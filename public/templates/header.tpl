@@ -29,9 +29,9 @@
 
 			templates_init();
 
-			var rootUrl = document.location.protocol + '//' + (document.location.hostname || document.location.host),
+			var rootUrl = document.location.protocol + '//' + (document.location.hostname || document.location.host) + (document.location.port ? ':'+document.location.port : ''),
 				content = null;
-
+				console.log(rootUrl);
 			$('document').ready(function() {
 				if (!window.history || !window.history.pushState) return; // no ajaxification for old browsers
 				
