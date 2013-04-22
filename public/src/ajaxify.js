@@ -1,3 +1,6 @@
+var ajaxify = {};
+
+
 (function($) {
 	
 	var rootUrl = document.location.protocol + '//' + (document.location.hostname || document.location.host) + (document.location.port ? ':'+document.location.port : ''),
@@ -5,7 +8,26 @@
 
 	var current_state = '';
 
-		
+	ajaxify.go = function(url) {
+		var tpl_url = (url === '') ? 'home' : url;
+
+		if (templates[tpl_url]) {
+			if (current_state != url) {
+				current_state = url;
+
+				window.history.pushState({}, url, "/" + url);
+				content.innerHTML = templates[tpl_url];
+				exec_body_scripts(content);
+
+				
+			}
+			
+			return true;
+		}
+
+		return false;
+	}
+
 	$('document').ready(function() {
 		if (!window.history || !window.history.pushState) return; // no ajaxification for old browsers
 		
@@ -14,19 +36,8 @@
 
 		$('a').unbind('click').bind('click', function(ev) {
 			var url = this.href.replace(rootUrl +'/', '');
-			var tpl_url = (url === '') ? 'home' : url;
 
-			if (templates[tpl_url]) {
-				if (current_state != url) {
-					current_state = url;
-
-					window.history.pushState({}, url, "/" + url);
-					content.innerHTML = templates[tpl_url];
-					exec_body_scripts(content);
-
-					
-				}
-				
+			if (ajaxify.go(url)) {
 				ev.preventDefault();
 				return false;
 			} 
