@@ -1,12 +1,11 @@
 var express = require('express'),
     connect = require('connect'),
+    config = require('../config.js'),
     WebServer = express();
 
 
 (function(app) {
 	var templates = global.templates;
-
-
 
 	app.get('/test', function(req, res) {
 		var body = 'testing';
@@ -46,7 +45,7 @@ var express = require('express'),
 			});
 		});
 		
-		app.listen(80);
+		app.listen(config.port);
 	}
 
 }(WebServer));
