@@ -11,6 +11,12 @@ First step is to obtain all of the dependencies requires by node-forum:
 
     # apt-get install redis
 
+Now we ensure that the configuration files are properly set up. node-forum runs on port 4567 by default. The client side config can be set up thusly:
+
+    $ cp public/config.default.json public/config.json
+
+Ensure that `/public/config.json` points to the publically accessible IP/hostname of your forum.
+
 Lastly, we run the forum.
 
     $ node app
