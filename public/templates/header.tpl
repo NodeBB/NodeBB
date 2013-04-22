@@ -113,7 +113,7 @@
       }
 	</style>
 	<script>
-	var socket = io.connect('http://198.199.80.41:8081');
+	var socket = io.connect('http://198.58.101.18:8081');
 
 	socket.on('event:connect', function(data) {
 		

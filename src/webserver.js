@@ -1,11 +1,11 @@
 var express = require('express'),
+	WebServer = express(),
+	server = require('http').createServer(WebServer),
     connect = require('connect'),
-    config = require('../config.js'),
-    WebServer = express();
+    config = require('../config.js');
 
 (function(app) {
 	var templates = global.templates;
-	global.app = app;
 
 	app.get('/test', function(req, res) {
 		var body = 'testing';
@@ -39,8 +39,8 @@ var express = require('express'),
 			app.use(express.static(global.configuration.ROOT_DIRECTORY + '/public')); 
 			app.set('mailOptions', config.mailer);
 		});
-		
-		app.listen(config.port);
 	}
 
 }(WebServer));
+
+server.listen(config.port);
