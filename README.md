@@ -1,5 +1,5 @@
 # node-forum
-**node-forum** is a robust nodejs driven forum built on a redis database.
+**node-forum** is a robust nodejs driven forum built on a redis database. It is powered by web sockets, and is compatible down to IE8.
 
 ## Installation
 
@@ -7,7 +7,7 @@ First step is to obtain all of the dependencies requires by node-forum:
 
     $ npm install
 
-Next, we install redis. If you have redis installed, you can skip this step.
+*(Optional)* Next, we install redis. If you already have redis installed, you can skip this step.
 
     # apt-get install redis
 
@@ -15,9 +15,9 @@ Lastly, we run the forum.
 
     $ node app
 
-## Config
+## Server Configuration
 
-node-forum is pre-configured to run on port 4567, with default options defined in config.json. The following options are available:
+The server configuration file (located at `/config.js`) contains default options required for the running of node-forum. The following options are available:
 
 <table>
 	<tr>
@@ -40,3 +40,7 @@ node-forum is pre-configured to run on port 4567, with default options defined i
 		</td>
 	</tr>
 </table>
+
+## Client Configuration
+
+As the client will utilise web sockets to connect to the server, you'll need to customise the client configuration file (located at `/public/config.json`) to point to your server's publically accessible IP. The port will be identical to the port specified in the server-side configuration (defaulted to `4567`).
