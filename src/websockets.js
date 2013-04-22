@@ -5,7 +5,7 @@ var SocketIO = require('socket.io').listen(8081);
 (function(io) {
 	var modules = null;
 
-
+	global.io = io;
 	module.exports.init = function() {
 		modules = global.modules;
 	}
