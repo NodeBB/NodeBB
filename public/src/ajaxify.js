@@ -3,9 +3,12 @@
 	var rootUrl = document.location.protocol + '//' + (document.location.hostname || document.location.host) + (document.location.port ? ':'+document.location.port : ''),
 		content = null;
 
+	var current_state = '';
+
 		
 	$('document').ready(function() {
 		if (!window.history || !window.history.pushState) return; // no ajaxification for old browsers
+		
 
 		content = content || document.getElementById('content');
 
@@ -14,13 +17,21 @@
 			var tpl_url = (url === '') ? 'home' : url;
 
 			if (templates[tpl_url]) {
-				window.history.pushState({}, url, "/" + url);
-				content.innerHTML = templates[tpl_url];
-				exec_body_scripts(content);
+				if (current_state != url) {
+					current_state = url;
+
+					window.history.pushState({}, url, "/" + url);
+					content.innerHTML = templates[tpl_url];
+					exec_body_scripts(content);
+
+					
+				}
+				
+				ev.preventDefault();
+				return false;
 			} 
 			
-			ev.preventDefault();
-			return false;
+			
 		});
 	});
 
