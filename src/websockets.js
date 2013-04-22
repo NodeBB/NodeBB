@@ -23,7 +23,7 @@ var SocketIO = require('socket.io').listen(global.server);
 		
 		// BEGIN: API calls (todo: organize)
 		socket.on('user.create', function(data) {
-			modules.user.create(data.username, data.password);
+			modules.user.create(data.username, data.password, data.email);
 		});
 
 		socket.on('user.exists', function(data) {
@@ -40,7 +40,11 @@ var SocketIO = require('socket.io').listen(global.server);
 
 		socket.on('user.login', function(data) {
 			modules.user.login(data);
-		});		
+		});
+
+		socket.on('user.email.exists', function(data) {
+			modules.user.email.exists(data.email);
+		});
 	});
 	
 }(SocketIO));

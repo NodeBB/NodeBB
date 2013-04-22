@@ -35,7 +35,7 @@ var RDB = require('./redis.js');
 	};
 
 
-	User.create = function(username, password) {
+	User.create = function(username, password, email) {
 		if (current_uid) {
 			return; global.socket.emit('user.create', {'status': 0, 'message': 'Only anonymous users can register a new account.'});
 		}
@@ -54,6 +54,8 @@ var RDB = require('./redis.js');
 				RDB.set('username:' + username + ':uid', uid);
 				RDB.set('uid:' + uid + ':username', username);
 				RDB.set('uid:' + uid + ':password', password);
+				RDB.set('uid:' + uid + ':email', email);
+				RDB.set('email:' + email, uid);
 				
 				RDB.incr('user:count', function(count) {
 					io.sockets.emit('user.count', {count: count});
@@ -93,5 +95,13 @@ var RDB = require('./redis.js');
 		RDB.get('username:' + username + ':uid', callback);
 	};
 
-
+	User.email = {
+		exists: function(email) {
+			RDB.get('email:' + email, function(exists) {
+				console.log('email:' + email, exists);
+				exists = !!exists;
+				global.socket.emit('user.email.exists', { exists: exists });
+			});
+		}
+	}
 }(exports));

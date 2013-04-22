@@ -6,7 +6,8 @@
     </div>
 	<label>Username</label><input type="text" placeholder="Enter Username" id="username" /><br />
 	<label>Password</label><input type="password" placeholder="Enter Password" id="password" /><br />
-	<button class="btn btn-primary" id="login" type="submit">Login</button>
+	<button class="btn btn-primary" id="login" type="submit">Login</button> &nbsp;
+	<a href="/reset">Forgot Password?</a>
 </div>
 <script type="text/javascript">
 (function() {

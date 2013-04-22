@@ -15,7 +15,7 @@ var fs = require('fs');
 	}
 
 	Templates.init = function() {
-		loadTemplates(['header', 'footer', 'register', 'home', 'login']);
+		loadTemplates(['header', 'footer', 'register', 'home', 'login', 'reset']);
 	}
 
 }(exports));

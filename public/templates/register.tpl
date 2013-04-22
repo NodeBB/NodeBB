@@ -22,8 +22,9 @@
 
 <h1>Register</h1>
 <div class="well">
-	<label>Username</label><input type="text" placeholder="Enter Username" id="username" /> <span id="username-notify" class="label label-success"></span> <br />
-	<label>Password</label><input type="password" placeholder="Enter Password" id="password" /><br />
+	<label for="email">Email Address</label><input type="email" placeholder="Enter Email Address" id="email" /> <span id="email-notify" class="label label-important"></span> <br />
+	<label for="username">Username</label><input type="text" placeholder="Enter Username" id="username" /> <span id="username-notify" class="label label-success"></span> <br />
+	<label for="password">Password</label><input type="password" placeholder="Enter Password" id="password" /><br />
 	<button class="btn btn-primary" id="register" type="submit">Register Now</button>
 </div>
 <script type="text/javascript">
@@ -31,18 +32,25 @@
 	var username = document.getElementById('username'),
 		password = document.getElementById('password'),
 		register = document.getElementById('register'),
-		username_notify = document.getElementById('username-notify');
+		emailEl = document.getElementById('email'),
+		username_notify = document.getElementById('username-notify'),
+		email_notify = document.getElementById('email-notify');
 
 	register.onclick = function() {
 		socket.emit('user.create', {
 			username: username.value,
-			password: password.value
+			password: password.value,
+			email: emailEl.value
 		});
 	};
 
 	username.onkeyup = function() {
 		socket.emit('user.exists', {username: username.value});
 	}
+	emailEl.addEventListener('change', function() {
+		console.log('checking email existance');
+		socket.emit('user.email.exists', { email: emailEl.value });
+	}, false);
 
 	socket.on('user.create', function(data) {
 		//console.log('user create: ' + data.status);
@@ -54,6 +62,13 @@
 		} else {
 			username_notify.innerHTML = 'Not taken';
 			username_notify.className = 'label label-success';
+		}
+	});
+	socket.on('user.email.exists', function(data) {
+		if (data.exists === true) {
+			email_notify.innerHTML = 'Email Address exists';
+		} else {
+			email_notify.innerHTML = '';
 		}
 	});
 }());

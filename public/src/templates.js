@@ -13,7 +13,7 @@ function loadTemplates(templatesToLoad) {
 }
 
 function templates_init() {
-	loadTemplates(['register', 'home', 'login']);	
+	loadTemplates(['register', 'home', 'login', 'reset']);	
 }
 
 templates_init();

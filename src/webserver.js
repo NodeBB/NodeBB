@@ -7,22 +7,17 @@ var express = require('express'),
 (function(app) {
 	var templates = global.templates;
 
-	app.get('/test', function(req, res) {
-		var body = 'testing';
-		res.send(body);
-	});
 	app.get('/', function(req, res) {
-		console.log(templates['header']);
 		res.send(templates['header'] + templates['home'] + templates['footer']);
 	});
 
 	app.get('/login', function(req, res) {
-		var body = templates['header'] + templates['login'] + templates['footer'];
-		res.setHeader('Content-Type', 'text/html');
-		res.setHeader('Content-Length', body.length);
-		res.end(body);
+		res.send(templates['header'] + templates['login'] + templates['footer']);
 	});
 
+	app.get('/reset', function(req, res) {
+		res.send(templates['header'] + templates['reset'] + templates['footer']);
+	});
 
 	app.get('/register', function(req, res) {
 		res.send(templates['header'] + templates['register'] + templates['footer']);
