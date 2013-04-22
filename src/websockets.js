@@ -1,5 +1,5 @@
 
-var SocketIO = require('socket.io').listen(8081);
+var SocketIO = require('socket.io').listen(global.server);
 
 
 (function(io) {
