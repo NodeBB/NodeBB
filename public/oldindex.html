@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
+	<script type="text/javascript" src="vendor/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="socket.io/socket.io.js"></script>
+	<script type="text/javascript" src="vendor/ajaxify/ajaxify.js"></script>
+	<style type="text/css">
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+	</style>
+	<script>
+	var socket = io.connect('http://198.199.80.41:8081');
+
+	socket.on('event:connect', function(data) {
+		
+	});
+
+
+	</script>
+</head>
+<body>
+	<div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+        	<a href="/">Home</a>
+        	<a href="/test.html">Register</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container" id="content">
+    	Home
+    </div>
+</body>
+</html>

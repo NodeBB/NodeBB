@@ -1,0 +1,22 @@
+{
+  "author": "psychobunny <andrew@designcreateplay.com>",
+  "name": "nodeforum",
+  "description": "nodeforum dev",
+  "version": "0.0.1",
+  "homepage": "http://www.designcreateplay.com",
+  "repository": {
+    "url": ""
+  },
+  "main": "app.js",
+  "dependencies": {
+      "socket.io": "0.9.14",
+      "redis": "0.8.3",
+      "express": "3.2.0",
+      "connect": "2.7.6"
+    },
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
