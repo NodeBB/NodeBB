@@ -1,4 +1,4 @@
-var RDB = require('../RedisDB.js');
+var RDB = require('./redis.js');
 
 (function(User) {
 	var current_uid;
@@ -26,11 +26,11 @@ var RDB = require('../RedisDB.js');
 				RDB.set('uid:' + uid + ':password', password);
 				
 				RDB.incr('user:count', function(count) {
-					global.io.sockets.emit('user.count', {count: count});
+					io.sockets.emit('user.count', {count: count});
 				});
 
 				RDB.lpush('user:users', username);
-				global.io.sockets.emit('user.latest', {username: username});
+				io.sockets.emit('user.latest', {username: username});
 
 				global.socket.emit('user.create', {'status': 1});
 			});
