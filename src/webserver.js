@@ -21,6 +21,13 @@ var express = require('express'),
 		res.end(body);
 	});
 
+	app.get('/login', function(req, res) {
+		var body = templates['header'] + templates['login'] + templates['footer'];
+		res.setHeader('Content-Type', 'text/html');
+		res.setHeader('Content-Length', body.length);
+		res.end(body);
+	});
+
 
 	app.get('/register', function(req, res) {
 		var body = templates['header'] + templates['register'] + templates['footer'];

@@ -24,7 +24,7 @@
 			}
 
 			function templates_init() {
-				loadTemplates(['register', 'home']);	
+				loadTemplates(['register', 'home', 'login']);	
 			}
 
 			templates_init();
@@ -113,7 +113,7 @@
       }
 	</style>
 	<script>
-	var socket = io.connect('http://198.58.101.18:8081');
+	var socket = io.connect('http://198.199.80.41:8081');
 
 	socket.on('event:connect', function(data) {
 		
@@ -131,6 +131,7 @@
 	            <ul class="nav">
 	              <li class="active"><a href="/">Home</a></li>
 	              <li><a href="/register">Register</a></li>
+	              <li><a href="/login">Login</a></li>
 	            </ul>
 	        </div>
         </div>

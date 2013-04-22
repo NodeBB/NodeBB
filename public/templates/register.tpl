@@ -19,10 +19,13 @@
 </script>
 <!-- END Forum Info Template -->
 <!-- START Register Template -->
+
 <h1>Register</h1>
-Username: <input type="text" placeholder="Enter Username" id="username" /> <span id="username-notify" class="label label-success"></span> <br />
-Password: <input type="password" placeholder="Enter Password" id="password" /><br />
-<button id="register" type="submit">Register Now</button>
+<div class="well">
+	<label>Username</label><input type="text" placeholder="Enter Username" id="username" /> <span id="username-notify" class="label label-success"></span> <br />
+	<label>Password</label><input type="password" placeholder="Enter Password" id="password" /><br />
+	<button class="btn btn-primary" id="register" type="submit">Register Now</button>
+</div>
 <script type="text/javascript">
 (function() {
 	var username = document.getElementById('username'),
