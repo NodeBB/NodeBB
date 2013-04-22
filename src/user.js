@@ -3,15 +3,45 @@ var RDB = require('./redis.js');
 (function(User) {
 	var current_uid;
 
+	User.login = function(user) {
+		if (current_uid) {
+			return global.socket.emit('user.login', {'status': 0, 'message': 'User is already logged in.'});
+			
+		}
+
+		if (user.username == null || user.password == null) {
+			return global.socket.emit('user.login', {'status': 0, 'message': 'Missing fields'});
+			
+		}
+
+		RDB.get('username:' + user.username + ':uid', function(uid) {
+			if (uid == null) {
+				return global.socket.emit('user.login', {'status': 0, 'message': 'Username does not exist.'});
+				
+			}
+
+			RDB.get('uid:' + uid + ':password', function(password) {
+				if (user.password != password) {
+					return global.socket.emit('user.login', {'status': 0, 'message': 'Incorrect username / password combination.'});
+				} else {
+					console.log('in');
+					return global.socket.emit('user.login', {'status': 1, 'message': 'Logged in!'});
+				}
+			});
+				
+		});
+				
+
+	};
+
+
 	User.create = function(username, password) {
 		if (current_uid) {
-			global.socket.emit('user.create', {'status': 0, 'message': 'Only anonymous users can register a new account.'});
-			return;
+			return; global.socket.emit('user.create', {'status': 0, 'message': 'Only anonymous users can register a new account.'});
 		}
 
 		if (username == null || password == null) {
-			global.socket.emit('user.create', {'status': 0, 'message': 'Missing fields'});
-			return;
+			return; global.socket.emit('user.create', {'status': 0, 'message': 'Missing fields'});
 		}
 
 

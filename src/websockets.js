@@ -36,6 +36,10 @@ var SocketIO = require('socket.io').listen(8081);
 
 		socket.on('user.latest', function(data) {
 			modules.user.latest(data);
+		});
+
+		socket.on('user.login', function(data) {
+			modules.user.login(data);
 		});		
 	});
 	
