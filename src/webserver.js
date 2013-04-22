@@ -5,6 +5,7 @@ var express = require('express'),
 
 (function(app) {
 	var templates = global.templates;
+	global.app = app;
 
 	app.get('/test', function(req, res) {
 		var body = 'testing';
