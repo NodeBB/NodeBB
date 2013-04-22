@@ -5,7 +5,9 @@
 
 1. `$ npm install`
 
-2. `node app`
+2. `$ apt-get install redis`
+
+3. `$ node app`
 
 ## Config
 
