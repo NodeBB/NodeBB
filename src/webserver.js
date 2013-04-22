@@ -44,3 +44,4 @@ var express = require('express'),
 }(WebServer));
 
 server.listen(config.port);
+global.server = server;
