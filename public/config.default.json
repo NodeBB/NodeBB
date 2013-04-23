@@ -1,0 +1,6 @@
+{
+	"socket" : {
+		"address" : "localhost",
+		"port" : "4567"
+	}
+}
