@@ -13,6 +13,10 @@ var socket,
 			socket.on('event:connect', function(data) {
 				
 			});
+
+			socket.on('event:alert', function(data) {
+				app.alert(data);
+			});
 		},
 		async: false
 

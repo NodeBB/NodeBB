@@ -18,13 +18,19 @@ var ajaxify = {};
 				current_state = url;
 
 				window.history.pushState({}, url, "/" + url);
-				content.innerHTML = templates[tpl_url];
-				exec_body_scripts(content);
+				
+				jQuery('#content').fadeOut(100, function() {
+					content.innerHTML = templates[tpl_url];
+					exec_body_scripts(content);
 
-				ajaxify.enable();
-				if (callback) {
-					callback();
-				}
+					ajaxify.enable();
+					if (callback) {
+						callback();
+					}
+					
+					jQuery('#content').fadeIn(200);
+				});
+				
 			}
 			
 			return true;
@@ -42,6 +48,7 @@ var ajaxify = {};
 
 		if (ajaxify.go(url)) {
 			ev.preventDefault();
+			return false;
 		}
 	}
 

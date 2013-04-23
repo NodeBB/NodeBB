@@ -65,6 +65,13 @@ var RDB = require('./redis.js');
 				io.sockets.emit('user.latest', {username: username});
 
 				global.socket.emit('user.create', {'status': 1});
+
+				global.socket.emit('event:alert', {
+					title: 'Thank you for registering',
+					message: 'You have successfully registered - welcome to nodebb!',
+					type: 'notify',
+					timeout: 2000
+				});
 			});
 		});
 	};
