@@ -11,9 +11,18 @@
 	<script type="text/javascript" src="src/templates.js"></script>
 	<script type="text/javascript" src="src/ajaxify.js"></script>
 	<style type="text/css">
-      body {
-        padding-top: 60px;
-      }
+		body {
+			padding-top: 60px;
+		}
+
+		#notification_window {
+			position: absolute;
+			right: 20px;
+			top: 80px;
+			width: 300px;
+			height: 0px;
+
+		}
 	</style>
 </head>
 
@@ -31,6 +40,6 @@
         </div>
       </div>
     </div>
-
+	<div id="notification_window"></div>
     <div class="container" id="content">
 
