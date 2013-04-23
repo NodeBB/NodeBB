@@ -116,26 +116,22 @@ var	config = require('../config.js'),
 				var reset_code = utils.generateUUID();
 				RDB.set('user:reset:' + reset_code, uid);
 
+				var reset_link = config.url + 'reset/' + reset_code,
+					reset_email = global.templates['emails/reset'].parse({'RESET_LINK': reset_link});
+
 				var message = emailjs.message.create({
-					text:	"Hello,\n\n" +
-							"We received a request to reset your password, possibly because you have forgotten it. If this is not the case, please ignore this email.\n\n" +
-							"To continue with the password reset, please click on the following link:\n\n" +
-							"&nbsp;&nbsp;" + config.url + 'reset/' + reset_code + "\n\n\n" +
-							"Thanks!\nNodeBB",
+					text:	reset_email,
 					from: config.mailer.from,
 					to: email,
 					subject: 'Password Reset Requested',
 					attachment: [
 						{
-							data:	"<p>Hello,</p>" +
-									"<p>We received a request to reset your password, possibly because you have forgotten it. If this is not the case, please ignore this email.</p>" +
-									"<p>To continue with the password reset, please click on the following link:</p>" +
-									"<blockquote>" + config.url + 'reset/' + reset_code + "</blockquote>" +
-									"<p>Thanks!<br /><strong>NodeBB</strong>",
+							data:	reset_email,
 							alternative: true
 						}
 					]
 				});
+				
 				emailjsServer.send(message, function(err, success) {
 					if (err === null) {
 						global.socket.emit('user.send_reset', {
@@ -144,6 +140,7 @@ var	config = require('../config.js'),
 							email: email
 						});
 					}
+					else throw new Error(err);
 				});
 			} else {
 				global.socket.emit('user.send_reset', {

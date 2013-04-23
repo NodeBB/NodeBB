@@ -15,6 +15,10 @@
 </div>
 <script type="text/javascript">
 (function() {
+	document.getElementById('reset').onclick = function() {
+		socket.emit('user.send_reset', { email: document.getElementById('email').value });
+	};
+
 	socket.on('user.send_reset', function(data) {
 		var	inputEl = document.getElementById('email'),
 			submitEl = document.getElementById('reset'),
