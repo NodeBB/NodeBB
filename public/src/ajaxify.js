@@ -37,7 +37,6 @@ var ajaxify = {};
 
 		if (ajaxify.go(url)) {
 			ev.preventDefault();
-			return false;
 		}
 	}
 
