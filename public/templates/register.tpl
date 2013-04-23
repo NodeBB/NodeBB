@@ -54,6 +54,15 @@
 
 	socket.on('user.create', function(data) {
 		//console.log('user create: ' + data.status);
+		ajaxify.go('/', function() {
+			app.alert({
+				title: 'Thank you for registering',
+				message: 'You have successfully registered - welcome to nodebb!',
+				type: 'notify',
+				timeout: 2000
+			});
+		});
+		
 	});
 	socket.on('user.exists', function(data) {
 		if (data.exists == true) {

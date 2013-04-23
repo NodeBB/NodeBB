@@ -3,16 +3,18 @@ var ajaxify = {};
 
 (function($) {
 	
-	var rootUrl = document.location.protocol + '//' + (document.location.hostname || document.location.host) + (document.location.port ? ':'+document.location.port : ''),
+	var location = document.location || window.location,
+		rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : ''),
 		content = null;
 
-	var current_state = '';
+	var current_state = null;
 
-	ajaxify.go = function(url) {
+	ajaxify.go = function(url, callback) {
+		var url = url.replace(/\/$/, "");
 		var tpl_url = (url === '') ? 'home' : url;
 
 		if (templates[tpl_url]) {
-			if (current_state != url) {
+			if (current_state === null || current_state != url) {
 				current_state = url;
 
 				window.history.pushState({}, url, "/" + url);
@@ -20,6 +22,9 @@ var ajaxify = {};
 				exec_body_scripts(content);
 
 				ajaxify.enable();
+				if (callback) {
+					callback();
+				}
 			}
 			
 			return true;
