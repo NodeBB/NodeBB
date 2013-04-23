@@ -23,6 +23,13 @@
 			height: 0px;
 
 		}
+		footer.footer {
+			color: #555;
+			text-align: center;
+		}
+		footer.footer a {
+			color: #222;
+		}
 	</style>
 </head>
 

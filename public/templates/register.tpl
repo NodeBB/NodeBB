@@ -1,23 +1,3 @@
-<!-- START Forum Info Template -->
-<div class="alert alert-info">
-	<span id="number_of_users"></span><br />
-	<span id="latest_user"></span>
-</div>
-<script type="text/javascript">
-(function() {
-	var num_users = document.getElementById('number_of_users'),
-		latest_user = document.getElementById('latest_user');
-	socket.emit('user.count', {});
-	socket.on('user.count', function(data) {
-		num_users.innerHTML = "We currently have <b>" + data.count + "</b> registered users.";
-	});
-	socket.emit('user.latest', {});
-	socket.on('user.latest', function(data) {
-		latest_user.innerHTML = "The most recent user to register is <b>" + data.username + "</b>.";
-	});
-}());
-</script>
-<!-- END Forum Info Template -->
 <!-- START Register Template -->
 
 <h1>Register</h1>
