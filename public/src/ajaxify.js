@@ -19,7 +19,7 @@ var ajaxify = {};
 				content.innerHTML = templates[tpl_url];
 				exec_body_scripts(content);
 
-				ajaxify.enableAll();
+				ajaxify.enable();
 			}
 			
 			return true;
@@ -28,11 +28,11 @@ var ajaxify = {};
 		return false;
 	}
 
-	ajaxify.enableAll = function() {
-		$('a').unbind('click', ajaxify.enable).bind('click', ajaxify.enable);
+	ajaxify.enable = function() {
+		$('a').unbind('click', ajaxify.onclick).bind('click', ajaxify.onclick);
 	}
 
-	ajaxify.enable = function(ev) {
+	ajaxify.onclick = function(ev) {
 		var url = this.href.replace(rootUrl +'/', '');
 
 		if (ajaxify.go(url)) {
@@ -46,7 +46,7 @@ var ajaxify = {};
 
 		content = content || document.getElementById('content');
 
-		ajaxify.enableAll();
+		ajaxify.enable();
 	});
 
 	function exec_body_scripts(body_el) {
