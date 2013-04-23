@@ -24,6 +24,11 @@ var express = require('express'),
 		res.send(templates['header'] + templates['login'] + templates['footer']);
 	});
 
+	app.get('/reset/:code', function(req, res) {
+		refreshTemplates();
+		res.send(templates['header'] + templates['reset_code'] + templates['footer']);
+	});
+
 	app.get('/reset', function(req, res) {
 		refreshTemplates();
 		res.send(templates['header'] + templates['reset'] + templates['footer']);

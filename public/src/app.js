@@ -5,7 +5,7 @@ var socket,
 (function() {
 
 	$.ajax({
-		url: 'config.json?v=' + new Date().getTime(),
+		url: '/config.json?v=' + new Date().getTime(),
 		success: function(data) {
 			config = data;
 			socket = io.connect('http://' + config.socket.address + config.socket.port? ':' + config.socket.port : '');

@@ -5,7 +5,7 @@ function loadTemplates(templatesToLoad) {
 
 	for (var t in templatesToLoad) {
 		(function(template) {
-			$.get('templates/' + template + '.tpl?v=' + timestamp, function(html) {
+			$.get('/templates/' + template + '.tpl?v=' + timestamp, function(html) {
 				templates[template] = html;
 			});
 		}(templatesToLoad[t]));
