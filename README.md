@@ -1,9 +1,9 @@
-# node-forum
-**node-forum** is a robust nodejs driven forum built on a redis database. It is powered by web sockets, and is compatible down to IE8.
+# NodeBB
+**NodeBB** is a robust nodejs driven forum built on a redis database. It is powered by web sockets, and is compatible down to IE8.
 
 ## Installation
 
-First step is to obtain all of the dependencies requires by node-forum:
+First step is to obtain all of the dependencies requires by NodeBB:
 
     $ npm install
 
@@ -11,11 +11,15 @@ First step is to obtain all of the dependencies requires by node-forum:
 
     # apt-get install redis
 
-Now we ensure that the configuration files are properly set up. node-forum runs on port 4567 by default. The client side config can be set up thusly:
+Now we ensure that the configuration files are properly set up. NodeBB runs on port 4567 by default. The client side config can be set up thusly:
 
     $ cp public/config.default.json public/config.json
 
-Ensure that `/public/config.json` points to the publically accessible IP/hostname of your forum.
+... and the server side config can be set up similarly:
+
+    $ cp config.default.js config.js
+
+Ensure that `/public/config.json` points to the publically accessible IP/hostname of your forum, and that the values of the server side config are also set correctly (see below).
 
 Lastly, we run the forum.
 
@@ -23,7 +27,7 @@ Lastly, we run the forum.
 
 ## Server Configuration
 
-The server configuration file (located at `/config.js`) contains default options required for the running of node-forum. The following options are available:
+The server configuration file (located at `/config.js`) contains default options required for the running of NodeBB. The following options are available:
 
 <table>
 	<tr>
@@ -31,8 +35,12 @@ The server configuration file (located at `/config.js`) contains default options
 		<th>Description</th>
 	</tr>
 	<tr>
+		<td><b>base_url</b></td>
+		<td><i>(Default: 'http://localhost')</i> A web-accessible URL to your app, without the port</td>
+	</tr>
+	<tr>
 		<td><b>port</b></td>
-		<td><i>(Default: 4567)</i> The default port that node-forum runs on</td>
+		<td><i>(Default: 4567)</i> The default port that NodeBB runs on</td>
 	</tr>
 	<tr>
 		<td><b>mailer</b></td>
