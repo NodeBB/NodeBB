@@ -19,7 +19,7 @@ var ajaxify = {};
 				content.innerHTML = templates[tpl_url];
 				exec_body_scripts(content);
 
-				
+				ajaxify.enableAll();
 			}
 			
 			return true;
@@ -28,22 +28,25 @@ var ajaxify = {};
 		return false;
 	}
 
+	ajaxify.enableAll = function() {
+		$('a').unbind('click', ajaxify.enable).bind('click', ajaxify.enable);
+	}
+
+	ajaxify.enable = function(ev) {
+		var url = this.href.replace(rootUrl +'/', '');
+
+		if (ajaxify.go(url)) {
+			ev.preventDefault();
+			return false;
+		}
+	}
+
 	$('document').ready(function() {
 		if (!window.history || !window.history.pushState) return; // no ajaxification for old browsers
-		
 
 		content = content || document.getElementById('content');
 
-		$('a').unbind('click').bind('click', function(ev) {
-			var url = this.href.replace(rootUrl +'/', '');
-
-			if (ajaxify.go(url)) {
-				ev.preventDefault();
-				return false;
-			} 
-			
-			
-		});
+		ajaxify.enableAll();
 	});
 
 	function exec_body_scripts(body_el) {
@@ -54,27 +57,26 @@ var ajaxify = {};
 		// Argument body_el is an element in the dom.
 
 		function nodeName(elem, name) {
-		return elem.nodeName && elem.nodeName.toUpperCase() ===
-		          name.toUpperCase();
+			return elem.nodeName && elem.nodeName.toUpperCase() === name.toUpperCase();
 		};
 
 		function evalScript(elem) {
-		var data = (elem.text || elem.textContent || elem.innerHTML || "" ),
-		    head = document.getElementsByTagName("head")[0] ||
-		              document.documentElement,
-		    script = document.createElement("script");
+			var data = (elem.text || elem.textContent || elem.innerHTML || "" ),
+			    head = document.getElementsByTagName("head")[0] ||
+			              document.documentElement,
+			    script = document.createElement("script");
 
-		script.type = "text/javascript";
-		try {
-		  // doesn't work on ie...
-		  script.appendChild(document.createTextNode(data));      
-		} catch(e) {
-		  // IE has funky script nodes
-		  script.text = data;
-		}
+			script.type = "text/javascript";
+			try {
+			  // doesn't work on ie...
+			  script.appendChild(document.createTextNode(data));      
+			} catch(e) {
+			  // IE has funky script nodes
+			  script.text = data;
+			}
 
-		head.insertBefore(script, head.firstChild);
-		head.removeChild(script);
+			head.insertBefore(script, head.firstChild);
+			head.removeChild(script);
 		};
 
 		// main section of function
