@@ -1,4 +1,8 @@
-var RDB = require('./redis.js');
+var	config = require('../config.js'),
+	utils = require('../utils.js'),
+	RDB = require('./redis.js'),
+	emailjs = require('emailjs'),
+	emailjsServer = emailjs.server.connect(config.mailer);
 
 (function(User) {
 	var current_uid;
@@ -24,7 +28,6 @@ var RDB = require('./redis.js');
 				if (user.password != password) {
 					return global.socket.emit('user.login', {'status': 0, 'message': 'Incorrect username / password combination.'});
 				} else {
-					console.log('in');
 					return global.socket.emit('user.login', {'status': 1, 'message': 'Logged in!'});
 				}
 			});
@@ -95,13 +98,45 @@ var RDB = require('./redis.js');
 		RDB.get('username:' + username + ':uid', callback);
 	};
 
+	User.get_uid_by_email = function(email, callback) {
+		RDB.get('email:' + email, callback)
+	};
+
 	User.send_reset = function(email) {
-		User.email.exists(email, function(exists) {
-			if (exists) {
-				global.socket.emit('user.send_reset', {
-					status: "ok",
-					message: "code-sent",
-					email: email
+		User.get_uid_by_email(email, function(uid) {
+			if (uid !== null) {
+				// Generate a new reset code
+				var reset_code = utils.generateUUID();
+				RDB.set('user:reset:' + reset_code, uid);
+
+				var message = emailjs.message.create({
+					text:	"Hello,\n\n" +
+							"We received a request to reset your password, possibly because you have forgotten it. If this is not the case, please ignore this email.\n\n" +
+							"To continue with the password reset, please click on the following link:\n\n" +
+							"&nbsp;&nbsp;" + config.url + 'reset/' + reset_code + "\n\n\n" +
+							"Thanks!\nNodeBB",
+					from: config.mailer.from,
+					to: email,
+					subject: 'Password Reset Requested',
+					attachment: [
+						{
+							data:	"<p>Hello,</p>" +
+									"<p>We received a request to reset your password, possibly because you have forgotten it. If this is not the case, please ignore this email.</p>" +
+									"<p>To continue with the password reset, please click on the following link:</p>" +
+									"<blockquote>" + config.url + 'reset/' + reset_code + "</blockquote>" +
+									"<p>Thanks!<br /><strong>NodeBB</strong>",
+							alternative: true
+						}
+					]
+				});
+				emailjsServer.send(message, function(err, success) {
+					if (err === null) {
+						global.socket.emit('user.send_reset', {
+							status: "ok",
+							message: "code-sent",
+							email: email
+						});
+					}
 				});
 			} else {
 				global.socket.emit('user.send_reset', {
@@ -115,8 +150,7 @@ var RDB = require('./redis.js');
 
 	User.email = {
 		exists: function(email, callback) {
-			RDB.get('email:' + email, function(exists) {
-				console.log('email:' + email, exists);
+			User.get_uid_by_email(email, function(exists) {
 				exists = !!exists;
 				if (typeof callback !== 'function') global.socket.emit('user.email.exists', { exists: exists });
 				else callback(exists);

@@ -1,18 +1,19 @@
 {
-  "author": "psychobunny <andrew@designcreateplay.com>",
+  "author": "psychobunny <andrew@designcreateplay.com>, julianlam <julian@designcreateplay.com>",
   "name": "nodeforum",
   "description": "nodeforum dev",
   "version": "0.0.1",
   "homepage": "http://www.designcreateplay.com",
   "repository": {
-    "url": ""
+    "url": "https://github.com/psychobunny/node-forum/"
   },
   "main": "app.js",
   "dependencies": {
       "socket.io": "0.9.14",
       "redis": "0.8.3",
       "express": "3.2.0",
-      "connect": "2.7.6"
+      "connect": "2.7.6",
+      "emailjs": "0.3.4"
     },
   "devDependencies": {},
   "optionalDependencies": {},

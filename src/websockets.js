@@ -1,6 +1,4 @@
-
-var SocketIO = require('socket.io').listen(global.server);
-
+var	SocketIO = require('socket.io').listen(global.server);
 
 (function(io) {
 	var modules = null;
