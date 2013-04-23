@@ -48,7 +48,7 @@ var ajaxify = {};
 
 		if (ajaxify.go(url)) {
 			ev.preventDefault();
-			return false;
+			// return false;	// Uncommenting this breaks event bubbling!
 		}
 	}
 
