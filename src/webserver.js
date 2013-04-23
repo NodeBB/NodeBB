@@ -29,10 +29,9 @@ var express = require('express'),
 			app.use(express.favicon());
 			app.use(express.bodyParser());
 			app.use(express.cookieParser());
-			app.use(express.logger({ format: '\x1b[1m:method\x1b[0m \x1b[33m:url\x1b[0m :response-time ms' }));
-			app.use(express.methodOverride());
+			// app.use(express.logger({ format: '\x1b[1m:method\x1b[0m \x1b[33m:url\x1b[0m :response-time ms' }));
+			// app.use(express.methodOverride());
 			app.use(express.static(global.configuration.ROOT_DIRECTORY + '/public')); 
-			app.set('mailOptions', config.mailer);
 		});
 	}
 

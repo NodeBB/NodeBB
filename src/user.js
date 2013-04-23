@@ -95,12 +95,31 @@ var RDB = require('./redis.js');
 		RDB.get('username:' + username + ':uid', callback);
 	};
 
+	User.send_reset = function(email) {
+		User.email.exists(email, function(exists) {
+			if (exists) {
+				global.socket.emit('user.send_reset', {
+					status: "ok",
+					message: "code-sent",
+					email: email
+				});
+			} else {
+				global.socket.emit('user.send_reset', {
+					status: "error",
+					message: "invalid-email",
+					email: email
+				});
+			}
+		});
+	}
+
 	User.email = {
-		exists: function(email) {
+		exists: function(email, callback) {
 			RDB.get('email:' + email, function(exists) {
 				console.log('email:' + email, exists);
 				exists = !!exists;
-				global.socket.emit('user.email.exists', { exists: exists });
+				if (typeof callback !== 'function') global.socket.emit('user.email.exists', { exists: exists });
+				else callback(exists);
 			});
 		}
 	}

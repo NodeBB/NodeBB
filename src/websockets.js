@@ -22,6 +22,7 @@ var SocketIO = require('socket.io').listen(global.server);
 		socket.emit('event:connect', {status: 1});
 		
 		// BEGIN: API calls (todo: organize)
+		//   julian: :^)
 		socket.on('user.create', function(data) {
 			modules.user.create(data.username, data.password, data.email);
 		});
@@ -44,6 +45,10 @@ var SocketIO = require('socket.io').listen(global.server);
 
 		socket.on('user.email.exists', function(data) {
 			modules.user.email.exists(data.email);
+		});
+
+		socket.on('user.send_reset', function(data) {
+			modules.user.send_reset(data.email);
 		});
 	});
 	

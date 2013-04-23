@@ -45,7 +45,11 @@
 	};
 
 	username.onkeyup = function() {
-		socket.emit('user.exists', {username: username.value});
+		if (username.value.length > 2) socket.emit('user.exists', {username: username.value});
+		else {
+			username_notify.innerHTML = 'Username too short';
+			username_notify.className = 'label label-important';
+		}
 	}
 	emailEl.addEventListener('change', function() {
 		console.log('checking email existance');
