@@ -62,7 +62,7 @@ var fs = require('fs');
 
 			for (var d in data) {
 				if (data.hasOwnProperty(d)) {
-					if (data[d] instanceof String) {
+					if (data[d] instanceof String || data[d] === null) {
 						continue;
 					} else if (data[d].constructor == Array) {
 						namespace += d;

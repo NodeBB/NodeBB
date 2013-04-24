@@ -33,6 +33,16 @@
 		});
 	};
 
+	RedisDB.mget = function(keys, callback, error_handler) {
+		db.mget(keys, function(error, data) {
+			return_handler(error, data, callback, error_handler);
+		});
+	};
+
+	RedisDB.multi = function() {
+		return db.multi();
+	}
+
 	RedisDB.del = function(key, callback) {
 		db.del(key);
 	}

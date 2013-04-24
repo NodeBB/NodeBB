@@ -12,23 +12,74 @@ var	RDB = require('./redis.js'),
 	// *tid:1:uid
 	// *tid:1:posts  (array of pid)
 	// *tid:1:timestamp
-	// *uid:1:topics
+	// *uid:1:tozpics
 	// *topic:slug:how-to-eat-chicken:tid
 
 
 
-	Topics.get_by_category = function(category, start, end) {
+	Topics.get_by_category = function(callback, category, start, end) {
 
 	}
 
-	Topics.get = function(start, end) {
+	Topics.generate_forum_body = function(callback, start, end) {
+		var forum_body = global.templates['home'];
+		
+
+		Topics.get(function(data) {
+			console.log({'topics': data});
+			forum_body = forum_body.parse({'topics': data});
+			callback(forum_body);
+		}, start, end);
+	};
+
+	Topics.get = function(callback, start, end) {
 		if (start == null) start = 0;
 		if (end == null) end = start + 10;
 
 
-		RDB.lrange('topics:tid', start, end, function() {
-			global.socket.emit
+		RDB.lrange('topics:tid', start, end, function(tids) {
+			var title = [],
+				uid = [],
+				timestamp = [],
+				posts = [];
+
+			for (var i=0, ii=tids.length; i<ii; i++) {
+				title.push('tid:' + tids[i] + ':title');
+				uid.push('tid:' + tids[i] + ':uid');
+				timestamp.push('tid:' + tids[i] + ':timestamp');
+				posts.push('tid:' + tids[i] + ':posts');
+			}
+			/*RDB.mget(topic, function(topic_data) {
+				callback(topic_data);
+			});*/
+
+			RDB.multi()
+				.mget(title)
+				.mget(uid)
+				.mget(timestamp)
+				.mget(posts)
+				.exec(function(err, replies) {
+					title = replies[0];
+					uid = replies[1];
+					timestamp = replies[2];
+					posts = replies[3];
+
+					var topics = [];
+					for (var i=0, ii=title.length; i<ii; i++) {
+						topics.push({
+							'title' : title[i],
+							'uid' : uid[i],
+							'timestamp' : timestamp[i],
+							'posts' : posts[i],
+							'post_count' : 0
+						});
+					}
+
+					callback(topics);
+				});
 		});
+
+
 	}
 
 

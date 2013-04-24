@@ -42,7 +42,7 @@
 			height: 350px;
 			left: 0px;
 			bottom: 0px;
-			opacity: 0.8;
+			background: white;
 		}
 
 		#post_window input {
@@ -68,14 +68,39 @@
 		}
 
 		#post_window .post-title-container {
+			opacity: 0.8;
 			height: 50px;
 		}
 
 		#post_window .post-content-container {
+			opacity: 0.8;
 			background: #000;
 			width: 100%;
 			height: 300px;
 
+		}
+
+		.topic-container {
+			list-style-type: none;
+			padding: 0;
+			margin: 0;
+			border: 1px solid #eee;
+			margin-top: 50px;
+		}
+		.topic-container li.topic-row:nth-child(odd) {
+			background-color:#fdfdfd;
+		}
+		.topic-container li.topic-row:nth-child(even) {
+			background-color:#fff;
+		}
+		.topic-container li.topic-row {
+			cursor: pointer;
+			border-bottom: 1px solid #eee;
+			padding: 10px;
+
+		}
+		.topic-container li.topic-row:hover {
+			background-color: #eee;
 		}
 	</style>
 </head>

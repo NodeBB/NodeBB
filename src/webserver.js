@@ -40,11 +40,11 @@ var express = require('express'),
 	//	app.use(express.methodOverride());
 
 	app.get('/', function(req, res) {
-		//global.modules.topics.get(function() {
-		//	res.send(templates['header'] + templates['home'] + templates['footer']);	
-		//})
+		global.modules.topics.generate_forum_body(function(forum_body) {
+			res.send(templates['header'] + forum_body + templates['footer']);	
+		})
 		
-		res.send(templates['header'] + templates['home'] + templates['footer']);
+		//res.send(templates['header'] + templates['home'] + templates['footer']);
 	});
 
 	app.get('/login', function(req, res) {
