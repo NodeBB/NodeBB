@@ -7,35 +7,23 @@ var express = require('express'),
 (function(app) {
 	var templates = global.templates;
 
-	function refreshTemplates() {
-		//need a better solution than copying this code on every call. is there an "onconnect" event?
-		if (DEVELOPMENT === true) {
-			// refreshing templates
-			modules.templates.init();
-		}
-	}
 	app.get('/', function(req, res) {
-		refreshTemplates();
 		res.send(templates['header'] + templates['home'] + templates['footer']);
 	});
 
 	app.get('/login', function(req, res) {
-		refreshTemplates();
 		res.send(templates['header'] + templates['login'] + templates['footer']);
 	});
 
 	app.get('/reset/:code', function(req, res) {
-		refreshTemplates();
 		res.send(templates['header'] + templates['reset_code'].parse({ reset_code: req.params.code }) + templates['footer']);
 	});
 
 	app.get('/reset', function(req, res) {
-		refreshTemplates();
 		res.send(templates['header'] + templates['reset'] + templates['footer']);
 	});
 
 	app.get('/register', function(req, res) {
-		refreshTemplates();
 		res.send(templates['header'] + templates['register'] + templates['footer']);
 	});
 

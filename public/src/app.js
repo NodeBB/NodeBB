@@ -2,6 +2,7 @@ var socket,
 	config,
 	app = {};
 
+// todo: cleanup,etc
 (function() {
 
 	$.ajax({
@@ -42,7 +43,7 @@ var socket,
 		p.innerHTML = params.message;
 		strong.innerHTML = params.title;
 
-		div.className = "alert " + ((params.type=='warning') ? '' : "alert-" + params.type);
+		div.className = "alert toaster-alert " + ((params.type=='warning') ? '' : "alert-" + params.type);
 		
 		div.setAttribute('id', alert_id);
 		div.appendChild(button);
@@ -61,9 +62,52 @@ var socket,
 
 		if (params.timeout) {
 			setTimeout(function() {
-				jQuery(div).fadeOut('1000');
+				jQuery(div).fadeOut(1000);
 			}, params.timeout)
+		}
+
+		if (params.clickfn) {
+			div.onclick = function() {
+				params.clickfn();
+				jQuery(div).fadeOut(500);
+			}
 		}
 	}
 
+	var post_window = null;
+	app.open_post_window = function() {
+		post_window = post_window || document.getElementById('post_window');
+
+		jQuery(post_window).slideToggle(250);
+
+	};
+
+	app.post_topic = function() {
+		var title = document.getElementById('post_title').innerHTML,
+			content = document.getElementById('post_content').innerHTML;
+
+		if (title.length < 5 || content.length < 5) {
+			app.alert({
+				title: 'Topic Post Failure',
+				message: 'You need to write more dude.',
+				type: 'error',
+				timeout: 2000,
+				clickfn: function() {
+					ajaxify.go('register');
+				}
+			});	
+
+			return;
+		}
+
+		socket.emit('topics.post', {
+			'title' : title,
+			'content' : content 
+		});
+		jQuery(post_window).slideToggle(250);
+	};
+
+	jQuery('document').ready(function() {
+		jQuery('#post_window').slideToggle(0);
+	})
 }());

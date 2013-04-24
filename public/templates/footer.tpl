@@ -2,7 +2,7 @@
 
 	</div><!--END container -->
 	<!-- START Forum Info -->
-	<div class="container">
+	<div class="container" style="padding-top: 50px;">
 		<div class="alert alert-info">
 			<span id="number_of_users"></span><br />
 			<span id="latest_user"></span>
