@@ -114,19 +114,21 @@ var	config = require('../config.js'),
 			if (uid !== null) {
 				// Generate a new reset code
 				var reset_code = utils.generateUUID();
-				RDB.set('user:reset:' + reset_code, uid);
+				RDB.set('reset:' + reset_code + ':uid', uid);
+				// RDB.set('reset:' + reset_code + ':expiry', expiry);
 
 				var reset_link = config.url + 'reset/' + reset_code,
-					reset_email = global.templates['emails/reset'].parse({'RESET_LINK': reset_link});
+					reset_email = global.templates['emails/reset'].parse({'RESET_LINK': reset_link}),
+					reset_email_plaintext = global.templates['emails/reset_plaintext'].parse({ 'RESET_LINK': reset_link });
 
 				var message = emailjs.message.create({
-					text:	reset_email,
+					text: reset_email_plaintext,
 					from: config.mailer.from,
 					to: email,
 					subject: 'Password Reset Requested',
 					attachment: [
 						{
-							data:	reset_email,
+							data: reset_email,
 							alternative: true
 						}
 					]
@@ -139,8 +141,13 @@ var	config = require('../config.js'),
 							message: "code-sent",
 							email: email
 						});
+					} else {
+						global.socket.emit('user.send_reset', {
+							status: "error",
+							message: "send-failed"
+						});
+						throw new Error(err);
 					}
-					else throw new Error(err);
 				});
 			} else {
 				global.socket.emit('user.send_reset', {

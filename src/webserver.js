@@ -26,7 +26,7 @@ var express = require('express'),
 
 	app.get('/reset/:code', function(req, res) {
 		refreshTemplates();
-		res.send(templates['header'] + templates['reset_code'] + templates['footer']);
+		res.send(templates['header'] + templates['reset_code'].parse({ reset_code: req.params.code }) + templates['footer']);
 	});
 
 	app.get('/reset', function(req, res) {

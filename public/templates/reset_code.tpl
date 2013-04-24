@@ -6,16 +6,20 @@
 		<p></p>
 	</div>
 	<label>New Password</label><input type="password" placeholder="A new password" id="password" /><br />
-	<label>... and again</label><input type="password" placeholder="" id="password_2" /><br />
-	<input type="hidden" value="{andrew - the code goes here}" />
+	<label>... and again</label><input type="password" placeholder="" id="repeat" /><br />
+	<input type="hidden" value="{reset_code}" />
 	<button class="btn btn-primary" id="reset" type="submit">Reset Password</button>
 </div>
 <script type="text/javascript">
 (function() {
-	var	resetEl = document.getElementById('reset');
+	var	resetEl = document.getElementById('reset'),
+		password = document.getElementById('password'),
+		repeat = document.getElementById('repeat');
 
 	resetEl.addEventListener('click', function() {
-
+		if (password.value === repeat.value) {
+			alert("match");
+		}
 	}, false);
 	// socket.on('user.password.reset', function(data) {
 	// 	if (data.success === 'ok') {

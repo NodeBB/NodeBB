@@ -8,21 +8,29 @@
 	<div class="alert" id="error" style="display:none">
 		<button type="button" class="close" data-dismiss="alert">&times;</button>
 		<strong>Invalid Email!</strong>
-		<p>The email you put in (<span id="invalid-email"></span>) is not registered with us. Please try again.</p>
+		<p></p>
 	</div>
-	<label>Email Address</label><input type="text" placeholder="Enter Email Address" id="email" /><br />
+	<label for="email">Email Address</label><input type="text" placeholder="Enter Email Address" id="email" /><br />
 	<button class="btn btn-primary" id="reset" type="submit">Reset Password</button>
 </div>
 <script type="text/javascript">
 (function() {
+	var	inputEl = document.getElementById('email'),
+		errorEl = document.getElementById('error'),
+		errorTextEl = errorEl.querySelector('p');
+
 	document.getElementById('reset').onclick = function() {
-		socket.emit('user.send_reset', { email: document.getElementById('email').value });
+		if (inputEl.value.length > 0 && inputEl.value.indexOf('@') !== -1) {
+			socket.emit('user.send_reset', { email: inputEl.value });
+		} else {
+			jQuery('#success').hide();
+			jQuery(errorEl).show();
+			errorTextEl.innerHTML = 'Please enter a valid email';
+		}
 	};
 
 	socket.on('user.send_reset', function(data) {
-		var	inputEl = document.getElementById('email'),
-			submitEl = document.getElementById('reset'),
-			invalidEl = document.getElementById('invalid-email');
+		var	submitEl = document.getElementById('reset');
 
 		if (data.status === 'ok') {
 			jQuery('#error').hide();
@@ -31,8 +39,15 @@
 			inputEl.value = '';
 		} else {
 			jQuery('#success').hide();
-			jQuery('#error').show();
-			invalidEl.innerHTML = data.email;
+			jQuery(errorEl).show();
+			switch(data.message) {
+				case 'invalid-email':
+					errorTextEl.innerHTML = 'The email you put in (<span>' + data.email + '</span>) is not registered with us. Please try again.';
+				break;
+				case 'send-failed':
+					errorTextEl.innerHTML = 'There was a problem sending the reset code. Please try again later.';
+				break;
+			}
 		}
 	});
 }());

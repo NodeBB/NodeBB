@@ -24,7 +24,7 @@ var fs = require('fs');
 	}
 
 	Templates.init = function() {
-		loadTemplates(['header', 'footer', 'register', 'home', 'login', 'reset', 'reset_code', 'emails/reset']);
+		loadTemplates(['header', 'footer', 'register', 'home', 'login', 'reset', 'reset_code', 'emails/reset', 'emails/reset_plaintext']);
 	}
 
 	var parse = function(data) {
