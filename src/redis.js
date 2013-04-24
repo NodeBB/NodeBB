@@ -22,8 +22,9 @@
 		}
 	}
 
-	RedisDB.set = function(key, value) {
+	RedisDB.set = function(key, value, expiry) {
 		db.set(key, value);
+		if (expiry !== undefined) RedisDB.expire(key, expiry);
 	};
 
 	RedisDB.get = function(key, callback, error_handler) {
@@ -34,6 +35,10 @@
 
 	RedisDB.del = function(key, callback) {
 		db.del(key);
+	}
+
+	RedisDB.expire = function(key, expiry) {
+		db.expire(key, expiry);
 	}
 
 	// Atomic Operations

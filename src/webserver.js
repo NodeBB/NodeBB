@@ -14,6 +14,25 @@ var express = require('express'),
 			modules.templates.init();
 		}
 	}
+
+	function checkAuth(req, res, next) {
+		if (!req.session || !req.session.uid) {
+			res.send(403, 'You are not authorized to view this page');
+		} else {
+			next();
+		}
+	}
+
+	// Middlewares
+	app.use(express.favicon());	// 2 args: string path and object options (i.e. expire time etc)
+	app.use(express.bodyParser());	// Puts POST vars in request.body
+	app.use(express.cookieParser());	// If you want to parse cookies (res.cookies)
+	app.use(express.session({secret: 'nodebb-julian', key: 'express.sid'}));
+	// Dunno wtf this does
+	//	app.use(express.logger({ format: '\x1b[1m:method\x1b[0m \x1b[33m:url\x1b[0m :response-time ms' }));
+	// Useful if you want to use app.put and app.delete (instead of app.post all the time)
+	//	app.use(express.methodOverride());
+
 	app.get('/', function(req, res) {
 		refreshTemplates();
 		res.send(templates['header'] + templates['home'] + templates['footer']);
@@ -39,22 +58,17 @@ var express = require('express'),
 		res.send(templates['header'] + templates['register'] + templates['footer']);
 	});
 
+	app.get('/account', checkAuth, function(req, res) {
+		refreshTemplates();
+		res.send(templates['header'] + templates['account_settings'] + templates['footer']);
+	});
+
 	module.exports.init = function() {
 		// todo move some of this stuff into config.json
 		app.configure(function() {
-			app.use(express.favicon());	// 2 args: string path and object options (i.e. expire time etc)
-			app.use(express.bodyParser());	// Puts POST vars in request.body
-			app.use(express.cookieParser());	// Presumably important
-			
-			// Dunno wtf this does
-			// app.use(express.logger({ format: '\x1b[1m:method\x1b[0m \x1b[33m:url\x1b[0m :response-time ms' }));
-			
-			// Useful if you want to use app.put and app.delete (instead of app.post all the time)
-			// app.use(express.methodOverride());
 			app.use(express.static(global.configuration.ROOT_DIRECTORY + '/public')); 
 		});
 	}
-
 }(WebServer));
 
 server.listen(config.port);
