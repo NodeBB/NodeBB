@@ -5,44 +5,38 @@ var	config = require('../config.js'),
 	emailjsServer = emailjs.server.connect(config.mailer);
 
 (function(User) {
-	var current_uid;
 
 	User.login = function(user) {
-		if (current_uid) {
-			return global.socket.emit('user.login', {'status': 0, 'message': 'User is already logged in.'});
-			
-		}
-
 		if (user.username == null || user.password == null) {
 			return global.socket.emit('user.login', {'status': 0, 'message': 'Missing fields'});
-			
 		}
 
 		RDB.get('username:' + user.username + ':uid', function(uid) {
 			if (uid == null) {
 				return global.socket.emit('user.login', {'status': 0, 'message': 'Username does not exist.'});
-				
 			}
 
 			RDB.get('uid:' + uid + ':password', function(password) {
 				if (user.password != password) {
 					return global.socket.emit('user.login', {'status': 0, 'message': 'Incorrect username / password combination.'});
 				} else {
+					// Start, replace, or extend a session
+					RDB.get('uid:' + uid + ':session', function(session) {
+						if (session !== user.sessionID) {
+							RDB.set('uid:' + uid + ':session', user.sessionID, 60*60*24*14);	// Login valid for two weeks
+						} else {
+							RDB.expire('uid:' + uid + ':session', 60*60*24*14);	// Defer expiration to two weeks from now
+						}
+					});
+
 					return global.socket.emit('user.login', {'status': 1, 'message': 'Logged in!'});
 				}
 			});
-				
 		});
-				
-
 	};
 
 
 	User.create = function(username, password, email) {
-		if (current_uid) {
-			return; global.socket.emit('user.create', {'status': 0, 'message': 'Only anonymous users can register a new account.'});
-		}
-
 		if (username == null || password == null) {
 			return; global.socket.emit('user.create', {'status': 0, 'message': 'Missing fields'});
 		}

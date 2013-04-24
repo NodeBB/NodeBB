@@ -24,7 +24,11 @@ var fs = require('fs');
 	}
 
 	Templates.init = function() {
-		loadTemplates(['header', 'footer', 'register', 'home', 'login', 'reset', 'reset_code', 'emails/reset', 'emails/reset_plaintext']);
+		loadTemplates([
+			'header', 'footer', 'register', 'home',
+			'login', 'reset', 'reset_code', 'account_settings',
+			'emails/reset', 'emails/reset_plaintext'
+		]);
 	}
 
 	var parse = function(data) {

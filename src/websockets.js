@@ -1,13 +1,34 @@
-var	SocketIO = require('socket.io').listen(global.server);
+var	SocketIO = require('socket.io').listen(global.server),
+	cookie = require('cookie'),
+	connect = require('connect');
 
 (function(io) {
-	var modules = null;
+	var	modules = null,
+		sessionID;
 
 	global.io = io;
 	module.exports.init = function() {
 		modules = global.modules;
 	}
 
+	// Adapted from http://howtonode.org/socket-io-auth
+	io.set('authorization', function(handshakeData, accept) {
+		if (handshakeData.headers.cookie) {
+			handshakeData.cookie = cookie.parse(handshakeData.headers.cookie);
+			handshakeData.sessionID = connect.utils.parseSignedCookie(handshakeData.cookie['express.sid'], 'nodebb-julian');
+
+			if (handshakeData.cookie['express.sid'] == handshakeData.sessionID) {
+				return accept('Cookie is invalid.', false);
+			}
+		} else {
+			// No cookie sent
+			return accept('No cookie transmitted', false);
+		}
+
+		// Otherwise, continue unimpeded.
+		sessionID = handshakeData.sessionID;
+		accept(null, true);
+	});
 
 	io.sockets.on('connection', function(socket) {
 		global.socket = socket;
@@ -17,7 +38,8 @@ var	SocketIO = require('socket.io').listen(global.server);
 			modules.templates.init();
 		}
 
-		socket.emit('event:connect', {status: 1});
+		// not required, "connect" emitted automatically
+		// socket.emit('event:connect', {status: 1});
 		
 		// BEGIN: API calls (todo: organize)
 		//   julian: :^)
@@ -38,6 +60,7 @@ var	SocketIO = require('socket.io').listen(global.server);
 		});
 
 		socket.on('user.login', function(data) {
+			data.sessionID = sessionID;
 			modules.user.login(data);
 		});
 
