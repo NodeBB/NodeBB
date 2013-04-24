@@ -12,7 +12,7 @@ var socket,
 			socket = io.connect('http://' + config.socket.address + config.socket.port? ':' + config.socket.port : '');
 
 			socket.on('event:connect', function(data) {
-				console.log('connected to socket.io: ', data);
+				console.log('connected to nodebb socket: ', data);
 			});
 
 			socket.on('event:alert', function(data) {

@@ -21,11 +21,11 @@ var	config = require('../config.js'),
 					return global.socket.emit('user.login', {'status': 0, 'message': 'Incorrect username / password combination.'});
 				} else {
 					// Start, replace, or extend a session
-					RDB.get('uid:' + uid + ':session', function(session) {
+					RDB.get('session:' + user.sessionID, function(session) {
 						if (session !== user.sessionID) {
-							RDB.set('uid:' + uid + ':session', user.sessionID, 60*60*24*14);	// Login valid for two weeks
+							RDB.set('session:' + user.sessionID, uid, 60*60*24*14);	// Login valid for two weeks
 						} else {
-							RDB.expire('uid:' + uid + ':session', 60*60*24*14);	// Defer expiration to two weeks from now
+							RDB.expire('session:' + user.sessionID, 60*60*24*14);	// Defer expiration to two weeks from now
 						}
 					});
 
@@ -101,6 +101,10 @@ var	config = require('../config.js'),
 
 	User.get_uid_by_email = function(email, callback) {
 		RDB.get('email:' + email, callback)
+	};
+
+	User.get_uid_by_session = function(session, callback) {
+		RDB.get('session:' + session, callback);
 	};
 
 	User.reset = {
