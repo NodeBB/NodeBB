@@ -115,7 +115,12 @@ var	config = require('../config.js'),
 				if (uid !== null) {
 					RDB.get('reset:' + code + ':expiry', function(expiry) {
 						if (expiry >= +new Date()/1000|0) global.socket.emit('user:reset.valid', { valid: true });
-						else global.socket.emit('user:reset.valid', { valid: false });
+						else {
+							// Expired, delete from db
+							RDB.del('reset:' + code + ':uid');
+							RDB.del('reset:' + code + ':expiry');
+							global.socket.emit('user:reset.valid', { valid: false });
+						}
 					});
 				} else global.socket.emit('user:reset.valid', { valid: false });
 			});

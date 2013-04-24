@@ -5,8 +5,12 @@
 		<strong>Password Changed</strong>
 		<p></p>
 	</div>
+	<div class="alert" id="notice" style="display:none">
+		<strong></strong>
+		<p></p>
+	</div>
 	<div class="alert alert-error" id="error" style="display:none">
-		<strong>Incrrect Reset Code</strong>
+		<strong>Incorrect Reset Code</strong>
 		<p>The reset code received was incorrect. Please try again, or <a href="/reset">request a new reset code</a></p>
 	</div>
 	<div id="reset-form">
@@ -20,10 +24,16 @@
 (function() {
 	var	resetEl = document.getElementById('reset'),
 		password = document.getElementById('password'),
-		repeat = document.getElementById('repeat');
+		repeat = document.getElementById('repeat'),
+		noticeEl = document.getElementById('notice');
 
 	resetEl.addEventListener('click', function() {
-		if (password.value === repeat.value) {
+		if (password.value.length < 6) {
+			$('#error').hide();
+			noticeEl.querySelector('strong').value = 'Invalid Password';
+			noticeEl.querySelector('p').value = 'The password entered it too short, please pick a different password!';
+			noticeEl.style.display = 'auto';
+		} else if (password.value === repeat.value) {
 			alert("match");
 		}
 	}, false);

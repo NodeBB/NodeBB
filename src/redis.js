@@ -32,6 +32,10 @@
 		});
 	};
 
+	RedisDB.del = function(key, callback) {
+		db.del(key);
+	}
+
 	// Atomic Operations
 	RedisDB.incr = function(key, callback, error_handler) {
 		db.incr(key, function(error, data) {
