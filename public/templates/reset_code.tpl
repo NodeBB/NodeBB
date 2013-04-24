@@ -5,10 +5,16 @@
 		<strong>Password Changed</strong>
 		<p></p>
 	</div>
-	<label>New Password</label><input type="password" placeholder="A new password" id="password" /><br />
-	<label>... and again</label><input type="password" placeholder="" id="repeat" /><br />
-	<input type="hidden" value="{reset_code}" />
-	<button class="btn btn-primary" id="reset" type="submit">Reset Password</button>
+	<div class="alert alert-error" id="error" style="display:none">
+		<strong>Incrrect Reset Code</strong>
+		<p>The reset code received was incorrect. Please try again, or <a href="/reset">request a new reset code</a></p>
+	</div>
+	<div id="reset-form">
+		<label for="password">New Password</label><input type="password" placeholder="A new password" id="password" /><br />
+		<label for="repeat">... and again</label><input type="password" placeholder="The same password" id="repeat" /><br />
+		<input type="hidden" value="{reset_code}" />
+		<button class="btn btn-primary" id="reset" type="submit" disabled>Reset Password</button>
+	</div>
 </div>
 <script type="text/javascript">
 (function() {
@@ -21,6 +27,19 @@
 			alert("match");
 		}
 	}, false);
+
+	// Enable the form if the code is valid
+	socket.emit('user:reset.valid', { code: '{reset_code}' });
+	socket.on('user:reset.valid', function(data) {
+		if (!!data.valid) resetEl.disabled = false;
+		else {
+			var formEl = document.getElementById('reset-form');
+			// Show error message
+			$('#error').show();
+			formEl.parentNode.removeChild(formEl);
+		}
+	})
+
 	// socket.on('user.password.reset', function(data) {
 	// 	if (data.success === 'ok') {
 	// 		ajaxify.go('/');

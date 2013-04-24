@@ -45,8 +45,12 @@ var	SocketIO = require('socket.io').listen(global.server);
 			modules.user.email.exists(data.email);
 		});
 
-		socket.on('user.send_reset', function(data) {
-			modules.user.send_reset(data.email);
+		socket.on('user:reset.send', function(data) {
+			modules.user.reset.send(data.email);
+		});
+
+		socket.on('user:reset.valid', function(data) {
+			modules.user.reset.validate(data.code);
 		});
 	});
 	

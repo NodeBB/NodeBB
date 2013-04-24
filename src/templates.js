@@ -29,7 +29,8 @@ var fs = require('fs');
 
 	var parse = function(data) {
 		function replace(key, value, template) {
-			return template.replace("{" + key + "}", value);
+			var searchRegex = new RegExp('{' + key + '}', 'g');
+			return template.replace(searchRegex, value);
 		}
 
 		function makeRegex(block) {

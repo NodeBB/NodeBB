@@ -21,7 +21,7 @@
 
 	document.getElementById('reset').onclick = function() {
 		if (inputEl.value.length > 0 && inputEl.value.indexOf('@') !== -1) {
-			socket.emit('user.send_reset', { email: inputEl.value });
+			socket.emit('user:reset.send', { email: inputEl.value });
 		} else {
 			jQuery('#success').hide();
 			jQuery(errorEl).show();

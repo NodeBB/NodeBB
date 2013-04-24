@@ -109,54 +109,66 @@ var	config = require('../config.js'),
 		RDB.get('email:' + email, callback)
 	};
 
-	User.send_reset = function(email) {
-		User.get_uid_by_email(email, function(uid) {
-			if (uid !== null) {
-				// Generate a new reset code
-				var reset_code = utils.generateUUID();
-				RDB.set('reset:' + reset_code + ':uid', uid);
-				// RDB.set('reset:' + reset_code + ':expiry', expiry);
+	User.reset = {
+		validate: function(code) {
+			RDB.get('reset:' + code + ':uid', function(uid) {
+				if (uid !== null) {
+					RDB.get('reset:' + code + ':expiry', function(expiry) {
+						if (expiry >= +new Date()/1000|0) global.socket.emit('user:reset.valid', { valid: true });
+						else global.socket.emit('user:reset.valid', { valid: false });
+					});
+				} else global.socket.emit('user:reset.valid', { valid: false });
+			});
+		},
+		send: function(email) {
+			User.get_uid_by_email(email, function(uid) {
+				if (uid !== null) {
+					// Generate a new reset code
+					var reset_code = utils.generateUUID();
+					RDB.set('reset:' + reset_code + ':uid', uid);
+					RDB.set('reset:' + reset_code + ':expiry', (60*60)+new Date()/1000|0);	// Active for one hour
 
-				var reset_link = config.url + 'reset/' + reset_code,
-					reset_email = global.templates['emails/reset'].parse({'RESET_LINK': reset_link}),
-					reset_email_plaintext = global.templates['emails/reset_plaintext'].parse({ 'RESET_LINK': reset_link });
+					var reset_link = config.url + 'reset/' + reset_code,
+						reset_email = global.templates['emails/reset'].parse({'RESET_LINK': reset_link}),
+						reset_email_plaintext = global.templates['emails/reset_plaintext'].parse({ 'RESET_LINK': reset_link });
 
-				var message = emailjs.message.create({
-					text: reset_email_plaintext,
-					from: config.mailer.from,
-					to: email,
-					subject: 'Password Reset Requested',
-					attachment: [
-						{
-							data: reset_email,
-							alternative: true
+					var message = emailjs.message.create({
+						text: reset_email_plaintext,
+						from: config.mailer.from,
+						to: email,
+						subject: 'Password Reset Requested',
+						attachment: [
+							{
+								data: reset_email,
+								alternative: true
+							}
+						]
+					});
+					
+					emailjsServer.send(message, function(err, success) {
+						if (err === null) {
+							global.socket.emit('user.send_reset', {
+								status: "ok",
+								message: "code-sent",
+								email: email
+							});
+						} else {
+							global.socket.emit('user.send_reset', {
+								status: "error",
+								message: "send-failed"
+							});
+							throw new Error(err);
 						}
-					]
-				});
-				
-				emailjsServer.send(message, function(err, success) {
-					if (err === null) {
-						global.socket.emit('user.send_reset', {
-							status: "ok",
-							message: "code-sent",
-							email: email
-						});
-					} else {
-						global.socket.emit('user.send_reset', {
-							status: "error",
-							message: "send-failed"
-						});
-						throw new Error(err);
-					}
-				});
-			} else {
-				global.socket.emit('user.send_reset', {
-					status: "error",
-					message: "invalid-email",
-					email: email
-				});
-			}
-		});
+					});
+				} else {
+					global.socket.emit('user.send_reset', {
+						status: "error",
+						message: "invalid-email",
+						email: email
+					});
+				}
+			});
+		}
 	}
 
 	User.email = {
