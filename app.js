@@ -1,5 +1,7 @@
 var modules = {
     	user: require('./src/user.js'),
+        topics: require('./src/topics.js'),
+        posts: require('./src/posts.js'),
     	templates: require('./src/templates.js'),
     	webserver: require('./src/webserver.js'),
     	websockets: require('./src/websockets.js')
@@ -11,6 +13,8 @@ var modules = {
 global.configuration = {};
 global.modules = modules;
 
+// change this to = null when auth module is complete
+global.uid = 1;
 
 
 

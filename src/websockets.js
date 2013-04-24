@@ -79,6 +79,10 @@ var	SocketIO = require('socket.io').listen(global.server),
 		socket.on('user:reset.commit', function(data) {
 			modules.user.reset.commit(data.code, data.password);
 		});
+
+		socket.on('api:topics.post', function(data) {
+			modules.topics.post(data.title, data.content);
+		});
 	});
 	
 }(SocketIO));
