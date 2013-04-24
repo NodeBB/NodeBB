@@ -83,8 +83,8 @@ var socket,
 	};
 
 	app.post_topic = function() {
-		var title = document.getElementById('post_title').innerHTML,
-			content = document.getElementById('post_content').innerHTML;
+		var title = document.getElementById('post_title').value,
+			content = document.getElementById('post_content').value;
 
 		if (title.length < 5 || content.length < 5) {
 			app.alert({
