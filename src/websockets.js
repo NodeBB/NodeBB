@@ -15,7 +15,7 @@ var	SocketIO = require('socket.io').listen(global.server),
 	io.set('authorization', function(handshakeData, accept) {
 		if (handshakeData.headers.cookie) {
 			handshakeData.cookie = cookie.parse(handshakeData.headers.cookie);
-			handshakeData.sessionID = connect.utils.parseSignedCookie(handshakeData.cookie['express.sid'], 'nodebb-julian');
+			handshakeData.sessionID = connect.utils.parseSignedCookie(handshakeData.cookie['express.sid'], 'nodebb');
 
 			if (handshakeData.cookie['express.sid'] == handshakeData.sessionID) {
 				return accept('Cookie is invalid.', false);

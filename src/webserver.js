@@ -16,7 +16,7 @@ var express = require('express'),
 	}
 
 	function checkAuth(req, res, next) {
-		if (!req.session || !req.session.uid) {
+		if (!global.uid) {
 			res.send(403, 'You are not authorized to view this page');
 		} else {
 			next();
@@ -27,7 +27,13 @@ var express = require('express'),
 	app.use(express.favicon());	// 2 args: string path and object options (i.e. expire time etc)
 	app.use(express.bodyParser());	// Puts POST vars in request.body
 	app.use(express.cookieParser());	// If you want to parse cookies (res.cookies)
-	app.use(express.session({secret: 'nodebb-julian', key: 'express.sid'}));
+	app.use(express.session({secret: 'nodebb', key: 'express.sid'}));
+	app.use(function(req, res, next) {
+		global.modules.user.get_uid_by_session(req.sessionID, function(uid) {
+			if (uid) global.uid = uid;
+			next();
+		});
+	});
 	// Dunno wtf this does
 	//	app.use(express.logger({ format: '\x1b[1m:method\x1b[0m \x1b[33m:url\x1b[0m :response-time ms' }));
 	// Useful if you want to use app.put and app.delete (instead of app.post all the time)
