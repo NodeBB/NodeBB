@@ -3,7 +3,7 @@
 	<div class="alert alert-success" id="success" style="display:none">
 		<button type="button" class="close" data-dismiss="alert">&times;</button>
 		<strong>Password Changed</strong>
-		<p></p>
+		<p>Password successfully reset, please <a href="/login">log in again</a>.</p>
 	</div>
 	<div class="alert" id="notice" style="display:none">
 		<strong></strong>
@@ -16,7 +16,6 @@
 	<div id="reset-form">
 		<label for="password">New Password</label><input type="password" placeholder="A new password" id="password" /><br />
 		<label for="repeat">... and again</label><input type="password" placeholder="The same password" id="repeat" /><br />
-		<input type="hidden" value="{reset_code}" />
 		<button class="btn btn-primary" id="reset" type="submit" disabled>Reset Password</button>
 	</div>
 </div>
@@ -30,11 +29,11 @@
 	resetEl.addEventListener('click', function() {
 		if (password.value.length < 6) {
 			$('#error').hide();
-			noticeEl.querySelector('strong').value = 'Invalid Password';
-			noticeEl.querySelector('p').value = 'The password entered it too short, please pick a different password!';
-			noticeEl.style.display = 'auto';
+			noticeEl.querySelector('strong').innerHTML = 'Invalid Password';
+			noticeEl.querySelector('p').innerHTML = 'The password entered it too short, please pick a different password!';
+			noticeEl.style.display = 'block';
 		} else if (password.value === repeat.value) {
-			alert("match");
+			socket.emit('user:reset.commit', { code: '{reset_code}', password: password.value });
 		}
 	}, false);
 
@@ -50,10 +49,12 @@
 		}
 	})
 
-	// socket.on('user.password.reset', function(data) {
-	// 	if (data.success === 'ok') {
-	// 		ajaxify.go('/');
-	// 	}
-	// });
+	socket.on('user:reset.commit', function(data) {
+		if (data.status === 'ok') {
+			$('#error').hide();
+			$('#notice').hide();
+			$('#success').show();
+		}
+	});
 }());
 </script>

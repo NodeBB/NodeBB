@@ -52,6 +52,10 @@ var	SocketIO = require('socket.io').listen(global.server);
 		socket.on('user:reset.valid', function(data) {
 			modules.user.reset.validate(data.code);
 		});
+
+		socket.on('user:reset.commit', function(data) {
+			modules.user.reset.commit(data.code, data.password);
+		});
 	});
 	
 }(SocketIO));

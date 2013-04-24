@@ -110,19 +110,27 @@ var	config = require('../config.js'),
 	};
 
 	User.reset = {
-		validate: function(code) {
+		validate: function(code, callback) {
+			if (typeof callback !== 'function') callback = undefined;
+
 			RDB.get('reset:' + code + ':uid', function(uid) {
 				if (uid !== null) {
 					RDB.get('reset:' + code + ':expiry', function(expiry) {
-						if (expiry >= +new Date()/1000|0) global.socket.emit('user:reset.valid', { valid: true });
-						else {
+						if (expiry >= +new Date()/1000|0) {
+							if (!callback) global.socket.emit('user:reset.valid', { valid: true });
+							else callback(true);
+						} else {
 							// Expired, delete from db
 							RDB.del('reset:' + code + ':uid');
 							RDB.del('reset:' + code + ':expiry');
-							global.socket.emit('user:reset.valid', { valid: false });
+							if (!callback) global.socket.emit('user:reset.valid', { valid: false });
+							else callback(false);
 						}
 					});
-				} else global.socket.emit('user:reset.valid', { valid: false });
+				} else {
+					if (!callback) global.socket.emit('user:reset.valid', { valid: false });
+					else callback(false);
+				}
 			});
 		},
 		send: function(email) {
@@ -170,6 +178,19 @@ var	config = require('../config.js'),
 						status: "error",
 						message: "invalid-email",
 						email: email
+					});
+				}
+			});
+		},
+		commit: function(code, password) {
+			this.validate(code, function(validated) {
+				if (validated) {
+					RDB.get('reset:' + code + ':uid', function(uid) {
+						RDB.set('uid:' + uid + ':password', password);
+						RDB.del('reset:' + code + ':uid');
+						RDB.del('reset:' + code + ':expiry');
+
+						global.socket.emit('user:reset.commit', { status: 'ok' });
 					});
 				}
 			});
