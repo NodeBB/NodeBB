@@ -10,7 +10,6 @@
 	<script type="text/javascript" src="/src/app.js"></script>
 	<script type="text/javascript" src="/src/templates.js"></script>
 	<script type="text/javascript" src="/src/ajaxify.js"></script>
-	<script type="text/javascript" src="/vendor/ckeditor/ckeditor.js"></script>
 	<style type="text/css">
 		body {
 			padding-top: 60px;
@@ -60,9 +59,10 @@
 			border: 1px solid #111;
 			font-size: 16px;
 			color: #bebebe;
+			outline: 0;
 		}
 		#post_window textarea:focus { 
-			outline: none;
+			outline: 0;
 			border:none !important;
 			box-shadow:none !important;
 		}
@@ -105,10 +105,10 @@
 
 	    		<div class="btn-toolbar">
 				    <div class="btn-group">
-					    <a class="btn btn-link" href="#"><i class="icon-bold"></i></a>
-					    <a class="btn btn-link" href="#"><i class="icon-italic"></i></a>
-					    <a class="btn btn-link" href="#"><i class="icon-font"></i></a>
-					    <a class="btn btn-link" href="#"><i class="icon-list"></i></a>
+					    <a class="btn btn-link" href="#" tabindex="-1"><i class="icon-bold"></i></a>
+					    <a class="btn btn-link" href="#" tabindex="-1"><i class="icon-italic"></i></a>
+					    <a class="btn btn-link" href="#" tabindex="-1"><i class="icon-font"></i></a>
+					    <a class="btn btn-link" href="#" tabindex="-1"><i class="icon-list"></i></a>
 				    </div>
 				    <div class="btn-group" style="float: right; margin-right: -12px">
 					    <a class="btn" onclick="app.post_topic()"><i class="icon-ok"></i> Submit</a>

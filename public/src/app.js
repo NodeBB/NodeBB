@@ -11,7 +11,7 @@ var socket,
 			config = data;
 			socket = io.connect('http://' + config.socket.address + config.socket.port? ':' + config.socket.port : '');
 
-			socket.on('connect', function(data) {
+			socket.on('event:connect', function(data) {
 				console.log('connected to socket.io: ', data);
 			});
 
@@ -77,8 +77,8 @@ var socket,
 	var post_window = null;
 	app.open_post_window = function() {
 		post_window = post_window || document.getElementById('post_window');
-
 		jQuery(post_window).slideToggle(250);
+		document.getElementById('post_title').focus();
 
 	};
 
@@ -100,7 +100,7 @@ var socket,
 			return;
 		}
 
-		socket.emit('topics.post', {
+		socket.emit('api:topics.post', {
 			'title' : title,
 			'content' : content 
 		});

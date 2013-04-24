@@ -38,8 +38,7 @@ var	SocketIO = require('socket.io').listen(global.server),
 			modules.templates.init();
 		}
 
-		// not required, "connect" emitted automatically
-		// socket.emit('event:connect', {status: 1});
+		socket.emit('event:connect', {status: 1});
 		
 		// BEGIN: API calls (todo: organize)
 		//   julian: :^)

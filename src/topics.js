@@ -66,7 +66,7 @@ var	RDB = require('./redis.js'),
 			RDB.set('tid:' + tid + ':uid', global.uid);
 			RDB.set('tid:' + tid + ':timestamp', new Date().getTime());
 			
-			RDB.set('topic:slug:' + slugify(title) + ':tid', tid);
+			RDB.set('topic:slug:' + tid + '/' + slugify(title) + ':tid', tid);
 
 			// Posts
 			posts.create(content, function(pid) {
@@ -78,8 +78,8 @@ var	RDB = require('./redis.js'),
 
 
 			global.socket.emit('event:alert', {
-				title: 'Thank you for registering',
-				message: 'You have successfully registered - welcome to nodebb!',
+				title: 'Thank you for posting',
+				message: 'You have successfully posted. Click here to view your post.',
 				type: 'notify',
 				timeout: 2000
 			});

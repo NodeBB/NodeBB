@@ -6,6 +6,9 @@ new_post.onclick = function() {
 	app.open_post_window();
 }
 
+jQuery('document').ready(function() {
+	
+});
 
 
 /*app.alert({
