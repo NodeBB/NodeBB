@@ -28,7 +28,6 @@ var templates = {};
 		loadTemplates([
 				'header', 'footer', 'register', 'home',
 				'login', 'reset', 'reset_code', 'account_settings',
-				'logout',
 				'emails/reset', 'emails/reset_plaintext'
 			]);
 	}
