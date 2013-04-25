@@ -4,6 +4,7 @@
 	<!-- START Forum Info -->
 	<div id="footer" class="container" style="padding-top: 50px;">
 		<div class="alert alert-info">
+			<span id="active_users"></span><br />
 			<span id="number_of_users"></span><br />
 			<span id="latest_user"></span>
 		</div>
@@ -13,7 +14,9 @@
 	<script type="text/javascript">
 	(function() {
 		var num_users = document.getElementById('number_of_users'),
-			latest_user = document.getElementById('latest_user');
+			latest_user = document.getElementById('latest_user'),
+			active_users = document.getElementById('active_users');
+
 		socket.emit('user.count', {});
 		socket.on('user.count', function(data) {
 			num_users.innerHTML = "We currently have <b>" + data.count + "</b> registered users.";
@@ -21,6 +24,10 @@
 		socket.emit('user.latest', {});
 		socket.on('user.latest', function(data) {
 			latest_user.innerHTML = "The most recent user to register is <b>" + data.username + "</b>.";
+		});
+		socket.emit('api:user.active.get');
+		socket.on('api:user.active.get', function(data) {
+			active_users.innerHTML = 'There ' + (parseInt(data.users) !== 1 ? 'are' : 'is') + ' <strong>' + data.users + '</strong> user' + (parseInt(data.users) !== 1 ? 's' : '') + ' and <strong>' + data.anon + '</strong> guest' + (parseInt(data.anon) !== 1 ? 's' : '') + ' online';
 		});
 	}());
 	</script>

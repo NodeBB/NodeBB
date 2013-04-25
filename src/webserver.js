@@ -43,6 +43,9 @@ var express = require('express'),
 				if (global.uid !== null) console.log('info: [Auth] uid ' + global.uid + ' found. Welcome back.');
 				else console.log('info: [Auth] No login session found.');
 			});
+
+			// (Re-)register the session as active
+			global.modules.user.active.register(req.sessionID);
 		} else {
 			console.log('info: [Auth] Ping from uid ' + global.uid);
 		}

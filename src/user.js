@@ -225,4 +225,43 @@ var	config = require('../config.js'),
 			});
 		}
 	}
+
+	User.active = {
+		get: function(callback) {
+			RDB.keys('active:*', function(active) {
+				var	returnObj = {
+						users: 0,
+						anon: 0,
+						uids: []
+					},
+					keys = [];
+
+				for(var a in active) {
+					keys.push('sess:' + active[a].split(':')[1] + ':uid');
+				}
+
+				RDB.mget(keys, function(uids) {
+					for(var u in uids) {
+						if (uids[u] !== null) {
+							if (returnObj.uids.indexOf(uids[u]) === -1) {
+								returnObj.users++;
+								returnObj.uids.push(uids[u]);
+							}
+						} else {
+							returnObj.anon++;
+						}
+					}
+
+					if (callback === undefined) {
+						global.socket.emit('api:user.active.get', returnObj)
+					} else {
+						callback(returnObj);
+					}
+				});
+			});
+		},
+		register: function(sessionID) {
+			RDB.set('active:' + sessionID, 60*10);	// Active state persists for 10 minutes
+		}
+	}
 }(exports));

@@ -82,6 +82,10 @@ var	SocketIO = require('socket.io').listen(global.server),
 		socket.on('api:topics.post', function(data) {
 			modules.topics.post(data.title, data.content);
 		});
+
+		socket.on('api:user.active.get', function() {
+			modules.user.active.get();
+		});
 	});
 	
 }(SocketIO));
