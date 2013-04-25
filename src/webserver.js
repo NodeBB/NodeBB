@@ -60,6 +60,19 @@ var express = require('express'),
 		});
 	});
 
+
+
+	app.get('/topics/:topic_id', function(req, res) {
+		global.modules.topics.generate_topic_body(function(topic_body) {
+			res.send(templates['header'] + topic_body + templates['footer']);
+		}, req.params.topic_id)
+	});
+	app.get('/topics/:topic_id/:slug', function(req, res) {
+		global.modules.topics.generate_topic_body(function(topic_body) {
+			res.send(templates['header'] + topic_body + templates['footer']);
+		}, req.params.topic_id)
+	});
+
 	app.get('/api/:method', function(req, res) {
 		switch(req.params.method) {
 			case 'home' :

@@ -1,10 +1,10 @@
 <button id="new_post" class="btn btn-primary btn-large">New Post</button>
 <ul class="topic-container">
 <!-- BEGIN topics -->
-<li class="topic-row">
+<a href="topics/{topics.slug}"><li class="topic-row">
 	<h4>{topics.title}</h4>
-	<p>Posted on {topics.timestamp} by user {topics.uid}. {topics.post_count} replies.</p>
-</li>
+	<p>Posted on {topics.timestamp} by user {topics.uid}. {topics.post_count} posts.</p>
+</li></a>
 <!-- END topics -->
 </ul>
 <script type="text/javascript">

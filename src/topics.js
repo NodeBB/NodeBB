@@ -21,6 +21,17 @@ var	RDB = require('./redis.js'),
 
 	}
 
+
+	Topics.generate_topic_body = function(callback, tid, start, end) {
+		if (start == null) start = 0;
+		if (end == null) end = start + 10;
+
+		RDB.lrange('tid:' + tid + ':posts', start, end, function(tids) {
+			callback(tids);
+		});
+	};
+
+	// this needs to move into forum.js
 	Topics.generate_forum_body = function(callback, start, end) {
 		var forum_body = global.templates['home'];
 		
@@ -29,6 +40,10 @@ var	RDB = require('./redis.js'),
 			forum_body = forum_body.parse(data);
 			callback(forum_body);
 		}, start, end);
+	};
+
+	Topics.get_postIDs_by_topicID = function(topicID, start, end) {
+
 	};
 
 	Topics.get = function(callback, start, end) {
@@ -40,29 +55,30 @@ var	RDB = require('./redis.js'),
 			var title = [],
 				uid = [],
 				timestamp = [],
-				posts = [];
+				slug = [],
+				postcount = [];
 
 			for (var i=0, ii=tids.length; i<ii; i++) {
 				title.push('tid:' + tids[i] + ':title');
 				uid.push('tid:' + tids[i] + ':uid');
 				timestamp.push('tid:' + tids[i] + ':timestamp');
-				posts.push('tid:' + tids[i] + ':posts');
+				slug.push('tid:' + tids[i] + ':slug');
+				postcount.push('tid:' + tids[i] + ':postcount');
 			}
-			/*RDB.mget(topic, function(topic_data) {
-				callback(topic_data);
-			});*/
 
 			if (tids.length > 0) {
 				RDB.multi()
 					.mget(title)
 					.mget(uid)
 					.mget(timestamp)
-					.mget(posts)
+					.mget(slug)
+					.mget(postcount)
 					.exec(function(err, replies) {
 						title = replies[0];
 						uid = replies[1];
 						timestamp = replies[2];
-						posts = replies[3];
+						slug = replies[3];
+						postcount = replies[4];
 
 						var topics = [];
 						for (var i=0, ii=title.length; i<ii; i++) {
@@ -70,8 +86,8 @@ var	RDB = require('./redis.js'),
 								'title' : title[i],
 								'uid' : uid[i],
 								'timestamp' : timestamp[i],
-								'posts' : posts[i],
-								'post_count' : 0
+								'slug' : slug[i],
+								'post_count' : postcount[i]
 							});
 						}
 
@@ -99,6 +115,7 @@ var	RDB = require('./redis.js'),
 
 		RDB.incr('global:next_topic_id', function(tid) {
 			// Global Topics
+			if (global.uid == null) global.uid = 0;
 			if (global.uid !== null) {
 				RDB.lpush('topics:tid', tid);	
 			} else {
@@ -112,20 +129,25 @@ var	RDB = require('./redis.js'),
 				RDB.lpush('topics:' + category + ':tid', tid);
 			}
 
+			var slug = tid + '/' + slugify(title);
+
 			// Topic Info
 			RDB.set('tid:' + tid + ':title', title);
 			RDB.set('tid:' + tid + ':uid', global.uid);
+			RDB.set('tid:' + tid + ':slug', slug);
 			RDB.set('tid:' + tid + ':timestamp', new Date().getTime());
-			
-			RDB.set('topic:slug:' + tid + '/' + slugify(title) + ':tid', tid);
+			RDB.incr('tid:' + tid + ':postcount');
+
+			RDB.set('topic:slug:' + slug + ':tid', tid);
 
 			// Posts
 			posts.create(content, function(pid) {
 				RDB.lpush('tid:' + tid + ':posts', pid);
 			});
 
+
 			// User Details - move this out later
-			RDB.lpush('uid:' + uid + ':topics', tid);
+			RDB.lpush('uid:' + global.uid + ':topics', tid);
 
 
 			global.socket.emit('event:alert', {

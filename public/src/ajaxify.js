@@ -25,27 +25,20 @@ var ajaxify = {};
 		var tpl_url = (url === '') ? 'home' : url;
 
 		if (templates[tpl_url]) {
-			if (current_state === null || current_state != url) {
-				current_state = url;
+			window.history.pushState({}, url, "/" + url);
 
-				window.history.pushState({}, url, "/" + url);
+			jQuery('#content, #footer').fadeOut(100);
+			
+			load_template(function() {
+				exec_body_scripts(content);
 
-				jQuery('#content, #footer').fadeOut(150, function() {
-					//content.innerHTML = templates[tpl_url];
-					load_template(function() {
-						exec_body_scripts(content);
-
-						ajaxify.enable();
-						if (callback) {
-							callback();
-						}
-						
-						jQuery('#content, #footer').fadeIn(200);
-					});
-					
-				});
+				ajaxify.enable();
+				if (callback) {
+					callback();
+				}
 				
-			}
+				jQuery('#content, #footer').fadeIn(200);
+			});
 			
 			return true;
 		}
