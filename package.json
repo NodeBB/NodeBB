@@ -14,7 +14,8 @@
       "express": "3.2.0",
       "connect": "2.7.6",
       "emailjs": "0.3.4",
-      "cookie": "0.0.6"
+      "cookie": "0.0.6",
+      "connect-redis": "1.4.5"
     },
   "devDependencies": {},
   "optionalDependencies": {},

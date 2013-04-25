@@ -1,7 +1,7 @@
 var express = require('express'),
 	WebServer = express(),
 	server = require('http').createServer(WebServer),
-    connect = require('connect'),
+	RedisStore = require('connect-redis')(express);
     config = require('../config.js');
 
 (function(app) {
@@ -45,7 +45,11 @@ var express = require('express'),
 	app.use(express.favicon());	// 2 args: string path and object options (i.e. expire time etc)
 	app.use(express.bodyParser());	// Puts POST vars in request.body
 	app.use(express.cookieParser());	// If you want to parse cookies (res.cookies)
-	app.use(express.session({secret: 'nodebb', key: 'express.sid'}));
+	app.use(express.session({
+		store: new RedisStore(),
+		secret: 'nodebb',
+		key: 'express.sid'
+	}));
 	// Dunno wtf this does
 	//	app.use(express.logger({ format: '\x1b[1m:method\x1b[0m \x1b[33m:url\x1b[0m :response-time ms' }));
 	// Useful if you want to use app.put and app.delete (instead of app.post all the time)
