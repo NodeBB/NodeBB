@@ -14,7 +14,7 @@ global.configuration = {};
 global.modules = modules;
 
 // change this to = null when auth module is complete
-global.uid = 1;
+// global.uid = 1;
 
 
 

@@ -24,7 +24,7 @@ var express = require('express'),
 		// Include this middleware if the endpoint requires a logged in user to view
 		console.log('REQUIRE: ', global.uid, req.sessionID);
 		if (!global.uid) {
-			req.redirect('/403');
+			res.redirect('/403');
 		} else {
 			next();
 		}

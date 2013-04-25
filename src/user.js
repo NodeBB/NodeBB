@@ -21,13 +21,7 @@ var	config = require('../config.js'),
 					return global.socket.emit('user.login', {'status': 0, 'message': 'Incorrect username / password combination.'});
 				} else {
 					// Start, replace, or extend a session
-					RDB.get('session:' + user.sessionID, function(session) {
-						if (session !== user.sessionID) {
-							RDB.set('session:' + user.sessionID, uid, 60*60*24*14);	// Login valid for two weeks
-						} else {
-							RDB.expire('session:' + user.sessionID, 60*60*24*14);	// Defer expiration to two weeks from now
-						}
-					});
+					global.uid = uid;
 
 					return global.socket.emit('user.login', {'status': 1, 'message': 'Logged in!'});
 				}
