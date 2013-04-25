@@ -21,20 +21,33 @@ var	config = require('../config.js'),
 					return global.socket.emit('user.login', {'status': 0, 'message': 'Incorrect username / password combination.'});
 				} else {
 					// Start, replace, or extend a session
-					RDB.get('session:' + user.sessionID, function(session) {
+					RDB.get('sess:' + user.sessionID, function(session) {
 						if (session !== user.sessionID) {
-							RDB.set('session:' + user.sessionID, uid, 60*60*24*14);	// Login valid for two weeks
+							RDB.set('sess:' + user.sessionID + ':uid', uid, 60*60*24*14);	// Login valid for two weeks
+							RDB.set('uid:' + uid + ':session', user.sessionID, 60*60*24*14);
 						} else {
-							RDB.expire('session:' + user.sessionID, 60*60*24*14);	// Defer expiration to two weeks from now
+							RDB.expire('sess:' + user.sessionID + ':uid', 60*60*24*14);	// Defer expiration to two weeks from now
+							RDB.expire('uid:' + uid + ':session', 60*60*24*14);
 						}
 					});
 
+					global.uid = uid;
 					return global.socket.emit('user.login', {'status': 1, 'message': 'Logged in!'});
 				}
 			});
 		});
 	};
 
+	User.logout = function(callback) {
+		RDB.get('uid:' + global.uid + ':session', function(sessionID) {
+			if (sessionID) {
+				RDB.del('sess:' + sessionID + ':uid');
+				RDB.del('uid:' + global.uid + ':session');
+				global.uid = null;
+				callback(true);
+			} else callback(false);
+		});
+	}
 
 	User.create = function(username, password, email) {
 		if (username == null || password == null) {
@@ -104,7 +117,7 @@ var	config = require('../config.js'),
 	};
 
 	User.get_uid_by_session = function(session, callback) {
-		RDB.get('session:' + session, callback);
+		RDB.get('sess:' + session + ':uid', callback);
 	};
 
 	User.reset = {

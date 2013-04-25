@@ -108,6 +108,31 @@ var socket,
 	};
 
 	jQuery('document').ready(function() {
+		// On menu click, change "active" state
+		var menuEl = document.querySelector('.nav'),
+			liEls = menuEl.querySelectorAll('li'),
+			logoutEl = document.getElementById('logout'),
+			parentEl;
+
+		menuEl.addEventListener('click', function(e) {
+			parentEl = e.target.parentNode;
+			if (parentEl.nodeName === 'LI') {
+				for(var x=0,numLis=liEls.length;x<numLis;x++) {
+					if (liEls[x] !== parentEl) liEls[x].className = '';
+					else parentEl.className = 'active';
+				}
+			}
+		}, false);
+
+		// Posting
 		jQuery('#post_window').slideToggle(0);
+
+		// Logout
+		logoutEl.addEventListener('click', function() {
+			socket.emit('api:user.logout');
+		});
+		socket.on('api:user.logout', function(data) {
+			if (data.status === 'ok') alert('Logged out.');
+		});
 	})
 }());

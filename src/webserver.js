@@ -15,30 +15,13 @@ var express = require('express'),
 		}
 	}
 
-	function hasAuth(req, res, next) {
-		// Include this middleware if the endpoint is publically accessible, but has elements that logged in users can see
-		global.modules.user.get_uid_by_session(req.sessionID, function(uid) {
-			if (uid) {
-				global.uid = uid;
-				console.log('info: [Auth] User is logged in as uid: ' + uid);
-			} else {
-				console.log('info: [Auth] User is not logged in');
-			}
-
-			next();
-		});
-	}
-
 	function requireAuth(req, res, next) {
 		// Include this middleware if the endpoint requires a logged in user to view
-		hasAuth(req, res, function() {
-			if (!global.uid) {
-				res.redirect('/403');
-			} else {
-				console.log('info: [Auth] User is logged in as uid: ' + uid);
-				next();
-			}
-		});
+		if (!global.uid) {
+			res.redirect('/403');
+		} else {
+			next();
+		}
 	}
 
 	// Middlewares
@@ -46,16 +29,32 @@ var express = require('express'),
 	app.use(express.bodyParser());	// Puts POST vars in request.body
 	app.use(express.cookieParser());	// If you want to parse cookies (res.cookies)
 	app.use(express.session({
-		store: new RedisStore(),
+		store: new RedisStore({
+			ttl: 60*60*24*14
+		}),
 		secret: 'nodebb',
 		key: 'express.sid'
 	}));
+	app.use(function(req, res, next) {
+		if (global.uid === undefined) {
+			console.log('info: [Auth] First load, retrieving uid...');
+			global.modules.user.get_uid_by_session(req.sessionID, function(uid) {
+				global.uid = uid;
+				if (global.uid !== null) console.log('info: [Auth] uid ' + global.uid + ' found. Welcome back.');
+				else console.log('info: [Auth] No login session found.');
+			});
+		} else {
+			console.log('info: [Auth] Ping from uid ' + global.uid);
+		}
+
+		next();
+	});
 	// Dunno wtf this does
 	//	app.use(express.logger({ format: '\x1b[1m:method\x1b[0m \x1b[33m:url\x1b[0m :response-time ms' }));
 	// Useful if you want to use app.put and app.delete (instead of app.post all the time)
 	//	app.use(express.methodOverride());
 
-	app.get('/', hasAuth, function(req, res) {
+	app.get('/', function(req, res) {
 		global.modules.topics.generate_forum_body(function(forum_body) {
 			res.send(templates['header'] + forum_body + templates['footer']);	
 		})
@@ -63,8 +62,17 @@ var express = require('express'),
 		//res.send(templates['header'] + templates['home'] + templates['footer']);
 	});
 
-	app.get('/login', hasAuth, function(req, res) {
+	app.get('/login', function(req, res) {
 		res.send(templates['header'] + templates['login'] + templates['footer']);
+	});
+
+	app.get('/logout', function(req, res) {
+		console.log('info: [Auth] Session ' + res.sessionID + ' logout (uid: ' + global.uid + ')');
+		global.modules.user.logout(function(logout) {
+			if (logout === true) req.session.destroy();
+		});
+
+		res.send(templates['header'] + templates['logout'] + templates['footer']);
 	});
 
 	app.get('/reset/:code', function(req, res) {

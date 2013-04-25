@@ -11,140 +11,144 @@
 	<script type="text/javascript" src="/src/templates.js"></script>
 	<script type="text/javascript" src="/src/ajaxify.js"></script>
 	<style type="text/css">
-		body {
-			padding-top: 60px;
-		}
+	body {
+		padding-top: 60px;
+	}
 
-		#notification_window {
-			position: absolute;
-			right: 20px;
-			top: 80px;
-			width: 300px;
-			height: 0px;
-		}
+	#notification_window {
+		position: absolute;
+		right: 20px;
+		top: 80px;
+		width: 300px;
+		height: 0px;
+	}
 
-		.toaster-alert {
+	.toaster-alert {
 
-			cursor: pointer;
-		}
+		cursor: pointer;
+	}
 
-		footer.footer {
-			color: #555;
-			text-align: center;
-		}
-		footer.footer a {
-			color: #222;
-		}
+	footer.footer {
+		color: #555;
+		text-align: center;
+	}
+	footer.footer a {
+		color: #222;
+	}
 
-		#post_window {
-			width: 100%;
-			position: absolute;
-			height: 350px;
-			left: 0px;
-			bottom: 0px;
-			background: white;
-		}
+	#post_window {
+		width: 100%;
+		position: absolute;
+		height: 350px;
+		left: 0px;
+		bottom: 0px;
+		background: white;
+	}
 
-		#post_window input {
-			width: 100%;
-			height: 30px;
-			padding: 5px;
-		}
-		#post_window textarea {
-			width: 100%;
-			background: #222;
-			height: 220px;
-			resize: none;
-			border-radius: 0;
-			border: 1px solid #111;
-			font-size: 16px;
-			color: #bebebe;
-			outline: 0;
-		}
-		#post_window textarea:focus { 
-			outline: 0;
-			border:none !important;
-			box-shadow:none !important;
-		}
+	#post_window input {
+		width: 100%;
+		height: 30px;
+		padding: 5px;
+	}
+	#post_window textarea {
+		width: 100%;
+		background: #222;
+		height: 220px;
+		resize: none;
+		border-radius: 0;
+		border: 1px solid #111;
+		font-size: 16px;
+		color: #bebebe;
+		outline: 0;
+	}
+	#post_window textarea:focus { 
+		outline: 0;
+		border:none !important;
+		box-shadow:none !important;
+	}
 
-		#post_window .post-title-container {
-			opacity: 0.8;
-			height: 50px;
-		}
+	#post_window .post-title-container {
+		opacity: 0.8;
+		height: 50px;
+	}
 
-		#post_window .post-content-container {
-			opacity: 0.8;
-			background: #000;
-			width: 100%;
-			height: 300px;
+	#post_window .post-content-container {
+		opacity: 0.8;
+		background: #000;
+		width: 100%;
+		height: 300px;
 
-		}
+	}
 
-		.topic-container {
-			list-style-type: none;
-			padding: 0;
-			margin: 0;
-			border: 1px solid #eee;
-			margin-top: 50px;
-		}
-		.topic-container li.topic-row:nth-child(odd) {
-			background-color:#fdfdfd;
-		}
-		.topic-container li.topic-row:nth-child(even) {
-			background-color:#fff;
-		}
-		.topic-container li.topic-row {
-			cursor: pointer;
-			border-bottom: 1px solid #eee;
-			padding: 10px;
+	.topic-container {
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+		border: 1px solid #eee;
+		margin-top: 50px;
+	}
+	.topic-container li.topic-row:nth-child(odd) {
+		background-color:#fdfdfd;
+	}
+	.topic-container li.topic-row:nth-child(even) {
+		background-color:#fff;
+	}
+	.topic-container li.topic-row {
+		cursor: pointer;
+		border-bottom: 1px solid #eee;
+		padding: 10px;
 
-		}
-		.topic-container li.topic-row:hover {
-			background-color: #eee;
-		}
+	}
+	.topic-container li.topic-row:hover {
+		background-color: #eee;
+	}
 	</style>
 </head>
 
 <body>
 	<div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-        	<div class="nav-collapse collapse">
-	            <ul class="nav">
-	              <li class="active"><a href="/">Home</a></li>
-	              <li><a href="/register">Register</a></li>
-	              <li><a href="/login">Login</a></li>
-	            </ul>
-	        </div>
-        </div>
-      </div>
-    </div>
-    <div id="post_window">
-    	<div class="post-title-container">
-	    	<div class="container">
-	    		<input id="post_title" placeholder="Enter your topic title here." />
-	    	</div>
-	    </div>
-	    <div class="post-content-container">
-	    	<div class="container">
+		<div class="navbar-inner">
+			<div class="container">
+				<div class="nav-collapse collapse">
+					<a class="brand" href="#">NodeBB</a>
+					<ul class="nav">
+						<li class="active"><a href="/">Home</a></li>
+						<li><a href="/register">Register</a></li>
+						<li><a href="/login">Login</a></li>
+					</ul>
+					<ul class="nav pull-right">
+						<li><a href="/logout" id="logout">Log out</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="post_window">
+		<div class="post-title-container">
+			<div class="container">
+				<input id="post_title" placeholder="Enter your topic title here." />
+			</div>
+		</div>
+		<div class="post-content-container">
+			<div class="container">
 
-	    		<div class="btn-toolbar">
-				    <div class="btn-group">
-					    <a class="btn btn-link" href="#" tabindex="-1"><i class="icon-bold"></i></a>
-					    <a class="btn btn-link" href="#" tabindex="-1"><i class="icon-italic"></i></a>
-					    <a class="btn btn-link" href="#" tabindex="-1"><i class="icon-font"></i></a>
-					    <a class="btn btn-link" href="#" tabindex="-1"><i class="icon-list"></i></a>
-				    </div>
-				    <div class="btn-group" style="float: right; margin-right: -12px">
-					    <a class="btn" onclick="app.post_topic()"><i class="icon-ok"></i> Submit</a>
-					    <a class="btn" onclick="jQuery(post_window).slideToggle(250);"><i class="icon-remove"></i> Discard</a>
+				<div class="btn-toolbar">
+					<div class="btn-group">
+						<a class="btn btn-link" href="#" tabindex="-1"><i class="icon-bold"></i></a>
+						<a class="btn btn-link" href="#" tabindex="-1"><i class="icon-italic"></i></a>
+						<a class="btn btn-link" href="#" tabindex="-1"><i class="icon-font"></i></a>
+						<a class="btn btn-link" href="#" tabindex="-1"><i class="icon-list"></i></a>
 					</div>
-			    </div>
+					<div class="btn-group" style="float: right; margin-right: -12px">
+						<a class="btn" onclick="app.post_topic()"><i class="icon-ok"></i> Submit</a>
+						<a class="btn" onclick="jQuery(post_window).slideToggle(250);"><i class="icon-remove"></i> Discard</a>
+					</div>
+				</div>
 
-	    		<textarea id="post_content" placeholder="Type your message here."></textarea>
+				<textarea id="post_content" placeholder="Type your message here."></textarea>
 
-	    	</div>
-	    </div>
-    </div>
+			</div>
+		</div>
+	</div>
 	<div id="notification_window"></div>
-    <div class="container" id="content">
+	<div class="container" id="content">
