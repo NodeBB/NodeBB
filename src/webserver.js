@@ -103,7 +103,7 @@ var express = require('express'),
 	});
 
 	app.get('/403', function(req, res) {
-		res.send(403, 'You are not authorized to view this page');
+		res.send(templates['header'] + templates['403'] + templates['footer']);
 	});
 
 	module.exports.init = function() {

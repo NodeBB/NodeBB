@@ -117,7 +117,8 @@
 						<li><a href="/login">Login</a></li>
 					</ul>
 					<ul class="nav pull-right">
-						<li><a href="/logout" id="logout">Log out</a></li>
+						<li><a href="/account">Account</a></li>
+						<li><a href="/logout">Log out</a></li>
 					</ul>
 				</div>
 			</div>

@@ -126,14 +126,6 @@ var socket,
 
 		// Posting
 		jQuery('#post_window').slideToggle(0);
-
-		// Logout
-		logoutEl.addEventListener('click', function() {
-			socket.emit('api:user.logout');
-		});
-		socket.on('api:user.logout', function(data) {
-			if (data.status === 'ok') alert('Logged out.');
-		});
 	})
 
 
