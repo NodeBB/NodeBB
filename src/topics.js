@@ -26,8 +26,7 @@ var	RDB = require('./redis.js'),
 		
 
 		Topics.get(function(data) {
-			// console.log({'topics': data});
-			forum_body = forum_body.parse({'topics': data});
+			forum_body = forum_body.parse(data);
 			callback(forum_body);
 		}, start, end);
 	};
@@ -76,7 +75,7 @@ var	RDB = require('./redis.js'),
 							});
 						}
 
-						callback(topics);
+						callback({'topics': topics});
 					}
 				);
 			} else callback([]);

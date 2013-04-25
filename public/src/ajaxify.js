@@ -18,17 +18,20 @@ var ajaxify = {};
 				current_state = url;
 
 				window.history.pushState({}, url, "/" + url);
-				
-				jQuery('#content').fadeOut(100, function() {
-					content.innerHTML = templates[tpl_url];
-					exec_body_scripts(content);
 
-					ajaxify.enable();
-					if (callback) {
-						callback();
-					}
+				jQuery('#content, #footer').fadeOut(150, function() {
+					//content.innerHTML = templates[tpl_url];
+					load_template(function() {
+						exec_body_scripts(content);
+
+						ajaxify.enable();
+						if (callback) {
+							callback();
+						}
+						
+						jQuery('#content, #footer').fadeIn(200);
+					});
 					
-					jQuery('#content').fadeIn(200);
 				});
 				
 			}
@@ -111,4 +114,5 @@ var ajaxify = {};
 			evalScript(scripts[i]);
 		}
 	};
+	
 }(jQuery));

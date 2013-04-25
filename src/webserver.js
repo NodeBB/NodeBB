@@ -57,9 +57,19 @@ var express = require('express'),
 	app.get('/', function(req, res) {
 		global.modules.topics.generate_forum_body(function(forum_body) {
 			res.send(templates['header'] + forum_body + templates['footer']);	
-		})
-		
-		//res.send(templates['header'] + templates['home'] + templates['footer']);
+		});
+	});
+
+	app.get('/api/:method', function(req, res) {
+		switch(req.params.method) {
+			case 'home' :
+					global.modules.topics.get(function(data) {
+						res.send(JSON.stringify(data));
+					});
+				break;
+			default :
+				res.send('{}');
+		}
 	});
 
 	app.get('/login', function(req, res) {

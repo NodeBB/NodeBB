@@ -135,4 +135,7 @@ var socket,
 			if (data.status === 'ok') alert('Logged out.');
 		});
 	})
+
+
+
 }());

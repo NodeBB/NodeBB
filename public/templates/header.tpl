@@ -110,7 +110,7 @@
 		<div class="navbar-inner">
 			<div class="container">
 				<div class="nav-collapse collapse">
-					<a class="brand" href="#">NodeBB</a>
+					<a class="brand" href="/">NodeBB</a>
 					<ul class="nav">
 						<li class="active"><a href="/">Home</a></li>
 						<li><a href="/register">Register</a></li>
