@@ -8,6 +8,7 @@ var ajaxify = {};
 		content = null;
 
 	var current_state = null;
+	var executed = {};
 
 	ajaxify.go = function(url, callback) {
 		var url = url.replace(/\/$/, "");
@@ -22,7 +23,10 @@ var ajaxify = {};
 				jQuery('#content, #footer').fadeOut(150, function() {
 					//content.innerHTML = templates[tpl_url];
 					load_template(function() {
-						exec_body_scripts(content);
+						if (executed[url] !== true) {
+							exec_body_scripts(content);
+							executed[url] = true;
+						}
 
 						ajaxify.enable();
 						if (callback) {
