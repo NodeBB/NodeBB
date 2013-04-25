@@ -1,0 +1,4 @@
+#!/bin/bash
+clear
+echo "Launching NodeBB"
+supervisor --extensions 'node|js|tpl' app
