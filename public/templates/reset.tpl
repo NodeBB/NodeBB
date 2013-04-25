@@ -29,6 +29,8 @@
 		}
 	};
 
+	ajaxify.register_events(['user.send_reset']);
+	
 	socket.on('user.send_reset', function(data) {
 		var	submitEl = document.getElementById('reset');
 

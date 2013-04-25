@@ -23,6 +23,7 @@
 		});
 	};
 
+	ajaxify.register_events(['user.login']);
 	socket.on('user.login', function(data) {
 		console.log(data);
 		if (data.status === 0) {

@@ -39,6 +39,9 @@
 
 	// Enable the form if the code is valid
 	socket.emit('user:reset.valid', { code: '{reset_code}' });
+
+
+	ajaxify.register_events(['user:reset.valid', 'user:reset.commit']);
 	socket.on('user:reset.valid', function(data) {
 		if (!!data.valid) resetEl.disabled = false;
 		else {

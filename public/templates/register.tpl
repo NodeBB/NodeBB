@@ -36,6 +36,11 @@
 		socket.emit('user.email.exists', { email: emailEl.value });
 	}, false);
 
+
+
+
+	ajaxify.register_events(['user.create', 'user.exists', 'user.email.exists']);
+
 	socket.on('user.create', function(data) {
 		//console.log('user create: ' + data.status);
 		ajaxify.go('/');

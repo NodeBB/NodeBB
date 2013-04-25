@@ -10,6 +10,16 @@ var ajaxify = {};
 	var current_state = null;
 	var executed = {};
 
+	var events = [];
+	ajaxify.register_events = function(new_page_events) {
+		for (var i = 0, ii = events.length; i<ii; i++) {
+			socket.removeAllListeners(events[i]); // optimize this to user removeListener(event, listener) instead.
+		}
+
+		events = new_page_events;
+	};
+
+
 	ajaxify.go = function(url, callback) {
 		var url = url.replace(/\/$/, "");
 		var tpl_url = (url === '') ? 'home' : url;
@@ -23,10 +33,7 @@ var ajaxify = {};
 				jQuery('#content, #footer').fadeOut(150, function() {
 					//content.innerHTML = templates[tpl_url];
 					load_template(function() {
-						if (executed[url] !== true) {
-							exec_body_scripts(content);
-							executed[url] = true;
-						}
+						exec_body_scripts(content);
 
 						ajaxify.enable();
 						if (callback) {
