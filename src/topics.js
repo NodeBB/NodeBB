@@ -53,33 +53,34 @@ var	RDB = require('./redis.js'),
 				callback(topic_data);
 			});*/
 
-			RDB.multi()
-				.mget(title)
-				.mget(uid)
-				.mget(timestamp)
-				.mget(posts)
-				.exec(function(err, replies) {
-					title = replies[0];
-					uid = replies[1];
-					timestamp = replies[2];
-					posts = replies[3];
+			if (tids.length > 0) {
+				RDB.multi()
+					.mget(title)
+					.mget(uid)
+					.mget(timestamp)
+					.mget(posts)
+					.exec(function(err, replies) {
+						title = replies[0];
+						uid = replies[1];
+						timestamp = replies[2];
+						posts = replies[3];
 
-					var topics = [];
-					for (var i=0, ii=title.length; i<ii; i++) {
-						topics.push({
-							'title' : title[i],
-							'uid' : uid[i],
-							'timestamp' : timestamp[i],
-							'posts' : posts[i],
-							'post_count' : 0
-						});
+						var topics = [];
+						for (var i=0, ii=title.length; i<ii; i++) {
+							topics.push({
+								'title' : title[i],
+								'uid' : uid[i],
+								'timestamp' : timestamp[i],
+								'posts' : posts[i],
+								'post_count' : 0
+							});
+						}
+
+						callback(topics);
 					}
-
-					callback(topics);
-				});
+				);
+			} else callback([]);
 		});
-
-
 	}
 
 

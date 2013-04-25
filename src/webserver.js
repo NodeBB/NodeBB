@@ -15,9 +15,16 @@ var express = require('express'),
 		}
 	}
 
-	function checkAuth(req, res, next) {
+	function hasAuth(req, res, next) {
+		// Include this middleware if the endpoint is publically accessible, but has elements that logged in users can see
+
+	}
+
+	function requireAuth(req, res, next) {
+		// Include this middleware if the endpoint requires a logged in user to view
+		console.log('REQUIRE: ', global.uid, req.sessionID);
 		if (!global.uid) {
-			res.send(403, 'You are not authorized to view this page');
+			req.redirect('/403');
 		} else {
 			next();
 		}
@@ -63,9 +70,13 @@ var express = require('express'),
 		res.send(templates['header'] + templates['register'] + templates['footer']);
 	});
 
-	app.get('/account', checkAuth, function(req, res) {
+	app.get('/account', requireAuth, function(req, res) {
 		refreshTemplates();
 		res.send(templates['header'] + templates['account_settings'] + templates['footer']);
+	});
+
+	app.get('/403', function(req, res) {
+		res.send(403, 'You are not authorized to view this page');
 	});
 
 	module.exports.init = function() {
