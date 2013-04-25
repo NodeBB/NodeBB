@@ -17,17 +17,28 @@ var express = require('express'),
 
 	function hasAuth(req, res, next) {
 		// Include this middleware if the endpoint is publically accessible, but has elements that logged in users can see
+		global.modules.user.get_uid_by_session(req.sessionID, function(uid) {
+			if (uid) {
+				global.uid = uid;
+				console.log('info: [Auth] User is logged in as uid: ' + uid);
+			} else {
+				console.log('info: [Auth] User is not logged in');
+			}
 
+			next();
+		});
 	}
 
 	function requireAuth(req, res, next) {
 		// Include this middleware if the endpoint requires a logged in user to view
-		console.log('REQUIRE: ', global.uid, req.sessionID);
-		if (!global.uid) {
-			res.redirect('/403');
-		} else {
-			next();
-		}
+		hasAuth(req, res, function() {
+			if (!global.uid) {
+				res.redirect('/403');
+			} else {
+				console.log('info: [Auth] User is logged in as uid: ' + uid);
+				next();
+			}
+		});
 	}
 
 	// Middlewares
@@ -35,18 +46,12 @@ var express = require('express'),
 	app.use(express.bodyParser());	// Puts POST vars in request.body
 	app.use(express.cookieParser());	// If you want to parse cookies (res.cookies)
 	app.use(express.session({secret: 'nodebb', key: 'express.sid'}));
-	app.use(function(req, res, next) {
-		global.modules.user.get_uid_by_session(req.sessionID, function(uid) {
-			if (uid) global.uid = uid;
-			next();
-		});
-	});
 	// Dunno wtf this does
 	//	app.use(express.logger({ format: '\x1b[1m:method\x1b[0m \x1b[33m:url\x1b[0m :response-time ms' }));
 	// Useful if you want to use app.put and app.delete (instead of app.post all the time)
 	//	app.use(express.methodOverride());
 
-	app.get('/', function(req, res) {
+	app.get('/', hasAuth, function(req, res) {
 		global.modules.topics.generate_forum_body(function(forum_body) {
 			res.send(templates['header'] + forum_body + templates['footer']);	
 		})
@@ -54,7 +59,7 @@ var express = require('express'),
 		//res.send(templates['header'] + templates['home'] + templates['footer']);
 	});
 
-	app.get('/login', function(req, res) {
+	app.get('/login', hasAuth, function(req, res) {
 		res.send(templates['header'] + templates['login'] + templates['footer']);
 	});
 

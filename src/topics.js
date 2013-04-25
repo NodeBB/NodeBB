@@ -26,7 +26,7 @@ var	RDB = require('./redis.js'),
 		
 
 		Topics.get(function(data) {
-			console.log({'topics': data});
+			// console.log({'topics': data});
 			forum_body = forum_body.parse({'topics': data});
 			callback(forum_body);
 		}, start, end);
