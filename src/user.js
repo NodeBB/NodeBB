@@ -32,6 +32,14 @@ var	config = require('../config.js'),
 					});
 
 					global.uid = uid;
+
+					global.socket.emit('event:alert', {
+						title: 'Welcome ' + user.username,
+						message: 'You have successfully logged in.',
+						type: 'notify',
+						timeout: 2000
+					});
+
 					return global.socket.emit('user.login', {'status': 1, 'message': 'Logged in!'});
 				}
 			});

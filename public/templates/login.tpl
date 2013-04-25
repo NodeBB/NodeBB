@@ -29,8 +29,8 @@
 			jQuery('#error').show(50);
 			jQuery('#error p').html(data.message);
 		} else {
-			alert('success');
 			jQuery('#error').hide(50);
+			ajaxify.go('/');
 		}
 	});
 }());
