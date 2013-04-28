@@ -36,18 +36,33 @@ var express = require('express'),
 		key: 'express.sid'
 	}));
 	app.use(function(req, res, next) {
-		if (global.uid === undefined) {
-			console.log('info: [Auth] First load, retrieving uid...');
-			global.modules.user.get_uid_by_session(req.sessionID, function(uid) {
-				global.uid = uid;
-				if (global.uid !== null) console.log('info: [Auth] uid ' + global.uid + ' found. Welcome back.');
-				else console.log('info: [Auth] No login session found.');
-			});
+		var hasExtension = /\.[\w]{2,4}$/;
+		if (!hasExtension.test(req.url.indexOf('?') !== -1 ? req.url.substr(0, req.url.indexOf('?')) : req.url)) {
+			console.log('REQUESTING: ' + req.url);
+			if (req.session.uid === undefined) {
+				console.log('info: [Auth] First load, retrieving uid...');
+				global.modules.user.get_uid_by_session(req.sessionID, function(uid) {
+					if (uid !== null) {
+						req.session.uid = uid;
+
+						global.socket.emit('event:alert', {
+							title: 'Welcome ' + user.username,
+							message: 'You have successfully logged in.',
+							type: 'notify',
+							timeout: 2000
+						});
+					} else req.session.uid = 0;
+
+					if (req.session.uid) console.log('info: [Auth] uid ' + req.session.uid + ' found. Welcome back.');
+					else console.log('info: [Auth] No login session found.');
+				});
+			} else {
+				// console.log('SESSION: ' + req.sessionID);
+				// console.log('info: [Auth] Ping from uid ' + req.session.uid);
+			}
 
 			// (Re-)register the session as active
 			global.modules.user.active.register(req.sessionID);
-		} else {
-			console.log('info: [Auth] Ping from uid ' + global.uid);
 		}
 
 		next();
@@ -85,6 +100,7 @@ var express = require('express'),
 				break;
 			default :
 				res.send('{}');
+			break;
 		}
 	});
 
@@ -94,8 +110,11 @@ var express = require('express'),
 
 	app.get('/logout', function(req, res) {
 		console.log('info: [Auth] Session ' + res.sessionID + ' logout (uid: ' + global.uid + ')');
-		global.modules.user.logout(function(logout) {
-			if (logout === true) req.session.destroy();
+		global.modules.user.logout(req.sessionID, function(logout) {
+			if (logout === true) {
+				delete(req.session.uid);
+				req.session.destroy();
+			}
 		});
 
 		res.send(templates['header'] + templates['logout'] + templates['footer']);
@@ -125,7 +144,7 @@ var express = require('express'),
 	module.exports.init = function() {
 		// todo move some of this stuff into config.json
 		app.configure(function() {
-			app.use(express.static(global.configuration.ROOT_DIRECTORY + '/public')); 
+			app.use(express.static(global.configuration.ROOT_DIRECTORY + '/public'));
 		});
 	}
 }(WebServer));

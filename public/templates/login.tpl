@@ -30,8 +30,7 @@
 			jQuery('#error').show(50);
 			jQuery('#error p').html(data.message);
 		} else {
-			jQuery('#error').hide(50);
-			ajaxify.go('/');
+			document.location.href = '/';
 		}
 	});
 }());
