@@ -1,7 +1,8 @@
 var express = require('express'),
 	WebServer = express(),
 	server = require('http').createServer(WebServer),
-	RedisStore = require('connect-redis')(express);
+	RedisStore = require('connect-redis')(express),
+	path = require('path'),
     config = require('../config.js');
 
 (function(app) {
@@ -26,8 +27,10 @@ var express = require('express'),
 
 	// Middlewares
 	app.use(express.favicon());	// 2 args: string path and object options (i.e. expire time etc)
+	app.use(express.static(path.join(__dirname, '../', 'public')));
 	app.use(express.bodyParser());	// Puts POST vars in request.body
 	app.use(express.cookieParser());	// If you want to parse cookies (res.cookies)
+	app.use(express.compress());
 	app.use(express.session({
 		store: new RedisStore({
 			ttl: 60*60*24*14
@@ -36,9 +39,8 @@ var express = require('express'),
 		key: 'express.sid'
 	}));
 	app.use(function(req, res, next) {
-		var hasExtension = /\.[\w]{2,4}$/;
-		if (!hasExtension.test(req.url.indexOf('?') !== -1 ? req.url.substr(0, req.url.indexOf('?')) : req.url)) {
-			console.log('REQUESTING: ' + req.url);
+		// Don't bother with session handling for API requests
+		if (!/^\/api\//.test(req.url)) {
 			if (req.session.uid === undefined) {
 				console.log('info: [Auth] First load, retrieving uid...');
 				global.modules.user.get_uid_by_session(req.sessionID, function(uid) {
@@ -60,10 +62,10 @@ var express = require('express'),
 				// console.log('SESSION: ' + req.sessionID);
 				// console.log('info: [Auth] Ping from uid ' + req.session.uid);
 			}
-
-			// (Re-)register the session as active
-			global.modules.user.active.register(req.sessionID);
 		}
+
+		// (Re-)register the session as active
+		global.modules.user.active.register(req.sessionID);
 
 		next();
 	});
@@ -77,8 +79,6 @@ var express = require('express'),
 			res.send(templates['header'] + forum_body + templates['footer']);	
 		});
 	});
-
-
 
 	app.get('/topics/:topic_id', function(req, res) {
 		global.modules.topics.generate_topic_body(function(topic_body) {
@@ -140,13 +140,6 @@ var express = require('express'),
 	app.get('/403', function(req, res) {
 		res.send(templates['header'] + templates['403'] + templates['footer']);
 	});
-
-	module.exports.init = function() {
-		// todo move some of this stuff into config.json
-		app.configure(function() {
-			app.use(express.static(global.configuration.ROOT_DIRECTORY + '/public'));
-		});
-	}
 }(WebServer));
 
 server.listen(config.port);
