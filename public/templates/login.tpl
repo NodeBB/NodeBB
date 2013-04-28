@@ -25,13 +25,11 @@
 
 	ajaxify.register_events(['user.login']);
 	socket.on('user.login', function(data) {
-		console.log(data);
 		if (data.status === 0) {
 			jQuery('#error').show(50);
 			jQuery('#error p').html(data.message);
 		} else {
-			jQuery('#error').hide(50);
-			ajaxify.go('/');
+			document.location.href = '/';
 		}
 	});
 }());

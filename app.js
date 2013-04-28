@@ -22,7 +22,7 @@ global.modules = modules;
     config['ROOT_DIRECTORY'] = __dirname;
 
 	modules.templates.init();
-	modules.webserver.init();
+	// modules.webserver.init();
 	modules.websockets.init();
 	
 

@@ -33,25 +33,17 @@ var	config = require('../config.js'),
 
 					global.uid = uid;
 
-					global.socket.emit('event:alert', {
-						title: 'Welcome ' + user.username,
-						message: 'You have successfully logged in.',
-						type: 'notify',
-						timeout: 2000
-					});
-
 					return global.socket.emit('user.login', {'status': 1, 'message': 'Logged in!'});
 				}
 			});
 		});
 	};
 
-	User.logout = function(callback) {
-		RDB.get('uid:' + global.uid + ':session', function(sessionID) {
-			if (sessionID) {
+	User.logout = function(sessionID, callback) {
+		User.get_uid_by_session(sessionID, function(uid) {
+			if (uid) {
 				RDB.del('sess:' + sessionID + ':uid');
-				RDB.del('uid:' + global.uid + ':session');
-				global.uid = null;
+				RDB.del('uid:' + uid + ':session');
 				callback(true);
 			} else callback(false);
 		});
@@ -236,32 +228,37 @@ var	config = require('../config.js'),
 					},
 					keys = [];
 
-				for(var a in active) {
-					keys.push('sess:' + active[a].split(':')[1] + ':uid');
-				}
+				if (active.length > 0) {
+					for(var a in active) {
+						keys.push('sess:' + active[a].split(':')[1] + ':uid');
+					}
 
-				RDB.mget(keys, function(uids) {
-					for(var u in uids) {
-						if (uids[u] !== null) {
-							if (returnObj.uids.indexOf(uids[u]) === -1) {
-								returnObj.users++;
-								returnObj.uids.push(uids[u]);
+					RDB.mget(keys, function(uids) {
+						for(var u in uids) {
+							if (uids[u] !== null) {
+								if (returnObj.uids.indexOf(uids[u]) === -1) {
+									returnObj.users++;
+									returnObj.uids.push(uids[u]);
+								}
+							} else {
+								returnObj.anon++;
 							}
-						} else {
-							returnObj.anon++;
 						}
-					}
 
-					if (callback === undefined) {
-						global.socket.emit('api:user.active.get', returnObj)
-					} else {
-						callback(returnObj);
-					}
-				});
+						if (callback === undefined) {
+							io.sockets.emit('api:user.active.get', returnObj)
+						} else {
+							callback(returnObj);
+						}
+					});
+				} else {
+					io.sockets.emit('api:user.active.get', returnObj)
+				}
 			});
 		},
 		register: function(sessionID) {
-			RDB.set('active:' + sessionID, 60*10);	// Active state persists for 10 minutes
+			RDB.set('active:' + sessionID, '', 60*10);	// Active state persists for 10 minutes
+			this.get();
 		}
 	}
 }(exports));
