@@ -3,13 +3,13 @@
 
 ## Installation
 
-First step is to obtain all of the dependencies requires by NodeBB:
+NodeBB is powered by Node.js with a Redis database. They must be installed prior in order for NodeBB to work.
+
+	# apt-get install nodejs redis
+
+Next, obtain all of the dependencies required by NodeBB:
 
     $ npm install
-
-*(Optional)* Next, we install redis. If you already have redis installed, you can skip this step.
-
-    # apt-get install redis
 
 Now we ensure that the configuration files are properly set up. NodeBB runs on port 4567 by default. The client side config can be set up thusly:
 
