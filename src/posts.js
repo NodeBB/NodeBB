@@ -48,6 +48,8 @@ var	RDB = require('./redis.js');
 
 						callback({'posts': posts});
 					});
+			} else {
+				callback({});
 			}
 
 
