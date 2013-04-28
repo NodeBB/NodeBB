@@ -246,13 +246,13 @@ var	config = require('../config.js'),
 						}
 
 						if (callback === undefined) {
-							global.socket.emit('api:user.active.get', returnObj)
+							io.sockets.emit('api:user.active.get', returnObj)
 						} else {
 							callback(returnObj);
 						}
 					});
 				} else {
-					global.socket.emit('api:user.active.get', returnObj)
+					io.sockets.emit('api:user.active.get', returnObj)
 				}
 			});
 		},
