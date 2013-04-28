@@ -4,7 +4,8 @@ var	SocketIO = require('socket.io').listen(global.server),
 
 (function(io) {
 	var	modules = null,
-		sessionID;
+		sessionID,
+		uid;
 
 	global.io = io;
 	module.exports.init = function() {
@@ -27,7 +28,12 @@ var	SocketIO = require('socket.io').listen(global.server),
 
 		// Otherwise, continue unimpeded.
 		sessionID = handshakeData.sessionID;
-		accept(null, true);
+		global.modules.user.get_uid_by_session(sessionID, function(session_uid) {
+			if (session_uid) uid = session_uid;
+			else uid = 0;
+
+			accept(null, true);
+		});
 	});
 
 	io.sockets.on('connection', function(socket) {
