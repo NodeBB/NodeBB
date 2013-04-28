@@ -47,12 +47,12 @@ var express = require('express'),
 					if (uid !== null) {
 						req.session.uid = uid;
 
-						global.socket.emit('event:alert', {
+						/*global.socket.emit('event:alert', {
 							title: 'Welcome ' + user.username,
 							message: 'You have successfully logged in.',
 							type: 'notify',
 							timeout: 2000
-						});
+						});*/
 					} else req.session.uid = 0;
 
 					if (req.session.uid) console.log('info: [Auth] uid ' + req.session.uid + ' found. Welcome back.');
