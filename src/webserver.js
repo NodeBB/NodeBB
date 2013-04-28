@@ -65,6 +65,7 @@ var express = require('express'),
 
 
 
+	// need a proper way to combine these two routes together
 	app.get('/topics/:topic_id', function(req, res) {
 		global.modules.topics.generate_topic_body(function(topic_body) {
 			res.send(templates['header'] + topic_body + templates['footer']);
@@ -75,6 +76,8 @@ var express = require('express'),
 			res.send(templates['header'] + topic_body + templates['footer']);
 		}, req.params.topic_id)
 	});
+
+
 
 	app.get('/api/:method', function(req, res) {
 		switch(req.params.method) {

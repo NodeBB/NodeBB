@@ -11,7 +11,47 @@ var	RDB = require('./redis.js');
 
 
 
-	Posts.get = function(topic) {
+	Posts.get = function(callback, tid, start, end) {
+		if (start == null) start = 0;
+		if (end == null) end = start + 10;
+
+		RDB.lrange('tid:' + tid + ':posts', start, end, function(pids) {
+
+			var content = [],
+				uid = [],
+				timestamp = [];
+
+			for (var i=0, ii=pids.length; i<ii; i++) {
+				content.push('pid:' + pids[i] + ':content');
+				uid.push('pid:' + pids[i] + ':uid');
+				timestamp.push('pid:' + pids[i] + ':timestamp');
+			}
+
+			if (pids.length > 0) {
+				RDB.multi()
+					.mget(content)
+					.mget(uid)
+					.mget(timestamp)
+					.exec(function(err, replies) {
+						content = replies[0];
+						uid = replies[1];
+						timestamp = replies[2];
+
+						var posts = [];
+						for (var i=0, ii=content.length; i<ii; i++) {
+							posts.push({
+								'content' : content[i],
+								'uid' : uid[i],
+								'timestamp' : timestamp[i]
+							});
+						}
+
+						callback({'posts': posts});
+					});
+			}
+
+
+		});
 
 	}
 

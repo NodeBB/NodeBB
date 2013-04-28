@@ -23,12 +23,12 @@ var	RDB = require('./redis.js'),
 
 
 	Topics.generate_topic_body = function(callback, tid, start, end) {
-		if (start == null) start = 0;
-		if (end == null) end = start + 10;
-
-		RDB.lrange('tid:' + tid + ':posts', start, end, function(tids) {
-			callback(tids);
-		});
+		var topic_body = global.templates['topic'];
+	
+		posts.get(function(data) {
+			topic_body = topic_body.parse(data);
+			callback(topic_body);
+		}, tid, start, end)
 	};
 
 	// this needs to move into forum.js
@@ -40,10 +40,6 @@ var	RDB = require('./redis.js'),
 			forum_body = forum_body.parse(data);
 			callback(forum_body);
 		}, start, end);
-	};
-
-	Topics.get_postIDs_by_topicID = function(topicID, start, end) {
-
 	};
 
 	Topics.get = function(callback, start, end) {

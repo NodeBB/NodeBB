@@ -25,7 +25,7 @@ var fs = require('fs');
 
 	Templates.init = function() {
 		loadTemplates([
-			'header', 'footer', 'register', 'home',
+			'header', 'footer', 'register', 'home', 'topic',
 			'login', 'reset', 'reset_code', 'account_settings',
 			'logout', '403',
 			'emails/reset', 'emails/reset_plaintext'
