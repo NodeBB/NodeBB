@@ -258,6 +258,7 @@ var	config = require('../config.js'),
 		},
 		register: function(sessionID) {
 			RDB.set('active:' + sessionID, '', 60*10);	// Active state persists for 10 minutes
+			this.get();
 		}
 	}
 }(exports));
