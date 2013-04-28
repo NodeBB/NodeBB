@@ -99,8 +99,8 @@ var	RDB = require('./redis.js'),
 	}
 
 
-	Topics.post = function(title, content, category) {
-		if (global.uid === null) {
+	Topics.post = function(uid, title, content, category) {
+		if (uid === 0) {
 			global.socket.emit('event:alert', {
 				title: 'Thank you for posting',
 				message: 'Since you are unregistered, your post is awaiting approval. Click here to register now.',
@@ -115,8 +115,8 @@ var	RDB = require('./redis.js'),
 
 		RDB.incr('global:next_topic_id', function(tid) {
 			// Global Topics
-			if (global.uid == null) global.uid = 0;
-			if (global.uid !== null) {
+			if (uid == null) uid = 0;
+			if (uid !== null) {
 				RDB.lpush('topics:tid', tid);	
 			} else {
 				// need to add some unique key sent by client so we can update this with the real uid later
@@ -133,7 +133,7 @@ var	RDB = require('./redis.js'),
 
 			// Topic Info
 			RDB.set('tid:' + tid + ':title', title);
-			RDB.set('tid:' + tid + ':uid', global.uid);
+			RDB.set('tid:' + tid + ':uid', uid);
 			RDB.set('tid:' + tid + ':slug', slug);
 			RDB.set('tid:' + tid + ':timestamp', new Date().getTime());
 			RDB.incr('tid:' + tid + ':postcount');
@@ -147,7 +147,7 @@ var	RDB = require('./redis.js'),
 
 
 			// User Details - move this out later
-			RDB.lpush('uid:' + global.uid + ':topics', tid);
+			RDB.lpush('uid:' + uid + ':topics', tid);
 
 
 			global.socket.emit('event:alert', {
