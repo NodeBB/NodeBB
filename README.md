@@ -5,7 +5,7 @@
 
 NodeBB is powered by Node.js with a Redis database. They must be installed prior in order for NodeBB to work.
 
-	# apt-get install nodejs redis
+	# apt-get install nodejs redis-server npm
 
 Next, obtain all of the dependencies required by NodeBB:
 
@@ -24,6 +24,10 @@ Ensure that `/public/config.json` points to the publically accessible IP/hostnam
 Lastly, we run the forum.
 
     $ node app
+
+*(Optional)* Some server configurations may install the node binary as `nodejs` instead of `node`. You can re-map it (so as to not break compatibility with `node-supervisor`) by running the following command:
+
+    # update-alternatives --install /usr/bin/node node /usr/bin/nodejs 10
 
 ## Server Configuration
 
