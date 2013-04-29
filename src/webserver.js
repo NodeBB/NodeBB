@@ -16,15 +16,6 @@ var express = require('express'),
 		}
 	}
 
-	function requireAuth(req, res, next) {
-		// Include this middleware if the endpoint requires a logged in user to view
-		if (!global.uid) {
-			res.redirect('/403');
-		} else {
-			next();
-		}
-	}
-
 	// Middlewares
 	app.use(express.favicon());	// 2 args: string path and object options (i.e. expire time etc)
 	app.use(express.static(path.join(__dirname, '../', 'public')));
@@ -40,22 +31,22 @@ var express = require('express'),
 	}));
 	app.use(function(req, res, next) {
 		// Don't bother with session handling for API requests
-		if (!/^\/api\//.test(req.url)) {
-			if (req.session.uid === undefined) {
-				console.log('info: [Auth] First load, retrieving uid...');
-				global.modules.user.get_uid_by_session(req.sessionID, function(uid) {
-					if (uid !== null) {
-						req.session.uid = uid;
-						console.log('info: [Auth] uid ' + req.session.uid + ' found. Welcome back.');
-					} else {
-						req.session.uid = 0;
-						console.log('info: [Auth] No login session found.');
-					}
-				});
-			} else {
-				// console.log('SESSION: ' + req.sessionID);
-				// console.log('info: [Auth] Ping from uid ' + req.session.uid);
-			}
+		if (/^\/api\//.test(req.url)) next();
+
+		if (req.session.uid === undefined) {
+			console.log('info: [Auth] First load, retrieving uid...');
+			global.modules.user.get_uid_by_session(req.sessionID, function(uid) {
+				if (uid !== null) {
+					req.session.uid = uid;
+					console.log('info: [Auth] uid ' + req.session.uid + ' found. Welcome back.');
+				} else {
+					req.session.uid = 0;
+					console.log('info: [Auth] No login session found.');
+				}
+			});
+		} else {
+			// console.log('SESSION: ' + req.sessionID);
+			// console.log('info: [Auth] Ping from uid ' + req.session.uid);
 		}
 
 		// (Re-)register the session as active
@@ -130,7 +121,7 @@ var express = require('express'),
 		res.send(templates['header'] + templates['register'] + templates['footer']);
 	});
 
-	app.get('/account', requireAuth, function(req, res) {
+	app.get('/account', function(req, res) {
 		refreshTemplates();
 		res.send(templates['header'] + templates['account_settings'] + templates['footer']);
 	});
