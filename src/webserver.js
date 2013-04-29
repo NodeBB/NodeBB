@@ -31,7 +31,7 @@ var express = require('express'),
 	}));
 	app.use(function(req, res, next) {
 		// Don't bother with session handling for API requests
-		if (/^\/api\//.test(req.url)) next();
+		if (/^\/api\//.test(req.url)) return next();
 
 		if (req.session.uid === undefined) {
 			console.log('info: [Auth] First load, retrieving uid...');
