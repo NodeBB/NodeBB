@@ -46,17 +46,11 @@ var express = require('express'),
 				global.modules.user.get_uid_by_session(req.sessionID, function(uid) {
 					if (uid !== null) {
 						req.session.uid = uid;
-
-						/*global.socket.emit('event:alert', {
-							title: 'Welcome ' + user.username,
-							message: 'You have successfully logged in.',
-							type: 'notify',
-							timeout: 2000
-						});*/
-					} else req.session.uid = 0;
-
-					if (req.session.uid) console.log('info: [Auth] uid ' + req.session.uid + ' found. Welcome back.');
-					else console.log('info: [Auth] No login session found.');
+						console.log('info: [Auth] uid ' + req.session.uid + ' found. Welcome back.');
+					} else {
+						req.session.uid = 0;
+						console.log('info: [Auth] No login session found.');
+					}
 				});
 			} else {
 				// console.log('SESSION: ' + req.sessionID);

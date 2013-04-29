@@ -31,9 +31,7 @@ var	config = require('../config.js'),
 						}
 					});
 
-					global.uid = uid;
-
-					return global.socket.emit('user.login', {'status': 1, 'message': 'Logged in!'});
+					return socket.emit('user.login', {'status': 1, 'message': 'Logged in!'});
 				}
 			});
 		});
