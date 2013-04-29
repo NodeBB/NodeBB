@@ -48,6 +48,10 @@ var	SocketIO = require('socket.io').listen(global.server),
 		
 		// BEGIN: API calls (todo: organize)
 		//   julian: :^)
+		socket.on('api:user.get', function(data) {
+			modules.user.get(uid, data.fields);
+		});
+
 		socket.on('user.create', function(data) {
 			modules.user.create(data.username, data.password, data.email);
 		});

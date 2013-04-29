@@ -102,6 +102,16 @@
 	.topic-container li.topic-row:hover {
 		background-color: #eee;
 	}
+
+	#user_label img {
+		border: 1px solid #999;
+		margin-right: 8px;
+	}
+
+	#user_label span {
+		font-size: 12px;
+		font-weight: bold;
+	}
 	</style>
 </head>
 
@@ -117,7 +127,7 @@
 						<li><a href="/login">Login</a></li>
 					</ul>
 					<ul class="nav pull-right">
-						<li><a href="/account">Account</a></li>
+						<li><p class="navbar-text" id="user_label"></p></li>
 						<li><a href="/logout">Log out</a></li>
 					</ul>
 				</div>

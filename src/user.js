@@ -1,10 +1,49 @@
 var	config = require('../config.js'),
 	utils = require('../utils.js'),
 	RDB = require('./redis.js'),
+	crypto = require('crypto'),
 	emailjs = require('emailjs'),
 	emailjsServer = emailjs.server.connect(config.mailer);
 
 (function(User) {
+
+	User.get = function(uid, fields) {
+		if (uid > 0) {
+			var	keys = [],
+				returnData = {},
+				removeEmail = false;
+
+			if (!(fields instanceof Array)) fields = ['username', 'email'];
+			if (fields.indexOf('picture') !== -1 && fields.indexOf('email') === -1) {
+				fields.push('email');
+				removeEmail = true;
+			}
+
+			for(var f=0,numFields=fields.length;f<numFields;f++) {
+				keys.push('uid:' + uid + ':' + fields[f]);
+			}
+
+			RDB.mget(keys, function(data) {
+				for(var x=0,numData=data.length;x<numData;x++) {
+					returnData[fields[x]] = data[x];
+				}
+				console.log(returnData);
+				if (returnData.picture !== undefined) {
+					var	md5sum = crypto.createHash('md5');
+					md5sum.update(returnData.email.toLowerCase());
+					returnData.picture = 'http://www.gravatar.com/avatar/' + md5sum.digest('hex') + '?s=24';
+					if (removeEmail) delete returnData.email;
+				}
+				socket.emit('api:user.get', returnData);
+			});
+		} else {
+			socket.emit('api:user.get', {
+				username: "Anonymous User",
+				email: '',
+				picture: 'http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=24'
+			});
+		}
+	}
 
 	User.login = function(user) {
 		if (user.username == null || user.password == null) {

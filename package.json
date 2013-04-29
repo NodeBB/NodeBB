@@ -16,7 +16,8 @@
       "emailjs": "0.3.4",
       "cookie": "0.0.6",
       "connect-redis": "1.4.5",
-      "path": "0.4.9"
+      "path": "0.4.9",
+      "crypto": "0.0.3"
     },
   "devDependencies": {},
   "optionalDependencies": {},
