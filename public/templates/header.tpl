@@ -4,6 +4,7 @@
 	<title></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="/vendor/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
 	<script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
 	<script type="text/javascript" src="/vendor/bootstrap/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
@@ -11,8 +12,10 @@
 	<script type="text/javascript" src="/src/templates.js"></script>
 	<script type="text/javascript" src="/src/ajaxify.js"></script>
 	<style type="text/css">
-	body {
-		padding-top: 60px;
+	@media (min-width: 979px) {
+		body {
+			padding-top: 60px;
+		}
 	}
 
 	#notification_window {
@@ -119,8 +122,13 @@
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="navbar-inner">
 			<div class="container">
+				<a class="brand" href="/">NodeBB</a>
+				<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
 				<div class="nav-collapse collapse">
-					<a class="brand" href="/">NodeBB</a>
 					<ul class="nav">
 						<li class="active"><a href="/">Home</a></li>
 						<li><a href="/register">Register</a></li>
