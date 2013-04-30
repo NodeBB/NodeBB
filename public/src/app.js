@@ -18,6 +18,10 @@ var socket,
 			socket.on('event:alert', function(data) {
 				app.alert(data);
 			});
+			
+			socket.on('event:consolelog', function(data) {
+				console.log(data);
+			});
 		},
 		async: false
 

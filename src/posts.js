@@ -62,13 +62,15 @@ var	RDB = require('./redis.js');
 
 	};
 
-	Posts.create = function(content, callback) {
-		if (global.uid === null) return;
-
+	Posts.create = function(uid, content, callback) {
+		console.log("global uid "+uid);
+		
+		if (uid === null) return;
+		
 		RDB.incr('global:next_post_id', function(pid) {
 			// Posts Info
 			RDB.set('pid:' + pid + ':content', content);
-			RDB.set('pid:' + pid + ':uid', global.uid);
+			RDB.set('pid:' + pid + ':uid', uid);
 			RDB.set('pid:' + pid + ':timestamp', new Date().getTime());
 			
 			// User Details - move this out later
