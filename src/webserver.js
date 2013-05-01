@@ -124,11 +124,6 @@ var express = require('express'),
 		res.send(templates['header'] + templates['register'] + templates['footer']);
 	});
 
-	app.get('/account', function(req, res) {
-		refreshTemplates();
-		res.send(templates['header'] + templates['account_settings'] + templates['footer']);
-	});
-
 	app.get('/403', function(req, res) {
 		res.send(templates['header'] + templates['403'] + templates['footer']);
 	});
