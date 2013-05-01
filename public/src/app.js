@@ -79,17 +79,57 @@ var socket,
 	}
 
 	var post_window = null,
-		mode = 'topic',
-		topic_id = null;
+		submit_post_btn = null,
+		post_title = null,
+		post_content = null;
+
+
 	app.open_post_window = function(post_mode, id) {
+		submit_post_btn = submit_post_btn || document.getElementById('submit_post_btn');
+		post_title = post_title || document.getElementById('post_title');
+		post_content = post_content || document.getElementById('post_content');
+
+
 		post_window = post_window || document.getElementById('post_window');
 		jQuery(post_window).slideToggle(250);
-		document.getElementById('post_title').focus();
 
-		mode = (post_mode == null) ? 'topic' : mode;
-		topic_id = (mode == 'reply') ? topic_id : null;
+		if (post_mode == null || post_mode == 'topic') {
+			post_title.style.display = 'block';
+			post_title.focus();
+			submit_post_btn.onclick = function() {
+				app.post_topic();
+			}
+		} else {
+			post_title.style.display = 'none';
+			post_content.focus();
+			submit_post_btn.onclick = function() {
+				app.post_reply(id)
+			} 
+		}
+
 	};
 
+	app.post_reply = function(topic_id) {
+		var	content = document.getElementById('post_content').value;
+
+		if (content.length < 5) {
+			app.alert({
+				title: 'Reply Failure',
+				message: 'You need to write more dude.',
+				type: 'error',
+				timeout: 2000
+			});	
+
+			return;
+		}
+
+		socket.emit('api:posts.reply', {
+			'topic_id' : topic_id,
+			'content' : content 
+		});
+		jQuery(post_window).slideToggle(250);
+
+	};
 	app.post_topic = function() {
 		var title = document.getElementById('post_title').value,
 			content = document.getElementById('post_content').value;
@@ -99,10 +139,7 @@ var socket,
 				title: 'Topic Post Failure',
 				message: 'You need to write more dude.',
 				type: 'error',
-				timeout: 2000,
-				clickfn: function() {
-					ajaxify.go('register');
-				}
+				timeout: 2000
 			});	
 
 			return;

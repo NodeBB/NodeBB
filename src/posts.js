@@ -48,7 +48,7 @@ var	RDB = require('./redis.js'),
 							});
 						}
 
-						callback({'posts': posts, 'TOPIC_ID': tid});
+						callback({'TOPIC_ID': tid, 'posts': posts});
 					});
 			} else {
 				callback({});
@@ -60,8 +60,17 @@ var	RDB = require('./redis.js'),
 	}
 
 
-	Posts.reply = function() {
+	Posts.reply = function(tid, uid, content) {
+		Posts.create(uid, content, function(pid) {
+			RDB.rpush('tid:' + tid + ':posts', pid);
 
+			global.socket.emit('event:alert', {
+				title: 'Reply Successful',
+				message: 'You have successfully replied. Click here to view your reply.',
+				type: 'notify',
+				timeout: 2000
+			});
+		});
 	};
 
 	Posts.create = function(uid, content, callback) {
