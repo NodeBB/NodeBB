@@ -1,4 +1,5 @@
-var	RDB = require('./redis.js');
+var	RDB = require('./redis.js'),
+	utils = require('./utils.js');
 
 (function(Posts) {
 	//data structure
@@ -42,7 +43,8 @@ var	RDB = require('./redis.js');
 							posts.push({
 								'content' : content[i],
 								'uid' : uid[i],
-								'timestamp' : timestamp[i]
+								'timestamp' : timestamp[i],
+								'relativeTime': utils.relativeTime(timestamp[i])
 							});
 						}
 
