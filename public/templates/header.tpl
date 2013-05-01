@@ -108,6 +108,35 @@
 		background-color: #eee;
 	}
 
+
+
+	.post-container {
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+		border: 1px solid #eee;
+		
+	}
+	.post-container li.post-row:nth-child(odd) {
+		background-color:#fdfdfd;
+	}
+	.post-container li.post-row:nth-child(even) {
+		background-color:#fff;
+	}
+	.post-container li.post-row {
+		cursor: pointer;
+		border-bottom: 1px solid #eee;
+		padding: 10px;
+	}
+	.post-container li:last-child {
+		border-bottom: 0;
+	}
+	.post-container li.post-row:hover {
+		background-color: #eee;
+	}
+
+
+
 	#user_label img {
 		border: 1px solid #999;
 		margin-right: 8px;

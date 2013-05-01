@@ -22,7 +22,7 @@ var ajaxify = {};
 
 	ajaxify.go = function(url, callback) {
 		var url = url.replace(/\/$/, "");
-		var tpl_url = (url === '') ? 'home' : url.split('/')[0];
+		var tpl_url = (url === '' || url === '/') ? 'home' : url.split('/')[0];
 		
 		if (templates[tpl_url]) {
 			window.history.pushState({}, url, "/" + url);

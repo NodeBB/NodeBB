@@ -5,9 +5,9 @@
 	</ul>
 </div>
 
-<ul class="topic-container">
+<ul class="post-container">
 <!-- BEGIN posts -->
-<li class="topic-row">
+<li class="post-row">
 	<p>{posts.content}</p>
 	<p>Posted {posts.relativeTime} by user {posts.uid}.</p>
 </li>
