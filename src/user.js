@@ -257,8 +257,8 @@ var	config = require('../config.js'),
 
 	User.active = {
 		get_record : function() {
-			RDB.get('global:active_user_record', function(record) {
-				socket.emit('api:user.active.get_record', record);
+			RDB.mget(['global:active_user_record', 'global:active_user_record_date'], function(data) {
+				socket.emit('api:user.active.get_record', {record: data[0], timestamp: data[1]});
 			});
 		},
 
@@ -267,6 +267,7 @@ var	config = require('../config.js'),
 				RDB.get('global:active_user_record', function(record) {
 					if (total > record) {
 						RDB.set('global:active_user_record', total);
+						RDB.set('global:active_user_record_date', new Date().getTime());
 					}
 				});
 			}

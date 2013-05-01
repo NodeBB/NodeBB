@@ -40,7 +40,7 @@
 		});
 		socket.emit('api:user.active.get_record');
 		socket.on('api:user.active.get_record', function(data) {
-			active_record.innerHTML = "most users ever online was <strong>" + data + "</strong>";
+			active_record.innerHTML = "most users ever online was <strong>" + data.record + "</strong> on <strong>" + (new Date(parseInt(data.timestamp,10))).toUTCString() + "</strong>";
 		});
 		socket.emit('api:user.get', { fields: ['username', 'picture'] });
 		socket.on('api:user.get', function(data) {
