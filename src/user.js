@@ -27,7 +27,7 @@ var	config = require('../config.js'),
 				for(var x=0,numData=data.length;x<numData;x++) {
 					returnData[fields[x]] = data[x];
 				}
-				console.log(returnData);
+				
 				if (returnData.picture !== undefined) {
 					var	md5sum = crypto.createHash('md5');
 					md5sum.update(returnData.email.toLowerCase());
@@ -47,17 +47,17 @@ var	config = require('../config.js'),
 
 	User.login = function(user) {
 		if (user.username == null || user.password == null) {
-			return global.socket.emit('user.login', {'status': 0, 'message': 'Missing fields'});
+			return socket.emit('user.login', {'status': 0, 'message': 'Missing fields'});
 		}
 
 		RDB.get('username:' + user.username + ':uid', function(uid) {
 			if (uid == null) {
-				return global.socket.emit('user.login', {'status': 0, 'message': 'Username does not exist.'});
+				return socket.emit('user.login', {'status': 0, 'message': 'Username does not exist.'});
 			}
 
 			RDB.get('uid:' + uid + ':password', function(password) {
 				if (user.password != password) {
-					return global.socket.emit('user.login', {'status': 0, 'message': 'Incorrect username / password combination.'});
+					return socket.emit('user.login', {'status': 0, 'message': 'Incorrect username / password combination.'});
 				} else {
 					// Start, replace, or extend a session
 					RDB.get('sess:' + user.sessionID, function(session) {
@@ -88,7 +88,7 @@ var	config = require('../config.js'),
 
 	User.create = function(username, password, email) {
 		if (username == null || password == null) {
-			return; global.socket.emit('user.create', {'status': 0, 'message': 'Missing fields'});
+			return; socket.emit('user.create', {'status': 0, 'message': 'Missing fields'});
 		}
 
 
@@ -111,9 +111,9 @@ var	config = require('../config.js'),
 				RDB.lpush('user:users', username);
 				io.sockets.emit('user.latest', {username: username});
 
-				global.socket.emit('user.create', {'status': 1});
+				socket.emit('user.create', {'status': 1});
 
-				global.socket.emit('event:alert', {
+				socket.emit('event:alert', {
 					title: 'Thank you for registering',
 					message: 'You have successfully registered - welcome to nodebb!',
 					type: 'notify',
@@ -127,7 +127,7 @@ var	config = require('../config.js'),
 	User.exists = function(username, callback) {
 		User.get_uid_by_username(username, function(exists) {
 			exists = !!exists;
-			global.socket.emit('user.exists', {exists: exists})
+			socket.emit('user.exists', {exists: exists})
 
 			if (callback) {
 				callback(exists);
@@ -136,12 +136,12 @@ var	config = require('../config.js'),
 	};
 	User.count = function() {
 		RDB.get('user:count', function(count) {
-			global.socket.emit('user.count', {count: (count === null) ? 0 : count});
+			socket.emit('user.count', {count: (count === null) ? 0 : count});
 		});
 	};
 	User.latest = function() {
 		RDB.lrange('user:users', 0, 0, function(username) {
-			global.socket.emit('user.latest', {username: username});
+			socket.emit('user.latest', {username: username});
 		});	
 	}
 
@@ -165,18 +165,18 @@ var	config = require('../config.js'),
 				if (uid !== null) {
 					RDB.get('reset:' + code + ':expiry', function(expiry) {
 						if (expiry >= +new Date()/1000|0) {
-							if (!callback) global.socket.emit('user:reset.valid', { valid: true });
+							if (!callback) socket.emit('user:reset.valid', { valid: true });
 							else callback(true);
 						} else {
 							// Expired, delete from db
 							RDB.del('reset:' + code + ':uid');
 							RDB.del('reset:' + code + ':expiry');
-							if (!callback) global.socket.emit('user:reset.valid', { valid: false });
+							if (!callback) socket.emit('user:reset.valid', { valid: false });
 							else callback(false);
 						}
 					});
 				} else {
-					if (!callback) global.socket.emit('user:reset.valid', { valid: false });
+					if (!callback) socket.emit('user:reset.valid', { valid: false });
 					else callback(false);
 				}
 			});
@@ -208,13 +208,13 @@ var	config = require('../config.js'),
 					
 					emailjsServer.send(message, function(err, success) {
 						if (err === null) {
-							global.socket.emit('user.send_reset', {
+							socket.emit('user.send_reset', {
 								status: "ok",
 								message: "code-sent",
 								email: email
 							});
 						} else {
-							global.socket.emit('user.send_reset', {
+							socket.emit('user.send_reset', {
 								status: "error",
 								message: "send-failed"
 							});
@@ -222,7 +222,7 @@ var	config = require('../config.js'),
 						}
 					});
 				} else {
-					global.socket.emit('user.send_reset', {
+					socket.emit('user.send_reset', {
 						status: "error",
 						message: "invalid-email",
 						email: email
@@ -238,7 +238,7 @@ var	config = require('../config.js'),
 						RDB.del('reset:' + code + ':uid');
 						RDB.del('reset:' + code + ':expiry');
 
-						global.socket.emit('user:reset.commit', { status: 'ok' });
+						socket.emit('user:reset.commit', { status: 'ok' });
 					});
 				}
 			});
@@ -249,14 +249,28 @@ var	config = require('../config.js'),
 		exists: function(email, callback) {
 			User.get_uid_by_email(email, function(exists) {
 				exists = !!exists;
-				if (typeof callback !== 'function') global.socket.emit('user.email.exists', { exists: exists });
+				if (typeof callback !== 'function') socket.emit('user.email.exists', { exists: exists });
 				else callback(exists);
 			});
 		}
 	}
 
 	User.active = {
+		get_record : function() {
+			RDB.get('global:active_user_record', function(record) {
+				socket.emit('api:user.active.get_record', record);
+			});
+		},
+
 		get: function(callback) {
+			function user_record(total) {
+				RDB.get('global:active_user_record', function(record) {
+					if (total > record) {
+						RDB.set('global:active_user_record', total);
+					}
+				});
+			}
+
 			RDB.keys('active:*', function(active) {
 				var	returnObj = {
 						users: 0,
@@ -281,6 +295,8 @@ var	config = require('../config.js'),
 								returnObj.anon++;
 							}
 						}
+
+						user_record(returnObj.anon + returnObj.users);
 
 						if (callback === undefined) {
 							io.sockets.emit('api:user.active.get', returnObj)

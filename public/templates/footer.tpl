@@ -4,7 +4,7 @@
 	<!-- START Forum Info -->
 	<div id="footer" class="container" style="padding-top: 50px;">
 		<div class="alert alert-info">
-			<span id="active_users"></span><br />
+			<span id="active_users"></span>; <span id="active_record"></span><br />
 			<span id="number_of_users"></span><br />
 			<span id="latest_user"></span>
 		</div>
@@ -16,7 +16,8 @@
 		var num_users = document.getElementById('number_of_users'),
 			latest_user = document.getElementById('latest_user'),
 			active_users = document.getElementById('active_users'),
-			user_label = document.getElementById('user_label');
+			user_label = document.getElementById('user_label'),
+			active_record = document.getElementById('active_record');
 
 		socket.emit('user.count', {});
 		socket.on('user.count', function(data) {
@@ -32,7 +33,14 @@
 		});
 		socket.emit('api:user.active.get');
 		socket.on('api:user.active.get', function(data) {
-			active_users.innerHTML = 'There ' + (parseInt(data.users) !== 1 ? 'are' : 'is') + ' <strong>' + data.users + '</strong> user' + (parseInt(data.users) !== 1 ? 's' : '') + ' and <strong>' + data.anon + '</strong> guest' + (parseInt(data.anon) !== 1 ? 's' : '') + ' online';
+			var plural_users = parseInt(data.users) !== 1,
+				plural_anon = parseInt(data.anon) !== 1;
+
+			active_users.innerHTML = 'There ' + (plural_users ? 'are' : 'is') + ' <strong>' + data.users + '</strong> user' + (plural_users ? 's' : '') + ' and <strong>' + data.anon + '</strong> guest' + (plural_anon ? 's' : '') + ' online';
+		});
+		socket.emit('api:user.active.get_record');
+		socket.on('api:user.active.get_record', function(data) {
+			active_record.innerHTML = "most users ever online was <strong>" + data + "</strong>";
 		});
 		socket.emit('api:user.get', { fields: ['username', 'picture'] });
 		socket.on('api:user.get', function(data) {

@@ -96,6 +96,10 @@ var	SocketIO = require('socket.io').listen(global.server),
 		socket.on('api:user.active.get', function() {
 			modules.user.active.get();
 		});
+
+		socket.on('api:user.active.get_record', function() {
+			modules.user.active.get_record();
+		});
 	});
 	
 }(SocketIO));
