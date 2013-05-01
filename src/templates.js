@@ -60,11 +60,11 @@ var fs = require('fs');
 		var template = this.html, regex, block;
 
 		return (function parse(data, namespace, template) {
-			if (data.length == 0) {
+			if (Object.keys(data).length == 0) {
 				regex = makeRegex('[^]*');
 				template = template.replace(regex, '');
 			}
-
+			
 			for (var d in data) {
 				if (data.hasOwnProperty(d)) {
 					if (data[d] instanceof String || data[d] === null) {

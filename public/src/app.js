@@ -78,12 +78,16 @@ var socket,
 		}
 	}
 
-	var post_window = null;
-	app.open_post_window = function() {
+	var post_window = null,
+		mode = 'topic',
+		topic_id = null;
+	app.open_post_window = function(post_mode, id) {
 		post_window = post_window || document.getElementById('post_window');
 		jQuery(post_window).slideToggle(250);
 		document.getElementById('post_title').focus();
 
+		mode = (post_mode == null) ? 'topic' : mode;
+		topic_id = (mode == 'reply') ? topic_id : null;
 	};
 
 	app.post_topic = function() {

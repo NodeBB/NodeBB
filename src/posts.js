@@ -46,7 +46,7 @@ var	RDB = require('./redis.js');
 							});
 						}
 
-						callback({'posts': posts});
+						callback({'posts': posts, 'TOPIC_ID': tid});
 					});
 			} else {
 				callback({});
