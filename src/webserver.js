@@ -3,7 +3,9 @@ var express = require('express'),
 	server = require('http').createServer(WebServer),
 	RedisStore = require('connect-redis')(express),
 	path = require('path'),
-    config = require('../config.js');
+    config = require('../config.js'),
+    redis = require('redis'),
+	redisServer = redis.createClient(config.redis.port, config.redis.host, config.redis.options);
 
 (function(app) {
 	var templates = global.templates;
@@ -24,6 +26,7 @@ var express = require('express'),
 	app.use(express.compress());
 	app.use(express.session({
 		store: new RedisStore({
+			client: redisServer,
 			ttl: 60*60*24*14
 		}),
 		secret: 'nodebb',
