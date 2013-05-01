@@ -1,5 +1,5 @@
 var	config = require('../config.js'),
-	utils = require('../utils.js'),
+	utils = require('./utils.js'),
 	RDB = require('./redis.js'),
 	crypto = require('crypto'),
 	emailjs = require('emailjs'),
