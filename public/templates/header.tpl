@@ -100,7 +100,9 @@
 		cursor: pointer;
 		border-bottom: 1px solid #eee;
 		padding: 10px;
-
+	}
+	.topic-container li:last-child {
+		border-bottom: 0;
 	}
 	.topic-container li.topic-row:hover {
 		background-color: #eee;
