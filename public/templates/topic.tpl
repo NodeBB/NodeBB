@@ -1,3 +1,10 @@
+<div class="container">
+	<ul class="breadcrumb">
+		<li><a href="/">Home</a> <span class="divider">/</span></li>
+		<li class="active">{TOPIC_NAME}</li>
+	</ul>
+</div>
+
 <ul class="topic-container">
 <!-- BEGIN posts -->
 <li class="topic-row">
@@ -11,6 +18,6 @@
 <script type="text/javascript">
 var post_reply = document.getElementById('post_reply');
 post_reply.onclick = function() {
-	app.open_post_window('reply', {TOPIC_ID});
+	app.open_post_window('reply', "{TOPIC_ID}", "{TOPIC_NAME}");
 }
 </script>

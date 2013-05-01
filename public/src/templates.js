@@ -119,7 +119,6 @@ function load_template(callback) {
 	url = (url === '') ? 'home' : url;
 
 	jQuery.get(API_URL + url, function(data) {
-		
 		document.getElementById('content').innerHTML = templates[url.split('/')[0]].parse(JSON.parse(data));
 		if (callback) callback();
 	});

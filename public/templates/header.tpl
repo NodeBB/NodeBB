@@ -117,6 +117,11 @@
 		font-size: 12px;
 		font-weight: bold;
 	}
+	#reply_title {
+		font-size: 17px;
+		padding-top: 14px;
+		font-weight: 600;
+	}
 	</style>
 </head>
 
@@ -132,7 +137,7 @@
 				</button>
 				<div class="nav-collapse collapse">
 					<ul class="nav">
-						<li class="active"><a href="/">Home</a></li>
+						<li class="active"><a href="/">Forum</a></li>
 						<li><a href="/register">Register</a></li>
 						<li><a href="/login">Login</a></li>
 					</ul>
@@ -148,6 +153,7 @@
 		<div class="post-title-container">
 			<div class="container">
 				<input id="post_title" placeholder="Enter your topic title here." />
+				<span id="reply_title"></span>
 			</div>
 		</div>
 		<div class="post-content-container">
@@ -172,4 +178,5 @@
 		</div>
 	</div>
 	<div id="notification_window"></div>
+
 	<div class="container" id="content">

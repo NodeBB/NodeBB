@@ -85,12 +85,14 @@ var socket,
 	var post_window = null,
 		submit_post_btn = null,
 		post_title = null,
+		reply_title = null,
 		post_content = null;
 
 
-	app.open_post_window = function(post_mode, id) {
+	app.open_post_window = function(post_mode, id, title) {
 		submit_post_btn = submit_post_btn || document.getElementById('submit_post_btn');
 		post_title = post_title || document.getElementById('post_title');
+		reply_title = reply_title || document.getElementById('reply_title');
 		post_content = post_content || document.getElementById('post_content');
 
 
@@ -98,13 +100,16 @@ var socket,
 		jQuery(post_window).slideToggle(250);
 
 		if (post_mode == null || post_mode == 'topic') {
-			post_title.style.display = 'block';
+			post_title.style.display = "block";
+			reply_title.style.display = "none";
 			post_title.focus();
 			submit_post_btn.onclick = function() {
 				app.post_topic();
 			}
 		} else {
-			post_title.style.display = 'none';
+			post_title.style.display = "none";
+			reply_title.style.display = "block";
+			reply_title.innerHTML = 'You are replying to "' + title + '"';
 			post_content.focus();
 			submit_post_btn.onclick = function() {
 				app.post_reply(id)
