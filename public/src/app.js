@@ -1,6 +1,8 @@
 var socket,
 	config,
-	app = {};
+	app = {},
+
+	API_URL = null;
 
 // todo: cleanup,etc
 (function() {
@@ -8,6 +10,8 @@ var socket,
 	$.ajax({
 		url: '/config.json?v=' + new Date().getTime(),
 		success: function(data) {
+			API_URL = data.api_url;
+
 			config = data;
 			socket = io.connect('http://' + config.socket.address + config.socket.port? ':' + config.socket.port : '');
 

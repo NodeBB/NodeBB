@@ -69,32 +69,36 @@ var express = require('express'),
 	});
 
 
-	// need a proper way to combine these two routes together
-	app.get('/topics/:topic_id', function(req, res) {
+	function generate_topic_body(req, res) {
 		global.modules.topics.generate_topic_body(function(topic_body) {
 			res.send(templates['header'] + topic_body + templates['footer']);
-		}, req.params.topic_id)
-	});
-	app.get('/topics/:topic_id/:slug', function(req, res) {
-		global.modules.topics.generate_topic_body(function(topic_body) {
-			res.send(templates['header'] + topic_body + templates['footer']);
-		}, req.params.topic_id)
-	});
+		}, req.params.topic_id);
+	}
+	app.get('/topic/:topic_id', generate_topic_body);
+	app.get('/topic/:topic_id*', generate_topic_body);
 
 
 
-	app.get('/api/:method', function(req, res) {
+	function api_method(req, res) {
 		switch(req.params.method) {
 			case 'home' :
 					global.modules.topics.get(function(data) {
 						res.send(JSON.stringify(data));
 					});
 				break;
+			case 'topic' :
+					global.modules.posts.get(function(data) {
+						res.send(JSON.stringify(data));
+					}, req.params.id);
+				break;
 			default :
 				res.send('{}');
 			break;
 		}
-	});
+	}
+	app.get('/api/:method', api_method);
+	app.get('/api/:method/:id', api_method);
+	app.get('/api/:method/:id*', api_method);
 
 	app.get('/login', function(req, res) {
 		res.send(templates['header'] + templates['login'] + templates['footer']);

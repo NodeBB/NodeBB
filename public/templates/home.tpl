@@ -1,7 +1,7 @@
 <button id="new_post" class="btn btn-primary btn-large">New Post</button>
 <ul class="topic-container">
 <!-- BEGIN topics -->
-<a href="topics/{topics.slug}"><li class="topic-row">
+<a href="topic/{topics.slug}"><li class="topic-row">
 	<h4>{topics.title}</h4>
 	<p>Posted {topics.relativeTime} by user {topics.uid}. {topics.post_count} posts.</p>
 </li></a>

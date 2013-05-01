@@ -26,7 +26,7 @@ var templates = {};
 
 	function init() {
 		loadTemplates([
-				'header', 'footer', 'register', 'home',
+				'header', 'footer', 'register', 'home', 'topic',
 				'login', 'reset', 'reset_code', 'account_settings',
 				'emails/reset', 'emails/reset_plaintext'
 			]);
@@ -116,10 +116,11 @@ function load_template(callback) {
 		rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : '');
 
 	var url = location.href.replace(rootUrl +'/', '');
-	if (url == '') url = 'home';
-	jQuery.get('api/' + url, function(data) {
+	url = (url === '') ? 'home' : url;
+
+	jQuery.get(API_URL + url, function(data) {
 		
-		document.getElementById('content').innerHTML = templates[url].parse(JSON.parse(data));
+		document.getElementById('content').innerHTML = templates[url.split('/')[0]].parse(JSON.parse(data));
 		if (callback) callback();
 	});
 }

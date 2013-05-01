@@ -64,7 +64,7 @@ var	RDB = require('./redis.js'),
 		Posts.create(uid, content, function(pid) {
 			RDB.rpush('tid:' + tid + ':posts', pid);
 
-			global.socket.emit('event:alert', {
+			socket.emit('event:alert', {
 				title: 'Reply Successful',
 				message: 'You have successfully replied. Click here to view your reply.',
 				type: 'notify',
@@ -74,8 +74,6 @@ var	RDB = require('./redis.js'),
 	};
 
 	Posts.create = function(uid, content, callback) {
-		console.log("global uid "+uid);
-		
 		if (uid === null) return;
 		
 		RDB.incr('global:next_post_id', function(pid) {
