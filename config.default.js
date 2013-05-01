@@ -1,4 +1,5 @@
 var config = {
+	"secret": 'nodebb-secret',
 	"base_url": "http://localhost",
 	"port": 4567,
 	"mailer": {

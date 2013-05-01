@@ -29,7 +29,7 @@ var express = require('express'),
 			client: redisServer,
 			ttl: 60*60*24*14
 		}),
-		secret: 'nodebb',
+		secret: config.secret,
 		key: 'express.sid'
 	}));
 	app.use(function(req, res, next) {
