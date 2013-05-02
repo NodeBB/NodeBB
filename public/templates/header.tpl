@@ -29,7 +29,7 @@
 						<li class="active"><a href="/">Forum</a></li>
 					</ul>
 					<ul class="nav pull-right" id="right-menu">
-						<li><p class="navbar-text" id="user_label"></p></li>
+						<li><a href="#" id="user_label"></a></li>
 					</ul>
 				</div>
 			</div>
