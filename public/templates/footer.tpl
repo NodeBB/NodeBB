@@ -45,7 +45,6 @@
 		});
 		socket.emit('api:user.get', { fields: ['username', 'picture'] });
 		socket.on('api:user.get', function(data) {
-			console.log(data);
 			if (data.uid > 0) {
 				var	gravatar = document.createElement('img'),
 					name = document.createElement('span')
