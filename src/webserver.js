@@ -18,7 +18,7 @@ passport.use(new passportLocal(function(user, password, next) {
 	});
 }));
 
-if (config.twitter.key.length > 0 && config.twitter.secret.length > 0) {
+if (config.twitter && config.twitter.key && config.twitter.key.length > 0 && config.twitter.secret.length > 0) {
 	passport.use(new passportTwitter({
 		consumerKey: config.twitter.key,
 		consumerSecret: config.twitter.secret,
@@ -124,6 +124,28 @@ passport.deserializeUser(function(uid, done) {
 					global.modules.topics.get(function(data) {
 						res.send(JSON.stringify(data));
 					});
+				break;
+			case 'login' :
+					var data = {},
+						num_strategies = login_strategies.length;
+
+					if (num_strategies == 0) {
+						data = {
+							'login_window:spansize': 'span12',
+							'alternate_logins:display': 'none'
+						};	
+					} else {
+						data = {
+							'login_window:spansize': 'span6',
+							'alternate_logins:display': 'block'
+						}
+						for (var i=0, ii=num_strategies; i<ii; i++) {
+							data[login_strategies[i] + ':display'] = 'block';
+						}
+					}
+					console.log(data);
+					res.send(JSON.stringify(data));
+					
 				break;
 			case 'topic' :
 					global.modules.posts.get(function(data) {
