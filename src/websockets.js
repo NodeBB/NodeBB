@@ -53,10 +53,6 @@ var	SocketIO = require('socket.io').listen(global.server),
 			modules.user.get(uid, data.fields);
 		});
 
-		socket.on('user.create', function(data) {
-			modules.user.create(data.username, data.password, data.email);
-		});
-
 		socket.on('user.exists', function(data) {
 			modules.user.exists(data.username);
 		});

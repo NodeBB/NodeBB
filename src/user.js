@@ -133,15 +133,10 @@ var	config = require('../config.js'),
 		});
 	}
 
-	User.create = function(username, password, email) {
-		if (username == null || password == null) {
-			return; socket.emit('user.create', {'status': 0, 'message': 'Missing fields'});
-		}
-
-
+	User.create = function(username, password, email, callback) {
 		User.exists(username, function(exists) {
 			if (exists) {
-				return;
+				return callback('user-exists', 0);
 			}
 
 			RDB.incr('global:next_user_id', function(uid) {
@@ -158,14 +153,7 @@ var	config = require('../config.js'),
 				RDB.lpush('user:users', username);
 				io.sockets.emit('user.latest', {username: username});
 
-				socket.emit('user.create', {'status': 1});
-
-				socket.emit('event:alert', {
-					title: 'Thank you for registering',
-					message: 'You have successfully registered - welcome to nodebb!',
-					type: 'notify',
-					timeout: 2000
-				});
+				callback(null, uid);
 			});
 		});
 	};
@@ -174,11 +162,9 @@ var	config = require('../config.js'),
 	User.exists = function(username, callback) {
 		User.get_uid_by_username(username, function(exists) {
 			exists = !!exists;
-			socket.emit('user.exists', {exists: exists})
 
-			if (callback) {
-				callback(exists);
-			}
+			if (callback) callback(exists);
+			else socket.emit('user.exists', {exists: exists});
 		});
 	};
 	User.count = function() {

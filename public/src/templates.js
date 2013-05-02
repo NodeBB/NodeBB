@@ -41,7 +41,7 @@ var templates = {};
 	function init() {
 		loadTemplates([
 				'header', 'footer', 'register', 'home', 'topic',
-				'login', 'reset', 'reset_code', 'account_settings',
+				'login', 'reset', 'reset_code',
 				'emails/reset', 'emails/reset_plaintext'
 			]);
 	}
