@@ -1,6 +1,8 @@
 var socket,
 	config,
-	app = {};
+	app = {},
+
+	API_URL = null;
 
 // todo: cleanup,etc
 (function() {
@@ -8,6 +10,8 @@ var socket,
 	$.ajax({
 		url: '/config.json?v=' + new Date().getTime(),
 		success: function(data) {
+			API_URL = data.api_url;
+
 			config = data;
 			socket = io.connect('http://' + config.socket.address + config.socket.port? ':' + config.socket.port : '');
 
@@ -78,14 +82,63 @@ var socket,
 		}
 	}
 
-	var post_window = null;
-	app.open_post_window = function() {
+	var post_window = null,
+		submit_post_btn = null,
+		post_title = null,
+		reply_title = null,
+		post_content = null;
+
+
+	app.open_post_window = function(post_mode, id, title) {
+		submit_post_btn = submit_post_btn || document.getElementById('submit_post_btn');
+		post_title = post_title || document.getElementById('post_title');
+		reply_title = reply_title || document.getElementById('reply_title');
+		post_content = post_content || document.getElementById('post_content');
+
+
 		post_window = post_window || document.getElementById('post_window');
 		jQuery(post_window).slideToggle(250);
-		document.getElementById('post_title').focus();
+
+		if (post_mode == null || post_mode == 'topic') {
+			post_title.style.display = "block";
+			reply_title.style.display = "none";
+			post_title.focus();
+			submit_post_btn.onclick = function() {
+				app.post_topic();
+			}
+		} else {
+			post_title.style.display = "none";
+			reply_title.style.display = "block";
+			reply_title.innerHTML = 'You are replying to "' + title + '"';
+			post_content.focus();
+			submit_post_btn.onclick = function() {
+				app.post_reply(id)
+			} 
+		}
 
 	};
 
+	app.post_reply = function(topic_id) {
+		var	content = document.getElementById('post_content').value;
+
+		if (content.length < 5) {
+			app.alert({
+				title: 'Reply Failure',
+				message: 'You need to write more dude.',
+				type: 'error',
+				timeout: 2000
+			});	
+
+			return;
+		}
+
+		socket.emit('api:posts.reply', {
+			'topic_id' : topic_id,
+			'content' : content 
+		});
+		jQuery(post_window).slideToggle(250);
+
+	};
 	app.post_topic = function() {
 		var title = document.getElementById('post_title').value,
 			content = document.getElementById('post_content').value;
@@ -95,10 +148,7 @@ var socket,
 				title: 'Topic Post Failure',
 				message: 'You need to write more dude.',
 				type: 'error',
-				timeout: 2000,
-				clickfn: function() {
-					ajaxify.go('register');
-				}
+				timeout: 2000
 			});	
 
 			return;

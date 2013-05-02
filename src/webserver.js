@@ -89,43 +89,51 @@ passport.deserializeUser(function(uid, done) {
 	// Useful if you want to use app.put and app.delete (instead of app.post all the time)
 	//	app.use(express.methodOverride());
 
-	app.get('/', function(req, res) {
-		global.modules.topics.generate_forum_body(function(forum_body) {
-			res.send(templates['header'] + forum_body + templates['footer']);	
-		});
-	});
 
+	// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
+	(function() {
+		var routes = ['', 'login', 'register'];
 
-	// need a proper way to combine these two routes together
-	app.get('/topics/:topic_id', function(req, res) {
+		for (var i=0, ii=routes.length; i<ii; i++) {
+			(function(route) {
+				app.get('/' + route, function(req, res) {
+					res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("' + route + '");});</script>' + templates['footer']);
+				});
+			}(routes[i]));
+		}
+	}());
+	
+
+	function generate_topic_body(req, res) {
 		global.modules.topics.generate_topic_body(function(topic_body) {
 			res.send(templates['header'] + topic_body + templates['footer']);
-		}, req.params.topic_id)
-	});
-	app.get('/topics/:topic_id/:slug', function(req, res) {
-		global.modules.topics.generate_topic_body(function(topic_body) {
-			res.send(templates['header'] + topic_body + templates['footer']);
-		}, req.params.topic_id)
-	});
+		}, req.params.topic_id);
+	}
+	app.get('/topic/:topic_id', generate_topic_body);
+	app.get('/topic/:topic_id*', generate_topic_body);
 
 
 
-	app.get('/api/:method', function(req, res) {
+	function api_method(req, res) {
 		switch(req.params.method) {
 			case 'home' :
 					global.modules.topics.get(function(data) {
 						res.send(JSON.stringify(data));
 					});
 				break;
+			case 'topic' :
+					global.modules.posts.get(function(data) {
+						res.send(JSON.stringify(data));
+					}, req.params.id);
+				break;
 			default :
 				res.send('{}');
 			break;
 		}
-	});
-
-	app.get('/login', function(req, res) {
-		res.send(templates['header'] + templates['login'] + templates['footer']);
-	});
+	}
+	app.get('/api/:method', api_method);
+	app.get('/api/:method/:id', api_method);
+	app.get('/api/:method/:id*', api_method);
 
 	app.post('/login', passport.authenticate('local', {
 		successRedirect: '/',
@@ -146,10 +154,6 @@ passport.deserializeUser(function(uid, done) {
 
 	app.get('/reset', function(req, res) {
 		res.send(templates['header'] + templates['reset'] + templates['footer']);
-	});
-
-	app.get('/register', function(req, res) {
-		res.send(templates['header'] + templates['register'] + templates['footer']);
 	});
 
 	app.get('/403', function(req, res) {

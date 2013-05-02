@@ -76,6 +76,10 @@
 		db.lpush(key, item);
 	}
 
+	RedisDB.rpush = function(key, item) {
+		db.rpush(key, item);
+	}
+
 	RedisDB.lrange = function(key, start, end, callback, error_handler) {
 		db.lrange(key, start, end, function(error, data) {
 			return_handler(error, data, callback, error_handler);

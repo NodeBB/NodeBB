@@ -96,7 +96,7 @@ var	RDB = require('./redis.js'),
 
 	Topics.post = function(uid, title, content, category) {
 		if (uid === 0) {
-			global.socket.emit('event:alert', {
+			socket.emit('event:alert', {
 				title: 'Thank you for posting',
 				message: 'Since you are unregistered, your post is awaiting approval. Click here to register now.',
 				type: 'warning',
@@ -145,7 +145,7 @@ var	RDB = require('./redis.js'),
 			RDB.lpush('uid:' + uid + ':topics', tid);
 
 
-			global.socket.emit('event:alert', {
+			socket.emit('event:alert', {
 				title: 'Thank you for posting',
 				message: 'You have successfully posted. Click here to view your post.',
 				type: 'notify',

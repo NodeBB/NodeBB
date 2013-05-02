@@ -94,6 +94,10 @@ var	SocketIO = require('socket.io').listen(global.server),
 			modules.topics.post(uid, data.title, data.content);
 		});
 
+		socket.on('api:posts.reply', function(data) {
+			modules.posts.reply(data.topic_id, uid, data.content);
+		});
+
 		socket.on('api:user.active.get', function() {
 			modules.user.active.get();
 		});
