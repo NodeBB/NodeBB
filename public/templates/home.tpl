@@ -3,7 +3,7 @@
 <!-- BEGIN topics -->
 <a href="topic/{topics.slug}"><li class="topic-row">
 	<h4>{topics.title}</h4>
-	<p>Posted {topics.relativeTime} by user <span class="username">{topics.uid}</span>. {topics.post_count} posts.</p>
+	<p>Posted {topics.relativeTime} by <span class="username">{topics.uid}</span>. {topics.post_count} posts.</p>
 </li></a>
 <!-- END topics -->
 </ul>
@@ -17,13 +17,13 @@ jQuery('document').ready(function() {
 	jQuery('.username').each(function() {
 		var userId = this.innerHTML;
 
-		socket.on('api:user.get', function(userObj) {
-	 		console.log("derp");
-			console.log(userObj);
-			
-		});
+		(function(span){
+			socket.on('api:user.getNameByUid', function(username) {
+				span.innerHTML = username;	
+			});
+		})(this);
 		
-		socket.emit('api:user.get', { fields: [ 'uid' ], 'uid': userId });
+		socket.emit('api:user.getNameByUid', { fields: [ 'username' ], 'uid': userId });
 
 	})
 	

@@ -262,6 +262,10 @@ var	config = require('../config.js'),
 		RDB.get('username:' + username + ':uid', callback);
 	};
 
+	User.get_username_by_uid = function(uid, callback) {
+		RDB.get('uid:' + uid+ ':username', callback);
+	};
+
 	User.get_uid_by_email = function(email, callback) {
 		RDB.get('email:' + email, callback)
 	};
