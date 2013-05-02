@@ -1,3 +1,13 @@
+
+.caret-left {
+	border-left: 0;
+	border-right: 4px solid black;
+	border-top: 4px solid transparent;
+	border-bottom: 4px solid transparent;
+}
+
+
+
 .pointer {
 	cursor: pointer;
 	*cursor: hand;
@@ -7,6 +17,10 @@
 	display: inline-block;
 	*display: inline;
 	zoom: 1;
+}
+
+body {
+	background: #fdfdfd;
 }
 
 .none {
@@ -47,7 +61,7 @@ footer.footer {
 
 #post_window {
 	width: 100%;
-	position: absolute;
+	position: fixed;
 	height: 350px;
 	left: 0px;
 	bottom: 0px;
@@ -124,28 +138,69 @@ footer.footer {
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
-	border: 1px solid #eee;
+	clear: both;
+
+	.profile-image-block {
+		background: white;
+
+	}
+	li {
+		padding-bottom: 15px;
+	}
+
+	.profile-block, .post-block {
+		border: 1px solid #f0f0f0;
+		border-radius: 5px;
+		
+		padding: 10px;
+	}
+
+	img {
+		margin: 5px;
+	}
+
+	.profile-block {
+		background: #fafafa;
+		margin-right: -11px;
+		margin-left: -11px;
+		margin-bottom: -11px;
+		margin-top: 15px;
+		border-radius: 0 0 5px 5px;
+		font-size: 10px;
+		padding: 5px;
+		padding-left: 10px;
+	}
+
+	.post-block {
+
+		.caret {
+			margin-top: -10px;
+			margin-left: -18px;
+			display: block;
+			border-width: 8px 8px 8px 0;
+			border-color: transparent #ddd transparent;
+		}
+		.post-buttons {
+			font-size: 12px;
+			float: right;
+
+			div {
+				display: inline-block;
+				padding-left: 15px;
+				padding-right: 15px; 
+				border-left: 1px solid #f0f0f0;
+				cursor: pointer;
+
+				&:last-child {
+					padding-right: 5px;
+				}
+			}
+		}
+		background: #fff;
+	}
 
 	li:last-child {
 		border-bottom: 0;
-	}
-
-	li.post-row {
-		cursor: pointer;
-		border-bottom: 1px solid #eee;
-		padding: 10px;
-
-		&:nth-child(odd) {
-			background-color:#fdfdfd;
-		}
-
-		&:nth-child(even) {
-			background-color:#fff;
-		}
-
-		&:hover {
-			background-color: #eee;
-		}
 	}
 }
 

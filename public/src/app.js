@@ -107,9 +107,14 @@ var socket,
 				app.post_topic();
 			}
 		} else {
+			if (post_mode == 'reply') {
+				reply_title.innerHTML = 'You are replying to "' + title + '"';
+			} else if (post_mode == 'quote') {
+				reply_title.innerHTML = 'You are quoting "' + title + '"';
+			}
+
 			post_title.style.display = "none";
 			reply_title.style.display = "block";
-			reply_title.innerHTML = 'You are replying to "' + title + '"';
 			post_content.focus();
 			submit_post_btn.onclick = function() {
 				app.post_reply(id)
@@ -117,6 +122,9 @@ var socket,
 		}
 
 	};
+
+
+
 
 	app.post_reply = function(topic_id) {
 		var	content = document.getElementById('post_content').value;

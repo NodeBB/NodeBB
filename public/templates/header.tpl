@@ -5,6 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	<link href="/vendor/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+	<link rel="stylesheet" href="/vendor/fontawesome/css/font-awesome.min.css">
 	<script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
 	<script type="text/javascript" src="/vendor/bootstrap/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
@@ -47,10 +48,10 @@
 
 				<div class="btn-toolbar">
 					<div class="btn-group">
-						<a class="btn btn-link" href="#" tabindex="-1"><i class="icon-bold"></i></a>
-						<a class="btn btn-link" href="#" tabindex="-1"><i class="icon-italic"></i></a>
-						<a class="btn btn-link" href="#" tabindex="-1"><i class="icon-font"></i></a>
-						<a class="btn btn-link" href="#" tabindex="-1"><i class="icon-list"></i></a>
+						<span class="btn btn-link" tabindex="-1"><i class="icon-bold"></i></span>
+						<span class="btn btn-link" tabindex="-1"><i class="icon-italic"></i></span>
+						<span class="btn btn-link" tabindex="-1"><i class="icon-font"></i></span>
+						<span class="btn btn-link" tabindex="-1"><i class="icon-list"></i></span>
 					</div>
 					<div class="btn-group" style="float: right; margin-right: -12px">
 						<a id="submit_post_btn" class="btn" onclick="app.post_topic()"><i class="icon-ok"></i> Submit</a>

@@ -174,6 +174,31 @@ var	config = require('../config.js'),
 		});
 	}
 
+	User.loginViaFacebook = function(fbid, name, email, callback) {
+		User.get_uid_by_fbid(fbid, function(uid) {
+			if (uid !== null) {
+				// Existing User
+				callback(null, {
+					uid: uid
+				});
+			} else {
+				// New User
+				User.create(name, null, email, function(err, uid) {
+					if (err !== null) {
+						callback(err);
+					} else {
+						// Save twitter-specific information to the user
+						RDB.set('uid:' + uid + ':fbid', fbid);
+						RDB.set('fbid:' + fbid + ':uid', uid);
+						callback(null, {
+							uid: uid
+						});
+					}
+				});
+			}
+		});
+	}
+
 	User.logout = function(sessionID, callback) {
 		User.get_uid_by_session(sessionID, function(uid) {
 			if (uid) {
@@ -253,6 +278,12 @@ var	config = require('../config.js'),
 
 	User.get_uid_by_google_id = function(gplusid, callback) {
 		RDB.get('gplusid:' + gplusid + ':uid', function(uid) {
+			callback(uid);
+		});	
+	}
+
+	User.get_uid_by_fbid = function(fbid, callback) {
+		RDB.get('fbid:' + fbid + ':uid', function(uid) {
 			callback(uid);
 		});	
 	}

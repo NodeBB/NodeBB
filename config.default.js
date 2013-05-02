@@ -21,6 +21,10 @@ var config = {
 	"google": {
 		"id": '',
 		"secret": ''
+	},
+	"facebook": {
+		"app_id": '',
+		"secret": ''
 	}
 }
 
