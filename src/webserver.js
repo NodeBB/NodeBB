@@ -10,6 +10,7 @@ var express = require('express'),
 	passportLocal = require('passport-local').Strategy,
 	passportTwitter = require('passport-twitter').Strategy,
 	passportGoogle = require('passport-google-oauth').OAuth2Strategy,
+	passportFacebook = require('passport-facebook').Strategy,
 	login_strategies = [];
 
 passport.use(new passportLocal(function(user, password, next) {
@@ -34,7 +35,7 @@ if (config.twitter && config.twitter.key && config.twitter.key.length > 0 && con
 	login_strategies.push('twitter');
 }
 
-if (config.google.id.length > 0 && config.google.secret.length > 0) {
+if (config.google && config.google.id.length > 0 && config.google.secret.length > 0) {
 	passport.use(new passportGoogle({
 		clientID: config.google.id,
 		clientSecret: config.google.secret,
@@ -44,9 +45,24 @@ if (config.google.id.length > 0 && config.google.secret.length > 0) {
 			if (err) { return done(err); }
 			done(null, user);
 		});
-	}))
+	}));
 
 	login_strategies.push('google');
+}
+
+if (config.facebook && config.facebook.app_id.length > 0 && config.facebook.secret.length > 0) {
+	passport.use(new passportFacebook({
+		clientID: config.facebook.app_id,
+		clientSecret: config.facebook.secret,
+		callbackURL: config.url + 'auth/facebook/callback'
+	}, function(accessToken, refreshToken, profile, done) {
+		global.modules.user.loginViaFacebook(profile.id, profile.displayName, profile.emails[0].value, function(err, user) {
+			if (err) { return done(err); }
+			done(null, user);
+		});
+	}));
+
+	login_strategies.push('facebook');
 }
 
 passport.serializeUser(function(user, done) {
@@ -202,6 +218,15 @@ passport.deserializeUser(function(uid, done) {
 		app.get('/auth/google', passport.authenticate('google', { scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email' }));
 
 		app.get('/auth/google/callback', passport.authenticate('google', {
+			successRedirect: '/',
+			failureRedirect: '/login'
+		}));
+	}
+
+	if (login_strategies.indexOf('facebook') !== -1) {
+		app.get('/auth/facebook', passport.authenticate('facebook', { scope: 'email' }));
+
+		app.get('/auth/facebook/callback', passport.authenticate('facebook', {
 			successRedirect: '/',
 			failureRedirect: '/login'
 		}));
