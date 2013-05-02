@@ -158,6 +158,9 @@ var socket,
 			'title' : title,
 			'content' : content 
 		});
+		
+		jQuery('#post_title').val('');
+		jQuery('#post_content').val('');
 		jQuery(post_window).slideToggle(250);
 	};
 
