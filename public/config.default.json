@@ -2,5 +2,6 @@
 	"socket" : {
 		"address" : "localhost",
 		"port" : "4567"
-	}
+	},
+	"api_url" : "http://localhost:4567/api/"
 }

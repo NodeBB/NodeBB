@@ -1,8 +1,6 @@
 var	RDB = require('./redis.js'),
-	posts = require('./posts.js');
-
-
-
+	posts = require('./posts.js'),
+	utils = require('./utils.js');
 
 (function(Topics) {
 	//data structure
@@ -82,6 +80,7 @@ var	RDB = require('./redis.js'),
 								'title' : title[i],
 								'uid' : uid[i],
 								'timestamp' : timestamp[i],
+								'relativeTime': utils.relativeTime(timestamp[i]),
 								'slug' : slug[i],
 								'post_count' : postcount[i]
 							});
@@ -97,7 +96,7 @@ var	RDB = require('./redis.js'),
 
 	Topics.post = function(uid, title, content, category) {
 		if (uid === 0) {
-			global.socket.emit('event:alert', {
+			socket.emit('event:alert', {
 				title: 'Thank you for posting',
 				message: 'Since you are unregistered, your post is awaiting approval. Click here to register now.',
 				type: 'warning',
@@ -137,7 +136,7 @@ var	RDB = require('./redis.js'),
 			RDB.set('topic:slug:' + slug + ':tid', tid);
 
 			// Posts
-			posts.create(content, function(pid) {
+			posts.create(uid, content, function(pid) {
 				RDB.lpush('tid:' + tid + ':posts', pid);
 			});
 
@@ -146,7 +145,7 @@ var	RDB = require('./redis.js'),
 			RDB.lpush('uid:' + uid + ':topics', tid);
 
 
-			global.socket.emit('event:alert', {
+			socket.emit('event:alert', {
 				title: 'Thank you for posting',
 				message: 'You have successfully posted. Click here to view your post.',
 				type: 'notify',

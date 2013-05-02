@@ -26,8 +26,8 @@ var fs = require('fs');
 	Templates.init = function() {
 		loadTemplates([
 			'header', 'footer', 'register', 'home', 'topic',
-			'login', 'reset', 'reset_code', 'account_settings',
-			'logout', '403',
+			'login', 'reset', 'reset_code', 'logout',
+			'403',
 			'emails/reset', 'emails/reset_plaintext'
 		]);
 	}
@@ -60,7 +60,11 @@ var fs = require('fs');
 		var template = this.html, regex, block;
 
 		return (function parse(data, namespace, template) {
-
+			if (Object.keys(data).length == 0) {
+				regex = makeRegex('[^]*');
+				template = template.replace(regex, '');
+			}
+			
 			for (var d in data) {
 				if (data.hasOwnProperty(d)) {
 					if (data[d] instanceof String || data[d] === null) {
@@ -89,7 +93,7 @@ var fs = require('fs');
 
 						block = parse(data[d], namespace, block);
 						template = setBlock(regex, block, template);
-					} else {								
+					} else {
 						template = replace(namespace + d, data[d], template);
 					}
 				}					

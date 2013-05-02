@@ -17,7 +17,9 @@
       "cookie": "0.0.6",
       "connect-redis": "1.4.5",
       "path": "0.4.9",
-      "crypto": "0.0.3"
+      "crypto": "0.0.3",
+      "passport": "0.1.16",
+      "passport-local": "0.1.6"
     },
   "devDependencies": {},
   "optionalDependencies": {},

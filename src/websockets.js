@@ -1,6 +1,7 @@
 var	SocketIO = require('socket.io').listen(global.server),
 	cookie = require('cookie'),
-	connect = require('connect');
+	connect = require('connect'),
+	config = require('../config.js');
 
 (function(io) {
 	var	modules = null,
@@ -16,7 +17,7 @@ var	SocketIO = require('socket.io').listen(global.server),
 	io.set('authorization', function(handshakeData, accept) {
 		if (handshakeData.headers.cookie) {
 			handshakeData.cookie = cookie.parse(handshakeData.headers.cookie);
-			handshakeData.sessionID = connect.utils.parseSignedCookie(handshakeData.cookie['express.sid'], 'nodebb');
+			handshakeData.sessionID = connect.utils.parseSignedCookie(handshakeData.cookie['express.sid'], config.secret);
 
 			if (handshakeData.cookie['express.sid'] == handshakeData.sessionID) {
 				return accept('Cookie is invalid.', false);
@@ -93,8 +94,16 @@ var	SocketIO = require('socket.io').listen(global.server),
 			modules.topics.post(uid, data.title, data.content);
 		});
 
+		socket.on('api:posts.reply', function(data) {
+			modules.posts.reply(data.topic_id, uid, data.content);
+		});
+
 		socket.on('api:user.active.get', function() {
 			modules.user.active.get();
+		});
+
+		socket.on('api:user.active.get_record', function() {
+			modules.user.active.get_record();
 		});
 	});
 	

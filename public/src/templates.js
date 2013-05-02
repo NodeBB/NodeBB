@@ -1,9 +1,17 @@
 var templates = {};
 
 (function() {
+	var ready_callback;
+
+	templates.ready = function(callback) {
+		//quick implementation because introducing a lib to handle several async callbacks
+		if (callback == null) ready_callback();
+		else ready_callback = callback;
+	}
 
 	function loadTemplates(templatesToLoad) {
 		var timestamp = new Date().getTime();
+		var loaded = templatesToLoad.length;
 
 		for (var t in templatesToLoad) {
 			(function(file) {
@@ -18,6 +26,12 @@ var templates = {};
 					template.prototype.html = String(html);
 					
 					templates[file] = new template;
+
+					loaded--;
+					if (loaded == 0) templates.ready();
+				}).fail(function() {
+					loaded--;
+					if (loaded == 0) templates.ready();
 				});
 			}(templatesToLoad[t]));
 		}
@@ -26,7 +40,7 @@ var templates = {};
 
 	function init() {
 		loadTemplates([
-				'header', 'footer', 'register', 'home',
+				'header', 'footer', 'register', 'home', 'topic',
 				'login', 'reset', 'reset_code', 'account_settings',
 				'emails/reset', 'emails/reset_plaintext'
 			]);
@@ -62,6 +76,10 @@ var templates = {};
 		var template = this.html, regex, block;
 
 		return (function parse(data, namespace, template) {
+			if (data.length == 0) {
+				regex = makeRegex('[^]*');
+				template = template.replace(regex, '');
+			}
 
 			for (var d in data) {
 				if (data.hasOwnProperty(d)) {
@@ -112,10 +130,10 @@ function load_template(callback) {
 		rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : '');
 
 	var url = location.href.replace(rootUrl +'/', '');
-	if (url == '') url = 'home';
-	jQuery.get('api/' + url, function(data) {
-		
-		document.getElementById('content').innerHTML = templates[url].parse(JSON.parse(data));
+	url = (url === '' || url === '/') ? 'home' : url;
+
+	jQuery.get(API_URL + url, function(data) {
+		document.getElementById('content').innerHTML = templates[url.split('/')[0]].parse(JSON.parse(data));
 		if (callback) callback();
 	});
 }
