@@ -58,7 +58,6 @@ passport.deserializeUser(function(uid, done) {
 		if (/^\/api\//.test(req.url)) return next();
 
 		if (req.user && req.user.uid) {
-			console.log('** YOU ARE LOGGED IN AS UID: ' + req.user.uid + ' ***');
 			global.modules.user.session_ping(req.sessionID, req.user.uid);
 		}
 
