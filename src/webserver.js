@@ -143,7 +143,7 @@ passport.deserializeUser(function(uid, done) {
 							data[login_strategies[i] + ':display'] = 'block';
 						}
 					}
-					console.log(data);
+					
 					res.send(JSON.stringify(data));
 					
 				break;
