@@ -76,6 +76,51 @@ var	config = require('../config.js'),
 		});
 	};
 
+	User.loginViaLocal = function(username, password, next) {
+		if (!username || !password) {
+			return next({
+				status: 'error',
+				message: 'invalid-user'
+			});
+		} else {
+			RDB.get('username:' + username + ':uid', function(uid) {
+				if (uid == null) {
+					return next({
+						status: 'error',
+						message: 'invalid-user'
+					});
+				}
+
+				RDB.get('uid:' + uid + ':password', function(user_password) {
+					if (password == user_password) {
+						// Start, replace, or extend a session
+						// RDB.get('sess:' + user.sessionID, function(session) {
+						// 	if (session !== user.sessionID) {
+						// 		RDB.set('sess:' + user.sessionID + ':uid', uid, 60*60*24*14);	// Login valid for two weeks
+						// 		RDB.set('uid:' + uid + ':session', user.sessionID, 60*60*24*14);
+						// 	} else {
+						// 		RDB.expire('sess:' + user.sessionID + ':uid', 60*60*24*14);	// Defer expiration to two weeks from now
+						// 		RDB.expire('uid:' + uid + ':session', 60*60*24*14);
+						// 	}
+						// });
+
+						next({
+							status: "ok",
+							user: {
+								uid: uid
+							}
+						});
+					} else {
+						next({
+							status: 'error',
+							message: 'invalid-password'
+						});
+					}
+				});
+			});
+		}
+	}
+
 	User.logout = function(sessionID, callback) {
 		User.get_uid_by_session(sessionID, function(uid) {
 			if (uid) {
@@ -156,6 +201,14 @@ var	config = require('../config.js'),
 	User.get_uid_by_session = function(session, callback) {
 		RDB.get('sess:' + session + ':uid', callback);
 	};
+
+	User.session_ping = function(sessionID, uid) {
+		// Start, replace, or extend a session
+		RDB.get('sess:' + sessionID, function(session) {
+			RDB.set('sess:' + sessionID + ':uid', uid, 60*60*24*14);	// Login valid for two weeks
+			RDB.set('uid:' + uid + ':session', sessionID, 60*60*24*14);
+		});
+	}
 
 	User.reset = {
 		validate: function(code, callback) {

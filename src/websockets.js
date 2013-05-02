@@ -1,6 +1,7 @@
 var	SocketIO = require('socket.io').listen(global.server),
 	cookie = require('cookie'),
-	connect = require('connect');
+	connect = require('connect'),
+	config = require('../config.js');
 
 (function(io) {
 	var	modules = null,
@@ -16,7 +17,7 @@ var	SocketIO = require('socket.io').listen(global.server),
 	io.set('authorization', function(handshakeData, accept) {
 		if (handshakeData.headers.cookie) {
 			handshakeData.cookie = cookie.parse(handshakeData.headers.cookie);
-			handshakeData.sessionID = connect.utils.parseSignedCookie(handshakeData.cookie['express.sid'], 'nodebb');
+			handshakeData.sessionID = connect.utils.parseSignedCookie(handshakeData.cookie['express.sid'], config.secret);
 
 			if (handshakeData.cookie['express.sid'] == handshakeData.sessionID) {
 				return accept('Cookie is invalid.', false);
