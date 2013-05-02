@@ -167,12 +167,12 @@
 				<div class="nav-collapse collapse">
 					<ul class="nav">
 						<li class="active"><a href="/">Forum</a></li>
-						<li><a href="/register">Register</a></li>
-						<li><a href="/login">Login</a></li>
+						<!-- <li><a href="/register">Register</a></li>
+						<li><a href="/login">Login</a></li> -->
 					</ul>
-					<ul class="nav pull-right">
+					<ul class="nav pull-right" id="right-menu">
 						<li><p class="navbar-text" id="user_label"></p></li>
-						<li><a href="/logout">Log out</a></li>
+						<!-- <li><a href="/logout">Log out</a></li> -->
 					</ul>
 				</div>
 			</div>

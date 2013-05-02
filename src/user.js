@@ -10,7 +10,9 @@ var	config = require('../config.js'),
 	User.get = function(uid, fields) {
 		if (uid > 0) {
 			var	keys = [],
-				returnData = {},
+				returnData = {
+					uid: uid
+				},
 				removeEmail = false;
 
 			if (!(fields instanceof Array)) fields = ['username', 'email'];

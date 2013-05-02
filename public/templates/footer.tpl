@@ -17,7 +17,8 @@
 			latest_user = document.getElementById('latest_user'),
 			active_users = document.getElementById('active_users'),
 			user_label = document.getElementById('user_label'),
-			active_record = document.getElementById('active_record');
+			active_record = document.getElementById('active_record'),
+			right_menu = document.getElementById('right-menu');
 
 		socket.emit('user.count', {});
 		socket.on('user.count', function(data) {
@@ -44,14 +45,30 @@
 		});
 		socket.emit('api:user.get', { fields: ['username', 'picture'] });
 		socket.on('api:user.get', function(data) {
-			var	gravatar = document.createElement('img'),
-				name = document.createElement('span');
+			if (data.uid > 0) {
+				var	gravatar = document.createElement('img'),
+					name = document.createElement('span')
+					logoutEl = document.createElement('li');
 
-			name.innerHTML = data['username'];
-			gravatar.src = data['picture'];
+				logoutEl.innerHTML = '<a href="/logout">Log out</a>';
 
-			user_label.appendChild(gravatar);
-			user_label.appendChild(name);
+				name.innerHTML = data['username'];
+				gravatar.src = data['picture'];
+
+				user_label.innerHTML = '';
+				user_label.appendChild(gravatar);
+				user_label.appendChild(name);
+				right_menu.appendChild(logoutEl);
+			} else {
+				var registerEl = document.createElement('li'),
+					loginEl = document.createElement('li');
+
+				registerEl.innerHTML = '<a href="/register">Register</a>';
+				loginEl.innerHTML = '<a href="/login">Login</a>';
+
+				right_menu.appendChild(registerEl);
+				right_menu.appendChild(loginEl);
+			}
 		});
 	}());
 	</script>
