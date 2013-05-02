@@ -34,7 +34,7 @@ if (config.twitter && config.twitter.key && config.twitter.key.length > 0 && con
 	login_strategies.push('twitter');
 }
 
-if (config.google.id.length > 0 && config.google.secret.length > 0) {
+if (config.google && config.google.id && config.google.id.length > 0 && config.google.secret.length > 0) {
 	passport.use(new passportGoogle({
 		clientID: config.google.id,
 		clientSecret: config.google.secret,
