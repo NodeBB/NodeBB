@@ -8,7 +8,8 @@ var express = require('express'),
 	redisServer = redis.createClient(config.redis.port, config.redis.host, config.redis.options),
 	passport = require('passport'),
 	passportLocal = require('passport-local').Strategy,
-	passportTwitter = require('passport-twitter').Strategy;
+	passportTwitter = require('passport-twitter').Strategy,
+	login_strategies = [];
 
 passport.use(new passportLocal(function(user, password, next) {
 	global.modules.user.loginViaLocal(user, password, function(login) {
@@ -17,16 +18,20 @@ passport.use(new passportLocal(function(user, password, next) {
 	});
 }));
 
-passport.use(new passportTwitter({
-	consumerKey: config.twitter.key,
-	consumerSecret: config.twitter.secret,
-	callbackURL: config.url + "auth/twitter/callback"
-}, function(token, tokenSecret, profile, done) {
-	global.modules.user.loginViaTwitter(profile.id, profile.username, function(err, user) {
-		if (err) { return done(err); }
-		done(null, user);
-	});
-}));
+if (config.twitter.key.length > 0 && config.twitter.secret.length > 0) {
+	passport.use(new passportTwitter({
+		consumerKey: config.twitter.key,
+		consumerSecret: config.twitter.secret,
+		callbackURL: config.url + "auth/twitter/callback"
+	}, function(token, tokenSecret, profile, done) {
+		global.modules.user.loginViaTwitter(profile.id, profile.username, function(err, user) {
+			if (err) { return done(err); }
+			done(null, user);
+		});
+	}));
+
+	login_strategies.push('twitter');
+}
 
 passport.serializeUser(function(user, done) {
 	done(null, user.uid);
@@ -147,12 +152,14 @@ passport.deserializeUser(function(uid, done) {
 		});
 	});
 
-	app.get('/auth/twitter', passport.authenticate('twitter'));
+	if (login_strategies.indexOf('twitter') !== -1) {
+		app.get('/auth/twitter', passport.authenticate('twitter'));
 
-	app.get('/auth/twitter/callback', passport.authenticate('twitter', {
-		successRedirect: '/',
-		failureRedirect: '/login'
-	}));
+		app.get('/auth/twitter/callback', passport.authenticate('twitter', {
+			successRedirect: '/',
+			failureRedirect: '/login'
+		}));
+	}
 
 	app.get('/reset/:code', function(req, res) {
 		res.send(templates['header'] + templates['reset_code'].parse({ reset_code: req.params.code }) + templates['footer']);

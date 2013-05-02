@@ -9,9 +9,8 @@
 		<form method="post" action="/login">
 			<label>Username</label><input type="text" placeholder="Enter Username" name="username" id="username" /><br />
 			<label>Password</label><input type="password" placeholder="Enter Password" name="password" id="password" /><br />
-			<button class="btn btn-primary" id="login" type="submit">Login</button> &nbsp;
+			<button class="btn btn-primary" id="login" type="submit">Login</button> &nbsp; <a href="/reset">Forgot Password?</a>
 		</form>
-		<a href="/reset">Forgot Password?</a>
 	</div>
 	<div class="well span6">
 		<h4>Alternative Logins</h4>
