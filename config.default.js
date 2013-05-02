@@ -13,6 +13,10 @@ var config = {
 		options: {
 			
 		}
+	},
+	"twitter": {
+		"key": '',
+		"secret": ''
 	}
 }
 

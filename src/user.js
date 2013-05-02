@@ -32,6 +32,7 @@ var	config = require('../config.js'),
 				
 				if (returnData.picture !== undefined) {
 					var	md5sum = crypto.createHash('md5');
+					if (!returnData.email) returnData.email = '';
 					md5sum.update(returnData.email.toLowerCase());
 					returnData.picture = 'http://www.gravatar.com/avatar/' + md5sum.digest('hex') + '?s=24';
 					if (removeEmail) delete returnData.email;
@@ -123,6 +124,31 @@ var	config = require('../config.js'),
 		}
 	}
 
+	User.loginViaTwitter = function(twid, handle, callback) {
+		User.get_uid_by_twitter_id(twid, function(uid) {
+			if (uid !== null) {
+				// Existing User
+				callback(null, {
+					uid: uid
+				});
+			} else {
+				// New User
+				User.create(handle, null, null, function(err, uid) {
+					if (err !== null) {
+						callback(err);
+					} else {
+						// Save twitter-specific information to the user
+						RDB.set('uid:' + uid + ':twid', twid);
+						RDB.set('twid:' + twid + ':uid', uid);
+						callback(null, {
+							uid: uid
+						});
+					}
+				});
+			}
+		})
+	}
+
 	User.logout = function(sessionID, callback) {
 		User.get_uid_by_session(sessionID, function(uid) {
 			if (uid) {
@@ -142,9 +168,11 @@ var	config = require('../config.js'),
 			RDB.incr('global:next_user_id', function(uid) {
 				RDB.set('username:' + username + ':uid', uid);
 				RDB.set('uid:' + uid + ':username', username);
-				RDB.set('uid:' + uid + ':password', password);
-				RDB.set('uid:' + uid + ':email', email);
-				RDB.set('email:' + email, uid);
+				if (password) RDB.set('uid:' + uid + ':password', password);
+				if (email) {
+					RDB.set('uid:' + uid + ':email', email);
+					RDB.set('email:' + email, uid);
+				}
 				
 				RDB.incr('user:count', function(count) {
 					io.sockets.emit('user.count', {count: count});
@@ -189,6 +217,12 @@ var	config = require('../config.js'),
 	User.get_uid_by_session = function(session, callback) {
 		RDB.get('sess:' + session + ':uid', callback);
 	};
+
+	User.get_uid_by_twitter_id = function(twid, callback) {
+		RDB.get('twid:' + twid + ':uid', function(uid) {
+			callback(uid);
+		});
+	}
 
 	User.session_ping = function(sessionID, uid) {
 		// Start, replace, or extend a session
