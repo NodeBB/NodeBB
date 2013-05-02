@@ -70,7 +70,7 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 		// BEGIN: API calls (todo: organize)
 		//   julian: :^)
 		socket.on('api:user.get', function(data) {
-			modules.user.get(socket, uid, data.fields);
+			modules.user.get(socket, data.uid || uid, data.fields);
 		});
 
 		socket.on('user.exists', function(data) {
