@@ -7,7 +7,7 @@ var	config = require('../config.js'),
 
 (function(User) {
 
-	User.get = function(uid, fields) {
+	User.get = function(socket, uid, fields) {
 		if (uid > 0) {
 			var	keys = [],
 				returnData = {
@@ -48,7 +48,7 @@ var	config = require('../config.js'),
 		}
 	}
 
-	User.login = function(user) {
+	User.login = function(socket, user) {
 		if (user.username == null || user.password == null) {
 			return socket.emit('user.login', {'status': 0, 'message': 'Missing fields'});
 		}
@@ -160,7 +160,7 @@ var	config = require('../config.js'),
 	}
 
 	User.create = function(username, password, email, callback) {
-		User.exists(username, function(exists) {
+		User.exists(null, username, function(exists) {
 			if (exists) {
 				return callback('user-exists', 0);
 			}
@@ -187,7 +187,7 @@ var	config = require('../config.js'),
 	};
 
 
-	User.exists = function(username, callback) {
+	User.exists = function(socket, username, callback) {
 		User.get_uid_by_username(username, function(exists) {
 			exists = !!exists;
 
@@ -195,12 +195,14 @@ var	config = require('../config.js'),
 			else socket.emit('user.exists', {exists: exists});
 		});
 	};
-	User.count = function() {
+	
+	User.count = function(socket) {
 		RDB.get('user:count', function(count) {
 			socket.emit('user.count', {count: (count === null) ? 0 : count});
 		});
 	};
-	User.latest = function() {
+	
+	User.latest = function(socket) {
 		RDB.lrange('user:users', 0, 0, function(username) {
 			socket.emit('user.latest', {username: username});
 		});	
@@ -233,7 +235,7 @@ var	config = require('../config.js'),
 	}
 
 	User.reset = {
-		validate: function(code, callback) {
+		validate: function(socket, code, callback) {
 			if (typeof callback !== 'function') callback = undefined;
 
 			RDB.get('reset:' + code + ':uid', function(uid) {
@@ -256,7 +258,7 @@ var	config = require('../config.js'),
 				}
 			});
 		},
-		send: function(email) {
+		send: function(socket, email) {
 			User.get_uid_by_email(email, function(uid) {
 				if (uid !== null) {
 					// Generate a new reset code
@@ -305,7 +307,7 @@ var	config = require('../config.js'),
 				}
 			});
 		},
-		commit: function(code, password) {
+		commit: function(socket, code, password) {
 			this.validate(code, function(validated) {
 				if (validated) {
 					RDB.get('reset:' + code + ':uid', function(uid) {
@@ -321,7 +323,7 @@ var	config = require('../config.js'),
 	}
 
 	User.email = {
-		exists: function(email, callback) {
+		exists: function(socket, email, callback) {
 			User.get_uid_by_email(email, function(exists) {
 				exists = !!exists;
 				if (typeof callback !== 'function') socket.emit('user.email.exists', { exists: exists });
@@ -331,7 +333,7 @@ var	config = require('../config.js'),
 	}
 
 	User.active = {
-		get_record : function() {
+		get_record : function(socket) {
 			RDB.mget(['global:active_user_record', 'global:active_user_record_date'], function(data) {
 				socket.emit('api:user.active.get_record', {record: data[0], timestamp: data[1]});
 			});
