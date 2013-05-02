@@ -17,7 +17,7 @@
 		<ul class="alt-logins">
 			<li data-url="/auth/twitter" class="twitter {twitter:display}"></li>
 			<li data-url="/auth/google" class="google {google:display}"></li>
-			<li data-url="/auth/facebook" class="facebook {facebook:display}">Login via Facebook</li>
+			<li data-url="/auth/facebook" class="facebook {facebook:display}"></li>
 		</ul>
 	</div>
 </div>
