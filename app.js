@@ -4,7 +4,8 @@ var modules = {
         posts: require('./src/posts.js'),
     	templates: require('./src/templates.js'),
     	webserver: require('./src/webserver.js'),
-    	websockets: require('./src/websockets.js')
+    	websockets: require('./src/websockets.js'),
+        fs: require('fs')
     }
 
     DEVELOPMENT = true;
@@ -12,9 +13,6 @@ var modules = {
 
 global.configuration = {};
 global.modules = modules;
-
-// change this to = null when auth module is complete
-// global.uid = 1;
 
 
 process.on('uncaughtException', function(err) {
@@ -28,7 +26,6 @@ process.on('uncaughtException', function(err) {
     config['ROOT_DIRECTORY'] = __dirname;
 
 	modules.templates.init();
-	// modules.webserver.init();
 	modules.websockets.init();
 	
 	

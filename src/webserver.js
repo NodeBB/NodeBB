@@ -19,7 +19,7 @@ passport.use(new passportLocal(function(user, password, next) {
 	});
 }));
 
-if (config.twitter.key.length > 0 && config.twitter.secret.length > 0) {
+if (config.twitter && config.twitter.key && config.twitter.key.length > 0 && config.twitter.secret.length > 0) {
 	passport.use(new passportTwitter({
 		consumerKey: config.twitter.key,
 		consumerSecret: config.twitter.secret,
@@ -40,8 +40,10 @@ if (config.google.id.length > 0 && config.google.secret.length > 0) {
 		clientSecret: config.google.secret,
 		callbackURL: config.url + 'auth/google/callback'
 	}, function(accessToken, refreshToken, profile, done) {
-		console.log(accessToken, refreshToken, profile);
-		done('hardcode fail');
+		global.modules.user.loginViaGoogle(profile.id, profile.displayName, profile.emails[0].value, function(err, user) {
+			if (err) { return done(err); }
+			done(null, user);
+		});
 	}))
 
 	login_strategies.push('google');
@@ -139,6 +141,27 @@ passport.deserializeUser(function(uid, done) {
 						res.send(JSON.stringify(data));
 					});
 				break;
+			case 'login' :
+					var data = {},
+						num_strategies = login_strategies.length;
+
+					if (num_strategies == 0) {
+						data = {
+							'login_window:spansize': 'span12',
+							'alternate_logins:display': 'none'
+						};	
+					} else {
+						data = {
+							'login_window:spansize': 'span6',
+							'alternate_logins:display': 'block'
+						}
+						for (var i=0, ii=num_strategies; i<ii; i++) {
+							data[login_strategies[i] + ':display'] = 'active';
+						}
+					}
+					res.send(JSON.stringify(data));
+					
+				break;
 			case 'topic' :
 					global.modules.posts.get(function(data) {
 						res.send(JSON.stringify(data));
@@ -176,7 +199,7 @@ passport.deserializeUser(function(uid, done) {
 	}
 
 	if (login_strategies.indexOf('google') !== -1) {
-		app.get('/auth/google', passport.authenticate('google', { scope: {} }));
+		app.get('/auth/google', passport.authenticate('google', { scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email' }));
 
 		app.get('/auth/google/callback', passport.authenticate('google', {
 			successRedirect: '/',

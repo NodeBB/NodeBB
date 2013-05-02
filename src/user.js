@@ -146,7 +146,32 @@ var	config = require('../config.js'),
 					}
 				});
 			}
-		})
+		});
+	}
+
+	User.loginViaGoogle = function(gplusid, handle, email, callback) {
+		User.get_uid_by_google_id(gplusid, function(uid) {
+			if (uid !== null) {
+				// Existing User
+				callback(null, {
+					uid: uid
+				});
+			} else {
+				// New User
+				User.create(handle, null, email, function(err, uid) {
+					if (err !== null) {
+						callback(err);
+					} else {
+						// Save twitter-specific information to the user
+						RDB.set('uid:' + uid + ':gplusid', gplusid);
+						RDB.set('gplusid:' + gplusid + ':uid', uid);
+						callback(null, {
+							uid: uid
+						});
+					}
+				});
+			}
+		});
 	}
 
 	User.logout = function(sessionID, callback) {
@@ -222,6 +247,12 @@ var	config = require('../config.js'),
 		RDB.get('twid:' + twid + ':uid', function(uid) {
 			callback(uid);
 		});
+	}
+
+	User.get_uid_by_google_id = function(gplusid, callback) {
+		RDB.get('gplusid:' + gplusid + ':uid', function(uid) {
+			callback(uid);
+		});	
 	}
 
 	User.session_ping = function(sessionID, uid) {

@@ -9,6 +9,14 @@
 	zoom: 1;
 }
 
+.none {
+	display: none;
+}
+
+.block {
+	display: block;
+}
+
 @media (min-width: 979px) {
 	body {
 		padding-top: 60px;
@@ -166,13 +174,13 @@ footer.footer {
 
 	li {
 		vertical-align: top;
-		.inline-block;
+		background: transparent;
+		.none;
 		.pointer;
 
 		&.google {
 			width: 202px;
 			height: 32px;
-			background: transparent;
 			background-image: url('../images/google_login.png');
 
 			&:hover {
@@ -182,6 +190,16 @@ footer.footer {
 			&:active {
 				background-position-x: -535px;
 			}
+		}
+
+		&.twitter {
+			width: 158px;
+			height: 28px;
+			background-image: url('../images/twitter_login.png');
+		}
+
+		&.active {
+			.inline-block;
 		}
 	}
 }

@@ -1,4 +1,4 @@
-var fs = require('fs');
+
 
 (function(Templates) {
 
@@ -7,7 +7,7 @@ var fs = require('fs');
 	function loadTemplates(templatesToLoad) {
 		for (var t in templatesToLoad) {
 			(function(file) {
-				fs.readFile(global.configuration.ROOT_DIRECTORY + '/public/templates/' + file + '.tpl', function(err, html) {
+				modules.fs.readFile(global.configuration.ROOT_DIRECTORY + '/public/templates/' + file + '.tpl', function(err, html) {
 					var template = function() {
 						this.toString = function() {
 							return this.html;
