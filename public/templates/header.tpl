@@ -109,6 +109,8 @@
 	#user_label img {
 		border: 1px solid #999;
 		margin-right: 8px;
+		margin-top: -2px;
+		float: left;
 	}
 
 	#user_label span {
@@ -135,7 +137,7 @@
 						<li><a href="/login">Login</a></li>
 					</ul>
 					<ul class="nav pull-right">
-						<li><p class="navbar-text" id="user_label"></p></li>
+						<li><a href="#" id="user_label"></a></li>
 						<li><a href="/logout">Log out</a></li>
 					</ul>
 				</div>

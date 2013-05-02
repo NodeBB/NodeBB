@@ -65,6 +65,10 @@ var express = require('express'),
 		});
 	});
 
+	app.get('/403', function(req, res) {
+		res.send(templates['header'] + templates['403'] + templates['footer']);
+	});
+
 
 	// need a proper way to combine these two routes together
 	app.get('/topics/:topic_id', function(req, res) {
@@ -126,8 +130,15 @@ var express = require('express'),
 		res.send(templates['header'] + templates['account_settings'] + templates['footer']);
 	});
 
-	app.get('/403', function(req, res) {
-		res.send(templates['header'] + templates['403'] + templates['footer']);
+	app.get('/users', function(req, res) {
+		// Render user list
+		res.send('User list');
+	});
+
+	app.get('/users/:username', function(req, res) {
+		global.modules.user.get_uid_by_username(req.params.username, function(uid) {
+			res.send(templates['header'] + templates['user_profile'].parse({ uid: uid }) + templates['footer']);
+		});
 	});
 }(WebServer));
 
