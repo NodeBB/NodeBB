@@ -7,3 +7,4 @@ node_modules/
 sftp-config.json
 public/config.json
 config.js
+public/css/style.css
