@@ -3,5 +3,5 @@
 		"address" : "localhost",
 		"port" : "4567"
 	},
-	"api_url" : "localhost"
+	"api_url" : "http://localhost:4567/api/"
 }
