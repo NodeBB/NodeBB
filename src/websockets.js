@@ -1,13 +1,11 @@
-var	SocketIO = require('socket.io').listen(global.server),
+var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 	cookie = require('cookie'),
 	connect = require('connect'),
 	config = require('../config.js');
 
 (function(io) {
 	var	modules = null,
-		sessionID,
-		uid;
-
+			users = {};
 	global.io = io;
 	module.exports.init = function() {
 		modules = global.modules;
@@ -28,16 +26,25 @@ var	SocketIO = require('socket.io').listen(global.server),
 		}
 
 		// Otherwise, continue unimpeded.
-		sessionID = handshakeData.sessionID;
-		global.modules.user.get_uid_by_session(sessionID, function(session_uid) {
-			if (session_uid) uid = session_uid;
-			else uid = 0;
+		var sessionID = handshakeData.sessionID;
+		
+		global.modules.user.get_uid_by_session(sessionID, function(userId) {
+			if (userId)
+			{
+				users[sessionID] = userId;
+			}			
+			else 
+				users[sessionID] = 0;
 
 			accept(null, true);
 		});
 	});
 
 	io.sockets.on('connection', function(socket) {
+		
+		var hs = socket.handshake;
+		
+		var uid = users[hs.sessionID];
 
 		if (DEVELOPMENT === true) {
 			// refreshing templates
@@ -49,9 +56,16 @@ var	SocketIO = require('socket.io').listen(global.server),
     		console.log("error message "+err);
     		socket.emit('event:consolelog',{type:'uncaughtException', stack:err.stack, error:err.toString()});
 		});
-		
 
 		socket.emit('event:connect', {status: 1});
+		
+		socket.on('disconnect', function() {
+      		console.log('Got disconnect! SESSION ID : '+hs.sessionID+' USER ID : '+uid);
+
+      		delete users[hs.sessionID];
+      		console.log(users);
+   		});
+
 		
 		// BEGIN: API calls (todo: organize)
 		//   julian: :^)
