@@ -3,7 +3,7 @@
 <!-- BEGIN topics -->
 <a href="topic/{topics.slug}"><li class="topic-row">
 	<h4>{topics.title}</h4>
-	<p>Posted {topics.relativeTime} by user <span id="username"></span>. {topics.post_count} posts.</p>
+	<p>Posted {topics.relativeTime} by user <span class="username">{topics.uid}</span>. {topics.post_count} posts.</p>
 </li></a>
 <!-- END topics -->
 </ul>
@@ -14,15 +14,21 @@ new_post.onclick = function() {
 }
 
 jQuery('document').ready(function() {
-	var userId = {topics.uid};
-	
-	socket.on('api:user.get', function(userObj) {
- 		console.log("derp");
-		console.log(userObj);
+	jQuery('.username').each(function() {
+		var userId = this.innerHTML;
+
+		socket.on('api:user.get', function(userObj) {
+	 		console.log("derp");
+			console.log(userObj);
+			
+		});
 		
-	});
+		socket.emit('api:user.get', { fields: [ 'uid' ], 'uid': userId });
+
+	})
 	
-	socket.emit('api:user.get', { fields: [ 'uid' ], 'uid': userId });
+	
+	
 	
 	
 });
