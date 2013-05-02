@@ -165,7 +165,23 @@ footer.footer {
 	padding: 0;
 
 	li {
+		vertical-align: top;
 		.inline-block;
 		.pointer;
+
+		&.google {
+			width: 202px;
+			height: 32px;
+			background: transparent;
+			background-image: url('../images/google_login.png');
+
+			&:hover {
+				background-position-x: -265px;
+			}
+
+			&:active {
+				background-position-x: -535px;
+			}
+		}
 	}
 }

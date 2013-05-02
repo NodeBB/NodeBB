@@ -17,6 +17,10 @@ var config = {
 	"twitter": {
 		"key": '',
 		"secret": ''
+	},
+	"google": {
+		"id": '',
+		"secret": ''
 	}
 }
 

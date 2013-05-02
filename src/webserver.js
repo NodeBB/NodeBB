@@ -9,6 +9,7 @@ var express = require('express'),
 	passport = require('passport'),
 	passportLocal = require('passport-local').Strategy,
 	passportTwitter = require('passport-twitter').Strategy,
+	passportGoogle = require('passport-google-oauth').OAuth2Strategy,
 	login_strategies = [];
 
 passport.use(new passportLocal(function(user, password, next) {
@@ -22,7 +23,7 @@ if (config.twitter.key.length > 0 && config.twitter.secret.length > 0) {
 	passport.use(new passportTwitter({
 		consumerKey: config.twitter.key,
 		consumerSecret: config.twitter.secret,
-		callbackURL: config.url + "auth/twitter/callback"
+		callbackURL: config.url + 'auth/twitter/callback'
 	}, function(token, tokenSecret, profile, done) {
 		global.modules.user.loginViaTwitter(profile.id, profile.username, function(err, user) {
 			if (err) { return done(err); }
@@ -31,6 +32,19 @@ if (config.twitter.key.length > 0 && config.twitter.secret.length > 0) {
 	}));
 
 	login_strategies.push('twitter');
+}
+
+if (config.google.id.length > 0 && config.google.secret.length > 0) {
+	passport.use(new passportGoogle({
+		clientID: config.google.id,
+		clientSecret: config.google.secret,
+		callbackURL: config.url + 'auth/google/callback'
+	}, function(accessToken, refreshToken, profile, done) {
+		console.log(accessToken, refreshToken, profile);
+		done('hardcode fail');
+	}))
+
+	login_strategies.push('google');
 }
 
 passport.serializeUser(function(user, done) {
@@ -156,6 +170,15 @@ passport.deserializeUser(function(uid, done) {
 		app.get('/auth/twitter', passport.authenticate('twitter'));
 
 		app.get('/auth/twitter/callback', passport.authenticate('twitter', {
+			successRedirect: '/',
+			failureRedirect: '/login'
+		}));
+	}
+
+	if (login_strategies.indexOf('google') !== -1) {
+		app.get('/auth/google', passport.authenticate('google', { scope: {} }));
+
+		app.get('/auth/google/callback', passport.authenticate('google', {
 			successRedirect: '/',
 			failureRedirect: '/login'
 		}));

@@ -16,6 +16,7 @@
 		<h4>Alternative Logins</h4>
 		<ul class="alt-logins">
 			<li><a href="/auth/twitter"><img src="/images/twitter_login.png" /></a></li>
+			<li class="google"></li>
 		</ul>
 	</div>
 </div>
