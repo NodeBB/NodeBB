@@ -21,6 +21,7 @@
       "passport": "0.1.16",
       "passport-local": "0.1.6",
       "passport-twitter": "0.1.4",
+      "passport-google-oauth": "0.1.5",
       "less-middleware": "0.1.11"
     },
   "devDependencies": {},

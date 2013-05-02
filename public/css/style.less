@@ -22,6 +22,15 @@
 body {
 	background: #fdfdfd;
 }
+
+.none {
+	display: none;
+}
+
+.block {
+	display: block;
+}
+
 @media (min-width: 979px) {
 	body {
 		padding-top: 60px;
@@ -200,6 +209,7 @@ footer.footer {
 		border: 1px solid #999;
 		margin-right: 8px;
 		margin-top: -2px;
+		float: left;
 	}
 
 	span {
@@ -219,14 +229,33 @@ footer.footer {
 	padding: 0;
 
 	li {
-		.inline-block;
+		vertical-align: top;
+		background: transparent;
+		.none;
 		.pointer;
-	}
-}
 
-.none {
-	display: none !important;
-}
-.block {
-	display: block !important;
+		&.google {
+			width: 202px;
+			height: 32px;
+			background-image: url('../images/google_login.png');
+
+			&:hover {
+				background-position-x: -265px;
+			}
+
+			&:active {
+				background-position-x: -535px;
+			}
+		}
+
+		&.twitter {
+			width: 158px;
+			height: 28px;
+			background-image: url('../images/twitter_login.png');
+		}
+
+		&.active {
+			.inline-block;
+		}
+	}
 }

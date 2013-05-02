@@ -60,7 +60,7 @@ var	RDB = require('./redis.js'),
 	}
 
 
-	Posts.reply = function(tid, uid, content) {
+	Posts.reply = function(socket, tid, uid, content) {
 		Posts.create(uid, content, function(pid) {
 			RDB.rpush('tid:' + tid + ':posts', pid);
 

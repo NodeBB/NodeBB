@@ -15,13 +15,6 @@ global.configuration = {};
 global.modules = modules;
 
 
-process.on('uncaughtException', function(err) {
-    // handle the error safely
-    console.log("error message "+err);
-    global.socket.emit('event:consolelog',{type:'uncaughtException',stack:err.stack,error:err.toString()});
-});
-
-
 (function(config) {
     config['ROOT_DIRECTORY'] = __dirname;
 

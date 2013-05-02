@@ -15,7 +15,18 @@
 	<div class="well span6 {alternate_logins:display}">
 		<h4>Alternative Logins</h4>
 		<ul class="alt-logins">
-			<li class="none {twitter:display}"><a href="/auth/twitter"><img src="/images/twitter_login.png" /></a></li>
+			<li data-url="/auth/twitter" class="twitter {twitter:display}"></li>
+			<li data-url="/auth/google" class="google {google:display}"></li>
 		</ul>
 	</div>
 </div>
+
+<script>
+	var altLoginEl = document.querySelector('.alt-logins');
+
+	altLoginEl.addEventListener('click', function(e) {
+		if (e.target.nodeName === 'LI') {
+			document.location.href = e.target.getAttribute('data-url');
+		}
+	});
+</script>
