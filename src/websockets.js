@@ -38,60 +38,66 @@ var	SocketIO = require('socket.io').listen(global.server),
 	});
 
 	io.sockets.on('connection', function(socket) {
-		global.socket = socket;
 
 		if (DEVELOPMENT === true) {
 			// refreshing templates
 			modules.templates.init();
 		}
+		
+		process.on('uncaughtException', function(err) {
+    		// handle the error safely
+    		console.log("error message "+err);
+    		socket.emit('event:consolelog',{type:'uncaughtException', stack:err.stack, error:err.toString()});
+		});
+		
 
 		socket.emit('event:connect', {status: 1});
 		
 		// BEGIN: API calls (todo: organize)
 		//   julian: :^)
 		socket.on('api:user.get', function(data) {
-			modules.user.get(uid, data.fields);
+			modules.user.get(socket, uid, data.fields);
 		});
 
 		socket.on('user.exists', function(data) {
-			modules.user.exists(data.username);
+			modules.user.exists(socket, data.username);
 		});
 
 		socket.on('user.count', function(data) {
-			modules.user.count(data);
+			modules.user.count(socket, data);
 		});
 
 		socket.on('user.latest', function(data) {
-			modules.user.latest(data);
+			modules.user.latest(socket, data);
 		});
 
 		socket.on('user.login', function(data) {
 			data.sessionID = sessionID;
-			modules.user.login(data);
+			modules.user.login(socket, data);
 		});
 
 		socket.on('user.email.exists', function(data) {
-			modules.user.email.exists(data.email);
+			modules.user.email.exists(socket, data.email);
 		});
 
 		socket.on('user:reset.send', function(data) {
-			modules.user.reset.send(data.email);
+			modules.user.reset.send(socket, data.email);
 		});
 
 		socket.on('user:reset.valid', function(data) {
-			modules.user.reset.validate(data.code);
+			modules.user.reset.validate(socket, data.code);
 		});
 
 		socket.on('user:reset.commit', function(data) {
-			modules.user.reset.commit(data.code, data.password);
+			modules.user.reset.commit(socket, data.code, data.password);
 		});
 
 		socket.on('api:topics.post', function(data) {
-			modules.topics.post(uid, data.title, data.content);
+			modules.topics.post(socket, uid, data.title, data.content);
 		});
 
 		socket.on('api:posts.reply', function(data) {
-			modules.posts.reply(data.topic_id, uid, data.content);
+			modules.posts.reply(socket, data.topic_id, uid, data.content);
 		});
 
 		socket.on('api:user.active.get', function() {
@@ -99,7 +105,7 @@ var	SocketIO = require('socket.io').listen(global.server),
 		});
 
 		socket.on('api:user.active.get_record', function() {
-			modules.user.active.get_record();
+			modules.user.active.get_record(socket);
 		});
 	});
 	

@@ -93,8 +93,8 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
-
-	Topics.post = function(uid, title, content, category) {
+	Topics.post = function(socket, uid, title, content, category) {
+		
 		if (uid === 0) {
 			socket.emit('event:alert', {
 				title: 'Thank you for posting',
@@ -143,7 +143,6 @@ var	RDB = require('./redis.js'),
 
 			// User Details - move this out later
 			RDB.lpush('uid:' + uid + ':topics', tid);
-
 
 			socket.emit('event:alert', {
 				title: 'Thank you for posting',
