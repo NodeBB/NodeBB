@@ -1,5 +1,6 @@
 var	RDB = require('./redis.js'),
-	utils = require('./utils.js');
+	utils = require('./utils.js'),
+	marked = require('marked');
 
 (function(Posts) {
 	//data structure
@@ -41,7 +42,7 @@ var	RDB = require('./redis.js'),
 							var posts = [];
 							for (var i=0, ii=content.length; i<ii; i++) {
 								posts.push({
-									'content' : content[i],
+									'content' : marked(content[i]),
 									'uid' : uid[i],
 									'timestamp' : timestamp[i],
 									'relativeTime': utils.relativeTime(timestamp[i])
