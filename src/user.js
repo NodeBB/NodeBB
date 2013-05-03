@@ -302,6 +302,26 @@ var	config = require('../config.js'),
 		});
 	};
 
+	User.get_user_postdetails = function(uids, callback) {
+		var username = [],
+			rep = [];
+
+		for(var i=0, ii=uids.length; i<ii; i++) {
+			username.push('uid:' + uids[i] + ':username');
+			rep.push('uid:' + uids[i] + ':rep');
+		}
+		
+		RDB.multi()
+			.mget(username)
+			.mget(rep)
+			.exec(function(err, replies) {
+				callback({
+					'username': replies[0],
+					'rep' : replies[1]
+				});
+			});
+	}
+
 	User.get_uid_by_email = function(email, callback) {
 		RDB.get('email:' + email, callback)
 	};

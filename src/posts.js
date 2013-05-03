@@ -23,12 +23,14 @@ var	RDB = require('./redis.js'),
 				var content = [],
 					uid = [],
 					timestamp = [],
-					pid = [];
+					pid = [],
+					post_rep = [];
 
 				for (var i=0, ii=pids.length; i<ii; i++) {
 					content.push('pid:' + pids[i] + ':content');
 					uid.push('pid:' + pids[i] + ':uid');
 					timestamp.push('pid:' + pids[i] + ':timestamp');
+					post_rep.push('pid:' + pids[i] + ':rep');		
 					pid.push(pids[i]);
 				}
 
@@ -37,27 +39,41 @@ var	RDB = require('./redis.js'),
 						.mget(content)
 						.mget(uid)
 						.mget(timestamp)
+						.mget(post_rep)
 						.exec(function(err, replies) {
 							content = replies[0];
 							uid = replies[1];
 							timestamp = replies[2];
+							post_rep = replies[3];
 
-							user.get_usernames_by_uids(uid, function(userNames) {
+							user.get_user_postdetails(uid, function(user_details) {
 								user.get_gravatars_by_uids(uid, 80, function(gravatars) {
 									var posts = [];
-									for (var i=0, ii=content.length; i<ii; i++) {
-										posts.push({
-											'pid' : pid[i],
-											'content' : marked(content[i] || ''),
-											'uid' : uid[i],
-											'userName' : userNames[i] || 'anonymous',
-											'gravatar' : gravatars[i],
-											'timestamp' : timestamp[i],
-											'relativeTime': utils.relativeTime(timestamp[i])
-										});
-									}
+									var callbacks = content.length;
 
-									callback({'topic_name':topic_name, 'topic_id': tid, 'posts': posts});
+									for (var i=0, ii=content.length; i<ii; i++) {
+										(function(i) {
+											Posts.hasFavourited(pid[i], uid[i], function(hasFavourited) {
+												posts.push({
+													'pid' : pid[i],
+													'content' : marked(content[i] || ''),
+													'uid' : uid[i],
+													'username' : user_details.username[i] || 'anonymous',
+													'user_rep' : user_details.rep[i] || 0,
+													'post_rep' : post_rep[i] || 0,
+													'gravatar' : gravatars[i],
+													'timestamp' : timestamp[i],
+													'relativeTime': utils.relativeTime(timestamp[i]),
+													'fav_star_class' : hasFavourited ? 'icon-star' : 'icon-star-empty' 
+												});
+												
+												callbacks--;
+												if (callbacks == 0) {
+													callback({'topic_name':topic_name, 'topic_id': tid, 'posts': posts});
+												}
+											});
+										}(i));
+									}
 								});
 							});
 						});
@@ -103,4 +119,36 @@ var	RDB = require('./redis.js'),
 
 	}
 
+
+	Posts.favourite = function(socket, pid) {
+		RDB.get('pid:' + pid + ':uid', function(uid) {
+			Posts.hasFavourited(pid, uid, function(hasFavourited) {
+				if (hasFavourited == false) {
+					RDB.sadd('pid:' + pid + ':users_favourited', uid);
+					RDB.incr('uid:' + uid + ':rep');
+					RDB.incr('pid:' + pid + ':rep');
+				}
+			});
+			
+		});
+	}
+
+	Posts.unfavourite = function(socket, pid) {
+		RDB.get('pid:' + pid + ':uid', function(uid) {
+			Posts.hasFavourited(pid, uid, function(hasFavourited) {
+				if (hasFavourited == true) {
+					RDB.srem('pid:' + pid + ':users_favourited', uid);
+					RDB.decr('uid:' + uid + ':rep');
+					RDB.decr('pid:' + pid + ':rep');
+				}
+			});
+			
+		});
+	}
+
+	Posts.hasFavourited = function(pid, uid, callback) {
+		RDB.sismember('pid:' + pid + ':users_favourited', uid, function(hasFavourited) {
+			callback(hasFavourited);
+		});
+	}
 }(exports));

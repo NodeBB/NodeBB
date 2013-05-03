@@ -86,4 +86,19 @@
 		});
 	}
 
+	// Sets
+	RedisDB.sadd = function(key, item) {
+		db.sadd(key, item);
+	};
+
+	RedisDB.srem = function(key, item) {
+		db.srem(key, item);
+	};
+
+	RedisDB.sismember = function(key, item, callback, error_handler) {
+		db.sismember(key, item, function(error, data) {
+			return_handler(error, data, callback, error_handler);
+		});
+	};
+
 }(exports));
