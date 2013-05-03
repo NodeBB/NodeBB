@@ -9,9 +9,7 @@
 <!-- BEGIN posts -->
 <li class="row">
 	<div class="span1 profile-image-block">
-		
-			<img src="https://en.gravatar.com/userimage/18452752/f59e713c717466d2f5ad2a6970769f32.png" align="left" />
-			
+		<img src="https://en.gravatar.com/userimage/18452752/f59e713c717466d2f5ad2a6970769f32.png" align="left" />
 	</div>
 	<div class="span11">
 		<div class="post-block">
