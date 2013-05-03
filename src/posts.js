@@ -1,6 +1,7 @@
 var	RDB = require('./redis.js'),
 	utils = require('./utils.js'),
-	marked = require('marked');
+	marked = require('marked'),
+	user = require('./user.js');
 
 (function(Posts) {
 	//data structure
@@ -21,12 +22,14 @@ var	RDB = require('./redis.js'),
 			RDB.lrange('tid:' + tid + ':posts', start, end, function(pids) {
 				var content = [],
 					uid = [],
-					timestamp = [];
+					timestamp = [],
+					pid = [];
 
 				for (var i=0, ii=pids.length; i<ii; i++) {
 					content.push('pid:' + pids[i] + ':content');
 					uid.push('pid:' + pids[i] + ':uid');
 					timestamp.push('pid:' + pids[i] + ':timestamp');
+					pid.push(pids[i]);
 				}
 
 				if (pids.length > 0) {
@@ -39,17 +42,21 @@ var	RDB = require('./redis.js'),
 							uid = replies[1];
 							timestamp = replies[2];
 
-							var posts = [];
-							for (var i=0, ii=content.length; i<ii; i++) {
-								posts.push({
-									'content' : marked(content[i]),
-									'uid' : uid[i],
-									'timestamp' : timestamp[i],
-									'relativeTime': utils.relativeTime(timestamp[i])
-								});
-							}
+							user.get_usernames_by_uids(uid, function(userNames) {
+								var posts = [];
+								for (var i=0, ii=content.length; i<ii; i++) {
+									posts.push({
+										'pid' : pid[i],
+										'content' : marked(content[i]),
+										'uid' : uid[i],
+										'userName' : userNames[i] || 'anonymous',
+										'timestamp' : timestamp[i],
+										'relativeTime': utils.relativeTime(timestamp[i])
+									});
+								}
 
-							callback({'TOPIC_NAME':topic_name, 'TOPIC_ID': tid, 'posts': posts});
+								callback({'topic_name':topic_name, 'topic_id': tid, 'posts': posts});
+							});
 						});
 				} else {
 					callback({});

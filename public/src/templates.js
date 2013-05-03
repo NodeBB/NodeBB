@@ -5,7 +5,7 @@ var templates = {};
 
 	templates.ready = function(callback) {
 		//quick implementation because introducing a lib to handle several async callbacks
-		if (callback == null) ready_callback();
+		if (callback == null && ready_callback) ready_callback();
 		else ready_callback = callback;
 	}
 

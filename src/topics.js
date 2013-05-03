@@ -1,6 +1,7 @@
 var	RDB = require('./redis.js'),
 	posts = require('./posts.js'),
-	utils = require('./utils.js');
+	utils = require('./utils.js'),
+	user = require('./user.js');
 
 (function(Topics) {
 	//data structure
@@ -68,25 +69,33 @@ var	RDB = require('./redis.js'),
 					.mget(slug)
 					.mget(postcount)
 					.exec(function(err, replies) {
+						
 						title = replies[0];
 						uid = replies[1];
 						timestamp = replies[2];
 						slug = replies[3];
 						postcount = replies[4];
 
-						var topics = [];
-						for (var i=0, ii=title.length; i<ii; i++) {
-							topics.push({
-								'title' : title[i],
-								'uid' : uid[i],
-								'timestamp' : timestamp[i],
-								'relativeTime': utils.relativeTime(timestamp[i]),
-								'slug' : slug[i],
-								'post_count' : postcount[i]
-							});
-						}
+						user.get_usernames_by_uids(uid, function(userNames) {
+							var topics = [];
+							
+							for (var i=0, ii=title.length; i<ii; i++) {
+								
+								topics.push({
+									'title' : title[i],
+									'uid' : uid[i],
+									'username': userNames[i],
+									'timestamp' : timestamp[i],
+									'relativeTime': utils.relativeTime(timestamp[i]),
+									'slug' : slug[i],
+									'post_count' : postcount[i]
+								});
+							}
+						
+							callback({'topics': topics});
+						});
 
-						callback({'topics': topics});
+						
 					}
 				);
 			} else callback([]);

@@ -264,6 +264,17 @@ var	config = require('../config.js'),
 		RDB.get('uid:' + uid+ ':username', callback);
 	};
 
+	User.get_usernames_by_uids = function(uids, callback) {
+		var userIds = [];
+		for(var i=0, ii=uids.length; i<ii; i++) {
+			userIds.push('uid:' + uids[i] + ':username');
+		}
+		
+		RDB.mget(userIds, function(data) {
+			callback(data);
+		});
+	};
+
 	User.get_uid_by_email = function(email, callback) {
 		RDB.get('email:' + email, callback)
 	};
