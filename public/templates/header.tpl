@@ -30,7 +30,7 @@
 						<li class="active"><a href="/">Forum</a></li>
 					</ul>
 					<ul class="nav pull-right" id="right-menu">
-						<li><a href="#" id="user_label"></a></li>
+						<li><a href="/account" id="user_label"></a></li>
 					</ul>
 				</div>
 			</div>

@@ -25,7 +25,7 @@
 
 	Templates.init = function() {
 		loadTemplates([
-			'header', 'footer', 'register', 'home', 'topic',
+			'header', 'footer', 'register', 'home', 'topic', 'account',
 			'login', 'reset', 'reset_code', 'logout',
 			'403',
 			'emails/reset', 'emails/reset_plaintext'
