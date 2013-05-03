@@ -150,7 +150,7 @@ var	RDB = require('./redis.js'),
 			RDB.set('topic:slug:' + slug + ':tid', tid);
 
 			// Posts
-			posts.create(uid, content, function(pid) {
+			posts.create(uid, tid, content, function(pid) {
 				RDB.lpush('tid:' + tid + ':posts', pid);
 			});
 
