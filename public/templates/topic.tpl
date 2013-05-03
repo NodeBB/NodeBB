@@ -21,7 +21,7 @@
 				posted by <strong>{posts.userName}</strong> {posts.relativeTime}
 				<span class="post-buttons">
 					<div id="quote_{posts.pid}" class="quote"><i class="icon-quote-left"></i></div>
-					<div class="favourite"><i class="icon-star-empty"></i></div>
+					<div id="favs_{posts.pid}" class="favourite"><span id="favs_counter_{posts.pid}">0</span><i class="icon-star-empty"></i></div>
 					<div class="post_reply">Reply <i class="icon-reply"></i></div>
 				</span>
 			</div>
@@ -47,7 +47,20 @@ jQuery('.quote').click(function() {
 });
 
 jQuery('.favourite').click(function() {
-	if (this.children[0].className == 'icon-star-empty') this.children[0].className = 'icon-star';
-	else this.children[0].className = 'icon-star-empty';
+	var pid = this.id.replace('favs_', ''),
+		favs_counter = document.getElementById('favs_counter_' + pid);
+
+	var total = parseInt(favs_counter.innerHTML, 10);
+
+	if (this.children[1].className == 'icon-star-empty') {
+		this.children[1].className = 'icon-star';
+		total++;
+		favs_counter.innerHTML = total;
+	}
+	else {
+		this.children[1].className = 'icon-star-empty';
+		total--;
+		favs_counter.innerHTML = total;
+	}
 })
 </script>

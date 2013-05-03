@@ -124,6 +124,10 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 			modules.user.active.get();
 		});
 
+		socket.on('api:posts.favourite', function(data) {
+			modules.posts.favourite(socket, data.pid);
+		})
+
 		socket.on('api:user.active.get_record', function() {
 			modules.user.active.get_record(socket);
 		});
