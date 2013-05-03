@@ -75,7 +75,9 @@ var	RDB = require('./redis.js'),
 						timestamp = replies[2];
 						slug = replies[3];
 						postcount = replies[4];
-
+						
+						
+						
 						user.get_usernames_by_uids(uid, function(userNames) {
 							var topics = [];
 							
@@ -116,8 +118,9 @@ var	RDB = require('./redis.js'),
 			});
 			return; // for now, until anon code is written.
 		}
-
+		
 		RDB.incr('global:next_topic_id', function(tid) {
+
 			// Global Topics
 			if (uid == null) uid = 0;
 			if (uid !== null) {
@@ -141,7 +144,9 @@ var	RDB = require('./redis.js'),
 			RDB.set('tid:' + tid + ':slug', slug);
 			RDB.set('tid:' + tid + ':timestamp', new Date().getTime());
 			RDB.incr('tid:' + tid + ':postcount');
-
+			
+			
+			
 			RDB.set('topic:slug:' + slug + ':tid', tid);
 
 			// Posts

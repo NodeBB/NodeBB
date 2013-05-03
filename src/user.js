@@ -3,7 +3,8 @@ var	config = require('../config.js'),
 	RDB = require('./redis.js'),
 	crypto = require('crypto'),
 	emailjs = require('emailjs'),
-	emailjsServer = emailjs.server.connect(config.mailer);
+	emailjsServer = emailjs.server.connect(config.mailer),
+	bcrypt = require('bcrypt');
 
 (function(User) {
 
@@ -122,30 +123,21 @@ var	config = require('../config.js'),
 				}
 
 				RDB.get('uid:' + uid + ':password', function(user_password) {
-					if (password == user_password) {
-						// Start, replace, or extend a session
-						// RDB.get('sess:' + user.sessionID, function(session) {
-						// 	if (session !== user.sessionID) {
-						// 		RDB.set('sess:' + user.sessionID + ':uid', uid, 60*60*24*14);	// Login valid for two weeks
-						// 		RDB.set('uid:' + uid + ':session', user.sessionID, 60*60*24*14);
-						// 	} else {
-						// 		RDB.expire('sess:' + user.sessionID + ':uid', 60*60*24*14);	// Defer expiration to two weeks from now
-						// 		RDB.expire('uid:' + uid + ':session', 60*60*24*14);
-						// 	}
-						// });
-
-						next({
-							status: "ok",
-							user: {
-								uid: uid
-							}
-						});
-					} else {
-						next({
-							status: 'error',
-							message: 'invalid-password'
-						});
-					}
+					bcrypt.compare(password, user_password, function(err, res) {
+						if (res === true) {
+							next({
+								status: "ok",
+								user: {
+									uid: uid
+								}
+							});
+						} else {
+							next({
+								status: 'error',
+								message: 'invalid-password'
+							});
+						}
+					});
 				});
 			});
 		}
@@ -245,7 +237,13 @@ var	config = require('../config.js'),
 			RDB.incr('global:next_user_id', function(uid) {
 				RDB.set('username:' + username + ':uid', uid);
 				RDB.set('uid:' + uid + ':username', username);
-				if (password) RDB.set('uid:' + uid + ':password', password);
+				if (password) {
+					bcrypt.genSalt(10, function(err, salt) {
+						bcrypt.hash(password, salt, function(err, hash) {
+							RDB.set('uid:' + uid + ':password', hash);
+						});
+					});
+				}
 				if (email) {
 					RDB.set('uid:' + uid + ':email', email);
 					RDB.set('email:' + email, uid);
