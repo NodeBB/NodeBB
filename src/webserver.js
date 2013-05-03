@@ -78,14 +78,6 @@ passport.deserializeUser(function(uid, done) {
 (function(app) {
 	var templates = global.templates;
 
-	function refreshTemplates() {
-		//need a better solution than copying this code on every call. is there an "onconnect" event?
-		if (DEVELOPMENT === true) {
-			// refreshing templates
-			modules.templates.init();
-		}
-	}
-
 	// Middlewares
 	app.use(express.favicon());	// 2 args: string path and object options (i.e. expire time etc)
 	app.use(require('less-middleware')({ src: path.join(__dirname, '../', '/public') }));
@@ -259,8 +251,11 @@ passport.deserializeUser(function(uid, done) {
 	});
 
 	app.get('/account', function(req, res) {
-		refreshTemplates();
-		res.send(templates['header'] + templates['account_settings'] + templates['footer']);
+
+ 		if (req.user === undefined) 
+ 			return res.redirect('/403');
+
+		res.send(templates['header'] + templates['account'] + templates['footer']);
 	});
 
 	app.get('/users', function(req, res) {
