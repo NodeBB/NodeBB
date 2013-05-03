@@ -69,7 +69,7 @@ var	RDB = require('./redis.js'),
 
 
 	Posts.reply = function(socket, tid, uid, content) {
-		Posts.create(uid, content, function(pid) {
+		Posts.create(uid, tid, content, function(pid) {
 			RDB.rpush('tid:' + tid + ':posts', pid);
 
 			socket.emit('event:alert', {
@@ -81,7 +81,7 @@ var	RDB = require('./redis.js'),
 		});
 	};
 
-	Posts.create = function(uid, content, callback) {
+	Posts.create = function(uid, tid, content, callback) {
 		if (uid === null) return;
 		
 		RDB.incr('global:next_post_id', function(pid) {
@@ -89,6 +89,8 @@ var	RDB = require('./redis.js'),
 			RDB.set('pid:' + pid + ':content', content);
 			RDB.set('pid:' + pid + ':uid', uid);
 			RDB.set('pid:' + pid + ':timestamp', new Date().getTime());
+			
+			RDB.incr('tid:' + tid + ':postcount');
 			
 			// User Details - move this out later
 			RDB.lpush('uid:' + uid + ':posts', pid);
