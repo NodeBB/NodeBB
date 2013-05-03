@@ -7,7 +7,15 @@ var templates = {};
 		//quick implementation because introducing a lib to handle several async callbacks
 		if (callback == null && ready_callback) ready_callback();
 		else ready_callback = callback;
-	}
+	};
+
+	templates.prepare = function(raw_tpl, data) {
+		var template = {};
+		template.html = raw_tpl;
+		template.parse = parse;
+		template.blocks = {};
+		return template; 		
+	};
 
 	function loadTemplates(templatesToLoad) {
 		var timestamp = new Date().getTime();
@@ -24,9 +32,10 @@ var templates = {};
 
 					template.prototype.parse = parse;
 					template.prototype.html = String(html);
-					
-					templates[file] = new template;
+					template.prototype.blocks = {};
 
+					templates[file] = new template;
+					
 					loaded--;
 					if (loaded == 0) templates.ready();
 				}).fail(function() {
@@ -49,6 +58,8 @@ var templates = {};
 
 	//modified from https://github.com/psychobunny/dcp.templates
 	var parse = function(data) {
+		var self = this;
+
 		function replace(key, value, template) {
 			var searchRegex = new RegExp('{' + key + '}', 'g');
 			return template.replace(searchRegex, value);
@@ -61,6 +72,8 @@ var templates = {};
 		function getBlock(regex, block, template) {
 			data = template.match(regex);			
 			if (data == null) return;
+
+			if (block !== undefined) self.blocks[block] = data[0];
 
 			data = data[0]
 				.replace("<!-- BEGIN " + block + " -->", "")

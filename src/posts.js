@@ -92,12 +92,38 @@ var	RDB = require('./redis.js'),
 		Posts.create(uid, tid, content, function(pid) {
 			RDB.rpush('tid:' + tid + ':posts', pid);
 
+
 			socket.emit('event:alert', {
 				title: 'Reply Successful',
 				message: 'You have successfully replied. Click here to view your reply.',
 				type: 'notify',
 				timeout: 2000
 			});
+
+			user.get_user_postdetails([uid], function(user_details) {
+				user.get_gravatars_by_uids([uid], 80, function(gravatars) {
+					var timestamp = new Date().getTime();
+
+					socket.broadcast.to('topic_' + tid).emit('event:new_post', {
+						'posts' : [
+							{
+								'pid' : pid,
+								'content' : marked(content || ''),
+								'uid' : uid,
+								'username' : user_details.username[0] || 'anonymous',
+								'user_rep' : user_details.rep[0] || 0,
+								'post_rep' : 0,
+								'gravatar' : gravatars[0],
+								'timestamp' : timestamp,
+								'relativeTime': utils.relativeTime(timestamp),
+								'fav_star_class' :'icon-star-empty' 
+							}
+						]
+					});
+				});
+			});
+
+			
 		});
 	};
 
@@ -117,7 +143,6 @@ var	RDB = require('./redis.js'),
 			
 			if (callback) callback(pid);
 		});
-
 	}
 
 
