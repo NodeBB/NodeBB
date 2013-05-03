@@ -18,7 +18,7 @@
 			<div id="content_{posts.pid}" class="post-content">{posts.content}</div>
 			<!--<p>Posted {posts.relativeTime} by user {posts.uid}.</p>-->
 			<div class="profile-block">
-				posted by <strong>psychobunny</strong> {posts.relativeTime}
+				posted by <strong>{posts.userName}</strong> {posts.relativeTime}
 				<span class="post-buttons">
 					<div id="quote_{posts.pid}" class="quote"><i class="icon-quote-left"></i></div>
 					<div class="favourite"><i class="icon-star-empty"></i></div>
