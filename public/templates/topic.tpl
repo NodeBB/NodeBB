@@ -9,18 +9,18 @@
 <!-- BEGIN posts -->
 <li class="row">
 	<div class="span1 profile-image-block">
+		<!--<i class="icon-spinner icon-spin icon-2x pull-left"></i>-->
 		<img src="https://en.gravatar.com/userimage/18452752/f59e713c717466d2f5ad2a6970769f32.png" align="left" />
+		<i class="icon-star"></i>2432
 	</div>
 	<div class="span11">
 		<div class="post-block">
-			
-
-			<p>{posts.content}</p>
+			<div id="content_{posts.pid}" class="post-content">{posts.content}</div>
 			<!--<p>Posted {posts.relativeTime} by user {posts.uid}.</p>-->
 			<div class="profile-block">
 				posted by <strong>psychobunny</strong> {posts.relativeTime}
 				<span class="post-buttons">
-					<div class="quote"><i class="icon-quote-left"></i></div>
+					<div id="quote_{posts.pid}" class="quote"><i class="icon-quote-left"></i></div>
 					<div class="favourite"><i class="icon-star-empty"></i></div>
 					<div class="post_reply">Reply <i class="icon-reply"></i></div>
 				</span>
@@ -36,11 +36,14 @@
 
 <script type="text/javascript">
 jQuery('.post_reply').click(function() {
-	app.open_post_window('reply', "{TOPIC_ID}", "{TOPIC_NAME}");
+	app.open_post_window('reply', "{topic_id}", "{topic_name}");
 });
 
 jQuery('.quote').click(function() {
-	app.open_post_window('quote', "{TOPIC_ID}", "{TOPIC_NAME}");
+	app.open_post_window('quote', "{topic_id}", "{topic_name}");
+
+	// this needs to be looked at, obviously. only single line quotes work well I think maybe replace all \r\n with > ?
+	document.getElementById('post_content').innerHTML = '> ' + document.getElementById('content_' + this.id.replace('quote_', '')).innerHTML;
 });
 
 jQuery('.favourite').click(function() {

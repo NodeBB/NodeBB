@@ -21,12 +21,14 @@ var	RDB = require('./redis.js'),
 			RDB.lrange('tid:' + tid + ':posts', start, end, function(pids) {
 				var content = [],
 					uid = [],
-					timestamp = [];
+					timestamp = [],
+					pid = [];
 
 				for (var i=0, ii=pids.length; i<ii; i++) {
 					content.push('pid:' + pids[i] + ':content');
 					uid.push('pid:' + pids[i] + ':uid');
 					timestamp.push('pid:' + pids[i] + ':timestamp');
+					pid.push(pids[i]);
 				}
 
 				if (pids.length > 0) {
@@ -42,6 +44,7 @@ var	RDB = require('./redis.js'),
 							var posts = [];
 							for (var i=0, ii=content.length; i<ii; i++) {
 								posts.push({
+									'pid' : pid[i],
 									'content' : marked(content[i]),
 									'uid' : uid[i],
 									'timestamp' : timestamp[i],
@@ -49,7 +52,7 @@ var	RDB = require('./redis.js'),
 								});
 							}
 
-							callback({'TOPIC_NAME':topic_name, 'TOPIC_ID': tid, 'posts': posts});
+							callback({'topic_name':topic_name, 'topic_id': tid, 'posts': posts});
 						});
 				} else {
 					callback({});
