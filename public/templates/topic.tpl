@@ -68,23 +68,7 @@ socket.on('event:new_post', function(data) {
 
 	jQuery('<div></div>').appendTo("#post-container").hide().append(html).fadeIn('slow');	
 });
-/*
-jQuery('document').ready(function() {
-	setTimeout(function() {
-		//console.log(JSON.stringify(templates['topic'].blocks));
-		var html = templates.prepare(templates['topic'].blocks['posts']).parse({
-				'posts' : [
-					{
-						'username' : 'derp'
-					}
-				]
-			});
 
-		jQuery('<div></div>').appendTo("#post-container").hide().append(html).fadeIn('slow');
-		
-	}, 1500);
-});
-*/
 function adjust_rep(value, pid, uid) {
 	var post_rep = document.getElementById('post_rep_' + pid),
 		user_rep = document.getElementById('user_rep_' + uid);
