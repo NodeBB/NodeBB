@@ -26,7 +26,7 @@ var	RDB = require('./redis.js'),
 		posts.get(function(data) {
 			topic_body = topic_body.parse(data);
 			callback(topic_body);
-		}, tid, start, end)
+		}, tid, start, end);
 	};
 
 	// this needs to move into forum.js
