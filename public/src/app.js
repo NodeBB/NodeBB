@@ -1,7 +1,7 @@
 var socket,
 	config,
 	app = {},
-
+	current_room,
 	API_URL = null;
 
 // todo: cleanup,etc
@@ -173,6 +173,12 @@ var socket,
 	};
 
 	jQuery('document').ready(function() {
+		if (current_room != 'global') {
+			socket.emit('event:enter_room', 'global');
+			current_room = 'global';
+		}
+
+
 		// On menu click, change "active" state
 		var menuEl = document.querySelector('.nav'),
 			liEls = menuEl.querySelectorAll('li'),

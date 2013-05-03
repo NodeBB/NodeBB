@@ -21,6 +21,13 @@ var ajaxify = {};
 
 
 	ajaxify.go = function(url, callback) {
+		// leave room and join global
+		if (current_room != 'global') {
+			socket.emit('event:enter_room', 'global');
+			current_room = 'global';
+		}
+		
+
 		var url = url.replace(/\/$/, "");
 		var tpl_url = (url === '' || url === '/') ? 'home' : url.split('/')[0];
 		

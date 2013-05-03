@@ -69,6 +69,10 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 		
 		// BEGIN: API calls (todo: organize)
 		//   julian: :^)
+		socket.on('event:enter_room', function(room) {
+			socket.join(room);
+		});
+
 		socket.on('api:user.get', function(data) {
 			modules.user.get(socket, uid, data.fields);
 		});
@@ -125,11 +129,11 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 		});
 
 		socket.on('api:posts.favourite', function(data) {
-			modules.posts.favourite(socket, data.pid);
+			modules.posts.favourite(io, data.pid, data.room_id, uid);
 		});
 
 		socket.on('api:posts.unfavourite', function(data) {
-			modules.posts.unfavourite(socket, data.pid);
+			modules.posts.unfavourite(io, data.pid, data.room_id, uid);
 		});
 
 		socket.on('api:user.active.get_record', function() {

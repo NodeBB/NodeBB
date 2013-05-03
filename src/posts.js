@@ -14,7 +14,8 @@ var	RDB = require('./redis.js'),
 
 
 
-	Posts.get = function(callback, tid, start, end) {
+	Posts.get = function(callback, tid, current_user, start, end) {
+		console.log(current_user);
 		if (start == null) start = 0;
 		if (end == null) end = start + 10;
 
@@ -53,7 +54,7 @@ var	RDB = require('./redis.js'),
 
 									for (var i=0, ii=content.length; i<ii; i++) {
 										(function(i) {
-											Posts.hasFavourited(pid[i], uid[i], function(hasFavourited) {
+											Posts.hasFavourited(pid[i], current_user, function(hasFavourited) {
 												posts.push({
 													'pid' : pid[i],
 													'content' : marked(content[i] || ''),
@@ -66,7 +67,7 @@ var	RDB = require('./redis.js'),
 													'relativeTime': utils.relativeTime(timestamp[i]),
 													'fav_star_class' : hasFavourited ? 'icon-star' : 'icon-star-empty' 
 												});
-												
+
 												callbacks--;
 												if (callbacks == 0) {
 													callback({'topic_name':topic_name, 'topic_id': tid, 'posts': posts});
@@ -120,29 +121,35 @@ var	RDB = require('./redis.js'),
 	}
 
 
-	Posts.favourite = function(socket, pid) {
-		RDB.get('pid:' + pid + ':uid', function(uid) {
+	Posts.favourite = function(io, pid, room_id, uid) {
+		RDB.get('pid:' + pid + ':uid', function(uid_of_poster) {
 			Posts.hasFavourited(pid, uid, function(hasFavourited) {
 				if (hasFavourited == false) {
 					RDB.sadd('pid:' + pid + ':users_favourited', uid);
-					RDB.incr('uid:' + uid + ':rep');
+					RDB.incr('uid:' + uid_of_poster + ':rep');
 					RDB.incr('pid:' + pid + ':rep');
+
+					if (room_id) {
+						io.sockets.in(room_id).emit('event:rep_up', {uid: uid_of_poster, pid: pid});
+					}
 				}
 			});
-			
 		});
 	}
 
-	Posts.unfavourite = function(socket, pid) {
-		RDB.get('pid:' + pid + ':uid', function(uid) {
+	Posts.unfavourite = function(io, pid, room_id, uid) {
+		RDB.get('pid:' + pid + ':uid', function(uid_of_poster) {
 			Posts.hasFavourited(pid, uid, function(hasFavourited) {
 				if (hasFavourited == true) {
 					RDB.srem('pid:' + pid + ':users_favourited', uid);
-					RDB.decr('uid:' + uid + ':rep');
+					RDB.decr('uid:' + uid_of_poster + ':rep');
 					RDB.decr('pid:' + pid + ':rep');
+
+					if (room_id) {
+						io.sockets.in(room_id).emit('event:rep_down', {uid: uid_of_poster, pid: pid});
+					}
 				}
 			});
-			
 		});
 	}
 
