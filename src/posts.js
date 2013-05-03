@@ -48,7 +48,7 @@ var	RDB = require('./redis.js'),
 									for (var i=0, ii=content.length; i<ii; i++) {
 										posts.push({
 											'pid' : pid[i],
-											'content' : marked(content[i]),
+											'content' : marked(content[i] || ''),
 											'uid' : uid[i],
 											'userName' : userNames[i] || 'anonymous',
 											'gravatar' : gravatars[i],
