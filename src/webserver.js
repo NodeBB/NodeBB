@@ -270,7 +270,7 @@ passport.deserializeUser(function(uid, done) {
 
 	app.get('/users/:username', function(req, res) {
 		global.modules.user.get_uid_by_username(req.params.username, function(uid) {
-			res.send(templates['header'] + templates['user_profile'].parse({ uid: uid }) + templates['footer']);
+			res.send('User profile for uid: ' + uid);
 		});
 	});
 }(WebServer));
