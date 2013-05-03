@@ -24,7 +24,9 @@
       "passport-google-oauth": "0.1.5",
       "passport-facebook": "0.1.5",
       "less-middleware": "0.1.11",
-      "marked": "0.2.8"
+      "marked": "0.2.8",
+      "bcrypt": "0.7.5",
+      "node-gyp": "0.9.5"
     },
   "devDependencies": {},
   "optionalDependencies": {},

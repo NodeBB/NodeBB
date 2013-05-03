@@ -3,9 +3,9 @@
 
 ## Installation
 
-NodeBB is powered by Node.js with a Redis database. They must be installed prior in order for NodeBB to work.
+NodeBB is powered by Node.js with a Redis database. They must be installed prior in order for NodeBB to work. `build-essential` exposes the build environment for `bcrypt` compilation.
 
-	# apt-get install nodejs redis-server npm
+	# apt-get install nodejs redis-server npm build-essential
 
 Next, obtain all of the dependencies required by NodeBB:
 
