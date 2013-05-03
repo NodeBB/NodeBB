@@ -48,6 +48,33 @@ var	config = require('../config.js'),
 		}
 	}
 
+
+	User.get_gravatars_by_uids = function(uids, size, callback) {
+		var keys = [];
+		for (var i = 0, ii= uids.length; i<ii; i++) {
+			keys.push('uid:' + uids[i] + ':email');
+		}
+
+		var gravatars = [];
+		
+
+		RDB.mget(keys, function(data) {
+			for (var i=0, ii=data.length; i<ii; i++) {
+				if (!data[i]) {
+					gravatars.push("http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=" + size);
+				} else {
+					var	md5sum = crypto.createHash('md5');
+					md5sum.update((data[i]).toLowerCase());
+					gravatars.push('http://www.gravatar.com/avatar/' + md5sum.digest('hex') + '?s=' + size);	
+				}
+				
+			}
+
+			callback(gravatars);
+		});
+		
+	};
+
 	User.login = function(socket, user) {
 		if (user.username == null || user.password == null) {
 			return socket.emit('user.login', {'status': 0, 'message': 'Missing fields'});

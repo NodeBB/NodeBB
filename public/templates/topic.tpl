@@ -10,7 +10,7 @@
 <li class="row">
 	<div class="span1 profile-image-block">
 		<!--<i class="icon-spinner icon-spin icon-2x pull-left"></i>-->
-		<img src="https://en.gravatar.com/userimage/18452752/f59e713c717466d2f5ad2a6970769f32.png" align="left" />
+		<img src="{posts.gravatar}" align="left" />
 		<i class="icon-star"></i>2432
 	</div>
 	<div class="span11">

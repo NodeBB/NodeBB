@@ -43,19 +43,22 @@ var	RDB = require('./redis.js'),
 							timestamp = replies[2];
 
 							user.get_usernames_by_uids(uid, function(userNames) {
-								var posts = [];
-								for (var i=0, ii=content.length; i<ii; i++) {
-									posts.push({
-										'pid' : pid[i],
-										'content' : marked(content[i]),
-										'uid' : uid[i],
-										'userName' : userNames[i] || 'anonymous',
-										'timestamp' : timestamp[i],
-										'relativeTime': utils.relativeTime(timestamp[i])
-									});
-								}
+								user.get_gravatars_by_uids(uid, 80, function(gravatars) {
+									var posts = [];
+									for (var i=0, ii=content.length; i<ii; i++) {
+										posts.push({
+											'pid' : pid[i],
+											'content' : marked(content[i]),
+											'uid' : uid[i],
+											'userName' : userNames[i] || 'anonymous',
+											'gravatar' : gravatars[i],
+											'timestamp' : timestamp[i],
+											'relativeTime': utils.relativeTime(timestamp[i])
+										});
+									}
 
-								callback({'topic_name':topic_name, 'topic_id': tid, 'posts': posts});
+									callback({'topic_name':topic_name, 'topic_id': tid, 'posts': posts});
+								});
 							});
 						});
 				} else {
