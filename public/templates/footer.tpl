@@ -44,7 +44,7 @@
 			active_record.innerHTML = "most users ever online was <strong>" + data.record + "</strong> on <strong>" + (new Date(parseInt(data.timestamp,10))).toUTCString() + "</strong>";
 		});
 		socket.emit('api:user.get', { fields: ['username', 'picture'] });
-		socket.on('api:user.get', function(data) {
+		socket.once('api:user.get', function(data) {
 			if (data.uid > 0) {
 				var	gravatar = document.createElement('img'),
 					name = document.createElement('span')
