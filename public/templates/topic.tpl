@@ -1,7 +1,7 @@
 <div class="container">
 	<ul class="breadcrumb">
 		<li><a href="/">Home</a> <span class="divider">/</span></li>
-		<li class="active">{TOPIC_NAME}</li>
+		<li class="active">{topic_name}</li>
 	</ul>
 </div>
 
