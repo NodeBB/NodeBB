@@ -16,7 +16,6 @@
 	<div class="span11">
 		<div class="post-block">
 			<div id="content_{posts.pid}" class="post-content">{posts.content}</div>
-			<!--<p>Posted {posts.relativeTime} by user {posts.uid}.</p>-->
 			<div class="profile-block">
 				posted by <strong>{posts.username}</strong> {posts.relativeTime}
 				<span class="post-buttons">
