@@ -26,7 +26,6 @@ var ajaxify = {};
 			socket.emit('event:enter_room', 'global');
 			current_room = 'global';
 		}
-		
 
 		var url = url.replace(/\/$/, "");
 		var tpl_url = (url === '' || url === '/') ? 'home' : url.split('/')[0];

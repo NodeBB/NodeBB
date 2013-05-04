@@ -118,6 +118,8 @@ passport.deserializeUser(function(uid, done) {
 		res.send(templates['header'] + templates['403'] + templates['footer']);
 	});
 
+
+
 	// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 	(function() {
 		var routes = ['', 'login', 'register'];
@@ -131,17 +133,14 @@ passport.deserializeUser(function(uid, done) {
 		}
 	}());
 	
-
-	function generate_topic_body(req, res) {
-		global.modules.topics.generate_topic_body(function(topic_body) {
-			res.send(templates['header'] + topic_body + templates['footer']);
-		}, req.params.topic_id);
-	}
-	app.get('/topic/:topic_id', generate_topic_body);
-	app.get('/topic/:topic_id*', generate_topic_body);
+	// Complex Routes
+	app.get('/topic/:topic_id/:slug?', function(req, res) {
+		res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("' + 'topic/' + req.params.topic_id + '");});</script>' + templates['footer']);
+	});
 
 
 
+	// These functions are called via ajax once the initial page is loaded to populate templates with data
 	function api_method(req, res) {
 		switch(req.params.method) {
 			case 'home' :
@@ -173,7 +172,7 @@ passport.deserializeUser(function(uid, done) {
 			case 'topic' :
 					global.modules.posts.get(function(data) {
 						res.send(JSON.stringify(data));
-					}, req.params.id, req.user.uid);
+					}, req.params.id, req.user.uid || 0);
 				break;
 			default :
 				res.send('{}');
