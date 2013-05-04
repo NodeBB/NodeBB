@@ -16,13 +16,15 @@ var	config = require('../config.js'),
 				},
 				removeEmail = false;
 
-			if (!(fields instanceof Array)) fields = ['username', 'email'];
+			if (!(fields instanceof Array)) 
+				fields = ['username', 'email', 'joindate'];
+
 			if (fields.indexOf('picture') !== -1 && fields.indexOf('email') === -1) {
 				fields.push('email');
 				removeEmail = true;
 			}
 
-			for(var f=0,numFields=fields.length;f<numFields;f++) {
+			for(var f = 0, numFields = fields.length; f<numFields; f++) {
 				keys.push('uid:' + uid + ':' + fields[f]);
 			}
 
@@ -47,6 +49,35 @@ var	config = require('../config.js'),
 				picture: 'http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=24'
 			});
 		}
+	}
+
+	User.getUserData = function(uid, callback) {
+		var fields = ['username', 'email', 'joindate', 'picture'];
+		var keys = [];
+		
+		for(var i = 0, numFields = fields.length; i<numFields; i++) {
+			keys.push('uid:' + uid + ':' + fields[i]);
+		}
+		
+		RDB.mget(keys, function(data) {
+			
+			var returnData = {
+				uid: uid
+			};
+			
+			for(var i=0, numData=data.length; i<numData; i++) {
+				returnData[fields[i]] = data[i];
+			}
+				
+			var md5sum = crypto.createHash('md5');
+			
+			md5sum.update(returnData.email.toLowerCase());
+			returnData.picture = 'http://www.gravatar.com/avatar/' + md5sum.digest('hex') + '?s=24';
+
+			callback(returnData);
+	
+		});
+		
 	}
 
 
@@ -244,10 +275,13 @@ var	config = require('../config.js'),
 						});
 					});
 				}
+				
 				if (email) {
 					RDB.set('uid:' + uid + ':email', email);
 					RDB.set('email:' + email, uid);
 				}
+				
+				RDB.set('uid:' + uid + ':joindate', new Date().getTime());
 				
 				RDB.incr('user:count', function(count) {
 					io.sockets.emit('user.count', {count: count});

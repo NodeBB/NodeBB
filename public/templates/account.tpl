@@ -5,11 +5,25 @@
         <strong></strong>
         <p></p>
     </div>
+
+	<!-- BEGIN user -->
+		
+	<img src="{user.picture}" />
+	<br/>
+	<span>{user.username}</span>
+	<br/>		
     <label for="email">Email Address</label><input type="text" placeholder="Enter Email Address" id="email" /><br />
     <button class="btn btn-primary" id="reset" type="submit">Reset Password</button>
-    <p>
-        If you see this, you are logged in.
-    </p>
+	<br/>	
+	<span>Member for </span>
+	<span id="membersince">{user.joindate}</span>
+	<br/>
+
+
+	<!-- END user -->
+
+
+
 </div>
 <script type="text/javascript">
 (function() {

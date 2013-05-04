@@ -143,9 +143,7 @@ var	RDB = require('./redis.js'),
 			RDB.set('tid:' + tid + ':uid', uid);
 			RDB.set('tid:' + tid + ':slug', slug);
 			RDB.set('tid:' + tid + ':timestamp', new Date().getTime());
-			RDB.incr('tid:' + tid + ':postcount');
-			
-			
+		
 			
 			RDB.set('topic:slug:' + slug + ':tid', tid);
 

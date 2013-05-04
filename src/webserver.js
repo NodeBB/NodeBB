@@ -11,6 +11,8 @@ var express = require('express'),
 	passportTwitter = require('passport-twitter').Strategy,
 	passportGoogle = require('passport-google-oauth').OAuth2Strategy,
 	passportFacebook = require('passport-facebook').Strategy,
+	user = require('./user.js'),
+	utils = require('./utils.js'),
 	login_strategies = [];
 
 passport.use(new passportLocal(function(user, password, next) {
@@ -254,7 +256,17 @@ passport.deserializeUser(function(uid, done) {
  		if (req.user === undefined) 
  			return res.redirect('/403');
 
-		res.send(templates['header'] + templates['account'] + templates['footer']);
+		user.getUserData(req.user.uid, function(data) {
+
+			data.joindate = utils.relativeTime(data.joindate);
+			var account = templates['account'];
+			var userData = {user:data};
+			account = account.parse(userData);
+			
+			res.send(templates['header'] + account + templates['footer']);
+		});
+		
+		
 	});
 
 	app.get('/users', function(req, res) {
