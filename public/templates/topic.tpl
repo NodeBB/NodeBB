@@ -11,7 +11,7 @@
 	<div class="span1 profile-image-block visible-desktop">
 		<!--<i class="icon-spinner icon-spin icon-2x pull-left"></i>-->
 		<img src="{posts.gravatar}80" align="left" />
-		<i class="icon-star"></i><span id="user_rep_{posts.uid}">{posts.user_rep}</span>
+		<i class="icon-star"></i><span class="user_rep_{posts.uid}">{posts.user_rep}</span>
 	</div>
 	<div class="span11">
 		<div class="post-block">
@@ -22,7 +22,7 @@
 					<div id="ids_{posts.pid}_{posts.uid}" class="edit {posts.display_moderator_tools} hidden-phone"><i class="icon-pencil"></i></div>
 					<div id="ids_{posts.pid}_{posts.uid}" class="delete {posts.display_moderator_tools} hidden-phone"><i class="icon-trash"></i></div>
 					<div id="quote_{posts.pid}_{posts.uid}" class="quote hidden-phone"><i class="icon-quote-left"></i></div>
-					<div id="favs_{posts.pid}_{posts.uid}" class="favourite hidden-phone"><span id="post_rep_{posts.pid}">{posts.post_rep}</span><i class="{posts.fav_star_class}"></i></div>
+					<div id="favs_{posts.pid}_{posts.uid}" class="favourite hidden-phone"><span class="post_rep_{posts.pid}">{posts.post_rep}</span><i class="{posts.fav_star_class}"></i></div>
 					<div class="post_reply">Reply <i class="icon-reply"></i></div>
 				</span>
 			</div>
@@ -78,17 +78,17 @@ socket.on('event:new_post', function(data) {
 });
 
 function adjust_rep(value, pid, uid) {
-	var post_rep = document.getElementById('post_rep_' + pid),
-		user_rep = document.getElementById('user_rep_' + uid);
+	var post_rep = jQuery('.post_rep_' + pid),
+		user_rep = jQuery('.user_rep_' + uid);
 
-	var ptotal = parseInt(post_rep.innerHTML, 10),
-		utotal = parseInt(user_rep.innerHTML, 10);
+	var ptotal = parseInt(post_rep.html(), 10),
+		utotal = parseInt(user_rep.html(), 10);
 
 	ptotal += value;
 	utotal += value;
 
-	post_rep.innerHTML = ptotal;
-	user_rep.innerHTML = utotal;
+	post_rep.html(ptotal);
+	user_rep.html(utotal);
 }
 
 
