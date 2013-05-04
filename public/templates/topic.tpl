@@ -40,24 +40,7 @@ jQuery('document').ready(function() {
 	// join room for this thread - DRY failure, see ajaxify and app.js
 	socket.emit('event:enter_room', 'topic_' + '{topic_id}');
 	current_room = 'topic_' + '{topic_id}';
-});
-
-jQuery('.post_reply').click(function() {
-	app.open_post_window('reply', "{topic_id}", "{topic_name}");
-});
-
-jQuery('.quote').click(function() {
-	app.open_post_window('quote', "{topic_id}", "{topic_name}");
-
-	// this needs to be looked at, obviously. only single line quotes work well I think maybe replace all \r\n with > ?
-	document.getElementById('post_content').innerHTML = '> ' + document.getElementById('content_' + this.id.replace('quote_', '')).innerHTML;
-});
-
-jQuery('.edit, .delete').each(function() {
-	var ids = this.id.replace('ids_', '').split('_'),
-		pid = ids[0],
-		uid = ids[1];
-
+	set_up_posts();
 });
 
 
@@ -72,9 +55,11 @@ socket.on('event:rep_down', function(data) {
 });
 
 socket.on('event:new_post', function(data) {
-	var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
+	var html = templates.prepare(templates['topic'].blocks['posts']).parse(data),
+		uniqueid = new Date().getTime();
 
-	jQuery('<div></div>').appendTo("#post-container").hide().append(html).fadeIn('slow');	
+	jQuery('<div id="' + uniqueid + '"></div>').appendTo("#post-container").hide().append(html).fadeIn('slow');	
+	set_up_posts(uniqueid);
 });
 
 function adjust_rep(value, pid, uid) {
@@ -92,19 +77,42 @@ function adjust_rep(value, pid, uid) {
 }
 
 
-jQuery('.favourite').click(function() {
-	var ids = this.id.replace('favs_', '').split('_'),
-		pid = ids[0],
-		uid = ids[1];
+function set_up_posts(div) {
+	if (div == null) div = '';
+	else div = '#' + div;
 
-	
-	if (this.children[1].className == 'icon-star-empty') {
-		this.children[1].className = 'icon-star';
-		socket.emit('api:posts.favourite', {pid: pid, room_id: current_room});
-	}
-	else {
-		this.children[1].className = 'icon-star-empty';
-		socket.emit('api:posts.unfavourite', {pid: pid, room_id: current_room});
-	}
-})
+	jQuery(div + ' .post_reply').click(function() {
+		app.open_post_window('reply', "{topic_id}", "{topic_name}");
+	});
+
+	jQuery(div + ' .quote').click(function() {
+		app.open_post_window('quote', "{topic_id}", "{topic_name}");
+
+		// this needs to be looked at, obviously. only single line quotes work well I think maybe replace all \r\n with > ?
+		document.getElementById('post_content').innerHTML = '> ' + document.getElementById('content_' + this.id.replace('quote_', '')).innerHTML;
+	});
+
+	jQuery(div + ' .edit, ' + div + ' .delete').each(function() {
+		var ids = this.id.replace('ids_', '').split('_'),
+			pid = ids[0],
+			uid = ids[1];
+
+	});
+
+	jQuery(div + ' .favourite').click(function() {
+		var ids = this.id.replace('favs_', '').split('_'),
+			pid = ids[0],
+			uid = ids[1];
+
+		
+		if (this.children[1].className == 'icon-star-empty') {
+			this.children[1].className = 'icon-star';
+			socket.emit('api:posts.favourite', {pid: pid, room_id: current_room});
+		}
+		else {
+			this.children[1].className = 'icon-star-empty';
+			socket.emit('api:posts.unfavourite', {pid: pid, room_id: current_room});
+		}
+	});
+}
 </script>
