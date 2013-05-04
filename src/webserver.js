@@ -172,7 +172,7 @@ passport.deserializeUser(function(uid, done) {
 			case 'topic' :
 					global.modules.posts.get(function(data) {
 						res.send(JSON.stringify(data));
-					}, req.params.id, req.user.uid || 0);
+					}, req.params.id, (req.user) ? req.user.uid : 0);
 				break;
 			default :
 				res.send('{}');
