@@ -48,7 +48,7 @@ var	RDB = require('./redis.js'),
 							post_rep = replies[3];
 
 							user.get_user_postdetails(uid, function(user_details) {
-								user.get_gravatars_by_uids(uid, 80, function(gravatars) {
+								user.get_gravatars_by_uids(uid, '', function(gravatars) {
 									var posts = [];
 									var callbacks = content.length;
 

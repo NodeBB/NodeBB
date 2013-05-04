@@ -8,19 +8,19 @@
 <ul id="post-container" class="post-container container">
 <!-- BEGIN posts -->
 <li class="row">
-	<div class="span1 profile-image-block">
+	<div class="span1 profile-image-block visible-desktop">
 		<!--<i class="icon-spinner icon-spin icon-2x pull-left"></i>-->
-		<img src="{posts.gravatar}" align="left" />
+		<img src="{posts.gravatar}80" align="left" />
 		<i class="icon-star"></i><span id="user_rep_{posts.uid}">{posts.user_rep}</span>
 	</div>
 	<div class="span11">
 		<div class="post-block">
 			<div id="content_{posts.pid}" class="post-content">{posts.content}</div>
 			<div class="profile-block">
-				posted by <strong>{posts.username}</strong> {posts.relativeTime}
+				<img class="hidden-desktop" src="{posts.gravatar}10" align="left" /> posted by <strong>{posts.username}</strong> {posts.relativeTime}
 				<span class="post-buttons">
-					<div id="quote_{posts.pid}" class="quote"><i class="icon-quote-left"></i></div>
-					<div id="favs_{posts.pid}_{posts.uid}" class="favourite"><span id="post_rep_{posts.pid}">{posts.post_rep}</span><i class="{posts.fav_star_class}"></i></div>
+					<div id="quote_{posts.pid}" class="quote hidden-phone"><i class="icon-quote-left"></i></div>
+					<div id="favs_{posts.pid}_{posts.uid}" class="favourite hidden-phone"><span id="post_rep_{posts.pid}">{posts.post_rep}</span><i class="{posts.fav_star_class}"></i></div>
 					<div class="post_reply">Reply <i class="icon-reply"></i></div>
 				</span>
 			</div>
