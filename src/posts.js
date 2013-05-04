@@ -3,10 +3,6 @@ var	RDB = require('./redis.js'),
 	marked = require('marked'),
 	user = require('./user.js');
 
-marked.setOptions({
-	breaks: true
-});
-
 (function(Posts) {
 	//data structure
 	//*global:next_post_id
@@ -105,10 +101,10 @@ marked.setOptions({
 			});
 
 			user.get_user_postdetails([uid], function(user_details) {
-				user.get_gravatars_by_uids([uid], 80, function(gravatars) {
+				user.get_gravatars_by_uids([uid], '', function(gravatars) {
 					var timestamp = new Date().getTime();
 
-					socket.broadcast.to('topic_' + tid).emit('event:new_post', {
+					socket.in('topic_' + tid).emit('event:new_post', {
 						'posts' : [
 							{
 								'pid' : pid,

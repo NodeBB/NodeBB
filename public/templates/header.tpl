@@ -54,8 +54,8 @@
 						<span class="btn btn-link" tabindex="-1"><i class="icon-list"></i></span>
 					</div>
 					<div class="btn-group" style="float: right; margin-right: -12px">
-						<a id="submit_post_btn" class="btn" onclick="app.post_topic()"><i class="icon-ok"></i> Submit</a>
-						<a class="btn" onclick="jQuery(post_window).slideToggle(250);"><i class="icon-remove"></i> Discard</a>
+						<span id="submit_post_btn" class="btn" onclick="app.post_topic()"><i class="icon-ok"></i> Submit</span>
+						<span class="btn" onclick="jQuery(post_window).slideToggle(250);"><i class="icon-remove"></i> Discard</span>
 					</div>
 				</div>
 
