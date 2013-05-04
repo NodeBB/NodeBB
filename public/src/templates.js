@@ -50,7 +50,7 @@ var templates = {};
 	function init() {
 		loadTemplates([
 				'header', 'footer', 'register', 'home', 'topic',
-				'login', 'reset', 'reset_code',
+				'login', 'reset', 'reset_code', 'account',
 				'emails/reset', 'emails/reset_plaintext'
 			]);
 	}
