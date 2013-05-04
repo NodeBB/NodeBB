@@ -20,6 +20,10 @@ var ajaxify = {};
 	};
 
 
+	window.onpopstate = function(event) {
+		ajaxify.go(document.location.href.replace(rootUrl +'/', ''));
+	};
+
 	ajaxify.go = function(url, callback) {
 		// leave room and join global
 		if (current_room != 'global') {
