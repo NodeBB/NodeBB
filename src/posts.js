@@ -3,6 +3,10 @@ var	RDB = require('./redis.js'),
 	marked = require('marked'),
 	user = require('./user.js');
 
+marked.setOptions({
+	breaks: true
+});
+
 (function(Posts) {
 	//data structure
 	//*global:next_post_id
