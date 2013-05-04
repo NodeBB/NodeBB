@@ -1,12 +1,19 @@
 var config = {
+	// The "secret" is used to encrypt cookie sessions, change this to any random string
 	"secret": 'nodebb-secret',
+
+	// "base_url" is expected to be a publically accessible URL to your NodeBB instance (Default base_url: 'http://localhost', port: '4567')
 	"base_url": "http://localhost",
 	"port": 4567,
+
+	// The host and port to the SMTP server used by NodeBB. The "from" value must be changed.
 	"mailer": {
 		host: 'localhost',
 		port: '25',
 		from: 'mailer@localhost.lan'
 	},
+
+	// Connection details to the redis database instance.
 	"redis": {
 		port: "6379",
 		host: "127.0.0.1",
@@ -14,6 +21,10 @@ var config = {
 			
 		}
 	},
+
+	// Social Networking integration. Add the appropriate API keys to activate
+	// login via alternate method, otherwise the option will not be presented
+	// to the user
 	"twitter": {
 		"key": '',
 		"secret": ''
