@@ -19,7 +19,9 @@
 			<div class="profile-block">
 				<img class="hidden-desktop" src="{posts.gravatar}10" align="left" /> posted by <strong>{posts.username}</strong> {posts.relativeTime}
 				<span class="post-buttons">
-					<div id="quote_{posts.pid}" class="quote hidden-phone"><i class="icon-quote-left"></i></div>
+					<div id="ids_{posts.pid}_{posts.uid}" class="edit {posts.display_moderator_tools} hidden-phone"><i class="icon-pencil"></i></div>
+					<div id="ids_{posts.pid}_{posts.uid}" class="delete {posts.display_moderator_tools} hidden-phone"><i class="icon-trash"></i></div>
+					<div id="quote_{posts.pid}_{posts.uid}" class="quote hidden-phone"><i class="icon-quote-left"></i></div>
 					<div id="favs_{posts.pid}_{posts.uid}" class="favourite hidden-phone"><span id="post_rep_{posts.pid}">{posts.post_rep}</span><i class="{posts.fav_star_class}"></i></div>
 					<div class="post_reply">Reply <i class="icon-reply"></i></div>
 				</span>
@@ -51,6 +53,12 @@ jQuery('.quote').click(function() {
 	document.getElementById('post_content').innerHTML = '> ' + document.getElementById('content_' + this.id.replace('quote_', '')).innerHTML;
 });
 
+jQuery('.edit, .delete').each(function() {
+	var ids = this.id.replace('ids_', '').split('_'),
+		pid = ids[0],
+		uid = ids[1];
+
+});
 
 
 ajaxify.register_events(['event:rep_up', 'event:rep_down']);

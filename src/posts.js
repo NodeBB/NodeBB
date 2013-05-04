@@ -15,7 +15,6 @@ var	RDB = require('./redis.js'),
 
 
 	Posts.get = function(callback, tid, current_user, start, end) {
-		console.log(current_user);
 		if (start == null) start = 0;
 		if (end == null) end = start + 10;
 
@@ -65,7 +64,8 @@ var	RDB = require('./redis.js'),
 													'gravatar' : gravatars[i],
 													'timestamp' : timestamp[i],
 													'relativeTime': utils.relativeTime(timestamp[i]),
-													'fav_star_class' : hasFavourited ? 'icon-star' : 'icon-star-empty' 
+													'fav_star_class' : hasFavourited ? 'icon-star' : 'icon-star-empty',
+													'display_moderator_tools' : uid[i] === current_user ? 'show' : 'hide'
 												});
 
 												callbacks--;
