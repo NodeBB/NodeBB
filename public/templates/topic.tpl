@@ -44,7 +44,7 @@ jQuery('document').ready(function() {
 });
 
 
-ajaxify.register_events(['event:rep_up', 'event:rep_down']);
+ajaxify.register_events(['event:rep_up', 'event:rep_down', 'event:new_post']);
 
 socket.on('event:rep_up', function(data) {
 	adjust_rep(1, data.pid, data.uid);
