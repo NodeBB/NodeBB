@@ -69,8 +69,9 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 		
 		// BEGIN: API calls (todo: organize)
 		//   julian: :^)
-		socket.on('event:enter_room', function(room) {
-			socket.join(room);
+		socket.on('event:enter_room', function(data) {
+			if (data.leave !== null) socket.leave (data.leave);
+			socket.join(data.enter);
 		});
 
 		socket.on('api:user.get', function(data) {

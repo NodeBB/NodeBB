@@ -39,9 +39,7 @@
 
 <script type="text/javascript">
 jQuery('document').ready(function() {
-	// join room for this thread - DRY failure, see ajaxify and app.js
-	socket.emit('event:enter_room', 'topic_' + '{topic_id}');
-	current_room = 'topic_' + '{topic_id}';
+	app.enter_room('global', 'topic_' + '{topic_id}');
 	set_up_posts();
 });
 
