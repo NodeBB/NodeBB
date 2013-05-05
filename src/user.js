@@ -62,40 +62,6 @@ var	config = require('../config.js'),
 		}
 	};
 
-	User.login = function(socket, user) {
-		console.log("THIS IS USED");
-		
-		
-		if (user.username == null || user.password == null) {
-			return socket.emit('user.login', {'status': 0, 'message': 'Missing fields'});
-		}
-
-		RDB.get('username:' + user.username + ':uid', function(uid) {
-			if (uid == null) {
-				return socket.emit('user.login', {'status': 0, 'message': 'Username does not exist.'});
-			}
-
-			RDB.get('uid:' + uid + ':password', function(password) {
-				if (user.password != password) {
-					return socket.emit('user.login', {'status': 0, 'message': 'Incorrect username / password combination.'});
-				} else {
-					// Start, replace, or extend a session
-					RDB.get('sess:' + user.sessionID, function(session) {
-						if (session !== user.sessionID) {
-							RDB.set('sess:' + user.sessionID + ':uid', uid, 60*60*24*14);	// Login valid for two weeks
-							RDB.set('uid:' + uid + ':session', user.sessionID, 60*60*24*14);
-						} else {
-							RDB.expire('sess:' + user.sessionID + ':uid', 60*60*24*14);	// Defer expiration to two weeks from now
-							RDB.expire('uid:' + uid + ':session', 60*60*24*14);
-						}
-					});
-
-					return socket.emit('user.login', {'status': 1, 'message': 'Logged in!'});
-				}
-			});
-		});
-	};
-
 	User.loginViaLocal = function(username, password, next) {
 
 		if (!username || !password) {
@@ -369,23 +335,26 @@ var	config = require('../config.js'),
 	};
 
 	User.get_user_postdetails = function(uids, callback) {
-		var username = [],
-			rep = [];
-
-		for(var i=0, ii=uids.length; i<ii; i++) {
-			username.push('uid:' + uids[i] + ':username');
-			rep.push('uid:' + uids[i] + ':rep');
-		}
 		
-		RDB.multi()
-			.mget(username)
-			.mget(rep)
-			.exec(function(err, replies) {
-				callback({
-					'username': replies[0],
-					'rep' : replies[1]
-				});
+		var usernames = [];
+		var reputations = [];
+		
+		for(var i=0, ii=uids.length; i<ii; ++i) {
+		
+			User.getUserFields(uids[i], ['username','reputation'], function(data){
+				
+				usernames.push(data['username']);
+				reputations.push(data['reputation']);
+				
+				if(usernames.length >= uids.length) {
+					
+					callback({
+						'username':usernames,
+						'rep':reputations
+					});
+				}
 			});
+		}
 	}
 
 	User.get_uid_by_email = function(email, callback) {

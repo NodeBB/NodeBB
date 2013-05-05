@@ -104,7 +104,7 @@ var	RDB = require('./redis.js'),
 				user.get_gravatars_by_uids([uid], '', function(gravatars) {
 					var timestamp = new Date().getTime();
 
-					socket.on('topic_' + tid).emit('event:new_post', {
+					socket.in('topic_' + tid).emit('event:new_post', {
 						'posts' : [
 							{
 								'pid' : pid,
@@ -151,7 +151,9 @@ var	RDB = require('./redis.js'),
 			Posts.hasFavourited(pid, uid, function(hasFavourited) {
 				if (hasFavourited == false) {
 					RDB.sadd('pid:' + pid + ':users_favourited', uid);
-					RDB.incr('uid:' + uid_of_poster + ':rep');
+
+					RDB.db.hincrby(String(uid_of_poster), 'reputation', 1);
+					
 					RDB.incr('pid:' + pid + ':rep');
 
 					if (room_id) {
@@ -167,7 +169,7 @@ var	RDB = require('./redis.js'),
 			Posts.hasFavourited(pid, uid, function(hasFavourited) {
 				if (hasFavourited == true) {
 					RDB.srem('pid:' + pid + ':users_favourited', uid);
-					RDB.decr('uid:' + uid_of_poster + ':rep');
+					RDB.db.hincrby(String(uid_of_poster), 'reputation', -1);
 					RDB.decr('pid:' + pid + ':rep');
 
 					if (room_id) {

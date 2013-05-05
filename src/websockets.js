@@ -133,11 +133,6 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 			modules.user.latest(socket, data);
 		});
 
-		socket.on('user.login', function(data) {
-			data.sessionID = sessionID;
-			modules.user.login(socket, data);
-		});
-
 		socket.on('user.email.exists', function(data) {
 			modules.user.email.exists(socket, data.email);
 		});
