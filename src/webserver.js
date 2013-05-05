@@ -315,7 +315,10 @@ passport.deserializeUser(function(uid, done) {
 			return res.redirect('/403');
 		
 		user.getUserData(req.params.uid, function(data){
-			res.send(data);
+			if(data)
+				res.send(data);
+			else
+				res.send("User doesn't exist!");
 		});
 		
 	});

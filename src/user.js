@@ -39,7 +39,8 @@ var	config = require('../config.js'),
 		RDB.db.hgetall(String(uid), function(err, data){
 			if(err === null)
 			{
-				delete data['password'];
+				if(data && data['password'])
+					delete data['password'];
 				callback(data);
 			}
 			else
