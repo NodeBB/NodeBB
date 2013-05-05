@@ -61,6 +61,8 @@ var ajaxify = {};
 	}
 
 	ajaxify.onclick = function(ev) {
+		if (this.href == window.location.href + "#") return;
+		console.log(this.href);
 		var url = this.href.replace(rootUrl +'/', '');
 
 		if (ajaxify.go(url)) {

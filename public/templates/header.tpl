@@ -27,7 +27,15 @@
 				</button>
 				<div class="nav-collapse collapse">
 					<ul class="nav">
-						<li class="active"><a href="/">Forum</a></li>
+						<li id="fat-menu" class="active dropdown">
+	                      <a href="#" id="topic_dropdown" role="button" class="dropdown-toggle" data-toggle="dropdown">Topics <span class="badge badge-inverse">3</span></a>
+	                      <ul class="dropdown-menu" role="menu" aria-labelledby="topic_dropdown">
+	                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">latest post</a></li>
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="#">another latest post</a></li>
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="#">moar latest posts</a></li>
+	                      </ul>
+	                    </li>
+
 					</ul>
 					<ul class="nav pull-right" id="right-menu">
 						<li><a href="/account" id="user_label"></a></li>

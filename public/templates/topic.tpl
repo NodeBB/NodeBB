@@ -4,7 +4,7 @@
 		<li class="active">{topic_name}</li>
 	</ul>
 
-	psychobunny, null, and 2 guests are browsing this thread.
+	<small>psychobunny, null, and 2 guests are browsing this thread</small><br />
 </div>
 
 <ul id="post-container" class="post-container container">
