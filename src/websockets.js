@@ -5,7 +5,9 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 
 (function(io) {
 	var	modules = null,
-			users = {};
+			users = {},
+			rooms = {};
+
 	global.io = io;
 	module.exports.init = function() {
 		modules = global.modules;
@@ -67,11 +69,30 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
    		});
 
 		
+
+		socket.on('event:enter_room', function(data) {
+			if (data.leave !== null) socket.leave (data.leave);
+			socket.join(data.enter);
+
+			rooms[data.enter] = rooms[data.enter] || {};
+			if (uid) {
+				rooms[data.enter][uid] = true;
+				if (rooms[data.leave]) {
+					delete rooms[data.leave][uid];
+				}
+			} else {
+				rooms[data.enter].anonymous = rooms[data.enter].anonymous ? rooms[data.enter].anonymous + 1 : 1;
+				rooms[data.leave].anonymous = rooms[data.leave].anonymous ? rooms[data.enter].anonymous - 1 : 0;
+			}
+
+			socket.emit('api:get_users_in_room', {
+				uids: Object.keys(rooms[data.enter] || {}),
+				anonymous: rooms[data.enter] ? rooms[data.enter].anonymous : 0
+			});
+		});
+
 		// BEGIN: API calls (todo: organize)
 		//   julian: :^)
-		socket.on('event:enter_room', function(room) {
-			socket.join(room);
-		});
 
 		socket.on('api:updateHeader', function(data) {
 			if(uid) {

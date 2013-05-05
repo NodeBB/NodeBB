@@ -26,29 +26,27 @@ var ajaxify = {};
 
 	ajaxify.go = function(url, callback) {
 		// leave room and join global
-		if (current_room != 'global') {
-			socket.emit('event:enter_room', 'global');
-			current_room = 'global';
-		}
+		app.enter_room('global');
 
 		var url = url.replace(/\/$/, "");
 		var tpl_url = (url === '' || url === '/') ? 'home' : url.split('/')[0];
 		
 		if (templates[tpl_url]) {
 			window.history.pushState({}, url, "/" + url);
+			jQuery('#content, #footer').fadeOut(100, function() {
+				load_template(function() {
 
-			jQuery('#content, #footer').fadeOut(100);
-			
-			load_template(function() {
-				exec_body_scripts(content);
+					exec_body_scripts(content);
 
-				ajaxify.enable();
-				if (callback) {
-					callback();
-				}
-				
-				jQuery('#content, #footer').fadeIn(200);
+					ajaxify.enable();
+					if (callback) {
+						callback();
+					}
+					
+					jQuery('#content, #footer').fadeIn(250);
+				});
 			});
+			
 			
 			return true;
 		}
@@ -62,7 +60,6 @@ var ajaxify = {};
 
 	ajaxify.onclick = function(ev) {
 		if (this.href == window.location.href + "#") return;
-		console.log(this.href);
 		var url = this.href.replace(rootUrl +'/', '');
 
 		if (ajaxify.go(url)) {

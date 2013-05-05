@@ -1,7 +1,6 @@
 var socket,
 	config,
 	app = {},
-	current_room,
 	API_URL = null;
 
 // todo: cleanup,etc
@@ -172,11 +171,21 @@ var socket,
 		jQuery(post_window).slideToggle(250);
 	};
 
+
+	app.current_room = null; 
+	app.enter_room = function(room) {
+		if (app.current_room === room) return;
+
+		socket.emit('event:enter_room', {
+			'enter': room,
+			'leave': app.current_room
+		});
+
+		app.current_room = room;
+	};
+
 	jQuery('document').ready(function() {
-		if (current_room != 'global') {
-			socket.emit('event:enter_room', 'global');
-			current_room = 'global';
-		}
+		app.enter_room('global');
 
 
 		// On menu click, change "active" state
