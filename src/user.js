@@ -468,7 +468,8 @@ var	config = require('../config.js'),
 			this.validate(code, function(validated) {
 				if (validated) {
 					RDB.get('reset:' + code + ':uid', function(uid) {
-						RDB.set('uid:' + uid + ':password', password);
+
+						RDB.db.hset(String(uid), 'password', password);
 						RDB.del('reset:' + code + ':uid');
 						RDB.del('reset:' + code + ':expiry');
 
