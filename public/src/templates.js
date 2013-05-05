@@ -49,10 +49,11 @@ var templates = {};
 
 	function init() {
 		loadTemplates([
-				'header', 'footer', 'register', 'home', 'topic',
-				'login', 'reset', 'reset_code', 'account',
-				'emails/reset', 'emails/reset_plaintext'
-			]);
+			'header', 'footer', 'register', 'home', 'topic',
+			'login', 'reset', 'reset_code', 'account',
+			'confirm',
+			'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext'
+		]);
 	}
 
 

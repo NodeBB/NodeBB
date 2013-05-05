@@ -140,7 +140,9 @@ passport.deserializeUser(function(uid, done) {
 		res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("' + 'topic/' + req.params.topic_id + '");});</script>' + templates['footer']);
 	});
 
-
+	app.get('/confirm/:code', function(req, res) {
+		res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("' + 'confirm/' + req.params.code + '");});</script>' + templates['footer']);
+	});
 
 	// These functions are called via ajax once the initial page is loaded to populate templates with data
 	function api_method(req, res) {
@@ -175,6 +177,23 @@ passport.deserializeUser(function(uid, done) {
 					global.modules.posts.get(function(data) {
 						res.send(JSON.stringify(data));
 					}, req.params.id, (req.user) ? req.user.uid : 0);
+				break;
+			case 'confirm':
+					global.modules.user.email.confirm(req.params.id, function(data) {
+						if (data.status === 'ok') {
+							res.send(JSON.stringify({
+								'alert-class': 'alert-success',
+								title: 'Email Confirmed',
+								text: 'Thank you for vaidating your email. Your account is now fully activated.'
+							}));
+						} else {
+							res.send(JSON.stringify({
+								'alert-class': 'alert-error',
+								title: 'An error occurred...',
+								text: 'There was a problem validating your email address. Perhaps the code was invalid or has expired.'
+							}));
+						}
+					});
 				break;
 			default :
 				res.send('{}');
