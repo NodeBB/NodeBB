@@ -286,9 +286,6 @@ passport.deserializeUser(function(uid, done) {
 			console.log("I GOT "+JSON.stringify(data));
 			
 		});
-		
-		
-		
 	});
 
 	app.get('/account', function(req, res) {
@@ -310,7 +307,16 @@ passport.deserializeUser(function(uid, done) {
 			
 			res.send(templates['header'] + account + templates['footer']);
 		});
+	});
+	
+	app.get('/uid/:uid', function(req, res) {
 		
+		if(!req.params.uid)
+			return res.redirect('/403');
+		
+		user.getUserData(req.params.uid, function(data){
+			res.send(data);
+		});
 		
 	});
 

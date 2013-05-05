@@ -56,7 +56,7 @@
 				logoutEl.innerHTML = '<a href="/logout">Log out</a>';
 
 				name.innerHTML = data['username'];
-				gravatar.src = data['picture'];
+				gravatar.src = data['picture']+"?s=24";
 
 				user_label.innerHTML = '';
 				user_label.appendChild(gravatar);

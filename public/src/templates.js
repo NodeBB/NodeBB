@@ -49,7 +49,7 @@ var templates = {};
 
 	function init() {
 		loadTemplates([
-			'header', 'footer', 'register', 'home', 'topic',
+			'header', 'footer', 'register', 'home', 'topic','account',
 			'login', 'reset', 'reset_code', 'account',
 			'confirm',
 			'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext'

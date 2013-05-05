@@ -53,11 +53,11 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 			modules.templates.init();
 		}
 		
-		process.on('uncaughtException', function(err) {
+		/*process.on('uncaughtException', function(err) {
     		// handle the error safely
     		console.log("error message "+err);
     		socket.emit('event:consolelog',{type:'uncaughtException', stack:err.stack, error:err.toString()});
-		});
+		});*/
 
 		socket.emit('event:connect', {status: 1});
 		
@@ -71,6 +71,8 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 		
 
 		socket.on('event:enter_room', function(data) {
+			return;
+			
 			if (data.leave !== null) socket.leave (data.leave);
 			socket.join(data.enter);
 

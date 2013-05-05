@@ -38,7 +38,10 @@ var	config = require('../config.js'),
 
 		RDB.db.hgetall(String(uid), function(err, data){
 			if(err === null)
+			{
+				delete data['password'];
 				callback(data);
+			}
 			else
 				console.log(err);
 		});
@@ -386,7 +389,7 @@ var	config = require('../config.js'),
 	}
 
 	User.get_uid_by_email = function(email, callback) {
-		RDB.get('email:' + email+':uid', callback)
+		RDB.get('email:' + email + ':uid', callback)
 	};
 
 	User.get_uid_by_session = function(session, callback) {
