@@ -277,8 +277,35 @@ var	config = require('../config.js'),
 				}
 				
 				if (email) {
+					var	confirm_code = utils.generateUUID(),
+						confirm_link = config.url + 'confirm/' + confirm_code,
+						confirm_email = global.templates['emails/header'] + global.templates['emails/email_confirm'].parse({'CONFIRM_LINK': confirm_link}) + global.templates['emails/footer'],
+						confirm_email_plaintext = global.templates['emails/email_confirm_plaintext'].parse({ 'CONFIRM_LINK': confirm_link });
+
 					RDB.set('uid:' + uid + ':email', email);
 					RDB.set('email:' + email, uid);
+
+					// Email confirmation code
+					RDB.set('email:' + email + ':confirm', confirm_code, 60*60*2);
+					RDB.set('confirm:' + confirm_code + ':email', email, 60*60*2);	// Expire after 2 hours
+
+					// Send intro email w/ confirm code
+					var message = emailjs.message.create({
+						text: confirm_email_plaintext,
+						from: config.mailer.from,
+						to: email,
+						subject: '[NodeBB] Registration Email Verification',
+						attachment: [
+							{
+								data: confirm_email,
+								alternative: true
+							}
+						]
+					});
+					
+					emailjsServer.send(message, function(err, success) {
+						if (err) console.log(err);
+					});
 				}
 				
 				RDB.set('uid:' + uid + ':joindate', new Date().getTime());
@@ -484,6 +511,21 @@ var	config = require('../config.js'),
 				exists = !!exists;
 				if (typeof callback !== 'function') socket.emit('user.email.exists', { exists: exists });
 				else callback(exists);
+			});
+		},
+		confirm: function(code, callback) {
+			RDB.get('confirm:' + code + ':email', function(email) {
+				if (email !== null) {
+					RDB.set('email:' + email + ':confirm', true);
+					RDB.del('confirm:' + code + ':email');
+					callback({
+						status: 'ok'
+					});
+				} else {
+					callback({
+						status: 'not_ok'
+					});
+				}
 			});
 		}
 	}
