@@ -17,7 +17,7 @@
 		<div class="post-block">
 			<div id="content_{posts.pid}" class="post-content">{posts.content}</div>
 			<div class="profile-block">
-				<img class="hidden-desktop" src="{posts.gravatar}10" align="left" /> posted by <strong>{posts.username}</strong> {posts.relativeTime}
+				<img class="hidden-desktop" src="{posts.gravatar}10" align="left" /> posted by <strong>{posts.username}</strong> {posts.relativeTime} ago
 				<span class="post-buttons">
 					<div id="ids_{posts.pid}_{posts.uid}" class="edit {posts.display_moderator_tools} hidden-phone"><i class="icon-pencil"></i></div>
 					<div id="ids_{posts.pid}_{posts.uid}" class="delete {posts.display_moderator_tools} hidden-phone"><i class="icon-trash"></i></div>
