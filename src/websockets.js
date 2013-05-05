@@ -73,8 +73,23 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 			socket.join(room);
 		});
 
-		socket.on('api:user.get', function(data) {
-			modules.user.get(socket, uid, data.fields);
+		socket.on('api:updateHeader', function(data) {
+			if(uid) {
+						
+				modules.user.getUserFields(uid, data.fields, function(fields) {
+					fields.uid = uid;
+					socket.emit('api:updateHeader', fields);
+				});
+			}
+			else {
+				socket.emit('api:updateHeader', {
+					uid:0,
+					username: "Anonymous User",
+					email: '',
+					picture: 'http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=24'
+				});
+			}
+				
 		});
 		
 		socket.on('api:user.getNameByUid', function(data) {

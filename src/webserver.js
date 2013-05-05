@@ -270,7 +270,22 @@ passport.deserializeUser(function(uid, done) {
 		});
 	});
 
+	app.get('/baristest', function(req, res) {
+		/*user.getUserField(req.user.uid, 'email', function(data) {
+			console.log(" I GOT FIELD " +data);
+		});*/
+/*		user.getUserData(req.user.uid, function(data) {
+			console.log(" USER DATA : " + JSON.stringify(data));
+		});*/
+//		user.getUserFields(req.user.uid, ['email','username'], function(data) {
+		user.getUserFields(req.user.uid, ['username','email'], function(data) {
+			console.log(" I GOT FIELDS " +JSON.stringify(data));
+		});
+	});
+
 	app.get('/account', function(req, res) {
+
+		console.log("GOING TO ACCOUNT");
 
  		if (req.user === undefined) 
  			return res.redirect('/403');
@@ -278,6 +293,9 @@ passport.deserializeUser(function(uid, done) {
 		user.getUserData(req.user.uid, function(data) {
 
 			data.joindate = utils.relativeTime(data.joindate);
+
+			console.log("user data" + JSON.stringify(data));
+			
 			var account = templates['account'];
 			var userData = {user:data};
 			account = account.parse(userData);
