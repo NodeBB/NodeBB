@@ -278,9 +278,17 @@ passport.deserializeUser(function(uid, done) {
 			console.log(" USER DATA : " + JSON.stringify(data));
 		});*/
 //		user.getUserFields(req.user.uid, ['email','username'], function(data) {
-		user.getUserFields(req.user.uid, ['username','email'], function(data) {
+		/*user.getUserFields(req.user.uid, ['username','email'], function(data) {
 			console.log(" I GOT FIELDS " +JSON.stringify(data));
+		});*/
+		
+		user.get_usernames_by_uids(["17","1"], function(data){
+			console.log("I GOT "+JSON.stringify(data));
+			
 		});
+		
+		
+		
 	});
 
 	app.get('/account', function(req, res) {

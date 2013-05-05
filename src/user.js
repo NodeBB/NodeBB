@@ -46,29 +46,17 @@ var	config = require('../config.js'),
 
 
 	User.get_gravatars_by_uids = function(uids, size, callback) {
-		var keys = [];
-		for (var i = 0, ii= uids.length; i<ii; i++) {
-			keys.push('uid:' + uids[i] + ':email');
-		}
-
+		
 		var gravatars = [];
 		
-
-		RDB.mget(keys, function(data) {
-			for (var i=0, ii=data.length; i<ii; i++) {
-				if (!data[i]) {
-					gravatars.push("http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=" + size);
-				} else {
-					var	md5sum = crypto.createHash('md5');
-					md5sum.update((data[i]).toLowerCase());
-					gravatars.push('http://www.gravatar.com/avatar/' + md5sum.digest('hex') + '?s=' + size);	
-				}
-				
-			}
-
-			callback(gravatars);
-		});
-		
+		for(var i=0, ii=uids.length; i<ii; ++i) {
+			
+			User.getUserField(uids[i], 'picture', function(picture) {
+				gravatars.push(picture);
+				if(gravatars.length >= uids.length)
+					callback(gravatars);
+			});
+		}
 	};
 
 	User.login = function(socket, user) {
@@ -249,7 +237,8 @@ var	config = require('../config.js'),
 					'email' : email,
 					'joindate' : new Date().getTime(),
 					'password' : hash,
-					'picture' : User.createGravatarURLFromEmail(email)
+					'picture' : User.createGravatarURLFromEmail(email),
+					'reputation': 0
 				});
 				
 				RDB.set('username:' + username + ':uid', uid);
@@ -277,11 +266,11 @@ var	config = require('../config.js'),
 		if(email) {
 			var md5sum = crypto.createHash('md5');
 			md5sum.update(email.toLowerCase());
-			var gravatarURL = 'http://www.gravatar.com/avatar/' + md5sum.digest('hex') + '?s=24';
+			var gravatarURL = 'http://www.gravatar.com/avatar/' + md5sum.digest('hex');
 			return gravatarURL;
 		}
 		else {
-			return "http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=24";	
+			return "http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e";	
 		}
 	}
 
@@ -357,18 +346,23 @@ var	config = require('../config.js'),
 	};
 
 	User.get_username_by_uid = function(uid, callback) {
-		RDB.get('uid:' + uid+ ':username', callback);
+		User.getUserField(uid, 'username', callback);
 	};
 
 	User.get_usernames_by_uids = function(uids, callback) {
-		var userIds = [];
-		for(var i=0, ii=uids.length; i<ii; i++) {
-			userIds.push('uid:' + uids[i] + ':username');
-		}
 		
-		RDB.mget(userIds, function(data) {
-			callback(data);
-		});
+		var usernames = [];
+		
+		for(var i=0, ii=uids.length; i<ii; ++i) {
+		
+			User.get_username_by_uid(uids[i], function(username){
+
+				usernames.push(username);
+
+				if(usernames.length >= uids.length)
+					callback(usernames);
+			});
+		}
 	};
 
 	User.get_user_postdetails = function(uids, callback) {
