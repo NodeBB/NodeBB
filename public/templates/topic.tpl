@@ -37,106 +37,135 @@
 
 
 <script type="text/javascript">
+	(function() {
+		var	locked = '{locked}';
 
-jQuery('document').ready(function() {
-	var room = 'topic_' + '{topic_id}';
-	app.enter_room(room);
-	set_up_posts();
-});
+		jQuery('document').ready(function() {
+			var	room = 'topic_' + '{topic_id}';
 
+			app.enter_room(room);
+			set_up_posts();
 
-ajaxify.register_events(['event:rep_up', 'event:rep_down', 'event:new_post', 'api:get_users_in_room']);
-socket.on('api:get_users_in_room', function(users) {
-	var anonymous = users.anonymous,
-		usernames = users.usernames,
-		usercount = usernames.length;
-
-	for (var i = 0, ii=usercount; i<ii; i++) {
-		usernames[i] = '<strong>' + usernames[i] + '</strong>';
-	}
-
-	// headexplosion.gif for fun, to see if I could do this in one line of code. feel free to refactor haha
-	var active =
-		((usercount === 1) ? usernames[0] : '')
-		+ ((usercount === 2 && anonymous === 0) ? usernames[0] + ' and ' + usernames[1] : '')
-		+ ((usercount > 2 && anonymous === 0) ? usernames.join(', ').replace(/,([^,]*)$/, ", and$1") : '')
-		+ (usercount > 1 && anonymous > 0 ? usernames.join(', ') : '')
-		+ ((anonymous > 0) ? (usercount > 0 ? ' and ': '') + anonymous + ' guest' + (anonymous > 1  ? 's are': ' is') : '')
-		+ (anonymous === 0 ? (usercount > 1 ? ' are' : ' is') : '') + ' browsing this thread';
-
-	document.getElementById('thread_active_users').innerHTML = active;
-});
-
-socket.on('event:rep_up', function(data) {
-	adjust_rep(1, data.pid, data.uid);
-});
-
-socket.on('event:rep_down', function(data) {
-	adjust_rep(-1, data.pid, data.uid);
-});
+			if (locked === '1') set_locked_state(true);
+		});
 
 
-socket.on('event:new_post', function(data) {
-	var html = templates.prepare(templates['topic'].blocks['posts']).parse(data),
-		uniqueid = new Date().getTime();
+		ajaxify.register_events(['event:rep_up', 'event:rep_down', 'event:new_post', 'api:get_users_in_room']);
+		socket.on('api:get_users_in_room', function(users) {
+			var anonymous = users.anonymous,
+				usernames = users.usernames,
+				usercount = usernames.length;
 
-	jQuery('<div id="' + uniqueid + '"></div>').appendTo("#post-container").hide().append(html).fadeIn('slow');	
-	set_up_posts(uniqueid);
-});
+			for (var i = 0, ii=usercount; i<ii; i++) {
+				usernames[i] = '<strong>' + usernames[i] + '</strong>';
+			}
+
+			// headexplosion.gif for fun, to see if I could do this in one line of code. feel free to refactor haha
+			var active =
+				((usercount === 1) ? usernames[0] : '')
+				+ ((usercount === 2 && anonymous === 0) ? usernames[0] + ' and ' + usernames[1] : '')
+				+ ((usercount > 2 && anonymous === 0) ? usernames.join(', ').replace(/,([^,]*)$/, ", and$1") : '')
+				+ (usercount > 1 && anonymous > 0 ? usernames.join(', ') : '')
+				+ ((anonymous > 0) ? (usercount > 0 ? ' and ': '') + anonymous + ' guest' + (anonymous > 1  ? 's are': ' is') : '')
+				+ (anonymous === 0 ? (usercount > 1 ? ' are' : ' is') : '') + ' browsing this thread';
+
+			document.getElementById('thread_active_users').innerHTML = active;
+		});
+
+		socket.on('event:rep_up', function(data) {
+			adjust_rep(1, data.pid, data.uid);
+		});
+
+		socket.on('event:rep_down', function(data) {
+			adjust_rep(-1, data.pid, data.uid);
+		});
+
+
+		socket.on('event:new_post', function(data) {
+			var html = templates.prepare(templates['topic'].blocks['posts']).parse(data),
+				uniqueid = new Date().getTime();
+
+			jQuery('<div id="' + uniqueid + '"></div>').appendTo("#post-container").hide().append(html).fadeIn('slow');	
+			set_up_posts(uniqueid);
+		});
 
 
 
-function adjust_rep(value, pid, uid) {
-	var post_rep = jQuery('.post_rep_' + pid),
-		user_rep = jQuery('.user_rep_' + uid);
+		function adjust_rep(value, pid, uid) {
+			var post_rep = jQuery('.post_rep_' + pid),
+				user_rep = jQuery('.user_rep_' + uid);
 
-	var ptotal = parseInt(post_rep.html(), 10),
-		utotal = parseInt(user_rep.html(), 10);
+			var ptotal = parseInt(post_rep.html(), 10),
+				utotal = parseInt(user_rep.html(), 10);
 
-	ptotal += value;
-	utotal += value;
+			ptotal += value;
+			utotal += value;
 
-	post_rep.html(ptotal);
-	user_rep.html(utotal);
-}
-
-
-function set_up_posts(div) {
-	if (div == null) div = '';
-	else div = '#' + div;
-
-	jQuery(div + ' .post_reply').click(function() {
-		app.open_post_window('reply', "{topic_id}", "{topic_name}");
-	});
-
-	jQuery(div + ' .quote').click(function() {
-		app.open_post_window('quote', "{topic_id}", "{topic_name}");
-
-		// this needs to be looked at, obviously. only single line quotes work well I think maybe replace all \r\n with > ?
-		document.getElementById('post_content').innerHTML = '> ' + document.getElementById('content_' + this.id.replace('quote_', '')).innerHTML;
-	});
-
-	jQuery(div + ' .edit, ' + div + ' .delete').each(function() {
-		var ids = this.id.replace('ids_', '').split('_'),
-			pid = ids[0],
-			uid = ids[1];
-
-	});
-
-	jQuery(div + ' .favourite').click(function() {
-		var ids = this.id.replace('favs_', '').split('_'),
-			pid = ids[0],
-			uid = ids[1];
-
-		
-		if (this.children[1].className == 'icon-star-empty') {
-			this.children[1].className = 'icon-star';
-			socket.emit('api:posts.favourite', {pid: pid, room_id: app.current_room});
+			post_rep.html(ptotal);
+			user_rep.html(utotal);
 		}
-		else {
-			this.children[1].className = 'icon-star-empty';
-			socket.emit('api:posts.unfavourite', {pid: pid, room_id: app.current_room});
+
+
+		function set_up_posts(div) {
+			if (div == null) div = '';
+			else div = '#' + div;
+
+			jQuery(div + ' .post_reply').click(function() {
+				if (locked !== '1') app.open_post_window('reply', "{topic_id}", "{topic_name}");
+			});
+
+			jQuery(div + ' .quote').click(function() {
+				if (locked !== '1') app.open_post_window('quote', "{topic_id}", "{topic_name}");
+
+				// this needs to be looked at, obviously. only single line quotes work well I think maybe replace all \r\n with > ?
+				document.getElementById('post_content').innerHTML = '> ' + document.getElementById('content_' + this.id.replace('quote_', '')).innerHTML;
+			});
+
+			jQuery(div + ' .edit, ' + div + ' .delete').each(function() {
+				var ids = this.id.replace('ids_', '').split('_'),
+					pid = ids[0],
+					uid = ids[1];
+
+			});
+
+			jQuery(div + ' .favourite').click(function() {
+				var ids = this.id.replace('favs_', '').split('_'),
+					pid = ids[0],
+					uid = ids[1];
+
+				
+				if (this.children[1].className == 'icon-star-empty') {
+					this.children[1].className = 'icon-star';
+					socket.emit('api:posts.favourite', {pid: pid, room_id: app.current_room});
+				}
+				else {
+					this.children[1].className = 'icon-star-empty';
+					socket.emit('api:posts.unfavourite', {pid: pid, room_id: app.current_room});
+				}
+			});
 		}
-	});
-}
+
+		function set_locked_state(locked) {
+			var	threadReplyBtn = document.getElementById('post_reply'),
+				postReplyBtns = document.querySelectorAll('#post-container .post_reply'),
+				quoteBtns = document.querySelectorAll('#post-container .quote'),
+				numReplyBtns = postReplyBtns.length,
+				x;
+			if (locked === true) {
+				threadReplyBtn.disabled = true;
+				threadReplyBtn.innerHTML = 'Locked';
+				for(x=0;x<numReplyBtns;x++) {
+					postReplyBtns[x].innerHTML = 'Locked <i class="icon-lock"></i>';
+					quoteBtns[x].style.display = 'none';
+				}
+			} else {
+				threadReplyBtn.disabled = false;
+				threadReplyBtn.innerHTML = 'Reply';
+				for(x=0;x<numReplyBtns;x++) {
+					postReplyBtns[x].innerHTML = 'Reply <i class="icon-reply"></i>';
+					quoteBtns[x].style.display = 'inline-block';
+				}
+			}
+		}
+	})();
 </script>
