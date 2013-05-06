@@ -11,20 +11,24 @@
 	<span class="account-username">{user.username}</span>
 	<br/>		
 		
-	<div class="account-bio-block">
+	<div class="account-picture-block">
 		<img src="{user.picture}?s=128" />
 	</div>
 	
 	<div class="account-bio-block">
-		<span class="account-bio-label">Member for </span>
-		<span>{user.joindate}</span>
+		<span class="account-bio-label">email</span>
+		<span>{user.email}</span>
 		<br/>
 		
-		<span class="account-bio-label">Reputation </span>
+		<span class="account-bio-label">member for</span>
+		<span>{user.joindate}</span>
+		<br/>
+
+		<span class="account-bio-label">reputation</span>
 		<span>{user.reputation}</span>
 		<br/>		
 		
-		<span class="account-bio-label">Posts</span>
+		<span class="account-bio-label">posts</span>
 		<span>{user.postcount}</span>
 	</div>
 	
