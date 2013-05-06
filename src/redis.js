@@ -6,6 +6,8 @@
 		config = require('../config.js'),
 		db = redis.createClient(config.redis.port, config.redis.host, config.redis.options);
 
+	RedisDB.db = db;
+
 	// todo (holy cow): append,auth,bgrewriteaof,bgsave,bitcount,bitop,blpop,brpop,brpoplpush,client kill,client list,client getname,client setname,config get,config set,config resetstat,dbsize,debug object,debug segfault,decrby,discard,dump,echo,eval,evalsha,exec,exists,expireat,flushall,flushdb,getbit,getrange,getset,hdel,hexists,hget,hgetall,hincrby,hincrbyfloat,hkeys,hlen,hmget,hmset,hset,hsetnx,hvals,incrby,incrbyfloat,info,lastsave,lindex,linsert,llen,lpop,lpushx,lrem,lset,ltrim,migrate,monitor,move,mset,msetnx,object,persist,pexpire,pexpireat,ping,psetex,psubscribe,pttl,publish,punsubscribe,quit,randomkey,rename,renamenx,restore,rpop,rpoplpush,rpush,rpushx,sadd,save,scard,script exists,script flush,script kill,script load,sdiff,sdiffstore,select,setbit,setex,setnx,setrange,shutdown,sinter,sinterstore,sismember,slaveof,slowlog,smembers,smove,sort,spop,srandmember,srem,strlen,subscribe,sunion,sunionstore,sync,time,ttl,type,unsubscribe,unwatch,watch,zadd,zcard,zcount,zincrby,zinterstore,zrange,zrangebyscore,zrank,zrem,zremrangebyrank,zremrangebyscore,zrevrange,zrevrangebyscore,zrevrank,zscore,zunionstore
 	// done: get, set, incr, decr, del, mget, multi, expire, lpush, lrange, keys
 

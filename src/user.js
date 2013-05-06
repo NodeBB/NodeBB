@@ -8,137 +8,67 @@ var	config = require('../config.js'),
 
 (function(User) {
 
-	User.get = function(socket, uid, fields) {
-		if (uid > 0) {
-			var	keys = [],
-				returnData = {
-					uid: uid
-				},
-				removeEmail = false;
 
-			if (!(fields instanceof Array)) 
-				fields = ['username', 'email', 'joindate'];
-
-			if (fields.indexOf('picture') !== -1 && fields.indexOf('email') === -1) {
-				fields.push('email');
-				removeEmail = true;
-			}
-
-			for(var f = 0, numFields = fields.length; f<numFields; f++) {
-				keys.push('uid:' + uid + ':' + fields[f]);
-			}
-
-			RDB.mget(keys, function(data) {
-				for(var x=0,numData=data.length;x<numData;x++) {
-					returnData[fields[x]] = data[x];
-				}
+	User.getUserField = function(uid, field, callback) {
+		RDB.db.hget(String(uid), field, function(err, data){
+			if(err === null)
+				callback(data);
+			else
+				console.log(err);
+		});
+	}
+	
+	User.getUserFields = function(uid, fields, callback) {
+		RDB.db.hmget(String(uid), fields, function(err, data){
+			if(err === null) {
+				var returnData = {};
 				
-				if (returnData.picture !== undefined) {
-					var	md5sum = crypto.createHash('md5');
-					if (!returnData.email) returnData.email = '';
-					md5sum.update(returnData.email.toLowerCase());
-					returnData.picture = 'http://www.gravatar.com/avatar/' + md5sum.digest('hex') + '?s=24';
-					if (removeEmail) delete returnData.email;
+				for(var i=0, ii=fields.length; i<ii; ++i) {
+					returnData[fields[i]] = data[i];
 				}
-				socket.emit('api:user.get', returnData);
-			});
-		} else {
-			socket.emit('api:user.get', {
-				username: "Anonymous User",
-				email: '',
-				picture: 'http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=24'
-			});
-		}
+
+				callback(returnData);
+			}
+			else
+				console.log(err);
+		});		
 	}
 
 	User.getUserData = function(uid, callback) {
-		var fields = ['username', 'email', 'joindate', 'picture'];
-		var keys = [];
-		
-		for(var i = 0, numFields = fields.length; i<numFields; i++) {
-			keys.push('uid:' + uid + ':' + fields[i]);
-		}
-		
-		RDB.mget(keys, function(data) {
-			
-			var returnData = {
-				uid: uid
-			};
-			
-			for(var i=0, numData=data.length; i<numData; i++) {
-				returnData[fields[i]] = data[i];
-			}
-				
-			var md5sum = crypto.createHash('md5');
-			
-			md5sum.update(returnData.email.toLowerCase());
-			returnData.picture = 'http://www.gravatar.com/avatar/' + md5sum.digest('hex') + '?s=24';
 
-			callback(returnData);
-	
+		RDB.db.hgetall(String(uid), function(err, data){
+			if(err === null)
+			{
+				if(data && data['password'])
+					delete data['password'];
+				callback(data);
+			}
+			else
+				console.log(err);
 		});
-		
 	}
 
+	User.setUserField = function(uid, field, value) {
+		RDB.db.hset(String(uid),	field, value);				
+	}
 
 	User.get_gravatars_by_uids = function(uids, size, callback) {
-		var keys = [];
-		for (var i = 0, ii= uids.length; i<ii; i++) {
-			keys.push('uid:' + uids[i] + ':email');
-		}
-
+		
 		var gravatars = [];
-		
 
-		RDB.mget(keys, function(data) {
-			for (var i=0, ii=data.length; i<ii; i++) {
-				if (!data[i]) {
-					gravatars.push("http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=" + size);
-				} else {
-					var	md5sum = crypto.createHash('md5');
-					md5sum.update((data[i]).toLowerCase());
-					gravatars.push('http://www.gravatar.com/avatar/' + md5sum.digest('hex') + '?s=' + size);	
-				}
-				
-			}
-
-			callback(gravatars);
-		});
-		
-	};
-
-	User.login = function(socket, user) {
-		if (user.username == null || user.password == null) {
-			return socket.emit('user.login', {'status': 0, 'message': 'Missing fields'});
-		}
-
-		RDB.get('username:' + user.username + ':uid', function(uid) {
-			if (uid == null) {
-				return socket.emit('user.login', {'status': 0, 'message': 'Username does not exist.'});
-			}
-
-			RDB.get('uid:' + uid + ':password', function(password) {
-				if (user.password != password) {
-					return socket.emit('user.login', {'status': 0, 'message': 'Incorrect username / password combination.'});
-				} else {
-					// Start, replace, or extend a session
-					RDB.get('sess:' + user.sessionID, function(session) {
-						if (session !== user.sessionID) {
-							RDB.set('sess:' + user.sessionID + ':uid', uid, 60*60*24*14);	// Login valid for two weeks
-							RDB.set('uid:' + uid + ':session', user.sessionID, 60*60*24*14);
-						} else {
-							RDB.expire('sess:' + user.sessionID + ':uid', 60*60*24*14);	// Defer expiration to two weeks from now
-							RDB.expire('uid:' + uid + ':session', 60*60*24*14);
-						}
-					});
-
-					return socket.emit('user.login', {'status': 1, 'message': 'Logged in!'});
-				}
+		for(var i=0, ii=uids.length; i<ii; ++i) {
+						
+			User.getUserField(uids[i], 'picture', function(picture) {
+				console.log(picture);
+				gravatars.push(picture);
+				if(gravatars.length >= uids.length)
+					callback(gravatars);
 			});
-		});
+		}
 	};
 
 	User.loginViaLocal = function(username, password, next) {
+
 		if (!username || !password) {
 			return next({
 				status: 'error',
@@ -152,8 +82,9 @@ var	config = require('../config.js'),
 						message: 'invalid-user'
 					});
 				}
-
-				RDB.get('uid:' + uid + ':password', function(user_password) {
+				
+				User.getUserField(uid, 'password', function(user_password) {
+					
 					bcrypt.compare(password, user_password, function(err, res) {
 						if (res === true) {
 							next({
@@ -260,56 +191,36 @@ var	config = require('../config.js'),
 	}
 
 	User.create = function(username, password, email, callback) {
-		User.exists(null, username, function(exists) {
-			if (exists) {
-				return callback('user-exists', 0);
-			}
 
-			RDB.incr('global:next_user_id', function(uid) {
+		if(!username) {
+			console.log("invalid registration data! username ["+username+"], password ["+password+"], email ["+email+"]");
+			return;
+		}
+	
+		// TODO : check if username email is unique!! -baris
+	
+
+		RDB.incr('global:next_user_id', function(uid) {
+			
+			console.log("Registering uid : " + uid);
+
+			User.hashPassword(password, function(hash) {
+
+				RDB.db.hmset(String(uid), {
+					'username' : username,
+					'email' : email,
+					'joindate' : new Date().getTime(),
+					'password' : hash,
+					'picture' : User.createGravatarURLFromEmail(email),
+					'reputation': 0
+				});
+				
 				RDB.set('username:' + username + ':uid', uid);
-				RDB.set('uid:' + uid + ':username', username);
-				if (password) {
-					bcrypt.genSalt(10, function(err, salt) {
-						bcrypt.hash(password, salt, function(err, hash) {
-							RDB.set('uid:' + uid + ':password', hash);
-						});
-					});
-				}
+				RDB.set('email:' + email +':uid', uid);			
 				
-				if (email) {
-					var	confirm_code = utils.generateUUID(),
-						confirm_link = config.url + 'confirm/' + confirm_code,
-						confirm_email = global.templates['emails/header'] + global.templates['emails/email_confirm'].parse({'CONFIRM_LINK': confirm_link}) + global.templates['emails/footer'],
-						confirm_email_plaintext = global.templates['emails/email_confirm_plaintext'].parse({ 'CONFIRM_LINK': confirm_link });
-
-					RDB.set('uid:' + uid + ':email', email);
-					RDB.set('email:' + email, uid);
-
-					// Email confirmation code
-					RDB.set('email:' + email + ':confirm', confirm_code, 60*60*2);
-					RDB.set('confirm:' + confirm_code + ':email', email, 60*60*2);	// Expire after 2 hours
-
-					// Send intro email w/ confirm code
-					var message = emailjs.message.create({
-						text: confirm_email_plaintext,
-						from: config.mailer.from,
-						to: email,
-						subject: '[NodeBB] Registration Email Verification',
-						attachment: [
-							{
-								data: confirm_email,
-								alternative: true
-							}
-						]
-					});
-					
-					emailjsServer.send(message, function(err, success) {
-						if (err) console.log(err);
-					});
-				}
-				
-				RDB.set('uid:' + uid + ':joindate', new Date().getTime());
-				
+				if(email)
+					User.sendConfirmationEmail(email);
+			
 				RDB.incr('user:count', function(count) {
 					io.sockets.emit('user.count', {count: count});
 				});
@@ -318,17 +229,77 @@ var	config = require('../config.js'),
 				io.sockets.emit('user.latest', {username: username});
 
 				callback(null, uid);
+				
+			});
+
+		});
+
+	};
+
+	User.createGravatarURLFromEmail = function(email) {
+		if(email) {
+			var md5sum = crypto.createHash('md5');
+			md5sum.update(email.toLowerCase());
+			var gravatarURL = 'http://www.gravatar.com/avatar/' + md5sum.digest('hex');
+			return gravatarURL;
+		}
+		else {
+			return "http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e";	
+		}
+	}
+
+	User.hashPassword = function(password, callback) {
+		if(!password) {
+			callback(password);
+			return;
+		}
+		
+		bcrypt.genSalt(10, function(err, salt) {
+			bcrypt.hash(password, salt, function(err, hash) {
+				callback(hash);	
 			});
 		});
-	};
+	}
+
+	User.sendConfirmationEmail = function (email) {
+		var confirm_code = utils.generateUUID(),
+			confirm_link = config.url + 'confirm/' + confirm_code,
+			confirm_email = global.templates['emails/header'] + global.templates['emails/email_confirm'].parse({'CONFIRM_LINK': confirm_link}) + global.templates['emails/footer'],
+			confirm_email_plaintext = global.templates['emails/email_confirm_plaintext'].parse({ 'CONFIRM_LINK': confirm_link });
+
+		// Email confirmation code
+		RDB.set('email:' + email + ':confirm', confirm_code, 60*60*2);
+		RDB.set('confirm:' + confirm_code + ':email', email, 60*60*2);	// Expire after 2 hours
+
+			// Send intro email w/ confirm code
+		var message = emailjs.message.create({
+			text: confirm_email_plaintext,
+			from: config.mailer.from,
+			to: email,
+			subject: '[NodeBB] Registration Email Verification',
+			attachment: [
+				{
+					data: confirm_email,
+					alternative: true
+				}
+			]
+		});
+			
+		emailjsServer.send(message, function(err, success) {
+			if (err) 
+				console.log(err);
+		});	
+	}
 
 
 	User.exists = function(socket, username, callback) {
 		User.get_uid_by_username(username, function(exists) {
 			exists = !!exists;
 
-			if (callback) callback(exists);
-			else socket.emit('user.exists', {exists: exists});
+			if (callback) 
+				callback(exists);
+			else 
+				socket.emit('user.exists', {exists: exists});
 		});
 	};
 	
@@ -349,42 +320,50 @@ var	config = require('../config.js'),
 	};
 
 	User.get_username_by_uid = function(uid, callback) {
-		RDB.get('uid:' + uid+ ':username', callback);
+		User.getUserField(uid, 'username', callback);
 	};
 
 	User.get_usernames_by_uids = function(uids, callback) {
-		var userIds = [];
-		for(var i=0, ii=uids.length; i<ii; i++) {
-			userIds.push('uid:' + uids[i] + ':username');
-		}
 		
-		RDB.mget(userIds, function(data) {
-			callback(data);
-		});
+		var usernames = [];
+		
+		for(var i=0, ii=uids.length; i<ii; ++i) {
+		
+			User.get_username_by_uid(uids[i], function(username){
+
+				usernames.push(username);
+
+				if(usernames.length >= uids.length)
+					callback(usernames);
+			});
+		}
 	};
 
 	User.get_user_postdetails = function(uids, callback) {
-		var username = [],
-			rep = [];
-
-		for(var i=0, ii=uids.length; i<ii; i++) {
-			username.push('uid:' + uids[i] + ':username');
-			rep.push('uid:' + uids[i] + ':rep');
-		}
 		
-		RDB.multi()
-			.mget(username)
-			.mget(rep)
-			.exec(function(err, replies) {
-				callback({
-					'username': replies[0],
-					'rep' : replies[1]
-				});
+		var usernames = [];
+		var reputations = [];
+		
+		for(var i=0, ii=uids.length; i<ii; ++i) {
+		
+			User.getUserFields(uids[i], ['username','reputation'], function(data){
+				
+				usernames.push(data['username']);
+				reputations.push(data['reputation']);
+				
+				if(usernames.length >= uids.length) {
+					
+					callback({
+						'username':usernames,
+						'rep':reputations
+					});
+				}
 			});
+		}
 	}
 
 	User.get_uid_by_email = function(email, callback) {
-		RDB.get('email:' + email, callback)
+		RDB.get('email:' + email + ':uid', callback)
 	};
 
 	User.get_uid_by_session = function(session, callback) {
@@ -494,7 +473,8 @@ var	config = require('../config.js'),
 			this.validate(code, function(validated) {
 				if (validated) {
 					RDB.get('reset:' + code + ':uid', function(uid) {
-						RDB.set('uid:' + uid + ':password', password);
+
+						RDB.db.hset(String(uid), 'password', password);
 						RDB.del('reset:' + code + ':uid');
 						RDB.del('reset:' + code + ':expiry');
 

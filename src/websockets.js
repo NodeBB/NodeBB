@@ -5,7 +5,12 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 
 (function(io) {
 	var	modules = null,
-			users = {};
+			users = {},
+			rooms = {
+				'users' : {},
+				'anonymous' : {}
+			};
+
 	global.io = io;
 	module.exports.init = function() {
 		modules = global.modules;
@@ -51,11 +56,11 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 			modules.templates.init();
 		}
 		
-		process.on('uncaughtException', function(err) {
+		/*process.on('uncaughtException', function(err) {
     		// handle the error safely
     		console.log("error message "+err);
     		socket.emit('event:consolelog',{type:'uncaughtException', stack:err.stack, error:err.toString()});
-		});
+		});*/
 
 		socket.emit('event:connect', {status: 1});
 		
@@ -67,14 +72,62 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
    		});
 
 		
-		// BEGIN: API calls (todo: organize)
-		//   julian: :^)
-		socket.on('event:enter_room', function(room) {
-			socket.join(room);
+
+		socket.on('event:enter_room', function(data) {
+			if (data.leave !== null) socket.leave (data.leave);
+			socket.join(data.enter);
+
+			rooms.users[data.enter] = rooms.users[data.enter] || {};
+			if (uid) {
+				rooms.users[data.enter][uid] = true;
+				if (rooms.users[data.leave]) {
+					delete rooms.users[data.leave][uid];
+				}
+			} else {
+				rooms.anonymous[data.enter] = (rooms.anonymous[data.enter] || 0) + 1;
+				rooms.anonymous[data.leave] = rooms.anonymous[data.leave] || 0;
+			}
+
+			var uids = Object.keys(rooms.users[data.enter] || {});
+
+			if (uids.length == 0) {
+				socket.emit('api:get_users_in_room', {
+					usernames: [],
+					uids: [],
+					anonymous: rooms.anonymous[data.enter] || 0
+				});
+			}
+			modules.user.get_usernames_by_uids(uids, function(usernames) {
+				socket.emit('api:get_users_in_room', {
+					usernames: usernames,
+					uids: uids,
+					anonymous: rooms.anonymous[data.enter] || 0
+				});
+			});
+
+			
 		});
 
-		socket.on('api:user.get', function(data) {
-			modules.user.get(socket, uid, data.fields);
+		// BEGIN: API calls (todo: organize)
+		//   julian: :^)
+
+		socket.on('api:updateHeader', function(data) {
+			if(uid) {
+						
+				modules.user.getUserFields(uid, data.fields, function(fields) {
+					fields.uid = uid;
+					socket.emit('api:updateHeader', fields);
+				});
+			}
+			else {
+				socket.emit('api:updateHeader', {
+					uid:0,
+					username: "Anonymous User",
+					email: '',
+					picture: 'http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=24'
+				});
+			}
+				
 		});
 		
 		socket.on('api:user.getNameByUid', function(data) {
@@ -93,11 +146,6 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 
 		socket.on('user.latest', function(data) {
 			modules.user.latest(socket, data);
-		});
-
-		socket.on('user.login', function(data) {
-			data.sessionID = sessionID;
-			modules.user.login(socket, data);
 		});
 
 		socket.on('user.email.exists', function(data) {

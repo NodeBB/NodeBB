@@ -2,9 +2,8 @@
 	<ul class="breadcrumb">
 		<li><a href="/">Home</a> <span class="divider">/</span></li>
 		<li class="active">{topic_name}</li>
+		<div id="thread_active_users"></div>
 	</ul>
-
-	<small>psychobunny, null, and 2 guests are browsing this thread</small><br />
 </div>
 
 <ul id="post-container" class="post-container container">
@@ -38,15 +37,35 @@
 
 
 <script type="text/javascript">
+
 jQuery('document').ready(function() {
-	// join room for this thread - DRY failure, see ajaxify and app.js
-	socket.emit('event:enter_room', 'topic_' + '{topic_id}');
-	current_room = 'topic_' + '{topic_id}';
+	var room = 'topic_' + '{topic_id}';
+	app.enter_room(room);
 	set_up_posts();
 });
 
 
-ajaxify.register_events(['event:rep_up', 'event:rep_down', 'event:new_post']);
+ajaxify.register_events(['event:rep_up', 'event:rep_down', 'event:new_post', 'api:get_users_in_room']);
+socket.on('api:get_users_in_room', function(users) {
+	var anonymous = users.anonymous,
+		usernames = users.usernames,
+		usercount = usernames.length;
+
+	for (var i = 0, ii=usercount; i<ii; i++) {
+		usernames[i] = '<strong>' + usernames[i] + '</strong>';
+	}
+
+	// headexplosion.gif for fun, to see if I could do this in one line of code. feel free to refactor haha
+	var active =
+		((usercount === 1) ? usernames[0] : '')
+		+ ((usercount === 2 && anonymous === 0) ? usernames[0] + ' and ' + usernames[1] : '')
+		+ ((usercount > 2 && anonymous === 0) ? usernames.join(', ').replace(/,([^,]*)$/, ", and$1") : '')
+		+ (usercount > 1 && anonymous > 0 ? usernames.join(', ') : '')
+		+ ((anonymous > 0) ? (usercount > 0 ? ' and ': '') + anonymous + ' guest' + (anonymous.length > 1  ? 's are': ' is') : '')
+		+ (anonymous === 0 ? (usercount > 1 ? ' are' : ' is') : '') + ' browsing this thread';
+
+	document.getElementById('thread_active_users').innerHTML = active;
+});
 
 socket.on('event:rep_up', function(data) {
 	adjust_rep(1, data.pid, data.uid);
@@ -56,6 +75,7 @@ socket.on('event:rep_down', function(data) {
 	adjust_rep(-1, data.pid, data.uid);
 });
 
+
 socket.on('event:new_post', function(data) {
 	var html = templates.prepare(templates['topic'].blocks['posts']).parse(data),
 		uniqueid = new Date().getTime();
@@ -63,6 +83,8 @@ socket.on('event:new_post', function(data) {
 	jQuery('<div id="' + uniqueid + '"></div>').appendTo("#post-container").hide().append(html).fadeIn('slow');	
 	set_up_posts(uniqueid);
 });
+
+
 
 function adjust_rep(value, pid, uid) {
 	var post_rep = jQuery('.post_rep_' + pid),
@@ -109,11 +131,11 @@ function set_up_posts(div) {
 		
 		if (this.children[1].className == 'icon-star-empty') {
 			this.children[1].className = 'icon-star';
-			socket.emit('api:posts.favourite', {pid: pid, room_id: current_room});
+			socket.emit('api:posts.favourite', {pid: pid, room_id: app.current_room});
 		}
 		else {
 			this.children[1].className = 'icon-star-empty';
-			socket.emit('api:posts.unfavourite', {pid: pid, room_id: current_room});
+			socket.emit('api:posts.unfavourite', {pid: pid, room_id: app.current_room});
 		}
 	});
 }

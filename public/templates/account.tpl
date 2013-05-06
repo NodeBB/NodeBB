@@ -18,6 +18,10 @@
 	<span>Member for </span>
 	<span id="membersince">{user.joindate}</span>
 	<br/>
+	
+	<span>Reputation </span>
+	<span id="membersince">{user.reputation}</span>
+	<br/>
 
 
 	<!-- END user -->

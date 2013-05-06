@@ -124,7 +124,7 @@ passport.deserializeUser(function(uid, done) {
 
 	// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 	(function() {
-		var routes = ['', 'login', 'register'];
+		var routes = ['', 'login', 'register', 'account'];
 
 		for (var i=0, ii=routes.length; i<ii; i++) {
 			(function(route) {
@@ -177,6 +177,11 @@ passport.deserializeUser(function(uid, done) {
 					global.modules.posts.get(function(data) {
 						res.send(JSON.stringify(data));
 					}, req.params.id, (req.user) ? req.user.uid : 0);
+				break;
+			case 'account' : 
+					get_account_fn(req, res, function(userData) {
+						res.send(JSON.stringify(userData));
+					});
 				break;
 			case 'confirm':
 					global.modules.user.email.confirm(req.params.id, function(data) {
@@ -270,7 +275,28 @@ passport.deserializeUser(function(uid, done) {
 		});
 	});
 
-	app.get('/account', function(req, res) {
+	app.get('/baristest', function(req, res) {
+		/*user.getUserField(req.user.uid, 'email', function(data) {
+			console.log(" I GOT FIELD " +data);
+		});*/
+/*		user.getUserData(req.user.uid, function(data) {
+			console.log(" USER DATA : " + JSON.stringify(data));
+		});*/
+//		user.getUserFields(req.user.uid, ['email','username'], function(data) {
+		/*user.getUserFields(req.user.uid, ['username','email'], function(data) {
+			console.log(" I GOT FIELDS " +JSON.stringify(data));
+		});*/
+		
+		user.get_usernames_by_uids(["17","1"], function(data){
+			console.log("I GOT "+JSON.stringify(data));
+			
+		});
+	});
+
+	//to baris, move this into account.js or sth later - just moved this out here for you to utilize client side tpl parsing
+	//I didn't want to change too much so you should probably sort out the params etc
+	function get_account_fn(req, res, callback) {
+		console.log("GOING TO ACCOUNT");
 
  		if (req.user === undefined) 
  			return res.redirect('/403');
@@ -278,13 +304,26 @@ passport.deserializeUser(function(uid, done) {
 		user.getUserData(req.user.uid, function(data) {
 
 			data.joindate = utils.relativeTime(data.joindate);
-			var account = templates['account'];
-			var userData = {user:data};
-			account = account.parse(userData);
+
+			console.log("user data" + JSON.stringify(data));
 			
-			res.send(templates['header'] + account + templates['footer']);
+			var userData = {user:data};
+			callback(userData);
 		});
+	}
+
+	
+	app.get('/uid/:uid', function(req, res) {
 		
+		if(!req.params.uid)
+			return res.redirect('/403');
+		
+		user.getUserData(req.params.uid, function(data){
+			if(data)
+				res.send(data);
+			else
+				res.send("User doesn't exist!");
+		});
 		
 	});
 
