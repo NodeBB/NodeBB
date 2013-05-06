@@ -340,26 +340,29 @@ var	config = require('../config.js'),
 	};
 
 	User.get_user_postdetails = function(uids, callback) {
-		
+
+		var multi_queue = RDB.db.multi();
+
+		for(var i=0, ii=uids.length; i<ii; ++i) {
+			multi_queue = multi_queue.hmget(uids[i], 'username', 'reputation');
+		}
+
 		var usernames = [];
 		var reputations = [];
 		
-		for(var i=0, ii=uids.length; i<ii; ++i) {
-		
-			User.getUserFields(uids[i], ['username','reputation'], function(data){
-				
-				usernames.push(data['username']);
-				reputations.push(data['reputation']);
-				
-				if(usernames.length >= uids.length) {
-					
-					callback({
-						'username':usernames,
-						'rep':reputations
-					});
-				}
+		multi_queue.exec(function (err, replies) {
+			
+		  	replies.forEach(function (reply, index) {
+				usernames.push(reply[0]);
+				reputations.push(reply[1]);
 			});
-		}
+			
+			callback({
+				'username':usernames,
+				'rep':reputations
+			});
+			
+		});
 	}
 
 	User.get_uid_by_email = function(email, callback) {
