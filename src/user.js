@@ -34,6 +34,27 @@ var	config = require('../config.js'),
 		});		
 	}
 
+	// a function I feel should be built in user not sure how baris is tackling this so oppa chicken wrapper here
+	User.getMultipleUserFields = function(uids, fields, callback) {
+		var uuids = uids.filter(function(value, index, self) { 
+		    return self.indexOf(value) === index;
+		});
+
+		var data = {},
+			loaded = 0;
+
+
+		for (var i=0, ii=uuids.length; i<ii; i++) {
+			(function(user_id) {
+				User.getUserFields(user_id, fields, function(user_data){
+					data[user_id] = user_data;
+					loaded ++;
+					if (loaded == uuids.length) callback(data);
+				});
+			}(uuids[i]))
+		}
+	}
+
 	User.getUserData = function(uid, callback) {
 
 		RDB.db.hgetall(String(uid), function(err, data){

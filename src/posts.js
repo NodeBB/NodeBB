@@ -5,152 +5,98 @@ var	RDB = require('./redis.js'),
 	async = require('async');
 
 (function(Posts) {
-	//data structure
-	//*global:next_post_id
-	// *pid:1:content
-	// *pid:1:uid
-	// *pid:1:timestamp
-	// ***pid:1:replies
-	// *uid:1:posts
-
-
 
 	Posts.get = function(callback, tid, current_user, start, end) {
 		if (start == null) start = 0;
 		if (end == null) end = start + 10;
 
-		async.parallel({
-			details: function(callback) {
-				RDB.mget([
-					'tid:' + tid + ':title',
-					'tid:' + tid + ':locked'
-				], function(results) {
-					callback(null, {
-						'topic_name': results[0],
-						'locked': results[1]
+		var post_data, user_data, thread_data, vote_data;
+
+
+		//compile thread after all data is asynchronously called
+		function generateThread() {
+			if (!post_data ||! user_data || !thread_data || !vote_data) return;
+
+			var posts = [];
+
+			for (var i=0, ii= post_data.pid.length; i<ii; i++) {
+				var uid = post_data.uid[i],
+					pid = post_data.pid[i];
+					
+				posts.push({
+					'pid' : pid,
+					'uid' : uid,
+					'content' : marked(post_data.content[i] || ''),
+					'post_rep' : post_data.reputation[i] || 0,
+					'timestamp' : post_data.timestamp[i],
+					'relativeTime': utils.relativeTime(post_data.timestamp[i]),
+					'username' : user_data[uid].username || 'anonymous',
+					'user_rep' : user_data[uid].reputation || 0,
+					'gravatar' : user_data[uid].picture,
+					'fav_star_class' : vote_data[pid] ? 'icon-star' : 'icon-star-empty',
+					'display_moderator_tools' : uid === current_user ? 'show' : 'hide'
+				});
+			}
+
+			callback({
+				'topic_name':thread_data.topic_name,
+				'locked': parseInt(thread_data.locked) || 0,
+				'topic_id': tid,
+				'posts': posts
+			});
+		}
+
+
+		// get all data for thread in asynchronous fashion
+		RDB.lrange('tid:' + tid + ':posts', start, end, function(pids) {
+			var content = [], uid = [], timestamp = [], pid = [], post_rep = [];
+
+			for (var i=0, ii=pids.length; i<ii; i++) {
+				content.push('pid:' + pids[i] + ':content');
+				uid.push('pid:' + pids[i] + ':uid');
+				timestamp.push('pid:' + pids[i] + ':timestamp');
+				post_rep.push('pid:' + pids[i] + ':rep');		
+				pid.push(pids[i]);
+			}
+
+			RDB.get('tid:' + tid + ':title', function(topic_name) {
+				thread_data = {topic_name: topic_name};
+				generateThread();
+			});
+
+			Posts.getFavouritesByPostIDs(pids, current_user, function(fav_data) {
+				vote_data = fav_data;
+				generateThread();
+			});
+
+
+			RDB.multi()
+				.mget(content)
+				.mget(uid)
+				.mget(timestamp)
+				.mget(post_rep)
+				.get('tid:' + tid + ':title')
+				.get('tid:' + tid + ':locked')
+				.exec(function(err, replies) {
+					post_data = {
+						pid: pids,
+						content: replies[0],
+						uid: replies[1],
+						timestamp: replies[2],
+						reputation: replies[3]
+					};
+
+					thread_data = {
+						topic_name: replies[4],
+						locked: replies[5]
+					};
+
+					user.getMultipleUserFields(post_data.uid, ['username','reputation','picture'], function(user_details){
+						user_data = user_details;
+						generateThread();
 					});
 				});
-			},
-			posts: function(callback) {
-				var participant_uids = [],
-					post_calls = [];
-				
-				async.waterfall([
-					function(next) {
-						RDB.lrange('tid:' + tid + ':posts', start, end, function(pids) {
-							var content = [],
-								uids = [],
-								participants = [],
-								timestamp = [],
-								pid = [],
-								post_rep = [];
-
-							for (var i=0, ii=pids.length; i<ii; i++) {
-								content.push('pid:' + pids[i] + ':content');
-								uids.push('pid:' + pids[i] + ':uid');
-								timestamp.push('pid:' + pids[i] + ':timestamp');
-								post_rep.push('pid:' + pids[i] + ':rep');		
-								pid.push(pids[i]);
-							}
-
-							if (pids.length > 0) {
-								RDB.multi()
-									.mget(content)
-									.mget(uids)
-									.mget(timestamp)
-									.mget(post_rep)
-									.exec(function(err, replies) {
-										// Populate uids array
-										for(var x=0,numReplies=replies[1].length;x<numReplies;x++) {
-											var uid = parseInt(replies[1][x]);
-											if (participants.indexOf(uid) === -1) participants.push(uid);
-										}
-
-										// Construct return object
-										next(null, {
-											replies: replies,
-											pids: pids,
-											participants: participants
-										});
-									}
-								);
-							}
-						});
-					}, function(returnObj, next) {
-						// Get user details
-						var details = {},
-							calls = [];
-
-						for(var x=0,numParticipants=returnObj.participants.length;x<numParticipants;x++) {
-							(function(uid) {
-								calls.push(function(next) {
-									// Get individual participant's details
-									user.getUserData(uid, function(userData) {
-										next(null, userData);
-									})
-								});
-							})(returnObj.participants[x]);
-						}
-						async.parallel(calls, function(err, results) {
-							for(var x=0,numResults=results.length;x<numResults;x++) {
-								details[returnObj.participants[x]] = results[x];
-							}
-							returnObj.participants = details;
-							next(null, returnObj);
-						});
-					}, function(returnObj, next) {
-						// Favourited?
-						var	calls = [],
-							numPosts = returnObj.pids.length;
-
-						for(var x=0;x<numPosts;x++) {
-							(function(pid) {
-								calls.push(function(callback) {
-									Posts.hasFavourited(pid, current_user, function(hasFavourited) {
-										callback(null, hasFavourited);
-									});
-								});
-							})(returnObj.pids[x]);
-						}
-						async.parallel(calls, function(err, results) {
-							returnObj.favourites = results;
-							next(null, returnObj);
-						});
-					}
-				], function(err, returnObj) {
-					callback(null, returnObj);
-				});
-			}
-		}, function(err, results) {
-			// Construct posts array
-			var posts = [],
-				participant_details = results.posts.participants;
-			for(var x=0,numPosts=results.posts.pids.length;x<numPosts;x++) {
-				var uid = results.posts.replies[1][x],
-					participant = participant_details[uid];
-				posts.push({
-					pid: results.posts.pids[x],
-					content: marked(results.posts.replies[0][x] || ''),
-					uid: uid,
-					timestamp: results.posts.replies[2][x],
-					relativeTime: utils.relativeTime(results.posts.replies[2][x]),
-					post_rep: results.posts.replies[3][x],
-					display_moderator_tools: results.posts.replies[1][x] === current_user ? 'show' : 'hide',
-					username: participant.username,
-					gravatar: participant.picture,
-					user_rep: participant.reputation,
-					fav_star_class: results.posts.favourites[x] ? 'icon-star' : 'icon-star-empty',
-				});
-			}
-
-			// Construct return object
-			callback({
-				'topic_name': results.details.topic_name,
-				'locked': parseInt(results.details.locked) || 0,
-				'topic_id': tid,
-				posts: posts,
-				uids: results.posts.participants
-			});
+			
 		});
 	}
 
@@ -267,5 +213,20 @@ var	RDB = require('./redis.js'),
 		RDB.sismember('pid:' + pid + ':users_favourited', uid, function(hasFavourited) {
 			callback(hasFavourited);
 		});
+	}
+
+	Posts.getFavouritesByPostIDs = function(pids, uid, callback) {
+		var loaded = 0;
+		var data = {};
+
+		for (var i=0, ii=pids.length; i<ii; i++) {
+			(function(post_id) {
+				Posts.hasFavourited(post_id, uid, function(hasFavourited){
+					data[post_id] = hasFavourited;
+					loaded ++;
+					if (loaded == pids.length) callback(data);
+				});
+			}(pids[i]))
+		}
 	}
 }(exports));
