@@ -21,9 +21,13 @@ var	RDB = require('./redis.js'),
 
 		async.parallel({
 			details: function(callback) {
-				RDB.get('tid:' + tid + ':title', function(topic_name) {
+				RDB.mget([
+					'tid:' + tid + ':title',
+					'tid:' + tid + ':locked'
+				], function(results) {
 					callback(null, {
-						'topic_name': topic_name
+						'topic_name': results[0],
+						'locked': results[1]
 					});
 				});
 			},
@@ -142,6 +146,7 @@ var	RDB = require('./redis.js'),
 			// Construct return object
 			callback({
 				'topic_name': results.details.topic_name,
+				'locked': parseInt(results.details.locked) || 0,
 				'topic_id': tid,
 				posts: posts,
 				uids: results.posts.participants
