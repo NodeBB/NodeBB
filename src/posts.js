@@ -196,6 +196,7 @@ var	RDB = require('./redis.js'),
 			RDB.set('pid:' + pid + ':content', content);
 			RDB.set('pid:' + pid + ':uid', uid);
 			RDB.set('pid:' + pid + ':timestamp', new Date().getTime());
+			RDB.set('pid:' + pid + ':rep', 0);
 			
 			RDB.incr('tid:' + tid + ':postcount');
 			
