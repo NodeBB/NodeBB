@@ -162,29 +162,28 @@ var	RDB = require('./redis.js'),
 				timeout: 2000
 			});
 
-			user.get_user_postdetails(uid, function(user_details) {
-				user.get_gravatars_by_uids(uid, '', function(gravatars) {
-					var timestamp = new Date().getTime();
+		
+			user.getUserFields(uid, ['username','reputation','picture'], function(data){
+				
+				var timestamp = new Date().getTime();
 
-					socket.in('topic_' + tid).emit('event:new_post', {
-						'posts' : [
-							{
-								'pid' : pid,
-								'content' : marked(content || ''),
-								'uid' : uid,
-								'username' : user_details.username[0] || 'anonymous',
-								'user_rep' : user_details.rep[0] || 0,
-								'post_rep' : 0,
-								'gravatar' : gravatars[0],
-								'timestamp' : timestamp,
-								'relativeTime': utils.relativeTime(timestamp),
-								'fav_star_class' :'icon-star-empty' 
-							}
-						]
-					});
+				socket.in('topic_' + tid).emit('event:new_post', {
+					'posts' : [
+						{
+							'pid' : pid,
+							'content' : marked(content || ''),
+							'uid' : uid,
+							'username' : data.username || 'anonymous',
+							'user_rep' : data.reputation || 0,
+							'post_rep' : 0,
+							'gravatar' : data.picture,
+							'timestamp' : timestamp,
+							'relativeTime': utils.relativeTime(timestamp),
+							'fav_star_class' :'icon-star-empty' 
+						}
+					]
 				});
 			});
-
 			
 		});
 	};

@@ -52,20 +52,6 @@ var	config = require('../config.js'),
 		RDB.db.hset(String(uid),	field, value);				
 	}
 
-	User.get_gravatars_by_uids = function(uids, size, callback) {
-		
-		var gravatars = [];
-
-		for(var i=0, ii=uids.length; i<ii; ++i) {
-						
-			User.getUserField(uids[i], 'picture', function(picture) {
-				gravatars.push(picture);
-				if(gravatars.length >= uids.length)
-					callback(gravatars);
-			});
-		}
-	};
-
 	User.loginViaLocal = function(username, password, next) {
 
 		if (!username || !password) {
@@ -337,32 +323,6 @@ var	config = require('../config.js'),
 			});
 		}
 	};
-
-	User.get_user_postdetails = function(uids, callback) {
-
-		var multi_queue = RDB.db.multi();
-
-		for(var i=0, ii=uids.length; i<ii; ++i) {
-			multi_queue = multi_queue.hmget(uids[i], 'username', 'reputation');
-		}
-
-		var usernames = [];
-		var reputations = [];
-		
-		multi_queue.exec(function (err, replies) {
-			
-		  	replies.forEach(function (reply, index) {
-				usernames.push(reply[0]);
-				reputations.push(reply[1]);
-			});
-			
-			callback({
-				'username':usernames,
-				'rep':reputations
-			});
-			
-		});
-	}
 
 	User.get_uid_by_email = function(email, callback) {
 		RDB.get('email:' + email + ':uid', callback)
