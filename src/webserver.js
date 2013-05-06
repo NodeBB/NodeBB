@@ -128,7 +128,14 @@ passport.deserializeUser(function(uid, done) {
 
 		for (var i=0, ii=routes.length; i<ii; i++) {
 			(function(route) {
+				
 				app.get('/' + route, function(req, res) {
+					
+					if ((route === 'login' || route ==='register') && (req.user && req.user.uid > 0)) {
+						res.redirect('/account');
+						return;
+					}
+					
 					res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("' + route + '");});</script>' + templates['footer']);
 				});
 			}(routes[i]));
