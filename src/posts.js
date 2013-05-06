@@ -202,7 +202,10 @@ var	RDB = require('./redis.js'),
 			// User Details - move this out later
 			RDB.lpush('uid:' + uid + ':posts', pid);
 			
-			if (callback) callback(pid);
+			RDB.db.hincrby(uid, 'postcount', 1);
+			
+			if (callback) 
+				callback(pid);
 		});
 	}
 

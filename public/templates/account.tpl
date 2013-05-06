@@ -7,21 +7,36 @@
     </div>
 
 	<!-- BEGIN user -->
-		
-	<img src="{user.picture}" />
-	<br/>
-	<span>{user.username}</span>
+	
+	<span class="account-username">{user.username}</span>
 	<br/>		
-    <label for="email">Email Address</label><input type="text" placeholder="Enter Email Address" id="email" /><br />
-    <button class="btn btn-primary" id="reset" type="submit">Reset Password</button>
-	<br/>	
-	<span>Member for </span>
-	<span id="membersince">{user.joindate}</span>
+		
+	<div class="account-bio-block">
+		<img src="{user.picture}?s=128" />
+	</div>
+	
+	<div class="account-bio-block">
+		<span class="account-bio-label">Member for </span>
+		<span>{user.joindate}</span>
+		<br/>
+		
+		<span class="account-bio-label">Reputation </span>
+		<span>{user.reputation}</span>
+		<br/>		
+		
+		<span class="account-bio-label">Posts</span>
+		<span>{user.postcount}</span>
+	</div>
+	
 	<br/>
 	
-	<span>Reputation </span>
-	<span id="membersince">{user.reputation}</span>
-	<br/>
+	
+
+	<br/>	
+
+
+    <label for="email">Email Address</label><input type="text" placeholder="Enter Email Address" id="email" /><br />
+    <button class="btn btn-primary" id="reset" type="submit">Reset Password</button>
 
 
 	<!-- END user -->

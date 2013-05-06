@@ -197,7 +197,8 @@ var	config = require('../config.js'),
 					'joindate' : new Date().getTime(),
 					'password' : hash,
 					'picture' : User.createGravatarURLFromEmail(email),
-					'reputation': 0
+					'reputation': 0,
+					'postcount': 0
 				});
 				
 				RDB.set('username:' + username + ':uid', uid);
