@@ -8,7 +8,9 @@
 
 	<!-- BEGIN user -->
 	
-	<span class="account-username">{user.username}</span>
+	<div class="account-username-box">
+		<span class="account-username">{user.username}</span>
+	</div>
 	<br/>		
 		
 	<div class="account-picture-block">
