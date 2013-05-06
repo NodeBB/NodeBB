@@ -48,6 +48,9 @@ var	config = require('../config.js'),
 		});
 	}
 
+	User.setUserField = function(uid, field, value) {
+		RDB.db.hset(String(uid),	field, value);				
+	}
 
 	User.get_gravatars_by_uids = function(uids, size, callback) {
 		
