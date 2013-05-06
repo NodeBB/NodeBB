@@ -157,61 +157,74 @@ var	RDB = require('./redis.js'),
 
 	Posts.reply = function(socket, tid, uid, content) {
 		Posts.create(uid, tid, content, function(pid) {
-			RDB.rpush('tid:' + tid + ':posts', pid);
+			if (pid > 0) {
+				RDB.rpush('tid:' + tid + ':posts', pid);
 
-
-			socket.emit('event:alert', {
-				title: 'Reply Successful',
-				message: 'You have successfully replied. Click here to view your reply.',
-				type: 'notify',
-				timeout: 2000
-			});
-
-		
-			user.getUserFields(uid, ['username','reputation','picture'], function(data){
-				
-				var timestamp = new Date().getTime();
-
-				socket.in('topic_' + tid).emit('event:new_post', {
-					'posts' : [
-						{
-							'pid' : pid,
-							'content' : marked(content || ''),
-							'uid' : uid,
-							'username' : data.username || 'anonymous',
-							'user_rep' : data.reputation || 0,
-							'post_rep' : 0,
-							'gravatar' : data.picture,
-							'timestamp' : timestamp,
-							'relativeTime': utils.relativeTime(timestamp),
-							'fav_star_class' :'icon-star-empty' 
-						}
-					]
+				socket.emit('event:alert', {
+					title: 'Reply Successful',
+					message: 'You have successfully replied. Click here to view your reply.',
+					type: 'notify',
+					timeout: 2000
 				});
-			});
+
 			
+				user.getUserFields(uid, ['username','reputation','picture'], function(data){
+					
+					var timestamp = new Date().getTime();
+
+					socket.in('topic_' + tid).emit('event:new_post', {
+						'posts' : [
+							{
+								'pid' : pid,
+								'content' : marked(content || ''),
+								'uid' : uid,
+								'username' : data.username || 'anonymous',
+								'user_rep' : data.reputation || 0,
+								'post_rep' : 0,
+								'gravatar' : data.picture,
+								'timestamp' : timestamp,
+								'relativeTime': utils.relativeTime(timestamp),
+								'fav_star_class' :'icon-star-empty' 
+							}
+						]
+					});
+				});
+			} else {
+				socket.emit('event:alert', {
+					title: 'Reply Unsuccessful',
+					message: 'Your reply could not be posted at this time. Please try again later.',
+					type: 'notify',
+					timeout: 2000
+				});
+			}
 		});
 	};
 
 	Posts.create = function(uid, tid, content, callback) {
 		if (uid === null) return;
 		
-		RDB.incr('global:next_post_id', function(pid) {
-			// Posts Info
-			RDB.set('pid:' + pid + ':content', content);
-			RDB.set('pid:' + pid + ':uid', uid);
-			RDB.set('pid:' + pid + ':timestamp', new Date().getTime());
-			RDB.set('pid:' + pid + ':rep', 0);
-			
-			RDB.incr('tid:' + tid + ':postcount');
-			
-			// User Details - move this out later
-			RDB.lpush('uid:' + uid + ':posts', pid);
-			
-			RDB.db.hincrby(uid, 'postcount', 1);
-			
-			if (callback) 
-				callback(pid);
+		RDB.get('tid:' + tid + ':locked', function(locked) {
+			if (!locked || locked === '0') {
+				RDB.incr('global:next_post_id', function(pid) {
+					// Posts Info
+					RDB.set('pid:' + pid + ':content', content);
+					RDB.set('pid:' + pid + ':uid', uid);
+					RDB.set('pid:' + pid + ':timestamp', new Date().getTime());
+					RDB.set('pid:' + pid + ':rep', 0);
+					
+					RDB.incr('tid:' + tid + ':postcount');
+					
+					// User Details - move this out later
+					RDB.lpush('uid:' + uid + ':posts', pid);
+					
+					RDB.db.hincrby(uid, 'postcount', 1);
+					
+					if (callback) 
+						callback(pid);
+				});
+			} else {
+				callback(-1);
+			}
 		});
 	}
 
