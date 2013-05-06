@@ -35,18 +35,18 @@ var ajaxify = {};
 			window.history.pushState({}, url, "/" + url);
 
 			jQuery('#footer').fadeOut(100);
-			jQuery('#content').fadeOut(100, function() {
-				load_template(function() {
+			jQuery('#content').fadeOut(100);
 
-					exec_body_scripts(content);
+			load_template(function() {
 
-					ajaxify.enable();
-					if (callback) {
-						callback();
-					}
-					
-					jQuery('#content, #footer').fadeIn(250);
-				});
+				exec_body_scripts(content);
+
+				ajaxify.enable();
+				if (callback) {
+					callback();
+				}
+				
+				jQuery('#content, #footer').fadeIn(250);
 			});
 			
 			
