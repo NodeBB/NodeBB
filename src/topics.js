@@ -149,7 +149,7 @@ var	RDB = require('./redis.js'),
 
 			// Posts
 			posts.create(uid, tid, content, function(pid) {
-				RDB.lpush('tid:' + tid + ':posts', pid);
+				if (pid > 0) RDB.lpush('tid:' + tid + ':posts', pid);
 			});
 
 
