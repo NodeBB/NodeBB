@@ -61,7 +61,7 @@ socket.on('api:get_users_in_room', function(users) {
 		+ ((usercount === 2 && anonymous === 0) ? usernames[0] + ' and ' + usernames[1] : '')
 		+ ((usercount > 2 && anonymous === 0) ? usernames.join(', ').replace(/,([^,]*)$/, ", and$1") : '')
 		+ (usercount > 1 && anonymous > 0 ? usernames.join(', ') : '')
-		+ ((anonymous > 0) ? (usercount > 0 ? ' and ': '') + anonymous + ' guest' + (anonymous.length > 1  ? 's are': ' is') : '')
+		+ ((anonymous > 0) ? (usercount > 0 ? ' and ': '') + anonymous + ' guest' + (anonymous > 1  ? 's are': ' is') : '')
 		+ (anonymous === 0 ? (usercount > 1 ? ' are' : ' is') : '') + ' browsing this thread';
 
 	document.getElementById('thread_active_users').innerHTML = active;
