@@ -4,17 +4,6 @@ var	RDB = require('./redis.js'),
 	user = require('./user.js');
 
 (function(Topics) {
-	//data structure
-
-	//*global:next_topic_id
-	// *tid:1:title
-	// *tid:1:uid
-	// *tid:1:posts  (array of pid)
-	// *tid:1:timestamp
-	// *uid:1:tozpics
-	// *topic:slug:how-to-eat-chicken:tid
-
-
 
 	Topics.get_by_category = function(callback, category, start, end) {
 
@@ -136,7 +125,7 @@ var	RDB = require('./redis.js'),
 				RDB.lpush('topics:' + category + ':tid', tid);
 			}
 
-			var slug = tid + '/' + slugify(title);
+			var slug = tid + '/' + utils.slugify(title);
 
 			// Topic Info
 			RDB.set('tid:' + tid + ':title', title);
@@ -168,23 +157,3 @@ var	RDB = require('./redis.js'),
 	};
 
 }(exports));
-
-
-//http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
-function slugify(str) {
-	str = str.replace(/^\s+|\s+$/g, ''); // trim
-	str = str.toLowerCase();
-
-	// remove accents, swap ñ for n, etc
-	var from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
-	var to   = "aaaaeeeeiiiioooouuuunc------";
-	for (var i=0, l=from.length ; i<l ; i++) {
-		str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
-	}
-
-	str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
-			.replace(/\s+/g, '-') // collapse whitespace and replace by -
-			.replace(/-+/g, '-'); // collapse dashes
-
-	return str;
-}
