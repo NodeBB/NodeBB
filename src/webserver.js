@@ -337,6 +337,12 @@ passport.deserializeUser(function(uid, done) {
 			res.send('User profile for uid: ' + uid);
 		});
 	});
+
+	app.get('/test', function(req, res) {
+		global.modules.posts.get(function(data) {
+			res.send('<pre>' + JSON.stringify(data) + '</pre>');
+		}, 1, 1);
+	});
 }(WebServer));
 
 server.listen(config.port);

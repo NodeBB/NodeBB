@@ -6,7 +6,10 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 (function(io) {
 	var	modules = null,
 			users = {},
-			rooms = {};
+			rooms = {
+				'users' : {},
+				'anonymous' : {}
+			};
 
 	global.io = io;
 	module.exports.init = function() {
@@ -70,25 +73,39 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 
 		
 
-		socket.on('event:enter_room', function(data) {			
+		socket.on('event:enter_room', function(data) {
 			if (data.leave !== null) socket.leave (data.leave);
 			socket.join(data.enter);
 
-			rooms[data.enter] = rooms[data.enter] || {};
+			rooms.users[data.enter] = rooms.users[data.enter] || {};
 			if (uid) {
-				rooms[data.enter][uid] = true;
-				if (rooms[data.leave]) {
-					delete rooms[data.leave][uid];
+				rooms.users[data.enter][uid] = true;
+				if (rooms.users[data.leave]) {
+					delete rooms.users[data.leave][uid];
 				}
 			} else {
-				rooms[data.enter].anonymous = rooms[data.enter].anonymous ? rooms[data.enter].anonymous + 1 : 1;
-				rooms[data.leave].anonymous = rooms[data.leave].anonymous ? rooms[data.enter].anonymous - 1 : 0;
+				rooms.anonymous[data.enter] = (rooms.anonymous[data.enter] || 0) + 1;
+				rooms.anonymous[data.leave] = rooms.anonymous[data.leave] || 0;
 			}
 
-			socket.emit('api:get_users_in_room', {
-				uids: Object.keys(rooms[data.enter] || {}),
-				anonymous: rooms[data.enter] ? rooms[data.enter].anonymous : 0
+			var uids = Object.keys(rooms.users[data.enter] || {});
+
+			if (uids.length == 0) {
+				socket.emit('api:get_users_in_room', {
+					usernames: [],
+					uids: [],
+					anonymous: rooms.anonymous[data.enter] || 0
+				});
+			}
+			modules.user.get_usernames_by_uids(uids, function(usernames) {
+				socket.emit('api:get_users_in_room', {
+					usernames: usernames,
+					uids: uids,
+					anonymous: rooms.anonymous[data.enter] || 0
+				});
 			});
+
+			
 		});
 
 		// BEGIN: API calls (todo: organize)

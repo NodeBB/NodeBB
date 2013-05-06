@@ -26,7 +26,8 @@
       "less-middleware": "0.1.11",
       "marked": "0.2.8",
       "bcrypt": "0.7.5",
-      "node-gyp": "0.9.5"
+      "node-gyp": "0.9.5",
+      "async": "0.2.8"
     },
   "devDependencies": {},
   "optionalDependencies": {},

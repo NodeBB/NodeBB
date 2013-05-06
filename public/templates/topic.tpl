@@ -2,9 +2,8 @@
 	<ul class="breadcrumb">
 		<li><a href="/">Home</a> <span class="divider">/</span></li>
 		<li class="active">{topic_name}</li>
+		<div id="thread_active_users"></div>
 	</ul>
-
-	<div id="thread_active_users"></div><br />
 </div>
 
 <ul id="post-container" class="post-container container">
@@ -48,7 +47,24 @@ jQuery('document').ready(function() {
 
 ajaxify.register_events(['event:rep_up', 'event:rep_down', 'event:new_post', 'api:get_users_in_room']);
 socket.on('api:get_users_in_room', function(users) {
-	document.getElementById('thread_active_users').innerHTML = (users.uids.join(', ')) + ' are browsing this thread';
+	var anonymous = users.anonymous,
+		usernames = users.usernames,
+		usercount = usernames.length;
+
+	for (var i = 0, ii=usercount; i<ii; i++) {
+		usernames[i] = '<strong>' + usernames[i] + '</strong>';
+	}
+
+	// headexplosion.gif for fun, to see if I could do this in one line of code. feel free to refactor haha
+	var active =
+		((usercount === 1) ? usernames[0] : '')
+		+ ((usercount === 2 && anonymous === 0) ? usernames[0] + ' and ' + usernames[1] : '')
+		+ ((usercount > 2 && anonymous === 0) ? usernames.join(', ').replace(/,([^,]*)$/, ", and$1") : '')
+		+ (usercount > 1 && anonymous > 0 ? usernames.join(', ') : '')
+		+ ((anonymous > 0) ? (usercount > 0 ? ' and ': '') + anonymous + ' guest' + (anonymous.length > 1  ? 's are': ' is') : '')
+		+ (anonymous === 0 ? (usercount > 1 ? ' are' : ' is') : '') + ' browsing this thread';
+
+	document.getElementById('thread_active_users').innerHTML = active;
 });
 
 socket.on('event:rep_up', function(data) {
