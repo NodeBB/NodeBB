@@ -1,7 +1,8 @@
 var	RDB = require('./redis.js'),
 	utils = require('./utils.js'),
 	marked = require('marked'),
-	user = require('./user.js');
+	user = require('./user.js'),
+	async = require('async');
 
 (function(Posts) {
 	//data structure
@@ -17,6 +18,55 @@ var	RDB = require('./redis.js'),
 	Posts.get = function(callback, tid, current_user, start, end) {
 		if (start == null) start = 0;
 		if (end == null) end = start + 10;
+
+		// async.parallel({
+		// 	details: function(callback) {
+		// 		RDB.get('tid:' + tid + ':title', function(topic_name) {
+		// 			callback(null, {
+		// 				'topic_name': topic_name
+		// 			});
+		// 		});
+		// 	},
+		// 	posts: function(callback) {
+		// 		var participant_uids = [],
+		// 			post_calls = [];
+		// 		RDB.lrange('tid:' + tid + ':posts', start, end, function(pids) {
+		// 			var content = [],
+		// 				uid = [],
+		// 				timestamp = [],
+		// 				pid = [],
+		// 				post_rep = [];
+
+		// 			for (var i=0, ii=pids.length; i<ii; i++) {
+		// 				content.push('pid:' + pids[i] + ':content');
+		// 				uid.push('pid:' + pids[i] + ':uid');
+		// 				timestamp.push('pid:' + pids[i] + ':timestamp');
+		// 				post_rep.push('pid:' + pids[i] + ':rep');		
+		// 				pid.push(pids[i]);
+		// 			}
+
+		// 			if (pids.length > 0) {
+		// 				RDB.multi()
+		// 					.mget(content)
+		// 					.mget(uid)
+		// 					.mget(timestamp)
+		// 					.mget(post_rep)
+		// 					.exec(function(err, replies) {
+		// 						content = replies[0];
+		// 						uid = replies[1];
+		// 						timestamp = replies[2];
+		// 						post_rep = replies[3];
+
+		// 						callback(null, replies);
+		// 					}
+		// 				);
+		// 			}
+		// 		});
+		// 	}
+		// }, function(err, results) {
+		// 	callback(results);
+		// });
+		// return;
 
 		RDB.get('tid:' + tid + ':title', function(topic_name) { //do these asynch later
 			RDB.lrange('tid:' + tid + ':posts', start, end, function(pids) {
