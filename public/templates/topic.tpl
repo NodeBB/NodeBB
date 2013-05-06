@@ -34,6 +34,14 @@
 </ul>
 <hr />
 <button id="post_reply" class="btn btn-primary btn-large post_reply">Reply</button>
+<div class="btn-group pull-right">
+	<button class="btn dropdown-toggle" data-toggle="dropdown">Thread Tools <span class="caret"></span></button>
+	<ul class="dropdown-menu">
+		<li><a href="#">Lock/Unlock Thread</a></li>
+		<li class="divider"></li>
+		<li><a href="#"><span class="text-error">Delete Thread</span></a></li>
+	</ul>
+</div>
 
 
 <script type="text/javascript">
