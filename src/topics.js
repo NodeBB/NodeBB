@@ -11,12 +11,14 @@ var	RDB = require('./redis.js'),
 
 
 
-	Topics.get = function(callback, start, end) {
+	Topics.get = function(callback, category_id, start, end) {
 		if (start == null) start = 0;
 		if (end == null) end = start + 10;
 
+		//build a proper wrapper for this and move it into above function later
+		var range_var = (category_id) ? 'categories:' + category_id + ':tid'  : 'topics:tid';
 
-		RDB.lrange('topics:tid', start, end, function(tids) {
+		RDB.lrange(range_var, start, end, function(tids) {
 			var title = [],
 				uid = [],
 				timestamp = [],
@@ -64,17 +66,17 @@ var	RDB = require('./redis.js'),
 								});
 							}
 						
-							callback({'topics': topics});
+							callback({'category_id': category_id, 'topics': topics});
 						});
 
 						
 					}
 				);
-			} else callback([]);
+			} else callback({'category_id': category_id, 'topics': []});
 		});
 	}
 
-	Topics.post = function(socket, uid, title, content, category) {
+	Topics.post = function(socket, uid, title, content, category_id) {
 		
 		if (uid === 0) {
 			socket.emit('event:alert', {
@@ -102,8 +104,8 @@ var	RDB = require('./redis.js'),
 			
 
 
-			if (category) {
-				RDB.lpush('topics:' + category + ':tid', tid);
+			if (category_id) {
+				RDB.lpush('categories:' + category_id + ':tid', tid);
 			}
 
 			var slug = tid + '/' + utils.slugify(title);

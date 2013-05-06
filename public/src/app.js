@@ -98,12 +98,12 @@ var socket,
 		post_window = post_window || document.getElementById('post_window');
 		jQuery(post_window).slideToggle(250);
 
-		if (post_mode == null || post_mode == 'topic') {
+		if (post_mode == 'topic') {
 			post_title.style.display = "block";
 			reply_title.style.display = "none";
 			post_title.focus();
 			submit_post_btn.onclick = function() {
-				app.post_topic();
+				app.post_topic(id);
 			}
 		} else {
 			if (post_mode == 'reply') {
@@ -146,7 +146,7 @@ var socket,
 		jQuery(post_window).slideToggle(250);
 
 	};
-	app.post_topic = function() {
+	app.post_topic = function(category_id) {
 		var title = document.getElementById('post_title').value,
 			content = document.getElementById('post_content').value;
 
@@ -163,11 +163,11 @@ var socket,
 
 		socket.emit('api:topics.post', {
 			'title' : title,
-			'content' : content 
+			'content' : content,
+			'category_id' : category_id
 		});
 		
-		jQuery('#post_title').val('');
-		jQuery('#post_content').val('');
+		jQuery('#post_title, #post_content').val('');
 		jQuery(post_window).slideToggle(250);
 	};
 

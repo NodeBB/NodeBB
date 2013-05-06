@@ -49,7 +49,7 @@ var templates = {};
 
 	function init() {
 		loadTemplates([
-			'header', 'footer', 'register', 'home', 'topic','account',
+			'header', 'footer', 'register', 'home', 'topic','account', 'category',
 			'login', 'reset', 'reset_code', 'account',
 			'confirm',
 			'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext'
@@ -90,9 +90,8 @@ var templates = {};
 		var template = this.html, regex, block;
 
 		return (function parse(data, namespace, template) {
-			if (data.length == 0) {
-				regex = makeRegex('[^]*');
-				template = template.replace(regex, '');
+			if (!data || data.length == 0) {
+				template = '';
 			}
 
 			for (var d in data) {
@@ -147,6 +146,7 @@ function load_template(callback) {
 	url = (url === '' || url === '/') ? 'home' : url;
 
 	jQuery.get(API_URL + url, function(data) {
+		console.log(data)
 		document.getElementById('content').innerHTML = templates[url.split('/')[0]].parse(JSON.parse(data));
 		if (callback) callback();
 	});

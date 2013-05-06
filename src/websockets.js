@@ -161,7 +161,7 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 		});
 
 		socket.on('api:topics.post', function(data) {
-			modules.topics.post(socket, uid, data.title, data.content);
+			modules.topics.post(socket, uid, data.title, data.content, data.category_id);
 		});
 
 		socket.on('api:posts.reply', function(data) {

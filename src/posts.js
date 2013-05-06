@@ -1,8 +1,7 @@
 var	RDB = require('./redis.js'),
 	utils = require('./utils.js'),
 	marked = require('marked'),
-	user = require('./user.js'),
-	async = require('async');
+	user = require('./user.js');
 
 (function(Posts) {
 
