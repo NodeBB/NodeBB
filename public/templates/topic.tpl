@@ -153,7 +153,7 @@
 				x;
 			if (locked === true) {
 				threadReplyBtn.disabled = true;
-				threadReplyBtn.innerHTML = 'Locked';
+				threadReplyBtn.innerHTML = 'Locked <i class="icon-lock"></i>';
 				for(x=0;x<numReplyBtns;x++) {
 					postReplyBtns[x].innerHTML = 'Locked <i class="icon-lock"></i>';
 					quoteBtns[x].style.display = 'none';
