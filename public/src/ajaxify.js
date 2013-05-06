@@ -33,7 +33,9 @@ var ajaxify = {};
 		
 		if (templates[tpl_url]) {
 			window.history.pushState({}, url, "/" + url);
-			jQuery('#content, #footer').fadeOut(100, function() {
+
+			jQuery('#footer').fadeOut(100);
+			jQuery('#content').fadeOut(100, function() {
 				load_template(function() {
 
 					exec_body_scripts(content);

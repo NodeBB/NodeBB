@@ -70,9 +70,7 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 
 		
 
-		socket.on('event:enter_room', function(data) {
-			return;
-			
+		socket.on('event:enter_room', function(data) {			
 			if (data.leave !== null) socket.leave (data.leave);
 			socket.join(data.enter);
 

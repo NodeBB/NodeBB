@@ -52,10 +52,11 @@ var	config = require('../config.js'),
 	User.get_gravatars_by_uids = function(uids, size, callback) {
 		
 		var gravatars = [];
-		
+
 		for(var i=0, ii=uids.length; i<ii; ++i) {
-			
+						
 			User.getUserField(uids[i], 'picture', function(picture) {
+				console.log(picture);
 				gravatars.push(picture);
 				if(gravatars.length >= uids.length)
 					callback(gravatars);

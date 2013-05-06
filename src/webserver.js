@@ -124,7 +124,7 @@ passport.deserializeUser(function(uid, done) {
 
 	// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 	(function() {
-		var routes = ['', 'login', 'register'];
+		var routes = ['', 'login', 'register', 'account'];
 
 		for (var i=0, ii=routes.length; i<ii; i++) {
 			(function(route) {
@@ -177,6 +177,11 @@ passport.deserializeUser(function(uid, done) {
 					global.modules.posts.get(function(data) {
 						res.send(JSON.stringify(data));
 					}, req.params.id, (req.user) ? req.user.uid : 0);
+				break;
+			case 'account' : 
+					get_account_fn(req, res, function(userData) {
+						res.send(JSON.stringify(userData));
+					});
 				break;
 			case 'confirm':
 					global.modules.user.email.confirm(req.params.id, function(data) {
@@ -288,8 +293,9 @@ passport.deserializeUser(function(uid, done) {
 		});
 	});
 
-	app.get('/account', function(req, res) {
-
+	//to baris, move this into account.js or sth later - just moved this out here for you to utilize client side tpl parsing
+	//I didn't want to change too much so you should probably sort out the params etc
+	function get_account_fn(req, res, callback) {
 		console.log("GOING TO ACCOUNT");
 
  		if (req.user === undefined) 
@@ -301,13 +307,11 @@ passport.deserializeUser(function(uid, done) {
 
 			console.log("user data" + JSON.stringify(data));
 			
-			var account = templates['account'];
 			var userData = {user:data};
-			account = account.parse(userData);
-			
-			res.send(templates['header'] + account + templates['footer']);
+			callback(userData);
 		});
-	});
+	}
+
 	
 	app.get('/uid/:uid', function(req, res) {
 		
