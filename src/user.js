@@ -59,7 +59,6 @@ var	config = require('../config.js'),
 		for(var i=0, ii=uids.length; i<ii; ++i) {
 						
 			User.getUserField(uids[i], 'picture', function(picture) {
-				console.log(picture);
 				gravatars.push(picture);
 				if(gravatars.length >= uids.length)
 					callback(gravatars);
@@ -239,7 +238,7 @@ var	config = require('../config.js'),
 	User.createGravatarURLFromEmail = function(email) {
 		if(email) {
 			var md5sum = crypto.createHash('md5');
-			md5sum.update(email.toLowerCase());
+			md5sum.update((email || '').toLowerCase());
 			var gravatarURL = 'http://www.gravatar.com/avatar/' + md5sum.digest('hex');
 			return gravatarURL;
 		}

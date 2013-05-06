@@ -19,122 +19,134 @@ var	RDB = require('./redis.js'),
 		if (start == null) start = 0;
 		if (end == null) end = start + 10;
 
-		// async.parallel({
-		// 	details: function(callback) {
-		// 		RDB.get('tid:' + tid + ':title', function(topic_name) {
-		// 			callback(null, {
-		// 				'topic_name': topic_name
-		// 			});
-		// 		});
-		// 	},
-		// 	posts: function(callback) {
-		// 		var participant_uids = [],
-		// 			post_calls = [];
-		// 		RDB.lrange('tid:' + tid + ':posts', start, end, function(pids) {
-		// 			var content = [],
-		// 				uid = [],
-		// 				timestamp = [],
-		// 				pid = [],
-		// 				post_rep = [];
+		async.parallel({
+			details: function(callback) {
+				RDB.get('tid:' + tid + ':title', function(topic_name) {
+					callback(null, {
+						'topic_name': topic_name
+					});
+				});
+			},
+			posts: function(callback) {
+				var participant_uids = [],
+					post_calls = [];
+				
+				async.waterfall([
+					function(next) {
+						RDB.lrange('tid:' + tid + ':posts', start, end, function(pids) {
+							var content = [],
+								uids = [],
+								participants = [],
+								timestamp = [],
+								pid = [],
+								post_rep = [];
 
-		// 			for (var i=0, ii=pids.length; i<ii; i++) {
-		// 				content.push('pid:' + pids[i] + ':content');
-		// 				uid.push('pid:' + pids[i] + ':uid');
-		// 				timestamp.push('pid:' + pids[i] + ':timestamp');
-		// 				post_rep.push('pid:' + pids[i] + ':rep');		
-		// 				pid.push(pids[i]);
-		// 			}
+							for (var i=0, ii=pids.length; i<ii; i++) {
+								content.push('pid:' + pids[i] + ':content');
+								uids.push('pid:' + pids[i] + ':uid');
+								timestamp.push('pid:' + pids[i] + ':timestamp');
+								post_rep.push('pid:' + pids[i] + ':rep');		
+								pid.push(pids[i]);
+							}
 
-		// 			if (pids.length > 0) {
-		// 				RDB.multi()
-		// 					.mget(content)
-		// 					.mget(uid)
-		// 					.mget(timestamp)
-		// 					.mget(post_rep)
-		// 					.exec(function(err, replies) {
-		// 						content = replies[0];
-		// 						uid = replies[1];
-		// 						timestamp = replies[2];
-		// 						post_rep = replies[3];
+							if (pids.length > 0) {
+								RDB.multi()
+									.mget(content)
+									.mget(uids)
+									.mget(timestamp)
+									.mget(post_rep)
+									.exec(function(err, replies) {
+										// Populate uids array
+										for(var x=0,numReplies=replies[1].length;x<numReplies;x++) {
+											var uid = parseInt(replies[1][x]);
+											if (participants.indexOf(uid) === -1) participants.push(uid);
+										}
 
-		// 						callback(null, replies);
-		// 					}
-		// 				);
-		// 			}
-		// 		});
-		// 	}
-		// }, function(err, results) {
-		// 	callback(results);
-		// });
-		// return;
-
-		RDB.get('tid:' + tid + ':title', function(topic_name) { //do these asynch later
-			RDB.lrange('tid:' + tid + ':posts', start, end, function(pids) {
-				var content = [],
-					uid = [],
-					timestamp = [],
-					pid = [],
-					post_rep = [];
-
-				for (var i=0, ii=pids.length; i<ii; i++) {
-					content.push('pid:' + pids[i] + ':content');
-					uid.push('pid:' + pids[i] + ':uid');
-					timestamp.push('pid:' + pids[i] + ':timestamp');
-					post_rep.push('pid:' + pids[i] + ':rep');		
-					pid.push(pids[i]);
-				}
-
-				if (pids.length > 0) {
-					RDB.multi()
-						.mget(content)
-						.mget(uid)
-						.mget(timestamp)
-						.mget(post_rep)
-						.exec(function(err, replies) {
-							content = replies[0];
-							uid = replies[1];
-							timestamp = replies[2];
-							post_rep = replies[3];
-
-							user.get_user_postdetails(uid, function(user_details) {
-								user.get_gravatars_by_uids(uid, '', function(gravatars) {
-									var posts = [];
-									var callbacks = content.length;
-
-									for (var i=0, ii=content.length; i<ii; i++) {
-										(function(i) {
-											Posts.hasFavourited(pid[i], current_user, function(hasFavourited) {
-												posts.push({
-													'pid' : pid[i],
-													'content' : marked(content[i] || ''),
-													'uid' : uid[i],
-													'username' : user_details.username[i] || 'anonymous',
-													'user_rep' : user_details.rep[i] || 0,
-													'post_rep' : post_rep[i] || 0,
-													'gravatar' : gravatars[i],
-													'timestamp' : timestamp[i],
-													'relativeTime': utils.relativeTime(timestamp[i]),
-													'fav_star_class' : hasFavourited ? 'icon-star' : 'icon-star-empty',
-													'display_moderator_tools' : uid[i] === current_user ? 'show' : 'hide'
-												});
-
-												callbacks--;
-												if (callbacks == 0) {
-													callback({'topic_name':topic_name, 'topic_id': tid, 'posts': posts});
-												}
-											});
-										}(i));
+										// Construct return object
+										next(null, {
+											replies: replies,
+											pids: pids,
+											participants: participants
+										});
 									}
-								});
-							});
+								);
+							}
 						});
-				} else {
-					callback({});
-				}
+					}, function(returnObj, next) {
+						// Get user details
+						var details = {},
+							calls = [];
+
+						for(var x=0,numParticipants=returnObj.participants.length;x<numParticipants;x++) {
+							(function(uid) {
+								calls.push(function(next) {
+									// Get individual participant's details
+									user.getUserData(uid, function(userData) {
+										next(null, userData);
+									})
+								});
+							})(returnObj.participants[x]);
+						}
+						async.parallel(calls, function(err, results) {
+							for(var x=0,numResults=results.length;x<numResults;x++) {
+								details[returnObj.participants[x]] = results[x];
+							}
+							returnObj.participants = details;
+							next(null, returnObj);
+						});
+					}, function(returnObj, next) {
+						// Favourited?
+						var	calls = [],
+							numPosts = returnObj.pids.length;
+
+						for(var x=0;x<numPosts;x++) {
+							(function(pid) {
+								calls.push(function(callback) {
+									Posts.hasFavourited(pid, current_user, function(hasFavourited) {
+										callback(null, hasFavourited);
+									});
+								});
+							})(returnObj.pids[x]);
+						}
+						async.parallel(calls, function(err, results) {
+							returnObj.favourites = results;
+							next(null, returnObj);
+						});
+					}
+				], function(err, returnObj) {
+					callback(null, returnObj);
+				});
+			}
+		}, function(err, results) {
+			// Construct posts array
+			var posts = [],
+				participant_details = results.posts.participants;
+			for(var x=0,numPosts=results.posts.pids.length;x<numPosts;x++) {
+				var uid = results.posts.replies[1][x],
+					participant = participant_details[uid];
+				posts.push({
+					pid: results.posts.pids[x],
+					content: marked(results.posts.replies[0][x] || ''),
+					uid: uid,
+					timestamp: results.posts.replies[2][x],
+					relativeTime: utils.relativeTime(results.posts.replies[2][x]),
+					post_rep: results.posts.replies[3][x],
+					display_moderator_tools: results.posts.replies[1][x] === current_user ? 'show' : 'hide',
+					username: participant.username,
+					gravatar: participant.picture,
+					user_rep: participant.reputation,
+					fav_star_class: results.posts.favourites[x] ? 'icon-star' : 'icon-star-empty',
+				});
+			}
+
+			// Construct return object
+			callback({
+				'topic_name': results.details.topic_name,
+				'topic_id': tid,
+				posts: posts,
+				uids: results.posts.participants
 			});
 		});
-
-
 	}
 
 
