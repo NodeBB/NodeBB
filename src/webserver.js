@@ -160,6 +160,9 @@ passport.deserializeUser(function(uid, done) {
 
 	// These functions are called via ajax once the initial page is loaded to populate templates with data
 	function api_method(req, res) {
+		
+		
+		
 		switch(req.params.method) {
 			case 'home' :
 					global.modules.categories.get(function(data) {
@@ -213,6 +216,7 @@ passport.deserializeUser(function(uid, done) {
 					});
 				break;
 			case 'users' : 
+					
 					get_account_fn(req, res, function(userData) {
 						res.send(JSON.stringify(userData));
 					});
@@ -335,20 +339,29 @@ passport.deserializeUser(function(uid, done) {
  			return res.redirect('/403');
 	
 		var requestedUserId = req.user.uid;
-
-		if(req.params.id != req.user.uid)
-			requestedUserId = req.params.id;
-
-		user.getUserData(requestedUserId, function(data) {
-			if(data)
-			{
-				data.joindate = utils.relativeTime(data.joindate);
-				
-				callback({user:data});
-			}
-			else
-				callback({user:{}});
+		
+		var username = req.params.id;
+		
+		user.get_uid_by_username(username, function(uid) {
+		
+			if(uid != req.user.uid)
+				requestedUserId = uid;
+	
+			user.getUserData(requestedUserId, function(data) {
+				if(data)
+				{
+					data.joindate = utils.relativeTime(data.joindate);
+					data.uid = requestedUserId;
+					callback({user:data});
+				}
+				else
+					callback({user:{}});
+			});
+			
 		});
+		
+
+		
 	}
 
 	
@@ -371,28 +384,42 @@ passport.deserializeUser(function(uid, done) {
 		res.send('User list');
 	});
 
-	app.get('/users/:uid', handleUserProfile);
-	app.get('/users/:uid/:username*', handleUserProfile);
+	app.get('/users/:uid/edit', function(req, res){
+		console.log("OPPA");
+		
+		if(req.user && req.params.uid)
+		{
+			//res.send("editing user");
+			res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("users/' + req.params.uid+'/edit");});</script>' + templates['footer']);
+		}
+		else
+			return res.redirect('/403');	
+	});
+
+	
+	app.get('/users/:username*', handleUserProfile);
 	
 
 	function handleUserProfile(req, res) {
 		
-		if(req.params.uid == 0) {
+		if(!req.params.username) {
 			res.send("User doesn't exist!");
 			return;
 		}
 
-		user.getUserData(req.params.uid, function(data) {
-			if(data) {
-				if(req.url.indexOf(data.username) == -1)
-					res.redirect(301, '/users/'+req.params.uid+'/'+data.username);
-				else
-					res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("users/' + req.params.uid +'/'+data.username + '");});</script>' + templates['footer']);
-			}
-			else
-				res.send("User doesn't exist!");			
+		user.get_uid_by_username(req.params.username, function(uid) {
+
+			user.getUserData(uid, function(data) {
+				if(data) {
+					res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("users/'+data.username + '");});</script>' + templates['footer']);
+				}
+				else {
+					res.send("User doesn't exist! /users/"+req.params.username);
+				}			
+			});
 		});
 	}
+
 
 	app.get('/test', function(req, res) {
 		global.modules.topics.delete(1, 1);

@@ -124,7 +124,9 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 		});
 		
 		socket.on('user.exists', function(data) {
-			modules.user.exists(socket, data.username);
+			modules.user.exists(data.username, function(exists){
+				socket.emit('user.exists', {exists: exists});
+			});
 		});
 
 		socket.on('user.count', function(data) {
@@ -189,6 +191,14 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 
 		socket.on('api:topic.unlock', function(data) {
 			modules.topics.unlock(data.tid, uid, socket);
+		});
+
+		socket.on('api:topic.pin', function(data) {
+			modules.topics.pin(data.tid, uid, socket);
+		});
+
+		socket.on('api:topic.unpin', function(data) {
+			modules.topics.unpin(data.tid, uid, socket);
 		});
 	});
 	
