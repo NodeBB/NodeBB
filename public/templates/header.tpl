@@ -38,7 +38,7 @@
 
 					</ul>
 					<ul class="nav pull-right" id="right-menu">
-						<li><a href="/account" id="user_label"></a></li>
+						<li><a href="/users" id="user_label"></a></li>
 					</ul>
 				</div>
 			</div>
