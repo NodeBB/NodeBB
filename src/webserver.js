@@ -145,15 +145,17 @@ passport.deserializeUser(function(uid, done) {
 	
 	// Complex Routes
 	app.get('/topic/:topic_id/:slug?', function(req, res) {
-		res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("' + 'topic/' + req.params.topic_id + '");});</script>' + templates['footer']);
+		var topic_url = req.params.topic_id + (req.params.slug ? '/' + req.params.slug : '');
+		res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '");});</script>' + templates['footer']);
 	});
 
 	app.get('/category/:category_id/:slug?', function(req, res) {
-		res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("' + 'category/' + req.params.category_id + '");});</script>' + templates['footer']);
+		var category_url = req.params.category_id + (req.params.slug ? '/' + req.params.slug : '');
+		res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("category/' + category_url + '");});</script>' + templates['footer']);
 	});
 
 	app.get('/confirm/:code', function(req, res) {
-		res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("' + 'confirm/' + req.params.code + '");});</script>' + templates['footer']);
+		res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("confirm/' + req.params.code + '");});</script>' + templates['footer']);
 	});
 
 	// These functions are called via ajax once the initial page is loaded to populate templates with data
