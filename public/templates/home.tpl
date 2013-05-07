@@ -1,3 +1,12 @@
+<div class="hero-unit">
+	<h1>NodeBB</h1>
+	<p>Welcome to NodeBB, the discussion platform of the future.</p>
+	<p>
+		<a target="_blank" href="http://www.nodebb.org" class="btn btn-large"><i class="icon-comment"></i> Get NodeBB</a>
+		<a target="_blank" href="http://www.nodebb.org" class="btn btn-large"><i class="icon-github-alt"></i> Fork us on Github</a>
+		<a target="_blank" href="http://www.nodebb.org" class="btn btn-large"><i class="icon-twitter"></i> @dcplabs</a>
+	</p>
+</div>
 
 <div class="row category-row">
 	<!-- BEGIN categories -->
