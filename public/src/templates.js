@@ -28,7 +28,6 @@ var templates = {};
 
 		$.getJSON('/templates/config.json', function(data) {
 			config = data;
-			console.log('loaded');
 		});
 
 		for (var t in templatesToLoad) {
