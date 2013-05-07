@@ -85,9 +85,15 @@ var	RDB = require('./redis.js'),
 								'post_count' : postcount[i],
 								'lock-icon': locked[i] === '1' ? 'icon-lock' : 'hide',
 								'deleted': deleted[i],
+								'pinned': parseInt(pinned[i] || 0),	// For sorting purposes
 								'pin-icon': pinned[i] === '1' ? 'icon-pushpin' : 'hide'
 							});
 						}
+
+						// Float pinned topics to the top
+						topics = topics.sort(function(a, b) {
+							return b.pinned - a.pinned;
+						});
 
 						callback({
 							'category_name' : category_id ? category_name : 'Recent',
