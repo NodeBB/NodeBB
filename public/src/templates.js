@@ -1,7 +1,12 @@
 var templates = {};
 
 (function() {
-	var ready_callback;
+	var ready_callback,
+		config;
+
+	templates.get_custom_map = function(tpl) {
+		return (config['custom_mapping'] && config['custom_mapping'][tpl]) ? config['custom_mapping'][tpl] : tpl;
+	}
 
 	templates.ready = function(callback) {
 		//quick implementation because introducing a lib to handle several async callbacks
@@ -20,6 +25,11 @@ var templates = {};
 	function loadTemplates(templatesToLoad) {
 		var timestamp = new Date().getTime();
 		var loaded = templatesToLoad.length;
+
+		$.getJSON('/templates/config.json', function(data) {
+			config = data;
+			console.log('loaded');
+		});
 
 		for (var t in templatesToLoad) {
 			(function(file) {
@@ -146,8 +156,10 @@ function load_template(callback) {
 	url = (url === '' || url === '/') ? 'home' : url;
 
 	jQuery.get(API_URL + url, function(data) {
-		console.log(data)
-		document.getElementById('content').innerHTML = templates[url.split('/')[0]].parse(JSON.parse(data));
+		var tpl = url.split('/')[0];
+		tpl = templates.get_custom_map(tpl);
+
+		document.getElementById('content').innerHTML = templates[tpl].parse(JSON.parse(data));
 		if (callback) callback();
 	});
 }

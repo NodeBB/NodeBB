@@ -196,7 +196,7 @@ passport.deserializeUser(function(uid, done) {
 						res.send(JSON.stringify(data));
 					}, req.params.id);
 				break;
-			case 'account' : 
+			case 'users' : 
 					get_account_fn(req, res, function(userData) {
 						res.send(JSON.stringify(userData));
 					});
@@ -366,8 +366,7 @@ passport.deserializeUser(function(uid, done) {
 			if(req.url.indexOf(data.username) == -1)
 				res.redirect(301, '/users/'+req.params.uid+'/'+data.username);
 			else
-				res.send(templates['header'] + '<pre>'+JSON.stringify(data, null, 4)+'</pre>' + templates['footer']);
-//				res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("' + 'userprofile' + '");});</script>' + templates['footer']);
+				res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("users/' + req.params.uid +'/'+data.username + '");});</script>' + templates['footer']);
 			
 		});
 	}
