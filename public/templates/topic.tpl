@@ -223,6 +223,8 @@
 			var	threadReplyBtn = document.getElementById('post_reply'),
 				postReplyBtns = document.querySelectorAll('#post-container .post_reply'),
 				quoteBtns = document.querySelectorAll('#post-container .quote'),
+				editBtns = document.querySelectorAll('#post-container .edit'),
+				deleteBtns = document.querySelectorAll('#post-container .delete'),
 				numReplyBtns = postReplyBtns.length,
 				lockThreadEl = document.getElementById('lock_thread'),
 				x;
@@ -233,6 +235,8 @@
 				for(x=0;x<numReplyBtns;x++) {
 					postReplyBtns[x].innerHTML = 'Locked <i class="icon-lock"></i>';
 					quoteBtns[x].style.display = 'none';
+					editBtns[x].style.display = 'none';
+					deleteBtns[x].style.display = 'none';
 				}
 
 				thread_state.locked = '1';
@@ -243,6 +247,8 @@
 				for(x=0;x<numReplyBtns;x++) {
 					postReplyBtns[x].innerHTML = 'Reply <i class="icon-reply"></i>';
 					quoteBtns[x].style.display = 'inline-block';
+					editBtns[x].style.display = 'inline-block';
+					deleteBtns[x].style.display = 'inline-block';
 				}
 
 				thread_state.locked = '0';
