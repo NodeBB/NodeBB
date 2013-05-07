@@ -216,10 +216,13 @@ passport.deserializeUser(function(uid, done) {
 					});
 				break;
 			case 'users' : 
-					
-					get_account_fn(req, res, function(userData) {
-						res.send(JSON.stringify(userData));
-					});
+					if (String(req.params.section).toLowerCase() === 'edit') {
+
+					} else {
+						get_account_fn(req, res, function(userData) {
+							res.send(JSON.stringify(userData));
+						});						
+					}
 				break;
 			case 'confirm':
 					global.modules.user.email.confirm(req.params.id, function(data) {
@@ -243,9 +246,13 @@ passport.deserializeUser(function(uid, done) {
 			break;
 		}
 	}
+
 	app.get('/api/:method', api_method);
 	app.get('/api/:method/:id', api_method);
+	// ok fine MUST ADD RECURSION style. I'll look for a better fix in future but unblocking baris for this:
+	app.get('/api/:method/:id/:section?', api_method);
 	app.get('/api/:method/:id*', api_method);
+	
 
 	app.post('/login', passport.authenticate('local', {
 		successRedirect: '/',

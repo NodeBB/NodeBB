@@ -147,16 +147,19 @@ var templates = {};
 
 }());
 
-function load_template(callback) {
+function load_template(callback, custom_tpl) {
 	var location = document.location || window.location,
 		rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : '');
 
 	var url = location.href.replace(rootUrl +'/', '');
 	url = (url === '' || url === '/') ? 'home' : url;
 
+
 	jQuery.get(API_URL + url, function(data) {
 		var tpl = url.split('/')[0];
 		tpl = templates.get_custom_map(tpl);
+
+		if (custom_tpl) tpl = custom_tpl;
 
 		document.getElementById('content').innerHTML = templates[tpl].parse(JSON.parse(data));
 		if (callback) callback();

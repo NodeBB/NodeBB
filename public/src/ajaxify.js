@@ -25,7 +25,7 @@ var ajaxify = {};
 		// ajaxify.go(document.location.href.replace(rootUrl +'/', ''));
 	};
 
-	ajaxify.go = function(url, callback) {
+	ajaxify.go = function(url, callback, custom_tpl) {
 
 		// leave room and join global
 		app.enter_room('global');
@@ -49,7 +49,7 @@ var ajaxify = {};
 				}
 				
 				jQuery('#content, #footer').fadeIn(250);
-			});
+			}, custom_tpl);
 			
 			
 			return true;
