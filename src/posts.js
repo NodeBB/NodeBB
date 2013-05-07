@@ -116,8 +116,8 @@ var	RDB = require('./redis.js'),
 				user.getUserFields(uid, ['username','reputation','picture'], function(data){
 					
 					var timestamp = new Date().getTime();
-
-					socket.in('topic_' + tid).emit('event:new_post', {
+					
+					io.sockets.in('topic_' + tid).emit('event:new_post', {
 						'posts' : [
 							{
 								'pid' : pid,
