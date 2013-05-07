@@ -1,4 +1,4 @@
-<h1>Account Settings</h1>
+
 <div class="well">
     <div class="alert" id="message" style="display:none">
         <button type="button" class="close" data-dismiss="message">&times;</button>
@@ -10,6 +10,7 @@
 	
 	<div class="account-username-box">
 		<span class="account-username">{user.username}</span>
+		<span class="account-links">edit</span>
 	</div>
 	<br/>		
 		
