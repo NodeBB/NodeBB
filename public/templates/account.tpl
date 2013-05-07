@@ -10,7 +10,7 @@
 	
 	<div class="account-username-box">
 		<span class="account-username">{user.username}</span>
-		<span class="pull-right"><a href="/users/edit/{user.uid}">edit</a></span>
+		<span class="pull-right"><a href="/users/{user.username}/edit">edit</a></span>
 	</div>
 	<br/>		
 		

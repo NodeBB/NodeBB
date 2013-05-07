@@ -384,13 +384,13 @@ passport.deserializeUser(function(uid, done) {
 		res.send('User list');
 	});
 
-	app.get('/users/edit/:uid', function(req, res){
+	app.get('/users/:uid/edit', function(req, res){
 		console.log("OPPA");
 		
 		if(req.user && req.params.uid)
 		{
 			//res.send("editing user");
-			res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("users/edit/' + req.params.uid+'");});</script>' + templates['footer']);
+			res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("users/' + req.params.uid+'/edit");});</script>' + templates['footer']);
 		}
 		else
 			return res.redirect('/403');	
