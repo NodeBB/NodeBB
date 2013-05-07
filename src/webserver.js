@@ -110,6 +110,7 @@ passport.deserializeUser(function(uid, done) {
 
 		next();
 	});
+	
 	// Dunno wtf this does
 	//	app.use(express.logger({ format: '\x1b[1m:method\x1b[0m \x1b[33m:url\x1b[0m :response-time ms' }));
 	// Useful if you want to use app.put and app.delete (instead of app.post all the time)
@@ -349,11 +350,27 @@ passport.deserializeUser(function(uid, done) {
 		res.send('User list');
 	});
 
-	app.get('/users/:username', function(req, res) {
-		global.modules.user.get_uid_by_username(req.params.username, function(uid) {
-			res.send('User profile for uid: ' + uid);
+	app.get('/users/:uid', handleUserProfile);
+	app.get('/users/:uid/:username*', handleUserProfile);
+	
+
+	function handleUserProfile(req, res) {
+		console.log("userid " + req.params.uid);
+		if(req.params.uid == 0) {
+			res.send("User doesn't exist!");
+			return;
+		}
+
+		user.getUserData(req.params.uid, function(data) {
+			
+			if(req.url.indexOf(data.username) == -1)
+				res.redirect(301, '/users/'+req.params.uid+'/'+data.username);
+			else
+				res.send(templates['header'] + '<pre>'+JSON.stringify(data, null, 4)+'</pre>' + templates['footer']);
+//				res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("' + 'userprofile' + '");});</script>' + templates['footer']);
+			
 		});
-	});
+	}
 
 	app.get('/test', function(req, res) {
 		global.modules.posts.get(function(data) {
