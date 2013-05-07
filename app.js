@@ -33,20 +33,33 @@ global.modules = modules;
                 console.log('Setting up default categories...');
 
                 modules.categories.create({
-                    'name': 'General',
-                    'description': 'A place to talk about whateeeever you want'
+                    'name': 'Announcements',
+                    'description': 'A place to talk about whateeeever you want',
+                    'blockclass': 'category-purple',
+                    'icon' : 'icon-bullhorn'
+                });
+
+                modules.categories.create({
+                    'name': 'General Discussion',
+                    'description': 'A place to talk about whateeeever you want',
+                    'blockclass': 'category-purple',
+                    'icon' : 'icon-comment'
                 });
 
 
                 modules.categories.create({
                     'name': 'NodeBB Development',
-                    'description': 'Bugs? Dont worry, we dont read this thread, so post them here.'
+                    'description': 'Bugs? Dont worry, we dont read this thread, so post them here.',
+                    'blockclass': 'category-purple',
+                    'icon' : 'icon-github-alt'
                 });
 
 
                 modules.categories.create({
-                    'name': 'Design Create Play',
-                    'description': 'In future an example of how a hidden category should look like.'
+                    'name': 'Blogs',
+                    'description': 'In future an example of how a hidden category should look like.',
+                    'blockclass': 'category-purple',
+                    'icon' : 'icon-pencil'
                 });
 
             } else console.log('Good.');
