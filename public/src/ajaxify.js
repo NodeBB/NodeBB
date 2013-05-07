@@ -25,6 +25,7 @@ var ajaxify = {};
 	};
 
 	ajaxify.go = function(url, callback) {
+		
 		// leave room and join global
 		app.enter_room('global');
 
@@ -39,7 +40,7 @@ var ajaxify = {};
 			jQuery('#content').fadeOut(100);
 
 			load_template(function() {
-
+				console.log('called');
 				exec_body_scripts(content);
 
 				ajaxify.enable();
