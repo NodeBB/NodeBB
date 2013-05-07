@@ -220,7 +220,13 @@ passport.deserializeUser(function(uid, done) {
 					});
 				break;
 			case 'users' : 
-					if (String(req.params.section).toLowerCase() === 'edit') {
+					if (!req.params.section && !req.params.id) {
+						console.log("PURE USERS");					
+						get_users_fn(req, res, function(userData) {
+							res.send(JSON.stringify(userData));
+						});
+					}
+					else if (String(req.params.section).toLowerCase() === 'edit') {
 						get_account_fn(req, res, function(userData) {
 							res.send(JSON.stringify(userData));
 						});			
@@ -229,6 +235,7 @@ passport.deserializeUser(function(uid, done) {
 							res.send(JSON.stringify(userData));
 						});						
 					}
+					
 				break;
 			case 'confirm':
 					global.modules.user.email.confirm(req.params.id, function(data) {
@@ -372,9 +379,12 @@ passport.deserializeUser(function(uid, done) {
 			});
 			
 		});
-		
-
-		
+	}
+	
+	function get_users_fn(req, res, callback) {
+		user.getUserList(function(data){
+			callback({users:data});
+		});
 	}
 
 	
@@ -393,9 +403,9 @@ passport.deserializeUser(function(uid, done) {
 	});
 
 	app.get('/users', function(req, res) {
-		console.log("ARE U HERE");
+
 		user.getUserList(function(data){
-			//res.send(data);
+
 			res.send(templates['header'] + create_route("users", "users") + templates['footer']);
 
 		});
@@ -403,11 +413,9 @@ passport.deserializeUser(function(uid, done) {
 	});
 
 	app.get('/users/:uid/edit', function(req, res){
-		console.log("OPPA");
 		
 		if(req.user && req.params.uid)
 		{
-			//res.send("editing user");
 			res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("users/' + req.params.uid+'/edit");});</script>' + templates['footer']);
 		}
 		else

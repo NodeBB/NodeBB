@@ -10,7 +10,7 @@ var	config = require('../config.js'),
 
 
 	User.getUserField = function(uid, field, callback) {
-		RDB.db.hget(String(uid), field, function(err, data){
+		RDB.db.hget('user:'+uid, field, function(err, data){
 			if(err === null)
 				callback(data);
 			else
@@ -19,7 +19,7 @@ var	config = require('../config.js'),
 	}
 	
 	User.getUserFields = function(uid, fields, callback) {
-		RDB.db.hmget(String(uid), fields, function(err, data){
+		RDB.db.hmget('user:'+uid, fields, function(err, data){
 			if(err === null) {
 				var returnData = {};
 				
@@ -57,7 +57,7 @@ var	config = require('../config.js'),
 
 	User.getUserData = function(uid, callback) {
 
-		RDB.db.hgetall(String(uid), function(err, data){
+		RDB.db.hgetall('user:'+uid, function(err, data){
 			if(err === null)
 			{
 				if(data && data['password'])
@@ -70,12 +70,32 @@ var	config = require('../config.js'),
 	}
 
 	User.setUserField = function(uid, field, value) {
-		RDB.db.hset(String(uid),	field, value);				
+		RDB.db.hset('user:'+uid,	field, value);				
+	}
+
+	User.incrementUserFieldBy = function(uid, field, value) {
+		RDB.db.hincrby('user:'+uid, field, value);
 	}
 
 	User.getUserList = function(callback){
-		RDB.db.lrange('user:users', 0, -1, function(err, data) {
-			callback(data);
+		var data = [];
+		
+		RDB.db.keys('user:*', function(err, userkeys){
+			
+			for(var i=0,ii=userkeys.length; i<ii; ++i) {
+				
+				RDB.db.hgetall(userkeys[i], function(err, userdata) {
+					
+					if(userdata && userdata.password)
+						delete userdata.password;
+					
+					data.push(userdata);
+					
+					if(data.length == userkeys.length)
+						callback(data);
+				});
+			}
+			
 		});
 	}
 
@@ -218,7 +238,7 @@ var	config = require('../config.js'),
 
 			User.hashPassword(password, function(hash) {
 
-				RDB.db.hmset(String(uid), {
+				RDB.db.hmset('user:'+uid, {
 					'username' : username,
 					'email' : email,
 					'joindate' : new Date().getTime(),
@@ -234,11 +254,11 @@ var	config = require('../config.js'),
 				if(email)
 					User.sendConfirmationEmail(email);
 			
-				RDB.incr('user:count', function(count) {
+				RDB.incr('usercount', function(count) {
 					io.sockets.emit('user.count', {count: count});
 				});
 
-				RDB.lpush('user:users', username);
+				RDB.lpush('userlist', username);
 				io.sockets.emit('user.latest', {username: username});
 
 				callback(null, uid);
@@ -315,13 +335,13 @@ var	config = require('../config.js'),
 	};
 	
 	User.count = function(socket) {
-		RDB.get('user:count', function(count) {
+		RDB.get('usercount', function(count) {
 			socket.emit('user.count', {count: (count === null) ? 0 : count});
 		});
 	};
 	
 	User.latest = function(socket) {
-		RDB.lrange('user:users', 0, 0, function(username) {
+		RDB.lrange('userlist', 0, 0, function(username) {
 			socket.emit('user.latest', {username: username});
 		});	
 	}
@@ -458,7 +478,7 @@ var	config = require('../config.js'),
 				if (validated) {
 					RDB.get('reset:' + code + ':uid', function(uid) {
 
-						RDB.db.hset(String(uid), 'password', password);
+						User.setUserField(uid, 'password', password);
 						RDB.del('reset:' + code + ':uid');
 						RDB.del('reset:' + code + ':expiry');
 

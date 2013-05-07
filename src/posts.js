@@ -178,7 +178,7 @@ var	RDB = require('./redis.js'),
 					// User Details - move this out later
 					RDB.lpush('uid:' + uid + ':posts', pid);
 					
-					RDB.db.hincrby(uid, 'postcount', 1);
+					user.incrementUserFieldBy(uid, 'postcount', 1);
 					
 					if (callback) 
 						callback(pid);
@@ -196,7 +196,7 @@ var	RDB = require('./redis.js'),
 				if (hasFavourited == false) {
 					RDB.sadd('pid:' + pid + ':users_favourited', uid);
 
-					RDB.db.hincrby(String(uid_of_poster), 'reputation', 1);
+					user.incrementUserFieldBy(uid_of_poster, 'reputation', 1);
 					
 					RDB.incr('pid:' + pid + ':rep');
 
@@ -212,8 +212,9 @@ var	RDB = require('./redis.js'),
 		RDB.get('pid:' + pid + ':uid', function(uid_of_poster) {
 			Posts.hasFavourited(pid, uid, function(hasFavourited) {
 				if (hasFavourited == true) {
+					
 					RDB.srem('pid:' + pid + ':users_favourited', uid);
-					RDB.db.hincrby(String(uid_of_poster), 'reputation', -1);
+					user.incrementUserFieldBy(uid_of_poster, 'reputation', -1);
 					RDB.decr('pid:' + pid + ':rep');
 
 					if (room_id) {
