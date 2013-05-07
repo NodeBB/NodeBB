@@ -299,14 +299,12 @@ var	config = require('../config.js'),
 	}
 
 
-	User.exists = function(socket, username, callback) {
+	User.exists = function(username, callback) {
 		User.get_uid_by_username(username, function(exists) {
 			exists = !!exists;
 
 			if (callback) 
 				callback(exists);
-			else 
-				socket.emit('user.exists', {exists: exists});
 		});
 	};
 	
