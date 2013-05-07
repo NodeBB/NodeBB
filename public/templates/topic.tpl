@@ -34,27 +34,45 @@
 </ul>
 <hr />
 <button id="post_reply" class="btn btn-primary btn-large post_reply">Reply</button>
-<div class="btn-group pull-right">
+<div class="btn-group pull-right" id="thread-tools" style="visibility: hidden;">
 	<button class="btn dropdown-toggle" data-toggle="dropdown">Thread Tools <span class="caret"></span></button>
 	<ul class="dropdown-menu">
 		<li><a href="#">Lock/Unlock Thread</a></li>
 		<li class="divider"></li>
-		<li><a href="#"><span class="text-error">Delete Thread</span></a></li>
+		<li><a href="#" id="delete_thread"><span class="text-error">Delete Thread</span></a></li>
 	</ul>
 </div>
 
 
 <script type="text/javascript">
 	(function() {
-		var	locked = '{locked}';
+		var	locked = '{locked}',
+			expose_tools = '{expose_tools}';
+
+		console.log(expose_tools);
 
 		jQuery('document').ready(function() {
-			var	room = 'topic_' + '{topic_id}';
+			var	room = 'topic_' + '{topic_id}',
+				adminTools = document.getElementById('thread-tools');
 
 			app.enter_room(room);
 			set_up_posts();
 
 			if (locked === '1') set_locked_state(true);
+
+			if (expose_tools === '1') {
+				var deleteThreadEl = document.getElementById('delete-thread');
+
+				adminTools.style.visibility = 'inherit';
+
+				// Add events to the thread tools
+				deleteThreadEl.addEventListener('click', function(e) {
+					e.preventDefault();
+					if (confirm('really delete thread? (THIS DIALOG TO BE REPLACED WITH BOOTBOX)')) {
+						console.log('socket shiz');
+					}
+				});
+			}
 		});
 
 

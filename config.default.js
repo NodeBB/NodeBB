@@ -36,6 +36,11 @@ var config = {
 	"facebook": {
 		"app_id": '',
 		"secret": ''
+	},
+
+	// Privileged Actions Reputation Thresholds
+	"privilege_thresholds": {
+		"manage_thread": 2000
 	}
 }
 

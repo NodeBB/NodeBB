@@ -1,7 +1,8 @@
 var	RDB = require('./redis.js'),
 	utils = require('./utils.js'),
 	marked = require('marked'),
-	user = require('./user.js');
+	user = require('./user.js'),
+	config = require('../config.js');
 
 (function(Posts) {
 
@@ -41,6 +42,7 @@ var	RDB = require('./redis.js'),
 				'topic_name':thread_data.topic_name,
 				'locked': parseInt(thread_data.locked) || 0,
 				'topic_id': tid,
+				'expose_tools': user_data[uid].reputation >= config.privilege_thresholds.manage_thread ? 1 : 0,
 				'posts': posts
 			});
 		}
