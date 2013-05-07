@@ -58,7 +58,7 @@ var templates = {};
 
 	function init() {
 		loadTemplates([
-			'header', 'footer', 'register', 'home', 'topic','account', 'category',
+			'header', 'footer', 'register', 'home', 'topic','account', 'category', 'users',
 			'login', 'reset', 'reset_code', 'account',
 			'confirm',
 			'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext'
@@ -160,7 +160,7 @@ function load_template(callback, custom_tpl) {
 		tpl = templates.get_custom_map(tpl);
 
 		if (custom_tpl) tpl = custom_tpl;
-
+		
 		document.getElementById('content').innerHTML = templates[tpl].parse(JSON.parse(data));
 		if (callback) callback();
 	});

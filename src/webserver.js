@@ -122,6 +122,10 @@ passport.deserializeUser(function(uid, done) {
 	});
 
 
+	function create_route(url, tpl) {
+		return '<script>templates.ready(function(){ajaxify.go("' + url + '", null, "' + tpl + '");});</script>';
+	}
+
 
 	// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 	(function() {
@@ -137,7 +141,7 @@ passport.deserializeUser(function(uid, done) {
 						return;
 					}
 					
-					res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("' + route + '");});</script>' + templates['footer']);
+					res.send(templates['header'] + create_route(route) + templates['footer']);
 				});
 			}(routes[i]));
 		}
@@ -217,7 +221,9 @@ passport.deserializeUser(function(uid, done) {
 				break;
 			case 'users' : 
 					if (String(req.params.section).toLowerCase() === 'edit') {
-
+						get_account_fn(req, res, function(userData) {
+							res.send(JSON.stringify(userData));
+						});			
 					} else {
 						get_account_fn(req, res, function(userData) {
 							res.send(JSON.stringify(userData));
@@ -390,7 +396,8 @@ passport.deserializeUser(function(uid, done) {
 		console.log("ARE U HERE");
 		user.getUserList(function(data){
 			//res.send(data);
-			res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("users");});</script>' + templates['footer']);
+			res.send(templates['header'] + create_route("users", "users") + templates['footer']);
+
 		});
 		
 	});
