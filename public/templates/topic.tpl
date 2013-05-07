@@ -183,11 +183,11 @@
 			else div = '#' + div;
 
 			jQuery(div + ' .post_reply').click(function() {
-				if (locked !== '1') app.open_post_window('reply', "{topic_id}", "{topic_name}");
+				if (thread_state.locked !== '1') app.open_post_window('reply', "{topic_id}", "{topic_name}");
 			});
 
 			jQuery(div + ' .quote').click(function() {
-				if (locked !== '1') app.open_post_window('quote', "{topic_id}", "{topic_name}");
+				if (thread_state.locked !== '1') app.open_post_window('quote', "{topic_id}", "{topic_name}");
 
 				// this needs to be looked at, obviously. only single line quotes work well I think maybe replace all \r\n with > ?
 				document.getElementById('post_content').innerHTML = '> ' + document.getElementById('content_' + this.id.replace('quote_', '')).innerHTML;
@@ -206,13 +206,15 @@
 					uid = ids[1];
 
 				
-				if (this.children[1].className == 'icon-star-empty') {
-					this.children[1].className = 'icon-star';
-					socket.emit('api:posts.favourite', {pid: pid, room_id: app.current_room});
-				}
-				else {
-					this.children[1].className = 'icon-star-empty';
-					socket.emit('api:posts.unfavourite', {pid: pid, room_id: app.current_room});
+				if (thread_state.locked !== '1') {
+					if (this.children[1].className == 'icon-star-empty') {
+						this.children[1].className = 'icon-star';
+						socket.emit('api:posts.favourite', {pid: pid, room_id: app.current_room});
+					}
+					else {
+						this.children[1].className = 'icon-star-empty';
+						socket.emit('api:posts.unfavourite', {pid: pid, room_id: app.current_room});
+					}
 				}
 			});
 		}
