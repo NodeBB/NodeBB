@@ -37,18 +37,21 @@
 <div class="btn-group pull-right" id="thread-tools" style="visibility: hidden;">
 	<button class="btn dropdown-toggle" data-toggle="dropdown">Thread Tools <span class="caret"></span></button>
 	<ul class="dropdown-menu">
-		<li><a href="#">Lock/Unlock Thread</a></li>
+		<li><a href="#" id="lock_thread"><i class="icon-lock"></i> Lock Thread</a></li>
 		<li class="divider"></li>
-		<li><a href="#" id="delete_thread"><span class="text-error">Delete Thread</span></a></li>
+		<li><a href="#" id="delete_thread"><span class="text-error"><i class="icon-trash"></i>  Delete Thread</span></a></li>
 	</ul>
 </div>
 
 
 <script type="text/javascript">
 	(function() {
-		var	locked = '{locked}',
-			expose_tools = '{expose_tools}',
-			tid = '{topic_id}';
+		var	expose_tools = '{expose_tools}',
+			tid = '{topic_id}',
+			thread_state = {
+				locked: '{locked}',
+				deleted: '{deleted}'
+			};
 
 		jQuery('document').ready(function() {
 			var	room = 'topic_' + '{topic_id}',
@@ -57,18 +60,39 @@
 			app.enter_room(room);
 			set_up_posts();
 
-			if (locked === '1') set_locked_state(true);
+			if (thread_state.locked === '1') set_locked_state(true);
+			if (thread_state.deleted === '1') set_delete_state(true);
 
 			if (expose_tools === '1') {
-				var deleteThreadEl = document.getElementById('delete_thread');
+				var deleteThreadEl = document.getElementById('delete_thread'),
+					lockThreadEl = document.getElementById('lock_thread');
 
 				adminTools.style.visibility = 'inherit';
 
 				// Add events to the thread tools
 				deleteThreadEl.addEventListener('click', function(e) {
 					e.preventDefault();
-					if (confirm('really delete thread? (THIS DIALOG TO BE REPLACED WITH BOOTBOX)')) {
-						socket.emit('api:topic.delete', { tid: tid });
+					if (thread_state.deleted !== '1') {
+						if (confirm('really delete thread? (THIS DIALOG TO BE REPLACED WITH BOOTBOX)')) {
+							socket.emit('api:topic.delete', { tid: tid });
+						}
+					} else {
+						if (confirm('really restore thread? (THIS DIALOG TO BE REPLACED WITH BOOTBOX)')) {
+							socket.emit('api:topic.restore', { tid: tid });
+						}
+					}
+				});
+
+				lockThreadEl.addEventListener('click', function(e) {
+					e.preventDefault();
+					if (thread_state.locked !== '1') {
+						if (confirm('really lock thread? (THIS DIALOG TO BE REPLACED WITH BOOTBOX)')) {
+							socket.emit('api:topic.lock', { tid: tid });
+						}
+					} else {
+						if (confirm('really unlock thread? (THIS DIALOG TO BE REPLACED WITH BOOTBOX)')) {
+							socket.emit('api:topic.unlock', { tid: tid });
+						}
 					}
 				});
 			}
@@ -114,8 +138,32 @@
 		});
 
 		socket.on('event:topic_deleted', function(data) {
+			console.log('deleted');
 			if (data.tid === tid && data.status === 'ok') {
-				console.log('thread deleted!!');
+				set_locked_state(true);
+				set_delete_state(true);
+			}
+		});
+
+		socket.on('event:topic_restored', function(data) {
+			console.log('restored');
+			if (data.tid === tid && data.status === 'ok') {
+				set_locked_state(false);
+				set_delete_state(false);
+			}
+		});
+
+		socket.on('event:topic_locked', function(data) {
+			console.log('locked');
+			if (data.tid === tid && data.status === 'ok') {
+				set_locked_state(true);
+			}
+		});
+
+		socket.on('event:topic_unlocked', function(data) {
+			console.log('unlocked');
+			if (data.tid === tid && data.status === 'ok') {
+				set_locked_state(false);
 			}
 		});
 
@@ -178,21 +226,43 @@
 				postReplyBtns = document.querySelectorAll('#post-container .post_reply'),
 				quoteBtns = document.querySelectorAll('#post-container .quote'),
 				numReplyBtns = postReplyBtns.length,
+				lockThreadEl = document.getElementById('lock_thread'),
 				x;
 			if (locked === true) {
+				lockThreadEl.innerHTML = '<i class="icon-unlock"></i> Unlock Thread';
 				threadReplyBtn.disabled = true;
 				threadReplyBtn.innerHTML = 'Locked <i class="icon-lock"></i>';
 				for(x=0;x<numReplyBtns;x++) {
 					postReplyBtns[x].innerHTML = 'Locked <i class="icon-lock"></i>';
 					quoteBtns[x].style.display = 'none';
 				}
+
+				thread_state.locked = '1';
 			} else {
+				lockThreadEl.innerHTML = '<i class="icon-lock"></i> Lock Thread';
 				threadReplyBtn.disabled = false;
 				threadReplyBtn.innerHTML = 'Reply';
 				for(x=0;x<numReplyBtns;x++) {
 					postReplyBtns[x].innerHTML = 'Reply <i class="icon-reply"></i>';
 					quoteBtns[x].style.display = 'inline-block';
 				}
+
+				thread_state.locked = '0';
+			}
+		}
+
+		function set_delete_state(deleted) {
+			var	deleteThreadEl = document.getElementById('delete_thread'),
+				deleteTextEl = deleteThreadEl.getElementsByTagName('span')[0];
+
+			if (deleted) {
+				deleteTextEl.innerHTML = '<i class="icon-comment"></i> Restore Thread';
+
+				thread_state.deleted = '1';
+			} else {
+				deleteTextEl.innerHTML = '<i class="icon-trash"></i> Delete Thread';
+
+				thread_state.deleted = '0';
 			}
 		}
 	})();

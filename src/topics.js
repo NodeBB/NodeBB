@@ -145,7 +145,7 @@ var	RDB = require('./redis.js'),
 				RDB.set('tid:' + tid + ':locked', 1);
 
 				if (socket) {
-					socket.emit('event:topic_locked', {
+					socket.in('topic_' + tid).emit('event:topic_locked', {
 						tid: tid,
 						status: 'ok'
 					});
@@ -158,10 +158,10 @@ var	RDB = require('./redis.js'),
 		user.getUserField(uid, 'reputation', function(rep) {
 			if (rep >= configs.privilege_thresholds.manage_thread) {
 				// Mark thread as locked
-				RDB.set('tid:' + tid + ':locked', 0);
+				RDB.del('tid:' + tid + ':locked');
 
 				if (socket) {
-					socket.emit('event:topic_unlocked', {
+					socket.in('topic_' + tid).emit('event:topic_unlocked', {
 						tid: tid,
 						status: 'ok'
 					});
@@ -178,7 +178,7 @@ var	RDB = require('./redis.js'),
 				Topics.lock(tid, uid);
 
 				if (socket) {
-					socket.emit('event:topic_deleted', {
+					socket.in('topic_' + tid).emit('event:topic_deleted', {
 						tid: tid,
 						status: 'ok'
 					});
@@ -191,11 +191,11 @@ var	RDB = require('./redis.js'),
 		user.getUserField(uid, 'reputation', function(rep) {
 			if (rep >= configs.privilege_thresholds.manage_thread) {
 				// Mark thread as deleted
-				RDB.set('tid:' + tid + ':deleted', 0);
-				Topics.lock(tid, uid);
+				RDB.del('tid:' + tid + ':deleted');
+				Topics.unlock(tid, uid);
 
 				if (socket) {
-					socket.emit('event:topic_restored', {
+					socket.in('topic_' + tid).emit('event:topic_restored', {
 						tid: tid,
 						status: 'ok'
 					});

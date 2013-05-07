@@ -10,12 +10,12 @@ var	RDB = require('./redis.js'),
 		if (start == null) start = 0;
 		if (end == null) end = start + 10;
 
-		var post_data, user_data, thread_data, vote_data;
+		var post_data, user_data, thread_data, vote_data, viewer_data;
 
 
 		//compile thread after all data is asynchronously called
 		function generateThread() {
-			if (!post_data ||! user_data || !thread_data || !vote_data) return;
+			if (!post_data ||! user_data || !thread_data || !vote_data || !viewer_data) return;
 
 			var posts = [];
 
@@ -41,8 +41,9 @@ var	RDB = require('./redis.js'),
 			callback({
 				'topic_name':thread_data.topic_name,
 				'locked': parseInt(thread_data.locked) || 0,
+				'deleted': parseInt(thread_data.deleted) || 0,
 				'topic_id': tid,
-				'expose_tools': user_data[uid].reputation >= config.privilege_thresholds.manage_thread ? 1 : 0,
+				'expose_tools': viewer_data.reputation >= config.privilege_thresholds.manage_thread ? 1 : 0,
 				'posts': posts
 			});
 		}
@@ -78,6 +79,7 @@ var	RDB = require('./redis.js'),
 				.mget(post_rep)
 				.get('tid:' + tid + ':title')
 				.get('tid:' + tid + ':locked')
+				.get('tid:' + tid + ':deleted')
 				.exec(function(err, replies) {
 					post_data = {
 						pid: pids,
@@ -89,7 +91,8 @@ var	RDB = require('./redis.js'),
 
 					thread_data = {
 						topic_name: replies[4],
-						locked: replies[5]
+						locked: replies[5] || 0,
+						deleted: replies[6] || 0
 					};
 
 					user.getMultipleUserFields(post_data.uid, ['username','reputation','picture'], function(user_details){
@@ -97,7 +100,13 @@ var	RDB = require('./redis.js'),
 						generateThread();
 					});
 				});
-			
+		});
+
+		user.getUserField(current_user, 'reputation', function(reputation){
+			viewer_data = {
+				reputation: reputation
+			};
+			generateThread();
 		});
 	}
 

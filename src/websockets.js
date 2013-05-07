@@ -62,10 +62,7 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 		socket.emit('event:connect', {status: 1});
 		
 		socket.on('disconnect', function() {
-      		console.log('Got disconnect! SESSION ID : '+hs.sessionID+' USER ID : '+uid);
-
       		delete users[hs.sessionID];
-      		console.log(users);
    		});
 
 		
