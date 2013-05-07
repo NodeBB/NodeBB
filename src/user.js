@@ -73,6 +73,12 @@ var	config = require('../config.js'),
 		RDB.db.hset(String(uid),	field, value);				
 	}
 
+	User.getUserList = function(callback){
+		RDB.db.lrange('user:users', 0, -1, function(err, data) {
+			callback(data);
+		});
+	}
+
 	User.loginViaLocal = function(username, password, next) {
 
 		if (!username || !password) {
