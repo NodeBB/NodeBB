@@ -387,8 +387,12 @@ passport.deserializeUser(function(uid, done) {
 	});
 
 	app.get('/users', function(req, res) {
-		// Render user list
-		res.send('User list');
+		console.log("ARE U HERE");
+		user.getUserList(function(data){
+			//res.send(data);
+			res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("users");});</script>' + templates['footer']);
+		});
+		
 	});
 
 	app.get('/users/:uid/edit', function(req, res){
@@ -408,6 +412,7 @@ passport.deserializeUser(function(uid, done) {
 	
 
 	function handleUserProfile(req, res) {
+		console.log("handleUserProfile");
 		
 		if(!req.params.username) {
 			res.send("User doesn't exist!");
