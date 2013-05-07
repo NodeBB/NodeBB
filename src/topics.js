@@ -215,4 +215,36 @@ var	RDB = require('./redis.js'),
 			}
 		});
 	}
+
+	Topics.pin = function(tid, uid, socket) {
+		user.getUserField(uid, 'reputation', function(rep) {
+			if (rep >= configs.privilege_thresholds.manage_thread) {
+				// Mark thread as deleted
+				RDB.set('tid:' + tid + ':pinned', 1);
+
+				if (socket) {
+					io.sockets.in('topic_' + tid).emit('event:topic_pinned', {
+						tid: tid,
+						status: 'ok'
+					});
+				}
+			}
+		});
+	}
+
+	Topics.unpin = function(tid, uid, socket) {
+		user.getUserField(uid, 'reputation', function(rep) {
+			if (rep >= configs.privilege_thresholds.manage_thread) {
+				// Mark thread as deleted
+				RDB.del('tid:' + tid + ':pinned');
+
+				if (socket) {
+					io.sockets.in('topic_' + tid).emit('event:topic_unpinned', {
+						tid: tid,
+						status: 'ok'
+					});
+				}
+			}
+		});
+	}
 }(exports));

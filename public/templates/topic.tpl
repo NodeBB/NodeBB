@@ -37,6 +37,7 @@
 <div class="btn-group pull-right" id="thread-tools" style="visibility: hidden;">
 	<button class="btn dropdown-toggle" data-toggle="dropdown">Thread Tools <span class="caret"></span></button>
 	<ul class="dropdown-menu">
+		<li><a href="#" id="pin_thread"><i class="icon-pushpin"></i> Pin Thread</a></li>
 		<li><a href="#" id="lock_thread"><i class="icon-lock"></i> Lock Thread</a></li>
 		<li class="divider"></li>
 		<li><a href="#" id="delete_thread"><span class="text-error"><i class="icon-trash"></i>  Delete Thread</span></a></li>
@@ -50,7 +51,8 @@
 			tid = '{topic_id}',
 			thread_state = {
 				locked: '{locked}',
-				deleted: '{deleted}'
+				deleted: '{deleted}',
+				pinned: '{pinned}'
 			};
 
 		jQuery('document').ready(function() {
@@ -62,10 +64,12 @@
 
 			if (thread_state.locked === '1') set_locked_state(true);
 			if (thread_state.deleted === '1') set_delete_state(true);
+			if (thread_state.pinned === '1') set_pinned_state(true);
 
 			if (expose_tools === '1') {
 				var deleteThreadEl = document.getElementById('delete_thread'),
-					lockThreadEl = document.getElementById('lock_thread');
+					lockThreadEl = document.getElementById('lock_thread'),
+					pinThreadEl = document.getElementById('pin_thread');
 
 				adminTools.style.visibility = 'inherit';
 
@@ -86,13 +90,18 @@
 				lockThreadEl.addEventListener('click', function(e) {
 					e.preventDefault();
 					if (thread_state.locked !== '1') {
-						if (confirm('really lock thread? (THIS DIALOG TO BE REPLACED WITH BOOTBOX)')) {
-							socket.emit('api:topic.lock', { tid: tid });
-						}
+						socket.emit('api:topic.lock', { tid: tid });
 					} else {
-						if (confirm('really unlock thread? (THIS DIALOG TO BE REPLACED WITH BOOTBOX)')) {
-							socket.emit('api:topic.unlock', { tid: tid });
-						}
+						socket.emit('api:topic.unlock', { tid: tid });
+					}
+				});
+
+				pinThreadEl.addEventListener('click', function(e) {
+					e.preventDefault();
+					if (thread_state.pinned !== '1') {
+						socket.emit('api:topic.pin', { tid: tid });
+					} else {
+						socket.emit('api:topic.unpin', { tid: tid });
 					}
 				});
 			}
@@ -160,6 +169,18 @@
 		socket.on('event:topic_unlocked', function(data) {
 			if (data.tid === tid && data.status === 'ok') {
 				set_locked_state(false);
+			}
+		});
+
+		socket.on('event:topic_pinned', function(data) {
+			if (data.tid === tid && data.status === 'ok') {
+				set_pinned_state(true);
+			}
+		});
+
+		socket.on('event:topic_unpinned', function(data) {
+			if (data.tid === tid && data.status === 'ok') {
+				set_pinned_state(false);
 			}
 		});
 
@@ -278,6 +299,20 @@
 				deleteNotice.parentNode.removeChild(deleteNotice);
 
 				thread_state.deleted = '0';
+			}
+		}
+
+		function set_pinned_state(pinned) {
+			var pinEl = document.getElementById('pin_thread');
+
+			if (pinned) {
+				pinEl.innerHTML = '<i class="icon-pushpin"></i> Unpin Thread';
+
+				thread_state.pinned = '1';
+			} else {
+				pinEl.innerHTML = '<i class="icon-pushpin"></i> Pin Thread';
+
+				thread_state.pinned = '0';
 			}
 		}
 	})();
