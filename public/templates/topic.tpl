@@ -262,7 +262,7 @@
 				// Spawn a 'deleted' notice at the top of the page
 				deleteNotice.setAttribute('id', 'thread-deleted');
 				deleteNotice.className = 'alert';
-				deleteNotice.innerHTML = 'This thread has been deleted. Only users with thread management privileges can see it.';
+				deleteNotice.innerHTML = 'This thread has been deleted. Only users with thread management privileges can see it.<br /><br /><a href="/">Home</a>';
 				document.getElementById('content').insertBefore(deleteNotice, threadEl);
 
 				thread_state.deleted = '1';

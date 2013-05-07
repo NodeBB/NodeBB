@@ -24,14 +24,18 @@ var	RDB = require('./redis.js'),
 				uid = [],
 				timestamp = [],
 				slug = [],
-				postcount = [];
+				postcount = [],
+				locked = [],
+				deleted = [];
 
 			for (var i=0, ii=tids.length; i<ii; i++) {
 				title.push('tid:' + tids[i] + ':title');
 				uid.push('tid:' + tids[i] + ':uid');
 				timestamp.push('tid:' + tids[i] + ':timestamp');
 				slug.push('tid:' + tids[i] + ':slug');
-				postcount.push('tid:' + tids[i] + ':postcount');
+				postcount.push('tid:' + tids[i] + ':postcount'),
+				locked.push('tid:' + tids[i] + ':locked'),
+				deleted.push('tid:' + tids[i] + ':deleted');
 			}
 
 			if (tids.length > 0) {
@@ -41,21 +45,23 @@ var	RDB = require('./redis.js'),
 					.mget(timestamp)
 					.mget(slug)
 					.mget(postcount)
+					.mget(locked)
+					.mget(deleted)
 					.exec(function(err, replies) {
-						
 						title = replies[0];
 						uid = replies[1];
 						timestamp = replies[2];
 						slug = replies[3];
 						postcount = replies[4];
-						
-						
-						
+						locked = replies[5];
+						deleted = replies[6];
+
 						user.get_usernames_by_uids(uid, function(userNames) {
 							var topics = [];
 							
 							for (var i=0, ii=title.length; i<ii; i++) {
-								
+								if (deleted[i] === '1') continue;
+
 								topics.push({
 									'title' : title[i],
 									'uid' : uid[i],
@@ -63,7 +69,9 @@ var	RDB = require('./redis.js'),
 									'timestamp' : timestamp[i],
 									'relativeTime': utils.relativeTime(timestamp[i]),
 									'slug' : slug[i],
-									'post_count' : postcount[i]
+									'post_count' : postcount[i],
+									icon: locked[i] === '1' ? 'icon-lock' : 'hide',
+									deleted: deleted[i]
 								});
 							}
 						
