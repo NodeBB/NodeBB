@@ -12,7 +12,9 @@
 <li class="row">
 	<div class="span1 profile-image-block visible-desktop">
 		<!--<i class="icon-spinner icon-spin icon-2x pull-left"></i>-->
-		<img src="{posts.gravatar}80" align="left" />
+		<a href="/users/{posts.username}">
+			<img src="{posts.gravatar}?s=80" align="left" />
+		</a>
 		<i class="icon-star"></i><span class="user_rep_{posts.uid}">{posts.user_rep}</span>
 	</div>
 	<div class="span11">
