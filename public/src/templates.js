@@ -2,7 +2,7 @@ var templates = {};
 
 (function() {
 	var ready_callback,
-		config;
+		config = {};
 
 	templates.get_custom_map = function(tpl) {
 		return (config['custom_mapping'] && config['custom_mapping'][tpl]) ? config['custom_mapping'][tpl] : tpl;

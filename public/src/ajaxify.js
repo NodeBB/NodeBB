@@ -21,10 +21,12 @@ var ajaxify = {};
 
 
 	window.onpopstate = function(event) {
-		ajaxify.go(document.location.href.replace(rootUrl +'/', ''));
+		// this breaks reloading and results in ajaxify.go calling twice, believe it messes around with sockets. ill come back for you later bitchez
+		// ajaxify.go(document.location.href.replace(rootUrl +'/', ''));
 	};
 
 	ajaxify.go = function(url, callback) {
+
 		// leave room and join global
 		app.enter_room('global');
 

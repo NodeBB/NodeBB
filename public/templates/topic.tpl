@@ -253,14 +253,25 @@
 
 		function set_delete_state(deleted) {
 			var	deleteThreadEl = document.getElementById('delete_thread'),
-				deleteTextEl = deleteThreadEl.getElementsByTagName('span')[0];
+				deleteTextEl = deleteThreadEl.getElementsByTagName('span')[0],
+				threadEl = document.querySelector('.post-container'),
+				deleteNotice = document.getElementById('thread-deleted') || document.createElement('div');
 
 			if (deleted) {
 				deleteTextEl.innerHTML = '<i class="icon-comment"></i> Restore Thread';
+				$(threadEl).addClass('deleted');
+
+				// Spawn a 'deleted' notice at the top of the page
+				deleteNotice.setAttribute('id', 'thread-deleted');
+				deleteNotice.className = 'alert';
+				deleteNotice.innerHTML = 'This thread has been deleted. Only users with thread management privileges can see it.';
+				document.getElementById('content').insertBefore(deleteNotice, threadEl);
 
 				thread_state.deleted = '1';
 			} else {
 				deleteTextEl.innerHTML = '<i class="icon-trash"></i> Delete Thread';
+				$(threadEl).removeClass('deleted');
+				deleteNotice.parentNode.removeChild(deleteNotice);
 
 				thread_state.deleted = '0';
 			}
