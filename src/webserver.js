@@ -411,9 +411,8 @@ passport.deserializeUser(function(uid, done) {
 
 
 	app.get('/test', function(req, res) {
-		global.modules.posts.get(function(data) {
-			res.send('<pre>' + JSON.stringify(data, null, 4) + '</pre>');
-		}, 1, 1);
+		global.modules.topics.delete(1, 1);
+		res.send();
 	});
 }(WebServer));
 

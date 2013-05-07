@@ -62,10 +62,7 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 		socket.emit('event:connect', {status: 1});
 		
 		socket.on('disconnect', function() {
-      		console.log('Got disconnect! SESSION ID : '+hs.sessionID+' USER ID : '+uid);
-
       		delete users[hs.sessionID];
-      		console.log(users);
    		});
 
 		
@@ -176,6 +173,22 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 
 		socket.on('api:user.active.get_record', function() {
 			modules.user.active.get_record(socket);
+		});
+
+		socket.on('api:topic.delete', function(data) {
+			modules.topics.delete(data.tid, uid, socket);
+		});
+
+		socket.on('api:topic.restore', function(data) {
+			modules.topics.restore(data.tid, uid, socket);
+		});
+
+		socket.on('api:topic.lock', function(data) {
+			modules.topics.lock(data.tid, uid, socket);
+		});
+
+		socket.on('api:topic.unlock', function(data) {
+			modules.topics.unlock(data.tid, uid, socket);
 		});
 	});
 	

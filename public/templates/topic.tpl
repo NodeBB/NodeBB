@@ -34,31 +34,72 @@
 </ul>
 <hr />
 <button id="post_reply" class="btn btn-primary btn-large post_reply">Reply</button>
-<div class="btn-group pull-right">
+<div class="btn-group pull-right" id="thread-tools" style="visibility: hidden;">
 	<button class="btn dropdown-toggle" data-toggle="dropdown">Thread Tools <span class="caret"></span></button>
 	<ul class="dropdown-menu">
-		<li><a href="#">Lock/Unlock Thread</a></li>
+		<li><a href="#" id="lock_thread"><i class="icon-lock"></i> Lock Thread</a></li>
 		<li class="divider"></li>
-		<li><a href="#"><span class="text-error">Delete Thread</span></a></li>
+		<li><a href="#" id="delete_thread"><span class="text-error"><i class="icon-trash"></i>  Delete Thread</span></a></li>
 	</ul>
 </div>
 
 
 <script type="text/javascript">
 	(function() {
-		var	locked = '{locked}';
+		var	expose_tools = '{expose_tools}',
+			tid = '{topic_id}',
+			thread_state = {
+				locked: '{locked}',
+				deleted: '{deleted}'
+			};
 
 		jQuery('document').ready(function() {
-			var	room = 'topic_' + '{topic_id}';
+			var	room = 'topic_' + '{topic_id}',
+				adminTools = document.getElementById('thread-tools');
 
 			app.enter_room(room);
 			set_up_posts();
 
-			if (locked === '1') set_locked_state(true);
+			if (thread_state.locked === '1') set_locked_state(true);
+			if (thread_state.deleted === '1') set_delete_state(true);
+
+			if (expose_tools === '1') {
+				var deleteThreadEl = document.getElementById('delete_thread'),
+					lockThreadEl = document.getElementById('lock_thread');
+
+				adminTools.style.visibility = 'inherit';
+
+				// Add events to the thread tools
+				deleteThreadEl.addEventListener('click', function(e) {
+					e.preventDefault();
+					if (thread_state.deleted !== '1') {
+						if (confirm('really delete thread? (THIS DIALOG TO BE REPLACED WITH BOOTBOX)')) {
+							socket.emit('api:topic.delete', { tid: tid });
+						}
+					} else {
+						if (confirm('really restore thread? (THIS DIALOG TO BE REPLACED WITH BOOTBOX)')) {
+							socket.emit('api:topic.restore', { tid: tid });
+						}
+					}
+				});
+
+				lockThreadEl.addEventListener('click', function(e) {
+					e.preventDefault();
+					if (thread_state.locked !== '1') {
+						if (confirm('really lock thread? (THIS DIALOG TO BE REPLACED WITH BOOTBOX)')) {
+							socket.emit('api:topic.lock', { tid: tid });
+						}
+					} else {
+						if (confirm('really unlock thread? (THIS DIALOG TO BE REPLACED WITH BOOTBOX)')) {
+							socket.emit('api:topic.unlock', { tid: tid });
+						}
+					}
+				});
+			}
 		});
 
 
-		ajaxify.register_events(['event:rep_up', 'event:rep_down', 'event:new_post', 'api:get_users_in_room']);
+		ajaxify.register_events(['event:rep_up', 'event:rep_down', 'event:new_post', 'api:get_users_in_room', 'event:topic_deleted']);
 		socket.on('api:get_users_in_room', function(users) {
 			var anonymous = users.anonymous,
 				usernames = users.usernames,
@@ -88,7 +129,6 @@
 			adjust_rep(-1, data.pid, data.uid);
 		});
 
-
 		socket.on('event:new_post', function(data) {
 			var html = templates.prepare(templates['topic'].blocks['posts']).parse(data),
 				uniqueid = new Date().getTime();
@@ -97,7 +137,31 @@
 			set_up_posts(uniqueid);
 		});
 
+		socket.on('event:topic_deleted', function(data) {
+			if (data.tid === tid && data.status === 'ok') {
+				set_locked_state(true);
+				set_delete_state(true);
+			}
+		});
 
+		socket.on('event:topic_restored', function(data) {
+			if (data.tid === tid && data.status === 'ok') {
+				set_locked_state(false);
+				set_delete_state(false);
+			}
+		});
+
+		socket.on('event:topic_locked', function(data) {
+			if (data.tid === tid && data.status === 'ok') {
+				set_locked_state(true);
+			}
+		});
+
+		socket.on('event:topic_unlocked', function(data) {
+			if (data.tid === tid && data.status === 'ok') {
+				set_locked_state(false);
+			}
+		});
 
 		function adjust_rep(value, pid, uid) {
 			var post_rep = jQuery('.post_rep_' + pid),
@@ -119,11 +183,11 @@
 			else div = '#' + div;
 
 			jQuery(div + ' .post_reply').click(function() {
-				if (locked !== '1') app.open_post_window('reply', "{topic_id}", "{topic_name}");
+				if (thread_state.locked !== '1') app.open_post_window('reply', "{topic_id}", "{topic_name}");
 			});
 
 			jQuery(div + ' .quote').click(function() {
-				if (locked !== '1') app.open_post_window('quote', "{topic_id}", "{topic_name}");
+				if (thread_state.locked !== '1') app.open_post_window('quote', "{topic_id}", "{topic_name}");
 
 				// this needs to be looked at, obviously. only single line quotes work well I think maybe replace all \r\n with > ?
 				document.getElementById('post_content').innerHTML = '> ' + document.getElementById('content_' + this.id.replace('quote_', '')).innerHTML;
@@ -142,13 +206,15 @@
 					uid = ids[1];
 
 				
-				if (this.children[1].className == 'icon-star-empty') {
-					this.children[1].className = 'icon-star';
-					socket.emit('api:posts.favourite', {pid: pid, room_id: app.current_room});
-				}
-				else {
-					this.children[1].className = 'icon-star-empty';
-					socket.emit('api:posts.unfavourite', {pid: pid, room_id: app.current_room});
+				if (thread_state.locked !== '1') {
+					if (this.children[1].className == 'icon-star-empty') {
+						this.children[1].className = 'icon-star';
+						socket.emit('api:posts.favourite', {pid: pid, room_id: app.current_room});
+					}
+					else {
+						this.children[1].className = 'icon-star-empty';
+						socket.emit('api:posts.unfavourite', {pid: pid, room_id: app.current_room});
+					}
 				}
 			});
 		}
@@ -158,21 +224,54 @@
 				postReplyBtns = document.querySelectorAll('#post-container .post_reply'),
 				quoteBtns = document.querySelectorAll('#post-container .quote'),
 				numReplyBtns = postReplyBtns.length,
+				lockThreadEl = document.getElementById('lock_thread'),
 				x;
 			if (locked === true) {
+				lockThreadEl.innerHTML = '<i class="icon-unlock"></i> Unlock Thread';
 				threadReplyBtn.disabled = true;
 				threadReplyBtn.innerHTML = 'Locked <i class="icon-lock"></i>';
 				for(x=0;x<numReplyBtns;x++) {
 					postReplyBtns[x].innerHTML = 'Locked <i class="icon-lock"></i>';
 					quoteBtns[x].style.display = 'none';
 				}
+
+				thread_state.locked = '1';
 			} else {
+				lockThreadEl.innerHTML = '<i class="icon-lock"></i> Lock Thread';
 				threadReplyBtn.disabled = false;
 				threadReplyBtn.innerHTML = 'Reply';
 				for(x=0;x<numReplyBtns;x++) {
 					postReplyBtns[x].innerHTML = 'Reply <i class="icon-reply"></i>';
 					quoteBtns[x].style.display = 'inline-block';
 				}
+
+				thread_state.locked = '0';
+			}
+		}
+
+		function set_delete_state(deleted) {
+			var	deleteThreadEl = document.getElementById('delete_thread'),
+				deleteTextEl = deleteThreadEl.getElementsByTagName('span')[0],
+				threadEl = document.querySelector('.post-container'),
+				deleteNotice = document.getElementById('thread-deleted') || document.createElement('div');
+
+			if (deleted) {
+				deleteTextEl.innerHTML = '<i class="icon-comment"></i> Restore Thread';
+				$(threadEl).addClass('deleted');
+
+				// Spawn a 'deleted' notice at the top of the page
+				deleteNotice.setAttribute('id', 'thread-deleted');
+				deleteNotice.className = 'alert';
+				deleteNotice.innerHTML = 'This thread has been deleted. Only users with thread management privileges can see it.<br /><br /><a href="/">Home</a>';
+				document.getElementById('content').insertBefore(deleteNotice, threadEl);
+
+				thread_state.deleted = '1';
+			} else {
+				deleteTextEl.innerHTML = '<i class="icon-trash"></i> Delete Thread';
+				$(threadEl).removeClass('deleted');
+				deleteNotice.parentNode.removeChild(deleteNotice);
+
+				thread_state.deleted = '0';
 			}
 		}
 	})();

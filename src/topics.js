@@ -1,7 +1,8 @@
 var	RDB = require('./redis.js'),
 	posts = require('./posts.js'),
 	utils = require('./utils.js'),
-	user = require('./user.js');
+	user = require('./user.js'),
+	configs = require('../config.js');
 
 (function(Topics) {
 
@@ -23,14 +24,18 @@ var	RDB = require('./redis.js'),
 				uid = [],
 				timestamp = [],
 				slug = [],
-				postcount = [];
+				postcount = [],
+				locked = [],
+				deleted = [];
 
 			for (var i=0, ii=tids.length; i<ii; i++) {
 				title.push('tid:' + tids[i] + ':title');
 				uid.push('tid:' + tids[i] + ':uid');
 				timestamp.push('tid:' + tids[i] + ':timestamp');
 				slug.push('tid:' + tids[i] + ':slug');
-				postcount.push('tid:' + tids[i] + ':postcount');
+				postcount.push('tid:' + tids[i] + ':postcount'),
+				locked.push('tid:' + tids[i] + ':locked'),
+				deleted.push('tid:' + tids[i] + ':deleted');
 			}
 
 			if (tids.length > 0) {
@@ -40,21 +45,23 @@ var	RDB = require('./redis.js'),
 					.mget(timestamp)
 					.mget(slug)
 					.mget(postcount)
+					.mget(locked)
+					.mget(deleted)
 					.exec(function(err, replies) {
-						
 						title = replies[0];
 						uid = replies[1];
 						timestamp = replies[2];
 						slug = replies[3];
 						postcount = replies[4];
-						
-						
-						
+						locked = replies[5];
+						deleted = replies[6];
+
 						user.get_usernames_by_uids(uid, function(userNames) {
 							var topics = [];
 							
 							for (var i=0, ii=title.length; i<ii; i++) {
-								
+								if (deleted[i] === '1') continue;
+
 								topics.push({
 									'title' : title[i],
 									'uid' : uid[i],
@@ -62,7 +69,9 @@ var	RDB = require('./redis.js'),
 									'timestamp' : timestamp[i],
 									'relativeTime': utils.relativeTime(timestamp[i]),
 									'slug' : slug[i],
-									'post_count' : postcount[i]
+									'post_count' : postcount[i],
+									icon: locked[i] === '1' ? 'icon-lock' : 'hide',
+									deleted: deleted[i]
 								});
 							}
 						
@@ -139,8 +148,71 @@ var	RDB = require('./redis.js'),
 				timeout: 2000
 			});
 		});
-
-		
 	};
 
+	Topics.lock = function(tid, uid, socket) {
+		user.getUserField(uid, 'reputation', function(rep) {
+			if (rep >= configs.privilege_thresholds.manage_thread) {
+				// Mark thread as locked
+				RDB.set('tid:' + tid + ':locked', 1);
+
+				if (socket) {
+					io.sockets.in('topic_' + tid).emit('event:topic_locked', {
+						tid: tid,
+						status: 'ok'
+					});
+				}
+			}
+		});
+	}
+
+	Topics.unlock = function(tid, uid, socket) {
+		user.getUserField(uid, 'reputation', function(rep) {
+			if (rep >= configs.privilege_thresholds.manage_thread) {
+				// Mark thread as locked
+				RDB.del('tid:' + tid + ':locked');
+
+				if (socket) {
+					io.sockets.in('topic_' + tid).emit('event:topic_unlocked', {
+						tid: tid,
+						status: 'ok'
+					});
+				}
+			}
+		});
+	}
+
+	Topics.delete = function(tid, uid, socket) {
+		user.getUserField(uid, 'reputation', function(rep) {
+			if (rep >= configs.privilege_thresholds.manage_thread) {
+				// Mark thread as deleted
+				RDB.set('tid:' + tid + ':deleted', 1);
+				Topics.lock(tid, uid);
+
+				if (socket) {
+					io.sockets.in('topic_' + tid).emit('event:topic_deleted', {
+						tid: tid,
+						status: 'ok'
+					});
+				}
+			}
+		});
+	}
+
+	Topics.restore = function(tid, uid, socket) {
+		user.getUserField(uid, 'reputation', function(rep) {
+			if (rep >= configs.privilege_thresholds.manage_thread) {
+				// Mark thread as deleted
+				RDB.del('tid:' + tid + ':deleted');
+				Topics.unlock(tid, uid);
+
+				if (socket) {
+					io.sockets.in('topic_' + tid).emit('event:topic_restored', {
+						tid: tid,
+						status: 'ok'
+					});
+				}
+			}
+		});
+	}
 }(exports));
