@@ -149,7 +149,7 @@ var	RDB = require('./redis.js'),
 				RDB.set('tid:' + tid + ':locked', 1);
 
 				if (socket) {
-					socket.in('topic_' + tid).emit('event:topic_locked', {
+					io.sockets.in('topic_' + tid).emit('event:topic_locked', {
 						tid: tid,
 						status: 'ok'
 					});
@@ -165,7 +165,7 @@ var	RDB = require('./redis.js'),
 				RDB.del('tid:' + tid + ':locked');
 
 				if (socket) {
-					socket.in('topic_' + tid).emit('event:topic_unlocked', {
+					io.sockets.in('topic_' + tid).emit('event:topic_unlocked', {
 						tid: tid,
 						status: 'ok'
 					});
@@ -182,7 +182,7 @@ var	RDB = require('./redis.js'),
 				Topics.lock(tid, uid);
 
 				if (socket) {
-					socket.in('topic_' + tid).emit('event:topic_deleted', {
+					io.sockets.in('topic_' + tid).emit('event:topic_deleted', {
 						tid: tid,
 						status: 'ok'
 					});
@@ -199,7 +199,7 @@ var	RDB = require('./redis.js'),
 				Topics.unlock(tid, uid);
 
 				if (socket) {
-					socket.in('topic_' + tid).emit('event:topic_restored', {
+					io.sockets.in('topic_' + tid).emit('event:topic_restored', {
 						tid: tid,
 						status: 'ok'
 					});

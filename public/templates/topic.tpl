@@ -138,7 +138,6 @@
 		});
 
 		socket.on('event:topic_deleted', function(data) {
-			console.log('deleted');
 			if (data.tid === tid && data.status === 'ok') {
 				set_locked_state(true);
 				set_delete_state(true);
@@ -146,7 +145,6 @@
 		});
 
 		socket.on('event:topic_restored', function(data) {
-			console.log('restored');
 			if (data.tid === tid && data.status === 'ok') {
 				set_locked_state(false);
 				set_delete_state(false);
@@ -154,14 +152,12 @@
 		});
 
 		socket.on('event:topic_locked', function(data) {
-			console.log('locked');
 			if (data.tid === tid && data.status === 'ok') {
 				set_locked_state(true);
 			}
 		});
 
 		socket.on('event:topic_unlocked', function(data) {
-			console.log('unlocked');
 			if (data.tid === tid && data.status === 'ok') {
 				set_locked_state(false);
 			}
