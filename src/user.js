@@ -326,17 +326,13 @@ var	config = require('../config.js'),
 		RDB.get('username:' + username + ':uid', callback);
 	};
 
-	User.get_username_by_uid = function(uid, callback) {
-		User.getUserField(uid, 'username', callback);
-	};
-
 	User.get_usernames_by_uids = function(uids, callback) {
 		
 		var usernames = [];
 		
 		for(var i=0, ii=uids.length; i<ii; ++i) {
 		
-			User.get_username_by_uid(uids[i], function(username){
+			User.getUserField(uids[i],'username', function(username){
 
 				usernames.push(username);
 
