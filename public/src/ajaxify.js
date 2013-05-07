@@ -38,7 +38,6 @@ var ajaxify = {};
 			jQuery('#content').fadeOut(100);
 
 			load_template(function() {
-
 				exec_body_scripts(content);
 
 				ajaxify.enable();

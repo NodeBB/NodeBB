@@ -47,9 +47,8 @@
 <script type="text/javascript">
 	(function() {
 		var	locked = '{locked}',
-			expose_tools = '{expose_tools}';
-
-		console.log(expose_tools);
+			expose_tools = '{expose_tools}',
+			tid = '{topic_id}';
 
 		jQuery('document').ready(function() {
 			var	room = 'topic_' + '{topic_id}',
@@ -61,7 +60,7 @@
 			if (locked === '1') set_locked_state(true);
 
 			if (expose_tools === '1') {
-				var deleteThreadEl = document.getElementById('delete-thread');
+				var deleteThreadEl = document.getElementById('delete_thread');
 
 				adminTools.style.visibility = 'inherit';
 
@@ -69,14 +68,14 @@
 				deleteThreadEl.addEventListener('click', function(e) {
 					e.preventDefault();
 					if (confirm('really delete thread? (THIS DIALOG TO BE REPLACED WITH BOOTBOX)')) {
-						console.log('socket shiz');
+						socket.emit('api:topic.delete', { tid: tid });
 					}
 				});
 			}
 		});
 
 
-		ajaxify.register_events(['event:rep_up', 'event:rep_down', 'event:new_post', 'api:get_users_in_room']);
+		ajaxify.register_events(['event:rep_up', 'event:rep_down', 'event:new_post', 'api:get_users_in_room', 'event:topic_deleted']);
 		socket.on('api:get_users_in_room', function(users) {
 			var anonymous = users.anonymous,
 				usernames = users.usernames,
@@ -106,7 +105,6 @@
 			adjust_rep(-1, data.pid, data.uid);
 		});
 
-
 		socket.on('event:new_post', function(data) {
 			var html = templates.prepare(templates['topic'].blocks['posts']).parse(data),
 				uniqueid = new Date().getTime();
@@ -115,7 +113,11 @@
 			set_up_posts(uniqueid);
 		});
 
-
+		socket.on('event:topic_deleted', function(data) {
+			if (data.tid === tid && data.status === 'ok') {
+				console.log('thread deleted!!');
+			}
+		});
 
 		function adjust_rep(value, pid, uid) {
 			var post_rep = jQuery('.post_rep_' + pid),

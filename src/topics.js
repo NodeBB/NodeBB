@@ -1,7 +1,8 @@
 var	RDB = require('./redis.js'),
 	posts = require('./posts.js'),
 	utils = require('./utils.js'),
-	user = require('./user.js');
+	user = require('./user.js'),
+	configs = require('../config.js');
 
 (function(Topics) {
 
@@ -135,8 +136,71 @@ var	RDB = require('./redis.js'),
 				timeout: 2000
 			});
 		});
-
-		
 	};
 
+	Topics.lock = function(tid, uid, socket) {
+		user.getUserField(uid, 'reputation', function(rep) {
+			if (rep >= configs.privilege_thresholds.manage_thread) {
+				// Mark thread as locked
+				RDB.set('tid:' + tid + ':locked', 1);
+
+				if (socket) {
+					socket.emit('event:topic_locked', {
+						tid: tid,
+						status: 'ok'
+					});
+				}
+			}
+		});
+	}
+
+	Topics.unlock = function(tid, uid, socket) {
+		user.getUserField(uid, 'reputation', function(rep) {
+			if (rep >= configs.privilege_thresholds.manage_thread) {
+				// Mark thread as locked
+				RDB.set('tid:' + tid + ':locked', 0);
+
+				if (socket) {
+					socket.emit('event:topic_unlocked', {
+						tid: tid,
+						status: 'ok'
+					});
+				}
+			}
+		});
+	}
+
+	Topics.delete = function(tid, uid, socket) {
+		user.getUserField(uid, 'reputation', function(rep) {
+			if (rep >= configs.privilege_thresholds.manage_thread) {
+				// Mark thread as deleted
+				RDB.set('tid:' + tid + ':deleted', 1);
+				Topics.lock(tid, uid);
+
+				if (socket) {
+					socket.emit('event:topic_deleted', {
+						tid: tid,
+						status: 'ok'
+					});
+				}
+			}
+		});
+	}
+
+	Topics.restore = function(tid, uid, socket) {
+		user.getUserField(uid, 'reputation', function(rep) {
+			if (rep >= configs.privilege_thresholds.manage_thread) {
+				// Mark thread as deleted
+				RDB.set('tid:' + tid + ':deleted', 0);
+				Topics.lock(tid, uid);
+
+				if (socket) {
+					socket.emit('event:topic_restored', {
+						tid: tid,
+						status: 'ok'
+					});
+				}
+			}
+		});
+	}
 }(exports));

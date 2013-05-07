@@ -356,9 +356,8 @@ passport.deserializeUser(function(uid, done) {
 	});
 
 	app.get('/test', function(req, res) {
-		global.modules.posts.create(2, 2, 'test', function(pid) {
-			res.send('<pre>' + pid + '</pre>');
-		}, 1, 1);
+		global.modules.topics.delete(1, 1);
+		res.send();
 	});
 }(WebServer));
 

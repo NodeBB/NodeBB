@@ -40,7 +40,7 @@ var config = {
 
 	// Privileged Actions Reputation Thresholds
 	"privilege_thresholds": {
-		"manage_thread": 2000
+		"manage_thread": 1000
 	}
 }
 
