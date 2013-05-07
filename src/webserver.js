@@ -125,7 +125,7 @@ passport.deserializeUser(function(uid, done) {
 
 	// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 	(function() {
-		var routes = ['', 'login', 'register', 'account'];
+		var routes = ['', 'login', 'register', 'account', 'latest', 'popular', 'active'];
 
 		for (var i=0, ii=routes.length; i<ii; i++) {
 			(function(route) {
@@ -192,9 +192,23 @@ passport.deserializeUser(function(uid, done) {
 				break;
 			case 'category' :
 					global.modules.topics.get(function(data) {
-						console.log(data);
 						res.send(JSON.stringify(data));
 					}, req.params.id);
+				break;
+			case 'latest' :
+					global.modules.topics.get(function(data) {
+						res.send(JSON.stringify(data));
+					});
+				break;
+			case 'popular' :
+					global.modules.topics.get(function(data) {
+						res.send(JSON.stringify(data));
+					});
+				break;
+			case 'active' :
+					global.modules.topics.get(function(data) {
+						res.send(JSON.stringify(data));
+					});
 				break;
 			case 'users' : 
 					get_account_fn(req, res, function(userData) {
