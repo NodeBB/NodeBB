@@ -1,3 +1,11 @@
+<div class="container">
+	<ul class="breadcrumb">
+		<li><a href="/">Home</a><span class="divider">/</span></li>
+		<li class="active">{category_name}</li>
+		<div id="category_active_users"></div>
+	</ul>
+</div>
+
 <button id="new_post" class="btn btn-primary btn-large {show_topic_button}">New Topic</button>
 <ul class="topic-container">
 <!-- BEGIN topics -->
