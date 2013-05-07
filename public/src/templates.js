@@ -156,10 +156,17 @@ function load_template(callback, custom_tpl) {
 
 
 	jQuery.get(API_URL + url, function(data) {
-		var tpl = url.split('/')[0];
-		tpl = templates.get_custom_map(tpl);
 
-		if (custom_tpl) tpl = custom_tpl;
+		var splits = url.split('/');
+		var tpl = url;
+		
+		if(splits.length) {
+			tpl = splits[0];
+			tpl = templates.get_custom_map(tpl);
+		}
+
+		if (custom_tpl && custom_tpl != "undefined") 
+			tpl = custom_tpl;
 		
 		document.getElementById('content').innerHTML = templates[tpl].parse(JSON.parse(data));
 		if (callback) callback();
