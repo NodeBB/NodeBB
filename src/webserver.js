@@ -158,6 +158,9 @@ passport.deserializeUser(function(uid, done) {
 
 	// These functions are called via ajax once the initial page is loaded to populate templates with data
 	function api_method(req, res) {
+		
+		
+		
 		switch(req.params.method) {
 			case 'home' :
 					global.modules.categories.get(function(data) {
@@ -211,6 +214,7 @@ passport.deserializeUser(function(uid, done) {
 					});
 				break;
 			case 'users' : 
+					
 					get_account_fn(req, res, function(userData) {
 						res.send(JSON.stringify(userData));
 					});
@@ -341,7 +345,7 @@ passport.deserializeUser(function(uid, done) {
 			if(data)
 			{
 				data.joindate = utils.relativeTime(data.joindate);
-				
+				data.uid = requestedUserId;
 				callback({user:data});
 			}
 			else
@@ -369,12 +373,24 @@ passport.deserializeUser(function(uid, done) {
 		res.send('User list');
 	});
 
+	app.get('/users/edit/:uid', function(req, res){
+		console.log("OPPA");
+		
+		if(req.user && req.params.uid)
+		{
+			//res.send("editing user");
+			res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("users/edit/' + req.params.uid+'");});</script>' + templates['footer']);
+		}
+		else
+			return res.redirect('/403');	
+	});
+
 	app.get('/users/:uid', handleUserProfile);
 	app.get('/users/:uid/:username*', handleUserProfile);
 	
 
 	function handleUserProfile(req, res) {
-		
+		console.log("OPPA 1");
 		if(req.params.uid == 0) {
 			res.send("User doesn't exist!");
 			return;
@@ -387,10 +403,12 @@ passport.deserializeUser(function(uid, done) {
 				else
 					res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("users/' + req.params.uid +'/'+data.username + '");});</script>' + templates['footer']);
 			}
-			else
-				res.send("User doesn't exist!");			
+			else {
+				res.send("User doesn't exist! /users/"+req.params.uid);
+			}			
 		});
 	}
+
 
 	app.get('/test', function(req, res) {
 		global.modules.posts.get(function(data) {

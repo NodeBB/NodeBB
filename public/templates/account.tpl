@@ -10,7 +10,7 @@
 	
 	<div class="account-username-box">
 		<span class="account-username">{user.username}</span>
-		<span class="account-links">edit</span>
+		<span class="pull-right"><a href="/users/edit/{user.uid}">edit</a></span>
 	</div>
 	<br/>		
 		
@@ -35,13 +35,7 @@
 		<span>{user.postcount}</span>
 	</div>
 	
-	<br/>
 	
-	
-
-	<br/>	
-
-
     <label for="email">Email Address</label><input type="text" placeholder="Enter Email Address" id="email" /><br />
     <button class="btn btn-primary" id="reset" type="submit">Reset Password</button>
 

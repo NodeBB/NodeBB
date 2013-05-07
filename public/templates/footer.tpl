@@ -59,7 +59,7 @@
 				gravatar.src = data['picture']+"?s=24";
 
 
-                $('#user_label').attr('href','/users/'+data.uid);
+                $('#user_label').attr('href','/users/'+data.uid+'/'+data['username']);
 
 				user_label.innerHTML = '';
 				user_label.appendChild(gravatar);
