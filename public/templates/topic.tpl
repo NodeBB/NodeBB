@@ -1,6 +1,7 @@
 <div class="container">
 	<ul class="breadcrumb">
-		<li><a href="/">Home</a> <span class="divider">/</span></li>
+		<li><a href="/">Home</a><span class="divider">/</span></li>
+		<li><a href="/category/{category_slug}">{category_name}</a><span class="divider">/</span></li>
 		<li class="active">{topic_name}</li>
 		<div id="thread_active_users"></div>
 	</ul>

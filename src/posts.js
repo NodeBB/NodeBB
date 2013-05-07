@@ -33,12 +33,14 @@ var	RDB = require('./redis.js'),
 					'user_rep' : user_data[uid].reputation || 0,
 					'gravatar' : user_data[uid].picture,
 					'fav_star_class' : vote_data[pid] ? 'icon-star' : 'icon-star-empty',
-					'display_moderator_tools' : uid === current_user ? 'show' : 'hide'
+					'display_moderator_tools' : uid == current_user ? 'show' : 'hide'
 				});
 			}
 
 			callback({
 				'topic_name':thread_data.topic_name,
+				'category_name':thread_data.category_name,
+				'category_slug':thread_data.category_slug,
 				'locked': parseInt(thread_data.locked) || 0,
 				'topic_id': tid,
 				'posts': posts
@@ -58,10 +60,6 @@ var	RDB = require('./redis.js'),
 				pid.push(pids[i]);
 			}
 
-			RDB.get('tid:' + tid + ':title', function(topic_name) {
-				thread_data = {topic_name: topic_name};
-				generateThread();
-			});
 
 			Posts.getFavouritesByPostIDs(pids, current_user, function(fav_data) {
 				vote_data = fav_data;
@@ -76,6 +74,8 @@ var	RDB = require('./redis.js'),
 				.mget(post_rep)
 				.get('tid:' + tid + ':title')
 				.get('tid:' + tid + ':locked')
+				.get('tid:' + tid + ':category_name')
+				.get('tid:' + tid + ':category_slug')
 				.exec(function(err, replies) {
 					post_data = {
 						pid: pids,
@@ -87,7 +87,9 @@ var	RDB = require('./redis.js'),
 
 					thread_data = {
 						topic_name: replies[4],
-						locked: replies[5]
+						locked: replies[5],
+						category_name: replies[6],
+						category_slug: replies[7]
 					};
 
 					user.getMultipleUserFields(post_data.uid, ['username','reputation','picture'], function(user_details){

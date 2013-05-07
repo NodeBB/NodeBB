@@ -1,7 +1,8 @@
 var	RDB = require('./redis.js'),
 	posts = require('./posts.js'),
 	utils = require('./utils.js'),
-	user = require('./user.js');
+	user = require('./user.js')
+	categories = require('./categories.js');
 
 (function(Topics) {
 
@@ -33,54 +34,75 @@ var	RDB = require('./redis.js'),
 				postcount.push('tid:' + tids[i] + ':postcount');
 			}
 
+			var multi = RDB.multi()
+				.get('cid:' + category_id + ':name');
+
 			if (tids.length > 0) {
-				RDB.multi()
+				multi
 					.mget(title)
 					.mget(uid)
 					.mget(timestamp)
 					.mget(slug)
 					.mget(postcount)
-					.exec(function(err, replies) {
-						
-						title = replies[0];
-						uid = replies[1];
-						timestamp = replies[2];
-						slug = replies[3];
-						postcount = replies[4];
-						
-						
-						
-						user.get_usernames_by_uids(uid, function(userNames) {
-							var topics = [];
-							
-							for (var i=0, ii=title.length; i<ii; i++) {
-								
-								topics.push({
-									'title' : title[i],
-									'uid' : uid[i],
-									'username': userNames[i],
-									'timestamp' : timestamp[i],
-									'relativeTime': utils.relativeTime(timestamp[i]),
-									'slug' : slug[i],
-									'post_count' : postcount[i]
-								});
-							}
-						
-							callback({
-								'show_topic_button' : category_id ? 'show' : 'hidden',
-								'category_id': category_id,
-								'topics': topics
-							});
-						});
+			}
+				
+			
+			multi.exec(function(err, replies) {
+				category_name = replies[0];
+				var topics = [];
 
+				if (tids.length > 0) {
+					title = replies[1];
+					uid = replies[2];
+					timestamp = replies[3];
+					slug = replies[4];
+					postcount = replies[5];
+					
+					
+					
+					
+					user.get_usernames_by_uids(uid, function(userNames) {
 						
-					}
-				);
-			} else callback({'category_id': category_id, 'topics': []});
+						for (var i=0, ii=title.length; i<ii; i++) {
+							
+							topics.push({
+								'title' : title[i],
+								'uid' : uid[i],
+								'username': userNames[i],
+								'timestamp' : timestamp[i],
+								'relativeTime': utils.relativeTime(timestamp[i]),
+								'slug' : slug[i],
+								'post_count' : postcount[i]
+							});
+						}
+
+						callback({
+							'category_name' : category_id ? category_name : 'Recent',
+							'show_topic_button' : category_id ? 'show' : 'hidden',
+							'category_id': category_id,
+							'topics': topics
+						});
+					
+					});	
+				}
+				else {
+					callback({
+						'category_name' : category_id ? category_name : 'Recent',
+						'show_topic_button' : category_id ? 'show' : 'hidden',
+						'category_id': category_id,
+						'topics': []
+					});
+				}
+				
+
+
+			});
+			//} else callback({'category_id': category_id, 'topics': []});
 		});
 	}
 
 	Topics.post = function(socket, uid, title, content, category_id) {
+		if (!category_id) throw new Error('Attempted to post without a category_id');
 		
 		if (uid === 0) {
 			socket.emit('event:alert', {
@@ -103,7 +125,7 @@ var	RDB = require('./redis.js'),
 				RDB.lpush('topics:tid', tid);	
 			} else {
 				// need to add some unique key sent by client so we can update this with the real uid later
-				RDB.lpush('topics:queued:tid', tid);		
+				RDB.lpush('topics:queued:tid', tid);
 			}
 			
 
@@ -138,6 +160,14 @@ var	RDB = require('./redis.js'),
 				type: 'notify',
 				timeout: 2000
 			});
+
+
+			// in future it may be possible to add topics to several categories, so leaving the door open here.
+			categories.get_category([category_id], function(data) {
+				RDB.set('tid:' + tid + ':category_name', data.categories[0].name);
+				RDB.set('tid:' + tid + ':category_slug', data.categories[0].slug);
+			});
+
 		});
 
 		
