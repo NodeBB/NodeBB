@@ -10,8 +10,14 @@
 	    <br/>
 		<a href="/users/{users.username}">{users.username}</a>
 	    <br/>
-		<span title="reputation">{users.reputation}</span><br/>
-		<span title="postcount">{users.postcount}</span><br/>
+		<div title="reputation">
+			<span>{users.reputation}</span>
+			<i class='icon-star'></i>
+		</div>
+		<div title="post count">
+			<span>{users.postcount}</span>
+			<i class='icon-pencil'></i>
+		</div>
 
 	</div>
 
