@@ -314,7 +314,6 @@ passport.deserializeUser(function(uid, done) {
 	//to baris, move this into account.js or sth later - just moved this out here for you to utilize client side tpl parsing
 	//I didn't want to change too much so you should probably sort out the params etc
 	function get_account_fn(req, res, callback) {
-		console.log("GOING TO ACCOUNT");
 
  		if (req.user === undefined) 
  			return res.redirect('/403');
@@ -322,8 +321,6 @@ passport.deserializeUser(function(uid, done) {
 		user.getUserData(req.user.uid, function(data) {
 
 			data.joindate = utils.relativeTime(data.joindate);
-
-			console.log("user data" + JSON.stringify(data));
 			
 			var userData = {user:data};
 			callback(userData);
@@ -355,19 +352,21 @@ passport.deserializeUser(function(uid, done) {
 	
 
 	function handleUserProfile(req, res) {
-		console.log("userid " + req.params.uid);
+		
 		if(req.params.uid == 0) {
 			res.send("User doesn't exist!");
 			return;
 		}
 
 		user.getUserData(req.params.uid, function(data) {
-			
-			if(req.url.indexOf(data.username) == -1)
-				res.redirect(301, '/users/'+req.params.uid+'/'+data.username);
+			if(data) {
+				if(req.url.indexOf(data.username) == -1)
+					res.redirect(301, '/users/'+req.params.uid+'/'+data.username);
+				else
+					res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("users/' + req.params.uid +'/'+data.username + '");});</script>' + templates['footer']);
+			}
 			else
-				res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("users/' + req.params.uid +'/'+data.username + '");});</script>' + templates['footer']);
-			
+				res.send("User doesn't exist!");			
 		});
 	}
 
