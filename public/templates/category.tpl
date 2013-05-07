@@ -10,7 +10,7 @@
 <ul class="topic-container">
 <!-- BEGIN topics -->
 <a href="../../topic/{topics.slug}"><li class="topic-row">
-	<h4>{topics.title}</h4>
+	<h4><i class="{topics.icon}"></i> {topics.title}</h4>
 	<p>Posted {topics.relativeTime} ago by <span class="username">{topics.username}</span>. {topics.post_count} posts.</p>
 </li></a>
 <!-- END topics -->

@@ -1,7 +1,8 @@
 var	RDB = require('./redis.js'),
 	utils = require('./utils.js'),
 	marked = require('marked'),
-	user = require('./user.js');
+	user = require('./user.js'),
+	config = require('../config.js');
 
 (function(Posts) {
 
@@ -9,12 +10,12 @@ var	RDB = require('./redis.js'),
 		if (start == null) start = 0;
 		if (end == null) end = start + 10;
 
-		var post_data, user_data, thread_data, vote_data;
+		var post_data, user_data, thread_data, vote_data, viewer_data;
 
 
 		//compile thread after all data is asynchronously called
 		function generateThread() {
-			if (!post_data ||! user_data || !thread_data || !vote_data) return;
+			if (!post_data ||! user_data || !thread_data || !vote_data || !viewer_data) return;
 
 			var posts = [];
 
@@ -42,7 +43,9 @@ var	RDB = require('./redis.js'),
 				'category_name':thread_data.category_name,
 				'category_slug':thread_data.category_slug,
 				'locked': parseInt(thread_data.locked) || 0,
+				'deleted': parseInt(thread_data.deleted) || 0,
 				'topic_id': tid,
+				'expose_tools': viewer_data.reputation >= config.privilege_thresholds.manage_thread ? 1 : 0,
 				'posts': posts
 			});
 		}
@@ -76,6 +79,7 @@ var	RDB = require('./redis.js'),
 				.get('tid:' + tid + ':locked')
 				.get('tid:' + tid + ':category_name')
 				.get('tid:' + tid + ':category_slug')
+				.get('tid:' + tid + ':deleted')
 				.exec(function(err, replies) {
 					post_data = {
 						pid: pids,
@@ -89,7 +93,8 @@ var	RDB = require('./redis.js'),
 						topic_name: replies[4],
 						locked: replies[5],
 						category_name: replies[6],
-						category_slug: replies[7]
+						category_slug: replies[7],
+						deleted: replies[8] || 0
 					};
 
 					user.getMultipleUserFields(post_data.uid, ['username','reputation','picture'], function(user_details){
@@ -97,7 +102,13 @@ var	RDB = require('./redis.js'),
 						generateThread();
 					});
 				});
-			
+		});
+
+		user.getUserField(current_user, 'reputation', function(reputation){
+			viewer_data = {
+				reputation: reputation
+			};
+			generateThread();
 		});
 	}
 
