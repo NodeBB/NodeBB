@@ -4,7 +4,7 @@
 	<p>
 		<a target="_blank" href="http://www.nodebb.org" class="btn btn-large"><i class="icon-comment"></i> Get NodeBB</a>
 		<a target="_blank" href="http://www.nodebb.org" class="btn btn-large"><i class="icon-github-alt"></i> Fork us on Github</a>
-		<a target="_blank" href="http://www.nodebb.org" class="btn btn-large"><i class="icon-twitter"></i> @dcplabs</a>
+		<a target="_blank" href="http://www.nodebb.org" class="btn btn-large"><i class="icon-twitter"></i> dcplabs</a>
 	</p>
 </div>
 
@@ -12,7 +12,7 @@
 	<!-- BEGIN categories -->
 	<div class="span3">
 		<a href="category/{categories.slug}">
-			<h4>{categories.name}</h4>
+			<h4>{categories.name} <span class="badge badge-important">3</span></h4>
 			<!-- {categories.description} -->
 			<div class="category-icon {categories.blockclass}">
 				<i class="{categories.icon} icon-4x"></i>

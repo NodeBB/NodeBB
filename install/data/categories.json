@@ -1,0 +1,74 @@
+ [
+    {
+        "name": "Announcements",
+        "description": "A place to talk about whateeeever you want",
+        "blockclass": "category-blue",
+        "icon" : "icon-bullhorn"
+    },
+    {
+        "name": "General Discussion",
+        "description": "A place to talk about whateeeever you want",
+        "blockclass": "category-blue",
+        "icon" : "icon-comment"
+    },
+    {
+        "name": "NodeBB Development",
+        "description": "Bugs? Dont worry, we dont read this thread, so post them here.",
+        "blockclass": "category-blue",
+        "icon" : "icon-github-alt"
+    },
+    {
+        "name": "Blogs",
+        "description": "In future an example of how a hidden category should look like.",
+        "blockclass": "category-blue",
+        "icon" : "icon-pencil"
+    },
+    {
+        "name": "Feature Requests",
+        "description": "In future an example of how a hidden category should look like.",
+        "blockclass": "category-purple",
+        "icon" : "icon-lightbulb"
+    },
+    {
+        "name": "Bug Reports",
+        "description": "In future an example of how a hidden category should look like.",
+        "blockclass": "category-purple",
+        "icon" : "icon-cogs"
+    },
+    {
+        "name": "Bug Reports",
+        "description": "In future an example of how a hidden category should look like.",
+        "blockclass": "category-purple",
+        "icon" : "icon-cogs"
+    },
+    {
+        "name": "NodeBB Link Exchange",
+        "description": "In future an example of how a hidden category should look like.",
+        "blockclass": "category-purple",
+        "icon" : "icon-exchange"
+    },
+    {
+        "name": "News",
+        "description": "In future an example of how a hidden category should look like.",
+        "blockclass": "category-darkblue",
+        "icon" : "icon-globe"
+    },
+    {
+        "name": "Movies",
+        "description": "In future an example of how a hidden category should look like.",
+        "blockclass": "category-darkblue",
+        "icon" : "icon-film"
+    },
+    {
+        "name": "Games",
+        "description": "In future an example of how a hidden category should look like.",
+        "blockclass": "category-darkblue",
+        "icon" : "icon-screenshot"
+    },
+    {
+        "name": "Random",
+        "description": "In future an example of how a hidden category should look like.",
+        "blockclass": "category-darkblue",
+        "icon" : "icon-beer"
+    }
+]
