@@ -317,13 +317,21 @@ passport.deserializeUser(function(uid, done) {
 
  		if (req.user === undefined) 
  			return res.redirect('/403');
+	
+		var requestedUserId = req.user.uid;
 
-		user.getUserData(req.user.uid, function(data) {
+		if(req.params.id != req.user.uid)
+			requestedUserId = req.params.id;
 
-			data.joindate = utils.relativeTime(data.joindate);
-			
-			var userData = {user:data};
-			callback(userData);
+		user.getUserData(requestedUserId, function(data) {
+			if(data)
+			{
+				data.joindate = utils.relativeTime(data.joindate);
+				
+				callback({user:data});
+			}
+			else
+				callback({user:{}});
 		});
 	}
 
