@@ -1,0 +1,8 @@
+{
+    "custom_mapping": {
+        "users": "account",
+        "latest": "category",
+        "popular": "category",
+        "active": "category"
+    }
+}

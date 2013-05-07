@@ -67,7 +67,11 @@ var	RDB = require('./redis.js'),
 								});
 							}
 						
-							callback({'category_id': category_id, 'topics': topics});
+							callback({
+								'show_topic_button' : category_id ? 'show' : 'hidden',
+								'category_id': category_id,
+								'topics': topics
+							});
 						});
 
 						

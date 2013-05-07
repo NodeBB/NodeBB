@@ -15,6 +15,8 @@ var	RDB = require('./redis.js'),
 			// Topic Info
 			RDB.set('cid:' + cid + ':name', data.name);
 			RDB.set('cid:' + cid + ':description', data.description);
+			RDB.set('cid:' + cid + ':icon', data.icon);
+			RDB.set('cid:' + cid + ':blockclass', data.blockclass);
 			RDB.set('cid:' + cid + ':slug', slug);
 		
 			RDB.set('category:slug:' + slug + ':cid', cid);
@@ -29,11 +31,15 @@ var	RDB = require('./redis.js'),
 		RDB.lrange('categories:cid', 0, -1, function(cids) {
 			var name = [],
 				description = [],
+				icon = [],
+				blockclass = [],
 				slug = [];
 
 			for (var i=0, ii=cids.length; i<ii; i++) {
 				name.push('cid:' + cids[i] + ':name');
 				description.push('cid:' + cids[i] + ':description');
+				icon.push('cid:' + cids[i] + ':icon');
+				blockclass.push('cid:' + cids[i] + ':blockclass');
 				slug.push('cid:' + cids[i] + ':slug');
 			}
 
@@ -41,11 +47,15 @@ var	RDB = require('./redis.js'),
 				RDB.multi()
 					.mget(name)
 					.mget(description)
+					.mget(icon)
+					.mget(blockclass)
 					.mget(slug)
 					.exec(function(err, replies) {
 						name = replies[0];
 						description = replies[1];
-						slug = replies[2];
+						icon = replies[2];
+						blockclass = replies[3];
+						slug = replies[4];
 						
 						var categories = [];
 						for (var i=0, ii=cids.length; i<ii; i++) {
@@ -54,6 +64,8 @@ var	RDB = require('./redis.js'),
 								'cid' : cids[i],
 								'slug' : slug[i],
 								'description' : description[i],
+								'blockclass' : blockclass[i],
+								'icon' : icon[i],
 								/*'topics' : [0,1], later
 								'latest_post' : {
 									'uid' : 1,

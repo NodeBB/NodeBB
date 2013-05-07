@@ -1,4 +1,4 @@
-<button id="new_post" class="btn btn-primary btn-large">New Topic</button>
+<button id="new_post" class="btn btn-primary btn-large {show_topic_button}">New Topic</button>
 <ul class="topic-container">
 <!-- BEGIN topics -->
 <a href="../../topic/{topics.slug}"><li class="topic-row">

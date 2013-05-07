@@ -123,12 +123,6 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 				
 		});
 		
-		socket.on('api:user.getNameByUid', function(data) {
-			modules.user.get_username_by_uid(data.uid, function(data){
-				socket.emit('api:user.getNameByUid', data);
-			});
-		});
-
 		socket.on('user.exists', function(data) {
 			modules.user.exists(socket, data.username);
 		});

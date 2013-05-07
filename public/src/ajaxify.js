@@ -30,6 +30,7 @@ var ajaxify = {};
 
 		var url = url.replace(/\/$/, "");
 		var tpl_url = (url === '' || url === '/') ? 'home' : url.split('/')[0];
+		tpl_url = templates.get_custom_map(tpl_url);
 		
 		if (templates[tpl_url]) {
 			window.history.pushState({}, url, "/" + url);
