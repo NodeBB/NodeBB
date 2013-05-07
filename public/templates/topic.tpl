@@ -163,25 +163,25 @@
 
 		socket.on('event:topic_locked', function(data) {
 			if (data.tid === tid && data.status === 'ok') {
-				set_locked_state(true);
+				set_locked_state(true, 1);
 			}
 		});
 
 		socket.on('event:topic_unlocked', function(data) {
 			if (data.tid === tid && data.status === 'ok') {
-				set_locked_state(false);
+				set_locked_state(false, 1);
 			}
 		});
 
 		socket.on('event:topic_pinned', function(data) {
 			if (data.tid === tid && data.status === 'ok') {
-				set_pinned_state(true);
+				set_pinned_state(true, 1);
 			}
 		});
 
 		socket.on('event:topic_unpinned', function(data) {
 			if (data.tid === tid && data.status === 'ok') {
-				set_pinned_state(false);
+				set_pinned_state(false, 1);
 			}
 		});
 
@@ -241,7 +241,7 @@
 			});
 		}
 
-		function set_locked_state(locked) {
+		function set_locked_state(locked, alert) {
 			var	threadReplyBtn = document.getElementById('post_reply'),
 				postReplyBtns = document.querySelectorAll('#post-container .post_reply'),
 				quoteBtns = document.querySelectorAll('#post-container .quote'),
@@ -250,6 +250,7 @@
 				numReplyBtns = postReplyBtns.length,
 				lockThreadEl = document.getElementById('lock_thread'),
 				x;
+
 			if (locked === true) {
 				lockThreadEl.innerHTML = '<i class="icon-unlock"></i> Unlock Thread';
 				threadReplyBtn.disabled = true;
@@ -259,6 +260,16 @@
 					quoteBtns[x].style.display = 'none';
 					editBtns[x].style.display = 'none';
 					deleteBtns[x].style.display = 'none';
+				}
+
+				if (alert) {
+					app.alert({
+						'alert_id': 'thread_lock',
+						type: 'success',
+						title: 'Thread Locked',
+						message: 'Thread has been successfully locked',
+						timeout: 5000
+					});
 				}
 
 				thread_state.locked = '1';
@@ -271,6 +282,16 @@
 					quoteBtns[x].style.display = 'inline-block';
 					editBtns[x].style.display = 'inline-block';
 					deleteBtns[x].style.display = 'inline-block';
+				}
+
+				if (alert) {
+					app.alert({
+						'alert_id': 'thread_lock',
+						type: 'success',
+						title: 'Thread Unlocked',
+						message: 'Thread has been successfully unlocked',
+						timeout: 5000
+					});
 				}
 
 				thread_state.locked = '0';
@@ -303,15 +324,33 @@
 			}
 		}
 
-		function set_pinned_state(pinned) {
+		function set_pinned_state(pinned, alert) {
 			var pinEl = document.getElementById('pin_thread');
 
 			if (pinned) {
 				pinEl.innerHTML = '<i class="icon-pushpin"></i> Unpin Thread';
+				if (alert) {
+					app.alert({
+						'alert_id': 'thread_pin',
+						type: 'success',
+						title: 'Thread Pinned',
+						message: 'Thread has been successfully pinned',
+						timeout: 5000
+					});
+				}
 
 				thread_state.pinned = '1';
 			} else {
 				pinEl.innerHTML = '<i class="icon-pushpin"></i> Pin Thread';
+				if (alert) {
+					app.alert({
+						'alert_id': 'thread_pin',
+						type: 'success',
+						title: 'Thread Unpinned',
+						message: 'Thread has been successfully unpinned',
+						timeout: 5000
+					});
+				}
 
 				thread_state.pinned = '0';
 			}

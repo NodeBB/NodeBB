@@ -44,6 +44,7 @@ var	RDB = require('./redis.js'),
 				'category_slug':thread_data.category_slug,
 				'locked': parseInt(thread_data.locked) || 0,
 				'deleted': parseInt(thread_data.deleted) || 0,
+				'pinned': parseInt(thread_data.pinned) || 0,
 				'topic_id': tid,
 				'expose_tools': viewer_data.reputation >= config.privilege_thresholds.manage_thread ? 1 : 0,
 				'posts': posts
@@ -80,6 +81,7 @@ var	RDB = require('./redis.js'),
 				.get('tid:' + tid + ':category_name')
 				.get('tid:' + tid + ':category_slug')
 				.get('tid:' + tid + ':deleted')
+				.get('tid:' + tid + ':pinned')
 				.exec(function(err, replies) {
 					post_data = {
 						pid: pids,
@@ -91,10 +93,11 @@ var	RDB = require('./redis.js'),
 
 					thread_data = {
 						topic_name: replies[4],
-						locked: replies[5],
+						locked: replies[5] || 0,
 						category_name: replies[6],
 						category_slug: replies[7],
-						deleted: replies[8] || 0
+						deleted: replies[8] || 0,
+						pinned: replies[9] || 0
 					};
 
 					user.getMultipleUserFields(post_data.uid, ['username','reputation','picture'], function(user_details){
