@@ -33,6 +33,8 @@ var socket,
 
 	// use unique alert_id to have multiple alerts visible at a time, use the same alert_id to fade out the current instance  
 	// type : error, success, info, warning/notify
+	// title = bolded title text
+	// message = alert message content
 	// timeout default = permanent
 	// location : notification_window (default) or content
 	app.alert = function(params) {
@@ -41,7 +43,7 @@ var socket,
 			strong = document.createElement('strong'),
 			p = document.createElement('p');
 
-		var alert_id = 'alert_button_' + ((alert_id) ? alert_id : new Date().getTime()); 
+		var alert_id = 'alert_button_' + ((params.alert_id) ? params.alert_id : new Date().getTime()); 
 
 		jQuery('#'+alert_id).fadeOut(500, function() {
 			this.remove();

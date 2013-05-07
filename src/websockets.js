@@ -192,6 +192,14 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 		socket.on('api:topic.unlock', function(data) {
 			modules.topics.unlock(data.tid, uid, socket);
 		});
+
+		socket.on('api:topic.pin', function(data) {
+			modules.topics.pin(data.tid, uid, socket);
+		});
+
+		socket.on('api:topic.unpin', function(data) {
+			modules.topics.unpin(data.tid, uid, socket);
+		});
 	});
 	
 }(SocketIO));

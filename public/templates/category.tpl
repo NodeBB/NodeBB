@@ -1,8 +1,16 @@
+<div class="container">
+	<ul class="breadcrumb">
+		<li><a href="/">Home</a><span class="divider">/</span></li>
+		<li class="active">{category_name}</li>
+		<div id="category_active_users"></div>
+	</ul>
+</div>
+
 <button id="new_post" class="btn btn-primary btn-large {show_topic_button}">New Topic</button>
 <ul class="topic-container">
 <!-- BEGIN topics -->
 <a href="../../topic/{topics.slug}"><li class="topic-row">
-	<h4><i class="{topics.icon}"></i> {topics.title}</h4>
+	<h4><i class="{topics.pin-icon}"></i><i class="{topics.lock-icon}"></i> {topics.title}</h4>
 	<p>Posted {topics.relativeTime} ago by <span class="username">{topics.username}</span>. {topics.post_count} posts.</p>
 </li></a>
 <!-- END topics -->

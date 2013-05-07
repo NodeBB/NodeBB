@@ -1,6 +1,7 @@
 <div class="container">
 	<ul class="breadcrumb">
-		<li><a href="/">Home</a> <span class="divider">/</span></li>
+		<li><a href="/">Home</a><span class="divider">/</span></li>
+		<li><a href="/category/{category_slug}">{category_name}</a><span class="divider">/</span></li>
 		<li class="active">{topic_name}</li>
 		<div id="thread_active_users"></div>
 	</ul>
@@ -37,6 +38,7 @@
 <div class="btn-group pull-right" id="thread-tools" style="visibility: hidden;">
 	<button class="btn dropdown-toggle" data-toggle="dropdown">Thread Tools <span class="caret"></span></button>
 	<ul class="dropdown-menu">
+		<li><a href="#" id="pin_thread"><i class="icon-pushpin"></i> Pin Thread</a></li>
 		<li><a href="#" id="lock_thread"><i class="icon-lock"></i> Lock Thread</a></li>
 		<li class="divider"></li>
 		<li><a href="#" id="delete_thread"><span class="text-error"><i class="icon-trash"></i>  Delete Thread</span></a></li>
@@ -50,7 +52,8 @@
 			tid = '{topic_id}',
 			thread_state = {
 				locked: '{locked}',
-				deleted: '{deleted}'
+				deleted: '{deleted}',
+				pinned: '{pinned}'
 			};
 
 		jQuery('document').ready(function() {
@@ -62,10 +65,12 @@
 
 			if (thread_state.locked === '1') set_locked_state(true);
 			if (thread_state.deleted === '1') set_delete_state(true);
+			if (thread_state.pinned === '1') set_pinned_state(true);
 
 			if (expose_tools === '1') {
 				var deleteThreadEl = document.getElementById('delete_thread'),
-					lockThreadEl = document.getElementById('lock_thread');
+					lockThreadEl = document.getElementById('lock_thread'),
+					pinThreadEl = document.getElementById('pin_thread');
 
 				adminTools.style.visibility = 'inherit';
 
@@ -86,13 +91,18 @@
 				lockThreadEl.addEventListener('click', function(e) {
 					e.preventDefault();
 					if (thread_state.locked !== '1') {
-						if (confirm('really lock thread? (THIS DIALOG TO BE REPLACED WITH BOOTBOX)')) {
-							socket.emit('api:topic.lock', { tid: tid });
-						}
+						socket.emit('api:topic.lock', { tid: tid });
 					} else {
-						if (confirm('really unlock thread? (THIS DIALOG TO BE REPLACED WITH BOOTBOX)')) {
-							socket.emit('api:topic.unlock', { tid: tid });
-						}
+						socket.emit('api:topic.unlock', { tid: tid });
+					}
+				});
+
+				pinThreadEl.addEventListener('click', function(e) {
+					e.preventDefault();
+					if (thread_state.pinned !== '1') {
+						socket.emit('api:topic.pin', { tid: tid });
+					} else {
+						socket.emit('api:topic.unpin', { tid: tid });
 					}
 				});
 			}
@@ -153,13 +163,25 @@
 
 		socket.on('event:topic_locked', function(data) {
 			if (data.tid === tid && data.status === 'ok') {
-				set_locked_state(true);
+				set_locked_state(true, 1);
 			}
 		});
 
 		socket.on('event:topic_unlocked', function(data) {
 			if (data.tid === tid && data.status === 'ok') {
-				set_locked_state(false);
+				set_locked_state(false, 1);
+			}
+		});
+
+		socket.on('event:topic_pinned', function(data) {
+			if (data.tid === tid && data.status === 'ok') {
+				set_pinned_state(true, 1);
+			}
+		});
+
+		socket.on('event:topic_unpinned', function(data) {
+			if (data.tid === tid && data.status === 'ok') {
+				set_pinned_state(false, 1);
 			}
 		});
 
@@ -219,13 +241,16 @@
 			});
 		}
 
-		function set_locked_state(locked) {
+		function set_locked_state(locked, alert) {
 			var	threadReplyBtn = document.getElementById('post_reply'),
 				postReplyBtns = document.querySelectorAll('#post-container .post_reply'),
 				quoteBtns = document.querySelectorAll('#post-container .quote'),
+				editBtns = document.querySelectorAll('#post-container .edit'),
+				deleteBtns = document.querySelectorAll('#post-container .delete'),
 				numReplyBtns = postReplyBtns.length,
 				lockThreadEl = document.getElementById('lock_thread'),
 				x;
+
 			if (locked === true) {
 				lockThreadEl.innerHTML = '<i class="icon-unlock"></i> Unlock Thread';
 				threadReplyBtn.disabled = true;
@@ -233,6 +258,18 @@
 				for(x=0;x<numReplyBtns;x++) {
 					postReplyBtns[x].innerHTML = 'Locked <i class="icon-lock"></i>';
 					quoteBtns[x].style.display = 'none';
+					editBtns[x].style.display = 'none';
+					deleteBtns[x].style.display = 'none';
+				}
+
+				if (alert) {
+					app.alert({
+						'alert_id': 'thread_lock',
+						type: 'success',
+						title: 'Thread Locked',
+						message: 'Thread has been successfully locked',
+						timeout: 5000
+					});
 				}
 
 				thread_state.locked = '1';
@@ -243,6 +280,18 @@
 				for(x=0;x<numReplyBtns;x++) {
 					postReplyBtns[x].innerHTML = 'Reply <i class="icon-reply"></i>';
 					quoteBtns[x].style.display = 'inline-block';
+					editBtns[x].style.display = 'inline-block';
+					deleteBtns[x].style.display = 'inline-block';
+				}
+
+				if (alert) {
+					app.alert({
+						'alert_id': 'thread_lock',
+						type: 'success',
+						title: 'Thread Unlocked',
+						message: 'Thread has been successfully unlocked',
+						timeout: 5000
+					});
 				}
 
 				thread_state.locked = '0';
@@ -262,7 +311,7 @@
 				// Spawn a 'deleted' notice at the top of the page
 				deleteNotice.setAttribute('id', 'thread-deleted');
 				deleteNotice.className = 'alert';
-				deleteNotice.innerHTML = 'This thread has been deleted. Only users with thread management privileges can see it.<br /><br /><a href="/">Home</a>';
+				deleteNotice.innerHTML = 'This thread has been deleted. Only users with thread management privileges can see it.';
 				document.getElementById('content').insertBefore(deleteNotice, threadEl);
 
 				thread_state.deleted = '1';
@@ -272,6 +321,38 @@
 				deleteNotice.parentNode.removeChild(deleteNotice);
 
 				thread_state.deleted = '0';
+			}
+		}
+
+		function set_pinned_state(pinned, alert) {
+			var pinEl = document.getElementById('pin_thread');
+
+			if (pinned) {
+				pinEl.innerHTML = '<i class="icon-pushpin"></i> Unpin Thread';
+				if (alert) {
+					app.alert({
+						'alert_id': 'thread_pin',
+						type: 'success',
+						title: 'Thread Pinned',
+						message: 'Thread has been successfully pinned',
+						timeout: 5000
+					});
+				}
+
+				thread_state.pinned = '1';
+			} else {
+				pinEl.innerHTML = '<i class="icon-pushpin"></i> Pin Thread';
+				if (alert) {
+					app.alert({
+						'alert_id': 'thread_pin',
+						type: 'success',
+						title: 'Thread Unpinned',
+						message: 'Thread has been successfully unpinned',
+						timeout: 5000
+					});
+				}
+
+				thread_state.pinned = '0';
 			}
 		}
 	})();

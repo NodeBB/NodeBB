@@ -40,8 +40,11 @@ var	RDB = require('./redis.js'),
 
 			callback({
 				'topic_name':thread_data.topic_name,
+				'category_name':thread_data.category_name,
+				'category_slug':thread_data.category_slug,
 				'locked': parseInt(thread_data.locked) || 0,
 				'deleted': parseInt(thread_data.deleted) || 0,
+				'pinned': parseInt(thread_data.pinned) || 0,
 				'topic_id': tid,
 				'expose_tools': viewer_data.reputation >= config.privilege_thresholds.manage_thread ? 1 : 0,
 				'posts': posts
@@ -61,10 +64,6 @@ var	RDB = require('./redis.js'),
 				pid.push(pids[i]);
 			}
 
-			RDB.get('tid:' + tid + ':title', function(topic_name) {
-				thread_data = {topic_name: topic_name};
-				generateThread();
-			});
 
 			Posts.getFavouritesByPostIDs(pids, current_user, function(fav_data) {
 				vote_data = fav_data;
@@ -79,7 +78,10 @@ var	RDB = require('./redis.js'),
 				.mget(post_rep)
 				.get('tid:' + tid + ':title')
 				.get('tid:' + tid + ':locked')
+				.get('tid:' + tid + ':category_name')
+				.get('tid:' + tid + ':category_slug')
 				.get('tid:' + tid + ':deleted')
+				.get('tid:' + tid + ':pinned')
 				.exec(function(err, replies) {
 					post_data = {
 						pid: pids,
@@ -92,7 +94,10 @@ var	RDB = require('./redis.js'),
 					thread_data = {
 						topic_name: replies[4],
 						locked: replies[5] || 0,
-						deleted: replies[6] || 0
+						category_name: replies[6],
+						category_slug: replies[7],
+						deleted: replies[8] || 0,
+						pinned: replies[9] || 0
 					};
 
 					user.getMultipleUserFields(post_data.uid, ['username','reputation','picture'], function(user_details){
