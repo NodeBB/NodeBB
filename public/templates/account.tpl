@@ -28,11 +28,11 @@
 		<br/>
 
 		<span class="account-bio-label">reputation</span>
-		<span>{user.reputation}</span>
+		<span id='reputation'>{user.reputation}</span>
 		<br/>		
 		
 		<span class="account-bio-label">posts</span>
-		<span>{user.postcount}</span>
+		<span id='postcount'>{user.postcount}</span>
 	</div>
 	
 	
@@ -47,6 +47,20 @@
 </div>
 <script type="text/javascript">
 (function() {
-    // ...
+    
+    function addCommas(text) {
+        return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+    }
+    
+    $(document).ready(function() {
+        var rep = $('#reputation');
+        rep.html(addCommas(rep.html()));
+        
+        var postcount = $('#postcount');
+        postcount.html(addCommas(postcount.html()));
+        
+    });
+    
+
 }());
 </script>

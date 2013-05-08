@@ -436,7 +436,8 @@ passport.deserializeUser(function(uid, done) {
 
 			user.getUserData(uid, function(data) {
 				if(data) {
-					res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("users/'+data.username + '");});</script>' + templates['footer']);
+					//res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("users/'+data.username + '");});</script>' + templates['footer']);
+					res.send(templates['header'] + create_route('users/'+data.username,'users')  + templates['footer']);
 				}
 				else {
 					res.send("User doesn't exist! /users/"+req.params.username);
