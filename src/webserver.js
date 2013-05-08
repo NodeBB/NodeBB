@@ -221,7 +221,6 @@ passport.deserializeUser(function(uid, done) {
 				break;
 			case 'users' : 
 					if (!req.params.section && !req.params.id) {
-						console.log("PURE USERS");					
 						get_users_fn(req, res, function(userData) {
 							res.send(JSON.stringify(userData));
 						});
@@ -427,7 +426,6 @@ passport.deserializeUser(function(uid, done) {
 	
 
 	function handleUserProfile(req, res) {
-		console.log("handleUserProfile");
 		
 		if(!req.params.username) {
 			res.send("User doesn't exist!");
