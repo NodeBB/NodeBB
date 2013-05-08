@@ -23,8 +23,7 @@ body {
 	background: #fdfdfd;
 }
 
-// havent really decided what makes more sense tbh
-.none, .hide {
+.none {
 	display: none !important;
 }
 
@@ -373,27 +372,66 @@ footer.footer {
 }
 
 .category-purple {
-	background: #ab1290;
+	@color: #ab1290;
+	background: @color;
 	color: white;
+
+	&:hover {
+		background: lighten(@color, 10%);
+	}
 }
 
 .category-darkblue {
-	background: #004C66;
+	@color: #004C66;
+	background: @color;
 	color: white;
+
+	&:hover {
+		background: lighten(@color, 10%);
+	}
 }
 
 .category-blue {
-	background: #0059B2;
+	@color: #0059B2;
+	background: @color;
 	color: white;
+
+	&:hover {
+		background: lighten(@color, 10%);
+	}
 }
 
 .category-darkgreen {
-	background: #004000;
+	@color: #004000;
+	background: @color;
 	color: white;
+
+	&:hover {
+		background: lighten(@color, 10%);
+	}
 }
 .category-orange {
+	@color: #FF7A4D;
 	color: white;
-	background: #FF7A4D;
+	background: @color;
+
+	&:hover {
+		background: lighten(@color, 10%);
+	}
+}
+
+.category-list {
+	li {
+		.inline-block;
+		.pointer;
+		padding: 0.5em 0;
+		text-align: center;
+		margin: 0.5em;
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+		padding: 0.5em;
+	}
 }
 
 .hero-unit {

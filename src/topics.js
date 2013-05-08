@@ -83,10 +83,10 @@ var	RDB = require('./redis.js'),
 								'relativeTime': utils.relativeTime(timestamp[i]),
 								'slug' : slug[i],
 								'post_count' : postcount[i],
-								'lock-icon': locked[i] === '1' ? 'icon-lock' : 'hide',
+								'lock-icon': locked[i] === '1' ? 'icon-lock' : 'none',
 								'deleted': deleted[i],
 								'pinned': parseInt(pinned[i] || 0),	// For sorting purposes
-								'pin-icon': pinned[i] === '1' ? 'icon-pushpin' : 'hide'
+								'pin-icon': pinned[i] === '1' ? 'icon-pushpin' : 'none'
 							});
 						}
 
@@ -286,5 +286,11 @@ var	RDB = require('./redis.js'),
 				}
 			}
 		});
+	}
+
+	Topics.move = function(tid, cid, socket) {
+		moved = true;	// nibstayla
+		if (moved) socket.emit('api:topic.move', { status: 'ok' });
+		else socket.emit('api:topic.move', { status: 'error' });
 	}
 }(exports));

@@ -43,8 +43,28 @@
 		<li><a href="#" id="pin_thread"><i class="icon-pushpin"></i> Pin Thread</a></li>
 		<li><a href="#" id="lock_thread"><i class="icon-lock"></i> Lock Thread</a></li>
 		<li class="divider"></li>
-		<li><a href="#" id="delete_thread"><span class="text-error"><i class="icon-trash"></i>  Delete Thread</span></a></li>
+		<li><a href="#" id="move_thread"><i class="icon-move"></i> Move Thread</a></li>
+		<li class="divider"></li>
+		<li><a href="#" id="delete_thread"><span class="text-error"><i class="icon-trash"></i> Delete Thread</span></a></li>
 	</ul>
+</div>
+<div id="move_thread_modal" class="modal hide fade">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>Move Thread</h3>
+	</div>
+	<div class="modal-body">
+		<p id="categories-loading"><i class="icon-spin icon-refresh"></i> Loading Categories</p>
+		<ul class="category-list"></ul>
+		<div id="move-confirm" style="display: none;">
+			<hr />
+			<div class="alert">This topic will be moved to the category <strong><span id="confirm-category-name"></span></strong></div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn" data-dismiss="modal" id="move_thread_cancel">Close</a>
+		<button type="button" class="btn btn-primary" id="move_thread_commit" disabled>Move</a>
+	</div>
 </div>
 
 
@@ -72,7 +92,9 @@
 			if (expose_tools === '1') {
 				var deleteThreadEl = document.getElementById('delete_thread'),
 					lockThreadEl = document.getElementById('lock_thread'),
-					pinThreadEl = document.getElementById('pin_thread');
+					pinThreadEl = document.getElementById('pin_thread'),
+					moveThreadEl = document.getElementById('move_thread'),
+					moveThreadModal = $('#move_thread_modal');
 
 				adminTools.style.visibility = 'inherit';
 
@@ -88,7 +110,7 @@
 							socket.emit('api:topic.restore', { tid: tid });
 						}
 					}
-				});
+				}, false);
 
 				lockThreadEl.addEventListener('click', function(e) {
 					e.preventDefault();
@@ -97,7 +119,7 @@
 					} else {
 						socket.emit('api:topic.unlock', { tid: tid });
 					}
-				});
+				}, false);
 
 				pinThreadEl.addEventListener('click', function(e) {
 					e.preventDefault();
@@ -105,6 +127,83 @@
 						socket.emit('api:topic.pin', { tid: tid });
 					} else {
 						socket.emit('api:topic.unpin', { tid: tid });
+					}
+				}, false);
+
+				moveThreadEl.addEventListener('click', function(e) {
+					e.preventDefault();
+					moveThreadModal.modal('show');
+				}, false);
+				moveThreadModal.on('shown', function() {
+					var loadingEl = document.getElementById('categories-loading');
+					if (loadingEl) {
+						socket.once('api:categories.get', function(data) {
+							// Render categories
+							var	categoriesFrag = document.createDocumentFragment(),
+								categoryEl = document.createElement('li'),
+								numCategories = data.categories.length,
+								modalBody = moveThreadModal.find('.modal-body'),
+								categoriesEl = modalBody[0].getElementsByTagName('ul')[0],
+								confirmDiv = document.getElementById('move-confirm'),
+								confirmCat = confirmDiv.getElementsByTagName('span')[0],
+								commitEl = document.getElementById('move_thread_commit'),
+								cancelEl = document.getElementById('move_thread_cancel'),
+								x, info, targetCid, targetCatLabel;
+
+							categoriesEl.className = 'category-list';
+							for(x=0;x<numCategories;x++) {
+								info = data.categories[x];
+								categoryEl.className = info.blockclass;
+								categoryEl.innerHTML = '<i class="' + info.icon + '"></i> ' + info.name;
+								categoryEl.setAttribute('data-cid', info.cid);
+								categoriesFrag.appendChild(categoryEl.cloneNode(true));
+							}
+							categoriesEl.appendChild(categoriesFrag);
+							modalBody[0].removeChild(loadingEl);
+
+							categoriesEl.addEventListener('click', function(e) {
+								if (e.target.nodeName === 'LI') {
+									confirmCat.innerHTML = e.target.innerHTML;
+									confirmDiv.style.display = 'block';
+									targetCid = e.target.getAttribute('data-cid');
+									targetCatLabel = e.target.innerHTML;
+									commitEl.disabled = false;
+								}
+							}, false);
+
+							commitEl.addEventListener('click', function() {
+								if (!commitEl.disabled && targetCid) {
+									commitEl.disabled = true;
+									$(cancelEl).fadeOut(250);
+									$(moveThreadModal).find('.modal-header button').fadeOut(250);
+									commitEl.innerHTML = 'Moving <i class="icon-spin icon-refresh"></i>';
+
+									socket.once('api:topic.move', function(data) {
+										console.log(data);
+										moveThreadModal.modal('hide');
+										if (data.status === 'ok') {
+											app.alert({
+												'alert_id': 'thread_move',
+												type: 'success',
+												title: 'Topic Successfully Moved',
+												message: 'This topic has been successfully moved to ' + targetCatLabel,
+												timeout: 5000
+											});
+										} else {
+											app.alert({
+												'alert_id': 'thread_move',
+												type: 'error',
+												title: 'Unable to Move Topic',
+												message: 'This topic could not be moved to ' + targetCatLabel + '.<br />Please try again later',
+												timeout: 5000
+											});
+										}
+									});
+									socket.emit('api:topic.move', { tid: tid, cid: targetCid });
+								}
+							});
+						});
+						socket.emit('api:categories.get');
 					}
 				});
 			}
