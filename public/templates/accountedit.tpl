@@ -76,7 +76,7 @@
     $(document).ready(function(){
         
         $('#submitBtn').on('click',function(){
-            
+            alert('click');    
             var userData = {
                 uid:$('#inputUID').val(),
                 email:$('#inputEmail').val(),
@@ -89,7 +89,7 @@
             $.post('/edituser',
                 userData,
                 function(data) {
-                                    
+                         alert('fail');       
                 }                
             );
             

@@ -333,11 +333,11 @@ passport.deserializeUser(function(uid, done) {
 	});
 
 	app.post('/edituser', function(req, res){
-		
+
 		if(!req.user)
 			return res.redirect('/403');
 		
-		if(req.user.uid !== req.body.uid)
+		if(req.user.uid != req.body.uid)
 			return res.redirect('/');
 		
 		user.updateUserFields(req.user.uid, req.body);
