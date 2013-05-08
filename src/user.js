@@ -70,7 +70,7 @@ var	config = require('../config.js'),
 	}
 
 	User.updateUserFields = function(uid, data) {
-		console.log(data);
+		
 		for(var key in data) {
 			User.setUserField(uid, key, data[key]);
 		}

@@ -228,7 +228,7 @@ passport.deserializeUser(function(uid, done) {
 					else if (String(req.params.section).toLowerCase() === 'edit') {
 						get_account_fn(req, res, function(userData) {
 							res.send(JSON.stringify(userData));
-						});			
+						});
 					} else {
 						get_account_fn(req, res, function(userData) {
 							res.send(JSON.stringify(userData));
@@ -334,10 +334,11 @@ passport.deserializeUser(function(uid, done) {
 
 	app.post('/edituser', function(req, res){
 		
-		if(!req.user) {
-			res.redirect('/403');
-			return;
-		}
+		if(!req.user)
+			return res.redirect('/403');
+		console.log(req.body.uid);
+		if(req.user.uid !== req.body.uid)
+			return res.redirect('/');
 		
 		user.updateUserFields(req.user.uid, req.body);
 		
@@ -377,7 +378,11 @@ passport.deserializeUser(function(uid, done) {
 					data.joindate = utils.relativeTime(data.joindate);
 					data.age = new Date().getFullYear() - new Date(data.birthday).getFullYear();;
 					data.uid = uid;
-					callback({user:data});
+					callback({
+						yourid:req.user.uid,
+						theirid:uid,
+						user:data
+					});
 				}
 				else
 					callback({user:{}});

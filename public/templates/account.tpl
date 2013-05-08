@@ -10,7 +10,7 @@
 	
 	<div class="account-username-box">
 		<span class="account-username"><a href="/users/{user.username}">{user.username}</a></span>
-		<span class="pull-right"><a href="/users/{user.username}/edit">edit</a></span>
+		<span id="editLink" class="pull-right"><a href="/users/{user.username}/edit">edit</a></span>
 	</div>
 		
 	<div class="account-picture-block">
@@ -50,13 +50,17 @@
 		<span id='postcount'>{user.postcount}</span>
 	</div>
 	 
-
+   
 	<!-- END user -->
-
+ 
 
 
 </div>
 <script type="text/javascript">
+
+var yourid = '{yourid}';
+var theirid = '{theirid}';
+
 (function() {
     
     function addCommas(text) {
@@ -69,6 +73,10 @@
         
         var postcount = $('#postcount');
         postcount.html(addCommas(postcount.html()));
+        
+        var editLink = $('#editLink');
+        if( yourid !== theirid)
+            editLink.addClass('hidden');
         
     });
     
