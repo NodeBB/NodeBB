@@ -39,7 +39,7 @@
                <div class="control-group">
                 <label class="control-label" for="inputWebsite">Website</label>
                 <div class="controls">
-                  <input type="text" id="inputWebsite" placeholder="http://website.com" value="{user.fullname}">
+                  <input type="text" id="inputWebsite" placeholder="http://website.com" value="{user.website}">
                 </div>
               </div>
              
@@ -58,8 +58,8 @@
               </div>
              
               <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Save changes</button>
-                <button type="button" class="btn">Cancel</button>
+                <a id="submitBtn" href="" class="btn btn-primary">Save changes</a>
+                <a href="/users/{user.username}" class="btn">Cancel</a>
             </div>
               
          </form>
@@ -71,6 +71,27 @@
 </div>
 <script type="text/javascript">
 (function() {
-    // ...
+    $(document).ready(function(){
+        
+        $('#submitBtn').on('click',function(){
+            
+            var userData = {
+                email:$('#inputEmail').val(),
+                fullname:$('#inputFullname').val(),
+                website:$('#inputWebsite').val(),
+                birthday:$('#inputBirthday').val(),
+                location:$('#inputLocation').val()
+            };
+            
+            $.post('/edituser',
+                userData,
+                function(data) {
+                                    
+                }                
+            );
+            
+        });
+        
+    });
 }());
 </script>

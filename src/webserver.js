@@ -332,6 +332,19 @@ passport.deserializeUser(function(uid, done) {
 		});
 	});
 
+	app.post('/edituser', function(req, res){
+		
+		if(!req.user) {
+			res.redirect('/403');
+			return;
+		}
+		
+		user.updateUserFields(req.user.uid, req.body);
+		
+		res.redirect('/');
+	});
+	
+
 	app.get('/baristest', function(req, res) {
 		/*user.getUserField(req.user.uid, 'email', function(data) {
 			console.log(" I GOT FIELD " +data);
@@ -362,6 +375,7 @@ passport.deserializeUser(function(uid, done) {
 				if(data)
 				{
 					data.joindate = utils.relativeTime(data.joindate);
+					data.age = new Date().getFullYear() - new Date(data.birthday).getFullYear();;
 					data.uid = uid;
 					callback({user:data});
 				}

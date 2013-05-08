@@ -22,6 +22,22 @@
 		<span>{user.email}</span>
 		<br/>
 		
+		<span class="account-bio-label">full name</span>
+        <span>{user.fullname}</span>
+        <br/>
+        
+        <span class="account-bio-label">website</span>
+        <span><a href="{user.website}">{user.website}</a></span>
+        <br/>
+		
+		<span class="account-bio-label">location</span>
+        <span>{user.location}</span>
+        <br/>
+        
+        <span class="account-bio-label">age</span>
+        <span>{user.age}</span>
+        <br/>
+		
 		<span class="account-bio-label">member for</span>
 		<span>{user.joindate}</span>
 		<br/>
