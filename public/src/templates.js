@@ -145,6 +145,11 @@ var templates = {};
 				}					
 			}
 
+			if (namespace) {
+				var regex = new RegExp("{" + namespace + "[^]*?}", 'g');
+				template = template.replace(regex, '');
+			}
+
 			return template;
 			
 		})(data, "", template);
