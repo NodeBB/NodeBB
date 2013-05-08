@@ -31,9 +31,12 @@ var ajaxify = {};
 		app.enter_room('global');
 
 		var url = url.replace(/\/$/, "");
-		tpl_url = templates.get_custom_map(tpl_url);
-		var tpl_url = (url === '' || url === '/') ? 'home' : url.split('/')[0];
+
+		var tpl_url = templates.get_custom_map(url);
 		
+		if (tpl_url == false) {
+			tpl_url = (url === '' || url === '/') ? 'home' : url.split('/')[0];
+		} 
 		
 		if (templates[tpl_url]) {
 			window.history.pushState({}, url, "/" + url);

@@ -7,7 +7,6 @@ var templates = {};
 	templates.get_custom_map = function(tpl) {
 		if (config['custom_mapping'] && tpl) {
 			for (var pattern in config['custom_mapping']) {
-				console.log(pattern);
 				if (tpl.match(pattern)) {
 					return (config['custom_mapping'][pattern]);
 				}
