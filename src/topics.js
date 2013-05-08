@@ -98,7 +98,7 @@ var	RDB = require('./redis.js'),
 						callback({
 							'category_name' : category_id ? category_name : 'Recent',
 							'show_topic_button' : category_id ? 'show' : 'hidden',
-							'category_id': category_id,
+							'category_id': category_id || 0,
 							'topics': topics
 						});
 					
@@ -108,7 +108,7 @@ var	RDB = require('./redis.js'),
 					callback({
 						'category_name' : category_id ? category_name : 'Recent',
 						'show_topic_button' : category_id ? 'show' : 'hidden',
-						'category_id': category_id,
+						'category_id': category_id || 0,
 						'topics': []
 					});
 				}
