@@ -38,6 +38,7 @@
 	                    </li>
 					</ul>
 					<ul class="nav pull-right" id="right-menu">
+						<li><i class="icon-plus icon-2x" style="color:#999;"></i></li>
 						<li><a href="/users" id="user_label"></a></li>
 					</ul>
 				</div>

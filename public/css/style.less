@@ -32,7 +32,7 @@ body {
 	display: block;
 }
 .badge {
-	vertical-align: 15%;
+	vertical-align: 17%;
 }
 .nav .badge {
 	vertical-align: 10%;
@@ -111,34 +111,73 @@ footer.footer {
 	}
 }
 
+
 .topic-container {
-	list-style-type: none;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  margin-top: 10px;
+}
+.topic-container a:nth-child(odd) li.topic-row {
+  background-color: #fdfdfd;
+}
+.topic-container a:nth-child(even) li.topic-row {
+  background-color: #fff;
+}
+.topic-container a {
+	margin-bottom: 10px;
+	display: block;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	text-decoration: none;
+	color: #333;
+}
+.topic-container li.topic-row {
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+  border-radius: 5px;
+}
+.topic-container li:last-child {
+  border-bottom: 0;
+}
+.topic-container .row {
+	
+}
+.topic-row-icon, .topic-row-content {
+	}
+.topic-row-icon {
+	border-radius: 5px 0 0 5px;
+	height: 75px;
+	background: #0059B2;
+	color: white;
+	line-height: 105px;
+	min-width: 75px;
+}
+
+@media (max-width: 767px) 
+{
+	.topic-row-icon {
+		border-radius: 5px 5px 0 0;
+	}
+}
+
+.top-posters {
+	float: right;
+	padding-top: 2px;
+}
+
+.topic-row-content {
+	width: 80%;
+}
+
+.topic-row-content h3 {
 	padding: 0;
 	margin: 0;
-	border: 1px solid #eee;
-	margin-top: 50px;
+	margin-top: 4px;
+}
 
-	a:nth-child(odd) li.topic-row {
-		background-color:#fdfdfd;
-	}
-
-	a:nth-child(even) li.topic-row {
-		background-color:#fff;
-	}
-
-	li.topic-row {
-		cursor: pointer;
-		border-bottom: 1px solid #eee;
-		padding: 10px;
-	}
-
-	li:last-child {
-		border-bottom: 0;
-	}
-
-	li.topic-row:hover {
-		background-color: #eee;
-	}
+.topic-row-content h3 small {
+	vertical-align: 3px;
 }
 
 .post-container {
