@@ -424,7 +424,6 @@ passport.deserializeUser(function(uid, done) {
 	
 	app.get('/users/:username*', handleUserProfile);
 	
-
 	function handleUserProfile(req, res) {
 		
 		if(!req.params.username) {
