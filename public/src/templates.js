@@ -5,7 +5,15 @@ var templates = {};
 		config = {};
 
 	templates.get_custom_map = function(tpl) {
-		return (config['custom_mapping'] && config['custom_mapping'][tpl]) ? config['custom_mapping'][tpl] : tpl;
+		if (config['custom_mapping'] && tpl) {
+			for (var pattern in config['custom_mapping']) {
+				console.log(pattern);
+				if (tpl.match(pattern)) {
+					return (config['custom_mapping'][pattern]);
+				}
+			}
+		}
+		return false;
 	}
 
 	templates.ready = function(callback) {
@@ -156,18 +164,15 @@ function load_template(callback, custom_tpl) {
 
 
 	jQuery.get(API_URL + url, function(data) {
-
-		var splits = url.split('/');
-		var tpl = url;
-		
-		if(splits.length) {
-			tpl = splits[0];
-			tpl = templates.get_custom_map(tpl);
+		var tpl = templates.get_custom_map(url);
+		if (tpl == false) {
+			tpl = url.split('/')[0];
 		}
 
 		if (custom_tpl && custom_tpl != "undefined") 
 			tpl = custom_tpl;
-		
+
+
 		document.getElementById('content').innerHTML = templates[tpl].parse(JSON.parse(data));
 		if (callback) callback();
 	});
