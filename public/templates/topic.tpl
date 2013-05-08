@@ -179,7 +179,6 @@
 									commitEl.innerHTML = 'Moving <i class="icon-spin icon-refresh"></i>';
 
 									socket.once('api:topic.move', function(data) {
-										console.log(data);
 										moveThreadModal.modal('hide');
 										if (data.status === 'ok') {
 											app.alert({
@@ -284,6 +283,10 @@
 			if (data.tid === tid && data.status === 'ok') {
 				set_pinned_state(false, 1);
 			}
+		});
+
+		socket.on('event:topic_moved', function(data) {
+			if (data && data.tid > 0) ajaxify.go('topic/' + data.tid);
 		});
 
 		function adjust_rep(value, pid, uid) {
