@@ -145,12 +145,6 @@ var	RDB = require('./redis.js'),
 				// need to add some unique key sent by client so we can update this with the real uid later
 				RDB.lpush('topics:queued:tid', tid);
 			}
-			
-
-
-			if (category_id) {
-				RDB.db.sadd('categories:' + category_id + ':tid', tid);
-			}
 
 			var slug = tid + '/' + utils.slugify(title);
 
@@ -181,6 +175,8 @@ var	RDB = require('./redis.js'),
 
 
 			// in future it may be possible to add topics to several categories, so leaving the door open here.
+			RDB.db.sadd('categories:' + category_id + ':tid', tid);
+			RDB.set('tid:' + tid + ':cid', category_id);
 			categories.get_category([category_id], function(data) {
 				RDB.set('tid:' + tid + ':category_name', data.categories[0].name);
 				RDB.set('tid:' + tid + ':category_slug', data.categories[0].slug);
@@ -288,8 +284,19 @@ var	RDB = require('./redis.js'),
 	}
 
 	Topics.move = function(tid, cid, socket) {
-		moved = true;	// nibstayla
-		if (moved) socket.emit('api:topic.move', { status: 'ok' });
-		else socket.emit('api:topic.move', { status: 'error' });
+		RDB.get('tid:' + tid + ':cid', function(oldCid) {
+			RDB.db.smove('categories:' + oldCid + ':tid', 'categories:' + cid + ':tid', tid, function(err, result) {
+				if (!err && result === 1) {
+					RDB.set('tid:' + tid + ':cid', cid);
+					categories.get_category([cid], function(data) {
+						RDB.set('tid:' + tid + ':category_name', data.categories[0].name);
+						RDB.set('tid:' + tid + ':category_slug', data.categories[0].slug);
+					});
+					socket.emit('api:topic.move', { status: 'ok' });
+				} else {
+					socket.emit('api:topic.move', { status: 'error' });
+				}
+			});
+		});
 	}
 }(exports));
