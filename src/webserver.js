@@ -336,7 +336,7 @@ passport.deserializeUser(function(uid, done) {
 		
 		if(!req.user)
 			return res.redirect('/403');
-		console.log(req.body.uid);
+		
 		if(req.user.uid !== req.body.uid)
 			return res.redirect('/');
 		
