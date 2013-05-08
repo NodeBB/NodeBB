@@ -419,7 +419,7 @@ passport.deserializeUser(function(uid, done) {
 
 	app.get('/users/:uid/edit', function(req, res){
 		
-		if(req.user && req.params.uid)
+		if(req.user && req.params.uid && req.user.uid === req.params.uid)
 			res.send(templates['header'] + create_route('users/'+req.params.uid+'/edit','accountedit') + templates['footer']);
 		else
 			return res.redirect('/403');	
