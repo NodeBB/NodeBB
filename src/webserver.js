@@ -378,10 +378,11 @@ passport.deserializeUser(function(uid, done) {
 					data.joindate = utils.relativeTime(data.joindate);
 					data.age = new Date().getFullYear() - new Date(data.birthday).getFullYear();;
 					data.uid = uid;
+					
 					callback({
-						yourid:req.user.uid,
-						theirid:uid,
-						user:data
+						yourid: (req.user)?req.user.uid : 0,
+						theirid: uid,
+						user: data
 					});
 				}
 				else
