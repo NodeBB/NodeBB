@@ -116,7 +116,6 @@ var	config = require('../config.js'),
 				}
 				
 				User.getUserField(uid, 'password', function(user_password) {
-					
 					bcrypt.compare(password, user_password, function(err, res) {
 						if (res === true) {
 							next({
