@@ -20,7 +20,7 @@ var	RDB = require('./redis.js'),
 		//build a proper wrapper for this and move it into above function later
 		var range_var = (category_id) ? 'categories:' + category_id + ':tid'  : 'topics:tid';
 
-		RDB.lrange(range_var, start, end, function(tids) {
+		RDB.db.smembers(range_var, function(err, tids) {
 			var title = [],
 				uid = [],
 				timestamp = [],
@@ -116,7 +116,6 @@ var	RDB = require('./redis.js'),
 
 
 			});
-			//} else callback({'category_id': category_id, 'topics': []});
 		});
 	}
 
@@ -150,7 +149,7 @@ var	RDB = require('./redis.js'),
 
 
 			if (category_id) {
-				RDB.lpush('categories:' + category_id + ':tid', tid);
+				RDB.db.sadd('categories:' + category_id + ':tid', tid);
 			}
 
 			var slug = tid + '/' + utils.slugify(title);
