@@ -9,10 +9,9 @@
 	<!-- BEGIN user -->
 	
 	<div class="account-username-box">
-		<span class="account-username">{user.username}</span>
+		<span class="account-username"><a href="/users/{user.username}">{user.username}</a></span>
 		<span class="pull-right"><a href="/users/{user.username}/edit">edit</a></span>
 	</div>
-	<br/>		
 		
 	<div class="account-picture-block">
 		<img src="{user.picture}?s=128" />
@@ -34,11 +33,7 @@
 		<span class="account-bio-label">posts</span>
 		<span id='postcount'>{user.postcount}</span>
 	</div>
-	
-	
-    <label for="email">Email Address</label><input type="text" placeholder="Enter Email Address" id="email" /><br />
-    <button class="btn btn-primary" id="reset" type="submit">Reset Password</button>
-
+	 
 
 	<!-- END user -->
 

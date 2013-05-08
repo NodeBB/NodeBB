@@ -406,10 +406,7 @@ passport.deserializeUser(function(uid, done) {
 	app.get('/users/:uid/edit', function(req, res){
 		
 		if(req.user && req.params.uid)
-		{
-			//res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("users/' + req.params.uid+'/edit");});</script>' + templates['footer']);
 			res.send(templates['header'] + create_route('users/'+req.params.uid+'/edit','accountedit') + templates['footer']);
-		}
 		else
 			return res.redirect('/403');	
 	});

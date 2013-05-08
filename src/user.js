@@ -239,6 +239,10 @@ var	config = require('../config.js'),
 
 				RDB.db.hmset('user:'+uid, {
 					'username' : username,
+					'fullname': '',
+					'location':'',
+					'birthday':'',
+					'website':'',
 					'email' : email,
 					'joindate' : new Date().getTime(),
 					'password' : hash,
