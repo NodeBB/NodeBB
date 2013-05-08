@@ -21,6 +21,15 @@
 
 body {
 	background: #fdfdfd;
+	-webkit-transition: margin-bottom 250ms ease;
+	-moz-transition: margin-bottom 250ms ease;
+	-ms-transition: margin-bottom 250ms ease;
+	-o-transition: margin-bottom 250ms ease;
+	transition: margin-bottom 250ms ease;
+
+	&.composing {
+		margin-bottom: 350px;
+	}
 }
 
 .none {
@@ -72,6 +81,7 @@ footer.footer {
 	left: 0px;
 	bottom: 0px;
 	background: white;
+	z-index: 1500;
 
 	input {
 		width: 100%;
