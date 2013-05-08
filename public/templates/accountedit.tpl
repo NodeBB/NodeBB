@@ -57,6 +57,8 @@
                 </div>
               </div>
              
+             <input type="hidden" id="inputUID" value="{user.uid}">
+             
               <div class="form-actions">
                 <a id="submitBtn" href="" class="btn btn-primary">Save changes</a>
                 <a href="/users/{user.username}" class="btn">Cancel</a>
@@ -76,6 +78,7 @@
         $('#submitBtn').on('click',function(){
             
             var userData = {
+                uid:$('#inputUID').val(),
                 email:$('#inputEmail').val(),
                 fullname:$('#inputFullname').val(),
                 website:$('#inputWebsite').val(),
