@@ -71,14 +71,18 @@ var socket,
 
 		if (params.timeout) {
 			setTimeout(function() {
-				jQuery(div).fadeOut(1000);
+				jQuery(div).fadeOut(1000, function() {
+					this.remove();
+				});
 			}, params.timeout)
 		}
 
 		if (params.clickfn) {
 			div.onclick = function() {
 				params.clickfn();
-				jQuery(div).fadeOut(500);
+				jQuery(div).fadeOut(500, function() {
+					this.remove();
+				});
 			}
 		}
 	}
