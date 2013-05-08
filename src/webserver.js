@@ -332,6 +332,19 @@ passport.deserializeUser(function(uid, done) {
 		});
 	});
 
+	app.post('/edituser', function(req, res){
+		
+		if(!req.user) {
+			res.redirect('/403');
+			return;
+		}
+		
+		user.updateUserFields(req.user.uid, req.body);
+		
+		res.redirect('/');
+	});
+	
+
 	app.get('/baristest', function(req, res) {
 		/*user.getUserField(req.user.uid, 'email', function(data) {
 			console.log(" I GOT FIELD " +data);
@@ -353,24 +366,17 @@ passport.deserializeUser(function(uid, done) {
 	//to baris, move this into account.js or sth later - just moved this out here for you to utilize client side tpl parsing
 	//I didn't want to change too much so you should probably sort out the params etc
 	function get_account_fn(req, res, callback) {
-
- 		if (req.user === undefined) 
- 			return res.redirect('/403');
-	
-		var requestedUserId = req.user.uid;
 		
 		var username = req.params.id;
 		
 		user.get_uid_by_username(username, function(uid) {
-		
-			if(uid != req.user.uid)
-				requestedUserId = uid;
 	
-			user.getUserData(requestedUserId, function(data) {
+			user.getUserData(uid, function(data) {
 				if(data)
 				{
 					data.joindate = utils.relativeTime(data.joindate);
-					data.uid = requestedUserId;
+					data.age = new Date().getFullYear() - new Date(data.birthday).getFullYear();;
+					data.uid = uid;
 					callback({user:data});
 				}
 				else
@@ -414,9 +420,7 @@ passport.deserializeUser(function(uid, done) {
 	app.get('/users/:uid/edit', function(req, res){
 		
 		if(req.user && req.params.uid)
-		{
-			res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("users/' + req.params.uid+'/edit");});</script>' + templates['footer']);
-		}
+			res.send(templates['header'] + create_route('users/'+req.params.uid+'/edit','accountedit') + templates['footer']);
 		else
 			return res.redirect('/403');	
 	});
@@ -424,7 +428,6 @@ passport.deserializeUser(function(uid, done) {
 	
 	app.get('/users/:username*', handleUserProfile);
 	
-
 	function handleUserProfile(req, res) {
 		
 		if(!req.params.username) {
@@ -433,13 +436,18 @@ passport.deserializeUser(function(uid, done) {
 		}
 
 		user.get_uid_by_username(req.params.username, function(uid) {
-
+			
+			if(!uid) {
+				res.redirect('/403');
+				return;
+			}
+			
 			user.getUserData(uid, function(data) {
 				if(data) {
-					res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("users/'+data.username + '");});</script>' + templates['footer']);
+					res.send(templates['header'] + create_route('users/'+data.username, 'account')  + templates['footer']);
 				}
 				else {
-					res.send("User doesn't exist! /users/"+req.params.username);
+					res.redirect('/403');
 				}			
 			});
 		});

@@ -9,10 +9,9 @@
 	<!-- BEGIN user -->
 	
 	<div class="account-username-box">
-		<span class="account-username">{user.username}</span>
+		<span class="account-username"><a href="/users/{user.username}">{user.username}</a></span>
 		<span class="pull-right"><a href="/users/{user.username}/edit">edit</a></span>
 	</div>
-	<br/>		
 		
 	<div class="account-picture-block">
 		<img src="{user.picture}?s=128" />
@@ -23,22 +22,34 @@
 		<span>{user.email}</span>
 		<br/>
 		
+		<span class="account-bio-label">full name</span>
+        <span>{user.fullname}</span>
+        <br/>
+        
+        <span class="account-bio-label">website</span>
+        <span><a href="{user.website}">{user.website}</a></span>
+        <br/>
+		
+		<span class="account-bio-label">location</span>
+        <span>{user.location}</span>
+        <br/>
+        
+        <span class="account-bio-label">age</span>
+        <span>{user.age}</span>
+        <br/>
+		
 		<span class="account-bio-label">member for</span>
 		<span>{user.joindate}</span>
 		<br/>
 
 		<span class="account-bio-label">reputation</span>
-		<span>{user.reputation}</span>
+		<span id='reputation'>{user.reputation}</span>
 		<br/>		
 		
 		<span class="account-bio-label">posts</span>
-		<span>{user.postcount}</span>
+		<span id='postcount'>{user.postcount}</span>
 	</div>
-	
-	
-    <label for="email">Email Address</label><input type="text" placeholder="Enter Email Address" id="email" /><br />
-    <button class="btn btn-primary" id="reset" type="submit">Reset Password</button>
-
+	 
 
 	<!-- END user -->
 
@@ -47,6 +58,20 @@
 </div>
 <script type="text/javascript">
 (function() {
-    // ...
+    
+    function addCommas(text) {
+        return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+    }
+    
+    $(document).ready(function() {
+        var rep = $('#reputation');
+        rep.html(addCommas(rep.html()));
+        
+        var postcount = $('#postcount');
+        postcount.html(addCommas(postcount.html()));
+        
+    });
+    
+
 }());
 </script>

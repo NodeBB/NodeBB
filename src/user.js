@@ -69,6 +69,13 @@ var	config = require('../config.js'),
 		});
 	}
 
+	User.updateUserFields = function(uid, data) {
+		console.log(data);
+		for(var key in data) {
+			User.setUserField(uid, key, data[key]);
+		}
+	}
+
 	User.setUserField = function(uid, field, value) {
 		RDB.db.hset('user:'+uid,	field, value);				
 	}
@@ -239,6 +246,10 @@ var	config = require('../config.js'),
 
 				RDB.db.hmset('user:'+uid, {
 					'username' : username,
+					'fullname': '',
+					'location':'',
+					'birthday':'',
+					'website':'',
 					'email' : email,
 					'joindate' : new Date().getTime(),
 					'password' : hash,
