@@ -431,8 +431,15 @@ var	config = require('../config.js'),
 		// Start, replace, or extend a session
 		RDB.get('sess:' + sessionID, function(err, session) {
 			RDB.handle(err);
-			RDB.set('sess:' + sessionID + ':uid', uid, 60*60*24*14);	// Login valid for two weeks
-			RDB.set('uid:' + uid + ':session', sessionID, 60*60*24*14);
+
+			var expiry = 60*60*24*14, // Login valid for two weeks
+				sess_key = 'sess:' + sessionID + ':uid',
+				uid_key = 'uid:' + uid + ':session';
+
+			RDB.set(sess_key, uid);
+			RDB.expire(sess_key, expiry);
+			RDB.set(uid_key, sessionID);
+			RDB.expire(uid_key, expiry);
 		});
 	}
 

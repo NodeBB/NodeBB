@@ -238,6 +238,7 @@ var	RDB = require('./redis.js'),
 	Posts.hasFavourited = function(pid, uid, callback) {
 		RDB.sismember('pid:' + pid + ':users_favourited', uid, function(err, hasFavourited) {
 			RDB.handle(err);
+			
 			callback(hasFavourited);
 		});
 	}
@@ -248,8 +249,7 @@ var	RDB = require('./redis.js'),
 
 		for (var i=0, ii=pids.length; i<ii; i++) {
 			(function(post_id) {
-				Posts.hasFavourited(post_id, uid, function(err, hasFavourited) {
-					RDB.handle(err);
+				Posts.hasFavourited(post_id, uid, function(hasFavourited) {
 			
 					data[post_id] = hasFavourited;
 					loaded ++;
