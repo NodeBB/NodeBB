@@ -69,6 +69,13 @@ var	config = require('../config.js'),
 		});
 	}
 
+	User.updateUserFields = function(uid, data) {
+		
+		for(var key in data) {
+			User.setUserField(uid, key, data[key]);
+		}
+	}
+
 	User.setUserField = function(uid, field, value) {
 		RDB.db.hset('user:'+uid,	field, value);				
 	}

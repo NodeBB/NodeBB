@@ -203,6 +203,16 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 		socket.on('api:topic.unpin', function(data) {
 			modules.topics.unpin(data.tid, uid, socket);
 		});
+
+		socket.on('api:categories.get', function() {
+			modules.categories.get(function(categories) {
+				socket.emit('api:categories.get', categories);
+			});
+		});
+
+		socket.on('api:topic.move', function(data) {
+			modules.topics.move(data.tid, data.cid, socket);
+		});
 	});
 	
 }(SocketIO));

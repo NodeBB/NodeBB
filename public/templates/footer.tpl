@@ -76,6 +76,15 @@
 				right_menu.appendChild(loginEl);
 			}
 		});
+
+
+		// Post window events
+		var	postWindowEl = document.getElementById('post_window'),
+			discardEl = document.getElementById('discard-post');
+		discardEl.addEventListener('click', function() {
+			$(postWindowEl).slideToggle(250);
+			$(document.body).removeClass('composing');
+		}, false);
 	}());
 	</script>
 	<!-- END Forum Info -->

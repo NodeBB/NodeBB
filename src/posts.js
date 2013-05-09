@@ -34,7 +34,7 @@ var	RDB = require('./redis.js'),
 					'user_rep' : user_data[uid].reputation || 0,
 					'gravatar' : user_data[uid].picture,
 					'fav_star_class' : vote_data[pid] ? 'icon-star' : 'icon-star-empty',
-					'display_moderator_tools' : uid == current_user ? 'show' : 'hide'
+					'display_moderator_tools' : uid == current_user ? 'show' : 'none'
 				});
 			}
 

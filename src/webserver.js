@@ -232,7 +232,7 @@ passport.deserializeUser(function(uid, done) {
 					else if (String(req.params.section).toLowerCase() === 'edit') {
 						get_account_fn(req, res, function(userData) {
 							res.send(JSON.stringify(userData));
-						});			
+						});
 					} else {
 						get_account_fn(req, res, function(userData) {
 							res.send(JSON.stringify(userData));
@@ -336,6 +336,20 @@ passport.deserializeUser(function(uid, done) {
 		});
 	});
 
+	app.post('/edituser', function(req, res){
+
+		if(!req.user)
+			return res.redirect('/403');
+		
+		if(req.user.uid != req.body.uid)
+			return res.redirect('/');
+		
+		user.updateUserFields(req.user.uid, req.body);
+		
+		res.redirect('/');
+	});
+	
+
 	app.get('/baristest', function(req, res) {
 		/*user.getUserField(req.user.uid, 'email', function(data) {
 			console.log(" I GOT FIELD " +data);
@@ -366,8 +380,14 @@ passport.deserializeUser(function(uid, done) {
 				if(data)
 				{
 					data.joindate = utils.relativeTime(data.joindate);
+					data.age = new Date().getFullYear() - new Date(data.birthday).getFullYear();;
 					data.uid = uid;
-					callback({user:data});
+					
+					callback({
+						yourid: (req.user)?req.user.uid : 0,
+						theirid: uid,
+						user: data
+					});
 				}
 				else
 					callback({user:{}});
@@ -409,10 +429,16 @@ passport.deserializeUser(function(uid, done) {
 
 	app.get('/users/:uid/edit', function(req, res){
 		
-		if(req.user && req.params.uid)
-			res.send(templates['header'] + create_route('users/'+req.params.uid+'/edit','accountedit') + templates['footer']);
-		else
-			return res.redirect('/403');	
+		if(!req.user)
+			return res.redirect('/403');
+		
+		user.getUserField(req.user.uid, 'username', function(username) {
+		
+			if(req.params.uid && username === req.params.uid)
+				res.send(templates['header'] + create_route('users/'+req.params.uid+'/edit','accountedit') + templates['footer']);
+			else
+				return res.redirect('/403');
+		});	
 	});
 
 	

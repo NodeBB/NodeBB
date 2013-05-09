@@ -64,7 +64,7 @@
 					</div>
 					<div class="btn-group" style="float: right; margin-right: -12px">
 						<span id="submit_post_btn" class="btn" onclick="app.post_topic()"><i class="icon-ok"></i> Submit</span>
-						<span class="btn" onclick="jQuery(post_window).slideToggle(250);"><i class="icon-remove"></i> Discard</span>
+						<span class="btn" id="discard-post"><i class="icon-remove"></i> Discard</span>
 					</div>
 				</div>
 

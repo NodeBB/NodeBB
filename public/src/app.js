@@ -100,9 +100,10 @@ var socket,
 		reply_title = reply_title || document.getElementById('reply_title');
 		post_content = post_content || document.getElementById('post_content');
 
-
 		post_window = post_window || document.getElementById('post_window');
-		jQuery(post_window).slideToggle(250);
+
+		jQuery(post_window).slideDown(250);
+		$(document.body).addClass('composing');
 
 		if (post_mode == 'topic') {
 			post_title.style.display = "block";
@@ -149,7 +150,7 @@ var socket,
 			'topic_id' : topic_id,
 			'content' : content 
 		});
-		jQuery(post_window).slideToggle(250);
+		jQuery(post_window).slideDown(250);
 
 	};
 	app.post_topic = function(category_id) {
@@ -175,6 +176,7 @@ var socket,
 		
 		jQuery('#post_title, #post_content').val('');
 		jQuery(post_window).slideToggle(250);
+		$(document.body).addClass('composing');
 	};
 
 
