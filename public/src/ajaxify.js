@@ -43,8 +43,9 @@ var ajaxify = {};
 		if (templates[tpl_url]) {
 			window.history.pushState({}, url, "/" + url);
 
-			jQuery('#footer').fadeOut(100);
+			jQuery('#footer').fadeOut(100).removeAttr('id');
 			jQuery('#content').fadeOut(100);
+			jQuery('<div id="content"></div>').insertBefore('#footer').hide();
 
 			load_template(function() {
 				exec_body_scripts(content);
