@@ -21,9 +21,9 @@
 				<img src="http://www.gravatar.com/avatar/91050ce0072697b53380c6a03a1bc12a?s=60" class="img-polaroid" />
 			</div>
 			<div>
-				<h3><span class="badge badge-important">3</span> {topics.title} <small>24<i class="icon-star"></i></small></h3> 
+				<h3><span class="badge {topics.badgeclass}">{topics.post_count}</span> {topics.title} <small>24<i class="icon-star"></i></small></h3> 
 				<p> Posted {topics.relativeTime} ago by 
-					<span class="username">{topics.username}</span>. {topics.post_count} posts.</p>
+					<span class="username">{topics.username}</span>.</p>
 			</div>
 		</div>
 	</div>

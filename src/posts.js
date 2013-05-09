@@ -2,6 +2,7 @@ var	RDB = require('./redis.js'),
 	utils = require('./utils.js'),
 	marked = require('marked'),
 	user = require('./user.js'),
+	topics = require('./topics.js'),
 	config = require('../config.js');
 
 (function(Posts) {
@@ -12,6 +13,7 @@ var	RDB = require('./redis.js'),
 
 		var post_data, user_data, thread_data, vote_data, viewer_data;
 
+		topics.markAsRead(tid, current_user);
 
 		//compile thread after all data is asynchronously called
 		function generateThread() {
@@ -122,6 +124,8 @@ var	RDB = require('./redis.js'),
 		Posts.create(uid, tid, content, function(pid) {
 			if (pid > 0) {
 				RDB.rpush('tid:' + tid + ':posts', pid);
+
+				RDB.del('tid:' + tid + ':read_by_uid'); // let everybody know there is an unread post
 
 				socket.emit('event:alert', {
 					title: 'Reply Successful',

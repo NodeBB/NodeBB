@@ -12,8 +12,7 @@ var	RDB = require('./redis.js'),
 	}
 
 
-
-	Topics.get = function(callback, category_id, start, end) {
+	Topics.get = function(callback, category_id, current_user, start, end) {
 		if (start == null) start = 0;
 		if (end == null) end = start + 10;
 
@@ -70,15 +69,18 @@ var	RDB = require('./redis.js'),
 					locked = replies[6];
 					deleted = replies[7];
 					pinned = replies[8];
-					
-					user.get_usernames_by_uids(uid, function(userNames) {
-						
-						for (var i=0, ii=title.length; i<ii; i++) {
-							
+
+					var usernames,
+						has_read;
+
+					function generate_topic() {
+						if (!usernames || !has_read) return;
+
+						for (var i=0, ii=title.length; i<ii; i++) {			
 							topics.push({
 								'title' : title[i],
 								'uid' : uid[i],
-								'username': userNames[i],
+								'username': usernames[i],
 								'timestamp' : timestamp[i],
 								'relativeTime': utils.relativeTime(timestamp[i]),
 								'slug' : slug[i],
@@ -86,7 +88,8 @@ var	RDB = require('./redis.js'),
 								'lock-icon': locked[i] === '1' ? 'icon-lock' : 'none',
 								'deleted': deleted[i],
 								'pinned': parseInt(pinned[i] || 0),	// For sorting purposes
-								'pin-icon': pinned[i] === '1' ? 'icon-pushpin' : 'none'
+								'pin-icon': pinned[i] === '1' ? 'icon-pushpin' : 'none',
+								'badgeclass' : (has_read[i] && current_user !=0) ? '' : 'badge-important'
 							});
 						}
 
@@ -101,8 +104,17 @@ var	RDB = require('./redis.js'),
 							'category_id': category_id || 0,
 							'topics': topics
 						});
+					}
 					
+					user.get_usernames_by_uids(uid, function(userNames) {
+						usernames = userNames;
+						generate_topic();
 					});	
+
+					Topics.hasReadTopics(tids, current_user, function(hasRead) {
+						has_read = hasRead;
+						generate_topic();
+					});
 				}
 				else {
 					callback({
@@ -116,6 +128,23 @@ var	RDB = require('./redis.js'),
 
 
 			});
+		});
+	}
+
+
+	Topics.markAsRead = function(tid, uid) {
+		RDB.sadd('tid:' + tid + ':read_by_uid', uid);
+	}
+
+	Topics.hasReadTopics = function(tids, uid, callback) {
+		var batch = RDB.multi();
+
+		for (var i=0, ii=tids.length; i<ii; i++) {
+			batch.sismember('tid:' + tids[i] + ':read_by_uid', uid);	
+		}
+		
+		batch.exec(function(err, hasRead) {
+			callback(hasRead);
 		});
 	}
 

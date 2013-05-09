@@ -131,7 +131,7 @@ var express = require('express'),
 			case 'category' :
 					global.modules.topics.get(function(data) {
 						res.send(JSON.stringify(data));
-					}, req.params.id);
+					}, req.params.id, (req.user) ? req.user.uid : 0);
 				break;
 			case 'latest' :
 					global.modules.topics.get(function(data) {
