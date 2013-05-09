@@ -66,7 +66,6 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
    		});
 
 		socket.on('api:get_all_rooms', function(data) {
-			console.log('recieve');
 			socket.emit('api:get_all_rooms', io.sockets.manager.rooms);
 		})
 
@@ -101,6 +100,8 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 					anonymous: anonymous
 				});
 			});
+
+			if (data.enter != 'admin') io.sockets.in('admin').emit('api:get_all_rooms', io.sockets.manager.rooms);
 			
 		});
 

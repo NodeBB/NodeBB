@@ -140,7 +140,7 @@ var	RDB = require('./redis.js'),
 			// Global Topics
 			if (uid == null) uid = 0;
 			if (uid !== null) {
-				RDB.lpush('topics:tid', tid);	
+				RDB.db.sadd('topics:tid', tid);	
 			} else {
 				// need to add some unique key sent by client so we can update this with the real uid later
 				RDB.lpush('topics:queued:tid', tid);

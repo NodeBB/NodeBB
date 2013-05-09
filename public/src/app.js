@@ -182,6 +182,7 @@ var socket,
 
 	app.current_room = null; 
 	app.enter_room = function(room) {
+		console.log(room)
 		if (app.current_room === room) return;
 
 		socket.emit('event:enter_room', {
