@@ -25,6 +25,12 @@ var socket,
 			socket.on('event:consolelog', function(data) {
 				console.log(data);
 			});
+
+			socket.on('api:posts.getRawPost', function(data) {
+				var contentEl = document.getElementById('post_content');
+
+				contentEl.value = data.post;
+			});
 		},
 		async: false
 
@@ -94,7 +100,7 @@ var socket,
 		post_content = null;
 
 
-	app.open_post_window = function(post_mode, id, title) {
+	app.open_post_window = function(post_mode, id, title, pid) {
 		submit_post_btn = submit_post_btn || document.getElementById('submit_post_btn');
 		post_title = post_title || document.getElementById('post_title');
 		reply_title = reply_title || document.getElementById('reply_title');
@@ -112,6 +118,16 @@ var socket,
 			submit_post_btn.onclick = function() {
 				app.post_topic(id);
 			}
+		} else if (post_mode === 'edit') {
+			reply_title.innerHTML = 'You are editing "' + title + '"';
+			socket.emit('api:posts.getRawPost', { pid: pid });
+
+			post_title.style.display = "none";
+			reply_title.style.display = "block";
+			post_content.focus();
+			submit_post_btn.onclick = function() {
+				app.edit_post(pid);
+			} 
 		} else {
 			if (post_mode == 'reply') {
 				reply_title.innerHTML = 'You are replying to "' + title + '"';
@@ -133,7 +149,7 @@ var socket,
 
 
 	app.post_reply = function(topic_id) {
-		var	content = document.getElementById('post_content').value;
+		var	content = document.getElementById('post_content');
 
 		if (content.length < 5) {
 			app.alert({
@@ -148,14 +164,15 @@ var socket,
 
 		socket.emit('api:posts.reply', {
 			'topic_id' : topic_id,
-			'content' : content 
+			'content' : content.value
 		});
-		jQuery(post_window).slideDown(250);
-
+		jQuery(post_window).slideUp(250);
+		$(document.body).removeClass('composing');
+		content.value = '';
 	};
 	app.post_topic = function(category_id) {
-		var title = document.getElementById('post_title').value,
-			content = document.getElementById('post_content').value;
+		var title = document.getElementById('post_title'),
+			content = document.getElementById('post_content');
 
 		if (title.length < 5 || content.length < 5) {
 			app.alert({
@@ -169,15 +186,25 @@ var socket,
 		}
 
 		socket.emit('api:topics.post', {
-			'title' : title,
-			'content' : content,
+			'title' : title.value,
+			'content' : content.value,
 			'category_id' : category_id
 		});
 		
-		jQuery('#post_title, #post_content').val('');
-		jQuery(post_window).slideToggle(250);
-		$(document.body).addClass('composing');
+		jQuery(post_window).slideUp(250);
+		$(document.body).removeClass('composing');
+		title.value = '';
+		content.value = '';
 	};
+
+	app.edit_post = function(pid) {
+		var	content = document.getElementById('post_content');
+		socket.emit('api:posts.edit', { pid: pid, content: content.value });
+
+		jQuery(post_window).slideUp(250);
+		$(document.body).removeClass('composing');
+		content.value = '';
+	}
 
 
 	app.current_room = null; 

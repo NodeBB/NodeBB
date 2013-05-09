@@ -214,6 +214,14 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 		socket.on('api:topic.move', function(data) {
 			modules.topics.move(data.tid, data.cid, socket);
 		});
+
+		socket.on('api:posts.getRawPost', function(data) {
+			modules.posts.getRawContent(data.pid, socket);
+		});
+
+		socket.on('api:posts.edit', function(data) {
+			modules.posts.edit(data.pid, data.content);
+		});
 	});
 	
 }(SocketIO));

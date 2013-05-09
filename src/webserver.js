@@ -314,6 +314,12 @@ var express = require('express'),
 		});
 	}
 
+	app.get('/test', function(req, res) {
+		global.modules.posts.getRawContent(11, function(post) {
+			res.send(JSON.stringify(post));
+		});
+	});
+
 // TODO move user related logic into another file ^^^^^^^^^^^^^^^^^^^^^^^
 }(WebServer));
 

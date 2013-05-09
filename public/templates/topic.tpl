@@ -72,6 +72,8 @@
 	(function() {
 		var	expose_tools = '{expose_tools}',
 			tid = '{topic_id}',
+			postListEl = document.getElementById('post-container'),
+			editBtns = document.querySelectorAll('#post-container .post-buttons .edit, #post-container .post-buttons .edit i'),
 			thread_state = {
 				locked: '{locked}',
 				deleted: '{deleted}',
@@ -208,8 +210,17 @@
 			}
 		});
 
+		$('.post-container').delegate('.edit', 'click', function(e) {
+			var pid = ($(this).attr('id') || $(this.parentNode).attr('id')).split('_')[1];
+			app.open_post_window('edit', "{topic_id}", "{topic_name}", pid);
+		});
 
-		ajaxify.register_events(['event:rep_up', 'event:rep_down', 'event:new_post', 'api:get_users_in_room', 'event:topic_deleted']);
+		ajaxify.register_events([
+			'event:rep_up', 'event:rep_down', 'event:new_post', 'api:get_users_in_room',
+			'event:topic_deleted', 'event:topic_restored', 'event:topic:locked',
+			'event:topic_unlocked', 'event:topic_pinned', 'event:topic_unpinned',
+			'event:topic_moved', 'event:post_edited'
+		]);
 		socket.on('api:get_users_in_room', function(users) {
 			var anonymous = users.anonymous,
 				usernames = users.usernames,
@@ -287,6 +298,14 @@
 
 		socket.on('event:topic_moved', function(data) {
 			if (data && data.tid > 0) ajaxify.go('topic/' + data.tid);
+		});
+
+		socket.on('event:post_edited', function(data) {
+			var editedPostEl = document.getElementById('content_' + data.pid);
+			$(editedPostEl).fadeOut(250, function() {
+				this.innerHTML = data.content;
+				$(this).fadeIn(250);
+			});
 		});
 
 		function adjust_rep(value, pid, uid) {

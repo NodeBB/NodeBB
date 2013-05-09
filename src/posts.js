@@ -68,12 +68,10 @@ var	RDB = require('./redis.js'),
 				pid.push(pids[i]);
 			}
 
-
 			Posts.getFavouritesByPostIDs(pids, current_user, function(fav_data) {
 				vote_data = fav_data;
 				generateThread();
 			});
-
 
 			RDB.multi()
 				.mget(content)
@@ -182,6 +180,7 @@ var	RDB = require('./redis.js'),
 					RDB.set('pid:' + pid + ':uid', uid);
 					RDB.set('pid:' + pid + ':timestamp', new Date().getTime());
 					RDB.set('pid:' + pid + ':rep', 0);
+					RDB.set('pid:' + pid + ':tid', tid);
 					
 					RDB.incr('tid:' + tid + ':postcount');
 					
@@ -189,7 +188,7 @@ var	RDB = require('./redis.js'),
 					RDB.lpush('uid:' + uid + ':posts', pid);
 					
 					user.incrementUserFieldBy(uid, 'postcount', 1);
-					
+
 					if (callback) 
 						callback(pid);
 				});
@@ -261,5 +260,18 @@ var	RDB = require('./redis.js'),
 				});
 			}(pids[i]))
 		}
+	}
+
+	Posts.getRawContent = function(pid, socket) {
+		RDB.get('pid:' + pid + ':content', function(err, raw) {
+			socket.emit('api:posts.getRawPost', { post: raw });
+		});
+	}
+
+	Posts.edit = function(pid, content) {
+		RDB.get('pid:' + pid + ':tid', function(err, tid) {
+			RDB.set('pid:' + pid + ':content', content);
+			io.sockets.in('topic_' + tid).emit('event:post_edited', { pid: pid, content: marked(content || '') });
+		});
 	}
 }(exports));
