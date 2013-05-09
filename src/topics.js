@@ -95,7 +95,12 @@ var	RDB = require('./redis.js'),
 
 						// Float pinned topics to the top
 						topics = topics.sort(function(a, b) {
-							return b.pinned - a.pinned;
+							if (a.pinned !== b.pinned) return b.pinned - a.pinned;
+							else {
+								console.log('here');
+								// Sort by datetime descending
+								return b.timestamp - a.timestamp;
+							}
 						});
 
 						callback({
