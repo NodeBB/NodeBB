@@ -20,7 +20,7 @@ var	RDB = require('./redis.js'),
 		//build a proper wrapper for this and move it into above function later
 		var range_var = (category_id) ? 'categories:' + category_id + ':tid'  : 'topics:tid';
 
-		RDB.db.smembers(range_var, function(err, tids) {
+		RDB.smembers(range_var, function(err, tids) {
 			var title = [],
 				uid = [],
 				timestamp = [],
@@ -135,12 +135,13 @@ var	RDB = require('./redis.js'),
 			return; // for now, until anon code is written.
 		}
 		
-		RDB.incr('global:next_topic_id', function(tid) {
+		RDB.incr('global:next_topic_id', function(err, tid) {
+			RDB.handle(err);
 
 			// Global Topics
 			if (uid == null) uid = 0;
 			if (uid !== null) {
-				RDB.db.sadd('topics:tid', tid);	
+				RDB.sadd('topics:tid', tid);	
 			} else {
 				// need to add some unique key sent by client so we can update this with the real uid later
 				RDB.lpush('topics:queued:tid', tid);
@@ -175,7 +176,7 @@ var	RDB = require('./redis.js'),
 
 
 			// in future it may be possible to add topics to several categories, so leaving the door open here.
-			RDB.db.sadd('categories:' + category_id + ':tid', tid);
+			RDB.sadd('categories:' + category_id + ':tid', tid);
 			RDB.set('tid:' + tid + ':cid', category_id);
 			categories.get_category([category_id], function(data) {
 				RDB.set('tid:' + tid + ':category_name', data.categories[0].name);
@@ -284,8 +285,10 @@ var	RDB = require('./redis.js'),
 	}
 
 	Topics.move = function(tid, cid, socket) {
-		RDB.get('tid:' + tid + ':cid', function(oldCid) {
-			RDB.db.smove('categories:' + oldCid + ':tid', 'categories:' + cid + ':tid', tid, function(err, result) {
+		RDB.get('tid:' + tid + ':cid', function(err, oldCid) {
+			RDB.handle(err);
+
+			RDB.smove('categories:' + oldCid + ':tid', 'categories:' + cid + ':tid', tid, function(err, result) {
 				if (!err && result === 1) {
 					RDB.set('tid:' + tid + ':cid', cid);
 					categories.get_category([cid], function(data) {

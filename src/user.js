@@ -10,7 +10,7 @@ var	config = require('../config.js'),
 
 
 	User.getUserField = function(uid, field, callback) {
-		RDB.db.hget('user:'+uid, field, function(err, data){
+		RDB.hget('user:'+uid, field, function(err, data){
 			if(err === null)
 				callback(data);
 			else
@@ -19,7 +19,7 @@ var	config = require('../config.js'),
 	}
 	
 	User.getUserFields = function(uid, fields, callback) {
-		RDB.db.hmget('user:'+uid, fields, function(err, data){
+		RDB.hmget('user:'+uid, fields, function(err, data){
 			if(err === null) {
 				var returnData = {};
 				
@@ -57,7 +57,7 @@ var	config = require('../config.js'),
 
 	User.getUserData = function(uid, callback) {
 
-		RDB.db.hgetall('user:'+uid, function(err, data){
+		RDB.hgetall('user:'+uid, function(err, data){
 			if(err === null)
 			{
 				if(data && data['password'])
@@ -77,21 +77,21 @@ var	config = require('../config.js'),
 	}
 
 	User.setUserField = function(uid, field, value) {
-		RDB.db.hset('user:'+uid,	field, value);				
+		RDB.hset('user:'+uid,	field, value);				
 	}
 
 	User.incrementUserFieldBy = function(uid, field, value) {
-		RDB.db.hincrby('user:'+uid, field, value);
+		RDB.hincrby('user:'+uid, field, value);
 	}
 
 	User.getUserList = function(callback){
 		var data = [];
 		
-		RDB.db.keys('user:*', function(err, userkeys){
+		RDB.keys('user:*', function(err, userkeys){
 			
 			for(var i=0,ii=userkeys.length; i<ii; ++i) {
 				
-				RDB.db.hgetall(userkeys[i], function(err, userdata) {
+				RDB.hgetall(userkeys[i], function(err, userdata) {
 					
 					if(userdata && userdata.password)
 						delete userdata.password;
@@ -114,7 +114,9 @@ var	config = require('../config.js'),
 				message: 'invalid-user'
 			});
 		} else {
-			RDB.get('username:' + username + ':uid', function(uid) {
+			RDB.get('username:' + username + ':uid', function(err, uid) {
+				RDB.handle(err);
+
 				if (uid == null) {
 					return next({
 						status: 'error',
@@ -238,13 +240,14 @@ var	config = require('../config.js'),
 		// TODO : check if username email is unique!! -baris
 	
 
-		RDB.incr('global:next_user_id', function(uid) {
+		RDB.incr('global:next_user_id', function(err, uid) {
+			RDB.handle(err);
 			
 			console.log("Registering uid : " + uid);
 
 			User.hashPassword(password, function(hash) {
 
-				RDB.db.hmset('user:'+uid, {
+				RDB.hmset('user:'+uid, {
 					'username' : username,
 					'fullname': '',
 					'location':'',
@@ -264,7 +267,9 @@ var	config = require('../config.js'),
 				if(email)
 					User.sendConfirmationEmail(email);
 			
-				RDB.incr('usercount', function(count) {
+				RDB.incr('usercount', function(err, count) {
+					RDB.handle(err);
+			
 					io.sockets.emit('user.count', {count: count});
 				});
 
@@ -311,8 +316,14 @@ var	config = require('../config.js'),
 			confirm_email_plaintext = global.templates['emails/email_confirm_plaintext'].parse({ 'CONFIRM_LINK': confirm_link });
 
 		// Email confirmation code
-		RDB.set('email:' + email + ':confirm', confirm_code, 60*60*2);
-		RDB.set('confirm:' + confirm_code + ':email', email, 60*60*2);	// Expire after 2 hours
+		var expiry_time = 60*60*2,	// Expire after 2 hours
+			email_key = 'email:' + email + ':confirm',
+			confirm_key = 'confirm:' + confirm_code + ':email';
+
+		RDB.set(email_key, confirm_code);
+		RDB.expire(email_key, expiry_time);
+		RDB.set(confirm_key, email);
+		RDB.expire(confirm_key, expiry_time);
 
 			// Send intro email w/ confirm code
 		var message = emailjs.message.create({
@@ -345,19 +356,24 @@ var	config = require('../config.js'),
 	};
 	
 	User.count = function(socket) {
-		RDB.get('usercount', function(count) {
+		RDB.get('usercount', function(err, count) {
+			RDB.handle(err);
 			socket.emit('user.count', {count: (count === null) ? 0 : count});
 		});
 	};
 	
 	User.latest = function(socket) {
-		RDB.lrange('userlist', 0, 0, function(username) {
+		RDB.lrange('userlist', 0, 0, function(err, username) {
+			RDB.handle(err);
 			socket.emit('user.latest', {username: username});
 		});	
 	}
 
 	User.get_uid_by_username = function(username, callback) {
-		RDB.get('username:' + username + ':uid', callback);
+		RDB.get('username:' + username + ':uid', function(err, data) {
+			RDB.handle(err);
+			callback(data);
+		});
 	};
 
 	User.get_usernames_by_uids = function(uids, callback) {
@@ -377,34 +393,44 @@ var	config = require('../config.js'),
 	};
 
 	User.get_uid_by_email = function(email, callback) {
-		RDB.get('email:' + email + ':uid', callback)
+		RDB.get('email:' + email + ':uid', function(err, data) {
+			RDB.handle(err);
+			callback(data);
+		});
 	};
 
 	User.get_uid_by_session = function(session, callback) {
-		RDB.get('sess:' + session + ':uid', callback);
+		RDB.get('sess:' + session + ':uid', function(err, data) {
+			RDB.handle(err);
+			callback(data);
+		});
 	};
 
 	User.get_uid_by_twitter_id = function(twid, callback) {
-		RDB.get('twid:' + twid + ':uid', function(uid) {
+		RDB.get('twid:' + twid + ':uid', function(err, uid) {
+			RDB.handle(err);			
 			callback(uid);
 		});
 	}
 
 	User.get_uid_by_google_id = function(gplusid, callback) {
-		RDB.get('gplusid:' + gplusid + ':uid', function(uid) {
+		RDB.get('gplusid:' + gplusid + ':uid', function(err, uid) {
+			RDB.handle(err);
 			callback(uid);
 		});	
 	}
 
 	User.get_uid_by_fbid = function(fbid, callback) {
-		RDB.get('fbid:' + fbid + ':uid', function(uid) {
+		RDB.get('fbid:' + fbid + ':uid', function(err, uid) {
+			RDB.handle(err);
 			callback(uid);
 		});	
 	}
 
 	User.session_ping = function(sessionID, uid) {
 		// Start, replace, or extend a session
-		RDB.get('sess:' + sessionID, function(session) {
+		RDB.get('sess:' + sessionID, function(err, session) {
+			RDB.handle(err);
 			RDB.set('sess:' + sessionID + ':uid', uid, 60*60*24*14);	// Login valid for two weeks
 			RDB.set('uid:' + uid + ':session', sessionID, 60*60*24*14);
 		});
@@ -414,9 +440,13 @@ var	config = require('../config.js'),
 		validate: function(socket, code, callback) {
 			if (typeof callback !== 'function') callback = undefined;
 
-			RDB.get('reset:' + code + ':uid', function(uid) {
+			RDB.get('reset:' + code + ':uid', function(err, uid) {
+				RDB.handle(err);
+
 				if (uid !== null) {
-					RDB.get('reset:' + code + ':expiry', function(expiry) {
+					RDB.get('reset:' + code + ':expiry', function(err, expiry) {
+						RDB.handle(err);
+
 						if (expiry >= +new Date()/1000|0) {
 							if (!callback) socket.emit('user:reset.valid', { valid: true });
 							else callback(true);
@@ -486,7 +516,8 @@ var	config = require('../config.js'),
 		commit: function(socket, code, password) {
 			this.validate(code, function(validated) {
 				if (validated) {
-					RDB.get('reset:' + code + ':uid', function(uid) {
+					RDB.get('reset:' + code + ':uid', function(err, uid) {
+						RDB.handle(err);
 
 						User.setUserField(uid, 'password', password);
 						RDB.del('reset:' + code + ':uid');
@@ -508,7 +539,9 @@ var	config = require('../config.js'),
 			});
 		},
 		confirm: function(code, callback) {
-			RDB.get('confirm:' + code + ':email', function(email) {
+			RDB.get('confirm:' + code + ':email', function(err, email) {
+				RDB.handle(err);
+
 				if (email !== null) {
 					RDB.set('email:' + email + ':confirm', true);
 					RDB.del('confirm:' + code + ':email');
@@ -526,14 +559,17 @@ var	config = require('../config.js'),
 
 	User.active = {
 		get_record : function(socket) {
-			RDB.mget(['global:active_user_record', 'global:active_user_record_date'], function(data) {
+			RDB.mget(['global:active_user_record', 'global:active_user_record_date'], function(err, data) {
+				RDB.handle(err);
 				socket.emit('api:user.active.get_record', {record: data[0], timestamp: data[1]});
 			});
 		},
 
 		get: function(callback) {
 			function user_record(total) {
-				RDB.get('global:active_user_record', function(record) {
+				RDB.get('global:active_user_record', function(err, record) {
+					RDB.handle(err);
+
 					if (total > record) {
 						RDB.set('global:active_user_record', total);
 						RDB.set('global:active_user_record_date', new Date().getTime());
@@ -541,7 +577,9 @@ var	config = require('../config.js'),
 				});
 			}
 
-			RDB.keys('active:*', function(active) {
+			RDB.keys('active:*', function(err, active) {
+				RDB.handle(err);
+
 				var	returnObj = {
 						users: 0,
 						anon: 0,
@@ -554,7 +592,9 @@ var	config = require('../config.js'),
 						keys.push('sess:' + active[a].split(':')[1] + ':uid');
 					}
 
-					RDB.mget(keys, function(uids) {
+					RDB.mget(keys, function(err, uids) {
+						RDB.handle(err);
+
 						for(var u in uids) {
 							if (uids[u] !== null) {
 								if (returnObj.uids.indexOf(uids[u]) === -1) {
@@ -580,7 +620,10 @@ var	config = require('../config.js'),
 			});
 		},
 		register: function(sessionID) {
-			RDB.set('active:' + sessionID, '', 60*10);	// Active state persists for 10 minutes
+			// Active state persists for 10 minutes
+			var active_session = 'active:' + sessionID;
+			RDB.set(active_session, '');
+			RDB.expire(active_session, 60*10)
 			this.get();
 		}
 	}

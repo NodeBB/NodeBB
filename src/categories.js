@@ -8,7 +8,9 @@ var	RDB = require('./redis.js'),
 
 	// An admin-only function. Seeing how we have no control panel yet ima leave this right here. sit pretty, you
 	Categories.create = function(data, callback) {
-		RDB.incr('global:next_category_id', function(cid) {
+		RDB.incr('global:next_category_id', function(err, cid) {
+			RDB.handle(err);
+
 			var slug = cid + '/' + utils.slugify(data.name);
 			RDB.rpush('categories:cid', cid);
 
@@ -30,7 +32,8 @@ var	RDB = require('./redis.js'),
 	};
 
 	Categories.get = function(callback) {
-		RDB.lrange('categories:cid', 0, -1, function(cids) {
+		RDB.lrange('categories:cid', 0, -1, function(err, cids) {
+			RDB.handle(err);
 			Categories.get_category(cids, callback);
 		});
 	}

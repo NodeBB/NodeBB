@@ -53,7 +53,9 @@ var	RDB = require('./redis.js'),
 
 
 		// get all data for thread in asynchronous fashion
-		RDB.lrange('tid:' + tid + ':posts', start, end, function(pids) {
+		RDB.lrange('tid:' + tid + ':posts', start, end, function(err, pids) {
+			RDB.handle(err);
+			
 			var content = [], uid = [], timestamp = [], pid = [], post_rep = [];
 
 			for (var i=0, ii=pids.length; i<ii; i++) {
@@ -164,9 +166,13 @@ var	RDB = require('./redis.js'),
 	Posts.create = function(uid, tid, content, callback) {
 		if (uid === null) return;
 		
-		RDB.get('tid:' + tid + ':locked', function(locked) {
+		RDB.get('tid:' + tid + ':locked', function(err, locked) {
+			RDB.handle(err);
+
 			if (!locked || locked === '0') {
-				RDB.incr('global:next_post_id', function(pid) {
+				RDB.incr('global:next_post_id', function(err, pid) {
+					RDB.handle(err);
+			
 					// Posts Info
 					RDB.set('pid:' + pid + ':content', content);
 					RDB.set('pid:' + pid + ':uid', uid);
@@ -191,7 +197,9 @@ var	RDB = require('./redis.js'),
 
 
 	Posts.favourite = function(io, pid, room_id, uid) {
-		RDB.get('pid:' + pid + ':uid', function(uid_of_poster) {
+		RDB.get('pid:' + pid + ':uid', function(err, uid_of_poster) {
+			RDB.handle(err);
+
 			Posts.hasFavourited(pid, uid, function(hasFavourited) {
 				if (hasFavourited == false) {
 					RDB.sadd('pid:' + pid + ':users_favourited', uid);
@@ -209,7 +217,9 @@ var	RDB = require('./redis.js'),
 	}
 
 	Posts.unfavourite = function(io, pid, room_id, uid) {
-		RDB.get('pid:' + pid + ':uid', function(uid_of_poster) {
+		RDB.get('pid:' + pid + ':uid', function(err, uid_of_poster) {
+			RDB.handle(err);
+
 			Posts.hasFavourited(pid, uid, function(hasFavourited) {
 				if (hasFavourited == true) {
 					
@@ -226,7 +236,8 @@ var	RDB = require('./redis.js'),
 	}
 
 	Posts.hasFavourited = function(pid, uid, callback) {
-		RDB.sismember('pid:' + pid + ':users_favourited', uid, function(hasFavourited) {
+		RDB.sismember('pid:' + pid + ':users_favourited', uid, function(err, hasFavourited) {
+			RDB.handle(err);
 			callback(hasFavourited);
 		});
 	}
@@ -237,7 +248,9 @@ var	RDB = require('./redis.js'),
 
 		for (var i=0, ii=pids.length; i<ii; i++) {
 			(function(post_id) {
-				Posts.hasFavourited(post_id, uid, function(hasFavourited){
+				Posts.hasFavourited(post_id, uid, function(err, hasFavourited) {
+					RDB.handle(err);
+			
 					data[post_id] = hasFavourited;
 					loaded ++;
 					if (loaded == pids.length) callback(data);
