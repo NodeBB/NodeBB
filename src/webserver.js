@@ -207,7 +207,7 @@ var express = require('express'),
 		if(req.user.uid != req.body.uid)
 			return res.redirect('/');
 		
-		user.updateUserFields(req.user.uid, req.body);
+		user.updateProfile(req.user.uid, req.body);
 		
 		res.redirect('/');
 	});

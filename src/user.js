@@ -70,10 +70,15 @@ var	config = require('../config.js'),
 		});
 	}
 
-	User.updateUserFields = function(uid, data) {
+	User.updateProfile = function(uid, data) {
 		
-		for(var key in data) {
-			User.setUserField(uid, key, data[key]);
+		var fields = ['email', 'fullname', 'website', 'location', 'birthday'];
+		var key = '';
+		
+		for(var i=0,ii=fields.length; i<ii; ++i) {
+			key = fields[i];
+			if(data[key] !== undefined)
+				User.setUserField(uid, key, data[key]);
 		}
 	}
 
