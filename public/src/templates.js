@@ -68,7 +68,8 @@ var templates = {};
 			'header', 'footer', 'register', 'home', 'topic','account', 'category', 'users', 'accountedit', 
 			'login', 'reset', 'reset_code', 'account',
 			'confirm',
-			'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext'
+			'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext',
+			'admin/index', 'admin/categories', 'admin/users', 'admin/topics', 'admin/settings', 'admin/themes', 'admin/twitter', 'admin/facebook', 'admin/gplus'
 		]);
 	}
 
@@ -168,15 +169,15 @@ function load_template(callback, custom_tpl) {
 
 
 	jQuery.get(API_URL + url, function(data) {
+
 		var tpl = templates.get_custom_map(url);
-		if (tpl == false) {
-			tpl = url.split('/')[0];
+		
+		if (tpl == false && !templates[url]) {
+			tpl = (url === '' || url === '/') ? 'home' : url.split('/')[0];
+		} else if (templates[url]) {
+			tpl = url;
 		}
-
-		if (custom_tpl && custom_tpl != "undefined") 
-			tpl = custom_tpl;
-
-
+		
 		document.getElementById('content').innerHTML = templates[tpl].parse(JSON.parse(data));
 		if (callback) callback();
 	});

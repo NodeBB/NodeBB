@@ -65,7 +65,10 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
       		delete users[hs.sessionID];
    		});
 
-		
+		socket.on('api:get_all_rooms', function(data) {
+			console.log('recieve');
+			socket.emit('api:get_all_rooms', io.sockets.manager.rooms);
+		})
 
 		socket.on('event:enter_room', function(data) {
 			if (data.leave !== null) socket.leave (data.leave);

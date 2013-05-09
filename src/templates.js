@@ -1,4 +1,4 @@
-
+// to be deprecated in favour of client-side only templates.
 
 (function(Templates) {
 
@@ -28,6 +28,7 @@
 			'header', 'footer', 'register', 'home', 'topic', 'account',
 			'login', 'reset', 'reset_code', 'logout',
 			'403',
+			'admin/header', 'admin/footer', 'admin/index',
 			'emails/header', 'emails/footer',
 			'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext'
 		]);

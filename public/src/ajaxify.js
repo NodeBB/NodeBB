@@ -34,9 +34,11 @@ var ajaxify = {};
 
 		var tpl_url = templates.get_custom_map(url);
 		
-		if (tpl_url == false) {
+		if (tpl_url == false && !templates[url]) {
 			tpl_url = (url === '' || url === '/') ? 'home' : url.split('/')[0];
-		} 
+		} else if (templates[url]) {
+			tpl_url = url;
+		}
 		
 		if (templates[tpl_url]) {
 			window.history.pushState({}, url, "/" + url);

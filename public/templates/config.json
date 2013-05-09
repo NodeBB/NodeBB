@@ -1,5 +1,8 @@
 {
     "custom_mapping": {
+    	"admin/topics[^]*": "admin/topics",
+    	"admin/categories[^]*": "admin/categories",
+    	"admin/users[^]*": "admin/users",
     	"users[^]*edit": "accountedit",
         "users": "account",
         "latest": "category",

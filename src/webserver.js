@@ -13,6 +13,7 @@ var express = require('express'),
 	passportFacebook = require('passport-facebook').Strategy,
 	user = require('./user.js'),
 	utils = require('./utils.js'),
+	admin = require('./routes/admin.js'),
 	login_strategies = [];
 
 passport.use(new passportLocal(function(user, password, next) {
@@ -122,9 +123,10 @@ passport.deserializeUser(function(uid, done) {
 	});
 
 
-	function create_route(url, tpl) {
+	function create_route(url, tpl) { // to remove
 		return '<script>templates.ready(function(){ajaxify.go("' + url + '", null, "' + tpl + '");});</script>';
 	}
+	app.create_route = create_route;
 
 
 	// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
@@ -161,6 +163,8 @@ passport.deserializeUser(function(uid, done) {
 	app.get('/confirm/:code', function(req, res) {
 		res.send(templates['header'] + '<script>templates.ready(function(){ajaxify.go("confirm/' + req.params.code + '");});</script>' + templates['footer']);
 	});
+
+	admin.create_routes(app);
 
 	// These functions are called via ajax once the initial page is loaded to populate templates with data
 	function api_method(req, res) {
