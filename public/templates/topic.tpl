@@ -217,6 +217,11 @@
 			app.open_post_window('edit', "{topic_id}", "{topic_name}", pid);
 		});
 
+        $('.post-container').delegate('.delete', 'click', function(e) {
+            var pid = ($(this).attr('id') || $(this.parentNode).attr('id')).split('_')[1];
+            alert('delete clicked post id '+pid);
+        }); 
+
 		ajaxify.register_events([
 			'event:rep_up', 'event:rep_down', 'event:new_post', 'api:get_users_in_room',
 			'event:topic_deleted', 'event:topic_restored', 'event:topic:locked',
