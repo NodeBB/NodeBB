@@ -220,7 +220,7 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 		});
 
 		socket.on('api:posts.edit', function(data) {
-			modules.posts.edit(data.pid, data.content);
+			modules.posts.edit(uid, data.pid, data.content);
 		});
 	});
 	

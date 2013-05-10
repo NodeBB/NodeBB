@@ -97,7 +97,6 @@ var	RDB = require('./redis.js'),
 						topics = topics.sort(function(a, b) {
 							if (a.pinned !== b.pinned) return b.pinned - a.pinned;
 							else {
-								console.log('here');
 								// Sort by datetime descending
 								return b.timestamp - a.timestamp;
 							}

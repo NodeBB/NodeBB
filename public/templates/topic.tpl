@@ -3,7 +3,7 @@
 		<li><a href="/">Home</a><span class="divider">/</span></li>
 		<li><a href="/category/{category_slug}">{category_name}</a><span class="divider">/</span></li>
 		<li class="active">{topic_name}</li>
-		<div id="thread_active_users"></div>
+		<div id="thread_active_users" class="hidden-phone"></div>
 	</ul>
 </div>
 
@@ -21,7 +21,6 @@
 		<div class="post-block">
 			<div id="content_{posts.pid}" class="post-content">{posts.content}</div>
 			<div class="profile-block">
-				<img class="hidden-desktop" src="{posts.gravatar}10" align="left" /> posted by <strong><a href="/users/{posts.username}">{posts.username}</a></strong>    {posts.relativeTime} ago
 				<span class="post-buttons">
 					<div id="ids_{posts.pid}_{posts.uid}" class="edit {posts.display_moderator_tools} hidden-phone"><i class="icon-pencil"></i></div>
 					<div id="ids_{posts.pid}_{posts.uid}" class="delete {posts.display_moderator_tools} hidden-phone"><i class="icon-trash"></i></div>
@@ -29,6 +28,9 @@
 					<div id="favs_{posts.pid}_{posts.uid}" class="favourite hidden-phone"><span class="post_rep_{posts.pid}">{posts.post_rep}</span><i class="{posts.fav_star_class}"></i></div>
 					<div class="post_reply">Reply <i class="icon-reply"></i></div>
 				</span>
+				<img class="hidden-desktop" src="{posts.gravatar}?s=10" align="left" /> posted by <strong><a href="/users/{posts.username}">{posts.username}</a></strong> {posts.relativeTime} ago
+				<span class="{posts.edited-class} hidden-phone">| last edited by <strong><a href="/users/{posts.editor}">{posts.editor}</a></strong> {posts.relativeEditTime} ago</span>
+				<span class="{posts.edited-class}"><i class="icon-edit visible-phone" title="edited by {posts.editor} {posts.relativeEditTime} ago"></i></span>
 			</div>
 		</div>
 	</div>

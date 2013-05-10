@@ -17,7 +17,7 @@ var	RDB = require('./redis.js'),
 
 		//compile thread after all data is asynchronously called
 		function generateThread() {
-			if (!post_data ||! user_data || !thread_data || !vote_data || !viewer_data) return;
+			if (!post_data || !user_data || !thread_data || !vote_data || !viewer_data) return;
 
 			var posts = [];
 
@@ -36,7 +36,10 @@ var	RDB = require('./redis.js'),
 					'user_rep' : user_data[uid].reputation || 0,
 					'gravatar' : user_data[uid].picture,
 					'fav_star_class' : vote_data[pid] ? 'icon-star' : 'icon-star-empty',
-					'display_moderator_tools' : uid == current_user ? 'show' : 'none'
+					'display_moderator_tools' : uid == current_user ? 'show' : 'none',
+					'edited-class': post_data.editor[i] !== null ? '' : 'none',
+					'editor': post_data.editor[i] !== null ? user_data[post_data.editor[i]].username : '',
+					'relativeEditTime': post_data.editTime !== null ? utils.relativeTime(post_data.editTime[i]) : ''
 				});
 			}
 
@@ -58,13 +61,15 @@ var	RDB = require('./redis.js'),
 		RDB.lrange('tid:' + tid + ':posts', start, end, function(err, pids) {
 			RDB.handle(err);
 			
-			var content = [], uid = [], timestamp = [], pid = [], post_rep = [];
+			var content = [], uid = [], timestamp = [], pid = [], post_rep = [], editor = [], editTime = [];
 
 			for (var i=0, ii=pids.length; i<ii; i++) {
 				content.push('pid:' + pids[i] + ':content');
 				uid.push('pid:' + pids[i] + ':uid');
 				timestamp.push('pid:' + pids[i] + ':timestamp');
-				post_rep.push('pid:' + pids[i] + ':rep');		
+				post_rep.push('pid:' + pids[i] + ':rep');
+				editor.push('pid:' + pids[i] + ':editor');
+				editTime.push('pid:' + pids[i] + ':edited');
 				pid.push(pids[i]);
 			}
 
@@ -84,13 +89,17 @@ var	RDB = require('./redis.js'),
 				.get('tid:' + tid + ':category_slug')
 				.get('tid:' + tid + ':deleted')
 				.get('tid:' + tid + ':pinned')
+				.mget(editor)
+				.mget(editTime)
 				.exec(function(err, replies) {
 					post_data = {
 						pid: pids,
 						content: replies[0],
 						uid: replies[1],
 						timestamp: replies[2],
-						reputation: replies[3]
+						reputation: replies[3],
+						editor: replies[10],
+						editTime: replies[11]
 					};
 
 					thread_data = {
@@ -101,6 +110,13 @@ var	RDB = require('./redis.js'),
 						deleted: replies[8] || 0,
 						pinned: replies[9] || 0
 					};
+
+					// Add any editors to the user_data object
+					for(var x=0,numPosts=replies[10].length;x<numPosts;x++) {
+						if (replies[10][x] !== null && post_data.uid.indexOf(replies[10][x]) === -1) {
+							post_data.uid.push(replies[10][x]);
+						}
+					}
 
 					user.getMultipleUserFields(post_data.uid, ['username','reputation','picture'], function(user_details){
 						user_data = user_details;
@@ -268,9 +284,12 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
-	Posts.edit = function(pid, content) {
+	Posts.edit = function(uid, pid, content) {
 		RDB.get('pid:' + pid + ':tid', function(err, tid) {
 			RDB.set('pid:' + pid + ':content', content);
+			RDB.set('pid:' + pid + ':edited', new Date().getTime());
+			RDB.set('pid:' + pid + ':editor', uid);
+
 			io.sockets.in('topic_' + tid).emit('event:post_edited', { pid: pid, content: marked(content || '') });
 		});
 	}
