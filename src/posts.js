@@ -36,7 +36,7 @@ var	RDB = require('./redis.js'),
 					'user_rep' : user_data[uid].reputation || 0,
 					'gravatar' : user_data[uid].picture,
 					'fav_star_class' : vote_data[pid] ? 'icon-star' : 'icon-star-empty',
-					'display_moderator_tools' : uid == current_user ? 'show' : 'none',
+					'display_moderator_tools': (uid == current_user || viewer_data.reputation >= config.privilege_thresholds.manage_content) ? 'show' : 'none',
 					'edited-class': post_data.editor[i] !== null ? '' : 'none',
 					'editor': post_data.editor[i] !== null ? user_data[post_data.editor[i]].username : '',
 					'relativeEditTime': post_data.editTime !== null ? utils.relativeTime(post_data.editTime[i]) : ''
