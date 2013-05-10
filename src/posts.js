@@ -285,12 +285,21 @@ var	RDB = require('./redis.js'),
 	}
 
 	Posts.edit = function(uid, pid, content) {
-		RDB.get('pid:' + pid + ':tid', function(err, tid) {
-			RDB.set('pid:' + pid + ':content', content);
-			RDB.set('pid:' + pid + ':edited', new Date().getTime());
-			RDB.set('pid:' + pid + ':editor', uid);
+		RDB.mget(['pid:' + pid + ':tid', 'pid:' + pid + ':uid'], function(err, results) {
+			var	tid = results[0],
+				author = results[1];
 
-			io.sockets.in('topic_' + tid).emit('event:post_edited', { pid: pid, content: marked(content || '') });
+			if (uid === author) {
+				RDB.set('pid:' + pid + ':content', content);
+				RDB.set('pid:' + pid + ':edited', new Date().getTime());
+				RDB.set('pid:' + pid + ':editor', uid);
+
+				io.sockets.in('topic_' + tid).emit('event:post_edited', { pid: pid, content: marked(content || '') });
+			}
 		});
+	}
+
+	Posts.delete = function(uid, pid) {
+		return 'elephants';
 	}
 }(exports));
