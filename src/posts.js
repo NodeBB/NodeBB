@@ -5,6 +5,10 @@ var	RDB = require('./redis.js'),
 	topics = require('./topics.js'),
 	config = require('../config.js');
 
+marked.setOptions({
+	breaks: true
+});
+
 (function(Posts) {
 
 	Posts.get = function(callback, tid, current_user, start, end) {
