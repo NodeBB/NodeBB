@@ -4,6 +4,7 @@ var config = {
 
 	// "base_url" is expected to be a publically accessible URL to your NodeBB instance (Default base_url: 'http://localhost', port: '4567')
 	"base_url": "http://localhost",
+	"use_port": true,
 	"port": 4567,
 
 	// The host and port to the SMTP server used by NodeBB. The "from" value must be changed.
@@ -40,10 +41,11 @@ var config = {
 
 	// Privileged Actions Reputation Thresholds
 	"privilege_thresholds": {
-		"manage_thread": 1000
+		"manage_thread": 1000,
+		"manage_content": 2000
 	}
 }
 
-config.url = config.base_url + ':' + config.port + '/';
+config.url = config.base_url + (config.use_port ? ':' + config.port : '') + '/';
 
 module.exports = config;

@@ -36,7 +36,6 @@ var	config = require('../config.js'),
 
 	// a function I feel should be built in user not sure how baris is tackling this so oppa chicken wrapper here
 	User.getMultipleUserFields = function(uids, fields, callback) {
-		console.log(uids);
 		var uuids = uids.filter(function(value, index, self) { 
 		    return self.indexOf(value) === index;
 		});
@@ -253,6 +252,8 @@ var	config = require('../config.js'),
 
 			User.hashPassword(password, function(hash) {
 
+				var gravatar = User.createGravatarURLFromEmail(email);
+
 				RDB.hmset('user:'+uid, {
 					'username' : username,
 					'fullname': '',
@@ -262,7 +263,9 @@ var	config = require('../config.js'),
 					'email' : email,
 					'joindate' : new Date().getTime(),
 					'password' : hash,
-					'picture' : User.createGravatarURLFromEmail(email),
+					'picture': gravatar,
+					'gravatarpicture' : gravatar,
+					'uploadedpicture': '',
 					'reputation': 0,
 					'postcount': 0
 				});

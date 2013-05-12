@@ -14,7 +14,7 @@
 	</div>
 		
 	<div class="account-picture-block">
-		<img src="{user.picture}?s=128" />
+		<img src="{user.picture}?s=128" class="user-profile-picture"/>
 	</div>
 	
 	<div class="account-bio-block">
