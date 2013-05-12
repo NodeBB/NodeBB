@@ -5,7 +5,7 @@
 
     <div class="users-box well">
 	 	<a href="/users/{users.username}">
-		    <img src="{users.picture}"/>
+		    <img src="{users.picture}" class="user-8080-picture"/>
 	    </a>
 	    <br/>
 		<a href="/users/{users.username}">{users.username}</a>
