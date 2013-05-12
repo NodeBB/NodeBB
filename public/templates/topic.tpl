@@ -224,18 +224,18 @@
 			app.open_post_window('edit', "{topic_id}", "{topic_name}", pid);
 		});
 
-        $('.post-container').delegate('.delete', 'click', function(e) {
-            var	pid = ($(this).attr('id') || $(this.parentNode).attr('id')).split('_')[1],
-            	postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
-            	deleteAction = !postEl.hasClass('deleted') ? true : false,
-            	confirmDel = confirm((deleteAction ? 'Delete' : 'Restore') + ' this post?');
+		$('.post-container').delegate('.delete', 'click', function(e) {
+			var	pid = ($(this).attr('id') || $(this.parentNode).attr('id')).split('_')[1],
+			postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
+			deleteAction = !postEl.hasClass('deleted') ? true : false,
+			confirmDel = confirm((deleteAction ? 'Delete' : 'Restore') + ' this post?');
 
-            if (confirmDel) {
-            	deleteAction ?
-            		socket.emit('api:posts.delete', { pid: pid }) :
-            		socket.emit('api:posts.restore', { pid: pid });
-            }
-        }); 
+			if (confirmDel) {
+				deleteAction ?
+				socket.emit('api:posts.delete', { pid: pid }) :
+				socket.emit('api:posts.restore', { pid: pid });
+			}
+		}); 
 
 		ajaxify.register_events([
 			'event:rep_up', 'event:rep_down', 'event:new_post', 'api:get_users_in_room',
