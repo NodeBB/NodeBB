@@ -12,6 +12,8 @@
 	<script type="text/javascript" src="/src/app.js"></script>
 	<script type="text/javascript" src="/src/templates.js"></script>
 	<script type="text/javascript" src="/src/ajaxify.js"></script>
+	<script type="text/javascript" src="/src/jquery.form.js"></script>
+
 	<link rel="stylesheet" type="text/css" href="/css/style.css" />
 </head>
 
@@ -39,7 +41,7 @@
 					</ul>
 					<ul class="nav pull-right" id="right-menu">
 						<!--<li><i class="icon-plus icon-2x" style="color:#999;"></i></li> fail. add this back later -->
-						<li><a href="/users" id="user_label"></a></li>
+						<!--<li><a href="/users" id="user_label"></a></li>-->
 					</ul>
 				</div>
 			</div>
