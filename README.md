@@ -43,8 +43,11 @@ The server configuration file (located at `/config.js`) contains default options
 		<td><i>(Default: 'http://localhost')</i> A web-accessible URL to your app, without the port</td>
 	</tr>
 	<tr>
+		<td><b>use_port</b></td>
+		<td><i>(Default: true)</i> Whether or not to include the port number when constructing the url for use in NodeBB. If you are serving NodeBB via a proxy (i.e. nginx), switch this off.
+	<tr>
 		<td><b>port</b></td>
-		<td><i>(Default: 4567)</i> The default port that NodeBB runs on</td>
+		<td><i>(Default: 4567)</i> The default port that NodeBB runs on. Even if you are running NodeBB behind a proxy server, this port must be set.</td>
 	</tr>
 	<tr>
 		<td><b>mailer</b></td>
