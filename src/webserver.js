@@ -9,6 +9,7 @@ var express = require('express'),
 	
 	user = require('./user.js'),
 	utils = require('./utils.js'),
+	fs = require('fs'),
 	admin = require('./routes/admin.js'),
 	auth = require('./routes/authentication.js');
 
@@ -198,6 +199,82 @@ var express = require('express'),
 
 
 // TODO move user related logic into another file vvvvvvvvvvvvvvvvvvvv
+
+	app.post('/pictureupload', function(req, res) {
+    	
+		if(!req.user)
+			return res.redirect('/403');
+		
+		user.getUserField(req.user.uid, 'uploadedpicture', function(uploadedpicture) {
+			
+			var index = uploadedpicture.lastIndexOf('/');
+			var filename = uploadedpicture.substr(index+1);
+
+			var absolutePath = global.configuration['ROOT_DIRECTORY'] + config.upload_path + filename;
+
+			fs.unlink(absolutePath, function(err) {
+				if(err) {				
+					console.log(err);
+				}
+				
+				uploadUserPicture(req.user.uid, req.files.userPhoto.name, req.files.userPhoto.path, res);
+				
+			});
+			
+		});
+
+	});
+	
+	function uploadUserPicture(uid, filename, tempPath, res) {
+		var uploadPath = config['upload_path'] + uid + '-' + filename;
+
+		fs.rename(
+			tempPath,
+			global.configuration['ROOT_DIRECTORY']+ uploadPath,
+			function(error) {
+	            if(error) {
+					res.send({
+	                    error: 'Ah crap! Something bad happened'
+					});
+	                return;
+	            }
+	 			
+	 			var imageUrl = config.base_url + config.install_path + uploadPath;
+	 			
+	            res.send({
+					path: imageUrl
+	            });
+	            
+	            user.setUserField(uid, 'uploadedpicture', imageUrl);
+	            user.setUserField(uid, 'picture', imageUrl);
+	            
+			}
+    	);
+		
+	}
+	
+
+	app.post('/changeuserpicture', function(req, res){
+		if(!req.user)
+			return res.redirect('/403');
+		
+		if(req.user.uid != req.body.uid)
+			return res.redirect('/');
+			
+		var type = req.body.type;
+		if(type == 'gravatar') {	
+			user.getUserField(req.user.uid, 'gravatarpicture', function(gravatar){
+				user.setUserField(req.user.uid, 'picture', gravatar);
+			});
+		}
+		else if(type == 'uploaded') {
+			user.getUserField(req.user.uid, 'uploadedpicture', function(uploadedpicture){
+				user.setUserField(req.user.uid, 'picture', uploadedpicture);
+			});
+		}
+		res.send({});
+	});
+
 
 	app.post('/edituser', function(req, res){
 

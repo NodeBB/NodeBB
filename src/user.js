@@ -252,6 +252,8 @@ var	config = require('../config.js'),
 
 			User.hashPassword(password, function(hash) {
 
+				var gravatar = User.createGravatarURLFromEmail(email);
+
 				RDB.hmset('user:'+uid, {
 					'username' : username,
 					'fullname': '',
@@ -261,7 +263,9 @@ var	config = require('../config.js'),
 					'email' : email,
 					'joindate' : new Date().getTime(),
 					'password' : hash,
-					'picture' : User.createGravatarURLFromEmail(email),
+					'picture': gravatar,
+					'gravatarpicture' : gravatar,
+					'uploadedpicture': '',
 					'reputation': 0,
 					'postcount': 0
 				});
