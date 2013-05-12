@@ -43,7 +43,8 @@ marked.setOptions({
 					'display_moderator_tools': (uid == current_user || viewer_data.reputation >= config.privilege_thresholds.manage_content) ? 'show' : 'none',
 					'edited-class': post_data.editor[i] !== null ? '' : 'none',
 					'editor': post_data.editor[i] !== null ? user_data[post_data.editor[i]].username : '',
-					'relativeEditTime': post_data.editTime !== null ? utils.relativeTime(post_data.editTime[i]) : ''
+					'relativeEditTime': post_data.editTime !== null ? utils.relativeTime(post_data.editTime[i]) : '',
+					'deleted-class': post_data.deleted[i] === '1' ? 'deleted' : ''
 				});
 			}
 
@@ -65,7 +66,7 @@ marked.setOptions({
 		RDB.lrange('tid:' + tid + ':posts', start, end, function(err, pids) {
 			RDB.handle(err);
 			
-			var content = [], uid = [], timestamp = [], pid = [], post_rep = [], editor = [], editTime = [];
+			var content = [], uid = [], timestamp = [], pid = [], post_rep = [], editor = [], editTime = [], deleted = [];
 
 			for (var i=0, ii=pids.length; i<ii; i++) {
 				content.push('pid:' + pids[i] + ':content');
@@ -74,6 +75,7 @@ marked.setOptions({
 				post_rep.push('pid:' + pids[i] + ':rep');
 				editor.push('pid:' + pids[i] + ':editor');
 				editTime.push('pid:' + pids[i] + ':edited');
+				deleted.push('pid:' + pids[i] + ':deleted');
 				pid.push(pids[i]);
 			}
 
@@ -95,6 +97,7 @@ marked.setOptions({
 				.get('tid:' + tid + ':pinned')
 				.mget(editor)
 				.mget(editTime)
+				.mget(deleted)
 				.exec(function(err, replies) {
 					post_data = {
 						pid: pids,
@@ -103,7 +106,8 @@ marked.setOptions({
 						timestamp: replies[2],
 						reputation: replies[3],
 						editor: replies[10],
-						editTime: replies[11]
+						editTime: replies[11],
+						deleted: replies[12]
 					};
 
 					thread_data = {
@@ -291,19 +295,40 @@ marked.setOptions({
 	Posts.edit = function(uid, pid, content) {
 		RDB.mget(['pid:' + pid + ':tid', 'pid:' + pid + ':uid'], function(err, results) {
 			var	tid = results[0],
-				author = results[1];
+				author = results[1],
+				success = function() {
+					RDB.set('pid:' + pid + ':content', content);
+					RDB.set('pid:' + pid + ':edited', new Date().getTime());
+					RDB.set('pid:' + pid + ':editor', uid);
 
-			if (uid === author) {
-				RDB.set('pid:' + pid + ':content', content);
-				RDB.set('pid:' + pid + ':edited', new Date().getTime());
-				RDB.set('pid:' + pid + ':editor', uid);
+					io.sockets.in('topic_' + tid).emit('event:post_edited', { pid: pid, content: marked(content || '') });
+				};
 
-				io.sockets.in('topic_' + tid).emit('event:post_edited', { pid: pid, content: marked(content || '') });
+			if (uid === author) success();
+			else {
+				user.getUserField(uid, 'reputation', function(reputation) {
+					if (reputation >= config.privilege_thresholds.manage_content) success();
+				});
 			}
 		});
 	}
 
 	Posts.delete = function(uid, pid) {
-		return 'elephants';
+		RDB.mget(['pid:' + pid + ':tid', 'pid:' + pid + ':uid'], function(err, results) {
+			var	tid = results[0],
+				author = results[1],
+				success = function() {
+					RDB.set('pid:' + pid + ':deleted', 1);
+
+					io.sockets.in('topic_' + tid).emit('event:post_deleted', { pid: pid });
+				};
+
+			if (uid === author) success();
+			else {
+				user.getUserField(uid, 'reputation', function(reputation) {
+					if (reputation >= config.privilege_thresholds.manage_content) success();
+				});
+			}
+		});
 	}
 }(exports));

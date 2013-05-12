@@ -222,6 +222,14 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 		socket.on('api:posts.edit', function(data) {
 			modules.posts.edit(uid, data.pid, data.content);
 		});
+
+		socket.on('api:posts.delete', function(data) {
+			modules.posts.delete(uid, data.pid);
+		});
+
+		socket.on('api:posts.restore', function(data) {
+			modules.posts.restore(uid, data.pid);
+		});
 	});
 	
 }(SocketIO));

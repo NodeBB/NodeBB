@@ -9,7 +9,7 @@
 
 <ul id="post-container" class="post-container container">
 <!-- BEGIN posts -->
-<li class="row">
+<li class="row {posts.deleted-class}">
 	<div class="span1 profile-image-block visible-desktop">
 		<!--<i class="icon-spinner icon-spin icon-2x pull-left"></i>-->
 		<a href="/users/{posts.username}">
@@ -218,15 +218,19 @@
 		});
 
         $('.post-container').delegate('.delete', 'click', function(e) {
-            var pid = ($(this).attr('id') || $(this.parentNode).attr('id')).split('_')[1];
-            alert('delete clicked post id '+pid);
+            var	pid = ($(this).attr('id') || $(this.parentNode).attr('id')).split('_')[1];
+            	confirmDel = confirm('Delete this post?');
+
+            if (confirmDel) {
+            	socket.emit('api:posts.delete', { pid: pid });
+            }
         }); 
 
 		ajaxify.register_events([
 			'event:rep_up', 'event:rep_down', 'event:new_post', 'api:get_users_in_room',
 			'event:topic_deleted', 'event:topic_restored', 'event:topic:locked',
 			'event:topic_unlocked', 'event:topic_pinned', 'event:topic_unpinned',
-			'event:topic_moved', 'event:post_edited'
+			'event:topic_moved', 'event:post_edited', 'event:post_deleted', 'event:post_restored'
 		]);
 		socket.on('api:get_users_in_room', function(users) {
 			var anonymous = users.anonymous,
@@ -313,6 +317,11 @@
 				this.innerHTML = data.content;
 				$(this).fadeIn(250);
 			});
+		});
+
+		socket.on('event:post_deleted', function(data) {
+			console.log(data);
+			if (data.pid) set_post_delete_state(data.pid, true);
 		});
 
 		function adjust_rep(value, pid, uid) {
@@ -484,6 +493,10 @@
 
 				thread_state.pinned = '0';
 			}
+		}
+
+		function set_post_delete_state(pid, deleted) {
+			console.log('SETTING DELETE STATE: ', pid, deleted);
 		}
 	})();
 </script>
