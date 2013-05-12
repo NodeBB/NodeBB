@@ -9,7 +9,7 @@
 
 <ul id="post-container" class="post-container container">
 <!-- BEGIN posts -->
-<li class="row {posts.deleted-class}">
+<li class="row" data-pid="{posts.pid}" data-deleted="{posts.deleted}">
 	<div class="span1 profile-image-block visible-desktop">
 		<!--<i class="icon-spinner icon-spin icon-2x pull-left"></i>-->
 		<a href="/users/{posts.username}">
@@ -210,6 +210,14 @@
 					}
 				});
 			}
+
+			// Fix delete state for this thread's posts
+			var	postEls = document.querySelectorAll('#post-container li[data-deleted]');
+			for(var x=0,numPosts=postEls.length;x<numPosts;x++) {
+				console.log(postEls[x].getAttribute('data-pid'));
+				if (postEls[x].getAttribute('data-deleted') === '1') toggle_post_delete_state(postEls[x].getAttribute('data-pid'));
+				postEls[x].removeAttribute('data-deleted');
+			}
 		});
 
 		$('.post-container').delegate('.edit', 'click', function(e) {
@@ -218,11 +226,15 @@
 		});
 
         $('.post-container').delegate('.delete', 'click', function(e) {
-            var	pid = ($(this).attr('id') || $(this.parentNode).attr('id')).split('_')[1];
-            	confirmDel = confirm('Delete this post?');
+            var	pid = ($(this).attr('id') || $(this.parentNode).attr('id')).split('_')[1],
+            	postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
+            	deleteAction = !postEl.hasClass('deleted') ? true : false,
+            	confirmDel = confirm((deleteAction ? 'Delete' : 'Restore') + ' this post?');
 
             if (confirmDel) {
-            	socket.emit('api:posts.delete', { pid: pid });
+            	deleteAction ?
+            		socket.emit('api:posts.delete', { pid: pid }) :
+            		socket.emit('api:posts.restore', { pid: pid });
             }
         }); 
 
@@ -320,8 +332,11 @@
 		});
 
 		socket.on('event:post_deleted', function(data) {
-			console.log(data);
-			if (data.pid) set_post_delete_state(data.pid, true);
+			if (data.pid) toggle_post_delete_state(data.pid, true);
+		});
+
+		socket.on('event:post_restored', function(data) {
+			if (data.pid) toggle_post_delete_state(data.pid, true);
 		});
 
 		function adjust_rep(value, pid, uid) {
@@ -495,8 +510,23 @@
 			}
 		}
 
-		function set_post_delete_state(pid, deleted) {
-			console.log('SETTING DELETE STATE: ', pid, deleted);
+		function toggle_post_delete_state(pid) {
+			var postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]'));
+				quoteEl = $(postEl[0].querySelector('.quote')),
+				favEl = $(postEl[0].querySelector('.favourite')),
+				replyEl = $(postEl[0].querySelector('.post_reply'));
+
+			if (!postEl.hasClass('deleted')) {
+				quoteEl.addClass('none');
+				favEl.addClass('none');
+				replyEl.addClass('none');
+			} else {
+				quoteEl.removeClass('none');
+				favEl.removeClass('none');
+				replyEl.removeClass('none');
+			}
+
+			postEl.toggleClass('deleted');
 		}
 	})();
 </script>

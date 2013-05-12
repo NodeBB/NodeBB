@@ -23,29 +23,32 @@ marked.setOptions({
 		function generateThread() {
 			if (!post_data || !user_data || !thread_data || !vote_data || !viewer_data) return;
 
-			var posts = [];
+			var	posts = [],
+				manage_content = viewer_data.reputation >= config.privilege_thresholds.manage_content;
 
 			for (var i=0, ii= post_data.pid.length; i<ii; i++) {
 				var uid = post_data.uid[i],
 					pid = post_data.pid[i];
 					
-				posts.push({
-					'pid' : pid,
-					'uid' : uid,
-					'content' : marked(post_data.content[i] || ''),
-					'post_rep' : post_data.reputation[i] || 0,
-					'timestamp' : post_data.timestamp[i],
-					'relativeTime': utils.relativeTime(post_data.timestamp[i]),
-					'username' : user_data[uid].username || 'anonymous',
-					'user_rep' : user_data[uid].reputation || 0,
-					'gravatar' : user_data[uid].picture,
-					'fav_star_class' : vote_data[pid] ? 'icon-star' : 'icon-star-empty',
-					'display_moderator_tools': (uid == current_user || viewer_data.reputation >= config.privilege_thresholds.manage_content) ? 'show' : 'none',
-					'edited-class': post_data.editor[i] !== null ? '' : 'none',
-					'editor': post_data.editor[i] !== null ? user_data[post_data.editor[i]].username : '',
-					'relativeEditTime': post_data.editTime !== null ? utils.relativeTime(post_data.editTime[i]) : '',
-					'deleted-class': post_data.deleted[i] === '1' ? 'deleted' : ''
-				});
+				if (post_data.deleted[i] === null || (post_data.deleted[i] === '1' && manage_content)) {
+					posts.push({
+						'pid' : pid,
+						'uid' : uid,
+						'content' : marked(post_data.content[i] || ''),
+						'post_rep' : post_data.reputation[i] || 0,
+						'timestamp' : post_data.timestamp[i],
+						'relativeTime': utils.relativeTime(post_data.timestamp[i]),
+						'username' : user_data[uid].username || 'anonymous',
+						'user_rep' : user_data[uid].reputation || 0,
+						'gravatar' : user_data[uid].picture,
+						'fav_star_class' : vote_data[pid] ? 'icon-star' : 'icon-star-empty',
+						'display_moderator_tools': (uid == current_user || manage_content) ? 'show' : 'none',
+						'edited-class': post_data.editor[i] !== null ? '' : 'none',
+						'editor': post_data.editor[i] !== null ? user_data[post_data.editor[i]].username : '',
+						'relativeEditTime': post_data.editTime !== null ? utils.relativeTime(post_data.editTime[i]) : '',
+						'deleted': post_data.deleted[i] || '0'
+					});
+				}
 			}
 
 			callback({
@@ -321,6 +324,25 @@ marked.setOptions({
 					RDB.set('pid:' + pid + ':deleted', 1);
 
 					io.sockets.in('topic_' + tid).emit('event:post_deleted', { pid: pid });
+				};
+
+			if (uid === author) success();
+			else {
+				user.getUserField(uid, 'reputation', function(reputation) {
+					if (reputation >= config.privilege_thresholds.manage_content) success();
+				});
+			}
+		});
+	}
+
+	Posts.restore = function(uid, pid) {
+		RDB.mget(['pid:' + pid + ':tid', 'pid:' + pid + ':uid'], function(err, results) {
+			var	tid = results[0],
+				author = results[1],
+				success = function() {
+					RDB.del('pid:' + pid + ':deleted');
+
+					io.sockets.in('topic_' + tid).emit('event:post_restored', { pid: pid });
 				};
 
 			if (uid === author) success();
