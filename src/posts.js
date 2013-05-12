@@ -176,7 +176,9 @@ marked.setOptions({
 								'gravatar' : data.picture,
 								'timestamp' : timestamp,
 								'relativeTime': utils.relativeTime(timestamp),
-								'fav_star_class' :'icon-star-empty' 
+								'fav_star_class' :'icon-star-empty',
+								'edited-class': 'none',
+								'editor': '',
 							}
 						]
 					});

@@ -50,7 +50,7 @@
 	<div id="post_window">
 		<div class="post-title-container">
 			<div class="container">
-				<input id="post_title" placeholder="Enter your topic title here." />
+				<input id="post_title" placeholder="Enter your topic title here." tabIndex="1" />
 				<span id="reply_title"></span>
 			</div>
 		</div>
@@ -65,12 +65,12 @@
 						<span class="btn btn-link" tabindex="-1"><i class="icon-list"></i></span>
 					</div>
 					<div class="btn-group" style="float: right; margin-right: -12px">
-						<span id="submit_post_btn" class="btn" onclick="app.post_topic()"><i class="icon-ok"></i> Submit</span>
-						<span class="btn" id="discard-post"><i class="icon-remove"></i> Discard</span>
+						<button id="submit_post_btn" class="btn" onclick="app.post_topic()" tabIndex="3"><i class="icon-ok"></i> Submit</button>
+						<button class="btn" id="discard-post" tabIndex="4"><i class="icon-remove"></i> Discard</button>
 					</div>
 				</div>
 
-				<textarea id="post_content" placeholder="Type your message here."></textarea>
+				<textarea id="post_content" placeholder="Type your message here." tabIndex="2"></textarea>
 
 			</div>
 		</div>

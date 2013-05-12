@@ -214,7 +214,6 @@
 			// Fix delete state for this thread's posts
 			var	postEls = document.querySelectorAll('#post-container li[data-deleted]');
 			for(var x=0,numPosts=postEls.length;x<numPosts;x++) {
-				console.log(postEls[x].getAttribute('data-pid'));
 				if (postEls[x].getAttribute('data-deleted') === '1') toggle_post_delete_state(postEls[x].getAttribute('data-pid'));
 				postEls[x].removeAttribute('data-deleted');
 			}
@@ -276,6 +275,7 @@
 		socket.on('event:new_post', function(data) {
 			var html = templates.prepare(templates['topic'].blocks['posts']).parse(data),
 				uniqueid = new Date().getTime();
+				console.log(data);
 
 			jQuery('<div id="' + uniqueid + '"></div>').appendTo("#post-container").hide().append(html).fadeIn('slow');	
 			set_up_posts(uniqueid);
