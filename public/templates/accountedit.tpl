@@ -50,6 +50,10 @@
 	    	<input id="userPhotoInput" type="file" name="userPhoto" >
 	    </form>
 	    
+	    <div id="upload-progress-box" class="progress progress-striped active hide">
+			<div id="upload-progress-bar" class="bar" style="width: 0%;"></div>
+		</div>
+	    
 	    <div id="alert-status" class="alert hide"></div>
    		<div id="alert-success" class="alert alert-success hide"></div>
    		<div id="alert-error" class="alert alert-error hide"></div>
@@ -141,6 +145,9 @@ $(document).ready(function() {
     $('#uploadForm').submit(function() {
         status('uploading the file ...');
 		
+		$('#upload-progress-bar').css('width', '0%');
+		$('#upload-progress-box').show();
+		
 		if(!$('#userPhotoInput').val()) {
 			error('select an image to upload!');
 			return false;			
@@ -151,6 +158,11 @@ $(document).ready(function() {
 			error: function(xhr) {
 				error('Error: ' + xhr.status);
 			},
+ 			
+ 			uploadProgress : function(event, position, total, percent) {
+ 				$('#upload-progress-bar').css('width', percent+'%');
+ 			},
+ 			
  
 			success: function(response) {
 				if(response.error) {
@@ -182,6 +194,7 @@ $(document).ready(function() {
  		$('#alert-status').hide();
 		$('#alert-success').hide();
 		$('#alert-error').hide();
+		$('#upload-progress-box').hide();
  	}
  
     function status(message) {
@@ -310,13 +323,14 @@ $(document).ready(function() {
 		
     	$('#change-picture-modal').modal('hide');
     	$('#upload-picture-modal').modal('show');
+
     	hideAlerts();
     	
-    	$('#pictureUploadSubmitBtn').on('click', function() {
-		    $('#uploadForm').submit();
-    	});
-    	
     	return false;
+	});
+	
+	$('#pictureUploadSubmitBtn').on('click', function() {
+		$('#uploadForm').submit();
 	});
     
     
