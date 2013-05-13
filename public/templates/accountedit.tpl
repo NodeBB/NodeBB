@@ -50,7 +50,9 @@
 	    	<input id="userPhotoInput" type="file" name="userPhoto" >
 	    </form>
 	    
-	    <span id="status" />
+	    <div id="alert-status" class="alert hide"></div>
+   		<div id="alert-success" class="alert alert-success hide"></div>
+   		<div id="alert-error" class="alert alert-error hide"></div>
    	
 	  </div>
 	  <div class="modal-footer">
@@ -142,12 +144,12 @@ $(document).ready(function() {
         $(this).ajaxSubmit({
  
 			error: function(xhr) {
-				status('Error: ' + xhr.status);
+				error('Error: ' + xhr.status);
 			},
  
 			success: function(response) {
 				if(response.error) {
-					status('Opps, something bad happened');
+					error(response.error);
 					return;
 				}
  
@@ -158,18 +160,38 @@ $(document).ready(function() {
  				
 				$('#user-data-uploadedpicture').html(imageUrlOnServer);        
  								
-	        	$('#upload-picture-modal').modal('hide');
+				setTimeout(function() {
+					hideAlerts();
+		        	$('#upload-picture-modal').modal('hide');
+				}, 750);
 	        	
 				socket.emit('api:updateHeader', { fields: ['username', 'picture'] });
-				status('');
+				success('File uploaded successfully!');
             }
 		});
 
 		return false;
     });
  
+ 	function hideAlerts() {
+ 		$('#alert-status').hide();
+		$('#alert-success').hide();
+		$('#alert-error').hide();
+ 	}
+ 
     function status(message) {
-		$('#status').text(message);
+    	hideAlerts();
+		$('#alert-status').text(message).show();
+    }
+    
+    function success(message) {
+    	hideAlerts();
+		$('#alert-success').text(message).show();
+    }
+    
+    function error(message) {
+    	hideAlerts();
+		$('#alert-error').text(message).show();
     }
 });
 

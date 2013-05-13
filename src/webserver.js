@@ -205,6 +205,13 @@ var express = require('express'),
 		if(!req.user)
 			return res.redirect('/403');
 		
+		if(req.files.userPhoto.size > 65536) {
+			res.send({
+				error: 'Images must be smaller than 64kb!'
+			});
+			return;
+		}
+		
 		user.getUserField(req.user.uid, 'uploadedpicture', function(uploadedpicture) {
 			
 			var index = uploadedpicture.lastIndexOf('/');
@@ -234,7 +241,7 @@ var express = require('express'),
 			function(error) {
 	            if(error) {
 					res.send({
-	                    error: 'Ah crap! Something bad happened'
+	                    error: 'Error uploading file! Error : '+ JSON.stringify(error)
 					});
 	                return;
 	            }
