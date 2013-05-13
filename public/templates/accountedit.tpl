@@ -140,7 +140,12 @@ $(document).ready(function() {
  
     $('#uploadForm').submit(function() {
         status('uploading the file ...');
- 
+		
+		if(!$('#userPhotoInput').val()) {
+			error('select an image to upload!');
+			return false;			
+		}
+
         $(this).ajaxSubmit({
  
 			error: function(xhr) {
@@ -248,15 +253,19 @@ $(document).ready(function() {
         	var gravatarPicture = $('#user-data-gravatarpicture').html();        
 			var uploadedPicture = $('#user-data-uploadedpicture').html();        
 
-			if(gravatarPicture)
+			if(gravatarPicture) {
 	        	$('#user-gravatar-picture').attr('src', gravatarPicture);
+	        	$('#gravatar-box').show();
+	        }
 	        else
-	        	$('#user-gravatar-picture').addClass('hide');
+	        	$('#gravatar-box').hide();
 
-        	if(uploadedPicture)
+        	if(uploadedPicture) {
 	        	$('#user-uploaded-picture').attr('src', uploadedPicture);
+	        	$('#uploaded-box').show();
+	        }
 	        else
-	        	$('#user-uploaded-picture').addClass('hide');
+	        	$('#uploaded-box').hide();
 	        	
 	        	
 	         if(currentPicture == gravatarPicture)

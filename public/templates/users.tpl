@@ -11,11 +11,11 @@
 		<a href="/users/{users.username}">{users.username}</a>
 	    <br/>
 		<div title="reputation">
-			<span id='reputation'>{users.reputation}</span>
+			<span class='reputation'>{users.reputation}</span>
 			<i class='icon-star'></i>
 		</div>
 		<div title="post count">
-			<span id='postcount'>{users.postcount}</span>
+			<span class='postcount'>{users.postcount}</span>
 			<i class='icon-pencil'></i>
 		</div>
 
@@ -32,11 +32,14 @@
     }
     
     $(document).ready(function() {
-        var rep = $('#reputation');
-        rep.html(addCommas(rep.html()));
         
-        var postcount = $('#postcount');
-        postcount.html(addCommas(postcount.html()));
+        $('.reputation').each(function(index, element) {
+        	$(element).html(addCommas($(element).html()));
+        })
+        
+        $('.postcount').each(function(index, element) {
+        	$(element).html(addCommas($(element).html()));
+        })
         
     });
     

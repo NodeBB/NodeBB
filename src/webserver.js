@@ -233,6 +233,14 @@ var express = require('express'),
 	});
 	
 	function uploadUserPicture(uid, filename, tempPath, res) {
+
+		if(!filename){
+			res.send({
+                error: 'Error uploading file! Error : Invalid file name!'
+			});
+            return;
+		}
+		
 		var uploadPath = config['upload_path'] + uid + '-' + filename;
 
 		fs.rename(
