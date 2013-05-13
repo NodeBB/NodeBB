@@ -4,6 +4,13 @@ var config = {
 
 	// "base_url" is expected to be a publically accessible URL to your NodeBB instance (Default base_url: 'http://localhost', port: '4567')
 	"base_url": "http://localhost",
+	
+	// public url for uploaded files
+	"upload_url": "http://dev.domain.com/uploads/",
+	
+	// relative path for uploads
+	"upload_path": "/uploads/",
+	
 	"use_port": true,
 	"port": 4567,
 

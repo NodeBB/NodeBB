@@ -198,10 +198,7 @@ $(document).ready(function() {
     	hideAlerts();
 		$('#alert-error').text(message).show();
     }
-});
 
-
-(function() {	
 	
 	function submitUserData() {
 		var userData = {
@@ -234,103 +231,102 @@ $(document).ready(function() {
             }                
 		);
 	}
-	
-	
-    $(document).ready(function(){
-        
-		var selectedImageType = '';
-        
-        $('#submitBtn').on('click',function(){
 
-           submitUserData();
+        
+	var selectedImageType = '';
+    
+    $('#submitBtn').on('click',function(){
 
-        });
-        
-        
-        function updateImages() {
-        	
-			var currentPicture = $('#user-current-picture').attr('src');
-        	var gravatarPicture = $('#user-data-gravatarpicture').html();        
-			var uploadedPicture = $('#user-data-uploadedpicture').html();        
+       submitUserData();
 
-			if(gravatarPicture) {
-	        	$('#user-gravatar-picture').attr('src', gravatarPicture);
-	        	$('#gravatar-box').show();
-	        }
-	        else
-	        	$('#gravatar-box').hide();
-
-        	if(uploadedPicture) {
-	        	$('#user-uploaded-picture').attr('src', uploadedPicture);
-	        	$('#uploaded-box').show();
-	        }
-	        else
-	        	$('#uploaded-box').hide();
-	        	
-	        	
-	         if(currentPicture == gravatarPicture)
-		        $('#gravatar-box .icon-ok').show();
-			else
-		        $('#gravatar-box .icon-ok').hide();
-		        
-   	        if(currentPicture == uploadedPicture)
-		        $('#uploaded-box .icon-ok').show();
-			else
-		        $('#uploaded-box .icon-ok').hide();
-        }
-        
-        
-        $('#changePictureBtn').on('click', function() {
-			selectedImageType = '';
-			updateImages();
-        	
-        	$('#change-picture-modal').modal('show');
-        	
-        	return false;
-        });
-        
-        $('#gravatar-box').on('click', function(){
-    		$('#gravatar-box .icon-ok').show();
-	        $('#uploaded-box .icon-ok').hide();
-	        selectedImageType = 'gravatar';
-    	});
-    	
-    	$('#uploaded-box').on('click', function(){
-    		$('#gravatar-box .icon-ok').hide();
-	        $('#uploaded-box .icon-ok').show();
-	        selectedImageType = 'uploaded';
-    	});
-    	
-    	$('#savePictureChangesBtn').on('click', function() {
-        	$('#change-picture-modal').modal('hide');
-
-        	if(selectedImageType) {
-	        	changeUserPicture(selectedImageType);
-	        	
-	        	if(selectedImageType == 'gravatar')
-			        $('#user-current-picture').attr('src', $('#user-data-gravatarpicture').html());		
-				else if(selectedImageType == 'uploaded')
-			        $('#user-current-picture').attr('src', $('#user-data-uploadedpicture').html());						
-	        }
-        	
-    	});
-    	
-    	$('#upload-picture-modal').on('hide', function() {
-    		$('#userPhotoInput').val('');
-    	});
-    	
-    	$('#uploadPictureBtn').on('click', function(){
-    		
-        	$('#change-picture-modal').modal('hide');
-        	$('#upload-picture-modal').modal('show');
-        	
-        	$('#pictureUploadSubmitBtn').on('click', function() {
-    		    $('#uploadForm').submit();
-        	});
-        	
-        	return false;
-    	});
-        
     });
-}());
+    
+    
+    function updateImages() {
+    	
+		var currentPicture = $('#user-current-picture').attr('src');
+    	var gravatarPicture = $('#user-data-gravatarpicture').html();        
+		var uploadedPicture = $('#user-data-uploadedpicture').html();        
+
+		if(gravatarPicture) {
+        	$('#user-gravatar-picture').attr('src', gravatarPicture);
+        	$('#gravatar-box').show();
+        }
+        else
+        	$('#gravatar-box').hide();
+
+    	if(uploadedPicture) {
+        	$('#user-uploaded-picture').attr('src', uploadedPicture);
+        	$('#uploaded-box').show();
+        }
+        else
+        	$('#uploaded-box').hide();
+        	
+        	
+         if(currentPicture == gravatarPicture)
+	        $('#gravatar-box .icon-ok').show();
+		else
+	        $('#gravatar-box .icon-ok').hide();
+	        
+        if(currentPicture == uploadedPicture)
+	        $('#uploaded-box .icon-ok').show();
+		else
+	        $('#uploaded-box .icon-ok').hide();
+    }
+    
+    
+    $('#changePictureBtn').on('click', function() {
+		selectedImageType = '';
+		updateImages();
+    	
+    	$('#change-picture-modal').modal('show');
+    	
+    	return false;
+    });
+    
+    $('#gravatar-box').on('click', function(){
+		$('#gravatar-box .icon-ok').show();
+        $('#uploaded-box .icon-ok').hide();
+        selectedImageType = 'gravatar';
+	});
+	
+	$('#uploaded-box').on('click', function(){
+		$('#gravatar-box .icon-ok').hide();
+        $('#uploaded-box .icon-ok').show();
+        selectedImageType = 'uploaded';
+	});
+	
+	$('#savePictureChangesBtn').on('click', function() {
+    	$('#change-picture-modal').modal('hide');
+
+    	if(selectedImageType) {
+        	changeUserPicture(selectedImageType);
+        	
+        	if(selectedImageType == 'gravatar')
+		        $('#user-current-picture').attr('src', $('#user-data-gravatarpicture').html());		
+			else if(selectedImageType == 'uploaded')
+		        $('#user-current-picture').attr('src', $('#user-data-uploadedpicture').html());						
+        }
+    	
+	});
+	
+	$('#upload-picture-modal').on('hide', function() {
+		$('#userPhotoInput').val('');
+	});
+	
+	$('#uploadPictureBtn').on('click', function(){
+		
+    	$('#change-picture-modal').modal('hide');
+    	$('#upload-picture-modal').modal('show');
+    	hideAlerts();
+    	
+    	$('#pictureUploadSubmitBtn').on('click', function() {
+		    $('#uploadForm').submit();
+    	});
+    	
+    	return false;
+	});
+    
+    
+});
 </script>

@@ -241,11 +241,14 @@ var express = require('express'),
             return;
 		}
 		
-		var uploadPath = config['upload_path'] + uid + '-' + filename;
+		filename = uid + '-' + filename
+		var uploadPath = config.upload_path + filename;
 
+		console.log(uploadPath);
+		
 		fs.rename(
 			tempPath,
-			global.configuration['ROOT_DIRECTORY']+ uploadPath,
+			global.configuration['ROOT_DIRECTORY'] + uploadPath,
 			function(error) {
 	            if(error) {
 					res.send({
@@ -254,7 +257,7 @@ var express = require('express'),
 	                return;
 	            }
 	 			
-	 			var imageUrl = config.base_url + config.install_path + uploadPath;
+	 			var imageUrl = config.upload_url + filename;
 	 			
 	            res.send({
 					path: imageUrl
