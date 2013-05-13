@@ -198,25 +198,6 @@ $(document).ready(function() {
     	hideAlerts();
 		$('#alert-error').text(message).show();
     }
-
-	
-	function submitUserData() {
-		var userData = {
-            uid:$('#inputUID').val(),
-            email:$('#inputEmail').val(),
-            fullname:$('#inputFullname').val(),
-            website:$('#inputWebsite').val(),
-            birthday:$('#inputBirthday').val(),
-            location:$('#inputLocation').val()
-        };
-            
-		$.post('/edituser',
-        	userData,
-            function(data) {
-
-			}                
-		);
-	}
 	
 	function changeUserPicture(type) { 
 		var userData = {
@@ -231,16 +212,27 @@ $(document).ready(function() {
             }                
 		);
 	}
-
         
 	var selectedImageType = '';
     
     $('#submitBtn').on('click',function(){
 
-       submitUserData();
+       var userData = {
+            uid:$('#inputUID').val(),
+            email:$('#inputEmail').val(),
+            fullname:$('#inputFullname').val(),
+            website:$('#inputWebsite').val(),
+            birthday:$('#inputBirthday').val(),
+            location:$('#inputLocation').val()
+        };
+            
+		$.post('/edituser',
+        	userData,
+            function(data) {
 
+			}                
+		);
     });
-    
     
     function updateImages() {
     	
