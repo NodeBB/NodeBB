@@ -268,7 +268,7 @@ var express = require('express'),
             return;
 		}
 		
-		filename = uid + '-' + filename
+		filename = uid + '-' + filename;
 		var uploadPath = config.upload_path + filename;
 		
 		console.log('trying to upload to : '+ global.configuration['ROOT_DIRECTORY'] + uploadPath);
