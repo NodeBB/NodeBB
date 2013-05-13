@@ -131,9 +131,6 @@
 			res.send(templates['header'] + templates['reset'] + templates['footer']);
 		});
 
-		app.get('/register', function(req, res) {
-			res.send(templates['header'] + templates['register'] + templates['footer']);
-		});
 
 		app.post('/login', passport.authenticate('local', {
 			successRedirect: '/',
@@ -141,6 +138,7 @@
 		}));
 		
 		app.post('/register', function(req, res) {
+			console.log('wtf');
 			user_module.create(req.body.username, req.body.password, req.body.email, function(err, uid) {
 				if (err === null) {
 					req.login({
