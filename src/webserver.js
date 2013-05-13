@@ -227,6 +227,13 @@ var express = require('express'),
 		if(!req.user)
 			return res.redirect('/403');
 		
+		if(req.files.userPhoto.size > 131072) {
+			res.send({
+				error: 'Images must be smaller than 128kb!'
+			});
+			return;
+		}
+		
 		user.getUserField(req.user.uid, 'uploadedpicture', function(uploadedpicture) {
 			
 			var index = uploadedpicture.lastIndexOf('/');
@@ -248,20 +255,29 @@ var express = require('express'),
 	});
 	
 	function uploadUserPicture(uid, filename, tempPath, res) {
-		var uploadPath = config['upload_path'] + uid + '-' + filename;
 
+		if(!filename){
+			res.send({
+                error: 'Error uploading file! Error : Invalid file name!'
+			});
+            return;
+		}
+		
+		filename = uid + '-' + filename
+		var uploadPath = config.upload_path + filename;
+		
 		fs.rename(
 			tempPath,
-			global.configuration['ROOT_DIRECTORY']+ uploadPath,
+			global.configuration['ROOT_DIRECTORY'] + uploadPath,
 			function(error) {
 	            if(error) {
 					res.send({
-	                    error: 'Ah crap! Something bad happened'
+	                    error: 'Error uploading file!'
 					});
 	                return;
 	            }
 	 			
-	 			var imageUrl = config.base_url + config.install_path + uploadPath;
+	 			var imageUrl = config.upload_url + filename;
 	 			
 	            res.send({
 					path: imageUrl
@@ -272,7 +288,6 @@ var express = require('express'),
 	            
 			}
     	);
-		
 	}
 	
 
