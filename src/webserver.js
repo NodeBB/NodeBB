@@ -234,10 +234,15 @@ var express = require('express'),
 			return;
 		}
 		
-		user.getUserField(req.user.uid, 'uploadedpicture', function(uploadedpicture) {
+		user.getUserField(req.user.uid, 'uploadedpicture', function(oldpicture) {
+
+			if(!oldpicture) {
+				uploadUserPicture(req.user.uid, req.files.userPhoto.name, req.files.userPhoto.path, res);
+				return;
+			}
 			
-			var index = uploadedpicture.lastIndexOf('/');
-			var filename = uploadedpicture.substr(index+1);
+			var index = oldpicture.lastIndexOf('/');
+			var filename = oldpicture.substr(index+1);
 
 			var absolutePath = global.configuration['ROOT_DIRECTORY'] + config.upload_path + filename;
 
@@ -266,11 +271,14 @@ var express = require('express'),
 		filename = uid + '-' + filename
 		var uploadPath = config.upload_path + filename;
 		
+		console.log('trying to upload to : '+ global.configuration['ROOT_DIRECTORY'] + uploadPath);
+		
 		fs.rename(
 			tempPath,
 			global.configuration['ROOT_DIRECTORY'] + uploadPath,
 			function(error) {
 	            if(error) {
+	            	console.log(error);
 					res.send({
 	                    error: 'Error uploading file!'
 					});
