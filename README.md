@@ -43,6 +43,10 @@ The server configuration file (located at `/config.js`) contains default options
 		<td><i>(Default: 'http://localhost')</i> A web-accessible URL to your app, without the port</td>
 	</tr>
 	<tr>
+		<td><b>upload_path</b></td>
+		<td><i>(Default: '/public/uploads')</i> A relative path (relative to the application's web root) to the uploads folder. Please ensure that Node.js can write to this folder</td>
+	</tr>
+	<tr>
 		<td><b>use_port</b></td>
 		<td><i>(Default: true)</i> Whether or not to include the port number when constructing the url for use in NodeBB. If you are serving NodeBB via a proxy (i.e. nginx), switch this off.
 	<tr>

@@ -6,7 +6,7 @@ var config = {
 	"base_url": "http://localhost",
 	
 	// relative path for uploads
-	"upload_path": "/uploads/",
+	"upload_path": "/public/uploads/",
 	
 	"use_port": true,
 	"port": 4567,

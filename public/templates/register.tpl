@@ -9,7 +9,7 @@
 		</form>
 	</div>
 	<div class="well span6 {alternate_logins:display}">
-		<h4>Alternative Logins</h4>
+		<h4>Alternative Registration</h4>
 		<ul class="alt-logins">
 			<li data-url="/auth/twitter" class="twitter {twitter:display}"></li>
 			<li data-url="/auth/google" class="google {google:display}"></li>
