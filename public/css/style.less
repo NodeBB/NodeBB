@@ -156,11 +156,15 @@ footer.footer {
 	}
 .topic-row-icon {
 	border-radius: 5px 0 0 5px;
-	height: 75px;
+	height: 64px;
 	background: #0059B2;
 	color: white;
 	line-height: 105px;
-	min-width: 75px;
+	min-width: 64px;
+	i {
+		vertical-align: 25%;
+		margin-left: 8px;
+	}
 }
 
 @media (max-width: 767px) 
@@ -173,6 +177,28 @@ footer.footer {
 .top-posters {
 	float: right;
 	padding-top: 2px;
+
+	div.img-polaroid {
+		width: 300px;
+		height: 50px;
+		line-height: 16px;
+		img {
+			display: block;
+			float: left;
+		}
+		p {
+			display: block;
+			float: left;
+			width: 240px;
+			margin-left: 10px;
+			overflow: hidden;
+			height: 50px;
+		}
+	}
+	.img-polaroid {
+		margin-left: 1px;
+		border: 1px solid rgba(0,0,0,0.1);
+	}
 }
 
 .topic-row-content {
@@ -183,6 +209,7 @@ footer.footer {
 	padding: 0;
 	margin: 0;
 	margin-top: 4px;
+	line-height: 30px;
 }
 
 .topic-row-content h3 small {
