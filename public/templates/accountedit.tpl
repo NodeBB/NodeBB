@@ -21,7 +21,7 @@
 		    <span class="user-picture-label">Gravatar</span>
    		    <i class='icon-ok icon-2x'></i>
 	    </div>
-	    
+	    <br/>
 	    <div id="uploaded-box">
 		    <img id="user-uploaded-picture" src="" class="img-polaroid user-profile-picture">
 		    <span class="user-picture-label">Uploaded picture</span>
@@ -75,7 +75,7 @@
 
     <div class="account-picture-block text-center">
         <img id="user-current-picture" class="user-profile-picture" src="{user.picture}" /><br/>
-        <a id="changePictureBtn" href="#">change picture</a>
+        <a id="changePictureBtn" href="#" class="btn btn-primary">change picture</a>
     </div>
   
       
