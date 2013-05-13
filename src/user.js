@@ -76,8 +76,14 @@ var	config = require('../config.js'),
 		
 		for(var i=0,ii=fields.length; i<ii; ++i) {
 			key = fields[i];
-			if(data[key] !== undefined)
+			if(data[key] !== undefined) {
+				
 				User.setUserField(uid, key, data[key]);
+				
+				if(key === 'email') {
+					User.setUserField(uid, 'gravatarpicture', User.createGravatarURLFromEmail(data[key]));
+				}
+			}
 		}
 	}
 
