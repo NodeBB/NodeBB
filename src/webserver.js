@@ -348,10 +348,6 @@ var express = require('express'),
 				{
 					data.joindate = utils.relativeTime(data.joindate);
 					data.age = new Date().getFullYear() - new Date(data.birthday).getFullYear();
-
-					console.log(data.birthday);
-					console.log(new Date(data.birthday).getFullYear());
-
 					data.uid = uid;
 					
 					callback({
