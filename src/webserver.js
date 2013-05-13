@@ -124,6 +124,28 @@ var express = require('express'),
 
 					res.send(JSON.stringify(data));
 				break;
+			case 'register' :
+					var data = {},
+						login_strategies = auth.get_login_strategies(),
+						num_strategies = login_strategies.length;
+
+					if (num_strategies == 0) {
+						data = {
+							'register_window:spansize': 'span12',
+							'alternate_logins:display': 'none'
+						};	
+					} else {
+						data = {
+							'register_window:spansize': 'span6',
+							'alternate_logins:display': 'block'
+						}
+						for (var i=0, ii=num_strategies; i<ii; i++) {
+							data[login_strategies[i] + ':display'] = 'active';
+						}
+					}
+
+					res.send(JSON.stringify(data));
+				break;
 			case 'topic' :
 					global.modules.posts.get(function(data) {
 						res.send(JSON.stringify(data));
