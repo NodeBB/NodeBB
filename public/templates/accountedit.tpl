@@ -19,13 +19,13 @@
 	    <div id="gravatar-box">
 		    <img id="user-gravatar-picture" src="" class="img-polaroid user-profile-picture">
 		    <span class="user-picture-label">Gravatar</span>
-   		    <i class='icon-ok'></i>
+   		    <i class='icon-ok icon-2x'></i>
 	    </div>
 	    
 	    <div id="uploaded-box">
 		    <img id="user-uploaded-picture" src="" class="img-polaroid user-profile-picture">
 		    <span class="user-picture-label">Uploaded picture</span>
-		    <i class='icon-ok'></i>
+		    <i class='icon-ok icon-2x'></i>
 	    </div>
 	    
 	    <a id="uploadPictureBtn" href="#">Upload new picture</a>
@@ -49,6 +49,10 @@
 	    <form id="uploadForm" action="/pictureupload" method="post" enctype="multipart/form-data">
 	    	<input id="userPhotoInput" type="file" name="userPhoto" >
 	    </form>
+	    
+	    <div id="upload-progress-box" class="progress progress-striped active hide">
+			<div id="upload-progress-bar" class="bar" style="width: 0%;"></div>
+		</div>
 	    
 	    <div id="alert-status" class="alert hide"></div>
    		<div id="alert-success" class="alert alert-success hide"></div>
@@ -141,6 +145,9 @@ $(document).ready(function() {
     $('#uploadForm').submit(function() {
         status('uploading the file ...');
 		
+		$('#upload-progress-bar').css('width', '0%');
+		$('#upload-progress-box').show();
+		
 		if(!$('#userPhotoInput').val()) {
 			error('select an image to upload!');
 			return false;			
@@ -151,6 +158,11 @@ $(document).ready(function() {
 			error: function(xhr) {
 				error('Error: ' + xhr.status);
 			},
+ 			
+ 			uploadProgress : function(event, position, total, percent) {
+ 				$('#upload-progress-bar').css('width', percent+'%');
+ 			},
+ 			
  
 			success: function(response) {
 				if(response.error) {
@@ -182,6 +194,7 @@ $(document).ready(function() {
  		$('#alert-status').hide();
 		$('#alert-success').hide();
 		$('#alert-error').hide();
+		$('#upload-progress-box').hide();
  	}
  
     function status(message) {
@@ -198,25 +211,6 @@ $(document).ready(function() {
     	hideAlerts();
 		$('#alert-error').text(message).show();
     }
-
-	
-	function submitUserData() {
-		var userData = {
-            uid:$('#inputUID').val(),
-            email:$('#inputEmail').val(),
-            fullname:$('#inputFullname').val(),
-            website:$('#inputWebsite').val(),
-            birthday:$('#inputBirthday').val(),
-            location:$('#inputLocation').val()
-        };
-            
-		$.post('/edituser',
-        	userData,
-            function(data) {
-
-			}                
-		);
-	}
 	
 	function changeUserPicture(type) { 
 		var userData = {
@@ -231,16 +225,27 @@ $(document).ready(function() {
             }                
 		);
 	}
-
         
 	var selectedImageType = '';
     
     $('#submitBtn').on('click',function(){
 
-       submitUserData();
+       var userData = {
+            uid:$('#inputUID').val(),
+            email:$('#inputEmail').val(),
+            fullname:$('#inputFullname').val(),
+            website:$('#inputWebsite').val(),
+            birthday:$('#inputBirthday').val(),
+            location:$('#inputLocation').val()
+        };
+            
+		$.post('/edituser',
+        	userData,
+            function(data) {
 
+			}                
+		);
     });
-    
     
     function updateImages() {
     	
@@ -318,13 +323,14 @@ $(document).ready(function() {
 		
     	$('#change-picture-modal').modal('hide');
     	$('#upload-picture-modal').modal('show');
+
     	hideAlerts();
     	
-    	$('#pictureUploadSubmitBtn').on('click', function() {
-		    $('#uploadForm').submit();
-    	});
-    	
     	return false;
+	});
+	
+	$('#pictureUploadSubmitBtn').on('click', function() {
+		$('#uploadForm').submit();
 	});
     
     
