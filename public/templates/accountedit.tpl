@@ -19,13 +19,13 @@
 	    <div id="gravatar-box">
 		    <img id="user-gravatar-picture" src="" class="img-polaroid user-profile-picture">
 		    <span class="user-picture-label">Gravatar</span>
-   		    <i class='icon-ok'></i>
+   		    <i class='icon-ok icon-2x'></i>
 	    </div>
 	    
 	    <div id="uploaded-box">
 		    <img id="user-uploaded-picture" src="" class="img-polaroid user-profile-picture">
 		    <span class="user-picture-label">Uploaded picture</span>
-		    <i class='icon-ok'></i>
+		    <i class='icon-ok icon-2x'></i>
 	    </div>
 	    
 	    <a id="uploadPictureBtn" href="#">Upload new picture</a>

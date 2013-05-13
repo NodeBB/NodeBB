@@ -205,9 +205,9 @@ var express = require('express'),
 		if(!req.user)
 			return res.redirect('/403');
 		
-		if(req.files.userPhoto.size > 65536) {
+		if(req.files.userPhoto.size > 131072) {
 			res.send({
-				error: 'Images must be smaller than 64kb!'
+				error: 'Images must be smaller than 128kb!'
 			});
 			return;
 		}
@@ -243,8 +243,6 @@ var express = require('express'),
 		
 		filename = uid + '-' + filename
 		var uploadPath = config.upload_path + filename;
-
-		console.log(uploadPath);
 		
 		fs.rename(
 			tempPath,
@@ -252,7 +250,7 @@ var express = require('express'),
 			function(error) {
 	            if(error) {
 					res.send({
-	                    error: 'Error uploading file! Error : '+ JSON.stringify(error)
+	                    error: 'Error uploading file!'
 					});
 	                return;
 	            }
@@ -268,7 +266,6 @@ var express = require('express'),
 	            
 			}
     	);
-		
 	}
 	
 
