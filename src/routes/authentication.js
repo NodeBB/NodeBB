@@ -138,9 +138,8 @@
 		}));
 		
 		app.post('/register', function(req, res) {
-			console.log('wtf');
 			user_module.create(req.body.username, req.body.password, req.body.email, function(err, uid) {
-				if (err === null) {
+				if (err === null && uid > 0) {
 					req.login({
 						uid: uid
 					}, function() {

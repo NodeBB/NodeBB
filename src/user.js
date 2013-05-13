@@ -237,60 +237,49 @@ var	config = require('../config.js'),
 
 	User.create = function(username, password, email, callback) {
 
-		if(!username) {
-			console.log("invalid registration data! username ["+username+"], password ["+password+"], email ["+email+"]");
-			return;
-		}
-	
-		// TODO : check if username email is unique!! -baris
-	
+		User.exists(username, function(exists) {
+			if (exists || email.indexOf('@') === -1 || password.length < 5) return callback(null, -1);
 
-		RDB.incr('global:next_user_id', function(err, uid) {
-			RDB.handle(err);
-			
-			console.log("Registering uid : " + uid);
+			RDB.incr('global:next_user_id', function(err, uid) {
+				RDB.handle(err);
+				User.hashPassword(password, function(hash) {
+					var gravatar = User.createGravatarURLFromEmail(email);
 
-			User.hashPassword(password, function(hash) {
+					RDB.hmset('user:'+uid, {
+						'username' : username,
+						'fullname': '',
+						'location':'',
+						'birthday':'',
+						'website':'',
+						'email' : email,
+						'joindate' : new Date().getTime(),
+						'password' : hash,
+						'picture': gravatar,
+						'gravatarpicture' : gravatar,
+						'uploadedpicture': '',
+						'reputation': 0,
+						'postcount': 0
+					});
+					
+					RDB.set('username:' + username + ':uid', uid);
+					RDB.set('email:' + email +':uid', uid);			
+					
+					if(email)
+						User.sendConfirmationEmail(email);
+				
+					RDB.incr('usercount', function(err, count) {
+						RDB.handle(err);
+				
+						io.sockets.emit('user.count', {count: count});
+					});
 
-				var gravatar = User.createGravatarURLFromEmail(email);
+					RDB.lpush('userlist', username);
+					io.sockets.emit('user.latest', {username: username});
 
-				RDB.hmset('user:'+uid, {
-					'username' : username,
-					'fullname': '',
-					'location':'',
-					'birthday':'',
-					'website':'',
-					'email' : email,
-					'joindate' : new Date().getTime(),
-					'password' : hash,
-					'picture': gravatar,
-					'gravatarpicture' : gravatar,
-					'uploadedpicture': '',
-					'reputation': 0,
-					'postcount': 0
+					callback(null, uid);
 				});
-				
-				RDB.set('username:' + username + ':uid', uid);
-				RDB.set('email:' + email +':uid', uid);			
-				
-				if(email)
-					User.sendConfirmationEmail(email);
-			
-				RDB.incr('usercount', function(err, count) {
-					RDB.handle(err);
-			
-					io.sockets.emit('user.count', {count: count});
-				});
-
-				RDB.lpush('userlist', username);
-				io.sockets.emit('user.latest', {username: username});
-
-				callback(null, uid);
-				
 			});
-
 		});
-
 	};
 
 	User.createGravatarURLFromEmail = function(email) {
