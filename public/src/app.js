@@ -143,6 +143,40 @@ var socket,
 			} 
 		}
 
+		// If there was a saved draft, populate the post content with it now
+		if (localStorage) {
+			var draft = localStorage.getItem(post_mode + '_' + id + '_draft');
+			if (draft && draft.length > 0) {
+				post_content.value = draft;
+				localStorage.removeItem(post_mode + '_' + id + '_draft');
+			}
+		}
+
+		// Override post window behaviour if user is not logged in
+		if (document.getElementById('user_label') === null) {
+			submit_post_btn.innerHTML = '<i class="icon-save"></i> Save &amp; Login</i>';
+			submit_post_btn.onclick = function() {
+				// Save the post content in localStorage and send the user to registration page
+				if (localStorage && post_content.value.length > 0) {
+					localStorage.setItem(post_mode + '_' + id + '_draft', post_content.value);
+
+					jQuery(post_window).slideUp(250);
+					$(document.body).removeClass('composing');
+					post_title.value = '';
+					reply_title.value = '';
+					post_content.value = '';
+
+					app.alert({
+						title: 'Post Saved',
+						message: 'We&apos;ve saved your post as a draft. It will be available again when you log in and post again.',
+						type: 'notify',
+						timeout: 5000
+					});
+
+					ajaxify.go('login');
+				}
+			}
+		}
 	};
 
 

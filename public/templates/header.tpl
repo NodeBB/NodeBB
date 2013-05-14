@@ -65,7 +65,7 @@
 						<span class="btn btn-link" tabindex="-1"><i class="icon-list"></i></span>
 					</div>
 					<div class="btn-group" style="float: right; margin-right: -12px">
-						<button id="submit_post_btn" class="btn" onclick="app.post_topic()" tabIndex="3"><i class="icon-ok"></i> Submit</button>
+						<button id="submit_post_btn" class="btn" tabIndex="3"><i class="icon-ok"></i> Submit</button>
 						<button class="btn" id="discard-post" tabIndex="4"><i class="icon-remove"></i> Discard</button>
 					</div>
 				</div>

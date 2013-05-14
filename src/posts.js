@@ -146,6 +146,16 @@ marked.setOptions({
 
 
 	Posts.reply = function(socket, tid, uid, content) {
+		if (uid < 1) {
+			socket.emit('event:alert', {
+				title: 'Reply Unsuccessful',
+				message: 'You don&apos;t seem to be logged in, so you cannot reply.',
+				type: 'error',
+				timeout: 2000
+			});
+			return;
+		}
+
 		Posts.create(uid, tid, content, function(pid) {
 			if (pid > 0) {
 				RDB.rpush('tid:' + tid + ':posts', pid);
