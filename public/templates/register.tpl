@@ -2,14 +2,14 @@
 <div class="row-fluid">
 	<div class="well {register_window:spansize}">
 		<form method="post" action="/register">
-			<label for="email">Email Address</label><input type="email" name="email" placeholder="Enter Email Address" id="email" /> <span id="email-notify" class="label label-important"></span> <br />
+			<label for="email">Email Address</label><input type="email" name="email" placeholder="Enter Email Address" id="email" /> <span id="email-notify" class="label label-important"></span><br />
 			<label for="username">Username</label><input type="text" name="username" placeholder="Enter Username" id="username" /> <span id="username-notify" class="label label-success"></span> <br />
-			<label for="password">Password</label><input type="password" name="password" placeholder="Enter Password" id="password" /><br />
+			<label for="password">Password</label><input type="password" name="password" placeholder="Enter Password" id="password" /> <span id="password-notify" class="label label-important"></span> <br />
 			<button class="btn btn-primary" id="register" type="submit">Register Now</button>
 		</form>
 	</div>
 	<div class="well span6 {alternate_logins:display}">
-		<h4>Alternative Logins</h4>
+		<h4>Alternative Registration</h4>
 		<ul class="alt-logins">
 			<li data-url="/auth/twitter" class="twitter {twitter:display}"></li>
 			<li data-url="/auth/google" class="google {google:display}"></li>
@@ -24,7 +24,8 @@
 		register = document.getElementById('register'),
 		emailEl = document.getElementById('email'),
 		username_notify = document.getElementById('username-notify'),
-		email_notify = document.getElementById('email-notify');
+		email_notify = document.getElementById('email-notify'),
+		password_notify = document.getElementById('password-notify');
 
 	username.onkeyup = function() {
 		if (username.value.length > 2) socket.emit('user.exists', {username: username.value});
@@ -35,6 +36,13 @@
 	}
 	emailEl.addEventListener('change', function() {
 		socket.emit('user.email.exists', { email: emailEl.value });
+	}, false);
+	password.addEventListener('keyup', function() {
+		if (password.value.length < 5) {
+			password_notify.innerHTML = 'Password too short';
+		} else {
+			password_notify.innerHTML = '';
+		}
 	}, false);
 
 	ajaxify.register_events(['user.exists', 'user.email.exists']);
@@ -63,5 +71,34 @@
 			document.location.href = e.target.getAttribute('data-url');
 		}
 	});
+
+	// Form Validation
+	function validateForm() {
+		var validated = true;
+		if (username.value.length < 2) {
+			username_notify.innerHTML = 'Invalid username';
+			username_notify.className = 'label label-important';
+			validated = false;
+		}
+
+		if (password.value.length < 5) {
+			password_notify.innerHTML = 'Password too short';
+			validated = false;
+		} else {
+			password_notify.innerHTML = '';
+		}
+
+		if (email.value.indexOf('@') === -1) {
+			email_notify.innerHTML = 'Invalid email address';
+			validated = false;
+		} else {
+			email_notify.innerHTML = '';
+		}
+
+		return validated;
+	}
+	register.addEventListener('click', function(e) {
+		if (!validateForm()) e.preventDefault();
+	}, false);
 }());
 </script>

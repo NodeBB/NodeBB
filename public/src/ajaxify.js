@@ -21,11 +21,12 @@ var ajaxify = {};
 
 
 	window.onpopstate = function(event) {
-		// this breaks reloading and results in ajaxify.go calling twice, believe it messes around with sockets. ill come back for you later bitchez
-		// ajaxify.go(document.location.href.replace(rootUrl +'/', ''));
+		console.log('popstate called:', event);
+		if (event !== null && event.state && event.state.url) ajaxify.go(event.state.url, null, null, true);
 	};
 
-	ajaxify.go = function(url, callback, custom_tpl) {
+	ajaxify.go = function(url, callback, template, quiet) {
+		// "quiet": If set to true, will not call pushState
 
 		// leave room and join global
 		app.enter_room('global');
@@ -41,7 +42,11 @@ var ajaxify = {};
 		}
 		
 		if (templates[tpl_url]) {
-			window.history.pushState({}, url, "/" + url);
+			if (quiet !== true) {
+				window.history.pushState({
+					"url": url
+				}, url, "/" + url);
+			}
 
 			jQuery('#footer').fadeOut(100);
 			jQuery('#content').fadeOut(100);
@@ -55,7 +60,7 @@ var ajaxify = {};
 				}
 				
 				jQuery('#content, #footer').fadeIn(200);
-			}, custom_tpl);
+			}, url, template);
 			
 			
 			return true;

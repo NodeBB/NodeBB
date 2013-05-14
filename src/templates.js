@@ -1,3 +1,6 @@
+var fs = require('fs');
+
+
 // to be deprecated in favour of client-side only templates.
 
 (function(Templates) {
@@ -7,7 +10,7 @@
 	function loadTemplates(templatesToLoad) {
 		for (var t in templatesToLoad) {
 			(function(file) {
-				modules.fs.readFile(global.configuration.ROOT_DIRECTORY + '/public/templates/' + file + '.tpl', function(err, html) {
+				fs.readFile(global.configuration.ROOT_DIRECTORY + '/public/templates/' + file + '.tpl', function(err, html) {
 					var template = function() {
 						this.toString = function() {
 							return this.html;
