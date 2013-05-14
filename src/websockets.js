@@ -1,16 +1,20 @@
 var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 	cookie = require('cookie'),
 	connect = require('connect'),
-	config = require('../config.js');
-
+	config = require('../config.js'),
+	user = require('./user.js'),
+	posts = require('./posts.js'),
+	topics = require('./topics.js'),
+	categories = require('./categories.js'),
+	templates = require('./templates.js');
+	
 (function(io) {
-	var	modules = null,
-			users = {},
+	var	users = {},
 			rooms = {}
 
 	global.io = io;
 	module.exports.init = function() {
-		modules = global.modules;
+		
 	}
 
 	// Adapted from http://howtonode.org/socket-io-auth
@@ -30,7 +34,7 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 		// Otherwise, continue unimpeded.
 		var sessionID = handshakeData.sessionID;
 		
-		global.modules.user.get_uid_by_session(sessionID, function(userId) {
+		user.get_uid_by_session(sessionID, function(userId) {
 			if (userId)
 			{
 				users[sessionID] = userId;
@@ -50,7 +54,7 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 
 		if (DEVELOPMENT === true) {
 			// refreshing templates
-			modules.templates.init();
+			templates.init();
 		}
 		
 		/*process.on('uncaughtException', function(err) {
@@ -93,7 +97,7 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 			}
 
 
-			modules.user.get_usernames_by_uids(uids, function(usernames) {
+			user.get_usernames_by_uids(uids, function(usernames) {
 				io.sockets.in(data.enter).emit('api:get_users_in_room', {
 					usernames: usernames,
 					uids: uids,
@@ -111,7 +115,7 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 		socket.on('api:updateHeader', function(data) {
 			if(uid) {
 						
-				modules.user.getUserFields(uid, data.fields, function(fields) {
+				user.getUserFields(uid, data.fields, function(fields) {
 					fields.uid = uid;
 					socket.emit('api:updateHeader', fields);
 				});
@@ -128,107 +132,107 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 		});
 		
 		socket.on('user.exists', function(data) {
-			modules.user.exists(data.username, function(exists){
+			user.exists(data.username, function(exists){
 				socket.emit('user.exists', {exists: exists});
 			});
 		});
 
 		socket.on('user.count', function(data) {
-			modules.user.count(socket, data);
+			user.count(socket, data);
 		});
 
 		socket.on('user.latest', function(data) {
-			modules.user.latest(socket, data);
+			user.latest(socket, data);
 		});
 
 		socket.on('user.email.exists', function(data) {
-			modules.user.email.exists(socket, data.email);
+			user.email.exists(socket, data.email);
 		});
 
 		socket.on('user:reset.send', function(data) {
-			modules.user.reset.send(socket, data.email);
+			user.reset.send(socket, data.email);
 		});
 
 		socket.on('user:reset.valid', function(data) {
-			modules.user.reset.validate(socket, data.code);
+			user.reset.validate(socket, data.code);
 		});
 
 		socket.on('user:reset.commit', function(data) {
-			modules.user.reset.commit(socket, data.code, data.password);
+			user.reset.commit(socket, data.code, data.password);
 		});
 
 		socket.on('api:topics.post', function(data) {
-			modules.topics.post(socket, uid, data.title, data.content, data.category_id);
+			topics.post(socket, uid, data.title, data.content, data.category_id);
 		});
 
 		socket.on('api:posts.reply', function(data) {
-			modules.posts.reply(socket, data.topic_id, uid, data.content);
+			posts.reply(socket, data.topic_id, uid, data.content);
 		});
 
 		socket.on('api:user.active.get', function() {
-			modules.user.active.get();
+			user.active.get();
 		});
 
 		socket.on('api:posts.favourite', function(data) {
-			modules.posts.favourite(io, data.pid, data.room_id, uid);
+			posts.favourite(io, data.pid, data.room_id, uid);
 		});
 
 		socket.on('api:posts.unfavourite', function(data) {
-			modules.posts.unfavourite(io, data.pid, data.room_id, uid);
+			posts.unfavourite(io, data.pid, data.room_id, uid);
 		});
 
 		socket.on('api:user.active.get_record', function() {
-			modules.user.active.get_record(socket);
+			user.active.get_record(socket);
 		});
 
 		socket.on('api:topic.delete', function(data) {
-			modules.topics.delete(data.tid, uid, socket);
+			topics.delete(data.tid, uid, socket);
 		});
 
 		socket.on('api:topic.restore', function(data) {
-			modules.topics.restore(data.tid, uid, socket);
+			topics.restore(data.tid, uid, socket);
 		});
 
 		socket.on('api:topic.lock', function(data) {
-			modules.topics.lock(data.tid, uid, socket);
+			topics.lock(data.tid, uid, socket);
 		});
 
 		socket.on('api:topic.unlock', function(data) {
-			modules.topics.unlock(data.tid, uid, socket);
+			topics.unlock(data.tid, uid, socket);
 		});
 
 		socket.on('api:topic.pin', function(data) {
-			modules.topics.pin(data.tid, uid, socket);
+			topics.pin(data.tid, uid, socket);
 		});
 
 		socket.on('api:topic.unpin', function(data) {
-			modules.topics.unpin(data.tid, uid, socket);
+			topics.unpin(data.tid, uid, socket);
 		});
 
 		socket.on('api:categories.get', function() {
-			modules.categories.get(function(categories) {
+			categories.get(function(categories) {
 				socket.emit('api:categories.get', categories);
 			});
 		});
 
 		socket.on('api:topic.move', function(data) {
-			modules.topics.move(data.tid, data.cid, socket);
+			topics.move(data.tid, data.cid, socket);
 		});
 
 		socket.on('api:posts.getRawPost', function(data) {
-			modules.posts.getRawContent(data.pid, socket);
+			posts.getRawContent(data.pid, socket);
 		});
 
 		socket.on('api:posts.edit', function(data) {
-			modules.posts.edit(uid, data.pid, data.content);
+			posts.edit(uid, data.pid, data.content);
 		});
 
 		socket.on('api:posts.delete', function(data) {
-			modules.posts.delete(uid, data.pid);
+			posts.delete(uid, data.pid);
 		});
 
 		socket.on('api:posts.restore', function(data) {
-			modules.posts.restore(uid, data.pid);
+			posts.restore(uid, data.pid);
 		});
 	});
 	

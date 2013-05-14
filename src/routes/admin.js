@@ -1,4 +1,7 @@
 
+var user = require('./../user.js'),
+	topics = require('./../topics.js');
+
 (function(Admin) {
 	Admin.create_routes = function(app) {
 
@@ -29,7 +32,7 @@
 					if (req.params.tab == 'search') {
 						res.send(JSON.stringify({search_display: 'block', users: []}))
 					} else {
-						global.modules.user.getUserList(function(data){
+						user.getUserList(function(data){
 							res.send(JSON.stringify({search_display: 'none', users:data}));
 						});
 					}
@@ -39,13 +42,13 @@
 					if (req.params.tab == 'disabled') {
 						res.send(JSON.stringify({categories: []}));
 					} else {
-						global.modules.categories.get(function(data) {
+						categories.get(function(data) {
 							res.send(JSON.stringify(data));
 						});
 					}
 					break;
 				case 'topics' :
-					global.modules.topics.get(function(data) {
+					topics.get(function(data) {
 						res.send(JSON.stringify(data));
 					});
 					break;

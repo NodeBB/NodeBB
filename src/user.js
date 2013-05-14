@@ -1,4 +1,6 @@
-var	config = require('../config.js'),
+
+
+var config = require('../config.js'),
 	utils = require('./utils.js'),
 	RDB = require('./redis.js'),
 	crypto = require('crypto'),
