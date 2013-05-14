@@ -160,13 +160,11 @@ var templates = {};
 
 }());
 
-function load_template(callback, custom_tpl) {
+function load_template(callback, url, template) {
 	var location = document.location || window.location,
 		rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : '');
 
-	var url = location.href.replace(rootUrl +'/', '');
 	url = (url === '' || url === '/') ? 'home' : url;
-
 
 	jQuery.get(API_URL + url, function(data) {
 
