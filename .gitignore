@@ -8,3 +8,5 @@ sftp-config.json
 public/config.json
 config.js
 public/css/style.css
+*.sublime-project
+*.sublime-workspace
