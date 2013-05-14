@@ -1,6 +1,9 @@
 
 
-var user = require('./../user.js');
+var user = require('./../user.js'),
+	fs = require('fs'),
+	utils = require('./../utils.js'),
+	config = require('../../config.js');
 
 
 (function(User) {
@@ -55,40 +58,186 @@ var user = require('./../user.js');
 			});		
 		});
 		
-/*
-		function api_method(req, res) {
-			switch(req.params.method) {
-				case 'users' :
-					if (req.params.tab == 'search') {
-						res.send(JSON.stringify({search_display: 'block', users: []}))
-					} else {
-						user.getUserList(function(data){
-							res.send(JSON.stringify({search_display: 'none', users:data}));
-						});
+		app.get('/users/:username/edit', function(req, res){
+				
+			if(!req.user)
+				return res.redirect('/403');
+			
+			user.getUserField(req.user.uid, 'username', function(username) {
+			
+				if(req.params.username && username === req.params.username)
+					res.send(templates['header'] + app.create_route('users/'+req.params.username+'/edit','accountedit') + templates['footer']);
+				else
+					return res.redirect('/403');
+			});	
+		});
+
+		app.post('/users/doedit', function(req, res){
+
+			if(!req.user)
+				return res.redirect('/403');
+			
+			if(req.user.uid != req.body.uid)
+				return res.redirect('/');
+			
+			user.updateProfile(req.user.uid, req.body);
+			
+			res.redirect('/');
+		});
+
+		app.post('/users/uploadpicture', function(req, res) {
+    	
+			if(!req.user)
+				return res.redirect('/403');
+			
+			if(req.files.userPhoto.size > 131072) {
+				res.send({
+					error: 'Images must be smaller than 128kb!'
+				});
+				return;
+			}
+			
+			user.getUserField(req.user.uid, 'uploadedpicture', function(oldpicture) {
+
+				if(!oldpicture) {
+					uploadUserPicture(req.user.uid, req.files.userPhoto.name, req.files.userPhoto.path, res);
+					return;
+				}
+				
+				var index = oldpicture.lastIndexOf('/');
+				var filename = oldpicture.substr(index + 1);
+
+				var absolutePath = global.configuration['ROOT_DIRECTORY'] + config.upload_path + filename;
+
+				fs.unlink(absolutePath, function(err) {
+					if(err) {				
+						console.log(err);
 					}
 					
-					break;
-				case 'categories':
-					if (req.params.tab == 'disabled') {
-						res.send(JSON.stringify({categories: []}));
-					} else {
-						categories.get(function(data) {
-							res.send(JSON.stringify(data));
-						});
-					}
-					break;
-				case 'topics' :
-					topics.get(function(data) {
-						res.send(JSON.stringify(data));
-					});
-					break;
-				default :
-					res.send('{}');
+					uploadUserPicture(req.user.uid, req.files.userPhoto.name, req.files.userPhoto.path, res);
+					
+				});
+				
+			});
+
+		});
+		
+		function uploadUserPicture(uid, filename, tempPath, res) {
+
+			if(!filename){
+				res.send({
+	                error: 'Error uploading file! Error : Invalid file name!'
+				});
+	            return;
 			}
+			
+			filename = uid + '-' + filename;
+			var uploadPath = config.upload_path + filename;
+			
+			console.log('trying to upload to : '+ global.configuration['ROOT_DIRECTORY'] + uploadPath);
+			
+			fs.rename(
+				tempPath,
+				global.configuration['ROOT_DIRECTORY'] + uploadPath,
+				function(error) {
+		            if(error) {
+		            	console.log(error);
+						res.send({
+		                    error: 'Error uploading file!'
+						});
+		                return;
+		            }
+		 			
+		 			var imageUrl = config.upload_url + filename;
+		 			
+		            res.send({
+						path: imageUrl
+		            });
+		            
+		            user.setUserField(uid, 'uploadedpicture', imageUrl);
+		            user.setUserField(uid, 'picture', imageUrl);
+		            
+				}
+	    	);
+		}
+		
+
+		app.post('/users/changepicture', function(req, res){
+			if(!req.user)
+				return res.redirect('/403');
+			
+			if(req.user.uid != req.body.uid)
+				return res.redirect('/');
+				
+			var type = req.body.type;
+			if(type == 'gravatar') {	
+				user.getUserField(req.user.uid, 'gravatarpicture', function(gravatar){
+					user.setUserField(req.user.uid, 'picture', gravatar);
+				});
+			}
+			else if(type == 'uploaded') {
+				user.getUserField(req.user.uid, 'uploadedpicture', function(uploadedpicture){
+					user.setUserField(req.user.uid, 'picture', uploadedpicture);
+				});
+			}
+			res.send({});
+		});
+
+
+		function api_method(req, res) {
+			
+			var callerUID = req.user?req.user.uid : 0;
+	
+			if (!req.params.section && !req.params.username) {
+				
+				user.getUserList(function(data){
+					
+					res.send(JSON.stringify({users:data}));
+					
+				});
+			}
+			else if (String(req.params.section).toLowerCase() === 'edit') {
+				getUserDataByUserName(req.params.username, callerUID, function(userData) {
+					res.send(JSON.stringify(userData));
+				});
+			} else {
+				getUserDataByUserName(req.params.username, callerUID, function(userData) {
+					res.send(JSON.stringify(userData));
+				});						
+			}
+		
 		}
 
-		app.get('/api/admin/:method/:tab?*', api_method);
-		app.get('/api/admin/:method*', api_method);*/
+		app.get('/api/users/:username?/:section?', api_method);
+
+		function getUserDataByUserName(username, callerUID, callback) {
+		
+			user.get_uid_by_username(username, function(uid) {
+		
+				user.getUserData(uid, function(data) {
+					if(data) {
+						data.joindate = utils.relativeTime(data.joindate);
+						
+						if(!data.birthday)
+							data.age = '';
+						else
+							data.age = new Date().getFullYear() - new Date(data.birthday).getFullYear();
+						
+						data.uid = uid;
+						data.yourid = callerUID;
+						data.theirid = uid;
+						
+						callback(data);
+					}
+					else
+						callback({});
+				});
+				
+			});
+		}
+		
+
+
 	};
 
 

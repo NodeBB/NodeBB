@@ -101,6 +101,7 @@ var express = require('express'),
 	
 	// These functions are called via ajax once the initial page is loaded to populate templates with data
 	function api_method(req, res) {		
+		
 		switch(req.params.method) {
 			case 'home' :
 					categories.get(function(data) {
@@ -176,23 +177,6 @@ var express = require('express'),
 						res.send(JSON.stringify(data));
 					});
 				break;
-			case 'users' : 
-					if (!req.params.section && !req.params.id) {
-						get_users_fn(req, res, function(userData) {
-							res.send(JSON.stringify(userData));
-						});
-					}
-					else if (String(req.params.section).toLowerCase() === 'edit') {
-						get_account_fn(req, res, function(userData) {
-							res.send(JSON.stringify(userData));
-						});
-					} else {
-						get_account_fn(req, res, function(userData) {
-							res.send(JSON.stringify(userData));
-						});						
-					}
-					
-				break;
 			case 'confirm':
 					user.email.confirm(req.params.id, function(data) {
 						if (data.status === 'ok') {
@@ -221,184 +205,12 @@ var express = require('express'),
 	// ok fine MUST ADD RECURSION style. I'll look for a better fix in future but unblocking baris for this:
 	app.get('/api/:method/:id/:section?', api_method);
 	app.get('/api/:method/:id*', api_method);
-	
-
-
-
-// TODO move user related logic into another file vvvvvvvvvvvvvvvvvvvv
-
-	app.post('/pictureupload', function(req, res) {
-    	
-		if(!req.user)
-			return res.redirect('/403');
-		
-		if(req.files.userPhoto.size > 131072) {
-			res.send({
-				error: 'Images must be smaller than 128kb!'
-			});
-			return;
-		}
-		
-		user.getUserField(req.user.uid, 'uploadedpicture', function(oldpicture) {
-
-			if(!oldpicture) {
-				uploadUserPicture(req.user.uid, req.files.userPhoto.name, req.files.userPhoto.path, res);
-				return;
-			}
-			
-			var index = oldpicture.lastIndexOf('/');
-			var filename = oldpicture.substr(index+1);
-
-			var absolutePath = global.configuration['ROOT_DIRECTORY'] + config.upload_path + filename;
-
-			fs.unlink(absolutePath, function(err) {
-				if(err) {				
-					console.log(err);
-				}
-				
-				uploadUserPicture(req.user.uid, req.files.userPhoto.name, req.files.userPhoto.path, res);
-				
-			});
-			
-		});
-
-	});
-	
-	function uploadUserPicture(uid, filename, tempPath, res) {
-
-		if(!filename){
-			res.send({
-                error: 'Error uploading file! Error : Invalid file name!'
-			});
-            return;
-		}
-		
-		filename = uid + '-' + filename;
-		var uploadPath = config.upload_path + filename;
-		
-		console.log('trying to upload to : '+ global.configuration['ROOT_DIRECTORY'] + uploadPath);
-		
-		fs.rename(
-			tempPath,
-			global.configuration['ROOT_DIRECTORY'] + uploadPath,
-			function(error) {
-	            if(error) {
-	            	console.log(error);
-					res.send({
-	                    error: 'Error uploading file!'
-					});
-	                return;
-	            }
-	 			
-	 			var imageUrl = config.upload_url + filename;
-	 			
-	            res.send({
-					path: imageUrl
-	            });
-	            
-	            user.setUserField(uid, 'uploadedpicture', imageUrl);
-	            user.setUserField(uid, 'picture', imageUrl);
-	            
-			}
-    	);
-	}
-	
-
-	app.post('/changeuserpicture', function(req, res){
-		if(!req.user)
-			return res.redirect('/403');
-		
-		if(req.user.uid != req.body.uid)
-			return res.redirect('/');
-			
-		var type = req.body.type;
-		if(type == 'gravatar') {	
-			user.getUserField(req.user.uid, 'gravatarpicture', function(gravatar){
-				user.setUserField(req.user.uid, 'picture', gravatar);
-			});
-		}
-		else if(type == 'uploaded') {
-			user.getUserField(req.user.uid, 'uploadedpicture', function(uploadedpicture){
-				user.setUserField(req.user.uid, 'picture', uploadedpicture);
-			});
-		}
-		res.send({});
-	});
-
-
-	app.post('/edituser', function(req, res){
-
-		if(!req.user)
-			return res.redirect('/403');
-		
-		if(req.user.uid != req.body.uid)
-			return res.redirect('/');
-		
-		user.updateProfile(req.user.uid, req.body);
-		
-		res.redirect('/');
-	});
-	
-
-	//to baris, move this into account.js or sth later - just moved this out here for you to utilize client side tpl parsing
-	//I didn't want to change too much so you should probably sort out the params etc
-	function get_account_fn(req, res, callback) {
-		
-		var username = req.params.id;
-		console.log("derp");
-		user.get_uid_by_username(username, function(uid) {
-	
-			user.getUserData(uid, function(data) {
-				if(data)
-				{
-					data.joindate = utils.relativeTime(data.joindate);
-					data.age = new Date().getFullYear() - new Date(data.birthday).getFullYear();
-					console.log(data.age);
-					if(data.age === null)
-						data.age = 0;
-					data.uid = uid;
-					
-					data.yourid = (req.user)?req.user.uid : 0;
-					data.theirid = uid;
-					
-					callback(data);
-				}
-				else
-					callback({user:{}});
-			});
-			
-		});
-	}
-	
-	function get_users_fn(req, res, callback) {
-		user.getUserList(function(data){
-			callback({users:data});
-		});
-	}
-	
-
-	app.get('/users/:uid/edit', function(req, res){
-		
-		if(!req.user)
-			return res.redirect('/403');
-		
-		user.getUserField(req.user.uid, 'username', function(username) {
-		
-			if(req.params.uid && username === req.params.uid)
-				res.send(templates['header'] + app.create_route('users/'+req.params.uid+'/edit','accountedit') + templates['footer']);
-			else
-				return res.redirect('/403');
-		});	
-	});
-	
 
 	app.get('/test', function(req, res) {
 		posts.getRawContent(11, function(post) {
 			res.send(JSON.stringify(post));
 		});
 	});
-
-// TODO move user related logic into another file ^^^^^^^^^^^^^^^^^^^^^^^
 }(WebServer));
 
 server.listen(config.port);

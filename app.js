@@ -35,4 +35,6 @@ global.configuration = {};
 
     setup_categories();
 
+    
+
 }(global.configuration));
