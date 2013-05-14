@@ -27,7 +27,10 @@ var	RDB = require('./redis.js'),
 				postcount = [],
 				locked = [],
 				deleted = [],
-				pinned = [];
+				pinned = [],
+				recent_post = [],
+				recent_author = [],
+				recent_picture = [];
 
 			for (var i=0, ii=tids.length; i<ii; i++) {
 				title.push('tid:' + tids[i] + ':title');
@@ -38,6 +41,9 @@ var	RDB = require('./redis.js'),
 				locked.push('tid:' + tids[i] + ':locked');
 				deleted.push('tid:' + tids[i] + ':deleted');
 				pinned.push('tid:' + tids[i] + ':pinned');
+				recent_post.push('tid:' + tids[i] + ':recent:post');
+				recent_author.push('tid:' + tids[i] + ':recent:author');
+				recent_picture.push('tid:' + tids[i] + ':recent:picture');
 			}
 
 			var multi = RDB.multi()
@@ -53,6 +59,9 @@ var	RDB = require('./redis.js'),
 					.mget(locked)
 					.mget(deleted)
 					.mget(pinned)
+					.mget(recent_post)
+					.mget(recent_author)
+					.mget(recent_picture)
 			}
 				
 			
@@ -69,12 +78,16 @@ var	RDB = require('./redis.js'),
 					locked = replies[6];
 					deleted = replies[7];
 					pinned = replies[8];
+					recent_post = replies[9];
+					recent_author = replies[10];
+					recent_picture = replies[11];
 
 					var usernames,
 						has_read;
 
 					function generate_topic() {
 						if (!usernames || !has_read) return;
+
 
 						for (var i=0, ii=title.length; i<ii; i++) {			
 							topics.push({
@@ -89,7 +102,10 @@ var	RDB = require('./redis.js'),
 								'deleted': deleted[i],
 								'pinned': parseInt(pinned[i] || 0),	// For sorting purposes
 								'pin-icon': pinned[i] === '1' ? 'icon-pushpin' : 'none',
-								'badgeclass' : (has_read[i] && current_user !=0) ? '' : 'badge-important'
+								'badgeclass' : (has_read[i] && current_user !=0) ? '' : 'badge-important',
+								'recent_post' : recent_post[i],
+								'recent_author' : recent_author[i],
+								'recent_picture' : recent_picture[i]
 							});
 						}
 

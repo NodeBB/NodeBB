@@ -222,6 +222,14 @@ marked.setOptions({
 					RDB.set('pid:' + pid + ':tid', tid);
 					
 					RDB.incr('tid:' + tid + ':postcount');
+
+
+					user.getUserFields(uid, ['username','picture'], function(data){
+						RDB.set('tid:' + tid + ':recent:post', content);
+						RDB.set('tid:' + tid + ':recent:author', data.username);
+						RDB.set('tid:' + tid + ':recent:picture', data.picture);
+					});
+					
 					
 					// User Details - move this out later
 					RDB.lpush('uid:' + uid + ':posts', pid);

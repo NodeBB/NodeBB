@@ -183,9 +183,35 @@ var user = require('./../user.js'),
 			res.send({});
 		});
 
+		app.post('/users/addfriend', function(req, res){
+			if(!req.user)
+				return res.redirect('/403');
+			
+			if(req.user.uid == req.body.uid)
+				return res.redirect('/');
+
+			user.addFriend(req.user.uid, req.body.uid, function(err, data) {
+				if(err)
+					res.send({error:err});
+				else
+					res.send(data);
+			});
+		});
+
+		app.get('/users/:username/friends', function(req, res){
+				
+			if(!req.user)
+				return res.redirect('/403');
+			
+			user.get_uid_by_username(req.params.username, function(uid) {
+					user.getFriends(uid, function(data) {
+						res.send(JSON.stringify(data, null, 0));
+					});
+				});
+		});
 
 		function api_method(req, res) {
-			
+			console.log("fail "+req.params.section);
 			var callerUID = req.user?req.user.uid : 0;
 	
 			if (!req.params.section && !req.params.username) {
@@ -195,6 +221,9 @@ var user = require('./../user.js'),
 					res.send(JSON.stringify({users:data}));
 					
 				});
+			}
+			else if(String(req.params.section).toLowerCase() === 'friends') {
+				
 			}
 			else if (String(req.params.section).toLowerCase() === 'edit') {
 				getUserDataByUserName(req.params.username, callerUID, function(userData) {
@@ -209,6 +238,8 @@ var user = require('./../user.js'),
 		}
 
 		app.get('/api/users/:username?/:section?', api_method);
+
+
 
 		function getUserDataByUserName(username, callerUID, callback) {
 		
