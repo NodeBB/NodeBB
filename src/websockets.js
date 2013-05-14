@@ -1,4 +1,5 @@
-var	SocketIO = require('socket.io').listen(global.server,{log:false}),
+
+var SocketIO = require('socket.io').listen(global.server,{log:false}),
 	cookie = require('cookie'),
 	connect = require('connect'),
 	config = require('../config.js'),
@@ -13,9 +14,6 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 			rooms = {}
 
 	global.io = io;
-	module.exports.init = function() {
-		
-	}
 
 	// Adapted from http://howtonode.org/socket-io-auth
 	io.set('authorization', function(handshakeData, accept) {
@@ -51,7 +49,7 @@ var	SocketIO = require('socket.io').listen(global.server,{log:false}),
 		var hs = socket.handshake;
 		
 		var uid = users[hs.sessionID];
-
+		
 		if (DEVELOPMENT === true) {
 			// refreshing templates
 			templates.init();

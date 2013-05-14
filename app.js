@@ -1,6 +1,4 @@
-var topics = require('./src/topics.js'),
-    posts = require('./src/posts.js'),
-    categories = require('./src/categories.js'),
+var categories = require('./src/categories.js'),
     templates = require('./src/templates.js'),
     webserver = require('./src/webserver.js'),
     websockets = require('./src/websockets.js'),
@@ -14,8 +12,6 @@ global.configuration = {};
     config['ROOT_DIRECTORY'] = __dirname;
 
 	templates.init();
-	websockets.init();
-
 
     //setup scripts to be moved outside of the app in future.
     function setup_categories() {
