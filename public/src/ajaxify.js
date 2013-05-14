@@ -26,7 +26,6 @@ var ajaxify = {};
 	};
 
 	ajaxify.go = function(url, callback, template, quiet) {
-		console.log('go', url, quiet);
 		// "quiet": If set to true, will not call pushState
 
 		// leave room and join global
@@ -44,7 +43,6 @@ var ajaxify = {};
 		
 		if (templates[tpl_url]) {
 			if (quiet !== true) {
-				console.log('pushing state');
 				window.history.pushState({
 					"url": url
 				}, url, "/" + url);
