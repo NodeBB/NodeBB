@@ -102,8 +102,12 @@ var config = require('../config.js'),
 		
 		RDB.keys('user:*', function(err, userkeys){
 			
+			var anonUserIndex = userkeys.indexOf("user:0");
+			if(anonUserIndex !== -1) {
+				userkeys.splice(anonUserIndex, 1);
+			}
+
 			for(var i=0,ii=userkeys.length; i<ii; ++i) {
-				
 				RDB.hgetall(userkeys[i], function(err, userdata) {
 					
 					if(userdata && userdata.password)
@@ -115,7 +119,6 @@ var config = require('../config.js'),
 						callback(data);
 				});
 			}
-			
 		});
 	}
 
@@ -351,6 +354,23 @@ var config = require('../config.js'),
 		});	
 	}
 
+	User.addFriend = function(uid, friendid, callback) {
+		RDB.sadd('user:'+uid+':friends', friendid, function(err, data){
+			if(err === null) 
+				callback(data);
+			else
+				console.log(err);
+		})
+	}
+
+	User.getFriends = function(uid, callback) {
+		RDB.smembers('user:'+uid+':friends', function(err, data){
+			if(err === null) 
+				callback(data);
+			else
+				console.log(err);	
+		});
+	}
 
 	User.exists = function(username, callback) {
 		User.get_uid_by_username(username, function(exists) {

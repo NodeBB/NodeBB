@@ -38,6 +38,9 @@
 	                    <li>
 	                      <a href="/active">Active</a>
 	                    </li>
+	                    <li>
+	                      <a href="/users">Users</a>
+	                    </li>
 					</ul>
 					<ul class="nav pull-right" id="right-menu">
 						<!--<li><i class="icon-plus icon-2x" style="color:#999;"></i></li> fail. add this back later -->

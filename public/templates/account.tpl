@@ -12,61 +12,74 @@
 		<span id="editLink" class="pull-right"><a href="/users/{username}/edit">edit</a></span>
 	</div>
 		
-	<div class="account-picture-block">
-		<img src="{picture}" class="user-profile-picture"/>
-	</div>
+
+	<div class="row-fluid">
+		<div class="span3" style="text-align: center; margin-bottom:20px;">
+			<div class="account-picture-block">
+				<img src="{picture}" class="user-profile-picture"/>
+			</div>
+		</div>
 	
-	<div class="account-bio-block">
-		<span class="account-bio-label">email</span>
-		<span>{email}</span>
-		<br/>
-		
-		<span class="account-bio-label">full name</span>
-        <span>{fullname}</span>
-        <br/>
-        
-        <span class="account-bio-label">website</span>
-        <span><a href="{website}">{website}</a></span>
-        <br/>
-		
-		<span class="account-bio-label">location</span>
-        <span>{location}</span>
-        <br/>
-        
-        <span class="account-bio-label">age</span>
-        <span>{age}</span>
-        <br/>
-		
-		<span class="account-bio-label">member for</span>
-		<span>{joindate}</span>
-		<br/>
+		<div class="span9">
+			<div class="inline-block">
+				<div class="account-bio-block">
+					<span class="account-bio-label">email</span>
+					<span>{email}</span>
+					<br/>
+					
+					<span class="account-bio-label">full name</span>
+			        <span>{fullname}</span>
+			        <br/>
+			        
+			        <span class="account-bio-label">website</span>
+			        <span><a href="{website}">{website}</a></span>
+			        <br/>
+					
+					<span class="account-bio-label">location</span>
+			        <span>{location}</span>
+			        <br/>
+			        
+			        <span class="account-bio-label">age</span>
+			        <span>{age}</span>
+			        <br/>
+					
+					<span class="account-bio-label">member for</span>
+					<span>{joindate}</span>
+					<br/>
 
-		<span class="account-bio-label">reputation</span>
-		<span id='reputation'>{reputation}</span>
-		<br/>		
-		
-		<span class="account-bio-label">posts</span>
-		<span id='postcount'>{postcount}</span>
+					<span class="account-bio-label">reputation</span>
+					<span id='reputation'>{reputation}</span>
+					<br/>		
+					
+					<span class="account-bio-label">posts</span>
+					<span id='postcount'>{postcount}</span>
+				</div>
+			</div>
+		</div>
 	</div>
-	 
-   
-	<!-- END user -->
- 
-
-
+	<div id="user-actions" class="container">
+		<a id="add-friend-btn" href="#" class="btn">Add Friend</a>
+		<a id="send-message-btn" href="#" class="btn">Send Message</a>
+	</div>
 </div>
+
 <script type="text/javascript">
 
 var yourid = '{yourid}';
 var theirid = '{theirid}';
 
+
+
 (function() {
-    
+	
+	
+
     function addCommas(text) {
         return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
     }
     
     $(document).ready(function() {
+
         var rep = $('#reputation');
         rep.html(addCommas(rep.html()));
         
@@ -74,9 +87,32 @@ var theirid = '{theirid}';
         postcount.html(addCommas(postcount.html()));
         
         var editLink = $('#editLink');
-        if( yourid !== theirid)
-            editLink.addClass('hidden');
+		var addFriendBtn = $('#add-friend-btn');
+		var sendMessageBtn = $('#send-message-btn');
         
+        if( yourid !== theirid) {
+            editLink.hide();
+            addFriendBtn.show();
+            sendMessageBtn.show();
+    	}
+    	else {
+    		addFriendBtn.hide();
+            sendMessageBtn.hide();	
+    	}
+        
+        addFriendBtn.on('click', function() {
+        	$.post('/users/addfriend', {uid: theirid},
+            	function(data) {
+            		
+				}                
+			);
+        	return false;
+        });
+
+        sendMessageBtn.on('click', function() {
+        	return false;
+        });
+
     });
     
 

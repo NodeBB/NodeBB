@@ -80,7 +80,7 @@
 		<div class="span9">
 		     <div class="inline-block">
 		         <form class='form-horizontal'>
-		             <div class="control-group">
+					<div class="control-group">
 		                <label class="control-label" for="inputEmail">Email</label>
 		                <div class="controls">
 		                  <input type="text" id="inputEmail" placeholder="Email" value="{email}">
@@ -120,7 +120,7 @@
 		              <div class="form-actions">
 		                <a id="submitBtn" href="" class="btn btn-primary">Save changes</a>
 		                <a href="/users/{username}" class="btn">Cancel</a>
-		            </div>
+		              </div>
 		              
 		         </form>
 		    </div>
@@ -136,6 +136,8 @@ var uploadedPicture = '{uploadedpicture}';
 
 $(document).ready(function() {
  
+
+
     $('#uploadForm').submit(function() {
         status('uploading the file ...');
 		
