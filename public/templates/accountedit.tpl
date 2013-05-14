@@ -45,7 +45,7 @@
 	  </div>
 	  <div class="modal-body">
 	    
-	    <form id="uploadForm" action="/pictureupload" method="post" enctype="multipart/form-data">
+	    <form id="uploadForm" action="/users/uploadpicture" method="post" enctype="multipart/form-data">
 	    	<input id="userPhotoInput" type="file" name="userPhoto" >
 	    </form>
 	    
@@ -212,7 +212,7 @@ $(document).ready(function() {
 			type: type
         };
             
-		$.post('/changeuserpicture',
+		$.post('/users/changepicture',
         	userData,
             function(data) {	
        			socket.emit('api:updateHeader', { fields: ['username', 'picture'] });
@@ -233,7 +233,7 @@ $(document).ready(function() {
             location:$('#inputLocation').val()
         };
             
-		$.post('/edituser',
+		$.post('/users/doedit',
         	userData,
             function(data) {
 
@@ -242,6 +242,7 @@ $(document).ready(function() {
     });
     
     function updateImages() {
+		var currentPicture = $('#user-current-picture').attr('src');
 
 		if(gravatarPicture) {
         	$('#user-gravatar-picture').attr('src', gravatarPicture);
