@@ -8,6 +8,9 @@ var express = require('express'),
 	redisServer = redis.createClient(config.redis.port, config.redis.host, config.redis.options),
 	
 	user = require('./user.js'),
+	categories = require('./categories.js'),
+	posts = require('./posts.js'),
+	topics = require('./topics.js'),
 	utils = require('./utils.js'),
 	fs = require('fs'),
 	admin = require('./routes/admin.js'),
@@ -40,11 +43,11 @@ var express = require('express'),
 		if (/^\/api\//.test(req.url)) return next();
 
 		if (req.user && req.user.uid) {
-			global.modules.user.session_ping(req.sessionID, req.user.uid);
+			user.session_ping(req.sessionID, req.user.uid);
 		}
 
 		// (Re-)register the session as active
-		global.modules.user.active.register(req.sessionID);
+		user.active.register(req.sessionID);
 
 		next();
 	});
@@ -98,7 +101,7 @@ var express = require('express'),
 	function api_method(req, res) {		
 		switch(req.params.method) {
 			case 'home' :
-					global.modules.categories.get(function(data) {
+					categories.get(function(data) {
 						res.send(JSON.stringify(data));
 					});
 				break;
@@ -147,27 +150,27 @@ var express = require('express'),
 					res.send(JSON.stringify(data));
 				break;
 			case 'topic' :
-					global.modules.posts.get(function(data) {
+					posts.get(function(data) {
 						res.send(JSON.stringify(data));
 					}, req.params.id, (req.user) ? req.user.uid : 0);
 				break;
 			case 'category' :
-					global.modules.topics.get(function(data) {
+					topics.get(function(data) {
 						res.send(JSON.stringify(data));
 					}, req.params.id, (req.user) ? req.user.uid : 0);
 				break;
 			case 'latest' :
-					global.modules.topics.get(function(data) {
+					topics.get(function(data) {
 						res.send(JSON.stringify(data));
 					});
 				break;
 			case 'popular' :
-					global.modules.topics.get(function(data) {
+					topics.get(function(data) {
 						res.send(JSON.stringify(data));
 					});
 				break;
 			case 'active' :
-					global.modules.topics.get(function(data) {
+					topics.get(function(data) {
 						res.send(JSON.stringify(data));
 					});
 				break;
@@ -189,7 +192,7 @@ var express = require('express'),
 					
 				break;
 			case 'confirm':
-					global.modules.user.email.confirm(req.params.id, function(data) {
+					user.email.confirm(req.params.id, function(data) {
 						if (data.status === 'ok') {
 							res.send(JSON.stringify({
 								'alert-class': 'alert-success',
@@ -436,7 +439,7 @@ var express = require('express'),
 	}
 
 	app.get('/test', function(req, res) {
-		global.modules.posts.getRawContent(11, function(post) {
+		posts.getRawContent(11, function(post) {
 			res.send(JSON.stringify(post));
 		});
 	});
