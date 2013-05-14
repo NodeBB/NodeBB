@@ -6,7 +6,6 @@
         <strong></strong>
         <p></p>
     </div>
-
  
 	<!-- Change Picture Modal -->
 	<div id="change-picture-modal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -64,19 +63,16 @@
 	    <button id="pictureUploadSubmitBtn" class="btn btn-primary">Upload Picture</button>
 	  </div>
 	</div>
-
-
-    <!-- BEGIN user -->
     
     <div class="account-username-box">
-        <span class="account-username"><a href="/users/{user.username}">{user.username}</a></span>
-        <span class="pull-right"><a href="/users/{user.username}/edit">edit</a></span>
+        <span class="account-username"><a href="/users/{username}">{username}</a></span>
+        <span class="pull-right"><a href="/users/{username}/edit">edit</a></span>
     </div>
 
 	<div class="row-fluid">
 		<div class="span3" style="text-align: center; margin-bottom:20px;">
 		    <div class="account-picture-block text-center">
-		        <img id="user-current-picture" class="user-profile-picture" src="{user.picture}" /><br/>
+		        <img id="user-current-picture" class="user-profile-picture" src="{picture}" /><br/>
 		        <a id="changePictureBtn" href="#" class="btn btn-primary">change picture</a>
 		    </div>
 		</div>
@@ -87,63 +83,56 @@
 		             <div class="control-group">
 		                <label class="control-label" for="inputEmail">Email</label>
 		                <div class="controls">
-		                  <input type="text" id="inputEmail" placeholder="Email" value="{user.email}">
+		                  <input type="text" id="inputEmail" placeholder="Email" value="{email}">
 		                </div>
 		              </div>
 		              
 		              <div class="control-group">
 		                <label class="control-label" for="inputFullname">Full Name</label>
 		                <div class="controls">
-		                  <input type="text" id="inputFullname" placeholder="Full Name" value="{user.fullname}">
+		                  <input type="text" id="inputFullname" placeholder="Full Name" value="{fullname}">
 		                </div>
 		              </div>
 		              
 		               <div class="control-group">
 		                <label class="control-label" for="inputWebsite">Website</label>
 		                <div class="controls">
-		                  <input type="text" id="inputWebsite" placeholder="http://website.com" value="{user.website}">
+		                  <input type="text" id="inputWebsite" placeholder="http://website.com" value="{website}">
 		                </div>
 		              </div>
 		             
 		              <div class="control-group">
 		                <label class="control-label" for="inputLocation">Location</label>
 		                <div class="controls">
-		                  <input type="text" id="inputLocation" placeholder="Location" value="{user.location}">
+		                  <input type="text" id="inputLocation" placeholder="Location" value="{location}">
 		                </div>
 		              </div>
 		              
 		              <div class="control-group">
 		                <label class="control-label" for="inputBirthday">Birthday</label>
 		                <div class="controls">
-		                  <input type="text" id="inputBirthday" placeholder="mm/dd/yyyy" value="{user.birthday}">
+		                  <input type="text" id="inputBirthday" placeholder="mm/dd/yyyy" value="{birthday}">
 		                </div>
 		              </div>
 		             
-		             <input type="hidden" id="inputUID" value="{user.uid}">
+		             <input type="hidden" id="inputUID" value="{uid}">
 		             
 		              <div class="form-actions">
 		                <a id="submitBtn" href="" class="btn btn-primary">Save changes</a>
-		                <a href="/users/{user.username}" class="btn">Cancel</a>
+		                <a href="/users/{username}" class="btn">Cancel</a>
 		            </div>
 		              
 		         </form>
 		    </div>
 	    </div>
-    </div>
-    
-    <!-- how to pass data to the script ?? -->
-	<div id="user-data-picture" class="hide">{user.picture}</div>
-	<div id="user-data-gravatarpicture" class="hide">{user.gravatarpicture}</div>
-	<div id="user-data-uploadedpicture" class="hide">{user.uploadedpicture}</div>
-
-    
-    <!-- END user -->
-
+    </div>  
 </div>
 
-
-
 <script type="text/javascript">
+
+
+var gravatarPicture = '{gravatarpicture}';
+var uploadedPicture = '{uploadedpicture}';
 
 $(document).ready(function() {
  
@@ -180,7 +169,7 @@ $(document).ready(function() {
  				$('#user-current-picture').attr('src', imageUrlOnServer);
  				$('#user-uploaded-picture').attr('src', imageUrlOnServer);
  				
-				$('#user-data-uploadedpicture').html(imageUrlOnServer);        
+				uploadedPicture = imageUrlOnServer;        
  								
 				setTimeout(function() {
 					hideAlerts();
@@ -253,10 +242,6 @@ $(document).ready(function() {
     });
     
     function updateImages() {
-    	
-		var currentPicture = $('#user-current-picture').attr('src');
-    	var gravatarPicture = $('#user-data-gravatarpicture').html();        
-		var uploadedPicture = $('#user-data-uploadedpicture').html();        
 
 		if(gravatarPicture) {
         	$('#user-gravatar-picture').attr('src', gravatarPicture);
@@ -313,9 +298,9 @@ $(document).ready(function() {
         	changeUserPicture(selectedImageType);
         	
         	if(selectedImageType == 'gravatar')
-		        $('#user-current-picture').attr('src', $('#user-data-gravatarpicture').html());		
+		        $('#user-current-picture').attr('src', gravatarPicture);		
 			else if(selectedImageType == 'uploaded')
-		        $('#user-current-picture').attr('src', $('#user-data-uploadedpicture').html());						
+		        $('#user-current-picture').attr('src', uploadedPicture);						
         }
     	
 	});

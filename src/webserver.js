@@ -350,11 +350,10 @@ var express = require('express'),
 					data.age = new Date().getFullYear() - new Date(data.birthday).getFullYear();
 					data.uid = uid;
 					
-					callback({
-						yourid: (req.user)?req.user.uid : 0,
-						theirid: uid,
-						user: data
-					});
+					data.yourid = (req.user)?req.user.uid : 0;
+					data.theirid = uid;
+					
+					callback(data);
 				}
 				else
 					callback({user:{}});
