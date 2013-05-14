@@ -11,7 +11,7 @@ global.configuration = {};
 (function(config) {
     config['ROOT_DIRECTORY'] = __dirname;
 
-	templates.init();
+    templates.init();
 
     //setup scripts to be moved outside of the app in future.
     function setup_categories() {

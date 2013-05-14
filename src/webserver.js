@@ -8,12 +8,14 @@ var express = require('express'),
 	redisServer = redis.createClient(config.redis.port, config.redis.host, config.redis.options),
 	
 	user = require('./user.js'),
+
 	categories = require('./categories.js'),
 	posts = require('./posts.js'),
 	topics = require('./topics.js'),
 	utils = require('./utils.js'),
 	fs = require('fs'),
 	admin = require('./routes/admin.js'),
+	userRoute = require('./routes/user.js'),
 	auth = require('./routes/authentication.js');
 
 
@@ -54,7 +56,7 @@ var express = require('express'),
 	
 	auth.create_routes(app);
 	admin.create_routes(app);
-
+	userRoute.create_routes(app);
 
 
 	app.create_route = function(url, tpl) { // to remove
@@ -343,7 +345,7 @@ var express = require('express'),
 	function get_account_fn(req, res, callback) {
 		
 		var username = req.params.id;
-		
+		console.log("derp");
 		user.get_uid_by_username(username, function(uid) {
 	
 			user.getUserData(uid, function(data) {
@@ -351,6 +353,9 @@ var express = require('express'),
 				{
 					data.joindate = utils.relativeTime(data.joindate);
 					data.age = new Date().getFullYear() - new Date(data.birthday).getFullYear();
+					console.log(data.age);
+					if(data.age === null)
+						data.age = 0;
 					data.uid = uid;
 					
 					data.yourid = (req.user)?req.user.uid : 0;
@@ -370,31 +375,7 @@ var express = require('express'),
 			callback({users:data});
 		});
 	}
-
 	
-	app.get('/uid/:uid', function(req, res) {
-		
-		if(!req.params.uid)
-			return res.redirect('/403');
-		
-		user.getUserData(req.params.uid, function(data){
-			if(data)
-				res.send(data);
-			else
-				res.send("User doesn't exist!");
-		});
-		
-	});
-
-	app.get('/users', function(req, res) {
-
-		user.getUserList(function(data){
-
-			res.send(templates['header'] + app.create_route("users", "users") + templates['footer']);
-
-		});
-		
-	});
 
 	app.get('/users/:uid/edit', function(req, res){
 		
@@ -409,34 +390,7 @@ var express = require('express'),
 				return res.redirect('/403');
 		});	
 	});
-
 	
-	app.get('/users/:username*', handleUserProfile);
-	
-	function handleUserProfile(req, res) {
-		
-		if(!req.params.username) {
-			res.send("User doesn't exist!");
-			return;
-		}
-
-		user.get_uid_by_username(req.params.username, function(uid) {
-			
-			if(!uid) {
-				res.redirect('/403');
-				return;
-			}
-			
-			user.getUserData(uid, function(data) {
-				if(data) {
-					res.send(templates['header'] + app.create_route('users/'+data.username, 'account')  + templates['footer']);
-				}
-				else {
-					res.redirect('/403');
-				}			
-			});
-		});
-	}
 
 	app.get('/test', function(req, res) {
 		posts.getRawContent(11, function(post) {

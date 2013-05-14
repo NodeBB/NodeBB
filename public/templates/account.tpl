@@ -26,7 +26,7 @@
         <br/>
         
         <span class="account-bio-label">website</span>
-        <span><a href="{user.website}">{website}</a></span>
+        <span><a href="{website}">{website}</a></span>
         <br/>
 		
 		<span class="account-bio-label">location</span>
