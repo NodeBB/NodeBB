@@ -113,8 +113,8 @@ var templates = {};
 
 			for (var d in data) {
 				if (data.hasOwnProperty(d)) {
-					if (data[d] instanceof String || data[d] === null) {
-						continue;
+					if (data[d] === null) {
+						template = replace(namespace + d, '', template);
 					} else if (data[d].constructor == Array) {
 						namespace += d;
 						
@@ -127,9 +127,9 @@ var templates = {};
 						do {
 							result += parse(data[d][i], namespace + '.', block);
 						} while (i++ < numblocks);
-						
+
+						namespace = namespace.replace(d, '');
 						template = setBlock(regex, result, template);
-						
 					} else if (data[d] instanceof Object) {
 						namespace += d + '.';
 						
@@ -142,7 +142,7 @@ var templates = {};
 					} else {								
 						template = replace(namespace + d, data[d], template);
 					}
-				}					
+				}
 			}
 
 			if (namespace) {

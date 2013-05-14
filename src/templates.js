@@ -17,6 +17,7 @@ var fs = require('fs');
 						};
 					}
 
+					template.prototype.file = file;
 					template.prototype.parse = parse;
 					template.prototype.html = String(html);
 					
@@ -65,6 +66,7 @@ var fs = require('fs');
 		var template = this.html, regex, block;
 
 		return (function parse(data, namespace, template) {
+			console.log(this.file + ' is being called on server side. Templates will be deprecated soon');
 			if (Object.keys(data).length == 0) {
 				regex = makeRegex('[^]*');
 				template = template.replace(regex, '');
