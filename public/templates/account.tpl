@@ -101,6 +101,11 @@ var theirid = '{theirid}';
     	}
         
         addFriendBtn.on('click', function() {
+        	$.post('/users/addfriend', {uid: theirid},
+            	function(data) {
+            		
+				}                
+			);
         	return false;
         });
 

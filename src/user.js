@@ -354,6 +354,23 @@ var config = require('../config.js'),
 		});	
 	}
 
+	User.addFriend = function(uid, friendid, callback) {
+		RDB.sadd('user:'+uid+':friends', friendid, function(err, data){
+			if(err === null) 
+				callback(data);
+			else
+				console.log(err);
+		})
+	}
+
+	User.getFriends = function(uid, callback) {
+		RDB.smembers('user:'+uid+':friends', function(err, data){
+			if(err === null) 
+				callback(data);
+			else
+				console.log(err);	
+		});
+	}
 
 	User.exists = function(username, callback) {
 		User.get_uid_by_username(username, function(exists) {
