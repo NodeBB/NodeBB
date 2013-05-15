@@ -24,14 +24,16 @@ marked.setOptions({
 			if (!post_data || !user_data || !thread_data || !vote_data || !viewer_data) return;
 
 			var	posts = [],
+				main_posts = [],
 				manage_content = viewer_data.reputation >= config.privilege_thresholds.manage_content;
+
 
 			for (var i=0, ii= post_data.pid.length; i<ii; i++) {
 				var uid = post_data.uid[i],
 					pid = post_data.pid[i];
 					
 				if (post_data.deleted[i] === null || (post_data.deleted[i] === '1' && manage_content)) {
-					posts.push({
+					var post_obj = {
 						'pid' : pid,
 						'uid' : uid,
 						'content' : marked(post_data.content[i] || ''),
@@ -47,7 +49,10 @@ marked.setOptions({
 						'editor': post_data.editor[i] !== null ? user_data[post_data.editor[i]].username : '',
 						'relativeEditTime': post_data.editTime !== null ? utils.relativeTime(post_data.editTime[i]) : '',
 						'deleted': post_data.deleted[i] || '0'
-					});
+					};
+
+					if (i == 0) main_posts.push(post_obj);
+					else posts.push(post_obj);
 				}
 			}
 
@@ -60,7 +65,8 @@ marked.setOptions({
 				'pinned': parseInt(thread_data.pinned) || 0,
 				'topic_id': tid,
 				'expose_tools': viewer_data.reputation >= config.privilege_thresholds.manage_thread ? 1 : 0,
-				'posts': posts
+				'posts': posts,
+				'main_posts': main_posts
 			});
 		}
 
