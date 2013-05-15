@@ -65,7 +65,7 @@ var templates = {};
 
 	function init() {
 		loadTemplates([
-			'header', 'footer', 'register', 'home', 'topic','account', 'category', 'users', 'accountedit', 
+			'header', 'footer', 'register', 'home', 'topic','account', 'category', 'users', 'accountedit', 'friends',
 			'login', 'reset', 'reset_code', 'account',
 			'confirm', '403',
 			'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext',

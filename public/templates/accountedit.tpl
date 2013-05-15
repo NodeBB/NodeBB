@@ -1,11 +1,7 @@
 
 <div class="well">
 
-    <div class="alert" id="message" style="display:none">
-        <button type="button" class="close" data-dismiss="message">&times;</button>
-        <strong></strong>
-        <p></p>
-    </div>
+   
  
 	<!-- Change Picture Modal -->
 	<div id="change-picture-modal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -65,9 +61,15 @@
 	</div>
     
     <div class="account-username-box">
-        <span class="account-username"><a href="/users/{username}">{username}</a></span>
-        <span class="pull-right"><a href="/users/{username}/edit">edit</a></span>
-    </div>
+		<span class="account-username">
+			<a href="/users/{username}">{username}</a> >
+			<a href="/users/{username}/edit">edit</a>
+		</span>
+		<div class="account-sub-links inline-block pull-right">
+			<span id="friendsLink" class="pull-right"><a href="/users/{username}/friends">friends</a></span>
+			<span id="editLink" class="pull-right"><a href="/users/{username}/edit">edit</a></span>
+		</div>
+	</div>
 
 	<div class="row-fluid">
 		<div class="span3" style="text-align: center; margin-bottom:20px;">

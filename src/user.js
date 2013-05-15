@@ -64,6 +64,7 @@ var config = require('../config.js'),
 			{
 				if(data && data['password'])
 					delete data['password'];
+				data.uid = uid;
 				callback(data);
 			}
 			else
@@ -365,8 +366,24 @@ var config = require('../config.js'),
 
 	User.getFriends = function(uid, callback) {
 		RDB.smembers('user:'+uid+':friends', function(err, data){
-			if(err === null) 
-				callback(data);
+			if(err === null){ 
+				
+				var friendsData = [];
+
+				if(data.length === 0) {
+					callback(friendsData);
+					return;
+				}
+
+				for(var i=0, ii=data.length; i<ii; ++i) {
+					User.getUserData(data[i], function(userData){
+						friendsData.push(userData);
+						console.log(friendsData);
+						if(friendsData.length == data.length)
+							callback(friendsData);			
+					});	
+				}
+			}
 			else
 				console.log(err);	
 		});

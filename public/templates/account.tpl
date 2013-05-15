@@ -1,15 +1,16 @@
 
 <div class="well">
-    <div class="alert" id="message" style="display:none">
-        <button type="button" class="close" data-dismiss="message">&times;</button>
-        <strong></strong>
-        <p></p>
-    </div>
+   
 
 
-	<div class="account-username-box">
-		<span class="account-username"><a href="/users/{username}">{username}</a></span>
-		<span id="editLink" class="pull-right"><a href="/users/{username}/edit">edit</a></span>
+  <div class="account-username-box">
+		<span class="account-username">
+			<a href="/users/{username}">{username}</a>
+		</span>
+		<div class="account-sub-links inline-block pull-right">
+			<span id="friendsLink" class="pull-right"><a href="/users/{username}/friends">friends</a></span>
+			<span id="editLink" class="pull-right"><a href="/users/{username}/edit">edit</a></span>
+		</div>
 	</div>
 		
 
@@ -60,6 +61,8 @@
 	<div id="user-actions" class="container">
 		<a id="add-friend-btn" href="#" class="btn">Add Friend</a>
 	</div>
+	<br/>
+	<div id="user-action-alert" class="alert alert-success hide"></div>
 </div>
 
 <script type="text/javascript">
@@ -67,11 +70,7 @@
 var yourid = '{yourid}';
 var theirid = '{theirid}';
 
-
-
 (function() {
-	
-	
 
     function addCommas(text) {
         return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
@@ -94,14 +93,13 @@ var theirid = '{theirid}';
             addFriendBtn.show();
         }
     	else {
-    		addFriendBtn.hide();
-        
+    		addFriendBtn.hide();        
     	}
         
         addFriendBtn.on('click', function() {
         	$.post('/users/addfriend', {uid: theirid},
             	function(data) {
-            		
+            		$('#user-action-alert').html('Friend Added!').show();
 				}                
 			);
         	return false;
