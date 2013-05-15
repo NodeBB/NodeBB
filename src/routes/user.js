@@ -244,15 +244,16 @@ var user = require('./../user.js'),
 				});
 			} else {
 				getUserDataByUserName(req.params.username, callerUID, function(userData) {
-					res.send(JSON.stringify(userData));
+					user.isFriend(callerUID, userData.theirid, function(isFriend) {
+						userData.isFriend = isFriend;
+						res.send(JSON.stringify(userData));
+					});
 				});						
 			}
 		
 		}
 
 		app.get('/api/users/:username?/:section?', api_method);
-
-
 
 		function getUserDataByUserName(username, callerUID, callback) {
 		

@@ -72,6 +72,8 @@ var theirid = '{theirid}';
 
 (function() {
 
+	var isFriend = {isFriend};
+
     function addCommas(text) {
         return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
     }
@@ -90,7 +92,10 @@ var theirid = '{theirid}';
         
         if( yourid !== theirid) {
             editLink.hide();
-            addFriendBtn.show();
+            if(isFriend)
+           		addFriendBtn.hide();
+           	else
+           		addFriendBtn.show();
         }
     	else {
     		addFriendBtn.hide();        
