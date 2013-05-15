@@ -31,10 +31,16 @@ var socket,
 
 				contentEl.value = data.post;
 			});
+
+			socket.on('disconnect', function(data){
+				$('#disconnect-modal').show();
+				$('#reload-button').on('click',function(){
+					$('#disconnect-modal').hide();
+					window.location.reload();
+				});
+			});
 		},
 		async: false
-
-
 	});
 
 	// use unique alert_id to have multiple alerts visible at a time, use the same alert_id to fade out the current instance  

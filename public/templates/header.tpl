@@ -78,6 +78,19 @@
 			</div>
 		</div>
 	</div>
+
+	<div id="disconnect-modal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-header">
+	    <h3 id="myModalLabel">Socket Disconnect</h3>
+	  </div>
+	  <div class="modal-body">
+		<span>Looks like you disconnected, try reloading the page.</span>
+	  </div>
+	  <div class="modal-footer">
+	    <a id="reload-button" href="/" class="btn btn-primary">Reload</a>
+	  </div>
+	</div>
+
 	<div id="notification_window"></div>
 
 	<div class="container" id="content">
