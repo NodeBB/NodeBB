@@ -32,7 +32,7 @@
 				<span class='postcount'>{friends.postcount}</span>
 				<i class='icon-pencil'></i>
 			</div>
-			<a id="remove-friend-btn" href="#" class="btn remove-friend-btn" friendid="{friends.uid}">Unfriend</a>
+			<a id="remove-friend-btn" href="#" class="btn remove-friend-btn" friendid="{friends.uid}">Unfollow</a>
 		</div>
 
 		<!-- END friends -->
@@ -72,7 +72,7 @@ var friendCount = '{friendCount}';
 				
 				$.post('/users/removefriend', {uid: friendid},
 	            	function(data) {
-	            		button.parent().remove();
+	            		removeBtn.parent().remove();
 					}                
 				);
 				return false;
