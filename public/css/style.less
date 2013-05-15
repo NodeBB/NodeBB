@@ -317,14 +317,31 @@ footer.footer {
 
 
 	.main-post {
+		.main-avatar:hover .hover-overlay {
+			opacity: 0.75;
+		}
+
+		.hover-overlay {
+			margin: 5px;
+			position: absolute;
+			bottom: 2px;
+			height: 45px;
+			padding-top: 2px;
+			width:120px;
+			background: #000;
+			opacity: 0;
+			transition: opacity 0.3s;
+		}
 		.profile-block {
 			//height: 100px;
 		}
 		.main-avatar {
+			color: white;
+			position: relative;
 			float: left;
 			margin-right: 15px;
-			margin-bottom: 5px;
-			padding-bottom: 3px;
+			margin-bottom: 0px;
+			padding-bottom: 0px;
 			text-align: center
 		}
 		.post-content {

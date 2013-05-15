@@ -15,10 +15,13 @@
 		<li class="row main-post" data-pid="{main_posts.pid}" data-deleted="{main_posts.deleted}">
 			<div class="span12">
 				<div class="post-block">
-					<a class="main-avatar img-polaroid" href="/users/{main_posts.username}">
+					<a class="main-avatar" href="/users/{main_posts.username}">
 						<img src="{main_posts.gravatar}?s=120" align="left" /><br />
-						<i class="icon-star"></i><span class="user_rep_{main_posts.uid}">{main_posts.user_rep}</span>
-						<i class="icon-pencil"></i><span class="user_posts_{main_posts.uid}">8</span>
+						<div class="hover-overlay">
+							{main_posts.username}<br />
+							<i class="icon-star"></i><span class="user_rep_{main_posts.uid}">{main_posts.user_rep}</span>
+							<i class="icon-pencil"></i><span class="user_posts_{main_posts.uid}">8</span>
+						</div>
 					</a>
 					<h3>{topic_name} 
 						<small>
@@ -29,7 +32,7 @@
 							<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn edit {main_posts.display_moderator_tools} hidden-phone"><i class="icon-pencil"></i></button>
 							<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn delete {main_posts.display_moderator_tools} hidden-phone"><i class="icon-trash"></i></button>
 							<button id="quote_{main_posts.pid}_{main_posts.uid}" class="btn quote hidden-phone"><i class="icon-quote-left"></i></button>
-							
+
 							<button id="favs_{main_posts.pid}_{main_posts.uid}" class="favourite hidden-phone btn"><span class="post_rep_{main_posts.pid}">Favourite {main_posts.post_rep} </span><i class="{main_posts.fav_star_class}"></i></button>
 							<button id="post_reply" class="btn btn-primary btn post_reply">Reply <i class="icon-reply"></i></button>
 						</div>
