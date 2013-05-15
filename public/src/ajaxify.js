@@ -21,8 +21,8 @@ var ajaxify = {};
 
 
 	window.onpopstate = function(event) {
-		console.log('popstate called:', event);
-		if (event !== null && event.state && event.state.url) ajaxify.go(event.state.url, null, null, true);
+		console.log('popstate called:', event.state);
+		if (event !== null && event.state && event.state.url !== undefined) ajaxify.go(event.state.url, null, null, true);
 	};
 
 	ajaxify.go = function(url, callback, template, quiet) {
@@ -43,6 +43,9 @@ var ajaxify = {};
 		
 		if (templates[tpl_url]) {
 			if (quiet !== true) {
+				console.log('state pushed', {
+					"url": url
+				});
 				window.history.pushState({
 					"url": url
 				}, url, "/" + url);
