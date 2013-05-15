@@ -218,7 +218,12 @@ var express = require('express'),
 
 	app.get('/graph/users/:username/picture', function(req, res) {
 		user.get_uid_by_username(req.params.username, function(uid) {
+			if (uid == null) {
+				res.send('{status:0}');
+				return;
+			}
 			user.getUserField(uid, 'picture', function(picture) {
+				if (picture == null) res.redirect('http://www.gravatar.com/avatar/a938b82215dfc96c4cabeb6906e5f953');
 				res.redirect(picture);
 			});
 		});
