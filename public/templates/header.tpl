@@ -61,10 +61,10 @@
 			<div class="container">
 
 				<div class="btn-toolbar">
-					<div class="btn-group">
+					<div class="btn-group" id="formatting-bar">
 						<span class="btn btn-link" tabindex="-1"><i class="icon-bold"></i></span>
 						<span class="btn btn-link" tabindex="-1"><i class="icon-italic"></i></span>
-						<span class="btn btn-link" tabindex="-1"><i class="icon-font"></i></span>
+						<!-- <span class="btn btn-link" tabindex="-1"><i class="icon-font"></i></span> -->
 						<span class="btn btn-link" tabindex="-1"><i class="icon-list"></i></span>
 					</div>
 					<div class="btn-group" style="float: right; margin-right: -12px">

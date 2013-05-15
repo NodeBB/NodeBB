@@ -274,7 +274,33 @@ var socket,
 		}, false);
 
 		// Posting
+		var	formattingBar = document.getElementById('formatting-bar'),
+			postContentEl = document.getElementById('post_content');
 		jQuery('#post_window').slideToggle(0);
+		formattingBar.addEventListener('click', function(e) {
+			if (e.target.nodeName === 'I') {
+				switch(e.target.className) {
+					case 'icon-bold':
+						var cursorEnd = postContentEl.value.length;
+						postContentEl.value = postContentEl.value + '**bolded text**';
+						postContentEl.selectionStart = cursorEnd+2;
+						postContentEl.selectionEnd = postContentEl.value.length - 2;
+					break;
+					case 'icon-italic':
+						var cursorEnd = postContentEl.value.length;
+						postContentEl.value = postContentEl.value + '*italicised text*';
+						postContentEl.selectionStart = cursorEnd+1;
+						postContentEl.selectionEnd = postContentEl.value.length - 1;
+					break;
+					case 'icon-list':
+						var cursorEnd = postContentEl.value.length;
+						postContentEl.value = postContentEl.value + "\n\n* list item";
+						postContentEl.selectionStart = cursorEnd+4;
+						postContentEl.selectionEnd = postContentEl.value.length;
+					break;
+				}
+			}
+		}, false);
 	})
 
 
