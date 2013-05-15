@@ -21,7 +21,6 @@ var ajaxify = {};
 
 
 	window.onpopstate = function(event) {
-		console.log('popstate called:', event.state);
 		if (event !== null && event.state && event.state.url !== undefined) ajaxify.go(event.state.url, null, null, true);
 	};
 
@@ -43,9 +42,6 @@ var ajaxify = {};
 		
 		if (templates[tpl_url]) {
 			if (quiet !== true) {
-				console.log('state pushed', {
-					"url": url
-				});
 				window.history.pushState({
 					"url": url
 				}, url, "/" + url);
@@ -80,9 +76,11 @@ var ajaxify = {};
 		if (this.href == window.location.href + "#") return;
 		var url = this.href.replace(rootUrl +'/', '');
 
-		if (ajaxify.go(url)) {
+		if (!ev.ctrlKey && ev.which === 1) {
+			if (ajaxify.go(url)) ev.preventDefault();
+		} else if ((ev.ctrlKey && ev.which === 1) || ev.which === 2) {
+			window.open(this.href, '_blank');
 			ev.preventDefault();
-			// return false;	// Uncommenting this breaks event bubbling!
 		}
 	}
 
