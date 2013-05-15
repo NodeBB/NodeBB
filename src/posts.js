@@ -246,27 +246,48 @@ marked.setOptions({
 	}
 
 
-	Posts.favourite = function(io, pid, room_id, uid) {
+	Posts.favourite = function(pid, room_id, uid, socket) {
+		if (uid === 0) {
+			socket.emit('event:alert', {
+				alert_id: 'post_favourite',
+				title: 'Not Logged In',
+				message: 'Please log in in order to favourite this post',
+				type: 'error',
+				timeout: 5000
+			});
+			return;
+		}
+
 		RDB.get('pid:' + pid + ':uid', function(err, uid_of_poster) {
 			RDB.handle(err);
 
 			Posts.hasFavourited(pid, uid, function(hasFavourited) {
 				if (hasFavourited == false) {
 					RDB.sadd('pid:' + pid + ':users_favourited', uid);
-
-					user.incrementUserFieldBy(uid_of_poster, 'reputation', 1);
-					
 					RDB.incr('pid:' + pid + ':rep');
 
+					if (uid !== uid_of_poster) user.incrementUserFieldBy(uid_of_poster, 'reputation', 1);
+
 					if (room_id) {
-						io.sockets.in(room_id).emit('event:rep_up', {uid: uid_of_poster, pid: pid});
+						io.sockets.in(room_id).emit('event:rep_up', {uid: uid !== uid_of_poster ? uid_of_poster : 0, pid: pid});
 					}
 				}
 			});
 		});
 	}
 
-	Posts.unfavourite = function(io, pid, room_id, uid) {
+	Posts.unfavourite = function(pid, room_id, uid, socket) {
+		if (uid === 0) {
+			socket.emit('event:alert', {
+				alert_id: 'post_favourite',
+				title: 'Not Logged In',
+				message: 'Please log in in order to favourite this post',
+				type: 'error',
+				timeout: 5000
+			});
+			return;
+		}
+
 		RDB.get('pid:' + pid + ':uid', function(err, uid_of_poster) {
 			RDB.handle(err);
 
@@ -274,11 +295,12 @@ marked.setOptions({
 				if (hasFavourited == true) {
 					
 					RDB.srem('pid:' + pid + ':users_favourited', uid);
-					user.incrementUserFieldBy(uid_of_poster, 'reputation', -1);
 					RDB.decr('pid:' + pid + ':rep');
+					
+					if (uid !== uid_of_poster) user.incrementUserFieldBy(uid_of_poster, 'reputation', -1);
 
 					if (room_id) {
-						io.sockets.in(room_id).emit('event:rep_down', {uid: uid_of_poster, pid: pid});
+						io.sockets.in(room_id).emit('event:rep_down', {uid: uid !== uid_of_poster ? uid_of_poster : 0, pid: pid});
 					}
 				}
 			});

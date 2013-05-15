@@ -172,11 +172,11 @@ var SocketIO = require('socket.io').listen(global.server,{log:false}),
 		});
 
 		socket.on('api:posts.favourite', function(data) {
-			posts.favourite(io, data.pid, data.room_id, uid);
+			posts.favourite(data.pid, data.room_id, uid, socket);
 		});
 
 		socket.on('api:posts.unfavourite', function(data) {
-			posts.unfavourite(io, data.pid, data.room_id, uid);
+			posts.unfavourite(data.pid, data.room_id, uid, socket);
 		});
 
 		socket.on('api:user.active.get_record', function() {
