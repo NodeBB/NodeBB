@@ -100,6 +100,8 @@ var user = require('./../user.js'),
 			var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
 			var type = req.files.userPhoto.type;
 			
+			console.log(req.files.userPhoto);
+
 			if(allowedTypes.indexOf(type) === -1) {
 				res.send({
 					error: 'Allowed image types are png, jpg and gif!'
@@ -160,6 +162,17 @@ var user = require('./../user.js'),
 		            
 		        user.setUserField(uid, 'uploadedpicture', imageUrl);
 		        user.setUserField(uid, 'picture', imageUrl);
+
+		        var im = require('node-imagemagick');
+
+		        im.resize({
+				  srcPath: global.configuration['ROOT_DIRECTORY'] + uploadPath,
+				  dstPath: global.configuration['ROOT_DIRECTORY'] + uploadPath,
+				  width: 128
+				}, function(err, stdout, stderr){
+				  if (err) 
+				  	throw err;
+				});
 
 			});
 

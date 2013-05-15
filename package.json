@@ -27,7 +27,8 @@
       "marked": "0.2.8",
       "bcrypt": "0.7.5",
       "node-gyp": "0.9.5",
-      "async": "0.2.8"
+      "async": "0.2.8",
+      "node-imagemagick": "0.1.8"
     },
   "devDependencies": {},
   "optionalDependencies": {},
