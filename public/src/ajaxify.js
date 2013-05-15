@@ -60,8 +60,10 @@ var ajaxify = {};
 				
 				jQuery('#content, #footer').fadeIn(200);
 			}, url, template);
-			
-			
+
+			return true;
+		} else {
+			document.location.href = url;
 			return true;
 		}
 
