@@ -378,7 +378,7 @@ var config = require('../config.js'),
 				for(var i=0, ii=data.length; i<ii; ++i) {
 					User.getUserData(data[i], function(userData){
 						friendsData.push(userData);
-						console.log(friendsData);
+						
 						if(friendsData.length == data.length)
 							callback(friendsData);			
 					});	
@@ -393,6 +393,16 @@ var config = require('../config.js'),
 		RDB.srem('user:'+uid+':friends', friendid, function(err, data){
 			if(err === null)
 				callback(data);
+			else
+				console.log(err);
+		});
+	}
+
+	User.isFriend = function(uid, friendid, callback) {
+		RDB.sismember('user:'+uid+':friends', friendid, function(err, data){
+			if(err === null){
+				callback(data === 1);
+			}
 			else
 				console.log(err);
 		});

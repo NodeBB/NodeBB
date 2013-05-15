@@ -59,7 +59,7 @@
 		</div>
 	</div>
 	<div id="user-actions" class="container">
-		<a id="add-friend-btn" href="#" class="btn">Add Friend</a>
+		<a id="add-friend-btn" href="#" class="btn">Follow</a>
 	</div>
 	<br/>
 	<div id="user-action-alert" class="alert alert-success hide"></div>
@@ -71,6 +71,8 @@ var yourid = '{yourid}';
 var theirid = '{theirid}';
 
 (function() {
+
+	var isFriend = {isFriend};
 
     function addCommas(text) {
         return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
@@ -90,7 +92,10 @@ var theirid = '{theirid}';
         
         if( yourid !== theirid) {
             editLink.hide();
-            addFriendBtn.show();
+            if(isFriend)
+           		addFriendBtn.hide();
+           	else
+           		addFriendBtn.show();
         }
     	else {
     		addFriendBtn.hide();        
@@ -99,16 +104,14 @@ var theirid = '{theirid}';
         addFriendBtn.on('click', function() {
         	$.post('/users/addfriend', {uid: theirid},
             	function(data) {
+            		addFriendBtn.remove();
             		$('#user-action-alert').html('Friend Added!').show();
 				}                
 			);
         	return false;
         });
 
-        
-
     });
-    
 
 }());
 </script>

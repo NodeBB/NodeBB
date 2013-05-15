@@ -31,10 +31,16 @@ var socket,
 
 				contentEl.value = data.post;
 			});
+
+			socket.on('disconnect', function(data){
+				$('#disconnect-modal').show();
+				$('#reload-button').on('click',function(){
+					$('#disconnect-modal').hide();
+					window.location.reload();
+				});
+			});
 		},
 		async: false
-
-
 	});
 
 	// use unique alert_id to have multiple alerts visible at a time, use the same alert_id to fade out the current instance  
@@ -274,7 +280,33 @@ var socket,
 		}, false);
 
 		// Posting
+		var	formattingBar = document.getElementById('formatting-bar'),
+			postContentEl = document.getElementById('post_content');
 		jQuery('#post_window').slideToggle(0);
+		formattingBar.addEventListener('click', function(e) {
+			if (e.target.nodeName === 'I') {
+				switch(e.target.className) {
+					case 'icon-bold':
+						var cursorEnd = postContentEl.value.length;
+						postContentEl.value = postContentEl.value + '**bolded text**';
+						postContentEl.selectionStart = cursorEnd+2;
+						postContentEl.selectionEnd = postContentEl.value.length - 2;
+					break;
+					case 'icon-italic':
+						var cursorEnd = postContentEl.value.length;
+						postContentEl.value = postContentEl.value + '*italicised text*';
+						postContentEl.selectionStart = cursorEnd+1;
+						postContentEl.selectionEnd = postContentEl.value.length - 1;
+					break;
+					case 'icon-list':
+						var cursorEnd = postContentEl.value.length;
+						postContentEl.value = postContentEl.value + "\n\n* list item";
+						postContentEl.selectionStart = cursorEnd+4;
+						postContentEl.selectionEnd = postContentEl.value.length;
+					break;
+				}
+			}
+		}, false);
 	})
 
 

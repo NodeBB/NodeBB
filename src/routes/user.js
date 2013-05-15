@@ -91,20 +91,31 @@ var user = require('./../user.js'),
 			if(!req.user)
 				return res.redirect('/403');
 			
-			if(req.files.userPhoto.size > 131072) {
+			if(req.files.userPhoto.size > 262144) {
 				res.send({
-					error: 'Images must be smaller than 128kb!'
+					error: 'Images must be smaller than 256kb!'
 				});
 				return;
 			}
+			var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
+			var type = req.files.userPhoto.type;
 			
+			console.log(req.files.userPhoto);
+
+			if(allowedTypes.indexOf(type) === -1) {
+				res.send({
+					error: 'Allowed image types are png, jpg and gif!'
+				});
+				return;	
+			}
+
 			user.getUserField(req.user.uid, 'uploadedpicture', function(oldpicture) {
 
 				if(!oldpicture) {
 					uploadUserPicture(req.user.uid, req.files.userPhoto.name, req.files.userPhoto.path, res);
 					return;
 				}
-				
+
 				var index = oldpicture.lastIndexOf('/');
 				var filename = oldpicture.substr(index + 1);
 
@@ -151,6 +162,17 @@ var user = require('./../user.js'),
 		            
 		        user.setUserField(uid, 'uploadedpicture', imageUrl);
 		        user.setUserField(uid, 'picture', imageUrl);
+
+		        var im = require('node-imagemagick');
+
+		        im.resize({
+				  srcPath: global.configuration['ROOT_DIRECTORY'] + uploadPath,
+				  dstPath: global.configuration['ROOT_DIRECTORY'] + uploadPath,
+				  width: 128
+				}, function(err, stdout, stderr){
+				  if (err) 
+				  	throw err;
+				});
 
 			});
 
@@ -244,15 +266,16 @@ var user = require('./../user.js'),
 				});
 			} else {
 				getUserDataByUserName(req.params.username, callerUID, function(userData) {
-					res.send(JSON.stringify(userData));
+					user.isFriend(callerUID, userData.theirid, function(isFriend) {
+						userData.isFriend = isFriend;
+						res.send(JSON.stringify(userData));
+					});
 				});						
 			}
 		
 		}
 
 		app.get('/api/users/:username?/:section?', api_method);
-
-
 
 		function getUserDataByUserName(username, callerUID, callback) {
 		
