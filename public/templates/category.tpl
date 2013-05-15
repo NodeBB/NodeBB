@@ -15,7 +15,7 @@
 				<div class="span12 topic-row img-polaroid">
 					<div class="latest-post visible-desktop">
 						<div class="pull-right">
-							<img src="{topics.recent_picture}?s=50" />
+							<img style="width: 48px; height: 48px; /*temporary*/" src="/graph/users/{topics.recent_author}/picture" />
 							<p><strong>{topics.recent_author}</strong>: {topics.recent_post}</p>
 						</div>
 					</div>
@@ -37,31 +37,17 @@
 				Recent Replies
 			</div>
 			<div class="block-content">
-				<img src="http://www.gravatar.com/avatar/fd37ce111f863c6665045c2d72d199bf?s=48" class="img-polaroid" />
-				<img src="http://www.gravatar.com/avatar/07c9c7170c3ac676c2561e3eeaee063c?s=48" class="img-polaroid" />
-				<img src="http://www.gravatar.com/avatar/91050ce0072697b53380c6a03a1bc12a?s=48" class="img-polaroid" />
-				<img src="http://www.gravatar.com/avatar/fd37ce111f863c6665045c2d72d199bf?s=48" class="img-polaroid" />
-				<img src="http://www.gravatar.com/avatar/07c9c7170c3ac676c2561e3eeaee063c?s=48" class="img-polaroid" />
-				<img src="http://www.gravatar.com/avatar/91050ce0072697b53380c6a03a1bc12a?s=48" class="img-polaroid" />
-				<img src="http://www.gravatar.com/avatar/fd37ce111f863c6665045c2d72d199bf?s=48" class="img-polaroid" />
-				<img src="http://www.gravatar.com/avatar/07c9c7170c3ac676c2561e3eeaee063c?s=48" class="img-polaroid" />
-				<img src="http://www.gravatar.com/avatar/91050ce0072697b53380c6a03a1bc12a?s=48" class="img-polaroid" />
+				
 			</div>
 		</div>
 		<div class="sidebar-block img-polaroid">
 			<div class="block-header">
-				Top posters
+				Active Participants
 			</div>
 			<div class="block-content">
-				<img src="http://www.gravatar.com/avatar/fd37ce111f863c6665045c2d72d199bf?s=48" class="img-polaroid" />
-				<img src="http://www.gravatar.com/avatar/07c9c7170c3ac676c2561e3eeaee063c?s=48" class="img-polaroid" />
-				<img src="http://www.gravatar.com/avatar/91050ce0072697b53380c6a03a1bc12a?s=48" class="img-polaroid" />
-				<img src="http://www.gravatar.com/avatar/fd37ce111f863c6665045c2d72d199bf?s=48" class="img-polaroid" />
-				<img src="http://www.gravatar.com/avatar/07c9c7170c3ac676c2561e3eeaee063c?s=48" class="img-polaroid" />
-				<img src="http://www.gravatar.com/avatar/91050ce0072697b53380c6a03a1bc12a?s=48" class="img-polaroid" />
-				<img src="http://www.gravatar.com/avatar/fd37ce111f863c6665045c2d72d199bf?s=48" class="img-polaroid" />
-				<img src="http://www.gravatar.com/avatar/07c9c7170c3ac676c2561e3eeaee063c?s=48" class="img-polaroid" />
-				<img src="http://www.gravatar.com/avatar/91050ce0072697b53380c6a03a1bc12a?s=48" class="img-polaroid" />
+				<!-- BEGIN active_users -->
+				<a href="/users/{active_users.username}"><img style="width: 48px; height: 48px; /*temporary*/" src="/graph/users/{active_users.username}/picture" class="img-polaroid" /></a>
+				<!-- END active_users -->
 			</div>
 		</div>
 	</div>

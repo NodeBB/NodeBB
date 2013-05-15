@@ -29,8 +29,7 @@ var	RDB = require('./redis.js'),
 				deleted = [],
 				pinned = [],
 				recent_post = [],
-				recent_author = [],
-				recent_picture = [];
+				recent_author = [];
 
 			for (var i=0, ii=tids.length; i<ii; i++) {
 				title.push('tid:' + tids[i] + ':title');
@@ -43,11 +42,11 @@ var	RDB = require('./redis.js'),
 				pinned.push('tid:' + tids[i] + ':pinned');
 				recent_post.push('tid:' + tids[i] + ':recent:post');
 				recent_author.push('tid:' + tids[i] + ':recent:author');
-				recent_picture.push('tid:' + tids[i] + ':recent:picture');
 			}
 
 			var multi = RDB.multi()
-				.get('cid:' + category_id + ':name');
+				.get('cid:' + category_id + ':name')
+				.smembers('cid:' + category_id + ':active_users');
 
 			if (tids.length > 0) {
 				multi
@@ -61,26 +60,25 @@ var	RDB = require('./redis.js'),
 					.mget(pinned)
 					.mget(recent_post)
 					.mget(recent_author)
-					.mget(recent_picture)
 			}
 				
 			
 			multi.exec(function(err, replies) {
 				category_name = replies[0];
+				active_usernames = replies[1];
 				var topics = [];
 
 				if (tids.length > 0) {
-					title = replies[1];
-					uid = replies[2];
-					timestamp = replies[3];
-					slug = replies[4];
-					postcount = replies[5];
-					locked = replies[6];
-					deleted = replies[7];
-					pinned = replies[8];
-					recent_post = replies[9];
-					recent_author = replies[10];
-					recent_picture = replies[11];
+					title = replies[2];
+					uid = replies[3];
+					timestamp = replies[4];
+					slug = replies[5];
+					postcount = replies[6];
+					locked = replies[7];
+					deleted = replies[8];
+					pinned = replies[9];
+					recent_post = replies[10];
+					recent_author = replies[11];
 
 					var usernames,
 						has_read;
@@ -104,8 +102,7 @@ var	RDB = require('./redis.js'),
 								'pin-icon': pinned[i] === '1' ? 'icon-pushpin' : 'none',
 								'badgeclass' : (has_read[i] && current_user !=0) ? '' : 'badge-important',
 								'recent_post' : recent_post[i],
-								'recent_author' : recent_author[i],
-								'recent_picture' : recent_picture[i]
+								'recent_author' : recent_author[i]
 							});
 						}
 
@@ -118,11 +115,17 @@ var	RDB = require('./redis.js'),
 							}
 						});
 
+						var active_users = {};
+						for (var username in active_usernames) {
+							active_users['username'] = active_usernames[username];
+						}
+
 						callback({
 							'category_name' : category_id ? category_name : 'Recent',
 							'show_topic_button' : category_id ? 'show' : 'hidden',
 							'category_id': category_id || 0,
-							'topics': topics
+							'topics': topics,
+							'active_users': active_users
 						});
 					}
 					

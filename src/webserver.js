@@ -211,6 +211,21 @@ var express = require('express'),
 			res.send(JSON.stringify(post));
 		});
 	});
+
+
+
+	//START TODO: MOVE TO GRAPH.JS 
+
+	app.get('/graph/users/:username/picture', function(req, res) {
+		user.get_uid_by_username(req.params.username, function(uid) {
+			user.getUserField(uid, 'picture', function(picture) {
+				res.redirect(picture);
+			});
+		});
+		
+	});
+
+	//END TODO: MOVE TO GRAPH.JS
 }(WebServer));
 
 server.listen(config.port);

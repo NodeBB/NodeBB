@@ -75,13 +75,7 @@ var	RDB = require('./redis.js'),
 							'slug' : slug[i],
 							'description' : description[i],
 							'blockclass' : blockclass[i],
-							'icon' : icon[i],
-							/*'topics' : [0,1], later
-							'latest_post' : {
-								'uid' : 1,
-								'pid' : 1,
-								timestamp and shit
-							}*/
+							'icon' : icon[i]
 						});
 					}
 

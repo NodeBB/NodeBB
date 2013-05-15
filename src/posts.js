@@ -224,10 +224,23 @@ marked.setOptions({
 					RDB.incr('tid:' + tid + ':postcount');
 
 
-					user.getUserFields(uid, ['username','picture'], function(data){
+					user.getUserFields(uid, ['username'], function(data){
 						RDB.set('tid:' + tid + ':recent:post', content);
 						RDB.set('tid:' + tid + ':recent:author', data.username);
-						RDB.set('tid:' + tid + ':recent:picture', data.picture);
+
+						//add active users to this category
+						RDB.get('tid:' + tid + ':cid', function(err, cid) {
+							RDB.handle(err);
+
+							// this is a bit of a naive implementation, defn something to look at post-MVP
+							RDB.scard('cid:' + cid + ':active_users', function(amount) {
+								if (amount > 10) {
+									RDB.spop('cid:' + cid + ':active_users');
+								}
+
+								RDB.sadd('cid:' + cid + ':active_users', data.username);
+							});
+						});
 					});
 					
 					
