@@ -59,7 +59,6 @@
 	</div>
 	<div id="user-actions" class="container">
 		<a id="add-friend-btn" href="#" class="btn">Add Friend</a>
-		<a id="send-message-btn" href="#" class="btn">Send Message</a>
 	</div>
 </div>
 
@@ -88,16 +87,15 @@ var theirid = '{theirid}';
         
         var editLink = $('#editLink');
 		var addFriendBtn = $('#add-friend-btn');
-		var sendMessageBtn = $('#send-message-btn');
+		
         
         if( yourid !== theirid) {
             editLink.hide();
             addFriendBtn.show();
-            sendMessageBtn.show();
-    	}
+        }
     	else {
     		addFriendBtn.hide();
-            sendMessageBtn.hide();	
+        
     	}
         
         addFriendBtn.on('click', function() {
@@ -109,9 +107,7 @@ var theirid = '{theirid}';
         	return false;
         });
 
-        sendMessageBtn.on('click', function() {
-        	return false;
-        });
+        
 
     });
     

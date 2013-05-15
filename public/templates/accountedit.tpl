@@ -79,50 +79,50 @@
 	      
 		<div class="span9">
 		     <div class="inline-block">
-		         <form class='form-horizontal'>
-					<div class="control-group">
-		                <label class="control-label" for="inputEmail">Email</label>
-		                <div class="controls">
-		                  <input type="text" id="inputEmail" placeholder="Email" value="{email}">
-		                </div>
-		              </div>
-		              
-		              <div class="control-group">
-		                <label class="control-label" for="inputFullname">Full Name</label>
-		                <div class="controls">
-		                  <input type="text" id="inputFullname" placeholder="Full Name" value="{fullname}">
-		                </div>
-		              </div>
-		              
-		               <div class="control-group">
-		                <label class="control-label" for="inputWebsite">Website</label>
-		                <div class="controls">
-		                  <input type="text" id="inputWebsite" placeholder="http://website.com" value="{website}">
-		                </div>
-		              </div>
-		             
-		              <div class="control-group">
-		                <label class="control-label" for="inputLocation">Location</label>
-		                <div class="controls">
-		                  <input type="text" id="inputLocation" placeholder="Location" value="{location}">
-		                </div>
-		              </div>
-		              
-		              <div class="control-group">
-		                <label class="control-label" for="inputBirthday">Birthday</label>
-		                <div class="controls">
-		                  <input type="text" id="inputBirthday" placeholder="mm/dd/yyyy" value="{birthday}">
-		                </div>
-		              </div>
-		             
-		             <input type="hidden" id="inputUID" value="{uid}">
-		             
-		              <div class="form-actions">
-		                <a id="submitBtn" href="" class="btn btn-primary">Save changes</a>
-		                <a href="/users/{username}" class="btn">Cancel</a>
-		              </div>
-		              
-		         </form>
+				<form class='form-horizontal'>
+				<div class="control-group">
+				    <label class="control-label" for="inputEmail">Email</label>
+				    <div class="controls">
+				      <input type="text" id="inputEmail" placeholder="Email" value="{email}">
+				    </div>
+				  </div>
+				  
+				  <div class="control-group">
+				    <label class="control-label" for="inputFullname">Full Name</label>
+				    <div class="controls">
+				      <input type="text" id="inputFullname" placeholder="Full Name" value="{fullname}">
+				    </div>
+				  </div>
+				  
+				   <div class="control-group">
+				    <label class="control-label" for="inputWebsite">Website</label>
+				    <div class="controls">
+				      <input type="text" id="inputWebsite" placeholder="http://website.com" value="{website}">
+				    </div>
+				  </div>
+				 
+				  <div class="control-group">
+				    <label class="control-label" for="inputLocation">Location</label>
+				    <div class="controls">
+				      <input type="text" id="inputLocation" placeholder="Location" value="{location}">
+				    </div>
+				  </div>
+				  
+				  <div class="control-group">
+				    <label class="control-label" for="inputBirthday">Birthday</label>
+				    <div class="controls">
+				      <input type="text" id="inputBirthday" placeholder="mm/dd/yyyy" value="{birthday}">
+				    </div>
+				  </div>
+				 
+				 <input type="hidden" id="inputUID" value="{uid}">
+				 
+				  <div class="form-actions">
+				    <a id="submitBtn" href="" class="btn btn-primary">Save changes</a>
+				    <a href="/users/{username}" class="btn">Cancel</a>
+				  </div>
+				  
+				</form>
 		    </div>
 	    </div>
     </div>  

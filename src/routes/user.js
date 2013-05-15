@@ -136,7 +136,37 @@ var user = require('./../user.js'),
 			
 			console.log('trying to upload to : '+ global.configuration['ROOT_DIRECTORY'] + uploadPath);
 			
-			fs.rename(
+			var is = fs.createReadStream(tempPath);
+			var os = fs.createWriteStream(global.configuration['ROOT_DIRECTORY'] + uploadPath);
+			
+			is.pipe(os);
+
+			is.on('end', function(){
+ 				fs.unlinkSync(tempPath);
+
+				var imageUrl = config.upload_url + filename;
+		 			
+		        res.send({
+					path: imageUrl
+		        });
+		            
+		        user.setUserField(uid, 'uploadedpicture', imageUrl);
+		        user.setUserField(uid, 'picture', imageUrl);
+
+			});
+
+			os.on('error', function(err) {
+				console.log(err);
+			});
+
+			
+
+			/*util.pump(is, os, function() {
+			    fs.unlinkSync('source_file');
+			});*/
+
+
+			/*fs.rename(
 				tempPath,
 				global.configuration['ROOT_DIRECTORY'] + uploadPath,
 				function(error) {
@@ -158,7 +188,7 @@ var user = require('./../user.js'),
 		            user.setUserField(uid, 'picture', imageUrl);
 		            
 				}
-	    	);
+	    	);*/
 		}
 		
 
@@ -211,7 +241,9 @@ var user = require('./../user.js'),
 		});
 
 		function api_method(req, res) {
-			console.log("fail "+req.params.section);
+			
+			
+			
 			var callerUID = req.user?req.user.uid : 0;
 	
 			if (!req.params.section && !req.params.username) {
