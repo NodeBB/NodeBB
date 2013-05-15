@@ -8,59 +8,71 @@
 </div>
 
 <ul id="post-container" class="post-container container">
-	<li class="row" data-pid="{posts.pid}" data-deleted="{posts.deleted}">
-		<div class="span1 profile-image-block visible-desktop">
-			<!--<i class="icon-spinner icon-spin icon-2x pull-left"></i>-->
-			<a href="/users/{posts.username}">
-				<img src="http://www.gravatar.com/avatar/5af32f56c02e59591f0d0c1e6941977c?s=80" align="left" />
-			</a>
-			<i class="icon-star"></i><span class="user_rep_{posts.uid}">100</span>
-		</div>
-		<div class="span11">
-			<div class="post-block">
-				<div id="content_{posts.pid}" class="post-content">This is the main post blah blah </div>
-				<div class="profile-block">
-					<span class="post-buttons">
-						<div id="ids_{posts.pid}_{posts.uid}" class="edit {posts.display_moderator_tools} hidden-phone"><i class="icon-pencil"></i></div>
-						<div id="ids_{posts.pid}_{posts.uid}" class="delete {posts.display_moderator_tools} hidden-phone"><i class="icon-trash"></i></div>
-						<div id="quote_{posts.pid}_{posts.uid}" class="quote hidden-phone"><i class="icon-quote-left"></i></div>
-						<div id="favs_{posts.pid}_{posts.uid}" class="favourite hidden-phone"><span class="post_rep_{posts.pid}">50</span><i class="{posts.fav_star_class}"></i></div>
-						<div class="post_reply">Reply <i class="icon-reply"></i></div>
-					</span>
-					<img class="hidden-desktop" src="{posts.gravatar}?s=10" align="left" /> posted by <strong><a href="/users/{posts.username}">psychobunny</a></strong> 1 hour ago
-				</div>
-			</div>
-		</div>
-	</li>
-
 	
-	<!-- BEGIN posts -->
-	<li class="row" data-pid="{posts.pid}" data-deleted="{posts.deleted}">
-		<div class="span1 profile-image-block visible-desktop">
-			<!--<i class="icon-spinner icon-spin icon-2x pull-left"></i>-->
-			<a href="/users/{posts.username}">
-				<img src="{posts.gravatar}?s=80" align="left" />
-			</a>
-			<i class="icon-star"></i><span class="user_rep_{posts.uid}">{posts.user_rep}</span>
-		</div>
-		<div class="span11">
-			<div class="post-block">
-				<div id="content_{posts.pid}" class="post-content">{posts.content}</div>
-				<div class="profile-block">
-					<span class="post-buttons">
-						<div id="ids_{posts.pid}_{posts.uid}" class="edit {posts.display_moderator_tools} hidden-phone"><i class="icon-pencil"></i></div>
-						<div id="ids_{posts.pid}_{posts.uid}" class="delete {posts.display_moderator_tools} hidden-phone"><i class="icon-trash"></i></div>
-						<div id="quote_{posts.pid}_{posts.uid}" class="quote hidden-phone"><i class="icon-quote-left"></i></div>
-						<div id="favs_{posts.pid}_{posts.uid}" class="favourite hidden-phone"><span class="post_rep_{posts.pid}">{posts.post_rep}</span><i class="{posts.fav_star_class}"></i></div>
-						<div class="post_reply">Reply <i class="icon-reply"></i></div>
-					</span>
-					<img class="hidden-desktop" src="{posts.gravatar}?s=10" align="left" /> posted by <strong><a href="/users/{posts.username}">{posts.username}</a></strong> {posts.relativeTime} ago
-					<span class="{posts.edited-class} hidden-phone">| last edited by <strong><a href="/users/{posts.editor}">{posts.editor}</a></strong> {posts.relativeEditTime} ago</span>
-					<span class="{posts.edited-class}"><i class="icon-edit visible-phone" title="edited by {posts.editor} {posts.relativeEditTime} ago"></i></span>
+
+
+	<!-- BEGIN main_posts -->
+		<li class="row main-post" data-pid="{main_posts.pid}" data-deleted="{main_posts.deleted}">
+			<div class="span12">
+				<div class="post-block">
+					<a class="main-avatar img-polaroid" href="/users/{main_posts.username}">
+						<img src="{main_posts.gravatar}?s=120" align="left" /><br />
+						<i class="icon-star"></i><span class="user_rep_{main_posts.uid}">{main_posts.user_rep}</span>
+						<i class="icon-pencil"></i><span class="user_posts_{main_posts.uid}">8</span>
+					</a>
+					<h3>{topic_name} 
+						<small>
+							posted {main_posts.relativeTime} ago by <strong><a href="/users/{main_posts.username}">{main_posts.username}</a></strong>
+							<span class="{main_posts.edited-class}"><i class="icon-edit visible-phone" title="edited by {main_posts.editor} {main_posts.relativeEditTime} ago"></i></span>
+						</small>
+						<div class="pull-right" style="margin-right: 10px;">
+							<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn edit {main_posts.display_moderator_tools} hidden-phone"><i class="icon-pencil"></i></button>
+							<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn delete {main_posts.display_moderator_tools} hidden-phone"><i class="icon-trash"></i></button>
+							<button id="quote_{main_posts.pid}_{main_posts.uid}" class="btn quote hidden-phone"><i class="icon-quote-left"></i></button>
+							
+							<button id="favs_{main_posts.pid}_{main_posts.uid}" class="favourite hidden-phone btn"><span class="post_rep_{main_posts.pid}">Favourite {main_posts.post_rep} </span><i class="{main_posts.fav_star_class}"></i></button>
+							<button id="post_reply" class="btn btn-primary btn post_reply">Reply <i class="icon-reply"></i></button>
+						</div>
+					</h3>
+
+
+					<hr />
+					<span class="{main_posts.edited-class} hidden-phone"> last edited by <strong><a href="/users/{main_posts.editor}">{main_posts.editor}</a></strong> {main_posts.relativeEditTime} ago</span>
+
+					<div id="content_{main_posts.pid}" class="post-content">{main_posts.content}</div>
+					<div class="profile-block"></div>
 				</div>
 			</div>
-		</div>
-	</li>
+		</li>
+	<!-- END main_posts -->
+
+	<!-- BEGIN posts -->
+		<li class="row" data-pid="{posts.pid}" data-deleted="{posts.deleted}">
+			<div class="span1 profile-image-block visible-desktop">
+				<!--<i class="icon-spinner icon-spin icon-2x pull-left"></i>-->
+				<a href="/users/{posts.username}">
+					<img src="{posts.gravatar}?s=80" align="left" />
+				</a>
+				<i class="icon-star"></i><span class="user_rep_{posts.uid}">{posts.user_rep}</span>
+			</div>
+			<div class="span11">
+				<div class="post-block">
+					<div id="content_{posts.pid}" class="post-content">{posts.content}</div>
+					<div class="profile-block">
+						<span class="post-buttons">
+							<div id="ids_{posts.pid}_{posts.uid}" class="edit {posts.display_moderator_tools} hidden-phone"><i class="icon-pencil"></i></div>
+							<div id="ids_{posts.pid}_{posts.uid}" class="delete {posts.display_moderator_tools} hidden-phone"><i class="icon-trash"></i></div>
+							<div id="quote_{posts.pid}_{posts.uid}" class="quote hidden-phone"><i class="icon-quote-left"></i></div>
+							<div id="favs_{posts.pid}_{posts.uid}" class="favourite hidden-phone"><span class="post_rep_{posts.pid}">{posts.post_rep}</span><i class="{posts.fav_star_class}"></i></div>
+							<div class="post_reply"><i class="icon-reply"></i></div>
+						</span>
+						<img class="hidden-desktop" src="{posts.gravatar}?s=10" align="left" /> posted by <strong><a href="/users/{posts.username}">{posts.username}</a></strong> {posts.relativeTime} ago
+						<span class="{posts.edited-class} hidden-phone">| last edited by <strong><a href="/users/{posts.editor}">{posts.editor}</a></strong> {posts.relativeEditTime} ago</span>
+						<span class="{posts.edited-class}"><i class="icon-edit visible-phone" title="edited by {posts.editor} {posts.relativeEditTime} ago"></i></span>
+					</div>
+				</div>
+			</div>
+		</li>
 	<!-- END posts -->
 </ul>
 <hr />
