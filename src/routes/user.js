@@ -91,20 +91,29 @@ var user = require('./../user.js'),
 			if(!req.user)
 				return res.redirect('/403');
 			
-			if(req.files.userPhoto.size > 131072) {
+			if(req.files.userPhoto.size > 262144) {
 				res.send({
-					error: 'Images must be smaller than 128kb!'
+					error: 'Images must be smaller than 256kb!'
 				});
 				return;
 			}
+			var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
+			var type = req.files.userPhoto.type;
 			
+			if(allowedTypes.indexOf(type) === -1) {
+				res.send({
+					error: 'Allowed image types are png, jpg and gif!'
+				});
+				return;	
+			}
+
 			user.getUserField(req.user.uid, 'uploadedpicture', function(oldpicture) {
 
 				if(!oldpicture) {
 					uploadUserPicture(req.user.uid, req.files.userPhoto.name, req.files.userPhoto.path, res);
 					return;
 				}
-				
+
 				var index = oldpicture.lastIndexOf('/');
 				var filename = oldpicture.substr(index + 1);
 
