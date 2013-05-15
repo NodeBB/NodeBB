@@ -11,6 +11,7 @@ var utils = {
 			difference = now - Math.floor(parseFloat(timestamp));
 
 		difference = Math.floor(difference / 1000);
+		console.log(difference);
 		if (difference < 60) return difference + ' second' + (difference !== 1 ? 's' : '');
 		
 		difference = Math.floor(difference / 60);
@@ -20,16 +21,13 @@ var utils = {
 		if (difference < 24) return difference + ' hour' + (difference !== 1 ? 's' : '');
 
 		difference = Math.floor(difference / 24);
-		if (difference < 3) return difference + ' day' + (difference !== 1 ? 's' : '');
+		if (difference < 30) return difference + ' day' + (difference !== 1 ? 's' : '');
 
-		// Lastly, just return a formatted date
-		var	date = new Date(timestamp);
-			// hour = date.getHours(),
-			// minute = date.getMinutes(),
-			// day = date.getDate(),
-			// month = date.getMonth(),
-			// months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-		return date.toDateString();
+		difference = Math.floor(difference / 30);
+		if (difference < 12) return difference + ' month' + (difference !== 1 ? 's' : '');
+
+		difference = Math.floor(difference / 12);
+		return difference + ' year' + (difference !== 1 ? 's' : '');
 	},
 	
 	//http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/

@@ -78,12 +78,13 @@ var user = require('./../user.js'),
 			if(!req.user)
 				return res.redirect('/403');
 			
-			if(req.user.uid != req.body.uid)
+			if(req.user.uid != req.body.uid) {
 				return res.redirect('/');
+			}
 			
 			user.updateProfile(req.user.uid, req.body);
-			
-			res.redirect('/');
+
+			res.send({});
 		});
 
 		app.post('/users/uploadpicture', function(req, res) {
@@ -283,8 +284,9 @@ var user = require('./../user.js'),
 		
 				user.getUserData(uid, function(data) {
 					if(data) {
+						console.log(data.joindate);
 						data.joindate = utils.relativeTime(data.joindate);
-						
+						console.log(data.joindate);
 						if(!data.birthday)
 							data.age = '';
 						else

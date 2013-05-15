@@ -120,7 +120,7 @@
 				 <input type="hidden" id="inputUID" value="{uid}">
 				 
 				  <div class="form-actions">
-				    <a id="submitBtn" href="" class="btn btn-primary">Save changes</a>
+				    <a id="submitBtn" href="#" class="btn btn-primary">Save changes</a>
 				    <a href="/users/{username}" class="btn">Cancel</a>
 				  </div>
 				  
@@ -240,9 +240,16 @@ $(document).ready(function() {
 		$.post('/users/doedit',
         	userData,
             function(data) {
-
-			}                
+            	app.alert({
+			      'alert_id': 'user_profile_updated',
+			      type: 'success',
+			      title: 'Profile Updated',
+			      message: 'Your profile has been updated successfully',
+			      timeout: 2000
+			    });
+            }
 		);
+		return false;
     });
     
     function updateImages() {
