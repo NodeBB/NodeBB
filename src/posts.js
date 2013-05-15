@@ -31,6 +31,11 @@ marked.setOptions({
 					pid = post_data.pid[i];
 					
 				if (post_data.deleted[i] === null || (post_data.deleted[i] === '1' && manage_content)) {
+					
+					if(uid == 0) {
+						console.log(user_data[uid].picture);
+					}
+
 					posts.push({
 						'pid' : pid,
 						'uid' : uid,
@@ -40,7 +45,7 @@ marked.setOptions({
 						'relativeTime': utils.relativeTime(post_data.timestamp[i]),
 						'username' : user_data[uid].username || 'anonymous',
 						'user_rep' : user_data[uid].reputation || 0,
-						'gravatar' : user_data[uid].picture,
+						'gravatar' : user_data[uid].picture || 'http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e',
 						'fav_star_class' : vote_data[pid] ? 'icon-star' : 'icon-star-empty',
 						'display_moderator_tools': (uid == current_user || manage_content) ? 'show' : 'none',
 						'edited-class': post_data.editor[i] !== null ? '' : 'none',

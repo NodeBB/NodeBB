@@ -11,7 +11,7 @@ var utils = {
 			difference = now - Math.floor(parseFloat(timestamp));
 
 		difference = Math.floor(difference / 1000);
-		console.log(difference);
+		
 		if (difference < 60) return difference + ' second' + (difference !== 1 ? 's' : '');
 		
 		difference = Math.floor(difference / 60);
