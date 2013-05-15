@@ -69,10 +69,11 @@ var ajaxify = {};
 	}
 
 	ajaxify.enable = function() {
+		$('a').unbind('mouseup', ajaxify.onmouseup).bind('mouseup', ajaxify.onmouseup);
 		$('a').unbind('click', ajaxify.onclick).bind('click', ajaxify.onclick);
 	}
 
-	ajaxify.onclick = function(ev) {
+	ajaxify.onmouseup = function(ev) {
 		if (this.href == window.location.href + "#") return;
 		var url = this.href.replace(rootUrl +'/', '');
 
@@ -82,6 +83,10 @@ var ajaxify = {};
 			window.open(this.href, '_blank');
 			ev.preventDefault();
 		}
+	}
+
+	ajaxify.onclick = function(ev) {
+		ev.preventDefault();
 	}
 
 	$('document').ready(function() {
