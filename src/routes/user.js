@@ -138,8 +138,6 @@ var user = require('./../user.js'),
 			
 			var is = fs.createReadStream(tempPath);
 			var os = fs.createWriteStream(global.configuration['ROOT_DIRECTORY'] + uploadPath);
-			
-			is.pipe(os);
 
 			is.on('end', function(){
  				fs.unlinkSync(tempPath);
@@ -159,36 +157,7 @@ var user = require('./../user.js'),
 				console.log(err);
 			});
 
-			
-
-			/*util.pump(is, os, function() {
-			    fs.unlinkSync('source_file');
-			});*/
-
-
-			/*fs.rename(
-				tempPath,
-				global.configuration['ROOT_DIRECTORY'] + uploadPath,
-				function(error) {
-		            if(error) {
-		            	console.log(error);
-						res.send({
-		                    error: 'Error uploading file!'
-						});
-		                return;
-		            }
-		 			
-		 			var imageUrl = config.upload_url + filename;
-		 			
-		            res.send({
-						path: imageUrl
-		            });
-		            
-		            user.setUserField(uid, 'uploadedpicture', imageUrl);
-		            user.setUserField(uid, 'picture', imageUrl);
-		            
-				}
-	    	);*/
+			is.pipe(os);
 		}
 		
 
