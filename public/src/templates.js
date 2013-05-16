@@ -168,8 +168,6 @@ function load_template(callback, url, template) {
 	url = (url === '' || url === '/') ? 'home' : url;
 
 	jQuery.get(API_URL + url, function(data) {
-
-		console.log(data);
 		if(!data) {
 			window.location.href = '/403';
 			return;
