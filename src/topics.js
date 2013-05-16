@@ -122,9 +122,9 @@ var	RDB = require('./redis.js'),
 							}
 						});
 
-						var active_users = {};
+						var active_users = [];
 						for (var username in active_usernames) {
-							active_users['username'] = active_usernames[username];
+							active_users.push({'username': active_usernames[username]});
 						}
 
 						callback({
@@ -148,6 +148,7 @@ var	RDB = require('./redis.js'),
 					});
 
 					categories.getModerators(category_id, function(mods) {
+						console.log(mods);
 						moderators = mods;
 						generate_topic();
 					})
