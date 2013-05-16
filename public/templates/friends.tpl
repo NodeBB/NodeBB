@@ -49,10 +49,6 @@ var friendCount = '{friendCount}';
 
 (function() {
     
-    function addCommas(text) {
-        return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
-    }
-    
     $(document).ready(function() {
     	
     	if(parseInt(friendCount, 10) === 0) {
@@ -80,12 +76,12 @@ var friendCount = '{friendCount}';
 		}
 
         $('.reputation').each(function(index, element) {
-        	$(element).html(addCommas($(element).html()));
-        })
+        	$(element).html(app.addCommas($(element).html()));
+        });
         
         $('.postcount').each(function(index, element) {
-        	$(element).html(addCommas($(element).html()));
-        })
+        	$(element).html(app.addCommas($(element).html()));
+        });
         
     });
     

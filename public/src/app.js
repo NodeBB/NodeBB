@@ -44,6 +44,11 @@ var socket,
 		async: false
 	});
 
+	// takes a string like 1000 and returns 1,000
+	app.addCommas = function(text) {
+        return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+    }
+
 	// use unique alert_id to have multiple alerts visible at a time, use the same alert_id to fade out the current instance  
 	// type : error, success, info, warning/notify
 	// title = bolded title text
