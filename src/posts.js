@@ -21,12 +21,13 @@ marked.setOptions({
 
 		getTopicPosts();
 
-		getUserReputation();
+		getViewerData();
 		
 
 		//compile thread after all data is asynchronously called
 		function generateThread() {
 			if (!post_data || !user_data || !thread_data || !vote_data || !viewer_data) return;
+			console.log(viewer_data);
 
 			var	posts = [],
 				main_posts = [],
@@ -49,7 +50,7 @@ marked.setOptions({
 						'user_rep' : user_data[uid].reputation || 0,
 						'gravatar' : user_data[uid].picture || 'http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e',
 						'fav_star_class' : vote_data[pid] ? 'icon-star' : 'icon-star-empty',
-						'display_moderator_tools': (uid == current_user || manage_content) ? 'show' : 'none',
+						'display_moderator_tools': (uid == current_user || manage_content || viewer_data.isModerator) ? 'show' : 'none',
 						'edited-class': post_data.editor[i] !== null ? '' : 'none',
 						'editor': post_data.editor[i] !== null ? user_data[post_data.editor[i]].username : '',
 						'relativeEditTime': post_data.editTime !== null ? utils.relativeTime(post_data.editTime[i]) : '',
@@ -69,7 +70,7 @@ marked.setOptions({
 				'deleted': parseInt(thread_data.deleted) || 0,
 				'pinned': parseInt(thread_data.pinned) || 0,
 				'topic_id': tid,
-				'expose_tools': viewer_data.reputation >= config.privilege_thresholds.manage_thread ? 1 : 0,
+				'expose_tools': (manage_content || viewer_data.isModerator) ? 1 : 0,
 				'posts': posts,
 				'main_posts': main_posts
 			});
@@ -155,12 +156,27 @@ marked.setOptions({
 			});
 		}
 
-		function getUserReputation() {
-			user.getUserField(current_user, 'reputation', function(reputation){
-				viewer_data = {
-					reputation: reputation
-				};
-				generateThread();
+		function getViewerData() {
+			async.parallel([
+				function(callback) {
+					user.getUserField(current_user, 'reputation', function(reputation){
+						viewer_data = viewer_data || {};
+						viewer_data.reputation = reputation;
+
+						callback(null);
+					});
+				},
+				function(callback) {
+					RDB.get('tid:' + tid + ':cid', function(err, cid) {
+						user.isModerator(current_user, cid, function(isMod) {
+							viewer_data = viewer_data || {};
+							viewer_data.isModerator = isMod;
+							callback(null);
+						});
+					})
+				}
+			], function(err, results) {
+					generateThread();
 			});
 		}
 	}
