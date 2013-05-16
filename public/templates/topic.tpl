@@ -23,24 +23,23 @@
 							<i class="icon-pencil"></i><span class="user_posts_{main_posts.uid}">8</span>
 						</div>
 					</a>
-					<h3>{topic_name} 
-						<small>
-							posted {main_posts.relativeTime} ago by <strong><a href="/users/{main_posts.username}">{main_posts.username}</a></strong>
-							<span class="{main_posts.edited-class}"><i class="icon-edit visible-phone" title="edited by {main_posts.editor} {main_posts.relativeEditTime} ago"></i></span>
-						</small>
-						<div class="pull-right" style="margin-right: 10px;">
-							<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn edit {main_posts.display_moderator_tools} hidden-phone"><i class="icon-pencil"></i></button>
-							<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn delete {main_posts.display_moderator_tools} hidden-phone"><i class="icon-trash"></i></button>
-							<button id="quote_{main_posts.pid}_{main_posts.uid}" class="btn quote hidden-phone"><i class="icon-quote-left"></i></button>
+					<h3><p class="topic-title">{topic_name}</p> 
+						<div class="pull-right hidden-phone" style="margin-right: 10px;">
+							<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn edit {main_posts.display_moderator_tools}"><i class="icon-pencil"></i></button>
+							<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn delete {main_posts.display_moderator_tools}"><i class="icon-trash"></i></button>
+							<button id="quote_{main_posts.pid}_{main_posts.uid}" class="btn quote"><i class="icon-quote-left"></i></button>
 
-							<button id="favs_{main_posts.pid}_{main_posts.uid}" class="favourite hidden-phone btn"><span class="post_rep_{main_posts.pid}">Favourite {main_posts.post_rep} </span><i class="{main_posts.fav_star_class}"></i></button>
+							<button id="favs_{main_posts.pid}_{main_posts.uid}" class="favourite btn"><span class="post_rep_{main_posts.pid}">Favourite {main_posts.post_rep} </span><i class="{main_posts.fav_star_class}"></i></button>
 							<button id="post_reply" class="btn btn-primary btn post_reply">Reply <i class="icon-reply"></i></button>
 						</div>
 					</h3>
 
 
 					<hr />
-					<span class="{main_posts.edited-class} hidden-phone" style="font-size:10px;"> last edited by <strong><a href="/users/{main_posts.editor}">{main_posts.editor}</a></strong> {main_posts.relativeEditTime} ago</span>
+					<small>
+						posted {main_posts.relativeTime} ago by <strong><a href="/users/{main_posts.username}">{main_posts.username}</a></strong>
+						<span class="{main_posts.edited-class}"><i class="icon-edit" title="edited by {main_posts.editor} {main_posts.relativeEditTime} ago"></i></span>
+					</small>
 
 					<div style="clear:both; margin-bottom: 10px;"></div>
 

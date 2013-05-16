@@ -12,7 +12,13 @@
 		<!-- BEGIN topics -->
 		<a href="../../topic/{topics.slug}"><li>
 			<div class="row-fluid">
-				<div class="span12 topic-row img-polaroid">
+				<div class="span1 thread-rating hidden-phone hidden-tablet">
+					<span>
+						<i class="icon-star icon-3x"></i><br />
+						38
+					</span>
+				</div>
+				<div class="span11 topic-row img-polaroid">
 					<div class="latest-post visible-desktop">
 						<div class="pull-right">
 							<img style="width: 48px; height: 48px; /*temporary*/" src="/graph/users/{topics.recent_author}/picture" />
@@ -20,10 +26,12 @@
 						</div>
 					</div>
 					<div>
-						<h3><span class="badge {topics.badgeclass}">{topics.post_count}</span> {topics.title} <small>24<i class="icon-star"></i><br />
+						<h3><span class="topic-title"><span class="badge {topics.badgeclass}">{topics.post_count}</span>{topics.title}</span></h3>
+						<small>
 							<strong><i class="{topics.pin-icon}"></i><i class="{topics.lock-icon}"></i></strong>
 							Posted {topics.relativeTime} ago by 
-							<strong>{topics.username}</strong>.</small></h3> 
+							<strong>{topics.username}</strong>.
+						</small> 
 					</div>
 				</div>
 			</div>

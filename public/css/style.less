@@ -36,6 +36,12 @@ body {
 	&.composing {
 		margin-bottom: 350px;
 	}
+
+	@media (min-width: 979px) 
+	{
+		padding-top: 70px;
+	}
+
 }
 
 .none {
@@ -50,12 +56,6 @@ body {
 }
 .nav .badge {
 	vertical-align: 10%;
-}
-
-@media (min-width: 979px) 
-{	body {
-		padding-top: 70px;
-	}
 }
 
 #notification_window {
@@ -160,7 +160,7 @@ footer.footer {
 	a {
 		li {
 			list-style: none;
-			border-bottom: 1px solid #eee;
+			//border-bottom: 1px solid #eee;
 			margin-bottom: 10px;
 			padding-bottom: 10px;
 
@@ -180,26 +180,73 @@ footer.footer {
 		margin-left: 0;
 	}
 
+	.thread-rating {
+		color: #444;
+		text-align: center;
+		margin-top: 7px;
+
+		span {
+			display: inline-block; margin-left: 5px;
+			i {
+				padding-left: 2.4px;
+			}
+
+
+			@media (max-width: 1200px) 
+			{
+				margin-left: -1px;
+			}
+		}
+
+
+	}
 
 	.topic-row {
 		border-radius: 5px;
-		width: 100%;
 		padding-left: 20px;
+
+		small {
+			vertical-align: 2px;
+			strong {
+				color: #666;
+			}
+			color: #999;
+			font-size: 14px;
+		}
 
 		h3 {
 			padding: 0;
 			margin: 0;
 			margin-top: 4px;
-			line-height: 30px;
 			color: rgb(0, 136, 204);
+			line-height: 25px;
 
-			small {
-				vertical-align: 2px;
-				strong {
-					color: #666;
+			.topic-title {
+				width: 50%;
+				display: inline-block;
+				font-size: 20px;
+				white-space: nowrap;
+				text-overflow:ellipsis;
+				overflow: hidden;
+
+
+				.badge {
+					margin-right: 6px;
+				}
+
+				@media (max-width: 979px) 
+				{
+					width: 100%;
 				}
 			}
 		}
+
+		@media (max-width: 979px) 
+		{
+			width: 100%;
+			margin-left: 0px;
+		}
+
 	}
 
 	.latest-post {
@@ -323,6 +370,49 @@ footer.footer {
 
 
 	.main-post {
+		h3 {
+			margin: 0;
+
+			.topic-title {
+				width: 60%;
+				white-space: nowrap;
+				text-overflow:ellipsis;
+				overflow: hidden;
+				display: inline-block;
+				margin: 0;
+				padding: 0;
+				padding-top: 5px;
+				margin-bottom: -5px;
+				
+				@media (max-width: 1200px) {
+					width: 500px;
+				}
+				@media (min-width: 768px) and (max-width: 979px) {
+					width: 320px;
+				}
+				@media (max-width: 767px) { 
+					width: 75%;
+				}
+			}
+		}
+
+		.main-avatar {
+			color: white;
+			position: relative;
+			float: left;
+			margin-right: 15px;
+			margin-bottom: 0px;
+			padding-bottom: 0px;
+			text-align: center;
+			@media (max-width: 767px) { 
+				width: 20%;
+				max-width: 85px;
+			}
+			@media (max-width: 400px) { 
+				display: none;
+			}
+		}
+
 		.main-avatar:hover .hover-overlay {
 			opacity: 0.75;
 		}
@@ -340,18 +430,7 @@ footer.footer {
 			opacity: 0;
 			transition: opacity 0.3s;
 		}
-		.profile-block {
-			//height: 100px;
-		}
-		.main-avatar {
-			color: white;
-			position: relative;
-			float: left;
-			margin-right: 15px;
-			margin-bottom: 0px;
-			padding-bottom: 0px;
-			text-align: center
-		}
+
 		.post-content {
 			min-height: 80px;
 		}
@@ -601,5 +680,15 @@ a:hover {
 
 	span:focus {
 		outline: none;
+	}
+}
+
+
+.breadcrumb {
+	li {
+		max-width: 35%;
+		white-space: nowrap;
+		text-overflow:ellipsis;
+		overflow: hidden;
 	}
 }
