@@ -20,11 +20,7 @@ var	RDB = require('./redis.js'),
 		var range_var = (category_id) ? 'categories:' + category_id + ':tid'  : 'topics:tid';
 
 		RDB.smembers(range_var, function(err, tids) {
-			
-			if(tids.length === 0) {
-				callback(false);
-				return;
-			}
+	
 
 			var title = [],
 				uid = [],
@@ -71,6 +67,11 @@ var	RDB = require('./redis.js'),
 			
 			multi.exec(function(err, replies) {
 				category_name = replies[0];
+
+				if(category_name === null) {
+					callback(false);
+					return;
+				}
 				active_usernames = replies[1];
 				var topics = [];
 
