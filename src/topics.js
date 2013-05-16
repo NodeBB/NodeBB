@@ -148,7 +148,6 @@ var	RDB = require('./redis.js'),
 					});
 
 					categories.getModerators(category_id, function(mods) {
-						console.log(mods);
 						moderators = mods;
 						generate_topic();
 					})
