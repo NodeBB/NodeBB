@@ -16,7 +16,7 @@
 			<div class="span12">
 				<div class="post-block">
 					<a class="main-avatar" href="/users/{main_posts.username}">
-						<img src="{main_posts.gravatar}?s=120" align="left" /><br />
+						<img src="{main_posts.gravatar}?s=80" align="left" /><br />
 						<div class="hover-overlay">
 							{main_posts.username}<br />
 							<i class="icon-star"></i><span class="user_rep_{main_posts.uid}">{main_posts.user_rep}</span>
@@ -38,10 +38,14 @@
 						</div>
 					</h3>
 
+
 					<hr />
-					<span class="{main_posts.edited-class} hidden-phone"> last edited by <strong><a href="/users/{main_posts.editor}">{main_posts.editor}</a></strong> {main_posts.relativeEditTime} ago</span>
+					<span class="{main_posts.edited-class} hidden-phone" style="font-size:10px;"> last edited by <strong><a href="/users/{main_posts.editor}">{main_posts.editor}</a></strong> {main_posts.relativeEditTime} ago</span>
+
+					<div style="clear:both; margin-bottom: 10px;"></div>
 
 					<div id="content_{main_posts.pid}" class="post-content">{main_posts.content}</div>
+					<div class="profile-block"></div>
 				</div>
 			</div>
 		</li>
