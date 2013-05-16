@@ -133,6 +133,7 @@ var	RDB = require('./redis.js'),
 							'category_id': category_id || 0,
 							'topics': topics,
 							'active_users': active_users,
+							'moderator_block_class': moderators.length > 0 ? '' : 'none',
 							'moderators': moderators
 						});
 					}

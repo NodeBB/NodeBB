@@ -40,6 +40,8 @@ var	RDB = require('./redis.js'),
 
 	Categories.getModerators = function(cid, callback) {
 		RDB.smembers('cid:' + cid + ':moderators', function(err, mods) {
+			if (mods.length === 0) return callback([]);
+
 			user.getMultipleUserFields(mods, ['username'], function(details) {
 				var moderators = [];
 				for(u in details) {
