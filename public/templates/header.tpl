@@ -66,6 +66,7 @@
 						<span class="btn btn-link" tabindex="-1"><i class="icon-italic"></i></span>
 						<!-- <span class="btn btn-link" tabindex="-1"><i class="icon-font"></i></span> -->
 						<span class="btn btn-link" tabindex="-1"><i class="icon-list"></i></span>
+						<span class="btn btn-link" tabindex="-1"><i class="icon-link"></i></span>
 					</div>
 					<div class="btn-group" style="float: right; margin-right: -12px">
 						<button id="submit_post_btn" class="btn" tabIndex="3"><i class="icon-ok"></i> Submit</button>

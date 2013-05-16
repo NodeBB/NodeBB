@@ -38,12 +38,10 @@
 						</div>
 					</h3>
 
-
 					<hr />
 					<span class="{main_posts.edited-class} hidden-phone"> last edited by <strong><a href="/users/{main_posts.editor}">{main_posts.editor}</a></strong> {main_posts.relativeEditTime} ago</span>
 
 					<div id="content_{main_posts.pid}" class="post-content">{main_posts.content}</div>
-					<div class="profile-block"></div>
 				</div>
 			</div>
 		</li>

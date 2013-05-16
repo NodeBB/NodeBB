@@ -288,6 +288,7 @@ var socket,
 				var	cursorEnd = postContentEl.value.length,
 					selectionStart = postContentEl.selectionStart,
 					selectionEnd = postContentEl.selectionEnd,
+					selectionLength = selectionEnd - selectionStart,
 					target;
 				if (e.target.nodeName === 'I') target = e.target;
 				else if (e.target.nodeName === 'SPAN') target = e.target.querySelector('i');
@@ -323,6 +324,19 @@ var socket,
 						postContentEl.value = postContentEl.value + "\n\n* list item";
 						postContentEl.selectionStart = cursorEnd+4;
 						postContentEl.selectionEnd = postContentEl.value.length;
+					break;
+					case 'icon-link':
+						if (selectionStart === selectionEnd) {
+							// Nothing selected
+							postContentEl.value = postContentEl.value + '[link text](link url)';
+							postContentEl.selectionStart = cursorEnd+12;
+							postContentEl.selectionEnd = postContentEl.value.length - 1;
+						} else {
+							// Text selected
+							postContentEl.value = postContentEl.value.slice(0, selectionStart) + '[' + postContentEl.value.slice(selectionStart, selectionEnd) + '](link url)' + postContentEl.value.slice(selectionEnd);
+							postContentEl.selectionStart = selectionStart + selectionLength + 3;
+							postContentEl.selectionEnd = selectionEnd + 11;
+						}
 					break;
 				}
 			}
