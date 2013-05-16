@@ -75,12 +75,7 @@ marked.setOptions({
 		// get all data for thread in asynchronous fashion
 		RDB.lrange('tid:' + tid + ':posts', start, end, function(err, pids) {
 			RDB.handle(err);
-
-			if(pids.length === 0){
-				callback(false);
-				return;
-			}
-			
+	
 			var content = [], uid = [], timestamp = [], pid = [], post_rep = [], editor = [], editTime = [], deleted = [];
 
 			for (var i=0, ii=pids.length; i<ii; i++) {
