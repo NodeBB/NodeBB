@@ -52,7 +52,7 @@
 	<!-- END main_posts -->
 
 	<!-- BEGIN posts -->
-		<li class="row" data-pid="{posts.pid}" data-deleted="{posts.deleted}">
+		<li class="row" data-pid="{posts.pid}" data-uid="{posts.uid}" data-deleted="{posts.deleted}">
 			<div class="span1 profile-image-block visible-desktop">
 				<!--<i class="icon-spinner icon-spin icon-2x pull-left"></i>-->
 				<a href="/users/{posts.username}">
@@ -415,9 +415,11 @@
 
 			jQuery(div + ' .quote').click(function() {
 				if (thread_state.locked !== '1') app.open_post_window('quote', "{topic_id}", "{topic_name}");
+				
+				var pid = $(this).parents('li').attr('data-pid');
+				
+				$('#post_content').val('> ' + $('#content_' + pid).html() + '\n');
 
-				// this needs to be looked at, obviously. only single line quotes work well I think maybe replace all \r\n with > ?
-				document.getElementById('post_content').innerHTML = '> ' + document.getElementById('content_' + this.id.replace('quote_', '')).innerHTML;
 			});
 
 			jQuery(div + ' .edit, ' + div + ' .delete').each(function() {
