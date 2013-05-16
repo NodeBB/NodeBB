@@ -33,10 +33,9 @@ var socket,
 			});
 
 			socket.on('disconnect', function(data){
-				$('#disconnect-modal').show();
+				$('#disconnect-modal').modal('show');
 				$('#reload-button').on('click',function(){
-					$('#disconnect-modal').hide();
-					console.log(window.location.href);
+					$('#disconnect-modal').modal('hide');
 					window.location.reload();
 				});
 			});
