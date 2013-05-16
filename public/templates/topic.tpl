@@ -280,7 +280,8 @@
 			'event:rep_up', 'event:rep_down', 'event:new_post', 'api:get_users_in_room',
 			'event:topic_deleted', 'event:topic_restored', 'event:topic:locked',
 			'event:topic_unlocked', 'event:topic_pinned', 'event:topic_unpinned',
-			'event:topic_moved', 'event:post_edited', 'event:post_deleted', 'event:post_restored'
+			'event:topic_moved', 'event:post_edited', 'event:post_deleted', 'event:post_restored',
+			'api:posts.favourite'
 		]);
 		socket.on('api:get_users_in_room', function(users) {
 			var anonymous = users.anonymous,
@@ -370,6 +371,13 @@
 			});
 		});
 
+		socket.on('api:posts.favourite', function(data) {
+			if (data.status !== 'ok' && data.pid) {
+				var favEl = document.querySelector('.post_rep_' + data.pid).nextSibling;
+				if (favEl) favEl.className = 'icon-star-empty';
+			}
+		});
+
 		socket.on('event:post_deleted', function(data) {
 			if (data.pid) toggle_post_delete_state(data.pid, true);
 		});
@@ -420,7 +428,6 @@
 					pid = ids[0],
 					uid = ids[1];
 
-				
 				if (thread_state.locked !== '1') {
 					if (this.children[1].className == 'icon-star-empty') {
 						this.children[1].className = 'icon-star';

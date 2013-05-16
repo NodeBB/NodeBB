@@ -277,6 +277,11 @@ marked.setOptions({
 				type: 'error',
 				timeout: 5000
 			});
+
+			socket.emit('api:posts.favourite', {
+				status: 'error',
+				pid: pid
+			});
 			return;
 		}
 
@@ -293,6 +298,10 @@ marked.setOptions({
 					if (room_id) {
 						io.sockets.in(room_id).emit('event:rep_up', {uid: uid !== uid_of_poster ? uid_of_poster : 0, pid: pid});
 					}
+
+					socket.emit('api:posts.favourite', {
+						status: 'ok'
+					});
 				}
 			});
 		});
