@@ -12,6 +12,7 @@ marked.setOptions({
 (function(Posts) {
 
 	Posts.get = function(callback, tid, current_user, start, end) {
+
 		if (start == null) start = 0;
 		if (end == null) end = start + 10;
 
@@ -74,6 +75,11 @@ marked.setOptions({
 		// get all data for thread in asynchronous fashion
 		RDB.lrange('tid:' + tid + ':posts', start, end, function(err, pids) {
 			RDB.handle(err);
+
+			if(pids.length === 0){
+				callback(false);
+				return;
+			}
 			
 			var content = [], uid = [], timestamp = [], pid = [], post_rep = [], editor = [], editTime = [], deleted = [];
 

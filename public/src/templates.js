@@ -40,6 +40,7 @@ var templates = {};
 		for (var t in templatesToLoad) {
 			(function(file) {
 				$.get('/templates/' + file + '.tpl?v=' + timestamp, function(html) {
+		
 					var template = function() {
 						this.toString = function() {
 							return this.html;
@@ -167,6 +168,12 @@ function load_template(callback, url, template) {
 	url = (url === '' || url === '/') ? 'home' : url;
 
 	jQuery.get(API_URL + url, function(data) {
+
+		console.log(data);
+		if(!data) {
+			window.location.href = '/403';
+			return;
+		}
 
 		var tpl = templates.get_custom_map(url);
 		

@@ -154,26 +154,46 @@ var express = require('express'),
 				break;
 			case 'topic' :
 					posts.get(function(data) {
+						if(!data) {
+							res.send(false);
+							return;
+						}
 						res.send(JSON.stringify(data));
 					}, req.params.id, (req.user) ? req.user.uid : 0);
 				break;
 			case 'category' :
 					topics.get(function(data) {
+						if(!data) {
+							res.send(false);
+							return;
+						}
 						res.send(JSON.stringify(data));
 					}, req.params.id, (req.user) ? req.user.uid : 0);
 				break;
 			case 'latest' :
 					topics.get(function(data) {
+						if(!data) {
+							res.send(false);
+							return;
+						}
 						res.send(JSON.stringify(data));
 					});
 				break;
 			case 'popular' :
 					topics.get(function(data) {
+						if(!data) {
+							res.send(false);
+							return;
+						}
 						res.send(JSON.stringify(data));
 					});
 				break;
 			case 'active' :
 					topics.get(function(data) {
+						if(!data) {
+							res.send(false);
+							return;
+						}
 						res.send(JSON.stringify(data));
 					});
 				break;
