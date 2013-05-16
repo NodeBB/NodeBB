@@ -1,4 +1,3 @@
-
 .caret-left {
 	border-left: 0;
 	border-right: 4px solid black;
@@ -6,7 +5,14 @@
 	border-bottom: 4px solid transparent;
 }
 
-
+.no-select {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
 
 .pointer {
 	cursor: pointer;
@@ -585,4 +591,12 @@ footer.footer {
 
 a:hover {
   text-decoration:none;
+}
+
+.formatting-bar {
+	.no-select;
+
+	span:focus {
+		outline: none;
+	}
 }

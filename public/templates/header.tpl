@@ -61,7 +61,7 @@
 			<div class="container">
 
 				<div class="btn-toolbar">
-					<div class="btn-group" id="formatting-bar">
+					<div class="btn-group formatting-bar">
 						<span class="btn btn-link" tabindex="-1"><i class="icon-bold"></i></span>
 						<span class="btn btn-link" tabindex="-1"><i class="icon-italic"></i></span>
 						<!-- <span class="btn btn-link" tabindex="-1"><i class="icon-font"></i></span> -->
