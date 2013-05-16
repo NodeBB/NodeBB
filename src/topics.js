@@ -215,6 +215,7 @@ var	RDB = require('./redis.js'),
 				if (pid > 0) RDB.lpush('tid:' + tid + ':posts', pid);
 			});
 
+			Topics.markAsRead(tid, uid);
 
 			// User Details - move this out later
 			RDB.lpush('uid:' + uid + ':topics', tid);

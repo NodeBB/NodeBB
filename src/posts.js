@@ -168,6 +168,9 @@ marked.setOptions({
 
 				RDB.del('tid:' + tid + ':read_by_uid'); // let everybody know there is an unread post
 
+				// Re-add the poster, so he/she does not get an "unread" flag on this topic
+				topics.markAsRead(tid, uid);
+
 				socket.emit('event:alert', {
 					title: 'Reply Successful',
 					message: 'You have successfully replied. Click here to view your reply.',
