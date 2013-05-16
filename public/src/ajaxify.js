@@ -21,12 +21,11 @@ var ajaxify = {};
 
 
 	window.onpopstate = function(event) {
+		// "quiet": If set to true, will not call pushState
 		if (event !== null && event.state && event.state.url !== undefined) ajaxify.go(event.state.url, null, null, true);
 	};
 
 	ajaxify.go = function(url, callback, template, quiet) {
-		// "quiet": If set to true, will not call pushState
-
 		// leave room and join global
 		app.enter_room('global');
 
@@ -62,33 +61,24 @@ var ajaxify = {};
 			}, url, template);
 
 			return true;
-		} else {
-			document.location.href = url;
-			return true;
 		}
 
 		return false;
 	}
 
 	ajaxify.enable = function() {
-		$('a').unbind('mouseup', ajaxify.onmouseup).bind('mouseup', ajaxify.onmouseup);
 		$('a').unbind('click', ajaxify.onclick).bind('click', ajaxify.onclick);
 	}
 
-	ajaxify.onmouseup = function(ev) {
+	ajaxify.onclick = function(ev) {
 		if (this.href == window.location.href + "#") return;
 		var url = this.href.replace(rootUrl +'/', '');
 
 		if (!ev.ctrlKey && ev.which === 1) {
-			if (ajaxify.go(url)) ev.preventDefault();
-		} else if ((ev.ctrlKey && ev.which === 1) || ev.which === 2) {
-			window.open(this.href, '_blank');
-			ev.preventDefault();
+			if (ajaxify.go(url)) {
+				ev.preventDefault();
+			}
 		}
-	}
-
-	ajaxify.onclick = function(ev) {
-		ev.preventDefault();
 	}
 
 	$('document').ready(function() {

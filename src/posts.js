@@ -13,12 +13,16 @@ marked.setOptions({
 (function(Posts) {
 
 	Posts.get = function(callback, tid, current_user, start, end) {
+
 		if (start == null) start = 0;
 		if (end == null) end = start + 10;
 
 		var post_data, user_data, thread_data, vote_data, viewer_data;
 
-		topics.markAsRead(tid, current_user);
+		getTopicPosts();
+
+		getUserReputation();
+		
 
 		//compile thread after all data is asynchronously called
 		function generateThread() {
@@ -71,84 +75,94 @@ marked.setOptions({
 			});
 		}
 
+		function getTopicPosts() {
+			// get all data for thread in asynchronous fashion
+			RDB.lrange('tid:' + tid + ':posts', start, end, function(err, pids) {
+				RDB.handle(err);
+				
+				if(pids.length === 0 ){
+					callback(false);
+					return;
+				}
+				
+				topics.markAsRead(tid, current_user);
+				
+				var content = [], uid = [], timestamp = [], pid = [], post_rep = [], editor = [], editTime = [], deleted = [];
 
-		// get all data for thread in asynchronous fashion
-		RDB.lrange('tid:' + tid + ':posts', start, end, function(err, pids) {
-			RDB.handle(err);
-			
-			var content = [], uid = [], timestamp = [], pid = [], post_rep = [], editor = [], editTime = [], deleted = [];
+				for (var i=0, ii=pids.length; i<ii; i++) {
+					content.push('pid:' + pids[i] + ':content');
+					uid.push('pid:' + pids[i] + ':uid');
+					timestamp.push('pid:' + pids[i] + ':timestamp');
+					post_rep.push('pid:' + pids[i] + ':rep');
+					editor.push('pid:' + pids[i] + ':editor');
+					editTime.push('pid:' + pids[i] + ':edited');
+					deleted.push('pid:' + pids[i] + ':deleted');
+					pid.push(pids[i]);
+				}
 
-			for (var i=0, ii=pids.length; i<ii; i++) {
-				content.push('pid:' + pids[i] + ':content');
-				uid.push('pid:' + pids[i] + ':uid');
-				timestamp.push('pid:' + pids[i] + ':timestamp');
-				post_rep.push('pid:' + pids[i] + ':rep');
-				editor.push('pid:' + pids[i] + ':editor');
-				editTime.push('pid:' + pids[i] + ':edited');
-				deleted.push('pid:' + pids[i] + ':deleted');
-				pid.push(pids[i]);
-			}
+				Posts.getFavouritesByPostIDs(pids, current_user, function(fav_data) {
+					vote_data = fav_data;
+					generateThread();
+				});
 
-			Posts.getFavouritesByPostIDs(pids, current_user, function(fav_data) {
-				vote_data = fav_data;
+				RDB.multi()
+					.mget(content)
+					.mget(uid)
+					.mget(timestamp)
+					.mget(post_rep)
+					.get('tid:' + tid + ':title')
+					.get('tid:' + tid + ':locked')
+					.get('tid:' + tid + ':category_name')
+					.get('tid:' + tid + ':category_slug')
+					.get('tid:' + tid + ':deleted')
+					.get('tid:' + tid + ':pinned')
+					.mget(editor)
+					.mget(editTime)
+					.mget(deleted)
+					.exec(function(err, replies) {
+						post_data = {
+							pid: pids,
+							content: replies[0],
+							uid: replies[1],
+							timestamp: replies[2],
+							reputation: replies[3],
+							editor: replies[10],
+							editTime: replies[11],
+							deleted: replies[12]
+						};
+
+						thread_data = {
+							topic_name: replies[4],
+							locked: replies[5] || 0,
+							category_name: replies[6],
+							category_slug: replies[7],
+							deleted: replies[8] || 0,
+							pinned: replies[9] || 0
+						};
+
+						// Add any editors to the user_data object
+						for(var x=0,numPosts=replies[10].length;x<numPosts;x++) {
+							if (replies[10][x] !== null && post_data.uid.indexOf(replies[10][x]) === -1) {
+								post_data.uid.push(replies[10][x]);
+							}
+						}
+
+						user.getMultipleUserFields(post_data.uid, ['username','reputation','picture'], function(user_details){
+							user_data = user_details;
+							generateThread();
+						});
+					});
+			});
+		}
+
+		function getUserReputation() {
+			user.getUserField(current_user, 'reputation', function(reputation){
+				viewer_data = {
+					reputation: reputation
+				};
 				generateThread();
 			});
-
-			RDB.multi()
-				.mget(content)
-				.mget(uid)
-				.mget(timestamp)
-				.mget(post_rep)
-				.get('tid:' + tid + ':title')
-				.get('tid:' + tid + ':locked')
-				.get('tid:' + tid + ':category_name')
-				.get('tid:' + tid + ':category_slug')
-				.get('tid:' + tid + ':deleted')
-				.get('tid:' + tid + ':pinned')
-				.mget(editor)
-				.mget(editTime)
-				.mget(deleted)
-				.exec(function(err, replies) {
-					post_data = {
-						pid: pids,
-						content: replies[0],
-						uid: replies[1],
-						timestamp: replies[2],
-						reputation: replies[3],
-						editor: replies[10],
-						editTime: replies[11],
-						deleted: replies[12]
-					};
-
-					thread_data = {
-						topic_name: replies[4],
-						locked: replies[5] || 0,
-						category_name: replies[6],
-						category_slug: replies[7],
-						deleted: replies[8] || 0,
-						pinned: replies[9] || 0
-					};
-
-					// Add any editors to the user_data object
-					for(var x=0,numPosts=replies[10].length;x<numPosts;x++) {
-						if (replies[10][x] !== null && post_data.uid.indexOf(replies[10][x]) === -1) {
-							post_data.uid.push(replies[10][x]);
-						}
-					}
-
-					user.getMultipleUserFields(post_data.uid, ['username','reputation','picture'], function(user_details){
-						user_data = user_details;
-						generateThread();
-					});
-				});
-		});
-
-		user.getUserField(current_user, 'reputation', function(reputation){
-			viewer_data = {
-				reputation: reputation
-			};
-			generateThread();
-		});
+		}
 	}
 
 

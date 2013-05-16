@@ -101,8 +101,6 @@ var user = require('./../user.js'),
 			var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
 			var type = req.files.userPhoto.type;
 			
-			console.log(req.files.userPhoto);
-
 			if(allowedTypes.indexOf(type) === -1) {
 				res.send({
 					error: 'Allowed image types are png, jpg and gif!'
@@ -284,9 +282,9 @@ var user = require('./../user.js'),
 		
 				user.getUserData(uid, function(data) {
 					if(data) {
-						console.log(data.joindate);
+
 						data.joindate = utils.relativeTime(data.joindate);
-						console.log(data.joindate);
+
 						if(!data.birthday)
 							data.age = '';
 						else
