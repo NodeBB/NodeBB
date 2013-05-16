@@ -12,6 +12,7 @@ marked.setOptions({
 (function(Posts) {
 
 	Posts.get = function(callback, tid, current_user, start, end) {
+
 		if (start == null) start = 0;
 		if (end == null) end = start + 10;
 
@@ -74,7 +75,7 @@ marked.setOptions({
 		// get all data for thread in asynchronous fashion
 		RDB.lrange('tid:' + tid + ':posts', start, end, function(err, pids) {
 			RDB.handle(err);
-			
+	
 			var content = [], uid = [], timestamp = [], pid = [], post_rep = [], editor = [], editTime = [], deleted = [];
 
 			for (var i=0, ii=pids.length; i<ii; i++) {
@@ -277,6 +278,11 @@ marked.setOptions({
 				type: 'error',
 				timeout: 5000
 			});
+
+			socket.emit('api:posts.favourite', {
+				status: 'error',
+				pid: pid
+			});
 			return;
 		}
 
@@ -293,6 +299,10 @@ marked.setOptions({
 					if (room_id) {
 						io.sockets.in(room_id).emit('event:rep_up', {uid: uid !== uid_of_poster ? uid_of_poster : 0, pid: pid});
 					}
+
+					socket.emit('api:posts.favourite', {
+						status: 'ok'
+					});
 				}
 			});
 		});

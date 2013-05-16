@@ -80,7 +80,7 @@ var config = require('../config.js'),
 		for(var i=0,ii=fields.length; i<ii; ++i) {
 			key = fields[i];
 			if(data[key] !== undefined) {
-				console.log(data[key]);
+
 				User.setUserField(uid, key, data[key]);
 				
 				if(key === 'email') {

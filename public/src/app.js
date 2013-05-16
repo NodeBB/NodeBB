@@ -36,6 +36,7 @@ var socket,
 				$('#disconnect-modal').show();
 				$('#reload-button').on('click',function(){
 					$('#disconnect-modal').hide();
+					console.log(window.location.href);
 					window.location.reload();
 				});
 			});
