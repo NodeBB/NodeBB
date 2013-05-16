@@ -74,17 +74,13 @@ var theirid = '{theirid}';
 
 	var isFriend = {isFriend};
 
-    function addCommas(text) {
-        return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
-    }
-    
     $(document).ready(function() {
 
         var rep = $('#reputation');
-        rep.html(addCommas(rep.html()));
+        rep.html(app.addCommas(rep.html()));
         
         var postcount = $('#postcount');
-        postcount.html(addCommas(postcount.html()));
+        postcount.html(app.addCommas(postcount.html()));
         
         var editLink = $('#editLink');
 		var addFriendBtn = $('#add-friend-btn');

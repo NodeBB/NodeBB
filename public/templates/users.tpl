@@ -27,19 +27,17 @@
 <script>
 (function() {
     
-    function addCommas(text) {
-        return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
-    }
+   
     
     $(document).ready(function() {
         
         $('.reputation').each(function(index, element) {
-        	$(element).html(addCommas($(element).html()));
-        })
+        	$(element).html(app.addCommas($(element).html()));
+        });
         
         $('.postcount').each(function(index, element) {
-        	$(element).html(addCommas($(element).html()));
-        })
+        	$(element).html(app.addCommas($(element).html()));
+        });
         
     });
     
