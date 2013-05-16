@@ -397,8 +397,27 @@ marked.setOptions({
 
 			if (uid === author) success();
 			else {
-				user.getUserField(uid, 'reputation', function(reputation) {
-					if (reputation >= config.privilege_thresholds.manage_content) success();
+				async.parallel([
+					function(callback) {
+						user.getUserField(uid, 'reputation', function(reputation) {
+							callback(null, reputation >= config.privilege_thresholds.manage_content);
+						});
+					},
+					function(callback) {
+						RDB.get('tid:' + tid + ':cid', function(err, cid) {
+							user.isModerator(uid, cid, function(isMod) {
+								callback(null, isMod);
+							});
+						});
+					}
+				], function(err, results) {
+					// If any return true, allow the edit
+					for(var x=0,numResults=results.length;x<numResults;x++) {
+						if (results[x]) {
+							success();
+							break;
+						}
+					}
 				});
 			}
 		});
@@ -416,8 +435,27 @@ marked.setOptions({
 
 			if (uid === author) success();
 			else {
-				user.getUserField(uid, 'reputation', function(reputation) {
-					if (reputation >= config.privilege_thresholds.manage_content) success();
+				async.parallel([
+					function(callback) {
+						user.getUserField(uid, 'reputation', function(reputation) {
+							callback(null, reputation >= config.privilege_thresholds.manage_content);
+						});
+					},
+					function(callback) {
+						RDB.get('tid:' + tid + ':cid', function(err, cid) {
+							user.isModerator(uid, cid, function(isMod) {
+								callback(null, isMod);
+							});
+						});
+					}
+				], function(err, results) {
+					// If any return true, allow the edit
+					for(var x=0,numResults=results.length;x<numResults;x++) {
+						if (results[x]) {
+							success();
+							break;
+						}
+					}
 				});
 			}
 		});
@@ -435,8 +473,27 @@ marked.setOptions({
 
 			if (uid === author) success();
 			else {
-				user.getUserField(uid, 'reputation', function(reputation) {
-					if (reputation >= config.privilege_thresholds.manage_content) success();
+				async.parallel([
+					function(callback) {
+						user.getUserField(uid, 'reputation', function(reputation) {
+							callback(null, reputation >= config.privilege_thresholds.manage_content);
+						});
+					},
+					function(callback) {
+						RDB.get('tid:' + tid + ':cid', function(err, cid) {
+							user.isModerator(uid, cid, function(isMod) {
+								callback(null, isMod);
+							});
+						});
+					}
+				], function(err, results) {
+					// If any return true, allow the edit
+					for(var x=0,numResults=results.length;x<numResults;x++) {
+						if (results[x]) {
+							success();
+							break;
+						}
+					}
 				});
 			}
 		});

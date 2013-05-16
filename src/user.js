@@ -511,7 +511,7 @@ var config = require('../config.js'),
 	}
 
 	User.isModerator = function(uid, cid, callback) {
-		RDB.sismember(uid, 'cid:' + cid + ':moderators', function(err, exists) {
+		RDB.sismember('cid:' + cid + ':moderators', uid, function(err, exists) {
 			callback(exists);
 		});
 	}
