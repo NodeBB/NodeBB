@@ -68,7 +68,7 @@ var	RDB = require('./redis.js'),
 			multi.exec(function(err, replies) {
 				category_name = replies[0];
 
-				if(category_name === null) {
+				if(category_id && category_name === null) {
 					callback(false);
 					return;
 				}
