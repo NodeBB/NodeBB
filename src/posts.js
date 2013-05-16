@@ -3,7 +3,8 @@ var	RDB = require('./redis.js'),
 	marked = require('marked'),
 	user = require('./user.js'),
 	topics = require('./topics.js'),
-	config = require('../config.js');
+	config = require('../config.js'),
+	async = require('async');
 
 marked.setOptions({
 	breaks: true

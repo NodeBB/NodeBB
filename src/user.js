@@ -505,6 +505,12 @@ var config = require('../config.js'),
 		});
 	}
 
+	User.isModerator = function(uid, cid, callback) {
+		RDB.sismember(uid, 'cid:' + cid + ':moderators', function(err, exists) {
+			callback(exists);
+		});
+	}
+
 	User.reset = {
 		validate: function(socket, code, callback) {
 			if (typeof callback !== 'function') callback = undefined;

@@ -207,8 +207,8 @@ var express = require('express'),
 	app.get('/api/:method/:id*', api_method);
 
 	app.get('/test', function(req, res) {
-		posts.getRawContent(11, function(post) {
-			res.send(JSON.stringify(post));
+		categories.getModerators(2, function(mods) {
+			res.send(JSON.stringify(mods));
 		});
 	});
 

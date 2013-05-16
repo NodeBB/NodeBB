@@ -30,7 +30,7 @@ var fs = require('fs');
 	Templates.init = function() {
 		loadTemplates([
 			'header', 'footer', 'register', 'home', 'topic', 'account', 'friends',
-			'login', 'reset', 'reset_code', 'logout',
+			'login', 'reset', 'reset_code',
 			'403',
 			'admin/header', 'admin/footer', 'admin/index',
 			'emails/header', 'emails/footer',

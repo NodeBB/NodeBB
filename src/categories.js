@@ -38,6 +38,20 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
+	Categories.getModerators = function(cid, callback) {
+		RDB.smembers('cid:' + cid + ':moderators', function(err, mods) {
+			user.getMultipleUserFields(mods, ['username'], function(details) {
+				var moderators = [];
+				for(u in details) {
+					if (details.hasOwnProperty(u)) {
+						moderators.push({ username: details[u].username });
+					}
+				}
+				callback(moderators);
+			});
+		});
+	}
+
 	Categories.get_category = function(cids, callback) {
 		var name = [],
 			description = [],

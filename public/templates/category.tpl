@@ -50,6 +50,16 @@
 				<!-- END active_users -->
 			</div>
 		</div>
+		<div class="sidebar-block img-polaroid {moderator_block_class}">
+			<div class="block-header">
+				Moderators
+			</div>
+			<div class="block-content">
+				<!-- BEGIN moderators -->
+				<a href="/users/{moderators.username}"><img style="width: 48px; height: 48px; /*temporary*/" src="/graph/users/{moderators.username}/picture" class="img-polaroid" /></a>
+				<!-- END moderators -->
+			</div>
+		</div>
 	</div>
 </div>
 

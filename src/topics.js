@@ -81,10 +81,11 @@ var	RDB = require('./redis.js'),
 					recent_author = replies[11];
 
 					var usernames,
-						has_read;
+						has_read,
+						moderators;
 
 					function generate_topic() {
-						if (!usernames || !has_read) return;
+						if (!usernames || !has_read || !moderators) return;
 
 
 						for (var i=0, ii=title.length; i<ii; i++) {			
@@ -125,7 +126,8 @@ var	RDB = require('./redis.js'),
 							'show_topic_button' : category_id ? 'show' : 'hidden',
 							'category_id': category_id || 0,
 							'topics': topics,
-							'active_users': active_users
+							'active_users': active_users,
+							'moderators': moderators
 						});
 					}
 					
@@ -138,6 +140,11 @@ var	RDB = require('./redis.js'),
 						has_read = hasRead;
 						generate_topic();
 					});
+
+					categories.getModerators(category_id, function(mods) {
+						moderators = mods;
+						generate_topic();
+					})
 				}
 				else {
 					callback({
@@ -147,9 +154,6 @@ var	RDB = require('./redis.js'),
 						'topics': []
 					});
 				}
-				
-
-
 			});
 		});
 	}
