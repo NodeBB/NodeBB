@@ -38,6 +38,11 @@ var config = require('../config.js'),
 
 	// a function I feel should be built in user not sure how baris is tackling this so oppa chicken wrapper here
 	User.getMultipleUserFields = function(uids, fields, callback) {
+		if(uids.length === 0) {
+			callback({});
+			return;
+		}
+
 		var uuids = uids.filter(function(value, index, self) { 
 		    return self.indexOf(value) === index;
 		});
