@@ -181,6 +181,25 @@ marked.setOptions({
 		}
 	}
 
+	Posts.editable = function(uid, pid) {
+
+	}
+
+	Posts.get_tid_by_pid = function(pid, callback) {
+		RDB.get('pid:' + pid + ':tid', function(err, tid) {
+			if (tid && parseInt(tid) > 0) callback(tid);
+			else callback(false);
+		});
+	}
+
+	Posts.get_cid_by_pid = function(pid, callback) {
+		Posts.get_tid(pid, function(tid) {
+			if (tid) topics.get_cid_by_tid(tid, function(cid) {
+				if (cid) callback(cid);
+				else callback(false);
+			});
+		})
+	}
 
 	Posts.reply = function(socket, tid, uid, content) {
 		if (uid < 1) {

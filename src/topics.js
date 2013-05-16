@@ -166,6 +166,12 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
+	Topics.get_cid_by_tid = function(tid, callback) {
+		RDB.get('tid:' + pid + ':cid', function(err, cid) {
+			if (cid && parseInt(cid) > 0) callback(cid);
+			else callback(false);
+		});
+	}
 
 	Topics.markAsRead = function(tid, uid) {
 		RDB.sadd('tid:' + tid + ':read_by_uid', uid);
