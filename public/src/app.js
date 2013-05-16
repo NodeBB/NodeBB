@@ -212,10 +212,10 @@ var socket,
 		content.value = '';
 	};
 	app.post_topic = function(category_id) {
-		var title = document.getElementById('post_title'),
-			content = document.getElementById('post_content');
+		var title = $('#post_title'),
+			content = $('#post_content');
 
-		if (title.length < 5 || content.length < 5) {
+		if (title.val().length < 5 || content.val().length < 5) {
 			app.alert({
 				title: 'Topic Post Failure',
 				message: 'You need to write more dude.',
@@ -227,15 +227,15 @@ var socket,
 		}
 
 		socket.emit('api:topics.post', {
-			'title' : title.value,
-			'content' : content.value,
+			'title' : title.val(),
+			'content' : content.val(),
 			'category_id' : category_id
 		});
 		
 		jQuery(post_window).slideUp(250);
 		$(document.body).removeClass('composing');
-		title.value = '';
-		content.value = '';
+		title.val('');
+		content.val('');
 	};
 
 	app.edit_post = function(pid) {

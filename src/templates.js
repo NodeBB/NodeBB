@@ -31,7 +31,7 @@ var fs = require('fs');
 		loadTemplates([
 			'header', 'footer', 'register', 'home', 'topic', 'account', 'friends',
 			'login', 'reset', 'reset_code',
-			'403',
+			'403', 'logout',
 			'admin/header', 'admin/footer', 'admin/index',
 			'emails/header', 'emails/footer',
 			'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext'
