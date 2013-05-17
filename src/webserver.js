@@ -20,7 +20,7 @@ var express = require('express'),
 
 
 (function(app) {
-	var templates = global.templates;
+	var templates = null;
 
 	// Middlewares
 	app.use(express.favicon());	// 2 args: string path and object options (i.e. expire time etc)
@@ -37,6 +37,11 @@ var express = require('express'),
 		secret: config.secret,
 		key: 'express.sid'
 	}));
+
+
+	module.exports.init = function() {
+		templates = global.templates;
+	}
 
 	auth.initialize(app);
 

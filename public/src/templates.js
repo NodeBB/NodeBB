@@ -1,8 +1,21 @@
-var templates = {};
 
-(function() {
+
+(function (module) {
+	
 	var ready_callback,
-		config = {};
+		config = {},
+		templates,
+		fs = null;
+
+	module.exports = templates = {};
+
+	try {
+		fs = require('fs');
+	} catch (e) {}
+
+	templates.force_refresh = function(tpl) {
+		return !!config.force_refresh[tpl];
+	}
 
 	templates.get_custom_map = function(tpl) {
 		if (config['custom_mapping'] && tpl) {
@@ -12,11 +25,11 @@ var templates = {};
 				}
 			}
 		}
+
 		return false;
 	}
 
 	templates.ready = function(callback) {
-		//quick implementation because introducing a lib to handle several async callbacks
 		if (callback == null && ready_callback) ready_callback();
 		else ready_callback = callback;
 	};
@@ -26,49 +39,80 @@ var templates = {};
 		template.html = raw_tpl;
 		template.parse = parse;
 		template.blocks = {};
+
 		return template; 		
 	};
 
 	function loadTemplates(templatesToLoad) {
-		var timestamp = new Date().getTime();
-		var loaded = templatesToLoad.length;
+		function loadServer() {
+			var loaded = templatesToLoad.length;
 
-		$.getJSON('/templates/config.json', function(data) {
-			config = data;
-		});
+			for (var t in templatesToLoad) {
+				(function(file) {
+					fs.readFile(global.configuration.ROOT_DIRECTORY + '/public/templates/' + file + '.tpl', function(err, html) {
+						var template = function() {
+							this.toString = function() {
+								return this.html;
+							};
+						}
 
-		for (var t in templatesToLoad) {
-			(function(file) {
-				$.get('/templates/' + file + '.tpl?v=' + timestamp, function(html) {
-		
-					var template = function() {
-						this.toString = function() {
-							return this.html;
-						};
-					}
+						template.prototype.file = file;
+						template.prototype.parse = parse;
+						template.prototype.html = String(html);
+						
+						global.templates[file] = new template;
 
-					template.prototype.parse = parse;
-					template.prototype.html = String(html);
-					template.prototype.blocks = {};
-
-					templates[file] = new template;
-					
-					loaded--;
-					if (loaded == 0) templates.ready();
-				}).fail(function() {
-					loaded--;
-					if (loaded == 0) templates.ready();
-				});
-			}(templatesToLoad[t]));
+						loaded--;
+						if (loaded == 0) templates.ready();
+					});
+				}(templatesToLoad[t]));
+			}
 		}
+
+		function loadClient() {
+			var timestamp = new Date().getTime();
+			var loaded = templatesToLoad.length;
+
+			jQuery.getJSON('/templates/config.json', function(data) {
+				config = data;
+			});
+
+			for (var t in templatesToLoad) {
+				(function(file) {
+					jQuery.get('/templates/' + file + '.tpl?v=' + timestamp, function(html) {
+			
+						var template = function() {
+							this.toString = function() {
+								return this.html;
+							};
+						}
+
+						template.prototype.parse = parse;
+						template.prototype.html = String(html);
+						template.prototype.blocks = {};
+
+						templates[file] = new template;
+						
+						loaded--;
+						if (loaded == 0) templates.ready();
+					}).fail(function() {
+						loaded--;
+						if (loaded == 0) templates.ready();
+					});
+				}(templatesToLoad[t]));
+			}
+		}
+		
+		if (fs === null) loadClient();
+		else loadServer();
 	}
 
 
-	function init() {
+	templates.init = function() {
 		loadTemplates([
 			'header', 'footer', 'register', 'home', 'topic','account', 'category', 'users', 'accountedit', 'friends',
 			'login', 'reset', 'reset_code', 'account',
-			'confirm', '403',
+			'confirm', '403', 'logout',
 			'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext',
 			'admin/index', 'admin/categories', 'admin/users', 'admin/topics', 'admin/settings', 'admin/themes', 'admin/twitter', 'admin/facebook', 'admin/gplus'
 		]);
@@ -157,9 +201,17 @@ var templates = {};
 	}
 
 
-	init();
+	
 
-}());
+	if ('undefined' !== typeof window) {
+		window.templates = module.exports;
+		templates.init();
+	}
+
+})('undefined' === typeof module ? {module:{exports:{}}} : module)
+
+
+
 
 function load_template(callback, url, template) {
 	var location = document.location || window.location,
@@ -185,3 +237,5 @@ function load_template(callback, url, template) {
 		if (callback) callback();
 	});
 }
+
+
