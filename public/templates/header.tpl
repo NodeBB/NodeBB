@@ -28,7 +28,7 @@
 					<span class="icon-bar"></span>
 				</button>
 				<div class="nav-collapse collapse">
-					<ul class="nav">
+					<ul class="nav nodebb-inline-block">
 						<li>
 	                      <a href="/latest">Recent <span class="badge badge-inverse">3</span></a>
 	                    </li>
@@ -42,7 +42,7 @@
 	                      <a href="/users">Users</a>
 	                    </li>
 					</ul>
-					<ul class="nav pull-right" id="right-menu">
+					<ul class="nav pull-right nodebb-inline-block nodebb-pull-right" id="right-menu">
 						<!--<li><i class="icon-plus icon-2x" style="color:#999;"></i></li> fail. add this back later -->
 						<!--<li><a href="/users" id="user_label"></a></li>-->
 					</ul>
@@ -79,7 +79,7 @@
 			</div>
 		</div>
 	</div>
-
+    
 	<div id="disconnect-modal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	  <div class="modal-header">
 	    <h3 id="myModalLabel">Socket Disconnect</h3>
