@@ -57,7 +57,7 @@
 				<a href="/users/{posts.username}">
 					<img src="{posts.gravatar}?s=80" align="left" />
 				</a>
-				<i class="icon-star"></i><span class="user_rep_{posts.uid} user_reputation_text">{posts.user_rep}</span>
+				<i class="icon-star"></i><span class="user_rep_{posts.uid} formatted-number">{posts.user_rep}</span>
 			</div>
 			<div class="span11">
 				<div class="post-block">
@@ -124,12 +124,16 @@
 				pinned: '{pinned}'
 			};
 
-		jQuery('document').ready(function() {
-
-			$('.user_reputation_text').each(function(index, element) {
+		function addCommasToNumbers() {
+			$('.formatted-number').each(function(index, element) {
 	        	$(element).html(app.addCommas($(element).html()));
         	});
+		}
 
+		jQuery('document').ready(function() {
+
+			addCommasToNumbers();
+			
 			var	room = 'topic_' + '{topic_id}',
 				adminTools = document.getElementById('thread-tools');
 

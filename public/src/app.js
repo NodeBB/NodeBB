@@ -33,11 +33,13 @@ var socket,
 			});
 
 			socket.on('disconnect', function(data){
-				$('#disconnect-modal').modal('show');
-				$('#reload-button').on('click',function(){
-					$('#disconnect-modal').modal('hide');
-					window.location.reload();
-				});
+				setTimeout(function() { 
+					$('#disconnect-modal').modal('show');
+					$('#reload-button').on('click',function(){
+						$('#disconnect-modal').modal('hide');
+						window.location.reload();
+					});
+				}, 500);
 			});
 		},
 		async: false
@@ -243,12 +245,24 @@ var socket,
 	};
 
 	app.edit_post = function(pid) {
-		var	content = document.getElementById('post_content');
-		socket.emit('api:posts.edit', { pid: pid, content: content.value });
+		var	content = $('#post_content');
+
+		if (content.val().length < 5) {
+			app.alert({
+				title: 'Topic Post Failure',
+				message: 'You need to write more dude.',
+				type: 'error',
+				timeout: 2000
+			});	
+
+			return;
+		}
+
+		socket.emit('api:posts.edit', { pid: pid, content: content.val() });
 
 		jQuery(post_window).slideUp(250);
 		$(document.body).removeClass('composing');
-		content.value = '';
+		content.val('');
 	}
 
 
