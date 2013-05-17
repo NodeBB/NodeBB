@@ -91,10 +91,27 @@
 	]);
 
 	socket.on('event:new_topic', function(data) {
-		console.log(data);
-		var html = templates.prepare(templates['category'].blocks['topics']).parse({ topics: [data] });
+		var html = templates.prepare(templates['category'].blocks['topics']).parse({ topics: [data] }),
+			topic = document.createElement('div'),
+			container = document.getElementById('topics-container'),
+			topics = document.querySelectorAll('#topics-container a'),
+			numTopics = topics.length,
+			x;
 
-		jQuery('<div></div>').appendTo("#topics-container").hide().append(html).fadeIn('slow');	
+		topic.innerHTML = html;
+		if (numTopics > 0) {
+			for(x=0;x<numTopics;x++) {
+				if (topics[x].querySelector('.icon-pushpin')) continue;
+				container.insertBefore(topic, topics[x]);
+				$(topic).hide().fadeIn('slow');
+				break;
+			}
+		} else {
+			container.insertBefore(topic, null);
+			$(topic).hide().fadeIn('slow');
+		}
+
+		// jQuery('<div></div>').appendTo("#topics-container").hide().append(html).fadeIn('slow');	
 		// set_up_posts(uniqueid);
 	});
 })();

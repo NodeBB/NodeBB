@@ -374,7 +374,7 @@ marked.setOptions({
 	Topics.unlock = function(tid, uid, socket) {
 		user.getUserField(uid, 'reputation', function(rep) {
 			if (rep >= configs.privilege_thresholds.manage_thread) {
-				// Mark thread as locked
+				// Mark thread as unlocked
 				RDB.del('tid:' + tid + ':locked');
 
 				if (socket) {
@@ -407,7 +407,7 @@ marked.setOptions({
 	Topics.restore = function(tid, uid, socket) {
 		user.getUserField(uid, 'reputation', function(rep) {
 			if (rep >= configs.privilege_thresholds.manage_thread) {
-				// Mark thread as deleted
+				// Mark thread as restored
 				RDB.del('tid:' + tid + ':deleted');
 				Topics.unlock(tid, uid);
 
@@ -424,7 +424,7 @@ marked.setOptions({
 	Topics.pin = function(tid, uid, socket) {
 		user.getUserField(uid, 'reputation', function(rep) {
 			if (rep >= configs.privilege_thresholds.manage_thread) {
-				// Mark thread as deleted
+				// Mark thread as pinned
 				RDB.set('tid:' + tid + ':pinned', 1);
 
 				if (socket) {
@@ -440,7 +440,7 @@ marked.setOptions({
 	Topics.unpin = function(tid, uid, socket) {
 		user.getUserField(uid, 'reputation', function(rep) {
 			if (rep >= configs.privilege_thresholds.manage_thread) {
-				// Mark thread as deleted
+				// Mark thread as unpinned
 				RDB.del('tid:' + tid + ':pinned');
 
 				if (socket) {
