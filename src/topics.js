@@ -35,7 +35,7 @@ marked.setOptions({
 				postcount = [],
 				locked = [],
 				deleted = [],
-				pinned = [],
+				pinned = [];
 
 			for (var i=0, ii=tids.length; i<ii; i++) {
 				title.push('tid:' + tids[i] + ':title');
@@ -94,7 +94,6 @@ marked.setOptions({
 						if (!usernames || !has_read || !moderators || !teaser_info) return;
 
 						for (var i=0, ii=title.length; i<ii; i++) {
-							console.log(teaser_info[i]);
 							topics.push({
 								'title' : title[i],
 								'uid' : uid[i],
@@ -111,7 +110,6 @@ marked.setOptions({
 								'teaser_text': teaser_info[i].text,
 								'teaser_username': teaser_info[i].username
 							});
-							console.log(teaser_info[i].text, teaser_info[i].username);
 						}
 
 						// Float pinned topics to the top
