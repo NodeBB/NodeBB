@@ -99,12 +99,17 @@
 
 		var api_url = (url === '' || url === '/') ? 'home' : url;
 
-		var tpl_url = templates.get_custom_map(url);
-		if (tpl_url == false && !templates[api_url]) {
-			tpl_url = api_url.split('/')[0];
-		} else {
-			tpl_url = api_url;
+
+		var tpl_url = templates.get_custom_map(api_url);
+
+		if (tpl_url === false) {
+			if (!available_templates[api_url]) {
+				tpl_url = api_url.split('/')[0];
+			} else {
+				tpl_url = api_url;
+			}
 		}
+		
 		
 		var template_data = null;
 
