@@ -4,7 +4,7 @@ var	RDB = require('./redis.js'),
 	user = require('./user.js'),
 	configs = require('../config.js'),
 	categories = require('./categories.js'),
-	marked = require('marked')
+	marked = require('marked'),
 	async = require('async');
 
 marked.setOptions({

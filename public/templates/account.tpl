@@ -54,6 +54,10 @@
 					
 					<span class="account-bio-label">posts</span>
 					<span id='postcount'>{postcount}</span>
+					<br/>
+					
+					<span class="account-bio-label">signature</span>
+					<span id='signature'>{signature}</span>
 				</div>
 			</div>
 		</div>

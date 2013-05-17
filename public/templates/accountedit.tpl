@@ -116,6 +116,13 @@
 				      <input type="text" id="inputBirthday" placeholder="mm/dd/yyyy" value="{birthday}">
 				    </div>
 				  </div>
+
+				  <div class="control-group">
+				    <label class="control-label" for="inputSignature">Signature</label>
+				    <div class="controls">
+				      <textarea id="inputSignature" placeholder="your signature" rows="5">{signature}</textarea>
+				    </div>
+				  </div>
 				 
 				 <input type="hidden" id="inputUID" value="{uid}">
 				 
@@ -227,14 +234,15 @@ $(document).ready(function() {
 	var selectedImageType = '';
     
     $('#submitBtn').on('click',function(){
-
+    	alert($('#inputSignature').val());
        var userData = {
             uid:$('#inputUID').val(),
             email:$('#inputEmail').val(),
             fullname:$('#inputFullname').val(),
             website:$('#inputWebsite').val(),
             birthday:$('#inputBirthday').val(),
-            location:$('#inputLocation').val()
+            location:$('#inputLocation').val(),
+            signature:$('#inputSignature').val(),
         };
             
 		$.post('/users/doedit',
