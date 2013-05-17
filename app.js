@@ -7,6 +7,7 @@ var categories = require('./src/categories.js'),
 DEVELOPMENT = true;
 
 global.configuration = {};
+global.templates = {};
 
 (function(config) {
     config['ROOT_DIRECTORY'] = __dirname;
