@@ -227,8 +227,8 @@ var express = require('express'),
 	app.get('/api/:method/:id*', api_method);
 
 	app.get('/test', function(req, res) {
-		topics.get_teasers([1, 2, 3], function(teasers) {
-			res.send(JSON.stringify(teasers));
+		topics.get_topic(3, 1, function(data) {
+			res.send(JSON.stringify(data));
 		});
 	});
 
