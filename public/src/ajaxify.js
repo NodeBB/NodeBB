@@ -39,7 +39,7 @@ var ajaxify = {};
 			tpl_url = url;
 		}
 		
-		if (templates[tpl_url]) {
+		if (templates[tpl_url] && !templates.force_refresh(tpl_url)) {
 			if (quiet !== true) {
 				window.history.pushState({
 					"url": url

@@ -1,5 +1,5 @@
 var categories = require('./src/categories.js'),
-    templates = require('./src/templates.js'),
+    templates = require('./public/src/templates.js'),
     webserver = require('./src/webserver.js'),
     websockets = require('./src/websockets.js'),
     fs = require('fs');
@@ -7,11 +7,15 @@ var categories = require('./src/categories.js'),
 DEVELOPMENT = true;
 
 global.configuration = {};
+global.templates = {};
 
 (function(config) {
     config['ROOT_DIRECTORY'] = __dirname;
 
     templates.init();
+    templates.ready(function() {
+        webserver.init();
+    });
 
     //setup scripts to be moved outside of the app in future.
     function setup_categories() {
