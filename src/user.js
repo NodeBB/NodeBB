@@ -90,7 +90,7 @@ var config = require('../config.js'),
 				
 				if(key === 'email') {
 					User.setUserField(uid, 'gravatarpicture', User.createGravatarURLFromEmail(data[key]));
-					RDB.set('email:' + email +':uid', uid);
+					RDB.set('email:' + data['email'] +':uid', uid);
 				}
 			}
 		}

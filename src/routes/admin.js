@@ -1,16 +1,18 @@
 
 var user = require('./../user.js'),
-	topics = require('./../topics.js');
+	topics = require('./../topics.js'),
+	RDB = require('./../redis.js');
 
 (function(Admin) {
 	Admin.create_routes = function(app) {
 
 		(function() {
-			var routes = ['categories', 'users', 'topics', 'settings', 'themes', 'twitter', 'facebook', 'gplus'];
+			var routes = ['categories', 'users', 'topics', 'settings', 'themes', 'twitter', 'facebook', 'gplus', 'redis'];
 
 			for (var i=0, ii=routes.length; i<ii; i++) {
 				(function(route) {
 					app.get('/admin/' + route, function(req, res) {
+						console.log("derp " +route);
 						res.send(templates['admin/header'] + app.create_route('admin/' + route) + templates['admin/footer']);
 					});
 				}(routes[i]));
@@ -50,6 +52,31 @@ var user = require('./../user.js'),
 				case 'topics' :
 					topics.get(function(data) {
 						res.send(JSON.stringify(data));
+					});
+					break;
+				case 'redis':
+					console.log('going into redis');
+					RDB.info(function(err, data) {
+						data = data.split("\r\n");
+						var finalData = {};
+
+						for(var i in data) {
+							
+							try	{
+								data[i] = data[i].replace(/:/,"\":\"");
+								var json = "{\"" + data[i] + "\"}";
+								
+								var jsonObject = JSON.parse(json);
+								for(var key in jsonObject) {
+									finalData[key] = jsonObject[key];
+								}
+							}catch(err){
+
+							}
+						}
+
+						console.log(finalData);
+						res.send(JSON.stringify(finalData));
 					});
 					break;
 				default :

@@ -70,7 +70,7 @@ var templates = {};
 			'login', 'reset', 'reset_code', 'account',
 			'confirm', '403',
 			'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext',
-			'admin/index', 'admin/categories', 'admin/users', 'admin/topics', 'admin/settings', 'admin/themes', 'admin/twitter', 'admin/facebook', 'admin/gplus'
+			'admin/index', 'admin/categories', 'admin/users', 'admin/topics', 'admin/settings', 'admin/themes', 'admin/twitter', 'admin/facebook', 'admin/gplus', 'admin/redis'
 		]);
 	}
 
