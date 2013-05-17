@@ -39,17 +39,16 @@ var ajaxify = {};
 			tpl_url = url;
 		}
 		
-		if (templates[tpl_url] && !templates.force_refresh(tpl_url)) {
+		if (templates.is_available(tpl_url) && !templates.force_refresh(tpl_url)) {
 			if (quiet !== true) {
 				window.history.pushState({
 					"url": url
 				}, url, "/" + url);
 			}
 
-			jQuery('#footer').fadeOut(100);
-			jQuery('#content').fadeOut(100);
+			jQuery('#footer, #content').fadeOut(100);
 
-			load_template(function() {
+			templates.load_template(function() {
 				exec_body_scripts(content);
 
 				ajaxify.enable();

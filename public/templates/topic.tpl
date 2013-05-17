@@ -327,9 +327,13 @@
 		socket.on('event:new_post', function(data) {
 			var html = templates.prepare(templates['topic'].blocks['posts']).parse(data),
 				uniqueid = new Date().getTime();
-				console.log(data);
+				
+			jQuery('<div id="' + uniqueid + '"></div>')
+				.appendTo("#post-container")
+				.hide()
+				.append(html)
+				.fadeIn('slow');
 
-			jQuery('<div id="' + uniqueid + '"></div>').appendTo("#post-container").hide().append(html).fadeIn('slow');	
 			set_up_posts(uniqueid);
 		});
 

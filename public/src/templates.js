@@ -5,7 +5,8 @@
 	var ready_callback,
 		config = {},
 		templates,
-		fs = null;
+		fs = null,
+		available_templates = [];
 
 	module.exports = templates = {};
 
@@ -28,6 +29,10 @@
 
 		return false;
 	}
+
+	templates.is_available = function(tpl) {
+		return !!jQuery.inArray(tpl, available_templates);
+	};
 
 	templates.ready = function(callback) {
 		if (callback == null && ready_callback) ready_callback();
@@ -70,37 +75,11 @@
 		}
 
 		function loadClient() {
-			var timestamp = new Date().getTime();
-			var loaded = templatesToLoad.length;
-
-			jQuery.getJSON('/templates/config.json', function(data) {
-				config = data;
+			jQuery.when(jQuery.getJSON('/templates/config.json'), jQuery.getJSON('/api/get_templates_listing')).done(function(config_data, templates_data) {
+				config = config_data[0];
+				available_templates = templates_data[0];
+				templates.ready();
 			});
-
-			for (var t in templatesToLoad) {
-				(function(file) {
-					jQuery.get('/templates/' + file + '.tpl?v=' + timestamp, function(html) {
-			
-						var template = function() {
-							this.toString = function() {
-								return this.html;
-							};
-						}
-
-						template.prototype.parse = parse;
-						template.prototype.html = String(html);
-						template.prototype.blocks = {};
-
-						templates[file] = new template;
-						
-						loaded--;
-						if (loaded == 0) templates.ready();
-					}).fail(function() {
-						loaded--;
-						if (loaded == 0) templates.ready();
-					});
-				}(templatesToLoad[t]));
-			}
 		}
 		
 		if (fs === null) loadClient();
@@ -108,15 +87,74 @@
 	}
 
 
-	templates.init = function() {
-		loadTemplates([
-			'header', 'footer', 'register', 'home', 'topic','account', 'category', 'users', 'accountedit', 'friends',
-			'login', 'reset', 'reset_code', 'account',
-			'confirm', '403', 'logout',
-			'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext',
-			'admin/index', 'admin/categories', 'admin/users', 'admin/topics', 'admin/settings', 'admin/themes', 'admin/twitter', 'admin/facebook', 'admin/gplus'
-		]);
+	templates.init = function(templates_to_load) {
+		loadTemplates(templates_to_load || []);
 	}
+
+
+
+	templates.load_template = function(callback, url, template) {
+		var location = document.location || window.location,
+			rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : '');
+
+		var api_url = (url === '' || url === '/') ? 'home' : url;
+
+		var tpl_url = templates.get_custom_map(url);
+		if (tpl_url == false && !templates[api_url]) {
+			tpl_url = api_url.split('/')[0];
+		} else {
+			tpl_url = api_url;
+		}
+		
+		var template_data = null;
+
+
+		(function() {
+			var timestamp = new Date().getTime(); //debug
+
+			if (!templates[tpl_url]) {
+				jQuery.get('/templates/' + tpl_url + '.tpl?v=' + timestamp, function(html) {
+					var template = function() {
+						this.toString = function() {
+							return this.html;
+						};
+					}
+
+					template.prototype.parse = parse;
+					template.prototype.html = String(html);
+					template.prototype.blocks = {};
+
+					templates[tpl_url] = new template;
+					
+					parse_template();
+				});
+			} else {
+				parse_template();
+			}
+			
+		}());
+			
+		(function() {
+			jQuery.get(API_URL + api_url, function(data) {
+				if(!data) {
+					window.location.href = '/404';
+					return;
+				}
+
+				template_data = data;
+				parse_template();
+			});
+		}());
+		
+
+		function parse_template() {
+			if (!templates[tpl_url] || !template_data) return;
+
+			document.getElementById('content').innerHTML = templates[tpl_url].parse(JSON.parse(template_data));
+			if (callback) callback(true);
+		}
+	}
+
 
 
 	//modified from https://github.com/psychobunny/dcp.templates
@@ -210,32 +248,5 @@
 
 })('undefined' === typeof module ? {module:{exports:{}}} : module)
 
-
-
-
-function load_template(callback, url, template) {
-	var location = document.location || window.location,
-		rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : '');
-
-	url = (url === '' || url === '/') ? 'home' : url;
-
-	jQuery.get(API_URL + url, function(data) {
-		if(!data) {
-			window.location.href = '/403';
-			return;
-		}
-
-		var tpl = templates.get_custom_map(url);
-		
-		if (tpl == false && !templates[url]) {
-			tpl = (url === '' || url === '/') ? 'home' : url.split('/')[0];
-		} else if (templates[url]) {
-			tpl = url;
-		}
-		
-		document.getElementById('content').innerHTML = templates[tpl].parse(JSON.parse(data));
-		if (callback) callback();
-	});
-}
 
 

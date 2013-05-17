@@ -12,7 +12,11 @@ global.templates = {};
 (function(config) {
     config['ROOT_DIRECTORY'] = __dirname;
 
-    templates.init();
+    templates.init([
+        'header', 'footer', 'logout',
+        'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext'
+    ]);
+    
     templates.ready(function() {
         webserver.init();
     });

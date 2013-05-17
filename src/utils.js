@@ -1,8 +1,35 @@
+var fs = require('fs');
+
 var utils = {
 	generateUUID: function() {
 		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
 			var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
 			return v.toString(16);
+		});
+	},
+
+	//Adapted from http://stackoverflow.com/questions/5827612/node-js-fs-readdir-recursive-directory-search
+	walk: function(dir, done) {
+		var main_dir = global.configuration.ROOT_DIRECTORY + '/public/templates/';
+		var results = [];
+		fs.readdir(dir, function(err, list) {
+		    if (err) return done(err);
+		    var pending = list.length;
+		    if (!pending) return done(null, results);
+		    list.forEach(function(file) {
+				file = dir + '/' + file;
+				fs.stat(file, function(err, stat) {
+					if (stat && stat.isDirectory()) {
+						utils.walk(file, function(err, res) {
+							results = results.concat(res);
+							if (!--pending) done(null, results);
+						});
+					} else {
+						results.push(file.replace(main_dir, '').replace('.tpl', ''));
+						if (!--pending) done(null, results);
+			        }
+				});
+			});
 		});
 	},
 	
