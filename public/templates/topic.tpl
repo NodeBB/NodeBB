@@ -44,7 +44,7 @@
 					<div style="clear:both; margin-bottom: 10px;"></div>
 
 					<div id="content_{main_posts.pid}" class="post-content">{main_posts.content}</div>
-					<div>{main_posts.signature}</div>
+					<div class="post-signature">{main_posts.signature}</div>
 					<div class="profile-block"></div>
 				</div>
 			</div>
@@ -63,7 +63,7 @@
 			<div class="span11">
 				<div class="post-block">
 					<div id="content_{posts.pid}" class="post-content">{posts.content}</div>
-					<div>{posts.signature}</div>
+					<div class="post-signature">{posts.signature}</div>
 					<div class="profile-block">
 						<span class="post-buttons">
 							<div id="ids_{posts.pid}_{posts.uid}" class="edit {posts.display_moderator_tools} hidden-phone"><i class="icon-pencil"></i></div>
