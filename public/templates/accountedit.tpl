@@ -234,7 +234,7 @@ $(document).ready(function() {
 	var selectedImageType = '';
     
     $('#submitBtn').on('click',function(){
-    	alert($('#inputSignature').val());
+    	
        var userData = {
             uid:$('#inputUID').val(),
             email:$('#inputEmail').val(),

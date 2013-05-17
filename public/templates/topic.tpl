@@ -62,6 +62,7 @@
 			<div class="span11">
 				<div class="post-block">
 					<div id="content_{posts.pid}" class="post-content">{posts.content}</div>
+					<div>{posts.signature}</div>
 					<div class="profile-block">
 						<span class="post-buttons">
 							<div id="ids_{posts.pid}_{posts.uid}" class="edit {posts.display_moderator_tools} hidden-phone"><i class="icon-pencil"></i></div>
