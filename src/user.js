@@ -255,8 +255,6 @@ var config = require('../config.js'),
 	User.create = function(username, password, email, callback) {
 
 		User.exists(username, function(exists) {
-			if (exists || email.indexOf('@') === -1 /*|| password.length < 5*/) return callback(null, -1);
-
 			RDB.incr('global:next_user_id', function(err, uid) {
 				RDB.handle(err);
 
