@@ -271,8 +271,11 @@ marked.setOptions({
 					'pid:' + pid + ':uid'
 				], function(err, content) {
 					user.getUserField(content[1], 'username', function(username) {
+						var stripped = content[0];
+						if(content[0])
+							stripped = utils.strip_tags(marked(content[0]));
 						callback({
-							"text": utils.strip_tags(marked(content[0])),
+							"text": stripped,
 							"username": username
 						});
 					});
