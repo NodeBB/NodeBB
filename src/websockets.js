@@ -6,8 +6,7 @@ var SocketIO = require('socket.io').listen(global.server,{log:false}),
 	user = require('./user.js'),
 	posts = require('./posts.js'),
 	topics = require('./topics.js'),
-	categories = require('./categories.js'),
-	templates = require('./templates.js');
+	categories = require('./categories.js');
 	
 (function(io) {
 	var	users = {},
@@ -50,10 +49,6 @@ var SocketIO = require('socket.io').listen(global.server,{log:false}),
 		
 		var uid = users[hs.sessionID];
 		
-		if (DEVELOPMENT === true) {
-			// refreshing templates
-			templates.init();
-		}
 		
 		/*process.on('uncaughtException', function(err) {
     		// handle the error safely

@@ -9,5 +9,8 @@
         "latest": "category",
         "popular": "category",
         "active": "category"
+    },
+    "force_refresh": {
+        "logout": true
     }
 }
