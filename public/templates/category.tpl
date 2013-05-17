@@ -8,7 +8,7 @@
 <div class="category row">
 
 	<div class="span9">
-		<ul>
+		<ul id="topics-container">
 		<!-- BEGIN topics -->
 		<a href="../../topic/{topics.slug}"><li>
 			<div class="row-fluid">
@@ -77,8 +77,25 @@
 
 
 <script type="text/javascript">
-var new_post = document.getElementById('new_post');
-new_post.onclick = function() {
-	app.open_post_window('topic', {category_id});
-}
+(function() {
+	var	room = 'category_' + '{category_id}';
+	app.enter_room(room);
+
+	var new_post = document.getElementById('new_post');
+	new_post.onclick = function() {
+		app.open_post_window('topic', {category_id});
+	}
+
+	ajaxify.register_events([
+		'event:new_topic'
+	]);
+
+	socket.on('event:new_topic', function(data) {
+		console.log(data);
+		var html = templates.prepare(templates['category'].blocks['topics']).parse({ topics: [data] });
+
+		jQuery('<div></div>').appendTo("#topics-container").hide().append(html).fadeIn('slow');	
+		// set_up_posts(uniqueid);
+	});
+})();
 </script>

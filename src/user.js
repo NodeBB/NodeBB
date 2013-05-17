@@ -6,7 +6,9 @@ var config = require('../config.js'),
 	crypto = require('crypto'),
 	emailjs = require('emailjs'),
 	emailjsServer = emailjs.server.connect(config.mailer),
-	bcrypt = require('bcrypt');
+	bcrypt = require('bcrypt'),
+	marked = require('marked');
+
 
 (function(User) {
 
@@ -79,19 +81,24 @@ var config = require('../config.js'),
 
 	User.updateProfile = function(uid, data) {
 		
-		var fields = ['email', 'fullname', 'website', 'location', 'birthday'];
+		var fields = ['email', 'fullname', 'website', 'location', 'birthday', 'signature'];
 		var key = '';
 		
 		for(var i=0,ii=fields.length; i<ii; ++i) {
 			key = fields[i];
-			if(data[key] !== undefined) {
 
-				User.setUserField(uid, key, data[key]);
+			if(data[key] !== undefined) {
 				
 				if(key === 'email') {
 					User.setUserField(uid, 'gravatarpicture', User.createGravatarURLFromEmail(data[key]));
-					RDB.set('email:' + email +':uid', uid);
+					RDB.set('email:' + data['email'] +':uid', uid);
 				}
+				else if(key === 'signature') {
+					//sanitize sig plx - baris
+					//data[key] = marked(data[key]);
+				}
+
+				User.setUserField(uid, key, data[key]);
 			}
 		}
 	}
@@ -268,6 +275,7 @@ var config = require('../config.js'),
 					'birthday':'',
 					'website':'',
 					'email' : email,
+					'signature':'',
 					'joindate' : new Date().getTime(),
 					'picture': gravatar,
 					'gravatarpicture' : gravatar,

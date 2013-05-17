@@ -94,6 +94,8 @@
 						<li class=''><a href='/admin/topics'><i class='icon-book'></i> Topics</a></li>
 						<li class=''><a href='/admin/themes'><i class='icon-th'></i> Themes</a></li>
 						<li class=''><a href='/admin/settings'><i class='icon-cogs'></i> Settings</a></li>
+						<li class=''><a href='/admin/redis'><i class='icon-hdd'></i> Redis</a></li>
+
 						<li class="nav-header">Social Authentication</li>
 						<li class=''><a href='/admin/twitter'><i class='icon-twitter'></i>Twitter</a></li>
 						<li class=''><a href='/admin/facebook'><i class='icon-facebook'></i>Facebook</a></li>

@@ -153,6 +153,7 @@
 			document.getElementById('content').innerHTML = templates[tpl_url].parse(JSON.parse(template_data));
 			if (callback) callback(true);
 		}
+
 	}
 
 
