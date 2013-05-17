@@ -227,11 +227,10 @@ var express = require('express'),
 	app.get('/api/:method/:id*', api_method);
 
 	app.get('/test', function(req, res) {
-		categories.getModerators(2, function(mods) {
-			res.send(JSON.stringify(mods));
+		topics.get_teasers([1, 2, 3], function(teasers) {
+			res.send(JSON.stringify(teasers));
 		});
 	});
-
 
 
 	//START TODO: MOVE TO GRAPH.JS 

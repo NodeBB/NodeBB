@@ -21,8 +21,8 @@
 				<div class="span11 topic-row img-polaroid">
 					<div class="latest-post visible-desktop">
 						<div class="pull-right">
-							<img style="width: 48px; height: 48px; /*temporary*/" src="/graph/users/{topics.recent_author}/picture" />
-							<p><strong>{topics.recent_author}</strong>: {topics.recent_post}</p>
+							<img style="width: 48px; height: 48px; /*temporary*/" src="/graph/users/{topics.teaser_username}/picture" />
+							<p><strong>{topics.teaser_username}</strong>: {topics.teaser_text}</p>
 						</div>
 					</div>
 					<div>
