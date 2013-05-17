@@ -169,6 +169,59 @@ marked.setOptions({
 		});
 	}
 
+	Topics.get_topic = function(tid, uid, callback) {
+		var topicData = {};
+
+		async.parallel([
+			function(next) {
+				RDB.mget([
+					'tid:' + tid + ':title',
+					'tid:' + tid + ':uid',
+					'tid:' + tid + ':timestamp',
+					'tid:' + tid + ':slug',
+					'tid:' + tid + ':postcount',
+					'tid:' + tid + ':locked',
+					'tid:' + tid + ':pinned',
+					'tid:' + tid + ':deleted'
+				], function(err, topic) {
+					topicData.title = topic[0];
+					topicData.uid = topic[1];
+					topicData.timestamp = topic[2];
+					topicData.relativeTime = utils.relativeTime(topic[2]),
+					topicData.slug = topic[3];
+					topicData.post_count = topic[4];
+					topicData.locked = topic[5];
+					topicData.pinned = topic[6];
+					topicData.deleted = topic[7];
+
+					user.getUserField(topic[1], 'username', function(username) {
+						topicData.username = username;
+						next(null);
+					})
+				});
+			},
+			function(next) {
+				if (uid && parseInt(uid) > 0) {
+					RDB.sismember('tid:' + tid + ':read_by_uid', uid, function(err, read) {
+						topicData.badgeclass = read ? '' : 'badge-important';
+						next(null);
+					});
+				} else next(null);
+			},
+			function(next) {
+				Topics.get_teaser(tid, function(teaser) {
+					topicData.teaser_text = teaser.text;
+					topicData.teaser_username = teaser.username;
+					next(null);
+				});
+			}
+		], function(err) {
+			if (!err) {
+				callback(topicData);
+			}
+		});
+	}
+
 	Topics.get_cid_by_tid = function(tid, callback) {
 		RDB.get('tid:' + pid + ':cid', function(err, cid) {
 			if (cid && parseInt(cid) > 0) callback(cid);
@@ -269,7 +322,14 @@ marked.setOptions({
 
 			// Posts
 			posts.create(uid, tid, content, function(pid) {
-				if (pid > 0) RDB.lpush('tid:' + tid + ':posts', pid);
+				if (pid > 0) {
+					RDB.lpush('tid:' + tid + ':posts', pid);
+
+					// Notify any users looking at the category that a new post has arrived
+					Topics.get_topic(tid, uid, function(topicData) {
+						io.sockets.in('category_' + category_id).emit('event:new_topic', topicData);
+					});
+				}
 			});
 
 			Topics.markAsRead(tid, uid);
@@ -283,7 +343,6 @@ marked.setOptions({
 				type: 'notify',
 				timeout: 2000
 			});
-
 
 			// in future it may be possible to add topics to several categories, so leaving the door open here.
 			RDB.sadd('categories:' + category_id + ':tid', tid);
