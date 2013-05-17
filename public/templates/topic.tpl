@@ -44,6 +44,7 @@
 					<div style="clear:both; margin-bottom: 10px;"></div>
 
 					<div id="content_{main_posts.pid}" class="post-content">{main_posts.content}</div>
+					<div>{main_posts.signature}</div>
 					<div class="profile-block"></div>
 				</div>
 			</div>
