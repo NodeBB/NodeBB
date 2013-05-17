@@ -33,11 +33,13 @@ var socket,
 			});
 
 			socket.on('disconnect', function(data){
-				$('#disconnect-modal').modal('show');
-				$('#reload-button').on('click',function(){
-					$('#disconnect-modal').modal('hide');
-					window.location.reload();
-				});
+				setTimeout(function() { 
+					$('#disconnect-modal').modal('show');
+					$('#reload-button').on('click',function(){
+						$('#disconnect-modal').modal('hide');
+						window.location.reload();
+					});
+				}, 500);
 			});
 		},
 		async: false
