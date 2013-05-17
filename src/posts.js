@@ -37,7 +37,6 @@ marked.setOptions({
 				var uid = post_data.uid[i],
 					pid = post_data.pid[i];
 					
-				console.log(current_user, uid);
 				if (post_data.deleted[i] === null || (post_data.deleted[i] === '1' && manage_content) || current_user === uid) {
 					var post_obj = {
 						'pid' : pid,
@@ -307,9 +306,6 @@ marked.setOptions({
 
 
 					user.getUserFields(uid, ['username'], function(data){
-						RDB.set('tid:' + tid + ':recent:post', content);
-						RDB.set('tid:' + tid + ':recent:author', data.username);
-
 						//add active users to this category
 						RDB.get('tid:' + tid + ':cid', function(err, cid) {
 							RDB.handle(err);
