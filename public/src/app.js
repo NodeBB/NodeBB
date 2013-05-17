@@ -302,65 +302,69 @@ var socket,
 		var	formattingBar = document.querySelector('.formatting-bar'),
 			postContentEl = document.getElementById('post_content');
 		jQuery('#post_window').slideToggle(0);
-		formattingBar.addEventListener('click', function(e) {
-			if (e.target.nodeName === 'I' || e.target.nodeName === 'SPAN') {
-				var	cursorEnd = postContentEl.value.length,
-					selectionStart = postContentEl.selectionStart,
-					selectionEnd = postContentEl.selectionEnd,
-					selectionLength = selectionEnd - selectionStart,
-					target;
-				if (e.target.nodeName === 'I') target = e.target;
-				else if (e.target.nodeName === 'SPAN') target = e.target.querySelector('i');
-				switch(target.className) {
-					case 'icon-bold':
-						if (selectionStart === selectionEnd) {
+
+		if(formattingBar) {
+
+			formattingBar.addEventListener('click', function(e) {
+				if (e.target.nodeName === 'I' || e.target.nodeName === 'SPAN') {
+					var	cursorEnd = postContentEl.value.length,
+						selectionStart = postContentEl.selectionStart,
+						selectionEnd = postContentEl.selectionEnd,
+						selectionLength = selectionEnd - selectionStart,
+						target;
+					if (e.target.nodeName === 'I') target = e.target;
+					else if (e.target.nodeName === 'SPAN') target = e.target.querySelector('i');
+					switch(target.className) {
+						case 'icon-bold':
+							if (selectionStart === selectionEnd) {
+								// Nothing selected
+								postContentEl.value = postContentEl.value + '**bolded text**';
+								postContentEl.selectionStart = cursorEnd+2;
+								postContentEl.selectionEnd = postContentEl.value.length - 2;
+							} else {
+								// Text selected
+								postContentEl.value = postContentEl.value.slice(0, selectionStart) + '**' + postContentEl.value.slice(selectionStart, selectionEnd) + '**' + postContentEl.value.slice(selectionEnd);
+								postContentEl.selectionStart = selectionStart + 2;
+								postContentEl.selectionEnd = selectionEnd + 2;
+							}
+						break;
+						case 'icon-italic':
+							if (selectionStart === selectionEnd) {
+								// Nothing selected
+								postContentEl.value = postContentEl.value + '*italicised text*';
+								postContentEl.selectionStart = cursorEnd+1;
+								postContentEl.selectionEnd = postContentEl.value.length - 1;
+							} else {
+								// Text selected
+								postContentEl.value = postContentEl.value.slice(0, selectionStart) + '*' + postContentEl.value.slice(selectionStart, selectionEnd) + '*' + postContentEl.value.slice(selectionEnd);
+								postContentEl.selectionStart = selectionStart + 1;
+								postContentEl.selectionEnd = selectionEnd + 1;
+							}
+						break;
+						case 'icon-list':
 							// Nothing selected
-							postContentEl.value = postContentEl.value + '**bolded text**';
-							postContentEl.selectionStart = cursorEnd+2;
-							postContentEl.selectionEnd = postContentEl.value.length - 2;
-						} else {
-							// Text selected
-							postContentEl.value = postContentEl.value.slice(0, selectionStart) + '**' + postContentEl.value.slice(selectionStart, selectionEnd) + '**' + postContentEl.value.slice(selectionEnd);
-							postContentEl.selectionStart = selectionStart + 2;
-							postContentEl.selectionEnd = selectionEnd + 2;
-						}
-					break;
-					case 'icon-italic':
-						if (selectionStart === selectionEnd) {
-							// Nothing selected
-							postContentEl.value = postContentEl.value + '*italicised text*';
-							postContentEl.selectionStart = cursorEnd+1;
-							postContentEl.selectionEnd = postContentEl.value.length - 1;
-						} else {
-							// Text selected
-							postContentEl.value = postContentEl.value.slice(0, selectionStart) + '*' + postContentEl.value.slice(selectionStart, selectionEnd) + '*' + postContentEl.value.slice(selectionEnd);
-							postContentEl.selectionStart = selectionStart + 1;
-							postContentEl.selectionEnd = selectionEnd + 1;
-						}
-					break;
-					case 'icon-list':
-						// Nothing selected
-						postContentEl.value = postContentEl.value + "\n\n* list item";
-						postContentEl.selectionStart = cursorEnd+4;
-						postContentEl.selectionEnd = postContentEl.value.length;
-					break;
-					case 'icon-link':
-						if (selectionStart === selectionEnd) {
-							// Nothing selected
-							postContentEl.value = postContentEl.value + '[link text](link url)';
-							postContentEl.selectionStart = cursorEnd+12;
-							postContentEl.selectionEnd = postContentEl.value.length - 1;
-						} else {
-							// Text selected
-							postContentEl.value = postContentEl.value.slice(0, selectionStart) + '[' + postContentEl.value.slice(selectionStart, selectionEnd) + '](link url)' + postContentEl.value.slice(selectionEnd);
-							postContentEl.selectionStart = selectionStart + selectionLength + 3;
-							postContentEl.selectionEnd = selectionEnd + 11;
-						}
-					break;
+							postContentEl.value = postContentEl.value + "\n\n* list item";
+							postContentEl.selectionStart = cursorEnd+4;
+							postContentEl.selectionEnd = postContentEl.value.length;
+						break;
+						case 'icon-link':
+							if (selectionStart === selectionEnd) {
+								// Nothing selected
+								postContentEl.value = postContentEl.value + '[link text](link url)';
+								postContentEl.selectionStart = cursorEnd+12;
+								postContentEl.selectionEnd = postContentEl.value.length - 1;
+							} else {
+								// Text selected
+								postContentEl.value = postContentEl.value.slice(0, selectionStart) + '[' + postContentEl.value.slice(selectionStart, selectionEnd) + '](link url)' + postContentEl.value.slice(selectionEnd);
+								postContentEl.selectionStart = selectionStart + selectionLength + 3;
+								postContentEl.selectionEnd = selectionEnd + 11;
+							}
+						break;
+					}
 				}
-			}
-		}, false);
-	})
+			}, false);
+		}
+	});
 
 
 
