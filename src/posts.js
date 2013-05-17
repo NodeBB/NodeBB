@@ -27,7 +27,6 @@ marked.setOptions({
 		//compile thread after all data is asynchronously called
 		function generateThread() {
 			if (!post_data || !user_data || !thread_data || !vote_data || !viewer_data) return;
-			console.log(viewer_data);
 
 			var	posts = [],
 				main_posts = [],
@@ -38,7 +37,8 @@ marked.setOptions({
 				var uid = post_data.uid[i],
 					pid = post_data.pid[i];
 					
-				if (post_data.deleted[i] === null || (post_data.deleted[i] === '1' && manage_content)) {
+				console.log(current_user, uid);
+				if (post_data.deleted[i] === null || (post_data.deleted[i] === '1' && manage_content) || current_user === uid) {
 					var post_obj = {
 						'pid' : pid,
 						'uid' : uid,
@@ -181,8 +181,31 @@ marked.setOptions({
 		}
 	}
 
-	Posts.editable = function(uid, pid) {
-
+	Posts.editable = function(uid, pid, callback) {
+		async.parallel([
+			function(next) {
+				RDB.get('pid:' + pid + ':uid', function(err, author) {
+					if (author && parseInt(author) > 0) next(null, author === uid);
+				});
+			},
+			function(next) {
+				user.getUserField(uid, 'reputation', function(reputation) {
+					next(null, reputation >= config.privilege_thresholds.manage_content);
+				});
+			},
+			function(next) {
+				Posts.get_tid_by_pid(pid, function(tid) {
+					RDB.get('tid:' + tid + ':cid', function(err, cid) {
+						user.isModerator(uid, cid, function(isMod) {
+							next(null, isMod);
+						});
+					});
+				});
+			}
+		], function(err, results) {
+			// If any return true, allow the edit
+			if (results.indexOf(true) !== -1) callback(true);
+		});
 	}
 
 	Posts.get_tid_by_pid = function(pid, callback) {
@@ -419,118 +442,46 @@ marked.setOptions({
 	}
 
 	Posts.edit = function(uid, pid, content) {
-		RDB.mget(['pid:' + pid + ':tid', 'pid:' + pid + ':uid'], function(err, results) {
-			var	tid = results[0],
-				author = results[1],
-				success = function() {
-					RDB.set('pid:' + pid + ':content', content);
-					RDB.set('pid:' + pid + ':edited', new Date().getTime());
-					RDB.set('pid:' + pid + ':editor', uid);
+		var	success = function() {
+				RDB.set('pid:' + pid + ':content', content);
+				RDB.set('pid:' + pid + ':edited', new Date().getTime());
+				RDB.set('pid:' + pid + ':editor', uid);
 
+				Posts.get_tid_by_pid(pid, function(tid) {
 					io.sockets.in('topic_' + tid).emit('event:post_edited', { pid: pid, content: marked(content || '') });
-				};
-
-			if (uid === author) success();
-			else {
-				async.parallel([
-					function(callback) {
-						user.getUserField(uid, 'reputation', function(reputation) {
-							callback(null, reputation >= config.privilege_thresholds.manage_content);
-						});
-					},
-					function(callback) {
-						RDB.get('tid:' + tid + ':cid', function(err, cid) {
-							user.isModerator(uid, cid, function(isMod) {
-								callback(null, isMod);
-							});
-						});
-					}
-				], function(err, results) {
-					// If any return true, allow the edit
-					for(var x=0,numResults=results.length;x<numResults;x++) {
-						if (results[x]) {
-							success();
-							break;
-						}
-					}
 				});
-			}
+			};
+
+		Posts.editable(uid, pid, function(editable) {
+			if (editable) success();
 		});
 	}
 
 	Posts.delete = function(uid, pid) {
-		RDB.mget(['pid:' + pid + ':tid', 'pid:' + pid + ':uid'], function(err, results) {
-			var	tid = results[0],
-				author = results[1],
-				success = function() {
-					RDB.set('pid:' + pid + ':deleted', 1);
+		var	success = function() {
+				RDB.set('pid:' + pid + ':deleted', 1);
 
+				Posts.get_tid_by_pid(pid, function(tid) {
 					io.sockets.in('topic_' + tid).emit('event:post_deleted', { pid: pid });
-				};
-
-			if (uid === author) success();
-			else {
-				async.parallel([
-					function(callback) {
-						user.getUserField(uid, 'reputation', function(reputation) {
-							callback(null, reputation >= config.privilege_thresholds.manage_content);
-						});
-					},
-					function(callback) {
-						RDB.get('tid:' + tid + ':cid', function(err, cid) {
-							user.isModerator(uid, cid, function(isMod) {
-								callback(null, isMod);
-							});
-						});
-					}
-				], function(err, results) {
-					// If any return true, allow the edit
-					for(var x=0,numResults=results.length;x<numResults;x++) {
-						if (results[x]) {
-							success();
-							break;
-						}
-					}
 				});
-			}
+			};
+
+		Posts.editable(uid, pid, function(editable) {
+			if (editable) success();
 		});
 	}
 
 	Posts.restore = function(uid, pid) {
-		RDB.mget(['pid:' + pid + ':tid', 'pid:' + pid + ':uid'], function(err, results) {
-			var	tid = results[0],
-				author = results[1],
-				success = function() {
-					RDB.del('pid:' + pid + ':deleted');
+		var	success = function() {
+				RDB.del('pid:' + pid + ':deleted');
 
+				Posts.get_tid_by_pid(pid, function(tid) {
 					io.sockets.in('topic_' + tid).emit('event:post_restored', { pid: pid });
-				};
-
-			if (uid === author) success();
-			else {
-				async.parallel([
-					function(callback) {
-						user.getUserField(uid, 'reputation', function(reputation) {
-							callback(null, reputation >= config.privilege_thresholds.manage_content);
-						});
-					},
-					function(callback) {
-						RDB.get('tid:' + tid + ':cid', function(err, cid) {
-							user.isModerator(uid, cid, function(isMod) {
-								callback(null, isMod);
-							});
-						});
-					}
-				], function(err, results) {
-					// If any return true, allow the edit
-					for(var x=0,numResults=results.length;x<numResults;x++) {
-						if (results[x]) {
-							success();
-							break;
-						}
-					}
 				});
-			}
+			};
+
+		Posts.editable(uid, pid, function(editable) {
+			if (editable) success();
 		});
 	}
 }(exports));

@@ -255,46 +255,50 @@ var config = require('../config.js'),
 	User.create = function(username, password, email, callback) {
 
 		User.exists(username, function(exists) {
-			if (exists || email.indexOf('@') === -1 || password.length < 5) return callback(null, -1);
+			if (exists || email.indexOf('@') === -1 /*|| password.length < 5*/) return callback(null, -1);
 
 			RDB.incr('global:next_user_id', function(err, uid) {
 				RDB.handle(err);
-				User.hashPassword(password, function(hash) {
-					var gravatar = User.createGravatarURLFromEmail(email);
 
-					RDB.hmset('user:'+uid, {
-						'username' : username,
-						'fullname': '',
-						'location':'',
-						'birthday':'',
-						'website':'',
-						'email' : email,
-						'joindate' : new Date().getTime(),
-						'password' : hash,
-						'picture': gravatar,
-						'gravatarpicture' : gravatar,
-						'uploadedpicture': '',
-						'reputation': 0,
-						'postcount': 0
-					});
-					
-					RDB.set('username:' + username + ':uid', uid);
-					RDB.set('email:' + email +':uid', uid);			
-					
-					if(email)
-						User.sendConfirmationEmail(email);
-				
-					RDB.incr('usercount', function(err, count) {
-						RDB.handle(err);
-				
-						io.sockets.emit('user.count', {count: count});
-					});
+				var gravatar = User.createGravatarURLFromEmail(email);
 
-					RDB.lpush('userlist', username);
-					io.sockets.emit('user.latest', {username: username});
-
-					callback(null, uid);
+				RDB.hmset('user:'+uid, {
+					'username' : username,
+					'fullname': '',
+					'location':'',
+					'birthday':'',
+					'website':'',
+					'email' : email,
+					'joindate' : new Date().getTime(),
+					'picture': gravatar,
+					'gravatarpicture' : gravatar,
+					'uploadedpicture': '',
+					'reputation': 0,
+					'postcount': 0
 				});
+				
+				RDB.set('username:' + username + ':uid', uid);
+				RDB.set('email:' + email +':uid', uid);			
+				
+				if(email)
+					User.sendConfirmationEmail(email);
+			
+				RDB.incr('usercount', function(err, count) {
+					RDB.handle(err);
+			
+					io.sockets.emit('user.count', {count: count});
+				});
+
+				RDB.lpush('userlist', username);
+				io.sockets.emit('user.latest', {username: username});
+
+				callback(null, uid);
+
+				if (password) {
+					User.hashPassword(password, function(hash) {
+						RDB.hset('user:'+uid, 'password', hash);
+					});
+				}
 			});
 		});
 	};
