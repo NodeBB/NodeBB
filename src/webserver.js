@@ -108,6 +108,11 @@ var express = require('express'),
 	function api_method(req, res) {		
 		
 		switch(req.params.method) {
+			case 'get_templates_listing' :
+					utils.walk(global.configuration.ROOT_DIRECTORY + '/public/templates', function(err, data) {
+						res.send(JSON.stringify(data));
+					});
+				break;
 			case 'home' :
 					categories.get(function(data) {
 						res.send(JSON.stringify(data));
