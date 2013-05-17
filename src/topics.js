@@ -75,24 +75,24 @@ marked.setOptions({
 				active_usernames = replies[1];
 				var topics = [];
 
-				if (tids.length > 0) {
-					title = replies[2];
-					uid = replies[3];
-					timestamp = replies[4];
-					slug = replies[5];
-					postcount = replies[6];
-					locked = replies[7];
-					deleted = replies[8];
-					pinned = replies[9];
+				title = replies[2];
+				uid = replies[3];
+				timestamp = replies[4];
+				slug = replies[5];
+				postcount = replies[6];
+				locked = replies[7];
+				deleted = replies[8];
+				pinned = replies[9];
 
-					var usernames,
-						has_read,
-						moderators,
-						teaser_info;
+				var usernames,
+					has_read,
+					moderators,
+					teaser_info;
 
-					function generate_topic() {
-						if (!usernames || !has_read || !moderators || !teaser_info) return;
+				function generate_topic() {
+					if (!usernames || !has_read || !moderators || !teaser_info) return;
 
+					if (tids.length > 0) {
 						for (var i=0, ii=title.length; i<ii; i++) {
 							topics.push({
 								'title' : title[i],
@@ -111,60 +111,60 @@ marked.setOptions({
 								'teaser_username': teaser_info[i].username
 							});
 						}
-
-						// Float pinned topics to the top
-						topics = topics.sort(function(a, b) {
-							if (a.pinned !== b.pinned) return b.pinned - a.pinned;
-							else {
-								// Sort by datetime descending
-								return b.timestamp - a.timestamp;
-							}
-						});
-
-						var active_users = [];
-						for (var username in active_usernames) {
-							active_users.push({'username': active_usernames[username]});
-						}
-
-						callback({
-							'category_name' : category_id ? category_name : 'Recent',
-							'show_topic_button' : category_id ? 'show' : 'hidden',
-							'category_id': category_id || 0,
-							'topics': topics,
-							'active_users': active_users,
-							'moderator_block_class': moderators.length > 0 ? '' : 'none',
-							'moderators': moderators
-						});
 					}
-					
-					user.get_usernames_by_uids(uid, function(userNames) {
-						usernames = userNames;
-						generate_topic();
-					});	
 
-					Topics.hasReadTopics(tids, current_user, function(hasRead) {
-						has_read = hasRead;
-						generate_topic();
+					// Float pinned topics to the top
+					topics = topics.sort(function(a, b) {
+						if (a.pinned !== b.pinned) return b.pinned - a.pinned;
+						else {
+							// Sort by datetime descending
+							return b.timestamp - a.timestamp;
+						}
 					});
 
-					categories.getModerators(category_id, function(mods) {
-						moderators = mods;
-						generate_topic();
-					});
+					var active_users = [];
+					for (var username in active_usernames) {
+						active_users.push({'username': active_usernames[username]});
+					}
 
-					Topics.get_teasers(tids, function(teasers) {
-						teaser_info = teasers;
-						generate_topic();
-					});
-				}
-				else {
 					callback({
 						'category_name' : category_id ? category_name : 'Recent',
 						'show_topic_button' : category_id ? 'show' : 'hidden',
 						'category_id': category_id || 0,
-						'topics': []
+						'topics': topics,
+						'active_users': active_users,
+						'moderator_block_class': moderators.length > 0 ? '' : 'none',
+						'moderators': moderators
 					});
 				}
+				
+				user.get_usernames_by_uids(uid, function(userNames) {
+					usernames = userNames;
+					generate_topic();
+				});	
+
+				Topics.hasReadTopics(tids, current_user, function(hasRead) {
+					has_read = hasRead;
+					generate_topic();
+				});
+
+				categories.getModerators(category_id, function(mods) {
+					moderators = mods;
+					generate_topic();
+				});
+
+				Topics.get_teasers(tids, function(teasers) {
+					teaser_info = teasers;
+					generate_topic();
+				});
+				// else {
+				// 	callback({
+				// 		'category_name' : category_id ? category_name : 'Recent',
+				// 		'show_topic_button' : category_id ? 'show' : 'hidden',
+				// 		'category_id': category_id || 0,
+				// 		'topics': []
+				// 	});
+				// }
 			});
 		});
 	}

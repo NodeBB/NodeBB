@@ -447,8 +447,9 @@ var config = require('../config.js'),
 	};
 
 	User.get_usernames_by_uids = function(uids, callback) {
-		
 		var usernames = [];
+
+		if (!Array.isArray(uids)) return callback([]);
 		
 		for(var i=0, ii=uids.length; i<ii; ++i) {
 		
