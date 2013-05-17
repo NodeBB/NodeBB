@@ -48,6 +48,7 @@ marked.setOptions({
 						'username' : user_data[uid].username || 'anonymous',
 						'user_rep' : user_data[uid].reputation || 0,
 						'gravatar' : user_data[uid].picture || 'http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e',
+						'signature' : user_data[uid].signature,
 						'fav_star_class' : vote_data[pid] ? 'icon-star' : 'icon-star-empty',
 						'display_moderator_tools': (uid == current_user || manage_content || viewer_data.isModerator) ? 'show' : 'none',
 						'edited-class': post_data.editor[i] !== null ? '' : 'none',
@@ -147,7 +148,7 @@ marked.setOptions({
 							}
 						}
 
-						user.getMultipleUserFields(post_data.uid, ['username','reputation','picture'], function(user_details){
+						user.getMultipleUserFields(post_data.uid, ['username','reputation','picture', 'signature'], function(user_details){
 							user_data = user_details;
 							generateThread();
 						});
