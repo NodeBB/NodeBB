@@ -42,9 +42,7 @@
 	                      <a href="/users">Users</a>
 	                    </li>
 					</ul>
-					<ul class="nav pull-right nodebb-inline-block nodebb-pull-right" id="right-menu">
-						<!--<li><i class="icon-plus icon-2x" style="color:#999;"></i></li> fail. add this back later -->
-						<!--<li><a href="/users" id="user_label"></a></li>-->
+					<ul class="nav pull-right nodebb-inline-block" id="right-menu">
 					</ul>
 				</div>
 			</div>
