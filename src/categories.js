@@ -1,7 +1,8 @@
 var	RDB = require('./redis.js'),
 	posts = require('./posts.js'),
 	utils = require('./utils.js'),
-	user = require('./user.js');
+	user = require('./user.js'),
+	async = require('async');
 
 (function(Categories) {
 
@@ -26,6 +27,30 @@ var	RDB = require('./redis.js'),
 			if (callback) callback({'status': 1});
 		});
 	};
+
+	Categories.privileges = function(cid, uid, callback) {
+		async.parallel([
+			// function(next) {
+			// 	user.getUserField(uid, 'reputation', function(reputation) {
+			// 		next(null, reputation >= config.privilege_thresholds.manage_category);
+			// 	});
+			// },
+			function(next) {
+				user.isModerator(uid, cid, function(isMod) {
+					next(null, isMod);
+				});
+			}, function(next) {
+				user.isAdministrator(uid, function(isAdmin) {
+					next(null, isAdmin);
+				});
+			}
+		], function(err, results) {
+			callback({
+				editable: results.indexOf(true) !== -1 ? true : false,
+				view_deleted: results.indexOf(true) !== -1 ? true : false
+			});
+		});
+	}
 
 	Categories.edit = function(data, callback) {
 		// just a reminder to self that name + slugs are stored into topics data as well.

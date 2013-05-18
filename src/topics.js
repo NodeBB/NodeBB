@@ -87,29 +87,33 @@ marked.setOptions({
 				var usernames,
 					has_read,
 					moderators,
-					teaser_info;
+					teaser_info,
+					privileges;
 
 				function generate_topic() {
-					if (!usernames || !has_read || !moderators || !teaser_info) return;
+					if (!usernames || !has_read || !moderators || !teaser_info || !privileges) return;
 
 					if (tids.length > 0) {
 						for (var i=0, ii=title.length; i<ii; i++) {
-							topics.push({
-								'title' : title[i],
-								'uid' : uid[i],
-								'username': usernames[i],
-								'timestamp' : timestamp[i],
-								'relativeTime': utils.relativeTime(timestamp[i]),
-								'slug' : slug[i],
-								'post_count' : postcount[i],
-								'lock-icon': locked[i] === '1' ? 'icon-lock' : 'none',
-								'deleted': deleted[i],
-								'pinned': parseInt(pinned[i] || 0),	// For sorting purposes
-								'pin-icon': pinned[i] === '1' ? 'icon-pushpin' : 'none',
-								'badgeclass' : (has_read[i] && current_user !=0) ? '' : 'badge-important',
-								'teaser_text': teaser_info[i].text,
-								'teaser_username': teaser_info[i].username
-							});
+							if (!deleted[i] || (deleted[i] && privileges.view_deleted) || uid[i] === current_user) {
+								topics.push({
+									'title' : title[i],
+									'uid' : uid[i],
+									'username': usernames[i],
+									'timestamp' : timestamp[i],
+									'relativeTime': utils.relativeTime(timestamp[i]),
+									'slug' : slug[i],
+									'post_count' : postcount[i],
+									'lock-icon': locked[i] === '1' ? 'icon-lock' : 'none',
+									'deleted': deleted[i],
+									'deleted-class': deleted[i] ? 'deleted' : '',
+									'pinned': parseInt(pinned[i] || 0),	// For sorting purposes
+									'pin-icon': pinned[i] === '1' ? 'icon-pushpin' : 'none',
+									'badgeclass' : (has_read[i] && current_user !=0) ? '' : 'badge-important',
+									'teaser_text': teaser_info[i].text,
+									'teaser_username': teaser_info[i].username
+								});
+							}
 						}
 					}
 
@@ -157,39 +161,33 @@ marked.setOptions({
 					teaser_info = teasers;
 					generate_topic();
 				});
-				// else {
-				// 	callback({
-				// 		'category_name' : category_id ? category_name : 'Recent',
-				// 		'show_topic_button' : category_id ? 'show' : 'hidden',
-				// 		'category_id': category_id || 0,
-				// 		'topics': []
-				// 	});
-				// }
+
+				categories.privileges(category_id, current_user, function(user_privs) {
+					privileges = user_privs;
+				});
 			});
 		});
 	}
 
-	Topics.editable = function(tid, uid, callback) {
+	Topics.privileges = function(tid, uid, callback) {
 		async.parallel([
+			function(next) {
+				Topics.get_cid_by_tid(tid, function(cid) {
+					categories.privileges(cid, uid, function(privileges) {
+						next(null, privileges);
+					});
+				});
+			},
 			function(next) {
 				user.getUserField(uid, 'reputation', function(reputation) {
 					next(null, reputation >= config.privilege_thresholds.manage_thread);
 				});
-			},
-			function(next) {
-				Topics.get_cid_by_tid(tid, function(cid) {
-					user.isModerator(uid, cid, function(isMod) {
-						next(null, isMod);
-					});
-				});
-			}, function(next) {
-				user.isAdministrator(uid, function(isAdmin) {
-					next(null, isAdmin);
-				});
 			}
 		], function(err, results) {
-			// If any return true, allow the edit
-			if (results.indexOf(true) !== -1) callback(true);
+			callback({
+				editable: results[0].editable || (results.slice(1).indexOf(true) !== -1 ? true : false),
+				view_deleted: results[0].view_deleted || (results.slice(1).indexOf(true) !== -1 ? true : false)
+			});
 		});
 	}
 
@@ -383,8 +381,8 @@ marked.setOptions({
 	};
 
 	Topics.lock = function(tid, uid, socket) {
-		Topics.editable(tid, uid, function(editable) {
-			if (editable) {
+		Topics.privileges(tid, uid, function(privileges) {
+			if (privileges.editable) {
 				// Mark thread as locked
 				RDB.set('tid:' + tid + ':locked', 1);
 
@@ -399,8 +397,8 @@ marked.setOptions({
 	}
 
 	Topics.unlock = function(tid, uid, socket) {
-		Topics.editable(tid, uid, function(editable) {
-			if (editable) {
+		Topics.privileges(tid, uid, function(privileges) {
+			if (privileges.editable) {
 				// Mark thread as unlocked
 				RDB.del('tid:' + tid + ':locked');
 
@@ -415,8 +413,8 @@ marked.setOptions({
 	}
 
 	Topics.delete = function(tid, uid, socket) {
-		Topics.editable(tid, uid, function(editable) {
-			if (editable) {
+		Topics.privileges(tid, uid, function(privileges) {
+			if (privileges.editable) {
 				// Mark thread as deleted
 				RDB.set('tid:' + tid + ':deleted', 1);
 				Topics.lock(tid, uid);
@@ -432,8 +430,8 @@ marked.setOptions({
 	}
 
 	Topics.restore = function(tid, uid, socket) {
-		Topics.editable(tid, uid, function(editable) {
-			if (editable) {
+		Topics.privileges(tid, uid, function(privileges) {
+			if (privileges.editable) {
 				// Mark thread as restored
 				RDB.del('tid:' + tid + ':deleted');
 				Topics.unlock(tid, uid);
@@ -449,8 +447,8 @@ marked.setOptions({
 	}
 
 	Topics.pin = function(tid, uid, socket) {
-		Topics.editable(tid, uid, function(editable) {
-			if (editable) {
+		Topics.privileges(tid, uid, function(privileges) {
+			if (privileges.editable) {
 				// Mark thread as pinned
 				RDB.set('tid:' + tid + ':pinned', 1);
 
@@ -465,8 +463,8 @@ marked.setOptions({
 	}
 
 	Topics.unpin = function(tid, uid, socket) {
-		Topics.editable(tid, uid, function(editable) {
-			if (editable) {
+		Topics.privileges(tid, uid, function(privileges) {
+			if (privileges.editable) {
 				// Mark thread as unpinned
 				RDB.del('tid:' + tid + ':pinned');
 

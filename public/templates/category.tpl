@@ -10,7 +10,7 @@
 	<div class="span9">
 		<ul id="topics-container">
 		<!-- BEGIN topics -->
-		<a href="../../topic/{topics.slug}"><li>
+		<a href="../../topic/{topics.slug}"><li class="{topics.deleted-class}">
 			<div class="row-fluid">
 				<div class="span1 thread-rating hidden-phone hidden-tablet">
 					<span>

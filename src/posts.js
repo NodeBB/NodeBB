@@ -13,34 +13,28 @@ marked.setOptions({
 (function(Posts) {
 
 	Posts.get = function(callback, tid, current_user, start, end) {
-
 		if (start == null) start = 0;
 		if (end == null) end = -1;//start + 10;
 
-		var post_data, user_data, thread_data, vote_data, viewer_data;
+		var post_data, user_data, thread_data, vote_data, privileges;
 
 		getTopicPosts();
 
-		getViewerData();
+		getPrivileges();
 		
 
 		//compile thread after all data is asynchronously called
 		function generateThread() {
-			if (!post_data || !user_data || !thread_data || !vote_data || !viewer_data) return;
+			if (!post_data || !user_data || !thread_data || !vote_data || !privileges) return;
 
 			var	posts = [],
-				main_posts = [],
-				manage_content = (
-					viewer_data.reputation >= config.privilege_thresholds.manage_content ||
-					viewer_data.isModerator ||
-					viewer_data.isAdministrator
-				);
+				main_posts = [];
 
 			for (var i=0, ii= post_data.pid.length; i<ii; i++) {
 				var uid = post_data.uid[i],
 					pid = post_data.pid[i];
 					
-				if (post_data.deleted[i] === null || (post_data.deleted[i] === '1' && manage_content) || current_user === uid) {
+				if (post_data.deleted[i] === null || (post_data.deleted[i] === '1' && privileges.view_deleted) || current_user === uid) {
 					var post_obj = {
 						'pid' : pid,
 						'uid' : uid,
@@ -53,7 +47,7 @@ marked.setOptions({
 						'gravatar' : user_data[uid].picture || 'http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e',
 						'signature' : user_data[uid].signature,
 						'fav_star_class' : vote_data[pid] ? 'icon-star' : 'icon-star-empty',
-						'display_moderator_tools': (uid == current_user || manage_content || viewer_data.isModerator) ? 'show' : 'none',
+						'display_moderator_tools': (uid == current_user || privileges.editable) ? 'show' : 'none',
 						'edited-class': post_data.editor[i] !== null ? '' : 'none',
 						'editor': post_data.editor[i] !== null ? user_data[post_data.editor[i]].username : '',
 						'relativeEditTime': post_data.editTime !== null ? utils.relativeTime(post_data.editTime[i]) : '',
@@ -73,7 +67,7 @@ marked.setOptions({
 				'deleted': parseInt(thread_data.deleted) || 0,
 				'pinned': parseInt(thread_data.pinned) || 0,
 				'topic_id': tid,
-				'expose_tools': manage_content ? 1 : 0,
+				'expose_tools': privileges.editable ? 1 : 0,
 				'posts': posts,
 				'main_posts': main_posts
 			});
@@ -159,40 +153,23 @@ marked.setOptions({
 			});
 		}
 
-		function getViewerData() {
-			async.parallel([
-				function(callback) {
-					user.getUserField(current_user, 'reputation', function(reputation){
-						viewer_data = viewer_data || {};
-						viewer_data.reputation = reputation;
-
-						callback(null);
-					});
-				},
-				function(callback) {
-					RDB.get('tid:' + tid + ':cid', function(err, cid) {
-						user.isModerator(current_user, cid, function(isMod) {
-							viewer_data = viewer_data || {};
-							viewer_data.isModerator = isMod;
-							callback(null);
-						});
-					})
-				},
-				function(callback) {
-					user.isAdministrator(current_user, function(isAdmin) {
-						viewer_data = viewer_data || {};
-						viewer_data.isAdministrator = isAdmin;
-						callback(null);
-					});
-				}
-			], function(err) {
-					generateThread();
+		function getPrivileges() {
+			topics.privileges(tid, current_user, function(user_privs) {
+				privileges = user_privs;
+				generateThread();
 			});
 		}
 	}
 
-	Posts.editable = function(uid, pid, callback) {
+	Posts.privileges = function(pid, uid, callback) {
 		async.parallel([
+			function(next) {
+				Posts.get_tid_by_pid(pid, function(tid) {
+					topics.privileges(tid, uid, function(privileges) {
+						next(null, privileges);
+					});
+				});
+			},
 			function(next) {
 				RDB.get('pid:' + pid + ':uid', function(err, author) {
 					if (author && parseInt(author) > 0) next(null, author === uid);
@@ -202,23 +179,12 @@ marked.setOptions({
 				user.getUserField(uid, 'reputation', function(reputation) {
 					next(null, reputation >= config.privilege_thresholds.manage_content);
 				});
-			},
-			function(next) {
-				Posts.get_tid_by_pid(pid, function(tid) {
-					RDB.get('tid:' + tid + ':cid', function(err, cid) {
-						user.isModerator(uid, cid, function(isMod) {
-							next(null, isMod);
-						});
-					});
-				});
-			}, function(next) {
-				user.isAdministrator(uid, function(isAdmin) {
-					next(null, isAdmin);
-				});
 			}
 		], function(err, results) {
-			// If any return true, allow the edit
-			if (results.indexOf(true) !== -1) callback(true);
+			callback({
+				editable: results[0].editable || (results.slice(1).indexOf(true) !== -1 ? true : false),
+				view_deleted: results[0].view_deleted || (results.slice(1).indexOf(true) !== -1 ? true : false)
+			});
 		});
 	}
 
@@ -462,8 +428,8 @@ marked.setOptions({
 				});
 			};
 
-		Posts.editable(uid, pid, function(editable) {
-			if (editable) success();
+		Posts.privileges(pid, uid, function(privileges) {
+			if (privileges.editable) success();
 		});
 	}
 
@@ -476,8 +442,8 @@ marked.setOptions({
 				});
 			};
 
-		Posts.editable(uid, pid, function(editable) {
-			if (editable) success();
+		Posts.privileges(pid, uid, function(privileges) {
+			if (privileges.editable) success();
 		});
 	}
 
@@ -490,8 +456,8 @@ marked.setOptions({
 				});
 			};
 
-		Posts.editable(uid, pid, function(editable) {
-			if (editable) success();
+		Posts.privileges(pid, uid, function(privileges) {
+			if (privileges.editable) success();
 		});
 	}
 }(exports));
