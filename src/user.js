@@ -264,7 +264,7 @@ var config = require('../config.js'),
 
 		User.exists(username, function(exists) {
 			RDB.incr('global:next_user_id', function(err, uid) {
-				RDB.handle(err);
+				RDB.handfle(err);
 
 				var gravatar = User.createGravatarURLFromEmail(email);
 
@@ -524,7 +524,13 @@ var config = require('../config.js'),
 
 	User.isModerator = function(uid, cid, callback) {
 		RDB.sismember('cid:' + cid + ':moderators', uid, function(err, exists) {
-			callback(exists);
+			callback(!!exists);
+		});
+	}
+
+	User.isAdministrator = function(uid, callback) {
+		RDB.sismember('administrators', uid, function(err, exists) {
+			callback(!!exists);
 		});
 	}
 

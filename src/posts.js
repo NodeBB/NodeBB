@@ -15,7 +15,7 @@ marked.setOptions({
 	Posts.get = function(callback, tid, current_user, start, end) {
 
 		if (start == null) start = 0;
-		if (end == null) end = start + 10;
+		if (end == null) end = -1;//start + 10;
 
 		var post_data, user_data, thread_data, vote_data, viewer_data;
 
@@ -30,8 +30,11 @@ marked.setOptions({
 
 			var	posts = [],
 				main_posts = [],
-				manage_content = viewer_data.reputation >= config.privilege_thresholds.manage_content;
-
+				manage_content = (
+					viewer_data.reputation >= config.privilege_thresholds.manage_content ||
+					viewer_data.isModerator ||
+					viewer_data.isAdministrator
+				);
 
 			for (var i=0, ii= post_data.pid.length; i<ii; i++) {
 				var uid = post_data.uid[i],
@@ -70,7 +73,7 @@ marked.setOptions({
 				'deleted': parseInt(thread_data.deleted) || 0,
 				'pinned': parseInt(thread_data.pinned) || 0,
 				'topic_id': tid,
-				'expose_tools': (manage_content || viewer_data.isModerator) ? 1 : 0,
+				'expose_tools': manage_content ? 1 : 0,
 				'posts': posts,
 				'main_posts': main_posts
 			});
@@ -174,8 +177,15 @@ marked.setOptions({
 							callback(null);
 						});
 					})
+				},
+				function(callback) {
+					user.isAdministrator(current_user, function(isAdmin) {
+						viewer_data = viewer_data || {};
+						viewer_data.isAdministrator = isAdmin;
+						callback(null);
+					});
 				}
-			], function(err, results) {
+			], function(err) {
 					generateThread();
 			});
 		}
@@ -200,6 +210,10 @@ marked.setOptions({
 							next(null, isMod);
 						});
 					});
+				});
+			}, function(next) {
+				user.isAdministrator(uid, function(err, isAdmin) {
+					next(null, isAdmin);
 				});
 			}
 		], function(err, results) {

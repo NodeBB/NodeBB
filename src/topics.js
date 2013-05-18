@@ -2,7 +2,7 @@ var	RDB = require('./redis.js'),
 	posts = require('./posts.js'),
 	utils = require('./utils.js'),
 	user = require('./user.js'),
-	configs = require('../config.js'),
+	config = require('../config.js'),
 	categories = require('./categories.js'),
 	marked = require('marked'),
 	async = require('async');
@@ -169,6 +169,30 @@ marked.setOptions({
 		});
 	}
 
+	Topics.editable = function(tid, uid, callback) {
+		async.parallel([
+			function(next) {
+				user.getUserField(uid, 'reputation', function(reputation) {
+					next(null, reputation >= config.privilege_thresholds.manage_thread);
+				});
+			},
+			function(next) {
+				Topics.get_cid_by_tid(tid, function(cid) {
+					user.isModerator(uid, cid, function(isMod) {
+						next(null, isMod);
+					});
+				});
+			}, function(next) {
+				user.isAdministrator(uid, function(isAdmin) {
+					next(null, isAdmin);
+				});
+			}
+		], function(err, results) {
+			// If any return true, allow the edit
+			if (results.indexOf(true) !== -1) callback(true);
+		});
+	}
+
 	Topics.get_topic = function(tid, uid, callback) {
 		var topicData = {};
 
@@ -223,7 +247,7 @@ marked.setOptions({
 	}
 
 	Topics.get_cid_by_tid = function(tid, callback) {
-		RDB.get('tid:' + pid + ':cid', function(err, cid) {
+		RDB.get('tid:' + tid + ':cid', function(err, cid) {
 			if (cid && parseInt(cid) > 0) callback(cid);
 			else callback(false);
 		});
@@ -359,8 +383,8 @@ marked.setOptions({
 	};
 
 	Topics.lock = function(tid, uid, socket) {
-		user.getUserField(uid, 'reputation', function(rep) {
-			if (rep >= configs.privilege_thresholds.manage_thread) {
+		Topics.editable(tid, uid, function(editable) {
+			if (editable) {
 				// Mark thread as locked
 				RDB.set('tid:' + tid + ':locked', 1);
 
@@ -375,8 +399,8 @@ marked.setOptions({
 	}
 
 	Topics.unlock = function(tid, uid, socket) {
-		user.getUserField(uid, 'reputation', function(rep) {
-			if (rep >= configs.privilege_thresholds.manage_thread) {
+		Topics.editable(tid, uid, function(editable) {
+			if (editable) {
 				// Mark thread as unlocked
 				RDB.del('tid:' + tid + ':locked');
 
@@ -391,8 +415,8 @@ marked.setOptions({
 	}
 
 	Topics.delete = function(tid, uid, socket) {
-		user.getUserField(uid, 'reputation', function(rep) {
-			if (rep >= configs.privilege_thresholds.manage_thread) {
+		Topics.editable(tid, uid, function(editable) {
+			if (editable) {
 				// Mark thread as deleted
 				RDB.set('tid:' + tid + ':deleted', 1);
 				Topics.lock(tid, uid);
@@ -408,8 +432,8 @@ marked.setOptions({
 	}
 
 	Topics.restore = function(tid, uid, socket) {
-		user.getUserField(uid, 'reputation', function(rep) {
-			if (rep >= configs.privilege_thresholds.manage_thread) {
+		Topics.editable(tid, uid, function(editable) {
+			if (editable) {
 				// Mark thread as restored
 				RDB.del('tid:' + tid + ':deleted');
 				Topics.unlock(tid, uid);
@@ -425,8 +449,8 @@ marked.setOptions({
 	}
 
 	Topics.pin = function(tid, uid, socket) {
-		user.getUserField(uid, 'reputation', function(rep) {
-			if (rep >= configs.privilege_thresholds.manage_thread) {
+		Topics.editable(tid, uid, function(editable) {
+			if (editable) {
 				// Mark thread as pinned
 				RDB.set('tid:' + tid + ':pinned', 1);
 
@@ -441,8 +465,8 @@ marked.setOptions({
 	}
 
 	Topics.unpin = function(tid, uid, socket) {
-		user.getUserField(uid, 'reputation', function(rep) {
-			if (rep >= configs.privilege_thresholds.manage_thread) {
+		Topics.editable(tid, uid, function(editable) {
+			if (editable) {
 				// Mark thread as unpinned
 				RDB.del('tid:' + tid + ':pinned');
 
