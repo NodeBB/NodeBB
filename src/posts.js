@@ -212,7 +212,7 @@ marked.setOptions({
 					});
 				});
 			}, function(next) {
-				user.isAdministrator(uid, function(err, isAdmin) {
+				user.isAdministrator(uid, function(isAdmin) {
 					next(null, isAdmin);
 				});
 			}
@@ -265,7 +265,6 @@ marked.setOptions({
 					timeout: 2000
 				});
 
-			
 				user.getUserFields(uid, ['username','reputation','picture'], function(data){
 					
 					var timestamp = new Date().getTime();
