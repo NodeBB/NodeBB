@@ -102,12 +102,12 @@
 		if (numTopics > 0) {
 			for(x=0;x<numTopics;x++) {
 				if (topics[x].querySelector('.icon-pushpin')) continue;
-				container.insertBefore(topic, topics[x]);
+				container.insertBefore(topic.querySelector('a'), topics[x]);
 				$(topic).hide().fadeIn('slow');
 				break;
 			}
 		} else {
-			container.insertBefore(topic, null);
+			container.insertBefore(topic.querySelector('a'), null);
 			$(topic).hide().fadeIn('slow');
 		}
 
