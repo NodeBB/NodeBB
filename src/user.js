@@ -264,7 +264,7 @@ var config = require('../config.js'),
 
 		User.exists(username, function(exists) {
 			RDB.incr('global:next_user_id', function(err, uid) {
-				RDB.handfle(err);
+				RDB.handle(err);
 
 				var gravatar = User.createGravatarURLFromEmail(email);
 
