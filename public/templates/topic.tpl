@@ -337,6 +337,8 @@
 				.fadeIn('slow');
 
 			set_up_posts(uniqueid);
+			
+			addCommasToNumbers();
 		});
 
 		socket.on('event:topic_deleted', function(data) {
