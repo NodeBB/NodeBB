@@ -79,10 +79,17 @@ var config = require('../config.js'),
 		});
 	}
 
-	User.updateProfile = function(uid, data) {
+	User.updateProfile = function(uid, data, callback) {
 		
 		var fields = ['email', 'fullname', 'website', 'location', 'birthday', 'signature'];
 		var key = '';
+		
+		if(data['signature'] !== undefined && data['signature'].length > 150)
+		{
+			callback({error:'Signature can\'t be longer than 150 characters!'});
+			return;
+		}
+		
 		
 		for(var i=0,ii=fields.length; i<ii; ++i) {
 			key = fields[i];
@@ -93,15 +100,15 @@ var config = require('../config.js'),
 					User.setUserField(uid, 'gravatarpicture', User.createGravatarURLFromEmail(data[key]));
 					RDB.set('email:' + data['email'] +':uid', uid);
 				}
-				else if(key === 'signature') {
-					//sanitize sig plx - baris
-					//data[key] = marked(data[key]);
-				}
-
+				
 				User.setUserField(uid, key, data[key]);
 			}
 		}
+		
+		callback({});
 	}
+
+	
 
 	User.setUserField = function(uid, field, value) {
 		RDB.hset('user:'+uid, field, value);				
