@@ -278,6 +278,35 @@ var socket,
 		app.current_room = room;
 	};
 
+	app.process_page = function() {
+
+		function populate_online_users() {
+			var uids = [];
+
+			jQuery('.post-row').each(function() {
+				uids.push(this.getAttribute('data-uid'));
+			});
+			
+			socket.emit('api:user.get_online_users', uids);
+		}
+
+
+		populate_online_users();
+
+	}
+
+	socket.on('api:user.get_online_users', function(users) {
+		jQuery('.username-field').each(function() {
+			var uid = jQuery(this).parents('li').attr('data-uid');
+			
+			if (uid && jQuery.inArray(uid, users) !== -1) {
+				jQuery(this).prepend('<i class="icon-circle"></i>');
+			} else {
+				jQuery(this).prepend('<i class="icon-circle-blank"></i>');
+			}
+		});
+	});
+
 	jQuery('document').ready(function() {
 		app.enter_room('global');
 

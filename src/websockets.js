@@ -48,6 +48,7 @@ var SocketIO = require('socket.io').listen(global.server,{log:false}),
 		var hs = socket.handshake;
 		
 		var uid = users[hs.sessionID];
+		user.go_online(uid);
 		
 		
 		/*process.on('uncaughtException', function(err) {
@@ -59,6 +60,7 @@ var SocketIO = require('socket.io').listen(global.server,{log:false}),
 		socket.emit('event:connect', {status: 1});
 		
 		socket.on('disconnect', function() {
+			user.go_offline(uid);
       		delete users[hs.sessionID];
    		});
 
@@ -152,6 +154,10 @@ var SocketIO = require('socket.io').listen(global.server,{log:false}),
 
 		socket.on('user:reset.commit', function(data) {
 			user.reset.commit(socket, data.code, data.password);
+		});
+
+		socket.on('api:user.get_online_users', function(data) {
+			user.get_online_users(socket, data);
 		});
 
 		socket.on('api:topics.post', function(data) {

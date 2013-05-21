@@ -72,6 +72,15 @@ marked.setOptions({
 					callback(false);
 					return;
 				}
+				if (tids.length == 0) {
+					callback({
+						'category_name' : category_id ? category_name : 'Recent',
+						'show_topic_button' : category_id ? 'show' : 'hidden',
+						'category_id': category_id || 0,
+						'topics': topics
+					});
+				}
+				
 				active_usernames = replies[1];
 				var topics = [];
 

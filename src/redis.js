@@ -3,7 +3,8 @@
 		ERROR_LOGS = true,
 
 		redis = require('redis'),
-		config = require('../config.js');
+		config = require('../config.js'),
+		utils = require('./utils.js');
 	
 
 	RedisDB.exports = redis.createClient(config.redis.port, config.redis.host, config.redis.options);
@@ -21,5 +22,19 @@
 			}
 		}
 	}
+
+
+	/*
+	* A possibly more efficient way of doing multiple sismember calls
+	*/
+	RedisDB.exports.sismembers = function(key, needles, callback) {
+		var tempkey = key + ':temp:' + utils.generateUUID();
+		RedisDB.exports.sadd(tempkey, needles, function() {
+			RedisDB.exports.sinter(key, tempkey, function(err, data) {
+				RedisDB.exports.del(tempkey);
+				callback(err, data);
+			});
+		});
+	};
 
 }(module));

@@ -660,7 +660,22 @@ var config = require('../config.js'),
 				}
 			});
 		}
-	}
+	};
+
+	User.get_online_users = function(socket, uids) {
+		RDB.sismembers('users:online', uids, function(err, data) {
+			socket.emit('api:user.get_online_users', data);
+		});		
+	};
+
+	User.go_online = function(uid) {
+		RDB.sadd('users:online', uid);
+	};
+
+	User.go_offline = function(uid) {
+		RDB.srem('users:online', uid);
+	};
+
 
 	User.active = {
 		get_record : function(socket) {
