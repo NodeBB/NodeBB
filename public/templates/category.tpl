@@ -5,12 +5,16 @@
 		<div id="category_active_users"></div>
 	</ul>
 </div>
+<div class="alert alert-warning hide" id="category-no-topics">
+	<strong>There are no topics in this category.</strong><br />
+	Why don't you try posting one?
+</div>
 <div class="category row">
 
 	<div class="span9">
 		<ul id="topics-container">
 		<!-- BEGIN topics -->
-		<a href="../../topic/{topics.slug}"><li class="{topics.deleted-class}">
+		<a href="../../topic/{topics.slug}"><li class="category-item {topics.deleted-class}">
 			<div class="row-fluid">
 				<div class="span1 thread-rating hidden-phone hidden-tablet">
 					<span>
@@ -89,6 +93,11 @@
 	ajaxify.register_events([
 		'event:new_topic'
 	]);
+
+	if (jQuery('.category-item').length == 0) {
+		jQuery('.category.row').hide();
+		jQuery('#category-no-topics').show();
+	}
 
 	socket.on('event:new_topic', function(data) {
 		var html = templates.prepare(templates['category'].blocks['topics']).parse({ topics: [data] }),
