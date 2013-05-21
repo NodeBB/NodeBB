@@ -56,10 +56,10 @@ var	RDB = require('./redis.js'),
 		// just a reminder to self that name + slugs are stored into topics data as well.
 	};
 
-	Categories.get = function(callback) {
+	Categories.get = function(callback, current_user) {
 		RDB.lrange('categories:cid', 0, -1, function(err, cids) {
 			RDB.handle(err);
-			Categories.get_category(cids, callback);
+			Categories.get_category(cids, callback, current_user);
 		});
 	}
 
@@ -79,12 +79,29 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
-	Categories.get_category = function(cids, callback) {
+
+	Categories.hasReadCategories = function(cids, uid, callback) {
+		var batch = RDB.multi();
+
+		for (var i=0, ii=cids.length; i<ii; i++) {
+			batch.sismember('cid:' + cids[i] + ':read_by_uid', uid);	
+		}
+		
+		batch.exec(function(err, hasRead) {
+			callback(hasRead);
+		});
+	}
+
+
+
+	Categories.get_category = function(cids, callback, current_user) {
 		var name = [],
 			description = [],
 			icon = [],
 			blockclass = [],
-			slug = [];
+			slug = [],
+			topic_count = [],
+			has_read = {};
 
 		for (var i=0, ii=cids.length; i<ii; i++) {
 			name.push('cid:' + cids[i] + ':name');
@@ -92,6 +109,7 @@ var	RDB = require('./redis.js'),
 			icon.push('cid:' + cids[i] + ':icon');
 			blockclass.push('cid:' + cids[i] + ':blockclass');
 			slug.push('cid:' + cids[i] + ':slug');
+			topic_count.push('cid:' + cids[i] + ':topiccount');
 		}
 
 		if (cids.length > 0) {
@@ -101,26 +119,39 @@ var	RDB = require('./redis.js'),
 				.mget(icon)
 				.mget(blockclass)
 				.mget(slug)
+				.mget(topic_count)
 				.exec(function(err, replies) {
 					name = replies[0];
 					description = replies[1];
 					icon = replies[2];
 					blockclass = replies[3];
 					slug = replies[4];
+					topic_count = replies[5];
+
 					
-					var categories = [];
-					for (var i=0, ii=cids.length; i<ii; i++) {
-						categories.push({
-							'name' : name[i],
-							'cid' : cids[i],
-							'slug' : slug[i],
-							'description' : description[i],
-							'blockclass' : blockclass[i],
-							'icon' : icon[i]
-						});
+					function generateCategories() {
+						var categories = [];
+						for (var i=0, ii=cids.length; i<ii; i++) {
+							categories.push({
+								'name' : name[i],
+								'cid' : cids[i],
+								'slug' : slug[i],
+								'description' : description[i],
+								'blockclass' : blockclass[i],
+								'icon' : icon[i],
+								'badgeclass' : (!topic_count[i] || (has_read[i] && current_user !=0)) ? '' : 'badge-important',
+								'topic_count' : topic_count[i] || 0
+							});
+						}
+
+						callback({'categories': categories});
 					}
 
-					callback({'categories': categories});
+					Categories.hasReadCategories(cids, current_user, function(read_data) {
+						has_read = read_data;
+						generateCategories();
+					});
+					
 				});
 		} else callback({'categories' : []});
 	};

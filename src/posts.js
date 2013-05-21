@@ -196,7 +196,7 @@ marked.setOptions({
 	}
 
 	Posts.get_cid_by_pid = function(pid, callback) {
-		Posts.get_tid(pid, function(tid) {
+		Posts.get_tid_by_pid(pid, function(tid) {
 			if (tid) topics.get_cid_by_tid(tid, function(cid) {
 				if (cid) callback(cid);
 				else callback(false);
@@ -220,6 +220,9 @@ marked.setOptions({
 				RDB.rpush('tid:' + tid + ':posts', pid);
 
 				RDB.del('tid:' + tid + ':read_by_uid'); // let everybody know there is an unread post
+				Posts.get_cid_by_pid(pid, function(cid) {
+					RDB.del('cid:' + cid + ':read_by_uid');
+				});
 
 				// Re-add the poster, so he/she does not get an "unread" flag on this topic
 				topics.markAsRead(tid, uid);
