@@ -285,8 +285,26 @@ marked.setOptions({
 		} else callback([]);
 	}
 
+	Topics.get_latest_undeleted_pid = function(tid, callback) {
+		RDB.lrange('tid:' + tid + ':posts', 0, -1, function(err, pids) {
+			var pidKeys = [];
+			for(var x=0,numPids=pids.length;x<numPids;x++) {
+				pidKeys.push('pid:' + pids[x] + ':deleted');
+			}
+			RDB.mget(pidKeys, function(err, posts) {
+				var numPosts = posts.length;
+				while(numPosts--) {
+					if (posts[numPosts] !== '1') {
+						callback(pids[numPosts]);
+						break;
+					}
+				}
+			});
+		});
+	}
+
 	Topics.get_teaser = function(tid, callback) {
-		RDB.lrange('tid:' + tid + ':posts', -1, -1, function(err, pid) {
+		Topics.get_latest_undeleted_pid(tid, function(pid) {
 			if (pid !== null) {
 				RDB.mget([
 					'pid:' + pid + ':content',
