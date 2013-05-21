@@ -1,7 +1,8 @@
 
 var user = require('./../user.js'),
 	topics = require('./../topics.js'),
-	RDB = require('./../redis.js');
+	RDB = require('./../redis.js')
+	categories = require('./../categories.js');
 
 (function(Admin) {
 	Admin.create_routes = function(app) {
@@ -12,7 +13,6 @@ var user = require('./../user.js'),
 			for (var i=0, ii=routes.length; i<ii; i++) {
 				(function(route) {
 					app.get('/admin/' + route, function(req, res) {
-						console.log("derp " +route);
 						res.send(templates['admin/header'] + app.create_route('admin/' + route) + templates['admin/footer']);
 					});
 				}(routes[i]));
@@ -55,7 +55,6 @@ var user = require('./../user.js'),
 					});
 					break;
 				case 'redis':
-					console.log('going into redis');
 					RDB.info(function(err, data) {
 						data = data.split("\r\n");
 						var finalData = {};
@@ -75,7 +74,7 @@ var user = require('./../user.js'),
 							}
 						}
 
-						console.log(finalData);
+						
 						res.send(JSON.stringify(finalData));
 					});
 					break;

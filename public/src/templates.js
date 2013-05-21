@@ -31,7 +31,7 @@
 	}
 
 	templates.is_available = function(tpl) {
-		return !!jQuery.inArray(tpl, available_templates);
+		return jQuery.inArray(tpl, available_templates) !== -1;
 	};
 
 	templates.ready = function(callback) {
@@ -99,15 +99,17 @@
 
 		var api_url = (url === '' || url === '/') ? 'home' : url;
 
-
 		var tpl_url = templates.get_custom_map(api_url);
 
-		if (tpl_url === false) {
-			if (!available_templates[api_url]) {
-				tpl_url = api_url.split('/')[0];
-			} else {
-				tpl_url = api_url;
+		var trimmed = api_url;
+		while (tpl_url == false && trimmed.length > 0) {
+			if (templates.is_available(trimmed)) {
+				tpl_url = trimmed;
 			}
+
+			trimmed = trimmed.split('/');
+			trimmed.pop();
+			trimmed = trimmed.join('/');
 		}
 		
 		

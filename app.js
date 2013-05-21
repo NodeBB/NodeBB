@@ -13,7 +13,7 @@ global.templates = {};
     config['ROOT_DIRECTORY'] = __dirname;
 
     templates.init([
-        'header', 'footer', 'logout',
+        'header', 'footer', 'logout', 'admin/header', 'admin/footer', 'admin/index',
         'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext'
     ]);
     

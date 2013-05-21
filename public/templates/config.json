@@ -5,7 +5,7 @@
     	"admin/users[^]*": "admin/users",
     	"users[^]*edit": "accountedit",
         "users[^]*friends": "friends",
-        "users": "account",
+        "users/[^]*": "account",
         "latest": "category",
         "popular": "category",
         "active": "category"
