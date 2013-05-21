@@ -120,7 +120,7 @@
 				  <div class="control-group">
 				    <label class="control-label" for="inputSignature">Signature</label>
 				    <div class="controls">
-				      <textarea id="inputSignature" placeholder="your signature" rows="5">{signature}</textarea>
+				      <textarea id="inputSignature" placeholder="max 150 chars" rows="5">{signature}</textarea>
 				    </div>
 				  </div>
 				 
@@ -248,7 +248,18 @@ $(document).ready(function() {
 		$.post('/users/doedit',
         	userData,
             function(data) {
-            	app.alert({
+            	if(data.error) {
+            		app.alert({
+				      'alert_id': 'user_profile_updated',
+				      type: 'error',
+				      title: 'Profile Update Error',
+				      message: data.error,
+				      timeout: 2000
+				    });
+            		return;
+            	}
+            	
+				app.alert({
 			      'alert_id': 'user_profile_updated',
 			      type: 'success',
 			      title: 'Profile Updated',

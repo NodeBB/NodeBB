@@ -45,7 +45,7 @@ marked.setOptions({
 						'username' : user_data[uid].username || 'anonymous',
 						'user_rep' : user_data[uid].reputation || 0,
 						'gravatar' : user_data[uid].picture || 'http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e',
-						'signature' : user_data[uid].signature,
+						'signature' : marked(utils.strip_tags(user_data[uid].signature || '')),
 						'fav_star_class' : vote_data[pid] ? 'icon-star' : 'icon-star-empty',
 						'display_moderator_tools': (uid == current_user || privileges.editable) ? 'show' : 'none',
 						'edited-class': post_data.editor[i] !== null ? '' : 'none',

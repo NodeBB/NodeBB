@@ -82,9 +82,9 @@ var user = require('./../user.js'),
 				return res.redirect('/');
 			}
 			
-			user.updateProfile(req.user.uid, req.body);
-
-			res.send({});
+			user.updateProfile(req.user.uid, req.body, function(data) {
+				res.send(data);	
+			});
 		});
 
 		app.post('/users/uploadpicture', function(req, res) {
