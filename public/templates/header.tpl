@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
+	<title>NodeBB</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="title" CONTENT="NodeBB">
+	<meta name="description" content="Node.js/Redis/Socket.io powered forums for a new generation">
 	<link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	<link href="/vendor/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
 	<link rel="stylesheet" href="/vendor/fontawesome/css/font-awesome.min.css">
