@@ -24,7 +24,7 @@ global.templates = {};
     //setup scripts to be moved outside of the app in future.
     function setup_categories() {
         console.log('Checking categories...');
-        categories.get(function(data) {
+        categories.getAllCategories(function(data) {
             if (data.categories.length === 0) {
                 console.log('Setting up default categories...');
 

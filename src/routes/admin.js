@@ -44,13 +44,13 @@ var user = require('./../user.js'),
 					if (req.params.tab == 'disabled') {
 						res.send(JSON.stringify({categories: []}));
 					} else {
-						categories.get(function(data) {
+						categories.getAllCategories(function(data) {
 							res.send(JSON.stringify(data));
 						});
 					}
 					break;
 				case 'topics' :
-					topics.get(function(data) {
+					categories.get(function(data) {
 						res.send(JSON.stringify(data));
 					});
 					break;

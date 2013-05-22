@@ -209,7 +209,7 @@ var SocketIO = require('socket.io').listen(global.server,{log:false}),
 		});
 
 		socket.on('api:categories.get', function() {
-			categories.get(function(categories) {
+			categories.getAllCategories(function(categories) {
 				socket.emit('api:categories.get', categories);
 			});
 		});

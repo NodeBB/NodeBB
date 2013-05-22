@@ -4,6 +4,7 @@ var	RDB = require('./redis.js'),
 	user = require('./user.js'),
 	config = require('../config.js'),
 	categories = require('./categories.js'),
+	posts = require('./posts.js'),
 	marked = require('marked'),
 	async = require('async');
 
@@ -18,165 +19,153 @@ marked.setOptions({
 	}
 
 
-	Topics.get = function(callback, category_id, current_user, start, end) {
+	Topics.get = function(callback, tid, current_user, start, end) {
 		if (start == null) start = 0;
-		if (end == null) end = start + 10;
+		if (end == null) end = -1;//start + 10;
 
-		//build a proper wrapper for this and move it into above function later
-		var range_var = (category_id) ? 'categories:' + category_id + ':tid'  : 'topics:tid';
+		var post_data, user_data, thread_data, vote_data, privileges;
 
-		RDB.smembers(range_var, function(err, tids) {
-	
+		getTopicPosts();
 
-			var title = [],
-				uid = [],
-				timestamp = [],
-				slug = [],
-				postcount = [],
-				locked = [],
-				deleted = [],
-				pinned = [];
+		getPrivileges();
+		
 
-			for (var i=0, ii=tids.length; i<ii; i++) {
-				title.push('tid:' + tids[i] + ':title');
-				uid.push('tid:' + tids[i] + ':uid');
-				timestamp.push('tid:' + tids[i] + ':timestamp');
-				slug.push('tid:' + tids[i] + ':slug');
-				postcount.push('tid:' + tids[i] + ':postcount');
-				locked.push('tid:' + tids[i] + ':locked');
-				deleted.push('tid:' + tids[i] + ':deleted');
-				pinned.push('tid:' + tids[i] + ':pinned');
+		//compile thread after all data is asynchronously called
+		function generateThread() {
+			if (!post_data || !user_data || !thread_data || !vote_data || !privileges) return;
+
+			var	retrieved_posts = [],
+				main_posts = [];
+
+			for (var i=0, ii= post_data.pid.length; i<ii; i++) {
+				var uid = post_data.uid[i],
+					pid = post_data.pid[i];
+					
+				if (post_data.deleted[i] === null || (post_data.deleted[i] === '1' && privileges.view_deleted) || current_user === uid) {
+					var post_obj = {
+						'pid' : pid,
+						'uid' : uid,
+						'content' : marked(post_data.content[i] || ''),
+						'post_rep' : post_data.reputation[i] || 0,
+						'timestamp' : post_data.timestamp[i],
+						'relativeTime': utils.relativeTime(post_data.timestamp[i]),
+						'username' : user_data[uid].username || 'anonymous',
+						'user_rep' : user_data[uid].reputation || 0,
+						'gravatar' : user_data[uid].picture || 'http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e',
+						'signature' : marked(utils.strip_tags(user_data[uid].signature || '')),
+						'fav_star_class' : vote_data[pid] ? 'icon-star' : 'icon-star-empty',
+						'display_moderator_tools': (uid == current_user || privileges.editable) ? 'show' : 'none',
+						'edited-class': post_data.editor[i] !== null ? '' : 'none',
+						'editor': post_data.editor[i] !== null ? user_data[post_data.editor[i]].username : '',
+						'relativeEditTime': post_data.editTime !== null ? utils.relativeTime(post_data.editTime[i]) : '',
+						'deleted': post_data.deleted[i] || '0'
+					};
+
+					if (i == 0) main_posts.push(post_obj);
+					else retrieved_posts.push(post_obj);
+				}
 			}
 
-			var multi = RDB.multi()
-				.get('cid:' + category_id + ':name')
-				.smembers('cid:' + category_id + ':active_users');
+			callback({
+				'topic_name':thread_data.topic_name,
+				'category_name':thread_data.category_name,
+				'category_slug':thread_data.category_slug,
+				'locked': parseInt(thread_data.locked) || 0,
+				'deleted': parseInt(thread_data.deleted) || 0,
+				'pinned': parseInt(thread_data.pinned) || 0,
+				'topic_id': tid,
+				'expose_tools': privileges.editable ? 1 : 0,
+				'posts': retrieved_posts,
+				'main_posts': main_posts
+			});
+		}
 
-			if (tids.length > 0) {
-				multi
-					.mget(title)
-					.mget(uid)
-					.mget(timestamp)
-					.mget(slug)
-					.mget(postcount)
-					.mget(locked)
-					.mget(deleted)
-					.mget(pinned)
-			}
+		function getTopicPosts() {
+			// get all data for thread in asynchronous fashion
+			RDB.lrange('tid:' + tid + ':posts', start, end, function(err, pids) {
+				RDB.handle(err);
 				
-			
-			multi.exec(function(err, replies) {
-				category_name = replies[0];
-
-				if(category_id && category_name === null) {
+				if(pids.length === 0 ){
 					callback(false);
 					return;
 				}
 				
-				active_usernames = replies[1];
-				var topics = [];
+				Topics.markAsRead(tid, current_user);
+				
+				var content = [], uid = [], timestamp = [], pid = [], post_rep = [], editor = [], editTime = [], deleted = [];
 
-				if (tids.length == 0) {
-					callback({
-						'category_name' : category_id ? category_name : 'Recent',
-						'show_topic_button' : category_id ? 'show' : 'hidden',
-						'category_id': category_id || 0,
-						'topics' : []
-					});
+				for (var i=0, ii=pids.length; i<ii; i++) {
+					content.push('pid:' + pids[i] + ':content');
+					uid.push('pid:' + pids[i] + ':uid');
+					timestamp.push('pid:' + pids[i] + ':timestamp');
+					post_rep.push('pid:' + pids[i] + ':rep');
+					editor.push('pid:' + pids[i] + ':editor');
+					editTime.push('pid:' + pids[i] + ':edited');
+					deleted.push('pid:' + pids[i] + ':deleted');
+					pid.push(pids[i]);
 				}
 
-				title = replies[2];
-				uid = replies[3];
-				timestamp = replies[4];
-				slug = replies[5];
-				postcount = replies[6];
-				locked = replies[7];
-				deleted = replies[8];
-				pinned = replies[9];
+				posts.getFavouritesByPostIDs(pids, current_user, function(fav_data) {
+					vote_data = fav_data;
+					generateThread();
+				});
 
-				var usernames,
-					has_read,
-					moderators,
-					teaser_info,
-					privileges;
+				RDB.multi()
+					.mget(content)
+					.mget(uid)
+					.mget(timestamp)
+					.mget(post_rep)
+					.get('tid:' + tid + ':title')
+					.get('tid:' + tid + ':locked')
+					.get('tid:' + tid + ':category_name')
+					.get('tid:' + tid + ':category_slug')
+					.get('tid:' + tid + ':deleted')
+					.get('tid:' + tid + ':pinned')
+					.mget(editor)
+					.mget(editTime)
+					.mget(deleted)
+					.exec(function(err, replies) {
+						post_data = {
+							pid: pids,
+							content: replies[0],
+							uid: replies[1],
+							timestamp: replies[2],
+							reputation: replies[3],
+							editor: replies[10],
+							editTime: replies[11],
+							deleted: replies[12]
+						};
 
-				function generate_topic() {
-					if (!usernames || !has_read || !moderators || !teaser_info || !privileges) return;
+						thread_data = {
+							topic_name: replies[4],
+							locked: replies[5] || 0,
+							category_name: replies[6],
+							category_slug: replies[7],
+							deleted: replies[8] || 0,
+							pinned: replies[9] || 0
+						};
 
-					if (tids.length > 0) {
-						for (var i=0, ii=title.length; i<ii; i++) {
-							if (!deleted[i] || (deleted[i] && privileges.view_deleted) || uid[i] === current_user) {
-								topics.push({
-									'title' : title[i],
-									'uid' : uid[i],
-									'username': usernames[i],
-									'timestamp' : timestamp[i],
-									'relativeTime': utils.relativeTime(timestamp[i]),
-									'slug' : slug[i],
-									'post_count' : postcount[i],
-									'lock-icon': locked[i] === '1' ? 'icon-lock' : 'none',
-									'deleted': deleted[i],
-									'deleted-class': deleted[i] ? 'deleted' : '',
-									'pinned': parseInt(pinned[i] || 0),	// For sorting purposes
-									'pin-icon': pinned[i] === '1' ? 'icon-pushpin' : 'none',
-									'badgeclass' : (has_read[i] && current_user !=0) ? '' : 'badge-important',
-									'teaser_text': teaser_info[i].text,
-									'teaser_username': teaser_info[i].username
-								});
+						// Add any editors to the user_data object
+						for(var x=0,numPosts=replies[10].length;x<numPosts;x++) {
+							if (replies[10][x] !== null && post_data.uid.indexOf(replies[10][x]) === -1) {
+								post_data.uid.push(replies[10][x]);
 							}
 						}
-					}
 
-					// Float pinned topics to the top
-					topics = topics.sort(function(a, b) {
-						if (a.pinned !== b.pinned) return b.pinned - a.pinned;
-						else {
-							// Sort by datetime descending
-							return b.timestamp - a.timestamp;
-						}
+						user.getMultipleUserFields(post_data.uid, ['username','reputation','picture', 'signature'], function(user_details){
+							user_data = user_details;
+							generateThread();
+						});
 					});
-
-					var active_users = [];
-					for (var username in active_usernames) {
-						active_users.push({'username': active_usernames[username]});
-					}
-
-					callback({
-						'category_name' : category_id ? category_name : 'Recent',
-						'show_topic_button' : category_id ? 'show' : 'hidden',
-						'category_id': category_id || 0,
-						'topics': topics,
-						'active_users': active_users,
-						'moderator_block_class': moderators.length > 0 ? '' : 'none',
-						'moderators': moderators
-					});
-				}
-				
-				user.get_usernames_by_uids(uid, function(userNames) {
-					usernames = userNames;
-					generate_topic();
-				});	
-
-				Topics.hasReadTopics(tids, current_user, function(hasRead) {
-					has_read = hasRead;
-					generate_topic();
-				});
-
-				categories.getModerators(category_id, function(mods) {
-					moderators = mods;
-					generate_topic();
-				});
-
-				Topics.get_teasers(tids, function(teasers) {
-					teaser_info = teasers;
-					generate_topic();
-				});
-
-				categories.privileges(category_id, current_user, function(user_privs) {
-					privileges = user_privs;
-				});
 			});
-		});
+		}
+
+		function getPrivileges() {
+			Topics.privileges(tid, current_user, function(user_privs) {
+				privileges = user_privs;
+				generateThread();
+			});
+		}
 	}
 
 	Topics.privileges = function(tid, uid, callback) {

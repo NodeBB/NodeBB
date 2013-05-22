@@ -114,7 +114,7 @@ var express = require('express'),
 					});
 				break;
 			case 'home' :
-					categories.get(function(data) {
+					categories.getAllCategories(function(data) {
 						res.send(JSON.stringify(data));
 					}, (req.user) ? req.user.uid : 0);
 				break;
@@ -163,7 +163,7 @@ var express = require('express'),
 					res.send(JSON.stringify(data));
 				break;
 			case 'topic' :
-					posts.get(function(data) {
+					topics.get(function(data) {
 						if(!data) {
 							res.send(false);
 							return;
@@ -172,7 +172,7 @@ var express = require('express'),
 					}, req.params.id, (req.user) ? req.user.uid : 0);
 				break;
 			case 'category' :
-					topics.get(function(data) {
+					categories.get(function(data) {
 						if(!data) {
 							res.send(false);
 							return;
@@ -181,7 +181,7 @@ var express = require('express'),
 					}, req.params.id, (req.user) ? req.user.uid : 0);
 				break;
 			case 'latest' :
-					topics.get(function(data) {
+					categories.get(function(data) {
 						if(!data) {
 							res.send(false);
 							return;
@@ -190,7 +190,7 @@ var express = require('express'),
 					});
 				break;
 			case 'popular' :
-					topics.get(function(data) {
+					categories.get(function(data) {
 						if(!data) {
 							res.send(false);
 							return;
@@ -199,7 +199,7 @@ var express = require('express'),
 					});
 				break;
 			case 'active' :
-					topics.get(function(data) {
+					categories.get(function(data) {
 						if(!data) {
 							res.send(false);
 							return;
@@ -237,9 +237,9 @@ var express = require('express'),
 	app.get('/api/:method/:id*', api_method);
 
 	app.get('/test', function(req, res) {
-		// topics.get_latest_undeleted_pid(5, function(pid) {
-		// 	res.send(pid);
-		// });
+		categories.get(function(category) {
+			res.send(JSON.stringify(category, null, 4));
+		}, 2, 2, null, null);
 	});
 
 
