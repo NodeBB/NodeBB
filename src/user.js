@@ -100,6 +100,9 @@ var config = require('../config.js'),
 					User.setUserField(uid, 'gravatarpicture', User.createGravatarURLFromEmail(data[key]));
 					RDB.set('email:' + data['email'] +':uid', uid);
 				}
+				else if(key === 'signature') {
+					data[key] = utils.strip_tags(data[key]);
+				}
 				
 				User.setUserField(uid, key, data[key]);
 			}
