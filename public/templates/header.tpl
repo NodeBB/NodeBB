@@ -9,6 +9,7 @@
 	<link href="/vendor/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
 	<link rel="stylesheet" href="/vendor/fontawesome/css/font-awesome.min.css">
 	<script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
+	<script type="text/javascript" src="/vendor/jquery/js/jquery-ui-1.10.3.custom.min.js"></script>
 	<script type="text/javascript" src="/vendor/bootstrap/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 	<script type="text/javascript" src="/src/app.js"></script>
@@ -100,7 +101,7 @@
 	  <div class="modal-body">
 		<textarea id="chat-content" cols="40" rows="10"></textarea><br/>
 		<input id="chat-message-input" type="text" name="chat-message" placeholder="type chat message here press enter to send"/><br/>
-		<a id="chat-message-send-btn" href="#" class="btn btn-primary">Send</a>
+		<button type="button" id="chat-message-send-btn" href="#" class="btn btn-primary">Send</button>
 	  </div>
 	</div>
 

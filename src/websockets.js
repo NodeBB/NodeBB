@@ -5,6 +5,7 @@ var SocketIO = require('socket.io').listen(global.server,{log:false}),
 	config = require('../config.js'),
 	user = require('./user.js'),
 	posts = require('./posts.js'),
+	utils = require('./utils.js'),
 	topics = require('./topics.js'),
 	categories = require('./categories.js');
 	
@@ -240,7 +241,7 @@ var SocketIO = require('socket.io').listen(global.server,{log:false}),
 			var touid = data.touid;
 
 			if(userSockets[touid]) {
-				var msg = data.message;
+				var msg = utils.strip_tags(data.message);
 
 				user.getUserField(uid, 'username', function(username) {
 					var finalMessage = username + ' says : ' + msg;

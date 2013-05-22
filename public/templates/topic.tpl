@@ -300,68 +300,88 @@
 			var username = $(this).parents('li').attr('data-username');
 			var touid = $(this).parents('li').attr('data-uid');
 
+			var chatModal = createModalIfDoesntExist(username, touid);
+
+			chatModal.show();
+			bringModalToTop(chatModal);
+			
+		});
+
+		function bringModalToTop(chatModal) {
+			var topZ = 0;
+			$('.modal').each(function(){
+			  var thisZ = parseInt($(this).css('zIndex'), 10);
+			  if (thisZ > topZ){
+			    topZ = thisZ;
+			  }
+			});
+			chatModal.css('zIndex', topZ+1);
+		}
+
+		function createModalIfDoesntExist(username, touid) {
 			var chatModal = $('#chat-modal-'+touid);
-			console.log($('#chat-modal-'+touid).length);
-			console.log('#chat-modal-'+touid);
+
 			if(!chatModal.length) {
 				var chatModal = $('#chat-modal').clone();
-				chatModal.attr('id','#chat-modal-'+touid);
+				chatModal.attr('id','chat-modal-'+touid);
 				chatModal.appendTo($('body'));
+				chatModal.draggable();
+				chatModal.find('#chat-with-name').html(username);
+
 				chatModal.find('.close').on('click',function(e){
 					chatModal.hide();
 				});
+
+				chatModal.on('click', function(e){
+					bringModalToTop(chatModal);
+				});
+
+				addSendHandler(chatModal, touid);	
 			}
 
-			chatModal.show();
+			return chatModal;
+		}
 
-			chatModal.find('#chat-with-name').html(username);
-			
-			//addSendHandler(touid);	
-			
-		});
+		function addSendHandler(chatModal, touid) {
+			chatModal.find('#chat-message-input').off('keypress');
+			chatModal.find('#chat-message-input').on('keypress', function(e) {
+				if(e.which === 13) {
+					sendMessage(chatModal, touid);
+				}
+			});
 
-		$('#chat-modal').on('hide', function(){
-			$('#chat-message-input').off('keypress');
-			$('#chat-content').html('');
-		});
+			chatModal.find('#chat-message-send-btn').off('click');
+			chatModal.find('#chat-message-send-btn').on('click', function(e){
+				sendMessage(chatModal, touid);
+				return false;
+			});
+		}
+
+		function sendMessage(chatModal, touid) {
+			var msg = app.strip_tags(chatModal.find('#chat-message-input').val()) + '\n';
+			socket.emit('sendChatMessage', { touid:touid, message:msg});
+			chatModal.find('#chat-message-input').val('');
+			appendChatMessage(chatModal, 'You : ' + msg);
+		}
 
 		socket.on('chatMessage', function(data){
 			var username = data.username;
 			var fromuid = data.fromuid;
 			var message = data.message;
 
-			$('#chat-modal').modal('show');
-			$('#chat-with-name').html(username);
-			$('#chat-content').append(message);
+			var chatModal = createModalIfDoesntExist(username, fromuid);
+			chatModal.show();
+			bringModalToTop(chatModal);
+		
+			appendChatMessage(chatModal, message)
+		});
 
-			var chatContent = $('#chat-content');
+		function appendChatMessage(chatModal, message){
+			var chatContent = chatModal.find('#chat-content');
+			chatContent.append(message);
     		chatContent.scrollTop(
         		chatContent[0].scrollHeight - chatContent.height()
     		);
-
-			addSendHandler(fromuid);
-		});
-
-		function addSendHandler(touid) {
-			$('#chat-message-input').off('keypress');
-			$('#chat-message-input').on('keypress', function(e) {
-				if(e.which === 13) {
-					sendMessage(touid);
-				}
-			});
-
-			$('#chat-message-send-btn').off('click');
-			$('#chat-message-send-btn').on('click', function(e){
-				sendMessage(touid);
-				return false;
-			});
-		}
-
-		function sendMessage(touid) {
-			var msg = $('#chat-message-input').val() + '\n';
-			socket.emit('sendChatMessage', { touid:touid, message:msg});
-			$('#chat-message-input').val('');
-			$('#chat-content').append('You : '+ msg);
 		}
 		//end of chat
 
