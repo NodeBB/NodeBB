@@ -1,3 +1,12 @@
+/**
+ * READ ME!
+ * The config directives here are all different based on where NodeBB is installed.
+ * This config file system will be deprecated soon, and all configs will be moved
+ * to the redis db, under the hash "config"
+ *
+ * As of May 22nd, 2013, this migration hasn't started yet
+ */
+
 var config = {
 	// The "secret" is used to encrypt cookie sessions, change this to any random string
 	"secret": 'nodebb-secret',

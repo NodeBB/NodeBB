@@ -6,9 +6,9 @@ var express = require('express'),
     config = require('../config.js'),
     redis = require('redis'),
 	redisServer = redis.createClient(config.redis.port, config.redis.host, config.redis.options),
+	marked = require('marked'),
 	
 	user = require('./user.js'),
-
 	categories = require('./categories.js'),
 	posts = require('./posts.js'),
 	topics = require('./topics.js'),
@@ -17,7 +17,6 @@ var express = require('express'),
 	admin = require('./routes/admin.js'),
 	userRoute = require('./routes/user.js'),
 	auth = require('./routes/authentication.js');
-
 
 (function(app) {
 	var templates = null;
@@ -115,6 +114,7 @@ var express = require('express'),
 				break;
 			case 'home' :
 					categories.getAllCategories(function(data) {
+						data.motd = marked(config.motd || "# NodeBB v0.1\nWelcome to NodeBB, the discussion platform of the future.\n\n<a target=\"_blank\" href=\"http://www.nodebb.org\" class=\"btn btn-large\"><i class=\"icon-comment\"></i> Get NodeBB</a> <a target=\"_blank\" href=\"https://github.com/psychobunny/NodeBB\" class=\"btn btn-large\"><i class=\"icon-github-alt\"></i> Fork us on Github</a> <a target=\"_blank\" href=\"https://twitter.com/dcplabs\" class=\"btn btn-large\"><i class=\"icon-twitter\"></i> @dcplabs</a>");
 						res.send(JSON.stringify(data));
 					}, (req.user) ? req.user.uid : 0);
 				break;
@@ -191,6 +191,7 @@ var express = require('express'),
 				break;
 			case 'popular' :
 					categories.get(function(data) {
+						console.log(data);
 						if(!data) {
 							res.send(false);
 							return;
@@ -239,7 +240,7 @@ var express = require('express'),
 	app.get('/test', function(req, res) {
 		categories.get(function(category) {
 			res.send(JSON.stringify(category, null, 4));
-		}, 2, 2, null, null);
+		}, null, 2, null, null);
 	});
 
 
