@@ -10,7 +10,8 @@ var SocketIO = require('socket.io').listen(global.server,{log:false}),
 	
 (function(io) {
 	var	users = {},
-			rooms = {}
+		userSockets = {},
+		rooms = {}
 
 	global.io = io;
 
@@ -48,6 +49,7 @@ var SocketIO = require('socket.io').listen(global.server,{log:false}),
 		var hs = socket.handshake;
 		
 		var uid = users[hs.sessionID];
+		userSockets[uid] = socket;
 		user.go_online(uid);
 		
 		
@@ -232,6 +234,19 @@ var SocketIO = require('socket.io').listen(global.server,{log:false}),
 
 		socket.on('api:posts.restore', function(data) {
 			posts.restore(uid, data.pid);
+		});
+
+		socket.on('sendChatMessage', function(data) {
+			var touid = data.touid;
+
+			if(userSockets[touid]) {
+				var msg = data.message;
+
+				user.getUserField(uid, 'username', function(username) {
+					var finalMessage = username + ' says : ' + msg;
+					userSockets[touid].emit('chatMessage', {fromuid:uid, username:username, message:finalMessage});
+				});
+			}
 		});
 	});
 	

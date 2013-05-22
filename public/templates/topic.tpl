@@ -52,7 +52,7 @@
 	<!-- END main_posts -->
 
 	<!-- BEGIN posts -->
-		<li class="row post-row" data-pid="{posts.pid}" data-uid="{posts.uid}" data-deleted="{posts.deleted}">
+		<li class="row post-row" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-deleted="{posts.deleted}">
 			<div class="span1 profile-image-block visible-desktop">
 				<!--<i class="icon-spinner icon-spin icon-2x pull-left"></i>-->
 				<a href="/users/{posts.username}">
@@ -66,6 +66,7 @@
 					<div class="post-signature">{posts.signature}</div>
 					<div class="profile-block">
 						<span class="post-buttons">
+							<div id="ids_{posts.pid}_{posts.uid}" class="chat hidden-phone"><i class="icon-comment"></i></div>
 							<div id="ids_{posts.pid}_{posts.uid}" class="edit {posts.display_moderator_tools} hidden-phone"><i class="icon-pencil"></i></div>
 							<div id="ids_{posts.pid}_{posts.uid}" class="delete {posts.display_moderator_tools} hidden-phone"><i class="icon-trash"></i></div>
 							<div id="quote_{posts.pid}_{posts.uid}" class="quote hidden-phone"><i class="icon-quote-left"></i></div>
@@ -191,6 +192,7 @@
 					e.preventDefault();
 					moveThreadModal.modal('show');
 				}, false);
+
 				moveThreadModal.on('shown', function() {
 					var loadingEl = document.getElementById('categories-loading');
 					if (loadingEl) {
@@ -291,6 +293,79 @@
 			}
 		}); 
 
+		// CHAT, move to chat.js later?
+
+		$('.post-container').delegate('.chat', 'click', function(e){
+
+			var username = $(this).parents('li').attr('data-username');
+			var touid = $(this).parents('li').attr('data-uid');
+
+			var chatModal = $('#chat-modal-'+touid);
+			console.log($('#chat-modal-'+touid).length);
+			console.log('#chat-modal-'+touid);
+			if(!chatModal.length) {
+				var chatModal = $('#chat-modal').clone();
+				chatModal.attr('id','#chat-modal-'+touid);
+				chatModal.appendTo($('body'));
+				chatModal.find('.close').on('click',function(e){
+					chatModal.hide();
+				});
+			}
+
+			chatModal.show();
+
+			chatModal.find('#chat-with-name').html(username);
+			
+			//addSendHandler(touid);	
+			
+		});
+
+		$('#chat-modal').on('hide', function(){
+			$('#chat-message-input').off('keypress');
+			$('#chat-content').html('');
+		});
+
+		socket.on('chatMessage', function(data){
+			var username = data.username;
+			var fromuid = data.fromuid;
+			var message = data.message;
+
+			$('#chat-modal').modal('show');
+			$('#chat-with-name').html(username);
+			$('#chat-content').append(message);
+
+			var chatContent = $('#chat-content');
+    		chatContent.scrollTop(
+        		chatContent[0].scrollHeight - chatContent.height()
+    		);
+
+			addSendHandler(fromuid);
+		});
+
+		function addSendHandler(touid) {
+			$('#chat-message-input').off('keypress');
+			$('#chat-message-input').on('keypress', function(e) {
+				if(e.which === 13) {
+					sendMessage(touid);
+				}
+			});
+
+			$('#chat-message-send-btn').off('click');
+			$('#chat-message-send-btn').on('click', function(e){
+				sendMessage(touid);
+				return false;
+			});
+		}
+
+		function sendMessage(touid) {
+			var msg = $('#chat-message-input').val() + '\n';
+			socket.emit('sendChatMessage', { touid:touid, message:msg});
+			$('#chat-message-input').val('');
+			$('#chat-content').append('You : '+ msg);
+		}
+		//end of chat
+
+
 		ajaxify.register_events([
 			'event:rep_up', 'event:rep_down', 'event:new_post', 'api:get_users_in_room',
 			'event:topic_deleted', 'event:topic_restored', 'event:topic:locked',
@@ -298,6 +373,7 @@
 			'event:topic_moved', 'event:post_edited', 'event:post_deleted', 'event:post_restored',
 			'api:posts.favourite'
 		]);
+
 
 		socket.on('api:get_users_in_room', function(users) {
 			var anonymous = users.anonymous,

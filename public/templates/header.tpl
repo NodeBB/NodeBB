@@ -90,6 +90,18 @@
 	  </div>
 	</div>
 
+	<div id="chat-modal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-header">
+	  	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	    <h3 id="myModalLabel">Chat with <span id="chat-with-name"></span></h3>
+	  </div>
+	  <div class="modal-body">
+		<textarea id="chat-content" cols="40" rows="10"></textarea><br/>
+		<input id="chat-message-input" type="text" name="chat-message" placeholder="type chat message here press enter to send"/><br/>
+		<a id="chat-message-send-btn" href="#" class="btn btn-primary">Send</a>
+	  </div>
+	</div>
+
 	<div id="notification_window"></div>
 
 	<div class="container" id="content">
