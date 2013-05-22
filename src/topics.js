@@ -287,7 +287,11 @@ marked.setOptions({
 
 	Topics.get_latest_undeleted_pid = function(tid, callback) {
 		RDB.lrange('tid:' + tid + ':posts', 0, -1, function(err, pids) {
-			var pidKeys = [];
+			var pidKeys = [],
+				numPids = pids.length;
+
+			if (numPids === 0) return callback(null);
+
 			for(var x=0,numPids=pids.length;x<numPids;x++) {
 				pidKeys.push('pid:' + pids[x] + ':deleted');
 			}

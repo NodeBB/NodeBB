@@ -173,8 +173,7 @@ var socket,
 				if (localStorage && post_content.value.length > 0) {
 					localStorage.setItem(post_mode + '_' + id + '_draft', post_content.value);
 
-					jQuery(post_window).slideUp(250);
-					$(document.body).removeClass('composing');
+					app.close_post_window();
 					post_title.value = '';
 					reply_title.value = '';
 					post_content.value = '';
@@ -192,8 +191,11 @@ var socket,
 		}
 	};
 
-
-
+	app.close_post_window = function() {
+		post_window = post_window || document.getElementById('post_window');
+		jQuery(post_window).slideUp(250);
+		$(document.body).removeClass('composing');
+	}
 
 	app.post_reply = function(topic_id) {
 		var	content = document.getElementById('post_content');
@@ -213,8 +215,7 @@ var socket,
 			'topic_id' : topic_id,
 			'content' : content.value
 		});
-		jQuery(post_window).slideUp(250);
-		$(document.body).removeClass('composing');
+		app.close_post_window();
 		content.value = '';
 	};
 	app.post_topic = function(category_id) {
@@ -238,8 +239,7 @@ var socket,
 			'category_id' : category_id
 		});
 		
-		jQuery(post_window).slideUp(250);
-		$(document.body).removeClass('composing');
+		app.close_post_window();
 		title.val('');
 		content.val('');
 	};
@@ -260,8 +260,7 @@ var socket,
 
 		socket.emit('api:posts.edit', { pid: pid, content: content.val() });
 
-		jQuery(post_window).slideUp(250);
-		$(document.body).removeClass('composing');
+		app.close_post_window();
 		content.val('');
 	}
 
