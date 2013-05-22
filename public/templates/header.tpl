@@ -99,7 +99,7 @@
 	    <h3 id="myModalLabel">Chat with <span id="chat-with-name"></span></h3>
 	  </div>
 	  <div class="modal-body">
-		<textarea id="chat-content" cols="40" rows="10"></textarea><br/>
+		<textarea id="chat-content" cols="40" rows="10" readonly></textarea><br/>
 		<input id="chat-message-input" type="text" name="chat-message" placeholder="type chat message here press enter to send"/><br/>
 		<button type="button" id="chat-message-send-btn" href="#" class="btn btn-primary">Send</button>
 	  </div>
