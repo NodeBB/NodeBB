@@ -3,7 +3,8 @@
 var user = require('./../user.js'),
 	fs = require('fs'),
 	utils = require('./../utils.js'),
-	config = require('../../config.js');
+	config = require('../../config.js'),
+	marked = require('marked');
 
 
 (function(User) {
@@ -265,10 +266,15 @@ var user = require('./../user.js'),
 				});
 			} else {
 				getUserDataByUserName(req.params.username, callerUID, function(userData) {
+					
 					user.isFriend(callerUID, userData.theirid, function(isFriend) {
 						userData.isFriend = isFriend;
+						
+						userData.signature = marked(userData.signature || '');
+						
 						res.send(JSON.stringify(userData));
 					});
+					
 				});						
 			}
 		

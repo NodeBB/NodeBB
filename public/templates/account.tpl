@@ -43,7 +43,7 @@
 			        <span class="account-bio-label">age</span>
 			        <span>{age}</span>
 			        <br/>
-					
+					<hr/>
 					<span class="account-bio-label">member for</span>
 					<span>{joindate}</span>
 					<br/>
@@ -55,9 +55,11 @@
 					<span class="account-bio-label">posts</span>
 					<span id='postcount'>{postcount}</span>
 					<br/>
-					
+					<hr/>
 					<span class="account-bio-label">signature</span>
-					<span id='signature'>{signature}</span>
+					<div class="post-signature">
+						<span id='signature'>{signature}</span>
+					</div>
 				</div>
 			</div>
 		</div>

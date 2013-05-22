@@ -89,7 +89,7 @@ marked.setOptions({
 					timeout: 2000
 				});
 
-				user.getUserFields(uid, ['username','reputation','picture'], function(data){
+				user.getUserFields(uid, ['username','reputation','picture','signature'], function(data){
 					
 					var timestamp = new Date().getTime();
 					
@@ -103,6 +103,7 @@ marked.setOptions({
 								'user_rep' : data.reputation || 0,
 								'post_rep' : 0,
 								'gravatar' : data.picture,
+								'signature' : marked(data.signature || ''),
 								'timestamp' : timestamp,
 								'relativeTime': utils.relativeTime(timestamp),
 								'fav_star_class' :'icon-star-empty',
