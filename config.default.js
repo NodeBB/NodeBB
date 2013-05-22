@@ -56,7 +56,10 @@ var config = {
 	"privilege_thresholds": {
 		"manage_thread": 1000,
 		"manage_content": 2000
-	}
+	},
+
+	"show_motd": true,
+	"motd": undefined
 }
 
 config.url = config.base_url + (config.use_port ? ':' + config.port : '') + '/';

@@ -1,4 +1,4 @@
-<div class="hero-unit">
+<div class="hero-unit {motd_class}">
 	{motd}
 </div>
 
