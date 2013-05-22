@@ -237,9 +237,9 @@ var express = require('express'),
 	app.get('/api/:method/:id*', api_method);
 
 	app.get('/test', function(req, res) {
-		topics.get_latest_undeleted_pid(5, function(pid) {
-			res.send(pid);
-		});
+		// topics.get_latest_undeleted_pid(5, function(pid) {
+		// 	res.send(pid);
+		// });
 	});
 
 
