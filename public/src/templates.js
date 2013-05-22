@@ -2,8 +2,7 @@
 
 (function (module) {
 	
-	var ready_callback,
-		config = {},
+	var config = {},
 		templates,
 		fs = null,
 		available_templates = [];
@@ -35,8 +34,19 @@
 	};
 
 	templates.ready = function(callback) {
-		if (callback == null && ready_callback) ready_callback();
-		else ready_callback = callback;
+		if (callback == null) {
+			if (this.ready_callback) {
+				this.ready_callback();
+			} else {
+				this.loaded = true;
+			}
+		} else {
+			if (this.loaded == true) {
+				callback();
+			} else {
+				this.ready_callback = callback;
+			}
+		}
 	};
 
 	templates.prepare = function(raw_tpl, data) {
