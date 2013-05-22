@@ -325,7 +325,11 @@
 				var chatModal = $('#chat-modal').clone();
 				chatModal.attr('id','chat-modal-'+touid);
 				chatModal.appendTo($('body'));
-				chatModal.draggable();
+				chatModal.draggable({
+					start:function(){
+						bringModalToTop(chatModal);
+					}
+				});
 				chatModal.find('#chat-with-name').html(username);
 
 				chatModal.find('.close').on('click',function(e){
