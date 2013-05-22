@@ -25,12 +25,12 @@
 					</a>
 					<h3><p class="topic-title">{topic_name}</p> 
 						<div class="pull-right hidden-phone" style="margin-right: 10px;">
-							<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn edit {main_posts.display_moderator_tools}"><i class="icon-pencil"></i></button>
-							<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn delete {main_posts.display_moderator_tools}"><i class="icon-trash"></i></button>
-							<button id="quote_{main_posts.pid}_{main_posts.uid}" class="btn quote"><i class="icon-quote-left"></i></button>
+							<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn edit {main_posts.display_moderator_tools}" type="button"><i class="icon-pencil"></i></button>
+							<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn delete {main_posts.display_moderator_tools}" type="button"><i class="icon-trash"></i></button>
+							<button id="quote_{main_posts.pid}_{main_posts.uid}" class="btn quote" type="button"><i class="icon-quote-left"></i></button>
 
-							<button id="favs_{main_posts.pid}_{main_posts.uid}" class="favourite btn"><span class="post_rep_{main_posts.pid}">Favourite {main_posts.post_rep} </span><i class="{main_posts.fav_star_class}"></i></button>
-							<button id="post_reply" class="btn btn-primary btn post_reply">Reply <i class="icon-reply"></i></button>
+							<button id="favs_{main_posts.pid}_{main_posts.uid}" class="favourite btn" type="button"><span class="post_rep_{main_posts.pid}">Favourite {main_posts.post_rep} </span><i class="{main_posts.fav_star_class}"></i></button>
+							<button id="post_reply" class="btn btn-primary btn post_reply" type="button">Reply <i class="icon-reply"></i></button>
 						</div>
 					</h3>
 
@@ -83,9 +83,9 @@
 	<!-- END posts -->
 </ul>
 <hr />
-<button id="post_reply" class="btn btn-primary btn-large post_reply">Reply</button>
+<button id="post_reply" class="btn btn-primary btn-large post_reply" type="button">Reply</button>
 <div class="btn-group pull-right" id="thread-tools" style="visibility: hidden;">
-	<button class="btn dropdown-toggle" data-toggle="dropdown">Thread Tools <span class="caret"></span></button>
+	<button class="btn dropdown-toggle" data-toggle="dropdown" type="button">Thread Tools <span class="caret"></span></button>
 	<ul class="dropdown-menu">
 		<li><a href="#" id="pin_thread"><i class="icon-pushpin"></i> Pin Thread</a></li>
 		<li><a href="#" id="lock_thread"><i class="icon-lock"></i> Lock Thread</a></li>
@@ -533,7 +533,7 @@
 				var pid = $(this).parents('li').attr('data-pid');
 				
 				$('#post_content').val('> ' + $('#content_' + pid).html() + '\n');
-
+				console.log("POST ID "+pid);
 			});
 
 			jQuery(div + ' .edit, ' + div + ' .delete').each(function() {
