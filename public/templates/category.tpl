@@ -16,13 +16,13 @@
 		<!-- BEGIN topics -->
 		<a href="../../topic/{topics.slug}"><li class="category-item {topics.deleted-class}">
 			<div class="row-fluid">
-				<div class="span1 thread-rating hidden-phone hidden-tablet">
+				<!-- <div class="span1 thread-rating hidden-phone hidden-tablet">
 					<span>
 						<i class="icon-star icon-3x"></i><br />
 						38
 					</span>
-				</div>
-				<div class="span11 topic-row img-polaroid">
+				</div> -->
+				<div class="span12 topic-row img-polaroid">
 					<div class="latest-post visible-desktop">
 						<div class="pull-right">
 							<img style="width: 48px; height: 48px; /*temporary*/" src="/graph/users/{topics.teaser_username}/picture" />
