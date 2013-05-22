@@ -116,7 +116,7 @@ var express = require('express'),
 			case 'home' :
 					categories.get(function(data) {
 						res.send(JSON.stringify(data));
-					});
+					}, (req.user) ? req.user.uid : 0);
 				break;
 			case 'login' :
 					var data = {},

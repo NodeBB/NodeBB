@@ -12,7 +12,7 @@
 
 
 	<!-- BEGIN main_posts -->
-		<li class="row main-post" data-pid="{main_posts.pid}" data-deleted="{main_posts.deleted}">
+		<li class="row post-row main-post" data-pid="{main_posts.pid}" data-uid="{main_posts.uid}" data-deleted="{main_posts.deleted}">
 			<div class="span12">
 				<div class="post-block">
 					<a class="main-avatar" href="/users/{main_posts.username}">
@@ -37,7 +37,7 @@
 
 					<hr />
 					<small>
-						posted {main_posts.relativeTime} ago by <strong><a href="/users/{main_posts.username}">{main_posts.username}</a></strong>
+						posted {main_posts.relativeTime} ago by <strong><a href="/users/{main_posts.username}" class="username-field">{main_posts.username}</a></strong>
 						<span class="{main_posts.edited-class}"><i class="icon-edit" title="edited by {main_posts.editor} {main_posts.relativeEditTime} ago"></i></span>
 					</small>
 
@@ -52,7 +52,7 @@
 	<!-- END main_posts -->
 
 	<!-- BEGIN posts -->
-		<li class="row" data-pid="{posts.pid}" data-uid="{posts.uid}" data-deleted="{posts.deleted}">
+		<li class="row post-row" data-pid="{posts.pid}" data-uid="{posts.uid}" data-deleted="{posts.deleted}">
 			<div class="span1 profile-image-block visible-desktop">
 				<!--<i class="icon-spinner icon-spin icon-2x pull-left"></i>-->
 				<a href="/users/{posts.username}">
@@ -72,7 +72,7 @@
 							<div id="favs_{posts.pid}_{posts.uid}" class="favourite hidden-phone"><span class="post_rep_{posts.pid}">{posts.post_rep}</span><i class="{posts.fav_star_class}"></i></div>
 							<div class="post_reply"><i class="icon-reply"></i></div>
 						</span>
-						<img class="hidden-desktop" src="{posts.gravatar}?s=10" align="left" /> posted by <strong><a href="/users/{posts.username}">{posts.username}</a></strong> {posts.relativeTime} ago
+						<img class="hidden-desktop" src="{posts.gravatar}?s=10" align="left" /> posted by <strong><a class="username-field" href="/users/{posts.username}">{posts.username}</a></strong> {posts.relativeTime} ago
 						<span class="{posts.edited-class} hidden-phone">| last edited by <strong><a href="/users/{posts.editor}">{posts.editor}</a></strong> {posts.relativeEditTime} ago</span>
 						<span class="{posts.edited-class}"><i class="icon-edit visible-phone" title="edited by {posts.editor} {posts.relativeEditTime} ago"></i></span>
 					</div>
@@ -272,6 +272,7 @@
 			}
 		});
 
+
 		$('.post-container').delegate('.edit', 'click', function(e) {
 			var pid = ($(this).attr('id') || $(this.parentNode).attr('id')).split('_')[1];
 			app.open_post_window('edit', "{topic_id}", "{topic_name}", pid);
@@ -297,6 +298,7 @@
 			'event:topic_moved', 'event:post_edited', 'event:post_deleted', 'event:post_restored',
 			'api:posts.favourite'
 		]);
+
 		socket.on('api:get_users_in_room', function(users) {
 			var anonymous = users.anonymous,
 				usernames = users.usernames,
@@ -337,6 +339,8 @@
 				.fadeIn('slow');
 
 			set_up_posts(uniqueid);
+			
+			addCommasToNumbers();
 		});
 
 		socket.on('event:topic_deleted', function(data) {

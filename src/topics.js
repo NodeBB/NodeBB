@@ -72,8 +72,18 @@ marked.setOptions({
 					callback(false);
 					return;
 				}
+				
 				active_usernames = replies[1];
 				var topics = [];
+
+				if (tids.length == 0) {
+					callback({
+						'category_name' : category_id ? category_name : 'Recent',
+						'show_topic_button' : category_id ? 'show' : 'hidden',
+						'category_id': category_id || 0,
+						'topics' : []
+					});
+				}
 
 				title = replies[2];
 				uid = replies[3];
@@ -252,7 +262,11 @@ marked.setOptions({
 	}
 
 	Topics.markAsRead = function(tid, uid) {
+		// there is an issue with this fn. if you read a topic that is previously read you will mark the category as read anyways - there is no check
 		RDB.sadd('tid:' + tid + ':read_by_uid', uid);
+		Topics.get_cid_by_tid(tid, function(cid) {
+			RDB.sadd('cid:' + cid + ':read_by_uid', uid);
+		});
 	}
 
 	Topics.hasReadTopics = function(tids, uid, callback) {
@@ -391,6 +405,9 @@ marked.setOptions({
 				timeout: 2000
 			});
 
+			// let everyone know that there is an unread topic in this category
+			RDB.del('cid:' + category_id + ':read_by_uid');
+
 			// in future it may be possible to add topics to several categories, so leaving the door open here.
 			RDB.sadd('categories:' + category_id + ':tid', tid);
 			RDB.set('tid:' + tid + ':cid', category_id);
@@ -399,6 +416,7 @@ marked.setOptions({
 				RDB.set('tid:' + tid + ':category_slug', data.categories[0].slug);
 			});
 
+			RDB.incr('cid:' + category_id + ':topiccount');
 		});
 	};
 

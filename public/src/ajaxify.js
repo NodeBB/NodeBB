@@ -56,6 +56,8 @@ var ajaxify = {};
 					callback();
 				}
 				
+				app.process_page();
+				
 				jQuery('#content, #footer').fadeIn(200);
 			}, url, template);
 
