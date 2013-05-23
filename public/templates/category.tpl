@@ -107,6 +107,9 @@
 			numTopics = topics.length,
 			x;
 
+		jQuery('.category.row').show();
+		jQuery('#category-no-topics').hide();
+
 		topic.innerHTML = html;
 		if (numTopics > 0) {
 			for(x=0;x<numTopics;x++) {
