@@ -55,7 +55,7 @@ var socket,
 					title: 'Disconnect',
 					message: 'You have disconnected from NodeBB, we will try to reconnect!',
 					type: 'error',
-					timeout: 1000
+					timeout: 5000
 				});
 			});
 
@@ -113,51 +113,64 @@ var socket,
 	// timeout default = permanent
 	// location : notification_window (default) or content
 	app.alert = function(params) {
-		var div = document.createElement('div'),
-			button = document.createElement('button'),
-			strong = document.createElement('strong'),
-			p = document.createElement('p');
+		
 
 		var alert_id = 'alert_button_' + ((params.alert_id) ? params.alert_id : new Date().getTime()); 
 
-		jQuery('#'+alert_id).fadeOut(500, function() {
-			this.remove();
-		});
+		var alert = $('#'+alert_id);
 
-		p.innerHTML = params.message;
-		strong.innerHTML = params.title;
-
-		div.className = "alert toaster-alert " + ((params.type=='warning') ? '' : "alert-" + params.type);
-		
-		div.setAttribute('id', alert_id);
-		div.appendChild(button);
-		div.appendChild(strong);
-		div.appendChild(p);
-
-		button.className = 'close';
-		button.innerHTML = '&times;';
-		button.onclick = function(ev) {
-			div.parentNode.removeChild(div);
+		if(alert.length > 0) {
+			alert.find('strong').html(params.title);
+			alert.find('p').html(params.message);
+			alert.attr('class', "alert toaster-alert " + ((params.type=='warning') ? '' : "alert-" + params.type));
 		}
+		else {
 
-		if (params.location == null) params.location = 'notification_window';
+			var div = document.createElement('div'),
+				button = document.createElement('button'),
+				strong = document.createElement('strong'),
+				p = document.createElement('p');
 
-		jQuery('#'+params.location).prepend(jQuery(div).fadeIn('100'));
+			/*jQuery('#'+alert_id).fadeOut(500, function() {
+				this.remove();
+			});*/
 
-		if (params.timeout) {
-			setTimeout(function() {
-				jQuery(div).fadeOut(1000, function() {
-					this.remove();
-				});
-			}, params.timeout)
-		}
+			p.innerHTML = params.message;
+			strong.innerHTML = params.title;
 
-		if (params.clickfn) {
-			div.onclick = function() {
-				params.clickfn();
-				jQuery(div).fadeOut(500, function() {
-					this.remove();
-				});
+			div.className = "alert toaster-alert " + ((params.type=='warning') ? '' : "alert-" + params.type);
+			
+			div.setAttribute('id', alert_id);
+			div.appendChild(button);
+			div.appendChild(strong);
+			div.appendChild(p);
+
+			button.className = 'close';
+			button.innerHTML = '&times;';
+			button.onclick = function(ev) {
+				div.parentNode.removeChild(div);
+			}
+
+			if (params.location == null) 
+				params.location = 'notification_window';
+
+			jQuery('#'+params.location).prepend(jQuery(div).fadeIn('100'));
+
+			if (params.timeout) {
+				setTimeout(function() {
+					jQuery(div).fadeOut(1000, function() {
+						this.remove();
+					});
+				}, params.timeout)
+			}
+
+			if (params.clickfn) {
+				div.onclick = function() {
+					params.clickfn();
+					jQuery(div).fadeOut(500, function() {
+						this.remove();
+					});
+				}
 			}
 		}
 	}
@@ -256,7 +269,7 @@ var socket,
 
 	app.close_post_window = function() {
 		console.log('closing post window');
-		
+
 		post_window = post_window || document.getElementById('post_window');
 		jQuery(post_window).slideUp(250);
 		$(document.body).removeClass('composing');
