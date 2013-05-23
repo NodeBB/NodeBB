@@ -25,12 +25,12 @@
 					</a>
 					<h3><p class="topic-title">{topic_name}</p> 
 						<div class="pull-right hidden-phone" style="margin-right: 10px;">
-							<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn edit {main_posts.display_moderator_tools}"><i class="icon-pencil"></i></button>
-							<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn delete {main_posts.display_moderator_tools}"><i class="icon-trash"></i></button>
-							<button id="quote_{main_posts.pid}_{main_posts.uid}" class="btn quote"><i class="icon-quote-left"></i></button>
+							<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn edit {main_posts.display_moderator_tools}" type="button"><i class="icon-pencil"></i></button>
+							<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn delete {main_posts.display_moderator_tools}" type="button"><i class="icon-trash"></i></button>
+							<button id="quote_{main_posts.pid}_{main_posts.uid}" class="btn quote" type="button"><i class="icon-quote-left"></i></button>
 
-							<button id="favs_{main_posts.pid}_{main_posts.uid}" class="favourite btn"><span class="post_rep_{main_posts.pid}">Favourite {main_posts.post_rep} </span><i class="{main_posts.fav_star_class}"></i></button>
-							<button id="post_reply" class="btn btn-primary btn post_reply">Reply <i class="icon-reply"></i></button>
+							<button id="favs_{main_posts.pid}_{main_posts.uid}" class="favourite btn" type="button"><span class="post_rep_{main_posts.pid}">Favourite {main_posts.post_rep} </span><i class="{main_posts.fav_star_class}"></i></button>
+							<button id="post_reply" class="btn btn-primary btn post_reply" type="button">Reply <i class="icon-reply"></i></button>
 						</div>
 					</h3>
 
@@ -52,7 +52,7 @@
 	<!-- END main_posts -->
 
 	<!-- BEGIN posts -->
-		<li class="row post-row" data-pid="{posts.pid}" data-uid="{posts.uid}" data-deleted="{posts.deleted}">
+		<li class="row post-row" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-deleted="{posts.deleted}">
 			<div class="span1 profile-image-block visible-desktop">
 				<!--<i class="icon-spinner icon-spin icon-2x pull-left"></i>-->
 				<a href="/users/{posts.username}">
@@ -66,6 +66,7 @@
 					<div class="post-signature">{posts.signature}</div>
 					<div class="profile-block">
 						<span class="post-buttons">
+							<div id="ids_{posts.pid}_{posts.uid}" class="chat hidden-phone"><i class="icon-comment"></i></div>
 							<div id="ids_{posts.pid}_{posts.uid}" class="edit {posts.display_moderator_tools} hidden-phone"><i class="icon-pencil"></i></div>
 							<div id="ids_{posts.pid}_{posts.uid}" class="delete {posts.display_moderator_tools} hidden-phone"><i class="icon-trash"></i></div>
 							<div id="quote_{posts.pid}_{posts.uid}" class="quote hidden-phone"><i class="icon-quote-left"></i></div>
@@ -82,9 +83,9 @@
 	<!-- END posts -->
 </ul>
 <hr />
-<button id="post_reply" class="btn btn-primary btn-large post_reply">Reply</button>
+<button id="post_reply" class="btn btn-primary btn-large post_reply" type="button">Reply</button>
 <div class="btn-group pull-right" id="thread-tools" style="visibility: hidden;">
-	<button class="btn dropdown-toggle" data-toggle="dropdown">Thread Tools <span class="caret"></span></button>
+	<button class="btn dropdown-toggle" data-toggle="dropdown" type="button">Thread Tools <span class="caret"></span></button>
 	<ul class="dropdown-menu">
 		<li><a href="#" id="pin_thread"><i class="icon-pushpin"></i> Pin Thread</a></li>
 		<li><a href="#" id="lock_thread"><i class="icon-lock"></i> Lock Thread</a></li>
@@ -191,6 +192,7 @@
 					e.preventDefault();
 					moveThreadModal.modal('show');
 				}, false);
+
 				moveThreadModal.on('shown', function() {
 					var loadingEl = document.getElementById('categories-loading');
 					if (loadingEl) {
@@ -291,6 +293,103 @@
 			}
 		}); 
 
+		// CHAT, move to chat.js later?
+
+		$('.post-container').delegate('.chat', 'click', function(e){
+
+			var username = $(this).parents('li').attr('data-username');
+			var touid = $(this).parents('li').attr('data-uid');
+
+			var chatModal = createModalIfDoesntExist(username, touid);
+
+			chatModal.show();
+			bringModalToTop(chatModal);
+			
+		});
+
+		function bringModalToTop(chatModal) {
+			var topZ = 0;
+			$('.modal').each(function(){
+			  var thisZ = parseInt($(this).css('zIndex'), 10);
+			  if (thisZ > topZ){
+			    topZ = thisZ;
+			  }
+			});
+			chatModal.css('zIndex', topZ+1);
+		}
+
+		function createModalIfDoesntExist(username, touid) {
+			var chatModal = $('#chat-modal-'+touid);
+
+			if(!chatModal.length) {
+				var chatModal = $('#chat-modal').clone();
+				chatModal.attr('id','chat-modal-'+touid);
+				chatModal.appendTo($('body'));
+				chatModal.draggable({
+					start:function(){
+						bringModalToTop(chatModal);
+					}
+				});
+				chatModal.find('#chat-with-name').html(username);
+
+				chatModal.find('.close').on('click',function(e){
+					chatModal.hide();
+				});
+
+				chatModal.on('click', function(e){
+					bringModalToTop(chatModal);
+				});
+
+				addSendHandler(chatModal, touid);	
+			}
+
+			return chatModal;
+		}
+
+		function addSendHandler(chatModal, touid) {
+			chatModal.find('#chat-message-input').off('keypress');
+			chatModal.find('#chat-message-input').on('keypress', function(e) {
+				if(e.which === 13) {
+					sendMessage(chatModal, touid);
+				}
+			});
+
+			chatModal.find('#chat-message-send-btn').off('click');
+			chatModal.find('#chat-message-send-btn').on('click', function(e){
+				sendMessage(chatModal, touid);
+				return false;
+			});
+		}
+
+		function sendMessage(chatModal, touid) {
+			var msg = app.strip_tags(chatModal.find('#chat-message-input').val()) + '\n';
+			socket.emit('sendChatMessage', { touid:touid, message:msg});
+			chatModal.find('#chat-message-input').val('');
+			appendChatMessage(chatModal, 'You : ' + msg);
+		}
+
+		socket.on('chatMessage', function(data){
+			var username = data.username;
+			var fromuid = data.fromuid;
+			var message = data.message;
+
+			var chatModal = createModalIfDoesntExist(username, fromuid);
+			chatModal.show();
+			bringModalToTop(chatModal);
+		
+			appendChatMessage(chatModal, message)
+		});
+
+		function appendChatMessage(chatModal, message){
+			var chatContent = chatModal.find('#chat-content');
+			chatContent.append(message);
+    		chatContent.scrollTop(
+        		chatContent[0].scrollHeight - chatContent.height()
+    		);
+		}
+		//end of chat
+
+
 		ajaxify.register_events([
 			'event:rep_up', 'event:rep_down', 'event:new_post', 'api:get_users_in_room',
 			'event:topic_deleted', 'event:topic_restored', 'event:topic:locked',
@@ -298,6 +397,7 @@
 			'event:topic_moved', 'event:post_edited', 'event:post_deleted', 'event:post_restored',
 			'api:posts.favourite'
 		]);
+
 
 		socket.on('api:get_users_in_room', function(users) {
 			var anonymous = users.anonymous,
@@ -437,7 +537,7 @@
 				var pid = $(this).parents('li').attr('data-pid');
 				
 				$('#post_content').val('> ' + $('#content_' + pid).html() + '\n');
-
+				console.log("POST ID "+pid);
 			});
 
 			jQuery(div + ' .edit, ' + div + ' .delete').each(function() {
