@@ -79,7 +79,7 @@ var	RDB = require('./redis.js'),
 
 					var categoryData = {
 							'category_name' : category_name,
-							'show_topic_button' : 'hidden',
+							'show_topic_button' : 'show',
 							'category_id': category_id,
 							'active_users': active_users,
 							'topics' : []
@@ -115,6 +115,28 @@ var	RDB = require('./redis.js'),
 
 					
 				});
+		});
+	}
+
+	// not the permanent location for this function
+	Categories.getLatestTopics = function(current_user, start, end, callback) {
+		RDB.zrange('topics:recent', 0, -1, function(err, tids) {
+			var latestTopics = {
+				'category_name' : 'Recent',
+				'show_topic_button' : 'hidden',
+				'category_id': false,
+				'topics' : []
+			};
+
+			if (!tids.length) {
+				callback(latestTopics);
+				return;
+			}
+
+			Categories.getTopicsByTids(tids, current_user, function(topicData) {
+				latestTopics.topics = topicData;
+				callback(latestTopics);
+			});
 		});
 	}
 
@@ -182,10 +204,6 @@ var	RDB = require('./redis.js'),
 
 				// temporary. I don't think this call should belong here
 				function getPrivileges(next) {
-					if (category_id == null) {
-						next(null, {view_deleted: false});
-					}
-
 					Categories.privileges(category_id, current_user, function(user_privs) {
 						next(null, user_privs);
 					});

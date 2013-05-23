@@ -340,6 +340,9 @@ marked.setOptions({
 			// let everyone know that there is an unread topic in this category
 			RDB.del('cid:' + category_id + ':read_by_uid');
 
+			RDB.zadd('topics:recent', (new Date()).getTime(), tid);
+			//RDB.zadd('topics:active', tid);
+
 			// in future it may be possible to add topics to several categories, so leaving the door open here.
 			RDB.sadd('categories:' + category_id + ':tid', tid);
 			RDB.set('tid:' + tid + ':cid', category_id);

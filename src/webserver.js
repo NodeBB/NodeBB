@@ -183,17 +183,12 @@ var express = require('express'),
 					}, req.params.id, (req.user) ? req.user.uid : 0);
 				break;
 			case 'latest' :
-					categories.get(function(data) {
-						if(!data) {
-							res.send(false);
-							return;
-						}
+					categories.getLatestTopics((req.user) ? req.user.uid : 0, 0, 9, function(data) {
 						res.send(JSON.stringify(data));
 					});
 				break;
 			case 'popular' :
 					categories.get(function(data) {
-						console.log(data);
 						if(!data) {
 							res.send(false);
 							return;
