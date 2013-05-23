@@ -45,6 +45,12 @@
 	                    </li>
 					</ul>
 					<ul class="nav pull-right nodebb-inline-block" id="right-menu">
+						<li class="notifications">
+							<a href="#" id="notif_dropdown"><i class="icon-circle-blank"></i></a>
+							<ul class="dropdown-menu" aria-labelledby="notif_dropdown">
+								<li>nibs!</li>
+							</ul>
+						</li>
 					</ul>
 				</div>
 			</div>

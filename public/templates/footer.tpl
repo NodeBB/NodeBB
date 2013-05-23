@@ -52,8 +52,6 @@
 					name = document.createElement('span')
 					logoutEl = document.createElement('li');
 					
-				right_menu.innerHTML = '';
-
 				logoutEl.innerHTML = '<a href="/logout">Log out</a>';
 
 				name.innerHTML = data['username'];
@@ -81,7 +79,6 @@
 			}
 		});
 
-
 		// Post window events
 		var	postWindowEl = document.getElementById('post_window'),
 			discardEl = document.getElementById('discard-post');
@@ -89,6 +86,9 @@
 			$(postWindowEl).slideToggle(250);
 			$(document.body).removeClass('composing');
 		}, false);
+
+		// Notifications dropdown
+		// var notifTrigger = document.querySelector('.notifications a');
 	}());
 	</script>
 	<!-- END Forum Info -->
