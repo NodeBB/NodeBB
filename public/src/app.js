@@ -66,7 +66,7 @@ var socket,
 	// title = bolded title text
 	// message = alert message content
 	// timeout default = permanent
-	// location : notification_window (default) or content
+	// location : alert_window (default) or content
 	app.alert = function(params) {
 		var div = document.createElement('div'),
 			button = document.createElement('button'),
@@ -95,7 +95,7 @@ var socket,
 			div.parentNode.removeChild(div);
 		}
 
-		if (params.location == null) params.location = 'notification_window';
+		if (params.location == null) params.location = 'alert_window';
 
 		jQuery('#'+params.location).prepend(jQuery(div).fadeIn('100'));
 

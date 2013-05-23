@@ -111,6 +111,6 @@
 	  </div>
 	</div>
 
-	<div id="notification_window"></div>
+	<div id="alert_window"></div>
 
 	<div class="container" id="content">
