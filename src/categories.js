@@ -8,6 +8,7 @@ var	RDB = require('./redis.js'),
 (function(Categories) {
 
 
+	// START Move into possibly admin/categories.js
 	// An admin-only function. Seeing how we have no control panel yet ima leave this right here. sit pretty, you
 	Categories.create = function(data, callback) {
 		RDB.incr('global:next_category_id', function(err, cid) {
@@ -29,23 +30,27 @@ var	RDB = require('./redis.js'),
 		});
 	};
 
+	Categories.edit = function(data, callback) {
+		// just a reminder to self that name + slugs are stored into topics data as well.
+	};
+	// END Move into possibly admin/categories.js
+
+
+
 	Categories.privileges = function(cid, uid, callback) {
-		async.parallel([
-			// function(next) {
-			// 	user.getUserField(uid, 'reputation', function(reputation) {
-			// 		next(null, reputation >= config.privilege_thresholds.manage_category);
-			// 	});
-			// },
-			function(next) {
-				user.isModerator(uid, cid, function(isMod) {
+		function isModerator(next) {
+			user.isModerator(uid, cid, function(isMod) {
 					next(null, isMod);
 				});
-			}, function(next) {
-				user.isAdministrator(uid, function(isAdmin) {
+		}
+
+		function isAdministrator(next) {
+			user.isAdministrator(uid, function(isAdmin) {
 					next(null, isAdmin);
 				});
-			}
-		], function(err, results) {
+		}
+
+		async.parallel([isModerator, isAdministrator], function(err, results) {
 			callback({
 				editable: results.indexOf(true) !== -1 ? true : false,
 				view_deleted: results.indexOf(true) !== -1 ? true : false
@@ -53,14 +58,8 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
-	Categories.edit = function(data, callback) {
-		// just a reminder to self that name + slugs are stored into topics data as well.
-	};
 
-	Categories.get = function(callback, category_id, current_user, start, end) {
-		if (start == null) start = 0;
-		if (end == null) end = start + 10;
-
+	Categories.get = function(callback, category_id, current_user) {
 		var range_var = (category_id) ? 'categories:' + category_id + ':tid'  : 'topics:tid';
 
 		RDB.smembers(range_var, function(err, tids) {
