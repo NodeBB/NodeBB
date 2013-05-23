@@ -266,9 +266,16 @@ var SocketIO = require('socket.io').listen(global.server,{log:false}),
 
 				user.getUserField(uid, 'username', function(username) {
 					var finalMessage = username + ' says : ' + msg;
+
 					for(var x=0;x>numSockets;x++) {
 						userSockets[touid][x].emit('chatMessage', {fromuid:uid, username:username, message:finalMessage});
 					}
+
+					notifications.create(finalMessage, 5, null, 'notification_'+new Date().getTime(), function(nid) {
+ 						notifications.push(nid, [touid], function(success) {
+  							console.log(success);
+ 						});
+					});
 				});
 			}
 		});
