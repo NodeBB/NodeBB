@@ -6,6 +6,8 @@ var SocketIO = require('socket.io').listen(global.server,{log:false}),
 	user = require('./user.js'),
 	posts = require('./posts.js'),
 	topics = require('./topics.js'),
+	threadTools = require('./threadTools.js'),
+	postTools = require('./postTools.js'),
 	categories = require('./categories.js');
 	
 (function(io) {
@@ -185,27 +187,31 @@ var SocketIO = require('socket.io').listen(global.server,{log:false}),
 		});
 
 		socket.on('api:topic.delete', function(data) {
-			topics.delete(data.tid, uid, socket);
+			threadTools.delete(data.tid, uid, socket);
 		});
 
 		socket.on('api:topic.restore', function(data) {
-			topics.restore(data.tid, uid, socket);
+			threadTools.restore(data.tid, uid, socket);
 		});
 
 		socket.on('api:topic.lock', function(data) {
-			topics.lock(data.tid, uid, socket);
+			threadTools.lock(data.tid, uid, socket);
 		});
 
 		socket.on('api:topic.unlock', function(data) {
-			topics.unlock(data.tid, uid, socket);
+			threadTools.unlock(data.tid, uid, socket);
 		});
 
 		socket.on('api:topic.pin', function(data) {
-			topics.pin(data.tid, uid, socket);
+			threadTools.pin(data.tid, uid, socket);
 		});
 
 		socket.on('api:topic.unpin', function(data) {
-			topics.unpin(data.tid, uid, socket);
+			threadTools.unpin(data.tid, uid, socket);
+		});
+
+		socket.on('api:topic.move', function(data) {
+			threadTools.move(data.tid, data.cid, socket);
 		});
 
 		socket.on('api:categories.get', function() {
@@ -214,24 +220,20 @@ var SocketIO = require('socket.io').listen(global.server,{log:false}),
 			});
 		});
 
-		socket.on('api:topic.move', function(data) {
-			topics.move(data.tid, data.cid, socket);
-		});
-
 		socket.on('api:posts.getRawPost', function(data) {
 			posts.getRawContent(data.pid, socket);
 		});
 
 		socket.on('api:posts.edit', function(data) {
-			posts.edit(uid, data.pid, data.content);
+			postTools.edit(uid, data.pid, data.content);
 		});
 
 		socket.on('api:posts.delete', function(data) {
-			posts.delete(uid, data.pid);
+			postTools.delete(uid, data.pid);
 		});
 
 		socket.on('api:posts.restore', function(data) {
-			posts.restore(uid, data.pid);
+			postTools.restore(uid, data.pid);
 		});
 	});
 	
