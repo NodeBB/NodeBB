@@ -7,7 +7,7 @@ var express = require('express'),
     redis = require('redis'),
 	redisServer = redis.createClient(config.redis.port, config.redis.host, config.redis.options),
 	marked = require('marked'),
-	utils = require('./../public/src/utils.js'),
+	utils = require('../public/src/utils.js'),
 	fs = require('fs'),
 	
 	user = require('./user.js'),

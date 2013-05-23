@@ -1,7 +1,7 @@
 var	config = require('../config.js'),
 	RDB = require('./redis.js'),
 	async = require('async'),
-	utils = require('./utils.js');
+	utils = require('../public/src/utils.js');
 
 (function(Notifications) {
 	Notifications.get = function(nid, callback) {
