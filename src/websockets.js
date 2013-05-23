@@ -239,9 +239,19 @@ var SocketIO = require('socket.io').listen(global.server,{log:false}),
 		});
 
 		socket.on('api:notifications.get', function(data) {
-			notifications.get(uid, function(notifs) {
+			user.notifications.get(uid, function(notifs) {
 				socket.emit('api:notifications.get', notifs);
 			});
+		});
+
+		socket.on('api:notifications.counts', function(data) {
+			user.notifications.counts(uid, function(counts) {
+				socket.emit('api:notifications.counts', counts);
+			});
+		});
+
+		socket.on('api:notifications.mark_read', function(nid) {
+			notifications.mark_read(nid, uid);
 		});
 
 		socket.on('sendChatMessage', function(data) {

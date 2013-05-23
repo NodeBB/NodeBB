@@ -33,23 +33,23 @@
 				<div class="nav-collapse collapse">
 					<ul class="nav nodebb-inline-block">
 						<li>
-	                      <a href="/latest">Recent <span class="badge badge-inverse">3</span></a>
-	                    </li>
-	                    <li>
-	                      <a href="/popular">Popular</a>
-	                    </li>
-	                    <li>
-	                      <a href="/active">Active</a>
-	                    </li>
-	                    <li>
-	                      <a href="/users">Users</a>
-	                    </li>
+							<a href="/latest">Recent <span class="badge badge-inverse">3</span></a>
+						</li>
+						<li>
+							<a href="/popular">Popular</a>
+						</li>
+						<li>
+							<a href="/active">Active</a>
+						</li>
+						<li>
+							<a href="/users">Users</a>
+						</li>
 					</ul>
 					<ul class="nav pull-right nodebb-inline-block" id="right-menu">
-						<li class="notifications">
-							<a href="#" id="notif_dropdown"><i class="icon-circle-blank"></i></a>
-							<ul class="dropdown-menu" aria-labelledby="notif_dropdown">
-								<li>nibs!</li>
+						<li class="notifications dropdown">
+							<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="notif_dropdown"><i class="icon-circle-blank"></i></a>
+							<ul id="notif-list" class="dropdown-menu" aria-labelledby="notif_dropdown">
+								<li><a href="#"><i class="icon-refresh icon-spin"></i> Loading Notifications</a></li>
 							</ul>
 						</li>
 					</ul>

@@ -240,9 +240,14 @@ var express = require('express'),
 	app.get('/api/:method/:id*', api_method);
 
 	app.get('/test', function(req, res) {
-		user.notifications.get(2, function(notifs) {
-			res.send(JSON.stringify(notifs, null, 4));
+		notifications.mark_read_multiple([1, 2], 1, function(success) {
+			res.send('mark: ' + success);
 		});
+		// notifications.create('some text', 5, '/category/2/general-discussion', function(nid) {
+		// 	notifications.push(nid, 1, function() {
+		// 		res.send('nid: ', nid)
+		// 	});
+		// });
 	});
 
 

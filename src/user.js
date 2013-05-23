@@ -776,7 +776,6 @@ var config = require('../config.js'),
 									next();
 								});
 							}, function(err) {
-								console.log(read);
 								next(null, read);
 							});
 						} else next(null, read);
@@ -784,6 +783,22 @@ var config = require('../config.js'),
 				}
 			}, function(err, notifications) {
 				callback(notifications);
+			});
+		},
+		counts: function(uid, callback) {
+			async.parallel({
+				unread: function(next) {
+					RDB.zcount('uid:' + uid + ':notifications:unread', 0, 10, function(err, count) {
+						next(null, count);
+					});
+				},
+				read: function(next) {
+					RDB.zcount('uid:' + uid + ':notifications:read', 0, 10, function(err, count) {
+						next(null, count);
+					});
+				}
+			}, function(err, counts) {
+				callback(counts);
 			});
 		}
 	}

@@ -1,13 +1,16 @@
 var	config = require('../config.js'),
-	RDB = require('./redis.js');
+	RDB = require('./redis.js'),
+	async = require('async');
 
 (function(Notifications) {
 	Notifications.get = function(nid, callback) {
-		RDB.hmget('notifications:' + nid, 'text', 'score', 'path', function(err, notification) {
+		RDB.hmget('notifications:' + nid, 'text', 'score', 'path', 'datetime', function(err, notification) {
 			callback({
+				nid: nid,
 				text: notification[0],
 				score: notification[1],
-				path: notification[2]
+				path: notification[2],
+				datetime: notification[3]
 			});
 		});
 	}
@@ -56,5 +59,15 @@ var	config = require('../config.js'),
 				if (callback) callback(true);
 			});
 		}
+	}
+
+	Notifications.mark_read_multiple = function(nids, uid, callback) {
+		async.each(nids, function(nid, next) {
+			Notifications.mark_read(nid, uid, function(success) {
+				if (success) next(null);
+			});
+		}, function(err) {
+			if (callback && !err) callback(true);
+		});
 	}
 }(exports));
