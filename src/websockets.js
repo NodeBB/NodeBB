@@ -1,5 +1,5 @@
 
-var SocketIO = require('socket.io').listen(global.server,{log:false}),
+var SocketIO = require('socket.io').listen(global.server, { log:false }),
 	cookie = require('cookie'),
 	connect = require('connect'),
 	config = require('../config.js'),
@@ -57,6 +57,7 @@ var SocketIO = require('socket.io').listen(global.server,{log:false}),
 		userSockets[uid].push(socket);
 		user.go_online(uid);
 		
+		socket.join('uid_' + uid);
 		
 		/*process.on('uncaughtException', function(err) {
     		// handle the error safely
