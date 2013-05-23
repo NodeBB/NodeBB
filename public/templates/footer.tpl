@@ -107,7 +107,6 @@
 			}
 		})
 		socket.on('api:notifications.get', function(data) {
-			console.log(data);
 			var	notifFrag = document.createDocumentFragment(),
 				notifEl = document.createElement('li'),
 				numRead = data.read.length,
@@ -138,6 +137,7 @@
 			if ((counts.unread + counts.read) > 0) notifIcon.className = 'icon-circle active';
 			else notifIcon.className = 'icon-circle-blank';
 		});
+		socket.emit('api:notifications.counts');
 	}());
 	</script>
 	<!-- END Forum Info -->
