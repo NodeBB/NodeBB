@@ -51,9 +51,10 @@ var SocketIO = require('socket.io').listen(global.server,{log:false}),
 	io.sockets.on('connection', function(socket) {
 		
 		var hs = socket.handshake;
-		
+
 		var uid = users[hs.sessionID];
-		userSockets[uid] = socket;
+		userSockets[uid] = userSockets[uid] || [];
+		userSockets[uid].push(socket);
 		user.go_online(uid);
 		
 		
@@ -260,11 +261,14 @@ var SocketIO = require('socket.io').listen(global.server,{log:false}),
 			var touid = data.touid;
 
 			if(userSockets[touid]) {
-				var msg = utils.strip_tags(data.message);
+				var msg = utils.strip_tags(data.message),
+					numSockets = userSockets[touid].length;
 
 				user.getUserField(uid, 'username', function(username) {
 					var finalMessage = username + ' says : ' + msg;
-					userSockets[touid].emit('chatMessage', {fromuid:uid, username:username, message:finalMessage});
+					for(var x=0;x>numSockets;x++) {
+						userSockets[touid][x].emit('chatMessage', {fromuid:uid, username:username, message:finalMessage});
+					}
 				});
 			}
 		});
