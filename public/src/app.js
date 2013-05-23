@@ -86,14 +86,6 @@ var socket,
 					window.location.reload();
 				});
 			}
-
-			socket.on('reconnect_failed', function(data) {
-				console.log('reconnect_failed');	
-			});
-
-			socket.on('connect_failed', function(data){
-				console.log('connect_faled');
-			});
 		},
 		async: false
 	});
@@ -179,6 +171,12 @@ var socket,
 
 	app.open_post_window = function(post_mode, id, title, pid) {
 		
+		try{
+			throw new Error;
+		}catch(e){
+			console.log(e.stack);
+		}
+
 		submit_post_btn = submit_post_btn || document.getElementById('submit_post_btn');
 		post_title = post_title || document.getElementById('post_title');
 		reply_title = reply_title || document.getElementById('reply_title');
@@ -257,6 +255,8 @@ var socket,
 	};
 
 	app.close_post_window = function() {
+		console.log('closing post window');
+		
 		post_window = post_window || document.getElementById('post_window');
 		jQuery(post_window).slideUp(250);
 		$(document.body).removeClass('composing');

@@ -48,9 +48,6 @@ var ajaxify = {};
 
 			jQuery('#footer, #content').fadeOut(100);
 
-			// Close the post window if it is open
-			app.close_post_window();
-
 			templates.load_template(function() {
 				exec_body_scripts(content);
 
@@ -62,6 +59,7 @@ var ajaxify = {};
 				app.process_page();
 				
 				jQuery('#content, #footer').fadeIn(200);
+				app.close_post_window();
 			}, url, template);
 
 			return true;
