@@ -88,10 +88,11 @@
 		}, false);
 
 		// Notifications dropdown
-		var notifTrigger = document.querySelector('.notifications a'),
+		var notifContainer = document.getElementsByClassName('notifications')[0],
+			notifTrigger = notifContainer.querySelector('a'),
 			notifList = document.getElementById('notif-list');
 		notifTrigger.addEventListener('click', function() {
-			socket.emit('api:notifications.get');
+			if (notifContainer.className.indexOf('open') === -1) socket.emit('api:notifications.get');
 		});
 		notifList.addEventListener('click', function(e) {
 			var target;
@@ -106,7 +107,6 @@
 			}
 		})
 		socket.on('api:notifications.get', function(data) {
-			console.log(data);
 			var	notifFrag = document.createDocumentFragment(),
 				notifEl = document.createElement('li'),
 				numRead = data.read.length,

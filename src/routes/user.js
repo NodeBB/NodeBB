@@ -2,7 +2,7 @@
 
 var user = require('./../user.js'),
 	fs = require('fs'),
-	utils = require('./../utils.js'),
+	utils = require('./../../public/src/utils.js'),
 	config = require('../../config.js'),
 	marked = require('marked');
 

@@ -1,5 +1,5 @@
 var	RDB = require('./redis.js'),
-	utils = require('./utils.js'),
+	utils = require('./../public/src/utils.js'),
 	marked = require('marked'),
 	user = require('./user.js'),
 	topics = require('./topics.js'),

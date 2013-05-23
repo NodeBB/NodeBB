@@ -1,6 +1,7 @@
 var	config = require('../config.js'),
 	RDB = require('./redis.js'),
-	async = require('async');
+	async = require('async'),
+	utils = require('./utils.js');
 
 (function(Notifications) {
 	Notifications.get = function(nid, callback) {
@@ -15,12 +16,17 @@ var	config = require('../config.js'),
 		});
 	}
 
-	Notifications.create = function(text, score, path, callback) {
+	Notifications.create = function(text, score, path, uniqueId, callback) {
 		/*
 		 * Score guide:
 		 * 0	Low priority messages (probably unused)
 		 * 5	Normal messages
 		 * 10	High priority messages
+		 *
+		 * uniqueId is used solely to override stale nids.
+		 * 		If a new nid is pushed to a user and an existing nid in the user's
+		 *		(un)read list contains the same uniqueId, it will be removed, and
+		 *		the new one put in its place.
 		 */
 		RDB.incr('notifications:next_nid', function(err, nid) {
 			RDB.hmset(
@@ -29,6 +35,7 @@ var	config = require('../config.js'),
 				'score', score || 5,
 				'path', path || null,
 				'datetime', new Date().getTime(),
+				'uniqueId', uniqueId || utils.generateUUID(),
 			function(err, status) {
 				if (status === 'OK') callback(nid);
 			});
