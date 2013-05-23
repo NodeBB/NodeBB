@@ -40,28 +40,28 @@
 			});
 		},
 		
-		relativeTime: function(timestamp) {
+		relativeTime: function(timestamp, min) {
 			var	now = +new Date(),
 				difference = now - Math.floor(parseFloat(timestamp));
 
 			difference = Math.floor(difference / 1000);
 			
-			if (difference < 60) return difference + ' second' + (difference !== 1 ? 's' : '');
+			if (difference < 60) return difference + (min ? 's' : ' second') + (difference !== 1 && !min ? 's' : '');
 			
 			difference = Math.floor(difference / 60);
-			if (difference < 60) return difference + ' minute' + (difference !== 1 ? 's' : '');
+			if (difference < 60) return difference + (min ? 'm' : ' minute') + (difference !== 1 && !min ? 's' : '');
 
 			difference = Math.floor(difference / 60);
-			if (difference < 24) return difference + ' hour' + (difference !== 1 ? 's' : '');
+			if (difference < 24) return difference + (min ? 'h' : ' hour') + (difference !== 1 && !min ? 's' : '');
 
 			difference = Math.floor(difference / 24);
-			if (difference < 30) return difference + ' day' + (difference !== 1 ? 's' : '');
+			if (difference < 30) return difference + (min ? 'd' : ' day') + (difference !== 1 && !min ? 's' : '');
 
 			difference = Math.floor(difference / 30);
-			if (difference < 12) return difference + ' month' + (difference !== 1 ? 's' : '');
+			if (difference < 12) return difference + (min ? 'mon' : ' month') + (difference !== 1 && !min ? 's' : '');
 
 			difference = Math.floor(difference / 12);
-			return difference + ' year' + (difference !== 1 ? 's' : '');
+			return difference + (min ? 'y' : ' year') + (difference !== 1 && !min ? 's' : '');
 		},
 		
 		//http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
@@ -83,7 +83,7 @@
 			return str;
 		},
 
-		// Willingly stolen from: http://phpjs.org/functions/strip_tags/
+		// Blatently stolen from: http://phpjs.org/functions/strip_tags/
 		'strip_tags': function(input, allowed) {
 			allowed = (((allowed || "") + "").toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join(''); // making sure the allowed arg is a string containing only tags in lowercase (<a><b><c>)
 			var	tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,

@@ -102,28 +102,34 @@
 				case 'li': target = e.target; break;
 			}
 			if (target) {
-				var nid = target.getAttribute('data-nid');
-				socket.emit('api:notifications.mark_read', nid);
+				var nid = parseInt(target.getAttribute('data-nid'));
+				if (nid > 0) socket.emit('api:notifications.mark_read', nid);
 			}
 		})
 		socket.on('api:notifications.get', function(data) {
+			console.log(data);
 			var	notifFrag = document.createDocumentFragment(),
 				notifEl = document.createElement('li'),
 				numRead = data.read.length,
 				numUnread = data.unread.length,
 				x;
 			notifList.innerHTML = '';
-			for(x=0;x<numUnread;x++) {
-				notifEl.setAttribute('data-nid', data.unread[x].nid);
-				notifEl.className = 'unread';
-				notifEl.innerHTML = '<a href="' + data.unread[x].path + '"><span class="pull-right">11m</span>' + data.unread[x].text + '</a>';
-				notifFrag.appendChild(notifEl.cloneNode(true));
-			}
-			for(x=0;x<numRead;x++) {
-				notifEl.setAttribute('data-nid', data.read[x].nid);
-				notifEl.className = '';
-				notifEl.innerHTML = '<a href="' + data.read[x].path + '"><span class="pull-right">11m</span>' + data.read[x].text + '</a>';
-				notifFrag.appendChild(notifEl.cloneNode(true));
+			if (data.read.length + data.unread.length > 0) {
+				for(x=0;x<numUnread;x++) {
+					notifEl.setAttribute('data-nid', data.unread[x].nid);
+					notifEl.className = 'unread';
+					notifEl.innerHTML = '<a href="' + data.unread[x].path + '"><span class="pull-right">' + utils.relativeTime(data.unread[x].datetime, true) + '</span>' + data.unread[x].text + '</a>';
+					notifFrag.appendChild(notifEl.cloneNode(true));
+				}
+				for(x=0;x<numRead;x++) {
+					notifEl.setAttribute('data-nid', data.read[x].nid);
+					notifEl.className = '';
+					notifEl.innerHTML = '<a href="' + data.read[x].path + '"><span class="pull-right">' + utils.relativeTime(data.unread[x].datetime, true) + '</span>' + data.read[x].text + '</a>';
+					notifFrag.appendChild(notifEl.cloneNode(true));
+				}
+			} else {
+				notifEl.innerHTML = '<a>You have no notifications</a>';
+				notifFrag.appendChild(notifEl);
 			}
 			notifList.appendChild(notifFrag);
 		});
