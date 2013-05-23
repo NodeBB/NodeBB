@@ -5,6 +5,7 @@ var SocketIO = require('socket.io').listen(global.server,{log:false}),
 	config = require('../config.js'),
 	user = require('./user.js'),
 	posts = require('./posts.js'),
+	favourites = require('./favourites.js'),
 	utils = require('../public/src/utils.js'),
 	topics = require('./topics.js'),
 	categories = require('./categories.js'),
@@ -180,11 +181,11 @@ var SocketIO = require('socket.io').listen(global.server,{log:false}),
 		});
 
 		socket.on('api:posts.favourite', function(data) {
-			posts.favourite(data.pid, data.room_id, uid, socket);
+			favourites.favourite(data.pid, data.room_id, uid, socket);
 		});
 
 		socket.on('api:posts.unfavourite', function(data) {
-			posts.unfavourite(data.pid, data.room_id, uid, socket);
+			favourites.unfavourite(data.pid, data.room_id, uid, socket);
 		});
 
 		socket.on('api:user.active.get_record', function() {

@@ -3,6 +3,7 @@ var	RDB = require('./redis.js'),
 	marked = require('marked'),
 	user = require('./user.js'),
 	topics = require('./topics.js'),
+	favourites = require('./favourites.js'),
 	config = require('../config.js'),
 	threadTools = require('./threadTools.js'),
 	async = require('async');
@@ -42,7 +43,7 @@ marked.setOptions({
 
 
 			function getFavouritesData(next) {
-				Posts.getFavouritesByPostIDs(pids, current_user, function(fav_data) {
+				favourites.getFavouritesByPostIDs(pids, current_user, function(fav_data) {
 					next(null, fav_data);
 				}); // to be moved
 			}
@@ -236,104 +237,10 @@ marked.setOptions({
 		});
 	}
 
-
-	Posts.favourite = function(pid, room_id, uid, socket) {
-		if (uid === 0) {
-			socket.emit('event:alert', {
-				alert_id: 'post_favourite',
-				title: 'Not Logged In',
-				message: 'Please log in in order to favourite this post',
-				type: 'error',
-				timeout: 5000
-			});
-
-			socket.emit('api:posts.favourite', {
-				status: 'error',
-				pid: pid
-			});
-			return;
-		}
-
-		RDB.get('pid:' + pid + ':uid', function(err, uid_of_poster) {
-			RDB.handle(err);
-
-			Posts.hasFavourited(pid, uid, function(hasFavourited) {
-				if (hasFavourited == false) {
-					RDB.sadd('pid:' + pid + ':users_favourited', uid);
-					RDB.incr('pid:' + pid + ':rep');
-
-					if (uid !== uid_of_poster) user.incrementUserFieldBy(uid_of_poster, 'reputation', 1);
-
-					if (room_id) {
-						io.sockets.in(room_id).emit('event:rep_up', {uid: uid !== uid_of_poster ? uid_of_poster : 0, pid: pid});
-					}
-
-					socket.emit('api:posts.favourite', {
-						status: 'ok'
-					});
-				}
-			});
-		});
-	}
-
-	Posts.unfavourite = function(pid, room_id, uid, socket) {
-		if (uid === 0) {
-			socket.emit('event:alert', {
-				alert_id: 'post_favourite',
-				title: 'Not Logged In',
-				message: 'Please log in in order to favourite this post',
-				type: 'error',
-				timeout: 5000
-			});
-			return;
-		}
-
-		RDB.get('pid:' + pid + ':uid', function(err, uid_of_poster) {
-			RDB.handle(err);
-
-			Posts.hasFavourited(pid, uid, function(hasFavourited) {
-				if (hasFavourited == true) {
-					
-					RDB.srem('pid:' + pid + ':users_favourited', uid);
-					RDB.decr('pid:' + pid + ':rep');
-					
-					if (uid !== uid_of_poster) user.incrementUserFieldBy(uid_of_poster, 'reputation', -1);
-
-					if (room_id) {
-						io.sockets.in(room_id).emit('event:rep_down', {uid: uid !== uid_of_poster ? uid_of_poster : 0, pid: pid});
-					}
-				}
-			});
-		});
-	}
-
-	Posts.hasFavourited = function(pid, uid, callback) {
-		RDB.sismember('pid:' + pid + ':users_favourited', uid, function(err, hasFavourited) {
-			RDB.handle(err);
-			
-			callback(hasFavourited);
-		});
-	}
-
-	Posts.getFavouritesByPostIDs = function(pids, uid, callback) {
-		var loaded = 0;
-		var data = {};
-
-		for (var i=0, ii=pids.length; i<ii; i++) {
-			(function(post_id) {
-				Posts.hasFavourited(post_id, uid, function(hasFavourited) {
-			
-					data[post_id] = hasFavourited;
-					loaded ++;
-					if (loaded == pids.length) callback(data);
-				});
-			}(pids[i]))
-		}
-	}
-
 	Posts.getRawContent = function(pid, socket) {
 		RDB.get('pid:' + pid + ':content', function(err, raw) {
 			socket.emit('api:posts.getRawPost', { post: raw });
 		});
 	}
+
 }(exports));
