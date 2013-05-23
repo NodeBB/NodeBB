@@ -5,6 +5,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 	config = require('../config.js'),
 	user = require('./user.js'),
 	posts = require('./posts.js'),
+	favourites = require('./favourites.js'),
 	utils = require('../public/src/utils.js'),
 	topics = require('./topics.js'),
 	categories = require('./categories.js'),
@@ -70,6 +71,10 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		socket.on('disconnect', function() {
 			user.go_offline(uid);
       		delete users[hs.sessionID];
+      		var index = userSockets[uid].indexOf(socket);
+      		if(index !== -1) {
+      			userSockets[uid].splice(index, 1);
+      		}
    		});
 
 		socket.on('api:get_all_rooms', function(data) {
@@ -181,11 +186,11 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('api:posts.favourite', function(data) {
-			posts.favourite(data.pid, data.room_id, uid, socket);
+			favourites.favourite(data.pid, data.room_id, uid, socket);
 		});
 
 		socket.on('api:posts.unfavourite', function(data) {
-			posts.unfavourite(data.pid, data.room_id, uid, socket);
+			favourites.unfavourite(data.pid, data.room_id, uid, socket);
 		});
 
 		socket.on('api:user.active.get_record', function() {
@@ -268,13 +273,13 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				user.getUserField(uid, 'username', function(username) {
 					var finalMessage = username + ' says : ' + msg;
 
-					for(var x=0;x>numSockets;x++) {
+					for(var x=0;x<numSockets;x++) {
 						userSockets[touid][x].emit('chatMessage', {fromuid:uid, username:username, message:finalMessage});
 					}
 
 					notifications.create(finalMessage, 5, null, 'notification_'+new Date().getTime(), function(nid) {
  						notifications.push(nid, [touid], function(success) {
-  							console.log(success);
+  							
  						});
 					});
 				});

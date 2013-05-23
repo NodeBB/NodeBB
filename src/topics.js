@@ -313,7 +313,7 @@ marked.setOptions({
 				if (pid > 0) {
 					RDB.lpush('tid:' + tid + ':posts', pid);
 
-					// Notify any users looking at the category that a new post has arrived
+					// Notify any users looking at the category that a new topic has arrived
 					Topics.get_topic(tid, uid, function(topicData) {
 						io.sockets.in('category_' + category_id).emit('event:new_topic', topicData);
 					});
