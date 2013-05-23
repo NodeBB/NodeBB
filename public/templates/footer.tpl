@@ -81,7 +81,6 @@
 			}
 		});
 
-
 		// Post window events
 		var	postWindowEl = document.getElementById('post_window'),
 			discardEl = document.getElementById('discard-post');

@@ -9,6 +9,7 @@
 	<link href="/vendor/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
 	<link rel="stylesheet" href="/vendor/fontawesome/css/font-awesome.min.css">
 	<script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
+	<script type="text/javascript" src="/vendor/jquery/js/jquery-ui-1.10.3.custom.min.js"></script>
 	<script type="text/javascript" src="/vendor/bootstrap/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 	<script type="text/javascript" src="/src/app.js"></script>
@@ -85,10 +86,22 @@
 	    <h3 id="myModalLabel">Socket Disconnect</h3>
 	  </div>
 	  <div class="modal-body">
-		<span>Looks like you disconnected, try reloading the page.</span>
+		<span id="disconnect-text">Looks like you disconnected, try reloading the page.</span>
 	  </div>
 	  <div class="modal-footer">
 	    <a id="reload-button" href="/" class="btn btn-primary">Reload</a>
+	  </div>
+	</div>
+
+	<div id="chat-modal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-header">
+	  	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	    <h3 id="myModalLabel">Chat with <span id="chat-with-name"></span></h3>
+	  </div>
+	  <div class="modal-body">
+		<textarea id="chat-content" cols="40" rows="10" readonly></textarea><br/>
+		<input id="chat-message-input" type="text" name="chat-message" placeholder="type chat message here press enter to send"/><br/>
+		<button type="button" id="chat-message-send-btn" href="#" class="btn btn-primary">Send</button>
 	  </div>
 	</div>
 
