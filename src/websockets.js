@@ -6,7 +6,8 @@ var SocketIO = require('socket.io').listen(global.server,{log:false}),
 	user = require('./user.js'),
 	posts = require('./posts.js'),
 	topics = require('./topics.js'),
-	categories = require('./categories.js');
+	categories = require('./categories.js'),
+	notifications = require('./notifications.js');
 	
 (function(io) {
 	var	users = {},
@@ -232,6 +233,12 @@ var SocketIO = require('socket.io').listen(global.server,{log:false}),
 
 		socket.on('api:posts.restore', function(data) {
 			posts.restore(uid, data.pid);
+		});
+
+		socket.on('api:notifications.get', function(data) {
+			notifications.get(uid, function(notifs) {
+				socket.emit('api:notifications.get', notifs);
+			});
 		});
 	});
 	

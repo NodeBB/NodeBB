@@ -1,5 +1,3 @@
-
-
 var config = require('../config.js'),
 	utils = require('./utils.js'),
 	RDB = require('./redis.js'),
@@ -7,12 +5,11 @@ var config = require('../config.js'),
 	emailjs = require('emailjs'),
 	emailjsServer = emailjs.server.connect(config.mailer),
 	bcrypt = require('bcrypt'),
-	marked = require('marked');
-
+	marked = require('marked'),
+	notifications = require('./notifications.js'),
+	async = require('async');
 
 (function(User) {
-
-
 	User.getUserField = function(uid, field, callback) {
 		RDB.hget('user:'+uid, field, function(err, data){
 			if(err === null)
@@ -748,6 +745,46 @@ var config = require('../config.js'),
 			RDB.set(active_session, '');
 			RDB.expire(active_session, 60*10)
 			this.get();
+		}
+	}
+
+	User.notifications = {
+		get: function(uid, callback) {
+			async.parallel({
+				unread: function(next) {
+					RDB.zrangebyscore('uid:' + uid + ':notifications:unread', 0, 10, function(err, nids) {
+						var unread = [];
+						if (nids && nids.length > 0) {
+							async.eachSeries(nids, function(nid, next) {
+								notifications.get(nid, function(notif_data) {
+									unread.push(notif_data);
+									next();
+								});
+							}, function(err) {
+								next(null, unread);
+							});
+						} else next(null, unread);
+					});
+				},
+				read: function(next) {
+					RDB.zrangebyscore('uid:' + uid + ':notifications:read', 0, 10, function(err, nids) {
+						var read = [];
+						if (nids && nids.length > 0) {
+							async.eachSeries(nids, function(nid, next) {
+								notifications.get(nid, function(notif_data) {
+									read.push(notif_data);
+									next();
+								});
+							}, function(err) {
+								console.log(read);
+								next(null, read);
+							});
+						} else next(null, read);
+					});
+				}
+			}, function(err, notifications) {
+				callback(notifications);
+			});
 		}
 	}
 }(exports));

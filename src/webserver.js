@@ -7,13 +7,14 @@ var express = require('express'),
     redis = require('redis'),
 	redisServer = redis.createClient(config.redis.port, config.redis.host, config.redis.options),
 	marked = require('marked'),
+	fs = require('fs'),
 	
 	user = require('./user.js'),
 	categories = require('./categories.js'),
 	posts = require('./posts.js'),
 	topics = require('./topics.js'),
+	notifications = require('./notifications.js'),
 	utils = require('./utils.js'),
-	fs = require('fs'),
 	admin = require('./routes/admin.js'),
 	userRoute = require('./routes/user.js'),
 	auth = require('./routes/authentication.js');
@@ -239,9 +240,9 @@ var express = require('express'),
 	app.get('/api/:method/:id*', api_method);
 
 	app.get('/test', function(req, res) {
-		categories.get(function(category) {
-			res.send(JSON.stringify(category, null, 4));
-		}, null, 2, null, null);
+		user.notifications.get(2, function(notifs) {
+			res.send(JSON.stringify(notifs, null, 4));
+		});
 	});
 
 
