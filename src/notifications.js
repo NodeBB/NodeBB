@@ -5,13 +5,14 @@ var	config = require('../config.js'),
 
 (function(Notifications) {
 	Notifications.get = function(nid, callback) {
-		RDB.hmget('notifications:' + nid, 'text', 'score', 'path', 'datetime', function(err, notification) {
+		RDB.hmget('notifications:' + nid, 'text', 'score', 'path', 'datetime', 'uniqueId', function(err, notification) {
 			callback({
 				nid: nid,
 				text: notification[0],
 				score: notification[1],
 				path: notification[2],
-				datetime: notification[3]
+				datetime: notification[3],
+				uniqueId: notification[4]
 			});
 		});
 	}
@@ -51,10 +52,49 @@ var	config = require('../config.js'),
 		Notifications.get(nid, function(notif_data) {
 			for(x=0;x<numUids;x++) {
 				if (parseInt(uids[x]) > 0) {
-					RDB.zadd('uid:' + uids[x] + ':notifications:unread', notif_data.score, nid);
-					if (callback) callback(true);
+					(function(uid) {
+						Notifications.remove_by_uniqueId(notif_data.uniqueId, uid, function() {
+							RDB.zadd('uid:' + uid + ':notifications:unread', notif_data.score, nid);
+							if (callback) callback(true);
+						});
+					})(uids[x]);
 				}
 			}
+		});
+	}
+
+	Notifications.remove_by_uniqueId = function(uniqueId, uid, callback) {
+		async.parallel([
+			function(next) {
+				RDB.zrange('uid:' + uid + ':notifications:unread', 0, -1, function(err, nids) {
+					if (nids && nids.length > 0) {
+						async.each(nids, function(nid, next) {
+							Notifications.get(nid, function(nid_info) {
+								if (nid_info.uniqueId === uniqueId) RDB.zrem('uid:' + uid + ':notifications:unread', nid);
+								next();
+							});
+						}, function(err) {
+							next();
+						});
+					} else next();
+				});
+			},
+			function(next) {
+				RDB.zrange('uid:' + uid + ':notifications:read', 0, -1, function(err, nids) {
+					if (nids && nids.length > 0) {
+						async.each(nids, function(nid, next) {
+							Notifications.get(nid, function(nid_info) {
+								if (nid_info.uniqueId === uniqueId) RDB.zrem('uid:' + uid + ':notifications:read', nid);
+								next();
+							});
+						}, function(err) {
+							next();
+						});
+					} else next();
+				});
+			}
+		], function(err) {
+			if (!err) callback(true);
 		});
 	}
 

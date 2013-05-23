@@ -240,14 +240,14 @@ var express = require('express'),
 	app.get('/api/:method/:id*', api_method);
 
 	app.get('/test', function(req, res) {
-		notifications.mark_read_multiple([1, 2], 1, function(success) {
-			res.send('mark: ' + success);
-		});
-		// notifications.create('some text', 5, '/category/2/general-discussion', function(nid) {
-		// 	notifications.push(nid, 1, function() {
-		// 		res.send('nid: ', nid)
-		// 	});
+		// notifications.remove_by_uniqueId('foobar', 1, function(success) {
+		// 	res.send('remove: ' + success);
 		// });
+		notifications.create('a bunch more text', 5, '/category/2/general-discussion', 'foobar', function(nid) {
+			notifications.push(nid, 1, function() {
+				res.send('nid: ' + nid)
+			});
+		});
 	});
 
 
