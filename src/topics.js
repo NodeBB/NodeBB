@@ -135,7 +135,7 @@ marked.setOptions({
 				topicData.post_count = topic[4];
 				topicData.locked = topic[5];
 				topicData.pinned = topic[6];
-				topiscData.deleted = topic[7];
+				topicData.deleted = topic[7];
 
 				user.getUserField(topic[1], 'username', function(username) {
 					topicData.username = username;
