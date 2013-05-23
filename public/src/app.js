@@ -14,6 +14,10 @@ var socket,
 			config = data;
 			socket = io.connect('http://' + config.socket.address + config.socket.port? ':' + config.socket.port : '');
 
+			var reconnecting = false;
+			var reconnectTries = 0;
+
+
 			socket.on('event:connect', function(data) {
 				console.log('connected to nodebb socket: ', data);
 			});
@@ -32,14 +36,63 @@ var socket,
 				contentEl.value = data.post;
 			});
 
-			socket.on('disconnect', function(data){
-				setTimeout(function() { 
-					$('#disconnect-modal').modal('show');
-					$('#reload-button').on('click',function(){
-						$('#disconnect-modal').modal('hide');
-						window.location.reload();
+			socket.on('connect', function(data){
+				if(reconnecting) {
+					app.alert({
+						alert_id: 'connection_alert',
+						title: 'Connected',
+						message: 'Connection successfull',
+						type: 'success',
+						timeout: 5000
 					});
-				}, 500);
+					reconnecting = false;
+				}
+			});
+
+			socket.on('disconnect', function(data){
+				app.alert({
+					alert_id: 'connection_alert',
+					title: 'Disconnect',
+					message: 'You have disconnected from NodeBB, we will try to reconnect!',
+					type: 'error',
+					timeout: 1000
+				});
+			});
+
+			socket.on('reconnecting', function(data) {
+				reconnecting = true;
+				reconnectTries++;
+				if(reconnectTries > 4) {
+					showDisconnectModal();
+					return;
+				}
+				app.alert({
+					alert_id: 'connection_alert',
+					title: 'Reconnecting',
+					message: 'You have disconnected from NodeBB, we will try to reconnect you. <br/><i class="icon-refresh icon-spin"></i>',
+					type: 'notify',
+					timeout: 5000
+				});
+			});
+
+			function showDisconnectModal() {
+				$('#disconnect-modal').modal({
+					backdrop:'static',
+					show:true
+				});
+
+				$('#reload-button').on('click',function(){
+					$('#disconnect-modal').modal('hide');
+					window.location.reload();
+				});
+			}
+
+			socket.on('reconnect_failed', function(data) {
+				console.log('reconnect_failed');	
+			});
+
+			socket.on('connect_failed', function(data){
+				console.log('connect_faled');
 			});
 		},
 		async: false
