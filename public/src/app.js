@@ -131,10 +131,6 @@ var socket,
 				strong = document.createElement('strong'),
 				p = document.createElement('p');
 
-			/*jQuery('#'+alert_id).fadeOut(500, function() {
-				this.remove();
-			});*/
-
 			p.innerHTML = params.message;
 			strong.innerHTML = params.title;
 
@@ -183,12 +179,6 @@ var socket,
 
 
 	app.open_post_window = function(post_mode, id, title, pid) {
-		
-		try{
-			throw new Error;
-		}catch(e){
-			console.log(e.stack);
-		}
 
 		submit_post_btn = submit_post_btn || document.getElementById('submit_post_btn');
 		post_title = post_title || document.getElementById('post_title');
@@ -268,8 +258,6 @@ var socket,
 	};
 
 	app.close_post_window = function() {
-		console.log('closing post window');
-
 		post_window = post_window || document.getElementById('post_window');
 		jQuery(post_window).slideUp(250);
 		$(document.body).removeClass('composing');
