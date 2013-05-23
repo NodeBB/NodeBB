@@ -14,6 +14,10 @@ var socket,
 			config = data;
 			socket = io.connect('http://' + config.socket.address + config.socket.port? ':' + config.socket.port : '');
 
+			var reconnecting = false;
+			var reconnectTries = 0;
+
+
 			socket.on('event:connect', function(data) {
 				console.log('connected to nodebb socket: ', data);
 			});
@@ -32,15 +36,56 @@ var socket,
 				contentEl.value = data.post;
 			});
 
-			socket.on('disconnect', function(data){
-				setTimeout(function() { 
-					$('#disconnect-modal').modal('show');
-					$('#reload-button').on('click',function(){
-						$('#disconnect-modal').modal('hide');
-						window.location.reload();
+			socket.on('connect', function(data){
+				if(reconnecting) {
+					app.alert({
+						alert_id: 'connection_alert',
+						title: 'Connected',
+						message: 'Connection successfull',
+						type: 'success',
+						timeout: 5000
 					});
-				}, 500);
+					reconnecting = false;
+				}
 			});
+
+			socket.on('disconnect', function(data){
+				app.alert({
+					alert_id: 'connection_alert',
+					title: 'Disconnect',
+					message: 'You have disconnected from NodeBB, we will try to reconnect!',
+					type: 'error',
+					timeout: 5000
+				});
+			});
+
+			socket.on('reconnecting', function(data) {
+				reconnecting = true;
+				reconnectTries++;
+				if(reconnectTries > 4) {
+					showDisconnectModal();
+					return;
+				}
+				app.alert({
+					alert_id: 'connection_alert',
+					title: 'Reconnecting',
+					message: 'You have disconnected from NodeBB, we will try to reconnect you. <br/><i class="icon-refresh icon-spin"></i>',
+					type: 'notify',
+					timeout: 5000
+				});
+			});
+
+			function showDisconnectModal() {
+				$('#disconnect-modal').modal({
+					backdrop:'static',
+					show:true
+				});
+
+				$('#reload-button').on('click',function(){
+					$('#disconnect-modal').modal('hide');
+					window.location.reload();
+				});
+			}
 		},
 		async: false
 	});
@@ -68,51 +113,60 @@ var socket,
 	// timeout default = permanent
 	// location : alert_window (default) or content
 	app.alert = function(params) {
-		var div = document.createElement('div'),
-			button = document.createElement('button'),
-			strong = document.createElement('strong'),
-			p = document.createElement('p');
+		
 
 		var alert_id = 'alert_button_' + ((params.alert_id) ? params.alert_id : new Date().getTime()); 
 
-		jQuery('#'+alert_id).fadeOut(500, function() {
-			this.remove();
-		});
+		var alert = $('#'+alert_id);
 
-		p.innerHTML = params.message;
-		strong.innerHTML = params.title;
-
-		div.className = "alert toaster-alert " + ((params.type=='warning') ? '' : "alert-" + params.type);
-		
-		div.setAttribute('id', alert_id);
-		div.appendChild(button);
-		div.appendChild(strong);
-		div.appendChild(p);
-
-		button.className = 'close';
-		button.innerHTML = '&times;';
-		button.onclick = function(ev) {
-			div.parentNode.removeChild(div);
+		if(alert.length > 0) {
+			alert.find('strong').html(params.title);
+			alert.find('p').html(params.message);
+			alert.attr('class', "alert toaster-alert " + ((params.type=='warning') ? '' : "alert-" + params.type));
 		}
+		else {
 
-		if (params.location == null) params.location = 'alert_window';
+			var div = document.createElement('div'),
+				button = document.createElement('button'),
+				strong = document.createElement('strong'),
+				p = document.createElement('p');
 
-		jQuery('#'+params.location).prepend(jQuery(div).fadeIn('100'));
+			p.innerHTML = params.message;
+			strong.innerHTML = params.title;
 
-		if (params.timeout) {
-			setTimeout(function() {
-				jQuery(div).fadeOut(1000, function() {
-					this.remove();
-				});
-			}, params.timeout)
-		}
+			div.className = "alert toaster-alert " + ((params.type=='warning') ? '' : "alert-" + params.type);
+			
+			div.setAttribute('id', alert_id);
+			div.appendChild(button);
+			div.appendChild(strong);
+			div.appendChild(p);
 
-		if (params.clickfn) {
-			div.onclick = function() {
-				params.clickfn();
-				jQuery(div).fadeOut(500, function() {
-					this.remove();
-				});
+			button.className = 'close';
+			button.innerHTML = '&times;';
+			button.onclick = function(ev) {
+				div.parentNode.removeChild(div);
+			}
+
+			if (params.location == null) 
+				params.location = 'alert_window';
+
+			jQuery('#'+params.location).prepend(jQuery(div).fadeIn('100'));
+
+			if (params.timeout) {
+				setTimeout(function() {
+					jQuery(div).fadeOut(1000, function() {
+						this.remove();
+					});
+				}, params.timeout)
+			}
+
+			if (params.clickfn) {
+				div.onclick = function() {
+					params.clickfn();
+					jQuery(div).fadeOut(500, function() {
+						this.remove();
+					});
+				}
 			}
 		}
 	}
@@ -125,7 +179,7 @@ var socket,
 
 
 	app.open_post_window = function(post_mode, id, title, pid) {
-		
+
 		submit_post_btn = submit_post_btn || document.getElementById('submit_post_btn');
 		post_title = post_title || document.getElementById('post_title');
 		reply_title = reply_title || document.getElementById('reply_title');

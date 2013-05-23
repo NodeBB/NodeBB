@@ -61,7 +61,6 @@ var	RDB = require('./redis.js'),
 		if (start == null) start = 0;
 		if (end == null) end = start + 10;
 
-		//build a proper wrapper for this and move it into above function later
 		var range_var = (category_id) ? 'categories:' + category_id + ':tid'  : 'topics:tid';
 
 		RDB.smembers(range_var, function(err, tids) {

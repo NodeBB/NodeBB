@@ -362,10 +362,13 @@
 		}
 
 		function sendMessage(chatModal, touid) {
-			var msg = app.strip_tags(chatModal.find('#chat-message-input').val()) + '\n';
-			socket.emit('sendChatMessage', { touid:touid, message:msg});
-			chatModal.find('#chat-message-input').val('');
-			appendChatMessage(chatModal, 'You : ' + msg);
+			var msg = app.strip_tags(chatModal.find('#chat-message-input').val());
+			if(msg.length) {
+				msg = msg +'\n';
+				socket.emit('sendChatMessage', { touid:touid, message:msg});
+				chatModal.find('#chat-message-input').val('');
+				appendChatMessage(chatModal, 'You : ' + msg);
+			}
 		}
 
 		socket.on('chatMessage', function(data){

@@ -92,7 +92,7 @@
 	    <h3 id="myModalLabel">Socket Disconnect</h3>
 	  </div>
 	  <div class="modal-body">
-		<span>Looks like you disconnected, try reloading the page.</span>
+		<span id="disconnect-text">Looks like you disconnected, try reloading the page.</span>
 	  </div>
 	  <div class="modal-footer">
 	    <a id="reload-button" href="/" class="btn btn-primary">Reload</a>

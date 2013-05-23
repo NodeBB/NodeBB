@@ -4,6 +4,7 @@ var	RDB = require('./redis.js'),
 	user = require('./user.js'),
 	topics = require('./topics.js'),
 	config = require('../config.js'),
+	threadTools = require('./threadTools.js'),
 	async = require('async');
 
 marked.setOptions({
@@ -12,49 +13,108 @@ marked.setOptions({
 
 (function(Posts) {
 
-	Posts.get = function(callback, pid, current_user) {
-		// Not used... although Topics.get could be refactored to call Posts.get for every post
-	}
+	Posts.get = function(callback, tid, current_user, start, end) {
+		if (start == null) start = 0;
+		if (end == null) end = start + 10;
 
-	Posts.privileges = function(pid, uid, callback) {
-		async.parallel([
-			function(next) {
-				Posts.get_tid_by_pid(pid, function(tid) {
-					topics.privileges(tid, uid, function(privileges) {
-						next(null, privileges);
-					});
-				});
-			},
-			function(next) {
-				RDB.get('pid:' + pid + ':uid', function(err, author) {
-					if (author && parseInt(author) > 0) next(null, author === uid);
-				});
-			},
-			function(next) {
-				user.getUserField(uid, 'reputation', function(reputation) {
-					next(null, reputation >= config.privilege_thresholds.manage_content);
-				});
+		RDB.lrange('tid:' + tid + ':posts', start, end, function(err, pids) {
+			RDB.handle(err);
+			
+			if (pids.length === 0 ) {
+				callback(false);
+				return;
 			}
-		], function(err, results) {
-			callback({
-				editable: results[0].editable || (results.slice(1).indexOf(true) !== -1 ? true : false),
-				view_deleted: results[0].view_deleted || (results.slice(1).indexOf(true) !== -1 ? true : false)
+			
+			topics.markAsRead(tid, current_user);
+			
+			var content = [], uid = [], timestamp = [], pid = [], post_rep = [], editor = [], editTime = [], deleted = [];
+
+			for (var i=0, ii=pids.length; i<ii; i++) {
+				content.push('pid:' + pids[i] + ':content');
+				uid.push('pid:' + pids[i] + ':uid');
+				timestamp.push('pid:' + pids[i] + ':timestamp');
+				post_rep.push('pid:' + pids[i] + ':rep');
+				editor.push('pid:' + pids[i] + ':editor');
+				editTime.push('pid:' + pids[i] + ':edited');
+				deleted.push('pid:' + pids[i] + ':deleted');
+				pid.push(pids[i]);
+			}
+
+
+			function getFavouritesData(next) {
+				Posts.getFavouritesByPostIDs(pids, current_user, function(fav_data) {
+					next(null, fav_data);
+				}); // to be moved
+			}
+
+			function getPostData(next) {
+				RDB.multi()
+					.mget(content)
+					.mget(uid)
+					.mget(timestamp)
+					.mget(post_rep)
+					.mget(editor)
+					.mget(editTime)
+					.mget(deleted)
+					.exec(function(err, replies) {
+						post_data = {
+							pid: pids,
+							content: replies[0],
+							uid: replies[1],
+							timestamp: replies[2],
+							reputation: replies[3],
+							editor: replies[4],
+							editTime: replies[5],
+							deleted: replies[6]
+						};
+
+						// below, to be deprecated
+						// Add any editors to the user_data object
+						for(var x = 0, numPosts = post_data.editor.length; x < numPosts; x++) {
+							if (post_data.editor[x] !== null && post_data.uid.indexOf(post_data.editor[x]) === -1) {
+								post_data.uid.push(post_data.editor[x]);
+							}
+						}
+
+						user.getMultipleUserFields(post_data.uid, ['username','reputation','picture', 'signature'], function(user_details) {
+							next(null, {
+								users: user_details,
+								posts: post_data
+							});
+						});
+						// above, to be deprecated
+					});
+			}
+
+			async.parallel([getFavouritesData, getPostData], function(err, results) {
+				callback({
+					'voteData' : results[0], // to be moved
+					'userData' : results[1].users, // to be moved
+					'postData' : results[1].posts
+				});
 			});
+
 		});
 	}
 
 	Posts.get_tid_by_pid = function(pid, callback) {
 		RDB.get('pid:' + pid + ':tid', function(err, tid) {
-			if (tid && parseInt(tid) > 0) callback(tid);
-			else callback(false);
+			if (tid && parseInt(tid) > 0) {
+				callback(tid);
+			} else {
+				callback(false);
+			}
 		});
 	}
 
 	Posts.get_cid_by_pid = function(pid, callback) {
 		Posts.get_tid_by_pid(pid, function(tid) {
 			if (tid) topics.get_cid_by_tid(tid, function(cid) {
-				if (cid) callback(cid);
-				else callback(false);
+				if (cid) {
+					callback(cid);
+				} else {
+					callback(false);
+				}
 			});
 		})
 	}
@@ -81,6 +141,7 @@ marked.setOptions({
 
 				// Re-add the poster, so he/she does not get an "unread" flag on this topic
 				topics.markAsRead(tid, uid);
+				// this will duplicate once we enter the thread, which is where we should be going
 
 				socket.emit('event:alert', {
 					title: 'Reply Successful',
@@ -89,7 +150,7 @@ marked.setOptions({
 					timeout: 2000
 				});
 
-				user.getUserFields(uid, ['username','reputation','picture','signature'], function(data){
+				user.getUserFields(uid, ['username','reputation','picture','signature'], function(data) {
 					
 					var timestamp = new Date().getTime();
 					
@@ -144,7 +205,7 @@ marked.setOptions({
 					RDB.incr('tid:' + tid + ':postcount');
 
 
-					user.getUserFields(uid, ['username'], function(data){
+					user.getUserFields(uid, ['username'], function(data) {
 						//add active users to this category
 						RDB.get('tid:' + tid + ':cid', function(err, cid) {
 							RDB.handle(err);
@@ -273,50 +334,6 @@ marked.setOptions({
 	Posts.getRawContent = function(pid, socket) {
 		RDB.get('pid:' + pid + ':content', function(err, raw) {
 			socket.emit('api:posts.getRawPost', { post: raw });
-		});
-	}
-
-	Posts.edit = function(uid, pid, content) {
-		var	success = function() {
-				RDB.set('pid:' + pid + ':content', content);
-				RDB.set('pid:' + pid + ':edited', new Date().getTime());
-				RDB.set('pid:' + pid + ':editor', uid);
-
-				Posts.get_tid_by_pid(pid, function(tid) {
-					io.sockets.in('topic_' + tid).emit('event:post_edited', { pid: pid, content: marked(content || '') });
-				});
-			};
-
-		Posts.privileges(pid, uid, function(privileges) {
-			if (privileges.editable) success();
-		});
-	}
-
-	Posts.delete = function(uid, pid) {
-		var	success = function() {
-				RDB.set('pid:' + pid + ':deleted', 1);
-
-				Posts.get_tid_by_pid(pid, function(tid) {
-					io.sockets.in('topic_' + tid).emit('event:post_deleted', { pid: pid });
-				});
-			};
-
-		Posts.privileges(pid, uid, function(privileges) {
-			if (privileges.editable) success();
-		});
-	}
-
-	Posts.restore = function(uid, pid) {
-		var	success = function() {
-				RDB.del('pid:' + pid + ':deleted');
-
-				Posts.get_tid_by_pid(pid, function(tid) {
-					io.sockets.in('topic_' + tid).emit('event:post_restored', { pid: pid });
-				});
-			};
-
-		Posts.privileges(pid, uid, function(privileges) {
-			if (privileges.editable) success();
 		});
 	}
 }(exports));
