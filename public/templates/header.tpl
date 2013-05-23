@@ -47,7 +47,7 @@
 						</li>
 					</ul>
 					<ul class="nav pull-right nodebb-inline-block" id="right-menu">
-						<li class="notifications dropdown">
+						<li class="notifications dropdown text-center">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="notif_dropdown"><i class="icon-circle-blank"></i></a>
 							<ul id="notif-list" class="dropdown-menu" aria-labelledby="notif_dropdown">
 								<li><a href="#"><i class="icon-refresh icon-spin"></i> Loading Notifications</a></li>

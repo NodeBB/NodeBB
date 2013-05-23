@@ -129,6 +129,10 @@
 			if (counts.unread > 0) notifIcon.className = 'icon-circle active';
 			else notifIcon.className = 'icon-circle-blank';
 		});
+		socket.on('event:new_notification', function() {
+			console.log('WOOT');
+			document.querySelector('.notifications a i').className = 'icon-circle active';
+		});
 		socket.emit('api:notifications.counts');
 	}());
 	</script>

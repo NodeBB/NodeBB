@@ -55,6 +55,7 @@ var	config = require('../config.js'),
 					(function(uid) {
 						Notifications.remove_by_uniqueId(notif_data.uniqueId, uid, function() {
 							RDB.zadd('uid:' + uid + ':notifications:unread', notif_data.score, nid);
+							global.io.sockets.in('uid_' + uid).emit('event:new_notification');
 							if (callback) callback(true);
 						});
 					})(uids[x]);
