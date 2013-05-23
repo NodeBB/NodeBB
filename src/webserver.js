@@ -71,7 +71,7 @@ var express = require('express'),
 
 	// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 	(function() {
-		var routes = ['', 'login', 'register', 'account', 'latest', 'popular', 'active', '403'];
+		var routes = ['', 'login', 'register', 'account', 'latest', 'popular', 'active', '403', '404'];
 
 		for (var i=0, ii=routes.length; i<ii; i++) {
 			(function(route) {

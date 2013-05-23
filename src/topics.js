@@ -58,6 +58,11 @@ marked.setOptions({
 				voteData = results[1].voteData,
 				privileges = results[2];
 
+			if (!postData) {
+				callback(false);
+				return;
+			}
+
 			for (var i=0, ii= postData.pid.length; i<ii; i++) {
 				var uid = postData.uid[i],
 					pid = postData.pid[i];
