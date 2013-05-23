@@ -41,7 +41,7 @@ var socket,
 					app.alert({
 						alert_id: 'connection_alert',
 						title: 'Connected',
-						message: 'Connection successfull',
+						message: 'Connection successful',
 						type: 'success',
 						timeout: 5000
 					});
