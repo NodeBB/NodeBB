@@ -107,6 +107,7 @@
 			}
 		})
 		socket.on('api:notifications.get', function(data) {
+			console.log(data);
 			var	notifFrag = document.createDocumentFragment(),
 				notifEl = document.createElement('li'),
 				numRead = data.read.length,
@@ -123,7 +124,7 @@
 				for(x=0;x<numRead;x++) {
 					notifEl.setAttribute('data-nid', data.read[x].nid);
 					notifEl.className = '';
-					notifEl.innerHTML = '<a href="' + data.read[x].path + '"><span class="pull-right">' + utils.relativeTime(data.unread[x].datetime, true) + '</span>' + data.read[x].text + '</a>';
+					notifEl.innerHTML = '<a href="' + data.read[x].path + '"><span class="pull-right">' + utils.relativeTime(data.read[x].datetime, true) + '</span>' + data.read[x].text + '</a>';
 					notifFrag.appendChild(notifEl.cloneNode(true));
 				}
 			} else {
@@ -134,7 +135,7 @@
 		});
 		socket.on('api:notifications.counts', function(counts) {
 			var notifIcon = document.querySelector('.notifications a i');
-			if ((counts.unread + counts.read) > 0) notifIcon.className = 'icon-circle active';
+			if (counts.unread > 0) notifIcon.className = 'icon-circle active';
 			else notifIcon.className = 'icon-circle-blank';
 		});
 		socket.emit('api:notifications.counts');
