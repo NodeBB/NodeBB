@@ -1,6 +1,6 @@
 var	RDB = require('./redis.js'),
 	posts = require('./posts.js'),
-	utils = require('./utils.js'),
+	utils = require('./../public/src/utils.js'),
 	user = require('./user.js'),
 	async = require('async'),
 	topics = require('./topics.js');

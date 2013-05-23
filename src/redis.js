@@ -4,7 +4,7 @@
 
 		redis = require('redis'),
 		config = require('../config.js'),
-		utils = require('./utils.js');
+		utils = require('./../public/src/utils.js');
 	
 
 	RedisDB.exports = redis.createClient(config.redis.port, config.redis.host, config.redis.options);
