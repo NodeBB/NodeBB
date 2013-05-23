@@ -47,27 +47,18 @@
 		socket.emit('api:updateHeader', { fields: ['username', 'picture'] });
 
 		socket.on('api:updateHeader', function(data) {
+			var rightMenu = $('#right-menu');
 			if (data.uid > 0) {
-				var	gravatar = document.createElement('img'),
-					name = document.createElement('span')
-					logoutEl = document.createElement('li');
-					
-				logoutEl.innerHTML = '<a href="/logout">Log out</a>';
+				var userLabel = rightMenu.find('#user_label');
+				userLabel.attr('href','/users/'+data['username']);
 
-				name.innerHTML = data['username'];
-				gravatar.src = data['picture']+"?s=24";
+				userLabel.find('img').attr('src',data['picture']+"?s=24");
+				userLabel.find('span').html(data['username']);
 				
-				var userLink = $('<a id="user_label" href="/users/'+data['username']+'"></a>');
-
-				userLink.append(gravatar);
-				userLink.append(name);
-				
-				var userLi = $('<li></li>');
-				userLi.append(userLink);
-				
-				$(right_menu).append(userLi);
-				right_menu.appendChild(logoutEl);
 			} else {
+				
+				rightMenu.html('');
+
 				var registerEl = document.createElement('li'),
 					loginEl = document.createElement('li');
 
