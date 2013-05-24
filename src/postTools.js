@@ -25,7 +25,9 @@ marked.setOptions({
 
 		function isOwnPost(next) {
 			RDB.get('pid:' + pid + ':uid', function(err, author) {
-					if (author && parseInt(author) > 0) next(null, author === uid);
+					if (author && parseInt(author) > 0) {
+						next(null, author === uid);
+					}
 				});
 		}
 
@@ -52,12 +54,17 @@ marked.setOptions({
 				RDB.set('pid:' + pid + ':editor', uid);
 
 				posts.get_tid_by_pid(pid, function(tid) {
-					io.sockets.in('topic_' + tid).emit('event:post_edited', { pid: pid, content: marked(content || '') });
+					io.sockets.in('topic_' + tid).emit('event:post_edited', {
+						pid: pid,
+						content: marked(content || '')
+					});
 				});
 			};
 
 		PostTools.privileges(pid, uid, function(privileges) {
-			if (privileges.editable) success();
+			if (privileges.editable) {
+				success();
+			}
 		});
 	}
 
@@ -66,12 +73,16 @@ marked.setOptions({
 				RDB.set('pid:' + pid + ':deleted', 1);
 
 				posts.get_tid_by_pid(pid, function(tid) {
-					io.sockets.in('topic_' + tid).emit('event:post_deleted', { pid: pid });
+					io.sockets.in('topic_' + tid).emit('event:post_deleted', {
+						pid: pid
+					});
 				});
 			};
 
 		PostTools.privileges(pid, uid, function(privileges) {
-			if (privileges.editable) success();
+			if (privileges.editable) {
+				success();
+			}
 		});
 	}
 
@@ -80,12 +91,16 @@ marked.setOptions({
 				RDB.del('pid:' + pid + ':deleted');
 
 				posts.get_tid_by_pid(pid, function(tid) {
-					io.sockets.in('topic_' + tid).emit('event:post_restored', { pid: pid });
+					io.sockets.in('topic_' + tid).emit('event:post_restored', {
+						pid: pid
+					});
 				});
 			};
 
 		PostTools.privileges(pid, uid, function(privileges) {
-			if (privileges.editable) success();
+			if (privileges.editable) {
+				success();
+			}
 		});
 	}
 

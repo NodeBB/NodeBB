@@ -98,7 +98,6 @@
 			}
 		})
 		socket.on('api:notifications.get', function(data) {
-			console.log(data);
 			var	notifFrag = document.createDocumentFragment(),
 				notifEl = document.createElement('li'),
 				numRead = data.read.length,
@@ -126,8 +125,10 @@
 		});
 		socket.on('api:notifications.counts', function(counts) {
 			var notifIcon = document.querySelector('.notifications a i');
-			if (counts.unread > 0) notifIcon.className = 'icon-circle active';
-			else notifIcon.className = 'icon-circle-blank';
+			if(notifIcon) {
+				if (counts.unread > 0) notifIcon.className = 'icon-circle active';
+				else notifIcon.className = 'icon-circle-blank';
+			}
 		});
 		socket.on('event:new_notification', function() {
 			console.log('WOOT');

@@ -14,8 +14,7 @@ marked.setOptions({
 });
 
 (function(Topics) {
-	Topics.get = function(callback, tid, current_user) {
-
+	Topics.getTopicById = function(tid, current_user, callback) {
 		function getTopicData(next) {
 			RDB.multi()
 				.get('tid:' + tid + ':title')
@@ -37,9 +36,9 @@ marked.setOptions({
 		}
 
 		function getTopicPosts(next) {
-			posts.get(function(postData) {
+			posts.getPostsByTid(tid, current_user, 0, 10, function(postData) {
 				next(null, postData);
-			}, tid, current_user, 0, 10);
+			});
 		}
 
 		function getPrivileges(next) {
@@ -68,7 +67,7 @@ marked.setOptions({
 					pid = postData.pid[i];
 				
 
-				// ############ to be moved into posts.get ############
+				// ############ to be moved into posts.getPostsByTid ############
 				if (postData.deleted[i] === null || (postData.deleted[i] === '1' && privileges.view_deleted) || current_user === uid) {
 					var post_obj = {
 						'pid' : pid,
@@ -95,7 +94,7 @@ marked.setOptions({
 						retrieved_posts.push(post_obj);
 					}
 				}
-				// ########## end to be moved into posts.get ############
+				// ########## end to be moved into posts.getPostsByTid ############
 			}
 
 			callback({

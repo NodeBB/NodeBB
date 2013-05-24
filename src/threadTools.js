@@ -145,10 +145,17 @@ var	RDB = require('./redis.js'),
 						RDB.set('tid:' + tid + ':category_name', data.categories[0].name);
 						RDB.set('tid:' + tid + ':category_slug', data.categories[0].slug);
 					});
-					socket.emit('api:topic.move', { status: 'ok' });
-					io.sockets.in('topic_' + tid).emit('event:topic_moved', { tid: tid });
+
+					socket.emit('api:topic.move', {
+						status: 'ok'
+					});
+					io.sockets.in('topic_' + tid).emit('event:topic_moved', {
+						tid: tid
+					});
 				} else {
-					socket.emit('api:topic.move', { status: 'error' });
+					socket.emit('api:topic.move', {
+						status: 'error'
+					});
 				}
 			});
 		});
