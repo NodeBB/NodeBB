@@ -98,7 +98,6 @@
 			}
 		})
 		socket.on('api:notifications.get', function(data) {
-			console.log(data);
 			var	notifFrag = document.createDocumentFragment(),
 				notifEl = document.createElement('li'),
 				numRead = data.read.length,
