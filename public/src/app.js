@@ -50,13 +50,15 @@ var socket,
 			});
 
 			socket.on('disconnect', function(data){
-				app.alert({
-					alert_id: 'connection_alert',
-					title: 'Disconnect',
-					message: 'You have disconnected from NodeBB, we will try to reconnect!',
-					type: 'error',
-					timeout: 5000
-				});
+				setTimeout(function() {
+					app.alert({
+						alert_id: 'connection_alert',
+						title: 'Disconnect',
+						message: 'You have disconnected from NodeBB, we will try to reconnect!',
+						type: 'error',
+						timeout: 5000
+					});
+				}, 500);
 			});
 
 			socket.on('reconnecting', function(data) {
