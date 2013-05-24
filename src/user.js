@@ -288,7 +288,8 @@ var config = require('../config.js'),
 					'gravatarpicture' : gravatar,
 					'uploadedpicture': '',
 					'reputation': 0,
-					'postcount': 0
+					'postcount': 0,
+					'lastposttime': 0
 				});
 				
 				RDB.set('username:' + username + ':uid', uid);

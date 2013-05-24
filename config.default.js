@@ -59,7 +59,8 @@ var config = {
 	},
 
 	"show_motd": true,
-	"motd": undefined
+	"motd": undefined,
+	"post_delay" : 10000
 }
 
 config.url = config.base_url + (config.use_port ? ':' + config.port : '') + '/';

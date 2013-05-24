@@ -295,68 +295,81 @@ marked.setOptions({
 			return; // for now, until anon code is written.
 		}
 		
-		RDB.incr('global:next_topic_id', function(err, tid) {
-			RDB.handle(err);
+		user.getUserField(uid, 'lastposttime', function(lastposttime) {
 
-			// Global Topics
-			if (uid == null) uid = 0;
-			if (uid !== null) {
-				RDB.sadd('topics:tid', tid);	
-			} else {
-				// need to add some unique key sent by client so we can update this with the real uid later
-				RDB.lpush('topics:queued:tid', tid);
+			if(new Date().getTime() - lastposttime < config.post_delay) {
+				socket.emit('event:alert', {
+					title: 'Too many posts!',
+					message: 'You can only post every '+ (config.post_delay / 1000) + ' seconds.',
+					type: 'error',
+					timeout: 2000
+				});
+				return;
 			}
 
-			var slug = tid + '/' + utils.slugify(title);
+			RDB.incr('global:next_topic_id', function(err, tid) {
+				RDB.handle(err);
 
-			// Topic Info
-			RDB.set('tid:' + tid + ':title', title);
-			RDB.set('tid:' + tid + ':uid', uid);
-			RDB.set('tid:' + tid + ':slug', slug);
-			RDB.set('tid:' + tid + ':timestamp', new Date().getTime());
-		
-			
-			RDB.set('topic:slug:' + slug + ':tid', tid);
-
-			// Posts
-			posts.create(uid, tid, content, function(pid) {
-				if (pid > 0) {
-					RDB.lpush('tid:' + tid + ':posts', pid);
-
-					// Notify any users looking at the category that a new topic has arrived
-					Topics.get_topic(tid, uid, function(topicData) {
-						io.sockets.in('category_' + category_id).emit('event:new_topic', topicData);
-					});
+				// Global Topics
+				if (uid == null) uid = 0;
+				if (uid !== null) {
+					RDB.sadd('topics:tid', tid);	
+				} else {
+					// need to add some unique key sent by client so we can update this with the real uid later
+					RDB.lpush('topics:queued:tid', tid);
 				}
+
+				var slug = tid + '/' + utils.slugify(title);
+
+				// Topic Info
+				RDB.set('tid:' + tid + ':title', title);
+				RDB.set('tid:' + tid + ':uid', uid);
+				RDB.set('tid:' + tid + ':slug', slug);
+				RDB.set('tid:' + tid + ':timestamp', new Date().getTime());
+			
+				
+				RDB.set('topic:slug:' + slug + ':tid', tid);
+
+				// Posts
+				posts.create(uid, tid, content, function(pid) {
+					if (pid > 0) {
+						RDB.lpush('tid:' + tid + ':posts', pid);
+
+						// Notify any users looking at the category that a new topic has arrived
+						Topics.get_topic(tid, uid, function(topicData) {
+							io.sockets.in('category_' + category_id).emit('event:new_topic', topicData);
+						});
+					}
+				});
+
+				Topics.markAsRead(tid, uid);
+
+				// User Details - move this out later
+				RDB.lpush('uid:' + uid + ':topics', tid);
+
+				socket.emit('event:alert', {
+					title: 'Thank you for posting',
+					message: 'You have successfully posted. Click here to view your post.',
+					type: 'notify',
+					timeout: 2000
+				});
+
+				// let everyone know that there is an unread topic in this category
+				RDB.del('cid:' + category_id + ':read_by_uid');
+
+				RDB.zadd('topics:recent', (new Date()).getTime(), tid);
+				//RDB.zadd('topics:active', tid);
+
+				// in future it may be possible to add topics to several categories, so leaving the door open here.
+				RDB.sadd('categories:' + category_id + ':tid', tid);
+				RDB.set('tid:' + tid + ':cid', category_id);
+				categories.getCategories([category_id], function(data) {
+					RDB.set('tid:' + tid + ':category_name', data.categories[0].name);
+					RDB.set('tid:' + tid + ':category_slug', data.categories[0].slug);
+				});
+
+				RDB.incr('cid:' + category_id + ':topiccount');
 			});
-
-			Topics.markAsRead(tid, uid);
-
-			// User Details - move this out later
-			RDB.lpush('uid:' + uid + ':topics', tid);
-
-			socket.emit('event:alert', {
-				title: 'Thank you for posting',
-				message: 'You have successfully posted. Click here to view your post.',
-				type: 'notify',
-				timeout: 2000
-			});
-
-			// let everyone know that there is an unread topic in this category
-			RDB.del('cid:' + category_id + ':read_by_uid');
-
-			RDB.zadd('topics:recent', (new Date()).getTime(), tid);
-			//RDB.zadd('topics:active', tid);
-
-			// in future it may be possible to add topics to several categories, so leaving the door open here.
-			RDB.sadd('categories:' + category_id + ':tid', tid);
-			RDB.set('tid:' + tid + ':cid', category_id);
-			categories.getCategories([category_id], function(data) {
-				RDB.set('tid:' + tid + ':category_name', data.categories[0].name);
-				RDB.set('tid:' + tid + ':category_slug', data.categories[0].slug);
-			});
-
-			RDB.incr('cid:' + category_id + ':topiccount');
 		});
 	};
 

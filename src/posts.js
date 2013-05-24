@@ -127,60 +127,73 @@ marked.setOptions({
 			return;
 		}
 
-		Posts.create(uid, tid, content, function(pid) {
-			if (pid > 0) {
-				RDB.rpush('tid:' + tid + ':posts', pid);
+		user.getUserField(uid, 'lastposttime', function(lastposttime) {
 
-				RDB.del('tid:' + tid + ':read_by_uid'); // let everybody know there is an unread post
-				Posts.get_cid_by_pid(pid, function(cid) {
-					RDB.del('cid:' + cid + ':read_by_uid');
-				});
-
-				RDB.zadd('topics:recent_posts:tid:' + tid, (new Date()).getTime(), pid);
-			
-				// Re-add the poster, so he/she does not get an "unread" flag on this topic
-				topics.markAsRead(tid, uid);
-				// this will duplicate once we enter the thread, which is where we should be going
-
+			if(new Date().getTime() - lastposttime < config.post_delay) {
 				socket.emit('event:alert', {
-					title: 'Reply Successful',
-					message: 'You have successfully replied. Click here to view your reply.',
-					type: 'notify',
+					title: 'Too many posts!',
+					message: 'You can only post every '+ (config.post_delay / 1000) + ' seconds.',
+					type: 'error',
 					timeout: 2000
 				});
-
-				user.getUserFields(uid, ['username','reputation','picture','signature'], function(data) {
-					
-					var timestamp = new Date().getTime();
-					
-					io.sockets.in('topic_' + tid).emit('event:new_post', {
-						'posts' : [
-							{
-								'pid' : pid,
-								'content' : marked(content || ''),
-								'uid' : uid,
-								'username' : data.username || 'anonymous',
-								'user_rep' : data.reputation || 0,
-								'post_rep' : 0,
-								'gravatar' : data.picture,
-								'signature' : marked(data.signature || ''),
-								'timestamp' : timestamp,
-								'relativeTime': utils.relativeTime(timestamp),
-								'fav_star_class' :'icon-star-empty',
-								'edited-class': 'none',
-								'editor': '',
-							}
-						]
-					});
-				});
-			} else {
-				socket.emit('event:alert', {
-					title: 'Reply Unsuccessful',
-					message: 'Your reply could not be posted at this time. Please try again later.',
-					type: 'notify',
-					timeout: 2000
-				});
+				return;
 			}
+
+			Posts.create(uid, tid, content, function(pid) {
+				if (pid > 0) {
+					RDB.rpush('tid:' + tid + ':posts', pid);
+
+					RDB.del('tid:' + tid + ':read_by_uid'); // let everybody know there is an unread post
+					Posts.get_cid_by_pid(pid, function(cid) {
+						RDB.del('cid:' + cid + ':read_by_uid');
+					});
+
+					RDB.zadd('topics:recent_posts:tid:' + tid, (new Date()).getTime(), pid);
+				
+					// Re-add the poster, so he/she does not get an "unread" flag on this topic
+					topics.markAsRead(tid, uid);
+					// this will duplicate once we enter the thread, which is where we should be going
+
+					socket.emit('event:alert', {
+						title: 'Reply Successful',
+						message: 'You have successfully replied. Click here to view your reply.',
+						type: 'notify',
+						timeout: 2000
+					});
+
+					user.getUserFields(uid, ['username','reputation','picture','signature'], function(data) {
+						
+						var timestamp = new Date().getTime();
+						
+						io.sockets.in('topic_' + tid).emit('event:new_post', {
+							'posts' : [
+								{
+									'pid' : pid,
+									'content' : marked(content || ''),
+									'uid' : uid,
+									'username' : data.username || 'anonymous',
+									'user_rep' : data.reputation || 0,
+									'post_rep' : 0,
+									'gravatar' : data.picture,
+									'signature' : marked(data.signature || ''),
+									'timestamp' : timestamp,
+									'relativeTime': utils.relativeTime(timestamp),
+									'fav_star_class' :'icon-star-empty',
+									'edited-class': 'none',
+									'editor': '',
+								}
+							]
+						});
+					});
+				} else {
+					socket.emit('event:alert', {
+						title: 'Reply Unsuccessful',
+						message: 'Your reply could not be posted at this time. Please try again later.',
+						type: 'notify',
+						timeout: 2000
+					});
+				}
+			});
 		});
 	};
 
@@ -193,11 +206,12 @@ marked.setOptions({
 			if (!locked || locked === '0') {
 				RDB.incr('global:next_post_id', function(err, pid) {
 					RDB.handle(err);
-			
+					
+					var timestamp = new Date().getTime();
 					// Posts Info
 					RDB.set('pid:' + pid + ':content', content);
 					RDB.set('pid:' + pid + ':uid', uid);
-					RDB.set('pid:' + pid + ':timestamp', new Date().getTime());
+					RDB.set('pid:' + pid + ':timestamp', timestamp);
 					RDB.set('pid:' + pid + ':rep', 0);
 					RDB.set('pid:' + pid + ':tid', tid);
 					
@@ -225,6 +239,7 @@ marked.setOptions({
 					RDB.lpush('uid:' + uid + ':posts', pid);
 					
 					user.incrementUserFieldBy(uid, 'postcount', 1);
+					user.setUserField(uid, 'lastposttime', timestamp);
 
 					if (callback) 
 						callback(pid);
