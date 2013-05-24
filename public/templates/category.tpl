@@ -48,7 +48,7 @@
 			<div class="block-header">
 				Recent Replies
 			</div>
-			<div class="block-content">
+			<div class="block-content" id="category_recent_replies">
 				
 			</div>
 		</div>
@@ -82,6 +82,7 @@
 
 <script type="text/javascript">
 (function() {
+	var cid = '{category_id}';
 	var	room = 'category_' + '{category_id}';
 	app.enter_room(room);
 
@@ -129,9 +130,10 @@
 
 
 
-	//socket.emit('api:topics.getRecentReplies', tid);
-	socket.on('api:topics.getRecentReplies', function(replies) {
+	socket.emit('api:categories.getRecentReplies', cid);
+	socket.on('api:categories.getRecentReplies', function(replies) {
 		console.log(replies);
+		jQuery('#category_recent_replies')	
 	});
 
 })();
