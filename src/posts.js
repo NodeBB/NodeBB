@@ -140,6 +140,8 @@ marked.setOptions({
 					RDB.del('cid:' + cid + ':read_by_uid');
 				});
 
+				RDB.zadd('topics:recent_posts:tid:' + tid, (new Date()).getTime(), pid);
+			
 				// Re-add the poster, so he/she does not get an "unread" flag on this topic
 				topics.markAsRead(tid, uid);
 				// this will duplicate once we enter the thread, which is where we should be going

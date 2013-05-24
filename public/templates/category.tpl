@@ -126,5 +126,13 @@
 		// jQuery('<div></div>').appendTo("#topics-container").hide().append(html).fadeIn('slow');	
 		// set_up_posts(uniqueid);
 	});
+
+
+
+	//socket.emit('api:topics.getRecentReplies', tid);
+	socket.on('api:topics.getRecentReplies', function(replies) {
+		console.log(replies);
+	});
+
 })();
 </script>

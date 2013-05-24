@@ -274,6 +274,12 @@ marked.setOptions({
 		});
 	}
 
+	Topics.getRecentReplies = function(tid, callback) {
+		RDB.zrange('topics:recent_posts:tid:' + tid, 0, -1, 'WITHSCORES', function(err, replies) {
+			callback(replies);
+		});
+	}
+
 	Topics.post = function(socket, uid, title, content, category_id) {
 		if (!category_id) throw new Error('Attempted to post without a category_id');
 		

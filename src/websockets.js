@@ -263,6 +263,13 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			notifications.mark_read(nid, uid);
 		});
 
+		socket.on('api:topics.getRecentReplies', function(tid) {
+			console.log('test');
+			topics.getRecentReplies(tid, function(replies) {
+				socket.emit('api:topics.getRecentReplies', replies);
+			});
+		});
+
 		socket.on('sendChatMessage', function(data) {
 			var touid = data.touid;
 
