@@ -27,7 +27,8 @@ var	RDB = require('./redis.js'),
 
 					var categoryData = {
 							'category_name' : category_name,
-							'show_topic_button' : 'show',
+							'show_category_features' : 'show',
+							'topic_row_size': 'span9',
 							'category_id': category_id,
 							'active_users': active_users,
 							'topics' : []
@@ -69,7 +70,8 @@ var	RDB = require('./redis.js'),
 		RDB.zrange('topics:recent', 0, -1, function(err, tids) {
 			var latestTopics = {
 				'category_name' : 'Recent',
-				'show_topic_button' : 'hidden',
+				'show_category_features' : 'hidden',
+				'topic_row_size': 'span12',
 				'category_id': false,
 				'topics' : []
 			};
