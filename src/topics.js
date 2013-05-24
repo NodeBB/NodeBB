@@ -58,6 +58,11 @@ marked.setOptions({
 				voteData = results[1].voteData,
 				privileges = results[2];
 
+			if (!postData) {
+				callback(false);
+				return;
+			}
+
 			for (var i=0, ii= postData.pid.length; i<ii; i++) {
 				var uid = postData.uid[i],
 					pid = postData.pid[i];
@@ -335,10 +340,13 @@ marked.setOptions({
 			// let everyone know that there is an unread topic in this category
 			RDB.del('cid:' + category_id + ':read_by_uid');
 
+			RDB.zadd('topics:recent', (new Date()).getTime(), tid);
+			//RDB.zadd('topics:active', tid);
+
 			// in future it may be possible to add topics to several categories, so leaving the door open here.
 			RDB.sadd('categories:' + category_id + ':tid', tid);
 			RDB.set('tid:' + tid + ':cid', category_id);
-			categories.get_category([category_id], function(data) {
+			categories.getCategories([category_id], function(data) {
 				RDB.set('tid:' + tid + ':category_name', data.categories[0].name);
 				RDB.set('tid:' + tid + ':category_slug', data.categories[0].slug);
 			});

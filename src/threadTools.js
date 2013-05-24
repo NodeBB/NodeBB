@@ -141,7 +141,7 @@ var	RDB = require('./redis.js'),
 			RDB.smove('categories:' + oldCid + ':tid', 'categories:' + cid + ':tid', tid, function(err, result) {
 				if (!err && result === 1) {
 					RDB.set('tid:' + tid + ':cid', cid);
-					categories.get_category([cid], function(data) {
+					categories.getCategories([cid], function(data) {
 						RDB.set('tid:' + tid + ':category_name', data.categories[0].name);
 						RDB.set('tid:' + tid + ':category_slug', data.categories[0].slug);
 					});

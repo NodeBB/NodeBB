@@ -60,104 +60,180 @@ var	RDB = require('./redis.js'),
 
 
 	Categories.get = function(callback, category_id, current_user) {
-		var range_var = (category_id) ? 'categories:' + category_id + ':tid'  : 'topics:tid';
-
-		RDB.smembers(range_var, function(err, tids) {
-			var title = [],
-				uid = [],
-				timestamp = [],
-				slug = [],
-				postcount = [],
-				locked = [],
-				deleted = [],
-				pinned = [];
-
-			for (var i=0, ii=tids.length; i<ii; i++) {
-				title.push('tid:' + tids[i] + ':title');
-				uid.push('tid:' + tids[i] + ':uid');
-				timestamp.push('tid:' + tids[i] + ':timestamp');
-				slug.push('tid:' + tids[i] + ':slug');
-				postcount.push('tid:' + tids[i] + ':postcount');
-				locked.push('tid:' + tids[i] + ':locked');
-				deleted.push('tid:' + tids[i] + ':deleted');
-				pinned.push('tid:' + tids[i] + ':pinned');
-			}
-
-			var multi = RDB.multi()
+		RDB.smembers('categories:' + category_id + ':tid', function(err, tids) {
+			RDB.multi()
 				.get('cid:' + category_id + ':name')
-				.smembers('cid:' + category_id + ':active_users');
+				.smembers('cid:' + category_id + ':active_users')
+				.exec(function(err, replies) {
+					category_name = replies[0];
+					active_usernames = replies[1];
+					
+					if (category_name === null) {
+						callback(false);
+					}
 
-			if (tids.length > 0) {
-				multi
-					.mget(title)
-					.mget(uid)
-					.mget(timestamp)
-					.mget(slug)
-					.mget(postcount)
-					.mget(locked)
-					.mget(deleted)
-					.mget(pinned)
+					var active_users = [];
+					for (var username in active_usernames) {
+						active_users.push({'username': active_usernames[username]});
+					}
+
+					var categoryData = {
+							'category_name' : category_name,
+							'show_topic_button' : 'show',
+							'category_id': category_id,
+							'active_users': active_users,
+							'topics' : []
+						};
+
+					function getTopics(next) {
+						Categories.getTopicsByTids(tids, current_user, function(topics) {
+							next(null, topics);
+						}, category_id);
+					}
+					
+					function getModerators(next) {
+						Categories.getModerators(category_id, function(moderators) {
+							next(null, moderators);
+						});
+					}
+
+					if (tids.length === 0) {
+						getModerators(function(err, moderators) {
+							categoryData.moderator_block_class = moderators.length > 0 ? '' : 'none';
+							categoryData.moderators = moderators;
+
+							callback(categoryData);
+						});
+					} else {
+						async.parallel([getTopics, getModerators], function(err, results) {
+							categoryData.topics = results[0];
+							categoryData.moderator_block_class = results[1].length > 0 ? '' : 'none';
+							categoryData.moderators = results[1];
+							callback(categoryData);
+						});
+					}
+
+					
+				});
+		});
+	}
+
+	// not the permanent location for this function
+	Categories.getLatestTopics = function(current_user, start, end, callback) {
+		RDB.zrange('topics:recent', 0, -1, function(err, tids) {
+			var latestTopics = {
+				'category_name' : 'Recent',
+				'show_topic_button' : 'hidden',
+				'category_id': false,
+				'topics' : []
+			};
+
+			if (!tids.length) {
+				callback(latestTopics);
+				return;
 			}
-			
-			multi.exec(function(err, replies) {
-				category_name = replies[0];
 
-				if(category_id && category_name === null) {
-					callback(false);
-					return;
-				}
-				
-				active_usernames = replies[1];
+			Categories.getTopicsByTids(tids, current_user, function(topicData) {
+				latestTopics.topics = topicData;
+				callback(latestTopics);
+			});
+		});
+	}
+
+
+	Categories.getTopicsByTids = function(tids, current_user, callback, category_id /*temporary*/) {
+		var title = [],
+			uid = [],
+			timestamp = [],
+			slug = [],
+			postcount = [],
+			locked = [],
+			deleted = [],
+			pinned = [];
+
+		for (var i=0, ii=tids.length; i<ii; i++) {
+			title.push('tid:' + tids[i] + ':title');
+			uid.push('tid:' + tids[i] + ':uid');
+			timestamp.push('tid:' + tids[i] + ':timestamp');
+			slug.push('tid:' + tids[i] + ':slug');
+			postcount.push('tid:' + tids[i] + ':postcount');
+			locked.push('tid:' + tids[i] + ':locked');
+			deleted.push('tid:' + tids[i] + ':deleted');
+			pinned.push('tid:' + tids[i] + ':pinned');
+		}
+
+
+		RDB.multi()
+			.mget(title)
+			.mget(uid)
+			.mget(timestamp)
+			.mget(slug)
+			.mget(postcount)
+			.mget(locked)
+			.mget(deleted)
+			.mget(pinned)
+			.exec(function(err, replies) {
 				var retrieved_topics = [];
 
-				if (tids.length == 0) {
-					callback({
-						'category_name' : category_id ? category_name : 'Recent',
-						'show_topic_button' : category_id ? 'show' : 'hidden',
-						'category_id': category_id || 0,
-						'topics' : []
+				title = replies[0];
+				uid = replies[1];
+				timestamp = replies[2];
+				slug = replies[3];
+				postcount = replies[4];
+				locked = replies[5];
+				deleted = replies[6];
+				pinned = replies[7];
+			
+				function getUserNames(next) {
+					user.get_usernames_by_uids(uid, function(userNames) {
+						next(null, userNames);
 					});
 				}
 
-				title = replies[2];
-				uid = replies[3];
-				timestamp = replies[4];
-				slug = replies[5];
-				postcount = replies[6];
-				locked = replies[7];
-				deleted = replies[8];
-				pinned = replies[9];
+				function hasReadTopics(next) {
+					topics.hasReadTopics(tids, current_user, function(hasRead) {
+						next(null, hasRead);
+					});
+				}
 
-				var usernames,
-					has_read,
-					moderators,
-					teaser_info,
-					privileges;
+				function getTeaserInfo(next) {
+					topics.get_teasers(tids, function(teasers) {
+						next(null, teasers);
+					});
+				}
 
-				function generate_topic() {
-					if (!usernames || !has_read || !moderators || !teaser_info || !privileges) return;
+				// temporary. I don't think this call should belong here
+				function getPrivileges(next) {
+					Categories.privileges(category_id, current_user, function(user_privs) {
+						next(null, user_privs);
+					});
+				}
 
-					if (tids.length > 0) {
-						for (var i=0, ii=title.length; i<ii; i++) {
-							if (!deleted[i] || (deleted[i] && privileges.view_deleted) || uid[i] === current_user) {
-								retrieved_topics.push({
-									'title' : title[i],
-									'uid' : uid[i],
-									'username': usernames[i],
-									'timestamp' : timestamp[i],
-									'relativeTime': utils.relativeTime(timestamp[i]),
-									'slug' : slug[i],
-									'post_count' : postcount[i],
-									'lock-icon': locked[i] === '1' ? 'icon-lock' : 'none',
-									'deleted': deleted[i],
-									'deleted-class': deleted[i] ? 'deleted' : '',
-									'pinned': parseInt(pinned[i] || 0),	// For sorting purposes
-									'pin-icon': pinned[i] === '1' ? 'icon-pushpin' : 'none',
-									'badgeclass' : (has_read[i] && current_user !=0) ? '' : 'badge-important',
-									'teaser_text': teaser_info[i].text,
-									'teaser_username': teaser_info[i].username
-								});
-							}
+				async.parallel([getUserNames, hasReadTopics, getTeaserInfo, getPrivileges], function(err, results) {
+					var usernames = results[0],
+						hasReadTopics = results[1],
+						teaserInfo = results[2],
+						privileges = results[3];
+
+					for (var i=0, ii=tids.length; i<ii; i++) {
+						if (!deleted[i] || (deleted[i] && privileges.view_deleted) || uid[i] === current_user) {
+							retrieved_topics.push({
+								'title' : title[i],
+								'uid' : uid[i],
+								'username': usernames[i],
+								'timestamp' : timestamp[i],
+								'relativeTime': utils.relativeTime(timestamp[i]),
+								'slug' : slug[i],
+								'post_count' : postcount[i],
+								'lock-icon': locked[i] === '1' ? 'icon-lock' : 'none',
+								'deleted': deleted[i],
+								'deleted-class': deleted[i] ? 'deleted' : '',
+								'pinned': parseInt(pinned[i] || 0),	// For sorting purposes
+								'pin-icon': pinned[i] === '1' ? 'icon-pushpin' : 'none',
+								'badgeclass' : (hasReadTopics[i] && current_user !=0) ? '' : 'badge-important',
+								'teaser_text': teaserInfo[i].text,
+								'teaser_username': teaserInfo[i].username
+							});
 						}
 					}
 
@@ -170,53 +246,16 @@ var	RDB = require('./redis.js'),
 						}
 					});
 
-					var active_users = [];
-					for (var username in active_usernames) {
-						active_users.push({'username': active_usernames[username]});
-					}
 
-					callback({
-						'category_name' : category_id ? category_name : 'Recent',
-						'show_topic_button' : category_id ? 'show' : 'hidden',
-						'category_id': category_id || 0,
-						'topics': retrieved_topics,
-						'active_users': active_users,
-						'moderator_block_class': moderators.length > 0 ? '' : 'none',
-						'moderators': moderators
-					});
-				}
-				
-				user.get_usernames_by_uids(uid, function(userNames) {
-					usernames = userNames;
-					generate_topic();
-				});	
-
-				topics.hasReadTopics(tids, current_user, function(hasRead) {
-					has_read = hasRead;
-					generate_topic();
-				});
-
-				Categories.getModerators(category_id, function(mods) {
-					moderators = mods;
-					generate_topic();
-				});
-
-				topics.get_teasers(tids, function(teasers) {
-					teaser_info = teasers;
-					generate_topic();
-				});
-
-				Categories.privileges(category_id, current_user, function(user_privs) {
-					privileges = user_privs;
+					callback(retrieved_topics);
 				});
 			});
-		});
 	}
 
 	Categories.getAllCategories = function(callback, current_user) {
 		RDB.lrange('categories:cid', 0, -1, function(err, cids) {
 			RDB.handle(err);
-			Categories.get_category(cids, callback, current_user);
+			Categories.getCategories(cids, callback, current_user);
 		});
 	}
 
@@ -251,7 +290,7 @@ var	RDB = require('./redis.js'),
 
 
 
-	Categories.get_category = function(cids, callback, current_user) {
+	Categories.getCategories = function(cids, callback, current_user) {
 		var name = [],
 			description = [],
 			icon = [],
