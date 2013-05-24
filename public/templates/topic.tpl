@@ -23,7 +23,7 @@
 							<i class="icon-pencil"></i><span class="user_posts_{main_posts.uid}">8</span>
 						</div>
 					</a>
-					<h3><p class="topic-title">{topic_name}</p> 
+					<h3><p id="topic_title_{main_posts.pid}" class="topic-title">{topic_name}</p> 
 						<div class="pull-right hidden-phone" style="margin-right: 10px;">
 							<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn edit {main_posts.display_moderator_tools}" type="button"><i class="icon-pencil"></i></button>
 							<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn delete {main_posts.display_moderator_tools}" type="button"><i class="icon-trash"></i></button>
@@ -277,7 +277,13 @@
 
 		$('.post-container').delegate('.edit', 'click', function(e) {
 			var pid = ($(this).attr('id') || $(this.parentNode).attr('id')).split('_')[1];
-			app.open_post_window('edit', "{topic_id}", "{topic_name}", pid);
+
+			var main = $(this).parents('.main-post');
+			if(main.length > 0) 
+				app.open_post_window('edit', "{topic_id}", "{topic_name}", pid);
+			else 
+				app.open_post_window('edit', "{topic_id}", "", pid);
+		
 		});
 
 		$('.post-container').delegate('.delete', 'click', function(e) {
@@ -490,6 +496,16 @@
 
 		socket.on('event:post_edited', function(data) {
 			var editedPostEl = document.getElementById('content_' + data.pid);
+
+			var editedPostTitle = $('#topic_title_'+data.pid);
+			
+			if(editedPostTitle.length > 0) {
+				editedPostTitle.fadeOut(250, function() {
+					editedPostTitle.html(data.title);
+					editedPostTitle.fadeIn(250);
+				});
+			}
+
 			$(editedPostEl).fadeOut(250, function() {
 				this.innerHTML = data.content;
 				$(this).fadeIn(250);

@@ -236,7 +236,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('api:posts.edit', function(data) {
-			postTools.edit(uid, data.pid, data.content);
+			postTools.edit(uid, data.pid, data.title, data.content);
 		});
 
 		socket.on('api:posts.delete', function(data) {

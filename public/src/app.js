@@ -194,11 +194,17 @@ var socket,
 				app.post_topic(id);
 			}
 		} else if (post_mode === 'edit') {
-			reply_title.innerHTML = 'You are editing "' + title + '"';
+			
+			if(title === "") {
+				post_title.style.display = "none";
+			}
+			else {
+				post_title.style.display = "block";
+				post_title.value = title;
+			}
+			reply_title.style.display = "none";	
 			socket.emit('api:posts.getRawPost', { pid: pid });
-
-			post_title.style.display = "none";
-			reply_title.style.display = "block";
+			
 			post_content.focus();
 			submit_post_btn.onclick = function() {
 				app.edit_post(pid);
@@ -307,9 +313,10 @@ var socket,
 	};
 
 	app.edit_post = function(pid) {
-		var	content = $('#post_content');
+		var title = $('#post_title'),
+			content = $('#post_content');
 
-		if (content.val().length < 5) {
+		if (title.val().length < 5 || content.val().length < 5) {
 			app.alert({
 				title: 'Topic Post Failure',
 				message: 'You need to write more dude.',
@@ -320,7 +327,7 @@ var socket,
 			return;
 		}
 
-		socket.emit('api:posts.edit', { pid: pid, content: content.val() });
+		socket.emit('api:posts.edit', { pid: pid, content: content.val(), title: title.val() });
 
 		app.close_post_window();
 		content.val('');
