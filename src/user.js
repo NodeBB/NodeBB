@@ -196,8 +196,8 @@ var config = require('../config.js'),
 						callback(err);
 					} else {
 						// Save twitter-specific information to the user
-						RDB.set('uid:' + uid + ':twid', twid);
-						RDB.set('twid:' + twid + ':uid', uid);
+						User.setUserField(uid, 'twid', twid);
+						RDB.hset('twid:uid', twid, uid);
 						callback(null, {
 							uid: uid
 						});
@@ -216,17 +216,23 @@ var config = require('../config.js'),
 				});
 			} else {
 				// New User
-				User.create(handle, null, email, function(err, uid) {
-					if (err !== null) {
-						callback(err);
-					} else {
-						// Save twitter-specific information to the user
-						RDB.set('uid:' + uid + ':gplusid', gplusid);
-						RDB.set('gplusid:' + gplusid + ':uid', uid);
-						callback(null, {
-							uid: uid
+				var success = function(uid) {
+					// Save google-specific information to the user
+					User.setUserField(uid, 'gplusid', gplusid);
+					RDB.hset('gplusid:uid', gplusid, uid);
+					callback(null, {
+						uid: uid
+					});
+				}
+
+				User.get_uid_by_email(email, function(uid) {
+					if (!uid) {
+						User.create(handle, null, email, function(err, uid) {
+							if (err !== null) {
+								callback(err);
+							} else success(uid);
 						});
-					}
+					} else success(uid); // Existing account -- merge
 				});
 			}
 		});
@@ -241,17 +247,23 @@ var config = require('../config.js'),
 				});
 			} else {
 				// New User
-				User.create(name, null, email, function(err, uid) {
-					if (err !== null) {
-						callback(err);
-					} else {
-						// Save twitter-specific information to the user
-						RDB.set('uid:' + uid + ':fbid', fbid);
-						RDB.set('fbid:' + fbid + ':uid', uid);
+				var success = function(uid) {
+					// Save facebook-specific information to the user
+						User.setUserField(uid, 'fbid', fbid);
+						RDB.hset('fbid:uid', fbid, uid);
 						callback(null, {
 							uid: uid
 						});
-					}
+				}
+
+				User.get_uid_by_email(email, function(uid) {
+					if (!uid) {
+						User.create(name, null, email, function(err, uid) {
+							if (err !== null) {
+								callback(err);
+							} else success(uid);
+						});
+					} else success(uid); // Existing account -- merge
 				});
 			}
 		});
@@ -288,7 +300,8 @@ var config = require('../config.js'),
 					'gravatarpicture' : gravatar,
 					'uploadedpicture': '',
 					'reputation': 0,
-					'postcount': 0
+					'postcount': 0,
+					'lastposttime': 0
 				});
 				
 				RDB.set('username:' + username + ':uid', uid);
@@ -493,21 +506,21 @@ var config = require('../config.js'),
 	};
 
 	User.get_uid_by_twitter_id = function(twid, callback) {
-		RDB.get('twid:' + twid + ':uid', function(err, uid) {
+		RDB.hget('twid:uid', twid, function(err, uid) {
 			RDB.handle(err);			
 			callback(uid);
 		});
 	}
 
 	User.get_uid_by_google_id = function(gplusid, callback) {
-		RDB.get('gplusid:' + gplusid + ':uid', function(err, uid) {
+		RDB.hget('gplusid:uid', gplusid, function(err, uid) {
 			RDB.handle(err);
 			callback(uid);
 		});	
 	}
 
 	User.get_uid_by_fbid = function(fbid, callback) {
-		RDB.get('fbid:' + fbid + ':uid', function(err, uid) {
+		RDB.hget('fbid:uid', fbid, function(err, uid) {
 			RDB.handle(err);
 			callback(uid);
 		});	

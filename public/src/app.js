@@ -38,27 +38,21 @@ var socket,
 
 			socket.on('connect', function(data){
 				if(reconnecting) {
-					app.alert({
-						alert_id: 'connection_alert',
-						title: 'Connected',
-						message: 'Connection successful',
-						type: 'success',
-						timeout: 5000
-					});
+					setTimeout(function(){
+						app.alert({
+							alert_id: 'connection_alert',
+							title: 'Connected',
+							message: 'Connection successful.',
+							type: 'success',
+							timeout: 5000
+						});
+					}, 1000);
 					reconnecting = false;
 				}
 			});
 
 			socket.on('disconnect', function(data){
-				setTimeout(function() {
-					app.alert({
-						alert_id: 'connection_alert',
-						title: 'Disconnect',
-						message: 'You have disconnected from NodeBB, we will try to reconnect!',
-						type: 'error',
-						timeout: 5000
-					});
-				}, 500);
+				
 			});
 
 			socket.on('reconnecting', function(data) {
