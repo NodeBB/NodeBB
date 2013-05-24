@@ -14,16 +14,12 @@ marked.setOptions({
 
 (function(Posts) {
 
-	Posts.get = function(callback, tid, current_user, start, end) {
-		if (start == null) start = 0;
-		if (end == null) end = start + 10;
-
+	Posts.getPostsByTid = function(tid, current_user, start, end, callback) {
 		RDB.lrange('tid:' + tid + ':posts', start, end, function(err, pids) {
 			RDB.handle(err);
 			
 			if (pids.length === 0 ) {
-				callback(false);
-				return;
+				throw new Error('Topic should never have 0 posts. tid: ' + tid);
 			}
 			
 			topics.markAsRead(tid, current_user);

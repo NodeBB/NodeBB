@@ -105,7 +105,8 @@ var express = require('express'),
 	});
 	
 	// These functions are called via ajax once the initial page is loaded to populate templates with data
-	function api_method(req, res) {		
+	function api_method(req, res) {
+		var uid = (req.user) ? req.user.uid : 0;
 		
 		switch(req.params.method) {
 			case 'get_templates_listing' :
@@ -118,7 +119,7 @@ var express = require('express'),
 						data.motd_class = (config.show_motd || config.show_motd === undefined) ? '' : 'none';
 						data.motd = marked(config.motd || "# NodeBB v0.1\nWelcome to NodeBB, the discussion platform of the future.\n\n<a target=\"_blank\" href=\"http://www.nodebb.org\" class=\"btn btn-large\"><i class=\"icon-comment\"></i> Get NodeBB</a> <a target=\"_blank\" href=\"https://github.com/designcreateplay/NodeBB\" class=\"btn btn-large\"><i class=\"icon-github-alt\"></i> Fork us on Github</a> <a target=\"_blank\" href=\"https://twitter.com/dcplabs\" class=\"btn btn-large\"><i class=\"icon-twitter\"></i> @dcplabs</a>");
 						res.send(JSON.stringify(data));
-					}, (req.user) ? req.user.uid : 0);
+					}, uid);
 				break;
 			case 'login' :
 					var data = {},
@@ -165,43 +166,27 @@ var express = require('express'),
 					res.send(JSON.stringify(data));
 				break;
 			case 'topic' :
-					topics.get(function(data) {
-						if(!data) {
-							res.send(false);
-							return;
-						}
-						res.send(JSON.stringify(data));
-					}, req.params.id, (req.user) ? req.user.uid : 0);
+					topics.getTopicById(req.params.id, uid, function(data) {
+						res.send(data ? JSON.stringify(data) : false);
+					});
 				break;
 			case 'category' :
-					categories.get(function(data) {
-						if(!data) {
-							res.send(false);
-							return;
-						}
-						res.send(JSON.stringify(data));
-					}, req.params.id, (req.user) ? req.user.uid : 0);
+					categories.getCategoryById(req.params.id, uid, function(data) {
+						res.send(data ? JSON.stringify(data) : false);
+					}, req.params.id, uid);
 				break;
 			case 'latest' :
-					categories.getLatestTopics((req.user) ? req.user.uid : 0, 0, 9, function(data) {
+					categories.getLatestTopics(uid, 0, 9, function(data) {
 						res.send(JSON.stringify(data));
 					});
 				break;
 			case 'popular' :
-					categories.get(function(data) {
-						if(!data) {
-							res.send(false);
-							return;
-						}
+					categories.getLatestTopics(uid, 0, 9, function(data) {
 						res.send(JSON.stringify(data));
 					});
 				break;
 			case 'active' :
-					categories.get(function(data) {
-						if(!data) {
-							res.send(false);
-							return;
-						}
+					categories.getLatestTopics(uid, 0, 9, function(data) {
 						res.send(JSON.stringify(data));
 					});
 				break;

@@ -2,6 +2,9 @@ var categories = require('./src/categories.js'),
     templates = require('./public/src/templates.js'),
     webserver = require('./src/webserver.js'),
     websockets = require('./src/websockets.js'),
+    admin = {
+        'categories': require('./src/admin/categories.js')
+    },
     fs = require('fs');
 
 DEVELOPMENT = true;
@@ -33,11 +36,13 @@ global.templates = {};
                     default_categories = JSON.parse(default_categories);
                     
                     for (var category in default_categories) {
-                        categories.create(default_categories[category]);
+                        admin.categories.create(default_categories[category]);
                     }
                 });
 
-            } else console.log('Good.');
+            } else {
+                console.log('Good.');
+            }
         });
     }
 

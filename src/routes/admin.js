@@ -50,7 +50,7 @@ var user = require('./../user.js'),
 					}
 					break;
 				case 'topics' :
-					categories.get(function(data) {
+					categories.getCategoryById(0, 0, function(data) {
 						res.send(JSON.stringify(data));
 					});
 					break;

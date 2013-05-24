@@ -7,59 +7,7 @@ var	RDB = require('./redis.js'),
 
 (function(Categories) {
 
-
-	// START Move into possibly admin/categories.js
-	// An admin-only function. Seeing how we have no control panel yet ima leave this right here. sit pretty, you
-	Categories.create = function(data, callback) {
-		RDB.incr('global:next_category_id', function(err, cid) {
-			RDB.handle(err);
-
-			var slug = cid + '/' + utils.slugify(data.name);
-			RDB.rpush('categories:cid', cid);
-
-			// Topic Info
-			RDB.set('cid:' + cid + ':name', data.name);
-			RDB.set('cid:' + cid + ':description', data.description);
-			RDB.set('cid:' + cid + ':icon', data.icon);
-			RDB.set('cid:' + cid + ':blockclass', data.blockclass);
-			RDB.set('cid:' + cid + ':slug', slug);
-		
-			RDB.set('category:slug:' + slug + ':cid', cid);
-
-			if (callback) callback({'status': 1});
-		});
-	};
-
-	Categories.edit = function(data, callback) {
-		// just a reminder to self that name + slugs are stored into topics data as well.
-	};
-	// END Move into possibly admin/categories.js
-
-
-
-	Categories.privileges = function(cid, uid, callback) {
-		function isModerator(next) {
-			user.isModerator(uid, cid, function(isMod) {
-					next(null, isMod);
-				});
-		}
-
-		function isAdministrator(next) {
-			user.isAdministrator(uid, function(isAdmin) {
-					next(null, isAdmin);
-				});
-		}
-
-		async.parallel([isModerator, isAdministrator], function(err, results) {
-			callback({
-				editable: results.indexOf(true) !== -1 ? true : false,
-				view_deleted: results.indexOf(true) !== -1 ? true : false
-			});
-		});
-	}
-
-
-	Categories.get = function(callback, category_id, current_user) {
+	Categories.getCategoryById = function(category_id, current_user, callback) {
 		RDB.smembers('categories:' + category_id + ':tid', function(err, tids) {
 			RDB.multi()
 				.get('cid:' + category_id + ':name')
@@ -112,8 +60,6 @@ var	RDB = require('./redis.js'),
 							callback(categoryData);
 						});
 					}
-
-					
 				});
 		});
 	}
@@ -140,7 +86,7 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
-
+	// not the permanent location for this function
 	Categories.getTopicsByTids = function(tids, current_user, callback, category_id /*temporary*/) {
 		var title = [],
 			uid = [],
@@ -276,6 +222,29 @@ var	RDB = require('./redis.js'),
 	}
 
 
+	Categories.privileges = function(cid, uid, callback) {
+		function isModerator(next) {
+			user.isModerator(uid, cid, function(isMod) {
+					next(null, isMod);
+				});
+		}
+
+		function isAdministrator(next) {
+			user.isAdministrator(uid, function(isAdmin) {
+					next(null, isAdmin);
+				});
+		}
+
+		async.parallel([isModerator, isAdministrator], function(err, results) {
+			callback({
+				editable: results.indexOf(true) !== -1 ? true : false,
+				view_deleted: results.indexOf(true) !== -1 ? true : false
+			});
+		});
+	}
+
+
+
 	Categories.hasReadCategories = function(cids, uid, callback) {
 		var batch = RDB.multi();
 
@@ -291,6 +260,11 @@ var	RDB = require('./redis.js'),
 
 
 	Categories.getCategories = function(cids, callback, current_user) {
+		if (cids.length === 0) {
+			callback({'categories' : []});
+			return;
+		}
+		
 		var name = [],
 			description = [],
 			icon = [],
@@ -307,49 +281,47 @@ var	RDB = require('./redis.js'),
 			slug.push('cid:' + cids[i] + ':slug');
 			topic_count.push('cid:' + cids[i] + ':topiccount');
 		}
+		
+		RDB.multi()
+			.mget(name)
+			.mget(description)
+			.mget(icon)
+			.mget(blockclass)
+			.mget(slug)
+			.mget(topic_count)
+			.exec(function(err, replies) {
+				name = replies[0];
+				description = replies[1];
+				icon = replies[2];
+				blockclass = replies[3];
+				slug = replies[4];
+				topic_count = replies[5];
 
-		if (cids.length > 0) {
-			RDB.multi()
-				.mget(name)
-				.mget(description)
-				.mget(icon)
-				.mget(blockclass)
-				.mget(slug)
-				.mget(topic_count)
-				.exec(function(err, replies) {
-					name = replies[0];
-					description = replies[1];
-					icon = replies[2];
-					blockclass = replies[3];
-					slug = replies[4];
-					topic_count = replies[5];
-
-					
-					function generateCategories() {
-						var categories = [];
-						for (var i=0, ii=cids.length; i<ii; i++) {
-							categories.push({
-								'name' : name[i],
-								'cid' : cids[i],
-								'slug' : slug[i],
-								'description' : description[i],
-								'blockclass' : blockclass[i],
-								'icon' : icon[i],
-								'badgeclass' : (!topic_count[i] || (has_read[i] && current_user !=0)) ? '' : 'badge-important',
-								'topic_count' : topic_count[i] || 0
-							});
-						}
-
-						callback({'categories': categories});
+				
+				function generateCategories() {
+					var categories = [];
+					for (var i=0, ii=cids.length; i<ii; i++) {
+						categories.push({
+							'name' : name[i],
+							'cid' : cids[i],
+							'slug' : slug[i],
+							'description' : description[i],
+							'blockclass' : blockclass[i],
+							'icon' : icon[i],
+							'badgeclass' : (!topic_count[i] || (has_read[i] && current_user !=0)) ? '' : 'badge-important',
+							'topic_count' : topic_count[i] || 0
+						});
 					}
 
-					Categories.hasReadCategories(cids, current_user, function(read_data) {
-						has_read = read_data;
-						generateCategories();
-					});
-					
+					callback({'categories': categories});
+				}
+
+				Categories.hasReadCategories(cids, current_user, function(read_data) {
+					has_read = read_data;
+					generateCategories();
 				});
-		} else callback({'categories' : []});
+				
+			});
 	};
 
 }(exports));

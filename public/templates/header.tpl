@@ -36,12 +36,12 @@
 						<li>
 							<a href="/latest">Recent <span class="badge badge-inverse">3</span></a>
 						</li>
-						<li>
+						<!--<li>
 							<a href="/popular">Popular</a>
 						</li>
 						<li>
 							<a href="/active">Active</a>
-						</li>
+						</li>-->
 						<li>
 							<a href="/users">Users</a>
 						</li>
