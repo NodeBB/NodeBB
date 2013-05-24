@@ -263,10 +263,9 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			notifications.mark_read(nid, uid);
 		});
 
-		socket.on('api:topics.getRecentReplies', function(tid) {
-			console.log('test');
-			topics.getRecentReplies(tid, function(replies) {
-				socket.emit('api:topics.getRecentReplies', replies);
+		socket.on('api:categories.getRecentReplies', function(tid) {
+			categories.getRecentReplies(tid, function(replies) {
+				socket.emit('api:categories.getRecentReplies', replies);
 			});
 		});
 

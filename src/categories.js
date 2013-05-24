@@ -259,7 +259,11 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
-
+	Categories.getRecentReplies = function(cid, callback) {
+		RDB.zrange('categories:recent_posts:cid:' + cid, 0, -1, function(err, replies) {
+			callback(replies);
+		});
+	}
 
 	Categories.getCategories = function(cids, callback, current_user) {
 		if (cids.length === 0) {

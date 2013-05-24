@@ -23,74 +23,87 @@ marked.setOptions({
 			}
 			
 			topics.markAsRead(tid, current_user);
+
+			Posts.getPostsByPids(pids, current_user, function(posts) {
+				callback(posts);
+			})
 			
-			var content = [], uid = [], timestamp = [], pid = [], post_rep = [], editor = [], editTime = [], deleted = [];
+			
 
-			for (var i=0, ii=pids.length; i<ii; i++) {
-				content.push('pid:' + pids[i] + ':content');
-				uid.push('pid:' + pids[i] + ':uid');
-				timestamp.push('pid:' + pids[i] + ':timestamp');
-				post_rep.push('pid:' + pids[i] + ':rep');
-				editor.push('pid:' + pids[i] + ':editor');
-				editTime.push('pid:' + pids[i] + ':edited');
-				deleted.push('pid:' + pids[i] + ':deleted');
-				pid.push(pids[i]);
-			}
+		});
+	}
+
+	// todo, getPostsByPids has duplicated stuff, have that call this fn.
+	Posts.getPostSummaryByPids = function(pids, callback) {
+		var content = [], uid = [], timestamp = [];
+
+	};
+
+	Posts.getPostsByPids = function(pids, current_user, callback) {
+		var content = [], uid = [], timestamp = [], post_rep = [], editor = [], editTime = [], deleted = [];
+
+		for (var i=0, ii=pids.length; i<ii; i++) {
+			content.push('pid:' + pids[i] + ':content');
+			uid.push('pid:' + pids[i] + ':uid');
+			timestamp.push('pid:' + pids[i] + ':timestamp');
+			post_rep.push('pid:' + pids[i] + ':rep');
+			editor.push('pid:' + pids[i] + ':editor');
+			editTime.push('pid:' + pids[i] + ':edited');
+			deleted.push('pid:' + pids[i] + ':deleted');
+		}
 
 
-			function getFavouritesData(next) {
-				favourites.getFavouritesByPostIDs(pids, current_user, function(fav_data) {
-					next(null, fav_data);
-				}); // to be moved
-			}
+		function getFavouritesData(next) {
+			favourites.getFavouritesByPostIDs(pids, current_user, function(fav_data) {
+				next(null, fav_data);
+			}); // to be moved
+		}
 
-			function getPostData(next) {
-				RDB.multi()
-					.mget(content)
-					.mget(uid)
-					.mget(timestamp)
-					.mget(post_rep)
-					.mget(editor)
-					.mget(editTime)
-					.mget(deleted)
-					.exec(function(err, replies) {
-						post_data = {
-							pid: pids,
-							content: replies[0],
-							uid: replies[1],
-							timestamp: replies[2],
-							reputation: replies[3],
-							editor: replies[4],
-							editTime: replies[5],
-							deleted: replies[6]
-						};
+		function getPostData(next) {
+			RDB.multi()
+				.mget(content)
+				.mget(uid)
+				.mget(timestamp)
+				.mget(post_rep)
+				.mget(editor)
+				.mget(editTime)
+				.mget(deleted)
+				.exec(function(err, replies) {
+					post_data = {
+						pid: pids,
+						content: replies[0],
+						uid: replies[1],
+						timestamp: replies[2],
+						reputation: replies[3],
+						editor: replies[4],
+						editTime: replies[5],
+						deleted: replies[6]
+					};
 
-						// below, to be deprecated
-						// Add any editors to the user_data object
-						for(var x = 0, numPosts = post_data.editor.length; x < numPosts; x++) {
-							if (post_data.editor[x] !== null && post_data.uid.indexOf(post_data.editor[x]) === -1) {
-								post_data.uid.push(post_data.editor[x]);
-							}
+					// below, to be deprecated
+					// Add any editors to the user_data object
+					for(var x = 0, numPosts = post_data.editor.length; x < numPosts; x++) {
+						if (post_data.editor[x] !== null && post_data.uid.indexOf(post_data.editor[x]) === -1) {
+							post_data.uid.push(post_data.editor[x]);
 						}
+					}
 
-						user.getMultipleUserFields(post_data.uid, ['username','reputation','picture', 'signature'], function(user_details) {
-							next(null, {
-								users: user_details,
-								posts: post_data
-							});
+					user.getMultipleUserFields(post_data.uid, ['username','reputation','picture', 'signature'], function(user_details) {
+						next(null, {
+							users: user_details,
+							posts: post_data
 						});
-						// above, to be deprecated
 					});
-			}
-
-			async.parallel([getFavouritesData, getPostData], function(err, results) {
-				callback({
-					'voteData' : results[0], // to be moved
-					'userData' : results[1].users, // to be moved
-					'postData' : results[1].posts
+					// above, to be deprecated
 				});
-			});
+		}
 
+		async.parallel([getFavouritesData, getPostData], function(err, results) {
+			callback({
+				'voteData' : results[0], // to be moved
+				'userData' : results[1].users, // to be moved
+				'postData' : results[1].posts
+			});
 		});
 	}
 
@@ -127,8 +140,8 @@ marked.setOptions({
 			return;
 		}
 
-		user.getUserField(uid, 'lastposttime', function(lastposttime) {
 
+		user.getUserField(uid, 'lastposttime', function(lastposttime) {
 			if(new Date().getTime() - lastposttime < config.post_delay) {
 				socket.emit('event:alert', {
 					title: 'Too many posts!',
