@@ -85,15 +85,6 @@ var	RDB = require('./redis.js'),
 							'topics' : []
 						};
 
-					if (tids.length === 0) {
-						getModerators(function(err, moderators) {
-							categoryData.moderator_block_class = moderators.length > 0 ? '' : 'none';
-							categoryData.moderators = moderators;
-
-							callback(categoryData);
-						});
-					}
-
 					function getTopics(next) {
 						Categories.getTopicsByTids(tids, current_user, function(topics) {
 							next(null, topics);
@@ -106,12 +97,21 @@ var	RDB = require('./redis.js'),
 						});
 					}
 
-					async.parallel([getTopics, getModerators], function(err, results) {
-						categoryData.topics = results[0];
-						categoryData.moderator_block_class = results[1].length > 0 ? '' : 'none';
-						categoryData.moderators = results[1];
-						callback(categoryData);
-					});
+					if (tids.length === 0) {
+						getModerators(function(err, moderators) {
+							categoryData.moderator_block_class = moderators.length > 0 ? '' : 'none';
+							categoryData.moderators = moderators;
+
+							callback(categoryData);
+						});
+					} else {
+						async.parallel([getTopics, getModerators], function(err, results) {
+							categoryData.topics = results[0];
+							categoryData.moderator_block_class = results[1].length > 0 ? '' : 'none';
+							categoryData.moderators = results[1];
+							callback(categoryData);
+						});
+					}
 
 					
 				});
