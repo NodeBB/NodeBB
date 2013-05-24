@@ -17,6 +17,7 @@ var express = require('express'),
 	notifications = require('./notifications.js'),
 	admin = require('./routes/admin.js'),
 	userRoute = require('./routes/user.js'),
+	installRoute = require('./routes/install.js'),
 	auth = require('./routes/authentication.js');
 
 (function(app) {
@@ -62,6 +63,7 @@ var express = require('express'),
 	auth.create_routes(app);
 	admin.create_routes(app);
 	userRoute.create_routes(app);
+	installRoute.create_routes(app);
 
 
 	app.create_route = function(url, tpl) { // to remove

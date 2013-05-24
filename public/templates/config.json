@@ -10,6 +10,8 @@
         "admin/twitter[^]*": "admin/twitter",
         "admin/facebook[^]*": "admin/facebook",
         "admin/gplus[^]*": "admin/gplus",
+        "install/?$": "install/basic",
+        "install/basic/?$": "install/basic",
     	"users[^]*edit": "accountedit",
         "users[^]*friends": "friends",
         "users/[^]*": "account",
