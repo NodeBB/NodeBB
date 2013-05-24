@@ -11,7 +11,7 @@
 </div>
 <div class="category row">
 
-	<div class="span9">
+	<div class="{topic_row_size}">
 		<ul id="topics-container">
 		<!-- BEGIN topics -->
 		<a href="../../topic/{topics.slug}"><li class="category-item {topics.deleted-class}">
@@ -43,7 +43,7 @@
 		<!-- END topics -->
 		</ul>
 	</div>
-	<div class="span3">
+	<div class="span3 {show_category_features}">
 		<div class="sidebar-block img-polaroid">
 			<div class="block-header">
 				Recent Replies
@@ -77,7 +77,7 @@
 
 
 <hr />
-<button id="new_post" class="btn btn-primary btn-large {show_topic_button}">New Topic</button>
+<button id="new_post" class="btn btn-primary btn-large {show_category_features}">New Topic</button>
 
 
 <script type="text/javascript">
