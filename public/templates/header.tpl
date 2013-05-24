@@ -18,7 +18,7 @@
 	<script type="text/javascript" src="/src/jquery.form.js"></script>
 	<script type="text/javascript" src="/src/utils.js"></script>
 
-	<link rel="stylesheet" type="text/css" href="/css/style.css" />
+	<link rel="stylesheet" type="text/css" href="/css/nodebb.css" />
 </head>
 
 <body>

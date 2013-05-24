@@ -24,7 +24,7 @@ var express = require('express'),
 
 	// Middlewares
 	app.use(express.favicon());	// 2 args: string path and object options (i.e. expire time etc)
-	app.use(require('less-middleware')({ src: path.join(__dirname, '../', '/public') }));
+	app.use(require('less-middleware')({ src: path.join(__dirname, '../', 'public') }));
 	app.use(express.static(path.join(__dirname, '../', 'public')));
 	app.use(express.bodyParser());	// Puts POST vars in request.body
 	app.use(express.cookieParser());	// If you want to parse cookies (res.cookies)
