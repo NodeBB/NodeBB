@@ -257,15 +257,18 @@ marked.setOptions({
 			if (pid !== null) {
 				RDB.mget([
 					'pid:' + pid + ':content',
-					'pid:' + pid + ':uid'
+					'pid:' + pid + ':uid',
+					'pid:' + pid + ':timestamp'
 				], function(err, content) {
 					user.getUserField(content[1], 'username', function(username) {
-						var stripped = content[0];
+						var stripped = content[0],
+							timestamp = content[2];
 						if(content[0])
 							stripped = utils.strip_tags(marked(content[0]));
 						callback({
 							"text": stripped,
-							"username": username
+							"username": username,
+							"timestamp" : timestamp
 						});
 					});
 				});

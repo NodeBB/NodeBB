@@ -33,10 +33,36 @@ marked.setOptions({
 		});
 	}
 
-	// todo, getPostsByPids has duplicated stuff, have that call this fn.
+	// todo, getPostsByPids has duplicated stuff, have that call this fn - after userinfo calls are pulled out.
 	Posts.getPostSummaryByPids = function(pids, callback) {
 		var content = [], uid = [], timestamp = [];
+		for (var i=0, ii=pids.length; i<ii; i++) {
+			content.push('pid:' + pids[i] + ':content');
+			uid.push('pid:' + pids[i] + ':uid');
+			timestamp.push('pid:' + pids[i] + ':timestamp');
+		}
 
+		RDB.multi()
+			.mget(content)
+			.mget(uid)
+			.mget(timestamp)
+			.exec(function(err, replies) {
+				post_data = {
+					pids: pids,
+					content: replies[0],
+					uid: replies[1],
+					timestamp: replies[2]
+				}
+
+				// below, to be deprecated
+				user.getMultipleUserFields(post_data.uid, ['username','reputation','picture'], function(user_details) {
+					callback({
+						users: user_details,
+						posts: post_data
+					});
+				});
+				// above, to be deprecated
+			});
 	};
 
 	Posts.getPostsByPids = function(pids, current_user, callback) {
@@ -157,12 +183,12 @@ marked.setOptions({
 					RDB.rpush('tid:' + tid + ':posts', pid);
 
 					RDB.del('tid:' + tid + ':read_by_uid'); // let everybody know there is an unread post
+
 					Posts.get_cid_by_pid(pid, function(cid) {
 						RDB.del('cid:' + cid + ':read_by_uid');
+						RDB.zadd('categories:recent_posts:cid:' + cid, (new Date()).getTime(), pid);
 					});
 
-					RDB.zadd('topics:recent_posts:tid:' + tid, (new Date()).getTime(), pid);
-				
 					// Re-add the poster, so he/she does not get an "unread" flag on this topic
 					topics.markAsRead(tid, uid);
 					// this will duplicate once we enter the thread, which is where we should be going
