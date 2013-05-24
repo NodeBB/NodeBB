@@ -133,6 +133,10 @@
 
 	socket.emit('api:categories.getRecentReplies', cid);
 	socket.on('api:categories.getRecentReplies', function(replies) {
+		if (replies === false) {
+			return;
+		}
+		
 		var users = replies.users,
 			posts = replies.posts,
 			recent_replies = document.getElementById('category_recent_replies');
