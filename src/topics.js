@@ -346,7 +346,7 @@ marked.setOptions({
 			// in future it may be possible to add topics to several categories, so leaving the door open here.
 			RDB.sadd('categories:' + category_id + ':tid', tid);
 			RDB.set('tid:' + tid + ':cid', category_id);
-			categories.get_category([category_id], function(data) {
+			categories.getCategories([category_id], function(data) {
 				RDB.set('tid:' + tid + ':category_name', data.categories[0].name);
 				RDB.set('tid:' + tid + ':category_slug', data.categories[0].slug);
 			});
