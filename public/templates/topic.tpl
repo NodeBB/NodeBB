@@ -114,18 +114,27 @@
 	</div>
 </div>
 
+<input type="hidden" template-variable="expose_tools" value="{expose_tools}" />
+<input type="hidden" template-variable="topic_id" value="{topic_id}" />
+<input type="hidden" template-variable="locked" value="{locked}" />
+<input type="hidden" template-variable="deleted" value="{deleted}" />
+<input type="hidden" template-variable="pinned" value="{pinned}" />
+<input type="hidden" template-variable="topic_name" value="{topic_name}" />
+
+
 
 <script type="text/javascript">
 	(function() {
-		var	expose_tools = '{expose_tools}',
-			tid = '{topic_id}',
+		var	expose_tools = templates.get('expose_tools'),
+			tid = templates.get('topic_id'),
 			postListEl = document.getElementById('post-container'),
 			editBtns = document.querySelectorAll('#post-container .post-buttons .edit, #post-container .post-buttons .edit i'),
 			thread_state = {
-				locked: '{locked}',
-				deleted: '{deleted}',
-				pinned: '{pinned}'
-			};
+				locked: templates.get('locked'),
+				deleted: templates.get('deleted'),
+				pinned: templates.get('pinned')
+			},
+			topic_name = templates.get('topic_name');
 
 		function addCommasToNumbers() {
 			$('.formatted-number').each(function(index, element) {
@@ -137,7 +146,7 @@
 
 			addCommasToNumbers();
 			
-			var	room = 'topic_' + '{topic_id}',
+			var	room = 'topic_' + tid,
 				adminTools = document.getElementById('thread-tools');
 
 			app.enter_room(room);
@@ -280,9 +289,9 @@
 
 			var main = $(this).parents('.main-post');
 			if(main.length > 0) 
-				app.open_post_window('edit', "{topic_id}", "{topic_name}", pid);
+				app.open_post_window('edit', tid, topic_name, pid);
 			else 
-				app.open_post_window('edit', "{topic_id}", "", pid);
+				app.open_post_window('edit', tid, "", pid);
 		
 		});
 
@@ -547,11 +556,11 @@
 			else div = '#' + div;
 
 			jQuery(div + ' .post_reply').click(function() {
-				if (thread_state.locked !== '1') app.open_post_window('reply', "{topic_id}", "{topic_name}");
+				if (thread_state.locked !== '1') app.open_post_window('reply', tid, topic_name);
 			});
 
 			jQuery(div + ' .quote').click(function() {
-				if (thread_state.locked !== '1') app.open_post_window('quote', "{topic_id}", "{topic_name}");
+				if (thread_state.locked !== '1') app.open_post_window('quote', tid, topic_name);
 				
 				var pid = $(this).parents('li').attr('data-pid');
 				

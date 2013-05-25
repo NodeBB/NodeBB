@@ -81,10 +81,13 @@
 <button id="new_post" class="btn btn-primary btn-large {show_category_features}">New Topic</button>
 
 
+<input type="hidden" template-variable="category_id" value="{category_id}" />
+
 <script type="text/javascript">
 (function() {
-	var cid = '{category_id}';
-	var	room = 'category_' + '{category_id}';
+	var cid = templates.get('category_id'),
+		room = 'category_' + cid;
+		
 	app.enter_room(room);
 
 	var new_post = document.getElementById('new_post');

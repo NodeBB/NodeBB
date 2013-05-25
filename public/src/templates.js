@@ -5,7 +5,8 @@
 	var config = {},
 		templates,
 		fs = null,
-		available_templates = [];
+		available_templates = [],
+		parsed_variables = {};
 
 	module.exports = templates = {};
 
@@ -153,8 +154,8 @@
 			
 		(function() {
 			jQuery.get(API_URL + api_url, function(data) {
-				if(!data) {
-					window.location.href = '/404';
+				if(data === false) {
+					ajaxify.go('404');
 					return;
 				}
 
@@ -168,12 +169,25 @@
 			if (!templates[tpl_url] || !template_data) return;
 
 			document.getElementById('content').innerHTML = templates[tpl_url].parse(JSON.parse(template_data));
-			if (callback) callback(true);
+
+			jQuery('#content [template-variable]').each(function(index, element) {
+				templates.set(element.getAttribute('template-variable'), element.value);
+			});
+
+			if (callback) {
+				callback(true);
+			}
 		}
 
 	}
 
+	templates.get = function(key) {
+		return parsed_variables[key];
+	}
 
+	templates.set = function(key, value) {
+		parsed_variables[key] = value;
+	}
 
 	//modified from https://github.com/psychobunny/dcp.templates
 	var parse = function(data) {
