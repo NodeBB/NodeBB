@@ -27,7 +27,7 @@
 
 <hr />
 <div class="pull-right">
-	<a href="/" class="btn btn-success btn-large"><i class="icon-thumbs-up"></i> Start using NodeBB!</a>
+	<button id="start-nodebb" class="btn btn-success btn-large"><i class="icon-thumbs-up"></i> Start using NodeBB!</button>
 </div>
 <div>
 	<button data-path="social" class="btn btn-primary btn-large">Previous &ndash; <i class="icon-facebook"></i> Social</button>
@@ -36,5 +36,11 @@
 <script>
 	(function() {
 		nodebb_setup.prepare();
+
+		var startEl = document.getElementById('start-nodebb');
+		startEl.addEventListener('click', function(e) {
+			e.preventDefault();
+			document.location.href = '/';
+		});
 	})();
 </script>
