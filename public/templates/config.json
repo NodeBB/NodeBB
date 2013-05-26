@@ -1,25 +1,29 @@
 {
-    "custom_mapping": {
-    	"admin/topics[^]*": "admin/topics",
-    	"admin/categories[^]*": "admin/categories",
-    	"admin/users[^]*": "admin/users",
-        "admin/redis[^]*": "admin/redis",
-        "admin/index[^]*": "admin/index",
-        "admin/themes[^]*": "admin/themes",
-        "admin/settings[^]*": "admin/settings",
-        "admin/twitter[^]*": "admin/twitter",
-        "admin/facebook[^]*": "admin/facebook",
-        "admin/gplus[^]*": "admin/gplus",
-        "install/?$": "install/basic",
-        "install/basic/?$": "install/basic",
-    	"users[^]*edit": "accountedit",
-        "users[^]*friends": "friends",
-        "users/[^]*": "account",
-        "latest": "category",
-        "popular": "category",
-        "active": "category"
-    },
-    "force_refresh": {
-        "logout": true
-    }
+	"custom_mapping": {
+		"admin/topics[^]*": "admin/topics",
+		"admin/categories[^]*": "admin/categories",
+		"admin/users[^]*": "admin/users",
+		"admin/redis[^]*": "admin/redis",
+		"admin/index[^]*": "admin/index",
+		"admin/themes[^]*": "admin/themes",
+		"admin/settings[^]*": "admin/settings",
+		"admin/twitter[^]*": "admin/twitter",
+		"admin/facebook[^]*": "admin/facebook",
+		"admin/gplus[^]*": "admin/gplus",
+		"install/?$": "install/redis",
+		"install/basic/?": "install/basic",
+		"install/redis/?": "install/redis",
+		"install/mail/?": "install/mail",
+		"install/social/?": "install/social",
+		"install/privileges/?": "install/privileges",
+		"users[^]*edit": "accountedit",
+		"users[^]*friends": "friends",
+		"users/[^]*": "account",
+		"latest": "category",
+		"popular": "category",
+		"active": "category"
+	},
+	"force_refresh": {
+		"logout": true
+	}
 }

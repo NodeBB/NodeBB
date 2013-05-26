@@ -5,7 +5,7 @@ var RDB = require('../redis.js');
 	Install.create_routes = function(app) {
 
 		(function() {
-			var routes = ['basic'];
+			var routes = ['basic', 'redis', 'mail', 'social', 'privileges'];
 
 			for (var i=0, ii=routes.length; i<ii; i++) {
 				(function(route) {
@@ -21,7 +21,7 @@ var RDB = require('../redis.js');
 			res.send(templates['install/header'] + app.create_route('install/basic') + templates['install/footer']);
 		});
 		app.get('/install/index', function(req, res) {
-			res.send(templates['install/header'] + app.create_route('install/index') + templates['install/footer']);
+			res.send(templates['install/header'] + app.create_route('install/basic') + templates['install/footer']);
 		});
 
 

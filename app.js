@@ -18,7 +18,7 @@ global.templates = {};
     templates.init([
         'header', 'footer', 'logout', 'admin/header', 'admin/footer', 'admin/index',
         'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext',
-        'emails/header', 'emails/footer', 'install/header', 'install/footer', 'install/basic'
+        'emails/header', 'emails/footer', 'install/header', 'install/footer', 'install/redis'
     ]);
     
     templates.ready(function() {

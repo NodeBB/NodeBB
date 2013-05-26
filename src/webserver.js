@@ -18,7 +18,8 @@ var express = require('express'),
 	admin = require('./routes/admin.js'),
 	userRoute = require('./routes/user.js'),
 	installRoute = require('./routes/install.js'),
-	auth = require('./routes/authentication.js');
+	auth = require('./routes/authentication.js'),
+	meta = require('./meta.js');
 
 (function(app) {
 	var templates = null;
@@ -222,13 +223,8 @@ var express = require('express'),
 	app.get('/api/:method/:id*', api_method);
 
 	app.get('/test', function(req, res) {
-		// notifications.remove_by_uniqueId('foobar', 1, function(success) {
-		// 	res.send('remove: ' + success);
-		// });
-		notifications.create('a bunch more text', 5, '/category/2/general-discussion', 'foobar', function(nid) {
-			notifications.push(nid, 1, function() {
-				res.send('nid: ' + nid)
-			});
+		meta.config.get(function(config) {
+			res.send(JSON.stringify(config, null, 4));
 		});
 	});
 

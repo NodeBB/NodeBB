@@ -11,7 +11,9 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 	categories = require('./categories.js'),
 	notifications = require('./notifications.js'),
 	threadTools = require('./threadTools.js'),
-	postTools = require('./postTools.js');
+	postTools = require('./postTools.js'),
+	meta = require('./meta.js'),
+	async = require('async');
 	
 (function(io) {
 	var	users = {},
@@ -291,6 +293,35 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					});
 				});
 			}
+		});
+
+		socket.on('api:config.redisTest', function() {
+			meta.testRedis(function(success) {
+				socket.emit('api:config.redisTest', {
+					status: success ? 'ok' : 'error'
+				});
+			});
+		});
+
+		socket.on('api:config.setup', function(data) {
+			async.parallel([
+				function(next) {
+					meta.config.set('redis/host', data['redis/host'], next);
+				},
+				function(next) {
+					meta.config.set('redis/port', data['redis/port'], next);
+				}
+			], function(err) {
+				meta.config.get(function(config) {
+					socket.emit('api:config.setup', config);
+				});
+			});
+		});
+
+		socket.on('api:config.set', function(data) {
+			meta.config.set(data.key, data.value, function(err) {
+				if (!err) socket.emit('api:config.set', { status: 'ok' });
+			});
 		});
 	});
 	
