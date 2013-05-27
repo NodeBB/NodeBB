@@ -15,44 +15,7 @@
 	<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
 	<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 	<link rel="stylesheet" type="text/css" href="/css/style.css" />
-	<style type="text/css">
-	.entry-row {
-		border-radius: 10px;
-		margin-bottom: 10px;
-		padding: 10px;
-		cursor: move;
-		width: 555px;
-	}
-	.admin-categories form {
-		margin: 0 0 0px;
-	}
-
-	.admin-categories input {
-		height: 20px;
-		padding: 5px;
-		margin-left: 10px;
-		width: 150px;
-		border: 0;
-		border-radius: 5px;
-		margin-top: -8px;	
-	}
-	.admin-categories select {
-		border: 0;
-		margin-left: 10px;
-		padding: 5px;
-		margin-top: -8px;
-	}
-	.admin-categories button {
-		margin-top: -7px;
-	}
-	.admin-categories .icon{
-		width: 30px;
-		height: 30px;
-		text-align: center;
-		line-height: 35px;
-		display: inline-block;
-	}
-	</style>
+	<link rel="stylesheet" type="text/css" href="/css/admin.css" />
 </head>
 
 <body>
@@ -81,6 +44,8 @@
 			</div>
 		</div>
 	</div>
+
+	<div id="alert_window"></div>
 	
 	<div class="container-fluid">
 		<div class="row-fluid">

@@ -3,11 +3,19 @@
 
 <form>
 	<div class="alert alert-notify">
-		<p>Create a <strong>Facebook Application</strong> and then paste your application details here.</p><br />
-		<input type="text" class="" placeholder="App Key"><br />
-		<input type="text" class="" placeholder="App Secret"><br />
+		<p>
+			Create a <strong>Facebook Application</strong> via the
+			<a href="https://developers.facebook.com/">Facebook Developers Page</a> and
+			then paste your application details here.
+		</p>
+		<br />
+		<input type="text" data-field="social:facebook:app_id" title="Application ID" class="input-medium" placeholder="App Key"><br />
+		<input type="text" data-field="social:facebook:secret" title="Application Secret" class="input-large" placeholder="App Secret"><br />
 	</div>
 </form>
 
-<button class="btn btn-large btn-primary" type="submit">Save</button>
-<button class="btn btn-large" type="submit" disabled>Delete</button>
+<button class="btn btn-large btn-primary" id="save">Save</button>
+
+<script>
+	nodebb_admin.prepare();
+</script>
