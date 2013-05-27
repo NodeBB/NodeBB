@@ -18,7 +18,6 @@ fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 					global.config[c] = config[c];
 				}
 			}
-			console.log(global.config);
 
 			var categories = require('./src/categories.js'),
 				templates = require('./public/src/templates.js'),
