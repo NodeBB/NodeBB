@@ -1,4 +1,5 @@
-var	RDB = require('./redis.js'),
+var	RDB = require('./redis.js')
+	schema = require('./schema.js'),
 	posts = require('./posts.js'),
 	utils = require('./../public/src/utils.js'),
 	user = require('./user.js'),
@@ -17,12 +18,12 @@ marked.setOptions({
 	Topics.getTopicById = function(tid, current_user, callback) {
 		function getTopicData(next) {
 			RDB.multi()
-				.get('tid:' + tid + ':title')
-				.get('tid:' + tid + ':locked')
-				.get('tid:' + tid + ':category_name')
-				.get('tid:' + tid + ':category_slug')
-				.get('tid:' + tid + ':deleted')
-				.get('tid:' + tid + ':pinned')
+				.get(schema.topics(tid).title)
+				.get(schema.topics(tid).locked)
+				.get(schema.topics(tid).category_name)
+				.get(schema.topics(tid).category_slug)
+				.get(schema.topics(tid).deleted)
+				.get(schema.topics(tid).pinned)
 				.exec(function(err, replies) {
 						next(null, {
 							topic_name: replies[0],
@@ -118,14 +119,14 @@ marked.setOptions({
 
 		function get_topic_data(next) {
 			RDB.mget([
-				'tid:' + tid + ':title',
-				'tid:' + tid + ':uid',
-				'tid:' + tid + ':timestamp',
-				'tid:' + tid + ':slug',
-				'tid:' + tid + ':postcount',
-				'tid:' + tid + ':locked',
-				'tid:' + tid + ':pinned',
-				'tid:' + tid + ':deleted'
+				schema.topics(tid).title,
+				schema.topics(tid).uid,
+				schema.topics(tid).timestamp,
+				schema.topics(tid).slug,
+				schema.topics(tid).postcount,
+				schema.topics(tid).locked,
+				schema.topics(tid).pinned,
+				schema.topics(tid).deleted
 			], function(err, topic) {
 				if (err) {
 					throw new Error(err);
@@ -152,7 +153,7 @@ marked.setOptions({
 		function get_read_status(next) {
 			// posts.create calls this function - should be an option to skip this because its always true
 			if (uid && parseInt(uid) > 0) {
-				RDB.sismember('tid:' + tid + ':read_by_uid', uid, function(err, read) {
+				RDB.sismember(schema.topics(tid).read_by_uid, uid, function(err, read) {
 					topicData.badgeclass = read ? '' : 'badge-important';
 
 					next();
@@ -181,7 +182,7 @@ marked.setOptions({
 	}
 
 	Topics.get_cid_by_tid = function(tid, callback) {
-		RDB.get('tid:' + tid + ':cid', function(err, cid) {
+		RDB.get(schema.topics(tid).cid, function(err, cid) {
 			if (cid && parseInt(cid) > 0) {
 				callback(cid);
 			} else {
@@ -192,7 +193,7 @@ marked.setOptions({
 
 	Topics.markAsRead = function(tid, uid) {
 		// there is an issue with this fn. if you read a topic that is previously read you will mark the category as read anyways - there is no check
-		RDB.sadd('tid:' + tid + ':read_by_uid', uid);
+		RDB.sadd(schema.topics(tid).read_by_uid, uid);
 		Topics.get_cid_by_tid(tid, function(cid) {
 			RDB.sadd('cid:' + cid + ':read_by_uid', uid);
 		});
@@ -202,7 +203,7 @@ marked.setOptions({
 		var batch = RDB.multi();
 
 		for (var i=0, ii=tids.length; i<ii; i++) {
-			batch.sismember('tid:' + tids[i] + ':read_by_uid', uid);	
+			batch.sismember(schema.topics(tids[i]).read_by_uid, uid);	
 		}
 		
 		batch.exec(function(err, hasRead) {
@@ -230,8 +231,9 @@ marked.setOptions({
 		}
 	}
 
+// start: probably should be moved into posts
 	Topics.get_latest_undeleted_pid = function(tid, callback) {
-		RDB.lrange('tid:' + tid + ':posts', 0, -1, function(err, pids) {
+		RDB.lrange(schema.topics(tid).posts, 0, -1, function(err, pids) {
 			var pidKeys = [],
 				numPids = pids.length;
 
@@ -257,27 +259,25 @@ marked.setOptions({
 			if (pid !== null) {
 				RDB.mget([
 					'pid:' + pid + ':content',
-					'pid:' + pid + ':uid'
+					'pid:' + pid + ':uid',
+					'pid:' + pid + ':timestamp'
 				], function(err, content) {
 					user.getUserField(content[1], 'username', function(username) {
-						var stripped = content[0];
+						var stripped = content[0],
+							timestamp = content[2];
 						if(content[0])
 							stripped = utils.strip_tags(marked(content[0]));
 						callback({
 							"text": stripped,
-							"username": username
+							"username": username,
+							"timestamp" : timestamp
 						});
 					});
 				});
 			}
 		});
 	}
-
-	Topics.getRecentReplies = function(tid, callback) {
-		RDB.zrange('topics:recent_posts:tid:' + tid, 0, -1, 'WITHSCORES', function(err, replies) {
-			callback(replies);
-		});
-	}
+// end: probably should be moved into posts
 
 	Topics.post = function(socket, uid, title, content, category_id) {
 		if (!category_id) throw new Error('Attempted to post without a category_id');
@@ -295,68 +295,81 @@ marked.setOptions({
 			return; // for now, until anon code is written.
 		}
 		
-		RDB.incr('global:next_topic_id', function(err, tid) {
-			RDB.handle(err);
+		user.getUserField(uid, 'lastposttime', function(lastposttime) {
 
-			// Global Topics
-			if (uid == null) uid = 0;
-			if (uid !== null) {
-				RDB.sadd('topics:tid', tid);	
-			} else {
-				// need to add some unique key sent by client so we can update this with the real uid later
-				RDB.lpush('topics:queued:tid', tid);
+			if(new Date().getTime() - lastposttime < config.post_delay) {
+				socket.emit('event:alert', {
+					title: 'Too many posts!',
+					message: 'You can only post every '+ (config.post_delay / 1000) + ' seconds.',
+					type: 'error',
+					timeout: 2000
+				});
+				return;
 			}
 
-			var slug = tid + '/' + utils.slugify(title);
+			RDB.incr(schema.global().next_topic_id, function(err, tid) {
+				RDB.handle(err);
 
-			// Topic Info
-			RDB.set('tid:' + tid + ':title', title);
-			RDB.set('tid:' + tid + ':uid', uid);
-			RDB.set('tid:' + tid + ':slug', slug);
-			RDB.set('tid:' + tid + ':timestamp', new Date().getTime());
-		
-			
-			RDB.set('topic:slug:' + slug + ':tid', tid);
-
-			// Posts
-			posts.create(uid, tid, content, function(pid) {
-				if (pid > 0) {
-					RDB.lpush('tid:' + tid + ':posts', pid);
-
-					// Notify any users looking at the category that a new topic has arrived
-					Topics.get_topic(tid, uid, function(topicData) {
-						io.sockets.in('category_' + category_id).emit('event:new_topic', topicData);
-					});
+				// Global Topics
+				if (uid == null) uid = 0;
+				if (uid !== null) {
+					RDB.sadd(schema.topics().tid, tid);	
+				} else {
+					// need to add some unique key sent by client so we can update this with the real uid later
+					RDB.lpush(schema.topics().queued_tids, tid);
 				}
+
+				var slug = tid + '/' + utils.slugify(title);
+
+				// Topic Info
+				RDB.set(schema.topic(tid).title, title);
+				RDB.set(schema.topic(tid).uid, uid);
+				RDB.set(schema.topic(tid).slug, slug);
+				RDB.set(schema.topic(tid).timestamp, new Date().getTime());
+			
+				
+				RDB.set(schema.topic().slug(slug).tid, tid);
+
+				// Posts
+				posts.create(uid, tid, content, function(pid) {
+					if (pid > 0) {
+						RDB.lpush(schema.topic(tid).posts, pid);
+
+						// Notify any users looking at the category that a new topic has arrived
+						Topics.get_topic(tid, uid, function(topicData) {
+							io.sockets.in('category_' + category_id).emit('event:new_topic', topicData);
+						});
+					}
+				});
+
+				Topics.markAsRead(tid, uid);
+
+				// User Details - move this out later
+				RDB.lpush('uid:' + uid + ':topics', tid);
+
+				socket.emit('event:alert', {
+					title: 'Thank you for posting',
+					message: 'You have successfully posted. Click here to view your post.',
+					type: 'notify',
+					timeout: 2000
+				});
+
+				// let everyone know that there is an unread topic in this category
+				RDB.del('cid:' + category_id + ':read_by_uid');
+
+				RDB.zadd(schema.topics().recent, (new Date()).getTime(), tid);
+				//RDB.zadd('topics:active', tid);
+
+				// in future it may be possible to add topics to several categories, so leaving the door open here.
+				RDB.sadd('categories:' + category_id + ':tid', tid);
+				RDB.set(schema.topics(tid).cid, category_id);
+				categories.getCategories([category_id], function(data) {
+					RDB.set(schema.topics(tid).category_name, data.categories[0].name);
+					RDB.set(schema.topics(tid).category_slug, data.categories[0].slug);
+				});
+
+				RDB.incr('cid:' + category_id + ':topiccount');
 			});
-
-			Topics.markAsRead(tid, uid);
-
-			// User Details - move this out later
-			RDB.lpush('uid:' + uid + ':topics', tid);
-
-			socket.emit('event:alert', {
-				title: 'Thank you for posting',
-				message: 'You have successfully posted. Click here to view your post.',
-				type: 'notify',
-				timeout: 2000
-			});
-
-			// let everyone know that there is an unread topic in this category
-			RDB.del('cid:' + category_id + ':read_by_uid');
-
-			RDB.zadd('topics:recent', (new Date()).getTime(), tid);
-			//RDB.zadd('topics:active', tid);
-
-			// in future it may be possible to add topics to several categories, so leaving the door open here.
-			RDB.sadd('categories:' + category_id + ':tid', tid);
-			RDB.set('tid:' + tid + ':cid', category_id);
-			categories.getCategories([category_id], function(data) {
-				RDB.set('tid:' + tid + ':category_name', data.categories[0].name);
-				RDB.set('tid:' + tid + ':category_slug', data.categories[0].slug);
-			});
-
-			RDB.incr('cid:' + category_id + ':topiccount');
 		});
 	};
 

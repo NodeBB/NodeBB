@@ -27,6 +27,7 @@
 						<div class="pull-right">
 							<img style="width: 48px; height: 48px; /*temporary*/" src="/graph/users/{topics.teaser_username}/picture" />
 							<p><strong>{topics.teaser_username}</strong>: {topics.teaser_text}</p>
+							<span>posted {topics.teaser_timestamp} ago</span>
 						</div>
 					</div>
 					<div>
@@ -42,13 +43,15 @@
 		</li></a>
 		<!-- END topics -->
 		</ul>
+		<hr />
+		<button id="new_post" class="btn btn-primary btn-large {show_category_features}">New Topic</button>
 	</div>
 	<div class="span3 {show_category_features}">
 		<div class="sidebar-block img-polaroid">
 			<div class="block-header">
 				Recent Replies
 			</div>
-			<div class="block-content">
+			<div class="block-content recent-replies" id="category_recent_replies">
 				
 			</div>
 		</div>
@@ -76,13 +79,15 @@
 </div>
 
 
-<hr />
-<button id="new_post" class="btn btn-primary btn-large {show_category_features}">New Topic</button>
 
+
+<input type="hidden" template-variable="category_id" value="{category_id}" />
 
 <script type="text/javascript">
 (function() {
-	var	room = 'category_' + '{category_id}';
+	var cid = templates.get('category_id'),
+		room = 'category_' + cid;
+		
 	app.enter_room(room);
 
 	var new_post = document.getElementById('new_post');
@@ -129,9 +134,31 @@
 
 
 
-	//socket.emit('api:topics.getRecentReplies', tid);
-	socket.on('api:topics.getRecentReplies', function(replies) {
-		console.log(replies);
+	socket.emit('api:categories.getRecentReplies', cid);
+	socket.on('api:categories.getRecentReplies', function(replies) {
+		if (replies === false) {
+			return;
+		}
+		
+		var users = replies.users,
+			posts = replies.posts,
+			recent_replies = document.getElementById('category_recent_replies');
+
+		recent_replies.innerHTML = '';
+		for (var i=0, ii=posts.pids.length; i<ii; i++) {
+			var a = document.createElement('a'),
+				ul = document.createElement('ul'),
+				username = users[posts.uid[i]].username,
+				picture = users[posts.uid[i]].picture;
+
+			//temp until design finalized
+			ul.innerHTML = '<li><img title="' + username + '" style="width: 48px; height: 48px; /*temporary*/" src="' + picture + '" class="" />'
+							+ '<p><strong>' + username + '</strong>: ' + posts.content[i] + '</p><span>posted ' + utils.relativeTime(posts.timestamp[i]) + ' ago</span></li>';
+			
+			a.appendChild(ul);
+			recent_replies.appendChild(a);
+		}
+		
 	});
 
 })();

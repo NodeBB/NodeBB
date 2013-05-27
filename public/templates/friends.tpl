@@ -40,12 +40,15 @@
 	<div id="no-friend-notice" class="alert alert-warning hide">This user doesn't have any friends :(</div>
 </div>
 
-<script>
+<input type="hidden" template-variable="yourid" value="{yourid}" />
+<input type="hidden" template-variable="theirid" value="{theirid}" />
+<input type="hidden" template-variable="friendCount" value="{friendCount}" />
 
-var yourid = '{yourid}';
-var theirid = '{theirid}';
+<script type="text/javascript">
 
-var friendCount = '{friendCount}';
+var yourid = templates.get('yourid'),
+	theirid = templates.get('theirid'),
+	friendCount = templates.get('friendCount');
 
 (function() {
     

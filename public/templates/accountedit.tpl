@@ -137,11 +137,14 @@
     </div>  
 </div>
 
+<input type="hidden" template-variable="gravatarpicture" value="{gravatarpicture}" />
+<input type="hidden" template-variable="uploadedpicture" value="{uploadedpicture}" />
+
 <script type="text/javascript">
 
 
-var gravatarPicture = '{gravatarpicture}';
-var uploadedPicture = '{uploadedpicture}';
+var gravatarPicture = templates.get('gravatarpicture');
+var uploadedPicture = templates.get('uploadedpicture');
 
 $(document).ready(function() {
  

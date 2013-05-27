@@ -19,8 +19,13 @@
 		<button class="btn btn-primary" id="reset" type="submit" disabled>Reset Password</button>
 	</div>
 </div>
+<input type="hidden" template-variable="reset_code" value="{reset_code}" />
+
+
 <script type="text/javascript">
 (function() {
+	var reset_code = templates.get('reset_code');
+
 	var	resetEl = document.getElementById('reset'),
 		password = document.getElementById('password'),
 		repeat = document.getElementById('repeat'),
@@ -33,12 +38,12 @@
 			noticeEl.querySelector('p').innerHTML = 'The password entered it too short, please pick a different password!';
 			noticeEl.style.display = 'block';
 		} else if (password.value === repeat.value) {
-			socket.emit('user:reset.commit', { code: '{reset_code}', password: password.value });
+			socket.emit('user:reset.commit', { code: reset_code, password: password.value });
 		}
 	}, false);
 
 	// Enable the form if the code is valid
-	socket.emit('user:reset.valid', { code: '{reset_code}' });
+	socket.emit('user:reset.valid', { code: reset_code });
 
 
 	ajaxify.register_events(['user:reset.valid', 'user:reset.commit']);

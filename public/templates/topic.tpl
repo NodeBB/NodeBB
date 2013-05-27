@@ -23,7 +23,7 @@
 							<i class="icon-pencil"></i><span class="user_posts_{main_posts.uid}">8</span>
 						</div>
 					</a>
-					<h3><p class="topic-title">{topic_name}</p> 
+					<h3><p id="topic_title_{main_posts.pid}" class="topic-title">{topic_name}</p> 
 						<div class="pull-right hidden-phone" style="margin-right: 10px;">
 							<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn edit {main_posts.display_moderator_tools}" type="button"><i class="icon-pencil"></i></button>
 							<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn delete {main_posts.display_moderator_tools}" type="button"><i class="icon-trash"></i></button>
@@ -114,18 +114,27 @@
 	</div>
 </div>
 
+<input type="hidden" template-variable="expose_tools" value="{expose_tools}" />
+<input type="hidden" template-variable="topic_id" value="{topic_id}" />
+<input type="hidden" template-variable="locked" value="{locked}" />
+<input type="hidden" template-variable="deleted" value="{deleted}" />
+<input type="hidden" template-variable="pinned" value="{pinned}" />
+<input type="hidden" template-variable="topic_name" value="{topic_name}" />
+
+
 
 <script type="text/javascript">
 	(function() {
-		var	expose_tools = '{expose_tools}',
-			tid = '{topic_id}',
+		var	expose_tools = templates.get('expose_tools'),
+			tid = templates.get('topic_id'),
 			postListEl = document.getElementById('post-container'),
 			editBtns = document.querySelectorAll('#post-container .post-buttons .edit, #post-container .post-buttons .edit i'),
 			thread_state = {
-				locked: '{locked}',
-				deleted: '{deleted}',
-				pinned: '{pinned}'
-			};
+				locked: templates.get('locked'),
+				deleted: templates.get('deleted'),
+				pinned: templates.get('pinned')
+			},
+			topic_name = templates.get('topic_name');
 
 		function addCommasToNumbers() {
 			$('.formatted-number').each(function(index, element) {
@@ -137,7 +146,7 @@
 
 			addCommasToNumbers();
 			
-			var	room = 'topic_' + '{topic_id}',
+			var	room = 'topic_' + tid,
 				adminTools = document.getElementById('thread-tools');
 
 			app.enter_room(room);
@@ -277,7 +286,13 @@
 
 		$('.post-container').delegate('.edit', 'click', function(e) {
 			var pid = ($(this).attr('id') || $(this.parentNode).attr('id')).split('_')[1];
-			app.open_post_window('edit', "{topic_id}", "{topic_name}", pid);
+
+			var main = $(this).parents('.main-post');
+			if(main.length > 0) 
+				app.open_post_window('edit', tid, topic_name, pid);
+			else 
+				app.open_post_window('edit', tid, "", pid);
+		
 		});
 
 		$('.post-container').delegate('.delete', 'click', function(e) {
@@ -490,6 +505,16 @@
 
 		socket.on('event:post_edited', function(data) {
 			var editedPostEl = document.getElementById('content_' + data.pid);
+
+			var editedPostTitle = $('#topic_title_'+data.pid);
+			
+			if(editedPostTitle.length > 0) {
+				editedPostTitle.fadeOut(250, function() {
+					editedPostTitle.html(data.title);
+					editedPostTitle.fadeIn(250);
+				});
+			}
+
 			$(editedPostEl).fadeOut(250, function() {
 				this.innerHTML = data.content;
 				$(this).fadeIn(250);
@@ -531,11 +556,11 @@
 			else div = '#' + div;
 
 			jQuery(div + ' .post_reply').click(function() {
-				if (thread_state.locked !== '1') app.open_post_window('reply', "{topic_id}", "{topic_name}");
+				if (thread_state.locked !== '1') app.open_post_window('reply', tid, topic_name);
 			});
 
 			jQuery(div + ' .quote').click(function() {
-				if (thread_state.locked !== '1') app.open_post_window('quote', "{topic_id}", "{topic_name}");
+				if (thread_state.locked !== '1') app.open_post_window('quote', tid, topic_name);
 				
 				var pid = $(this).parents('li').attr('data-pid');
 				

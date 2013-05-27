@@ -47,15 +47,18 @@ marked.setOptions({
 		});
 	}
 
-	PostTools.edit = function(uid, pid, content) {
+	PostTools.edit = function(uid, pid, title, content) {
 		var	success = function() {
+
 				RDB.set('pid:' + pid + ':content', content);
 				RDB.set('pid:' + pid + ':edited', new Date().getTime());
 				RDB.set('pid:' + pid + ':editor', uid);
 
 				posts.get_tid_by_pid(pid, function(tid) {
+					RDB.set('tid:' + tid + ':title', title);
 					io.sockets.in('topic_' + tid).emit('event:post_edited', {
 						pid: pid,
+						title: title,
 						content: marked(content || '')
 					});
 				});

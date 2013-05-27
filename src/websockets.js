@@ -238,7 +238,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('api:posts.edit', function(data) {
-			postTools.edit(uid, data.pid, data.content);
+			postTools.edit(uid, data.pid, data.title, data.content);
 		});
 
 		socket.on('api:posts.delete', function(data) {
@@ -265,10 +265,9 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			notifications.mark_read(nid, uid);
 		});
 
-		socket.on('api:topics.getRecentReplies', function(tid) {
-			console.log('test');
-			topics.getRecentReplies(tid, function(replies) {
-				socket.emit('api:topics.getRecentReplies', replies);
+		socket.on('api:categories.getRecentReplies', function(tid) {
+			categories.getRecentReplies(tid, function(replies) {
+				socket.emit('api:categories.getRecentReplies', replies);
 			});
 		});
 

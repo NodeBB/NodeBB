@@ -180,7 +180,8 @@ var	RDB = require('./redis.js'),
 								'pin-icon': pinned[i] === '1' ? 'icon-pushpin' : 'none',
 								'badgeclass' : (hasReadTopics[i] && current_user !=0) ? '' : 'badge-important',
 								'teaser_text': teaserInfo[i].text,
-								'teaser_username': teaserInfo[i].username
+								'teaser_username': teaserInfo[i].username,
+								'teaser_timestamp': utils.relativeTime(teaserInfo[i].timestamp)
 							});
 						}
 					}
@@ -259,7 +260,17 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
-
+	Categories.getRecentReplies = function(cid, callback) {
+		RDB.zrange('categories:recent_posts:cid:' + cid, 0, -1, function(err, pids) {
+			if (pids.length == 0) {
+				callback(false);
+				return;
+			}
+			posts.getPostSummaryByPids(pids, function(posts) {
+				callback(posts);
+			});
+		});
+	}
 
 	Categories.getCategories = function(cids, callback, current_user) {
 		if (cids.length === 0) {

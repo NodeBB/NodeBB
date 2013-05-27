@@ -69,12 +69,16 @@
 	</div>
 	<br/>
 	<div id="user-action-alert" class="alert alert-success hide"></div>
+
 </div>
+
+<input type="hidden" template-variable="yourid" value="{yourid}" />
+<input type="hidden" template-variable="theirid" value="{theirid}" />
 
 <script type="text/javascript">
 
-var yourid = '{yourid}';
-var theirid = '{theirid}';
+var yourid = templates.get('yourid'),
+	theirid = templates.get('theirid');
 
 (function() {
 

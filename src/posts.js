@@ -23,74 +23,113 @@ marked.setOptions({
 			}
 			
 			topics.markAsRead(tid, current_user);
+
+			Posts.getPostsByPids(pids, current_user, function(posts) {
+				callback(posts);
+			})
 			
-			var content = [], uid = [], timestamp = [], pid = [], post_rep = [], editor = [], editTime = [], deleted = [];
+			
 
-			for (var i=0, ii=pids.length; i<ii; i++) {
-				content.push('pid:' + pids[i] + ':content');
-				uid.push('pid:' + pids[i] + ':uid');
-				timestamp.push('pid:' + pids[i] + ':timestamp');
-				post_rep.push('pid:' + pids[i] + ':rep');
-				editor.push('pid:' + pids[i] + ':editor');
-				editTime.push('pid:' + pids[i] + ':edited');
-				deleted.push('pid:' + pids[i] + ':deleted');
-				pid.push(pids[i]);
-			}
+		});
+	}
 
+	// todo, getPostsByPids has duplicated stuff, have that call this fn - after userinfo calls are pulled out.
+	Posts.getPostSummaryByPids = function(pids, callback) {
+		var content = [], uid = [], timestamp = [];
+		for (var i=0, ii=pids.length; i<ii; i++) {
+			content.push('pid:' + pids[i] + ':content');
+			uid.push('pid:' + pids[i] + ':uid');
+			timestamp.push('pid:' + pids[i] + ':timestamp');
+		}
 
-			function getFavouritesData(next) {
-				favourites.getFavouritesByPostIDs(pids, current_user, function(fav_data) {
-					next(null, fav_data);
-				}); // to be moved
-			}
+		RDB.multi()
+			.mget(content)
+			.mget(uid)
+			.mget(timestamp)
+			.exec(function(err, replies) {
+				post_data = {
+					pids: pids,
+					content: replies[0],
+					uid: replies[1],
+					timestamp: replies[2]
+				}
 
-			function getPostData(next) {
-				RDB.multi()
-					.mget(content)
-					.mget(uid)
-					.mget(timestamp)
-					.mget(post_rep)
-					.mget(editor)
-					.mget(editTime)
-					.mget(deleted)
-					.exec(function(err, replies) {
-						post_data = {
-							pid: pids,
-							content: replies[0],
-							uid: replies[1],
-							timestamp: replies[2],
-							reputation: replies[3],
-							editor: replies[4],
-							editTime: replies[5],
-							deleted: replies[6]
-						};
-
-						// below, to be deprecated
-						// Add any editors to the user_data object
-						for(var x = 0, numPosts = post_data.editor.length; x < numPosts; x++) {
-							if (post_data.editor[x] !== null && post_data.uid.indexOf(post_data.editor[x]) === -1) {
-								post_data.uid.push(post_data.editor[x]);
-							}
-						}
-
-						user.getMultipleUserFields(post_data.uid, ['username','reputation','picture', 'signature'], function(user_details) {
-							next(null, {
-								users: user_details,
-								posts: post_data
-							});
-						});
-						// above, to be deprecated
+				// below, to be deprecated
+				user.getMultipleUserFields(post_data.uid, ['username','reputation','picture'], function(user_details) {
+					callback({
+						users: user_details,
+						posts: post_data
 					});
-			}
-
-			async.parallel([getFavouritesData, getPostData], function(err, results) {
-				callback({
-					'voteData' : results[0], // to be moved
-					'userData' : results[1].users, // to be moved
-					'postData' : results[1].posts
 				});
+				// above, to be deprecated
 			});
+	};
 
+	Posts.getPostsByPids = function(pids, current_user, callback) {
+		var content = [], uid = [], timestamp = [], post_rep = [], editor = [], editTime = [], deleted = [];
+
+		for (var i=0, ii=pids.length; i<ii; i++) {
+			content.push('pid:' + pids[i] + ':content');
+			uid.push('pid:' + pids[i] + ':uid');
+			timestamp.push('pid:' + pids[i] + ':timestamp');
+			post_rep.push('pid:' + pids[i] + ':rep');
+			editor.push('pid:' + pids[i] + ':editor');
+			editTime.push('pid:' + pids[i] + ':edited');
+			deleted.push('pid:' + pids[i] + ':deleted');
+		}
+
+
+		function getFavouritesData(next) {
+			favourites.getFavouritesByPostIDs(pids, current_user, function(fav_data) {
+				next(null, fav_data);
+			}); // to be moved
+		}
+
+		function getPostData(next) {
+			RDB.multi()
+				.mget(content)
+				.mget(uid)
+				.mget(timestamp)
+				.mget(post_rep)
+				.mget(editor)
+				.mget(editTime)
+				.mget(deleted)
+				.exec(function(err, replies) {
+					post_data = {
+						pid: pids,
+						content: replies[0],
+						uid: replies[1],
+						timestamp: replies[2],
+						reputation: replies[3],
+						editor: replies[4],
+						editTime: replies[5],
+						deleted: replies[6]
+					};
+
+					// below, to be deprecated
+					// Add any editors to the user_data object
+					for(var x = 0, numPosts = post_data.editor.length; x < numPosts; x++) {
+						if (post_data.editor[x] !== null && post_data.uid.indexOf(post_data.editor[x]) === -1) {
+							post_data.uid.push(post_data.editor[x]);
+						}
+					}
+
+					user.getMultipleUserFields(post_data.uid, ['username','reputation','picture', 'signature'], function(user_details) {
+						next(null, {
+							users: user_details,
+							posts: post_data
+						});
+					});
+					// above, to be deprecated
+				});
+		}
+
+		async.parallel([getFavouritesData, getPostData], function(err, results) {
+			callback({
+				'voteData' : results[0], // to be moved
+				'userData' : results[1].users, // to be moved
+				'postData' : results[1].posts
+			});
 		});
 	}
 
@@ -127,60 +166,73 @@ marked.setOptions({
 			return;
 		}
 
-		Posts.create(uid, tid, content, function(pid) {
-			if (pid > 0) {
-				RDB.rpush('tid:' + tid + ':posts', pid);
 
-				RDB.del('tid:' + tid + ':read_by_uid'); // let everybody know there is an unread post
-				Posts.get_cid_by_pid(pid, function(cid) {
-					RDB.del('cid:' + cid + ':read_by_uid');
-				});
-
-				RDB.zadd('topics:recent_posts:tid:' + tid, (new Date()).getTime(), pid);
-			
-				// Re-add the poster, so he/she does not get an "unread" flag on this topic
-				topics.markAsRead(tid, uid);
-				// this will duplicate once we enter the thread, which is where we should be going
-
+		user.getUserField(uid, 'lastposttime', function(lastposttime) {
+			if(new Date().getTime() - lastposttime < config.post_delay) {
 				socket.emit('event:alert', {
-					title: 'Reply Successful',
-					message: 'You have successfully replied. Click here to view your reply.',
-					type: 'notify',
+					title: 'Too many posts!',
+					message: 'You can only post every '+ (config.post_delay / 1000) + ' seconds.',
+					type: 'error',
 					timeout: 2000
 				});
-
-				user.getUserFields(uid, ['username','reputation','picture','signature'], function(data) {
-					
-					var timestamp = new Date().getTime();
-					
-					io.sockets.in('topic_' + tid).emit('event:new_post', {
-						'posts' : [
-							{
-								'pid' : pid,
-								'content' : marked(content || ''),
-								'uid' : uid,
-								'username' : data.username || 'anonymous',
-								'user_rep' : data.reputation || 0,
-								'post_rep' : 0,
-								'gravatar' : data.picture,
-								'signature' : marked(data.signature || ''),
-								'timestamp' : timestamp,
-								'relativeTime': utils.relativeTime(timestamp),
-								'fav_star_class' :'icon-star-empty',
-								'edited-class': 'none',
-								'editor': '',
-							}
-						]
-					});
-				});
-			} else {
-				socket.emit('event:alert', {
-					title: 'Reply Unsuccessful',
-					message: 'Your reply could not be posted at this time. Please try again later.',
-					type: 'notify',
-					timeout: 2000
-				});
+				return;
 			}
+
+			Posts.create(uid, tid, content, function(pid) {
+				if (pid > 0) {
+					RDB.rpush('tid:' + tid + ':posts', pid);
+
+					RDB.del('tid:' + tid + ':read_by_uid'); // let everybody know there is an unread post
+
+					Posts.get_cid_by_pid(pid, function(cid) {
+						RDB.del('cid:' + cid + ':read_by_uid');
+						RDB.zadd('categories:recent_posts:cid:' + cid, (new Date()).getTime(), pid);
+					});
+
+					// Re-add the poster, so he/she does not get an "unread" flag on this topic
+					topics.markAsRead(tid, uid);
+					// this will duplicate once we enter the thread, which is where we should be going
+
+					socket.emit('event:alert', {
+						title: 'Reply Successful',
+						message: 'You have successfully replied. Click here to view your reply.',
+						type: 'notify',
+						timeout: 2000
+					});
+
+					user.getUserFields(uid, ['username','reputation','picture','signature'], function(data) {
+						
+						var timestamp = new Date().getTime();
+						
+						io.sockets.in('topic_' + tid).emit('event:new_post', {
+							'posts' : [
+								{
+									'pid' : pid,
+									'content' : marked(content || ''),
+									'uid' : uid,
+									'username' : data.username || 'anonymous',
+									'user_rep' : data.reputation || 0,
+									'post_rep' : 0,
+									'gravatar' : data.picture,
+									'signature' : marked(data.signature || ''),
+									'timestamp' : timestamp,
+									'relativeTime': utils.relativeTime(timestamp),
+									'fav_star_class' :'icon-star-empty',
+									'edited-class': 'none',
+									'editor': '',
+								}
+							]
+						});
+					});
+				} else {
+					socket.emit('event:alert', {
+						title: 'Reply Unsuccessful',
+						message: 'Your reply could not be posted at this time. Please try again later.',
+						type: 'notify',
+						timeout: 2000
+					});
+				}
+			});
 		});
 	};
 
@@ -193,11 +245,12 @@ marked.setOptions({
 			if (!locked || locked === '0') {
 				RDB.incr('global:next_post_id', function(err, pid) {
 					RDB.handle(err);
-			
+					
+					var timestamp = new Date().getTime();
 					// Posts Info
 					RDB.set('pid:' + pid + ':content', content);
 					RDB.set('pid:' + pid + ':uid', uid);
-					RDB.set('pid:' + pid + ':timestamp', new Date().getTime());
+					RDB.set('pid:' + pid + ':timestamp', timestamp);
 					RDB.set('pid:' + pid + ':rep', 0);
 					RDB.set('pid:' + pid + ':tid', tid);
 					
@@ -225,6 +278,7 @@ marked.setOptions({
 					RDB.lpush('uid:' + uid + ':posts', pid);
 					
 					user.incrementUserFieldBy(uid, 'postcount', 1);
+					user.setUserField(uid, 'lastposttime', timestamp);
 
 					if (callback) 
 						callback(pid);
