@@ -3,11 +3,9 @@
 		ERROR_LOGS = true,
 
 		redis = require('redis'),
-		config = require('../config.js'),
 		utils = require('./../public/src/utils.js');
 	
-
-	RedisDB.exports = redis.createClient(config.redis.port, config.redis.host, config.redis.options);
+	RedisDB.exports = redis.createClient(global.config.redis.port, global.config.redis.host);
 
 	RedisDB.exports.handle = function(error) {
 		if (error !== null) {

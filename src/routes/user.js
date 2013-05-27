@@ -1,11 +1,8 @@
 
-
 var user = require('./../user.js'),
 	fs = require('fs'),
 	utils = require('./../../public/src/utils.js'),
-	config = require('../../config.js'),
 	marked = require('marked');
-
 
 (function(User) {
 	User.create_routes = function(app) {

@@ -2,7 +2,6 @@
 var SocketIO = require('socket.io').listen(global.server, { log:false }),
 	cookie = require('cookie'),
 	connect = require('connect'),
-	config = require('../config.js'),
 	user = require('./user.js'),
 	posts = require('./posts.js'),
 	favourites = require('./favourites.js'),
@@ -11,7 +10,9 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 	categories = require('./categories.js'),
 	notifications = require('./notifications.js'),
 	threadTools = require('./threadTools.js'),
-	postTools = require('./postTools.js');
+	postTools = require('./postTools.js'),
+	meta = require('./meta.js'),
+	async = require('async');
 	
 (function(io) {
 	var	users = {},
@@ -24,7 +25,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 	io.set('authorization', function(handshakeData, accept) {
 		if (handshakeData.headers.cookie) {
 			handshakeData.cookie = cookie.parse(handshakeData.headers.cookie);
-			handshakeData.sessionID = connect.utils.parseSignedCookie(handshakeData.cookie['express.sid'], config.secret);
+			handshakeData.sessionID = connect.utils.parseSignedCookie(handshakeData.cookie['express.sid'], global.config.secret);
 
 			if (handshakeData.cookie['express.sid'] == handshakeData.sessionID) {
 				return accept('Cookie is invalid.', false);
@@ -290,6 +291,26 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					});
 				});
 			}
+		});
+
+		socket.on('api:config.redisTest', function() {
+			meta.testRedis(function(success) {
+				socket.emit('api:config.redisTest', {
+					status: success ? 'ok' : 'error'
+				});
+			});
+		});
+
+		socket.on('api:config.get', function(data) {
+			meta.config.get(function(config) {
+				socket.emit('api:config.get', config);
+			});
+		});
+
+		socket.on('api:config.set', function(data) {
+			meta.config.set(data.key, data.value, function(err) {
+				if (!err) socket.emit('api:config.set', { status: 'ok' });
+			});
 		});
 	});
 	

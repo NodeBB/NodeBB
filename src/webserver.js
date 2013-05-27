@@ -3,9 +3,8 @@ var express = require('express'),
 	server = require('http').createServer(WebServer),
 	RedisStore = require('connect-redis')(express),
 	path = require('path'),
-    config = require('../config.js'),
     redis = require('redis'),
-	redisServer = redis.createClient(config.redis.port, config.redis.host, config.redis.options),
+	redisServer = redis.createClient(global.config.redis.port, global.config.redis.host),
 	marked = require('marked'),
 	utils = require('../public/src/utils.js'),
 	fs = require('fs'),
@@ -17,7 +16,9 @@ var express = require('express'),
 	notifications = require('./notifications.js'),
 	admin = require('./routes/admin.js'),
 	userRoute = require('./routes/user.js'),
-	auth = require('./routes/authentication.js');
+	installRoute = require('./routes/install.js'),
+	auth = require('./routes/authentication.js'),
+	meta = require('./meta.js');
 
 (function(app) {
 	var templates = null;
@@ -34,7 +35,7 @@ var express = require('express'),
 			client: redisServer,
 			ttl: 60*60*24*14
 		}),
-		secret: config.secret,
+		secret: global.config.secret,
 		key: 'express.sid'
 	}));
 
@@ -62,6 +63,7 @@ var express = require('express'),
 	auth.create_routes(app);
 	admin.create_routes(app);
 	userRoute.create_routes(app);
+	installRoute.create_routes(app);
 
 
 	app.create_route = function(url, tpl) { // to remove
@@ -220,13 +222,8 @@ var express = require('express'),
 	app.get('/api/:method/:id*', api_method);
 
 	app.get('/test', function(req, res) {
-		// notifications.remove_by_uniqueId('foobar', 1, function(success) {
-		// 	res.send('remove: ' + success);
-		// });
-		notifications.create('a bunch more text', 5, '/category/2/general-discussion', 'foobar', function(nid) {
-			notifications.push(nid, 1, function() {
-				res.send('nid: ' + nid)
-			});
+		meta.config.get(function(config) {
+			res.send(JSON.stringify(config, null, 4));
 		});
 	});
 

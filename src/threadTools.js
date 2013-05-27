@@ -2,7 +2,6 @@ var	RDB = require('./redis.js'),
 	topics = require('./topics.js'),
 	categories = require('./categories.js'),
 	user = require('./user.js'),
-	config = require('../config.js'),
 	async = require('async');
 
 
@@ -23,7 +22,7 @@ var	RDB = require('./redis.js'),
 			// DRY fail in postTools
 
 			user.getUserField(uid, 'reputation', function(reputation) {
-				next(null, reputation >= config.privilege_thresholds.manage_thread);
+				next(null, reputation >= global.config['privileges:manage_topic']);
 			});
 		}
 		
