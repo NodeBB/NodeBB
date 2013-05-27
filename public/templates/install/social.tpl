@@ -1,5 +1,5 @@
 
-<h1>Step 4 &ndash; Social Media Logins (Optional)</h1>
+<h1>Social Media Logins</h1>
 
 <form class="form-inline">
 	<p>
@@ -9,26 +9,26 @@
 
 	<h3>Facebook</h3>
 	<p>
-		<label>Application ID</label> <input type="text" class="input-medium" data-field="social/facebook/app_id" />
+		<label>Application ID</label> <input type="text" class="input-medium" data-field="social:facebook:app_id" />
 	</p>
 	<p>
-		<label>Application Secret</label> <input type="text" class="input-large" data-field="social/facebook/secret" />
+		<label>Application Secret</label> <input type="text" class="input-large" data-field="social:facebook:secret" />
 	</p>
 
 	<h3>Twitter</h3>
 	<p>
-		<label>Application Key</label> <input type="text" class="input-medium" data-field="social/twitter/key" />
+		<label>Application Key</label> <input type="text" class="input-medium" data-field="social:twitter:key" />
 	</p>
 	<p>
-		<label>Application Secret</label> <input type="text" class="input-large" data-field="social/twitter/secret" />
+		<label>Application Secret</label> <input type="text" class="input-large" data-field="social:twitter:secret" />
 	</p>
 
 	<h3>Google</h3>
 	<p>
-		<label>Application Key</label> <input type="text" class="input-xxlarge" data-field="social/google/key" />
+		<label>Application ID</label> <input type="text" class="input-xxlarge" data-field="social:google:id" />
 	</p>
 	<p>
-		<label>Application Secret</label> <input type="text" class="input-large" data-field="social/google/secret" />
+		<label>Application Secret</label> <input type="text" class="input-large" data-field="social:google:secret" />
 	</p>
 </form>
 

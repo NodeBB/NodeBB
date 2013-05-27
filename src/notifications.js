@@ -1,5 +1,4 @@
-var	config = require('../config.js'),
-	RDB = require('./redis.js'),
+var	RDB = require('./redis.js'),
 	async = require('async'),
 	utils = require('../public/src/utils.js');
 

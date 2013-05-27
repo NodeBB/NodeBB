@@ -2,7 +2,6 @@ var	RDB = require('./redis.js'),
 	posts = require('./posts.js'),
 	threadTools = require('./threadTools.js'),
 	user = require('./user.js'),
-	config = require('../config.js'),
 	async = require('async'),
 	marked = require('marked');
 
@@ -35,8 +34,8 @@ marked.setOptions({
 			// DRY fail in threadTools.
 
 			user.getUserField(uid, 'reputation', function(reputation) {
-					next(null, reputation >= config.privilege_thresholds.manage_content);
-				});
+				next(null, reputation >= global.config['privileges:manage_content']);
+			});
 		}
 
 		async.parallel([getThreadPrivileges, isOwnPost, hasEnoughRep], function(err, results) {

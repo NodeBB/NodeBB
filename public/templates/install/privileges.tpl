@@ -1,5 +1,5 @@
 
-<h1>Step 5 &ndash; User Privilege Thresholds</h1>
+<h1>User Privilege Thresholds</h1>
 
 <form class="form-inline">
 	<p>

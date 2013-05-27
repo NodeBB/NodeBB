@@ -5,17 +5,26 @@
 			config: undefined,
 			prepare: function() {
 				// Bounce if config is not ready
-				if (nodebb_setup.config === undefined) {
-					ajaxify.go('install/redis');
-					app.alert({
-						alert_id: 'config-ready',
-						type: 'error',
-						timeout: 10000,
-						title: 'NodeBB Configuration Not Ready!',
-						message:	'NodeBB cannot proceed with setup at this time as Redis database information ' +
-									'was not found. Please enter the information below.'
-					});
+				// if (nodebb_setup.config === undefined) {
+				// 	ajaxify.go('install/redis');
+				// 	app.alert({
+				// 		alert_id: 'config-ready',
+				// 		type: 'error',
+				// 		timeout: 10000,
+				// 		title: 'NodeBB Configuration Not Ready!',
+				// 		message:	'NodeBB cannot proceed with setup at this time as Redis database information ' +
+				// 					'was not found. Please enter the information below.'
+				// 	});
 
+				// 	return;
+				// }
+
+				// Come back in 500ms if the config isn't ready yet
+				if (nodebb_setup.config === undefined) {
+					console.log('Config not ready...');
+					setTimeout(function() {
+						nodebb_setup.prepare();
+					}, 500);
 					return;
 				}
 
@@ -105,6 +114,11 @@
 					if (!e.target.disabled) ajaxify.go(href);
 				}
 			}, false);
+
+			socket.emit('api:config.get');
+			socket.on('api:config.get', function(data) {
+				nodebb_setup.config = data;
+			});
 
 			socket.on('api:config.set', function(data) {
 				if (data.status === 'ok') {

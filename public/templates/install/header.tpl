@@ -34,12 +34,6 @@
 				<div class="nav-collapse collapse">
 					<ul class="nav nodebb-inline-block">
 						<li>
-							<a data-tab="redis" href="/install/redis"><i class="icon-hdd"></i> Redis</a>
-						</li>
-						<li>
-							<a data-tab="basic" href="/install/basic"><i class="icon-cog"></i> Basic</a>
-						</li>
-						<li>
 							<a data-tab="email" href="/install/email"><i class="icon-envelope"></i> Mail</a>
 						</li>
 						<li>

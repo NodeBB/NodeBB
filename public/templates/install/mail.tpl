@@ -1,5 +1,5 @@
 
-<h1>Step 3 &ndash; Mailer Information</h1>
+<h1>Mailer Information</h1>
 
 <form class="form-inline">
 	<p>
@@ -24,9 +24,6 @@
 <hr />
 <div class="pull-right">
 	<button data-path="social" class="btn btn-primary btn-large">Next &ndash; <i class="icon-facebook"></i> Social</button>
-</div>
-<div>
-	<button data-path="basic" class="btn btn-primary btn-large">Previous &ndash; <i class="icon-cog"></i> Basic</button>
 </div>
 
 <script>

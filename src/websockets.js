@@ -2,7 +2,6 @@
 var SocketIO = require('socket.io').listen(global.server, { log:false }),
 	cookie = require('cookie'),
 	connect = require('connect'),
-	config = require('../config.js'),
 	user = require('./user.js'),
 	posts = require('./posts.js'),
 	favourites = require('./favourites.js'),
@@ -26,7 +25,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 	io.set('authorization', function(handshakeData, accept) {
 		if (handshakeData.headers.cookie) {
 			handshakeData.cookie = cookie.parse(handshakeData.headers.cookie);
-			handshakeData.sessionID = connect.utils.parseSignedCookie(handshakeData.cookie['express.sid'], config.secret);
+			handshakeData.sessionID = connect.utils.parseSignedCookie(handshakeData.cookie['express.sid'], global.config.secret);
 
 			if (handshakeData.cookie['express.sid'] == handshakeData.sessionID) {
 				return accept('Cookie is invalid.', false);
@@ -302,18 +301,9 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			});
 		});
 
-		socket.on('api:config.setup', function(data) {
-			async.parallel([
-				function(next) {
-					meta.config.set('redis/host', data['redis/host'], next);
-				},
-				function(next) {
-					meta.config.set('redis/port', data['redis/port'], next);
-				}
-			], function(err) {
-				meta.config.get(function(config) {
-					socket.emit('api:config.setup', config);
-				});
+		socket.on('api:config.get', function(data) {
+			meta.config.get(function(config) {
+				socket.emit('api:config.get', config);
 			});
 		});
 

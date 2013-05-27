@@ -3,9 +3,8 @@ var express = require('express'),
 	server = require('http').createServer(WebServer),
 	RedisStore = require('connect-redis')(express),
 	path = require('path'),
-    config = require('../config.js'),
     redis = require('redis'),
-	redisServer = redis.createClient(config.redis.port, config.redis.host, config.redis.options),
+	redisServer = redis.createClient(global.config.redis.port, global.config.redis.host),
 	marked = require('marked'),
 	utils = require('../public/src/utils.js'),
 	fs = require('fs'),
@@ -36,7 +35,7 @@ var express = require('express'),
 			client: redisServer,
 			ttl: 60*60*24*14
 		}),
-		secret: config.secret,
+		secret: global.config.secret,
 		key: 'express.sid'
 	}));
 

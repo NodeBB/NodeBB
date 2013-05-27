@@ -1,5 +1,4 @@
 (function(Auth) {
-
 	var passport = require('passport'),
 		passportLocal = require('passport-local').Strategy,
 		passportTwitter = require('passport-twitter').Strategy,
@@ -7,11 +6,7 @@
 		passportFacebook = require('passport-facebook').Strategy,
 		login_strategies = [],
 
-		user_module = require('./../user.js'),
-		config = require('./../../config.js');
-
-
-
+		user_module = require('./../user.js');
 
 	passport.use(new passportLocal(function(user, password, next) {
 		user_module.loginViaLocal(user, password, function(login) {
@@ -20,10 +15,10 @@
 		});
 	}));
 
-	if (config.twitter && config.twitter.key && config.twitter.key.length > 0 && config.twitter.secret.length > 0) {
+	if (global.config['social:twitter:key'] && global.config['social:twitter:secret']) {
 		passport.use(new passportTwitter({
-			consumerKey: config.twitter.key,
-			consumerSecret: config.twitter.secret,
+			consumerKey: global.config['social:twitter:key'],
+			consumerSecret: global.config['social:twitter:secret'],
 			callbackURL: config.url + 'auth/twitter/callback'
 		}, function(token, tokenSecret, profile, done) {
 			user_module.loginViaTwitter(profile.id, profile.username, function(err, user) {
@@ -35,10 +30,10 @@
 		login_strategies.push('twitter');
 	}
 
-	if (config.google && config.google.id.length > 0 && config.google.secret.length > 0) {
+	if (global.config['social:google:id'] && global.config['social:google:secret']) {
 		passport.use(new passportGoogle({
-			clientID: config.google.id,
-			clientSecret: config.google.secret,
+			clientID: global.config['social:google:id'],
+			clientSecret: global.config['social:google:secret'],
 			callbackURL: config.url + 'auth/google/callback'
 		}, function(accessToken, refreshToken, profile, done) {
 			user_module.loginViaGoogle(profile.id, profile.displayName, profile.emails[0].value, function(err, user) {
@@ -50,10 +45,10 @@
 		login_strategies.push('google');
 	}
 
-	if (config.facebook && config.facebook.app_id.length > 0 && config.facebook.secret.length > 0) {
+	if (global.config['social:facebook:app_id'] && global.config['social:facebook:secret']) {
 		passport.use(new passportFacebook({
-			clientID: config.facebook.app_id,
-			clientSecret: config.facebook.secret,
+			clientID: global.config['social:facebook:app_id'],
+			clientSecret: global.config['social:facebook:secret'],
 			callbackURL: config.url + 'auth/facebook/callback'
 		}, function(accessToken, refreshToken, profile, done) {
 			user_module.loginViaFacebook(profile.id, profile.displayName, profile.emails[0].value, function(err, user) {
