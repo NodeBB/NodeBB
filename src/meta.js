@@ -3,22 +3,6 @@ var utils = require('./../public/src/utils.js'),
 	async = require('async');
 
 (function(Meta) {
-	Meta.testRedis = function(callback) {
-		RDB.set('nodebb-redis-test', 'foobar', function(err, res) {
-			if (!err) {
-				RDB.get('nodebb-redis-test', function(err, res) {
-					if (!err && res === 'foobar') {
-						callback(true);
-					} else {
-						callback(false);
-					}
-				});
-			} else {
-				callback(false);
-			}
-		});
-	}
-
 	Meta.config = {
 		get: function(callback) {
 			var config = {};
