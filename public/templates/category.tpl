@@ -43,6 +43,8 @@
 		</li></a>
 		<!-- END topics -->
 		</ul>
+		<hr />
+		<button id="new_post" class="btn btn-primary btn-large {show_category_features}">New Topic</button>
 	</div>
 	<div class="span3 {show_category_features}">
 		<div class="sidebar-block img-polaroid">
@@ -77,8 +79,6 @@
 </div>
 
 
-<hr />
-<button id="new_post" class="btn btn-primary btn-large {show_category_features}">New Topic</button>
 
 
 <input type="hidden" template-variable="category_id" value="{category_id}" />
