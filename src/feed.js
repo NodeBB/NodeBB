@@ -2,10 +2,7 @@
 	var	RDB = require('./redis.js'),
 		schema = require('./schema.js'),
 		posts = require('./posts.js'),
-		topics = require('./topics.js'),
-		config = require('../config.js');
-
-
+		topics = require('./topics.js');
 
 	function saveFeed(feed, xml) {
 		feed.endEntry();
@@ -15,7 +12,6 @@
 	function createFeed(xml, urn, title, feed_url, author) {
 		var ATOMWriter = require('atom-writer'),
 			feed = new ATOMWriter(xml);
-
 
 		return feed
 				  .startFeed(urn)
@@ -74,10 +70,7 @@
 
 	};
 
-
 	Feed.updateCategory = function(params) {
 
 	};
-
-
 }(exports));

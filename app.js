@@ -18,6 +18,7 @@ fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 					global.config[c] = config[c];
 				}
 			}
+			console.log(global.config);
 
 			var categories = require('./src/categories.js'),
 				templates = require('./public/src/templates.js'),
@@ -82,8 +83,10 @@ fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 
 		process.stdout.write(
 			"\nWelcome to NodeBB!\nThis looks like a new installation, so you'll have to answer a " +
-			"few questions about your environment before we can proceed with the setup.\n\n\nWhat is...\n\n"
-			);
+			"few questions about your environment before we can proceed with the setup.\n\n" +
+			"Press enter to accept the default setting (shown in brackets).\n\n\n" +
+			"What is...\n\n"
+		);
 
 		ask('... the publically accessible URL of this installation? (http://localhost)', function(base_url) {
 			ask('... the port number of your install? (4567)', function(port) {
