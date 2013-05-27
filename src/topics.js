@@ -24,6 +24,7 @@ marked.setOptions({
 				.get(schema.topics(tid).category_slug)
 				.get(schema.topics(tid).deleted)
 				.get(schema.topics(tid).pinned)
+				.get(schema.topics(tid).slug)
 				.exec(function(err, replies) {
 						next(null, {
 							topic_name: replies[0],
@@ -31,7 +32,8 @@ marked.setOptions({
 							category_name: replies[2],
 							category_slug: replies[3],
 							deleted: replies[4] || 0,
-							pinned: replies[5] || 0
+							pinned: replies[5] || 0,
+							slug: replies[6]
 						});
 					});
 		}
@@ -105,6 +107,7 @@ marked.setOptions({
 				'locked': parseInt(topicData.locked) || 0,
 				'deleted': parseInt(topicData.deleted) || 0,
 				'pinned': parseInt(topicData.pinned) || 0,
+				'slug': topicData.slug,
 				'topic_id': tid,
 				'expose_tools': privileges.editable ? 1 : 0,
 				'posts': retrieved_posts,
@@ -322,21 +325,21 @@ marked.setOptions({
 				var slug = tid + '/' + utils.slugify(title);
 
 				// Topic Info
-				RDB.set(schema.topic(tid).title, title);
-				RDB.set(schema.topic(tid).uid, uid);
-				RDB.set(schema.topic(tid).slug, slug);
-				RDB.set(schema.topic(tid).timestamp, new Date().getTime());
+				RDB.set(schema.topics(tid).title, title);
+				RDB.set(schema.topics(tid).uid, uid);
+				RDB.set(schema.topics(tid).slug, slug);
+				RDB.set(schema.topics(tid).timestamp, new Date().getTime());
 			
 				
-				RDB.set(schema.topic().slug(slug).tid, tid);
+				RDB.set(schema.topics().slug(slug).tid, tid);
 
 				// Posts
 				posts.create(uid, tid, content, function(pid) {
 					if (pid > 0) {
-						RDB.lpush(schema.topic(tid).posts, pid);
+						RDB.lpush(schema.topics(tid).posts, pid);
 
 						// Notify any users looking at the category that a new topic has arrived
-						Topics.get_topic(tid, uid, function(topicData) {
+						Topics.get_topics(tid, uid, function(topicData) {
 							io.sockets.in('category_' + category_id).emit('event:new_topic', topicData);
 						});
 					}

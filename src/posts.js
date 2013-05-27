@@ -6,6 +6,7 @@ var	RDB = require('./redis.js'),
 	favourites = require('./favourites.js'),
 	config = require('../config.js'),
 	threadTools = require('./threadTools.js'),
+	feed = require('./feed.js'),
 	async = require('async');
 
 marked.setOptions({
@@ -256,11 +257,13 @@ marked.setOptions({
 					
 					RDB.incr('tid:' + tid + ':postcount');
 
-
-					user.getUserFields(uid, ['username'], function(data) {
+					user.getUserFields(uid, ['username'], function(data) { // todo parallel
 						//add active users to this category
 						RDB.get('tid:' + tid + ':cid', function(err, cid) {
 							RDB.handle(err);
+
+
+							feed.updateTopic(tid, cid);
 
 							// this is a bit of a naive implementation, defn something to look at post-MVP
 							RDB.scard('cid:' + cid + ':active_users', function(amount) {
