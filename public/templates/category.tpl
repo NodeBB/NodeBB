@@ -42,8 +42,8 @@
 			</div>
 		</li></a>
 		<!-- END topics -->
-		<hr />
 		</ul>
+		<hr />
 		<button id="new_post" class="btn btn-primary btn-large {show_category_features}">New Topic</button>
 	</div>
 	<div class="span3 {show_category_features} category-sidebar">
@@ -112,7 +112,7 @@
 			numTopics = topics.length,
 			x;
 
-		jQuery('.category.row').show();
+		jQuery('#topics-container, .category-sidebar').show();
 		jQuery('#category-no-topics').hide();
 
 		topic.innerHTML = html;
