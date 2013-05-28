@@ -329,7 +329,7 @@ marked.setOptions({
 				RDB.set(schema.topics(tid).slug, slug);
 				RDB.set(schema.topics(tid).timestamp, new Date().getTime());
 				
-				RDB.set(schema.topics().slug(slug).tid, tid);
+				RDB.set('topic:slug:' + slug + ':tid', tid);
 
 				// Posts
 				posts.create(uid, tid, content, function(pid) {

@@ -37,13 +37,6 @@
 			posts: 'tid:' + tid + ':posts',
 			queued_tids: 'topics:queued:tid',
 
-
-			slug: function(slug) {
-				return {
-					tid: 'topic:slug:' + slug + ':tid'
-				}
-			}
-
 		}
 	};
 
