@@ -21,7 +21,10 @@ var express = require('express'),
 	meta = require('./meta.js');
 
 (function(app) {
-	var templates = null;
+	var templates = null,
+		build_header = function() {
+			return templates['header'].parse({ cssSrc: global.config['theme:src'] || '/vendor/bootstrap/css/bootstrap.min.css' });
+		};
 
 	// Middlewares
 	app.use(express.favicon());	// 2 args: string path and object options (i.e. expire time etc)
@@ -72,10 +75,7 @@ var express = require('express'),
 
 	// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 	(function() {
-		var routes = ['', 'login', 'register', 'account', 'latest', 'popular', 'active', '403', '404'],
-			build_header = function() {
-				return templates['header'].parse({ cssSrc: global.config['theme:src'] || '/vendor/bootstrap/css/bootstrap.min.css' });
-			};
+		var routes = ['', 'login', 'register', 'account', 'latest', 'popular', 'active', '403', '404'];
 
 		for (var i=0, ii=routes.length; i<ii; i++) {
 			(function(route) {
@@ -95,7 +95,14 @@ var express = require('express'),
 	// Complex Routes
 	app.get('/topic/:topic_id/:slug?', function(req, res) {
 		var topic_url = req.params.topic_id + (req.params.slug ? '/' + req.params.slug : '');
-		res.send(build_header() + '<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '");});</script>' + templates['footer']);
+		topics.get_cid_by_tid(req.params.topic_id, function() {
+			res.send(
+				build_header() +
+				'<script>alert("' + cid + '");</script>' +
+				'<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '");});</script>' +
+				templates['footer']
+			);
+		});
 	});
 
 	app.get('/category/:category_id/:slug?', function(req, res) {
