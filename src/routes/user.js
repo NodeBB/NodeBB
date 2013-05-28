@@ -6,7 +6,9 @@ var user = require('./../user.js'),
 
 (function(User) {
 	User.create_routes = function(app) {
-
+		var build_header = function() {
+				return templates['header'].parse({ cssSrc: global.config['theme:src'] || '/vendor/bootstrap/css/bootstrap.min.css' });
+			};
 		
 		app.get('/uid/:uid', function(req, res) {
 		
@@ -23,24 +25,18 @@ var user = require('./../user.js'),
 		});
 
 		app.get('/users', function(req, res) {
-
 			user.getUserList(function(data) {
-
-				res.send(templates['header'] + app.create_route("users", "users") + templates['footer']);
-
+				res.send(build_header() + app.create_route("users", "users") + templates['footer']);
 			});
-			
 		});
 
 		app.get('/users/:username', function(req, res) {
-
 			if(!req.params.username) {
 				res.send("User doesn't exist!");
 				return;
 			}
 
 			user.get_uid_by_username(req.params.username, function(uid) {
-				
 				if(!uid) {
 					res.redirect('/403');
 					return;
@@ -48,7 +44,7 @@ var user = require('./../user.js'),
 				
 				user.getUserData(uid, function(data) {
 					if(data) {
-						res.send(templates['header'] + app.create_route('users/'+data.username, 'account')  + templates['footer']);
+						res.send(build_header() + app.create_route('users/'+data.username, 'account')  + templates['footer']);
 					}
 					else {
 						res.redirect('/403');
@@ -65,7 +61,7 @@ var user = require('./../user.js'),
 			user.getUserField(req.user.uid, 'username', function(username) {
 			
 				if(req.params.username && username === req.params.username)
-					res.send(templates['header'] + app.create_route('users/'+req.params.username+'/edit','accountedit') + templates['footer']);
+					res.send(build_header() + app.create_route('users/'+req.params.username+'/edit','accountedit') + templates['footer']);
 				else
 					return res.redirect('/403');
 			});	
@@ -231,7 +227,7 @@ var user = require('./../user.js'),
 			if(!req.user)
 				return res.redirect('/403');
 			
-			res.send(templates['header'] + app.create_route('users/'+req.params.username+'/friends','friends') + templates['footer']);
+			res.send(build_header() + app.create_route('users/'+req.params.username+'/friends','friends') + templates['footer']);
 		});
 
 		function api_method(req, res) {
