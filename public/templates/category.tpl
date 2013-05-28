@@ -42,11 +42,11 @@
 			</div>
 		</li></a>
 		<!-- END topics -->
-		</ul>
 		<hr />
+		</ul>
 		<button id="new_post" class="btn btn-primary btn-large {show_category_features}">New Topic</button>
 	</div>
-	<div class="span3 {show_category_features}">
+	<div class="span3 {show_category_features} category-sidebar">
 		<div class="sidebar-block img-polaroid">
 			<div class="block-header">
 				Recent Replies
@@ -100,7 +100,7 @@
 	]);
 
 	if (jQuery('.category-item').length == 0) {
-		jQuery('.category.row').hide();
+		jQuery('#topics-container, .category-sidebar').hide();
 		jQuery('#category-no-topics').show();
 	}
 
