@@ -21,6 +21,7 @@
 			for(var x=0;x<numThemes;x++) {
 				var theme = bootswatch.themes[x];
 				themeEl.setAttribute('data-css', theme.cssMin);
+				themeEl.setAttribute('data-theme', theme.name);
 				themeEl.innerHTML =	'<img src="' + theme.thumbnail + '" />' +
 									'<div>' +
 										'<div class="pull-right">' +
@@ -51,6 +52,17 @@
 							cssEl = document.getElementById('base-theme');
 
 						cssEl.href = cssSrc;
+					break;
+					case 'use':
+						var	parentEl = $(e.target).parents('li'),
+							cssSrc = parentEl.attr('data-css'),
+							cssName = parentEl.attr('data-theme');
+						socket.emit('api:config.set', {
+							key: 'theme:id', value: 'bootswatch:' + cssName
+						});
+						socket.emit('api:config.set', {
+							key: 'theme:src', value: cssSrc
+						});
 					break;
 				}
 			}

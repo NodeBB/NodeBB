@@ -300,7 +300,6 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('api:config.set', function(data) {
-			console.log('saving', data);
 			meta.config.set(data.key, data.value, function(err) {
 				if (!err) socket.emit('api:config.set', { status: 'ok' });
 			});
