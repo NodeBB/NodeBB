@@ -338,7 +338,7 @@ marked.setOptions({
 						RDB.lpush(schema.topics(tid).posts, pid);
 
 						// Notify any users looking at the category that a new topic has arrived
-						Topics.get_topics(tid, uid, function(topicData) {
+						Topics.get_topic(tid, uid, function(topicData) {
 							io.sockets.in('category_' + category_id).emit('event:new_topic', topicData);
 						});
 					}
