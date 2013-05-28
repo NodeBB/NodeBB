@@ -95,7 +95,7 @@ var express = require('express'),
 	// Complex Routes
 	app.get('/topic/:topic_id/:slug?', function(req, res) {
 		var topic_url = req.params.topic_id + (req.params.slug ? '/' + req.params.slug : '');
-		topics.get_cid_by_tid(req.params.topic_id, function() {
+		topics.get_cid_by_tid(req.params.topic_id, function(cid) {
 			res.send(
 				build_header() +
 				'<script>alert("' + cid + '");</script>' +
