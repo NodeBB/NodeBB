@@ -355,39 +355,41 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.sendConfirmationEmail = function (email) {
-		var confirm_code = utils.generateUUID(),
-			confirm_link = config.url + 'confirm/' + confirm_code,
-			confirm_email = global.templates['emails/header'] + global.templates['emails/email_confirm'].parse({'CONFIRM_LINK': confirm_link}) + global.templates['emails/footer'],
-			confirm_email_plaintext = global.templates['emails/email_confirm_plaintext'].parse({ 'CONFIRM_LINK': confirm_link });
+		if (global.config['email:host'] && global.config['email:port'] && global.config['email:from']) {
+			var confirm_code = utils.generateUUID(),
+				confirm_link = config.url + 'confirm/' + confirm_code,
+				confirm_email = global.templates['emails/header'] + global.templates['emails/email_confirm'].parse({'CONFIRM_LINK': confirm_link}) + global.templates['emails/footer'],
+				confirm_email_plaintext = global.templates['emails/email_confirm_plaintext'].parse({ 'CONFIRM_LINK': confirm_link });
 
-		// Email confirmation code
-		var expiry_time = 60*60*2,	// Expire after 2 hours
-			email_key = 'email:' + email + ':confirm',
-			confirm_key = 'confirm:' + confirm_code + ':email';
+			// Email confirmation code
+			var expiry_time = 60*60*2,	// Expire after 2 hours
+				email_key = 'email:' + email + ':confirm',
+				confirm_key = 'confirm:' + confirm_code + ':email';
 
-		RDB.set(email_key, confirm_code);
-		RDB.expire(email_key, expiry_time);
-		RDB.set(confirm_key, email);
-		RDB.expire(confirm_key, expiry_time);
+			RDB.set(email_key, confirm_code);
+			RDB.expire(email_key, expiry_time);
+			RDB.set(confirm_key, email);
+			RDB.expire(confirm_key, expiry_time);
 
-			// Send intro email w/ confirm code
-		var message = emailjs.message.create({
-			text: confirm_email_plaintext,
-			from: config.mailer.from,
-			to: email,
-			subject: '[NodeBB] Registration Email Verification',
-			attachment: [
-				{
-					data: confirm_email,
-					alternative: true
-				}
-			]
-		});
-			
-		emailjsServer.send(message, function(err, success) {
-			if (err) 
-				console.log(err);
-		});	
+				// Send intro email w/ confirm code
+			var message = emailjs.message.create({
+				text: confirm_email_plaintext,
+				from: config.mailer.from,
+				to: email,
+				subject: '[NodeBB] Registration Email Verification',
+				attachment: [
+					{
+						data: confirm_email,
+						alternative: true
+					}
+				]
+			});
+				
+			emailjsServer.send(message, function(err, success) {
+				if (err) 
+					console.log(err);
+			});
+		}
 	}
 
 	User.addFriend = function(uid, friendid, callback) {

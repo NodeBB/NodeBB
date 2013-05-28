@@ -85,7 +85,10 @@ var express = require('express'),
 						return;
 					}
 					
-					res.send(templates['header'] + app.create_route(route) + templates['footer']);
+					res.send(
+						templates['header'].parse({ cssSrc: global.config['theme:src'] || '/vendor/bootstrap/css/bootstrap.min.css' }) +
+						app.create_route(route) + templates['footer']
+					);
 				});
 			}(routes[i]));
 		}
