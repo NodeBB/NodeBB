@@ -107,6 +107,7 @@ fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 										base_url: base_url,
 										port: port,
 										use_port: use_port,
+										upload_path: '/public/uploads/',
 										redis: {
 											host: redis_host,
 											port: redis_port

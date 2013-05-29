@@ -16,7 +16,7 @@
 			<div class="span12">
 				<div class="post-block">
 					<a class="main-avatar" href="/users/{main_posts.username}">
-						<img src="{main_posts.gravatar}?s=80" align="left" /><br />
+						<img src="{main_posts.gravatar}?s=80&default=identicon" align="left" /><br />
 						<div class="hover-overlay">
 							{main_posts.username}<br />
 							<i class="icon-star"></i><span class="user_rep_{main_posts.uid}">{main_posts.user_rep}</span>
@@ -56,7 +56,7 @@
 			<div class="span1 profile-image-block visible-desktop">
 				<!--<i class="icon-spinner icon-spin icon-2x pull-left"></i>-->
 				<a href="/users/{posts.username}">
-					<img src="{posts.gravatar}?s=80" align="left" />
+					<img src="{posts.gravatar}?s=80&default=identicon" align="left" />
 				</a>
 				<i class="icon-star"></i><span class="user_rep_{posts.uid} formatted-number">{posts.user_rep}</span>
 			</div>
@@ -73,7 +73,7 @@
 							<div id="favs_{posts.pid}_{posts.uid}" class="favourite hidden-phone"><span class="post_rep_{posts.pid}">{posts.post_rep}</span><i class="{posts.fav_star_class}"></i></div>
 							<div class="post_reply"><i class="icon-reply"></i></div>
 						</span>
-						<img class="hidden-desktop" src="{posts.gravatar}?s=10" align="left" /> posted by <strong><a class="username-field" href="/users/{posts.username}">{posts.username}</a></strong> {posts.relativeTime} ago
+						<img class="hidden-desktop" src="{posts.gravatar}?s=10&default=identicon" align="left" /> posted by <strong><a class="username-field" href="/users/{posts.username}">{posts.username}</a></strong> {posts.relativeTime} ago
 						<span class="{posts.edited-class} hidden-phone">| last edited by <strong><a href="/users/{posts.editor}">{posts.editor}</a></strong> {posts.relativeEditTime} ago</span>
 						<span class="{posts.edited-class}"><i class="icon-edit visible-phone" title="edited by {posts.editor} {posts.relativeEditTime} ago"></i></span>
 					</div>

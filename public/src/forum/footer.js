@@ -38,7 +38,7 @@
 			var userLabel = rightMenu.find('#user_label');
 			userLabel.attr('href','/users/'+data['username']);
 
-			userLabel.find('img').attr('src',data['picture']+"?s=24");
+			userLabel.find('img').attr('src',data['picture']+"?s=24&default=identicon");
 			userLabel.find('span').html(data['username']);
 			
 		} else {

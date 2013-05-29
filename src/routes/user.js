@@ -138,6 +138,7 @@ var user = require('./../user.js'),
 			
 			filename = uid + '-' + filename;
 			var uploadPath = config.upload_path + filename;
+			console.log(config);
 			
 			console.log('trying to upload to : '+ global.configuration['ROOT_DIRECTORY'] + uploadPath);
 			

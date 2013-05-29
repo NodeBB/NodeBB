@@ -18,9 +18,9 @@
 		</div>
 		<div class="span11 topic-row-content">
 			<div class="top-posters">
-				<img src="http://www.gravatar.com/avatar/fd37ce111f863c6665045c2d72d199bf?s=60" class="img-polaroid" />
-				<img src="http://www.gravatar.com/avatar/07c9c7170c3ac676c2561e3eeaee063c?s=60" class="img-polaroid" />
-				<img src="http://www.gravatar.com/avatar/91050ce0072697b53380c6a03a1bc12a?s=60" class="img-polaroid" />
+				<img src="http://www.gravatar.com/avatar/fd37ce111f863c6665045c2d72d199bf?s=60&default=identicon" class="img-polaroid" />
+				<img src="http://www.gravatar.com/avatar/07c9c7170c3ac676c2561e3eeaee063c?s=60&default=identicon" class="img-polaroid" />
+				<img src="http://www.gravatar.com/avatar/91050ce0072697b53380c6a03a1bc12a?s=60&default=identicon" class="img-polaroid" />
 			</div>
 			<div>
 				<h3><span class="badge badge-important">3</span> {topics.title} <small>24<i class="icon-star"></i></small></h3> 

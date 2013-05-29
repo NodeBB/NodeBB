@@ -332,8 +332,8 @@ var utils = require('./../public/src/utils.js'),
 	User.createGravatarURLFromEmail = function(email) {
 		if (!email) email = utils.generateUUID();
 		var md5sum = crypto.createHash('md5');
-		md5sum.update(email).toLowerCase().trim();
-		var gravatarURL = 'http://www.gravatar.com/avatar/' + md5sum.digest('hex');
+		md5sum.update(email.toLowerCase().trim());
+		var gravatarURL = 'http://www.gravatar.com/avatar/' + md5sum.digest('hex') + '?default=identicon';
 		return gravatarURL;
 	}
 

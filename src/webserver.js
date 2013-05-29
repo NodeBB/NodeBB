@@ -244,7 +244,7 @@ var express = require('express'),
 				return;
 			}
 			user.getUserField(uid, 'picture', function(picture) {
-				if (picture == null) res.redirect('http://www.gravatar.com/avatar/a938b82215dfc96c4cabeb6906e5f953');
+				if (picture == null) res.redirect('http://www.gravatar.com/avatar/a938b82215dfc96c4cabeb6906e5f953&default=identicon');
 				res.redirect(picture);
 			});
 		});
