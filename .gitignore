@@ -5,7 +5,8 @@
 npm-debug.log
 node_modules/
 sftp-config.json
+config.json
 public/config.json
-public/css/style.css
+public/css/*.css
 *.sublime-project
 *.sublime-workspace
