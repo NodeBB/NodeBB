@@ -98,7 +98,6 @@ var express = require('express'),
 		topics.get_cid_by_tid(req.params.topic_id, function(cid) {
 			res.send(
 				build_header() +
-				'<script>alert("' + cid + '");</script>' +
 				'<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '");});</script>' +
 				templates['footer']
 			);
