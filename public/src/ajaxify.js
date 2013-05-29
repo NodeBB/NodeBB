@@ -91,12 +91,9 @@ var ajaxify = {};
 		ajaxify.enable();
 	});
 
+
 	function exec_body_scripts(body_el) {
-		//http://stackoverflow.com/questions/2592092/executing-script-elements-inserted-with-innerhtml
-		// Finds and executes scripts in a newly added element's body.
-		// Needed since innerHTML does not run scripts.
-		//
-		// Argument body_el is an element in the dom.
+		// modified from http://stackoverflow.com/questions/2592092/executing-script-elements-inserted-with-innerhtml
 
 		function nodeName(elem, name) {
 			return elem.nodeName && elem.nodeName.toUpperCase() === name.toUpperCase();
@@ -110,35 +107,38 @@ var ajaxify = {};
 
 			script.type = "text/javascript";
 			try {
-			  // doesn't work on ie...
 			  script.appendChild(document.createTextNode(data));      
 			} catch(e) {
-			  // IE has funky script nodes
 			  script.text = data;
+			}
+
+			if (elem.src) {
+				script.src = elem.src;
 			}
 
 			head.insertBefore(script, head.firstChild);
 			head.removeChild(script);
 		};
 
-		// main section of function
 		var scripts = [],
-		  script,
-		  children_nodes = body_el.childNodes,
-		  child,
-		  i;
+			script,
+			children_nodes = body_el.childNodes,
+			child,
+			i;
 
 		for (i = 0; children_nodes[i]; i++) {
-		child = children_nodes[i];
-		if (nodeName(child, "script" ) &&
-		  (!child.type || child.type.toLowerCase() === "text/javascript")) {
-		      scripts.push(child);
-		  }
+			child = children_nodes[i];
+			if (nodeName(child, "script" ) &&
+			(!child.type || child.type.toLowerCase() === "text/javascript")) {
+				scripts.push(child);
+			}
 		}
 
 		for (i = 0; scripts[i]; i++) {
 			script = scripts[i];
-			if (script.parentNode) {script.parentNode.removeChild(script);}
+			if (script.parentNode) {
+				script.parentNode.removeChild(script);
+			}
 			evalScript(scripts[i]);
 		}
 	};
