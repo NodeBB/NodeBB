@@ -20,6 +20,7 @@ fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 			}
 
 			var categories = require('./src/categories.js'),
+				RDB = require('./src/redis.js'),
 				templates = require('./public/src/templates.js'),
 				webserver = require('./src/webserver.js'),
 				websockets = require('./src/websockets.js'),
@@ -60,6 +61,8 @@ fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 								}
 							});
 
+							// Hardcoding uid 1 as an admin
+							RDB.sadd('administrators', 1);
 						} else {
 							console.log('Info: Good.');
 						}
@@ -118,8 +121,8 @@ fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 									if (err) throw err;
 									else {
 										process.stdout.write(
-											"\n\nConfiguration Saved OK\n\nPlease start NodeBB again and navigate to " +
-											base_url + (use_port ? ':' + port : '') + "/install to continue setup.\n\n"
+											"\n\nConfiguration Saved OK\n\nPlease start NodeBB again and register a new user at " +
+											base_url + (use_port ? ':' + port : '') + "/register. This user will automatically become an administrator.\n\n"
 										);
 										process.exit();
 									}

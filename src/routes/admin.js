@@ -5,6 +5,13 @@ var user = require('./../user.js'),
 	categories = require('./../categories.js');
 
 (function(Admin) {
+	Admin.isAdmin = function(req, res, next) {
+		user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function(isAdmin) {
+			if (!isAdmin) res.redirect('/403');
+			else next();
+		});
+	}
+
 	Admin.create_routes = function(app) {
 
 		(function() {
@@ -12,7 +19,7 @@ var user = require('./../user.js'),
 
 			for (var i=0, ii=routes.length; i<ii; i++) {
 				(function(route) {
-					app.get('/admin/' + route, function(req, res) {
+					app.get('/admin/' + route, Admin.isAdmin, function(req, res) {
 						res.send(templates['admin/header'] + app.create_route('admin/' + route) + templates['admin/footer']);
 					});
 				}(routes[i]));
@@ -20,10 +27,10 @@ var user = require('./../user.js'),
 		}());
 
 		//todo consolidate.
-		app.get('/admin', function(req, res) {
+		app.get('/admin', Admin.isAdmin, function(req, res) {
 			res.send(templates['admin/header'] + app.create_route('admin/index') + templates['admin/footer']);
 		});
-		app.get('/admin/index', function(req, res) {
+		app.get('/admin/index', Admin.isAdmin, function(req, res) {
 			res.send(templates['admin/header'] + app.create_route('admin/index') + templates['admin/footer']);
 		});
 
