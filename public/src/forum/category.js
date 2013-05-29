@@ -6,7 +6,7 @@
 
 	var new_post = document.getElementById('new_post');
 	new_post.onclick = function() {
-		app.open_post_window('topic', {category_id});
+		app.open_post_window('topic', cid);
 	}
 
 	ajaxify.register_events([
