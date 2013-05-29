@@ -330,15 +330,11 @@ var utils = require('./../public/src/utils.js'),
 	};
 
 	User.createGravatarURLFromEmail = function(email) {
-		if(email) {
-			var md5sum = crypto.createHash('md5');
-			md5sum.update((email || '').toLowerCase());
-			var gravatarURL = 'http://www.gravatar.com/avatar/' + md5sum.digest('hex');
-			return gravatarURL;
-		}
-		else {
-			return "http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e";	
-		}
+		if (!email) email = utils.generateUUID();
+		var md5sum = crypto.createHash('md5');
+		md5sum.update(email).toLowerCase().trim();
+		var gravatarURL = 'http://www.gravatar.com/avatar/' + md5sum.digest('hex');
+		return gravatarURL;
 	}
 
 	User.hashPassword = function(password, callback) {

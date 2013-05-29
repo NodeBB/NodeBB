@@ -11,9 +11,9 @@
 	<div class="well span6 {alternate_logins:display}">
 		<h4>Alternative Registration</h4>
 		<ul class="alt-logins">
-			<li data-url="/auth/twitter" class="twitter {twitter:display}"></li>
-			<li data-url="/auth/google" class="google {google:display}"></li>
-			<li data-url="/auth/facebook" class="facebook {facebook:display}"></li>
+			<li data-url="/auth/twitter" class="twitter {twitter:display}"><i class="icon-twitter-sign icon-3x"></i></li>
+			<li data-url="/auth/google" class="google {google:display}"><i class="icon-google-plus-sign icon-3x"></i></li>
+			<li data-url="/auth/facebook" class="facebook {facebook:display}"><i class="icon-facebook-sign icon-3x"></i></li>
 		</ul>
 	</div>
 </div>
