@@ -15,7 +15,7 @@
         "name": "NodeBB Development",
         "description": "Bugs? Dont worry, we dont read this thread, so post them here.",
         "blockclass": "category-blue",
-        "icon" : "icon-github-alt"
+        "icon" : "icon-github"
     },
     {
         "name": "Blogs",
@@ -36,10 +36,10 @@
         "icon" : "icon-cogs"
     },
     {
-        "name": "Bug Reports",
+        "name": "NodeBB Addons",
         "description": "In future an example of how a hidden category should look like.",
         "blockclass": "category-purple",
-        "icon" : "icon-cogs"
+        "icon" : "icon-plus-sign"
     },
     {
         "name": "NodeBB Link Exchange",

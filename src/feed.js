@@ -2,11 +2,15 @@
 	var	RDB = require('./redis.js'),
 		schema = require('./schema.js'),
 		posts = require('./posts.js'),
-		topics = require('./topics.js');
+		topics = require('./topics.js'),
+		fs = require('fs');
 
-	function saveFeed(feed, xml) {
+	function saveFeed(feed, xml, tid) {
 		feed.endEntry();
-		console.log(xml.toString())
+
+		fs.writeFile('feeds/topics/' + tid + '.rss', xml.toString(), function (err) {
+			if (err) throw err;
+		});
 	}
 
 	function createFeed(xml, urn, title, feed_url, author) {
@@ -25,7 +29,7 @@
 	function createEntry(feed, urn, title, content, url, author) {
 		return feed		
 				  .startEntry(urn)
-				  .writeTitle('Reply #' + title)
+				  .writeTitle(title)
 				  .writeLink(url, 'text/html')
 				  .writeContent(content, 'text', 'en')
 				  .writeAuthorRAW(author)
@@ -54,18 +58,20 @@
 			var topicData = results[0],
 				postsData = results[1].postData,
 				userData = results[1].userData,
-				url = topicData.category_slug + '/' + topicData.slug;
+				url = '/topic/' + topicData.slug;
 
 			var post = topicData.main_posts[0];
 			var urn = 'urn:' + cid + ':' + tid;
 			var feed = createFeed(xml, urn, topicData.topic_name, url, post.username);
+			var title;
 
 			for (var i = 0, ii = postsData.pid.length; i < ii; i++) {
 				urn = 'urn:' + cid + ':' + tid + ':' + postsData.pid[i];
-				feed = createEntry(feed, urn, postsData.pid[i], postsData.content[i], url, userData[postsData.uid[i]].username);
+				title = 'Reply to ' + topicData.topic_name + ' on ' + (new Date(parseInt(postsData.timestamp[i], 10)).toUTCString());
+				feed = createEntry(feed, urn, title, postsData.content[i], url, userData[postsData.uid[i]].username);
 			}
 
-			saveFeed(feed, xml);
+			saveFeed(feed, xml, tid);
 		});
 
 	};
