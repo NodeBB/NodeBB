@@ -94,8 +94,21 @@ var express = require('express'),
 	
 	// Complex Routes
 	app.get('/topic/:topic_id/:slug?', function(req, res) {
-		var topic_url = req.params.topic_id + (req.params.slug ? '/' + req.params.slug : '');
-		topics.get_cid_by_tid(req.params.topic_id, function(cid) {
+		var tid = req.params.topic_id;
+		if (tid.match('.rss')) {
+			fs.readFile('feeds/topics/' + tid, function (err, data) {
+				if (err) {
+					res.send("Unable to locate an rss feed at this location.");
+					return;
+				}
+				res.send(data);
+			});
+			return;
+		}
+
+
+		var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
+		topics.get_cid_by_tid(tid, function(cid) {
 			res.send(
 				build_header() +
 				'<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '");});</script>' +
