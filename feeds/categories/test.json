@@ -1,0 +1,40 @@
+{
+  "author": "psychobunny <andrew@designcreateplay.com>, julianlam <julian@designcreateplay.com>",
+  "name": "nodeforum",
+  "description": "nodeforum dev",
+  "version": "0.0.1",
+  "homepage": "http://www.designcreateplay.com",
+  "repository": {
+    "url": "https://github.com/psychobunny/node-forum/"
+  },
+  "main": "app.js",
+  "dependencies": {
+      "socket.io": "0.9.14",
+      "redis": "0.8.3",
+      "express": "3.2.0",
+      "connect": "2.7.6",
+      "emailjs": "0.3.4",
+      "cookie": "0.0.6",
+      "connect-redis": "1.4.5",
+      "path": "0.4.9",
+      "crypto": "0.0.3",
+      "passport": "0.1.16",
+      "passport-local": "0.1.6",
+      "passport-twitter": "0.1.4",
+      "passport-google-oauth": "0.1.5",
+      "passport-facebook": "0.1.5",
+      "less-middleware": "0.1.11",
+      "marked": "0.2.8",
+      "bcrypt": "0.7.5",
+      "node-gyp": "0.9.5",
+      "async": "0.2.8",
+      "node-imagemagick": "0.1.8",
+      "atom-writer": "1.0.3",
+      "xml-writer": "1.2.4"
+    },
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
