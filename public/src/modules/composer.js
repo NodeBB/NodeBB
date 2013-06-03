@@ -2,7 +2,8 @@ define(function() {
 	var composer = {
 			initialized: false,
 			posts: [],
-			container: undefined,
+			btnContainer: undefined,
+			postContainer: undefined,
 			listEl: undefined
 		};
 
@@ -10,12 +11,17 @@ define(function() {
 		// Create the fixed bottom bar
 		var	contentEl = document.getElementById('content');
 		
-		composer.container = document.createElement('div');
+		composer.btnContainer = document.createElement('div');
+		composer.btnContainer.innerHTML = '<div class="navbar-inner"><ul class="nav pull-right"></ul></div>';
+		composer.btnContainer.className = 'posts-bar navbar navbar-fixed-bottom';
 
-		composer.container.innerHTML = '<div class="navbar-inner"><ul class="nav pull-right"></ul></div>';
-		composer.container.className = 'posts-bar navbar navbar-fixed-bottom';
-		composer.listEl = composer.container.querySelector('ul');
-		document.body.insertBefore(composer.container, contentEl);
+		composer.postContainer = document.createElement('div');
+		composer.postContainer.className = 'post-window row-fluid';
+		composer.postContainer.innerHTML = '<div class="span10 offset1"><input type="text" placeholder="Enter your topic title here..." /><textarea rows="10"></textarea></div>';
+
+		composer.listEl = composer.btnContainer.querySelector('ul');
+		document.body.insertBefore(composer.btnContainer, contentEl);
+		document.body.insertBefore(composer.postContainer, composer.btnContainer);
 
 		socket.on('api:composer.push', function(threadData) {
 			console.log(threadData);
@@ -34,9 +40,9 @@ define(function() {
 	composer.update = function() {
 		if (composer.initialized) {
 			if (composer.posts.length > 0) {
-				composer.container.setAttribute('data-active', '1');
+				composer.btnContainer.setAttribute('data-active', '1');
 			} else {
-				composer.container.removeAttribute('data-active');
+				composer.btnContainer.removeAttribute('data-active');
 			}
 		}
 	}
