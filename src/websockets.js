@@ -304,6 +304,12 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				if (!err) socket.emit('api:config.set', { status: 'ok' });
 			});
 		});
+
+		socket.on('api:composer.push', function(tid) {
+			topics.get_topic(tid, uid, function(topicData) {
+				socket.emit('api:composer.push', topicData);
+			});
+		});
 	});
 	
 }(SocketIO));

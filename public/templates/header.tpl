@@ -13,6 +13,13 @@
 	<script type="text/javascript" src="/vendor/bootstrap/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 	<script type="text/javascript" src="/src/app.js"></script>
+	<script src="/vendor/requirejs/require.js"></script>
+	<script>
+		require.config({
+			baseUrl: "/src/modules",
+			waitSeconds: 3
+		});
+	</script>
 	<script type="text/javascript" src="/src/templates.js"></script>
 	<script type="text/javascript" src="/src/ajaxify.js"></script>
 	<script type="text/javascript" src="/src/jquery.form.js"></script>

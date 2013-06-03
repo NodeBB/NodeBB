@@ -822,3 +822,39 @@ body .navbar .nodebb-inline-block {
 		}
 	}
 }
+
+.posts-bar {
+	display: none;
+	-moz-opacity: 0.5;
+	opacity: 0.5;
+	-webkit-transition: opacity 250ms ease-in;
+	-moz-transition: opacity 250ms ease-in;
+	-ms-transition: opacity 250ms ease-in;
+	-o-transition: opacity 250ms ease-in;
+	transition: opacity 250ms ease-in;
+
+	&[data-active="1"] {
+		display: block;
+	}
+
+	&:hover {
+		-moz-opacity: 1;
+		opacity: 1;
+	}
+
+	li {
+		a > span {
+			.inline-block;
+			max-width: 200px;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
+		}
+
+		img {
+			max-width: 24px;
+			max-height: 24px;
+			margin-right: 1em;
+		}
+	}
+}
