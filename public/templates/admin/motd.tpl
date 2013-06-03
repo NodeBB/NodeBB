@@ -10,9 +10,12 @@
 		You can enter either full HTML or Markdown text.
 	</p>
 	<textarea placeholder="Welcome to NodeBB!" data-field="motd" rows="10"></textarea>
+	<form class="form-inline">
+		<label class="checkbox" for="show_motd"><input type="checkbox" id="show_motd" data-field="show_motd" /> Show the Message of the Day</label>
+	</form>
 </div>
 
-<button class="btn btn-large btn-primary" id="save">Save</button>
+<button class="btn btn-large btn-primary" id="save" checked>Save</button>
 
 <script>
 	nodebb_admin.prepare();

@@ -36,7 +36,7 @@
 							break;
 
 							case 'checkbox':
-								fields[x].checked = nodebb_admin.config[key] ? true : false;
+								fields[x].checked = nodebb_admin.config[key] === '1' ? true : false;
 							break;
 						}
 					}
