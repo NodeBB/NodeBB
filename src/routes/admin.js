@@ -15,7 +15,7 @@ var user = require('./../user.js'),
 	Admin.create_routes = function(app) {
 
 		(function() {
-			var routes = ['categories', 'users', 'topics', 'settings', 'themes', 'twitter', 'facebook', 'gplus', 'redis'];
+			var routes = ['categories', 'users', 'topics', 'settings', 'themes', 'twitter', 'facebook', 'gplus', 'redis', 'motd'];
 
 			for (var i=0, ii=routes.length; i<ii; i++) {
 				(function(route) {

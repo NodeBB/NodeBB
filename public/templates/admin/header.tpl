@@ -60,6 +60,7 @@
 						<li class=''><a href='/admin/themes'><i class='icon-th'></i> Themes</a></li>
 						<li class=''><a href='/admin/settings'><i class='icon-cogs'></i> Settings</a></li>
 						<li class=''><a href='/admin/redis'><i class='icon-hdd'></i> Redis</a></li>
+						<li class=''><a href="/admin/motd"><i class="icon-comment"></i> MOTD</a></li>
 
 						<li class="nav-header">Social Authentication</li>
 						<li class=''><a href='/admin/twitter'><i class='icon-twitter'></i>Twitter</a></li>

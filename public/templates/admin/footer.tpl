@@ -26,46 +26,23 @@
 			for(x=0;x<numFields;x++) {
 				key = fields[x].getAttribute('data-field');
 				inputType = fields[x].getAttribute('type');
-				if (nodebb_admin.config[key]) {
-					switch(inputType) {
-						case 'text':
-						case 'textarea':
-						case 'number':
-							fields[x].value = nodebb_admin.config[key];
-						break;
-
-						case 'checkbox':
-							fields[x].checked = nodebb_admin.config[key] ? true : false;
-						break;
-					}
-				} /*else {
-					// Save defaults, if they're not found in the config
-					var	defaultFields = [
-							'use_port', 'port', 'upload_url', 'mailer:host',
-							'mailer:port', 'privileges:manage_content',
-							'privileges:manage_topic'
-						],
-						defaultVal;
-					if (defaultFields.indexOf(key) !== -1) {
-						console.log('saving default value: ', key);
+				if (fields[x].nodeName === 'INPUT') {
+					if (nodebb_admin.config[key]) {
 						switch(inputType) {
 							case 'text':
 							case 'textarea':
 							case 'number':
-								defaultVal = fields[x].value;
+								fields[x].value = nodebb_admin.config[key];
 							break;
 
 							case 'checkbox':
-								defaultVal = fields[x].checked ? '1' : '0';
+								fields[x].checked = nodebb_admin.config[key] ? true : false;
 							break;
 						}
-						socket.emit('api:config.set', {
-							key: key,
-							value: defaultVal
-						});
-						nodebb_admin.config[key] = defaultVal;
 					}
-				}*/
+				} else if (fields[x].nodeName === 'TEXTAREA') {
+					if (nodebb_admin.config[key]) fields[x].value = nodebb_admin.config[key];
+				}
 			}
 
 			saveBtn.addEventListener('click', function(e) {
@@ -74,18 +51,22 @@
 
 				for(x=0;x<numFields;x++) {
 					key = fields[x].getAttribute('data-field');
-					inputType = fields[x].getAttribute('type');
-					switch(inputType) {
-						case 'text':
-						case 'textarea':
-						case 'number':
-							value = fields[x].value;
-						break;
+					if (fields[x].nodeName === 'INPUT') {
+						inputType = fields[x].getAttribute('type');
+						switch(inputType) {
+							case 'text':
+							case 'number':
+								value = fields[x].value;
+							break;
 
-						case 'checkbox':
-							value = fields[x].checked ? '1' : '0';
-						break;
+							case 'checkbox':
+								value = fields[x].checked ? '1' : '0';
+							break;
+						}
+					} else if (fields[x].nodeName === 'TEXTAREA') {
+						value = fields[x].value;
 					}
+
 					socket.emit('api:config.set', { key: key, value: value });
 				}
 			});

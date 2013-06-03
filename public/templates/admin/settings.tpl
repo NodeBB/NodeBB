@@ -15,10 +15,31 @@
 <form>
 	<h3>Email Settings</h3>
 	<div class="alert alert-notify">
-		<strong>Email Address</strong><br /> <input type="text" class="" value="info@localhost"><br />
+		<div>
+			<p>
+				<strong>Email Address</strong><br />
+				The following email address refers to the email that the recipient will see in the "From" and "Reply To" fields.
+			</p>
+			<input type="text" class="input-large" data-field="email:from" placeholder="info@example.org" />
+		</div>
+		<div>
+			<p>
+				<strong>SMTP Server Host</strong><br />
+				(Default: <em>127.0.0.1</em>)
+			</p>
+			<input type="text" class="input-medium" data-field="email:smtp:host" placeholder="127.0.0.1" />
+		</div>
+		<div>
+			<p>
+				<strong>SMTP Server Port</strong>
+			</p>
+			<input type="text" class="input-mini" data-field="email:smtp:port" placeholder="25" />
+		</div>
 	</div>
 </form>
 
+<button class="btn btn-large btn-primary" id="save">Save</button>
 
-<button class="btn btn-large btn-primary" type="submit">Save</button>
-<button class="btn btn-large" type="submit" disabled>Delete</button>
+<script>
+	nodebb_admin.prepare();
+</script>
