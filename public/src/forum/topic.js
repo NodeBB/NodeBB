@@ -162,11 +162,13 @@
 		var pid = ($(this).attr('id') || $(this.parentNode).attr('id')).split('_')[1];
 
 		var main = $(this).parents('.main-post');
-		if(main.length > 0) 
-			app.open_post_window('edit', tid, topic_name, pid);
-		else 
-			app.open_post_window('edit', tid, "", pid);
-	
+		// if(main.length > 0) 
+		// 	app.open_post_window('edit', tid, topic_name, pid);
+		// else 
+		// 	app.open_post_window('edit', tid, "", pid);
+		require(['composer'], function(cmp) {
+			cmp.push(null, null, pid);
+		});
 	});
 
 	$('.post-container').delegate('.delete', 'click', function(e) {
@@ -446,13 +448,6 @@
 					$('.post-window textarea').val('> ' + $('#content_' + pid).html() + '\n');
 				});
 			}
-		});
-
-		jQuery(div + ' .edit, ' + div + ' .delete').each(function() {
-			var ids = this.id.replace('ids_', '').split('_'),
-				pid = ids[0],
-				uid = ids[1];
-
 		});
 
 		jQuery(div + ' .favourite').click(function() {

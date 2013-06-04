@@ -233,7 +233,9 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('api:posts.getRawPost', function(data) {
-			posts.getRawContent(data.pid, socket);
+			posts.getRawContent(data.pid, function(raw) {
+				socket.emit('api:posts.getRawPost', { post: raw });
+			});
 		});
 
 		socket.on('api:posts.edit', function(data) {
@@ -306,18 +308,26 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('api:composer.push', function(data) {
-			if (data.tid > 0) {
+			if (parseInt(data.tid) > 0) {
 				topics.get_topic(data.tid, uid, function(topicData) {
 					topicData.tid = data.tid;
 					socket.emit('api:composer.push', topicData);
 				});
-			} else {
+			} else if (parseInt(data.cid) > 0) {
 				user.getUserField(uid, 'username', function(username) {
 					socket.emit('api:composer.push', {
 						tid: 0,
 						cid: data.cid,
 						username: username,
 						title: 'New Topic'
+					});
+				});
+			} else if (parseInt(data.pid) > 0) {
+				posts.getRawContent(data.pid, function(raw) {
+					socket.emit('api:composer.push', {
+						title: 'asdf',
+						pid: data.pid,
+						body: raw
 					});
 				});
 			}

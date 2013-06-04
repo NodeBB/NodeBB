@@ -291,9 +291,9 @@ marked.setOptions({
 		});
 	}
 
-	Posts.getRawContent = function(pid, socket) {
+	Posts.getRawContent = function(pid, callback) {
 		RDB.get('pid:' + pid + ':content', function(err, raw) {
-			socket.emit('api:posts.getRawPost', { post: raw });
+			callback(raw);
 		});
 	}
 

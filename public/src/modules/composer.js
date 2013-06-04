@@ -49,8 +49,9 @@ define(function() {
 			composer.posts[uuid] = {
 				tid: threadData.tid,
 				cid: threadData.cid,
+				pid: threadData.pid,
 				title: threadData.tid ? threadData.title : '',
-				body: ''
+				body: threadData.body || ''
 			};
 			composer.active++;
 			composer.update();
@@ -149,10 +150,11 @@ define(function() {
 		}
 	}
 
-	composer.push = function(tid, cid) {
+	composer.push = function(tid, cid, pid) {
 		socket.emit('api:composer.push', {
-			tid: tid,
-			cid: cid
+			tid: tid,	// Replying
+			cid: cid,	// Posting
+			pid: pid	// Editing
 		});
 	}
 
@@ -166,6 +168,9 @@ define(function() {
 		composer.postContainer.setAttribute('data-uuid', post_uuid);
 		if (post_data.tid > 0) {
 			titleEl.value = 'Replying to: ' + post_data.title;
+			titleEl.readonly = true;
+		} else if (post_data.pid > 0) {
+			titleEl.value = 'Editing: ' + post_data.title;
 			titleEl.readonly = true;
 		} else {
 			titleEl.value = post_data.title;
