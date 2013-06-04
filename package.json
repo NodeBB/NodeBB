@@ -30,8 +30,7 @@
       "async": "0.2.8",
       "node-imagemagick": "0.1.8",
       "atom-writer": "1.0.3",
-      "xml-writer": "1.2.4",
-      "nodefly": "stable"
+      "xml-writer": "1.2.4"
     },
   "devDependencies": {},
   "optionalDependencies": {},

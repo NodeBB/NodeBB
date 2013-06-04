@@ -1,12 +1,3 @@
-// NodeFly
-require('nodefly').profile(
-	'4b15d2184244dba6a0589932aa79ec50',
-	'NodeBB',
-	{
-		blockThreshold: 10
-	}
-);
-
 // Read config.js to grab redis info
 var fs = require('fs'),
 	path = require('path'),
