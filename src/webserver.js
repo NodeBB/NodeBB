@@ -118,7 +118,19 @@ var express = require('express'),
 	});
 
 	app.get('/category/:category_id/:slug?', function(req, res) {
-		var category_url = req.params.category_id + (req.params.slug ? '/' + req.params.slug : '');
+		var cid = req.params.category_id;
+		if (cid.match('.rss')) {
+			fs.readFile('feeds/categories/' + cid, function (err, data) {
+				if (err) {
+					res.send("Unable to locate an rss feed at this location.");
+					return;
+				}
+				res.send(data);
+			});
+			return;
+		}
+
+		var category_url = cid + (req.params.slug ? '/' + req.params.slug : '');
 		res.send(build_header() + '<script>templates.ready(function(){ajaxify.go("category/' + category_url + '");});</script>' + templates['footer']);
 	});
 

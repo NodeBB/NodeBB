@@ -23,29 +23,30 @@
 							<i class="icon-pencil"></i><span class="user_posts_{main_posts.uid}">8</span>
 						</div>
 					</a>
-					<h3><p id="topic_title_{main_posts.pid}" class="topic-title">{topic_name}</p> 
-						<div class="pull-right hidden-phone" style="margin-right: 10px;">
-							<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn edit {main_posts.display_moderator_tools}" type="button"><i class="icon-pencil"></i></button>
-							<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn delete {main_posts.display_moderator_tools}" type="button"><i class="icon-trash"></i></button>
-							<button id="quote_{main_posts.pid}_{main_posts.uid}" class="btn quote" type="button"><i class="icon-quote-left"></i></button>
-
-							<button id="favs_{main_posts.pid}_{main_posts.uid}" class="favourite btn" type="button"><span class="post_rep_{main_posts.pid}">Favourite {main_posts.post_rep} </span><i class="{main_posts.fav_star_class}"></i></button>
-							<button id="post_reply" class="btn btn-primary btn post_reply" type="button">Reply <i class="icon-reply"></i></button>
-						</div>
-					</h3>
+					<h3><p id="topic_title_{main_posts.pid}" class="topic-title">{topic_name}</p></h3>
 
 
 					<hr />
-					<small>
-						posted {main_posts.relativeTime} ago by <strong><a href="/users/{main_posts.username}" class="username-field">{main_posts.username}</a></strong>
-						<span class="{main_posts.edited-class}"><i class="icon-edit" title="edited by {main_posts.editor} {main_posts.relativeEditTime} ago"></i></span>
-					</small>
 
+					<div class="topic-buttons pull-left">
+						<a href="/users/{main_posts.username}" class="username-field btn">{main_posts.username}</a>
+						<a target="_blank" class="btn" href="../{topic_id}.rss"><i class="icon-rss-sign"></i></a>
+						<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn edit {main_posts.display_moderator_tools}" type="button"><i class="icon-pencil"></i></button>
+						<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn delete {main_posts.display_moderator_tools}" type="button"><i class="icon-trash"></i></button>
+						<button id="quote_{main_posts.pid}_{main_posts.uid}" class="btn quote" type="button"><i class="icon-quote-left"></i></button>
+
+						<button id="favs_{main_posts.pid}_{main_posts.uid}" class="favourite btn" type="button"><span class="post_rep_{main_posts.pid}">Favourite {main_posts.post_rep} </span><i class="{main_posts.fav_star_class}"></i></button>
+						<button id="post_reply" class="btn btn-primary btn post_reply" type="button">Reply <i class="icon-reply"></i></button>
+					</div>
 					<div style="clear:both; margin-bottom: 10px;"></div>
 
 					<div id="content_{main_posts.pid}" class="post-content">{main_posts.content}</div>
 					<div class="post-signature">{main_posts.signature}</div>
-					<div class="profile-block"></div>
+					<div class="profile-block">
+						<img class="hidden-desktop" src="{main_posts.gravatar}?s=10&default=identicon" align="left" /> posted by <strong><a class="" href="/users/{main_posts.username}">{main_posts.username}</a></strong> {main_posts.relativeTime} ago
+						<span class="{main_posts.edited-class} hidden-phone">| last edited by <strong><a href="/users/{main_posts.editor}">{main_posts.editor}</a></strong> {main_posts.relativeEditTime} ago</span>
+						<span class="{main_posts.edited-class}"><i class="icon-edit visible-phone" title="edited by {main_posts.editor} {main_posts.relativeEditTime} ago"></i></span>
+					</div>
 				</div>
 			</div>
 		</li>

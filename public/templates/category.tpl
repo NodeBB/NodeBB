@@ -49,6 +49,14 @@
 	<div class="span3 {show_category_features} category-sidebar">
 		<div class="sidebar-block img-polaroid">
 			<div class="block-header">
+				<a target="_blank" href="../{category_id}.rss"><i class="icon-rss-sign icon-2x"></i></a>&nbsp;
+				<i class="icon-facebook-sign icon-2x"></i>&nbsp;
+				<i class="icon-twitter-sign icon-2x"></i>&nbsp;
+				<i class="icon-google-plus-sign icon-2x"></i>&nbsp;
+			</div>
+		</div>
+		<div class="sidebar-block img-polaroid">
+			<div class="block-header">
 				Recent Replies
 			</div>
 			<div class="block-content recent-replies" id="category_recent_replies">

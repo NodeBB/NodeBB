@@ -166,6 +166,7 @@ var	RDB = require('./redis.js'),
 					for (var i=0, ii=tids.length; i<ii; i++) {
 						if (!deleted[i] || (deleted[i] && privileges.view_deleted) || uid[i] === current_user) {
 							retrieved_topics.push({
+								'tid' : tids[i],
 								'title' : title[i],
 								'uid' : uid[i],
 								'username': usernames[i],
@@ -261,7 +262,7 @@ var	RDB = require('./redis.js'),
 	}
 
 	Categories.getRecentReplies = function(cid, callback) {
-		RDB.zrange('categories:recent_posts:cid:' + cid, 0, -1, function(err, pids) {
+		RDB.zrange('categories:recent_posts:cid:' + cid, 0, 4, function(err, pids) {
 			if (pids.length == 0) {
 				callback(false);
 				return;

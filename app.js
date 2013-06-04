@@ -7,6 +7,7 @@ require('nodefly').profile(
 	}
 );
 
+
 // Read config.js to grab redis info
 var fs = require('fs'),
 	path = require('path'),
