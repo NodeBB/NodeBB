@@ -443,7 +443,6 @@
 
 				require(['composer'], function(cmp) {
 					cmp.push(tid);
-					console.log($('.post-window textarea'), $('#content_' + pid));
 					$('.post-window textarea').val('> ' + $('#content_' + pid).html() + '\n');
 				});
 			}
