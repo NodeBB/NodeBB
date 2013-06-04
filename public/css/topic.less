@@ -1,0 +1,165 @@
+
+.post-container {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+	clear: both;
+
+	.profile-image-block {
+		background: white;
+		display: inline-block;
+		text-align: center;
+		font-size: 12px;
+	}
+
+	li {
+		padding-bottom: 15px;
+
+		&.deleted {
+			-moz-opacity: 0.30;
+			opacity: 0.30;
+		}
+	}
+
+	.profile-block, .post-block {
+		border: 1px solid #f0f0f0;
+		border-radius: 5px;
+		
+		padding: 10px;
+	}
+
+	img {
+		margin: 5px;
+	}
+
+	.profile-block {
+		background: #fafafa;
+		margin-right: -11px;
+		margin-left: -11px;
+		margin-bottom: -11px;
+		margin-top: 15px;
+		border-radius: 0 0 5px 5px;
+		font-size: 10px;
+		line-height: 18px;
+		padding: 5px;
+		padding-left: 10px;
+
+		img.hidden-desktop {
+			max-width: 10px;
+			max-height: 10px;
+		}
+	}
+	.post-content {
+		min-height: 50px;
+		padding: 2px 5px 0 5px;
+		word-wrap: break-word;
+	}
+
+	.post-block {
+		.post-buttons {
+			font-size: 12px;
+			float: right;
+			margin-right: 5px;
+
+			div {
+				display: inline-block;
+				padding-left: 15px;
+				padding-right: 15px; 
+				border-left: 1px solid #f0f0f0;
+				cursor: pointer;
+
+				&:last-child {
+					padding-right: 5px;
+				}
+			}
+
+			.icon-star {
+				//theme this to make it yellow eventually
+			}
+		}
+		background: #fff;
+	}
+
+	&.deleted {
+		-moz-opacity: 0.30;
+		opacity: 0.30;
+	}
+
+
+	.main-post {
+		h3 {
+			margin: 0;
+
+			.topic-title {
+				width: auto;
+				white-space: nowrap;
+				text-overflow:ellipsis;
+				overflow: hidden;
+				margin: 0;
+				padding: 0;
+				padding-top: 5px;
+				margin-bottom: -5px;
+				padding-bottom: 5px;
+			}
+		}
+
+		.main-avatar {
+			color: white;
+			position: relative;
+			float: left;
+			margin-right: 15px;
+			margin-bottom: 0px;
+			padding-bottom: 0px;
+			text-align: center;
+
+			@media (max-width: 767px) { 
+				display: none;
+			}
+		}
+
+		.main-avatar:hover .hover-overlay {
+			opacity: 0.75;
+		}
+
+		.hover-overlay {
+			margin: 5px;
+			position: absolute;
+			bottom: 0px;
+			height: 35px;
+			padding-top: 2px;
+			width: 80px;
+			font-size: 13px;
+			line-height: 16px;
+			background: #000;
+			opacity: 0;
+			transition: opacity 0.3s;
+		}
+
+		.post-content {
+			min-height: 80px;
+		}
+		hr {
+			margin-top: 0;
+			margin-right: 10px;
+			margin-bottom: 0;
+		}
+		.post-block {
+			.post-buttons {
+				div {
+					border: 0;
+				}
+			}
+		}
+		.favourite {
+			cursor: pointer;
+		}
+		.btn {
+			display: inline-block;
+		}
+
+		.topic-buttons {
+			margin-top: 8px;
+		}
+
+	}
+}
