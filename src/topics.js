@@ -7,7 +7,8 @@ var	RDB = require('./redis.js')
 	posts = require('./posts.js'),
 	marked = require('marked'),
 	threadTools = require('./threadTools.js'),
-	async = require('async');
+	async = require('async'),
+	feed = require('./feed.js');
 
 marked.setOptions({
 	breaks: true
@@ -370,6 +371,8 @@ marked.setOptions({
 				});
 
 				RDB.incr('cid:' + category_id + ':topiccount');
+
+				feed.updateCategory(category_id);
 			});
 		});
 	};

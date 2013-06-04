@@ -5,10 +5,9 @@
 		topics = require('./topics.js'),
 		fs = require('fs');
 
-	function saveFeed(feed, xml, tid) {
+	function saveFeed(location, feed, xml) {
 		feed.endEntry();
-
-		fs.writeFile('feeds/topics/' + tid + '.rss', xml.toString(), function (err) {
+		fs.writeFile(location, xml.toString(), function (err) {
 			if (err) throw err;
 		});
 	}
@@ -37,7 +36,8 @@
 	}
 
 	Feed.updateTopic = function(tid, cid) {
-		var cache_time_in_seconds = 60,
+		return;
+		var cache_time_in_seconds = 60, //todo. don't rewrite xml every time something is posted.
 			XMLWriter = require('xml-writer');
 			xml = new XMLWriter(true);
 
@@ -71,12 +71,31 @@
 				feed = createEntry(feed, urn, title, postsData.content[i], url, userData[postsData.uid[i]].username);
 			}
 
-			saveFeed(feed, xml, tid);
+			saveFeed('feeds/topics/' + tid + '.rss', feed, xml);
 		});
 
 	};
 
-	Feed.updateCategory = function(params) {
+	Feed.updateCategory = function(cid) {
+		var XMLWriter = require('xml-writer');
+			xml = new XMLWriter(true);
+
+		categories.getCategoryById(cid, 0, function(categoryData) {
+			var url = '/category/' + categoryData.category_id + '/' + categoryData.category_name;
+
+			var urn = 'urn:' + cid;
+			var feed = createFeed(xml, urn, categoryData.category_name, url, 'NodeBB'); // not exactly sure if author for a category should be site_title?
+			var title;
+			var topics = categoryData.topics;
+
+			for (var i = 0, ii = topics.length; i < ii; i++) {
+				urn = 'urn:' + cid + ':' + topics[i].tid;
+				title = topics[i].title + '. Posted on ' + (new Date(parseInt(topics[i].timestamp, 10)).toUTCString());
+				feed = createEntry(feed, urn, title, topics[i].teaser_text, url, topics[i].username);
+			}
+
+			saveFeed('feeds/categories/' + cid + '.rss', feed, xml);
+		});
 
 	};
 }(exports));
