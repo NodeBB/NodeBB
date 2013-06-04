@@ -38,7 +38,7 @@ var ajaxify = {};
 		} else if (templates[url]) {
 			tpl_url = url;
 		}
-		
+
 		if (templates.is_available(tpl_url) && !templates.force_refresh(tpl_url)) {
 			if (quiet !== true) {
 				window.history.pushState({
@@ -75,6 +75,8 @@ var ajaxify = {};
 	ajaxify.onclick = function(ev) {
 		if (this.href == window.location.href + "#") return;
 		var url = this.href.replace(rootUrl +'/', '');
+		
+		if (this.target !== '') return;
 
 		if (!ev.ctrlKey && ev.which === 1) {
 			if (ajaxify.go(url)) {
