@@ -2,7 +2,7 @@
   "author": "psychobunny <andrew@designcreateplay.com>, julianlam <julian@designcreateplay.com>, barisusakli <baris@designcreateplay.com>",
   "name": "NodeBB",
   "description": "NodeBB Forum",
-  "version": "0.1",
+  "version": "0.0.1",
   "homepage": "http://www.nodebb.org",
   "repository": {
     "url": "https://github.com/designcreateplay/NodeBB/"
@@ -29,8 +29,7 @@
       "node-gyp": "0.9.5",
       "async": "0.2.8",
       "node-imagemagick": "0.1.8",
-      "atom-writer": "1.0.3",
-      "xml-writer": "1.2.4"
+      "node-rss": "1.0.1"
     },
   "devDependencies": {},
   "optionalDependencies": {},
