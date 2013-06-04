@@ -827,6 +827,7 @@ body .navbar .nodebb-inline-block {
 	display: none;
 	-moz-opacity: 0.5;
 	opacity: 0.5;
+	margin-top: 0;
 	-webkit-transition: opacity 250ms ease-in;
 	-moz-transition: opacity 250ms ease-in;
 	-ms-transition: opacity 250ms ease-in;
@@ -862,18 +863,31 @@ body .navbar .nodebb-inline-block {
 .post-window {
 	position: fixed;
 	bottom: 45px;
-	height: 30%;
+	height: 450px;
+	display: none;
 
-	div {
+	> div {
 		height: 100%;
-		background: rgba(64, 64, 64, 0.2);
+		background: rgba(64, 64, 64, 0.6);
+
+		.btn-toolbar {
+			width: 90%;
+			margin: 0 auto;
+
+			span {
+				color: white;
+			}
+		}
 
 		input {
 			width: 100%;
 			text-align: center;
-			background: none;
+			background: rgba(255, 255, 255, 0.9);
 			border: none;
 			padding: 0.5em 0;
+			-webkit-border-radius: 0px;
+			-moz-border-radius: 0px;
+			border-radius: 0px;
 		}
 
 		textarea {
@@ -885,6 +899,13 @@ body .navbar .nodebb-inline-block {
 			margin: 1em auto;
 			resize: none;
 			color: white;
+			height: 330px;
 		}
+	}
+}
+
+@media (max-width: 979px) {
+	.post-window {
+		position: static;
 	}
 }

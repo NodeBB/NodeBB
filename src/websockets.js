@@ -305,10 +305,22 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			});
 		});
 
-		socket.on('api:composer.push', function(tid) {
-			topics.get_topic(tid, uid, function(topicData) {
-				socket.emit('api:composer.push', topicData);
-			});
+		socket.on('api:composer.push', function(data) {
+			if (data.tid > 0) {
+				topics.get_topic(data.tid, uid, function(topicData) {
+					topicData.tid = data.tid;
+					socket.emit('api:composer.push', topicData);
+				});
+			} else {
+				user.getUserField(uid, 'username', function(username) {
+					socket.emit('api:composer.push', {
+						tid: 0,
+						cid: data.cid,
+						username: username,
+						title: 'New Topic'
+					});
+				});
+			}
 		});
 	});
 	

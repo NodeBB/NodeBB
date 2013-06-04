@@ -430,16 +430,23 @@
 		else div = '#' + div;
 
 		jQuery(div + ' .post_reply').click(function() {
-			if (thread_state.locked !== '1') app.open_post_window('reply', tid, topic_name);
+			if (thread_state.locked !== '1') {
+				require(['composer'], function(cmp) {
+					cmp.push(tid);
+				});
+			}
 		});
 
 		jQuery(div + ' .quote').click(function() {
-			if (thread_state.locked !== '1') app.open_post_window('quote', tid, topic_name);
-			
-			var pid = $(this).parents('li').attr('data-pid');
-			
-			$('#post_content').val('> ' + $('#content_' + pid).html() + '\n');
-			console.log("POST ID "+pid);
+			if (thread_state.locked !== '1') {
+				var pid = $(this).parents('li').attr('data-pid');
+
+				require(['composer'], function(cmp) {
+					cmp.push(tid);
+					console.log($('.post-window textarea'), $('#content_' + pid));
+					$('.post-window textarea').val('> ' + $('#content_' + pid).html() + '\n');
+				});
+			}
 		});
 
 		jQuery(div + ' .edit, ' + div + ' .delete').each(function() {

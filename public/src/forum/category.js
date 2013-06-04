@@ -6,7 +6,9 @@
 
 	var new_post = document.getElementById('new_post');
 	new_post.onclick = function() {
-		app.open_post_window('topic', cid);
+		require(['composer'], function(cmp) {
+		    cmp.push(0, cid);
+		});
 	}
 
 	ajaxify.register_events([
