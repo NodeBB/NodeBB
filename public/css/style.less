@@ -427,25 +427,15 @@ footer.footer {
 			margin: 0;
 
 			.topic-title {
-				width: 60%;
+				width: auto;
 				white-space: nowrap;
 				text-overflow:ellipsis;
 				overflow: hidden;
-				display: inline-block;
 				margin: 0;
 				padding: 0;
 				padding-top: 5px;
 				margin-bottom: -5px;
-				
-				@media (max-width: 1200px) {
-					width: 500px;
-				}
-				@media (min-width: 768px) and (max-width: 979px) {
-					width: 320px;
-				}
-				@media (max-width: 767px) { 
-					width: 75%;
-				}
+				padding-bottom: 5px;
 			}
 		}
 
@@ -457,11 +447,8 @@ footer.footer {
 			margin-bottom: 0px;
 			padding-bottom: 0px;
 			text-align: center;
+
 			@media (max-width: 767px) { 
-				width: 20%;
-				max-width: 85px;
-			}
-			@media (max-width: 400px) { 
 				display: none;
 			}
 		}
@@ -504,6 +491,16 @@ footer.footer {
 		}
 		.btn {
 			display: inline-block;
+		}
+
+		.topic-details {
+			margin-top: 7px;
+			margin-right: 10px;
+			color: #ddd;
+		}
+
+		.topic-buttons {
+			margin-top: 7px;
 		}
 
 	}

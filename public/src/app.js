@@ -365,13 +365,18 @@ var socket,
 
 	socket.on('api:user.get_online_users', function(users) {
 		jQuery('.username-field').each(function() {
-			var uid = jQuery(this).parents('li').attr('data-uid');
+			if (this.processed === true) return;
+
+			var el = jQuery(this),
+				uid = el.parents('li').attr('data-uid');
 			
 			if (uid && jQuery.inArray(uid, users) !== -1) {
-				jQuery(this).prepend('<i class="icon-circle"></i>');
+				el.prepend('<i class="icon-circle"></i>&nbsp;');
 			} else {
-				jQuery(this).prepend('<i class="icon-circle-blank"></i>');
+				el.prepend('<i class="icon-circle-blank"></i>&nbsp;');
 			}
+
+			el.processed = true;
 		});
 	});
 
