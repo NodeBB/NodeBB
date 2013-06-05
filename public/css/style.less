@@ -538,6 +538,8 @@ body .navbar .nodebb-inline-block {
 }
 
 #mobile-menu, #mobile-menu-overlay {
+	z-index: 999;
+
 	@media (min-width: 979px) 
 	{
 		display: none !important;
@@ -630,11 +632,10 @@ body .navbar .nodebb-inline-block {
 		transition: margin-top 250ms ease;
 
 		margin-top: 20%;
-		opacity: 0;
+		
 
 		&.menu-visible {
 			margin-top: 0%;
-			opacity: 1;
 		}
 
 		i {

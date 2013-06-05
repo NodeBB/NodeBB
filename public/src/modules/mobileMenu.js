@@ -41,10 +41,10 @@ define(function() {
 			icon.src = 'category/' + category.slug;
 
 			icon.onclick = function() {
-				jQuery(overlay).toggleClass('menu-visible');
+				jQuery('.mobile-menu-icon').toggleClass('menu-visible');
 
 				setTimeout(function() {
-					jQuery('.mobile-menu-icon').toggleClass('menu-visible');
+					jQuery(overlay).toggleClass('menu-visible');
 				}, 200);
 
 				ajaxify.go(this.src);
