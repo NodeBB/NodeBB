@@ -4,7 +4,8 @@ define(function() {
 
 	var categories = null,
 		overlay = null,
-		menuBtn = null;
+		menuBtn = null,
+		postBtn = null;
 
 
 	function loadCategories(callback) {
@@ -63,9 +64,27 @@ define(function() {
 	}
 
 
+	mobileMenu.onNavigate = function() {
+		var cid = templates.get('category_id');
+
+		if (cid) {
+			postBtn.style.display = 'inline-block';
+			postBtn.onclick = function() {
+				require(['composer'], function(cmp) {
+				    cmp.push(0, cid); //todo check if in post
+				});
+			};
+		} else {
+			postBtn.style.display = 'none';
+		}
+
+	};
+
+
 	mobileMenu.init = function() {
 		overlay = overlay || document.getElementById('mobile-menu-overlay');
 		menuBtn = menuBtn || document.getElementById('mobile-menu-btn');
+		postBtn = postBtn || document.getElementById('mobile-post-btn');
 		
 		menuBtn.onclick = function() {
 			animateIcons();
@@ -73,9 +92,11 @@ define(function() {
 
 
 		loadCategories(displayCategories);
+		mobileMenu.onNavigate();
 	}
 
 	return {
-		init: mobileMenu.init
+		init: mobileMenu.init,
+		onNavigate: mobileMenu.onNavigate
 	}
 });

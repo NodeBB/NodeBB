@@ -191,6 +191,11 @@ var socket,
 			socket.emit('api:user.get_online_users', uids);
 		}
 
+		// here is where all modules' onNavigate should be called, I think.
+		require(['mobileMenu'], function(mobileMenu) {
+			mobileMenu.onNavigate();
+		});
+
 
 		populate_online_users();
 
