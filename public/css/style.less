@@ -35,6 +35,10 @@ body {
 		padding-top: 70px;
 	}
 
+	@media (max-width: 979px)
+	{
+		padding-bottom: 50px;
+	}
 }
 
 .none {
@@ -520,5 +524,122 @@ body .navbar .nodebb-inline-block {
 @media (max-width: 979px) {
 	.post-window {
 		position: static;
+	}
+}
+
+
+#mobile-menu {
+	position: fixed;
+	bottom: 0px;
+	height: 50px;
+	background: #333;
+	width: 100%;
+	left: 0px;
+}
+
+#mobile-menu, #mobile-menu-overlay {
+	@media (min-width: 979px) 
+	{
+		display: none !important;
+	}
+}
+
+
+.btn-none,
+.btn-none:active,
+.btn-none[disabled] {
+  background-color: transparent;
+  background-image: none;
+  -webkit-box-shadow: none;
+     -moz-box-shadow: none;
+          box-shadow: none;
+}
+
+.btn-none {
+  cursor: pointer;
+  border-color: transparent;
+  -webkit-border-radius: 0;
+     -moz-border-radius: 0;
+          border-radius: 0;
+}
+
+.btn-none:hover,
+.btn-none:focus {
+  text-decoration: none;
+  background-color: transparent;
+}
+
+.btn-none[disabled]:hover,
+.btn-none[disabled]:focus {
+  text-decoration: none;
+}
+
+.btn-none {
+	.icon-white {
+		color: white;
+	}
+}
+
+#mobile-menu {
+	#mobile-menu-btn {
+		color: #eee;
+		padding: 10px;
+		text-shadow: none;
+	}
+}
+
+#mobile-menu-overlay {
+	display: none;
+
+	background: rgba(0, 0, 0, 0.85);
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 100%;
+	//margin-top: 50px;
+	padding-top: 20px;
+	opacity: 0;
+
+	-webkit-transition: opacity 150ms ease;
+	-moz-transition: opacity 150ms ease;
+	-ms-transition: opacity 150ms ease;
+	-o-transition: opacity 150ms ease;
+	transition: opacity 150ms ease;
+
+	&.menu-visible {
+		display: block;
+		opacity: 1;
+	}
+
+	.mobile-menu-icon {
+		color: white;
+		width: 20%;
+		min-width: 85px;
+		height: auto;
+		text-align: center;
+		padding: 10px;
+		display: inline-block;
+		cursor: pointer;
+		-webkit-tap-highlight-color: rgba(0,0,0,0);
+
+		-webkit-transition: margin-top 250ms ease;
+		-moz-transition: margin-top 250ms ease;
+		-ms-transition: margin-top 250ms ease;
+		-o-transition: margin-top 250ms ease;
+		transition: margin-top 250ms ease;
+
+		margin-top: 20%;
+		opacity: 0;
+
+		&.menu-visible {
+			margin-top: 0%;
+			opacity: 1;
+		}
+
+		i {
+			width: 100%;
+		}
+
 	}
 }

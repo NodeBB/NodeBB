@@ -74,5 +74,6 @@
 
 <input type="hidden" template-variable="yourid" value="{yourid}" />
 <input type="hidden" template-variable="theirid" value="{theirid}" />
+<input type="hidden" template-variable="isFriend" value="{isFriend}" />
 
 <script type="text/javascript" src="/src/forum/account.js"></script>

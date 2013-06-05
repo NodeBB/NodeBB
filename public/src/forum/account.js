@@ -1,8 +1,7 @@
 (function() {
 	var yourid = templates.get('yourid'),
-		theirid = templates.get('theirid');
-		
-	var isFriend = {isFriend};
+		theirid = templates.get('theirid'),
+        isFriend = templates.get('isFriend');
 
     $(document).ready(function() {
 

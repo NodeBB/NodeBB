@@ -29,7 +29,9 @@
 </head>
 
 <body>
-	<div class="navbar navbar-inverse navbar-fixed-top">
+	<div id="mobile-menu-overlay">
+	</div>
+	<div class="navbar navbar-inverse navbar-fixed-top" id="header-menu">
 		<div class="navbar-inner">
 			<div class="container">
 				<a class="brand" href="/">NodeBB</a>
