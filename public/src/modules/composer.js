@@ -43,14 +43,14 @@ define(function() {
 		socket.on('api:composer.push', function(threadData) {
 			var	uuid = utils.generateUUID(),
 				btnEl = document.createElement('li');
-			btnEl.innerHTML = '<a href="#"><img src="/graph/users/' + threadData.username + '/picture" /><span>' + threadData.title + '</span></a>';
+			btnEl.innerHTML = '<a href="#"><img src="/graph/users/' + threadData.username + '/picture" /><span>' + (!threadData.cid ? (threadData.title || '') : 'New Topic') + '</span></a>';
 			btnEl.setAttribute('data-uuid', uuid);
 			composer.listEl.appendChild(btnEl);
 			composer.posts[uuid] = {
 				tid: threadData.tid,
 				cid: threadData.cid,
 				pid: threadData.pid,
-				title: threadData.tid ? threadData.title : '',
+				title: threadData.title || '',
 				body: threadData.body || ''
 			};
 			composer.active++;
@@ -170,6 +170,7 @@ define(function() {
 			titleEl.value = 'Replying to: ' + post_data.title;
 			titleEl.readonly = true;
 		} else if (post_data.pid > 0) {
+			console.log(post_data);
 			titleEl.value = 'Editing: ' + post_data.title;
 			titleEl.readonly = true;
 		} else {
@@ -180,6 +181,8 @@ define(function() {
 		// Highlight the button
 		$('.posts-bar li').removeClass('active');
 		composer.btnContainer.querySelector('[data-uuid="' + post_uuid + '"]').className += ' active';
+
+		// 
 	}
 
 	composer.post = function(post_uuid) {
@@ -198,7 +201,7 @@ define(function() {
 		}
 
 		// Still here? Let's post.
-		if (postData.tid === 0 || postData.cid) {
+		if (parseInt(postData.cid) > 0) {
 			socket.emit('api:topics.post', {
 				'title' : titleEl.value,
 				'content' : bodyEl.value,
@@ -208,6 +211,12 @@ define(function() {
 			socket.emit('api:posts.reply', {
 				'topic_id' : postData.tid,
 				'content' : bodyEl.value
+			});
+		} else if (parseInt(postData.pid) > 0) {
+			socket.emit('api:posts.edit', {
+				pid: postData.pid,
+				content: bodyEl.value,
+				title: titleEl.value
 			});
 		}
 

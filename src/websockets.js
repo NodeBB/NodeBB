@@ -319,7 +319,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 						tid: 0,
 						cid: data.cid,
 						username: username,
-						title: 'New Topic'
+						title: undefined
 					});
 				});
 			} else if (parseInt(data.pid) > 0) {
