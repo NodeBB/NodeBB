@@ -1,13 +1,3 @@
-// NodeFly
-require('nodefly').profile(
-	'4b15d2184244dba6a0589932aa79ec50',
-	'NodeBB',
-	{
-		blockThreshold: 10
-	}
-);
-
-
 // Read config.js to grab redis info
 var fs = require('fs'),
 	path = require('path'),
@@ -127,6 +117,7 @@ fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 										}
 									}
 
+								// Server-side config
 								fs.writeFile(path.join(__dirname, 'config.json'), JSON.stringify(config, null, 4), function(err) {
 									if (err) throw err;
 									else {
@@ -137,6 +128,15 @@ fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 										process.exit();
 									}
 								});
+
+								// Client-side config
+								fs.writeFile(path.join(__dirname, 'public', 'config.json'), JSON.stringify({
+									socket: {
+										address: base_url,
+										port: port
+									},
+									api_url: base_url + ':' + port + '/api/'
+								}, null, 4))
 							});
 						});
 					});
