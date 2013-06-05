@@ -75,35 +75,6 @@
 			</div>
 		</div>
 	</div>
-	<div id="post_window">
-		<div class="post-title-container">
-			<div class="container">
-				<input id="post_title" placeholder="Enter your topic title here." tabIndex="1" />
-				<span id="reply_title"></span>
-			</div>
-		</div>
-		<div class="post-content-container">
-			<div class="container">
-
-				<div class="btn-toolbar">
-					<div class="btn-group formatting-bar">
-						<span class="btn btn-link" tabindex="-1"><i class="icon-bold"></i></span>
-						<span class="btn btn-link" tabindex="-1"><i class="icon-italic"></i></span>
-						<!-- <span class="btn btn-link" tabindex="-1"><i class="icon-font"></i></span> -->
-						<span class="btn btn-link" tabindex="-1"><i class="icon-list"></i></span>
-						<span class="btn btn-link" tabindex="-1"><i class="icon-link"></i></span>
-					</div>
-					<div class="btn-group" style="float: right; margin-right: -12px">
-						<button id="submit_post_btn" class="btn" tabIndex="3"><i class="icon-ok"></i> Submit</button>
-						<button class="btn" id="discard-post" tabIndex="4"><i class="icon-remove"></i> Discard</button>
-					</div>
-				</div>
-
-				<textarea id="post_content" placeholder="Type your message here." tabIndex="2"></textarea>
-
-			</div>
-		</div>
-	</div>
     
 	<div id="disconnect-modal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	  <div class="modal-header">

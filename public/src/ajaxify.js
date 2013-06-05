@@ -59,7 +59,6 @@ var ajaxify = {};
 				app.process_page();
 				
 				jQuery('#content, #footer').fadeIn(200);
-				app.close_post_window();
 			}, url, template);
 
 			return true;

@@ -166,10 +166,10 @@ define(function() {
 		composer.postContainer.style.display = 'block';
 		composer.postContainer.style.bottom = composer.btnContainer.offsetHeight + "px";
 		composer.postContainer.setAttribute('data-uuid', post_uuid);
-		if (post_data.tid > 0) {
+		if (parseInt(post_data.tid) > 0) {
 			titleEl.value = 'Replying to: ' + post_data.title;
 			titleEl.readonly = true;
-		} else if (post_data.pid > 0) {
+		} else if (parseInt(post_data.pid) > 0) {
 			console.log(post_data);
 			titleEl.value = 'Editing: ' + post_data.title;
 			titleEl.readonly = true;
@@ -182,7 +182,12 @@ define(function() {
 		$('.posts-bar li').removeClass('active');
 		composer.btnContainer.querySelector('[data-uuid="' + post_uuid + '"]').className += ' active';
 
-		// 
+		// Direct user focus to the correct element
+		if ((parseInt(post_data.tid) || parseInt(post_data.pid)) > 0) {
+			bodyEl.focus();
+		} else if (parseInt(post_data.cid) > 0) {
+			titleEl.focus();
+		}
 	}
 
 	composer.post = function(post_uuid) {
