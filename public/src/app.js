@@ -199,6 +199,7 @@ var socket,
 
 		populate_online_users();
 
+		window.scrollTo(0, 1);
 	}
 
 	socket.on('api:user.get_online_users', function(users) {
