@@ -194,6 +194,12 @@ marked.setOptions({
 		});
 	}
 
+	Topics.getTitle = function(tid, callback) {
+		RDB.get('tid:' + tid + ':title', function(err, title) {
+			callback(title);
+		});
+	}
+
 	Topics.markAsRead = function(tid, uid) {
 		// there is an issue with this fn. if you read a topic that is previously read you will mark the category as read anyways - there is no check
 		RDB.sadd(schema.topics(tid).read_by_uid, uid);

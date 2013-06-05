@@ -10,6 +10,12 @@ marked.setOptions({
 });
 
 (function(PostTools) {
+	PostTools.isMain = function(pid, tid, callback) {
+		RDB.lrange('tid:' + tid + ':posts', 0, 0, function(err, pids) {
+			if (pids[0] === pid) callback(true);
+			else callback(false);
+		})
+	}
 
 	PostTools.privileges = function(pid, uid, callback) {
 		//todo: break early if one condition is true 
@@ -48,17 +54,19 @@ marked.setOptions({
 
 	PostTools.edit = function(uid, pid, title, content) {
 		var	success = function() {
-
 				RDB.set('pid:' + pid + ':content', content);
 				RDB.set('pid:' + pid + ':edited', new Date().getTime());
 				RDB.set('pid:' + pid + ':editor', uid);
 
 				posts.get_tid_by_pid(pid, function(tid) {
-					RDB.set('tid:' + tid + ':title', title);
-					io.sockets.in('topic_' + tid).emit('event:post_edited', {
-						pid: pid,
-						title: title,
-						content: marked(content || '')
+					PostTools.isMain(pid, tid, function(isMainPost) {
+						if (isMainPost) RDB.set('tid:' + tid + ':title', title);
+
+						io.sockets.in('topic_' + tid).emit('event:post_edited', {
+							pid: pid,
+							title: title,
+							content: marked(content || '')
+						});
 					});
 				});
 			};

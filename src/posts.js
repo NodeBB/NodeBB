@@ -13,7 +13,6 @@ marked.setOptions({
 });
 
 (function(Posts) {
-
 	Posts.getPostsByTid = function(tid, current_user, start, end, callback) {
 		RDB.lrange('tid:' + tid + ':posts', start, end, function(err, pids) {
 			RDB.handle(err);

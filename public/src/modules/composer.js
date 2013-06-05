@@ -58,6 +58,10 @@ define(function() {
 			composer.load(uuid);
 		});
 
+		socket.on('api:composer.editCheck', function(editCheck) {
+			if (editCheck.titleEditable === true) composer.postContainer.querySelector('input').readOnly = false;
+		});
+
 		// Posts bar events
 		$(composer.btnContainer).on('click', 'li', function() {
 			var uuid = this.getAttribute('data-uuid');
@@ -168,11 +172,11 @@ define(function() {
 		composer.postContainer.setAttribute('data-uuid', post_uuid);
 		if (parseInt(post_data.tid) > 0) {
 			titleEl.value = 'Replying to: ' + post_data.title;
-			titleEl.readonly = true;
+			titleEl.readOnly = true;
 		} else if (parseInt(post_data.pid) > 0) {
-			console.log(post_data);
-			titleEl.value = 'Editing: ' + post_data.title;
-			titleEl.readonly = true;
+			titleEl.value = post_data.title;
+			titleEl.readOnly = true;
+			socket.emit('api:composer.editCheck', post_data.pid);
 		} else {
 			titleEl.value = post_data.title;
 		}

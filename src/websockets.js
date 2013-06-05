@@ -323,14 +323,35 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					});
 				});
 			} else if (parseInt(data.pid) > 0) {
-				posts.getRawContent(data.pid, function(raw) {
+				async.parallel([
+					function(next) {
+						posts.getRawContent(data.pid, function(raw) {
+							next(null, raw);
+						});
+					},
+					function(next) {
+						topics.getTitle(data.pid, function(title) {
+							next(null, title);
+						});
+					}
+				], function(err, results) {
 					socket.emit('api:composer.push', {
-						title: 'asdf',
+						title: results[1],
 						pid: data.pid,
-						body: raw
+						body: results[0]
 					});
 				});
 			}
+		});
+
+		socket.on('api:composer.editCheck', function(pid) {
+			posts.get_tid_by_pid(pid, function(tid) {
+				postTools.isMain(pid, tid, function(isMain) {
+					socket.emit('api:composer.editCheck', {
+						titleEditable: isMain
+					});
+				})
+			})
 		});
 	});
 	
