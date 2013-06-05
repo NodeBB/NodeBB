@@ -240,5 +240,23 @@ var socket,
 				}
 			}
 		}, false);
+
+
+		addTouchEvents();
 	});
+
+
+
+	
+	function addTouchEvents() {
+		var el = jQuery("#content"),
+			width = el.width();
+
+		el.on('touchmove', function(e) {
+			//this.style.marginLeft = - parseInt(width - event.touches[0].pageX) + 'px';
+		});
+		el.on('touchend', function(e) {
+			this.style.marginLeft = 'auto';
+		})
+	}
 }());
