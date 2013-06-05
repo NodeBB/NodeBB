@@ -10,7 +10,6 @@
 	Why don't you try posting one?
 </div>
 <div class="category row">
-
 	<div class="{topic_row_size}">
 		<ul id="topics-container">
 		<!-- BEGIN topics -->
