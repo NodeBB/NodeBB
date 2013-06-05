@@ -592,7 +592,6 @@ body .navbar .nodebb-inline-block {
 }
 
 #mobile-menu-overlay {
-	display: none;
 
 	background: rgba(0, 0, 0, 0.85);
 	position: fixed;
@@ -609,9 +608,9 @@ body .navbar .nodebb-inline-block {
 	-ms-transition: opacity 150ms ease;
 	-o-transition: opacity 150ms ease;
 	transition: opacity 150ms ease;
-
+	z-index: -1;
 	&.menu-visible {
-		display: block;
+		z-index: 99;
 		opacity: 1;
 	}
 
