@@ -1,11 +1,21 @@
 // Read config.js to grab redis info
 var fs = require('fs'),
 	path = require('path'),
-	utils = require('./public/src/utils.js');
+	utils = require('./public/src/utils.js'),
+
+	args = {};
+
+// Parse any passed-in arguments
+process.argv.slice(2).forEach(function(value) {
+	if (value.slice(0, 2) === '--') {
+		var arg = value.slice(2).split('=');
+		args[arg[0]] = arg[1] || true;
+	}
+});
 
 console.log('Info: Checking for valid base configuration file');
 fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
-	if (!err) {
+	if (!err && args.setup !== true) {
 		global.config = JSON.parse(data);
 		global.config.url = global.config.base_url + (global.config.use_port ? ':' + global.config.port : '') + '/';
 		global.config.upload_url = global.config.url + 'uploads/';
@@ -73,7 +83,9 @@ fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 		});
 	} else {
 		// New install, ask setup questions
-		console.log('Info: Configuration not found, starting NodeBB setup');
+		if (args.setup) console.log('Info: NodeBB Setup Triggered via Command Line');
+		else console.log('Info: Configuration not found, starting NodeBB setup');
+
 		var	ask = function(question, callback) {
 				process.stdin.resume();
 				process.stdout.write(question + ': ');
@@ -85,7 +97,7 @@ fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 
 		process.stdout.write(
 			"\nWelcome to NodeBB!\nThis looks like a new installation, so you'll have to answer a " +
-			"few questions about your environment before we can proceed with the setup.\n\n" +
+			"few questions about your environment before we can proceed.\n\n" +
 			"Press enter to accept the default setting (shown in brackets).\n\n\n" +
 			"What is...\n\n"
 		);
@@ -122,8 +134,16 @@ fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 									if (err) throw err;
 									else {
 										process.stdout.write(
-											"\n\nConfiguration Saved OK\n\nPlease start NodeBB again and register a new user at " +
-											base_url + (use_port ? ':' + port : '') + "/register. This user will automatically become an administrator.\n\n"
+											"\n\nConfiguration Saved OK\n\n"
+										);
+										if (!args.setup) {
+											process.stdout.write(
+												"Please start NodeBB again and register a new user at " +
+												base_url + (use_port ? ':' + port : '') + "/register. This user will automatically become an administrator.\n\n"
+											);
+										}
+										process.stdout.write(
+											"If at any time you'd like to run this setup again, run the app with the \"--setup\" flag\n\n"
 										);
 										process.exit();
 									}
