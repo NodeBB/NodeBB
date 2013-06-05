@@ -1,6 +1,14 @@
 <h1>Settings</h1>
 <hr />
 
+<h3>General Settings</h3>
+<div class="alert">
+	<form>
+		<label>Site Title</label>
+		<input type="text" placeholder="My Forum" data-field="title" />
+	</form>
+</div>
+
 <form>
 	<h3>Privilege Thresholds</h3>
 	<div class="alert alert-notify">

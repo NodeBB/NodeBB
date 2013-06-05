@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
+	<title>NodeBB Administration Panel</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link id="base-theme" href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	<link href="/vendor/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">

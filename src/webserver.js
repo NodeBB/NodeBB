@@ -23,7 +23,10 @@ var express = require('express'),
 (function(app) {
 	var templates = null,
 		build_header = function() {
-			return templates['header'].parse({ cssSrc: global.config['theme:src'] || '/vendor/bootstrap/css/bootstrap.min.css' });
+			return templates['header'].parse({
+				cssSrc: global.config['theme:src'] || '/vendor/bootstrap/css/bootstrap.min.css',
+				title: global.config['title'] || 'NodeBB'
+			});
 		};
 
 	// Middlewares
