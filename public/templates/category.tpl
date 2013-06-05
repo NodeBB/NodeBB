@@ -10,7 +10,6 @@
 	Why don't you try posting one?
 </div>
 <div class="category row">
-
 	<div class="{topic_row_size}">
 		<ul id="topics-container">
 		<!-- BEGIN topics -->
@@ -69,7 +68,7 @@
 			</div>
 			<div class="block-content">
 				<!-- BEGIN active_users -->
-				<a href="/users/{active_users.username}"><img title="{active_users.username}" style="width: 48px; height: 48px; /*temporary*/" src="/graph/users/{active_users.username}/picture" class="img-polaroid" /></a>
+				<a href="/users/{active_users.username}"><img title="{active_users.username}" src="/graph/users/{active_users.username}/picture" class="img-polaroid" /></a>
 				<!-- END active_users -->
 			</div>
 		</div>
@@ -79,7 +78,7 @@
 			</div>
 			<div class="block-content">
 				<!-- BEGIN moderators -->
-				<a href="/users/{moderators.username}"><img title="{moderators.username}" style="width: 48px; height: 48px; /*temporary*/" src="/graph/users/{moderators.username}/picture" class="img-polaroid" /></a>
+				<a href="/users/{moderators.username}"><img title="{moderators.username}" src="/graph/users/{moderators.username}/picture" class="img-polaroid" /></a>
 				<!-- END moderators -->
 			</div>
 		</div>

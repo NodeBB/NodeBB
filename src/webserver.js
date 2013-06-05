@@ -101,7 +101,10 @@ var express = require('express'),
 					res.send("Unable to locate an rss feed at this location.");
 					return;
 				}
-				res.send(data);
+				
+				res.setHeader('Content-Type', 'application/xml');
+				res.setHeader('Content-Length', data.length);
+				res.end(data);
 			});
 			return;
 		}
@@ -125,7 +128,10 @@ var express = require('express'),
 					res.send("Unable to locate an rss feed at this location.");
 					return;
 				}
-				res.send(data);
+
+				res.setHeader('Content-Type', 'application/xml');
+				res.setHeader('Content-Length', data.length);
+				res.end(data);
 			});
 			return;
 		}
