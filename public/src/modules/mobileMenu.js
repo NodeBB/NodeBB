@@ -65,15 +65,25 @@ define(function() {
 
 
 	mobileMenu.onNavigate = function() {
-		var cid = templates.get('category_id');
+		var cid = templates.get('category_id'),
+			tid = templates.get('topic_id');
 
 		if (cid) {
 			postBtn.style.display = 'inline-block';
 			postBtn.onclick = function() {
 				require(['composer'], function(cmp) {
-				    cmp.push(0, cid); //todo check if in post
+				    cmp.push(0, cid);
 				});
 			};
+			postBtn.children[0].className = 'icon-plus icon-2x';
+		} else if (tid) {
+			postBtn.style.display = 'inline-block';
+			postBtn.onclick = function() {
+				require(['composer'], function(cmp) {
+				    cmp.push(tid);
+				});
+			};
+			postBtn.children[0].className = 'icon-reply icon-2x'
 		} else {
 			postBtn.style.display = 'none';
 		}
