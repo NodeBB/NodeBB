@@ -191,9 +191,17 @@ var socket,
 			socket.emit('api:user.get_online_users', uids);
 		}
 
+		// here is where all modules' onNavigate should be called, I think.
+		require(['mobileMenu'], function(mobileMenu) {
+			mobileMenu.onNavigate();
+		});
+
 
 		populate_online_users();
 
+		setTimeout(function() {
+			window.scrollTo(0, 1); // rehide address bar on mobile after page load completes.	
+		}, 100);
 	}
 
 	socket.on('api:user.get_online_users', function(users) {
@@ -232,5 +240,64 @@ var socket,
 				}
 			}
 		}, false);
+
+
+		addTouchEvents();
 	});
+
+
+
+	
+	function addTouchEvents() {
+		return; // later.
+
+
+		// click simulation just for testing/sanity purposes.
+
+		var el = jQuery("#content"),
+			sidebar = jQuery('#mobile-sidebar'),
+			width = el.width();
+
+		function onTouchMove(ev) {
+			var coordinates = window.event ? window.event.touches[0] : ev.touches[0];
+
+			el.css({
+				marginLeft: -parseInt(width - coordinates.pageX) + 'px',
+				paddingRight: parseInt(width - coordinates.pageX) + 'px'});
+
+			sidebar.css({
+				marginLeft: -parseInt(width - coordinates.pageX) + 'px',
+				width: parseInt(width - coordinates.pageX) + 'px'
+			});
+		}
+
+		function onMouseMove(ev) {
+			ev.touches = [{pageX: ev.pageX, pageY: ev.pageY}];
+			onTouchMove(ev);
+		}
+
+		function onTouchEnd() {
+			el.css({
+				marginLeft: '0px',
+				paddingRight: '0px'
+			});
+
+			sidebar.css({
+				marginLeft: '0px',
+				width: '0px'
+			});
+		}
+
+		el.on('touchmove', onTouchMove);
+		el.on('mousedown', function() {
+			el.on('mousemove', onMouseMove);
+		});
+
+		el.on('touchend', onTouchEnd);
+		el.on('mouseup', function() {
+			el.off('mousemove');
+			onTouchEnd();
+		});
+		
+	}
 }());

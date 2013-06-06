@@ -48,6 +48,7 @@ var ajaxify = {};
 
 			jQuery('#footer, #content').fadeOut(100);
 
+			templates.flush();
 			templates.load_template(function() {
 				exec_body_scripts(content);
 

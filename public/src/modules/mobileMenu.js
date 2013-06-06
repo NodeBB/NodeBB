@@ -4,7 +4,8 @@ define(function() {
 
 	var categories = null,
 		overlay = null,
-		menuBtn = null;
+		menuBtn = null,
+		postBtn = null;
 
 
 	function loadCategories(callback) {
@@ -63,9 +64,37 @@ define(function() {
 	}
 
 
+	mobileMenu.onNavigate = function() {
+		var cid = templates.get('category_id'),
+			tid = templates.get('topic_id');
+
+		if (cid) {
+			postBtn.style.display = 'inline-block';
+			postBtn.onclick = function() {
+				require(['composer'], function(cmp) {
+				    cmp.push(0, cid);
+				});
+			};
+			postBtn.children[0].className = 'icon-plus icon-2x';
+		} else if (tid) {
+			postBtn.style.display = 'inline-block';
+			postBtn.onclick = function() {
+				require(['composer'], function(cmp) {
+				    cmp.push(tid);
+				});
+			};
+			postBtn.children[0].className = 'icon-reply icon-2x'
+		} else {
+			postBtn.style.display = 'none';
+		}
+
+	};
+
+
 	mobileMenu.init = function() {
 		overlay = overlay || document.getElementById('mobile-menu-overlay');
 		menuBtn = menuBtn || document.getElementById('mobile-menu-btn');
+		postBtn = postBtn || document.getElementById('mobile-post-btn');
 		
 		menuBtn.onclick = function() {
 			animateIcons();
@@ -73,9 +102,11 @@ define(function() {
 
 
 		loadCategories(displayCategories);
+		mobileMenu.onNavigate();
 	}
 
 	return {
-		init: mobileMenu.init
+		init: mobileMenu.init,
+		onNavigate: mobileMenu.onNavigate
 	}
 });

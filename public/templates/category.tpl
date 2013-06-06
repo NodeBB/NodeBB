@@ -45,7 +45,7 @@
 		<hr />
 		<button id="new_post" class="btn btn-primary btn-large {show_category_features}">New Topic</button>
 	</div>
-	<div class="span3 {show_category_features} category-sidebar">
+	<div class="span3 {show_category_features} category-sidebar mobile-sidebar">
 		<div class="sidebar-block img-polaroid">
 			<div class="block-header">
 				<a target="_blank" href="../{category_id}.rss"><i class="icon-rss-sign icon-2x"></i></a>&nbsp;

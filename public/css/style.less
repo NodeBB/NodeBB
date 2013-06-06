@@ -41,6 +41,10 @@ body {
 	}
 }
 
+button, a {
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
 .none {
 	display: none !important;
 }
@@ -583,15 +587,15 @@ body .navbar .nodebb-inline-block {
 }
 
 #mobile-menu {
-	#mobile-menu-btn {
+	button {
 		color: #eee;
 		padding: 10px;
 		text-shadow: none;
+		-webkit-tap-highlight-color: rgba(0,0,0,0);
 	}
 }
 
 #mobile-menu-overlay {
-	display: none;
 
 	background: rgba(0, 0, 0, 0.85);
 	position: fixed;
@@ -608,9 +612,9 @@ body .navbar .nodebb-inline-block {
 	-ms-transition: opacity 150ms ease;
 	-o-transition: opacity 150ms ease;
 	transition: opacity 150ms ease;
-
+	z-index: -1;
 	&.menu-visible {
-		display: block;
+		z-index: 99;
 		opacity: 1;
 	}
 
@@ -643,4 +647,16 @@ body .navbar .nodebb-inline-block {
 		}
 
 	}
+}
+
+
+
+
+#mobile-sidebar {
+	height: 100%;
+	position: absolute;
+	left: 100%;
+	top: 0px;
+	overflow: hidden;
+	margin-top: 60px;
 }

@@ -169,7 +169,7 @@
 			if (!templates[tpl_url] || !template_data) return;
 
 			document.getElementById('content').innerHTML = templates[tpl_url].parse(JSON.parse(template_data));
-
+			
 			jQuery('#content [template-variable]').each(function(index, element) {
 				templates.set(element.getAttribute('template-variable'), element.value);
 			});
@@ -179,6 +179,10 @@
 			}
 		}
 
+	}
+
+	templates.flush = function() {
+		parsed_variables = {};
 	}
 
 	templates.get = function(key) {

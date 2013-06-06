@@ -1,6 +1,10 @@
 
 
 	</div><!--END container -->
+
+	<div id="mobile-sidebar">
+	</div>
+
 	<!-- START Forum Info -->
 	<div id="footer" class="container hidden-phone" style="padding-top: 50px; display: none">
 		<div class="alert alert-info">
@@ -13,6 +17,7 @@
 
 	<div id="mobile-menu">
 		<button id="mobile-menu-btn" type="button" class="btn btn-none"><i class="icon-th icon-2x"></i></button>
+		<button id="mobile-post-btn" type="button" class="btn btn-none"><i class="icon-plus icon-2x"></i></button>
 	</div>
 	<script type="text/javascript" src="/src/forum/footer.js"></script>
 	<!-- END Forum Info -->
