@@ -49,7 +49,9 @@ fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 				templates.init([
 					'header', 'footer', 'logout', 'admin/header', 'admin/footer', 'admin/index',
 					'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext',
-					'emails/header', 'emails/footer', 'install/header', 'install/footer', 'install/redis'
+					'emails/header', 'emails/footer', 'install/header', 'install/footer', 'install/redis',
+
+					'noscript/topic'
 				]);
 
 				templates.ready(function() {

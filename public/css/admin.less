@@ -1,13 +1,4 @@
-.inline-block {
-	display: inline-block;
-	*display: inline;
-	zoom: 1;
-}
-
-.pointer {
-	cursor: pointer;
-	*cursor: hand;
-}
+@import "mixins";
 
 .entry-row {
 	border-radius: 10px;
@@ -58,7 +49,7 @@
 	li {
 		padding: 10px 16px;
 		margin: 0.25em 1em;
-		.inline-block;
+		list-style-type: none;
 		.pointer;
 		-webkit-border-radius: 10px;
 		-moz-border-radius: 10px;
@@ -68,6 +59,19 @@
 		-ms-transition: background-color 250ms linear;
 		-o-transition: background-color 250ms linear;
 		transition: background-color 250ms linear;
+
+		img {
+			max-width: 150px;
+			float: left;
+		}
+
+		h4, p {
+			margin-left: 170px;
+		}
+
+		p {
+			font-size: 0.9em;
+		}
 
 		&:hover {
 			background-color: rgba(128, 128, 128, 0.2);

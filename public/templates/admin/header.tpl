@@ -12,6 +12,13 @@
 	<script type="text/javascript" src="/src/app.js"></script>
 	<script type="text/javascript" src="/src/templates.js"></script>
 	<script type="text/javascript" src="/src/ajaxify.js"></script>
+	<script src="/vendor/requirejs/require.js"></script>
+	<script>
+		require.config({
+			baseUrl: "/src/modules",
+			waitSeconds: 3
+		});
+	</script>
 	<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
 	<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 	<link rel="stylesheet" type="text/css" href="/css/style.css" />

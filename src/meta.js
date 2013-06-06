@@ -37,6 +37,9 @@ var utils = require('./../public/src/utils.js'),
 			RDB.hset('config', field, value, function(err, res) {
 				callback(err);
 			});
+		},
+		remove: function(field) {
+			RDB.hdel('config', field);
 		}
 	}
 }(exports));

@@ -114,10 +114,11 @@ var express = require('express'),
 
 
 		var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
-		topics.get_cid_by_tid(tid, function(cid) {
+		topics.get_posts_noscript(tid, ((req.user) ? req.user.uid : 0), function(posts) {
 			res.send(
 				build_header() +
-				'<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '");});</script>' +
+				'\n\t<noscript>\n\t\t' + templates['noscript/topic'] + '\n\t</noscript>' +
+				'\n\t<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '");});</script>' +
 				templates['footer']
 			);
 		});

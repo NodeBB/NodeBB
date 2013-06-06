@@ -307,6 +307,10 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			});
 		});
 
+		socket.on('api:config.remove', function(key) {
+			meta.config.remove(key);
+		});
+
 		socket.on('api:composer.push', function(data) {
 			if (uid > 0) {
 				if (parseInt(data.tid) > 0) {
