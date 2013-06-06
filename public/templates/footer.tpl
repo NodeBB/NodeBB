@@ -1,6 +1,10 @@
 
 
 	</div><!--END container -->
+
+	<div id="mobile-sidebar">
+	</div>
+
 	<!-- START Forum Info -->
 	<div id="footer" class="container hidden-phone" style="padding-top: 50px; display: none">
 		<div class="alert alert-info">

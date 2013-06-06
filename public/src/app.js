@@ -249,14 +249,55 @@ var socket,
 
 	
 	function addTouchEvents() {
+		return; // later.
+
+
+		// click simulation just for testing/sanity purposes.
+
 		var el = jQuery("#content"),
+			sidebar = jQuery('#mobile-sidebar'),
 			width = el.width();
 
-		el.on('touchmove', function(e) {
-			//this.style.marginLeft = - parseInt(width - event.touches[0].pageX) + 'px';
+		function onTouchMove(ev) {
+			var coordinates = window.event ? window.event.touches[0] : ev.touches[0];
+
+			el.css({
+				marginLeft: -parseInt(width - coordinates.pageX) + 'px',
+				paddingRight: parseInt(width - coordinates.pageX) + 'px'});
+
+			sidebar.css({
+				marginLeft: -parseInt(width - coordinates.pageX) + 'px',
+				width: parseInt(width - coordinates.pageX) + 'px'
+			});
+		}
+
+		function onMouseMove(ev) {
+			ev.touches = [{pageX: ev.pageX, pageY: ev.pageY}];
+			onTouchMove(ev);
+		}
+
+		function onTouchEnd() {
+			el.css({
+				marginLeft: '0px',
+				paddingRight: '0px'
+			});
+
+			sidebar.css({
+				marginLeft: '0px',
+				width: '0px'
+			});
+		}
+
+		el.on('touchmove', onTouchMove);
+		el.on('mousedown', function() {
+			el.on('mousemove', onMouseMove);
 		});
-		el.on('touchend', function(e) {
-			this.style.marginLeft = 'auto';
-		})
+
+		el.on('touchend', onTouchEnd);
+		el.on('mouseup', function() {
+			el.off('mousemove');
+			onTouchEnd();
+		});
+		
 	}
 }());
