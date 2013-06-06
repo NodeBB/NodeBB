@@ -30,12 +30,6 @@ var socket,
 				console.log(data);
 			});
 
-			socket.on('api:posts.getRawPost', function(data) {
-				var contentEl = document.getElementById('post_content');
-
-				contentEl.value = data.post;
-			});
-
 			socket.on('connect', function(data){
 				if(reconnecting) {
 					setTimeout(function(){

@@ -316,6 +316,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				if (parseInt(data.tid) > 0) {
 					topics.get_topic(data.tid, uid, function(topicData) {
 						topicData.tid = data.tid;
+						if (data.body) topicData.body = data.body;
 						socket.emit('api:composer.push', topicData);
 					});
 				} else if (parseInt(data.cid) > 0) {

@@ -28,12 +28,12 @@ define(function() {
 														'<span class="btn btn-link" tabindex="-1"><i class="icon-link"></i></span>' +
 													'</div>' +
 													'<div class="btn-group action-bar" style="float: right; margin-right: -12px">' +
-														'<button data-action="post" class="btn" tabIndex="3"><i class="icon-ok"></i> Submit</button>' +
-														'<button data-action="minimize" class="btn" tabIndex="4"><i class="icon-download-alt"></i> Minimize</button>' +
-														'<button class="btn" data-action="discard" tabIndex="5"><i class="icon-remove"></i> Discard</button>' +
+														'<button data-action="post" class="btn" tabIndex="2"><i class="icon-ok"></i> Submit</button>' +
+														'<button data-action="minimize" class="btn" tabIndex="3"><i class="icon-download-alt"></i> Minimize</button>' +
+														'<button class="btn" data-action="discard" tabIndex="4"><i class="icon-remove"></i> Discard</button>' +
 													'</div>' +
 												'</div>' +
-												'<textarea></textarea>' +
+												'<textarea tabIndex="1"></textarea>' +
 											'</div>';
 
 		composer.listEl = composer.btnContainer.querySelector('ul');
@@ -167,11 +167,12 @@ define(function() {
 		}
 	}
 
-	composer.push = function(tid, cid, pid) {
+	composer.push = function(tid, cid, pid, text) {
 		socket.emit('api:composer.push', {
 			tid: tid,	// Replying
 			cid: cid,	// Posting
-			pid: pid	// Editing
+			pid: pid,	// Editing
+			body: text	// Predefined text
 		});
 	}
 
@@ -202,6 +203,8 @@ define(function() {
 		// Direct user focus to the correct element
 		if ((parseInt(post_data.tid) || parseInt(post_data.pid)) > 0) {
 			bodyEl.focus();
+			bodyEl.selectionStart = bodyEl.value.length;
+			bodyEl.selectionEnd = bodyEl.value.length;
 		} else if (parseInt(post_data.cid) > 0) {
 			titleEl.focus();
 		}
