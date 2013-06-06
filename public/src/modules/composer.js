@@ -41,21 +41,34 @@ define(function() {
 		document.body.insertBefore(composer.postContainer, composer.btnContainer);
 
 		socket.on('api:composer.push', function(threadData) {
-			var	uuid = utils.generateUUID(),
-				btnEl = document.createElement('li');
-			btnEl.innerHTML = '<a href="#"><img src="/graph/users/' + threadData.username + '/picture" /><span>' + (!threadData.cid ? (threadData.title || '') : 'New Topic') + '</span></a>';
-			btnEl.setAttribute('data-uuid', uuid);
-			composer.listEl.appendChild(btnEl);
-			composer.posts[uuid] = {
-				tid: threadData.tid,
-				cid: threadData.cid,
-				pid: threadData.pid,
-				title: threadData.title || '',
-				body: threadData.body || ''
-			};
-			composer.active++;
-			composer.update();
-			composer.load(uuid);
+			if (!threadData.error) {
+				var	uuid = utils.generateUUID(),
+					btnEl = document.createElement('li');
+				btnEl.innerHTML = '<a href="#"><img src="/graph/users/' + threadData.username + '/picture" /><span>' + (!threadData.cid ? (threadData.title || '') : 'New Topic') + '</span></a>';
+				btnEl.setAttribute('data-uuid', uuid);
+				composer.listEl.appendChild(btnEl);
+				composer.posts[uuid] = {
+					tid: threadData.tid,
+					cid: threadData.cid,
+					pid: threadData.pid,
+					title: threadData.title || '',
+					body: threadData.body || ''
+				};
+				composer.active++;
+				composer.update();
+				composer.load(uuid);
+			} else {
+				app.alert({
+					type: 'error',
+					timeout: 5000,
+					alert_id: 'post_error',
+					title: 'Please Log In to Post',
+					message: 'Posting is currently restricted to registered members only, click here to log in',
+					clickfn: function() {
+						ajaxify.go('login');
+					}
+				});
+			}
 		});
 
 		socket.on('api:composer.editCheck', function(editCheck) {

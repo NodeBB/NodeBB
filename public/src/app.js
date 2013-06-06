@@ -109,8 +109,6 @@ var socket,
 	// timeout default = permanent
 	// location : alert_window (default) or content
 	app.alert = function(params) {
-		
-
 		var alert_id = 'alert_button_' + ((params.alert_id) ? params.alert_id : new Date().getTime()); 
 
 		var alert = $('#'+alert_id);
@@ -121,7 +119,6 @@ var socket,
 			alert.attr('class', "alert toaster-alert " + ((params.type=='warning') ? '' : "alert-" + params.type));
 		}
 		else {
-
 			var div = document.createElement('div'),
 				button = document.createElement('button'),
 				strong = document.createElement('strong'),

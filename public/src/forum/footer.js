@@ -13,7 +13,7 @@
 	socket.emit('user.latest', {});
 	socket.on('user.latest', function(data) {
 		if (data.username == '') {
-			latest_user.innerHTML = '';y
+			latest_user.innerHTML = '';
 		} else {
 			latest_user.innerHTML = "The most recent user to register is <b><a href='/users/"+data.username+"'>" + data.username + "</a></b>.";
 		}

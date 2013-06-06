@@ -308,38 +308,44 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('api:composer.push', function(data) {
-			if (parseInt(data.tid) > 0) {
-				topics.get_topic(data.tid, uid, function(topicData) {
-					topicData.tid = data.tid;
-					socket.emit('api:composer.push', topicData);
-				});
-			} else if (parseInt(data.cid) > 0) {
-				user.getUserField(uid, 'username', function(username) {
-					socket.emit('api:composer.push', {
-						tid: 0,
-						cid: data.cid,
-						username: username,
-						title: undefined
+			if (uid > 0) {
+				if (parseInt(data.tid) > 0) {
+					topics.get_topic(data.tid, uid, function(topicData) {
+						topicData.tid = data.tid;
+						socket.emit('api:composer.push', topicData);
 					});
-				});
-			} else if (parseInt(data.pid) > 0) {
-				async.parallel([
-					function(next) {
-						posts.getRawContent(data.pid, function(raw) {
-							next(null, raw);
+				} else if (parseInt(data.cid) > 0) {
+					user.getUserField(uid, 'username', function(username) {
+						socket.emit('api:composer.push', {
+							tid: 0,
+							cid: data.cid,
+							username: username,
+							title: undefined
 						});
-					},
-					function(next) {
-						topics.getTitle(data.pid, function(title) {
-							next(null, title);
-						});
-					}
-				], function(err, results) {
-					socket.emit('api:composer.push', {
-						title: results[1],
-						pid: data.pid,
-						body: results[0]
 					});
+				} else if (parseInt(data.pid) > 0) {
+					async.parallel([
+						function(next) {
+							posts.getRawContent(data.pid, function(raw) {
+								next(null, raw);
+							});
+						},
+						function(next) {
+							topics.getTitle(data.pid, function(title) {
+								next(null, title);
+							});
+						}
+					], function(err, results) {
+						socket.emit('api:composer.push', {
+							title: results[1],
+							pid: data.pid,
+							body: results[0]
+						});
+					});
+				}
+			} else {
+				socket.emit('api:composer.push', {
+					error: 'no-uid'
 				});
 			}
 		});
