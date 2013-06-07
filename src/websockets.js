@@ -364,6 +364,24 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				})
 			})
 		});
+
+		socket.on('api:post.privileges', function(pid) {
+			postTools.privileges(pid, uid, function(privileges) {
+				socket.emit('api:post.privileges', privileges);
+			});
+		});
+
+		socket.on('api:topic.followCheck', function(tid) {
+			threadTools.isFollowing(tid, uid, function(following) {
+				socket.emit('api:topic.followCheck', following);
+			});
+		});
+
+		socket.on('api:topic.follow', function(tid) {
+			threadTools.toggleFollow(tid, uid, function(follow) {
+				if (follow.status === 'ok') socket.emit('api:topic.follow', follow);
+			});
+		});
 	});
 	
 }(SocketIO));

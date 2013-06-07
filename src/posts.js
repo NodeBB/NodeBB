@@ -199,6 +199,9 @@ marked.setOptions({
 						timeout: 2000
 					});
 
+					// Send notifications to users who are following this topic
+					threadTools.notify_followers(tid, uid);
+
 					user.getUserFields(uid, ['username','reputation','picture','signature'], function(data) {
 						
 						var timestamp = new Date().getTime();

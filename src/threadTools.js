@@ -2,8 +2,8 @@ var	RDB = require('./redis.js'),
 	topics = require('./topics.js'),
 	categories = require('./categories.js'),
 	user = require('./user.js'),
-	async = require('async');
-
+	async = require('async'),
+	notifications = require('./notifications.js');
 
 (function(ThreadTools) {
 	
@@ -157,6 +157,65 @@ var	RDB = require('./redis.js'),
 					});
 				}
 			});
+		});
+	}
+
+	ThreadTools.isFollowing = function(tid, current_user, callback) {
+		RDB.sismember('tid:' + tid + ':followers', current_user, function(err, following) {
+			callback(following);
+		});
+	}
+
+	ThreadTools.toggleFollow = function(tid, current_user, callback) {
+		ThreadTools.isFollowing(tid, current_user, function(following) {
+			if (!following) {
+				RDB.sadd('tid:' + tid + ':followers', current_user, function(err, success) {
+					if (!err) {
+						callback({
+							status: 'ok',
+							follow: true
+						});
+					} else callback({ status: 'error' });
+				});
+			} else {
+				RDB.srem('tid:' + tid + ':followers', current_user, function(err, success) {
+					if (!err) {
+						callback({
+							status: 'ok',
+							follow: false
+						});
+					} else callback({ status: 'error' });
+				});
+			}
+		});
+	}
+
+	ThreadTools.get_followers = function(tid, callback) {
+		RDB.smembers('tid:' + tid + ':followers', function(err, followers) {
+			callback(err, followers);
+		});
+	}
+
+	ThreadTools.notify_followers = function(tid, exceptUid) {
+		async.parallel([
+			function(next) {
+				topics.get_topic(tid, 0, function(threadData) {
+					// console.log(threadData);
+					notifications.create(threadData.teaser_username + ' has posted a reply to: "' + threadData.title + '"', null, '/topic/' + tid, 'topic:' + tid, function(nid) {
+						next(null, nid);
+					});
+				});
+			},
+			function(next) {
+				ThreadTools.get_followers(tid, function(err, followers) {
+					if (followers.indexOf(exceptUid) !== -1) followers.splice(followers.indexOf(exceptUid), 1);
+					next(null, followers);
+				});
+			}
+		], function(err, results) {
+			if (!err) {
+				notifications.push(results[0], results[1]);
+			}
 		});
 	}
 

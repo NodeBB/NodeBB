@@ -31,6 +31,7 @@
 					<div class="topic-buttons pull-left">
 						<a href="/users/{main_posts.username}" class="username-field btn hidden-phone">{main_posts.username}</a>
 						<a target="_blank" class="btn hidden-phone" href="../{topic_id}.rss"><i class="icon-rss-sign"></i></a>
+						<button class="btn follow" type="button"><i class="icon-eye-open"></i></button>
 						<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn edit {main_posts.display_moderator_tools}" type="button"><i class="icon-pencil"></i></button>
 						<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn delete {main_posts.display_moderator_tools}" type="button"><i class="icon-trash"></i></button>
 						<button id="quote_{main_posts.pid}_{main_posts.uid}" class="btn quote" type="button"><i class="icon-quote-left"></i></button>

@@ -155,6 +155,46 @@
 			if (postEls[x].getAttribute('data-deleted') === '1') toggle_post_delete_state(postEls[x].getAttribute('data-pid'));
 			postEls[x].removeAttribute('data-deleted');
 		}
+
+		// Follow Thread State
+		var followEl = $('.main-post .follow'),
+			set_follow_state = function(state, quiet) {
+				if (state && !followEl.hasClass('btn-success')) {
+					followEl.addClass('btn-success');
+					followEl[0].title = 'You are currently receiving updates to this topic';
+					if (!quiet) {
+						app.alert({
+							alert_id: 'topic_follow',
+							timeout: 2500,
+							title: 'Following Topic',
+							message: 'You will now be receiving notifications when somebody posts to this topic.',
+							type: 'success'
+						});
+					}
+				} else if (!state && followEl.hasClass('btn-success')) {
+					followEl.removeClass('btn-success');
+					followEl[0].title = 'Be notified of new replies in this topic';
+					if (!quiet) {
+						app.alert({
+							alert_id: 'topic_follow',
+							timeout: 2500,
+							title: 'Not Following Topic',
+							message: 'You will no longer receive notifications from this topic.',
+							type: 'success'
+						});
+					}
+				}
+			};
+		socket.on('api:topic.followCheck', function(state) {
+			set_follow_state(state, true);
+		});
+		socket.on('api:topic.follow', function(data) {
+			set_follow_state(data.follow);
+		});
+		socket.emit('api:topic.followCheck', tid);
+		followEl[0].addEventListener('click', function() {
+			socket.emit('api:topic.follow', tid);
+		}, false);
 	});
 
 
@@ -589,21 +629,46 @@
 	}
 
 	function toggle_post_delete_state(pid) {
-		var postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]'));
+		var	postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]'));
+
+		if (postEl[0]) {
 			quoteEl = $(postEl[0].querySelector('.quote')),
 			favEl = $(postEl[0].querySelector('.favourite')),
 			replyEl = $(postEl[0].querySelector('.post_reply'));
 
-		if (!postEl.hasClass('deleted')) {
-			quoteEl.addClass('none');
-			favEl.addClass('none');
-			replyEl.addClass('none');
-		} else {
+			socket.once('api:post.privileges', function(privileges) {
+				if (privileges.editable) {
+					if (!postEl.hasClass('deleted')) {
+						toggle_post_tools(pid, false);
+					} else {
+						toggle_post_tools(pid, true);
+					}
+				}
+
+				if (privileges.view_deleted) {
+					postEl.toggleClass('deleted');
+				} else {
+					postEl.toggleClass('none');
+				}
+			});
+			socket.emit('api:post.privileges', pid);
+		}
+	}
+
+	function toggle_post_tools(pid, state) {
+		var	postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
+			quoteEl = $(postEl[0].querySelector('.quote')),
+			favEl = $(postEl[0].querySelector('.favourite')),
+			replyEl = $(postEl[0].querySelector('.post_reply'));
+
+		if (state) {
 			quoteEl.removeClass('none');
 			favEl.removeClass('none');
 			replyEl.removeClass('none');
+		} else {
+			quoteEl.addClass('none');
+			favEl.addClass('none');
+			replyEl.addClass('none');
 		}
-
-		postEl.toggleClass('deleted');
 	}
 })();

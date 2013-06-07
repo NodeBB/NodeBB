@@ -264,9 +264,9 @@ var express = require('express'),
 	app.get('/api/:method/:id*', api_method);
 
 	app.get('/test', function(req, res) {
-		meta.config.get(function(config) {
-			res.send(JSON.stringify(config, null, 4));
-		});
+		var ThreadTools = require('./threadTools.js');
+		ThreadTools.notify_followers(3);
+		res.send();
 	});
 
 

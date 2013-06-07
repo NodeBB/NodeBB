@@ -1,5 +1,6 @@
 var	RDB = require('./redis.js'),
 	posts = require('./posts.js'),
+	topics = require('./topics'),
 	threadTools = require('./threadTools.js'),
 	user = require('./user.js'),
 	async = require('async'),
