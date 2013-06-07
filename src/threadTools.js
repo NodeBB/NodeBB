@@ -170,21 +170,25 @@ var	RDB = require('./redis.js'),
 		ThreadTools.isFollowing(tid, current_user, function(following) {
 			if (!following) {
 				RDB.sadd('tid:' + tid + ':followers', current_user, function(err, success) {
-					if (!err) {
-						callback({
-							status: 'ok',
-							follow: true
-						});
-					} else callback({ status: 'error' });
+					if (callback) {
+						if (!err) {
+							callback({
+								status: 'ok',
+								follow: true
+							});
+						} else callback({ status: 'error' });
+					}
 				});
 			} else {
 				RDB.srem('tid:' + tid + ':followers', current_user, function(err, success) {
-					if (!err) {
-						callback({
-							status: 'ok',
-							follow: false
-						});
-					} else callback({ status: 'error' });
+					if (callback) {
+						if (!err) {
+							callback({
+								status: 'ok',
+								follow: false
+							});
+						} else callback({ status: 'error' });
+					}
 				});
 			}
 		});

@@ -353,6 +353,9 @@ marked.setOptions({
 					if (pid > 0) {
 						RDB.lpush(schema.topics(tid).posts, pid);
 
+						// Auto-subscribe the post creator to the newly created topic
+						threadTools.toggleFollow(tid, uid);
+
 						// Notify any users looking at the category that a new topic has arrived
 						Topics.get_topic(tid, uid, function(topicData) {
 							io.sockets.in('category_' + category_id).emit('event:new_topic', topicData);
