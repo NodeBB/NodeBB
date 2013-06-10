@@ -189,7 +189,16 @@
 			set_follow_state(state, true);
 		});
 		socket.on('api:topic.follow', function(data) {
-			set_follow_state(data.follow);
+			if (data.status && data.status === 'ok') set_follow_state(data.follow);
+			else {
+				app.alert({
+					type: 'error',
+					alert_id: 'topic_follow',
+					title: 'Please Log In',
+					message: 'Please register or log in in order to subscribe to this topic',
+					timeout: 5000
+				});
+			}
 		});
 		socket.emit('api:topic.followCheck', tid);
 		followEl[0].addEventListener('click', function() {

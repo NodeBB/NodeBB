@@ -378,9 +378,16 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('api:topic.follow', function(tid) {
-			threadTools.toggleFollow(tid, uid, function(follow) {
-				if (follow.status === 'ok') socket.emit('api:topic.follow', follow);
-			});
+			if (uid && uid > 0) {
+				threadTools.toggleFollow(tid, uid, function(follow) {
+					if (follow.status === 'ok') socket.emit('api:topic.follow', follow);
+				});
+			} else {
+				socket.emit('api:topic.follow', {
+					status: 'error',
+					error: 'not-logged-in'
+				});
+			}
 		});
 	});
 	
