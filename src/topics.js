@@ -206,7 +206,18 @@ marked.setOptions({
 
 	Topics.getTitle = function(tid, callback) {
 		RDB.get('tid:' + tid + ':title', function(err, title) {
+			console.log(tid, title);
 			callback(title);
+		});
+	}
+
+	Topics.getTitleByPid = function(pid, callback) {
+		RDB.get('pid:' + pid + ':tid', function(err, tid) {
+			if (!err) {
+				Topics.getTitle(tid, function(title) {
+					callback(title);
+				});
+			} else callback('Could not grab title');
 		});
 	}
 

@@ -336,7 +336,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 							});
 						},
 						function(next) {
-							topics.getTitle(data.pid, function(title) {
+							topics.getTitleByPid(data.pid, function(title) {
 								next(null, title);
 							});
 						}
