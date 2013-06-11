@@ -210,7 +210,7 @@
 			data = template.match(regex);			
 			if (data == null) return;
 
-			if (block !== undefined) self.blocks[block] = data[0];
+			if (self.blocks && block !== undefined) self.blocks[block] = data[0];
 
 			data = data[0]
 				.replace("<!-- BEGIN " + block + " -->", "")

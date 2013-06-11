@@ -118,7 +118,7 @@ var express = require('express'),
 			console.log(posts);
 			res.send(
 				build_header() +
-				'\n\t<noscript>\n\t\t' + templates['noscript/topic'].parse(/*{ posts: [{ foo: 'bar' }]}*/) + '\n\t</noscript>' +
+				'\n\t<noscript>\n\t\t' + templates['noscript/topic'].parse({ posts: posts }) + '\n\t</noscript>' +
 				'\n\t<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '");});</script>' +
 				templates['footer']
 			);
