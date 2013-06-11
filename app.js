@@ -157,7 +157,7 @@ fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 										address: base_url,
 										port: port
 									},
-									api_url: base_url + ':' + port + '/api/'
+									api_url: base_url + (use_port ? ':' + port : '') + '/api/'
 								}, null, 4))
 							});
 						});
