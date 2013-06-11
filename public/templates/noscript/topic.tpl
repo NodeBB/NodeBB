@@ -9,7 +9,7 @@
 <ul>
 	<!-- BEGIN posts -->
 		<li>
-			
+			Foo: {posts.foo}
 		</li>
 	<!-- END posts -->
 </ul>
