@@ -11,7 +11,6 @@
 			prepare: function() {
 				// Come back in 500ms if the config isn't ready yet
 				if (nodebb_admin.config === undefined) {
-					console.log('Config not ready...');
 					setTimeout(function() {
 						nodebb_admin.prepare();
 					}, 500);
@@ -71,9 +70,6 @@
 					}
 				});
 			},
-			// save: function(key, value) {
-			// 	socket.emit('api:config.set', { key: key, value: value });
-			// },
 			remove: function(key) {
 				socket.emit('api:config.remove', key);
 			}
