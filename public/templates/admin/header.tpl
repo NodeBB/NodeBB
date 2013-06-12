@@ -13,6 +13,7 @@
 	<script type="text/javascript" src="/src/templates.js"></script>
 	<script type="text/javascript" src="/src/ajaxify.js"></script>
 	<script src="/vendor/requirejs/require.js"></script>
+	<script src="/vendor/bootbox/bootbox.min.js"></script>
 	<script>
 		require.config({
 			baseUrl: "/src/modules",
