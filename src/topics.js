@@ -184,16 +184,6 @@ marked.setOptions({
 		});
 	}
 
-	Topics.get_posts_noscript = function(tid, current_user, callback) {
-		// Topics.get_topic(tid, current_user, function() {
-			callback([
-				{
-					foo: 'bar'
-				}
-			]);
-			// });
-	}
-
 	Topics.get_cid_by_tid = function(tid, callback) {
 		RDB.get(schema.topics(tid).cid, function(err, cid) {
 			if (cid && parseInt(cid) > 0) {
@@ -206,7 +196,18 @@ marked.setOptions({
 
 	Topics.getTitle = function(tid, callback) {
 		RDB.get('tid:' + tid + ':title', function(err, title) {
+			console.log(tid, title);
 			callback(title);
+		});
+	}
+
+	Topics.getTitleByPid = function(pid, callback) {
+		RDB.get('pid:' + pid + ':tid', function(err, tid) {
+			if (!err) {
+				Topics.getTitle(tid, function(title) {
+					callback(title);
+				});
+			} else callback('Could not grab title');
 		});
 	}
 

@@ -1,0 +1,15 @@
+@import "mixins";
+
+noscript {
+	.posts {
+		li {
+			list-style-type: none;
+			padding: 1em;
+			margin-bottom: 1em;
+
+			&:nth-child(even) {
+				background: rgba(192,192,192,0.2);
+			}
+		}
+	}
+}

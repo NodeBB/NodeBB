@@ -43,13 +43,13 @@
 			deleteThreadEl.addEventListener('click', function(e) {
 				e.preventDefault();
 				if (thread_state.deleted !== '1') {
-					if (confirm('really delete thread? (THIS DIALOG TO BE REPLACED WITH BOOTBOX)')) {
-						socket.emit('api:topic.delete', { tid: tid });
-					}
+					bootbox.confirm('Are you sure you want to delete this thread?', function(confirm) {
+						if (confirm) socket.emit('api:topic.delete', { tid: tid });
+					});
 				} else {
-					if (confirm('really restore thread? (THIS DIALOG TO BE REPLACED WITH BOOTBOX)')) {
-						socket.emit('api:topic.restore', { tid: tid });
-					}
+					bootbox.confirm('Are you sure you want to restore this thread?', function(confirm) {
+						if (confirm) socket.emit('api:topic.restore', { tid: tid });
+					});
 				}
 			}, false);
 
@@ -372,6 +372,7 @@
 	});
 
 	socket.on('event:new_post', function(data) {
+		data.posts[0].display_moderator_tools = 'none';
 		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data),
 			uniqueid = new Date().getTime();
 			
@@ -380,6 +381,11 @@
 			.hide()
 			.append(html)
 			.fadeIn('slow');
+
+		socket.once('api:post.privileges', function(privileges) {
+			if (privileges.editable) toggle_mod_tools(data.posts[0].pid, true);
+		});
+		socket.emit('api:post.privileges', data.posts[0].pid);
 
 		set_up_posts(uniqueid);
 		
@@ -528,7 +534,7 @@
 			quoteBtns = document.querySelectorAll('#post-container .quote'),
 			editBtns = document.querySelectorAll('#post-container .edit'),
 			deleteBtns = document.querySelectorAll('#post-container .delete'),
-			numReplyBtns = postReplyBtns.length,
+			numPosts = document.querySelectorAll('#post_container li[data-pid]').length,
 			lockThreadEl = document.getElementById('lock_thread'),
 			x;
 
@@ -536,7 +542,7 @@
 			lockThreadEl.innerHTML = '<i class="icon-unlock"></i> Unlock Thread';
 			threadReplyBtn.disabled = true;
 			threadReplyBtn.innerHTML = 'Locked <i class="icon-lock"></i>';
-			for(x=0;x<numReplyBtns;x++) {
+			for(x=0;x<numPosts;x++) {
 				postReplyBtns[x].innerHTML = 'Locked <i class="icon-lock"></i>';
 				quoteBtns[x].style.display = 'none';
 				editBtns[x].style.display = 'none';
@@ -558,7 +564,7 @@
 			lockThreadEl.innerHTML = '<i class="icon-lock"></i> Lock Thread';
 			threadReplyBtn.disabled = false;
 			threadReplyBtn.innerHTML = 'Reply';
-			for(x=0;x<numReplyBtns;x++) {
+			for(x=0;x<numPosts;x++) {
 				postReplyBtns[x].innerHTML = 'Reply <i class="icon-reply"></i>';
 				quoteBtns[x].style.display = 'inline-block';
 				editBtns[x].style.display = 'inline-block';
@@ -678,6 +684,20 @@
 			quoteEl.addClass('none');
 			favEl.addClass('none');
 			replyEl.addClass('none');
+		}
+	}
+
+	function toggle_mod_tools(pid, state) {
+		var	postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
+			editEl = postEl.find('.edit'),
+			deleteEl = postEl.find('.delete');
+		
+		if (state) {
+			editEl.removeClass('none');
+			deleteEl.removeClass('none');
+		} else {
+			editEl.addClass('none');
+			deleteEl.addClass('none');
 		}
 	}
 })();

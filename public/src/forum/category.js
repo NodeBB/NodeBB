@@ -15,11 +15,6 @@
 		'event:new_topic'
 	]);
 
-	if (jQuery('.category-item').length == 0) {
-		jQuery('#topics-container, .category-sidebar').hide();
-		jQuery('#category-no-topics').show();
-	}
-
 	socket.on('event:new_topic', function(data) {
 		var html = templates.prepare(templates['category'].blocks['topics']).parse({ topics: [data] }),
 			topic = document.createElement('div'),
@@ -28,8 +23,8 @@
 			numTopics = topics.length,
 			x;
 
-		jQuery('#topics-container, .category-sidebar').show();
-		jQuery('#category-no-topics').hide();
+		jQuery('#topics-container, .category-sidebar').removeClass('hidden');
+		jQuery('#category-no-topics').remove();
 
 		topic.innerHTML = html;
 		if (numTopics > 0) {

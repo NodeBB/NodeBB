@@ -58,7 +58,11 @@ nodebb_admin.themes = {
 
 	var revertEl = document.getElementById('revert_theme');
 	revertEl.addEventListener('click', function() {
-		nodebb_admin.remove('theme:id');
-		nodebb_admin.remove('theme:src');
+		bootbox.confirm('Are you sure you wish to remove the custom theme and restore the NodeBB default theme?', function(confirm) {
+			if (confirm) {
+				nodebb_admin.remove('theme:id');
+				nodebb_admin.remove('theme:src');
+			}
+		});
 	}, false);
 })();

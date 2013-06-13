@@ -17,6 +17,7 @@
 	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 	<script type="text/javascript" src="/src/app.js"></script>
 	<script src="/vendor/requirejs/require.js"></script>
+	<script src="/vendor/bootbox/bootbox.min.js"></script>
 	<script>
 		require.config({
 			baseUrl: "/src/modules",

@@ -5,7 +5,7 @@
 		<div id="category_active_users"></div>
 	</ul>
 </div>
-<div class="alert alert-warning hide" id="category-no-topics">
+<div class="alert alert-warning hide {no_topics_message}" id="category-no-topics">
 	<strong>There are no topics in this category.</strong><br />
 	Why don't you try posting one?
 </div>
@@ -42,10 +42,10 @@
 		</li></a>
 		<!-- END topics -->
 		</ul>
-		<hr />
-		<button id="new_post" class="btn btn-primary btn-large {show_category_features}">New Topic</button>
+		<hr class="{show_sidebar}" />
+		<button id="new_post" class="btn btn-primary btn-large {show_topic_button}">New Topic</button>
 	</div>
-	<div class="span3 {show_category_features} category-sidebar mobile-sidebar">
+	<div class="span3 {show_sidebar} category-sidebar mobile-sidebar">
 		<div class="sidebar-block img-polaroid">
 			<div class="block-header">
 				<a target="_blank" href="../{category_id}.rss"><i class="icon-rss-sign icon-2x"></i></a>&nbsp;
