@@ -1,21 +1,16 @@
-define(function() {
+define(['taskbar'], function(taskbar) {
 	var composer = {
 			initialized: false,
 			active: 0,
+			taskbar: taskbar,
 			posts: {},
-			btnContainer: undefined,
 			postContainer: undefined,
-			listEl: undefined
 		};
 
 	composer.init = function() {
 		// Create the fixed bottom bar
-		var	footerEl = document.getElementById('footer');
+		var	taskbar = document.getElementById('taskbar');
 		
-		composer.btnContainer = document.createElement('div');
-		composer.btnContainer.innerHTML = '<div class="navbar-inner"><ul class="nav pull-right"></ul></div>';
-		composer.btnContainer.className = 'posts-bar navbar navbar-fixed-bottom';
-
 		composer.postContainer = document.createElement('div');
 		composer.postContainer.className = 'post-window row-fluid';
 		composer.postContainer.innerHTML =	'<div class="span10 offset1">' +
@@ -36,17 +31,17 @@ define(function() {
 												'<textarea tabIndex="2"></textarea>' +
 											'</div>';
 
-		composer.listEl = composer.btnContainer.querySelector('ul');
-		document.body.insertBefore(composer.btnContainer, footerEl);
-		document.body.insertBefore(composer.postContainer, composer.btnContainer);
+		document.body.insertBefore(composer.postContainer, taskbar);
 
 		socket.on('api:composer.push', function(threadData) {
 			if (!threadData.error) {
-				var	uuid = utils.generateUUID(),
-					btnEl = document.createElement('li');
-				btnEl.innerHTML = '<a href="#"><img src="/graph/users/' + threadData.username + '/picture" /><span>' + (!threadData.cid ? (threadData.title || '') : 'New Topic') + '</span></a>';
-				btnEl.setAttribute('data-uuid', uuid);
-				composer.listEl.appendChild(btnEl);
+				var	uuid = utils.generateUUID();
+
+				composer.taskbar.push('composer', uuid, {
+					title: (!threadData.cid ? (threadData.title || '') : 'New Topic'),
+					icon: '/graph/users/' + threadData.username + '/picture'
+				});
+
 				composer.posts[uuid] = {
 					tid: threadData.tid,
 					cid: threadData.cid,
@@ -54,8 +49,6 @@ define(function() {
 					title: threadData.title || '',
 					body: threadData.body || ''
 				};
-				composer.active++;
-				composer.update();
 				composer.load(uuid);
 			} else {
 				app.alert({
@@ -75,12 +68,6 @@ define(function() {
 			if (editCheck.titleEditable === true) composer.postContainer.querySelector('input').readOnly = false;
 		});
 
-		// Posts bar events
-		$(composer.btnContainer).on('click', 'li', function() {
-			var uuid = this.getAttribute('data-uuid');
-			composer.load(uuid);
-		});
-
 		// Post Window events
 		var	jPostContainer = $(composer.postContainer),
 			postContentEl = composer.postContainer.querySelector('textarea')
@@ -94,7 +81,7 @@ define(function() {
 				uuid = $(this).parents('.post-window').attr('data-uuid');
 			switch(action) {
 				case 'post': composer.post(uuid); break;
-				case 'minimize': composer.minimize(); break;
+				case 'minimize': composer.minimize(uuid); break;
 				case 'discard': composer.discard(uuid); break;
 			}
 		});
@@ -157,16 +144,6 @@ define(function() {
 		composer.initialized = true;
 	}
 
-	composer.update = function() {
-		if (composer.initialized) {
-			if (composer.active > 0) {
-				composer.btnContainer.setAttribute('data-active', '1');
-			} else {
-				composer.btnContainer.removeAttribute('data-active');
-			}
-		}
-	}
-
 	composer.push = function(tid, cid, pid, text) {
 		socket.emit('api:composer.push', {
 			tid: tid,	// Replying
@@ -182,7 +159,7 @@ define(function() {
 			bodyEl = composer.postContainer.querySelector('textarea');
 
 		composer.postContainer.style.display = 'block';
-		composer.postContainer.style.bottom = composer.btnContainer.offsetHeight + "px";
+		// composer.postContainer.style.bottom = composer.btnContainer.offsetHeight + "px";
 		composer.postContainer.setAttribute('data-uuid', post_uuid);
 		if (parseInt(post_data.tid) > 0) {
 			titleEl.value = 'Replying to: ' + post_data.title;
@@ -195,10 +172,6 @@ define(function() {
 			titleEl.value = post_data.title;
 		}
 		bodyEl.value = post_data.body
-
-		// Highlight the button
-		$('.posts-bar li').removeClass('active');
-		composer.btnContainer.querySelector('[data-uuid="' + post_uuid + '"]').className += ' active';
 
 		// Direct user focus to the correct element
 		if ((parseInt(post_data.tid) || parseInt(post_data.pid)) > 0) {
@@ -250,19 +223,15 @@ define(function() {
 
 	composer.discard = function(post_uuid) {
 		if (composer.posts[post_uuid]) {
-			// Commit
-			var btnEl = composer.btnContainer.querySelector('[data-uuid="' + post_uuid + '"]');
 			delete composer.posts[post_uuid];
-			composer.active--;
-			btnEl.parentNode.removeChild(btnEl);
 			composer.minimize();
-			composer.update();
+			taskbar.discard('composer', post_uuid);
 		}
 	}
 
-	composer.minimize = function() {
+	composer.minimize = function(uuid) {
 		composer.postContainer.style.display = 'none';
-		$('.posts-bar li').removeClass('active');
+		taskbar.minimize('composer', uuid);
 	}
 
 	composer.init();
