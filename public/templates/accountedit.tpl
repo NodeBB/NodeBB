@@ -113,7 +113,7 @@
 				  <div class="control-group">
 				    <label class="control-label" for="inputBirthday">Birthday</label>
 				    <div class="controls">
-				      <input type="text" id="inputBirthday" placeholder="mm/dd/yyyy" value="{birthday}">
+				      <input type="date" id="inputBirthday" placeholder="mm/dd/yyyy" value="{birthday}">
 				    </div>
 				  </div>
 
