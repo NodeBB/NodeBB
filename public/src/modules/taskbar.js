@@ -16,15 +16,20 @@ define(function() {
 
 			// Posts bar events
 			$(taskbar.taskbar).on('click', 'li', function() {
-				var	module = this.getAttribute('data-module'),
+				var	_btn = this,
+					module = this.getAttribute('data-module'),
 					uuid = this.getAttribute('data-uuid');
 
 				require([module], function(module) {
-					module.load(uuid);
+					if (_btn.className.indexOf('active') === -1) {
+						module.load(uuid);
 
-					// Highlight the button
-					$(taskbar.tasklist).removeClass('active');
-					this.className += ' active';
+						// Highlight the button
+						$(taskbar.tasklist).removeClass('active');
+						_btn.className += ' active';
+					} else {
+						module.minimize(uuid);
+					}
 				});
 			});
 
@@ -54,6 +59,7 @@ define(function() {
 								'</a>';
 			btnEl.setAttribute('data-module', module);
 			btnEl.setAttribute('data-uuid', uuid);
+			btnEl.className = 'active';
 			taskbar.tasklist.appendChild(btnEl);
 
 			taskbar.update();

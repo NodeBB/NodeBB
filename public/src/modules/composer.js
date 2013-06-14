@@ -238,6 +238,7 @@ define(['taskbar'], function(taskbar) {
 
 	return {
 		push: composer.push,
-		load: composer.load
+		load: composer.load,
+		minimize: composer.minimize
 	};
 });
