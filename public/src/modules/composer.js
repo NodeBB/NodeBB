@@ -19,7 +19,7 @@ define(function() {
 		composer.postContainer = document.createElement('div');
 		composer.postContainer.className = 'post-window row-fluid';
 		composer.postContainer.innerHTML =	'<div class="span10 offset1">' +
-												'<input type="text" placeholder="Enter your topic title here..." />' +
+												'<input type="text" tabIndex="1" placeholder="Enter your topic title here..." />' +
 												'<div class="btn-toolbar">' +
 													'<div class="btn-group formatting-bar">' +
 														'<span class="btn btn-link" tabindex="-1"><i class="icon-bold"></i></span>' +
@@ -28,12 +28,12 @@ define(function() {
 														'<span class="btn btn-link" tabindex="-1"><i class="icon-link"></i></span>' +
 													'</div>' +
 													'<div class="btn-group action-bar" style="float: right; margin-right: -12px">' +
-														'<button data-action="post" class="btn" tabIndex="2"><i class="icon-ok"></i> Submit</button>' +
-														'<button data-action="minimize" class="btn" tabIndex="3"><i class="icon-download-alt"></i> Minimize</button>' +
-														'<button class="btn" data-action="discard" tabIndex="4"><i class="icon-remove"></i> Discard</button>' +
+														'<button data-action="post" class="btn" tabIndex="3"><i class="icon-ok"></i> Submit</button>' +
+														'<button data-action="minimize" class="btn" tabIndex="4"><i class="icon-download-alt"></i> Minimize</button>' +
+														'<button class="btn" data-action="discard" tabIndex="5"><i class="icon-remove"></i> Discard</button>' +
 													'</div>' +
 												'</div>' +
-												'<textarea tabIndex="1"></textarea>' +
+												'<textarea tabIndex="2"></textarea>' +
 											'</div>';
 
 		composer.listEl = composer.btnContainer.querySelector('ul');

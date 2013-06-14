@@ -51,7 +51,7 @@ fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 					'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext',
 					'emails/header', 'emails/footer', 'install/header', 'install/footer', 'install/redis',
 
-					'noscript/topic'
+					'noscript/header', 'noscript/home', 'noscript/category', 'noscript/topic'
 				]);
 
 				templates.ready(function() {

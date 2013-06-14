@@ -24,7 +24,7 @@
 				<div class="span12 topic-row img-polaroid">
 					<div class="latest-post visible-desktop">
 						<div class="pull-right">
-							<img style="width: 48px; height: 48px; /*temporary*/" src="/graph/users/{topics.teaser_username}/picture" />
+							<img style="width: 48px; height: 48px; /*temporary*/" src="../../graph/users/{topics.teaser_username}/picture" />
 							<p><strong>{topics.teaser_username}</strong>: {topics.teaser_text}</p>
 							<span>posted {topics.teaser_timestamp} ago</span>
 						</div>

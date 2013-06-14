@@ -1,15 +1,50 @@
 @import "mixins";
 
 noscript {
+	.default {
+		list-style-type: none;
+		padding: 1em;
+		margin-bottom: 1em;
+
+		&:nth-child(even) {
+			background: rgba(191,191,191,0.2);
+		}
+
+		&:nth-child(odd) {
+			background: rgba(223,223,223,0.2);
+		}
+	}
+
+	.categories {
+		li {
+			.default;
+
+			.icon {
+				float: left;
+				margin-right: 1em;
+			}
+
+			a {
+				font-size: 20px;
+			}
+		}
+	}
+
+	.topics {
+		li {
+			.default;
+		}
+
+		.teaser {
+			img {
+				float: left;
+			}
+		}
+	}
+
 	.posts {
 		li {
-			list-style-type: none;
-			padding: 1em;
-			margin-bottom: 1em;
-
-			&:nth-child(even) {
-				background: rgba(192,192,192,0.2);
-			}
+			.default;
 		}
 	}
 }

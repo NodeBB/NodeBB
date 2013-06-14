@@ -78,7 +78,7 @@ var express = require('express'),
 
 	// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 	(function() {
-		var routes = ['', 'login', 'register', 'account', 'latest', 'popular', 'active', '403', '404'];
+		var routes = ['login', 'register', 'account', 'latest', 'popular', 'active', '403', '404'];
 
 		for (var i=0, ii=routes.length; i<ii; i++) {
 			(function(route) {
@@ -96,6 +96,17 @@ var express = require('express'),
 	}());
 	
 	// Complex Routes
+	app.get('/', function(req, res) {
+		categories.getAllCategories(function(returnData) {
+			res.send(
+				build_header() +
+				'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/home'].parse(returnData) + '\n\t</noscript>' +
+				app.create_route('') +
+				templates['footer']
+			);
+		}, 0);
+	});
+
 	app.get('/topic/:topic_id/:slug?', function(req, res) {
 		var tid = req.params.topic_id;
 		if (tid.match('.rss')) {
@@ -117,7 +128,7 @@ var express = require('express'),
 		topics.getTopicById(tid, ((req.user) ? req.user.uid : 0), function(topic) {
 			res.send(
 				build_header() +
-				'\n\t<noscript>\n' + templates['noscript/topic'].parse(topic) + '\n\t</noscript>' +
+				'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/topic'].parse(topic) + '\n\t</noscript>' +
 				'\n\t<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '");});</script>' +
 				templates['footer']
 			);
@@ -141,7 +152,15 @@ var express = require('express'),
 		}
 
 		var category_url = cid + (req.params.slug ? '/' + req.params.slug : '');
-		res.send(build_header() + '<script>templates.ready(function(){ajaxify.go("category/' + category_url + '");});</script>' + templates['footer']);
+		categories.getCategoryById(cid, 0, function(returnData) {
+			console.log(returnData);
+			res.send(
+				build_header() +
+				'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/category'].parse(returnData) + '\n\t</noscript>' +
+				'\n\t<script>templates.ready(function(){ajaxify.go("category/' + category_url + '");});</script>' +
+				templates['footer']
+			);
+		});
 	});
 
 	app.get('/confirm/:code', function(req, res) {
