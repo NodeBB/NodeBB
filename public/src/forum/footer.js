@@ -38,8 +38,10 @@
 			var	userLabel = document.createElement('li'),
 				logoutEl = document.createElement('li');
 
-			userLabel.innerHTML =	'<a href="/users/' + data['username'] + '">' +
-										'<img src="' + data['picture'] + '?s=24&default=identicon" />' +
+			
+
+			userLabel.innerHTML =	'<a id="user_label" href="/users/' + data['username'] + '">' +
+										'<img src="' + data['picture'] + '?s=24&default=identicon"/>' +
 										'<span>' + data['username'] + '</span>' +
 									'</a>';
 			logoutEl.innerHTML = '<a href="/logout">Log out</a>';
