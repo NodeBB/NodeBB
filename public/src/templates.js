@@ -177,6 +177,10 @@
 					case 'boolean':
 						value = (element.value === 'true' || element.value === '1') ? true : false;
 					break;
+					case 'int':	// Intentional fall-through
+					case 'integer':
+						value = parseInt(element.value);
+					break;
 					default:
 						value = element.value;
 					break;
