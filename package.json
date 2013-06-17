@@ -1,5 +1,6 @@
 {
   "author": "psychobunny <andrew@designcreateplay.com>, julianlam <julian@designcreateplay.com>, barisusakli <baris@designcreateplay.com>",
+  "license": "GPLv3 or later",
   "name": "NodeBB",
   "description": "NodeBB Forum",
   "version": "0.0.1",
@@ -31,8 +32,9 @@
       "node-imagemagick": "0.1.8",
       "node-rss": "1.0.1"
     },
-  "devDependencies": {},
-  "optionalDependencies": {},
+  "bugs": {
+    "url": "https://github.com/designcreateplay/NodeBB/issues"
+  },
   "engines": {
     "node": "*"
   }
