@@ -171,7 +171,18 @@
 			document.getElementById('content').innerHTML = templates[tpl_url].parse(JSON.parse(template_data));
 			
 			jQuery('#content [template-variable]').each(function(index, element) {
-				templates.set(element.getAttribute('template-variable'), element.value);
+				var value = null;
+
+				switch(element.getAttribute('template-type')) {
+					case 'boolean':
+						value = (element.value === 'true' || element.value === '1') ? true : false;
+					break;
+					default:
+						value = element.value;
+					break;
+				}
+
+				templates.set(element.getAttribute('template-variable'), value);
 			});
 
 			if (callback) {
