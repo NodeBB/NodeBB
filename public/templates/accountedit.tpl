@@ -66,7 +66,8 @@
 			<a href="/users/{username}/edit">edit</a>
 		</span>
 		<div class="account-sub-links inline-block pull-right">
-			<span id="friendsLink" class="pull-right"><a href="/users/{username}/friends">friends</a></span>
+			<span id="followersLink" class="pull-right"><a href="/users/{username}/followers">followers</a></span>
+			<span id="followingLink" class="pull-right"><a href="/users/{username}/following">following</a></span>
 			<span id="editLink" class="pull-right"><a href="/users/{username}/edit">edit</a></span>
 		</div>
 	</div>

@@ -202,36 +202,44 @@ var user = require('./../user.js'),
 			res.send({});
 		});
 
-		app.post('/users/addfriend', function(req, res){
+		app.post('/users/follow', function(req, res){
 			if(!req.user)
 				return res.redirect('/403');
 			
 			if(req.user.uid == req.body.uid)
 				return res.redirect('/');
 
-			user.addFriend(req.user.uid, req.body.uid, function(data) {
+			user.follow(req.user.uid, req.body.uid, function(data) {
 				res.send({data:data});
 			});
 		});
 
-		app.post('/users/removefriend', function(req, res){
+		app.post('/users/unfollow', function(req, res){
 			if(!req.user)
 				return res.redirect('/403');
 			
 			if(req.user.uid == req.body.uid)
 				return res.redirect('/');
 
-			user.removeFriend(req.user.uid, req.body.uid, function(data) {
+			user.unfollow(req.user.uid, req.body.uid, function(data) {
 				res.send({data:data});
 			});
 		});
 
-		app.get('/users/:username/friends', function(req, res){
+		app.get('/users/:username/following', function(req, res) {
 
 			if(!req.user)
 				return res.redirect('/403');
 			
-			res.send(build_header() + app.create_route('users/'+req.params.username+'/friends','friends') + templates['footer']);
+			res.send(build_header() + app.create_route('users/'+req.params.username+'/following','following') + templates['footer']);
+		});
+		
+		app.get('/users/:username/followers', function(req, res) {
+
+			if(!req.user)
+				return res.redirect('/403');
+			
+			res.send(build_header() + app.create_route('users/'+req.params.username+'/followers','followers') + templates['footer']);
 		});
 
 		function api_method(req, res) {
@@ -246,13 +254,24 @@ var user = require('./../user.js'),
 					
 				});
 			}
-			else if(String(req.params.section).toLowerCase() === 'friends') {
+			else if(String(req.params.section).toLowerCase() === 'following') {
 				
 				getUserDataByUserName(req.params.username, callerUID, function(userData) {
 					
-					user.getFriends(userData.uid, function(friendsData){
-						userData.friends = friendsData;
-						userData.friendCount = friendsData.length;
+					user.getFollowing(userData.uid, function(followingData){
+						userData.following = followingData;
+						userData.followingCount = followingData.length;
+						res.send(JSON.stringify(userData));
+					});
+				});
+			}
+			else if(String(req.params.section).toLowerCase() === 'followers') {
+				
+				getUserDataByUserName(req.params.username, callerUID, function(userData) {
+					
+					user.getFollowers(userData.uid, function(followersData){
+						userData.followers = followersData;
+						userData.followersCount = followersData.length;
 						res.send(JSON.stringify(userData));
 					});
 				});
@@ -264,8 +283,8 @@ var user = require('./../user.js'),
 			} else {
 				getUserDataByUserName(req.params.username, callerUID, function(userData) {
 					
-					user.isFriend(callerUID, userData.theirid, function(isFriend) {
-						userData.isFriend = isFriend;
+					user.isFollowing(callerUID, userData.theirid, function(isFollowing) {
+						userData.isFollowing = isFollowing;
 						
 						userData.signature = marked(userData.signature || '');
 						

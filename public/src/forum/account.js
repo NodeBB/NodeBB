@@ -1,7 +1,7 @@
 (function() {
 	var yourid = templates.get('yourid'),
 		theirid = templates.get('theirid'),
-        isFriend = templates.get('isFriend');
+        isFollowing = templates.get('isFollowing');
 
     $(document).ready(function() {
 
@@ -12,25 +12,24 @@
         postcount.html(app.addCommas(postcount.html()));
         
         var editLink = $('#editLink');
-		var addFriendBtn = $('#add-friend-btn');
-		
-        
+		var followBtn = $('#follow-btn');
+        	
         if( yourid !== theirid) {
             editLink.hide();
-            if(isFriend)
-           		addFriendBtn.hide();
+            if(isFollowing)
+           		followBtn.hide();
            	else
-           		addFriendBtn.show();
+           		followBtn.show();
         }
     	else {
-    		addFriendBtn.hide();        
+    		followBtn.hide();        
     	}
         
-        addFriendBtn.on('click', function() {
-        	$.post('/users/addfriend', {uid: theirid},
+        followBtn.on('click', function() {
+        	$.post('/users/follow', {uid: theirid},
             	function(data) {
-            		addFriendBtn.remove();
-            		$('#user-action-alert').html('Friend Added!').show();
+            		followBtn.remove();
+            		$('#user-action-alert').html('You are now following'+ $('.account-username').text() +'!').show();
 				}                
 			);
         	return false;

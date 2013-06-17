@@ -8,7 +8,8 @@
 			<a href="/users/{username}">{username}</a>
 		</span>
 		<div class="account-sub-links inline-block pull-right">
-			<span id="friendsLink" class="pull-right"><a href="/users/{username}/friends">friends</a></span>
+			<span id="followersLink" class="pull-right"><a href="/users/{username}/followers">followers</a></span>
+			<span id="followingLink" class="pull-right"><a href="/users/{username}/following">following</a></span>
 			<span id="editLink" class="pull-right"><a href="/users/{username}/edit">edit</a></span>
 		</div>
 	</div>
@@ -65,7 +66,7 @@
 		</div>
 	</div>
 	<div id="user-actions" class="container">
-		<a id="add-friend-btn" href="#" class="btn">Follow</a>
+		<a id="follow-btn" href="#" class="btn">Follow</a>
 	</div>
 	<br/>
 	<div id="user-action-alert" class="alert alert-success hide"></div>

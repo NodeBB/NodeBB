@@ -388,54 +388,71 @@ var utils = require('./../public/src/utils.js'),
 		}
 	}
 
-	User.addFriend = function(uid, friendid, callback) {
-		RDB.sadd('user:'+uid+':friends', friendid, function(err, data){
-			if(err === null) 
-				callback(data);
+	User.follow = function(uid, followid, callback) {
+		RDB.sadd('user:'+uid+':following', followid, function(err, data) {
+			if(err === null) {
+				RDB.sadd('user:'+followid+':followers', uid, function(err, data) {
+					callback(data);	
+				});
+			}
 			else
 				console.log(err);
-		})
+		});
 	}
 
-	User.getFriends = function(uid, callback) {
-		RDB.smembers('user:'+uid+':friends', function(err, data){
-			if(err === null){ 
-				
-				var friendsData = [];
-
-				if(data.length === 0) {
-					callback(friendsData);
-					return;
-				}
-
-				for(var i=0, ii=data.length; i<ii; ++i) {
-					User.getUserData(data[i], function(userData){
-						friendsData.push(userData);
-						
-						if(friendsData.length == data.length)
-							callback(friendsData);			
-					});	
-				}
+	User.unfollow = function(uid, unfollowid, callback) {
+		RDB.srem('user:'+uid+':following', unfollowid, function(err, data){
+			if(err === null) {
+				RDB.srem('user:'+unfollowid+':followers', uid, function(err, data){
+					callback(data);
+				});
 			}
+			else
+				console.log(err);
+		});
+	}
+
+	User.getFollowing = function(uid, callback) {
+		RDB.smembers('user:'+uid+':following', function(err, userIds) {
+			if(err === null)
+				User.getDataForUsers(userIds, callback);
 			else
 				console.log(err);	
 		});
 	}
 
-	User.removeFriend = function(uid, friendid, callback) {
-		RDB.srem('user:'+uid+':friends', friendid, function(err, data){
+	User.getFollowers = function(uid, callback) {
+		RDB.smembers('user:'+uid+':followers', function(err, userIds) {
 			if(err === null)
-				callback(data);
+				User.getDataForUsers(userIds, callback);
 			else
-				console.log(err);
+				console.log(err);	
 		});
 	}
+	
+	User.getDataForUsers = function(userIds, callback) {
+		var returnData = [];
 
-	User.isFriend = function(uid, friendid, callback) {
-		RDB.sismember('user:'+uid+':friends', friendid, function(err, data){
-			if(err === null){
+		if(userIds.length === 0) {
+			callback(returnData);
+			return;
+		}
+
+		for(var i=0, ii=userIds.length; i<ii; ++i) {
+			User.getUserData(userIds[i], function(userData) {
+				returnData.push(userData);
+				
+				if(returnData.length == userIds.length)
+					callback(returnData);			
+			});	
+		}
+	}
+	
+
+	User.isFollowing = function(uid, theirid, callback) {
+		RDB.sismember('user:'+uid+':following', theirid, function(err, data) {
+			if(err === null)
 				callback(data === 1);
-			}
 			else
 				console.log(err);
 		});
