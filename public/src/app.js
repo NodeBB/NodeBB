@@ -12,7 +12,7 @@ var socket,
 			API_URL = data.api_url;
 
 			config = data;
-			socket = io.connect('http://' + config.socket.address + config.socket.port? ':' + config.socket.port : '');
+			socket = io.connect(config.socket.address + (config.socket.port ? ':' + config.socket.port : ''));
 
 			var reconnecting = false;
 			var reconnectTries = 0;
