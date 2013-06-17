@@ -1,5 +1,6 @@
 {
   "author": "psychobunny <andrew@designcreateplay.com>, julianlam <julian@designcreateplay.com>, barisusakli <baris@designcreateplay.com>",
+  "license": "GPLv3 or later",
   "name": "NodeBB",
   "description": "NodeBB Forum",
   "version": "0.0.1",
