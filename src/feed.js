@@ -7,8 +7,6 @@
 		rss = require('node-rss');
 
 	function saveFeed(location, feed) {
-		console.log(rss.getFeedXML(feed));
-		console.log('derp');
 		fs.writeFile(location, rss.getFeedXML(feed), function (err) {
 			if (err) throw err;
 		});
