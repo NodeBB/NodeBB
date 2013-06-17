@@ -34,7 +34,6 @@ var utils = require('./../public/src/utils.js'),
 		});		
 	}
 
-	// a function I feel should be built in user not sure how baris is tackling this so oppa chicken wrapper here
 	User.getMultipleUserFields = function(uids, fields, callback) {
 		if(uids.length === 0) {
 			callback({});
@@ -47,7 +46,6 @@ var utils = require('./../public/src/utils.js'),
 
 		var data = {},
 			loaded = 0;
-
 
 		for (var i=0, ii=uuids.length; i<ii; i++) {
 			(function(user_id) {
@@ -107,8 +105,6 @@ var utils = require('./../public/src/utils.js'),
 		callback({});
 	}
 
-	
-
 	User.setUserField = function(uid, field, value) {
 		RDB.hset('user:'+uid, field, value);				
 	}
@@ -117,10 +113,10 @@ var utils = require('./../public/src/utils.js'),
 		RDB.hincrby('user:'+uid, field, value);
 	}
 
-	User.getUserList = function(callback){
+	User.getUserList = function(callback) {
 		var data = [];
 		
-		RDB.keys('user:*', function(err, userkeys){
+		RDB.keys('user:*', function(err, userkeys) {
 			
 			var anonUserIndex = userkeys.indexOf("user:0");
 			if(anonUserIndex !== -1) {
@@ -425,6 +421,24 @@ var utils = require('./../public/src/utils.js'),
 		RDB.smembers('user:'+uid+':followers', function(err, userIds) {
 			if(err === null)
 				User.getDataForUsers(userIds, callback);
+			else
+				console.log(err);	
+		});
+	}
+	
+	User.getFollowingCount = function(uid, callback) {
+		RDB.smembers('user:'+uid+':following', function(err, userIds) {
+			if(err === null)
+				callback(userIds.length);
+			else
+				console.log(err);	
+		});
+	}
+	
+	User.getFollowerCount = function(uid, callback) {
+		RDB.smembers('user:'+uid+':followers', function(err, userIds) {
+			if(err === null)
+				callback(userIds.length);
 			else
 				console.log(err);	
 		});

@@ -56,6 +56,15 @@
 					<span class="account-bio-label">posts</span>
 					<span id='postcount'>{postcount}</span>
 					<br/>
+					
+					<span class="account-bio-label">followers</span>
+					<span>{followerCount}</span>
+					<br/>
+					
+					<span class="account-bio-label">following</span>
+					<span>{followingCount}</span>
+					<br/>
+					
 					<hr/>
 					<span class="account-bio-label">signature</span>
 					<div class="post-signature">

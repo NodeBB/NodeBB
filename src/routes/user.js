@@ -315,8 +315,16 @@ var user = require('./../user.js'),
 						data.uid = uid;
 						data.yourid = callerUID;
 						data.theirid = uid;
-						
-						callback(data);
+
+						user.getFollowingCount(uid, function(followingCount) {
+							user.getFollowerCount(uid, function(followerCount) {
+								data.followingCount = followingCount;
+								data.followerCount = followerCount;
+		
+								callback(data);
+								
+							});
+						});
 					}
 					else
 						callback({});
