@@ -22,15 +22,11 @@ Next, obtain all of the dependencies required by NodeBB:
     $ cd nodebb
     $ npm install
 
-Now we ensure that the configuration files are properly set up. NodeBB runs on port 4567 by default. The client side config can be set up thusly:
+Initiate the setup script by running the app with the `--setup` flag:
 
-    $ cp public/config.default.json public/config.json
+    $ node app --setup
 
-... and the server side config can be set up similarly:
-
-    $ cp config.default.js config.js
-
-Ensure that `/public/config.json` points to the publically accessible IP/hostname of your forum, and that the values of the server side config are also set correctly (see below).
+The default settings are for a local server running on the default port, with a redis store on the same machine/port.
 
 Lastly, we run the forum.
 
