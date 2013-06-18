@@ -12,6 +12,7 @@
 
 
 	<!-- BEGIN main_posts -->
+	    <a name="{main_posts.pid}"></a>
 		<li class="row post-row main-post" data-pid="{main_posts.pid}" data-uid="{main_posts.uid}" data-deleted="{main_posts.deleted}">
 			<div class="span12">
 				<div class="post-block">
@@ -57,6 +58,7 @@
 	<!-- END main_posts -->
 
 	<!-- BEGIN posts -->
+		<a name="{posts.pid}"></a>
 		<li class="row post-row" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-deleted="{posts.deleted}">
 			<div class="span1 profile-image-block visible-desktop">
 				<!--<i class="icon-spinner icon-spin icon-2x pull-left"></i>-->

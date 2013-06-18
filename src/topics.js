@@ -201,6 +201,12 @@ marked.setOptions({
 		});
 	}
 
+	Topics.getSlug = function(tid, callback) {
+		RDB.get('tid:' + tid + ':slug', function(err, slug) {
+			callback(slug);
+		});
+	}
+
 	Topics.getTitleByPid = function(pid, callback) {
 		RDB.get('pid:' + pid + ':tid', function(err, tid) {
 			if (!err) {
