@@ -1,6 +1,9 @@
 [NodeBB Homepage](http://www.nodebb.org/ "NodeBB")
-[Check out our IndieGoGo campaign! Please support us!](http://https://www.indiegogo.com/projects/nodebb-the-discussion-platform-of-the-future/ "IndieGoGo")
+
+Please support us! [Check out our IndieGoGo campaign](http://https://www.indiegogo.com/projects/nodebb-the-discussion-platform-of-the-future/ "IndieGoGo")
+
 [Follow our development on Twitter](http://www.twitter.com/NodeBB/ "NodeBB Twitter")
+
 [Like us on Facebook](http://www.facebook.com/NodeBB/ "NodeBB Facebook")
 
 
