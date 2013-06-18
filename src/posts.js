@@ -284,6 +284,8 @@ marked.setOptions({
 					user.incrementUserFieldBy(uid, 'postcount', 1);
 					user.setUserField(uid, 'lastposttime', timestamp);
 
+					user.sendPostNotificationToFollowers(uid, tid, pid);
+
 					if (callback) 
 						callback(pid);
 				});

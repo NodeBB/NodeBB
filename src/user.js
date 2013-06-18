@@ -462,6 +462,18 @@ var utils = require('./../public/src/utils.js'),
 		}
 	}
 	
+	User.sendPostNotificationToFollowers = function(uid, tid, pid) {
+
+		User.getUserField(uid, 'username', function(username) {
+			User.getFollowers(uid, function(followers) {
+				var message = username + ' made a new post';
+				notifications.create(message, 5, 'topic/' + tid + '/' + pid, 'notification_'+new Date().getTime(), function(nid) {
+	 				notifications.push(nid, followers);
+				});
+			});
+		});
+
+	}
 
 	User.isFollowing = function(uid, theirid, callback) {
 		RDB.sismember('user:'+uid+':following', theirid, function(err, data) {
