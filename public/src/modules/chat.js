@@ -20,16 +20,19 @@ define(['taskbar'], function(taskbar) {
 		if(!chatModal.length) {
 			var chatModal = $('#chat-modal').clone();
 			chatModal.attr('id','chat-modal-'+touid);
+			var uuid = utils.generateUUID();
+			chatModal.attr('UUID', uuid);
 			chatModal.appendTo($('body'));
 			chatModal.draggable({
 				start:function(){
-					bringModalToTop(chatModal);
+					module.bringModalToTop(chatModal);
 				}
 			});
 			chatModal.find('#chat-with-name').html(username);
 
 			chatModal.find('.close').on('click',function(e){
 				chatModal.hide();
+				taskbar.discard('chat', uuid);
 			});
 
 			chatModal.on('click', function(e){
@@ -37,9 +40,23 @@ define(['taskbar'], function(taskbar) {
 			});
 
 			addSendHandler(chatModal, touid);	
+
+			taskbar.push('chat', uuid, {title:'chat with '+username});
 		}
 
 		return chatModal;
+	}
+
+	module.load = function(uuid) {
+		var chatModal = $('div[UUID="'+uuid+'"]');
+		chatModal.show();
+		module.bringModalToTop(chatModal);
+	}
+
+	module.minimize = function(uuid) {
+		var chatModal = $('div[UUID="'+uuid+'"]');
+		chatModal.hide();
+		taskbar.minimize('chat', uuid);
 	}
 
 	function addSendHandler(chatModal, touid) {
@@ -63,23 +80,12 @@ define(['taskbar'], function(taskbar) {
 			msg = msg +'\n';
 			socket.emit('sendChatMessage', { touid:touid, message:msg});
 			chatModal.find('#chat-message-input').val('');
-			appendChatMessage(chatModal, 'You : ' + msg);
+			module.appendChatMessage(chatModal, 'You : ' + msg);
 		}
 	}
 
-	socket.on('chatMessage', function(data){
-		var username = data.username;
-		var fromuid = data.fromuid;
-		var message = data.message;
 
-		var chatModal = module.createModalIfDoesntExist(username, fromuid);
-		chatModal.show();
-		module.bringModalToTop(chatModal);
-	
-		appendChatMessage(chatModal, message)
-	});
-
-	function appendChatMessage(chatModal, message){
+	module.appendChatMessage = function(chatModal, message){
 		var chatContent = chatModal.find('#chat-content');
 		chatContent.append(message);
 		chatContent.scrollTop(
