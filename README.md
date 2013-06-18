@@ -1,10 +1,6 @@
-[NodeBB Homepage](http://www.nodebb.org/ "NodeBB")
+Please support NodeBB development! Check out our IndieGoGo campaign and like, share, and follow us :)
+[NodeBB Homepage](http://www.nodebb.org/ "NodeBB") # [IndieGoGo campaign](https://www.indiegogo.com/projects/nodebb-the-discussion-platform-of-the-future/ "IndieGoGo") # [Follow on Twitter](http://www.twitter.com/NodeBB/ "NodeBB Twitter") # [Like us on Facebook](http://www.facebook.com/NodeBB/ "NodeBB Facebook")
 
-Please support us! [Check out our IndieGoGo campaign](http://https://www.indiegogo.com/projects/nodebb-the-discussion-platform-of-the-future/ "IndieGoGo")
-
-[Follow our development on Twitter](http://www.twitter.com/NodeBB/ "NodeBB Twitter")
-
-[Like us on Facebook](http://www.facebook.com/NodeBB/ "NodeBB Facebook")
 
 
 # NodeBB
