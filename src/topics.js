@@ -69,7 +69,6 @@ marked.setOptions({
 				var uid = postData.uid[i],
 					pid = postData.pid[i];
 				
-
 				// ############ to be moved into posts.getPostsByTid ############
 				if (postData.deleted[i] === null || (postData.deleted[i] === '1' && privileges.view_deleted) || current_user === uid) {
 					var post_obj = {
