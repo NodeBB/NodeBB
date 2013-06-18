@@ -59,7 +59,7 @@ define(function() {
 								'</a>';
 			btnEl.setAttribute('data-module', module);
 			btnEl.setAttribute('data-uuid', uuid);
-			btnEl.className = 'active';
+			btnEl.className = options.state || 'active';
 			taskbar.tasklist.appendChild(btnEl);
 
 			taskbar.update();

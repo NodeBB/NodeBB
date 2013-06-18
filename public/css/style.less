@@ -460,6 +460,17 @@ body .navbar .nodebb-inline-block {
 			max-height: 24px;
 			margin-right: 1em;
 		}
+
+		&.pulse {
+			-webkit-animation: pulsate 2500ms linear;
+			-webkit-animation-iteration-count: infinite;
+		}
+
+		@-webkit-keyframes pulsate {
+			0% { background: none; }
+			50% { background: rgb(170, 220, 170); }
+			100% { background: none; }
+		}
 	}
 }
 
@@ -630,9 +641,6 @@ body .navbar .nodebb-inline-block {
 
 	}
 }
-
-
-
 
 #mobile-sidebar {
 	height: 100%;
