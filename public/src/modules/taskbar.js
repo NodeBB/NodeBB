@@ -51,6 +51,10 @@ define(function() {
 			taskbar.update();
 		},
 		push: function(module, uuid, options) {
+			var element = $(taskbar.tasklist).find('li[data-uuid="'+uuid+'"]');
+			if(element.length)
+				return;
+			
 			var	btnEl = document.createElement('li');
 
 			btnEl.innerHTML =	'<a href="#">' +

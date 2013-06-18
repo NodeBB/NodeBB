@@ -40,10 +40,9 @@ define(['taskbar'], function(taskbar) {
 			});
 
 			addSendHandler(chatModal, touid);	
-
-			taskbar.push('chat', uuid, {title:'chat with '+username});
 		}
 
+		taskbar.push('chat', chatModal.attr('UUID'), {title:'chat with '+username});
 		return chatModal;
 	}
 
