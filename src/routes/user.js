@@ -113,9 +113,8 @@ var user = require('./../user.js'),
 					return;
 				}
 
-				var filename = path.basename(oldpicture);
-				var absolutePath = global.configuration['ROOT_DIRECTORY'] + config.upload_path + filename;
-
+				var absolutePath = path.join(global.configuration['ROOT_DIRECTORY'], config.upload_path, path.basename(oldpicture));
+				
 				fs.unlink(absolutePath, function(err) {
 					if(err) {				
 						console.log(err);
@@ -124,18 +123,16 @@ var user = require('./../user.js'),
 					uploadUserPicture(req.user.uid, req.files.userPhoto.name, req.files.userPhoto.path, res);
 					
 				});
-				
 			});
-
 		});
 		
 		function uploadUserPicture(uid, filename, tempPath, res) {
 
 			if(!filename){
 				res.send({
-	                error: 'Error uploading file! Error : Invalid file name!'
+					error: 'Error uploading file! Error : Invalid file name!'
 				});
-	            return;
+				return;
 			}
 			
 			filename = uid + '-' + filename;
@@ -147,26 +144,28 @@ var user = require('./../user.js'),
 			var os = fs.createWriteStream(global.configuration['ROOT_DIRECTORY'] + uploadPath);
 
 			is.on('end', function() {
- 				fs.unlinkSync(tempPath);
+				fs.unlinkSync(tempPath);
 
 				var imageUrl = config.upload_url + filename;
-		 			
-		        res.send({
+
+				res.send({
 					path: imageUrl
-		        });
-		            
-		        user.setUserField(uid, 'uploadedpicture', imageUrl);
-		        user.setUserField(uid, 'picture', imageUrl);
+				});
 
-		        var im = require('node-imagemagick');
+				user.setUserField(uid, 'uploadedpicture', imageUrl);
+				user.setUserField(uid, 'picture', imageUrl);
 
-		        im.resize({
-				  srcPath: global.configuration['ROOT_DIRECTORY'] + uploadPath,
-				  dstPath: global.configuration['ROOT_DIRECTORY'] + uploadPath,
-				  width: 128
+				var im = require('node-imagemagick');
+
+				im.resize({
+					srcPath: global.configuration['ROOT_DIRECTORY'] + uploadPath,
+					dstPath: global.configuration['ROOT_DIRECTORY'] + uploadPath,
+					width: 128
 				}, function(err, stdout, stderr){
-				  if (err) 
-				  	throw err;
+					if (err) {
+						console.log(err);
+						throw err;
+					}
 				});
 
 			});
