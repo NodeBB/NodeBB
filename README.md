@@ -1,10 +1,8 @@
 Please support NodeBB development! Check out our IndieGoGo campaign and like, share, and follow us :)
 [NodeBB Homepage](http://www.nodebb.org/ "NodeBB") # [IndieGoGo campaign](https://www.indiegogo.com/projects/nodebb-the-discussion-platform-of-the-future/ "IndieGoGo") # [Follow on Twitter](http://www.twitter.com/NodeBB/ "NodeBB Twitter") # [Like us on Facebook](http://www.facebook.com/NodeBB/ "NodeBB Facebook")
 
-
-
 # NodeBB
-**NodeBB** is a robust nodejs driven forum built on a redis database. It is powered by web sockets, and is compatible down to IE8.
+**NodeBB** is a robust Node.js driven forum built on a redis database. It is powered by web sockets, and is compatible down to IE8.
 
 ![NodeBB Screenshot](http://i.imgur.com/mxRmLAg.png)
 
@@ -19,10 +17,18 @@ NodeBB requires a version of Node.js at least 0.8 or greater, and a Redis versio
 First, we install our base software stack. `build-essential` is required as it exposes the build environment for `bcrypt` compilation, we won't be compiling anything manually.
 
 	# apt-get install git nodejs redis-server npm build-essential
+
+**If your package manager only installed a version of Node.js that is less than 0.8:**
+
+	# add-apt-repository ppa:chris-lea/node.js
+	# apt-get update && apt-get dist-upgrade
+
+Next, clone this repository:
+
 	$ cd /path/to/nodebb/install/location
 	$ git clone git://github.com/designcreateplay/NodeBB.git nodebb
 
-Next, obtain all of the dependencies required by NodeBB:
+Obtain all of the dependencies required by NodeBB:
 
     $ cd nodebb
     $ npm install
