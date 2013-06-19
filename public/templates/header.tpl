@@ -66,6 +66,15 @@
 								<li><a href="#"><i class="icon-refresh icon-spin"></i> Loading Notifications</a></li>
 							</ul>
 						</li>
+						<li>
+							<a id="user_label" href="">
+								<img src=""/>
+								<span></span>
+							</a>
+						</li>
+						<li>
+							<a href="/logout">Log out</a>
+						</li>
 					</ul>
 				</div>
 			</div>

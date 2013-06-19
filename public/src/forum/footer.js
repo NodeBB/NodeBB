@@ -35,19 +35,12 @@
 	socket.on('api:updateHeader', function(data) {
 		var rightMenu = $('#right-menu');
 		if (data.uid > 0) {
-			var	userLabel = document.createElement('li'),
-				logoutEl = document.createElement('li');
-
+			var userLabel = rightMenu.find('#user_label');
+			userLabel.attr('href','/users/'+data['username']);
 			
-
-			userLabel.innerHTML =	'<a id="user_label" href="/users/' + data['username'] + '">' +
-										'<img src="' + data['picture'] + '?s=24&default=identicon"/>' +
-										'<span>' + data['username'] + '</span>' +
-									'</a>';
-			logoutEl.innerHTML = '<a href="/logout">Log out</a>';
-
-			rightMenu[0].appendChild(userLabel);
-			rightMenu[0].appendChild(logoutEl);
+			userLabel.find('img').attr('src',data['picture']+"?s=24&default=identicon");
+			userLabel.find('span').html(data['username']);
+			
 		} else {
 			rightMenu.html('');
 
