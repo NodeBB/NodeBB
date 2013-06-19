@@ -2,6 +2,7 @@
 var user = require('./../user.js'),
 	fs = require('fs'),
 	utils = require('./../../public/src/utils.js'),
+	path = require('path'),
 	marked = require('marked');
 
 (function(User) {
@@ -112,9 +113,7 @@ var user = require('./../user.js'),
 					return;
 				}
 
-				var index = oldpicture.lastIndexOf('/');
-				var filename = oldpicture.substr(index + 1);
-
+				var filename = path.basename(oldpicture);
 				var absolutePath = global.configuration['ROOT_DIRECTORY'] + config.upload_path + filename;
 
 				fs.unlink(absolutePath, function(err) {
@@ -141,14 +140,13 @@ var user = require('./../user.js'),
 			
 			filename = uid + '-' + filename;
 			var uploadPath = config.upload_path + filename;
-			console.log(config);
 			
 			console.log('trying to upload to : '+ global.configuration['ROOT_DIRECTORY'] + uploadPath);
 			
 			var is = fs.createReadStream(tempPath);
 			var os = fs.createWriteStream(global.configuration['ROOT_DIRECTORY'] + uploadPath);
 
-			is.on('end', function(){
+			is.on('end', function() {
  				fs.unlinkSync(tempPath);
 
 				var imageUrl = config.upload_url + filename;
