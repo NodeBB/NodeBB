@@ -14,9 +14,9 @@ NodeBB requires a version of Node.js at least 0.8 or greater, and a Redis versio
 
 ## Installation
 
-First, we install our base software stack. `build-essential` is required as it exposes the build environment for `bcrypt` compilation, we won't be compiling anything manually.
+First, we install our base software stack:
 
-	# apt-get install git nodejs redis-server npm build-essential
+	# apt-get install git nodejs redis-server npm build-essential imagemagick
 
 **If your package manager only installed a version of Node.js that is less than 0.8:**
 
