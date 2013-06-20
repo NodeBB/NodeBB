@@ -23,7 +23,6 @@ var user = require('./../user.js'),
 		});
 
 		app.get('/users', function(req, res) {
-			console.log('derp');
 			user.getUserList(function(data) {
 				res.send(app.build_header() + app.create_route("users", "users") + templates['footer']);
 			});
@@ -134,7 +133,7 @@ var user = require('./../user.js'),
 			var filename = uid + '-profileimg' + extension;
 			var uploadPath = path.join(global.configuration['ROOT_DIRECTORY'], config.upload_path, filename);
 			
-			console.log('trying to upload to : '+ uploadPath);
+			console.log('Info: Attempting upload to: '+ uploadPath);
 			
 			var is = fs.createReadStream(tempPath);
 			var os = fs.createWriteStream(uploadPath);
@@ -235,7 +234,6 @@ var user = require('./../user.js'),
 		});
 
 		function api_method(req, res) {
-			console.log('derp');
 			var callerUID = req.user?req.user.uid : 0;
 	
 			if (!req.params.section && !req.params.username) {

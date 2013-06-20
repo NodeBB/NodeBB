@@ -193,7 +193,6 @@ marked.setOptions({
 					next();
 				});
 			}, function(err) {
-				console.log(topics);
 				callback(topics);
 			});
 		});
