@@ -8,17 +8,18 @@
 </ul>
 
 
-    	
+<!-- TODO: remove inline event listeners. -->
+
 <div class="row-fluid admin-categories">
 	<ul class="span12" id="entry-container">
 	<!-- BEGIN categories -->
-		<li class="entry-row {categories.blockclass}">
+		<li data-cid="{categories.cid}" class="entry-row {categories.blockclass}">
 			<form class="form-inline">
 				<div class="icon">
-					<i onclick="select_icon(this);" class="{categories.icon} icon-2x"></i>
+					<i onclick="select_icon(this); modified(this);" class="{categories.icon} icon-2x"></i>
 				</div>
-				<input placeholder="Category Name" value="{categories.name}" class="input-medium"></input>
-				<select class="blockclass input-medium" data-value="{categories.blockclass}" onchange="update_blockclass(this);">
+				<input placeholder="Category Name" value="{categories.name}" onchange="modified(this);" class="input-medium"></input>
+				<select class="blockclass input-medium" data-value="{categories.blockclass}" onchange="update_blockclass(this); modified(this);">
 					<option value="category-purple">category-purple</option>
 					<option value="category-darkblue">category-darkblue</option>
 					<option value="category-blue">category-blue</option>
@@ -26,7 +27,7 @@
 					<option value="category-orange">category-orange</option>
 				</select>
 				<!--<input value="{categories.icon}" class="input-medium" onchange="update_icon(this);"></input>-->
-				<input placeholder="Category Description" value="{categories.description}" class="input-medium description"></input>
+				<input onchange="modified(this);" placeholder="Category Description" value="{categories.description}" class="input-medium description"></input>
 				<!--<a target="_blank" href="../category/{categories.slug}">category/{categories.slug}</a>-->
 
 				<!--<div style="float: right">
@@ -37,11 +38,19 @@
 
 	<!-- END categories -->
 	</ul>
+
+	<button class="btn btn-large btn-primary" id="save">Save</button>
 </div>
 
 
 
 <script type="text/javascript">
+
+var modified_catgories = {};
+
+function modified(el) {
+
+}
 
 function select_icon(el) {
 	var selected = el.className.replace(' icon-2x', '');
