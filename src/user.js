@@ -291,7 +291,7 @@ var utils = require('./../public/src/utils.js'),
 					'website':'',
 					'email' : email,
 					'signature':'',
-					'joindate' : new Date().getTime(),
+					'joindate' : Date.now(),
 					'picture': gravatar,
 					'gravatarpicture' : gravatar,
 					'uploadedpicture': '',
@@ -472,7 +472,7 @@ var utils = require('./../public/src/utils.js'),
 
 					var message = username + ' made a new post';
 
-					notifications.create(message, 5, global.config.url + 'topic/' + slug + '#' + pid, 'notification_'+new Date().getTime(), function(nid) {
+					notifications.create(message, 5, global.config.url + 'topic/' + slug + '#' + pid, 'notification_'+ Date.now(), function(nid) {
 		 				notifications.push(nid, followers);
 					});
 				});
@@ -751,7 +751,7 @@ var utils = require('./../public/src/utils.js'),
 
 					if (total > record) {
 						RDB.set('global:active_user_record', total);
-						RDB.set('global:active_user_record_date', new Date().getTime());
+						RDB.set('global:active_user_record_date', Date.now());
 					}
 				});
 			}
