@@ -5,7 +5,7 @@
 	margin-bottom: 10px;
 	padding: 10px;
 	cursor: move;
-	width: 555px;
+	width: 800px;
 }
 .admin-categories {
 	form {
@@ -20,6 +20,9 @@
 		border: 0;
 		border-radius: 5px;
 		margin-top: -8px;	
+	}
+	input.description {
+		width: 400px;
 	}
 
 	select {
@@ -81,4 +84,26 @@
 
 .motd textarea {
 	width: 100%;
+}
+
+
+.icon-container {
+	.row {
+		margin: 0;
+		.span3 {
+			width: 20px;
+			height: 20px;
+			margin: 1px;
+			cursor: pointer;
+			line-height: 20px;
+			text-align: center;
+
+			&:hover, &.selected {
+				background: black;
+				color: white;
+			}
+
+
+		}
+	}
 }
