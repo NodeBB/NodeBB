@@ -62,21 +62,21 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		socket.join('uid_' + uid);
 		
 		/*process.on('uncaughtException', function(err) {
-    		// handle the error safely
-    		console.log("error message "+err);
-    		socket.emit('event:consolelog',{type:'uncaughtException', stack:err.stack, error:err.toString()});
+			// handle the error safely
+			console.log("error message "+err);
+			socket.emit('event:consolelog',{type:'uncaughtException', stack:err.stack, error:err.toString()});
 		});*/
 
 		socket.emit('event:connect', {status: 1});
 		
 		socket.on('disconnect', function() {
 			user.go_offline(uid);
-      		delete users[hs.sessionID];
-      		var index = userSockets[uid].indexOf(socket);
-      		if(index !== -1) {
-      			userSockets[uid].splice(index, 1);
-      		}
-   		});
+			delete users[hs.sessionID];
+			var index = userSockets[uid].indexOf(socket);
+			if(index !== -1) {
+				userSockets[uid].splice(index, 1);
+			}
+		});
 
 		socket.on('api:get_all_rooms', function(data) {
 			socket.emit('api:get_all_rooms', io.sockets.manager.rooms);
@@ -287,9 +287,9 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					}
 
 					notifications.create(finalMessage, 5, '#', 'notification_'+Date.now(), function(nid) {
- 						notifications.push(nid, [touid], function(success) {
-  							
- 						});
+						notifications.push(nid, [touid], function(success) {
+							
+						});
 					});
 				});
 			}

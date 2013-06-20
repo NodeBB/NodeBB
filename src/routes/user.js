@@ -80,7 +80,7 @@ var user = require('./../user.js'),
 		});
 
 		app.post('/users/uploadpicture', function(req, res) {
-    	
+
 			if(!req.user)
 				return res.redirect('/403');
 			

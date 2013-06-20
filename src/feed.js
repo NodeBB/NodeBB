@@ -16,12 +16,12 @@
 		return rss.createNewFeed(
 			title,
 			feed_url,
-            description,
-            author,
-            xml_url, 
-            {
-            	'urn' : urn
-            }
+			description,
+			author,
+			xml_url, 
+			{
+				'urn' : urn
+			}
 		);	
 	}
 
