@@ -20,10 +20,10 @@
 			var main_dir = global.configuration.ROOT_DIRECTORY + '/public/templates/';
 			var results = [];
 			fs.readdir(dir, function(err, list) {
-			    if (err) return done(err);
-			    var pending = list.length;
-			    if (!pending) return done(null, results);
-			    list.forEach(function(file) {
+				if (err) return done(err);
+				var pending = list.length;
+				if (!pending) return done(null, results);
+				list.forEach(function(file) {
 					file = dir + '/' + file;
 					fs.stat(file, function(err, stat) {
 						if (stat && stat.isDirectory()) {
@@ -34,7 +34,7 @@
 						} else {
 							results.push(file.replace(main_dir, '').replace('.tpl', ''));
 							if (!--pending) done(null, results);
-				        }
+						}
 					});
 				});
 			});

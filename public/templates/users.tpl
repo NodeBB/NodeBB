@@ -1,13 +1,13 @@
 <h1>Users</h1>
 <div>
-    <!-- BEGIN users -->
-    <div class="users-box well">
-	 	<a href="/users/{users.username}">
-		    <img src="{users.picture}" class="user-8080-picture"/>
-	    </a>
-	    <br/>
+	<!-- BEGIN users -->
+	<div class="users-box well">
+		<a href="/users/{users.username}">
+			<img src="{users.picture}" class="user-8080-picture"/>
+		</a>
+		<br/>
 		<a href="/users/{users.username}">{users.username}</a>
-	    <br/>
+		<br/>
 		<div title="reputation">
 			<span class='reputation'>{users.reputation}</span>
 			<i class='icon-star'></i>

@@ -12,7 +12,7 @@
 
 
 	<!-- BEGIN main_posts -->
-	    <a name="{main_posts.pid}"></a>
+		<a name="{main_posts.pid}"></a>
 		<li class="row post-row main-post" data-pid="{main_posts.pid}" data-uid="{main_posts.uid}" data-deleted="{main_posts.deleted}">
 			<div class="span12">
 				<div class="post-block">

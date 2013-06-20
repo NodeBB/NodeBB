@@ -30,20 +30,20 @@
 					<br/>
 					
 					<span class="account-bio-label">full name</span>
-			        <span>{fullname}</span>
-			        <br/>
-			        
-			        <span class="account-bio-label">website</span>
-			        <span><a href="{website}">{website}</a></span>
-			        <br/>
+					<span>{fullname}</span>
+					<br/>
+					
+					<span class="account-bio-label">website</span>
+					<span><a href="{website}">{website}</a></span>
+					<br/>
 					
 					<span class="account-bio-label">location</span>
-			        <span>{location}</span>
-			        <br/>
-			        
-			        <span class="account-bio-label">age</span>
-			        <span>{age}</span>
-			        <br/>
+					<span>{location}</span>
+					<br/>
+					
+					<span class="account-bio-label">age</span>
+					<span>{age}</span>
+					<br/>
 					<hr/>
 					<span class="account-bio-label">member for</span>
 					<span>{joindate}</span>

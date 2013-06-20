@@ -8,7 +8,7 @@
 </ul>
 
 
-    	
+		
 <div class="row-fluid admin-categories">
 	<ul class="span12" id="entry-container">
 	<!-- BEGIN categories -->

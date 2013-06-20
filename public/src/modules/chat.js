@@ -8,7 +8,7 @@ define(['taskbar'], function(taskbar) {
 		$('.modal').each(function() {
 		  var thisZ = parseInt($(this).css('zIndex'), 10);
 		  if (thisZ > topZ) {
-		    topZ = thisZ;
+			topZ = thisZ;
 		  }
 		});
 		chatModal.css('zIndex', topZ+1);
@@ -88,7 +88,7 @@ define(['taskbar'], function(taskbar) {
 		var chatContent = chatModal.find('#chat-content');
 		chatContent.append(message);
 		chatContent.scrollTop(
-    		chatContent[0].scrollHeight - chatContent.height()
+			chatContent[0].scrollHeight - chatContent.height()
 		);
 	}
 

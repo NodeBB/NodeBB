@@ -4,12 +4,12 @@
 		theirid = templates.get('theirid'),
 		followingCount = templates.get('followingCount');
 
-    $(document).ready(function() {
-    	
-    	if(parseInt(followingCount, 10) === 0) {
-    		$('#no-following-notice').show();
-    	}
-    	var editLink = $('#editLink');
+	$(document).ready(function() {
+		
+		if(parseInt(followingCount, 10) === 0) {
+			$('#no-following-notice').show();
+		}
+		var editLink = $('#editLink');
 
 		if(yourid !== theirid) {
 			editLink.hide();
@@ -22,23 +22,23 @@
 				var followingUid = $(this).attr('followingUid');
 				
 				$.post('/users/unfollow', {uid: followingUid, _csrf:$('#csrf_token').val()},
-	            	function(data) {
-	            		removeBtn.parent().remove();
+					function(data) {
+						removeBtn.parent().remove();
 					}                
 				);
 				return false;
 			});
 		}
 
-        $('.reputation').each(function(index, element) {
-        	$(element).html(app.addCommas($(element).html()));
-        });
-        
-        $('.postcount').each(function(index, element) {
-        	$(element).html(app.addCommas($(element).html()));
-        });
-        
-    });
-    
+		$('.reputation').each(function(index, element) {
+			$(element).html(app.addCommas($(element).html()));
+		});
+		
+		$('.postcount').each(function(index, element) {
+			$(element).html(app.addCommas($(element).html()));
+		});
+		
+	});
+	
 
 }());

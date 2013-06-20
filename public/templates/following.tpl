@@ -16,15 +16,15 @@
 	</div>
 
 	<div>
-	    <!-- BEGIN following -->
+		<!-- BEGIN following -->
 
-	    <div class="users-box well">
-		 	<a href="/users/{following.username}">
-			    <img src="{following.picture}" class="user-8080-picture"/>
-		    </a>
-		    <br/>
+		<div class="users-box well">
+			<a href="/users/{following.username}">
+				<img src="{following.picture}" class="user-8080-picture"/>
+			</a>
+			<br/>
 			<a href="/users/{following.username}">{following.username}</a>
-		    <br/>
+			<br/>
 			<div title="reputation">
 				<span class='reputation'>{following.reputation}</span>
 				<i class='icon-star'></i>

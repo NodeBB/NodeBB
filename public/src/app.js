@@ -82,10 +82,10 @@ var socket,
 
 	// takes a string like 1000 and returns 1,000
 	app.addCommas = function(text) {
-        return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
-    }
+		return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+	}
 
-    // Willingly stolen from: http://phpjs.org/functions/strip_tags/
+	// Willingly stolen from: http://phpjs.org/functions/strip_tags/
 	app.strip_tags = function(input, allowed) {
 		allowed = (((allowed || "") + "").toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join(''); // making sure the allowed arg is a string containing only tags in lowercase (<a><b><c>)
 		var	tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,

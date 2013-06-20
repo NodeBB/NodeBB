@@ -39,11 +39,11 @@
 				<div class="nav-collapse collapse">
 					<ul class="nav">
 						<li>
-	                      <a href="/admin/index"><i class="icon-home"></i> Home</a>
-	                    </li>
-	                    <li>
-	                      <a href="/admin/settings"><i class="icon-cogs"></i> Settings</a>
-	                    </li>
+						  <a href="/admin/index"><i class="icon-home"></i> Home</a>
+						</li>
+						<li>
+						  <a href="/admin/settings"><i class="icon-cogs"></i> Settings</a>
+						</li>
 					</ul>
 					<ul class="nav pull-right" id="right-menu">
 						<li><a href="/users" id="user_label"></a></li>

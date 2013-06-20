@@ -12,8 +12,8 @@
 
 	function addCommasToNumbers() {
 		$('.formatted-number').each(function(index, element) {
-        	$(element).html(app.addCommas($(element).html()));
-    	});
+			$(element).html(app.addCommas($(element).html()));
+		});
 	}
 
 	jQuery('document').ready(function() {
