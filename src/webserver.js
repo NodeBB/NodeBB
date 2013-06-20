@@ -44,7 +44,11 @@ var express = require('express'),
 		secret: global.config.secret,
 		key: 'express.sid'
 	}));
-
+	app.use(express.csrf());
+	app.use(function(req, res, next) {
+		res.locals.csrf_token = req.session._csrf;
+		next();
+	});
 
 	module.exports.init = function() {
 		templates = global.templates;
@@ -204,6 +208,8 @@ var express = require('express'),
 						}
 					}
 
+					data.token = res.locals.csrf_token;
+
 					res.send(JSON.stringify(data));
 				break;
 			case 'register' :
@@ -225,6 +231,8 @@ var express = require('express'),
 							data[login_strategies[i] + ':display'] = 'active';
 						}
 					}
+
+					data.token = res.locals.csrf_token;
 
 					res.send(JSON.stringify(data));
 				break;
@@ -282,10 +290,10 @@ var express = require('express'),
 	app.get('/api/:method/:id/:section?', api_method);
 	app.get('/api/:method/:id*', api_method);
 
-	app.get('/test', function(req, res) {
-		var ThreadTools = require('./threadTools.js');
-		ThreadTools.notify_followers(3);
+	app.all('/test', function(req, res) {
 		res.send();
+		// console.log('CSRF is: ', res.locals.token);
+		// res.send('<form method="POST" action="/test"><input type="hidden" name="_csrf" value="' + res.locals.token + '" /><button type="submit">go</button></form>');
 	});
 
 

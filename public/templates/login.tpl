@@ -9,6 +9,7 @@
 		<form method="post" action="/login">
 			<label>Username</label><input type="text" placeholder="Enter Username" name="username" id="username" /><br />
 			<label>Password</label><input type="password" placeholder="Enter Password" name="password" id="password" /><br />
+			<input type="hidden" name="_csrf" value="{token}" />
 			<button class="btn btn-primary" id="login" type="submit">Login</button> &nbsp; <a href="/reset">Forgot Password?</a>
 		</form>
 	</div>
