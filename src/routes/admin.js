@@ -56,9 +56,14 @@ var user = require('./../user.js'),
 						});
 					}
 					break;
-				case 'topics' :
-					categories.getCategoryById(0, 0, function(data) {
-						res.json(data);
+				case 'topics':
+					topics.getAllTopics(function(topics) {
+						topics.sort(function(a, b) {
+							return b.timestamp - a.timestamp;
+						});
+						res.json({
+							topics: topics
+						});
 					});
 					break;
 				case 'redis':
