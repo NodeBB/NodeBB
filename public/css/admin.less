@@ -1,6 +1,19 @@
 @import "mixins";
 
 .admin {
+	.entry-row {
+		border-radius: 10px;
+		margin-bottom: 10px;
+		padding: 10px;
+		cursor: move;
+		width: 800px;
+	}
+
+	.admin-categories {
+		form {
+			margin: 0 0 0px;
+		}
+	}
 
 	.entry-row {
 		border-radius: 10px;
@@ -8,6 +21,10 @@
 		padding: 10px;
 		cursor: move;
 		width: 555px;
+	}
+
+	input.description {
+		width: 400px;
 	}
 
 	.admin-categories {
@@ -106,4 +123,24 @@
 		}
 	}
 
+	.icon-container {
+		.row {
+			margin: 0;
+			.span3 {
+				width: 20px;
+				height: 20px;
+				margin: 1px;
+				cursor: pointer;
+				line-height: 20px;
+				text-align: center;
+
+				&:hover, &.selected {
+					background: black;
+					color: white;
+				}
+
+
+			}
+		}
+	}
 }
