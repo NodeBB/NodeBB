@@ -168,7 +168,6 @@
 		function parse_template() {
 			if (!templates[tpl_url] || !template_data) return;
 
-			//document.getElementById('content').innerHTML = templates[tpl_url].parse(JSON.parse(template_data));
 			document.getElementById('content').innerHTML = templates[tpl_url].parse(template_data);
 			
 			jQuery('#content [template-variable]').each(function(index, element) {
