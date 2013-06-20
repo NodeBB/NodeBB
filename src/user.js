@@ -42,7 +42,7 @@ var utils = require('./../public/src/utils.js'),
 		}
 
 		var uuids = uids.filter(function(value, index, self) { 
-		    return self.indexOf(value) === index;
+			return self.indexOf(value) === index;
 		});
 
 		var data = {},
@@ -64,10 +64,14 @@ var utils = require('./../public/src/utils.js'),
 		RDB.hgetall('user:'+uid, function(err, data){
 			if(err === null)
 			{
-				if(data && data['password'])
-					delete data['password'];
-				data.uid = uid;
-				callback(data);
+				if(data) {
+					if(data['password'])
+						delete data['password'];
+					data.uid = uid;
+					callback(data);
+				}
+				else
+					callback({});
 			}
 			else
 				console.log(err);

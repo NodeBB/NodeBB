@@ -246,11 +246,12 @@
 		
 	});
 
-	socket.on('chatMessage', function(data){
+	socket.on('chatMessage', function(data) {
 		
 		var username = data.username;
 		var fromuid = data.fromuid;
 		var message = data.message;
+		
 		require(['chat'], function(chat) {
 			var chatModal = chat.createModalIfDoesntExist(username, fromuid);
 			chatModal.show();
