@@ -39,27 +39,26 @@ var user = require('./../user.js'),
 			switch(req.params.method) {
 				case 'users' :
 					if (req.params.tab == 'search') {
-						res.send(JSON.stringify({search_display: 'block', users: []}))
+						res.json({search_display: 'block', users: []});
 					} else {
 						user.getUserList(function(data){
-
-							res.send(JSON.stringify({search_display: 'none', users:data, yourid:req.user.uid}));
+							res.json({search_display: 'none', users:data, yourid:req.user.uid});
 						});
 					}
 					
 					break;
 				case 'categories':
 					if (req.params.tab == 'disabled') {
-						res.send(JSON.stringify({categories: []}));
+						res.json({categories: []});
 					} else {
 						categories.getAllCategories(function(data) {
-							res.send(JSON.stringify(data));
+							res.json(data);
 						});
 					}
 					break;
 				case 'topics' :
 					categories.getCategoryById(0, 0, function(data) {
-						res.send(JSON.stringify(data));
+						res.json(data);
 					});
 					break;
 				case 'redis':
@@ -83,11 +82,11 @@ var user = require('./../user.js'),
 						}
 
 						
-						res.send(JSON.stringify(finalData));
+						res.json(finalData);
 					});
 					break;
 				default :
-					res.send('{}');
+					res.json({});
 			}
 		}
 

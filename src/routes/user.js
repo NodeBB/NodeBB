@@ -246,9 +246,7 @@ var user = require('./../user.js'),
 			if (!req.params.section && !req.params.username) {
 				
 				user.getUserList(function(data){
-					
-					res.send(JSON.stringify({users:data}));
-					
+					res.json({users:data});
 				});
 			}
 			else if(String(req.params.section).toLowerCase() === 'following') {
@@ -258,7 +256,7 @@ var user = require('./../user.js'),
 					user.getFollowing(userData.uid, function(followingData){
 						userData.following = followingData;
 						userData.followingCount = followingData.length;
-						res.send(JSON.stringify(userData));
+						res.json(userData);
 					});
 				});
 			}
@@ -269,13 +267,13 @@ var user = require('./../user.js'),
 					user.getFollowers(userData.uid, function(followersData){
 						userData.followers = followersData;
 						userData.followersCount = followersData.length;
-						res.send(JSON.stringify(userData));
+						res.json(userData);
 					});
 				});
 			}
 			else if (String(req.params.section).toLowerCase() === 'edit') {
 				getUserDataByUserName(req.params.username, callerUID, function(userData) {
-					res.send(JSON.stringify(userData));
+					res.json(userData);
 				});
 			} else {
 				getUserDataByUserName(req.params.username, callerUID, function(userData) {
@@ -285,7 +283,7 @@ var user = require('./../user.js'),
 						
 						userData.signature = marked(userData.signature || '');
 						
-						res.send(JSON.stringify(userData));
+						res.json(userData);
 					});
 					
 				});						

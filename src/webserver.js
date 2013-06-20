@@ -178,14 +178,14 @@ var express = require('express'),
 		switch(req.params.method) {
 			case 'get_templates_listing' :
 					utils.walk(global.configuration.ROOT_DIRECTORY + '/public/templates', function(err, data) {
-						res.send(JSON.stringify(data));
+						res.json(data);
 					});
 				break;
 			case 'home' :
 					categories.getAllCategories(function(data) {
 						data.motd_class = (config.show_motd === '1' || config.show_motd === undefined) ? '' : 'none';
 						data.motd = marked(config.motd || "# NodeBB v0.1\nWelcome to NodeBB, the discussion platform of the future.\n\n<a target=\"_blank\" href=\"http://www.nodebb.org\" class=\"btn btn-large\"><i class=\"icon-comment\"></i> Get NodeBB</a> <a target=\"_blank\" href=\"https://github.com/designcreateplay/NodeBB\" class=\"btn btn-large\"><i class=\"icon-github-alt\"></i> Fork us on Github</a> <a target=\"_blank\" href=\"https://twitter.com/dcplabs\" class=\"btn btn-large\"><i class=\"icon-twitter\"></i> @dcplabs</a>");
-						res.send(JSON.stringify(data));
+						res.json(data);
 					}, uid);
 				break;
 			case 'login' :
@@ -210,7 +210,7 @@ var express = require('express'),
 
 					data.token = res.locals.csrf_token;
 
-					res.send(JSON.stringify(data));
+					res.json(data);
 				break;
 			case 'register' :
 					var data = {},
@@ -234,52 +234,52 @@ var express = require('express'),
 
 					data.token = res.locals.csrf_token;
 
-					res.send(JSON.stringify(data));
+					res.json(data);
 				break;
 			case 'topic' :
 					topics.getTopicById(req.params.id, uid, function(data) {
-						res.send(data ? JSON.stringify(data) : false);
+						res.json(data);
 					});
 				break;
 			case 'category' :
 					categories.getCategoryById(req.params.id, uid, function(data) {
-						res.send(data ? JSON.stringify(data) : false);
+						res.json(data);
 					}, req.params.id, uid);
 				break;
 			case 'latest' :
 					categories.getLatestTopics(uid, 0, 9, function(data) {
-						res.send(JSON.stringify(data));
+						res.json(data);
 					});
 				break;
 			case 'popular' :
 					categories.getLatestTopics(uid, 0, 9, function(data) {
-						res.send(JSON.stringify(data));
+						res.json(data);
 					});
 				break;
 			case 'active' :
 					categories.getLatestTopics(uid, 0, 9, function(data) {
-						res.send(JSON.stringify(data));
+						res.json(data);
 					});
 				break;
 			case 'confirm':
 					user.email.confirm(req.params.id, function(data) {
 						if (data.status === 'ok') {
-							res.send(JSON.stringify({
+							res.json({
 								'alert-class': 'alert-success',
 								title: 'Email Confirmed',
 								text: 'Thank you for vaidating your email. Your account is now fully activated.'
-							}));
+							});
 						} else {
-							res.send(JSON.stringify({
+							res.json({
 								'alert-class': 'alert-error',
 								title: 'An error occurred...',
 								text: 'There was a problem validating your email address. Perhaps the code was invalid or has expired.'
-							}));
+							});
 						}
 					});
 				break;
 			default :
-				res.send('{}');
+				res.json({});
 			break;
 		}
 	}
