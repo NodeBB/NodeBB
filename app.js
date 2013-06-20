@@ -110,56 +110,59 @@ fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 				ask('Will you be using a port number to access NodeBB? (y)', function(use_port) {
 					ask('... the host IP or address of your Redis instance? (127.0.0.1)', function(redis_host) {
 						ask('... the host port of your Redis instance? (6379)', function(redis_port) {
-							ask('... your NodeBB secret? (keyboard mash for a bit here)', function(secret) {
-								if (!base_url) base_url = 'http://localhost';
-								if (!port) port = 4567;
-								if (!use_port) use_port = true; else use_port = (use_port === 'y' ? true : false);
-								if (!redis_host) redis_host = '127.0.0.1';
-								if (!redis_port) redis_port = 6379;
-								if (!secret) secret = utils.generateUUID();
+							ask('... the password of your Redis database? (no password)', function(redis_password) {
+								ask('... your NodeBB secret? (keyboard mash for a bit here)', function(secret) {
+									if (!base_url) base_url = 'http://localhost';
+									if (!port) port = 4567;
+									if (!use_port) use_port = true; else use_port = (use_port === 'y' ? true : false);
+									if (!redis_host) redis_host = '127.0.0.1';
+									if (!redis_port) redis_port = 6379;
+									if (!secret) secret = utils.generateUUID();
 
-								var	fs = require('fs'),
-									path = require('path'),
-									config = {
-										secret: secret,
-										base_url: base_url,
-										port: port,
-										use_port: use_port,
-										upload_path: '/public/uploads/',
-										redis: {
-											host: redis_host,
-											port: redis_port
+									var	fs = require('fs'),
+										path = require('path'),
+										config = {
+											secret: secret,
+											base_url: base_url,
+											port: port,
+											use_port: use_port,
+											upload_path: '/public/uploads/',
+											redis: {
+												host: redis_host,
+												port: redis_port,
+												password: redis_password
+											}
 										}
-									}
 
-								// Server-side config
-								fs.writeFile(path.join(__dirname, 'config.json'), JSON.stringify(config, null, 4), function(err) {
-									if (err) throw err;
-									else {
-										process.stdout.write(
-											"\n\nConfiguration Saved OK\n\n"
-										);
-										if (!args.setup) {
+									// Server-side config
+									fs.writeFile(path.join(__dirname, 'config.json'), JSON.stringify(config, null, 4), function(err) {
+										if (err) throw err;
+										else {
 											process.stdout.write(
-												"Please start NodeBB again and register a new user at " +
-												base_url + (use_port ? ':' + port : '') + "/register. This user will automatically become an administrator.\n\n"
+												"\n\nConfiguration Saved OK\n\n"
 											);
+											if (!args.setup) {
+												process.stdout.write(
+													"Please start NodeBB again and register a new user at " +
+													base_url + (use_port ? ':' + port : '') + "/register. This user will automatically become an administrator.\n\n"
+												);
+											}
+											process.stdout.write(
+												"If at any time you'd like to run this setup again, run the app with the \"--setup\" flag\n\n"
+											);
+											process.exit();
 										}
-										process.stdout.write(
-											"If at any time you'd like to run this setup again, run the app with the \"--setup\" flag\n\n"
-										);
-										process.exit();
-									}
-								});
+									});
 
-								// Client-side config
-								fs.writeFile(path.join(__dirname, 'public', 'config.json'), JSON.stringify({
-									socket: {
-										address: base_url,
-										port: port
-									},
-									api_url: base_url + (use_port ? ':' + port : '') + '/api/'
-								}, null, 4))
+									// Client-side config
+									fs.writeFile(path.join(__dirname, 'public', 'config.json'), JSON.stringify({
+										socket: {
+											address: base_url,
+											port: port
+										},
+										api_url: base_url + (use_port ? ':' + port : '') + '/api/'
+									}, null, 4))
+								});
 							});
 						});
 					});
