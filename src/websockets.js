@@ -286,7 +286,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 						userSockets[touid][x].emit('chatMessage', {fromuid:uid, username:username, message:finalMessage});
 					}
 
-					notifications.create(finalMessage, 5, '', 'notification_'+new Date().getTime(), function(nid) {
+					notifications.create(finalMessage, 5, '', 'notification_'+Date.now(), function(nid) {
  						notifications.push(nid, [touid], function(success) {
   							
  						});

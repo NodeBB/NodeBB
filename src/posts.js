@@ -167,7 +167,7 @@ marked.setOptions({
 
 
 		user.getUserField(uid, 'lastposttime', function(lastposttime) {
-			if(new Date().getTime() - lastposttime < config.post_delay) {
+			if(Date.now() - lastposttime < config.post_delay) {
 				socket.emit('event:alert', {
 					title: 'Too many posts!',
 					message: 'You can only post every '+ (config.post_delay / 1000) + ' seconds.',
@@ -185,7 +185,7 @@ marked.setOptions({
 
 					Posts.get_cid_by_pid(pid, function(cid) {
 						RDB.del('cid:' + cid + ':read_by_uid');
-						RDB.zadd('categories:recent_posts:cid:' + cid, (new Date()).getTime(), pid);
+						RDB.zadd('categories:recent_posts:cid:' + cid, Date.now(), pid);
 					});
 
 					// Re-add the poster, so he/she does not get an "unread" flag on this topic
@@ -204,7 +204,7 @@ marked.setOptions({
 
 					user.getUserFields(uid, ['username','reputation','picture','signature'], function(data) {
 						
-						var timestamp = new Date().getTime();
+						var timestamp = Date.now();
 						
 						io.sockets.in('topic_' + tid).emit('event:new_post', {
 							'posts' : [
@@ -248,7 +248,7 @@ marked.setOptions({
 				RDB.incr('global:next_post_id', function(err, pid) {
 					RDB.handle(err);
 					
-					var timestamp = new Date().getTime();
+					var timestamp = Date.now();
 					// Posts Info
 					RDB.set('pid:' + pid + ':content', content);
 					RDB.set('pid:' + pid + ':uid', uid);

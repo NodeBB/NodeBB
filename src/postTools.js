@@ -56,7 +56,7 @@ marked.setOptions({
 	PostTools.edit = function(uid, pid, title, content) {
 		var	success = function() {
 				RDB.set('pid:' + pid + ':content', content);
-				RDB.set('pid:' + pid + ':edited', new Date().getTime());
+				RDB.set('pid:' + pid + ':edited', Date.now());
 				RDB.set('pid:' + pid + ':editor', uid);
 
 				posts.get_tid_by_pid(pid, function(tid) {

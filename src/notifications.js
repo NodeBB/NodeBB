@@ -34,7 +34,7 @@ var	RDB = require('./redis.js'),
 				'text', text || '',
 				'score', score || 5,
 				'path', path || null,
-				'datetime', new Date().getTime(),
+				'datetime', Date.now(),
 				'uniqueId', uniqueId || utils.generateUUID(),
 			function(err, status) {
 				if (status === 'OK') callback(nid);

@@ -322,7 +322,7 @@ marked.setOptions({
 		
 		user.getUserField(uid, 'lastposttime', function(lastposttime) {
 
-			if(new Date().getTime() - lastposttime < config.post_delay) {
+			if(Date.now() - lastposttime < config.post_delay) {
 				socket.emit('event:alert', {
 					title: 'Too many posts!',
 					message: 'You can only post every '+ (config.post_delay / 1000) + ' seconds.',
@@ -350,7 +350,7 @@ marked.setOptions({
 				RDB.set(schema.topics(tid).title, title);
 				RDB.set(schema.topics(tid).uid, uid);
 				RDB.set(schema.topics(tid).slug, slug);
-				RDB.set(schema.topics(tid).timestamp, new Date().getTime());
+				RDB.set(schema.topics(tid).timestamp, Date.now());
 				
 				RDB.set('topic:slug:' + slug + ':tid', tid);
 
@@ -384,7 +384,7 @@ marked.setOptions({
 				// let everyone know that there is an unread topic in this category
 				RDB.del('cid:' + category_id + ':read_by_uid');
 
-				RDB.zadd(schema.topics().recent, (new Date()).getTime(), tid);
+				RDB.zadd(schema.topics().recent, Date.now(), tid);
 				//RDB.zadd('topics:active', tid);
 
 				// in future it may be possible to add topics to several categories, so leaving the door open here.
