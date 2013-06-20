@@ -17,7 +17,7 @@ var user = require('./../user.js'),
 		app.get('/uid/:uid', function(req, res) {
 		
 			if(!req.params.uid)
-				return res.redirect('/403');
+				return res.redirect('/404');
 			
 			user.getUserData(req.params.uid, function(data){
 				if(data)
@@ -42,7 +42,7 @@ var user = require('./../user.js'),
 
 			user.get_uid_by_username(req.params.username, function(uid) {
 				if(!uid) {
-					res.redirect('/403');
+					res.redirect('/404');
 					return;
 				}
 				
@@ -51,7 +51,7 @@ var user = require('./../user.js'),
 						res.send(build_header() + app.create_route('users/'+data.username, 'account')  + templates['footer']);
 					}
 					else {
-						res.redirect('/403');
+						res.redirect('/404');
 					}			
 				});
 			});		
@@ -67,7 +67,7 @@ var user = require('./../user.js'),
 				if(req.params.username && username === req.params.username)
 					res.send(build_header() + app.create_route('users/'+req.params.username+'/edit','accountedit') + templates['footer']);
 				else
-					return res.redirect('/403');
+					return res.redirect('/404');
 			});	
 		});
 

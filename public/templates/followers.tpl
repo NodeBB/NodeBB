@@ -1,7 +1,5 @@
 
 <div class="well">
-   
-
 
 	<div class="account-username-box">
 		<span class="account-username">
@@ -16,15 +14,15 @@
 	</div>
 
 	<div>
-	    <!-- BEGIN followers -->
+		<!-- BEGIN followers -->
 
-	    <div class="users-box well">
-		 	<a href="/users/{followers.username}">
-			    <img src="{followers.picture}" class="user-8080-picture"/>
-		    </a>
-		    <br/>
+		<div class="users-box well">
+			<a href="/users/{followers.username}">
+				<img src="{followers.picture}" class="user-8080-picture"/>
+			</a>
+			<br/>
 			<a href="/users/{followers.username}">{followers.username}</a>
-		    <br/>
+			<br/>
 			<div title="reputation">
 				<span class='reputation'>{followers.reputation}</span>
 				<i class='icon-star'></i>

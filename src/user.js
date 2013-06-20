@@ -127,13 +127,9 @@ var utils = require('./../public/src/utils.js'),
 			}
 
 			for(var i=0,ii=userkeys.length; i<ii; ++i) {
-				RDB.hgetall(userkeys[i], function(err, userdata) {
-					
-					if(userdata && userdata.password)
-						delete userdata.password;
-					
-					data.push(userdata);
-					
+				var uid = userkeys[i].substr(5);
+				User.getUserData(uid, function(userData) {
+					data.push(userData);
 					if(data.length == userkeys.length)
 						callback(data);
 				});
@@ -299,7 +295,8 @@ var utils = require('./../public/src/utils.js'),
 					'uploadedpicture': '',
 					'reputation': 0,
 					'postcount': 0,
-					'lastposttime': 0
+					'lastposttime': 0,
+					'administrator': 0
 				});
 				
 				RDB.set('username:' + username + ':uid', uid);
@@ -601,6 +598,26 @@ var utils = require('./../public/src/utils.js'),
 			callback(!!exists);
 		});
 	}
+
+	User.makeAdministrator = function(uid, callback) {
+		RDB.sadd('administrators', uid, function(err, data){
+			if(err === null) {
+				User.setUserField(uid, 'administrator', 1);
+			}
+			if(callback)
+				callback(err === null);
+		});
+	}
+
+	User.removeAdministrator = function(uid, callback) {
+		RDB.srem('administrators', uid, function(err, data){
+			if(err === null) {
+				User.setUserField(uid, 'administrator', 0);
+			}
+			if(callback)
+				callback(err === null);
+		});
+	}	
 
 	User.reset = {
 		validate: function(socket, code, callback) {
