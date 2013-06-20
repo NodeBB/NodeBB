@@ -26,7 +26,8 @@
 		}
 		
 		followBtn.on('click', function() {
-			$.post('/users/follow', {uid: theirid},
+			
+			$.post('/users/follow', {uid: theirid, _csrf:$('#csrf_token').val()},
 				function(data) {
 					followBtn.remove();
 					$('#user-action-alert').html('You are now following'+ $('.account-username').text() +'!').show();
