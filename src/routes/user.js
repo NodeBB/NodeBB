@@ -133,7 +133,7 @@ var user = require('./../user.js'),
 			var filename = uid + '-profileimg' + extension;
 			var uploadPath = path.join(global.configuration['ROOT_DIRECTORY'], config.upload_path, filename);
 			
-			console.log('trying to upload to : '+ uploadPath);
+			console.log('Info: Attempting upload to: '+ uploadPath);
 			
 			var is = fs.createReadStream(tempPath);
 			var os = fs.createWriteStream(uploadPath);

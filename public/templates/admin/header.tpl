@@ -26,7 +26,7 @@
 	<link rel="stylesheet" type="text/css" href="/css/admin.css" />
 </head>
 
-<body>
+<body class="admin">
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="navbar-inner">
 			<div class="container-fluid">

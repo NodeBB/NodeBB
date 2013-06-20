@@ -179,7 +179,22 @@ marked.setOptions({
 				throw new Error(err);
 			}
 
+			topicData.tid = tid;
 			callback(topicData);
+		});
+	}
+
+	Topics.getAllTopics = function(callback) {
+		RDB.smembers('topics:tid', function(err, tids) {
+			var topics = [];
+			async.each(tids, function(tid, next) {
+				Topics.get_topic(tid, 0, function(topicData) {
+					topics.push(topicData);
+					next();
+				});
+			}, function(err) {
+				callback(topics);
+			});
 		});
 	}
 
@@ -195,7 +210,6 @@ marked.setOptions({
 
 	Topics.getTitle = function(tid, callback) {
 		RDB.get('tid:' + tid + ':title', function(err, title) {
-			console.log(tid, title);
 			callback(title);
 		});
 	}

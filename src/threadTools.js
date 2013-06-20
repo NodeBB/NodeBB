@@ -46,6 +46,11 @@ var	RDB = require('./redis.js'),
 						tid: tid,
 						status: 'ok'
 					});
+
+					socket.emit('api:topic.lock', {
+						status: 'ok',
+						tid: tid
+					});
 				}
 			}
 		});
@@ -61,6 +66,11 @@ var	RDB = require('./redis.js'),
 					io.sockets.in('topic_' + tid).emit('event:topic_unlocked', {
 						tid: tid,
 						status: 'ok'
+					});
+
+					socket.emit('api:topic.unlock', {
+						status: 'ok',
+						tid: tid
 					});
 				}
 			}
@@ -79,6 +89,11 @@ var	RDB = require('./redis.js'),
 						tid: tid,
 						status: 'ok'
 					});
+
+					socket.emit('api:topic.delete', {
+						status: 'ok',
+						tid: tid
+					});
 				}
 			}
 		});
@@ -96,6 +111,11 @@ var	RDB = require('./redis.js'),
 						tid: tid,
 						status: 'ok'
 					});
+
+					socket.emit('api:topic.restore', {
+						status: 'ok',
+						tid: tid
+					});
 				}
 			}
 		});
@@ -112,6 +132,11 @@ var	RDB = require('./redis.js'),
 						tid: tid,
 						status: 'ok'
 					});
+
+					socket.emit('api:topic.pin', {
+						status: 'ok',
+						tid: tid
+					});
 				}
 			}
 		});
@@ -127,6 +152,11 @@ var	RDB = require('./redis.js'),
 					io.sockets.in('topic_' + tid).emit('event:topic_unpinned', {
 						tid: tid,
 						status: 'ok'
+					});
+
+					socket.emit('api:topic.unpin', {
+						status: 'ok',
+						tid: tid
 					});
 				}
 			}

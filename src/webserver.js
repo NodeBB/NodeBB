@@ -159,7 +159,6 @@ var express = require('express'),
 
 		var category_url = cid + (req.params.slug ? '/' + req.params.slug : '');
 		categories.getCategoryById(cid, 0, function(returnData) {
-			console.log(returnData);
 			res.send(
 				app.build_header(res) +
 				'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/category'].parse(returnData) + '\n\t</noscript>' +
@@ -294,8 +293,6 @@ var express = require('express'),
 
 	app.all('/test', function(req, res) {
 		res.send();
-		// console.log('CSRF is: ', res.locals.token);
-		// res.send('<form method="POST" action="/test"><input type="hidden" name="_csrf" value="' + res.locals.token + '" /><button type="submit">go</button></form>');
 	});
 
 
