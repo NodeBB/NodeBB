@@ -96,6 +96,7 @@ var user = require('./../user.js'),
 				});
 				return;
 			}
+			
 			var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
 			var type = req.files.userPhoto.type;
 			
@@ -120,28 +121,28 @@ var user = require('./../user.js'),
 						console.log(err);
 					}
 					
-					uploadUserPicture(req.user.uid, req.files.userPhoto.name, req.files.userPhoto.path, res);
+					uploadUserPicture(req.user.uid, path.extname(req.files.userPhoto.name), req.files.userPhoto.path, res);
 					
 				});
 			});
 		});
 		
-		function uploadUserPicture(uid, filename, tempPath, res) {
+		function uploadUserPicture(uid, extension, tempPath, res) {
 
-			if(!filename){
+			if(!extension) {
 				res.send({
-					error: 'Error uploading file! Error : Invalid file name!'
+					error: 'Error uploading file! Error : Invalid extension!'
 				});
 				return;
 			}
+
+			var filename = uid + '-profileimg' + extension;
+			var uploadPath = path.join(global.configuration['ROOT_DIRECTORY'], config.upload_path, filename);
 			
-			filename = uid + '-' + filename;
-			var uploadPath = config.upload_path + filename;
-			
-			console.log('trying to upload to : '+ global.configuration['ROOT_DIRECTORY'] + uploadPath);
+			console.log('trying to upload to : '+ uploadPath);
 			
 			var is = fs.createReadStream(tempPath);
-			var os = fs.createWriteStream(global.configuration['ROOT_DIRECTORY'] + uploadPath);
+			var os = fs.createWriteStream(uploadPath);
 
 			is.on('end', function() {
 				fs.unlinkSync(tempPath);
@@ -158,13 +159,12 @@ var user = require('./../user.js'),
 				var im = require('node-imagemagick');
 
 				im.resize({
-					srcPath: global.configuration['ROOT_DIRECTORY'] + uploadPath,
-					dstPath: global.configuration['ROOT_DIRECTORY'] + uploadPath,
+					srcPath: uploadPath,
+					dstPath: uploadPath,
 					width: 128
-				}, function(err, stdout, stderr){
+				}, function(err, stdout, stderr) {
 					if (err) {
 						console.log(err);
-						throw err;
 					}
 				});
 
