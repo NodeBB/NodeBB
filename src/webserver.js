@@ -21,13 +21,14 @@ var express = require('express'),
 	meta = require('./meta.js');
 
 (function(app) {
-	var templates = null,
-		build_header = function() {
-			return templates['header'].parse({
-				cssSrc: global.config['theme:src'] || '/vendor/bootstrap/css/bootstrap.min.css',
-				title: global.config['title'] || 'NodeBB'
-			});
-		};
+	var templates = null;
+	
+	app.build_header = function() {
+		return templates['header'].parse({
+			cssSrc: global.config['theme:src'] || '/vendor/bootstrap/css/bootstrap.min.css',
+			title: global.config['title'] || 'NodeBB'
+		});
+	};
 
 	// Middlewares
 	app.use(express.favicon());	// 2 args: string path and object options (i.e. expire time etc)
@@ -93,7 +94,7 @@ var express = require('express'),
 						return;
 					}
 					
-					res.send(build_header() + app.create_route(route) + templates['footer']);
+					res.send(app.build_header() + app.create_route(route) + templates['footer']);
 				});
 			}(routes[i]));
 		}
@@ -103,7 +104,7 @@ var express = require('express'),
 	app.get('/', function(req, res) {
 		categories.getAllCategories(function(returnData) {
 			res.send(
-				build_header() +
+				app.build_header() +
 				'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/home'].parse(returnData) + '\n\t</noscript>' +
 				app.create_route('') +
 				templates['footer']
@@ -131,7 +132,7 @@ var express = require('express'),
 		var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
 		topics.getTopicById(tid, ((req.user) ? req.user.uid : 0), function(topic) {
 			res.send(
-				build_header() +
+				app.build_header() +
 				'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/topic'].parse(topic) + '\n\t</noscript>' +
 				'\n\t<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '");});</script>' +
 				templates['footer']
@@ -159,7 +160,7 @@ var express = require('express'),
 		categories.getCategoryById(cid, 0, function(returnData) {
 			console.log(returnData);
 			res.send(
-				build_header() +
+				app.build_header() +
 				'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/category'].parse(returnData) + '\n\t</noscript>' +
 				'\n\t<script>templates.ready(function(){ajaxify.go("category/' + category_url + '");});</script>' +
 				templates['footer']
@@ -168,7 +169,7 @@ var express = require('express'),
 	});
 
 	app.get('/confirm/:code', function(req, res) {
-		res.send(build_header() + '<script>templates.ready(function(){ajaxify.go("confirm/' + req.params.code + '");});</script>' + templates['footer']);
+		res.send(app.build_header() + '<script>templates.ready(function(){ajaxify.go("confirm/' + req.params.code + '");});</script>' + templates['footer']);
 	});
 	
 	// These functions are called via ajax once the initial page is loaded to populate templates with data

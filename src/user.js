@@ -126,8 +126,14 @@ var utils = require('./../public/src/utils.js'),
 				userkeys.splice(anonUserIndex, 1);
 			}
 
+			// removes user:1:following and user:1:followers, - need to find a better way for this
+			userkeys = userkeys.filter(function(value, index, self){
+				return value.indexOf(':f') === -1;
+			});
+
 			for(var i=0,ii=userkeys.length; i<ii; ++i) {
 				var uid = userkeys[i].substr(5);
+				
 				User.getUserData(uid, function(userData) {
 					data.push(userData);
 					if(data.length == userkeys.length)
