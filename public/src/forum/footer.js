@@ -35,12 +35,26 @@
 	socket.on('api:updateHeader', function(data) {
 		var rightMenu = $('#right-menu');
 		if (data.uid > 0) {
+
 			var userLabel = rightMenu.find('#user_label');
-			userLabel.attr('href','/users/'+data['username']);
+			if(userLabel.length) {
+				userLabel.attr('href','/users/'+data['username']);
 			
-			userLabel.find('img').attr('src',data['picture']+"?s=24&default=identicon");
-			userLabel.find('span').html(data['username']);
-			
+				userLabel.find('img').attr('src',data['picture']+"?s=24&default=identicon");
+				userLabel.find('span').html(data['username']);
+			}
+			else {
+				var userli = $('<li> \
+									<a id="user_label" href="/users/'+data['username']+'"> \
+										<img src="'+data['picture']+"?s=24&default=identicon"+'"/> \
+										<span>'+data['username']+'</span> \
+									</a> \
+								</li>');
+				rightMenu.append(userli);
+
+				var logoutli = $('<li><a href="/logout">Log out</a></li>');
+				rightMenu.append(logoutli);
+			}
 		} else {
 			rightMenu.html('');
 
