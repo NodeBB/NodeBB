@@ -98,4 +98,7 @@
 
 	<div id="alert_window"></div>
 
+	<input id="csrf_token" type="hidden" template-variable="csrf" value="{csrf}" />
+
 	<div class="container" id="content">
+

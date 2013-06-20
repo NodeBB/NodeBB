@@ -92,7 +92,8 @@
 			var uid = parent.attr('data-uid');
 
 			var userData = {
-				uid:uid
+				uid:uid,
+				_csrf:$('#csrf_token').val()
 			};
 			
 			$.post('/admin/makeadmin',
@@ -122,7 +123,8 @@
 			var uid = parent.attr('data-uid');
 
 			var userData = {
-				uid:uid
+				uid:uid,
+				_csrf:$('#csrf_token').val()
 			};
 			
 			$.post('/admin/removeadmin',

@@ -21,7 +21,7 @@
 				var removeBtn = $(this);
 				var followingUid = $(this).attr('followingUid');
 				
-				$.post('/users/unfollow', {uid: followingUid},
+				$.post('/users/unfollow', {uid: followingUid, _csrf:$('#csrf_token').val()},
 	            	function(data) {
 	            		removeBtn.parent().remove();
 					}                

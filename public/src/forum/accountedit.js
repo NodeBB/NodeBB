@@ -80,7 +80,8 @@ $(document).ready(function() {
 	function changeUserPicture(type) { 
 		var userData = {
             uid: $('#inputUID').val(),
-			type: type
+			type: type,
+			_csrf:$('#csrf_token').val()
         };
             
 		$.post('/users/changepicture',
@@ -103,6 +104,7 @@ $(document).ready(function() {
             birthday:$('#inputBirthday').val(),
             location:$('#inputLocation').val(),
             signature:$('#inputSignature').val(),
+            _csrf:$('#csrf_token').val()
         };
             
 		$.post('/users/doedit',

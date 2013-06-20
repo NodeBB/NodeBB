@@ -23,9 +23,8 @@ var user = require('./../user.js'),
 		});
 
 		app.get('/users', function(req, res) {
-			console.log('derp');
 			user.getUserList(function(data) {
-				res.send(app.build_header() + app.create_route("users", "users") + templates['footer']);
+				res.send(app.build_header(res) + app.create_route("users", "users") + templates['footer']);
 			});
 		});
 
@@ -43,7 +42,7 @@ var user = require('./../user.js'),
 				
 				user.getUserData(uid, function(data) {
 					if(data) {
-						res.send(app.build_header() + app.create_route('users/'+data.username, 'account')  + templates['footer']);
+						res.send(app.build_header(res) + app.create_route('users/'+data.username, 'account')  + templates['footer']);
 					}
 					else {
 						res.redirect('/404');
@@ -60,7 +59,7 @@ var user = require('./../user.js'),
 			user.getUserField(req.user.uid, 'username', function(username) {
 			
 				if(req.params.username && username === req.params.username)
-					res.send(app.build_header() + app.create_route('users/'+req.params.username+'/edit','accountedit') + templates['footer']);
+					res.send(app.build_header(res) + app.create_route('users/'+req.params.username+'/edit','accountedit') + templates['footer']);
 				else
 					return res.redirect('/404');
 			});	
@@ -223,7 +222,7 @@ var user = require('./../user.js'),
 			if(!req.user)
 				return res.redirect('/403');
 			
-			res.send(app.build_header() + app.create_route('users/'+req.params.username+'/following','following') + templates['footer']);
+			res.send(app.build_header(res) + app.create_route('users/'+req.params.username+'/following','following') + templates['footer']);
 		});
 		
 		app.get('/users/:username/followers', function(req, res) {
@@ -231,11 +230,11 @@ var user = require('./../user.js'),
 			if(!req.user)
 				return res.redirect('/403');
 			
-			res.send(app.build_header() + app.create_route('users/'+req.params.username+'/followers','followers') + templates['footer']);
+			res.send(app.build_header(res) + app.create_route('users/'+req.params.username+'/followers','followers') + templates['footer']);
 		});
 
 		function api_method(req, res) {
-			console.log('derp');
+
 			var callerUID = req.user?req.user.uid : 0;
 	
 			if (!req.params.section && !req.params.username) {
