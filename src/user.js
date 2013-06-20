@@ -68,10 +68,8 @@ var utils = require('./../public/src/utils.js'),
 					if(data['password'])
 						delete data['password'];
 					data.uid = uid;
-					callback(data);
 				}
-				else
-					callback({});
+				callback(data);
 			}
 			else
 				console.log(err);
