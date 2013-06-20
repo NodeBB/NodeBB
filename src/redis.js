@@ -7,6 +7,10 @@
 	
 	RedisDB.exports = redis.createClient(global.config.redis.port, global.config.redis.host);
 
+	if( global.config.redis.password ) {
+		RedisDB.exports.auth(global.config.redis.password);
+	}
+
 	RedisDB.exports.handle = function(error) {
 		if (error !== null) {
 			if (PRODUCTION === false) {
