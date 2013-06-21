@@ -185,12 +185,12 @@ marked.setOptions({
 
 					Posts.get_cid_by_pid(pid, function(cid) {
 						RDB.del('cid:' + cid + ':read_by_uid');
+						
 						RDB.zadd('categories:recent_posts:cid:' + cid, Date.now(), pid);
+
+						topics.markAsRead(tid, uid);
 					});
 
-					// Re-add the poster, so he/she does not get an "unread" flag on this topic
-					topics.markAsRead(tid, uid);
-					// this will duplicate once we enter the thread, which is where we should be going
 
 					socket.emit('event:alert', {
 						title: 'Reply Successful',
