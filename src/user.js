@@ -11,7 +11,7 @@ var utils = require('./../public/src/utils.js'),
 
 (function(User) {
 	User.getUserField = function(uid, field, callback) {
-		RDB.hget('user:'+uid, field, function(err, data){
+		RDB.hget('user:'+uid, field, function(err, data) {
 			if(err === null)
 				callback(data);
 			else
@@ -20,7 +20,7 @@ var utils = require('./../public/src/utils.js'),
 	}
 	
 	User.getUserFields = function(uid, fields, callback) {
-		RDB.hmget('user:'+uid, fields, function(err, data){
+		RDB.hmget('user:'+uid, fields, function(err, data) {
 			if(err === null) {
 				var returnData = {};
 				
@@ -50,7 +50,7 @@ var utils = require('./../public/src/utils.js'),
 
 		for (var i=0, ii=uuids.length; i<ii; i++) {
 			(function(user_id) {
-				User.getUserFields(user_id, fields, function(user_data){
+				User.getUserFields(user_id, fields, function(user_data) {
 					data[user_id] = user_data;
 					loaded ++;
 					if (loaded == uuids.length) callback(data);
@@ -61,9 +61,8 @@ var utils = require('./../public/src/utils.js'),
 
 	User.getUserData = function(uid, callback) {
 
-		RDB.hgetall('user:'+uid, function(err, data){
-			if(err === null)
-			{
+		RDB.hgetall('user:'+uid, function(err, data) {
+			if(err === null) {
 				if(data) {
 					if(data['password'])
 						delete data['password'];
@@ -81,8 +80,7 @@ var utils = require('./../public/src/utils.js'),
 		var fields = ['email', 'fullname', 'website', 'location', 'birthday', 'signature'];
 		var key = '';
 		
-		if(data['signature'] !== undefined && data['signature'].length > 150)
-		{
+		if(data['signature'] !== undefined && data['signature'].length > 150) {
 			callback({error:'Signature can\'t be longer than 150 characters!'});
 			return;
 		}
@@ -125,11 +123,6 @@ var utils = require('./../public/src/utils.js'),
 			if(anonUserIndex !== -1) {
 				userkeys.splice(anonUserIndex, 1);
 			}
-
-			// removes user:1:following and user:1:followers, - need to find a better way for this
-			userkeys = userkeys.filter(function(value, index, self){
-				return value.indexOf(':f') === -1;
-			});
 
 			for(var i=0,ii=userkeys.length; i<ii; ++i) {
 				var uid = userkeys[i].substr(5);
@@ -391,9 +384,9 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.follow = function(uid, followid, callback) {
-		RDB.sadd('user:'+uid+':following', followid, function(err, data) {
+		RDB.sadd('following:'+uid, followid, function(err, data) {
 			if(err === null) {
-				RDB.sadd('user:'+followid+':followers', uid, function(err, data) {
+				RDB.sadd('followers:'+followid, uid, function(err, data) {
 					callback(data);	
 				});
 			}
@@ -403,9 +396,9 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.unfollow = function(uid, unfollowid, callback) {
-		RDB.srem('user:'+uid+':following', unfollowid, function(err, data){
+		RDB.srem('following:'+uid, unfollowid, function(err, data){
 			if(err === null) {
-				RDB.srem('user:'+unfollowid+':followers', uid, function(err, data){
+				RDB.srem('followers:'+unfollowid, uid, function(err, data){
 					callback(data);
 				});
 			}
@@ -415,7 +408,7 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.getFollowing = function(uid, callback) {
-		RDB.smembers('user:'+uid+':following', function(err, userIds) {
+		RDB.smembers('following:'+uid, function(err, userIds) {
 			if(err === null)
 				User.getDataForUsers(userIds, callback);
 			else
@@ -424,7 +417,7 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.getFollowers = function(uid, callback) {
-		RDB.smembers('user:'+uid+':followers', function(err, userIds) {
+		RDB.smembers('followers:'+uid, function(err, userIds) {
 			if(err === null)
 				User.getDataForUsers(userIds, callback);
 			else
@@ -433,7 +426,7 @@ var utils = require('./../public/src/utils.js'),
 	}
 	
 	User.getFollowingCount = function(uid, callback) {
-		RDB.smembers('user:'+uid+':following', function(err, userIds) {
+		RDB.smembers('following:'+uid, function(err, userIds) {
 			if(err === null)
 				callback(userIds.length);
 			else
@@ -442,7 +435,7 @@ var utils = require('./../public/src/utils.js'),
 	}
 	
 	User.getFollowerCount = function(uid, callback) {
-		RDB.smembers('user:'+uid+':followers', function(err, userIds) {
+		RDB.smembers('followers:'+uid, function(err, userIds) {
 			if(err === null)
 				callback(userIds.length);
 			else
@@ -471,7 +464,7 @@ var utils = require('./../public/src/utils.js'),
 	User.sendPostNotificationToFollowers = function(uid, tid, pid) {
 
 		User.getUserField(uid, 'username', function(username) {
-			RDB.smembers('user:'+uid+':followers', function(err, followers) {
+			RDB.smembers('followers:'+uid, function(err, followers) {
 				
 				topics.getSlug(tid, function(slug) {
 
@@ -487,7 +480,7 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.isFollowing = function(uid, theirid, callback) {
-		RDB.sismember('user:'+uid+':following', theirid, function(err, data) {
+		RDB.sismember('following:'+uid, theirid, function(err, data) {
 			if(err === null)
 				callback(data === 1);
 			else
