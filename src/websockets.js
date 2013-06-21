@@ -40,9 +40,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		
 		user.get_uid_by_session(sessionID, function(userId) {
 			if (userId)
-			{
 				users[sessionID] = userId;
-			}			
 			else 
 				users[sessionID] = 0;
 

@@ -203,7 +203,7 @@ marked.setOptions({
 					threadTools.notify_followers(tid, uid);
 
 					user.getUserFields(uid, ['username','reputation','picture','signature'], function(data) {
-						
+
 						var timestamp = Date.now();
 						
 						io.sockets.in('topic_' + tid).emit('event:new_post', {
