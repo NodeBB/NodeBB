@@ -31,11 +31,11 @@
 
 					<div class="topic-buttons pull-left">
 						<a href="/users/{main_posts.username}" class="username-field btn hidden-phone">{main_posts.username}</a>
-						<a target="_blank" class="btn hidden-phone" href="../{topic_id}.rss"><i class="icon-rss-sign"></i></a>
-						<button class="btn follow" type="button"><i class="icon-eye-open"></i></button>
-						<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn edit {main_posts.display_moderator_tools}" type="button"><i class="icon-pencil"></i></button>
-						<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn delete {main_posts.display_moderator_tools}" type="button"><i class="icon-trash"></i></button>
-						<button id="quote_{main_posts.pid}_{main_posts.uid}" class="btn quote" type="button"><i class="icon-quote-left"></i></button>
+						<a target="_blank" class="btn hidden-phone" href="../{topic_id}.rss" title="RSS Feed"><i class="icon-rss-sign"></i></a>
+						<button class="btn follow" type="button" title="Be notified of new replies in this topic"><i class="icon-eye-open"></i></button>
+						<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn edit {main_posts.display_moderator_tools}" type="button" title="Edit"><i class="icon-pencil"></i></button>
+						<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn delete {main_posts.display_moderator_tools}" type="button" title="Delete"><i class="icon-trash"></i></button>
+						<button id="quote_{main_posts.pid}_{main_posts.uid}" class="btn quote" type="button" title="Quote"><i class="icon-quote-left"></i></button>
 
 						<button id="favs_{main_posts.pid}_{main_posts.uid}" class="favourite btn" type="button">
 							<span>Favourite</span>
@@ -75,12 +75,12 @@
 					<div class="post-signature">{posts.signature}</div>
 					<div class="profile-block">
 						<span class="post-buttons">
-							<div id="ids_{posts.pid}_{posts.uid}" class="chat hidden-phone"><i class="icon-comment"></i></div>
-							<div id="ids_{posts.pid}_{posts.uid}" class="edit {posts.display_moderator_tools} hidden-phone"><i class="icon-pencil"></i></div>
-							<div id="ids_{posts.pid}_{posts.uid}" class="delete {posts.display_moderator_tools} hidden-phone"><i class="icon-trash"></i></div>
-							<div id="quote_{posts.pid}_{posts.uid}" class="quote hidden-phone"><i class="icon-quote-left"></i></div>
-							<div id="favs_{posts.pid}_{posts.uid}" class="favourite hidden-phone"><span class="post_rep_{posts.pid}">{posts.post_rep}</span><i class="{posts.fav_star_class}"></i></div>
-							<div class="post_reply"><i class="icon-reply"></i></div>
+							<div id="ids_{posts.pid}_{posts.uid}" class="chat hidden-phone" title="Chat"><i class="icon-comment"></i></div>
+							<div id="ids_{posts.pid}_{posts.uid}" class="edit {posts.display_moderator_tools} hidden-phone" title="Edit"><i class="icon-pencil"></i></div>
+							<div id="ids_{posts.pid}_{posts.uid}" class="delete {posts.display_moderator_tools} hidden-phone" title="Delete"><i class="icon-trash"></i></div>
+							<div id="quote_{posts.pid}_{posts.uid}" class="quote hidden-phone" title="Quote"><i class="icon-quote-left"></i></div>
+							<div id="favs_{posts.pid}_{posts.uid}" class="favourite hidden-phone" title="Favourite"><span class="post_rep_{posts.pid}">{posts.post_rep}</span><i class="{posts.fav_star_class}"></i></div>
+							<div class="post_reply" title="Reply"><i class="icon-reply"></i></div>
 						</span>
 						<img class="hidden-desktop" src="{posts.gravatar}?s=10&default=identicon" align="left" /> posted by <strong><a class="username-field" href="/users/{posts.username}">{posts.username}</a></strong> {posts.relativeTime} ago
 						<span class="{posts.edited-class} hidden-phone">| last edited by <strong><a href="/users/{posts.editor}">{posts.editor}</a></strong> {posts.relativeEditTime} ago</span>
