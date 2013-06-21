@@ -107,10 +107,23 @@ var socket,
 
 		var alert = $('#'+alert_id);
 
+		function startTimeout(div, timeout) {
+			var timeoutId = setTimeout(function() {
+				$(div).fadeOut(1000, function() {
+					this.remove();
+				});
+			}, timeout);
+			
+			$(div).attr('timeoutId', timeoutId);
+		}
+
 		if(alert.length > 0) {
 			alert.find('strong').html(params.title);
 			alert.find('p').html(params.message);
 			alert.attr('class', "alert toaster-alert " + ((params.type=='warning') ? '' : "alert-" + params.type));
+			
+			clearTimeout(alert.attr('timeoutId'));
+			startTimeout(alert, params.timeout);
 		}
 		else {
 			var div = document.createElement('div'),
@@ -140,11 +153,7 @@ var socket,
 			jQuery('#'+params.location).prepend(jQuery(div).fadeIn('100'));
 
 			if (params.timeout) {
-				setTimeout(function() {
-					jQuery(div).fadeOut(1000, function() {
-						this.remove();
-					});
-				}, params.timeout)
+				startTimeout(div, params.timeout);
 			}
 
 			if (params.clickfn) {
@@ -157,6 +166,8 @@ var socket,
 			}
 		}
 	}
+
+	
 
 	app.current_room = null; 
 	app.enter_room = function(room) {

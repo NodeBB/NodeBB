@@ -187,7 +187,7 @@ marked.setOptions({
 						RDB.del('cid:' + cid + ':read_by_uid');
 						
 						RDB.zadd('categories:recent_posts:cid:' + cid, Date.now(), pid);
-
+		  	  		
 						topics.markAsRead(tid, uid);
 					});
 

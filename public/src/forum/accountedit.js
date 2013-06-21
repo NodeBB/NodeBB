@@ -129,7 +129,7 @@ $(document).ready(function() {
 				  type: 'success',
 				  title: 'Profile Updated',
 				  message: 'Your profile has been updated successfully',
-				  timeout: 2000
+				  timeout: 10000
 				});
 			}
 		);
