@@ -42,6 +42,7 @@
 			
 			<form id="uploadForm" action="/users/uploadpicture" method="post" enctype="multipart/form-data">
 				<input id="userPhotoInput" type="file" name="userPhoto" >
+				<input id="imageUploadCsrf" type="hidden" name="_csrf" value="">
 			</form>
 			
 			<div id="upload-progress-box" class="progress progress-striped active hide">

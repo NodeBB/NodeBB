@@ -17,6 +17,9 @@ $(document).ready(function() {
 			error('select an image to upload!');
 			return false;			
 		}
+		
+		$(this).find('#imageUploadCsrf').val($('#csrf_token').val());
+		
 
 		$(this).ajaxSubmit({
  
