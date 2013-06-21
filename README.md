@@ -18,7 +18,7 @@ First, we install our base software stack:
 
 	# apt-get install git nodejs redis-server npm build-essential imagemagick
 
-**If your package manager only installed a version of Node.js that is less than 0.8:**
+**If your package manager only installed a version of Node.js that is less than 0.8 (e.g. Ubuntu 12.10, 13.04):**
 
 	# add-apt-repository ppa:chris-lea/node.js
 	# apt-get update && apt-get dist-upgrade
@@ -42,6 +42,8 @@ The default settings are for a local server running on the default port, with a 
 Lastly, we run the forum.
 
     $ node app
+
+NodeBB can also be started with helper programs, such as `supervisor` and `forever`. [Take a look at the options here](https://github.com/designcreateplay/NodeBB/wiki/How-to-run-NodeBB).
 
 *(Optional)* Some server configurations may install the node binary as `nodejs` instead of `node`. You can re-map it (so as to not break compatibility with `node-supervisor`) by running the following command:
 
