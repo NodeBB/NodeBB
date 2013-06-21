@@ -454,15 +454,6 @@
 					element.attr('class', 'icon-star-empty');
 					socket.emit('api:posts.unfavourite', {pid: pid, room_id: app.current_room});
 				}
-				
-				/*if (this.children[2].className == 'icon-star-empty') {
-					this.children[2].className = 'icon-star';
-					socket.emit('api:posts.favourite', {pid: pid, room_id: app.current_room});
-				}
-				else {
-					this.children[2].className = 'icon-star-empty';
-					socket.emit('api:posts.unfavourite', {pid: pid, room_id: app.current_room});
-				}*/
 			}
 		});
 	}
