@@ -292,11 +292,7 @@ var express = require('express'),
 	app.get('/api/:method/:id*', api_method);
 
 	app.all('/test', function(req, res) {
-		var RDB = require('./redis.js');
-		RDB.lpush('administrators', 1, function(err, data) {
-			// console.log(err, data);
-			res.send();
-		});
+		res.send();
 	});
 
 

@@ -1,4 +1,4 @@
 #!/bin/bash
 clear
-echo "Launching NodeBB"
-supervisor --extensions 'node|js|tpl' -- app $1
+echo "Launching NodeBB in \"development\" mode"
+NODE_ENV=development supervisor --extensions 'node|js|tpl' -- app $1

@@ -753,11 +753,15 @@ var utils = require('./../public/src/utils.js'),
 	};
 
 	User.go_online = function(uid) {
-		RDB.sadd('users:online', uid);
+		RDB.sadd('users:online', uid, function(err) {
+			if (err) RDB.handle(err);
+		});
 	};
 
 	User.go_offline = function(uid) {
-		RDB.srem('users:online', uid);
+		RDB.srem('users:online', uid, function(err) {
+			if (err) RDB.handle(err);
+		});
 	};
 
 

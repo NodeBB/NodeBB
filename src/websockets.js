@@ -55,11 +55,13 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		var hs = socket.handshake;
 
 		var uid = users[hs.sessionID];
-		userSockets[uid] = userSockets[uid] || [];
-		userSockets[uid].push(socket);
-		user.go_online(uid);
-		
-		socket.join('uid_' + uid);
+		// if (uid > 0) {
+			userSockets[uid] = userSockets[uid] || [];
+			userSockets[uid].push(socket);
+			user.go_online(uid);
+			
+			socket.join('uid_' + uid);
+		// }
 		
 		/*process.on('uncaughtException', function(err) {
 			// handle the error safely
@@ -70,12 +72,14 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		socket.emit('event:connect', {status: 1});
 		
 		socket.on('disconnect', function() {
-			user.go_offline(uid);
-			delete users[hs.sessionID];
-			var index = userSockets[uid].indexOf(socket);
-			if(index !== -1) {
-				userSockets[uid].splice(index, 1);
-			}
+			// if (uid > 0) {
+				user.go_offline(uid);
+				delete users[hs.sessionID];
+				var index = userSockets[uid].indexOf(socket);
+				if(index !== -1) {
+					userSockets[uid].splice(index, 1);
+				}
+			// }
 		});
 
 		socket.on('api:get_all_rooms', function(data) {

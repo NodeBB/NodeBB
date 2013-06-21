@@ -4,6 +4,9 @@ var fs = require('fs'),
 	utils = require('./public/src/utils.js'),
 	args = {};
 
+// Runtime environment
+global.env = process.env.NODE_ENV || 'production',
+
 // Parse any passed-in arguments
 process.argv.slice(2).forEach(function(value) {
 	if (value.slice(0, 2) === '--') {
