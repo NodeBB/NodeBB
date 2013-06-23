@@ -8,6 +8,13 @@ Please support NodeBB development! Check out our IndieGoGo campaign and like, sh
 
 ![NodeBB Login Page (with Social Logins)](http://i.imgur.com/q5tUUHW.png)
 
+## How can I follow along/contribute?
+
+* Our [Indiegogo campaign](https://www.indiegogo.com/projects/nodebb-the-discussion-platform-of-the-future/) is accepting contributions until August 17th, 2013
+* Our feature roadmap is hosted on the [NodeBB Development/Roadmap Trello](https://trello.com/board/nodebb-development-roadmap/51c66b0d7c42d0a257002732)
+* If you are a developer, feel free to check out the source and submit pull requests.
+* If you are a designer, NodeBB needs themes! NodeBB will accept any LESS or CSS file and use it in place of the default Twitter Bootstrap theme. Consider extending Bootstrap themes by extending the base bootstrap LESS file.
+
 ## Requirements
 
 NodeBB requires a version of Node.js at least 0.8 or greater, and a Redis version 2.6 or greater.
