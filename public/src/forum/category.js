@@ -27,20 +27,21 @@
 		jQuery('#category-no-topics').remove();
 
 		topic.innerHTML = html;
+		topic = topic.querySelector('a');
+		
 		if (numTopics > 0) {
 			for(x=0;x<numTopics;x++) {
 				if (topics[x].querySelector('.icon-pushpin')) continue;
-				container.insertBefore(topic.querySelector('a'), topics[x]);
+				container.insertBefore(topic, topics[x]);
 				$(topic).hide().fadeIn('slow');
 				break;
 			}
 		} else {
-			container.insertBefore(topic.querySelector('a'), null);
+			container.insertBefore(topic, null);
 			$(topic).hide().fadeIn('slow');
 		}
 
-		// jQuery('<div></div>').appendTo("#topics-container").hide().append(html).fadeIn('slow');	
-		// set_up_posts(uniqueid);
+		ajaxify.enable();
 	});
 
 
