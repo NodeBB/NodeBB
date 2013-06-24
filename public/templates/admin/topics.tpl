@@ -19,4 +19,8 @@
 	<!-- END topics -->
 </ul>
 
+<div class="text-center">
+	<button id="topics_loadmore" class="btn btn-large">Load More Topics</button>
+</div>
+
 <script type="text/javascript" src="../../src/forum/admin/topics.js"></script>

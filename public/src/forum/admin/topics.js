@@ -1,5 +1,6 @@
 $(document).ready(function() {
-	var topicsListEl = document.querySelector('.topics');
+	var topicsListEl = document.querySelector('.topics'),
+		loadMoreEl = document.getElementById('topics_loadmore');
 
 	$(topicsListEl).on('click', '[data-action]', function() {
 		var $this = $(this),
@@ -21,6 +22,16 @@ $(document).ready(function() {
 			break;
 		}
 	});
+
+	loadMoreEl.addEventListener('click', function() {
+		var	topics = document.querySelectorAll('.topics li[data-tid]'),
+			lastTid = parseInt(topics[topics.length - 1].getAttribute('data-tid'));
+
+		socket.emit('api:admin.topics.getMore', {
+			limit: 10,
+			after: lastTid
+		});
+	}, false);
 
 	// Resolve proper button state for all topics
 	var	topicEls = topicsListEl.querySelectorAll('li'),
@@ -81,4 +92,9 @@ socket.on('api:topic.restore', function(response) {
 
 		$(btnEl).removeClass('active');
 	}
+});
+
+socket.on('api:admin.topics.getMore', function(topics) {
+	var	html = templates.prepare(templates['admin/topics'].blocks['topics']).parse(topics);
+	console.log(html);
 });

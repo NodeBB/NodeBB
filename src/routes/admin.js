@@ -57,10 +57,7 @@ var user = require('./../user.js'),
 					}
 					break;
 				case 'topics':
-					topics.getAllTopics(function(topics) {
-						topics.sort(function(a, b) {
-							return b.timestamp - a.timestamp;
-						});
+					topics.getAllTopics(10, null, function(topics) {
 						res.json({
 							topics: topics
 						});
