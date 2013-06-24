@@ -185,9 +185,33 @@ marked.setOptions({
 		});
 	}
 
-	Topics.getAllTopics = function(callback) {
+	Topics.getAllTopics = function(limit, after, callback) {
 		RDB.smembers('topics:tid', function(err, tids) {
-			var topics = [];
+			var topics = [],
+				numTids, x;
+
+			// Sort into ascending order
+			tids.sort(function(a, b) { return a - b; });
+
+			// Eliminate everything after the "after" tid
+			if (after) {
+				for(x=0,numTids=tids.length;x<numTids;x++) {
+					if (tids[x] >= after) {
+						tids = tids.slice(0, x);
+						break;
+					}
+				}
+			}
+
+			if (limit) {
+				if (limit > 0 && limit < tids.length) {
+					tids = tids.slice(tids.length - limit);
+				}
+			}
+
+			// Sort into descending order
+			tids.sort(function(a, b) { return b - a; });
+
 			async.each(tids, function(tid, next) {
 				Topics.get_topic(tid, 0, function(topicData) {
 					topics.push(topicData);

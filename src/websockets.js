@@ -126,7 +126,6 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		// BEGIN: API calls (todo: organize)
-		//   julian: :^)
 
 		socket.on('api:updateHeader', function(data) {
 			if(uid) {
@@ -395,6 +394,12 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					error: 'not-logged-in'
 				});
 			}
+		});
+
+		socket.on('api:admin.topics.getMore', function(data) {
+			topics.getAllTopics(data.limit, data.after, function(topics) {
+				socket.emit('api:admin.topics.getMore', JSON.stringify(topics));
+			});
 		});
 	});
 	

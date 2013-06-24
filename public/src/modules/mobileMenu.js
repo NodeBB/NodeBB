@@ -5,18 +5,23 @@ define(function() {
 	var categories = null,
 		overlay = null,
 		menuBtn = null,
-		postBtn = null;
+		postBtn = null,
+		initialized = false;
 
 
 	function loadCategories(callback) {
 		if (categories) {
-			displayCategories();
+			callback(true);
 			return;
 		}
 
 		jQuery.getJSON('/api/home', function(data) {
 			categories = data.categories;
-			displayCategories();
+			initialized = true;
+
+			if (callback) {
+				callback(true);
+			}
 		});
 	}
 
@@ -65,6 +70,8 @@ define(function() {
 
 
 	mobileMenu.onNavigate = function() {
+		if (initialized == false) return false;
+
 		var cid = templates.get('category_id'),
 			tid = templates.get('topic_id');
 
@@ -100,9 +107,11 @@ define(function() {
 			animateIcons();
 		}
 
-
-		loadCategories(displayCategories);
-		mobileMenu.onNavigate();
+		loadCategories(function() {
+			displayCategories();
+			mobileMenu.onNavigate();
+		});
+		
 	}
 
 	return {
