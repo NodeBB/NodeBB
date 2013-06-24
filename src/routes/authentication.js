@@ -6,10 +6,11 @@
 		passportFacebook = require('passport-facebook').Strategy,
 		login_strategies = [],
 
-		user_module = require('./../user.js');
+		user_module = require('./../user.js'),
+		login_module = require('./../login.js');
 
 	passport.use(new passportLocal(function(user, password, next) {
-		user_module.loginViaLocal(user, password, function(login) {
+		login_module.loginViaLocal(user, password, function(login) {
 			if (login.status === 'ok') next(null, login.user);
 			else next(null, false, login);
 		});
@@ -21,7 +22,7 @@
 			consumerSecret: global.config['social:twitter:secret'],
 			callbackURL: config.url + 'auth/twitter/callback'
 		}, function(token, tokenSecret, profile, done) {
-			user_module.loginViaTwitter(profile.id, profile.username, function(err, user) {
+			login_module.loginViaTwitter(profile.id, profile.username, function(err, user) {
 				if (err) { return done(err); }
 				done(null, user);
 			});
@@ -36,7 +37,7 @@
 			clientSecret: global.config['social:google:secret'],
 			callbackURL: config.url + 'auth/google/callback'
 		}, function(accessToken, refreshToken, profile, done) {
-			user_module.loginViaGoogle(profile.id, profile.displayName, profile.emails[0].value, function(err, user) {
+			login_module.loginViaGoogle(profile.id, profile.displayName, profile.emails[0].value, function(err, user) {
 				if (err) { return done(err); }
 				done(null, user);
 			});
@@ -51,7 +52,7 @@
 			clientSecret: global.config['social:facebook:secret'],
 			callbackURL: config.url + 'auth/facebook/callback'
 		}, function(accessToken, refreshToken, profile, done) {
-			user_module.loginViaFacebook(profile.id, profile.displayName, profile.emails[0].value, function(err, user) {
+			login_module.loginViaFacebook(profile.id, profile.displayName, profile.emails[0].value, function(err, user) {
 				if (err) { return done(err); }
 				done(null, user);
 			});
@@ -84,7 +85,7 @@
 
 		app.get('/logout', function(req, res) {
 			console.log('info: [Auth] Session ' + req.sessionID + ' logout (uid: ' + global.uid + ')');
-			user_module.logout(req.sessionID, function(logout) {
+			login_module.logout(req.sessionID, function(logout) {
 				req.logout();
 				res.send(app.build_header(res) + templates['logout'] + templates['footer']);
 			});
