@@ -84,7 +84,7 @@ var express = require('express'),
 
 	// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 	(function() {
-		var routes = ['login', 'register', 'account', 'latest', 'popular', 'active', '403', '404'];
+		var routes = ['login', 'register', 'account', 'recent', 'popular', 'active', '403', '404'];
 
 		for (var i=0, ii=routes.length; i<ii; i++) {
 			(function(route) {
@@ -247,7 +247,7 @@ var express = require('express'),
 						res.json(data);
 					}, req.params.id, uid);
 				break;
-			case 'latest' :
+			case 'recent' :
 					categories.getLatestTopics(uid, 0, 9, function(data) {
 						res.json(data);
 					});
