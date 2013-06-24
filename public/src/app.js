@@ -42,6 +42,7 @@ var socket,
 						});
 					}, 1000);
 					reconnecting = false;
+					socket.emit('api:updateHeader', { fields: ['username', 'picture', 'userslug'] });
 				}
 			});
 
@@ -110,7 +111,7 @@ var socket,
 		function startTimeout(div, timeout) {
 			var timeoutId = setTimeout(function() {
 				$(div).fadeOut(1000, function() {
-					this.remove();
+					$(this).remove();
 				});
 			}, timeout);
 			
