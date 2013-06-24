@@ -250,19 +250,22 @@
 					if (data[d] === null) {
 						template = replace(namespace + d, '', template);
 					} else if (data[d].constructor == Array) {
-						namespace += d;
+						namespace += d + '.';
 						
 						regex = makeRegex(d),
 						block = getBlock(regex, namespace, template)
-						if (block == null) continue;
+						if (block == null) {
+							namespace = namespace.replace(d + '.', '');
+							continue;
+						}
 
 						var numblocks = data[d].length - 1, i = 0, result = "";
 
 						do {
-							result += parse(data[d][i], namespace + '.', block);
+							result += parse(data[d][i], namespace, block);
 						} while (i++ < numblocks);
 
-						namespace = namespace.replace(d, '');
+						namespace = namespace.replace(d + '.', '');
 						template = setBlock(regex, result, template);
 					} else if (data[d] instanceof Object) {
 						namespace += d + '.';
