@@ -24,13 +24,16 @@ $(document).ready(function() {
 	});
 
 	loadMoreEl.addEventListener('click', function() {
-		var	topics = document.querySelectorAll('.topics li[data-tid]'),
-			lastTid = parseInt(topics[topics.length - 1].getAttribute('data-tid'));
+		if (this.className.indexOf('disabled') === -1) {
+			var	topics = document.querySelectorAll('.topics li[data-tid]'),
+				lastTid = parseInt(topics[topics.length - 1].getAttribute('data-tid'));
 
-		socket.emit('api:admin.topics.getMore', {
-			limit: 10,
-			after: lastTid
-		});
+			this.innerHTML = '<i class="icon-refresh icon-spin"></i> Retrieving topics';
+			socket.emit('api:admin.topics.getMore', {
+				limit: 10,
+				after: lastTid
+			});
+		}
 	}, false);
 
 	// Resolve proper button state for all topics
@@ -95,8 +98,21 @@ socket.on('api:topic.restore', function(response) {
 });
 
 socket.on('api:admin.topics.getMore', function(topics) {
+	var btnEl = document.getElementById('topics_loadmore');
+
 	topics = JSON.parse(topics);
 	console.log(topics);
-	var	html = templates.prepare(templates['admin/topics'].blocks['topics']).parse(topics);
-	console.log(html);
+	if (topics.length > 0) {
+		var	html = templates.prepare(templates['admin/topics'].blocks['topics']).parse({
+				topics: topics
+			}),
+			topicsListEl = document.querySelector('.topics');
+
+		topicsListEl.innerHTML += html;
+		btnEl.innerHTML = 'Load More Topics';
+	} else {
+		// Exhausted all topics
+		btnEl.className += ' disabled';
+		btnEl.innerHTML = 'No more topics';
+	}
 });
