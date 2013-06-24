@@ -15,23 +15,17 @@
 		<li data-cid="{categories.cid}" class="entry-row {categories.blockclass}">
 			<form class="form-inline">
 				<div class="icon">
-					<i onclick="select_icon(this); modified(this);" class="{categories.icon} icon-2x"></i>
+					<i data-name="icon" value="{categories.icon}" class="{categories.icon} icon-2x"></i>
 				</div>
-				<input placeholder="Category Name" value="{categories.name}" onchange="modified(this);" class="input-medium"></input>
-				<select class="blockclass input-medium" data-value="{categories.blockclass}" onchange="update_blockclass(this); modified(this);">
+				<input placeholder="Category Name" data-name="name" value="{categories.name}" class="category_name input-medium"></input>
+				<select class="blockclass input-medium" data-name="blockclass" data-value="{categories.blockclass}">
 					<option value="category-purple">category-purple</option>
 					<option value="category-darkblue">category-darkblue</option>
 					<option value="category-blue">category-blue</option>
 					<option value="category-darkgreen">category-darkgreen</option>
 					<option value="category-orange">category-orange</option>
 				</select>
-				<!--<input value="{categories.icon}" class="input-medium" onchange="update_icon(this);"></input>-->
-				<input onchange="modified(this);" placeholder="Category Description" value="{categories.description}" class="input-medium description"></input>
-				<!--<a target="_blank" href="../category/{categories.slug}">category/{categories.slug}</a>-->
-
-				<!--<div style="float: right">
-					<button class="btn btn-large btn-inverse">Save</button>
-				</div>-->
+				<input data-name="description" placeholder="Category Description" value="{categories.description}" class="category_description input-medium description"></input>
 			</form>
 		</li>
 
@@ -45,10 +39,18 @@
 
 <script type="text/javascript">
 
-var modified_catgories = {};
+var modified_categories = {};
 
 function modified(el) {
+	var cid = $(el).parents('li').attr('data-cid');
 
+	modified_categories[cid] = modified_categories[cid] || {};
+	modified_categories[cid][el.getAttribute('data-name')] = el.value;
+}
+
+function save() {
+	socket.emit('api:admin.categories.update', modified_categories);
+	modified_categories = {};
 }
 
 function select_icon(el) {
@@ -57,26 +59,23 @@ function select_icon(el) {
 	jQuery('#icons .' + selected).parent().addClass('selected');
 
 
-
 	bootbox.confirm('<h2>Select an icon.</h2>' + document.getElementById('icons').innerHTML, function(confirm) {
 		if (confirm) {
 			var iconClass = jQuery('.bootbox .selected').children(':first').attr('class');
-			el.className = iconClass + ' icon-2x';
+			el.className = iconClass + ' icon icon-2x';
+			el.value = iconClass;
 		}
 	});
 
 	jQuery('.bootbox .span3').on('click', function() {
 		jQuery('.bootbox .selected').removeClass('selected');
 		jQuery(this).addClass('selected');
-	})
+	});
 }
 
 
 function update_blockclass(el) {
 	el.parentNode.parentNode.className = 'entry-row ' + el.value;
-}
-function update_icon(el) {
-	jQuery(el.parentNode.parentNode);
 }
 
 jQuery('#entry-container').sortable();
@@ -98,7 +97,19 @@ jQuery('.blockclass').each(function() {
 				jQuery(this.parentNode).addClass('active');
 				return false;
 			}
-		})
+		});
+
+		jQuery('#save').on('click', save);
+
+		jQuery('.icon').on('click', function(ev) {
+			select_icon(ev.target);
+		});
+
+		jQuery('.blockclass').on('change', update_blockclass);
+
+		jQuery('.category_name, .category_description, .blockclass').on('change', function(ev) {
+			modified(ev.target);
+		});
 	});
 	
 }());

@@ -24,8 +24,45 @@ var	RDB = require('./../redis.js'),
 		});
 	};
 
-	CategoriesAdmin.edit = function(data, callback) {
-		// just a reminder to self that name + slugs are stored into topics data as well.
+	CategoriesAdmin.update = function(modified, socket) {
+		var updated = [];
+
+		for (var cid in modified) {
+			var category = modified[cid];
+
+			for (var key in category) {
+				RDB.set('cid:' + cid + ':' + key, category[key]);
+
+				if (key == 'name') {
+					// reset slugs if name is updated
+					var slug = cid + '/' + utils.slugify(category[key]);
+					RDB.set('cid:' + cid + ':slug', slug);
+					RDB.set('category:slug:' + slug + ':cid', cid);
+
+					RDB.smembers('categories:' + cid + ':tid', function(err, tids) {
+						var pipe = RDB.multi();
+
+						for (var tid in tids) {
+							pipe.set(schema.topics(tid).category_name, category[key]);
+							pipe.set(schema.topics(tid).category_slug, slug);
+						}
+						pipe.exec();
+					});
+					
+				}
+			}
+
+			updated.push(cid);
+		}
+
+		
+
+		socket.emit('event:alert', {
+			title: 'Updated Categories',
+			message: 'Category IDs ' + updated.join(', ') + ' was successfully updated.',
+			type: 'success',
+			timeout: 2000
+		});
 	};
 
 }(exports));

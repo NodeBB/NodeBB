@@ -12,7 +12,10 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 	threadTools = require('./threadTools.js'),
 	postTools = require('./postTools.js'),
 	meta = require('./meta.js'),
-	async = require('async');
+	async = require('async'),
+	admin = {
+		'categories': require('./admin/categories.js')
+	};
 	
 (function(io) {
 	var	users = {},
@@ -405,6 +408,10 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				socket.emit('api:admin.topics.getMore', JSON.stringify(topics));
 			});
 		});
+
+		socket.on('api:admin.categories.update', function(data) {
+			admin.categories.update(data, socket);
+		})
 	});
 	
 }(SocketIO));
