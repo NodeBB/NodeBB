@@ -75,7 +75,7 @@
 						<li class=''><a href='/admin/facebook'><i class='icon-facebook'></i>Facebook</a></li>
 						<li class=''><a href='/admin/gplus'><i class='icon-google-plus'></i>Google+</a></li>
 						<li class="nav-header">Custom Modules</li>
-						<li class=''><a href=''>Search</a></li>
+						<!-- <li class=''><a href=''>Search</a></li> -->
 					</ul>
 				</div><!--/.well -->
 			</div><!--/span-->
