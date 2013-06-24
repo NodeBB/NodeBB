@@ -749,7 +749,7 @@ var utils = require('./../public/src/utils.js'),
 		get: function(uid, callback) {
 			async.parallel({
 				unread: function(next) {
-					RDB.zrangebyscore('uid:' + uid + ':notifications:unread', 0, 10, function(err, nids) {
+					RDB.zrevrangebyscore('uid:' + uid + ':notifications:unread', 10, 0, function(err, nids) {
 						var unread = [];
 						if (nids && nids.length > 0) {
 							async.eachSeries(nids, function(nid, next) {
@@ -764,7 +764,7 @@ var utils = require('./../public/src/utils.js'),
 					});
 				},
 				read: function(next) {
-					RDB.zrangebyscore('uid:' + uid + ':notifications:read', 0, 10, function(err, nids) {
+					RDB.zrevrangebyscore('uid:' + uid + ':notifications:read', 10, 0, function(err, nids) {
 						var read = [];
 						if (nids && nids.length > 0) {
 							async.eachSeries(nids, function(nid, next) {
@@ -779,6 +779,13 @@ var utils = require('./../public/src/utils.js'),
 					});
 				}
 			}, function(err, notifications) {
+				// While maintaining score sorting, sort by time
+				notifications.read.sort(function(a, b) {
+					if (a.score === b.score) return (a.datetime - b.datetime) > 0 ? -1 : 1;
+				});
+				notifications.unread.sort(function(a, b) {
+					if (a.score === b.score) return (a.datetime - b.datetime) > 0 ? -1 : 1;
+				});
 				callback(notifications);
 			});
 		},

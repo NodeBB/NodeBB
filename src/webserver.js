@@ -292,6 +292,9 @@ var express = require('express'),
 	app.get('/api/:method/:id*', api_method);
 
 	app.all('/test', function(req, res) {
+		notifications.create('normal 7', 5, '/topics/1', 'fteds', function(nid) {
+			notifications.push(nid, 1);
+		});
 		res.send();
 	});
 
@@ -300,7 +303,9 @@ var express = require('express'),
 	app.get('/graph/users/:username/picture', function(req, res) {
 		user.get_uid_by_username(req.params.username, function(uid) {
 			if (uid == null) {
-				res.send('{status:0}');
+				res.json({
+					status: 0
+				});
 				return;
 			}
 			user.getUserField(uid, 'picture', function(picture) {
