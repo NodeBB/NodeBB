@@ -9,7 +9,7 @@
 			then paste your application details here.
 		</p>
 		<br />
-		<input type="text" data-field="social:facebook:app_id" title="Application ID" class="input-medium" placeholder="App Key"><br />
+		<input type="text" data-field="social:facebook:app_id" title="Application ID" class="input-medium" placeholder="App ID"><br />
 		<input type="text" data-field="social:facebook:secret" title="Application Secret" class="input-large" placeholder="App Secret"><br />
 	</div>
 </form>
