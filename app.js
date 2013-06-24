@@ -76,7 +76,6 @@ fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 							});
 
 							// Hardcoding uid 1 as an admin
-							//RDB.sadd('administrators', 1);
 							var user = require('./src/user.js');
 							user.makeAdministrator(1);
 						} else {

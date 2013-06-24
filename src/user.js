@@ -186,7 +186,7 @@ var utils = require('./../public/src/utils.js'),
 					'reputation': 0,
 					'postcount': 0,
 					'lastposttime': 0,
-					'administrator': 0
+					'administrator': (uid==1)?1:0
 				});
 				
 				RDB.set('username:' + username + ':uid', uid);
