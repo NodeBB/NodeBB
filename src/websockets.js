@@ -147,7 +147,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 		
 		socket.on('user.exists', function(data) {
-			user.exists(data.username, function(exists){
+			user.exists(utils.slugify(data.username), function(exists){
 				socket.emit('user.exists', {exists: exists});
 			});
 		});
