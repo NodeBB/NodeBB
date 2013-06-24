@@ -1,8 +1,14 @@
 (function() {
 	var cid = templates.get('category_id'),
-		room = 'category_' + cid;
+		room = 'category_' + cid,
+		twitterEl = document.getElementById('twitter-intent'),
+		twitter_url = templates.get('twitter-intent-url');
 		
 	app.enter_room(room);
+
+	twitterEl.addEventListener('click', function() {
+		window.open(twitter_url, '_blank', 'width=550,height=420,scrollbars=no,status=no');
+	}, false);
 
 	var new_post = document.getElementById('new_post');
 	new_post.onclick = function() {

@@ -12,9 +12,11 @@ var	RDB = require('./redis.js'),
 			RDB.multi()
 				.get('cid:' + category_id + ':name')
 				.smembers('cid:' + category_id + ':active_users')
+				.get('cid:' + category_id + ':slug')
 				.exec(function(err, replies) {
-					var category_name = replies[0];
-					var active_users = replies[1];
+					var	category_name = replies[0],
+						active_users = replies[1],
+						category_slug = replies[2];
 					
 					if (category_name === null) {
 						callback(false);
@@ -28,7 +30,8 @@ var	RDB = require('./redis.js'),
 							'topic_row_size': 'span9',
 							'category_id': category_id,
 							'active_users': [],
-							'topics' : []
+							'topics' : [],
+							'twitter-intent-url': 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(global.config.url + 'category/' + category_id + '/' + category_slug) + '&text=' + encodeURIComponent(category_name)
 						};
 
 					function getTopics(next) {
