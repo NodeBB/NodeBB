@@ -92,6 +92,7 @@
 	socket.on('api:notifications.get', function(data) {
 		var	notifFrag = document.createDocumentFragment(),
 			notifEl = document.createElement('li'),
+			notifIcon = document.querySelector('.notifications a i'),
 			numRead = data.read.length,
 			numUnread = data.unread.length,
 			x;
@@ -114,18 +115,21 @@
 			notifFrag.appendChild(notifEl);
 		}
 		notifList.appendChild(notifFrag);
+
+		socket.emit('api:notifications.removeFlag');
+		notifIcon.className = 'icon-circle-blank';
 	});
-	socket.on('api:notifications.counts', function(counts) {
+	socket.on('api:notifications.hasFlag', function(flag) {
 		var notifIcon = document.querySelector('.notifications a i');
 		if(notifIcon) {
-			if (counts.unread > 0) notifIcon.className = 'icon-circle active';
+			if (flag > 0) notifIcon.className = 'icon-circle active';
 			else notifIcon.className = 'icon-circle-blank';
 		}
 	});
 	socket.on('event:new_notification', function() {
 		document.querySelector('.notifications a i').className = 'icon-circle active';
 	});
-	socket.emit('api:notifications.counts');
+	socket.emit('api:notifications.hasFlag');
 
 
 	require(['mobileMenu'], function(mobileMenu) {

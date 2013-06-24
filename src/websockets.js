@@ -262,10 +262,14 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			});
 		});
 
-		socket.on('api:notifications.counts', function(data) {
-			user.notifications.counts(uid, function(counts) {
-				socket.emit('api:notifications.counts', counts);
+		socket.on('api:notifications.hasFlag', function(data) {
+			user.notifications.hasFlag(uid, function(flag) {
+				socket.emit('api:notifications.hasFlag', flag);
 			});
+		});
+
+		socket.on('api:notifications.removeFlag', function() {
+			user.notifications.removeFlag(uid);
 		});
 
 		socket.on('api:notifications.mark_read', function(nid) {

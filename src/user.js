@@ -789,20 +789,17 @@ var utils = require('./../public/src/utils.js'),
 				callback(notifications);
 			});
 		},
-		counts: function(uid, callback) {
-			async.parallel({
-				unread: function(next) {
-					RDB.zcount('uid:' + uid + ':notifications:unread', 0, 10, function(err, count) {
-						next(null, count);
-					});
-				},
-				read: function(next) {
-					RDB.zcount('uid:' + uid + ':notifications:read', 0, 10, function(err, count) {
-						next(null, count);
-					});
-				}
-			}, function(err, counts) {
-				callback(counts);
+		hasFlag: function(uid, callback) {
+			RDB.get('uid:1:notifications:flag', function(err, flag) {
+				if (err) RDB.handle(err);
+
+				if (flag === '1') callback(true);
+				else callback(false);
+			});
+		},
+		removeFlag: function(uid) {
+			RDB.del('uid:' + uid + ':notifications:flag', function(err) {
+				if (err) RDB.handle(err);
 			});
 		}
 	}

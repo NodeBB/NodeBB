@@ -292,9 +292,6 @@ var express = require('express'),
 	app.get('/api/:method/:id*', api_method);
 
 	app.all('/test', function(req, res) {
-		notifications.create('normal 7', 5, '/topics/1', 'fteds', function(nid) {
-			notifications.push(nid, 1);
-		});
 		res.send();
 	});
 
