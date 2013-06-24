@@ -145,6 +145,10 @@ var utils = require('./../public/src/utils.js'),
 
 				var gravatar = User.createGravatarURLFromEmail(email);
 
+				var userSlug = utils.slugify(username);
+
+				console.log(userSlug);
+
 				RDB.hmset('user:'+uid, {
 					'username' : username,
 					'fullname': '',
