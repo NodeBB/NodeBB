@@ -295,7 +295,6 @@ var express = require('express'),
 		res.send();
 	});
 
-
 	//START TODO: MOVE TO GRAPH.JS 
 
 	app.get('/graph/users/:username/picture', function(req, res) {

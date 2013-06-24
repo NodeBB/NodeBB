@@ -109,11 +109,16 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 
 			user.get_usernames_by_uids(uids, function(usernames) {
-				io.sockets.in(data.enter).emit('api:get_users_in_room', {
-					usernames: usernames,
-					uids: uids,
-					anonymous: anonymous
+				user.get_userslugs_by_uids(uids, function(userslugs) { 
+
+					io.sockets.in(data.enter).emit('api:get_users_in_room', {
+						usernames: usernames,
+						userslugs: userslugs,
+						uids: uids,
+						anonymous: anonymous
+					});
 				});
+
 			});
 
 			if (data.enter != 'admin') io.sockets.in('admin').emit('api:get_all_rooms', io.sockets.manager.rooms);

@@ -274,10 +274,11 @@
 	socket.on('api:get_users_in_room', function(users) {
 		var anonymous = users.anonymous,
 			usernames = users.usernames,
+			userslugs = users.userslugs,
 			usercount = usernames.length;
 
 		for (var i = 0, ii=usercount; i<ii; i++) {
-			usernames[i] = '<strong>' + '<a href="/users/'+usernames[i]+'">' + usernames[i] + '</a></strong>';
+			usernames[i] = '<strong>' + '<a href="/users/'+userslugs[i]+'">' + usernames[i] + '</a></strong>';
 		}
 
 		// headexplosion.gif for fun, to see if I could do this in one line of code. feel free to refactor haha

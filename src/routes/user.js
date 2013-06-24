@@ -28,13 +28,14 @@ var user = require('./../user.js'),
 			});
 		});
 
-		app.get('/users/:username', function(req, res) {
-			if(!req.params.username) {
+		app.get('/users/:userslug', function(req, res) {
+
+			if(!req.params.userslug) {
 				res.send("User doesn't exist!");
 				return;
 			}
 
-			user.get_uid_by_username(req.params.username, function(uid) {
+			user.get_uid_by_userslug(req.params.userslug, function(uid) {
 				if(!uid) {
 					res.redirect('/404');
 					return;
@@ -42,7 +43,7 @@ var user = require('./../user.js'),
 				
 				user.getUserData(uid, function(data) {
 					if(data) {
-						res.send(app.build_header(res) + app.create_route('users/'+data.username, 'account')  + templates['footer']);
+						res.send(app.build_header(res) + app.create_route('users/'+data.userslug, 'account')  + templates['footer']);
 					}
 					else {
 						res.redirect('/404');
@@ -51,15 +52,15 @@ var user = require('./../user.js'),
 			});		
 		});
 		
-		app.get('/users/:username/edit', function(req, res){
+		app.get('/users/:userslug/edit', function(req, res){
 				
 			if(!req.user)
 				return res.redirect('/403');
 			
-			user.getUserField(req.user.uid, 'username', function(username) {
+			user.getUserField(req.user.uid, 'userslug', function(userslug) {
 			
-				if(req.params.username && username === req.params.username)
-					res.send(app.build_header(res) + app.create_route('users/'+req.params.username+'/edit','accountedit') + templates['footer']);
+				if(req.params.userslug && userslug === req.params.userslug)
+					res.send(app.build_header(res) + app.create_route('users/'+req.params.userslug+'/edit','accountedit') + templates['footer']);
 				else
 					return res.redirect('/404');
 			});	
@@ -217,35 +218,35 @@ var user = require('./../user.js'),
 			});
 		});
 
-		app.get('/users/:username/following', function(req, res) {
+		app.get('/users/:userslug/following', function(req, res) {
 
 			if(!req.user)
 				return res.redirect('/403');
 			
-			res.send(app.build_header(res) + app.create_route('users/'+req.params.username+'/following','following') + templates['footer']);
+			res.send(app.build_header(res) + app.create_route('users/'+req.params.userslug+'/following','following') + templates['footer']);
 		});
 		
-		app.get('/users/:username/followers', function(req, res) {
+		app.get('/users/:userslug/followers', function(req, res) {
 
 			if(!req.user)
 				return res.redirect('/403');
 			
-			res.send(app.build_header(res) + app.create_route('users/'+req.params.username+'/followers','followers') + templates['footer']);
+			res.send(app.build_header(res) + app.create_route('users/'+req.params.userslug+'/followers','followers') + templates['footer']);
 		});
 
 		function api_method(req, res) {
-
+			
 			var callerUID = req.user?req.user.uid : 0;
-	
-			if (!req.params.section && !req.params.username) {
+
+			if (!req.params.section && !req.params.userslug) {
 				
-				user.getUserList(function(data){
+				user.getUserList(function(data) {
 					res.json({users:data});
 				});
 			}
 			else if(String(req.params.section).toLowerCase() === 'following') {
 				
-				getUserDataByUserName(req.params.username, callerUID, function(userData) {
+				getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
 					
 					user.getFollowing(userData.uid, function(followingData){
 						userData.following = followingData;
@@ -256,7 +257,7 @@ var user = require('./../user.js'),
 			}
 			else if(String(req.params.section).toLowerCase() === 'followers') {
 				
-				getUserDataByUserName(req.params.username, callerUID, function(userData) {
+				getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
 					
 					user.getFollowers(userData.uid, function(followersData){
 						userData.followers = followersData;
@@ -266,11 +267,11 @@ var user = require('./../user.js'),
 				});
 			}
 			else if (String(req.params.section).toLowerCase() === 'edit') {
-				getUserDataByUserName(req.params.username, callerUID, function(userData) {
+				getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
 					res.json(userData);
 				});
 			} else {
-				getUserDataByUserName(req.params.username, callerUID, function(userData) {
+				getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
 					
 					user.isFollowing(callerUID, userData.theirid, function(isFollowing) {
 						userData.isFollowing = isFollowing;
@@ -285,11 +286,11 @@ var user = require('./../user.js'),
 		
 		}
 
-		app.get('/api/users/:username?/:section?', api_method);
+		app.get('/api/users/:userslug?/:section?', api_method);
 
-		function getUserDataByUserName(username, callerUID, callback) {
+		function getUserDataByUserSlug(userslug, callerUID, callback) {
 		
-			user.get_uid_by_username(username, function(uid) {
+			user.get_uid_by_userslug(userslug, function(uid) {
 		
 				user.getUserData(uid, function(data) {
 					if(data) {

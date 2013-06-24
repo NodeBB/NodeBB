@@ -79,6 +79,7 @@ marked.setOptions({
 						'timestamp' : postData.timestamp[i],
 						'relativeTime': utils.relativeTime(postData.timestamp[i]),
 						'username' : userData[uid].username || 'anonymous',
+						'userslug' : userData[uid].userslug || '',
 						'user_rep' : userData[uid].reputation || 0,
 						'gravatar' : userData[uid].picture || 'http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e',
 						'signature' : marked(userData[uid].signature || ''),

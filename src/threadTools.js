@@ -234,7 +234,6 @@ var	RDB = require('./redis.js'),
 		async.parallel([
 			function(next) {
 				topics.get_topic(tid, 0, function(threadData) {
-					// console.log(threadData);
 					notifications.create(threadData.teaser_username + ' has posted a reply to: "' + threadData.title + '"', null, '/topic/' + tid, 'topic:' + tid, function(nid) {
 						next(null, nid);
 					});

@@ -30,22 +30,23 @@
 		active_record.innerHTML = "most users ever online was <strong>" + data.record + "</strong> on <strong>" + (new Date(parseInt(data.timestamp,10))).toUTCString() + "</strong>";
 	});
 
-	socket.emit('api:updateHeader', { fields: ['username', 'picture'] });
+	socket.emit('api:updateHeader', { fields: ['username', 'picture', 'userslug'] });
 
 	socket.on('api:updateHeader', function(data) {
+
 		var rightMenu = $('#right-menu');
 		if (data.uid > 0) {
 
 			var userLabel = rightMenu.find('#user_label');
 			if(userLabel.length) {
-				userLabel.attr('href','/users/'+data['username']);
+				userLabel.attr('href','/users/'+data['userslug']);
 			
 				userLabel.find('img').attr('src',data['picture']+"?s=24&default=identicon");
 				userLabel.find('span').html(data['username']);
 			}
 			else {
 				var userli = $('<li> \
-									<a id="user_label" href="/users/'+data['username']+'"> \
+									<a id="user_label" href="/users/'+data['userslug']+'"> \
 										<img src="'+data['picture']+"?s=24&default=identicon"+'"/> \
 										<span>'+data['username']+'</span> \
 									</a> \

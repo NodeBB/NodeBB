@@ -13,16 +13,11 @@ var	RDB = require('./redis.js'),
 				.get('cid:' + category_id + ':name')
 				.smembers('cid:' + category_id + ':active_users')
 				.exec(function(err, replies) {
-					category_name = replies[0];
-					active_usernames = replies[1];
+					var category_name = replies[0];
+					var active_users = replies[1];
 					
 					if (category_name === null) {
 						callback(false);
-					}
-
-					var active_users = [];
-					for (var username in active_usernames) {
-						active_users.push({'username': active_usernames[username]});
 					}
 
 					var categoryData = {
@@ -32,7 +27,7 @@ var	RDB = require('./redis.js'),
 							'no_topics_message': 'hidden',
 							'topic_row_size': 'span9',
 							'category_id': category_id,
-							'active_users': active_users,
+							'active_users': [],
 							'topics' : []
 						};
 
@@ -48,6 +43,16 @@ var	RDB = require('./redis.js'),
 						});
 					}
 
+					function getActiveUsers(next) {
+						user.getMultipleUserFields(active_users, ['username','userslug'], function(users) {
+							var activeUserData = [];
+							for(var uid in users) {
+								activeUserData.push(users[uid]);
+							}
+							next(null, activeUserData);
+						});
+					}
+
 					if (tids.length === 0) {
 						getModerators(function(err, moderators) {
 							categoryData.moderator_block_class = moderators.length > 0 ? '' : 'none';
@@ -58,10 +63,11 @@ var	RDB = require('./redis.js'),
 							callback(categoryData);
 						});
 					} else {
-						async.parallel([getTopics, getModerators], function(err, results) {
+						async.parallel([getTopics, getModerators, getActiveUsers], function(err, results) {
 							categoryData.topics = results[0];
 							categoryData.moderator_block_class = results[1].length > 0 ? '' : 'none';
 							categoryData.moderators = results[1];
+							categoryData.active_users = results[2];
 							callback(categoryData);
 						});
 					}

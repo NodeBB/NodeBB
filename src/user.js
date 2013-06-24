@@ -136,6 +136,30 @@ var utils = require('./../public/src/utils.js'),
 		});
 	}
 
+	User.delete = function(uid, callback) {
+		RDB.exists('user:'+uid, function(err, exists) {
+			if(exists === 1) {
+				console.log('deleting uid ' + uid);
+
+				User.getUserData(uid, function(data) {
+					
+					RDB.del('username:' + data['username'] + ':uid');
+					RDB.del('email:' + data['email'] +':uid');
+					RDB.del('userslug:'+ data['userslug'] +':uid');
+
+					RDB.del('user:' + uid);		
+					RDB.del('followers:' + uid);
+					RDB.del('following:' + uid);
+	
+					RDB.lrem('userlist', 1, uid);
+
+					callback(true);	
+				});
+			}
+			else
+				callback(false);
+		});
+	}
 
 	User.create = function(username, password, email, callback) {
 
@@ -144,13 +168,11 @@ var utils = require('./../public/src/utils.js'),
 				RDB.handle(err);
 
 				var gravatar = User.createGravatarURLFromEmail(email);
-
-				var userSlug = utils.slugify(username);
-
-				console.log(userSlug);
+				var userslug = utils.slugify(username);
 
 				RDB.hmset('user:'+uid, {
 					'username' : username,
+					'userslug' : userslug,
 					'fullname': '',
 					'location':'',
 					'birthday':'',
@@ -169,6 +191,7 @@ var utils = require('./../public/src/utils.js'),
 				
 				RDB.set('username:' + username + ':uid', uid);
 				RDB.set('email:' + email +':uid', uid);
+				RDB.set('userslug:'+ userslug +':uid', uid);
 				
 				if(email)
 					User.sendConfirmationEmail(email);
@@ -387,6 +410,13 @@ var utils = require('./../public/src/utils.js'),
 		});
 	};
 
+	User.get_uid_by_userslug = function(userslug, callback) {
+		RDB.get('userslug:' + userslug + ':uid', function(err, data) {
+			RDB.handle(err);
+			callback(data);
+		});
+	};
+
 	User.get_usernames_by_uids = function(uids, callback) {
 		var usernames = [];
 
@@ -394,7 +424,7 @@ var utils = require('./../public/src/utils.js'),
 		
 		for(var i=0, ii=uids.length; i<ii; ++i) {
 		
-			User.getUserField(uids[i],'username', function(username){
+			User.getUserField(uids[i],'username', function(username) {
 
 				usernames.push(username);
 
@@ -402,7 +432,24 @@ var utils = require('./../public/src/utils.js'),
 					callback(usernames);
 			});
 		}
-	};
+	}
+
+	User.get_userslugs_by_uids = function(uids, callback) {
+		var userslugs = [];
+
+		if (!Array.isArray(uids)) return callback([]);
+		
+		for(var i=0, ii=uids.length; i<ii; ++i) {
+		
+			User.getUserField(uids[i],'userslug', function(userslug) {
+
+				userslugs.push(userslug);
+
+				if(userslugs.length >= uids.length)
+					callback(userslugs);
+			});
+		}
+	}
 
 	User.get_uid_by_email = function(email, callback) {
 		RDB.get('email:' + email + ':uid', function(err, data) {
