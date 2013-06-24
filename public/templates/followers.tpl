@@ -3,13 +3,13 @@
 
 	<div class="account-username-box">
 		<span class="account-username">
-			<a href="/users/{username}">{username}</a> >
-			<a href="/users/{username}/followers">followers</a>
+			<a href="/users/{userslug}">{username}</a> >
+			<a href="/users/{userslug}/followers">followers</a>
 		</span>
 		<div class="account-sub-links inline-block pull-right">
-			<span id="followersLink" class="pull-right"><a href="/users/{username}/followers">followers</a></span>
-			<span id="followingLink" class="pull-right"><a href="/users/{username}/following">following</a></span>
-			<span id="editLink" class="pull-right"><a href="/users/{username}/edit">edit</a></span>
+			<span id="followersLink" class="pull-right"><a href="/users/{userslug}/followers">followers</a></span>
+			<span id="followingLink" class="pull-right"><a href="/users/{userslug}/following">following</a></span>
+			<span id="editLink" class="pull-right"><a href="/users/{userslug}/edit">edit</a></span>
 		</div>
 	</div>
 
@@ -17,11 +17,11 @@
 		<!-- BEGIN followers -->
 
 		<div class="users-box well">
-			<a href="/users/{followers.username}">
+			<a href="/users/{followers.userslug}">
 				<img src="{followers.picture}" class="user-8080-picture"/>
 			</a>
 			<br/>
-			<a href="/users/{followers.username}">{followers.username}</a>
+			<a href="/users/{followers.userslug}">{followers.username}</a>
 			<br/>
 			<div title="reputation">
 				<span class='reputation'>{followers.reputation}</span>

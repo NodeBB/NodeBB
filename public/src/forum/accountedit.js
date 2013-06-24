@@ -50,7 +50,7 @@ $(document).ready(function() {
 					$('#upload-picture-modal').modal('hide');
 				}, 750);
 				
-				socket.emit('api:updateHeader', { fields: ['username', 'picture'] });
+				socket.emit('api:updateHeader', { fields: ['username', 'picture', 'userslug'] });
 				success('File uploaded successfully!');
 			}
 		});
@@ -90,7 +90,7 @@ $(document).ready(function() {
 		$.post('/users/changepicture',
 			userData,
 			function(data) {	
-				socket.emit('api:updateHeader', { fields: ['username', 'picture'] });
+				socket.emit('api:updateHeader', { fields: ['username', 'picture', 'userslug'] });
 			}                
 		);
 	}

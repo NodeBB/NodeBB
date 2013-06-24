@@ -113,7 +113,7 @@ marked.setOptions({
 						}
 					}
 
-					user.getMultipleUserFields(post_data.uid, ['username','reputation','picture', 'signature'], function(user_details) {
+					user.getMultipleUserFields(post_data.uid, ['username', 'userslug', 'reputation', 'picture', 'signature'], function(user_details) {
 						next(null, {
 							users: user_details,
 							posts: post_data
@@ -272,7 +272,8 @@ marked.setOptions({
 									RDB.spop('cid:' + cid + ':active_users');
 								}
 
-								RDB.sadd('cid:' + cid + ':active_users', data.username);
+								//RDB.sadd('cid:' + cid + ':active_users', data.username);
+								RDB.sadd('cid:' + cid + ':active_users', uid);
 							});
 						});
 					});

@@ -76,8 +76,7 @@
 			var isAdmin = adminBtn.attr('data-admin') !== "0";
 			var parent = adminBtn.parents('.users-box');
 			var uid = parent.attr('data-uid');
-			console.log(uid);
-			console.log(yourid);
+			
 			if(isAdmin && uid != yourid)
 				adminBtn.show();				
 			else
