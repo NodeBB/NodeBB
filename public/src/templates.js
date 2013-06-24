@@ -273,7 +273,7 @@
 
 						block = parse(data[d], namespace, block);
 						template = setBlock(regex, block, template);
-					} else {								
+					} else {
 						template = replace(namespace + d, data[d], template);
 					}
 				}

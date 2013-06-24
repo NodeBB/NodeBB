@@ -95,6 +95,8 @@ socket.on('api:topic.restore', function(response) {
 });
 
 socket.on('api:admin.topics.getMore', function(topics) {
+	topics = JSON.parse(topics);
+	console.log(topics);
 	var	html = templates.prepare(templates['admin/topics'].blocks['topics']).parse(topics);
 	console.log(html);
 });
