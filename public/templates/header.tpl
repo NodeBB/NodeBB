@@ -47,7 +47,7 @@
 				<div class="nav-collapse collapse">
 					<ul class="nav nodebb-inline-block">
 						<li>
-							<a href="/latest">Recent <!--<span class="badge badge-inverse">3</span>--></a>
+							<a href="/recent">Recent <!--<span class="badge badge-inverse">3</span>--></a>
 						</li>
 						<!--<li>
 							<a href="/popular">Popular</a>

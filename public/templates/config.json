@@ -19,7 +19,7 @@
 		"users[^]*following": "following",
 		"users[^]*followers": "followers",
 		"users/[^]*": "account",
-		"latest": "category",
+		"recent": "category",
 		"popular": "category",
 		"active": "category"
 	},
