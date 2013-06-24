@@ -252,8 +252,9 @@
 					} else if (data[d].constructor == Array) {
 						namespace += d + '.';
 						
-						regex = makeRegex(d),
-						block = getBlock(regex, namespace, template)
+						var regex = makeRegex(d),
+							block = getBlock(regex, namespace.substring(0, namespace.length-1), template);
+
 						if (block == null) {
 							namespace = namespace.replace(d + '.', '');
 							continue;
