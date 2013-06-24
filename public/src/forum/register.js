@@ -5,15 +5,18 @@
 		emailEl = document.getElementById('email'),
 		username_notify = document.getElementById('username-notify'),
 		email_notify = document.getElementById('email-notify'),
-		password_notify = document.getElementById('password-notify');
+		password_notify = document.getElementById('password-notify'),
+		emailexists = false,
+		userexists = false;
 
-	username.onkeyup = function() {
+	$(username).on('keyup change', function() {
 		if (username.value.length > 2) socket.emit('user.exists', {username: username.value});
 		else {
 			username_notify.innerHTML = 'Username too short';
 			username_notify.className = 'label label-important';
 		}
-	}
+	});
+
 	emailEl.addEventListener('change', function() {
 		socket.emit('user.email.exists', { email: emailEl.value });
 	}, false);
@@ -28,6 +31,7 @@
 	ajaxify.register_events(['user.exists', 'user.email.exists']);
 
 	socket.on('user.exists', function(data) {
+		userexists = data.exists;
 		if (data.exists == true) {
 			username_notify.innerHTML = 'Username exists';
 			username_notify.className = 'label label-important';
@@ -37,6 +41,7 @@
 		}
 	});
 	socket.on('user.email.exists', function(data) {
+		emailexists = data.exists;
 		if (data.exists === true) {
 			email_notify.innerHTML = 'Email Address exists';
 		} else {
@@ -79,6 +84,14 @@
 		} else {
 			email_notify.innerHTML = '';
 		}
+
+		if(emailexists) {
+			email_notify.innerHTML = 'Email Address exists';
+			validated = false;
+		}
+
+		if(userexists)
+			validated = false;
 
 		return validated;
 	}

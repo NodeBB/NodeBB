@@ -163,12 +163,20 @@ var utils = require('./../public/src/utils.js'),
 
 	User.create = function(username, password, email, callback) {
 
-		User.exists(username, function(exists) {
+		var userslug = utils.slugify(username);
+
+		User.exists(userslug, function(exists) {
+
+			if(exists) {
+				console.log("user name taken");
+				callback(null, 0);
+				return;
+			}
+
 			RDB.incr('global:next_user_id', function(err, uid) {
 				RDB.handle(err);
 
 				var gravatar = User.createGravatarURLFromEmail(email);
-				var userslug = utils.slugify(username);
 
 				RDB.hmset('user:'+uid, {
 					'username' : username,
@@ -380,8 +388,8 @@ var utils = require('./../public/src/utils.js'),
 		});
 	}
 
-	User.exists = function(username, callback) {
-		User.get_uid_by_username(username, function(exists) {
+	User.exists = function(userslug, callback) {
+		User.get_uid_by_userslug(userslug, function(exists) {
 			exists = !!exists;
 
 			if (callback) 
