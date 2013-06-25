@@ -151,9 +151,6 @@ define(['taskbar'], function(taskbar) {
 			pid: pid,	// Editing
 			body: text	// Predefined text
 		});
-		// Regardless of success or failure, this should be set back to false so new topics can have their title set
-		var titleEl = composer.postContainer.querySelector('input');
-		titleEl.readOnly = false;
 	}
 
 	composer.load = function(post_uuid) {
@@ -173,6 +170,7 @@ define(['taskbar'], function(taskbar) {
 			socket.emit('api:composer.editCheck', post_data.pid);
 		} else {
 			titleEl.value = post_data.title;
+			titleEl.readOnly = false;
 		}
 		bodyEl.value = post_data.body
 
