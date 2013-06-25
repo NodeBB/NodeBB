@@ -15,11 +15,11 @@
 
 <!-- BEGIN users -->
 <div class="users-box well" data-uid="{users.uid}">
-	<a href="/users/{users.username}">
+	<a href="/users/{users.userslug}">
 		<img src="{users.picture}" class="user-8080-picture"/>
 	</a>
 	<br/>
-	<a href="/users/{users.username}">{users.username}</a>
+	<a href="/users/{users.userslug}">{users.username}</a>
 	<br/>
 	<div title="reputation">
 		<span id='reputation'>{users.reputation}</span>
