@@ -83,6 +83,20 @@
 			return str;
 		},
 
+		// from http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
+		isEmailValid: function(email) {
+		    var re = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+	    	return re.test(email); 
+		},
+
+		isUserNameValid: function(name) {
+			return (name && name !== "" && !(/^\s*$/.test(name)));
+		},
+	
+		isPasswordValid: function(password) {
+			return password && password.indexOf(' ') === -1 && password.length > 5;
+		},
+
 		// Blatently stolen from: http://phpjs.org/functions/strip_tags/
 		'strip_tags': function(input, allowed) {
 			allowed = (((allowed || "") + "").toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join(''); // making sure the allowed arg is a string containing only tags in lowercase (<a><b><c>)
@@ -93,6 +107,23 @@
 				return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
 			});
 		}
+	}
+
+
+	if (!String.prototype.trim) {
+		String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g, '');};
+	}
+
+	if (!String.prototype.ltrim) {
+		String.prototype.ltrim=function(){return this.replace(/^\s+/,'');};
+	}
+	
+	if (!String.prototype.rtrim) {
+		String.prototype.rtrim=function(){return this.replace(/\s+$/,'');};			
+	}
+	
+	if (!String.prototype.fulltrim) {
+		String.prototype.fulltrim=function(){return this.replace(/(?:(?:^|\n)\s+|\s+(?:$|\n))/g,'').replace(/\s+/g,' ');};			
 	}
 
 	

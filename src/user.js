@@ -163,12 +163,20 @@ var utils = require('./../public/src/utils.js'),
 
 	User.create = function(username, password, email, callback) {
 
+		username = username.trim();
+		email = email.trim();
+
+		if(!utils.isEmailValid(email) || !utils.isUserNameValid(username) || !utils.isPasswordValid(password)) {
+			console.log('Invalid email/username/password!');
+			callback(null, 0);
+			return;
+		}
+
 		var userslug = utils.slugify(username);
 
 		User.exists(userslug, function(exists) {
 
 			if(exists) {
-				console.log("user name taken");
 				callback(null, 0);
 				return;
 			}

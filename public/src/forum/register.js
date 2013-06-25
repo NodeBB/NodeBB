@@ -8,32 +8,60 @@
 		email_notify = document.getElementById('email-notify'),
 		password_notify = document.getElementById('password-notify'),
 		password_confirm_notify = document.getElementById('password-confirm-notify'),		
+		usernamevalid = false;
 		emailexists = false,
 		emailvalid = false,
 		userexists = false,
-		passwordsmatch = false;
+		passwordsmatch = false,
+		passwordvalid = false;
 
 	$(username).on('keyup change', function() {
-		if (username.value.length > 2) socket.emit('user.exists', {username: username.value});
-		else {
+		usernamevalid = utils.isUserNameValid(username.value);
+
+		
+		if(username.value.length < 3) {
 			username_notify.innerHTML = 'Username too short';
 			username_notify.className = 'label label-important';
+		}
+		else if(!usernamevalid) {
+			username_notify.innerHTML = 'Invalid username';
+			username_notify.className = 'label label-important';
+		}
+		else {
+			socket.emit('user.exists', {username: username.value});
 		}
 	});
 
 	$(emailEl).on('keyup change', function() {
-		socket.emit('user.email.exists', { email: emailEl.value });
+		emailvalid = utils.isEmailValid(email.value);
+
+		if(!emailvalid) {
+			email_notify.innerHTML = 'Invalid email address';
+			email_notify.className = 'label label-important';
+		}
+		else
+			socket.emit('user.email.exists', { email: emailEl.value });
 	});
 	
-	password.addEventListener('keyup', function() {
-		if (password.value.length < 5) {
+	$(password).on('keyup', function() {
+		passwordvalid = utils.isPasswordValid(password.value);
+		if (password.value.length < 6) {
 			password_notify.innerHTML = 'Password too short';
 			password_notify.className = 'label label-important';
-		} else {
+		} else if(!passwordvalid) {
+			password_notify.innerHTML = 'Invalid password';
+			password_notify.className = 'label label-important';
+		}	else {
 			password_notify.innerHTML = 'OK!';
 			password_notify.className = 'label label-success';
 		}
-	}, false);
+		
+		if(password.value !== password_confirm.value) {
+			password_confirm_notify.innerHTML = 'Passwords must match!';
+			password_confirm_notify.className = 'label label-important';
+			passwordsmatch = false;
+		}
+	});
 	
 	$(password_confirm).on('keyup', function() {
 		if(password.value !== password_confirm.value) {
@@ -63,13 +91,9 @@
 	
 	socket.on('user.email.exists', function(data) {
 		emailexists = data.exists;
-		emailvalid = isEmailValid(email.value);
 
 		if (data.exists === true) {
 			email_notify.innerHTML = 'Email Address exists';
-			email_notify.className = 'label label-important';
-		} else if(!emailvalid) {
-			email_notify.innerHTML = 'Invalid email address';
 			email_notify.className = 'label label-important';
 		}
 		else {
@@ -77,12 +101,6 @@
 			email_notify.className = 'label label-success';
 		}
 	});
-
-	// from http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
-	function isEmailValid(email) {
-	    var re = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-    	return re.test(email); 
-	}
 
 	// Alternate Logins
 	var altLoginEl = document.querySelector('.alt-logins');
@@ -97,10 +115,10 @@
 		}
 	});
 
-	// Form Validation
 	function validateForm() {
 		var validated = true;
-		if (username.value.length < 2) {
+		
+		if (username.value.length < 2 || !usernamevalid) {
 			username_notify.innerHTML = 'Invalid username';
 			username_notify.className = 'label label-important';
 			validated = false;
@@ -110,6 +128,10 @@
 			password_notify.innerHTML = 'Password too short';
 			validated = false;
 		} 
+		
+		if(password.value !== password_confirm.value) {
+			password_confirm_notify.innerHTML = 'Passwords must match!';
+		}
 
 		if (!emailvalid) {
 			email_notify.innerHTML = 'Invalid email address';
@@ -121,10 +143,7 @@
 			validated = false;
 		}
 
-		if(userexists)
-			validated = false;
-			
-		if(!passwordsmatch)
+		if(userexists || !passwordsmatch || !passwordvalid)
 			validated = false;
 
 		return validated;
