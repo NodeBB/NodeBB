@@ -36,7 +36,16 @@ var	RDB = require('./redis.js'),
 
 					function getTopics(next) {
 						Categories.getTopicsByTids(tids, current_user, function(topics) {
+							// Float pinned topics to the top
+							topics = topics.sort(function(a, b) {
+								if (a.pinned !== b.pinned) return b.pinned - a.pinned;
+								else {
+									return b.timestamp - a.timestamp;
+								}
+							});
+							console.log(topics);
 							next(null, topics);
+							
 						}, category_id);
 					}
 					
@@ -201,15 +210,6 @@ var	RDB = require('./redis.js'),
 							});
 						}
 					}
-
-					// Float pinned topics to the top
-					retrieved_topics = retrieved_topics.sort(function(a, b) {
-						if (a.pinned !== b.pinned) return b.pinned - a.pinned;
-						else {
-							// assume equal, tids are already sorted due to RDB.zadd(schema.topics().recent, Date.now(), tid);
-							return 0;
-						}
-					});
 
 					callback(retrieved_topics);
 				});
