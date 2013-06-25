@@ -30,11 +30,9 @@
 		<i class='icon-pencil'></i>
 	</div>
 	<div>
-		<a href="#" class="btn make-admin-btn" data-admin="{users.administrator}">Make Admin</a>
+		<a href="#" class="btn admin-btn" data-admin="{users.administrator}" data-username="{users.username}">Admin</a>
 	</div>
-	<div>
-		<a href="#" class="btn remove-admin-btn" data-admin="{users.administrator}">Remove Admin</a>
-	</div>
+
 </div>
 <!-- END users -->
 
@@ -60,56 +58,42 @@
 			}
 		});
 
-		jQuery('.make-admin-btn').each(function(index, element) {
+		jQuery('.admin-btn').each(function(index, element) {
 			var adminBtn = $(element);
 			var isAdmin = adminBtn.attr('data-admin') !== "0";
 			
 			if(isAdmin)
-				adminBtn.hide();				
+				adminBtn.addClass('btn-success');
 			else
-				adminBtn.show();
+				adminBtn.removeClass('btn-success');
 
 		});
 
-		jQuery('.remove-admin-btn').each(function(index, element) {
-			var adminBtn = $(element);
+		jQuery('.admin-btn').on('click', function() {
+			var adminBtn = $(this);
 			var isAdmin = adminBtn.attr('data-admin') !== "0";
 			var parent = adminBtn.parents('.users-box');
+
 			var uid = parent.attr('data-uid');
+
+			if(isAdmin) {
+				socket.emit('api:admin.user.removeAdmin', uid);		
+				adminBtn.removeClass('btn-success');
+				adminBtn.attr('data-admin', 0);
+			}
+			else {
+				bootbox.confirm('Do you really want to make "' + adminBtn.attr('data-username') +'" an admin?', function(confirm) {
+					if(confirm) {
+						socket.emit('api:admin.user.makeAdmin', uid);
+						adminBtn.addClass('btn-success');
+						adminBtn.attr('data-admin', 1);
+					}
+				});
+			}
 			
-			if(isAdmin && uid != yourid)
-				adminBtn.show();				
-			else
-				adminBtn.hide();
-
-		});
-
-		jQuery('.make-admin-btn').on('click', function() {
-			var makeBtn = $(this);
-			var parent = makeBtn.parents('.users-box');
-			var removeBtn = parent.find('.remove-admin-btn');
-			var uid = parent.attr('data-uid');
-
-			socket.emit('api:admin.user.makeAdmin', uid);
-			makeBtn.hide();
-			removeBtn.show();
 			return false;
 		});
-
-		jQuery('.remove-admin-btn').on('click', function() {
-			
-			var removeBtn = $(this);
-			var parent = removeBtn.parents('.users-box');
-			var makeBtn = parent.find('.make-admin-btn');
-			var uid = parent.attr('data-uid');
-
-			socket.emit('api:admin.user.removeAdmin', uid);		
-			makeBtn.show();
-			removeBtn.hide();
-			return false;
-		});
-
-
+	
 	});
 	
 }());
