@@ -96,39 +96,7 @@ var user = require('./../user.js'),
 		app.get('/api/admin/:method*', api_method);
 
 
-		app.post('/admin/makeadmin', function(req, res){
-
-			if(!req.user)
-				return res.redirect('/403');
-			
-			user.isAdministrator(req.user.uid, function(isAdmin) {
-				if(isAdmin) {
-					user.makeAdministrator(req.body.uid, function(data) {
-						res.send(data);	
-					});
-				}
-				else
-					res.redirect('/403');
-			});
-		});
-
-		app.post('/admin/removeadmin', function(req, res){
-
-			if(!req.user)
-				return res.redirect('/403');
-			
-			user.isAdministrator(req.user.uid, function(isAdmin) {
-				if(isAdmin) {
-					user.removeAdministrator(req.body.uid, function(data) {
-						res.send(data);	
-					});
-				}
-				else
-					res.redirect('/403');
-			});
-			
-			
-		});
+	
 
 	};
 

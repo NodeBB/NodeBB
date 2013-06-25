@@ -90,27 +90,9 @@
 			var removeBtn = parent.find('.remove-admin-btn');
 			var uid = parent.attr('data-uid');
 
-			var userData = {
-				uid:uid,
-				_csrf:$('#csrf_token').val()
-			};
-			
-			$.post('/admin/makeadmin',
-				userData,
-				function(data) {
-					app.alert({
-					  'alert_id': 'user_made_admin',
-					  type: 'success',
-					  title: 'User Modified',
-					  message: 'This user is an administrator now!',
-					  timeout: 2000
-					});
-
-					makeBtn.hide();
-					removeBtn.show();
-				}
-			);
-
+			socket.emit('api:admin.user.makeAdmin', uid);
+			makeBtn.hide();
+			removeBtn.show();
 			return false;
 		});
 
@@ -121,28 +103,9 @@
 			var makeBtn = parent.find('.make-admin-btn');
 			var uid = parent.attr('data-uid');
 
-			var userData = {
-				uid:uid,
-				_csrf:$('#csrf_token').val()
-			};
-			
-			$.post('/admin/removeadmin',
-				userData,
-				function(data) {
-					app.alert({
-					  'alert_id': 'user_removed_admin',
-					  type: 'success',
-					  title: 'User Modified',
-					  message: 'This user is no longer an administrator!',
-					  timeout: 2000
-					});
-
-					makeBtn.show();
-					removeBtn.hide();
-				}
-			);
-
-			
+			socket.emit('api:admin.user.removeAdmin', uid);		
+			makeBtn.show();
+			removeBtn.hide();
 			return false;
 		});
 

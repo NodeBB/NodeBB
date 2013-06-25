@@ -14,7 +14,8 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 	meta = require('./meta.js'),
 	async = require('async'),
 	admin = {
-		'categories': require('./admin/categories.js')
+		'categories': require('./admin/categories.js'),
+		'user': require('./admin/user.js')
 	};
 	
 (function(io) {
@@ -411,7 +412,19 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 		socket.on('api:admin.categories.update', function(data) {
 			admin.categories.update(data, socket);
-		})
+		});
+		
+		socket.on('api:admin.user.makeAdmin', function(theirid) {
+			if(uid && uid > 0) {
+				admin.user.makeAdmin(uid, theirid, socket);
+			}
+		});
+		
+		socket.on('api:admin.user.removeAdmin', function(theirid) {
+			if(uid && uid > 0) {
+				admin.user.removeAdmin(uid, theirid, socket);
+			}
+		});
 	});
 	
 }(SocketIO));
