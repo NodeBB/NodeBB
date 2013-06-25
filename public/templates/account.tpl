@@ -16,13 +16,16 @@
 		
 
 	<div class="row-fluid">
-		<div class="span3" style="text-align: center; margin-bottom:20px;">
+		<div class="span2" style="text-align: center; margin-bottom:20px;">
 			<div class="account-picture-block">
 				<img src="{picture}" class="user-profile-picture"/>
 			</div>
+			<div id="user-actions">
+				<a id="follow-btn" href="#" class="btn">Follow</a>
+			</div>
 		</div>
 	
-		<div class="span9">
+		<div class="span10">
 			<div class="inline-block">
 				<div class="account-bio-block">
 					<span class="account-bio-label">email</span>
@@ -74,9 +77,7 @@
 			</div>
 		</div>
 	</div>
-	<div id="user-actions" class="container">
-		<a id="follow-btn" href="#" class="btn">Follow</a>
-	</div>
+
 	<br/>
 	<div id="user-action-alert" class="alert alert-success hide"></div>
 

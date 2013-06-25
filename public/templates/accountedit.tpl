@@ -73,14 +73,14 @@
 	</div>
 
 	<div class="row-fluid">
-		<div class="span3" style="text-align: center; margin-bottom:20px;">
+		<div class="span2" style="text-align: center; margin-bottom:20px;">
 			<div class="account-picture-block text-center">
 				<img id="user-current-picture" class="user-profile-picture" src="{picture}" /><br/>
 				<a id="changePictureBtn" href="#" class="btn btn-primary">change picture</a>
 			</div>
 		</div>
 		  
-		<div class="span9">
+		<div class="span10">
 			 <div class="inline-block">
 				<form class='form-horizontal'>
 					<div class="control-group">
