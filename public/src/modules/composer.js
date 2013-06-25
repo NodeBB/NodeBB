@@ -10,7 +10,7 @@ define(['taskbar'], function(taskbar) {
 	composer.init = function() {
 		// Create the fixed bottom bar
 		var	taskbar = document.getElementById('taskbar');
-		
+
 		composer.postContainer = document.createElement('div');
 		composer.postContainer.className = 'post-window row-fluid';
 		composer.postContainer.innerHTML =	'<div class="span10 offset1">' +
@@ -151,6 +151,9 @@ define(['taskbar'], function(taskbar) {
 			pid: pid,	// Editing
 			body: text	// Predefined text
 		});
+		// Regardless of success or failure, this should be set back to false so new topics can have their title set
+		var titleEl = composer.postContainer.querySelector('input');
+		titleEl.readOnly = false;
 	}
 
 	composer.load = function(post_uuid) {
