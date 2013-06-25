@@ -10,7 +10,7 @@ define(['taskbar'], function(taskbar) {
 	composer.init = function() {
 		// Create the fixed bottom bar
 		var	taskbar = document.getElementById('taskbar');
-		
+
 		composer.postContainer = document.createElement('div');
 		composer.postContainer.className = 'post-window row-fluid';
 		composer.postContainer.innerHTML =	'<div class="span10 offset1">' +
@@ -170,6 +170,7 @@ define(['taskbar'], function(taskbar) {
 			socket.emit('api:composer.editCheck', post_data.pid);
 		} else {
 			titleEl.value = post_data.title;
+			titleEl.readOnly = false;
 		}
 		bodyEl.value = post_data.body
 
