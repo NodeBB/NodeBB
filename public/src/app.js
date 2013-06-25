@@ -23,7 +23,6 @@ var socket,
 			});
 
 			socket.on('event:alert', function(data) {
-				console.log('ALERT');
 				app.alert(data);
 			});
 			
