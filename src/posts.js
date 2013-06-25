@@ -1,5 +1,6 @@
 var	RDB = require('./redis.js'),
 	utils = require('./../public/src/utils.js'),
+	schema = require('./schema.js'),
 	marked = require('marked'),
 	user = require('./user.js'),
 	topics = require('./topics.js'),
@@ -257,6 +258,7 @@ marked.setOptions({
 					RDB.set('pid:' + pid + ':tid', tid);
 					
 					RDB.incr('tid:' + tid + ':postcount');
+					RDB.zadd(schema.topics().recent, Date.now(), tid);
 
 					user.getUserFields(uid, ['username'], function(data) { // todo parallel
 						//add active users to this category

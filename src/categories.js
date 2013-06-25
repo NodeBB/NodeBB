@@ -80,7 +80,7 @@ var	RDB = require('./redis.js'),
 
 	// not the permanent location for this function
 	Categories.getLatestTopics = function(current_user, start, end, callback) {
-		RDB.zrange('topics:recent', 0, -1, function(err, tids) {
+		RDB.zrevrange('topics:recent', 0, -1, function(err, tids) {
 			var latestTopics = {
 				'category_name' : 'Recent',
 				'show_sidebar' : 'hidden',
@@ -206,11 +206,10 @@ var	RDB = require('./redis.js'),
 					retrieved_topics = retrieved_topics.sort(function(a, b) {
 						if (a.pinned !== b.pinned) return b.pinned - a.pinned;
 						else {
-							// Sort by datetime descending
-							return b.timestamp - a.timestamp;
+							// assume equal, tids are already sorted due to RDB.zadd(schema.topics().recent, Date.now(), tid);
+							return 0;
 						}
 					});
-
 
 					callback(retrieved_topics);
 				});

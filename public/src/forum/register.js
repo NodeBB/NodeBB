@@ -64,7 +64,7 @@
 	socket.on('user.email.exists', function(data) {
 		emailexists = data.exists;
 		emailvalid = isEmailValid(email.value);
-		console.log('derp');
+
 		if (data.exists === true) {
 			email_notify.innerHTML = 'Email Address exists';
 			email_notify.className = 'label label-important';
