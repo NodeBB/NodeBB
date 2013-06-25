@@ -5,6 +5,7 @@
 			<label for="email">Email Address</label><input type="email" name="email" placeholder="Enter Email Address" id="email" /> <span id="email-notify" class="label label-important"></span><br />
 			<label for="username">Username</label><input type="text" name="username" placeholder="Enter Username" id="username" /> <span id="username-notify" class="label label-success"></span> <br />
 			<label for="password">Password</label><input type="password" name="password" placeholder="Enter Password" id="password" /> <span id="password-notify" class="label label-important"></span> <br />
+			<label for="password-confirm">Confirm Password</label><input type="password" name="password-confirm" placeholder="Confirm Password" id="password-confirm" /> <span id="password-confirm-notify" class="label label-important"></span> <br />
 			<input type="hidden" name="_csrf" value="{token}" />
 			<button class="btn btn-primary" id="register" type="submit">Register Now</button>
 		</form>
