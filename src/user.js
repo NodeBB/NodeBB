@@ -255,22 +255,17 @@ var utils = require('./../public/src/utils.js'),
 
 	User.search = function(username, callback) {
 		console.log('searching '+username);
-		RDB.keys('username:'+ username + '*:uid', function(err, keys) {
+		RDB.keys('username:*'+ username + '*:uid', function(err, keys) {
 			if(err === null) {
-				//console.log(data);
-				
-				/*var keys = [];
-				for(var i=0, ii=data.length; i<ii; ++i) {
-					keys.push('')
-				}*/
-
-				RDB.mget(keys, function(err, uids) {
-					console.log(uids);
-					User.getDataForUsers(uids, function(userdata) {
-						callback(userdata);
-					});
-				});
-			
+				if(keys && keys.length) {
+					RDB.mget(keys, function(err, uids) {
+						User.getDataForUsers(uids, function(userdata) {
+							callback(userdata);
+						});
+					});			
+				}
+				else
+					callback([]);
 			}	
 			else
 				console.log(err);
@@ -378,7 +373,7 @@ var utils = require('./../public/src/utils.js'),
 	User.getDataForUsers = function(userIds, callback) {
 		var returnData = [];
 
-		if(userIds.length === 0) {
+		if(!userIds || userIds.length === 0) {
 			callback(returnData);
 			return;
 		}

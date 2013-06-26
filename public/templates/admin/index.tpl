@@ -43,7 +43,26 @@
 	socket.emit('api:get_all_rooms');
 
 	socket.on('api:admin.user.search', function(data) {
-		console.log(data);
+		var	html = templates.prepare(templates['admin/users'].blocks['users']).parse({
+				users: data
+			}),
+			userListEl = document.querySelector('.users');
+
+		userListEl.innerHTML = html;
+		jQuery('.icon-spinner').addClass('none');				
+
+		if(data && data.length === 0) {
+			$('#user-notfound-notify').html('User not found!')
+				.show()
+				.addClass('label-important')
+				.removeClass('label-success');
+		}
+		else
+			$('#user-notfound-notify').html(data.length + ' user'+(data.length>1?'s':'') + ' found!')
+				.show()
+				.addClass('label-success')
+				.removeClass('label-important');
+
 	});
 
 </script>

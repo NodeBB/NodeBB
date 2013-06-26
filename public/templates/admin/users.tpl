@@ -11,33 +11,36 @@
 <div class="search {search_display} well">
 	<input id="search-user" type="text" placeholder="Enter a username to search"/><br />
 	<i class="icon-spinner icon-spin none"></i>
+	<span id="user-notfound-notify" class="label label-important hide">User not found!</span><br/>
 </div>
 
-<!-- BEGIN users -->
-<div class="users-box well" data-uid="{users.uid}" data-admin="{users.administrator}" data-username="{users.username}">
-	<a href="/users/{users.userslug}">
-		<img src="{users.picture}" class="user-8080-picture"/>
-	</a>
-	<br/>
-	<a href="/users/{users.userslug}">{users.username}</a>
-	<br/>
-	<div title="reputation">
-		<span id='reputation'>{users.reputation}</span>
-		<i class='icon-star'></i>
+<ul class="users">
+	<!-- BEGIN users -->
+	<div class="users-box well" data-uid="{users.uid}" data-admin="{users.administrator}" data-username="{users.username}">
+		<a href="/users/{users.userslug}">
+			<img src="{users.picture}" class="user-8080-picture"/>
+		</a>
+		<br/>
+		<a href="/users/{users.userslug}">{users.username}</a>
+		<br/>
+		<div title="reputation">
+			<span id='reputation'>{users.reputation}</span>
+			<i class='icon-star'></i>
+		</div>
+		<div title="post count">
+			<span id='postcount'>{users.postcount}</span>
+			<i class='icon-pencil'></i>
+		</div>
+		<div>
+			<a href="#" class="btn admin-btn">Admin</a>
+		</div>
+		<br/>
+		<div>
+			<a href="#" class="btn delete-btn btn-danger">Delete</a>
+		</div>
 	</div>
-	<div title="post count">
-		<span id='postcount'>{users.postcount}</span>
-		<i class='icon-pencil'></i>
-	</div>
-	<div>
-		<a href="#" class="btn admin-btn">Admin</a>
-	</div>
-	<br/>
-	<div>
-		<a href="#" class="btn delete-btn btn-danger">Delete</a>
-	</div>
-</div>
-<!-- END users -->
+	<!-- END users -->
+</ul>
 
 <input type="hidden" template-variable="yourid" value="{yourid}" />
 

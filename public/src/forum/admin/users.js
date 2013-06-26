@@ -3,6 +3,7 @@
 	jQuery('document').ready(function() {
 
 		var yourid = templates.get('yourid');
+		var timeoutId = 0;
 
 		var url = window.location.href,
 			parts = url.split('/'),
@@ -17,14 +18,17 @@
 		});
 
 		jQuery('#search-user').on('keyup', function () {
-			console.log('derp'); 
-			jQuery('.icon-spinner').removeClass('none');
-			console.log($('#search-user').val());
-			socket.emit('api:admin.user.search', $('#search-user').val());
+			if(timeoutId !== 0) {
+				clearTimeout(timeoutId);
+				timeoutId = 0;
+			}
+
+
+			timeoutId = setTimeout(function() {
+				jQuery('.icon-spinner').removeClass('none');
+				socket.emit('api:admin.user.search', $('#search-user').val());
+			}, 250);
 		});
-
-
-
 		
 
 		function isUserAdmin(element) {
