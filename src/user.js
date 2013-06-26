@@ -255,10 +255,22 @@ var utils = require('./../public/src/utils.js'),
 
 	User.search = function(username, callback) {
 		console.log('searching '+username);
-		RDB.keys('username:'+ username + '*:uid', function(err, data) {
+		RDB.keys('username:'+ username + '*:uid', function(err, keys) {
 			if(err === null) {
-				console.log(data);
-				callback(data);
+				//console.log(data);
+				
+				/*var keys = [];
+				for(var i=0, ii=data.length; i<ii; ++i) {
+					keys.push('')
+				}*/
+
+				RDB.mget(keys, function(err, uids) {
+					console.log(uids);
+					User.getDataForUsers(uids, function(userdata) {
+						callback(userdata);
+					});
+				});
+			
 			}	
 			else
 				console.log(err);

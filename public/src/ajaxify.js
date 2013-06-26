@@ -118,7 +118,8 @@ var ajaxify = {};
 			}
 
 			head.insertBefore(script, head.firstChild);
-			head.removeChild(script);
+			//TODO: remove from head before inserting?, doing this breaks scripts in safari so commented out for now
+			//head.removeChild(script);
 		};
 
 		var scripts = [],
