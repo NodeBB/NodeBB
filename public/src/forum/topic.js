@@ -426,8 +426,8 @@
 		ptotal += value;
 		utotal += value;
 
-		post_rep.html(ptotal);
-		user_rep.html(utotal);
+		post_rep.html(ptotal+ ' ');
+		user_rep.html(utotal+ ' ');
 	}
 
 

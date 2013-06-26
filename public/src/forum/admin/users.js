@@ -1,31 +1,7 @@
 
 (function() {
-	jQuery('document').ready(function() {
 
-		var yourid = templates.get('yourid');
-
-		var url = window.location.href,
-			parts = url.split('/'),
-			active = parts[parts.length-1];
-
-		jQuery('.nav-pills li').removeClass('active');
-		jQuery('.nav-pills li a').each(function() {
-			if (this.getAttribute('href').match(active)) {
-				jQuery(this.parentNode).addClass('active');
-				return false;
-			}
-		});
-
-		jQuery('#search-user').on('keyup', function () {
-			console.log('derp'); 
-			jQuery('.icon-spinner').removeClass('none');
-			console.log($('#search-user').val());
-			socket.emit('api:admin.user.search', $('#search-user').val());
-		});
-
-
-
-		
+	function initUsers() {
 
 		function isUserAdmin(element) {
 			var parent = $(element).parents('.users-box');
@@ -97,6 +73,70 @@
 			}
 			
 			return false;
+		});
+	}
+
+
+	jQuery('document').ready(function() {
+
+		var yourid = templates.get('yourid');
+		var timeoutId = 0;
+
+		var url = window.location.href,
+			parts = url.split('/'),
+			active = parts[parts.length-1];
+
+		jQuery('.nav-pills li').removeClass('active');
+		jQuery('.nav-pills li a').each(function() {
+			if (this.getAttribute('href').match(active)) {
+				jQuery(this.parentNode).addClass('active');
+				return false;
+			}
+		});
+
+		jQuery('#search-user').on('keyup', function () {
+			if(timeoutId !== 0) {
+				clearTimeout(timeoutId);
+				timeoutId = 0;
+			}
+
+			timeoutId = setTimeout(function() {
+				var username = $('#search-user').val();
+				
+				jQuery('.icon-spinner').removeClass('none');
+				socket.emit('api:admin.user.search', username);
+				
+			}, 250);
+		});
+		
+		initUsers();
+		
+		socket.removeAllListeners('api:admin.user.search');
+		
+		socket.on('api:admin.user.search', function(data) {
+
+			var	html = templates.prepare(templates['admin/users'].blocks['users']).parse({
+					users: data
+				}),
+				userListEl = document.querySelector('.users');
+
+			userListEl.innerHTML = html;
+			jQuery('.icon-spinner').addClass('none');				
+
+			if(data && data.length === 0) {
+				$('#user-notfound-notify').html('User not found!')
+					.show()
+					.addClass('label-important')
+					.removeClass('label-success');
+			}
+			else {
+				$('#user-notfound-notify').html(data.length + ' user'+(data.length>1?'s':'') + ' found!')
+					.show()
+					.addClass('label-success')
+					.removeClass('label-important');
+			}
+			
+			initUsers();
 		});
 	
 	});
