@@ -43,6 +43,7 @@
 	socket.emit('api:get_all_rooms');
 
 	socket.on('api:admin.user.search', function(data) {
+		console.log('move this into user.js but it should execute only once');
 		var	html = templates.prepare(templates['admin/users'].blocks['users']).parse({
 				users: data
 			}),
@@ -57,12 +58,14 @@
 				.addClass('label-important')
 				.removeClass('label-success');
 		}
-		else
+		else {
 			$('#user-notfound-notify').html(data.length + ' user'+(data.length>1?'s':'') + ' found!')
 				.show()
 				.addClass('label-success')
 				.removeClass('label-important');
-
+		}
+		
+		user.initUsers();
 	});
 
 </script>
