@@ -41,4 +41,9 @@
 
 	app.enter_room('admin');
 	socket.emit('api:get_all_rooms');
+
+	socket.on('api:admin.user.search', function(data) {
+		console.log(data);
+	});
+
 </script>

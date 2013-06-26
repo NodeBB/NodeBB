@@ -25,9 +25,7 @@
 
 
 
-		socket.on('api:admin.user.search', function(data) {
-			console.log(data);
-		});
+		
 
 		function isUserAdmin(element) {
 			var parent = $(element).parents('.users-box');
