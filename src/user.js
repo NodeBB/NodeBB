@@ -254,6 +254,11 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.search = function(username, callback) {
+		if(!username) {
+			callback([]);
+			return;
+		}
+
 		RDB.keys('username:*'+ username + '*:uid', function(err, keys) {
 			if(err === null) {
 				if(keys && keys.length) {
