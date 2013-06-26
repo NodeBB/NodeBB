@@ -79,7 +79,7 @@
 							<div id="ids_{posts.pid}_{posts.uid}" class="edit {posts.display_moderator_tools} hidden-phone" title="Edit"><i class="icon-pencil"></i></div>
 							<div id="ids_{posts.pid}_{posts.uid}" class="delete {posts.display_moderator_tools} hidden-phone" title="Delete"><i class="icon-trash"></i></div>
 							<div id="quote_{posts.pid}_{posts.uid}" class="quote hidden-phone" title="Quote"><i class="icon-quote-left"></i></div>
-							<div id="favs_{posts.pid}_{posts.uid}" class="favourite hidden-phone" title="Favourite"><span class="post_rep_{posts.pid}">{posts.post_rep}</span><i class="{posts.fav_star_class}"></i></div>
+							<div id="favs_{posts.pid}_{posts.uid}" class="favourite hidden-phone" title="Favourite"><span class="post_rep_{posts.pid}">{posts.post_rep} </span><i class="{posts.fav_star_class}"></i></div>
 							<div class="post_reply" title="Reply"><i class="icon-reply"></i></div>
 						</span>
 						<img class="hidden-desktop" src="{posts.gravatar}?s=10&default=identicon" align="left" /> posted by <strong><a class="username-field" href="/users/{posts.userslug}">{posts.username}</a></strong> {posts.relativeTime} ago
