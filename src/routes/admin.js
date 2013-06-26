@@ -24,6 +24,17 @@ var user = require('./../user.js'),
 					});
 				}(routes[i]));
 			}
+
+			var unit_tests = ['categories'];
+
+			for (var i=0, ii=unit_tests.length; i<ii; i++) {
+				(function(route) {
+					app.get('/admin/testing/' + route, Admin.isAdmin, function(req, res) {
+						res.send(templates['admin/header'] + app.create_route('admin/testing/' + route) + templates['admin/footer']);
+					});
+				}(unit_tests[i]));
+			}
+
 		}());
 
 		//todo consolidate.
