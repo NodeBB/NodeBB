@@ -305,17 +305,16 @@
 		data.posts[0].display_moderator_tools = 'none';
 		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data),
 			uniqueid = new Date().getTime();
-			
+
 		jQuery('<div id="' + uniqueid + '"></div>')
 			.appendTo("#post-container")
 			.hide()
 			.append(html)
 			.fadeIn('slow');
 
-		socket.once('api:post.privileges', function(privileges) {
-			if (privileges.editable) toggle_mod_tools(data.posts[0].pid, true);
-		});
-		socket.emit('api:post.privileges', data.posts[0].pid);
+		for(var x=0,numPosts=data.posts.length;x<numPosts;x++) {
+			socket.emit('api:post.privileges', data.posts[x].pid);
+		}
 
 		set_up_posts(uniqueid);
 		
@@ -395,6 +394,10 @@
 
 	socket.on('event:post_restored', function(data) {
 		if (data.pid) toggle_post_delete_state(data.pid, true);
+	});
+
+	socket.on('api:post.privileges', function(privileges) {
+		if (privileges.editable) toggle_mod_tools(privileges.pid, true);
 	});
 
 	function adjust_rep(value, pid, uid) {

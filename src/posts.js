@@ -26,10 +26,7 @@ marked.setOptions({
 
 			Posts.getPostsByPids(pids, current_user, function(posts) {
 				callback(posts);
-			})
-			
-			
-
+			});
 		});
 	}
 

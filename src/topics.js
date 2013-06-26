@@ -7,6 +7,7 @@ var	RDB = require('./redis.js')
 	posts = require('./posts.js'),
 	marked = require('marked'),
 	threadTools = require('./threadTools.js'),
+	postTools = require('./postTools'),
 	async = require('async'),
 	feed = require('./feed.js');
 
@@ -39,7 +40,7 @@ marked.setOptions({
 		}
 
 		function getTopicPosts(next) {
-			posts.getPostsByTid(tid, current_user, 0, 10, function(postData) {
+			posts.getPostsByTid(tid, current_user, 0, 9, function(postData) {
 				next(null, postData);
 			});
 		}
@@ -51,69 +52,30 @@ marked.setOptions({
 		}
 
 		async.parallel([getTopicData, getTopicPosts, getPrivileges], function(err, results) {
-			var	retrieved_posts = [],
-			main_posts = [];
-
 			var topicData = results[0],
-				postData = results[1].postData,
-				userData = results[1].userData,
-				voteData = results[1].voteData,
 				privileges = results[2];
 
-			if (!postData) {
-				callback(false);
-				return;
-			}
+			postTools.constructPostObject(results[1], tid, current_user, privileges, function(postObj) {
+				if (postObj.length) {
+					var	main_posts = postObj.splice(0, 1);
 
-			for (var i=0, ii= postData.pid.length; i<ii; i++) {
-				var uid = postData.uid[i],
-					pid = postData.pid[i];
-				
-				// ############ to be moved into posts.getPostsByTid ############
-				if (postData.deleted[i] === null || (postData.deleted[i] === '1' && privileges.view_deleted) || current_user === uid) {
-					var post_obj = {
-						'pid' : pid,
-						'uid' : uid,
-						'content' : marked(postData.content[i] || ''),
-						'post_rep' : postData.reputation[i] || 0,
-						'timestamp' : postData.timestamp[i],
-						'relativeTime': utils.relativeTime(postData.timestamp[i]),
-						'username' : userData[uid].username || 'anonymous',
-						'userslug' : userData[uid].userslug || '',
-						'user_rep' : userData[uid].reputation || 0,
-						'gravatar' : userData[uid].picture || 'http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e',
-						'signature' : marked(userData[uid].signature || ''),
-						'fav_star_class' : voteData[pid] ? 'icon-star' : 'icon-star-empty',
-						'display_moderator_tools': (uid == current_user || privileges.editable) ? 'show' : 'none',
-						'edited-class': postData.editor[i] !== null ? '' : 'none',
-						'editor': postData.editor[i] !== null ? userData[postData.editor[i]].username : '',
-						'relativeEditTime': postData.editTime !== null ? utils.relativeTime(postData.editTime[i]) : '',
-						'deleted': postData.deleted[i] || '0'
-					};
-
-					if (i == 0) {
-						main_posts.push(post_obj);
-					} else {
-						retrieved_posts.push(post_obj);
-					}
+					callback({
+						'topic_name':topicData.topic_name,
+						'category_name':topicData.category_name,
+						'category_slug':topicData.category_slug,
+						'locked': parseInt(topicData.locked) || 0,
+						'deleted': parseInt(topicData.deleted) || 0,
+						'pinned': parseInt(topicData.pinned) || 0,
+						'slug': topicData.slug,
+						'topic_id': tid,
+						'expose_tools': privileges.editable ? 1 : 0,
+						'posts': postObj,
+						'main_posts': main_posts
+					});
+				} else {
+					return callback(false);
 				}
-				// ########## end to be moved into posts.getPostsByTid ############
-			}
-
-			callback({
-				'topic_name':topicData.topic_name,
-				'category_name':topicData.category_name,
-				'category_slug':topicData.category_slug,
-				'locked': parseInt(topicData.locked) || 0,
-				'deleted': parseInt(topicData.deleted) || 0,
-				'pinned': parseInt(topicData.pinned) || 0,
-				'slug': topicData.slug,
-				'topic_id': tid,
-				'expose_tools': privileges.editable ? 1 : 0,
-				'posts': retrieved_posts,
-				'main_posts': main_posts
 			});
-
 		});
 	}
 
