@@ -2,12 +2,22 @@
 	var cid = templates.get('category_id'),
 		room = 'category_' + cid,
 		twitterEl = document.getElementById('twitter-intent'),
-		twitter_url = templates.get('twitter-intent-url');
+		facebookEl = document.getElementById('facebook-share'),
+		googleEl = document.getElementById('google-share'),
+		twitter_url = templates.get('twitter-intent-url'),
+		facebook_url = templates.get('facebook-share-url'),
+		google_url = templates.get('google-share-url');
 		
 	app.enter_room(room);
 
 	twitterEl.addEventListener('click', function() {
 		window.open(twitter_url, '_blank', 'width=550,height=420,scrollbars=no,status=no');
+	}, false);
+	facebookEl.addEventListener('click', function() {
+		window.open(facebook_url, '_blank', 'width=626,height=436,scrollbars=no,status=no');
+	}, false);
+	googleEl.addEventListener('click', function() {
+		window.open(google_url, '_blank', 'width=500,height=570,scrollbars=no,status=no');
 	}, false);
 
 	var new_post = document.getElementById('new_post');
