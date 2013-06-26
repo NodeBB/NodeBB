@@ -4,7 +4,8 @@ var	RDB = require('./redis.js'),
 	threadTools = require('./threadTools.js'),
 	user = require('./user.js'),
 	async = require('async'),
-	marked = require('marked');
+	marked = require('marked'),
+	utils = require('../public/src/utils');
 
 marked.setOptions({
 	breaks: true
@@ -112,6 +113,67 @@ marked.setOptions({
 			if (privileges.editable) {
 				success();
 			}
+		});
+	}
+
+	PostTools.constructPostObject = function(rawPosts, tid, current_user, privileges, callback) {
+		var postObj = [];
+
+		async.waterfall([
+			function(next) {
+				if (!privileges) {
+					threadTools.privileges(tid, current_user, function(privs) {
+						privileges = privs;
+						next();
+					});
+				} else {
+					next();
+				}
+			},
+			function(next) {
+				var postData = rawPosts.postData,
+					userData = rawPosts.userData,
+					voteData = rawPosts.voteData;
+
+				if (!postData) {
+					return next(null, []);
+				}
+
+				for (var i=0, ii= postData.pid.length; i<ii; i++) {
+					var uid = postData.uid[i],
+						pid = postData.pid[i];
+					
+					// ############ to be moved into posts.getPostsByTid ############
+					if (postData.deleted[i] === null || (postData.deleted[i] === '1' && privileges.view_deleted) || current_user === uid) {
+						var post_obj = {
+							'pid' : pid,
+							'uid' : uid,
+							'content' : marked(postData.content[i] || ''),
+							'post_rep' : postData.reputation[i] || 0,
+							'timestamp' : postData.timestamp[i],
+							'relativeTime': utils.relativeTime(postData.timestamp[i]),
+							'username' : userData[uid].username || 'anonymous',
+							'userslug' : userData[uid].userslug || '',
+							'user_rep' : userData[uid].reputation || 0,
+							'gravatar' : userData[uid].picture || 'http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e',
+							'signature' : marked(userData[uid].signature || ''),
+							'fav_star_class' : voteData[pid] ? 'icon-star' : 'icon-star-empty',
+							'display_moderator_tools': (uid == current_user || privileges.editable) ? 'show' : 'none',
+							'edited-class': postData.editor[i] !== null ? '' : 'none',
+							'editor': postData.editor[i] !== null ? userData[postData.editor[i]].username : '',
+							'relativeEditTime': postData.editTime !== null ? utils.relativeTime(postData.editTime[i]) : '',
+							'deleted': postData.deleted[i] || '0'
+						};
+
+						postObj.push(post_obj);
+					}
+					// ########## end to be moved into posts.getPostsByTid ############
+				}
+
+				next(null);
+			}
+		], function(err) {
+			callback(postObj);
 		});
 	}
 

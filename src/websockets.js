@@ -381,6 +381,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 		socket.on('api:post.privileges', function(pid) {
 			postTools.privileges(pid, uid, function(privileges) {
+				privileges.pid = parseInt(pid);
 				socket.emit('api:post.privileges', privileges);
 			});
 		});
@@ -402,6 +403,21 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					error: 'not-logged-in'
 				});
 			}
+		});
+
+		socket.on('api:topic.loadMore', function(data) {
+			var	start = data.after,
+				end = start + 10;
+
+			posts.getPostsByTid(data.tid, uid, start, end, function(posts){
+				if (!posts.error) {
+					postTools.constructPostObject(posts, data.tid, uid, null, function(postObj) {
+						io.sockets.in('topic_' + data.tid).emit('event:new_post', {
+							posts: postObj
+						});
+					});
+				}
+			});
 		});
 
 		socket.on('api:admin.topics.getMore', function(data) {
