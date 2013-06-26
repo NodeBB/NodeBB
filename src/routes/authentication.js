@@ -129,10 +129,9 @@
 		});
 
 
-		app.post('/login', passport.authenticate('local', {
-			successRedirect: '/',
-			failureRedirect: '/login'
-		}));
+		app.post('/login', passport.authenticate('local'), function(req, res) {
+			res.json({success:1});
+		});
 		
 		app.post('/register', function(req, res) {
 			user_module.create(req.body.username, req.body.password, req.body.email, function(err, uid) {

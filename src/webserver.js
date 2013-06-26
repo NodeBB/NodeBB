@@ -91,7 +91,10 @@ var express = require('express'),
 				
 				app.get('/' + route, function(req, res) {
 					if ((route === 'login' || route ==='register') && (req.user && req.user.uid > 0)) {
-						res.redirect('/account');
+						
+						user.getUserField(req.user.uid, 'userslug', function(userslug) {
+							res.redirect('/users/'+userslug);							
+						});
 						return;
 					}
 					
