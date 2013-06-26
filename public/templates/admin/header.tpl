@@ -63,7 +63,7 @@
 						<li class="nav-header">NodeBB</li>
 						<li class='active'><a href='/admin/index'><i class='icon-home'></i> Home</a></li>
 						<li class=''><a href='/admin/categories'><i class='icon-folder-close-alt'></i> Categories</a></li>
-						<li class=''><a href='/admin/users'><i class='icon-user'></i> Users</a></li>
+						<li class=''><a href='/admin/users/latest'><i class='icon-user'></i> Users</a></li>
 						<li class=''><a href='/admin/topics'><i class='icon-book'></i> Topics</a></li>
 						<li class=''><a href='/admin/themes'><i class='icon-th'></i> Themes</a></li>
 						<li class=''><a href='/admin/settings'><i class='icon-cogs'></i> Settings</a></li>

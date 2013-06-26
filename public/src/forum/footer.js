@@ -132,6 +132,9 @@
 	socket.emit('api:notifications.hasFlag');
 
 
+
+
+
 	require(['mobileMenu'], function(mobileMenu) {
 		mobileMenu.init();
 	});

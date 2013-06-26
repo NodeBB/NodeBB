@@ -1,3 +1,5 @@
+
+
 (function() {
 	// Alternate Logins
 	var altLoginEl = document.querySelector('.alt-logins');
@@ -11,7 +13,6 @@
 			document.location.href = target.getAttribute('data-url');
 		}
 	});	
-	
 	
 	$('#login').on('click', function() {
 		
@@ -32,9 +33,11 @@
 			error : function(data, textStatus, jqXHR) {
 				$('#login-error-notify').show().delay(1000).fadeOut(250);
 			},
-			dataType: 'json'
+			dataType: 'json',
+			async: true,
+			timeout: 2000
 		});
-		
+
 		return false;
 	});
 	

@@ -40,8 +40,33 @@ var user = require('./../user.js'),
 				case 'users' :
 					if (req.params.tab == 'search') {
 						res.json({search_display: 'block', users: []});
-					} else {
-						user.getUserList(function(data){
+					} 
+					else if(req.params.tab == 'latest') {
+						user.getUserList(function(data) {
+							data = data.sort(function(a, b) {
+								return b.joindate - a.joindate;
+							});
+							res.json({search_display: 'none', users:data, yourid:req.user.uid});
+						});
+					}
+					else if(req.params.tab == 'sort-posts') {
+						user.getUserList(function(data) {
+							data = data.sort(function(a, b) {
+								return b.postcount - a.postcount;
+							});
+							res.json({search_display: 'none', users:data, yourid:req.user.uid});
+						});
+					}
+					else if(req.params.tab == 'sort-reputation') {
+						user.getUserList(function(data) {
+							data = data.sort(function(a, b) {
+								return b.reputation - a.reputation;
+							});
+							res.json({search_display: 'none', users:data, yourid:req.user.uid});
+						});
+					}
+					else {
+						user.getUserList(function(data) {
 							res.json({search_display: 'none', users:data, yourid:req.user.uid});
 						});
 					}
