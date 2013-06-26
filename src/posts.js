@@ -17,16 +17,17 @@ marked.setOptions({
 	Posts.getPostsByTid = function(tid, current_user, start, end, callback) {
 		RDB.lrange('tid:' + tid + ':posts', start, end, function(err, pids) {
 			RDB.handle(err);
-			
-			if (pids.length === 0 ) {
-				throw new Error('Topic should never have 0 posts. tid: ' + tid);
-			}
-			
 			topics.markAsRead(tid, current_user);
 
-			Posts.getPostsByPids(pids, current_user, function(posts) {
-				callback(posts);
-			});
+			if (pids.length) {
+				Posts.getPostsByPids(pids, current_user, function(posts) {
+					callback(posts);
+				});
+			} else {
+				callback({
+					error: 'no-posts'
+				});
+			}
 		});
 	}
 

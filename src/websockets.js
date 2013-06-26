@@ -410,11 +410,13 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				end = start + 10;
 
 			posts.getPostsByTid(data.tid, uid, start, end, function(posts){
-				postTools.constructPostObject(posts, data.tid, uid, null, function(postObj) {
-					io.sockets.in('topic_' + data.tid).emit('event:new_post', {
-						posts: postObj
+				if (!posts.error) {
+					postTools.constructPostObject(posts, data.tid, uid, null, function(postObj) {
+						io.sockets.in('topic_' + data.tid).emit('event:new_post', {
+							posts: postObj
+						});
 					});
-				});
+				}
 			});
 		});
 
