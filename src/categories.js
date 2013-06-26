@@ -45,7 +45,6 @@ var	RDB = require('./redis.js'),
 									return b.lastposttime - a.lastposttime;
 								}
 							});
-							console.log(topics);
 							next(null, topics);
 							
 						}, category_id);
