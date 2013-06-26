@@ -39,6 +39,9 @@
 				<div class="nav-collapse collapse">
 					<ul class="nav">
 						<li>
+						  <a href="/" target="_blank"><i class="icon-book"></i> Forum</a>
+						</li>
+						<li>
 						  <a href="/admin/index"><i class="icon-home"></i> Home</a>
 						</li>
 						<li>
