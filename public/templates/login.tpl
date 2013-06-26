@@ -7,12 +7,12 @@
 			<strong>Failed Login Attempt</strong> <p></p>
 		</div>
 		
-		<div>
+		<form>
 			<label>Username</label><input type="text" placeholder="Enter Username" name="username" id="username" /><br />
 			<label>Password</label><input type="password" placeholder="Enter Password" name="password" id="password" /><br />
 			<input type="hidden" name="_csrf" value="{token}" id="csrf-token" />
 			<button class="btn btn-primary" id="login" type="submit">Login</button> &nbsp; <a href="/reset">Forgot Password?</a>
-		</div>
+		</form>
 		
 		<span id="login-error-notify" class="label label-important hide">Invalid username/password</span><br/>
 	</div>
