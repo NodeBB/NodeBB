@@ -330,11 +330,10 @@
 			socket.emit('api:post.privileges', data.posts[x].pid);
 		}
 
+		set_up_posts(uniqueid);
 		tempContainer.replaceWith(tempContainer.contents());
 		infiniteLoaderActive = false;
 
-		set_up_posts(uniqueid);
-		
 		addCommasToNumbers();
 	});
 
