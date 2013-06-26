@@ -1,5 +1,6 @@
 {
 	"custom_mapping": {
+		"admin/testing/categories[^]*": "admin/testing/categories",
 		"admin/topics[^]*": "admin/topics",
 		"admin/categories[^]*": "admin/categories",
 		"admin/users[^]*": "admin/users",

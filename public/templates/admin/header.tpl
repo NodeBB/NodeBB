@@ -8,6 +8,8 @@
 	<link rel="stylesheet" href="/vendor/fontawesome/css/font-awesome.min.css">
 	<script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
 	<script type="text/javascript" src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-git.js"></script>
+	<link rel="stylesheet" type="text/css" href="http://code.jquery.com/qunit/qunit-git.css">
 	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 	<script type="text/javascript" src="/src/app.js"></script>
 	<script type="text/javascript" src="/src/templates.js"></script>
@@ -74,11 +76,23 @@
 						<li class=''><a href="/admin/motd"><i class="icon-comment"></i> MOTD</a></li>
 
 						<li class="nav-header">Social Authentication</li>
-						<li class=''><a href='/admin/twitter'><i class='icon-twitter'></i>Twitter</a></li>
-						<li class=''><a href='/admin/facebook'><i class='icon-facebook'></i>Facebook</a></li>
-						<li class=''><a href='/admin/gplus'><i class='icon-google-plus'></i>Google+</a></li>
-						<li class="nav-header">Custom Modules</li>
+						<li class=''><a href='/admin/twitter'><i class='icon-twitter-sign'></i> Twitter</a></li>
+						<li class=''><a href='/admin/facebook'><i class='icon-facebook-sign'></i> Facebook</a></li>
+						<li class=''><a href='/admin/gplus'><i class='icon-google-plus-sign'></i> Google+</a></li>
+						<!--<li class="nav-header">Custom Modules</li>-->
 						<!-- <li class=''><a href=''>Search</a></li> -->
+						<li class="nav-header">Unit Tests</li>
+						<ul class="nav nav-list">
+							<li class=''><a href='/admin/testing/categories'>Categories</a></li>
+							<li class=''><a href='/admin/testing/topics'>Topics</a></li>
+							<li class=''><a href='/admin/testing/posts'>Posts</a></li>
+							<li class=''><a href='/admin/testing/accounts'>Accounts</a></li>
+							<li class=''><a href='/admin/testing/chat'>Chat</a></li>
+							<li class=''><a href='/admin/testing/notifications'>Notifications</a></li>
+							<li class=''><a href='/admin/testing/friends'>Friends</a></li>
+							<li class=''><a href='/admin/testing/feed'>RSS Feed</a></li>
+							<li class=''><a href='/admin/testing/emails'>Emails</a></li>
+						</ul>
 					</ul>
 				</div><!--/.well -->
 			</div><!--/span-->
