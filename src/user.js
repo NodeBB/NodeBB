@@ -253,6 +253,18 @@ var utils = require('./../public/src/utils.js'),
 		});
 	}
 
+	User.search = function(username, callback) {
+		console.log('searching '+username);
+		RDB.keys('username:'+ username + '*:uid', function(err, data) {
+			if(err === null) {
+				console.log(data);
+				callback(data);
+			}	
+			else
+				console.log(err);
+		});
+	}
+
 	User.sendConfirmationEmail = function (email) {
 		if (global.config['email:host'] && global.config['email:port'] && global.config['email:from']) {
 			var confirm_code = utils.generateUUID(),
