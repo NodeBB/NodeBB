@@ -1,7 +1,7 @@
 <h1>Users</h1>
 <hr />
 <ul class="nav nav-pills">
-	<li class='active'><a href='/admin/users'>Latest Users</a></li>
+	<li class='active'><a href='/admin/users/latest'>Latest Users</a></li>
 	<li class=''><a href='/admin/users/sort-posts'>Top Posters</a></li>
 	<li class=''><a href='/admin/users/sort-reputation'>Most Reputation</a></li>
 	<li class=''><a href='/admin/users/search'>Search</a></li>
@@ -14,7 +14,7 @@
 </div>
 
 <!-- BEGIN users -->
-<div class="users-box well" data-uid="{users.uid}">
+<div class="users-box well" data-uid="{users.uid}" data-admin="{users.administrator}" data-username="{users.username}">
 	<a href="/users/{users.userslug}">
 		<img src="{users.picture}" class="user-8080-picture"/>
 	</a>
@@ -30,7 +30,11 @@
 		<i class='icon-pencil'></i>
 	</div>
 	<div>
-		<a href="#" class="btn admin-btn" data-admin="{users.administrator}" data-username="{users.username}">Admin</a>
+		<a href="#" class="btn admin-btn">Admin</a>
+	</div>
+	<br/>
+	<div>
+		<a href="#" class="btn delete-btn btn-danger">Delete</a>
 	</div>
 
 </div>
@@ -58,9 +62,19 @@
 			}
 		});
 
+		function isUserAdmin(element) {
+			var parent = $(element).parents('.users-box');
+			return (parent.attr('data-admin') !== "0");
+		}
+
+		function getUID(element) {
+			var parent = $(element).parents('.users-box');
+			return parent.attr('data-uid');	
+		}
+
 		jQuery('.admin-btn').each(function(index, element) {
 			var adminBtn = $(element);
-			var isAdmin = adminBtn.attr('data-admin') !== "0";
+			var isAdmin = isUserAdmin(adminBtn);
 			
 			if(isAdmin)
 				adminBtn.addClass('btn-success');
@@ -69,25 +83,51 @@
 
 		});
 
+		jQuery('.delete-btn').each(function(index, element) {
+			var deleteBtn = $(element);
+			var isAdmin = isUserAdmin(deleteBtn);
+			
+			if(isAdmin)
+				deleteBtn.addClass('disabled');
+			else
+				deleteBtn.show();
+		});
+
 		jQuery('.admin-btn').on('click', function() {
 			var adminBtn = $(this);
-			var isAdmin = adminBtn.attr('data-admin') !== "0";
+			var isAdmin = isUserAdmin(adminBtn);
 			var parent = adminBtn.parents('.users-box');
-
-			var uid = parent.attr('data-uid');
+			var uid = getUID(adminBtn);
 
 			if(isAdmin) {
 				socket.emit('api:admin.user.removeAdmin', uid);		
 				adminBtn.removeClass('btn-success');
-				adminBtn.attr('data-admin', 0);
+				parent.find('.delete-btn').removeClass('disabled');
+				parent.attr('data-admin', 0);
 			}
 			else {
-				bootbox.confirm('Do you really want to make "' + adminBtn.attr('data-username') +'" an admin?', function(confirm) {
+				bootbox.confirm('Do you really want to make "' + parent.attr('data-username') +'" an admin?', function(confirm) {
 					if(confirm) {
 						socket.emit('api:admin.user.makeAdmin', uid);
 						adminBtn.addClass('btn-success');
-						adminBtn.attr('data-admin', 1);
+						parent.find('.delete-btn').addClass('disabled');
+						parent.attr('data-admin', 1);
 					}
+				});
+			}
+			
+			return false;
+		});
+
+		jQuery('.delete-btn').on('click', function() {
+			var deleteBtn = $(this);
+			var isAdmin = isUserAdmin(deleteBtn);
+			var parent = deleteBtn.parents('.users-box');
+			var uid = getUID(deleteBtn);
+
+			if(!isAdmin) {
+				bootbox.confirm('Do you really want to delete "' + parent.attr('data-username') +'"?', function(confirm) {
+					socket.emit('api:admin.user.deleteUser', uid);		
 				});
 			}
 			

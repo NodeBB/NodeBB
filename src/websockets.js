@@ -425,6 +425,12 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				admin.user.removeAdmin(uid, theirid, socket);
 			}
 		});
+
+		socket.on('api:admin.user.deleteUser', function(theirid) {
+			if(uid && uid > 0) {
+				admin.user.deleteUser(uid, theirid, socket);
+			}
+		});
 	});
 	
 }(SocketIO));
