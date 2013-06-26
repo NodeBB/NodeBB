@@ -49,9 +49,9 @@
 		<div class="sidebar-block img-polaroid">
 			<div class="block-header">
 				<a target="_blank" href="../{category_id}.rss"><i class="icon-rss-sign icon-2x"></i></a>&nbsp;
-				<i class="icon-facebook-sign icon-2x"></i>&nbsp;
+				<a href="#" id="facebook-share"><i class="icon-facebook-sign icon-2x"></i></a>&nbsp;
 				<a href="#" id="twitter-intent"><i class="icon-twitter-sign icon-2x"></i></a>&nbsp;
-				<i class="icon-google-plus-sign icon-2x"></i>&nbsp;
+				<a href="#" id="google-share"><i class="icon-google-plus-sign icon-2x"></i></a>&nbsp;
 			</div>
 		</div>
 		<div class="sidebar-block img-polaroid">
@@ -87,4 +87,6 @@
 
 <input type="hidden" template-variable="category_id" value="{category_id}" />
 <input type="hidden" template-variable="twitter-intent-url" value="{twitter-intent-url}" />
+<input type="hidden" template-variable="facebook-share-url" value="{facebook-share-url}" />
+<input type="hidden" template-variable="google-share-url" value="{google-share-url}" />
 <script type="text/javascript" src="/src/forum/category.js"></script>
