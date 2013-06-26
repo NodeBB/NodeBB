@@ -258,7 +258,8 @@ marked.setOptions({
 					RDB.set('pid:' + pid + ':tid', tid);
 					
 					RDB.incr('tid:' + tid + ':postcount');
-					RDB.zadd(schema.topics().recent, Date.now(), tid);
+					RDB.zadd(schema.topics().recent, timestamp, tid);
+					RDB.set('tid:' + tid + ':lastposttime', timestamp);
 
 					user.getUserFields(uid, ['username'], function(data) { // todo parallel
 						//add active users to this category

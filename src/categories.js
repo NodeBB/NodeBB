@@ -40,7 +40,7 @@ var	RDB = require('./redis.js'),
 							topics = topics.sort(function(a, b) {
 								if (a.pinned !== b.pinned) return b.pinned - a.pinned;
 								else {
-									return b.timestamp - a.timestamp;
+									return b.lastposttime - a.lastposttime;
 								}
 							});
 							console.log(topics);
@@ -117,6 +117,7 @@ var	RDB = require('./redis.js'),
 		var title = [],
 			uid = [],
 			timestamp = [],
+			lastposttime = [],
 			slug = [],
 			postcount = [],
 			locked = [],
@@ -127,6 +128,7 @@ var	RDB = require('./redis.js'),
 			title.push('tid:' + tids[i] + ':title');
 			uid.push('tid:' + tids[i] + ':uid');
 			timestamp.push('tid:' + tids[i] + ':timestamp');
+			lastposttime.push('tid:' + tids[i] + ':lastposttime');			
 			slug.push('tid:' + tids[i] + ':slug');
 			postcount.push('tid:' + tids[i] + ':postcount');
 			locked.push('tid:' + tids[i] + ':locked');
@@ -139,6 +141,7 @@ var	RDB = require('./redis.js'),
 			.mget(title)
 			.mget(uid)
 			.mget(timestamp)
+			.mget(lastposttime)
 			.mget(slug)
 			.mget(postcount)
 			.mget(locked)
@@ -150,11 +153,12 @@ var	RDB = require('./redis.js'),
 				title = replies[0];
 				uid = replies[1];
 				timestamp = replies[2];
-				slug = replies[3];
-				postcount = replies[4];
-				locked = replies[5];
-				deleted = replies[6];
-				pinned = replies[7];
+				lastposttime = replies[3];
+				slug = replies[4];
+				postcount = replies[5];
+				locked = replies[6];
+				deleted = replies[7];
+				pinned = replies[8];
 			
 				function getUserNames(next) {
 					user.get_usernames_by_uids(uid, function(userNames) {
@@ -195,6 +199,7 @@ var	RDB = require('./redis.js'),
 								'uid' : uid[i],
 								'username': usernames[i],
 								'timestamp' : timestamp[i],
+								'lastposttime' : lastposttime[i],
 								'relativeTime': utils.relativeTime(timestamp[i]),
 								'slug' : slug[i],
 								'post_count' : postcount[i],
