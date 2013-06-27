@@ -325,7 +325,6 @@ marked.setOptions({
 						});
 					};
 					
-					console.log(returnData);
 					callback(returnData);
 				});
 			}
