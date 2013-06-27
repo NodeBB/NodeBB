@@ -261,22 +261,6 @@
 		
 	});
 
-	socket.on('chatMessage', function(data) {
-		
-		var username = data.username;
-		var fromuid = data.fromuid;
-		var message = data.message;
-		
-		require(['chat'], function(chat) {
-			var chatModal = chat.createModalIfDoesntExist(username, fromuid);
-			chatModal.show();
-			chat.bringModalToTop(chatModal);
-	
-			chat.appendChatMessage(chatModal, message);
-		});
-	});
-
-
 	ajaxify.register_events([
 		'event:rep_up', 'event:rep_down', 'event:new_post', 'api:get_users_in_room',
 		'event:topic_deleted', 'event:topic_restored', 'event:topic:locked',
