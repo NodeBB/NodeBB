@@ -64,7 +64,7 @@ marked.setOptions({
 	};
 
 	Posts.getPostsByPids = function(pids, current_user, callback) {
-		var content = [], uid = [], timestamp = [], post_rep = [], editor = [], editTime = [], deleted = [];
+		var content = [], uid = [], timestamp = [], post_rep = [], editor = [], editTime = [], deleted = [], tid = [];
 
 		for (var i=0, ii=pids.length; i<ii; i++) {
 			content.push('pid:' + pids[i] + ':content');
@@ -74,6 +74,7 @@ marked.setOptions({
 			editor.push('pid:' + pids[i] + ':editor');
 			editTime.push('pid:' + pids[i] + ':edited');
 			deleted.push('pid:' + pids[i] + ':deleted');
+			tid.push('pid:' + pids[i] + ':tid');
 		}
 
 
@@ -92,6 +93,7 @@ marked.setOptions({
 				.mget(editor)
 				.mget(editTime)
 				.mget(deleted)
+				.mget(tid)
 				.exec(function(err, replies) {
 					post_data = {
 						pid: pids,
@@ -101,7 +103,8 @@ marked.setOptions({
 						reputation: replies[3],
 						editor: replies[4],
 						editTime: replies[5],
-						deleted: replies[6]
+						deleted: replies[6],
+						tid: replies[7]
 					};
 
 					// below, to be deprecated
@@ -301,6 +304,32 @@ marked.setOptions({
 		RDB.get('pid:' + pid + ':content', function(err, raw) {
 			callback(raw);
 		});
+	}
+	
+	Posts.getPostsByUid = function(uid, callback) {
+		
+		RDB.lrange('uid:' + uid + ':posts', 0, 10, function(err, pids) {
+			if(err === null) {
+				
+				Posts.getPostsByPids(pids, uid, function(posts) {
+					var returnData = [];
+					
+					var len = posts.postData.pid.length;
+					
+					for (var i=0; i < len; ++i) {
+						returnData.push({
+							pid: posts.postData.pid[i],
+							content: posts.postData.content[i],
+							timestamp: utils.relativeTime(posts.postData.timestamp[i]),							
+							tid: posts.postData.tid[i]
+						});
+					};
+					
+					console.log(returnData);
+					callback(returnData);
+				});
+			}
+		});				
 	}
 
 }(exports));

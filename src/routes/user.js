@@ -1,5 +1,6 @@
 
 var user = require('./../user.js'),
+	posts = require('./../posts.js'),
 	fs = require('fs'),
 	utils = require('./../../public/src/utils.js'),
 	path = require('path'),
@@ -41,13 +42,13 @@ var user = require('./../user.js'),
 					return;
 				}
 				
-				user.getUserData(uid, function(data) {
-					if(data) {
-						res.send(app.build_header(res) + app.create_route('users/'+data.userslug, 'account')  + templates['footer']);
-					}
-					else {
-						res.redirect('/404');
-					}			
+				user.getUserData(uid, function(userdata) {
+						if(userdata) {
+							res.send(app.build_header(res) + app.create_route('users/'+userdata.userslug, 'account')  + templates['footer']);
+						}
+						else {
+							res.redirect('/404');
+						}			
 				});
 			});		
 		});
@@ -274,11 +275,15 @@ var user = require('./../user.js'),
 				getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
 					
 					user.isFollowing(callerUID, userData.theirid, function(isFollowing) {
-						userData.isFollowing = isFollowing;
 						
-						userData.signature = marked(userData.signature || '');
+						posts.getPostsByUid(userData.theirid, function(posts) {
+							userData.posts = posts;
+							userData.isFollowing = isFollowing;
 						
-						res.json(userData);
+							userData.signature = marked(userData.signature || '');
+						
+							res.json(userData);
+						});
 					});
 					
 				});						

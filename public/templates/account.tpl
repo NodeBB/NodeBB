@@ -25,7 +25,8 @@
 			</div>
 		</div>
 	
-		<div class="span10">
+		<div class="span5">
+			<h4>profile</h4>
 			<div class="inline-block">
 				<div class="account-bio-block">
 					<span class="account-bio-label">email</span>
@@ -75,6 +76,19 @@
 					</div>
 				</div>
 			</div>
+		</div>
+		
+		<div class="span5 user-recent-posts">
+			<h4>recent posts </h4>
+			<!-- BEGIN posts -->
+			<a href="/topic/{posts.tid}/{posts.pid}">
+				<div class="topic-row img-polaroid clearfix">
+					<span>{posts.content}</span>
+					<span class="pull-right">{posts.timestamp} ago</span>
+				</div>	
+			</a>
+			
+			<!-- END posts -->
 		</div>
 	</div>
 
