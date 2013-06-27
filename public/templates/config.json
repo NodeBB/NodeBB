@@ -16,10 +16,15 @@
 		"install/mail/?": "install/mail",
 		"install/social/?": "install/social",
 		"install/privileges/?": "install/privileges",
+        "users/sort-posts": "users",
+        "users/latest": "users",
+        "users/sort-reputation": "users",
+        "users/search": "users",
 		"users[^]*edit": "accountedit",
 		"users[^]*following": "following",
 		"users[^]*followers": "followers",
 		"users/[^]*": "account",
+
 		"recent": "category",
 		"popular": "category",
 		"active": "category"

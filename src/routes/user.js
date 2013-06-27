@@ -24,9 +24,7 @@ var user = require('./../user.js'),
 		});
 
 		app.get('/users', function(req, res) {
-			user.getUserList(function(data) {
-				res.send(app.build_header(res) + app.create_route("users", "users") + templates['footer']);
-			});
+			res.send(app.build_header(res) + app.create_route("users", "users") + templates['footer']);
 		});
 
 		app.get('/users/:userslug', function(req, res) {
@@ -34,6 +32,13 @@ var user = require('./../user.js'),
 			if(!req.params.userslug) {
 				res.send("User doesn't exist!");
 				return;
+			}
+			console.log('derp');
+			console.log(req.params.userslug);
+			
+			if(req.params.userslug === "sort-posts" || req.params.userslug === "sort-reputation" || req.params.userslug === "latest" || req.params.userslug === "search") {		
+				res.send(app.build_header(res) + app.create_route("users/"+req.params.userslug, "users") + templates['footer']);
+				return;	
 			}
 
 			user.get_uid_by_userslug(req.params.userslug, function(uid) {
@@ -240,9 +245,38 @@ var user = require('./../user.js'),
 			var callerUID = req.user?req.user.uid : 0;
 
 			if (!req.params.section && !req.params.userslug) {
-				
 				user.getUserList(function(data) {
-					res.json({users:data});
+						data = data.sort(function(a, b) {
+							return b.joindate - a.joindate;
+						});
+						res.json({search_display: 'none', users:data});
+				});
+			}
+			else if (req.params.userslug == 'search') {
+				res.json({search_display: 'block', users: []});
+			} 
+			else if(req.params.userslug === "sort-posts") {
+				user.getUserList(function(data) {
+					data = data.sort(function(a, b) {
+						return b.postcount - a.postcount;
+					});
+					res.json({search_display: 'none', users:data});
+				});
+			}
+			else if(req.params.userslug === "sort-reputation") {
+				user.getUserList(function(data) {
+					data = data.sort(function(a, b) {
+						return b.reputation - a.reputation;
+					});
+					res.json({search_display: 'none', users:data});
+				});
+			}
+			else if(req.params.userslug === "latest") {
+				user.getUserList(function(data) {
+					data = data.sort(function(a, b) {
+						return b.joindate - a.joindate;
+					});
+					res.json({search_display: 'none', users:data});
 				});
 			}
 			else if(String(req.params.section).toLowerCase() === 'following') {
