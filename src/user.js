@@ -151,7 +151,7 @@ var utils = require('./../public/src/utils.js'),
 					RDB.del('followers:' + uid);
 					RDB.del('following:' + uid);
 	
-					RDB.lrem('userlist', 1, uid);
+					RDB.lrem('userlist', 1, data['username']);
 
 					callback(true);	
 				});
@@ -219,7 +219,7 @@ var utils = require('./../public/src/utils.js'),
 				});
 
 				RDB.lpush('userlist', username);
-				io.sockets.emit('user.latest', {username: username});
+				io.sockets.emit('user.latest', {userslug: userslug, username: username});
 
 				callback(null, uid);
 
@@ -438,7 +438,13 @@ var utils = require('./../public/src/utils.js'),
 	User.latest = function(socket) {
 		RDB.lrange('userlist', 0, 0, function(err, username) {
 			RDB.handle(err);
-			socket.emit('user.latest', {username: username});
+			
+			User.get_uid_by_username(username, function(uid) {
+				
+				User.getUserField(uid, 'userslug', function(userslug) {
+					socket.emit('user.latest', {userslug: userslug, username: username});				
+				});
+			});
 		});	
 	}
 

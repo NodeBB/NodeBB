@@ -311,22 +311,27 @@ marked.setOptions({
 		RDB.lrange('uid:' + uid + ':posts', 0, 10, function(err, pids) {
 			if(err === null) {
 				
-				Posts.getPostsByPids(pids, uid, function(posts) {
-					var returnData = [];
-					
-					var len = posts.postData.pid.length;
-					
-					for (var i=0; i < len; ++i) {
-						returnData.push({
-							pid: posts.postData.pid[i],
-							content: posts.postData.content[i],
-							timestamp: utils.relativeTime(posts.postData.timestamp[i]),							
-							tid: posts.postData.tid[i]
-						});
-					};
-					
-					callback(returnData);
-				});
+				if(pids && pids.length) {
+				
+					Posts.getPostsByPids(pids, uid, function(posts) {
+						var returnData = [];
+						
+						var len = posts.postData.pid.length;
+						
+						for (var i=0; i < len; ++i) {
+							returnData.push({
+								pid: posts.postData.pid[i],
+								content: posts.postData.content[i],
+								timestamp: utils.relativeTime(posts.postData.timestamp[i]),							
+								tid: posts.postData.tid[i]
+							});
+						};
+						
+						callback(returnData);
+					});
+				}
+				else
+					callback([]);
 			}
 		});				
 	}
