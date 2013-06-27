@@ -25,7 +25,7 @@
 			</div>
 		</div>
 	
-		<div class="span5">
+		<div class="span4">
 			<h4>profile</h4>
 			<div class="inline-block">
 				<div class="account-bio-block">
@@ -78,7 +78,7 @@
 			</div>
 		</div>
 		
-		<div class="span5 user-recent-posts">
+		<div class="span6 user-recent-posts">
 			<h4>recent posts </h4>
 			<!-- BEGIN posts -->
 			<a href="/topic/{posts.tid}/{posts.pid}">
