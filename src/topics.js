@@ -218,10 +218,16 @@ marked.setOptions({
 	}
 
 	Topics.markAsRead = function(tid, uid) {
-		// there is an issue with this fn. if you read a topic that is previously read you will mark the category as read anyways - there is no check
+		
 		RDB.sadd(schema.topics(tid).read_by_uid, uid);
+		
 		Topics.get_cid_by_tid(tid, function(cid) {
-			RDB.sadd('cid:' + cid + ':read_by_uid', uid);
+					
+			categories.isTopicsRead(cid, uid, function(read) {
+				if(read) {
+					categories.markAsRead(cid, uid);
+				}
+			});
 		});
 	}
 
