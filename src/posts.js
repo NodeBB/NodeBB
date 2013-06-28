@@ -186,11 +186,11 @@ marked.setOptions({
 					RDB.del('tid:' + tid + ':read_by_uid'); // let everybody know there is an unread post
 
 					Posts.get_cid_by_pid(pid, function(cid) {
-						RDB.del('cid:' + cid + ':read_by_uid');
+						RDB.del('cid:' + cid + ':read_by_uid', function(err, data) {
+							topics.markAsRead(tid, uid);	
+						});
 						
 						RDB.zadd('categories:recent_posts:cid:' + cid, Date.now(), pid);
-		  	  		
-						topics.markAsRead(tid, uid);
 					});
 
 

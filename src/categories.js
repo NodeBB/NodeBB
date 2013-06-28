@@ -352,6 +352,8 @@ var	RDB = require('./redis.js'),
 
 				Categories.hasReadCategories(cids, current_user, function(read_data) {
 					has_read = read_data;
+					console.log(cids, read_data);
+					console.log(current_user);
 					generateCategories();
 				});
 				
