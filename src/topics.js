@@ -385,11 +385,9 @@ marked.setOptions({
 
 				// let everyone know that there is an unread topic in this category
 				RDB.del('cid:' + category_id + ':read_by_uid', function(err, data) {
-					console.log('deleted');
 					Topics.markAsRead(tid, uid);
 				});
-				
-				
+
 				
 				RDB.zadd(schema.topics().recent, Date.now(), tid);
 				//RDB.zadd('topics:active', tid);
