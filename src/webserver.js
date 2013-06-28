@@ -32,7 +32,7 @@ var express = require('express'),
 	};
 
 	// Middlewares
-	app.use(express.favicon());	// 2 args: string path and object options (i.e. expire time etc)
+	app.use(express.favicon(path.join(__dirname, '../', 'public', 'favicon.ico')));
 	app.use(require('less-middleware')({ src: path.join(__dirname, '../', 'public') }));
 	app.use(express.static(path.join(__dirname, '../', 'public')));
 	app.use(express.bodyParser());	// Puts POST vars in request.body
