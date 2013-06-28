@@ -347,8 +347,8 @@ marked.setOptions({
 		RDB.mget(['totaltopiccount', 'totalpostcount'], function(err, data) {
 			if(err === null) {
 				var stats = {
-					topics: data[1]?data[1]:0,
-					posts: data[0]?data[0]:0				
+					topics: data[0]?data[0]:0,
+					posts: data[1]?data[1]:0				
 				};
 				
 				socket.emit('post.stats', stats);
