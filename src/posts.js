@@ -207,8 +207,7 @@ marked.setOptions({
 					user.getUserFields(uid, ['username','reputation','picture','signature'], function(data) {
 
 						var timestamp = Date.now();
-						
-						io.sockets.in('topic_' + tid).emit('event:new_post', {
+						var socketData = {
 							'posts' : [
 								{
 									'pid' : pid,
@@ -226,7 +225,11 @@ marked.setOptions({
 									'editor': '',
 								}
 							]
-						});
+						};
+						
+						io.sockets.in('topic_' + tid).emit('event:new_post', socketData);
+						io.sockets.in('recent_posts').emit('event:new_post', socketData);
+						
 					});
 				} else {
 					socket.emit('event:alert', {

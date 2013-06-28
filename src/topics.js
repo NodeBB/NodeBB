@@ -366,6 +366,7 @@ marked.setOptions({
 						// Notify any users looking at the category that a new topic has arrived
 						Topics.get_topic(tid, uid, function(topicData) {
 							io.sockets.in('category_' + category_id).emit('event:new_topic', topicData);
+							io.sockets.in('recent_posts').emit('event:new_topic', topicData);
 						});
 					}
 				});
