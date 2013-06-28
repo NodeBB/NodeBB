@@ -368,6 +368,8 @@ marked.setOptions({
 							io.sockets.in('category_' + category_id).emit('event:new_topic', topicData);
 							io.sockets.in('recent_posts').emit('event:new_topic', topicData);
 						});
+
+						posts.getTopicPostStats(socket);
 					}
 				});
 
@@ -398,10 +400,12 @@ marked.setOptions({
 				});
 
 				RDB.incr('cid:' + category_id + ':topiccount');
+				RDB.incr('totaltopiccount');
 
 				feed.updateCategory(category_id);
 			});
 		});
 	};
 
+	
 }(exports));

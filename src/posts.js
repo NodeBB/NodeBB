@@ -201,6 +201,8 @@ marked.setOptions({
 						timeout: 2000
 					});
 
+					Posts.getTopicPostStats(socket);
+
 					// Send notifications to users who are following this topic
 					threadTools.notify_followers(tid, uid);
 
@@ -264,6 +266,8 @@ marked.setOptions({
 					RDB.incr('tid:' + tid + ':postcount');
 					RDB.zadd(schema.topics().recent, timestamp, tid);
 					RDB.set('tid:' + tid + ':lastposttime', timestamp);
+
+					RDB.incr('totalpostcount');
 
 					user.getUserFields(uid, ['username'], function(data) { // todo parallel
 						//add active users to this category
@@ -337,6 +341,21 @@ marked.setOptions({
 					callback([]);
 			}
 		});				
+	}
+
+	Posts.getTopicPostStats = function(socket) {
+		RDB.mget(['totaltopiccount', 'totalpostcount'], function(err, data) {
+			if(err === null) {
+				var stats = {
+					topics: data[1]?data[1]:0,
+					posts: data[0]?data[0]:0				
+				};
+				
+				socket.emit('post.stats', stats);
+			}				
+			else
+				console.log(err);
+		});
 	}
 
 }(exports));

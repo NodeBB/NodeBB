@@ -160,6 +160,10 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			user.count(socket, data);
 		});
 
+		socket.on('post.stats', function(data) {
+			posts.getTopicPostStats(socket);
+		});
+
 		socket.on('user.latest', function(data) {
 			user.latest(socket, data);
 		});
