@@ -26,21 +26,30 @@
 				
 				jQuery('.icon-spinner').removeClass('none');
 				socket.emit('api:admin.user.search', username);
-				console.log('sent');				
 			}, 250);
 		});
 		
 		socket.removeAllListeners('api:admin.user.search');
 		
 		socket.on('api:admin.user.search', function(data) {
-			console.log('derp');
-			var	html = templates.prepare(templates['users'].blocks['users']).parse({
+			
+			jQuery('.icon-spinner').addClass('none');				
+			
+			if(data === null) {
+				$('#user-notfound-notify').html('You need to be logged in to search!')
+					.show()
+					.addClass('label-important')
+					.removeClass('label-success');
+				return;
+			}
+			
+			var html = templates.prepare(templates['users'].blocks['users']).parse({
 					users: data
 				}),
 				userListEl = document.querySelector('.users');
 
 			userListEl.innerHTML = html;
-			jQuery('.icon-spinner').addClass('none');				
+
 
 			if(data && data.length === 0) {
 				$('#user-notfound-notify').html('User not found!')

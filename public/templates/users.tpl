@@ -1,10 +1,10 @@
 <div>
 	
 	<ul class="nav nav-pills">
-		<li class='active'><a href='/users?sort=latest'>Latest Users</a></li>
-		<li class=''><a href='/users?sort=posts'>Top Posters</a></li>
-		<li class=''><a href='/users?sort=reputation'>Most Reputation</a></li>
-		<li class=''><a href='/users?search'>Search</a></li>
+		<li class='active'><a href='/users-latest'>Latest Users</a></li>
+		<li class=''><a href='/users-sort-posts'>Top Posters</a></li>
+		<li class=''><a href='/users-sort-reputation'>Most Reputation</a></li>
+		<li class=''><a href='/users-search'>Search</a></li>
 	</ul>
 
 

@@ -458,6 +458,8 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					socket.emit('api:admin.user.search', data);
 				});
 			}
+			else
+				socket.emit('api:admin.user.search', null);
 		});
 	});
 	

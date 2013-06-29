@@ -24,15 +24,23 @@ var user = require('./../user.js'),
 		});
 
 		app.get('/users', function(req, res) {
-						
-			if(req.query.sort === 'posts') 
-				res.send(app.build_header(res) + app.create_route("users", "users") + templates['footer']);
-			else if(req.query.sort === 'reputation')
-				res.send(app.build_header(res) + app.create_route("users", "users") + templates['footer']);
-			else if(req.query.sort === 'latest')
-				res.send(app.build_header(res) + app.create_route("users?sort=latest", "users") + templates['footer']);
-			else
-				res.send(app.build_header(res) + app.create_route("users", "users") + templates['footer']);
+			res.send(app.build_header(res) + app.create_route("users", "users") + templates['footer']);
+		});
+		
+		app.get('/users-latest', function(req, res) {
+			res.send(app.build_header(res) + app.create_route("users-latest", "users") + templates['footer']);
+		});
+		
+		app.get('/users-sort-posts', function(req, res) {
+			res.send(app.build_header(res) + app.create_route("users-sort-posts", "users") + templates['footer']);
+		});
+		
+		app.get('/users-sort-reputation', function(req, res) {
+			res.send(app.build_header(res) + app.create_route("users-sort-reputation", "users") + templates['footer']);
+		});
+		
+		app.get('/users-search', function(req, res) {
+			res.send(app.build_header(res) + app.create_route("users-search", "users") + templates['footer']);
 		});
 
 		app.get('/users/:userslug', function(req, res) {
@@ -253,33 +261,6 @@ var user = require('./../user.js'),
 						res.json({search_display: 'none', users:data});
 				});
 			}
-			else if (req.query.search) {
-				res.json({search_display: 'block', users: []});
-			} 
-			else if(req.query.sort === "posts") {
-				user.getUserList(function(data) {
-					data = data.sort(function(a, b) {
-						return b.postcount - a.postcount;
-					});
-					res.json({search_display: 'none', users:data});
-				});
-			}
-			else if(req.query.sort === "reputation") {
-				user.getUserList(function(data) {
-					data = data.sort(function(a, b) {
-						return b.reputation - a.reputation;
-					});
-					res.json({search_display: 'none', users:data});
-				});
-			}
-			else if(req.query.sort === "latest") {
-				user.getUserList(function(data) {
-					data = data.sort(function(a, b) {
-						return b.joindate - a.joindate;
-					});
-					res.json({search_display: 'none', users:data});
-				});
-			}
 			else if(String(req.params.section).toLowerCase() === 'following') {
 				
 				getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
@@ -327,7 +308,42 @@ var user = require('./../user.js'),
 		}
 
 		app.get('/api/users/:userslug?/:section?', api_method);
-		app.get('/api/users', api_method);
+		app.get('/api/users-sort-posts', getUsersSortedByPosts);
+		app.get('/api/users-sort-reputation', getUsersSortedByReputation);
+		app.get('/api/users-latest', getUsersSortedByJoinDate);
+		app.get('/api/users-search', getUsersForSearch);
+		
+		function getUsersSortedByPosts(req, res) {
+			user.getUserList(function(data) {
+				data = data.sort(function(a, b) {
+					return b.postcount - a.postcount;
+				});
+				res.json({search_display: 'none', users:data});
+			});
+		}
+		
+		function getUsersSortedByReputation(req, res) {
+			user.getUserList(function(data) {
+				data = data.sort(function(a, b) {
+					return b.reputation - a.reputation;
+				});
+				res.json({search_display: 'none', users:data});
+			});
+		}
+
+		function getUsersSortedByJoinDate(req, res) {
+			user.getUserList(function(data) {
+				data = data.sort(function(a, b) {
+					return b.joindate - a.joindate;
+				});
+				res.json({search_display: 'none', users:data});
+			});
+		}
+	
+		function getUsersForSearch(req, res) {		
+			res.json({search_display: 'block', users: []});
+		}
+
 
 		function getUserDataByUserSlug(userslug, callerUID, callback) {
 		
