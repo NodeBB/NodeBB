@@ -1,5 +1,6 @@
 (function() {
 	var num_users = document.getElementById('number_of_users'),
+		post_stats = document.getElementById('post_stats'),
 		latest_user = document.getElementById('latest_user'),
 		active_users = document.getElementById('active_users'),
 		user_label = document.getElementById('user_label'),
@@ -10,6 +11,12 @@
 	socket.on('user.count', function(data) {
 		num_users.innerHTML = "We currently have <b>" + data.count + "</b> registered users.";
 	});
+
+	socket.emit('post.stats');
+	socket.on('post.stats', function(data) {
+		post_stats.innerHTML = "Our uses have created " + data.topics + " topics and made " + data.posts + " posts.";
+	});
+
 	socket.emit('user.latest', {});
 	socket.on('user.latest', function(data) {
 		if (data.username == '') {
@@ -18,6 +25,7 @@
 			latest_user.innerHTML = "The most recent user to register is <b><a href='/users/"+data.userslug+"'>" + data.username + "</a></b>.";
 		}
 	});
+
 	socket.emit('api:user.active.get');
 	socket.on('api:user.active.get', function(data) {
 		var plural_users = parseInt(data.users) !== 1,

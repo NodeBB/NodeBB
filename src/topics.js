@@ -218,10 +218,16 @@ marked.setOptions({
 	}
 
 	Topics.markAsRead = function(tid, uid) {
-		// there is an issue with this fn. if you read a topic that is previously read you will mark the category as read anyways - there is no check
+		
 		RDB.sadd(schema.topics(tid).read_by_uid, uid);
+		
 		Topics.get_cid_by_tid(tid, function(cid) {
-			RDB.sadd('cid:' + cid + ':read_by_uid', uid);
+					
+			categories.isTopicsRead(cid, uid, function(read) {
+				if(read) {
+					categories.markAsRead(cid, uid);
+				}
+			});
 		});
 	}
 
@@ -368,10 +374,10 @@ marked.setOptions({
 							io.sockets.in('category_' + category_id).emit('event:new_topic', topicData);
 							io.sockets.in('recent_posts').emit('event:new_topic', topicData);
 						});
+
+						posts.getTopicPostStats(socket);
 					}
 				});
-
-				Topics.markAsRead(tid, uid);
 
 				// User Details - move this out later
 				RDB.lpush('uid:' + uid + ':topics', tid);
@@ -384,8 +390,11 @@ marked.setOptions({
 				});
 
 				// let everyone know that there is an unread topic in this category
-				RDB.del('cid:' + category_id + ':read_by_uid');
+				RDB.del('cid:' + category_id + ':read_by_uid', function(err, data) {
+					Topics.markAsRead(tid, uid);
+				});
 
+				
 				RDB.zadd(schema.topics().recent, Date.now(), tid);
 				//RDB.zadd('topics:active', tid);
 
@@ -398,10 +407,12 @@ marked.setOptions({
 				});
 
 				RDB.incr('cid:' + category_id + ':topiccount');
+				RDB.incr('totaltopiccount');
 
 				feed.updateCategory(category_id);
 			});
 		});
 	};
 
+	
 }(exports));

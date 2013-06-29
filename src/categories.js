@@ -267,7 +267,26 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
+	Categories.isTopicsRead = function(cid, uid, callback) {
+		RDB.smembers('categories:' + cid + ':tid', function(err, tids) {
 
+			topics.hasReadTopics(tids, uid, function(hasRead) {
+
+				var allread = true;
+				for (var i=0, ii=tids.length; i<ii; i++) {
+					if(hasRead[i] === 0) {
+						allread = false;
+						break;
+					}
+				}
+				callback(allread);				
+			});
+		});
+	}
+
+	Categories.markAsRead = function(cid, uid) {
+		RDB.sadd('cid:' + cid + ':read_by_uid', uid);			
+	}
 
 	Categories.hasReadCategories = function(cids, uid, callback) {
 		var batch = RDB.multi();

@@ -186,11 +186,11 @@ marked.setOptions({
 					RDB.del('tid:' + tid + ':read_by_uid'); // let everybody know there is an unread post
 
 					Posts.get_cid_by_pid(pid, function(cid) {
-						RDB.del('cid:' + cid + ':read_by_uid');
+						RDB.del('cid:' + cid + ':read_by_uid', function(err, data) {
+							topics.markAsRead(tid, uid);	
+						});
 						
 						RDB.zadd('categories:recent_posts:cid:' + cid, Date.now(), pid);
-		  	  		
-						topics.markAsRead(tid, uid);
 					});
 
 
@@ -200,6 +200,8 @@ marked.setOptions({
 						type: 'notify',
 						timeout: 2000
 					});
+
+					Posts.getTopicPostStats(socket);
 
 					// Send notifications to users who are following this topic
 					threadTools.notify_followers(tid, uid);
@@ -264,6 +266,8 @@ marked.setOptions({
 					RDB.incr('tid:' + tid + ':postcount');
 					RDB.zadd(schema.topics().recent, timestamp, tid);
 					RDB.set('tid:' + tid + ':lastposttime', timestamp);
+
+					RDB.incr('totalpostcount');
 
 					user.getUserFields(uid, ['username'], function(data) { // todo parallel
 						//add active users to this category
@@ -337,6 +341,21 @@ marked.setOptions({
 					callback([]);
 			}
 		});				
+	}
+
+	Posts.getTopicPostStats = function(socket) {
+		RDB.mget(['totaltopiccount', 'totalpostcount'], function(err, data) {
+			if(err === null) {
+				var stats = {
+					topics: data[0]?data[0]:0,
+					posts: data[1]?data[1]:0				
+				};
+				
+				socket.emit('post.stats', stats);
+			}				
+			else
+				console.log(err);
+		});
 	}
 
 }(exports));
