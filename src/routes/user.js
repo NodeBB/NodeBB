@@ -30,7 +30,7 @@ var user = require('./../user.js'),
 			else if(req.query.sort === 'reputation')
 				res.send(app.build_header(res) + app.create_route("users", "users") + templates['footer']);
 			else if(req.query.sort === 'latest')
-				res.send(app.build_header(res) + app.create_route("users", "users") + templates['footer']);
+				res.send(app.build_header(res) + app.create_route("users?sort=latest", "users") + templates['footer']);
 			else
 				res.send(app.build_header(res) + app.create_route("users", "users") + templates['footer']);
 		});
