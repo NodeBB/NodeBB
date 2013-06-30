@@ -68,6 +68,7 @@
 					<img src="{posts.gravatar}?s=80&default=identicon" align="left" />
 				</a>
 				<i class="icon-star"></i><span class="user_rep_{posts.uid} formatted-number">{posts.user_rep}</span>
+				<div id="ids_{posts.pid}_{posts.uid}" class="chat hidden-phone" title="Chat"><i class="icon-comment"></i></div>
 			</div>
 			<div class="span11">
 				<div class="post-block">
@@ -75,7 +76,6 @@
 					<div class="post-signature">{posts.signature}</div>
 					<div class="profile-block">
 						<span class="post-buttons">
-							<div id="ids_{posts.pid}_{posts.uid}" class="chat hidden-phone" title="Chat"><i class="icon-comment"></i></div>
 							<div id="ids_{posts.pid}_{posts.uid}" class="edit {posts.display_moderator_tools} hidden-phone" title="Edit"><i class="icon-pencil"></i></div>
 							<div id="ids_{posts.pid}_{posts.uid}" class="delete {posts.display_moderator_tools} hidden-phone" title="Delete"><i class="icon-trash"></i></div>
 							<div id="quote_{posts.pid}_{posts.uid}" class="quote hidden-phone" title="Quote"><i class="icon-quote-left"></i></div>
