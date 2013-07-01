@@ -289,7 +289,9 @@
 			+ ((anonymous > 0) ? (usercount > 0 ? ' and ': '') + anonymous + ' guest' + (anonymous > 1  ? 's are': ' is') : '')
 			+ (anonymous === 0 ? (usercount > 1 ? ' are' : ' is') : '') + ' browsing this thread';
 
-		document.getElementById('thread_active_users').innerHTML = active;
+		var activeEl = $('#thread_active_users');
+		if(activeEl.length)
+			activeEl.html(active);
 	});
 
 	socket.on('event:rep_up', function(data) {
