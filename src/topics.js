@@ -381,8 +381,6 @@ marked.setOptions({
 					type: 'notify',
 					timeout: 2000
 				});
-				
-				console.log('topic posted');
 			});
 		});
 	};
