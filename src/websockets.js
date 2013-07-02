@@ -335,7 +335,10 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					topics.get_topic(data.tid, uid, function(topicData) {
 						topicData.tid = data.tid;
 						if (data.body) topicData.body = data.body;
-						socket.emit('api:composer.push', topicData);
+						socket.emit('api:composer.push', {
+							tid: data.tid,
+							title: topicData.title
+						});
 					});
 				} else if (parseInt(data.cid) > 0) {
 					user.getUserField(uid, 'username', function(username) {

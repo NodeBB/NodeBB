@@ -35,7 +35,7 @@
 			});
 		}
 
-		async.parallel([getTopicData, getPostsData], function(err, results) {
+		async.parallel([getTopicData], function(err, results) {
 			var topicData = results[0],
 				location = '/topic/' + topicData.slug,
 				xml_url = '/topic/' + tid + '.rss';

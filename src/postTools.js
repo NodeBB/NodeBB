@@ -23,7 +23,7 @@ marked.setOptions({
 		//todo: break early if one condition is true 
 		
 		function getThreadPrivileges(next) {
-			posts.get_tid_by_pid(pid, function(tid) {
+			posts.getPostField(pid, 'tid', function(tid) {
 					threadTools.privileges(tid, uid, function(privileges) {
 						next(null, privileges);
 					});

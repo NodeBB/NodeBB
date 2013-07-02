@@ -17,7 +17,7 @@
 			<div class="span12">
 				<div class="post-block">
 					<a class="main-avatar" href="/users/{main_posts.userslug}">
-						<img src="{main_posts.gravatar}?s=80&default=identicon" align="left" /><br />
+						<img src="{main_posts.picture}?s=80&default=identicon" align="left" /><br />
 						<div class="hover-overlay">
 							{main_posts.username}<br />
 							<i class="icon-star"></i><span class="user_rep_{main_posts.uid}">{main_posts.user_rep}</span>
@@ -47,7 +47,7 @@
 					<div id="content_{main_posts.pid}" class="post-content">{main_posts.content}</div>
 					<div class="post-signature">{main_posts.signature}</div>
 					<div class="profile-block">
-						<img class="hidden-desktop" src="{main_posts.gravatar}?s=10&default=identicon" align="left" /> posted by <strong><a class="" href="/users/{main_posts.userslug}">{main_posts.username}</a></strong> {main_posts.relativeTime} ago
+						<img class="hidden-desktop" src="{main_posts.picture}?s=10&default=identicon" align="left" /> posted by <strong><a class="" href="/users/{main_posts.userslug}">{main_posts.username}</a></strong> {main_posts.relativeTime} ago
 						<span class="{main_posts.edited-class} hidden-phone">| last edited by <strong><a href="/users/{main_posts.editor}">{main_posts.editor}</a></strong> {main_posts.relativeEditTime} ago</span>
 						<span class="{main_posts.edited-class}"><i class="icon-edit visible-phone" title="edited by {main_posts.editor} {main_posts.relativeEditTime} ago"></i></span>
 						<div class="post-buttons visible-phone">
@@ -65,7 +65,7 @@
 			<div class="span1 profile-image-block visible-desktop">
 				<!--<i class="icon-spinner icon-spin icon-2x pull-left"></i>-->
 				<a href="/users/{posts.userslug}">
-					<img src="{posts.gravatar}?s=80&default=identicon" align="left" />
+					<img src="{posts.picture}?s=80&default=identicon" align="left" />
 				</a>
 				<i class="icon-star"></i><span class="user_rep_{posts.uid} formatted-number">{posts.user_rep}</span>
 				<div id="ids_{posts.pid}_{posts.uid}" class="chat hidden-phone" title="Chat"><i class="icon-comment"></i></div>
@@ -82,7 +82,7 @@
 							<div id="favs_{posts.pid}_{posts.uid}" class="favourite hidden-phone" title="Favourite"><span class="post_rep_{posts.pid}">{posts.post_rep} </span><i class="{posts.fav_star_class}"></i></div>
 							<div class="post_reply" title="Reply"><i class="icon-reply"></i></div>
 						</span>
-						<img class="hidden-desktop" src="{posts.gravatar}?s=10&default=identicon" align="left" /> posted by <strong><a class="username-field" href="/users/{posts.userslug}">{posts.username}</a></strong> {posts.relativeTime} ago
+						<img class="hidden-desktop" src="{posts.picture}?s=10&default=identicon" align="left" /> posted by <strong><a class="username-field" href="/users/{posts.userslug}">{posts.username}</a></strong> {posts.relativeTime} ago
 						<span class="{posts.edited-class} hidden-phone">| last edited by <strong><a href="/users/{posts.editor}">{posts.editor}</a></strong> {posts.relativeEditTime} ago</span>
 						<span class="{posts.edited-class}"><i class="icon-edit visible-phone" title="edited by {posts.editor} {posts.relativeEditTime} ago"></i></span>
 					</div>

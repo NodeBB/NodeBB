@@ -31,37 +31,42 @@ marked.setOptions({
 			}
 		});
 	}
+	
+	Posts.addUserInfoToPost = function(post, callback) {
+		user.getUserFields(post.uid, ['username', 'userslug', 'reputation', 'picture', 'signature'], function(userData) {
 
-	// todo, getPostsByPids has duplicated stuff, have that call this fn - after userinfo calls are pulled out.
+			post.username = userData.username || 'anonymous';
+			post.userslug = userData.userslug || '';
+			post.user_rep = userData.reputation || 0;
+			post.picture = userData.picture || 'http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e';
+			post.signature = marked(userData.signature || '');
+
+			callback();
+		});
+	}
+
 	Posts.getPostSummaryByPids = function(pids, callback) {
-		var content = [], uid = [], timestamp = [];
-		for (var i=0, ii=pids.length; i<ii; i++) {
-			content.push('pid:' + pids[i] + ':content');
-			uid.push('pid:' + pids[i] + ':uid');
-			timestamp.push('pid:' + pids[i] + ':timestamp');
-		}
-
-		RDB.multi()
-			.mget(content)
-			.mget(uid)
-			.mget(timestamp)
-			.exec(function(err, replies) {
-				post_data = {
-					pids: pids,
-					content: replies[0],
-					uid: replies[1],
-					timestamp: replies[2]
-				}
-
-				// below, to be deprecated
-				user.getMultipleUserFields(post_data.uid, ['username','reputation','picture'], function(user_details) {
-					callback({
-						users: user_details,
-						posts: post_data
+		
+		var returnData = [];
+		
+		var loaded = 0;
+						
+		for(var i=0, ii=pids.length; i<ii; ++i) {
+			
+			(function(index, pid) {
+				Posts.getPostFields(pids[i], ['pid', 'content', 'uid', 'timestamp'], function(postData) {
+					Posts.addUserInfoToPost(postData, function() {
+						
+						returnData[index] = postData;
+						++loaded;
+						
+						if(loaded === pids.length) {
+							callback(returnData);		
+						}				
 					});
 				});
-				// above, to be deprecated
-			});
+			}(i, pids[i]));
+		}
 	};
 
 	Posts.getPostData = function(pid, callback) {
@@ -71,6 +76,22 @@ marked.setOptions({
 			else
 				console.log(err);
 		});
+	}
+
+	Posts.getPostFields = function(uid, fields, callback) {
+		RDB.hmget('post:' + uid, fields, function(err, data) {
+			if(err === null) {
+				var returnData = {};
+				
+				for(var i=0, ii=fields.length; i<ii; ++i) {
+					returnData[fields[i]] = data[i];
+				}
+
+				callback(returnData);
+			}
+			else
+				console.log(err);
+		});		
 	}
 
 	Posts.getPostsByPids = function(pids, callback) {
@@ -95,7 +116,7 @@ marked.setOptions({
 	}
 
 	Posts.getPostField = function(pid, field, callback) {
-		RDB.hget('post:' + pid, field, function(data) {
+		RDB.hget('post:' + pid, field, function(err, data) {
 			if(err === null)
 				callback(data);
 			else
@@ -171,7 +192,12 @@ marked.setOptions({
 						RDB.zadd('categories:recent_posts:cid:' + cid, Date.now(), pid);
 					});
 
+					Posts.getTopicPostStats(socket);
 
+					// Send notifications to users who are following this topic
+					threadTools.notify_followers(tid, uid);
+
+					
 					socket.emit('event:alert', {
 						title: 'Reply Successful',
 						message: 'You have successfully replied. Click here to view your reply.',
@@ -179,10 +205,6 @@ marked.setOptions({
 						timeout: 2000
 					});
 
-					Posts.getTopicPostStats(socket);
-
-					// Send notifications to users who are following this topic
-					threadTools.notify_followers(tid, uid);
 
 					user.getUserFields(uid, ['username','reputation','picture','signature'], function(data) {
 
@@ -209,6 +231,8 @@ marked.setOptions({
 						
 						io.sockets.in('topic_' + tid).emit('event:new_post', socketData);
 						io.sockets.in('recent_posts').emit('event:new_post', socketData);
+						
+						
 						
 					});
 				} else {
@@ -255,7 +279,6 @@ marked.setOptions({
 
 					RDB.incr('totalpostcount');
 						
-					//RDB.get('tid:' + tid + ':cid', function(err, cid) {
 					topics.getTopicField(tid, 'cid', function(cid) {
 						RDB.handle(err);
 
@@ -271,8 +294,7 @@ marked.setOptions({
 						});
 					});
 					
-					user.onNewPostMade(uid, tid, pid, timestamp);
-					
+					user.onNewPostMade(uid, tid, pid, timestamp);					
 
 					if (callback) 
 						callback(pid);

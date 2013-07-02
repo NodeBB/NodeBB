@@ -32,25 +32,13 @@ marked.setOptions({
 		});
 	}
 
-	function addUserInfoToPost(post, callback) {
-		user.getUserFields(post.uid, ['username', 'userslug', 'reputation', 'picture', 'signature'], function(userData) {
-
-			post.username = userData.username || 'anonymous';
-			post.userslug = userData.userslug || '';
-			post.user_rep = userData.reputation || 0;
-			post.gravatar = userData.picture || 'http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e';
-			post.signature = marked(userData.signature || '');
-
-			callback();
-		});
-	}
 
 	function constructPosts(topicPosts, callback) {
 		var done = 0;
 
 		for(var i=0, ii=topicPosts.length; i<ii; ++i) {
 
-			addUserInfoToPost(topicPosts[i], function() {
+			posts.addUserInfoToPost(topicPosts[i], function() {
 				++done;
 				if(done === topicPosts.length)
 					callback();
@@ -393,6 +381,8 @@ marked.setOptions({
 					type: 'notify',
 					timeout: 2000
 				});
+				
+				console.log('topic posted');
 			});
 		});
 	};
