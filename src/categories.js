@@ -119,21 +119,21 @@ var	RDB = require('./redis.js'),
 		
 		function getTopicInfoMoar(topicData, callback) {
 
-			function getUserNames(next) {
+			function getUserName(next) {
 				user.getUserField(topicData.uid, 'username', function(username) {
 					next(null, username);
 				});
 			}
 
-			function hasReadTopics(next) {
+			function hasReadTopic(next) {
 				topics.hasReadTopics([topicData.tid], current_user, function(hasRead) {
 					next(null, hasRead);
 				});
 			}
 
 			function getTeaserInfo(next) {
-				topics.get_teasers([topicData.tid], function(teasers) {
-					next(null, teasers);
+				topics.get_teaser(topicData.tid, function(teaser) {
+					next(null, teaser);
 				});
 			}
 
@@ -144,7 +144,7 @@ var	RDB = require('./redis.js'),
 				});
 			}
 
-			async.parallel([getUserNames, hasReadTopics, getTeaserInfo, getPrivileges], function(err, results) {
+			async.parallel([getUserName, hasReadTopic, getTeaserInfo, getPrivileges], function(err, results) {
 				var username = results[0],
 					hasReadTopic = results[1],
 					teaserInfo = results[2],

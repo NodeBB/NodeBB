@@ -27,7 +27,7 @@ marked.setOptions({
 	}
 
 	Topics.getTopicPosts = function(tid, callback) {
-		posts.getPostsByTid(tid, 0, 9, function(postData) {
+		posts.getPostsByTid(tid, 0, -1, function(postData) {
 			callback(postData);
 		});
 	}
@@ -277,40 +277,39 @@ marked.setOptions({
 		}
 	}
 
-// start: probably should be moved into posts
+
 	Topics.get_latest_undeleted_pid = function(tid, callback) {
-		RDB.lrange(schema.topics(tid).posts, 0, -1, function(err, pids) {
-			var pidKeys = [],
-				numPids = pids.length;
+		
+		Topics.getTopicPosts(tid, function(posts) {
 
-			if (numPids === 0) return callback(null);
-
-			for(var x=0,numPids=pids.length;x<numPids;x++) {
-				pidKeys.push('pid:' + pids[x] + ':deleted');
-			}
-			RDB.mget(pidKeys, function(err, posts) {
-				var numPosts = posts.length;
-				while(numPosts--) {
-					if (posts[numPosts] !== '1') {
-						callback(pids[numPosts]);
-						break;
-					}
+			var numPosts = posts.length;
+			if(!numPosts)
+				callback(null);
+				
+			while(numPosts--) {
+				if(posts[numPosts].deleted !== '1') {
+					callback(posts[numPosts].pid);
+					break;
 				}
-			});
+			}
+			
 		});
+		
 	}
 
 	Topics.get_teaser = function(tid, callback) {
 		Topics.get_latest_undeleted_pid(tid, function(pid) {
 			if (pid !== null) {
 				
-				posts.getPostFields(pid, ['content', 'uid', 'timestamp'], function(content) {
-					
-					user.getUserField(content[1], 'username', function(username) {
-						var stripped = content[0],
-							timestamp = content[2];
-						if(content[0])
-							stripped = utils.strip_tags(marked(content[0]));
+				posts.getPostFields(pid, ['content', 'uid', 'timestamp'], function(postData) {
+
+					user.getUserField(postData.uid, 'username', function(username) {
+						var stripped = postData.content,
+							timestamp = postData.timestamp;
+							
+						if(postData.content)
+							stripped = utils.strip_tags(marked(postData.content));
+							
 						callback({
 							"text": stripped,
 							"username": username,
@@ -321,7 +320,6 @@ marked.setOptions({
 			}
 		});
 	}
-// end: probably should be moved into posts
 
 	Topics.post = function(socket, uid, title, content, category_id) {
 		if (!category_id) 
