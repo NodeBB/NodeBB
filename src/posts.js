@@ -103,6 +103,21 @@ marked.setOptions({
 		});
 	}
 
+	Posts.getPostFields = function(pid, fields, callback) {
+		RDB.hmget('post:' + pid, fields, function(err, data) {
+			if(err === null) {
+				var returnData = {};
+				
+				for(var i=0, ii=fields.length; i<ii; ++i) {
+					returnData[fields[i]] = data[i];
+				}
+
+				callback(returnData);
+			}
+			else
+				console.log(err);
+		});		
+	}
 
 	Posts.get_cid_by_pid = function(pid, callback) {
 		Posts.getPostField(pid, 'tid', function(tid) {

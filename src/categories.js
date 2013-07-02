@@ -115,111 +115,91 @@ var	RDB = require('./redis.js'),
 
 	// not the permanent location for this function
 	Categories.getTopicsByTids = function(tids, current_user, callback, category_id /*temporary*/) {
-		var title = [],
-			uid = [],
-			timestamp = [],
-			lastposttime = [],
-			slug = [],
-			postcount = [],
-			locked = [],
-			deleted = [],
-			pinned = [];
+		var retrieved_topics = [];
+		
+		function getTopicInfoMoar(topicData, callback) {
 
-		for (var i=0, ii=tids.length; i<ii; i++) {
-			title.push('tid:' + tids[i] + ':title');
-			uid.push('tid:' + tids[i] + ':uid');
-			timestamp.push('tid:' + tids[i] + ':timestamp');
-			lastposttime.push('tid:' + tids[i] + ':lastposttime');			
-			slug.push('tid:' + tids[i] + ':slug');
-			postcount.push('tid:' + tids[i] + ':postcount');
-			locked.push('tid:' + tids[i] + ':locked');
-			deleted.push('tid:' + tids[i] + ':deleted');
-			pinned.push('tid:' + tids[i] + ':pinned');
+			function getUserNames(next) {
+				user.getUserField(topicData.uid, 'username', function(username) {
+					next(null, username);
+				});
+			}
+
+			function hasReadTopics(next) {
+				topics.hasReadTopics([topicData.tid], current_user, function(hasRead) {
+					next(null, hasRead);
+				});
+			}
+
+			function getTeaserInfo(next) {
+				topics.get_teasers([topicData.tid], function(teasers) {
+					next(null, teasers);
+				});
+			}
+
+			// temporary. I don't think this call should belong here
+			function getPrivileges(next) {
+				Categories.privileges(category_id, current_user, function(user_privs) {
+					next(null, user_privs);
+				});
+			}
+
+			async.parallel([getUserNames, hasReadTopics, getTeaserInfo, getPrivileges], function(err, results) {
+				var username = results[0],
+					hasReadTopic = results[1],
+					teaserInfo = results[2],
+					privileges = results[3];
+
+				callback({
+					username: username,
+					hasReadTopic: hasReadTopic,
+					teaserInfo: teaserInfo,
+					privileges: privileges
+				});
+				//if (!deleted[i] || (deleted[i] && privileges.view_deleted) || uid[i] === current_user) {
+					/*retrieved_topics.push({
+						
+						'username': usernames[i],
+						'badgeclass' : (hasReadTopics[i] && current_user !=0) ? '' : 'badge-important',
+						'teaser_text': teaserInfo[i].text,
+						'teaser_username': teaserInfo[i].username,
+						'teaser_timestamp': utils.relativeTime(teaserInfo[i].timestamp)
+					});*/
+				//}
+				
+
+				
+			});
 		}
 
 
-		RDB.multi()
-			.mget(title)
-			.mget(uid)
-			.mget(timestamp)
-			.mget(lastposttime)
-			.mget(slug)
-			.mget(postcount)
-			.mget(locked)
-			.mget(deleted)
-			.mget(pinned)
-			.exec(function(err, replies) {
-				var retrieved_topics = [];
+		for(var i=0; i<tids.length; ++i) {
 
-				title = replies[0];
-				uid = replies[1];
-				timestamp = replies[2];
-				lastposttime = replies[3];
-				slug = replies[4];
-				postcount = replies[5];
-				locked = replies[6];
-				deleted = replies[7];
-				pinned = replies[8];
-			
-				function getUserNames(next) {
-					user.get_usernames_by_uids(uid, function(userNames) {
-						next(null, userNames);
-					});
-				}
+			topics.getTopicData(tids[i], function(topicData) {
 
-				function hasReadTopics(next) {
-					topics.hasReadTopics(tids, current_user, function(hasRead) {
-						next(null, hasRead);
-					});
-				}
+				getTopicInfoMoar(topicData, function(topicInfo) {
+					console.log(topicInfo);
 
-				function getTeaserInfo(next) {
-					topics.get_teasers(tids, function(teasers) {
-						next(null, teasers);
-					});
-				}
+					topicData['pin-icon'] = topicData.pinned === '1' ? 'icon-pushpin' : 'none';
+					topicData['lock-icon'] = topicData.locked === '1' ? 'icon-lock' : 'none';
+					topicData['deleted-class'] = topicData.deleted === '1' ? 'deleted' : '';
 
-				// temporary. I don't think this call should belong here
-				function getPrivileges(next) {
-					Categories.privileges(category_id, current_user, function(user_privs) {
-						next(null, user_privs);
-					});
-				}
+					topicData.relativeTime = utils.relativeTime(topicData.timestamp);
 
-				async.parallel([getUserNames, hasReadTopics, getTeaserInfo, getPrivileges], function(err, results) {
-					var usernames = results[0],
-						hasReadTopics = results[1],
-						teaserInfo = results[2],
-						privileges = results[3];
+					topicData.username = topicInfo.username;
+					topicData.badgeclass = (topicInfo.hasread && current_user != 0) ? '' : 'badge-important';
+					topicData.teaser_text = topicInfo.teaserInfo.text,
+					topicData.teaser_username = topicInfo.teaserInfo.username;
+					topicData.teaser_timestamp = utils.relativeTime(topicInfo.teaserInfo.timestamp);
 
-					for (var i=0, ii=tids.length; i<ii; i++) {
-						if (!deleted[i] || (deleted[i] && privileges.view_deleted) || uid[i] === current_user) {
-							retrieved_topics.push({
-								'tid' : tids[i],
-								'title' : title[i],
-								'uid' : uid[i],
-								'username': usernames[i],
-								'timestamp' : timestamp[i],
-								'lastposttime' : lastposttime[i],
-								'relativeTime': utils.relativeTime(timestamp[i]),
-								'slug' : slug[i],
-								'post_count' : postcount[i],
-								'lock-icon': locked[i] === '1' ? 'icon-lock' : 'none',
-								'deleted': deleted[i],
-								'deleted-class': deleted[i] ? 'deleted' : '',
-								'pinned': parseInt(pinned[i] || 0),	// For sorting purposes
-								'pin-icon': pinned[i] === '1' ? 'icon-pushpin' : 'none',
-								'badgeclass' : (hasReadTopics[i] && current_user !=0) ? '' : 'badge-important',
-								'teaser_text': teaserInfo[i].text,
-								'teaser_username': teaserInfo[i].username,
-								'teaser_timestamp': utils.relativeTime(teaserInfo[i].timestamp)
-							});
-						}
-					}
+					retrieved_topics.push(topicData);
 
-					callback(retrieved_topics);
+					if(retrieved_topics.length === tids.length)
+						callback(retrieved_topics);
 				});
 			});
+		}
+
 	}
 
 	Categories.getAllCategories = function(callback, current_user) {

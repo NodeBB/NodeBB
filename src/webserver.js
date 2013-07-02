@@ -312,8 +312,13 @@ var express = require('express'),
 		/*posts.getPostsByUid(1, 0, 10, function(data) {
 			res.send(data);
 		});*/
-		topics.getTopicById(1, 1, function(data) {
+		
+		/*topics.getTopicById(1, 1, function(data) {
 			res.send(data);
+		});*/
+
+		categories.getCategoryById(12, 0, function(returnData) {
+			res.send(returnData);
 		});
 
 		

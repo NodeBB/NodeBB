@@ -11,7 +11,7 @@ var utils = require('./../public/src/utils.js'),
 
 (function(User) {
 	User.getUserField = function(uid, field, callback) {
-		RDB.hget('user:'+uid, field, function(err, data) {
+		RDB.hget('user:' + uid, field, function(err, data) {
 			if(err === null)
 				callback(data);
 			else
@@ -20,7 +20,7 @@ var utils = require('./../public/src/utils.js'),
 	}
 	
 	User.getUserFields = function(uid, fields, callback) {
-		RDB.hmget('user:'+uid, fields, function(err, data) {
+		RDB.hmget('user:' + uid, fields, function(err, data) {
 			if(err === null) {
 				var returnData = {};
 				

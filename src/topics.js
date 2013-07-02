@@ -303,11 +303,9 @@ marked.setOptions({
 	Topics.get_teaser = function(tid, callback) {
 		Topics.get_latest_undeleted_pid(tid, function(pid) {
 			if (pid !== null) {
-				RDB.mget([
-					'pid:' + pid + ':content',
-					'pid:' + pid + ':uid',
-					'pid:' + pid + ':timestamp'
-				], function(err, content) {
+				
+				posts.getPostFields(pid, ['content', 'uid', 'timestamp'], function(content) {
+					
 					user.getUserField(content[1], 'username', function(username) {
 						var stripped = content[0],
 							timestamp = content[2];
