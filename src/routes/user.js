@@ -292,7 +292,7 @@ var user = require('./../user.js'),
 					
 					user.isFollowing(callerUID, userData.theirid, function(isFollowing) {
 						
-						posts.getPostsByUid(userData.theirid, function(posts) {
+						posts.getPostsByUid(userData.theirid, 0, 9, function(posts) {
 							userData.posts = posts;
 							userData.isFollowing = isFollowing;
 						

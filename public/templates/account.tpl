@@ -84,7 +84,7 @@
 			<a href="/topic/{posts.tid}/{posts.pid}">
 				<div class="topic-row img-polaroid clearfix">
 					<span>{posts.content}</span>
-					<span class="pull-right">{posts.timestamp} ago</span>
+					<span class="pull-right">{posts.relativeTime} ago</span>
 				</div>	
 			</a>
 			

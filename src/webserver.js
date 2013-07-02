@@ -301,8 +301,19 @@ var express = require('express'),
 			res.send(data);	
 		});*/
 
-		posts.getPostsByTid(1, 1, 0, 10, function(data) {
+		/*posts.getPostsByTid(1, 1, 0, 10, function(data) {
 			res.send(data);	
+		});*/
+
+/*		posts.getPostsByPids([1,2,3], function(data) {
+			res.send(data);
+		});*/
+
+		/*posts.getPostsByUid(1, 0, 10, function(data) {
+			res.send(data);
+		});*/
+		topics.getTopicById(1, 1, function(data) {
+			res.send(data);
 		});
 
 		

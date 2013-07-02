@@ -36,7 +36,7 @@
 		}
 
 		function getPostsData(next) {
-			posts.getPostsByTid(tid, 0, -20, -1, function(postsData) {
+			posts.getPostsByTid(tid, -20, -1, function(postsData) {
 				next(null, postsData);
 			});
 		}

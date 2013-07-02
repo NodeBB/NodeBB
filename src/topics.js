@@ -16,32 +16,61 @@ marked.setOptions({
 });
 
 (function(Topics) {
+
+	Topics.getTopicData = function(tid, callback) {
+		RDB.hgetall('topic:' + tid, function(err, data) {
+			if(err === null)
+				callback(data);
+			else
+				console.log(err);
+		});
+	}
+
+	Topics.getTopicPosts = function(tid, callback) {
+		posts.getPostsByTid(tid, 0, 9, function(postData) {
+			callback(postData);
+		});
+	}
+
+	function addUserInfoToPost(post, callback) {
+		user.getUserFields(post.uid, ['username', 'userslug', 'reputation', 'picture', 'signature'], function(userData) {
+
+			post.username = userData.username || 'anonymous';
+			post.userslug = userData.userslug || '';
+			post.user_rep = userData.reputation || 0;
+			post.gravatar = userData.picture || 'http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e';
+			post.signature = marked(userData.signature || '');
+
+			callback();
+		});
+	}
+
+	function constructPosts(topicPosts, callback) {
+		var done = 0;
+
+		for(var i=0, ii=topicPosts.length; i<ii; ++i) {
+
+			addUserInfoToPost(topicPosts[i], function() {
+				++done;
+				if(done === topicPosts.length)
+					callback();
+			});
+		}
+	}
+
 	Topics.getTopicById = function(tid, current_user, callback) {
+		
+		Topics.markAsRead(tid, current_user);
+
 		function getTopicData(next) {
-			RDB.multi()
-				.get(schema.topics(tid).title)
-				.get(schema.topics(tid).locked)
-				.get(schema.topics(tid).category_name)
-				.get(schema.topics(tid).category_slug)
-				.get(schema.topics(tid).deleted)
-				.get(schema.topics(tid).pinned)
-				.get(schema.topics(tid).slug)
-				.exec(function(err, replies) {
-						next(null, {
-							topic_name: replies[0],
-							locked: replies[1] || 0,
-							category_name: replies[2],
-							category_slug: replies[3],
-							deleted: replies[4] || 0,
-							pinned: replies[5] || 0,
-							slug: replies[6]
-						});
-					});
+			Topics.getTopicData(tid, function(topicData) {
+				next(null, topicData);
+			});
 		}
 
 		function getTopicPosts(next) {
-			posts.getPostsByTid(tid, current_user, 0, 9, function(postData) {
-				next(null, postData);
+			Topics.getTopicPosts(tid, function(topicPosts) {
+				next(null, topicPosts);
 			});
 		}
 
@@ -53,29 +82,28 @@ marked.setOptions({
 
 		async.parallel([getTopicData, getTopicPosts, getPrivileges], function(err, results) {
 			var topicData = results[0],
+				topicPosts = results[1],
 				privileges = results[2];
 
-			postTools.constructPostObject(results[1], tid, current_user, privileges, function(postObj) {
-				if (postObj.length) {
-					var	main_posts = postObj.splice(0, 1);
+			constructPosts(topicPosts, function() {
 
-					callback({
-						'topic_name':topicData.topic_name,
-						'category_name':topicData.category_name,
-						'category_slug':topicData.category_slug,
-						'locked': parseInt(topicData.locked) || 0,
-						'deleted': parseInt(topicData.deleted) || 0,
-						'pinned': parseInt(topicData.pinned) || 0,
-						'slug': topicData.slug,
-						'topic_id': tid,
-						'expose_tools': privileges.editable ? 1 : 0,
-						'posts': postObj,
-						'main_posts': main_posts
-					});
-				} else {
-					return callback(false);
-				}
+				var main_posts = topicPosts.splice(0, 1);
+
+				callback({
+					'topic_name':topicData.title,
+					'category_name':topicData.category_name,
+					'category_slug':topicData.category_slug,
+					'locked': topicData.locked,
+					'deleted': topicData.deleted,
+					'pinned': topicData.pinned,
+					'slug': topicData.slug,
+					'topic_id': tid,
+					'expose_tools': privileges.editable ? 1 : 0,
+					'posts': topicPosts,
+					'main_posts': main_posts
+				});
 			});
+
 		});
 	}
 
@@ -195,25 +223,11 @@ marked.setOptions({
 		});
 	}
 
-	Topics.getTitle = function(tid, callback) {
-		RDB.get('tid:' + tid + ':title', function(err, title) {
-			callback(title);
-		});
-	}
-
-	Topics.getSlug = function(tid, callback) {
-		RDB.get('tid:' + tid + ':slug', function(err, slug) {
-			callback(slug);
-		});
-	}
-
 	Topics.getTitleByPid = function(pid, callback) {
-		RDB.get('pid:' + pid + ':tid', function(err, tid) {
-			if (!err) {
-				Topics.getTitle(tid, function(title) {
-					callback(title);
-				});
-			} else callback('Could not grab title');
+		posts.getPostField(pid, 'tid', function(tid) {
+			Topics.getTopicField(tid, 'title', function(title) {
+				callback(title);
+			});
 		});
 	}
 
@@ -312,7 +326,8 @@ marked.setOptions({
 // end: probably should be moved into posts
 
 	Topics.post = function(socket, uid, title, content, category_id) {
-		if (!category_id) throw new Error('Attempted to post without a category_id');
+		if (!category_id) 
+			throw new Error('Attempted to post without a category_id');
 		
 		if (uid === 0) {
 			socket.emit('event:alert', {
@@ -352,16 +367,24 @@ marked.setOptions({
 				}
 
 				var slug = tid + '/' + utils.slugify(title);
+				var timestamp = Date.now();
 
-				// Topic Info
-				RDB.set(schema.topics(tid).title, title);
-				RDB.set(schema.topics(tid).uid, uid);
-				RDB.set(schema.topics(tid).slug, slug);
-				RDB.set(schema.topics(tid).timestamp, Date.now());
+				RDB.hmset('topic:' + tid, {
+					'tid': tid,
+					'uid': uid,
+					'cid': category_id,
+					'title': title,
+					'slug': slug,
+					'timestamp': timestamp,
+					'lastposttime': 0,
+					'postcount': 0,
+					'locked': 0,
+					'deleted': 0,
+					'pinned': 0 
+				});
 				
-				RDB.set('topic:slug:' + slug + ':tid', tid);
+				RDB.set('topicslug:' + slug + ':tid', tid);
 
-				// Posts
 				posts.create(uid, tid, content, function(pid) {
 					if (pid > 0) {
 						RDB.lpush(schema.topics(tid).posts, pid);
@@ -379,8 +402,26 @@ marked.setOptions({
 					}
 				});
 
-				// User Details - move this out later
-				RDB.lpush('uid:' + uid + ':topics', tid);
+				user.addTopicIdToUser(uid, tid);
+
+				// let everyone know that there is an unread topic in this category
+				RDB.del('cid:' + category_id + ':read_by_uid', function(err, data) {
+					Topics.markAsRead(tid, uid);
+				});
+
+
+				// in future it may be possible to add topics to several categories, so leaving the door open here.
+				RDB.sadd('categories:' + category_id + ':tid', tid);
+
+				categories.getCategories([category_id], function(data) {
+					Topics.setTopicField(tid, 'category_name', data.categories[0].name);
+					Topics.setTopicField(tid, 'category_slug', data.categories[0].slug);
+				});
+
+				RDB.incr('cid:' + category_id + ':topiccount');
+				RDB.incr('totaltopiccount');
+
+				feed.updateCategory(category_id);
 
 				socket.emit('event:alert', {
 					title: 'Thank you for posting',
@@ -388,31 +429,35 @@ marked.setOptions({
 					type: 'notify',
 					timeout: 2000
 				});
-
-				// let everyone know that there is an unread topic in this category
-				RDB.del('cid:' + category_id + ':read_by_uid', function(err, data) {
-					Topics.markAsRead(tid, uid);
-				});
-
-				
-				RDB.zadd(schema.topics().recent, Date.now(), tid);
-				//RDB.zadd('topics:active', tid);
-
-				// in future it may be possible to add topics to several categories, so leaving the door open here.
-				RDB.sadd('categories:' + category_id + ':tid', tid);
-				RDB.set(schema.topics(tid).cid, category_id);
-				categories.getCategories([category_id], function(data) {
-					RDB.set(schema.topics(tid).category_name, data.categories[0].name);
-					RDB.set(schema.topics(tid).category_slug, data.categories[0].slug);
-				});
-
-				RDB.incr('cid:' + category_id + ':topiccount');
-				RDB.incr('totaltopiccount');
-
-				feed.updateCategory(category_id);
 			});
 		});
 	};
 
+	Topics.getTopicField = function(tid, field, callback) {
+		RDB.hget('topic:' + tid, field, function(err, data) {
+			if(err === null)
+				callback(data);
+			else
+				console.log(err);
+		});
+	}
+
+	Topics.setTopicField = function(tid, field, value) {
+		RDB.hset('topic:' + tid, field, value);
+	}
+
+	Topics.increasePostCount = function(tid) {
+		RDB.hincrby('topic:' + tid, 'postcount', 1);
+	}
+
+	Topics.isLocked = function(tid, callback) {
+		Topics.getTopicField(tid, 'locked', function(locked) {
+			callback(locked);
+		});
+	}
+
+	Topics.addToRecent = function(tid, timestamp) {
+		RDB.zadd(schema.topics().recent, timestamp, tid);
+	}
 	
 }(exports));

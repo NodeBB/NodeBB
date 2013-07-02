@@ -247,7 +247,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('api:posts.getRawPost', function(data) {
-			posts.getRawContent(data.pid, function(raw) {
+			posts.getPostField(data.pid, 'content', function(raw) {
 				socket.emit('api:posts.getRawPost', { post: raw });
 			});
 		});
@@ -349,7 +349,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				} else if (parseInt(data.pid) > 0) {
 					async.parallel([
 						function(next) {
-							posts.getRawContent(data.pid, function(raw) {
+							posts.getPostField(data.pid, 'content', function(raw) {
 								next(null, raw);
 							});
 						},
@@ -413,7 +413,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			var	start = data.after,
 				end = start + 10;
 
-			posts.getPostsByTid(data.tid, uid, start, end, function(posts){
+			posts.getPostsByTid(data.tid, start, end, function(posts){
 				if (!posts.error) {
 					postTools.constructPostObject(posts, data.tid, uid, null, function(postObj) {
 						io.sockets.in('topic_' + data.tid).emit('event:new_post', {

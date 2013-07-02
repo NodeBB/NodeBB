@@ -14,13 +14,14 @@ marked.setOptions({
 });
 
 (function(Posts) {
-	Posts.getPostsByTid = function(tid, current_user, start, end, callback) {
+
+	Posts.getPostsByTid = function(tid, start, end, callback) {
 		RDB.lrange('tid:' + tid + ':posts', start, end, function(err, pids) {
+			
 			RDB.handle(err);
-			topics.markAsRead(tid, current_user);
 
 			if (pids.length) {
-				Posts.getPostsByPids(pids, current_user, function(posts) {
+				Posts.getPostsByPids(pids, function(posts) {
 					callback(posts);
 				});
 			} else {
@@ -63,97 +64,58 @@ marked.setOptions({
 			});
 	};
 
-	Posts.getPostsByPids = function(pids, current_user, callback) {
-		var content = [], uid = [], timestamp = [], post_rep = [], editor = [], editTime = [], deleted = [], tid = [];
+	Posts.getPostData = function(pid, callback) {
+		RDB.hgetall('post:' + pid, function(err, data) {
+			if(err === null) 
+				callback(data);
+			else
+				console.log(err);
+		});
+	}
 
-		for (var i=0, ii=pids.length; i<ii; i++) {
-			content.push('pid:' + pids[i] + ':content');
-			uid.push('pid:' + pids[i] + ':uid');
-			timestamp.push('pid:' + pids[i] + ':timestamp');
-			post_rep.push('pid:' + pids[i] + ':rep');
-			editor.push('pid:' + pids[i] + ':editor');
-			editTime.push('pid:' + pids[i] + ':edited');
-			deleted.push('pid:' + pids[i] + ':deleted');
-			tid.push('pid:' + pids[i] + ':tid');
-		}
+	Posts.getPostsByPids = function(pids, callback) {
+		var posts = [], 
+			loaded = 0;
 
-
-		function getFavouritesData(next) {
-			favourites.getFavouritesByPostIDs(pids, current_user, function(fav_data) {
-				next(null, fav_data);
-			}); // to be moved
-		}
-
-		function getPostData(next) {
-			RDB.multi()
-				.mget(content)
-				.mget(uid)
-				.mget(timestamp)
-				.mget(post_rep)
-				.mget(editor)
-				.mget(editTime)
-				.mget(deleted)
-				.mget(tid)
-				.exec(function(err, replies) {
-					post_data = {
-						pid: pids,
-						content: replies[0],
-						uid: replies[1],
-						timestamp: replies[2],
-						reputation: replies[3],
-						editor: replies[4],
-						editTime: replies[5],
-						deleted: replies[6],
-						tid: replies[7]
-					};
-
-					// below, to be deprecated
-					// Add any editors to the user_data object
-					for(var x = 0, numPosts = post_data.editor.length; x < numPosts; x++) {
-						if (post_data.editor[x] !== null && post_data.uid.indexOf(post_data.editor[x]) === -1) {
-							post_data.uid.push(post_data.editor[x]);
-						}
+		for(var i=0, ii=pids.length; i<ii; ++i) {
+			(function(index, pid) {
+				Posts.getPostData(pid, function(postData) {
+					
+					if(postData) {
+						postData.relativeTime = utils.relativeTime(postData.timestamp);			
+						posts[index] = postData;
 					}
-
-					user.getMultipleUserFields(post_data.uid, ['username', 'userslug', 'reputation', 'picture', 'signature'], function(user_details) {
-						next(null, {
-							users: user_details,
-							posts: post_data
-						});
-					});
-					// above, to be deprecated
+					
+					++loaded;
+					if(loaded === pids.length)
+						callback(posts);
 				});
+			}(i, pids[i]));
 		}
+	}
 
-		async.parallel([getFavouritesData, getPostData], function(err, results) {
-			callback({
-				'voteData' : results[0], // to be moved
-				'userData' : results[1].users, // to be moved
-				'postData' : results[1].posts
-			});
+	Posts.getPostField = function(pid, field, callback) {
+		RDB.hget('post:' + pid, field, function(data) {
+			if(err === null)
+				callback(data);
+			else
+				console.log(err);
 		});
 	}
 
-	Posts.get_tid_by_pid = function(pid, callback) {
-		RDB.get('pid:' + pid + ':tid', function(err, tid) {
-			if (tid && parseInt(tid) > 0) {
-				callback(tid);
-			} else {
-				callback(false);
-			}
-		});
-	}
 
 	Posts.get_cid_by_pid = function(pid, callback) {
-		Posts.get_tid_by_pid(pid, function(tid) {
-			if (tid) topics.get_cid_by_tid(tid, function(cid) {
-				if (cid) {
-					callback(cid);
-				} else {
-					callback(false);
-				}
-			});
-		})
+		Posts.getPostField(pid, 'tid', function(tid) {
+			if (tid) {
+				topics.get_cid_by_tid(tid, function(cid) {
+					if (cid) {
+						callback(cid);
+					} else {
+						callback(false);
+					}
+				});
+			}
+		});
 	}
 
 	Posts.reply = function(socket, tid, uid, content) {
@@ -169,6 +131,7 @@ marked.setOptions({
 
 
 		user.getUserField(uid, 'lastposttime', function(lastposttime) {
+
 			if(Date.now() - lastposttime < config.post_delay) {
 				socket.emit('event:alert', {
 					title: 'Too many posts!',
@@ -183,7 +146,7 @@ marked.setOptions({
 				if (pid > 0) {
 					RDB.rpush('tid:' + tid + ':posts', pid);
 
-					RDB.del('tid:' + tid + ':read_by_uid'); // let everybody know there is an unread post
+					RDB.del('tid:' + tid + ':read_by_uid'); 
 
 					Posts.get_cid_by_pid(pid, function(cid) {
 						RDB.del('cid:' + cid + ':read_by_uid', function(err, data) {
@@ -246,57 +209,54 @@ marked.setOptions({
 	};
 
 	Posts.create = function(uid, tid, content, callback) {
-		if (uid === null) return;
+		if (uid === null) {
+			callback(-1);
+			return;
+		}
 		
-		RDB.get('tid:' + tid + ':locked', function(err, locked) {
-			RDB.handle(err);
+		topics.isLocked(tid, function(locked) {
 
 			if (!locked || locked === '0') {
 				RDB.incr('global:next_post_id', function(err, pid) {
 					RDB.handle(err);
 					
 					var timestamp = Date.now();
-					// Posts Info
-					RDB.set('pid:' + pid + ':content', content);
-					RDB.set('pid:' + pid + ':uid', uid);
-					RDB.set('pid:' + pid + ':timestamp', timestamp);
-					RDB.set('pid:' + pid + ':rep', 0);
-					RDB.set('pid:' + pid + ':tid', tid);
 					
-					RDB.incr('tid:' + tid + ':postcount');
-					RDB.zadd(schema.topics().recent, timestamp, tid);
-					RDB.set('tid:' + tid + ':lastposttime', timestamp);
+					RDB.hmset('post:' + pid, {
+						'pid': pid,
+						'uid': uid,
+						'tid': tid,
+						'content': content,
+						'timestamp': timestamp,
+						'reputation': 0,
+						'editor': '',
+						'edited': 0,
+						'deleted': 0
+					});
+
+					topics.increasePostCount(tid);
+					topics.setTopicField(tid, 'lastposttime', timestamp);
+					topics.addToRecent(tid, timestamp);
 
 					RDB.incr('totalpostcount');
+						
+					RDB.get('tid:' + tid + ':cid', function(err, cid) {
+						RDB.handle(err);
 
-					user.getUserFields(uid, ['username'], function(data) { // todo parallel
-						//add active users to this category
-						RDB.get('tid:' + tid + ':cid', function(err, cid) {
-							RDB.handle(err);
+						feed.updateTopic(tid, cid);
 
+						// this is a bit of a naive implementation, defn something to look at post-MVP
+						RDB.scard('cid:' + cid + ':active_users', function(amount) {
+							if (amount > 10) {
+								RDB.spop('cid:' + cid + ':active_users');
+							}
 
-							feed.updateTopic(tid, cid);
-
-							// this is a bit of a naive implementation, defn something to look at post-MVP
-							RDB.scard('cid:' + cid + ':active_users', function(amount) {
-								if (amount > 10) {
-									RDB.spop('cid:' + cid + ':active_users');
-								}
-
-								//RDB.sadd('cid:' + cid + ':active_users', data.username);
-								RDB.sadd('cid:' + cid + ':active_users', uid);
-							});
+							RDB.sadd('cid:' + cid + ':active_users', uid);
 						});
 					});
 					
+					user.onNewPostMade(uid, tid, pid, timestamp);
 					
-					// User Details - move this out later
-					RDB.lpush('uid:' + uid + ':posts', pid);
-					
-					user.incrementUserFieldBy(uid, 'postcount', 1);
-					user.setUserField(uid, 'lastposttime', timestamp);
-
-					user.sendPostNotificationToFollowers(uid, tid, pid);
 
 					if (callback) 
 						callback(pid);
@@ -306,40 +266,19 @@ marked.setOptions({
 			}
 		});
 	}
-
-	Posts.getRawContent = function(pid, callback) {
-		RDB.get('pid:' + pid + ':content', function(err, raw) {
-			callback(raw);
-		});
-	}
 	
-	Posts.getPostsByUid = function(uid, callback) {
+	Posts.getPostsByUid = function(uid, start, end, callback) {
 		
-		RDB.lrange('uid:' + uid + ':posts', 0, 10, function(err, pids) {
-			if(err === null) {
-				
-				if(pids && pids.length) {
-				
-					Posts.getPostsByPids(pids, uid, function(posts) {
-						var returnData = [];
-						
-						var len = posts.postData.pid.length;
-						
-						for (var i=0; i < len; ++i) {
-							returnData.push({
-								pid: posts.postData.pid[i],
-								content: posts.postData.content[i],
-								timestamp: utils.relativeTime(posts.postData.timestamp[i]),							
-								tid: posts.postData.tid[i]
-							});
-						};
-						
-						callback(returnData);
-					});
-				}
-				else
-					callback([]);
+		user.getPostIds(uid, start, end, function(pids) {
+			
+			if(pids && pids.length) {
+			
+				Posts.getPostsByPids(pids, function(posts) {
+					callback(posts);
+				});
 			}
+			else
+				callback([]);
 		});				
 	}
 
