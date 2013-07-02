@@ -57,7 +57,7 @@ var	RDB = require('./redis.js'),
 					}
 
 					function getActiveUsers(next) {
-						user.getMultipleUserFields(active_users, ['username','userslug'], function(users) {
+						user.getMultipleUserFields(active_users, ['username', 'userslug'], function(users) {
 							var activeUserData = [];
 							for(var uid in users) {
 								activeUserData.push(users[uid]);
@@ -117,7 +117,7 @@ var	RDB = require('./redis.js'),
 	Categories.getTopicsByTids = function(tids, current_user, callback, category_id /*temporary*/) {
 		var retrieved_topics = [];
 		
-		function getTopicInfoMoar(topicData, callback) {
+		function getTopicInfo(topicData, callback) {
 
 			function getUserName(next) {
 				user.getUserField(topicData.uid, 'username', function(username) {
@@ -152,33 +152,20 @@ var	RDB = require('./redis.js'),
 
 				callback({
 					username: username,
-					hasReadTopic: hasReadTopic,
+					hasread: hasReadTopic,
 					teaserInfo: teaserInfo,
 					privileges: privileges
 				});
-				//if (!deleted[i] || (deleted[i] && privileges.view_deleted) || uid[i] === current_user) {
-					/*retrieved_topics.push({
-						
-						'username': usernames[i],
-						'badgeclass' : (hasReadTopics[i] && current_user !=0) ? '' : 'badge-important',
-						'teaser_text': teaserInfo[i].text,
-						'teaser_username': teaserInfo[i].username,
-						'teaser_timestamp': utils.relativeTime(teaserInfo[i].timestamp)
-					});*/
-				//}
-				
-
-				
 			});
 		}
-
+		
+		var topicCountToLoad = tids.length;
 
 		for(var i=0; i<tids.length; ++i) {
 
 			topics.getTopicData(tids[i], function(topicData) {
 
-				getTopicInfoMoar(topicData, function(topicInfo) {
-					console.log(topicInfo);
+				getTopicInfo(topicData, function(topicInfo) {
 
 					topicData['pin-icon'] = topicData.pinned === '1' ? 'icon-pushpin' : 'none';
 					topicData['lock-icon'] = topicData.locked === '1' ? 'icon-lock' : 'none';
@@ -192,9 +179,12 @@ var	RDB = require('./redis.js'),
 					topicData.teaser_username = topicInfo.teaserInfo.username;
 					topicData.teaser_timestamp = utils.relativeTime(topicInfo.teaserInfo.timestamp);
 
-					retrieved_topics.push(topicData);
+					if (!topicData.deleted || (topicData.deleted && topicInfo.privileges.view_deleted) || topicData.uid === current_user)
+						retrieved_topics.push(topicData);
+					else
+						--topicCountToLoad;
 
-					if(retrieved_topics.length === tids.length)
+					if(retrieved_topics.length === topicsToLoad)
 						callback(retrieved_topics);
 				});
 			});

@@ -122,7 +122,7 @@ marked.setOptions({
 	Posts.get_cid_by_pid = function(pid, callback) {
 		Posts.getPostField(pid, 'tid', function(tid) {
 			if (tid) {
-				topics.get_cid_by_tid(tid, function(cid) {
+				topics.getTopicField(tid, 'cid', function(cid) {
 					if (cid) {
 						callback(cid);
 					} else {
@@ -255,7 +255,8 @@ marked.setOptions({
 
 					RDB.incr('totalpostcount');
 						
-					RDB.get('tid:' + tid + ':cid', function(err, cid) {
+					//RDB.get('tid:' + tid + ':cid', function(err, cid) {
+					topics.getTopicField(tid, 'cid', function(cid) {
 						RDB.handle(err);
 
 						feed.updateTopic(tid, cid);

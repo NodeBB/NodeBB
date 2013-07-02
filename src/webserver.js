@@ -301,9 +301,9 @@ var express = require('express'),
 			res.send(data);	
 		});*/
 
-		/*posts.getPostsByTid(1, 1, 0, 10, function(data) {
+		posts.getPostsByTid(2, 0, -1, function(data) {
 			res.send(data);	
-		});*/
+		});
 
 /*		posts.getPostsByPids([1,2,3], function(data) {
 			res.send(data);
@@ -317,10 +317,10 @@ var express = require('express'),
 			res.send(data);
 		});*/
 
-		categories.getCategoryById(12, 0, function(returnData) {
+/*		categories.getCategoryById(12, 0, function(returnData) {
 			res.send(returnData);
 		});
-
+*/
 		
 	});
 

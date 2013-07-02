@@ -11,7 +11,7 @@ var	RDB = require('./redis.js'),
 		//todo: break early if one condition is true 
 		
 		function getCategoryPrivileges(next) {
-			topics.get_cid_by_tid(tid, function(cid) {
+			topics.getTopicField(tid, 'cid', function(cid) {
 				categories.privileges(cid, uid, function(privileges) {
 					next(null, privileges);
 				});

@@ -108,37 +108,14 @@ marked.setOptions({
 	}
 
 	Topics.get_topic = function(tid, uid, callback) {
-		var topicData = {};
 
 		function get_topic_data(next) {
-			RDB.mget([
-				schema.topics(tid).title,
-				schema.topics(tid).uid,
-				schema.topics(tid).timestamp,
-				schema.topics(tid).slug,
-				schema.topics(tid).postcount,
-				schema.topics(tid).locked,
-				schema.topics(tid).pinned,
-				schema.topics(tid).deleted
-			], function(err, topic) {
-				if (err) {
-					throw new Error(err);
-				}
-				
-				topicData.title = topic[0];
-				topicData.uid = topic[1];
-				topicData.timestamp = topic[2];
-				topicData.relativeTime = utils.relativeTime(topic[2]),
-				topicData.slug = topic[3];
-				topicData.post_count = topic[4];
-				topicData.locked = topic[5];
-				topicData.pinned = topic[6];
-				topicData.deleted = topic[7];
+			Topics.getTopicData(tid, function(topic) {
 
-				user.getUserField(topic[1], 'username', function(username) {
-					topicData.username = username;
-					
-					next();
+				user.getUserField(topic.uid, 'username', function(username) {
+
+					topic.username = username;
+					next(null, topic);
 				});
 			});
 		}
@@ -147,30 +124,30 @@ marked.setOptions({
 			// posts.create calls this function - should be an option to skip this because its always true
 			if (uid && parseInt(uid) > 0) {
 				RDB.sismember(schema.topics(tid).read_by_uid, uid, function(err, read) {
-					topicData.badgeclass = read ? '' : 'badge-important';
-
-					next();
+					next(null, read);
 				});
 			} else {
-				next();
+				next(null, null);
 			}
 		}
 
 		function get_teaser(next) {
 			Topics.get_teaser(tid, function(teaser) {
-				topicData.teaser_text = teaser.text;
-				topicData.teaser_username = teaser.username;
-
-				next();
+				next(null, teaser);
 			});
 		}
 
-		async.parallel([get_topic_data, get_read_status, get_teaser], function(err) {
+		async.parallel([get_topic_data, get_read_status, get_teaser], function(err, results) {
 			if (err) {
 				throw new Error(err);
 			}
+			
+			var topicData = results[0];
+			topicData.relativeTime = utils.relativeTime(results[0].timestamp);
+			topicData.badgeclass = results[1] ? '' : 'badge-important';
+			topicData.teaser_text = results[2].text;
+			topicData.teaser_username = results[2].username;
 
-			topicData.tid = tid;
 			callback(topicData);
 		});
 	}
@@ -213,16 +190,6 @@ marked.setOptions({
 		});
 	}
 
-	Topics.get_cid_by_tid = function(tid, callback) {
-		RDB.get(schema.topics(tid).cid, function(err, cid) {
-			if (cid && parseInt(cid) > 0) {
-				callback(cid);
-			} else {
-				callback(false);
-			}
-		});
-	}
-
 	Topics.getTitleByPid = function(pid, callback) {
 		posts.getPostField(pid, 'tid', function(tid) {
 			Topics.getTopicField(tid, 'title', function(title) {
@@ -235,7 +202,7 @@ marked.setOptions({
 		
 		RDB.sadd(schema.topics(tid).read_by_uid, uid);
 		
-		Topics.get_cid_by_tid(tid, function(cid) {
+		Topics.getTopicField(tid, 'cid', function(cid) {
 					
 			categories.isTopicsRead(cid, uid, function(read) {
 				if(read) {
@@ -390,6 +357,7 @@ marked.setOptions({
 
 						// Notify any users looking at the category that a new topic has arrived
 						Topics.get_topic(tid, uid, function(topicData) {
+
 							io.sockets.in('category_' + category_id).emit('event:new_topic', topicData);
 							io.sockets.in('recent_posts').emit('event:new_topic', topicData);
 						});

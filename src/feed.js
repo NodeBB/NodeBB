@@ -35,17 +35,8 @@
 			});
 		}
 
-		function getPostsData(next) {
-			posts.getPostsByTid(tid, -20, -1, function(postsData) {
-				next(null, postsData);
-			});
-		}
-
-
 		async.parallel([getTopicData, getPostsData], function(err, results) {
 			var topicData = results[0],
-				postsData = results[1].postData,
-				userData = results[1].userData,
 				location = '/topic/' + topicData.slug,
 				xml_url = '/topic/' + tid + '.rss';
 
@@ -55,18 +46,20 @@
 			var feed = createFeed(topicData.topic_name, '', location, xml_url, post.username, urn);
 			var title;
 
-			for (var i = 0, ii = postsData.pid.length; i < ii; i++) {
-				urn = 'urn:' + cid + ':' + tid + ':' + postsData.pid[i];
-				title = 'Reply to ' + topicData.topic_name + ' on ' + (new Date(parseInt(postsData.timestamp[i], 10)).toUTCString());
+			var topic_posts = topicData.main_posts.concat(topicData.posts);
+
+			for (var i = 0, ii = topic_posts.length; i < ii; i++) {
+				urn = 'urn:' + cid + ':' + tid + ':' + topic_posts[i].pid;
+				title = 'Reply to ' + topicData.topic_name + ' on ' + (new Date(parseInt(topic_posts[i].timestamp, 10)).toUTCString());
 
 				feed.addNewItem(
 					title,
 					location,
-					postsData.timestamp[i],
-					postsData.content[i],
+					topic_posts[i].timestamp,
+					topic_posts[i].content,
 					{
 						'urn' : urn,
-						'username' : userData[postsData.uid[i]].username
+						'username' : topic_posts[i].username
 					}
 				);
 			}

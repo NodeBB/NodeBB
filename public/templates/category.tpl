@@ -30,7 +30,7 @@
 						</div>
 					</div>
 					<div>
-						<h3><span class="topic-title"><span class="badge {topics.badgeclass}">{topics.post_count}</span>{topics.title}</span></h3>
+						<h3><span class="topic-title"><span class="badge {topics.badgeclass}">{topics.postcount}</span>{topics.title}</span></h3>
 						<small>
 							<strong><i class="{topics.pin-icon}"></i><i class="{topics.lock-icon}"></i></strong>
 							Posted {topics.relativeTime} ago by 
