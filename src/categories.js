@@ -116,6 +116,7 @@ var	RDB = require('./redis.js'),
 	// not the permanent location for this function
 	Categories.getTopicsByTids = function(tids, current_user, callback, category_id /*temporary*/) {
 		var retrieved_topics = [];
+		var topicCountToLoad = tids.length;
 		
 		function getTopicInfo(topicData, callback) {
 
@@ -159,7 +160,7 @@ var	RDB = require('./redis.js'),
 			});
 		}
 		
-		var topicCountToLoad = tids.length;
+
 
 		for(var i=0; i<tids.length; ++i) {
 
@@ -184,7 +185,7 @@ var	RDB = require('./redis.js'),
 					else
 						--topicCountToLoad;
 
-					if(retrieved_topics.length === topicsToLoad)
+					if(retrieved_topics.length === topicCountToLoad)
 						callback(retrieved_topics);
 				});
 			});
