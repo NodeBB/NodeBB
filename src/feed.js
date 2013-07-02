@@ -29,15 +29,8 @@
 	Feed.updateTopic = function(tid, cid) {
 		var cache_time_in_seconds = 60;
 
-		function getTopicData(next) {
-			topics.getTopicById(tid, 0, function(topicData) {
-				next(null, topicData);
-			});
-		}
-
-		async.parallel([getTopicData], function(err, results) {
-			var topicData = results[0],
-				location = '/topic/' + topicData.slug,
+		topics.getTopicById(tid, 0, function(topicData) {
+			var location = '/topic/' + topicData.slug,
 				xml_url = '/topic/' + tid + '.rss';
 
 			var post = topicData.main_posts[0];
