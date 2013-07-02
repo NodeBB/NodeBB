@@ -295,7 +295,17 @@ var express = require('express'),
 	app.get('/api/:method/:id*', api_method);
 
 	app.all('/test', function(req, res) {
-		res.send();
+		//res.send();
+
+		/*posts.getPostsByPids([1,2,3], 1, function(data) {
+			res.send(data);	
+		});*/
+
+		posts.getPostsByTid(1, 1, 0, 10, function(data) {
+			res.send(data);	
+		});
+
+		
 	});
 
 	//START TODO: MOVE TO GRAPH.JS 
