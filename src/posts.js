@@ -128,6 +128,10 @@ marked.setOptions({
 		});
 	}
 
+	Posts.setPostField = function(pid, field, value) {
+		RDB.hset('post:' + pid, field, value);
+	}
+
 	Posts.getPostFields = function(pid, fields, callback) {
 		RDB.hmget('post:' + pid, fields, function(err, data) {
 			if(err === null) {

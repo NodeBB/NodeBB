@@ -39,7 +39,7 @@ var	RDB = require('./redis.js'),
 		ThreadTools.privileges(tid, uid, function(privileges) {
 			if (privileges.editable) {
 				// Mark thread as locked
-				RDB.set('tid:' + tid + ':locked', 1);
+				topics.setTopicField(tid, 'locked', 1);
 
 				if (socket) {
 					io.sockets.in('topic_' + tid).emit('event:topic_locked', {
@@ -59,7 +59,6 @@ var	RDB = require('./redis.js'),
 	ThreadTools.unlock = function(tid, uid, socket) {
 		ThreadTools.privileges(tid, uid, function(privileges) {
 			if (privileges.editable) {
-				// Mark thread as unlocked
 				RDB.del('tid:' + tid + ':locked');
 
 				if (socket) {
@@ -80,8 +79,8 @@ var	RDB = require('./redis.js'),
 	ThreadTools.delete = function(tid, uid, socket) {
 		ThreadTools.privileges(tid, uid, function(privileges) {
 			if (privileges.editable) {
-				// Mark thread as deleted
-				RDB.set('tid:' + tid + ':deleted', 1);
+				
+				topics.setTopicField(tid, 'deleted', 1);
 				ThreadTools.lock(tid, uid);
 
 				if (socket) {
@@ -102,8 +101,8 @@ var	RDB = require('./redis.js'),
 	ThreadTools.restore = function(tid, uid, socket) {
 		ThreadTools.privileges(tid, uid, function(privileges) {
 			if (privileges.editable) {
-				// Mark thread as restored
-				RDB.del('tid:' + tid + ':deleted');
+
+				topics.setTopicField(tid, 'deleted', 0);
 				ThreadTools.unlock(tid, uid);
 
 				if (socket) {
@@ -124,8 +123,8 @@ var	RDB = require('./redis.js'),
 	ThreadTools.pin = function(tid, uid, socket) {
 		ThreadTools.privileges(tid, uid, function(privileges) {
 			if (privileges.editable) {
-				// Mark thread as pinned
-				RDB.set('tid:' + tid + ':pinned', 1);
+				
+				topics.setTopicField(tid, 'pinned', 1);
 
 				if (socket) {
 					io.sockets.in('topic_' + tid).emit('event:topic_pinned', {
@@ -145,8 +144,8 @@ var	RDB = require('./redis.js'),
 	ThreadTools.unpin = function(tid, uid, socket) {
 		ThreadTools.privileges(tid, uid, function(privileges) {
 			if (privileges.editable) {
-				// Mark thread as unpinned
-				RDB.del('tid:' + tid + ':pinned');
+				
+				topics.setTopicField(tid, 'pinned', 0);
 
 				if (socket) {
 					io.sockets.in('topic_' + tid).emit('event:topic_unpinned', {
@@ -169,10 +168,12 @@ var	RDB = require('./redis.js'),
 
 			RDB.smove('categories:' + oldCid + ':tid', 'categories:' + cid + ':tid', tid, function(err, result) {
 				if (!err && result === 1) {
-					RDB.set('tid:' + tid + ':cid', cid);
+
+					topics.setTopicField(tid, 'cid', cid);
+
 					categories.getCategories([cid], function(data) {
-						RDB.set('tid:' + tid + ':category_name', data.categories[0].name);
-						RDB.set('tid:' + tid + ':category_slug', data.categories[0].slug);
+						topics.setTopicField(tid, 'category_name', data.categories[0].name);
+						topics.setTopicField(tid, 'category_slug', data.categories[0].slug);
 					});
 
 					socket.emit('api:topic.move', {

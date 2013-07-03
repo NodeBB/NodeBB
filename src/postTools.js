@@ -56,22 +56,23 @@ marked.setOptions({
 
 	PostTools.edit = function(uid, pid, title, content) {
 		var	success = function() {
-				RDB.set('pid:' + pid + ':content', content);
-				RDB.set('pid:' + pid + ':edited', Date.now());
-				RDB.set('pid:' + pid + ':editor', uid);
+			posts.setPostField(pid, 'content', content);
+			posts.setPostField(pid, 'edited', Date.now());
+			posts.setPostField(pid, 'editor', uid);
 
-				posts.get_tid_by_pid(pid, function(tid) {
-					PostTools.isMain(pid, tid, function(isMainPost) {
-						if (isMainPost) RDB.set('tid:' + tid + ':title', title);
+			posts.get_tid_by_pid(pid, function(tid) {
+				PostTools.isMain(pid, tid, function(isMainPost) {
+					if (isMainPost) 
+						topics.setTopicField(tid, 'title', title);
 
-						io.sockets.in('topic_' + tid).emit('event:post_edited', {
-							pid: pid,
-							title: title,
-							content: marked(content || '')
-						});
+					io.sockets.in('topic_' + tid).emit('event:post_edited', {
+						pid: pid,
+						title: title,
+						content: marked(content || '')
 					});
 				});
-			};
+			});
+		};
 
 		PostTools.privileges(pid, uid, function(privileges) {
 			if (privileges.editable) {
@@ -82,14 +83,14 @@ marked.setOptions({
 
 	PostTools.delete = function(uid, pid) {
 		var	success = function() {
-				RDB.set('pid:' + pid + ':deleted', 1);
+			posts.setPostField(pid, 'deleted', 1);
 
-				posts.get_tid_by_pid(pid, function(tid) {
-					io.sockets.in('topic_' + tid).emit('event:post_deleted', {
-						pid: pid
-					});
+			posts.get_tid_by_pid(pid, function(tid) {
+				io.sockets.in('topic_' + tid).emit('event:post_deleted', {
+					pid: pid
 				});
-			};
+			});
+		};
 
 		PostTools.privileges(pid, uid, function(privileges) {
 			if (privileges.editable) {
