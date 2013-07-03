@@ -214,35 +214,28 @@ marked.setOptions({
 					});
 
 
-					user.getUserFields(uid, ['username','reputation','picture','signature'], function(data) {
-
-						var timestamp = Date.now();
-						var socketData = {
-							'posts' : [
-								{
-									'pid' : pid,
-									'content' : marked(content || ''),
-									'uid' : uid,
-									'username' : data.username || 'anonymous',
-									'user_rep' : data.reputation || 0,
-									'post_rep' : 0,
-									'picture' : data.picture,
-									'signature' : marked(data.signature || ''),
-									'timestamp' : timestamp,
-									'relativeTime': utils.relativeTime(timestamp),
-									'fav_star_class' :'icon-star-empty',
-									'edited-class': 'none',
-									'editor': '',
-								}
-							]
-						};
+					var timestamp = Date.now();
+					var socketData = {
+						'posts' : [
+							{
+								'pid' : pid,
+								'content' : marked(content || ''),
+								'uid' : uid,
+								'post_rep' : 0,
+								'timestamp' : timestamp,
+								'relativeTime': utils.relativeTime(timestamp),
+								'fav_star_class' :'icon-star-empty',
+								'edited-class': 'none',
+								'editor': '',
+							}
+						]
+					};
 						
+					posts.addUserInfoToPost(socketData['posts'][0], function() {
 						io.sockets.in('topic_' + tid).emit('event:new_post', socketData);
 						io.sockets.in('recent_posts').emit('event:new_post', socketData);
-						
-						
-						
-					});
+					});					
+				
 				} else {
 					socket.emit('event:alert', {
 						title: 'Reply Unsuccessful',
