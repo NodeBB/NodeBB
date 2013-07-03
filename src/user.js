@@ -221,13 +221,13 @@ var utils = require('./../public/src/utils.js'),
 				RDB.lpush('userlist', username);
 				io.sockets.emit('user.latest', {userslug: userslug, username: username});
 
-				callback(null, uid);
-
 				if (password) {
 					User.hashPassword(password, function(hash) {
-						RDB.hset('user:'+uid, 'password', hash);
+						User.setUserField(uid, 'password', hash);
 					});
 				}
+
+				callback(null, uid);
 			});
 		});
 	};
