@@ -34,7 +34,7 @@ var	RDB = require('./../redis.js'),
 			var category = modified[cid];
 
 			for (var key in category) {
-				RDB.set('cid:' + cid + ':' + key, category[key]);
+				RDB.hset('category:' + cid, key, category[key]);
 
 				if (key == 'name') {
 					// reset slugs if name is updated
