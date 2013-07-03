@@ -2,6 +2,32 @@
 
 	</div><!--END container -->
 
+	<div id="disconnect-modal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-header">
+			<h3 id="myModalLabel">Socket Disconnect</h3>
+		</div>
+		<div class="modal-body">
+			<span id="disconnect-text">Looks like you disconnected, try reloading the page.</span>
+		</div>
+		<div class="modal-footer">
+			<a id="reload-button" href="/" class="btn btn-primary">Reload</a>
+		</div>
+	</div>
+
+	<div id="chat-modal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<h3 id="myModalLabel">Chat with <span id="chat-with-name"></span></h3>
+		</div>
+		<div class="modal-body">
+			<textarea id="chat-content" cols="40" rows="10" readonly></textarea><br/>
+			<input id="chat-message-input" type="text" name="chat-message" placeholder="type chat message here press enter to send"/><br/>
+			<button type="button" id="chat-message-send-btn" href="#" class="btn btn-primary">Send</button>
+		</div>
+	</div>
+
+	<div id="alert_window"></div>
+
 	<div id="mobile-sidebar">
 	</div>
 
