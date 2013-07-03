@@ -100,14 +100,14 @@ marked.setOptions({
 
 	PostTools.restore = function(uid, pid) {
 		var	success = function() {
-				RDB.del('pid:' + pid + ':deleted');
+			posts.setPostField(pid, 'deleted', 0);
 
-				posts.getPostField(pid, 'tid', function(tid) {
-					io.sockets.in('topic_' + tid).emit('event:post_restored', {
-						pid: pid
-					});
+			posts.getPostField(pid, 'tid', function(tid) {
+				io.sockets.in('topic_' + tid).emit('event:post_restored', {
+					pid: pid
 				});
-			};
+			});
+		};
 
 		PostTools.privileges(pid, uid, function(privileges) {
 			if (privileges.editable) {
