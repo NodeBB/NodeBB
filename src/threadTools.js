@@ -36,7 +36,6 @@ var	RDB = require('./redis.js'),
 	ThreadTools.lock = function(tid, uid, socket) {
 		ThreadTools.privileges(tid, uid, function(privileges) {
 			if (privileges.editable) {
-				// Mark thread as locked
 				topics.setTopicField(tid, 'locked', 1);
 
 				if (socket) {
@@ -57,8 +56,8 @@ var	RDB = require('./redis.js'),
 	ThreadTools.unlock = function(tid, uid, socket) {
 		ThreadTools.privileges(tid, uid, function(privileges) {
 			if (privileges.editable) {
-				RDB.del('tid:' + tid + ':locked');
-
+				topics.setTopicField(tid, 'locked', 0);
+				
 				if (socket) {
 					io.sockets.in('topic_' + tid).emit('event:topic_unlocked', {
 						tid: tid,
