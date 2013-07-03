@@ -378,7 +378,6 @@ marked.setOptions({
 
 						// Notify any users looking at the category that a new topic has arrived
 						Topics.getTopicForCategoryView(tid, uid, function(topicData) {
-							console.log(topicData);
 							io.sockets.in('category_' + category_id).emit('event:new_topic', topicData);
 							io.sockets.in('recent_posts').emit('event:new_topic', topicData);
 						});
