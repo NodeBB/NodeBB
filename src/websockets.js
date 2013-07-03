@@ -339,7 +339,8 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 						socket.emit('api:composer.push', {
 							tid: data.tid,
-							title: topicData.title
+							title: topicData.title,
+							body: topicData.body
 						});
 					});
 				} else if (parseInt(data.cid) > 0) {
