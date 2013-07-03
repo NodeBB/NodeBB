@@ -294,6 +294,15 @@ var express = require('express'),
 	app.get('/api/:method/:id/:section?', api_method);
 	app.get('/api/:method/:id*', api_method);
 
+	app.get('/cid/:cid', function(req, res) {
+		categories.getCategoryData(req.params.cid, function(data){
+			if(data)
+				res.send(data);
+			else
+				res.send("Category doesn't exist!");
+		});
+	});
+
 	app.get('/tid/:tid', function(req, res) {
 		topics.getTopicData(req.params.tid, function(data){
 			if(data)
