@@ -78,7 +78,7 @@
 				username = posts[i].username,
 				picture = posts[i].picture;
 
-			ul.innerHTML = '<li><img title="' + username + '" style="width: 48px; height: 48px; /*temporary*/" src="' + picture + '" class="" />'
+			ul.innerHTML = '<li><img title="' + username + '" style="width: 48px; height: 48px; /*temporary*/" class="img-polaroid" src="' + picture + '" class="" />'
 							+ '<p><strong>' + username + '</strong>: ' + posts[i].content + '</p><span>posted ' + utils.relativeTime(posts[i].timestamp) + ' ago</span></li>';
 			
 			a.appendChild(ul);
