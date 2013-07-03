@@ -3,7 +3,7 @@
 			<li>
 				<div class="row-fluid">
 					<div class="span2">
-						<img src="{main_posts.gravatar}" /><br />
+						<img src="{main_posts.picture}" /><br />
 						{main_posts.username}
 					</div>
 					<div class="span10">
@@ -16,7 +16,7 @@
 			<li>
 				<div class="row-fluid">
 					<div class="span2">
-						<img src="{posts.gravatar}" /><br />
+						<img src="{posts.picture}" /><br />
 						{posts.username}
 					</div>
 					<div class="span10">

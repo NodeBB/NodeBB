@@ -434,14 +434,13 @@
 				var pid = $(this).parents('li').attr('data-pid');
 
 				socket.once('api:posts.getRawPost', function(data) {
+
 					quoted = '> ' + data.post.replace(/\n/g, '\n> ') + '\n\n';
 					require(['composer'], function(cmp) {
 						cmp.push(tid, null, null, quoted);
 					});
 				});
 				socket.emit('api:posts.getRawPost', { pid: pid });
-					// $('.post-window textarea').val('> ' + $('#content_' + pid).html() + '\n');
-				// });
 			}
 		});
 

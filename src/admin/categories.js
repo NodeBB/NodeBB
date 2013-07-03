@@ -11,14 +11,17 @@ var	RDB = require('./../redis.js'),
 			var slug = cid + '/' + utils.slugify(data.name);
 			RDB.rpush('categories:cid', cid);
 
-			// Topic Info
-			RDB.set('cid:' + cid + ':name', data.name);
-			RDB.set('cid:' + cid + ':description', data.description);
-			RDB.set('cid:' + cid + ':icon', data.icon);
-			RDB.set('cid:' + cid + ':blockclass', data.blockclass);
-			RDB.set('cid:' + cid + ':slug', slug);
-		
-			RDB.set('category:slug:' + slug + ':cid', cid);
+			RDB.hmset('category:' + cid, {
+				cid: cid,
+				name: data.name,
+				description: data.description,
+				icon: data.icon,
+				blockclass: data.blockclass,
+				slug: slug,
+				topic_count: 0
+			});
+
+			RDB.set('categoryslug:' + slug + ':cid', cid);
 
 			if (callback) callback({'status': 1});
 		});
@@ -29,15 +32,15 @@ var	RDB = require('./../redis.js'),
 
 		for (var cid in modified) {
 			var category = modified[cid];
-
+			
 			for (var key in category) {
-				RDB.set('cid:' + cid + ':' + key, category[key]);
+				RDB.hset('category:' + cid, key, category[key]);
 
 				if (key == 'name') {
 					// reset slugs if name is updated
 					var slug = cid + '/' + utils.slugify(category[key]);
-					RDB.set('cid:' + cid + ':slug', slug);
-					RDB.set('category:slug:' + slug + ':cid', cid);
+					RDB.hset('category:' + cid, 'slug', slug);
+					RDB.set('categoryslug:' + slug + ':cid', cid);
 
 					RDB.smembers('categories:' + cid + ':tid', function(err, tids) {
 						var pipe = RDB.multi();

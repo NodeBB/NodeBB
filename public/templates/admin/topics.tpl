@@ -12,7 +12,7 @@
 		<a target="_blank" href="../../topic/{topics.slug}">{topics.title}</a>
 		<ul>
 			<li><i class="icon-time"></i> Posted {topics.relativeTime} ago by {topics.username}</li>
-			<li><i class="icon-comments"></i> {topics.post_count} post(s)</li>
+			<li><i class="icon-comments"></i> {topics.postcount} post(s)</li>
 		</ul>
 		<div class="clear"></div>
 	</li>
