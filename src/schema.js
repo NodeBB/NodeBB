@@ -13,19 +13,6 @@
 	Schema.topics = function(tid) {
 		return {
 
-			/* strings */
-			title: 'tid:' + tid + ':title',
-			locked: 'tid:' + tid + ':locked',
-			category_name: 'tid:' + tid + ':category_name',
-			category_slug: 'tid:' + tid + ':category_slug',
-			deleted: 'tid:' + tid + ':deleted',
-			pinned: 'tid:' + tid + ':pinned',
-			uid: 'tid:' + tid + ':uid',
-			timestamp: 'tid:' + tid + ':timestamp',
-			slug: 'tid:' + tid + ':slug',
-			postcount: 'tid:' + tid + ':postcount',
-			cid: 'tid:' + tid + ':cid',
-
 			/* sets */
 			tid: 'topics:tid',
 			read_by_uid: 'tid:' + tid + ':read_by_uid',

@@ -11,7 +11,7 @@ var	RDB = require('./redis.js'),
 		//todo: break early if one condition is true 
 		
 		function getCategoryPrivileges(next) {
-			topics.get_cid_by_tid(tid, function(cid) {
+			topics.getTopicField(tid, 'cid', function(cid) {
 				categories.privileges(cid, uid, function(privileges) {
 					next(null, privileges);
 				});
@@ -19,8 +19,6 @@ var	RDB = require('./redis.js'),
 		}
 
 		function hasEnoughRep(next) {
-			// DRY fail in postTools
-
 			user.getUserField(uid, 'reputation', function(reputation) {
 				next(null, reputation >= global.config['privileges:manage_topic']);
 			});
@@ -38,8 +36,7 @@ var	RDB = require('./redis.js'),
 	ThreadTools.lock = function(tid, uid, socket) {
 		ThreadTools.privileges(tid, uid, function(privileges) {
 			if (privileges.editable) {
-				// Mark thread as locked
-				RDB.set('tid:' + tid + ':locked', 1);
+				topics.setTopicField(tid, 'locked', 1);
 
 				if (socket) {
 					io.sockets.in('topic_' + tid).emit('event:topic_locked', {
@@ -59,8 +56,7 @@ var	RDB = require('./redis.js'),
 	ThreadTools.unlock = function(tid, uid, socket) {
 		ThreadTools.privileges(tid, uid, function(privileges) {
 			if (privileges.editable) {
-				// Mark thread as unlocked
-				RDB.del('tid:' + tid + ':locked');
+				topics.setTopicField(tid, 'locked', 0);
 
 				if (socket) {
 					io.sockets.in('topic_' + tid).emit('event:topic_unlocked', {
@@ -80,8 +76,8 @@ var	RDB = require('./redis.js'),
 	ThreadTools.delete = function(tid, uid, socket) {
 		ThreadTools.privileges(tid, uid, function(privileges) {
 			if (privileges.editable) {
-				// Mark thread as deleted
-				RDB.set('tid:' + tid + ':deleted', 1);
+				
+				topics.setTopicField(tid, 'deleted', 1);
 				ThreadTools.lock(tid, uid);
 
 				if (socket) {
@@ -102,8 +98,8 @@ var	RDB = require('./redis.js'),
 	ThreadTools.restore = function(tid, uid, socket) {
 		ThreadTools.privileges(tid, uid, function(privileges) {
 			if (privileges.editable) {
-				// Mark thread as restored
-				RDB.del('tid:' + tid + ':deleted');
+
+				topics.setTopicField(tid, 'deleted', 0);
 				ThreadTools.unlock(tid, uid);
 
 				if (socket) {
@@ -124,8 +120,8 @@ var	RDB = require('./redis.js'),
 	ThreadTools.pin = function(tid, uid, socket) {
 		ThreadTools.privileges(tid, uid, function(privileges) {
 			if (privileges.editable) {
-				// Mark thread as pinned
-				RDB.set('tid:' + tid + ':pinned', 1);
+				
+				topics.setTopicField(tid, 'pinned', 1);
 
 				if (socket) {
 					io.sockets.in('topic_' + tid).emit('event:topic_pinned', {
@@ -145,8 +141,8 @@ var	RDB = require('./redis.js'),
 	ThreadTools.unpin = function(tid, uid, socket) {
 		ThreadTools.privileges(tid, uid, function(privileges) {
 			if (privileges.editable) {
-				// Mark thread as unpinned
-				RDB.del('tid:' + tid + ':pinned');
+				
+				topics.setTopicField(tid, 'pinned', 0);
 
 				if (socket) {
 					io.sockets.in('topic_' + tid).emit('event:topic_unpinned', {
@@ -164,15 +160,17 @@ var	RDB = require('./redis.js'),
 	}
 
 	ThreadTools.move = function(tid, cid, socket) {
-		RDB.get('tid:' + tid + ':cid', function(err, oldCid) {
-			RDB.handle(err);
+		
+		topics.getTopicField(tid, 'cid', function(oldCid) {
 
 			RDB.smove('categories:' + oldCid + ':tid', 'categories:' + cid + ':tid', tid, function(err, result) {
 				if (!err && result === 1) {
-					RDB.set('tid:' + tid + ':cid', cid);
+
+					topics.setTopicField(tid, 'cid', cid);
+
 					categories.getCategories([cid], function(data) {
-						RDB.set('tid:' + tid + ':category_name', data.categories[0].name);
-						RDB.set('tid:' + tid + ':category_slug', data.categories[0].slug);
+						topics.setTopicField(tid, 'category_name', data.categories[0].name);
+						topics.setTopicField(tid, 'category_slug', data.categories[0].slug);
 					});
 
 					socket.emit('api:topic.move', {
@@ -233,11 +231,16 @@ var	RDB = require('./redis.js'),
 	ThreadTools.notify_followers = function(tid, exceptUid) {
 		async.parallel([
 			function(next) {
-				topics.get_topic(tid, 0, function(threadData) {
-					notifications.create(threadData.teaser_username + ' has posted a reply to: "' + threadData.title + '"', null, '/topic/' + tid, 'topic:' + tid, function(nid) {
-						next(null, nid);
+				
+				topics.getTopicField(tid, 'title', function(title) {
+					topics.getTeaser(tid, function(teaser) {
+							notifications.create(teaser.username + ' has posted a reply to: "' + title + '"', null, '/topic/' + tid, 'topic:' + tid, function(nid) {
+							next(null, nid);
+						});
 					});
 				});
+					
+				
 			},
 			function(next) {
 				ThreadTools.get_followers(tid, function(err, followers) {

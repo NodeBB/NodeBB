@@ -61,27 +61,25 @@
 	});
 
 
-
 	socket.emit('api:categories.getRecentReplies', cid);
-	socket.on('api:categories.getRecentReplies', function(replies) {
-		if (replies === false) {
+	socket.on('api:categories.getRecentReplies', function(posts) {
+		if (!posts || posts.length === 0) {
 			return;
 		}
 		
-		var users = replies.users,
-			posts = replies.posts,
-			recent_replies = document.getElementById('category_recent_replies');
+		var recent_replies = document.getElementById('category_recent_replies');
 
 		recent_replies.innerHTML = '';
-		for (var i=0, ii=posts.pids.length; i<ii; i++) {
+		
+		for (var i=0, ii=posts.length; i<ii; i++) {
+			
 			var a = document.createElement('a'),
 				ul = document.createElement('ul'),
-				username = users[posts.uid[i]].username,
-				picture = users[posts.uid[i]].picture;
+				username = posts[i].username,
+				picture = posts[i].picture;
 
-			//temp until design finalized
 			ul.innerHTML = '<li><img title="' + username + '" style="width: 48px; height: 48px; /*temporary*/" src="' + picture + '" class="" />'
-							+ '<p><strong>' + username + '</strong>: ' + posts.content[i] + '</p><span>posted ' + utils.relativeTime(posts.timestamp[i]) + ' ago</span></li>';
+							+ '<p><strong>' + username + '</strong>: ' + posts[i].content + '</p><span>posted ' + utils.relativeTime(posts[i].timestamp) + ' ago</span></li>';
 			
 			a.appendChild(ul);
 			recent_replies.appendChild(a);

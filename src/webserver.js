@@ -134,7 +134,7 @@ var express = require('express'),
 
 
 		var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
-		topics.getTopicById(tid, ((req.user) ? req.user.uid : 0), function(topic) {
+		topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), function(topic) {
 			res.send(
 				app.build_header(res) +
 				'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/topic'].parse(topic) + '\n\t</noscript>' +
@@ -241,7 +241,7 @@ var express = require('express'),
 					res.json(data);
 				break;
 			case 'topic' :
-					topics.getTopicById(req.params.id, uid, function(data) {
+					topics.getTopicWithPosts(req.params.id, uid, function(data) {
 						res.json(data);
 					});
 				break;
@@ -294,8 +294,30 @@ var express = require('express'),
 	app.get('/api/:method/:id/:section?', api_method);
 	app.get('/api/:method/:id*', api_method);
 
+	app.get('/tid/:tid', function(req, res) {
+		topics.getTopicData(req.params.tid, function(data){
+			if(data)
+				res.send(data);
+			else
+				res.send("Topic doesn't exist!");
+		});
+	});
+
+	app.get('/pid/:pid', function(req, res) {
+		posts.getPostData(req.params.pid, function(data){
+			if(data)
+				res.send(data);
+			else
+				res.send("Post doesn't exist!");
+		});
+	});
+
 	app.all('/test', function(req, res) {
-		res.send();
+		
+		categories.getCategoryById(1,1, function(data) {
+			res.send(data);
+		},1);
+		
 	});
 
 	//START TODO: MOVE TO GRAPH.JS 

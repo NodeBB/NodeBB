@@ -247,7 +247,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('api:posts.getRawPost', function(data) {
-			posts.getRawContent(data.pid, function(raw) {
+			posts.getPostField(data.pid, 'content', function(raw) {
 				socket.emit('api:posts.getRawPost', { post: raw });
 			});
 		});
@@ -332,10 +332,16 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		socket.on('api:composer.push', function(data) {
 			if (uid > 0) {
 				if (parseInt(data.tid) > 0) {
-					topics.get_topic(data.tid, uid, function(topicData) {
-						topicData.tid = data.tid;
-						if (data.body) topicData.body = data.body;
-						socket.emit('api:composer.push', topicData);
+					topics.getTopicData(data.tid, function(topicData) {
+
+						if (data.body) 
+							topicData.body = data.body;
+
+						socket.emit('api:composer.push', {
+							tid: data.tid,
+							title: topicData.title,
+							body: topicData.body
+						});
 					});
 				} else if (parseInt(data.cid) > 0) {
 					user.getUserField(uid, 'username', function(username) {
@@ -349,7 +355,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				} else if (parseInt(data.pid) > 0) {
 					async.parallel([
 						function(next) {
-							posts.getRawContent(data.pid, function(raw) {
+							posts.getPostField(data.pid, 'content', function(raw) {
 								next(null, raw);
 							});
 						},
@@ -374,7 +380,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('api:composer.editCheck', function(pid) {
-			posts.get_tid_by_pid(pid, function(tid) {
+			posts.getPostField(pid, 'tid', function(tid) {
 				postTools.isMain(pid, tid, function(isMain) {
 					socket.emit('api:composer.editCheck', {
 						titleEditable: isMain
@@ -413,14 +419,10 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			var	start = data.after,
 				end = start + 10;
 
-			posts.getPostsByTid(data.tid, uid, start, end, function(posts){
-				if (!posts.error) {
-					postTools.constructPostObject(posts, data.tid, uid, null, function(postObj) {
-						io.sockets.in('topic_' + data.tid).emit('event:new_post', {
-							posts: postObj
-						});
-					});
-				}
+			topics.getTopicPosts(data.tid, start, end, uid, function(posts) {
+				io.sockets.in('topic_' + data.tid).emit('event:new_post', {
+					posts: posts
+				});
 			});
 		});
 

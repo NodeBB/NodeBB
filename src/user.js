@@ -11,7 +11,7 @@ var utils = require('./../public/src/utils.js'),
 
 (function(User) {
 	User.getUserField = function(uid, field, callback) {
-		RDB.hget('user:'+uid, field, function(err, data) {
+		RDB.hget('user:' + uid, field, function(err, data) {
 			if(err === null)
 				callback(data);
 			else
@@ -20,7 +20,7 @@ var utils = require('./../public/src/utils.js'),
 	}
 	
 	User.getUserFields = function(uid, fields, callback) {
-		RDB.hmget('user:'+uid, fields, function(err, data) {
+		RDB.hmget('user:' + uid, fields, function(err, data) {
 			if(err === null) {
 				var returnData = {};
 				
@@ -55,13 +55,13 @@ var utils = require('./../public/src/utils.js'),
 					loaded ++;
 					if (loaded == uuids.length) callback(data);
 				});
-			}(uuids[i]))
+			}(uuids[i]));
 		}
 	}
 
 	User.getUserData = function(uid, callback) {
 
-		RDB.hgetall('user:'+uid, function(err, data) {
+		RDB.hgetall('user:' + uid, function(err, data) {
 			if(err === null) {
 				if(data) {
 					if(data['password'])
@@ -107,11 +107,11 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.setUserField = function(uid, field, value) {
-		RDB.hset('user:'+uid, field, value);				
+		RDB.hset('user:' + uid, field, value);
 	}
 
 	User.incrementUserFieldBy = function(uid, field, value) {
-		RDB.hincrby('user:'+uid, field, value);
+		RDB.hincrby('user:' + uid, field, value);
 	}
 
 	User.getUserList = function(callback) {
@@ -129,7 +129,7 @@ var utils = require('./../public/src/utils.js'),
 				
 				User.getUserData(uid, function(userData) {
 					data.push(userData);
-					if(data.length == userkeys.length)
+					if(data.length === userkeys.length)
 						callback(data);
 				});
 			}
@@ -221,13 +221,13 @@ var utils = require('./../public/src/utils.js'),
 				RDB.lpush('userlist', username);
 				io.sockets.emit('user.latest', {userslug: userslug, username: username});
 
-				callback(null, uid);
-
 				if (password) {
 					User.hashPassword(password, function(hash) {
-						RDB.hset('user:'+uid, 'password', hash);
+						User.setUserField(uid, 'password', hash);
 					});
 				}
+
+				callback(null, uid);
 			});
 		});
 	};
@@ -273,6 +273,38 @@ var utils = require('./../public/src/utils.js'),
 			}	
 			else
 				console.log(err);
+		});
+	}
+
+	User.onNewPostMade = function(uid, tid, pid, timestamp) {
+		User.addPostIdToUser(uid, pid)
+					
+		User.incrementUserFieldBy(uid, 'postcount', 1);
+		User.setUserField(uid, 'lastposttime', timestamp);
+
+		User.sendPostNotificationToFollowers(uid, tid, pid);
+	}
+
+	User.addPostIdToUser = function(uid, pid) {
+		RDB.lpush('uid:' + uid + ':posts', pid);
+	}
+
+	User.addTopicIdToUser = function(uid, tid) {
+		RDB.lpush('uid:' + uid + ':topics', tid);
+	}
+
+	User.getPostIds = function(uid, start, end, callback) {
+		RDB.lrange('uid:' + uid + ':posts', start, end, function(err, pids) {
+			if(err === null) {
+				if(pids && pids.length)
+					callback(pids);
+				else
+					callback([]);
+			}
+			else {
+				console.log(err);
+				callback([]);
+			}
 		});
 	}
 
@@ -397,7 +429,7 @@ var utils = require('./../public/src/utils.js'),
 		User.getUserField(uid, 'username', function(username) {
 			RDB.smembers('followers:'+uid, function(err, followers) {
 				
-				topics.getSlug(tid, function(slug) {
+				topics.getTopicField(tid, 'slug', function(slug) {
 
 					var message = username + ' made a new post';
 

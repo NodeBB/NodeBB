@@ -6,7 +6,7 @@
 		<ul class="topics">
 			<!-- BEGIN topics -->
 			<li>
-				<a href="../../topic/{topics.slug}">{topics.title} ({topics.post_count})</a>
+				<a href="../../topic/{topics.slug}">{topics.title} ({topics.postcount})</a>
 				<div class="teaser">
 					<img class="img-polaroid" src="../../graph/users/{topics.teaser_username}/picture" />
 					<p>
