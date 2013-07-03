@@ -9,14 +9,13 @@ var	RDB = require('./redis.js'),
 
 	Categories.getCategoryById = function(category_id, current_user, callback) {
 		RDB.smembers('categories:' + category_id + ':tid', function(err, tids) {
-			RDB.multi()
-				.get('cid:' + category_id + ':name')
-				.smembers('cid:' + category_id + ':active_users')
-				.get('cid:' + category_id + ':slug')
-				.exec(function(err, replies) {
-					var	category_name = replies[0],
-						active_users = replies[1],
-						category_slug = replies[2];
+
+			Categories.getCategoryData(category_id, function(categoryData) {
+
+				var	category_name = categoryData.name;
+					category_slug = categoryData.slug;
+
+				RDB.smembers('cid:' + category_id + ':active_users', function(err, active_users) {
 					
 					if (category_name === null) {
 						callback(false);
@@ -85,6 +84,7 @@ var	RDB = require('./redis.js'),
 						});
 					}
 				});
+			});
 		});
 	}
 
@@ -115,6 +115,7 @@ var	RDB = require('./redis.js'),
 
 	// not the permanent location for this function
 	Categories.getTopicsByTids = function(tids, current_user, callback, category_id /*temporary*/) {
+
 		var retrieved_topics = [];
 		var topicCountToLoad = tids.length;
 		
@@ -271,6 +272,14 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
+	Categories.hasReadCategory = function(cid, uid, callback) {
+		RDB.sismember('cid:' + cid + ':read_by_uid', uid, function(err, hasRead) {
+			RDB.handle(err);
+			
+			callback(hasRead);
+		});	
+	}
+
 	Categories.getRecentReplies = function(cid, callback) {
 		RDB.zrevrange('categories:recent_posts:cid:' + cid, 0, 4, function(err, pids) {
 
@@ -284,69 +293,40 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
+	Categories.getCategoryData = function(cid, callback) {
+		RDB.hgetall('category:' + cid, function(err, data) {
+			if(err === null)
+				callback(data);
+			else	
+				console.log(err);
+		});
+	}
+
 	Categories.getCategories = function(cids, callback, current_user) {
 		if (cids.length === 0) {
 			callback({'categories' : []});
 			return;
 		}
 		
-		var name = [],
-			description = [],
-			icon = [],
-			blockclass = [],
-			slug = [],
-			topic_count = [],
-			has_read = {};
+		var categories = [];
 
-		for (var i=0, ii=cids.length; i<ii; i++) {
-			name.push('cid:' + cids[i] + ':name');
-			description.push('cid:' + cids[i] + ':description');
-			icon.push('cid:' + cids[i] + ':icon');
-			blockclass.push('cid:' + cids[i] + ':blockclass');
-			slug.push('cid:' + cids[i] + ':slug');
-			topic_count.push('cid:' + cids[i] + ':topiccount');
-		}
-		
-		RDB.multi()
-			.mget(name)
-			.mget(description)
-			.mget(icon)
-			.mget(blockclass)
-			.mget(slug)
-			.mget(topic_count)
-			.exec(function(err, replies) {
-				name = replies[0];
-				description = replies[1];
-				icon = replies[2];
-				blockclass = replies[3];
-				slug = replies[4];
-				topic_count = replies[5];
-
+		for(var i=0; i<cids.length; ++i) {
+			Categories.getCategoryData(cids[i], function(categoryData) {
 				
-				function generateCategories() {
-					var categories = [];
-					for (var i=0, ii=cids.length; i<ii; i++) {
-						categories.push({
-							'name' : name[i],
-							'cid' : cids[i],
-							'slug' : slug[i],
-							'description' : description[i],
-							'blockclass' : blockclass[i],
-							'icon' : icon[i],
-							'badgeclass' : (!topic_count[i] || (has_read[i] && current_user !=0)) ? '' : 'badge-important',
-							'topic_count' : topic_count[i] || 0
-						});
-					}
+				if(!categoryData)
+					return;
 
-					callback({'categories': categories});
-				}
+				Categories.hasReadCategory(categoryData.cid, current_user, function(hasRead) {
+					categoryData['badgeclass'] = (parseInt(categoryData.topic_count,10) === 0 || (hasRead && current_user != 0)) ? '' : 'badge-important';
 
-				Categories.hasReadCategories(cids, current_user, function(read_data) {
-					has_read = read_data;
-					generateCategories();
-				});
+					categories.push(categoryData);
+					
+					if(categories.length === cids.length)
+						callback({'categories': categories});
 				
+				}) ;
 			});
+		}		
 	};
 
 }(exports));

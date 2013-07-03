@@ -139,7 +139,6 @@ marked.setOptions({
 		}
 
 		function getReadStatus(next) {
-			// posts.create calls this function - should be an option to skip this because its always true
 			if (uid && parseInt(uid) > 0) {
 				RDB.sismember(schema.topics(tid).read_by_uid, uid, function(err, read) {
 					next(null, read);
@@ -400,7 +399,7 @@ marked.setOptions({
 					Topics.setTopicField(tid, 'category_slug', data.categories[0].slug);
 				});
 
-				RDB.incr('cid:' + category_id + ':topiccount');
+				RDB.hincrby('category:' + category_id, 'topic_count', 1);
 				RDB.incr('totaltopiccount');
 
 				feed.updateCategory(category_id);

@@ -314,9 +314,12 @@ var express = require('express'),
 
 	app.all('/test', function(req, res) {
 		
-		topics.getTopicById(24, 1, function(data) {
+		/*topics.getTopicById(24, 1, function(data) {
 			res.send(data);
-		});
+		});*/
+		categories.getCategoryById(1,1, function(data) {
+			res.send(data);
+		},1);
 		
 	});
 
