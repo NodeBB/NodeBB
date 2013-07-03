@@ -159,11 +159,15 @@ marked.setOptions({
 				throw new Error(err);
 			}
 			
-			var topicData = results[0];
-			topicData.relativeTime = utils.relativeTime(results[0].timestamp);
-			topicData.badgeclass = results[1] ? '' : 'badge-important';
-			topicData.teaser_text = results[2].text;
-			topicData.teaser_username = results[2].username;
+			var topicData = results[0],
+				hasRead = results[1],
+				teaser = results[2];
+
+			topicData.relativeTime = utils.relativeTime(topicData.timestamp);
+			topicData.badgeclass = hasRead ? '' : 'badge-important';
+			topicData.teaser_text = teaser.text;
+			topicData.teaser_username = teaser.username;
+			topicData.teaser_timestamp = utils.relativeTime(teaser.timestamp);
 
 			callback(topicData);
 		});
@@ -374,7 +378,7 @@ marked.setOptions({
 
 						// Notify any users looking at the category that a new topic has arrived
 						Topics.getTopicForCategoryView(tid, uid, function(topicData) {
-
+							console.log(topicData);
 							io.sockets.in('category_' + category_id).emit('event:new_topic', topicData);
 							io.sockets.in('recent_posts').emit('event:new_topic', topicData);
 						});
