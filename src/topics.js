@@ -83,7 +83,7 @@ marked.setOptions({
 		});
 	}
 
-	Topics.getTopicById = function(tid, current_user, callback) {
+	Topics.getTopicWithPosts = function(tid, current_user, callback) {
 		
 		Topics.markAsRead(tid, current_user);
 

@@ -134,7 +134,7 @@ var express = require('express'),
 
 
 		var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
-		topics.getTopicById(tid, ((req.user) ? req.user.uid : 0), function(topic) {
+		topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), function(topic) {
 			res.send(
 				app.build_header(res) +
 				'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/topic'].parse(topic) + '\n\t</noscript>' +
@@ -241,7 +241,7 @@ var express = require('express'),
 					res.json(data);
 				break;
 			case 'topic' :
-					topics.getTopicById(req.params.id, uid, function(data) {
+					topics.getTopicWithPosts(req.params.id, uid, function(data) {
 						res.json(data);
 					});
 				break;
@@ -314,9 +314,6 @@ var express = require('express'),
 
 	app.all('/test', function(req, res) {
 		
-		/*topics.getTopicById(24, 1, function(data) {
-			res.send(data);
-		});*/
 		categories.getCategoryById(1,1, function(data) {
 			res.send(data);
 		},1);
