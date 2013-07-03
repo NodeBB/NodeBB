@@ -379,7 +379,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('api:composer.editCheck', function(pid) {
-			posts.get_tid_by_pid(pid, function(tid) {
+			posts.getPostField(pid, 'tid', function(tid) {
 				postTools.isMain(pid, tid, function(isMain) {
 					socket.emit('api:composer.editCheck', {
 						titleEditable: isMain

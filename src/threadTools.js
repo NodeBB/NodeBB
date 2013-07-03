@@ -19,8 +19,6 @@ var	RDB = require('./redis.js'),
 		}
 
 		function hasEnoughRep(next) {
-			// DRY fail in postTools
-
 			user.getUserField(uid, 'reputation', function(reputation) {
 				next(null, reputation >= global.config['privileges:manage_topic']);
 			});

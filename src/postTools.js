@@ -24,23 +24,21 @@ marked.setOptions({
 		
 		function getThreadPrivileges(next) {
 			posts.getPostField(pid, 'tid', function(tid) {
-					threadTools.privileges(tid, uid, function(privileges) {
-						next(null, privileges);
-					});
+				threadTools.privileges(tid, uid, function(privileges) {
+					next(null, privileges);
 				});
+			});
 		}
 
 		function isOwnPost(next) {
-			RDB.get('pid:' + pid + ':uid', function(err, author) {
-					if (author && parseInt(author) > 0) {
-						next(null, author === uid);
-					}
-				});
+			posts.getPostField(pid, 'uid', function(author) {
+				if (author && parseInt(author) > 0) {
+					next(null, author === uid);
+				}
+			});
 		}
 
 		function hasEnoughRep(next) {
-			// DRY fail in threadTools.
-
 			user.getUserField(uid, 'reputation', function(reputation) {
 				next(null, reputation >= global.config['privileges:manage_content']);
 			});
@@ -55,12 +53,13 @@ marked.setOptions({
 	}
 
 	PostTools.edit = function(uid, pid, title, content) {
+
 		var	success = function() {
 			posts.setPostField(pid, 'content', content);
 			posts.setPostField(pid, 'edited', Date.now());
 			posts.setPostField(pid, 'editor', uid);
 
-			posts.get_tid_by_pid(pid, function(tid) {
+			posts.getPostField(pid, 'tid', function(tid) {
 				PostTools.isMain(pid, tid, function(isMainPost) {
 					if (isMainPost) 
 						topics.setTopicField(tid, 'title', title);
@@ -85,7 +84,7 @@ marked.setOptions({
 		var	success = function() {
 			posts.setPostField(pid, 'deleted', 1);
 
-			posts.get_tid_by_pid(pid, function(tid) {
+			posts.getPostField(pid, 'tid', function(tid) {
 				io.sockets.in('topic_' + tid).emit('event:post_deleted', {
 					pid: pid
 				});
@@ -103,7 +102,7 @@ marked.setOptions({
 		var	success = function() {
 				RDB.del('pid:' + pid + ':deleted');
 
-				posts.get_tid_by_pid(pid, function(tid) {
+				posts.getPostField(pid, 'tid', function(tid) {
 					io.sockets.in('topic_' + tid).emit('event:post_restored', {
 						pid: pid
 					});
