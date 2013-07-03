@@ -267,8 +267,8 @@ marked.setOptions({
 
 
 	Topics.get_latest_undeleted_pid = function(tid, callback) {
-		
-		Topics.getTopicPosts(tid, 0, -1, 0, function(posts) {
+
+		posts.getPostsByTid(tid, 0, -1, function(posts) {
 
 			var numPosts = posts.length;
 			if(!numPosts)
@@ -279,10 +279,8 @@ marked.setOptions({
 					callback(posts[numPosts].pid);
 					break;
 				}
-			}
-			
-		});
-		
+			}			
+		});		
 	}
 
 	Topics.getTeaser = function(tid, callback) {
