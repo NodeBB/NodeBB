@@ -233,11 +233,16 @@ var	RDB = require('./redis.js'),
 	ThreadTools.notify_followers = function(tid, exceptUid) {
 		async.parallel([
 			function(next) {
-				topics.get_topic(tid, 0, function(threadData) {
-					notifications.create(threadData.teaser_username + ' has posted a reply to: "' + threadData.title + '"', null, '/topic/' + tid, 'topic:' + tid, function(nid) {
-						next(null, nid);
+				
+				topics.getTopicField(tid, 'title', function(title) {
+					topics.get_teaser(tid, function(teaser) {
+							notifications.create(teaser.username + ' has posted a reply to: "' + title + '"', null, '/topic/' + tid, 'topic:' + tid, function(nid) {
+							next(null, nid);
+						});
 					});
 				});
+					
+				
 			},
 			function(next) {
 				ThreadTools.get_followers(tid, function(err, followers) {

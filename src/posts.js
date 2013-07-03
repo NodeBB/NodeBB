@@ -101,9 +101,13 @@ marked.setOptions({
 		for(var i=0, ii=pids.length; i<ii; ++i) {
 			(function(index, pid) {
 				Posts.getPostData(pid, function(postData) {
-					
+				
 					if(postData) {
-						postData.relativeTime = utils.relativeTime(postData.timestamp);			
+						postData.relativeTime = utils.relativeTime(postData.timestamp);	
+						postData.post_rep = postData.reputation;
+						postData['edited-class'] = postData.editor !== '' ? '' : 'none';
+						postData['relativeEditTime'] = postData.edited !== '0' ? utils.relativeTime(postData.edited) : '';
+						
 						posts[index] = postData;
 					}
 					
@@ -218,7 +222,7 @@ marked.setOptions({
 									'username' : data.username || 'anonymous',
 									'user_rep' : data.reputation || 0,
 									'post_rep' : 0,
-									'gravatar' : data.picture,
+									'picture' : data.picture,
 									'signature' : marked(data.signature || ''),
 									'timestamp' : timestamp,
 									'relativeTime': utils.relativeTime(timestamp),

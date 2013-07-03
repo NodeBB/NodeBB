@@ -91,9 +91,10 @@ var	RDB = require('./redis.js'),
 			
 					data[post_id] = hasFavourited;
 					loaded ++;
-					if (loaded == pids.length) callback(data);
+					if (loaded === pids.length) 
+						callback(data);
 				});
-			}(pids[i]))
+			}(pids[i]));
 		}
 	}
 

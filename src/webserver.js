@@ -301,9 +301,9 @@ var express = require('express'),
 			res.send(data);	
 		});*/
 
-		posts.getPostsByTid(2, 0, -1, function(data) {
+		/*posts.getPostsByTid(2, 0, -1, function(data) {
 			res.send(data);	
-		});
+		});*/
 
 /*		posts.getPostsByPids([1,2,3], function(data) {
 			res.send(data);
@@ -313,9 +313,9 @@ var express = require('express'),
 			res.send(data);
 		});*/
 		
-		/*topics.getTopicById(1, 1, function(data) {
+		topics.getTopicById(24, 1, function(data) {
 			res.send(data);
-		});*/
+		});
 
 /*		categories.getCategoryById(12, 0, function(returnData) {
 			res.send(returnData);

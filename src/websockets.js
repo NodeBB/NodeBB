@@ -332,9 +332,11 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		socket.on('api:composer.push', function(data) {
 			if (uid > 0) {
 				if (parseInt(data.tid) > 0) {
-					topics.get_topic(data.tid, uid, function(topicData) {
-						topicData.tid = data.tid;
-						if (data.body) topicData.body = data.body;
+					topics.getTopicData(data.tid, function(topicData) {
+
+						if (data.body) 
+							topicData.body = data.body;
+
 						socket.emit('api:composer.push', {
 							tid: data.tid,
 							title: topicData.title
@@ -416,14 +418,10 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			var	start = data.after,
 				end = start + 10;
 
-			posts.getPostsByTid(data.tid, start, end, function(posts){
-				if (!posts.error) {
-					postTools.constructPostObject(posts, data.tid, uid, null, function(postObj) {
-						io.sockets.in('topic_' + data.tid).emit('event:new_post', {
-							posts: postObj
-						});
-					});
-				}
+			topics.getTopicPosts(data.tid, start, end, uid, function(posts) {
+				io.sockets.in('topic_' + data.tid).emit('event:new_post', {
+					posts: posts
+				});
 			});
 		});
 

@@ -9,7 +9,8 @@ var	RDB = require('./redis.js')
 	threadTools = require('./threadTools.js'),
 	postTools = require('./postTools'),
 	async = require('async'),
-	feed = require('./feed.js');
+	feed = require('./feed.js'),
+	favourites = require('./favourites.js');
 
 marked.setOptions({
 	breaks: true
@@ -26,24 +27,60 @@ marked.setOptions({
 		});
 	}
 
-	Topics.getTopicPosts = function(tid, callback) {
-		posts.getPostsByTid(tid, 0, -1, function(postData) {
-			callback(postData);
+	Topics.getTopicDataWithUsername = function(tid, callback) {
+		Topics.getTopicData(tid, function(topic) {
+			user.getUserField(topic.uid, 'username', function(username) {
+
+				topic.username = username;
+				callback(topic);
+			});
 		});
 	}
 
+	Topics.getTopicPosts = function(tid, start, end, current_user, callback) {
+		posts.getPostsByTid(tid, start, end, function(postData) {
 
-	function constructPosts(topicPosts, callback) {
-		var done = 0;
+			function getFavouritesData(next) {
+				var pids = [];
+				for(var i=0; i<postData.length; ++i) 
+					pids.push(postData[i].pid);
 
-		for(var i=0, ii=topicPosts.length; i<ii; ++i) {
+				favourites.getFavouritesByPostIDs(pids, current_user, function(fav_data) {
+					next(null, fav_data);				
+				}); 
+			}
 
-			posts.addUserInfoToPost(topicPosts[i], function() {
-				++done;
-				if(done === topicPosts.length)
-					callback();
+			function addUserInfoToPosts(next) {
+				var done = 0;
+
+				for(var i=0, ii=postData.length; i<ii; ++i) {
+
+					posts.addUserInfoToPost(postData[i], function() {
+						++done;
+						if(done === postData.length)
+							next(null, null);
+					});
+				}
+			}	
+
+			function getPrivileges(next) {
+				threadTools.privileges(tid, current_user, function(privData) {
+					next(null, privData);
+				});
+			}		
+
+			async.parallel([getFavouritesData, addUserInfoToPosts, getPrivileges], function(err, results) {
+				var fav_data = results[0],
+					privileges = results[2];
+
+				for(var i=0; i<postData.length; ++i) {
+					postData[i].fav_star_class = fav_data[postData[i].pid] ? 'icon-star' : 'icon-star-empty';
+					postData[i]['display_moderator_tools'] = (postData[i].uid == current_user || privileges.editable) ? 'show' : 'none';
+				}
+
+				callback(postData);
 			});
-		}
+		});
 	}
 
 	Topics.getTopicById = function(tid, current_user, callback) {
@@ -57,7 +94,8 @@ marked.setOptions({
 		}
 
 		function getTopicPosts(next) {
-			Topics.getTopicPosts(tid, function(topicPosts) {
+			Topics.getTopicPosts(tid, 0, -1, current_user, function(topicPosts, privileges) {
+				
 				next(null, topicPosts);
 			});
 		}
@@ -66,45 +104,37 @@ marked.setOptions({
 			threadTools.privileges(tid, current_user, function(privData) {
 				next(null, privData);
 			});
-		}
+		}		
 
 		async.parallel([getTopicData, getTopicPosts, getPrivileges], function(err, results) {
 			var topicData = results[0],
 				topicPosts = results[1],
 				privileges = results[2];
 
-			constructPosts(topicPosts, function() {
+			var main_posts = topicPosts.splice(0, 1);
 
-				var main_posts = topicPosts.splice(0, 1);
-
-				callback({
-					'topic_name':topicData.title,
-					'category_name':topicData.category_name,
-					'category_slug':topicData.category_slug,
-					'locked': topicData.locked,
-					'deleted': topicData.deleted,
-					'pinned': topicData.pinned,
-					'slug': topicData.slug,
-					'topic_id': tid,
-					'expose_tools': privileges.editable ? 1 : 0,
-					'posts': topicPosts,
-					'main_posts': main_posts
-				});
+			callback({
+				'topic_name':topicData.title,
+				'category_name':topicData.category_name,
+				'category_slug':topicData.category_slug,
+				'locked': topicData.locked,
+				'deleted': topicData.deleted,
+				'pinned': topicData.pinned,
+				'slug': topicData.slug,
+				'topic_id': tid,
+				'expose_tools': privileges.editable ? 1 : 0,
+				'posts': topicPosts,
+				'main_posts': main_posts
 			});
-
 		});
 	}
 
-	Topics.get_topic = function(tid, uid, callback) {
+
+	Topics.getTopicForCategoryView = function(tid, uid, callback) {
 
 		function get_topic_data(next) {
-			Topics.getTopicData(tid, function(topic) {
-
-				user.getUserField(topic.uid, 'username', function(username) {
-
-					topic.username = username;
-					next(null, topic);
-				});
+			Topics.getTopicDataWithUsername(tid, function(topic) {
+				next(null, topic);
 			});
 		}
 
@@ -168,7 +198,7 @@ marked.setOptions({
 			tids.sort(function(a, b) { return b - a; });
 
 			async.each(tids, function(tid, next) {
-				Topics.get_topic(tid, 0, function(topicData) {
+				Topics.getTopicDataWithUsername(tid, function(topicData) {
 					topics.push(topicData);
 					next();
 				});
@@ -235,7 +265,7 @@ marked.setOptions({
 
 	Topics.get_latest_undeleted_pid = function(tid, callback) {
 		
-		Topics.getTopicPosts(tid, function(posts) {
+		Topics.getTopicPosts(tid, 0, -1, 0, function(posts) {
 
 			var numPosts = posts.length;
 			if(!numPosts)
@@ -344,7 +374,7 @@ marked.setOptions({
 						threadTools.toggleFollow(tid, uid);
 
 						// Notify any users looking at the category that a new topic has arrived
-						Topics.get_topic(tid, uid, function(topicData) {
+						Topics.getTopicForCategoryView(tid, uid, function(topicData) {
 
 							io.sockets.in('category_' + category_id).emit('event:new_topic', topicData);
 							io.sockets.in('recent_posts').emit('event:new_topic', topicData);
