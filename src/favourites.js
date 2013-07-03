@@ -1,4 +1,5 @@
 var	RDB = require('./redis.js'),
+	posts = require('./posts.js'),
 	user = require('./user.js');
 
 (function(Favourites) {
@@ -20,15 +21,15 @@ var	RDB = require('./redis.js'),
 			return;
 		}
 
-		RDB.get('pid:' + pid + ':uid', function(err, uid_of_poster) {
-			RDB.handle(err);
+		posts.getPostField(pid, 'uid', function(uid_of_poster) {
 
 			Favourites.hasFavourited(pid, uid, function(hasFavourited) {
 				if (hasFavourited == false) {
 					RDB.sadd('pid:' + pid + ':users_favourited', uid);
-					RDB.incr('pid:' + pid + ':rep');
+					RDB.hincrby('post:' + pid, 'reputation', 1);
 
-					if (uid !== uid_of_poster) user.incrementUserFieldBy(uid_of_poster, 'reputation', 1);
+					if (uid !== uid_of_poster) 
+						user.incrementUserFieldBy(uid_of_poster, 'reputation', 1);
 
 					if (room_id) {
 						io.sockets.in(room_id).emit('event:rep_up', {uid: uid !== uid_of_poster ? uid_of_poster : 0, pid: pid});
@@ -54,16 +55,16 @@ var	RDB = require('./redis.js'),
 			return;
 		}
 
-		RDB.get('pid:' + pid + ':uid', function(err, uid_of_poster) {
-			RDB.handle(err);
+		posts.getPostField(pid, 'uid', function(uid_of_poster) {
 
 			Favourites.hasFavourited(pid, uid, function(hasFavourited) {
 				if (hasFavourited == true) {
 					
 					RDB.srem('pid:' + pid + ':users_favourited', uid);
-					RDB.decr('pid:' + pid + ':rep');
+					RDB.hincrby('post:' + pid, 'reputation', -1);
 					
-					if (uid !== uid_of_poster) user.incrementUserFieldBy(uid_of_poster, 'reputation', -1);
+					if (uid !== uid_of_poster) 
+						user.incrementUserFieldBy(uid_of_poster, 'reputation', -1);
 
 					if (room_id) {
 						io.sockets.in(room_id).emit('event:rep_down', {uid: uid !== uid_of_poster ? uid_of_poster : 0, pid: pid});

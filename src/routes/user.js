@@ -255,10 +255,10 @@ var user = require('./../user.js'),
 
 			if (!req.params.section && !req.params.userslug) {
 				user.getUserList(function(data) {
-						data = data.sort(function(a, b) {
-							return b.joindate - a.joindate;
-						});
-						res.json({search_display: 'none', users:data});
+					data = data.sort(function(a, b) {
+						return b.joindate - a.joindate;
+					});
+					res.json({search_display: 'none', users:data});
 				});
 			}
 			else if(String(req.params.section).toLowerCase() === 'following') {
