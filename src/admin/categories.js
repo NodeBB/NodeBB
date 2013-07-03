@@ -32,7 +32,7 @@ var	RDB = require('./../redis.js'),
 
 		for (var cid in modified) {
 			var category = modified[cid];
-
+			
 			for (var key in category) {
 				RDB.hset('category:' + cid, key, category[key]);
 
