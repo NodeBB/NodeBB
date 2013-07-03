@@ -57,7 +57,7 @@ var	RDB = require('./redis.js'),
 		ThreadTools.privileges(tid, uid, function(privileges) {
 			if (privileges.editable) {
 				topics.setTopicField(tid, 'locked', 0);
-				
+
 				if (socket) {
 					io.sockets.in('topic_' + tid).emit('event:topic_unlocked', {
 						tid: tid,
@@ -160,8 +160,8 @@ var	RDB = require('./redis.js'),
 	}
 
 	ThreadTools.move = function(tid, cid, socket) {
-		RDB.get('tid:' + tid + ':cid', function(err, oldCid) {
-			RDB.handle(err);
+		
+		topics.getTopicField(tid, 'cid', function(oldCid) {
 
 			RDB.smove('categories:' + oldCid + ':tid', 'categories:' + cid + ':tid', tid, function(err, result) {
 				if (!err && result === 1) {
