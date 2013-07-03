@@ -294,33 +294,29 @@ var express = require('express'),
 	app.get('/api/:method/:id/:section?', api_method);
 	app.get('/api/:method/:id*', api_method);
 
+	app.get('/tid/:tid', function(req, res) {
+		topics.getTopicData(req.params.tid, function(data){
+			if(data)
+				res.send(data);
+			else
+				res.send("Topic doesn't exist!");
+		});
+	});
+
+	app.get('/pid/:pid', function(req, res) {
+		posts.getPostData(req.params.pid, function(data){
+			if(data)
+				res.send(data);
+			else
+				res.send("Post doesn't exist!");
+		});
+	});
+
 	app.all('/test', function(req, res) {
-		//res.send();
-
-		/*posts.getPostsByPids([1,2,3], 1, function(data) {
-			res.send(data);	
-		});*/
-
-		/*posts.getPostsByTid(2, 0, -1, function(data) {
-			res.send(data);	
-		});*/
-
-/*		posts.getPostsByPids([1,2,3], function(data) {
-			res.send(data);
-		});*/
-
-		/*posts.getPostsByUid(1, 0, 10, function(data) {
-			res.send(data);
-		});*/
 		
 		topics.getTopicById(24, 1, function(data) {
 			res.send(data);
 		});
-
-/*		categories.getCategoryById(12, 0, function(returnData) {
-			res.send(returnData);
-		});
-*/
 		
 	});
 

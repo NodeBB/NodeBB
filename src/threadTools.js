@@ -235,7 +235,7 @@ var	RDB = require('./redis.js'),
 			function(next) {
 				
 				topics.getTopicField(tid, 'title', function(title) {
-					topics.get_teaser(tid, function(teaser) {
+					topics.getTeaser(tid, function(teaser) {
 							notifications.create(teaser.username + ' has posted a reply to: "' + title + '"', null, '/topic/' + tid, 'topic:' + tid, function(nid) {
 							next(null, nid);
 						});

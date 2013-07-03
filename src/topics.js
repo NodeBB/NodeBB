@@ -132,13 +132,13 @@ marked.setOptions({
 
 	Topics.getTopicForCategoryView = function(tid, uid, callback) {
 
-		function get_topic_data(next) {
+		function getTopicData(next) {
 			Topics.getTopicDataWithUsername(tid, function(topic) {
 				next(null, topic);
 			});
 		}
 
-		function get_read_status(next) {
+		function getReadStatus(next) {
 			// posts.create calls this function - should be an option to skip this because its always true
 			if (uid && parseInt(uid) > 0) {
 				RDB.sismember(schema.topics(tid).read_by_uid, uid, function(err, read) {
@@ -149,13 +149,13 @@ marked.setOptions({
 			}
 		}
 
-		function get_teaser(next) {
-			Topics.get_teaser(tid, function(teaser) {
+		function getTeaser(next) {
+			Topics.getTeaser(tid, function(teaser) {
 				next(null, teaser);
 			});
 		}
 
-		async.parallel([get_topic_data, get_read_status, get_teaser], function(err, results) {
+		async.parallel([getTopicData, getReadStatus, getTeaser], function(err, results) {
 			if (err) {
 				throw new Error(err);
 			}
@@ -242,13 +242,13 @@ marked.setOptions({
 		});
 	}
 
-	Topics.get_teasers = function(tids, callback) {
+	Topics.getTeasers = function(tids, callback) {
 		var	requests = [];
 		if (Array.isArray(tids)) {
 			for(x=0,numTids=tids.length;x<numTids;x++) {
 				(function(tid) {
 					requests.push(function(next) {
-						Topics.get_teaser(tid, function(teaser_info) {
+						Topics.getTeaser(tid, function(teaser_info) {
 							next(null, teaser_info);
 						});
 					});
@@ -282,7 +282,7 @@ marked.setOptions({
 		
 	}
 
-	Topics.get_teaser = function(tid, callback) {
+	Topics.getTeaser = function(tid, callback) {
 		Topics.get_latest_undeleted_pid(tid, function(pid) {
 			if (pid !== null) {
 				

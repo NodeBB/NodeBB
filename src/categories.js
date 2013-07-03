@@ -133,7 +133,7 @@ var	RDB = require('./redis.js'),
 			}
 
 			function getTeaserInfo(next) {
-				topics.get_teaser(topicData.tid, function(teaser) {
+				topics.getTeaser(topicData.tid, function(teaser) {
 					next(null, teaser);
 				});
 			}
