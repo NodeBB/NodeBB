@@ -1,7 +1,12 @@
 <div class="container">
 	<ul class="breadcrumb">
-		<li><a href="/">Home</a><span class="divider">/</span></li>
-		<li class="active">{category_name}</li>
+		<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
+			<a href="/" itemprop="url"><span itemprop="title">Home</span></a>
+			<span class="divider">/</span>
+		</li>
+		<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
+			<span itemprop="title">{category_name}</span>
+		</li>
 		<div id="category_active_users"></div>
 	</ul>
 </div>

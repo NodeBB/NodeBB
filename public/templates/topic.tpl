@@ -1,8 +1,16 @@
 <div class="container">
 	<ul class="breadcrumb">
-		<li><a href="/">Home</a><span class="divider">/</span></li>
-		<li><a href="/category/{category_slug}">{category_name}</a><span class="divider">/</span></li>
-		<li class="active">{topic_name}</li>
+		<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
+			<a href="/" itemprop="url"><span itemprop="title">Home</span></a>
+			<span class="divider">/</span>
+		</li>
+		<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
+			<a href="/category/{category_slug}" itemprop="url"><span itemprop="title">{category_name}</span></a>
+			<span class="divider">/</span>
+		</li>
+		<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
+			<span itemprop="title">{topic_name}</span>
+		</li>
 		<div id="thread_active_users" class="hidden-phone"></div>
 	</ul>
 </div>
