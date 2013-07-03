@@ -129,7 +129,7 @@ var utils = require('./../public/src/utils.js'),
 				
 				User.getUserData(uid, function(userData) {
 					data.push(userData);
-					if(data.length == userkeys.length)
+					if(data.length === userkeys.length)
 						callback(data);
 				});
 			}
