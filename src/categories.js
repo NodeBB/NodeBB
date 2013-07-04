@@ -12,7 +12,7 @@ var	RDB = require('./redis.js'),
 
 			Categories.getCategoryData(category_id, function(categoryData) {
 
-				var	category_name = categoryData.name;
+				var category_name = categoryData.name;
 					category_slug = categoryData.slug;
 
 				RDB.smembers('cid:' + category_id + ':active_users', function(err, active_users) {
@@ -160,8 +160,11 @@ var	RDB = require('./redis.js'),
 				});
 			});
 		}
-		
 
+		function isTopicVisible(topicData, topicInfo) {
+			var deleted = parseInt(topicData.deleted, 10) !== 0;
+			return !deleted || (deleted && topicInfo.privileges.view_deleted) || topicData.uid === current_user;
+		}
 
 		for(var i=0; i<tids.length; ++i) {
 
@@ -180,8 +183,8 @@ var	RDB = require('./redis.js'),
 					topicData.teaser_text = topicInfo.teaserInfo.text,
 					topicData.teaser_username = topicInfo.teaserInfo.username;
 					topicData.teaser_timestamp = utils.relativeTime(topicInfo.teaserInfo.timestamp);
-
-					if (!topicData.deleted || (topicData.deleted && topicInfo.privileges.view_deleted) || topicData.uid === current_user)
+					
+					if (isTopicVisible(topicData, topicInfo))
 						retrieved_topics.push(topicData);
 					else
 						--topicCountToLoad;
@@ -300,6 +303,14 @@ var	RDB = require('./redis.js'),
 			else	
 				console.log(err);
 		});
+	}
+	
+	Categories.setCategoryField = function(cid, field, value) {
+		RDB.hset('category:' + cid, field, value);
+	}
+
+	Categories.incrementCategoryFieldBy = function(cid, field, value) {
+		RDB.hincrby('category:' + cid, field, value);
 	}
 
 	Categories.getCategories = function(cids, callback, current_user) {

@@ -167,6 +167,9 @@ var	RDB = require('./redis.js'),
 				if (!err && result === 1) {
 
 					topics.setTopicField(tid, 'cid', cid);
+					
+					categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1);
+					categories.incrementCategoryFieldBy(cid, 'topic_count', 1);
 
 					categories.getCategories([cid], function(data) {
 						topics.setTopicField(tid, 'category_name', data.categories[0].name);
