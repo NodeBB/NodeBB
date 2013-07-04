@@ -245,6 +245,18 @@ marked.setOptions({
 		});
 	}
 
+	Topics.hasReadTopic = function(tid, uid, callback) {
+		RDB.sismember(schema.topics(tid).read_by_uid, uid, function(err, hasRead) {
+			if(err === null) {
+				callback(hasRead);
+			}
+			else {
+				console.log(err);
+				callback(false);
+			}
+		});	
+	}
+	
 	Topics.getTeasers = function(tids, callback) {
 		var	requests = [];
 		if (Array.isArray(tids)) {

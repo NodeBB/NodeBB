@@ -128,7 +128,7 @@ var	RDB = require('./redis.js'),
 			}
 
 			function hasReadTopic(next) {
-				topics.hasReadTopics([topicData.tid], current_user, function(hasRead) {
+				topics.hasReadTopic(topicData.tid, current_user, function(hasRead) {
 					next(null, hasRead);
 				});
 			}
