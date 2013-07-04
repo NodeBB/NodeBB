@@ -18,7 +18,7 @@
 	<div class="row-fluid">
 		<div class="span2" style="text-align: center; margin-bottom:20px;">
 			<div class="account-picture-block">
-				<img src="{picture}" class="user-profile-picture"/>
+				<img src="{picture}" class="user-profile-picture img-polaroid"/>
 			</div>
 			<div id="user-actions">
 				<a id="follow-btn" href="#" class="btn">Follow</a>
