@@ -133,7 +133,9 @@ var express = require('express'),
 
 
 		var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
-		topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), function(topic) {
+		topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), function(err, topic) {
+			if (err) return res.redirect('404');
+
 			res.send(
 				app.build_header(res) +
 				'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/topic'].parse(topic) + '\n\t</noscript>' +
@@ -238,7 +240,7 @@ var express = require('express'),
 					res.json(data);
 				break;
 			case 'topic' :
-					topics.getTopicWithPosts(req.params.id, uid, function(data) {
+					topics.getTopicWithPosts(req.params.id, uid, function(err, data) {
 						res.json(data);
 					});
 				break;
