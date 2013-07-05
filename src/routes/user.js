@@ -1,4 +1,3 @@
-
 var user = require('./../user.js'),
 	posts = require('./../posts.js'),
 	fs = require('fs'),
@@ -15,10 +14,11 @@ var user = require('./../user.js'),
 				return res.redirect('/404');
 			
 			user.getUserData(req.params.uid, function(data){
-				if(data)
+				if(data) {
 					res.send(data);
-				else
+				} else {
 					res.send("User doesn't exist!");
+				}
 			});
 			
 		});
@@ -44,7 +44,6 @@ var user = require('./../user.js'),
 		});
 
 		app.get('/users/:userslug', function(req, res) {
-
 			if(!req.params.userslug) {
 				res.send("User doesn't exist!");
 				return;
@@ -59,8 +58,7 @@ var user = require('./../user.js'),
 				user.getUserData(uid, function(userdata) {
 						if(userdata) {
 							res.send(app.build_header(res) + app.create_route('users/'+userdata.userslug, 'account')  + templates['footer']);
-						}
-						else {
+						} else {
 							res.redirect('/404');
 						}			
 				});
@@ -68,21 +66,20 @@ var user = require('./../user.js'),
 		});
 		
 		app.get('/users/:userslug/edit', function(req, res){
-				
 			if(!req.user)
 				return res.redirect('/403');
 			
 			user.getUserField(req.user.uid, 'userslug', function(userslug) {
 			
-				if(req.params.userslug && userslug === req.params.userslug)
+				if(req.params.userslug && userslug === req.params.userslug) {
 					res.send(app.build_header(res) + app.create_route('users/'+req.params.userslug+'/edit','accountedit') + templates['footer']);
-				else
+				} else {
 					return res.redirect('/404');
+				}
 			});	
 		});
 
 		app.post('/users/doedit', function(req, res){
-
 			if(!req.user)
 				return res.redirect('/403');
 			
@@ -96,7 +93,6 @@ var user = require('./../user.js'),
 		});
 
 		app.post('/users/uploadpicture', function(req, res) {
-
 			if(!req.user)
 				return res.redirect('/403');
 			
@@ -108,9 +104,8 @@ var user = require('./../user.js'),
 			}
 			
 			var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
-			var type = req.files.userPhoto.type;
 			
-			if(allowedTypes.indexOf(type) === -1) {
+			if(allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
 				res.send({
 					error: 'Allowed image types are png, jpg and gif!'
 				});
@@ -128,7 +123,7 @@ var user = require('./../user.js'),
 				
 				fs.unlink(absolutePath, function(err) {
 					if(err) {				
-						console.log(err);
+						console.error('[%d] %s', Date.now(), + err);
 					}
 					
 					uploadUserPicture(req.user.uid, path.extname(req.files.userPhoto.name), req.files.userPhoto.path, res);
@@ -138,7 +133,6 @@ var user = require('./../user.js'),
 		});
 		
 		function uploadUserPicture(uid, extension, tempPath, res) {
-
 			if(!extension) {
 				res.send({
 					error: 'Error uploading file! Error : Invalid extension!'
@@ -149,6 +143,7 @@ var user = require('./../user.js'),
 			var filename = uid + '-profileimg' + extension;
 			var uploadPath = path.join(global.configuration['ROOT_DIRECTORY'], config.upload_path, filename);
 			
+			// @todo move to proper logging code - this should only be temporary
 			console.log('Info: Attempting upload to: '+ uploadPath);
 			
 			var is = fs.createReadStream(tempPath);
@@ -159,9 +154,7 @@ var user = require('./../user.js'),
 
 				var imageUrl = config.upload_url + filename;
 
-				res.send({
-					path: imageUrl
-				});
+				res.json({ path: imageUrl });
 
 				user.setUserField(uid, 'uploadedpicture', imageUrl);
 				user.setUserField(uid, 'picture', imageUrl);
@@ -174,14 +167,18 @@ var user = require('./../user.js'),
 					width: 128
 				}, function(err, stdout, stderr) {
 					if (err) {
-						console.log(err);
+						// @todo: better logging method; for now, send to stderr.
+						// ideally, this should be happening in another process
+						// to avoid poisoning the main process on error or allowing a significant problem
+						// to crash the main process
+						console.error('[%d] %s', Date.now(), + err);
 					}
 				});
 
 			});
 
 			os.on('error', function(err) {
-				console.log(err);
+				console.error('[%d] %s', Date.now(), + err);
 			});
 
 			is.pipe(os);
@@ -217,7 +214,7 @@ var user = require('./../user.js'),
 				return res.redirect('/');
 
 			user.follow(req.user.uid, req.body.uid, function(data) {
-				res.send({data:data});
+				res.json({ data:data });
 			});
 		});
 
@@ -229,7 +226,7 @@ var user = require('./../user.js'),
 				return res.redirect('/');
 
 			user.unfollow(req.user.uid, req.body.uid, function(data) {
-				res.send({data:data});
+				res.json({ data:data });
 			});
 		});
 
@@ -251,20 +248,18 @@ var user = require('./../user.js'),
 
 		function api_method(req, res) {
 
-			var callerUID = req.user?req.user.uid : 0;
+			var callerUID = req.user ? req.user.uid : 0;
 
 			if (!req.params.section && !req.params.userslug) {
 				user.getUserList(function(data) {
 					data = data.sort(function(a, b) {
 						return b.joindate - a.joindate;
 					});
-					res.json({search_display: 'none', users:data});
+					res.json({ search_display: 'none', users: data });
 				});
 			}
 			else if(String(req.params.section).toLowerCase() === 'following') {
-				
 				getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
-					
 					user.getFollowing(userData.uid, function(followingData){
 						userData.following = followingData;
 						userData.followingCount = followingData.length;
@@ -273,9 +268,7 @@ var user = require('./../user.js'),
 				});
 			}
 			else if(String(req.params.section).toLowerCase() === 'followers') {
-				
 				getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
-					
 					user.getFollowers(userData.uid, function(followersData){
 						userData.followers = followersData;
 						userData.followersCount = followersData.length;
@@ -289,22 +282,17 @@ var user = require('./../user.js'),
 				});
 			} else {
 				getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
-					
 					user.isFollowing(callerUID, userData.theirid, function(isFollowing) {
-						
 						posts.getPostsByUid(userData.theirid, 0, 9, function(posts) {
 							userData.posts = posts;
 							userData.isFollowing = isFollowing;
-						
 							userData.signature = marked(userData.signature || '');
-						
 							res.json(userData);
 						});
 					});
 					
 				});						
 			}
-		
 		}
 
 		app.get('/api/users/:userslug?/:section?', api_method);
@@ -318,16 +306,16 @@ var user = require('./../user.js'),
 				data = data.sort(function(a, b) {
 					return b.postcount - a.postcount;
 				});
-				res.json({search_display: 'none', users:data});
+				res.json({ search_display: 'none', users:data });
 			});
 		}
-		
+
 		function getUsersSortedByReputation(req, res) {
 			user.getUserList(function(data) {
 				data = data.sort(function(a, b) {
 					return b.reputation - a.reputation;
 				});
-				res.json({search_display: 'none', users:data});
+				res.json({ search_display: 'none', users:data });
 			});
 		}
 
@@ -336,28 +324,26 @@ var user = require('./../user.js'),
 				data = data.sort(function(a, b) {
 					return b.joindate - a.joindate;
 				});
-				res.json({search_display: 'none', users:data});
+				res.json({ search_display: 'none', users:data });
 			});
 		}
 	
 		function getUsersForSearch(req, res) {		
-			res.json({search_display: 'block', users: []});
+			res.json({ search_display: 'block', users: [] });
 		}
 
 
 		function getUserDataByUserSlug(userslug, callerUID, callback) {
-		
 			user.get_uid_by_userslug(userslug, function(uid) {
-		
 				user.getUserData(uid, function(data) {
 					if(data) {
-
 						data.joindate = utils.relativeTime(data.joindate);
 
-						if(!data.birthday)
+						if(!data.birthday) {
 							data.age = '';
-						else
+						} else {
 							data.age = new Date().getFullYear() - new Date(data.birthday).getFullYear();
+						}
 						
 						data.uid = uid;
 						data.yourid = callerUID;
@@ -367,14 +353,13 @@ var user = require('./../user.js'),
 							user.getFollowerCount(uid, function(followerCount) {
 								data.followingCount = followingCount;
 								data.followerCount = followerCount;
-		
 								callback(data);
-								
 							});
 						});
-					}
-					else
+					} else {
+						// @todo why is this an empty object? perhaps the callback should expect NULL or undefined instead.
 						callback({});
+					}
 				});
 				
 			});
