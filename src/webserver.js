@@ -576,15 +576,15 @@ var express = require('express'),
 		for(var user in users) {
 			redis.hmset('user:'+user.uid, user);
 			
-			RDB.set('username:' + user.username + ':uid', user.uid);
-			RDB.set('email:' + user.email +':uid', user.uid);
-			RDB.set('userslug:'+ user.userslug +':uid', user.uid);
+			redis.set('username:' + user.username + ':uid', user.uid);
+			redis.set('email:' + user.email +':uid', user.uid);
+			redis.set('userslug:'+ user.userslug +':uid', user.uid);
 			
-			RDB.incr('usercount', function(err, count) {
-				RDB.handle(err);
+			redis.incr('usercount', function(err, count) {
+				redis.handle(err);
 			});
 
-			RDB.lpush('userlist', user.username);
+			redis.lpush('userlist', user.username);
 		}
 		  
 		res.send('success');
