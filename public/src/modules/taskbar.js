@@ -22,6 +22,7 @@ define(function() {
 
 				require([module], function(module) {
 					if (_btn.className.indexOf('active') === -1) {
+						taskbar.minimizeAll();
 						module.load(uuid);
 
 						// Highlight the button
@@ -64,6 +65,8 @@ define(function() {
 			btnEl.setAttribute('data-module', module);
 			btnEl.setAttribute('data-uuid', uuid);
 			btnEl.className = options.state || 'active';
+
+			if (!options.state || options.state === 'active') taskbar.minimizeAll();
 			taskbar.tasklist.appendChild(btnEl);
 
 			taskbar.update();
@@ -71,6 +74,9 @@ define(function() {
 		minimize: function(module, uuid) {
 			var btnEl = taskbar.tasklist.querySelector('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
 			$(btnEl).removeClass('active');
+		},
+		minimizeAll: function() {
+			$(taskbar.tasklist.querySelectorAll('.active')).removeClass('active');
 		}
 	}
 
