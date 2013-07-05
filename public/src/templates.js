@@ -154,7 +154,7 @@
 			
 		(function() {
 			jQuery.get(API_URL + api_url, function(data) {
-				if(data === false) {
+				if(!data) {
 					ajaxify.go('404');
 					return;
 				}
