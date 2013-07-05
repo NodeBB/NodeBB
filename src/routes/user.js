@@ -13,7 +13,7 @@ var user = require('./../user.js'),
 			if(!req.params.uid)
 				return res.redirect('/404');
 			
-			user.getUserData(req.params.uid, function(data){
+			user.getUserData(req.params.uid, function(data) {
 				if(data) {
 					res.send(data);
 				} else {
@@ -55,17 +55,11 @@ var user = require('./../user.js'),
 					return;
 				}
 				
-				user.getUserData(uid, function(userdata) {
-						if(userdata) {
-							res.send(app.build_header(res) + app.create_route('users/'+userdata.userslug, 'account')  + templates['footer']);
-						} else {
-							res.redirect('/404');
-						}			
-				});
+				res.send(app.build_header(res) + app.create_route('users/'+req.params.userslug, 'account')  + templates['footer']);
 			});		
 		});
 		
-		app.get('/users/:userslug/edit', function(req, res){
+		app.get('/users/:userslug/edit', function(req, res) {
 			if(!req.user)
 				return res.redirect('/403');
 			
@@ -194,12 +188,12 @@ var user = require('./../user.js'),
 				
 			var type = req.body.type;
 			if(type == 'gravatar') {	
-				user.getUserField(req.user.uid, 'gravatarpicture', function(gravatar){
+				user.getUserField(req.user.uid, 'gravatarpicture', function(gravatar) {
 					user.setUserField(req.user.uid, 'picture', gravatar);
 				});
 			}
 			else if(type == 'uploaded') {
-				user.getUserField(req.user.uid, 'uploadedpicture', function(uploadedpicture){
+				user.getUserField(req.user.uid, 'uploadedpicture', function(uploadedpicture) {
 					user.setUserField(req.user.uid, 'picture', uploadedpicture);
 				});
 			}
@@ -249,8 +243,11 @@ var user = require('./../user.js'),
 		function api_method(req, res) {
 
 			var callerUID = req.user ? req.user.uid : 0;
+			var userslug = req.params.userslug;
+			var section = req.params.section ? String(req.params.section).toLowerCase() : null;
+				
+			if (!section && !userslug) {
 
-			if (!req.params.section && !req.params.userslug) {
 				user.getUserList(function(data) {
 					data = data.sort(function(a, b) {
 						return b.joindate - a.joindate;
@@ -258,35 +255,38 @@ var user = require('./../user.js'),
 					res.json({ search_display: 'none', users: data });
 				});
 			}
-			else if(String(req.params.section).toLowerCase() === 'following') {
+			else if(section === 'following') {
 				getFollowing(req, res, callerUID);
 			}
-			else if(String(req.params.section).toLowerCase() === 'followers') {
+			else if(section === 'followers') {
 				getFollowers(req, res, callerUID);
 			}
-			else if (String(req.params.section).toLowerCase() === 'edit') {
-				getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
+			else if (section === 'edit') {
+				getUserDataByUserSlug(userslug, callerUID, function(userData) {
 					res.json(userData);
 				});
 			} else {
-				getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
-					user.isFollowing(callerUID, userData.theirid, function(isFollowing) {
-						posts.getPostsByUid(userData.theirid, 0, 9, function(posts) {
-							userData.posts = posts;
-							userData.isFollowing = isFollowing;
-							userData.signature = marked(userData.signature || '');
-							res.json(userData);
+				getUserDataByUserSlug(userslug, callerUID, function(userData) {
+					if(userData) {
+						user.isFollowing(callerUID, userData.theirid, function(isFollowing) {
+							posts.getPostsByUid(userData.theirid, 0, 9, function(posts) {
+								userData.posts = posts;
+								userData.isFollowing = isFollowing;
+								userData.signature = marked(userData.signature || '');
+								res.json(userData);
+							});
 						});
-					});
-					
+					} else {
+						res.json(null);						
+					}
 				});						
 			}
 		}
 
 		function getFollowing(req, res, callerUid) {
-			getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
+			getUserDataByUserSlug(req.params.userslug, callerUid, function(userData) {
 				if(userData) {
-					user.getFollowing(userData.uid, function(followingData){
+					user.getFollowing(userData.uid, function(followingData) {
 						userData.following = followingData;
 						userData.followingCount = followingData.length;
 						res.json(userData);
@@ -301,7 +301,7 @@ var user = require('./../user.js'),
 		function getFollowers(req, res, callerUid) {
 			getUserDataByUserSlug(req.params.userslug, callerUid, function(userData) {
 				if(userData) {
-					user.getFollowers(userData.uid, function(followersData){
+					user.getFollowers(userData.uid, function(followersData) {
 						userData.followers = followersData;
 						userData.followersCount = followersData.length;
 						res.json(userData);
