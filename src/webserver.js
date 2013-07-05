@@ -159,7 +159,6 @@ var express = require('express'),
 
 		var category_url = cid + (req.params.slug ? '/' + req.params.slug : '');
 		categories.getCategoryById(cid, 0, function(returnData) {
-
 			res.send(
 				app.build_header(res) +
 				'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/category'].parse(returnData) + '\n\t</noscript>' +

@@ -161,6 +161,9 @@
 
 				template_data = data;
 				parse_template();
+			}).fail(function(data) {
+				template_data = {};
+				parse_template();
 			});
 		}());
 		
