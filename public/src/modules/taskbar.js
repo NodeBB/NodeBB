@@ -7,6 +7,7 @@ define(function() {
 			var	footerEl = document.getElementById('footer');
 		
 			taskbar.taskbar = document.createElement('div');
+			var jTaskbar = $(taskbar.taskbar);
 			taskbar.taskbar.innerHTML = '<div class="navbar-inner"><ul class="nav pull-right"></ul></div>';
 			taskbar.taskbar.className = 'taskbar navbar navbar-fixed-bottom';
 			taskbar.taskbar.id = 'taskbar';
@@ -15,13 +16,14 @@ define(function() {
 			document.body.insertBefore(taskbar.taskbar, footerEl);
 
 			// Posts bar events
-			$(taskbar.taskbar).on('click', 'li', function() {
+			jTaskbar.on('click', 'li', function() {
 				var	_btn = this,
 					module = this.getAttribute('data-module'),
 					uuid = this.getAttribute('data-uuid');
 
 				require([module], function(module) {
 					if (_btn.className.indexOf('active') === -1) {
+						taskbar.minimizeAll();
 						module.load(uuid);
 
 						// Highlight the button
@@ -31,6 +33,10 @@ define(function() {
 						module.minimize(uuid);
 					}
 				});
+			});
+
+			jTaskbar.on('click', 'li a', function(e) {
+				e.preventDefault();
 			});
 
 			taskbar.initialized = true;
@@ -64,6 +70,8 @@ define(function() {
 			btnEl.setAttribute('data-module', module);
 			btnEl.setAttribute('data-uuid', uuid);
 			btnEl.className = options.state || 'active';
+
+			if (!options.state || options.state === 'active') taskbar.minimizeAll();
 			taskbar.tasklist.appendChild(btnEl);
 
 			taskbar.update();
@@ -71,6 +79,9 @@ define(function() {
 		minimize: function(module, uuid) {
 			var btnEl = taskbar.tasklist.querySelector('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
 			$(btnEl).removeClass('active');
+		},
+		minimizeAll: function() {
+			$(taskbar.tasklist.querySelectorAll('.active')).removeClass('active');
 		}
 	}
 
