@@ -328,7 +328,7 @@ var express = require('express'),
 	
 	
 	app.get('/restoreusers', function(req, res) {
-		var users = [
+		var usersData = [
 		    {
 		      "lastposttime": "1371780880500",
 		      "userslug": "frandroid",
@@ -569,18 +569,19 @@ var express = require('express'),
 		    }		    
 		  ];
 		var rdb = require('./redis.js');
-		for(var user in users) {
-			rdb.hmset('user:'+user.uid, user);
+		for (var i in usersData) {
+			var userData = usersData[i];
+			rdb.hmset('user:'+userData.uid, userData);
 			
-			rdb.set('username:' + user.username + ':uid', user.uid);
-			rdb.set('email:' + user.email +':uid', user.uid);
-			rdb.set('userslug:'+ user.userslug +':uid', user.uid);
+			rdb.set('username:' + userData.username + ':uid', userData.uid);
+			rdb.set('email:' + userData.email +':uid', userData.uid);
+			rdb.set('userslug:'+ userData.userslug +':uid', userData.uid);
 			
 			rdb.incr('usercount', function(err, count) {
 				rdb.handle(err);
 			});
 
-			rdb.lpush('userlist', user.username);
+			rdb.lpush('userlist', userData.username);
 		}
 		  
 		res.send('success');
