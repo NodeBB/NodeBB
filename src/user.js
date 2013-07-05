@@ -66,7 +66,6 @@ var utils = require('./../public/src/utils.js'),
 				if(data) {
 					if(data['password'])
 						delete data['password'];
-					data.uid = uid;
 				}
 				callback(data);
 			}
@@ -187,6 +186,7 @@ var utils = require('./../public/src/utils.js'),
 				var gravatar = User.createGravatarURLFromEmail(email);
 
 				RDB.hmset('user:'+uid, {
+					'uid': uid,
 					'username' : username,
 					'userslug' : userslug,
 					'fullname': '',
