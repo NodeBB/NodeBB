@@ -16,6 +16,14 @@ var	RDB = require('./../redis.js'),
 					});					
 				});
 			}
+			else {
+				socket.emit('event:alert', {
+					title: 'Warning',
+					message: 'You need to be an administrator to make someone else an administrator!',
+					type: 'warning',
+					timeout: 2000
+				});					
+			}
 		});
 	};
 
