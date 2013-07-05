@@ -40,21 +40,27 @@ var utils = require('./../public/src/utils.js'),
 			return;
 		}
 
-		var data = {},
-			loaded = 0;
-			uuids = uids.filter(function(value, index, self) {
+		var returnData = [];
+
+		uuids = uids.filter(function(value, index, self) {
 			return self.indexOf(value) === index;
 		});
 
-		for (var i=0, ii=uuids.length; i<ii; i++) {
-			(function(user_id) {
-				User.getUserFields(user_id, fields, function(user_data) {
-					data[user_id] = user_data;
-					loaded ++;
-					if (loaded == uuids.length) callback(data);
-				});
-			}(uuids[i]));
+		function iterator(uid, callback) {
+			User.getUserFields(uid, fields, function(userData) {
+				returnData.push(userData);
+				callback(null);
+			});
 		}
+
+		async.each(uuids, iterator, function(err) {
+			if(!err) {
+				callback(returnData);
+			} else {
+				console.log(err);
+				callback(null);
+			}
+		});
 	}
 
 	User.getUserData = function(uid, callback) {
@@ -411,23 +417,25 @@ var utils = require('./../public/src/utils.js'),
 		});
 	}
 
-	User.getDataForUsers = function(userIds, callback) {
+	User.getDataForUsers = function(uids, callback) {
 		var returnData = [];
 
-		if(!userIds || userIds.length === 0) {
+		if(!uids || !Array.isArray(uids) || uids.length === 0) {
 			callback(returnData);
 			return;
 		}
 
-		for(var i = 0, ii = userIds.length; i < ii; ++i) {
-			User.getUserData(userIds[i], function(userData) {
+		function iterator(uids, callback) {
+			User.getUserData(uid, function(userData) {
 				returnData.push(userData);
 
-				if(returnData.length == userIds.length) {
-					callback(returnData);
-				}
+				callback(null);
 			});
 		}
+		
+		async.each(uids, iterator, function(err) {
+			callback(returnData);
+		});
 	}
 
 	User.sendPostNotificationToFollowers = function(uid, tid, pid) {
@@ -455,13 +463,9 @@ var utils = require('./../public/src/utils.js'),
 		});
 	}
 
-	// @todo check why this function checks for a callback - if there's no callback,
-	// it effectively does nothing
 	User.exists = function(userslug, callback) {
 		User.get_uid_by_userslug(userslug, function(exists) {
-			if (callback) {
-				callback(!!exists);
-			}
+			callback(!!exists);
 		});
 	};
 

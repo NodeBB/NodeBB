@@ -101,28 +101,20 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			}
 
 			var uids = Object.keys(rooms[data.enter] || {});
-			var anonymous = io.sockets.clients(data.enter).length - uids.length;
+			var anonymousCount = io.sockets.clients(data.enter).length - uids.length;
 
-			if (uids.length == 0) {
+			if (uids.length === 0) {
 				io.sockets.in(data.enter).emit('api:get_users_in_room', {
-					usernames: [],
-					uids: [],
-					anonymous: anonymous
+					users: [],
+					anonymousCount: anonymousCount
 				});
 			}
 
-
-			user.get_usernames_by_uids(uids, function(usernames) {
-				user.get_userslugs_by_uids(uids, function(userslugs) { 
-
-					io.sockets.in(data.enter).emit('api:get_users_in_room', {
-						usernames: usernames,
-						userslugs: userslugs,
-						uids: uids,
-						anonymous: anonymous
-					});
+			user.getMultipleUserFields(uids, ['username', 'userslug'], function(users) {
+				io.sockets.in(data.enter).emit('api:get_users_in_room', {
+					users: users,
+					anonymousCount: anonymousCount
 				});
-
 			});
 
 			if (data.enter != 'admin') io.sockets.in('admin').emit('api:get_all_rooms', io.sockets.manager.rooms);

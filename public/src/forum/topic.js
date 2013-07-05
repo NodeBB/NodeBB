@@ -310,14 +310,15 @@
 	]);
 
 
-	socket.on('api:get_users_in_room', function(users) {
-		var anonymous = users.anonymous,
-			usernames = users.usernames,
-			userslugs = users.userslugs,
-			usercount = usernames.length;
+	socket.on('api:get_users_in_room', function(data) {
 
-		for (var i = 0, ii=usercount; i<ii; i++) {
-			usernames[i] = '<strong>' + '<a href="/users/'+userslugs[i]+'">' + usernames[i] + '</a></strong>';
+		var anonymousCount = data.anonymousCount,
+			users = data.users,
+			usernames = [],
+			usercount = users.length;
+
+		for (var i = 0, ii=users.length; i<ii; ++i) {
+			usernames[i] = '<strong>' + '<a href="/users/'+users[i].userslug+'">' + users[i].username + '</a></strong>';
 		}
 
 		// headexplosion.gif for fun, to see if I could do this in one line of code. feel free to refactor haha
@@ -326,8 +327,8 @@
 			+ ((usercount === 2 && anonymous === 0) ? usernames[0] + ' and ' + usernames[1] : '')
 			+ ((usercount > 2 && anonymous === 0) ? usernames.join(', ').replace(/,([^,]*)$/, ", and$1") : '')
 			+ (usercount > 1 && anonymous > 0 ? usernames.join(', ') : '')
-			+ ((anonymous > 0) ? (usercount > 0 ? ' and ': '') + anonymous + ' guest' + (anonymous > 1  ? 's are': ' is') : '')
-			+ (anonymous === 0 ? (usercount > 1 ? ' are' : ' is') : '') + ' browsing this thread';
+			+ ((anonymousCount > 0) ? (usercount > 0 ? ' and ': '') + anonymousCount + ' guest' + (anonymousCount > 1  ? 's are': ' is') : '')
+			+ (anonymousCount === 0 ? (usercount > 1 ? ' are' : ' is') : '') + ' browsing this thread';
 
 		var activeEl = $('#thread_active_users');
 		if(activeEl.length)
