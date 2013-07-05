@@ -25,8 +25,8 @@
 			adminTools = document.getElementById('thread-tools');
 
 		app.enter_room(room);
-		set_up_posts();
 
+		// Resetting thread state
 		if (thread_state.locked === '1') set_locked_state(true);
 		if (thread_state.deleted === '1') set_delete_state(true);
 		if (thread_state.pinned === '1') set_pinned_state(true);
@@ -221,6 +221,46 @@
 		});
 	});
 
+	$('.container').on('click', '.post_reply', function() {
+		if (thread_state.locked !== '1') {
+			require(['composer'], function(cmp) {
+				cmp.push(tid);
+			});
+		}
+	});
+
+	$('.post-container').on('click', '.quote', function() {
+		if (thread_state.locked !== '1') {
+			var pid = $(this).parents('li').attr('data-pid');
+
+			socket.once('api:posts.getRawPost', function(data) {
+
+				quoted = '> ' + data.post.replace(/\n/g, '\n> ') + '\n\n';
+				require(['composer'], function(cmp) {
+					cmp.push(tid, null, null, quoted);
+				});
+			});
+			socket.emit('api:posts.getRawPost', { pid: pid });
+		}
+	});
+
+	$('.post-container').on('click', '.favourite', function() {
+		var ids = this.id.replace('favs_', '').split('_'),
+			pid = ids[0],
+			uid = ids[1];
+
+		if (thread_state.locked !== '1') {
+			var element = $(this).find('i');
+			if(element.attr('class') == 'icon-star-empty') {
+				element.attr('class', 'icon-star');
+				socket.emit('api:posts.favourite', {pid: pid, room_id: app.current_room});
+			}
+			else {
+				element.attr('class', 'icon-star-empty');
+				socket.emit('api:posts.unfavourite', {pid: pid, room_id: app.current_room});
+			}
+		}
+	});
 
 	$('.post-container').delegate('.edit', 'click', function(e) {
 		var pid = ($(this).attr('id') || $(this.parentNode).attr('id')).split('_')[1];
@@ -316,7 +356,6 @@
 			socket.emit('api:post.privileges', data.posts[x].pid);
 		}
 
-		set_up_posts(uniqueid);
 		tempContainer.replaceWith(tempContainer.contents());
 		infiniteLoaderActive = false;
 
@@ -414,53 +453,6 @@
 
 		post_rep.html(ptotal+ ' ');
 		user_rep.html(utotal+ ' ');
-	}
-
-
-	function set_up_posts(div) {
-		if (div == null) div = '';
-		else div = '#' + div;
-
-		jQuery(div + ' .post_reply').click(function() {
-			if (thread_state.locked !== '1') {
-				require(['composer'], function(cmp) {
-					cmp.push(tid);
-				});
-			}
-		});
-
-		jQuery(div + ' .quote').click(function() {
-			if (thread_state.locked !== '1') {
-				var pid = $(this).parents('li').attr('data-pid');
-
-				socket.once('api:posts.getRawPost', function(data) {
-
-					quoted = '> ' + data.post.replace(/\n/g, '\n> ') + '\n\n';
-					require(['composer'], function(cmp) {
-						cmp.push(tid, null, null, quoted);
-					});
-				});
-				socket.emit('api:posts.getRawPost', { pid: pid });
-			}
-		});
-
-		jQuery(div + ' .favourite').click(function() {
-			var ids = this.id.replace('favs_', '').split('_'),
-				pid = ids[0],
-				uid = ids[1];
-
-			if (thread_state.locked !== '1') {
-				var element = $(this).find('i');
-				if(element.attr('class') == 'icon-star-empty') {
-					element.attr('class', 'icon-star');
-					socket.emit('api:posts.favourite', {pid: pid, room_id: app.current_room});
-				}
-				else {
-					element.attr('class', 'icon-star-empty');
-					socket.emit('api:posts.unfavourite', {pid: pid, room_id: app.current_room});
-				}
-			}
-		});
 	}
 
 	function set_locked_state(locked, alert) {
