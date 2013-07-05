@@ -240,6 +240,9 @@ var utils = require('./../public/src/utils.js'),
 			return;
 		}
 
+		// round count should be variable somewhere instead of hardcoded here
+		// if an admin has the resources to up the round count, then making it easy for them to do so
+		// can't hurt
 		bcrypt.genSalt(10, function(err, salt) {
 			bcrypt.hash(password, salt, function(err, hash) {
 				callback(hash);	
@@ -254,7 +257,7 @@ var utils = require('./../public/src/utils.js'),
 		}
 
 		RDB.keys('username:*'+ username + '*:uid', function(err, keys) {
-			if(err === null) {
+			if(!err) {
 				if(keys && keys.length) {
 					RDB.mget(keys, function(err, uids) {
 						User.getDataForUsers(uids, function(userdata) {
@@ -272,7 +275,7 @@ var utils = require('./../public/src/utils.js'),
 
 	User.onNewPostMade = function(uid, tid, pid, timestamp) {
 		User.addPostIdToUser(uid, pid)
-					
+
 		User.incrementUserFieldBy(uid, 'postcount', 1);
 		User.setUserField(uid, 'lastposttime', timestamp);
 
@@ -289,13 +292,12 @@ var utils = require('./../public/src/utils.js'),
 
 	User.getPostIds = function(uid, start, end, callback) {
 		RDB.lrange('uid:' + uid + ':posts', start, end, function(err, pids) {
-			if(err === null) {
+			if(!err) {
 				if(pids && pids.length)
 					callback(pids);
 				else
 					callback([]);
-			}
-			else {
+			} else {
 				console.log(err);
 				callback([]);
 			}
@@ -334,69 +336,78 @@ var utils = require('./../public/src/utils.js'),
 			});
 				
 			emailjsServer.send(message, function(err, success) {
-				if (err) 
+				if (err) {
 					console.log(err);
+				}
 			});
 		}
 	}
 
 	User.follow = function(uid, followid, callback) {
-		RDB.sadd('following:'+uid, followid, function(err, data) {
-			if(err === null) {
-				RDB.sadd('followers:'+followid, uid, function(err, data) {
+		RDB.sadd('following:' + uid, followid, function(err, data) {
+			if(!err) {
+				RDB.sadd('followers:' + followid, uid, function(err, data) {
 					callback(data);	
 				});
-			}
-			else
+			} else {
 				console.log(err);
+			}
 		});
 	}
 
 	User.unfollow = function(uid, unfollowid, callback) {
-		RDB.srem('following:'+uid, unfollowid, function(err, data){
-			if(err === null) {
-				RDB.srem('followers:'+unfollowid, uid, function(err, data){
+		RDB.srem('following:' + uid, unfollowid, function(err, data){
+			if(!err) {
+				RDB.srem('followers:' + unfollowid, uid, function(err, data){
 					callback(data);
 				});
-			}
-			else
+			} else {
 				console.log(err);
+			}
 		});
 	}
 
 	User.getFollowing = function(uid, callback) {
-		RDB.smembers('following:'+uid, function(err, userIds) {
-			if(err === null)
+		RDB.smembers('following:' + uid, function(err, userIds) {
+			if(!err) {
 				User.getDataForUsers(userIds, callback);
-			else
-				console.log(err);	
+			} else {
+				console.log(err);
+			}
 		});
 	}
 
 	User.getFollowers = function(uid, callback) {
-		RDB.smembers('followers:'+uid, function(err, userIds) {
-			if(err === null)
+		RDB.smembers('followers:' + uid, function(err, userIds) {
+			if(!err) {
 				User.getDataForUsers(userIds, callback);
-			else
+			} else {
 				console.log(err);	
+			}
 		});
 	}
 	
 	User.getFollowingCount = function(uid, callback) {
-		RDB.smembers('following:'+uid, function(err, userIds) {
-			if(err === null)
+		RDB.smembers('following:' + uid, function(err, userIds) {
+			if(!err) {
 				callback(userIds.length);
-			else
+			} else {
 				console.log(err);	
+			}
 		});
 	}
 	
 	User.getFollowerCount = function(uid, callback) {
-		RDB.smembers('followers:'+uid, function(err, userIds) {
-			if(err === null)
+		RDB.smembers('followers:' + uid, function(err, userIds) {
+			// @note why are error-handling styles being mixed?
+			// either go with not-error-dosomething-else-dosomethingelse, or
+			// go with if-error-dosomething-return
+			// also why is console.log(err) being used when below we're using RDB.handle()?
+			if(!err) {
 				callback(userIds.length);
-			else
-				console.log(err);	
+			} else {
+				console.log(err);
+			}
 		});
 	}
 	
@@ -408,23 +419,21 @@ var utils = require('./../public/src/utils.js'),
 			return;
 		}
 
-		for(var i=0, ii=userIds.length; i<ii; ++i) {
+		for(var i = 0, ii = userIds.length; i < ii; ++i) {
 			User.getUserData(userIds[i], function(userData) {
 				returnData.push(userData);
-				
-				if(returnData.length == userIds.length)
-					callback(returnData);			
+
+				if(returnData.length == userIds.length) {
+					callback(returnData);
+				}
 			});	
 		}
 	}
 	
 	User.sendPostNotificationToFollowers = function(uid, tid, pid) {
-
 		User.getUserField(uid, 'username', function(username) {
-			RDB.smembers('followers:'+uid, function(err, followers) {
-				
+			RDB.smembers('followers:' + uid, function(err, followers) {
 				topics.getTopicField(tid, 'slug', function(slug) {
-
 					var message = username + ' made a new post';
 
 					notifications.create(message, 5, global.config.url + 'topic/' + slug + '#' + pid, 'notification_'+ Date.now(), function(nid) {
@@ -437,36 +446,41 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.isFollowing = function(uid, theirid, callback) {
-		RDB.sismember('following:'+uid, theirid, function(err, data) {
-			if(err === null)
+		RDB.sismember('following:' + uid, theirid, function(err, data) {
+			if(!err) {
 				callback(data === 1);
-			else
+			} else {
 				console.log(err);
+			}
 		});
 	}
 
+	// @todo check why this function checks for a callback - if there's no callback,
+	// it effectively does nothing
 	User.exists = function(userslug, callback) {
 		User.get_uid_by_userslug(userslug, function(exists) {
-			exists = !!exists;
-
-			if (callback) 
-				callback(exists);
+			if (callback) {
+				callback(!!exists);
+			}
 		});
 	};
 	
 	User.count = function(socket) {
 		RDB.get('usercount', function(err, count) {
-			RDB.handle(err);
-			socket.emit('user.count', {count: (count === null) ? 0 : count});
+			if (err) {
+				RDB.handle(err);
+			}
+			socket.emit('user.count', { count: count ? count : 0 });
 		});
 	};
 	
 	User.latest = function(socket) {
 		RDB.lrange('userlist', 0, 0, function(err, username) {
-			RDB.handle(err);
+			if (err) {
+				RDB.handle(err);
+			}
 			
 			User.get_uid_by_username(username, function(uid) {
-				
 				User.getUserField(uid, 'userslug', function(userslug) {
 					socket.emit('user.latest', {userslug: userslug, username: username});				
 				});
@@ -476,14 +490,18 @@ var utils = require('./../public/src/utils.js'),
 
 	User.get_uid_by_username = function(username, callback) {
 		RDB.get('username:' + username + ':uid', function(err, data) {
-			RDB.handle(err);
+			if (err) {
+				RDB.handle(err);
+			}
 			callback(data);
 		});
 	};
 
 	User.get_uid_by_userslug = function(userslug, callback) {
 		RDB.get('userslug:' + userslug + ':uid', function(err, data) {
-			RDB.handle(err);
+			if (err) {
+				RDB.handle(err);
+			}
 			callback(data);
 		});
 	};
@@ -491,16 +509,17 @@ var utils = require('./../public/src/utils.js'),
 	User.get_usernames_by_uids = function(uids, callback) {
 		var usernames = [];
 
-		if (!Array.isArray(uids)) return callback([]);
+		if (!Array.isArray(uids)) {
+			return callback([]);
+		}
 		
 		for(var i=0, ii=uids.length; i<ii; ++i) {
-		
 			User.getUserField(uids[i],'username', function(username) {
-
 				usernames.push(username);
 
-				if(usernames.length >= uids.length)
+				if(usernames.length >= uids.length) {
 					callback(usernames);
+				}
 			});
 		}
 	}
@@ -508,51 +527,65 @@ var utils = require('./../public/src/utils.js'),
 	User.get_userslugs_by_uids = function(uids, callback) {
 		var userslugs = [];
 
-		if (!Array.isArray(uids)) return callback([]);
+		if (!Array.isArray(uids)) {
+			return callback([]);
+		}
 		
+		// @todo - rework this logic. it doesn't make much sense when you're going through
+		// each and then placing the check logic into the innermost callback.
+		// this is probably a situation where an async.method is ideal
 		for(var i=0, ii=uids.length; i<ii; ++i) {
-		
 			User.getUserField(uids[i],'userslug', function(userslug) {
-
 				userslugs.push(userslug);
 
-				if(userslugs.length >= uids.length)
+				if(userslugs.length >= uids.length) {
 					callback(userslugs);
+				}
 			});
 		}
 	}
 
 	User.get_uid_by_email = function(email, callback) {
 		RDB.get('email:' + email + ':uid', function(err, data) {
-			RDB.handle(err);
+			if (err) {
+				RDB.handle(err);
+			}
 			callback(data);
 		});
 	};
 
 	User.get_uid_by_session = function(session, callback) {
 		RDB.get('sess:' + session + ':uid', function(err, data) {
-			RDB.handle(err);
+			if (err) {
+				RDB.handle(err);
+			}
 			callback(data);
 		});
 	};
 
 	User.get_uid_by_twitter_id = function(twid, callback) {
 		RDB.hget('twid:uid', twid, function(err, uid) {
-			RDB.handle(err);			
+			if (err) {
+				RDB.handle(err);
+			}
 			callback(uid);
 		});
 	}
 
 	User.get_uid_by_google_id = function(gplusid, callback) {
 		RDB.hget('gplusid:uid', gplusid, function(err, uid) {
-			RDB.handle(err);
+			if (err) {
+				RDB.handle(err);
+			}
 			callback(uid);
 		});	
 	}
 
 	User.get_uid_by_fbid = function(fbid, callback) {
 		RDB.hget('fbid:uid', fbid, function(err, uid) {
-			RDB.handle(err);
+			if (err) {
+				RDB.handle(err);
+			}
 			callback(uid);
 		});	
 	}
@@ -560,7 +593,9 @@ var utils = require('./../public/src/utils.js'),
 	User.session_ping = function(sessionID, uid) {
 		// Start, replace, or extend a session
 		RDB.get('sess:' + sessionID, function(err, session) {
-			RDB.handle(err);
+			if (err) {
+				RDB.handle(err);
+			}
 
 			var expiry = 60*60*24*14, // Login valid for two weeks
 				sess_key = 'sess:' + sessionID + ':uid',
@@ -575,61 +610,84 @@ var utils = require('./../public/src/utils.js'),
 
 	User.isModerator = function(uid, cid, callback) {
 		RDB.sismember('cid:' + cid + ':moderators', uid, function(err, exists) {
+			// @todo handle error
 			callback(!!exists);
 		});
 	}
 
 	User.isAdministrator = function(uid, callback) {
 		RDB.sismember('administrators', uid, function(err, exists) {
+			// @todo handle error
 			callback(!!exists);
 		});
 	}
 
 	User.makeAdministrator = function(uid, callback) {
 		RDB.sadd('administrators', uid, function(err, data){
-			if(err === null) {
+			if(!err) {
 				User.setUserField(uid, 'administrator', 1);
 			}
-			if(callback)
+
+			if(callback) {
+				// @todo address why we're only sending back a boolean in the callback and not an error if it occurred
 				callback(err === null);
+			}
 		});
 	}
 
 	User.removeAdministrator = function(uid, callback) {
 		RDB.srem('administrators', uid, function(err, data){
-			if(err === null) {
+			if(!err) {
 				User.setUserField(uid, 'administrator', 0);
 			}
-			if(callback)
+
+			if(callback) {
+				// @todo address why we're only sending back a boolean in the callback and not an error if it occurred
 				callback(err === null);
+			}
 		});
 	}	
 
 	User.reset = {
 		validate: function(socket, code, callback) {
-			if (typeof callback !== 'function') callback = undefined;
+			if (typeof callback !== 'function') {
+				callback = null;
+			}
 
 			RDB.get('reset:' + code + ':uid', function(err, uid) {
-				RDB.handle(err);
+				if (err) {
+					RDB.handle(err);
+				}
 
 				if (uid !== null) {
 					RDB.get('reset:' + code + ':expiry', function(err, expiry) {
-						RDB.handle(err);
+						if (err) {
+							RDB.handle(err);
+						}
 
-						if (expiry >= +new Date()/1000|0) {
-							if (!callback) socket.emit('user:reset.valid', { valid: true });
-							else callback(true);
+						if (expiry >= +Date.now()/1000|0) {
+							if (!callback) {
+								socket.emit('user:reset.valid', { valid: true });
+							} else {
+								callback(true);
+							}
 						} else {
 							// Expired, delete from db
 							RDB.del('reset:' + code + ':uid');
 							RDB.del('reset:' + code + ':expiry');
-							if (!callback) socket.emit('user:reset.valid', { valid: false });
-							else callback(false);
+							if (!callback) {
+								socket.emit('user:reset.valid', { valid: false });
+							} else {
+								callback(false);
+							}
 						}
 					});
 				} else {
-					if (!callback) socket.emit('user:reset.valid', { valid: false });
-					else callback(false);
+					if (!callback) {
+						socket.emit('user:reset.valid', { valid: false });
+					} else {
+						callback(false);
+					}
 				}
 			});
 		},
@@ -670,6 +728,7 @@ var utils = require('./../public/src/utils.js'),
 								status: "error",
 								message: "send-failed"
 							});
+							// @todo handle error properly
 							throw new Error(err);
 						}
 					});
@@ -686,7 +745,9 @@ var utils = require('./../public/src/utils.js'),
 			this.validate(code, function(validated) {
 				if (validated) {
 					RDB.get('reset:' + code + ':uid', function(err, uid) {
-						RDB.handle(err);
+						if (err) {
+							RDB.handle(err);
+						}
 
 						User.setUserField(uid, 'password', password);
 						RDB.del('reset:' + code + ':uid');
@@ -703,24 +764,25 @@ var utils = require('./../public/src/utils.js'),
 		exists: function(socket, email, callback) {
 			User.get_uid_by_email(email, function(exists) {
 				exists = !!exists;
-				if (typeof callback !== 'function') socket.emit('user.email.exists', { exists: exists });
-				else callback(exists);
+				if (typeof callback !== 'function') {
+					socket.emit('user.email.exists', { exists: exists });
+				} else {
+					callback(exists);
+				}
 			});
 		},
 		confirm: function(code, callback) {
 			RDB.get('confirm:' + code + ':email', function(err, email) {
-				RDB.handle(err);
+				if (err) {
+					RDB.handle(err);
+				}
 
 				if (email !== null) {
 					RDB.set('email:' + email + ':confirm', true);
 					RDB.del('confirm:' + code + ':email');
-					callback({
-						status: 'ok'
-					});
+					callback({ status: 'ok' });
 				} else {
-					callback({
-						status: 'not_ok'
-					});
+					callback({ status: 'not_ok' });
 				}
 			});
 		}
@@ -728,19 +790,24 @@ var utils = require('./../public/src/utils.js'),
 
 	User.get_online_users = function(socket, uids) {
 		RDB.sismembers('users:online', uids, function(err, data) {
+			// @todo handle err
 			socket.emit('api:user.get_online_users', data);
 		});		
 	};
 
 	User.go_online = function(uid) {
 		RDB.sadd('users:online', uid, function(err) {
-			if (err) RDB.handle(err);
+			if (err) {
+				RDB.handle(err);
+			}
 		});
 	};
 
 	User.go_offline = function(uid) {
 		RDB.srem('users:online', uid, function(err) {
-			if (err) RDB.handle(err);
+			if (err) {
+				RDB.handle(err);
+			}
 		});
 	};
 
@@ -749,7 +816,7 @@ var utils = require('./../public/src/utils.js'),
 		get_record : function(socket) {
 			RDB.mget(['global:active_user_record', 'global:active_user_record_date'], function(err, data) {
 				RDB.handle(err);
-				socket.emit('api:user.active.get_record', {record: data[0], timestamp: data[1]});
+				socket.emit('api:user.active.get_record', { record: data[0], timestamp: data[1] });
 			});
 		},
 
@@ -821,6 +888,7 @@ var utils = require('./../public/src/utils.js'),
 			async.parallel({
 				unread: function(next) {
 					RDB.zrevrangebyscore('uid:' + uid + ':notifications:unread', 10, 0, function(err, nids) {
+						// @todo handle err
 						var unread = [];
 						if (nids && nids.length > 0) {
 							async.eachSeries(nids, function(nid, next) {
@@ -831,11 +899,14 @@ var utils = require('./../public/src/utils.js'),
 							}, function(err) {
 								next(null, unread);
 							});
-						} else next(null, unread);
+						} else {
+							next(null, unread);
+						}
 					});
 				},
 				read: function(next) {
 					RDB.zrevrangebyscore('uid:' + uid + ':notifications:read', 10, 0, function(err, nids) {
+						// @todo handle err
 						var read = [];
 						if (nids && nids.length > 0) {
 							async.eachSeries(nids, function(nid, next) {
@@ -846,31 +917,40 @@ var utils = require('./../public/src/utils.js'),
 							}, function(err) {
 								next(null, read);
 							});
-						} else next(null, read);
+						} else {
+							next(null, read);
+						}
 					});
 				}
 			}, function(err, notifications) {
 				// While maintaining score sorting, sort by time
 				notifications.read.sort(function(a, b) {
-					if (a.score === b.score) return (a.datetime - b.datetime) > 0 ? -1 : 1;
+					if (a.score === b.score) {
+						return (a.datetime - b.datetime) > 0 ? -1 : 1;
+					}
 				});
 				notifications.unread.sort(function(a, b) {
-					if (a.score === b.score) return (a.datetime - b.datetime) > 0 ? -1 : 1;
+					if (a.score === b.score) {
+						return (a.datetime - b.datetime) > 0 ? -1 : 1;
+					}
 				});
 				callback(notifications);
 			});
 		},
 		hasFlag: function(uid, callback) {
 			RDB.get('uid:1:notifications:flag', function(err, flag) {
-				if (err) RDB.handle(err);
+				if (err) {
+					RDB.handle(err);
+				}
 
-				if (flag === '1') callback(true);
-				else callback(false);
+				callback(flag === 1);
 			});
 		},
 		removeFlag: function(uid) {
 			RDB.del('uid:' + uid + ':notifications:flag', function(err) {
-				if (err) RDB.handle(err);
+				if (err) {
+					RDB.handle(err);
+				}
 			});
 		}
 	}
