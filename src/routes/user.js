@@ -259,22 +259,10 @@ var user = require('./../user.js'),
 				});
 			}
 			else if(String(req.params.section).toLowerCase() === 'following') {
-				getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
-					user.getFollowing(userData.uid, function(followingData){
-						userData.following = followingData;
-						userData.followingCount = followingData.length;
-						res.json(userData);
-					});
-				});
+				getFollowing(req, res, callerUID);
 			}
 			else if(String(req.params.section).toLowerCase() === 'followers') {
-				getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
-					user.getFollowers(userData.uid, function(followersData){
-						userData.followers = followersData;
-						userData.followersCount = followersData.length;
-						res.json(userData);
-					});
-				});
+				getFollowers(req, res, callerUID);
 			}
 			else if (String(req.params.section).toLowerCase() === 'edit') {
 				getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
@@ -293,6 +281,35 @@ var user = require('./../user.js'),
 					
 				});						
 			}
+		}
+
+		function getFollowing(req, res, callerUid) {
+			getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
+				if(userData) {
+					user.getFollowing(userData.uid, function(followingData){
+						userData.following = followingData;
+						userData.followingCount = followingData.length;
+						res.json(userData);
+					});
+				
+				} else {
+					res.json(null);
+				}
+			});
+		}
+
+		function getFollowers(req, res, callerUid) {
+			getUserDataByUserSlug(req.params.userslug, callerUid, function(userData) {
+				if(userData) {
+					user.getFollowers(userData.uid, function(followersData){
+						userData.followers = followersData;
+						userData.followersCount = followersData.length;
+						res.json(userData);
+					});
+				} else {
+					res.json(null);
+				}				
+			});
 		}
 
 		app.get('/api/users/:userslug?/:section?', api_method);
@@ -332,9 +349,14 @@ var user = require('./../user.js'),
 			res.json({ search_display: 'block', users: [] });
 		}
 
-
 		function getUserDataByUserSlug(userslug, callerUID, callback) {
 			user.get_uid_by_userslug(userslug, function(uid) {
+				
+				if(uid === null) {
+					callback(null);
+					return;
+				}
+				
 				user.getUserData(uid, function(data) {
 					if(data) {
 						data.joindate = utils.relativeTime(data.joindate);
@@ -357,8 +379,7 @@ var user = require('./../user.js'),
 							});
 						});
 					} else {
-						// @todo why is this an empty object? perhaps the callback should expect NULL or undefined instead.
-						callback({});
+						callback(null);
 					}
 				});
 				
