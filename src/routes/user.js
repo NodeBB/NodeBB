@@ -19,8 +19,6 @@ var user = require('./../user.js'),
 				} else {
 					res.send("User doesn't exist!");
 				}
-				
-				res.send(data);
 			});
 			
 		});
