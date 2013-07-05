@@ -56,6 +56,6 @@
     "url": "https://github.com/designcreateplay/NodeBB/issues"
   },
   "engines": {
-    "node": "*"
+    "node": ">=0.8"
   }
 }
