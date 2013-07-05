@@ -17,7 +17,7 @@ var user = require('./../user.js'),
 				if(data) {
 					res.send(data);
 				} else {
-					res.send("User doesn't exist!");
+					res.json(404, {error:"User doesn't exist!"});
 				}
 			});
 			
@@ -229,7 +229,14 @@ var user = require('./../user.js'),
 			if(!req.user)
 				return res.redirect('/403');
 			
-			res.send(app.build_header(res) + app.create_route('users/'+req.params.userslug+'/following','following') + templates['footer']);
+			user.get_uid_by_userslug(req.params.userslug, function(uid) {
+				if(!uid) {
+					res.redirect('/404');
+					return;
+				}
+			
+				res.send(app.build_header(res) + app.create_route('users/'+req.params.userslug+'/following','following') + templates['footer']);
+			});
 		});
 		
 		app.get('/users/:userslug/followers', function(req, res) {
@@ -237,7 +244,13 @@ var user = require('./../user.js'),
 			if(!req.user)
 				return res.redirect('/403');
 			
-			res.send(app.build_header(res) + app.create_route('users/'+req.params.userslug+'/followers','followers') + templates['footer']);
+			user.get_uid_by_userslug(req.params.userslug, function(uid) {
+				if(!uid) {
+					res.redirect('/404');
+					return;
+				}
+				res.send(app.build_header(res) + app.create_route('users/'+req.params.userslug+'/followers','followers') + templates['footer']);
+			});
 		});
 
 		function api_method(req, res) {
@@ -277,7 +290,7 @@ var user = require('./../user.js'),
 							});
 						});
 					} else {
-						res.json(null);						
+						res.json(404, { error: 'User not found!' })	;
 					}
 				});						
 			}
@@ -293,7 +306,7 @@ var user = require('./../user.js'),
 					});
 				
 				} else {
-					res.json(null);
+					res.json(404, { error: 'User not found!' })	;
 				}
 			});
 		}
@@ -307,7 +320,7 @@ var user = require('./../user.js'),
 						res.json(userData);
 					});
 				} else {
-					res.json(null);
+					res.json(404, { error: 'User not found!' })	;
 				}				
 			});
 		}
