@@ -224,13 +224,14 @@ var utils = require('./../public/src/utils.js'),
 	};
 
 	User.createGravatarURLFromEmail = function(email) {
+		var forceDefault = ''
 		if (!email) {
-			email = utils.generateUUID();
+			email = '0000',
+			forceDefault = '&forceDefault=y';
 		}
-		var md5sum = crypto.createHash('md5');
-		md5sum.update(email.toLowerCase().trim());
-		var gravatarURL = 'http://www.gravatar.com/avatar/' + md5sum.digest('hex') + '?default=identicon&s=128';
-		return gravatarURL;
+		var emailHash = crypto.createHash('md5').update(email.toLowerCase().trim()).digest('hex');
+		// @todo: https asset support?
+		return 'http://www.gravatar.com/avatar/' + emailHash + '?default=identicon&s=128' + forceDefault;
 	}
 
 	User.hashPassword = function(password, callback) {
