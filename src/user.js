@@ -532,7 +532,6 @@ var utils = require('./../public/src/utils.js'),
 		}
 
 		function iterator(uid, callback) {
-
 			User.getUserField(uid, 'userslug', function(userslug) {
 				userslugs.push(userslug);
 				callback(null);
@@ -540,22 +539,8 @@ var utils = require('./../public/src/utils.js'),
 		}
 
 		async.each(uids, iterator, function(err) {
-
 			callback(userslugs);			
 		});
-
-		// @todo - rework this logic. it doesn't make much sense when you're going through
-		// each and then placing the check logic into the innermost callback.
-		// this is probably a situation where an async.method is ideal
-		/*for(var i=0, ii=uids.length; i<ii; ++i) {
-			User.getUserField(uids[i],'userslug', function(userslug) {
-				userslugs.push(userslug);
-
-				if(userslugs.length >= uids.length) {
-					callback(userslugs);
-				}
-			});
-		}*/
 	}
 
 	User.get_uid_by_email = function(email, callback) {
