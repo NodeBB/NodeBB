@@ -7,6 +7,7 @@ define(function() {
 			var	footerEl = document.getElementById('footer');
 		
 			taskbar.taskbar = document.createElement('div');
+			var jTaskbar = $(taskbar.taskbar);
 			taskbar.taskbar.innerHTML = '<div class="navbar-inner"><ul class="nav pull-right"></ul></div>';
 			taskbar.taskbar.className = 'taskbar navbar navbar-fixed-bottom';
 			taskbar.taskbar.id = 'taskbar';
@@ -15,7 +16,7 @@ define(function() {
 			document.body.insertBefore(taskbar.taskbar, footerEl);
 
 			// Posts bar events
-			$(taskbar.taskbar).on('click', 'li', function() {
+			jTaskbar.on('click', 'li', function() {
 				var	_btn = this,
 					module = this.getAttribute('data-module'),
 					uuid = this.getAttribute('data-uuid');
@@ -32,6 +33,10 @@ define(function() {
 						module.minimize(uuid);
 					}
 				});
+			});
+
+			jTaskbar.on('click', 'li a', function(e) {
+				e.preventDefault();
 			});
 
 			taskbar.initialized = true;
