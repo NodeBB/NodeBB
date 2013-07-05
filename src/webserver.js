@@ -149,13 +149,11 @@ var express = require('express'),
 		if (cid.match('.rss')) {
 			fs.readFile('feeds/categories/' + cid, function (err, data) {
 				if (err) {
-					res.send("Unable to locate an rss feed at this location.");
+					res.send(404, "Unable to locate an rss feed at this location.");
 					return;
 				}
 
-				res.setHeader('Content-Type', 'application/xml');
-				res.setHeader('Content-Length', data.length);
-				res.end(data);
+				res.type('xml').set('Content-Length', data.length).send(data);
 			});
 			return;
 		}
