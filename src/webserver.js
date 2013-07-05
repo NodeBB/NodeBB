@@ -572,19 +572,19 @@ var express = require('express'),
 		      "uid": "8"
 		    }		    
 		  ];
-				  
+		var rdb = require('./redis.js');
 		for(var user in users) {
-			redis.hmset('user:'+user.uid, user);
+			rdb.hmset('user:'+user.uid, user);
 			
-			redis.set('username:' + user.username + ':uid', user.uid);
-			redis.set('email:' + user.email +':uid', user.uid);
-			redis.set('userslug:'+ user.userslug +':uid', user.uid);
+			rdb.set('username:' + user.username + ':uid', user.uid);
+			rdb.set('email:' + user.email +':uid', user.uid);
+			rdb.set('userslug:'+ user.userslug +':uid', user.uid);
 			
-			redis.incr('usercount', function(err, count) {
-				redis.handle(err);
+			rdb.incr('usercount', function(err, count) {
+				rdb.handle(err);
 			});
 
-			redis.lpush('userlist', user.username);
+			rdb.lpush('userlist', user.username);
 		}
 		  
 		res.send('success');
