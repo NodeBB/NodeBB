@@ -12,26 +12,25 @@ var utils = require('./../public/src/utils.js'),
 (function(User) {
 	User.getUserField = function(uid, field, callback) {
 		RDB.hget('user:' + uid, field, function(err, data) {
-			if(err === null)
+			if(err === null) {
 				callback(data);
-			else
+			} else {
 				console.log(err);
+			}
 		});
 	}
 	
 	User.getUserFields = function(uid, fields, callback) {
 		RDB.hmget('user:' + uid, fields, function(err, data) {
-			if(err === null) {
-				var returnData = {};
-				
-				for(var i=0, ii=fields.length; i<ii; ++i) {
+			if(err === null) {				
+				for(var i = 0, returnData = {}, ii=fields.length; i<ii; ++i) {
 					returnData[fields[i]] = data[i];
 				}
 
 				callback(returnData);
-			}
-			else
+			} else {
 				console.log(err);
+			}
 		});		
 	}
 
@@ -41,12 +40,11 @@ var utils = require('./../public/src/utils.js'),
 			return;
 		}
 
-		var uuids = uids.filter(function(value, index, self) { 
-			return self.indexOf(value) === index;
-		});
-
 		var data = {},
 			loaded = 0;
+			uuids = uids.filter(function(value, index, self) { 
+			return self.indexOf(value) === index;
+		});
 
 		for (var i=0, ii=uuids.length; i<ii; i++) {
 			(function(user_id) {
@@ -60,7 +58,6 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.getUserData = function(uid, callback) {
-
 		RDB.hgetall('user:' + uid, function(err, data) {
 			if(err === null) {
 				if(data) {
@@ -68,33 +65,29 @@ var utils = require('./../public/src/utils.js'),
 						delete data['password'];
 				}
 				callback(data);
-			}
-			else
+			} else {
 				console.log(err);
+			}
 		});
 	}
 
 	User.updateProfile = function(uid, data, callback) {
-		
+
 		var fields = ['email', 'fullname', 'website', 'location', 'birthday', 'signature'];
-		var key = '';
-		
+
 		if(data['signature'] !== undefined && data['signature'].length > 150) {
 			callback({error:'Signature can\'t be longer than 150 characters!'});
 			return;
 		}
-		
-		
-		for(var i=0,ii=fields.length; i<ii; ++i) {
+
+		for(var i = 0, key, ii = fields.length; i < ii; ++i) {
 			key = fields[i];
 
 			if(data[key] !== undefined) {
-				
 				if(key === 'email') {
 					User.setUserField(uid, 'gravatarpicture', User.createGravatarURLFromEmail(data[key]));
 					RDB.set('email:' + data['email'] +':uid', uid);
-				}
-				else if(key === 'signature') {
+				} else if(key === 'signature') {
 					data[key] = utils.strip_tags(data[key]);
 				}
 				
@@ -141,7 +134,6 @@ var utils = require('./../public/src/utils.js'),
 				console.log('deleting uid ' + uid);
 
 				User.getUserData(uid, function(data) {
-					
 					RDB.del('username:' + data['username'] + ':uid');
 					RDB.del('email:' + data['email'] +':uid');
 					RDB.del('userslug:'+ data['userslug'] +':uid');
@@ -149,22 +141,21 @@ var utils = require('./../public/src/utils.js'),
 					RDB.del('user:' + uid);		
 					RDB.del('followers:' + uid);
 					RDB.del('following:' + uid);
-	
+
 					RDB.lrem('userlist', 1, data['username']);
 
 					callback(true);	
 				});
-			}
-			else
+			} else {
 				callback(false);
+			}
 		});
 	}
 
 	User.create = function(username, password, email, callback) {
+		username = username.trim(), email = email.trim();
 
-		username = username.trim();
-		email = email.trim();
-
+		// @todo return a proper error? use node-validator?
 		if(!utils.isEmailValid(email) || !utils.isUserNameValid(username) || !utils.isPasswordValid(password)) {
 			console.log('Invalid email/username/password!');
 			callback(null, 0);
@@ -174,7 +165,6 @@ var utils = require('./../public/src/utils.js'),
 		var userslug = utils.slugify(username);
 
 		User.exists(userslug, function(exists) {
-
 			if(exists) {
 				callback(null, 0);
 				return;
@@ -202,15 +192,16 @@ var utils = require('./../public/src/utils.js'),
 					'reputation': 0,
 					'postcount': 0,
 					'lastposttime': 0,
-					'administrator': (uid==1)?1:0
+					'administrator': (uid == 1) ? 1 : 0
 				});
 				
 				RDB.set('username:' + username + ':uid', uid);
 				RDB.set('email:' + email +':uid', uid);
 				RDB.set('userslug:'+ userslug +':uid', uid);
 				
-				if(email)
+				if(email) {
 					User.sendConfirmationEmail(email);
+				}
 			
 				RDB.incr('usercount', function(err, count) {
 					RDB.handle(err);
@@ -233,8 +224,9 @@ var utils = require('./../public/src/utils.js'),
 	};
 
 	User.createGravatarURLFromEmail = function(email) {
-		if (!email) 
+		if (!email) {
 			email = utils.generateUUID();
+		}
 		var md5sum = crypto.createHash('md5');
 		md5sum.update(email.toLowerCase().trim());
 		var gravatarURL = 'http://www.gravatar.com/avatar/' + md5sum.digest('hex') + '?default=identicon&s=128';
@@ -246,7 +238,7 @@ var utils = require('./../public/src/utils.js'),
 			callback(password);
 			return;
 		}
-		
+
 		bcrypt.genSalt(10, function(err, salt) {
 			bcrypt.hash(password, salt, function(err, hash) {
 				callback(hash);	
@@ -268,12 +260,12 @@ var utils = require('./../public/src/utils.js'),
 							callback(userdata);
 						});
 					});			
-				}
-				else
+				} else {
 					callback([]);
-			}	
-			else
+				}
+			} else {
 				console.log(err);
+			}
 		});
 	}
 
