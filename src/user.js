@@ -10,6 +10,7 @@ var utils = require('./../public/src/utils.js'),
 	async = require('async');
 
 (function(User) {
+	
 	User.getUserField = function(uid, field, callback) {
 		RDB.hget('user:' + uid, field, function(err, data) {
 			if(err === null) {
@@ -425,7 +426,7 @@ var utils = require('./../public/src/utils.js'),
 			return;
 		}
 
-		function iterator(uids, callback) {
+		function iterator(uid, callback) {
 			User.getUserData(uid, function(userData) {
 				returnData.push(userData);
 
@@ -517,15 +518,16 @@ var utils = require('./../public/src/utils.js'),
 			return callback([]);
 		}
 
-		for(var i=0, ii=uids.length; i<ii; ++i) {
-			User.getUserField(uids[i],'username', function(username) {
+		function iterator(uid, callback) {
+			User.getUserField(uid, 'username', function(username) {
 				usernames.push(username);
-
-				if(usernames.length >= uids.length) {
-					callback(usernames);
-				}
+				callback(null);
 			});
 		}
+
+		async.each(uids, iterator, function(err) {
+			callback(usernames);			
+		});
 	}
 
 	User.get_userslugs_by_uids = function(uids, callback) {
