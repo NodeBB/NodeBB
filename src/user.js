@@ -19,10 +19,10 @@ var utils = require('./../public/src/utils.js'),
 			}
 		});
 	}
-	
+
 	User.getUserFields = function(uid, fields, callback) {
 		RDB.hmget('user:' + uid, fields, function(err, data) {
-			if(err === null) {				
+			if(err === null) {
 				for(var i = 0, returnData = {}, ii=fields.length; i<ii; ++i) {
 					returnData[fields[i]] = data[i];
 				}
@@ -31,7 +31,7 @@ var utils = require('./../public/src/utils.js'),
 			} else {
 				console.log(err);
 			}
-		});		
+		});
 	}
 
 	User.getMultipleUserFields = function(uids, fields, callback) {
@@ -42,7 +42,7 @@ var utils = require('./../public/src/utils.js'),
 
 		var data = {},
 			loaded = 0;
-			uuids = uids.filter(function(value, index, self) { 
+			uuids = uids.filter(function(value, index, self) {
 			return self.indexOf(value) === index;
 		});
 
@@ -90,11 +90,11 @@ var utils = require('./../public/src/utils.js'),
 				} else if(key === 'signature') {
 					data[key] = utils.strip_tags(data[key]);
 				}
-				
+
 				User.setUserField(uid, key, data[key]);
 			}
 		}
-		
+
 		callback({});
 	}
 
@@ -108,9 +108,9 @@ var utils = require('./../public/src/utils.js'),
 
 	User.getUserList = function(callback) {
 		var data = [];
-		
+
 		RDB.keys('user:*', function(err, userkeys) {
-			
+
 			var anonUserIndex = userkeys.indexOf("user:0");
 			if(anonUserIndex !== -1) {
 				userkeys.splice(anonUserIndex, 1);
@@ -118,7 +118,7 @@ var utils = require('./../public/src/utils.js'),
 
 			for(var i=0,ii=userkeys.length; i<ii; ++i) {
 				var uid = userkeys[i].substr(5);
-				
+
 				User.getUserData(uid, function(userData) {
 					data.push(userData);
 					if(data.length === userkeys.length)
@@ -138,13 +138,13 @@ var utils = require('./../public/src/utils.js'),
 					RDB.del('email:' + data['email'] +':uid');
 					RDB.del('userslug:'+ data['userslug'] +':uid');
 
-					RDB.del('user:' + uid);		
+					RDB.del('user:' + uid);
 					RDB.del('followers:' + uid);
 					RDB.del('following:' + uid);
 
 					RDB.lrem('userlist', 1, data['username']);
 
-					callback(true);	
+					callback(true);
 				});
 			} else {
 				callback(false);
@@ -194,18 +194,18 @@ var utils = require('./../public/src/utils.js'),
 					'lastposttime': 0,
 					'administrator': (uid == 1) ? 1 : 0
 				});
-				
+
 				RDB.set('username:' + username + ':uid', uid);
 				RDB.set('email:' + email +':uid', uid);
 				RDB.set('userslug:'+ userslug +':uid', uid);
-				
+
 				if(email) {
 					User.sendConfirmationEmail(email);
 				}
-			
+
 				RDB.incr('usercount', function(err, count) {
 					RDB.handle(err);
-			
+
 					io.sockets.emit('user.count', {count: count});
 				});
 
@@ -245,7 +245,7 @@ var utils = require('./../public/src/utils.js'),
 		// can't hurt
 		bcrypt.genSalt(10, function(err, salt) {
 			bcrypt.hash(password, salt, function(err, hash) {
-				callback(hash);	
+				callback(hash);
 			});
 		});
 	}
@@ -263,7 +263,7 @@ var utils = require('./../public/src/utils.js'),
 						User.getDataForUsers(uids, function(userdata) {
 							callback(userdata);
 						});
-					});			
+					});
 				} else {
 					callback([]);
 				}
@@ -334,7 +334,7 @@ var utils = require('./../public/src/utils.js'),
 					}
 				]
 			});
-				
+
 			emailjsServer.send(message, function(err, success) {
 				if (err) {
 					console.log(err);
@@ -347,7 +347,7 @@ var utils = require('./../public/src/utils.js'),
 		RDB.sadd('following:' + uid, followid, function(err, data) {
 			if(!err) {
 				RDB.sadd('followers:' + followid, uid, function(err, data) {
-					callback(data);	
+					callback(data);
 				});
 			} else {
 				console.log(err);
@@ -382,21 +382,21 @@ var utils = require('./../public/src/utils.js'),
 			if(!err) {
 				User.getDataForUsers(userIds, callback);
 			} else {
-				console.log(err);	
+				console.log(err);
 			}
 		});
 	}
-	
+
 	User.getFollowingCount = function(uid, callback) {
 		RDB.smembers('following:' + uid, function(err, userIds) {
 			if(!err) {
 				callback(userIds.length);
 			} else {
-				console.log(err);	
+				console.log(err);
 			}
 		});
 	}
-	
+
 	User.getFollowerCount = function(uid, callback) {
 		RDB.smembers('followers:' + uid, function(err, userIds) {
 			// @note why are error-handling styles being mixed?
@@ -410,7 +410,7 @@ var utils = require('./../public/src/utils.js'),
 			}
 		});
 	}
-	
+
 	User.getDataForUsers = function(userIds, callback) {
 		var returnData = [];
 
@@ -426,10 +426,10 @@ var utils = require('./../public/src/utils.js'),
 				if(returnData.length == userIds.length) {
 					callback(returnData);
 				}
-			});	
+			});
 		}
 	}
-	
+
 	User.sendPostNotificationToFollowers = function(uid, tid, pid) {
 		User.getUserField(uid, 'username', function(username) {
 			RDB.smembers('followers:' + uid, function(err, followers) {
@@ -464,7 +464,7 @@ var utils = require('./../public/src/utils.js'),
 			}
 		});
 	};
-	
+
 	User.count = function(socket) {
 		RDB.get('usercount', function(err, count) {
 			if (err) {
@@ -473,19 +473,19 @@ var utils = require('./../public/src/utils.js'),
 			socket.emit('user.count', { count: count ? count : 0 });
 		});
 	};
-	
+
 	User.latest = function(socket) {
 		RDB.lrange('userlist', 0, 0, function(err, username) {
 			if (err) {
 				RDB.handle(err);
 			}
-			
+
 			User.get_uid_by_username(username, function(uid) {
 				User.getUserField(uid, 'userslug', function(userslug) {
-					socket.emit('user.latest', {userslug: userslug, username: username});				
+					socket.emit('user.latest', {userslug: userslug, username: username});
 				});
 			});
-		});	
+		});
 	}
 
 	User.get_uid_by_username = function(username, callback) {
@@ -512,7 +512,7 @@ var utils = require('./../public/src/utils.js'),
 		if (!Array.isArray(uids)) {
 			return callback([]);
 		}
-		
+
 		for(var i=0, ii=uids.length; i<ii; ++i) {
 			User.getUserField(uids[i],'username', function(username) {
 				usernames.push(username);
@@ -530,7 +530,7 @@ var utils = require('./../public/src/utils.js'),
 		if (!Array.isArray(uids)) {
 			return callback([]);
 		}
-		
+
 		// @todo - rework this logic. it doesn't make much sense when you're going through
 		// each and then placing the check logic into the innermost callback.
 		// this is probably a situation where an async.method is ideal
@@ -578,7 +578,7 @@ var utils = require('./../public/src/utils.js'),
 				RDB.handle(err);
 			}
 			callback(uid);
-		});	
+		});
 	}
 
 	User.get_uid_by_fbid = function(fbid, callback) {
@@ -587,7 +587,7 @@ var utils = require('./../public/src/utils.js'),
 				RDB.handle(err);
 			}
 			callback(uid);
-		});	
+		});
 	}
 
 	User.session_ping = function(sessionID, uid) {
@@ -646,7 +646,7 @@ var utils = require('./../public/src/utils.js'),
 				callback(err === null);
 			}
 		});
-	}	
+	}
 
 	User.reset = {
 		validate: function(socket, code, callback) {
@@ -715,7 +715,7 @@ var utils = require('./../public/src/utils.js'),
 							}
 						]
 					});
-					
+
 					emailjsServer.send(message, function(err, success) {
 						if (err === null) {
 							socket.emit('user.send_reset', {
@@ -792,7 +792,7 @@ var utils = require('./../public/src/utils.js'),
 		RDB.sismembers('users:online', uids, function(err, data) {
 			// @todo handle err
 			socket.emit('api:user.get_online_users', data);
-		});		
+		});
 	};
 
 	User.go_online = function(uid) {
