@@ -284,7 +284,7 @@ var express = require('express'),
 					});
 				break;
 			default :
-				res.json({});
+				res.json(404, { error: 'unrecognized API endpoint' });
 			break;
 		}
 	}
@@ -300,7 +300,7 @@ var express = require('express'),
 			if(data)
 				res.send(data);
 			else
-				res.send("Category doesn't exist!");
+				res.send(404, "Category doesn't exist!");
 		});
 	});
 
@@ -309,7 +309,7 @@ var express = require('express'),
 			if(data)
 				res.send(data);
 			else
-				res.send("Topic doesn't exist!");
+				res.send(404, "Topic doesn't exist!");
 		});
 	});
 
@@ -318,7 +318,7 @@ var express = require('express'),
 			if(data)
 				res.send(data);
 			else
-				res.send("Post doesn't exist!");
+				res.send(404, "Post doesn't exist!");
 		});
 	});
 
