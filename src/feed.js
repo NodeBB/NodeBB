@@ -29,7 +29,9 @@
 	Feed.updateTopic = function(tid, cid) {
 		var cache_time_in_seconds = 60;
 
-		topics.getTopicWithPosts(tid, 0, function(topicData) {
+		topics.getTopicWithPosts(tid, 0, function(err, topicData) {
+			if (err) console.log('Error: Problem saving topic RSS feed', err);
+
 			var location = '/topic/' + topicData.slug,
 				xml_url = '/topic/' + tid + '.rss';
 

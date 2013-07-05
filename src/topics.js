@@ -84,47 +84,51 @@ marked.setOptions({
 	}
 
 	Topics.getTopicWithPosts = function(tid, current_user, callback) {
-		
-		Topics.markAsRead(tid, current_user);
+		threadTools.exists(tid, function(exists) {
+			if (!exists) return callback(new Error('Topic tid \'' + tid + '\' not found'));
 
-		function getTopicData(next) {
-			Topics.getTopicData(tid, function(topicData) {
-				next(null, topicData);
-			});
-		}
+			Topics.markAsRead(tid, current_user);
 
-		function getTopicPosts(next) {
-			Topics.getTopicPosts(tid, 0, -1, current_user, function(topicPosts, privileges) {
-				
-				next(null, topicPosts);
-			});
-		}
+			function getTopicData(next) {
+				Topics.getTopicData(tid, function(topicData) {
+					next(null, topicData);
+				});
+			}
 
-		function getPrivileges(next) {
-			threadTools.privileges(tid, current_user, function(privData) {
-				next(null, privData);
-			});
-		}		
+			function getTopicPosts(next) {
+				Topics.getTopicPosts(tid, 0, -1, current_user, function(topicPosts, privileges) {
+					
+					next(null, topicPosts);
+				});
+			}
 
-		async.parallel([getTopicData, getTopicPosts, getPrivileges], function(err, results) {
-			var topicData = results[0],
-				topicPosts = results[1],
-				privileges = results[2];
+			function getPrivileges(next) {
+				threadTools.privileges(tid, current_user, function(privData) {
+					next(null, privData);
+				});
+			}		
 
-			var main_posts = topicPosts.splice(0, 1);
+			async.parallel([getTopicData, getTopicPosts, getPrivileges], function(err, results) {
+				if (err) console.log(err.message);
+				var topicData = results[0],
+					topicPosts = results[1],
+					privileges = results[2];
 
-			callback({
-				'topic_name':topicData.title,
-				'category_name':topicData.category_name,
-				'category_slug':topicData.category_slug,
-				'locked': topicData.locked,
-				'deleted': topicData.deleted,
-				'pinned': topicData.pinned,
-				'slug': topicData.slug,
-				'topic_id': tid,
-				'expose_tools': privileges.editable ? 1 : 0,
-				'posts': topicPosts,
-				'main_posts': main_posts
+				var main_posts = topicPosts.splice(0, 1);
+
+				callback(null, {
+					'topic_name':topicData.title,
+					'category_name':topicData.category_name,
+					'category_slug':topicData.category_slug,
+					'locked': topicData.locked,
+					'deleted': topicData.deleted,
+					'pinned': topicData.pinned,
+					'slug': topicData.slug,
+					'topic_id': tid,
+					'expose_tools': privileges.editable ? 1 : 0,
+					'posts': topicPosts,
+					'main_posts': main_posts
+				});
 			});
 		});
 	}

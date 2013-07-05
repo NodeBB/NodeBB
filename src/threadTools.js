@@ -6,6 +6,13 @@ var	RDB = require('./redis.js'),
 	notifications = require('./notifications.js');
 
 (function(ThreadTools) {
+
+	ThreadTools.exists = function(tid, callback) {
+		RDB.sismember('topics:tid', tid, function(err, ismember) {
+			if (err) RDB.handle(err);
+			callback(!!ismember || false);
+		});
+	}
 	
 	ThreadTools.privileges = function(tid, uid, callback) {
 		//todo: break early if one condition is true 
