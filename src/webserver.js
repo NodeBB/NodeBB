@@ -320,11 +320,17 @@ var express = require('express'),
 		});
 	});
 
-	app.all('/test', function(req, res) {
+
+	app.get('/test', function(req, res) {
 		
-		categories.getCategoryById(1,1, function(data) {
+		console.log('derp');
+		user.get_userslugs_by_uids([1,2], function(data) {
 			res.send(data);
-		},1);
+		});
+		
+/*		categories.getCategoryById(1,1, function(data) {
+			res.send(data);
+		},1);*/ 
 		
 	});
 
