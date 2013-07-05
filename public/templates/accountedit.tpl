@@ -80,7 +80,7 @@
 			</div>
 		</div>
 		  
-		<div class="span10">
+		<div class="span5">
 			 <div class="inline-block">
 				<form class='form-horizontal'>
 					<div class="control-group">
@@ -129,7 +129,37 @@
 				 
 					<div class="form-actions">
 						<a id="submitBtn" href="#" class="btn btn-primary">Save changes</a>
-						<a href="/users/{username}" class="btn">Cancel</a>
+					</div>
+				  
+				</form>
+			</div>
+		</div>
+		<div class="span5">
+			<div class="inline-block">
+				<form class='form-horizontal'>
+					<div class="control-group">
+						<label class="control-label" for="inputCurrentPassword">Current Password</label>
+						<div class="controls">
+							<input type="text" id="inputCurrentPassword" placeholder="Current Password" value="">
+						</div>
+					</div>
+				
+					<div class="control-group">
+						<label class="control-label" for="inputNewPassword">Password</label>
+						<div class="controls">
+							<input type="text" id="inputNewPassword" placeholder="New Password" value="">
+						</div>
+					</div>
+				
+					<div class="control-group">
+						<label class="control-label" for="inputNewPasswordAgain">Confirm Password</label>
+						<div class="controls">
+							<input type="text" id="inputNewPasswordAgain" placeholder="Confirm Password" value="">
+						</div>
+					</div>
+				 
+					<div class="form-actions">
+						<a id="changePasswordBtn" href="#" class="btn btn-primary">Change Password</a>
 					</div>
 				  
 				</form>
