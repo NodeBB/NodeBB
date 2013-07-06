@@ -311,28 +311,9 @@
 
 
 	socket.on('api:get_users_in_room', function(data) {
-
-		var anonymousCount = data.anonymousCount,
-			users = data.users,
-			usernames = [],
-			usercount = users.length;
-
-		for (var i = 0, ii=users.length; i<ii; ++i) {
-			usernames[i] = '<strong>' + '<a href="/users/'+users[i].userslug+'">' + users[i].username + '</a></strong>';
-		}
-
-		// headexplosion.gif for fun, to see if I could do this in one line of code. feel free to refactor haha
-		var active =
-			((usercount === 1) ? usernames[0] : '')
-			+ ((usercount === 2 && anonymous === 0) ? usernames[0] + ' and ' + usernames[1] : '')
-			+ ((usercount > 2 && anonymous === 0) ? usernames.join(', ').replace(/,([^,]*)$/, ", and$1") : '')
-			+ (usercount > 1 && anonymous > 0 ? usernames.join(', ') : '')
-			+ ((anonymousCount > 0) ? (usercount > 0 ? ' and ': '') + anonymousCount + ' guest' + (anonymousCount > 1  ? 's are': ' is') : '')
-			+ (anonymousCount === 0 ? (usercount > 1 ? ' are' : ' is') : '') + ' browsing this thread';
-
 		var activeEl = $('#thread_active_users');
 		if(activeEl.length)
-			activeEl.html(active);
+			activeEl.html(data);
 	});
 
 	socket.on('event:rep_up', function(data) {

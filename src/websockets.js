@@ -6,6 +6,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 	posts = require('./posts.js'),
 	favourites = require('./favourites.js'),
 	utils = require('../public/src/utils.js'),
+	util = require('util'),
 	topics = require('./topics.js'),
 	categories = require('./categories.js'),
 	notifications = require('./notifications.js'),
@@ -103,19 +104,28 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			var uids = Object.keys(rooms[data.enter] || {});
 			var anonymousCount = io.sockets.clients(data.enter).length - uids.length;
 
-			if (uids.length === 0) {
-				io.sockets.in(data.enter).emit('api:get_users_in_room', {
-					users: [],
-					anonymousCount: anonymousCount
-				});
+			function userList(users, anonymousCount, userCount) {
+				var usernames = [];
+
+				for (var i = 0, ii=users.length; i<ii; ++i) {
+					usernames[i] = '<strong>' + '<a href="/users/'+users[i].userslug+'">' + users[i].username + '</a></strong>';
+				}
+				
+				var joiner = anonymousCount + userCount == 1 ? 'is' : 'are', 
+				userList = anonymousCount > 0 ? usernames.concat(util.format('%d guest%s', anonymousCount, anonymousCount > 1 ? 's' : '')) : usernames,
+				lastUser = userList.length > 1 ? ' and ' + userList.pop() : '';
+
+				return util.format('%s%s %s browsing this thread', userList.join(', '), lastUser, joiner);
 			}
 
-			user.getMultipleUserFields(uids, ['username', 'userslug'], function(users) {
-				io.sockets.in(data.enter).emit('api:get_users_in_room', {
-					users: users,
-					anonymousCount: anonymousCount
+
+			if (uids.length === 0) {
+				io.sockets.in(data.enter).emit('api:get_users_in_room', userList([], anonymousCount, 0));
+			} else {
+				user.getMultipleUserFields(uids, ['username', 'userslug'], function(users) {
+					io.sockets.in(data.enter).emit('api:get_users_in_room', userList(users, anonymousCount, users.length));
 				});
-			});
+			}
 
 			if (data.enter != 'admin') io.sockets.in('admin').emit('api:get_all_rooms', io.sockets.manager.rooms);
 			
