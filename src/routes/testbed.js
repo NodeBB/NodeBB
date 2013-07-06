@@ -40,13 +40,27 @@
 				var diff = process.hrtime(time);
 				diff = diff[0] + diff[1] / 1e9;
 				return diff;
+			}
+			
+			function withForeach() {
+				var time = process.hrtime();
 				
+				for(var n=0; n<runCount; ++n) {
+					myArray.forEach(function(index) {
+						
+					});
+				}
+				
+				var diff = process.hrtime(time);
+				diff = diff[0] + diff[1] / 1e9;
+				return diff;
 			}
 			
 			benchData['runs'] = runCount;
 			
 			benchData['withCaching'] = withCaching();
 			benchData['withoutCaching'] = withoutCaching();
+			benchData['withForeach'] = withForeach();
 
 			res.json(benchData);
 			
