@@ -25,6 +25,15 @@ var user = require('./user.js'),
 				
 				user.getUserField(uid, 'password', function(user_password) {
 					bcrypt.compare(password, user_password, function(err, res) {
+						if(err) {
+							console.log(err);
+							next({
+								status: "error",
+								message: 'bcrypt compare error'
+							});
+							return;
+						}
+						
 						if (res === true) {
 							next({
 								status: "ok",
