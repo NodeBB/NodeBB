@@ -116,22 +116,25 @@ var utils = require('./../public/src/utils.js'),
 	User.getUserList = function(callback) {
 		var data = [];
 
-		RDB.keys('user:*', function(err, userkeys) {
+		RDB.lrange('userlist', 0, -1, function(err, uids) {
 
-			var anonUserIndex = userkeys.indexOf("user:0");
-			if(anonUserIndex !== -1) {
-				userkeys.splice(anonUserIndex, 1);
-			}
-
-			for(var i=0,ii=userkeys.length; i<ii; ++i) {
-				var uid = userkeys[i].substr(5);
-
+			RDB.handle(err);
+			
+			function iterator(uid, callback) {
 				User.getUserData(uid, function(userData) {
 					data.push(userData);
-					if(data.length === userkeys.length)
-						callback(data);
+					callback(null);
 				});
 			}
+			
+			async.each(uids, iterator, function(err) {
+				if(!err) {
+					callback(data);
+				} else {
+					console.log(err);
+					callback(null);
+				}
+			});
 		});
 	}
 
@@ -149,7 +152,7 @@ var utils = require('./../public/src/utils.js'),
 					RDB.del('followers:' + uid);
 					RDB.del('following:' + uid);
 
-					RDB.lrem('userlist', 1, data['username']);
+					RDB.lrem('userlist', 1, uid);
 
 					callback(true);
 				});
@@ -201,7 +204,7 @@ var utils = require('./../public/src/utils.js'),
 					'lastposttime': 0,
 					'administrator': (uid == 1) ? 1 : 0
 				});
-
+				
 				RDB.set('username:' + username + ':uid', uid);
 				RDB.set('email:' + email +':uid', uid);
 				RDB.set('userslug:'+ userslug +':uid', uid);
@@ -216,7 +219,8 @@ var utils = require('./../public/src/utils.js'),
 					io.sockets.emit('user.count', {count: count});
 				});
 
-				RDB.lpush('userlist', username);
+				RDB.lpush('userlist', uid);
+				
 				io.sockets.emit('user.latest', {userslug: userslug, username: username});
 
 				if (password) {
@@ -451,7 +455,6 @@ var utils = require('./../public/src/utils.js'),
 				});
 			});
 		});
-
 	}
 
 	User.isFollowing = function(uid, theirid, callback) {
@@ -472,23 +475,18 @@ var utils = require('./../public/src/utils.js'),
 
 	User.count = function(socket) {
 		RDB.get('usercount', function(err, count) {
-			if (err) {
-				RDB.handle(err);
-			}
+			RDB.handle(err);
+
 			socket.emit('user.count', { count: count ? count : 0 });
 		});
 	};
 
 	User.latest = function(socket) {
-		RDB.lrange('userlist', 0, 0, function(err, username) {
-			if (err) {
-				RDB.handle(err);
-			}
+		RDB.lrange('userlist', 0, 0, function(err, uid) {
+			RDB.handle(err);
 
-			User.get_uid_by_username(username, function(uid) {
-				User.getUserField(uid, 'userslug', function(userslug) {
-					socket.emit('user.latest', {userslug: userslug, username: username});
-				});
+			User.getUserFields(uid, ['username', 'userslug'], function(userData) {
+				socket.emit('user.latest', {userslug: userData.userslug, username: userData.username});
 			});
 		});
 	}
