@@ -200,6 +200,8 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
+	
+
 	Categories.getModerators = function(cid, callback) {
 		RDB.smembers('cid:' + cid + ':moderators', function(err, mods) {
 			if (mods.length === 0)
@@ -274,11 +276,11 @@ var	RDB = require('./redis.js'),
 		});	
 	}
 
-	Categories.getRecentReplies = function(cid, callback) {
-		RDB.zrevrange('categories:recent_posts:cid:' + cid, 0, 4, function(err, pids) {
+	Categories.getRecentReplies = function(cid, count, callback) {
+		RDB.zrevrange('categories:recent_posts:cid:' + cid, 0, count, function(err, pids) {
 
 			if (pids.length == 0) {
-				callback(false);
+				callback([]);
 				return;
 			}
 			posts.getPostSummaryByPids(pids, function(posts) {
@@ -330,5 +332,7 @@ var	RDB = require('./redis.js'),
 			});
 		}		
 	};
+	
+	
 
 }(exports));

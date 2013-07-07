@@ -287,7 +287,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('api:categories.getRecentReplies', function(tid) {
-			categories.getRecentReplies(tid, function(replies) {
+			categories.getRecentReplies(tid, 4, function(replies) {
 				socket.emit('api:categories.getRecentReplies', replies);
 			});
 		});

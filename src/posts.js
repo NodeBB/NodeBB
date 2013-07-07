@@ -196,8 +196,6 @@ marked.setOptions({
 						RDB.del('cid:' + cid + ':read_by_uid', function(err, data) {
 							topics.markAsRead(tid, uid);	
 						});
-						
-						RDB.zadd('categories:recent_posts:cid:' + cid, Date.now(), pid);
 					});
 
 					Posts.getTopicPostStats(socket);
@@ -285,6 +283,8 @@ marked.setOptions({
 
 						feed.updateTopic(tid, cid);
 
+						RDB.zadd('categories:recent_posts:cid:' + cid, Date.now(), pid);
+
 						// this is a bit of a naive implementation, defn something to look at post-MVP
 						RDB.scard('cid:' + cid + ':active_users', function(amount) {
 							if (amount > 10) {
@@ -294,6 +294,8 @@ marked.setOptions({
 							RDB.sadd('cid:' + cid + ':active_users', uid);
 						});
 					});
+					
+					
 					
 					user.onNewPostMade(uid, tid, pid, timestamp);					
 

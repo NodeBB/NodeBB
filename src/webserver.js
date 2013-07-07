@@ -186,9 +186,25 @@ var express = require('express'),
 				break;
 			case 'home' :
 					categories.getAllCategories(function(data) {
-						data.motd_class = (config.show_motd === '1' || config.show_motd === undefined) ? '' : 'none';
-						data.motd = marked(config.motd || "# NodeBB v0.1\nWelcome to NodeBB, the discussion platform of the future.\n\n<a target=\"_blank\" href=\"http://www.nodebb.org\" class=\"btn btn-large\"><i class=\"icon-comment\"></i> Get NodeBB</a> <a target=\"_blank\" href=\"https://github.com/designcreateplay/NodeBB\" class=\"btn btn-large\"><i class=\"icon-github-alt\"></i> Fork us on Github</a> <a target=\"_blank\" href=\"https://twitter.com/dcplabs\" class=\"btn btn-large\"><i class=\"icon-twitter\"></i> @dcplabs</a>");
-						res.json(data);
+						
+						var async = require('async');
+						
+						function iterator(category, callback) {
+							console.log(category.cid);
+							categories.getRecentReplies(category.cid, 2, function(posts) {
+								category["posts"] = posts;
+								category["post_count"] = posts.length;
+								callback(null);
+							});
+						}
+						
+						async.each(data.categories, iterator, function(err) {
+							data.motd_class = (config.show_motd === '1' || config.show_motd === undefined) ? '' : 'none';
+							data.motd = marked(config.motd || "# NodeBB v0.1\nWelcome to NodeBB, the discussion platform of the future.\n\n<a target=\"_blank\" href=\"http://www.nodebb.org\" class=\"btn btn-large\"><i class=\"icon-comment\"></i> Get NodeBB</a> <a target=\"_blank\" href=\"https://github.com/designcreateplay/NodeBB\" class=\"btn btn-large\"><i class=\"icon-github-alt\"></i> Fork us on Github</a> <a target=\"_blank\" href=\"https://twitter.com/dcplabs\" class=\"btn btn-large\"><i class=\"icon-twitter\"></i> @dcplabs</a>");
+							res.json(data);							
+						});
+						
+
 					}, uid);
 				break;
 			case 'login' :
