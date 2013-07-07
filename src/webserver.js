@@ -190,7 +190,6 @@ var express = require('express'),
 						var async = require('async');
 						
 						function iterator(category, callback) {
-							console.log(category.cid);
 							categories.getRecentReplies(category.cid, 2, function(posts) {
 								category["posts"] = posts;
 								category["post_count"] = posts.length;
