@@ -11,6 +11,102 @@ var utils = require('./../public/src/utils.js'),
 
 (function(User) {
 	
+	User.create = function(username, password, email, callback) {
+		username = username.trim(), email = email.trim();
+
+		// @todo return a proper error? use node-validator?
+		if(!utils.isEmailValid(email) || !utils.isUserNameValid(username) || !utils.isPasswordValid(password)) {
+			console.log('Invalid email/username/password!');
+			callback(null, 0);
+			return;
+		}
+
+		var userslug = utils.slugify(username);
+
+		User.exists(userslug, function(exists) {
+			if(exists) {
+				callback(null, 0);
+				return;
+			}
+
+			RDB.incr('global:next_user_id', function(err, uid) {
+				RDB.handle(err);
+
+				var gravatar = User.createGravatarURLFromEmail(email);
+
+				RDB.hmset('user:'+uid, {
+					'uid': uid,
+					'username' : username,
+					'userslug' : userslug,
+					'fullname': '',
+					'location':'',
+					'birthday':'',
+					'website':'',
+					'email' : email,
+					'signature':'',
+					'joindate' : Date.now(),
+					'picture': gravatar,
+					'gravatarpicture' : gravatar,
+					'uploadedpicture': '',
+					'reputation': 0,
+					'postcount': 0,
+					'lastposttime': 0,
+					'administrator': (uid == 1) ? 1 : 0
+				});
+				
+				RDB.set('username:' + username + ':uid', uid);
+				RDB.set('email:' + email +':uid', uid);
+				RDB.set('userslug:'+ userslug +':uid', uid);
+
+				if(email) {
+					User.sendConfirmationEmail(email);
+				}
+
+				RDB.incr('usercount', function(err, count) {
+					RDB.handle(err);
+
+					io.sockets.emit('user.count', {count: count});
+				});
+
+				RDB.lpush('userlist', uid);
+				
+				io.sockets.emit('user.latest', {userslug: userslug, username: username});
+
+				if (password) {
+					User.hashPassword(password, function(hash) {
+						User.setUserField(uid, 'password', hash);
+					});
+				}
+
+				callback(null, uid);
+			});
+		});
+	};
+	
+	User.delete = function(uid, callback) {
+		RDB.exists('user:'+uid, function(err, exists) {
+			if(exists === 1) {
+				console.log('deleting uid ' + uid);
+
+				User.getUserData(uid, function(data) {
+					RDB.del('username:' + data['username'] + ':uid');
+					RDB.del('email:' + data['email'] +':uid');
+					RDB.del('userslug:'+ data['userslug'] +':uid');
+
+					RDB.del('user:' + uid);
+					RDB.del('followers:' + uid);
+					RDB.del('following:' + uid);
+
+					RDB.lrem('userlist', 1, uid);
+
+					callback(true);
+				});
+			} else {
+				callback(false);
+			}
+		});
+	}
+	
 	User.getUserField = function(uid, field, callback) {
 		RDB.hget('user:' + uid, field, function(err, data) {
 			if(err === null) {
@@ -138,101 +234,6 @@ var utils = require('./../public/src/utils.js'),
 		});
 	}
 
-	User.delete = function(uid, callback) {
-		RDB.exists('user:'+uid, function(err, exists) {
-			if(exists === 1) {
-				console.log('deleting uid ' + uid);
-
-				User.getUserData(uid, function(data) {
-					RDB.del('username:' + data['username'] + ':uid');
-					RDB.del('email:' + data['email'] +':uid');
-					RDB.del('userslug:'+ data['userslug'] +':uid');
-
-					RDB.del('user:' + uid);
-					RDB.del('followers:' + uid);
-					RDB.del('following:' + uid);
-
-					RDB.lrem('userlist', 1, uid);
-
-					callback(true);
-				});
-			} else {
-				callback(false);
-			}
-		});
-	}
-
-	User.create = function(username, password, email, callback) {
-		username = username.trim(), email = email.trim();
-
-		// @todo return a proper error? use node-validator?
-		if(!utils.isEmailValid(email) || !utils.isUserNameValid(username) || !utils.isPasswordValid(password)) {
-			console.log('Invalid email/username/password!');
-			callback(null, 0);
-			return;
-		}
-
-		var userslug = utils.slugify(username);
-
-		User.exists(userslug, function(exists) {
-			if(exists) {
-				callback(null, 0);
-				return;
-			}
-
-			RDB.incr('global:next_user_id', function(err, uid) {
-				RDB.handle(err);
-
-				var gravatar = User.createGravatarURLFromEmail(email);
-
-				RDB.hmset('user:'+uid, {
-					'uid': uid,
-					'username' : username,
-					'userslug' : userslug,
-					'fullname': '',
-					'location':'',
-					'birthday':'',
-					'website':'',
-					'email' : email,
-					'signature':'',
-					'joindate' : Date.now(),
-					'picture': gravatar,
-					'gravatarpicture' : gravatar,
-					'uploadedpicture': '',
-					'reputation': 0,
-					'postcount': 0,
-					'lastposttime': 0,
-					'administrator': (uid == 1) ? 1 : 0
-				});
-				
-				RDB.set('username:' + username + ':uid', uid);
-				RDB.set('email:' + email +':uid', uid);
-				RDB.set('userslug:'+ userslug +':uid', uid);
-
-				if(email) {
-					User.sendConfirmationEmail(email);
-				}
-
-				RDB.incr('usercount', function(err, count) {
-					RDB.handle(err);
-
-					io.sockets.emit('user.count', {count: count});
-				});
-
-				RDB.lpush('userlist', uid);
-				
-				io.sockets.emit('user.latest', {userslug: userslug, username: username});
-
-				if (password) {
-					User.hashPassword(password, function(hash) {
-						User.setUserField(uid, 'password', hash);
-					});
-				}
-
-				callback(null, uid);
-			});
-		});
-	};
 
 	User.createGravatarURLFromEmail = function(email) {
 		var forceDefault = ''
@@ -792,7 +793,7 @@ var utils = require('./../public/src/utils.js'),
 
 	User.get_online_users = function(socket, uids) {
 		RDB.sismembers('users:online', uids, function(err, data) {
-			// @todo handle err
+			RDB.handle(err);
 			socket.emit('api:user.get_online_users', data);
 		});
 	};
@@ -837,7 +838,7 @@ var utils = require('./../public/src/utils.js'),
 			RDB.keys('active:*', function(err, active) {
 				RDB.handle(err);
 
-				var	returnObj = {
+				var returnObj = {
 						users: 0,
 						anon: 0,
 						uids: []
