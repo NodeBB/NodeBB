@@ -59,8 +59,6 @@ var express = require('express'),
 
 	auth.initialize(app);
 	
-	app.use(app.router);
-
 	app.use(function(req, res, next) {
 		// Don't bother with session handling for API requests
 		if (/^\/api\//.test(req.url)) return next();
@@ -74,6 +72,8 @@ var express = require('express'),
 
 		next();
 	});
+	
+	app.use(app.router);
 
 	app.use(function(req, res, next) {
 		res.status(404);
