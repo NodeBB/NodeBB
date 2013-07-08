@@ -34,7 +34,7 @@ var user = require('./user.js'),
 							return;
 						}
 						
-						if (res === true) {
+						if (res) {
 							next({
 								status: "ok",
 								user: {

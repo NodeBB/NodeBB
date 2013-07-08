@@ -190,6 +190,14 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			user.get_online_users(socket, data);
 		});
 
+		socket.on('api:user.changePassword', function(data) {
+			user.changePassword(socket, uid, data, function(success) {
+				if(success) {
+					socket.emit('api:user.changePassword');
+				}
+			});
+		});
+
 		socket.on('api:topics.post', function(data) {
 			topics.post(socket, uid, data.title, data.content, data.category_id);
 		});

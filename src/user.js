@@ -201,6 +201,51 @@ var utils = require('./../public/src/utils.js'),
 		callback({});
 	}
 
+	User.changePassword = function(socket, uid, data, callback) {
+		if(!utils.isPasswordValid(data.newPassword)) {
+			socket.emit('event:alert', {
+				title: 'Error',
+				message: 'Invalid password!',
+				type: 'error',
+				timeout: 2000
+			});		
+			callback(false);
+			return;		
+		}
+
+		User.getUserField(uid, 'password', function(user_password) {
+			bcrypt.compare(data.currentPassword, user_password, function(err, res) {
+				if(err) {
+					console.log(err);
+					callback(false);
+					return;
+				}
+
+				if (res) {
+					User.hashPassword(data.newPassword, function(hash) {
+						User.setUserField(uid, 'password', hash);
+
+						socket.emit('event:alert', {
+							title: 'Success',
+							message: 'Your password is updated!',
+							type: 'success',
+							timeout: 2000
+						});	
+						callback(true);
+					});
+				} else {
+					socket.emit('event:alert', {
+						title: 'Warning',
+						message: 'Your current password is not correct!',
+						type: 'warning',
+						timeout: 2000
+					});	
+					callback(false);
+				}
+			});
+		});
+	}
+
 	User.setUserField = function(uid, field, value) {
 		RDB.hset('user:' + uid, field, value);
 	}

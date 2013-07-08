@@ -80,7 +80,7 @@
 			</div>
 		</div>
 		  
-		<div class="span5">
+		<div class="span10">
 			 <div class="inline-block">
 				<form class='form-horizontal'>
 					<div class="control-group">
@@ -133,38 +133,37 @@
 				  
 				</form>
 			</div>
-		</div>
-		<div class="span5">
-			<div class="inline-block">
+			<div class="inline-block" style="vertical-align:top;">
 				<form class='form-horizontal'>
 					<div class="control-group">
 						<label class="control-label" for="inputCurrentPassword">Current Password</label>
 						<div class="controls">
-							<input type="text" id="inputCurrentPassword" placeholder="Current Password" value="">
+							<input type="password" id="inputCurrentPassword" placeholder="Current Password" value="">
 						</div>
 					</div>
 				
 					<div class="control-group">
 						<label class="control-label" for="inputNewPassword">Password</label>
 						<div class="controls">
-							<input type="text" id="inputNewPassword" placeholder="New Password" value="">
+							<input type="password" id="inputNewPassword" placeholder="New Password" value=""><br/><span id="password-notify" class="label label-important"></span>
 						</div>
 					</div>
 				
 					<div class="control-group">
 						<label class="control-label" for="inputNewPasswordAgain">Confirm Password</label>
 						<div class="controls">
-							<input type="text" id="inputNewPasswordAgain" placeholder="Confirm Password" value="">
+							<input type="password" id="inputNewPasswordAgain" placeholder="Confirm Password" value=""><br/><span id="password-confirm-notify" class="label label-important"></span>
 						</div>
 					</div>
-				 
+				
 					<div class="form-actions">
 						<a id="changePasswordBtn" href="#" class="btn btn-primary">Change Password</a>
 					</div>
-				  
+				
 				</form>
 			</div>
 		</div>
+		
 	</div>  
 </div>
 

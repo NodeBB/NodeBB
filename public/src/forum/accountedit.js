@@ -219,5 +219,66 @@ $(document).ready(function() {
 		$('#uploadForm').submit();
 	});
 	
-	
+	(function handlePasswordChange() {
+		var currentPassword = $('#inputCurrentPassword');
+		var password_notify = $('#password-notify');
+		var password_confirm_notify = $('#password-confirm-notify');
+		var password = $('#inputNewPassword');
+		var password_confirm = $('#inputNewPasswordAgain');
+		var passwordvalid = false;
+		var passwordsmatch = false;
+
+
+		function onPasswordChanged() {
+			passwordvalid = utils.isPasswordValid(password.val());
+			if (password.val().length < 6) {
+				password_notify.html('Password too short');
+				password_notify.attr('class', 'label label-important');
+			} else if(!passwordvalid) {
+				password_notify.html('Invalid password');
+				password_notify.attr('class', 'label label-important');
+			} else {
+				password_notify.html('OK!');
+				password_notify.attr('class', 'label label-success');
+			}
+			
+			onPasswordConfirmChanged();
+		}
+
+		function onPasswordConfirmChanged() {
+			if(password.val() !== password_confirm.val()) {
+				password_confirm_notify.html('Passwords must match!');
+				password_confirm_notify.attr('class', 'label label-important');
+				passwordsmatch = false;
+			} else {
+				password_confirm_notify.html('OK!');
+				password_confirm_notify.attr('class', 'label label-success');
+				passwordsmatch = true;
+			}
+		}
+
+		password.on('keyup', onPasswordChanged);
+		password_confirm.on('keyup', onPasswordConfirmChanged);
+
+		$('#changePasswordBtn').on('click', function() {
+			if(passwordvalid && passwordsmatch && currentPassword.val()) {
+				socket.emit('api:user.changePassword', {
+					'currentPassword': currentPassword.val(),
+					'newPassword': password.val()
+				});
+			}
+			return false;
+		});
+
+		socket.on('api:user.changePassword', function(data) {
+			currentPassword.val('');
+			password.val('');
+			password_confirm.val('');
+			password_notify.html('');
+			password_confirm_notify.html('');
+			passwordsmatch = false;
+			passwordvalid = false;
+		});
+
+	}());
 });
