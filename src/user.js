@@ -28,57 +28,64 @@ var utils = require('./../public/src/utils.js'),
 				callback(null, 0);
 				return;
 			}
-
-			RDB.incr('global:next_user_id', function(err, uid) {
-				RDB.handle(err);
-
-				var gravatar = User.createGravatarURLFromEmail(email);
-
-				RDB.hmset('user:'+uid, {
-					'uid': uid,
-					'username' : username,
-					'userslug' : userslug,
-					'fullname': '',
-					'location':'',
-					'birthday':'',
-					'website':'',
-					'email' : email,
-					'signature':'',
-					'joindate' : Date.now(),
-					'picture': gravatar,
-					'gravatarpicture' : gravatar,
-					'uploadedpicture': '',
-					'reputation': 0,
-					'postcount': 0,
-					'lastposttime': 0,
-					'administrator': (uid == 1) ? 1 : 0
-				});
-				
-				RDB.set('username:' + username + ':uid', uid);
-				RDB.set('email:' + email +':uid', uid);
-				RDB.set('userslug:'+ userslug +':uid', uid);
-
-				if(email) {
-					User.sendConfirmationEmail(email);
+			
+			User.isEmailAvailable(email, function(available) {
+				if(!available) {
+					callback(null, 0);
+					return;
 				}
 
-				RDB.incr('usercount', function(err, count) {
+				RDB.incr('global:next_user_id', function(err, uid) {
 					RDB.handle(err);
 
-					io.sockets.emit('user.count', {count: count});
-				});
+					var gravatar = User.createGravatarURLFromEmail(email);
 
-				RDB.lpush('userlist', uid);
-				
-				io.sockets.emit('user.latest', {userslug: userslug, username: username});
-
-				if (password) {
-					User.hashPassword(password, function(hash) {
-						User.setUserField(uid, 'password', hash);
+					RDB.hmset('user:'+uid, {
+						'uid': uid,
+						'username' : username,
+						'userslug' : userslug,
+						'fullname': '',
+						'location':'',
+						'birthday':'',
+						'website':'',
+						'email' : email,
+						'signature':'',
+						'joindate' : Date.now(),
+						'picture': gravatar,
+						'gravatarpicture' : gravatar,
+						'uploadedpicture': '',
+						'reputation': 0,
+						'postcount': 0,
+						'lastposttime': 0,
+						'administrator': (uid == 1) ? 1 : 0
 					});
-				}
+					
+					RDB.set('username:' + username + ':uid', uid);
+					RDB.set('email:' + email +':uid', uid);
+					RDB.set('userslug:'+ userslug +':uid', uid);
 
-				callback(null, uid);
+					if(email) {
+						User.sendConfirmationEmail(email);
+					}
+
+					RDB.incr('usercount', function(err, count) {
+						RDB.handle(err);
+
+						io.sockets.emit('user.count', {count: count});
+					});
+
+					RDB.lpush('userlist', uid);
+					
+					io.sockets.emit('user.latest', {userslug: userslug, username: username});
+
+					if (password) {
+						User.hashPassword(password, function(hash) {
+							User.setUserField(uid, 'password', hash);
+						});
+					}
+
+					callback(null, uid);
+				});
 			});
 		});
 	};
@@ -174,31 +181,84 @@ var utils = require('./../public/src/utils.js'),
 		});
 	}
 
-	User.updateProfile = function(uid, data, callback) {
+	User.updateProfile = function(socket, uid, data) {
 
 		var fields = ['email', 'fullname', 'website', 'location', 'birthday', 'signature'];
 
-		if(data['signature'] !== undefined && data['signature'].length > 150) {
-			callback({error:'Signature can\'t be longer than 150 characters!'});
-			return;
+		function isSignatureValid(next) {
+			if(data['signature'] !== undefined && data['signature'].length > 150) {
+				next({error:'Signature can\'t be longer than 150 characters!'}, false);
+			} else {
+				next(null, true);	
+			}			
 		}
-
-		for(var i = 0, key, ii = fields.length; i < ii; ++i) {
-			key = fields[i];
-
-			if(data[key] !== undefined) {
-				if(key === 'email') {
-					User.setUserField(uid, 'gravatarpicture', User.createGravatarURLFromEmail(data[key]));
-					RDB.set('email:' + data['email'] +':uid', uid);
-				} else if(key === 'signature') {
-					data[key] = utils.strip_tags(data[key]);
-				}
-
-				User.setUserField(uid, key, data[key]);
+		
+		function isEmailAvailable(next) {
+			if(data['email'] !== undefined) {
+				User.getUserField(uid, 'email', function(email) {
+					if(email !== data['email']) {
+						User.isEmailAvailable(data['email'], function(available) {
+							if(!available) {						
+								next({error:'Email not available!'}, false);
+							}
+						});
+					} else {
+						next(null, true);		
+					}
+				});
+			} else {
+				next(null, true);
 			}
 		}
+		
+		async.series([isSignatureValid, isEmailAvailable], function(err, results) {
+			if(err) {
+				socket.emit('event:alert', {
+					title: 'Error',
+					message: err.error,
+					type: 'error',
+					timeout: 2000
+				});	
+			} else {
+				updateFields();
+			}
+		});
 
-		callback({});
+		function updateFields() {
+			for(var i = 0, key, ii = fields.length; i < ii; ++i) {
+				key = fields[i];
+
+				if(data[key] !== undefined) {
+					if(key === 'email') {
+						User.setUserField(uid, 'gravatarpicture', User.createGravatarURLFromEmail(data[key]));
+						RDB.set('email:' + data['email'] +':uid', uid);
+					} else if(key === 'signature') {
+						data[key] = utils.strip_tags(data[key]);
+					}
+
+					User.setUserField(uid, key, data[key]);
+				}
+			}
+
+			socket.emit('event:alert', {
+				title: 'Success',
+				message: 'Your profile has been updated successfully!',
+				type: 'success',
+				timeout: 2000
+			});	
+		}
+	}
+
+	User.isEmailAvailable = function(email, callback) {
+		RDB.exists('email:' + email + ':uid' , function(err, exists) {
+			if(!err) {
+				callback(exists !== 1);
+				return;
+			} else {
+				console.log(err);
+				callback(false);
+			}
+		});
 	}
 
 	User.changePassword = function(socket, uid, data, callback) {

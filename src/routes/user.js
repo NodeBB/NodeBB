@@ -73,19 +73,6 @@ var user = require('./../user.js'),
 			});	
 		});
 
-		app.post('/users/doedit', function(req, res){
-			if(!req.user)
-				return res.redirect('/403');
-			
-			if(req.user.uid != req.body.uid) {
-				return res.redirect('/');
-			}
-			
-			user.updateProfile(req.user.uid, req.body, function(data) {
-				res.send(data);	
-			});
-		});
-
 		app.post('/users/uploadpicture', function(req, res) {
 			if(!req.user)
 				return res.redirect('/403');

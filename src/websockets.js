@@ -197,6 +197,10 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				}
 			});
 		});
+				   
+		socket.on('api:user.updateProfile', function(data) {
+			user.updateProfile(socket, uid, data);
+		});
 
 		socket.on('api:topics.post', function(data) {
 			topics.post(socket, uid, data.title, data.content, data.category_id);

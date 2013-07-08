@@ -106,33 +106,10 @@ $(document).ready(function() {
 			website:$('#inputWebsite').val(),
 			birthday:$('#inputBirthday').val(),
 			location:$('#inputLocation').val(),
-			signature:$('#inputSignature').val(),
-			_csrf:$('#csrf_token').val()
+			signature:$('#inputSignature').val()
 		};
-			
-		$.post('/users/doedit',
-			userData,
-			function(data) {
-				if(data.error) {
-					app.alert({
-					  'alert_id': 'user_profile_updated',
-					  type: 'error',
-					  title: 'Profile Update Error',
-					  message: data.error,
-					  timeout: 2000
-					});
-					return;
-				}
-				
-				app.alert({
-				  'alert_id': 'user_profile_updated',
-				  type: 'success',
-				  title: 'Profile Updated',
-				  message: 'Your profile has been updated successfully',
-				  timeout: 2000
-				});
-			}
-		);
+
+		socket.emit('api:user.updateProfile', userData);
 		return false;
 	});
 	
