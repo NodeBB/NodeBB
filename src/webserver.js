@@ -58,6 +58,8 @@ var express = require('express'),
 	}
 
 	auth.initialize(app);
+	
+	app.use(app.router);
 
 	app.use(function(req, res, next) {
 		// Don't bother with session handling for API requests
@@ -72,7 +74,40 @@ var express = require('express'),
 
 		next();
 	});
-	
+
+	app.use(function(req, res, next) {
+		res.status(404);
+
+		// respond with html page
+		if (req.accepts('html')) {
+			
+			//res.json('404', { url: req.url });
+			res.redirect('/404');
+			return;
+		}
+
+		// respond with json
+		if (req.accepts('json')) {
+			console.log('sending 404 json');
+			res.send({ error: 'Not found' });
+			return;
+		}
+		
+		// default to plain-text. send()
+		res.type('txt').send('Not found');
+	});
+
+	app.use(function(err, req, res, next) {
+		// we may use properties of the error object
+		// here and next(err) appropriately, or if
+		// we possibly recovered from the error, simply next().
+		console.error(err.stack);
+		
+		res.status(err.status || 500);
+		
+		res.json('500', { error: err.message });
+	});	
+
 	auth.create_routes(app);
 	admin.create_routes(app);
 	userRoute.create_routes(app);

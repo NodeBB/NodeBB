@@ -43,15 +43,16 @@ var user = require('./../user.js'),
 			res.send(app.build_header(res) + app.create_route("users-search", "users") + templates['footer']);
 		});
 
-		app.get('/users/:userslug', function(req, res) {
+		app.get('/users/:userslug', function(req, res, next) {
+
 			if(!req.params.userslug) {
-				res.send("User doesn't exist!");
+				next();
 				return;
 			}
 
 			user.get_uid_by_userslug(req.params.userslug, function(uid) {
 				if(!uid) {
-					res.redirect('/404');
+					next();
 					return;
 				}
 				
@@ -60,6 +61,7 @@ var user = require('./../user.js'),
 		});
 		
 		app.get('/users/:userslug/edit', function(req, res) {
+			console.log('derp');
 			if(!req.user)
 				return res.redirect('/403');
 			
