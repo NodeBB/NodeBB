@@ -8,7 +8,9 @@
 
 	function saveFeed(location, feed) {
 		fs.writeFile(location, rss.getFeedXML(feed), function (err) {
-			if (err) throw err;
+			if(err) {
+				console.log(err);
+			}
 		});
 	}
 
