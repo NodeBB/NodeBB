@@ -8,18 +8,20 @@ var	RDB = require('./redis.js'),
 (function(Categories) {
 
 	Categories.getCategoryById = function(category_id, current_user, callback) {
-		RDB.smembers('categories:' + category_id + ':tid', function(err, tids) {
-
-			Categories.getCategoryData(category_id, function(categoryData) {
+		
+		Categories.getCategoryData(category_id, function(categoryData) {
+			
+			if(!categoryData) {
+				callback(false);
+				return;
+			}
+			
+			RDB.smembers('categories:' + category_id + ':tid', function(err, tids) {
 
 				var category_name = categoryData.name;
 					category_slug = categoryData.slug;
 
 				RDB.smembers('cid:' + category_id + ':active_users', function(err, active_users) {
-					
-					if (category_name === null) {
-						callback(false);
-					}
 
 					var categoryData = {
 							'category_name' : category_name,
