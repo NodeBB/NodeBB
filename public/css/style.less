@@ -207,11 +207,6 @@ footer.footer {
    margin-bottom:10px;
 }
 
-.user-8080-picture {
-   width:80px;
-   height:80px;
-}
-
 .user-picture-label {
   font-size:20px;
 }
@@ -333,14 +328,22 @@ footer.footer {
 
 .users-box{
   display: inline-block;
-  margin-right: 20px;
   margin-top: 20px;
   text-align: center; 
   vertical-align: top; 
-  max-width: 84px;
+  max-width: 104px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+
+  img {
+  	width:80px;
+  	height:80px;
+  }
+
+  a {
+  	margin:5px;
+  }
 }
 
 a:hover {

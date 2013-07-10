@@ -16,9 +16,9 @@
 
 <ul class="users">
 	<!-- BEGIN users -->
-	<div class="users-box well" data-uid="{users.uid}" data-admin="{users.administrator}" data-username="{users.username}">
+	<div class="users-box" data-uid="{users.uid}" data-admin="{users.administrator}" data-username="{users.username}">
 		<a href="/users/{users.userslug}">
-			<img src="{users.picture}" class="user-8080-picture"/>
+			<img src="{users.picture}" class="img-polaroid"/>
 		</a>
 		<br/>
 		<a href="/users/{users.userslug}">{users.username}</a>
@@ -34,7 +34,6 @@
 		<div>
 			<a href="#" class="btn admin-btn">Admin</a>
 		</div>
-		<br/>
 		<div>
 			<a href="#" class="btn delete-btn btn-danger">Delete</a>
 		</div>

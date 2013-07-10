@@ -15,10 +15,9 @@
 
 	<div>
 		<!-- BEGIN followers -->
-
-		<div class="users-box well">
+		<div class="users-box">
 			<a href="/users/{followers.userslug}">
-				<img src="{followers.picture}" class="user-8080-picture"/>
+				<img src="{followers.picture}" class="img-polaroid"/>
 			</a>
 			<br/>
 			<a href="/users/{followers.userslug}">{followers.username}</a>
