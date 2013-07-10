@@ -202,6 +202,65 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			user.updateProfile(socket, uid, data);
 		});
 
+		socket.on('api:user.changePicture', function(data) {
+			
+			var type = data.type;
+
+			function updateHeader() {
+				user.getUserFields(uid, ['picture'], function(fields) {
+					fields.uid = uid;
+					socket.emit('api:updateHeader', fields);
+				});
+			}
+
+			if(type === 'gravatar') {	
+				user.getUserField(uid, 'gravatarpicture', function(gravatar) {
+					user.setUserField(uid, 'picture', gravatar);
+					updateHeader();
+				});
+			}
+			else if(type === 'uploaded') {
+				user.getUserField(uid, 'uploadedpicture', function(uploadedpicture) {
+					user.setUserField(uid, 'picture', uploadedpicture);
+					updateHeader();
+				});
+			}
+			
+		});
+
+
+		socket.on('api:user.follow', function(data) {
+			
+			user.follow(uid, data.uid, function(success) {
+				if(success) {
+					user.getUserField(data.uid, 'username', function(username) {
+						socket.emit('event:alert', {
+							title: 'Following',
+							message: 'You are now following ' + username + '!',
+							type: 'success',
+							timeout: 2000
+						});		
+					});
+				}
+			});
+		});
+
+		socket.on('api:user.unfollow', function(data) {
+			
+			user.unfollow(uid, data.uid, function(success) {
+				if(success) {
+					user.getUserField(data.uid, 'username', function(username) {
+						socket.emit('event:alert', {
+							title: 'Unfollowed',
+							message: 'You are no longer following ' + username + '!',
+							type: 'success',
+							timeout: 2000
+						});		
+					});
+				}
+			});
+		});
+
 		socket.on('api:topics.post', function(data) {
 			topics.post(socket, uid, data.title, data.content, data.category_id);
 		});

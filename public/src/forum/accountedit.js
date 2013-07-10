@@ -82,17 +82,10 @@ $(document).ready(function() {
 	
 	function changeUserPicture(type) { 
 		var userData = {
-			uid: $('#inputUID').val(),
-			type: type,
-			_csrf:$('#csrf_token').val()
+			type: type
 		};
 			
-		$.post('/users/changepicture',
-			userData,
-			function(data) {	
-				socket.emit('api:updateHeader', { fields: ['username', 'picture', 'userslug'] });
-			}                
-		);
+		socket.emit('api:user.changePicture', userData);
 	}
 		
 	var selectedImageType = '';

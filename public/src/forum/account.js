@@ -26,13 +26,9 @@
 		}
 		
 		followBtn.on('click', function() {
-			
-			$.post('/users/follow', {uid: theirid, _csrf:$('#csrf_token').val()},
-				function(data) {
-					followBtn.remove();
-					$('#user-action-alert').html('You are now following'+ $('.account-username').text() +'!').show();
-				}
-			);
+		
+			followBtn.remove();
+			socket.emit('api:user.follow', {uid: theirid});
 			return false;
 		});
 

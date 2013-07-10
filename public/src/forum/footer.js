@@ -47,10 +47,12 @@
 
 			var userLabel = rightMenu.find('#user_label');
 			if(userLabel.length) {
-				userLabel.attr('href','/users/'+data['userslug']);
-			
-				userLabel.find('img').attr('src',data['picture']+"?s=24&default=identicon");
-				userLabel.find('span').html(data['username']);
+				if(data['userslug'])
+					userLabel.attr('href','/users/' + data['userslug']);
+				if(data['picture'])
+					userLabel.find('img').attr('src',data['picture']+"?s=24&default=identicon");
+				if(data['username'])
+					userLabel.find('span').html(data['username']);
 			}
 			else {
 				var userli = $('<li> \

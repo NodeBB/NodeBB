@@ -16,16 +16,13 @@
 			$('.unfollow-btn').hide();
 		}
 		else {
-			$('.unfollow-btn').on('click',function(){
+			$('.unfollow-btn').on('click',function() {
 
 				var removeBtn = $(this);
 				var followingUid = $(this).attr('followingUid');
-				
-				$.post('/users/unfollow', {uid: followingUid, _csrf:$('#csrf_token').val()},
-					function(data) {
-						removeBtn.parent().remove();
-					}                
-				);
+			
+				removeBtn.parent().remove();
+				socket.emit('api:user.unfollow', {uid: followingUid});
 				return false;
 			});
 		}

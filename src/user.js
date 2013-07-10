@@ -464,10 +464,16 @@ var utils = require('./../public/src/utils.js'),
 		RDB.sadd('following:' + uid, followid, function(err, data) {
 			if(!err) {
 				RDB.sadd('followers:' + followid, uid, function(err, data) {
-					callback(data);
+					if(!err) {
+						callback(true);
+					} else {
+						console.log(err);
+						callback(false);
+					}
 				});
 			} else {
 				console.log(err);
+				callback(false);
 			}
 		});
 	}

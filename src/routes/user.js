@@ -166,52 +166,6 @@ var user = require('./../user.js'),
 
 			is.pipe(os);
 		}
-		
-
-		app.post('/users/changepicture', function(req, res){
-			if(!req.user)
-				return res.redirect('/403');
-			
-			if(req.user.uid != req.body.uid)
-				return res.redirect('/');
-				
-			var type = req.body.type;
-			if(type == 'gravatar') {	
-				user.getUserField(req.user.uid, 'gravatarpicture', function(gravatar) {
-					user.setUserField(req.user.uid, 'picture', gravatar);
-				});
-			}
-			else if(type == 'uploaded') {
-				user.getUserField(req.user.uid, 'uploadedpicture', function(uploadedpicture) {
-					user.setUserField(req.user.uid, 'picture', uploadedpicture);
-				});
-			}
-			res.send({});
-		});
-
-		app.post('/users/follow', function(req, res){
-			if(!req.user)
-				return res.redirect('/403');
-			
-			if(req.user.uid == req.body.uid)
-				return res.redirect('/');
-
-			user.follow(req.user.uid, req.body.uid, function(data) {
-				res.json({ data:data });
-			});
-		});
-
-		app.post('/users/unfollow', function(req, res){
-			if(!req.user)
-				return res.redirect('/403');
-			
-			if(req.user.uid == req.body.uid)
-				return res.redirect('/');
-
-			user.unfollow(req.user.uid, req.body.uid, function(data) {
-				res.json({ data:data });
-			});
-		});
 
 		app.get('/users/:userslug/following', function(req, res) {
 
