@@ -357,10 +357,7 @@ var utils = require('./../public/src/utils.js'),
 			return;
 		}
 
-		// round count should be variable somewhere instead of hardcoded here
-		// if an admin has the resources to up the round count, then making it easy for them to do so
-		// can't hurt
-		bcrypt.genSalt(10, function(err, salt) {
+		bcrypt.genSalt(config.bcrypt_rounds, function(err, salt) {
 			bcrypt.hash(password, salt, function(err, hash) {
 				callback(hash);
 			});
@@ -391,7 +388,7 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.onNewPostMade = function(uid, tid, pid, timestamp) {
-		User.addPostIdToUser(uid, pid)
+		User.addPostIdToUser(uid, pid);
 
 		User.incrementUserFieldBy(uid, 'postcount', 1);
 		User.setUserField(uid, 'lastposttime', timestamp);
