@@ -25,16 +25,32 @@ var ajaxify = {};
 		if (event !== null && event.state && event.state.url !== undefined) ajaxify.go(event.state.url, null, null, true);
 	};
 
+	function generatePushUrl(url) {
+		if(url.indexOf(RELATIVE_PATH.slice(1)) === -1)
+			return RELATIVE_PATH + '/' + url;
+		else
+			return url.slice(RELATIVE_PATH.length);
+	}
+
 	ajaxify.go = function(url, callback, template, quiet) {
 		// leave room and join global
 		app.enter_room('global');
 
 		var url = url.replace(/\/$/, "");
 
+		if(url.indexOf(RELATIVE_PATH.slice(1)) !== -1) {
+			url = url.slice(RELATIVE_PATH.length);
+		}
+
 		var tpl_url = templates.get_custom_map(url);
 		
 		if (tpl_url == false && !templates[url]) {
-			tpl_url = (url === '' || url === '/') ? 'home' : url.split('/')[0];
+			if(url === '' || url === '/') {
+				tpl_url = 'home';
+			} else {
+				tpl_url = url.split('/')[0];
+			}
+			
 		} else if (templates[url]) {
 			tpl_url = url;
 		}
@@ -43,7 +59,7 @@ var ajaxify = {};
 			if (quiet !== true) {
 				window.history.pushState({
 					"url": url
-				}, url, RELATIVE_PATH + '/' + url);
+				}, url, generatePushUrl(url));
 			}
 
 			jQuery('#footer, #content').fadeOut(100);

@@ -105,7 +105,17 @@
 		loadTemplates(templates_to_load || []);
 	}
 
+	templates.getTemplateNameFromUrl = function(url) {
+		var parts = url.split('/');
 
+		for(var i=0; i<parts.length; ++i) {
+			if (templates.is_available(parts[i])) {
+				return parts[i];
+			}
+		}
+		return '';
+	}
+	
 
 	templates.load_template = function(callback, url, template) {
 		var location = document.location || window.location,
@@ -116,16 +126,10 @@
 		var tpl_url = templates.get_custom_map(api_url);
 
 		var trimmed = api_url;
-		while (tpl_url == false && trimmed.length > 0) {
-			if (templates.is_available(trimmed)) {
-				tpl_url = trimmed;
-			}
-
-			trimmed = trimmed.split('/');
-			trimmed.pop();
-			trimmed = trimmed.join('/');
-		}
 		
+		if(!tpl_url) {
+			tpl_url = templates.getTemplateNameFromUrl(api_url);
+		}
 		
 		var template_data = null;
 
