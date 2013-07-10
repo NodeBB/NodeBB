@@ -22,4 +22,4 @@
 <input type="hidden" template-variable="reset_code" value="{reset_code}" />
 
 
-<script type="text/javascript" src="/src/forum/reset_code.js"></script>
+<script type="text/javascript" src="{relative_path}/src/forum/reset_code.js"></script>

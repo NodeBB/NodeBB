@@ -101,4 +101,4 @@
 <input type="hidden" template-variable="theirid" value="{theirid}" />
 <input type="hidden" template-type="boolean" template-variable="isFollowing" value="{isFollowing}" />
 
-<script type="text/javascript" src="/src/forum/account.js"></script>
+<script type="text/javascript" src="{relative_path}/src/forum/account.js"></script>

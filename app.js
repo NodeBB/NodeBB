@@ -2,6 +2,7 @@
 var fs = require('fs'),
 	path = require('path'),
 	utils = require('./public/src/utils.js'),
+	url = require('url'),
 	args = {};
 
 // Runtime environment
@@ -21,6 +22,8 @@ fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 		global.config = JSON.parse(data);
 		global.config.url = global.config.base_url + (global.config.use_port ? ':' + global.config.port : '') + '/';
 		global.config.upload_url = global.config.url + 'uploads/';
+		
+
 		console.log('Info: Base Configuration OK.');
 
 		var	meta = require('./src/meta.js');
@@ -71,11 +74,13 @@ fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 								default_categories = JSON.parse(default_categories);
 
 								for (var category in default_categories) {
+									console.log(category);
 									admin.categories.create(default_categories[category]);
 								}
 							});
 
-							// Hardcoding uid 1 as an admin
+							
+							console.log('Info: Hardcoding uid 1 as an admin');
 							var user = require('./src/user.js');
 							user.makeAdministrator(1);
 						} else {
@@ -123,11 +128,17 @@ fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 										if (!secret) secret = utils.generateUUID();
 										if (!bcrypt_rounds) bcrypt_rounds = 10;
 
+										var urlObject = url.parse(base_url);
+										var relative_path = urlObject.pathname;
+										var host = urlObject.host;
+										var protocol = urlObject.protocol;
+
 										var	fs = require('fs'),
 											path = require('path'),
 											config = {
 												secret: secret,
 												base_url: base_url,
+												relative_path: relative_path,
 												port: port,
 												use_port: use_port,
 												upload_path: '/public/uploads/',
@@ -162,10 +173,11 @@ fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 										// Client-side config
 										fs.writeFile(path.join(__dirname, 'public', 'config.json'), JSON.stringify({
 											socket: {
-												address: base_url,
+												address: protocol + '//' + host,
 												port: port
 											},
-											api_url: base_url + (use_port ? ':' + port : '') + '/api/'
+											api_url: protocol + '//' + host + (use_port ? ':' + port : '') + relative_path + '/api/',
+											relative_path: relative_path
 										}, null, 4));
 									});
 								});

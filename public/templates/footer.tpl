@@ -45,7 +45,6 @@
 		<button id="mobile-menu-btn" type="button" class="btn btn-none"><i class="icon-th icon-2x"></i></button>
 		<button id="mobile-post-btn" type="button" class="btn btn-none"><i class="icon-plus icon-2x"></i></button>
 	</div>
-	<script type="text/javascript" src="/src/forum/footer.js"></script>
 	
 	<!-- END Forum Info -->
 </body>

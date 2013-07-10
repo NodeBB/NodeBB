@@ -86,9 +86,12 @@
 		}
 
 		function loadClient() {
-			jQuery.when(jQuery.getJSON('/templates/config.json'), jQuery.getJSON('/api/get_templates_listing')).done(function(config_data, templates_data) {
+			jQuery.when(jQuery.getJSON(RELATIVE_PATH + '/templates/config.json'), jQuery.getJSON(RELATIVE_PATH + '/api/get_templates_listing')).done(function(config_data, templates_data) {
 				config = config_data[0];
 				available_templates = templates_data[0];
+
+
+
 				templates.ready();
 			});
 		}
@@ -131,7 +134,7 @@
 			var timestamp = new Date().getTime(); //debug
 
 			if (!templates[tpl_url]) {
-				jQuery.get('/templates/' + tpl_url + '.tpl?v=' + timestamp, function(html) {
+				jQuery.get(RELATIVE_PATH + '/templates/' + tpl_url + '.tpl?v=' + timestamp, function(html) {
 					var template = function() {
 						this.toString = function() {
 							return this.html;
@@ -153,7 +156,10 @@
 		}());
 			
 		(function() {
+			console.log(API_URL,api_url);
 			jQuery.get(API_URL + api_url, function(data) {
+
+
 				if(!data) {
 					ajaxify.go('404');
 					return;
@@ -170,6 +176,7 @@
 
 		function parse_template() {
 			if (!templates[tpl_url] || !template_data) return;
+			template_data['relative_path'] = RELATIVE_PATH || global.config.relative_path;
 
 			document.getElementById('content').innerHTML = templates[tpl_url].parse(template_data);
 			

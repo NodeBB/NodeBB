@@ -1,4 +1,5 @@
 var express = require('express'),
+	express_namespace = require('express-namespace'),
 	WebServer = express(),
 	server = require('http').createServer(WebServer),
 	RedisStore = require('connect-redis')(express),
@@ -26,16 +27,18 @@ var express = require('express'),
 	
 	app.build_header = function(res) {
 		return templates['header'].parse({
-			cssSrc: global.config['theme:src'] || '/vendor/bootstrap/css/bootstrap.min.css',
+			cssSrc: global.config['theme:src'] || global.config.relative_path + '/vendor/bootstrap/css/bootstrap.min.css',
 			title: global.config['title'] || 'NodeBB',
-			csrf:res.locals.csrf_token
+			csrf:res.locals.csrf_token,
+			relative_path: global.config.relative_path
 		});
 	};
 
 	// Middlewares
 	app.use(express.favicon(path.join(__dirname, '../', 'public', 'favicon.ico')));
 	app.use(require('less-middleware')({ src: path.join(__dirname, '../', 'public') }));
-	app.use(express.static(path.join(__dirname, '../', 'public')));
+	//app.use(express.static(path.join(__dirname, '../', 'public')));
+	app.use(global.config.relative_path, express.static(path.join(__dirname, '../', 'public')));
 	app.use(express.bodyParser());	// Puts POST vars in request.body
 	app.use(express.cookieParser());	// If you want to parse cookies (res.cookies)
 	app.use(express.compress());
@@ -108,11 +111,7 @@ var express = require('express'),
 		res.json('500', { error: err.message });
 	});	
 
-	auth.create_routes(app);
-	admin.create_routes(app);
-	userRoute.create_routes(app);
-	installRoute.create_routes(app);
-	testBed.create_routes(app);
+	
 
 	app.create_route = function(url, tpl) { // to remove
 		return '<script>templates.ready(function(){ajaxify.go("' + url + '", null, "' + tpl + '");});</script>';
@@ -141,77 +140,156 @@ var express = require('express'),
 	}());
 	
 	// Complex Routes
-	app.get('/', function(req, res) {
-		categories.getAllCategories(function(returnData) {
-			res.send(
-				app.build_header(res) +
-				'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/home'].parse(returnData) + '\n\t</noscript>' +
-				app.create_route('') +
-				templates['footer']
-			);
-		}, 0);
-	});
+	app.namespace(global.config.relative_path, function() {
 
-	app.get('/topic/:topic_id/:slug?', function(req, res) {
-		var tid = req.params.topic_id;
-		if (tid.match('.rss')) {
-			fs.readFile('feeds/topics/' + tid, function (err, data) {
-				if (err) {
-					res.type('text').send(404, "Unable to locate an rss feed at this location.");
+		auth.create_routes(app);
+		admin.create_routes(app);
+		userRoute.create_routes(app);
+		installRoute.create_routes(app);
+		testBed.create_routes(app);
+
+		app.get('/', function(req, res) {
+			console.log('going in home');
+			categories.getAllCategories(function(returnData) {
+				res.send(
+					app.build_header(res) +
+					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/home'].parse(returnData) + '\n\t</noscript>' +
+					app.create_route('') +
+					templates['footer']
+				);
+			}, 0);
+		});
+	
+
+		app.get('/topic/:topic_id/:slug?', function(req, res) {
+			var tid = req.params.topic_id;
+			if (tid.match('.rss')) {
+				fs.readFile('feeds/topics/' + tid, function (err, data) {
+					if (err) {
+						res.type('text').send(404, "Unable to locate an rss feed at this location.");
+						return;
+					}
+					
+					res.type('xml').set('Content-Length', data.length).send(data);
+				});
+				return;
+			}
+
+
+			var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
+			topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), function(err, topic) {
+				if (err) return res.redirect('404');
+
+				res.send(
+					app.build_header(res) +
+					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/topic'].parse(topic) + '\n\t</noscript>' +
+					'\n\t<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '");});</script>' +
+					templates['footer']
+				);
+			});
+		});
+
+		app.get('/category/:category_id/:slug?', function(req, res) {
+			var cid = req.params.category_id;
+			if (cid.match('.rss')) {
+				fs.readFile('feeds/categories/' + cid, function (err, data) {
+					if (err) {
+						res.type('text').send(404, "Unable to locate an rss feed at this location.");
+						return;
+					}
+
+					res.type('xml').set('Content-Length', data.length).send(data);
+				});
+				return;
+			}
+
+			var category_url = cid + (req.params.slug ? '/' + req.params.slug : '');
+			categories.getCategoryById(cid, 0, function(returnData) {
+				if(!returnData) {
+					res.redirect('404');
 					return;
 				}
 				
-				res.type('xml').set('Content-Length', data.length).send(data);
+				res.send(
+					app.build_header(res) +
+					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/category'].parse(returnData) + '\n\t</noscript>' +
+					'\n\t<script>templates.ready(function(){ajaxify.go("category/' + category_url + '");});</script>' +
+					templates['footer']
+				);
 			});
-			return;
-		}
-
-
-		var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
-		topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), function(err, topic) {
-			if (err) return res.redirect('404');
-
-			res.send(
-				app.build_header(res) +
-				'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/topic'].parse(topic) + '\n\t</noscript>' +
-				'\n\t<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '");});</script>' +
-				templates['footer']
-			);
 		});
-	});
 
-	app.get('/category/:category_id/:slug?', function(req, res) {
-		var cid = req.params.category_id;
-		if (cid.match('.rss')) {
-			fs.readFile('feeds/categories/' + cid, function (err, data) {
-				if (err) {
-					res.type('text').send(404, "Unable to locate an rss feed at this location.");
+		app.get('/confirm/:code', function(req, res) {
+			res.send(app.build_header(res) + '<script>templates.ready(function(){ajaxify.go("confirm/' + req.params.code + '");});</script>' + templates['footer']);
+		});
+
+		app.get('/api/:method', api_method);
+		app.get('/api/:method/:id', api_method);
+		// ok fine MUST ADD RECURSION style. I'll look for a better fix in future but unblocking baris for this:
+		app.get('/api/:method/:id/:section?', api_method);
+		app.get('/api/:method/:id*', api_method);
+
+		app.get('/cid/:cid', function(req, res) {
+			categories.getCategoryData(req.params.cid, function(data){
+				if(data)
+					res.send(data);
+				else
+					res.send(404, "Category doesn't exist!");
+			});
+		});
+
+		app.get('/tid/:tid', function(req, res) {
+			topics.getTopicData(req.params.tid, function(data){
+				if(data)
+					res.send(data);
+				else
+					res.send(404, "Topic doesn't exist!");
+			});
+		});
+
+		app.get('/pid/:pid', function(req, res) {
+			posts.getPostData(req.params.pid, function(data){
+				if(data)
+					res.send(data);
+				else
+					res.send(404, "Post doesn't exist!");
+			});
+		});
+
+
+		//START TODO: MOVE TO GRAPH.JS 
+
+		app.get('/graph/users/:username/picture', function(req, res) {
+			user.get_uid_by_username(req.params.username, function(uid) {
+				if (uid == null) {
+					res.json({
+						status: 0
+					});
 					return;
 				}
-
-				res.type('xml').set('Content-Length', data.length).send(data);
+				user.getUserField(uid, 'picture', function(picture) {
+					if (picture == null) res.redirect('http://www.gravatar.com/avatar/a938b82215dfc96c4cabeb6906e5f953&default=identicon');
+					res.redirect(picture);
+				});
 			});
-			return;
-		}
-
-		var category_url = cid + (req.params.slug ? '/' + req.params.slug : '');
-		categories.getCategoryById(cid, 0, function(returnData) {
-			if(!returnData) {
-				res.redirect('404');
-				return;
-			}
 			
-			res.send(
-				app.build_header(res) +
-				'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/category'].parse(returnData) + '\n\t</noscript>' +
-				'\n\t<script>templates.ready(function(){ajaxify.go("category/' + category_url + '");});</script>' +
-				templates['footer']
-			);
 		});
-	});
 
-	app.get('/confirm/:code', function(req, res) {
-		res.send(app.build_header(res) + '<script>templates.ready(function(){ajaxify.go("confirm/' + req.params.code + '");});</script>' + templates['footer']);
+		//END TODO: MOVE TO GRAPH.JS
+
+		app.get('/test', function(req, res) {
+			
+			console.log('derp');
+			user.get_userslugs_by_uids([1,2], function(data) {
+				res.send(data);
+			});
+			
+	/*		categories.getCategoryById(1,1, function(data) {
+				res.send(data);
+			},1);*/ 
+			
+		});
+
 	});
 	
 	// These functions are called via ajax once the initial page is loaded to populate templates with data
@@ -342,73 +420,10 @@ var express = require('express'),
 		}
 	}
 
-	app.get('/api/:method', api_method);
-	app.get('/api/:method/:id', api_method);
-	// ok fine MUST ADD RECURSION style. I'll look for a better fix in future but unblocking baris for this:
-	app.get('/api/:method/:id/:section?', api_method);
-	app.get('/api/:method/:id*', api_method);
-
-	app.get('/cid/:cid', function(req, res) {
-		categories.getCategoryData(req.params.cid, function(data){
-			if(data)
-				res.send(data);
-			else
-				res.send(404, "Category doesn't exist!");
-		});
-	});
-
-	app.get('/tid/:tid', function(req, res) {
-		topics.getTopicData(req.params.tid, function(data){
-			if(data)
-				res.send(data);
-			else
-				res.send(404, "Topic doesn't exist!");
-		});
-	});
-
-	app.get('/pid/:pid', function(req, res) {
-		posts.getPostData(req.params.pid, function(data){
-			if(data)
-				res.send(data);
-			else
-				res.send(404, "Post doesn't exist!");
-		});
-	});
+	
 
 
-	app.get('/test', function(req, res) {
-		
-		console.log('derp');
-		user.get_userslugs_by_uids([1,2], function(data) {
-			res.send(data);
-		});
-		
-/*		categories.getCategoryById(1,1, function(data) {
-			res.send(data);
-		},1);*/ 
-		
-	});
-
-
-	//START TODO: MOVE TO GRAPH.JS 
-
-	app.get('/graph/users/:username/picture', function(req, res) {
-		user.get_uid_by_username(req.params.username, function(uid) {
-			if (uid == null) {
-				res.json({
-					status: 0
-				});
-				return;
-			}
-			user.getUserField(uid, 'picture', function(picture) {
-				if (picture == null) res.redirect('http://www.gravatar.com/avatar/a938b82215dfc96c4cabeb6906e5f953&default=identicon');
-				res.redirect(picture);
-			});
-		});
-		
-	});
-
-	//END TODO: MOVE TO GRAPH.JS
+	
 }(WebServer));
 
 server.listen(config.port);

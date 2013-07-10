@@ -140,4 +140,4 @@
 
 
 
-<script type="text/javascript" src="/src/forum/topic.js"></script>
+<script type="text/javascript" src="{relative_path}/src/forum/topic.js"></script>

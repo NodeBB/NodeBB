@@ -14,10 +14,9 @@ var utils = require('./../public/src/utils.js'),
 	User.create = function(username, password, email, callback) {
 		username = username.trim(), email = email.trim();
 
-		// @todo return a proper error? use node-validator?
+		// @todo use node-validator?
 		if(!utils.isEmailValid(email) || !utils.isUserNameValid(username) || !utils.isPasswordValid(password)) {
-			console.log('Invalid email/username/password!');
-			callback(null, 0);
+			callback('Invalid email/username/password!', 0);
 			return;
 		}
 
@@ -25,13 +24,13 @@ var utils = require('./../public/src/utils.js'),
 
 		User.exists(userslug, function(exists) {
 			if(exists) {
-				callback(null, 0);
+				callback('Username taken!', 0);
 				return;
 			}
 			
 			User.isEmailAvailable(email, function(available) {
 				if(!available) {
-					callback(null, 0);
+					callback('Email taken!', 0);
 					return;
 				}
 

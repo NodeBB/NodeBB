@@ -27,4 +27,4 @@
 	</div>
 </div>
 
-<script type="text/javascript" src="/src/forum/login.js"></script>
+<script type="text/javascript" src="{relative_path}/src/forum/login.js"></script>

@@ -170,4 +170,4 @@
 <input type="hidden" template-variable="gravatarpicture" value="{gravatarpicture}" />
 <input type="hidden" template-variable="uploadedpicture" value="{uploadedpicture}" />
 
-<script type="text/javascript" src="/src/forum/accountedit.js"></script>
+<script type="text/javascript" src="{relative_path}/src/forum/accountedit.js"></script>

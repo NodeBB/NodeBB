@@ -309,7 +309,7 @@ var	RDB = require('./redis.js'),
 	}
 
 	Categories.getCategories = function(cids, callback, current_user) {
-		if (cids.length === 0) {
+		if (!cids || cids.length === 0) {
 			callback({'categories' : []});
 			return;
 		}

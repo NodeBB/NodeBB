@@ -73,7 +73,7 @@
 			</div>
 			<div class="block-content">
 				<!-- BEGIN active_users -->
-				<a href="/users/{active_users.userslug}"><img title="{active_users.username}" src="/graph/users/{active_users.username}/picture" class="img-polaroid" /></a>
+				<a href="/users/{active_users.userslug}"><img title="{active_users.username}" src="../../graph/users/{active_users.username}/picture" class="img-polaroid" /></a>
 				<!-- END active_users -->
 			</div>
 		</div>
@@ -83,7 +83,7 @@
 			</div>
 			<div class="block-content">
 				<!-- BEGIN moderators -->
-				<a href="/users/{moderators.userslug}"><img title="{moderators.username}" src="/graph/users/{moderators.username}/picture" class="img-polaroid" /></a>
+				<a href="/users/{moderators.userslug}"><img title="{moderators.username}" src="../../graph/users/{active_users.username}/picture" class="img-polaroid" /></a>
 				<!-- END moderators -->
 			</div>
 		</div>
@@ -94,4 +94,5 @@
 <input type="hidden" template-variable="twitter-intent-url" value="{twitter-intent-url}" />
 <input type="hidden" template-variable="facebook-share-url" value="{facebook-share-url}" />
 <input type="hidden" template-variable="google-share-url" value="{google-share-url}" />
-<script type="text/javascript" src="/src/forum/category.js"></script>
+
+<script type="text/javascript" src="{relative_path}/src/forum/category.js"></script>

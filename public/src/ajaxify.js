@@ -38,12 +38,12 @@ var ajaxify = {};
 		} else if (templates[url]) {
 			tpl_url = url;
 		}
-
+			
 		if (templates.is_available(tpl_url) && !templates.force_refresh(tpl_url)) {
 			if (quiet !== true) {
 				window.history.pushState({
 					"url": url
-				}, url, "/" + url);
+				}, url, RELATIVE_PATH + '/' + url);
 			}
 
 			jQuery('#footer, #content').fadeOut(100);

@@ -36,4 +36,4 @@
 	</ul>
 </div>
 
-<script type="text/javascript" src="/src/forum/users.js"></script>
+<script type="text/javascript" src="{relative_path}/src/forum/users.js"></script>

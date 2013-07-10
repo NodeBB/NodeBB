@@ -9,27 +9,27 @@
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<link href="{cssSrc}" rel="stylesheet" media="screen">
-	<link href="/vendor/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
-	<link rel="stylesheet" href="/vendor/fontawesome/css/font-awesome.min.css">
+	<link href="{relative_path}/vendor/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+	<link rel="stylesheet" href="{relative_path}/vendor/fontawesome/css/font-awesome.min.css">
 	<script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
-	<script type="text/javascript" src="/vendor/jquery/js/jquery-ui-1.10.3.custom.min.js"></script>
-	<script type="text/javascript" src="/vendor/bootstrap/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
-	<script type="text/javascript" src="/src/app.js"></script>
-	<script src="/vendor/requirejs/require.js"></script>
-	<script src="/vendor/bootbox/bootbox.min.js"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/jquery/js/jquery-ui-1.10.3.custom.min.js"></script>
+	<script type="text/javascript" src="{relative_path}/vendor/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="{relative_path}/socket.io/socket.io.js"></script>
+	<script type="text/javascript" src="{relative_path}/src/app.js"></script>
+	<script src="{relative_path}/vendor/requirejs/require.js"></script>
+	<script src="{relative_path}/vendor/bootbox/bootbox.min.js"></script>
 	<script>
 		require.config({
-			baseUrl: "/src/modules",
+			baseUrl: "{relative_path}/src/modules",
 			waitSeconds: 3
 		});
 	</script>
-	<script type="text/javascript" src="/src/templates.js"></script>
-	<script type="text/javascript" src="/src/ajaxify.js"></script>
-	<script type="text/javascript" src="/src/jquery.form.js"></script>
-	<script type="text/javascript" src="/src/utils.js"></script>
+	<script type="text/javascript" src="{relative_path}/src/templates.js"></script>
+	<script type="text/javascript" src="{relative_path}/src/ajaxify.js"></script>
+	<script type="text/javascript" src="{relative_path}/src/jquery.form.js"></script>
+	<script type="text/javascript" src="{relative_path}/src/utils.js"></script>
 
-	<link rel="stylesheet" type="text/css" href="/css/nodebb.css" />
+	<link rel="stylesheet" type="text/css" href="{relative_path}/css/nodebb.css" />
 </head>
 
 <body>

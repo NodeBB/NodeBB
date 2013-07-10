@@ -1,15 +1,17 @@
 var socket,
 	config,
 	app = {},
-	API_URL = null;
+	API_URL = null,
+	RELATIVE_PATH = null;
 
 // todo: cleanup,etc
 (function() {
 
 	$.ajax({
-		url: '/config.json?v=' + new Date().getTime(),
+		url: '/forum/config.json?v=' + new Date().getTime(),
 		success: function(data) {
 			API_URL = data.api_url;
+			RELATIVE_PATH = data.relative_path;
 
 			config = data;
 			socket = io.connect(config.socket.address + (config.socket.port ? ':' + config.socket.port : ''));
@@ -244,6 +246,7 @@ var socket,
 			}
 		}, false);
 
+		$.getScript(RELATIVE_PATH + '/src/forum/footer.js');
 
 		addTouchEvents();
 	});

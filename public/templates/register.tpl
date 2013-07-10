@@ -20,4 +20,4 @@
 	</div>
 </div>
 
-<script type="text/javascript" src="/src/forum/register.js"></script>
+<script type="text/javascript" src="{relative_path}/src/forum/register.js"></script>

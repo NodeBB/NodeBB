@@ -14,4 +14,4 @@
 	<button class="btn btn-primary" id="reset" type="submit">Reset Password</button>
 </div>
 
-<script type="text/javascript" src="/src/forum/reset.js"></script>
+<script type="text/javascript" src="{relative_path}/src/forum/reset.js"></script>
