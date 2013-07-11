@@ -360,7 +360,6 @@ var express = require('express'),
 				break;
 			case 'category' :
 					categories.getCategoryById(req.params.id, uid, function(data) {
-						console.log(data);
 						res.json(data);
 					}, req.params.id, uid);
 				break;
