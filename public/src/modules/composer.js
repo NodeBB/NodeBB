@@ -39,7 +39,7 @@ define(['taskbar'], function(taskbar) {
 
 				composer.taskbar.push('composer', uuid, {
 					title: (!threadData.cid ? (threadData.title || '') : 'New Topic'),
-					icon: '/graph/users/' + threadData.username + '/picture'
+					icon: threadData.picture
 				});
 
 				composer.posts[uuid] = {

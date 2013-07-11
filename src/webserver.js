@@ -258,27 +258,6 @@ var express = require('express'),
 			});
 		});
 
-
-		//START TODO: MOVE TO GRAPH.JS 
-
-		app.get('/graph/users/:username/picture', function(req, res) {
-			user.get_uid_by_username(req.params.username, function(uid) {
-				if (uid == null) {
-					res.json({
-						status: 0
-					});
-					return;
-				}
-				user.getUserField(uid, 'picture', function(picture) {
-					if (picture == null) res.redirect('http://www.gravatar.com/avatar/a938b82215dfc96c4cabeb6906e5f953&default=identicon');
-					res.redirect(picture);
-				});
-			});
-			
-		});
-
-		//END TODO: MOVE TO GRAPH.JS
-
 		app.get('/test', function(req, res) {
 			
 			console.log('derp');
@@ -381,6 +360,7 @@ var express = require('express'),
 				break;
 			case 'category' :
 					categories.getCategoryById(req.params.id, uid, function(data) {
+						console.log(data);
 						res.json(data);
 					}, req.params.id, uid);
 				break;

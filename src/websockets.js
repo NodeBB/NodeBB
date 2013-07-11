@@ -417,11 +417,12 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 						});
 					});
 				} else if (parseInt(data.cid) > 0) {
-					user.getUserField(uid, 'username', function(username) {
+					user.getUserFields(uid, ['username', 'picture'], function(userData) {
 						socket.emit('api:composer.push', {
 							tid: 0,
 							cid: data.cid,
-							username: username,
+							username: userData.username,
+							picture: userData.picture,
 							title: undefined
 						});
 					});

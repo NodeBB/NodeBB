@@ -305,7 +305,7 @@ marked.setOptions({
 				
 				posts.getPostFields(pid, ['content', 'uid', 'timestamp'], function(postData) {
 
-					user.getUserField(postData.uid, 'username', function(username) {
+					user.getUserFields(postData.uid, ['username', 'picture'], function(userData) {
 						var stripped = postData.content,
 							timestamp = postData.timestamp;
 							
@@ -314,7 +314,8 @@ marked.setOptions({
 							
 						callback({
 							"text": stripped,
-							"username": username,
+							"username": userData.username,
+							"picture": userData.picture,
 							"timestamp" : timestamp
 						});
 					});

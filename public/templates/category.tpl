@@ -29,7 +29,7 @@
 				<div class="span12 topic-row img-polaroid">
 					<div class="latest-post visible-desktop">
 						<div class="pull-right">
-							<img style="width: 48px; height: 48px; /*temporary*/" src="../../graph/users/{topics.teaser_username}/picture" />
+							<img style="width: 48px; height: 48px; /*temporary*/" src="{topics.teaser_userpicture}" />
 							<p><strong>{topics.teaser_username}</strong>: {topics.teaser_text}</p>
 							<span>posted {topics.teaser_timestamp} ago</span>
 						</div>
@@ -73,7 +73,7 @@
 			</div>
 			<div class="block-content">
 				<!-- BEGIN active_users -->
-				<a href="/users/{active_users.userslug}"><img title="{active_users.username}" src="../../graph/users/{active_users.username}/picture" class="img-polaroid" /></a>
+				<a href="/users/{active_users.userslug}"><img title="{active_users.username}" src="{active_users.picture}" class="img-polaroid" /></a>
 				<!-- END active_users -->
 			</div>
 		</div>
@@ -83,7 +83,7 @@
 			</div>
 			<div class="block-content">
 				<!-- BEGIN moderators -->
-				<a href="/users/{moderators.userslug}"><img title="{moderators.username}" src="../../graph/users/{active_users.username}/picture" class="img-polaroid" /></a>
+				<a href="/users/{moderators.userslug}"><img title="{moderators.username}" src="{moderators.picture}" class="img-polaroid" /></a>
 				<!-- END moderators -->
 			</div>
 		</div>

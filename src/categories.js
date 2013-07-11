@@ -58,7 +58,7 @@ var	RDB = require('./redis.js'),
 					}
 
 					function getActiveUsers(next) {
-						user.getMultipleUserFields(active_users, ['username', 'userslug'], function(users) {
+						user.getMultipleUserFields(active_users, ['username', 'userslug', 'picture'], function(users) {
 							next(null, users);
 						});
 					}
@@ -180,6 +180,7 @@ var	RDB = require('./redis.js'),
 					topicData.badgeclass = (topicInfo.hasread && current_user != 0) ? '' : 'badge-important';
 					topicData.teaser_text = topicInfo.teaserInfo.text,
 					topicData.teaser_username = topicInfo.teaserInfo.username;
+					topicData.teaser_userpicture = topicInfo.teaserInfo.picture;
 					topicData.teaser_timestamp = utils.relativeTime(topicInfo.teaserInfo.timestamp);
 					
 					if (isTopicVisible(topicData, topicInfo))
