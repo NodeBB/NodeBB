@@ -44,4 +44,4 @@
 <input type="hidden" template-variable="yourid" value="{yourid}" />
 
 
-<script type="text/javascript" src="../../src/forum/admin/users.js"></script>
+<script type="text/javascript" src="{relative_path}/src/forum/admin/users.js"></script>

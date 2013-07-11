@@ -246,8 +246,7 @@ var socket,
 			}
 		}, false);
 
-		$.getScript(RELATIVE_PATH + '/src/forum/footer.js');
-
+		
 		addTouchEvents();
 	});
 

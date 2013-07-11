@@ -9,7 +9,7 @@
 			<button data-action="lock" class="btn"><i class="icon-lock"></i></button>
 			<button data-action="delete" class="btn"><i class="icon-trash"></i></button>
 		</div>
-		<a target="_blank" href="../../topic/{topics.slug}">{topics.title}</a>
+		<a target="_blank" href="{relative_path}/topic/{topics.slug}">{topics.title}</a>
 		<ul>
 			<li><i class="icon-time"></i> Posted {topics.relativeTime} ago by {topics.username}</li>
 			<li><i class="icon-comments"></i> {topics.postcount} post(s)</li>
@@ -23,4 +23,4 @@
 	<button id="topics_loadmore" class="btn btn-large">Load More Topics</button>
 </div>
 
-<script type="text/javascript" src="../../src/forum/admin/topics.js"></script>
+<script type="text/javascript" src="{relative_path}/src/forum/admin/topics.js"></script>

@@ -43,4 +43,4 @@
   <div class="span3"><i class="icon-ambulance"></i></div><div class="span3"><i class="icon-h-sign"></i></div><div class="span3"><i class="icon-hospital"></i></div><div class="span3"><i class="icon-medkit"></i></div><div class="span3"><i class="icon-plus-sign-alt"></i></div><div class="span3"><i class="icon-stethoscope"></i></div><div class="span3"><i class="icon-user-md"></i></div>
 </div></div></div>
 
-<script type="text/javascript" src="../../src/forum/admin/categories.js"></script>
+<script type="text/javascript" src="{relative_path}/src/forum/admin/categories.js"></script>

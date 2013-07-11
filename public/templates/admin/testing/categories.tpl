@@ -6,6 +6,7 @@
 
 <script type="text/javascript">
 jQuery(document).ready(function () {
+
 	QUnit.init();
 	asyncTest( "Loading Categories", function() {
 		

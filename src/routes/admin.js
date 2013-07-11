@@ -12,6 +12,14 @@ var user = require('./../user.js'),
 		});
 	}
 
+	Admin.build_header = function(res) {
+		return templates['admin/header'].parse({
+			cssSrc: global.config['theme:src'] || global.config.relative_path + '/vendor/bootstrap/css/bootstrap.min.css',
+			csrf:res.locals.csrf_token,
+			relative_path: global.config.relative_path
+		});
+	}
+
 	Admin.create_routes = function(app) {
 
 		(function() {
@@ -20,7 +28,7 @@ var user = require('./../user.js'),
 			for (var i=0, ii=routes.length; i<ii; i++) {
 				(function(route) {
 					app.get('/admin/' + route, Admin.isAdmin, function(req, res) {
-						res.send(templates['admin/header'] + app.create_route('admin/' + route) + templates['admin/footer']);
+						res.send(Admin.build_header(res) + app.create_route('admin/' + route) + templates['admin/footer']);
 					});
 				}(routes[i]));
 			}
@@ -30,7 +38,7 @@ var user = require('./../user.js'),
 			for (var i=0, ii=unit_tests.length; i<ii; i++) {
 				(function(route) {
 					app.get('/admin/testing/' + route, Admin.isAdmin, function(req, res) {
-						res.send(templates['admin/header'] + app.create_route('admin/testing/' + route) + templates['admin/footer']);
+						res.send(Admin.build_header(res) + app.create_route('admin/testing/' + route) + templates['admin/footer']);
 					});
 				}(unit_tests[i]));
 			}
@@ -39,10 +47,11 @@ var user = require('./../user.js'),
 
 		//todo consolidate.
 		app.get('/admin', Admin.isAdmin, function(req, res) {
-			res.send(templates['admin/header'] + app.create_route('admin/index') + templates['admin/footer']);
+			res.send(Admin.build_header(res) + app.create_route('admin/index') + templates['admin/footer']);
 		});
+		
 		app.get('/admin/index', Admin.isAdmin, function(req, res) {
-			res.send(templates['admin/header'] + app.create_route('admin/index') + templates['admin/footer']);
+			res.send(Admin.build_header(res) + app.create_route('admin/index') + templates['admin/footer']);
 		});
 
 

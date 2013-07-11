@@ -47,5 +47,9 @@
 	</div>
 	
 	<!-- END Forum Info -->
+	<script>
+		$.getScript(RELATIVE_PATH + '/src/forum/footer.js');
+	</script>
+	
 </body>
 </html>

@@ -28,11 +28,13 @@
 
 	socket.emit('api:user.active.get');
 	socket.on('api:user.active.get', function(data) {
+	
 		var plural_users = parseInt(data.users) !== 1,
 			plural_anon = parseInt(data.anon) !== 1;
 
 		active_users.innerHTML = 'There ' + (plural_users ? 'are' : 'is') + ' <strong>' + data.users + '</strong> user' + (plural_users ? 's' : '') + ' and <strong>' + data.anon + '</strong> guest' + (plural_anon ? 's' : '') + ' online';
 	});
+	
 	socket.emit('api:user.active.get_record');
 	socket.on('api:user.active.get_record', function(data) {
 		active_record.innerHTML = "most users ever online was <strong>" + data.record + "</strong> on <strong>" + (new Date(parseInt(data.timestamp,10))).toUTCString() + "</strong>";

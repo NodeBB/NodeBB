@@ -24,6 +24,7 @@
 	
 	ajaxify.register_events(['api:get_all_rooms']);
 	socket.on('api:get_all_rooms', function(data) {
+
 		var active_users = document.getElementById('active_users'),
 			total = 0;
 			active_users.innerHTML = '';
