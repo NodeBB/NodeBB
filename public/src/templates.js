@@ -160,9 +160,8 @@
 		}());
 			
 		(function() {
-			console.log(API_URL,api_url);
-			jQuery.get(API_URL + api_url, function(data) {
 
+			jQuery.get(API_URL + api_url, function(data) {
 
 				if(!data) {
 					ajaxify.go('404');

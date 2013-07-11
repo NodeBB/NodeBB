@@ -15,7 +15,7 @@ define(function() {
 			return;
 		}
 
-		jQuery.getJSON('/api/home', function(data) {
+		jQuery.getJSON(RELATIVE_PATH+'/api/home', function(data) {
 			categories = data.categories;
 			initialized = true;
 

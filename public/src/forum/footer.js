@@ -63,7 +63,7 @@
 								</li>');
 				rightMenu.append(userli);
 
-				var logoutli = $('<li><a href="/logout">Log out</a></li>');
+				var logoutli = $('<li><a href="' + RELATIVE_PATH + '/logout">Log out</a></li>');
 				rightMenu.append(logoutli);
 			}
 		} else {

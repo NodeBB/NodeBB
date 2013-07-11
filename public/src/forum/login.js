@@ -24,11 +24,11 @@
 				
 		$.ajax({
 			type: "POST",
-			url: '/login',
+			url: RELATIVE_PATH + '/login',
 			data: loginData,
 			success: function(data, textStatus, jqXHR) {
 				$('#login-error-notify').hide();
-				window.location.replace("/");
+				window.location.replace(RELATIVE_PATH + "/");
 			},
 			error : function(data, textStatus, jqXHR) {
 				$('#login-error-notify').show().delay(1000).fadeOut(250);

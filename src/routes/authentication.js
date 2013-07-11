@@ -135,14 +135,15 @@
 		
 		app.post('/register', function(req, res) {
 			user_module.create(req.body.username, req.body.password, req.body.email, function(err, uid) {
+
 				if (err === null && uid > 0) {
 					req.login({
 						uid: uid
 					}, function() {
-						res.redirect('/');
+						res.redirect(global.config.relative_path + '/');
 					});
 				} else {
-					res.redirect('/register');
+					res.redirect(global.config.relative_path + '/register');
 				}
 			});
 		});

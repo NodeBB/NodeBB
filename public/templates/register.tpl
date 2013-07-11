@@ -1,7 +1,7 @@
 <h1>Register</h1>
 <div class="row-fluid">
 	<div class="well {register_window:spansize}">
-		<form method="post" action="/register">
+		<form method="post" action="{relative_path}/register">
 			<label for="email">Email Address</label><input type="email" name="email" placeholder="Enter Email Address" id="email" /> <span id="email-notify" class="label label-important"></span><br />
 			<label for="username">Username</label><input type="text" name="username" placeholder="Enter Username" id="username" /> <span id="username-notify" class="label label-success"></span> <br />
 			<label for="password">Password</label><input type="password" name="password" placeholder="Enter Password" id="password" /> <span id="password-notify" class="label label-important"></span> <br />

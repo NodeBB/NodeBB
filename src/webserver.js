@@ -110,36 +110,13 @@ var express = require('express'),
 		
 		res.json('500', { error: err.message });
 	});	
-
 	
 
 	app.create_route = function(url, tpl) { // to remove
 		return '<script>templates.ready(function(){ajaxify.go("' + url + '", null, "' + tpl + '");});</script>';
 	};
-
-	// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
-	(function() {
-		var routes = ['login', 'register', 'account', 'recent', 'popular', 'active', '403', '404'];
-
-		for (var i=0, ii=routes.length; i<ii; i++) {
-			(function(route) {
-				
-				app.get('/' + route, function(req, res) {
-					if ((route === 'login' || route ==='register') && (req.user && req.user.uid > 0)) {
-						
-						user.getUserField(req.user.uid, 'userslug', function(userslug) {
-							res.redirect('/users/'+userslug);							
-						});
-						return;
-					}
-					
-					res.send(app.build_header(res) + app.create_route(route) + templates['footer']);
-				});
-			}(routes[i]));
-		}
-	}());
 	
-	// Complex Routes
+
 	app.namespace(global.config.relative_path, function() {
 
 		auth.create_routes(app);
@@ -147,9 +124,34 @@ var express = require('express'),
 		userRoute.create_routes(app);
 		installRoute.create_routes(app);
 		testBed.create_routes(app);
+		
+		
+		
+		// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
+		(function() {
+			var routes = ['login', 'register', 'account', 'recent', 'popular', 'active', '403', '404'];
+	
+			for (var i=0, ii=routes.length; i<ii; i++) {
+				(function(route) {
+					
+					app.get('/' + route, function(req, res) {
+						if ((route === 'login' || route ==='register') && (req.user && req.user.uid > 0)) {
+							
+							user.getUserField(req.user.uid, 'userslug', function(userslug) {
+								res.redirect('/users/'+userslug);							
+							});
+							return;
+						}
+						
+						res.send(app.build_header(res) + app.create_route(route) + templates['footer']);
+					});
+				}(routes[i]));
+			}
+		}());
+		
 
 		app.get('/', function(req, res) {
-			console.log('going in home');
+
 			categories.getAllCategories(function(returnData) {
 				res.send(
 					app.build_header(res) +
