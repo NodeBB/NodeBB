@@ -2,6 +2,7 @@
 var fs = require('fs'),
 	path = require('path'),
 	utils = require('./public/src/utils.js'),
+	ver = '0.0.2',
 	args = {};
 
 // Runtime environment
@@ -15,12 +16,18 @@ process.argv.slice(2).forEach(function(value) {
 	}
 });
 
-console.log('Info: Checking for valid base configuration file');
+// Log GNU copyright info along with server info
+console.log('Info: NodeBB v' + ver + ' Copyright (C) 2013 Design Create Play Inc.');
+console.log('Info: This program comes with ABSOLUTELY NO WARRANTY.');
+console.log('Info: This is free software, and you are welcome to redistribute it under certain conditions.');
+console.log('Info: ===');
+
 fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 	if (!err && args.setup !== true) {
 		global.config = JSON.parse(data);
 		global.config.url = global.config.base_url + (global.config.use_port ? ':' + global.config.port : '') + '/';
 		global.config.upload_url = global.config.url + 'uploads/';
+		console.log('Info: Initializing NodeBB v' + ver + ', on port ' + global.config.port + ', using Redis store at ' + global.config.redis.host + ':' + global.config.redis.port + '.');
 		console.log('Info: Base Configuration OK.');
 
 		var	meta = require('./src/meta.js');
@@ -79,7 +86,7 @@ fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 							var user = require('./src/user.js');
 							user.makeAdministrator(1);
 						} else {
-							console.log('Info: Good.');
+							console.log('Info: Categories OK. Found ' + data.categories.length + ' categories.');
 						}
 					});
 				}
