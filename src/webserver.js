@@ -85,7 +85,7 @@ var express = require('express'),
 		if (req.accepts('html')) {
 			
 			//res.json('404', { url: req.url });
-			res.redirect('/404');
+			res.redirect(global.config.relative_path + '/404');
 			return;
 		}
 
