@@ -1,3 +1,21 @@
+/*
+	NodeBB - A forum powered by node in development by designcreateplay
+	Copyright (C) 2013  DesignCreatePlay Inc.
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 // Read config.js to grab redis info
 var fs = require('fs'),
 	path = require('path'),
@@ -17,7 +35,7 @@ process.argv.slice(2).forEach(function(value) {
 });
 
 // Log GNU copyright info along with server info
-console.log('Info: NodeBB v' + ver + ' Copyright (C) 2013 Design Create Play Inc.');
+console.log('Info: NodeBB v' + ver + ' Copyright (C) 2013 DesignCreatePlay Inc.');
 console.log('Info: This program comes with ABSOLUTELY NO WARRANTY.');
 console.log('Info: This is free software, and you are welcome to redistribute it under certain conditions.');
 console.log('Info: ===');
