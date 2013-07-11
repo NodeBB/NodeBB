@@ -98,8 +98,6 @@ var socket,
 						window.location.reload();
 					});
 				}
-				
-				callback();
 			},
 			async: false
 		});
