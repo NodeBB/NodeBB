@@ -8,7 +8,7 @@ var socket,
 (function() {
 	RELATIVE_PATH = $('#relative_path').val();
 	
-	function loadConfig(callback) {
+	function loadConfig() {
 	
 		$.ajax({
 			url: RELATIVE_PATH + '/config.json?v=' + new Date().getTime(),
@@ -231,15 +231,10 @@ var socket,
 		}, 100);
 	}
 
-	
-
-
-
-
 
 	jQuery('document').ready(function() {
 		
-		loadConfig(function () {});
+		loadConfig();
 		
 		app.enter_room('global');
 
