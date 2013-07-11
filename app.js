@@ -152,10 +152,14 @@ fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 										if (!secret) secret = utils.generateUUID();
 										if (!bcrypt_rounds) bcrypt_rounds = 10;
 
-										var urlObject = url.parse(base_url);
-										var relative_path = urlObject.pathname;
-										var host = urlObject.host;
-										var protocol = urlObject.protocol;
+										var urlObject = url.parse(base_url),
+											relative_path = urlObject.pathname,
+											host = urlObject.host,
+											protocol = urlObject.protocol;
+											
+										if(relative_path.length === 1) {
+											relative_path = '';
+										}
 
 										var	fs = require('fs'),
 											path = require('path'),

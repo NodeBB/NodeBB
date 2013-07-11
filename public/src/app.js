@@ -6,83 +6,105 @@ var socket,
 
 // todo: cleanup,etc
 (function() {
-
-	$.ajax({
-		url: '/forum/config.json?v=' + new Date().getTime(),
-		success: function(data) {
-			API_URL = data.api_url;
-			RELATIVE_PATH = data.relative_path;
-
-			config = data;
-			socket = io.connect(config.socket.address + (config.socket.port ? ':' + config.socket.port : ''));
-
-			var reconnecting = false;
-			var reconnectTries = 0;
-
-
-			socket.on('event:connect', function(data) {
-				console.log('connected to nodebb socket: ', data);
-			});
-
-			socket.on('event:alert', function(data) {
-				app.alert(data);
-			});
-			
-			socket.on('event:consolelog', function(data) {
-				console.log(data);
-			});
-
-			socket.on('connect', function(data){
-				if(reconnecting) {
-					setTimeout(function(){
-						app.alert({
-							alert_id: 'connection_alert',
-							title: 'Connected',
-							message: 'Connection successful.',
-							type: 'success',
-							timeout: 5000
-						});
-					}, 1000);
-					reconnecting = false;
-					socket.emit('api:updateHeader', { fields: ['username', 'picture', 'userslug'] });
-				}
-			});
-
-			socket.on('disconnect', function(data){
+	RELATIVE_PATH = $('#relative_path').val();
+	
+	function loadConfig(callback) {
+	
+		$.ajax({
+			url: RELATIVE_PATH + '/config.json?v=' + new Date().getTime(),
+			success: function(data) {
+				API_URL = data.api_url;
+	
+				config = data;
+				socket = io.connect(config.socket.address + (config.socket.port ? ':' + config.socket.port : ''));
+	
+				var reconnecting = false;
+				var reconnectTries = 0;
+	
+	
+				socket.on('event:connect', function(data) {
+					console.log('connected to nodebb socket: ', data);
+				});
+	
+				socket.on('event:alert', function(data) {
+					app.alert(data);
+				});
 				
-			});
-
-			socket.on('reconnecting', function(data) {
-				reconnecting = true;
-				reconnectTries++;
-				if(reconnectTries > 4) {
-					showDisconnectModal();
-					return;
+				socket.on('event:consolelog', function(data) {
+					console.log(data);
+				});
+	
+				socket.on('connect', function(data){
+					if(reconnecting) {
+						setTimeout(function(){
+							app.alert({
+								alert_id: 'connection_alert',
+								title: 'Connected',
+								message: 'Connection successful.',
+								type: 'success',
+								timeout: 5000
+							});
+						}, 1000);
+						reconnecting = false;
+						socket.emit('api:updateHeader', { fields: ['username', 'picture', 'userslug'] });
+					}
+				});
+	
+				socket.on('disconnect', function(data){
+					
+				});
+	
+				socket.on('reconnecting', function(data) {
+					reconnecting = true;
+					reconnectTries++;
+					if(reconnectTries > 4) {
+						showDisconnectModal();
+						return;
+					}
+					app.alert({
+						alert_id: 'connection_alert',
+						title: 'Reconnecting',
+						message: 'You have disconnected from NodeBB, we will try to reconnect you. <br/><i class="icon-refresh icon-spin"></i>',
+						type: 'notify',
+						timeout: 5000
+					});
+				});
+	
+				socket.on('api:user.get_online_users', function(users) {
+					jQuery('.username-field').each(function() {
+						if (this.processed === true) return;
+			
+						var el = jQuery(this),
+							uid = el.parents('li').attr('data-uid');
+						
+						if (uid && jQuery.inArray(uid, users) !== -1) {
+							el.prepend('<i class="icon-circle"></i>&nbsp;');
+						} else {
+							el.prepend('<i class="icon-circle-blank"></i>&nbsp;');
+						}
+			
+						el.processed = true;
+					});
+				});
+	
+				function showDisconnectModal() {
+					$('#disconnect-modal').modal({
+						backdrop:'static',
+						show:true
+					});
+	
+					$('#reload-button').on('click',function(){
+						$('#disconnect-modal').modal('hide');
+						window.location.reload();
+					});
 				}
-				app.alert({
-					alert_id: 'connection_alert',
-					title: 'Reconnecting',
-					message: 'You have disconnected from NodeBB, we will try to reconnect you. <br/><i class="icon-refresh icon-spin"></i>',
-					type: 'notify',
-					timeout: 5000
-				});
-			});
-
-			function showDisconnectModal() {
-				$('#disconnect-modal').modal({
-					backdrop:'static',
-					show:true
-				});
-
-				$('#reload-button').on('click',function(){
-					$('#disconnect-modal').modal('hide');
-					window.location.reload();
-				});
-			}
-		},
-		async: false
-	});
-
+				
+				callback();
+			},
+			async: false
+		});
+	}
+	
 	// takes a string like 1000 and returns 1,000
 	app.addCommas = function(text) {
 		return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
@@ -209,24 +231,16 @@ var socket,
 		}, 100);
 	}
 
-	socket.on('api:user.get_online_users', function(users) {
-		jQuery('.username-field').each(function() {
-			if (this.processed === true) return;
+	
 
-			var el = jQuery(this),
-				uid = el.parents('li').attr('data-uid');
-			
-			if (uid && jQuery.inArray(uid, users) !== -1) {
-				el.prepend('<i class="icon-circle"></i>&nbsp;');
-			} else {
-				el.prepend('<i class="icon-circle-blank"></i>&nbsp;');
-			}
 
-			el.processed = true;
-		});
-	});
+
+
 
 	jQuery('document').ready(function() {
+		
+		loadConfig(function () {});
+		
 		app.enter_room('global');
 
 

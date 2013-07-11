@@ -179,8 +179,12 @@
 
 		function parse_template() {
 			if (!templates[tpl_url] || !template_data) return;
-			template_data['relative_path'] = RELATIVE_PATH || global.config.relative_path;
-
+			
+			if(typeof global !== "undefined")
+				template_data['relative_path'] = global.config.relative_path;
+			else 
+				template_data['relative_path'] = RELATIVE_PATH;
+			
 			document.getElementById('content').innerHTML = templates[tpl_url].parse(template_data);
 			
 			jQuery('#content [template-variable]').each(function(index, element) {
