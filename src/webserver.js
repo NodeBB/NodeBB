@@ -63,6 +63,9 @@ var express = require('express'),
 	auth.initialize(app);
 	
 	app.use(function(req, res, next) {
+		
+		global.config.https = req.connection.encrypted !== undefined;
+		
 		// Don't bother with session handling for API requests
 		if (/^\/api\//.test(req.url)) return next();
 
@@ -261,9 +264,13 @@ var express = require('express'),
 		app.get('/test', function(req, res) {
 			
 			console.log('derp');
-			user.get_userslugs_by_uids([1,2], function(data) {
+			/*user.get_userslugs_by_uids([1,2], function(data) {
 				res.send(data);
-			});
+			});*/
+			var gravatar=  require('gravatar');
+			var img = gravatar.url('', {}, https=false);
+			res.send(img);
+	//		'http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e'
 			
 	/*		categories.getCategoryById(1,1, function(data) {
 				res.send(data);

@@ -338,16 +338,19 @@ var utils = require('./../public/src/utils.js'),
 		});
 	}
 
-
 	User.createGravatarURLFromEmail = function(email) {
-		var forceDefault = ''
+		var options = {
+			size: '128',
+			default: 'identicon',
+			rating: 'pg'
+		};
+		
 		if (!email) {
-			email = '0000',
-			forceDefault = '&forceDefault=y';
+			email = '';
+			options.forcedefault = 'y';
 		}
-		var emailHash = crypto.createHash('md5').update(email.toLowerCase().trim()).digest('hex');
-		// @todo: https asset support?
-		return 'http://www.gravatar.com/avatar/' + emailHash + '?default=identicon&s=128' + forceDefault;
+
+		return require('gravatar').url(email, options, https=global.config.https);
 	}
 
 	User.hashPassword = function(password, callback) {

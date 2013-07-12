@@ -146,7 +146,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					uid:0,
 					username: "Anonymous User",
 					email: '',
-					picture: 'http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=24'
+					picture: require('gravatar').url('', {s:'24'}, https=global.config.https)
 				});
 			}
 				
