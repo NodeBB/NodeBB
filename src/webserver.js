@@ -64,7 +64,7 @@ var express = require('express'),
 	
 	app.use(function(req, res, next) {
 		
-		global.config.https = req.connection.encrypted !== undefined;
+		global.config.https = req.secure;
 		
 		// Don't bother with session handling for API requests
 		if (/^\/api\//.test(req.url)) return next();
