@@ -41,7 +41,15 @@ marked.setOptions({
 			post.picture = userData.picture || require('gravatar').url('', {}, https=global.config.https);
 			post.signature = marked(userData.signature || '');
 
-			callback();
+			if(post.editor !== '') {
+				user.getUserFields(post.editor, ['username', 'userslug'], function(editorData) {
+					post.editorname = editorData.username;
+					post.editorslug = editorData.userslug;	
+					callback();
+				});
+			} else {
+				callback();
+			}
 		});
 	}
 
