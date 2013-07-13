@@ -115,7 +115,7 @@ marked.setOptions({
 						postData.post_rep = postData.reputation;
 						postData['edited-class'] = postData.editor !== '' ? '' : 'none';
 						postData['relativeEditTime'] = postData.edited !== '0' ? utils.relativeTime(postData.edited) : '';
-						
+						postData.content = marked(postData.content || '');
 						posts[index] = postData;
 					}
 					
