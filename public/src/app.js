@@ -98,6 +98,8 @@ var socket,
 						window.location.reload();
 					});
 				}
+				
+				app.enter_room('global');				
 			},
 			async: false
 		});
@@ -194,8 +196,9 @@ var socket,
 
 	app.current_room = null; 
 	app.enter_room = function(room) {
-		if (app.current_room === room) return;
-
+		if (app.current_room === room) 
+			return;
+		
 		socket.emit('event:enter_room', {
 			'enter': room,
 			'leave': app.current_room
@@ -234,9 +237,6 @@ var socket,
 		
 		loadConfig();
 		
-		app.enter_room('global');
-
-
 		// On menu click, change "active" state
 		var menuEl = document.querySelector('.nav'),
 			liEls = menuEl.querySelectorAll('li'),
