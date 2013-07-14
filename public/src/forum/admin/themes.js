@@ -1,6 +1,11 @@
-nodebb_admin.themes = {
-	render: function(bootswatch) {
-		var	themeFrag = document.createDocumentFragment(),
+
+
+var nodebb_admin = (function(nodebb_admin) {
+
+	var themes = {};
+
+	themes.render = function(bootswatch) {
+		var themeFrag = document.createDocumentFragment(),
 			themeEl = document.createElement('li'),
 			themeContainer = document.querySelector('#content .themes'),
 			numThemes = bootswatch.themes.length;
@@ -24,10 +29,16 @@ nodebb_admin.themes = {
 		themeContainer.innerHTML = '';
 		themeContainer.appendChild(themeFrag);
 	}
-};
+	
+	nodebb_admin.themes = themes;
+	
+	return nodebb_admin;
+	
+}(nodebb_admin || {}));
+
 
 (function() {
-	var	scriptEl = document.createElement('script');
+	var scriptEl = document.createElement('script');
 	scriptEl.src = 'http://api.bootswatch.com?callback=nodebb_admin.themes.render';
 	document.body.appendChild(scriptEl);
 
