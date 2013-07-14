@@ -14,7 +14,7 @@
 
 	socket.emit('post.stats');
 	socket.on('post.stats', function(data) {
-		post_stats.innerHTML = "Our users have created " + data.topics + " topics and made " + data.posts + " posts.";
+		post_stats.innerHTML = "Our users have created <b>" + data.topics + "</b> topics and made <b>" + data.posts + "</b> posts.";
 	});
 
 	socket.emit('user.latest', {});
