@@ -221,10 +221,18 @@
 		});
 	});
 
-	$('.container').on('click', '.post_reply', function() {
+	$('#content').on('click', '.post_reply', function() {
+		var	selectionText = '',
+			selection = window.getSelection() || document.getSelection();
+
+		if ($(selection.baseNode).parents('.post-content').length > 0) {
+			var	snippet = selection.toString();
+			if (snippet.length > 0) selectionText = '> ' + snippet.replace(/\n/g, '\n> ');
+		}
+
 		if (thread_state.locked !== '1') {
 			require(['composer'], function(cmp) {
-				cmp.push(tid);
+				cmp.push(tid, null, null, selectionText + '\n\n');
 			});
 		}
 	});
