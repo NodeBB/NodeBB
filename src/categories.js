@@ -189,7 +189,6 @@ var	RDB = require('./redis.js'),
 						--topicCountToLoad;
 
 					if(retrieved_topics.length === topicCountToLoad) {
-						console.log('derp');
 						callback(retrieved_topics);
 					}
 				});

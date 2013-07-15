@@ -61,7 +61,7 @@ var user = require('./../user.js'),
 		});
 		
 		app.get('/users/:userslug/edit', function(req, res) {
-			console.log('derp');
+
 			if(!req.user)
 				return res.redirect('/403');
 			
