@@ -3,8 +3,7 @@
 <head>
 	<title>NodeBB Administration Panel</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	
-	<input id="relative_path" type="hidden" template-variable="relative_path" value="{relative_path}" />
+	<meta id="relative_path" template-variable="relative_path" value="{relative_path}" />
 	<link id="base-theme" href="{cssSrc}" rel="stylesheet" media="screen">
 	<link href="{relative_path}/vendor/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
 	<link rel="stylesheet" href="{relative_path}/vendor/fontawesome/css/font-awesome.min.css">

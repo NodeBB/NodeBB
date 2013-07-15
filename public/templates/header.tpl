@@ -9,7 +9,7 @@
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	
-	<input id="relative_path" type="hidden" template-variable="relative_path" value="{relative_path}" />
+	<meta id="relative_path" template-variable="relative_path" value="{relative_path}" />
 	
 	<link href="{cssSrc}" rel="stylesheet" media="screen">
 	<link href="{relative_path}/vendor/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">

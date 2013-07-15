@@ -6,7 +6,7 @@ var socket,
 
 // todo: cleanup,etc
 (function() {
-	RELATIVE_PATH = $('#relative_path').val();
+	RELATIVE_PATH = $('#relative_path').attr('value');
 	
 	function loadConfig() {
 	
