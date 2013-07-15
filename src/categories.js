@@ -132,8 +132,8 @@ var	RDB = require('./redis.js'),
 			}
 
 			function getTeaserInfo(next) {
-				topics.getTeaser(topicData.tid, function(teaser) {
-					next(null, teaser);
+				topics.getTeaser(topicData.tid, function(err, teaser) {
+					next(null, teaser || {});
 				});
 			}
 
@@ -178,10 +178,10 @@ var	RDB = require('./redis.js'),
 
 					topicData.username = topicInfo.username;
 					topicData.badgeclass = (topicInfo.hasread && current_user != 0) ? '' : 'badge-important';
-					topicData.teaser_text = topicInfo.teaserInfo.text,
-					topicData.teaser_username = topicInfo.teaserInfo.username;
-					topicData.teaser_userpicture = topicInfo.teaserInfo.picture;
-					topicData.teaser_timestamp = utils.relativeTime(topicInfo.teaserInfo.timestamp);
+					topicData.teaser_text = topicInfo.teaserInfo.text || '',
+					topicData.teaser_username = topicInfo.teaserInfo.username || '';
+					topicData.teaser_userpicture = topicInfo.teaserInfo.picture || '';
+					topicData.teaser_timestamp = topicInfo.teaserInfo.timestamp ? utils.relativeTime(topicInfo.teaserInfo.timestamp) : '';
 
 					if (isTopicVisible(topicData, topicInfo))
 						retrieved_topics.push(topicData);

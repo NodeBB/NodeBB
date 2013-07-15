@@ -3,7 +3,8 @@ var	RDB = require('./redis.js'),
 	categories = require('./categories.js'),
 	user = require('./user.js'),
 	async = require('async'),
-	notifications = require('./notifications.js');
+	notifications = require('./notifications.js'),
+	posts = require('./posts');
 
 (function(ThreadTools) {
 
@@ -80,25 +81,20 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
-	ThreadTools.delete = function(tid, uid, socket) {
+	ThreadTools.delete = function(tid, uid, callback) {
 		ThreadTools.privileges(tid, uid, function(privileges) {
-			if (privileges.editable) {
+			if (privileges.editable || uid === -1) {
 				
 				topics.setTopicField(tid, 'deleted', 1);
 				ThreadTools.lock(tid, uid);
 
-				if (socket) {
-					io.sockets.in('topic_' + tid).emit('event:topic_deleted', {
-						tid: tid,
-						status: 'ok'
-					});
+				io.sockets.in('topic_' + tid).emit('event:topic_deleted', {
+					tid: tid,
+					status: 'ok'
+				});
 
-					socket.emit('api:topic.delete', {
-						status: 'ok',
-						tid: tid
-					});
-				}
-			}
+				callback(null);
+			} else callback(new Error('not-enough-privs'));
 		});
 	}
 
@@ -243,10 +239,12 @@ var	RDB = require('./redis.js'),
 			function(next) {
 				
 				topics.getTopicField(tid, 'title', function(title) {
-					topics.getTeaser(tid, function(teaser) {
+					topics.getTeaser(tid, function(err, teaser) {
+						if (!err) {
 							notifications.create(teaser.username + ' has posted a reply to: "' + title + '"', null, '/topic/' + tid, 'topic:' + tid, function(nid) {
-							next(null, nid);
-						});
+								next(null, nid);
+							});
+						} else next(err);
 					});
 				});
 					
@@ -259,10 +257,28 @@ var	RDB = require('./redis.js'),
 				});
 			}
 		], function(err, results) {
-			if (!err) {
-				notifications.push(results[0], results[1]);
-			}
+			if (!err) notifications.push(results[0], results[1]);
+			// Otherwise, do nothing
 		});
 	}
 
+	ThreadTools.get_latest_undeleted_pid = function(tid, callback) {
+
+		posts.getPostsByTid(tid, 0, -1, function(posts) {
+
+			var numPosts = posts.length;
+			if(!numPosts)
+				return callback(new Error('no-undeleted-pids-found'));
+				
+			while(numPosts--) {
+				if(posts[numPosts].deleted !== '1') {
+					callback(null, posts[numPosts].pid);
+					return;
+				}
+			}
+			
+			// If we got here, nothing was found...
+			callback(new Error('no-undeleted-pids-found'));
+		});		
+	}
 }(exports));
