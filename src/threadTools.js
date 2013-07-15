@@ -3,7 +3,8 @@ var	RDB = require('./redis.js'),
 	categories = require('./categories.js'),
 	user = require('./user.js'),
 	async = require('async'),
-	notifications = require('./notifications.js');
+	notifications = require('./notifications.js'),
+	posts = require('./posts');
 
 (function(ThreadTools) {
 
@@ -266,4 +267,23 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
+	ThreadTools.get_latest_undeleted_pid = function(tid, callback) {
+
+		posts.getPostsByTid(tid, 0, -1, function(posts) {
+
+			var numPosts = posts.length;
+			if(!numPosts)
+				return callback(new Error('no-undeleted-pids-found'));
+				
+			while(numPosts--) {
+				if(posts[numPosts].deleted !== '1') {
+					callback(null, posts[numPosts].pid);
+					return;
+				}
+			}
+			
+			// If we got here, nothing was found...
+			callback(new Error('no-undeleted-pids-found'));
+		});		
+	}
 }(exports));

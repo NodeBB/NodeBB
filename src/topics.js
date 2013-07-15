@@ -277,29 +277,8 @@ marked.setOptions({
 		} else callback(teasers);
 	}
 
-
-	Topics.get_latest_undeleted_pid = function(tid, callback) {
-
-		posts.getPostsByTid(tid, 0, -1, function(posts) {
-
-			var numPosts = posts.length;
-			if(!numPosts)
-				return callback(new Error('no-undeleted-pids-found'));
-				
-			while(numPosts--) {
-				if(posts[numPosts].deleted !== '1') {
-					callback(null, posts[numPosts].pid);
-					return;
-				}
-			}
-			
-			// If we got here, nothing was found...
-			callback(new Error('no-undeleted-pids-found'));
-		});		
-	}
-
 	Topics.getTeaser = function(tid, callback) {
-		Topics.get_latest_undeleted_pid(tid, function(err, pid) {
+		threadTools.get_latest_undeleted_pid(tid, function(err, pid) {
 			if (!err) {
 				posts.getPostFields(pid, ['content', 'uid', 'timestamp'], function(postData) {
 
