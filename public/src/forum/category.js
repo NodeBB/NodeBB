@@ -66,25 +66,25 @@
 		if (!posts || posts.length === 0) {
 			return;
 		}
-		
+
 		var recent_replies = document.getElementById('category_recent_replies');
 
 		recent_replies.innerHTML = '';
 		
-		for (var i=0, ii=posts.length; i<ii; i++) {
-			
-			var a = document.createElement('a'),
-				ul = document.createElement('ul'),
-				username = posts[i].username,
-				picture = posts[i].picture;
+		var	frag = document.createDocumentFragment(),
+			li = document.createElement('li');
+		for (var i=0,numPosts=posts.length; i<numPosts; i++) {
+			var dateString = utils.relativeTime(posts[i].timestamp);
+			li.setAttribute('data-pid', posts[i].pid);
+			li.innerHTML =	'<img title="' + posts[i].username + '" style="width: 48px; height: 48px; /*temporary*/" class="img-polaroid" src="' + posts[i].picture + '" class="" />' +
+								'<p>' +
+									'<strong>' + posts[i].username + '</strong>: ' + posts[i].content +
+								'</p>' +
+								'<span>posted ' + utils.relativeTime(posts[i].timestamp) + ' ago</span>';
 
-			ul.innerHTML = '<li><img title="' + username + '" style="width: 48px; height: 48px; /*temporary*/" class="img-polaroid" src="' + picture + '" class="" />'
-							+ '<p><strong>' + username + '</strong>: ' + posts[i].content + '</p><span>posted ' + utils.relativeTime(posts[i].timestamp) + ' ago</span></li>';
-			
-			a.appendChild(ul);
-			recent_replies.appendChild(a);
+			frag.appendChild(li.cloneNode(true));
+			recent_replies.appendChild(frag);
 		}
-		
 	});
 
 })();

@@ -152,7 +152,14 @@
 			padding: 5px 5px 5px 0px;
 			
 			li {
+				clear: both;
 				line-height: 16px;
+				margin-bottom: 1em;
+
+				&:last-child {
+					margin-bottom: 0;
+				}
+
 				img {
 					display: block;
 					float: left;
@@ -162,8 +169,10 @@
 					padding-left:5px;
 					overflow: hidden;
 					height: 32px;
+					margin-bottom: 0.5em;
 				}
 				span {
+					font-size: 12px;
 					display: block;
 					overflow: hidden;
 					height: 16px;

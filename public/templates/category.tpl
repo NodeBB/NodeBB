@@ -63,8 +63,8 @@
 			<div class="block-header">
 				Recent Replies
 			</div>
-			<div class="block-content recent-replies" id="category_recent_replies">
-				
+			<div class="block-content recent-replies">
+				<ul id="category_recent_replies"></ul>
 			</div>
 		</div>
 		<div class="sidebar-block img-polaroid">
