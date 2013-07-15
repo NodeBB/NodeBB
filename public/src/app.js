@@ -1,12 +1,10 @@
 var socket,
 	config,
 	app = {},
-	API_URL = null,
-	RELATIVE_PATH = null;
+	API_URL = null;
 
-// todo: cleanup,etc
+
 (function() {
-	RELATIVE_PATH = $('#relative_path').attr('value');
 	
 	function loadConfig() {
 	
@@ -104,6 +102,8 @@ var socket,
 			async: false
 		});
 	}
+	
+
 	
 	// takes a string like 1000 and returns 1,000
 	app.addCommas = function(text) {
@@ -238,7 +238,7 @@ var socket,
 
 	jQuery('document').ready(function() {
 		
-		loadConfig();
+		
 		
 		// On menu click, change "active" state
 		var menuEl = document.querySelector('.nav'),
@@ -260,7 +260,7 @@ var socket,
 		addTouchEvents();
 	});
 
-
+	loadConfig();
 
 	
 	function addTouchEvents() {
