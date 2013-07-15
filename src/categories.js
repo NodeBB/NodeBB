@@ -189,7 +189,6 @@ var	RDB = require('./redis.js'),
 						--topicCountToLoad;
 
 					if(retrieved_topics.length === topicCountToLoad) {
-						console.log('derp');
 						callback(retrieved_topics);
 					}
 				});
@@ -282,13 +281,17 @@ var	RDB = require('./redis.js'),
 	}
 
 	Categories.getRecentReplies = function(cid, count, callback) {
-		RDB.zrevrange('categories:recent_posts:cid:' + cid, 0, count-1, function(err, pids) {
+		RDB.zrevrange('categories:recent_posts:cid:' + cid, 0, (count<10)?10:count, function(err, pids) {
 
 			if (pids.length == 0) {
 				callback([]);
 				return;
 			}
+
 			posts.getPostSummaryByPids(pids, function(posts) {
+				if(posts.length > count) {
+					posts = posts.slice(0, count);
+				}
 				callback(posts);
 			});
 		});

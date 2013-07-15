@@ -263,7 +263,6 @@ var express = require('express'),
 
 		app.get('/test', function(req, res) {
 			
-			console.log('derp');
 			/*user.get_userslugs_by_uids([1,2], function(data) {
 				res.send(data);
 			});*/

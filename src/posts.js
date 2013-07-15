@@ -57,24 +57,24 @@ marked.setOptions({
 		
 		var returnData = [];
 		
-		var loaded = 0;
-						
-		for(var i=0, ii=pids.length; i<ii; ++i) {
-			
-			(function(index, pid) {
-				Posts.getPostFields(pids[i], ['pid', 'content', 'uid', 'timestamp'], function(postData) {
-					Posts.addUserInfoToPost(postData, function() {
-						
-						returnData[index] = postData;
-						++loaded;
-						
-						if(loaded === pids.length) {
-							callback(returnData);		
-						}				
-					});
+		function getPostSummary(pid, callback) {
+			Posts.getPostFields(pid, ['pid', 'content', 'uid', 'timestamp', 'deleted'], function(postData) {
+				Posts.addUserInfoToPost(postData, function() {
+
+					if(postData.deleted !== '1')	{
+						returnData.push(postData);
+					}
+					
+					callback(null);
 				});
-			}(i, pids[i]));
+			});
 		}
+		
+		async.eachSeries(pids, getPostSummary, function(err) {
+			if(!err) {
+				callback(returnData);
+			}
+		});
 	};
 
 	Posts.getPostData = function(pid, callback) {
