@@ -82,6 +82,18 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				if(index !== -1) {
 					userSockets[uid].splice(index, 1);
 				}
+				
+				for(var roomName in rooms) {
+
+					socket.leave(roomName);
+
+					if(rooms[roomName][hs.sessionID]) {
+						delete rooms[roomName][hs.sessionID];
+					}	
+					
+					updateRoomBrowsingText(roomName);									
+				}
+				
 			// }
 		});
 
@@ -89,20 +101,33 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			socket.emit('api:get_all_rooms', io.sockets.manager.rooms);
 		})
 
-		socket.on('event:enter_room', function(data) {
-			if (data.leave !== null) socket.leave (data.leave);
-			socket.join(data.enter);
+		function updateRoomBrowsingText(roomName) {
 
-			rooms[data.enter] = rooms[data.enter] || {};
-			if (uid) {
-				rooms[data.enter][uid] = true;
-				if (rooms[data.leave]) {
-					delete rooms[data.leave][uid];
+			function getUidsInRoom(room) {
+				var uids = [];
+				for(var sessionId in room) {
+					if(uids.indexOf(room[sessionId]) === -1)
+						uids.push(room[sessionId]);
 				}
+				return uids;
 			}
 
-			var uids = Object.keys(rooms[data.enter] || {});
-			var anonymousCount = io.sockets.clients(data.enter).length - uids.length;
+			function getAnonymousCount(roomName) {
+				var clients = io.sockets.clients(roomName);
+				var anonCount = 0;
+				
+				for(var i=0; i<clients.length; ++i) {
+					var hs = clients[i].handshake;
+					if(hs && !users[hs.sessionID]) {
+						++anonCount;
+					}
+				}
+				return anonCount;				
+			}
+
+			var uids = getUidsInRoom(rooms[roomName]);
+			
+			var anonymousCount = getAnonymousCount(roomName);
 
 			function userList(users, anonymousCount, userCount) {
 				var usernames = [];
@@ -120,14 +145,39 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 
 			if (uids.length === 0) {
-				io.sockets.in(data.enter).emit('api:get_users_in_room', userList([], anonymousCount, 0));
+				io.sockets.in(roomName).emit('api:get_users_in_room', userList([], anonymousCount, 0));
 			} else {
 				user.getMultipleUserFields(uids, ['username', 'userslug'], function(users) {
-					io.sockets.in(data.enter).emit('api:get_users_in_room', userList(users, anonymousCount, users.length));
+					io.sockets.in(roomName).emit('api:get_users_in_room', userList(users, anonymousCount, users.length));
 				});
 			}
+		}
 
-			if (data.enter != 'admin') io.sockets.in('admin').emit('api:get_all_rooms', io.sockets.manager.rooms);
+		socket.on('event:enter_room', function(data) {
+			
+			if (data.leave !== null) {
+				socket.leave(data.leave);
+			}
+				
+			socket.join(data.enter);
+
+			rooms[data.enter] = rooms[data.enter] || {};
+
+			if(data.leave) {
+				if (uid) {
+					rooms[data.enter][hs.sessionID] = uid;
+				
+					if (data.leave && rooms[data.leave] && rooms[data.leave][hs.sessionID]) {
+						delete rooms[data.leave][hs.sessionID];
+					}
+				}
+				updateRoomBrowsingText(data.leave);
+			}
+			
+			updateRoomBrowsingText(data.enter);
+
+			if (data.enter != 'admin') 
+				io.sockets.in('admin').emit('api:get_all_rooms', io.sockets.manager.rooms);
 			
 		});
 
