@@ -19,7 +19,6 @@ var socket,
 				var reconnecting = false;
 				var reconnectTries = 0;
 	
-	
 				socket.on('event:connect', function(data) {
 					console.log('connected to nodebb socket: ', data);
 				});
@@ -48,17 +47,27 @@ var socket,
 					}
 				});
 	
-				socket.on('disconnect', function(data){
-					
-				});
-	
 				socket.on('reconnecting', function(data) {
+					function showDisconnectModal() {
+						$('#disconnect-modal').modal({
+							backdrop:'static',
+							show:true
+						});
+		
+						$('#reload-button').on('click',function(){
+							$('#disconnect-modal').modal('hide');
+							window.location.reload();
+						});
+					}
+					
 					reconnecting = true;
 					reconnectTries++;
+					
 					if(reconnectTries > 4) {
 						showDisconnectModal();
 						return;
 					}
+					
 					app.alert({
 						alert_id: 'connection_alert',
 						title: 'Reconnecting',
@@ -70,7 +79,8 @@ var socket,
 	
 				socket.on('api:user.get_online_users', function(users) {
 					jQuery('.username-field').each(function() {
-						if (this.processed === true) return;
+						if (this.processed === true) 
+							return;
 			
 						var el = jQuery(this),
 							uid = el.parents('li').attr('data-uid');
@@ -84,26 +94,14 @@ var socket,
 						el.processed = true;
 					});
 				});
-	
-				function showDisconnectModal() {
-					$('#disconnect-modal').modal({
-						backdrop:'static',
-						show:true
-					});
-	
-					$('#reload-button').on('click',function(){
-						$('#disconnect-modal').modal('hide');
-						window.location.reload();
-					});
-				}
 				
-				app.enter_room('global');				
+				app.enter_room('global');
+				
+
 			},
 			async: false
 		});
 	}
-	
-
 	
 	// takes a string like 1000 and returns 1,000
 	app.addCommas = function(text) {
@@ -237,9 +235,7 @@ var socket,
 
 
 	jQuery('document').ready(function() {
-		
-		
-		
+
 		// On menu click, change "active" state
 		var menuEl = document.querySelector('.nav'),
 			liEls = menuEl.querySelectorAll('li'),
