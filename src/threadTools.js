@@ -81,25 +81,20 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
-	ThreadTools.delete = function(tid, uid, socket) {
+	ThreadTools.delete = function(tid, uid, callback) {
 		ThreadTools.privileges(tid, uid, function(privileges) {
-			if (privileges.editable) {
+			if (privileges.editable || uid === -1) {
 				
 				topics.setTopicField(tid, 'deleted', 1);
 				ThreadTools.lock(tid, uid);
 
-				if (socket) {
-					io.sockets.in('topic_' + tid).emit('event:topic_deleted', {
-						tid: tid,
-						status: 'ok'
-					});
+				io.sockets.in('topic_' + tid).emit('event:topic_deleted', {
+					tid: tid,
+					status: 'ok'
+				});
 
-					socket.emit('api:topic.delete', {
-						status: 'ok',
-						tid: tid
-					});
-				}
-			}
+				callback(null);
+			} else callback(new Error('not-enough-privs'));
 		});
 	}
 

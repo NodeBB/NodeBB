@@ -286,7 +286,14 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('api:topic.delete', function(data) {
-			threadTools.delete(data.tid, uid, socket);
+			threadTools.delete(data.tid, uid, function(err) {
+				if (!err) {
+					socket.emit('api:topic.delete', {
+						status: 'ok',
+						tid: data.tid
+					});
+				}
+			});
 		});
 
 		socket.on('api:topic.restore', function(data) {

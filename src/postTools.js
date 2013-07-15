@@ -88,6 +88,15 @@ marked.setOptions({
 				io.sockets.in('topic_' + tid).emit('event:post_deleted', {
 					pid: pid
 				});
+
+				// Delete the thread if it is the last undeleted post
+				threadTools.get_latest_undeleted_pid(tid, function(err, pid) {
+					if (err && err.message === 'no-undeleted-pids-found') {
+						threadTools.delete(tid, -1, function(err) {
+							if (err) console.log('Error: Could not delete topic (tid: ' + tid + ')');
+						});
+					}
+				});
 			});
 		};
 
