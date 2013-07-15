@@ -153,7 +153,8 @@ marked.setOptions({
 		}
 
 		function getTeaser(next) {
-			Topics.getTeaser(tid, function(teaser) {
+			Topics.getTeaser(tid, function(err, teaser) {
+				if (err) teaser = {};
 				next(null, teaser);
 			});
 		}
@@ -169,9 +170,9 @@ marked.setOptions({
 
 			topicData.relativeTime = utils.relativeTime(topicData.timestamp);
 			topicData.badgeclass = hasRead ? '' : 'badge-important';
-			topicData.teaser_text = teaser.text;
-			topicData.teaser_username = teaser.username;
-			topicData.teaser_timestamp = utils.relativeTime(teaser.timestamp);
+			topicData.teaser_text = teaser.text || '';
+			topicData.teaser_username = teaser.username || '';
+			topicData.teaser_timestamp = teaser.timestamp ? utils.relativeTime(teaser.timestamp) : '';
 
 			callback(topicData);
 		});
@@ -262,23 +263,18 @@ marked.setOptions({
 	}
 	
 	Topics.getTeasers = function(tids, callback) {
-		var	requests = [];
+		var teasers = [];
 		if (Array.isArray(tids)) {
-			for(x=0,numTids=tids.length;x<numTids;x++) {
-				(function(tid) {
-					requests.push(function(next) {
-						Topics.getTeaser(tid, function(teaser_info) {
-							next(null, teaser_info);
-						});
-					});
-				})(tids[x]);
-			}
-			async.parallel(requests, function(err, teasers) {
+			async.each(tids, function(tid, next) {
+				Topics.getTeaser(tid, function(err, teaser_info) {
+					if (err) teaser_info = {};
+					teasers.push(teaser_info);
+					next();
+				});
+			}, function() {
 				callback(teasers);
 			});
-		} else {
-			callback([]);
-		}
+		} else callback(teasers);
 	}
 
 
@@ -288,26 +284,23 @@ marked.setOptions({
 
 			var numPosts = posts.length;
 			if(!numPosts)
-				callback(null);
+				return callback(new Error('no-undeleted-pids-found'));
 				
 			while(numPosts--) {
 				if(posts[numPosts].deleted !== '1') {
-					callback(posts[numPosts].pid);
+					callback(null, posts[numPosts].pid);
 					return;
 				}
 			}
-			if(posts.length > 0)			
-				callback(posts[0].pid);			
-			else 
-				callback(null);
+			
+			// If we got here, nothing was found...
+			callback(new Error('no-undeleted-pids-found'));
 		});		
 	}
 
 	Topics.getTeaser = function(tid, callback) {
-		Topics.get_latest_undeleted_pid(tid, function(pid) {
-			console.log(pid);
-			if (pid !== null) {
-				
+		Topics.get_latest_undeleted_pid(tid, function(err, pid) {
+			if (!err) {
 				posts.getPostFields(pid, ['content', 'uid', 'timestamp'], function(postData) {
 
 					user.getUserFields(postData.uid, ['username', 'picture'], function(userData) {
@@ -317,7 +310,7 @@ marked.setOptions({
 						if(postData.content)
 							stripped = utils.strip_tags(marked(postData.content));
 							
-						callback({
+						callback(null, {
 							"text": stripped,
 							"username": userData.username,
 							"picture": userData.picture,
@@ -325,14 +318,7 @@ marked.setOptions({
 						});
 					});
 				});
-			} else {
-				callback({
-					"text": "",
-					"username": "",
-					"picture": "",
-					"timestamp" : ""
-				});
-			}
+			} else callback(new Error('no-teaser-found'));
 		});
 	}
 

@@ -243,10 +243,12 @@ var	RDB = require('./redis.js'),
 			function(next) {
 				
 				topics.getTopicField(tid, 'title', function(title) {
-					topics.getTeaser(tid, function(teaser) {
+					topics.getTeaser(tid, function(err, teaser) {
+						if (!err) {
 							notifications.create(teaser.username + ' has posted a reply to: "' + title + '"', null, '/topic/' + tid, 'topic:' + tid, function(nid) {
-							next(null, nid);
-						});
+								next(null, nid);
+							});
+						} else next(err);
 					});
 				});
 					
@@ -259,9 +261,8 @@ var	RDB = require('./redis.js'),
 				});
 			}
 		], function(err, results) {
-			if (!err) {
-				notifications.push(results[0], results[1]);
-			}
+			if (!err) notifications.push(results[0], results[1]);
+			// Otherwise, do nothing
 		});
 	}
 
