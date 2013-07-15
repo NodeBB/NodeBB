@@ -924,7 +924,6 @@ var utils = require('./../public/src/utils.js'),
 		});
 	};
 
-
 	User.active = {
 		get_record : function(socket) {
 			RDB.mget(['global:active_user_record', 'global:active_user_record_date'], function(err, data) {
