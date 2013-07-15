@@ -293,14 +293,19 @@ marked.setOptions({
 			while(numPosts--) {
 				if(posts[numPosts].deleted !== '1') {
 					callback(posts[numPosts].pid);
-					break;
+					return;
 				}
-			}			
+			}
+			if(posts.length > 0)			
+				callback(posts[0].pid);			
+			else 
+				callback(null);
 		});		
 	}
 
 	Topics.getTeaser = function(tid, callback) {
 		Topics.get_latest_undeleted_pid(tid, function(pid) {
+			console.log(pid);
 			if (pid !== null) {
 				
 				posts.getPostFields(pid, ['content', 'uid', 'timestamp'], function(postData) {
@@ -319,6 +324,13 @@ marked.setOptions({
 							"timestamp" : timestamp
 						});
 					});
+				});
+			} else {
+				callback({
+					"text": "",
+					"username": "",
+					"picture": "",
+					"timestamp" : ""
 				});
 			}
 		});

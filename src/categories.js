@@ -182,14 +182,16 @@ var	RDB = require('./redis.js'),
 					topicData.teaser_username = topicInfo.teaserInfo.username;
 					topicData.teaser_userpicture = topicInfo.teaserInfo.picture;
 					topicData.teaser_timestamp = utils.relativeTime(topicInfo.teaserInfo.timestamp);
-					
+
 					if (isTopicVisible(topicData, topicInfo))
 						retrieved_topics.push(topicData);
 					else
 						--topicCountToLoad;
 
-					if(retrieved_topics.length === topicCountToLoad)
+					if(retrieved_topics.length === topicCountToLoad) {
+						console.log('derp');
 						callback(retrieved_topics);
+					}
 				});
 			});
 		}
