@@ -305,7 +305,7 @@ marked.setOptions({
 
 	Topics.getTeaser = function(tid, callback) {
 		Topics.get_latest_undeleted_pid(tid, function(pid) {
-			console.log(pid);
+
 			if (pid !== null) {
 				
 				posts.getPostFields(pid, ['content', 'uid', 'timestamp'], function(postData) {
