@@ -196,15 +196,18 @@ var socket,
 
 	app.current_room = null; 
 	app.enter_room = function(room) {
-		if (app.current_room === room) 
-			return;
 		
-		socket.emit('event:enter_room', {
-			'enter': room,
-			'leave': app.current_room
-		});
-
-		app.current_room = room;
+		if(socket) {
+			if (app.current_room === room) 
+				return;
+				
+			socket.emit('event:enter_room', {
+				'enter': room,
+				'leave': app.current_room
+			});
+			
+			app.current_room = room;
+		}
 	};
 
 	app.process_page = function() {
