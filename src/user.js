@@ -230,7 +230,10 @@ var utils = require('./../public/src/utils.js'),
 				if(data[key] !== undefined) {
 					if(key === 'email') {
 						User.setUserField(uid, 'gravatarpicture', User.createGravatarURLFromEmail(data[key]));
-						RDB.set('email:' + data['email'] +':uid', uid);
+						user.getUserField(uid, 'email', function(email) {
+							RDB.del('email:' + email + ':uid'); 
+							RDB.set('email:' + data['email'] + ':uid', uid);
+						});
 					} else if(key === 'signature') {
 						data[key] = utils.strip_tags(data[key]);
 					}
