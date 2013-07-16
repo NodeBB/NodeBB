@@ -8,140 +8,142 @@ define(['taskbar'], function(taskbar) {
 		};
 
 	composer.init = function() {
-		// Create the fixed bottom bar
-		var	taskbar = document.getElementById('taskbar');
+		if (!composer.initialized) {
+			// Create the fixed bottom bar
+			var	taskbar = document.getElementById('taskbar');
 
-		composer.postContainer = document.createElement('div');
-		composer.postContainer.className = 'post-window row-fluid';
-		composer.postContainer.innerHTML =	'<div class="span10 offset1">' +
-												'<input type="text" tabIndex="1" placeholder="Enter your topic title here..." />' +
-												'<div class="btn-toolbar">' +
-													'<div class="btn-group formatting-bar">' +
-														'<span class="btn btn-link" tabindex="-1"><i class="icon-bold"></i></span>' +
-														'<span class="btn btn-link" tabindex="-1"><i class="icon-italic"></i></span>' +
-														'<span class="btn btn-link" tabindex="-1"><i class="icon-list"></i></span>' +
-														'<span class="btn btn-link" tabindex="-1"><i class="icon-link"></i></span>' +
+			composer.postContainer = document.createElement('div');
+			composer.postContainer.className = 'post-window row-fluid';
+			composer.postContainer.innerHTML =	'<div class="span10 offset1">' +
+													'<input type="text" tabIndex="1" placeholder="Enter your topic title here..." />' +
+													'<div class="btn-toolbar">' +
+														'<div class="btn-group formatting-bar">' +
+															'<span class="btn btn-link" tabindex="-1"><i class="icon-bold"></i></span>' +
+															'<span class="btn btn-link" tabindex="-1"><i class="icon-italic"></i></span>' +
+															'<span class="btn btn-link" tabindex="-1"><i class="icon-list"></i></span>' +
+															'<span class="btn btn-link" tabindex="-1"><i class="icon-link"></i></span>' +
+														'</div>' +
+														'<div class="btn-group action-bar" style="float: right; margin-right: -12px">' +
+															'<button data-action="post" class="btn" tabIndex="3"><i class="icon-ok"></i> Submit</button>' +
+															'<button data-action="minimize" class="btn hidden-phone" tabIndex="4"><i class="icon-download-alt"></i> Minimize</button>' +
+															'<button class="btn" data-action="discard" tabIndex="5"><i class="icon-remove"></i> Discard</button>' +
+														'</div>' +
 													'</div>' +
-													'<div class="btn-group action-bar" style="float: right; margin-right: -12px">' +
-														'<button data-action="post" class="btn" tabIndex="3"><i class="icon-ok"></i> Submit</button>' +
-														'<button data-action="minimize" class="btn hidden-phone" tabIndex="4"><i class="icon-download-alt"></i> Minimize</button>' +
-														'<button class="btn" data-action="discard" tabIndex="5"><i class="icon-remove"></i> Discard</button>' +
-													'</div>' +
-												'</div>' +
-												'<textarea tabIndex="2"></textarea>' +
-											'</div>';
+													'<textarea tabIndex="2"></textarea>' +
+												'</div>';
 
-		document.body.insertBefore(composer.postContainer, taskbar);
+			document.body.insertBefore(composer.postContainer, taskbar);
 
-		socket.on('api:composer.push', function(threadData) {
-			if (!threadData.error) {
-				var	uuid = utils.generateUUID();
+			socket.on('api:composer.push', function(threadData) {
+				if (!threadData.error) {
+					var	uuid = utils.generateUUID();
 
-				composer.taskbar.push('composer', uuid, {
-					title: (!threadData.cid ? (threadData.title || '') : 'New Topic'),
-					icon: threadData.picture
-				});
+					composer.taskbar.push('composer', uuid, {
+						title: (!threadData.cid ? (threadData.title || '') : 'New Topic'),
+						icon: threadData.picture
+					});
 
-				composer.posts[uuid] = {
-					tid: threadData.tid,
-					cid: threadData.cid,
-					pid: threadData.pid,
-					title: threadData.title || '',
-					body: threadData.body || ''
-				};
-				composer.load(uuid);
-			} else {
-				app.alert({
-					type: 'error',
-					timeout: 5000,
-					alert_id: 'post_error',
-					title: 'Please Log In to Post',
-					message: 'Posting is currently restricted to registered members only, click here to log in',
-					clickfn: function() {
-						ajaxify.go('login');
-					}
-				});
-			}
-		});
+					composer.posts[uuid] = {
+						tid: threadData.tid,
+						cid: threadData.cid,
+						pid: threadData.pid,
+						title: threadData.title || '',
+						body: threadData.body || ''
+					};
+					composer.load(uuid);
+				} else {
+					app.alert({
+						type: 'error',
+						timeout: 5000,
+						alert_id: 'post_error',
+						title: 'Please Log In to Post',
+						message: 'Posting is currently restricted to registered members only, click here to log in',
+						clickfn: function() {
+							ajaxify.go('login');
+						}
+					});
+				}
+			});
 
-		socket.on('api:composer.editCheck', function(editCheck) {
-			if (editCheck.titleEditable === true) composer.postContainer.querySelector('input').readOnly = false;
-		});
+			socket.on('api:composer.editCheck', function(editCheck) {
+				if (editCheck.titleEditable === true) composer.postContainer.querySelector('input').readOnly = false;
+			});
 
-		// Post Window events
-		var	jPostContainer = $(composer.postContainer),
-			postContentEl = composer.postContainer.querySelector('textarea')
-		jPostContainer.on('change', 'input, textarea', function() {
-			var uuid = $(this).parents('.post-window')[0].getAttribute('data-uuid');
-			if (this.nodeName === 'INPUT') composer.posts[uuid].title = this.value;
-			else if (this.nodeName === 'TEXTAREA') composer.posts[uuid].body = this.value;
-		});
-		jPostContainer.on('click', '.action-bar button', function() {
-			var	action = this.getAttribute('data-action'),
-				uuid = $(this).parents('.post-window').attr('data-uuid');
-			switch(action) {
-				case 'post': composer.post(uuid); break;
-				case 'minimize': composer.minimize(uuid); break;
-				case 'discard': composer.discard(uuid); break;
-			}
-		});
-		jPostContainer.on('click', '.formatting-bar span', function() {
-			var iconClass = this.querySelector('i').className,
-				cursorEnd = postContentEl.value.length,
-				selectionStart = postContentEl.selectionStart,
-				selectionEnd = postContentEl.selectionEnd,
-				selectionLength = selectionEnd - selectionStart;
+			// Post Window events
+			var	jPostContainer = $(composer.postContainer),
+				postContentEl = composer.postContainer.querySelector('textarea')
+			jPostContainer.on('change', 'input, textarea', function() {
+				var uuid = $(this).parents('.post-window')[0].getAttribute('data-uuid');
+				if (this.nodeName === 'INPUT') composer.posts[uuid].title = this.value;
+				else if (this.nodeName === 'TEXTAREA') composer.posts[uuid].body = this.value;
+			});
+			jPostContainer.on('click', '.action-bar button', function() {
+				var	action = this.getAttribute('data-action'),
+					uuid = $(this).parents('.post-window').attr('data-uuid');
+				switch(action) {
+					case 'post': composer.post(uuid); break;
+					case 'minimize': composer.minimize(uuid); break;
+					case 'discard': composer.discard(uuid); break;
+				}
+			});
+			jPostContainer.on('click', '.formatting-bar span', function() {
+				var iconClass = this.querySelector('i').className,
+					cursorEnd = postContentEl.value.length,
+					selectionStart = postContentEl.selectionStart,
+					selectionEnd = postContentEl.selectionEnd,
+					selectionLength = selectionEnd - selectionStart;
 
-			switch(iconClass) {
-				case 'icon-bold':
-					if (selectionStart === selectionEnd) {
+				switch(iconClass) {
+					case 'icon-bold':
+						if (selectionStart === selectionEnd) {
+							// Nothing selected
+							postContentEl.value = postContentEl.value + '**bolded text**';
+							postContentEl.selectionStart = cursorEnd+2;
+							postContentEl.selectionEnd = postContentEl.value.length - 2;
+						} else {
+							// Text selected
+							postContentEl.value = postContentEl.value.slice(0, selectionStart) + '**' + postContentEl.value.slice(selectionStart, selectionEnd) + '**' + postContentEl.value.slice(selectionEnd);
+							postContentEl.selectionStart = selectionStart + 2;
+							postContentEl.selectionEnd = selectionEnd + 2;
+						}
+					break;
+					case 'icon-italic':
+						if (selectionStart === selectionEnd) {
+							// Nothing selected
+							postContentEl.value = postContentEl.value + '*italicised text*';
+							postContentEl.selectionStart = cursorEnd+1;
+							postContentEl.selectionEnd = postContentEl.value.length - 1;
+						} else {
+							// Text selected
+							postContentEl.value = postContentEl.value.slice(0, selectionStart) + '*' + postContentEl.value.slice(selectionStart, selectionEnd) + '*' + postContentEl.value.slice(selectionEnd);
+							postContentEl.selectionStart = selectionStart + 1;
+							postContentEl.selectionEnd = selectionEnd + 1;
+						}
+					break;
+					case 'icon-list':
 						// Nothing selected
-						postContentEl.value = postContentEl.value + '**bolded text**';
-						postContentEl.selectionStart = cursorEnd+2;
-						postContentEl.selectionEnd = postContentEl.value.length - 2;
-					} else {
-						// Text selected
-						postContentEl.value = postContentEl.value.slice(0, selectionStart) + '**' + postContentEl.value.slice(selectionStart, selectionEnd) + '**' + postContentEl.value.slice(selectionEnd);
-						postContentEl.selectionStart = selectionStart + 2;
-						postContentEl.selectionEnd = selectionEnd + 2;
-					}
-				break;
-				case 'icon-italic':
-					if (selectionStart === selectionEnd) {
-						// Nothing selected
-						postContentEl.value = postContentEl.value + '*italicised text*';
-						postContentEl.selectionStart = cursorEnd+1;
-						postContentEl.selectionEnd = postContentEl.value.length - 1;
-					} else {
-						// Text selected
-						postContentEl.value = postContentEl.value.slice(0, selectionStart) + '*' + postContentEl.value.slice(selectionStart, selectionEnd) + '*' + postContentEl.value.slice(selectionEnd);
-						postContentEl.selectionStart = selectionStart + 1;
-						postContentEl.selectionEnd = selectionEnd + 1;
-					}
-				break;
-				case 'icon-list':
-					// Nothing selected
-					postContentEl.value = postContentEl.value + "\n\n* list item";
-					postContentEl.selectionStart = cursorEnd+4;
-					postContentEl.selectionEnd = postContentEl.value.length;
-				break;
-				case 'icon-link':
-					if (selectionStart === selectionEnd) {
-						// Nothing selected
-						postContentEl.value = postContentEl.value + '[link text](link url)';
-						postContentEl.selectionStart = cursorEnd+12;
-						postContentEl.selectionEnd = postContentEl.value.length - 1;
-					} else {
-						// Text selected
-						postContentEl.value = postContentEl.value.slice(0, selectionStart) + '[' + postContentEl.value.slice(selectionStart, selectionEnd) + '](link url)' + postContentEl.value.slice(selectionEnd);
-						postContentEl.selectionStart = selectionStart + selectionLength + 3;
-						postContentEl.selectionEnd = selectionEnd + 11;
-					}
-				break;
-			}
-		});
+						postContentEl.value = postContentEl.value + "\n\n* list item";
+						postContentEl.selectionStart = cursorEnd+4;
+						postContentEl.selectionEnd = postContentEl.value.length;
+					break;
+					case 'icon-link':
+						if (selectionStart === selectionEnd) {
+							// Nothing selected
+							postContentEl.value = postContentEl.value + '[link text](link url)';
+							postContentEl.selectionStart = cursorEnd+12;
+							postContentEl.selectionEnd = postContentEl.value.length - 1;
+						} else {
+							// Text selected
+							postContentEl.value = postContentEl.value.slice(0, selectionStart) + '[' + postContentEl.value.slice(selectionStart, selectionEnd) + '](link url)' + postContentEl.value.slice(selectionEnd);
+							postContentEl.selectionStart = selectionStart + selectionLength + 3;
+							postContentEl.selectionEnd = selectionEnd + 11;
+						}
+					break;
+				}
+			});
 
-		composer.initialized = true;
+			composer.initialized = true;
+		}
 	}
 
 	composer.push = function(tid, cid, pid, text) {

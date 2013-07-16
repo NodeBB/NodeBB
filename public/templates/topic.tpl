@@ -48,7 +48,7 @@
 						<button id="favs_{main_posts.pid}_{main_posts.uid}" class="favourite btn" type="button">
 							<span>Favourite</span>
 							<span class="post_rep_{main_posts.pid}">{main_posts.post_rep} </span><i class="{main_posts.fav_star_class}"></i></button>
-						<button id="post_reply" class="btn btn-primary btn post_reply hidden-phone" type="button">Reply <i class="icon-reply"></i></button>
+						<button class="btn btn-primary btn post_reply hidden-phone" type="button">Reply <i class="icon-reply"></i></button>
 					</div>
 					<div style="clear:both; margin-bottom: 10px;"></div>
 

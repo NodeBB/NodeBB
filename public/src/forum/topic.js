@@ -221,21 +221,23 @@
 		});
 	});
 
-	$('#content').on('click', '.post_reply', function() {
-		var	selectionText = '',
-			selection = window.getSelection() || document.getSelection();
+	var reply_fn = function() {
+			var	selectionText = '',
+				selection = window.getSelection() || document.getSelection();
 
-		if ($(selection.baseNode).parents('.post-content').length > 0) {
-			var	snippet = selection.toString();
-			if (snippet.length > 0) selectionText = '> ' + snippet.replace(/\n/g, '\n> ');
-		}
+			if ($(selection.baseNode).parents('.post-content').length > 0) {
+				var	snippet = selection.toString();
+				if (snippet.length > 0) selectionText = '> ' + snippet.replace(/\n/g, '\n> ');
+			}
 
-		if (thread_state.locked !== '1') {
-			require(['composer'], function(cmp) {
-				cmp.push(tid, null, null, selectionText + '\n\n');
-			});
-		}
-	});
+			if (thread_state.locked !== '1') {
+				require(['composer'], function(cmp) {
+					cmp.push(tid, null, null, selectionText + '\n\n');
+				});
+			}
+		};
+	$('.post-container').on('click', '.post_reply', reply_fn);
+	$('#post_reply').on('click', reply_fn);
 
 	$('.post-container').on('click', '.quote', function() {
 		if (thread_state.locked !== '1') {
