@@ -181,7 +181,7 @@
 			if (!templates[tpl_url] || !template_data) return;
 			
 			if(typeof global !== "undefined")
-				template_data['relative_path'] = global.config.relative_path;
+				template_data['relative_path'] = global.nconf.get('relative_path');
 			else 
 				template_data['relative_path'] = RELATIVE_PATH;
 			

@@ -32,9 +32,9 @@ var	RDB = require('./redis.js'),
 							'category_id': category_id,
 							'active_users': [],
 							'topics' : [],
-							'twitter-intent-url': 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(global.config.url + 'category/' + category_slug) + '&text=' + encodeURIComponent(category_name),
-							'facebook-share-url': 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(global.config.url + 'category/' + category_slug),
-							'google-share-url': 'https://plus.google.com/share?url=' + encodeURIComponent(global.config.url + 'category/' + category_slug)
+							'twitter-intent-url': 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(global.nconf.get('url') + 'category/' + category_slug) + '&text=' + encodeURIComponent(category_name),
+							'facebook-share-url': 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(global.nconf.get('url') + 'category/' + category_slug),
+							'google-share-url': 'https://plus.google.com/share?url=' + encodeURIComponent(global.nconf.get('url') + 'category/' + category_slug)
 						};
 
 					function getTopics(next) {

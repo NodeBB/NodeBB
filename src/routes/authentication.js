@@ -140,10 +140,10 @@
 					req.login({
 						uid: uid
 					}, function() {
-						res.redirect(global.config.relative_path + '/');
+						res.redirect(global.nconf.get('relative_path') + '/');
 					});
 				} else {
-					res.redirect(global.config.relative_path + '/register');
+					res.redirect(global.nconf.get('relative_path') + '/register');
 				}
 			});
 		});
