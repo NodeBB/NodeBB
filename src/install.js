@@ -11,8 +11,7 @@ var	async = require('async'),
 			'redis:host|Host IP or address of your Redis instance? (127.0.0.1)',
 			'redis:port|Host port of your Redis instance? (6379)',
 			'redis:password|Password of your Redis database? (no password)',
-			'secret|Your NodeBB secret? (keyboard mash for a bit here)',
-			'bcrypt_rounds|The number of rounds to use for bcrypt.genSalt? (10)'
+			'secret|Your NodeBB secret? (keyboard mash for a bit here)'
 		],
 		defaults: {
 			"base_url": 'http://localhost',
@@ -22,7 +21,7 @@ var	async = require('async'),
 			"redis:port": 6379,
 			"redis:password": '',
 			"secret": utils.generateUUID(),
-			"bcrypt_rounds": 10,
+			"bcrypt_rounds": 12,
 			"upload_path": '/public/uploads'
 		},
 		ask: function(question, callback) {
