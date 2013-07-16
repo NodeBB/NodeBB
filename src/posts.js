@@ -38,7 +38,7 @@ marked.setOptions({
 			post.username = userData.username || 'anonymous';
 			post.userslug = userData.userslug || '';
 			post.user_rep = userData.reputation || 0;
-			post.picture = userData.picture || require('gravatar').url('', {}, https=global.config.https);
+			post.picture = userData.picture || require('gravatar').url('', {}, https=global.nconf.get('https'));
 			post.signature = marked(userData.signature || '');
 
 			if(post.editor !== '') {

@@ -109,8 +109,8 @@ var ajaxify = {};
 
 		function evalScript(elem) {
 			var data = (elem.text || elem.textContent || elem.innerHTML || "" ),
-				head = document.getElementsByTagName("head")[0] ||
-						  document.documentElement,
+				head =	document.getElementsByTagName("head")[0] ||
+						document.documentElement,
 				script = document.createElement("script");
 
 			script.type = "text/javascript";

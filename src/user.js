@@ -353,7 +353,7 @@ var utils = require('./../public/src/utils.js'),
 			options.forcedefault = 'y';
 		}
 
-		return require('gravatar').url(email, options, https=global.config.https);
+		return require('gravatar').url(email, options, https=global.nconf.get('https'));
 	}
 
 	User.hashPassword = function(password, callback) {
@@ -563,7 +563,7 @@ var utils = require('./../public/src/utils.js'),
 				topics.getTopicField(tid, 'slug', function(slug) {
 					var message = username + ' made a new post';
 
-					notifications.create(message, 5, global.config.url + 'topic/' + slug + '#' + pid, 'notification_'+ Date.now(), function(nid) {
+					notifications.create(message, 5, global.nconf.get('url') + 'topic/' + slug + '#' + pid, 'notification_'+ Date.now(), function(nid) {
 		 				notifications.push(nid, followers);
 					});
 				});

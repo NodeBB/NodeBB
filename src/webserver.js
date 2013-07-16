@@ -5,7 +5,7 @@ var express = require('express'),
 	RedisStore = require('connect-redis')(express),
 	path = require('path'),
 	redis = require('redis'),
-	redisServer = redis.createClient(global.config.redis.port, global.config.redis.host),
+	redisServer = redis.createClient(global.nconf.get('redis:port'), global.nconf.get('redis:host')),
 	marked = require('marked'),
 	utils = require('../public/src/utils.js'),
 	pkg = require('../package.json'),
@@ -28,10 +28,10 @@ var express = require('express'),
 	
 	app.build_header = function(res) {
 		return templates['header'].parse({
-			cssSrc: global.config['theme:src'] || global.config.relative_path + '/vendor/bootstrap/css/bootstrap.min.css',
+			cssSrc: global.config['theme:src'] || global.nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
 			title: global.config['title'] || 'NodeBB',
 			csrf:res.locals.csrf_token,
-			relative_path: global.config.relative_path
+			relative_path: global.nconf.get('relative_path')
 		});
 	};
 
@@ -39,7 +39,7 @@ var express = require('express'),
 	app.use(express.favicon(path.join(__dirname, '../', 'public', 'favicon.ico')));
 	app.use(require('less-middleware')({ src: path.join(__dirname, '../', 'public') }));
 	//app.use(express.static(path.join(__dirname, '../', 'public')));
-	app.use(global.config.relative_path, express.static(path.join(__dirname, '../', 'public')));
+	app.use(global.nconf.get('relative_path'), express.static(path.join(__dirname, '../', 'public')));
 	app.use(express.bodyParser());	// Puts POST vars in request.body
 	app.use(express.cookieParser());	// If you want to parse cookies (res.cookies)
 	app.use(express.compress());
@@ -48,7 +48,7 @@ var express = require('express'),
 			client: redisServer,
 			ttl: 60*60*24*14
 		}),
-		secret: global.config.secret,
+		secret: global.nconf.get('secret'),
 		key: 'express.sid'
 	}));
 	app.use(express.csrf());
@@ -65,7 +65,7 @@ var express = require('express'),
 	
 	app.use(function(req, res, next) {
 		
-		global.config.https = req.secure;
+		global.nconf.set('https', req.secure);
 		
 		// Don't bother with session handling for API requests
 		if (/^\/api\//.test(req.url)) return next();
@@ -89,7 +89,7 @@ var express = require('express'),
 		if (req.accepts('html')) {
 			
 			//res.json('404', { url: req.url });
-			res.redirect(global.config.relative_path + '/404');
+			res.redirect(global.nconf.get('relative_path') + '/404');
 			return;
 		}
 
@@ -121,7 +121,7 @@ var express = require('express'),
 	};
 	
 
-	app.namespace(global.config.relative_path, function() {
+	app.namespace(global.nconf.get('relative_path'), function() {
 
 		auth.create_routes(app);
 		admin.create_routes(app);
@@ -414,5 +414,5 @@ var express = require('express'),
 	
 }(WebServer));
 
-server.listen(config.port);
+server.listen(nconf.get('port'));
 global.server = server;

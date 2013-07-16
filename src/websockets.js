@@ -30,7 +30,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 	io.set('authorization', function(handshakeData, accept) {
 		if (handshakeData.headers.cookie) {
 			handshakeData.cookie = cookie.parse(handshakeData.headers.cookie);
-			handshakeData.sessionID = connect.utils.parseSignedCookie(handshakeData.cookie['express.sid'], global.config.secret);
+			handshakeData.sessionID = connect.utils.parseSignedCookie(handshakeData.cookie['express.sid'], global.nconf.get('secret'));
 
 			if (handshakeData.cookie['express.sid'] == handshakeData.sessionID) {
 				return accept('Cookie is invalid.', false);
@@ -196,7 +196,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					uid:0,
 					username: "Anonymous User",
 					email: '',
-					picture: require('gravatar').url('', {s:'24'}, https=global.config.https)
+					picture: require('gravatar').url('', {s:'24'}, https=global.nconf.get('https'))
 				});
 			}
 				
