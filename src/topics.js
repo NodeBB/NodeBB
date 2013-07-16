@@ -173,7 +173,8 @@ marked.setOptions({
 			topicData.teaser_text = teaser.text || '';
 			topicData.teaser_username = teaser.username || '';
 			topicData.teaser_timestamp = teaser.timestamp ? utils.relativeTime(teaser.timestamp) : '';
-
+			topicData.teaser_userpicture = teaser.picture;
+			
 			callback(topicData);
 		});
 	}
