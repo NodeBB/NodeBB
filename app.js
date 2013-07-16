@@ -20,9 +20,9 @@
 var fs = require('fs'),
 	path = require('path'),
 	utils = require('./public/src/utils.js'),
+	pkg = require('./package.json'),
 	url = require('url'),
 	args = {};
-global.ver = '0.0.2';
 
 // Runtime environment
 global.env = process.env.NODE_ENV || 'production',
@@ -36,7 +36,7 @@ process.argv.slice(2).forEach(function(value) {
 });
 
 // Log GNU copyright info along with server info
-console.log('Info: NodeBB v' + global.ver + ' Copyright (C) 2013 DesignCreatePlay Inc.');
+console.log('Info: NodeBB v' + pkg.version + ' Copyright (C) 2013 DesignCreatePlay Inc.');
 console.log('Info: This program comes with ABSOLUTELY NO WARRANTY.');
 console.log('Info: This is free software, and you are welcome to redistribute it under certain conditions.');
 console.log('Info: ===');
@@ -47,7 +47,7 @@ fs.readFile(path.join(__dirname, 'config.json'), function(err, data) {
 		global.config.url = global.config.base_url + (global.config.use_port ? ':' + global.config.port : '') + '/';
 		global.config.upload_url = global.config.url + 'uploads/';
 
-		console.log('Info: Initializing NodeBB v' + global.ver + ', on port ' + global.config.port + ', using Redis store at ' + global.config.redis.host + ':' + global.config.redis.port + '.');
+		console.log('Info: Initializing NodeBB v' + pkg.version + ', on port ' + global.config.port + ', using Redis store at ' + global.config.redis.host + ':' + global.config.redis.port + '.');
 		console.log('Info: Base Configuration OK.');
 
 		var	meta = require('./src/meta.js');
