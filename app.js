@@ -18,9 +18,7 @@
 
 // Read config.js to grab redis info
 var fs = require('fs'),
-	path = require('path'),
 	nconf = require('nconf'),
-	utils = require('./public/src/utils.js'),
 	pkg = require('./package.json'),
 	url = require('url');
 
@@ -41,7 +39,7 @@ if (!nconf.get('setup') && nconf.get('base_url')) {
 	nconf.set('upload_url', nconf.get('url') + 'uploads/');
 	global.nconf = nconf;
 
-	console.log('Info: Initializing NodeBB v' + pkg.version + ', on port ' + nconf.get('port') + ', using Redis store at ' + nconf.get('redis').host + ':' + nconf.get('redis').port + '.');
+	console.log('Info: Initializing NodeBB v' + pkg.version + ', on port ' + nconf.get('port') + ', using Redis store at ' + nconf.get('redis:host') + ':' + nconf.get('redis:port') + '.');
 	console.log('Info: Base Configuration OK.');
 
 	// TODO: Replace this with nconf-redis
@@ -115,99 +113,25 @@ if (!nconf.get('setup') && nconf.get('base_url')) {
 	if (nconf.get('setup')) console.log('Info: NodeBB Setup Triggered via Command Line');
 	else console.log('Info: Configuration not found, starting NodeBB setup');
 
-	var	ask = function(question, callback) {
-			process.stdin.resume();
-			process.stdout.write(question + ': ');
-
-			process.stdin.once('data', function(data) {
-				callback(data.toString().trim());
-			});
-		}
+	var	install = require('./src/install');
 
 	process.stdout.write(
 		"\nWelcome to NodeBB!\nThis looks like a new installation, so you'll have to answer a " +
 		"few questions about your environment before we can proceed.\n\n" +
-		"Press enter to accept the default setting (shown in brackets).\n\n\n" +
-		"What is...\n\n"
+		"Press enter to accept the default setting (shown in brackets).\n\n\n"
 	);
 
-	ask('... the publically accessible URL of this installation? (http://localhost)', function(base_url) {
-		ask('... the port number of your install? (4567)', function(port) {
-			ask('Will you be using a port number to access NodeBB? (y)', function(use_port) {
-				ask('... the host IP or address of your Redis instance? (127.0.0.1)', function(redis_host) {
-					ask('... the host port of your Redis instance? (6379)', function(redis_port) {
-						ask('... the password of your Redis database? (no password)', function(redis_password) {
-							ask('... your NodeBB secret? (keyboard mash for a bit here)', function(secret) {
-								ask('... the number of rounds to use for bcrypt.genSalt? (10)', function(bcrypt_rounds) {
-									if (!base_url) base_url = 'http://localhost';
-									if (!port) port = 4567;
-									if (!use_port) use_port = true; else use_port = (use_port === 'y' ? true : false);
-									if (!redis_host) redis_host = '127.0.0.1';
-									if (!redis_port) redis_port = 6379;
-									if (!secret) secret = utils.generateUUID();
-									if (!bcrypt_rounds) bcrypt_rounds = 10;
+	install.setup(function(err) {
+		if (err) {
+			console.log('Error: There was a problem completing NodeBB setup: ', err.message);
+		} else {
+			if (!nconf.get('setup')) {
+				process.stdout.write(
+					"Please start NodeBB again and register a new user. This user will automatically become an administrator.\n\n"
+				);
+			}
+		}
 
-									var urlObject = url.parse(base_url),
-										relative_path = urlObject.pathname,
-										host = urlObject.host,
-										protocol = urlObject.protocol;
-										
-									if(relative_path.length === 1) {
-										relative_path = '';
-									}
-
-									var	fs = require('fs'),
-										path = require('path'),
-										config = {
-											secret: secret,
-											base_url: base_url,
-											relative_path: relative_path,
-											port: port,
-											use_port: use_port,
-											upload_path: '/public/uploads/',
-											bcrypt_rounds: bcrypt_rounds,
-											redis: {
-												host: redis_host,
-												port: redis_port,
-												password: redis_password
-											}
-										}
-
-									// Server-side config
-									fs.writeFile(path.join(__dirname, 'config.json'), JSON.stringify(config, null, 4), function(err) {
-										if (err) throw err;
-										else {
-											process.stdout.write(
-												"\n\nConfiguration Saved OK\n\n"
-											);
-											if (!nconf.get('setup')) {
-												process.stdout.write(
-													"Please start NodeBB again and register a new user at " +
-													base_url + (use_port ? ':' + port : '') + "/register. This user will automatically become an administrator.\n\n"
-												);
-											}
-											process.stdout.write(
-												"If at any time you'd like to run this setup again, run the app with the \"--setup\" flag\n\n"
-											);
-											process.exit();
-										}
-									});
-
-									// Client-side config
-									fs.writeFile(path.join(__dirname, 'public', 'config.json'), JSON.stringify({
-										socket: {
-											address: protocol + '//' + host,
-											port: port
-										},
-										api_url: protocol + '//' + host + (use_port ? ':' + port : '') + relative_path + '/api/',
-										relative_path: relative_path
-									}, null, 4));
-								});
-							});
-						});
-					});
-				});
-			});
-		});
+		process.exit();
 	});
 }
