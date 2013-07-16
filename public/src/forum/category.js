@@ -56,8 +56,6 @@
 			container.insertBefore(topic, null);
 			$(topic).hide().fadeIn('slow');
 		}
-
-		ajaxify.enable();
 	});
 
 
