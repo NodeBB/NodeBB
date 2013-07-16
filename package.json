@@ -1,31 +1,8 @@
 {
-  "author": "psychobunny <andrew@designcreateplay.com>, julianlam <julian@designcreateplay.com>, barisusakli <baris@designcreateplay.com>",
-  "contributors": [
-    {
-      "name": "Andrew Rodrigues",
-      "email": "andrew@designcreateplay.com"
-    },
-    {
-      "name": "Julian Lam",
-      "email": "julian@designcreateplay.com"
-    },
-    {
-      "name": "Barış Soner Uşaklı",
-      "email": "baris@designcreateplay.com"
-    },
-    {
-      "name": "Damian Bushong",
-      "url": "https://github.com/damianb"
-    },
-    {
-      "name": "Matt Smith",
-      "url": "https://github.com/soimafreak"
-    }
-  ],
-  "license": "GPLv3 or later",
   "name": "NodeBB",
+  "license": "GPLv3 or later",
   "description": "NodeBB Forum",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "homepage": "http://www.nodebb.org",
   "repository": {
     "type": "git",
@@ -60,5 +37,27 @@
   },
   "engines": {
     "node": ">=0.8"
-  }
+  },
+  "contributors": [
+    {
+      "name": "Andrew Rodrigues",
+      "email": "andrew@designcreateplay.com"
+    },
+    {
+      "name": "Julian Lam",
+      "email": "julian@designcreateplay.com"
+    },
+    {
+      "name": "Barış Soner Uşaklı",
+      "email": "baris@designcreateplay.com"
+    },
+    {
+      "name": "Damian Bushong",
+      "url": "https://github.com/damianb"
+    },
+    {
+      "name": "Matt Smith",
+      "url": "https://github.com/soimafreak"
+    }
+  ]
 }
