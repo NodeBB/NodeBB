@@ -17,9 +17,11 @@ var	async = require('async'),
 			"base_url": 'http://localhost',
 			"port": 4567,
 			"use_port": true,
-			"redis:host": '127.0.0.1',
-			"redis:port": 6379,
-			"redis:password": '',
+			"redis": {
+				"host": '127.0.0.1',
+				"port": 6379,
+				"password": ''
+			},
 			"secret": utils.generateUUID(),
 			"bcrypt_rounds": 12,
 			"upload_path": '/public/uploads'
