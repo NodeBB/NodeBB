@@ -46,15 +46,15 @@ var	async = require('async'),
 						break;
 						case 'redis:host':
 							config.redis = config.redis || {};
-							config.redis.host = value;
+							if (value !== '') config.redis.host = value;
 						break;
 						case 'redis:port':
 							config.redis = config.redis || {};
-							config.redis.port = value;
+							if (value !== '') config.redis.port = value;
 						break;
 						case 'redis:password':
 							config.redis = config.redis || {};
-							config.redis.password = value;
+							if (value !== '') config.redis.password = value;
 						break;
 
 						default:
