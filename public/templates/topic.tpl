@@ -29,7 +29,7 @@
 						<div class="hover-overlay">
 							{main_posts.username}<br />
 							<i class="icon-star"></i><span class="user_rep_{main_posts.uid}">{main_posts.user_rep}</span>
-							<i class="icon-pencil"></i><span class="user_posts_{main_posts.uid}">8</span>
+							<i class="icon-pencil"></i><span class="user_posts_{main_posts.uid}">{main_posts.user_postcount}</span>
 						</div>
 					</a>
 					<h3><p id="topic_title_{main_posts.pid}" class="topic-title">{topic_name}</p></h3>

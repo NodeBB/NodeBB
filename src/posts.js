@@ -33,11 +33,12 @@ marked.setOptions({
 	}
 	
 	Posts.addUserInfoToPost = function(post, callback) {
-		user.getUserFields(post.uid, ['username', 'userslug', 'reputation', 'picture', 'signature'], function(userData) {
+		user.getUserFields(post.uid, ['username', 'userslug', 'reputation', 'postcount', 'picture', 'signature'], function(userData) {
 
 			post.username = userData.username || 'anonymous';
 			post.userslug = userData.userslug || '';
 			post.user_rep = userData.reputation || 0;
+			post.user_postcount = userData.postcount || 0;
 			post.picture = userData.picture || require('gravatar').url('', {}, https=global.nconf.get('https'));
 			post.signature = marked(userData.signature || '');
 
