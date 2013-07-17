@@ -1,6 +1,8 @@
 var utils = require('./../public/src/utils.js'),
 	RDB = require('./redis.js'),
-	async = require('async');
+	async = require('async'),
+	path = require('path'),
+	fs = require('fs');
 
 (function(Meta) {
 	Meta.config = {
@@ -40,6 +42,39 @@ var utils = require('./../public/src/utils.js'),
 		},
 		remove: function(field) {
 			RDB.hdel('config', field);
+		}
+	}
+
+	Meta.themes = {
+		get: function(callback) {
+			var	themePath = path.join(__dirname, '../', 'public/themes');
+			fs.readdir(themePath, function(err, files) {
+				var themeArr = [];
+				async.each(files, function(file, next) {
+					fs.lstat(path.join(themePath, file), function(err, stats) {
+						if(stats.isDirectory()) {
+							var	themeDir = file,
+								themeConfPath = path.join(themePath, themeDir, 'theme.json');
+
+							fs.exists(themeConfPath, function(exists) {
+								if (exists) {
+									fs.readFile(themeConfPath, function(err, conf) {
+										conf = JSON.parse(conf);
+										conf.src = global.nconf.get('url') + 'themes/' + themeDir + '/' + conf.src;
+										themeArr.push(conf);
+										next();
+									});
+								}
+							});
+						} else next();
+					});
+				}, function(err) {
+					callback(err, themeArr);
+				});
+			});
+		},
+		saveViaGithub: function(repo_url, callback) {
+			// ...
 		}
 	}
 }(exports));

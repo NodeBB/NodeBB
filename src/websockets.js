@@ -614,6 +614,12 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			else
 				socket.emit('api:admin.user.search', null);
 		});
+
+		socket.on('api:admin:themes.getInstalled', function() {
+			meta.themes.get(function(err, themeArr) {
+				socket.emit('api:admin:themes.getInstalled', themeArr);
+			});
+		});
 	});
 	
 }(SocketIO));

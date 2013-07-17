@@ -7,7 +7,7 @@ var nodebb_admin = (function(nodebb_admin) {
 	themes.render = function(bootswatch) {
 		var themeFrag = document.createDocumentFragment(),
 			themeEl = document.createElement('li'),
-			themeContainer = document.querySelector('#content .themes'),
+			themeContainer = document.querySelector('#bootstrap_themes'),
 			numThemes = bootswatch.themes.length;
 
 		for(var x=0;x<numThemes;x++) {
@@ -42,30 +42,33 @@ var nodebb_admin = (function(nodebb_admin) {
 	scriptEl.src = 'http://api.bootswatch.com?callback=nodebb_admin.themes.render';
 	document.body.appendChild(scriptEl);
 
-	var themeContainer = document.querySelector('#content .themes');
-	themeContainer.addEventListener('click', function(e) {
-		if (e.target.hasAttribute('data-action')) {
-			switch(e.target.getAttribute('data-action')) {
-				case 'preview':
-					var	cssSrc = $(e.target).parents('li').attr('data-css'),
-						cssEl = document.getElementById('base-theme');
+	var	bootstrapThemeContainer = document.querySelector('#bootstrap_themes'),
+		installedThemeContainer = document.querySelector('#installed_themes'),
+		themeEvent = function(e) {
+			if (e.target.hasAttribute('data-action')) {
+				switch(e.target.getAttribute('data-action')) {
+					case 'preview':
+						var	cssSrc = $(e.target).parents('li').attr('data-css'),
+							cssEl = document.getElementById('base-theme');
 
-					cssEl.href = cssSrc;
-				break;
-				case 'use':
-					var	parentEl = $(e.target).parents('li'),
-						cssSrc = parentEl.attr('data-css'),
-						cssName = parentEl.attr('data-theme');
-					socket.emit('api:config.set', {
-						key: 'theme:id', value: 'bootswatch:' + cssName
-					});
-					socket.emit('api:config.set', {
-						key: 'theme:src', value: cssSrc
-					});
-				break;
+						cssEl.href = cssSrc;
+					break;
+					case 'use':
+						var	parentEl = $(e.target).parents('li'),
+							cssSrc = parentEl.attr('data-css'),
+							cssName = parentEl.attr('data-theme');
+						socket.emit('api:config.set', {
+							key: 'theme:id', value: 'bootswatch:' + cssName
+						});
+						socket.emit('api:config.set', {
+							key: 'theme:src', value: cssSrc
+						});
+					break;
+				}
 			}
-		}
-	}, false);
+		};
+	bootstrapThemeContainer.addEventListener('click', themeEvent);
+	installedThemeContainer.addEventListener('click', themeEvent);
 
 	var revertEl = document.getElementById('revert_theme');
 	revertEl.addEventListener('click', function() {
@@ -76,4 +79,31 @@ var nodebb_admin = (function(nodebb_admin) {
 			}
 		});
 	}, false);
+
+	// Installed Themes
+	socket.once('api:admin:themes.getInstalled', function(themes) {
+		var	instListEl = document.getElementById('installed_themes'),
+			themeFrag = document.createDocumentFragment(),
+			liEl = document.createElement('li');
+
+		for(var x=0,numThemes=themes.length;x<numThemes;x++) {
+			liEl.setAttribute('data-theme', themes[x].id);
+			liEl.setAttribute('data-css', themes[x].src);
+			liEl.innerHTML =	'<img src="' + themes[x].thumbnail + '" />' +
+								'<div>' +
+									'<div class="pull-right">' +
+										'<button class="btn btn-primary" data-action="use">Use</button> ' +
+										'<button class="btn" data-action="preview">Preview</button>' +
+									'</div>' +
+									'<h4>' + themes[x].name + '</h4>' +
+									'<p>' + themes[x].description + '</p>' +
+								'</div>' +
+								'<div class="clear">';
+			themeFrag.appendChild(liEl.cloneNode(true));
+		}
+
+		instListEl.innerHTML = '';
+		instListEl.appendChild(themeFrag);
+	});
+	socket.emit('api:admin:themes.getInstalled');
 })();

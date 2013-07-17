@@ -1,12 +1,20 @@
 <h1>Themes</h1>
 <hr />
 
+<h3>Custom Themes</h3>
+<p>
+	The following themes are currently installed in this NodeBB instance.
+</p>
+<ul class="themes" id="installed_themes">
+	<li><i class="icon-refresh icon-spin"></i> Checking for installed themes...</li>
+</ul>
+
 <h3>Bootswatch Themes</h3>
 <p>
 	NodeBB Themes are powered by Bootswatch, a repository containing themes built
 	with Bootstrap as a base theme.
 </p>
-<ul class="themes">
+<ul class="themes" id="bootstrap_themes">
 	<li><i class="icon-refresh icon-spin"></i> Loading Themes</li>
 </ul>
 
