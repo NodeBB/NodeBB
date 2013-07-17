@@ -43,7 +43,19 @@ var	async = require('async'),
 						case 'use_port':
 							value = value.toLowerCase();
 							if (['y', 'yes', ''].indexOf(value) === -1) config[question[0]] = false;
-						break; 
+						break;
+						case 'redis:host':
+							config.redis = config.redis || {};
+							config.redis.host = value;
+						break;
+						case 'redis:port':
+							config.redis = config.redis || {};
+							config.redis.port = value;
+						break;
+						case 'redis:password':
+							config.redis = config.redis || {};
+							config.redis.password = value;
+						break;
 
 						default:
 							if (value !== '') config[question[0]] = value;
