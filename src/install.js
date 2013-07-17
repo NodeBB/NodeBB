@@ -39,7 +39,17 @@ var	async = require('async'),
 			async.eachSeries(install.questions, function(question, next) {
 				var question = question.split('|');
 				install.ask(question[1], function(value) {
-					if (value !== '') config[question[0]] = value;
+					switch(question[0]) {
+						case 'use_port':
+							value = value.toLowerCase();
+							if (['y', 'yes', ''].indexOf(value) === -1) config[question[0]] = false;
+						break; 
+
+						default:
+							if (value !== '') config[question[0]] = value;
+						break;
+					}
+
 					next();
 				});
 			}, function() {
