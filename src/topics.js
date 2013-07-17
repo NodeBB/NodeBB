@@ -51,16 +51,15 @@ marked.setOptions({
 			}
 
 			function addUserInfoToPosts(next) {
-				var done = 0;
-
-				for(var i=0, ii=postData.length; i<ii; ++i) {
-
-					posts.addUserInfoToPost(postData[i], function() {
-						++done;
-						if(done === postData.length)
-							next(null, null);
+				function iterator(post, callback) {
+					posts.addUserInfoToPost(post, function() {
+						callback(null);
 					});
 				}
+
+				async.each(postData, iterator, function(err) { 
+					next(err, null);
+				});
 			}	
 
 			function getPrivileges(next) {
