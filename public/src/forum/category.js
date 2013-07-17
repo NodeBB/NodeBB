@@ -12,12 +12,15 @@
 
 	twitterEl.addEventListener('click', function() {
 		window.open(twitter_url, '_blank', 'width=550,height=420,scrollbars=no,status=no');
+		return false;
 	}, false);
 	facebookEl.addEventListener('click', function() {
 		window.open(facebook_url, '_blank', 'width=626,height=436,scrollbars=no,status=no');
+		return false;
 	}, false);
 	googleEl.addEventListener('click', function() {
 		window.open(google_url, '_blank', 'width=500,height=570,scrollbars=no,status=no');
+		return false;
 	}, false);
 
 	var new_post = document.getElementById('new_post');
