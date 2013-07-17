@@ -87,7 +87,7 @@
 		isEmailValid: function(email) {
 			// var re = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
 			var	valid = email.indexOf('@') !== -1 ? true : false;
-			return re.test(email); 
+			return valid;
 		},
 
 		isUserNameValid: function(name) {
