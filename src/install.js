@@ -17,9 +17,11 @@ var	async = require('async'),
 			"base_url": 'http://localhost',
 			"port": 4567,
 			"use_port": true,
-			"redis:host": '127.0.0.1',
-			"redis:port": 6379,
-			"redis:password": '',
+			"redis": {
+				"host": '127.0.0.1',
+				"port": 6379,
+				"password": ''
+			},
 			"secret": utils.generateUUID(),
 			"bcrypt_rounds": 12,
 			"upload_path": '/public/uploads'
@@ -39,7 +41,29 @@ var	async = require('async'),
 			async.eachSeries(install.questions, function(question, next) {
 				var question = question.split('|');
 				install.ask(question[1], function(value) {
-					if (value !== '') config[question[0]] = value;
+					switch(question[0]) {
+						case 'use_port':
+							value = value.toLowerCase();
+							if (['y', 'yes', ''].indexOf(value) === -1) config[question[0]] = false;
+						break;
+						case 'redis:host':
+							config.redis = config.redis || {};
+							if (value !== '') config.redis.host = value;
+						break;
+						case 'redis:port':
+							config.redis = config.redis || {};
+							if (value !== '') config.redis.port = value;
+						break;
+						case 'redis:password':
+							config.redis = config.redis || {};
+							if (value !== '') config.redis.password = value;
+						break;
+
+						default:
+							if (value !== '') config[question[0]] = value;
+						break;
+					}
+
 					next();
 				});
 			}, function() {
