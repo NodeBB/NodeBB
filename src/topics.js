@@ -317,6 +317,24 @@ marked.setOptions({
 				}
 			});
 			return; // for now, until anon code is written.
+		} else if(!title || title.length <= 3) {
+			socket.emit('event:alert', {
+				type: 'error',
+				timeout: 5000,
+				title: 'Title too short',
+				message: "Please enter a longer title.",
+				alert_id: 'post_error'
+			});
+			return;
+		} else if (!content || content.length <= 9) {
+			socket.emit('event:alert', {
+				type: 'error',
+				timeout: 5000,
+				title: 'Content too short',
+				message: "Please enter a longer post.",
+				alert_id: 'post_error'
+			});
+			return;
 		}
 		
 		user.getUserField(uid, 'lastposttime', function(lastposttime) {

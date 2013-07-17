@@ -201,6 +201,16 @@ define(['taskbar'], function(taskbar) {
 			});
 		}
 
+		if (bodyEl.value.length <= 9) {
+			return app.alert({
+				type: 'error',
+				timeout: 5000,
+				title: 'Content too short',
+				message: "Please enter a longer post.",
+				alert_id: 'post_error'
+			});
+		}
+
 		// Still here? Let's post.
 		if (parseInt(postData.cid) > 0) {
 			socket.emit('api:topics.post', {
