@@ -232,7 +232,7 @@
 
 			if (thread_state.locked !== '1') {
 				require(['composer'], function(cmp) {
-					cmp.push(tid, null, null, selectionText + '\n\n');
+					cmp.push(tid, null, null, selectionText.length > 0 ? selectionText + '\n\n' : '');
 				});
 			}
 		};

@@ -77,9 +77,7 @@ if (!nconf.get('setup') && nconf.get('base_url')) {
 				'noscript/header', 'noscript/home', 'noscript/category', 'noscript/topic'
 			]);
 
-			templates.ready(function() {
-				webserver.init();
-			});
+			templates.ready(webserver.init);
 
 			//setup scripts to be moved outside of the app in future.
 			function setup_categories() {
