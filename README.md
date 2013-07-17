@@ -4,14 +4,14 @@ Please support NodeBB development! Check out our IndieGoGo campaign and like, sh
 # NodeBB
 **NodeBB** is a robust Node.js driven forum built on a redis database. It is powered by web sockets, and is compatible down to IE8.
 
-![NodeBB Screenshot](http://i.imgur.com/mxRmLAg.png)
+![NodeBB Main Category Listing](http://i.imgur.com/u2zamT4.png)
 
-![NodeBB Login Page (with Social Logins)](http://i.imgur.com/q5tUUHW.png)
+![NodeBB Topic Page](http://i.imgur.com/KrvSoXV.png)
 
 ## How can I follow along/contribute?
 
 * Our [Indiegogo campaign](https://www.indiegogo.com/projects/nodebb-the-discussion-platform-of-the-future/) is accepting contributions until August 17th, 2013
-* Our feature roadmap is hosted on the [NodeBB Development/Roadmap Trello](https://trello.com/board/nodebb-development-roadmap/51c66b0d7c42d0a257002732)
+* Our feature roadmap is hosted on the project wiki's [Version History / Roadmap](https://github.com/designcreateplay/NodeBB/wiki/Version-History-%26-Roadmap)
 * If you are a developer, feel free to check out the source and submit pull requests.
 * If you are a designer, NodeBB needs themes! NodeBB will accept any LESS or CSS file and use it in place of the default Twitter Bootstrap theme. Consider extending Bootstrap themes by extending the base bootstrap LESS file.
 
