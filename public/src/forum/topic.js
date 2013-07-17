@@ -324,6 +324,8 @@
 		var activeEl = $('#thread_active_users');
 		if(activeEl.length)
 			activeEl.html(data);
+
+		app.populate_online_users();
 	});
 
 	socket.on('event:rep_up', function(data) {
@@ -351,6 +353,7 @@
 		tempContainer.replaceWith(tempContainer.contents());
 		infiniteLoaderActive = false;
 
+		app.populate_online_users();
 		addCommasToNumbers();
 	});
 

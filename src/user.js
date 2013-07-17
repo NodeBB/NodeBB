@@ -904,29 +904,6 @@ var utils = require('./../public/src/utils.js'),
 		}
 	};
 
-	User.get_online_users = function(socket, uids) {
-		RDB.sismembers('users:online', uids, function(err, data) {
-			RDB.handle(err);
-			socket.emit('api:user.get_online_users', data);
-		});
-	};
-
-	User.go_online = function(uid) {
-		RDB.sadd('users:online', uid, function(err) {
-			if (err) {
-				RDB.handle(err);
-			}
-		});
-	};
-
-	User.go_offline = function(uid) {
-		RDB.srem('users:online', uid, function(err) {
-			if (err) {
-				RDB.handle(err);
-			}
-		});
-	};
-
 	User.active = {
 		get_record : function(socket) {
 			RDB.mget(['global:active_user_record', 'global:active_user_record_date'], function(err, data) {
