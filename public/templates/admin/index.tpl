@@ -8,7 +8,7 @@
 		<a target="_blank" href="http://www.nodebb.org" class="btn btn-large"><i class="icon-github-alt"></i> Get Themes</a>
 		<a target="_blank" href="http://www.nodebb.org" class="btn btn-large"><i class="icon-twitter"></i> dcplabs</a>
 	</p>
-	<p><small>You are running <strong>NodeBB v0.0.1</strong>. This is where we will check to make sure your <strong>NodeBB</strong> is latest, etc.</small></p>
+	<p><small>You are running <strong>NodeBB v{version}</strong>. This is where we will check to make sure your <strong>NodeBB</strong> is latest, etc.</small></p>
 </div>
 
 

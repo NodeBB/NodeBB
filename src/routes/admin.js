@@ -1,7 +1,8 @@
 
 var user = require('./../user.js'),
 	topics = require('./../topics.js'),
-	RDB = require('./../redis.js')
+	RDB = require('./../redis.js'),
+	pkg = require('./../../package.json'),
 	categories = require('./../categories.js');
 
 (function(Admin) {
@@ -57,6 +58,9 @@ var user = require('./../user.js'),
 
 		function api_method(req, res) {
 			switch(req.params.method) {
+				case 'index':
+					res.json({version:pkg.version});
+				break;
 				case 'users' :
 					if (req.params.tab == 'search') {
 						res.json({search_display: 'block', users: []});
