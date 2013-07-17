@@ -86,9 +86,11 @@ var socket,
 							uid = el.parents('li').attr('data-uid');
 						
 						if (uid && jQuery.inArray(uid, users) !== -1) {
-							el.prepend('<i class="icon-circle"></i>&nbsp;');
+							el.find('i').remove();
+							el.prepend('<i class="icon-circle"></i>');
 						} else {
-							el.prepend('<i class="icon-circle-blank"></i>&nbsp;');
+							el.find('i').remove();
+							el.prepend('<i class="icon-circle-blank"></i>');
 						}
 			
 						el.processed = true;
@@ -208,17 +210,17 @@ var socket,
 		}
 	};
 
+	app.populate_online_users = function() {
+		var uids = [];
+
+		jQuery('.post-row').each(function() {
+			uids.push(this.getAttribute('data-uid'));
+		});
+		
+		socket.emit('api:user.get_online_users', uids);
+	}
+
 	app.process_page = function() {
-
-		function populate_online_users() {
-			var uids = [];
-
-			jQuery('.post-row').each(function() {
-				uids.push(this.getAttribute('data-uid'));
-			});
-			
-			socket.emit('api:user.get_online_users', uids);
-		}
 
 		// here is where all modules' onNavigate should be called, I think.
 		require(['mobileMenu'], function(mobileMenu) {
@@ -226,7 +228,7 @@ var socket,
 		});
 
 
-		populate_online_users();
+		app.populate_online_users();
 
 		setTimeout(function() {
 			window.scrollTo(0, 1); // rehide address bar on mobile after page load completes.	

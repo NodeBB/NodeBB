@@ -58,43 +58,35 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		var hs = socket.handshake;
 
 		var uid = users[hs.sessionID];
-		// if (uid > 0) {
-			userSockets[uid] = userSockets[uid] || [];
-			userSockets[uid].push(socket);
-			user.go_online(uid);
-			
-			socket.join('uid_' + uid);
-		// }
 		
-		/*process.on('uncaughtException', function(err) {
-			// handle the error safely
-			console.log("error message "+err);
-			socket.emit('event:consolelog',{type:'uncaughtException', stack:err.stack, error:err.toString()});
-		});*/
+		userSockets[uid] = userSockets[uid] || [];
+		userSockets[uid].push(socket);
 
+		
+		socket.join('uid_' + uid);
+		
 		socket.emit('event:connect', {status: 1});
 		
 		socket.on('disconnect', function() {
-			// if (uid > 0) {
-				user.go_offline(uid);
+			
+			var index = userSockets[uid].indexOf(socket);
+			if(index !== -1) {
+				userSockets[uid].splice(index, 1);
+			}
+
+			if(userSockets[uid].length === 0)		
 				delete users[hs.sessionID];
-				var index = userSockets[uid].indexOf(socket);
-				if(index !== -1) {
-					userSockets[uid].splice(index, 1);
-				}
-				
-				for(var roomName in rooms) {
+			
+			for(var roomName in rooms) {
 
-					socket.leave(roomName);
+				socket.leave(roomName);
 
-					if(rooms[roomName][hs.sessionID]) {
-						delete rooms[roomName][hs.sessionID];
-					}	
-					
-					updateRoomBrowsingText(roomName);									
-				}
+				if(rooms[roomName][socket.id]) {
+					delete rooms[roomName][socket.id];
+				}	
 				
-			// }
+				updateRoomBrowsingText(roomName);									
+			}
 		});
 
 		socket.on('api:get_all_rooms', function(data) {
@@ -105,9 +97,9 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 			function getUidsInRoom(room) {
 				var uids = [];
-				for(var sessionId in room) {
-					if(uids.indexOf(room[sessionId]) === -1)
-						uids.push(room[sessionId]);
+				for(var socketId in room) {
+					if(uids.indexOf(room[socketId]) === -1)
+						uids.push(room[socketId]);
 				}
 				return uids;
 			}
@@ -118,6 +110,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				
 				for(var i=0; i<clients.length; ++i) {
 					var hs = clients[i].handshake;
+
 					if(hs && !users[hs.sessionID]) {
 						++anonCount;
 					}
@@ -163,17 +156,17 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 			rooms[data.enter] = rooms[data.enter] || {};
 
-			if(data.leave) {
-				if (uid) {
-					rooms[data.enter][hs.sessionID] = uid;
+			if (uid) {
+				rooms[data.enter][socket.id] = uid;
 				
-					if (data.leave && rooms[data.leave] && rooms[data.leave][hs.sessionID]) {
-						delete rooms[data.leave][hs.sessionID];
-					}
+				if (data.leave && rooms[data.leave] && rooms[data.leave][socket.id]) {
+					delete rooms[data.leave][socket.id];
 				}
-				updateRoomBrowsingText(data.leave);
 			}
-			
+
+			if(data.leave)
+				updateRoomBrowsingText(data.leave);
+
 			updateRoomBrowsingText(data.enter);
 
 			if (data.enter != 'admin') 
@@ -185,7 +178,6 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 		socket.on('api:updateHeader', function(data) {
 			if(uid) {
-						
 				user.getUserFields(uid, data.fields, function(fields) {
 					fields.uid = uid;
 					socket.emit('api:updateHeader', fields);
@@ -237,7 +229,16 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('api:user.get_online_users', function(data) {
-			user.get_online_users(socket, data);
+			var returnData = [];
+			
+			for(var i=0; i<data.length; ++i) {
+				var uid = data[i];
+				if(userSockets[uid] && userSockets[uid].length > 0)
+					returnData.push(uid);
+				else 
+					returnData.push(0);
+			}
+			socket.emit('api:user.get_online_users', returnData);
 		});
 
 		socket.on('api:user.changePassword', function(data) {
