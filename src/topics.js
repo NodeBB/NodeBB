@@ -18,6 +18,8 @@ marked.setOptions({
 
 (function(Topics) {
 
+	Topics.minimumTitleLength = 3;
+
 	Topics.getTopicData = function(tid, callback) {
 		RDB.hgetall('topic:' + tid, function(err, data) {
 			if(err === null)
@@ -301,6 +303,16 @@ marked.setOptions({
 		});
 	}
 
+	Topics.emitTitleTooShortAlert = function(socket) {
+		socket.emit('event:alert', {
+				type: 'error',
+				timeout: 2000,
+				title: 'Title too short',
+				message: "Please enter a longer title.",
+				alert_id: 'post_error'
+			});
+	}
+
 	Topics.post = function(socket, uid, title, content, category_id) {
 		if (!category_id) 
 			throw new Error('Attempted to post without a category_id');
@@ -316,23 +328,11 @@ marked.setOptions({
 				}
 			});
 			return; // for now, until anon code is written.
-		} else if(!title || title.length <= 3) {
-			socket.emit('event:alert', {
-				type: 'error',
-				timeout: 5000,
-				title: 'Title too short',
-				message: "Please enter a longer title.",
-				alert_id: 'post_error'
-			});
+		} else if(!title || title.length < Topics.minimumTitleLength) {
+			Topics.emitTitleTooShortAlert(socket);
 			return;
-		} else if (!content || content.length <= 9) {
-			socket.emit('event:alert', {
-				type: 'error',
-				timeout: 5000,
-				title: 'Content too short',
-				message: "Please enter a longer post.",
-				alert_id: 'post_error'
-			});
+		} else if (!content || content.length < posts.miminumPostLength) {
+			posts.emitContentTooShortAlert(socket);
 			return;
 		}
 		

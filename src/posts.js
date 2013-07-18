@@ -15,6 +15,8 @@ marked.setOptions({
 
 (function(Posts) {
 
+	Posts.minimumPostLength = 8;
+
 	Posts.getPostsByTid = function(tid, start, end, callback) {
 		RDB.lrange('tid:' + tid + ':posts', start, end, function(err, pids) {
 			
@@ -171,6 +173,16 @@ marked.setOptions({
 		});
 	}
 
+	Posts.emitContentTooShortAlert = function(socket) {
+		socket.emit('event:alert', {
+			type: 'error',
+			timeout: 2000,
+			title: 'Content too short',
+			message: "Please enter a longer post.",
+			alert_id: 'post_error'
+		});
+	}
+
 	Posts.reply = function(socket, tid, uid, content) {
 		if (uid < 1) {
 			socket.emit('event:alert', {
@@ -180,14 +192,8 @@ marked.setOptions({
 				timeout: 2000
 			});
 			return;
-		} else if (!content || content.length <= 9) {
-			socket.emit('event:alert', {
-				type: 'error',
-				timeout: 5000,
-				title: 'Content too short',
-				message: "Please enter a longer post.",
-				alert_id: 'post_error'
-			});
+		} else if (!content || content.length < Posts.minimumPostLength) {
+			Posts.emitContentTooShortAlert(socket);
 			return;
 		}
 

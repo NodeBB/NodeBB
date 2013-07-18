@@ -384,23 +384,11 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('api:posts.edit', function(data) {
-			if(!data.title || data.title.length <= 3) {
-				socket.emit('event:alert', {
-					type: 'error',
-					timeout: 5000,
-					title: 'Title too short',
-					message: "Please enter a longer title.",
-					alert_id: 'post_error'
-				});
+			if(!data.title || data.title.length < topics.minimumTitleLength) {
+				topics.emitTitleTooShortAlert(socket);
 				return;
-			} else if (!data.content || data.content.length <= 9) {
-				socket.emit('event:alert', {
-					type: 'error',
-					timeout: 5000,
-					title: 'Content too short',
-					message: "Please enter a longer post.",
-					alert_id: 'post_error'
-				});
+			} else if (!data.content || data.content.length < posts.minimumPostLength) {
+				posts.emitContentTooShortAlert(socket);
 				return;
 			}
 			postTools.edit(uid, data.pid, data.title, data.content);
