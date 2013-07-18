@@ -6,7 +6,7 @@
 	<script>
 		var RELATIVE_PATH = "{relative_path}";
 	</script>
-	<link id="base-theme" href="{cssSrc}" rel="stylesheet" media="screen">
+	<link id="base-theme" href="{relative_path}/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	<link href="{relative_path}/vendor/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
 	<link rel="stylesheet" href="{relative_path}/vendor/fontawesome/css/font-awesome.min.css">
 	<script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
@@ -87,14 +87,14 @@
 						<li class="nav-header">Unit Tests</li>
 						<ul class="nav nav-list">
 							<li class=''><a href='{relative_path}/admin/testing/categories'>Categories</a></li>
-							<li class=''><a href='{relative_path}/admin/testing/topics'>Topics</a></li>
+							<!--<li class=''><a href='{relative_path}/admin/testing/topics'>Topics</a></li>
 							<li class=''><a href='{relative_path}/admin/testing/posts'>Posts</a></li>
 							<li class=''><a href='{relative_path}/admin/testing/accounts'>Accounts</a></li>
 							<li class=''><a href='{relative_path}/admin/testing/chat'>Chat</a></li>
 							<li class=''><a href='{relative_path}/admin/testing/notifications'>Notifications</a></li>
 							<li class=''><a href='{relative_path}/admin/testing/friends'>Friends</a></li>
 							<li class=''><a href='{relative_path}/admin/testing/feed'>RSS Feed</a></li>
-							<li class=''><a href='{relative_path}/admin/testing/emails'>Emails</a></li>
+							<li class=''><a href='{relative_path}/admin/testing/emails'>Emails</a></li>-->
 						</ul>
 					</ul>
 				</div><!--/.well -->
