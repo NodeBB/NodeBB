@@ -191,20 +191,20 @@ define(['taskbar'], function(taskbar) {
 		var	postData = composer.posts[post_uuid],
 			titleEl = composer.postContainer.querySelector('input'),
 			bodyEl = composer.postContainer.querySelector('textarea');
-		if (titleEl.value.length <= 3) {
+		if (titleEl.value.length < 3) {
 			return app.alert({
 				type: 'error',
-				timeout: 5000,
+				timeout: 2000,
 				title: 'Title too short',
 				message: "Please enter a longer title.",
 				alert_id: 'post_error'
 			});
 		}
 
-		if (bodyEl.value.length <= 9) {
+		if (bodyEl.value.length < 8) {
 			return app.alert({
 				type: 'error',
-				timeout: 5000,
+				timeout: 2000,
 				title: 'Content too short',
 				message: "Please enter a longer post.",
 				alert_id: 'post_error'

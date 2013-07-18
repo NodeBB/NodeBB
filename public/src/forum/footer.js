@@ -52,14 +52,14 @@
 				if(data['userslug'])
 					userLabel.attr('href','/users/' + data['userslug']);
 				if(data['picture'])
-					userLabel.find('img').attr('src',data['picture']+"?s=24&default=identicon");
+					userLabel.find('img').attr('src',data['picture']);
 				if(data['username'])
 					userLabel.find('span').html(data['username']);
 			}
 			else {
 				var userli = $('<li> \
 									<a id="user_label" href="/users/'+data['userslug']+'"> \
-										<img src="'+data['picture']+"?s=24&default=identicon"+'"/> \
+										<img src="'+data['picture']+'"/> \
 										<span>'+data['username']+'</span> \
 									</a> \
 								</li>');

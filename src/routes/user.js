@@ -101,8 +101,8 @@ var user = require('./../user.js'),
 					uploadUserPicture(req.user.uid, req.files.userPhoto.name, req.files.userPhoto.path, res);
 					return;
 				}
-
-				var absolutePath = path.join(global.configuration['ROOT_DIRECTORY'], config.upload_path, path.basename(oldpicture));
+				
+				var absolutePath = path.join(global.configuration['ROOT_DIRECTORY'], global.nconf.get('upload_path'), path.basename(oldpicture));
 				
 				fs.unlink(absolutePath, function(err) {
 					if(err) {				
@@ -124,7 +124,7 @@ var user = require('./../user.js'),
 			}
 
 			var filename = uid + '-profileimg' + extension;
-			var uploadPath = path.join(global.configuration['ROOT_DIRECTORY'], config.upload_path, filename);
+			var uploadPath = path.join(global.configuration['ROOT_DIRECTORY'], global.nconf.get('upload_path'), filename);
 			
 			// @todo move to proper logging code - this should only be temporary
 			console.log('Info: Attempting upload to: '+ uploadPath);
@@ -135,7 +135,7 @@ var user = require('./../user.js'),
 			is.on('end', function() {
 				fs.unlinkSync(tempPath);
 
-				var imageUrl = config.upload_url + filename;
+				var imageUrl = global.nconf.get('upload_url') + filename;
 
 				res.json({ path: imageUrl });
 
@@ -341,10 +341,7 @@ var user = require('./../user.js'),
 				
 			});
 		}
-		
-
 
 	};
-
 
 }(exports));
