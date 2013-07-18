@@ -297,7 +297,7 @@ marked.setOptions({
 
 					topics.increasePostCount(tid);
 					topics.setTopicField(tid, 'lastposttime', timestamp);
-					topics.addToRecent(tid, timestamp);
+					topics.updateTimestamp(tid, timestamp);
 
 					RDB.incr('totalpostcount');
 						
@@ -316,9 +316,7 @@ marked.setOptions({
 
 							RDB.sadd('cid:' + cid + ':active_users', uid);
 						});
-					});
-					
-					
+					});					
 					
 					user.onNewPostMade(uid, tid, pid, timestamp);					
 

@@ -450,7 +450,7 @@ marked.setOptions({
 		});
 	}
 
-	Topics.addToRecent = function(tid, timestamp) {
+	Topics.updateTimestamp = function(tid, timestamp) {
 		RDB.zadd(schema.topics().recent, timestamp, tid);
 	}
 	

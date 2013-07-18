@@ -95,6 +95,10 @@ marked.setOptions({
 						threadTools.delete(tid, -1, function(err) {
 							if (err) console.log('Error: Could not delete topic (tid: ' + tid + ')');
 						});
+					} else {
+						posts.getPostField(pid, 'timestamp', function(timestamp) {
+							topics.updateTimestamp(tid, timestamp);	
+						});	
 					}
 				});
 			});
