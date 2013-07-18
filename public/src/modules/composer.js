@@ -191,12 +191,13 @@ define(['taskbar'], function(taskbar) {
 		var	postData = composer.posts[post_uuid],
 			titleEl = composer.postContainer.querySelector('input'),
 			bodyEl = composer.postContainer.querySelector('textarea');
+		
 		if (titleEl.value.length < 3) {
 			return app.alert({
 				type: 'error',
 				timeout: 2000,
 				title: 'Title too short',
-				message: "Please enter a longer title.",
+				message: "Please enter a longer title. At least 3 characters.",
 				alert_id: 'post_error'
 			});
 		}
@@ -206,7 +207,7 @@ define(['taskbar'], function(taskbar) {
 				type: 'error',
 				timeout: 2000,
 				title: 'Content too short',
-				message: "Please enter a longer post.",
+				message: "Please enter a longer post. At least 8 characters.",
 				alert_id: 'post_error'
 			});
 		}

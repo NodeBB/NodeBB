@@ -178,7 +178,7 @@ marked.setOptions({
 			type: 'error',
 			timeout: 2000,
 			title: 'Content too short',
-			message: "Please enter a longer post.",
+			message: "Please enter a longer post. At least " + Posts.minimumPostLength + " characters.",
 			alert_id: 'post_error'
 		});
 	}

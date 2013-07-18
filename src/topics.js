@@ -308,7 +308,7 @@ marked.setOptions({
 				type: 'error',
 				timeout: 2000,
 				title: 'Title too short',
-				message: "Please enter a longer title.",
+				message: "Please enter a longer title. At least " + Topics.minimumTitleLength + " characters.",
 				alert_id: 'post_error'
 			});
 	}
