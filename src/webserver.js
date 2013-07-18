@@ -229,6 +229,14 @@ var express = require('express'),
 			res.send(app.build_header(res) + '<script>templates.ready(function(){ajaxify.go("confirm/' + req.params.code + '");});</script>' + templates['footer']);
 		});
 
+		app.get('/sitemap.xml', function(req, res) {
+			var	sitemap = require('./sitemap.js');
+
+			sitemap.render(function(xml) {
+				res.type('xml').set('Content-Length', xml.length).send(xml);
+			});
+		});
+
 		app.get('/api/:method', api_method);
 		app.get('/api/:method/:id', api_method);
 		// ok fine MUST ADD RECURSION style. I'll look for a better fix in future but unblocking baris for this:
@@ -260,22 +268,6 @@ var express = require('express'),
 				else
 					res.send(404, "Post doesn't exist!");
 			});
-		});
-
-		app.get('/test', function(req, res) {
-			
-			/*user.get_userslugs_by_uids([1,2], function(data) {
-				res.send(data);
-			});*/
-			var gravatar=  require('gravatar');
-			var img = gravatar.url('', {}, https=false);
-			res.send(img);
-	//		'http://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e'
-			
-	/*		categories.getCategoryById(1,1, function(data) {
-				res.send(data);
-			},1);*/ 
-			
 		});
 
 	});
@@ -407,11 +399,6 @@ var express = require('express'),
 			break;
 		}
 	}
-
-	
-
-
-	
 }(WebServer));
 
 server.listen(nconf.get('port'));
