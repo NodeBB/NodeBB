@@ -15,7 +15,6 @@ var user = require('./../user.js'),
 
 	Admin.build_header = function(res) {
 		return templates['admin/header'].parse({
-			cssSrc: global.config['theme:src'] || global.nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
 			csrf:res.locals.csrf_token,
 			relative_path: global.nconf.get('relative_path')
 		});
