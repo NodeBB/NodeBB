@@ -226,7 +226,8 @@ var user = require('./../user.js'),
 					if(userData) {
 						user.isFollowing(callerUID, userData.theirid, function(isFollowing) {
 							posts.getPostsByUid(userData.theirid, 0, 9, function(posts) {
-								userData.posts = posts;
+
+								userData.posts = posts.filter(function(p) {return p.deleted !== "1";});;
 								userData.isFollowing = isFollowing;
 								userData.signature = marked(userData.signature || '');
 								res.json(userData);
