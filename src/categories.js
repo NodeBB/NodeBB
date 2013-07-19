@@ -16,74 +16,87 @@ var	RDB = require('./redis.js'),
 				return;
 			}
 			
-			RDB.smembers('categories:' + category_id + ':tid', function(err, tids) {
+			var category_name = categoryData.name,
+				category_slug = categoryData.slug;
 
-				var category_name = categoryData.name;
-					category_slug = categoryData.slug;
+			function getTopicIds(next) {
+				Categories.getTopicIds(category_id, next);
+			}
+			function getActiveUsers(next) {
+				Categories.getActiveUsers(category_id, next);
+			}
 
-				RDB.smembers('cid:' + category_id + ':active_users', function(err, active_users) {
+			async.parallel([getTopicIds, getActiveUsers], function(err, results) {
+				var tids = results[0],
+					active_users = results[1];
 
-					var categoryData = {
-							'category_name' : category_name,
-							'show_sidebar' : 'show',
-							'show_topic_button': 'show',
-							'no_topics_message': 'hidden',
-							'topic_row_size': 'span9',
-							'category_id': category_id,
-							'active_users': [],
-							'topics' : [],
-							'twitter-intent-url': 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(global.nconf.get('url') + 'category/' + category_slug) + '&text=' + encodeURIComponent(category_name),
-							'facebook-share-url': 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(global.nconf.get('url') + 'category/' + category_slug),
-							'google-share-url': 'https://plus.google.com/share?url=' + encodeURIComponent(global.nconf.get('url') + 'category/' + category_slug)
-						};
+				var categoryData = {
+					'category_name' : category_name,
+					'show_sidebar' : 'show',
+					'show_topic_button': 'show',
+					'no_topics_message': 'hidden',
+					'topic_row_size': 'span9',
+					'category_id': category_id,
+					'active_users': [],
+					'topics' : [],
+					'twitter-intent-url': 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(global.nconf.get('url') + 'category/' + category_slug) + '&text=' + encodeURIComponent(category_name),
+					'facebook-share-url': 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(global.nconf.get('url') + 'category/' + category_slug),
+					'google-share-url': 'https://plus.google.com/share?url=' + encodeURIComponent(global.nconf.get('url') + 'category/' + category_slug)
+				};
 
-					function getTopics(next) {
-						Categories.getTopicsByTids(tids, current_user, function(topics) {
-							// Float pinned topics to the top
-							topics = topics.sort(function(a, b) {
-								if (a.pinned !== b.pinned) return b.pinned - a.pinned;
-								else {
-									return b.lastposttime - a.lastposttime;
-								}
-							});
-							next(null, topics);
-							
-						}, category_id);
-					}
-					
-					function getModerators(next) {
-						Categories.getModerators(category_id, function(moderators) {
-							next(null, moderators);
+				function getTopics(next) {
+					Categories.getTopicsByTids(tids, current_user, function(topics) {
+						// Float pinned topics to the top
+						topics = topics.sort(function(a, b) {
+							if (a.pinned !== b.pinned) return b.pinned - a.pinned;
+							else {
+								return b.lastposttime - a.lastposttime;
+							}
 						});
-					}
+						next(null, topics);
+						
+					}, category_id);
+				}
+				
+				function getModerators(next) {
+					Categories.getModerators(category_id, next);
+				}
 
-					function getActiveUsers(next) {
-						user.getMultipleUserFields(active_users, ['username', 'userslug', 'picture'], function(users) {
-							next(null, users);
-						});
-					}
+				function getActiveUsers(next) {
+					user.getMultipleUserFields(active_users, ['username', 'userslug', 'picture'], function(users) {
+						next(null, users);
+					});
+				}
 
-					if (tids.length === 0) {
-						getModerators(function(err, moderators) {
-							categoryData.moderator_block_class = moderators.length > 0 ? '' : 'none';
-							categoryData.moderators = moderators;
-							categoryData.show_sidebar = 'hidden';
-							categoryData.no_topics_message = 'show';
+				if (tids.length === 0) {
+					getModerators(function(err, moderators) {
+						categoryData.moderator_block_class = moderators.length > 0 ? '' : 'none';
+						categoryData.moderators = moderators;
+						categoryData.show_sidebar = 'hidden';
+						categoryData.no_topics_message = 'show';
 
-							callback(categoryData);
-						});
-					} else {
-						async.parallel([getTopics, getModerators, getActiveUsers], function(err, results) {
-							categoryData.topics = results[0];
-							categoryData.moderator_block_class = results[1].length > 0 ? '' : 'none';
-							categoryData.moderators = results[1];
-							categoryData.active_users = results[2];
-							callback(categoryData);
-						});
-					}
-				});
+						callback(categoryData);
+					});
+				} else {
+					async.parallel([getTopics, getModerators, getActiveUsers], function(err, results) {
+						categoryData.topics = results[0];
+						categoryData.moderator_block_class = results[1].length > 0 ? '' : 'none';
+						categoryData.moderators = results[1];
+						categoryData.active_users = results[2];
+						callback(categoryData);
+					});
+				}
+
 			});
 		});
+	}
+
+	Categories.getTopicIds = function(cid, callback) {
+		RDB.smembers('categories:' + cid + ':tid', callback);
+	}
+
+	Categories.getActiveUsers = function(cid, callback) {
+		RDB.smembers('cid:' + cid + ':active_users', callback);
 	}
 
 	// not the permanent location for this function
@@ -204,16 +217,20 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
-	
-
 	Categories.getModerators = function(cid, callback) {
 		RDB.smembers('cid:' + cid + ':moderators', function(err, mods) {
-			if (mods.length === 0)
-				return callback([]);
+			if(!err) {
+				if(mods && mods.length) {
+					user.getMultipleUserFields(mods, ['username'], function(moderators) {
+						callback(null, moderators);
+					});
+				} else {
+					callback(null, []);
+				}
+			} else {
+				callback(err, null);
+			}
 
-			user.getMultipleUserFields(mods, ['username'], function(moderators) {
-				callback(moderators);
-			});
 		});
 	}
 
