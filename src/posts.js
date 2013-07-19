@@ -107,28 +107,29 @@ marked.setOptions({
 	}
 
 	Posts.getPostsByPids = function(pids, callback) {
-		var posts = [], 
-			loaded = 0;
+		var posts = [];			
 
-		for(var i=0, ii=pids.length; i<ii; ++i) {
-			(function(index, pid) {
-				Posts.getPostData(pid, function(postData) {
-				
-					if(postData) {
-						postData.relativeTime = utils.relativeTime(postData.timestamp);	
-						postData.post_rep = postData.reputation;
-						postData['edited-class'] = postData.editor !== '' ? '' : 'none';
-						postData['relativeEditTime'] = postData.edited !== '0' ? utils.relativeTime(postData.edited) : '';
-						postData.content = marked(postData.content || '');
-						posts[index] = postData;
-					}
-					
-					++loaded;
-					if(loaded === pids.length)
-						callback(posts);
-				});
-			}(i, pids[i]));
+		function iterator(pid, callback) {
+			Posts.getPostData(pid, function(postData) {
+				if(postData) {
+					postData.relativeTime = utils.relativeTime(postData.timestamp);	
+					postData.post_rep = postData.reputation;
+					postData['edited-class'] = postData.editor !== '' ? '' : 'none';
+					postData['relativeEditTime'] = postData.edited !== '0' ? utils.relativeTime(postData.edited) : '';
+					postData.content = marked(postData.content || '');
+					posts.push(postData);
+				}
+				callback(null);
+			});
 		}
+
+		async.eachSeries(pids, iterator, function(err) {
+			if(!err) {
+				callback(posts);
+			} else {
+				callback([]);
+			}
+		});
 	}
 
 	Posts.getPostField = function(pid, field, callback) {

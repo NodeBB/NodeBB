@@ -267,7 +267,7 @@ marked.setOptions({
 	Topics.getTeasers = function(tids, callback) {
 		var teasers = [];
 		if (Array.isArray(tids)) {
-			async.each(tids, function(tid, next) {
+			async.eachSeries(tids, function(tid, next) {
 				Topics.getTeaser(tid, function(err, teaser_info) {
 					if (err) teaser_info = {};
 					teasers.push(teaser_info);

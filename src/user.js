@@ -156,7 +156,7 @@ var utils = require('./../public/src/utils.js'),
 			});
 		}
 
-		async.each(uuids, iterator, function(err) {
+		async.eachSeries(uuids, iterator, function(err) {
 			if(!err) {
 				callback(returnData);
 			} else {
@@ -556,7 +556,7 @@ var utils = require('./../public/src/utils.js'),
 			});
 		}
 		
-		async.each(uids, iterator, function(err) {
+		async.eachSeries(uids, iterator, function(err) {
 			callback(returnData);
 		});
 	}
@@ -641,7 +641,7 @@ var utils = require('./../public/src/utils.js'),
 			});
 		}
 
-		async.each(uids, iterator, function(err) {
+		async.eachSeries(uids, iterator, function(err) {
 			callback(usernames);			
 		});
 	}
@@ -660,7 +660,7 @@ var utils = require('./../public/src/utils.js'),
 			});
 		}
 
-		async.each(uids, iterator, function(err) {
+		async.eachSeries(uids, iterator, function(err) {
 			callback(userslugs);			
 		});
 	}
