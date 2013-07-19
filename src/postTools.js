@@ -119,7 +119,7 @@ marked.setOptions({
 		var	success = function() {
 			posts.setPostField(pid, 'deleted', 0);
 
-			posts.getPostFields(pid, ['tid', 'uid', function(postData) {
+			posts.getPostFields(pid, ['tid', 'uid'], function(postData) {
 
 				user.incrementUserFieldBy(postData.uid, 'postcount', 1);
 
