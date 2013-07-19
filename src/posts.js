@@ -82,8 +82,9 @@ marked.setOptions({
 
 	Posts.getPostData = function(pid, callback) {
 		RDB.hgetall('post:' + pid, function(err, data) {
-			if(err === null) 
+			if(err === null) {
 				callback(data);
+			}
 			else
 				console.log(err);
 		});

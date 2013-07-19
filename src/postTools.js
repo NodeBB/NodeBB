@@ -83,21 +83,25 @@ marked.setOptions({
 	PostTools.delete = function(uid, pid) {
 		var	success = function() {
 			posts.setPostField(pid, 'deleted', 1);
+			
 
-			posts.getPostField(pid, 'tid', function(tid) {
-				io.sockets.in('topic_' + tid).emit('event:post_deleted', {
+			posts.getPostFields(pid, ['tid', 'uid'], function(postData) {
+
+				user.decrementUserFieldBypostData.uid, 'postcount', 1);
+				
+				io.sockets.in('topic_' + postData.tid).emit('event:post_deleted', {
 					pid: pid
 				});
 
 				// Delete the thread if it is the last undeleted post
-				threadTools.get_latest_undeleted_pid(tid, function(err, pid) {
+				threadTools.get_latest_undeleted_pid(postData.tid, function(err, pid) {
 					if (err && err.message === 'no-undeleted-pids-found') {
-						threadTools.delete(tid, -1, function(err) {
-							if (err) console.log('Error: Could not delete topic (tid: ' + tid + ')');
+						threadTools.delete(postData.tid, -1, function(err) {
+							if (err) console.log('Error: Could not delete topic (tid: ' + postData.tid + ')');
 						});
 					} else {
 						posts.getPostField(pid, 'timestamp', function(timestamp) {
-							topics.updateTimestamp(tid, timestamp);	
+							topics.updateTimestamp(postData.tid, timestamp);	
 						});	
 					}
 				});
@@ -115,8 +119,11 @@ marked.setOptions({
 		var	success = function() {
 			posts.setPostField(pid, 'deleted', 0);
 
-			posts.getPostField(pid, 'tid', function(tid) {
-				io.sockets.in('topic_' + tid).emit('event:post_restored', {
+			posts.getPostFields(pid, ['tid', 'uid', function(postData) {
+
+				user.incrementUserFieldBy(postData.uid, 'postcount', 1);
+
+				io.sockets.in('topic_' + postData.tid).emit('event:post_restored', {
 					pid: pid
 				});
 			});

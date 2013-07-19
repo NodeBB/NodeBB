@@ -316,6 +316,10 @@ var utils = require('./../public/src/utils.js'),
 		RDB.hincrby('user:' + uid, field, value);
 	}
 
+	User.decrementUserFieldBy = function(uid, field, value) {
+		RDB.hincrby('user:' + uid, field, -value);
+	}
+
 	User.getUserList = function(callback) {
 		var data = [];
 
