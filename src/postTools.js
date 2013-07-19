@@ -87,7 +87,7 @@ marked.setOptions({
 
 			posts.getPostFields(pid, ['tid', 'uid'], function(postData) {
 
-				user.decrementUserFieldBypostData.uid, 'postcount', 1);
+				user.decrementUserFieldBy(postData.uid, 'postcount', 1);
 				
 				io.sockets.in('topic_' + postData.tid).emit('event:post_deleted', {
 					pid: pid
