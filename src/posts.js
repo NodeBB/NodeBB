@@ -61,7 +61,7 @@ marked.setOptions({
 		var returnData = [];
 		
 		function getPostSummary(pid, callback) {
-			Posts.getPostFields(pid, ['pid', 'content', 'uid', 'timestamp', 'deleted'], function(postData) {
+			Posts.getPostFields(pid, ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'], function(postData) {
 				Posts.addUserInfoToPost(postData, function() {
 
 					if(postData.deleted !== '1')	{

@@ -77,11 +77,15 @@
 		for (var i=0,numPosts=posts.length; i<numPosts; i++) {
 			var dateString = utils.relativeTime(posts[i].timestamp);
 			li.setAttribute('data-pid', posts[i].pid);
-			li.innerHTML =	'<img title="' + posts[i].username + '" style="width: 48px; height: 48px; /*temporary*/" class="img-polaroid" src="' + posts[i].picture + '" class="" />' +
-								'<p>' +
-									'<strong>' + posts[i].username + '</strong>: ' + posts[i].content +
-								'</p>' +
-								'<span>posted ' + utils.relativeTime(posts[i].timestamp) + ' ago</span>';
+
+
+			li.innerHTML =	'<a href="/users/' + posts[i].userslug + '"><img title="' + posts[i].username + '" style="width: 48px; height: 48px; /*temporary*/" class="img-polaroid" src="' + posts[i].picture + '" class="" /></a>' +
+								'<a href="/topic/'+ posts[i].tid + '">' +
+									'<p>' +
+										'<strong>' + posts[i].username + '</strong>: ' + posts[i].content +
+									'</p>' +
+									'<span>posted ' + utils.relativeTime(posts[i].timestamp) + ' ago</span>' +
+								'</a>';
 
 			frag.appendChild(li.cloneNode(true));
 			recent_replies.appendChild(frag);
