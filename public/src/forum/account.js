@@ -32,6 +32,10 @@
 			return false;
 		});
 
+		$('.user-recent-posts .topic-row').on('click', function() {
+			ajaxify.go($(this).attr('topic-url'));
+		})
+
 	});
 
 }());

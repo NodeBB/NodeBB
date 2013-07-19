@@ -81,13 +81,10 @@
 		<div class="span6 user-recent-posts">
 			<h4>recent posts </h4>
 			<!-- BEGIN posts -->
-			<a href="/topic/{posts.tid}/{posts.pid}">
-				<div class="topic-row img-polaroid clearfix">
-					<span>{posts.content}</span>
-					<span class="pull-right">{posts.relativeTime} ago</span>
-				</div>	
-			</a>
-			
+			<div class="topic-row img-polaroid clearfix" topic-url="topic/{posts.tid}/{posts.pid}">
+				<span>{posts.content}</span>
+				<span class="pull-right">{posts.relativeTime} ago</span>
+			</div>	
 			<!-- END posts -->
 		</div>
 	</div>
