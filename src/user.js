@@ -730,14 +730,14 @@ var utils = require('./../public/src/utils.js'),
 
 	User.isModerator = function(uid, cid, callback) {
 		RDB.sismember('cid:' + cid + ':moderators', uid, function(err, exists) {
-			// @todo handle error
+			RDB.handle(err);
 			callback(!!exists);
 		});
 	}
 
 	User.isAdministrator = function(uid, callback) {
 		RDB.sismember('administrators', uid, function(err, exists) {
-			// @todo handle error
+			RDB.handle(err);
 			callback(!!exists);
 		});
 	}
