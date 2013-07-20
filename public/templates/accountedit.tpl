@@ -40,7 +40,7 @@
 		</div>
 		<div class="modal-body">
 			
-			<form id="uploadForm" action="/users/uploadpicture" method="post" enctype="multipart/form-data">
+			<form id="uploadForm" action="{relative_path}/users/uploadpicture" method="post" enctype="multipart/form-data">
 				<input id="userPhotoInput" type="file" name="userPhoto" >
 				<input id="imageUploadCsrf" type="hidden" name="_csrf" value="">
 			</form>
