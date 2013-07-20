@@ -237,6 +237,14 @@ var express = require('express'),
 			});
 		});
 
+		app.get('/robots.txt', function(req, res) {
+			res.set('Content-Type', 'text/plain');
+			res.send(	"User-agent: *\n" +
+						"Disallow: \n" +
+						"Disallow: /admin/\n" +
+						"Sitemap: " + global.nconf.get('url') + "sitemap.xml");
+		});
+
 		app.get('/api/:method', api_method);
 		app.get('/api/:method/:id', api_method);
 		// ok fine MUST ADD RECURSION style. I'll look for a better fix in future but unblocking baris for this:
