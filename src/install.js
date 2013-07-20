@@ -81,6 +81,7 @@ var	async = require('async'),
 						relative_path: relative_path
 					};
 
+				server_conf.base_url = protocol + '//' + host;
 				server_conf.relative_path = relative_path;
 
 				install.save(server_conf, client_conf, callback);

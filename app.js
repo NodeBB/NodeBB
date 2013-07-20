@@ -35,8 +35,9 @@ console.log('Info: This is free software, and you are welcome to redistribute it
 console.log('Info: ===');
 
 if (!nconf.get('setup') && nconf.get('base_url')) {
-	nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + '/');
+	nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path') + '/');
 	nconf.set('upload_url', nconf.get('url') + 'uploads/');
+	console.log('NCONF CHECK', nconf.get('base_url'), nconf.get('upload_url'), nconf.get('url'));
 	global.nconf = nconf;
 
 	console.log('Info: Initializing NodeBB v' + pkg.version + ', on port ' + nconf.get('port') + ', using Redis store at ' + nconf.get('redis:host') + ':' + nconf.get('redis:port') + '.');
