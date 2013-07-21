@@ -181,7 +181,6 @@ var express = require('express'),
 				return;
 			}
 
-
 			var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
 			topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), function(err, topic) {
 				if (err) return res.redirect('404');
@@ -198,9 +197,7 @@ var express = require('express'),
 		app.get('/category/:category_id/:slug?', function(req, res) {
 			var cid = req.params.category_id;
 			
-			
 			if (cid.match(/^\d+\.rssgg$/)) {
-				console.log('IT WORKS');
 				fs.readFile('feeds/categories/' + cid, function (err, data) {
 					console.log('data', data);
 					if (err) {
@@ -212,7 +209,7 @@ var express = require('express'),
 				});
 				return;
 			}
-			console.log('now way');
+
 			var category_url = cid + (req.params.slug ? '/' + req.params.slug : '');
 			categories.getCategoryById(cid, 0, function(returnData) {
 				if(!returnData) {
