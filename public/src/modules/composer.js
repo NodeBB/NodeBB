@@ -7,10 +7,88 @@ define(['taskbar'], function(taskbar) {
 			postContainer: undefined,
 		};
 
+	function loadFile(file) {
+		var reader = new FileReader();
+		var dropDiv = $('#imagedrop');
+		var uuid = dropDiv.parents('[data-uuid]').attr('data-uuid');
+		var posts = composer.posts[uuid];
+		
+		$(reader).on('loadend', function(e) {
+			var bin = this.result; 
+			bin = bin.split(',')[1];
+
+			var img = {
+				name: file.name,
+				data: bin
+			};
+
+			posts.images.push(img);
+
+			var imageLabel = $('<div class="label"><span>'+ file.name +'</span></div>');
+			var closeButton = $('<button class="close">&times;</button>');
+			closeButton.on('click', function(e) {
+				
+				imageLabel.remove();
+				var index = posts.images.indexOf(img);
+				if(index !== -1) {
+					posts.images.splice(index, 1);
+				}
+				
+				if(!dropDiv.children().length) {
+					dropDiv.html('Drag and drop images here');
+				}
+			});
+
+			imageLabel.append(closeButton);      	
+    		dropDiv.append(imageLabel);
+
+		});
+	
+		reader.readAsDataURL(file);
+	}
+
+	function initializeFileReader() {
+		jQuery.event.props.push( "dataTransfer" );
+		
+		if(window.FileReader) {
+			var drop = $('#imagedrop');
+
+			$(composer.postContainer).on('dragenter dragover', function() {
+				drop.show();	
+			});
+			
+			function cancel(e) {
+				e.preventDefault();
+				return false;
+			}
+			
+			drop.on('dragover', cancel);
+			drop.on('dragenter', cancel);
+			
+			drop.on('drop', function(e) {
+				e.preventDefault();
+				var uuid = drop.parents('[data-uuid]').attr('data-uuid');
+				var posts = composer.posts[uuid];			
+				
+				var dt = e.dataTransfer;
+				var files = dt.files;
+				
+				if(!posts.images.length)
+					drop.html('');
+				
+				for (var i=0; i<files.length; i++) {
+					loadFile(files[i]);
+				}
+				return false;
+				
+			});
+			
+		}
+	}
+
 	composer.init = function() {
 		if (!composer.initialized) {
-			// Create the fixed bottom bar
-			var	taskbar = document.getElementById('taskbar');
+			var taskbar = document.getElementById('taskbar');
 
 			composer.postContainer = document.createElement('div');
 			composer.postContainer.className = 'post-window row-fluid';
@@ -29,14 +107,17 @@ define(['taskbar'], function(taskbar) {
 															'<button class="btn" data-action="discard" tabIndex="5"><i class="icon-remove"></i> Discard</button>' +
 														'</div>' +
 													'</div>' +
+													'<div id="imagedrop" style="display:none;"></div>'+
 													'<textarea tabIndex="2"></textarea>' +
 												'</div>';
 
 			document.body.insertBefore(composer.postContainer, taskbar);
 
+			initializeFileReader();
+
 			socket.on('api:composer.push', function(threadData) {
 				if (!threadData.error) {
-					var	uuid = utils.generateUUID();
+					var uuid = utils.generateUUID();
 
 					composer.taskbar.push('composer', uuid, {
 						title: (!threadData.cid ? (threadData.title || '') : 'New Topic'),
@@ -48,7 +129,8 @@ define(['taskbar'], function(taskbar) {
 						cid: threadData.cid,
 						pid: threadData.pid,
 						title: threadData.title || '',
-						body: threadData.body || ''
+						body: threadData.body || '',
+						images: []
 					};
 					composer.load(uuid);
 				} else {
@@ -156,9 +238,12 @@ define(['taskbar'], function(taskbar) {
 	}
 
 	composer.load = function(post_uuid) {
-		var	post_data = composer.posts[post_uuid],
+		var post_data = composer.posts[post_uuid],
 			titleEl = composer.postContainer.querySelector('input'),
-			bodyEl = composer.postContainer.querySelector('textarea');
+			bodyEl = composer.postContainer.querySelector('textarea'),
+			dropDiv = $(composer.postContainer).find('#imagedrop');	
+
+		dropDiv.html('Drag and drop images here').hide();
 
 		composer.postContainer.style.display = 'block';
 		// composer.postContainer.style.bottom = composer.btnContainer.offsetHeight + "px";
@@ -175,6 +260,8 @@ define(['taskbar'], function(taskbar) {
 			titleEl.readOnly = false;
 		}
 		bodyEl.value = post_data.body
+
+		
 
 		// Direct user focus to the correct element
 		if ((parseInt(post_data.tid) || parseInt(post_data.pid)) > 0) {
@@ -217,18 +304,21 @@ define(['taskbar'], function(taskbar) {
 			socket.emit('api:topics.post', {
 				'title' : titleEl.value,
 				'content' : bodyEl.value,
-				'category_id' : postData.cid
+				'category_id' : postData.cid,
+				images: composer.posts[post_uuid].images
 			});
 		} else if (parseInt(postData.tid) > 0) {
 			socket.emit('api:posts.reply', {
 				'topic_id' : postData.tid,
-				'content' : bodyEl.value
+				'content' : bodyEl.value,
+				images: composer.posts[post_uuid].images
 			});
 		} else if (parseInt(postData.pid) > 0) {
 			socket.emit('api:posts.edit', {
 				pid: postData.pid,
 				content: bodyEl.value,
-				title: titleEl.value
+				title: titleEl.value,
+				images: composer.posts[post_uuid].images
 			});
 		}
 
@@ -237,6 +327,7 @@ define(['taskbar'], function(taskbar) {
 
 	composer.discard = function(post_uuid) {
 		if (composer.posts[post_uuid]) {
+			$(composer.postContainer).find('#imagedrop').html('');
 			delete composer.posts[post_uuid];
 			composer.minimize();
 			taskbar.discard('composer', post_uuid);

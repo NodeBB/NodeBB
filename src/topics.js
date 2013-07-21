@@ -117,6 +117,10 @@ marked.setOptions({
 
 				var main_posts = topicPosts.splice(0, 1);
 
+/*				main_posts[0].main_uploadedImages = main_posts[0].uploadedImages;
+				delete main_posts[0].uploadedImages;
+				console.log(main_posts);*/
+				
 				callback(null, {
 					'topic_name':topicData.title,
 					'category_name':topicData.category_name,
@@ -313,7 +317,7 @@ marked.setOptions({
 			});
 	}
 
-	Topics.post = function(socket, uid, title, content, category_id) {
+	Topics.post = function(socket, uid, title, content, category_id, images) {
 		if (!category_id) 
 			throw new Error('Attempted to post without a category_id');
 		
@@ -379,9 +383,9 @@ marked.setOptions({
 				
 				RDB.set('topicslug:' + slug + ':tid', tid);
 
-				posts.create(uid, tid, content, function(pid) {
-					if (pid > 0) {
-						RDB.lpush(schema.topics(tid).posts, pid);
+				posts.create(uid, tid, content, images, function(postData) {
+					if (postData) {
+						RDB.lpush(schema.topics(tid).posts, postData.pid);
 
 						// Auto-subscribe the post creator to the newly created topic
 						threadTools.toggleFollow(tid, uid);

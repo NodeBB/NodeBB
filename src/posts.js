@@ -117,6 +117,11 @@ marked.setOptions({
 					postData['edited-class'] = postData.editor !== '' ? '' : 'none';
 					postData['relativeEditTime'] = postData.edited !== '0' ? utils.relativeTime(postData.edited) : '';
 					postData.content = marked(postData.content || '');
+					if(postData.uploadedImages) {
+						postData.uploadedImages = JSON.parse(postData.uploadedImages);
+					} else {
+						postData.uploadedImages = [];
+					}
 					posts.push(postData);
 				}
 				callback(null);
@@ -185,7 +190,7 @@ marked.setOptions({
 		});
 	}
 
-	Posts.reply = function(socket, tid, uid, content) {
+	Posts.reply = function(socket, tid, uid, content, images) {
 		if (uid < 1) {
 			socket.emit('event:alert', {
 				title: 'Reply Unsuccessful',
@@ -211,13 +216,13 @@ marked.setOptions({
 				return;
 			}
 
-			Posts.create(uid, tid, content, function(pid) {
-				if (pid > 0) {
-					RDB.rpush('tid:' + tid + ':posts', pid);
+			Posts.create(uid, tid, content, images, function(postData) {
+				if (postData) {
+					RDB.rpush('tid:' + tid + ':posts', postData.pid);
 
 					RDB.del('tid:' + tid + ':read_by_uid'); 
 
-					Posts.get_cid_by_pid(pid, function(cid) {
+					Posts.get_cid_by_pid(postData.pid, function(cid) {
 						RDB.del('cid:' + cid + ':read_by_uid', function(err, data) {
 							topics.markAsRead(tid, uid);	
 						});
@@ -228,7 +233,6 @@ marked.setOptions({
 					// Send notifications to users who are following this topic
 					threadTools.notify_followers(tid, uid);
 
-					
 					socket.emit('event:alert', {
 						title: 'Reply Successful',
 						message: 'You have successfully replied. Click here to view your reply.',
@@ -236,21 +240,16 @@ marked.setOptions({
 						timeout: 2000
 					});
 
+					postData.content = marked(postData.content);
+					postData.post_rep = 0;
+					postData.relativeTime = utils.relativeTime(postData.timestamp)
+					postData.fav_star_class = 'icon-star-empty';
+					postData['edited-class'] = 'none';
+					postData.uploadedImages = JSON.parse(postData.uploadedImages);
 
-					var timestamp = Date.now();
 					var socketData = {
 						'posts' : [
-							{
-								'pid' : pid,
-								'content' : marked(content || ''),
-								'uid' : uid,
-								'post_rep' : 0,
-								'timestamp' : timestamp,
-								'relativeTime': utils.relativeTime(timestamp),
-								'fav_star_class' :'icon-star-empty',
-								'edited-class': 'none',
-								'editor': '',
-							}
+							postData
 						]
 					};
 						
@@ -258,6 +257,7 @@ marked.setOptions({
 						io.sockets.in('topic_' + tid).emit('event:new_post', socketData);
 						io.sockets.in('recent_posts').emit('event:new_post', socketData);
 					});					
+			
 				
 				} else {
 					socket.emit('event:alert', {
@@ -270,10 +270,10 @@ marked.setOptions({
 			});
 		});
 	};
-
-	Posts.create = function(uid, tid, content, callback) {
+	
+	Posts.create = function(uid, tid, content, images, callback) {
 		if (uid === null) {
-			callback(-1);
+			callback(null);
 			return;
 		}
 		
@@ -285,7 +285,7 @@ marked.setOptions({
 					
 					var timestamp = Date.now();
 					
-					RDB.hmset('post:' + pid, {
+					var postData = {
 						'pid': pid,
 						'uid': uid,
 						'tid': tid,
@@ -294,8 +294,11 @@ marked.setOptions({
 						'reputation': 0,
 						'editor': '',
 						'edited': 0,
-						'deleted': 0
-					});
+						'deleted': 0,
+						'uploadedImages': ''
+					};
+					
+					RDB.hmset('post:' + pid, postData);
 
 					topics.increasePostCount(tid);
 					topics.updateTimestamp(tid, timestamp);
@@ -321,11 +324,42 @@ marked.setOptions({
 					
 					user.onNewPostMade(uid, tid, pid, timestamp);					
 
-					if (callback) 
-						callback(pid);
+					var imgur = require('./imgur');
+					// move clientID to config
+					imgur.setClientID('09f3955fee9a0a6');
+					
+					var uploadedImages = [];					
+
+					function uploadImage(image, callback) {
+						imgur.upload(image.data, 'base64', function(err, data) {
+							if(err) {
+								callback(err);
+							} else {
+								if(data.success) {
+									var img= {url:data.data.link, name:image.name};
+									uploadedImages.push(img);
+									callback(null);
+								} else {
+									callback(data);
+								}
+							}
+						});			
+					}				
+
+					async.each(images, uploadImage, function(err) {
+						if(!err) {
+							postData.uploadedImages = JSON.stringify(uploadedImages);
+							Posts.setPostField(pid, 'uploadedImages', postData.uploadedImages);
+
+							callback(postData);
+						} else {
+							console.log(err);
+							callback(null);
+						}
+					});
 				});
 			} else {
-				callback(-1);
+				callback(null);
 			}
 		});
 	}
