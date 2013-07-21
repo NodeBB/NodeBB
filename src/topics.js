@@ -116,10 +116,6 @@ marked.setOptions({
 					privileges = results[2];
 
 				var main_posts = topicPosts.splice(0, 1);
-
-/*				main_posts[0].main_uploadedImages = main_posts[0].uploadedImages;
-				delete main_posts[0].uploadedImages;
-				console.log(main_posts);*/
 				
 				callback(null, {
 					'topic_name':topicData.title,
