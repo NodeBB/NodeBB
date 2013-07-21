@@ -199,7 +199,6 @@ var express = require('express'),
 			
 			if (cid.match(/^\d+\.rssgg$/)) {
 				fs.readFile('feeds/categories/' + cid, function (err, data) {
-					console.log('data', data);
 					if (err) {
 						res.type('text').send(404, "Unable to locate an rss feed at this location.");
 						return;
