@@ -5,7 +5,7 @@
 		passportGoogle = require('passport-google-oauth').OAuth2Strategy,
 		passportFacebook = require('passport-facebook').Strategy,
 		login_strategies = [],
-
+		nconf = require('nconf'),
 		user_module = require('./../user.js'),
 		login_module = require('./../login.js');
 
@@ -20,7 +20,7 @@
 		passport.use(new passportTwitter({
 			consumerKey: global.config['social:twitter:key'],
 			consumerSecret: global.config['social:twitter:secret'],
-			callbackURL: config.url + 'auth/twitter/callback'
+			callbackURL: nconf.get('url') + 'auth/twitter/callback'
 		}, function(token, tokenSecret, profile, done) {
 			login_module.loginViaTwitter(profile.id, profile.username, function(err, user) {
 				if (err) { return done(err); }
@@ -35,7 +35,7 @@
 		passport.use(new passportGoogle({
 			clientID: global.config['social:google:id'],
 			clientSecret: global.config['social:google:secret'],
-			callbackURL: config.url + 'auth/google/callback'
+			callbackURL: nconf.get('url') + 'auth/google/callback'
 		}, function(accessToken, refreshToken, profile, done) {
 			login_module.loginViaGoogle(profile.id, profile.displayName, profile.emails[0].value, function(err, user) {
 				if (err) { return done(err); }
@@ -47,10 +47,11 @@
 	}
 
 	if (global.config['social:facebook:app_id'] && global.config['social:facebook:secret']) {
+		console.log(config.url);
 		passport.use(new passportFacebook({
 			clientID: global.config['social:facebook:app_id'],
 			clientSecret: global.config['social:facebook:secret'],
-			callbackURL: config.url + 'auth/facebook/callback'
+			callbackURL: nconf.get('url') + 'auth/facebook/callback'
 		}, function(accessToken, refreshToken, profile, done) {
 			login_module.loginViaFacebook(profile.id, profile.displayName, profile.emails[0].value, function(err, user) {
 				if (err) { return done(err); }
