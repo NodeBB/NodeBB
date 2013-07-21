@@ -84,11 +84,11 @@
 					<div class="post-signature">{posts.signature}</div>
 					<div class="profile-block">
 						<span class="post-buttons">
-							<button id="ids_{posts.pid}_{posts.uid}" class="edit {posts.display_moderator_tools} hidden-phone" title="Edit"><i class="icon-pencil"></i></button>
-							<button id="ids_{posts.pid}_{posts.uid}" class="delete {posts.display_moderator_tools} hidden-phone" title="Delete"><i class="icon-trash"></i></button>
-							<button id="quote_{posts.pid}_{posts.uid}" class="quote hidden-phone" title="Quote"><i class="icon-quote-left"></i></button>
-							<button id="favs_{posts.pid}_{posts.uid}" class="favourite hidden-phone" title="Favourite"><span class="post_rep_{posts.pid}">{posts.post_rep} </span><i class="{posts.fav_star_class}"></i></button>
-							<button class="post_reply" title="Reply"><i class="icon-reply"></i></button>
+							<button id="ids_{posts.pid}_{posts.uid}" class="edit {posts.display_moderator_tools} btn-link hidden-phone" title="Edit"><i class="icon-pencil"></i></button>
+							<button id="ids_{posts.pid}_{posts.uid}" class="delete {posts.display_moderator_tools} btn-link hidden-phone" title="Delete"><i class="icon-trash"></i></button>
+							<button id="quote_{posts.pid}_{posts.uid}" class="quote btn-link hidden-phone" title="Quote"><i class="icon-quote-left"></i></button>
+							<button id="favs_{posts.pid}_{posts.uid}" class="favourite btn-link hidden-phone" title="Favourite"><span class="post_rep_{posts.pid}">{posts.post_rep} </span><i class="{posts.fav_star_class}"></i></button>
+							<button class="post_reply btn-link" title="Reply"><i class="icon-reply"></i></button>
 						</span>
 						<img class="hidden-desktop" src="{posts.picture}?s=10&default=identicon" align="left" /> posted by <strong><a class="username-field" href="/users/{posts.userslug}">{posts.username}</a></strong> {posts.relativeTime} ago
 						<span class="{posts.edited-class} hidden-phone">| last edited by <strong><a href="/users/{posts.editorslug}">{posts.editorname}</a></strong> {posts.relativeEditTime} ago</span>
