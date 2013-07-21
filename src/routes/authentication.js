@@ -47,7 +47,6 @@
 	}
 
 	if (global.config['social:facebook:app_id'] && global.config['social:facebook:secret']) {
-		console.log(config.url);
 		passport.use(new passportFacebook({
 			clientID: global.config['social:facebook:app_id'],
 			clientSecret: global.config['social:facebook:secret'],
