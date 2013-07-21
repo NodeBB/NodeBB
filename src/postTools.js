@@ -81,7 +81,7 @@ marked.setOptions({
 	}
 
 	PostTools.delete = function(uid, pid) {
-		var	success = function() {
+		var success = function() {
 			posts.setPostField(pid, 'deleted', 1);
 			
 
@@ -116,7 +116,7 @@ marked.setOptions({
 	}
 
 	PostTools.restore = function(uid, pid) {
-		var	success = function() {
+		var success = function() {
 			posts.setPostField(pid, 'deleted', 0);
 
 			posts.getPostFields(pid, ['tid', 'uid'], function(postData) {
@@ -125,6 +125,12 @@ marked.setOptions({
 
 				io.sockets.in('topic_' + postData.tid).emit('event:post_restored', {
 					pid: pid
+				});
+				
+				threadTools.get_latest_undeleted_pid(postData.tid, function(err, pid) {
+					posts.getPostField(pid, 'timestamp', function(timestamp) {
+						topics.updateTimestamp(postData.tid, timestamp);
+					});	
 				});
 			});
 		};

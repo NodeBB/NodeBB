@@ -128,7 +128,6 @@ var	RDB = require('./redis.js'),
 	Categories.getTopicsByTids = function(tids, current_user, callback, category_id /*temporary*/) {
 
 		var retrieved_topics = [];
-		var topicCountToLoad = tids.length;
 		
 		function getTopicInfo(topicData, callback) {
 
@@ -177,9 +176,8 @@ var	RDB = require('./redis.js'),
 			return !deleted || (deleted && topicInfo.privileges.view_deleted) || topicData.uid === current_user;
 		}
 
-		for(var i=0; i<tids.length; ++i) {
-
-			topics.getTopicData(tids[i], function(topicData) {
+		function loadTopic(tid, callback) {
+			topics.getTopicData(tid, function(topicData) {
 
 				getTopicInfo(topicData, function(topicInfo) {
 
@@ -198,15 +196,17 @@ var	RDB = require('./redis.js'),
 
 					if (isTopicVisible(topicData, topicInfo))
 						retrieved_topics.push(topicData);
-					else
-						--topicCountToLoad;
-
-					if(retrieved_topics.length === topicCountToLoad) {
-						callback(retrieved_topics);
-					}
+					
+					callback(null);					
 				});
 			});
 		}
+		
+		async.eachSeries(tids, loadTopic, function(err) {
+			if(!err) {
+				callback(retrieved_topics);
+			}
+		});
 
 	}
 

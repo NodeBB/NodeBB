@@ -298,7 +298,6 @@ marked.setOptions({
 					});
 
 					topics.increasePostCount(tid);
-					topics.setTopicField(tid, 'lastposttime', timestamp);
 					topics.updateTimestamp(tid, timestamp);
 
 					RDB.incr('totalpostcount');

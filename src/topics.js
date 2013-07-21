@@ -452,6 +452,7 @@ marked.setOptions({
 
 	Topics.updateTimestamp = function(tid, timestamp) {
 		RDB.zadd(schema.topics().recent, timestamp, tid);
+		Topics.setTopicField(tid, 'lastposttime', timestamp);
 	}
 	
 }(exports));
