@@ -14,7 +14,7 @@ define(['taskbar'], function(taskbar) {
 
 			composer.postContainer = document.createElement('div');
 			composer.postContainer.className = 'post-window row-fluid';
-			composer.postContainer.innerHTML =	'<div class="span10 offset1">' +
+			composer.postContainer.innerHTML =	'<div class="span5">' +
 													'<input type="text" tabIndex="1" placeholder="Enter your topic title here..." />' +
 													'<div class="btn-toolbar">' +
 														'<div class="btn-group formatting-bar">' +
@@ -158,10 +158,16 @@ define(['taskbar'], function(taskbar) {
 	composer.load = function(post_uuid) {
 		var	post_data = composer.posts[post_uuid],
 			titleEl = composer.postContainer.querySelector('input'),
-			bodyEl = composer.postContainer.querySelector('textarea');
+			bodyEl = composer.postContainer.querySelector('textarea'),
+			postWindowEl = composer.postContainer.querySelector('.span5'),
+			taskbarBtn = document.querySelector('#taskbar [data-uuid="' + post_uuid + '"]'),
+			btnRect = taskbarBtn.getBoundingClientRect(),
+			windowRect;
 
 		composer.postContainer.style.display = 'block';
-		// composer.postContainer.style.bottom = composer.btnContainer.offsetHeight + "px";
+		windowRect = postWindowEl.getBoundingClientRect();
+		postWindowEl.style.left = (btnRect.left + btnRect.width - windowRect.width) + 'px';
+		composer.postContainer.style.bottom = btnRect.height + "px";
 		composer.postContainer.setAttribute('data-uuid', post_uuid);
 		if (parseInt(post_data.tid) > 0) {
 			titleEl.value = 'Replying to: ' + post_data.title;
