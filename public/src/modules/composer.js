@@ -162,12 +162,14 @@ define(['taskbar'], function(taskbar) {
 			postWindowEl = composer.postContainer.querySelector('.span5'),
 			taskbarBtn = document.querySelector('#taskbar [data-uuid="' + post_uuid + '"]'),
 			btnRect = taskbarBtn.getBoundingClientRect(),
-			windowRect;
+			taskbarRect = document.getElementById('taskbar').getBoundingClientRect(),
+			windowRect, leftPos;
 
 		composer.postContainer.style.display = 'block';
 		windowRect = postWindowEl.getBoundingClientRect();
-		postWindowEl.style.left = (btnRect.left + btnRect.width - windowRect.width) + 'px';
-		composer.postContainer.style.bottom = btnRect.height + "px";
+		leftPos = btnRect.left + btnRect.width - windowRect.width;
+		postWindowEl.style.left = (leftPos > 0 ? leftPos : 0) + 'px';
+		composer.postContainer.style.bottom = taskbarRect.height + "px";
 		composer.postContainer.setAttribute('data-uuid', post_uuid);
 		if (parseInt(post_data.tid) > 0) {
 			titleEl.value = 'Replying to: ' + post_data.title;
