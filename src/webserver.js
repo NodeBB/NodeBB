@@ -38,7 +38,6 @@ var express = require('express'),
 	// Middlewares
 	app.use(express.favicon(path.join(__dirname, '../', 'public', 'favicon.ico')));
 	app.use(require('less-middleware')({ src: path.join(__dirname, '../', 'public') }));
-	//app.use(express.static(path.join(__dirname, '../', 'public')));
 	app.use(global.nconf.get('relative_path'), express.static(path.join(__dirname, '../', 'public')));
 	app.use(express.bodyParser());	// Puts POST vars in request.body
 	app.use(express.cookieParser());	// If you want to parse cookies (res.cookies)
@@ -252,7 +251,7 @@ var express = require('express'),
 		app.get('/api/:method/:id*', api_method);
 
 		app.get('/cid/:cid', function(req, res) {
-			categories.getCategoryData(req.params.cid, function(data){
+			categories.getCategoryData(req.params.cid, function(err, data) {
 				if(data)
 					res.send(data);
 				else

@@ -9,9 +9,9 @@ var	RDB = require('./redis.js'),
 
 	Categories.getCategoryById = function(category_id, current_user, callback) {
 		
-		Categories.getCategoryData(category_id, function(categoryData) {
+		Categories.getCategoryData(category_id, function(err, categoryData) {
 			
-			if(!categoryData) {
+			if(err) {
 				callback(false);
 				return;
 			}
@@ -341,12 +341,23 @@ var	RDB = require('./redis.js'),
 	}
 
 	Categories.getCategoryData = function(cid, callback) {
-		RDB.hgetall('category:' + cid, function(err, data) {
-			if(err === null)
-				callback(data);
-			else	
+		RDB.hgetall('category:' + cid, callback);
+	}
+	
+	Categories.getCategoryFields = function(cid, fields, callback) {
+		RDB.hmget('category:' + cid, fields, function(err, data) {
+			if(err === null) {
+				var returnData = {};
+				
+				for(var i=0, ii=fields.length; i<ii; ++i) {
+					returnData[fields[i]] = data[i];
+				}
+
+				callback(returnData);
+			}
+			else
 				console.log(err);
-		});
+		});		
 	}
 	
 	Categories.setCategoryField = function(cid, field, value) {
@@ -366,9 +377,9 @@ var	RDB = require('./redis.js'),
 		var categories = [];
 
 		for(var i=0; i<cids.length; ++i) {
-			Categories.getCategoryData(cids[i], function(categoryData) {
+			Categories.getCategoryData(cids[i], function(err, categoryData) {
 				
-				if(!categoryData)
+				if(err)
 					return;
 
 				Categories.hasReadCategory(categoryData.cid, current_user, function(hasRead) {

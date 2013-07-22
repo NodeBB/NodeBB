@@ -180,11 +180,6 @@ var	RDB = require('./redis.js'),
 					categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1);
 					categories.incrementCategoryFieldBy(cid, 'topic_count', 1);
 
-					categories.getCategories([cid], function(data) {
-						topics.setTopicField(tid, 'category_name', data.categories[0].name);
-						topics.setTopicField(tid, 'category_slug', data.categories[0].slug);
-					});
-
 					socket.emit('api:topic.move', {
 						status: 'ok'
 					});

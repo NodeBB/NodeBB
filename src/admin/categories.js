@@ -41,24 +41,11 @@ var	RDB = require('./../redis.js'),
 					var slug = cid + '/' + utils.slugify(category[key]);
 					RDB.hset('category:' + cid, 'slug', slug);
 					RDB.set('categoryslug:' + slug + ':cid', cid);
-
-					RDB.smembers('categories:' + cid + ':tid', function(err, tids) {
-						var pipe = RDB.multi();
-
-						for (var tid in tids) {
-							pipe.set(schema.topics(tid).category_name, category[key]);
-							pipe.set(schema.topics(tid).category_slug, slug);
-						}
-						pipe.exec();
-					});
-					
 				}
 			}
 
 			updated.push(cid);
 		}
-
-		
 
 		socket.emit('event:alert', {
 			title: 'Updated Categories',
