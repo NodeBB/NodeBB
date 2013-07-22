@@ -230,6 +230,23 @@ var socket,
 
 		app.populate_online_users();
 
+		var url = window.location.href,
+			parts = url.split('/'),
+			active = parts[parts.length-1];
+
+		jQuery('.nav li').removeClass('active');
+		if(active) {
+			jQuery('.nav li a').each(function() {
+				var href = this.getAttribute('href');
+				if(active.match(/^users/))
+					active = 'users';
+				if (href.match(active)) {
+					jQuery(this.parentNode).addClass('active');
+					return false;
+				}
+			});
+		}
+
 		setTimeout(function() {
 			window.scrollTo(0, 1); // rehide address bar on mobile after page load completes.	
 		}, 100);
@@ -237,24 +254,6 @@ var socket,
 
 
 	jQuery('document').ready(function() {
-
-		// On menu click, change "active" state
-		var menuEl = document.querySelector('.nav'),
-			liEls = menuEl.querySelectorAll('li'),
-			logoutEl = document.getElementById('logout'),
-			parentEl;
-
-		menuEl.addEventListener('click', function(e) {
-			parentEl = e.target.parentNode;
-			if (parentEl.nodeName === 'LI') {
-				for(var x=0,numLis=liEls.length;x<numLis;x++) {
-					if (liEls[x] !== parentEl) liEls[x].className = '';
-					else parentEl.className = 'active';
-				}
-			}
-		}, false);
-
-		
 		addTouchEvents();
 	});
 
