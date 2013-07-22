@@ -31,7 +31,8 @@
     "node-rss": "1.0.1",
     "gravatar": "1.0.6",
     "nconf": "~0.6.7",
-    "sitemap": "~0.6.0"
+    "sitemap": "~0.6.0",
+    "cheerio": "~0.12.0"
   },
   "bugs": {
     "url": "https://github.com/designcreateplay/NodeBB/issues"

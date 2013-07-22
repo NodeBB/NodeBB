@@ -6,6 +6,7 @@ var	RDB = require('./redis.js'),
 	topics = require('./topics.js'),
 	favourites = require('./favourites.js'),
 	threadTools = require('./threadTools.js'),
+	postTools = require('./postTools'),
 	feed = require('./feed.js'),
 	async = require('async');
 
@@ -116,7 +117,9 @@ marked.setOptions({
 					postData.post_rep = postData.reputation;
 					postData['edited-class'] = postData.editor !== '' ? '' : 'none';
 					postData['relativeEditTime'] = postData.edited !== '0' ? utils.relativeTime(postData.edited) : '';
-					postData.content = marked(postData.content || '');
+					
+					postData.content = postTools.markdownToHTML(postData.content);
+
 					if(postData.uploadedImages) {
 						postData.uploadedImages = JSON.parse(postData.uploadedImages);
 					} else {
@@ -218,9 +221,9 @@ marked.setOptions({
 
 			Posts.create(uid, tid, content, images, function(postData) {
 				if (postData) {
-					topics.addPostToTopic(tid, postData.pid);
+					RDB.rpush('tid:' + tid + ':posts', postData.pid);
 
-					topics.markUnRead(tid);
+					RDB.del('tid:' + tid + ':read_by_uid'); 
 
 					Posts.get_cid_by_pid(postData.pid, function(cid) {
 						RDB.del('cid:' + cid + ':read_by_uid', function(err, data) {

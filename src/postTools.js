@@ -4,12 +4,8 @@ var	RDB = require('./redis.js'),
 	threadTools = require('./threadTools.js'),
 	user = require('./user.js'),
 	async = require('async'),
-	marked = require('marked'),
+	
 	utils = require('../public/src/utils');
-
-marked.setOptions({
-	breaks: true
-});
 
 (function(PostTools) {
 	PostTools.isMain = function(pid, tid, callback) {
@@ -140,6 +136,23 @@ marked.setOptions({
 				success();
 			}
 		});
+	}
+
+	PostTools.markdownToHTML = function(md) {
+		var	marked = require('marked'),
+			cheerio = require('cheerio');
+
+		marked.setOptions({
+			breaks: true
+		});
+
+		if (md.length > 0) {
+			var	parsedContentDOM = cheerio.load(marked(md));
+			parsedContentDOM('a').attr('rel', 'nofollow').attr('target', '_blank');
+			html = parsedContentDOM.html();
+		} else html = '<p></p>';
+
+		return html;
 	}
 
 
