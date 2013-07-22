@@ -147,8 +147,12 @@ var	RDB = require('./redis.js'),
 		});
 
 		if (md.length > 0) {
-			var	parsedContentDOM = cheerio.load(marked(md));
-			parsedContentDOM('a').attr('rel', 'nofollow').attr('target', '_blank');
+			var	parsedContentDOM = cheerio.load(marked(md)),
+				anchorText = parsedContentDOM.text();
+			parsedContentDOM('a').each(function() {
+				this.attr('rel', 'nofollow').attr('target', '_blank');
+				this.append(' <i class="icon-external-link"></i>');
+			});
 			html = parsedContentDOM.html();
 		} else html = '<p></p>';
 
