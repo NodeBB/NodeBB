@@ -503,7 +503,6 @@ body .navbar .nodebb-inline-block {
 
 .post-window {
 	position: fixed;
-	bottom: 45px;
 	display: none;
 	height: 350px;
 	visibility: hidden;
@@ -550,33 +549,39 @@ body .navbar .nodebb-inline-block {
 		}
 		
 		#imagedrop {
-      background: rgba(64, 64, 64, 0.95);
-      padding: 0.5em;
-      display: block;
-      width: 90%;
-      min-height:25px;
-      margin: 1em auto;
-      resize: none;
-      color:white;
-      font-size:20px;
-      div {
-        margin-right:10px;
-      }
-      span {
-        line-height:20px;
-        float:left;
-      }
-      button { 
-        padding-left:5px;
-      }
-    }
-		
+			background: rgba(64, 64, 64, 0.95);
+			padding: 0.5em;
+			display: block;
+			width: 90%;
+			min-height:25px;
+			margin: 1em auto;
+			resize: none;
+			color:white;
+			font-size:20px;
+
+			div {
+				margin-right:10px;
+			}
+			span {
+				line-height:20px;
+				float:left;
+			}
+			button { 
+				padding-left:5px;
+			}
+		}
 	}
 }
 
 @media (max-width: 979px) {
 	.post-window {
-		position: static;
+		position: relative;
+		bottom: 0px !important;
+
+		> div {
+			position: static;
+			width: 100% !important;
+		}
 	}
 }
 
