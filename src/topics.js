@@ -293,7 +293,7 @@ marked.setOptions({
 							timestamp = postData.timestamp;
 							
 						if(postData.content)
-							stripped = utils.strip_tags(marked(postData.content));
+							stripped = utils.strip_tags(postTools.markdownToHTML(postData.content));
 							
 						callback(null, {
 							"text": stripped,

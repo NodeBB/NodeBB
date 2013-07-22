@@ -1,5 +1,6 @@
 var user = require('./../user.js'),
 	posts = require('./../posts.js'),
+	postTools = require('../postTools'),
 	fs = require('fs'),
 	utils = require('./../../public/src/utils.js'),
 	path = require('path'),
@@ -229,7 +230,7 @@ var user = require('./../user.js'),
 
 								userData.posts = posts.filter(function(p) {return p.deleted !== "1";});
 								userData.isFollowing = isFollowing;
-								userData.signature = marked(userData.signature || '');
+								userData.signature = postTools.markdownToHTML(userData.signature);
 								res.json(userData);
 							});
 						});

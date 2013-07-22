@@ -1,7 +1,6 @@
 var	RDB = require('./redis.js'),
 	utils = require('./../public/src/utils.js'),
 	schema = require('./schema.js'),
-	marked = require('marked'),
 	user = require('./user.js'),
 	topics = require('./topics.js'),
 	favourites = require('./favourites.js'),
@@ -9,10 +8,6 @@ var	RDB = require('./redis.js'),
 	postTools = require('./postTools'),
 	feed = require('./feed.js'),
 	async = require('async');
-
-marked.setOptions({
-	breaks: true
-});
 
 (function(Posts) {
 
@@ -43,7 +38,7 @@ marked.setOptions({
 			post.user_rep = userData.reputation || 0;
 			post.user_postcount = userData.postcount || 0;
 			post.picture = userData.picture || require('gravatar').url('', {}, https=global.nconf.get('https'));
-			post.signature = marked(userData.signature || '');
+			post.signature = postTools.markdownToHTML(userData.signature);
 
 			if(post.editor !== '') {
 				user.getUserFields(post.editor, ['username', 'userslug'], function(editorData) {
@@ -243,7 +238,7 @@ marked.setOptions({
 						timeout: 2000
 					});
 
-					postData.content = marked(postData.content);
+					postData.content = postTools.markdownToHTML(postData.content);
 					postData.post_rep = 0;
 					postData.relativeTime = utils.relativeTime(postData.timestamp)
 					postData.fav_star_class = 'icon-star-empty';

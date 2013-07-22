@@ -63,7 +63,7 @@ var	RDB = require('./redis.js'),
 					io.sockets.in('topic_' + tid).emit('event:post_edited', {
 						pid: pid,
 						title: title,
-						content: marked(content || '')
+						content: PostTools.markdownToHTML(content)
 					});
 				});
 			});
