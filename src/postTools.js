@@ -147,14 +147,24 @@ var	RDB = require('./redis.js'),
 		});
 
 		if (md.length > 0) {
-			var	parsedContentDOM = cheerio.load(marked(md)),
-				anchorText = parsedContentDOM.text();
+			var	parsedContentDOM = cheerio.load(marked(md));
+			var	domain = global.nconf.get('url');
+			
 			parsedContentDOM('a').each(function() {
-				this.attr('rel', 'nofollow').attr('target', '_blank');
-				this.append(' <i class="icon-external-link"></i>');
+				this.attr('rel', 'nofollow');
+				var href = this.attr('href');
+
+				if (href && !href.match(domain)) {
+					this.attr('href', domain + 'outgoing?' + href);
+					this.append(' <i class="icon-external-link"></i>');
+				}
 			});
+			
+
 			html = parsedContentDOM.html();
-		} else html = '<p></p>';
+		} else {
+			html = '<p></p>';
+		}
 
 		return html;
 	}
