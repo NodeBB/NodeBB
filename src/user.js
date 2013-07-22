@@ -983,11 +983,17 @@ var utils = require('./../public/src/utils.js'),
 
 	User.notifications = {
 		get: function(uid, callback) {
+			var	maxNotifs = 15;
+
 			async.parallel({
 				unread: function(next) {
 					RDB.zrevrangebyscore('uid:' + uid + ':notifications:unread', 10, 0, function(err, nids) {
 						// @todo handle err
 						var unread = [];
+
+						// Cap the number of notifications returned
+						if (nids.length > maxNotifs) nids.length = maxNotifs;
+
 						if (nids && nids.length > 0) {
 							async.eachSeries(nids, function(nid, next) {
 								notifications.get(nid, function(notif_data) {
@@ -1006,6 +1012,10 @@ var utils = require('./../public/src/utils.js'),
 					RDB.zrevrangebyscore('uid:' + uid + ':notifications:read', 10, 0, function(err, nids) {
 						// @todo handle err
 						var read = [];
+
+						// Cap the number of notifications returned
+						if (nids.length > maxNotifs) nids.length = maxNotifs;
+
 						if (nids && nids.length > 0) {
 							async.eachSeries(nids, function(nid, next) {
 								notifications.get(nid, function(notif_data) {
@@ -1022,16 +1032,26 @@ var utils = require('./../public/src/utils.js'),
 				}
 			}, function(err, notifications) {
 				// While maintaining score sorting, sort by time
+				var	readCount = notifications.read.length,
+					unreadCount = notifications.unread.length;
+
 				notifications.read.sort(function(a, b) {
 					if (a.score === b.score) {
 						return (a.datetime - b.datetime) > 0 ? -1 : 1;
 					}
 				});
+
 				notifications.unread.sort(function(a, b) {
 					if (a.score === b.score) {
 						return (a.datetime - b.datetime) > 0 ? -1 : 1;
 					}
 				});
+
+				// Limit the number of notifications to `maxNotifs`, prioritising unread notifications
+				if (notifications.read.length + notifications.unread.length > maxNotifs) {
+					notifications.read.length = maxNotifs - notifications.unread.length;
+				}
+
 				callback(notifications);
 			});
 		},
