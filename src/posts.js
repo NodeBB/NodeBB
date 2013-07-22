@@ -216,9 +216,9 @@ var	RDB = require('./redis.js'),
 
 			Posts.create(uid, tid, content, images, function(postData) {
 				if (postData) {
-					RDB.rpush('tid:' + tid + ':posts', postData.pid);
-
-					RDB.del('tid:' + tid + ':read_by_uid'); 
+					topics.addPostToTopic(tid, postData.pid);
+					
+					topics.markUnRead(tid);
 
 					Posts.get_cid_by_pid(postData.pid, function(cid) {
 						RDB.del('cid:' + cid + ':read_by_uid', function(err, data) {
