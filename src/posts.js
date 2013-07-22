@@ -86,19 +86,14 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
-	Posts.getPostFields = function(uid, fields, callback) {
-		RDB.hmget('post:' + uid, fields, function(err, data) {
+	Posts.getPostFields = function(pid, fields, callback) {
+		RDB.hmgetObject('post:' + pid, fields, function(err, data) {
 			if(err === null) {
-				var returnData = {};
-				
-				for(var i=0, ii=fields.length; i<ii; ++i) {
-					returnData[fields[i]] = data[i];
-				}
-
-				callback(returnData);
+				callback(data);
 			}
-			else
+			else {
 				console.log(err);
+			}
 		});		
 	}
 

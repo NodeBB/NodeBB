@@ -126,13 +126,9 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.getUserFields = function(uid, fields, callback) {
-		RDB.hmget('user:' + uid, fields, function(err, data) {
+		RDB.hmgetObject('user:' + uid, fields, function(err, data) {
 			if(err === null) {
-				for(var i = 0, returnData = {}, ii=fields.length; i<ii; ++i) {
-					returnData[fields[i]] = data[i];
-				}
-
-				callback(returnData);
+				callback(data);
 			} else {
 				console.log(err);
 			}
@@ -141,7 +137,7 @@ var utils = require('./../public/src/utils.js'),
 
 	User.getMultipleUserFields = function(uids, fields, callback) {
 		if(uids.length === 0) {
-			callback({});
+			callback([]);
 			return;
 		}
 

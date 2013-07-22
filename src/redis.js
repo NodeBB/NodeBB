@@ -37,28 +37,26 @@
 	};
 
 	/*
-	* A lot of redis calls come back like this:
-	* [key, value, key, value, key, value]
-	* this is a simple utility fn to turn this into an object.
-	*/
-	RedisDB.exports.objectify = function(arr) {
-		var obj = {};
-		for (var i = 0; i < arr.length; i += 2) {
-		    obj[arr[i]] = arr[i+1];
-		}
-		return obj;
-	};
+	 * gets fields of a hash as an object instead of an array
+	 */
+	RedisDB.exports.hmgetObject = function (key, fields, callback) {
+		RedisDB.exports.hmget(key, fields, function(err, data) {
+			if(err === null) {
+				var returnData = {};
+				
+				for(var i=0, ii=fields.length; i<ii; ++i) {
+					returnData[fields[i]] = data[i];
+				}
 
-	/*
-	* Similar to .objectify, this utility function splits the data array into two arrays
-	*/
-	RedisDB.exports.splitify = function(arr) {
-		var arr1 = [], arr2 = [];
-		for (var i = 0; i < arr.length; i += 2) {
-		    arr1.push(arr[i]);
-		    arr2.push(arr[i+1]);
-		}
-		return [arr1,arr2];
-	};
+				callback(null, returnData);
+			}
+			else {
+				console.log(err);
+				callback(err, null);
+			}
+		});		
+	}	
+
+
 
 }(module));

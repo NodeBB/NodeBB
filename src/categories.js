@@ -345,16 +345,9 @@ var	RDB = require('./redis.js'),
 	}
 	
 	Categories.getCategoryFields = function(cid, fields, callback) {
-		RDB.hmget('category:' + cid, fields, function(err, data) {
-			if(err === null) {
-				var returnData = {};
-				
-				for(var i=0, ii=fields.length; i<ii; ++i) {
-					returnData[fields[i]] = data[i];
-				}
-
-				callback(returnData);
-			}
+		RDB.hmgetObject('category:' + cid, fields, function(err, data) {
+			if(err === null) 
+				callback(data);
 			else
 				console.log(err);
 		});		
