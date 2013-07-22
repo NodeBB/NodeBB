@@ -340,7 +340,6 @@ var	RDB = require('./redis.js'),
 					}				
 					
 					if(!images) {
-						console.log('images ', images);
 						postData.uploadedImages = JSON.stringify(uploadedImages);
 						Posts.setPostField(pid, 'uploadedImages', postData.uploadedImages);
 						callback(postData);
