@@ -230,7 +230,7 @@ var user = require('./../user.js'),
 
 								userData.posts = posts.filter(function(p) {return p.deleted !== "1";});
 								userData.isFollowing = isFollowing;
-								userData.signature = postTools.markdownToHTML(userData.signature);
+								userData.signature = postTools.markdownToHTML(userData.signature, true);
 								res.json(userData);
 							});
 						});
