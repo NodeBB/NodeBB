@@ -35,7 +35,7 @@ define(['taskbar'], function(taskbar) {
 				taskbar.discard('chat', uuid);
 			});
 
-			chatModal.on('click', function(e){
+			chatModal.on('click', function(e) {
 				module.bringModalToTop(chatModal);
 			});
 
