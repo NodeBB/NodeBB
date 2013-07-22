@@ -83,6 +83,7 @@ var	RDB = require('./redis.js'),
 						categoryData.moderator_block_class = results[1].length > 0 ? '' : 'none';
 						categoryData.moderators = results[1];
 						categoryData.active_users = results[2];
+						console.log(results[2]);
 						callback(categoryData);
 					});
 				}
