@@ -314,6 +314,32 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
+	Categories.moveRecentReplies = function(tid, oldCid, cid, callback) {
+		topics.getPids(tid, function(err, pids) {
+			if(!err) {
+
+				function movePost(pid, callback) {
+					posts.getPostField(pid, 'timestamp', function(timestamp) {
+						RDB.zrem('categories:recent_posts:cid:' + oldCid, pid);	
+						RDB.zadd('categories:recent_posts:cid:' + cid, timestamp, pid);	
+					});
+				}
+
+				async.each(pids, movePost, function(err) {
+					if(!err) {
+						callback(null, 1)
+					} else {
+						console.log(err);
+						callback(err, null);
+					}
+				});
+			} else {
+				console.log(err);
+				callback(err, null);
+			}
+		});
+	}
+
 	Categories.getCategoryData = function(cid, callback) {
 		RDB.hgetall('category:' + cid, function(err, data) {
 			if(err === null)

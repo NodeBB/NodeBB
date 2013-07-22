@@ -226,6 +226,10 @@ marked.setOptions({
 		});
 	}
 
+	Topics.markUnRead = function(tid) {
+		RDB.del('tid:' + tid + ':read_by_uid'); 
+	}
+
 	Topics.markAsRead = function(tid, uid) {
 		
 		RDB.sadd(schema.topics(tid).read_by_uid, uid);
@@ -455,4 +459,12 @@ marked.setOptions({
 		Topics.setTopicField(tid, 'lastposttime', timestamp);
 	}
 	
+	Topics.addPostToTopic = function(tid, pid) {
+		RDB.rpush('tid:' + tid + ':posts', pid);
+	}
+
+	Topics.getPids = function(tid, callback) {
+		RDB.lrange('tid:' + tid + ':posts', 0, -1, callback);
+	}
+
 }(exports));
