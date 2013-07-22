@@ -338,18 +338,25 @@ var	RDB = require('./redis.js'),
 							}
 						});			
 					}				
-
-					async.each(images, uploadImage, function(err) {
-						if(!err) {
-							postData.uploadedImages = JSON.stringify(uploadedImages);
-							Posts.setPostField(pid, 'uploadedImages', postData.uploadedImages);
-
-							callback(postData);
-						} else {
-							console.log(err);
-							callback(null);
-						}
-					});
+					
+					if(!images) {
+						console.log('images ', images);
+						postData.uploadedImages = JSON.stringify(uploadedImages);
+						Posts.setPostField(pid, 'uploadedImages', postData.uploadedImages);
+						callback(postData);
+					} else {
+						async.each(images, uploadImage, function(err) {
+							if(!err) {
+								postData.uploadedImages = JSON.stringify(uploadedImages);
+								Posts.setPostField(pid, 'uploadedImages', postData.uploadedImages);
+	
+								callback(postData);
+							} else {
+								console.log(err);
+								callback(null);
+							}
+						});
+					}
 				});
 			} else {
 				callback(null);
