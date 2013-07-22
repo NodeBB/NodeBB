@@ -26,7 +26,7 @@
 						38
 					</span>
 				</div> -->
-				<div class="span12 topic-row img-polaroid">
+				<div class="span12 topic-row">
 					<div class="latest-post visible-desktop">
 						<div class="pull-right">
 							<img style="width: 48px; height: 48px; /*temporary*/" src="{topics.teaser_userpicture}" />
