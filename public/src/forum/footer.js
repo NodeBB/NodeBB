@@ -86,7 +86,8 @@
 	var notifContainer = document.getElementsByClassName('notifications')[0],
 		notifTrigger = notifContainer.querySelector('a'),
 		notifList = document.getElementById('notif-list');
-	notifTrigger.addEventListener('click', function() {
+	notifTrigger.addEventListener('click', function(e) {
+		e.preventDefault();
 		if (notifContainer.className.indexOf('open') === -1) socket.emit('api:notifications.get');
 	});
 	notifList.addEventListener('click', function(e) {
