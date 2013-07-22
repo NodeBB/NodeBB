@@ -145,7 +145,6 @@
 
 
 	socket.on('chatMessage', function(data) {
-		
 		var username = data.username;
 		var fromuid = data.fromuid;
 		var message = data.message;

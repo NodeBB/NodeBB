@@ -429,6 +429,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('sendChatMessage', function(data) {
+
 			var touid = data.touid;
 
 			if(userSockets[touid]) {
@@ -441,7 +442,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					for(var x=0;x<numSockets;x++) {
 						userSockets[touid][x].emit('chatMessage', {fromuid:uid, username:username, message:finalMessage});
 					}
-
+					
 					notifications.create(finalMessage, 5, '#', 'notification_'+uid+'_'+touid, function(nid) {
 						notifications.push(nid, [touid], function(success) {
 							

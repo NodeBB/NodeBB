@@ -60,7 +60,7 @@
 					</div>
 					<div class="post-signature">{main_posts.signature}</div>
 					<div class="profile-block">
-						<img class="hidden-desktop" src="{main_posts.picture}?s=10&default=identicon" align="left" /> posted by <strong><a class="" href="/users/{main_posts.userslug}">{main_posts.username}</a></strong> {main_posts.relativeTime} ago
+						<img class="hidden-desktop" src="{main_posts.picture}" align="left" /> posted by <strong><a class="" href="/users/{main_posts.userslug}">{main_posts.username}</a></strong> {main_posts.relativeTime} ago
 						<span class="{main_posts.edited-class} hidden-phone">| last edited by <strong><a href="/users/{main_posts.editorslug}">{main_posts.editorname}</a></strong> {main_posts.relativeEditTime} ago</span>
 						<span class="{main_posts.edited-class}"><i class="icon-edit visible-phone" title="edited by {main_posts.editorname} {main_posts.relativeEditTime} ago"></i></span>
 						<div class="post-buttons visible-phone">
@@ -100,7 +100,7 @@
 							<button id="favs_{posts.pid}_{posts.uid}" class="favourite btn-link hidden-phone" title="Favourite"><span class="post_rep_{posts.pid}">{posts.post_rep} </span><i class="{posts.fav_star_class}"></i></button>
 							<button class="post_reply btn-link" title="Reply"><i class="icon-reply"></i></button>
 						</span>
-						<img class="hidden-desktop" src="{posts.picture}?s=10&default=identicon" align="left" /> posted by <strong><a class="username-field" href="/users/{posts.userslug}">{posts.username}</a></strong> {posts.relativeTime} ago
+						<img class="hidden-desktop" src="{posts.picture}" align="left" /> posted by <strong><a class="username-field" href="/users/{posts.userslug}">{posts.username}</a></strong> {posts.relativeTime} ago
 						<span class="{posts.edited-class} hidden-phone">| last edited by <strong><a href="/users/{posts.editorslug}">{posts.editorname}</a></strong> {posts.relativeEditTime} ago</span>
 						<span class="{posts.edited-class}"><i class="icon-edit visible-phone" title="edited by {posts.editorname} {posts.relativeEditTime} ago"></i></span>
 					</div>
