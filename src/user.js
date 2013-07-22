@@ -141,7 +141,7 @@ var utils = require('./../public/src/utils.js'),
 
 	User.getMultipleUserFields = function(uids, fields, callback) {
 		if(uids.length === 0) {
-			callback({});
+			callback([]);
 			return;
 		}
 
