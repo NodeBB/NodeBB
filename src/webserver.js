@@ -278,6 +278,20 @@ var express = require('express'),
 			});
 		});
 
+		app.get('/outgoing', function(req, res) {
+			var url = req.url.split('?');
+
+			if (url[1]) {
+				res.send(app.build_header(res) + templates['outgoing'].parse({
+					url: url[1],
+					home: global.nconf.get('url')
+				}) + templates['footer']);
+			} else {
+				res.status(404);
+				res.redirect(global.nconf.get('relative_path') + '/404');
+			}
+		});
+
 	});
 	
 	// These functions are called via ajax once the initial page is loaded to populate templates with data
