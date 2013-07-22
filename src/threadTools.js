@@ -171,6 +171,12 @@ var	RDB = require('./redis.js'),
 
 					topics.setTopicField(tid, 'cid', cid);
 					
+					categories.moveRecentReplies(tid, oldCid, cid, function(err, data) {
+						if(err) {
+							console.log(err);
+						}
+					});
+
 					categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1);
 					categories.incrementCategoryFieldBy(cid, 'topic_count', 1);
 
