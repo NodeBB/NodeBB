@@ -10,81 +10,83 @@ var utils = require('./../public/src/utils.js'),
 	async = require('async');
 
 (function(User) {
-	
 	User.create = function(username, password, email, callback) {
-		username = username.trim(), email = email.trim();
-
-		// @todo use node-validator?
-		if(!utils.isEmailValid(email) || !utils.isUserNameValid(username) || !utils.isPasswordValid(password)) {
-			callback('Invalid email/username/password!', 0);
-			return;
-		}
-
 		var userslug = utils.slugify(username);
 
-		User.exists(userslug, function(exists) {
-			if(exists) {
-				callback('Username taken!', 0);
-				return;
-			}
-			
-			User.isEmailAvailable(email, function(available) {
-				if(!available) {
-					callback('Email taken!', 0);
-					return;
-				}
+		username = username.trim();
+		email = email.trim();
 
-				RDB.incr('global:next_user_id', function(err, uid) {
+		async.parallel([
+			function(next) {
+				next(!utils.isEmailValid(email) ? new Error('Invalid Email!') : null);
+			},
+			function(next) {
+				next(!utils.isUserNameValid(username) ? new Error('Invalid Username!') : null);
+			},
+			function(next) {
+				next(!utils.isPasswordValid(password) ? new Error('Invalid Password!') : null);
+			},
+			function(next) {
+				User.exists(userslug, function(exists) {
+					next(exists ? new Error('Username taken!') : null);
+				});
+			},
+			function(next) {
+				User.isEmailAvailable(email, function(available) {
+					next(!available ? new Error('Email taken!') : null);
+				});
+			}
+		], function(err, results) {
+			if (err) callback(err, 0);	// FIXME: Maintaining the 0 for backwards compatibility. Do we need this?
+
+			RDB.incr('global:next_user_id', function(err, uid) {
+				RDB.handle(err);
+
+				var gravatar = User.createGravatarURLFromEmail(email);
+
+				RDB.hmset('user:'+uid, {
+					'uid': uid,
+					'username' : username,
+					'userslug' : userslug,
+					'fullname': '',
+					'location':'',
+					'birthday':'',
+					'website':'',
+					'email' : email,
+					'signature':'',
+					'joindate' : Date.now(),
+					'picture': gravatar,
+					'gravatarpicture' : gravatar,
+					'uploadedpicture': '',
+					'reputation': 0,
+					'postcount': 0,
+					'lastposttime': 0,
+					'administrator': (uid == 1) ? 1 : 0
+				});
+				
+				RDB.set('username:' + username + ':uid', uid);
+				RDB.set('email:' + email +':uid', uid);
+				RDB.set('userslug:'+ userslug +':uid', uid);
+
+				User.sendConfirmationEmail(email);
+
+				RDB.incr('usercount', function(err, count) {
 					RDB.handle(err);
 
-					var gravatar = User.createGravatarURLFromEmail(email);
-
-					RDB.hmset('user:'+uid, {
-						'uid': uid,
-						'username' : username,
-						'userslug' : userslug,
-						'fullname': '',
-						'location':'',
-						'birthday':'',
-						'website':'',
-						'email' : email,
-						'signature':'',
-						'joindate' : Date.now(),
-						'picture': gravatar,
-						'gravatarpicture' : gravatar,
-						'uploadedpicture': '',
-						'reputation': 0,
-						'postcount': 0,
-						'lastposttime': 0,
-						'administrator': (uid == 1) ? 1 : 0
-					});
-					
-					RDB.set('username:' + username + ':uid', uid);
-					RDB.set('email:' + email +':uid', uid);
-					RDB.set('userslug:'+ userslug +':uid', uid);
-
-					if(email) {
-						User.sendConfirmationEmail(email);
-					}
-
-					RDB.incr('usercount', function(err, count) {
-						RDB.handle(err);
-
-						io.sockets.emit('user.count', {count: count});
-					});
-
-					RDB.lpush('userlist', uid);
-					
-					io.sockets.emit('user.latest', {userslug: userslug, username: username});
-
-					if (password) {
-						User.hashPassword(password, function(hash) {
-							User.setUserField(uid, 'password', hash);
-						});
-					}
-
-					callback(null, uid);
+					io.sockets.emit('user.count', {count: count});
 				});
+
+				RDB.lpush('userlist', uid);
+				
+				io.sockets.emit('user.latest', {userslug: userslug, username: username});
+
+				if (password) {
+					User.hashPassword(password, function(hash) {
+						User.setUserField(uid, 'password', hash);
+					});
+				}
+
+				callback(null, uid);
 			});
 		});
 	};
