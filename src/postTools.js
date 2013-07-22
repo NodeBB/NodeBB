@@ -138,7 +138,7 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
-	PostTools.markdownToHTML = function(md) {
+	PostTools.markdownToHTML = function(md, isSignature) {
 		var	marked = require('marked'),
 			cheerio = require('cheerio');
 
@@ -156,7 +156,7 @@ var	RDB = require('./redis.js'),
 
 				if (href && !href.match(domain)) {
 					this.attr('href', domain + 'outgoing?' + href);
-					this.append(' <i class="icon-external-link"></i>');
+					if (!isSignature) this.append(' <i class="icon-external-link"></i>');
 				}
 			});
 			
