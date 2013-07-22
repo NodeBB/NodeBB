@@ -369,32 +369,41 @@ var	RDB = require('./redis.js'),
 	}
 
 	Categories.getCategories = function(cids, callback, current_user) {
-		if (!cids || cids.length === 0) {
+		if (!cids || !Array.isArray(cids) || cids.length === 0) {
 			callback({'categories' : []});
 			return;
 		}
 		
 		var categories = [];
 
-		for(var i=0; i<cids.length; ++i) {
-			Categories.getCategoryData(cids[i], function(err, categoryData) {
+		function getCategory(cid, callback) {
+			Categories.getCategoryData(cid, function(err, categoryData) {
 				
-				if(err)
+				if(err) {
+					callback(err);
 					return;
+				}
 
-				Categories.hasReadCategory(categoryData.cid, current_user, function(hasRead) {
+				Categories.hasReadCategory(cid, current_user, function(hasRead) {
 					categoryData['badgeclass'] = (parseInt(categoryData.topic_count,10) === 0 || (hasRead && current_user != 0)) ? '' : 'badge-important';
 
 					categories.push(categoryData);
-					
-					if(categories.length === cids.length)
-						callback({'categories': categories});
-				
+					callback(null);
 				}) ;
-			});
-		}		
-	};
-	
-	
+			});			
+		}
+				
+		async.eachSeries(cids, getCategory, function(err) {
+			if(err) {
+				console.log(err);
+				callback(null);
+				return;
+			}
+			
+			callback({'categories': categories});			
+		});
+		
+	};	
 
 }(exports));
+
