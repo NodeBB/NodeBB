@@ -504,8 +504,8 @@ body .navbar .nodebb-inline-block {
 .post-window {
 	position: fixed;
 	bottom: 45px;
-	height: 450px;
 	display: none;
+	height: 450px;
 
 	> div {
 		position: absolute;
@@ -528,7 +528,7 @@ body .navbar .nodebb-inline-block {
 		input {
 			width: 100%;
 			text-align: center;
-			background: rgba(255, 255, 255, 0.9);
+			background: rgba(255, 255, 255, 0.5);
 			border: none;
 			padding: 0.5em 0;
 			-webkit-border-radius: 0px;
@@ -547,6 +547,29 @@ body .navbar .nodebb-inline-block {
 			color: white;
 			height: 330px;
 		}
+		
+		#imagedrop {
+      background: rgba(64, 64, 64, 0.95);
+      padding: 0.5em;
+      display: block;
+      width: 90%;
+      min-height:25px;
+      margin: 1em auto;
+      resize: none;
+      color:white;
+      font-size:20px;
+      div {
+        margin-right:10px;
+      }
+      span {
+        line-height:20px;
+        float:left;
+      }
+      button { 
+        padding-left:5px;
+      }
+    }
+		
 	}
 }
 

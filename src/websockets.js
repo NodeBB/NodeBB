@@ -313,11 +313,11 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('api:topics.post', function(data) {
-			topics.post(socket, uid, data.title, data.content, data.category_id);
+			topics.post(socket, uid, data.title, data.content, data.category_id, data.images);
 		});
 
 		socket.on('api:posts.reply', function(data) {
-			posts.reply(socket, data.topic_id, uid, data.content);
+			posts.reply(socket, data.topic_id, uid, data.content, data.images);
 		});
 
 		socket.on('api:user.active.get', function() {

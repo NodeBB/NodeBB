@@ -169,7 +169,7 @@ var express = require('express'),
 
 		app.get('/topic/:topic_id/:slug?', function(req, res) {
 			var tid = req.params.topic_id;
-			if (tid.match('^\d+\.rss$')) {
+			if (tid.match(/^\d+\.rss$/)) {
 				fs.readFile('feeds/topics/' + tid, function (err, data) {
 					if (err) {
 						res.type('text').send(404, "Unable to locate an rss feed at this location.");
@@ -180,7 +180,6 @@ var express = require('express'),
 				});
 				return;
 			}
-
 
 			var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
 			topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), function(err, topic) {
@@ -197,7 +196,8 @@ var express = require('express'),
 
 		app.get('/category/:category_id/:slug?', function(req, res) {
 			var cid = req.params.category_id;
-			if (cid.match('^\d+\.rss$')) {
+			
+			if (cid.match(/^\d+\.rss$/)) {
 				fs.readFile('feeds/categories/' + cid, function (err, data) {
 					if (err) {
 						res.type('text').send(404, "Unable to locate an rss feed at this location.");
