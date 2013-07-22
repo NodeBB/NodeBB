@@ -148,14 +148,18 @@ var	RDB = require('./redis.js'),
 
 		if (md.length > 0) {
 			var	parsedContentDOM = cheerio.load(marked(md));
-			parsedContentDOM('a').attr('rel', 'nofollow');
+			var	domain = global.nconf.get('url');
+			
+			parsedContentDOM('a').each(function() {
+				this.attr('rel', 'nofollow');
+				var href = this.attr('href');
 
-			var href = parsedContentDOM('a').attr('href'),
-				domain = global.nconf.get('url');
-
-			if (href && !href.match(domain)) {
-				parsedContentDOM('a').attr('href', domain + 'outgoing?' + href);
-			}
+				if (href && !href.match(domain)) {
+					this.attr('href', domain + 'outgoing?' + href);
+					this.append(' <i class="icon-external-link"></i>');
+				}
+			});
+			
 
 			html = parsedContentDOM.html();
 		} else {
