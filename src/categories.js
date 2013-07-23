@@ -9,9 +9,9 @@ var	RDB = require('./redis.js'),
 
 	Categories.getCategoryById = function(category_id, current_user, callback) {
 		
-		Categories.getCategoryData(category_id, function(categoryData) {
+		Categories.getCategoryData(category_id, function(err, categoryData) {
 			
-			if(!categoryData) {
+			if(err) {
 				callback(false);
 				return;
 			}
@@ -341,12 +341,16 @@ var	RDB = require('./redis.js'),
 	}
 
 	Categories.getCategoryData = function(cid, callback) {
-		RDB.hgetall('category:' + cid, function(err, data) {
-			if(err === null)
+		RDB.hgetall('category:' + cid, callback);
+	}
+	
+	Categories.getCategoryFields = function(cid, fields, callback) {
+		RDB.hmgetObject('category:' + cid, fields, function(err, data) {
+			if(err === null) 
 				callback(data);
-			else	
+			else
 				console.log(err);
-		});
+		});		
 	}
 	
 	Categories.setCategoryField = function(cid, field, value) {
@@ -358,32 +362,41 @@ var	RDB = require('./redis.js'),
 	}
 
 	Categories.getCategories = function(cids, callback, current_user) {
-		if (!cids || cids.length === 0) {
+		if (!cids || !Array.isArray(cids) || cids.length === 0) {
 			callback({'categories' : []});
 			return;
 		}
 		
 		var categories = [];
 
-		for(var i=0; i<cids.length; ++i) {
-			Categories.getCategoryData(cids[i], function(categoryData) {
+		function getCategory(cid, callback) {
+			Categories.getCategoryData(cid, function(err, categoryData) {
 				
-				if(!categoryData)
+				if(err) {
+					callback(err);
 					return;
+				}
 
-				Categories.hasReadCategory(categoryData.cid, current_user, function(hasRead) {
+				Categories.hasReadCategory(cid, current_user, function(hasRead) {
 					categoryData['badgeclass'] = (parseInt(categoryData.topic_count,10) === 0 || (hasRead && current_user != 0)) ? '' : 'badge-important';
 
 					categories.push(categoryData);
-					
-					if(categories.length === cids.length)
-						callback({'categories': categories});
-				
+					callback(null);
 				}) ;
-			});
-		}		
-	};
-	
-	
+			});			
+		}
+				
+		async.eachSeries(cids, getCategory, function(err) {
+			if(err) {
+				console.log(err);
+				callback(null);
+				return;
+			}
+			
+			callback({'categories': categories});			
+		});
+		
+	};	
 
 }(exports));
+

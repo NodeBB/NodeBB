@@ -84,9 +84,16 @@ marked.setOptions({
 		});
 	}
 
+	Topics.getCategoryData = function(tid, callback) {
+		Topics.getTopicField(tid, 'cid', function(cid) {
+			categories.getCategoryData(cid, callback);
+		});
+	}
+
 	Topics.getTopicWithPosts = function(tid, current_user, callback) {
 		threadTools.exists(tid, function(exists) {
-			if (!exists) return callback(new Error('Topic tid \'' + tid + '\' not found'));
+			if (!exists) 
+				return callback(new Error('Topic tid \'' + tid + '\' not found'));
 
 			Topics.markAsRead(tid, current_user);
 
@@ -108,19 +115,29 @@ marked.setOptions({
 					next(null, privData);
 				});
 			}		
+			
+			function getCategoryData(next) {
+				Topics.getCategoryData(tid, next);
+			}
 
-			async.parallel([getTopicData, getTopicPosts, getPrivileges], function(err, results) {
-				if (err) console.log(err.message);
+			async.parallel([getTopicData, getTopicPosts, getPrivileges, getCategoryData], function(err, results) {
+				if (err) {
+					console.log(err.message);
+					callback(err, null);
+					return;
+				}
+					
 				var topicData = results[0],
 					topicPosts = results[1],
-					privileges = results[2];
+					privileges = results[2],
+					categoryData = results[3];
 
 				var main_posts = topicPosts.splice(0, 1);
 				
 				callback(null, {
 					'topic_name':topicData.title,
-					'category_name':topicData.category_name,
-					'category_slug':topicData.category_slug,
+					'category_name':categoryData.name,
+					'category_slug':categoryData.slug,
 					'locked': topicData.locked,
 					'deleted': topicData.deleted,
 					'pinned': topicData.pinned,
@@ -410,12 +427,6 @@ marked.setOptions({
 
 				// in future it may be possible to add topics to several categories, so leaving the door open here.
 				RDB.sadd('categories:' + category_id + ':tid', tid);
-
-				categories.getCategories([category_id], function(data) {
-					Topics.setTopicField(tid, 'category_name', data.categories[0].name);
-					Topics.setTopicField(tid, 'category_slug', data.categories[0].slug);
-				});
-
 				RDB.hincrby('category:' + category_id, 'topic_count', 1);
 				RDB.incr('totaltopiccount');
 
