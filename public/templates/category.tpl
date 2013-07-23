@@ -14,6 +14,21 @@
 	<strong>There are no topics in this category.</strong><br />
 	Why don't you try posting one?
 </div>
+
+<div>
+
+	<button id="new_post" class="btn btn-primary btn-large {show_topic_button}">New Topic</button>
+
+	<div class="inline-block pull-right">
+		<a target="_blank" href="../{category_id}.rss"><i class="icon-rss-sign icon-2x"></i></a>&nbsp;
+		<a href="#" id="facebook-share"><i class="icon-facebook-sign icon-2x"></i></a>&nbsp;
+		<a href="#" id="twitter-intent"><i class="icon-twitter-sign icon-2x"></i></a>&nbsp;
+		<a href="#" id="google-share"><i class="icon-google-plus-sign icon-2x"></i></a>&nbsp;
+	</div>
+</div>
+
+<hr class="{show_sidebar}" />
+
 <div class="category row">
 	<div class="{topic_row_size}">
 		<ul id="topics-container">
@@ -47,18 +62,9 @@
 		</li></a>
 		<!-- END topics -->
 		</ul>
-		<hr class="{show_sidebar}" />
-		<button id="new_post" class="btn btn-primary btn-large {show_topic_button}">New Topic</button>
 	</div>
 	<div class="span3 {show_sidebar} category-sidebar mobile-sidebar">
-		<div class="sidebar-block img-polaroid">
-			<div class="block-header">
-				<a target="_blank" href="../{category_id}.rss"><i class="icon-rss-sign icon-2x"></i></a>&nbsp;
-				<a href="#" id="facebook-share"><i class="icon-facebook-sign icon-2x"></i></a>&nbsp;
-				<a href="#" id="twitter-intent"><i class="icon-twitter-sign icon-2x"></i></a>&nbsp;
-				<a href="#" id="google-share"><i class="icon-google-plus-sign icon-2x"></i></a>&nbsp;
-			</div>
-		</div>
+
 		<div class="sidebar-block img-polaroid">
 			<div class="block-header">
 				Recent Replies

@@ -29,7 +29,7 @@ var	RDB = require('./redis.js'),
 				var categoryData = {
 					'category_name' : category_name,
 					'show_sidebar' : 'show',
-					'show_topic_button': 'show',
+					'show_topic_button': 'inline-block',
 					'no_topics_message': 'hidden',
 					'topic_row_size': 'span9',
 					'category_id': category_id,
