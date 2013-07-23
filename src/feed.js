@@ -67,7 +67,12 @@
 	};
 
 	Feed.updateCategory = function(cid) {
-		categories.getCategoryById(cid, 0, function(categoryData) {
+		categories.getCategoryById(cid, 0, function(err, categoryData) {
+			if (err) {
+				console.log('Error: Could not update RSS feed for category ' + cid);
+				return;
+			}
+
 			var location = '/category/' + categoryData.category_id + '/' + categoryData.category_name,
 				xml_url = '/category' + cid + '.rss';
 

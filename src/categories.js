@@ -10,12 +10,8 @@ var	RDB = require('./redis.js'),
 	Categories.getCategoryById = function(category_id, current_user, callback) {
 		
 		Categories.getCategoryData(category_id, function(err, categoryData) {
-			
-			if(err) {
-				callback(false);
-				return;
-			}
-			
+			if (err) return callback(err);
+
 			var category_name = categoryData.name,
 				category_slug = categoryData.slug;
 
@@ -75,7 +71,7 @@ var	RDB = require('./redis.js'),
 						categoryData.show_sidebar = 'hidden';
 						categoryData.no_topics_message = 'show';
 
-						callback(categoryData);
+						callback(null, categoryData);
 					});
 				} else {
 					async.parallel([getTopics, getModerators, getActiveUsers], function(err, results) {
@@ -83,7 +79,7 @@ var	RDB = require('./redis.js'),
 						categoryData.moderator_block_class = results[1].length > 0 ? '' : 'none';
 						categoryData.moderators = results[1];
 						categoryData.active_users = results[2];
-						callback(categoryData);
+						callback(null, categoryData);
 					});
 				}
 
@@ -341,7 +337,10 @@ var	RDB = require('./redis.js'),
 	}
 
 	Categories.getCategoryData = function(cid, callback) {
-		RDB.hgetall('category:' + cid, callback);
+		RDB.exists('category:' + cid, function(err, exists) {
+			if (exists) RDB.hgetall('category:' + cid, callback);
+			else callback(new Error('No category found!'));
+		});
 	}
 	
 	Categories.getCategoryFields = function(cid, fields, callback) {

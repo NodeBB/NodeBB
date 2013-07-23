@@ -11,6 +11,9 @@
 	<link href="{cssSrc}" rel="stylesheet" media="screen">
 	<link href="{relative_path}/vendor/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
 	<link rel="stylesheet" href="{relative_path}/vendor/fontawesome/css/font-awesome.min.css">
+	<script>
+		var RELATIVE_PATH = "{relative_path}";
+	</script>
 	<script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
 	<script type="text/javascript" src="{relative_path}/vendor/jquery/js/jquery-ui-1.10.3.custom.min.js"></script>
 	<script type="text/javascript" src="{relative_path}/vendor/bootstrap/js/bootstrap.min.js"></script>
@@ -19,7 +22,6 @@
 	<script src="{relative_path}/vendor/requirejs/require.js"></script>
 	<script src="{relative_path}/vendor/bootbox/bootbox.min.js"></script>
 	<script>
-		var RELATIVE_PATH = "{relative_path}";
 		require.config({
 			baseUrl: "{relative_path}/src/modules",
 			waitSeconds: 3

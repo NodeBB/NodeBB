@@ -209,11 +209,8 @@ var express = require('express'),
 			}
 
 			var category_url = cid + (req.params.slug ? '/' + req.params.slug : '');
-			categories.getCategoryById(cid, 0, function(returnData) {
-				if(!returnData) {
-					res.redirect('404');
-					return;
-				}
+			categories.getCategoryById(cid, 0, function(err, returnData) {
+				if(err) return res.redirect('404');
 				
 				res.send(
 					app.build_header(res) +
@@ -379,8 +376,9 @@ var express = require('express'),
 					});
 				break;
 			case 'category' :
-					categories.getCategoryById(req.params.id, uid, function(data) {
-						res.json(data);
+					categories.getCategoryById(req.params.id, uid, function(err, data) {
+						if (!err) res.json(data);
+						else res.send(404);
 					}, req.params.id, uid);
 				break;
 			case 'recent' :
