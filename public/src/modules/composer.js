@@ -287,6 +287,9 @@ define(['taskbar'], function(taskbar) {
 			titleEl = composer.postContainer.querySelector('input'),
 			bodyEl = composer.postContainer.querySelector('textarea');
 		
+		titleEl.value = titleEl.value.trim();
+		bodyEl.value = bodyEl.value.trim();
+		
 		if (titleEl.value.length < 3) {
 			return app.alert({
 				type: 'error',

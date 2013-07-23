@@ -184,6 +184,10 @@ var	RDB = require('./redis.js'),
 	}
 
 	Posts.reply = function(socket, tid, uid, content, images) {
+		if(content) {
+			content = content.trim();
+		}
+		
 		if (uid < 1) {
 			socket.emit('event:alert', {
 				title: 'Reply Unsuccessful',
