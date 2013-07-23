@@ -174,7 +174,10 @@ var	RDB = require('./redis.js'),
 
 		function loadTopic(tid, callback) {
 			topics.getTopicData(tid, function(topicData) {
-
+				if(!topicData) {
+					return callback(null);
+				}
+				
 				getTopicInfo(topicData, function(topicInfo) {
 
 					topicData['pin-icon'] = topicData.pinned === '1' ? 'icon-pushpin' : 'none';
