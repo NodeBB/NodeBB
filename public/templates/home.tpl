@@ -14,7 +14,7 @@
 					<!-- BEGIN posts -->
 					<div class="category-box">
 						<div class="post-preview">
-							<img src="{categories.posts.picture}" class="pull-left" >
+							<img src="{categories.posts.picture}" class="pull-left" />
 							<p class=""><strong>{categories.posts.username}</strong>: {categories.posts.content}</p>
 						</div>
 					</div>
