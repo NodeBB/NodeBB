@@ -281,35 +281,37 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 
 		socket.on('api:user.follow', function(data) {
-			
-			user.follow(uid, data.uid, function(success) {
-				if(success) {
-					user.getUserField(data.uid, 'username', function(username) {
-						socket.emit('event:alert', {
-							title: 'Following',
-							message: 'You are now following ' + username + '!',
-							type: 'success',
-							timeout: 2000
-						});		
-					});
-				}
-			});
+			if(uid) { 
+				user.follow(uid, data.uid, function(success) {
+					if(success) {
+						user.getUserField(data.uid, 'username', function(username) {
+							socket.emit('event:alert', {
+								title: 'Following',
+								message: 'You are now following ' + username + '!',
+								type: 'success',
+								timeout: 2000
+							});		
+						});
+					}
+				});
+			}
 		});
 
 		socket.on('api:user.unfollow', function(data) {
-			
-			user.unfollow(uid, data.uid, function(success) {
-				if(success) {
-					user.getUserField(data.uid, 'username', function(username) {
-						socket.emit('event:alert', {
-							title: 'Unfollowed',
-							message: 'You are no longer following ' + username + '!',
-							type: 'success',
-							timeout: 2000
-						});		
-					});
-				}
-			});
+			if(uid) {
+				user.unfollow(uid, data.uid, function(success) {
+					if(success) {
+						user.getUserField(data.uid, 'username', function(username) {
+							socket.emit('event:alert', {
+								title: 'Unfollowed',
+								message: 'You are no longer following ' + username + '!',
+								type: 'success',
+								timeout: 2000
+							});		
+						});
+					}
+				});
+			}
 		});
 
 		socket.on('api:topics.post', function(data) {
