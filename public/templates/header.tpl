@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="title" CONTENT="NodeBB">
 	<meta name="keywords" content="" />
-	<meta name="description" content="" />
+	<meta name="description" content="{meta.description}" />
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<link href="{cssSrc}" rel="stylesheet" media="screen">

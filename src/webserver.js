@@ -31,7 +31,10 @@ var express = require('express'),
 			cssSrc: global.config['theme:src'] || global.nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
 			title: global.config['title'] || 'NodeBB',
 			csrf:res.locals.csrf_token,
-			relative_path: global.nconf.get('relative_path')
+			relative_path: global.nconf.get('relative_path'),
+			meta: {
+				description: 'test'
+			}
 		});
 	};
 
