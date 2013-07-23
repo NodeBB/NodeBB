@@ -413,6 +413,19 @@ var express = require('express'),
 						}
 					});
 				break;
+			case 'outgoing' :
+				var url = req.url.split('?');
+
+				if (url[1]) {
+					res.json({
+						url: url[1],
+						home: global.nconf.get('url')
+					});
+				} else {
+					res.status(404);
+					res.redirect(global.nconf.get('relative_path') + '/404');
+				}
+				break;
 			default :
 				res.json(404, { error: 'unrecognized API endpoint' });
 			break;

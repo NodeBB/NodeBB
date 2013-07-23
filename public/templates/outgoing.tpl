@@ -5,7 +5,7 @@
 	</p>
 	<br />
 	<p>
-		<button class="btn btn-large" type="button" onclick="window.location='{url}'">Continue to {url}</button>
-		<button class="btn btn-large btn-inverse" type="button" onclick="history.go(-1); window.location='{home}'">Return to NodeBB</button>
+		<a href="{url}" rel="nofollow" class="btn btn-large">Continue to {url}</a>
+		<a href="{home}" class="btn btn-large btn-inverse">Return to NodeBB</a>
 	</p>
 </div>

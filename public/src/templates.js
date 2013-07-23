@@ -106,7 +106,7 @@
 	}
 
 	templates.getTemplateNameFromUrl = function(url) {
-		var parts = url.split('/');
+		var parts = url.split('?')[0].split('/');
 
 		for(var i=0; i<parts.length; ++i) {
 			if (templates.is_available(parts[i])) {
@@ -123,7 +123,7 @@
 
 		var api_url = (url === '' || url === '/') ? 'home' : url;
 
-		var tpl_url = templates.get_custom_map(api_url);
+		var tpl_url = templates.get_custom_map(api_url.split('?')[0]);
 
 		var trimmed = api_url;
 		
