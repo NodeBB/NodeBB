@@ -107,6 +107,23 @@
 			return input.replace(commentsAndPhpTags, '').replace(tags, function ($0, $1) {
 				return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
 			});
+		},
+
+		buildMetaTags: function(tagsArr) {
+			var	tags = '',
+				tag;
+			for(var x=0,numTags=tagsArr.length;x<numTags;x++) {
+				if (tags.length > 0) tags += "\n\t";
+				tag = '<meta';
+				for(y in tagsArr[x]) {
+					tag += ' ' + y + '="' + tagsArr[x][y] + '"';
+				}
+				tag += ' />';
+
+				tags += tag;
+			}
+
+			return tags;
 		}
 	}
 

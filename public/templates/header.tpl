@@ -2,12 +2,7 @@
 <html>
 <head>
 	<title>{title}</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="title" CONTENT="NodeBB">
-	<meta name="keywords" content="" />
-	<meta name="description" content="{meta.description}" />
-	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-	<meta name="apple-mobile-web-app-capable" content="yes" />
+	{meta_tags}
 	<link href="{cssSrc}" rel="stylesheet" media="screen">
 	<link href="{relative_path}/vendor/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
 	<link rel="stylesheet" href="{relative_path}/vendor/fontawesome/css/font-awesome.min.css">

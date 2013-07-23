@@ -13,7 +13,8 @@ var	RDB = require('./redis.js'),
 			if (err) return callback(err);
 
 			var category_name = categoryData.name,
-				category_slug = categoryData.slug;
+				category_slug = categoryData.slug,
+				category_description = categoryData.description;
 
 			function getTopicIds(next) {
 				Categories.getTopicIds(category_id, next);
@@ -28,6 +29,7 @@ var	RDB = require('./redis.js'),
 
 				var categoryData = {
 					'category_name' : category_name,
+					'category_description': category_description,
 					'show_sidebar' : 'show',
 					'show_topic_button': 'inline-block',
 					'no_topics_message': 'hidden',

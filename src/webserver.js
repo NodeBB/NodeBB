@@ -26,15 +26,20 @@ var express = require('express'),
 (function(app) {
 	var templates = null;
 	
-	app.build_header = function(res) {
+	app.build_header = function(res, metaTags) {
+		var	defaultMetaTags = [
+				{ name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
+				{ name: 'content-type', content: 'text/html; charset=UTF-8' },
+				{ name: 'apple-mobile-web-app-capable', content: 'yes' }
+			],
+			metaString = utils.buildMetaTags(defaultMetaTags.concat(metaTags || []));
+
 		return templates['header'].parse({
 			cssSrc: global.config['theme:src'] || global.nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
 			title: global.config['title'] || 'NodeBB',
 			csrf:res.locals.csrf_token,
 			relative_path: global.nconf.get('relative_path'),
-			meta: {
-				description: 'test'
-			}
+			meta_tags: metaString
 		});
 	};
 
@@ -157,7 +162,6 @@ var express = require('express'),
 		
 
 		app.get('/', function(req, res) {
-
 			categories.getAllCategories(function(returnData) {
 				res.send(
 					app.build_header(res) +
@@ -214,9 +218,12 @@ var express = require('express'),
 			var category_url = cid + (req.params.slug ? '/' + req.params.slug : '');
 			categories.getCategoryById(cid, 0, function(err, returnData) {
 				if(err) return res.redirect('404');
-				
+
 				res.send(
-					app.build_header(res) +
+					app.build_header(res, [
+						{ name: 'title', content: returnData.category_name },
+						{ name: 'description', content: returnData.category_description }
+					]) +
 					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/category'].parse(returnData) + '\n\t</noscript>' +
 					'\n\t<script>templates.ready(function(){ajaxify.go("category/' + category_url + '");});</script>' +
 					templates['footer']
