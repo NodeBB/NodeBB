@@ -37,7 +37,21 @@
 
 		$('.user-recent-posts .topic-row').on('click', function() {
 			ajaxify.go($(this).attr('topic-url'));
-		})
+		});
+		
+		var onlineStatus = $('.account-online-status');
+		
+		socket.on('api:user.isOnline', function(online) {
+			if(online) {
+				onlineStatus.find('span span').text('online');
+				onlineStatus.find('i').attr('class', 'icon-circle');
+			} else {
+				onlineStatus.find('span span').text('offline');
+				onlineStatus.find('i').attr('class', 'icon-circle-blank');
+			}
+		});
+		
+		socket.emit('api:user.isOnline', theirid);
 
 	});
 

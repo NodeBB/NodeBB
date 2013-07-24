@@ -10,6 +10,7 @@ define(['taskbar'], function(taskbar) {
 	function loadFile(file) {
 		var reader = new FileReader();
 		var dropDiv = $('#imagedrop');
+		var imagelist = $('#imagelist');
 		var uuid = dropDiv.parents('[data-uuid]').attr('data-uuid');
 		var posts = composer.posts[uuid];
 		
@@ -33,15 +34,11 @@ define(['taskbar'], function(taskbar) {
 				if(index !== -1) {
 					posts.images.splice(index, 1);
 				}
-				
-				if(!dropDiv.children().length) {
-					dropDiv.html('Drag and drop images here');
-				}
 			});
 
 			imageLabel.append(closeButton);      	
-    		dropDiv.append(imageLabel);
-
+    		imagelist.append(imageLabel);
+			dropDiv.hide();
 		});
 	
 		reader.readAsDataURL(file);
@@ -72,9 +69,6 @@ define(['taskbar'], function(taskbar) {
 				
 				var dt = e.dataTransfer;
 				var files = dt.files;
-				
-				if(!posts.images.length)
-					drop.html('');
 				
 				for (var i=0; i<files.length; i++) {
 					loadFile(files[i]);
@@ -107,8 +101,11 @@ define(['taskbar'], function(taskbar) {
 															'<button class="btn" data-action="discard" tabIndex="5"><i class="icon-remove"></i> Discard</button>' +
 														'</div>' +
 													'</div>' +
-													'<div id="imagedrop" style="display:none;"></div>'+
-													'<textarea tabIndex="2"></textarea>' +
+													'<div style="position:relative;">'+
+														'<div id="imagedrop" class=""><div>Drag and Drop Images Here</div></div>'+
+														'<textarea tabIndex="2"></textarea>' +
+														'<div id="imagelist"></div>'+
+													'</div>'+
 												'</div>';
 
 			document.body.insertBefore(composer.postContainer, taskbar);
@@ -246,9 +243,12 @@ define(['taskbar'], function(taskbar) {
 			btnRect = taskbarBtn.getBoundingClientRect(),
 			taskbarRect = document.getElementById('taskbar').getBoundingClientRect(),
 			dropDiv = $(composer.postContainer).find('#imagedrop'),
+			imagelist = $(composer.postContainer).find('#imagelist'),
 			windowRect, leftPos;
 
-		dropDiv.html('Drag and drop images here').hide();
+		dropDiv.hide();
+		imagelist.empty();
+		
 
 		composer.postContainer.style.display = 'block';
 		windowRect = postWindowEl.getBoundingClientRect();

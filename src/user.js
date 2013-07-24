@@ -337,7 +337,9 @@ var utils = require('./../public/src/utils.js'),
 			
 			function iterator(uid, callback) {
 				User.getUserData(uid, function(userData) {
-					data.push(userData);
+					if(userData) {
+						data.push(userData);
+					}
 					callback(null);
 				});
 			}

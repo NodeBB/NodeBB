@@ -38,7 +38,6 @@
 					<hr />
 
 					<div class="topic-buttons pull-left">
-						<a href="/users/{main_posts.userslug}" class="username-field btn hidden-phone">{main_posts.username}</a>
 						<a target="_blank" class="btn hidden-phone" href="../{topic_id}.rss" title="RSS Feed"><i class="icon-rss-sign"></i></a>
 						<button class="btn follow" type="button" title="Be notified of new replies in this topic"><i class="icon-eye-open"></i></button>
 						<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn edit {main_posts.display_moderator_tools}" type="button" title="Edit"><i class="icon-pencil"></i></button>
@@ -60,7 +59,7 @@
 					</div>
 					<div class="post-signature">{main_posts.signature}</div>
 					<div class="profile-block">
-						<img class="hidden-desktop" src="{main_posts.picture}" align="left" /> posted by <strong><a class="" href="/users/{main_posts.userslug}">{main_posts.username}</a></strong> {main_posts.relativeTime} ago
+						<img class="hidden-desktop" src="{main_posts.picture}" align="left" /> posted by <strong><a class="username-field" href="/users/{main_posts.userslug}">{main_posts.username}</a></strong> {main_posts.relativeTime} ago
 						<span class="{main_posts.edited-class} hidden-phone">| last edited by <strong><a href="/users/{main_posts.editorslug}">{main_posts.editorname}</a></strong> {main_posts.relativeEditTime} ago</span>
 						<span class="{main_posts.edited-class}"><i class="icon-edit visible-phone" title="edited by {main_posts.editorname} {main_posts.relativeEditTime} ago"></i></span>
 						<div class="post-buttons visible-phone">
