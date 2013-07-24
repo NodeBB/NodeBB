@@ -64,7 +64,6 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 			if(userSockets[uid].length === 0) {
 				delete users[sessionID];
-				console.log('dc ', userSockets[uid]);
 				if(uid)
 					io.sockets.in('global').emit('api:user.isOnline', isUserOnline(uid));
 			}			
