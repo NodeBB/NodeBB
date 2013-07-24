@@ -42,7 +42,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		socketCookieParser(hs, {}, function(err) {
 			sessionID = socket.handshake.signedCookies["express.sid"];
 			RedisStore.get(sessionID, function(err, sessionData) {
-				if (!err && sessionData) uid = users[sessionID] = sessionData.passport.user;
+				if (!err && sessionData.passport.user) uid = users[sessionID] = sessionData.passport.user;
 				else uid = users[sessionID] = 0;
 
 				userSockets[uid] = userSockets[uid] || [];
