@@ -259,16 +259,14 @@
 			pid = ids[0],
 			uid = ids[1];
 
-		if (thread_state.locked !== '1') {
-			var element = $(this).find('i');
-			if(element.attr('class') == 'icon-star-empty') {
-				element.attr('class', 'icon-star');
-				socket.emit('api:posts.favourite', {pid: pid, room_id: app.current_room});
-			}
-			else {
-				element.attr('class', 'icon-star-empty');
-				socket.emit('api:posts.unfavourite', {pid: pid, room_id: app.current_room});
-			}
+		var element = $(this).find('i');
+		if(element.attr('class') == 'icon-star-empty') {
+			element.attr('class', 'icon-star');
+			socket.emit('api:posts.favourite', {pid: pid, room_id: app.current_room});
+		}
+		else {
+			element.attr('class', 'icon-star-empty');
+			socket.emit('api:posts.unfavourite', {pid: pid, room_id: app.current_room});
 		}
 	});
 
@@ -276,10 +274,7 @@
 		var pid = ($(this).attr('id') || $(this.parentNode).attr('id')).split('_')[1];
 
 		var main = $(this).parents('.main-post');
-		// if(main.length > 0) 
-		// 	app.open_post_window('edit', tid, topic_name, pid);
-		// else 
-		// 	app.open_post_window('edit', tid, "", pid);
+
 		require(['composer'], function(cmp) {
 			cmp.push(null, null, pid);
 		});
