@@ -37,7 +37,7 @@ var utils = require('./../public/src/utils.js'),
 				});
 			}
 		], function(err, results) {
-			if (err) callback(err, 0);	// FIXME: Maintaining the 0 for backwards compatibility. Do we need this?
+			if (err) return callback(err, 0);	// FIXME: Maintaining the 0 for backwards compatibility. Do we need this?
 
 			RDB.incr('global:next_user_id', function(err, uid) {
 				RDB.handle(err);
