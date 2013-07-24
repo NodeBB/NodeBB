@@ -80,8 +80,10 @@
 				<a href="/users/{posts.userslug}">
 					<img src="{posts.picture}" align="left" class="img-polaroid"/>
 				</a>
-				<i class="icon-star"></i><span class="user_rep_{posts.uid} formatted-number">{posts.user_rep}</span>
-				<div id="ids_{posts.pid}_{posts.uid}" class="chat hidden-phone" title="Chat"><i class="icon-comment"></i></div>
+				<div class="stats">
+					<i class="icon-star"></i><span class="user_rep_{posts.uid} formatted-number">{posts.user_rep}</span>
+					<div id="ids_{posts.pid}_{posts.uid}" class="chat hidden-phone" title="Chat"><i class="icon-comment"></i></div>
+				</div>
 			</div>
 			<div class="span11">
 				<div class="post-block">

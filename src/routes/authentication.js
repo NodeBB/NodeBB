@@ -22,7 +22,7 @@
 			consumerSecret: global.config['social:twitter:secret'],
 			callbackURL: nconf.get('url') + 'auth/twitter/callback'
 		}, function(token, tokenSecret, profile, done) {
-			login_module.loginViaTwitter(profile.id, profile.username, function(err, user) {
+			login_module.loginViaTwitter(profile.id, profile.username, profile.photos, function(err, user) {
 				if (err) { return done(err); }
 				done(null, user);
 			});

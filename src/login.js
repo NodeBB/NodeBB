@@ -53,7 +53,7 @@ var user = require('./user.js'),
 		}
 	}
 
-	Login.loginViaTwitter = function(twid, handle, callback) {
+	Login.loginViaTwitter = function(twid, handle, photos, callback) {
 		user.get_uid_by_twitter_id(twid, function(uid) {
 			if (uid !== null) {
 				// Existing User
@@ -69,6 +69,13 @@ var user = require('./user.js'),
 						// Save twitter-specific information to the user
 						user.setUserField(uid, 'twid', twid);
 						RDB.hset('twid:uid', twid, uid);
+
+						// Save their photo, if present
+						if (photos && photos.length > 0) {
+							user.setUserField(uid, 'uploadedpicture', photos[0].value);
+							user.setUserField(uid, 'picture', photos[0].value);
+						}
+
 						callback(null, {
 							uid: uid
 						});
