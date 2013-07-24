@@ -234,13 +234,13 @@ var socket,
 			parts = url.split('/'),
 			active = parts[parts.length-1];
 
-		jQuery('.nav li').removeClass('active');
+		jQuery('#main-nav li').removeClass('active');
 		if(active) {
-			jQuery('.nav li a').each(function() {
+			jQuery('#main-nav li a').each(function() {
 				var href = this.getAttribute('href');
 				if(active.match(/^users/))
 					active = 'users';
-				if (href.match(active)) {
+				if (href && href.match(active)) {
 					jQuery(this.parentNode).addClass('active');
 					return false;
 				}
