@@ -99,7 +99,7 @@ var user = require('./../user.js'),
 			user.getUserField(req.user.uid, 'uploadedpicture', function(oldpicture) {
 
 				if(!oldpicture) {
-					uploadUserPicture(req.user.uid, req.files.userPhoto.name, req.files.userPhoto.path, res);
+					uploadUserPicture(req.user.uid, path.extname(req.files.userPhoto.name), req.files.userPhoto.path, res);
 					return;
 				}
 				
