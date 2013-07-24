@@ -1,7 +1,7 @@
 
 var SocketIO = require('socket.io').listen(global.server, { log:false }),
 	cookie = require('cookie'),
-	connect = require('connect'),
+	express = require('express'),
 	user = require('./user.js'),
 	posts = require('./posts.js'),
 	favourites = require('./favourites.js'),
@@ -14,6 +14,14 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 	postTools = require('./postTools.js'),
 	meta = require('./meta.js'),
 	async = require('async'),
+	RedisStoreLib = require('connect-redis')(express),
+	redis = require('redis'),
+	redisServer = redis.createClient(global.nconf.get('redis:port'), global.nconf.get('redis:host')),
+	RedisStore = new RedisStoreLib({
+		client: redisServer,
+		ttl: 60*60*24*14
+	}),
+	socketCookieParser = express.cookieParser(global.nconf.get('secret')),
 	admin = {
 		'categories': require('./admin/categories.js'),
 		'user': require('./admin/user.js')
@@ -26,45 +34,24 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 	global.io = io;
 
-	// Adapted from http://howtonode.org/socket-io-auth
-	io.set('authorization', function(handshakeData, accept) {
-		if (handshakeData.headers.cookie) {
-			handshakeData.cookie = cookie.parse(handshakeData.headers.cookie);
-			handshakeData.sessionID = connect.utils.parseSignedCookie(handshakeData.cookie['express.sid'], global.nconf.get('secret'));
-
-			if (handshakeData.cookie['express.sid'] == handshakeData.sessionID) {
-				return accept('Cookie is invalid.', false);
-			}
-		} else {
-			// No cookie sent
-			return accept('No cookie transmitted', false);
-		}
-
-		// Otherwise, continue unimpeded.
-		var sessionID = handshakeData.sessionID;
-		
-		user.get_uid_by_session(sessionID, function(userId) {
-			if (userId)
-				users[sessionID] = userId;
-			else 
-				users[sessionID] = 0;
-
-			accept(null, true);
-		});
-	});
-
 	io.sockets.on('connection', function(socket) {
-		
-		var hs = socket.handshake;
+		var	hs = socket.handshake,
+			sessionID, uid;
 
-		var uid = users[hs.sessionID];
-		
-		userSockets[uid] = userSockets[uid] || [];
-		userSockets[uid].push(socket);
+		// Validate the session, if present
+		socketCookieParser(hs, {}, function(err) {
+			sessionID = socket.handshake.signedCookies["express.sid"];
+			RedisStore.get(sessionID, function(err, sessionData) {
+				if (!err && sessionData) uid = users[sessionID] = sessionData.passport.user;
+				else uid = users[sessionID] = 0;
 
-		
-		socket.join('uid_' + uid);
-		
+				userSockets[uid] = userSockets[uid] || [];
+				userSockets[uid].push(socket);
+
+				socket.join('uid_' + uid);
+			});
+		});
+
 		socket.emit('event:connect', {status: 1});
 		
 		socket.on('disconnect', function() {
@@ -75,7 +62,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			}
 
 			if(userSockets[uid].length === 0)		
-				delete users[hs.sessionID];
+				delete users[sessionID];
 			
 			for(var roomName in rooms) {
 
@@ -111,7 +98,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				for(var i=0; i<clients.length; ++i) {
 					var hs = clients[i].handshake;
 
-					if(hs && !users[hs.sessionID]) {
+					if(hs && !users[sessionID]) {
 						++anonCount;
 					}
 				}
