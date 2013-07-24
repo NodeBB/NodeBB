@@ -6,7 +6,7 @@
 		passportFacebook = require('passport-facebook').Strategy,
 		login_strategies = [],
 		nconf = require('nconf'),
-		user_module = require('./../user.js'),
+		users = require('../user'),
 		login_module = require('./../login.js');
 
 	passport.use(new passportLocal(function(user, password, next) {
@@ -134,7 +134,7 @@
 		});
 		
 		app.post('/register', function(req, res) {
-			user_module.create(req.body.username, req.body.password, req.body.email, function(err, uid) {
+			users.create(req.body.username, req.body.password, req.body.email, function(err, uid) {
 
 				if (err === null && uid > 0) {
 					req.login({
