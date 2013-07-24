@@ -20,6 +20,9 @@
 			<div class="account-picture-block">
 				<img src="{picture}" class="user-profile-picture img-polaroid"/>
 			</div>
+			<div class="account-online-status">
+				<span><i class="icon-circle-blank"></i> <span>offline</span></span>
+			</div>
 			<div id="user-actions">
 				<a id="follow-btn" href="#" class="btn">Follow</a>
 			</div>

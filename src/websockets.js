@@ -47,7 +47,8 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 				userSockets[uid] = userSockets[uid] || [];
 				userSockets[uid].push(socket);
-
+				if(uid)
+					io.sockets.in('global').emit('api:user.isOnline', isUserOnline(uid));
 				socket.join('uid_' + uid);
 			});
 		});
@@ -61,8 +62,12 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				userSockets[uid].splice(index, 1);
 			}
 
-			if(userSockets[uid].length === 0)		
+			if(userSockets[uid].length === 0) {
 				delete users[sessionID];
+				console.log('dc ', userSockets[uid]);
+				if(uid)
+					io.sockets.in('global').emit('api:user.isOnline', isUserOnline(uid));
+			}			
 			
 			for(var roomName in rooms) {
 
@@ -215,17 +220,25 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			user.reset.commit(socket, data.code, data.password);
 		});
 
+		function isUserOnline(uid) {
+			return !!userSockets[uid] && userSockets[uid].length > 0;
+		}
+
 		socket.on('api:user.get_online_users', function(data) {
 			var returnData = [];
 			
 			for(var i=0; i<data.length; ++i) {
 				var uid = data[i];
-				if(userSockets[uid] && userSockets[uid].length > 0)
+				if(isUserOnline(uid))
 					returnData.push(uid);
 				else 
 					returnData.push(0);
 			}
 			socket.emit('api:user.get_online_users', returnData);
+		});
+
+		socket.on('api:user.isOnline', function(uid) {
+			socket.emit('api:user.isOnline', isUserOnline(uid));
 		});
 
 		socket.on('api:user.changePassword', function(data) {
