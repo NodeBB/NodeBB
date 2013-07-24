@@ -338,6 +338,11 @@ marked.setOptions({
 		if (!category_id) 
 			throw new Error('Attempted to post without a category_id');
 		
+		if(content) 
+			content = content.trim();
+		if(title)
+			title = title.trim();
+		
 		if (uid === 0) {
 			socket.emit('event:alert', {
 				title: 'Thank you for posting',

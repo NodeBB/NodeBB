@@ -35,13 +35,13 @@ var ajaxify = {};
 			url = url.slice(RELATIVE_PATH.length);
 		}
 
-		var tpl_url = templates.get_custom_map(url);
+		var tpl_url = templates.get_custom_map(url.split('?')[0]);
 		
 		if (tpl_url == false && !templates[url]) {
 			if(url === '' || url === '/') {
 				tpl_url = 'home';
 			} else {
-				tpl_url = url.split('/')[0];
+				tpl_url = url.split('/')[0].split('?')[0];
 			}
 			
 		} else if (templates[url]) {
@@ -73,10 +73,6 @@ var ajaxify = {};
 		}
 
 		return false;
-	}
-
-	ajaxify.onclick = function(ev) {
-		
 	}
 
 	$('document').ready(function() {

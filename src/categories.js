@@ -13,7 +13,8 @@ var	RDB = require('./redis.js'),
 			if (err) return callback(err);
 
 			var category_name = categoryData.name,
-				category_slug = categoryData.slug;
+				category_slug = categoryData.slug,
+				category_description = categoryData.description;
 
 			function getTopicIds(next) {
 				Categories.getTopicIds(category_id, next);
@@ -28,8 +29,9 @@ var	RDB = require('./redis.js'),
 
 				var categoryData = {
 					'category_name' : category_name,
+					'category_description': category_description,
 					'show_sidebar' : 'show',
-					'show_topic_button': 'show',
+					'show_topic_button': 'inline-block',
 					'no_topics_message': 'hidden',
 					'topic_row_size': 'span9',
 					'category_id': category_id,
@@ -174,7 +176,10 @@ var	RDB = require('./redis.js'),
 
 		function loadTopic(tid, callback) {
 			topics.getTopicData(tid, function(topicData) {
-
+				if(!topicData) {
+					return callback(null);
+				}
+				
 				getTopicInfo(topicData, function(topicInfo) {
 
 					topicData['pin-icon'] = topicData.pinned === '1' ? 'icon-pushpin' : 'none';

@@ -5,7 +5,7 @@
 
 	<div class="account-username-box">
 		<span class="account-username">
-			<a href="/users/{userslug}">{username}</a> >
+			<a href="/users/{userslug}">{username}</a> <i class="icon-chevron-right"></i>
 			<a href="/users/{userslug}/following">following</a>
 		</span>
 		<div class="account-sub-links inline-block pull-right">

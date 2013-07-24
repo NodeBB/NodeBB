@@ -41,8 +41,8 @@
 		<div class="modal-body">
 			
 			<form id="uploadForm" action="{relative_path}/users/uploadpicture" method="post" enctype="multipart/form-data">
-				<input id="userPhotoInput" type="file" name="userPhoto" >
-				<input id="imageUploadCsrf" type="hidden" name="_csrf" value="">
+				<input id="userPhotoInput" type="file" name="userPhoto" />
+				<input id="imageUploadCsrf" type="hidden" name="_csrf" value="" />
 			</form>
 			
 			<div id="upload-progress-box" class="progress progress-striped active hide">
@@ -62,7 +62,7 @@
 	
 	<div class="account-username-box">
 		<span class="account-username">
-			<a href="/users/{userslug}">{username}</a> >
+			<a href="/users/{userslug}">{username}</a> <i class="icon-chevron-right"></i>
 			<a href="/users/{userslug}/edit">edit</a>
 		</span>
 		<div class="account-sub-links inline-block pull-right">
