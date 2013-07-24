@@ -146,7 +146,7 @@ var	RDB = require('./redis.js'),
 			breaks: true
 		});
 
-		if (md.length > 0) {
+		if (md && md.length > 0) {
 			var	parsedContentDOM = cheerio.load(marked(md));
 			var	domain = global.nconf.get('url');
 			
