@@ -207,24 +207,37 @@ var express = require('express'),
 				return;
 			}
 
-			var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
-			topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), function(err, topic) {
+			async.waterfall([
+				function(next) {
+					topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), function(err, topicData) {
+						next(err, topicData);
+					});
+				},
+				function(topicData, next) {
+					app.build_header({
+						req: req,
+						res: res,
+						title: topicData.topic_name,
+						metaTags: [
+							{ name: "title", content: topicData.topic_name }
+						]
+					}, function(err, header) {
+						next(err, {
+							header: header,
+							topics: topicData
+						});
+					});
+				},
+			], function(err, data) {
 				if (err) return res.redirect('404');
+				var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
 
-				app.build_header({
-					req: req,
-					res: res,
-					metaTags: [
-						{ name: "title", content: topic.topic_name }
-					]
-				}, function(header) {
-					res.send(
-						header +
-						'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/topic'].parse(topic) + '\n\t</noscript>' +
-						'\n\t<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '");});</script>' +
-						templates['footer']
-					);
-				});
+				res.send(
+					data.header +
+					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/topic'].parse(data.topics) + '\n\t</noscript>' +
+					'\n\t<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '");});</script>' +
+					templates['footer']
+				);
 			});
 		});
 
@@ -243,25 +256,38 @@ var express = require('express'),
 				return;
 			}
 
-			var category_url = cid + (req.params.slug ? '/' + req.params.slug : '');
-			categories.getCategoryById(cid, 0, function(err, returnData) {
+			async.waterfall([
+				function(next) {
+					categories.getCategoryById(cid, 0, function(err, categoryData) {
+						next(err, categoryData);
+					});
+				},
+				function(categoryData, next) {
+					app.build_header({
+						req: req,
+						res: res,
+						title: categoryData.category_name,
+						metaTags: [
+							{ name: 'title', content: categoryData.category_name },
+							{ name: 'description', content: categoryData.category_description }
+						]
+					}, function(err, header) {
+						next(err, {
+							header: header,
+							categories: categoryData
+						});
+					});
+				}
+			], function(err, data) {
 				if(err) return res.redirect('404');
+				var category_url = cid + (req.params.slug ? '/' + req.params.slug : '');
 
-				app.build_header({
-					req: req,
-					res: res,
-					metaTags: [
-						{ name: 'title', content: returnData.category_name },
-						{ name: 'description', content: returnData.category_description }
-					]
-				}, function(header) {
-					res.send(
-						header +
-						'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/category'].parse(returnData) + '\n\t</noscript>' +
-						'\n\t<script>templates.ready(function(){ajaxify.go("category/' + category_url + '");});</script>' +
-						templates['footer']
-					);
-				});
+				res.send(
+					data.header +
+					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/category'].parse(data.categories) + '\n\t</noscript>' +
+					'\n\t<script>templates.ready(function(){ajaxify.go("category/' + category_url + '");});</script>' +
+					templates['footer']
+				);
 			});
 		});
 
