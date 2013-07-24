@@ -87,7 +87,7 @@
 			console.log('info: [Auth] Session ' + req.sessionID + ' logout (uid: ' + global.uid + ')');
 			login_module.logout(req.sessionID, function(logout) {
 				req.logout();
-				res.send(app.build_header(res) + templates['logout'] + templates['footer']);
+				res.send(app.build_header({ req: req, res: res }) + templates['logout'] + templates['footer']);
 			});
 		});
 
@@ -121,11 +121,11 @@
 
 
 		app.get('/reset/:code', function(req, res) {
-			res.send(app.build_header(res) + templates['reset_code'].parse({ reset_code: req.params.code }) + templates['footer']);
+			res.send(app.build_header({ req: req, res: res }) + templates['reset_code'].parse({ reset_code: req.params.code }) + templates['footer']);
 		});
 
 		app.get('/reset', function(req, res) {
-			res.send(app.build_header(res) + templates['reset'] + templates['footer']);
+			res.send(app.build_header({ req: req, res: res }) + templates['reset'] + templates['footer']);
 		});
 
 

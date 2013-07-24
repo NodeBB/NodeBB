@@ -1061,6 +1061,9 @@ var utils = require('./../public/src/utils.js'),
 				callback(notifications);
 			});
 		},
+		getUnreadCount: function(uid, callback) {
+			RDB.zcount('uid:' + uid + ':notifications:unread', 0, 10, callback);
+		},
 		hasFlag: function(uid, callback) {
 			RDB.get('uid:1:notifications:flag', function(err, flag) {
 				if (err) {

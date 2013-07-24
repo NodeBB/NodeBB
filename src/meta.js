@@ -79,4 +79,18 @@ var utils = require('./../public/src/utils.js'),
 			// ...
 		}
 	}
+
+	Meta.build_title = function(title, current_user, callback) {
+		var user = require('./user');
+
+		if (!title) title = global.config.title || 'NodeBB';
+		else title += ' | ' + global.config.title || 'NodeBB';
+
+		// Grab the number of unread notifications
+		user.notifications.getUnreadCount(current_user, function(err, count) {
+			if (!err && count > 0) title = '(' + count + ') ' + title;
+
+			callback(err, title);
+		});
+	}
 }(exports));

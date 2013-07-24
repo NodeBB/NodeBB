@@ -1,7 +1,8 @@
 
 var user = require('./user.js'),
 	bcrypt = require('bcrypt'),
-	RDB = require('./redis.js');
+	RDB = require('./redis.js'),
+	path = require('path');
 
 (function(Login){
 
@@ -72,8 +73,10 @@ var user = require('./user.js'),
 
 						// Save their photo, if present
 						if (photos && photos.length > 0) {
-							user.setUserField(uid, 'uploadedpicture', photos[0].value);
-							user.setUserField(uid, 'picture', photos[0].value);
+							var	photoUrl = photos[0].value;
+							photoUrl = path.dirname(photoUrl) + '/' + path.basename(photoUrl, path.extname(photoUrl)).slice(0, -6) + 'bigger' + path.extname(photoUrl);
+							user.setUserField(uid, 'uploadedpicture', photoUrl);
+							user.setUserField(uid, 'picture', photoUrl);
 						}
 
 						callback(null, {

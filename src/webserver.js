@@ -26,21 +26,26 @@ var express = require('express'),
 (function(app) {
 	var templates = null;
 	
-	app.build_header = function(res, metaTags) {
+	app.build_header = function(options) {
 		var	defaultMetaTags = [
 				{ name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
 				{ name: 'content-type', content: 'text/html; charset=UTF-8' },
 				{ name: 'apple-mobile-web-app-capable', content: 'yes' }
 			],
-			metaString = utils.buildMetaTags(defaultMetaTags.concat(metaTags || []));
+			metaString = utils.buildMetaTags(defaultMetaTags.concat(options.metaTags || [])),
+			templateValues = {
+				cssSrc: global.config['theme:src'] || global.nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
+				title: global.config['title'] || 'NodeBB',
+				csrf: options.res.locals.csrf_token,
+				relative_path: global.nconf.get('relative_path'),
+				meta_tags: metaString
+			};
 
-		return templates['header'].parse({
-			cssSrc: global.config['theme:src'] || global.nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
-			title: global.config['title'] || 'NodeBB',
-			csrf:res.locals.csrf_token,
-			relative_path: global.nconf.get('relative_path'),
-			meta_tags: metaString
-		});
+		// meta.build_title(options.title, (options.req.user ? options.req.user.uid : 0), function(err, title) {
+		// 	if (!err) templateValues.title = title;
+		// });
+
+		return templates['header'].parse(templateValues);
 	};
 
 	// Middlewares
@@ -153,8 +158,8 @@ var express = require('express'),
 							});
 							return;
 						}
-						
-						res.send(app.build_header(res) + app.create_route(route) + templates['footer']);
+
+						res.send(app.build_header({ req: req, res: res }) + app.create_route(route) + templates['footer']);
 					});
 				}(routes[i]));
 			}
@@ -164,7 +169,7 @@ var express = require('express'),
 		app.get('/', function(req, res) {
 			categories.getAllCategories(function(returnData) {
 				res.send(
-					app.build_header(res) +
+					app.build_header({ req: req, res: res }) +
 					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/home'].parse(returnData) + '\n\t</noscript>' +
 					app.create_route('') +
 					templates['footer']
@@ -192,7 +197,13 @@ var express = require('express'),
 				if (err) return res.redirect('404');
 
 				res.send(
-					app.build_header(res) +
+					app.build_header({
+						req: req,
+						res: res,
+						metaTags: [
+							{ name: "title", content: topic.topic_name }
+						]
+					}) +
 					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/topic'].parse(topic) + '\n\t</noscript>' +
 					'\n\t<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '");});</script>' +
 					templates['footer']
@@ -220,10 +231,14 @@ var express = require('express'),
 				if(err) return res.redirect('404');
 
 				res.send(
-					app.build_header(res, [
-						{ name: 'title', content: returnData.category_name },
-						{ name: 'description', content: returnData.category_description }
-					]) +
+					app.build_header({
+						req: req,
+						res: res,
+						metaTags: [
+							{ name: 'title', content: returnData.category_name },
+							{ name: 'description', content: returnData.category_description }
+						]
+					}) +
 					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/category'].parse(returnData) + '\n\t</noscript>' +
 					'\n\t<script>templates.ready(function(){ajaxify.go("category/' + category_url + '");});</script>' +
 					templates['footer']
@@ -232,7 +247,7 @@ var express = require('express'),
 		});
 
 		app.get('/confirm/:code', function(req, res) {
-			res.send(app.build_header(res) + '<script>templates.ready(function(){ajaxify.go("confirm/' + req.params.code + '");});</script>' + templates['footer']);
+			res.send(app.build_header({ req: req, res: res }) + '<script>templates.ready(function(){ajaxify.go("confirm/' + req.params.code + '");});</script>' + templates['footer']);
 		});
 
 		app.get('/sitemap.xml', function(req, res) {
@@ -288,7 +303,7 @@ var express = require('express'),
 			var url = req.url.split('?');
 
 			if (url[1]) {
-				res.send(app.build_header(res) + templates['outgoing'].parse({
+				res.send(app.build_header({ req: req, res: res }) + templates['outgoing'].parse({
 					url: url[1],
 					home: global.nconf.get('url')
 				}) + templates['footer']);
