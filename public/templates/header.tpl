@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>{title}</title>
+	<title>{browserTitle}</title>
 	{meta_tags}
 	<link href="{cssSrc}" rel="stylesheet" media="screen">
 	<link href="{relative_path}/vendor/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">

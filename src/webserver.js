@@ -26,7 +26,11 @@ var express = require('express'),
 (function(app) {
 	var templates = null;
 	
-	app.build_header = function(options) {
+	/**
+	 *	`options` object	requires:	req, res
+	 *						accepts:	metaTags
+	 */
+	app.build_header = function(options, callback) {
 		var	defaultMetaTags = [
 				{ name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
 				{ name: 'content-type', content: 'text/html; charset=UTF-8' },
@@ -41,11 +45,11 @@ var express = require('express'),
 				meta_tags: metaString
 			};
 
-		// meta.build_title(options.title, (options.req.user ? options.req.user.uid : 0), function(err, title) {
-		// 	if (!err) templateValues.title = title;
-		// });
+		meta.build_title(options.title, (options.req.user ? options.req.user.uid : 0), function(err, title) {
+			if (!err) templateValues.browserTitle = title;
 
-		return templates['header'].parse(templateValues);
+			callback(null, templates['header'].parse(templateValues));
+		});
 	};
 
 	// Middlewares
@@ -159,7 +163,9 @@ var express = require('express'),
 							return;
 						}
 
-						res.send(app.build_header({ req: req, res: res }) + app.create_route(route) + templates['footer']);
+						app.build_header({ req: req, res: res }, function(err, header) {
+							res.send(header + app.create_route(route) + templates['footer']);
+						});
 					});
 				}(routes[i]));
 			}
@@ -167,14 +173,23 @@ var express = require('express'),
 		
 
 		app.get('/', function(req, res) {
-			categories.getAllCategories(function(returnData) {
+			async.parallel({
+				"header": function(next) {
+					app.build_header({ req: req, res: res }, next);
+				},
+				"categories": function(next) {
+					categories.getAllCategories(function(returnData) {
+						next(null, returnData);
+					}, 0);
+				}
+			}, function(err, data) {
 				res.send(
-					app.build_header({ req: req, res: res }) +
-					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/home'].parse(returnData) + '\n\t</noscript>' +
+					data.header +
+					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/home'].parse(data.categories) + '\n\t</noscript>' +
 					app.create_route('') +
 					templates['footer']
 				);
-			}, 0);
+			})
 		});
 	
 
@@ -196,18 +211,20 @@ var express = require('express'),
 			topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), function(err, topic) {
 				if (err) return res.redirect('404');
 
-				res.send(
-					app.build_header({
-						req: req,
-						res: res,
-						metaTags: [
-							{ name: "title", content: topic.topic_name }
-						]
-					}) +
-					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/topic'].parse(topic) + '\n\t</noscript>' +
-					'\n\t<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '");});</script>' +
-					templates['footer']
-				);
+				app.build_header({
+					req: req,
+					res: res,
+					metaTags: [
+						{ name: "title", content: topic.topic_name }
+					]
+				}, function(header) {
+					res.send(
+						header +
+						'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/topic'].parse(topic) + '\n\t</noscript>' +
+						'\n\t<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '");});</script>' +
+						templates['footer']
+					);
+				});
 			});
 		});
 
@@ -230,24 +247,28 @@ var express = require('express'),
 			categories.getCategoryById(cid, 0, function(err, returnData) {
 				if(err) return res.redirect('404');
 
-				res.send(
-					app.build_header({
-						req: req,
-						res: res,
-						metaTags: [
-							{ name: 'title', content: returnData.category_name },
-							{ name: 'description', content: returnData.category_description }
-						]
-					}) +
-					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/category'].parse(returnData) + '\n\t</noscript>' +
-					'\n\t<script>templates.ready(function(){ajaxify.go("category/' + category_url + '");});</script>' +
-					templates['footer']
-				);
+				app.build_header({
+					req: req,
+					res: res,
+					metaTags: [
+						{ name: 'title', content: returnData.category_name },
+						{ name: 'description', content: returnData.category_description }
+					]
+				}, function(header) {
+					res.send(
+						header +
+						'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/category'].parse(returnData) + '\n\t</noscript>' +
+						'\n\t<script>templates.ready(function(){ajaxify.go("category/' + category_url + '");});</script>' +
+						templates['footer']
+					);
+				});
 			});
 		});
 
 		app.get('/confirm/:code', function(req, res) {
-			res.send(app.build_header({ req: req, res: res }) + '<script>templates.ready(function(){ajaxify.go("confirm/' + req.params.code + '");});</script>' + templates['footer']);
+			app.build_header({ req: req, res: res }, function(header) {
+				res.send(header + '<script>templates.ready(function(){ajaxify.go("confirm/' + req.params.code + '");});</script>' + templates['footer']);
+			});
 		});
 
 		app.get('/sitemap.xml', function(req, res) {
@@ -303,10 +324,12 @@ var express = require('express'),
 			var url = req.url.split('?');
 
 			if (url[1]) {
-				res.send(app.build_header({ req: req, res: res }) + templates['outgoing'].parse({
-					url: url[1],
-					home: global.nconf.get('url')
-				}) + templates['footer']);
+				app.build_header({ req: req, res: res }, function(header) {
+					res.send(header + templates['outgoing'].parse({
+						url: url[1],
+						home: global.nconf.get('url')
+					}) + templates['footer']);
+				});
 			} else {
 				res.status(404);
 				res.redirect(global.nconf.get('relative_path') + '/404');
