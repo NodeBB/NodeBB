@@ -316,6 +316,10 @@ var utils = require('./../public/src/utils.js'),
 		RDB.hset('user:' + uid, field, value);
 	}
 
+	User.setUserFields = function(uid, data) {
+		RDB.hmset('user:' + uid, data);
+	}
+
 	User.incrementUserFieldBy = function(uid, field, value) {
 		RDB.hincrby('user:' + uid, field, value);
 	}
