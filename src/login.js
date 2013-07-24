@@ -62,7 +62,7 @@ var user = require('./user.js'),
 				});
 			} else {
 				// New User
-				user.create(handle, null, null, function(err, uid) {
+				user.create(handle, undefined, undefined, function(err, uid) {
 					if (err !== null) {
 						callback(err);
 					} else {
@@ -98,7 +98,7 @@ var user = require('./user.js'),
 
 				user.get_uid_by_email(email, function(uid) {
 					if (!uid) {
-						user.create(handle, null, email, function(err, uid) {
+						user.create(handle, undefined, email, function(err, uid) {
 							if (err !== null) {
 								callback(err);
 							} else success(uid);
@@ -129,7 +129,7 @@ var user = require('./user.js'),
 
 				user.get_uid_by_email(email, function(uid) {
 					if (!uid) {
-						user.create(name, null, email, function(err, uid) {
+						user.create(name, undefined, email, function(err, uid) {
 							if (err !== null) {
 								callback(err);
 							} else success(uid);

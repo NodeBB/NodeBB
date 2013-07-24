@@ -14,17 +14,19 @@ var utils = require('./../public/src/utils.js'),
 		var userslug = utils.slugify(username);
 
 		username = username.trim();
-		email = email.trim();
+		if (email !== undefined) email = email.trim();
 
 		async.parallel([
 			function(next) {
-				next(!utils.isEmailValid(email) ? new Error('Invalid Email!') : null);
+				if (email !== undefined) next(!utils.isEmailValid(email) ? new Error('Invalid Email!') : null);
+				else next();
 			},
 			function(next) {
 				next(!utils.isUserNameValid(username) ? new Error('Invalid Username!') : null);
 			},
 			function(next) {
-				next(!utils.isPasswordValid(password) ? new Error('Invalid Password!') : null);
+				if (password !== undefined) next(!utils.isPasswordValid(password) ? new Error('Invalid Password!') : null);
+				else next();
 			},
 			function(next) {
 				User.exists(userslug, function(exists) {
@@ -32,9 +34,11 @@ var utils = require('./../public/src/utils.js'),
 				});
 			},
 			function(next) {
-				User.isEmailAvailable(email, function(available) {
-					next(!available ? new Error('Email taken!') : null);
-				});
+				if (email !== undefined) {
+					User.isEmailAvailable(email, function(available) {
+						next(!available ? new Error('Email taken!') : null);
+					});
+				} else next();
 			}
 		], function(err, results) {
 			if (err) return callback(err, 0);	// FIXME: Maintaining the 0 for backwards compatibility. Do we need this?
@@ -52,7 +56,7 @@ var utils = require('./../public/src/utils.js'),
 					'location':'',
 					'birthday':'',
 					'website':'',
-					'email' : email,
+					'email' : email || '',
 					'signature':'',
 					'joindate' : Date.now(),
 					'picture': gravatar,
@@ -65,10 +69,12 @@ var utils = require('./../public/src/utils.js'),
 				});
 				
 				RDB.set('username:' + username + ':uid', uid);
-				RDB.set('email:' + email +':uid', uid);
 				RDB.set('userslug:'+ userslug +':uid', uid);
 
-				User.sendConfirmationEmail(email);
+				if (email !== undefined) {
+					RDB.set('email:' + email +':uid', uid);
+					User.sendConfirmationEmail(email);
+				}
 
 				RDB.incr('usercount', function(err, count) {
 					RDB.handle(err);
@@ -80,7 +86,7 @@ var utils = require('./../public/src/utils.js'),
 				
 				io.sockets.emit('user.latest', {userslug: userslug, username: username});
 
-				if (password) {
+				if (password !== undefined) {
 					User.hashPassword(password, function(hash) {
 						User.setUserField(uid, 'password', hash);
 					});
