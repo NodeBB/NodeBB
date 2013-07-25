@@ -7,8 +7,9 @@
 			<a href="/users/{userslug}/followers">followers</a>
 		</span>
 		<div class="account-sub-links inline-block pull-right">
-			<span id="followersLink" class="pull-right"><a href="/users/{userslug}/followers">followers</a></span>
-			<span id="followingLink" class="pull-right"><a href="/users/{userslug}/following">following</a></span>
+			<span id="settingsLink" class="pull-right"><a href="/users/{userslug}/settings">settings</a></span>
+			<span class="pull-right"><a href="/users/{userslug}/followers">followers</a></span>
+			<span class="pull-right"><a href="/users/{userslug}/following">following</a></span>
 			<span id="editLink" class="pull-right"><a href="/users/{userslug}/edit">edit</a></span>
 		</div>
 	</div>
@@ -42,3 +43,4 @@
 <input type="hidden" template-variable="followersCount" value="{followersCount}" />
 
 <script type="text/javascript" src="{relative_path}/src/forum/followers.js"></script>
+<script type="text/javascript" src="{relative_path}/src/forum/accountheader.js"></script>

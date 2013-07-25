@@ -23,6 +23,7 @@
 		"users[^]*edit": "accountedit",
 		"users[^]*following": "following",
 		"users[^]*followers": "followers",
+		"users[^]*settings": "accountsettings",
 		"users/[^]*": "account",
 
 		"recent": "recent",

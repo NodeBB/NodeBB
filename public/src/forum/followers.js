@@ -9,12 +9,7 @@
 		if(parseInt(followersCount, 10) === 0) {
 			$('#no-followers-notice').show();
 		}
-		var editLink = $('#editLink');
-
-		if(yourid !== theirid) {
-			editLink.hide();
-		}
-
+		
 		$('.reputation').each(function(index, element) {
 			$(element).html(app.addCommas($(element).html()));
 		});

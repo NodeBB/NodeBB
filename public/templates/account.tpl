@@ -8,8 +8,9 @@
 			<a href="/users/{userslug}">{username}</a>
 		</span>
 		<div class="account-sub-links inline-block pull-right">
-			<span id="followersLink" class="pull-right"><a href="/users/{userslug}/followers">followers</a></span>
-			<span id="followingLink" class="pull-right"><a href="/users/{userslug}/following">following</a></span>
+			<span id="settingsLink" class="pull-right"><a href="/users/{userslug}/settings">settings</a></span>
+			<span class="pull-right"><a href="/users/{userslug}/followers">followers</a></span>
+			<span class="pull-right"><a href="/users/{userslug}/following">following</a></span>
 			<span id="editLink" class="pull-right"><a href="/users/{userslug}/edit">edit</a></span>
 		</div>
 	</div>
@@ -32,7 +33,7 @@
 			<h4>profile</h4>
 			<div class="inline-block">
 				<div class="account-bio-block">
-					<span class="account-bio-label">email</span>
+					<span class="account-bio-label">email</span><i class="icon-eye-close {emailClass}" title="Email hidden"></i>
 					<span>{email}</span>
 					<br/>
 					
@@ -102,3 +103,4 @@
 <input type="hidden" template-type="boolean" template-variable="isFollowing" value="{isFollowing}" />
 
 <script type="text/javascript" src="{relative_path}/src/forum/account.js"></script>
+<script type="text/javascript" src="{relative_path}/src/forum/accountheader.js"></script>

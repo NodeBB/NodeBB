@@ -313,6 +313,21 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			}
 		});
 
+		socket.on('api:user.saveSettings', function(data) {
+			if(uid) {
+				user.setUserFields(uid, {
+					showemail:data.showemail
+				});
+
+				socket.emit('event:alert', {
+					title: 'Saved',
+					message: 'Settings saved!',
+					type: 'success',
+					timeout: 2000
+				});		
+			}
+		});
+
 		socket.on('api:topics.post', function(data) {
 			topics.post(socket, uid, data.title, data.content, data.category_id, data.images);
 		});

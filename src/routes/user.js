@@ -90,6 +90,22 @@ var user = require('./../user.js'),
 			});	
 		});
 
+		app.get('/users/:userslug/settings', function(req, res) {
+
+			if(!req.user)
+				return res.redirect('/403');
+			
+			user.getUserField(req.user.uid, 'userslug', function(userslug) {
+				if(req.params.userslug && userslug === req.params.userslug) {
+					app.build_header({ req: req, res: res }, function(err, header) {
+						res.send(header + app.create_route('users/'+req.params.userslug+'/settings','accountsettings') + templates['footer']);
+					}) 
+				} else {
+					return res.redirect('/404');
+				}
+			});	
+		});
+
 		app.post('/users/uploadpicture', function(req, res) {
 			if(!req.user)
 				return res.redirect('/403');
@@ -110,24 +126,7 @@ var user = require('./../user.js'),
 				return;	
 			}
 
-			user.getUserField(req.user.uid, 'uploadedpicture', function(oldpicture) {
-
-				if(!oldpicture) {
-					uploadUserPicture(req.user.uid, path.extname(req.files.userPhoto.name), req.files.userPhoto.path, res);
-					return;
-				}
-				
-				var absolutePath = path.join(global.configuration['ROOT_DIRECTORY'], global.nconf.get('upload_path'), path.basename(oldpicture));
-				
-				fs.unlink(absolutePath, function(err) {
-					if(err) {				
-						console.error('[%d] %s', Date.now(), + err);
-					}
-					
-					uploadUserPicture(req.user.uid, path.extname(req.files.userPhoto.name), req.files.userPhoto.path, res);
-					
-				});
-			});
+			uploadUserPicture(req.user.uid, path.extname(req.files.userPhoto.name), req.files.userPhoto.path, res);
 		});
 		
 		function uploadUserPicture(uid, extension, tempPath, res) {
@@ -240,6 +239,9 @@ var user = require('./../user.js'),
 				getUserDataByUserSlug(userslug, callerUID, function(userData) {
 					res.json(userData);
 				});
+			}
+			else if (section === 'settings') {
+				getSettings(req, res, callerUID);
 			} else {
 				getUserDataByUserSlug(userslug, callerUID, function(userData) {
 					if(userData) {
@@ -288,6 +290,32 @@ var user = require('./../user.js'),
 			});
 		}
 
+		function getSettings(req, res, callerUid) {
+			
+			user.get_uid_by_userslug(req.params.userslug, function(uid) {
+				if(!uid) {
+					res.json(404, { error: 'User not found!' })	;
+					return;
+				}
+				uid = parseInt(uid, 10);
+				if(uid !== callerUid || callerUid === "0") {
+					res.json(403, { error: 'Not allowed!' });
+					return;
+				}
+				user.getUserFields(uid, ['username','userslug','showemail'], function(userData) {
+					if(userData) {
+						if(userData.showemail && userData.showemail === "1")
+							userData.showemail = "checked";
+						else
+							userData.showemail = "";
+						res.json(userData);
+					} else {
+						res.json(404, { error: 'User not found!' })	;
+					}				
+				});
+			});
+		}
+
 		app.get('/api/users/:userslug?/:section?', api_method);
 		app.get('/api/users-sort-posts', getUsersSortedByPosts);
 		app.get('/api/users-sort-reputation', getUsersSortedByReputation);
@@ -332,6 +360,8 @@ var user = require('./../user.js'),
 					callback(null);
 					return;
 				}
+
+				uid = parseInt(uid, 10);
 				
 				user.getUserData(uid, function(data) {
 					if(data) {
@@ -343,6 +373,19 @@ var user = require('./../user.js'),
 							data.age = new Date().getFullYear() - new Date(data.birthday).getFullYear();
 						}
 						
+						function canSeeEmail() {
+							return callerUID === uid || (data.email && (data.showemail && data.showemail === "1"));
+						}
+
+						if(!canSeeEmail()) 
+							data.email = "";
+
+						if(callerUID === uid && data.showemail === "0")
+							data.emailClass = "";
+						else 
+							data.emailClass = "hidden";
+
+
 						data.uid = uid;
 						data.yourid = callerUID;
 						data.theirid = uid;
