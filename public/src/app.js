@@ -22,6 +22,7 @@ var socket,
 				socket.on('event:connect', function(data) {
 					console.log('connected to nodebb socket: ', data);
 					app.username = data.username;
+					app.showLoginMessage();
 				});
 
 				socket.on('event:alert', function(data) {

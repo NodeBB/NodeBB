@@ -28,7 +28,7 @@ var ajaxify = {};
 	ajaxify.go = function(url, callback, template, quiet) {
 		// leave room and join global
 		app.enter_room('global');
-		app.showLoginMessage();
+
 
 		var url = url.replace(/\/$/, "");
 
