@@ -5,7 +5,9 @@
 <div class="alert">
 	<form>
 		<label>Site Title</label>
-		<input type="text" placeholder="My Forum" data-field="title" />
+		<input type="text" placeholder="Your Community Name" data-field="title" />
+		<label>Site Description</label>
+		<input type="text" class="input-xxlarge" placeholder="A short description about your community" data-field="description" />
 	</form>
 </div>
 

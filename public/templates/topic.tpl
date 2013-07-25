@@ -48,8 +48,8 @@
 							</button>
 						</div>
 						<div class="btn-group">
-							<button class="btn btn-primary btn post_reply" type="button">Reply <i class="icon-reply"></i></button>
 							<button id="quote_{main_posts.pid}_{main_posts.uid}" class="btn quote" type="button" title="Quote"><i class="icon-quote-left"></i></button>
+							<button class="btn btn-primary btn post_reply" type="button">Reply <i class="icon-reply"></i></button>
 						</div>
 					</div>
 					<div style="clear:both; margin-bottom: 10px;"></div>
