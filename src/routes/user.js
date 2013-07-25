@@ -396,7 +396,7 @@ var user = require('./../user.js'),
 						if(callerUID === uid && data.showemail === "0")
 							data.emailClass = "";
 						else 
-							data.emailClass = "hidden";
+							data.emailClass = "hide";
 
 
 						data.uid = uid;
