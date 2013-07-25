@@ -126,7 +126,22 @@ var user = require('./../user.js'),
 				return;	
 			}
 
-			uploadUserPicture(req.user.uid, path.extname(req.files.userPhoto.name), req.files.userPhoto.path, res);
+			user.getUserField(req.user.uid, 'uploadedpicture', function(oldpicture) {
+				if(!oldpicture) {
+					uploadUserPicture(req.user.uid, path.extname(req.files.userPhoto.name), req.files.userPhoto.path, res);
+					return;
+				}
+
+				var absolutePath = path.join(global.configuration['ROOT_DIRECTORY'], global.nconf.get('upload_path'), path.basename(oldpicture));
+
+				fs.unlink(absolutePath, function(err) {
+					if(err) {        
+						console.error('[%d] %s', Date.now(), + err);
+					}
+
+					uploadUserPicture(req.user.uid, path.extname(req.files.userPhoto.name), req.files.userPhoto.path, res);
+				});
+			});
 		});
 		
 		function uploadUserPicture(uid, extension, tempPath, res) {
@@ -151,18 +166,15 @@ var user = require('./../user.js'),
 
 				var imageUrl = global.nconf.get('upload_url') + filename;
 
-				res.json({ path: imageUrl });
-
 				user.setUserField(uid, 'uploadedpicture', imageUrl);
 				user.setUserField(uid, 'picture', imageUrl);
 
-				var im = require('node-imagemagick');
-
-				im.resize({
+				require('node-imagemagick').crop({
 					srcPath: uploadPath,
-					dstPath: uploadPath,
-					width: 128
-				}, function(err, stdout, stderr) {
+  					dstPath: uploadPath,
+					width: 128,
+					height: 128
+				}, function(err, stdout, stderr){
 					if (err) {
 						// @todo: better logging method; for now, send to stderr.
 						// ideally, this should be happening in another process
@@ -170,6 +182,8 @@ var user = require('./../user.js'),
 						// to crash the main process
 						console.error('[%d] %s', Date.now(), + err);
 					}
+
+					res.json({ path: imageUrl });
 				});
 
 			});
@@ -217,6 +231,7 @@ var user = require('./../user.js'),
 		function api_method(req, res) {
 
 			var callerUID = req.user ? req.user.uid : 0;
+			
 			var userslug = req.params.userslug;
 			var section = req.params.section ? String(req.params.section).toLowerCase() : null;
 				
@@ -297,7 +312,7 @@ var user = require('./../user.js'),
 					res.json(404, { error: 'User not found!' })	;
 					return;
 				}
-				uid = parseInt(uid, 10);
+				
 				if(uid !== callerUid || callerUid === "0") {
 					res.json(403, { error: 'Not allowed!' });
 					return;
@@ -360,9 +375,7 @@ var user = require('./../user.js'),
 					callback(null);
 					return;
 				}
-
-				uid = parseInt(uid, 10);
-				
+						
 				user.getUserData(uid, function(data) {
 					if(data) {
 						data.joindate = utils.relativeTime(data.joindate);
