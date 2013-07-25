@@ -238,8 +238,10 @@ var express = require('express'),
 						title: topicData.topic_name,
 						metaTags: [
 							{ name: "title", content: topicData.topic_name },
-							{ property: 'og:title', content: topicData.topic_name },
+							{ property: 'og:title', content: topicData.topic_name + ' | ' + (global.config.title || 'NodeBB') },
 							{ property: "og:type", content: 'article' },
+							{ property: "og:url", content: global.nconf.get('url') + 'topic/' + topicData.slug },
+							{ property: 'og:image', content: topicData.main_posts[0].picture },
 							{ property: "article:published_time", content: new Date(parseInt(topicData.main_posts[0].timestamp, 10)).toISOString() },
 							{ property: 'article:modified_time', content: new Date(lastMod).toISOString() },
 							{ property: 'article:section', content: topicData.category_name }
