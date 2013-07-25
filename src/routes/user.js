@@ -76,6 +76,20 @@ var user = require('./../user.js'),
 			});	
 		});
 
+		app.get('/users/:userslug/settings', function(req, res) {
+
+			if(!req.user)
+				return res.redirect('/403');
+			
+			user.getUserField(req.user.uid, 'userslug', function(userslug) {
+				if(req.params.userslug && userslug === req.params.userslug) {
+					res.send(app.build_header(res) + app.create_route('users/'+req.params.userslug+'/settings','accountsettings') + templates['footer']);
+				} else {
+					return res.redirect('/404');
+				}
+			});	
+		});
+
 		app.post('/users/uploadpicture', function(req, res) {
 			if(!req.user)
 				return res.redirect('/403');
