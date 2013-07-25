@@ -166,8 +166,6 @@ var user = require('./../user.js'),
 
 				var imageUrl = global.nconf.get('upload_url') + filename;
 
-				res.json({ path: imageUrl });
-
 				user.setUserField(uid, 'uploadedpicture', imageUrl);
 				user.setUserField(uid, 'picture', imageUrl);
 
@@ -184,6 +182,8 @@ var user = require('./../user.js'),
 						// to crash the main process
 						console.error('[%d] %s', Date.now(), + err);
 					}
+
+					res.json({ path: imageUrl });
 				});
 
 			});
