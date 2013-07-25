@@ -43,6 +43,7 @@ var socket,
 							});
 						}, 1000);
 						reconnecting = false;
+						reconnectTries = 0;
 						socket.emit('api:updateHeader', { fields: ['username', 'picture', 'userslug'] });
 					}
 				});
