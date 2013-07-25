@@ -126,7 +126,22 @@ var user = require('./../user.js'),
 				return;	
 			}
 
-			uploadUserPicture(req.user.uid, path.extname(req.files.userPhoto.name), req.files.userPhoto.path, res);
+			user.getUserField(req.user.uid, 'uploadedpicture', function(oldpicture) {
+				if(!oldpicture) {
+					uploadUserPicture(req.user.uid, path.extname(req.files.userPhoto.name), req.files.userPhoto.path, res);
+					return;
+				}
+
+				var absolutePath = path.join(global.configuration['ROOT_DIRECTORY'], global.nconf.get('upload_path'), path.basename(oldpicture));
+
+				fs.unlink(absolutePath, function(err) {
+					if(err) {        
+						console.error('[%d] %s', Date.now(), + err);
+					}
+
+					uploadUserPicture(req.user.uid, path.extname(req.files.userPhoto.name), req.files.userPhoto.path, res);
+				});
+			});
 		});
 		
 		function uploadUserPicture(uid, extension, tempPath, res) {
