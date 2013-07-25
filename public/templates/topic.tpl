@@ -38,16 +38,19 @@
 					<hr />
 
 					<div class="topic-buttons pull-left">
-						<a target="_blank" class="btn hidden-phone" href="../{topic_id}.rss" title="RSS Feed"><i class="icon-rss-sign"></i></a>
-						<button class="btn follow" type="button" title="Be notified of new replies in this topic"><i class="icon-eye-open"></i></button>
 						<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn edit {main_posts.display_moderator_tools}" type="button" title="Edit"><i class="icon-pencil"></i></button>
 						<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn delete {main_posts.display_moderator_tools}" type="button" title="Delete"><i class="icon-trash"></i></button>
-						<button id="quote_{main_posts.pid}_{main_posts.uid}" class="btn quote" type="button" title="Quote"><i class="icon-quote-left"></i></button>
-
-						<button id="favs_{main_posts.pid}_{main_posts.uid}" class="favourite btn" type="button">
-							<span>Favourite</span>
-							<span class="post_rep_{main_posts.pid}">{main_posts.post_rep} </span><i class="{main_posts.fav_star_class}"></i></button>
-						<button class="btn btn-primary btn post_reply hidden-phone" type="button">Reply <i class="icon-reply"></i></button>
+						<div class="btn-group">
+							<button class="btn follow" type="button" title="Be notified of new replies in this topic"><i class="icon-eye-open"></i></button>
+							<button id="favs_{main_posts.pid}_{main_posts.uid}" class="favourite btn" type="button">
+								<span>Favourite</span>
+								<span class="post_rep_{main_posts.pid}">{main_posts.post_rep} </span><i class="{main_posts.fav_star_class}"></i>
+							</button>
+						</div>
+						<div class="btn-group">
+							<button class="btn btn-primary btn post_reply" type="button">Reply <i class="icon-reply"></i></button>
+							<button id="quote_{main_posts.pid}_{main_posts.uid}" class="btn quote" type="button" title="Quote"><i class="icon-quote-left"></i></button>
+						</div>
 					</div>
 					<div style="clear:both; margin-bottom: 10px;"></div>
 
@@ -63,7 +66,10 @@
 						<span class="{main_posts.edited-class} hidden-phone">| last edited by <strong><a href="/users/{main_posts.editorslug}">{main_posts.editorname}</a></strong> {main_posts.relativeEditTime} ago</span>
 						<span class="{main_posts.edited-class}"><i class="icon-edit visible-phone" title="edited by {main_posts.editorname} {main_posts.relativeEditTime} ago"></i></span>
 						<div class="post-buttons visible-phone">
-							<div class="post_reply"><i class="icon-reply"></i></div>
+							<button class="post_reply btn-link"><i class="icon-reply"></i></button>
+						</div>
+						<div class="post-buttons">
+							<a href="../{topic_id}.rss" target="_blank"><i class="icon-rss"></i></a>
 						</div>
 					</div>
 				</div>
@@ -97,8 +103,8 @@
 						<span class="post-buttons">
 							<button id="ids_{posts.pid}_{posts.uid}" class="edit {posts.display_moderator_tools} btn-link hidden-phone" title="Edit"><i class="icon-pencil"></i></button>
 							<button id="ids_{posts.pid}_{posts.uid}" class="delete {posts.display_moderator_tools} btn-link hidden-phone" title="Delete"><i class="icon-trash"></i></button>
-							<button id="quote_{posts.pid}_{posts.uid}" class="quote btn-link hidden-phone" title="Quote"><i class="icon-quote-left"></i></button>
 							<button id="favs_{posts.pid}_{posts.uid}" class="favourite btn-link hidden-phone" title="Favourite"><span class="post_rep_{posts.pid}">{posts.post_rep} </span><i class="{posts.fav_star_class}"></i></button>
+							<button id="quote_{posts.pid}_{posts.uid}" class="quote btn-link hidden-phone" title="Quote"><i class="icon-quote-left"></i></button>
 							<button class="post_reply btn-link" title="Reply"><i class="icon-reply"></i></button>
 						</span>
 						<img class="hidden-desktop" src="{posts.picture}" align="left" /> posted by <strong><a class="username-field" href="/users/{posts.userslug}">{posts.username}</a></strong> {posts.relativeTime} ago
