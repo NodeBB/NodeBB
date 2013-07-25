@@ -47,13 +47,19 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 				userSockets[uid] = userSockets[uid] || [];
 				userSockets[uid].push(socket);
-				if(uid)
+				
+				if(uid) {
+					socket.join('uid_' + uid);
 					io.sockets.in('global').emit('api:user.isOnline', isUserOnline(uid));
-				socket.join('uid_' + uid);
+				
+					user.getUserField(uid, 'username', function(username) {
+						socket.emit('event:connect', {status: 1, username:username});
+					});
+				}
 			});
 		});
 
-		socket.emit('event:connect', {status: 1});
+		
 		
 		socket.on('disconnect', function() {
 			

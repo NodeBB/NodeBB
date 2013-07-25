@@ -21,8 +21,9 @@ var socket,
 	
 				socket.on('event:connect', function(data) {
 					console.log('connected to nodebb socket: ', data);
+					app.username = data.username;
 				});
-	
+
 				socket.on('event:alert', function(data) {
 					app.alert(data);
 				});
@@ -228,13 +229,12 @@ var socket,
 			mobileMenu.onNavigate();
 		});
 
-
 		app.populate_online_users();
 
 		var url = window.location.href,
 			parts = url.split('/'),
 			active = parts[parts.length-1];
-
+		
 		jQuery('#main-nav li').removeClass('active');
 		if(active) {
 			jQuery('#main-nav li a').each(function() {
@@ -253,6 +253,17 @@ var socket,
 		}, 100);
 	}
 
+
+	app.showLoginMessage = function() {
+		if(location.href.indexOf('loggedin') !== -1) {
+			app.alert({
+				type: 'success',
+				title: 'Welcome Back ' + app.username + '!',
+				message: 'You have successfully logged in!',
+				timeout: 5000
+			});
+		}
+	}
 
 	jQuery('document').ready(function() {
 		addTouchEvents();

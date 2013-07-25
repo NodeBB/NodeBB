@@ -41,9 +41,9 @@
 	});
 
 	socket.emit('api:updateHeader', { fields: ['username', 'picture', 'userslug'] });
-
+	
 	socket.on('api:updateHeader', function(data) {
-
+	
 		var rightMenu = $('#right-menu');
 		if (data.uid > 0) {
 
