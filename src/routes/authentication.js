@@ -84,13 +84,15 @@
 	Auth.create_routes = function(app) {
 
 		app.get('/logout', function(req, res) {
-			console.log('info: [Auth] Session ' + req.sessionID + ' logout (uid: ' + global.uid + ')');
-			login_module.logout(req.sessionID, function(logout) {
-				req.logout();
-				app.build_header({ req: req, res: res }, function(header) {
-					res.send(header + templates['logout'] + templates['footer']);
+			if (req.user && req.user.uid > 0) {
+				console.log('info: [Auth] Session ' + req.sessionID + ' logout (uid: ' + req.user.uid + ')');
+				login_module.logout(req.sessionID, function(logout) {
+					req.logout();
+					app.build_header({ req: req, res: res }, function(err, header) {
+						res.send(header + templates['logout'] + templates['footer']);
+					});
 				});
-			});
+			} else res.redirect('/');
 		});
 
 		if (login_strategies.indexOf('twitter') !== -1) {
@@ -123,13 +125,14 @@
 
 
 		app.get('/reset/:code', function(req, res) {
-			app.build_header({ req: req, res: res }, function(header) {
+			app.build_header({ req: req, res: res }, function(err, header) {
 				res.send(header + templates['reset_code'].parse({ reset_code: req.params.code }) + templates['footer']);
 			});
 		});
 
 		app.get('/reset', function(req, res) {
-			app.build_header({ req: req, res: res }, function(header) {
+			app.build_header({ req: req, res: res }, function(err, header) {
+				console.log(header);
 				res.send(header + templates['reset'] + templates['footer']);
 			});
 		});

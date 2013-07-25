@@ -1,7 +1,7 @@
 define(['taskbar'], function(taskbar) {
 	var composer = {
 			initialized: false,
-			active: 0,
+			active: undefined,
 			taskbar: taskbar,
 			posts: {},
 			postContainer: undefined,
@@ -95,17 +95,19 @@ define(['taskbar'], function(taskbar) {
 															'<span class="btn btn-link" tabindex="-1"><i class="icon-list"></i></span>' +
 															'<span class="btn btn-link" tabindex="-1"><i class="icon-link"></i></span>' +
 														'</div>' +
-														'<div class="btn-group action-bar" style="float: right; margin-right: -12px">' +
-															'<button data-action="post" class="btn" tabIndex="3"><i class="icon-ok"></i> Submit</button>' +
-															'<button data-action="minimize" class="btn hidden-phone" tabIndex="4"><i class="icon-download-alt"></i> Minimize</button>' +
-															'<button class="btn" data-action="discard" tabIndex="5"><i class="icon-remove"></i> Discard</button>' +
-														'</div>' +
 													'</div>' +
 													'<div style="position:relative;">'+
 														'<div id="imagedrop" class=""><div>Drag and Drop Images Here</div></div>'+
 														'<textarea tabIndex="2"></textarea>' +
 														'<div id="imagelist"></div>'+
 													'</div>'+
+													'<div class="btn-toolbar">' +
+														'<div class="btn-group action-bar" style="float: right; margin-right: -8px">' +
+															'<button data-action="minimize" class="btn hidden-phone" tabIndex="4"><i class="icon-download-alt"></i> Minimize</button>' +
+															'<button class="btn" data-action="discard" tabIndex="5"><i class="icon-remove"></i> Discard</button>' +
+															'<button data-action="post" class="btn" tabIndex="3"><i class="icon-ok"></i> Submit</button>' +
+														'</div>' +
+													'</div>' +
 												'</div>';
 
 			document.body.insertBefore(composer.postContainer, taskbar);
@@ -220,6 +222,9 @@ define(['taskbar'], function(taskbar) {
 					break;
 				}
 			});
+			window.addEventListener('resize', function() {
+				if (composer.active !== undefined) composer.reposition(composer.active);
+			});
 
 			composer.initialized = true;
 		}
@@ -238,23 +243,15 @@ define(['taskbar'], function(taskbar) {
 		var post_data = composer.posts[post_uuid],
 			titleEl = composer.postContainer.querySelector('input'),
 			bodyEl = composer.postContainer.querySelector('textarea'),
-			postWindowEl = composer.postContainer.querySelector('.span5'),
-			taskbarBtn = document.querySelector('#taskbar [data-uuid="' + post_uuid + '"]'),
-			btnRect = taskbarBtn.getBoundingClientRect(),
-			taskbarRect = document.getElementById('taskbar').getBoundingClientRect(),
 			dropDiv = $(composer.postContainer).find('#imagedrop'),
-			imagelist = $(composer.postContainer).find('#imagelist'),
-			windowRect, leftPos;
+			imagelist = $(composer.postContainer).find('#imagelist');
 
 		dropDiv.hide();
 		imagelist.empty();
-		
 
-		composer.postContainer.style.display = 'block';
-		windowRect = postWindowEl.getBoundingClientRect();
-		leftPos = btnRect.left + btnRect.width - windowRect.width;
-		postWindowEl.style.left = (leftPos > 0 ? leftPos : 0) + 'px';
-		composer.postContainer.style.bottom = taskbarRect.height + "px";
+		composer.reposition(post_uuid);
+		composer.active = post_uuid;
+		
 		composer.postContainer.setAttribute('data-uuid', post_uuid);
 		if (parseInt(post_data.tid) > 0) {
 			titleEl.value = 'Replying to: ' + post_data.title;
@@ -269,8 +266,6 @@ define(['taskbar'], function(taskbar) {
 		}
 		bodyEl.value = post_data.body
 
-		
-
 		// Direct user focus to the correct element
 		if ((parseInt(post_data.tid) || parseInt(post_data.pid)) > 0) {
 			bodyEl.focus();
@@ -279,6 +274,20 @@ define(['taskbar'], function(taskbar) {
 		} else if (parseInt(post_data.cid) > 0) {
 			titleEl.focus();
 		}
+	}
+
+	composer.reposition = function(post_uuid) {
+		var postWindowEl = composer.postContainer.querySelector('.span5'),
+			taskbarBtn = document.querySelector('#taskbar [data-uuid="' + post_uuid + '"]'),
+			btnRect = taskbarBtn.getBoundingClientRect(),
+			taskbarRect = document.getElementById('taskbar').getBoundingClientRect(),
+			windowRect, leftPos;
+
+		composer.postContainer.style.display = 'block';
+		windowRect = postWindowEl.getBoundingClientRect();
+		leftPos = btnRect.left + btnRect.width - windowRect.width;
+		postWindowEl.style.left = (leftPos > 0 ? leftPos : 0) + 'px';
+		composer.postContainer.style.bottom = taskbarRect.height + "px";
 	}
 
 	composer.post = function(post_uuid) {
@@ -347,6 +356,7 @@ define(['taskbar'], function(taskbar) {
 
 	composer.minimize = function(uuid) {
 		composer.postContainer.style.display = 'none';
+		composer.active = undefined;
 		taskbar.minimize('composer', uuid);
 	}
 
