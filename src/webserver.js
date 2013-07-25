@@ -225,13 +225,11 @@ var express = require('express'),
 				},
 				function(topicData, next) {
 					var	posts = topicData.posts.push(topicData.main_posts[0]),
-						authors = [],
 						lastMod = 0,
 						timestamp;
 					for(var x=0,numPosts=topicData.posts.length;x<numPosts;x++) {
 						timestamp = parseInt(topicData.posts[x].timestamp, 10);
 						if (timestamp > lastMod) lastMod = timestamp;
-						if (authors.indexOf(topicData.posts[x].username) === -1) authors.push(topicData.posts[x].username);
 					}
 
 					app.build_header({
@@ -244,7 +242,6 @@ var express = require('express'),
 							{ property: "og:type", content: 'article' },
 							{ property: "article:published_time", content: new Date(parseInt(topicData.main_posts[0].timestamp, 10)).toISOString() },
 							{ property: 'article:modified_time', content: new Date(lastMod).toISOString() },
-							{ property: 'article:author', content: authors.join(',') },
 							{ property: 'article:section', content: topicData.category_name }
 						]
 					}, function(err, header) {
