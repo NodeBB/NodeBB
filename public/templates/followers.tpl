@@ -43,3 +43,4 @@
 <input type="hidden" template-variable="followersCount" value="{followersCount}" />
 
 <script type="text/javascript" src="{relative_path}/src/forum/followers.js"></script>
+<script type="text/javascript" src="{relative_path}/src/forum/accountheader.js"></script>

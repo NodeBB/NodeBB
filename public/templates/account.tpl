@@ -33,7 +33,7 @@
 			<h4>profile</h4>
 			<div class="inline-block">
 				<div class="account-bio-block">
-					<span class="account-bio-label">email</span>
+					<span class="account-bio-label">email</span><i class="icon-eye-close {emailClass}" title="Email hidden"></i>
 					<span>{email}</span>
 					<br/>
 					
@@ -103,3 +103,4 @@
 <input type="hidden" template-type="boolean" template-variable="isFollowing" value="{isFollowing}" />
 
 <script type="text/javascript" src="{relative_path}/src/forum/account.js"></script>
+<script type="text/javascript" src="{relative_path}/src/forum/accountheader.js"></script>

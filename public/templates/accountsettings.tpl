@@ -18,15 +18,17 @@
 		<div class="span6">
 			<h4>privacy</h4>
 			<label class="checkbox">
-      			<input type="checkbox"> Show my email
+      			<input id="showemailCheckBox" type="checkbox" {showemail}> Show my email
     		</label>
 		</div>
 		  
 		<div class="span6">
-			span10
+			
 		</div>
-		
 	</div>  
+	<div class="form-actions">
+		<a id="submitBtn" href="#" class="btn btn-primary">Save changes</a>
+	</div>
 </div>
 
 <script type="text/javascript" src="{relative_path}/src/forum/accountsettings.js"></script>

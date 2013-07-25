@@ -11,14 +11,11 @@
 		var postcount = $('#postcount');
 		postcount.html(app.addCommas(postcount.html()));
 		
-		var editLink = $('#editLink');
 		var followBtn = $('#follow-btn');
 		if(yourid === "0") {
-			editLink.hide();
 			followBtn.hide();
 		}
 		else if(yourid !== theirid) {
-			editLink.hide();
 			if(isFollowing)
 				followBtn.hide();
 			else

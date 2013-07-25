@@ -9,10 +9,8 @@
 		if(parseInt(followingCount, 10) === 0) {
 			$('#no-following-notice').show();
 		}
-		var editLink = $('#editLink');
 
 		if(yourid !== theirid) {
-			editLink.hide();
 			$('.unfollow-btn').hide();
 		}
 		else {
