@@ -217,6 +217,7 @@ var user = require('./../user.js'),
 		function api_method(req, res) {
 
 			var callerUID = req.user ? req.user.uid : 0;
+			console.log(req.user);
 			var userslug = req.params.userslug;
 			var section = req.params.section ? String(req.params.section).toLowerCase() : null;
 				
@@ -297,7 +298,7 @@ var user = require('./../user.js'),
 					res.json(404, { error: 'User not found!' })	;
 					return;
 				}
-				uid = parseInt(uid, 10);
+				
 				if(uid !== callerUid || callerUid === "0") {
 					res.json(403, { error: 'Not allowed!' });
 					return;
@@ -357,12 +358,10 @@ var user = require('./../user.js'),
 			user.get_uid_by_userslug(userslug, function(uid) {
 				
 				if(uid === null) {
-					callback(null);
+					callback(null)
 					return;
 				}
-
-				uid = parseInt(uid, 10);
-				
+						
 				user.getUserData(uid, function(data) {
 					if(data) {
 						data.joindate = utils.relativeTime(data.joindate);
