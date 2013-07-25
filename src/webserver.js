@@ -34,7 +34,8 @@ var express = require('express'),
 		var	defaultMetaTags = [
 				{ name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
 				{ name: 'content-type', content: 'text/html; charset=UTF-8' },
-				{ name: 'apple-mobile-web-app-capable', content: 'yes' }
+				{ name: 'apple-mobile-web-app-capable', content: 'yes' },
+				{ property: 'og:site_name', content: global.config.title || 'NodeBB' },
 			],
 			metaString = utils.buildMetaTags(defaultMetaTags.concat(options.metaTags || [])),
 			templateValues = {
@@ -175,7 +176,16 @@ var express = require('express'),
 		app.get('/', function(req, res) {
 			async.parallel({
 				"header": function(next) {
-					app.build_header({ req: req, res: res }, next);
+					app.build_header({
+						req: req,
+						res: res,
+						metaTags: [
+							{ name: "title", content: global.config.title || 'NodeBB' },
+							{ name: "description", content: global.config.description || '' },
+							{ property: 'og:title', content: 'Index | ' + (global.config.title || 'NodeBB') },
+							{ property: "og:type", content: 'website' }
+						]
+					}, next);
 				},
 				"categories": function(next) {
 					categories.getAllCategories(function(returnData) {
@@ -214,12 +224,28 @@ var express = require('express'),
 					});
 				},
 				function(topicData, next) {
+					var	posts = topicData.posts.push(topicData.main_posts[0]),
+						authors = [],
+						lastMod = 0,
+						timestamp;
+					for(var x=0,numPosts=topicData.posts.length;x<numPosts;x++) {
+						timestamp = parseInt(topicData.posts[x].timestamp, 10);
+						if (timestamp > lastMod) lastMod = timestamp;
+						if (authors.indexOf(topicData.posts[x].username) === -1) authors.push(topicData.posts[x].username);
+					}
+
 					app.build_header({
 						req: req,
 						res: res,
 						title: topicData.topic_name,
 						metaTags: [
-							{ name: "title", content: topicData.topic_name }
+							{ name: "title", content: topicData.topic_name },
+							{ property: 'og:title', content: topicData.topic_name },
+							{ property: "og:type", content: 'article' },
+							{ property: "article:published_time", content: new Date(parseInt(topicData.main_posts[0].timestamp, 10)).toISOString() },
+							{ property: 'article:modified_time', content: new Date(lastMod).toISOString() },
+							{ property: 'article:author', content: authors.join(',') },
+							{ property: 'article:section', content: topicData.category_name }
 						]
 					}, function(err, header) {
 						next(err, {
@@ -269,7 +295,8 @@ var express = require('express'),
 						title: categoryData.category_name,
 						metaTags: [
 							{ name: 'title', content: categoryData.category_name },
-							{ name: 'description', content: categoryData.category_description }
+							{ name: 'description', content: categoryData.category_description },
+							{ property: "og:type", content: 'website' }
 						]
 					}, function(err, header) {
 						next(err, {
