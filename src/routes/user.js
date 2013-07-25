@@ -25,23 +25,33 @@ var user = require('./../user.js'),
 		});
 
 		app.get('/users', function(req, res) {
-			res.send(app.build_header(res) + app.create_route("users", "users") + templates['footer']);
+			app.build_header({ req: req, res: res }, function(err, header) {
+				res.send(header + app.create_route("users", "users") + templates['footer']);
+			});
 		});
 		
 		app.get('/users-latest', function(req, res) {
-			res.send(app.build_header(res) + app.create_route("users-latest", "users") + templates['footer']);
+			app.build_header({ req: req, res: res }, function(err, header) {
+				res.send(header + app.create_route("users-latest", "users") + templates['footer']);
+			});
 		});
 		
 		app.get('/users-sort-posts', function(req, res) {
-			res.send(app.build_header(res) + app.create_route("users-sort-posts", "users") + templates['footer']);
+			app.build_header({ req: req, res: res }, function(err, header) {
+				res.send(header + app.create_route("users-sort-posts", "users") + templates['footer']);
+			});
 		});
 		
 		app.get('/users-sort-reputation', function(req, res) {
-			res.send(app.build_header(res) + app.create_route("users-sort-reputation", "users") + templates['footer']);
+			app.build_header({ req: req, res: res }, function(err, header) {
+				res.send(header + app.create_route("users-sort-reputation", "users") + templates['footer']);
+			});
 		});
 		
 		app.get('/users-search', function(req, res) {
-			res.send(app.build_header(res) + app.create_route("users-search", "users") + templates['footer']);
+			app.build_header({ req: req, res: res }, function(err, header) {
+				res.send(header + app.create_route("users-search", "users") + templates['footer']);
+			});
 		});
 
 		app.get('/users/:userslug', function(req, res, next) {
@@ -57,7 +67,9 @@ var user = require('./../user.js'),
 					return;
 				}
 				
-				res.send(app.build_header(res) + app.create_route('users/'+req.params.userslug, 'account')  + templates['footer']);
+				app.build_header({ req: req, res: res }, function(err, header) {
+					res.send(header + app.create_route('users/'+req.params.userslug, 'account')  + templates['footer']);
+				});
 			});		
 		});
 		
@@ -69,7 +81,9 @@ var user = require('./../user.js'),
 			user.getUserField(req.user.uid, 'userslug', function(userslug) {
 			
 				if(req.params.userslug && userslug === req.params.userslug) {
-					res.send(app.build_header(res) + app.create_route('users/'+req.params.userslug+'/edit','accountedit') + templates['footer']);
+					app.build_header({ req: req, res: res }, function(err, header) {
+						res.send(header + app.create_route('users/'+req.params.userslug+'/edit','accountedit') + templates['footer']);
+					});
 				} else {
 					return res.redirect('/404');
 				}
@@ -179,7 +193,9 @@ var user = require('./../user.js'),
 					return;
 				}
 			
-				res.send(app.build_header(res) + app.create_route('users/'+req.params.userslug+'/following','following') + templates['footer']);
+				app.build_header({ req: req, res: res }, function(err, header) {
+					res.send(header + app.create_route('users/'+req.params.userslug+'/following','following') + templates['footer']);
+				});
 			});
 		});
 		
@@ -193,7 +209,9 @@ var user = require('./../user.js'),
 					res.redirect('/404');
 					return;
 				}
-				res.send(app.build_header(res) + app.create_route('users/'+req.params.userslug+'/followers','followers') + templates['footer']);
+				app.build_header({ req: req, res: res }, function(err, header) {
+					res.send(header + app.create_route('users/'+req.params.userslug+'/followers','followers') + templates['footer']);
+				});
 			});
 		});
 
