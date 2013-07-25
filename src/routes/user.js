@@ -171,13 +171,12 @@ var user = require('./../user.js'),
 				user.setUserField(uid, 'uploadedpicture', imageUrl);
 				user.setUserField(uid, 'picture', imageUrl);
 
-				var im = require('node-imagemagick');
-
-				im.resize({
+				require('node-imagemagick').crop({
 					srcPath: uploadPath,
-					dstPath: uploadPath,
-					width: 128
-				}, function(err, stdout, stderr) {
+  					dstPath: uploadPath,
+					width: 128,
+					height: 128
+				}, function(err, stdout, stderr){
 					if (err) {
 						// @todo: better logging method; for now, send to stderr.
 						// ideally, this should be happening in another process
@@ -232,7 +231,7 @@ var user = require('./../user.js'),
 		function api_method(req, res) {
 
 			var callerUID = req.user ? req.user.uid : 0;
-			console.log(req.user);
+			
 			var userslug = req.params.userslug;
 			var section = req.params.section ? String(req.params.section).toLowerCase() : null;
 				
@@ -373,7 +372,7 @@ var user = require('./../user.js'),
 			user.get_uid_by_userslug(userslug, function(uid) {
 				
 				if(uid === null) {
-					callback(null)
+					callback(null);
 					return;
 				}
 						
