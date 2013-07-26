@@ -3,7 +3,7 @@
    
 
 
-  <div class="account-username-box">
+	<div class="account-username-box">
 		<span class="account-username">
 			<a href="/users/{userslug}">{username}</a>
 		</span>

@@ -99,7 +99,11 @@ var	RDB = require('./redis.js'),
 
 	// not the permanent location for this function
 	Categories.getLatestTopics = function(current_user, start, end, callback) {
-		RDB.zrevrange('topics:recent', 0, -1, function(err, tids) {
+
+		var args = [ 'topics:recent', '+inf', Date.now() - 86400000];
+
+		RDB.zrevrangebyscore(args, function(err, tids) {
+			
 			var latestTopics = {
 				'category_name' : 'Recent',
 				'show_sidebar' : 'hidden',
@@ -110,7 +114,7 @@ var	RDB = require('./redis.js'),
 				'topics' : []
 			};
 
-			if (!tids.length) {
+			if (!tids || !tids.length) {
 				callback(latestTopics);
 				return;
 			}
