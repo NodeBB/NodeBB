@@ -97,12 +97,13 @@ var	RDB = require('./redis.js'),
 		RDB.smembers('cid:' + cid + ':active_users', callback);
 	}
 
-	// not the permanent location for this function
 	Categories.getLatestTopics = function(current_user, start, end, callback) {
 
-		var args = [ 'topics:recent', '+inf', Date.now() - 86400000];
-
-		RDB.zrevrangebyscore(args, function(err, tids) {
+		var timestamp = Date.now();
+		
+		RDB.zremrangebyscore('topics:recent', '-inf', timestamp - 86400000);
+		
+		RDB.zrevrangebyscore([ 'topics:recent', '+inf', timestamp - 86400000], function(err, tids) {
 			
 			var latestTopics = {
 				'category_name' : 'Recent',
@@ -126,8 +127,7 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
-	// not the permanent location for this function
-	Categories.getTopicsByTids = function(tids, current_user, callback, category_id /*temporary*/) {
+	Categories.getTopicsByTids = function(tids, current_user, callback, category_id) {
 
 		var retrieved_topics = [];
 		
