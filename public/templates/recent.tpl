@@ -7,14 +7,13 @@
 </div>
 
 
-<div class="alert alert-warning hide {no_topics_message}" id="category-no-topics">
-	<strong>There are no topics in this category.</strong><br />
-	Why don't you try posting one?
-</div>
-
 <a href="/recent">
 	<div class="alert hide" id="new-topics-alert"></div>
 </a>
+
+<div class="alert alert-warning hide {no_topics_message}" id="category-no-topics">
+	<strong>There are no recent topics.</strong>
+</div>
 
 
 <div class="category row">

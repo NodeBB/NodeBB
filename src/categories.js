@@ -116,6 +116,7 @@ var	RDB = require('./redis.js'),
 			};
 
 			if (!tids || !tids.length) {
+				latestTopics.no_topics_message = 'show';
 				callback(latestTopics);
 				return;
 			}
