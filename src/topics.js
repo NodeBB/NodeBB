@@ -277,8 +277,7 @@ marked.setOptions({
 		RDB.sismember(schema.topics(tid).read_by_uid, uid, function(err, hasRead) {
 			if(err === null) {
 				callback(hasRead);
-			}
-			else {
+			} else {
 				console.log(err);
 				callback(false);
 			}
