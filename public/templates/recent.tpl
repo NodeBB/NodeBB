@@ -15,6 +15,7 @@
 	<strong>There are no recent topics.</strong>
 </div>
 
+<button class="btn">Mark All Read</button><br/><br/>
 
 <div class="category row">
 	<div class="{topic_row_size}">

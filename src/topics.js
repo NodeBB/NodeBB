@@ -162,7 +162,7 @@ marked.setOptions({
 
 		function getReadStatus(next) {
 			if (uid && parseInt(uid) > 0) {
-				RDB.sismember(schema.topics(tid).read_by_uid, uid, function(err, read) {
+				Topics.hasReadTopic(tid, uid, function(read) {
 					next(null, read);
 				});
 			} else {
