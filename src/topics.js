@@ -234,6 +234,21 @@ marked.setOptions({
 			});
 		});
 	}
+	
+	Topics.markAllRead = function(uid) {
+		RDB.smembers('topics:tid', function(err, tids) {
+			if(err) {
+				console.log(err);
+				return;
+			}
+			
+			if(tids && tids.length) {
+				for(var i=0; i<tids.length; ++i) {
+					Topics.markAsRead(tids[i], uid);
+				}			
+			}
+		});
+	}
 
 	Topics.getTitleByPid = function(pid, callback) {
 		posts.getPostField(pid, 'tid', function(tid) {
