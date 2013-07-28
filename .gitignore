@@ -11,3 +11,4 @@ public/css/*.css
 public/themes/*
 *.sublime-project
 *.sublime-workspace
+plugins/*
