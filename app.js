@@ -57,6 +57,7 @@ if (!nconf.get('setup') && nconf.get('base_url')) {
 			templates = require('./public/src/templates.js'),
 			webserver = require('./src/webserver.js'),
 			websockets = require('./src/websockets.js'),
+			plugins = require('./src/plugins'),
 			admin = {
 				'categories': require('./src/admin/categories.js')
 			};
