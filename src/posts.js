@@ -7,7 +7,8 @@ var	RDB = require('./redis.js'),
 	threadTools = require('./threadTools.js'),
 	postTools = require('./postTools'),
 	feed = require('./feed.js'),
-	async = require('async');
+	async = require('async'),
+	plugins = require('./plugins');
 
 (function(Posts) {
 
@@ -275,91 +276,91 @@ var	RDB = require('./redis.js'),
 		}
 		
 		topics.isLocked(tid, function(locked) {
-
 			if (!locked || locked === '0') {
 				RDB.incr('global:next_post_id', function(err, pid) {
 					RDB.handle(err);
-					
-					var timestamp = Date.now();
-					
-					var postData = {
-						'pid': pid,
-						'uid': uid,
-						'tid': tid,
-						'content': content,
-						'timestamp': timestamp,
-						'reputation': 0,
-						'editor': '',
-						'edited': 0,
-						'deleted': 0,
-						'uploadedImages': ''
-					};
-					
-					RDB.hmset('post:' + pid, postData);
 
-					topics.increasePostCount(tid);
-					topics.updateTimestamp(tid, timestamp);
-
-					RDB.incr('totalpostcount');
+					plugins.fire_hook('filter:save_post_content', content, function(content) {
+						var timestamp = Date.now(),
+							postData = {
+								'pid': pid,
+								'uid': uid,
+								'tid': tid,
+								'content': content,
+								'timestamp': timestamp,
+								'reputation': 0,
+								'editor': '',
+								'edited': 0,
+								'deleted': 0,
+								'uploadedImages': ''
+							};
 						
-					topics.getTopicField(tid, 'cid', function(cid) {
-						RDB.handle(err);
+						RDB.hmset('post:' + pid, postData);
 
-						feed.updateTopic(tid, cid);
+						topics.increasePostCount(tid);
+						topics.updateTimestamp(tid, timestamp);
 
-						RDB.zadd('categories:recent_posts:cid:' + cid, Date.now(), pid);
+						RDB.incr('totalpostcount');
+							
+						topics.getTopicField(tid, 'cid', function(cid) {
+							RDB.handle(err);
 
-						// this is a bit of a naive implementation, defn something to look at post-MVP
-						RDB.scard('cid:' + cid + ':active_users', function(amount) {
-							if (amount > 10) {
-								RDB.spop('cid:' + cid + ':active_users');
-							}
+							feed.updateTopic(tid, cid);
 
-							RDB.sadd('cid:' + cid + ':active_users', uid);
-						});
-					});					
-					
-					user.onNewPostMade(uid, tid, pid, timestamp);					
+							RDB.zadd('categories:recent_posts:cid:' + cid, Date.now(), pid);
 
-					var imgur = require('./imgur');
-					// move clientID to config
-					imgur.setClientID('09f3955fee9a0a6');
-					
-					var uploadedImages = [];					
-
-					function uploadImage(image, callback) {
-						imgur.upload(image.data, 'base64', function(err, data) {
-							if(err) {
-								callback(err);
-							} else {
-								if(data.success) {
-									var img= {url:data.data.link, name:image.name};
-									uploadedImages.push(img);
-									callback(null);
-								} else {
-									callback(data);
+							// this is a bit of a naive implementation, defn something to look at post-MVP
+							RDB.scard('cid:' + cid + ':active_users', function(amount) {
+								if (amount > 10) {
+									RDB.spop('cid:' + cid + ':active_users');
 								}
-							}
-						});			
-					}				
-					
-					if(!images) {
-						postData.uploadedImages = JSON.stringify(uploadedImages);
-						Posts.setPostField(pid, 'uploadedImages', postData.uploadedImages);
-						callback(postData);
-					} else {
-						async.each(images, uploadImage, function(err) {
-							if(!err) {
-								postData.uploadedImages = JSON.stringify(uploadedImages);
-								Posts.setPostField(pid, 'uploadedImages', postData.uploadedImages);
-	
-								callback(postData);
-							} else {
-								console.log(err);
-								callback(null);
-							}
-						});
-					}
+
+								RDB.sadd('cid:' + cid + ':active_users', uid);
+							});
+						});					
+						
+						user.onNewPostMade(uid, tid, pid, timestamp);					
+
+						var imgur = require('./imgur');
+						// move clientID to config
+						imgur.setClientID('09f3955fee9a0a6');
+						
+						var uploadedImages = [];					
+
+						function uploadImage(image, callback) {
+							imgur.upload(image.data, 'base64', function(err, data) {
+								if(err) {
+									callback(err);
+								} else {
+									if(data.success) {
+										var img= {url:data.data.link, name:image.name};
+										uploadedImages.push(img);
+										callback(null);
+									} else {
+										callback(data);
+									}
+								}
+							});			
+						}				
+						
+						if(!images) {
+							postData.uploadedImages = JSON.stringify(uploadedImages);
+							Posts.setPostField(pid, 'uploadedImages', postData.uploadedImages);
+							callback(postData);
+						} else {
+							async.each(images, uploadImage, function(err) {
+								if(!err) {
+									postData.uploadedImages = JSON.stringify(uploadedImages);
+									Posts.setPostField(pid, 'uploadedImages', postData.uploadedImages);
+		
+									callback(postData);
+								} else {
+									console.log(err);
+									callback(null);
+								}
+							});
+						}
+					});
 				});
 			} else {
 				callback(null);

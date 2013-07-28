@@ -71,24 +71,24 @@ var	fs = require('fs'),
 		fire_hook: function(hook, args, callback) {
 			// TODO: Implement priority hook firing
 			var	_self = this
-				hookList = loaded_hooks[hook];
+				hookList = this.loaded_hooks[hook];
 
-			if(loaded_hooks[hook] && Array.isArray(hookList)) {
-				if (global.env === 'development') console.log('Info: [plugins] Firing hook: ' + hook);
+			if(hookList && Array.isArray(hookList)) {
+				if (global.env === 'development') console.log('Info: [plugins] Firing hook: \'' + hook + '\'');
 				var	hookType = hook.split(':')[0];
 				switch(hookType) {
 					case 'filter':
 						// Filters only take one argument, so only args[0] will be passed in
-						var	returnVal = args[0];
+						var	returnVal = (Array.isArray(args) ? args[0] : args);
 
 						async.each(hookList, function(hookObj, next) {
 							if (hookObj.callbacked) {
-								_self.libraries[hookObj.id][hookObj.method](returnVal, function(err, afterVal) {
+								_self.libraries[hookObj[0]][hookObj[1]](returnVal, function(err, afterVal) {
 									returnVal = afterVal;
 									next(err);
 								});
 							} else {
-								returnVal = _self.libraries[hookObj.id][hookObj.method](returnVal);
+								returnVal = _self.libraries[hookObj[0]][hookObj[1]](returnVal);
 								next();
 							}
 						}, function(err) {
