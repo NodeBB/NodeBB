@@ -343,7 +343,7 @@ var	RDB = require('./redis.js'),
 							});			
 						}
 
-						plugins.fireHook('action:save_post_content', [content])
+						plugins.fireHook('action:save_post_content', [pid, content]);
 						
 						if(!images) {
 							postData.uploadedImages = JSON.stringify(uploadedImages);
