@@ -1,9 +1,10 @@
 var	fs = require('fs'),
 	path = require('path'),
 	RDB = require('./redis.js'),
+	async = require('async'),
 	plugins = {
 		libraries: [],
-		loaded_hooks: {},
+		loadedHooks: {},
 		init: function() {
 			if (this.initialized) return;
 			if (global.env === 'development') console.log('Info: [plugins] Initializing plugins system');
@@ -28,7 +29,7 @@ var	fs = require('fs'),
 									_self.libraries[pluginData.id] = require(path.join(pluginPath, pluginData.library));
 									if (pluginData.hooks) {
 										for(var x=0,numHooks=pluginData.hooks.length;x<numHooks;x++) {
-											_self.register_hook(pluginData.id, pluginData.hooks[x]);
+											_self.registerHook(pluginData.id, pluginData.hooks[x]);
 										}
 									}
 									if (global.env === 'development') console.log('Info: [plugins] Loaded plugin: ' + pluginData.id);
@@ -52,26 +53,26 @@ var	fs = require('fs'),
 			});
 		},
 		initialized: false,
-		register_hook: function(id, data) {
+		registerHook: function(id, data) {
 			/*
 				`data` is an object consisting of (* is required):
 					`data.hook`*, the name of the NodeBB hook
 					`data.method`*, the method called in that plugin
-					`data.callbacked`, whether or not the hook expects a callback (true), or a return (false). (Default: false)
+					`data.callbacked`, whether or not the hook expects a callback (true), or a return (false). Only used for filters. (Default: false)
 					(Not implemented) `data.priority`, the relative priority of the method when it is eventually called (default: 10)
 			*/
 			var	_self = this;
 
 			if (data.hook && data.method) {
-				_self.loaded_hooks[data.hook] = _self.loaded_hooks[data.hook] || [];
-				_self.loaded_hooks[data.hook].push([id, data.method]);
+				_self.loadedHooks[data.hook] = _self.loadedHooks[data.hook] || [];
+				_self.loadedHooks[data.hook].push([id, data.method]);
 				if (global.env === 'development') console.log('Info: [plugins] Hook registered: ' + data.hook + ' will call ' + id);
 			} else return;
 		},
-		fire_hook: function(hook, args, callback) {
+		fireHook: function(hook, args, callback) {
 			// TODO: Implement priority hook firing
 			var	_self = this
-				hookList = this.loaded_hooks[hook];
+				hookList = this.loadedHooks[hook];
 
 			if(hookList && Array.isArray(hookList)) {
 				if (global.env === 'development') console.log('Info: [plugins] Firing hook: \'' + hook + '\'');
@@ -100,7 +101,9 @@ var	fs = require('fs'),
 						});
 					break;
 					case 'action':
-
+						async.each(hookList, function(hookObj) {
+							_self.libraries[hookObj[0]][hookObj[1]].apply(_self.libraries[hookObj[0]], args);
+						});
 					break;
 					default:
 						// Do nothing...

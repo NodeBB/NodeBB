@@ -280,7 +280,7 @@ var	RDB = require('./redis.js'),
 				RDB.incr('global:next_post_id', function(err, pid) {
 					RDB.handle(err);
 
-					plugins.fire_hook('filter:save_post_content', content, function(content) {
+					plugins.fireHook('filter:save_post_content', content, function(content) {
 						var timestamp = Date.now(),
 							postData = {
 								'pid': pid,
@@ -341,7 +341,9 @@ var	RDB = require('./redis.js'),
 									}
 								}
 							});			
-						}				
+						}
+
+						plugins.fireHook('action:save_post_content', [content])
 						
 						if(!images) {
 							postData.uploadedImages = JSON.stringify(uploadedImages);
