@@ -110,6 +110,43 @@ var	fs = require('fs'),
 					break;
 				}
 			}
+		},
+		showInstalled: function() {
+			// TODO: Also check /node_modules
+			var	moduleBasePath = path.join(__dirname, '../plugins');
+
+			async.waterfall([
+				function(next) {
+					fs.readdir(moduleBasePath, next);
+				},
+				function(files, next) {
+					var	plugins = [];
+
+					async.each(files, function(file, next) {
+						var	modulePath = path.join(moduleBasePath, file),
+							configPath;
+
+						fs.stat(path.join(moduleBasePath, file), function(err, stats) {
+							if (err || !stats.isDirectory()) return next();	//Silently fail
+
+							// Load the config file
+							fs.readFile(path.join(modulePath, 'plugin.json'), function(err, configJSON) {
+								if (err) return next();	// Silently fail if config can't be read
+								var	config = JSON.parse(configJSON);
+								delete config.library;
+								delete config.hooks;
+
+								plugins.push(config);
+								next();
+							});
+						});
+					}, function(err) {
+						next(null, plugins);
+					});
+				}
+			], function(err, plugins) {
+				console.log('plugins:', plugins);
+			});
 		}
 	}
 
