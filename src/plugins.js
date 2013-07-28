@@ -102,7 +102,15 @@ var	fs = require('fs'),
 					break;
 					case 'action':
 						async.each(hookList, function(hookObj) {
-							_self.libraries[hookObj[0]][hookObj[1]].apply(_self.libraries[hookObj[0]], args);
+							if (
+								_self.libraries[hookObj[0]] &&
+								_self.libraries[hookObj[0]][hookObj[1]] &&
+								typeof _self.libraries[hookObj[0]][hookObj[1]] === 'function'
+							) {
+								_self.libraries[hookObj[0]][hookObj[1]].apply(_self.libraries[hookObj[0]], args);
+							} else {
+								if (global.env === 'development') console.log('Info: [plugins] Expected method \'' + hookObj[1] + '\' in plugin \'' + hookObj[0] + '\' not found, skipping.');
+							}
 						});
 					break;
 					default:
