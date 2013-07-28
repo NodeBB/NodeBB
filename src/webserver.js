@@ -150,7 +150,7 @@ var express = require('express'),
 		
 		// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 		(function() {
-			var routes = ['login', 'register', 'account', 'recent', 'popular', 'active', '403', '404'];
+			var routes = ['login', 'register', 'account', 'recent', 'unread', 'popular', 'active', '403', '404'];
 	
 			for (var i=0, ii=routes.length; i<ii; i++) {
 				(function(route) {
@@ -388,6 +388,16 @@ var express = require('express'),
 			}
 		});
 
+		app.get('/test', function(req, res) {
+			topics.getUnreadTopics(4, 0, 9, function(data) {
+				console.log('ll', data.topics.length);
+				topics.getUnreadTopics(4, data.topics.length, data.topics.length + 9, function(data2) {
+					var finalData = [data,data2];
+					res.json(finalData);
+				});
+			});
+		});
+
 	});
 	
 	// These functions are called via ajax once the initial page is loaded to populate templates with data
@@ -482,19 +492,24 @@ var express = require('express'),
 					}, req.params.id, uid);
 				break;
 			case 'recent' :
-					topics.getLatestTopics(uid, 0, 9, function(data) {
-						res.json(data);
-					});
+				topics.getLatestTopics(uid, 0, 9, function(data) {
+					res.json(data);
+				});
+				break;
+			case 'unread':
+				topics.getUnreadTopics(uid, 0, -1, function(data) {
+					res.json(data);
+				});
 				break;
 			case 'popular' :
-					topics.getLatestTopics(uid, 0, 9, function(data) {
-						res.json(data);
-					});
+				topics.getLatestTopics(uid, 0, 9, function(data) {
+					res.json(data);
+				});
 				break;
 			case 'active' :
-					topics.getLatestTopics(uid, 0, 9, function(data) {
-						res.json(data);
-					});
+				topics.getLatestTopics(uid, 0, 9, function(data) {
+					res.json(data);
+				});
 				break;
 			case 'confirm':
 					user.email.confirm(req.params.id, function(data) {

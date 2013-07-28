@@ -44,7 +44,13 @@
 	socket.on('event:new_post', function(data) {
 		++newPostCount;
 		updateAlertText();
-
+	});
+	
+	$('#mark-allread-btn').on('click', function() {
+		socket.emit('api:topics.markAllRead');
+		$(this).remove();
+		$('#topics-container').empty();
+		$('#category-no-topics').removeClass('hidden');
 	});
 
 })();

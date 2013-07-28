@@ -94,8 +94,6 @@ marked.setOptions({
 
 		var timestamp = Date.now();
 		
-		RDB.zremrangebyscore('topics:recent', '-inf', timestamp - 86400000);
-		
 		RDB.zrevrangebyscore([ 'topics:recent', '+inf', timestamp - 86400000], function(err, tids) {
 			
 			var latestTopics = {
@@ -120,10 +118,59 @@ marked.setOptions({
 			});
 		});
 	}
+	
+	Topics.getUnreadTopics = function(uid, start, stop, callback) {
+
+		var unreadTopics = {
+			'category_name' : 'Unread',
+			'show_sidebar' : 'hidden',
+			'show_topic_button' : 'hidden',
+			'show_markallread_button': 'show',
+			'no_topics_message' : 'hidden',
+			'topic_row_size': 'span12',
+			'topics' : []
+		};
+
+		RDB.zrevrange('topics:recent', start, stop, function (err, tids) {
+				
+			function noUnreadTopics() {
+				unreadTopics.no_topics_message = 'show';
+				unreadTopics.show_markallread_button = 'hidden';
+				callback(unreadTopics);
+			}	
+				
+			if (!tids || !tids.length) {
+				noUnreadTopics();
+				return;
+			}
+				
+			Topics.hasReadTopics(tids, uid, function(read) {
+				
+				var unreadTids = tids.filter(function(tid, index, self) {
+					return read[index] === 0;
+				});	
+				
+				if (!unreadTids || !unreadTids.length) {
+					noUnreadTopics();
+					return;
+				}
+	
+				Topics.getTopicsByTids(unreadTids, uid, function(topicData) {
+					unreadTopics.topics = topicData;
+					callback(unreadTopics);
+				});
+			});	
+		});
+	}
 
 	Topics.getTopicsByTids = function(tids, current_user, callback, category_id) {
 
 		var retrieved_topics = [];
+		
+		if(!Array.isArray(tids) || tids.length === 0) {
+			callback(retrieved_topics);
+			return;
+		}
 		
 		function getTopicInfo(topicData, callback) {
 
@@ -134,20 +181,20 @@ marked.setOptions({
 			}
 
 			function hasReadTopic(next) {
-				topics.hasReadTopic(topicData.tid, current_user, function(hasRead) {
+				Topics.hasReadTopic(topicData.tid, current_user, function(hasRead) {
 					next(null, hasRead);
 				});
 			}
 
 			function getTeaserInfo(next) {
-				topics.getTeaser(topicData.tid, function(err, teaser) {
+				Topics.getTeaser(topicData.tid, function(err, teaser) {
 					next(null, teaser || {});
 				});
 			}
 
 			// temporary. I don't think this call should belong here
 			function getPrivileges(next) {
-				Categories.privileges(category_id, current_user, function(user_privs) {
+				categories.privileges(category_id, current_user, function(user_privs) {
 					next(null, user_privs);
 				});
 			}
@@ -173,7 +220,7 @@ marked.setOptions({
 		}
 
 		function loadTopic(tid, callback) {
-			topics.getTopicData(tid, function(topicData) {
+			Topics.getTopicData(tid, function(topicData) {
 				if(!topicData) {
 					return callback(null);
 				}
@@ -354,10 +401,11 @@ marked.setOptions({
 		});
 	}
 	
-	Topics.markAllRead = function(uid) {
+	Topics.markAllRead = function(uid, callback) {
 		RDB.smembers('topics:tid', function(err, tids) {
 			if(err) {
 				console.log(err);
+				callback(err, null);
 				return;
 			}
 			
@@ -366,6 +414,8 @@ marked.setOptions({
 					Topics.markAsRead(tids[i], uid);
 				}			
 			}
+			
+			callback(null, true);
 		});
 	}
 
@@ -513,7 +563,7 @@ marked.setOptions({
 				// Global Topics
 				if (uid == null) uid = 0;
 				if (uid !== null) {
-					RDB.sadd(schema.topics().tid, tid);	
+					RDB.sadd('topics:tid', tid);	
 				} else {
 					// need to add some unique key sent by client so we can update this with the real uid later
 					RDB.lpush(schema.topics().queued_tids, tid);

@@ -7,12 +7,16 @@
 </div>
 
 
-<a href="/recent">
+<a href="/unread">
 	<div class="alert hide" id="new-topics-alert"></div>
 </a>
 
-<div class="alert alert-warning hide {no_topics_message}" id="category-no-topics">
-	<strong>There are no recent topics.</strong>
+<div class="alert alert-warning {no_topics_message}" id="category-no-topics">
+	<strong>There are no unread topics.</strong>
+</div>
+
+<div>
+	<button id="mark-allread-btn" class="btn {show_markallread_button}">Mark All Read</button>
 </div>
 
 <div class="category row">

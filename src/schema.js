@@ -14,7 +14,6 @@
 		return {
 
 			/* sets */
-			tid: 'topics:tid',
 			read_by_uid: 'tid:' + tid + ':read_by_uid',
 
 			/* sorted sets */

@@ -27,6 +27,7 @@
 		"users/[^]*": "account",
 
 		"recent": "recent",
+		"unread": "unread",
 		"popular": "category",
 		"active": "category"
 	},

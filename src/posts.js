@@ -307,7 +307,7 @@ var	RDB = require('./redis.js'),
 
 						feed.updateTopic(tid, cid);
 
-						RDB.zadd('categories:recent_posts:cid:' + cid, Date.now(), pid);
+						RDB.zadd('categories:recent_posts:cid:' + cid, timestamp, pid);
 
 						// this is a bit of a naive implementation, defn something to look at post-MVP
 						RDB.scard('cid:' + cid + ':active_users', function(amount) {
@@ -319,7 +319,7 @@ var	RDB = require('./redis.js'),
 						});
 					});					
 					
-					user.onNewPostMade(uid, tid, pid, timestamp);					
+					user.onNewPostMade(uid, tid, pid, timestamp);
 
 					var imgur = require('./imgur');
 					// move clientID to config
