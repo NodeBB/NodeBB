@@ -387,17 +387,6 @@ var express = require('express'),
 				res.redirect(global.nconf.get('relative_path') + '/404');
 			}
 		});
-
-		app.get('/test', function(req, res) {
-			topics.getUnreadTopics(4, 0, 9, function(data) {
-				console.log('ll', data.topics.length);
-				topics.getUnreadTopics(4, data.topics.length, data.topics.length + 9, function(data2) {
-					var finalData = [data,data2];
-					res.json(finalData);
-				});
-			});
-		});
-
 	});
 	
 	// These functions are called via ajax once the initial page is loaded to populate templates with data
