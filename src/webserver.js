@@ -482,17 +482,17 @@ var express = require('express'),
 					}, req.params.id, uid);
 				break;
 			case 'recent' :
-					categories.getLatestTopics(uid, 0, 9, function(data) {
+					topics.getLatestTopics(uid, 0, 9, function(data) {
 						res.json(data);
 					});
 				break;
 			case 'popular' :
-					categories.getLatestTopics(uid, 0, 9, function(data) {
+					topics.getLatestTopics(uid, 0, 9, function(data) {
 						res.json(data);
 					});
 				break;
 			case 'active' :
-					categories.getLatestTopics(uid, 0, 9, function(data) {
+					topics.getLatestTopics(uid, 0, 9, function(data) {
 						res.json(data);
 					});
 				break;

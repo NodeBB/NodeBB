@@ -90,6 +90,125 @@ marked.setOptions({
 		});
 	}
 
+	Topics.getLatestTopics = function(current_user, start, end, callback) {
+
+		var timestamp = Date.now();
+		
+		RDB.zremrangebyscore('topics:recent', '-inf', timestamp - 86400000);
+		
+		RDB.zrevrangebyscore([ 'topics:recent', '+inf', timestamp - 86400000], function(err, tids) {
+			
+			var latestTopics = {
+				'category_name' : 'Recent',
+				'show_sidebar' : 'hidden',
+				'show_topic_button' : 'hidden',
+				'no_topics_message' : 'hidden',
+				'topic_row_size': 'span12',
+				'category_id': false,
+				'topics' : []
+			};
+
+			if (!tids || !tids.length) {
+				latestTopics.no_topics_message = 'show';
+				callback(latestTopics);
+				return;
+			}
+
+			Topics.getTopicsByTids(tids, current_user, function(topicData) {
+				latestTopics.topics = topicData;
+				callback(latestTopics);
+			});
+		});
+	}
+
+	Topics.getTopicsByTids = function(tids, current_user, callback, category_id) {
+
+		var retrieved_topics = [];
+		
+		function getTopicInfo(topicData, callback) {
+
+			function getUserName(next) {
+				user.getUserField(topicData.uid, 'username', function(username) {
+					next(null, username);
+				});
+			}
+
+			function hasReadTopic(next) {
+				topics.hasReadTopic(topicData.tid, current_user, function(hasRead) {
+					next(null, hasRead);
+				});
+			}
+
+			function getTeaserInfo(next) {
+				topics.getTeaser(topicData.tid, function(err, teaser) {
+					next(null, teaser || {});
+				});
+			}
+
+			// temporary. I don't think this call should belong here
+			function getPrivileges(next) {
+				Categories.privileges(category_id, current_user, function(user_privs) {
+					next(null, user_privs);
+				});
+			}
+
+			async.parallel([getUserName, hasReadTopic, getTeaserInfo, getPrivileges], function(err, results) {
+				var username = results[0],
+					hasReadTopic = results[1],
+					teaserInfo = results[2],
+					privileges = results[3];
+
+				callback({
+					username: username,
+					hasread: hasReadTopic,
+					teaserInfo: teaserInfo,
+					privileges: privileges
+				});
+			});
+		}
+
+		function isTopicVisible(topicData, topicInfo) {
+			var deleted = parseInt(topicData.deleted, 10) !== 0;
+			return !deleted || (deleted && topicInfo.privileges.view_deleted) || topicData.uid === current_user;
+		}
+
+		function loadTopic(tid, callback) {
+			topics.getTopicData(tid, function(topicData) {
+				if(!topicData) {
+					return callback(null);
+				}
+				
+				getTopicInfo(topicData, function(topicInfo) {
+
+					topicData['pin-icon'] = topicData.pinned === '1' ? 'icon-pushpin' : 'none';
+					topicData['lock-icon'] = topicData.locked === '1' ? 'icon-lock' : 'none';
+					topicData['deleted-class'] = topicData.deleted === '1' ? 'deleted' : '';
+
+					topicData.relativeTime = utils.relativeTime(topicData.timestamp);
+
+					topicData.username = topicInfo.username;
+					topicData.badgeclass = (topicInfo.hasread && current_user != 0) ? '' : 'badge-important';
+					topicData.teaser_text = topicInfo.teaserInfo.text || '',
+					topicData.teaser_username = topicInfo.teaserInfo.username || '';
+					topicData.teaser_userpicture = topicInfo.teaserInfo.picture || '';
+					topicData.teaser_timestamp = topicInfo.teaserInfo.timestamp ? utils.relativeTime(topicInfo.teaserInfo.timestamp) : '';
+
+					if (isTopicVisible(topicData, topicInfo))
+						retrieved_topics.push(topicData);
+					
+					callback(null);					
+				});
+			});
+		}
+		
+		async.eachSeries(tids, loadTopic, function(err) {
+			if(!err) {
+				callback(retrieved_topics);
+			}
+		});
+
+	}
+
 	Topics.getTopicWithPosts = function(tid, current_user, callback) {
 		threadTools.exists(tid, function(exists) {
 			if (!exists) 
