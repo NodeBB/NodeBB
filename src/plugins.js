@@ -119,9 +119,33 @@ var	fs = require('fs'),
 				}
 			}
 		},
-		showInstalled: function() {
+		isActive: function(id, callback) {
+			RDB.sismember('plugins:active', id, callback);
+		},
+		toggleActive: function(id, callback) {
+			this.isActive(id, function(err, active) {
+				if (err) {
+					if (global.env === 'development') console.log('Info: [plugins] Could not toggle active state on plugin \'' + id + '\'');
+					return;
+				}
+
+				RDB[(active ? 'srem' : 'sadd')]('plugins:active', id, function(err, success) {
+					if (err) {
+						if (global.env === 'development') console.log('Info: [plugins] Could not toggle active state on plugin \'' + id + '\'');
+						return;
+					}
+
+					callback({
+						id: id,
+						active: !active
+					});
+				});
+			});
+		},
+		showInstalled: function(callback) {
 			// TODO: Also check /node_modules
-			var	moduleBasePath = path.join(__dirname, '../plugins');
+			var	_self = this;
+				moduleBasePath = path.join(__dirname, '../plugins');
 
 			async.waterfall([
 				function(next) {
@@ -134,26 +158,50 @@ var	fs = require('fs'),
 						var	modulePath = path.join(moduleBasePath, file),
 							configPath;
 
-						fs.stat(path.join(moduleBasePath, file), function(err, stats) {
-							if (err || !stats.isDirectory()) return next();	//Silently fail
-
-							// Load the config file
-							fs.readFile(path.join(modulePath, 'plugin.json'), function(err, configJSON) {
-								if (err) return next();	// Silently fail if config can't be read
+						async.waterfall([
+							function(next) {
+								fs.stat(path.join(moduleBasePath, file), next);
+							},
+							function(stats, next) {
+								if (stats.isDirectory()) fs.readFile(path.join(modulePath, 'plugin.json'), next);
+								else next(new Error('not-a-directory'));
+							},
+							function(configJSON, next) {
 								var	config = JSON.parse(configJSON);
-								delete config.library;
-								delete config.hooks;
+								_self.isActive(config.id, function(err, active) {
+									if (err) next(new Error('no-active-state'));
 
-								plugins.push(config);
-								next();
-							});
+									delete config.library;
+									delete config.hooks;
+									config.active = active;
+									next(null, config);
+								});
+							}
+						], function(err, config) {
+							if (err) next();	// Silently fail
+
+							plugins.push(config);
 						});
+						// fs.stat(path.join(moduleBasePath, file), function(err, stats) {
+						// 	if (err || !stats.isDirectory()) return next();	// Silently fail
+
+						// 	// Load the config file
+						// 	fs.readFile(path.join(modulePath, 'plugin.json'), function(err, configJSON) {
+						// 		if (err) return next();	// Silently fail if config can't be read
+						// 		var	config = JSON.parse(configJSON);
+						// 		delete config.library;
+						// 		delete config.hooks;
+
+						// 		plugins.push(config);
+						// 		next();
+						// 	});
+						// });
 					}, function(err) {
 						next(null, plugins);
 					});
 				}
 			], function(err, plugins) {
-				console.log('plugins:', plugins);
+				callback(err, plugins);
 			});
 		}
 	}
