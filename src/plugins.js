@@ -189,7 +189,6 @@ var	fs = require('fs'),
 							next();
 						});
 					}, function(err) {
-						console.log(plugins);
 						next(null, plugins);
 					});
 				}
