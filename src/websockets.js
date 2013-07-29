@@ -633,11 +633,9 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			});
 		});
 
-		socket.on('api:admin.plugins.getInstalled', function() {
-			plugins.showInstalled(function(err, plugins) {
-				if (err) plugins = [];
-
-				return socket.emit('api:admin.plugins.getInstalled', plugins);
+		socket.on('api:admin.plugins.toggle', function(plugin_id) {
+			plugins.toggleActive(plugin_id, function(status) {
+				socket.emit('api:admin.plugins.toggle', status);
 			});
 		});
 	});

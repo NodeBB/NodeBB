@@ -178,29 +178,18 @@ var	fs = require('fs'),
 									delete config.library;
 									delete config.hooks;
 									config.active = active;
+									config.activeText = '<i class="icon-off"></i> ' + (active ? 'Dea' : 'A') + 'ctivate';
 									next(null, config);
 								});
 							}
 						], function(err, config) {
-							if (err) next();	// Silently fail
+							if (err) return next();	// Silently fail
 
 							plugins.push(config);
+							next();
 						});
-						// fs.stat(path.join(moduleBasePath, file), function(err, stats) {
-						// 	if (err || !stats.isDirectory()) return next();	// Silently fail
-
-						// 	// Load the config file
-						// 	fs.readFile(path.join(modulePath, 'plugin.json'), function(err, configJSON) {
-						// 		if (err) return next();	// Silently fail if config can't be read
-						// 		var	config = JSON.parse(configJSON);
-						// 		delete config.library;
-						// 		delete config.hooks;
-
-						// 		plugins.push(config);
-						// 		next();
-						// 	});
-						// });
 					}, function(err) {
+						console.log(plugins);
 						next(null, plugins);
 					});
 				}
