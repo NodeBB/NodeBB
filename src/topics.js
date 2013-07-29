@@ -271,7 +271,6 @@ marked.setOptions({
 				return callback(new Error('Topic tid \'' + tid + '\' not found'));
 
 			Topics.markAsRead(tid, current_user);
-			console.log('marked as read', current_user);
 
 			function getTopicData(next) {
 				Topics.getTopicData(tid, function(topicData) {
@@ -469,7 +468,7 @@ marked.setOptions({
 
 	Topics.hasReadTopic = function(tid, uid, callback) {
 		RDB.sismember(schema.topics(tid).read_by_uid, uid, function(err, hasRead) {
-			console.log('hasreadtopic', hasRead);
+
 			if(err === null) {
 				callback(hasRead);
 			} else {
