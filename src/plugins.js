@@ -74,7 +74,7 @@ var	fs = require('fs'),
 			var	_self = this
 				hookList = this.loadedHooks[hook];
 
-			if(hookList && Array.isArray(hookList)) {
+			if (hookList && Array.isArray(hookList)) {
 				if (global.env === 'development') console.log('Info: [plugins] Firing hook: \'' + hook + '\'');
 				var	hookType = hook.split(':')[0];
 				switch(hookType) {
@@ -117,6 +117,10 @@ var	fs = require('fs'),
 						// Do nothing...
 					break;
 				}
+			} else {
+				// Otherwise, this hook contains no methods
+				var	returnVal = (Array.isArray(args) ? args[0] : args);
+				if (callback) callback(returnVal);
 			}
 		},
 		isActive: function(id, callback) {
