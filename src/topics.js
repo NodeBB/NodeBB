@@ -138,28 +138,37 @@ marked.setOptions({
 				unreadTopics.show_markallread_button = 'hidden';
 				callback(unreadTopics);
 			}	
+			
+			function sendUnreadTopics(topicIds) {
+				Topics.getTopicsByTids(topicIds, uid, function(topicData) {
+					unreadTopics.topics = topicData;
+					callback(unreadTopics);
+				});
+			}
 				
 			if (!tids || !tids.length) {
 				noUnreadTopics();
 				return;
 			}
+			
+			if(uid === 0) {
+				sendUnreadTopics(tids);
+			} else {
 				
-			Topics.hasReadTopics(tids, uid, function(read) {
-				
-				var unreadTids = tids.filter(function(tid, index, self) {
-					return read[index] === 0;
+				Topics.hasReadTopics(tids, uid, function(read) {
+					
+					var unreadTids = tids.filter(function(tid, index, self) {
+						return read[index] === 0;
+					});	
+					
+					if (!unreadTids || !unreadTids.length) {
+						noUnreadTopics();
+						return;
+					}
+
+					sendUnreadTopics(unreadTids);
 				});	
-				
-				if (!unreadTids || !unreadTids.length) {
-					noUnreadTopics();
-					return;
-				}
-	
-				Topics.getTopicsByTids(unreadTids, uid, function(topicData) {
-					unreadTopics.topics = topicData;
-					callback(unreadTopics);
-				});
-			});	
+			}
 		});
 	}
 
@@ -262,6 +271,7 @@ marked.setOptions({
 				return callback(new Error('Topic tid \'' + tid + '\' not found'));
 
 			Topics.markAsRead(tid, current_user);
+			console.log('marked as read', current_user);
 
 			function getTopicData(next) {
 				Topics.getTopicData(tid, function(topicData) {
@@ -459,6 +469,7 @@ marked.setOptions({
 
 	Topics.hasReadTopic = function(tid, uid, callback) {
 		RDB.sismember(schema.topics(tid).read_by_uid, uid, function(err, hasRead) {
+			console.log('hasreadtopic', hasRead);
 			if(err === null) {
 				callback(hasRead);
 			} else {
