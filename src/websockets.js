@@ -25,7 +25,8 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 	admin = {
 		'categories': require('./admin/categories.js'),
 		'user': require('./admin/user.js')
-	};
+	},
+	plugins = require('./plugins');
 	
 (function(io) {
 	var	users = {},
@@ -642,6 +643,12 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		socket.on('api:admin:themes.getInstalled', function() {
 			meta.themes.get(function(err, themeArr) {
 				socket.emit('api:admin:themes.getInstalled', themeArr);
+			});
+		});
+
+		socket.on('api:admin.plugins.toggle', function(plugin_id) {
+			plugins.toggleActive(plugin_id, function(status) {
+				socket.emit('api:admin.plugins.toggle', status);
 			});
 		});
 	});

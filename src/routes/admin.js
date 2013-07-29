@@ -3,7 +3,8 @@ var user = require('./../user.js'),
 	topics = require('./../topics.js'),
 	RDB = require('./../redis.js'),
 	pkg = require('./../../package.json'),
-	categories = require('./../categories.js');
+	categories = require('./../categories.js'),
+	plugins = require('../plugins');
 
 (function(Admin) {
 	Admin.isAdmin = function(req, res, next) {
@@ -23,8 +24,12 @@ var user = require('./../user.js'),
 	Admin.create_routes = function(app) {
 
 		(function() {
-			var routes = ['categories', 'users', 'topics', 'settings', 'themes', 'twitter', 'facebook', 'gplus', 'redis', 'motd', 
-				'users/latest', 'users/sort-posts', 'users/sort-reputation', 'users/search'];
+			var	routes = [
+					'categories', 'users', 'topics', 'settings', 'themes',
+					'twitter', 'facebook', 'gplus', 'redis', 'motd', 
+					'users/latest', 'users/sort-posts', 'users/sort-reputation',
+					'users/search', 'plugins'
+				];
 
 			for (var i=0, ii=routes.length; i<ii; i++) {
 				(function(route) {
@@ -134,6 +139,15 @@ var user = require('./../user.js'),
 
 						
 						res.json(finalData);
+					});
+					break;
+				case 'plugins':
+					plugins.showInstalled(function(err, plugins) {
+						if (err || !Array.isArray(plugins)) plugins = [];
+
+						res.json(200, {
+							plugins: plugins
+						});
 					});
 					break;
 				default :

@@ -5,7 +5,8 @@ var	RDB = require('./redis.js'),
 	user = require('./user.js'),
 	async = require('async'),
 	
-	utils = require('../public/src/utils');
+	utils = require('../public/src/utils'),
+	plugins = require('./plugins');
 
 (function(PostTools) {
 	PostTools.isMain = function(pid, tid, callback) {
@@ -71,7 +72,10 @@ var	RDB = require('./redis.js'),
 
 		PostTools.privileges(pid, uid, function(privileges) {
 			if (privileges.editable) {
-				success();
+				plugins.fireHook('filter:save_post_content', content, function(parsedContent) {
+					content = parsedContent;
+					success();
+				});
 			}
 		});
 	}

@@ -74,6 +74,7 @@
 						<li class=''><a href='{relative_path}/admin/users/latest'><i class='icon-user'></i> Users</a></li>
 						<li class=''><a href='{relative_path}/admin/topics'><i class='icon-book'></i> Topics</a></li>
 						<li class=''><a href='{relative_path}/admin/themes'><i class='icon-th'></i> Themes</a></li>
+						<li class=''><a href='{relative_path}/admin/plugins'><i class='icon-code-fork'></i> Plugins</a></li>
 						<li class=''><a href='{relative_path}/admin/settings'><i class='icon-cogs'></i> Settings</a></li>
 						<li class=''><a href='{relative_path}/admin/redis'><i class='icon-hdd'></i> Redis</a></li>
 						<li class=''><a href="{relative_path}/admin/motd"><i class="icon-comment"></i> MOTD</a></li>
