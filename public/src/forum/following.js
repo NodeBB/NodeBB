@@ -23,19 +23,9 @@
 					var username = unfollowBtn.attr('data-username');
 					if(success) {
 						unfollowBtn.parent().remove();
-						app.alert({
-							title: 'Unfollowing',
-							message: 'You are no longer following ' + username + '!',
-							type: 'success',
-							timeout: 2000
-						});		
+						app.alertSuccess('You are no longer following ' + username + '!');
 					} else {
-						app.alert({
-							title: 'Error',
-							message: 'There was an error unfollowing ' + username + '!',
-							type: 'error',
-							timeout: 2000
-						});		
+						app.alertError('There was an error unfollowing ' + username + '!');
 					}
 				});
 				return false;

@@ -87,12 +87,7 @@ $(document).ready(function() {
 			
 		socket.emit('api:user.changePicture', userData, function(success) {
 			if(!success) {
-				app.alert({
-					title: 'Error',
-					message: 'There was an error changing picture!',
-					type: 'error',
-					timeout: 2000
-				});	
+				app.alertError('There was an error changing picture!');
 			}
 		});
 	}

@@ -30,19 +30,9 @@
 				if(success) {
 					followBtn.hide();
 					unfollowBtn.show();
-					app.alert({
-						title: 'Following',
-						message: 'You are now following ' + username + '!',
-						type: 'success',
-						timeout: 2000
-					});		
+					app.alertSuccess('You are now following ' + username + '!');
 				} else {
-					app.alert({
-						title: 'Error',
-						message: 'There was an error following' + username + '!',
-						type: 'error',
-						timeout: 2000
-					});		
+					app.alertError('There was an error following' + username + '!');
 				}
 			});
 			return false;
@@ -54,19 +44,9 @@
 				if(success) {
 					followBtn.show();
 					unfollowBtn.hide();
-					app.alert({
-						title: 'Unfollowing',
-						message: 'You are no longer following ' + username + '!',
-						type: 'success',
-						timeout: 2000
-					});		
+					app.alertSuccess('You are no longer following ' + username + '!');
 				} else {
-					app.alert({
-						title: 'Error',
-						message: 'There was an error unfollowing' + username + '!',
-						type: 'error',
-						timeout: 2000
-					});		
+					app.alertError('There was an error unfollowing ' + username + '!');
 				}
 			});
 			return false;
