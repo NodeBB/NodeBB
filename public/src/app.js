@@ -195,7 +195,29 @@ var socket,
 		}
 	}
 
-	
+	app.alertSuccess = function(message, timeout) {
+		if(!timeout)
+			timeout = 2000;
+
+		app.alert({
+			title: 'Success',
+			message: message,
+			type: 'success',
+			timeout: timeout
+		});
+	}
+
+	app.alertError = function(message, timeout) {
+		if(!timeout)
+			timeout = 2000;
+
+		app.alert({
+			title: 'Error',
+			message: message,
+			type: 'error',
+			timeout: timeout
+		});
+	}
 
 	app.current_room = null; 
 	app.enter_room = function(room) {
@@ -254,15 +276,22 @@ var socket,
 		}, 100);
 	}
 
-
 	app.showLoginMessage = function() {
-		if(location.href.indexOf('loggedin') !== -1) {
+		function showAlert() {
 			app.alert({
 				type: 'success',
 				title: 'Welcome Back ' + app.username + '!',
 				message: 'You have successfully logged in!',
 				timeout: 5000
 			});
+		}
+
+		if(location.href.indexOf('loggedin') !== -1) {
+			if(document.readyState !== 'complete') {
+				$(document).ready(showAlert);
+			} else {
+				showAlert();
+			}
 		}
 	}
 
@@ -272,7 +301,7 @@ var socket,
 
 	loadConfig();
 
-	
+
 	function addTouchEvents() {
 		return; // later.
 

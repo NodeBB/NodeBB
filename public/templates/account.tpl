@@ -25,7 +25,8 @@
 				<span><i class="icon-circle-blank"></i> <span>offline</span></span>
 			</div>
 			<div id="user-actions">
-				<a id="follow-btn" href="#" class="btn">Follow</a>
+				<a id="follow-btn" href="#" class="btn hide">Follow</a>
+				<a id="unfollow-btn" href="#" class="btn hide">Unfollow</a>
 			</div>
 		</div>
 	

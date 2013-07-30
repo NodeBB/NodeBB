@@ -18,7 +18,6 @@
 
 	<div>
 		<!-- BEGIN following -->
-
 		<div class="users-box">
 			<a href="/users/{following.userslug}">
 				<img src="{following.picture}" class="img-polaroid"/>
@@ -34,9 +33,8 @@
 				<span class='postcount'>{following.postcount}</span>
 				<i class='icon-pencil'></i>
 			</div>
-			<a id="unfollow-btn" href="#" class="btn unfollow-btn" followingUid="{following.uid}">Unfollow</a>
+			<a id="unfollow-btn" href="#" class="btn unfollow-btn" followingUid="{following.uid}" data-username="{following.username}">Unfollow</a>
 		</div>
-
 		<!-- END following -->
 	</div>
 	<div id="no-following-notice" class="alert alert-warning hide">This user isn't following anyone :(</div>

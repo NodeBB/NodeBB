@@ -12,23 +12,63 @@
 		postcount.html(app.addCommas(postcount.html()));
 		
 		var followBtn = $('#follow-btn');
-		if(yourid === "0") {
-			followBtn.hide();
-		}
-		else if(yourid !== theirid) {
-			if(isFollowing)
+		var unfollowBtn = $('#unfollow-btn');
+
+		if(yourid !== theirid) {
+			if(isFollowing) {
 				followBtn.hide();
-			else
+				unfollowBtn.show();
+			} else {
 				followBtn.show();
+				unfollowBtn.hide();
+			}
 		}
-		else {
-			followBtn.hide();        
-		}
-		
+
 		followBtn.on('click', function() {
-		
-			followBtn.remove();
-			socket.emit('api:user.follow', {uid: theirid});
+			socket.emit('api:user.follow', {uid: theirid}, function(success) {
+				var username = $('.account-username a').html();
+				if(success) {
+					followBtn.hide();
+					unfollowBtn.show();
+					app.alert({
+						title: 'Following',
+						message: 'You are now following ' + username + '!',
+						type: 'success',
+						timeout: 2000
+					});		
+				} else {
+					app.alert({
+						title: 'Error',
+						message: 'There was an error following' + username + '!',
+						type: 'error',
+						timeout: 2000
+					});		
+				}
+			});
+			return false;
+		});
+
+		unfollowBtn.on('click', function() {
+			socket.emit('api:user.unfollow', {uid: theirid}, function(success) {
+				var username = $('.account-username a').html();
+				if(success) {
+					followBtn.show();
+					unfollowBtn.hide();
+					app.alert({
+						title: 'Unfollowing',
+						message: 'You are no longer following ' + username + '!',
+						type: 'success',
+						timeout: 2000
+					});		
+				} else {
+					app.alert({
+						title: 'Error',
+						message: 'There was an error unfollowing' + username + '!',
+						type: 'error',
+						timeout: 2000
+					});		
+				}
+			});
 			return false;
 		});
 

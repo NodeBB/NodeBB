@@ -185,9 +185,10 @@ var utils = require('./../public/src/utils.js'),
 		});
 	}
 
-	User.updateProfile = function(socket, uid, data) {
+	User.updateProfile = function(uid, data, callback) {
 
 		var fields = ['email', 'fullname', 'website', 'location', 'birthday', 'signature'];
+		var returnData = {success:false};
 
 		function isSignatureValid(next) {
 			if(data['signature'] !== undefined && data['signature'].length > 150) {
@@ -198,61 +199,69 @@ var utils = require('./../public/src/utils.js'),
 		}
 		
 		function isEmailAvailable(next) {
-			if(data['email'] !== undefined) {
-				User.getUserField(uid, 'email', function(email) {
-					if(email !== data['email']) {
-						User.isEmailAvailable(data['email'], function(available) {
-							if(!available) {						
-								next({error:'Email not available!'}, false);
-							}
-						});
-					} else {
-						next(null, true);		
-					}
-				});
-			} else {
-				next(null, true);
+			if(!data['email']) {
+				return next(null, true);
 			}
+
+			User.getUserField(uid, 'email', function(email) {
+				if(email !== data['email']) {
+					User.isEmailAvailable(data['email'], function(available) {
+						if(!available) {						
+							next({error:'Email not available!'}, false);
+						} else {
+							next(null, true);		
+						}
+					});
+				} else {
+					next(null, true);		
+				}
+			});
 		}
 		
 		async.series([isSignatureValid, isEmailAvailable], function(err, results) {
 			if(err) {
-				socket.emit('event:alert', {
-					title: 'Error',
-					message: err.error,
-					type: 'error',
-					timeout: 2000
-				});	
+				console.log(err);
+				callback(returnData);
 			} else {
-				updateFields();
+				async.each(fields, updateField, function(err) {
+					if(err) {
+						console.log(err);
+						callback(returnData);
+					} else {
+						returnData.success = true;
+						callback(returnData);
+					}
+				});
 			}
 		});
 
-		function updateFields() {
-			for(var i = 0, key, ii = fields.length; i < ii; ++i) {
-				key = fields[i];
+		function updateField(field, callback) {
+			if(data[field] !== undefined) {
+				if(field === 'email') {
+					var gravatarpicture = User.createGravatarURLFromEmail(data[field]);
+					User.setUserField(uid, 'gravatarpicture', gravatarpicture);
+					User.getUserFields(uid, ['email', 'picture', 'uploadedpicture'], function(userData) {
+						RDB.del('email:' + userData['email'] + ':uid'); 
+						RDB.set('email:' + data['email'] + ':uid', uid);
+						User.setUserField(uid, field, data[field]);
+						if(userData.picture !== userData.uploadedpicture) {
+							returnData.picture = gravatarpicture;
+							User.setUserField(uid, 'picture', gravatarpicture);
+						}
+						returnData.gravatarpicture = gravatarpicture;
+						callback(null);
+					});
+					return;
+				} else if(field === 'signature') {
+					data[field] = utils.strip_tags(data[field]);
+				} 
 
-				if(data[key] !== undefined) {
-					if(key === 'email') {
-						User.setUserField(uid, 'gravatarpicture', User.createGravatarURLFromEmail(data[key]));
-						user.getUserField(uid, 'email', function(email) {
-							RDB.del('email:' + email + ':uid'); 
-							RDB.set('email:' + data['email'] + ':uid', uid);
-						});
-					} else if(key === 'signature') {
-						data[key] = utils.strip_tags(data[key]);
-					}
+				User.setUserField(uid, field, data[field]);	
 
-					User.setUserField(uid, key, data[key]);
-				}
+				callback(null);
+			} else {
+				callback(null);
 			}
-
-			socket.emit('event:alert', {
-				title: 'Success',
-				message: 'Your profile has been updated successfully!',
-				type: 'success',
-				timeout: 2000
-			});	
 		}
 	}
 
@@ -268,15 +277,9 @@ var utils = require('./../public/src/utils.js'),
 		});
 	}
 
-	User.changePassword = function(socket, uid, data, callback) {
+	User.changePassword = function(uid, data, callback) {
 		if(!utils.isPasswordValid(data.newPassword)) {
-			socket.emit('event:alert', {
-				title: 'Error',
-				message: 'Invalid password!',
-				type: 'error',
-				timeout: 2000
-			});		
-			callback(false);
+			callback({err:'Invalid password!'});
 			return;		
 		}
 
@@ -284,7 +287,7 @@ var utils = require('./../public/src/utils.js'),
 			bcrypt.compare(data.currentPassword, user_password, function(err, res) {
 				if(err) {
 					console.log(err);
-					callback(false);
+					callback({err:'bcrpyt compare error!'});
 					return;
 				}
 
@@ -292,22 +295,10 @@ var utils = require('./../public/src/utils.js'),
 					User.hashPassword(data.newPassword, function(hash) {
 						User.setUserField(uid, 'password', hash);
 
-						socket.emit('event:alert', {
-							title: 'Success',
-							message: 'Your password is updated!',
-							type: 'success',
-							timeout: 2000
-						});	
-						callback(true);
+						callback({err:null});
 					});
 				} else {
-					socket.emit('event:alert', {
-						title: 'Warning',
-						message: 'Your current password is not correct!',
-						type: 'warning',
-						timeout: 2000
-					});	
-					callback(false);
+					callback({err:'Your current password is not correct!'});
 				}
 			});
 		});

@@ -47,10 +47,18 @@
 	});
 	
 	$('#mark-allread-btn').on('click', function() {
-		socket.emit('api:topics.markAllRead');
-		$(this).remove();
-		$('#topics-container').empty();
-		$('#category-no-topics').removeClass('hidden');
+		var btn = $(this);
+		socket.emit('api:topics.markAllRead', {} , function(success) {
+			if(success) {
+				btn.remove();
+				$('#topics-container').empty();
+				$('#category-no-topics').removeClass('hidden');			
+				app.alertSuccess('All topics marked as read!');
+			} else {
+				app.alertError('There was an error marking topics read!');
+			}
+		});
+
 	});
 
 })();

@@ -247,19 +247,15 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			socket.emit('api:user.isOnline', isUserOnline(uid));
 		});
 
-		socket.on('api:user.changePassword', function(data) {
-			user.changePassword(socket, uid, data, function(success) {
-				if(success) {
-					socket.emit('api:user.changePassword');
-				}
-			});
+		socket.on('api:user.changePassword', function(data, callback) {
+			user.changePassword(uid, data, callback);
 		});
 				   
-		socket.on('api:user.updateProfile', function(data) {
-			user.updateProfile(socket, uid, data);
+		socket.on('api:user.updateProfile', function(data, callback) {
+			user.updateProfile(uid, data, callback);
 		});
 
-		socket.on('api:user.changePicture', function(data) {
+		socket.on('api:user.changePicture', function(data, callback) {
 			
 			var type = data.type;
 
@@ -267,71 +263,43 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				user.getUserFields(uid, ['picture'], function(fields) {
 					fields.uid = uid;
 					socket.emit('api:updateHeader', fields);
+					callback(true);
 				});
 			}
 
-			if(type === 'gravatar') {	
+			if(type === 'gravatar') {
 				user.getUserField(uid, 'gravatarpicture', function(gravatar) {
 					user.setUserField(uid, 'picture', gravatar);
 					updateHeader();
 				});
-			}
-			else if(type === 'uploaded') {
+			} else if(type === 'uploaded') {
 				user.getUserField(uid, 'uploadedpicture', function(uploadedpicture) {
 					user.setUserField(uid, 'picture', uploadedpicture);
 					updateHeader();
 				});
+			} else {
+				callback(false);
 			}
-			
 		});
 
-
-		socket.on('api:user.follow', function(data) {
+		socket.on('api:user.follow', function(data, callback) {
 			if(uid) { 
-				user.follow(uid, data.uid, function(success) {
-					if(success) {
-						user.getUserField(data.uid, 'username', function(username) {
-							socket.emit('event:alert', {
-								title: 'Following',
-								message: 'You are now following ' + username + '!',
-								type: 'success',
-								timeout: 2000
-							});		
-						});
-					}
-				});
+				user.follow(uid, data.uid, callback);
 			}
 		});
 
-		socket.on('api:user.unfollow', function(data) {
+		socket.on('api:user.unfollow', function(data, callback) {
 			if(uid) {
-				user.unfollow(uid, data.uid, function(success) {
-					if(success) {
-						user.getUserField(data.uid, 'username', function(username) {
-							socket.emit('event:alert', {
-								title: 'Unfollowed',
-								message: 'You are no longer following ' + username + '!',
-								type: 'success',
-								timeout: 2000
-							});		
-						});
-					}
-				});
+				user.unfollow(uid, data.uid, callback);
 			}
 		});
 
-		socket.on('api:user.saveSettings', function(data) {
+		socket.on('api:user.saveSettings', function(data, callback) {
 			if(uid) {
 				user.setUserFields(uid, {
 					showemail:data.showemail
 				});
-
-				socket.emit('event:alert', {
-					title: 'Saved',
-					message: 'Settings saved!',
-					type: 'success',
-					timeout: 2000
-				});		
+				callback(true);
 			}
 		});
 
@@ -339,15 +307,12 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			topics.post(socket, uid, data.title, data.content, data.category_id, data.images);
 		});
 		
-		socket.on('api:topics.markAllRead', function(data) {
+		socket.on('api:topics.markAllRead', function(data, callback) {
 			topics.markAllRead(uid, function(err, success) {
 				if(!err && success)	{
-					socket.emit('event:alert', {
-						title: 'Success',
-						message: 'All topics marked as read!',
-						type: 'success',
-						timeout: 2000
-					});		
+					callback(true);
+				} else {
+					callback(false);
 				}
 			});
 		});

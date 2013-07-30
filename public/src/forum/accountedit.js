@@ -85,7 +85,16 @@ $(document).ready(function() {
 			type: type
 		};
 			
-		socket.emit('api:user.changePicture', userData);
+		socket.emit('api:user.changePicture', userData, function(success) {
+			if(!success) {
+				app.alert({
+					title: 'Error',
+					message: 'There was an error changing picture!',
+					type: 'error',
+					timeout: 2000
+				});	
+			}
+		});
 	}
 		
 	var selectedImageType = '';
@@ -102,7 +111,21 @@ $(document).ready(function() {
 			signature:$('#inputSignature').val()
 		};
 
-		socket.emit('api:user.updateProfile', userData);
+		socket.emit('api:user.updateProfile', userData, function(data) {
+			if(data.success) {
+				app.alertSuccess('Your profile has been updated successfully!');
+				if(data.picture) {
+					$('#user-current-picture').attr('src', data.picture);
+					$('#user_label img').attr('src', data.picture);
+				}
+				if(data.gravatarpicture) {
+					$('#user-gravatar-picture').attr('src', data.gravatarpicture);
+					gravatarPicture = data.gravatarpicture;
+				}				
+			} else {
+				app.alertError('There was an error updating your profile!');
+			}
+		});
 		return false;
 	});
 	
@@ -231,24 +254,29 @@ $(document).ready(function() {
 		password_confirm.on('keyup', onPasswordConfirmChanged);
 
 		$('#changePasswordBtn').on('click', function() {
+			
 			if(passwordvalid && passwordsmatch && currentPassword.val()) {
-				socket.emit('api:user.changePassword', {
-					'currentPassword': currentPassword.val(),
-					'newPassword': password.val()
+				socket.emit('api:user.changePassword', {'currentPassword': currentPassword.val(),'newPassword': password.val()	}, function(data) {
+					
+					currentPassword.val('');
+					password.val('');
+					password_confirm.val('');
+					password_notify.html('');
+					password_confirm_notify.html('');
+					passwordsmatch = false;
+					passwordvalid = false;
+					
+					if(data.err) {
+						app.alertError(data.err);
+						return;
+					}
+					
+					app.alertSuccess('Your password is updated!');
+					
 				});
 			}
 			return false;
 		});
-
-		socket.on('api:user.changePassword', function(data) {
-			currentPassword.val('');
-			password.val('');
-			password_confirm.val('');
-			password_notify.html('');
-			password_confirm_notify.html('');
-			passwordsmatch = false;
-			passwordvalid = false;
-		});
-
+	
 	}());
 });

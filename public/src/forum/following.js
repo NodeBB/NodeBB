@@ -10,17 +10,34 @@
 			$('#no-following-notice').show();
 		}
 
+
 		if(yourid !== theirid) {
 			$('.unfollow-btn').hide();
 		}
 		else {
 			$('.unfollow-btn').on('click',function() {
-
-				var removeBtn = $(this);
+				var unfollowBtn = $(this);
 				var followingUid = $(this).attr('followingUid');
 			
-				removeBtn.parent().remove();
-				socket.emit('api:user.unfollow', {uid: followingUid});
+				socket.emit('api:user.unfollow', {uid: followingUid}, function(success) {
+					var username = unfollowBtn.attr('data-username');
+					if(success) {
+						unfollowBtn.parent().remove();
+						app.alert({
+							title: 'Unfollowing',
+							message: 'You are no longer following ' + username + '!',
+							type: 'success',
+							timeout: 2000
+						});		
+					} else {
+						app.alert({
+							title: 'Error',
+							message: 'There was an error unfollowing ' + username + '!',
+							type: 'error',
+							timeout: 2000
+						});		
+					}
+				});
 				return false;
 			});
 		}
