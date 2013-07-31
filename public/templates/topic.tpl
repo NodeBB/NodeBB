@@ -79,8 +79,8 @@
 
 	<!-- BEGIN posts -->
 		<a name="{posts.pid}"></a>
-		<li class="row post-row" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-deleted="{posts.deleted}">
-			<div class="span1 profile-image-block visible-desktop">
+		<li class="row-fluid post-row" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-deleted="{posts.deleted}">
+			<div class="span1 profile-image-block hidden-phone hidden-tablet">
 				<!--<i class="icon-spinner icon-spin icon-2x pull-left"></i>-->
 				<a href="/users/{posts.userslug}">
 					<img src="{posts.picture}" align="left" class="img-polaroid"/>
@@ -90,7 +90,7 @@
 					<div id="ids_{posts.pid}_{posts.uid}" class="chat hidden-phone" title="Chat"><i class="icon-comment"></i></div>
 				</div>
 			</div>
-			<div class="span11">
+			<div class="span11 span12-tablet">
 				<div class="post-block">
 					<div id="content_{posts.pid}" class="post-content">{posts.content}</div>
 					<div id="images_{posts.pid}" class="post-images">

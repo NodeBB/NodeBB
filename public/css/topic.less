@@ -95,7 +95,14 @@
 		-moz-opacity: 0.30;
 		opacity: 0.30;
 	}
-
+	/*http://stackoverflow.com/questions/11037517/bootstrap-making-responsive-changes-to-layout*/
+	@media (max-width: 979px) {
+		.span12-tablet {
+			width: 100% !important;
+			margin-left:0px;
+			*width: 100% !important;
+		}
+	}
 
 	.main-post {
 		h3 {
@@ -175,3 +182,5 @@
 
 	}
 }
+
+
