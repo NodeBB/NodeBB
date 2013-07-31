@@ -91,7 +91,7 @@
 		},
 
 		isUserNameValid: function(name) {
-			return (name && name !== "" && (/^\w{3,14}$/.test(name)));
+			return (name && name !== "" && (/^[a-zA-Z0-9 _-]{3,14}$/.test(name)));
 		},
 	
 		isPasswordValid: function(password) {
