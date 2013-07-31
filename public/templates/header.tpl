@@ -47,14 +47,11 @@
 				<div class="nav-collapse collapse">
 					<ul id="main-nav" class="nav nodebb-inline-block">
 						<li>
-							<a href="/recent">Recent <!--<span class="badge badge-inverse">3</span>--></a>
+							<a href="/recent">Recent</a>
 						</li>
 						<li>
 							<a href="/unread">Unread</a>
 						</li>
-						<!--<li>
-							<a href="/active">Active</a>
-						</li>-->
 						<li>
 							<a href="/users">Users</a>
 						</li>

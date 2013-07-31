@@ -18,6 +18,7 @@ var express = require('express'),
 	notifications = require('./notifications.js'),
 	admin = require('./routes/admin.js'),
 	userRoute = require('./routes/user.js'),
+	apiRoute = require('./routes/api.js'),
 	installRoute = require('./routes/install.js'),
 	testBed = require('./routes/testbed.js'),
 	auth = require('./routes/authentication.js'),
@@ -145,7 +146,7 @@ var express = require('express'),
 		userRoute.create_routes(app);
 		installRoute.create_routes(app);
 		testBed.create_routes(app);
-		
+		apiRoute.create_routes(app);
 		
 		
 		// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
@@ -339,12 +340,6 @@ var express = require('express'),
 						"Sitemap: " + global.nconf.get('url') + "sitemap.xml");
 		});
 
-		app.get('/api/:method', api_method);
-		app.get('/api/:method/:id', api_method);
-		// ok fine MUST ADD RECURSION style. I'll look for a better fix in future but unblocking baris for this:
-		app.get('/api/:method/:id/:section?', api_method);
-		app.get('/api/:method/:id*', api_method);
-
 		app.get('/cid/:cid', function(req, res) {
 			categories.getCategoryData(req.params.cid, function(err, data) {
 				if(data)
@@ -386,155 +381,9 @@ var express = require('express'),
 				res.status(404);
 				res.redirect(global.nconf.get('relative_path') + '/404');
 			}
-		});
+		});		
 	});
-	
-	// These functions are called via ajax once the initial page is loaded to populate templates with data
-	function api_method(req, res) {
-		var uid = (req.user) ? req.user.uid : 0;
-		
-		switch(req.params.method) {
-			case 'get_templates_listing' :
-					utils.walk(global.configuration.ROOT_DIRECTORY + '/public/templates', function(err, data) {
-						res.json(data);
-					});
-				break;
-			case 'home' :
-					categories.getAllCategories(function(data) {
-						
-						var async = require('async');
-						
-						function iterator(category, callback) {
-							categories.getRecentReplies(category.cid, 2, function(posts) {
-								category["posts"] = posts;
-								category["post_count"] = posts.length>2 ? 2 : posts.length;
-								callback(null);
-							});
-						}
-						
-						async.each(data.categories, iterator, function(err) {
-							data.motd_class = (config.show_motd === '1' || config.show_motd === undefined) ? '' : 'none';
-							data.motd = marked(config.motd || "# NodeBB v" + pkg.version + "\nWelcome to NodeBB, the discussion platform of the future.\n\n<a target=\"_blank\" href=\"http://www.nodebb.org\" class=\"btn btn-large\"><i class=\"icon-comment\"></i> Get NodeBB</a> <a target=\"_blank\" href=\"https://github.com/designcreateplay/NodeBB\" class=\"btn btn-large\"><i class=\"icon-github-alt\"></i> Fork us on Github</a> <a target=\"_blank\" href=\"https://twitter.com/dcplabs\" class=\"btn btn-large\"><i class=\"icon-twitter\"></i> @dcplabs</a>");
-							res.json(data);							
-						});
-						
 
-					}, uid);
-				break;
-			case 'login' :
-					var data = {},
-						login_strategies = auth.get_login_strategies(),
-						num_strategies = login_strategies.length;
-
-					if (num_strategies == 0) {
-						data = {
-							'login_window:spansize': 'span12',
-							'alternate_logins:display': 'none'
-						};	
-					} else {
-						data = {
-							'login_window:spansize': 'span6',
-							'alternate_logins:display': 'block'
-						}
-						for (var i=0, ii=num_strategies; i<ii; i++) {
-							data[login_strategies[i] + ':display'] = 'active';
-						}
-					}
-
-					data.token = res.locals.csrf_token;
-
-					res.json(data);
-				break;
-			case 'register' :
-					var data = {},
-						login_strategies = auth.get_login_strategies(),
-						num_strategies = login_strategies.length;
-
-					if (num_strategies == 0) {
-						data = {
-							'register_window:spansize': 'span12',
-							'alternate_logins:display': 'none'
-						};	
-					} else {
-						data = {
-							'register_window:spansize': 'span6',
-							'alternate_logins:display': 'block'
-						}
-						for (var i=0, ii=num_strategies; i<ii; i++) {
-							data[login_strategies[i] + ':display'] = 'active';
-						}
-					}
-
-					data.token = res.locals.csrf_token;
-
-					res.json(data);
-				break;
-			case 'topic' :
-					topics.getTopicWithPosts(req.params.id, uid, function(err, data) {
-						res.json(data);
-					});
-				break;
-			case 'category' :
-					categories.getCategoryById(req.params.id, uid, function(err, data) {
-						if (!err) res.json(data);
-						else res.send(404);
-					}, req.params.id, uid);
-				break;
-			case 'recent' :
-				topics.getLatestTopics(uid, 0, 9, function(data) {
-					res.json(data);
-				});
-				break;
-			case 'unread':
-				topics.getUnreadTopics(uid, 0, -1, function(data) {
-					res.json(data);
-				});
-				break;
-			case 'popular' :
-				topics.getLatestTopics(uid, 0, 9, function(data) {
-					res.json(data);
-				});
-				break;
-			case 'active' :
-				topics.getLatestTopics(uid, 0, 9, function(data) {
-					res.json(data);
-				});
-				break;
-			case 'confirm':
-					user.email.confirm(req.params.id, function(data) {
-						if (data.status === 'ok') {
-							res.json({
-								'alert-class': 'alert-success',
-								title: 'Email Confirmed',
-								text: 'Thank you for vaidating your email. Your account is now fully activated.'
-							});
-						} else {
-							res.json({
-								'alert-class': 'alert-error',
-								title: 'An error occurred...',
-								text: 'There was a problem validating your email address. Perhaps the code was invalid or has expired.'
-							});
-						}
-					});
-				break;
-			case 'outgoing' :
-				var url = req.url.split('?');
-
-				if (url[1]) {
-					res.json({
-						url: url[1],
-						home: global.nconf.get('url')
-					});
-				} else {
-					res.status(404);
-					res.redirect(global.nconf.get('relative_path') + '/404');
-				}
-				break;
-			default :
-				res.json(404, { error: 'unrecognized API endpoint' });
-			break;
-		}
-	}
 }(WebServer));
 
 server.listen(nconf.get('port'));
