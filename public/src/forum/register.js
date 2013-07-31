@@ -22,12 +22,13 @@
 		if(username.value.length < 3) {
 			username_notify.innerHTML = 'Username too short';
 			username_notify.className = 'label label-important';
-		}
-		else if(!usernamevalid) {
+		} else if(username.value.length > 13) {
+			username_notify.innerHTML = 'Username too long';
+			username_notify.className = 'label label-important';
+		} else if(!usernamevalid) {
 			username_notify.innerHTML = 'Invalid username';
 			username_notify.className = 'label label-important';
-		}
-		else {
+		} else {
 			socket.emit('user.exists', {username: username.value});
 		}
 	});

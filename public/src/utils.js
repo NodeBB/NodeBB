@@ -86,12 +86,12 @@
 		// from http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
 		isEmailValid: function(email) {
 			// var re = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-			var	valid = email.indexOf('@') !== -1 ? true : false;
+			var valid = email.indexOf('@') !== -1 ? true : false;
 			return valid;
 		},
 
 		isUserNameValid: function(name) {
-			return (name && name !== "" && !(/^\s*$/.test(name)));
+			return (name && name !== "" && (/^\w{3,14}$/.test(name)));
 		},
 	
 		isPasswordValid: function(password) {
