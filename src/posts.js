@@ -322,8 +322,7 @@ var	RDB = require('./redis.js'),
 						user.onNewPostMade(uid, tid, pid, timestamp);					
 
 						var imgur = require('./imgur');
-						// move clientID to config
-						imgur.setClientID('09f3955fee9a0a6');
+						imgur.setClientID(global.nconf.get('imgurClientID'));
 						
 						var uploadedImages = [];					
 

@@ -83,6 +83,7 @@ var	async = require('async'),
 
 				server_conf.base_url = protocol + '//' + host;
 				server_conf.relative_path = relative_path;
+				server_conf.imgurClientID = '';
 
 				install.save(server_conf, client_conf, callback);
 			});
