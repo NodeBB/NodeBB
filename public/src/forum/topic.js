@@ -8,18 +8,12 @@
 			deleted: templates.get('deleted'),
 			pinned: templates.get('pinned')
 		},
-		topic_name = templates.get('topic_name'),
-		infiniteLoaderActive = false;
-
-	function addCommasToNumbers() {
-		$('.formatted-number').each(function(index, element) {
-			$(element).html(app.addCommas($(element).html()));
-		});
-	}
+		topic_name = templates.get('topic_name');
+	
 
 	jQuery('document').ready(function() {
 
-		addCommasToNumbers();
+		app.addCommasToNumbers();
 		
 		var	room = 'topic_' + tid,
 			adminTools = document.getElementById('thread-tools');
@@ -211,12 +205,8 @@
 			var	windowHeight = document.body.offsetHeight - $(window).height(),
 				half = windowHeight / 2;
 
-			if (document.body.scrollTop > half && !infiniteLoaderActive) {
-				infiniteLoaderActive = true;
-				socket.emit('api:topic.loadMore', {
-					tid: tid,
-					after: document.querySelectorAll('#post-container li[data-pid]').length
-				});
+			if (document.body.scrollTop > half && !app.infiniteLoaderActive) {
+				app.loadMorePosts(tid);
 			}
 		});
 	});
@@ -331,26 +321,7 @@
 		adjust_rep(-1, data.pid, data.uid);
 	});
 
-	socket.on('event:new_post', function(data) {
-		data.posts[0].display_moderator_tools = 'none';
-		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data),
-			uniqueid = new Date().getTime(),
-			tempContainer = jQuery('<div id="' + uniqueid + '"></div>')
-				.appendTo("#post-container")
-				.hide()
-				.append(html)
-				.fadeIn('slow');
-
-		for(var x=0,numPosts=data.posts.length;x<numPosts;x++) {
-			socket.emit('api:post.privileges', data.posts[x].pid);
-		}
-
-		tempContainer.replaceWith(tempContainer.contents());
-		infiniteLoaderActive = false;
-
-		app.populate_online_users();
-		addCommasToNumbers();
-	});
+	socket.on('event:new_post', app.createNewPosts);
 
 	socket.on('event:topic_deleted', function(data) {
 		if (data.tid === tid && data.status === 'ok') {

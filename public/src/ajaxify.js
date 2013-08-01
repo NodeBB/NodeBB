@@ -29,8 +29,9 @@ var ajaxify = {};
 		// leave room and join global
 		app.enter_room('global');
 
-
 		var url = url.replace(/\/$/, "");
+
+		var hash = window.location.hash;
 
 		if(url.indexOf(RELATIVE_PATH.slice(1)) !== -1) {
 			url = url.slice(RELATIVE_PATH.length);
@@ -67,7 +68,12 @@ var ajaxify = {};
 				}
 				
 				app.process_page();
-				jQuery('#content, #footer').stop(true, true).fadeIn(200);
+				
+				jQuery('#content, #footer').stop(true, true).fadeIn(200, function() {
+					console.log('done loading');
+					app.scrollToPost(hash.substr(1));
+				});
+
 			}, url, template);
 
 			return true;

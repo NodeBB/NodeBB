@@ -556,14 +556,15 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			}
 		});
 
-		socket.on('api:topic.loadMore', function(data) {
+		socket.on('api:topic.loadMore', function(data, callback) {
 			var	start = data.after,
 				end = start + 10;
-
+			
 			topics.getTopicPosts(data.tid, start, end, uid, function(posts) {
-				io.sockets.in('topic_' + data.tid).emit('event:new_post', {
-					posts: posts
-				});
+				//io.sockets.in('topic_' + data.tid).emit('event:new_post', {
+				//	posts: posts
+				//});
+				callback({posts:posts});
 			});
 		});
 

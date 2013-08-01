@@ -295,6 +295,74 @@ var socket,
 		}
 	}
 
+	app.addCommasToNumbers = function() {
+		$('.formatted-number').each(function(index, element) {
+			$(element).html(app.addCommas($(element).html()));
+		});
+	}
+
+	app.createNewPosts = function(data) {
+		data.posts[0].display_moderator_tools = 'none';
+		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data),
+			uniqueid = new Date().getTime(),
+			tempContainer = jQuery('<div id="' + uniqueid + '"></div>')
+				.appendTo("#post-container")
+				.hide()
+				.append(html)
+				.fadeIn('slow');
+
+		for(var x=0,numPosts=data.posts.length;x<numPosts;x++) {
+			socket.emit('api:post.privileges', data.posts[x].pid);
+		}
+
+		tempContainer.replaceWith(tempContainer.contents());
+		infiniteLoaderActive = false;
+
+		app.populate_online_users();
+		app.addCommasToNumbers();
+	}
+
+	app.infiniteLoaderActive = false;
+
+	app.loadMorePosts = function(tid, callback) {
+		if(app.infiniteLoaderActive)
+			return;
+		infiniteLoaderActive = true;
+		socket.emit('api:topic.loadMore', {	
+			tid: tid, 
+			after: document.querySelectorAll('#post-container li[data-pid]').length 
+		}, function(data) {
+			app.infiniteLoaderActive = false;
+			if(data.posts.length) {
+				app.createNewPosts(data);
+				if(callback)
+					callback();
+			}
+		});
+	}
+
+	app.scrollToPost = function(pid) {
+		if(!pid)
+			return;
+		var container = $(document.body),
+			scrollTo = $('#post_anchor_' + pid);
+
+		if(!scrollTo.length) {
+			var tid = $('#post-container').attr('data-tid');
+			app.loadMorePosts(tid, function() {
+				app.scrollToPost(pid);
+			});
+			return;
+		}
+		
+		//container.scrollTop(
+		//	scrollTo.offset().top - container.offset().top + container.scrollTop() - $('#header-menu').height()
+		//);
+		container.animate({
+			scrollTop: scrollTo.offset().top - container.offset().top + container.scrollTop() - $('#header-menu').height()
+		});
+	}
+
 	jQuery('document').ready(function() {
 		addTouchEvents();
 	});

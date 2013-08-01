@@ -24,9 +24,7 @@ var	RDB = require('./redis.js'),
 					callback(posts);
 				});
 			} else {
-				callback({
-					error: 'no-posts'
-				});
+				callback([]);
 			}
 		});
 	}

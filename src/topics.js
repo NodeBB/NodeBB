@@ -41,7 +41,9 @@ marked.setOptions({
 
 	Topics.getTopicPosts = function(tid, start, end, current_user, callback) {
 		posts.getPostsByTid(tid, start, end, function(postData) {
-
+			if(Array.isArray(postData) && !postData.length)
+				return callback([]);
+			
 			function getFavouritesData(next) {
 				var pids = [];
 				for(var i=0; i<postData.length; ++i) 
@@ -78,7 +80,7 @@ marked.setOptions({
 					postData[i].fav_star_class = fav_data[postData[i].pid] ? 'icon-star' : 'icon-star-empty';
 					postData[i]['display_moderator_tools'] = (postData[i].uid == current_user || privileges.editable) ? 'show' : 'none';
 				}
-
+				
 				callback(postData);
 			});
 		});
@@ -279,8 +281,7 @@ marked.setOptions({
 			}
 
 			function getTopicPosts(next) {
-				Topics.getTopicPosts(tid, 0, -1, current_user, function(topicPosts, privileges) {
-					
+				Topics.getTopicPosts(tid, 0, 10, current_user, function(topicPosts, privileges) {
 					next(null, topicPosts);
 				});
 			}
