@@ -228,56 +228,10 @@ var user = require('./../user.js'),
 			});
 		});
 
-		function api_method(req, res) {
-
+		app.get('/api/users/:userslug/following', function(req, res) {
 			var callerUID = req.user ? req.user.uid : 0;
-			
-			var userslug = req.params.userslug;
-			var section = req.params.section ? String(req.params.section).toLowerCase() : null;
-				
-			if (!section && !userslug) {
 
-				user.getUserList(function(data) {
-					data = data.sort(function(a, b) {
-						return b.joindate - a.joindate;
-					});
-					res.json({ search_display: 'none', users: data });
-				});
-			}
-			else if(section === 'following') {
-				getFollowing(req, res, callerUID);
-			}
-			else if(section === 'followers') {
-				getFollowers(req, res, callerUID);
-			}
-			else if (section === 'edit') {
-				getUserDataByUserSlug(userslug, callerUID, function(userData) {
-					res.json(userData);
-				});
-			}
-			else if (section === 'settings') {
-				getSettings(req, res, callerUID);
-			} else {
-				getUserDataByUserSlug(userslug, callerUID, function(userData) {
-					if(userData) {
-						user.isFollowing(callerUID, userData.theirid, function(isFollowing) {
-							posts.getPostsByUid(userData.theirid, 0, 9, function(posts) {
-
-								userData.posts = posts.filter(function(p) {return p.deleted !== "1";});
-								userData.isFollowing = isFollowing;
-								userData.signature = postTools.markdownToHTML(userData.signature, true);
-								res.json(userData);
-							});
-						});
-					} else {
-						res.json(404, { error: 'User not found!' })	;
-					}
-				});						
-			}
-		}
-
-		function getFollowing(req, res, callerUid) {
-			getUserDataByUserSlug(req.params.userslug, callerUid, function(userData) {
+			getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
 				if(userData) {
 					user.getFollowing(userData.uid, function(followingData) {
 						userData.following = followingData;
@@ -289,10 +243,12 @@ var user = require('./../user.js'),
 					res.json(404, { error: 'User not found!' })	;
 				}
 			});
-		}
+		});
 
-		function getFollowers(req, res, callerUid) {
-			getUserDataByUserSlug(req.params.userslug, callerUid, function(userData) {
+		app.get('/api/users/:userslug/followers', function(req, res) {
+			var callerUID = req.user ? req.user.uid : 0;
+			
+			getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
 				if(userData) {
 					user.getFollowers(userData.uid, function(followersData) {
 						userData.followers = followersData;
@@ -303,17 +259,26 @@ var user = require('./../user.js'),
 					res.json(404, { error: 'User not found!' })	;
 				}				
 			});
-		}
+		});
 
-		function getSettings(req, res, callerUid) {
-			
+		app.get('/api/users/:userslug/edit', function(req, res) {
+			var callerUID = req.user ? req.user.uid : 0;
+
+			getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
+				res.json(userData);
+			});
+		});
+
+		app.get('/api/users/:userslug/settings', function(req, res) {
+			var callerUID = req.user ? req.user.uid : 0;
+
 			user.get_uid_by_userslug(req.params.userslug, function(uid) {
 				if(!uid) {
 					res.json(404, { error: 'User not found!' })	;
 					return;
 				}
 				
-				if(uid !== callerUid || callerUid === "0") {
+				if(uid !== callerUID || callerUID === "0") {
 					res.json(403, { error: 'Not allowed!' });
 					return;
 				}
@@ -328,10 +293,38 @@ var user = require('./../user.js'),
 						res.json(404, { error: 'User not found!' })	;
 					}				
 				});
-			});
-		}
+			});			
+		});
 
-		app.get('/api/users/:userslug?/:section?', api_method);
+		app.get('/api/users/:userslug', function(req, res) {
+			var callerUID = req.user ? req.user.uid : 0;
+
+			getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
+				if(userData) {
+					user.isFollowing(callerUID, userData.theirid, function(isFollowing) {
+						posts.getPostsByUid(userData.theirid, 0, 9, function(posts) {
+
+							userData.posts = posts.filter(function(p) {return p.deleted !== "1";});
+							userData.isFollowing = isFollowing;
+							userData.signature = postTools.markdownToHTML(userData.signature, true);
+							res.json(userData);
+						});
+					});
+				} else {
+					res.json(404, { error: 'User not found!' })	;
+				}
+			});						
+		});
+
+		app.get('/api/users', function(req, res) {
+			user.getUserList(function(data) {
+				data = data.sort(function(a, b) {
+					return b.joindate - a.joindate;
+				});
+				res.json({ search_display: 'none', users: data });
+			});
+		});
+
 		app.get('/api/users-sort-posts', getUsersSortedByPosts);
 		app.get('/api/users-sort-reputation', getUsersSortedByReputation);
 		app.get('/api/users-latest', getUsersSortedByJoinDate);
