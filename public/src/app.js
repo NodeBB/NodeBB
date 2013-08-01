@@ -302,7 +302,6 @@ var socket,
 	}
 
 	app.createNewPosts = function(data) {
-		console.log('creating new posts');
 		data.posts[0].display_moderator_tools = 'none';
 		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data),
 			uniqueid = new Date().getTime(),
