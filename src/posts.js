@@ -57,14 +57,18 @@ var	RDB = require('./redis.js'),
 		
 		function getPostSummary(pid, callback) {
 			Posts.getPostFields(pid, ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'], function(postData) {
-				Posts.addUserInfoToPost(postData, function() {
+				if(postData.deleted === '1') {
+					return;
+				}
 
-					if(postData.deleted !== '1')	{
-						returnData.push(postData);
-					}
-					
-					callback(null);
+				Posts.addUserInfoToPost(postData, function() {
+					topics.getTopicField(postData.tid, 'slug', function(topicSlug) {
+						postData.topicSlug = topicSlug;
+						returnData.push(postData);	
+						callback(null);
+					});
 				});
+				
 			});
 		}
 		

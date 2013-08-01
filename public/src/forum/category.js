@@ -80,7 +80,7 @@
 
 
 			li.innerHTML =	'<a href="/users/' + posts[i].userslug + '"><img title="' + posts[i].username + '" style="width: 48px; height: 48px; /*temporary*/" class="img-polaroid" src="' + posts[i].picture + '" class="" /></a>' +
-								'<a href="/topic/'+ posts[i].tid + '">' +
+								'<a href="/topic/'+ posts[i].topicSlug + '#' + posts[i].pid + '">' +
 									'<p>' +
 										'<strong>' + posts[i].username + '</strong>: ' + posts[i].content +
 									'</p>' +

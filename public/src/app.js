@@ -302,6 +302,7 @@ var socket,
 	}
 
 	app.createNewPosts = function(data) {
+		console.log('creating new posts');
 		data.posts[0].display_moderator_tools = 'none';
 		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data),
 			uniqueid = new Date().getTime(),
@@ -327,7 +328,7 @@ var socket,
 	app.loadMorePosts = function(tid, callback) {
 		if(app.infiniteLoaderActive)
 			return;
-		infiniteLoaderActive = true;
+		app.infiniteLoaderActive = true;
 		socket.emit('api:topic.loadMore', {	
 			tid: tid, 
 			after: document.querySelectorAll('#post-container li[data-pid]').length 
@@ -354,10 +355,7 @@ var socket,
 			});
 			return;
 		}
-		
-		//container.scrollTop(
-		//	scrollTo.offset().top - container.offset().top + container.scrollTop() - $('#header-menu').height()
-		//);
+
 		container.animate({
 			scrollTop: scrollTo.offset().top - container.offset().top + container.scrollTop() - $('#header-menu').height()
 		});

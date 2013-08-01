@@ -71,7 +71,10 @@ var ajaxify = {};
 				
 				jQuery('#content, #footer').stop(true, true).fadeIn(200, function() {
 					console.log('done loading');
-					app.scrollToPost(hash.substr(1));
+					if(window.location.hash)
+						hash = window.location.hash;
+					if(hash)
+						app.scrollToPost(hash.substr(1));
 				});
 
 			}, url, template);
