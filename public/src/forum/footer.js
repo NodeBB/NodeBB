@@ -6,7 +6,7 @@
 		user_label = document.getElementById('user_label'),
 		active_record = document.getElementById('active_record'),
 		right_menu = document.getElementById('right-menu');
-
+	
 	socket.emit('user.count', {});
 	socket.on('user.count', function(data) {
 		num_users.innerHTML = "We currently have <b>" + data.count + "</b> registered users.";

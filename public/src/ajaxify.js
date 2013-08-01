@@ -70,7 +70,6 @@ var ajaxify = {};
 				app.process_page();
 				
 				jQuery('#content, #footer').stop(true, true).fadeIn(200, function() {
-					console.log('done loading');
 					if(window.location.hash)
 						hash = window.location.hash;
 					if(hash)
@@ -93,6 +92,9 @@ var ajaxify = {};
 		// Enhancing all anchors to ajaxify...
 		$(document.body).on('click', 'a', function(e) {
 			if (this.href == window.location.href + "#") return;
+			if(this.href.slice(-1) === "#") return;
+			
+
 			var url = this.href.replace(rootUrl +'/', '');
 			
 			if (this.target !== '') return;
