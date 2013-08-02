@@ -51,7 +51,6 @@ var user = require('./../user.js'),
 
 		}());
 
-		//todo consolidate.
 		app.get('/admin', Admin.isAdmin, function(req, res) {
 			res.send(Admin.build_header(res) + app.create_route('admin/index') + templates['admin/footer']);
 		});
@@ -60,106 +59,126 @@ var user = require('./../user.js'),
 			res.send(Admin.build_header(res) + app.create_route('admin/index') + templates['admin/footer']);
 		});
 
+		app.get('/api/admin/index', function(req, res) {
+			res.json({version:pkg.version});
+		});
 
-		function api_method(req, res) {
-			switch(req.params.method) {
-				case 'index':
-					res.json({version:pkg.version});
-				break;
-				case 'users' :
-					if (req.params.tab == 'search') {
-						res.json({search_display: 'block', users: []});
-					} 
-					else if(req.params.tab == 'latest') {
-						user.getUserList(function(data) {
-							data = data.sort(function(a, b) {
-								return b.joindate - a.joindate;
-							});
-							res.json({search_display: 'none', users:data, yourid:req.user.uid});
-						});
-					}
-					else if(req.params.tab == 'sort-posts') {
-						user.getUserList(function(data) {
-							data = data.sort(function(a, b) {
-								return b.postcount - a.postcount;
-							});
-							res.json({search_display: 'none', users:data, yourid:req.user.uid});
-						});
-					}
-					else if(req.params.tab == 'sort-reputation') {
-						user.getUserList(function(data) {
-							data = data.sort(function(a, b) {
-								return b.reputation - a.reputation;
-							});
-							res.json({search_display: 'none', users:data, yourid:req.user.uid});
-						});
-					}
-					else {
-						user.getUserList(function(data) {
-							res.json({search_display: 'none', users:data, yourid:req.user.uid});
-						});
-					}
+		app.get('/api/admin/users/search', function(req, res) {
+			res.json({search_display: 'block', users: []});
+		});
+
+		app.get('/api/admin/users/latest', function(req, res) {
+			user.getUserList(function(data) {
+				data = data.sort(function(a, b) {
+					return b.joindate - a.joindate;
+				});
+				res.json({search_display: 'none', users:data, yourid:req.user.uid});
+			});
+		});
+
+		app.get('/api/admin/users/sort-posts', function(req, res) {
+			user.getUserList(function(data) {
+				data = data.sort(function(a, b) {
+					return b.postcount - a.postcount;
+				});
+				res.json({search_display: 'none', users:data, yourid:req.user.uid});
+			});
+		});
+
+		app.get('/api/admin/users/sort-reputation', function(req, res) {
+			user.getUserList(function(data) {
+				data = data.sort(function(a, b) {
+					return b.reputation - a.reputation;
+				});
+				res.json({search_display: 'none', users:data, yourid:req.user.uid});
+			});
+		});
+
+		app.get('/api/admin/users', function(req, res) {
+			user.getUserList(function(data) {
+				res.json({search_display: 'none', users:data, yourid:req.user.uid});
+			});
+		});
+
+		app.get('/api/admin/categories', function(req, res) {
+			categories.getAllCategories(function(data) {
+				res.json(data);
+			});
+		});
+
+		app.get('/api/admin/categories/disabled', function(req, res) {
+			res.json({categories: []});
+		});
+
+		app.get('/api/admin/topics', function(req, res) {
+			topics.getAllTopics(10, null, function(topics) {
+				res.json({
+					topics: topics
+				});
+			});
+		});
+
+		app.get('/api/admin/redis', function(req, res) {
+			RDB.info(function(err, data) {
+				data = data.split("\r\n");
+				var finalData = {};
+
+				for(var i in data) {
 					
-					break;
-				case 'categories':
-					if (req.params.tab == 'disabled') {
-						res.json({categories: []});
-					} else {
-						categories.getAllCategories(function(data) {
-							res.json(data);
-						});
-					}
-					break;
-				case 'topics':
-					topics.getAllTopics(10, null, function(topics) {
-						res.json({
-							topics: topics
-						});
-					});
-					break;
-				case 'redis':
-					RDB.info(function(err, data) {
-						data = data.split("\r\n");
-						var finalData = {};
-
-						for(var i in data) {
-							
-							try	{
-								data[i] = data[i].replace(/:/,"\":\"");
-								var json = "{\"" + data[i] + "\"}";
-								
-								var jsonObject = JSON.parse(json);
-								for(var key in jsonObject) {
-									finalData[key] = jsonObject[key];
-								}
-							}catch(err){
-
-							}
-						}
-
+					try	{
+						data[i] = data[i].replace(/:/,"\":\"");
+						var json = "{\"" + data[i] + "\"}";
 						
-						res.json(finalData);
-					});
-					break;
-				case 'plugins':
-					plugins.showInstalled(function(err, plugins) {
-						if (err || !Array.isArray(plugins)) plugins = [];
+						var jsonObject = JSON.parse(json);
+						for(var key in jsonObject) {
+							finalData[key] = jsonObject[key];
+						}
+					} catch(err){
+						console.log(err);
+					}
+				}
+			
+				res.json(finalData);
+			});
+		});
 
-						res.json(200, {
-							plugins: plugins
-						});
-					});
-					break;
-				default :
-					res.json({});
-			}
-		}
+		app.get('/api/admin/plugins', function(req, res) {
+			plugins.showInstalled(function(err, plugins) {
+				if (err || !Array.isArray(plugins)) plugins = [];
 
-		app.get('/api/admin/:method/:tab?*', api_method);
-		app.get('/api/admin/:method*', api_method);
+				res.json(200, {
+					plugins: plugins
+				});
+			});
+		});
 
+		app.get('/api/admin/settings', function(req, res) {
+			res.json(200, {});
+		});
 
-	
+		app.get('/api/admin/motd', function(req, res) {
+			res.json(200, {});
+		});
+
+		app.get('/api/admin/themes', function(req, res) {
+			res.json(200, {});
+		});
+
+		app.get('/api/admin/twitter', function(req, res) {
+			res.json(200, {});
+		});
+
+		app.get('/api/admin/facebook', function(req, res) {
+			res.json(200, {});
+		});
+
+		app.get('/api/admin/gplus', function(req, res) {
+			res.json(200, {});
+		});
+
+		app.get('/api/admin/testing/categories', function(req, res) {
+			res.json(200, {});
+		});
 
 	};
 

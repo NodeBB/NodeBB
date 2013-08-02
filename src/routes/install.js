@@ -24,20 +24,13 @@ var RDB = require('../redis.js');
 			res.send(templates['install/header'] + app.create_route('install/basic') + templates['install/footer']);
 		});
 
+		app.get('/api/install/basic', function(req, res) {
+			res.send('{}');
+		});
 
-		function api_method(req, res) {
-			switch(req.params.method) {
-				case 'basic' :
-					res.send('{}');
-					break;
-
-				default :
-					res.send('{}');
-			}
-		}
-
-		app.get('/api/install/:method/:tab?*', api_method);
-		app.get('/api/install/:method*', api_method);
+		app.get('/api/install', function(req, res) {
+			res.send('{}');
+		});
 	};
 
 
