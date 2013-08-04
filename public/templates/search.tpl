@@ -12,7 +12,7 @@
 
 <div class="category row">
 	<div class="span12">
-		<ul id="topics-container">
+		<ul id="topics-container" data-search-query="{search_query}">
 		<!-- BEGIN posts -->
 		<a href="../../topic/{posts.topicSlug}#{posts.pid}" id="tid-{posts.tid}">
 			<li class="category-item">
@@ -20,7 +20,7 @@
 					<div class="span12 img-polaroid">
 						<div class="search-result-post">
 							<img src="{posts.picture}" />
-							<strong>{posts.username}</strong>: {posts.content}
+							<strong>{posts.username}</strong>: <span class="search-result-text">{posts.content}</span>
 						</div>
 
 					</div>
@@ -31,6 +31,5 @@
 		</ul>
 	</div>
 </div>
-<!--
+
 <script type="text/javascript" src="{relative_path}/src/forum/search.js"></script>
--->
