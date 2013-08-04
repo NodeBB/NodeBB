@@ -6,7 +6,9 @@ var	RDB = require('./redis.js'),
 	async = require('async'),
 	
 	utils = require('../public/src/utils'),
-	plugins = require('./plugins');
+	plugins = require('./plugins'),
+	reds = require('reds'),
+	search = reds.createSearch('nodebbsearch');
 
 (function(PostTools) {
 	PostTools.isMain = function(pid, tid, callback) {
@@ -56,6 +58,10 @@ var	RDB = require('./redis.js'),
 			posts.setPostField(pid, 'edited', Date.now());
 			posts.setPostField(pid, 'editor', uid);
 
+			search.remove(pid, function() {
+				search.index(content, pid);
+			});
+
 			posts.getPostField(pid, 'tid', function(tid) {
 				PostTools.isMain(pid, tid, function(isMainPost) {
 					if (isMainPost) 
@@ -84,6 +90,7 @@ var	RDB = require('./redis.js'),
 		var success = function() {
 			posts.setPostField(pid, 'deleted', 1);
 			
+			search.remove(pid);
 
 			posts.getPostFields(pid, ['tid', 'uid'], function(postData) {
 
@@ -119,7 +126,7 @@ var	RDB = require('./redis.js'),
 		var success = function() {
 			posts.setPostField(pid, 'deleted', 0);
 
-			posts.getPostFields(pid, ['tid', 'uid'], function(postData) {
+			posts.getPostFields(pid, ['tid', 'uid', 'content'], function(postData) {
 
 				user.incrementUserFieldBy(postData.uid, 'postcount', 1);
 
@@ -132,6 +139,8 @@ var	RDB = require('./redis.js'),
 						topics.updateTimestamp(postData.tid, timestamp);
 					});	
 				});
+
+				search.index(postData.content, pid);
 			});
 		};
 

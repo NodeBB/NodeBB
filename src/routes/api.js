@@ -146,5 +146,36 @@ var user = require('./../user.js'),
 				res.redirect(global.nconf.get('relative_path') + '/404');
 			}
 		});	
+
+		app.get('/api/search', function(req, res) {
+			return res.json({
+				show_no_results:'hide',
+				search_query:'',
+				posts:[]
+			});
+		});
+
+		app.get('/api/search/:term', function(req, res, next) {
+
+			var reds = require('reds');
+			var search = reds.createSearch('nodebbsearch');
+		
+			search
+				.query(query = req.params.term).type('or')
+				.end(function(err, ids) {
+					if (err) 
+						return next();
+					
+					
+					posts.getPostSummaryByPids(ids, function(posts) {
+						res.json(200, {
+							show_no_results:ids.length?'hide':'show',
+							search_query:req.params.term,
+							posts:posts
+						});						
+					});
+	
+				});
+		});
 	}
 }(exports));

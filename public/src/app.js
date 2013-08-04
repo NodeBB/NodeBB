@@ -362,6 +362,13 @@ var socket,
 
 	jQuery('document').ready(function() {
 		addTouchEvents();
+
+		$('#search-form').on('submit', function() {
+			var input = $(this).find('input');
+			ajaxify.go("search/"+input.val(), null, "search");
+			input.val('');
+			return false;
+		})
 	});
 
 	loadConfig();

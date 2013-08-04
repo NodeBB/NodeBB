@@ -382,6 +382,18 @@ var express = require('express'),
 				res.redirect(global.nconf.get('relative_path') + '/404');
 			}
 		});		
+
+		app.get('/search', function(req, res) {
+			app.build_header({ req: req, res: res }, function(err, header) {
+				res.send(header + app.create_route("search", null, "search") + templates['footer']);
+			});
+		});
+		
+		app.get('/search/:term', function(req, res) {
+			app.build_header({ req: req, res: res }, function(err, header) {
+				res.send(header + app.create_route("search/"+req.params.term, null, "search") + templates['footer']);
+			});
+		});
 	});
 
 }(WebServer));

@@ -8,7 +8,9 @@ var	RDB = require('./redis.js'),
 	postTools = require('./postTools'),
 	feed = require('./feed.js'),
 	async = require('async'),
-	plugins = require('./plugins');
+	plugins = require('./plugins'),
+	reds = require('reds'),
+	search = reds.createSearch('nodebbsearch');
 
 (function(Posts) {
 
@@ -323,52 +325,61 @@ var	RDB = require('./redis.js'),
 						
 						user.onNewPostMade(uid, tid, pid, timestamp);					
 
-						var imgur = require('./imgur');
-						imgur.setClientID(global.nconf.get('imgurClientID'));
+						uploadPostImages(postData, images, function(err, uploadedImages) {
+							if(err) {
+								console.log('Uploading images failed!');
+							} else {
+								postData.uploadedImages = JSON.stringify(uploadedImages);
+								Posts.setPostField(pid, 'uploadedImages', postData.uploadedImages);
+							}
+							callback(postData);
+						});
 						
-						var uploadedImages = [];					
-
-						function uploadImage(image, callback) {
-							imgur.upload(image.data, 'base64', function(err, data) {
-								if(err) {
-									callback(err);
-								} else {
-									if(data.success) {
-										var img= {url:data.data.link, name:image.name};
-										uploadedImages.push(img);
-										callback(null);
-									} else {
-										callback(data);
-									}
-								}
-							});			
-						}
-
 						plugins.fireHook('action:save_post_content', [pid, content]);
 						
-						if(!images) {
-							postData.uploadedImages = JSON.stringify(uploadedImages);
-							Posts.setPostField(pid, 'uploadedImages', postData.uploadedImages);
-							callback(postData);
-						} else {
-							async.each(images, uploadImage, function(err) {
-								if(!err) {
-									postData.uploadedImages = JSON.stringify(uploadedImages);
-									Posts.setPostField(pid, 'uploadedImages', postData.uploadedImages);
-		
-									callback(postData);
-								} else {
-									console.log(err);
-									callback(null);
-								}
-							});
-						}
+						search.index(content, pid);
 					});
 				});
 			} else {
 				callback(null);
 			}
 		});
+	}
+
+	function uploadPostImages(postData, images, callback) {
+		var imgur = require('./imgur');
+		imgur.setClientID(global.nconf.get('imgurClientID'));
+						
+		var uploadedImages = [];					
+
+		function uploadImage(image, callback) {
+			imgur.upload(image.data, 'base64', function(err, data) {
+				if(err) {
+					callback(err);
+				} else {
+					if(data.success) {
+						var img= {url:data.data.link, name:image.name};
+						uploadedImages.push(img);
+						callback(null);
+					} else {
+						callback(data);
+					}
+				}
+			});			
+		}
+
+		if(!images) {
+			callback(null, uploadedImages);
+		} else {
+			async.each(images, uploadImage, function(err) {
+				if(!err) {
+					callback(null, uploadedImages);
+				} else {
+					console.log(err);
+					callback(err, null);
+				}
+			});
+		}
 	}
 	
 	Posts.getPostsByUid = function(uid, start, end, callback) {

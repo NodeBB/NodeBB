@@ -30,7 +30,8 @@
 		"recent": "recent",
 		"unread": "unread",
 		"popular": "category",
-		"active": "category"
+		"active": "category",
+		"search": "search"
 	},
 	"force_refresh": {
 		"logout": true

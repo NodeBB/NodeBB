@@ -57,6 +57,11 @@
 						</li>
 					</ul>
 					<ul id="right-menu" class="nav pull-right nodebb-inline-block">
+						<form id="search-form"
+						class="form-search form-inline" action="" method="GET">
+							<input type="text" name="query" class="input-medium search-query">
+							<button type="submit" class="btn hide">Search</button>
+						</form>
 						<li class="notifications dropdown text-center">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="notif_dropdown"><i class="icon-circle-blank"></i></a>
 							<ul id="notif-list" class="dropdown-menu" aria-labelledby="notif_dropdown">
