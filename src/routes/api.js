@@ -177,5 +177,9 @@ var user = require('./../user.js'),
 	
 				});
 		});
+		
+		app.get('/api/404', function(req, res) {
+			res.json({});
+		});
 	}
 }(exports));

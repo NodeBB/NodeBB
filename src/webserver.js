@@ -319,7 +319,7 @@ var express = require('express'),
 		});
 
 		app.get('/confirm/:code', function(req, res) {
-			app.build_header({ req: req, res: res }, function(header) {
+			app.build_header({ req: req, res: res }, function(err, header) {
 				res.send(header + '<script>templates.ready(function(){ajaxify.go("confirm/' + req.params.code + '");});</script>' + templates['footer']);
 			});
 		});
@@ -371,7 +371,7 @@ var express = require('express'),
 			var url = req.url.split('?');
 
 			if (url[1]) {
-				app.build_header({ req: req, res: res }, function(header) {
+				app.build_header({ req: req, res: res }, function(err, header) {
 					res.send(header + templates['outgoing'].parse({
 						url: url[1],
 						home: global.nconf.get('url')
