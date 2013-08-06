@@ -404,11 +404,35 @@ var	RDB = require('./redis.js'),
 					topics: data[0]?data[0]:0,
 					posts: data[1]?data[1]:0				
 				};
-				
+
 				socket.emit('post.stats', stats);
 			}				
 			else
 				console.log(err);
+		});
+	}
+
+	Posts.reIndexPids = function(pids, callback) {
+
+		function reIndex(pid, callback) {
+
+			Posts.getPostField(pid, 'content', function(content) {
+				search.remove(pid, function() {
+
+					if(content && content.length) {
+						search.index(content, pid);
+					}
+					callback(null);
+				});
+			});
+		}
+
+		async.each(pids, reIndex, function(err) {
+			if(err) {
+				callback(err, null);
+			} else {
+				callback(null, 'Posts reindexed');
+			}
 		});
 	}
 

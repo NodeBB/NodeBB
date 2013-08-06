@@ -394,6 +394,16 @@ var express = require('express'),
 				res.send(header + app.create_route("search/"+req.params.term, null, "search") + templates['footer']);
 			});
 		});
+		
+		app.get('/reindex', function(req, res) {
+			topics.reIndexAll(function(err) {
+				if(err) {
+					res.json(err);
+				} else {
+					res.send('All topics reindexed');
+				}
+			});
+		});
 	});
 
 }(WebServer));

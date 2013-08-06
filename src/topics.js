@@ -677,4 +677,37 @@ marked.setOptions({
 		RDB.lrange('tid:' + tid + ':posts', 0, -1, callback);
 	}
 
+	Topics.reIndexTopic = function(tid, callback) {
+		Topics.getPids(tid, function(err, pids) {
+			if(err) {
+				callback(err);
+			} else {
+				posts.reIndexPids(pids, function(err) {
+					if(err) {
+						callback(err);
+					} else {
+						callback(null);
+					}
+				});
+			}
+		});
+	}
+
+	Topics.reIndexAll = function(callback) {
+		RDB.smembers('topics:tid', function(err, tids) {
+			if(err) {
+				callback(err, null);
+			} else {
+
+				async.each(tids, Topics.reIndexTopic, function(err) {
+					if(err) {
+						callback(err, null);
+					} else {
+						callback(null, 'All topics reindexed.');
+					}
+				});
+			}
+		});
+	}
+
 }(exports));
