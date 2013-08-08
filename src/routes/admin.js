@@ -25,7 +25,7 @@ var user = require('./../user.js'),
 
 		(function() {
 			var	routes = [
-					'categories', 'users', 'topics', 'settings', 'themes',
+					'categories/active', 'categories/disabled', 'users', 'topics', 'settings', 'themes',
 					'twitter', 'facebook', 'gplus', 'redis', 'motd', 
 					'users/latest', 'users/sort-posts', 'users/sort-reputation',
 					'users/search', 'plugins'
@@ -106,8 +106,22 @@ var user = require('./../user.js'),
 			});
 		});
 
+		app.get('/api/admin/categories/active', function(req, res) {
+			categories.getAllCategories(function(data) {
+				data.categories = data.categories.filter(function(category) {
+					return (!category.disabled || category.disabled === "0");
+				});
+				res.json(data);
+			});
+		});
+
 		app.get('/api/admin/categories/disabled', function(req, res) {
-			res.json({categories: []});
+			categories.getAllCategories(function(data) {
+				data.categories = data.categories.filter(function(category) {
+					return category.disabled === "1";
+				});
+				res.json(data);
+			});
 		});
 
 		app.get('/api/admin/topics', function(req, res) {

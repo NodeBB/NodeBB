@@ -74,6 +74,30 @@ jQuery('.blockclass').each(function() {
 		jQuery('.category_name, .category_description, .blockclass').on('change', function(ev) {
 			modified(ev.target);
 		});
+
+		jQuery('.entry-row button').each(function(index, element) {
+			var disabled = $(element).attr('data-disabled');
+			if(disabled == "0" || disabled == "")
+				$(element).html('Disable');
+			else
+				$(element).html('Enable');
+
+		});
+
+		jQuery('.entry-row button').on('click', function(ev) {
+			var btn = jQuery(this);
+			var categoryRow = btn.parents('li');
+			var cid = categoryRow.attr('data-cid');
+
+			var disabled = btn.html() == "Disable" ? "1":"0";
+			categoryRow.remove();
+			modified_categories[cid] = modified_categories[cid] || {};
+			modified_categories[cid]['disabled'] = disabled;
+
+			save();
+			return false;
+		});
+
 	});
 	
 }());

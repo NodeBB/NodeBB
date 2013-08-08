@@ -17,7 +17,11 @@ var user = require('./../user.js'),
 		app.get('/api/home', function(req, res) {
 			var uid = (req.user) ? req.user.uid : 0;
 			categories.getAllCategories(function(data) {
-						
+				
+				data.categories = data.categories.filter(function(category) {
+					return (!category.disabled || category.disabled === "0");
+				});
+
 				function iterator(category, callback) {
 					categories.getRecentReplies(category.cid, 2, function(posts) {
 						category["posts"] = posts;
@@ -200,8 +204,6 @@ var user = require('./../user.js'),
 					topics:results[1]
 				});
 			});
-
-
 		});
 		
 		app.get('/api/404', function(req, res) {
