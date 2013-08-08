@@ -368,19 +368,15 @@ var express = require('express'),
 		});
 
 		app.get('/outgoing', function(req, res) {
-			var url = req.url.split('?');
+			if (!req.query.url) return res.redirect('/404');
 
-			if (url[1]) {
-				app.build_header({ req: req, res: res }, function(err, header) {
-					res.send(header + templates['outgoing'].parse({
-						url: url[1],
-						home: global.nconf.get('url')
-					}) + templates['footer']);
-				});
-			} else {
-				res.status(404);
-				res.redirect(global.nconf.get('relative_path') + '/404');
-			}
+			app.build_header({ req: req, res: res }, function(err, header) {
+				res.send(
+					header +
+					'\n\t<script>templates.ready(function(){ajaxify.go("outgoing?url=' + req.query.url + '");});</script>' +
+					templates['footer']
+				);
+			});
 		});		
 
 		app.get('/search', function(req, res) {

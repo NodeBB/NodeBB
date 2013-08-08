@@ -139,10 +139,11 @@ var user = require('./../user.js'),
 		});
 
 		app.get('/api/outgoing', function(req, res) {
-			var url = req.url.split('?');
-			if (url[1]) {
+			var url = req.query.url;
+
+			if (url) {
 				res.json({
-					url: url[1],
+					url: url,
 					home: global.nconf.get('url')
 				});
 			} else {
