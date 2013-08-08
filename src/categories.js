@@ -186,6 +186,11 @@ var	RDB = require('./redis.js'),
 
 	Categories.getRecentReplies = function(cid, count, callback) {
 		RDB.zrevrange('categories:recent_posts:cid:' + cid, 0, (count<10)?10:count, function(err, pids) {
+			if(err) {
+				console.log(err);
+				callback([]);
+				return;
+			}
 
 			if (pids.length == 0) {
 				callback([]);

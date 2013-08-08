@@ -60,7 +60,7 @@ var	RDB = require('./redis.js'),
 		function getPostSummary(pid, callback) {
 			Posts.getPostFields(pid, ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'], function(postData) {
 				if(postData.deleted === '1') {
-					return;
+					return callback(null);
 				}
 
 				Posts.addUserInfoToPost(postData, function() {
@@ -81,6 +81,8 @@ var	RDB = require('./redis.js'),
 		async.eachSeries(pids, getPostSummary, function(err) {
 			if(!err) {
 				callback(returnData);
+			} else {
+				console.log(err);
 			}
 		});
 	};
