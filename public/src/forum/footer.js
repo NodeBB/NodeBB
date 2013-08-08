@@ -85,10 +85,16 @@
 	// Notifications dropdown
 	var notifContainer = document.getElementsByClassName('notifications')[0],
 		notifTrigger = notifContainer.querySelector('a'),
-		notifList = document.getElementById('notif-list');
+		notifList = document.getElementById('notif-list'),
+		notifIcon = document.querySelector('.notifications a i');
 	notifTrigger.addEventListener('click', function(e) {
 		e.preventDefault();
-		if (notifContainer.className.indexOf('open') === -1) socket.emit('api:notifications.get');
+		if (notifContainer.className.indexOf('open') === -1) {
+			socket.emit('api:notifications.get');
+			socket.emit('api:notifications.mark_all_read', null, function() {
+				notifIcon.className = 'icon-circle-blank';
+			});
+		}
 	});
 	notifList.addEventListener('click', function(e) {
 		var target;
@@ -101,16 +107,15 @@
 			var nid = parseInt(target.getAttribute('data-nid'));
 			if (nid > 0) socket.emit('api:notifications.mark_read', nid);
 		}
-	})
+	});
 	socket.on('api:notifications.get', function(data) {
 		var	notifFrag = document.createDocumentFragment(),
 			notifEl = document.createElement('li'),
-			notifIcon = document.querySelector('.notifications a i'),
 			numRead = data.read.length,
 			numUnread = data.unread.length,
 			x;
 		notifList.innerHTML = '';
-		if (data.read.length + data.unread.length > 0) {
+		if ((data.read.length + data.unread.length) > 0) {
 			for(x=0;x<numUnread;x++) {
 				notifEl.setAttribute('data-nid', data.unread[x].nid);
 				notifEl.className = 'unread';
@@ -129,20 +134,12 @@
 		}
 		notifList.appendChild(notifFrag);
 
-		socket.emit('api:notifications.removeFlag');
-		notifIcon.className = 'icon-circle-blank';
-	});
-	socket.on('api:notifications.hasFlag', function(flag) {
-		var notifIcon = document.querySelector('.notifications a i');
-		if(notifIcon) {
-			if (flag > 0) notifIcon.className = 'icon-circle active';
-			else notifIcon.className = 'icon-circle-blank';
-		}
+		if (data.unread.length > 0) notifIcon.className = 'icon-circle active';
+		else notifIcon.className = 'icon-circle-blank';
 	});
 	socket.on('event:new_notification', function() {
 		document.querySelector('.notifications a i').className = 'icon-circle active';
 	});
-	socket.emit('api:notifications.hasFlag');
 
 
 	socket.on('chatMessage', function(data) {

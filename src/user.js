@@ -1057,22 +1057,6 @@ var utils = require('./../public/src/utils.js'),
 		},
 		getUnreadCount: function(uid, callback) {
 			RDB.zcount('uid:' + uid + ':notifications:unread', 0, 10, callback);
-		},
-		hasFlag: function(uid, callback) {
-			RDB.get('uid:1:notifications:flag', function(err, flag) {
-				if (err) {
-					RDB.handle(err);
-				}
-
-				callback(flag === 1);
-			});
-		},
-		removeFlag: function(uid) {
-			RDB.del('uid:' + uid + ':notifications:flag', function(err) {
-				if (err) {
-					RDB.handle(err);
-				}
-			});
 		}
 	}
 }(exports));

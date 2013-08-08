@@ -409,18 +409,14 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			});
 		});
 
-		socket.on('api:notifications.hasFlag', function(data) {
-			user.notifications.hasFlag(uid, function(flag) {
-				socket.emit('api:notifications.hasFlag', flag);
-			});
-		});
-
-		socket.on('api:notifications.removeFlag', function() {
-			user.notifications.removeFlag(uid);
-		});
-
 		socket.on('api:notifications.mark_read', function(nid) {
 			notifications.mark_read(nid, uid);
+		});
+
+		socket.on('api:notifications.mark_all_read', function(data, callback) {
+			notifications.mark_all_read(uid, function(err) {
+				if (!err) callback();
+			});
 		});
 
 		socket.on('api:categories.getRecentReplies', function(tid) {

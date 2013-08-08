@@ -100,7 +100,7 @@ var	RDB = require('./redis.js'),
 				notifications.get(nid, function(notif_data) {
 					RDB.zrem('uid:' + uid + ':notifications:unread', nid);
 					RDB.zadd('uid:' + uid + ':notifications:read', notif_data.score, nid);
-					if (callback) callback(true);
+					if (callback) callback();
 				});
 			}
 		},
@@ -108,11 +108,22 @@ var	RDB = require('./redis.js'),
 			if (!Array.isArray(nids) && parseInt(nids, 10) > 0) nids = [nids];
 
 			async.each(nids, function(nid, next) {
-				notifications.mark_read(nid, uid, function(success) {
-					if (success) next(null);
+				notifications.mark_read(nid, uid, function(err) {
+					if (!err) next(null);
 				});
 			}, function(err) {
-				if (callback && !err) callback(true);
+				if (callback) callback(err);
+			});
+		},
+		mark_all_read: function(uid, callback) {
+			RDB.zrange('uid:' + uid + ':notifications:unread', 0, 10, function(err, nids) {
+				if (err) return callback(err);
+
+				if (nids.length > 0) {
+					notifications.mark_read_multiple(nids, uid, function(err) {
+						callback(err);
+					});
+				} else callback();
 			});
 		}
 	}
@@ -121,5 +132,6 @@ module.exports = {
 	get: notifications.get,
 	create: notifications.create,
 	push: notifications.push,
-	mark_read: notifications.mark_read_multiple
+	mark_read: notifications.mark_read_multiple,
+	mark_all_read: notifications.mark_all_read
 }
