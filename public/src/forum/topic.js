@@ -205,9 +205,13 @@
 			var	windowHeight = document.body.offsetHeight - $(window).height(),
 				half = windowHeight / 2;
 
-			if (document.body.scrollTop > half && !app.infiniteLoaderActive) {
+			if (document.body.scrollTop > half && !app.infiniteLoaderActive && $('#post-container').children().length) {
 				app.loadMorePosts(tid);
 			}
+		});
+
+		$('.post-container').on('click', '.deleted', function(ev) {
+			$(this).toggleClass('deleted-expanded');
 		});
 	});
 

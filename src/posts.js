@@ -60,11 +60,15 @@ var	RDB = require('./redis.js'),
 		function getPostSummary(pid, callback) {
 			Posts.getPostFields(pid, ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'], function(postData) {
 				if(postData.deleted === '1') {
-					return;
+					return callback(null);
 				}
 
 				Posts.addUserInfoToPost(postData, function() {
 					topics.getTopicField(postData.tid, 'slug', function(topicSlug) {
+
+						if(postData.content)
+							postData.content = utils.strip_tags(postTools.markdownToHTML(postData.content));
+
 						postData.topicSlug = topicSlug;
 						returnData.push(postData);	
 						callback(null);
@@ -77,6 +81,8 @@ var	RDB = require('./redis.js'),
 		async.eachSeries(pids, getPostSummary, function(err) {
 			if(!err) {
 				callback(returnData);
+			} else {
+				console.log(err);
 			}
 		});
 	};
