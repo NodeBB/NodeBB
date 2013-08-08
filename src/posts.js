@@ -65,6 +65,10 @@ var	RDB = require('./redis.js'),
 
 				Posts.addUserInfoToPost(postData, function() {
 					topics.getTopicField(postData.tid, 'slug', function(topicSlug) {
+
+						if(postData.content)
+							postData.content = utils.strip_tags(postTools.markdownToHTML(postData.content));
+
 						postData.topicSlug = topicSlug;
 						returnData.push(postData);	
 						callback(null);
