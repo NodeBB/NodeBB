@@ -158,24 +158,50 @@ var user = require('./../user.js'),
 		app.get('/api/search/:term', function(req, res, next) {
 
 			var reds = require('reds');
-			var search = reds.createSearch('nodebbsearch');
-		
-			search
-				.query(query = req.params.term).type('or')
-				.end(function(err, ids) {
-					if (err) 
-						return next();
-					
-					
-					posts.getPostSummaryByPids(ids, function(posts) {
-						res.json(200, {
-							show_no_results:ids.length?'hide':'show',
-							search_query:req.params.term,
-							posts:posts
-						});						
+			var postSearch = reds.createSearch('nodebbpostsearch');
+			var topicSearch = reds.createSearch('nodebbtopicsearch');
+
+			function search(searchObj, callback) {
+				searchObj
+					.query(query = req.params.term).type('or')
+					.end(callback);
+			}
+
+			function searchPosts(callback) {
+				search(postSearch, function(err, pids) {
+					if(err)
+						return callback(err, null);
+
+					posts.getPostSummaryByPids(pids, function(posts) {
+						callback(null, posts);
 					});
-	
+				})
+			}
+
+			function searchTopics(callback) {
+				search(topicSearch, function(err, tids) {
+					if(err)
+						return callback(err, null);
+					console.log(tids);
+					topics.getTopicsByTids(tids, 0, function(topics) {
+						callback(null, topics);
+					}, 0);
 				});
+			}
+
+			async.parallel([searchPosts, searchTopics], function(err, results) {
+				if (err) 
+					return next();
+				var noresults = !results[0].length && !results[1].length;
+				return res.json({
+					show_no_results: noresults?'show':'hide',
+					search_query:req.params.term,
+					posts:results[0],
+					topics:results[1]
+				});
+			});
+
+
 		});
 		
 		app.get('/api/404', function(req, res) {

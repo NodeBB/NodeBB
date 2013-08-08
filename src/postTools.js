@@ -8,7 +8,8 @@ var	RDB = require('./redis.js'),
 	utils = require('../public/src/utils'),
 	plugins = require('./plugins'),
 	reds = require('reds'),
-	search = reds.createSearch('nodebbsearch');
+	postSearch = reds.createSearch('nodebbpostsearch'),
+	topicSearch = reds.createSearch('nodebbtopicsearch');
 
 (function(PostTools) {
 	PostTools.isMain = function(pid, tid, callback) {
@@ -58,14 +59,18 @@ var	RDB = require('./redis.js'),
 			posts.setPostField(pid, 'edited', Date.now());
 			posts.setPostField(pid, 'editor', uid);
 
-			search.remove(pid, function() {
-				search.index(content, pid);
+			postSearch.remove(pid, function() {
+				postSearch.index(content, pid);
 			});
 
 			posts.getPostField(pid, 'tid', function(tid) {
 				PostTools.isMain(pid, tid, function(isMainPost) {
-					if (isMainPost) 
+					if (isMainPost) {
 						topics.setTopicField(tid, 'title', title);
+						topicSearch.remove(tid, function() {
+							topicSearch.index(title, tid);
+						});
+					}
 
 					io.sockets.in('topic_' + tid).emit('event:post_edited', {
 						pid: pid,
@@ -90,7 +95,7 @@ var	RDB = require('./redis.js'),
 		var success = function() {
 			posts.setPostField(pid, 'deleted', 1);
 			
-			search.remove(pid);
+			postSearch.remove(pid);
 
 			posts.getPostFields(pid, ['tid', 'uid'], function(postData) {
 
@@ -140,7 +145,7 @@ var	RDB = require('./redis.js'),
 					});	
 				});
 
-				search.index(postData.content, pid);
+				postSearch.index(postData.content, pid);
 			});
 		};
 

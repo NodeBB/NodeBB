@@ -13,6 +13,21 @@
 <div class="category row">
 	<div class="span12">
 		<ul id="topics-container" data-search-query="{search_query}">
+		<!-- BEGIN topics -->
+		<a href="../../topic/{topics.slug}" id="tid-{topics.tid}">
+			<li class="category-item">
+				<div class="row-fluid">
+					<div class="span12 img-polaroid">
+						<div class="search-result-post">
+							<img src="{topics.teaser_userpicture}" />
+							<strong>{topics.teaser_username}</strong>: <span class="search-result-text">{topics.title}</span>
+						</div>
+
+					</div>
+				</div>
+			</li>
+		</a>
+		<!-- END topics -->
 		<!-- BEGIN posts -->
 		<a href="../../topic/{posts.topicSlug}#{posts.pid}" id="tid-{posts.tid}">
 			<li class="category-item">

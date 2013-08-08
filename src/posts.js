@@ -10,7 +10,7 @@ var	RDB = require('./redis.js'),
 	async = require('async'),
 	plugins = require('./plugins'),
 	reds = require('reds'),
-	search = reds.createSearch('nodebbsearch');
+	postSearch = reds.createSearch('nodebbpostsearch');
 
 (function(Posts) {
 
@@ -337,7 +337,7 @@ var	RDB = require('./redis.js'),
 						
 						plugins.fireHook('action:save_post_content', [pid, content]);
 						
-						search.index(content, pid);
+						postSearch.index(content, pid);
 					});
 				});
 			} else {
@@ -417,10 +417,10 @@ var	RDB = require('./redis.js'),
 		function reIndex(pid, callback) {
 
 			Posts.getPostField(pid, 'content', function(content) {
-				search.remove(pid, function() {
+				postSearch.remove(pid, function() {
 
 					if(content && content.length) {
-						search.index(content, pid);
+						postSearch.index(content, pid);
 					}
 					callback(null);
 				});
