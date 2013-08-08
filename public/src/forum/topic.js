@@ -209,6 +209,10 @@
 				app.loadMorePosts(tid);
 			}
 		});
+
+		$('.post-container').on('click', '.deleted', function(ev) {
+			$(this).toggleClass('deleted-expanded');
+		});
 	});
 
 	var reply_fn = function() {
