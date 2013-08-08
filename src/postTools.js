@@ -173,7 +173,7 @@ var	RDB = require('./redis.js'),
 				var href = this.attr('href');
 
 				if (href && !href.match(domain)) {
-					this.attr('href', domain + 'outgoing?' + href);
+					this.attr('href', domain + 'outgoing?url=' + encodeURIComponent(href));
 					if (!isSignature) this.append(' <i class="icon-external-link"></i>');
 				}
 			});
