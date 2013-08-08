@@ -203,7 +203,6 @@
 		// Infinite scrolling of posts
 		$(window).off('scroll');
 		$(window).on('scroll', function() {
-			console.log('called scroll for ' + tid);
 			var	windowHeight = document.body.offsetHeight - $(window).height(),
 				half = windowHeight / 2;
 
