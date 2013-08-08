@@ -12,3 +12,4 @@ public/themes/*
 *.sublime-project
 *.sublime-workspace
 plugins/*
+.project
