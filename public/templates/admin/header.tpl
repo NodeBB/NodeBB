@@ -70,7 +70,7 @@
 					<ul class="nav nav-list">
 						<li class="nav-header">NodeBB</li>
 						<li class='active'><a href='{relative_path}/admin/index'><i class='icon-home'></i> Home</a></li>
-						<li class=''><a href='{relative_path}/admin/categories'><i class='icon-folder-close-alt'></i> Categories</a></li>
+						<li class=''><a href='{relative_path}/admin/categories/active'><i class='icon-folder-close-alt'></i> Categories</a></li>
 						<li class=''><a href='{relative_path}/admin/users/latest'><i class='icon-user'></i> Users</a></li>
 						<li class=''><a href='{relative_path}/admin/topics'><i class='icon-book'></i> Topics</a></li>
 						<li class=''><a href='{relative_path}/admin/themes'><i class='icon-th'></i> Themes</a></li>

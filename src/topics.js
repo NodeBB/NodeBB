@@ -10,7 +10,9 @@ var	RDB = require('./redis.js')
 	postTools = require('./postTools'),
 	async = require('async'),
 	feed = require('./feed.js'),
-	favourites = require('./favourites.js');
+	favourites = require('./favourites.js'),
+	reds = require('reds'),
+	topicSearch = reds.createSearch('nodebbtopicsearch');
 
 marked.setOptions({
 	breaks: true
@@ -574,7 +576,7 @@ marked.setOptions({
 				// Global Topics
 				if (uid == null) uid = 0;
 				if (uid !== null) {
-					RDB.sadd('topics:tid', tid);	
+					RDB.sadd('topics:tid', tid);
 				} else {
 					// need to add some unique key sent by client so we can update this with the real uid later
 					RDB.lpush(schema.topics().queued_tids, tid);
@@ -597,6 +599,7 @@ marked.setOptions({
 					'pinned': 0 
 				});
 				
+				topicSearch.index(title, tid);
 				RDB.set('topicslug:' + slug + ':tid', tid);
 
 				posts.create(uid, tid, content, images, function(postData) {

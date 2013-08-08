@@ -27,6 +27,7 @@
 					<option value="category-orange">category-orange</option>
 				</select>
 				<input data-name="description" placeholder="Category Description" value="{categories.description}" class="category_description input-medium description"></input>
+				<button type="submit" class="btn" data-disabled="{categories.disabled}">Disable</button>
 			</form>
 		</li>
 

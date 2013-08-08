@@ -4,7 +4,9 @@ var	RDB = require('./redis.js'),
 	user = require('./user.js'),
 	async = require('async'),
 	notifications = require('./notifications.js'),
-	posts = require('./posts');
+	posts = require('./posts'),
+	reds = require('reds'),
+	topicSearch = reds.createSearch('nodebbtopicsearch');
 
 (function(ThreadTools) {
 
@@ -88,6 +90,8 @@ var	RDB = require('./redis.js'),
 				topics.setTopicField(tid, 'deleted', 1);
 				ThreadTools.lock(tid, uid);
 
+				topicSearch.remove(tid);
+
 				io.sockets.in('topic_' + tid).emit('event:topic_deleted', {
 					tid: tid,
 					status: 'ok'
@@ -116,6 +120,10 @@ var	RDB = require('./redis.js'),
 						tid: tid
 					});
 				}
+
+				topics.getTopicField(tid, 'title', function(title) {
+					topicSearch.index(title, tid);
+				});
 			}
 		});
 	}

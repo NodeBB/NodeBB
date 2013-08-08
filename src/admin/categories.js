@@ -18,7 +18,8 @@ var	RDB = require('./../redis.js'),
 				icon: data.icon,
 				blockclass: data.blockclass,
 				slug: slug,
-				topic_count: 0
+				topic_count: 0,
+				disabled: 0
 			});
 
 			RDB.set('categoryslug:' + slug + ':cid', cid);
