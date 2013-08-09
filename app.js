@@ -34,7 +34,9 @@ console.log('Info: This program comes with ABSOLUTELY NO WARRANTY.');
 console.log('Info: This is free software, and you are welcome to redistribute it under certain conditions.');
 console.log('Info: ===');
 
-if (!nconf.get('setup') && nconf.get('base_url')) {
+if(nconf.get('upgrade')) {
+	require('./src/upgrade').upgrade();
+} else if (!nconf.get('setup') && nconf.get('base_url')) {
 	nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path') + '/');
 	nconf.set('upload_url', nconf.get('url') + 'uploads/');
 	global.nconf = nconf;
