@@ -1,4 +1,6 @@
 (function() {
+	var loadingMoreTopics = false;
+
 	app.enter_room('recent_posts');
 
 	ajaxify.register_events([
@@ -58,7 +60,37 @@
 				app.alertError('There was an error marking topics read!');
 			}
 		});
-
 	});
+
+	function onTopicsLoaded(topics) {
+
+		var html = templates.prepare(templates['recent'].blocks['topics']).parse({ topics: topics }),
+			container = $('#topics-container');
+
+		$('#category-no-topics').remove();
+
+		container.append(html);
+	}
+
+	function loadMoreTopics() {
+		loadingMoreTopics = true;
+		socket.emit('api:topics.loadMoreRecentTopics', {after:$('#topics-container').children().length}, function(data) {
+			if(data.topics && data.topics.length) {
+				onTopicsLoaded(data.topics);
+				console.log(data.topics);
+			}
+			loadingMoreTopics = false;
+		});
+	}
+
+	$(window).off('scroll').on('scroll', function() {
+		var windowHeight = document.body.offsetHeight - $(window).height(),
+			half = windowHeight / 2;
+
+		if (document.body.scrollTop > half && !loadingMoreTopics) {
+			loadMoreTopics();
+		}
+	});
+
 
 })();

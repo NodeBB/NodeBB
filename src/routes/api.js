@@ -108,7 +108,7 @@ var user = require('./../user.js'),
 
 		app.get('/api/recent', function(req, res) {
 			var uid = (req.user) ? req.user.uid : 0;
-			topics.getLatestTopics(uid, 0, 9, function(data) {
+			topics.getLatestTopics(uid, 0, 19, function(data) {
 				res.json(data);
 			});
 		});

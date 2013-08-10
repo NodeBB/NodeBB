@@ -116,8 +116,8 @@
 		}, function(data) {
 			if(data.topics.length) {
 				onTopicsLoaded(data.topics);
-				loadingMoreTopics = false;
 			}
+			loadingMoreTopics = false;
 		});
 	}
 

@@ -97,8 +97,10 @@ marked.setOptions({
 	Topics.getLatestTopics = function(current_user, start, end, callback) {
 
 		var timestamp = Date.now();
+
+		var args = [ 'topics:recent', '+inf', timestamp - 86400000, 'WITHSCORES', 'LIMIT', start, end - start + 1];
 		
-		RDB.zrevrangebyscore([ 'topics:recent', '+inf', timestamp - 86400000], function(err, tids) {
+		RDB.zrevrangebyscore(args, function(err, tids) {
 			
 			var latestTopics = {
 				'category_name' : 'Recent',

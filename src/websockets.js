@@ -570,6 +570,15 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			});
 		});
 
+		socket.on('api:topics.loadMoreRecentTopics', function(data, callback) {
+			var start = data.after,
+				end = start + 9;
+
+			topics.getLatestTopics(uid, start, end, function(latestTopics) {
+				callback(latestTopics);
+			});
+		});
+
 		socket.on('api:admin.topics.getMore', function(data) {
 			topics.getAllTopics(data.limit, data.after, function(topics) {
 				socket.emit('api:admin.topics.getMore', JSON.stringify(topics));
