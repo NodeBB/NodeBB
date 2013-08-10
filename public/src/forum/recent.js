@@ -77,7 +77,6 @@
 		socket.emit('api:topics.loadMoreRecentTopics', {after:$('#topics-container').children().length}, function(data) {
 			if(data.topics && data.topics.length) {
 				onTopicsLoaded(data.topics);
-				console.log(data.topics);
 			}
 			loadingMoreTopics = false;
 		});
