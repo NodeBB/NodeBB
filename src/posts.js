@@ -108,6 +108,20 @@ var	RDB = require('./redis.js'),
 		});		
 	}
 
+	Posts.getPostField = function(pid, field, callback) {
+		RDB.hget('post:' + pid, field, function(err, data) {
+			if(err === null)
+				callback(data);
+			else
+				console.log(err);
+		});
+	}
+
+	Posts.setPostField = function(pid, field, value) {
+		RDB.hset('post:' + pid, field, value);
+	}
+
+
 	Posts.getPostsByPids = function(pids, callback) {
 		var posts = [];			
 
@@ -139,35 +153,6 @@ var	RDB = require('./redis.js'),
 				callback([]);
 			}
 		});
-	}
-
-	Posts.getPostField = function(pid, field, callback) {
-		RDB.hget('post:' + pid, field, function(err, data) {
-			if(err === null)
-				callback(data);
-			else
-				console.log(err);
-		});
-	}
-
-	Posts.setPostField = function(pid, field, value) {
-		RDB.hset('post:' + pid, field, value);
-	}
-
-	Posts.getPostFields = function(pid, fields, callback) {
-		RDB.hmget('post:' + pid, fields, function(err, data) {
-			if(err === null) {
-				var returnData = {};
-				
-				for(var i=0, ii=fields.length; i<ii; ++i) {
-					returnData[fields[i]] = data[i];
-				}
-
-				callback(returnData);
-			}
-			else
-				console.log(err);
-		});		
 	}
 
 	Posts.get_cid_by_pid = function(pid, callback) {
@@ -317,7 +302,8 @@ var	RDB = require('./redis.js'),
 
 							feed.updateTopic(tid, cid);
 
-							RDB.zadd('categories:recent_posts:cid:' + cid, Date.now(), pid);
+							RDB.zadd('categories:recent_posts:cid:' + cid, timestamp, pid);
+							RDB.zadd('categories:' + cid + ':tid', timestamp, tid);
 
 							// this is a bit of a naive implementation, defn something to look at post-MVP
 							RDB.scard('cid:' + cid + ':active_users', function(amount) {

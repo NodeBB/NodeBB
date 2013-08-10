@@ -201,9 +201,8 @@
 		}, false);
 
 		// Infinite scrolling of posts
-		$(window).off('scroll');
-		$(window).on('scroll', function() {
-			var	windowHeight = document.body.offsetHeight - $(window).height(),
+		$(window).off('scroll').on('scroll', function() {
+			var windowHeight = document.body.offsetHeight - $(window).height(),
 				half = windowHeight / 2;
 
 			if (document.body.scrollTop > half && !app.infiniteLoaderActive && $('#post-container').children().length) {

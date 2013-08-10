@@ -628,7 +628,7 @@ marked.setOptions({
 
 
 				// in future it may be possible to add topics to several categories, so leaving the door open here.
-				RDB.sadd('categories:' + category_id + ':tid', tid);
+				RDB.zadd('categories:' + category_id + ':tid', timestamp, tid);
 				RDB.hincrby('category:' + category_id, 'topic_count', 1);
 				RDB.incr('totaltopiccount');
 
@@ -651,6 +651,17 @@ marked.setOptions({
 			else
 				console.log(err);
 		});
+	}
+	
+	Topics.getTopicFields = function(tid, fields, callback) {
+		RDB.hmgetObject('topic:' + tid, fields, function(err, data) {
+			if(err === null) {
+				callback(data);
+			}
+			else {
+				console.log(err);
+			}
+		});		
 	}
 
 	Topics.setTopicField = function(tid, field, value) {

@@ -6,7 +6,8 @@
 		googleEl = document.getElementById('google-share'),
 		twitter_url = templates.get('twitter-intent-url'),
 		facebook_url = templates.get('facebook-share-url'),
-		google_url = templates.get('google-share-url');
+		google_url = templates.get('google-share-url'),
+		loadingMoreTopics = false;
 		
 	app.enter_room(room);
 
@@ -26,7 +27,7 @@
 	var new_post = document.getElementById('new_post');
 	new_post.onclick = function() {
 		require(['composer'], function(cmp) {
-		    cmp.push(0, cid);
+			cmp.push(0, cid);
 		});
 	}
 
@@ -34,7 +35,8 @@
 		'event:new_topic'
 	]);
 
-	socket.on('event:new_topic', function(data) {
+	function onNewTopic(data) {
+
 		var html = templates.prepare(templates['category'].blocks['topics']).parse({ topics: [data] }),
 			topic = document.createElement('div'),
 			container = document.getElementById('topics-container'),
@@ -59,8 +61,9 @@
 			container.insertBefore(topic, null);
 			$(topic).hide().fadeIn('slow');
 		}
-	});
+	}
 
+	socket.on('event:new_topic', onNewTopic);
 
 	socket.emit('api:categories.getRecentReplies', cid);
 	socket.on('api:categories.getRecentReplies', function(posts) {
@@ -91,5 +94,41 @@
 			recent_replies.appendChild(frag);
 		}
 	});
+	
+	function onTopicsLoaded(topics) {
+
+		var html = templates.prepare(templates['category'].blocks['topics']).parse({ topics: topics }),
+			container = $('#topics-container');
+
+		jQuery('#topics-container, .category-sidebar').removeClass('hidden');
+		jQuery('#category-no-topics').remove();
+
+		container.append(html);
+	}
+	
+
+
+	function loadMoreTopics(cid) {
+		loadingMoreTopics = true;
+		socket.emit('api:category.loadMore', {
+			cid: cid, 
+			after: $('#topics-container').children().length 
+		}, function(data) {
+			if(data.topics.length) {
+				onTopicsLoaded(data.topics);
+				loadingMoreTopics = false;
+			}
+		});
+	}
+
+	$(window).off('scroll').on('scroll', function(ev) {
+		var windowHeight = document.body.offsetHeight - $(window).height(),
+			half = windowHeight / 2;
+
+		if (document.body.scrollTop > half && !loadingMoreTopics) {
+			loadMoreTopics(cid);
+		}
+	});
+
 
 })();

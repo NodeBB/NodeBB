@@ -133,7 +133,10 @@ var	RDB = require('./redis.js'),
 			if (privileges.editable) {
 				
 				topics.setTopicField(tid, 'pinned', 1);
-
+				topics.getTopicField(tid, 'cid', function(cid) {
+					RDB.zadd('categories:' + cid + ':tid', Math.pow(2,53), tid);
+				});
+				
 				if (socket) {
 					io.sockets.in('topic_' + tid).emit('event:topic_pinned', {
 						tid: tid,
@@ -154,7 +157,9 @@ var	RDB = require('./redis.js'),
 			if (privileges.editable) {
 				
 				topics.setTopicField(tid, 'pinned', 0);
-
+				topics.getTopicFields(tid, ['cid', 'lastposttime'], function(topicData) {
+					RDB.zadd('categories:' + topicData.cid + ':tid', topicData.lastposttime, tid);
+				});
 				if (socket) {
 					io.sockets.in('topic_' + tid).emit('event:topic_unpinned', {
 						tid: tid,
@@ -172,13 +177,19 @@ var	RDB = require('./redis.js'),
 
 	ThreadTools.move = function(tid, cid, socket) {
 		
-		topics.getTopicField(tid, 'cid', function(oldCid) {
+		topics.getTopicFields(tid, ['cid', 'lastposttime'], function(topicData) {
+			var oldCid = topicData.cid;
+			var multi = RDB.multi();
 
-			RDB.smove('categories:' + oldCid + ':tid', 'categories:' + cid + ':tid', tid, function(err, result) {
+			multi.zrem('categories:' + oldCid + ':tid', tid);
+			multi.zadd('categories:' + cid + ':tid', topicData.lastposttime, tid);
+		
+			multi.exec(function(err, result) {
+
 				if (!err && result === 1) {
 
 					topics.setTopicField(tid, 'cid', cid);
-					
+
 					categories.moveRecentReplies(tid, oldCid, cid, function(err, data) {
 						if(err) {
 							console.log(err);

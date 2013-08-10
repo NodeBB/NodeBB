@@ -1,11 +1,12 @@
 (function(RedisDB) {
-	var	redis = require('redis'),
+	var redis = require('redis'),
+		nconf = require('nconf'),
 		utils = require('./../public/src/utils.js');
 	
-	RedisDB.exports = redis.createClient(global.nconf.get('redis:port'), global.nconf.get('redis:host'));
+	RedisDB.exports = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host'));
 
-	if( global.nconf.get('redis:password') ) {
-		RedisDB.exports.auth(global.nconf.get('redis:password'));
+	if(nconf.get('redis:password')) {
+		RedisDB.exports.auth(nconf.get('redis:password'));
 	}
 
 	RedisDB.exports.handle = function(error) {

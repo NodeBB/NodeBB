@@ -17,8 +17,9 @@ var	RDB = require('./redis.js'),
 				category_description = categoryData.description;
 
 			function getTopicIds(next) {
-				Categories.getTopicIds(category_id, next);
+				Categories.getTopicIds(category_id, 0, 19, next);
 			}
+
 			function getActiveUsers(next) {
 				Categories.getActiveUsers(category_id, next);
 			}
@@ -44,15 +45,7 @@ var	RDB = require('./redis.js'),
 
 				function getTopics(next) {
 					topics.getTopicsByTids(tids, current_user, function(topicsData) {
-						// Float pinned topics to the top
-						topicsData = topicsData.sort(function(a, b) {
-							if (a.pinned !== b.pinned) return b.pinned - a.pinned;
-							else {
-								return b.lastposttime - a.lastposttime;
-							}
-						});
 						next(null, topicsData);
-						
 					}, category_id);
 				}
 				
@@ -89,8 +82,16 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
-	Categories.getTopicIds = function(cid, callback) {
-		RDB.smembers('categories:' + cid + ':tid', callback);
+	Categories.getCategoryTopics = function(cid, start, stop, uid, callback) {
+		Categories.getTopicIds(cid, start, stop, function(err, tids) {
+			topics.getTopicsByTids(tids, uid, function(topicsData) {
+				callback(topicsData);
+			}, cid);
+		});
+	}
+
+	Categories.getTopicIds = function(cid, start, stop, callback) {
+		RDB.zrevrange('categories:' + cid + ':tid', start, stop, callback);
 	}
 
 	Categories.getActiveUsers = function(cid, callback) {
@@ -144,7 +145,7 @@ var	RDB = require('./redis.js'),
 	}
 
 	Categories.isTopicsRead = function(cid, uid, callback) {
-		RDB.smembers('categories:' + cid + ':tid', function(err, tids) {
+		RDB.zrange('categories:' + cid + ':tid', 0, -1, function(err, tids) {
 
 			topics.hasReadTopics(tids, uid, function(hasRead) {
 
