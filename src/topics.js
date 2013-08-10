@@ -148,6 +148,7 @@ marked.setOptions({
 			function sendUnreadTopics(topicIds) {
 				Topics.getTopicsByTids(topicIds, uid, function(topicData) {
 					unreadTopics.topics = topicData;
+					unreadTopics.nextStart = start + tids.length;
 					callback(unreadTopics);
 				});
 			}
@@ -532,7 +533,7 @@ marked.setOptions({
 			});
 	}
 
-	Topics.post = function(socket, uid, title, content, category_id, images) {
+	Topics.post = function(uid, title, content, category_id, images, callback) {
 		if (!category_id) 
 			throw new Error('Attempted to post without a category_id');
 		
@@ -542,33 +543,20 @@ marked.setOptions({
 			title = title.trim();
 		
 		if (uid === 0) {
-			socket.emit('event:alert', {
-				title: 'Thank you for posting',
-				message: 'Since you are unregistered, your post is awaiting approval. Click here to register now.',
-				type: 'warning',
-				timeout: 7500,
-				clickfn: function() {
-					ajaxify.go('register');
-				}
-			});
-			return; // for now, until anon code is written.
+			callback(new Error('not-logged-in'), null);
+			return;
 		} else if(!title || title.length < Topics.minimumTitleLength) {
-			Topics.emitTitleTooShortAlert(socket);
+			callback(new Error('title-too-short'), null);
 			return;
 		} else if (!content || content.length < posts.miminumPostLength) {
-			posts.emitContentTooShortAlert(socket);
+			callback(new Error('content-too-short'), null);
 			return;
 		}
 		
 		user.getUserField(uid, 'lastposttime', function(lastposttime) {
 
 			if(Date.now() - lastposttime < config.post_delay) {
-				socket.emit('event:alert', {
-					title: 'Too many posts!',
-					message: 'You can only post every '+ (config.post_delay / 1000) + ' seconds.',
-					type: 'error',
-					timeout: 2000
-				});
+				callback(new Error('too-many-posts'), null);
 				return;
 			}
 
@@ -604,23 +592,6 @@ marked.setOptions({
 				topicSearch.index(title, tid);
 				RDB.set('topicslug:' + slug + ':tid', tid);
 
-				posts.create(uid, tid, content, images, function(postData) {
-					if (postData) {
-						RDB.lpush(schema.topics(tid).posts, postData.pid);
-
-						// Auto-subscribe the post creator to the newly created topic
-						threadTools.toggleFollow(tid, uid);
-
-						// Notify any users looking at the category that a new topic has arrived
-						Topics.getTopicForCategoryView(tid, uid, function(topicData) {
-							io.sockets.in('category_' + category_id).emit('event:new_topic', topicData);
-							io.sockets.in('recent_posts').emit('event:new_topic', topicData);
-						});
-
-						posts.getTopicPostStats(socket);
-					}
-				});
-
 				user.addTopicIdToUser(uid, tid);
 
 				// let everyone know that there is an unread topic in this category
@@ -636,11 +607,21 @@ marked.setOptions({
 
 				feed.updateCategory(category_id);
 
-				socket.emit('event:alert', {
-					title: 'Thank you for posting',
-					message: 'You have successfully posted. Click here to view your post.',
-					type: 'notify',
-					timeout: 2000
+				posts.create(uid, tid, content, images, function(postData) {
+					if (postData) {
+						RDB.lpush(schema.topics(tid).posts, postData.pid);
+
+						// Auto-subscribe the post creator to the newly created topic
+						threadTools.toggleFollow(tid, uid);
+
+						// Notify any users looking at the category that a new topic has arrived
+						Topics.getTopicForCategoryView(tid, uid, function(topicData) {
+							io.sockets.in('category_' + category_id).emit('event:new_topic', topicData);
+							io.sockets.in('recent_posts').emit('event:new_topic', topicData);
+						});
+
+						callback(null, postData);
+					}
 				});
 			});
 		});

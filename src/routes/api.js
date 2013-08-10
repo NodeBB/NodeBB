@@ -115,7 +115,7 @@ var user = require('./../user.js'),
 
 		app.get('/api/unread', function(req, res) {
 			var uid = (req.user) ? req.user.uid : 0;
-			topics.getUnreadTopics(uid, 0, -1, function(data) {
+			topics.getUnreadTopics(uid, 0, 19, function(data) {
 				res.json(data);
 			});
 		});
