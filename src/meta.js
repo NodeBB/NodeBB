@@ -7,32 +7,15 @@ var utils = require('./../public/src/utils.js'),
 (function(Meta) {
 	Meta.config = {
 		get: function(callback) {
-			var config = {};
-
-			async.waterfall([
-				function(next) {
-					RDB.hkeys('config', function(err, keys) {
-						next(err, keys);
-					});
-				},
-				function(keys, next) {
-					async.each(keys, function(key, next) {
-						RDB.hget('config', key, function(err, value) {
-							if (!err) {
-								config[key] = value;
-							}
-
-							next(err);
-						});
-					}, next);
-				}
-			], function(err) {
+			RDB.hgetall('config', function(err, config) {
 				if (!err) {
 					config.status = 'ok';
 					callback(config);
-				} else callback({
-					status: 'error'
-				});
+				} else {
+					callback({
+						status: 'error'
+					});
+				}
 			});
 		},
 		set: function(field, value, callback) {
