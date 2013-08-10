@@ -47,10 +47,24 @@
 		++newPostCount;
 		updateAlertText();
 	});
+	
+	$('#mark-allread-btn').on('click', function() {
+		var btn = $(this);
+		socket.emit('api:topics.markAllRead', {} , function(success) {
+			if(success) {
+				btn.remove();
+				$('#topics-container').empty();
+				$('#category-no-topics').removeClass('hidden');			
+				app.alertSuccess('All topics marked as read!');
+			} else {
+				app.alertError('There was an error marking topics read!');
+			}
+		});
+	});
 
 	function onTopicsLoaded(topics) {
 
-		var html = templates.prepare(templates['recent'].blocks['topics']).parse({ topics: topics }),
+		var html = templates.prepare(templates['unread'].blocks['topics']).parse({ topics: topics }),
 			container = $('#topics-container');
 
 		$('#category-no-topics').remove();
@@ -60,9 +74,10 @@
 
 	function loadMoreTopics() {
 		loadingMoreTopics = true;
-		socket.emit('api:topics.loadMoreRecentTopics', {after:$('#topics-container').children().length}, function(data) {
+		socket.emit('api:topics.loadMoreUnreadTopics', {after:parseInt($('#topics-container').attr('data-next-start'), 10)}, function(data) {
 			if(data.topics && data.topics.length) {
 				onTopicsLoaded(data.topics);
+				$('#topics-container').attr('data-next-start', data.nextStart);
 			}
 			loadingMoreTopics = false;
 		});
@@ -77,5 +92,12 @@
 		}
 	});
 
+
+	if($("body").height() <= $(window).height() && $('#topics-container').children().length)
+		$('#load-more-btn').show();
+
+	$('#load-more-btn').on('click', function() {
+		loadMoreTopics();
+	});
 
 })();

@@ -178,34 +178,30 @@ var	RDB = require('./redis.js'),
 			alert_id: 'post_error'
 		});
 	}
+	
+	Posts.emitTooManyPostsAlert = function(socket) {
+		socket.emit('event:alert', {
+			title: 'Too many posts!',
+			message: 'You can only post every '+ (config.post_delay / 1000) + ' seconds.',
+			type: 'error',
+			timeout: 2000
+		});
+	}
 
-	Posts.reply = function(socket, tid, uid, content, images) {
+	Posts.reply = function(tid, uid, content, images, callback) {
 		if(content) {
 			content = content.trim();
 		}
 		
-		if (uid < 1) {
-			socket.emit('event:alert', {
-				title: 'Reply Unsuccessful',
-				message: 'You don&apos;t seem to be logged in, so you cannot reply.',
-				type: 'error',
-				timeout: 2000
-			});
-			return;
-		} else if (!content || content.length < Posts.minimumPostLength) {
-			Posts.emitContentTooShortAlert(socket);
+		if (!content || content.length < Posts.minimumPostLength) {
+			callback(new Error('content-too-short'), null);
 			return;
 		}
 
 		user.getUserField(uid, 'lastposttime', function(lastposttime) {
 
 			if(Date.now() - lastposttime < config.post_delay) {
-				socket.emit('event:alert', {
-					title: 'Too many posts!',
-					message: 'You can only post every '+ (config.post_delay / 1000) + ' seconds.',
-					type: 'error',
-					timeout: 2000
-				});
+				callback(new Error('too-many-posts'), null);
 				return;
 			}
 
@@ -221,17 +217,7 @@ var	RDB = require('./redis.js'),
 						});
 					});
 
-					Posts.getTopicPostStats(socket);
-
-					// Send notifications to users who are following this topic
 					threadTools.notify_followers(tid, uid);
-
-					socket.emit('event:alert', {
-						title: 'Reply Successful',
-						message: 'You have successfully replied. Click here to view your reply.',
-						type: 'notify',
-						timeout: 2000
-					});
 
 					postData.content = postTools.markdownToHTML(postData.content);
 					postData.post_rep = 0;
@@ -251,14 +237,9 @@ var	RDB = require('./redis.js'),
 						io.sockets.in('recent_posts').emit('event:new_post', socketData);
 					});					
 			
-				
+					callback(null, 'Reply successful');
 				} else {
-					socket.emit('event:alert', {
-						title: 'Reply Unsuccessful',
-						message: 'Your reply could not be posted at this time. Please try again later.',
-						type: 'notify',
-						timeout: 2000
-					});
+					callback(new Error('reply-error'), null);
 				}
 			});
 		});

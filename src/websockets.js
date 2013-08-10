@@ -304,7 +304,41 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('api:topics.post', function(data) {
-			topics.post(socket, uid, data.title, data.content, data.category_id, data.images);
+
+			topics.post(uid, data.title, data.content, data.category_id, data.images, function(err, result) {
+				if(err) {
+					if(err.message === 'not-logged-in') {
+						socket.emit('event:alert', {
+							title: 'Thank you for posting',
+							message: 'Since you are unregistered, your post is awaiting approval. Click here to register now.',
+							type: 'warning',
+							timeout: 7500,
+							clickfn: function() {
+								ajaxify.go('register');
+							}
+						});
+					} else if(err.message === 'title-too-short') {
+						topics.emitTitleTooShortAlert(socket);
+					} else if(err.message === 'content-too-short') {
+						posts.emitContentTooShortAlert(socket);
+					} else if (err.message === 'too-many-posts') {
+						posts.emitTooManyPostsAlert(socket);
+					}
+					return;
+				}
+				
+				if(result) {
+					posts.getTopicPostStats(socket);
+					
+					socket.emit('event:alert', {
+						title: 'Thank you for posting',
+						message: 'You have successfully posted. Click here to view your post.',
+						type: 'notify',
+						timeout: 2000
+					});
+				}				
+			});
+			
 		});
 		
 		socket.on('api:topics.markAllRead', function(data, callback) {
@@ -318,7 +352,47 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('api:posts.reply', function(data) {
-			posts.reply(socket, data.topic_id, uid, data.content, data.images);
+			if(uid < 1) {
+				socket.emit('event:alert', {
+					title: 'Reply Unsuccessful',
+					message: 'You don&apos;t seem to be logged in, so you cannot reply.',
+					type: 'error',
+					timeout: 2000
+				});
+				return;
+			}
+			
+			posts.reply(data.topic_id, uid, data.content, data.images, function(err, result) {
+				if(err) {
+					if(err.message === 'content-too-short') {
+						posts.emitContentTooShortAlert(socket);
+					} else if(err.messages === 'too-many-posts') {
+						posts.emitTooManyPostsAlert(socket);
+					} else if(err.message === 'reply-error') {
+						socket.emit('event:alert', {
+							title: 'Reply Unsuccessful',
+							message: 'Your reply could not be posted at this time. Please try again later.',
+							type: 'notify',
+							timeout: 2000
+						});
+					}
+					return;
+				}
+				
+				if(result) {
+					
+					posts.getTopicPostStats(socket);
+					
+					socket.emit('event:alert', {
+						title: 'Reply Successful',
+						message: 'You have successfully replied. Click here to view your reply.',
+						type: 'notify',
+						timeout: 2000
+					});
+					
+				}
+				
+			});
 		});
 
 		socket.on('api:user.active.get', function() {
@@ -576,6 +650,16 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 			topics.getLatestTopics(uid, start, end, function(latestTopics) {
 				callback(latestTopics);
+			});
+		});
+		
+		socket.on('api:topics.loadMoreUnreadTopics', function(data, callback) {
+			var start = data.after,
+				end = start + 9;
+			
+			console.log(start, end);
+			topics.getUnreadTopics(uid, start, end, function(unreadTopics) {
+				callback(unreadTopics);
 			});
 		});
 

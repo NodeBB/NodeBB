@@ -21,7 +21,7 @@
 
 <div class="category row">
 	<div class="{topic_row_size}">
-		<ul id="topics-container">
+		<ul id="topics-container" data-next-start="{nextStart}">
 		<!-- BEGIN topics -->
 		<a href="../../topic/{topics.slug}" id="tid-{topics.tid}">
 			<li class="category-item {topics.deleted-class}">
@@ -48,7 +48,8 @@
 		</a>
 		<!-- END topics -->
 		</ul>
+		<button id="load-more-btn" class="btn hide">Load More</button>
 	</div>
 </div>
 
-<script type="text/javascript" src="{relative_path}/src/forum/recent.js"></script>
+<script type="text/javascript" src="{relative_path}/src/forum/unread.js"></script>
