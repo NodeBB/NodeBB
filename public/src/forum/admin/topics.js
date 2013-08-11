@@ -32,6 +32,23 @@ $(document).ready(function() {
 			socket.emit('api:admin.topics.getMore', {
 				limit: 10,
 				after: lastTid
+			}, function(topics) {
+				var btnEl = document.getElementById('topics_loadmore');
+
+				topics = JSON.parse(topics);
+				if (topics.length > 0) {
+					var	html = templates.prepare(templates['admin/topics'].blocks['topics']).parse({
+							topics: topics
+						}),
+						topicsListEl = document.querySelector('.topics');
+
+					topicsListEl.innerHTML += html;
+					btnEl.innerHTML = 'Load More Topics';
+				} else {
+					// Exhausted all topics
+					btnEl.className += ' disabled';
+					btnEl.innerHTML = 'No more topics';
+				}
 			});
 		}
 	}, false);
@@ -94,25 +111,5 @@ socket.on('api:topic.restore', function(response) {
 		var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="delete"]');
 
 		$(btnEl).removeClass('active');
-	}
-});
-
-socket.on('api:admin.topics.getMore', function(topics) {
-	var btnEl = document.getElementById('topics_loadmore');
-
-	topics = JSON.parse(topics);
-	console.log(topics);
-	if (topics.length > 0) {
-		var	html = templates.prepare(templates['admin/topics'].blocks['topics']).parse({
-				topics: topics
-			}),
-			topicsListEl = document.querySelector('.topics');
-
-		topicsListEl.innerHTML += html;
-		btnEl.innerHTML = 'Load More Topics';
-	} else {
-		// Exhausted all topics
-		btnEl.className += ' disabled';
-		btnEl.innerHTML = 'No more topics';
 	}
 });
