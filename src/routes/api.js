@@ -210,5 +210,9 @@ var user = require('./../user.js'),
 		app.get('/api/404', function(req, res) {
 			res.json({});
 		});
+		
+		app.get('/api/403', function(req, res) {
+			res.json({});
+		});
 	}
 }(exports));
