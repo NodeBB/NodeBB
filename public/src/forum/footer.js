@@ -93,6 +93,7 @@
 			socket.emit('api:notifications.get');
 			socket.emit('api:notifications.mark_all_read', null, function() {
 				notifIcon.className = 'icon-circle-blank';
+				utils.refreshTitle();
 			});
 		}
 	});
@@ -139,6 +140,7 @@
 	});
 	socket.on('event:new_notification', function() {
 		document.querySelector('.notifications a i').className = 'icon-circle active';
+		utils.refreshTitle();
 	});
 
 

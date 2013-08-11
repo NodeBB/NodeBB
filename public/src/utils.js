@@ -124,6 +124,15 @@
 			}
 
 			return tags;
+		},
+
+		refreshTitle: function() {
+			var	a = document.createElement('a');
+
+			a.href = document.location;
+			socket.emit('api:meta.buildTitle', a.pathname.slice(1), function(title) {
+				document.title = title;
+			});
 		}
 	}
 
