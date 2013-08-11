@@ -43,9 +43,9 @@ $(document).ready(function() {
 		if (topicEls[x].getAttribute('data-pinned') === '1') topicEls[x].querySelector('[data-action="pin"]').className += ' active';
 		if (topicEls[x].getAttribute('data-locked') === '1') topicEls[x].querySelector('[data-action="lock"]').className += ' active';
 		if (topicEls[x].getAttribute('data-deleted') === '1') topicEls[x].querySelector('[data-action="delete"]').className += ' active';
-		// topicEls[x].removeAttribute('data-pinned');
-		// topicEls[x].removeAttribute('data-locked');
-		// topicEls[x].removeAttribute('data-deleted');
+		topicEls[x].removeAttribute('data-pinned');
+		topicEls[x].removeAttribute('data-locked');
+		topicEls[x].removeAttribute('data-deleted');
 	}
 });
 
