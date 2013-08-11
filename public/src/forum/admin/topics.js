@@ -40,12 +40,12 @@ $(document).ready(function() {
 	var	topicEls = topicsListEl.querySelectorAll('li'),
 		numTopics = topicEls.length;
 	for(var x=0;x<numTopics;x++) {
-		if (topicEls[x].getAttribute('data-pinned')) topicEls[x].querySelector('[data-action="pin"]').className += ' active';
-		if (topicEls[x].getAttribute('data-locked')) topicEls[x].querySelector('[data-action="lock"]').className += ' active';
-		if (topicEls[x].getAttribute('data-deleted')) topicEls[x].querySelector('[data-action="delete"]').className += ' active';
-		topicEls[x].removeAttribute('data-pinned');
-		topicEls[x].removeAttribute('data-locked');
-		topicEls[x].removeAttribute('data-deleted');
+		if (topicEls[x].getAttribute('data-pinned') === '1') topicEls[x].querySelector('[data-action="pin"]').className += ' active';
+		if (topicEls[x].getAttribute('data-locked') === '1') topicEls[x].querySelector('[data-action="lock"]').className += ' active';
+		if (topicEls[x].getAttribute('data-deleted') === '1') topicEls[x].querySelector('[data-action="delete"]').className += ' active';
+		// topicEls[x].removeAttribute('data-pinned');
+		// topicEls[x].removeAttribute('data-locked');
+		// topicEls[x].removeAttribute('data-deleted');
 	}
 });
 
