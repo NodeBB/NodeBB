@@ -33,7 +33,7 @@
     "sitemap": "~0.6.0",
     "cheerio": "~0.12.0",
     "request": "~2.25.0",
-    "reds": "~0.2.3"
+    "reds": "~0.2.4"
   },
   "bugs": {
     "url": "https://github.com/designcreateplay/NodeBB/issues"
