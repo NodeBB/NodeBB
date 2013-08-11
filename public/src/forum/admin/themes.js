@@ -39,7 +39,7 @@ var nodebb_admin = (function(nodebb_admin) {
 
 (function() {
 	var scriptEl = document.createElement('script');
-	scriptEl.src = 'http://api.bootswatch.com?callback=nodebb_admin.themes.render';
+	scriptEl.src = 'http://api.bootswatch.com/2/?callback=nodebb_admin.themes.render';
 	document.body.appendChild(scriptEl);
 
 	var	bootstrapThemeContainer = document.querySelector('#bootstrap_themes'),
@@ -81,7 +81,7 @@ var nodebb_admin = (function(nodebb_admin) {
 	}, false);
 
 	// Installed Themes
-	socket.once('api:admin:themes.getInstalled', function(themes) {
+	socket.emit('api:admin.themes.getInstalled', function(themes) {
 		var	instListEl = document.getElementById('installed_themes'),
 			themeFrag = document.createDocumentFragment(),
 			liEl = document.createElement('li');
@@ -108,5 +108,4 @@ var nodebb_admin = (function(nodebb_admin) {
 		instListEl.innerHTML = '';
 		instListEl.appendChild(themeFrag);
 	});
-	socket.emit('api:admin:themes.getInstalled');
 })();

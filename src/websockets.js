@@ -701,9 +701,9 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				socket.emit('api:admin.user.search', null);
 		});
 
-		socket.on('api:admin:themes.getInstalled', function() {
+		socket.on('api:admin.themes.getInstalled', function(callback) {
 			meta.themes.get(function(err, themeArr) {
-				socket.emit('api:admin:themes.getInstalled', themeArr);
+				callback(themeArr);
 			});
 		});
 
