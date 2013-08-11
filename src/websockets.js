@@ -663,9 +663,9 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			});
 		});
 
-		socket.on('api:admin.topics.getMore', function(data) {
+		socket.on('api:admin.topics.getMore', function(data, callback) {
 			topics.getAllTopics(data.limit, data.after, function(topics) {
-				socket.emit('api:admin.topics.getMore', JSON.stringify(topics));
+				callback(JSON.stringify(topics));
 			});
 		});
 
@@ -701,9 +701,9 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				socket.emit('api:admin.user.search', null);
 		});
 
-		socket.on('api:admin:themes.getInstalled', function() {
+		socket.on('api:admin.themes.getInstalled', function(callback) {
 			meta.themes.get(function(err, themeArr) {
-				socket.emit('api:admin:themes.getInstalled', themeArr);
+				callback(themeArr);
 			});
 		});
 

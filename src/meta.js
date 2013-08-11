@@ -49,7 +49,7 @@ var utils = require('./../public/src/utils.js'),
 										themeArr.push(conf);
 										next();
 									});
-								}
+								} else next();
 							});
 						} else next();
 					});
@@ -57,9 +57,6 @@ var utils = require('./../public/src/utils.js'),
 					callback(err, themeArr);
 				});
 			});
-		},
-		saveViaGithub: function(repo_url, callback) {
-			// ...
 		}
 	}
 

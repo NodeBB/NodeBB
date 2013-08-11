@@ -39,7 +39,7 @@ var nodebb_admin = (function(nodebb_admin) {
 
 (function() {
 	var scriptEl = document.createElement('script');
-	scriptEl.src = 'http://api.bootswatch.com?callback=nodebb_admin.themes.render';
+	scriptEl.src = 'http://api.bootswatch.com/2/?callback=nodebb_admin.themes.render';
 	document.body.appendChild(scriptEl);
 
 	var	bootstrapThemeContainer = document.querySelector('#bootstrap_themes'),
@@ -81,32 +81,38 @@ var nodebb_admin = (function(nodebb_admin) {
 	}, false);
 
 	// Installed Themes
-	socket.once('api:admin:themes.getInstalled', function(themes) {
+	socket.emit('api:admin.themes.getInstalled', function(themes) {
 		var	instListEl = document.getElementById('installed_themes'),
 			themeFrag = document.createDocumentFragment(),
 			liEl = document.createElement('li');
 
-		for(var x=0,numThemes=themes.length;x<numThemes;x++) {
-			liEl.setAttribute('data-theme', themes[x].id);
-			liEl.setAttribute('data-css', themes[x].src);
-			liEl.innerHTML =	'<img src="' + themes[x].screenshot + '" />' +
-								'<div>' +
-									'<div class="pull-right">' +
-										'<button class="btn btn-primary" data-action="use">Use</button> ' +
-										'<button class="btn" data-action="preview">Preview</button>' +
+		if (themes.length > 0) {
+			for(var x=0,numThemes=themes.length;x<numThemes;x++) {
+				liEl.setAttribute('data-theme', themes[x].id);
+				liEl.setAttribute('data-css', themes[x].src);
+				liEl.innerHTML =	'<img src="' + themes[x].screenshot + '" />' +
+									'<div>' +
+										'<div class="pull-right">' +
+											'<button class="btn btn-primary" data-action="use">Use</button> ' +
+											'<button class="btn" data-action="preview">Preview</button>' +
+										'</div>' +
+										'<h4>' + themes[x].name + '</h4>' +
+										'<p>' +
+											themes[x].description +
+											(themes[x].url ? ' (<a href="' + themes[x].url + '">Homepage</a>)' : '') +
+										'</p>' +
 									'</div>' +
-									'<h4>' + themes[x].name + '</h4>' +
-									'<p>' +
-										themes[x].description +
-										(themes[x].url ? ' (<a href="' + themes[x].url + '">Homepage</a>)' : '') +
-									'</p>' +
-								'</div>' +
-								'<div class="clear">';
-			themeFrag.appendChild(liEl.cloneNode(true));
+									'<div class="clear">';
+				themeFrag.appendChild(liEl.cloneNode(true));
+			}
+		} else {
+			// No themes found
+			liEl.className = 'no-themes';
+			liEl.innerHTML = 'No installed themes found';
+			themeFrag.appendChild(liEl);
 		}
 
 		instListEl.innerHTML = '';
 		instListEl.appendChild(themeFrag);
 	});
-	socket.emit('api:admin:themes.getInstalled');
 })();
