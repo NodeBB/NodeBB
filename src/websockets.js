@@ -712,6 +712,12 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				socket.emit('api:admin.plugins.toggle', status);
 			});
 		});
+
+		socket.on('api:meta.buildTitle', function(text, callback) {
+			meta.title.build(text, uid, function(err, title) {
+				callback(title);
+			});
+		});
 	});
 	
 }(SocketIO));

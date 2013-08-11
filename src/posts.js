@@ -64,7 +64,7 @@ var	RDB = require('./redis.js'),
 				}
 
 				Posts.addUserInfoToPost(postData, function() {
-					topics.getTopicField(postData.tid, 'slug', function(topicSlug) {
+					topics.getTopicField(postData.tid, 'slug', function(err, topicSlug) {
 
 						if(postData.content)
 							postData.content = utils.strip_tags(postTools.markdownToHTML(postData.content));
@@ -158,7 +158,7 @@ var	RDB = require('./redis.js'),
 	Posts.get_cid_by_pid = function(pid, callback) {
 		Posts.getPostField(pid, 'tid', function(tid) {
 			if (tid) {
-				topics.getTopicField(tid, 'cid', function(cid) {
+				topics.getTopicField(tid, 'cid', function(err, cid) {
 					if (cid) {
 						callback(cid);
 					} else {
@@ -278,7 +278,7 @@ var	RDB = require('./redis.js'),
 
 						RDB.incr('totalpostcount');
 							
-						topics.getTopicField(tid, 'cid', function(cid) {
+						topics.getTopicField(tid, 'cid', function(err, cid) {
 							RDB.handle(err);
 
 							feed.updateTopic(tid, cid);

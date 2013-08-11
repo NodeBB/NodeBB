@@ -21,7 +21,7 @@ var	RDB = require('./redis.js'),
 		//todo: break early if one condition is true 
 		
 		function getCategoryPrivileges(next) {
-			topics.getTopicField(tid, 'cid', function(cid) {
+			topics.getTopicField(tid, 'cid', function(err, cid) {
 				categories.privileges(cid, uid, function(privileges) {
 					next(null, privileges);
 				});
@@ -121,7 +121,7 @@ var	RDB = require('./redis.js'),
 					});
 				}
 
-				topics.getTopicField(tid, 'title', function(title) {
+				topics.getTopicField(tid, 'title', function(err, title) {
 					topicSearch.index(title, tid);
 				});
 			}
@@ -133,7 +133,7 @@ var	RDB = require('./redis.js'),
 			if (privileges.editable) {
 				
 				topics.setTopicField(tid, 'pinned', 1);
-				topics.getTopicField(tid, 'cid', function(cid) {
+				topics.getTopicField(tid, 'cid', function(err, cid) {
 					RDB.zadd('categories:' + cid + ':tid', Math.pow(2,53), tid);
 				});
 				
@@ -258,7 +258,7 @@ var	RDB = require('./redis.js'),
 		async.parallel([
 			function(next) {
 				
-				topics.getTopicField(tid, 'title', function(title) {
+				topics.getTopicField(tid, 'title', function(err, title) {
 					topics.getTeaser(tid, function(err, teaser) {
 						if (!err) {
 							notifications.create(teaser.username + ' has posted a reply to: "' + title + '"', null, '/topic/' + tid, 'topic:' + tid, function(nid) {

@@ -49,7 +49,7 @@ var ajaxify = {};
 		} else if (templates[url]) {
 			tpl_url = url;
 		}
-			
+
 		if (templates.is_available(tpl_url) && !templates.force_refresh(tpl_url)) {
 			if (quiet !== true) {
 				window.history.pushState({
@@ -77,6 +77,10 @@ var ajaxify = {};
 				});
 
 			}, url, template);
+
+			socket.emit('api:meta.buildTitle', url, function(title) {
+				document.title = title;
+			});
 
 			return true;
 		}

@@ -42,16 +42,19 @@ var express = require('express'),
 			templateValues = {
 				cssSrc: global.config['theme:src'] || global.nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
 				title: global.config['title'] || 'NodeBB',
+				browserTitle: global.config['title'] || 'NodeBB',
 				csrf: options.res.locals.csrf_token,
 				relative_path: global.nconf.get('relative_path'),
 				meta_tags: metaString
 			};
 
-		meta.build_title(options.title, (options.req.user ? options.req.user.uid : 0), function(err, title) {
-			if (!err) templateValues.browserTitle = title;
+		// meta.build_title(options.title, (options.req.user ? options.req.user.uid : 0), function(err, title) {
+		// 	if (!err) templateValues.browserTitle = title;
 
-			callback(null, templates['header'].parse(templateValues));
-		});
+		// 	callback(null, templates['header'].parse(templateValues));
+		// });
+
+		callback(null, templates['header'].parse(templateValues));
 	};
 
 	// Middlewares
@@ -236,7 +239,6 @@ var express = require('express'),
 					app.build_header({
 						req: req,
 						res: res,
-						title: topicData.topic_name,
 						metaTags: [
 							{ name: "title", content: topicData.topic_name },
 							{ property: 'og:title', content: topicData.topic_name + ' | ' + (global.config.title || 'NodeBB') },
@@ -292,7 +294,6 @@ var express = require('express'),
 					app.build_header({
 						req: req,
 						res: res,
-						title: categoryData.category_name,
 						metaTags: [
 							{ name: 'title', content: categoryData.category_name },
 							{ name: 'description', content: categoryData.category_description },
@@ -400,7 +401,6 @@ var express = require('express'),
 				}
 			});
 		});
-		
 	});
 
 }(WebServer));

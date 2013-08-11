@@ -60,17 +60,49 @@ var utils = require('./../public/src/utils.js'),
 		}
 	}
 
-	Meta.build_title = function(title, current_user, callback) {
-		var user = require('./user');
+	Meta.title = {
+		build: function(urlFragment, current_user, callback) {
+			var	self = this,
+				user = require('./user');
 
-		if (!title) title = global.config.title || 'NodeBB';
-		else title += ' | ' + global.config.title || 'NodeBB';
+			async.parallel({
+				title: function(next) {
+					self.parseFragment(urlFragment, next);
+				},
+				notifCount: function(next) {
+					user.notifications.getUnreadCount(current_user, next);
+				}
+			}, function(err, values) {
+				var	title;
 
-		// Grab the number of unread notifications
-		user.notifications.getUnreadCount(current_user, function(err, count) {
-			if (!err && count > 0) title = '(' + count + ') ' + title;
+				if (err) title = global.config.title || 'NodeBB';
+				else title = (values.notifCount > 0 ? '(' + values.notifCount + ') ' : '') + (values.title ? values.title + ' | ' : '') + global.config.title || 'NodeBB';
 
-			callback(err, title);
-		});
+				callback(null, title);
+			});
+		},
+		parseFragment: function(urlFragment, callback) {
+			if (urlFragment === '') {
+				callback(null, 'Index');
+			} else if (urlFragment === 'recent') {
+				callback(null, 'Recent Topics');
+			} else if (urlFragment === 'unread') {
+				callback(null, 'Unread Topics');
+			} else if (urlFragment === 'users') {
+				callback(null, 'Registered Users');
+			} else if (/^category\/\d+\/?/.test(urlFragment)) {
+				var	cid = urlFragment.match(/category\/(\d+)/)[1];
+
+				require('./categories').getCategoryField(cid, 'name', function(err, name) {
+					callback(null, name);
+				});
+			} else if (/^topic\/\d+\/?/.test(urlFragment)) {
+				var	tid = urlFragment.match(/topic\/(\d+)/)[1];
+
+				require('./topics').getTopicField(tid, 'title', function(err, title) {
+					callback(null, title);
+				});
+			} else callback(null);
+		}
 	}
 }(exports));

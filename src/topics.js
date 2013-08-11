@@ -89,7 +89,7 @@ marked.setOptions({
 	}
 
 	Topics.getCategoryData = function(tid, callback) {
-		Topics.getTopicField(tid, 'cid', function(cid) {
+		Topics.getTopicField(tid, 'cid', function(err, cid) {
 			categories.getCategoryData(cid, callback);
 		});
 	}
@@ -436,7 +436,7 @@ marked.setOptions({
 
 	Topics.getTitleByPid = function(pid, callback) {
 		posts.getPostField(pid, 'tid', function(tid) {
-			Topics.getTopicField(tid, 'title', function(title) {
+			Topics.getTopicField(tid, 'title', function(err, title) {
 				callback(title);
 			});
 		});
@@ -450,7 +450,7 @@ marked.setOptions({
 		
 		RDB.sadd(schema.topics(tid).read_by_uid, uid);
 		
-		Topics.getTopicField(tid, 'cid', function(cid) {
+		Topics.getTopicField(tid, 'cid', function(err, cid) {
 					
 			categories.isTopicsRead(cid, uid, function(read) {
 				if(read) {
@@ -628,12 +628,7 @@ marked.setOptions({
 	};
 
 	Topics.getTopicField = function(tid, field, callback) {
-		RDB.hget('topic:' + tid, field, function(err, data) {
-			if(err === null)
-				callback(data);
-			else
-				console.log(err);
-		});
+		RDB.hget('topic:' + tid, field, callback);
 	}
 	
 	Topics.getTopicFields = function(tid, fields, callback) {
@@ -656,7 +651,7 @@ marked.setOptions({
 	}
 
 	Topics.isLocked = function(tid, callback) {
-		Topics.getTopicField(tid, 'locked', function(locked) {
+		Topics.getTopicField(tid, 'locked', function(err, locked) {
 			callback(locked);
 		});
 	}
