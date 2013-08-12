@@ -14,7 +14,7 @@
 		<span id="user-notfound-notify" class="label label-important hide">User not found!</span><br/>
 	</div>
 	
-	<ul class="users">
+	<ul id="users-container" class="users">
 		<!-- BEGIN users -->
 		<div class="users-box">
 			<a href="/users/{users.userslug}">
@@ -34,6 +34,10 @@
 		</div>
 		<!-- END users -->
 	</ul>
+</div>
+
+<div class="text-center {loadmore_display}">
+	<button id="load-more-users-btn" class="btn">Load More</button>
 </div>
 
 <script type="text/javascript" src="{relative_path}/src/forum/users.js"></script>

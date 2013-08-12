@@ -99,7 +99,9 @@ var	RDB = require('./redis.js'),
 
 			posts.getPostFields(pid, ['tid', 'uid'], function(postData) {
 
-				user.decrementUserFieldBy(postData.uid, 'postcount', 1);
+				user.decrementUserFieldBy(postData.uid, 'postcount', 1, function(err, postcount) {
+					RDB.zadd('users:postcount', postcount, postData.uid);
+				});
 				
 				io.sockets.in('topic_' + postData.tid).emit('event:post_deleted', {
 					pid: pid

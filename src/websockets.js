@@ -657,10 +657,22 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			var start = data.after,
 				end = start + 9;
 			
-			console.log(start, end);
 			topics.getUnreadTopics(uid, start, end, function(unreadTopics) {
 				callback(unreadTopics);
 			});
+		});
+
+		socket.on('api:users.loadMore', function(data, callback) {
+			var start = data.after,
+				end = start + 19;
+	
+			user.getUsers(data.set, start, end, function(err, data) {
+				if(err) {
+					console.log(err);
+				} else {
+					callback({users:data});
+				}
+			});				
 		});
 
 		socket.on('api:admin.topics.getMore', function(data, callback) {

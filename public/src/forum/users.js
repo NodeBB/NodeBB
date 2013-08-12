@@ -2,6 +2,7 @@
 	
 	$(document).ready(function() {
 		var timeoutId = 0;
+		var loadingMoreUsers = false;
 		
 		var url = window.location.href,
 			parts = url.split('/'),
@@ -74,6 +75,46 @@
 			$(element).html(app.addCommas($(element).html()));
 		});
 		
+		function onUsersLoaded(users) {
+			var html = templates.prepare(templates['users'].blocks['users']).parse({ users: users }),
+				container = $('#users-container');
+
+			container.append(html);
+		}
+		
+		function loadMoreUsers() {
+			var set = '';
+			if(active === 'users-latest' || active === 'users') {
+				set = 'users:joindate';
+			} else if(active === 'users-sort-posts') {
+				set = 'users:postcount';
+			} else if(active === 'users-sort-reputation') {
+				set = 'users:reputation';	
+			}
+
+			if(set) {
+				loadingMoreUsers = true;
+				socket.emit('api:users.loadMore', {
+					set: set, 
+					after: $('#users-container').children().length 
+				}, function(data) {
+					if(data.users.length) {
+						onUsersLoaded(data.users);
+					}
+					loadingMoreUsers = false;
+				});
+			}
+		}
+		
+		$('#load-more-users-btn').on('click', loadMoreUsers);
+		
+		$(window).off('scroll').on('scroll', function() {
+			var bottom = (document.body.offsetHeight - $(window).height()) * 0.9;
+
+			if (document.body.scrollTop > bottom && !loadingMoreUsers) {
+				loadMoreUsers();
+			}
+		});
 	});
 
 }());

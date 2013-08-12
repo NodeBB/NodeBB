@@ -122,10 +122,9 @@
 	}
 
 	$(window).off('scroll').on('scroll', function(ev) {
-		var windowHeight = document.body.offsetHeight - $(window).height(),
-			half = windowHeight / 2;
+		var bottom = (document.body.offsetHeight - $(window).height()) * 0.9;
 
-		if (document.body.scrollTop > half && !loadingMoreTopics) {
+		if (document.body.scrollTop > bottom && !loadingMoreTopics) {
 			loadMoreTopics(cid);
 		}
 	});

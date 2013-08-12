@@ -36,6 +36,19 @@ function upgradeCategory(cid, callback) {
 	});
 }
 
+function upgradeUser(uid, callback) {
+	RDB.hmgetObject('user:' + uid, ['joindate', 'postcount', 'reputation'], function(err, userData) {
+		if(err)
+			return callback(err);
+		
+		RDB.zadd('users:joindate', userData.joindate, uid);
+		RDB.zadd('users:postcount', userData.postcount, uid);
+		RDB.zadd('users:reputation', userData.reputation, uid);
+			
+		callback(null);	
+	});
+	
+}
 
 exports.upgrade = function() {
 	
@@ -58,7 +71,17 @@ exports.upgrade = function() {
 		
 		function upgradeUsers(next) {
 			console.log('upgrading users');
-			next(null, 'upgraded users');
+			
+			RDB.lrange('userlist', 0, -1, function(err, uids) {
+					
+				async.each(uids, upgradeUser, function(err) {
+					if(!err)
+						next(null, 'upgraded users');
+					else
+						next(err, null);
+				});	
+				
+			});
 		}
 	];
 	

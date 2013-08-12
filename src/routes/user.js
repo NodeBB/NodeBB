@@ -316,49 +316,33 @@ var user = require('./../user.js'),
 			});						
 		});
 
-		app.get('/api/users', function(req, res) {
-			user.getUserList(function(data) {
-				data = data.sort(function(a, b) {
-					return b.joindate - a.joindate;
-				});
-				res.json({ search_display: 'none', users: data });
-			});
-		});
-
+		app.get('/api/users', getUsersSortedByJoinDate);
 		app.get('/api/users-sort-posts', getUsersSortedByPosts);
 		app.get('/api/users-sort-reputation', getUsersSortedByReputation);
 		app.get('/api/users-latest', getUsersSortedByJoinDate);
 		app.get('/api/users-search', getUsersForSearch);
 		
+		
+		function getUsersSortedByJoinDate(req, res) {
+			user.getUsers('users:joindate', 0, 49, function(err, data) {
+				res.json({ search_display: 'none',loadmore_display:'block', users:data });
+			});
+		}
+		
 		function getUsersSortedByPosts(req, res) {
-			user.getUserList(function(data) {
-				data = data.sort(function(a, b) {
-					return b.postcount - a.postcount;
-				});
-				res.json({ search_display: 'none', users:data });
+			user.getUsers('users:postcount', 0, 49, function(err, data) {
+				res.json({ search_display: 'none',loadmore_display:'block', users:data });
 			});
 		}
 
 		function getUsersSortedByReputation(req, res) {
-			user.getUserList(function(data) {
-				data = data.sort(function(a, b) {
-					return b.reputation - a.reputation;
-				});
-				res.json({ search_display: 'none', users:data });
-			});
-		}
-
-		function getUsersSortedByJoinDate(req, res) {
-			user.getUserList(function(data) {
-				data = data.sort(function(a, b) {
-					return b.joindate - a.joindate;
-				});
-				res.json({ search_display: 'none', users:data });
+			user.getUsers('users:reputation', 0, 49, function(err, data) {
+				res.json({ search_display: 'none', loadmore_display:'block', users:data });
 			});
 		}
 	
 		function getUsersForSearch(req, res) {		
-			res.json({ search_display: 'block', users: [] });
+			res.json({ search_display: 'block', loadmore_display:'none', users: [] });
 		}
 
 		function getUserDataByUserSlug(userslug, callerUID, callback) {

@@ -47,7 +47,8 @@ var utils = require('./../public/src/utils.js'),
 				RDB.handle(err);
 
 				var gravatar = User.createGravatarURLFromEmail(email);
-
+				var timestamp = Date.now();
+				
 				RDB.hmset('user:'+uid, {
 					'uid': uid,
 					'username' : username,
@@ -58,7 +59,7 @@ var utils = require('./../public/src/utils.js'),
 					'website':'',
 					'email' : email || '',
 					'signature':'',
-					'joindate' : Date.now(),
+					'joindate' : timestamp,
 					'picture': gravatar,
 					'gravatarpicture' : gravatar,
 					'uploadedpicture': '',
@@ -83,7 +84,9 @@ var utils = require('./../public/src/utils.js'),
 					io.sockets.emit('user.count', {count: count});
 				});
 
-				RDB.lpush('userlist', uid);
+				RDB.zadd('users:joindate', timestamp, uid);
+				RDB.zadd('users:postcount', 0, uid);
+				RDB.zadd('users:reputation', 0, uid);
 				
 				io.sockets.emit('user.latest', {userslug: userslug, username: username});
 
@@ -112,7 +115,9 @@ var utils = require('./../public/src/utils.js'),
 					RDB.del('followers:' + uid);
 					RDB.del('following:' + uid);
 
-					RDB.lrem('userlist', 1, uid);
+					RDB.zrem('users:joindate', uid);
+					RDB.zrem('users:postcount', uid);
+					RDB.zrem('users:reputation', uid);
 
 					callback(true);
 				});
@@ -312,20 +317,21 @@ var utils = require('./../public/src/utils.js'),
 		RDB.hmset('user:' + uid, data);
 	}
 
-	User.incrementUserFieldBy = function(uid, field, value) {
-		RDB.hincrby('user:' + uid, field, value);
+	User.incrementUserFieldBy = function(uid, field, value, callback) {
+		RDB.hincrby('user:' + uid, field, value, callback);
 	}
 
-	User.decrementUserFieldBy = function(uid, field, value) {
-		RDB.hincrby('user:' + uid, field, -value);
+	User.decrementUserFieldBy = function(uid, field, value, callback) {
+		RDB.hincrby('user:' + uid, field, -value, callback);
 	}
 
-	User.getUserList = function(callback) {
+	User.getUsers = function(set, start, stop, callback) {
 		var data = [];
-
-		RDB.lrange('userlist', 0, -1, function(err, uids) {
-
-			RDB.handle(err);
+		
+		RDB.zrevrange(set, start, stop, function(err, uids) {
+			if(err) {
+				return callback(err, null);
+			}
 			
 			function iterator(uid, callback) {
 				User.getUserData(uid, function(userData) {
@@ -336,14 +342,10 @@ var utils = require('./../public/src/utils.js'),
 				});
 			}
 			
-			async.each(uids, iterator, function(err) {
-				if(!err) {
-					callback(data);
-				} else {
-					console.log(err);
-					callback(null);
-				}
+			async.eachSeries(uids, iterator, function(err) {
+				callback(err, data);
 			});
+			
 		});
 	}
 
@@ -401,7 +403,10 @@ var utils = require('./../public/src/utils.js'),
 	User.onNewPostMade = function(uid, tid, pid, timestamp) {
 		User.addPostIdToUser(uid, pid);
 
-		User.incrementUserFieldBy(uid, 'postcount', 1);
+		User.incrementUserFieldBy(uid, 'postcount', 1, function(err, newpostcount) {
+			RDB.zadd('users:postcount', newpostcount, uid);
+		});
+		
 		User.setUserField(uid, 'lastposttime', timestamp);
 
 		User.sendPostNotificationToFollowers(uid, tid, pid);
@@ -602,7 +607,7 @@ var utils = require('./../public/src/utils.js'),
 	};
 
 	User.latest = function(socket) {
-		RDB.lrange('userlist', 0, 0, function(err, uid) {
+		RDB.zrevrange('users:joindate', 0, 0, function(err, uid) {
 			RDB.handle(err);
 
 			User.getUserFields(uid, ['username', 'userslug'], function(userData) {
