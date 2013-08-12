@@ -507,10 +507,12 @@ marked.setOptions({
 					user.getUserFields(postData.uid, ['username', 'picture'], function(userData) {
 						var stripped = postData.content,
 							timestamp = postData.timestamp;
-							
-						if(postData.content)
-							stripped = utils.strip_tags(postTools.markdownToHTML(postData.content));
-							
+
+						if(postData.content) {
+							stripped = postData.content.replace(/>.+\n\n/, '');
+							stripped = utils.strip_tags(postTools.markdownToHTML(stripped));
+						}
+
 						callback(null, {
 							"text": stripped,
 							"username": userData.username,
