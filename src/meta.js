@@ -9,6 +9,7 @@ var utils = require('./../public/src/utils.js'),
 		get: function(callback) {
 			RDB.hgetall('config', function(err, config) {
 				if (!err) {
+					config = config || {};
 					config.status = 'ok';
 					callback(config);
 				} else {
