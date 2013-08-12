@@ -78,12 +78,15 @@ var	async = require('async'),
 							port: config.port
 						},
 						api_url: protocol + '//' + host + (config.use_port ? ':' + config.port : '') + relative_path + '/api/',
-						relative_path: relative_path
+						relative_path: relative_path,
+						minimumTitleLength: 3,
+						minimumPostLength: 8
 					};
 
 				server_conf.base_url = protocol + '//' + host;
 				server_conf.relative_path = relative_path;
 				server_conf.imgurClientID = '';
+				server_conf.post_delay = 10000;
 
 				install.save(server_conf, client_conf, callback);
 			});

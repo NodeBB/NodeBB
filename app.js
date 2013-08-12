@@ -16,7 +16,6 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Read config.js to grab redis info
 var fs = require('fs'),
 	nconf = require('nconf'),
 	pkg = require('./package.json'),

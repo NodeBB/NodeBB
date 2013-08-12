@@ -366,7 +366,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				if(err) {
 					if(err.message === 'content-too-short') {
 						posts.emitContentTooShortAlert(socket);
-					} else if(err.messages === 'too-many-posts') {
+					} else if(err.message === 'too-many-posts') {
 						posts.emitTooManyPostsAlert(socket);
 					} else if(err.message === 'reply-error') {
 						socket.emit('event:alert', {
@@ -462,7 +462,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			if(!data.title || data.title.length < topics.minimumTitleLength) {
 				topics.emitTitleTooShortAlert(socket);
 				return;
-			} else if (!data.content || data.content.length < posts.minimumPostLength) {
+			} else if (!data.content || data.content.length < require('../public/config.json').minimumPostLength) {
 				posts.emitContentTooShortAlert(socket);
 				return;
 			}

@@ -11,6 +11,7 @@ var	RDB = require('./redis.js')
 	async = require('async'),
 	feed = require('./feed.js'),
 	favourites = require('./favourites.js'),
+	clientConfig = require('../public/config.json'),
 	reds = require('reds'),
 	topicSearch = reds.createSearch('nodebbtopicsearch');
 
@@ -20,7 +21,7 @@ marked.setOptions({
 
 (function(Topics) {
 
-	Topics.minimumTitleLength = 3;
+	
 
 	Topics.getTopicData = function(tid, callback) {
 		RDB.hgetall('topic:' + tid, function(err, data) {
@@ -530,7 +531,7 @@ marked.setOptions({
 				type: 'error',
 				timeout: 2000,
 				title: 'Title too short',
-				message: "Please enter a longer title. At least " + Topics.minimumTitleLength + " characters.",
+				message: "Please enter a longer title. At least " + clientConfig.minimumTitleLength + " characters.",
 				alert_id: 'post_error'
 			});
 	}
@@ -547,17 +548,17 @@ marked.setOptions({
 		if (uid === 0) {
 			callback(new Error('not-logged-in'), null);
 			return;
-		} else if(!title || title.length < Topics.minimumTitleLength) {
+		} else if(!title || title.length < clientConfig.minimumTitleLength) {
 			callback(new Error('title-too-short'), null);
 			return;
-		} else if (!content || content.length < posts.miminumPostLength) {
+		} else if (!content || content.length < clientConfig.miminumPostLength) {
 			callback(new Error('content-too-short'), null);
 			return;
 		}
 		
 		user.getUserField(uid, 'lastposttime', function(lastposttime) {
 
-			if(Date.now() - lastposttime < config.post_delay) {
+			if(Date.now() - lastposttime < nconf.get('post_delay')) {
 				callback(new Error('too-many-posts'), null);
 				return;
 			}
