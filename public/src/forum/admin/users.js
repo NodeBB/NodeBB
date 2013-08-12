@@ -140,10 +140,8 @@
 		});
 	
 		function onUsersLoaded(users) {
-			var html = templates.prepare(templates['admin/users'].blocks['users']).parse({ users: users }),
-				container = $('#users-container');
-
-			container.append(html);
+			var html = templates.prepare(templates['admin/users'].blocks['users']).parse({ users: users });
+			$('#users-container').append(html);
 		}
 
 		function loadMoreUsers() {
