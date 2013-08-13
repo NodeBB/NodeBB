@@ -149,6 +149,8 @@ marked.setOptions({
 				Topics.getTopicsByTids(topicIds, uid, function(topicData) {
 					unreadTopics.topics = topicData;
 					unreadTopics.nextStart = start + tids.length;
+					if(uid === 0)
+						unreadTopics.show_markallread_button = 'hidden';
 					callback(unreadTopics);
 				});
 			}

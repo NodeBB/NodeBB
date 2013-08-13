@@ -98,6 +98,8 @@
 				}, function(data) {
 					if(data.users.length) {
 						onUsersLoaded(data.users);
+					} else {
+						$('#load-more-users-btn').addClass('disabled');
 					}
 					loadingMoreUsers = false;
 				});
