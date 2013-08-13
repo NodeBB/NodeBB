@@ -5,7 +5,8 @@ var socket,
 
 
 (function() {
-	
+	var showWelcomeMessage = false;
+
 	function loadConfig() {
 	
 		$.ajax({
@@ -285,8 +286,9 @@ var socket,
 				timeout: 5000
 			});
 		}
-
-		if(location.href.indexOf('loggedin') !== -1) {
+		
+		if(showWelcomeMessage) {
+			showWelcomeMessage = false;
 			if(document.readyState !== 'complete') {
 				$(document).ready(showAlert);
 			} else {
@@ -370,6 +372,8 @@ var socket,
 			return false;
 		})
 	});
+
+	showWelcomeMessage = location.href.indexOf('loggedin') !== -1;
 
 	loadConfig();
 
