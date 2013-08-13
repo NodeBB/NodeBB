@@ -3,7 +3,8 @@ var	RDB = require('./redis.js'),
 	utils = require('./../public/src/utils.js'),
 	user = require('./user.js'),
 	async = require('async'),
-	topics = require('./topics.js');
+	topics = require('./topics.js'),
+	winston = require('winston');
 
 (function(Categories) {
 
@@ -187,8 +188,9 @@ var	RDB = require('./redis.js'),
 
 	Categories.getRecentReplies = function(cid, count, callback) {
 		RDB.zrevrange('categories:recent_posts:cid:' + cid, 0, (count<10)?10:count, function(err, pids) {
+		
 			if(err) {
-				console.log(err);
+				winston.err(err);
 				callback([]);
 				return;
 			}
@@ -222,12 +224,12 @@ var	RDB = require('./redis.js'),
 					if(!err) {
 						callback(null, 1)
 					} else {
-						console.log(err);
+						winston.err(err);
 						callback(err, null);
 					}
 				});
 			} else {
-				console.log(err);
+				winston.err(err);
 				callback(err, null);
 			}
 		});
@@ -249,7 +251,7 @@ var	RDB = require('./redis.js'),
 			if(err === null) 
 				callback(data);
 			else
-				console.log(err);
+				winston.err(err);
 		});		
 	}
 	
@@ -288,7 +290,7 @@ var	RDB = require('./redis.js'),
 				
 		async.eachSeries(cids, getCategory, function(err) {
 			if(err) {
-				console.log(err);
+				winston.err(err);
 				callback(null);
 				return;
 			}
