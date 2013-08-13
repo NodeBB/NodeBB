@@ -48,6 +48,16 @@
 	</div>
 </form>
 
+<form>
+	<h3>Post Settings</h3>
+	<div class="alert alert-notify">
+		<strong>Post Delay</strong><br /> <input type="text" class="" value="10000" data-field="postDelay"><br />
+		<strong>Minimum Title Length</strong><br /> <input type="text" class="" value="3" data-field="minimumTitleLength"><br />
+		<strong>Minimum Post Length</strong><br /> <input type="text" class="" value="8" data-field="minimumPostLength"><br />
+		
+	</div>
+</form>
+
 <button class="btn btn-large btn-primary" id="save">Save</button>
 
 <script>
