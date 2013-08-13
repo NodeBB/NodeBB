@@ -11,7 +11,6 @@ var	RDB = require('./redis.js'),
 	plugins = require('./plugins'),
 	reds = require('reds'),
 	nconf = require('nconf'),
-	clientConfig = require('../public/config.json'),
 	postSearch = reds.createSearch('nodebbpostsearch');
 
 (function(Posts) {
@@ -174,7 +173,7 @@ var	RDB = require('./redis.js'),
 			type: 'error',
 			timeout: 2000,
 			title: 'Content too short',
-			message: "Please enter a longer post. At least " + Posts.minimumPostLength + " characters.",
+			message: "Please enter a longer post. At least " + config.minimumPostLength + " characters.",
 			alert_id: 'post_error'
 		});
 	}
@@ -182,7 +181,7 @@ var	RDB = require('./redis.js'),
 	Posts.emitTooManyPostsAlert = function(socket) {
 		socket.emit('event:alert', {
 			title: 'Too many posts!',
-			message: 'You can only post every '+ (nconf.get('post_delay') / 1000) + ' seconds.',
+			message: 'You can only post every '+ config.postDelay/1000 + ' seconds.',
 			type: 'error',
 			timeout: 2000
 		});
@@ -193,13 +192,13 @@ var	RDB = require('./redis.js'),
 			content = content.trim();
 		}
 
-		if (!content || content.length < clientConfig.minimumPostLength) {
+		if (!content || content.length < config.minimumPostLength) {
 			callback(new Error('content-too-short'), null);
 			return;
 		}
 
 		user.getUserField(uid, 'lastposttime', function(lastposttime) {
-			if(Date.now() - lastposttime < nconf.get('post_delay')) {
+			if(Date.now() - lastposttime < config.postDelay)) {
 				callback(new Error('too-many-posts'), null);
 				return;
 			}

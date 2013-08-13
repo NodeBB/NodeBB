@@ -100,11 +100,16 @@ if(nconf.get('upgrade')) {
 						console.log('Info: Hardcoding uid 1 as an admin');
 						var user = require('./src/user.js');
 						user.makeAdministrator(1);
+
+
 					} else {
 						console.log('Info: Categories OK. Found ' + data.categories.length + ' categories.');
 					}
 				});
 			}
+
+
+
 			setup_categories();
 		}(global.configuration));
 	});
@@ -131,7 +136,7 @@ if(nconf.get('upgrade')) {
 				);
 			}
 		}
-
+		
 		process.exit();
 	});
 }
