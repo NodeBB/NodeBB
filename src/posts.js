@@ -11,7 +11,8 @@ var	RDB = require('./redis.js'),
 	plugins = require('./plugins'),
 	reds = require('reds'),
 	nconf = require('nconf'),
-	postSearch = reds.createSearch('nodebbpostsearch');
+	postSearch = reds.createSearch('nodebbpostsearch'),
+	winston = require('winston');
 
 (function(Posts) {
 
@@ -298,7 +299,7 @@ var	RDB = require('./redis.js'),
 
 						uploadPostImages(postData, images, function(err, uploadedImages) {
 							if(err) {
-								console.log('Uploading images failed!');
+								winston.error('Uploading images failed!', err.stack);
 							} else {
 								postData.uploadedImages = JSON.stringify(uploadedImages);
 								Posts.setPostField(pid, 'uploadedImages', postData.uploadedImages);

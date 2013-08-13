@@ -142,7 +142,7 @@ var user = require('./../user.js'),
 							finalData[key] = jsonObject[key];
 						}
 					} catch(err){
-						console.log('invalid redis status', i, data[i], err);
+						winston.warn('can\'t parse redis status variable, ignoring', i, data[i], err);
 					}
 				}
 			

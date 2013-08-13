@@ -7,6 +7,7 @@
 		login_strategies = [],
 		nconf = require('nconf'),
 		users = require('../user'),
+		winston = require('winston'),
 		login_module = require('./../login.js');
 
 	passport.use(new passportLocal(function(user, password, next) {
@@ -85,7 +86,7 @@
 
 		app.get('/logout', function(req, res) {
 			if (req.user && req.user.uid > 0) {
-				console.log('info: [Auth] Session ' + req.sessionID + ' logout (uid: ' + req.user.uid + ')');
+				winston.info('[Auth] Session ' + req.sessionID + ' logout (uid: ' + req.user.uid + ')');
 				login_module.logout(req.sessionID, function(logout) {
 					req.logout();
 					app.build_header({ req: req, res: res }, function(err, header) {
@@ -132,7 +133,6 @@
 
 		app.get('/reset', function(req, res) {
 			app.build_header({ req: req, res: res }, function(err, header) {
-				console.log(header);
 				res.send(header + templates['reset'] + templates['footer']);
 			});
 		});

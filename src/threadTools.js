@@ -6,7 +6,8 @@ var	RDB = require('./redis.js'),
 	notifications = require('./notifications.js'),
 	posts = require('./posts'),
 	reds = require('reds'),
-	topicSearch = reds.createSearch('nodebbtopicsearch');
+	topicSearch = reds.createSearch('nodebbtopicsearch'),
+	winston = require('winston');
 
 (function(ThreadTools) {
 
@@ -192,7 +193,7 @@ var	RDB = require('./redis.js'),
 
 					categories.moveRecentReplies(tid, oldCid, cid, function(err, data) {
 						if(err) {
-							console.log(err);
+							winston.err(err);
 						}
 					});
 

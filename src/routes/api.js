@@ -201,7 +201,7 @@ var user = require('./../user.js'),
 				search(topicSearch, function(err, tids) {
 					if(err)
 						return callback(err, null);
-					console.log(tids);
+					
 					topics.getTopicsByTids(tids, 0, function(topics) {
 						callback(null, topics);
 					}, 0);

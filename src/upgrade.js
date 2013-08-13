@@ -1,6 +1,6 @@
 var RDB = require('./redis.js'),
-	async = require('async');
-
+	async = require('async'),
+	winston = require('winston');
 
 
 function upgradeCategory(cid, callback) {
@@ -20,7 +20,6 @@ function upgradeCategory(cid, callback) {
 			
 				async.each(tids, moveTopic, function(err) {
 					if(!err) {
-						console.log('renaming ' + cid);
 						RDB.rename('temp_categories:' + cid + ':tid', 'categories:' + cid + ':tid');
 						callback(null);
 					}
@@ -30,7 +29,7 @@ function upgradeCategory(cid, callback) {
 				
 			});
 		} else {
-			console.log('category already upgraded '+ cid);
+			winston.info('category already upgraded '+ cid);
 			callback(null);
 		}
 	});
@@ -52,33 +51,37 @@ function upgradeUser(uid, callback) {
 
 exports.upgrade = function() {
 	
-	console.log('upgrading nodebb now');
+	winston.info('upgrading nodebb now');
 
 	var schema = [
 		function upgradeCategories(next) {
-			console.log('upgrading categories');
+			winston.info('upgrading categories');
 			
 			RDB.lrange('categories:cid', 0, -1, function(err, cids) {
 				
 				async.each(cids, upgradeCategory, function(err) {
-					if(!err)
-						next(null, 'upgraded categories');
-					else
+					if(!err) {
+						winston.info('upgraded categories');
+						next(null, null);
+					} else {
 						next(err, null);
+					}
 				});
 			});
 		},
 		
 		function upgradeUsers(next) {
-			console.log('upgrading users');
+			winston.info('upgrading users');
 			
 			RDB.lrange('userlist', 0, -1, function(err, uids) {
 					
 				async.each(uids, upgradeUser, function(err) {
-					if(!err)
-						next(null, 'upgraded users');
-					else
+					if(!err) {
+						winston.info('upgraded users')
+						next(null, null);
+					} else {
 						next(err, null);
+					}
 				});	
 				
 			});
@@ -87,9 +90,9 @@ exports.upgrade = function() {
 	
 	async.series(schema, function(err, results) {
 		if(!err)
-			console.log('upgrade complete');
+			winston.info('upgrade complete');
 		else 
-			console.log(err);
+			winston.err(err);
 			
 		process.exit();
 	

@@ -26,7 +26,8 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		'categories': require('./admin/categories.js'),
 		'user': require('./admin/user.js')
 	},
-	plugins = require('./plugins');
+	plugins = require('./plugins'),
+	winston = require('winston');
 	
 (function(io) {
 	var	users = {},
@@ -668,7 +669,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 	
 			user.getUsers(data.set, start, end, function(err, data) {
 				if(err) {
-					console.log(err);
+					winston.err(err);
 				} else {
 					callback({users:data});
 				}

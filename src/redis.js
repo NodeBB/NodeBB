@@ -1,7 +1,8 @@
 (function(RedisDB) {
 	var redis = require('redis'),
 		nconf = require('nconf'),
-		utils = require('./../public/src/utils.js');
+		utils = require('./../public/src/utils.js'),
+		winston = require('winston');
 	
 	RedisDB.exports = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host'));
 
@@ -11,14 +12,9 @@
 
 	RedisDB.exports.handle = function(error) {
 		if (error !== null) {
+			winston.err(error);
 			if (global.env !== 'production') {
-				console.log("################# ERROR LOG ####################");
-				console.log(error);
-				console.log(arguments.callee.name);
-				console.log("################# ERROR LOG ####################");
 				throw new Error(error);
-			} else {
-				console.log(error);
 			}
 		}
 	}
