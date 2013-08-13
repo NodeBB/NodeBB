@@ -13,11 +13,6 @@ var	RDB = require('./redis.js'),
 				type: 'error',
 				timeout: 5000
 			});
-
-			socket.emit('api:posts.favourite', {
-				status: 'error',
-				pid: pid
-			});
 			return;
 		}
 
@@ -39,7 +34,8 @@ var	RDB = require('./redis.js'),
 					}
 
 					socket.emit('api:posts.favourite', {
-						status: 'ok'
+						status: 'ok',
+						pid: pid
 					});
 				}
 			});
@@ -75,6 +71,11 @@ var	RDB = require('./redis.js'),
 					if (room_id) {
 						io.sockets.in(room_id).emit('event:rep_down', {uid: uid !== uid_of_poster ? uid_of_poster : 0, pid: pid});
 					}
+
+					socket.emit('api:posts.unfavourite', {
+						status: 'ok',
+						pid: pid
+					});
 				}
 			});
 		});

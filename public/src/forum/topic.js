@@ -254,11 +254,9 @@
 
 		var element = $(this).find('i');
 		if(element.attr('class') == 'icon-star-empty') {
-			element.attr('class', 'icon-star');
 			socket.emit('api:posts.favourite', {pid: pid, room_id: app.current_room});
 		}
 		else {
-			element.attr('class', 'icon-star-empty');
 			socket.emit('api:posts.unfavourite', {pid: pid, room_id: app.current_room});
 		}
 	});
@@ -387,7 +385,14 @@
 	});
 
 	socket.on('api:posts.favourite', function(data) {
-		if (data.status !== 'ok' && data.pid) {
+		if (data.status === 'ok' && data.pid) {
+			var favEl = document.querySelector('.post_rep_' + data.pid).nextSibling;
+			if (favEl) favEl.className = 'icon-star';
+		}
+	});
+
+	socket.on('api:posts.unfavourite', function(data) {
+		if (data.status === 'ok' && data.pid) {
 			var favEl = document.querySelector('.post_rep_' + data.pid).nextSibling;
 			if (favEl) favEl.className = 'icon-star-empty';
 		}
