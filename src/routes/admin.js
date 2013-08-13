@@ -4,7 +4,8 @@ var user = require('./../user.js'),
 	RDB = require('./../redis.js'),
 	pkg = require('./../../package.json'),
 	categories = require('./../categories.js'),
-	plugins = require('../plugins');
+	plugins = require('../plugins'),
+	winston = require('winston');
 
 (function(Admin) {
 	Admin.isAdmin = function(req, res, next) {
