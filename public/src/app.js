@@ -9,7 +9,7 @@ var socket,
 	function loadConfig() {
 	
 		$.ajax({
-			url: RELATIVE_PATH + '/config.json?v=' + new Date().getTime(),
+			url: RELATIVE_PATH + '/api/config',
 			success: function(data) {
 				API_URL = data.api_url;
 	

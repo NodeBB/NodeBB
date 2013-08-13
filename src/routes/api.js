@@ -3,7 +3,8 @@ var user = require('./../user.js'),
 	topics = require('./../topics.js'),
 	categories = require('./../categories.js')
 	utils = require('./../../public/src/utils.js'),
-	pkg = require('../../package.json');
+	pkg = require('../../package.json'),
+	meta = require('./../meta.js');
 	
 
 (function(Api) {
@@ -12,6 +13,19 @@ var user = require('./../user.js'),
 			utils.walk(global.configuration.ROOT_DIRECTORY + '/public/templates', function(err, data) {
 				res.json(data);
 			});
+		});
+
+		app.get('/api/config', function(req, res, next) {
+			meta.config.getFields(['postDelay', 'minimumTitleLength', 'minimumPostLength'], function(err, metaConfig) {
+				if(err) return next();
+				var clientConfig = require('../../public/config.json');
+				
+				for (var attrname in metaConfig) { 
+					clientConfig[attrname] = metaConfig[attrname]; 
+				}
+
+				res.json(200, clientConfig);
+			})
 		});
 		
 		app.get('/api/home', function(req, res) {

@@ -19,9 +19,13 @@ var utils = require('./../public/src/utils.js'),
 				}
 			});
 		},
+		getFields: function(fields, callback) {
+			RDB.hmgetObject('config', fields, callback);
+		},
 		set: function(field, value, callback) {
 			RDB.hset('config', field, value, function(err, res) {
-				callback(err);
+				if(callback)
+					callback(err, res);
 			});
 		},
 		remove: function(field) {
