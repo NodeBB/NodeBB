@@ -78,6 +78,8 @@ marked.setOptions({
 				var fav_data = results[0],
 					privileges = results[2];
 
+				postData = posts.filterBannedPosts(postData);
+
 				for(var i=0; i<postData.length; ++i) {
 					postData[i].fav_star_class = fav_data[postData[i].pid] ? 'icon-star' : 'icon-star-empty';
 					postData[i]['display_moderator_tools'] = (postData[i].uid == current_user || privileges.editable) ? 'show' : 'none';
@@ -149,7 +151,9 @@ marked.setOptions({
 				Topics.getTopicsByTids(topicIds, uid, function(topicData) {
 					unreadTopics.topics = topicData;
 					unreadTopics.nextStart = start + tids.length;
-					if(uid === 0)
+					if(!topicData || topicData.length === 0)
+						unreadTopics.no_topics_message = 'show';
+					if(uid === 0 || topicData.length === 0)
 						unreadTopics.show_markallread_button = 'hidden';
 					callback(unreadTopics);
 				});
@@ -192,9 +196,9 @@ marked.setOptions({
 		
 		function getTopicInfo(topicData, callback) {
 
-			function getUserName(next) {
-				user.getUserField(topicData.uid, 'username', function(username) {
-					next(null, username);
+			function getUserInfo(next) {
+				user.getUserFields(topicData.uid, ['username', 'banned'], function(userData) {
+					next(null, userData);
 				});
 			}
 
@@ -217,24 +221,23 @@ marked.setOptions({
 				});
 			}
 
-			async.parallel([getUserName, hasReadTopic, getTeaserInfo, getPrivileges], function(err, results) {
-				var username = results[0],
-					hasReadTopic = results[1],
-					teaserInfo = results[2],
-					privileges = results[3];
-
+			async.parallel([getUserInfo, hasReadTopic, getTeaserInfo, getPrivileges], function(err, results) {
 				callback({
-					username: username,
-					hasread: hasReadTopic,
-					teaserInfo: teaserInfo,
-					privileges: privileges
+					username: results[0].username,
+					userbanned: results[0].banned,
+					hasread: results[1],
+					teaserInfo: results[2],
+					privileges: results[3]
 				});
 			});
 		}
 
 		function isTopicVisible(topicData, topicInfo) {
 			var deleted = parseInt(topicData.deleted, 10) !== 0;
-			return !deleted || (deleted && topicInfo.privileges.view_deleted) || topicData.uid === current_user;
+			var banned = false;
+			if(topicData.userbanned)
+				banned = parseInt(topicData.userbanned, 10) !== 0;
+			return !banned && (!deleted || (deleted && topicInfo.privileges.view_deleted) || topicData.uid === current_user);
 		}
 
 		function loadTopic(tid, callback) {
@@ -252,6 +255,7 @@ marked.setOptions({
 					topicData.relativeTime = utils.relativeTime(topicData.timestamp);
 
 					topicData.username = topicInfo.username;
+					topicData.userbanned = topicInfo.userbanned;
 					topicData.badgeclass = (topicInfo.hasread && current_user != 0) ? '' : 'badge-important';
 					topicData.teaser_text = topicInfo.teaserInfo.text || '',
 					topicData.teaser_username = topicInfo.teaserInfo.username || '';

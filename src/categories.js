@@ -55,7 +55,8 @@ var	RDB = require('./redis.js'),
 				}
 
 				function getActiveUsers(next) {
-					user.getMultipleUserFields(active_users, ['username', 'userslug', 'picture'], function(users) {
+					user.getMultipleUserFields(active_users, ['username', 'userslug', 'picture', 'banned'], function(users) {
+						users = user.filterBannedUsers(users);
 						next(null, users);
 					});
 				}
@@ -66,7 +67,6 @@ var	RDB = require('./redis.js'),
 						categoryData.moderators = moderators;
 						categoryData.show_sidebar = 'hidden';
 						categoryData.no_topics_message = 'show';
-
 						callback(null, categoryData);
 					});
 				} else {
@@ -200,11 +200,12 @@ var	RDB = require('./redis.js'),
 				return;
 			}
 
-			posts.getPostSummaryByPids(pids, function(posts) {
-				if(posts.length > count) {
-					posts = posts.slice(0, count);
+			posts.getPostSummaryByPids(pids, function(postData) {
+				postData = posts.filterBannedPosts(postData);
+				if(postData.length > count) {
+					postData = postData.slice(0, count);
 				}
-				callback(posts);
+				callback(postData);
 			});
 		});
 	}

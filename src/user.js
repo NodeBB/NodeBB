@@ -41,7 +41,7 @@ var utils = require('./../public/src/utils.js'),
 				} else next();
 			}
 		], function(err, results) {
-			if (err) return callback(err, 0);	// FIXME: Maintaining the 0 for backwards compatibility. Do we need this?
+			if (err) return callback(err, null);
 
 			RDB.incr('global:next_user_id', function(err, uid) {
 				RDB.handle(err);
@@ -67,6 +67,7 @@ var utils = require('./../public/src/utils.js'),
 					'postcount': 0,
 					'lastposttime': 0,
 					'administrator': (uid == 1) ? 1 : 0,
+					'banned': 0,
 					'showemail': 0
 				});
 				
@@ -125,6 +126,14 @@ var utils = require('./../public/src/utils.js'),
 				callback(false);
 			}
 		});
+	}
+
+	User.ban = function(uid, callback) {
+		User.setUserField(uid, 'banned', 1, callback);
+	}
+
+	User.unban = function(uid, callback) {
+		User.setUserField(uid, 'banned', 0, callback);	
 	}
 	
 	User.getUserField = function(uid, field, callback) {
@@ -187,6 +196,12 @@ var utils = require('./../public/src/utils.js'),
 			} else {
 				console.log(err);
 			}
+		});
+	}
+
+	User.filterBannedUsers = function(users) {
+		return users.filter(function(user) {
+			return (!user.banned || user.banned === '0');
 		});
 	}
 
@@ -309,8 +324,8 @@ var utils = require('./../public/src/utils.js'),
 		});
 	}
 
-	User.setUserField = function(uid, field, value) {
-		RDB.hset('user:' + uid, field, value);
+	User.setUserField = function(uid, field, value, callback) {
+		RDB.hset('user:' + uid, field, value, callback);
 	}
 
 	User.setUserFields = function(uid, data) {
@@ -345,7 +360,6 @@ var utils = require('./../public/src/utils.js'),
 			async.eachSeries(uids, iterator, function(err) {
 				callback(err, data);
 			});
-			
 		});
 	}
 

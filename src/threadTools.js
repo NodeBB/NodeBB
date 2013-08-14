@@ -290,16 +290,33 @@ var	RDB = require('./redis.js'),
 			var numPosts = posts.length;
 			if(!numPosts)
 				return callback(new Error('no-undeleted-pids-found'));
-				
-			while(numPosts--) {
-				if(posts[numPosts].deleted !== '1') {
-					callback(null, posts[numPosts].pid);
-					return;
+			
+			posts = posts.reverse();
+			lastPostId = 0;
+
+			function isPostVisible(post, next) {
+				if(post.deleted !== '1') {
+					user.getUserField(post.uid, 'banned', function(banned) {
+						if(banned && banned === '1') {
+							next(null);
+						} else {
+							lastPostId = post.pid
+							next(post.pid);
+							return;
+						}
+					});					
+				} else {
+					next(null);
 				}
 			}
-			
-			// If we got here, nothing was found...
-			callback(new Error('no-undeleted-pids-found'));
-		});		
+
+			async.eachSeries(posts, isPostVisible, function(err) {
+				if(err) {
+					callback(null, lastPostId);
+				} else {
+					callback(new Error('no-undeleted-pids-found'));
+				}
+			});
+		});
 	}
 }(exports));

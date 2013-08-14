@@ -8,6 +8,11 @@
 			return (parent.attr('data-admin') !== "0");
 		}
 
+		function isUserBanned(element) {
+			var parent = $(element).parents('.users-box');
+			return (parent.attr('data-banned') !== "" && parent.attr('data-banned') !== "0");	
+		}
+
 		function getUID(element) {
 			var parent = $(element).parents('.users-box');
 			return parent.attr('data-uid');	
@@ -32,6 +37,20 @@
 				deleteBtn.addClass('disabled');
 			else
 				deleteBtn.show();
+		});
+
+		jQuery('.ban-btn').each(function(index, element) {
+			var banBtn = $(element);
+			var isAdmin = isUserAdmin(banBtn);
+			var isBanned = isUserBanned(banBtn);
+			
+			if(isAdmin)
+				banBtn.addClass('disabled');
+			else if(isBanned)
+				banBtn.addClass('btn-warning');
+			else 
+				banBtn.removeClass('btn-warning');
+
 		});
 
 		jQuery('.admin-btn').on('click', function() {
@@ -70,6 +89,30 @@
 				bootbox.confirm('Do you really want to delete "' + parent.attr('data-username') +'"?', function(confirm) {
 					socket.emit('api:admin.user.deleteUser', uid);		
 				});
+			}
+			
+			return false;
+		});
+
+		jQuery('.ban-btn').on('click', function() {
+			var banBtn = $(this);
+			var isAdmin = isUserAdmin(banBtn);
+			var isBanned = isUserBanned(banBtn);
+			var parent = banBtn.parents('.users-box');
+			var uid = getUID(banBtn);
+
+			if(!isAdmin) {
+				if(isBanned) {
+					socket.emit('api:admin.user.unbanUser', uid);
+					banBtn.removeClass('btn-warning');
+					parent.attr('data-banned', 0);
+				} else {
+					bootbox.confirm('Do you really want to ban "' + parent.attr('data-username') +'"?', function(confirm) {
+						socket.emit('api:admin.user.banUser', uid);		
+						banBtn.addClass('btn-warning');
+						parent.attr('data-banned', 1);
+					});
+				}
 			}
 			
 			return false;

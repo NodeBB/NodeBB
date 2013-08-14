@@ -45,7 +45,7 @@ var	RDB = require('./../redis.js'),
 
 	UserAdmin.deleteUser = function(uid, theirid, socket) {
 		user.isAdministrator(uid, function(amIAdmin) {
-			user.isAdministrator(theirid, function(areTheyAdmin){
+			user.isAdministrator(theirid, function(areTheyAdmin) {
 				if(amIAdmin && !areTheyAdmin) {
 					user.delete(theirid, function(data) {
 
@@ -58,8 +58,39 @@ var	RDB = require('./../redis.js'),
 					});
 				}
 			});
+		});
+	};
 
-			
+	UserAdmin.banUser = function(uid, theirid, socket) {
+		user.isAdministrator(uid, function(amIAdmin) {
+			user.isAdministrator(theirid, function(areTheyAdmin) {
+				if(amIAdmin && !areTheyAdmin) {
+					user.ban(theirid, function(err, result) {
+
+						socket.emit('event:alert', {
+							title: 'User Banned',
+							message: 'This user is banned!',
+							type: 'success',
+							timeout: 2000
+						});
+					});
+				}
+			});			
+		});
+	};
+
+	UserAdmin.unbanUser = function(uid, theirid, socket) {
+		user.isAdministrator(uid, function(amIAdmin) {
+			if(amIAdmin) {
+				user.unban(theirid, function(err, result) {
+					socket.emit('event:alert', {
+						title: 'User Unbanned',
+						message: 'This user is unbanned!',
+						type: 'success',
+						timeout: 2000
+					});
+				});
+			}
 		});
 	};
 

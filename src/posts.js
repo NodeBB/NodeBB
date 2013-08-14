@@ -32,12 +32,13 @@ var	RDB = require('./redis.js'),
 	}
 	
 	Posts.addUserInfoToPost = function(post, callback) {
-		user.getUserFields(post.uid, ['username', 'userslug', 'reputation', 'postcount', 'picture', 'signature'], function(userData) {
+		user.getUserFields(post.uid, ['username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned'], function(userData) {
 
 			post.username = userData.username || 'anonymous';
 			post.userslug = userData.userslug || '';
 			post.user_rep = userData.reputation || 0;
 			post.user_postcount = userData.postcount || 0;
+			post.user_banned = userData.banned || '0';
 			post.picture = userData.picture || require('gravatar').url('', {}, https=global.nconf.get('https'));
 			post.signature = postTools.markdownToHTML(userData.signature, true);
 
@@ -55,7 +56,7 @@ var	RDB = require('./redis.js'),
 
 	Posts.getPostSummaryByPids = function(pids, callback) {
 		
-		var returnData = [];
+		var posts = [];
 		
 		function getPostSummary(pid, callback) {
 			Posts.getPostFields(pid, ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'], function(postData) {
@@ -70,7 +71,7 @@ var	RDB = require('./redis.js'),
 							postData.content = utils.strip_tags(postTools.markdownToHTML(postData.content));
 
 						postData.topicSlug = topicSlug;
-						returnData.push(postData);	
+						posts.push(postData);	
 						callback(null);
 					});
 				});
@@ -80,12 +81,18 @@ var	RDB = require('./redis.js'),
 		
 		async.eachSeries(pids, getPostSummary, function(err) {
 			if(!err) {
-				callback(returnData);
+				callback(posts);
 			} else {
 				console.log(err);
 			}
 		});
 	};
+
+	Posts.filterBannedPosts = function(posts) {
+		return posts.filter(function(post) {
+			return post.user_banned === '0';
+		});
+	}
 
 	Posts.getPostData = function(pid, callback) {
 		RDB.hgetall('post:' + pid, function(err, data) {

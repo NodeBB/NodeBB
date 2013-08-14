@@ -671,6 +671,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				if(err) {
 					winston.err(err);
 				} else {
+					data = user.filterBannedUsers(data);
 					callback({users:data});
 				}
 			});				
@@ -704,14 +705,27 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			}
 		});
 
+		socket.on('api:admin.user.banUser', function(theirid) {
+			if(uid && uid > 0) {
+				admin.user.banUser(uid, theirid, socket);
+			}
+		});
+
+		socket.on('api:admin.user.unbanUser', function(theirid) {
+			if(uid && uid > 0) {
+				admin.user.unbanUser(uid, theirid, socket);
+			}
+		});
+
 		socket.on('api:admin.user.search', function(username) {
 			if(uid && uid > 0) {
 				user.search(username, function(data) {
+					data = user.filterBannedUsers(data);
 					socket.emit('api:admin.user.search', data);
 				});
-			}
-			else
+			} else {
 				socket.emit('api:admin.user.search', null);
+			}
 		});
 
 		socket.on('api:admin.themes.getInstalled', function(callback) {

@@ -16,7 +16,7 @@
 
 <ul id="users-container" class="users">
 	<!-- BEGIN users -->
-	<div class="users-box" data-uid="{users.uid}" data-admin="{users.administrator}" data-username="{users.username}">
+	<div class="users-box" data-uid="{users.uid}" data-admin="{users.administrator}" data-username="{users.username}" data-banned="{users.banned}">
 		<a href="/users/{users.userslug}">
 			<img src="{users.picture}" class="img-polaroid"/>
 		</a>
@@ -36,6 +36,9 @@
 		</div>
 		<div>
 			<a href="#" class="btn delete-btn btn-danger">Delete</a>
+		</div>
+		<div>
+			<a href="#" class="btn ban-btn">Ban</a>
 		</div>
 	</div>
 	<!-- END users -->
