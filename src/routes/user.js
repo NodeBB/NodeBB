@@ -64,19 +64,13 @@ var user = require('./../user.js'),
 
 			user.get_uid_by_userslug(req.params.userslug, function(uid) {
 				if(!uid) {
-					next();
-					return;
+					return next();
 				}
 
-				user.getUserField(uid, 'banned', function(banned) {
-					if(banned && banned === '1') {
-						next();
-					} else {
-						app.build_header({ req: req, res: res }, function(err, header) {
-							res.send(header + app.create_route('users/' + req.params.userslug, 'account')  + templates['footer']);
-						});		
-					}
-				});
+				app.build_header({ req: req, res: res }, function(err, header) {
+					res.send(header + app.create_route('users/' + req.params.userslug, 'account')  + templates['footer']);
+				});		
+
 			});		
 		});
 		
@@ -327,21 +321,18 @@ var user = require('./../user.js'),
 		
 		function getUsersSortedByJoinDate(req, res) {
 			user.getUsers('users:joindate', 0, 49, function(err, data) {
-				data = user.filterBannedUsers(data);
 				res.json({ search_display: 'none', loadmore_display:'block', users:data });
 			});
 		}
 		
 		function getUsersSortedByPosts(req, res) {
 			user.getUsers('users:postcount', 0, 49, function(err, data) {
-				data = user.filterBannedUsers(data);
 				res.json({ search_display: 'none', loadmore_display:'block', users:data });
 			});
 		}
 
 		function getUsersSortedByReputation(req, res) {
 			user.getUsers('users:reputation', 0, 49, function(err, data) {
-				data = user.filterBannedUsers(data);
 				res.json({ search_display: 'none', loadmore_display:'block', users:data });
 			});
 		}
@@ -380,7 +371,8 @@ var user = require('./../user.js'),
 						else 
 							data.emailClass = "hide";
 
-
+						data.show_banned = data.banned === '1'?'':'hide';
+						
 						data.uid = uid;
 						data.yourid = callerUID;
 						data.theirid = uid;

@@ -78,11 +78,10 @@ marked.setOptions({
 				var fav_data = results[0],
 					privileges = results[2];
 
-				postData = posts.filterBannedPosts(postData);
-
 				for(var i=0; i<postData.length; ++i) {
 					postData[i].fav_star_class = fav_data[postData[i].pid] ? 'icon-star' : 'icon-star-empty';
 					postData[i]['display_moderator_tools'] = (postData[i].uid == current_user || privileges.editable) ? 'show' : 'none';
+					postData[i].show_banned = postData[i].user_banned === '1'?'show':'hide';
 				}
 				
 				callback(postData);
@@ -197,7 +196,7 @@ marked.setOptions({
 		function getTopicInfo(topicData, callback) {
 
 			function getUserInfo(next) {
-				user.getUserFields(topicData.uid, ['username', 'banned'], function(userData) {
+				user.getUserFields(topicData.uid, ['username'], function(userData) {
 					next(null, userData);
 				});
 			}
@@ -234,10 +233,7 @@ marked.setOptions({
 
 		function isTopicVisible(topicData, topicInfo) {
 			var deleted = parseInt(topicData.deleted, 10) !== 0;
-			var banned = false;
-			if(topicData.userbanned)
-				banned = parseInt(topicData.userbanned, 10) !== 0;
-			return !banned && (!deleted || (deleted && topicInfo.privileges.view_deleted) || topicData.uid === current_user);
+			return !deleted || (deleted && topicInfo.privileges.view_deleted) || topicData.uid === current_user;
 		}
 
 		function loadTopic(tid, callback) {
@@ -255,7 +251,6 @@ marked.setOptions({
 					topicData.relativeTime = utils.relativeTime(topicData.timestamp);
 
 					topicData.username = topicInfo.username;
-					topicData.userbanned = topicInfo.userbanned;
 					topicData.badgeclass = (topicInfo.hasread && current_user != 0) ? '' : 'badge-important';
 					topicData.teaser_text = topicInfo.teaserInfo.text || '',
 					topicData.teaser_username = topicInfo.teaserInfo.username || '';
