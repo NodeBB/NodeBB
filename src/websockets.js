@@ -720,8 +720,12 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		socket.on('api:admin.user.search', function(username) {
 			if(uid && uid > 0) {
 				user.search(username, function(data) {
-					data = user.filterBannedUsers(data);
-					socket.emit('api:admin.user.search', data);
+					user.isAdministrator(uid, function(isAdmin) {
+						if(!isAdmin)
+							data = user.filterBannedUsers(data);
+
+						socket.emit('api:admin.user.search', data);
+					});
 				});
 			} else {
 				socket.emit('api:admin.user.search', null);
