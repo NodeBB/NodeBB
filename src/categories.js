@@ -157,7 +157,7 @@ var	RDB = require('./redis.js'),
 						break;
 					}
 				}
-				callback(allread);				
+				callback(allread);
 			});
 		});
 	}
@@ -281,7 +281,7 @@ var	RDB = require('./redis.js'),
 				}
 
 				Categories.hasReadCategory(cid, current_user, function(hasRead) {
-					categoryData['badgeclass'] = (parseInt(categoryData.topic_count,10) === 0 || (hasRead && current_user != 0)) ? '' : 'badge-important';
+					categoryData['badgeclass'] = (parseInt(categoryData.topic_count, 10) === 0 || (hasRead && current_user != 0)) ? '' : 'badge-important';
 
 					categories.push(categoryData);
 					callback(null);

@@ -27,11 +27,15 @@
 			url: RELATIVE_PATH + '/login',
 			data: loginData,
 			success: function(data, textStatus, jqXHR) {
-				$('#login-error-notify').hide();
-				window.location.replace(RELATIVE_PATH + "/?loggedin");
+				if(!data.success) {
+					$('#login-error-notify').html(data.message).show();
+				} else {
+					$('#login-error-notify').hide();
+					window.location.replace(RELATIVE_PATH + "/?loggedin");
+				}
 			},
 			error : function(data, textStatus, jqXHR) {
-				$('#login-error-notify').show().delay(1000).fadeOut(250);
+				$('#login-error-notify').show();
 			},
 			dataType: 'json',
 			async: true,

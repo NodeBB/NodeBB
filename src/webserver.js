@@ -124,6 +124,7 @@ var express = require('express'),
 	});
 
 	app.use(function(err, req, res, next) {
+		
 		// we may use properties of the error object
 		// here and next(err) appropriately, or if
 		// we possibly recovered from the error, simply next().

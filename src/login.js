@@ -25,8 +25,14 @@ var user = require('./user.js'),
 					});
 				}
 				
-				user.getUserField(uid, 'password', function(user_password) {
-					bcrypt.compare(password, user_password, function(err, res) {
+				user.getUserFields(uid, ['password', 'banned'], function(userData) {
+					if(userData.banned && userData.banned === '1') {
+						return next({
+							status: "error",
+							message: "user-banned"
+						});
+					}
+					bcrypt.compare(password, userData.password, function(err, res) {
 						if(err) {
 							winston.err(err);
 							next({

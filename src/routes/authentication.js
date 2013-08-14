@@ -136,10 +136,21 @@
 				res.send(header + templates['reset'] + templates['footer']);
 			});
 		});
-
-
-		app.post('/login', passport.authenticate('local'), function(req, res) {
-			res.json({success:1});
+		
+		app.post('/login', function(req, res, next) {
+			passport.authenticate('local', function(err, user, info) {
+				if(err) {
+					return next(err);
+				}
+				if (!user) {
+					return res.send({ success : false, message : info.message });
+				}
+				req.login({
+					uid: user.uid
+				}, function() {
+					res.send({ success : true, message : 'authentication succeeded' });
+				});
+			})(req, res, next);
 		});
 		
 		app.post('/register', function(req, res) {
