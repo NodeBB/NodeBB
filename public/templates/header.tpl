@@ -62,11 +62,12 @@
 								<li><a href="#"><i class="icon-refresh icon-spin"></i> Loading Notifications</a></li>
 							</ul>
 						</li>
-						<form id="search-form"
-						class="form-search form-inline" action="" method="GET">
-							<input type="text" name="query" class="input-medium search-query">
-							<button type="submit" class="btn hide">Search</button>
-						</form>
+						<li>
+							<form id="search-form" class="form-search form-inline" action="" method="GET">
+								<input type="text" name="query" class="input-medium search-query">
+								<button type="submit" class="btn hide">Search</button>
+							</form>
+						</li>
 						
 					</ul>
 				</div>
