@@ -362,7 +362,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				});
 				return;
 			}
-			
+
 			posts.reply(data.topic_id, uid, data.content, data.images, function(err, result) {
 				if(err) {
 					if(err.message === 'content-too-short') {

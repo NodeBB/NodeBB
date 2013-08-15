@@ -84,11 +84,11 @@ var	async = require('async'),
 
 				server_conf.base_url = protocol + '//' + host;
 				server_conf.relative_path = relative_path;
-				server_conf.imgurClientID = '';
 				
 				meta.config.set('postDelay', 10000);
 				meta.config.set('minimumPostLength', 8);
 				meta.config.set('minimumTitleLength', 3);
+				meta.config.set('imgurClientID', '');
 
 				install.save(server_conf, client_conf, callback);
 			});

@@ -7,10 +7,27 @@ define(['taskbar'], function(taskbar) {
 			postContainer: undefined,
 		};
 
+	function createImageLabel(img, postImages) {
+		var imageLabel = $('<div class="label"><span>'+ img.name +'</span></div>');
+		var closeButton = $('<button class="close">&times;</button>');
+
+		closeButton.on('click', function(e) {
+
+			imageLabel.remove();
+			var index = postImages.indexOf(img);
+			if(index !== -1) {
+				postImages.splice(index, 1);
+			}
+		});
+
+		imageLabel.append(closeButton);
+		return imageLabel;
+	}
+
 	function loadFile(file) {
 		var reader = new FileReader(),
-			dropDiv = $('#imagedrop'),
-			imagelist = $('#imagelist'),
+			dropDiv = $('.post-window .imagedrop'),
+			imagelist = $('.post-window .imagelist'),
 			uuid = dropDiv.parents('[data-uuid]').attr('data-uuid'),
 			posts = composer.posts[uuid];
 		
@@ -25,19 +42,9 @@ define(['taskbar'], function(taskbar) {
 
 			posts.images.push(img);
 
-			var imageLabel = $('<div class="label"><span>'+ file.name +'</span></div>');
-			var closeButton = $('<button class="close">&times;</button>');
-			closeButton.on('click', function(e) {
-				
-				imageLabel.remove();
-				var index = posts.images.indexOf(img);
-				if(index !== -1) {
-					posts.images.splice(index, 1);
-				}
-			});
+			var imageLabel = createImageLabel(img, posts.images);
 
-			imageLabel.append(closeButton);      	
-    		imagelist.append(imageLabel);
+			imagelist.append(imageLabel);
 			dropDiv.hide();
 		});
 	
@@ -46,16 +53,20 @@ define(['taskbar'], function(taskbar) {
 
 	function initializeFileReader() {
 		jQuery.event.props.push( "dataTransfer" );
-		
+		console.log(config);
 		if(window.FileReader) {
-			var	drop = $('#imagedrop');
+			var drop = $('.post-window .imagedrop');
+			var textarea = $('.post-window textarea');
 
-			$(composer.postContainer).on('dragenter dragover', function() {
-				var	textareaEl = this.querySelector('textarea'),
-					offset = textareaEl.offsetTop;
+			textarea.on('dragenter', function() {
 
-				drop.css('top', offset + 'px');
+				drop.css('top', textarea.position().top + 'px');
 				drop.show();
+
+				drop.on('dragleave', function(ev) {
+					drop.hide();
+					drop.off('dragleave');
+				});
 			});
 			
 			function cancel(e) {
@@ -72,7 +83,7 @@ define(['taskbar'], function(taskbar) {
 					posts = composer.posts[uuid],
 					dt = e.dataTransfer,
 					files = dt.files;
-				
+
 				for (var i=0; i<files.length; i++) {
 					loadFile(files[i]);
 				}
@@ -100,8 +111,8 @@ define(['taskbar'], function(taskbar) {
 														'</div>' +
 													'</div>' +
 													'<textarea tabIndex="2"></textarea>' +
-													'<div id="imagelist"></div>'+
-													'<div id="imagedrop"><div>Drag and Drop Images Here</div></div>'+
+													'<div class="imagelist"></div>'+
+													'<div class="imagedrop"><div>Drag and Drop Images Here</div></div>'+
 													'<div class="btn-toolbar action-bar">' +
 														'<div class="btn-group" style="float: right; margin-right: -8px">' +
 															'<button data-action="minimize" class="btn hidden-phone" tabIndex="4"><i class="icon-download-alt"></i> Minimize</button>' +
@@ -153,12 +164,14 @@ define(['taskbar'], function(taskbar) {
 
 			// Post Window events
 			var	jPostContainer = $(composer.postContainer),
-				postContentEl = composer.postContainer.querySelector('textarea')
+				postContentEl = composer.postContainer.querySelector('textarea');
+
 			jPostContainer.on('change', 'input, textarea', function() {
 				var uuid = $(this).parents('.post-window')[0].getAttribute('data-uuid');
 				if (this.nodeName === 'INPUT') composer.posts[uuid].title = this.value;
 				else if (this.nodeName === 'TEXTAREA') composer.posts[uuid].body = this.value;
 			});
+
 			jPostContainer.on('click', '.action-bar button', function() {
 				var	action = this.getAttribute('data-action'),
 					uuid = $(this).parents('.post-window').attr('data-uuid');
@@ -168,6 +181,7 @@ define(['taskbar'], function(taskbar) {
 					case 'discard': composer.discard(uuid); break;
 				}
 			});
+
 			jPostContainer.on('click', '.formatting-bar span', function() {
 				var iconClass = this.querySelector('i').className,
 					cursorEnd = postContentEl.value.length,
@@ -240,13 +254,22 @@ define(['taskbar'], function(taskbar) {
 		});
 	}
 
+	function createPostImages(images) {
+		var imagelist = $(composer.postContainer).find('.imagelist');
+		imagelist.empty();
+
+		if(images && images.length) {
+			for(var i=0; i<images.length; ++i) {
+				var imageLabel = createImageLabel(images[i], images);
+				imagelist.append(imageLabel);
+			}
+		}
+	}
+
 	composer.load = function(post_uuid) {
 		var post_data = composer.posts[post_uuid],
 			titleEl = composer.postContainer.querySelector('input'),
-			bodyEl = composer.postContainer.querySelector('textarea'),
-			imagelist = $(composer.postContainer).find('#imagelist');
-
-		imagelist.empty();
+			bodyEl = composer.postContainer.querySelector('textarea');
 
 		composer.reposition(post_uuid);
 		composer.active = post_uuid;
@@ -263,7 +286,9 @@ define(['taskbar'], function(taskbar) {
 			titleEl.value = post_data.title;
 			titleEl.readOnly = false;
 		}
-		bodyEl.value = post_data.body
+		bodyEl.value = post_data.body;
+
+		createPostImages(post_data.images);
 
 		// Direct user focus to the correct element
 		if ((parseInt(post_data.tid) || parseInt(post_data.pid)) > 0) {
@@ -291,7 +316,7 @@ define(['taskbar'], function(taskbar) {
 
 	composer.post = function(post_uuid) {
 		// Check title and post length
-		var	postData = composer.posts[post_uuid],
+		var postData = composer.posts[post_uuid],
 			titleEl = composer.postContainer.querySelector('input'),
 			bodyEl = composer.postContainer.querySelector('textarea');
 		
@@ -346,7 +371,8 @@ define(['taskbar'], function(taskbar) {
 
 	composer.discard = function(post_uuid) {
 		if (composer.posts[post_uuid]) {
-			$(composer.postContainer).find('#imagedrop').html('');
+			$(composer.postContainer).find('.imagedrop').html('');
+			$(composer.postContainer).find('.imagelist').empty();
 			delete composer.posts[post_uuid];
 			composer.minimize();
 			taskbar.discard('composer', post_uuid);

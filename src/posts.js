@@ -230,6 +230,7 @@ var	RDB = require('./redis.js'),
 					postData.relativeTime = utils.relativeTime(postData.timestamp)
 					postData.fav_star_class = 'icon-star-empty';
 					postData['edited-class'] = 'none';
+					postData.show_banned = 'hide';
 					postData.uploadedImages = JSON.parse(postData.uploadedImages);
 
 					var socketData = {
@@ -327,8 +328,8 @@ var	RDB = require('./redis.js'),
 
 	function uploadPostImages(postData, images, callback) {
 		var imgur = require('./imgur');
-		imgur.setClientID(global.nconf.get('imgurClientID'));
-						
+		imgur.setClientID(config.imgurClientID);
+
 		var uploadedImages = [];					
 
 		function uploadImage(image, callback) {
@@ -341,6 +342,7 @@ var	RDB = require('./redis.js'),
 						uploadedImages.push(img);
 						callback(null);
 					} else {
+						winston.error('Can\'t upload image, did you set imgurClientID?');
 						callback(data);
 					}
 				}

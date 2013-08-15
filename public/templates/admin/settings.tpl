@@ -8,6 +8,8 @@
 		<input type="text" placeholder="Your Community Name" data-field="title" />
 		<label>Site Description</label>
 		<input type="text" class="input-xxlarge" placeholder="A short description about your community" data-field="description" />
+		<label>Imgur Client ID</label>
+		<input type="text" class="input-xxlarge" placeholder="Imgur ClientID for image uploads" data-field="imgurClientID" />
 	</form>
 </div>
 

@@ -14,7 +14,7 @@ var request = require('request');
 			}         
 		};
 		
-		var post = request.post(options, function(err, req, body){
+		var post = request.post(options, function(err, req, body) {
 			try{
 				callback(err, JSON.parse(body));
 			} catch(e) {
