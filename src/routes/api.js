@@ -16,18 +16,21 @@ var user = require('./../user.js'),
 		});
 
 		app.get('/api/config', function(req, res, next) {
-			meta.config.getFields(['postDelay', 'minimumTitleLength', 'minimumPostLength'], function(err, metaConfig) {
+			meta.config.getFields(['postDelay', 'minimumTitleLength', 'minimumPostLength', 'imgurClientID'], function(err, metaConfig) {
 				if(err) return next();
 				var clientConfig = require('../../public/config.json');
 				
 				for (var attrname in metaConfig) { 
 					clientConfig[attrname] = metaConfig[attrname]; 
 				}
+				
+				clientConfig['imgurClientIDSet'] = clientConfig['imgurClientID'] !== '';
+				delete clientConfig['imgurClientID'];
 
 				res.json(200, clientConfig);
 			})
 		});
-		
+
 		app.get('/api/home', function(req, res) {
 			var uid = (req.user) ? req.user.uid : 0;
 			categories.getAllCategories(function(data) {

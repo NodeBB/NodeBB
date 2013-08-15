@@ -53,10 +53,10 @@ define(['taskbar'], function(taskbar) {
 
 	function initializeFileReader() {
 		jQuery.event.props.push( "dataTransfer" );
-		console.log(config);
+
 		if(window.FileReader) {
-			var drop = $('.post-window .imagedrop');
-			var textarea = $('.post-window textarea');
+			var drop = $('.post-window .imagedrop'),
+				textarea = $('.post-window textarea');
 
 			textarea.on('dragenter', function() {
 
@@ -76,7 +76,7 @@ define(['taskbar'], function(taskbar) {
 			
 			drop.on('dragover', cancel);
 			drop.on('dragenter', cancel);
-			
+
 			drop.on('drop', function(e) {
 				e.preventDefault();
 				var uuid = drop.parents('[data-uuid]').attr('data-uuid'),
@@ -90,7 +90,6 @@ define(['taskbar'], function(taskbar) {
 				return false;
 				
 			});
-			
 		}
 	}
 
@@ -124,7 +123,8 @@ define(['taskbar'], function(taskbar) {
 
 			document.body.insertBefore(composer.postContainer, taskbar);
 
-			initializeFileReader();
+			if(config.imgurClientIDSet)
+				initializeFileReader();
 
 			socket.on('api:composer.push', function(threadData) {
 				if (!threadData.error) {
