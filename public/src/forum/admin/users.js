@@ -8,6 +8,11 @@
 			return (parent.attr('data-admin') !== "0");
 		}
 
+		function isUserBanned(element) {
+			var parent = $(element).parents('.users-box');
+			return (parent.attr('data-banned') !== "" && parent.attr('data-banned') !== "0");	
+		}
+
 		function getUID(element) {
 			var parent = $(element).parents('.users-box');
 			return parent.attr('data-uid');	
@@ -32,6 +37,20 @@
 				deleteBtn.addClass('disabled');
 			else
 				deleteBtn.show();
+		});
+
+		jQuery('.ban-btn').each(function(index, element) {
+			var banBtn = $(element);
+			var isAdmin = isUserAdmin(banBtn);
+			var isBanned = isUserBanned(banBtn);
+			
+			if(isAdmin)
+				banBtn.addClass('disabled');
+			else if(isBanned)
+				banBtn.addClass('btn-warning');
+			else 
+				banBtn.removeClass('btn-warning');
+
 		});
 
 		jQuery('.admin-btn').on('click', function() {
@@ -74,13 +93,38 @@
 			
 			return false;
 		});
+
+		jQuery('.ban-btn').on('click', function() {
+			var banBtn = $(this);
+			var isAdmin = isUserAdmin(banBtn);
+			var isBanned = isUserBanned(banBtn);
+			var parent = banBtn.parents('.users-box');
+			var uid = getUID(banBtn);
+
+			if(!isAdmin) {
+				if(isBanned) {
+					socket.emit('api:admin.user.unbanUser', uid);
+					banBtn.removeClass('btn-warning');
+					parent.attr('data-banned', 0);
+				} else {
+					bootbox.confirm('Do you really want to ban "' + parent.attr('data-username') +'"?', function(confirm) {
+						socket.emit('api:admin.user.banUser', uid);		
+						banBtn.addClass('btn-warning');
+						parent.attr('data-banned', 1);
+					});
+				}
+			}
+			
+			return false;
+		});
 	}
 
 
 	jQuery('document').ready(function() {
 
-		var yourid = templates.get('yourid');
-		var timeoutId = 0;
+		var yourid = templates.get('yourid'),
+			timeoutId = 0,
+			loadingMoreUsers = false;
 
 		var url = window.location.href,
 			parts = url.split('/'),
@@ -114,8 +158,7 @@
 		socket.removeAllListeners('api:admin.user.search');
 		
 		socket.on('api:admin.user.search', function(data) {
-
-			var	html = templates.prepare(templates['admin/users'].blocks['users']).parse({
+			var html = templates.prepare(templates['admin/users'].blocks['users']).parse({
 					users: data
 				}),
 				userListEl = document.querySelector('.users');
@@ -139,6 +182,45 @@
 			initUsers();
 		});
 	
+		function onUsersLoaded(users) {
+			var html = templates.prepare(templates['admin/users'].blocks['users']).parse({ users: users });
+			$('#users-container').append(html);
+		}
+
+		function loadMoreUsers() {
+			var set = '';
+			if(active === 'latest') {
+				set = 'users:joindate';
+			} else if(active === 'sort-posts') {
+				set = 'users:postcount';
+			} else if(active === 'sort-reputation') {
+				set = 'users:reputation';
+			}
+
+			if(set) {
+				loadingMoreUsers = true;
+				socket.emit('api:users.loadMore', {
+					set: set, 
+					after: $('#users-container').children().length 
+				}, function(data) {
+					if(data.users.length) {
+						onUsersLoaded(data.users);
+					}
+					loadingMoreUsers = false;
+				});
+			}
+		}
+
+		$('#load-more-users-btn').on('click', loadMoreUsers);
+
+		$(window).off('scroll').on('scroll', function() {
+			var bottom = (document.body.offsetHeight - $(window).height()) * 0.9;
+
+			if (document.body.scrollTop > bottom && !loadingMoreUsers) {
+				loadMoreUsers();
+			}
+		});
+
 	});
-	
+
 }());

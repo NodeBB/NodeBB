@@ -2,7 +2,7 @@
   "name": "nodebb",
   "license": "GPLv3 or later",
   "description": "NodeBB Forum",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "homepage": "http://www.nodebb.org",
   "repository": {
     "type": "git",
@@ -33,7 +33,8 @@
     "sitemap": "~0.6.0",
     "cheerio": "~0.12.0",
     "request": "~2.25.0",
-    "reds": "~0.2.4"
+    "reds": "~0.2.4",
+    "winston": "~0.7.2"
   },
   "bugs": {
     "url": "https://github.com/designcreateplay/NodeBB/issues"

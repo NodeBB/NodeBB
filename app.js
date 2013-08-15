@@ -16,8 +16,8 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Read config.js to grab redis info
 var fs = require('fs'),
+	winston = require('winston'),
 	nconf = require('nconf'),
 	pkg = require('./package.json'),
 	url = require('url');
@@ -28,11 +28,26 @@ global.env = process.env.NODE_ENV || 'production',
 // Configuration setup
 nconf.argv().file({ file: __dirname + '/config.json'});
 
+winston.remove(winston.transports.Console);
+winston.add(winston.transports.Console, {
+	colorize:true
+});
+
+winston.add(winston.transports.File, {
+	filename:'error.log',
+	level:'error'
+})
+
+// TODO: remove once https://github.com/flatiron/winston/issues/280 is fixed
+winston.err = function(err) {
+	winston.error(err.stack);
+};
+
 // Log GNU copyright info along with server info
-console.log('Info: NodeBB v' + pkg.version + ' Copyright (C) 2013 DesignCreatePlay Inc.');
-console.log('Info: This program comes with ABSOLUTELY NO WARRANTY.');
-console.log('Info: This is free software, and you are welcome to redistribute it under certain conditions.');
-console.log('Info: ===');
+winston.info('NodeBB v' + pkg.version + ' Copyright (C) 2013 DesignCreatePlay Inc.');
+winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
+winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
+winston.info('===');
 
 if(nconf.get('upgrade')) {
 	require('./src/upgrade').upgrade();
@@ -41,8 +56,8 @@ if(nconf.get('upgrade')) {
 	nconf.set('upload_url', nconf.get('url') + 'uploads/');
 	global.nconf = nconf;
 
-	console.log('Info: Initializing NodeBB v' + pkg.version + ', on port ' + nconf.get('port') + ', using Redis store at ' + nconf.get('redis:host') + ':' + nconf.get('redis:port') + '.');
-	console.log('Info: Base Configuration OK.');
+	winston.info('Initializing NodeBB v' + pkg.version + ', on port ' + nconf.get('port') + ', using Redis store at ' + nconf.get('redis:host') + ':' + nconf.get('redis:port') + '.');
+	winston.info('Base Configuration OK.');
 
 	// TODO: Replace this with nconf-redis
 	var	meta = require('./src/meta.js');
@@ -84,10 +99,10 @@ if(nconf.get('upgrade')) {
 
 			//setup scripts to be moved outside of the app in future.
 			function setup_categories() {
-				console.log('Info: Checking categories...');
+				winston.info('Checking categories...');
 				categories.getAllCategories(function(data) {
 					if (data.categories.length === 0) {
-						console.log('Info: Setting up default categories...');
+						winston.info('Setting up default categories...');
 
 						fs.readFile(config.ROOT_DIRECTORY + '/install/data/categories.json', function(err, default_categories) {
 							default_categories = JSON.parse(default_categories);
@@ -98,21 +113,24 @@ if(nconf.get('upgrade')) {
 						});
 
 						
-						console.log('Info: Hardcoding uid 1 as an admin');
+						winston.info('Hardcoding uid 1 as an admin');
 						var user = require('./src/user.js');
 						user.makeAdministrator(1);
+
+
 					} else {
-						console.log('Info: Categories OK. Found ' + data.categories.length + ' categories.');
+						winston.info('Categories OK. Found ' + data.categories.length + ' categories.');
 					}
 				});
 			}
+
 			setup_categories();
 		}(global.configuration));
 	});
 } else {
 	// New install, ask setup questions
-	if (nconf.get('setup')) console.log('Info: NodeBB Setup Triggered via Command Line');
-	else console.log('Info: Configuration not found, starting NodeBB setup');
+	if (nconf.get('setup')) winston.info('NodeBB Setup Triggered via Command Line');
+	else winston.info('Configuration not found, starting NodeBB setup');
 
 	var	install = require('./src/install');
 
@@ -124,7 +142,7 @@ if(nconf.get('upgrade')) {
 
 	install.setup(function(err) {
 		if (err) {
-			console.log('Error: There was a problem completing NodeBB setup: ', err.message);
+			winston.error('There was a problem completing NodeBB setup: ', err.message);
 		} else {
 			if (!nconf.get('setup')) {
 				process.stdout.write(
@@ -132,7 +150,7 @@ if(nconf.get('upgrade')) {
 				);
 			}
 		}
-
+		
 		process.exit();
 	});
 }

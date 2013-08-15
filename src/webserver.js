@@ -108,7 +108,6 @@ var express = require('express'),
 
 		// respond with html page
 		if (req.accepts('html')) {
-			
 			//res.json('404', { url: req.url });
 			res.redirect(global.nconf.get('relative_path') + '/404');
 			return;
@@ -116,7 +115,6 @@ var express = require('express'),
 
 		// respond with json
 		if (req.accepts('json')) {
-			console.log('sending 404 json');
 			res.send({ error: 'Not found' });
 			return;
 		}
@@ -126,6 +124,7 @@ var express = require('express'),
 	});
 
 	app.use(function(err, req, res, next) {
+		
 		// we may use properties of the error object
 		// here and next(err) appropriately, or if
 		// we possibly recovered from the error, simply next().
@@ -401,6 +400,7 @@ var express = require('express'),
 				}
 			});
 		});
+		
 	});
 
 }(WebServer));

@@ -299,22 +299,22 @@ define(['taskbar'], function(taskbar) {
 		titleEl.value = titleEl.value.trim();
 		bodyEl.value = bodyEl.value.trim();
 		
-		if (titleEl.value.length < 3) {
+		if (titleEl.value.length < config.minimumTitleLength) {
 			return app.alert({
 				type: 'error',
 				timeout: 2000,
 				title: 'Title too short',
-				message: "Please enter a longer title. At least 3 characters.",
+				message: "Please enter a longer title. At least " + config.minimumTitleLength+ " characters.",
 				alert_id: 'post_error'
 			});
 		}
 
-		if (bodyEl.value.length < 8) {
+		if (bodyEl.value.length < config.minimumPostLength) {
 			return app.alert({
 				type: 'error',
 				timeout: 2000,
 				title: 'Content too short',
-				message: "Please enter a longer post. At least 8 characters.",
+				message: "Please enter a longer post. At least " + config.minimumPostLength + " characters.",
 				alert_id: 'post_error'
 			});
 		}

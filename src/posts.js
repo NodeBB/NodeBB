@@ -10,11 +10,11 @@ var	RDB = require('./redis.js'),
 	async = require('async'),
 	plugins = require('./plugins'),
 	reds = require('reds'),
-	postSearch = reds.createSearch('nodebbpostsearch');
+	nconf = require('nconf'),
+	postSearch = reds.createSearch('nodebbpostsearch'),
+	winston = require('winston');
 
 (function(Posts) {
-
-	Posts.minimumPostLength = 8;
 
 	Posts.getPostsByTid = function(tid, start, end, callback) {
 		RDB.lrange('tid:' + tid + ':posts', start, end, function(err, pids) {
@@ -32,12 +32,13 @@ var	RDB = require('./redis.js'),
 	}
 	
 	Posts.addUserInfoToPost = function(post, callback) {
-		user.getUserFields(post.uid, ['username', 'userslug', 'reputation', 'postcount', 'picture', 'signature'], function(userData) {
+		user.getUserFields(post.uid, ['username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned'], function(userData) {
 
 			post.username = userData.username || 'anonymous';
 			post.userslug = userData.userslug || '';
 			post.user_rep = userData.reputation || 0;
 			post.user_postcount = userData.postcount || 0;
+			post.user_banned = userData.banned || '0';
 			post.picture = userData.picture || require('gravatar').url('', {}, https=global.nconf.get('https'));
 			post.signature = postTools.markdownToHTML(userData.signature, true);
 
@@ -55,7 +56,7 @@ var	RDB = require('./redis.js'),
 
 	Posts.getPostSummaryByPids = function(pids, callback) {
 		
-		var returnData = [];
+		var posts = [];
 		
 		function getPostSummary(pid, callback) {
 			Posts.getPostFields(pid, ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'], function(postData) {
@@ -70,7 +71,7 @@ var	RDB = require('./redis.js'),
 							postData.content = utils.strip_tags(postTools.markdownToHTML(postData.content));
 
 						postData.topicSlug = topicSlug;
-						returnData.push(postData);	
+						posts.push(postData);	
 						callback(null);
 					});
 				});
@@ -80,12 +81,18 @@ var	RDB = require('./redis.js'),
 		
 		async.eachSeries(pids, getPostSummary, function(err) {
 			if(!err) {
-				callback(returnData);
+				callback(posts);
 			} else {
 				console.log(err);
 			}
 		});
 	};
+
+	Posts.filterBannedPosts = function(posts) {
+		return posts.filter(function(post) {
+			return post.user_banned === '0';
+		});
+	}
 
 	Posts.getPostData = function(pid, callback) {
 		RDB.hgetall('post:' + pid, function(err, data) {
@@ -174,7 +181,7 @@ var	RDB = require('./redis.js'),
 			type: 'error',
 			timeout: 2000,
 			title: 'Content too short',
-			message: "Please enter a longer post. At least " + Posts.minimumPostLength + " characters.",
+			message: "Please enter a longer post. At least " + config.minimumPostLength + " characters.",
 			alert_id: 'post_error'
 		});
 	}
@@ -182,7 +189,7 @@ var	RDB = require('./redis.js'),
 	Posts.emitTooManyPostsAlert = function(socket) {
 		socket.emit('event:alert', {
 			title: 'Too many posts!',
-			message: 'You can only post every '+ (config.post_delay / 1000) + ' seconds.',
+			message: 'You can only post every '+ config.postDelay/1000 + ' seconds.',
 			type: 'error',
 			timeout: 2000
 		});
@@ -192,15 +199,14 @@ var	RDB = require('./redis.js'),
 		if(content) {
 			content = content.trim();
 		}
-		
-		if (!content || content.length < Posts.minimumPostLength) {
+
+		if (!content || content.length < config.minimumPostLength) {
 			callback(new Error('content-too-short'), null);
 			return;
 		}
 
 		user.getUserField(uid, 'lastposttime', function(lastposttime) {
-
-			if(Date.now() - lastposttime < config.post_delay) {
+			if(Date.now() - lastposttime < config.postDelay) {
 				callback(new Error('too-many-posts'), null);
 				return;
 			}
@@ -300,7 +306,7 @@ var	RDB = require('./redis.js'),
 
 						uploadPostImages(postData, images, function(err, uploadedImages) {
 							if(err) {
-								console.log('Uploading images failed!');
+								winston.error('Uploading images failed!', err.stack);
 							} else {
 								postData.uploadedImages = JSON.stringify(uploadedImages);
 								Posts.setPostField(pid, 'uploadedImages', postData.uploadedImages);

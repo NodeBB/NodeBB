@@ -9,7 +9,8 @@ var	RDB = require('./redis.js'),
 	plugins = require('./plugins'),
 	reds = require('reds'),
 	postSearch = reds.createSearch('nodebbpostsearch'),
-	topicSearch = reds.createSearch('nodebbtopicsearch');
+	topicSearch = reds.createSearch('nodebbtopicsearch'),
+	winston = require('winston');
 
 (function(PostTools) {
 	PostTools.isMain = function(pid, tid, callback) {
@@ -99,7 +100,9 @@ var	RDB = require('./redis.js'),
 
 			posts.getPostFields(pid, ['tid', 'uid'], function(postData) {
 
-				user.decrementUserFieldBy(postData.uid, 'postcount', 1);
+				user.decrementUserFieldBy(postData.uid, 'postcount', 1, function(err, postcount) {
+					RDB.zadd('users:postcount', postcount, postData.uid);
+				});
 				
 				io.sockets.in('topic_' + postData.tid).emit('event:post_deleted', {
 					pid: pid
@@ -109,7 +112,7 @@ var	RDB = require('./redis.js'),
 				threadTools.get_latest_undeleted_pid(postData.tid, function(err, pid) {
 					if (err && err.message === 'no-undeleted-pids-found') {
 						threadTools.delete(postData.tid, -1, function(err) {
-							if (err) console.log('Error: Could not delete topic (tid: ' + postData.tid + ')');
+							if (err) winston.error('Could not delete topic (tid: ' + postData.tid + ')', err.stack);
 						});
 					} else {
 						posts.getPostField(pid, 'timestamp', function(timestamp) {

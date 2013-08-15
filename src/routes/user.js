@@ -4,7 +4,8 @@ var user = require('./../user.js'),
 	fs = require('fs'),
 	utils = require('./../../public/src/utils.js'),
 	path = require('path'),
-	marked = require('marked');
+	marked = require('marked'),
+	winston = require('winston');
 
 (function(User) {
 	User.create_routes = function(app) {
@@ -63,13 +64,13 @@ var user = require('./../user.js'),
 
 			user.get_uid_by_userslug(req.params.userslug, function(uid) {
 				if(!uid) {
-					next();
-					return;
+					return next();
 				}
-				
+
 				app.build_header({ req: req, res: res }, function(err, header) {
-					res.send(header + app.create_route('users/'+req.params.userslug, 'account')  + templates['footer']);
-				});
+					res.send(header + app.create_route('users/' + req.params.userslug, 'account')  + templates['footer']);
+				});		
+
 			});		
 		});
 		
@@ -136,7 +137,7 @@ var user = require('./../user.js'),
 
 				fs.unlink(absolutePath, function(err) {
 					if(err) {        
-						console.error('[%d] %s', Date.now(), + err);
+						winston.error('[%d] %s', Date.now(), + err);
 					}
 
 					uploadUserPicture(req.user.uid, path.extname(req.files.userPhoto.name), req.files.userPhoto.path, res);
@@ -155,8 +156,7 @@ var user = require('./../user.js'),
 			var filename = uid + '-profileimg' + extension;
 			var uploadPath = path.join(global.configuration['ROOT_DIRECTORY'], global.nconf.get('upload_path'), filename);
 			
-			// @todo move to proper logging code - this should only be temporary
-			console.log('Info: Attempting upload to: '+ uploadPath);
+			winston.info('Attempting upload to: '+ uploadPath);
 			
 			var is = fs.createReadStream(tempPath);
 			var os = fs.createWriteStream(uploadPath);
@@ -176,11 +176,7 @@ var user = require('./../user.js'),
 					height: 128
 				}, function(err, stdout, stderr){
 					if (err) {
-						// @todo: better logging method; for now, send to stderr.
-						// ideally, this should be happening in another process
-						// to avoid poisoning the main process on error or allowing a significant problem
-						// to crash the main process
-						console.error('[%d] %s', Date.now(), + err);
+						winston.err(err.message, err.stack);
 					}
 
 					res.json({ path: imageUrl });
@@ -189,7 +185,7 @@ var user = require('./../user.js'),
 			});
 
 			os.on('error', function(err) {
-				console.error('[%d] %s', Date.now(), + err);
+				winston.error('[%d] %s', Date.now(), + err);
 			});
 
 			is.pipe(os);
@@ -316,49 +312,33 @@ var user = require('./../user.js'),
 			});						
 		});
 
-		app.get('/api/users', function(req, res) {
-			user.getUserList(function(data) {
-				data = data.sort(function(a, b) {
-					return b.joindate - a.joindate;
-				});
-				res.json({ search_display: 'none', users: data });
-			});
-		});
-
+		app.get('/api/users', getUsersSortedByJoinDate);
 		app.get('/api/users-sort-posts', getUsersSortedByPosts);
 		app.get('/api/users-sort-reputation', getUsersSortedByReputation);
 		app.get('/api/users-latest', getUsersSortedByJoinDate);
 		app.get('/api/users-search', getUsersForSearch);
 		
+		
+		function getUsersSortedByJoinDate(req, res) {
+			user.getUsers('users:joindate', 0, 49, function(err, data) {
+				res.json({ search_display: 'none', loadmore_display:'block', users:data });
+			});
+		}
+		
 		function getUsersSortedByPosts(req, res) {
-			user.getUserList(function(data) {
-				data = data.sort(function(a, b) {
-					return b.postcount - a.postcount;
-				});
-				res.json({ search_display: 'none', users:data });
+			user.getUsers('users:postcount', 0, 49, function(err, data) {
+				res.json({ search_display: 'none', loadmore_display:'block', users:data });
 			});
 		}
 
 		function getUsersSortedByReputation(req, res) {
-			user.getUserList(function(data) {
-				data = data.sort(function(a, b) {
-					return b.reputation - a.reputation;
-				});
-				res.json({ search_display: 'none', users:data });
-			});
-		}
-
-		function getUsersSortedByJoinDate(req, res) {
-			user.getUserList(function(data) {
-				data = data.sort(function(a, b) {
-					return b.joindate - a.joindate;
-				});
-				res.json({ search_display: 'none', users:data });
+			user.getUsers('users:reputation', 0, 49, function(err, data) {
+				res.json({ search_display: 'none', loadmore_display:'block', users:data });
 			});
 		}
 	
 		function getUsersForSearch(req, res) {		
-			res.json({ search_display: 'block', users: [] });
+			res.json({ search_display: 'block', loadmore_display:'none', users: [] });
 		}
 
 		function getUserDataByUserSlug(userslug, callerUID, callback) {
@@ -391,7 +371,8 @@ var user = require('./../user.js'),
 						else 
 							data.emailClass = "hide";
 
-
+						data.show_banned = data.banned === '1'?'':'hide';
+						
 						data.uid = uid;
 						data.yourid = callerUID;
 						data.theirid = uid;

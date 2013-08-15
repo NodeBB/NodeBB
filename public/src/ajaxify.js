@@ -26,6 +26,7 @@ var ajaxify = {};
 	};
 
 	ajaxify.go = function(url, callback, template, quiet) {
+		$(window).off('scroll');
 		// leave room and join global
 		app.enter_room('global');
 

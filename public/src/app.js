@@ -5,11 +5,12 @@ var socket,
 
 
 (function() {
-	
+	var showWelcomeMessage = false;
+
 	function loadConfig() {
 	
 		$.ajax({
-			url: RELATIVE_PATH + '/config.json?v=' + new Date().getTime(),
+			url: RELATIVE_PATH + '/api/config',
 			success: function(data) {
 				API_URL = data.api_url;
 	
@@ -27,10 +28,6 @@ var socket,
 
 				socket.on('event:alert', function(data) {
 					app.alert(data);
-				});
-				
-				socket.on('event:consolelog', function(data) {
-					console.log(data);
 				});
 	
 				socket.on('connect', function(data){
@@ -285,8 +282,9 @@ var socket,
 				timeout: 5000
 			});
 		}
-
-		if(location.href.indexOf('loggedin') !== -1) {
+		
+		if(showWelcomeMessage) {
+			showWelcomeMessage = false;
 			if(document.readyState !== 'complete') {
 				$(document).ready(showAlert);
 			} else {
@@ -370,6 +368,8 @@ var socket,
 			return false;
 		})
 	});
+
+	showWelcomeMessage = location.href.indexOf('loggedin') !== -1;
 
 	loadConfig();
 

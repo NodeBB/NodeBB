@@ -110,7 +110,6 @@
 			contentEl.addEventListener('click', function(e) {
 				if (e.target.hasAttribute('data-path')) {
 					var	href = 'install/' + e.target.getAttribute('data-path');
-					console.log(href);
 					if (!e.target.disabled) ajaxify.go(href);
 				}
 			}, false);

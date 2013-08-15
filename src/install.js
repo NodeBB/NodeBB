@@ -3,6 +3,7 @@ var	async = require('async'),
 	fs = require('fs'),
 	url = require('url'),
 	path = require('path'),
+	meta = require('./meta'),
 	install = {
 		questions: [
 			'base_url|Publically accessible URL of this installation? (http://localhost)',
@@ -78,12 +79,16 @@ var	async = require('async'),
 							port: config.port
 						},
 						api_url: protocol + '//' + host + (config.use_port ? ':' + config.port : '') + relative_path + '/api/',
-						relative_path: relative_path
+						relative_path: relative_path						
 					};
 
 				server_conf.base_url = protocol + '//' + host;
 				server_conf.relative_path = relative_path;
 				server_conf.imgurClientID = '';
+				
+				meta.config.set('postDelay', 10000);
+				meta.config.set('minimumPostLength', 8);
+				meta.config.set('minimumTitleLength', 3);
 
 				install.save(server_conf, client_conf, callback);
 			});

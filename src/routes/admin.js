@@ -4,7 +4,8 @@ var user = require('./../user.js'),
 	RDB = require('./../redis.js'),
 	pkg = require('./../../package.json'),
 	categories = require('./../categories.js'),
-	plugins = require('../plugins');
+	plugins = require('../plugins'),
+	winston = require('winston');
 
 (function(Admin) {
 	Admin.isAdmin = function(req, res, next) {
@@ -64,39 +65,30 @@ var user = require('./../user.js'),
 		});
 
 		app.get('/api/admin/users/search', function(req, res) {
-			res.json({search_display: 'block', users: []});
+			res.json({search_display: 'block', loadmore_display:'none', users: []});
 		});
 
 		app.get('/api/admin/users/latest', function(req, res) {
-			user.getUserList(function(data) {
-				data = data.sort(function(a, b) {
-					return b.joindate - a.joindate;
-				});
-				res.json({search_display: 'none', users:data, yourid:req.user.uid});
+			user.getUsers('users:joindate', 0, 49, function(err, data) {
+				res.json({ search_display: 'none', loadmore_display:'block', users:data, yourid:req.user.uid });
 			});
 		});
 
 		app.get('/api/admin/users/sort-posts', function(req, res) {
-			user.getUserList(function(data) {
-				data = data.sort(function(a, b) {
-					return b.postcount - a.postcount;
-				});
-				res.json({search_display: 'none', users:data, yourid:req.user.uid});
+			user.getUsers('users:postcount', 0, 49, function(err, data) {
+				res.json({ search_display: 'none', loadmore_display:'block', users:data, yourid:req.user.uid });
 			});
 		});
 
 		app.get('/api/admin/users/sort-reputation', function(req, res) {
-			user.getUserList(function(data) {
-				data = data.sort(function(a, b) {
-					return b.reputation - a.reputation;
-				});
-				res.json({search_display: 'none', users:data, yourid:req.user.uid});
+			user.getUsers('users:reputation', 0, 49, function(err, data) {
+				res.json({ search_display: 'none', loadmore_display:'block', users:data, yourid:req.user.uid });
 			});
 		});
 
 		app.get('/api/admin/users', function(req, res) {
-			user.getUserList(function(data) {
-				res.json({search_display: 'none', users:data, yourid:req.user.uid});
+			user.getUsers('users:joindate', 0, 49, function(err, data) {
+				res.json({ search_display: 'none', users:data, yourid:req.user.uid });
 			});
 		});
 
@@ -139,7 +131,10 @@ var user = require('./../user.js'),
 
 				for(var i in data) {
 					
-					try	{
+					if(data[i].indexOf(':') == -1 || !data[i])
+						continue;
+					
+					try {
 						data[i] = data[i].replace(/:/,"\":\"");
 						var json = "{\"" + data[i] + "\"}";
 						
@@ -148,7 +143,7 @@ var user = require('./../user.js'),
 							finalData[key] = jsonObject[key];
 						}
 					} catch(err){
-						console.log(err);
+						winston.warn('can\'t parse redis status variable, ignoring', i, data[i], err);
 					}
 				}
 			

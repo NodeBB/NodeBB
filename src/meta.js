@@ -9,6 +9,7 @@ var utils = require('./../public/src/utils.js'),
 		get: function(callback) {
 			RDB.hgetall('config', function(err, config) {
 				if (!err) {
+					config = config || {};
 					config.status = 'ok';
 					callback(config);
 				} else {
@@ -18,9 +19,13 @@ var utils = require('./../public/src/utils.js'),
 				}
 			});
 		},
+		getFields: function(fields, callback) {
+			RDB.hmgetObject('config', fields, callback);
+		},
 		set: function(field, value, callback) {
 			RDB.hset('config', field, value, function(err, res) {
-				callback(err);
+				if(callback)
+					callback(err, res);
 			});
 		},
 		remove: function(field) {
@@ -76,7 +81,7 @@ var utils = require('./../public/src/utils.js'),
 				var	title;
 
 				if (err) title = global.config.title || 'NodeBB';
-				else title = (values.notifCount > 0 ? '(' + values.notifCount + ') ' : '') + (values.title ? values.title + ' | ' : '') + global.config.title || 'NodeBB';
+				else title = (values.notifCount > 0 ? '(' + values.notifCount + ') ' : '') + (values.title ? values.title + ' | ' : '') + (global.config.title || 'NodeBB');
 
 				callback(null, title);
 			});

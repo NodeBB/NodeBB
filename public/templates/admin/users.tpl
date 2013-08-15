@@ -14,9 +14,9 @@
 	<span id="user-notfound-notify" class="label label-important hide">User not found!</span><br/>
 </div>
 
-<ul class="users">
+<ul id="users-container" class="users">
 	<!-- BEGIN users -->
-	<div class="users-box" data-uid="{users.uid}" data-admin="{users.administrator}" data-username="{users.username}">
+	<div class="users-box" data-uid="{users.uid}" data-admin="{users.administrator}" data-username="{users.username}" data-banned="{users.banned}">
 		<a href="/users/{users.userslug}">
 			<img src="{users.picture}" class="img-polaroid"/>
 		</a>
@@ -37,10 +37,16 @@
 		<div>
 			<a href="#" class="btn delete-btn btn-danger">Delete</a>
 		</div>
+		<div>
+			<a href="#" class="btn ban-btn">Ban</a>
+		</div>
 	</div>
 	<!-- END users -->
 </ul>
 
+<div class="text-center {loadmore_display}">
+	<button id="load-more-users-btn" class="btn">Load More</button>
+</div>
 <input type="hidden" template-variable="yourid" value="{yourid}" />
 
 

@@ -202,10 +202,9 @@
 
 		// Infinite scrolling of posts
 		$(window).off('scroll').on('scroll', function() {
-			var windowHeight = document.body.offsetHeight - $(window).height(),
-				half = windowHeight / 2;
+			var bottom = (document.body.offsetHeight - $(window).height()) * 0.9;	
 
-			if (document.body.scrollTop > half && !app.infiniteLoaderActive && $('#post-container').children().length) {
+			if (document.body.scrollTop > bottom && !app.infiniteLoaderActive && $('#post-container').children().length) {
 				app.loadMorePosts(tid);
 			}
 		});
@@ -255,11 +254,9 @@
 
 		var element = $(this).find('i');
 		if(element.attr('class') == 'icon-star-empty') {
-			element.attr('class', 'icon-star');
 			socket.emit('api:posts.favourite', {pid: pid, room_id: app.current_room});
 		}
 		else {
-			element.attr('class', 'icon-star-empty');
 			socket.emit('api:posts.unfavourite', {pid: pid, room_id: app.current_room});
 		}
 	});
@@ -388,7 +385,14 @@
 	});
 
 	socket.on('api:posts.favourite', function(data) {
-		if (data.status !== 'ok' && data.pid) {
+		if (data.status === 'ok' && data.pid) {
+			var favEl = document.querySelector('.post_rep_' + data.pid).nextSibling;
+			if (favEl) favEl.className = 'icon-star';
+		}
+	});
+
+	socket.on('api:posts.unfavourite', function(data) {
+		if (data.status === 'ok' && data.pid) {
 			var favEl = document.querySelector('.post_rep_' + data.pid).nextSibling;
 			if (favEl) favEl.className = 'icon-star-empty';
 		}

@@ -2,12 +2,13 @@ var	fs = require('fs'),
 	path = require('path'),
 	RDB = require('./redis.js'),
 	async = require('async'),
+	winston = require('winston'),
 	plugins = {
 		libraries: [],
 		loadedHooks: {},
 		init: function() {
 			if (this.initialized) return;
-			if (global.env === 'development') console.log('Info: [plugins] Initializing plugins system');
+			if (global.env === 'development') winston.info('[plugins] Initializing plugins system');
 
 			var	_self = this;
 
@@ -32,12 +33,12 @@ var	fs = require('fs'),
 											_self.registerHook(pluginData.id, pluginData.hooks[x]);
 										}
 									}
-									if (global.env === 'development') console.log('Info: [plugins] Loaded plugin: ' + pluginData.id);
+									if (global.env === 'development') winston.info('[plugins] Loaded plugin: ' + pluginData.id);
 
 									next();
 								});
 							} else {
-								if (global.env === 'development') console.log('Info: [plugins] Plugin \'' + plugin + '\' not found');
+								if (global.env === 'development') winston.info('[plugins] Plugin \'' + plugin + '\' not found');
 								next();	// Ignore this plugin silently
 							}
 						})
@@ -45,11 +46,11 @@ var	fs = require('fs'),
 				}
 			], function(err) {
 				if (err) {
-					if (global.env === 'development') console.log('Info: [plugins] NodeBB encountered a problem while loading plugins', err.message);
+					if (global.env === 'development') winston.info('[plugins] NodeBB encountered a problem while loading plugins', err.message);
 					return;
 				}
 
-				if (global.env === 'development') console.log('Info: [plugins] Plugins OK');
+				if (global.env === 'development') winston.info('[plugins] Plugins OK');
 			});
 		},
 		initialized: false,
@@ -66,7 +67,7 @@ var	fs = require('fs'),
 			if (data.hook && data.method) {
 				_self.loadedHooks[data.hook] = _self.loadedHooks[data.hook] || [];
 				_self.loadedHooks[data.hook].push([id, data.method]);
-				if (global.env === 'development') console.log('Info: [plugins] Hook registered: ' + data.hook + ' will call ' + id);
+				if (global.env === 'development') winston.info('[plugins] Hook registered: ' + data.hook + ' will call ' + id);
 			} else return;
 		},
 		fireHook: function(hook, args, callback) {
@@ -75,7 +76,7 @@ var	fs = require('fs'),
 				hookList = this.loadedHooks[hook];
 
 			if (hookList && Array.isArray(hookList)) {
-				if (global.env === 'development') console.log('Info: [plugins] Firing hook: \'' + hook + '\'');
+				if (global.env === 'development') winston.info('[plugins] Firing hook: \'' + hook + '\'');
 				var	hookType = hook.split(':')[0];
 				switch(hookType) {
 					case 'filter':
@@ -94,7 +95,7 @@ var	fs = require('fs'),
 							}
 						}, function(err) {
 							if (err) {
-								if (global.env === 'development') console.log('Info: [plugins] Problem executing hook: ' + hook);
+								if (global.env === 'development') winston.info('[plugins] Problem executing hook: ' + hook);
 							}
 
 							callback(returnVal);
@@ -109,7 +110,7 @@ var	fs = require('fs'),
 							) {
 								_self.libraries[hookObj[0]][hookObj[1]].apply(_self.libraries[hookObj[0]], args);
 							} else {
-								if (global.env === 'development') console.log('Info: [plugins] Expected method \'' + hookObj[1] + '\' in plugin \'' + hookObj[0] + '\' not found, skipping.');
+								if (global.env === 'development') winston.info('[plugins] Expected method \'' + hookObj[1] + '\' in plugin \'' + hookObj[0] + '\' not found, skipping.');
 							}
 						});
 					break;
@@ -129,13 +130,13 @@ var	fs = require('fs'),
 		toggleActive: function(id, callback) {
 			this.isActive(id, function(err, active) {
 				if (err) {
-					if (global.env === 'development') console.log('Info: [plugins] Could not toggle active state on plugin \'' + id + '\'');
+					if (global.env === 'development') winston.info('[plugins] Could not toggle active state on plugin \'' + id + '\'');
 					return;
 				}
 
 				RDB[(active ? 'srem' : 'sadd')]('plugins:active', id, function(err, success) {
 					if (err) {
-						if (global.env === 'development') console.log('Info: [plugins] Could not toggle active state on plugin \'' + id + '\'');
+						if (global.env === 'development') winston.info('[plugins] Could not toggle active state on plugin \'' + id + '\'');
 						return;
 					}
 

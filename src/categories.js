@@ -3,7 +3,8 @@ var	RDB = require('./redis.js'),
 	utils = require('./../public/src/utils.js'),
 	user = require('./user.js'),
 	async = require('async'),
-	topics = require('./topics.js');
+	topics = require('./topics.js'),
+	winston = require('winston');
 
 (function(Categories) {
 
@@ -65,7 +66,6 @@ var	RDB = require('./redis.js'),
 						categoryData.moderators = moderators;
 						categoryData.show_sidebar = 'hidden';
 						categoryData.no_topics_message = 'show';
-
 						callback(null, categoryData);
 					});
 				} else {
@@ -156,7 +156,7 @@ var	RDB = require('./redis.js'),
 						break;
 					}
 				}
-				callback(allread);				
+				callback(allread);
 			});
 		});
 	}
@@ -187,8 +187,9 @@ var	RDB = require('./redis.js'),
 
 	Categories.getRecentReplies = function(cid, count, callback) {
 		RDB.zrevrange('categories:recent_posts:cid:' + cid, 0, (count<10)?10:count, function(err, pids) {
+		
 			if(err) {
-				console.log(err);
+				winston.err(err);
 				callback([]);
 				return;
 			}
@@ -198,11 +199,11 @@ var	RDB = require('./redis.js'),
 				return;
 			}
 
-			posts.getPostSummaryByPids(pids, function(posts) {
-				if(posts.length > count) {
-					posts = posts.slice(0, count);
+			posts.getPostSummaryByPids(pids, function(postData) {
+				if(postData.length > count) {
+					postData = postData.slice(0, count);
 				}
-				callback(posts);
+				callback(postData);
 			});
 		});
 	}
@@ -222,12 +223,12 @@ var	RDB = require('./redis.js'),
 					if(!err) {
 						callback(null, 1)
 					} else {
-						console.log(err);
+						winston.err(err);
 						callback(err, null);
 					}
 				});
 			} else {
-				console.log(err);
+				winston.err(err);
 				callback(err, null);
 			}
 		});
@@ -249,7 +250,7 @@ var	RDB = require('./redis.js'),
 			if(err === null) 
 				callback(data);
 			else
-				console.log(err);
+				winston.err(err);
 		});		
 	}
 	
@@ -278,7 +279,7 @@ var	RDB = require('./redis.js'),
 				}
 
 				Categories.hasReadCategory(cid, current_user, function(hasRead) {
-					categoryData['badgeclass'] = (parseInt(categoryData.topic_count,10) === 0 || (hasRead && current_user != 0)) ? '' : 'badge-important';
+					categoryData['badgeclass'] = (parseInt(categoryData.topic_count, 10) === 0 || (hasRead && current_user != 0)) ? '' : 'badge-important';
 
 					categories.push(categoryData);
 					callback(null);
@@ -288,7 +289,7 @@ var	RDB = require('./redis.js'),
 				
 		async.eachSeries(cids, getCategory, function(err) {
 			if(err) {
-				console.log(err);
+				winston.err(err);
 				callback(null);
 				return;
 			}

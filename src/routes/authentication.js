@@ -6,7 +6,8 @@
 		passportFacebook = require('passport-facebook').Strategy,
 		login_strategies = [],
 		nconf = require('nconf'),
-		users = require('../user'),
+		user = require('../user'),
+		winston = require('winston'),
 		login_module = require('./../login.js');
 
 	passport.use(new passportLocal(function(user, password, next) {
@@ -85,7 +86,7 @@
 
 		app.get('/logout', function(req, res) {
 			if (req.user && req.user.uid > 0) {
-				console.log('info: [Auth] Session ' + req.sessionID + ' logout (uid: ' + req.user.uid + ')');
+				winston.info('[Auth] Session ' + req.sessionID + ' logout (uid: ' + req.user.uid + ')');
 				login_module.logout(req.sessionID, function(logout) {
 					req.logout();
 					app.build_header({ req: req, res: res }, function(err, header) {
@@ -132,20 +133,30 @@
 
 		app.get('/reset', function(req, res) {
 			app.build_header({ req: req, res: res }, function(err, header) {
-				console.log(header);
 				res.send(header + templates['reset'] + templates['footer']);
 			});
 		});
-
-
-		app.post('/login', passport.authenticate('local'), function(req, res) {
-			res.json({success:1});
+		
+		app.post('/login', function(req, res, next) {
+			passport.authenticate('local', function(err, user, info) {
+				if(err) {
+					return next(err);
+				}
+				if (!user) {
+					return res.send({ success : false, message : info.message });
+				}
+				req.login({
+					uid: user.uid
+				}, function() {
+					res.send({ success : true, message : 'authentication succeeded' });
+				});
+			})(req, res, next);
 		});
 		
 		app.post('/register', function(req, res) {
-			users.create(req.body.username, req.body.password, req.body.email, function(err, uid) {
+			user.create(req.body.username, req.body.password, req.body.email, function(err, uid) {
 
-				if (err === null && uid > 0) {
+				if (err === null && uid) {
 					req.login({
 						uid: uid
 					}, function() {

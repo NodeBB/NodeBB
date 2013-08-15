@@ -6,7 +6,8 @@ var	RDB = require('./redis.js'),
 	notifications = require('./notifications.js'),
 	posts = require('./posts'),
 	reds = require('reds'),
-	topicSearch = reds.createSearch('nodebbtopicsearch');
+	topicSearch = reds.createSearch('nodebbtopicsearch'),
+	winston = require('winston');
 
 (function(ThreadTools) {
 
@@ -192,7 +193,7 @@ var	RDB = require('./redis.js'),
 
 					categories.moveRecentReplies(tid, oldCid, cid, function(err, data) {
 						if(err) {
-							console.log(err);
+							winston.err(err);
 						}
 					});
 
@@ -289,7 +290,7 @@ var	RDB = require('./redis.js'),
 			var numPosts = posts.length;
 			if(!numPosts)
 				return callback(new Error('no-undeleted-pids-found'));
-				
+			
 			while(numPosts--) {
 				if(posts[numPosts].deleted !== '1') {
 					callback(null, posts[numPosts].pid);
@@ -297,8 +298,7 @@ var	RDB = require('./redis.js'),
 				}
 			}
 			
-			// If we got here, nothing was found...
 			callback(new Error('no-undeleted-pids-found'));
-		});		
+		});
 	}
 }(exports));

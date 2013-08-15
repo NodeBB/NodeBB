@@ -26,7 +26,8 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		'categories': require('./admin/categories.js'),
 		'user': require('./admin/user.js')
 	},
-	plugins = require('./plugins');
+	plugins = require('./plugins'),
+	winston = require('winston');
 	
 (function(io) {
 	var	users = {},
@@ -366,7 +367,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				if(err) {
 					if(err.message === 'content-too-short') {
 						posts.emitContentTooShortAlert(socket);
-					} else if(err.messages === 'too-many-posts') {
+					} else if(err.message === 'too-many-posts') {
 						posts.emitTooManyPostsAlert(socket);
 					} else if(err.message === 'reply-error') {
 						socket.emit('event:alert', {
@@ -462,7 +463,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			if(!data.title || data.title.length < topics.minimumTitleLength) {
 				topics.emitTitleTooShortAlert(socket);
 				return;
-			} else if (!data.content || data.content.length < posts.minimumPostLength) {
+			} else if (!data.content || data.content.length < require('../public/config.json').minimumPostLength) {
 				posts.emitContentTooShortAlert(socket);
 				return;
 			}
@@ -657,10 +658,22 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			var start = data.after,
 				end = start + 9;
 			
-			console.log(start, end);
 			topics.getUnreadTopics(uid, start, end, function(unreadTopics) {
 				callback(unreadTopics);
 			});
+		});
+
+		socket.on('api:users.loadMore', function(data, callback) {
+			var start = data.after,
+				end = start + 19;
+	
+			user.getUsers(data.set, start, end, function(err, data) {
+				if(err) {
+					winston.err(err);
+				} else {
+					callback({users:data});
+				}
+			});				
 		});
 
 		socket.on('api:admin.topics.getMore', function(data, callback) {
@@ -691,14 +704,26 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			}
 		});
 
+		socket.on('api:admin.user.banUser', function(theirid) {
+			if(uid && uid > 0) {
+				admin.user.banUser(uid, theirid, socket);
+			}
+		});
+
+		socket.on('api:admin.user.unbanUser', function(theirid) {
+			if(uid && uid > 0) {
+				admin.user.unbanUser(uid, theirid, socket);
+			}
+		});
+
 		socket.on('api:admin.user.search', function(username) {
 			if(uid && uid > 0) {
 				user.search(username, function(data) {
 					socket.emit('api:admin.user.search', data);
 				});
-			}
-			else
+			} else {
 				socket.emit('api:admin.user.search', null);
+			}
 		});
 
 		socket.on('api:admin.themes.getInstalled', function(callback) {

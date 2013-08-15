@@ -20,7 +20,7 @@ marked.setOptions({
 
 (function(Topics) {
 
-	Topics.minimumTitleLength = 3;
+	
 
 	Topics.getTopicData = function(tid, callback) {
 		RDB.hgetall('topic:' + tid, function(err, data) {
@@ -81,6 +81,7 @@ marked.setOptions({
 				for(var i=0; i<postData.length; ++i) {
 					postData[i].fav_star_class = fav_data[postData[i].pid] ? 'icon-star' : 'icon-star-empty';
 					postData[i]['display_moderator_tools'] = (postData[i].uid == current_user || privileges.editable) ? 'show' : 'none';
+					postData[i].show_banned = postData[i].user_banned === '1'?'show':'hide';
 				}
 				
 				callback(postData);
@@ -149,6 +150,10 @@ marked.setOptions({
 				Topics.getTopicsByTids(topicIds, uid, function(topicData) {
 					unreadTopics.topics = topicData;
 					unreadTopics.nextStart = start + tids.length;
+					if(!topicData || topicData.length === 0)
+						unreadTopics.no_topics_message = 'show';
+					if(uid === 0 || topicData.length === 0)
+						unreadTopics.show_markallread_button = 'hidden';
 					callback(unreadTopics);
 				});
 			}
@@ -190,9 +195,9 @@ marked.setOptions({
 		
 		function getTopicInfo(topicData, callback) {
 
-			function getUserName(next) {
-				user.getUserField(topicData.uid, 'username', function(username) {
-					next(null, username);
+			function getUserInfo(next) {
+				user.getUserFields(topicData.uid, ['username'], function(userData) {
+					next(null, userData);
 				});
 			}
 
@@ -215,17 +220,13 @@ marked.setOptions({
 				});
 			}
 
-			async.parallel([getUserName, hasReadTopic, getTeaserInfo, getPrivileges], function(err, results) {
-				var username = results[0],
-					hasReadTopic = results[1],
-					teaserInfo = results[2],
-					privileges = results[3];
-
+			async.parallel([getUserInfo, hasReadTopic, getTeaserInfo, getPrivileges], function(err, results) {
 				callback({
-					username: username,
-					hasread: hasReadTopic,
-					teaserInfo: teaserInfo,
-					privileges: privileges
+					username: results[0].username,
+					userbanned: results[0].banned,
+					hasread: results[1],
+					teaserInfo: results[2],
+					privileges: results[3]
 				});
 			});
 		}
@@ -507,10 +508,12 @@ marked.setOptions({
 					user.getUserFields(postData.uid, ['username', 'picture'], function(userData) {
 						var stripped = postData.content,
 							timestamp = postData.timestamp;
-							
-						if(postData.content)
-							stripped = utils.strip_tags(postTools.markdownToHTML(postData.content));
-							
+
+						if(postData.content) {
+							stripped = postData.content.replace(/>.+\n\n/, '');
+							stripped = utils.strip_tags(postTools.markdownToHTML(stripped));
+						}
+
 						callback(null, {
 							"text": stripped,
 							"username": userData.username,
@@ -528,7 +531,7 @@ marked.setOptions({
 				type: 'error',
 				timeout: 2000,
 				title: 'Title too short',
-				message: "Please enter a longer title. At least " + Topics.minimumTitleLength + " characters.",
+				message: "Please enter a longer title. At least " + config.minimumTitleLength + " characters.",
 				alert_id: 'post_error'
 			});
 	}
@@ -545,17 +548,17 @@ marked.setOptions({
 		if (uid === 0) {
 			callback(new Error('not-logged-in'), null);
 			return;
-		} else if(!title || title.length < Topics.minimumTitleLength) {
+		} else if(!title || title.length < config.minimumTitleLength) {
 			callback(new Error('title-too-short'), null);
 			return;
-		} else if (!content || content.length < posts.miminumPostLength) {
+		} else if (!content || content.length < config.miminumPostLength) {
 			callback(new Error('content-too-short'), null);
 			return;
 		}
 		
 		user.getUserField(uid, 'lastposttime', function(lastposttime) {
 
-			if(Date.now() - lastposttime < config.post_delay) {
+			if(Date.now() - lastposttime < config.postDelay) {
 				callback(new Error('too-many-posts'), null);
 				return;
 			}

@@ -17,12 +17,15 @@
 		
 
 	<div class="row-fluid">
-		<div class="span2" style="text-align: center; margin-bottom:20px;">
+		<div class="span2 account-block" style="text-align: center; margin-bottom:20px;">
 			<div class="account-picture-block">
 				<img src="{picture}" class="user-profile-picture img-polaroid"/>
 			</div>
 			<div class="account-online-status">
 				<span><i class="icon-circle-blank"></i> <span>offline</span></span>
+			</div>
+			<div class="{show_banned}">
+				<span class="label label-important">banned</span>
 			</div>
 			<div id="user-actions">
 				<a id="follow-btn" href="#" class="btn hide">Follow</a>

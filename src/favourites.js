@@ -13,11 +13,6 @@ var	RDB = require('./redis.js'),
 				type: 'error',
 				timeout: 5000
 			});
-
-			socket.emit('api:posts.favourite', {
-				status: 'error',
-				pid: pid
-			});
 			return;
 		}
 
@@ -28,15 +23,19 @@ var	RDB = require('./redis.js'),
 					RDB.sadd('pid:' + pid + ':users_favourited', uid);
 					RDB.hincrby('post:' + pid, 'reputation', 1);
 
-					if (uid !== uid_of_poster) 
-						user.incrementUserFieldBy(uid_of_poster, 'reputation', 1);
+					if (uid !== uid_of_poster) {
+						user.incrementUserFieldBy(uid_of_poster, 'reputation', 1, function(err, newreputation) {
+							RDB.zadd('users:reputation', newreputation, uid_of_poster);
+						});
+					}
 
 					if (room_id) {
 						io.sockets.in(room_id).emit('event:rep_up', {uid: uid !== uid_of_poster ? uid_of_poster : 0, pid: pid});
 					}
 
 					socket.emit('api:posts.favourite', {
-						status: 'ok'
+						status: 'ok',
+						pid: pid
 					});
 				}
 			});
@@ -63,12 +62,20 @@ var	RDB = require('./redis.js'),
 					RDB.srem('pid:' + pid + ':users_favourited', uid);
 					RDB.hincrby('post:' + pid, 'reputation', -1);
 					
-					if (uid !== uid_of_poster) 
-						user.incrementUserFieldBy(uid_of_poster, 'reputation', -1);
+					if (uid !== uid_of_poster) {
+						user.incrementUserFieldBy(uid_of_poster, 'reputation', -1, function(err, newreputation) {
+							RDB.zadd('users:reputation', newreputation, uid_of_poster);
+						});
+					}
 
 					if (room_id) {
 						io.sockets.in(room_id).emit('event:rep_down', {uid: uid !== uid_of_poster ? uid_of_poster : 0, pid: pid});
 					}
+
+					socket.emit('api:posts.unfavourite', {
+						status: 'ok',
+						pid: pid
+					});
 				}
 			});
 		});

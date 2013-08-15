@@ -4,12 +4,13 @@
 		posts = require('./posts.js'),
 		topics = require('./topics.js'),
 		fs = require('fs'),
-		rss = require('node-rss');
+		rss = require('node-rss'),
+		winston = require('winston');
 
 	function saveFeed(location, feed) {
 		fs.writeFile(location, rss.getFeedXML(feed), function (err) {
 			if(err) {
-				console.log(err);
+				winston.err(err);
 			}
 		});
 	}
@@ -32,7 +33,7 @@
 		var cache_time_in_seconds = 60;
 
 		topics.getTopicWithPosts(tid, 0, function(err, topicData) {
-			if (err) console.log('Error: Problem saving topic RSS feed', err);
+			if (err) winston.error('Problem saving topic RSS feed', err.stack);
 
 			var location = '/topic/' + topicData.slug,
 				xml_url = '/topic/' + tid + '.rss';
@@ -69,7 +70,7 @@
 	Feed.updateCategory = function(cid) {
 		categories.getCategoryById(cid, 0, function(err, categoryData) {
 			if (err) {
-				console.log('Error: Could not update RSS feed for category ' + cid);
+				winston.error('Could not update RSS feed for category ' + cid, err.stack);
 				return;
 			}
 

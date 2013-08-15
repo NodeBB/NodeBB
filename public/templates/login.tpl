@@ -14,7 +14,7 @@
 			<button class="btn btn-primary" id="login" type="submit">Login</button> &nbsp; <a href="/reset">Forgot Password?</a>
 		</form>
 		
-		<span id="login-error-notify" class="label label-important hide">Invalid username/password</span><br/>
+		<div id="login-error-notify" class="alert alert-danger hide">Invalid username/password</div>
 	</div>
 	
 	<div class="well span6 {alternate_logins:display}">

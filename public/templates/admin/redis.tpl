@@ -16,6 +16,7 @@
 	<hr/>
 	<span>Total Connections Received</span> <span class="text-right">{total_connections_received}</span><br/>
 	<span>Total Commands Processed</span> <span class="text-right">{total_commands_processed}</span><br/>
+	<span>Instantaneous Ops. Per Second</span> <span class="text-right">{instantaneous_ops_per_sec}</span><br/>
 	<hr/>
 	<span>Keyspace Hits</span> <span class="text-right">{keyspace_hits}</span><br/>
 	<span>Keyspace Misses</span> <span class="text-right">{keyspace_misses}</span><br/>
