@@ -8,11 +8,11 @@ define(['taskbar'], function(taskbar) {
 		};
 
 	function loadFile(file) {
-		var reader = new FileReader();
-		var dropDiv = $('#imagedrop');
-		var imagelist = $('#imagelist');
-		var uuid = dropDiv.parents('[data-uuid]').attr('data-uuid');
-		var posts = composer.posts[uuid];
+		var reader = new FileReader(),
+			dropDiv = $('#imagedrop'),
+			imagelist = $('#imagelist'),
+			uuid = dropDiv.parents('[data-uuid]').attr('data-uuid'),
+			posts = composer.posts[uuid];
 		
 		$(reader).on('loadend', function(e) {
 			var bin = this.result; 
@@ -48,10 +48,14 @@ define(['taskbar'], function(taskbar) {
 		jQuery.event.props.push( "dataTransfer" );
 		
 		if(window.FileReader) {
-			var drop = $('#imagedrop');
+			var	drop = $('#imagedrop');
 
 			$(composer.postContainer).on('dragenter dragover', function() {
-				drop.show();	
+				var	textareaEl = this.querySelector('textarea'),
+					offset = textareaEl.offsetTop;
+
+				drop.css('top', offset + 'px');
+				drop.show();
 			});
 			
 			function cancel(e) {
@@ -64,11 +68,10 @@ define(['taskbar'], function(taskbar) {
 			
 			drop.on('drop', function(e) {
 				e.preventDefault();
-				var uuid = drop.parents('[data-uuid]').attr('data-uuid');
-				var posts = composer.posts[uuid];			
-				
-				var dt = e.dataTransfer;
-				var files = dt.files;
+				var uuid = drop.parents('[data-uuid]').attr('data-uuid'),
+					posts = composer.posts[uuid],
+					dt = e.dataTransfer,
+					files = dt.files;
 				
 				for (var i=0; i<files.length; i++) {
 					loadFile(files[i]);
@@ -88,21 +91,19 @@ define(['taskbar'], function(taskbar) {
 			composer.postContainer.className = 'post-window row-fluid';
 			composer.postContainer.innerHTML =	'<div class="span5">' +
 													'<input type="text" tabIndex="1" placeholder="Enter your topic title here..." />' +
-													'<div class="btn-toolbar">' +
-														'<div class="btn-group formatting-bar">' +
+													'<div class="btn-toolbar formatting-bar">' +
+														'<div class="btn-group">' +
 															'<span class="btn btn-link" tabindex="-1"><i class="icon-bold"></i></span>' +
 															'<span class="btn btn-link" tabindex="-1"><i class="icon-italic"></i></span>' +
 															'<span class="btn btn-link" tabindex="-1"><i class="icon-list"></i></span>' +
 															'<span class="btn btn-link" tabindex="-1"><i class="icon-link"></i></span>' +
 														'</div>' +
 													'</div>' +
-													'<div style="position:relative;">'+
-														'<div id="imagedrop" class=""><div>Drag and Drop Images Here</div></div>'+
-														'<textarea tabIndex="2"></textarea>' +
-														'<div id="imagelist"></div>'+
-													'</div>'+
-													'<div class="btn-toolbar">' +
-														'<div class="btn-group action-bar" style="float: right; margin-right: -8px">' +
+													'<textarea tabIndex="2"></textarea>' +
+													'<div id="imagelist"></div>'+
+													'<div id="imagedrop"><div>Drag and Drop Images Here</div></div>'+
+													'<div class="btn-toolbar action-bar">' +
+														'<div class="btn-group" style="float: right; margin-right: -8px">' +
 															'<button data-action="minimize" class="btn hidden-phone" tabIndex="4"><i class="icon-download-alt"></i> Minimize</button>' +
 															'<button class="btn" data-action="discard" tabIndex="5"><i class="icon-remove"></i> Discard</button>' +
 															'<button data-action="post" class="btn" tabIndex="3"><i class="icon-ok"></i> Submit</button>' +
@@ -243,10 +244,8 @@ define(['taskbar'], function(taskbar) {
 		var post_data = composer.posts[post_uuid],
 			titleEl = composer.postContainer.querySelector('input'),
 			bodyEl = composer.postContainer.querySelector('textarea'),
-			dropDiv = $(composer.postContainer).find('#imagedrop'),
 			imagelist = $(composer.postContainer).find('#imagelist');
 
-		dropDiv.hide();
 		imagelist.empty();
 
 		composer.reposition(post_uuid);
