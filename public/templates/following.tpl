@@ -26,11 +26,11 @@
 			<a href="/users/{following.userslug}">{following.username}</a>
 			<br/>
 			<div title="reputation">
-				<span class='reputation'>{following.reputation}</span>
+				<span class='formatted-number'>{following.reputation}</span>
 				<i class='icon-star'></i>
 			</div>
 			<div title="post count">
-				<span class='postcount'>{following.postcount}</span>
+				<span class='formatted-number'>{following.postcount}</span>
 				<i class='icon-pencil'></i>
 			</div>
 			<a id="unfollow-btn" href="#" class="btn unfollow-btn" followingUid="{following.uid}" data-username="{following.username}">Unfollow</a>

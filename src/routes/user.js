@@ -69,7 +69,7 @@ var user = require('./../user.js'),
 
 				app.build_header({ req: req, res: res }, function(err, header) {
 					res.send(header + app.create_route('users/' + req.params.userslug, 'account')  + templates['footer']);
-				});		
+				});
 
 			});		
 		});
@@ -303,6 +303,10 @@ var user = require('./../user.js'),
 							userData.posts = posts.filter(function(p) {return p.deleted !== "1";});
 							userData.isFollowing = isFollowing;
 							userData.signature = postTools.markdownToHTML(userData.signature, true);
+							if(!userData.profileviews)
+								userData.profileviews = 1;
+							if(callerUID !== userData.uid)
+								user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
 							res.json(userData);
 						});
 					});

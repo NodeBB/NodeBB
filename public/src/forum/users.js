@@ -8,6 +8,8 @@
 			parts = url.split('/'),
 			active = parts[parts.length-1];
 
+		app.addCommasToNumbers();
+
 		jQuery('.nav-pills li').removeClass('active');
 		jQuery('.nav-pills li a').each(function() {
 			if (this.getAttribute('href').match(active)) {
@@ -67,13 +69,7 @@
 
 		});
 		
-		$('.reputation').each(function(index, element) {
-			$(element).html(app.addCommas($(element).html()));
-		});
 		
-		$('.postcount').each(function(index, element) {
-			$(element).html(app.addCommas($(element).html()));
-		});
 		
 		function onUsersLoaded(users) {
 			var html = templates.prepare(templates['users'].blocks['users']).parse({ users: users });

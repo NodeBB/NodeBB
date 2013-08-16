@@ -34,7 +34,6 @@
 		</div>
 	
 		<div class="span4">
-			<h4>profile</h4>
 			<div class="inline-block">
 				<div class="account-bio-block">
 					<span class="account-bio-label">email</span><i class="icon-eye-close {emailClass}" title="Email hidden"></i>
@@ -61,20 +60,24 @@
 					<span>{joindate}</span>
 					<br/>
 
+					<span class="account-bio-label">profile views</span>
+					<span class="formatted-number">{profileviews}</span>
+					<br/>
+
 					<span class="account-bio-label">reputation</span>
-					<span id='reputation'>{reputation}</span>
+					<span class="formatted-number">{reputation}</span>
 					<br/>		
 					
 					<span class="account-bio-label">posts</span>
-					<span id='postcount'>{postcount}</span>
+					<span class="formatted-number">{postcount}</span>
 					<br/>
 					
 					<span class="account-bio-label">followers</span>
-					<span>{followerCount}</span>
+					<span class="formatted-number">{followerCount}</span>
 					<br/>
 					
 					<span class="account-bio-label">following</span>
-					<span>{followingCount}</span>
+					<span class="formatted-number">{followingCount}</span>
 					<br/>
 					
 					<hr/>
@@ -87,7 +90,6 @@
 		</div>
 		
 		<div class="span6 user-recent-posts">
-			<h4>recent posts </h4>
 			<!-- BEGIN posts -->
 			<div class="topic-row img-polaroid clearfix" topic-url="topic/{posts.tid}/#{posts.pid}">
 				<span>{posts.content}</span>

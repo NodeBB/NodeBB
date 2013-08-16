@@ -5,11 +5,7 @@
 
 	$(document).ready(function() {
 
-		var rep = $('#reputation');
-		rep.html(app.addCommas(rep.html()));
-		
-		var postcount = $('#postcount');
-		postcount.html(app.addCommas(postcount.html()));
+		app.addCommasToNumbers();
 		
 		var followBtn = $('#follow-btn');
 		var unfollowBtn = $('#unfollow-btn');
