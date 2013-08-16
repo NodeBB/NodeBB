@@ -230,6 +230,9 @@ var express = require('express'),
 					var	posts = topicData.posts.push(topicData.main_posts[0]),
 						lastMod = 0,
 						timestamp;
+
+					console.log(topicData.main_posts);
+
 					for(var x=0,numPosts=topicData.posts.length;x<numPosts;x++) {
 						timestamp = parseInt(topicData.posts[x].timestamp, 10);
 						if (timestamp > lastMod) lastMod = timestamp;

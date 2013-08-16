@@ -195,12 +195,14 @@
 				});
 			}
 		});
+		
 		socket.emit('api:topic.followCheck', tid);
-		followEl[0].addEventListener('click', function() {
-			socket.emit('api:topic.follow', tid);
-		}, false);
+		if(followEl[0]) {
+			followEl[0].addEventListener('click', function() {
+				socket.emit('api:topic.follow', tid);
+			}, false);
+		}
 
-		// Infinite scrolling of posts
 		$(window).off('scroll').on('scroll', function() {
 			var bottom = (document.body.offsetHeight - $(window).height()) * 0.9;	
 
