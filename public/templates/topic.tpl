@@ -92,7 +92,7 @@
 				<span class="label label-important {posts.show_banned}">banned</span>			
 			</div>
 			<div class="span11 span12-tablet">
-				<div class="post-block">
+				<div class="post-block speech-bubble">
 					<div id="content_{posts.pid}" class="post-content">{posts.content}</div>
 					<div id="images_{posts.pid}" class="post-images">
 						<!-- BEGIN uploadedImages -->
