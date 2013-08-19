@@ -79,7 +79,7 @@
 				onTopicsLoaded(data.topics);
 				$('#topics-container').attr('data-next-start', data.nextStart);
 			} else {
-
+				$('#load-more-btn').hide();		
 			}
 
 			loadingMoreTopics = false;
