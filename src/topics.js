@@ -612,7 +612,6 @@ marked.setOptions({
 
 				posts.create(uid, tid, content, images, function(postData) {
 					if (postData) {
-						RDB.lpush(schema.topics(tid).posts, postData.pid);
 
 						// Auto-subscribe the post creator to the newly created topic
 						threadTools.toggleFollow(tid, uid);

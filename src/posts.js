@@ -213,8 +213,7 @@ var	RDB = require('./redis.js'),
 
 			Posts.create(uid, tid, content, images, function(postData) {
 				if (postData) {
-					topics.addPostToTopic(tid, postData.pid);
-					
+
 					topics.markUnRead(tid);
 
 					Posts.get_cid_by_pid(postData.pid, function(cid) {
@@ -280,6 +279,7 @@ var	RDB = require('./redis.js'),
 						
 						RDB.hmset('post:' + pid, postData);
 
+						topics.addPostToTopic(tid, pid);
 						topics.increasePostCount(tid);
 						topics.updateTimestamp(tid, timestamp);
 
