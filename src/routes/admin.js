@@ -18,7 +18,7 @@ var user = require('./../user.js'),
 	Admin.build_header = function(res) {
 		return templates['admin/header'].parse({
 			csrf:res.locals.csrf_token,
-			relative_path: global.nconf.get('relative_path')
+			relative_path: nconf.get('relative_path')
 		});
 	}
 

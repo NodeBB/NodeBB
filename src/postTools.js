@@ -169,7 +169,7 @@ var	RDB = require('./redis.js'),
 
 		if (md && md.length > 0) {
 			var	parsedContentDOM = cheerio.load(marked(md));
-			var	domain = global.nconf.get('url');
+			var	domain = nconf.get('url');
 			
 			parsedContentDOM('a').each(function() {
 				this.attr('rel', 'nofollow');

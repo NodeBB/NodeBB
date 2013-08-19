@@ -127,13 +127,13 @@
 
 		app.get('/reset/:code', function(req, res) {
 			app.build_header({ req: req, res: res }, function(err, header) {
-				res.send(header + templates['reset_code'].parse({ reset_code: req.params.code }) + templates['footer']);
+				res.send(header + app.create_route('reset/'+req.params.code) + templates['footer']);
 			});
 		});
 
 		app.get('/reset', function(req, res) {
 			app.build_header({ req: req, res: res }, function(err, header) {
-				res.send(header + templates['reset'] + templates['footer']);
+				res.send(header + app.create_route('reset') + templates['footer']);
 			});
 		});
 		
@@ -160,10 +160,10 @@
 					req.login({
 						uid: uid
 					}, function() {
-						res.redirect(global.nconf.get('relative_path') + '/');
+						res.redirect(nconf.get('relative_path') + '/');
 					});
 				} else {
-					res.redirect(global.nconf.get('relative_path') + '/register');
+					res.redirect(nconf.get('relative_path') + '/register');
 				}
 			});
 		});

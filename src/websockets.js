@@ -16,12 +16,12 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 	async = require('async'),
 	RedisStoreLib = require('connect-redis')(express),
 	redis = require('redis'),
-	redisServer = redis.createClient(global.nconf.get('redis:port'), global.nconf.get('redis:host')),
+	redisServer = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host')),
 	RedisStore = new RedisStoreLib({
 		client: redisServer,
 		ttl: 60*60*24*14
 	}),
-	socketCookieParser = express.cookieParser(global.nconf.get('secret')),
+	socketCookieParser = express.cookieParser(nconf.get('secret')),
 	admin = {
 		'categories': require('./admin/categories.js'),
 		'user': require('./admin/user.js')
@@ -187,7 +187,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					uid:0,
 					username: "Anonymous User",
 					email: '',
-					picture: require('gravatar').url('', {s:'24'}, https=global.nconf.get('https'))
+					picture: require('gravatar').url('', {s:'24'}, https=nconf.get('https'))
 				});
 			}
 				

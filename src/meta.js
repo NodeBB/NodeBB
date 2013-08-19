@@ -48,9 +48,9 @@ var utils = require('./../public/src/utils.js'),
 								if (exists) {
 									fs.readFile(themeConfPath, function(err, conf) {
 										conf = JSON.parse(conf);
-										conf.src = global.nconf.get('url') + 'themes/' + themeDir + '/' + conf.src;
-										if (conf.screenshot) conf.screenshot = global.nconf.get('url') + 'themes/' + themeDir + '/' + conf.screenshot;
-										else conf.screenshot = global.nconf.get('url') + 'images/themes/default.png';
+										conf.src = nconf.get('url') + 'themes/' + themeDir + '/' + conf.src;
+										if (conf.screenshot) conf.screenshot = nconf.get('url') + 'themes/' + themeDir + '/' + conf.screenshot;
+										else conf.screenshot = nconf.get('url') + 'images/themes/default.png';
 										themeArr.push(conf);
 										next();
 									});

@@ -39,7 +39,7 @@ var	RDB = require('./redis.js'),
 			post.user_rep = userData.reputation || 0;
 			post.user_postcount = userData.postcount || 0;
 			post.user_banned = userData.banned || '0';
-			post.picture = userData.picture || require('gravatar').url('', {}, https=global.nconf.get('https'));
+			post.picture = userData.picture || require('gravatar').url('', {}, https=nconf.get('https'));
 			post.signature = postTools.markdownToHTML(userData.signature, true);
 
 			if(post.editor !== '') {

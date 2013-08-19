@@ -31,7 +31,10 @@
 		"unread": "unread",
 		"popular": "category",
 		"active": "category",
-		"search": "search"
+		"search": "search",
+		"reset/[^]*": "reset_code",
+		"reset": "reset"
+		
 	},
 	"force_refresh": {
 		"logout": true

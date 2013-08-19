@@ -56,7 +56,7 @@ var	path = require('path'),
 			async.parallel([sitemap.getStaticUrls, sitemap.getDynamicUrls], function(err, urls) {
 				var urls = urls[0].concat(urls[1]),
 					map = sm.createSitemap({
-						hostname: global.nconf.get('url'),
+						hostname: nconf.get('url'),
 						cacheTime: 600000,
 						urls: urls
 					}),
