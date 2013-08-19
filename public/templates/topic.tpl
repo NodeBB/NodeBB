@@ -42,7 +42,7 @@
 						<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn delete {main_posts.display_moderator_tools}" type="button" title="Delete"><i class="icon-trash"></i></button>
 						<div class="btn-group">
 							<button class="btn follow" type="button" title="Be notified of new replies in this topic"><i class="icon-eye-open"></i></button>
-							<button id="favs_{main_posts.pid}_{main_posts.uid}" class="favourite btn" type="button">
+							<button id="favs_{main_posts.pid}_{main_posts.uid}" class="favourite btn {main_posts.fav_button_class}" type="button">
 								<span>Favourite</span>
 								<span class="post_rep_{main_posts.pid}">{main_posts.post_rep} </span><i class="{main_posts.fav_star_class}"></i>
 							</button>

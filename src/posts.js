@@ -226,7 +226,8 @@ var	RDB = require('./redis.js'),
 
 					postData.content = postTools.markdownToHTML(postData.content);
 					postData.post_rep = 0;
-					postData.relativeTime = utils.relativeTime(postData.timestamp)
+					postData.relativeTime = utils.relativeTime(postData.timestamp);
+					postData.fav_button_class = '';
 					postData.fav_star_class = 'icon-star-empty';
 					postData['edited-class'] = 'none';
 					postData.show_banned = 'hide';

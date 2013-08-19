@@ -10,13 +10,8 @@
 		<div id="category_active_users"></div>
 	</ul>
 </div>
-<div class="alert alert-warning hide {no_topics_message}" id="category-no-topics">
-	<strong>There are no topics in this category.</strong><br />
-	Why don't you try posting one?
-</div>
 
 <div>
-
 	<button id="new_post" class="btn btn-primary btn-large {show_topic_button}">New Topic</button>
 
 	<div class="inline-block pull-right">
@@ -27,7 +22,12 @@
 	</div>
 </div>
 
-<hr class="{show_sidebar}" />
+<hr/>
+
+<div class="alert alert-warning hide {no_topics_message}" id="category-no-topics">
+	<strong>There are no topics in this category.</strong><br />
+	Why don't you try posting one?
+</div>
 
 <div class="category row">
 	<div class="{topic_row_size}">
