@@ -78,7 +78,10 @@
 			if(data.topics && data.topics.length) {
 				onTopicsLoaded(data.topics);
 				$('#topics-container').attr('data-next-start', data.nextStart);
+			} else {
+
 			}
+
 			loadingMoreTopics = false;
 		});
 	}
@@ -92,7 +95,7 @@
 	});
 
 
-	if($("body").height() <= $(window).height() && $('#topics-container').children().length)
+	if($("body").height() <= $(window).height() && $('#topics-container').children().length >= 20)
 		$('#load-more-btn').show();
 
 	$('#load-more-btn').on('click', function() {
