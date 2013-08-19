@@ -61,7 +61,7 @@
 			$(topic).hide().fadeIn('slow');
 		}
 
-		ajaxify.go('topic/'+data.slug);
+		socket.emit('api:categories.getRecentReplies', cid);
 	}
 
 	socket.on('event:new_topic', onNewTopic);
