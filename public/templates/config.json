@@ -25,6 +25,7 @@
 		"users[^]*following": "following",
 		"users[^]*followers": "followers",
 		"users[^]*settings": "accountsettings",
+		"users[^]*favourites": "favourites",
 		"users/[^]*": "account",
 
 		"recent": "recent",

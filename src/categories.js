@@ -9,7 +9,7 @@ var	RDB = require('./redis.js'),
 (function(Categories) {
 
 	Categories.getCategoryById = function(category_id, current_user, callback) {
-		
+
 		Categories.getCategoryData(category_id, function(err, categoryData) {
 			if (err) return callback(err);
 
@@ -49,7 +49,7 @@ var	RDB = require('./redis.js'),
 						next(null, topicsData);
 					}, category_id);
 				}
-				
+
 				function getModerators(next) {
 					Categories.getModerators(category_id, next);
 				}
@@ -162,16 +162,16 @@ var	RDB = require('./redis.js'),
 	}
 
 	Categories.markAsRead = function(cid, uid) {
-		RDB.sadd('cid:' + cid + ':read_by_uid', uid);			
+		RDB.sadd('cid:' + cid + ':read_by_uid', uid);
 	}
 
 	Categories.hasReadCategories = function(cids, uid, callback) {
 		var batch = RDB.multi();
 
 		for (var i=0, ii=cids.length; i<ii; i++) {
-			batch.sismember('cid:' + cids[i] + ':read_by_uid', uid);	
+			batch.sismember('cid:' + cids[i] + ':read_by_uid', uid);
 		}
-		
+
 		batch.exec(function(err, hasRead) {
 			callback(hasRead);
 		});
@@ -180,14 +180,14 @@ var	RDB = require('./redis.js'),
 	Categories.hasReadCategory = function(cid, uid, callback) {
 		RDB.sismember('cid:' + cid + ':read_by_uid', uid, function(err, hasRead) {
 			RDB.handle(err);
-			
+
 			callback(hasRead);
-		});	
+		});
 	}
 
 	Categories.getRecentReplies = function(cid, count, callback) {
 		RDB.zrevrange('categories:recent_posts:cid:' + cid, 0, (count<10)?10:count, function(err, pids) {
-		
+
 			if(err) {
 				winston.err(err);
 				callback([]);
@@ -199,7 +199,7 @@ var	RDB = require('./redis.js'),
 				return;
 			}
 
-			posts.getPostSummaryByPids(pids, function(postData) {
+			posts.getPostSummaryByPids(pids, function(err, postData) {
 				if(postData.length > count) {
 					postData = postData.slice(0, count);
 				}
@@ -214,8 +214,8 @@ var	RDB = require('./redis.js'),
 
 				function movePost(pid, callback) {
 					posts.getPostField(pid, 'timestamp', function(timestamp) {
-						RDB.zrem('categories:recent_posts:cid:' + oldCid, pid);	
-						RDB.zadd('categories:recent_posts:cid:' + cid, timestamp, pid);	
+						RDB.zrem('categories:recent_posts:cid:' + oldCid, pid);
+						RDB.zadd('categories:recent_posts:cid:' + cid, timestamp, pid);
 					});
 				}
 
@@ -240,20 +240,20 @@ var	RDB = require('./redis.js'),
 			else callback(new Error('No category found!'));
 		});
 	}
-	
+
 	Categories.getCategoryField = function(cid, field, callback) {
 		RDB.hget('category:' + cid, field, callback);
 	}
 
 	Categories.getCategoryFields = function(cid, fields, callback) {
 		RDB.hmgetObject('category:' + cid, fields, function(err, data) {
-			if(err === null) 
+			if(err === null)
 				callback(data);
 			else
 				winston.err(err);
-		});		
+		});
 	}
-	
+
 	Categories.setCategoryField = function(cid, field, value) {
 		RDB.hset('category:' + cid, field, value);
 	}
@@ -267,12 +267,12 @@ var	RDB = require('./redis.js'),
 			callback({'categories' : []});
 			return;
 		}
-		
+
 		var categories = [];
 
 		function getCategory(cid, callback) {
 			Categories.getCategoryData(cid, function(err, categoryData) {
-				
+
 				if(err) {
 					callback(err);
 					return;
@@ -284,20 +284,20 @@ var	RDB = require('./redis.js'),
 					categories.push(categoryData);
 					callback(null);
 				}) ;
-			});			
+			});
 		}
-				
+
 		async.eachSeries(cids, getCategory, function(err) {
 			if(err) {
 				winston.err(err);
 				callback(null);
 				return;
 			}
-			
-			callback({'categories': categories});			
+
+			callback({'categories': categories});
 		});
-		
-	};	
+
+	};
 
 }(exports));
 

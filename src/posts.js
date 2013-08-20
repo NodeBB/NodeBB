@@ -18,11 +18,11 @@ var	RDB = require('./redis.js'),
 
 	Posts.getPostsByTid = function(tid, start, end, callback) {
 		RDB.lrange('tid:' + tid + ':posts', start, end, function(err, pids) {
-			
+
 			RDB.handle(err);
 
 			if (pids.length) {
-				Posts.getPostsByPids(pids, function(posts) {
+				Posts.getPostsByPids(pids, function(err, posts) {
 					callback(posts);
 				});
 			} else {
@@ -30,7 +30,7 @@ var	RDB = require('./redis.js'),
 			}
 		});
 	}
-	
+
 	Posts.addUserInfoToPost = function(post, callback) {
 		user.getUserFields(post.uid, ['username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned'], function(userData) {
 
@@ -45,7 +45,7 @@ var	RDB = require('./redis.js'),
 			if(post.editor !== '') {
 				user.getUserFields(post.editor, ['username', 'userslug'], function(editorData) {
 					post.editorname = editorData.username;
-					post.editorslug = editorData.userslug;	
+					post.editorslug = editorData.userslug;
 					callback();
 				});
 			} else {
@@ -55,9 +55,9 @@ var	RDB = require('./redis.js'),
 	}
 
 	Posts.getPostSummaryByPids = function(pids, callback) {
-		
+
 		var posts = [];
-		
+
 		function getPostSummary(pid, callback) {
 			Posts.getPostFields(pid, ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'], function(postData) {
 				if(postData.deleted === '1') {
@@ -70,20 +70,20 @@ var	RDB = require('./redis.js'),
 						if(postData.content)
 							postData.content = utils.strip_tags(postTools.markdownToHTML(postData.content));
 
+						postData.relativeTime = utils.relativeTime(postData.timestamp);
 						postData.topicSlug = topicSlug;
-						posts.push(postData);	
+						posts.push(postData);
 						callback(null);
 					});
 				});
-				
 			});
 		}
-		
+
 		async.eachSeries(pids, getPostSummary, function(err) {
 			if(!err) {
-				callback(posts);
+				callback(null, posts);
 			} else {
-				console.log(err);
+				callback(err, null);
 			}
 		});
 	};
@@ -112,7 +112,7 @@ var	RDB = require('./redis.js'),
 			else {
 				console.log(err);
 			}
-		});		
+		});
 	}
 
 	Posts.getPostField = function(pid, field, callback) {
@@ -130,16 +130,16 @@ var	RDB = require('./redis.js'),
 
 
 	Posts.getPostsByPids = function(pids, callback) {
-		var posts = [];			
+		var posts = [];
 
 		function iterator(pid, callback) {
 			Posts.getPostData(pid, function(postData) {
 				if(postData) {
-					postData.relativeTime = utils.relativeTime(postData.timestamp);	
+					postData.relativeTime = utils.relativeTime(postData.timestamp);
 					postData.post_rep = postData.reputation;
 					postData['edited-class'] = postData.editor !== '' ? '' : 'none';
 					postData['relativeEditTime'] = postData.edited !== '0' ? utils.relativeTime(postData.edited) : '';
-					
+
 					postData.content = postTools.markdownToHTML(postData.content);
 
 					if(postData.uploadedImages) {
@@ -155,9 +155,9 @@ var	RDB = require('./redis.js'),
 
 		async.eachSeries(pids, iterator, function(err) {
 			if(!err) {
-				callback(posts);
+				callback(null, posts);
 			} else {
-				callback([]);
+				callback(err, null);
 			}
 		});
 	}
@@ -185,7 +185,7 @@ var	RDB = require('./redis.js'),
 			alert_id: 'post_error'
 		});
 	}
-	
+
 	Posts.emitTooManyPostsAlert = function(socket) {
 		socket.emit('event:alert', {
 			title: 'Too many posts!',
@@ -218,7 +218,7 @@ var	RDB = require('./redis.js'),
 
 					Posts.get_cid_by_pid(postData.pid, function(cid) {
 						RDB.del('cid:' + cid + ':read_by_uid', function(err, data) {
-							topics.markAsRead(tid, uid);	
+							topics.markAsRead(tid, uid);
 						});
 					});
 
@@ -238,12 +238,12 @@ var	RDB = require('./redis.js'),
 							postData
 						]
 					};
-						
+
 					posts.addUserInfoToPost(socketData['posts'][0], function() {
 						io.sockets.in('topic_' + tid).emit('event:new_post', socketData);
 						io.sockets.in('recent_posts').emit('event:new_post', socketData);
-					});					
-			
+					});
+
 					callback(null, 'Reply successful');
 				} else {
 					callback(new Error('reply-error'), null);
@@ -251,13 +251,13 @@ var	RDB = require('./redis.js'),
 			});
 		});
 	};
-	
+
 	Posts.create = function(uid, tid, content, images, callback) {
 		if (uid === null) {
 			callback(null);
 			return;
 		}
-		
+
 		topics.isLocked(tid, function(locked) {
 			if (!locked || locked === '0') {
 				RDB.incr('global:next_post_id', function(err, pid) {
@@ -277,7 +277,7 @@ var	RDB = require('./redis.js'),
 								'deleted': 0,
 								'uploadedImages': ''
 							};
-						
+
 						RDB.hmset('post:' + pid, postData);
 
 						topics.addPostToTopic(tid, pid);
@@ -285,7 +285,7 @@ var	RDB = require('./redis.js'),
 						topics.updateTimestamp(tid, timestamp);
 
 						RDB.incr('totalpostcount');
-							
+
 						topics.getTopicField(tid, 'cid', function(err, cid) {
 							RDB.handle(err);
 
@@ -302,9 +302,9 @@ var	RDB = require('./redis.js'),
 
 								RDB.sadd('cid:' + cid + ':active_users', uid);
 							});
-						});					
-						
-						user.onNewPostMade(uid, tid, pid, timestamp);					
+						});
+
+						user.onNewPostMade(uid, tid, pid, timestamp);
 
 						uploadPostImages(postData, images, function(err, uploadedImages) {
 							if(err) {
@@ -315,9 +315,9 @@ var	RDB = require('./redis.js'),
 							}
 							callback(postData);
 						});
-						
+
 						plugins.fireHook('action:save_post_content', [pid, content]);
-						
+
 						postSearch.index(content, pid);
 					});
 				});
@@ -331,7 +331,7 @@ var	RDB = require('./redis.js'),
 		var imgur = require('./imgur');
 		imgur.setClientID(config.imgurClientID);
 
-		var uploadedImages = [];					
+		var uploadedImages = [];
 
 		function uploadImage(image, callback) {
 			imgur.upload(image.data, 'base64', function(err, data) {
@@ -347,7 +347,7 @@ var	RDB = require('./redis.js'),
 						callback(data);
 					}
 				}
-			});			
+			});
 		}
 
 		if(!images) {
@@ -363,20 +363,20 @@ var	RDB = require('./redis.js'),
 			});
 		}
 	}
-	
+
 	Posts.getPostsByUid = function(uid, start, end, callback) {
-		
+
 		user.getPostIds(uid, start, end, function(pids) {
-			
+
 			if(pids && pids.length) {
-			
-				Posts.getPostsByPids(pids, function(posts) {
+
+				Posts.getPostsByPids(pids, function(err, posts) {
 					callback(posts);
 				});
 			}
 			else
 				callback([]);
-		});				
+		});
 	}
 
 	Posts.getTopicPostStats = function(socket) {
@@ -384,11 +384,11 @@ var	RDB = require('./redis.js'),
 			if(err === null) {
 				var stats = {
 					topics: data[0]?data[0]:0,
-					posts: data[1]?data[1]:0				
+					posts: data[1]?data[1]:0
 				};
 
 				socket.emit('post.stats', stats);
-			}				
+			}
 			else
 				console.log(err);
 		});
@@ -415,6 +415,21 @@ var	RDB = require('./redis.js'),
 			} else {
 				callback(null, 'Posts reindexed');
 			}
+		});
+	}
+
+	Posts.getFavourites = function(uid, callback) {
+		RDB.zrevrange('uid:' + uid + ':favourites', 0, -1, function(err, pids) {
+			if(err)
+				return callback(err, null);
+
+			Posts.getPostSummaryByPids(pids, function(err, posts) {
+				if(err)
+					return callback(err, null);
+
+				callback(null, posts);
+			});
+
 		});
 	}
 

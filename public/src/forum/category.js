@@ -8,7 +8,7 @@
 		facebook_url = templates.get('facebook-share-url'),
 		google_url = templates.get('google-share-url'),
 		loadingMoreTopics = false;
-		
+
 	app.enter_room(room);
 
 	twitterEl.addEventListener('click', function() {
@@ -48,7 +48,7 @@
 
 		topic.innerHTML = html;
 		topic = topic.querySelector('a');
-		
+
 		if (numTopics > 0) {
 			for(x=0;x<numTopics;x++) {
 				if (topics[x].querySelector('.icon-pushpin')) continue;
@@ -75,7 +75,7 @@
 		var recent_replies = document.getElementById('category_recent_replies');
 
 		recent_replies.innerHTML = '';
-		
+
 		var	frag = document.createDocumentFragment(),
 			li = document.createElement('li');
 		for (var i=0,numPosts=posts.length; i<numPosts; i++) {
@@ -95,7 +95,7 @@
 			recent_replies.appendChild(frag);
 		}
 	});
-	
+
 	function onTopicsLoaded(topics) {
 
 		var html = templates.prepare(templates['category'].blocks['topics']).parse({ topics: topics }),
@@ -106,14 +106,14 @@
 
 		container.append(html);
 	}
-	
+
 
 
 	function loadMoreTopics(cid) {
 		loadingMoreTopics = true;
 		socket.emit('api:category.loadMore', {
-			cid: cid, 
-			after: $('#topics-container').children().length 
+			cid: cid,
+			after: $('#topics-container').children().length
 		}, function(data) {
 			if(data.topics.length) {
 				onTopicsLoaded(data.topics);

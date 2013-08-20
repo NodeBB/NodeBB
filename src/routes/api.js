@@ -5,7 +5,7 @@ var user = require('./../user.js'),
 	utils = require('./../../public/src/utils.js'),
 	pkg = require('../../package.json'),
 	meta = require('./../meta.js');
-	
+
 
 (function(Api) {
 	Api.create_routes = function(app) {
@@ -19,11 +19,11 @@ var user = require('./../user.js'),
 			meta.config.getFields(['postDelay', 'minimumTitleLength', 'minimumPostLength', 'imgurClientID'], function(err, metaConfig) {
 				if(err) return next();
 				var clientConfig = require('../../public/config.json');
-				
-				for (var attrname in metaConfig) { 
-					clientConfig[attrname] = metaConfig[attrname]; 
+
+				for (var attrname in metaConfig) {
+					clientConfig[attrname] = metaConfig[attrname];
 				}
-				
+
 				clientConfig['imgurClientIDSet'] = !!clientConfig['imgurClientID'];
 				delete clientConfig['imgurClientID'];
 
@@ -65,7 +65,7 @@ var user = require('./../user.js'),
 				data = {
 					'login_window:spansize': 'span12',
 					'alternate_logins:display': 'none'
-				};	
+				};
 			} else {
 				data = {
 					'login_window:spansize': 'span6',
@@ -80,7 +80,7 @@ var user = require('./../user.js'),
 
 			res.json(data);
 		});
-		
+
 		app.get('/api/register', function(req, res) {
 			var data = {},
 				login_strategies = auth.get_login_strategies(),
@@ -90,7 +90,7 @@ var user = require('./../user.js'),
 				data = {
 					'register_window:spansize': 'span12',
 					'alternate_logins:display': 'none'
-				};	
+				};
 			} else {
 				data = {
 					'register_window:spansize': 'span6',
@@ -105,22 +105,22 @@ var user = require('./../user.js'),
 
 			res.json(data);
 		});
-	
+
 		app.get('/api/topic/:id/:slug?', function(req, res) {
 			var uid = (req.user) ? req.user.uid : 0;
 			topics.getTopicWithPosts(req.params.id, uid, function(err, data) {
 				res.json(data);
-			});			
+			});
 		});
-		
+
 		app.get('/api/category/:id/:slug?', function(req, res, next) {
 			var uid = (req.user) ? req.user.uid : 0;
 			categories.getCategoryById(req.params.id, uid, function(err, data) {
-				if (!err) 
+				if (!err)
 					res.json(data);
-				else 
+				else
 					next();
-			}, req.params.id, uid);			
+			}, req.params.id, uid);
 		});
 
 		app.get('/api/recent', function(req, res) {
@@ -167,7 +167,7 @@ var user = require('./../user.js'),
 				res.status(404);
 				res.redirect(nconf.get('relative_path') + '/404');
 			}
-		});	
+		});
 
 		app.get('/api/search', function(req, res) {
 			return res.json({
@@ -194,7 +194,9 @@ var user = require('./../user.js'),
 					if(err)
 						return callback(err, null);
 
-					posts.getPostSummaryByPids(pids, function(posts) {
+					posts.getPostSummaryByPids(pids, function(err, posts) {
+						if(err)
+							return callback(err, null);
 						callback(null, posts);
 					});
 				})
@@ -204,7 +206,7 @@ var user = require('./../user.js'),
 				search(topicSearch, function(err, tids) {
 					if(err)
 						return callback(err, null);
-					
+
 					topics.getTopicsByTids(tids, 0, function(topics) {
 						callback(null, topics);
 					}, 0);
@@ -212,7 +214,7 @@ var user = require('./../user.js'),
 			}
 
 			async.parallel([searchPosts, searchTopics], function(err, results) {
-				if (err) 
+				if (err)
 					return next();
 				var noresults = !results[0].length && !results[1].length;
 				return res.json({
@@ -223,7 +225,7 @@ var user = require('./../user.js'),
 				});
 			});
 		});
-		
+
 		app.get('/api/reset', function(req, res) {
 			res.json({});
 		});
@@ -235,7 +237,7 @@ var user = require('./../user.js'),
 		app.get('/api/404', function(req, res) {
 			res.json({});
 		});
-		
+
 		app.get('/api/403', function(req, res) {
 			res.json({});
 		});
