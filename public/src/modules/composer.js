@@ -53,13 +53,22 @@ define(['taskbar'], function(taskbar) {
 
 	function initializeFileReader() {
 		jQuery.event.props.push( "dataTransfer" );
+	
+		var draggingDocument = false;
 
 		if(window.FileReader) {
 			var drop = $('.post-window .imagedrop'),
 				textarea = $('.post-window textarea');
 
-			textarea.on('dragenter', function() {
+			$(document).on('dragstart', function(e) {
+				draggingDocument = true;
+			}).on('dragend', function(e) {
+				draggingDocument = false;
+			});
 
+			textarea.on('dragenter', function(e) {
+				if(draggingDocument)
+					return;
 				drop.css('top', textarea.position().top + 'px');
 				drop.show();
 
@@ -87,8 +96,10 @@ define(['taskbar'], function(taskbar) {
 				for (var i=0; i<files.length; i++) {
 					loadFile(files[i]);
 				}
+	
+				if(!files.length)
+					drop.hide();
 				return false;
-				
 			});
 		}
 	}
@@ -371,7 +382,7 @@ define(['taskbar'], function(taskbar) {
 
 	composer.discard = function(post_uuid) {
 		if (composer.posts[post_uuid]) {
-			$(composer.postContainer).find('.imagedrop').html('');
+			$(composer.postContainer).find('.imagedrop').hide();
 			$(composer.postContainer).find('.imagelist').empty();
 			delete composer.posts[post_uuid];
 			composer.minimize();
