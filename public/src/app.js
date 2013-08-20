@@ -8,18 +8,18 @@ var socket,
 	var showWelcomeMessage = false;
 
 	function loadConfig() {
-	
+
 		$.ajax({
 			url: RELATIVE_PATH + '/api/config',
 			success: function(data) {
 				API_URL = data.api_url;
-	
+
 				config = data;
 				socket = io.connect(config.socket.address + (config.socket.port ? ':' + config.socket.port : ''));
-	
+
 				var reconnecting = false;
 				var reconnectTries = 0;
-	
+
 				socket.on('event:connect', function(data) {
 					console.log('connected to nodebb socket: ', data);
 					app.username = data.username;
@@ -29,7 +29,7 @@ var socket,
 				socket.on('event:alert', function(data) {
 					app.alert(data);
 				});
-	
+
 				socket.on('connect', function(data){
 					if(reconnecting) {
 						setTimeout(function(){
@@ -46,28 +46,28 @@ var socket,
 						socket.emit('api:updateHeader', { fields: ['username', 'picture', 'userslug'] });
 					}
 				});
-	
+
 				socket.on('reconnecting', function(data) {
 					function showDisconnectModal() {
 						$('#disconnect-modal').modal({
 							backdrop:'static',
 							show:true
 						});
-		
+
 						$('#reload-button').on('click',function(){
 							$('#disconnect-modal').modal('hide');
 							window.location.reload();
 						});
 					}
-					
+
 					reconnecting = true;
 					reconnectTries++;
-					
+
 					if(reconnectTries > 4) {
 						showDisconnectModal();
 						return;
 					}
-					
+
 					app.alert({
 						alert_id: 'connection_alert',
 						title: 'Reconnecting',
@@ -76,15 +76,15 @@ var socket,
 						timeout: 5000
 					});
 				});
-	
+
 				socket.on('api:user.get_online_users', function(users) {
 					jQuery('.username-field').each(function() {
-						if (this.processed === true) 
+						if (this.processed === true)
 							return;
-			
+
 						var el = jQuery(this),
 							uid = el.parents('li').attr('data-uid');
-						
+
 						if (uid && jQuery.inArray(uid, users) !== -1) {
 							el.find('i').remove();
 							el.prepend('<i class="icon-circle"></i>');
@@ -92,19 +92,19 @@ var socket,
 							el.find('i').remove();
 							el.prepend('<i class="icon-circle-blank"></i>');
 						}
-			
+
 						el.processed = true;
 					});
 				});
-				
+
 				app.enter_room('global');
-				
+
 
 			},
 			async: false
 		});
 	}
-	
+
 	// takes a string like 1000 and returns 1,000
 	app.addCommas = function(text) {
 		return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
@@ -121,14 +121,14 @@ var socket,
 		});
 	}
 
-	// use unique alert_id to have multiple alerts visible at a time, use the same alert_id to fade out the current instance  
+	// use unique alert_id to have multiple alerts visible at a time, use the same alert_id to fade out the current instance
 	// type : error, success, info, warning/notify
 	// title = bolded title text
 	// message = alert message content
 	// timeout default = permanent
 	// location : alert_window (default) or content
 	app.alert = function(params) {
-		var alert_id = 'alert_button_' + ((params.alert_id) ? params.alert_id : new Date().getTime()); 
+		var alert_id = 'alert_button_' + ((params.alert_id) ? params.alert_id : new Date().getTime());
 
 		var alert = $('#'+alert_id);
 
@@ -138,7 +138,7 @@ var socket,
 					$(this).remove();
 				});
 			}, timeout);
-			
+
 			$(div).attr('timeoutId', timeoutId);
 		}
 
@@ -146,7 +146,7 @@ var socket,
 			alert.find('strong').html(params.title);
 			alert.find('p').html(params.message);
 			alert.attr('class', "alert toaster-alert " + ((params.type=='warning') ? '' : "alert-" + params.type));
-			
+
 			clearTimeout(alert.attr('timeoutId'));
 			startTimeout(alert, params.timeout);
 		}
@@ -160,7 +160,7 @@ var socket,
 			strong.innerHTML = params.title;
 
 			div.className = "alert toaster-alert " + ((params.type=='warning') ? '' : "alert-" + params.type);
-			
+
 			div.setAttribute('id', alert_id);
 			div.appendChild(button);
 			div.appendChild(strong);
@@ -172,7 +172,7 @@ var socket,
 				div.parentNode.removeChild(div);
 			}
 
-			if (params.location == null) 
+			if (params.location == null)
 				params.location = 'alert_window';
 
 			jQuery('#'+params.location).prepend(jQuery(div).fadeIn('100'));
@@ -216,18 +216,18 @@ var socket,
 		});
 	}
 
-	app.current_room = null; 
+	app.current_room = null;
 	app.enter_room = function(room) {
-		
+
 		if(socket) {
-			if (app.current_room === room) 
+			if (app.current_room === room)
 				return;
-				
+
 			socket.emit('event:enter_room', {
 				'enter': room,
 				'leave': app.current_room
 			});
-			
+
 			app.current_room = room;
 		}
 	};
@@ -238,7 +238,7 @@ var socket,
 		jQuery('.post-row').each(function() {
 			uids.push(this.getAttribute('data-uid'));
 		});
-		
+
 		socket.emit('api:user.get_online_users', uids);
 	}
 
@@ -254,7 +254,7 @@ var socket,
 		var url = window.location.href,
 			parts = url.split('/'),
 			active = parts[parts.length-1];
-		
+
 		jQuery('#main-nav li').removeClass('active');
 		if(active) {
 			jQuery('#main-nav li a').each(function() {
@@ -269,7 +269,7 @@ var socket,
 		}
 
 		setTimeout(function() {
-			window.scrollTo(0, 1); // rehide address bar on mobile after page load completes.	
+			window.scrollTo(0, 1); // rehide address bar on mobile after page load completes.
 		}, 100);
 	}
 
@@ -282,7 +282,7 @@ var socket,
 				timeout: 5000
 			});
 		}
-		
+
 		if(showWelcomeMessage) {
 			showWelcomeMessage = false;
 			if(document.readyState !== 'complete') {
@@ -326,9 +326,9 @@ var socket,
 		if(app.infiniteLoaderActive)
 			return;
 		app.infiniteLoaderActive = true;
-		socket.emit('api:topic.loadMore', {	
-			tid: tid, 
-			after: document.querySelectorAll('#post-container li[data-pid]').length 
+		socket.emit('api:topic.loadMore', {
+			tid: tid,
+			after: document.querySelectorAll('#post-container li[data-pid]').length
 		}, function(data) {
 			app.infiniteLoaderActive = false;
 			if(data.posts.length) {
@@ -343,14 +343,13 @@ var socket,
 		if(!pid)
 			return;
 		var container = $(document.body),
-			scrollTo = $('#post_anchor_' + pid);
+			scrollTo = $('#post_anchor_' + pid),
+			tid = $('#post-container').attr('data-tid');
 
-		if(!scrollTo.length) {
-			var tid = $('#post-container').attr('data-tid');
+		while(!scrollTo.length) {
 			app.loadMorePosts(tid, function() {
-				app.scrollToPost(pid);
+				scrollTo = $('#post_anchor_' + pid);
 			});
-			return;
 		}
 
 		container.animate({
@@ -424,6 +423,6 @@ var socket,
 			el.off('mousemove');
 			onTouchEnd();
 		});
-		
+
 	}
 }());
