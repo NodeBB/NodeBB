@@ -389,14 +389,20 @@
 	socket.on('api:posts.favourite', function(data) {
 		if (data.status === 'ok' && data.pid) {
 			var favEl = document.querySelector('.post_rep_' + data.pid).nextSibling;
-			if (favEl) favEl.className = 'icon-star';
+			if (favEl) {
+				favEl.className = 'icon-star';
+				$(favEl).parent().addClass('btn-warning');
+			}
 		}
 	});
 
 	socket.on('api:posts.unfavourite', function(data) {
 		if (data.status === 'ok' && data.pid) {
 			var favEl = document.querySelector('.post_rep_' + data.pid).nextSibling;
-			if (favEl) favEl.className = 'icon-star-empty';
+			if (favEl) {
+				favEl.className = 'icon-star-empty';
+				$(favEl).parent().removeClass('btn-warning');
+			}	
 		}
 	});
 

@@ -79,6 +79,7 @@ marked.setOptions({
 					privileges = results[2];
 
 				for(var i=0; i<postData.length; ++i) {
+					postData[i].fav_button_class = fav_data[postData[i].pid]? 'btn-warning' : '';
 					postData[i].fav_star_class = fav_data[postData[i].pid] ? 'icon-star' : 'icon-star-empty';
 					postData[i]['display_moderator_tools'] = (postData[i].uid == current_user || privileges.editable) ? 'show' : 'none';
 					postData[i].show_banned = postData[i].user_banned === '1'?'show':'hide';
@@ -612,7 +613,6 @@ marked.setOptions({
 
 				posts.create(uid, tid, content, images, function(postData) {
 					if (postData) {
-						RDB.lpush(schema.topics(tid).posts, postData.pid);
 
 						// Auto-subscribe the post creator to the newly created topic
 						threadTools.toggleFollow(tid, uid);

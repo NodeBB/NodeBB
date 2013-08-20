@@ -39,7 +39,7 @@ var	RDB = require('./redis.js'),
 			post.user_rep = userData.reputation || 0;
 			post.user_postcount = userData.postcount || 0;
 			post.user_banned = userData.banned || '0';
-			post.picture = userData.picture || require('gravatar').url('', {}, https=global.nconf.get('https'));
+			post.picture = userData.picture || require('gravatar').url('', {}, https=nconf.get('https'));
 			post.signature = postTools.markdownToHTML(userData.signature, true);
 
 			if(post.editor !== '') {
@@ -213,8 +213,7 @@ var	RDB = require('./redis.js'),
 
 			Posts.create(uid, tid, content, images, function(postData) {
 				if (postData) {
-					topics.addPostToTopic(tid, postData.pid);
-					
+
 					topics.markUnRead(tid);
 
 					Posts.get_cid_by_pid(postData.pid, function(cid) {
@@ -227,7 +226,8 @@ var	RDB = require('./redis.js'),
 
 					postData.content = postTools.markdownToHTML(postData.content);
 					postData.post_rep = 0;
-					postData.relativeTime = utils.relativeTime(postData.timestamp)
+					postData.relativeTime = utils.relativeTime(postData.timestamp);
+					postData.fav_button_class = '';
 					postData.fav_star_class = 'icon-star-empty';
 					postData['edited-class'] = 'none';
 					postData.show_banned = 'hide';
@@ -280,6 +280,7 @@ var	RDB = require('./redis.js'),
 						
 						RDB.hmset('post:' + pid, postData);
 
+						topics.addPostToTopic(tid, pid);
 						topics.increasePostCount(tid);
 						topics.updateTimestamp(tid, timestamp);
 

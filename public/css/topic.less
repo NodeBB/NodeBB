@@ -32,6 +32,7 @@
 	}
 
 	.profile-block, .post-block {
+		position:relative;
 		border: 1px solid rgba(0, 0, 0, 0.06);
 		border-radius: 5px;
 		padding: 10px;
@@ -98,16 +99,50 @@
 		}
 	}
 
+	
+
 	&.deleted {
 		-moz-opacity: 0.30;
 		opacity: 0.30;
 	}
 	/*http://stackoverflow.com/questions/11037517/bootstrap-making-responsive-changes-to-layout*/
 	@media (max-width: 979px) {
+
+
 		.span12-tablet {
 			width: 100% !important;
 			margin-left:0px;
 			*width: 100% !important;
+		}
+	}
+
+	@media (min-width: 979px) {
+		.speech-bubble:after 
+		{
+			content: "";
+			position: absolute;
+			top: 9px;
+			left: -7px;
+			border-style: solid;
+			border-width: 7px 7px 7px 0;
+			border-color: transparent #FFFFFF;
+			display: block;
+			width: 0;
+			z-index: 1;
+		}
+
+		.speech-bubble:before 
+		{
+			content: "";
+			position: absolute;
+			top: 9px;
+			left: -8px;
+			border-style: solid;
+			border-width: 7px 7px 7px 0;
+			border-color: transparent rgba(0, 0, 0, 0.125);
+			display: block;
+			width: 0;
+			z-index: 0;
 		}
 	}
 

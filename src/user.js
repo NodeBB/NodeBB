@@ -376,7 +376,7 @@ var utils = require('./../public/src/utils.js'),
 			options.forcedefault = 'y';
 		}
 
-		return require('gravatar').url(email, options, https=global.nconf.get('https'));
+		return require('gravatar').url(email, options, https=nconf.get('https'));
 	}
 
 	User.hashPassword = function(password, callback) {
@@ -589,7 +589,7 @@ var utils = require('./../public/src/utils.js'),
 				topics.getTopicField(tid, 'slug', function(err, slug) {
 					var message = username + ' made a new post';
 
-					notifications.create(message, 5, global.nconf.get('url') + 'topic/' + slug + '#' + pid, 'notification_'+ Date.now(), function(nid) {
+					notifications.create(message, 5, nconf.get('url') + 'topic/' + slug + '#' + pid, 'notification_'+ Date.now(), function(nid) {
 		 				notifications.push(nid, followers);
 					});
 				});
@@ -792,6 +792,7 @@ var utils = require('./../public/src/utils.js'),
 
 	User.reset = {
 		validate: function(socket, code, callback) {
+			
 			if (typeof callback !== 'function') {
 				callback = null;
 			}
@@ -841,13 +842,13 @@ var utils = require('./../public/src/utils.js'),
 					RDB.set('reset:' + reset_code + ':uid', uid);
 					RDB.set('reset:' + reset_code + ':expiry', (60*60)+new Date()/1000|0);	// Active for one hour
 
-					var reset_link = config.url + 'reset/' + reset_code,
+					var reset_link = nconf.get('url') + 'reset/' + reset_code,
 						reset_email = global.templates['emails/reset'].parse({'RESET_LINK': reset_link}),
 						reset_email_plaintext = global.templates['emails/reset_plaintext'].parse({ 'RESET_LINK': reset_link });
 
 					var message = emailjs.message.create({
 						text: reset_email_plaintext,
-						from: config.mailer.from,
+						from: config.mailer?config.mailer.from:'localhost@example.org',
 						to: email,
 						subject: 'Password Reset Requested',
 						attachment: [
@@ -884,14 +885,17 @@ var utils = require('./../public/src/utils.js'),
 			});
 		},
 		commit: function(socket, code, password) {
-			this.validate(code, function(validated) {
+			this.validate(socket, code, function(validated) {
 				if (validated) {
 					RDB.get('reset:' + code + ':uid', function(err, uid) {
 						if (err) {
 							RDB.handle(err);
 						}
 
-						User.setUserField(uid, 'password', password);
+						User.hashPassword(password, function(hash) {
+							User.setUserField(uid, 'password', hash);
+						});
+
 						RDB.del('reset:' + code + ':uid');
 						RDB.del('reset:' + code + ':expiry');
 

@@ -18,10 +18,10 @@
 
 var fs = require('fs'),
 	winston = require('winston'),
-	nconf = require('nconf'),
 	pkg = require('./package.json'),
 	url = require('url');
 
+nconf = require('nconf');
 // Runtime environment
 global.env = process.env.NODE_ENV || 'production',
 
@@ -54,7 +54,7 @@ if(nconf.get('upgrade')) {
 } else if (!nconf.get('setup') && nconf.get('base_url')) {
 	nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path') + '/');
 	nconf.set('upload_url', nconf.get('url') + 'uploads/');
-	global.nconf = nconf;
+
 
 	winston.info('Initializing NodeBB v' + pkg.version + ', on port ' + nconf.get('port') + ', using Redis store at ' + nconf.get('redis:host') + ':' + nconf.get('redis:port') + '.');
 	winston.info('Base Configuration OK.');

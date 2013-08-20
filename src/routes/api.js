@@ -161,11 +161,11 @@ var user = require('./../user.js'),
 			if (url) {
 				res.json({
 					url: url,
-					home: global.nconf.get('url')
+					home: nconf.get('url')
 				});
 			} else {
 				res.status(404);
-				res.redirect(global.nconf.get('relative_path') + '/404');
+				res.redirect(nconf.get('relative_path') + '/404');
 			}
 		});	
 
@@ -224,6 +224,14 @@ var user = require('./../user.js'),
 			});
 		});
 		
+		app.get('/api/reset', function(req, res) {
+			res.json({});
+		});
+
+		app.get('/api/reset/:code', function(req, res) {
+			res.json({ reset_code: req.params.code });
+		});
+
 		app.get('/api/404', function(req, res) {
 			res.json({});
 		});

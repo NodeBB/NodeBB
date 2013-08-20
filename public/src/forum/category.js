@@ -36,7 +36,6 @@
 	]);
 
 	function onNewTopic(data) {
-
 		var html = templates.prepare(templates['category'].blocks['topics']).parse({ topics: [data] }),
 			topic = document.createElement('div'),
 			container = document.getElementById('topics-container'),
@@ -61,6 +60,8 @@
 			container.insertBefore(topic, null);
 			$(topic).hide().fadeIn('slow');
 		}
+
+		socket.emit('api:categories.getRecentReplies', cid);
 	}
 
 	socket.on('event:new_topic', onNewTopic);

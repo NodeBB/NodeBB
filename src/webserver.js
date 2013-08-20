@@ -5,7 +5,7 @@ var express = require('express'),
 	RedisStore = require('connect-redis')(express),
 	path = require('path'),
 	redis = require('redis'),
-	redisServer = redis.createClient(global.nconf.get('redis:port'), global.nconf.get('redis:host')),
+	redisServer = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host')),
 	marked = require('marked'),
 	utils = require('../public/src/utils.js'),
 	pkg = require('../package.json'),
@@ -40,11 +40,11 @@ var express = require('express'),
 			],
 			metaString = utils.buildMetaTags(defaultMetaTags.concat(options.metaTags || [])),
 			templateValues = {
-				cssSrc: global.config['theme:src'] || global.nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
+				cssSrc: global.config['theme:src'] || nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
 				title: global.config['title'] || 'NodeBB',
 				browserTitle: global.config['title'] || 'NodeBB',
 				csrf: options.res.locals.csrf_token,
-				relative_path: global.nconf.get('relative_path'),
+				relative_path: nconf.get('relative_path'),
 				meta_tags: metaString
 			};
 
@@ -60,7 +60,7 @@ var express = require('express'),
 	// Middlewares
 	app.use(express.favicon(path.join(__dirname, '../', 'public', 'favicon.ico')));
 	app.use(require('less-middleware')({ src: path.join(__dirname, '../', 'public') }));
-	app.use(global.nconf.get('relative_path'), express.static(path.join(__dirname, '../', 'public')));
+	app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../', 'public')));
 	app.use(express.bodyParser());	// Puts POST vars in request.body
 	app.use(express.cookieParser());	// If you want to parse cookies (res.cookies)
 	app.use(express.compress());
@@ -69,7 +69,7 @@ var express = require('express'),
 			client: redisServer,
 			ttl: 60*60*24*14
 		}),
-		secret: global.nconf.get('secret'),
+		secret: nconf.get('secret'),
 		key: 'express.sid'
 	}));
 	app.use(express.csrf());
@@ -86,7 +86,7 @@ var express = require('express'),
 	
 	app.use(function(req, res, next) {
 		
-		global.nconf.set('https', req.secure);
+		nconf.set('https', req.secure);
 		
 		// Don't bother with session handling for API requests
 		if (/^\/api\//.test(req.url)) return next();
@@ -109,7 +109,7 @@ var express = require('express'),
 		// respond with html page
 		if (req.accepts('html')) {
 			//res.json('404', { url: req.url });
-			res.redirect(global.nconf.get('relative_path') + '/404');
+			res.redirect(nconf.get('relative_path') + '/404');
 			return;
 		}
 
@@ -141,7 +141,7 @@ var express = require('express'),
 	};
 	
 
-	app.namespace(global.nconf.get('relative_path'), function() {
+	app.namespace(nconf.get('relative_path'), function() {
 
 		auth.create_routes(app);
 		admin.create_routes(app);
@@ -243,7 +243,7 @@ var express = require('express'),
 							{ name: "title", content: topicData.topic_name },
 							{ property: 'og:title', content: topicData.topic_name + ' | ' + (global.config.title || 'NodeBB') },
 							{ property: "og:type", content: 'article' },
-							{ property: "og:url", content: global.nconf.get('url') + 'topic/' + topicData.slug },
+							{ property: "og:url", content: nconf.get('url') + 'topic/' + topicData.slug },
 							{ property: 'og:image', content: topicData.main_posts[0].picture },
 							{ property: "article:published_time", content: new Date(parseInt(topicData.main_posts[0].timestamp, 10)).toISOString() },
 							{ property: 'article:modified_time', content: new Date(lastMod).toISOString() },
@@ -338,7 +338,7 @@ var express = require('express'),
 			res.send(	"User-agent: *\n" +
 						"Disallow: \n" +
 						"Disallow: /admin/\n" +
-						"Sitemap: " + global.nconf.get('url') + "sitemap.xml");
+						"Sitemap: " + nconf.get('url') + "sitemap.xml");
 		});
 
 		app.get('/cid/:cid', function(req, res) {
