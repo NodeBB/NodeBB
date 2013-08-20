@@ -24,7 +24,7 @@ var user = require('./../user.js'),
 					clientConfig[attrname] = metaConfig[attrname]; 
 				}
 				
-				clientConfig['imgurClientIDSet'] = clientConfig['imgurClientID'] !== '';
+				clientConfig['imgurClientIDSet'] = !!clientConfig['imgurClientID'];
 				delete clientConfig['imgurClientID'];
 
 				res.json(200, clientConfig);
