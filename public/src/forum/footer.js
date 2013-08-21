@@ -140,6 +140,12 @@
 	});
 	socket.on('event:new_notification', function() {
 		document.querySelector('.notifications a i').className = 'icon-circle active';
+		app.alert({
+			title: 'New notification',
+			message: 'You have unread notifications.',
+			type: 'notify',
+			timeout: 2000
+		});
 		utils.refreshTitle();
 	});
 
