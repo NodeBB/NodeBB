@@ -31,14 +31,14 @@
 		<ul id="topics-container">
 		<!-- BEGIN topics -->
 		<a href="../../topic/{topics.slug}"><li class="category-item {topics.deleted-class}">
-			<div class="row-fluid">
+			<div class="row">
 				<!-- <div class="span1 thread-rating hidden-xs hidden-sm">
 					<span>
 						<i class="icon-star icon-3x"></i><br />
 						38
 					</span>
 				</div> -->
-				<div class="span12 topic-row">
+				<div class="col-md-12 topic-row">
 					<div class="latest-post visible-lg visible-md">
 						<div class="pull-right">
 							<img style="width: 48px; height: 48px; /*temporary*/" src="{topics.teaser_userpicture}" />
@@ -60,9 +60,9 @@
 		<!-- END topics -->
 		</ul>
 	</div>
-	<div class="span3 {show_sidebar} category-sidebar mobile-sidebar">
+	<div class="col-md-3 {show_sidebar} category-sidebar mobile-sidebar">
 
-		<div class="sidebar-block img-polaroid">
+		<div class="sidebar-block img-thumbnail">
 			<div class="block-header">
 				Recent Replies
 			</div>
@@ -70,23 +70,23 @@
 				<ul id="category_recent_replies"></ul>
 			</div>
 		</div>
-		<div class="sidebar-block img-polaroid">
+		<div class="sidebar-block img-thumbnail">
 			<div class="block-header">
 				Active Participants
 			</div>
 			<div class="block-content">
 				<!-- BEGIN active_users -->
-				<a href="/users/{active_users.userslug}"><img title="{active_users.username}" src="{active_users.picture}" class="img-polaroid" /></a>
+				<a href="/users/{active_users.userslug}"><img title="{active_users.username}" src="{active_users.picture}" class="img-thumbnail" /></a>
 				<!-- END active_users -->
 			</div>
 		</div>
-		<div class="sidebar-block img-polaroid {moderator_block_class}">
+		<div class="sidebar-block img-thumbnail {moderator_block_class}">
 			<div class="block-header">
 				Moderators
 			</div>
 			<div class="block-content">
 				<!-- BEGIN moderators -->
-				<a href="/users/{moderators.userslug}"><img title="{moderators.username}" src="{moderators.picture}" class="img-polaroid" /></a>
+				<a href="/users/{moderators.userslug}"><img title="{moderators.username}" src="{moderators.picture}" class="img-thumbnail" /></a>
 				<!-- END moderators -->
 			</div>
 		</div>

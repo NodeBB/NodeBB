@@ -18,10 +18,10 @@
 	<!-- BEGIN main_posts -->
 		<a id="post_anchor_{main_posts.pid}" name="{main_posts.pid}"></a>
 		<li class="row post-row main-post" data-pid="{main_posts.pid}" data-uid="{main_posts.uid}" data-deleted="{main_posts.deleted}">
-			<div class="span12">
+			<div class="col-md-12">
 				<div class="post-block">
 					<a class="main-avatar" href="/users/{main_posts.userslug}">
-						<img src="{main_posts.picture}" align="left" class="img-polaroid"/><br />
+						<img src="{main_posts.picture}" align="left" class="img-thumbnail"/><br />
 						<div class="hover-overlay">
 							{main_posts.username}<br />
 							<i class="icon-star"></i><span class="user_rep_{main_posts.uid}">{main_posts.user_rep}</span>
@@ -79,7 +79,7 @@
 			<div class="span1 profile-image-block hidden-xs hidden-sm">
 				<!--<i class="icon-spinner icon-spin icon-2x pull-left"></i>-->
 				<a href="/users/{posts.userslug}">
-					<img src="{posts.picture}" align="left" class="img-polaroid"/>
+					<img src="{posts.picture}" align="left" class="img-thumbnail"/>
 				</a>
 				<div class="stats">
 					<i class="icon-star"></i><span class="user_rep_{posts.uid} formatted-number">{posts.user_rep}</span>
@@ -87,7 +87,7 @@
 				</div>
 				<span class="label label-important {posts.show_banned}">banned</span>			
 			</div>
-			<div class="span11 span12-tablet">
+			<div class="span11 col-md-12-tablet">
 				<div class="post-block speech-bubble">
 					<div id="content_{posts.pid}" class="post-content">{posts.content}</div>
 					<div id="images_{posts.pid}" class="post-images">

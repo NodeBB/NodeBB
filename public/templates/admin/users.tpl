@@ -18,7 +18,7 @@
 	<!-- BEGIN users -->
 	<div class="users-box" data-uid="{users.uid}" data-admin="{users.administrator}" data-username="{users.username}" data-banned="{users.banned}">
 		<a href="/users/{users.userslug}">
-			<img src="{users.picture}" class="img-polaroid"/>
+			<img src="{users.picture}" class="img-thumbnail"/>
 		</a>
 		<br/>
 		<a href="/users/{users.userslug}">{users.username}</a>

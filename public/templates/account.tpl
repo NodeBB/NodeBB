@@ -10,7 +10,7 @@
 	<div class="row-fluid">
 		<div class="span2 account-block" style="text-align: center; margin-bottom:20px;">
 			<div class="account-picture-block">
-				<img src="{picture}" class="user-profile-picture img-polaroid"/>
+				<img src="{picture}" class="user-profile-picture img-thumbnail"/>
 			</div>
 			<div class="account-online-status">
 				<span><i class="icon-circle-blank"></i> <span>offline</span></span>
@@ -82,7 +82,7 @@
 
 		<div class="span6 user-recent-posts">
 			<!-- BEGIN posts -->
-			<div class="topic-row img-polaroid clearfix" topic-url="topic/{posts.tid}/#{posts.pid}">
+			<div class="topic-row img-thumbnail clearfix" topic-url="topic/{posts.tid}/#{posts.pid}">
 				<span>{posts.content}</span>
 				<span class="pull-right">{posts.relativeTime} ago</span>
 			</div>

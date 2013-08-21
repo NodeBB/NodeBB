@@ -11,13 +11,13 @@
 		<div class="modal-body">
 
 			<div id="gravatar-box">
-				<img id="user-gravatar-picture" src="" class="img-polaroid user-profile-picture">
+				<img id="user-gravatar-picture" src="" class="img-thumbnail user-profile-picture">
 				<span class="user-picture-label">Gravatar</span>
 				<i class='icon-ok icon-2x'></i>
 			</div>
 			<br/>
 			<div id="uploaded-box">
-				<img id="user-uploaded-picture" src="" class="img-polaroid user-profile-picture">
+				<img id="user-uploaded-picture" src="" class="img-thumbnail user-profile-picture">
 				<span class="user-picture-label">Uploaded picture</span>
 				<i class='icon-ok icon-2x'></i>
 			</div>
@@ -70,7 +70,7 @@
 	<div class="row-fluid">
 		<div class="span2" style="text-align: center; margin-bottom:20px;">
 			<div class="account-picture-block text-center">
-				<img id="user-current-picture" class="user-profile-picture img-polaroid" src="{picture}" /><br/>
+				<img id="user-current-picture" class="user-profile-picture img-thumbnail" src="{picture}" /><br/>
 				<a id="changePictureBtn" href="#" class="btn btn-primary">change picture</a>
 			</div>
 		</div>

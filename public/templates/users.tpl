@@ -18,7 +18,7 @@
 		<!-- BEGIN users -->
 		<div class="users-box">
 			<a href="/users/{users.userslug}">
-				<img src="{users.picture}" class="img-polaroid"/>
+				<img src="{users.picture}" class="img-thumbnail"/>
 			</a>
 			<br/>
 			<a href="/users/{users.userslug}">{users.username}</a>

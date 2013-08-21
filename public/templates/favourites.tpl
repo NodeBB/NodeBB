@@ -12,9 +12,9 @@
 	<div id="no-favourites-notice" class="alert alert-warning {show_nofavourites}">You don't have any favourites, favourite some posts to see them here!</div>
 
 	<div class="row-fluid">
-		<div class="span12 user-favourite-posts">
+		<div class="col-md-12 user-favourite-posts">
 			<!-- BEGIN posts -->
-			<div class="topic-row img-polaroid clearfix" topic-url="topic/{posts.tid}/#{posts.pid}">
+			<div class="topic-row img-thumbnail clearfix" topic-url="topic/{posts.tid}/#{posts.pid}">
 				<span><strong>{posts.username}</strong> : </span>
 				<span>{posts.content}</span>
 				<div>

@@ -23,7 +23,7 @@
 		<a href="../../topic/{topics.slug}" id="tid-{topics.tid}">
 			<li class="category-item {topics.deleted-class}">
 				<div class="row-fluid">
-					<div class="span12 topic-row img-polaroid">
+					<div class="col-md-12 topic-row img-thumbnail">
 						<div class="latest-post visible-lg visible-md">
 							<div class="pull-right">										
 								<img style="width: 48px; height: 48px; /*temporary*/" src="{topics.teaser_userpicture}" />
