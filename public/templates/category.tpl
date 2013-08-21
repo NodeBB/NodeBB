@@ -76,7 +76,7 @@
 			</div>
 			<div class="block-content">
 				<!-- BEGIN active_users -->
-				<a href="/users/{active_users.userslug}"><img title="{active_users.username}" src="{active_users.picture}" class="img-thumbnail" /></a>
+				<a href="/users/{active_users.userslug}"><img title="{active_users.username}" src="{active_users.picture}" class="img-rounded" /></a>
 				<!-- END active_users -->
 			</div>
 		</div>
@@ -86,7 +86,7 @@
 			</div>
 			<div class="block-content">
 				<!-- BEGIN moderators -->
-				<a href="/users/{moderators.userslug}"><img title="{moderators.username}" src="{moderators.picture}" class="img-thumbnail" /></a>
+				<a href="/users/{moderators.userslug}"><img title="{moderators.username}" src="{moderators.picture}" class="img-rounded" /></a>
 				<!-- END moderators -->
 			</div>
 		</div>
