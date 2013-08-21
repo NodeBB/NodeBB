@@ -9,7 +9,7 @@
 		<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
 			<span itemprop="title">{topic_name}</span>
 		</li>
-		<div id="thread_active_users" class="hidden-phone"></div>
+		<div id="thread_active_users" class="hidden-xs"></div>
 	</ol>
 </div>
 
@@ -60,10 +60,10 @@
 					</div>
 					<div class="post-signature">{main_posts.signature}</div>
 					<div class="profile-block">
-						<img class="hidden-desktop" src="{main_posts.picture}" align="left" /> posted by <strong><a class="username-field" href="/users/{main_posts.userslug}">{main_posts.username}</a></strong> {main_posts.relativeTime} ago
-						<span class="{main_posts.edited-class} hidden-phone">| last edited by <strong><a href="/users/{main_posts.editorslug}">{main_posts.editorname}</a></strong> {main_posts.relativeEditTime} ago</span>
-						<span class="{main_posts.edited-class}"><i class="icon-edit visible-phone" title="edited by {main_posts.editorname} {main_posts.relativeEditTime} ago"></i></span>
-						<div class="post-buttons visible-phone">
+						<img class="hidden-lg hidden-md" src="{main_posts.picture}" align="left" /> posted by <strong><a class="username-field" href="/users/{main_posts.userslug}">{main_posts.username}</a></strong> {main_posts.relativeTime} ago
+						<span class="{main_posts.edited-class} hidden-xs">| last edited by <strong><a href="/users/{main_posts.editorslug}">{main_posts.editorname}</a></strong> {main_posts.relativeEditTime} ago</span>
+						<span class="{main_posts.edited-class}"><i class="icon-edit visible-xs" title="edited by {main_posts.editorname} {main_posts.relativeEditTime} ago"></i></span>
+						<div class="post-buttons visible-xs">
 							<button class="post_reply btn-link"><i class="icon-reply"></i></button>
 						</div>
 						<div class="post-buttons">
@@ -78,14 +78,14 @@
 	<!-- BEGIN posts -->
 		<a id="post_anchor_{posts.pid}" name="{posts.pid}"></a>
 		<li class="row-fluid post-row" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-deleted="{posts.deleted}">
-			<div class="span1 profile-image-block hidden-phone hidden-tablet">
+			<div class="span1 profile-image-block hidden-xs hidden-sm">
 				<!--<i class="icon-spinner icon-spin icon-2x pull-left"></i>-->
 				<a href="/users/{posts.userslug}">
 					<img src="{posts.picture}" align="left" class="img-polaroid"/>
 				</a>
 				<div class="stats">
 					<i class="icon-star"></i><span class="user_rep_{posts.uid} formatted-number">{posts.user_rep}</span>
-					<div id="ids_{posts.pid}_{posts.uid}" class="chat hidden-phone" title="Chat"><i class="icon-comment"></i></div>
+					<div id="ids_{posts.pid}_{posts.uid}" class="chat hidden-xs" title="Chat"><i class="icon-comment"></i></div>
 				</div>
 				<span class="label label-important {posts.show_banned}">banned</span>			
 			</div>
@@ -100,15 +100,15 @@
 					<div class="post-signature">{posts.signature}</div>
 					<div class="profile-block">
 						<span class="post-buttons">
-							<button id="ids_{posts.pid}_{posts.uid}" class="edit {posts.display_moderator_tools} btn-link hidden-phone" title="Edit"><i class="icon-pencil"></i></button>
-							<button id="ids_{posts.pid}_{posts.uid}" class="delete {posts.display_moderator_tools} btn-link hidden-phone" title="Delete"><i class="icon-trash"></i></button>
-							<button id="favs_{posts.pid}_{posts.uid}" class="favourite btn-link hidden-phone" title="Favourite"><span class="post_rep_{posts.pid}">{posts.post_rep} </span><i class="{posts.fav_star_class}"></i></button>
-							<button id="quote_{posts.pid}_{posts.uid}" class="quote btn-link hidden-phone" title="Quote"><i class="icon-quote-left"></i></button>
+							<button id="ids_{posts.pid}_{posts.uid}" class="edit {posts.display_moderator_tools} btn-link hidden-xs" title="Edit"><i class="icon-pencil"></i></button>
+							<button id="ids_{posts.pid}_{posts.uid}" class="delete {posts.display_moderator_tools} btn-link hidden-xs" title="Delete"><i class="icon-trash"></i></button>
+							<button id="favs_{posts.pid}_{posts.uid}" class="favourite btn-link hidden-xs" title="Favourite"><span class="post_rep_{posts.pid}">{posts.post_rep} </span><i class="{posts.fav_star_class}"></i></button>
+							<button id="quote_{posts.pid}_{posts.uid}" class="quote btn-link hidden-xs" title="Quote"><i class="icon-quote-left"></i></button>
 							<button class="post_reply btn-link" title="Reply"><i class="icon-reply"></i></button>
 						</span>
-						<img class="hidden-desktop" src="{posts.picture}" align="left" /> posted by <strong><a class="username-field" href="/users/{posts.userslug}">{posts.username}</a></strong> {posts.relativeTime} ago
-						<span class="{posts.edited-class} hidden-phone">| last edited by <strong><a href="/users/{posts.editorslug}">{posts.editorname}</a></strong> {posts.relativeEditTime} ago</span>
-						<span class="{posts.edited-class}"><i class="icon-edit visible-phone" title="edited by {posts.editorname} {posts.relativeEditTime} ago"></i></span>
+						<img class="hidden-lg hidden-md" src="{posts.picture}" align="left" /> posted by <strong><a class="username-field" href="/users/{posts.userslug}">{posts.username}</a></strong> {posts.relativeTime} ago
+						<span class="{posts.edited-class} hidden-xs">| last edited by <strong><a href="/users/{posts.editorslug}">{posts.editorname}</a></strong> {posts.relativeEditTime} ago</span>
+						<span class="{posts.edited-class}"><i class="icon-edit visible-xs" title="edited by {posts.editorname} {posts.relativeEditTime} ago"></i></span>
 					</div>
 				</div>
 			</div>
