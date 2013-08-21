@@ -105,7 +105,7 @@
 		$('#load-more-users-btn').on('click', loadMoreUsers);
 		
 		$(window).off('scroll').on('scroll', function() {
-			var bottom = (document.body.offsetHeight - $(window).height()) * 0.9;
+			var bottom = ($(document).height() - $(window).height()) * 0.9;
 
 			if ($(window).scrollTop() > bottom && !loadingMoreUsers) {
 				loadMoreUsers();
