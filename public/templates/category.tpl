@@ -12,7 +12,7 @@
 </div>
 
 <div>
-	<button id="new_post" class="btn btn-primary btn-large {show_topic_button}">New Topic</button>
+	<button id="new_post" class="btn btn-primary btn-lg {show_topic_button}">New Topic</button>
 
 	<div class="inline-block pull-right">
 		<a target="_blank" href="../{category_id}.rss"><i class="icon-rss-sign icon-2x"></i></a>&nbsp;

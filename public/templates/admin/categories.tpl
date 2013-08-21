@@ -34,7 +34,7 @@
 	<!-- END categories -->
 	</ul>
 
-	<button class="btn btn-large btn-primary" id="save">Save</button>
+	<button class="btn btn-lg btn-primary" id="save">Save</button>
 </div>
 
 <div id="icons" style="display:none;"><div class="icon-container"><div class="row">

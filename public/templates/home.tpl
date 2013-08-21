@@ -1,4 +1,4 @@
-<div class="hero-unit {motd_class}">
+<div class="jumbotron {motd_class}">
 	{motd}
 </div>
 

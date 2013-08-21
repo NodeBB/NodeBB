@@ -118,9 +118,9 @@
 	<!-- END posts -->
 </ul>
 <hr />
-<button id="post_reply" class="btn btn-primary btn-large post_reply" type="button">Reply</button>
+<button id="post_reply" class="btn btn-primary btn-lg post_reply" type="button">Reply</button>
 <div class="btn-group pull-right" id="thread-tools" style="visibility: hidden;">
-	<button class="btn btn-large dropdown-toggle" data-toggle="dropdown" type="button">Thread Tools <span class="caret"></span></button>
+	<button class="btn btn-default btn-lg dropdown-toggle" data-toggle="dropdown" type="button">Thread Tools <span class="caret"></span></button>
 	<ul class="dropdown-menu">
 		<li><a href="#" id="pin_thread"><i class="icon-pushpin"></i> Pin Thread</a></li>
 		<li><a href="#" id="lock_thread"><i class="icon-lock"></i> Lock Thread</a></li>

@@ -30,10 +30,10 @@
 
 <hr />
 <div class="pull-right">
-	<button data-path="mail" class="btn btn-primary btn-large">Next &ndash; <i class="icon-envelope"></i> Mail</button>
+	<button data-path="mail" class="btn btn-primary btn-lg">Next &ndash; <i class="icon-envelope"></i> Mail</button>
 </div>
 <div>
-	<button data-path="redis" class="btn btn-primary btn-large">Previous &ndash; <i class="icon-hdd"></i> Redis</button>
+	<button data-path="redis" class="btn btn-primary btn-lg">Previous &ndash; <i class="icon-hdd"></i> Redis</button>
 </div>
 
 <script>

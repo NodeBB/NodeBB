@@ -26,9 +26,9 @@ a [class^="icon-"],a [class*=" icon-"]{display:inline;}
 .btn [class^="icon-"].pull-left.icon-2x,.btn [class*=" icon-"].pull-left.icon-2x,.btn [class^="icon-"].pull-right.icon-2x,.btn [class*=" icon-"].pull-right.icon-2x{margin-top:.18em;}
 .btn [class^="icon-"].icon-spin.icon-large,.btn [class*=" icon-"].icon-spin.icon-large{line-height:.8em;}
 .btn.btn-small [class^="icon-"].pull-left.icon-2x,.btn.btn-small [class*=" icon-"].pull-left.icon-2x,.btn.btn-small [class^="icon-"].pull-right.icon-2x,.btn.btn-small [class*=" icon-"].pull-right.icon-2x{margin-top:.25em;}
-.btn.btn-large [class^="icon-"],.btn.btn-large [class*=" icon-"]{margin-top:0;}.btn.btn-large [class^="icon-"].pull-left.icon-2x,.btn.btn-large [class*=" icon-"].pull-left.icon-2x,.btn.btn-large [class^="icon-"].pull-right.icon-2x,.btn.btn-large [class*=" icon-"].pull-right.icon-2x{margin-top:.05em;}
-.btn.btn-large [class^="icon-"].pull-left.icon-2x,.btn.btn-large [class*=" icon-"].pull-left.icon-2x{margin-right:.2em;}
-.btn.btn-large [class^="icon-"].pull-right.icon-2x,.btn.btn-large [class*=" icon-"].pull-right.icon-2x{margin-left:.2em;}
+.btn.btn-lg [class^="icon-"],.btn.btn-lg [class*=" icon-"]{margin-top:0;}.btn.btn-lg [class^="icon-"].pull-left.icon-2x,.btn.btn-lg [class*=" icon-"].pull-left.icon-2x,.btn.btn-lg [class^="icon-"].pull-right.icon-2x,.btn.btn-lg [class*=" icon-"].pull-right.icon-2x{margin-top:.05em;}
+.btn.btn-lg [class^="icon-"].pull-left.icon-2x,.btn.btn-lg [class*=" icon-"].pull-left.icon-2x{margin-right:.2em;}
+.btn.btn-lg [class^="icon-"].pull-right.icon-2x,.btn.btn-lg [class*=" icon-"].pull-right.icon-2x{margin-left:.2em;}
 .nav-list [class^="icon-"],.nav-list [class*=" icon-"]{line-height:inherit;}
 .icon-stack{position:relative;display:inline-block;width:2em;height:2em;line-height:2em;vertical-align:-35%;}.icon-stack [class^="icon-"],.icon-stack [class*=" icon-"]{display:block;text-align:center;position:absolute;width:100%;height:100%;font-size:1em;line-height:inherit;*line-height:2em;}
 .icon-stack .icon-stack-base{font-size:2em;*line-height:1em;}

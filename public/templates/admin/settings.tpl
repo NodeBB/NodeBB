@@ -60,7 +60,7 @@
 	</div>
 </form>
 
-<button class="btn btn-large btn-primary" id="save">Save</button>
+<button class="btn btn-lg btn-primary" id="save">Save</button>
 
 <script>
 	nodebb_admin.prepare();
