@@ -1,14 +1,12 @@
-<div class="container">
-	<ol class="breadcrumb">
-		<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
-			<a href="/" itemprop="url"><span itemprop="title">Home</span></a>
-		</li>
-		<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
-			<span itemprop="title">{category_name}</span>
-		</li>
-		<div id="category_active_users"></div>
-	</ol>
-</div>
+<ol class="breadcrumb">
+	<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
+		<a href="/" itemprop="url"><span itemprop="title">Home</span></a>
+	</li>
+	<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
+		<span itemprop="title">{category_name}</span>
+	</li>
+	<div id="category_active_users"></div>
+</ol>
 
 <div>
 	<button id="new_post" class="btn btn-primary btn-lg {show_topic_button}">New Topic</button>

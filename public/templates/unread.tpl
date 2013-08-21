@@ -1,11 +1,8 @@
-<div class="container">
-	<ol class="breadcrumb">
-		<li><a href="/">Home</a></li>
-		<li class="active">{category_name}</li>
-		<div id="category_active_users"></div>
-	</ol>
-</div>
-
+<ol class="breadcrumb">
+	<li><a href="/">Home</a></li>
+	<li class="active">{category_name}</li>
+	<div id="category_active_users"></div>
+</ol>
 
 <a href="/unread">
 	<div class="alert hide" id="new-topics-alert"></div>

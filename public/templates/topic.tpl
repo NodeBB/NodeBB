@@ -1,17 +1,15 @@
-<div class="container">
-	<ol class="breadcrumb">
-		<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
-			<a href="/" itemprop="url"><span itemprop="title">Home</span></a>
-		</li>
-		<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
-			<a href="/category/{category_slug}" itemprop="url"><span itemprop="title">{category_name}</span></a>
-		</li>
-		<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
-			<span itemprop="title">{topic_name}</span>
-		</li>
-		<div id="thread_active_users" class="hidden-xs"></div>
-	</ol>
-</div>
+<ol class="breadcrumb">
+	<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
+		<a href="/" itemprop="url"><span itemprop="title">Home</span></a>
+	</li>
+	<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
+		<a href="/category/{category_slug}" itemprop="url"><span itemprop="title">{category_name}</span></a>
+	</li>
+	<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
+		<span itemprop="title">{topic_name}</span>
+	</li>
+	<div id="thread_active_users" class="hidden-xs"></div>
+</ol>
 
 <ul id="post-container" class="post-container container" data-tid="{topic_id}">
 	

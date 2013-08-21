@@ -1,10 +1,7 @@
-<div class="container">
-	<ol class="breadcrumb">
-		<li><a href="/">Home</a></li>
-		<li class="active">Search</li>
-	</ol>
-</div>
-
+<ol class="breadcrumb">
+	<li><a href="/">Home</a></li>
+	<li class="active">Search</li>
+</ol>
 
 <div class="alert alert-warning {show_no_results}" id="no-search-results">
 	<strong>No search results for {search_query}.</strong>
