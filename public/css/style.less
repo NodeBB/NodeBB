@@ -253,95 +253,9 @@ footer.footer {
   }
 }
 
-.category-icon {
-	width: 100%;
-	height: 90px;
-	text-align: center;
-	border-radius: 0px;
-	margin: 0;
-	padding-top:25px;
-	cursor: pointer;
-	margin-bottom: 20px;
-	border-radius: 5px;
-	overflow:hidden;
-}
-.category-row h4 {
-	font-weight: 700;
-	text-align: left;
-	/*color: #555;*/ // NOTE: color for cat/topic header links should be grey in the default theme when we get around to it.
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-.category-row a {
-	text-decoration: none;
-	border: 0;
-}
-
-.category-purple {
-	@color: #ab1290;
-	background: @color;
-	color: white;
-
-	&:hover {
-		background: lighten(@color, 10%);
-	}
-}
-
-.category-darkblue {
-	@color: #004C66;
-	background: @color;
-	color: white;
-
-	&:hover {
-		background: lighten(@color, 10%);
-	}
-}
-
-.category-blue {
-	@color: #0059B2;
-	background: @color;
-	color: white;
-
-	&:hover {
-		background: lighten(@color, 10%);
-	}
-}
-
-.category-darkgreen {
-	@color: #004000;
-	background: @color;
-	color: white;
-
-	&:hover {
-		background: lighten(@color, 10%);
-	}
-}
-.category-orange {
-	@color: #FF7A4D;
-	color: white;
-	background: @color;
-
-	&:hover {
-		background: lighten(@color, 10%);
-	}
-}
-
-.category-list {
-	li {
-		.inline-block;
-		.pointer;
-		padding: 0.5em 0;
-		text-align: center;
-		margin: 0.5em;
-		-webkit-border-radius: 5px;
-		-moz-border-radius: 5px;
-		border-radius: 5px;
-		padding: 0.5em;
-	}
-}
 
 .hero-unit {
+	// goes into theme
 	background: #56BCDA;
 	color: white;
 	padding: 30px;
@@ -878,3 +792,103 @@ a:hover, .btn-link:hover, .btn-link:active, .btn-link:focus {
   }
 
 }
+
+
+
+//topic
+.category-list {
+	li {
+		.inline-block;
+		.pointer;
+		padding: 0.5em 0;
+		text-align: center;
+		margin: 0.5em;
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+		padding: 0.5em;
+	}
+}
+
+
+
+/*START: Goes into home.less */
+
+.categories {
+	h4 {
+		font-weight: 700;
+		text-align: left;
+		/*color: #555;*/ // NOTE: color for cat/topic header links should be grey in the default theme when we get around to it.
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	a {
+		text-decoration: none;
+		border: 0;
+	}
+	.icon {
+		width: 100%;
+		height: 110px;
+		text-align: center;
+		border-radius: 0px;
+		margin: 0;
+		padding-top:25px;
+		cursor: pointer;
+		margin-bottom: 20px;
+		border-radius: 5px;
+		overflow:hidden;
+	}
+
+}
+
+.category-purple {
+	@color: #ab1290;
+	background: @color;
+	color: white;
+
+	&:hover {
+		background: lighten(@color, 10%);
+	}
+}
+
+.category-darkblue {
+	@color: #004C66;
+	background: @color;
+	color: white;
+
+	&:hover {
+		background: lighten(@color, 10%);
+	}
+}
+
+.category-blue {
+	@color: #0059B2;
+	background: @color;
+	color: white;
+
+	&:hover {
+		background: lighten(@color, 10%);
+	}
+}
+
+.category-darkgreen {
+	@color: #004000;
+	background: @color;
+	color: white;
+
+	&:hover {
+		background: lighten(@color, 10%);
+	}
+}
+.category-orange {
+	@color: #FF7A4D;
+	color: white;
+	background: @color;
+
+	&:hover {
+		background: lighten(@color, 10%);
+	}
+}
+
+/*END: Goes into home.less */
