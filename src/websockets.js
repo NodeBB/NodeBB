@@ -628,10 +628,11 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('api:topic.loadMore', function(data, callback) {
-			var	start = data.after,
+			var start = data.after,
 				end = start + 9;
 			
 			topics.getTopicPosts(data.tid, start, end, uid, function(posts) {
+				console.log('sending back tid: '+data.tid, posts);
 				callback({posts:posts});
 			});
 		});

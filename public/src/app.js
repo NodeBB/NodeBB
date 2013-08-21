@@ -333,13 +333,15 @@ var socket,
 			app.infiniteLoaderActive = false;
 			if(data.posts.length) {
 				app.createNewPosts(data);
-				if(callback)
-					callback();
 			}
+			
+			if(callback)
+				callback(data.posts);
 		});
 	}
 
 	app.scrollToPost = function(pid) {
+
 		if(!pid)
 			return;
 
@@ -347,17 +349,31 @@ var socket,
 			scrollTo = $('#post_anchor_' + pid),
 			tid = $('#post-container').attr('data-tid');
 
-		while(!scrollTo.length && tid) {
-			app.loadMorePosts(tid, function() {
-				scrollTo = $('#post_anchor_' + pid);
-			});
-		}
-		
-		if(tid) {
+		function animateScroll() {
 			$('body,html').animate({
 				scrollTop: scrollTo.offset().top - container.offset().top + container.scrollTop() - $('#header-menu').height()
 			});
 		}
+
+		if(!scrollTo.length && tid) {
+			
+			var intervalID = setInterval(function() {
+				app.loadMorePosts(tid, function(posts) {
+					scrollTo = $('#post_anchor_' + pid);
+					
+					if(tid && scrollTo.length) {
+						animateScroll();						
+					}
+					
+					if(!posts.length || scrollTo.length)
+						clearInterval(intervalID);
+				});
+			}, 100);
+			
+		} else if(tid) {
+			animateScroll();
+		}
+
 	}
 
 	jQuery('document').ready(function() {
