@@ -1,8 +1,8 @@
 <div class="container">
-	<ul class="breadcrumb">
-		<li><a href="/">Home</a><span class="divider">/</span></li>
+	<ol class="breadcrumb">
+		<li><a href="/">Home</a></li>
 		<li class="active">Search</li>
-	</ul>
+	</ol>
 </div>
 
 
