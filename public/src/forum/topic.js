@@ -204,9 +204,9 @@
 		}
 
 		$(window).off('scroll').on('scroll', function() {
-			var bottom = (document.body.offsetHeight - $(window).height()) * 0.9;	
+			var bottom = (document.body.offsetHeight - $(window).height()) * 0.9;
 
-			if (document.body.scrollTop > bottom && !app.infiniteLoaderActive && $('#post-container').children().length) {
+			if ((document.documentElement.scrollTop || document.body.scrollTop) > bottom && !app.infiniteLoaderActive && $('#post-container').children().length) {
 				app.loadMorePosts(tid);
 			}
 		});
