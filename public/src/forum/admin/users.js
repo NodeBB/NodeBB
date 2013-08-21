@@ -216,7 +216,7 @@
 		$(window).off('scroll').on('scroll', function() {
 			var bottom = (document.body.offsetHeight - $(window).height()) * 0.9;
 
-			if (document.body.scrollTop > bottom && !loadingMoreUsers) {
+			if ($(window).scrollTop() > bottom && !loadingMoreUsers) {
 				loadMoreUsers();
 			}
 		});

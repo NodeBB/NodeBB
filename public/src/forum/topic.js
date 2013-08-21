@@ -206,7 +206,7 @@
 		$(window).off('scroll').on('scroll', function() {
 			var bottom = (document.body.offsetHeight - $(window).height()) * 0.9;
 
-			if ((document.documentElement.scrollTop || document.body.scrollTop) > bottom && !app.infiniteLoaderActive && $('#post-container').children().length) {
+			if ($(window).scrollTop() > bottom && !app.infiniteLoaderActive && $('#post-container').children().length) {
 				app.loadMorePosts(tid);
 			}
 		});

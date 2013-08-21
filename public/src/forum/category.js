@@ -125,7 +125,7 @@
 	$(window).off('scroll').on('scroll', function(ev) {
 		var bottom = (document.body.offsetHeight - $(window).height()) * 0.9;
 
-		if (document.body.scrollTop > bottom && !loadingMoreTopics) {
+		if ($(window).scrollTop() > bottom && !loadingMoreTopics) {
 			loadMoreTopics(cid);
 		}
 	});
