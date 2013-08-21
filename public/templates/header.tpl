@@ -48,7 +48,7 @@
 						<li>
 							<a href="/recent">Recent</a>
 						</li>
-						<li>
+						<li class="nodebb-loggedin">
 							<a href="/unread"><span id="numUnreadBadge" class="badge badge-inverse">0</span> Unread</a>
 						</li>
 						<li>

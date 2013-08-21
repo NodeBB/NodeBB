@@ -44,8 +44,12 @@
 	
 	socket.on('api:updateHeader', function(data) {
 	
-		var rightMenu = $('#right-menu');
-		if (data.uid > 0) {
+		var rightMenu = $('#right-menu'),
+			isLoggedIn = data.uid > 0;
+
+		if (isLoggedIn) {
+			jQuery('.nodebb-loggedin').show();
+			jQuery('.nodebb-loggedout').hide();
 
 			var userLabel = rightMenu.find('#user_label');
 			if(userLabel.length) {
@@ -55,8 +59,7 @@
 					userLabel.find('img').attr('src',data['picture']);
 				if(data['username'])
 					userLabel.find('span').html(data['username']);
-			}
-			else {
+			} else {
 				var userli = $('<li> \
 									<a id="user_label" href="/users/'+data['userslug']+'"> \
 										<img src="'+data['picture']+'"/> \
@@ -69,6 +72,9 @@
 				rightMenu.append(logoutli);
 			}
 		} else {
+			jQuery('.nodebb-loggedin').hide();
+			jQuery('.nodebb-loggedout').show();
+
 			rightMenu.html('');
 
 			var registerEl = document.createElement('li'),
