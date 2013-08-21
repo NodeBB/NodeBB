@@ -632,7 +632,6 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				end = start + 9;
 			
 			topics.getTopicPosts(data.tid, start, end, uid, function(posts) {
-				console.log('sending back tid: '+data.tid, posts);
 				callback({posts:posts});
 			});
 		});
