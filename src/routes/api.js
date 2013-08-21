@@ -137,6 +137,13 @@ var user = require('./../user.js'),
 			});
 		});
 
+		app.get('/api/unread/total', function(req, res) {
+			var uid = (req.user) ? req.user.uid : 0;
+			topics.getTotalUnread(uid, function(data) {
+				res.json(data);
+			});
+		});
+
 		app.get('/api/confirm/:id', function(req, res) {
 			user.email.confirm(req.params.id, function(data) {
 				if (data.status === 'ok') {

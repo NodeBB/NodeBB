@@ -127,6 +127,15 @@ marked.setOptions({
 		});
 	}
 	
+	Topics.getTotalUnread = function(uid, callback) {
+		RDB.zcount('topics:recent', '-inf', '+inf', function(err, count) {
+			if (err) count = 0;
+			console.log(count);
+
+			callback(count);
+		});
+	};
+
 	Topics.getUnreadTopics = function(uid, start, stop, callback) {
 
 		var unreadTopics = {

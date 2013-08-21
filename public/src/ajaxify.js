@@ -79,9 +79,7 @@ var ajaxify = {};
 
 			}, url, template);
 
-			socket.emit('api:meta.buildTitle', url, function(title) {
-				document.title = title;
-			});
+			utils.refreshTitle(url);
 
 			return true;
 		}

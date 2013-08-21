@@ -81,9 +81,9 @@ var utils = require('./../public/src/utils.js'),
 				var	title;
 
 				if (err) title = global.config.title || 'NodeBB';
-				else title = (values.notifCount > 0 ? '(' + values.notifCount + ') ' : '') + (values.title ? values.title + ' | ' : '') + (global.config.title || 'NodeBB');
+				else title = (values.title ? values.title + ' | ' : '') + (global.config.title || 'NodeBB');
 
-				callback(null, title);
+				callback(null, title, values.notifCount);
 			});
 		},
 		parseFragment: function(urlFragment, callback) {

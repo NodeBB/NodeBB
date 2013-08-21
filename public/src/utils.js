@@ -126,12 +126,16 @@
 			return tags;
 		},
 
-		refreshTitle: function() {
-			var	a = document.createElement('a');
+		refreshTitle: function(url) {
+			if (!url) {
+				var	a = document.createElement('a');
+				a.href = document.location;
+				url = a.pathname.slice(1);
+			}
 
-			a.href = document.location;
-			socket.emit('api:meta.buildTitle', a.pathname.slice(1), function(title) {
-				document.title = title;
+			socket.emit('api:meta.buildTitle', url, function(title, numNotifications) {
+				document.title = (numNotifications > 0 ? '(' + numNotifications + ') ' : '') +  title;
+				if (numNotifications > 0) document.querySelector('.notifications a i').className = 'icon-circle active';
 			});
 		}
 	}

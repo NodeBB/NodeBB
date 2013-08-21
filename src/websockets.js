@@ -739,8 +739,8 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('api:meta.buildTitle', function(text, callback) {
-			meta.title.build(text, uid, function(err, title) {
-				callback(title);
+			meta.title.build(text, uid, function(err, title, numNotifications) {
+				callback(title, numNotifications);
 			});
 		});
 	});
