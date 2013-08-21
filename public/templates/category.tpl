@@ -41,7 +41,7 @@
 				<div class="col-md-12 topic-row">
 					<div class="latest-post visible-lg visible-md">
 						<div class="pull-right">
-							<img style="width: 48px; height: 48px; /*temporary*/" src="{topics.teaser_userpicture}" />
+							<img class="img-rounded" style="width: 48px; height: 48px; /*temporary*/" src="{topics.teaser_userpicture}" />
 							<p><strong>{topics.teaser_username}</strong>: {topics.teaser_text}</p>
 							<span>posted {topics.teaser_timestamp} ago</span>
 						</div>
