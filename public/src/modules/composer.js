@@ -109,8 +109,8 @@ define(['taskbar'], function(taskbar) {
 			var taskbar = document.getElementById('taskbar');
 
 			composer.postContainer = document.createElement('div');
-			composer.postContainer.className = 'post-window row-fluid';
-			composer.postContainer.innerHTML =	'<div class="span5">' +
+			composer.postContainer.className = 'post-window row';
+			composer.postContainer.innerHTML =	'<div class="col-md-5">' +
 													'<input type="text" tabIndex="1" placeholder="Enter your topic title here..." />' +
 													'<div class="btn-toolbar formatting-bar">' +
 														'<div class="btn-group">' +
@@ -125,7 +125,7 @@ define(['taskbar'], function(taskbar) {
 													'<div class="imagedrop"><div>Drag and Drop Images Here</div></div>'+
 													'<div class="btn-toolbar action-bar">' +
 														'<div class="btn-group" style="float: right; margin-right: -8px">' +
-															'<button data-action="minimize" class="btn hidden-phone" tabIndex="4"><i class="icon-download-alt"></i> Minimize</button>' +
+															'<button data-action="minimize" class="btn hidden-xs" tabIndex="4"><i class="icon-download-alt"></i> Minimize</button>' +
 															'<button class="btn" data-action="discard" tabIndex="5"><i class="icon-remove"></i> Discard</button>' +
 															'<button data-action="post" class="btn" tabIndex="3"><i class="icon-ok"></i> Submit</button>' +
 														'</div>' +
@@ -312,7 +312,7 @@ define(['taskbar'], function(taskbar) {
 	}
 
 	composer.reposition = function(post_uuid) {
-		var postWindowEl = composer.postContainer.querySelector('.span5'),
+		var postWindowEl = composer.postContainer.querySelector('.col-md-5'),
 			taskbarBtn = document.querySelector('#taskbar [data-uuid="' + post_uuid + '"]'),
 			btnRect = taskbarBtn.getBoundingClientRect(),
 			taskbarRect = document.getElementById('taskbar').getBoundingClientRect(),
