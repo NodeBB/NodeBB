@@ -342,19 +342,22 @@ var socket,
 	app.scrollToPost = function(pid) {
 		if(!pid)
 			return;
+
 		var container = $(document.body),
 			scrollTo = $('#post_anchor_' + pid),
 			tid = $('#post-container').attr('data-tid');
 
-		while(!scrollTo.length) {
+		while(!scrollTo.length && tid) {
 			app.loadMorePosts(tid, function() {
 				scrollTo = $('#post_anchor_' + pid);
 			});
 		}
-
-		container.animate({
-			scrollTop: scrollTo.offset().top - container.offset().top + container.scrollTop() - $('#header-menu').height()
-		});
+		
+		if(tid) {
+			$('body,html').animate({
+				scrollTop: scrollTo.offset().top - container.offset().top + container.scrollTop() - $('#header-menu').height()
+			});
+		}
 	}
 
 	jQuery('document').ready(function() {
