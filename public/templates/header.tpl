@@ -49,7 +49,7 @@
 							<a href="/recent">Recent</a>
 						</li>
 						<li>
-							<a href="/unread">Unread</a>
+							<a href="/unread"><span id="numUnreadBadge" class="badge badge-inverse">0</span> Unread</a>
 						</li>
 						<li>
 							<a href="/users">Users</a>

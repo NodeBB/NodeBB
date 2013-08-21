@@ -128,11 +128,16 @@ marked.setOptions({
 	}
 	
 	Topics.getTotalUnread = function(uid, callback) {
-		RDB.zcount('topics:recent', '-inf', '+inf', function(err, count) {
-			if (err) count = 0;
-			console.log(count);
+		RDB.zrevrange('topics:recent', 0, 21, function (err, tids) {
+			Topics.hasReadTopics(tids, uid, function(read) {
+				var unreadTids = tids.filter(function(tid, index, self) {
+					return read[index] === 0;
+				});	
 
-			callback(count);
+				callback({
+					count: unreadTids.length
+				});
+			});	
 		});
 	};
 

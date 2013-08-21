@@ -56,6 +56,10 @@
 				$('#topics-container').empty();
 				$('#category-no-topics').removeClass('hidden');			
 				app.alertSuccess('All topics marked as read!');
+				$('#numUnreadBadge')
+					.removeClass('badge-important')
+					.addClass('badge-inverse')
+					.html('0');
 			} else {
 				app.alertError('There was an error marking topics read!');
 			}

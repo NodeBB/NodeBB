@@ -137,6 +137,22 @@
 				document.title = (numNotifications > 0 ? '(' + numNotifications + ') ' : '') +  title;
 				if (numNotifications > 0) document.querySelector('.notifications a i').className = 'icon-circle active';
 			});
+
+			jQuery.getJSON(RELATIVE_PATH + '/api/unread/total', function(data) {
+				var badge = jQuery('#numUnreadBadge');
+				badge.html(data.count > 20 ? '20+' : data.count);
+
+				if (data.count > 0) {
+					badge
+						.removeClass('badge-inverse')
+						.addClass('badge-important')
+				}
+				else {
+					badge
+						.removeClass('badge-important')
+						.addClass('badge-inverse')
+				}
+			});
 		}
 	}
 

@@ -16,7 +16,7 @@
 </div>
 
 <div>
-	<button id="mark-allread-btn" class="btn {show_markallread_button}">Mark All Read</button>
+	<button id="mark-allread-btn" class="btn {show_markallread_button}">Mark All As Read</button>
 </div>
 
 <div class="category row">
