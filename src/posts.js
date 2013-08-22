@@ -97,7 +97,10 @@ var	RDB = require('./redis.js'),
 	Posts.getPostData = function(pid, callback) {
 		RDB.hgetall('post:' + pid, function(err, data) {
 			if(err === null) {
-				callback(data);
+				plugins.fireHook('filter:post.get', data.content, function(content) {
+					data.content = content;
+					callback(data);
+				});
 			}
 			else
 				console.log(err);
@@ -263,7 +266,7 @@ var	RDB = require('./redis.js'),
 				RDB.incr('global:next_post_id', function(err, pid) {
 					RDB.handle(err);
 
-					plugins.fireHook('filter:save_post_content', content, function(content) {
+					plugins.fireHook('filter:post.save', content, function(content) {
 						var timestamp = Date.now(),
 							postData = {
 								'pid': pid,
@@ -316,7 +319,7 @@ var	RDB = require('./redis.js'),
 							callback(postData);
 						});
 
-						plugins.fireHook('action:save_post_content', [pid, content]);
+						plugins.fireHook('action:post.save', [pid, content]);
 
 						postSearch.index(content, pid);
 					});
