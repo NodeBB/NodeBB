@@ -70,7 +70,6 @@ if(nconf.get('upgrade')) {
 		}
 
 		var categories = require('./src/categories.js'),
-			RDB = require('./src/redis.js'),
 			templates = require('./public/src/templates.js'),
 			webserver = require('./src/webserver.js'),
 			websockets = require('./src/websockets.js'),
@@ -80,6 +79,7 @@ if(nconf.get('upgrade')) {
 			};
 
 		DEVELOPMENT = true;
+		RDB = require('./src/redis.js');
 
 		global.configuration = {};
 		global.templates = {};
