@@ -227,22 +227,8 @@ var	RDB = require('./redis.js'),
 
 					threadTools.notify_followers(tid, uid);
 
-					postData.content = postTools.markdownToHTML(postData.content);
-					postData.post_rep = 0;
-					postData.relativeTime = utils.relativeTime(postData.timestamp);
-					postData.fav_button_class = '';
-					postData.fav_star_class = 'icon-star-empty';
-					postData['edited-class'] = 'none';
-					postData.show_banned = 'hide';
-					postData.uploadedImages = JSON.parse(postData.uploadedImages);
-
-					var socketData = {
-						'posts' : [
-							postData
-						]
-					};
-
-					posts.addUserInfoToPost(socketData['posts'][0], function() {
+					Posts.addUserInfoToPost(postData, function() {
+						var	socketData = { posts: [postData] };
 						io.sockets.in('topic_' + tid).emit('event:new_post', socketData);
 						io.sockets.in('recent_posts').emit('event:new_post', socketData);
 					});
@@ -278,7 +264,14 @@ var	RDB = require('./redis.js'),
 								'editor': '',
 								'edited': 0,
 								'deleted': 0,
-								'uploadedImages': ''
+								'uploadedImages': [],
+								'fav_button_class': '',
+								'fav_star_class': 'icon-star-empty',
+								'show_banned': 'hide',
+								'relativeTime': '0 seconds',
+								'post_rep': '0',
+								'edited-class': 'none',
+								'relativeEditTime': ''
 							};
 
 						RDB.hmset('post:' + pid, postData);
@@ -309,13 +302,26 @@ var	RDB = require('./redis.js'),
 
 						user.onNewPostMade(uid, tid, pid, timestamp);
 
-						uploadPostImages(postData, images, function(err, uploadedImages) {
-							if(err) {
-								winston.error('Uploading images failed!', err.stack);
-							} else {
-								postData.uploadedImages = JSON.stringify(uploadedImages);
-								Posts.setPostField(pid, 'uploadedImages', postData.uploadedImages);
+						async.parallel({
+							uploadedImages: function(next) {
+								uploadPostImages(postData, images, function(err, uploadedImages) {
+									if(err) {
+										winston.error('Uploading images failed!', err.stack);
+										next(null, []);
+									} else {
+										next(null, uploadedImages);
+										Posts.setPostField(pid, 'uploadedImages', postData.uploadedImages);
+									}
+								});
+							},
+							content: function(next) {
+								plugins.fireHook('filter:post.get', content, function(content) {
+									next(null, content);
+								});
 							}
+						}, function(err, results) {
+							postData.uploadedImages = results.uploadedImages;
+							postData.content = results.content;
 							callback(postData);
 						});
 
