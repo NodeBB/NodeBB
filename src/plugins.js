@@ -20,28 +20,14 @@ var	fs = require('fs'),
 				function(plugins, next) {
 					async.each(plugins, function(plugin) {
 						// TODO: Update this check to also check node_modules
-						var	pluginPath = path.join(__dirname, '../plugins/', plugin);
-						fs.exists(pluginPath, function(exists) {
-							if (exists) {
-								fs.readFile(path.join(pluginPath, 'plugin.json'), function(err, data) {
-									if (err) return next(err);
-
-									var	pluginData = JSON.parse(data);
-									_self.libraries[pluginData.id] = require(path.join(pluginPath, pluginData.library));
-									if (pluginData.hooks) {
-										for(var x=0,numHooks=pluginData.hooks.length;x<numHooks;x++) {
-											_self.registerHook(pluginData.id, pluginData.hooks[x]);
-										}
-									}
-									if (global.env === 'development') winston.info('[plugins] Loaded plugin: ' + pluginData.id);
-
-									next();
-								});
-							} else {
-								if (global.env === 'development') winston.info('[plugins] Plugin \'' + plugin + '\' not found');
-								next();	// Ignore this plugin silently
-							}
-						})
+						var	pluginPath = path.join(__dirname, '../plugins/', plugin),
+							modulePath = path.join(__dirname, '../node_modules/', plugin);
+						if (fs.existsSync(pluginPath)) _self.loadPlugin(pluginPath, next);
+						else if (fs.existsSync(modulePath)) _self.loadPlugin(modulePath, next);
+						else {
+							if (global.env === 'development') winston.info('[plugins] Plugin \'' + plugin + '\' not found');
+							next();	// Ignore this plugin silently
+						}
 					}, next);
 				}
 			], function(err) {
@@ -54,6 +40,24 @@ var	fs = require('fs'),
 			});
 		},
 		initialized: false,
+		loadPlugin: function(pluginPath, callback) {
+			var	_self = this;
+
+			fs.readFile(path.join(pluginPath, 'plugin.json'), function(err, data) {
+				if (err) return callback(err);
+
+				var	pluginData = JSON.parse(data);
+				_self.libraries[pluginData.id] = require(path.join(pluginPath, pluginData.library));
+				if (pluginData.hooks) {
+					for(var x=0,numHooks=pluginData.hooks.length;x<numHooks;x++) {
+						_self.registerHook(pluginData.id, pluginData.hooks[x]);
+					}
+				}
+				if (global.env === 'development') winston.info('[plugins] Loaded plugin: ' + pluginData.id);
+
+				callback();
+			});
+		},
 		registerHook: function(id, data) {
 			/*
 				`data` is an object consisting of (* is required):
@@ -66,7 +70,7 @@ var	fs = require('fs'),
 
 			if (data.hook && data.method) {
 				_self.loadedHooks[data.hook] = _self.loadedHooks[data.hook] || [];
-				_self.loadedHooks[data.hook].push([id, data.method]);
+				_self.loadedHooks[data.hook].push([id, data.method, !!data.callbacked]);
 				if (global.env === 'development') winston.info('[plugins] Hook registered: ' + data.hook + ' will call ' + id);
 			} else return;
 		},
@@ -84,7 +88,7 @@ var	fs = require('fs'),
 						var	returnVal = (Array.isArray(args) ? args[0] : args);
 
 						async.each(hookList, function(hookObj, next) {
-							if (hookObj.callbacked) {
+							if (hookObj[2]) {
 								_self.libraries[hookObj[0]][hookObj[1]](returnVal, function(err, afterVal) {
 									returnVal = afterVal;
 									next(err);
@@ -95,7 +99,9 @@ var	fs = require('fs'),
 							}
 						}, function(err) {
 							if (err) {
-								if (global.env === 'development') winston.info('[plugins] Problem executing hook: ' + hook);
+								if (global.env === 'development') {
+									winston.info('[plugins] Problem executing hook: ' + hook);
+								}
 							}
 
 							callback(returnVal);

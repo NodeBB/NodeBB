@@ -153,6 +153,11 @@
 						.addClass('badge-inverse')
 				}
 			});
+		},
+
+		isRelativeUrl: function(url) {
+			var	firstChar = url.slice(0, 1);
+			return (firstChar === '.' || firstChar === '/');
 		}
 	}
 
