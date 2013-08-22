@@ -156,26 +156,49 @@ var	fs = require('fs'),
 		showInstalled: function(callback) {
 			// TODO: Also check /node_modules
 			var	_self = this;
-				moduleBasePath = path.join(__dirname, '../plugins');
+				localPluginPath = path.join(__dirname, '../plugins'),
+				npmPluginPath = path.join(__dirname, '../node_modules');
 
 			async.waterfall([
 				function(next) {
-					fs.readdir(moduleBasePath, next);
+					async.parallel([
+						function(next) {
+							fs.readdir(localPluginPath, next);
+						},
+						function(next) {
+							fs.readdir(npmPluginPath, next);
+						}
+					], function(err, dirs) {
+						if (err) return next(err);
+
+						dirs[0] = dirs[0].map(function(file) {
+							return path.join(localPluginPath, file);
+						}).filter(function(file) {
+							var	stats = fs.statSync(file);
+							if (stats.isDirectory()) return true;
+							else return false;
+						});
+
+						dirs[1] = dirs[1].map(function(file) {
+							return path.join(npmPluginPath, file);
+						}).filter(function(file) {
+							var	stats = fs.statSync(file);
+							if (stats.isDirectory() && file.substr(npmPluginPath.length+1, 14) === 'nodebb-plugin-') return true;
+							else return false;
+						});
+
+						next(err, dirs[0].concat(dirs[1]));
+					});
 				},
 				function(files, next) {
 					var	plugins = [];
 
 					async.each(files, function(file, next) {
-						var	modulePath = path.join(moduleBasePath, file),
-							configPath;
+						var	configPath;
 
 						async.waterfall([
 							function(next) {
-								fs.stat(path.join(moduleBasePath, file), next);
-							},
-							function(stats, next) {
-								if (stats.isDirectory()) fs.readFile(path.join(modulePath, 'plugin.json'), next);
-								else next(new Error('not-a-directory'));
+								fs.readFile(path.join(file, 'plugin.json'), next);
 							},
 							function(configJSON, next) {
 								var	config = JSON.parse(configJSON);
