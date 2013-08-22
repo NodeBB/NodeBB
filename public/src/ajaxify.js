@@ -77,9 +77,9 @@ var ajaxify = {};
 						app.scrollToPost(hash.substr(1));
 				});
 
-			}, url, template);
+				utils.refreshTitle(url);
 
-			utils.refreshTitle(url);
+			}, url, template);
 
 			return true;
 		}
