@@ -175,7 +175,7 @@ var	RDB = require('./redis.js'),
 				this.attr('rel', 'nofollow');
 				var href = this.attr('href');
 
-				if (href && !href.match(domain)) {
+				if (href && !href.match(domain) && !utils.isRelativeUrl(href)) {
 					this.attr('href', domain + 'outgoing?url=' + encodeURIComponent(href));
 					if (!isSignature) this.append(' <i class="icon-external-link"></i>');
 				}
