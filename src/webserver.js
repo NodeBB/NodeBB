@@ -10,7 +10,7 @@ var express = require('express'),
 	utils = require('../public/src/utils.js'),
 	pkg = require('../package.json'),
 	fs = require('fs'),
-	
+
 	user = require('./user.js'),
 	categories = require('./categories.js'),
 	posts = require('./posts.js'),
@@ -26,7 +26,7 @@ var express = require('express'),
 
 (function(app) {
 	var templates = null;
-	
+
 	/**
 	 *	`options` object	requires:	req, res
 	 *						accepts:	metaTags
@@ -36,13 +36,13 @@ var express = require('express'),
 				{ name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
 				{ name: 'content-type', content: 'text/html; charset=UTF-8' },
 				{ name: 'apple-mobile-web-app-capable', content: 'yes' },
-				{ property: 'og:site_name', content: global.config.title || 'NodeBB' },
+				{ property: 'og:site_name', content: meta.config.title || 'NodeBB' },
 			],
 			metaString = utils.buildMetaTags(defaultMetaTags.concat(options.metaTags || [])),
 			templateValues = {
-				cssSrc: global.config['theme:src'] || nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
-				title: global.config['title'] || 'NodeBB',
-				browserTitle: global.config['title'] || 'NodeBB',
+				cssSrc: meta.config['theme:src'] || nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
+				title: meta.config['title'] || 'NodeBB',
+				browserTitle: meta.config['title'] || 'NodeBB',
 				csrf: options.res.locals.csrf_token,
 				relative_path: nconf.get('relative_path'),
 				meta_tags: metaString
@@ -83,11 +83,11 @@ var express = require('express'),
 	}
 
 	auth.initialize(app);
-	
+
 	app.use(function(req, res, next) {
-		
+
 		nconf.set('https', req.secure);
-		
+
 		// Don't bother with session handling for API requests
 		if (/^\/api\//.test(req.url)) return next();
 
@@ -100,7 +100,7 @@ var express = require('express'),
 
 		next();
 	});
-	
+
 	app.use(app.router);
 
 	app.use(function(req, res, next) {
@@ -118,28 +118,28 @@ var express = require('express'),
 			res.send({ error: 'Not found' });
 			return;
 		}
-		
+
 		// default to plain-text. send()
 		res.type('txt').send('Not found');
 	});
 
 	app.use(function(err, req, res, next) {
-		
+
 		// we may use properties of the error object
 		// here and next(err) appropriately, or if
 		// we possibly recovered from the error, simply next().
 		console.error(err.stack);
-		
+
 		res.status(err.status || 500);
-		
+
 		res.json('500', { error: err.message });
-	});	
-	
+	});
+
 
 	app.create_route = function(url, tpl) { // to remove
 		return '<script>templates.ready(function(){ajaxify.go("' + url + '", null, "' + tpl + '");});</script>';
 	};
-	
+
 
 	app.namespace(nconf.get('relative_path'), function() {
 
@@ -149,20 +149,20 @@ var express = require('express'),
 		installRoute.create_routes(app);
 		testBed.create_routes(app);
 		apiRoute.create_routes(app);
-		
-		
+
+
 		// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 		(function() {
 			var routes = ['login', 'register', 'account', 'recent', 'unread', 'popular', 'active', '403', '404'];
-	
+
 			for (var i=0, ii=routes.length; i<ii; i++) {
 				(function(route) {
-					
+
 					app.get('/' + route, function(req, res) {
 						if ((route === 'login' || route ==='register') && (req.user && req.user.uid > 0)) {
-							
+
 							user.getUserField(req.user.uid, 'userslug', function(userslug) {
-								res.redirect('/users/'+userslug);							
+								res.redirect('/users/'+userslug);
 							});
 							return;
 						}
@@ -174,7 +174,7 @@ var express = require('express'),
 				}(routes[i]));
 			}
 		}());
-		
+
 
 		app.get('/', function(req, res) {
 			async.parallel({
@@ -183,9 +183,9 @@ var express = require('express'),
 						req: req,
 						res: res,
 						metaTags: [
-							{ name: "title", content: global.config.title || 'NodeBB' },
-							{ name: "description", content: global.config.description || '' },
-							{ property: 'og:title', content: 'Index | ' + (global.config.title || 'NodeBB') },
+							{ name: "title", content: meta.config.title || 'NodeBB' },
+							{ name: "description", content: meta.config.description || '' },
+							{ property: 'og:title', content: 'Index | ' + (meta.config.title || 'NodeBB') },
 							{ property: "og:type", content: 'website' }
 						]
 					}, next);
@@ -204,7 +204,7 @@ var express = require('express'),
 				);
 			})
 		});
-	
+
 
 		app.get('/topic/:topic_id/:slug?', function(req, res) {
 			var tid = req.params.topic_id;
@@ -214,7 +214,7 @@ var express = require('express'),
 						res.type('text').send(404, "Unable to locate an rss feed at this location.");
 						return;
 					}
-					
+
 					res.type('xml').set('Content-Length', data.length).send(data);
 				});
 				return;
@@ -241,7 +241,7 @@ var express = require('express'),
 						res: res,
 						metaTags: [
 							{ name: "title", content: topicData.topic_name },
-							{ property: 'og:title', content: topicData.topic_name + ' | ' + (global.config.title || 'NodeBB') },
+							{ property: 'og:title', content: topicData.topic_name + ' | ' + (meta.config.title || 'NodeBB') },
 							{ property: "og:type", content: 'article' },
 							{ property: "og:url", content: nconf.get('url') + 'topic/' + topicData.slug },
 							{ property: 'og:image', content: topicData.main_posts[0].picture },
@@ -271,7 +271,7 @@ var express = require('express'),
 
 		app.get('/category/:category_id/:slug?', function(req, res) {
 			var cid = req.params.category_id;
-			
+
 			if (cid.match(/^\d+\.rss$/)) {
 				fs.readFile('feeds/categories/' + cid, function (err, data) {
 					if (err) {
@@ -378,20 +378,20 @@ var express = require('express'),
 					templates['footer']
 				);
 			});
-		});		
+		});
 
 		app.get('/search', function(req, res) {
 			app.build_header({ req: req, res: res }, function(err, header) {
 				res.send(header + app.create_route("search", null, "search") + templates['footer']);
 			});
 		});
-		
+
 		app.get('/search/:term', function(req, res) {
 			app.build_header({ req: req, res: res }, function(err, header) {
 				res.send(header + app.create_route("search/"+req.params.term, null, "search") + templates['footer']);
 			});
 		});
-		
+
 		app.get('/reindex', function(req, res) {
 			topics.reIndexAll(function(err) {
 				if(err) {
@@ -401,7 +401,7 @@ var express = require('express'),
 				}
 			});
 		});
-		
+
 	});
 
 }(WebServer));

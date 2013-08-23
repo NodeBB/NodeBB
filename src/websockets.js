@@ -28,7 +28,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 	},
 	plugins = require('./plugins'),
 	winston = require('winston');
-	
+
 (function(io) {
 	var	users = {},
 		userSockets = {},
@@ -49,11 +49,11 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 				userSockets[uid] = userSockets[uid] || [];
 				userSockets[uid].push(socket);
-				
+
 				if(uid) {
 					socket.join('uid_' + uid);
 					io.sockets.in('global').emit('api:user.isOnline', isUserOnline(uid));
-				
+
 					user.getUserField(uid, 'username', function(username) {
 						socket.emit('event:connect', {status: 1, username:username});
 					});
@@ -61,10 +61,10 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			});
 		});
 
-		
-		
+
+
 		socket.on('disconnect', function() {
-			
+
 			var index = userSockets[uid].indexOf(socket);
 			if(index !== -1) {
 				userSockets[uid].splice(index, 1);
@@ -74,17 +74,17 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				delete users[sessionID];
 				if(uid)
 					io.sockets.in('global').emit('api:user.isOnline', isUserOnline(uid));
-			}			
-			
+			}
+
 			for(var roomName in rooms) {
 
 				socket.leave(roomName);
 
 				if(rooms[roomName][socket.id]) {
 					delete rooms[roomName][socket.id];
-				}	
-				
-				updateRoomBrowsingText(roomName);									
+				}
+
+				updateRoomBrowsingText(roomName);
 			}
 		});
 
@@ -106,7 +106,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			function getAnonymousCount(roomName) {
 				var clients = io.sockets.clients(roomName);
 				var anonCount = 0;
-				
+
 				for(var i=0; i<clients.length; ++i) {
 					var hs = clients[i].handshake;
 
@@ -114,11 +114,11 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 						++anonCount;
 					}
 				}
-				return anonCount;				
+				return anonCount;
 			}
 
 			var uids = getUidsInRoom(rooms[roomName]);
-			
+
 			var anonymousCount = getAnonymousCount(roomName);
 
 			function userList(users, anonymousCount, userCount) {
@@ -127,8 +127,8 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				for (var i = 0, ii=users.length; i<ii; ++i) {
 					usernames[i] = '<strong>' + '<a href="/users/'+users[i].userslug+'">' + users[i].username + '</a></strong>';
 				}
-				
-				var joiner = anonymousCount + userCount == 1 ? 'is' : 'are', 
+
+				var joiner = anonymousCount + userCount == 1 ? 'is' : 'are',
 				userList = anonymousCount > 0 ? usernames.concat(util.format('%d guest%s', anonymousCount, anonymousCount > 1 ? 's' : '')) : usernames,
 				lastUser = userList.length > 1 ? ' and ' + userList.pop() : '';
 
@@ -146,18 +146,18 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		}
 
 		socket.on('event:enter_room', function(data) {
-			
+
 			if (data.leave !== null) {
 				socket.leave(data.leave);
 			}
-				
+
 			socket.join(data.enter);
 
 			rooms[data.enter] = rooms[data.enter] || {};
 
 			if (uid) {
 				rooms[data.enter][socket.id] = uid;
-				
+
 				if (data.leave && rooms[data.leave] && rooms[data.leave][socket.id]) {
 					delete rooms[data.leave][socket.id];
 				}
@@ -168,18 +168,20 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 			updateRoomBrowsingText(data.enter);
 
-			if (data.enter != 'admin') 
+			if (data.enter != 'admin')
 				io.sockets.in('admin').emit('api:get_all_rooms', io.sockets.manager.rooms);
-			
+
 		});
 
 		// BEGIN: API calls (todo: organize)
 
 		socket.on('api:updateHeader', function(data) {
 			if(uid) {
-				user.getUserFields(uid, data.fields, function(fields) {
-					fields.uid = uid;
-					socket.emit('api:updateHeader', fields);
+				user.getUserFields(uid, data.fields, function(err, fields) {
+					if(!err && fields) {
+						fields.uid = uid;
+						socket.emit('api:updateHeader', fields);
+					}
 				});
 			}
 			else {
@@ -190,9 +192,9 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					picture: require('gravatar').url('', {s:'24'}, https=nconf.get('https'))
 				});
 			}
-				
+
 		});
-		
+
 		socket.on('user.exists', function(data) {
 			user.exists(utils.slugify(data.username), function(exists){
 				socket.emit('user.exists', {exists: exists});
@@ -233,12 +235,12 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 		socket.on('api:user.get_online_users', function(data) {
 			var returnData = [];
-			
+
 			for(var i=0; i<data.length; ++i) {
 				var uid = data[i];
 				if(isUserOnline(uid))
 					returnData.push(uid);
-				else 
+				else
 					returnData.push(0);
 			}
 			socket.emit('api:user.get_online_users', returnData);
@@ -251,20 +253,24 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		socket.on('api:user.changePassword', function(data, callback) {
 			user.changePassword(uid, data, callback);
 		});
-				   
+
 		socket.on('api:user.updateProfile', function(data, callback) {
 			user.updateProfile(uid, data, callback);
 		});
 
 		socket.on('api:user.changePicture', function(data, callback) {
-			
+
 			var type = data.type;
 
 			function updateHeader() {
-				user.getUserFields(uid, ['picture'], function(fields) {
-					fields.uid = uid;
-					socket.emit('api:updateHeader', fields);
-					callback(true);
+				user.getUserFields(uid, ['picture'], function(err, fields) {
+					if(!err && fields) {
+						fields.uid = uid;
+						socket.emit('api:updateHeader', fields);
+						callback(true);
+					} else {
+						callback(false);
+					}
 				});
 			}
 
@@ -284,7 +290,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('api:user.follow', function(data, callback) {
-			if(uid) { 
+			if(uid) {
 				user.follow(uid, data.uid, callback);
 			}
 		});
@@ -327,21 +333,21 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					}
 					return;
 				}
-				
+
 				if(result) {
 					posts.getTopicPostStats(socket);
-					
+
 					socket.emit('event:alert', {
 						title: 'Thank you for posting',
 						message: 'You have successfully posted. Click here to view your post.',
 						type: 'notify',
 						timeout: 2000
 					});
-				}				
+				}
 			});
-			
+
 		});
-		
+
 		socket.on('api:topics.markAllRead', function(data, callback) {
 			topics.markAllRead(uid, function(err, success) {
 				if(!err && success)	{
@@ -379,20 +385,20 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					}
 					return;
 				}
-				
+
 				if(result) {
-					
+
 					posts.getTopicPostStats(socket);
-					
+
 					socket.emit('event:alert', {
 						title: 'Reply Successful',
 						message: 'You have successfully replied. Click here to view your reply.',
 						type: 'notify',
 						timeout: 2000
 					});
-					
+
 				}
-				
+
 			});
 		});
 
@@ -514,10 +520,10 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					for(var x=0;x<numSockets;x++) {
 						userSockets[touid][x].emit('chatMessage', {fromuid:uid, username:username, message:finalMessage});
 					}
-					
+
 					notifications.create(finalMessage, 5, '#', 'notification_'+uid+'_'+touid, function(nid) {
 						notifications.push(nid, [touid], function(success) {
-							
+
 						});
 					});
 				});
@@ -525,19 +531,19 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('api:config.get', function(data) {
-			meta.config.get(function(config) {
+			meta.configs.get(function(config) {
 				socket.emit('api:config.get', config);
 			});
 		});
 
 		socket.on('api:config.set', function(data) {
-			meta.config.set(data.key, data.value, function(err) {
+			meta.configs.set(data.key, data.value, function(err) {
 				if (!err) socket.emit('api:config.set', { status: 'ok' });
 			});
 		});
 
 		socket.on('api:config.remove', function(key) {
-			meta.config.remove(key);
+			meta.configs.remove(key);
 		});
 
 		socket.on('api:composer.push', function(data) {
@@ -545,7 +551,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				if (parseInt(data.tid) > 0) {
 					topics.getTopicData(data.tid, function(topicData) {
 
-						if (data.body) 
+						if (data.body)
 							topicData.body = data.body;
 
 						socket.emit('api:composer.push', {
@@ -555,14 +561,16 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 						});
 					});
 				} else if (parseInt(data.cid) > 0) {
-					user.getUserFields(uid, ['username', 'picture'], function(userData) {
-						socket.emit('api:composer.push', {
-							tid: 0,
-							cid: data.cid,
-							username: userData.username,
-							picture: userData.picture,
-							title: undefined
-						});
+					user.getUserFields(uid, ['username', 'picture'], function(err, userData) {
+						if(!err && userData) {
+							socket.emit('api:composer.push', {
+								tid: 0,
+								cid: data.cid,
+								username: userData.username,
+								picture: userData.picture,
+								title: undefined
+							});
+						}
 					});
 				} else if (parseInt(data.pid) > 0) {
 					async.parallel([
@@ -630,16 +638,16 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		socket.on('api:topic.loadMore', function(data, callback) {
 			var start = data.after,
 				end = start + 9;
-			
+
 			topics.getTopicPosts(data.tid, start, end, uid, function(posts) {
 				callback({posts:posts});
 			});
 		});
-		
+
 		socket.on('api:category.loadMore', function(data, callback) {
 			var start = data.after,
 				end = start + 9;
-			
+
 			categories.getCategoryTopics(data.cid, start, end, uid, function(topics) {
 				callback({topics:topics});
 			});
@@ -653,11 +661,11 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				callback(latestTopics);
 			});
 		});
-		
+
 		socket.on('api:topics.loadMoreUnreadTopics', function(data, callback) {
 			var start = data.after,
 				end = start + 9;
-			
+
 			topics.getUnreadTopics(uid, start, end, function(unreadTopics) {
 				callback(unreadTopics);
 			});
@@ -666,14 +674,14 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		socket.on('api:users.loadMore', function(data, callback) {
 			var start = data.after,
 				end = start + 19;
-	
+
 			user.getUsers(data.set, start, end, function(err, data) {
 				if(err) {
 					winston.err(err);
 				} else {
 					callback({users:data});
 				}
-			});				
+			});
 		});
 
 		socket.on('api:admin.topics.getMore', function(data, callback) {
@@ -685,13 +693,13 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		socket.on('api:admin.categories.update', function(data) {
 			admin.categories.update(data, socket);
 		});
-		
+
 		socket.on('api:admin.user.makeAdmin', function(theirid) {
 			if(uid && uid > 0) {
 				admin.user.makeAdmin(uid, theirid, socket);
 			}
 		});
-		
+
 		socket.on('api:admin.user.removeAdmin', function(theirid) {
 			if(uid && uid > 0) {
 				admin.user.removeAdmin(uid, theirid, socket);
@@ -744,5 +752,5 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			});
 		});
 	});
-	
+
 }(SocketIO));

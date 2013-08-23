@@ -281,7 +281,7 @@ var user = require('./../user.js'),
 			});
 		});
 
-		app.get('/api/users/:userslug/settings', function(req, res) {
+		app.get('/api/users/:userslug/settings', function(req, res, next) {
 			var callerUID = req.user ? req.user.uid : 0;
 
 			user.get_uid_by_userslug(req.params.userslug, function(uid) {
@@ -294,7 +294,10 @@ var user = require('./../user.js'),
 					res.json(403, { error: 'Not allowed!' });
 					return;
 				}
-				user.getUserFields(uid, ['username','userslug','showemail'], function(userData) {
+				user.getUserFields(uid, ['username','userslug','showemail'], function(err, userData) {
+					if(err)
+						return next(err);
+
 					if(userData) {
 						if(userData.showemail && userData.showemail === "1")
 							userData.showemail = "checked";
@@ -322,7 +325,10 @@ var user = require('./../user.js'),
 					return;
 				}
 
-				user.getUserFields(uid, ['username','userslug'], function(userData) {
+				user.getUserFields(uid, ['username','userslug'], function(err, userData) {
+					if(err)
+						return next(err);
+
 					if(userData) {
 						posts.getFavourites(uid, function(err, posts) {
 							if(err)

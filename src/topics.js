@@ -20,7 +20,7 @@ marked.setOptions({
 
 (function(Topics) {
 
-	
+
 
 	Topics.getTopicData = function(tid, callback) {
 		RDB.hgetall('topic:' + tid, function(err, data) {
@@ -45,15 +45,15 @@ marked.setOptions({
 		posts.getPostsByTid(tid, start, end, function(postData) {
 			if(Array.isArray(postData) && !postData.length)
 				return callback([]);
-			
+
 			function getFavouritesData(next) {
 				var pids = [];
-				for(var i=0; i<postData.length; ++i) 
+				for(var i=0; i<postData.length; ++i)
 					pids.push(postData[i].pid);
 
 				favourites.getFavouritesByPostIDs(pids, current_user, function(fav_data) {
-					next(null, fav_data);				
-				}); 
+					next(null, fav_data);
+				});
 			}
 
 			function addUserInfoToPosts(next) {
@@ -63,16 +63,16 @@ marked.setOptions({
 					});
 				}
 
-				async.each(postData, iterator, function(err) { 
+				async.each(postData, iterator, function(err) {
 					next(err, null);
 				});
-			}	
+			}
 
 			function getPrivileges(next) {
 				threadTools.privileges(tid, current_user, function(privData) {
 					next(null, privData);
 				});
-			}		
+			}
 
 			async.parallel([getFavouritesData, addUserInfoToPosts, getPrivileges], function(err, results) {
 				var fav_data = results[0],
@@ -84,7 +84,7 @@ marked.setOptions({
 					postData[i]['display_moderator_tools'] = (postData[i].uid == current_user || privileges.editable) ? 'show' : 'none';
 					postData[i].show_banned = postData[i].user_banned === '1'?'show':'hide';
 				}
-				
+
 				callback(postData);
 			});
 		});
@@ -101,9 +101,9 @@ marked.setOptions({
 		var timestamp = Date.now();
 
 		var args = [ 'topics:recent', '+inf', timestamp - 86400000, 'WITHSCORES', 'LIMIT', start, end - start + 1];
-		
+
 		RDB.zrevrangebyscore(args, function(err, tids) {
-			
+
 			var latestTopics = {
 				'category_name' : 'Recent',
 				'show_sidebar' : 'hidden',
@@ -126,18 +126,18 @@ marked.setOptions({
 			});
 		});
 	}
-	
+
 	Topics.getTotalUnread = function(uid, callback) {
 		RDB.zrevrange('topics:recent', 0, 21, function (err, tids) {
 			Topics.hasReadTopics(tids, uid, function(read) {
 				var unreadTids = tids.filter(function(tid, index, self) {
 					return read[index] === 0;
-				});	
+				});
 
 				callback({
 					count: unreadTids.length
 				});
-			});	
+			});
 		});
 	};
 
@@ -154,13 +154,13 @@ marked.setOptions({
 		};
 
 		RDB.zrevrange('topics:recent', start, stop, function (err, tids) {
-				
+
 			function noUnreadTopics() {
 				unreadTopics.no_topics_message = 'show';
 				unreadTopics.show_markallread_button = 'hidden';
 				callback(unreadTopics);
-			}	
-			
+			}
+
 			function sendUnreadTopics(topicIds) {
 				Topics.getTopicsByTids(topicIds, uid, function(topicData) {
 					unreadTopics.topics = topicData;
@@ -172,29 +172,29 @@ marked.setOptions({
 					callback(unreadTopics);
 				});
 			}
-				
+
 			if (!tids || !tids.length) {
 				noUnreadTopics();
 				return;
 			}
-			
+
 			if(uid === 0) {
 				sendUnreadTopics(tids);
 			} else {
-				
+
 				Topics.hasReadTopics(tids, uid, function(read) {
-					
+
 					var unreadTids = tids.filter(function(tid, index, self) {
 						return read[index] === 0;
-					});	
-					
+					});
+
 					if (!unreadTids || !unreadTids.length) {
 						noUnreadTopics();
 						return;
 					}
 
 					sendUnreadTopics(unreadTids);
-				});	
+				});
 			}
 		});
 	}
@@ -202,18 +202,16 @@ marked.setOptions({
 	Topics.getTopicsByTids = function(tids, current_user, callback, category_id) {
 
 		var retrieved_topics = [];
-		
+
 		if(!Array.isArray(tids) || tids.length === 0) {
 			callback(retrieved_topics);
 			return;
 		}
-		
+
 		function getTopicInfo(topicData, callback) {
 
 			function getUserInfo(next) {
-				user.getUserFields(topicData.uid, ['username'], function(userData) {
-					next(null, userData);
-				});
+				user.getUserFields(topicData.uid, ['username'], next);
 			}
 
 			function hasReadTopic(next) {
@@ -256,7 +254,7 @@ marked.setOptions({
 				if(!topicData) {
 					return callback(null);
 				}
-				
+
 				getTopicInfo(topicData, function(topicInfo) {
 
 					topicData['pin-icon'] = topicData.pinned === '1' ? 'icon-pushpin' : 'none';
@@ -274,12 +272,12 @@ marked.setOptions({
 
 					if (isTopicVisible(topicData, topicInfo))
 						retrieved_topics.push(topicData);
-					
-					callback(null);					
+
+					callback(null);
 				});
 			});
 		}
-		
+
 		async.eachSeries(tids, loadTopic, function(err) {
 			if(!err) {
 				callback(retrieved_topics);
@@ -290,7 +288,7 @@ marked.setOptions({
 
 	Topics.getTopicWithPosts = function(tid, current_user, callback) {
 		threadTools.exists(tid, function(exists) {
-			if (!exists) 
+			if (!exists)
 				return callback(new Error('Topic tid \'' + tid + '\' not found'));
 
 			Topics.markAsRead(tid, current_user);
@@ -311,8 +309,8 @@ marked.setOptions({
 				threadTools.privileges(tid, current_user, function(privData) {
 					next(null, privData);
 				});
-			}		
-			
+			}
+
 			function getCategoryData(next) {
 				Topics.getCategoryData(tid, next);
 			}
@@ -323,14 +321,14 @@ marked.setOptions({
 					callback(err, null);
 					return;
 				}
-					
+
 				var topicData = results[0],
 					topicPosts = results[1],
 					privileges = results[2],
 					categoryData = results[3];
 
 				var main_posts = topicPosts.splice(0, 1);
-				
+
 				callback(null, {
 					'topic_name':topicData.title,
 					'category_name':categoryData.name,
@@ -378,7 +376,7 @@ marked.setOptions({
 			if (err) {
 				throw new Error(err);
 			}
-			
+
 			var topicData = results[0],
 				hasRead = results[1],
 				teaser = results[2];
@@ -389,7 +387,7 @@ marked.setOptions({
 			topicData.teaser_username = teaser.username || '';
 			topicData.teaser_timestamp = teaser.timestamp ? utils.relativeTime(teaser.timestamp) : '';
 			topicData.teaser_userpicture = teaser.picture;
-			
+
 			callback(topicData);
 		});
 	}
@@ -431,7 +429,7 @@ marked.setOptions({
 			});
 		});
 	}
-	
+
 	Topics.markAllRead = function(uid, callback) {
 		RDB.smembers('topics:tid', function(err, tids) {
 			if(err) {
@@ -439,13 +437,13 @@ marked.setOptions({
 				callback(err, null);
 				return;
 			}
-			
+
 			if(tids && tids.length) {
 				for(var i=0; i<tids.length; ++i) {
 					Topics.markAsRead(tids[i], uid);
-				}			
+				}
 			}
-			
+
 			callback(null, true);
 		});
 	}
@@ -459,15 +457,15 @@ marked.setOptions({
 	}
 
 	Topics.markUnRead = function(tid) {
-		RDB.del('tid:' + tid + ':read_by_uid'); 
+		RDB.del('tid:' + tid + ':read_by_uid');
 	}
 
 	Topics.markAsRead = function(tid, uid) {
-		
+
 		RDB.sadd(schema.topics(tid).read_by_uid, uid);
-		
+
 		Topics.getTopicField(tid, 'cid', function(err, cid) {
-					
+
 			categories.isTopicsRead(cid, uid, function(read) {
 				if(read) {
 					categories.markAsRead(cid, uid);
@@ -480,9 +478,9 @@ marked.setOptions({
 		var batch = RDB.multi();
 
 		for (var i=0, ii=tids.length; i<ii; i++) {
-			batch.sismember(schema.topics(tids[i]).read_by_uid, uid);	
+			batch.sismember(schema.topics(tids[i]).read_by_uid, uid);
 		}
-		
+
 		batch.exec(function(err, hasRead) {
 			callback(hasRead);
 		});
@@ -497,9 +495,9 @@ marked.setOptions({
 				console.log(err);
 				callback(false);
 			}
-		});	
+		});
 	}
-	
+
 	Topics.getTeasers = function(tids, callback) {
 		var teasers = [];
 		if (Array.isArray(tids)) {
@@ -520,7 +518,10 @@ marked.setOptions({
 			if (!err) {
 				posts.getPostFields(pid, ['content', 'uid', 'timestamp'], function(postData) {
 
-					user.getUserFields(postData.uid, ['username', 'picture'], function(userData) {
+					user.getUserFields(postData.uid, ['username', 'picture'], function(err, userData) {
+						if(err)
+							return callback(err, null);
+
 						var stripped = postData.content,
 							timestamp = postData.timestamp;
 
@@ -546,34 +547,34 @@ marked.setOptions({
 				type: 'error',
 				timeout: 2000,
 				title: 'Title too short',
-				message: "Please enter a longer title. At least " + config.minimumTitleLength + " characters.",
+				message: "Please enter a longer title. At least " + meta.config.minimumTitleLength + " characters.",
 				alert_id: 'post_error'
 			});
 	}
 
 	Topics.post = function(uid, title, content, category_id, images, callback) {
-		if (!category_id) 
+		if (!category_id)
 			throw new Error('Attempted to post without a category_id');
-		
-		if(content) 
+
+		if(content)
 			content = content.trim();
 		if(title)
 			title = title.trim();
-		
+
 		if (uid === 0) {
 			callback(new Error('not-logged-in'), null);
 			return;
-		} else if(!title || title.length < config.minimumTitleLength) {
+		} else if(!title || title.length < meta.config.minimumTitleLength) {
 			callback(new Error('title-too-short'), null);
 			return;
-		} else if (!content || content.length < config.miminumPostLength) {
+		} else if (!content || content.length < meta.config.miminumPostLength) {
 			callback(new Error('content-too-short'), null);
 			return;
 		}
-		
+
 		user.getUserField(uid, 'lastposttime', function(lastposttime) {
 
-			if(Date.now() - lastposttime < config.postDelay) {
+			if(Date.now() - lastposttime < meta.config.postDelay) {
 				callback(new Error('too-many-posts'), null);
 				return;
 			}
@@ -604,9 +605,9 @@ marked.setOptions({
 					'postcount': 0,
 					'locked': 0,
 					'deleted': 0,
-					'pinned': 0 
+					'pinned': 0
 				});
-				
+
 				topicSearch.index(title, tid);
 				RDB.set('topicslug:' + slug + ':tid', tid);
 
@@ -647,7 +648,7 @@ marked.setOptions({
 	Topics.getTopicField = function(tid, field, callback) {
 		RDB.hget('topic:' + tid, field, callback);
 	}
-	
+
 	Topics.getTopicFields = function(tid, fields, callback) {
 		RDB.hmgetObject('topic:' + tid, fields, function(err, data) {
 			if(err === null) {
@@ -656,7 +657,7 @@ marked.setOptions({
 			else {
 				console.log(err);
 			}
-		});		
+		});
 	}
 
 	Topics.setTopicField = function(tid, field, value) {
@@ -677,7 +678,7 @@ marked.setOptions({
 		RDB.zadd(schema.topics().recent, timestamp, tid);
 		Topics.setTopicField(tid, 'lastposttime', timestamp);
 	}
-	
+
 	Topics.addPostToTopic = function(tid, pid) {
 		RDB.rpush('tid:' + tid + ':posts', pid);
 	}

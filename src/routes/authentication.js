@@ -6,6 +6,7 @@
 		passportFacebook = require('passport-facebook').Strategy,
 		login_strategies = [],
 		nconf = require('nconf'),
+		meta = require('../meta'),
 		user = require('../user'),
 		winston = require('winston'),
 		login_module = require('./../login.js');
@@ -17,10 +18,10 @@
 		});
 	}));
 
-	if (global.config['social:twitter:key'] && global.config['social:twitter:secret']) {
+	if (meta.config['social:twitter:key'] && meta.config['social:twitter:secret']) {
 		passport.use(new passportTwitter({
-			consumerKey: global.config['social:twitter:key'],
-			consumerSecret: global.config['social:twitter:secret'],
+			consumerKey: meta.config['social:twitter:key'],
+			consumerSecret: meta.config['social:twitter:secret'],
 			callbackURL: nconf.get('url') + 'auth/twitter/callback'
 		}, function(token, tokenSecret, profile, done) {
 			login_module.loginViaTwitter(profile.id, profile.username, profile.photos, function(err, user) {
@@ -32,10 +33,10 @@
 		login_strategies.push('twitter');
 	}
 
-	if (global.config['social:google:id'] && global.config['social:google:secret']) {
+	if (meta.config['social:google:id'] && meta.config['social:google:secret']) {
 		passport.use(new passportGoogle({
-			clientID: global.config['social:google:id'],
-			clientSecret: global.config['social:google:secret'],
+			clientID: meta.config['social:google:id'],
+			clientSecret: meta.config['social:google:secret'],
 			callbackURL: nconf.get('url') + 'auth/google/callback'
 		}, function(accessToken, refreshToken, profile, done) {
 			login_module.loginViaGoogle(profile.id, profile.displayName, profile.emails[0].value, function(err, user) {
@@ -47,10 +48,10 @@
 		login_strategies.push('google');
 	}
 
-	if (global.config['social:facebook:app_id'] && global.config['social:facebook:secret']) {
+	if (meta.config['social:facebook:app_id'] && meta.config['social:facebook:secret']) {
 		passport.use(new passportFacebook({
-			clientID: global.config['social:facebook:app_id'],
-			clientSecret: global.config['social:facebook:secret'],
+			clientID: meta.config['social:facebook:app_id'],
+			clientSecret: meta.config['social:facebook:secret'],
 			callbackURL: nconf.get('url') + 'auth/facebook/callback'
 		}, function(accessToken, refreshToken, profile, done) {
 			login_module.loginViaFacebook(profile.id, profile.displayName, profile.emails[0].value, function(err, user) {
@@ -76,7 +77,7 @@
 		app.use(passport.initialize());
 		app.use(passport.session());
 	}
-	
+
 
 	Auth.get_login_strategies = function() {
 		return login_strategies;
@@ -136,7 +137,7 @@
 				res.send(header + app.create_route('reset') + templates['footer']);
 			});
 		});
-		
+
 		app.post('/login', function(req, res, next) {
 			passport.authenticate('local', function(err, user, info) {
 				if(err) {
@@ -152,7 +153,7 @@
 				});
 			})(req, res, next);
 		});
-		
+
 		app.post('/register', function(req, res) {
 			user.create(req.body.username, req.body.password, req.body.email, function(err, uid) {
 

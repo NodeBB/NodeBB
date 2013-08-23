@@ -4,13 +4,14 @@ var	RDB = require('./redis.js'),
 	threadTools = require('./threadTools.js'),
 	user = require('./user.js'),
 	async = require('async'),
-	
+
 	utils = require('../public/src/utils'),
 	plugins = require('./plugins'),
 	reds = require('reds'),
 	postSearch = reds.createSearch('nodebbpostsearch'),
 	topicSearch = reds.createSearch('nodebbtopicsearch'),
-	winston = require('winston');
+	winston = require('winston'),
+	meta = require('./meta.js');
 
 (function(PostTools) {
 	PostTools.isMain = function(pid, tid, callback) {
@@ -21,8 +22,8 @@ var	RDB = require('./redis.js'),
 	}
 
 	PostTools.privileges = function(pid, uid, callback) {
-		//todo: break early if one condition is true 
-		
+		//todo: break early if one condition is true
+
 		function getThreadPrivileges(next) {
 			posts.getPostField(pid, 'tid', function(tid) {
 				threadTools.privileges(tid, uid, function(privileges) {
@@ -41,7 +42,7 @@ var	RDB = require('./redis.js'),
 
 		function hasEnoughRep(next) {
 			user.getUserField(uid, 'reputation', function(reputation) {
-				next(null, reputation >= global.config['privileges:manage_content']);
+				next(null, reputation >= meta.config['privileges:manage_content']);
 			});
 		}
 
@@ -95,7 +96,7 @@ var	RDB = require('./redis.js'),
 	PostTools.delete = function(uid, pid) {
 		var success = function() {
 			posts.setPostField(pid, 'deleted', 1);
-			
+
 			postSearch.remove(pid);
 
 			posts.getPostFields(pid, ['tid', 'uid'], function(postData) {
@@ -103,7 +104,7 @@ var	RDB = require('./redis.js'),
 				user.decrementUserFieldBy(postData.uid, 'postcount', 1, function(err, postcount) {
 					RDB.zadd('users:postcount', postcount, postData.uid);
 				});
-				
+
 				io.sockets.in('topic_' + postData.tid).emit('event:post_deleted', {
 					pid: pid
 				});
@@ -116,8 +117,8 @@ var	RDB = require('./redis.js'),
 						});
 					} else {
 						posts.getPostField(pid, 'timestamp', function(timestamp) {
-							topics.updateTimestamp(postData.tid, timestamp);	
-						});	
+							topics.updateTimestamp(postData.tid, timestamp);
+						});
 					}
 				});
 			});
@@ -141,11 +142,11 @@ var	RDB = require('./redis.js'),
 				io.sockets.in('topic_' + postData.tid).emit('event:post_restored', {
 					pid: pid
 				});
-				
+
 				threadTools.get_latest_undeleted_pid(postData.tid, function(err, pid) {
 					posts.getPostField(pid, 'timestamp', function(timestamp) {
 						topics.updateTimestamp(postData.tid, timestamp);
-					});	
+					});
 				});
 
 				postSearch.index(postData.content, pid);
@@ -170,7 +171,7 @@ var	RDB = require('./redis.js'),
 		if (md && md.length > 0) {
 			var	parsedContentDOM = cheerio.load(marked(md));
 			var	domain = nconf.get('url');
-			
+
 			parsedContentDOM('a').each(function() {
 				this.attr('rel', 'nofollow');
 				var href = this.attr('href');
@@ -180,7 +181,7 @@ var	RDB = require('./redis.js'),
 					if (!isSignature) this.append(' <i class="icon-external-link"></i>');
 				}
 			});
-			
+
 
 			html = parsedContentDOM.html();
 		} else {

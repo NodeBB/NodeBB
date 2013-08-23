@@ -19,7 +19,8 @@
 var fs = require('fs'),
 	winston = require('winston'),
 	pkg = require('./package.json'),
-	url = require('url');
+	url = require('url'),
+	meta = require('./src/meta.js');
 
 nconf = require('nconf');
 // Runtime environment
@@ -49,25 +50,20 @@ winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
 winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
 winston.info('===');
 
+
+
 if(nconf.get('upgrade')) {
-	require('./src/upgrade').upgrade();
+	meta.configs.init(function() {
+		require('./src/upgrade').upgrade();
+	});
 } else if (!nconf.get('setup') && nconf.get('base_url')) {
 	nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path') + '/');
 	nconf.set('upload_url', nconf.get('url') + 'uploads/');
 
-
 	winston.info('Initializing NodeBB v' + pkg.version + ', on port ' + nconf.get('port') + ', using Redis store at ' + nconf.get('redis:host') + ':' + nconf.get('redis:port') + '.');
 	winston.info('Base Configuration OK.');
 
-	// TODO: Replace this with nconf-redis
-	var	meta = require('./src/meta.js');
-	global.config = {};
-	meta.config.get(function(config) {
-		for(c in config) {
-			if (config.hasOwnProperty(c)) {
-				global.config[c] = config[c];
-			}
-		}
+	meta.configs.init(function() {
 
 		var categories = require('./src/categories.js'),
 			templates = require('./public/src/templates.js'),
@@ -112,7 +108,7 @@ if(nconf.get('upgrade')) {
 							}
 						});
 
-						
+
 						winston.info('Hardcoding uid 1 as an admin');
 						var user = require('./src/user.js');
 						user.makeAdministrator(1);
@@ -127,6 +123,7 @@ if(nconf.get('upgrade')) {
 			setup_categories();
 		}(global.configuration));
 	});
+
 } else {
 	// New install, ask setup questions
 	if (nconf.get('setup')) winston.info('NodeBB Setup Triggered via Command Line');
@@ -150,7 +147,7 @@ if(nconf.get('upgrade')) {
 				);
 			}
 		}
-		
+
 		process.exit();
 	});
 }

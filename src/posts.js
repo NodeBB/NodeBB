@@ -11,6 +11,7 @@ var	RDB = require('./redis.js'),
 	plugins = require('./plugins'),
 	reds = require('reds'),
 	nconf = require('nconf'),
+	meta = require('./meta.js'),
 	postSearch = reds.createSearch('nodebbpostsearch'),
 	winston = require('winston');
 
@@ -32,7 +33,9 @@ var	RDB = require('./redis.js'),
 	}
 
 	Posts.addUserInfoToPost = function(post, callback) {
-		user.getUserFields(post.uid, ['username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned'], function(userData) {
+		user.getUserFields(post.uid, ['username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned'], function(err, userData) {
+			if(err)
+				return callback();
 
 			post.username = userData.username || 'anonymous';
 			post.userslug = userData.userslug || '';
@@ -43,7 +46,9 @@ var	RDB = require('./redis.js'),
 			post.signature = postTools.markdownToHTML(userData.signature, true);
 
 			if(post.editor !== '') {
-				user.getUserFields(post.editor, ['username', 'userslug'], function(editorData) {
+				user.getUserFields(post.editor, ['username', 'userslug'], function(err, editorData) {
+					if(err)
+						return callback();
 					post.editorname = editorData.username;
 					post.editorslug = editorData.userslug;
 					callback();
@@ -146,7 +151,12 @@ var	RDB = require('./redis.js'),
 					postData.content = postTools.markdownToHTML(postData.content);
 
 					if(postData.uploadedImages) {
-						postData.uploadedImages = JSON.parse(postData.uploadedImages);
+						try {
+							postData.uploadedImages = JSON.parse(postData.uploadedImages);
+						} catch(err) {
+							postData.uploadedImages = [];
+							winston.err(err);
+						}
 					} else {
 						postData.uploadedImages = [];
 					}
@@ -184,7 +194,7 @@ var	RDB = require('./redis.js'),
 			type: 'error',
 			timeout: 2000,
 			title: 'Content too short',
-			message: "Please enter a longer post. At least " + config.minimumPostLength + " characters.",
+			message: "Please enter a longer post. At least " + meta.config.minimumPostLength + " characters.",
 			alert_id: 'post_error'
 		});
 	}
@@ -192,7 +202,7 @@ var	RDB = require('./redis.js'),
 	Posts.emitTooManyPostsAlert = function(socket) {
 		socket.emit('event:alert', {
 			title: 'Too many posts!',
-			message: 'You can only post every '+ config.postDelay/1000 + ' seconds.',
+			message: 'You can only post every '+ meta.config.postDelay/1000 + ' seconds.',
 			type: 'error',
 			timeout: 2000
 		});
@@ -203,13 +213,13 @@ var	RDB = require('./redis.js'),
 			content = content.trim();
 		}
 
-		if (!content || content.length < config.minimumPostLength) {
+		if (!content || content.length < meta.config.minimumPostLength) {
 			callback(new Error('content-too-short'), null);
 			return;
 		}
 
 		user.getUserField(uid, 'lastposttime', function(lastposttime) {
-			if(Date.now() - lastposttime < config.postDelay) {
+			if(Date.now() - lastposttime < meta.config.postDelay) {
 				callback(new Error('too-many-posts'), null);
 				return;
 			}
@@ -264,7 +274,7 @@ var	RDB = require('./redis.js'),
 								'editor': '',
 								'edited': 0,
 								'deleted': 0,
-								'uploadedImages': [],
+								'uploadedImages': '[]',
 								'fav_button_class': '',
 								'fav_star_class': 'icon-star-empty',
 								'show_banned': 'hide',
@@ -310,7 +320,6 @@ var	RDB = require('./redis.js'),
 										next(null, []);
 									} else {
 										next(null, uploadedImages);
-										Posts.setPostField(pid, 'uploadedImages', postData.uploadedImages);
 									}
 								});
 							},
@@ -321,6 +330,7 @@ var	RDB = require('./redis.js'),
 							}
 						}, function(err, results) {
 							postData.uploadedImages = results.uploadedImages;
+							Posts.setPostField(pid, 'uploadedImages', JSON.stringify(postData.uploadedImages));
 							postData.content = results.content;
 							callback(postData);
 						});
@@ -338,7 +348,7 @@ var	RDB = require('./redis.js'),
 
 	function uploadPostImages(postData, images, callback) {
 		var imgur = require('./imgur');
-		imgur.setClientID(config.imgurClientID);
+		imgur.setClientID(meta.config.imgurClientID);
 
 		var uploadedImages = [];
 

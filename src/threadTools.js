@@ -7,7 +7,8 @@ var	RDB = require('./redis.js'),
 	posts = require('./posts'),
 	reds = require('reds'),
 	topicSearch = reds.createSearch('nodebbtopicsearch'),
-	winston = require('winston');
+	winston = require('winston'),
+	meta = require('./meta');
 
 (function(ThreadTools) {
 
@@ -17,10 +18,10 @@ var	RDB = require('./redis.js'),
 			callback(!!ismember || false);
 		});
 	}
-	
+
 	ThreadTools.privileges = function(tid, uid, callback) {
-		//todo: break early if one condition is true 
-		
+		//todo: break early if one condition is true
+
 		function getCategoryPrivileges(next) {
 			topics.getTopicField(tid, 'cid', function(err, cid) {
 				categories.privileges(cid, uid, function(privileges) {
@@ -31,10 +32,10 @@ var	RDB = require('./redis.js'),
 
 		function hasEnoughRep(next) {
 			user.getUserField(uid, 'reputation', function(reputation) {
-				next(null, reputation >= global.config['privileges:manage_topic']);
+				next(null, reputation >= meta.config['privileges:manage_topic']);
 			});
 		}
-		
+
 
 		async.parallel([getCategoryPrivileges, hasEnoughRep], function(err, results) {
 			callback({
@@ -87,7 +88,7 @@ var	RDB = require('./redis.js'),
 	ThreadTools.delete = function(tid, uid, callback) {
 		ThreadTools.privileges(tid, uid, function(privileges) {
 			if (privileges.editable || uid === -1) {
-				
+
 				topics.setTopicField(tid, 'deleted', 1);
 				ThreadTools.lock(tid, uid);
 
@@ -110,12 +111,12 @@ var	RDB = require('./redis.js'),
 				topics.setTopicField(tid, 'deleted', 0);
 				ThreadTools.unlock(tid, uid);
 
-				if (socket) {
-					io.sockets.in('topic_' + tid).emit('event:topic_restored', {
-						tid: tid,
-						status: 'ok'
-					});
+				io.sockets.in('topic_' + tid).emit('event:topic_restored', {
+					tid: tid,
+					status: 'ok'
+				});
 
+				if (socket) {
 					socket.emit('api:topic.restore', {
 						status: 'ok',
 						tid: tid
@@ -132,12 +133,12 @@ var	RDB = require('./redis.js'),
 	ThreadTools.pin = function(tid, uid, socket) {
 		ThreadTools.privileges(tid, uid, function(privileges) {
 			if (privileges.editable) {
-				
+
 				topics.setTopicField(tid, 'pinned', 1);
 				topics.getTopicField(tid, 'cid', function(err, cid) {
 					RDB.zadd('categories:' + cid + ':tid', Math.pow(2,53), tid);
 				});
-				
+
 				if (socket) {
 					io.sockets.in('topic_' + tid).emit('event:topic_pinned', {
 						tid: tid,
@@ -156,7 +157,7 @@ var	RDB = require('./redis.js'),
 	ThreadTools.unpin = function(tid, uid, socket) {
 		ThreadTools.privileges(tid, uid, function(privileges) {
 			if (privileges.editable) {
-				
+
 				topics.setTopicField(tid, 'pinned', 0);
 				topics.getTopicFields(tid, ['cid', 'lastposttime'], function(topicData) {
 					RDB.zadd('categories:' + topicData.cid + ':tid', topicData.lastposttime, tid);
@@ -177,17 +178,17 @@ var	RDB = require('./redis.js'),
 	}
 
 	ThreadTools.move = function(tid, cid, socket) {
-		
+
 		topics.getTopicFields(tid, ['cid', 'lastposttime'], function(topicData) {
 			var oldCid = topicData.cid;
 			var multi = RDB.multi();
 
 			multi.zrem('categories:' + oldCid + ':tid', tid);
 			multi.zadd('categories:' + cid + ':tid', topicData.lastposttime, tid);
-		
+
 			multi.exec(function(err, result) {
 
-				if (!err && result === 1) {
+				if (!err && result[0] === 1 && result[1] === 1) {
 
 					topics.setTopicField(tid, 'cid', cid);
 
@@ -258,7 +259,7 @@ var	RDB = require('./redis.js'),
 	ThreadTools.notify_followers = function(tid, exceptUid) {
 		async.parallel([
 			function(next) {
-				
+
 				topics.getTopicField(tid, 'title', function(err, title) {
 					topics.getTeaser(tid, function(err, teaser) {
 						if (!err) {
@@ -268,8 +269,8 @@ var	RDB = require('./redis.js'),
 						} else next(err);
 					});
 				});
-					
-				
+
+
 			},
 			function(next) {
 				ThreadTools.get_followers(tid, function(err, followers) {
@@ -290,14 +291,14 @@ var	RDB = require('./redis.js'),
 			var numPosts = posts.length;
 			if(!numPosts)
 				return callback(new Error('no-undeleted-pids-found'));
-			
+
 			while(numPosts--) {
 				if(posts[numPosts].deleted !== '1') {
 					callback(null, posts[numPosts].pid);
 					return;
 				}
 			}
-			
+
 			callback(new Error('no-undeleted-pids-found'));
 		});
 	}
