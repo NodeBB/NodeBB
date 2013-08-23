@@ -5,7 +5,14 @@ var utils = require('./../public/src/utils.js'),
 	fs = require('fs');
 
 (function(Meta) {
-	Meta.config = {
+
+	Meta.configs = {
+		init: function(callback) {
+			Meta.configs.get(function(config) {
+				Meta.config = config;
+				callback();
+			});
+		},
 		get: function(callback) {
 			RDB.hgetall('config', function(err, config) {
 				if (!err) {
@@ -80,8 +87,8 @@ var utils = require('./../public/src/utils.js'),
 			}, function(err, values) {
 				var	title;
 
-				if (err) title = global.config.title || 'NodeBB';
-				else title = (values.title ? values.title + ' | ' : '') + (global.config.title || 'NodeBB');
+				if (err) title = Meta.config.title || 'NodeBB';
+				else title = (values.title ? values.title + ' | ' : '') + (Meta.config.title || 'NodeBB');
 
 				callback(null, title, values.notifCount);
 			});
@@ -110,4 +117,6 @@ var utils = require('./../public/src/utils.js'),
 			} else callback(null);
 		}
 	}
+
 }(exports));
+

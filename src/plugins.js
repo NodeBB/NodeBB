@@ -20,28 +20,14 @@ var	fs = require('fs'),
 				function(plugins, next) {
 					async.each(plugins, function(plugin) {
 						// TODO: Update this check to also check node_modules
-						var	pluginPath = path.join(__dirname, '../plugins/', plugin);
-						fs.exists(pluginPath, function(exists) {
-							if (exists) {
-								fs.readFile(path.join(pluginPath, 'plugin.json'), function(err, data) {
-									if (err) return next(err);
-
-									var	pluginData = JSON.parse(data);
-									_self.libraries[pluginData.id] = require(path.join(pluginPath, pluginData.library));
-									if (pluginData.hooks) {
-										for(var x=0,numHooks=pluginData.hooks.length;x<numHooks;x++) {
-											_self.registerHook(pluginData.id, pluginData.hooks[x]);
-										}
-									}
-									if (global.env === 'development') winston.info('[plugins] Loaded plugin: ' + pluginData.id);
-
-									next();
-								});
-							} else {
-								if (global.env === 'development') winston.info('[plugins] Plugin \'' + plugin + '\' not found');
-								next();	// Ignore this plugin silently
-							}
-						})
+						var	pluginPath = path.join(__dirname, '../plugins/', plugin),
+							modulePath = path.join(__dirname, '../node_modules/', plugin);
+						if (fs.existsSync(pluginPath)) _self.loadPlugin(pluginPath, next);
+						else if (fs.existsSync(modulePath)) _self.loadPlugin(modulePath, next);
+						else {
+							if (global.env === 'development') winston.info('[plugins] Plugin \'' + plugin + '\' not found');
+							next();	// Ignore this plugin silently
+						}
 					}, next);
 				}
 			], function(err) {
@@ -54,6 +40,24 @@ var	fs = require('fs'),
 			});
 		},
 		initialized: false,
+		loadPlugin: function(pluginPath, callback) {
+			var	_self = this;
+
+			fs.readFile(path.join(pluginPath, 'plugin.json'), function(err, data) {
+				if (err) return callback(err);
+
+				var	pluginData = JSON.parse(data);
+				_self.libraries[pluginData.id] = require(path.join(pluginPath, pluginData.library));
+				if (pluginData.hooks) {
+					for(var x=0,numHooks=pluginData.hooks.length;x<numHooks;x++) {
+						_self.registerHook(pluginData.id, pluginData.hooks[x]);
+					}
+				}
+				if (global.env === 'development') winston.info('[plugins] Loaded plugin: ' + pluginData.id);
+
+				callback();
+			});
+		},
 		registerHook: function(id, data) {
 			/*
 				`data` is an object consisting of (* is required):
@@ -66,7 +70,7 @@ var	fs = require('fs'),
 
 			if (data.hook && data.method) {
 				_self.loadedHooks[data.hook] = _self.loadedHooks[data.hook] || [];
-				_self.loadedHooks[data.hook].push([id, data.method]);
+				_self.loadedHooks[data.hook].push([id, data.method, !!data.callbacked]);
 				if (global.env === 'development') winston.info('[plugins] Hook registered: ' + data.hook + ' will call ' + id);
 			} else return;
 		},
@@ -84,7 +88,7 @@ var	fs = require('fs'),
 						var	returnVal = (Array.isArray(args) ? args[0] : args);
 
 						async.each(hookList, function(hookObj, next) {
-							if (hookObj.callbacked) {
+							if (hookObj[2]) {
 								_self.libraries[hookObj[0]][hookObj[1]](returnVal, function(err, afterVal) {
 									returnVal = afterVal;
 									next(err);
@@ -95,7 +99,9 @@ var	fs = require('fs'),
 							}
 						}, function(err) {
 							if (err) {
-								if (global.env === 'development') winston.info('[plugins] Problem executing hook: ' + hook);
+								if (global.env === 'development') {
+									winston.info('[plugins] Problem executing hook: ' + hook);
+								}
 							}
 
 							callback(returnVal);
@@ -150,26 +156,49 @@ var	fs = require('fs'),
 		showInstalled: function(callback) {
 			// TODO: Also check /node_modules
 			var	_self = this;
-				moduleBasePath = path.join(__dirname, '../plugins');
+				localPluginPath = path.join(__dirname, '../plugins'),
+				npmPluginPath = path.join(__dirname, '../node_modules');
 
 			async.waterfall([
 				function(next) {
-					fs.readdir(moduleBasePath, next);
+					async.parallel([
+						function(next) {
+							fs.readdir(localPluginPath, next);
+						},
+						function(next) {
+							fs.readdir(npmPluginPath, next);
+						}
+					], function(err, dirs) {
+						if (err) return next(err);
+
+						dirs[0] = dirs[0].map(function(file) {
+							return path.join(localPluginPath, file);
+						}).filter(function(file) {
+							var	stats = fs.statSync(file);
+							if (stats.isDirectory()) return true;
+							else return false;
+						});
+
+						dirs[1] = dirs[1].map(function(file) {
+							return path.join(npmPluginPath, file);
+						}).filter(function(file) {
+							var	stats = fs.statSync(file);
+							if (stats.isDirectory() && file.substr(npmPluginPath.length+1, 14) === 'nodebb-plugin-') return true;
+							else return false;
+						});
+
+						next(err, dirs[0].concat(dirs[1]));
+					});
 				},
 				function(files, next) {
 					var	plugins = [];
 
 					async.each(files, function(file, next) {
-						var	modulePath = path.join(moduleBasePath, file),
-							configPath;
+						var	configPath;
 
 						async.waterfall([
 							function(next) {
-								fs.stat(path.join(moduleBasePath, file), next);
-							},
-							function(stats, next) {
-								if (stats.isDirectory()) fs.readFile(path.join(modulePath, 'plugin.json'), next);
-								else next(new Error('not-a-directory'));
+								fs.readFile(path.join(file, 'plugin.json'), next);
 							},
 							function(configJSON, next) {
 								var	config = JSON.parse(configJSON);

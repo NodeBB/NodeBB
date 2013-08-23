@@ -16,19 +16,14 @@ var user = require('./../user.js'),
 		});
 
 		app.get('/api/config', function(req, res, next) {
-			meta.config.getFields(['postDelay', 'minimumTitleLength', 'minimumPostLength', 'imgurClientID'], function(err, metaConfig) {
-				if(err) return next();
-				var clientConfig = require('../../public/config.json');
+			var config = require('../../public/config.json');
 
-				for (var attrname in metaConfig) {
-					clientConfig[attrname] = metaConfig[attrname];
-				}
+			config['postDelay'] = meta.config['postDelay'];
+			config['minimumTitleLength'] = meta.config['minimumTitleLength'];
+			config['minimumPostLength'] = meta.config['minimumPostLength'];
+			config['imgurClientIDSet'] = !!meta.config['imgurClientID'];
 
-				clientConfig['imgurClientIDSet'] = !!clientConfig['imgurClientID'];
-				delete clientConfig['imgurClientID'];
-
-				res.json(200, clientConfig);
-			})
+			res.json(200, config);
 		});
 
 		app.get('/api/home', function(req, res) {
@@ -48,8 +43,9 @@ var user = require('./../user.js'),
 				}
 
 				require('async').each(data.categories, iterator, function(err) {
-					data.motd_class = (config.show_motd === '1' || config.show_motd === undefined) ? '' : 'none';
-					data.motd = marked(config.motd || "# NodeBB <span>v " + pkg.version + "</span>\nWelcome to NodeBB, the discussion platform of the future.\n\n<div class='btn-group'><a target=\"_blank\" href=\"http://www.nodebb.org\" class=\"btn btn-default btn-lg\"><i class=\"icon-comment\"></i><span><span>&nbsp;Get NodeBB</span></span></a> <a target=\"_blank\" href=\"https://github.com/designcreateplay/NodeBB\" class=\"btn btn-default btn-lg\"><i class=\"icon-github-alt\"></i><span>&nbsp;Fork us on Github</span></a> <a target=\"_blank\" href=\"https://twitter.com/dcplabs\" class=\"btn btn-default btn-lg\"><i class=\"icon-twitter\"></i><span>&nbsp;@dcplabs</span></a></div>");
+					data.motd_class = (meta.config.show_motd === '1' || meta.config.show_motd === undefined) ? '' : 'none';
+					data.motd = marked(meta.config.motd || "# NodeBB <span>v " + pkg.version + "</span>\nWelcome to NodeBB, the discussion platform of the future.\n\n<div class='btn-group'><a target=\"_blank\" href=\"http://www.nodebb.org\" class=\"btn btn-default btn-lg\"><i class=\"icon-comment\"></i><span><span>&nbsp;Get NodeBB</span></span></a> <a target=\"_blank\" href=\"https://github.com/designcreateplay/NodeBB\" class=\"btn btn-default btn-lg\"><i class=\"icon-github-alt\"></i><span>&nbsp;Fork us on Github</span></a> <a target=\"_blank\" href=\"https://twitter.com/dcplabs\" class=\"btn btn-default btn-lg\"><i class=\"icon-twitter\"></i><span>&nbsp;@dcplabs</span></a></div>");
+
 					res.json(data);
 				});
 

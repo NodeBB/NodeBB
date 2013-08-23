@@ -2,7 +2,8 @@ var utils = require('./../public/src/utils.js'),
 	RDB = require('./redis.js'),
 	crypto = require('crypto'),
 	emailjs = require('emailjs'),
-	emailjsServer = emailjs.server.connect(config.mailer),
+	meta = require('./meta.js'),
+	emailjsServer = emailjs.server.connect(meta.config.mailer),
 	bcrypt = require('bcrypt'),
 	marked = require('marked'),
 	notifications = require('./notifications.js'),
@@ -48,7 +49,7 @@ var utils = require('./../public/src/utils.js'),
 
 				var gravatar = User.createGravatarURLFromEmail(email);
 				var timestamp = Date.now();
-				
+
 				RDB.hmset('user:'+uid, {
 					'uid': uid,
 					'username' : username,
@@ -71,7 +72,7 @@ var utils = require('./../public/src/utils.js'),
 					'banned': 0,
 					'showemail': 0
 				});
-				
+
 				RDB.set('username:' + username + ':uid', uid);
 				RDB.set('userslug:'+ userslug +':uid', uid);
 
@@ -89,7 +90,7 @@ var utils = require('./../public/src/utils.js'),
 				RDB.zadd('users:joindate', timestamp, uid);
 				RDB.zadd('users:postcount', 0, uid);
 				RDB.zadd('users:reputation', 0, uid);
-				
+
 				io.sockets.emit('user.latest', {userslug: userslug, username: username});
 
 				if (password !== undefined) {
@@ -102,7 +103,7 @@ var utils = require('./../public/src/utils.js'),
 			});
 		});
 	};
-	
+
 	User.delete = function(uid, callback) {
 		RDB.exists('user:'+uid, function(err, exists) {
 			if(exists === 1) {
@@ -134,9 +135,9 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.unban = function(uid, callback) {
-		User.setUserField(uid, 'banned', 0, callback);	
+		User.setUserField(uid, 'banned', 0, callback);
 	}
-	
+
 	User.getUserField = function(uid, field, callback) {
 		RDB.hget('user:' + uid, field, function(err, data) {
 			if(err === null) {
@@ -148,13 +149,7 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.getUserFields = function(uid, fields, callback) {
-		RDB.hmgetObject('user:' + uid, fields, function(err, data) {
-			if(err === null) {
-				callback(data);
-			} else {
-				console.log(err);
-			}
-		});
+		RDB.hmgetObject('user:' + uid, fields, callback);
 	}
 
 	User.getMultipleUserFields = function(uids, fields, callback) {
@@ -170,7 +165,9 @@ var utils = require('./../public/src/utils.js'),
 		});
 
 		function iterator(uid, callback) {
-			User.getUserFields(uid, fields, function(userData) {
+			User.getUserFields(uid, fields, function(err, userData) {
+				if(err)
+					return callback(err);
 				returnData.push(userData);
 				callback(null);
 			});
@@ -215,10 +212,10 @@ var utils = require('./../public/src/utils.js'),
 			if(data['signature'] !== undefined && data['signature'].length > 150) {
 				next({error:'Signature can\'t be longer than 150 characters!'}, false);
 			} else {
-				next(null, true);	
-			}			
+				next(null, true);
+			}
 		}
-		
+
 		function isEmailAvailable(next) {
 			if(!data['email']) {
 				return next(null, true);
@@ -227,18 +224,18 @@ var utils = require('./../public/src/utils.js'),
 			User.getUserField(uid, 'email', function(email) {
 				if(email !== data['email']) {
 					User.isEmailAvailable(data['email'], function(available) {
-						if(!available) {						
+						if(!available) {
 							next({error:'Email not available!'}, false);
 						} else {
-							next(null, true);		
+							next(null, true);
 						}
 					});
 				} else {
-					next(null, true);		
+					next(null, true);
 				}
 			});
 		}
-		
+
 		async.series([isSignatureValid, isEmailAvailable], function(err, results) {
 			if(err) {
 				console.log(err);
@@ -261,8 +258,11 @@ var utils = require('./../public/src/utils.js'),
 				if(field === 'email') {
 					var gravatarpicture = User.createGravatarURLFromEmail(data[field]);
 					User.setUserField(uid, 'gravatarpicture', gravatarpicture);
-					User.getUserFields(uid, ['email', 'picture', 'uploadedpicture'], function(userData) {
-						RDB.del('email:' + userData['email'] + ':uid'); 
+					User.getUserFields(uid, ['email', 'picture', 'uploadedpicture'], function(err, userData) {
+						if(err)
+							return callback(err);
+
+						RDB.del('email:' + userData['email'] + ':uid');
 						RDB.set('email:' + data['email'] + ':uid', uid);
 						User.setUserField(uid, field, data[field]);
 						if(userData.picture !== userData.uploadedpicture) {
@@ -275,9 +275,9 @@ var utils = require('./../public/src/utils.js'),
 					return;
 				} else if(field === 'signature') {
 					data[field] = utils.strip_tags(data[field]);
-				} 
+				}
 
-				User.setUserField(uid, field, data[field]);	
+				User.setUserField(uid, field, data[field]);
 
 				callback(null);
 			} else {
@@ -301,7 +301,7 @@ var utils = require('./../public/src/utils.js'),
 	User.changePassword = function(uid, data, callback) {
 		if(!utils.isPasswordValid(data.newPassword)) {
 			callback({err:'Invalid password!'});
-			return;		
+			return;
 		}
 
 		User.getUserField(uid, 'password', function(user_password) {
@@ -343,12 +343,12 @@ var utils = require('./../public/src/utils.js'),
 
 	User.getUsers = function(set, start, stop, callback) {
 		var data = [];
-		
+
 		RDB.zrevrange(set, start, stop, function(err, uids) {
 			if(err) {
 				return callback(err, null);
 			}
-			
+
 			function iterator(uid, callback) {
 				User.getUserData(uid, function(userData) {
 					if(userData) {
@@ -357,7 +357,7 @@ var utils = require('./../public/src/utils.js'),
 					callback(null);
 				});
 			}
-			
+
 			async.eachSeries(uids, iterator, function(err) {
 				callback(err, data);
 			});
@@ -370,7 +370,7 @@ var utils = require('./../public/src/utils.js'),
 			default: 'identicon',
 			rating: 'pg'
 		};
-		
+
 		if (!email) {
 			email = '';
 			options.forcedefault = 'y';
@@ -385,7 +385,7 @@ var utils = require('./../public/src/utils.js'),
 			return;
 		}
 
-		bcrypt.genSalt(config.bcrypt_rounds, function(err, salt) {
+		bcrypt.genSalt(nconf.get('bcrypt_rounds'), function(err, salt) {
 			bcrypt.hash(password, salt, function(err, hash) {
 				callback(hash);
 			});
@@ -421,7 +421,7 @@ var utils = require('./../public/src/utils.js'),
 		User.incrementUserFieldBy(uid, 'postcount', 1, function(err, newpostcount) {
 			RDB.zadd('users:postcount', newpostcount, uid);
 		});
-		
+
 		User.setUserField(uid, 'lastposttime', timestamp);
 
 		User.sendPostNotificationToFollowers(uid, tid, pid);
@@ -450,9 +450,9 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.sendConfirmationEmail = function (email) {
-		if (global.config['email:host'] && global.config['email:port'] && global.config['email:from']) {
+		if (meta.config['email:host'] && meta.config['email:port'] && meta.config['email:from']) {
 			var confirm_code = utils.generateUUID(),
-				confirm_link = config.url + 'confirm/' + confirm_code,
+				confirm_link = nconf.get('url') + 'confirm/' + confirm_code,
 				confirm_email = global.templates['emails/header'] + global.templates['emails/email_confirm'].parse({'CONFIRM_LINK': confirm_link}) + global.templates['emails/footer'],
 				confirm_email_plaintext = global.templates['emails/email_confirm_plaintext'].parse({ 'CONFIRM_LINK': confirm_link });
 
@@ -466,10 +466,10 @@ var utils = require('./../public/src/utils.js'),
 			RDB.set(confirm_key, email);
 			RDB.expire(confirm_key, expiry_time);
 
-				// Send intro email w/ confirm code
+			// Send intro email w/ confirm code
 			var message = emailjs.message.create({
 				text: confirm_email_plaintext,
-				from: config.mailer.from,
+				from: meta.config.mailer.from,
 				to: email,
 				subject: '[NodeBB] Registration Email Verification',
 				attachment: [
@@ -577,7 +577,7 @@ var utils = require('./../public/src/utils.js'),
 				callback(null);
 			});
 		}
-		
+
 		async.eachSeries(uids, iterator, function(err) {
 			callback(returnData);
 		});
@@ -625,8 +625,9 @@ var utils = require('./../public/src/utils.js'),
 		RDB.zrevrange('users:joindate', 0, 0, function(err, uid) {
 			RDB.handle(err);
 
-			User.getUserFields(uid, ['username', 'userslug'], function(userData) {
-				socket.emit('user.latest', {userslug: userData.userslug, username: userData.username});
+			User.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
+				if(!err && userData)
+					socket.emit('user.latest', {userslug: userData.userslug, username: userData.username});
 			});
 		});
 	}
@@ -664,7 +665,7 @@ var utils = require('./../public/src/utils.js'),
 		}
 
 		async.eachSeries(uids, iterator, function(err) {
-			callback(usernames);			
+			callback(usernames);
 		});
 	}
 
@@ -683,7 +684,7 @@ var utils = require('./../public/src/utils.js'),
 		}
 
 		async.eachSeries(uids, iterator, function(err) {
-			callback(userslugs);			
+			callback(userslugs);
 		});
 	}
 
@@ -792,7 +793,7 @@ var utils = require('./../public/src/utils.js'),
 
 	User.reset = {
 		validate: function(socket, code, callback) {
-			
+
 			if (typeof callback !== 'function') {
 				callback = null;
 			}
@@ -848,7 +849,7 @@ var utils = require('./../public/src/utils.js'),
 
 					var message = emailjs.message.create({
 						text: reset_email_plaintext,
-						from: config.mailer?config.mailer.from:'localhost@example.org',
+						from: meta.config.mailer?meta.config.mailer.from:'localhost@example.org',
 						to: email,
 						subject: 'Password Reset Requested',
 						attachment: [
