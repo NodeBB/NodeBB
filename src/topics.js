@@ -109,7 +109,7 @@ marked.setOptions({
 				'show_sidebar' : 'hidden',
 				'show_topic_button' : 'hidden',
 				'no_topics_message' : 'hidden',
-				'topic_row_size': 'span12',
+				'topic_row_size': 'col-md-12',
 				'category_id': false,
 				'topics' : []
 			};
@@ -149,7 +149,7 @@ marked.setOptions({
 			'show_topic_button' : 'hidden',
 			'show_markallread_button': 'show',
 			'no_topics_message' : 'hidden',
-			'topic_row_size': 'span12',
+			'topic_row_size': 'col-md-12',
 			'topics' : []
 		};
 
