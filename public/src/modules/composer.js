@@ -8,7 +8,7 @@ define(['taskbar'], function(taskbar) {
 		};
 
 	function createImageLabel(img, postImages) {
-		var imageLabel = $('<div class="label"><span>'+ img.name +'</span></div>');
+		var imageLabel = $('<div class="label label-primary"><span>'+ img.name +'</span></div>');
 		var closeButton = $('<button class="close">&times;</button>');
 
 		closeButton.on('click', function(e) {

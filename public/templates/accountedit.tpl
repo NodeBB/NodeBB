@@ -140,14 +140,14 @@
 					<div class="control-group">
 						<label class="control-label" for="inputNewPassword">Password</label>
 						<div class="controls">
-							<input type="password" id="inputNewPassword" placeholder="New Password" value=""><br/><span id="password-notify" class="label label-important"></span>
+							<input type="password" id="inputNewPassword" placeholder="New Password" value=""><br/><span id="password-notify" class="label label-danger"></span>
 						</div>
 					</div>
 				
 					<div class="control-group">
 						<label class="control-label" for="inputNewPasswordAgain">Confirm Password</label>
 						<div class="controls">
-							<input type="password" id="inputNewPasswordAgain" placeholder="Confirm Password" value=""><br/><span id="password-confirm-notify" class="label label-important"></span>
+							<input type="password" id="inputNewPasswordAgain" placeholder="Confirm Password" value=""><br/><span id="password-confirm-notify" class="label label-danger"></span>
 						</div>
 					</div>
 				

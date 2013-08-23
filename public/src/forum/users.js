@@ -41,7 +41,7 @@
 			if(data === null) {
 				$('#user-notfound-notify').html('You need to be logged in to search!')
 					.show()
-					.addClass('label-important')
+					.addClass('label-danger')
 					.removeClass('label-success');
 				return;
 			}
@@ -57,14 +57,14 @@
 			if(data && data.length === 0) {
 				$('#user-notfound-notify').html('User not found!')
 					.show()
-					.addClass('label-important')
+					.addClass('label-danger')
 					.removeClass('label-success');
 			}
 			else {
 				$('#user-notfound-notify').html(data.length + ' user'+(data.length>1?'s':'') + ' found!')
 					.show()
 					.addClass('label-success')
-					.removeClass('label-important');
+					.removeClass('label-danger');
 			}
 
 		});

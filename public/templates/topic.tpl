@@ -85,7 +85,7 @@
 					<i class="icon-star"></i><span class="user_rep_{posts.uid} formatted-number">{posts.user_rep}</span>
 					<div id="ids_{posts.pid}_{posts.uid}" class="chat hidden-xs" title="Chat"><i class="icon-comment"></i></div>
 				</div>
-				<span class="label label-important {posts.show_banned}">banned</span>			
+				<span class="label label-danger {posts.show_banned}">banned</span>			
 			</div>
 			<div class="span11 col-md-12-tablet">
 				<div class="post-block speech-bubble">

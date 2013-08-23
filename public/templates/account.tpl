@@ -16,7 +16,7 @@
 				<span><i class="icon-circle-blank"></i> <span>offline</span></span>
 			</div>
 			<div class="{show_banned}">
-				<span class="label label-important">banned</span>
+				<span class="label label-danger">banned</span>
 			</div>
 			<div id="user-actions">
 				<a id="follow-btn" href="#" class="btn hide">Follow</a>

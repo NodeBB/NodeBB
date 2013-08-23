@@ -11,7 +11,7 @@
 	<div class="search {search_display} well">
 		<input id="search-user" type="text" placeholder="Enter a username to search"/><br />
 		<i class="icon-spinner icon-spin none"></i>
-		<span id="user-notfound-notify" class="label label-important hide">User not found!</span><br/>
+		<span id="user-notfound-notify" class="label label-danger hide">User not found!</span><br/>
 	</div>
 	
 	<ul id="users-container" class="users">
