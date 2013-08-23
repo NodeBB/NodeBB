@@ -211,7 +211,7 @@ var socket,
 		app.alert({
 			title: 'Error',
 			message: message,
-			type: 'error',
+			type: 'danger',
 			timeout: timeout
 		});
 	}

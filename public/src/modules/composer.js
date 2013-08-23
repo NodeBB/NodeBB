@@ -30,9 +30,9 @@ define(['taskbar'], function(taskbar) {
 			imagelist = $('.post-window .imagelist'),
 			uuid = dropDiv.parents('[data-uuid]').attr('data-uuid'),
 			posts = composer.posts[uuid];
-		
+
 		$(reader).on('loadend', function(e) {
-			var bin = this.result; 
+			var bin = this.result;
 			bin = bin.split(',')[1];
 
 			var img = {
@@ -47,13 +47,13 @@ define(['taskbar'], function(taskbar) {
 			imagelist.append(imageLabel);
 			dropDiv.hide();
 		});
-	
+
 		reader.readAsDataURL(file);
 	}
 
 	function initializeFileReader() {
 		jQuery.event.props.push( "dataTransfer" );
-	
+
 		var draggingDocument = false;
 
 		if(window.FileReader) {
@@ -77,12 +77,12 @@ define(['taskbar'], function(taskbar) {
 					drop.off('dragleave');
 				});
 			});
-			
+
 			function cancel(e) {
 				e.preventDefault();
 				return false;
 			}
-			
+
 			drop.on('dragover', cancel);
 			drop.on('dragenter', cancel);
 
@@ -96,7 +96,7 @@ define(['taskbar'], function(taskbar) {
 				for (var i=0; i<files.length; i++) {
 					loadFile(files[i]);
 				}
-	
+
 				if(!files.length)
 					drop.hide();
 				return false;
@@ -157,7 +157,7 @@ define(['taskbar'], function(taskbar) {
 					composer.load(uuid);
 				} else {
 					app.alert({
-						type: 'error',
+						type: 'danger',
 						timeout: 5000,
 						alert_id: 'post_error',
 						title: 'Please Log In to Post',
@@ -284,7 +284,7 @@ define(['taskbar'], function(taskbar) {
 
 		composer.reposition(post_uuid);
 		composer.active = post_uuid;
-		
+
 		composer.postContainer.setAttribute('data-uuid', post_uuid);
 		if (parseInt(post_data.tid) > 0) {
 			titleEl.value = 'Replying to: ' + post_data.title;
@@ -330,13 +330,13 @@ define(['taskbar'], function(taskbar) {
 		var postData = composer.posts[post_uuid],
 			titleEl = composer.postContainer.querySelector('input'),
 			bodyEl = composer.postContainer.querySelector('textarea');
-		
+
 		titleEl.value = titleEl.value.trim();
 		bodyEl.value = bodyEl.value.trim();
-		
+
 		if (titleEl.value.length < config.minimumTitleLength) {
 			return app.alert({
-				type: 'error',
+				type: 'danger',
 				timeout: 2000,
 				title: 'Title too short',
 				message: "Please enter a longer title. At least " + config.minimumTitleLength+ " characters.",
@@ -346,7 +346,7 @@ define(['taskbar'], function(taskbar) {
 
 		if (bodyEl.value.length < config.minimumPostLength) {
 			return app.alert({
-				type: 'error',
+				type: 'danger',
 				timeout: 2000,
 				title: 'Content too short',
 				message: "Please enter a longer post. At least " + config.minimumPostLength + " characters.",

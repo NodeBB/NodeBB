@@ -544,7 +544,7 @@ marked.setOptions({
 
 	Topics.emitTitleTooShortAlert = function(socket) {
 		socket.emit('event:alert', {
-				type: 'error',
+				type: 'danger',
 				timeout: 2000,
 				title: 'Title too short',
 				message: "Please enter a longer title. At least " + meta.config.minimumTitleLength + " characters.",

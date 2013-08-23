@@ -124,7 +124,7 @@
 									} else {
 										app.alert({
 											'alert_id': 'thread_move',
-											type: 'error',
+											type: 'danger',
 											title: 'Unable to Move Topic',
 											message: 'This topic could not be moved to ' + targetCatLabel + '.<br />Please try again later',
 											timeout: 5000
@@ -183,7 +183,7 @@
 			if (data.status && data.status === 'ok') set_follow_state(data.follow);
 			else {
 				app.alert({
-					type: 'error',
+					type: 'danger',
 					alert_id: 'topic_follow',
 					title: 'Please Log In',
 					message: 'Please register or log in in order to subscribe to this topic',

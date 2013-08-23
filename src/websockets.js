@@ -363,7 +363,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				socket.emit('event:alert', {
 					title: 'Reply Unsuccessful',
 					message: 'You don&apos;t seem to be logged in, so you cannot reply.',
-					type: 'error',
+					type: 'danger',
 					timeout: 2000
 				});
 				return;
