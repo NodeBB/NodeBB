@@ -139,13 +139,7 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.getUserField = function(uid, field, callback) {
-		RDB.hget('user:' + uid, field, function(err, data) {
-			if(err === null) {
-				callback(data);
-			} else {
-				console.log(err);
-			}
-		});
+		RDB.hget('user:' + uid, field, callback);
 	}
 
 	User.getUserFields = function(uid, fields, callback) {

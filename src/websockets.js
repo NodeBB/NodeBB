@@ -54,7 +54,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					socket.join('uid_' + uid);
 					io.sockets.in('global').emit('api:user.isOnline', isUserOnline(uid));
 
-					user.getUserField(uid, 'username', function(username) {
+					user.getUserField(uid, 'username', function(err, username) {
 						socket.emit('event:connect', {status: 1, username:username});
 					});
 				}
@@ -275,12 +275,12 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			}
 
 			if(type === 'gravatar') {
-				user.getUserField(uid, 'gravatarpicture', function(gravatar) {
+				user.getUserField(uid, 'gravatarpicture', function(err, gravatar) {
 					user.setUserField(uid, 'picture', gravatar);
 					updateHeader();
 				});
 			} else if(type === 'uploaded') {
-				user.getUserField(uid, 'uploadedpicture', function(uploadedpicture) {
+				user.getUserField(uid, 'uploadedpicture', function(err, uploadedpicture) {
 					user.setUserField(uid, 'picture', uploadedpicture);
 					updateHeader();
 				});
@@ -514,7 +514,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				var msg = utils.strip_tags(data.message),
 					numSockets = userSockets[touid].length;
 
-				user.getUserField(uid, 'username', function(username) {
+				user.getUserField(uid, 'username', function(err, username) {
 					var finalMessage = username + ' says : ' + msg;
 
 					for(var x=0;x<numSockets;x++) {

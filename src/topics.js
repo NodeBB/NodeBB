@@ -33,8 +33,7 @@ marked.setOptions({
 
 	Topics.getTopicDataWithUsername = function(tid, callback) {
 		Topics.getTopicData(tid, function(topic) {
-			user.getUserField(topic.uid, 'username', function(username) {
-
+			user.getUserField(topic.uid, 'username', function(err, username) {
 				topic.username = username;
 				callback(topic);
 			});
@@ -572,8 +571,8 @@ marked.setOptions({
 			return;
 		}
 
-		user.getUserField(uid, 'lastposttime', function(lastposttime) {
-
+		user.getUserField(uid, 'lastposttime', function(err, lastposttime) {
+			if (err) lastposttime = 0;
 			if(Date.now() - lastposttime < meta.config.postDelay) {
 				callback(new Error('too-many-posts'), null);
 				return;

@@ -102,8 +102,7 @@ var	RDB = require('./redis.js'),
 	Posts.getPostData = function(pid, callback) {
 		RDB.hgetall('post:' + pid, function(err, data) {
 			if(err === null) {
-				plugins.fireHook('filter:post.get', data.content, function(content) {
-					data.content = content;
+				plugins.fireHook('filter:post.get', data, function(data) {
 					callback(data);
 				});
 			}
@@ -324,8 +323,8 @@ var	RDB = require('./redis.js'),
 								});
 							},
 							content: function(next) {
-								plugins.fireHook('filter:post.get', content, function(content) {
-									next(null, content);
+								plugins.fireHook('filter:post.get', postData, function(postData) {
+									next(null, postData.content);
 								});
 							}
 						}, function(err, results) {
@@ -335,7 +334,7 @@ var	RDB = require('./redis.js'),
 							callback(postData);
 						});
 
-						plugins.fireHook('action:post.save', [pid, content]);
+						plugins.fireHook('action:post.save', [postData]);
 
 						postSearch.index(content, pid);
 					});
