@@ -63,12 +63,12 @@ var user = require('./../user.js'),
 
 			if (num_strategies == 0) {
 				data = {
-					'login_window:spansize': 'span12',
+					'login_window:spansize': 'col-md-12',
 					'alternate_logins:display': 'none'
 				};
 			} else {
 				data = {
-					'login_window:spansize': 'span6',
+					'login_window:spansize': 'col-md-6',
 					'alternate_logins:display': 'block'
 				}
 				for (var i=0, ii=num_strategies; i<ii; i++) {
@@ -88,12 +88,12 @@ var user = require('./../user.js'),
 
 			if (num_strategies == 0) {
 				data = {
-					'register_window:spansize': 'span12',
+					'register_window:spansize': 'col-md-12',
 					'alternate_logins:display': 'none'
 				};
 			} else {
 				data = {
-					'register_window:spansize': 'span6',
+					'register_window:spansize': 'col-md-6',
 					'alternate_logins:display': 'block'
 				}
 				for (var i=0, ii=num_strategies; i<ii; i++) {
