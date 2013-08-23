@@ -18,7 +18,7 @@
 		<!-- BEGIN topics -->
 		<a href="../../topic/{topics.slug}" id="tid-{topics.tid}">
 			<li class="category-item {topics.deleted-class}">
-				<div class="row-fluid">
+				<div class="row">
 					<div class="col-md-12 topic-row img-thumbnail">
 						<div class="latest-post visible-lg visible-md">
 							<div class="pull-right">										

@@ -8,7 +8,7 @@
 		</span>
 	</div>
 
-	<div class="row-fluid">
+	<div class="row">
 		<div class="span6">
 			<h4>privacy</h4>
 			<label class="checkbox">

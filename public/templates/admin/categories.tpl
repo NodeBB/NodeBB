@@ -10,7 +10,7 @@
 
 <!-- TODO: remove inline event listeners. -->
 
-<div class="row-fluid admin-categories">
+<div class="row admin-categories">
 	<ul class="col-md-12" id="entry-container">
 	<!-- BEGIN categories -->
 		<li data-cid="{categories.cid}" class="entry-row {categories.blockclass}">

@@ -13,7 +13,7 @@
 		<!-- BEGIN topics -->
 		<a href="../../topic/{topics.slug}" id="tid-{topics.tid}">
 			<li class="category-item">
-				<div class="row-fluid">
+				<div class="row">
 					<div class="col-md-12 img-thumbnail">
 						<div class="search-result-post">
 							<img src="{topics.teaser_userpicture}" />
@@ -28,7 +28,7 @@
 		<!-- BEGIN posts -->
 		<a href="../../topic/{posts.topicSlug}#{posts.pid}" id="tid-{posts.tid}">
 			<li class="category-item">
-				<div class="row-fluid">
+				<div class="row">
 					<div class="col-md-12 img-thumbnail">
 						<div class="search-result-post">
 							<img src="{posts.picture}" />

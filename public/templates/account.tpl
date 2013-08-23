@@ -7,7 +7,7 @@
 		</span>
 	</div>
 
-	<div class="row-fluid">
+	<div class="row">
 		<div class="span2 account-block" style="text-align: center; margin-bottom:20px;">
 			<div class="account-picture-block">
 				<img src="{picture}" class="user-profile-picture img-thumbnail"/>

@@ -75,7 +75,7 @@
 
 	<!-- BEGIN posts -->
 		<a id="post_anchor_{posts.pid}" name="{posts.pid}"></a>
-		<li class="row-fluid post-row" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-deleted="{posts.deleted}">
+		<li class="row post-row" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-deleted="{posts.deleted}">
 			<div class="span1 profile-image-block hidden-xs hidden-sm">
 				<!--<i class="icon-spinner icon-spin icon-2x pull-left"></i>-->
 				<a href="/users/{posts.userslug}">

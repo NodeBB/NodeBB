@@ -64,7 +64,7 @@
 	<div id="alert_window"></div>
 	
 	<div class="container">
-		<div class="row-fluid">
+		<div class="row">
 			<div class="col-md-3">
 				<div class="well sidebar-nav">
 					<ul class="nav nav-list">
