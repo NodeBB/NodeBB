@@ -2,7 +2,7 @@ var ajaxify = {};
 
 
 (function($) {
-	
+
 	var location = document.location || window.location,
 		rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : ''),
 		content = null;
@@ -39,14 +39,14 @@ var ajaxify = {};
 		}
 
 		var tpl_url = templates.get_custom_map(url.split('?')[0]);
-		
+
 		if (tpl_url == false && !templates[url]) {
 			if(url === '' || url === '/') {
 				tpl_url = 'home';
 			} else {
 				tpl_url = url.split('/')[0].split('?')[0];
 			}
-			
+
 		} else if (templates[url]) {
 			tpl_url = url;
 		}
@@ -67,9 +67,9 @@ var ajaxify = {};
 				if (callback) {
 					callback();
 				}
-				
+
 				app.process_page();
-				
+
 				jQuery('#content, #footer').stop(true, true).fadeIn(200, function() {
 					if(window.location.hash)
 						hash = window.location.hash;
@@ -94,12 +94,15 @@ var ajaxify = {};
 
 		// Enhancing all anchors to ajaxify...
 		$(document.body).on('click', 'a', function(e) {
-			if (this.href == window.location.href + "#") return;
-			if(this.href.slice(-1) === "#") return;
-			
+
+			function hrefEmpty(href) {
+				return href == 'javascript:;' || href == window.location.href + "#" || href.slice(-1) === "#";
+			}
+
+			if(hrefEmpty(this.href)) return;
 
 			var url = this.href.replace(rootUrl +'/', '');
-			
+
 			if (this.target !== '') return;
 
 			if (!e.ctrlKey && e.which === 1) {
@@ -126,7 +129,7 @@ var ajaxify = {};
 
 			script.type = "text/javascript";
 			try {
-			  script.appendChild(document.createTextNode(data));      
+			  script.appendChild(document.createTextNode(data));
 			} catch(e) {
 			  script.text = data;
 			}
@@ -162,5 +165,5 @@ var ajaxify = {};
 			evalScript(scripts[i]);
 		}
 	};
-	
+
 }(jQuery));

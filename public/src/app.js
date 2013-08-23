@@ -218,7 +218,6 @@ var socket,
 
 	app.current_room = null;
 	app.enter_room = function(room) {
-
 		if(socket) {
 			if (app.current_room === room)
 				return;
@@ -334,7 +333,7 @@ var socket,
 			if(data.posts.length) {
 				app.createNewPosts(data);
 			}
-			
+
 			if(callback)
 				callback(data.posts);
 		});
@@ -356,20 +355,20 @@ var socket,
 		}
 
 		if(!scrollTo.length && tid) {
-			
+
 			var intervalID = setInterval(function() {
 				app.loadMorePosts(tid, function(posts) {
 					scrollTo = $('#post_anchor_' + pid);
-					
+
 					if(tid && scrollTo.length) {
-						animateScroll();						
+						animateScroll();
 					}
-					
+
 					if(!posts.length || scrollTo.length)
 						clearInterval(intervalID);
 				});
 			}, 100);
-			
+
 		} else if(tid) {
 			animateScroll();
 		}

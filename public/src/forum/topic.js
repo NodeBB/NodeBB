@@ -9,12 +9,12 @@
 			pinned: templates.get('pinned')
 		},
 		topic_name = templates.get('topic_name');
-	
+
 
 	jQuery('document').ready(function() {
 
 		app.addCommasToNumbers();
-		
+
 		var	room = 'topic_' + tid,
 			adminTools = document.getElementById('thread-tools');
 
@@ -26,17 +26,12 @@
 		if (thread_state.pinned === '1') set_pinned_state(true);
 
 		if (expose_tools === '1') {
-			var deleteThreadEl = document.getElementById('delete_thread'),
-				lockThreadEl = document.getElementById('lock_thread'),
-				pinThreadEl = document.getElementById('pin_thread'),
-				moveThreadEl = document.getElementById('move_thread'),
-				moveThreadModal = $('#move_thread_modal');
+			var moveThreadModal = $('#move_thread_modal');
 
 			adminTools.style.visibility = 'inherit';
 
 			// Add events to the thread tools
-			deleteThreadEl.addEventListener('click', function(e) {
-				e.preventDefault();
+			$('#delete_thread').on('click', function(e) {
 				if (thread_state.deleted !== '1') {
 					bootbox.confirm('Are you sure you want to delete this thread?', function(confirm) {
 						if (confirm) socket.emit('api:topic.delete', { tid: tid });
@@ -46,30 +41,31 @@
 						if (confirm) socket.emit('api:topic.restore', { tid: tid });
 					});
 				}
-			}, false);
+				return false;
+			});
 
-			lockThreadEl.addEventListener('click', function(e) {
-				e.preventDefault();
+			$('#lock_thread').on('click', function(e) {
 				if (thread_state.locked !== '1') {
 					socket.emit('api:topic.lock', { tid: tid });
 				} else {
 					socket.emit('api:topic.unlock', { tid: tid });
 				}
-			}, false);
+				return false;
+			});
 
-			pinThreadEl.addEventListener('click', function(e) {
-				e.preventDefault();
+			$('#pin_thread').on('click', function(e) {
 				if (thread_state.pinned !== '1') {
 					socket.emit('api:topic.pin', { tid: tid });
 				} else {
 					socket.emit('api:topic.unpin', { tid: tid });
 				}
-			}, false);
+				return false;
+			});
 
-			moveThreadEl.addEventListener('click', function(e) {
-				e.preventDefault();
+			$('#move_thread').on('click', function(e) {
 				moveThreadModal.modal('show');
-			}, false);
+				return false;
+			});
 
 			moveThreadModal.on('shown', function() {
 				var loadingEl = document.getElementById('categories-loading');
@@ -195,7 +191,7 @@
 				});
 			}
 		});
-		
+
 		socket.emit('api:topic.followCheck', tid);
 		if(followEl[0]) {
 			followEl[0].addEventListener('click', function() {
@@ -284,7 +280,7 @@
 			socket.emit('api:posts.delete', { pid: pid }) :
 			socket.emit('api:posts.restore', { pid: pid });
 		}
-	}); 
+	});
 
 	$('.post-container').delegate('.chat', 'click', function(e) {
 
@@ -296,7 +292,7 @@
 			chatModal.show();
 			chat.bringModalToTop(chatModal);
 		});
-		
+
 	});
 
 	ajaxify.register_events([
@@ -372,7 +368,7 @@
 		var editedPostEl = document.getElementById('content_' + data.pid);
 
 		var editedPostTitle = $('#topic_title_'+data.pid);
-		
+
 		if(editedPostTitle.length > 0) {
 			editedPostTitle.fadeOut(250, function() {
 				editedPostTitle.html(data.title);
@@ -402,7 +398,7 @@
 			if (favEl) {
 				favEl.className = 'icon-star-empty';
 				$(favEl).parent().removeClass('btn-warning');
-			}	
+			}
 		}
 	});
 
@@ -595,7 +591,7 @@
 		var	postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
 			editEl = postEl.find('.edit'),
 			deleteEl = postEl.find('.delete');
-		
+
 		if (state) {
 			editEl.removeClass('none');
 			deleteEl.removeClass('none');
