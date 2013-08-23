@@ -79,8 +79,7 @@ var user = require('./../user.js'),
 			if(!req.user)
 				return res.redirect('/403');
 
-			user.getUserField(req.user.uid, 'userslug', function(userslug) {
-
+			user.getUserField(req.user.uid, 'userslug', function(err, userslug) {
 				if(req.params.userslug && userslug === req.params.userslug) {
 					app.build_header({ req: req, res: res }, function(err, header) {
 						res.send(header + app.create_route('users/'+req.params.userslug+'/edit','accountedit') + templates['footer']);
@@ -96,7 +95,7 @@ var user = require('./../user.js'),
 			if(!req.user)
 				return res.redirect('/403');
 
-			user.getUserField(req.user.uid, 'userslug', function(userslug) {
+			user.getUserField(req.user.uid, 'userslug', function(err, userslug) {
 				if(req.params.userslug && userslug === req.params.userslug) {
 					app.build_header({ req: req, res: res }, function(err, header) {
 						res.send(header + app.create_route('users/'+req.params.userslug+'/settings','accountsettings') + templates['footer']);
@@ -127,7 +126,7 @@ var user = require('./../user.js'),
 				return;
 			}
 
-			user.getUserField(req.user.uid, 'uploadedpicture', function(oldpicture) {
+			user.getUserField(req.user.uid, 'uploadedpicture', function(err, oldpicture) {
 				if(!oldpicture) {
 					uploadUserPicture(req.user.uid, path.extname(req.files.userPhoto.name), req.files.userPhoto.path, res);
 					return;
