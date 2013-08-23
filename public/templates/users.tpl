@@ -7,11 +7,15 @@
 		<li class=''><a href='/users-search'>Search</a></li>
 	</ul>
 
-
+	<br />
 	<div class="search {search_display} well">
-		<input id="search-user" type="text" placeholder="Enter a username to search"/><br />
-		<i class="icon-spinner icon-spin none"></i>
-		<span id="user-notfound-notify" class="label label-danger hide">User not found!</span><br/>
+		
+		<div class="input-group">
+			<input class="form-control" id="search-user" type="text" placeholder="Enter a username to search"/>
+	        <span class="input-group-addon">
+	        	<span id="user-notfound-notify"><i class="icon icon-circle-blank"></i></span>
+	        </span>
+		</div>
 	</div>
 	
 	<ul id="users-container" class="users">

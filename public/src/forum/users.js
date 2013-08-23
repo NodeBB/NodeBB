@@ -8,6 +8,8 @@
 			parts = url.split('/'),
 			active = parts[parts.length-1];
 
+		var lastSearch = null;
+
 		app.addCommasToNumbers();
 
 		jQuery('.nav-pills li').removeClass('active');
@@ -27,22 +29,30 @@
 			timeoutId = setTimeout(function() {
 				var username = $('#search-user').val();
 				
-				jQuery('.icon-spinner').removeClass('none');
-				socket.emit('api:admin.user.search', username);
+				if (username == '') {
+					jQuery('#user-notfound-notify').html('<i class="icon icon-circle-blank"></i>');
+					jQuery('#user-notfound-notify').parent().removeClass('btn-warning label-warning btn-success label-success');
+					return;
+				}
+				
+				if (lastSearch === username) return;
+				lastSearch = username;
+				
+				jQuery('#user-notfound-notify').html('<i class="icon-spinner icon-spin"></i>');
+
+				setTimeout(function() {
+					socket.emit('api:admin.user.search', username);
+				}, 500); //replace this with global throttling function/constant
+				
 			}, 250);
 		});
 		
 		socket.removeAllListeners('api:admin.user.search');
 		
 		socket.on('api:admin.user.search', function(data) {
-			
-			jQuery('.icon-spinner').addClass('none');				
-			
 			if(data === null) {
-				$('#user-notfound-notify').html('You need to be logged in to search!')
-					.show()
-					.addClass('label-danger')
-					.removeClass('label-success');
+				$('#user-notfound-notify').html('You need to be logged in to search!');
+				$('#user-notfound-notify').parent().addClass('btn-warning label-warning');
 				return;
 			}
 			
@@ -55,16 +65,12 @@
 
 
 			if(data && data.length === 0) {
-				$('#user-notfound-notify').html('User not found!')
-					.show()
-					.addClass('label-danger')
-					.removeClass('label-success');
+				$('#user-notfound-notify').html('User not found!');
+				$('#user-notfound-notify').parent().addClass('btn-warning label-warning');
 			}
 			else {
-				$('#user-notfound-notify').html(data.length + ' user'+(data.length>1?'s':'') + ' found!')
-					.show()
-					.addClass('label-success')
-					.removeClass('label-danger');
+				$('#user-notfound-notify').html(data.length + ' user'+(data.length>1?'s':'') + ' found!');
+				$('#user-notfound-notify').parent().addClass('btn-success label-success');
 			}
 
 		});
