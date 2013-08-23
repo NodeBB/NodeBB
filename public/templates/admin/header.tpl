@@ -34,7 +34,7 @@
 <body class="admin">
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="navbar-inner">
-			<div class="container-fluid">
+			<div class="container">
 				<a class="brand" href="/admin/index">NodeBB ACP</a>
 				<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
 					<span class="icon-bar"></span>
@@ -63,7 +63,7 @@
 
 	<div id="alert_window"></div>
 	
-	<div class="container-fluid">
+	<div class="container">
 		<div class="row-fluid">
 			<div class="col-md-3">
 				<div class="well sidebar-nav">
