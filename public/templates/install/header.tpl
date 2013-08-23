@@ -26,7 +26,7 @@
 		<div class="navbar-inner">
 			<div class="container">
 				<a class="brand" href="/install">NodeBB Installation</a>
-				<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+				<button type="button" class="btn navbar-btn" data-toggle="collapse" data-target=".nav-collapse">
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
