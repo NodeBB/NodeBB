@@ -16,18 +16,20 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// Configuration setup
+nconf = require('nconf');
+nconf.argv().file({ file: __dirname + '/config.json'});
+
 var fs = require('fs'),
 	winston = require('winston'),
 	pkg = require('./package.json'),
 	url = require('url'),
 	meta = require('./src/meta.js');
 
-nconf = require('nconf');
 // Runtime environment
 global.env = process.env.NODE_ENV || 'production',
 
-// Configuration setup
-nconf.argv().file({ file: __dirname + '/config.json'});
+
 
 winston.remove(winston.transports.Console);
 winston.add(winston.transports.Console, {
