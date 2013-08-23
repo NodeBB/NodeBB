@@ -12,16 +12,15 @@
 		if (target) {
 			document.location.href = target.getAttribute('data-url');
 		}
-	});	
-	
+	});
+
 	$('#login').on('click', function() {
-		
 		var loginData = {
 			'username': $('#username').val(),
 			'password': $('#password').val(),
 			'_csrf': $('#csrf-token').val()
 		};
-				
+
 		$.ajax({
 			type: "POST",
 			url: RELATIVE_PATH + '/login',
@@ -44,5 +43,6 @@
 
 		return false;
 	});
-	
+
+	document.querySelector('#content input').focus();
 }());
