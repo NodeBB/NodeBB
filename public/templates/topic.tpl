@@ -12,7 +12,7 @@
 </ol>
 
 <ul id="post-container" class="post-container container" data-tid="{topic_id}">
-	
+
 
 
 	<!-- BEGIN main_posts -->
@@ -34,17 +34,17 @@
 					<hr />
 
 					<div class="topic-buttons pull-left">
-						<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn edit {main_posts.display_moderator_tools}" type="button" title="Edit"><i class="icon-pencil"></i></button>
-						<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn delete {main_posts.display_moderator_tools}" type="button" title="Delete"><i class="icon-trash"></i></button>
+						<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn btn-default edit {main_posts.display_moderator_tools}" type="button" title="Edit"><i class="icon-pencil"></i></button>
+						<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn btn-default delete {main_posts.display_moderator_tools}" type="button" title="Delete"><i class="icon-trash"></i></button>
 						<div class="btn-group">
-							<button class="btn follow" type="button" title="Be notified of new replies in this topic"><i class="icon-eye-open"></i></button>
-							<button id="favs_{main_posts.pid}_{main_posts.uid}" class="favourite btn {main_posts.fav_button_class}" type="button">
+							<button class="btn btn-default follow" type="button" title="Be notified of new replies in this topic"><i class="icon-eye-open"></i></button>
+							<button id="favs_{main_posts.pid}_{main_posts.uid}" class="favourite btn btn-default {main_posts.fav_button_class}" type="button">
 								<span>Favourite</span>
 								<span class="post_rep_{main_posts.pid}">{main_posts.post_rep} </span><i class="{main_posts.fav_star_class}"></i>
 							</button>
 						</div>
 						<div class="btn-group">
-							<button id="quote_{main_posts.pid}_{main_posts.uid}" class="btn quote" type="button" title="Quote"><i class="icon-quote-left"></i></button>
+							<button id="quote_{main_posts.pid}_{main_posts.uid}" class="btn btn-default quote" type="button" title="Quote"><i class="icon-quote-left"></i></button>
 							<button class="btn btn-primary btn post_reply" type="button">Reply <i class="icon-reply"></i></button>
 						</div>
 					</div>
@@ -85,7 +85,7 @@
 					<i class="icon-star"></i><span class="user_rep_{posts.uid} formatted-number">{posts.user_rep}</span>
 					<div id="ids_{posts.pid}_{posts.uid}" class="chat hidden-xs" title="Chat"><i class="icon-comment"></i></div>
 				</div>
-				<span class="label label-danger {posts.show_banned}">banned</span>			
+				<span class="label label-danger {posts.show_banned}">banned</span>
 			</div>
 			<div class="span11 col-md-12-tablet">
 				<div class="post-block speech-bubble">

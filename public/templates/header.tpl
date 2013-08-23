@@ -85,19 +85,19 @@
 						</ul>
 					</li>
 					<li>
-						<form id="search-form" class="form-search form-inline" action="" method="GET">
+						<form id="search-form" class="form-search form-inline visible-md visible-lg" action="" method="GET">
 							<input type="text" name="query" class="form-control search-query" />
 							<button type="submit" class="btn hide">Search</button>
 						</form>
 					</li>
-					
+
 				</ul>
 			</div>
 		</div>
 	</div>
-	
+
 	<input id="csrf_token" type="hidden" template-variable="csrf" value="{csrf}" />
 
-	
+
 	<div class="container" id="content">
 
