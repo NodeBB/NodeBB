@@ -59,7 +59,7 @@
 			max-height: 10px;
 			padding-top: 5px;
 			margin-right: 5px;
-			
+
 		}
 	}
 	.post-content {
@@ -77,6 +77,10 @@
 			font-size: 12px;
 			float: right;
 			margin-right: 5px;
+
+			button.show {
+				display: inline-block!important;
+			}
 
 			button, a {
 				display: inline-block;
@@ -99,7 +103,7 @@
 		}
 	}
 
-	
+
 
 	&.deleted {
 		-moz-opacity: 0.30;
@@ -117,7 +121,7 @@
 	}
 
 	@media (min-width: 979px) {
-		.speech-bubble:after 
+		.speech-bubble:after
 		{
 			content: "";
 			position: absolute;
@@ -131,7 +135,7 @@
 			z-index: 1;
 		}
 
-		.speech-bubble:before 
+		.speech-bubble:before
 		{
 			content: "";
 			position: absolute;
@@ -155,7 +159,7 @@
 				overflow: hidden;
 				margin: 0;
 				padding: 0;
-				padding-top: 5px;
+				padding-top: 0px;
 				margin-bottom: -5px;
 				padding-bottom: 5px;
 			}
@@ -170,8 +174,8 @@
 			padding-bottom: 0px;
 			text-align: center;
 			width:80px;
-			
-			@media (max-width: 767px) { 
+
+			@media (max-width: 767px) {
 				display: none;
 			}
 		}
@@ -217,7 +221,9 @@
 		}
 
 		.topic-buttons {
-			margin-top: 8px;
+			button.show {
+				display: inline-block!important;
+			}
 		}
 
 	}

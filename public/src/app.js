@@ -78,7 +78,7 @@ var socket,
 				});
 
 				socket.on('api:user.get_online_users', function(users) {
-					jQuery('.username-field').each(function() {
+					jQuery('a.username-field').each(function() {
 						if (this.processed === true)
 							return;
 
@@ -91,6 +91,22 @@ var socket,
 						} else {
 							el.find('i').remove();
 							el.prepend('<i class="icon-circle-blank"></i>');
+						}
+
+						el.processed = true;
+					});
+					jQuery('button .username-field').each(function() {
+						//DRY FAIL
+						if (this.processed === true)
+							return;
+
+						var el = jQuery(this),
+							uid = el.parents('li').attr('data-uid');
+
+						if (uid && jQuery.inArray(uid, users) !== -1) {
+							el.parent().addClass('btn-success');
+						} else {
+							el.parent().addClass('btn-danger');
 						}
 
 						el.processed = true;
