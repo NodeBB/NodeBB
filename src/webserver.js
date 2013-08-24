@@ -223,13 +223,10 @@ var express = require('express'),
 
 			async.waterfall([
 				function(next) {
-					topics.getTopicField(tid, 'deleted', function(err, deleted) {
-						if(deleted === '1')
-							return next(1, null);
-					});
-				},
-				function(next) {
 					topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), function(err, topicData) {
+						if(topicData.deleted === '1' && topicData.expose_tools === 0)
+							return next(new Error('Topic deleted'), null);
+
 						next(err, topicData);
 					});
 				},
