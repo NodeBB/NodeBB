@@ -207,6 +207,7 @@ var express = require('express'),
 
 
 		app.get('/topic/:topic_id/:slug?', function(req, res) {
+
 			var tid = req.params.topic_id;
 			if (tid.match(/^\d+\.rss$/)) {
 				fs.readFile('feeds/topics/' + tid, function (err, data) {
@@ -222,12 +223,18 @@ var express = require('express'),
 
 			async.waterfall([
 				function(next) {
+					topics.getTopicField(tid, 'deleted', function(err, deleted) {
+						if(deleted === '1')
+							return next(1, null);
+					});
+				},
+				function(next) {
 					topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), function(err, topicData) {
 						next(err, topicData);
 					});
 				},
 				function(topicData, next) {
-					var	posts = topicData.posts.push(topicData.main_posts[0]),
+					var posts = topicData.posts.push(topicData.main_posts[0]),
 						lastMod = 0,
 						timestamp;
 
