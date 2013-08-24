@@ -70,13 +70,18 @@ var	RDB = require('./redis.js'),
 				}
 
 				Posts.addUserInfoToPost(postData, function() {
-					topics.getTopicField(postData.tid, 'slug', function(err, topicSlug) {
+					topics.getTopicFields(postData.tid, ['slug', 'deleted'], function(err, topicData) {
+						if(err)
+							return callback(err);
+
+						if(topicData.deleted === '1')
+							return callback(null);
 
 						if(postData.content)
 							postData.content = utils.strip_tags(postTools.markdownToHTML(postData.content));
 
 						postData.relativeTime = utils.relativeTime(postData.timestamp);
-						postData.topicSlug = topicSlug;
+						postData.topicSlug = topicData.slug;
 						posts.push(postData);
 						callback(null);
 					});

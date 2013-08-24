@@ -649,14 +649,7 @@ marked.setOptions({
 	}
 
 	Topics.getTopicFields = function(tid, fields, callback) {
-		RDB.hmgetObject('topic:' + tid, fields, function(err, data) {
-			if(err === null) {
-				callback(data);
-			}
-			else {
-				console.log(err);
-			}
-		});
+		RDB.hmgetObject('topic:' + tid, fields, callback);
 	}
 
 	Topics.setTopicField = function(tid, field, value) {

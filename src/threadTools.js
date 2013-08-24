@@ -160,7 +160,7 @@ var	RDB = require('./redis.js'),
 			if (privileges.editable) {
 
 				topics.setTopicField(tid, 'pinned', 0);
-				topics.getTopicFields(tid, ['cid', 'lastposttime'], function(topicData) {
+				topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
 					RDB.zadd('categories:' + topicData.cid + ':tid', topicData.lastposttime, tid);
 				});
 				if (socket) {
@@ -180,7 +180,7 @@ var	RDB = require('./redis.js'),
 
 	ThreadTools.move = function(tid, cid, socket) {
 
-		topics.getTopicFields(tid, ['cid', 'lastposttime'], function(topicData) {
+		topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
 			var oldCid = topicData.cid;
 			var multi = RDB.multi();
 
