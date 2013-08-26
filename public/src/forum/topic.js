@@ -600,4 +600,44 @@
 			deleteEl.addClass('none');
 		}
 	}
+
+
+
+	var postAuthorImage, postAuthorInfo;
+
+	function updateHeader() {
+		jQuery('.post-author-info').css('bottom', '0px');
+		postAuthorImage = postAuthorImage || document.getElementById('post-author-image');
+		postAuthorInfo = postAuthorInfo || document.getElementById('post-author-info');
+
+	  var scrollTop = jQuery(window).scrollTop();
+	  var scrollBottom = scrollTop + jQuery(window).height();
+
+	  if (scrollTop < 50) {
+	    postAuthorImage.src = (jQuery('.main-avatar img').attr('src'));
+	    postAuthorInfo.innerHTML = 'Posted by ' + jQuery('.main-post').attr('data-username') + ', ' + jQuery('.main-post').find('.relativeTimeAgo').html();
+	    return;
+	  }
+
+	  jQuery('.sub-posts').each(function() {
+	    var el = jQuery(this);
+	    var elTop = el.offset().top;
+	    var height = Math.floor(el.height());
+	    var elBottom = elTop + (height < 300 ? height : 300);
+
+	    var inView = ((elBottom >= scrollTop) && (elTop <= scrollBottom)
+	      && (elBottom <= scrollBottom) &&  (elTop >= scrollTop) );
+
+
+	    if (inView) {
+
+	      postAuthorImage.src = (jQuery(this).find('.profile-image-block img').attr('src'));
+	      postAuthorInfo.innerHTML = 'Posted by ' + jQuery(this).attr('data-username') + ', ' + jQuery(this).find('.relativeTimeAgo').html();
+
+	    }
+	  });
+	}
+
+	window.onscroll = updateHeader;
+	window.onload = updateHeader;
 })();

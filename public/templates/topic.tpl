@@ -17,49 +17,54 @@
 
 	<!-- BEGIN main_posts -->
 		<a id="post_anchor_{main_posts.pid}" name="{main_posts.pid}"></a>
-		<li class="row post-row main-post" data-pid="{main_posts.pid}" data-uid="{main_posts.uid}" data-deleted="{main_posts.deleted}">
+		<li class="row post-row main-post" data-pid="{main_posts.pid}" data-uid="{main_posts.uid}" data-username="{main_posts.username}" data-deleted="{main_posts.deleted}">
 			<div class="col-md-12">
 				<div class="post-block">
-					<a class="main-avatar" href="/users/{main_posts.userslug}">
-						<img src="{main_posts.picture}" align="left" class="img-thumbnail"/><br />
-						<div class="hover-overlay">
-							{main_posts.username}<br />
-							<i class="icon-star"></i><span class="user_rep_{main_posts.uid}">{main_posts.user_rep}</span>
-							<i class="icon-pencil"></i><span class="user_posts_{main_posts.uid}">{main_posts.user_postcount}</span>
+					<div class="main-post-buttons">
+						<a class="main-avatar" href="/users/{main_posts.userslug}">
+							<img src="{main_posts.picture}" align="left" class="img-thumbnail" width=150 height=150 /><br />
+							<!--<div class="hover-overlay">
+								{main_posts.username}<br />
+								<i class="icon-star"></i><span class="user_rep_{main_posts.uid}">{main_posts.user_rep}</span>
+								<i class="icon-pencil"></i><span class="user_posts_{main_posts.uid}">{main_posts.user_postcount}</span>
+							</div>-->
+						</a>
+						<h3><p id="topic_title_{main_posts.pid}" class="topic-title">{topic_name}</p></h3>
+
+						<div class="topic-buttons" >
+							<div class="btn-group">
+								<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="Posted by {main_posts.username}">
+									<span class="username-field" href="/users/{main_posts.userslug}">{main_posts.username}&nbsp;</span>
+									<span class="caret"></span>
+								</button>
+
+
+							    <ul class="dropdown-menu">
+							      <li><a href="#">Profile</a></li>
+							      <li><a href="#">Chat</a></li>
+							    </ul>
+							</div>
+
+
+							<div class="btn-group">
+								<button class="btn btn-sm btn-default follow" type="button" title="Be notified of new replies in this topic"><i class="icon-eye-open"></i></button>
+								<button id="favs_{main_posts.pid}_{main_posts.uid}" class="favourite btn btn-sm btn-default {main_posts.fav_button_class}" type="button">
+									<span class="favourite-text">Favourite</span>
+									<span class="post_rep_{main_posts.pid}">{main_posts.post_rep} </span><i class="{main_posts.fav_star_class}"></i>
+								</button>
+							</div>
+							<div class="btn-group">
+								<button id="quote_{main_posts.pid}_{main_posts.uid}" class="btn btn-sm btn-default quote" type="button" title="Quote"><i class="icon-quote-left"></i></button>
+								<button class="btn btn-sm btn-primary btn post_reply" type="button">Reply <i class="icon-reply"></i></button>
+							</div>
+
+							<div class="btn-group pull-right post-tools">
+								<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn btn-sm btn-default edit {main_posts.display_moderator_tools}" type="button" title="Edit"><i class="icon-pencil"></i></button>
+								<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn btn-sm btn-default delete {main_posts.display_moderator_tools}" type="button" title="Delete"><i class="icon-trash"></i></button>
+							</div>
 						</div>
-					</a>
-					<h3><p id="topic_title_{main_posts.pid}" class="topic-title">{topic_name}</p></h3>
-
-					<div class="topic-buttons pull-left">
-						<div class="btn-group">
-							<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="Posted by {main_posts.username}">
-								<span class="username-field" href="/users/{main_posts.userslug}">{main_posts.username}</span>
-								<span class="caret"></span>
-							</button>
-
-
-						    <ul class="dropdown-menu">
-						      <li><a href="#">Profile</a></li>
-						      <li><a href="#">Chat</a></li>
-						    </ul>
-						</div>
-
-
-						<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn btn-default edit {main_posts.display_moderator_tools}" type="button" title="Edit"><i class="icon-pencil"></i></button>
-						<button id="ids_{main_posts.pid}_{main_posts.uid}" class="btn btn-default delete {main_posts.display_moderator_tools}" type="button" title="Delete"><i class="icon-trash"></i></button>
-						<div class="btn-group">
-							<button class="btn btn-default follow" type="button" title="Be notified of new replies in this topic"><i class="icon-eye-open"></i></button>
-							<button id="favs_{main_posts.pid}_{main_posts.uid}" class="favourite btn btn-default {main_posts.fav_button_class}" type="button">
-								<span>Favourite</span>
-								<span class="post_rep_{main_posts.pid}">{main_posts.post_rep} </span><i class="{main_posts.fav_star_class}"></i>
-							</button>
-						</div>
-						<div class="btn-group">
-							<button id="quote_{main_posts.pid}_{main_posts.uid}" class="btn btn-default quote" type="button" title="Quote"><i class="icon-quote-left"></i></button>
-							<button class="btn btn-primary btn post_reply" type="button">Reply <i class="icon-reply"></i></button>
-						</div>
+						<div style="clear:both; margin-bottom: 10px;"></div>
 					</div>
-					<div style="clear:both; margin-bottom: 10px;"></div>
 
 					<div id="content_{main_posts.pid}" class="post-content">{main_posts.content}</div>
 					<div id="images_{main_posts.pid}" class="post-images">
@@ -69,16 +74,24 @@
 					</div>
 					<div class="post-signature">{main_posts.signature}</div>
 					<div class="profile-block">
-						posted {main_posts.relativeTime} ago
+						<span class="pull-right">
+							posted <span class="relativeTimeAgo">{main_posts.relativeTime} ago</span>
+							<span class="{main_posts.edited-class}">| last edited by <strong><a href="/users/{main_posts.editorslug}">{main_posts.editorname}</a></strong> {main_posts.relativeEditTime} ago</span>
+						</span>
+						<div style="clear:both;"></div>
+
+					</div>
+					<!--<div class="profile-block">-->
+						<!--Posted {main_posts.relativeTime} ago
 						<span class="{main_posts.edited-class} hidden-xs">| last edited by <strong><a href="/users/{main_posts.editorslug}">{main_posts.editorname}</a></strong> {main_posts.relativeEditTime} ago</span>
 						<span class="{main_posts.edited-class}"><i class="icon-edit visible-xs" title="edited by {main_posts.editorname} {main_posts.relativeEditTime} ago"></i></span>
 						<div class="post-buttons visible-xs">
 							<button class="post_reply btn-link"><i class="icon-reply"></i></button>
-						</div>
-						<div class="post-buttons">
+						</div>-->
+						<!--<div class="post-buttons">
 							<a href="../{topic_id}.rss" target="_blank"><i class="icon-rss"></i></a>
-						</div>
-					</div>
+						</div>-->
+					<!--</div>-->
 				</div>
 			</div>
 		</li>
@@ -86,20 +99,56 @@
 
 	<!-- BEGIN posts -->
 		<a id="post_anchor_{posts.pid}" name="{posts.pid}"></a>
-		<li class="row post-row" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-deleted="{posts.deleted}">
+		<li class="row post-row sub-posts" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-deleted="{posts.deleted}">
 			<div class="col-md-1 profile-image-block hidden-xs hidden-sm">
 				<!--<i class="icon-spinner icon-spin icon-2x pull-left"></i>-->
 				<a href="/users/{posts.userslug}">
-					<img src="{posts.picture}" align="left" class="img-thumbnail"/>
+					<img src="{posts.picture}" align="left" class="img-thumbnail" />
 				</a>
-				<div class="stats">
+				<!--<div class="stats">
 					<i class="icon-star"></i><span class="user_rep_{posts.uid} formatted-number">{posts.user_rep}</span>
 					<div id="ids_{posts.pid}_{posts.uid}" class="chat hidden-xs" title="Chat"><i class="icon-comment"></i></div>
-				</div>
+				</div>-->
 				<span class="label label-danger {posts.show_banned}">banned</span>
 			</div>
 			<div class="col-md-11">
 				<div class="post-block speech-bubble">
+					<div class="post-buttons">
+						<div class="topic-buttons
+						">
+							<div class="btn-group">
+								<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="Posted by {posts.username}">
+									<span class="username-field" href="/users/{posts.userslug}">{posts.username}&nbsp;</span>
+									<span class="caret"></span>
+								</button>
+
+
+							    <ul class="dropdown-menu">
+							      <li><a href="#">Profile</a></li>
+							      <li><a href="#">Chat</a></li>
+							    </ul>
+							</div>
+
+							<div class="btn-group">
+								<button id="favs_{posts.pid}_{posts.uid}" class="favourite btn btn-sm btn-default {posts.fav_button_class}" type="button">
+									<span class="favourite-text">Favourite</span>
+									<span class="post_rep_{posts.pid}">{posts.post_rep} </span><i class="{posts.fav_star_class}"></i>
+								</button>
+							</div>
+							<div class="btn-group">
+								<button id="quote_{posts.pid}_{posts.uid}" class="btn btn-sm btn-default quote" type="button" title="Quote"><i class="icon-quote-left"></i></button>
+								<button class="btn btn-sm btn-primary btn post_reply" type="button">Reply <i class="icon-reply"></i></button>
+							</div>
+
+
+							<div class="btn-group pull-right post-tools">
+								<button id="ids_{posts.pid}_{posts.uid}" class="btn btn-sm btn-default edit {posts.display_moderator_tools}" type="button" title="Edit"><i class="icon-pencil"></i></button>
+								<button id="ids_{posts.pid}_{posts.uid}" class="btn btn-sm btn-default delete {posts.display_moderator_tools}" type="button" title="Delete"><i class="icon-trash"></i></button>
+							</div>
+						</div>
+						<div style="clear:both; margin-bottom: 7px;"></div>
+					</div>
+
 					<div id="content_{posts.pid}" class="post-content">{posts.content}</div>
 					<div id="images_{posts.pid}" class="post-images">
 						<!-- BEGIN uploadedImages -->
@@ -108,35 +157,58 @@
 					</div>
 					<div class="post-signature">{posts.signature}</div>
 					<div class="profile-block">
-						<span class="post-buttons">
+						<span class="pull-right">
+							posted <span class="relativeTimeAgo">{posts.relativeTime} ago</span>
+							<span class="{posts.edited-class}">| last edited by <strong><a href="/users/{posts.editorslug}">{posts.editorname}</a></strong> {posts.relativeEditTime} ago</span>
+						</span>
+						<div style="clear:both;"></div>
+
+					</div>
+					<!--<div class="profile-block">-->
+						<!--<span class="post-buttons">
 							<button id="ids_{posts.pid}_{posts.uid}" class="edit {posts.display_moderator_tools} btn-link" title="Edit"><i class="icon-pencil"></i></button>
 							<button id="ids_{posts.pid}_{posts.uid}" class="delete {posts.display_moderator_tools} btn-link" title="Delete"><i class="icon-trash"></i></button>
 							<button id="favs_{posts.pid}_{posts.uid}" class="favourite btn-link" title="Favourite"><span class="post_rep_{posts.pid}">{posts.post_rep} </span><i class="{posts.fav_star_class}"></i></button>
 							<button id="quote_{posts.pid}_{posts.uid}" class="quote btn-link" title="Quote"><i class="icon-quote-left"></i></button>
 							<button class="post_reply btn-link" title="Reply"><i class="icon-reply"></i></button>
-						</span>
-						<img class="hidden-lg hidden-md" src="{posts.picture}" align="left" /> posted by <strong><a class="username-field" href="/users/{posts.userslug}">{posts.username}</a></strong> {posts.relativeTime} ago
-						<span class="{posts.edited-class}">| last edited by <strong><a href="/users/{posts.editorslug}">{posts.editorname}</a></strong> {posts.relativeEditTime} ago</span>
+						</span>-->
+						<!--Posted by <strong><a class="username-field" href="/users/{posts.userslug}">{posts.username}</a></strong> {posts.relativeTime} ago-->
+						<!--<span class="{posts.edited-class}">| last edited by <strong><a href="/users/{posts.editorslug}">{posts.editorname}</a></strong> {posts.relativeEditTime} ago</span>
 						<span class="{posts.edited-class}"><i class="icon-edit visible-xs" title="edited by {posts.editorname} {posts.relativeEditTime} ago"></i></span>
-					</div>
+					</div>-->
 				</div>
 			</div>
 		</li>
 	<!-- END posts -->
 </ul>
 <hr />
-<button id="post_reply" class="btn btn-primary btn-lg post_reply" type="button">Reply</button>
-<div class="btn-group pull-right" id="thread-tools" style="visibility: hidden;">
-	<button class="btn btn-default btn-lg dropdown-toggle" data-toggle="dropdown" type="button">Thread Tools <span class="caret"></span></button>
-	<ul class="dropdown-menu">
-		<li><a href="#" id="pin_thread"><i class="icon-pushpin"></i> Pin Thread</a></li>
-		<li><a href="#" id="lock_thread"><i class="icon-lock"></i> Lock Thread</a></li>
-		<li class="divider"></li>
-		<li><a href="#" id="move_thread"><i class="icon-move"></i> Move Thread</a></li>
-		<li class="divider"></li>
-		<li><a href="#" id="delete_thread"><span class="text-error"><i class="icon-trash"></i> Delete Thread</span></a></li>
-	</ul>
+<div class="topic-main-buttons">
+	<button id="post_reply" class="btn btn-primary btn-lg post_reply" type="button">Reply</button>
+	<div class="btn-group pull-right" id="thread-tools" style="visibility: hidden;">
+		<button class="btn btn-default btn-lg dropdown-toggle" data-toggle="dropdown" type="button">Thread Tools <span class="caret"></span></button>
+		<ul class="dropdown-menu">
+			<li><a href="#" id="pin_thread"><i class="icon-pushpin"></i> Pin Thread</a></li>
+			<li><a href="#" id="lock_thread"><i class="icon-lock"></i> Lock Thread</a></li>
+			<li class="divider"></li>
+			<li><a href="#" id="move_thread"><i class="icon-move"></i> Move Thread</a></li>
+			<li class="divider"></li>
+			<li><a href="#" id="delete_thread"><span class="text-error"><i class="icon-trash"></i> Delete Thread</span></a></li>
+		</ul>
+	</div>
 </div>
+
+
+<div class="post-author-info">
+	<div class="row">
+		<div class="col-xs-3">
+			<img id="post-author-image" src="http://www.gravatar.com/avatar/ec001b26766105ea038160c98a317956?size=128&default=identicon&rating=pg" width=50 height=50 />
+		</div>
+		<div class="col-xs-9">
+			<h4><div id="post-author-info"></div></h4>
+		</div>
+	</div>
+</div>
+
 <div id="move_thread_modal" class="modal hide fade">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
