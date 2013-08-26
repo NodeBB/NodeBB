@@ -147,6 +147,7 @@
 	socket.on('event:new_notification', function() {
 		document.querySelector('.notifications a i').className = 'icon-circle active';
 		app.alert({
+			alert_id: 'new_notif',
 			title: 'New notification',
 			message: 'You have unread notifications.',
 			type: 'notify',
