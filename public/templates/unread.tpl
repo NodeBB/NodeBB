@@ -13,7 +13,7 @@
 </div>
 
 <div>
-	<button id="mark-allread-btn" class="btn {show_markallread_button}">Mark All As Read</button>
+	<button id="mark-allread-btn" class="btn btn-primary {show_markallread_button}">Mark all as Read</button>
 </div>
 
 <div class="category row">
@@ -25,7 +25,7 @@
 				<div class="row">
 					<div class="col-md-12 topic-row img-thumbnail">
 						<div class="latest-post visible-lg visible-md">
-							<div class="pull-right">										
+							<div class="pull-right">
 								<img style="width: 48px; height: 48px; /*temporary*/" src="{topics.teaser_userpicture}" />
 								<p><strong>{topics.teaser_username}</strong>: {topics.teaser_text}</p>
 								<span>posted {topics.teaser_timestamp} ago</span>
@@ -35,9 +35,9 @@
 							<h3><span class="topic-title"><span class="badge {topics.badgeclass}">{topics.postcount}</span>{topics.title}</span></h3>
 							<small>
 								<strong><i class="{topics.pin-icon}"></i><i class="{topics.lock-icon}"></i></strong>
-								Posted {topics.relativeTime} ago by 
+								Posted {topics.relativeTime} ago by
 								<strong>{topics.username}</strong>.
-							</small> 
+							</small>
 						</div>
 					</div>
 				</div>
