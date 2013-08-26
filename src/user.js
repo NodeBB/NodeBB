@@ -215,7 +215,7 @@ var utils = require('./../public/src/utils.js'),
 				return next(null, true);
 			}
 
-			User.getUserField(uid, 'email', function(email) {
+			User.getUserField(uid, 'email', function(err, email) {
 				if(email !== data['email']) {
 					User.isEmailAvailable(data['email'], function(available) {
 						if(!available) {
@@ -298,7 +298,7 @@ var utils = require('./../public/src/utils.js'),
 			return;
 		}
 
-		User.getUserField(uid, 'password', function(user_password) {
+		User.getUserField(uid, 'password', function(err, user_password) {
 			bcrypt.compare(data.currentPassword, user_password, function(err, res) {
 				if(err) {
 					console.log(err);
@@ -578,7 +578,7 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.sendPostNotificationToFollowers = function(uid, tid, pid) {
-		User.getUserField(uid, 'username', function(username) {
+		User.getUserField(uid, 'username', function(err, username) {
 			RDB.smembers('followers:' + uid, function(err, followers) {
 				topics.getTopicField(tid, 'slug', function(err, slug) {
 					var message = username + ' made a new post';
@@ -652,7 +652,7 @@ var utils = require('./../public/src/utils.js'),
 		}
 
 		function iterator(uid, callback) {
-			User.getUserField(uid, 'username', function(username) {
+			User.getUserField(uid, 'username', function(err, username) {
 				usernames.push(username);
 				callback(null);
 			});
@@ -671,7 +671,7 @@ var utils = require('./../public/src/utils.js'),
 		}
 
 		function iterator(uid, callback) {
-			User.getUserField(uid, 'userslug', function(userslug) {
+			User.getUserField(uid, 'userslug', function(err, userslug) {
 				userslugs.push(userslug);
 				callback(null);
 			});
