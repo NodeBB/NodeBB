@@ -90,7 +90,7 @@ var	RDB = require('./redis.js'),
 		ThreadTools.privileges(tid, uid, function(privileges) {
 			if (privileges.editable || uid === -1) {
 
-				topics.setTopicField(tid, 'deleted', 1);
+				topics.delete(tid);
 				ThreadTools.lock(tid, uid);
 
 				topicSearch.remove(tid);
@@ -109,7 +109,7 @@ var	RDB = require('./redis.js'),
 		ThreadTools.privileges(tid, uid, function(privileges) {
 			if (privileges.editable) {
 
-				topics.setTopicField(tid, 'deleted', 0);
+				topics.restore(tid);
 				ThreadTools.unlock(tid, uid);
 
 				io.sockets.in('topic_' + tid).emit('event:topic_restored', {
