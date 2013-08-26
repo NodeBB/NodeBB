@@ -1,5 +1,5 @@
 
-<div class="well">
+<div class="well account">
 
 	<div class="account-username-box" data-userslug="{userslug}">
 		<span class="account-username">
@@ -8,7 +8,7 @@
 	</div>
 
 	<div class="row">
-		<div class="span2 account-block" style="text-align: center; margin-bottom:20px;">
+		<div class="col-md-2 account-block" style="text-align: center; margin-bottom:20px;">
 			<div class="account-picture-block">
 				<img src="{picture}" class="user-profile-picture img-thumbnail"/>
 			</div>
@@ -24,7 +24,7 @@
 			</div>
 		</div>
 
-		<div class="span4">
+		<div class="col-md-4">
 			<div class="inline-block">
 				<div class="account-bio-block">
 					<span class="account-bio-label">email</span><i class="icon-eye-close {emailClass}" title="Email hidden"></i>
@@ -80,7 +80,7 @@
 			</div>
 		</div>
 
-		<div class="span6 user-recent-posts">
+		<div class="col-md-6 user-recent-posts">
 			<!-- BEGIN posts -->
 			<div class="topic-row img-thumbnail clearfix" topic-url="topic/{posts.tid}/#{posts.pid}">
 				<span>{posts.content}</span>

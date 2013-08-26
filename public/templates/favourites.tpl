@@ -1,5 +1,5 @@
 
-<div class="well">
+<div class="well favourites">
 
 
 
