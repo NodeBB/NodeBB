@@ -19,10 +19,10 @@
 		usernamevalid = utils.isUserNameValid(username.value);
 
 		
-		if(username.value.length < 3) {
+		if(username.value.length < 2) {
 			username_notify.innerHTML = 'Username too short';
 			username_notify.className = 'label label-important';
-		} else if(username.value.length > 13) {
+		} else if(username.value.length > 16) {
 			username_notify.innerHTML = 'Username too long';
 			username_notify.className = 'label label-important';
 		} else if(!usernamevalid) {
