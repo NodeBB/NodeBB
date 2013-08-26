@@ -32,7 +32,7 @@
 	</div>-->
 
 	<!-- START Forum Info -->
-	<div id="footer" class="container hidden-xs" style="padding-top: 50px; display: none">
+	<div id="footer" class="container" style="padding-top: 50px; display: none">
 		<div class="alert alert-info">
 			<span id="active_users"></span>; <span id="active_record"></span><br />
 			<span id="number_of_users"></span> <span id="post_stats"></span><br />
