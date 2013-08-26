@@ -17,7 +17,6 @@ var RDB = require('./redis'),
 		RDB.incr('global:next_message_id', function(err, mid) {
 			if(err)
 				return callback(err, null);
-			console.log('creating message', mid);
 
 			var message = {
 				content: content,
