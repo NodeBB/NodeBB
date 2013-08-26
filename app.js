@@ -82,7 +82,7 @@ if(nconf.get('upgrade')) {
 
 		// Initial setup for Reds
 		reds.createClient = function() {
-			return exports.client || (exports.client = RDB);
+			return reds.client || (reds.client = RDB);
 		}
 
 		global.configuration = {};
