@@ -72,7 +72,7 @@ var socket,
 						alert_id: 'connection_alert',
 						title: 'Reconnecting',
 						message: 'You have disconnected from NodeBB, we will try to reconnect you. <br/><i class="icon-refresh icon-spin"></i>',
-						type: 'notify',
+						type: 'warning',
 						timeout: 5000
 					});
 				});
@@ -161,7 +161,7 @@ var socket,
 		if(alert.length > 0) {
 			alert.find('strong').html(params.title);
 			alert.find('p').html(params.message);
-			alert.attr('class', "alert toaster-alert " + ((params.type=='warning') ? '' : "alert-" + params.type));
+			alert.attr('class', "alert toaster-alert " + "alert-" + params.type);
 
 			clearTimeout(alert.attr('timeoutId'));
 			startTimeout(alert, params.timeout);
@@ -175,7 +175,7 @@ var socket,
 			p.innerHTML = params.message;
 			strong.innerHTML = params.title;
 
-			div.className = "alert toaster-alert " + ((params.type=='warning') ? '' : "alert-" + params.type);
+			div.className = "alert toaster-alert " + "alert-" + params.type;
 
 			div.setAttribute('id', alert_id);
 			div.appendChild(button);

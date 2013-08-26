@@ -6,7 +6,7 @@
 		user_label = document.getElementById('user_label'),
 		active_record = document.getElementById('active_record'),
 		right_menu = document.getElementById('right-menu');
-	
+
 	socket.emit('user.count', {});
 	socket.on('user.count', function(data) {
 		num_users.innerHTML = "We currently have <b>" + data.count + "</b> registered users.";
@@ -28,22 +28,22 @@
 
 	socket.emit('api:user.active.get');
 	socket.on('api:user.active.get', function(data) {
-	
+
 		var plural_users = parseInt(data.users) !== 1,
 			plural_anon = parseInt(data.anon) !== 1;
 
 		active_users.innerHTML = 'There ' + (plural_users ? 'are' : 'is') + ' <strong>' + data.users + '</strong> user' + (plural_users ? 's' : '') + ' and <strong>' + data.anon + '</strong> guest' + (plural_anon ? 's' : '') + ' online';
 	});
-	
+
 	socket.emit('api:user.active.get_record');
 	socket.on('api:user.active.get_record', function(data) {
 		active_record.innerHTML = "most users ever online was <strong>" + data.record + "</strong> on <strong>" + (new Date(parseInt(data.timestamp,10))).toUTCString() + "</strong>";
 	});
 
 	socket.emit('api:updateHeader', { fields: ['username', 'picture', 'userslug'] });
-	
+
 	socket.on('api:updateHeader', function(data) {
-	
+
 		var rightMenu = $('#right-menu'),
 			isLoggedIn = data.uid > 0;
 
@@ -149,7 +149,7 @@
 		app.alert({
 			title: 'New notification',
 			message: 'You have unread notifications.',
-			type: 'notify',
+			type: 'warning',
 			timeout: 2000
 		});
 		utils.refreshTitle();
@@ -160,12 +160,12 @@
 		var username = data.username;
 		var fromuid = data.fromuid;
 		var message = data.message;
-		
+
 		require(['chat'], function(chat) {
 			var chatModal = chat.createModalIfDoesntExist(username, fromuid);
 			chatModal.show();
 			chat.bringModalToTop(chatModal);
-	
+
 			chat.appendChatMessage(chatModal, message);
 		});
 	});

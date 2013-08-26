@@ -21,7 +21,7 @@ var	nodebb_admin = nodebb_admin || {};
 							alert_id: 'plugin_toggled_' + status.id,
 							title: 'Plugin Enabled',
 							message: 'You may need to restart NodeBB in order for these changes to be reflected.',
-							type: 'notify',
+							type: 'warning',
 							timeout: 5000
 						})
 					});
