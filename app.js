@@ -72,12 +72,18 @@ if(nconf.get('upgrade')) {
 			webserver = require('./src/webserver.js'),
 			websockets = require('./src/websockets.js'),
 			plugins = require('./src/plugins'),
+			reds = require('reds'),
 			admin = {
 				'categories': require('./src/admin/categories.js')
 			};
 
 		DEVELOPMENT = true;
 		RDB = require('./src/redis.js');
+
+		// Initial setup for Reds
+		reds.createClient = function() {
+			return exports.client || (exports.client = RDB);
+		}
 
 		global.configuration = {};
 		global.templates = {};
@@ -88,7 +94,7 @@ if(nconf.get('upgrade')) {
 			templates.init([
 				'header', 'footer', 'logout', 'outgoing', 'admin/header', 'admin/footer', 'admin/index',
 				'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext',
-				'emails/header', 'emails/footer', 'install/header', 'install/footer', 'install/redis',
+				'emails/header', 'emails/footer',
 
 				'noscript/header', 'noscript/home', 'noscript/category', 'noscript/topic'
 			]);

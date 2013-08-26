@@ -10,9 +10,9 @@ var	RDB = require('./redis.js'),
 	async = require('async'),
 	plugins = require('./plugins'),
 	reds = require('reds'),
+	postSearch = reds.createSearch('nodebbpostsearch'),
 	nconf = require('nconf'),
 	meta = require('./meta.js'),
-	postSearch = reds.createSearch('nodebbpostsearch'),
 	winston = require('winston');
 
 (function(Posts) {
