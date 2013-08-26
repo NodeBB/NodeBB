@@ -41,7 +41,8 @@ var	RDB = require('./redis.js'),
 		}
 
 		function hasEnoughRep(next) {
-			user.getUserField(uid, 'reputation', function(reputation) {
+			user.getUserField(uid, 'reputation', function(err, reputation) {
+				if (err) return next(null, false);
 				next(null, reputation >= meta.config['privileges:manage_content']);
 			});
 		}

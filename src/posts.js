@@ -10,9 +10,9 @@ var	RDB = require('./redis.js'),
 	async = require('async'),
 	plugins = require('./plugins'),
 	reds = require('reds'),
+	postSearch = reds.createSearch('nodebbpostsearch'),
 	nconf = require('nconf'),
 	meta = require('./meta.js'),
-	postSearch = reds.createSearch('nodebbpostsearch'),
 	winston = require('winston');
 
 (function(Posts) {
@@ -70,13 +70,18 @@ var	RDB = require('./redis.js'),
 				}
 
 				Posts.addUserInfoToPost(postData, function() {
-					topics.getTopicField(postData.tid, 'slug', function(err, topicSlug) {
+					topics.getTopicFields(postData.tid, ['slug', 'deleted'], function(err, topicData) {
+						if(err)
+							return callback(err);
+
+						if(topicData.deleted === '1')
+							return callback(null);
 
 						if(postData.content)
 							postData.content = utils.strip_tags(postTools.markdownToHTML(postData.content));
 
 						postData.relativeTime = utils.relativeTime(postData.timestamp);
-						postData.topicSlug = topicSlug;
+						postData.topicSlug = topicData.slug;
 						posts.push(postData);
 						callback(null);
 					});
@@ -102,8 +107,7 @@ var	RDB = require('./redis.js'),
 	Posts.getPostData = function(pid, callback) {
 		RDB.hgetall('post:' + pid, function(err, data) {
 			if(err === null) {
-				plugins.fireHook('filter:post.get', data.content, function(content) {
-					data.content = content;
+				plugins.fireHook('filter:post.get', data, function(data) {
 					callback(data);
 				});
 			}
@@ -324,8 +328,9 @@ var	RDB = require('./redis.js'),
 								});
 							},
 							content: function(next) {
-								plugins.fireHook('filter:post.get', content, function(content) {
-									next(null, content);
+								plugins.fireHook('filter:post.get', postData, function(postData) {
+									postData.content = postTools.markdownToHTML(postData.content, false);
+									next(null, postData.content);
 								});
 							}
 						}, function(err, results) {
@@ -335,7 +340,7 @@ var	RDB = require('./redis.js'),
 							callback(postData);
 						});
 
-						plugins.fireHook('action:post.save', [pid, content]);
+						plugins.fireHook('action:post.save', [postData]);
 
 						postSearch.index(content, pid);
 					});

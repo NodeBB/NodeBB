@@ -14,23 +14,29 @@
 		</div>');
 
 		$('.account-username-box').append(links);
-
 	}
 
 	$(document).ready(function() {
-		
+
 		createMenu();
 
 		var editLink = $('#editLink');
 		var settingsLink = $('#settingsLink');
 		var favouritesLink = $('#favouritesLink');
-		
+
 		if(yourid === "0" || yourid !== theirid) {
 			editLink.hide();
 			settingsLink.hide();
 			favouritesLink.hide();
 		}
-	
+
+		jQuery('.account-sub-links span a').removeClass('bold').each(function() {
+			var href = this.getAttribute('href');
+			if (window.location.href.indexOf(href) !== -1) {
+				jQuery(this).addClass('bold');
+				return false;
+			}
+		});
 	});
 
 }());

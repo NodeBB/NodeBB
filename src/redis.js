@@ -3,7 +3,7 @@
 		nconf = require('nconf'),
 		utils = require('./../public/src/utils.js'),
 		winston = require('winston');
-	
+
 	RedisDB.exports = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host'));
 
 	if(nconf.get('redis:password')) {
@@ -40,7 +40,7 @@
 		RedisDB.exports.hmget(key, fields, function(err, data) {
 			if(err === null) {
 				var returnData = {};
-				
+
 				for(var i=0, ii=fields.length; i<ii; ++i) {
 					returnData[fields[i]] = data[i];
 				}
@@ -51,8 +51,8 @@
 				console.log(err);
 				callback(err, null);
 			}
-		});		
-	}	
+		});
+	}
 
 
 

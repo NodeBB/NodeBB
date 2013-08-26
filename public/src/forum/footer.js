@@ -96,10 +96,39 @@
 	notifTrigger.addEventListener('click', function(e) {
 		e.preventDefault();
 		if (notifContainer.className.indexOf('open') === -1) {
-			socket.emit('api:notifications.get');
-			socket.emit('api:notifications.mark_all_read', null, function() {
-				notifIcon.className = 'icon-circle-blank';
-				utils.refreshTitle();
+			socket.emit('api:notifications.get', null, function(data) {
+				var	notifFrag = document.createDocumentFragment(),
+					notifEl = document.createElement('li'),
+					numRead = data.read.length,
+					numUnread = data.unread.length,
+					x;
+				notifList.innerHTML = '';
+				if ((data.read.length + data.unread.length) > 0) {
+					for(x=0;x<numUnread;x++) {
+						notifEl.setAttribute('data-nid', data.unread[x].nid);
+						notifEl.className = 'unread';
+						notifEl.innerHTML = '<a href="' + data.unread[x].path + '"><span class="pull-right">' + utils.relativeTime(data.unread[x].datetime, true) + '</span>' + data.unread[x].text + '</a>';
+						notifFrag.appendChild(notifEl.cloneNode(true));
+					}
+					for(x=0;x<numRead;x++) {
+						notifEl.setAttribute('data-nid', data.read[x].nid);
+						notifEl.className = '';
+						notifEl.innerHTML = '<a href="' + data.read[x].path + '"><span class="pull-right">' + utils.relativeTime(data.read[x].datetime, true) + '</span>' + data.read[x].text + '</a>';
+						notifFrag.appendChild(notifEl.cloneNode(true));
+					}
+				} else {
+					notifEl.innerHTML = '<a>You have no notifications</a>';
+					notifFrag.appendChild(notifEl);
+				}
+				notifList.appendChild(notifFrag);
+
+				if (data.unread.length > 0) notifIcon.className = 'icon-circle active';
+				else notifIcon.className = 'icon-circle-blank';
+
+				socket.emit('api:notifications.mark_all_read', null, function() {
+					notifIcon.className = 'icon-circle-blank';
+					utils.refreshTitle();
+				});
 			});
 		}
 	});
@@ -115,38 +144,10 @@
 			if (nid > 0) socket.emit('api:notifications.mark_read', nid);
 		}
 	});
-	socket.on('api:notifications.get', function(data) {
-		var	notifFrag = document.createDocumentFragment(),
-			notifEl = document.createElement('li'),
-			numRead = data.read.length,
-			numUnread = data.unread.length,
-			x;
-		notifList.innerHTML = '';
-		if ((data.read.length + data.unread.length) > 0) {
-			for(x=0;x<numUnread;x++) {
-				notifEl.setAttribute('data-nid', data.unread[x].nid);
-				notifEl.className = 'unread';
-				notifEl.innerHTML = '<a href="' + data.unread[x].path + '"><span class="pull-right">' + utils.relativeTime(data.unread[x].datetime, true) + '</span>' + data.unread[x].text + '</a>';
-				notifFrag.appendChild(notifEl.cloneNode(true));
-			}
-			for(x=0;x<numRead;x++) {
-				notifEl.setAttribute('data-nid', data.read[x].nid);
-				notifEl.className = '';
-				notifEl.innerHTML = '<a href="' + data.read[x].path + '"><span class="pull-right">' + utils.relativeTime(data.read[x].datetime, true) + '</span>' + data.read[x].text + '</a>';
-				notifFrag.appendChild(notifEl.cloneNode(true));
-			}
-		} else {
-			notifEl.innerHTML = '<a>You have no notifications</a>';
-			notifFrag.appendChild(notifEl);
-		}
-		notifList.appendChild(notifFrag);
-
-		if (data.unread.length > 0) notifIcon.className = 'icon-circle active';
-		else notifIcon.className = 'icon-circle-blank';
-	});
 	socket.on('event:new_notification', function() {
 		document.querySelector('.notifications a i').className = 'icon-circle active';
 		app.alert({
+			alert_id: 'new_notif',
 			title: 'New notification',
 			message: 'You have unread notifications.',
 			type: 'warning',

@@ -31,7 +31,8 @@ var	RDB = require('./redis.js'),
 		}
 
 		function hasEnoughRep(next) {
-			user.getUserField(uid, 'reputation', function(reputation) {
+			user.getUserField(uid, 'reputation', function(err, reputation) {
+				if (err) return next(null, false);
 				next(null, reputation >= meta.config['privileges:manage_topic']);
 			});
 		}
@@ -89,7 +90,7 @@ var	RDB = require('./redis.js'),
 		ThreadTools.privileges(tid, uid, function(privileges) {
 			if (privileges.editable || uid === -1) {
 
-				topics.setTopicField(tid, 'deleted', 1);
+				topics.delete(tid);
 				ThreadTools.lock(tid, uid);
 
 				topicSearch.remove(tid);
@@ -108,7 +109,7 @@ var	RDB = require('./redis.js'),
 		ThreadTools.privileges(tid, uid, function(privileges) {
 			if (privileges.editable) {
 
-				topics.setTopicField(tid, 'deleted', 0);
+				topics.restore(tid);
 				ThreadTools.unlock(tid, uid);
 
 				io.sockets.in('topic_' + tid).emit('event:topic_restored', {
@@ -159,7 +160,7 @@ var	RDB = require('./redis.js'),
 			if (privileges.editable) {
 
 				topics.setTopicField(tid, 'pinned', 0);
-				topics.getTopicFields(tid, ['cid', 'lastposttime'], function(topicData) {
+				topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
 					RDB.zadd('categories:' + topicData.cid + ':tid', topicData.lastposttime, tid);
 				});
 				if (socket) {
@@ -179,7 +180,7 @@ var	RDB = require('./redis.js'),
 
 	ThreadTools.move = function(tid, cid, socket) {
 
-		topics.getTopicFields(tid, ['cid', 'lastposttime'], function(topicData) {
+		topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
 			var oldCid = topicData.cid;
 			var multi = RDB.multi();
 

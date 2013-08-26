@@ -287,12 +287,14 @@
 		var username = $(this).parents('li').attr('data-username');
 		var touid = $(this).parents('li').attr('data-uid');
 
-		require(['chat'], function(chat){
+		if(username === app.username || !app.username)
+			return;
+
+		require(['chat'], function(chat) {
 			var chatModal = chat.createModalIfDoesntExist(username, touid);
 			chatModal.show();
 			chat.bringModalToTop(chatModal);
 		});
-
 	});
 
 	ajaxify.register_events([

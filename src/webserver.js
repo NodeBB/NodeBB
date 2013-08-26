@@ -70,7 +70,10 @@ var express = require('express'),
 			ttl: 60*60*24*14
 		}),
 		secret: nconf.get('secret'),
-		key: 'express.sid'
+		key: 'express.sid',
+		cookie: {
+			maxAge: 60*60*24*30	// 30 days
+		}
 	}));
 	app.use(express.csrf());
 	app.use(function(req, res, next) {
@@ -161,7 +164,7 @@ var express = require('express'),
 					app.get('/' + route, function(req, res) {
 						if ((route === 'login' || route ==='register') && (req.user && req.user.uid > 0)) {
 
-							user.getUserField(req.user.uid, 'userslug', function(userslug) {
+							user.getUserField(req.user.uid, 'userslug', function(err, userslug) {
 								res.redirect('/users/'+userslug);
 							});
 							return;
@@ -207,6 +210,7 @@ var express = require('express'),
 
 
 		app.get('/topic/:topic_id/:slug?', function(req, res) {
+
 			var tid = req.params.topic_id;
 			if (tid.match(/^\d+\.rss$/)) {
 				fs.readFile('feeds/topics/' + tid, function (err, data) {
@@ -223,11 +227,16 @@ var express = require('express'),
 			async.waterfall([
 				function(next) {
 					topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), function(err, topicData) {
+						if(topicData) {
+							if(topicData.deleted === '1' && topicData.expose_tools === 0)
+								return next(new Error('Topic deleted'), null);
+						}
+
 						next(err, topicData);
 					});
 				},
 				function(topicData, next) {
-					var	posts = topicData.posts.push(topicData.main_posts[0]),
+					var posts = topicData.posts.push(topicData.main_posts[0]),
 						lastMod = 0,
 						timestamp;
 
@@ -374,7 +383,7 @@ var express = require('express'),
 			app.build_header({ req: req, res: res }, function(err, header) {
 				res.send(
 					header +
-					'\n\t<script>templates.ready(function(){ajaxify.go("outgoing?url=' + req.query.url + '");});</script>' +
+					'\n\t<script>templates.ready(function(){ajaxify.go("outgoing?url=' + encodeURIComponent(req.query.url) + '", null, null, true);});</script>' +
 					templates['footer']
 				);
 			});

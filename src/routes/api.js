@@ -102,9 +102,12 @@ var user = require('./../user.js'),
 			res.json(data);
 		});
 
-		app.get('/api/topic/:id/:slug?', function(req, res) {
+		app.get('/api/topic/:id/:slug?', function(req, res, next) {
 			var uid = (req.user) ? req.user.uid : 0;
 			topics.getTopicWithPosts(req.params.id, uid, function(err, data) {
+				if(data.deleted === '1' && data.expose_tools === 0) {
+					return res.json(404, {});
+				}
 				res.json(data);
 			});
 		});

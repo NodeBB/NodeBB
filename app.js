@@ -16,18 +16,20 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// Configuration setup
+nconf = require('nconf');
+nconf.argv().file({ file: __dirname + '/config.json'});
+
 var fs = require('fs'),
 	winston = require('winston'),
 	pkg = require('./package.json'),
 	url = require('url'),
 	meta = require('./src/meta.js');
 
-nconf = require('nconf');
 // Runtime environment
 global.env = process.env.NODE_ENV || 'production',
 
-// Configuration setup
-nconf.argv().file({ file: __dirname + '/config.json'});
+
 
 winston.remove(winston.transports.Console);
 winston.add(winston.transports.Console, {
@@ -64,6 +66,12 @@ if(nconf.get('upgrade')) {
 	winston.info('Base Configuration OK.');
 
 	meta.configs.init(function() {
+		// Initial setup for Redis & Reds
+		var	reds = require('reds');
+		RDB = require('./src/redis.js');
+		reds.createClient = function() {
+			return reds.client || (reds.client = RDB);
+		}
 
 		var categories = require('./src/categories.js'),
 			templates = require('./public/src/templates.js'),
@@ -75,7 +83,6 @@ if(nconf.get('upgrade')) {
 			};
 
 		DEVELOPMENT = true;
-		RDB = require('./src/redis.js');
 
 		global.configuration = {};
 		global.templates = {};
@@ -86,7 +93,7 @@ if(nconf.get('upgrade')) {
 			templates.init([
 				'header', 'footer', 'logout', 'outgoing', 'admin/header', 'admin/footer', 'admin/index',
 				'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext',
-				'emails/header', 'emails/footer', 'install/header', 'install/footer', 'install/redis',
+				'emails/header', 'emails/footer',
 
 				'noscript/header', 'noscript/home', 'noscript/category', 'noscript/topic'
 			]);

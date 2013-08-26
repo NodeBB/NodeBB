@@ -54,7 +54,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					socket.join('uid_' + uid);
 					io.sockets.in('global').emit('api:user.isOnline', isUserOnline(uid));
 
-					user.getUserField(uid, 'username', function(username) {
+					user.getUserField(uid, 'username', function(err, username) {
 						socket.emit('event:connect', {status: 1, username:username});
 					});
 				}
@@ -275,12 +275,12 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			}
 
 			if(type === 'gravatar') {
-				user.getUserField(uid, 'gravatarpicture', function(gravatar) {
+				user.getUserField(uid, 'gravatarpicture', function(err, gravatar) {
 					user.setUserField(uid, 'picture', gravatar);
 					updateHeader();
 				});
 			} else if(type === 'uploaded') {
-				user.getUserField(uid, 'uploadedpicture', function(uploadedpicture) {
+				user.getUserField(uid, 'uploadedpicture', function(err, uploadedpicture) {
 					user.setUserField(uid, 'picture', uploadedpicture);
 					updateHeader();
 				});
@@ -484,9 +484,9 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			postTools.restore(uid, data.pid);
 		});
 
-		socket.on('api:notifications.get', function(data) {
+		socket.on('api:notifications.get', function(data, callback) {
 			user.notifications.get(uid, function(notifs) {
-				socket.emit('api:notifications.get', notifs);
+				callback(notifs);
 			});
 		});
 
@@ -506,25 +506,42 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			});
 		});
 
+		socket.on('getChatMessages', function(data, callback) {
+			var touid = data.touid;
+			require('./messaging').getMessages(uid, touid, function(err, messages) {
+				if(err)
+					return callback(null);
+
+				callback(messages);
+			});
+		});
+
 		socket.on('sendChatMessage', function(data) {
 
 			var touid = data.touid;
+			if(touid === uid || uid === 0) {
+				return;
+			}
 
 			if(userSockets[touid]) {
 				var msg = utils.strip_tags(data.message),
 					numSockets = userSockets[touid].length;
 
-				user.getUserField(uid, 'username', function(username) {
+				user.getUserField(uid, 'username', function(err, username) {
 					var finalMessage = username + ' says : ' + msg;
 
 					for(var x=0;x<numSockets;x++) {
 						userSockets[touid][x].emit('chatMessage', {fromuid:uid, username:username, message:finalMessage});
 					}
 
-					notifications.create(finalMessage, 5, '#', 'notification_'+uid+'_'+touid, function(nid) {
+					notifications.create(finalMessage, 5, '#', 'notification_' + uid + '_' + touid, function(nid) {
 						notifications.push(nid, [touid], function(success) {
 
 						});
+					});
+
+					require('./messaging').addMessage(uid, touid, msg, function(err, message) {
+
 					});
 				});
 			}
