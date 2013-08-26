@@ -70,7 +70,10 @@ var express = require('express'),
 			ttl: 60*60*24*14
 		}),
 		secret: nconf.get('secret'),
-		key: 'express.sid'
+		key: 'express.sid',
+		cookie: {
+			maxAge: 60*60*24*30	// 30 days
+		}
 	}));
 	app.use(express.csrf());
 	app.use(function(req, res, next) {

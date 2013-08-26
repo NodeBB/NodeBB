@@ -484,9 +484,9 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			postTools.restore(uid, data.pid);
 		});
 
-		socket.on('api:notifications.get', function(data) {
+		socket.on('api:notifications.get', function(data, callback) {
 			user.notifications.get(uid, function(notifs) {
-				socket.emit('api:notifications.get', notifs);
+				callback(notifs);
 			});
 		});
 
