@@ -61,7 +61,6 @@ define(['taskbar'], function(taskbar) {
 
 	function getChatMessages(chatModal, touid) {
 		socket.emit('getChatMessages', {touid:touid}, function(messages) {
-			console.log(messages);
 			for(var i = 0; i<messages.length; ++i) {
 				module.appendChatMessage(chatModal, messages[i].content);
 			}
