@@ -1,8 +1,7 @@
 define(['taskbar'], function(taskbar) {
-	
+
 	var module = {};
 
-	
 	module.bringModalToTop = function(chatModal) {
 		var topZ = 0;
 		$('.modal').each(function() {
@@ -11,7 +10,7 @@ define(['taskbar'], function(taskbar) {
 			topZ = thisZ;
 		  }
 		});
-		chatModal.css('zIndex', topZ+1);
+		chatModal.css('zIndex', topZ + 1);
 	}
 
 	module.createModalIfDoesntExist = function(username, touid) {
@@ -39,7 +38,9 @@ define(['taskbar'], function(taskbar) {
 				module.bringModalToTop(chatModal);
 			});
 
-			addSendHandler(chatModal, touid);	
+			addSendHandler(chatModal, touid);
+
+			getChatMessages(chatModal, touid);
 		}
 
 		taskbar.push('chat', chatModal.attr('UUID'), {title:'chat with '+username});
@@ -56,6 +57,15 @@ define(['taskbar'], function(taskbar) {
 		var chatModal = $('div[UUID="'+uuid+'"]');
 		chatModal.hide();
 		taskbar.minimize('chat', uuid);
+	}
+
+	function getChatMessages(chatModal, touid) {
+		socket.emit('getChatMessages', {touid:touid}, function(messages) {
+			console.log(messages);
+			for(var i = 0; i<messages.length; ++i) {
+				module.appendChatMessage(chatModal, messages[i].content);
+			}
+		});
 	}
 
 	function addSendHandler(chatModal, touid) {

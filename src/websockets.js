@@ -506,9 +506,22 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			});
 		});
 
+		socket.on('getChatMessages', function(data, callback) {
+			var touid = data.touid;
+			require('./messaging').getMessages(uid, touid, function(err, messages) {
+				if(err)
+					return callback(null);
+
+				callback(messages);
+			});
+		});
+
 		socket.on('sendChatMessage', function(data) {
 
 			var touid = data.touid;
+			if(touid === uid || uid === 0) {
+				return;
+			}
 
 			if(userSockets[touid]) {
 				var msg = utils.strip_tags(data.message),
@@ -521,10 +534,14 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 						userSockets[touid][x].emit('chatMessage', {fromuid:uid, username:username, message:finalMessage});
 					}
 
-					notifications.create(finalMessage, 5, '#', 'notification_'+uid+'_'+touid, function(nid) {
+					notifications.create(finalMessage, 5, '#', 'notification_' + uid + '_' + touid, function(nid) {
 						notifications.push(nid, [touid], function(success) {
 
 						});
+					});
+
+					require('./messaging').addMessage(uid, touid, msg, function(err, message) {
+
 					});
 				});
 			}
