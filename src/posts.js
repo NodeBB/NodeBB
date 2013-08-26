@@ -329,6 +329,7 @@ var	RDB = require('./redis.js'),
 							},
 							content: function(next) {
 								plugins.fireHook('filter:post.get', postData, function(postData) {
+									postData.content = postTools.markdownToHTML(postData.content, false);
 									next(null, postData.content);
 								});
 							}
