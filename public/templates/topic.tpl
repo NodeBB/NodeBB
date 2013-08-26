@@ -234,6 +234,7 @@
 <input type="hidden" template-variable="deleted" value="{deleted}" />
 <input type="hidden" template-variable="pinned" value="{pinned}" />
 <input type="hidden" template-variable="topic_name" value="{topic_name}" />
+<input type="hidden" template-variable="postcount" value="{postcount}" />
 
 
 

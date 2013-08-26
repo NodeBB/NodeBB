@@ -42,7 +42,9 @@
 		            <span class="icon-bar"></span>
 		            <span class="icon-bar"></span>
 		        </button>
-		        <a class="navbar-brand" href="/">{title}</a>
+		        <a class="navbar-brand" href="/">{title}<div id="pagination">
+							0 / 0
+						</div></a>
 		    </div>
 
 			<div class="navbar-collapse collapse">
@@ -56,7 +58,12 @@
 					<li>
 						<a href="/users">Users</a>
 					</li>
+					<li>
+						<a href="/"></a>
+					</li>
 				</ul>
+
+
 				<ul id="right-menu" class="nav navbar-nav pull-right">
 					<li class="notifications dropdown text-center">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="notif_dropdown"><i class="icon-circle-blank"></i></a>

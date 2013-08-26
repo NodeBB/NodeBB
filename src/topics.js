@@ -379,6 +379,7 @@ marked.setOptions({
 					'deleted': topicData.deleted,
 					'pinned': topicData.pinned,
 					'slug': topicData.slug,
+					'postcount' : topicData.postcount,
 					'topic_id': tid,
 					'expose_tools': privileges.editable ? 1 : 0,
 					'posts': topicPosts,
