@@ -380,7 +380,7 @@ var express = require('express'),
 			app.build_header({ req: req, res: res }, function(err, header) {
 				res.send(
 					header +
-					'\n\t<script>templates.ready(function(){ajaxify.go("outgoing?url=' + req.query.url + '");});</script>' +
+					'\n\t<script>templates.ready(function(){ajaxify.go("outgoing?url=' + encodeURIComponent(req.query.url) + '", null, null, true);});</script>' +
 					templates['footer']
 				);
 			});
