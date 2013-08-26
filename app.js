@@ -66,24 +66,23 @@ if(nconf.get('upgrade')) {
 	winston.info('Base Configuration OK.');
 
 	meta.configs.init(function() {
+		// Initial setup for Redis & Reds
+		var	reds = require('reds');
+		RDB = require('./src/redis.js');
+		reds.createClient = function() {
+			return reds.client || (reds.client = RDB);
+		}
 
 		var categories = require('./src/categories.js'),
 			templates = require('./public/src/templates.js'),
 			webserver = require('./src/webserver.js'),
 			websockets = require('./src/websockets.js'),
 			plugins = require('./src/plugins'),
-			reds = require('reds'),
 			admin = {
 				'categories': require('./src/admin/categories.js')
 			};
 
 		DEVELOPMENT = true;
-		RDB = require('./src/redis.js');
-
-		// Initial setup for Reds
-		reds.createClient = function() {
-			return reds.client || (reds.client = RDB);
-		}
 
 		global.configuration = {};
 		global.templates = {};
