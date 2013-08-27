@@ -561,20 +561,22 @@ var	RDB = require('./redis.js')
 							return callback(err, null);
 
 						var stripped = postData.content,
-							timestamp = postData.timestamp;
+							timestamp = postData.timestamp,
+							returnObj = {
+								"username": userData.username,
+								"picture": userData.picture,
+								"timestamp" : timestamp
+							};
 
-						if(postData.content) {
+						if (postData.content) {
 							stripped = postData.content.replace(/>.+\n\n/, '');
 							postTools.toHTML(stripped, function(err, stripped) {
-								stripped = utils.strip_tags(stripped);
-
-								callback(null, {
-									"text": stripped,
-									"username": userData.username,
-									"picture": userData.picture,
-									"timestamp" : timestamp
-								});
+								returnObj.text = utils.strip_tags(stripped);
+								callback(null, returnObj);
 							});
+						} else {
+							returnObj.text = '';
+							callback(null, returnObj);
 						}
 					});
 				});
