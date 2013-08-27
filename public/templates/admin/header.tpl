@@ -29,36 +29,36 @@
 	<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 	<script src="{relative_path}/src/utils.js"></script>
 
-	<link rel="stylesheet" type="text/css" href="{relative_path}/css/style.css" />
+	<link rel="stylesheet" type="text/css" href="{relative_path}/css/nodebb.css" />
 	<link rel="stylesheet" type="text/css" href="{relative_path}/css/admin.css" />
 </head>
 
 <body class="admin">
 	<div class="navbar navbar-inverse navbar-fixed-top">
-		<div class="navbar-inner">
-			<div class="container">
-				<a class="brand" href="/admin/index">NodeBB ACP</a>
-				<button type="button" class="btn navbar-btn" data-toggle="collapse" data-target=".nav-collapse">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<div class="nav-collapse collapse">
-					<ul class="nav">
-						<li>
-						  <a href="/" target="_blank"><i class="icon-book"></i> Forum</a>
-						</li>
-						<li>
-						  <a href="/admin/index"><i class="icon-home"></i> Home</a>
-						</li>
-						<li>
-						  <a href="/admin/settings"><i class="icon-cogs"></i> Settings</a>
-						</li>
-					</ul>
-					<ul class="nav pull-right" id="right-menu">
-						<li><a href="/users" id="user_label"></a></li>
-					</ul>
-				</div>
+				<a class="navbar-brand" href="/admin/index">NodeBB ACP</a>
+			</div>
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li>
+					  <a href="/" target="_blank"><i class="icon-book"></i> Forum</a>
+					</li>
+					<li>
+					  <a href="/admin/index"><i class="icon-home"></i> Home</a>
+					</li>
+					<li>
+					  <a href="/admin/settings"><i class="icon-cogs"></i> Settings</a>
+					</li>
+				</ul>
+				<ul class="nav pull-right" id="right-menu">
+					<li><a href="/users" id="user_label"></a></li>
+				</ul>
 			</div>
 		</div>
 	</div>

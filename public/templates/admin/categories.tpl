@@ -18,23 +18,22 @@
 				<div class="icon">
 					<i data-name="icon" value="{categories.icon}" class="{categories.icon} icon-2x"></i>
 				</div>
-				<input placeholder="Category Name" data-name="name" value="{categories.name}" class="category_name input-medium"></input>
-				<select class="blockclass input-medium" data-name="blockclass" data-value="{categories.blockclass}">
+				<input placeholder="Category Name" data-name="name" value="{categories.name}" class="form-control category_name"></input>
+				<select class="form-control blockclass" data-name="blockclass" data-value="{categories.blockclass}">
 					<option value="category-purple">category-purple</option>
 					<option value="category-darkblue">category-darkblue</option>
 					<option value="category-blue">category-blue</option>
 					<option value="category-darkgreen">category-darkgreen</option>
 					<option value="category-orange">category-orange</option>
 				</select>
-				<input data-name="description" placeholder="Category Description" value="{categories.description}" class="category_description input-medium description"></input>
-				<button type="submit" class="btn" data-disabled="{categories.disabled}">Disable</button>
+				<input data-name="description" placeholder="Category Description" value="{categories.description}" class="form-control category_description description"></input>
+				<button type="submit" class="btn btn-default" data-disabled="{categories.disabled}">Disable</button>
 			</form>
 		</li>
 
 	<!-- END categories -->
+		<button class="btn btn-lg btn-primary" id="save">Save</button>
 	</ul>
-
-	<button class="btn btn-lg btn-primary" id="save">Save</button>
 </div>
 
 <div id="icons" style="display:none;"><div class="icon-container"><div class="row">
