@@ -20,11 +20,13 @@ var	path = require('path'),
 					var categoryUrls = [];
 					categories.getAllCategories(function(data) {
 						data.categories.forEach(function(category) {
-							categoryUrls.push({
-								url: path.join('category', category.slug),
-								changefreq: 'weekly',
-								priority: '0.4'
-							});
+							if (!category.disabled) {
+								categoryUrls.push({
+									url: path.join('category', category.slug),
+									changefreq: 'weekly',
+									priority: '0.4'
+								});
+							}
 						});
 
 						next(null, categoryUrls);
@@ -34,11 +36,13 @@ var	path = require('path'),
 					var	topicUrls = [];
 					topics.getAllTopics(null, null, function(topics) {
 						topics.forEach(function(topic) {
-							topicUrls.push({
-								url: path.join('topic', topic.slug),
-								changefreq: 'daily',
-								priority: '0.6'
-							});
+							if (topic.deleted !== '1') {
+								topicUrls.push({
+									url: path.join('topic', topic.slug),
+									changefreq: 'daily',
+									priority: '0.6'
+								});
+							}
 						});
 
 						next(null, topicUrls);
