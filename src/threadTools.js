@@ -199,12 +199,19 @@ var	RDB = require('./redis.js'),
 						}
 					});
 
+					categories.moveActiveUsers(tid, oldCid, cid, function(err, data) {
+						if(err) {
+							winston.err(err);
+						}
+					});
+
 					categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1);
 					categories.incrementCategoryFieldBy(cid, 'topic_count', 1);
 
 					socket.emit('api:topic.move', {
 						status: 'ok'
 					});
+
 					io.sockets.in('topic_' + tid).emit('event:topic_moved', {
 						tid: tid
 					});

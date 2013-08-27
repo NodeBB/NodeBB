@@ -310,7 +310,7 @@ var	RDB = require('./redis.js'),
 									RDB.spop('cid:' + cid + ':active_users');
 								}
 
-								RDB.sadd('cid:' + cid + ':active_users', uid);
+								categories.addActiveUser(cid, uid);
 							});
 						});
 

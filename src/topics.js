@@ -722,6 +722,28 @@ marked.setOptions({
 		RDB.lrange('tid:' + tid + ':posts', 0, -1, callback);
 	}
 
+	Topics.getUids = function(tid, callback) {
+		var uids = {};
+		Topics.getPids(tid, function(err, pids) {
+
+			function getUid(pid, next) {
+				posts.getPostField(pid, 'uid', function(uid) {
+					if(err)
+						return next(err);
+					uids[uid] = 1;
+					next(null);
+				});
+			}
+
+			async.each(pids, getUid, function(err) {
+				if(err)
+					return callback(err, null);
+
+				callback(null, Object.keys(uids));
+			});
+		});
+	}
+
 	Topics.delete = function(tid) {
 		Topics.setTopicField(tid, 'deleted', 1);
 		RDB.zrem('topics:recent', tid);
