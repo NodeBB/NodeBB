@@ -66,27 +66,35 @@ var	RDB = require('./redis.js'),
 				postSearch.index(content, pid);
 			});
 
-			posts.getPostField(pid, 'tid', function(tid) {
-				PostTools.isMain(pid, tid, function(isMainPost) {
-					if (isMainPost) {
-						topics.setTopicField(tid, 'title', title);
-						topicSearch.remove(tid, function() {
-							topicSearch.index(title, tid);
+			async.parallel([
+				function(next) {
+					posts.getPostField(pid, 'tid', function(tid) {
+						PostTools.isMain(pid, tid, function(isMainPost) {
+							if (isMainPost) {
+								topics.setTopicField(tid, 'title', title);
+								topicSearch.remove(tid, function() {
+									topicSearch.index(title, tid);
+									next(null, tid);
+								});
+							}
 						});
-					}
-
-					io.sockets.in('topic_' + tid).emit('event:post_edited', {
-						pid: pid,
-						title: title,
-						content: PostTools.markdownToHTML(content)
 					});
+				},
+				function(next) {
+					PostTools.toHTML(content, next);
+				}
+			], function(err, results) {
+				io.sockets.in('topic_' + results[0]).emit('event:post_edited', {
+					pid: pid,
+					title: title,
+					content: results[1]
 				});
 			});
 		};
 
 		PostTools.privileges(pid, uid, function(privileges) {
 			if (privileges.editable) {
-				plugins.fireHook('filter:save_post_content', content, function(parsedContent) {
+				plugins.fireHook('filter:post.save', content, function(parsedContent) {
 					content = parsedContent;
 					success();
 				});
@@ -161,35 +169,28 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
-	PostTools.markdownToHTML = function(md, isSignature) {
-		var	marked = require('marked'),
-			cheerio = require('cheerio');
+	PostTools.toHTML = function(raw, callback) {
+		plugins.fireHook('filter:post.parse', raw, function(parsed) {
+			var	cheerio = require('cheerio');
 
-		marked.setOptions({
-			breaks: true
+			if (parsed && parsed.length > 0) {
+				var	parsedContentDOM = cheerio.load(parsed);
+				var	domain = nconf.get('url');
+
+				parsedContentDOM('a').each(function() {
+					this.attr('rel', 'nofollow');
+					var href = this.attr('href');
+
+					if (href && !href.match(domain) && !utils.isRelativeUrl(href)) {
+						this.attr('href', domain + 'outgoing?url=' + encodeURIComponent(href));
+					}
+				});
+
+				callback(null, parsedContentDOM.html());
+			} else {
+				callback(null, '<p></p>');
+			}
 		});
-
-		if (md && md.length > 0) {
-			var	parsedContentDOM = cheerio.load(marked(md));
-			var	domain = nconf.get('url');
-
-			parsedContentDOM('a').each(function() {
-				this.attr('rel', 'nofollow');
-				var href = this.attr('href');
-
-				if (href && !href.match(domain) && !utils.isRelativeUrl(href)) {
-					this.attr('href', domain + 'outgoing?url=' + encodeURIComponent(href));
-					if (!isSignature) this.append(' <i class="icon-external-link"></i>');
-				}
-			});
-
-
-			html = parsedContentDOM.html();
-		} else {
-			html = '<p></p>';
-		}
-
-		return html;
 	}
 
 

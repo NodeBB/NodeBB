@@ -5,7 +5,6 @@ var	RDB = require('./redis.js')
 	user = require('./user.js'),
 	categories = require('./categories.js'),
 	posts = require('./posts.js'),
-	marked = require('marked'),
 	threadTools = require('./threadTools.js'),
 	postTools = require('./postTools'),
 	async = require('async'),
@@ -14,9 +13,6 @@ var	RDB = require('./redis.js')
 	reds = require('reds'),
 	topicSearch = reds.createSearch('nodebbtopicsearch');
 
-marked.setOptions({
-	breaks: true
-});
 
 (function(Topics) {
 
@@ -569,15 +565,17 @@ marked.setOptions({
 
 						if(postData.content) {
 							stripped = postData.content.replace(/>.+\n\n/, '');
-							stripped = utils.strip_tags(postTools.markdownToHTML(stripped));
-						}
+							postTools.toHTML(stripped, function(err, stripped) {
+								stripped = utils.strip_tags(stripped);
 
-						callback(null, {
-							"text": stripped,
-							"username": userData.username,
-							"picture": userData.picture,
-							"timestamp" : timestamp
-						});
+								callback(null, {
+									"text": stripped,
+									"username": userData.username,
+									"picture": userData.picture,
+									"timestamp" : timestamp
+								});
+							});
+						}
 					});
 				});
 			} else callback(new Error('no-teaser-found'));

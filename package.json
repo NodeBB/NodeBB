@@ -35,7 +35,8 @@
     "request": "~2.25.0",
     "reds": "~0.2.4",
     "winston": "~0.7.2",
-    "nodebb-plugin-mentions": "~0.1.0"
+    "nodebb-plugin-mentions": "~0.1.0",
+    "nodebb-plugin-markdown": "~0.1.0"
   },
   "bugs": {
     "url": "https://github.com/designcreateplay/NodeBB/issues"
