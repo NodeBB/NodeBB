@@ -608,15 +608,17 @@
 	var postAuthorImage, postAuthorInfo, pagination;
 	var	postcount = templates.get('postcount');
 
-
 	function updateHeader() {
 		jQuery('.post-author-info').css('bottom', '0px');
 		postAuthorImage = postAuthorImage || document.getElementById('post-author-image');
 		postAuthorInfo = postAuthorInfo || document.getElementById('post-author-info');
 		pagination = pagination || document.getElementById('pagination');
 
+		pagination.style.display = 'block';
+
+		var windowHeight = jQuery(window).height();
 		var scrollTop = jQuery(window).scrollTop();
-		var scrollBottom = scrollTop + jQuery(window).height();
+		var scrollBottom = scrollTop + windowHeight;
 
 		if (scrollTop < 50) {
 			postAuthorImage.src = (jQuery('.main-avatar img').attr('src'));
@@ -649,8 +651,8 @@
 		    }
 		});
 
-		if (scrollTop >= jQuery(window).height()) {
-			//pagination.innerHTML = postcount + ' / ' + postcount;
+		if(scrollTop + windowHeight == jQuery(document).height()) {
+			pagination.innerHTML = postcount + ' / ' + postcount;
 		}
 	}
 

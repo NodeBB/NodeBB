@@ -42,9 +42,7 @@
 		            <span class="icon-bar"></span>
 		            <span class="icon-bar"></span>
 		        </button>
-		        <a class="navbar-brand" href="/">{title}<div id="pagination">
-							0 / 0
-						</div></a>
+		        <a class="navbar-brand" href="/">{title}</a>
 		    </div>
 
 			<div class="navbar-collapse collapse">
@@ -77,8 +75,8 @@
 							<button type="submit" class="btn hide">Search</button>
 						</form>
 					</li>
-
 				</ul>
+				<div id="pagination"></div>
 			</div>
 		</div>
 	</div>

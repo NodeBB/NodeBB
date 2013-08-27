@@ -26,9 +26,12 @@ var ajaxify = {};
 	};
 
 	ajaxify.go = function(url, callback, template, quiet) {
+		// the following should be set like so: ajaxify.onchange(function(){}); where the code actually belongs
 		$(window).off('scroll');
-		// leave room and join global
 		app.enter_room('global');
+		document.getElementById('pagination').style.display = 'none';
+		window.onscroll = null;
+
 
 		var url = url.replace(/\/$/, "");
 
