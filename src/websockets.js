@@ -527,10 +527,11 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 
 			user.getUserField(uid, 'username', function(err, username) {
-				var finalMessage = 'New message from <strong>' + username + '</strong>';
+				var finalMessage = username + ': ' + msg,
+					notifText = 'New message from <strong>' + username + '</strong>';
 
 				if(!isUserOnline(touid)) {
-					notifications.create(finalMessage, 5, '#', 'notification_' + uid + '_' + touid, function(nid) {
+					notifications.create(notifText, 5, '#', 'notification_' + uid + '_' + touid, function(nid) {
 						notifications.push(nid, [touid], function(success) {
 
 						});
