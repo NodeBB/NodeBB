@@ -280,13 +280,13 @@
 		}
 	});
 
-	$('.post-container').delegate('.chat', 'click', function(e) {
-
+	$('.topic-buttons').delegate('.chat', 'click', function(e) {
 		var username = $(this).parents('li').attr('data-username');
 		var touid = $(this).parents('li').attr('data-uid');
 
 		if(username === app.username || !app.username)
 			return;
+
 
 		require(['chat'], function(chat) {
 			var chatModal = chat.createModalIfDoesntExist(username, touid);

@@ -30,8 +30,8 @@
 									<span class="caret"></span>
 								</button>
 							    <ul class="dropdown-menu">
-							      <li><a href="/users/{main_posts.userslug}"><i class="icon-user"></i> Profile</a></li>
-							      <li><a href="#"><i class="icon-comment"></i> Chat</a></li>
+									<li><a href="/users/{main_posts.userslug}"><i class="icon-user"></i> Profile</a></li>
+									<li><div class="chat"><i class="icon-comment"></i> Chat</div></li>
 							    </ul>
 							</div>
 
@@ -98,8 +98,8 @@
 								</button>
 
 							    <ul class="dropdown-menu">
-							      <li><a href="#"><i class="icon-user"></i> Profile</a></li>
-							      <li><a href="#"><i class="icon-comment"></i> Chat</a></li>
+									<li><a href="/users/{posts.userslug}"><i class="icon-user"></i> Profile</a></li>
+									<li><div class="chat"><i class="icon-comment"></i> Chat</div></li>
 							    </ul>
 							</div>
 
