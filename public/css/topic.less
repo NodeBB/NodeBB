@@ -1,19 +1,9 @@
 
-.post-container {
+.topic {
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
 	clear: both;
-
-	.profile-image-block {
-		display: inline-block;
-		text-align: center;
-		font-size: 12px;
-
-		.stats {
-			clear: both;
-		}
-	}
 
 	li.row {
 		padding-bottom: 15px;
@@ -45,27 +35,17 @@
 	.post-signature {
 		margin-left: 5px;
 	}
+
 	.profile-block {
 		background: rgba(0, 0, 0, 0.02);
-		margin-right: -11px;
-		margin-left: -11px;
-		margin-bottom: -11px;
-		margin-top: 15px;
+		margin: 15px -11px -11px -11px;
 		border-radius: 0 0 5px 5px;
 		font-size: 10px;
 		line-height: 15px;
-		padding: 5px;
-		padding-right: 8px;
+		padding: 5px 8px 5px 5px;
 		color: #777;
-
-		img.hidden-desktop {
-			max-width: 10px;
-			max-height: 10px;
-			padding-top: 5px;
-			margin-right: 5px;
-
-		}
 	}
+
 	.post-content {
 		min-height: 50px;
 		padding: 10px 5px 0 5px;
@@ -80,12 +60,9 @@
 		.post-buttons {
 			background: rgba(0, 0, 0, 0.02);
 			border: 1px solid rgba(0, 0, 0, 0.06);
+			margin: -5px 0 0 0;
+			padding: 8px 0 0 23px;
 
-			margin-left: 0px;
-			margin-top: -5px;
-			padding-top: 8px;
-			padding-left: 23px;
-			padding-bottom: 0;
 			button.show {
 				display: inline-block !important;
 			}
@@ -93,53 +70,12 @@
 			@media (max-width: 767px) {
 				padding-left: 9px;
 			}
-
 		}
-		/*.post-buttons {
-			font-size: 12px;
-			float: right;
-			margin-right: 5px;
-
-			button.show {
-				display: inline-block!important;
-			}
-
-			button, a {
-				display: inline-block;
-				padding: 0px 15px;
-				border: none;
-				border-left: 1px solid rgba(0, 0, 0, 0.06);
-				cursor: pointer;
-				background: none;
-				font-size: 12px;
-				height: 20px;
-
-				&:last-child {
-					padding-right: 5px;
-				}
-			}
-
-			.icon-star {
-				//theme this to make it yellow eventually
-			}
-		}*/
 	}
-
-
 
 	&.deleted {
 		-moz-opacity: 0.30;
 		opacity: 0.30;
-	}
-	/*http://stackoverflow.com/questions/11037517/bootstrap-making-responsive-changes-to-layout*/
-	@media (max-width: 979px) {
-
-
-		.span12-tablet {
-			width: 100% !important;
-			margin-left:0px;
-			*width: 100% !important;
-		}
 	}
 
 	@media (min-width: 979px) {
@@ -188,14 +124,12 @@
 			margin-left: 16px;
 		}
 		.post-buttons {
-			margin-top: -11px;
-			margin-left: -10px;
-			margin-right: -10px;
-			border-right: 0;
-			border-top: 0;
-			border-left: 0;
+			margin: -11px -10px 0 -10px;
+			border: 0;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 		}
 	}
+
 	.main-post {
 		h3 {
 			margin: 0;
@@ -203,11 +137,8 @@
 			.topic-title {
 				width: auto;
 				overflow: hidden;
-				margin: 0;
-				padding: 0;
-				padding-top: 0px;
-				margin-bottom: -5px;
-				padding-bottom: 5px;
+				margin: 0 0 -5px 0;
+				padding: 0 0 5px 0
 			}
 		}
 
@@ -215,8 +146,7 @@
 			color: white;
 			position: relative;
 			float: left;
-			margin-right:10px;
-			margin-bottom: 0px;
+			margin: 0 10px 0 0;
 			padding-bottom: 0px;
 			text-align: center;
 			width:100px;
@@ -225,6 +155,7 @@
 				display: none;
 			}
 		}
+
 		.img-thumbnail {
 			padding: 2px;
 			border-radius: 0;
@@ -233,11 +164,11 @@
 		.post-content {
 			min-height: 80px;
 		}
+
 		hr {
-			margin-top: 0;
-			margin-right: 10px;
-			margin-bottom: 0;
+			margin: 0 10px 0 0;
 		}
+
 		.post-block {
 			.post-buttons {
 				button.show {
@@ -246,6 +177,7 @@
 
 			}
 		}
+
 		.favourite {
 			cursor: pointer;
 		}
@@ -253,18 +185,17 @@
 			display: inline-block;
 		}
 
-		.topic-buttons { //mix up with post-buttons, needs to be looked at
+		.topic-buttons { //main-post version is called post-buttons, needs to be consolidated.
 			background: rgba(0, 0, 0, 0.02);
 			border: 1px solid rgba(0, 0, 0, 0.06);
-			margin-left: 92px;
+			margin: 0 -11px 0 92px;
 			padding: 10px;
-			margin-right: -11px;
 			border-right: 0;
+
 			@media (max-width: 767px) {
 				margin-left: -11px;
 				border-left: 0;
 			}
-
 
 			button.show {
 				display: inline-block!important;
@@ -272,14 +203,15 @@
 		}
 
 	}
-}
 
-
-.topic-main-buttons {
-	@media (max-width: 767px) {
-		margin-bottom: 0px;
+	.topic-main-buttons {
+		@media (max-width: 767px) {
+			margin-bottom: 0px;
+		}
 	}
+
 }
+
 
 
 @media (max-width: 475px) {
@@ -314,9 +246,7 @@
 
 	h4 {
 		color: white;
-		margin-top:16px;
-		margin-left: -35px;
-		margin-bottom: 0px;
+		margin: 16px 0 0 -35px;
 		font-weight: 300;
 		font-size: 16px;
 	}

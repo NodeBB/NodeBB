@@ -11,7 +11,7 @@
 	<div id="thread_active_users" class="hidden-xs"></div>
 </ol>
 
-<ul id="post-container" class="post-container container" data-tid="{topic_id}">
+<ul id="post-container" class="topic container" data-tid="{topic_id}">
 	<!-- BEGIN main_posts -->
 		<a id="post_anchor_{main_posts.pid}" name="{main_posts.pid}"></a>
 		<li class="row post-row main-post" data-pid="{main_posts.pid}" data-uid="{main_posts.uid}" data-username="{main_posts.username}" data-deleted="{main_posts.deleted}">
@@ -98,8 +98,8 @@
 								</button>
 
 							    <ul class="dropdown-menu">
-							      <li><a href="#">Profile</a></li>
-							      <li><a href="#">Chat</a></li>
+							      <li><a href="#"><i class="icon-user"></i> Profile</a></li>
+							      <li><a href="#"><i class="icon-comment"></i> Chat</a></li>
 							    </ul>
 							</div>
 
