@@ -39,12 +39,22 @@ button, a {
 .block, .show {
 	display: block;
 }
+
 .badge {
 	vertical-align: 17%;
 }
-.nav .badge {
-	vertical-align: 2%;
+
+.bold {
+	font-weight: bold;
 }
+
+a:hover, .btn-link:hover, .btn-link:active, .btn-link:focus {
+	text-decoration:none;
+}
+
+
+
+
 
 #alert_window {
 	position: fixed;
@@ -104,71 +114,12 @@ footer.footer {
 	}
 }
 
-
-#thread_active_users {
-	float: right;
-	color: rgb(153,153,153);
-
-	strong {
-		color: rgb(100,100,100);
-		font-weight: 600;
-		.pointer;
-	}
-}
-
-.bold {
-	font-weight: bold;
-}
-
-.user-recent-posts {
-  div {
-    color: #333;
-    margin-bottom: 10px;
-    .pointer;
-    overflow:hidden;
-    p {
-    	color: #333;
-    }
-  }
-  span {
-    padding-top: 10px;
-  }
-}
-
-
 .jumbotron {
 	// goes into theme
 	background: #56BCDA;
 	color: white;
 	padding: 30px;
 	word-wrap: break-word;
-}
-
-#users-container {
-	padding: 0;
-}
-.users-box{
-	display: inline-block;
-	margin-top: 20px;
-	text-align: center;
-	vertical-align: top;
-	max-width: 104px;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	overflow: hidden;
-
-	img {
-		width:80px;
-		height:80px;
-	}
-
-	a {
-		margin:5px;
-	}
-}
-
-a:hover, .btn-link:hover, .btn-link:active, .btn-link:focus {
-	text-decoration:none;
 }
 
 .formatting-bar {
@@ -193,38 +144,6 @@ a:hover, .btn-link:hover, .btn-link:active, .btn-link:focus {
 	float:right;
 }
 
-#admin-redis-info {
-	span {
-		display:inline-block;
-		width:220px;
-	}
-}
-
-.post-signature {
-  color: #666;
-  font-size: 12px;
-  border-top: 1px solid #ddd;
-  display: inline-block;
-
-	img {
-	  max-width:200px;
-	  max-height:60px;
-	}
-}
-
-.username-field {
-	.icon-circle {
-		font-size: 12px;
-		color: green;
-		margin-right:3px;
-	}
-	.icon-circle-blank {
-		font-size: 12px;
-		color: red;
-		margin-right:3px;
-	}
-}
-
 #chat-content {
 	width:95%;
 	height:200px;
@@ -236,7 +155,7 @@ a:hover, .btn-link:hover, .btn-link:active, .btn-link:focus {
 }
 
 #content{
-  padding-bottom:20px;
+	padding-bottom:20px;
 }
 
 
@@ -361,4 +280,7 @@ a:hover, .btn-link:hover, .btn-link:active, .btn-link:focus {
 	margin-right: -11px;
 }
 
+.nav .badge {
+	vertical-align: 2%;
+}
 //END: FIXES FOR BS3, may need to remove these when we get out of the RC releases

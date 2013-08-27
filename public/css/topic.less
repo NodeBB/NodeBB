@@ -33,6 +33,16 @@
 	}
 
 	.post-signature {
+		color: #666;
+		font-size: 12px;
+		border-top: 1px solid #ddd;
+		display: inline-block;
+
+		img {
+			max-width:200px;
+			max-height:60px;
+		}
+
 		margin-left: 5px;
 	}
 
@@ -263,5 +273,32 @@
 		-moz-border-radius: 5px;
 		border-radius: 5px;
 		padding: 0.5em;
+	}
+}
+
+
+.username-field {
+	.icon-circle {
+		font-size: 12px;
+		color: green;
+		margin-right:3px;
+	}
+	.icon-circle-blank {
+		font-size: 12px;
+		color: red;
+		margin-right:3px;
+	}
+}
+
+
+
+#thread_active_users {
+	float: right;
+	color: rgb(153,153,153);
+
+	strong {
+		color: rgb(100,100,100);
+		font-weight: 600;
+		.pointer;
 	}
 }
