@@ -25,12 +25,17 @@ var ajaxify = {};
 		if (event !== null && event.state && event.state.url !== undefined) ajaxify.go(event.state.url, null, null, true);
 	};
 
+	var pagination;
+
 	ajaxify.go = function(url, callback, template, quiet) {
-		// the following should be set like so: ajaxify.onchange(function(){}); where the code actually belongs
+		// start: the following should be set like so: ajaxify.onchange(function(){}); where the code actually belongs
 		$(window).off('scroll');
 		app.enter_room('global');
-		document.getElementById('pagination').style.display = 'none';
+
+		pagination = pagination || document.getElementById('pagination');
+		if (pagination) pagination.style.display = 'none';
 		window.onscroll = null;
+		// end
 
 
 		var url = url.replace(/\/$/, "");

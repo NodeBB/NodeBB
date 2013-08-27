@@ -28,7 +28,7 @@
 	<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
 	<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 	<script src="{relative_path}/src/utils.js"></script>
-	
+
 	<link rel="stylesheet" type="text/css" href="{relative_path}/css/style.css" />
 	<link rel="stylesheet" type="text/css" href="{relative_path}/css/admin.css" />
 </head>
@@ -64,7 +64,7 @@
 	</div>
 
 	<div id="alert_window"></div>
-	
+
 	<div class="container">
 		<div class="row">
 			<div class="col-md-3">
@@ -102,4 +102,4 @@
 					</ul>
 				</div><!--/.well -->
 			</div><!--/span-->
-			<div class="span9" id="content">
+			<div class="col-md-9" id="content">

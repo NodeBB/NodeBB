@@ -1,5 +1,5 @@
 (function (module) {
-	
+
 	var utils, fs;
 
 	try {
@@ -39,15 +39,15 @@
 				});
 			});
 		},
-		
+
 		relativeTime: function(timestamp, min) {
 			var	now = +new Date(),
 				difference = now - Math.floor(parseFloat(timestamp));
 
 			difference = Math.floor(difference / 1000);
-			
+
 			if (difference < 60) return difference + (min ? 's' : ' second') + (difference !== 1 && !min ? 's' : '');
-			
+
 			difference = Math.floor(difference / 60);
 			if (difference < 60) return difference + (min ? 'm' : ' minute') + (difference !== 1 && !min ? 's' : '');
 
@@ -63,7 +63,7 @@
 			difference = Math.floor(difference / 12);
 			return difference + (min ? 'y' : ' year') + (difference !== 1 && !min ? 's' : '');
 		},
-		
+
 		//http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
 		slugify: function(str) {
 			str = str.replace(/^\s+|\s+$/g, ''); // trim
@@ -93,7 +93,7 @@
 		isUserNameValid: function(name) {
 			return (name && name !== "" && (/^[a-zA-Z0-9 _-]{3,14}$/.test(name)));
 		},
-	
+
 		isPasswordValid: function(password) {
 			return password && password.indexOf(' ') === -1 && password.length > 5;
 		},
@@ -132,10 +132,12 @@
 				a.href = document.location;
 				url = a.pathname.slice(1);
 			}
+			var notificationIcon;
 
 			socket.emit('api:meta.buildTitle', url, function(title, numNotifications) {
 				document.title = (numNotifications > 0 ? '(' + numNotifications + ') ' : '') +  title;
-				if (numNotifications > 0) document.querySelector('.notifications a i').className = 'icon-circle active';
+				notificationIcon = notificationIcon || document.querySelector('.notifications a i');
+				if (numNotifications > 0 && notificationIcon) notificationIcon.className = 'icon-circle active';
 			});
 
 			jQuery.getJSON(RELATIVE_PATH + '/api/unread/total', function(data) {
@@ -169,16 +171,16 @@
 	if (!String.prototype.ltrim) {
 		String.prototype.ltrim=function(){return this.replace(/^\s+/,'');};
 	}
-	
+
 	if (!String.prototype.rtrim) {
-		String.prototype.rtrim=function(){return this.replace(/\s+$/,'');};			
-	}
-	
-	if (!String.prototype.fulltrim) {
-		String.prototype.fulltrim=function(){return this.replace(/(?:(?:^|\n)\s+|\s+(?:$|\n))/g,'').replace(/\s+/g,' ');};			
+		String.prototype.rtrim=function(){return this.replace(/\s+$/,'');};
 	}
 
-	
+	if (!String.prototype.fulltrim) {
+		String.prototype.fulltrim=function(){return this.replace(/(?:(?:^|\n)\s+|\s+(?:$|\n))/g,'').replace(/\s+/g,' ');};
+	}
+
+
 	if ('undefined' !== typeof window) {
 		window.utils = module.exports;
 	}
