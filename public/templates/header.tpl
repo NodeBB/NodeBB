@@ -31,9 +31,6 @@
 </head>
 
 <body>
-	<!--<div id="mobile-menu-overlay"> disabling until this can be pluginified.
-	</div>-->
-
 	<div class="navbar navbar-inverse navbar-fixed-top" id="header-menu">
 		<div class="container">
 			<div class="navbar-header">

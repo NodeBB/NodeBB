@@ -66,6 +66,7 @@
 		background: lighten(@color, 10%);
 	}
 }
+
 .category-orange {
 	@color: #FF7A4D;
 	color: white;
@@ -73,6 +74,28 @@
 
 	&:hover {
 		background: lighten(@color, 10%);
+	}
+}
+
+
+.category-box {
+	height:90px;
+
+	.post-preview {
+		padding-left:10px;
+		padding-right:10px;
+		text-align:left;
+		img {
+			width:60px;
+			height:60px;
+			padding-right:5px;
+		}
+
+		p {
+			overflow: hidden;
+			text-overflow:ellipsis;
+			height:60px;
+		}
 	}
 }
 
