@@ -5,7 +5,6 @@ var utils = require('./../public/src/utils.js'),
 	meta = require('./meta.js'),
 	emailjsServer = emailjs.server.connect(meta.config.mailer),
 	bcrypt = require('bcrypt'),
-	marked = require('marked'),
 	notifications = require('./notifications.js'),
 	topics = require('./topics.js'),
 	async = require('async');

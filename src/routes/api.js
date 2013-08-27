@@ -44,7 +44,7 @@ var user = require('./../user.js'),
 
 				require('async').each(data.categories, iterator, function(err) {
 					data.motd_class = (meta.config.show_motd === '1' || meta.config.show_motd === undefined) ? '' : 'none';
-					data.motd = marked(meta.config.motd || "# NodeBB <span class='hidden-phone'>v " + pkg.version + "</span>\nWelcome to NodeBB, the discussion platform of the future.\n\n<a target=\"_blank\" href=\"http://www.nodebb.org\" class=\"btn btn-large\"><i class=\"icon-comment\"></i><span class='hidden-phone'>&nbsp;Get NodeBB</span></a> <a target=\"_blank\" href=\"https://github.com/designcreateplay/NodeBB\" class=\"btn btn-large\"><i class=\"icon-github-alt\"></i><span class='hidden-phone'>&nbsp;Fork us on Github</span></a> <a target=\"_blank\" href=\"https://twitter.com/dcplabs\" class=\"btn btn-large\"><i class=\"icon-twitter\"></i><span class='hidden-phone'>&nbsp;@dcplabs</span></a>");
+					data.motd = require('marked')(meta.config.motd || "# NodeBB <span class='hidden-phone'>v " + pkg.version + "</span>\nWelcome to NodeBB, the discussion platform of the future.\n\n<a target=\"_blank\" href=\"http://www.nodebb.org\" class=\"btn btn-large\"><i class=\"icon-comment\"></i><span class='hidden-phone'>&nbsp;Get NodeBB</span></a> <a target=\"_blank\" href=\"https://github.com/designcreateplay/NodeBB\" class=\"btn btn-large\"><i class=\"icon-github-alt\"></i><span class='hidden-phone'>&nbsp;Fork us on Github</span></a> <a target=\"_blank\" href=\"https://twitter.com/dcplabs\" class=\"btn btn-large\"><i class=\"icon-twitter\"></i><span class='hidden-phone'>&nbsp;@dcplabs</span></a>");
 					res.json(data);
 				});
 

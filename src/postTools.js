@@ -66,20 +66,28 @@ var	RDB = require('./redis.js'),
 				postSearch.index(content, pid);
 			});
 
-			posts.getPostField(pid, 'tid', function(tid) {
-				PostTools.isMain(pid, tid, function(isMainPost) {
-					if (isMainPost) {
-						topics.setTopicField(tid, 'title', title);
-						topicSearch.remove(tid, function() {
-							topicSearch.index(title, tid);
+			async.parallel([
+				function(next) {
+					posts.getPostField(pid, 'tid', function(tid) {
+						PostTools.isMain(pid, tid, function(isMainPost) {
+							if (isMainPost) {
+								topics.setTopicField(tid, 'title', title);
+								topicSearch.remove(tid, function() {
+									topicSearch.index(title, tid);
+									next(null, tid);
+								});
+							}
 						});
-					}
-
-					io.sockets.in('topic_' + tid).emit('event:post_edited', {
-						pid: pid,
-						title: title,
-						content: PostTools.markdownToHTML(content)
 					});
+				},
+				function(next) {
+					PostTools.toHTML(content, next);
+				}
+			], function(err, results) {
+				io.sockets.in('topic_' + results[0]).emit('event:post_edited', {
+					pid: pid,
+					title: title,
+					content: results[1]
 				});
 			});
 		};
@@ -161,7 +169,7 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
-	PostTools.markdownToHTML = function(md, isSignature) {
+	PostTools.toHTML = function(raw, callback) {
 		var	marked = require('marked'),
 			cheerio = require('cheerio');
 
@@ -169,8 +177,8 @@ var	RDB = require('./redis.js'),
 			breaks: true
 		});
 
-		if (md && md.length > 0) {
-			var	parsedContentDOM = cheerio.load(marked(md));
+		if (raw && raw.length > 0) {
+			var	parsedContentDOM = cheerio.load(marked(raw));
 			var	domain = nconf.get('url');
 
 			parsedContentDOM('a').each(function() {
@@ -179,17 +187,14 @@ var	RDB = require('./redis.js'),
 
 				if (href && !href.match(domain) && !utils.isRelativeUrl(href)) {
 					this.attr('href', domain + 'outgoing?url=' + encodeURIComponent(href));
-					if (!isSignature) this.append(' <i class="icon-external-link"></i>');
 				}
 			});
 
 
-			html = parsedContentDOM.html();
+			callback(null, parsedContentDOM.html());
 		} else {
-			html = '<p></p>';
+			callback(null, '<p></p>');
 		}
-
-		return html;
 	}
 
 
