@@ -28,9 +28,6 @@
 
 	<div id="alert_window"></div>
 
-	<!--<div id="mobile-sidebar"> disabling until this can be pluginified.
-	</div>-->
-
 	<!-- START Forum Info -->
 	<div id="footer" class="container" style="padding-top: 50px; display: none">
 		<div class="alert alert-info">

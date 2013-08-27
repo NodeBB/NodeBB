@@ -392,8 +392,6 @@ var socket,
 	}
 
 	jQuery('document').ready(function() {
-		addTouchEvents();
-
 		$('#search-form').on('submit', function() {
 			var input = $(this).find('input');
 			ajaxify.go("search/"+input.val(), null, "search");
@@ -407,56 +405,4 @@ var socket,
 	loadConfig();
 
 
-	function addTouchEvents() {
-		return; // later.
-
-
-		// click simulation just for testing/sanity purposes.
-
-		var el = jQuery("#content"),
-			sidebar = jQuery('#mobile-sidebar'),
-			width = el.width();
-
-		function onTouchMove(ev) {
-			var coordinates = window.event ? window.event.touches[0] : ev.touches[0];
-
-			el.css({
-				marginLeft: -parseInt(width - coordinates.pageX) + 'px',
-				paddingRight: parseInt(width - coordinates.pageX) + 'px'});
-
-			sidebar.css({
-				marginLeft: -parseInt(width - coordinates.pageX) + 'px',
-				width: parseInt(width - coordinates.pageX) + 'px'
-			});
-		}
-
-		function onMouseMove(ev) {
-			ev.touches = [{pageX: ev.pageX, pageY: ev.pageY}];
-			onTouchMove(ev);
-		}
-
-		function onTouchEnd() {
-			el.css({
-				marginLeft: '0px',
-				paddingRight: '0px'
-			});
-
-			sidebar.css({
-				marginLeft: '0px',
-				width: '0px'
-			});
-		}
-
-		el.on('touchmove', onTouchMove);
-		el.on('mousedown', function() {
-			el.on('mousemove', onMouseMove);
-		});
-
-		el.on('touchend', onTouchEnd);
-		el.on('mouseup', function() {
-			el.off('mousemove');
-			onTouchEnd();
-		});
-
-	}
 }());

@@ -7,10 +7,10 @@ html {
 body {
 	/*background: #fdfdfd;*/  // port to default theme when it is implemented.
 	-webkit-transition: margin-bottom 250ms ease;
-	-moz-transition: margin-bottom 250ms ease;
-	-ms-transition: margin-bottom 250ms ease;
-	-o-transition: margin-bottom 250ms ease;
-	transition: margin-bottom 250ms ease;
+	   -moz-transition: margin-bottom 250ms ease;
+	    -ms-transition: margin-bottom 250ms ease;
+	     -o-transition: margin-bottom 250ms ease;
+	        transition: margin-bottom 250ms ease;
 
 	&.composing {
 		margin-bottom: 350px;
@@ -494,23 +494,6 @@ a:hover, .btn-link:hover, .btn-link:active, .btn-link:focus {
 
 
 
-#mobile-menu {
-	position: fixed;
-	bottom: 0px;
-	height: 50px;
-	background: #333;
-	width: 100%;
-	left: 0px;
-}
-
-#mobile-menu, #mobile-menu-overlay {
-	z-index: 999;
-
-	@media (min-width: 979px)
-	{
-		display: none !important;
-	}
-}
 
 
 .btn-none,
@@ -548,7 +531,14 @@ a:hover, .btn-link:hover, .btn-link:active, .btn-link:focus {
 	}
 }
 
+
 #mobile-menu {
+	position: fixed;
+	bottom: 0px;
+	height: 50px;
+	background: #333;
+	width: 100%;
+	left: 0px;
 	button {
 		color: #eee;
 		padding: 10px;
@@ -557,8 +547,16 @@ a:hover, .btn-link:hover, .btn-link:active, .btn-link:focus {
 	}
 }
 
-#mobile-menu-overlay {
+#mobile-menu, #mobile-menu-overlay {
+	z-index: 999;
 
+	@media (min-width: 979px)
+	{
+		display: none !important;
+	}
+}
+
+#mobile-menu-overlay {
 	background: rgba(0, 0, 0, 0.85);
 	position: fixed;
 	top: 0px;
@@ -611,14 +609,6 @@ a:hover, .btn-link:hover, .btn-link:active, .btn-link:focus {
 	}
 }
 
-#mobile-sidebar {
-	height: 100%;
-	position: absolute;
-	left: 100%;
-	top: 0px;
-	overflow: hidden;
-	margin-top: 60px;
-}
 
 .category-box {
   height:90px;
@@ -645,75 +635,6 @@ a:hover, .btn-link:hover, .btn-link:active, .btn-link:focus {
   margin-bottom:15px;
 }
 
-@-webkit-keyframes scroll-2 /* Safari and Chrome */
-{
-    0%   {top: 0px;}
-    25%   {top: -90px;}
-    50%  {top: -180px;}
-    75%  {top: -270px;}
-    100% {top: -360px;}
-}
-
-@keyframes scroll-2
-{
-    0%   {top: 0px;}
-    25%   {top: -90px;}
-    50%  {top: -180px;}
-    75%  {top: -270px;}
-    100% {top: -360px;}
-}
-
-@-webkit-keyframes scroll-1 /* Safari and Chrome */
-{
-    0%   {top: 0px;}
-    33%   {top: -90px;}
-    66%  {top: -180px;}
-    100%  {top: -270px;}
-}
-
-@keyframes scroll-1
-{
-    0%   {top: 0px;}
-    33%   {top: -90px;}
-    66%  {top: -180px;}
-    100%  {top: -270px;}
-}
-
-@-webkit-keyframes scroll-0 /* Safari and Chrome */
-{
-    0%   {top: 0px;}
-    50%   {top: -90px;}
-    100%  {top: -180px;}
-}
-
-@keyframes scroll-0
-{
-    0%   {top: 0px;}
-    50%   {top: -90px;}
-    100%  {top: -180px;}
-}
-
-.category-slider-2:hover {
-  position:relative;
-
-  -webkit-animation: scroll-2 10s ease 0.5s infinite normal;
-  animation: scroll-2 10s ease 0.5s infinite normal;/* Safari and Chrome: */
-}
-
-.category-slider-1:hover {
-  position:relative;
-
-  -webkit-animation: scroll-1 8s ease 0.5s infinite normal;
-  animation: scroll-1 8s ease 0.5s infinite normal;/* Safari and Chrome: */
-}
-
-.category-slider-0:hover {
-  position:relative;
-
-  -webkit-animation: scroll-0 6s ease 0.5s infinite normal;
-  animation: scroll-0 6s ease 0.5s infinite normal;/* Safari and Chrome: */
-}
-
 // go into header
 
 .search-result-post {
@@ -731,33 +652,6 @@ a:hover, .btn-link:hover, .btn-link:active, .btn-link:focus {
 
 }
 
-.account {
-	.topic-row {
-		width: 100%;
-	}
-}
-
-.favourites {
-	.topic-row {
-		width: 100%;
-		margin-bottom: 10px;
-	}
-}
-
-//topic
-.category-list {
-	li {
-		.inline-block;
-		.pointer;
-		padding: 0.5em 0;
-		text-align: center;
-		margin: 0.5em;
-		-webkit-border-radius: 5px;
-		-moz-border-radius: 5px;
-		border-radius: 5px;
-		padding: 0.5em;
-	}
-}
 
 
 
@@ -775,18 +669,3 @@ a:hover, .btn-link:hover, .btn-link:active, .btn-link:focus {
 }
 
 //END: FIXES FOR BS3, may need to remove these when we get out of the RC releases
-
-
-
-#pagination {
-	position: absolute;
-	background: rgb(34, 34, 34);
-	right: 0px;
-	top: 50px;
-	color: white;
-	padding: 10px;
-	padding-bottom: 5px;
-	padding-top: 5px;
-	font-size: 15px;
-	display: none;
-}

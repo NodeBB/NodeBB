@@ -60,7 +60,7 @@
 		<!-- END topics -->
 		</ul>
 	</div>
-	<div class="col-md-3 {show_sidebar} category-sidebar mobile-sidebar">
+	<div class="col-md-3 {show_sidebar} category-sidebar">
 
 		<div class="sidebar-block img-thumbnail">
 			<div class="block-header">
