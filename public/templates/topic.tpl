@@ -30,8 +30,8 @@
 									<span class="caret"></span>
 								</button>
 							    <ul class="dropdown-menu">
-							      <li><a href="#">Profile</a></li>
-							      <li><a href="#">Chat</a></li>
+							      <li><a href="#"><i class="icon-user"></i> Profile</a></li>
+							      <li><a href="#"><i class="icon-comment"></i> Chat</a></li>
 							    </ul>
 							</div>
 
