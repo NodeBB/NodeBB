@@ -246,9 +246,8 @@
 	});
 
 	$('.post-container').on('click', '.favourite', function() {
-		var ids = this.id.replace('favs_', '').split('_'),
-			pid = ids[0],
-			uid = ids[1];
+		var pid = $(this).parents('li').attr('data-pid');
+		var uid = $(this).parents('li').attr('data-uid');
 
 		var element = $(this).find('i');
 		if(element.attr('class') == 'icon-star-empty') {
@@ -260,9 +259,8 @@
 	});
 
 	$('.post-container').delegate('.edit', 'click', function(e) {
-		var pid = ($(this).attr('id') || $(this.parentNode).attr('id')).split('_')[1];
-
-		var main = $(this).parents('.main-post');
+		var pid = $(this).parents('li').attr('data-pid'),
+			main = $(this).parents('.main-post');
 
 		require(['composer'], function(cmp) {
 			cmp.push(null, null, pid);
@@ -270,10 +268,10 @@
 	});
 
 	$('.post-container').delegate('.delete', 'click', function(e) {
-		var	pid = ($(this).attr('id') || $(this.parentNode).attr('id')).split('_')[1],
-		postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
-		deleteAction = !postEl.hasClass('deleted') ? true : false,
-		confirmDel = confirm((deleteAction ? 'Delete' : 'Restore') + ' this post?');
+		var pid = $(this).parents('li').attr('data-pid'),
+			postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
+			deleteAction = !postEl.hasClass('deleted') ? true : false,
+			confirmDel = confirm((deleteAction ? 'Delete' : 'Restore') + ' this post?');
 
 		if (confirmDel) {
 			deleteAction ?
