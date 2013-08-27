@@ -568,14 +568,14 @@ var	RDB = require('./redis.js')
 								"timestamp" : timestamp
 							};
 
-						if(postData.content) {
+						if (postData.content) {
 							stripped = postData.content.replace(/>.+\n\n/, '');
 							postTools.toHTML(stripped, function(err, stripped) {
-								returnObj.stripped = utils.strip_tags(stripped);
+								returnObj.text = utils.strip_tags(stripped);
 								callback(null, returnObj);
 							});
 						} else {
-							returnObj.stripped = '';
+							returnObj.text = '';
 							callback(null, returnObj);
 						}
 					});
