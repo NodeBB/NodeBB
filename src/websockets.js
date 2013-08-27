@@ -32,7 +32,8 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 (function(io) {
 	var	users = {},
 		userSockets = {},
-		rooms = {}
+		rooms = {},
+		chats = {};
 
 	global.io = io;
 
@@ -55,7 +56,14 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					io.sockets.in('global').emit('api:user.isOnline', isUserOnline(uid));
 
 					user.getUserField(uid, 'username', function(err, username) {
-						socket.emit('event:connect', {status: 1, username:username});
+						socket.emit('event:connect', {status: 1, username:username, uid:uid});
+
+						if(chats[uid]) {
+							for(var i=0; i<chats[uid].length; ++i) {
+								io.sockets.in(chats[uid][i]).emit('chatMessage', {fromuid:uid, username:username, message: username+' came online\n', timestamp: Date.now()});
+								socket.join(chats[uid][i]);
+							}
+						}
 					});
 				}
 			});
@@ -74,6 +82,18 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				delete users[sessionID];
 				if(uid) {
 					io.sockets.in('global').emit('api:user.isOnline', isUserOnline(uid));
+
+					user.getUserField(uid, 'username', function(err, username) {
+
+						if(chats[uid] && chats[uid].length) {
+
+							for(var i=0; i<chats[uid].length; ++i) {
+
+								io.sockets.in(chats[uid][i]).emit('chatGoOffline', {uid:uid, username:username, timestamp:Date.now()});
+								socket.leave(chats[uid][i]);
+							}
+						}
+					});
 				}
 			}
 
@@ -526,10 +546,8 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 			var msg = utils.strip_tags(data.message);
 
-			var uids = [touid,uid].sort();
-			var chatroom = 'chat_' + uids[0] + '_' + uids[1];
-			console.log('entering chat room ', chatroom);
-			socket.join('chat_' + uids[0] + '_' + uids[1]);
+			var uids = [uid, touid].sort();
+			var chatroom = 'chatroom_'+uids[0]+'_'+uids[1];
 
 			user.getUserField(uid, 'username', function(err, username) {
 				var finalMessage = username + ': ' + msg,
@@ -550,16 +568,27 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 						numSockets = userSockets[touid].length;
 
 						for(var x=0; x<numSockets; ++x) {
+							userSockets[touid][x].join(chatroom);
 							userSockets[touid][x].emit('chatMessage', {fromuid:uid, username:username, message: finalMessage, timestamp: Date.now()});
 						}
+
+						chats[touid] = chats[touid] || [];
+						if(chats[touid].indexOf(chatroom) === -1)
+							chats[touid].push(chatroom);
 					}
 
 					if(userSockets[uid]) {
+
 						numSockets = userSockets[uid].length;
 
 						for(var x=0; x<numSockets; ++x) {
+							userSockets[uid][x].join(chatroom);
 							userSockets[uid][x].emit('chatMessage', {fromuid:touid, username:username, message:'You : ' + msg, timestamp: Date.now()});
 						}
+
+						chats[uid] = chats[uid] || [];
+						if(chats[uid].indexOf(chatroom) === -1)
+							chats[uid].push(chatroom);
 					}
 				});
 			});

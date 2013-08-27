@@ -13,12 +13,19 @@ define(['taskbar'], function(taskbar) {
 		chatModal.css('zIndex', topZ + 1);
 	}
 
+	module.getModal = function(touid) {
+		return $('#chat-modal-' + touid);
+	}
+
+	module.modalOpen = function(touid) {
+		return $('#chat-modal-' + touid).length !== 0;
+	}
 	module.createModalIfDoesntExist = function(username, touid, callback) {
-		var chatModal = $('#chat-modal-'+touid);
+		var chatModal = $('#chat-modal-' + touid);
 
 		if(!chatModal.length) {
 			var chatModal = $('#chat-modal').clone();
-			chatModal.attr('id','chat-modal-'+touid);
+			chatModal.attr('id','chat-modal-' + touid);
 			var uuid = utils.generateUUID();
 			chatModal.attr('UUID', uuid);
 			chatModal.appendTo($('body'));
