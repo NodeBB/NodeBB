@@ -13,7 +13,7 @@ define(['taskbar'], function(taskbar) {
 		chatModal.css('zIndex', topZ + 1);
 	}
 
-	module.createModalIfDoesntExist = function(username, touid) {
+	module.createModalIfDoesntExist = function(username, touid, callback) {
 		var chatModal = $('#chat-modal-'+touid);
 
 		if(!chatModal.length) {
@@ -29,7 +29,7 @@ define(['taskbar'], function(taskbar) {
 			});
 			chatModal.find('#chat-with-name').html(username);
 
-			chatModal.find('.close').on('click',function(e){
+			chatModal.find('.close').on('click', function(e) {
 				chatModal.hide();
 				taskbar.discard('chat', uuid);
 			});
@@ -40,8 +40,14 @@ define(['taskbar'], function(taskbar) {
 
 			addSendHandler(chatModal, touid);
 
-			getChatMessages(chatModal, touid);
+			getChatMessages(chatModal, touid, callback);
+
+			taskbar.push('chat', chatModal.attr('UUID'), {title:'chat with '+username});
+			return chatModal;
 		}
+
+		if(callback)
+			callback(false, chatModal);
 
 		taskbar.push('chat', chatModal.attr('UUID'), {title:'chat with '+username});
 		return chatModal;
@@ -59,11 +65,14 @@ define(['taskbar'], function(taskbar) {
 		taskbar.minimize('chat', uuid);
 	}
 
-	function getChatMessages(chatModal, touid) {
+	function getChatMessages(chatModal, touid, callback) {
 		socket.emit('getChatMessages', {touid:touid}, function(messages) {
 			for(var i = 0; i<messages.length; ++i) {
-				module.appendChatMessage(chatModal, messages[i].content);
+				module.appendChatMessage(chatModal, messages[i].content, messages[i].timestamp);
 			}
+
+			if(callback)
+				callback(true, chatModal);
 		});
 	}
 
@@ -88,14 +97,15 @@ define(['taskbar'], function(taskbar) {
 			msg = msg +'\n';
 			socket.emit('sendChatMessage', { touid:touid, message:msg});
 			chatModal.find('#chat-message-input').val('');
-			module.appendChatMessage(chatModal, 'You : ' + msg);
 		}
 	}
 
-
-	module.appendChatMessage = function(chatModal, message){
+	module.appendChatMessage = function(chatModal, message, timestamp) {
 		var chatContent = chatModal.find('#chat-content');
-		chatContent.append(message);
+
+		var date = new Date(parseInt(timestamp, 10));
+
+		chatContent.append('[' + date.toLocaleTimeString() + '] ' + message);
 		chatContent.scrollTop(
 			chatContent[0].scrollHeight - chatContent.height()
 		);

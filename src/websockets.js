@@ -523,28 +523,38 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				return;
 			}
 
-			if(userSockets[touid]) {
-				var msg = utils.strip_tags(data.message),
-					numSockets = userSockets[touid].length;
+			var msg = utils.strip_tags(data.message);
 
-				user.getUserField(uid, 'username', function(err, username) {
-					var finalMessage = username + ' says : ' + msg;
 
-					for(var x=0;x<numSockets;x++) {
-						userSockets[touid][x].emit('chatMessage', {fromuid:uid, username:username, message:finalMessage});
-					}
+			user.getUserField(uid, 'username', function(err, username) {
+				var finalMessage = username + ' : ' + msg;
 
-					notifications.create(finalMessage, 5, '#', 'notification_' + uid + '_' + touid, function(nid) {
-						notifications.push(nid, [touid], function(success) {
-
-						});
-					});
-
-					require('./messaging').addMessage(uid, touid, msg, function(err, message) {
+				notifications.create(finalMessage, 5, '#', 'notification_' + uid + '_' + touid, function(nid) {
+					notifications.push(nid, [touid], function(success) {
 
 					});
 				});
-			}
+
+				require('./messaging').addMessage(uid, touid, msg, function(err, message) {
+					var numSockets = 0;
+
+					if(userSockets[touid]) {
+						numSockets = userSockets[touid].length;
+
+						for(var x=0; x<numSockets; ++x) {
+							userSockets[touid][x].emit('chatMessage', {fromuid:uid, username:username, message: finalMessage, timestamp: Date.now()});
+						}
+					}
+
+					if(userSockets[uid]) {
+						numSockets = userSockets[uid].length;
+
+						for(var x=0; x<numSockets; ++x) {
+							userSockets[uid][x].emit('chatMessage', {fromuid:touid, username:username, message:'You : ' + msg, timestamp: Date.now()});
+						}
+					}
+				});
+			});
 		});
 
 		socket.on('api:config.get', function(data) {

@@ -132,6 +132,7 @@
 			});
 		}
 	});
+
 	notifList.addEventListener('click', function(e) {
 		var target;
 		switch(e.target.nodeName) {
@@ -144,6 +145,7 @@
 			if (nid > 0) socket.emit('api:notifications.mark_read', nid);
 		}
 	});
+
 	socket.on('event:new_notification', function() {
 		document.querySelector('.notifications a i').className = 'icon-circle active';
 		app.alert({
@@ -161,13 +163,16 @@
 		var username = data.username;
 		var fromuid = data.fromuid;
 		var message = data.message;
+		var timestamp = data.timestamp;
 
 		require(['chat'], function(chat) {
-			var chatModal = chat.createModalIfDoesntExist(username, fromuid);
+			var chatModal = chat.createModalIfDoesntExist(username, fromuid, function(created, modal) {
+				if(!created)
+					chat.appendChatMessage(modal, message, timestamp);
+			});
+
 			chatModal.show();
 			chat.bringModalToTop(chatModal);
-
-			chat.appendChatMessage(chatModal, message);
 		});
 	});
 
