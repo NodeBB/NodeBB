@@ -62,7 +62,8 @@
 				</ul>
 
 
-				<ul id="right-menu" class="nav navbar-nav pull-right">
+
+				<ul id="right-menu" class="nav navbar-nav navbar-right">
 					<li class="notifications dropdown text-center">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="notif_dropdown"><i class="icon-circle-blank"></i></a>
 						<ul id="notif-list" class="dropdown-menu" aria-labelledby="notif_dropdown">
@@ -70,10 +71,12 @@
 						</ul>
 					</li>
 					<li>
-						<form id="search-form" class="form-search form-inline visible-md visible-lg" action="" method="GET">
-							<input type="text" name="query" class="form-control search-query" />
-							<button type="submit" class="btn hide">Search</button>
-						</form>
+						<form id="search-form" class="navbar-form navbar-right" role="search" method="GET" action="">
+					      <div class="form-group">
+					        <input type="text" class="form-control" placeholder="Search" name="query">
+					      </div>
+					      <button type="submit" class="btn btn-default hide">Search</button>
+					    </form>
 					</li>
 				</ul>
 				<div id="pagination"></div>
