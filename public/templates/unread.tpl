@@ -45,7 +45,7 @@
 		</a>
 		<!-- END topics -->
 		</ul>
-		<button id="load-more-btn" class="btn hide">Load More</button>
+		<button id="load-more-btn" class="btn btn-primary hide">Load More</button>
 	</div>
 </div>
 

@@ -1,5 +1,5 @@
 <div>
-	
+
 	<ul class="nav nav-pills">
 		<li class='active'><a href='/users-latest'>Latest Users</a></li>
 		<li class=''><a href='/users-sort-posts'>Top Posters</a></li>
@@ -9,7 +9,7 @@
 
 	<br />
 	<div class="search {search_display} well">
-		
+
 		<div class="input-group">
 			<input class="form-control" id="search-user" type="text" placeholder="Enter a username to search"/>
 	        <span class="input-group-addon">
@@ -17,7 +17,7 @@
 	        </span>
 		</div>
 	</div>
-	
+
 	<ul id="users-container" class="users">
 		<!-- BEGIN users -->
 		<div class="users-box">
@@ -41,7 +41,7 @@
 </div>
 
 <div class="text-center {loadmore_display}">
-	<button id="load-more-users-btn" class="btn">Load More</button>
+	<button id="load-more-users-btn" class="btn btn-primary">Load More</button>
 </div>
 
 <script type="text/javascript" src="{relative_path}/src/forum/users.js"></script>
