@@ -281,17 +281,16 @@
 	});
 
 	$('.topic-buttons').delegate('.chat', 'click', function(e) {
-		var username = $(this).parents('li').attr('data-username');
-		var touid = $(this).parents('li').attr('data-uid');
+		var username = $(this).parents('li.row').attr('data-username');
+		var touid = $(this).parents('li.row').attr('data-uid');
 
 		if(username === app.username || !app.username)
 			return;
 
-
 		require(['chat'], function(chat) {
 			var chatModal = chat.createModalIfDoesntExist(username, touid);
-			chatModal.show();
-			chat.bringModalToTop(chatModal);
+			chatModal.modal();
+			chat.bringModalToTop(chatModal); // I don't think this is necessary
 		});
 	});
 
