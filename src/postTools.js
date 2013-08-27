@@ -94,7 +94,7 @@ var	RDB = require('./redis.js'),
 
 		PostTools.privileges(pid, uid, function(privileges) {
 			if (privileges.editable) {
-				plugins.fireHook('filter:save_post_content', content, function(parsedContent) {
+				plugins.fireHook('filter:post.save', content, function(parsedContent) {
 					content = parsedContent;
 					success();
 				});
@@ -170,31 +170,27 @@ var	RDB = require('./redis.js'),
 	}
 
 	PostTools.toHTML = function(raw, callback) {
-		var	marked = require('marked'),
-			cheerio = require('cheerio');
+		plugins.fireHook('filter:post.parse', raw, function(parsed) {
+			var	cheerio = require('cheerio');
 
-		marked.setOptions({
-			breaks: true
+			if (parsed && parsed.length > 0) {
+				var	parsedContentDOM = cheerio.load(parsed);
+				var	domain = nconf.get('url');
+
+				parsedContentDOM('a').each(function() {
+					this.attr('rel', 'nofollow');
+					var href = this.attr('href');
+
+					if (href && !href.match(domain) && !utils.isRelativeUrl(href)) {
+						this.attr('href', domain + 'outgoing?url=' + encodeURIComponent(href));
+					}
+				});
+
+				callback(null, parsedContentDOM.html());
+			} else {
+				callback(null, '<p></p>');
+			}
 		});
-
-		if (raw && raw.length > 0) {
-			var	parsedContentDOM = cheerio.load(marked(raw));
-			var	domain = nconf.get('url');
-
-			parsedContentDOM('a').each(function() {
-				this.attr('rel', 'nofollow');
-				var href = this.attr('href');
-
-				if (href && !href.match(domain) && !utils.isRelativeUrl(href)) {
-					this.attr('href', domain + 'outgoing?url=' + encodeURIComponent(href));
-				}
-			});
-
-
-			callback(null, parsedContentDOM.html());
-		} else {
-			callback(null, '<p></p>');
-		}
 	}
 
 
