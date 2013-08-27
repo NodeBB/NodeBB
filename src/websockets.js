@@ -72,8 +72,9 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 			if(userSockets[uid].length === 0) {
 				delete users[sessionID];
-				if(uid)
+				if(uid) {
 					io.sockets.in('global').emit('api:user.isOnline', isUserOnline(uid));
+				}
 			}
 
 			for(var roomName in rooms) {
@@ -525,6 +526,10 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 			var msg = utils.strip_tags(data.message);
 
+			var uids = [touid,uid].sort();
+			var chatroom = 'chat_' + uids[0] + '_' + uids[1];
+			console.log('entering chat room ', chatroom);
+			socket.join('chat_' + uids[0] + '_' + uids[1]);
 
 			user.getUserField(uid, 'username', function(err, username) {
 				var finalMessage = 'New message from <strong>' + username + '</strong>';
