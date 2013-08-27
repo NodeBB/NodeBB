@@ -264,7 +264,7 @@ var	RDB = require('./redis.js'),
 				topics.getTopicField(tid, 'title', function(err, title) {
 					topics.getTeaser(tid, function(err, teaser) {
 						if (!err) {
-							notifications.create(teaser.username + ' has posted a reply to: "' + title + '"', null, '/topic/' + tid, 'topic:' + tid, function(nid) {
+							notifications.create('<strong>' + teaser.username + '</strong> has posted a reply to: "<strong>' + title + '</strong>"', null, '/topic/' + tid, 'topic:' + tid, function(nid) {
 								next(null, nid);
 							});
 						} else next(err);

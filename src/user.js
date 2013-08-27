@@ -580,7 +580,7 @@ var utils = require('./../public/src/utils.js'),
 		User.getUserField(uid, 'username', function(err, username) {
 			RDB.smembers('followers:' + uid, function(err, followers) {
 				topics.getTopicField(tid, 'slug', function(err, slug) {
-					var message = username + ' made a new post';
+					var message = '<strong>' + username + '</strong> made a new post';
 
 					notifications.create(message, 5, nconf.get('url') + 'topic/' + slug + '#' + pid, 'notification_'+ Date.now(), function(nid) {
 		 				notifications.push(nid, followers);
