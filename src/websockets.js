@@ -217,9 +217,11 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('user.exists', function(data) {
-			user.exists(utils.slugify(data.username), function(exists){
-				socket.emit('user.exists', {exists: exists});
-			});
+			if(data.username) {
+				user.exists(utils.slugify(data.username), function(exists){
+					socket.emit('user.exists', {exists: exists});
+				});
+			}
 		});
 
 		socket.on('user.count', function(data) {

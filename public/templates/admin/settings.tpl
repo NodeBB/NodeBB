@@ -51,6 +51,14 @@
 </form>
 
 <form>
+	<h3>User Settings</h3>
+	<div class="alert alert-notify">
+		<strong>Minimum Username Length</strong><br /> <input type="text" class="" value="2" data-field="minimumUsernameLength"><br />
+		<strong>Maximum Username Length</strong><br /> <input type="text" class="" value="16" data-field="maximumUsernameLength"><br />
+	</div>
+</form>
+
+<form>
 	<h3>Post Settings</h3>
 	<div class="alert alert-notify">
 		<strong>Post Delay</strong><br /> <input type="text" class="" value="10000" data-field="postDelay"><br />

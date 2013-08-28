@@ -91,11 +91,11 @@
 		},
 
 		isUserNameValid: function(name) {
-			return (name && name !== "" && (/^[a-zA-Z0-9 _-]{3,14}$/.test(name)));
+			return (name && name !== "" && (/^[a-zA-Z0-9 _-]+$/.test(name)));
 		},
 	
 		isPasswordValid: function(password) {
-			return password && password.indexOf(' ') === -1 && password.length > 5;
+			return password && password.indexOf(' ') === -1;
 		},
 
 		// Blatently stolen from: http://phpjs.org/functions/strip_tags/

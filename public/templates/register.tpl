@@ -1,13 +1,31 @@
 <h1>Register</h1>
 <div class="row-fluid">
 	<div class="well {register_window:spansize}">
-		<form method="post" action="{relative_path}/register">
-			<label for="email">Email Address</label><input type="email" name="email" placeholder="Enter Email Address" id="email" /> <span id="email-notify" class="label label-important"></span><br />
-			<label for="username">Username</label><input type="text" name="username" placeholder="Enter Username" id="username" /> <span id="username-notify" class="label label-success"></span> <br />
-			<label for="password">Password</label><input type="password" name="password" placeholder="Enter Password" id="password" /> <span id="password-notify" class="label label-important"></span> <br />
-			<label for="password-confirm">Confirm Password</label><input type="password" name="password-confirm" placeholder="Confirm Password" id="password-confirm" /> <span id="password-confirm-notify" class="label label-important"></span> <br />
-			<input type="hidden" name="_csrf" value="{token}" />
-			<button class="btn btn-primary" id="register" type="submit">Register Now</button>
+		<form method="post" action="#">
+			<fieldset>
+				<label for="email"><strong>Email Address</strong></label>
+				<input type="email" name="email" placeholder="Enter Email Address" id="email" autofocus/>
+				<span id="email-notify" class="alert alert-error hide"></span>
+				<span class="help-block">Your email won't be shown to the public unless you want.</span>
+				
+				<label for="username"><strong>Username</strong></label>
+				<input type="text" name="username" placeholder="Enter Username" id="username" />
+				<span id="username-notify" class="alert alert-error hide"></span>
+				<span class="help-block">A unique username. {minimumUsernameLength}-{maximumUsernameLength} characters. Others can mention you with @username.</span>
+				
+				<label for="password"><strong>Password</strong></label>
+				<input type="password" name="password" placeholder="Enter Password" id="password" />
+				<span id="password-notify" class="alert alert-error hide"></span>
+				<span class="help-block">{minimumPasswordLength}-{maximumPasswordLength} characters.</span>
+				
+				<label for="password-confirm"><strong>Confirm Password</strong></label>
+				<input type="password" name="password-confirm" placeholder="Confirm Password" id="password-confirm" />
+				<span id="password-confirm-notify" class="alert alert-error hide"></span>
+				
+				<input type="hidden" name="_csrf" value="{token}" />
+				<br/>
+				<button class="btn btn-primary" id="register" type="submit">Register Now</button>
+			</fieldset>
 		</form>
 	</div>
 	<div class="well span6 {alternate_logins:display}">
