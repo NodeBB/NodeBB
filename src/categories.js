@@ -74,6 +74,7 @@ var	RDB = require('./redis.js'),
 						categoryData.moderator_block_class = results[1].length > 0 ? '' : 'none';
 						categoryData.moderators = results[1];
 						categoryData.active_users = results[2];
+						categoryData.show_sidebar = categoryData.topics.length > 0 ? 'show':'hidden';
 						callback(null, categoryData);
 					});
 				}
@@ -234,6 +235,26 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
+	Categories.moveActiveUsers = function(tid, oldCid, cid, callback) {
+		topics.getUids(tid, function(err, uids) {
+			if(!err && uids) {
+				function updateUser(uid) {
+					Categories.addActiveUser(cid, uid);
+					Categories.isUserActiveIn(oldCid, uid, function(err, active) {
+
+						if(!err && !active) {
+							Categories.removeActiveUser(oldCid, uid);
+						}
+					});
+				}
+
+				for(var i=0; i<uids.length; ++i) {
+					updateUser(uids[i]);
+				}
+			}
+		});
+	}
+
 	Categories.getCategoryData = function(cid, callback) {
 		RDB.exists('category:' + cid, function(err, exists) {
 			if (exists) RDB.hgetall('category:' + cid, callback);
@@ -298,6 +319,59 @@ var	RDB = require('./redis.js'),
 		});
 
 	};
+
+	Categories.isUserActiveIn = function(cid, uid, callback) {
+
+		RDB.lrange('uid:' + uid + ':posts', 0, -1, function(err, pids) {
+			if(err)
+				return callback(err, null);
+
+			function getPostCategory(pid, callback) {
+				posts.getPostField(pid, 'tid', function(tid) {
+
+					topics.getTopicField(tid, 'cid', function(err, postCid) {
+						if(err)
+							return callback(err, null);
+
+						return callback(null, postCid);
+					});
+				});
+			}
+
+			var index = 0,
+				active = false;
+
+			async.whilst(
+				function() {
+					return active === false && index < pids.length;
+				},
+				function(callback) {
+					getPostCategory(pids[index], function(err, postCid) {
+						if(err)
+							return callback(err);
+						if(postCid === cid)
+							active = true;
+						++index;
+						callback(null);
+					})
+				},
+				function(err) {
+					if(err)
+						return callback(err, null);
+
+					callback(null, active);
+				}
+			);
+		});
+	}
+
+	Categories.addActiveUser = function(cid, uid) {
+		RDB.sadd('cid:' + cid + ':active_users', uid);
+	}
+
+	Categories.removeActiveUser = function(cid, uid) {
+		RDB.srem('cid:' + cid + ':active_users', uid);
+	}
 
 }(exports));
 

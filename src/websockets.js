@@ -32,7 +32,8 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 (function(io) {
 	var	users = {},
 		userSockets = {},
-		rooms = {}
+		rooms = {},
+		chats = {};
 
 	global.io = io;
 
@@ -55,7 +56,14 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					io.sockets.in('global').emit('api:user.isOnline', isUserOnline(uid));
 
 					user.getUserField(uid, 'username', function(err, username) {
-						socket.emit('event:connect', {status: 1, username:username});
+						socket.emit('event:connect', {status: 1, username:username, uid:uid});
+
+						if(chats[uid]) {
+							for(var i=0; i<chats[uid].length; ++i) {
+								io.sockets.in(chats[uid][i]).emit('chatMessage', {fromuid:uid, username:username, message: username+' came online\n', timestamp: Date.now()});
+								socket.join(chats[uid][i]);
+							}
+						}
 					});
 				}
 			});
@@ -72,8 +80,21 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 			if(userSockets[uid].length === 0) {
 				delete users[sessionID];
-				if(uid)
+				if(uid) {
 					io.sockets.in('global').emit('api:user.isOnline', isUserOnline(uid));
+
+					user.getUserField(uid, 'username', function(err, username) {
+
+						if(chats[uid] && chats[uid].length) {
+
+							for(var i=0; i<chats[uid].length; ++i) {
+
+								io.sockets.in(chats[uid][i]).emit('chatGoOffline', {uid:uid, username:username, timestamp:Date.now()});
+								socket.leave(chats[uid][i]);
+							}
+						}
+					});
+				}
 			}
 
 			for(var roomName in rooms) {
@@ -196,9 +217,11 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		});
 
 		socket.on('user.exists', function(data) {
-			user.exists(utils.slugify(data.username), function(exists){
-				socket.emit('user.exists', {exists: exists});
-			});
+			if(data.username) {
+				user.exists(utils.slugify(data.username), function(exists){
+					socket.emit('user.exists', {exists: exists});
+				});
+			}
 		});
 
 		socket.on('user.count', function(data) {
@@ -523,28 +546,54 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				return;
 			}
 
-			if(userSockets[touid]) {
-				var msg = utils.strip_tags(data.message),
-					numSockets = userSockets[touid].length;
+			var msg = utils.strip_tags(data.message);
 
-				user.getUserField(uid, 'username', function(err, username) {
-					var finalMessage = username + ' says : ' + msg;
+			var uids = [uid, touid].sort();
+			var chatroom = 'chatroom_'+uids[0]+'_'+uids[1];
 
-					for(var x=0;x<numSockets;x++) {
-						userSockets[touid][x].emit('chatMessage', {fromuid:uid, username:username, message:finalMessage});
-					}
+			user.getUserField(uid, 'username', function(err, username) {
+				var finalMessage = username + ': ' + msg,
+					notifText = 'New message from <strong>' + username + '</strong>';
 
-					notifications.create(finalMessage, 5, '#', 'notification_' + uid + '_' + touid, function(nid) {
+				if(!isUserOnline(touid)) {
+					notifications.create(notifText, 5, '#', 'notification_' + uid + '_' + touid, function(nid) {
 						notifications.push(nid, [touid], function(success) {
 
 						});
 					});
+				}
 
-					require('./messaging').addMessage(uid, touid, msg, function(err, message) {
+				require('./messaging').addMessage(uid, touid, msg, function(err, message) {
+					var numSockets = 0;
 
-					});
+					if(userSockets[touid]) {
+						numSockets = userSockets[touid].length;
+
+						for(var x=0; x<numSockets; ++x) {
+							userSockets[touid][x].join(chatroom);
+							userSockets[touid][x].emit('chatMessage', {fromuid:uid, username:username, message: finalMessage, timestamp: Date.now()});
+						}
+
+						chats[touid] = chats[touid] || [];
+						if(chats[touid].indexOf(chatroom) === -1)
+							chats[touid].push(chatroom);
+					}
+
+					if(userSockets[uid]) {
+
+						numSockets = userSockets[uid].length;
+
+						for(var x=0; x<numSockets; ++x) {
+							userSockets[uid][x].join(chatroom);
+							userSockets[uid][x].emit('chatMessage', {fromuid:touid, username:username, message:'You : ' + msg, timestamp: Date.now()});
+						}
+
+						chats[uid] = chats[uid] || [];
+						if(chats[uid].indexOf(chatroom) === -1)
+							chats[uid].push(chatroom);
+					}
 				});
-			}
+			});
 		});
 
 		socket.on('api:config.get', function(data) {

@@ -5,7 +5,6 @@ var	RDB = require('./redis.js')
 	user = require('./user.js'),
 	categories = require('./categories.js'),
 	posts = require('./posts.js'),
-	marked = require('marked'),
 	threadTools = require('./threadTools.js'),
 	postTools = require('./postTools'),
 	async = require('async'),
@@ -14,9 +13,6 @@ var	RDB = require('./redis.js')
 	reds = require('reds'),
 	topicSearch = reds.createSearch('nodebbtopicsearch');
 
-marked.setOptions({
-	breaks: true
-});
 
 (function(Topics) {
 
@@ -566,19 +562,23 @@ marked.setOptions({
 							return callback(err, null);
 
 						var stripped = postData.content,
-							timestamp = postData.timestamp;
+							timestamp = postData.timestamp,
+							returnObj = {
+								"username": userData.username,
+								"picture": userData.picture,
+								"timestamp" : timestamp
+							};
 
-						if(postData.content) {
+						if (postData.content) {
 							stripped = postData.content.replace(/>.+\n\n/, '');
-							stripped = utils.strip_tags(postTools.markdownToHTML(stripped));
+							postTools.toHTML(stripped, function(err, stripped) {
+								returnObj.text = utils.strip_tags(stripped);
+								callback(null, returnObj);
+							});
+						} else {
+							returnObj.text = '';
+							callback(null, returnObj);
 						}
-
-						callback(null, {
-							"text": stripped,
-							"username": userData.username,
-							"picture": userData.picture,
-							"timestamp" : timestamp
-						});
 					});
 				});
 			} else callback(new Error('no-teaser-found'));
@@ -721,6 +721,28 @@ marked.setOptions({
 
 	Topics.getPids = function(tid, callback) {
 		RDB.lrange('tid:' + tid + ':posts', 0, -1, callback);
+	}
+
+	Topics.getUids = function(tid, callback) {
+		var uids = {};
+		Topics.getPids(tid, function(err, pids) {
+
+			function getUid(pid, next) {
+				posts.getPostField(pid, 'uid', function(uid) {
+					if(err)
+						return next(err);
+					uids[uid] = 1;
+					next(null);
+				});
+			}
+
+			async.each(pids, getUid, function(err) {
+				if(err)
+					return callback(err, null);
+
+				callback(null, Object.keys(uids));
+			});
+		});
 	}
 
 	Topics.delete = function(tid) {

@@ -199,12 +199,19 @@ var	RDB = require('./redis.js'),
 						}
 					});
 
+					categories.moveActiveUsers(tid, oldCid, cid, function(err, data) {
+						if(err) {
+							winston.err(err);
+						}
+					});
+
 					categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1);
 					categories.incrementCategoryFieldBy(cid, 'topic_count', 1);
 
 					socket.emit('api:topic.move', {
 						status: 'ok'
 					});
+
 					io.sockets.in('topic_' + tid).emit('event:topic_moved', {
 						tid: tid
 					});
@@ -264,7 +271,7 @@ var	RDB = require('./redis.js'),
 				topics.getTopicField(tid, 'title', function(err, title) {
 					topics.getTeaser(tid, function(err, teaser) {
 						if (!err) {
-							notifications.create(teaser.username + ' has posted a reply to: "' + title + '"', null, '/topic/' + tid, 'topic:' + tid, function(nid) {
+							notifications.create('<strong>' + teaser.username + '</strong> has posted a reply to: "<strong>' + title + '</strong>"', null, '/topic/' + tid, 'topic:' + tid, function(nid) {
 								next(null, nid);
 							});
 						} else next(err);

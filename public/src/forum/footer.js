@@ -132,6 +132,7 @@
 			});
 		}
 	});
+
 	notifList.addEventListener('click', function(e) {
 		var target;
 		switch(e.target.nodeName) {
@@ -144,6 +145,7 @@
 			if (nid > 0) socket.emit('api:notifications.mark_read', nid);
 		}
 	});
+
 	socket.on('event:new_notification', function() {
 		document.querySelector('.notifications a i').className = 'icon-circle active';
 		app.alert({
@@ -158,19 +160,26 @@
 
 
 	socket.on('chatMessage', function(data) {
-		var username = data.username;
-		var fromuid = data.fromuid;
-		var message = data.message;
 
 		require(['chat'], function(chat) {
-			var chatModal = chat.createModalIfDoesntExist(username, fromuid);
+			var chatModal = chat.createModalIfDoesntExist(data.username, data.fromuid, function(created, modal) {
+				if(!created)
+					chat.appendChatMessage(modal, data.message, data.timestamp);
+			});
+
 			chatModal.show();
 			chat.bringModalToTop(chatModal);
-
-			chat.appendChatMessage(chatModal, message);
 		});
 	});
 
+	socket.on('chatGoOffline', function(data) {
+		require(['chat'], function(chat) {
+			if(chat.modalOpen(data.uid)) {
+				var modal = chat.getModal(data.uid);
+				chat.appendChatMessage(modal, data.username + ' went offline\n', data.timestamp);
+			}
+		});
+	})
 
 	require(['mobileMenu'], function(mobileMenu) {
 		mobileMenu.init();

@@ -15,11 +15,12 @@
 					<label for="email" class="col-lg-4 control-label">Email Address</label>
 					<div class="col-lg-8">
 						<div class="input-group">
-							<input class="form-control" type="text" placeholder="Enter Email Address" name="email" id="email" /> 
+							<input class="form-control" type="text" placeholder="Enter Email Address" name="email" id="email" />
 					        <span class="input-group-addon">
 					        	<span id="email-notify"><i class="icon icon-circle-blank"></i></span>
 					        </span>
 						</div>
+						<span class="help-block">By default, your email will be hidden from the public.</span>
 					</div>
 				</div>
 				<div class="form-group">
@@ -31,6 +32,7 @@
 					        	<span id="username-notify"><i class="icon icon-circle-blank"></i></span>
 					        </span>
 						</div>
+						<span class="help-block">A unique username. {minimumUsernameLength}-{maximumUsernameLength} characters. Others can mention you with @<span id="yourUsername">username</span>.</span>
 					</div>
 				</div>
 				<div class="form-group">
@@ -42,6 +44,7 @@
 					        	<span id="password-notify"><i class="icon icon-circle-blank"></i></span>
 					        </span>
 						</div>
+						<span class="help-block">Your password's length must be {minimumPasswordLength}-{maximumPasswordLength} characters.</span>
 					</div>
 				</div>
 				<div class="form-group">
@@ -57,7 +60,8 @@
 				</div>
 				<div class="form-group">
 					<div class="col-lg-offset-4 col-lg-8">
-						<button class="btn btn-primary" id="register" type="submit">Register Now</button>
+						<hr />
+						<button class="btn btn-primary btn-lg btn-block" id="register" type="submit">Register Now</button>
 					</div>
 				</div>
 				<input type="hidden" name="_csrf" value="{token}" />

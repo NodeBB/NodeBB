@@ -34,28 +34,29 @@ var	RDB = require('./redis.js'),
 
 	Posts.addUserInfoToPost = function(post, callback) {
 		user.getUserFields(post.uid, ['username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned'], function(err, userData) {
-			if(err)
-				return callback();
+			if(err) return callback();
 
-			post.username = userData.username || 'anonymous';
-			post.userslug = userData.userslug || '';
-			post.user_rep = userData.reputation || 0;
-			post.user_postcount = userData.postcount || 0;
-			post.user_banned = userData.banned || '0';
-			post.picture = userData.picture || require('gravatar').url('', {}, https=nconf.get('https'));
-			post.signature = postTools.markdownToHTML(userData.signature, true);
+			postTools.toHTML(userData.signature, function(err, signature) {
+				post.username = userData.username || 'anonymous';
+				post.userslug = userData.userslug || '';
+				post.user_rep = userData.reputation || 0;
+				post.user_postcount = userData.postcount || 0;
+				post.user_banned = userData.banned || '0';
+				post.picture = userData.picture || require('gravatar').url('', {}, https=nconf.get('https'));
+				post.signature = signature;
 
-			if(post.editor !== '') {
-				user.getUserFields(post.editor, ['username', 'userslug'], function(err, editorData) {
-					if(err)
-						return callback();
-					post.editorname = editorData.username;
-					post.editorslug = editorData.userslug;
+				if(post.editor !== '') {
+					user.getUserFields(post.editor, ['username', 'userslug'], function(err, editorData) {
+						if(err) return callback();
+
+						post.editorname = editorData.username;
+						post.editorslug = editorData.userslug;
+						callback();
+					});
+				} else {
 					callback();
-				});
-			} else {
-				callback();
-			}
+				}
+			});
 		});
 	}
 
@@ -64,28 +65,41 @@ var	RDB = require('./redis.js'),
 		var posts = [];
 
 		function getPostSummary(pid, callback) {
-			Posts.getPostFields(pid, ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'], function(postData) {
-				if(postData.deleted === '1') {
-					return callback(null);
-				}
-
-				Posts.addUserInfoToPost(postData, function() {
-					topics.getTopicFields(postData.tid, ['slug', 'deleted'], function(err, topicData) {
-						if(err)
-							return callback(err);
-
-						if(topicData.deleted === '1')
-							return callback(null);
-
-						if(postData.content)
-							postData.content = utils.strip_tags(postTools.markdownToHTML(postData.content));
-
-						postData.relativeTime = utils.relativeTime(postData.timestamp);
-						postData.topicSlug = topicData.slug;
-						posts.push(postData);
-						callback(null);
+			async.waterfall([
+				function(next) {
+					Posts.getPostFields(pid, ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'], function(postData) {
+						if (postData.deleted === '1') return callback(null);
+						else {
+							postData.relativeTime = utils.relativeTime(postData.timestamp);
+							next(null, postData);
+						}
 					});
-				});
+				},
+				function(postData, next) {
+					Posts.addUserInfoToPost(postData, function() {
+						next(null, postData);
+					});
+				},
+				function(postData, next) {
+					topics.getTopicFields(postData.tid, ['slug', 'deleted'], function(err, topicData) {
+						if (err) return callback(err);
+						else if (topicData.deleted === '1') return callback(null);
+
+						postData.topicSlug = topicData.slug;
+						next(null, postData);
+					});
+				},
+				function(postData, next) {
+					if (postData.content) {
+						postTools.toHTML(postData.content, function(err, content) {
+							if (!err) postData.content = utils.strip_tags(content);
+							next(err, postData);
+						});
+					} else next(null, postData);
+				}
+			], function(err, postData) {
+				if (!err) posts.push(postData);
+				callback(err);
 			});
 		}
 
@@ -144,15 +158,13 @@ var	RDB = require('./redis.js'),
 	Posts.getPostsByPids = function(pids, callback) {
 		var posts = [];
 
-		function iterator(pid, callback) {
+		async.eachSeries(pids, function (pid, callback) {
 			Posts.getPostData(pid, function(postData) {
 				if(postData) {
 					postData.relativeTime = utils.relativeTime(postData.timestamp);
 					postData.post_rep = postData.reputation;
 					postData['edited-class'] = postData.editor !== '' ? '' : 'none';
 					postData['relativeEditTime'] = postData.edited !== '0' ? utils.relativeTime(postData.edited) : '';
-
-					postData.content = postTools.markdownToHTML(postData.content);
 
 					if(postData.uploadedImages) {
 						try {
@@ -164,13 +176,15 @@ var	RDB = require('./redis.js'),
 					} else {
 						postData.uploadedImages = [];
 					}
-					posts.push(postData);
-				}
-				callback(null);
-			});
-		}
 
-		async.eachSeries(pids, iterator, function(err) {
+					postTools.toHTML(postData.content, function(err, content) {
+						postData.content = content;
+						posts.push(postData);
+						callback(null);
+					});
+				}
+			});
+		}, function(err) {
 			if(!err) {
 				callback(null, posts);
 			} else {
@@ -310,7 +324,7 @@ var	RDB = require('./redis.js'),
 									RDB.spop('cid:' + cid + ':active_users');
 								}
 
-								RDB.sadd('cid:' + cid + ':active_users', uid);
+								categories.addActiveUser(cid, uid);
 							});
 						});
 
@@ -329,8 +343,9 @@ var	RDB = require('./redis.js'),
 							},
 							content: function(next) {
 								plugins.fireHook('filter:post.get', postData, function(postData) {
-									postData.content = postTools.markdownToHTML(postData.content, false);
-									next(null, postData.content);
+									postTools.toHTML(postData.content, function(err, content) {
+										next(null, content);
+									});
 								});
 							}
 						}, function(err, results) {

@@ -6,7 +6,6 @@ var express = require('express'),
 	path = require('path'),
 	redis = require('redis'),
 	redisServer = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host')),
-	marked = require('marked'),
 	utils = require('../public/src/utils.js'),
 	pkg = require('../package.json'),
 	fs = require('fs'),
@@ -67,12 +66,12 @@ var express = require('express'),
 	app.use(express.session({
 		store: new RedisStore({
 			client: redisServer,
-			ttl: 60*60*24*14
+			ttl: 60*60*24*30
 		}),
 		secret: nconf.get('secret'),
 		key: 'express.sid',
 		cookie: {
-			maxAge: 60*60*24*30	// 30 days
+			maxAge: 60*60*24*30*1000	// 30 days
 		}
 	}));
 	app.use(express.csrf());

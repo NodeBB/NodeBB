@@ -3,9 +3,8 @@ var utils = require('./../public/src/utils.js'),
 	crypto = require('crypto'),
 	emailjs = require('emailjs'),
 	meta = require('./meta.js'),
-	emailjsServer = emailjs.server.connect(meta.config.mailer),
+	emailjsServer = emailjs.server.connect(meta.config.mailer || '127.0.0.1'),
 	bcrypt = require('bcrypt'),
-	marked = require('marked'),
 	notifications = require('./notifications.js'),
 	topics = require('./topics.js'),
 	async = require('async');
@@ -581,7 +580,7 @@ var utils = require('./../public/src/utils.js'),
 		User.getUserField(uid, 'username', function(err, username) {
 			RDB.smembers('followers:' + uid, function(err, followers) {
 				topics.getTopicField(tid, 'slug', function(err, slug) {
-					var message = username + ' made a new post';
+					var message = '<strong>' + username + '</strong> made a new post';
 
 					notifications.create(message, 5, nconf.get('url') + 'topic/' + slug + '#' + pid, 'notification_'+ Date.now(), function(nid) {
 		 				notifications.push(nid, followers);

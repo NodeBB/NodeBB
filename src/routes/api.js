@@ -22,6 +22,10 @@ var user = require('./../user.js'),
 			config['minimumTitleLength'] = meta.config['minimumTitleLength'];
 			config['minimumPostLength'] = meta.config['minimumPostLength'];
 			config['imgurClientIDSet'] = !!meta.config['imgurClientID'];
+			config['minimumUsernameLength'] = meta.config['minimumUsernameLength'];
+			config['maximumUsernameLength'] = meta.config['maximumUsernameLength'];
+			config['minimumPasswordLength'] = meta.config['minimumPasswordLength'];
+			config['maximumPasswordLength'] = meta.config['maximumPasswordLength'];
 
 			res.json(200, config);
 		});
@@ -44,8 +48,7 @@ var user = require('./../user.js'),
 
 				require('async').each(data.categories, iterator, function(err) {
 					data.motd_class = (meta.config.show_motd === '1' || meta.config.show_motd === undefined) ? '' : 'none';
-					data.motd = marked(meta.config.motd || "# NodeBB <span>v " + pkg.version + "</span>\nWelcome to NodeBB, the discussion platform of the future.\n\n<div class='btn-group'><a target=\"_blank\" href=\"http://www.nodebb.org\" class=\"btn btn-default btn-lg\"><i class=\"icon-comment\"></i><span class='hidden-mobile'>&nbsp;Get NodeBB</span></a> <a target=\"_blank\" href=\"https://github.com/designcreateplay/NodeBB\" class=\"btn btn-default btn-lg\"><i class=\"icon-github-alt\"></i><span class='hidden-mobile'>&nbsp;Fork us on Github</span></a> <a target=\"_blank\" href=\"https://twitter.com/dcplabs\" class=\"btn btn-default btn-lg\"><i class=\"icon-twitter\"></i><span class='hidden-mobile'>&nbsp;@dcplabs</span></a></div>");
-
+					data.motd = require('marked')(meta.config.motd || "# NodeBB <span>v " + pkg.version + "</span>\nWelcome to NodeBB, the discussion platform of the future.\n\n<div class='btn-group'><a target=\"_blank\" href=\"http://www.nodebb.org\" class=\"btn btn-default btn-lg\"><i class=\"icon-comment\"></i><span class='hidden-mobile'>&nbsp;Get NodeBB</span></a> <a target=\"_blank\" href=\"https://github.com/designcreateplay/NodeBB\" class=\"btn btn-default btn-lg\"><i class=\"icon-github-alt\"></i><span class='hidden-mobile'>&nbsp;Fork us on Github</span></a> <a target=\"_blank\" href=\"https://twitter.com/dcplabs\" class=\"btn btn-default btn-lg\"><i class=\"icon-twitter\"></i><span class='hidden-mobile'>&nbsp;@dcplabs</span></a></div>");
 					res.json(data);
 				});
 
@@ -98,7 +101,10 @@ var user = require('./../user.js'),
 			}
 
 			data.token = res.locals.csrf_token;
-
+			data.minimumUsernameLength = meta.config['minimumUsernameLength'];
+			data.maximumUsernameLength = meta.config['maximumUsernameLength'];
+			data.minimumPasswordLength = meta.config['minimumPasswordLength'];
+			data.maximumPasswordLength = meta.config['maximumPasswordLength'];
 			res.json(data);
 		});
 
