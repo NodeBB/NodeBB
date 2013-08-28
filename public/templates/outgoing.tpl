@@ -5,7 +5,7 @@
 	</p>
 	<br />
 	<p>
-		<a href="{url}" rel="nofollow" class="btn btn-large">Continue to {url}</a>
-		<a href="{home}" class="btn btn-large btn-inverse">Return to NodeBB</a>
+		<a href="{url}" rel="nofollow" class="btn btn-default btn-lg">Continue to {url}</a>
+		<a href="{home}" class="btn btn-lg btn-inverse">Return to NodeBB</a>
 	</p>
 </div>

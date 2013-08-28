@@ -4,7 +4,6 @@
 	<title>{browserTitle}</title>
 	{meta_tags}
 	<link href="{cssSrc}" rel="stylesheet" media="screen">
-	<link href="{relative_path}/vendor/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
 	<link rel="stylesheet" href="{relative_path}/vendor/fontawesome/css/font-awesome.min.css">
 	<script>
 		var RELATIVE_PATH = "{relative_path}";
@@ -32,51 +31,58 @@
 </head>
 
 <body>
-	<div id="mobile-menu-overlay">
-	</div>
 	<div class="navbar navbar-inverse navbar-fixed-top" id="header-menu">
-		<div class="navbar-inner">
-			<div class="container">
-				<a class="brand" href="/">{title}</a>
-				<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<div class="nav-collapse collapse">
-					<ul id="main-nav" class="nav nodebb-inline-block">
-						<li>
-							<a href="/recent">Recent</a>
-						</li>
-						<li class="nodebb-loggedin">
-							<a href="/unread"><span id="numUnreadBadge" class="badge badge-inverse">0</span> Unread</a>
-						</li>
-						<li>
-							<a href="/users">Users</a>
-						</li>
-					</ul>
-					<ul id="right-menu" class="nav pull-right nodebb-inline-block">
-						<li class="notifications dropdown text-center">
-							<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="notif_dropdown"><i class="icon-circle-blank"></i></a>
-							<ul id="notif-list" class="dropdown-menu" aria-labelledby="notif_dropdown">
-								<li><a href="#"><i class="icon-refresh icon-spin"></i> Loading Notifications</a></li>
-							</ul>
-						</li>
-						<li>
-							<form id="search-form" class="form-search form-inline" action="" method="GET">
-								<input type="text" name="query" class="input-medium search-query">
-								<button type="submit" class="btn hide">Search</button>
-							</form>
-						</li>
-						
-					</ul>
-				</div>
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		            <span class="icon-bar"></span>
+		            <span class="icon-bar"></span>
+		            <span class="icon-bar"></span>
+		        </button>
+		        <a class="navbar-brand" href="/">{title}</a>
+		    </div>
+
+			<div class="navbar-collapse collapse">
+				<ul id="main-nav" class="nav navbar-nav">
+					<li>
+						<a href="/recent">Recent</a>
+					</li>
+					<li class="nodebb-loggedin">
+						<a href="/unread"><span id="numUnreadBadge" class="badge badge-inverse">0</span> Unread</a>
+					</li>
+					<li>
+						<a href="/users">Users</a>
+					</li>
+					<li>
+						<a href="/"></a>
+					</li>
+				</ul>
+
+
+
+				<ul id="right-menu" class="nav navbar-nav navbar-right">
+					<li class="notifications dropdown text-center">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="notif_dropdown"><i class="icon-circle-blank"></i></a>
+						<ul id="notif-list" class="dropdown-menu" aria-labelledby="notif_dropdown">
+							<li><a href="#"><i class="icon-refresh icon-spin"></i> Loading Notifications</a></li>
+						</ul>
+					</li>
+					<li>
+						<form id="search-form" class="navbar-form navbar-right" role="search" method="GET" action="">
+					      <div class="form-group">
+					        <input type="text" class="form-control" placeholder="Search" name="query">
+					      </div>
+					      <button type="submit" class="btn btn-default hide">Search</button>
+					    </form>
+					</li>
+				</ul>
+				<div id="pagination"></div>
 			</div>
 		</div>
 	</div>
-	
+
 	<input id="csrf_token" type="hidden" template-variable="csrf" value="{csrf}" />
 
-	
+
 	<div class="container" id="content">
 

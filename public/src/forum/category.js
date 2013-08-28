@@ -83,12 +83,12 @@
 			li.setAttribute('data-pid', posts[i].pid);
 
 
-			li.innerHTML =	'<a href="/users/' + posts[i].userslug + '"><img title="' + posts[i].username + '" style="width: 48px; height: 48px; /*temporary*/" class="img-polaroid" src="' + posts[i].picture + '" class="" /></a>' +
+			li.innerHTML =	'<a href="/users/' + posts[i].userslug + '"><img title="' + posts[i].username + '" style="width: 48px; height: 48px; /*temporary*/" class="img-rounded" src="' + posts[i].picture + '" class="" /></a>' +
 								'<a href="/topic/'+ posts[i].topicSlug + '#' + posts[i].pid + '">' +
 									'<p>' +
-										'<strong>' + posts[i].username + '</strong>: ' + posts[i].content +
+										posts[i].content +
 									'</p>' +
-									'<span>posted ' + utils.relativeTime(posts[i].timestamp) + ' ago</span>' +
+									'<span><strong>' + posts[i].username + '</strong> - ' + utils.relativeTime(posts[i].timestamp) + ' ago</span>' +
 								'</a>';
 
 			frag.appendChild(li.cloneNode(true));

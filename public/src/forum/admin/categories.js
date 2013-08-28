@@ -29,10 +29,12 @@ function select_icon(el) {
 		}
 	});
 
-	jQuery('.bootbox .span3').on('click', function() {
-		jQuery('.bootbox .selected').removeClass('selected');
-		jQuery(this).addClass('selected');
-	});
+	setTimeout(function() { //bootbox was rewritten for BS3 and I had to add this timeout for the previous code to work. TODO: to look into
+		jQuery('.bootbox .col-md-3').on('click', function() {
+			jQuery('.bootbox .selected').removeClass('selected');
+			jQuery(this).addClass('selected');
+		});
+	}, 500);
 }
 
 
@@ -46,7 +48,7 @@ jQuery('.blockclass').each(function() {
 });
 
 
-//DRY Failure. this needs to go into an ajaxify onready style fn. Currently is copy pasted into every single function so after ACP is off the ground fix asap 
+//DRY Failure. this needs to go into an ajaxify onready style fn. Currently is copy pasted into every single function so after ACP is off the ground fix asap
 (function() {
 	jQuery('document').ready(function() {
 		var url = window.location.href,
@@ -99,5 +101,5 @@ jQuery('.blockclass').each(function() {
 		});
 
 	});
-	
+
 }());

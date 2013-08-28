@@ -2,9 +2,9 @@
 
 
 var nodebb_admin = (function(nodebb_admin) {
-	
+
 	nodebb_admin.config = undefined;
-	
+
 	nodebb_admin.prepare = function() {
 		// Come back in 500ms if the config isn't ready yet
 		if (nodebb_admin.config === undefined) {
@@ -67,10 +67,10 @@ var nodebb_admin = (function(nodebb_admin) {
 			}
 		});
 	}
-	
+
 	nodebb_admin.remove = function(key) {
-		socket.emit('api:config.remove', key);		
-	}	
+		socket.emit('api:config.remove', key);
+	}
 
 
 	jQuery('document').ready(function() {
@@ -93,7 +93,7 @@ var nodebb_admin = (function(nodebb_admin) {
 	socket.once('api:config.get', function(config) {
 		nodebb_admin.config = config;
 	});
-	
+
 	socket.emit('api:config.get');
 
 	socket.on('api:config.set', function(data) {
@@ -111,12 +111,12 @@ var nodebb_admin = (function(nodebb_admin) {
 				timeout: 2500,
 				title: 'Changes Not Saved',
 				message: 'NodeBB encountered a problem saving your changes',
-				type: 'error'
+				type: 'danger'
 			});
 		}
 	});
-	
+
 	return nodebb_admin;
-	
+
 }(nodebb_admin || {}));
 

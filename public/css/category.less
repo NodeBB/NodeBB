@@ -4,11 +4,14 @@
 		margin-bottom: 50px;
 	}
 
+	> .col-md-12 {
+		padding-right: 30px;
+	}
+
 	a {
 		li {
 			list-style: none;
 			//border-bottom: 1px solid #eee;
-			margin-bottom: 10px;
 			padding-bottom: 10px;
 
 			&.deleted {
@@ -23,7 +26,7 @@
 	}
 
 	ul {
-		margin-left: 0;
+		margin-left: -25px;
 	}
 
 	.thread-rating {
@@ -38,7 +41,7 @@
 			}
 
 
-			@media (max-width: 1200px) 
+			@media (max-width: 1200px)
 			{
 				margin-left: -1px;
 			}
@@ -48,9 +51,14 @@
 	}
 
 	.topic-row {
+
+		&.col-md-12 {
+			margin-right: 11px;
+		}
+
 		border-radius: 5px;
-		padding-left: 20px;
-		border: 1px solid rgba(0, 0, 0, 0.2);
+		padding: 5px 5px 5px 20px;
+		border: 1px solid rgba(0, 0, 0, 0.15);
 
 		small {
 			vertical-align: 2px;
@@ -81,18 +89,10 @@
 					margin-right: 6px;
 				}
 
-				@media (max-width: 979px) 
-				{
-					width: 100%;
-				}
+
 			}
 		}
 
-		@media (max-width: 979px) 
-		{
-			width: 100%;
-			margin-left: 0px;
-		}
 
 	}
 
@@ -107,9 +107,8 @@
 			height: 50px;
 			line-height: 16px;
 			margin-left: 1px;
-			padding: 5px;
+			padding: 2px 5px 5px 20px;
 			border-left: 1px solid #bbb;
-			padding-left: 20px;
 
 			img {
 				display: block;
@@ -150,7 +149,7 @@
 
 			li {
 				clear: both;
-				line-height: 16px;
+				line-height: 17px;
 				margin-bottom: 1em;
 
 				&:last-child {
@@ -163,18 +162,17 @@
 				}
 				p {
 					display: block;
-					padding-left:5px;
-					padding-top: 2px;
+					padding-left: 8px;
 					overflow: hidden;
-					height: 32px;
-					margin-bottom: 0.5em;
+					height: 35px;
+					margin-bottom: 0;
 				}
 				span {
 					font-size: 12px;
 					display: block;
 					overflow: hidden;
 					height: 16px;
-					padding-left:5px;
+					padding-left: 8px;
 					color: #666;
 				}
 			}
@@ -184,6 +182,8 @@
 
 
 	.sidebar-block {
+		display: block;
+
 		.block-header {
 			padding: 8px;
 			padding-left: 13px;
@@ -198,7 +198,7 @@
 		}
 		.block-content {
 			padding: 10px;
-			.img-polaroid {
+			.img-rounded {
 				width: 20%;
 				height: auto;
 				max-width: 48px;
@@ -209,7 +209,7 @@
 		padding: 0;
 		margin-bottom: 20px;
 
-		.img-polaroid {
+		.img-rounded {
 			margin-top: 2px;
 
 		}

@@ -102,7 +102,7 @@ var	RDB = require('./redis.js')
 				'show_sidebar' : 'hidden',
 				'show_topic_button' : 'hidden',
 				'no_topics_message' : 'hidden',
-				'topic_row_size': 'span12',
+				'topic_row_size': 'col-md-12',
 				'category_id': false,
 				'topics' : []
 			};
@@ -170,7 +170,7 @@ var	RDB = require('./redis.js')
 			'show_topic_button' : 'hidden',
 			'show_markallread_button': 'show',
 			'no_topics_message' : 'hidden',
-			'topic_row_size': 'span12',
+			'topic_row_size': 'col-md-12',
 			'topics' : []
 		};
 
@@ -375,6 +375,7 @@ var	RDB = require('./redis.js')
 					'deleted': topicData.deleted,
 					'pinned': topicData.pinned,
 					'slug': topicData.slug,
+					'postcount' : topicData.postcount,
 					'topic_id': tid,
 					'expose_tools': privileges.editable ? 1 : 0,
 					'posts': topicPosts,
@@ -586,7 +587,7 @@ var	RDB = require('./redis.js')
 
 	Topics.emitTitleTooShortAlert = function(socket) {
 		socket.emit('event:alert', {
-				type: 'error',
+				type: 'danger',
 				timeout: 2000,
 				title: 'Title too short',
 				message: "Please enter a longer title. At least " + meta.config.minimumTitleLength + " characters.",

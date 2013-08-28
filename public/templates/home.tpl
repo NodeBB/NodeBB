@@ -1,13 +1,13 @@
-<div class="hero-unit {motd_class}">
+<div class="jumbotron {motd_class}">
 	{motd}
 </div>
 
-<div class="row category-row">
+<div class="row categories">
 	<!-- BEGIN categories -->
-	<div class="span3">
+	<div class="col-md-3 col-xs-6">
 		<a href="category/{categories.slug}">
 			<h4><span class="badge {categories.badgeclass}">{categories.topic_count} </span> {categories.name}</h4>
-			<div class="category-icon {categories.blockclass}">
+			<div class="icon {categories.blockclass}">
 				<div id="category-{categories.cid}" class="category-slider-{categories.post_count}">
 					<div class="category-box"><i class="{categories.icon} icon-4x"></i></div>
 					<div class="category-box">{categories.description}</div>
