@@ -109,6 +109,7 @@ var	RDB = require('./redis.js'),
 			postSearch.remove(pid);
 
 			posts.getPostFields(pid, ['tid', 'uid'], function(postData) {
+				RDB.hincrby('topic:'+postData.tid, 'postcount', -1);
 
 				user.decrementUserFieldBy(postData.uid, 'postcount', 1, function(err, postcount) {
 					RDB.zadd('users:postcount', postcount, postData.uid);
@@ -142,25 +143,33 @@ var	RDB = require('./redis.js'),
 
 	PostTools.restore = function(uid, pid) {
 		var success = function() {
-			posts.setPostField(pid, 'deleted', 0);
+				posts.setPostField(pid, 'deleted', 0);
 
-			posts.getPostFields(pid, ['tid', 'uid', 'content'], function(postData) {
+				posts.getPostFields(pid, ['tid', 'uid', 'content'], function(postData) {
+					RDB.hincrby('topic:'+postData.tid, 'postcount', 1);
 
-				user.incrementUserFieldBy(postData.uid, 'postcount', 1);
+					user.incrementUserFieldBy(postData.uid, 'postcount', 1);
 
-				io.sockets.in('topic_' + postData.tid).emit('event:post_restored', {
-					pid: pid
-				});
-
-				threadTools.get_latest_undeleted_pid(postData.tid, function(err, pid) {
-					posts.getPostField(pid, 'timestamp', function(timestamp) {
-						topics.updateTimestamp(postData.tid, timestamp);
+					io.sockets.in('topic_' + postData.tid).emit('event:post_restored', {
+						pid: pid
 					});
-				});
 
-				postSearch.index(postData.content, pid);
-			});
-		};
+					threadTools.get_latest_undeleted_pid(postData.tid, function(err, pid) {
+						posts.getPostField(pid, 'timestamp', function(timestamp) {
+							topics.updateTimestamp(postData.tid, timestamp);
+						});
+					});
+
+					// Restore topic if it is the only post 
+					topics.getTopicField(postData.tid, 'postcount', function(err, count) {
+						if (count === '1') {
+							threadTools.restore(postData.tid, uid);
+						}
+					});
+
+					postSearch.index(postData.content, pid);
+				});
+			};
 
 		PostTools.privileges(pid, uid, function(privileges) {
 			if (privileges.editable) {
