@@ -3,17 +3,15 @@
 	<li class="active">Search</li>
 </ol>
 
-<div class="alert alert-warning {show_no_results}" id="no-search-results">
-	<strong>No search results for {search_query}.</strong>
-</div>
-
-<div class="category row">
-	<div class="col-md-12">
+<div class="category search">
+	<div class="">
 		<ul id="topics-container" data-search-query="{search_query}">
+		<h3>Topics</h3>
+		<div class="alert alert-info {show_no_topics}">No topics found!</div>
 		<!-- BEGIN topics -->
 		<a href="../../topic/{topics.slug}" id="tid-{topics.tid}">
 			<li class="category-item">
-				<div class="row">
+				<div>
 					<div class="col-md-12 img-thumbnail">
 						<div class="search-result-post">
 							<img src="{topics.teaser_userpicture}" />
@@ -25,10 +23,12 @@
 			</li>
 		</a>
 		<!-- END topics -->
+		<h3>Posts</h3>
+		<div class="alert alert-info {show_no_posts}">No posts found!</div>
 		<!-- BEGIN posts -->
 		<a href="../../topic/{posts.topicSlug}#{posts.pid}" id="tid-{posts.tid}">
 			<li class="category-item">
-				<div class="row">
+				<div>
 					<div class="col-md-12 img-thumbnail">
 						<div class="search-result-post">
 							<img src="{posts.picture}" />

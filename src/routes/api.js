@@ -183,9 +183,11 @@ var user = require('./../user.js'),
 
 		app.get('/api/search', function(req, res) {
 			return res.json({
-				show_no_results:'hide',
+				show_no_topics:'hide',
+				show_no_posts:'hide',
 				search_query:'',
-				posts:[]
+				posts:[],
+				topics:[]
 			});
 		});
 
@@ -228,9 +230,10 @@ var user = require('./../user.js'),
 			async.parallel([searchPosts, searchTopics], function(err, results) {
 				if (err)
 					return next();
-				var noresults = !results[0].length && !results[1].length;
+
 				return res.json({
-					show_no_results: noresults?'show':'hide',
+					show_no_topics: results[1].length? 'hide':'',
+					show_no_posts: results[0].length? 'hide':'',
 					search_query:req.params.term,
 					posts:results[0],
 					topics:results[1]

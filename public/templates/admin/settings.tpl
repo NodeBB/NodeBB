@@ -55,6 +55,8 @@
 	<div class="alert alert-notify">
 		<strong>Minimum Username Length</strong><br /> <input type="text" class="" value="2" data-field="minimumUsernameLength"><br />
 		<strong>Maximum Username Length</strong><br /> <input type="text" class="" value="16" data-field="maximumUsernameLength"><br />
+		<strong>Minimum Password Length</strong><br /> <input type="text" class="" value="6" data-field="minimumPasswordLength"><br />
+		<strong>Maximum Password Length</strong><br /> <input type="text" class="" value="16" data-field="maximumPasswordLength"><br />
 	</div>
 </form>
 
