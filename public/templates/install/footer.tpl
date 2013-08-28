@@ -9,7 +9,7 @@
 				// 	ajaxify.go('install/redis');
 				// 	app.alert({
 				// 		alert_id: 'config-ready',
-				// 		type: 'error',
+				// 		type: 'danger',
 				// 		timeout: 10000,
 				// 		title: 'NodeBB Configuration Not Ready!',
 				// 		message:	'NodeBB cannot proceed with setup at this time as Redis database information ' +
@@ -134,7 +134,7 @@
 						timeout: 2500,
 						title: 'Configuration Not Saved',
 						message: 'NodeBB encountered a problem saving your changes',
-						type: 'error'
+						type: 'danger'
 					});
 				}
 			});

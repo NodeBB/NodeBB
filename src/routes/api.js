@@ -48,7 +48,7 @@ var user = require('./../user.js'),
 
 				require('async').each(data.categories, iterator, function(err) {
 					data.motd_class = (meta.config.show_motd === '1' || meta.config.show_motd === undefined) ? '' : 'none';
-					data.motd = require('marked')(meta.config.motd || "# NodeBB <span class='hidden-phone'>v " + pkg.version + "</span>\nWelcome to NodeBB, the discussion platform of the future.\n\n<a target=\"_blank\" href=\"http://www.nodebb.org\" class=\"btn btn-large\"><i class=\"icon-comment\"></i><span class='hidden-phone'>&nbsp;Get NodeBB</span></a> <a target=\"_blank\" href=\"https://github.com/designcreateplay/NodeBB\" class=\"btn btn-large\"><i class=\"icon-github-alt\"></i><span class='hidden-phone'>&nbsp;Fork us on Github</span></a> <a target=\"_blank\" href=\"https://twitter.com/dcplabs\" class=\"btn btn-large\"><i class=\"icon-twitter\"></i><span class='hidden-phone'>&nbsp;@dcplabs</span></a>");
+					data.motd = require('marked')(meta.config.motd || "# NodeBB <span>v " + pkg.version + "</span>\nWelcome to NodeBB, the discussion platform of the future.\n\n<div class='btn-group'><a target=\"_blank\" href=\"http://www.nodebb.org\" class=\"btn btn-default btn-lg\"><i class=\"icon-comment\"></i><span class='hidden-mobile'>&nbsp;Get NodeBB</span></a> <a target=\"_blank\" href=\"https://github.com/designcreateplay/NodeBB\" class=\"btn btn-default btn-lg\"><i class=\"icon-github-alt\"></i><span class='hidden-mobile'>&nbsp;Fork us on Github</span></a> <a target=\"_blank\" href=\"https://twitter.com/dcplabs\" class=\"btn btn-default btn-lg\"><i class=\"icon-twitter\"></i><span class='hidden-mobile'>&nbsp;@dcplabs</span></a></div>");
 					res.json(data);
 				});
 
@@ -62,12 +62,12 @@ var user = require('./../user.js'),
 
 			if (num_strategies == 0) {
 				data = {
-					'login_window:spansize': 'span12',
+					'login_window:spansize': 'col-md-12',
 					'alternate_logins:display': 'none'
 				};
 			} else {
 				data = {
-					'login_window:spansize': 'span6',
+					'login_window:spansize': 'col-md-6',
 					'alternate_logins:display': 'block'
 				}
 				for (var i=0, ii=num_strategies; i<ii; i++) {
@@ -87,12 +87,12 @@ var user = require('./../user.js'),
 
 			if (num_strategies == 0) {
 				data = {
-					'register_window:spansize': 'span12',
+					'register_window:spansize': 'col-md-12',
 					'alternate_logins:display': 'none'
 				};
 			} else {
 				data = {
-					'register_window:spansize': 'span6',
+					'register_window:spansize': 'col-md-6',
 					'alternate_logins:display': 'block'
 				}
 				for (var i=0, ii=num_strategies; i<ii; i++) {

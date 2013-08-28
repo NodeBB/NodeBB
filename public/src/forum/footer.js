@@ -152,7 +152,7 @@
 			alert_id: 'new_notif',
 			title: 'New notification',
 			message: 'You have unread notifications.',
-			type: 'notify',
+			type: 'warning',
 			timeout: 2000
 		});
 		utils.refreshTitle();

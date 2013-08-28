@@ -7,26 +7,31 @@
 		username_notify = $('#username-notify'),
 		email_notify = $('#email-notify'),
 		password_notify = $('#password-notify'),
-		password_confirm_notify = $('#password-confirm-notify'),		
-		validationError = false;
+		password_confirm_notify = $('#password-confirm-notify'),
+		validationError = false,
+		successIcon = '<i class="icon icon-ok"></i>';
 
 	function showError(element, msg) {
 		element.html(msg);
-		element.attr('class', 'alert alert-error');
+		element.parent()
+			.removeClass('alert-success')
+			.addClass('alert-danger');
 		element.show();
 		validationError = true;
 	}
-	
+
 	function showSuccess(element, msg) {
 		element.html(msg);
-		element.attr('class', 'alert alert-success');
+		element.parent()
+			.removeClass('alert-danger')
+			.addClass('alert-success');
 		element.show();
 	}
 
 	function validateEmail() {
 		if(!emailEl.val()) {
 			validationError = true;
-			email_notify.hide();
+			//email_notify.hide();
 			return;
 		}
 
@@ -44,9 +49,9 @@
 	function validateUsername() {
 		if(!username.val()) {
 			validationError = true;
-			username_notify.hide();
+			//username_notify.hide();
 			return;
-		}	
+		}
 
 		if(username.val().length < config.minimumUsernameLength) {
 			showError(username_notify, 'Username too short!');
@@ -59,17 +64,20 @@
 		}
 	}
 
+	username.on('keyup', function() {
+		jQuery('#yourUsername').html(this.value.length > 0 ? this.value : 'username');
+	});
 	username.on('blur', function() {
 		validateUsername();
 	});
-	
+
 	function validatePassword() {
 		if(!password.val()){
 			validationError = true;
-			password_notify.hide();
+			//password_notify.hide();
 			return;
 		}
-		
+
 		if (password.val().length < config.minimumPasswordLength) {
 			showError(password_notify, 'Password too short!');
 		} else if(password.val().length > config.maximumPasswordLength) {
@@ -77,31 +85,31 @@
 		} else if(!utils.isPasswordValid(password.val())) {
 			showError(password_notify, 'Invalid password!');
 		} else {
-			showSuccess(password_notify, 'OK!');
+			showSuccess(password_notify, successIcon);
 		}
-		
+
 		if(password.val() !== password_confirm.val() && password_confirm.val() !== '') {
 			showError(password_confirm_notify, 'Passwords must match!');
 		}
 	}
-	
+
 	$(password).on('blur', function() {
 		validatePassword();
 	});
-	
+
 	function validatePasswordConfirm() {
 		if(!password.val() || password_notify.hasClass('alert-error')) {
-			password_confirm_notify.hide();
+			//password_confirm_notify.hide();
 			return;
 		}
-			
+
 		if(password.val() !== password_confirm.val()) {
 			showError(password_confirm_notify, 'Passwords must match!');
 		} else {
-			showSuccess(password_confirm_notify, 'OK!');
+			showSuccess(password_confirm_notify, successIcon);
 		}
 	}
-	
+
 	$(password_confirm).on('blur', function() {
 		validatePasswordConfirm();
 	});
@@ -112,15 +120,15 @@
 		if (data.exists === true) {
 			showError(username_notify, 'Username already taken!');
 		} else {
-			showSuccess(username_notify, 'OK!');
+			showSuccess(username_notify, successIcon);
 		}
 	});
-	
+
 	socket.on('user.email.exists', function(data) {
 		if (data.exists === true) {
 			showError(email_notify, 'Email address already taken!');
 		} else {
-			showSuccess(email_notify, 'OK!');
+			showSuccess(email_notify, successIcon);
 		}
 	});
 
@@ -131,7 +139,7 @@
 
 	function validateForm() {
 		validationError = false;
-		
+
 		validateEmail();
 		validateUsername();
 		validatePassword();
@@ -139,9 +147,9 @@
 
 		return validationError;
 	}
-	
+
 	register.on('click', function(e) {
 		if (validateForm()) e.preventDefault();
 	});
-	
+
 }());

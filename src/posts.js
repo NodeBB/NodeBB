@@ -209,7 +209,7 @@ var	RDB = require('./redis.js'),
 
 	Posts.emitContentTooShortAlert = function(socket) {
 		socket.emit('event:alert', {
-			type: 'error',
+			type: 'danger',
 			timeout: 2000,
 			title: 'Content too short',
 			message: "Please enter a longer post. At least " + meta.config.minimumPostLength + " characters.",
@@ -221,7 +221,7 @@ var	RDB = require('./redis.js'),
 		socket.emit('event:alert', {
 			title: 'Too many posts!',
 			message: 'You can only post every '+ meta.config.postDelay/1000 + ' seconds.',
-			type: 'error',
+			type: 'danger',
 			timeout: 2000
 		});
 	}

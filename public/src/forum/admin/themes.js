@@ -18,7 +18,7 @@ var nodebb_admin = (function(nodebb_admin) {
 								'<div>' +
 									'<div class="pull-right">' +
 										'<button class="btn btn-primary" data-action="use">Use</button> ' +
-										'<button class="btn" data-action="preview">Preview</button>' +
+										'<button class="btn btn-default" data-action="preview">Preview</button>' +
 									'</div>' +
 									'<h4>' + theme.name + '</h4>' +
 									'<p>' + theme.description + '</p>' +
@@ -29,11 +29,11 @@ var nodebb_admin = (function(nodebb_admin) {
 		themeContainer.innerHTML = '';
 		themeContainer.appendChild(themeFrag);
 	}
-	
+
 	nodebb_admin.themes = themes;
-	
+
 	return nodebb_admin;
-	
+
 }(nodebb_admin || {}));
 
 

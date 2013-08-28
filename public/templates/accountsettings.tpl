@@ -1,6 +1,6 @@
 
 <div class="well">
-	
+
 	<div class="account-username-box" data-userslug="{userslug}">
 		<span class="account-username">
 			<a href="/users/{userslug}">{username}</a> <i class="icon-chevron-right"></i>
@@ -8,18 +8,20 @@
 		</span>
 	</div>
 
-	<div class="row-fluid">
-		<div class="span6">
+	<div class="row">
+		<div class="col-md-6">
 			<h4>privacy</h4>
-			<label class="checkbox">
-      			<input id="showemailCheckBox" type="checkbox" {showemail}> Show my email
-    		</label>
+			<div class="checkbox">
+				<label>
+	      			<input id="showemailCheckBox" type="checkbox" {showemail}> Show my email
+	    		</label>
+	    	</div>
 		</div>
-		  
-		<div class="span6">
-			
+
+		<div class="col-md-6">
+
 		</div>
-	</div>  
+	</div>
 	<div class="form-actions">
 		<a id="submitBtn" href="#" class="btn btn-primary">Save changes</a>
 	</div>

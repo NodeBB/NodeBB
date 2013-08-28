@@ -13,41 +13,29 @@
 	}
 
 	.admin-categories {
+		margin-top: 20px;
 		form {
 			margin: 0 0 0px;
 		}
 
-		input {
-			height: 20px;
-			padding: 5px;
-			margin-left: 10px;
+		input, select {
 			width: 150px;
-			border: 0;
-			border-radius: 5px;
-			margin-top: -8px;	
 		}
-		
+
 		.category_description {
 			width: 300px;
-		}
-
-		select {
-			border: 0;
-			margin-left: 10px;
-			padding: 5px;
-			margin-top: -8px;
-		}
-
-		button {
-			margin-top: -7px;
 		}
 
 		.icon{
 			width: 30px;
 			height: 30px;
 			text-align: center;
-			line-height: 35px;
+			line-height: 40px;
 			display: inline-block;
+			margin: 0 5px 0 5px;
+			i {
+				vertical-align: -20%;
+			}
 		}
 	}
 
@@ -119,11 +107,11 @@
 	.icon-container {
 		.row {
 			margin: 0;
-			.span3 {
+			.col-md-3 {
 				width: 20px;
 				height: 20px;
 				margin: 1px;
-				cursor: pointer;
+				.pointer;
 				line-height: 20px;
 				text-align: center;
 
@@ -154,4 +142,18 @@
 			}
 		}
 	}
+}
+
+
+
+#admin-redis-info {
+	span {
+		display:inline-block;
+		width:220px;
+	}
+}
+
+.fa-icons .col-md-3 {
+	padding-left: 0;
+	padding-right: 0;
 }

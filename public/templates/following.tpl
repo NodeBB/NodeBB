@@ -12,7 +12,7 @@
 		<!-- BEGIN following -->
 		<div class="users-box">
 			<a href="/users/{following.userslug}">
-				<img src="{following.picture}" class="img-polaroid"/>
+				<img src="{following.picture}" class="img-thumbnail"/>
 			</a>
 			<br/>
 			<a href="/users/{following.userslug}">{following.username}</a>

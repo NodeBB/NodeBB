@@ -7,18 +7,18 @@
 	<li class=''><a href='/admin/users/search'>Search</a></li>
 </ul>
 
-
+<br />
 <div class="search {search_display} well">
-	<input id="search-user" type="text" placeholder="Enter a username to search"/><br />
+	<input class="form-control" id="search-user" type="text" placeholder="Enter a username to search"/><br />
 	<i class="icon-spinner icon-spin none"></i>
-	<span id="user-notfound-notify" class="label label-important hide">User not found!</span><br/>
+	<span id="user-notfound-notify" class="label label-danger hide">User not found!</span><br/>
 </div>
 
 <ul id="users-container" class="users">
 	<!-- BEGIN users -->
 	<div class="users-box" data-uid="{users.uid}" data-admin="{users.administrator}" data-username="{users.username}" data-banned="{users.banned}">
 		<a href="/users/{users.userslug}">
-			<img src="{users.picture}" class="img-polaroid"/>
+			<img src="{users.picture}" class="img-thumbnail"/>
 		</a>
 		<br/>
 		<a href="/users/{users.userslug}">{users.username}</a>
@@ -45,7 +45,7 @@
 </ul>
 
 <div class="text-center {loadmore_display}">
-	<button id="load-more-users-btn" class="btn">Load More</button>
+	<button id="load-more-users-btn" class="btn btn-primary">Load More</button>
 </div>
 <input type="hidden" template-variable="yourid" value="{yourid}" />
 

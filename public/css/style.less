@@ -7,10 +7,10 @@ html {
 body {
 	/*background: #fdfdfd;*/  // port to default theme when it is implemented.
 	-webkit-transition: margin-bottom 250ms ease;
-	-moz-transition: margin-bottom 250ms ease;
-	-ms-transition: margin-bottom 250ms ease;
-	-o-transition: margin-bottom 250ms ease;
-	transition: margin-bottom 250ms ease;
+	   -moz-transition: margin-bottom 250ms ease;
+	    -ms-transition: margin-bottom 250ms ease;
+	     -o-transition: margin-bottom 250ms ease;
+	        transition: margin-bottom 250ms ease;
 
 	&.composing {
 		margin-bottom: 350px;
@@ -23,6 +23,7 @@ body {
 
 	@media (max-width: 979px)
 	{
+		padding-top: 70px;
 		padding-bottom: 50px;
 	}
 }
@@ -38,12 +39,18 @@ button, a {
 .block, .show {
 	display: block;
 }
-.badge {
-	vertical-align: 17%;
+
+.bold {
+	font-weight: bold;
 }
-.nav .badge {
-	vertical-align: 2%;
+
+a:hover, .btn-link:hover, .btn-link:active, .btn-link:focus {
+	text-decoration:none;
 }
+
+
+
+
 
 #alert_window {
 	position: fixed;
@@ -54,8 +61,7 @@ button, a {
 }
 
 .toaster-alert {
-
-	cursor: pointer;
+	.pointer;
 }
 
 footer.footer {
@@ -65,77 +71,6 @@ footer.footer {
 	a {
 		color: #222;
 	}
-}
-
-#post_window {
-	width: 100%;
-	position: fixed;
-	height: 350px;
-	left: 0px;
-	bottom: 0px;
-	background: white;
-	z-index: 1500;
-
-	input {
-		width: 100%;
-		height: 30px;
-		padding: 5px;
-	}
-
-	textarea {
-		width: 100%;
-		background: #222;
-		height: 220px;
-		resize: none;
-		border-radius: 0;
-		border: 1px solid #111;
-		font-size: 16px;
-		color: #bebebe;
-		outline: 0;
-
-		&:focus {
-			outline: 0;
-			border:none !important;
-			box-shadow:none !important;
-		}
-	}
-
-	.post-title-container {
-		opacity: 0.8;
-		height: 50px;
-	}
-
-	.post-content-container {
-		opacity: 0.8;
-		background: #000;
-		width: 100%;
-		height: 300px;
-	}
-}
-
-
-
-#user_label { //belongs in header.less
-	img {
-		border: 1px solid #454;
-		margin-right: 8px;
-		margin-top: -2px;
-		float: left;
-		width:24px;
-		height:24px;
-	}
-
-	span {
-		font-size: 14px;
-		font-weight: 400;
-		color: #ded;
-	}
-}
-
-#reply_title {
-	font-size: 17px;
-	padding-top: 14px;
-	font-weight: 600;
 }
 
 .alt-logins {
@@ -155,10 +90,10 @@ footer.footer {
 
 		i {
 			-webkit-transition: color 100ms linear;
-			-moz-transition: color 100ms linear;
-			-ms-transition: color 100ms linear;
-			-o-transition: color 100ms linear;
-			transition: color 100ms linear;
+			   -moz-transition: color 100ms linear;
+			    -ms-transition: color 100ms linear;
+			     -o-transition: color 100ms linear;
+			        transition: color 100ms linear;
 
 			&.icon-twitter-sign:hover {
 				color: #4099FF;
@@ -175,206 +110,12 @@ footer.footer {
 	}
 }
 
-
-#thread_active_users {
-	float: right;
-	color: rgb(153,153,153);
-
-	strong {
-		color: rgb(100,100,100);
-		font-weight: 600;
-		cursor: pointer;
-	}
-}
-
-.account-username-box{
-  border-bottom:1px solid #e3e3e3;
-  margin-bottom:10px;
-}
-
-.account-sub-links a{
-	margin-left:10px;
-}
-
-.account-username{
-  font-size:20px;
-  font-weight:bold;
-}
-
-.bold {
-	font-weight: bold;
-}
-
-.account-block {
-  div {
-    padding-bottom:10px;
-  }
-}
-
-.account-picture-block{
-    display:inline-block;
-    vertical-align:top;
-}
-
-.account-online-status {
-  .icon-circle-blank {
-      color:red;
-    }
-    .icon-circle {
-      color:green;
-    }
-}
-
-.user-profile-picture {
-   width:128px;
-}
-
-.user-picture-label {
-  font-size:20px;
-}
-
-.account-bio-block{
-  display:inline-block;
-  vertical-align:top;
-}
-
-.account-bio-label{
-  display:inline-block;
-  width:100px;
-}
-
-.user-recent-posts {
-  div {
-    color: #333;
-    margin-bottom: 10px;
-    cursor: pointer;
-    overflow:hidden;
-    p {
-    	color: #333;
-    }
-  }
-  span {
-    padding-top: 10px;
-  }
-}
-
-.category-icon {
-	width: 100%;
-	height: 90px;
-	text-align: center;
-	border-radius: 0px;
-	margin: 0;
-	padding-top:25px;
-	cursor: pointer;
-	margin-bottom: 20px;
-	border-radius: 5px;
-	overflow:hidden;
-}
-.category-row h4 {
-	font-weight: 700;
-	text-align: left;
-	/*color: #555;*/ // NOTE: color for cat/topic header links should be grey in the default theme when we get around to it.
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-.category-row a {
-	text-decoration: none;
-	border: 0;
-}
-
-.category-purple {
-	@color: #ab1290;
-	background: @color;
-	color: white;
-
-	&:hover {
-		background: lighten(@color, 10%);
-	}
-}
-
-.category-darkblue {
-	@color: #004C66;
-	background: @color;
-	color: white;
-
-	&:hover {
-		background: lighten(@color, 10%);
-	}
-}
-
-.category-blue {
-	@color: #0059B2;
-	background: @color;
-	color: white;
-
-	&:hover {
-		background: lighten(@color, 10%);
-	}
-}
-
-.category-darkgreen {
-	@color: #004000;
-	background: @color;
-	color: white;
-
-	&:hover {
-		background: lighten(@color, 10%);
-	}
-}
-.category-orange {
-	@color: #FF7A4D;
-	color: white;
-	background: @color;
-
-	&:hover {
-		background: lighten(@color, 10%);
-	}
-}
-
-.category-list {
-	li {
-		.inline-block;
-		.pointer;
-		padding: 0.5em 0;
-		text-align: center;
-		margin: 0.5em;
-		-webkit-border-radius: 5px;
-		-moz-border-radius: 5px;
-		border-radius: 5px;
-		padding: 0.5em;
-	}
-}
-
-.hero-unit {
+.jumbotron {
+	// goes into theme
 	background: #56BCDA;
 	color: white;
 	padding: 30px;
 	word-wrap: break-word;
-}
-
-.users-box{
-  display: inline-block;
-  margin-top: 20px;
-  text-align: center;
-  vertical-align: top;
-  max-width: 104px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-
-  img {
-  	width:80px;
-  	height:80px;
-  }
-
-  a {
-  	margin:5px;
-  }
-}
-
-a:hover, .btn-link:hover, .btn-link:active, .btn-link:focus {
-  text-decoration:none;
 }
 
 .formatting-bar {
@@ -395,159 +136,27 @@ a:hover, .btn-link:hover, .btn-link:active, .btn-link:focus {
 	}
 }
 
-body .navbar .nodebb-inline-block {
-	display:inline-block;
-}
-
 #right-menu{
 	float:right;
 }
 
-#admin-redis-info {
-	span {
-		display:inline-block;
-		width:220px;
-	}
-}
-
-.post-signature {
-  color: #666;
-  font-size: 12px;
-  border-top: 1px solid #ddd;
-  display: inline-block;
-
-	img {
-	  max-width:200px;
-	  max-height:60px;
-	}
-}
-
-.username-field {
-	.icon-circle {
-		font-size: 12px;
-		color: green;
-		margin-right:3px;
-	}
-	.icon-circle-blank {
-		font-size: 12px;
-		color: red;
-		margin-right:3px;
-	}
-}
-
 #chat-content {
-	width:95%;
 	height:200px;
 	resize:none;
 }
 
-#chat-message-input {
-	width:95%;
-}
-
 #content{
-  padding-bottom:20px;
+	padding-bottom:20px;
 }
 
 
-.dropdown-toggle {
-	i {
-		font-size: 12px;
-
-		@-webkit-keyframes glow
-		{
-			from {text-shadow: 0 0 5px #aaf, 0 0 5px #aaf, 0 0 5px #aaf;}
-			50% {text-shadow: 0 0 10px #aaf, 0 0 10px #aaf, 0 0 10px #aaf;}
-			to {text-shadow: 0 0 5px #aaf, 0 0 5px #aaf, 0 0 5px #aaf;}
-		}
-		@keyframes glow
-		{
-			from {text-shadow: 0 0 5px #aaf, 0 0 5px #aaf, 0 0 5px #aaf;}
-			50% {text-shadow: 0 0 10px #aaf, 0 0 10px #aaf, 0 0 10px #aaf;}
-			to {text-shadow: 0 0 5px #aaf, 0 0 5px #aaf, 0 0 5px #aaf;}
-		}
-
-
-		&.active {
-			color: #558;
-
-			text-shadow: 0 0 1em #aaf, 0 0 1em #aaf, 0 0 1em #aaf;
-			-webkit-animation:glow 1.5s infinite linear;
-				    animation:glow 1.5s infinite linear;
-		}
-
-	}
-}
-
-#notif-list {
-	li {
-		font-size: 12px;
-		width: 300px;
-		text-align: left;
-
-		a {
-			white-space: normal;
-		}
-
-		&.unread {
-			background: #eceff5;
-		}
-	}
-}
-
-.taskbar {
-	display: none;
-	-moz-opacity: 0.5;
-	opacity: 0.5;
-	margin-top: 0;
-	-webkit-transition: opacity 250ms ease-in;
-	-moz-transition: opacity 250ms ease-in;
-	-ms-transition: opacity 250ms ease-in;
-	-o-transition: opacity 250ms ease-in;
-	transition: opacity 250ms ease-in;
-
-	&[data-active="1"] {
-		display: block;
-	}
-
-	&:hover {
-		-moz-opacity: 1;
-		opacity: 1;
-	}
-
-	li {
-		a > span {
-			.inline-block;
-			max-width: 200px;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-			overflow: hidden;
-		}
-
-		img {
-			max-width: 24px;
-			max-height: 24px;
-			margin-right: 1em;
-		}
-
-		&.pulse {
-			-webkit-animation: pulsate 2500ms linear;
-			-webkit-animation-iteration-count: infinite;
-		}
-
-		@-webkit-keyframes pulsate {
-			0% { background: none; }
-			50% { background: #e5e5e5; }
-			100% { background: none; }
-		}
-	}
-}
-
+/* START: post-window needs to go in its own plugin area */
 .post-window {
 	position: fixed;
 	display: none;
 	height: 350px;
 	visibility: hidden;
+	width: 100%;
 
 	> div {
 		position: absolute;
@@ -645,245 +254,29 @@ body .navbar .nodebb-inline-block {
 		}
 	}
 }
+/* END: post-window needs to go in its own plugin area */
 
 
-#mobile-menu {
-	position: fixed;
-	bottom: 0px;
-	height: 50px;
-	background: #333;
-	width: 100%;
-	left: 0px;
-}
 
-#mobile-menu, #mobile-menu-overlay {
-	z-index: 999;
-
-	@media (min-width: 979px)
-	{
+//START: FIXES FOR BS3, may need to remove these when we get out of the RC releases
+@media (max-width: 979px) {
+	.hidden-mobile {
+		// BS2/3's hidden-xs does not support inline-block, so here it is for now.
 		display: none !important;
 	}
 }
 
-
-.btn-none,
-.btn-none:active,
-.btn-none[disabled] {
-  background-color: transparent;
-  background-image: none;
-  -webkit-box-shadow: none;
-     -moz-box-shadow: none;
-          box-shadow: none;
+.container > .navbar-header, .container > .navbar-collapse {
+	padding-right: 0;
+	margin-right: -11px;
 }
 
-.btn-none {
-  cursor: pointer;
-  border-color: transparent;
-  -webkit-border-radius: 0;
-     -moz-border-radius: 0;
-          border-radius: 0;
+.badge {
+	vertical-align: 17%;
 }
 
-.btn-none:hover,
-.btn-none:focus {
-  text-decoration: none;
-  background-color: transparent;
+.modal {
+	overflow-y: hidden;
 }
 
-.btn-none[disabled]:hover,
-.btn-none[disabled]:focus {
-  text-decoration: none;
-}
-
-.btn-none {
-	.icon-white {
-		color: white;
-	}
-}
-
-#mobile-menu {
-	button {
-		color: #eee;
-		padding: 10px;
-		text-shadow: none;
-		-webkit-tap-highlight-color: rgba(0,0,0,0);
-	}
-}
-
-#mobile-menu-overlay {
-
-	background: rgba(0, 0, 0, 0.85);
-	position: fixed;
-	top: 0px;
-	left: 0px;
-	height: 100%;
-	width: 100%;
-	//margin-top: 50px;
-	padding-top: 20px;
-	opacity: 0;
-
-	-webkit-transition: opacity 150ms ease;
-	-moz-transition: opacity 150ms ease;
-	-ms-transition: opacity 150ms ease;
-	-o-transition: opacity 150ms ease;
-	transition: opacity 150ms ease;
-	z-index: -1;
-	&.menu-visible {
-		z-index: 99;
-		opacity: 1;
-	}
-
-	.mobile-menu-icon {
-		color: white;
-		width: 20%;
-		min-width: 85px;
-		height: auto;
-		text-align: center;
-		padding: 10px;
-		display: inline-block;
-		cursor: pointer;
-		-webkit-tap-highlight-color: rgba(0,0,0,0);
-
-		-webkit-transition: margin-top 250ms ease;
-		-moz-transition: margin-top 250ms ease;
-		-ms-transition: margin-top 250ms ease;
-		-o-transition: margin-top 250ms ease;
-		transition: margin-top 250ms ease;
-
-		margin-top: 20%;
-
-
-		&.menu-visible {
-			margin-top: 0%;
-  	}
-
-		i {
-			width: 100%;
-		}
-
-	}
-}
-
-#mobile-sidebar {
-	height: 100%;
-	position: absolute;
-	left: 100%;
-	top: 0px;
-	overflow: hidden;
-	margin-top: 60px;
-}
-
-.category-box {
-  height:90px;
-
-  .post-preview {
-    padding-left:10px;
-    padding-right:10px;
-    text-align:left;
-    img {
-      width:60px;
-      height:60px;
-      padding-right:5px;
-    }
-
-    p {
-      overflow: hidden;
-      text-overflow:ellipsis;
-      height:60px;
-    }
-  }
-}
-
-#mark-allread-btn {
-  margin-bottom:15px;
-}
-
-@-webkit-keyframes scroll-2 /* Safari and Chrome */
-{
-    0%   {top: 0px;}
-    25%   {top: -90px;}
-    50%  {top: -180px;}
-    75%  {top: -270px;}
-    100% {top: -360px;}
-}
-
-@keyframes scroll-2
-{
-    0%   {top: 0px;}
-    25%   {top: -90px;}
-    50%  {top: -180px;}
-    75%  {top: -270px;}
-    100% {top: -360px;}
-}
-
-@-webkit-keyframes scroll-1 /* Safari and Chrome */
-{
-    0%   {top: 0px;}
-    33%   {top: -90px;}
-    66%  {top: -180px;}
-    100%  {top: -270px;}
-}
-
-@keyframes scroll-1
-{
-    0%   {top: 0px;}
-    33%   {top: -90px;}
-    66%  {top: -180px;}
-    100%  {top: -270px;}
-}
-
-@-webkit-keyframes scroll-0 /* Safari and Chrome */
-{
-    0%   {top: 0px;}
-    50%   {top: -90px;}
-    100%  {top: -180px;}
-}
-
-@keyframes scroll-0
-{
-    0%   {top: 0px;}
-    50%   {top: -90px;}
-    100%  {top: -180px;}
-}
-
-.category-slider-2:hover {
-  position:relative;
-
-  -webkit-animation: scroll-2 10s ease 0.5s infinite normal;
-  animation: scroll-2 10s ease 0.5s infinite normal;/* Safari and Chrome: */
-}
-
-.category-slider-1:hover {
-  position:relative;
-
-  -webkit-animation: scroll-1 8s ease 0.5s infinite normal;
-  animation: scroll-1 8s ease 0.5s infinite normal;/* Safari and Chrome: */
-}
-
-.category-slider-0:hover {
-  position:relative;
-
-  -webkit-animation: scroll-0 6s ease 0.5s infinite normal;
-  animation: scroll-0 6s ease 0.5s infinite normal;/* Safari and Chrome: */
-}
-
-.form-search {
-	float: left;
-	margin-top: 5px;
-	margin-bottom: 5px;
-}
-
-.search-result-post {
-  width: 100%;
-  line-height: 16px;
-  padding: 5px;
-  overflow:hidden;
-  img {
-    display: block;
-    float: left;
-    width:48px;
-    height:48px;
-    padding-right:10px;
-  }
-
-}
+//END: FIXES FOR BS3, may need to remove these when we get out of the RC releases

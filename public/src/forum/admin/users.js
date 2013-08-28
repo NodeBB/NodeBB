@@ -91,7 +91,9 @@
 
 			if(!isAdmin) {
 				bootbox.confirm('Do you really want to delete "' + parent.attr('data-username') +'"?', function(confirm) {
-					socket.emit('api:admin.user.deleteUser', uid);
+					if (confirm) {
+						socket.emit('api:admin.user.deleteUser', uid);
+					}
 				});
 			}
 
@@ -112,9 +114,11 @@
 					parent.attr('data-banned', 0);
 				} else {
 					bootbox.confirm('Do you really want to ban "' + parent.attr('data-username') +'"?', function(confirm) {
-						socket.emit('api:admin.user.banUser', uid);
-						banBtn.addClass('btn-warning');
-						parent.attr('data-banned', 1);
+						if (confirm) {
+							socket.emit('api:admin.user.banUser', uid);
+							banBtn.addClass('btn-warning');
+							parent.attr('data-banned', 1);
+						}
 					});
 				}
 			}
@@ -172,14 +176,14 @@
 			if(data && data.length === 0) {
 				$('#user-notfound-notify').html('User not found!')
 					.show()
-					.addClass('label-important')
+					.addClass('label-danger')
 					.removeClass('label-success');
 			}
 			else {
 				$('#user-notfound-notify').html(data.length + ' user'+(data.length>1?'s':'') + ' found!')
 					.show()
 					.addClass('label-success')
-					.removeClass('label-important');
+					.removeClass('label-danger');
 			}
 
 			initUsers();
