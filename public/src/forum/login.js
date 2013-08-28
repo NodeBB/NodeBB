@@ -27,7 +27,7 @@
 			data: loginData,
 			success: function(data, textStatus, jqXHR) {
 				if(!data.success) {
-					$('#login-error-notify').html(data.message).show();
+					$('#login-error-notify').show();
 				} else {
 					$('#login-error-notify').hide();
 					window.location.replace(RELATIVE_PATH + "/?loggedin");
@@ -41,6 +41,11 @@
 			timeout: 2000
 		});
 
+		return false;
+	});
+
+	$('#login-error-notify button').on('click', function() {
+		$('#login-error-notify').hide();
 		return false;
 	});
 
