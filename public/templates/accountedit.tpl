@@ -1,64 +1,68 @@
 
 <div class="well">
 
+	<div id="change-picture-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Change Picture" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h3 id="myModalLabel">Change Picture</h3>
+				</div>
+				<div class="modal-body">
+					<div id="gravatar-box">
+						<img id="user-gravatar-picture" src="" class="img-thumbnail user-profile-picture">
+						<span class="user-picture-label">Gravatar</span>
+						<i class='icon-ok icon-2x'></i>
+					</div>
+					<br/>
+					<div id="uploaded-box">
+						<img id="user-uploaded-picture" src="" class="img-thumbnail user-profile-picture">
+						<span class="user-picture-label">Uploaded picture</span>
+						<i class='icon-ok icon-2x'></i>
+					</div>
 
-	<!-- Change Picture Modal -->
-	<div id="change-picture-modal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-			<h3 id="myModalLabel">Change Picture</h3>
-		</div>
-		<div class="modal-body">
+					<a id="uploadPictureBtn" href="#">Upload new picture</a>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+					<button id="savePictureChangesBtn" class="btn btn-primary">Save changes</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
 
-			<div id="gravatar-box">
-				<img id="user-gravatar-picture" src="" class="img-thumbnail user-profile-picture">
-				<span class="user-picture-label">Gravatar</span>
-				<i class='icon-ok icon-2x'></i>
-			</div>
-			<br/>
-			<div id="uploaded-box">
-				<img id="user-uploaded-picture" src="" class="img-thumbnail user-profile-picture">
-				<span class="user-picture-label">Uploaded picture</span>
-				<i class='icon-ok icon-2x'></i>
-			</div>
+	<div id="upload-picture-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Upload Picture" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h3 id="myModalLabel">Upload Picture</h3>
+				</div>
+				<div class="modal-body">
+					<form id="uploadForm" action="{relative_path}/users/uploadpicture" method="post" enctype="multipart/form-data">
+						<div class="form-group">
+							<label for="userPhoto">Upload a picture</label>
+							<input type="file" id="userPhotoInput"  name="userPhoto">
+							<p class="help-block">.</p>
+						</div>
+						<input id="imageUploadCsrf" type="hidden" name="_csrf" value="" />
+					</form>
 
-			<a id="uploadPictureBtn" href="#">Upload new picture</a>
+					<div id="upload-progress-box" class="progress progress-striped active hide">
+						<div id="upload-progress-bar" class="bar" style="width: 0%;"></div>
+					</div>
 
-		</div>
-
-		<div class="modal-footer">
-			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-			<button id="savePictureChangesBtn" class="btn btn-primary">Save changes</button>
-		</div>
-	</div>
-
-	<!-- Upload picture modal-->
-	<div id="upload-picture-modal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-			<h3 id="myModalLabel">Upload Picture</h3>
-		</div>
-		<div class="modal-body">
-
-			<form id="uploadForm" action="{relative_path}/users/uploadpicture" method="post" enctype="multipart/form-data">
-				<input id="userPhotoInput" type="file" name="userPhoto" />
-				<input id="imageUploadCsrf" type="hidden" name="_csrf" value="" />
-			</form>
-
-			<div id="upload-progress-box" class="progress progress-striped active hide">
-				<div id="upload-progress-bar" class="bar" style="width: 0%;"></div>
-			</div>
-
-			<div id="alert-status" class="alert hide"></div>
-			<div id="alert-success" class="alert alert-success hide"></div>
-			<div id="alert-error" class="alert alert-error hide"></div>
-
-		</div>
-		<div class="modal-footer">
-			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-			<button id="pictureUploadSubmitBtn" class="btn btn-primary">Upload Picture</button>
-		</div>
-	</div>
+					<div id="alert-status" class="alert hide"></div>
+					<div id="alert-success" class="alert alert-success hide"></div>
+					<div id="alert-error" class="alert alert-error hide"></div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+					<button id="pictureUploadSubmitBtn" class="btn btn-primary">Upload Picture</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
 
 	<div class="account-username-box" data-userslug="{userslug}">
 		<span class="account-username">
@@ -70,7 +74,7 @@
 	<div class="row">
 		<div class="col-md-2" style="text-align: center; margin-bottom:20px;">
 			<div class="account-picture-block text-center">
-				<img id="user-current-picture" class="user-profile-picture img-thumbnail" src="{picture}" /><br/>
+				<img id="user-current-picture" class="user-profile-picture img-thumbnail" src="{picture}" /><br /><br />
 				<a id="changePictureBtn" href="#" class="btn btn-primary">change picture</a>
 			</div>
 		</div>
