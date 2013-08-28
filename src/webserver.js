@@ -71,7 +71,7 @@ var express = require('express'),
 		secret: nconf.get('secret'),
 		key: 'express.sid',
 		cookie: {
-			maxAge: 60*60*24*30	// 30 days
+			maxAge: 60*60*24*30*1000	// 30 days
 		}
 	}));
 	app.use(express.csrf());
