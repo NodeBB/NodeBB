@@ -66,7 +66,7 @@ var express = require('express'),
 	app.use(express.session({
 		store: new RedisStore({
 			client: redisServer,
-			ttl: 60*60*24*14
+			ttl: 60*60*24*30
 		}),
 		secret: nconf.get('secret'),
 		key: 'express.sid',
