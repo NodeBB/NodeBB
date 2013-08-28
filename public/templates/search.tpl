@@ -5,14 +5,11 @@
 	</ul>
 </div>
 
-
-<div class="alert alert-warning {show_no_results}" id="no-search-results">
-	<strong>No search results for {search_query}.</strong>
-</div>
-
 <div class="category row">
 	<div class="span12">
 		<ul id="topics-container" data-search-query="{search_query}">
+		<h3>Topics</h3>
+		<div class="alert alert-info {show_no_topics}">No topics found!</div>
 		<!-- BEGIN topics -->
 		<a href="../../topic/{topics.slug}" id="tid-{topics.tid}">
 			<li class="category-item">
@@ -28,6 +25,8 @@
 			</li>
 		</a>
 		<!-- END topics -->
+		<h3>Posts</h3>
+		<div class="alert alert-info {show_no_posts}">No posts found!</div>
 		<!-- BEGIN posts -->
 		<a href="../../topic/{posts.topicSlug}#{posts.pid}" id="tid-{posts.tid}">
 			<li class="category-item">
