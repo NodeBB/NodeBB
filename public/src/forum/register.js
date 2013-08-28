@@ -13,14 +13,18 @@
 
 	function showError(element, msg) {
 		element.html(msg);
-		element.parent().removeClass('alert-success').addClass('alert-danger');
+		element.parent()
+			.removeClass('alert-success')
+			.addClass('alert-danger');
 		element.show();
 		validationError = true;
 	}
 
 	function showSuccess(element, msg) {
 		element.html(msg);
-		element.parent().removeClass('alert-danger').addClass('alert-success');
+		element.parent()
+			.removeClass('alert-danger')
+			.addClass('alert-success');
 		element.show();
 	}
 
