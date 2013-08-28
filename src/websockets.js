@@ -800,6 +800,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 		socket.on('api:admin.themes.getInstalled', function(callback) {
 			meta.themes.get(function(err, themeArr) {
+				console.log(themeArr);
 				callback(themeArr);
 			});
 		});
