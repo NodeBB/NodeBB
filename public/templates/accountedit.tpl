@@ -43,7 +43,7 @@
 						<div class="form-group">
 							<label for="userPhoto">Upload a picture</label>
 							<input type="file" id="userPhotoInput"  name="userPhoto">
-							<p class="help-block">.</p>
+							<p class="help-block">You may only upload PNG, JPG, or GIF files under 256kb.</p>
 						</div>
 						<input id="imageUploadCsrf" type="hidden" name="_csrf" value="" />
 					</form>
