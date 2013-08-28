@@ -91,7 +91,9 @@
 
 			if(!isAdmin) {
 				bootbox.confirm('Do you really want to delete "' + parent.attr('data-username') +'"?', function(confirm) {
-					socket.emit('api:admin.user.deleteUser', uid);
+					if (confirm) {
+						socket.emit('api:admin.user.deleteUser', uid);
+					}
 				});
 			}
 
@@ -112,9 +114,11 @@
 					parent.attr('data-banned', 0);
 				} else {
 					bootbox.confirm('Do you really want to ban "' + parent.attr('data-username') +'"?', function(confirm) {
-						socket.emit('api:admin.user.banUser', uid);
-						banBtn.addClass('btn-warning');
-						parent.attr('data-banned', 1);
+						if (confirm) {
+							socket.emit('api:admin.user.banUser', uid);
+							banBtn.addClass('btn-warning');
+							parent.attr('data-banned', 1);
+						}
 					});
 				}
 			}
