@@ -1,5 +1,5 @@
 
-<div class="well">
+<div class="well account">
 
 	<div class="account-username-box" data-userslug="{userslug}">
 		<span class="account-username">
@@ -7,16 +7,16 @@
 		</span>
 	</div>
 
-	<div class="row-fluid">
-		<div class="span2 account-block" style="text-align: center; margin-bottom:20px;">
+	<div class="row">
+		<div class="col-md-2 account-block" style="text-align: center; margin-bottom:20px;">
 			<div class="account-picture-block">
-				<img src="{picture}" class="user-profile-picture img-polaroid"/>
+				<img src="{picture}" class="user-profile-picture img-thumbnail"/>
 			</div>
 			<div class="account-online-status">
 				<span><i class="icon-circle-blank"></i> <span>offline</span></span>
 			</div>
 			<div class="{show_banned}">
-				<span class="label label-important">banned</span>
+				<span class="label label-danger">banned</span>
 			</div>
 			<div id="user-actions">
 				<a id="follow-btn" href="#" class="btn hide">Follow</a>
@@ -24,7 +24,7 @@
 			</div>
 		</div>
 
-		<div class="span4">
+		<div class="col-md-4">
 			<div class="inline-block">
 				<div class="account-bio-block">
 					<span class="account-bio-label">email</span><i class="icon-eye-close {emailClass}" title="Email hidden"></i>
@@ -80,9 +80,9 @@
 			</div>
 		</div>
 
-		<div class="span6 user-recent-posts">
+		<div class="col-md-6 user-recent-posts">
 			<!-- BEGIN posts -->
-			<div class="topic-row img-polaroid clearfix" topic-url="topic/{posts.tid}/#{posts.pid}">
+			<div class="topic-row img-thumbnail clearfix" topic-url="topic/{posts.tid}/#{posts.pid}">
 				<span>{posts.content}</span>
 				<span class="pull-right">{posts.relativeTime} ago</span>
 			</div>

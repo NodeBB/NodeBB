@@ -32,7 +32,7 @@
 
 <hr />
 <div class="pull-right">
-	<button data-path="basic" class="btn btn-primary btn-large" disabled>Next &ndash; <i class="icon-cog"></i> Basic</button>
+	<button data-path="basic" class="btn btn-primary btn-lg" disabled>Next &ndash; <i class="icon-cog"></i> Basic</button>
 </div>
 
 <script>

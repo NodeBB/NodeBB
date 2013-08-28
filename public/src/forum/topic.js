@@ -124,7 +124,7 @@
 									} else {
 										app.alert({
 											'alert_id': 'thread_move',
-											type: 'error',
+											type: 'danger',
 											title: 'Unable to Move Topic',
 											message: 'This topic could not be moved to ' + targetCatLabel + '.<br />Please try again later',
 											timeout: 5000
@@ -183,7 +183,7 @@
 			if (data.status && data.status === 'ok') set_follow_state(data.follow);
 			else {
 				app.alert({
-					type: 'error',
+					type: 'danger',
 					alert_id: 'topic_follow',
 					title: 'Please Log In',
 					message: 'Please register or log in in order to subscribe to this topic',
@@ -246,9 +246,8 @@
 	});
 
 	$('.post-container').on('click', '.favourite', function() {
-		var ids = this.id.replace('favs_', '').split('_'),
-			pid = ids[0],
-			uid = ids[1];
+		var pid = $(this).parents('li').attr('data-pid');
+		var uid = $(this).parents('li').attr('data-uid');
 
 		var element = $(this).find('i');
 		if(element.attr('class') == 'icon-star-empty') {
@@ -260,9 +259,8 @@
 	});
 
 	$('.post-container').delegate('.edit', 'click', function(e) {
-		var pid = ($(this).attr('id') || $(this.parentNode).attr('id')).split('_')[1];
-
-		var main = $(this).parents('.main-post');
+		var pid = $(this).parents('li').attr('data-pid'),
+			main = $(this).parents('.main-post');
 
 		require(['composer'], function(cmp) {
 			cmp.push(null, null, pid);
@@ -270,10 +268,10 @@
 	});
 
 	$('.post-container').delegate('.delete', 'click', function(e) {
-		var	pid = ($(this).attr('id') || $(this.parentNode).attr('id')).split('_')[1],
-		postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
-		deleteAction = !postEl.hasClass('deleted') ? true : false,
-		confirmDel = confirm((deleteAction ? 'Delete' : 'Restore') + ' this post?');
+		var pid = $(this).parents('li').attr('data-pid'),
+			postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
+			deleteAction = !postEl.hasClass('deleted') ? true : false,
+			confirmDel = confirm((deleteAction ? 'Delete' : 'Restore') + ' this post?');
 
 		if (confirmDel) {
 			deleteAction ?
@@ -282,18 +280,17 @@
 		}
 	});
 
-	$('.post-container').delegate('.chat', 'click', function(e) {
-
-		var username = $(this).parents('li').attr('data-username');
-		var touid = $(this).parents('li').attr('data-uid');
+	$('.topic-buttons').delegate('.chat', 'click', function(e) {
+		var username = $(this).parents('li.row').attr('data-username');
+		var touid = $(this).parents('li.row').attr('data-uid');
 
 		if(username === app.username || !app.username)
 			return;
 
 		require(['chat'], function(chat) {
 			var chatModal = chat.createModalIfDoesntExist(username, touid);
-			chatModal.show();
-			chat.bringModalToTop(chatModal);
+			chatModal.modal();
+			chat.bringModalToTop(chatModal); // I don't think this is necessary
 		});
 	});
 
@@ -602,4 +599,60 @@
 			deleteEl.addClass('none');
 		}
 	}
+
+
+
+	var postAuthorImage, postAuthorInfo, pagination;
+	var	postcount = templates.get('postcount');
+
+	function updateHeader() {
+		jQuery('.post-author-info').css('bottom', '0px');
+		postAuthorImage = postAuthorImage || document.getElementById('post-author-image');
+		postAuthorInfo = postAuthorInfo || document.getElementById('post-author-info');
+		pagination = pagination || document.getElementById('pagination');
+
+		pagination.style.display = 'block';
+
+		var windowHeight = jQuery(window).height();
+		var scrollTop = jQuery(window).scrollTop();
+		var scrollBottom = scrollTop + windowHeight;
+
+		if (scrollTop < 50) {
+			postAuthorImage.src = (jQuery('.main-avatar img').attr('src'));
+			postAuthorInfo.innerHTML = 'Posted by ' + jQuery('.main-post').attr('data-username') + ', ' + jQuery('.main-post').find('.relativeTimeAgo').html();
+			pagination.innerHTML = '0 / ' + postcount;
+			return;
+		}
+
+
+		var count = 0;
+
+		jQuery('.sub-posts').each(function() {
+			count++;
+			this.postnumber = count;
+
+
+			var el = jQuery(this);
+			var elTop = el.offset().top;
+			var height = Math.floor(el.height());
+			var elBottom = elTop + (height < 300 ? height : 300);
+
+			var inView = ((elBottom >= scrollTop) && (elTop <= scrollBottom)
+					&& (elBottom <= scrollBottom) &&  (elTop >= scrollTop));
+
+
+		    if (inView) {
+		    	pagination.innerHTML = this.postnumber + ' / ' + postcount;
+				postAuthorImage.src = (jQuery(this).find('.profile-image-block img').attr('src'));
+				postAuthorInfo.innerHTML = 'Posted by ' + jQuery(this).attr('data-username') + ', ' + jQuery(this).find('.relativeTimeAgo').html();
+		    }
+		});
+
+		if(scrollTop + windowHeight == jQuery(document).height()) {
+			pagination.innerHTML = postcount + ' / ' + postcount;
+		}
+	}
+
+	window.onscroll = updateHeader;
+	window.onload = updateHeader;
 })();

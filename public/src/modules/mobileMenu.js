@@ -99,10 +99,11 @@ define(function() {
 
 
 	mobileMenu.init = function() {
+		return; // disabling until this can be pluginified.
 		overlay = overlay || document.getElementById('mobile-menu-overlay');
 		menuBtn = menuBtn || document.getElementById('mobile-menu-btn');
 		postBtn = postBtn || document.getElementById('mobile-post-btn');
-		
+
 		menuBtn.onclick = function() {
 			animateIcons();
 		}
@@ -111,7 +112,7 @@ define(function() {
 			displayCategories();
 			mobileMenu.onNavigate();
 		});
-		
+
 	}
 
 	return {

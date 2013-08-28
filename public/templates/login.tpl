@@ -1,29 +1,64 @@
-<h1>Login</h1>
-<div class="row-fluid">
-	<div class="well {login_window:spansize}">
-		<h4>Login via Username &amp; Password</h4>
-		<div class="alert alert-error" id="error" style="display:none">
-			<button type="button" class="close" data-dismiss="alert">&times;</button>
-			<strong>Failed Login Attempt</strong> <p></p>
+<ol class="breadcrumb">
+	<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
+		<a href="/" itemprop="url"><span itemprop="title">Home</span></a>
+	</li>
+	<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
+		<span itemprop="title">Login</span>
+	</li>
+</ol>
+
+
+<div class="row">
+	<div class="{login_window:spansize}">
+		<div class="well well-lg">
+			<div class="alert alert-error" id="error" style="display:none">
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+				<strong>Failed Login Attempt</strong> <p></p>
+			</div>
+			
+			<form class="form-horizontal" role="form">
+				<div class="form-group">
+					<label for="username" class="col-lg-2 control-label">Username</label>
+					<div class="col-lg-10">
+						<input class="form-control" type="text" placeholder="Enter Username" name="username" id="username" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="password" class="col-lg-2 control-label">Password</label>
+					<div class="col-lg-10">
+						<input class="form-control" type="password" placeholder="Enter Password" name="password" id="password" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-lg-offset-2 col-lg-10">
+						<div class="checkbox">
+						<label>
+							<input type="checkbox"> Remember me
+						</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-lg-offset-2 col-lg-10">
+						<button class="btn btn-primary" id="login" type="submit">Login</button> &nbsp; <a href="/reset">Forgot Password?</a>
+					</div>
+				</div>
+				<input type="hidden" name="_csrf" value="{token}" id="csrf-token" />
+			</form>
+			
+			<div id="login-error-notify" class="alert alert-danger hide">Invalid username/password</div>
 		</div>
-		
-		<form>
-			<label>Username</label><input type="text" placeholder="Enter Username" name="username" id="username" /><br />
-			<label>Password</label><input type="password" placeholder="Enter Password" name="password" id="password" /><br />
-			<input type="hidden" name="_csrf" value="{token}" id="csrf-token" />
-			<button class="btn btn-primary" id="login" type="submit">Login</button> &nbsp; <a href="/reset">Forgot Password?</a>
-		</form>
-		
-		<div id="login-error-notify" class="alert alert-danger hide">Invalid username/password</div>
 	</div>
 	
-	<div class="well span6 {alternate_logins:display}">
-		<h4>Alternative Logins</h4>
-		<ul class="alt-logins">
-			<li data-url="/auth/twitter" class="twitter {twitter:display}"><i class="icon-twitter-sign icon-3x"></i></li>
-			<li data-url="/auth/google" class="google {google:display}"><i class="icon-google-plus-sign icon-3x"></i></li>
-			<li data-url="/auth/facebook" class="facebook {facebook:display}"><i class="icon-facebook-sign icon-3x"></i></li>
-		</ul>
+	<div class="col-md-6 {alternate_logins:display}">
+		<div class="well well-lg">
+			<h4>Alternative Logins</h4>
+			<ul class="alt-logins">
+				<li data-url="/auth/twitter" class="twitter {twitter:display}"><i class="icon-twitter-sign icon-3x"></i></li>
+				<li data-url="/auth/google" class="google {google:display}"><i class="icon-google-plus-sign icon-3x"></i></li>
+				<li data-url="/auth/facebook" class="facebook {facebook:display}"><i class="icon-facebook-sign icon-3x"></i></li>
+			</ul>
+		</div>
 	</div>
 </div>
 

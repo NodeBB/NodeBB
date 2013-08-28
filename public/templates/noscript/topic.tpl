@@ -1,7 +1,7 @@
 		<ul class="posts">
 			<!-- BEGIN main_posts -->
 			<li>
-				<div class="row-fluid">
+				<div class="row">
 					<div class="span2">
 						<img src="{main_posts.picture}" /><br />
 						{main_posts.username}
@@ -14,7 +14,7 @@
 			<!-- END main_posts -->
 			<!-- BEGIN posts -->
 			<li>
-				<div class="row-fluid">
+				<div class="row">
 					<div class="span2">
 						<img src="{posts.picture}" /><br />
 						{posts.username}

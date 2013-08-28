@@ -10,7 +10,7 @@ var	RDB = require('./redis.js'),
 				alert_id: 'post_favourite',
 				title: 'Not Logged In',
 				message: 'Please log in in order to favourite this post',
-				type: 'error',
+				type: 'danger',
 				timeout: 5000
 			});
 			return;
@@ -50,7 +50,7 @@ var	RDB = require('./redis.js'),
 				alert_id: 'post_favourite',
 				title: 'Not Logged In',
 				message: 'Please log in in order to favourite this post',
-				type: 'error',
+				type: 'danger',
 				timeout: 5000
 			});
 			return;

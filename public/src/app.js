@@ -72,13 +72,13 @@ var socket,
 						alert_id: 'connection_alert',
 						title: 'Reconnecting',
 						message: 'You have disconnected from NodeBB, we will try to reconnect you. <br/><i class="icon-refresh icon-spin"></i>',
-						type: 'notify',
+						type: 'warning',
 						timeout: 5000
 					});
 				});
 
 				socket.on('api:user.get_online_users', function(users) {
-					jQuery('.username-field').each(function() {
+					jQuery('a.username-field').each(function() {
 						if (this.processed === true)
 							return;
 
@@ -91,6 +91,22 @@ var socket,
 						} else {
 							el.find('i').remove();
 							el.prepend('<i class="icon-circle-blank"></i>');
+						}
+
+						el.processed = true;
+					});
+					jQuery('button .username-field').each(function() {
+						//DRY FAIL
+						if (this.processed === true)
+							return;
+
+						var el = jQuery(this),
+							uid = el.parents('li').attr('data-uid');
+
+						if (uid && jQuery.inArray(uid, users) !== -1) {
+							el.parent().addClass('btn-success');
+						} else {
+							el.parent().addClass('btn-danger');
 						}
 
 						el.processed = true;
@@ -145,7 +161,7 @@ var socket,
 		if(alert.length > 0) {
 			alert.find('strong').html(params.title);
 			alert.find('p').html(params.message);
-			alert.attr('class', "alert toaster-alert " + ((params.type=='warning') ? '' : "alert-" + params.type));
+			alert.attr('class', "alert toaster-alert " + "alert-" + params.type);
 
 			clearTimeout(alert.attr('timeoutId'));
 			startTimeout(alert, params.timeout);
@@ -159,7 +175,7 @@ var socket,
 			p.innerHTML = params.message;
 			strong.innerHTML = params.title;
 
-			div.className = "alert toaster-alert " + ((params.type=='warning') ? '' : "alert-" + params.type);
+			div.className = "alert toaster-alert " + "alert-" + params.type;
 
 			div.setAttribute('id', alert_id);
 			div.appendChild(button);
@@ -211,7 +227,7 @@ var socket,
 		app.alert({
 			title: 'Error',
 			message: message,
-			type: 'error',
+			type: 'danger',
 			timeout: timeout
 		});
 	}
@@ -376,8 +392,6 @@ var socket,
 	}
 
 	jQuery('document').ready(function() {
-		addTouchEvents();
-
 		$('#search-form').on('submit', function() {
 			var input = $(this).find('input');
 			ajaxify.go("search/"+input.val(), null, "search");
@@ -391,56 +405,4 @@ var socket,
 	loadConfig();
 
 
-	function addTouchEvents() {
-		return; // later.
-
-
-		// click simulation just for testing/sanity purposes.
-
-		var el = jQuery("#content"),
-			sidebar = jQuery('#mobile-sidebar'),
-			width = el.width();
-
-		function onTouchMove(ev) {
-			var coordinates = window.event ? window.event.touches[0] : ev.touches[0];
-
-			el.css({
-				marginLeft: -parseInt(width - coordinates.pageX) + 'px',
-				paddingRight: parseInt(width - coordinates.pageX) + 'px'});
-
-			sidebar.css({
-				marginLeft: -parseInt(width - coordinates.pageX) + 'px',
-				width: parseInt(width - coordinates.pageX) + 'px'
-			});
-		}
-
-		function onMouseMove(ev) {
-			ev.touches = [{pageX: ev.pageX, pageY: ev.pageY}];
-			onTouchMove(ev);
-		}
-
-		function onTouchEnd() {
-			el.css({
-				marginLeft: '0px',
-				paddingRight: '0px'
-			});
-
-			sidebar.css({
-				marginLeft: '0px',
-				width: '0px'
-			});
-		}
-
-		el.on('touchmove', onTouchMove);
-		el.on('mousedown', function() {
-			el.on('mousemove', onMouseMove);
-		});
-
-		el.on('touchend', onTouchEnd);
-		el.on('mouseup', function() {
-			el.off('mousemove');
-			onTouchEnd();
-		});
-
-	}
 }());

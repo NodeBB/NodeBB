@@ -1,11 +1,8 @@
-<div class="container">
-	<ul class="breadcrumb">
-		<li><a href="/">Home</a><span class="divider">/</span></li>
-		<li class="active">{category_name}</li>
-		<div id="category_active_users"></div>
-	</ul>
-</div>
-
+<ol class="breadcrumb">
+	<li><a href="/">Home</a></li>
+	<li class="active">{category_name}</li>
+	<div id="category_active_users"></div>
+</ol>
 
 <a href="/recent">
 	<div class="alert hide" id="new-topics-alert"></div>
@@ -21,9 +18,9 @@
 		<!-- BEGIN topics -->
 		<a href="../../topic/{topics.slug}" id="tid-{topics.tid}">
 			<li class="category-item {topics.deleted-class}">
-				<div class="row-fluid">
-					<div class="span12 topic-row img-polaroid">
-						<div class="latest-post visible-desktop">
+				<div class="row">
+					<div class="col-md-12 topic-row img-thumbnail">
+						<div class="latest-post visible-lg visible-md">
 							<div class="pull-right">										
 								<img style="width: 48px; height: 48px; /*temporary*/" src="{topics.teaser_userpicture}" />
 								<p><strong>{topics.teaser_username}</strong>: {topics.teaser_text}</p>
