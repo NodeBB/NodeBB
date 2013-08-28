@@ -56,7 +56,6 @@ var	RDB = require('./redis.js'),
 	}
 
 	PostTools.edit = function(uid, pid, title, content) {
-
 		var	success = function() {
 			posts.setPostField(pid, 'content', content);
 			posts.setPostField(pid, 'edited', Date.now());
@@ -74,9 +73,10 @@ var	RDB = require('./redis.js'),
 								topics.setTopicField(tid, 'title', title);
 								topicSearch.remove(tid, function() {
 									topicSearch.index(title, tid);
-									next(null, tid);
 								});
 							}
+
+							next(null, tid);
 						});
 					});
 				},
