@@ -207,7 +207,7 @@
 			}
 		});
 
-		$('.post-container').on('click', '.deleted', function(ev) {
+		$('#post-container').on('click', '.deleted', function(ev) {
 			$(this).toggleClass('deleted-expanded');
 		});
 	});
@@ -227,10 +227,10 @@
 				});
 			}
 		};
-	$('.post-container').on('click', '.post_reply', reply_fn);
+	$('#post-container').on('click', '.post_reply', reply_fn);
 	$('#post_reply').on('click', reply_fn);
 
-	$('.post-container').on('click', '.quote', function() {
+	$('#post-container').on('click', '.quote', function() {
 		if (thread_state.locked !== '1') {
 			var pid = $(this).parents('li').attr('data-pid');
 
@@ -245,7 +245,7 @@
 		}
 	});
 
-	$('.post-container').on('click', '.favourite', function() {
+	$('#post-container').on('click', '.favourite', function() {
 		var pid = $(this).parents('li').attr('data-pid');
 		var uid = $(this).parents('li').attr('data-uid');
 
@@ -258,7 +258,7 @@
 		}
 	});
 
-	$('.post-container').delegate('.edit', 'click', function(e) {
+	$('#post-container').delegate('.edit', 'click', function(e) {
 		var pid = $(this).parents('li').attr('data-pid'),
 			main = $(this).parents('.main-post');
 
@@ -267,7 +267,7 @@
 		});
 	});
 
-	$('.post-container').delegate('.delete', 'click', function(e) {
+	$('#post-container').delegate('.delete', 'click', function(e) {
 		var pid = $(this).parents('li').attr('data-pid'),
 			postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
 			deleteAction = !postEl.hasClass('deleted') ? true : false,
@@ -487,7 +487,7 @@
 	function set_delete_state(deleted) {
 		var	deleteThreadEl = document.getElementById('delete_thread'),
 			deleteTextEl = deleteThreadEl.getElementsByTagName('span')[0],
-			threadEl = document.querySelector('.post-container'),
+			threadEl = document.querySelector('#post-container'),
 			deleteNotice = document.getElementById('thread-deleted') || document.createElement('div');
 
 		if (deleted) {
