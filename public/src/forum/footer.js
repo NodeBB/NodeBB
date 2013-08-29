@@ -162,24 +162,17 @@
 	socket.on('chatMessage', function(data) {
 
 		require(['chat'], function(chat) {
-			var chatModal = chat.createModalIfDoesntExist(data.username, data.fromuid, function(created, modal) {
-				if(!created)
-					chat.appendChatMessage(modal, data.message, data.timestamp);
-			});
+			var modal = null;
+			if(chat.modalExists(data.fromuid)) {
+				modal = chat.getModal(data.fromuid);
+				chat.appendChatMessage(modal, data.message, data.timestamp);
+			} else {
+				modal = chat.createModal(data.username, data.fromuid);				
+			}
 
-			chatModal.show();
-			chat.bringModalToTop(chatModal);
+			chat.load(modal.attr('UUID'));
 		});
 	});
-
-	socket.on('chatGoOffline', function(data) {
-		require(['chat'], function(chat) {
-			if(chat.modalOpen(data.uid)) {
-				var modal = chat.getModal(data.uid);
-				chat.appendChatMessage(modal, data.username + ' went offline\n', data.timestamp);
-			}
-		});
-	})
 
 	require(['mobileMenu'], function(mobileMenu) {
 		mobileMenu.init();

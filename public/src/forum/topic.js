@@ -288,9 +288,13 @@
 			return;
 
 		require(['chat'], function(chat) {
-			var chatModal = chat.createModalIfDoesntExist(username, touid);
-			chatModal.modal();
-			chat.bringModalToTop(chatModal); // I don't think this is necessary
+			var chatModal;
+			if(!chat.modalExists(touid)) {
+				chatModal = chat.createModal(username, touid);
+			} else {
+				chatModal = chat.getModal(touid);
+			}
+			chat.load(chatModal.attr('UUID'));
 		});
 	});
 
