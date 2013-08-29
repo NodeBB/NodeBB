@@ -1,12 +1,19 @@
 var	async = require('async'),
 	User = require('./user'),
 	Groups = {
-		list: function(callback) {
+		list: function(options, callback) {
 			RDB.hvals('group:gid', function(err, gids) {
 				if (gids.length > 0) {
-					async.each(gids, function(gid, next) {
-						Groups.get(gid, next);
-					}, callback);
+					async.map(gids, function(gid, next) {
+						Groups.get(gid, {
+							expand: options.expand
+						}, next);
+					}, function(err, groups) {
+						callback(err, groups.filter(function(group) {
+							if (group.deleted === '1') return false;
+							else return true;
+						}));
+					});
 				} else callback(null, []);
 			});
 		},
@@ -33,10 +40,10 @@ var	async = require('async'),
 			}, function(err, results) {
 				if (err) return callback(err);
 
-				results[0].count = results[1].length;
-				results[0].users = results[1];
+				results.base.count = results.users.length;
+				results.base.members = results.users;
 
-				callback(err, results[0]);
+				callback(err, results.base);
 			});
 		},
 		getGidFromName: function(name, callback) {
@@ -49,26 +56,28 @@ var	async = require('async'),
 			RDB.hexists('group:gid', name, callback);
 		},
 		create: function(name, description, callback) {
+			if (name.length === 0) return callback(new Error('name-too-short'));
+
 			Groups.exists(name, function(err, exists) {
 				if (!exists) {
 					RDB.incr('next_gid', function(err, gid) {
 						RDB.multi()
 							.hset('group:gid', name, gid)
-							.hset('gid:' + gid, {
+							.hmset('gid:' + gid, {
 								gid: gid,
 								name: name,
 								description: description,
 								deleted: '0'
 							})
 						.exec(function(err) {
-							callback(err, gid);
+							Groups.get(gid, {}, callback);
 						});
 					});
-				}
+				} else callback(new Error('group-exists'))
 			});
 		},
 		destroy: function(gid, callback) {
-			RDB.hset('gid:' + gid, deleted, '1', callback);
+			RDB.hset('gid:' + gid, 'deleted', '1', callback);
 		},
 		join: function(gid, uid, callback) {
 			RDB.sadd('gid:' + gid + ':members', uid, callback);

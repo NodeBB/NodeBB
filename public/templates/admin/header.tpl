@@ -74,6 +74,7 @@
 						<li class='active'><a href='{relative_path}/admin/index'><i class='icon-home'></i> Home</a></li>
 						<li class=''><a href='{relative_path}/admin/categories/active'><i class='icon-folder-close-alt'></i> Categories</a></li>
 						<li class=''><a href='{relative_path}/admin/users/latest'><i class='icon-user'></i> Users</a></li>
+						<li class=""><a href="{relative_path}/admin/groups"><i class="icon-group"></i> Groups</a></li>
 						<li class=''><a href='{relative_path}/admin/topics'><i class='icon-book'></i> Topics</a></li>
 						<li class=''><a href='{relative_path}/admin/themes'><i class='icon-th'></i> Themes</a></li>
 						<li class=''><a href='{relative_path}/admin/plugins'><i class='icon-code-fork'></i> Plugins</a></li>

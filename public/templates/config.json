@@ -13,6 +13,7 @@
 		"admin/facebook[^]*": "admin/facebook",
 		"admin/gplus[^]*": "admin/gplus",
 		"admin/motd/?$": "admin/motd",
+		"admin/groups/?$": "admin/groups",
 		"install/?$": "install/mail",
 		"install/mail/?": "install/mail",
 		"install/social/?": "install/social",

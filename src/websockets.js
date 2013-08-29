@@ -3,6 +3,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 	cookie = require('cookie'),
 	express = require('express'),
 	user = require('./user.js'),
+	Groups = require('./groups'),
 	posts = require('./posts.js'),
 	favourites = require('./favourites.js'),
 	utils = require('../public/src/utils.js'),
@@ -815,6 +816,30 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 		socket.on('api:meta.buildTitle', function(text, callback) {
 			meta.title.build(text, uid, function(err, title, numNotifications) {
 				callback(title, numNotifications);
+			});
+		});
+
+		/*
+			GROUPS
+		*/
+
+		socket.on('api:groups.create', function(data, callback) {
+			Groups.create(data.name, data.description, function(err, groupObj) {
+				callback(err ? err.message : null, groupObj || undefined);
+			});
+		});
+
+		socket.on('api:groups.delete', function(gid, callback) {
+			Groups.destroy(gid, function(err) {
+				callback(err ? err.message : null, err ? null : 'OK');
+			});
+		});
+
+		socket.on('api:groups.get', function(gid, callback) {
+			Groups.get(gid, {
+				expand: true
+			}, function(err, groupObj) {
+				callback(err ? err.message : null, groupObj || undefined);
 			});
 		});
 	});

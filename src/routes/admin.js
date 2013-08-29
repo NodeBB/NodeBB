@@ -1,5 +1,6 @@
 
 var user = require('./../user.js'),
+	Groups = require('../groups'),
 	topics = require('./../topics.js'),
 	RDB = require('./../redis.js'),
 	pkg = require('./../../package.json'),
@@ -27,7 +28,7 @@ var user = require('./../user.js'),
 		(function() {
 			var	routes = [
 					'categories/active', 'categories/disabled', 'users', 'topics', 'settings', 'themes',
-					'twitter', 'facebook', 'gplus', 'redis', 'motd', 
+					'twitter', 'facebook', 'gplus', 'redis', 'motd', 'groups',
 					'users/latest', 'users/sort-posts', 'users/sort-reputation',
 					'users/search', 'plugins'
 				];
@@ -189,6 +190,15 @@ var user = require('./../user.js'),
 			res.json(200, {});
 		});
 
+		app.get('/api/admin/groups', function(req, res) {
+			Groups.list({
+				expand: true
+			}, function(err, groups) {
+				res.json(200, {
+					groups: groups
+				});
+			});
+		});
 	};
 
 
