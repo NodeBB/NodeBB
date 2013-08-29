@@ -42,31 +42,31 @@ var utils = require('./../public/src/utils.js'),
 
 	Meta.themes = {
 		get: function(callback) {
-			var	themePath = path.join(__dirname, '../', 'public/themes');
+			var	themePath = path.join(__dirname, '../node_modules');
 			fs.readdir(themePath, function(err, files) {
-				var themeArr = [];
-				async.each(files, function(file, next) {
-					fs.lstat(path.join(themePath, file), function(err, stats) {
-						if(stats.isDirectory()) {
-							var	themeDir = file,
-								themeConfPath = path.join(themePath, themeDir, 'theme.json');
+				async.filter(files, function(file, next) {
+					fs.stat(path.join(themePath, file), function(err, fileStat) {
+						if (err) next(false);
 
-							fs.exists(themeConfPath, function(exists) {
-								if (exists) {
-									fs.readFile(themeConfPath, function(err, conf) {
-										conf = JSON.parse(conf);
-										conf.src = nconf.get('url') + 'themes/' + themeDir + '/' + conf.src;
-										if (conf.screenshot) conf.screenshot = nconf.get('url') + 'themes/' + themeDir + '/' + conf.screenshot;
-										else conf.screenshot = nconf.get('url') + 'images/themes/default.png';
-										themeArr.push(conf);
-										next();
-									});
-								} else next();
+						next((fileStat.isDirectory() && file.slice(0, 13) === 'nodebb-theme-'));
+					});
+				}, function(themes) {
+					async.map(themes, function(theme, next) {
+						var	config = path.join(themePath, theme, 'theme.json');
+
+						if (fs.existsSync(config)) {
+							fs.readFile(config, function(err, file) {
+								var	configObj = JSON.parse(file.toString());
+								if (!configObj.screenshot) configObj.screenshot = nconf.get('relative_path') + '/images/themes/default.png';
+								next(err, configObj);
 							});
 						} else next();
+					}, function(err, themes) {
+						themes = themes.filter(function(theme) {
+							return (theme !== undefined);
+						});
+						callback(null, themes);
 					});
-				}, function(err) {
-					callback(err, themeArr);
 				});
 			});
 		}

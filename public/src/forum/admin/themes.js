@@ -39,7 +39,7 @@ var nodebb_admin = (function(nodebb_admin) {
 
 (function() {
 	var scriptEl = document.createElement('script');
-	scriptEl.src = 'http://api.bootswatch.com/2/?callback=nodebb_admin.themes.render';
+	scriptEl.src = 'http://api.bootswatch.com/3/?callback=nodebb_admin.themes.render';
 	document.body.appendChild(scriptEl);
 
 	var	bootstrapThemeContainer = document.querySelector('#bootstrap_themes'),
@@ -94,7 +94,7 @@ var nodebb_admin = (function(nodebb_admin) {
 									'<div>' +
 										'<div class="pull-right">' +
 											'<button class="btn btn-primary" data-action="use">Use</button> ' +
-											'<button class="btn" data-action="preview">Preview</button>' +
+											'<button class="btn btn-default" data-action="preview">Preview</button>' +
 										'</div>' +
 										'<h4>' + themes[x].name + '</h4>' +
 										'<p>' +
