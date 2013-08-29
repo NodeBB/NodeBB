@@ -11,7 +11,7 @@
 <div class="row">
 	<div class="{login_window:spansize}">
 		<div class="well well-lg">
-			<div class="alert alert-error" id="error" style="display:none">
+			<div class="alert alert-danger" id="login-error-notify" style="display:none">
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
 				<strong>Failed Login Attempt</strong> <p></p>
 			</div>
@@ -45,8 +45,7 @@
 				</div>
 				<input type="hidden" name="_csrf" value="{token}" id="csrf-token" />
 			</form>
-			
-			<div id="login-error-notify" class="alert alert-danger hide">Invalid username/password</div>
+
 		</div>
 	</div>
 	
