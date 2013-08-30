@@ -529,7 +529,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			var msg = utils.strip_tags(data.message);
 
 			user.getUserField(uid, 'username', function(err, username) {
-				var finalMessage = username + ': ' + msg,
+				var finalMessage = username + ' : ' + msg,
 					notifText = 'New message from <strong>' + username + '</strong>';
 
 				if(!isUserOnline(touid)) {
