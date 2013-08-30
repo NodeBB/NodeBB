@@ -10,9 +10,14 @@
 		if (password.value.length < 6) {
 			$('#error').hide();
 			noticeEl.querySelector('strong').innerHTML = 'Invalid Password';
-			noticeEl.querySelector('p').innerHTML = 'The password entered it too short, please pick a different password!';
+			noticeEl.querySelector('p').innerHTML = 'The password entered is too short, please pick a different password.';
 			noticeEl.style.display = 'block';
-		} else if (password.value === repeat.value) {
+		} else if (password.value !== repeat.value) {
+			$('#error').hide();
+			noticeEl.querySelector('strong').innerHTML = 'Invalid Password';
+			noticeEl.querySelector('p').innerHTML = 'The two passwords you\'ve entered do not match.';
+			noticeEl.style.display = 'block';
+		} else {
 			socket.emit('user:reset.commit', { code: reset_code, password: password.value });
 		}
 	}, false);
