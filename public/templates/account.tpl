@@ -19,8 +19,8 @@
 				<span class="label label-danger">banned</span>
 			</div>
 			<div id="user-actions">
-				<a id="follow-btn" href="#" class="btn hide">Follow</a>
-				<a id="unfollow-btn" href="#" class="btn hide">Unfollow</a>
+				<a id="follow-btn" href="#" class="btn btn-default">Follow</a>
+				<a id="unfollow-btn" href="#" class="btn btn-default">Unfollow</a>
 			</div>
 		</div>
 

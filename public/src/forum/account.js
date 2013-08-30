@@ -6,7 +6,7 @@
 	$(document).ready(function() {
 
 		app.addCommasToNumbers();
-		
+
 		var followBtn = $('#follow-btn');
 		var unfollowBtn = $('#unfollow-btn');
 
@@ -18,6 +18,9 @@
 				followBtn.show();
 				unfollowBtn.hide();
 			}
+		} else {
+			followBtn.hide();
+			unfollowBtn.hide();
 		}
 
 		followBtn.on('click', function() {
@@ -51,9 +54,9 @@
 		$('.user-recent-posts .topic-row').on('click', function() {
 			ajaxify.go($(this).attr('topic-url'));
 		});
-		
+
 		var onlineStatus = $('.account-online-status');
-		
+
 		function handleUserOnline(data) {
 			if(data.online) {
 				onlineStatus.find('span span').text('online');
