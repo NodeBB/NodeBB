@@ -53,29 +53,35 @@
 					<li>
 						<a href="/users">Users</a>
 					</li>
+					<!--Enable when /search form is completed <li class="visible-xs">
+						<a href="/search">Search</a>
+					</li>-->
 					<li>
 						<a href="/"></a>
 					</li>
 				</ul>
 
-
+				<form id="search-form" class="navbar-form navbar-right hidden-xs" role="search" method="GET" action="">
+					<div class="hide" id="search-fields">
+				    	<div class="form-group">
+							<input type="text" class="form-control" placeholder="Search" name="query">
+				    	</div>
+				    	<button type="submit" class="btn btn-default hide">Search</button>
+				    </div>
+			    	<button id="search-button" type="button" class="btn btn-link nodebb-loggedin"><i class="icon-search"></i></button>
+			    </form>
 
 				<ul id="right-menu" class="nav navbar-nav navbar-right">
-					<li class="notifications dropdown text-center">
+					<li class="notifications dropdown text-center hidden-xs">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="notif_dropdown"><i class="icon-circle-blank"></i></a>
 						<ul id="notif-list" class="dropdown-menu" aria-labelledby="notif_dropdown">
-							<li><a href="#"><i class="icon-refresh icon-spin"></i> Loading Notifications</a></li>
+							<li>
+								<a href="#"><i class="icon-refresh icon-spin"></i> Loading Notifications</a>
+							</li>
 						</ul>
 					</li>
-					<li>
-						<form id="search-form" class="navbar-form navbar-right" role="search" method="GET" action="">
-					      <div class="form-group">
-					        <input type="text" class="form-control" placeholder="Search" name="query">
-					      </div>
-					      <button type="submit" class="btn btn-default hide">Search</button>
-					    </form>
-					</li>
 				</ul>
+
 				<div id="pagination"></div>
 			</div>
 		</div>

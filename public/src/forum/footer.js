@@ -44,6 +44,16 @@
 
 	socket.on('api:updateHeader', function(data) {
 
+		jQuery('#search-button').on('click', function() {
+			jQuery('#search-fields').removeClass('hide').show();
+			jQuery(this).hide();
+			jQuery('#search-fields input').focus()
+
+			jQuery('#search-form').on('submit', function() {
+				jQuery('#search-fields').hide();
+				jQuery('#search-button').show();
+			});
+		});
 		var rightMenu = $('#right-menu'),
 			isLoggedIn = data.uid > 0;
 
@@ -167,7 +177,7 @@
 				modal = chat.getModal(data.fromuid);
 				chat.appendChatMessage(modal, data.message, data.timestamp);
 			} else {
-				modal = chat.createModal(data.username, data.fromuid);				
+				modal = chat.createModal(data.username, data.fromuid);
 			}
 
 			chat.load(modal.attr('UUID'));
