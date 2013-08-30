@@ -403,10 +403,16 @@ var express = require('express'),
 		app.get('/reindex', function(req, res) {
 			topics.reIndexAll(function(err) {
 				if(err) {
-					res.json(err);
-				} else {
-					res.send('All topics reindexed');
+					return res.json(err);
 				}
+
+				user.reIndexAll(function(err) {
+					if(err) {
+						return res.json(err);
+					} else {
+						res.send('Topics and users reindexed');
+					}
+				});
 			});
 		});
 
