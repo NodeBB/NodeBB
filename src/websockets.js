@@ -476,7 +476,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				posts.emitContentTooShortAlert(socket);
 				return;
 			}
-			postTools.edit(uid, data.pid, data.title, data.content);
+			postTools.edit(uid, data.pid, data.title, data.content, data.images);
 		});
 
 		socket.on('api:posts.delete', function(data) {

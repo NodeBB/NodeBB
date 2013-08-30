@@ -332,7 +332,7 @@ var	RDB = require('./redis.js'),
 
 						async.parallel({
 							uploadedImages: function(next) {
-								uploadPostImages(postData, images, function(err, uploadedImages) {
+								Posts.uploadPostImages(postData.pid, images, function(err, uploadedImages) {
 									if(err) {
 										winston.error('Uploading images failed!', err.stack);
 										next(null, []);
@@ -350,7 +350,6 @@ var	RDB = require('./redis.js'),
 							}
 						}, function(err, results) {
 							postData.uploadedImages = results.uploadedImages;
-							Posts.setPostField(pid, 'uploadedImages', JSON.stringify(postData.uploadedImages));
 							postData.content = results.content;
 							callback(postData);
 						});
@@ -366,7 +365,7 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
-	function uploadPostImages(postData, images, callback) {
+	Posts.uploadPostImages = function(pid, images, callback) {
 		var imgur = require('./imgur');
 		imgur.setClientID(meta.config.imgurClientID);
 
@@ -394,6 +393,7 @@ var	RDB = require('./redis.js'),
 		} else {
 			async.each(images, uploadImage, function(err) {
 				if(!err) {
+					Posts.setPostField(pid, 'uploadedImages', JSON.stringify(uploadedImages));
 					callback(null, uploadedImages);
 				} else {
 					console.log(err);

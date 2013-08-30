@@ -383,6 +383,18 @@
 			this.innerHTML = data.content;
 			$(this).fadeIn(250);
 		});
+		
+		if(data.uploadedImages && data.uploadedImages.length) {
+			$('#images_'+data.pid).html('');
+			for(var i=0; i< data.uploadedImages.length; ++i) {
+				var img = $('<i class="icon-picture icon-1"></i><a href="' + data.uploadedImages[i].url +'"> '+data.uploadedImages[i].name+'</a><br/>');
+				$('#images_' + data.pid).append(img);
+			}
+		} else {
+			$('#images_'+data.pid).html('');
+		}
+		
+		console.log('time to recreate images', data);
 	});
 
 	socket.on('api:posts.favourite', function(data) {
