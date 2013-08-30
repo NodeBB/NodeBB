@@ -369,38 +369,40 @@ var	RDB = require('./redis.js'),
 		var imgur = require('./imgur');
 		imgur.setClientID(meta.config.imgurClientID);
 
-		var uploadedImages = [];
+		if(!images)
+			return callback(null, []);
 
-		function uploadImage(image, callback) {
+		var uploadedImages = images.filter(function(image) { return !!image.url; });
+
+		function uploadImage(image, next) {
+			if(!image.data)
+				return next(null);
+
 			imgur.upload(image.data, 'base64', function(err, data) {
 				if(err) {
-					callback(err);
+					next(err);
 				} else {
 					if(data.success) {
 						var img= {url:data.data.link, name:image.name};
 						uploadedImages.push(img);
-						callback(null);
+						next(null);
 					} else {
 						winston.error('Can\'t upload image, did you set imgurClientID?');
-						callback(data);
+						next(data);
 					}
 				}
 			});
 		}
 
-		if(!images) {
-			callback(null, uploadedImages);
-		} else {
-			async.each(images, uploadImage, function(err) {
-				if(!err) {
-					Posts.setPostField(pid, 'uploadedImages', JSON.stringify(uploadedImages));
-					callback(null, uploadedImages);
-				} else {
-					console.log(err);
-					callback(err, null);
-				}
-			});
-		}
+		async.each(images, uploadImage, function(err) {
+			if(!err) {
+				Posts.setPostField(pid, 'uploadedImages', JSON.stringify(uploadedImages));
+				callback(null, uploadedImages);
+			} else {
+				console.log(err);
+				callback(err, null);
+			}
+		});
 	}
 
 	Posts.getPostsByUid = function(uid, start, end, callback) {

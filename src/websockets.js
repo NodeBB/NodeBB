@@ -583,7 +583,6 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			if (uid > 0) {
 				if (parseInt(data.tid) > 0) {
 					topics.getTopicData(data.tid, function(topicData) {
-
 						if (data.body)
 							topicData.body = data.body;
 
@@ -606,9 +605,17 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 						}
 					});
 				} else if (parseInt(data.pid) > 0) {
+
 					async.parallel([
 						function(next) {
-							posts.getPostField(data.pid, 'content', function(raw) {
+							posts.getPostFields(data.pid, ['content', 'uploadedImages'], function(raw) {
+								try {
+									raw.uploadedImages = JSON.parse(raw.uploadedImages);
+								} catch(e) {
+									winston.err(e);
+									raw.uploadedImages = [];
+								}
+
 								next(null, raw);
 							});
 						},
@@ -621,7 +628,8 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 						socket.emit('api:composer.push', {
 							title: results[1],
 							pid: data.pid,
-							body: results[0]
+							body: results[0].content,
+							uploadedImages: results[0].uploadedImages
 						});
 					});
 				}
