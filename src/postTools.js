@@ -167,7 +167,7 @@ var	RDB = require('./redis.js'),
 						});
 					});
 
-					// Restore topic if it is the only post 
+					// Restore topic if it is the only post
 					topics.getTopicField(postData.tid, 'postcount', function(err, count) {
 						if (count === '1') {
 							threadTools.restore(postData.tid, uid);
@@ -186,6 +186,7 @@ var	RDB = require('./redis.js'),
 	}
 
 	PostTools.toHTML = function(raw, callback) {
+		raw = raw || '';
 		plugins.fireHook('filter:post.parse', raw, function(parsed) {
 			var	cheerio = require('cheerio');
 
