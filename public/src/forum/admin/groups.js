@@ -61,7 +61,15 @@ $(document).ready(function() {
 			break;
 			case 'members':
 				socket.emit('api:groups.get', gid, function(err, groupObj) {
+					var	formEl = detailsModal.find('form'),
+						nameEl = formEl.find('change-group-name'),
+						descEl = formEl.find('change-group-desc'),
+						membersEl = formEl.find('ul.members');
+
+					nameEl.val(groupObj.name);
+					descEl.cal(groupObj.description);
 					console.log(groupObj);
+
 					detailsModal.modal('show');
 				});
 			break;

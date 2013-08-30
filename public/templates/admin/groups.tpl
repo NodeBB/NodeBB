@@ -74,11 +74,11 @@
 				<form>
 					<div class="form-group">
 						<label for="group-name">Group Name</label>
-						<input type="text" class="form-control" id="create-group-name" placeholder="Group Name" />
+						<input type="text" class="form-control" id="change-group-name" placeholder="Group Name" />
 					</div>
 					<div class="form-group">
 						<label for="group-name">Description</label>
-						<input type="text" class="form-control" id="create-group-desc" placeholder="A short description about your group" />
+						<input type="text" class="form-control" id="change-group-desc" placeholder="A short description about your group" />
 					</div>
 					<div class="form-group">
 						<label>Members</label>
