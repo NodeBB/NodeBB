@@ -343,7 +343,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					socket.emit('event:alert', {
 						title: 'Thank you for posting',
 						message: 'You have successfully posted. Click here to view your post.',
-						type: 'warning',
+						type: 'success',
 						timeout: 2000
 					});
 				}
@@ -396,7 +396,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					socket.emit('event:alert', {
 						title: 'Reply Successful',
 						message: 'You have successfully replied. Click here to view your reply.',
-						type: 'warning',
+						type: 'success',
 						timeout: 2000
 					});
 
