@@ -314,6 +314,18 @@ var socket,
 		});
 	}
 
+	app.openChat = function(username, touid) {
+		require(['chat'], function(chat) {
+			var chatModal;
+			if(!chat.modalExists(touid)) {
+				chatModal = chat.createModal(username, touid);
+			} else {
+				chatModal = chat.getModal(touid);
+			}
+			chat.load(chatModal.attr('UUID'));
+		});
+	}
+
 	app.createNewPosts = function(data) {
 		data.posts[0].display_moderator_tools = 'none';
 		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data),

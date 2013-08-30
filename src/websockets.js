@@ -533,7 +533,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					notifText = 'New message from <strong>' + username + '</strong>';
 
 				if(!isUserOnline(touid)) {
-					notifications.create(notifText, 5, '#', 'notification_' + uid + '_' + touid, function(nid) {
+					notifications.create(notifText, 5, 'javascript:app.openChat(&apos;'+username+'&apos;, '+uid+');', 'notification_' + uid + '_' + touid, function(nid) {
 						notifications.push(nid, [touid], function(success) {
 
 						});

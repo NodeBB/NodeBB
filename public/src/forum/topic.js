@@ -288,15 +288,7 @@
 		if(username === app.username || !app.username)
 			return;
 
-		require(['chat'], function(chat) {
-			var chatModal;
-			if(!chat.modalExists(touid)) {
-				chatModal = chat.createModal(username, touid);
-			} else {
-				chatModal = chat.getModal(touid);
-			}
-			chat.load(chatModal.attr('UUID'));
-		});
+		app.openChat(username, touid);
 	});
 
 	ajaxify.register_events([
