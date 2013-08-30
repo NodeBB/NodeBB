@@ -62,13 +62,29 @@ $(document).ready(function() {
 			case 'members':
 				socket.emit('api:groups.get', gid, function(err, groupObj) {
 					var	formEl = detailsModal.find('form'),
-						nameEl = formEl.find('change-group-name'),
-						descEl = formEl.find('change-group-desc'),
-						membersEl = formEl.find('ul.members');
+						nameEl = formEl.find('#change-group-name'),
+						descEl = formEl.find('#change-group-desc'),
+						membersEl = formEl.find('ul.members'),
+						memberIcon = document.createElement('li'),
+						numMembers = groupObj.members.length,
+						membersFrag = document.createDocumentFragment(),
+						memberIconImg, x;
+
+					console.log(groupObj);
 
 					nameEl.val(groupObj.name);
-					descEl.cal(groupObj.description);
-					console.log(groupObj);
+					descEl.val(groupObj.description);
+
+					// Member list
+					memberIcon.innerHTML = '<img />';
+					memberIconImg = memberIcon.querySelector('img');
+					if (numMembers > 0) {
+						for(x=0,x<numMembers;x++) {
+							memberIconImg.src = groupObj.mmbers[x].picture;
+							membersFrag.appendChild(memberIcon.cloneNode(true));
+						}
+						membersEl.appendChild(membersFrag);
+					}
 
 					detailsModal.modal('show');
 				});
