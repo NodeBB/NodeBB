@@ -67,7 +67,8 @@
 				return false;
 			});
 
-			moveThreadModal.on('shown', function() {
+			moveThreadModal.on('shown.bs.modal', function() {
+
 				var loadingEl = document.getElementById('categories-loading');
 				if (loadingEl) {
 					socket.once('api:categories.get', function(data) {
@@ -383,7 +384,7 @@
 			this.innerHTML = data.content;
 			$(this).fadeIn(250);
 		});
-		
+
 		if(data.uploadedImages && data.uploadedImages.length) {
 			$('#images_'+data.pid).html('');
 			for(var i=0; i< data.uploadedImages.length; ++i) {
@@ -393,7 +394,7 @@
 		} else {
 			$('#images_'+data.pid).html('');
 		}
-		
+
 		console.log('time to recreate images', data);
 	});
 
