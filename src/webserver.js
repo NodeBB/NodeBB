@@ -295,6 +295,11 @@ var express = require('express'),
 			async.waterfall([
 				function(next) {
 					categories.getCategoryById(cid, 0, function(err, categoryData) {
+
+						if(categoryData) {
+							if(categoryData.disabled === '1')
+								return next(new Error('Category disabled'), null);
+						}
 						next(err, categoryData);
 					});
 				},
