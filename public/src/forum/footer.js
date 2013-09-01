@@ -44,6 +44,16 @@
 
 	socket.on('api:updateHeader', function(data) {
 
+		jQuery('#search-button').on('click', function() {
+			jQuery('#search-fields').removeClass('hide').show();
+			jQuery(this).hide();
+			jQuery('#search-fields input').focus()
+
+			jQuery('#search-form').on('submit', function() {
+				jQuery('#search-fields').hide();
+				jQuery('#search-button').show();
+			});
+		});
 		var rightMenu = $('#right-menu'),
 			isLoggedIn = data.uid > 0;
 
@@ -162,24 +172,17 @@
 	socket.on('chatMessage', function(data) {
 
 		require(['chat'], function(chat) {
-			var chatModal = chat.createModalIfDoesntExist(data.username, data.fromuid, function(created, modal) {
-				if(!created)
-					chat.appendChatMessage(modal, data.message, data.timestamp);
-			});
+			var modal = null;
+			if(chat.modalExists(data.fromuid)) {
+				modal = chat.getModal(data.fromuid);
+				chat.appendChatMessage(modal, data.message, data.timestamp);
+			} else {
+				modal = chat.createModal(data.username, data.fromuid);
+			}
 
-			chatModal.show();
-			chat.bringModalToTop(chatModal);
+			chat.load(modal.attr('UUID'));
 		});
 	});
-
-	socket.on('chatGoOffline', function(data) {
-		require(['chat'], function(chat) {
-			if(chat.modalOpen(data.uid)) {
-				var modal = chat.getModal(data.uid);
-				chat.appendChatMessage(modal, data.username + ' went offline\n', data.timestamp);
-			}
-		});
-	})
 
 	require(['mobileMenu'], function(mobileMenu) {
 		mobileMenu.init();

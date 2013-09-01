@@ -15,7 +15,7 @@ var socket,
 				API_URL = data.api_url;
 
 				config = data;
-				socket = io.connect(config.socket.address + (config.socket.port ? ':' + config.socket.port : ''));
+				socket = io.connect(config.socket.address);
 
 				var reconnecting = false;
 				var reconnectTries = 0;
@@ -311,6 +311,18 @@ var socket,
 	app.addCommasToNumbers = function() {
 		$('.formatted-number').each(function(index, element) {
 			$(element).html(app.addCommas($(element).html()));
+		});
+	}
+
+	app.openChat = function(username, touid) {
+		require(['chat'], function(chat) {
+			var chatModal;
+			if(!chat.modalExists(touid)) {
+				chatModal = chat.createModal(username, touid);
+			} else {
+				chatModal = chat.getModal(touid);
+			}
+			chat.load(chatModal.attr('UUID'));
 		});
 	}
 

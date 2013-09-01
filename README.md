@@ -16,7 +16,11 @@ Please support NodeBB development! Check out our IndieGoGo campaign and like, sh
 
 ## Requirements
 
-NodeBB requires a version of Node.js at least 0.8 or greater, and a Redis version 2.6 or greater.
+NodeBB requires the following software to be installed:
+
+* A version of Node.js at least 0.8 or greater
+* Redis, version 2.6 or greater.
+* nginx, version 1.3.13 or greater
 
 ## Installation
 

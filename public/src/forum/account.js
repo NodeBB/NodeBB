@@ -6,7 +6,7 @@
 	$(document).ready(function() {
 
 		app.addCommasToNumbers();
-		
+
 		var followBtn = $('#follow-btn');
 		var unfollowBtn = $('#unfollow-btn');
 
@@ -18,6 +18,9 @@
 				followBtn.show();
 				unfollowBtn.hide();
 			}
+		} else {
+			followBtn.hide();
+			unfollowBtn.hide();
 		}
 
 		followBtn.on('click', function() {
@@ -51,20 +54,22 @@
 		$('.user-recent-posts .topic-row').on('click', function() {
 			ajaxify.go($(this).attr('topic-url'));
 		});
-		
+
 		var onlineStatus = $('.account-online-status');
-		
-		socket.on('api:user.isOnline', function(online) {
-			if(online) {
+
+		function handleUserOnline(data) {
+			if(data.online) {
 				onlineStatus.find('span span').text('online');
 				onlineStatus.find('i').attr('class', 'icon-circle');
 			} else {
 				onlineStatus.find('span span').text('offline');
 				onlineStatus.find('i').attr('class', 'icon-circle-blank');
 			}
-		});
-		
-		socket.emit('api:user.isOnline', theirid);
+		}
+
+		socket.on('api:user.isOnline', handleUserOnline);
+
+		socket.emit('api:user.isOnline', theirid, handleUserOnline);
 
 	});
 

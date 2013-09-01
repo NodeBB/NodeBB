@@ -25,7 +25,7 @@
 				<span class='formatted-number'>{following.postcount}</span>
 				<i class='icon-pencil'></i>
 			</div>
-			<a id="unfollow-btn" href="#" class="btn unfollow-btn" followingUid="{following.uid}" data-username="{following.username}">Unfollow</a>
+			<a id="unfollow-btn" href="#" class="btn btn-default unfollow-btn" followingUid="{following.uid}" data-username="{following.username}">Unfollow</a>
 		</div>
 		<!-- END following -->
 	</div>

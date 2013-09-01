@@ -5,9 +5,9 @@
 		followingCount = templates.get('followingCount');
 
 	$(document).ready(function() {
-		
+
 		if(parseInt(followingCount, 10) === 0) {
-			$('#no-following-notice').show();
+			$('#no-following-notice').removeClass('hide');
 		}
 
 
@@ -18,7 +18,7 @@
 			$('.unfollow-btn').on('click',function() {
 				var unfollowBtn = $(this);
 				var followingUid = $(this).attr('followingUid');
-			
+
 				socket.emit('api:user.unfollow', {uid: followingUid}, function(success) {
 					var username = unfollowBtn.attr('data-username');
 					if(success) {
@@ -34,6 +34,6 @@
 
 		app.addCommasToNumbers();
 	});
-	
+
 
 }());

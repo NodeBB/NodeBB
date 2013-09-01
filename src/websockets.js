@@ -33,8 +33,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 (function(io) {
 	var	users = {},
 		userSockets = {},
-		rooms = {},
-		chats = {};
+		rooms = {};
 
 	global.io = io;
 
@@ -58,13 +57,6 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 					user.getUserField(uid, 'username', function(err, username) {
 						socket.emit('event:connect', {status: 1, username:username, uid:uid});
-
-						if(chats[uid]) {
-							for(var i=0; i<chats[uid].length; ++i) {
-								io.sockets.in(chats[uid][i]).emit('chatMessage', {fromuid:uid, username:username, message: username+' came online\n', timestamp: Date.now()});
-								socket.join(chats[uid][i]);
-							}
-						}
 					});
 				}
 			});
@@ -83,18 +75,6 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				delete users[sessionID];
 				if(uid) {
 					io.sockets.in('global').emit('api:user.isOnline', isUserOnline(uid));
-
-					user.getUserField(uid, 'username', function(err, username) {
-
-						if(chats[uid] && chats[uid].length) {
-
-							for(var i=0; i<chats[uid].length; ++i) {
-
-								io.sockets.in(chats[uid][i]).emit('chatGoOffline', {uid:uid, username:username, timestamp:Date.now()});
-								socket.leave(chats[uid][i]);
-							}
-						}
-					});
 				}
 			}
 
@@ -270,8 +250,8 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			socket.emit('api:user.get_online_users', returnData);
 		});
 
-		socket.on('api:user.isOnline', function(uid) {
-			socket.emit('api:user.isOnline', isUserOnline(uid));
+		socket.on('api:user.isOnline', function(uid, callback) {
+			callback({online:isUserOnline(uid), timestamp:Date.now()});
 		});
 
 		socket.on('api:user.changePassword', function(data, callback) {
@@ -364,7 +344,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					socket.emit('event:alert', {
 						title: 'Thank you for posting',
 						message: 'You have successfully posted. Click here to view your post.',
-						type: 'warning',
+						type: 'success',
 						timeout: 2000
 					});
 				}
@@ -417,7 +397,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 					socket.emit('event:alert', {
 						title: 'Reply Successful',
 						message: 'You have successfully replied. Click here to view your reply.',
-						type: 'warning',
+						type: 'success',
 						timeout: 2000
 					});
 
@@ -497,7 +477,7 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 				posts.emitContentTooShortAlert(socket);
 				return;
 			}
-			postTools.edit(uid, data.pid, data.title, data.content);
+			postTools.edit(uid, data.pid, data.title, data.content, data.images);
 		});
 
 		socket.on('api:posts.delete', function(data) {
@@ -549,15 +529,12 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 
 			var msg = utils.strip_tags(data.message);
 
-			var uids = [uid, touid].sort();
-			var chatroom = 'chatroom_'+uids[0]+'_'+uids[1];
-
 			user.getUserField(uid, 'username', function(err, username) {
-				var finalMessage = username + ': ' + msg,
+				var finalMessage = username + ' : ' + msg,
 					notifText = 'New message from <strong>' + username + '</strong>';
 
 				if(!isUserOnline(touid)) {
-					notifications.create(notifText, 5, '#', 'notification_' + uid + '_' + touid, function(nid) {
+					notifications.create(notifText, 5, 'javascript:app.openChat(&apos;'+username+'&apos;, '+uid+');', 'notification_' + uid + '_' + touid, function(nid) {
 						notifications.push(nid, [touid], function(success) {
 
 						});
@@ -571,13 +548,8 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 						numSockets = userSockets[touid].length;
 
 						for(var x=0; x<numSockets; ++x) {
-							userSockets[touid][x].join(chatroom);
 							userSockets[touid][x].emit('chatMessage', {fromuid:uid, username:username, message: finalMessage, timestamp: Date.now()});
 						}
-
-						chats[touid] = chats[touid] || [];
-						if(chats[touid].indexOf(chatroom) === -1)
-							chats[touid].push(chatroom);
 					}
 
 					if(userSockets[uid]) {
@@ -585,13 +557,8 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 						numSockets = userSockets[uid].length;
 
 						for(var x=0; x<numSockets; ++x) {
-							userSockets[uid][x].join(chatroom);
 							userSockets[uid][x].emit('chatMessage', {fromuid:touid, username:username, message:'You : ' + msg, timestamp: Date.now()});
 						}
-
-						chats[uid] = chats[uid] || [];
-						if(chats[uid].indexOf(chatroom) === -1)
-							chats[uid].push(chatroom);
 					}
 				});
 			});
@@ -617,7 +584,6 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			if (uid > 0) {
 				if (parseInt(data.tid) > 0) {
 					topics.getTopicData(data.tid, function(topicData) {
-
 						if (data.body)
 							topicData.body = data.body;
 
@@ -640,9 +606,17 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 						}
 					});
 				} else if (parseInt(data.pid) > 0) {
+
 					async.parallel([
 						function(next) {
-							posts.getPostField(data.pid, 'content', function(raw) {
+							posts.getPostFields(data.pid, ['content', 'uploadedImages'], function(raw) {
+								try {
+									raw.uploadedImages = JSON.parse(raw.uploadedImages);
+								} catch(e) {
+									winston.err(e);
+									raw.uploadedImages = [];
+								}
+
 								next(null, raw);
 							});
 						},
@@ -655,7 +629,8 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 						socket.emit('api:composer.push', {
 							title: results[1],
 							pid: data.pid,
-							body: results[0]
+							body: results[0].content,
+							uploadedImages: results[0].uploadedImages
 						});
 					});
 				}

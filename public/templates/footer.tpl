@@ -18,7 +18,7 @@
 		</div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
 
-	<div id="chat-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Chat" aria-hidden="true">
+	<div id="chat-modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="Chat" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
