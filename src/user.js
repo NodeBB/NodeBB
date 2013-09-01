@@ -7,7 +7,8 @@ var utils = require('./../public/src/utils.js'),
 	bcrypt = require('bcrypt'),
 	notifications = require('./notifications.js'),
 	topics = require('./topics.js'),
-	async = require('async');
+	async = require('async'),
+	userSearch = require('reds').createSearch('nodebbusersearch');
 
 (function(User) {
 	User.create = function(username, password, email, callback) {
@@ -89,6 +90,8 @@ var utils = require('./../public/src/utils.js'),
 				RDB.zadd('users:joindate', timestamp, uid);
 				RDB.zadd('users:postcount', 0, uid);
 				RDB.zadd('users:reputation', 0, uid);
+
+				userSearch.index(username, uid);
 
 				io.sockets.emit('user.latest', {userslug: userslug, username: username});
 
@@ -385,25 +388,42 @@ var utils = require('./../public/src/utils.js'),
 		});
 	}
 
+	User.reIndexAll = function(callback) {
+		User.getUsers('users:joindate', 0, -1, function(err, usersData) {
+			if(err) {
+				return callback(err, null);
+			}
+
+			function reIndexUser(uid, username) {
+				userSearch.remove(uid, function(){
+					userSearch.index(username, uid);
+				})
+			}
+
+			for(var i=0; i<usersData.length; ++i) {
+				reIndexUser(usersData[i].uid, usersData[i].username);
+			}
+			callback(null, 1);
+		});
+	}
+
 	User.search = function(username, callback) {
 		if(!username) {
 			callback([]);
 			return;
 		}
 
-		RDB.keys('username:*'+ username + '*:uid', function(err, keys) {
-			if(!err) {
-				if(keys && keys.length) {
-					RDB.mget(keys, function(err, uids) {
-						User.getDataForUsers(uids, function(userdata) {
-							callback(userdata);
-						});
-					});
-				} else {
-					callback([]);
-				}
-			} else {
+		userSearch.query(query = username).type('or').end(function(err, uids) {
+			if(err) {
 				console.log(err);
+				return;
+			}
+			if(uids && uids.length) {
+				User.getDataForUsers(uids, function(userdata) {
+					callback(userdata);
+				});
+			} else {
+				callback([]);
 			}
 		});
 	}

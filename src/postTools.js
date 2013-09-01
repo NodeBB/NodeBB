@@ -55,7 +55,7 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
-	PostTools.edit = function(uid, pid, title, content) {
+	PostTools.edit = function(uid, pid, title, content, images) {
 		var	success = function() {
 			posts.setPostField(pid, 'content', content);
 			posts.setPostField(pid, 'edited', Date.now());
@@ -67,6 +67,11 @@ var	RDB = require('./redis.js'),
 
 			async.parallel([
 				function(next) {
+					posts.uploadPostImages(pid, images, function(err, uploadedImages) {
+						next(err, uploadedImages);
+					});
+				},
+				function(next) {
 					posts.getPostField(pid, 'tid', function(tid) {
 						PostTools.isMain(pid, tid, function(isMainPost) {
 							if (isMainPost) {
@@ -76,7 +81,7 @@ var	RDB = require('./redis.js'),
 								});
 							}
 
-							next(null, tid);
+							next(null, {tid:tid, isMainPost:isMainPost});
 						});
 					});
 				},
@@ -84,10 +89,12 @@ var	RDB = require('./redis.js'),
 					PostTools.toHTML(content, next);
 				}
 			], function(err, results) {
-				io.sockets.in('topic_' + results[0]).emit('event:post_edited', {
+				io.sockets.in('topic_' + results[1].tid).emit('event:post_edited', {
 					pid: pid,
 					title: title,
-					content: results[1]
+					isMainPost: results[1].isMainPost,
+					content: results[2],
+					uploadedImages:results[0]
 				});
 			});
 		};
@@ -160,7 +167,7 @@ var	RDB = require('./redis.js'),
 						});
 					});
 
-					// Restore topic if it is the only post 
+					// Restore topic if it is the only post
 					topics.getTopicField(postData.tid, 'postcount', function(err, count) {
 						if (count === '1') {
 							threadTools.restore(postData.tid, uid);
@@ -179,6 +186,7 @@ var	RDB = require('./redis.js'),
 	}
 
 	PostTools.toHTML = function(raw, callback) {
+		raw = raw || '';
 		plugins.fireHook('filter:post.parse', raw, function(parsed) {
 			var	cheerio = require('cheerio');
 

@@ -136,10 +136,6 @@ footer.footer {
 	}
 }
 
-#right-menu{
-	float:right;
-}
-
 #chat-content {
 	height:200px;
 	resize:none;
@@ -257,6 +253,11 @@ footer.footer {
 /* END: post-window needs to go in its own plugin area */
 
 
+//theme
+#search-form .btn-link {
+	color: white;
+}
+
 
 //START: FIXES FOR BS3, may need to remove these when we get out of the RC releases
 @media (max-width: 979px) {
@@ -266,9 +267,11 @@ footer.footer {
 	}
 }
 
-.container > .navbar-header, .container > .navbar-collapse {
-	padding-right: 0;
-	margin-right: -11px;
+@media (min-width: 760px) {
+	.container > .navbar-header, .container > .navbar-collapse {
+		padding-right: 0;
+		margin-right: -11px;
+	}
 }
 
 .badge {

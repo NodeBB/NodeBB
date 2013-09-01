@@ -170,22 +170,27 @@
 	</div>
 </div>
 
-<div id="move_thread_modal" class="modal hide fade">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		<h3>Move Thread</h3>
-	</div>
-	<div class="modal-body">
-		<p id="categories-loading"><i class="icon-spin icon-refresh"></i> Loading Categories</p>
-		<ul class="category-list"></ul>
-		<div id="move-confirm" style="display: none;">
-			<hr />
-			<div class="alert">This topic will be moved to the category <strong><span id="confirm-category-name"></span></strong></div>
+
+<div id="move_thread_modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="Chat" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3>Move Thread</h3>
+			</div>
+			<div class="modal-body">
+				<p id="categories-loading"><i class="icon-spin icon-refresh"></i> Loading Categories</p>
+				<ul class="category-list"></ul>
+				<div id="move-confirm" style="display: none;">
+					<hr />
+					<div class="alert">This topic will be moved to the category <strong><span id="confirm-category-name"></span></strong></div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" id="move_thread_cancel">Close</a>
+				<button type="button" class="btn btn-primary" id="move_thread_commit" disabled>Move</a>
+			</div>
 		</div>
-	</div>
-	<div class="modal-footer">
-		<button type="button" class="btn" data-dismiss="modal" id="move_thread_cancel">Close</a>
-		<button type="button" class="btn btn-primary" id="move_thread_commit" disabled>Move</a>
 	</div>
 </div>
 

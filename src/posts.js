@@ -332,7 +332,7 @@ var	RDB = require('./redis.js'),
 
 						async.parallel({
 							uploadedImages: function(next) {
-								uploadPostImages(postData, images, function(err, uploadedImages) {
+								Posts.uploadPostImages(postData.pid, images, function(err, uploadedImages) {
 									if(err) {
 										winston.error('Uploading images failed!', err.stack);
 										next(null, []);
@@ -350,7 +350,6 @@ var	RDB = require('./redis.js'),
 							}
 						}, function(err, results) {
 							postData.uploadedImages = results.uploadedImages;
-							Posts.setPostField(pid, 'uploadedImages', JSON.stringify(postData.uploadedImages));
 							postData.content = results.content;
 							callback(postData);
 						});
@@ -366,41 +365,44 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
-	function uploadPostImages(postData, images, callback) {
+	Posts.uploadPostImages = function(pid, images, callback) {
 		var imgur = require('./imgur');
 		imgur.setClientID(meta.config.imgurClientID);
 
-		var uploadedImages = [];
+		if(!images)
+			return callback(null, []);
 
-		function uploadImage(image, callback) {
+		var uploadedImages = images.filter(function(image) { return !!image.url; });
+
+		function uploadImage(image, next) {
+			if(!image.data)
+				return next(null);
+
 			imgur.upload(image.data, 'base64', function(err, data) {
 				if(err) {
-					callback(err);
+					next(err);
 				} else {
 					if(data.success) {
 						var img= {url:data.data.link, name:image.name};
 						uploadedImages.push(img);
-						callback(null);
+						next(null);
 					} else {
 						winston.error('Can\'t upload image, did you set imgurClientID?');
-						callback(data);
+						next(data);
 					}
 				}
 			});
 		}
 
-		if(!images) {
-			callback(null, uploadedImages);
-		} else {
-			async.each(images, uploadImage, function(err) {
-				if(!err) {
-					callback(null, uploadedImages);
-				} else {
-					console.log(err);
-					callback(err, null);
-				}
-			});
-		}
+		async.each(images, uploadImage, function(err) {
+			if(!err) {
+				Posts.setPostField(pid, 'uploadedImages', JSON.stringify(uploadedImages));
+				callback(null, uploadedImages);
+			} else {
+				console.log(err);
+				callback(err, null);
+			}
+		});
 	}
 
 	Posts.getPostsByUid = function(uid, start, end, callback) {
