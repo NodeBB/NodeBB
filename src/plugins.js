@@ -18,17 +18,19 @@ var	fs = require('fs'),
 					RDB.smembers('plugins:active', next);
 				},
 				function(plugins, next) {
-					async.each(plugins, function(plugin) {
-						// TODO: Update this check to also check node_modules
-						var	pluginPath = path.join(__dirname, '../plugins/', plugin),
-							modulePath = path.join(__dirname, '../node_modules/', plugin);
-						if (fs.existsSync(pluginPath)) _self.loadPlugin(pluginPath, next);
-						else if (fs.existsSync(modulePath)) _self.loadPlugin(modulePath, next);
-						else {
-							if (global.env === 'development') winston.info('[plugins] Plugin \'' + plugin + '\' not found');
-							next();	// Ignore this plugin silently
-						}
-					}, next);
+					if (plugins.length > 0) {
+						async.each(plugins, function(plugin) {
+							// TODO: Update this check to also check node_modules
+							var	pluginPath = path.join(__dirname, '../plugins/', plugin),
+								modulePath = path.join(__dirname, '../node_modules/', plugin);
+							if (fs.existsSync(pluginPath)) _self.loadPlugin(pluginPath, next);
+							else if (fs.existsSync(modulePath)) _self.loadPlugin(modulePath, next);
+							else {
+								if (global.env === 'development') winston.info('[plugins] Plugin \'' + plugin + '\' not found');
+								next();	// Ignore this plugin silently
+							}
+						}, next);
+					} else next();
 				}
 			], function(err) {
 				if (err) {
