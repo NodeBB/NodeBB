@@ -58,7 +58,7 @@ var express = require('express'),
 
 	// Middlewares
 	app.use(express.favicon(path.join(__dirname, '../', 'public', 'favicon.ico')));
-	app.use(require('less-middleware')({ src: path.join(__dirname, '../', 'public') }));
+	app.use(require('less-middleware')({ src: path.join(__dirname, '../', 'public'), prefix:nconf.get('relative_path') }));
 	app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../', 'public')));
 	app.use(express.bodyParser());	// Puts POST vars in request.body
 	app.use(express.cookieParser());	// If you want to parse cookies (res.cookies)
