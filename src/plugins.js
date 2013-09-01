@@ -18,7 +18,7 @@ var	fs = require('fs'),
 					RDB.smembers('plugins:active', next);
 				},
 				function(plugins, next) {
-					if (plugins.length > 0) {
+					if (plugins && Array.isArray(plugins) && plugins.length > 0) {
 						async.each(plugins, function(plugin) {
 							// TODO: Update this check to also check node_modules
 							var	pluginPath = path.join(__dirname, '../plugins/', plugin),
