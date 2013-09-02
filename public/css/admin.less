@@ -144,7 +144,7 @@
 	}
 
 	.groups {
-		ul {
+		> ul {
 			padding-left: 0;
 
 			li {
@@ -161,11 +161,19 @@
 		}
 
 		.members {
+			padding: 1em;
+
 			li {
 				display: inline-block;
+				border: 1px solid rgb(200, 200, 200);
+				margin-right: 1em;
 
 				img {
 					width: 32px;
+				}
+
+				span {
+					padding: 0 1em;
 				}
 			}
 		}

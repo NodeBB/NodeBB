@@ -26,7 +26,7 @@ var	fs = require('fs'),
 							if (fs.existsSync(pluginPath)) _self.loadPlugin(pluginPath, next);
 							else if (fs.existsSync(modulePath)) _self.loadPlugin(modulePath, next);
 							else {
-								if (global.env === 'development') winston.info('[plugins] Plugin \'' + plugin + '\' not found');
+								if (global.env === 'development') winston.warn('[plugins] Plugin \'' + plugin + '\' not found');
 								next();	// Ignore this plugin silently
 							}
 						}, next);

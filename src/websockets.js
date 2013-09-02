@@ -766,13 +766,15 @@ var SocketIO = require('socket.io').listen(global.server, { log:false }),
 			}
 		});
 
-		socket.on('api:admin.user.search', function(username) {
+		socket.on('api:admin.user.search', function(username, callback) {
 			if(uid && uid > 0) {
 				user.search(username, function(data) {
-					socket.emit('api:admin.user.search', data);
+					if (!callback) socket.emit('api:admin.user.search', data);
+					else callback(null, data);
 				});
 			} else {
-				socket.emit('api:admin.user.search', null);
+				if (!callback) socket.emit('api:admin.user.search', null);
+				else callback();
 			}
 		});
 

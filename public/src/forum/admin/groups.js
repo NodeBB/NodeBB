@@ -4,6 +4,8 @@ $(document).ready(function() {
 		createSubmitBtn = document.getElementById('create-modal-go'),
 		createNameEl = $('#create-group-name'),
 		detailsModal = $('#group-details-modal'),
+		detailsSearch = detailsModal.find('#group-details-search'),
+		searchDelay = undefined,
 		listEl = $('#groups-list');
 
 	createEl.addEventListener('click', function() {
@@ -79,8 +81,8 @@ $(document).ready(function() {
 					memberIcon.innerHTML = '<img />';
 					memberIconImg = memberIcon.querySelector('img');
 					if (numMembers > 0) {
-						for(x=0,x<numMembers;x++) {
-							memberIconImg.src = groupObj.mmbers[x].picture;
+						for(x=0;x<numMembers;x++) {
+							memberIconImg.src = groupObj.members[x].picture;
 							membersFrag.appendChild(memberIcon.cloneNode(true));
 						}
 						membersEl.appendChild(membersFrag);
@@ -90,5 +92,40 @@ $(document).ready(function() {
 				});
 			break;
 		}
+	});
+
+	detailsSearch.on('keyup', function() {
+		var	searchEl = this;
+
+		if (searchDelay) clearTimeout(searchDelay);
+
+		searchDelay = setTimeout(function() {
+			var	searchText = searchEl.value,
+				resultsEl = document.getElementById('group-details-search-results'),
+				foundUser = document.createElement('li'),
+				foundUserImg, foundUserLabel;
+
+			foundUser.innerHTML = '<img /><span></span>';
+			foundUserImg = foundUser.getElementsByTagName('img')[0];
+			foundUserLabel = foundUser.getElementsByTagName('span')[0];
+
+			socket.emit('api:admin.user.search', searchText, function(err, results) {
+				if (!err && results && results.length > 0) {
+					var	numResults = results.length,
+						resultsSlug = document.createDocumentFragment(),
+						x;
+					if (numResults > 4) numResults = 4;
+					for(x=0;x<numResults;x++) {
+						foundUserImg.src = results[x].picture;
+						foundUserLabel.innerHTML = results[x].username;
+						foundUser.setAttribute('title', results[x].username);
+						resultsSlug.appendChild(foundUser.cloneNode(true));
+					}
+
+					resultsEl.innerHTML = '';
+					resultsEl.appendChild(resultsSlug);
+				} else resultsEl.innerHTML = '<li>No Users Found</li>';
+			});
+		}, 200);
 	});
 });
