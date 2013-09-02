@@ -1,5 +1,8 @@
 
-var SocketIO = require('socket.io').listen(global.server, { log:false }),
+var SocketIO = require('socket.io').listen(global.server, {
+		log: false,
+		transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket']
+	}),
 	cookie = require('cookie'),
 	express = require('express'),
 	user = require('./user.js'),
