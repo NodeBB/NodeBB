@@ -76,6 +76,12 @@ var	async = require('async'),
 				} else callback(new Error('group-exists'))
 			});
 		},
+		update: function(gid, values, callback) {
+			RDB.exists('gid:' + gid, function(err, exists) {
+				if (!err && exists) RDB.hmset('gid:' + gid, values, callback);
+				else calback(new Error('gid-not-found'));
+			});
+		},
 		destroy: function(gid, callback) {
 			RDB.hset('gid:' + gid, 'deleted', '1', callback);
 		},

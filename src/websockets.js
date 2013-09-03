@@ -822,6 +822,20 @@ var SocketIO = require('socket.io').listen(global.server, {
 				callback(err ? err.message : null, groupObj || undefined);
 			});
 		});
+
+		socket.on('api:groups.join', function(data, callback) {
+			Groups.join(data.gid, data.uid, callback);
+		});
+
+		socket.on('api:groups.leave', function(data, callback) {
+			Groups.leave(data.gid, data.uid, callback);
+		});
+
+		socket.on('api:groups.update', function(data, callback) {
+			Groups.update(data.gid, data.values, function(err) {
+				callback(err ? err.message : null);
+			});
+		});
 	});
 
 }(SocketIO));

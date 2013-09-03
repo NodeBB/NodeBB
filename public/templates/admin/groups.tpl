@@ -18,7 +18,7 @@
 				<div class="col-lg-4">
 					<ul class="pull-right members">
 					<!-- BEGIN members -->
-						<li title="{groups.members.username}"><img src="http://www.gravatar.com/avatar/e1565907855fffe8433c31671a49f177?size=128&default=identicon&rating=pg" /></li>
+						<li data-uid="{groups.members.uid}" title="{groups.members.username}"><img src="{groups.members.picture}" /></li>
 					<!-- END members -->
 					</ul>
 				</div>
@@ -79,7 +79,8 @@
 						</div>
 						<div class="form-group">
 							<label>Members</label>
-							<ul class="members" id="group-details-members"></ul>
+							<p>Click on a user to remove them from the group</p>
+							<ul class="members current_members" id="group-details-members"></ul>
 						</div>
 						<div class="form-group">
 							<label for="add-member">Add User to Group</label>

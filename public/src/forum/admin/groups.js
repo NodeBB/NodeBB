@@ -5,6 +5,9 @@ $(document).ready(function() {
 		createNameEl = $('#create-group-name'),
 		detailsModal = $('#group-details-modal'),
 		detailsSearch = detailsModal.find('#group-details-search'),
+		searchResults = detailsModal.find('#group-details-search-results'),
+		groupMembersEl = detailsModal.find('ul.current_members'),
+		detailsModalSave = detailsModal.find('.btn-primary'),
 		searchDelay = undefined,
 		listEl = $('#groups-list');
 
@@ -66,28 +69,31 @@ $(document).ready(function() {
 					var	formEl = detailsModal.find('form'),
 						nameEl = formEl.find('#change-group-name'),
 						descEl = formEl.find('#change-group-desc'),
-						membersEl = formEl.find('ul.members'),
 						memberIcon = document.createElement('li'),
 						numMembers = groupObj.members.length,
 						membersFrag = document.createDocumentFragment(),
 						memberIconImg, x;
 
-					console.log(groupObj);
 
 					nameEl.val(groupObj.name);
 					descEl.val(groupObj.description);
 
 					// Member list
-					memberIcon.innerHTML = '<img />';
+					memberIcon.innerHTML = '<img /><span></span>';
 					memberIconImg = memberIcon.querySelector('img');
+					memberIconLabel = memberIcon.querySelector('span');
 					if (numMembers > 0) {
 						for(x=0;x<numMembers;x++) {
 							memberIconImg.src = groupObj.members[x].picture;
+							memberIconLabel.innerHTML = groupObj.members[x].username;
+							memberIcon.setAttribute('data-uid', groupObj.members[x].uid);
 							membersFrag.appendChild(memberIcon.cloneNode(true));
 						}
-						membersEl.appendChild(membersFrag);
+						groupMembersEl.html('');
+						groupMembersEl[0].appendChild(membersFrag);
 					}
 
+					detailsModal.attr('data-gid', groupObj.gid);
 					detailsModal.modal('show');
 				});
 			break;
@@ -119,6 +125,7 @@ $(document).ready(function() {
 						foundUserImg.src = results[x].picture;
 						foundUserLabel.innerHTML = results[x].username;
 						foundUser.setAttribute('title', results[x].username);
+						foundUser.setAttribute('data-uid', results[x].uid);
 						resultsSlug.appendChild(foundUser.cloneNode(true));
 					}
 
@@ -127,5 +134,61 @@ $(document).ready(function() {
 				} else resultsEl.innerHTML = '<li>No Users Found</li>';
 			});
 		}, 200);
+	});
+
+	searchResults.on('click', 'li[data-uid]', function() {
+		var	userLabel = this,
+			uid = parseInt(this.getAttribute('data-uid')),
+			gid = detailsModal.attr('data-gid'),
+			members = [];
+
+		groupMembersEl.find('li[data-uid]').each(function() {
+			members.push(parseInt(this.getAttribute('data-uid')));
+		});
+
+		if (members.indexOf(uid) === -1) {
+			socket.emit('api:groups.join', {
+				gid: gid,
+				uid: uid
+			}, function(err, data) {
+				if (!err) {
+					groupMembersEl.append(userLabel.cloneNode(true));
+				}
+			});
+		}
+	});
+
+	groupMembersEl.on('click', 'li[data-uid]', function() {
+		var	uid = this.getAttribute('data-uid'),
+			gid = detailsModal.attr('data-gid');
+
+		socket.emit('api:groups.leave', {
+			gid: gid,
+			uid: uid
+		}, function(err, data) {
+			if (!err) {
+				groupMembersEl.find('li[data-uid="' + uid + '"]').remove();
+			}
+		});
+	});
+
+	detailsModalSave.on('click', function() {
+		var	formEl = detailsModal.find('form'),
+			nameEl = formEl.find('#change-group-name'),
+			descEl = formEl.find('#change-group-desc'),
+			gid = detailsModal.attr('data-gid');
+
+		socket.emit('api:groups.update', {
+			gid: gid,
+			values: {
+				name: nameEl.val(),
+				description: descEl.val()
+			}
+		}, function(err) {
+			if (!err) {
+				detailsModal.modal('hide');
+				ajaxify.go('admin/groups');
+			}
+		});
 	});
 });

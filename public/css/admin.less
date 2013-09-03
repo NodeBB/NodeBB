@@ -147,7 +147,7 @@
 		> ul {
 			padding-left: 0;
 
-			li {
+			> li {
 				list-style-type: none;
 				margin-bottom: 1em;
 				padding: 1em;
@@ -163,7 +163,7 @@
 		.members {
 			padding: 1em;
 
-			li {
+			li[data-uid] {
 				display: inline-block;
 				border: 1px solid rgb(200, 200, 200);
 				margin-right: 1em;
@@ -174,6 +174,11 @@
 
 				span {
 					padding: 0 1em;
+				}
+
+				&:hover {
+					.pointer;
+					background: rgba(192, 192, 192, 0.2);
 				}
 			}
 		}
