@@ -235,8 +235,7 @@ var express = require('express'),
 					});
 				},
 				function(topicData, next) {
-					var posts = topicData.posts.push(topicData.main_posts[0]),
-						lastMod = 0,
+					var lastMod = 0,
 						timestamp;
 
 					for(var x=0,numPosts=topicData.posts.length;x<numPosts;x++) {
