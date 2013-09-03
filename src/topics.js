@@ -324,7 +324,7 @@ var	RDB = require('./redis.js')
 
 	}
 
-	Topics.getTopicWithPosts = function(tid, current_user, callback) {
+	Topics.getTopicWithPosts = function(tid, current_user, start, end, callback) {
 		threadTools.exists(tid, function(exists) {
 			if (!exists)
 				return callback(new Error('Topic tid \'' + tid + '\' not found'));
@@ -338,7 +338,7 @@ var	RDB = require('./redis.js')
 			}
 
 			function getTopicPosts(next) {
-				Topics.getTopicPosts(tid, 0, 10, current_user, function(topicPosts, privileges) {
+				Topics.getTopicPosts(tid, start, end, current_user, function(topicPosts, privileges) {
 					next(null, topicPosts);
 				});
 			}
