@@ -353,15 +353,22 @@ var socket,
 		if(app.infiniteLoaderActive)
 			return;
 		app.infiniteLoaderActive = true;
+
+		if($('#loading-indicator').attr('done') === '0')
+			$('#loading-indicator').removeClass('hide');
+
 		socket.emit('api:topic.loadMore', {
 			tid: tid,
 			after: document.querySelectorAll('#post-container li[data-pid]').length
 		}, function(data) {
 			app.infiniteLoaderActive = false;
 			if(data.posts.length) {
+				$('#loading-indicator').attr('done', '0');
 				app.createNewPosts(data);
+			} else {
+				$('#loading-indicator').attr('done', '1');
 			}
-
+			$('#loading-indicator').addClass('hide');
 			if(callback)
 				callback(data.posts);
 		});
