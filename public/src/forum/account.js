@@ -4,6 +4,8 @@
 		isFollowing = templates.get('isFollowing');
 
 	$(document).ready(function() {
+		var username = $('.account-username a').html();
+		app.enter_room('users/' + theirid);
 
 		app.addCommasToNumbers();
 
@@ -25,7 +27,6 @@
 
 		followBtn.on('click', function() {
 			socket.emit('api:user.follow', {uid: theirid}, function(success) {
-				var username = $('.account-username a').html();
 				if(success) {
 					followBtn.hide();
 					unfollowBtn.show();
@@ -39,7 +40,6 @@
 
 		unfollowBtn.on('click', function() {
 			socket.emit('api:user.unfollow', {uid: theirid}, function(success) {
-				var username = $('.account-username a').html();
 				if(success) {
 					followBtn.show();
 					unfollowBtn.hide();
@@ -70,6 +70,11 @@
 		socket.on('api:user.isOnline', handleUserOnline);
 
 		socket.emit('api:user.isOnline', theirid, handleUserOnline);
+
+		socket.on('event:new_post', function(data) {
+			var html = templates.prepare(templates['account'].blocks['posts']).parse(data);
+			$('.user-recent-posts').prepend(html);
+		})
 
 	});
 
