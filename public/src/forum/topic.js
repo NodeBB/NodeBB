@@ -615,6 +615,15 @@
 	var	postcount = templates.get('postcount');
 
 	function updateHeader() {
+		if (pagination == null) {
+			jQuery('.pagination-block i:first').on('click', function() {
+				app.scrollToTop();
+			});
+			jQuery('.pagination-block i:last').on('click', function() {
+				app.scrollToBottom();
+			});
+		}
+
 		jQuery('.post-author-info').css('bottom', '0px');
 		postAuthorImage = postAuthorImage || document.getElementById('post-author-image');
 		postAuthorInfo = postAuthorInfo || document.getElementById('post-author-info');
@@ -651,7 +660,7 @@
 
 
 		    if (inView) {
-		    	pagination.innerHTML = this.postnumber + ' / ' + postcount;
+		    	pagination.innerHTML = this.postnumber + ' out of ' + postcount;
 				postAuthorImage.src = (jQuery(this).find('.profile-image-block img').attr('src'));
 				postAuthorInfo.innerHTML = 'Posted by ' + jQuery(this).attr('data-username') + ', ' + jQuery(this).find('.relativeTimeAgo').html();
 		    }
@@ -659,7 +668,7 @@
 
 		setTimeout(function() {
 			if(scrollTop + windowHeight == jQuery(document).height()) {
-				pagination.innerHTML = postcount + ' / ' + postcount;
+				pagination.innerHTML = postcount + ' out of ' + postcount;
 			}
 		}, 100);
 	}
