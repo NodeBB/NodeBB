@@ -19,7 +19,7 @@ var	fs = require('fs'),
 				},
 				function(plugins, next) {
 					if (plugins && Array.isArray(plugins) && plugins.length > 0) {
-						async.each(plugins, function(plugin) {
+						async.each(plugins, function(plugin, next) {
 							// TODO: Update this check to also check node_modules
 							var	pluginPath = path.join(__dirname, '../plugins/', plugin),
 								modulePath = path.join(__dirname, '../node_modules/', plugin);
@@ -31,6 +31,17 @@ var	fs = require('fs'),
 							}
 						}, next);
 					} else next();
+				},
+				function(next) {
+					winston.info('[plugins] Sorting hooks to fire in priority sequence');
+					Object.keys(_self.loadedHooks).forEach(function(hook) {
+						var	hooks = _self.loadedHooks[hook];
+						hooks = hooks.sort(function(a, b) {
+							return a[3] - b[3];
+						});
+					});
+
+					next();
 				}
 			], function(err) {
 				if (err) {
@@ -66,30 +77,33 @@ var	fs = require('fs'),
 					`data.hook`*, the name of the NodeBB hook
 					`data.method`*, the method called in that plugin
 					`data.callbacked`, whether or not the hook expects a callback (true), or a return (false). Only used for filters. (Default: false)
-					(Not implemented) `data.priority`, the relative priority of the method when it is eventually called (default: 10)
+					`data.priority`, the relative priority of the method when it is eventually called (default: 10)
 			*/
 			var	_self = this;
 
 			if (data.hook && data.method) {
+				// Assign default priority of 10 if none is passed-in
+				if (!data.priority) data.priority = 10;
+
 				_self.loadedHooks[data.hook] = _self.loadedHooks[data.hook] || [];
-				_self.loadedHooks[data.hook].push([id, data.method, !!data.callbacked]);
+				_self.loadedHooks[data.hook].push([id, data.method, !!data.callbacked, data.priority]);
+
 				if (global.env === 'development') winston.info('[plugins] Hook registered: ' + data.hook + ' will call ' + id);
 			} else return;
 		},
 		fireHook: function(hook, args, callback) {
-			// TODO: Implement priority hook firing
 			var	_self = this
 				hookList = this.loadedHooks[hook];
 
 			if (hookList && Array.isArray(hookList)) {
-				//if (global.env === 'development') winston.info('[plugins] Firing hook: \'' + hook + '\'');
+				if (global.env === 'development') winston.info('[plugins] Firing hook: \'' + hook + '\'');
 				var	hookType = hook.split(':')[0];
 				switch(hookType) {
 					case 'filter':
 						// Filters only take one argument, so only args[0] will be passed in
 						var	returnVal = (Array.isArray(args) ? args[0] : args);
 
-						async.each(hookList, function(hookObj, next) {
+						async.eachSeries(hookList, function(hookObj, next) {
 							if (hookObj[2]) {
 								_self.libraries[hookObj[0]][hookObj[1]](returnVal, function(err, afterVal) {
 									returnVal = afterVal;
