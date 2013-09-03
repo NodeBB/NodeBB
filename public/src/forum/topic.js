@@ -620,16 +620,16 @@
 		postAuthorInfo = postAuthorInfo || document.getElementById('post-author-info');
 		pagination = pagination || document.getElementById('pagination');
 
-		pagination.style.display = 'block';
+		pagination.parentNode.style.display = 'block';
 
 		var windowHeight = jQuery(window).height();
 		var scrollTop = jQuery(window).scrollTop();
 		var scrollBottom = scrollTop + windowHeight;
 
-		if (scrollTop < 50) {
+		if (scrollTop < 50 && postcount > 1) {
 			postAuthorImage.src = (jQuery('.main-avatar img').attr('src'));
 			postAuthorInfo.innerHTML = 'Posted by ' + jQuery('.main-post').attr('data-username') + ', ' + jQuery('.main-post').find('.relativeTimeAgo').html();
-			pagination.innerHTML = '0 / ' + postcount;
+			pagination.innerHTML = '0 out of ' + postcount;
 			return;
 		}
 
@@ -657,9 +657,11 @@
 		    }
 		});
 
-		if(scrollTop + windowHeight == jQuery(document).height()) {
-			pagination.innerHTML = postcount + ' / ' + postcount;
-		}
+		setTimeout(function() {
+			if(scrollTop + windowHeight == jQuery(document).height()) {
+				pagination.innerHTML = postcount + ' / ' + postcount;
+			}
+		}, 100);
 	}
 
 	window.onscroll = updateHeader;
