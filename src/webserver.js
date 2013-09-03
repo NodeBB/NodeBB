@@ -212,7 +212,7 @@ var express = require('express'),
 
 			var tid = req.params.topic_id;
 			if (tid.match(/^\d+\.rss$/)) {
-				fs.readFile('feeds/topics/' + tid, function (err, data) {
+				fs.readFile(path.join(__dirname, '../', 'feeds/topics', tid), function (err, data) {
 					if (err) {
 						res.type('text').send(404, "Unable to locate an rss feed at this location.");
 						return;
@@ -280,7 +280,7 @@ var express = require('express'),
 			var cid = req.params.category_id;
 
 			if (cid.match(/^\d+\.rss$/)) {
-				fs.readFile('feeds/categories/' + cid, function (err, data) {
+				fs.readFile(path.join(__dirname, '../', 'feeds/categories', cid), function (err, data) {
 					if (err) {
 						res.type('text').send(404, "Unable to locate an rss feed at this location.");
 						return;
