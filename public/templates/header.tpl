@@ -64,7 +64,7 @@
 				<form id="search-form" class="navbar-form navbar-right hidden-xs" role="search" method="GET" action="">
 					<div class="hide" id="search-fields">
 				    	<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search" name="query">
+							<input type="text" class="form-control" placeholder="Search" name="query" value="">
 				    	</div>
 				    	<button type="submit" class="btn btn-default hide">Search</button>
 				    </div>
