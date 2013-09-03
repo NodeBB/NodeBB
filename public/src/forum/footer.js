@@ -53,7 +53,13 @@
 				jQuery('#search-fields').hide();
 				jQuery('#search-button').show();
 			});
+
+			$('#search-fields input').on('blur', function() {
+				$('#search-fields').hide();
+				$('#search-button').show();
+			});
 		});
+
 		var rightMenu = $('#right-menu'),
 			isLoggedIn = data.uid > 0;
 
@@ -82,6 +88,7 @@
 				rightMenu.append(logoutli);
 			}
 		} else {
+			$('#search-button').hide();
 			jQuery('.nodebb-loggedin').hide();
 			jQuery('.nodebb-loggedout').show();
 
