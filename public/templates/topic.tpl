@@ -142,6 +142,9 @@
 		</li>
 	<!-- END posts -->
 </ul>
+<div id="loading-indicator" style="text-align:center;" class="hide" done="0">
+	<i class="icon-spinner icon-spin icon-large"></i>
+</div>
 <hr />
 <div class="topic-main-buttons">
 	<button id="post_reply" class="btn btn-primary btn-lg post_reply" type="button">Reply</button>

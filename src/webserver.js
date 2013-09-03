@@ -212,7 +212,7 @@ var express = require('express'),
 
 			var tid = req.params.topic_id;
 			if (tid.match(/^\d+\.rss$/)) {
-				fs.readFile('feeds/topics/' + tid, function (err, data) {
+				fs.readFile(path.join(__dirname, '../', 'feeds/topics', tid), function (err, data) {
 					if (err) {
 						res.type('text').send(404, "Unable to locate an rss feed at this location.");
 						return;
@@ -225,7 +225,7 @@ var express = require('express'),
 
 			async.waterfall([
 				function(next) {
-					topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), function(err, topicData) {
+					topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), 0, -1, function(err, topicData) {
 						if(topicData) {
 							if(topicData.deleted === '1' && topicData.expose_tools === 0)
 								return next(new Error('Topic deleted'), null);
@@ -235,8 +235,7 @@ var express = require('express'),
 					});
 				},
 				function(topicData, next) {
-					var posts = topicData.posts.push(topicData.main_posts[0]),
-						lastMod = 0,
+					var lastMod = 0,
 						timestamp;
 
 					for(var x=0,numPosts=topicData.posts.length;x<numPosts;x++) {
@@ -281,7 +280,7 @@ var express = require('express'),
 			var cid = req.params.category_id;
 
 			if (cid.match(/^\d+\.rss$/)) {
-				fs.readFile('feeds/categories/' + cid, function (err, data) {
+				fs.readFile(path.join(__dirname, '../', 'feeds/categories', cid), function (err, data) {
 					if (err) {
 						res.type('text').send(404, "Unable to locate an rss feed at this location.");
 						return;

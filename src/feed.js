@@ -5,10 +5,13 @@
 		topics = require('./topics.js'),
 		fs = require('fs'),
 		rss = require('node-rss'),
-		winston = require('winston');
+		winston = require('winston'),
+		path = require('path');
 
 	function saveFeed(location, feed) {
-		fs.writeFile(location, rss.getFeedXML(feed), function (err) {
+		var	savePath = path.join(__dirname, '../', location);
+
+		fs.writeFile(savePath, rss.getFeedXML(feed), function (err) {
 			if(err) {
 				winston.err(err);
 			}
@@ -21,18 +24,19 @@
 			feed_url,
 			description,
 			author,
-			xml_url, 
+			xml_url,
 			{
 				'urn' : urn
 			}
-		);	
+		);
 	}
 
 
 	Feed.updateTopic = function(tid, cid) {
+		winston.info('[RSS] Updating RSS feeds for topic ' + tid);
 		var cache_time_in_seconds = 60;
 
-		topics.getTopicWithPosts(tid, 0, function(err, topicData) {
+		topics.getTopicWithPosts(tid, 0, 0, -1, function(err, topicData) {
 			if (err) winston.error('Problem saving topic RSS feed', err.stack);
 
 			var location = '/topic/' + topicData.slug,
@@ -79,14 +83,14 @@
 
 			var urn = 'urn:' + cid;
 			var feed = createFeed(categoryData.category_name, '', location, xml_url, 'NodeBB', urn); // not exactly sure if author for a category should be site_title?
-			
+
 			var title;
 			var topics = categoryData.topics;
 
 			for (var i = 0, ii = topics.length; i < ii; i++) {
 				urn = 'urn:' + cid + ':' + topics[i].tid;
 				title = topics[i].title + '. Posted on ' + (new Date(parseInt(topics[i].timestamp, 10)).toUTCString());
-				
+
 				feed.addNewItem(
 					title,
 					location,

@@ -31,7 +31,7 @@
 </head>
 
 <body>
-	<div class="navbar navbar-inverse navbar-fixed-top" id="header-menu">
+	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="header-menu">
 		<div class="container">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -42,7 +42,7 @@
 		        <a class="navbar-brand" href="/">{title}</a>
 		    </div>
 
-			<div class="navbar-collapse collapse">
+			<div class="navbar-collapse collapse navbar-ex1-collapse">
 				<ul id="main-nav" class="nav navbar-nav">
 					<li>
 						<a href="/recent">Recent</a>
@@ -63,13 +63,13 @@
 
 				<form id="search-form" class="navbar-form navbar-right hidden-xs" role="search" method="GET" action="">
 					<div class="hide" id="search-fields">
-				    	<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search" name="query">
-				    	</div>
-				    	<button type="submit" class="btn btn-default hide">Search</button>
-				    </div>
-			    	<button id="search-button" type="button" class="btn btn-link nodebb-loggedin"><i class="icon-search"></i></button>
-			    </form>
+						<div class="form-group">
+							<input type="text" class="form-control" placeholder="Search" name="query" value="">
+						</div>
+						<button type="submit" class="btn btn-default hide">Search</button>
+					</div>
+					<button id="search-button" type="button" class="btn btn-link"><i class="icon-search"></i></button>
+				</form>
 
 				<ul id="right-menu" class="nav navbar-nav navbar-right">
 					<li class="notifications dropdown text-center hidden-xs">

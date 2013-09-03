@@ -259,6 +259,7 @@ var	RDB = require('./redis.js'),
 						var	socketData = { posts: [postData] };
 						io.sockets.in('topic_' + tid).emit('event:new_post', socketData);
 						io.sockets.in('recent_posts').emit('event:new_post', socketData);
+						io.sockets.in('users/' + uid).emit('event:new_post', socketData);
 					});
 
 					callback(null, 'Reply successful');
