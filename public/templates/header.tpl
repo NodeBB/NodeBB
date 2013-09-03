@@ -63,13 +63,13 @@
 
 				<form id="search-form" class="navbar-form navbar-right hidden-xs" role="search" method="GET" action="">
 					<div class="hide" id="search-fields">
-				    	<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search" name="query">
-				    	</div>
-				    	<button type="submit" class="btn btn-default hide">Search</button>
-				    </div>
-			    	<button id="search-button" type="button" class="btn btn-link nodebb-loggedin"><i class="icon-search"></i></button>
-			    </form>
+						<div class="form-group">
+							<input type="text" class="form-control" placeholder="Search" name="query" value="">
+						</div>
+						<button type="submit" class="btn btn-default hide">Search</button>
+					</div>
+					<button id="search-button" type="button" class="btn btn-link"><i class="icon-search"></i></button>
+				</form>
 
 				<ul id="right-menu" class="nav navbar-nav navbar-right">
 					<li class="notifications dropdown text-center hidden-xs">
