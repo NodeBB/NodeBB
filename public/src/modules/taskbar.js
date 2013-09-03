@@ -5,11 +5,11 @@ define(function() {
 		tasklist: undefined,
 		init: function() {
 			var	footerEl = document.getElementById('footer');
-		
+
 			taskbar.taskbar = document.createElement('div');
 			var jTaskbar = $(taskbar.taskbar);
-			taskbar.taskbar.innerHTML = '<div class="navbar-inner"><ul class="nav pull-right"></ul></div>';
-			taskbar.taskbar.className = 'taskbar navbar navbar-fixed-bottom';
+			taskbar.taskbar.innerHTML = '<div class="navbar-inner"><ul class="nav navbar-nav pull-right"></ul></div>';
+			taskbar.taskbar.className = 'taskbar navbar navbar-default navbar-fixed-bottom';
 			taskbar.taskbar.id = 'taskbar';
 
 			taskbar.tasklist = taskbar.taskbar.querySelector('ul');
@@ -60,7 +60,7 @@ define(function() {
 			var element = $(taskbar.tasklist).find('li[data-uuid="'+uuid+'"]');
 			if(element.length)
 				return;
-			
+
 			var	btnEl = document.createElement('li');
 
 			btnEl.innerHTML =	'<a href="#">' +

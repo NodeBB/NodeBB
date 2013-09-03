@@ -31,7 +31,7 @@
 </head>
 
 <body>
-	<div class="navbar navbar-inverse navbar-fixed-top" id="header-menu">
+	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="header-menu">
 		<div class="container">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -42,7 +42,7 @@
 		        <a class="navbar-brand" href="/">{title}</a>
 		    </div>
 
-			<div class="navbar-collapse collapse">
+			<div class="navbar-collapse collapse navbar-ex1-collapse">
 				<ul id="main-nav" class="nav navbar-nav">
 					<li>
 						<a href="/recent">Recent</a>
