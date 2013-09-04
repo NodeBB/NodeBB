@@ -33,7 +33,7 @@ var	fs = require('fs'),
 					} else next();
 				},
 				function(next) {
-					winston.info('[plugins] Sorting hooks to fire in priority sequence');
+					if (global.env === 'development') winston.info('[plugins] Sorting hooks to fire in priority sequence');
 					Object.keys(_self.loadedHooks).forEach(function(hook) {
 						var	hooks = _self.loadedHooks[hook];
 						hooks = hooks.sort(function(a, b) {

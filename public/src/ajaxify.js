@@ -33,7 +33,7 @@ var ajaxify = {};
 		app.enter_room('global');
 
 		pagination = pagination || document.getElementById('pagination');
-		if (pagination) pagination.style.display = 'none';
+		if (pagination) pagination.parentNode.style.display = 'none';
 		window.onscroll = null;
 		// end
 

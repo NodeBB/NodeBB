@@ -374,6 +374,18 @@ var socket,
 		});
 	}
 
+	app.scrollToTop = function() {
+		$('body,html').animate({
+			scrollTop: 0
+		});
+	};
+
+	app.scrollToBottom = function() {
+		$('body,html').animate({
+			scrollTop: $('html').height() - 100
+		});
+	}
+
 	app.scrollToPost = function(pid) {
 
 		if(!pid)

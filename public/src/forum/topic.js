@@ -615,21 +615,30 @@
 	var	postcount = templates.get('postcount');
 
 	function updateHeader() {
+		if (pagination == null) {
+			jQuery('.pagination-block i:first').on('click', function() {
+				app.scrollToTop();
+			});
+			jQuery('.pagination-block i:last').on('click', function() {
+				app.scrollToBottom();
+			});
+		}
+
 		jQuery('.post-author-info').css('bottom', '0px');
 		postAuthorImage = postAuthorImage || document.getElementById('post-author-image');
 		postAuthorInfo = postAuthorInfo || document.getElementById('post-author-info');
 		pagination = pagination || document.getElementById('pagination');
 
-		pagination.style.display = 'block';
+		pagination.parentNode.style.display = 'block';
 
 		var windowHeight = jQuery(window).height();
 		var scrollTop = jQuery(window).scrollTop();
 		var scrollBottom = scrollTop + windowHeight;
 
-		if (scrollTop < 50) {
+		if (scrollTop < 50 && postcount > 1) {
 			postAuthorImage.src = (jQuery('.main-avatar img').attr('src'));
 			postAuthorInfo.innerHTML = 'Posted by ' + jQuery('.main-post').attr('data-username') + ', ' + jQuery('.main-post').find('.relativeTimeAgo').html();
-			pagination.innerHTML = '0 / ' + postcount;
+			pagination.innerHTML = '0 out of ' + postcount;
 			return;
 		}
 
@@ -651,15 +660,17 @@
 
 
 		    if (inView) {
-		    	pagination.innerHTML = this.postnumber + ' / ' + postcount;
+		    	pagination.innerHTML = this.postnumber + ' out of ' + postcount;
 				postAuthorImage.src = (jQuery(this).find('.profile-image-block img').attr('src'));
 				postAuthorInfo.innerHTML = 'Posted by ' + jQuery(this).attr('data-username') + ', ' + jQuery(this).find('.relativeTimeAgo').html();
 		    }
 		});
 
-		if(scrollTop + windowHeight == jQuery(document).height()) {
-			pagination.innerHTML = postcount + ' / ' + postcount;
-		}
+		setTimeout(function() {
+			if(scrollTop + windowHeight == jQuery(document).height()) {
+				pagination.innerHTML = postcount + ' out of ' + postcount;
+			}
+		}, 100);
 	}
 
 	window.onscroll = updateHeader;

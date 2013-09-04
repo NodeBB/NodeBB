@@ -82,7 +82,11 @@
 					</li>
 				</ul>
 
-				<div id="pagination"></div>
+				<div class="pagination-block">
+					<i class="icon-upload pointer"></i>
+					<span id="pagination"></span>
+					<i class="icon-upload pointer icon-rotate-180"></i>
+				</div>
 			</div>
 		</div>
 	</div>

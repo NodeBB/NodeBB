@@ -27,7 +27,7 @@ var fs = require('fs'),
 	meta = require('./src/meta.js');
 
 // Runtime environment
-global.env = process.env.NODE_ENV || 'production',
+global.env = process.env.NODE_ENV || 'production';
 
 
 
@@ -39,7 +39,7 @@ winston.add(winston.transports.Console, {
 winston.add(winston.transports.File, {
 	filename:'error.log',
 	level:'error'
-})
+});
 
 // TODO: remove once https://github.com/flatiron/winston/issues/280 is fixed
 winston.err = function(err) {
@@ -134,7 +134,7 @@ if(nconf.get('upgrade')) {
 } else {
 	// New install, ask setup questions
 	if (nconf.get('setup')) winston.info('NodeBB Setup Triggered via Command Line');
-	else winston.info('Configuration not found, starting NodeBB setup');
+	else winston.warn('Configuration not found, starting NodeBB setup');
 
 	var	install = require('./src/install');
 
