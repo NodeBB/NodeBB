@@ -4,7 +4,7 @@ var	fs = require('fs'),
 	async = require('async'),
 	winston = require('winston'),
 	plugins = {
-		libraries: [],
+		libraries: {},
 		loadedHooks: {},
 		init: function() {
 			if (this.initialized) return;
