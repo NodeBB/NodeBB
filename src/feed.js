@@ -45,7 +45,7 @@
 
 			for (var i = 0, ii = topic_posts.length; i < ii; i++) {
 				postData = topic_posts[i];
-				dateStamp = new Date(parseInt(postData.edited === 0 ? postData.timestamp : postData.edited, 10)).toUTCString();
+				dateStamp = new Date(parseInt(postData.edited === '0' ? postData.timestamp : postData.edited, 10)).toUTCString();
 				title = 'Reply to ' + topicData.topic_name + ' on ' + dateStamp;
 
 				feed.item({
