@@ -134,7 +134,7 @@ if(nconf.get('upgrade')) {
 } else {
 	// New install, ask setup questions
 	if (nconf.get('setup')) winston.info('NodeBB Setup Triggered via Command Line');
-	else winston.info('Configuration not found, starting NodeBB setup');
+	else winston.warn('Configuration not found, starting NodeBB setup');
 
 	var	install = require('./src/install');
 
