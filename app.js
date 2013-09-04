@@ -63,7 +63,7 @@ if(nconf.get('upgrade')) {
 	nconf.set('upload_url', nconf.get('url') + 'uploads/');
 
 	winston.info('Initializing NodeBB v' + pkg.version + ', on port ' + nconf.get('port') + ', using Redis store at ' + nconf.get('redis:host') + ':' + nconf.get('redis:port') + '.');
-	winston.info('Base Configuration OK.');
+	if (process.env.NODE_ENV === 'development') winston.info('Base Configuration OK.');
 
 	meta.configs.init(function() {
 		// Initial setup for Redis & Reds
@@ -102,7 +102,7 @@ if(nconf.get('upgrade')) {
 
 			//setup scripts to be moved outside of the app in future.
 			function setup_categories() {
-				winston.info('Checking categories...');
+				if (process.env.NODE_ENV === 'development') winston.info('Checking categories...');
 				categories.getAllCategories(function(data) {
 					if (data.categories.length === 0) {
 						winston.info('Setting up default categories...');
@@ -122,7 +122,7 @@ if(nconf.get('upgrade')) {
 
 
 					} else {
-						winston.info('Categories OK. Found ' + data.categories.length + ' categories.');
+						if (process.env.NODE_ENV === 'development') winston.info('Categories OK. Found ' + data.categories.length + ' categories.');
 					}
 				});
 			}

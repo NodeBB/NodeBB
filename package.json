@@ -27,7 +27,6 @@
     "bcrypt": "0.7.5",
     "async": "0.2.8",
     "node-imagemagick": "0.1.8",
-    "node-rss": "1.0.1",
     "gravatar": "1.0.6",
     "nconf": "~0.6.7",
     "sitemap": "~0.6.0",
