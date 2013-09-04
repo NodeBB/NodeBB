@@ -21,7 +21,8 @@ var express = require('express'),
 	installRoute = require('./routes/install.js'),
 	testBed = require('./routes/testbed.js'),
 	auth = require('./routes/authentication.js'),
-	meta = require('./meta.js');
+	meta = require('./meta.js'),
+	feed = require('./feed');
 
 (function(app) {
 	var templates = null;
@@ -212,15 +213,25 @@ var express = require('express'),
 
 			var tid = req.params.topic_id;
 			if (tid.match(/^\d+\.rss$/)) {
-				fs.readFile(path.join(__dirname, '../', 'feeds/topics', tid), function (err, data) {
-					if (err) {
-						res.type('text').send(404, "Unable to locate an rss feed at this location.");
-						return;
-					}
+				tid = tid.slice(0, -4);
+				var	rssPath = path.join(__dirname, '../', 'feeds/topics', tid + '.rss'),
+					loadFeed = function() {
+						fs.readFile(rssPath, function (err, data) {
+							if (err) {
+								res.type('text').send(404, "Unable to locate an rss feed at this location.");
+								return;
+							}
 
-					res.type('xml').set('Content-Length', data.length).send(data);
-				});
-				return;
+							res.type('xml').set('Content-Length', data.length).send(data);
+						});
+						return;
+					};
+
+				if (!fs.existsSync(rssPath)) {
+					feed.updateTopic(tid, function() {
+						loadFeed();
+					});
+				} else loadFeed();
 			}
 
 			async.waterfall([

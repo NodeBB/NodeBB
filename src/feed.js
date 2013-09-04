@@ -24,7 +24,7 @@
 		});
 	}
 
-	Feed.updateTopic = function(tid, cid) {
+	Feed.updateTopic = function(tid, callback) {
 		if (process.env.NODE_ENV === 'development') winston.info('[rss] Updating RSS feeds for topic ' + tid);
 
 		topics.getTopicWithPosts(tid, 0, 0, -1, function(err, topicData) {
@@ -57,11 +57,12 @@
 			}
 
 			Feed.saveFeed('feeds/topics/' + tid + '.rss', feed);
+			if (callback) callback();
 		});
 
 	};
 
-	Feed.updateCategory = function(cid) {
+	Feed.updateCategory = function(cid, callback) {
 		if (process.env.NODE_ENV === 'development') winston.info('[rss] Updating RSS feeds for category ' + cid);
 		categories.getCategoryById(cid, 0, function(err, categoryData) {
 			if (err) return winston.error('Could not update RSS feed for category ' + cid, err.stack);
@@ -90,6 +91,7 @@
 			}
 
 			Feed.saveFeed('feeds/categories/' + cid + '.rss', feed);
+			if (callback) callback();
 		});
 
 	};
