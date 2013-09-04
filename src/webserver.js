@@ -210,21 +210,17 @@ var express = require('express'),
 
 
 		app.get('/topic/:topic_id/:slug?', function(req, res) {
-
 			var tid = req.params.topic_id;
+
 			if (tid.match(/^\d+\.rss$/)) {
 				tid = tid.slice(0, -4);
 				var	rssPath = path.join(__dirname, '../', 'feeds/topics', tid + '.rss'),
 					loadFeed = function() {
 						fs.readFile(rssPath, function (err, data) {
-							if (err) {
-								res.type('text').send(404, "Unable to locate an rss feed at this location.");
-								return;
-							}
-
-							res.type('xml').set('Content-Length', data.length).send(data);
+							if (err) res.type('text').send(404, "Unable to locate an rss feed at this location.");
+							else res.type('xml').set('Content-Length', data.length).send(data);
 						});
-						return;
+
 					};
 
 				if (!fs.existsSync(rssPath)) {
@@ -232,6 +228,8 @@ var express = require('express'),
 						loadFeed();
 					});
 				} else loadFeed();
+
+				return;
 			}
 
 			async.waterfall([
@@ -291,14 +289,22 @@ var express = require('express'),
 			var cid = req.params.category_id;
 
 			if (cid.match(/^\d+\.rss$/)) {
-				fs.readFile(path.join(__dirname, '../', 'feeds/categories', cid), function (err, data) {
-					if (err) {
-						res.type('text').send(404, "Unable to locate an rss feed at this location.");
-						return;
-					}
+				cid = cid.slice(0, -4);
+				var	rssPath = path.join(__dirname, '../', 'feeds/categories', cid + '.rss'),
+					loadFeed = function() {
+						fs.readFile(rssPath, function (err, data) {
+							if (err) res.type('text').send(404, "Unable to locate an rss feed at this location.");
+							else res.type('xml').set('Content-Length', data.length).send(data);
+						});
 
-					res.type('xml').set('Content-Length', data.length).send(data);
-				});
+					};
+
+				if (!fs.existsSync(rssPath)) {
+					feed.updateCategory(cid, function() {
+						loadFeed();
+					});
+				} else loadFeed();
+
 				return;
 			}
 

@@ -14,13 +14,13 @@
 		baseUrl: nconf.get('url') + 'feeds'
 	};
 
-	Feed.saveFeed = function(location, feed) {
+	Feed.saveFeed = function(location, feed, callback) {
 		var	savePath = path.join(__dirname, '../', location);
 
 		fs.writeFile(savePath, feed.xml(), function (err) {
-			if(err) {
-				winston.err(err);
-			}
+			if(err) return winston.err(err);
+
+			if (callback) callback(err);
 		});
 	}
 
@@ -41,23 +41,25 @@
 					ttl: Feed.defaults.ttl
 				}),
 				topic_posts = topicData.main_posts.concat(topicData.posts),
-				title, postData;
+				title, postData, dateStamp;
 
 			for (var i = 0, ii = topic_posts.length; i < ii; i++) {
-				title = 'Reply to ' + topicData.topic_name + ' on ' + (new Date(parseInt(topic_posts[i].timestamp, 10)).toUTCString());
 				postData = topic_posts[i];
+				dateStamp = new Date(parseInt(postData.edited === 0 ? postData.timestamp : postData.edited, 10)).toUTCString();
+				title = 'Reply to ' + topicData.topic_name + ' on ' + dateStamp;
 
 				feed.item({
 					title: title,
 					description: postData.content,
 					url: nconf.get('url') + 'topic/' + topicData.slug + '#' + postData.pid,
 					author: postData.username,
-					date: new Date(parseInt(postData.edited === 0 ? postData.timestamp : postData.edited, 10)).toUTCString()
+					date: dateStamp
 				});
 			}
 
-			Feed.saveFeed('feeds/topics/' + tid + '.rss', feed);
-			if (callback) callback();
+			Feed.saveFeed('feeds/topics/' + tid + '.rss', feed, function(err) {
+				if (callback) callback();
+			});
 		});
 
 	};
@@ -76,22 +78,24 @@
 					ttl: Feed.defaults.ttl
 				}),
 				topics = categoryData.topics,
-				title, topicData;
+				title, topicData, dateStamp;
 
 			for (var i = 0, ii = topics.length; i < ii; i++) {
-				title = topics[i].title + '. Posted on ' + (new Date(parseInt(topics[i].timestamp, 10)).toUTCString());
 				topicData = topics[i];
+				dateStamp = new Date(parseInt(topicData.lastposttime, 10)).toUTCString();
+				title = topics[i].title;
 
 				feed.item({
 					title: title,
 					url: nconf.get('url') + 'topic/' + topicData.slug,
 					author: topicData.username,
-					date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString()
+					date: dateStamp
 				});
 			}
 
-			Feed.saveFeed('feeds/categories/' + cid + '.rss', feed);
-			if (callback) callback();
+			Feed.saveFeed('feeds/categories/' + cid + '.rss', feed, function(err) {
+				if (callback) callback();
+			});
 		});
 
 	};
