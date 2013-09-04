@@ -314,7 +314,7 @@ var	RDB = require('./redis.js'),
 						topics.getTopicField(tid, 'cid', function(err, cid) {
 							RDB.handle(err);
 
-							feed.updateTopic(tid, cid);
+							feed.updateTopic(tid);
 
 							RDB.zadd('categories:recent_posts:cid:' + cid, timestamp, pid);
 							RDB.zadd('categories:' + cid + ':tid', timestamp, tid);

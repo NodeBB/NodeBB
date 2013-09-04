@@ -4,106 +4,98 @@
 		posts = require('./posts.js'),
 		topics = require('./topics.js'),
 		fs = require('fs'),
-		rss = require('node-rss'),
+		rss = require('rss'),
 		winston = require('winston'),
 		path = require('path');
 
-	function saveFeed(location, feed) {
+	Feed.defaults = {
+		ttl: 60,
+		basePath: path.join(__dirname, '../', 'feeds'),
+		baseUrl: nconf.get('url') + 'feeds'
+	};
+
+	Feed.saveFeed = function(location, feed, callback) {
 		var	savePath = path.join(__dirname, '../', location);
 
-		fs.writeFile(savePath, rss.getFeedXML(feed), function (err) {
-			if(err) {
-				winston.err(err);
-			}
+		fs.writeFile(savePath, feed.xml(), function (err) {
+			if(err) return winston.err(err);
+
+			if (callback) callback(err);
 		});
 	}
 
-	function createFeed(title, description, feed_url, xml_url, author, urn) {
-		return rss.createNewFeed(
-			title,
-			feed_url,
-			description,
-			author,
-			xml_url,
-			{
-				'urn' : urn
-			}
-		);
-	}
-
-
-	Feed.updateTopic = function(tid, cid) {
-		winston.info('[RSS] Updating RSS feeds for topic ' + tid);
-		var cache_time_in_seconds = 60;
+	Feed.updateTopic = function(tid, callback) {
+		if (process.env.NODE_ENV === 'development') winston.info('[rss] Updating RSS feeds for topic ' + tid);
 
 		topics.getTopicWithPosts(tid, 0, 0, -1, function(err, topicData) {
-			if (err) winston.error('Problem saving topic RSS feed', err.stack);
+			if (err) return winston.error('Problem saving topic RSS feed', err.stack);
 
-			var location = '/topic/' + topicData.slug,
-				xml_url = '/topic/' + tid + '.rss';
-
-			var post = topicData.main_posts[0];
-			var urn = 'urn:' + cid + ':' + tid;
-
-			var feed = createFeed(topicData.topic_name, '', location, xml_url, post.username, urn);
-			var title;
-
-			var topic_posts = topicData.main_posts.concat(topicData.posts);
+			var	feed = new rss({
+					title: topicData.topic_name,
+					description: topicData.main_posts[0].content,
+					feed_url: Feed.defaults.baseUrl + '/topics/' + tid + '.rss',
+					site_url: nconf.get('url') + 'topic/' + topicData.slug,
+					image_url: topicData.main_posts[0].picture,
+					author: topicData.main_posts[0].username,
+					pubDate: new Date(parseInt(topicData.main_posts[0].timestamp, 10)).toUTCString(),
+					ttl: Feed.defaults.ttl
+				}),
+				topic_posts = topicData.main_posts.concat(topicData.posts),
+				title, postData, dateStamp;
 
 			for (var i = 0, ii = topic_posts.length; i < ii; i++) {
-				urn = 'urn:' + cid + ':' + tid + ':' + topic_posts[i].pid;
-				title = 'Reply to ' + topicData.topic_name + ' on ' + (new Date(parseInt(topic_posts[i].timestamp, 10)).toUTCString());
+				postData = topic_posts[i];
+				dateStamp = new Date(parseInt(postData.edited === 0 ? postData.timestamp : postData.edited, 10)).toUTCString();
+				title = 'Reply to ' + topicData.topic_name + ' on ' + dateStamp;
 
-				feed.addNewItem(
-					title,
-					location,
-					topic_posts[i].timestamp,
-					topic_posts[i].content,
-					{
-						'urn' : urn,
-						'username' : topic_posts[i].username
-					}
-				);
+				feed.item({
+					title: title,
+					description: postData.content,
+					url: nconf.get('url') + 'topic/' + topicData.slug + '#' + postData.pid,
+					author: postData.username,
+					date: dateStamp
+				});
 			}
 
-			saveFeed('feeds/topics/' + tid + '.rss', feed);
+			Feed.saveFeed('feeds/topics/' + tid + '.rss', feed, function(err) {
+				if (callback) callback();
+			});
 		});
 
 	};
 
-	Feed.updateCategory = function(cid) {
+	Feed.updateCategory = function(cid, callback) {
+		if (process.env.NODE_ENV === 'development') winston.info('[rss] Updating RSS feeds for category ' + cid);
 		categories.getCategoryById(cid, 0, function(err, categoryData) {
-			if (err) {
-				winston.error('Could not update RSS feed for category ' + cid, err.stack);
-				return;
-			}
+			if (err) return winston.error('Could not update RSS feed for category ' + cid, err.stack);
 
-			var location = '/category/' + categoryData.category_id + '/' + categoryData.category_name,
-				xml_url = '/category' + cid + '.rss';
-
-			var urn = 'urn:' + cid;
-			var feed = createFeed(categoryData.category_name, '', location, xml_url, 'NodeBB', urn); // not exactly sure if author for a category should be site_title?
-
-			var title;
-			var topics = categoryData.topics;
+			var	feed = new rss({
+					title: categoryData.category_name,
+					description: categoryData.category_description,
+					feed_url: Feed.defaults.baseUrl + '/categories/' + cid + '.rss',
+					site_url: nconf.get('url') + 'category/' + categoryData.category_id,
+					pubDate: new Date(parseInt(categoryData.topics[0].lastposttime, 10)).toUTCString(),
+					ttl: Feed.defaults.ttl
+				}),
+				topics = categoryData.topics,
+				title, topicData, dateStamp;
 
 			for (var i = 0, ii = topics.length; i < ii; i++) {
-				urn = 'urn:' + cid + ':' + topics[i].tid;
-				title = topics[i].title + '. Posted on ' + (new Date(parseInt(topics[i].timestamp, 10)).toUTCString());
+				topicData = topics[i];
+				dateStamp = new Date(parseInt(topicData.lastposttime, 10)).toUTCString();
+				title = topics[i].title;
 
-				feed.addNewItem(
-					title,
-					location,
-					topics[i].timestamp,
-					topics[i].teaser_text,
-					{
-						'urn' : urn,
-						'username' : topics[i].username
-					}
-				);
+				feed.item({
+					title: title,
+					url: nconf.get('url') + 'topic/' + topicData.slug,
+					author: topicData.username,
+					date: dateStamp
+				});
 			}
 
-			saveFeed('feeds/categories/' + cid + '.rss', feed);
+			Feed.saveFeed('feeds/categories/' + cid + '.rss', feed, function(err) {
+				if (callback) callback();
+			});
 		});
 
 	};
