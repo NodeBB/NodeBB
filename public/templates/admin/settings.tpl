@@ -59,8 +59,6 @@
 		<input type="text" class="form-control" value="16" data-field="maximumUsernameLength"><br />
 		<strong>Minimum Password Length</strong><br />
 		<input type="text" class="form-control" value="6" data-field="minimumPasswordLength"><br />
-		<strong>Maximum Password Length</strong><br />
-		<input type="text" class="form-control" value="16" data-field="maximumPasswordLength"><br />
 	</div>
 </form>
 

@@ -90,7 +90,6 @@ var	async = require('async'),
 				meta.configs.set('minimumUsernameLength', 2);
 				meta.configs.set('maximumUsernameLength', 16);
 				meta.configs.set('minimumPasswordLength', 6);
-				meta.configs.set('maximumPasswordLength', 16);
 				meta.configs.set('imgurClientID', '');
 
 				install.save(server_conf, client_conf, callback);

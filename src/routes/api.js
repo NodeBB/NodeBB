@@ -25,7 +25,6 @@ var user = require('./../user.js'),
 			config['minimumUsernameLength'] = meta.config['minimumUsernameLength'];
 			config['maximumUsernameLength'] = meta.config['maximumUsernameLength'];
 			config['minimumPasswordLength'] = meta.config['minimumPasswordLength'];
-			config['maximumPasswordLength'] = meta.config['maximumPasswordLength'];
 
 			res.json(200, config);
 		});
@@ -104,7 +103,6 @@ var user = require('./../user.js'),
 			data.minimumUsernameLength = meta.config['minimumUsernameLength'];
 			data.maximumUsernameLength = meta.config['maximumUsernameLength'];
 			data.minimumPasswordLength = meta.config['minimumPasswordLength'];
-			data.maximumPasswordLength = meta.config['maximumPasswordLength'];
 			res.json(data);
 		});
 

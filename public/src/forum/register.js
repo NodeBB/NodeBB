@@ -31,7 +31,6 @@
 	function validateEmail() {
 		if(!emailEl.val()) {
 			validationError = true;
-			//email_notify.hide();
 			return;
 		}
 
@@ -49,7 +48,6 @@
 	function validateUsername() {
 		if(!username.val()) {
 			validationError = true;
-			//username_notify.hide();
 			return;
 		}
 
@@ -74,14 +72,11 @@
 	function validatePassword() {
 		if(!password.val()){
 			validationError = true;
-			//password_notify.hide();
 			return;
 		}
 
 		if (password.val().length < config.minimumPasswordLength) {
 			showError(password_notify, 'Password too short!');
-		} else if(password.val().length > config.maximumPasswordLength) {
-			showError(password_notify, 'Password too long!');
 		} else if(!utils.isPasswordValid(password.val())) {
 			showError(password_notify, 'Invalid password!');
 		} else {
@@ -99,7 +94,6 @@
 
 	function validatePasswordConfirm() {
 		if(!password.val() || password_notify.hasClass('alert-error')) {
-			//password_confirm_notify.hide();
 			return;
 		}
 

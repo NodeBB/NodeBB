@@ -44,7 +44,7 @@
 					        	<span id="password-notify"><i class="icon icon-circle-blank"></i></span>
 					        </span>
 						</div>
-						<span class="help-block">Your password's length must be {minimumPasswordLength}-{maximumPasswordLength} characters.</span>
+						<span class="help-block">Your password's length must be  at least {minimumPasswordLength} characters.</span>
 					</div>
 				</div>
 				<div class="form-group">
