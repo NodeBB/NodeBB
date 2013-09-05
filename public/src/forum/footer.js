@@ -1,47 +1,28 @@
 (function() {
-	var num_users = document.getElementById('number_of_users'),
-		post_stats = document.getElementById('post_stats'),
-		latest_user = document.getElementById('latest_user'),
-		active_users = document.getElementById('active_users'),
+	var stats_users = document.getElementById('stats_users'),
+		stats_topics = document.getElementById('stats_topics'),
+		stats_posts = document.getElementById('stats_posts'),
+		stats_online = document.getElementById('stats_online'),
 		user_label = document.getElementById('user_label'),
-		active_record = document.getElementById('active_record'),
 		right_menu = document.getElementById('right-menu');
 
 	socket.emit('user.count', {});
 	socket.on('user.count', function(data) {
-		num_users.innerHTML = "We currently have <b>" + data.count + "</b> registered users.";
+		stats_users.innerHTML = data.count;
 	});
 
 	socket.emit('post.stats');
 	socket.on('post.stats', function(data) {
-		post_stats.innerHTML = "Our users have created <b>" + data.topics + "</b> topics and made <b>" + data.posts + "</b> posts.";
-	});
-
-	socket.emit('user.latest', {});
-	socket.on('user.latest', function(data) {
-		if (data.username == '') {
-			latest_user.innerHTML = '';
-		} else {
-			latest_user.innerHTML = "The most recent user to register is <b><a href='/users/"+data.userslug+"'>" + data.username + "</a></b>.";
-		}
+		stats_topics.innerHTML = data.topics;
+		stats_posts.innerHTML = data.posts;
 	});
 
 	socket.emit('api:user.active.get');
 	socket.on('api:user.active.get', function(data) {
-
-		var plural_users = parseInt(data.users) !== 1,
-			plural_anon = parseInt(data.anon) !== 1;
-
-		active_users.innerHTML = 'There ' + (plural_users ? 'are' : 'is') + ' <strong>' + data.users + '</strong> user' + (plural_users ? 's' : '') + ' and <strong>' + data.anon + '</strong> guest' + (plural_anon ? 's' : '') + ' online';
-	});
-
-	socket.emit('api:user.active.get_record');
-	socket.on('api:user.active.get_record', function(data) {
-		active_record.innerHTML = "most users ever online was <strong>" + data.record + "</strong> on <strong>" + (new Date(parseInt(data.timestamp,10))).toUTCString() + "</strong>";
+		stats_online.innerHTML = data.users + data.anon;
 	});
 
 	socket.emit('api:updateHeader', { fields: ['username', 'picture', 'userslug'] });
-
 	socket.on('api:updateHeader', function(data) {
 
 		jQuery('#search-button').on('click', function() {

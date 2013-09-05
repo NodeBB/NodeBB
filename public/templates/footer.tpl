@@ -40,17 +40,34 @@
 
 	<div id="alert_window"></div>
 
-	<!-- START Forum Info -->
-	<div id="footer" class="container" style="padding-top: 50px; display: none">
-		<div class="alert alert-info">
-			<span id="active_users"></span>; <span id="active_record"></span><br />
-			<span id="number_of_users"></span> <span id="post_stats"></span><br />
-			<span id="latest_user"></span>
+
+	<div class="container footer-stats">
+		<div class="row">
+			<div class="col-md-3 col-xs-6">
+				<div class="stats-card well">
+					<h2><span id="stats_online"></span><br /><small>Online</small></h2>
+				</div>
+			</div>
+			<div class="col-md-3 col-xs-6">
+				<div class="stats-card well">
+					<h2><span id="stats_users"></span><br /><small>Users</small></h2>
+				</div>
+			</div>
+			<div class="col-md-3 col-xs-6">
+				<div class="stats-card well">
+					<h2><span id="stats_topics"></span><br /><small>Topics</small></h2>
+				</div>
+			</div>
+			<div class="col-md-3 col-xs-6">
+				<div class="stats-card well">
+					<h2><span id="stats_posts"></span><br /><small>Posts</small></h2>
+				</div>
+			</div>
 		</div>
-		<footer class="footer">Copyright &copy; 2013 <a target="_blank" href="http://www.nodebb.org">NodeBB</a> by <a target="_blank" href="https://github.com/psychobunny">psychobunny</a>, <a href="https://github.com/julianlam" target="_blank">julianlam</a>, <a href="https://github.com/barisusakli" target="_blank">barisusakli</a> from <a target="_blank" href="http://www.designcreateplay.com">designcreateplay</a></footer>
 	</div>
 
-	<!-- END Forum Info -->
+	<footer class="footer">Copyright &copy; 2013 <a target="_blank" href="http://www.nodebb.org">NodeBB</a> by <a target="_blank" href="https://github.com/psychobunny">psychobunny</a>, <a href="https://github.com/julianlam" target="_blank">julianlam</a>, <a href="https://github.com/barisusakli" target="_blank">barisusakli</a> from <a target="_blank" href="http://www.designcreateplay.com">designcreateplay</a></footer>
+
 	<script>
 		$.getScript(RELATIVE_PATH + '/src/forum/footer.js');
 	</script>
