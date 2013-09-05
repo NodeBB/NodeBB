@@ -152,7 +152,7 @@ define(['taskbar'], function(taskbar) {
 						pid: threadData.pid,
 						title: threadData.title || '',
 						body: threadData.body || '',
-						images: threadData.uploadedImages
+						images: threadData.uploadedImages || []
 					};
 					composer.load(uuid);
 				} else {
