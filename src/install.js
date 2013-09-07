@@ -7,6 +7,7 @@ var	async = require('async'),
 	User = require('./user'),
 	Groups = require('./groups'),
 	Categories = require('./categories'),
+	Plugins = require('./plugins'),
 	prompt = require('prompt'),
 	admin = {
 		categories: require('./admin/categories')
@@ -63,10 +64,7 @@ var	async = require('async'),
 					prompt.delimiter = '';
 
 					prompt.get(install.questions, function(err, config) {
-						if (!config) {
-							winston.warn('NodeBB Setup Aborted.');
-							process.exit();
-						}
+						if (!config) return next(new Error('aborted'));
 
 						// Translate redis properties into redis object
 						config.redis = {
@@ -146,8 +144,30 @@ var	async = require('async'),
 							next();
 						}
 					});
+				},
+				function(next) {
+					// Default plugins
+					winston.info('Enabling default plugins');
+
+					var	defaultEnabled = [
+							'nodebb-plugin-markdown', 'nodebb-plugin-mentions'
+						];
+
+					async.each(defaultEnabled, function(pluginId, next) {
+						Plugins.isActive(pluginId, function(err, active) {
+							if (!active) {
+								Plugins.toggleActive(pluginId);
+								next();
+							} else next();
+						})
+					}, next);
 				}
-			], callback);
+			], function(err) {
+				if (err) {
+					winston.warn('NodeBB Setup Aborted.');
+					process.exit();
+				} else callback();
+			});
 		},
 		createAdmin: function(callback) {
 			winston.warn('No administrators have been detected, running initial user setup');
@@ -174,6 +194,8 @@ var	async = require('async'),
 				];
 
 			prompt.get(questions, function(err, results) {
+				if (!results) return callback(new Error('aborted'));
+
 				nconf.set('bcrypt_rounds', 12);
 				User.create(results.username, results.password, results.email, function(err, uid) {
 					Groups.getGidFromName('Administrators', function(err, gid) {

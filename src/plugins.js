@@ -162,10 +162,12 @@ var	fs = require('fs'),
 						return;
 					}
 
-					callback({
-						id: id,
-						active: !active
-					});
+					if (callback) {
+						callback({
+							id: id,
+							active: !active
+						});
+					}
 				});
 			});
 		},
