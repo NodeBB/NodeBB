@@ -192,23 +192,31 @@ var	async = require('async'),
 						hidden: true,
 						type: 'string'
 					}
-				];
+				],
+				getAdminInfo = function(callback) {
+					prompt.get(questions, function(err, results) {
+						if (!results) return callback(new Error('aborted'));
 
-			prompt.get(questions, function(err, results) {
-				if (!results) return callback(new Error('aborted'));
+						nconf.set('bcrypt_rounds', 12);
+						User.create(results.username, results.password, results.email, function(err, uid) {
+							if (err) {
+								winston.warn(err.message + ' Please try again.');
+								return getAdminInfo();
+							}
 
-				nconf.set('bcrypt_rounds', 12);
-				User.create(results.username, results.password, results.email, function(err, uid) {
-					Groups.getGidFromName('Administrators', function(err, gid) {
-						if (gid) Groups.join(gid, uid, callback);
-						else {
-							Groups.create('Administrators', 'Forum Administrators', function(err, groupObj) {
-								Groups.join(groupObj.gid, uid, callback);
+							Groups.getGidFromName('Administrators', function(err, gid) {
+								if (gid) Groups.join(gid, uid, callback);
+								else {
+									Groups.create('Administrators', 'Forum Administrators', function(err, groupObj) {
+										Groups.join(groupObj.gid, uid, callback);
+									});
+								}
 							});
-						}
+						});
 					});
-				});
-			});
+				};
+
+			getAdminInfo(callback);
 		},
 		save: function(server_conf, client_conf, callback) {
 			// Server Config

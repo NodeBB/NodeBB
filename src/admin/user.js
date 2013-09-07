@@ -1,22 +1,28 @@
-var	RDB = require('./../redis.js'),
-	utils = require('./../../public/src/utils.js'),
-	user = require('./../user.js');
+var	RDB = require('../redis'),
+	utils = require('../../public/src/utils'),
+	user = require('../user'),
+	Groups = require('../groups');
 
 (function(UserAdmin) {
 
 	UserAdmin.makeAdmin = function(uid, theirid, socket) {
 		user.isAdministrator(uid, function(isAdmin) {
 			if(isAdmin) {
-				user.makeAdministrator(theirid, function(data) {
-					socket.emit('event:alert', {
-						title: 'User Modified',
-						message: 'This user is now an administrator!',
-						type: 'success',
-						timeout: 2000
-					});					
+				Groups.getGidFromName('Administrators', function(err, gid) {
+					Groups.join(gid, theirid, function(err) {
+						if (!err) {
+							user.setUserField(theirid, 'administrator', 1);
+
+							socket.emit('event:alert', {
+								title: 'User Modified',
+								message: 'This user is now an administrator!',
+								type: 'success',
+								timeout: 2000
+							});
+						}
+					});
 				});
-			}
-			else {
+			} else {
 				socket.emit('event:alert', {
 					title: 'Warning',
 					message: 'You need to be an administrator to make someone else an administrator!',
@@ -30,13 +36,18 @@ var	RDB = require('./../redis.js'),
 	UserAdmin.removeAdmin = function(uid, theirid, socket) {
 		user.isAdministrator(uid, function(isAdmin) {
 			if(isAdmin) {
-				user.removeAdministrator(theirid, function(data) {
+				Groups.getGidFromName('Administrators', function(err, gid) {
+					Groups.leave(gid, theirid, function(err) {
+						if (!err) {
+							user.setUserField(theirid, 'administrator', 0);
 
-					socket.emit('event:alert', {
-						title: 'User Modified',
-						message: 'This user is no longer an administrator!',
-						type: 'success',
-						timeout: 2000
+							socket.emit('event:alert', {
+								title: 'User Modified',
+								message: 'This user is no longer an administrator!',
+								type: 'success',
+								timeout: 2000
+							});
+						}
 					});
 				});
 			}

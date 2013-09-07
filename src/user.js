@@ -5,6 +5,7 @@ var utils = require('./../public/src/utils.js'),
 	meta = require('./meta.js'),
 	emailjsServer = emailjs.server.connect(meta.config.mailer || '127.0.0.1'),
 	bcrypt = require('bcrypt'),
+	Groups = require('./groups'),
 	notifications = require('./notifications.js'),
 	topics = require('./topics.js'),
 	async = require('async'),
@@ -769,35 +770,10 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.isAdministrator = function(uid, callback) {
-		RDB.sismember('administrators', uid, function(err, exists) {
-			RDB.handle(err);
-			callback(!!exists);
-		});
-	}
-
-	User.makeAdministrator = function(uid, callback) {
-		RDB.sadd('administrators', uid, function(err, data){
-			if(!err) {
-				User.setUserField(uid, 'administrator', 1);
-			}
-
-			if(callback) {
-				// @todo address why we're only sending back a boolean in the callback and not an error if it occurred
-				callback(err === null);
-			}
-		});
-	}
-
-	User.removeAdministrator = function(uid, callback) {
-		RDB.srem('administrators', uid, function(err, data){
-			if(!err) {
-				User.setUserField(uid, 'administrator', 0);
-			}
-
-			if(callback) {
-				// @todo address why we're only sending back a boolean in the callback and not an error if it occurred
-				callback(err === null);
-			}
+		Groups.getGidFromName('Administrators', function(err, gid) {
+			Groups.isMember(uid, gid, function(err, isAdmin) {
+				callback(isAdmin);
+			});
 		});
 	}
 
