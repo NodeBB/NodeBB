@@ -131,7 +131,7 @@ var user = require('./../user.js'),
 					return;
 				}
 
-				var absolutePath = path.join(global.configuration['ROOT_DIRECTORY'], global.nconf.get('upload_path'), path.basename(oldpicture));
+				var absolutePath = path.join(__dirname, '../', global.nconf.get('upload_path'), path.basename(oldpicture));
 
 				fs.unlink(absolutePath, function(err) {
 					if(err) {
@@ -152,7 +152,7 @@ var user = require('./../user.js'),
 			}
 
 			var filename = uid + '-profileimg' + extension;
-			var uploadPath = path.join(global.configuration['ROOT_DIRECTORY'], global.nconf.get('upload_path'), filename);
+			var uploadPath = path.join(__dirname, '../', global.nconf.get('upload_path'), filename);
 
 			winston.info('Attempting upload to: '+ uploadPath);
 

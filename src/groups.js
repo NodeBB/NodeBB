@@ -1,5 +1,6 @@
 var	async = require('async'),
 	User = require('./user'),
+	RDB = RDB || require('./redis'),
 	Groups = {
 		list: function(options, callback) {
 			RDB.hvals('group:gid', function(err, gids) {

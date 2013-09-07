@@ -24,7 +24,7 @@ var	RDB = require('./../redis.js'),
 
 			RDB.set('categoryslug:' + slug + ':cid', cid);
 
-			if (callback) callback({'status': 1});
+			if (callback) callback(null);
 		});
 	};
 

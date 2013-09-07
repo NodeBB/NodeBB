@@ -8,7 +8,6 @@ var user = require('./user.js'),
 (function(Login){
 
 	Login.loginViaLocal = function(username, password, next) {
-
 		if (!username || !password) {
 			return next({
 				status: 'error',
@@ -26,8 +25,7 @@ var user = require('./user.js'),
 				}
 
 				user.getUserFields(uid, ['password', 'banned'], function(err, userData) {
-					if(err)
-						return next(err);
+					if(err) return next(err);
 
 					if(userData.banned && userData.banned === '1') {
 						return next({
@@ -38,7 +36,7 @@ var user = require('./user.js'),
 
 					bcrypt.compare(password, userData.password, function(err, res) {
 						if(err) {
-							winston.err(err);
+							winston.err(err.message);
 							next({
 								status: "error",
 								message: 'bcrypt compare error'

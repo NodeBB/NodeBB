@@ -4,13 +4,14 @@ var user = require('./../user.js'),
 	categories = require('./../categories.js')
 	utils = require('./../../public/src/utils.js'),
 	pkg = require('../../package.json'),
-	meta = require('./../meta.js');
+	meta = require('./../meta.js'),
+	path = require('path');
 
 
 (function(Api) {
 	Api.create_routes = function(app) {
 		app.get('/api/get_templates_listing', function(req, res) {
-			utils.walk(global.configuration.ROOT_DIRECTORY + '/public/templates', function(err, data) {
+			utils.walk(path.join(__dirname, '../../', 'public/templates'), function(err, data) {
 				res.json(data);
 			});
 		});

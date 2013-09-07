@@ -65,7 +65,7 @@
 
 			for (var t in templatesToLoad) {
 				(function(file) {
-					fs.readFile(global.configuration.ROOT_DIRECTORY + '/public/templates/' + file + '.tpl', function(err, html) {
+					fs.readFile(__dirname + '/../templates/' + file + '.tpl', function(err, html) {
 						var template = function() {
 							this.toString = function() {
 								return this.html;
@@ -89,8 +89,6 @@
 			jQuery.when(jQuery.getJSON(RELATIVE_PATH + '/templates/config.json'), jQuery.getJSON(RELATIVE_PATH + '/api/get_templates_listing')).done(function(config_data, templates_data) {
 				config = config_data[0];
 				available_templates = templates_data[0];
-
-
 
 				templates.ready();
 			});

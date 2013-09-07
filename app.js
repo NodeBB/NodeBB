@@ -50,15 +50,9 @@ winston.err = function(err) {
 winston.info('NodeBB v' + pkg.version + ' Copyright (C) 2013 DesignCreatePlay Inc.');
 winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
 winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
-winston.info('===');
+winston.info('');
 
-
-
-if(nconf.get('upgrade')) {
-	meta.configs.init(function() {
-		require('./src/upgrade').upgrade();
-	});
-} else if (!nconf.get('setup') && nconf.get('base_url')) {
+if (!nconf.get('setup') && !nconf.get('upgrade') && nconf.get('base_url')) {
 	nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path') + '/');
 	nconf.set('upload_url', nconf.get('url') + 'uploads/');
 
@@ -82,77 +76,39 @@ if(nconf.get('upgrade')) {
 				'categories': require('./src/admin/categories.js')
 			};
 
-		DEVELOPMENT = true;
-
-		global.configuration = {};
 		global.templates = {};
+		templates.init([
+			'header', 'footer', 'logout', 'outgoing', 'admin/header', 'admin/footer', 'admin/index',
+			'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext',
+			'emails/header', 'emails/footer',
 
-		(function(config) {
-			config['ROOT_DIRECTORY'] = __dirname;
+			'noscript/header', 'noscript/home', 'noscript/category', 'noscript/topic'
+		]);
 
-			templates.init([
-				'header', 'footer', 'logout', 'outgoing', 'admin/header', 'admin/footer', 'admin/index',
-				'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext',
-				'emails/header', 'emails/footer',
-
-				'noscript/header', 'noscript/home', 'noscript/category', 'noscript/topic'
-			]);
-
-			templates.ready(webserver.init);
-
-			//setup scripts to be moved outside of the app in future.
-			function setup_categories() {
-				if (process.env.NODE_ENV === 'development') winston.info('Checking categories...');
-				categories.getAllCategories(function(data) {
-					if (data.categories.length === 0) {
-						winston.info('Setting up default categories...');
-
-						fs.readFile(config.ROOT_DIRECTORY + '/install/data/categories.json', function(err, default_categories) {
-							default_categories = JSON.parse(default_categories);
-
-							for (var category in default_categories) {
-								admin.categories.create(default_categories[category]);
-							}
-						});
-
-
-						winston.info('Hardcoding uid 1 as an admin');
-						var user = require('./src/user.js');
-						user.makeAdministrator(1);
-
-
-					} else {
-						if (process.env.NODE_ENV === 'development') winston.info('Categories OK. Found ' + data.categories.length + ' categories.');
-					}
-				});
-			}
-
-			setup_categories();
-		}(global.configuration));
+		templates.ready(webserver.init);
 	});
 
+} else if (nconf.get('upgrade')) {
+	meta.configs.init(function() {
+		require('./src/upgrade').upgrade();
+	});
 } else {
 	// New install, ask setup questions
 	if (nconf.get('setup')) winston.info('NodeBB Setup Triggered via Command Line');
 	else winston.warn('Configuration not found, starting NodeBB setup');
 
+	meta.config = {};
 	var	install = require('./src/install');
 
-	process.stdout.write(
-		"\nWelcome to NodeBB!\nThis looks like a new installation, so you'll have to answer a " +
-		"few questions about your environment before we can proceed.\n\n" +
-		"Press enter to accept the default setting (shown in brackets).\n\n\n"
-	);
+	winston.info('Welcome to NodeBB!');
+	winston.info('This looks like a new installation, so you\'ll have to answer a few questions about your environment before we can proceed.');
+	winston.info('Press enter to accept the default setting (shown in brackets).');
 
 	install.setup(function(err) {
 		if (err) {
 			winston.error('There was a problem completing NodeBB setup: ', err.message);
 		} else {
-			if (!nconf.get('setup')) {
-				process.stdout.write(
-					"Please start NodeBB again and register a new user. This user will automatically become an administrator.\n\n"
-				);
-			}
+			winston.info('NodeBB Setup Completed.');
 		}
 
 		process.exit();

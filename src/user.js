@@ -84,7 +84,7 @@ var utils = require('./../public/src/utils.js'),
 				RDB.incr('usercount', function(err, count) {
 					RDB.handle(err);
 
-					io.sockets.emit('user.count', {count: count});
+					if (typeof io !== 'undefined') io.sockets.emit('user.count', {count: count});
 				});
 
 				RDB.zadd('users:joindate', timestamp, uid);
@@ -93,15 +93,14 @@ var utils = require('./../public/src/utils.js'),
 
 				userSearch.index(username, uid);
 
-				io.sockets.emit('user.latest', {userslug: userslug, username: username});
+				if (typeof io !== 'undefined') io.sockets.emit('user.latest', {userslug: userslug, username: username});
 
 				if (password !== undefined) {
-					User.hashPassword(password, function(hash) {
+					User.hashPassword(password, function(err, hash) {
 						User.setUserField(uid, 'password', hash);
+						callback(null, uid);
 					});
-				}
-
-				callback(null, uid);
+				} else callback(null, uid);
 			});
 		});
 	};
@@ -309,7 +308,7 @@ var utils = require('./../public/src/utils.js'),
 				}
 
 				if (res) {
-					User.hashPassword(data.newPassword, function(hash) {
+					User.hashPassword(data.newPassword, function(err, hash) {
 						User.setUserField(uid, 'password', hash);
 
 						callback({err:null});
@@ -382,9 +381,7 @@ var utils = require('./../public/src/utils.js'),
 		}
 
 		bcrypt.genSalt(nconf.get('bcrypt_rounds'), function(err, salt) {
-			bcrypt.hash(password, salt, function(err, hash) {
-				callback(hash);
-			});
+			bcrypt.hash(password, salt, callback);
 		});
 	}
 
@@ -906,7 +903,7 @@ var utils = require('./../public/src/utils.js'),
 							RDB.handle(err);
 						}
 
-						User.hashPassword(password, function(hash) {
+						User.hashPassword(password, function(err, hash) {
 							User.setUserField(uid, 'password', hash);
 						});
 
