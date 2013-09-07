@@ -18,7 +18,9 @@
 		//Adapted from http://stackoverflow.com/questions/5827612/node-js-fs-readdir-recursive-directory-search
 		walk: function(dir, done) {
 			var results = [],
-				templateExtract = /\/([\w\d\-_]+)\.tpl$/;
+				path = require('path'),
+				main_dir = path.join(__dirname, '..', 'templates');
+
 			fs.readdir(dir, function(err, list) {
 				if (err) return done(err);
 				var pending = list.length;
@@ -32,10 +34,7 @@
 								if (!--pending) done(null, results);
 							});
 						} else {
-							var	templateMatch = file.match(templateExtract);
-
-							if (templateMatch) results.push(templateMatch[1]);
-							// results.push(file.replace(main_dir, '').replace('.tpl', ''));
+							results.push(file.replace(main_dir + '/', '').replace('.tpl', ''));
 							if (!--pending) done(null, results);
 						}
 					});

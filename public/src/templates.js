@@ -89,6 +89,7 @@
 			jQuery.when(jQuery.getJSON(RELATIVE_PATH + '/templates/config.json'), jQuery.getJSON(RELATIVE_PATH + '/api/get_templates_listing')).done(function(config_data, templates_data) {
 				config = config_data[0];
 				available_templates = templates_data[0];
+				console.log(config, available_templates);
 
 				templates.ready();
 			});
