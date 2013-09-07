@@ -156,8 +156,9 @@ var	async = require('async'),
 					async.each(defaultEnabled, function(pluginId, next) {
 						Plugins.isActive(pluginId, function(err, active) {
 							if (!active) {
-								Plugins.toggleActive(pluginId);
-								next();
+								Plugins.toggleActive(pluginId, function() {
+									next();
+								});
 							} else next();
 						})
 					}, next);
