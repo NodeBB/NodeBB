@@ -3,29 +3,28 @@
 
 	var yourid = templates.get('yourid');
 
-	function initUsers() {
+	function isUserAdmin(element) {
+		var parent = $(element).parents('.users-box');
+		return (parent.attr('data-admin') !== "0");
+	}
 
-		function isUserAdmin(element) {
-			var parent = $(element).parents('.users-box');
-			return (parent.attr('data-admin') !== "0");
-		}
+	function isUserBanned(element) {
+		var parent = $(element).parents('.users-box');
+		return (parent.attr('data-banned') !== "" && parent.attr('data-banned') !== "0");
+	}
 
-		function isUserBanned(element) {
-			var parent = $(element).parents('.users-box');
-			return (parent.attr('data-banned') !== "" && parent.attr('data-banned') !== "0");
-		}
+	function getUID(element) {
+		var parent = $(element).parents('.users-box');
+		return parent.attr('data-uid');
+	}
 
-		function getUID(element) {
-			var parent = $(element).parents('.users-box');
-			return parent.attr('data-uid');
-		}
+	function updateUserButtons() {
 
 		jQuery('.admin-btn').each(function(index, element) {
 			var adminBtn = $(element);
-			var isAdmin = isUserAdmin(adminBtn);
 			var uid = getUID(adminBtn);
 
-			if(isAdmin)
+			if(isUserAdmin(adminBtn))
 				adminBtn.addClass('btn-success');
 			else
 				adminBtn.removeClass('btn-success');
@@ -36,9 +35,8 @@
 
 		jQuery('.delete-btn').each(function(index, element) {
 			var deleteBtn = $(element);
-			var isAdmin = isUserAdmin(deleteBtn);
 
-			if(isAdmin)
+			if(isUserAdmin(deleteBtn))
 				deleteBtn.addClass('disabled');
 			else
 				deleteBtn.show();
@@ -46,19 +44,22 @@
 
 		jQuery('.ban-btn').each(function(index, element) {
 			var banBtn = $(element);
-			var isAdmin = isUserAdmin(banBtn);
-			var isBanned = isUserBanned(banBtn);
 
-			if(isAdmin)
+			if(isUserAdmin(banBtn))
 				banBtn.addClass('disabled');
-			else if(isBanned)
+			else if(isUserBanned(banBtn))
 				banBtn.addClass('btn-warning');
 			else
 				banBtn.removeClass('btn-warning');
 
 		});
+	}
+	
+	function initUsers() {
 
-		jQuery('.admin-btn').on('click', function() {
+		updateUserButtons();
+
+		$('#users-container').on('click', '.admin-btn', function() {
 			var adminBtn = $(this);
 			var isAdmin = isUserAdmin(adminBtn);
 			var parent = adminBtn.parents('.users-box');
@@ -83,7 +84,7 @@
 			return false;
 		});
 
-		jQuery('.delete-btn').on('click', function() {
+		$('#users-container').on('click', '.delete-btn', function() {
 			var deleteBtn = $(this);
 			var isAdmin = isUserAdmin(deleteBtn);
 			var parent = deleteBtn.parents('.users-box');
@@ -100,7 +101,7 @@
 			return false;
 		});
 
-		jQuery('.ban-btn').on('click', function() {
+		$('#users-container').on('click', '.ban-btn', function() {
 			var banBtn = $(this);
 			var isAdmin = isUserAdmin(banBtn);
 			var isBanned = isUserBanned(banBtn);
@@ -130,7 +131,7 @@
 
 	jQuery('document').ready(function() {
 
-		var	timeoutId = 0,
+		var timeoutId = 0,
 			loadingMoreUsers = false;
 
 		var url = window.location.href,
@@ -192,6 +193,7 @@
 		function onUsersLoaded(users) {
 			var html = templates.prepare(templates['admin/users'].blocks['users']).parse({ users: users });
 			$('#users-container').append(html);
+			updateUserButtons();
 		}
 
 		function loadMoreUsers() {
