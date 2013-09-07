@@ -1,7 +1,8 @@
 var RDB = require('./redis.js'),
 	async = require('async'),
 	winston = require('winston'),
-	user = require('./user');
+	user = require('./user'),
+	Groups = require('./groups');
 
 
 function upgradeCategory(cid, callback) {
@@ -49,6 +50,32 @@ function upgradeUser(uid, callback) {
 	});
 }
 
+function upgradeAdmins(callback) {
+	Groups.getGidFromName('Administrators', function(err, gid) {
+		if (!err && !gid) {
+			winston.info('Upgading Administrators');
+
+			async.parallel([
+				function(next) {
+					RDB.smembers("administrators", next);
+				},
+				function(next) {
+					Groups.create('Administrators', 'Forum Administrators', next);
+				}
+			], function(err, results) {
+				var	gid = results[1].gid;
+
+				async.each(results[0], function(uid, next) {
+					Groups.join(gid, uid, next);
+				}, callback);
+			});
+		} else {
+			winston.info('Administrators group OK')
+			callback();
+		}
+	});
+}
+
 exports.upgrade = function() {
 
 	winston.info('upgrading nodebb now');
@@ -85,7 +112,8 @@ exports.upgrade = function() {
 				});
 
 			});
-		}
+		},
+		upgradeAdmins
 	];
 
 	async.series(schema, function(err, results) {
