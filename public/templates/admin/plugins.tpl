@@ -13,7 +13,7 @@
 	<!-- END plugins -->
 </ul>
 
-<div class="alert">
+<div class="alert alert-warning">
 	<p>
 		<strong>Interesed in writing plugins for NodeBB?</strong>
 	</p>
