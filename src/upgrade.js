@@ -41,12 +41,29 @@ function upgradeUser(uid, callback) {
 	user.getUserFields(uid, ['joindate', 'postcount', 'reputation'], function(err, userData) {
 		if(err)
 			return callback(err);
-
-		RDB.zadd('users:joindate', userData.joindate, uid);
-		RDB.zadd('users:postcount', userData.postcount, uid);
-		RDB.zadd('users:reputation', userData.reputation, uid);
-
-		callback(null);
+			
+		async.parallel([
+			function(next) {
+				if(userData.joindate)
+					RDB.zadd('users:joindate', userData.joindate, uid, next);
+				else
+					next(null);
+			},
+			function(next) {
+				if(userData.postcount)			
+					RDB.zadd('users:postcount', userData.postcount, uid);
+				else
+					next(null);
+			},
+			function(next) {
+				if(userData.reputation)
+					RDB.zadd('users:reputation', userData.reputation, uid);
+				else
+					next(null);
+			}
+		], function(err, result) {
+			callback(err);	
+		});		
 	});
 }
 
