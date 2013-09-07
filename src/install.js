@@ -81,6 +81,7 @@ var	async = require('async'),
 						// Add hardcoded values
 						config['bcrypt_rounds'] = 12,
 						config['upload_path'] = '/public/uploads';
+						config['use_port'] = (config['use_port'].slice(0, 1) === 'y') ? true : false;
 
 						var urlObject = url.parse(config.base_url),
 							relative_path = (urlObject.pathname && urlObject.pathname.length > 1) ? urlObject.pathname : '',
