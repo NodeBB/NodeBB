@@ -152,7 +152,7 @@ var user = require('./../user.js'),
 			}
 
 			var filename = uid + '-profileimg' + extension;
-			var uploadPath = path.join(__dirname, '../', global.nconf.get('upload_path'), filename);
+			var uploadPath = path.join(process.cwd(), global.nconf.get('upload_path'), filename);
 
 			winston.info('Attempting upload to: '+ uploadPath);
 
@@ -179,10 +179,10 @@ var user = require('./../user.js'),
 
 					res.json({ path: imageUrl });
 				});
-
 			});
 
 			os.on('error', function(err) {
+				fs.unlinkSync(tempPath);
 				winston.error('[%d] %s', Date.now(), + err);
 			});
 

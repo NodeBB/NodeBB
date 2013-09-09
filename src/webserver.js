@@ -62,6 +62,7 @@ var express = require('express'),
 	app.use(require('less-middleware')({ src: path.join(__dirname, '../', 'public'), prefix:nconf.get('relative_path') }));
 	app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../', 'public')));
 	app.use(express.bodyParser());	// Puts POST vars in request.body
+
 	app.use(express.cookieParser());	// If you want to parse cookies (res.cookies)
 	app.use(express.compress());
 	app.use(express.session({
