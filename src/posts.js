@@ -319,8 +319,7 @@ var	RDB = require('./redis.js'),
 							RDB.zadd('categories:recent_posts:cid:' + cid, timestamp, pid);
 							RDB.zadd('categories:' + cid + ':tid', timestamp, tid);
 
-							// this is a bit of a naive implementation, defn something to look at post-MVP
-							RDB.scard('cid:' + cid + ':active_users', function(amount) {
+							RDB.scard('cid:' + cid + ':active_users', function(err, amount) {
 								if (amount > 10) {
 									RDB.spop('cid:' + cid + ':active_users');
 								}
