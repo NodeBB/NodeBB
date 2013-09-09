@@ -131,11 +131,11 @@ var user = require('./../user.js'),
 					return;
 				}
 
-				var absolutePath = path.join(__dirname, '../', global.nconf.get('upload_path'), path.basename(oldpicture));
+				var absolutePath = path.join(process.cwd(), global.nconf.get('upload_path'), path.basename(oldpicture));
 
 				fs.unlink(absolutePath, function(err) {
 					if(err) {
-						winston.error('[%d] %s', Date.now(), + err);
+						winston.err(err);
 					}
 
 					uploadUserPicture(req.user.uid, path.extname(req.files.userPhoto.name), req.files.userPhoto.path, res);
@@ -174,7 +174,7 @@ var user = require('./../user.js'),
 					height: 128
 				}, function(err, stdout, stderr){
 					if (err) {
-						winston.err(err.message, err.stack);
+						winston.err(err);
 					}
 
 					res.json({ path: imageUrl });
@@ -183,7 +183,7 @@ var user = require('./../user.js'),
 
 			os.on('error', function(err) {
 				fs.unlinkSync(tempPath);
-				winston.error('[%d] %s', Date.now(), + err);
+				winston.err(err);
 			});
 
 			is.pipe(os);
