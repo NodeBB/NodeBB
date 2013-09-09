@@ -281,7 +281,7 @@
 		}
 	});
 
-	$('.topic-buttons').delegate('.chat', 'click', function(e) {
+	$('#post-container').on('click', '.chat', function(e) {
 		var username = $(this).parents('li.row').attr('data-username');
 		var touid = $(this).parents('li.row').attr('data-uid');
 
