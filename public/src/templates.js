@@ -1,7 +1,7 @@
 
 
 (function (module) {
-	
+
 	var config = {},
 		templates,
 		fs = null,
@@ -56,7 +56,7 @@
 		template.parse = parse;
 		template.blocks = {};
 
-		return template; 		
+		return template;
 	};
 
 	function loadTemplates(templatesToLoad) {
@@ -75,7 +75,7 @@
 						template.prototype.file = file;
 						template.prototype.parse = parse;
 						template.prototype.html = String(html);
-						
+
 						global.templates[file] = new template;
 
 						loaded--;
@@ -89,12 +89,10 @@
 			jQuery.when(jQuery.getJSON(RELATIVE_PATH + '/templates/config.json'), jQuery.getJSON(RELATIVE_PATH + '/api/get_templates_listing')).done(function(config_data, templates_data) {
 				config = config_data[0];
 				available_templates = templates_data[0];
-				console.log(config, available_templates);
-
 				templates.ready();
 			});
 		}
-		
+
 		if (fs === null) loadClient();
 		else loadServer();
 	}
@@ -114,7 +112,7 @@
 		}
 		return '';
 	}
-	
+
 
 	templates.load_template = function(callback, url, template) {
 		var location = document.location || window.location,
@@ -125,11 +123,11 @@
 		var tpl_url = templates.get_custom_map(api_url.split('?')[0]);
 
 		var trimmed = api_url;
-		
+
 		if(!tpl_url) {
 			tpl_url = templates.getTemplateNameFromUrl(api_url);
 		}
-		
+
 		var template_data = null;
 
 
@@ -149,15 +147,15 @@
 					template.prototype.blocks = {};
 
 					templates[tpl_url] = new template;
-					
+
 					parse_template();
 				});
 			} else {
 				parse_template();
 			}
-			
+
 		}());
-			
+
 		(function() {
 
 			jQuery.get(API_URL + api_url, function(data) {
@@ -174,18 +172,18 @@
 				parse_template();
 			});
 		}());
-		
+
 
 		function parse_template() {
 			if (!templates[tpl_url] || !template_data) return;
-			
+
 			if(typeof global !== "undefined")
 				template_data['relative_path'] = nconf.get('relative_path');
-			else 
+			else
 				template_data['relative_path'] = RELATIVE_PATH;
-			
+
 			document.getElementById('content').innerHTML = templates[tpl_url].parse(template_data);
-			
+
 			jQuery('#content [template-variable]').each(function(index, element) {
 				var value = null;
 
@@ -238,7 +236,7 @@
 		}
 
 		function getBlock(regex, block, template) {
-			data = template.match(regex);			
+			data = template.match(regex);
 			if (data == null) return;
 
 			if (self.blocks && block !== undefined) self.blocks[block] = data[0];
@@ -267,7 +265,7 @@
 						template = replace(namespace + d, '', template);
 					} else if (data[d].constructor == Array) {
 						namespace += d + '.';
-						
+
 						var regex = makeRegex(d),
 							block = getBlock(regex, namespace.substring(0, namespace.length-1), template);
 
@@ -286,7 +284,7 @@
 						template = setBlock(regex, result, template);
 					} else if (data[d] instanceof Object) {
 						namespace += d + '.';
-						
+
 						regex = makeRegex(d),
 						block = getBlock(regex, namespace, template)
 						if (block == null) continue;
@@ -305,7 +303,7 @@
 			}
 
 			return template;
-			
+
 		})(data, "", template);
 	}
 

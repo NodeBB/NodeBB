@@ -6,7 +6,7 @@
 		<a href="/category/{category_slug}" itemprop="url"><span itemprop="title">{category_name}</span></a>
 	</li>
 	<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
-		<span itemprop="title">{topic_name}</span>
+		<span itemprop="title">{topic_name} <a target="_blank" href="../{topic_id}.rss"><i class="icon-rss-sign"></i></a></span>
 	</li>
 	<div id="thread_active_users" class="hidden-xs"></div>
 </ol>
@@ -21,7 +21,9 @@
 						<a class="main-avatar" href="/users/{main_posts.userslug}">
 							<img src="{main_posts.picture}" align="left" class="img-thumbnail" width=150 height=150 /><br />
 						</a>
-						<h3><p id="topic_title_{main_posts.pid}" class="topic-title">{topic_name}</p></h3>
+						<h3>
+							<p id="topic_title_{main_posts.pid}" class="topic-title">{topic_name}</p>
+						</h3>
 
 						<div class="topic-buttons" >
 							<div class="btn-group">
