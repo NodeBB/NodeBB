@@ -772,7 +772,7 @@ var utils = require('./../public/src/utils.js'),
 	User.isAdministrator = function(uid, callback) {
 		Groups.getGidFromName('Administrators', function(err, gid) {
 			Groups.isMember(uid, gid, function(err, isAdmin) {
-				callback(isAdmin);
+				callback(!!isAdmin);
 			});
 		});
 	}
