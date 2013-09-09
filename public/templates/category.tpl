@@ -3,7 +3,7 @@
 		<a href="/" itemprop="url"><span itemprop="title">Home</span></a>
 	</li>
 	<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
-		<span itemprop="title">{category_name}</span>
+		<span itemprop="title">{category_name} <a target="_blank" href="../{category_id}.rss"><i class="icon-rss-sign"></i></a></span>
 	</li>
 	<div id="category_active_users"></div>
 </ol>
@@ -12,7 +12,6 @@
 	<button id="new_post" class="btn btn-primary btn-lg {show_topic_button}">New Topic</button>
 
 	<div class="inline-block pull-right">
-		<a target="_blank" href="../{category_id}.rss"><i class="icon-rss-sign icon-2x"></i></a>&nbsp;
 		<a href="#" id="facebook-share"><i class="icon-facebook-sign icon-2x"></i></a>&nbsp;
 		<a href="#" id="twitter-intent"><i class="icon-twitter-sign icon-2x"></i></a>&nbsp;
 		<a href="#" id="google-share"><i class="icon-google-plus-sign icon-2x"></i></a>&nbsp;
