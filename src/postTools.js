@@ -11,7 +11,8 @@ var	RDB = require('./redis.js'),
 	postSearch = reds.createSearch('nodebbpostsearch'),
 	topicSearch = reds.createSearch('nodebbtopicsearch'),
 	winston = require('winston'),
-	meta = require('./meta.js');
+	meta = require('./meta.js'),
+	Feed = require('./feed');
 
 (function(PostTools) {
 	PostTools.isMain = function(pid, tid, callback) {
@@ -138,6 +139,8 @@ var	RDB = require('./redis.js'),
 						});
 					}
 				});
+
+				Feed.updateTopic(postData.tid);
 			});
 		};
 
@@ -173,6 +176,8 @@ var	RDB = require('./redis.js'),
 							threadTools.restore(postData.tid, uid);
 						}
 					});
+
+					Feed.updateTopic(postData.tid);
 
 					postSearch.index(postData.content, pid);
 				});

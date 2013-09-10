@@ -46,17 +46,19 @@
 			if (topicData.main_posts.length > 0) feed.pubDate = new Date(parseInt(topicData.main_posts[0].timestamp, 10)).toUTCString();
 
 			for (var i = 0, ii = topic_posts.length; i < ii; i++) {
-				postData = topic_posts[i];
-				dateStamp = new Date(parseInt(postData.edited === '0' ? postData.timestamp : postData.edited, 10)).toUTCString();
-				title = 'Reply to ' + topicData.topic_name + ' on ' + dateStamp;
+				if (topic_posts[i].deleted === '0') {
+					postData = topic_posts[i];
+					dateStamp = new Date(parseInt(postData.edited === '0' ? postData.timestamp : postData.edited, 10)).toUTCString();
+					title = 'Reply to ' + topicData.topic_name + ' on ' + dateStamp;
 
-				feed.item({
-					title: title,
-					description: postData.content,
-					url: nconf.get('url') + 'topic/' + topicData.slug + '#' + postData.pid,
-					author: postData.username,
-					date: dateStamp
-				});
+					feed.item({
+						title: title,
+						description: postData.content,
+						url: nconf.get('url') + 'topic/' + topicData.slug + '#' + postData.pid,
+						author: postData.username,
+						date: dateStamp
+					});
+				}
 			}
 
 			Feed.saveFeed('feeds/topics/' + tid + '.rss', feed, function(err) {

@@ -749,12 +749,20 @@ var	RDB = require('./redis.js')
 	Topics.delete = function(tid) {
 		Topics.setTopicField(tid, 'deleted', 1);
 		RDB.zrem('topics:recent', tid);
+
+		Topics.getTopicField(tid, 'cid', function(err, cid) {
+			feed.updateCategory(cid);
+		});
 	}
 
 	Topics.restore = function(tid) {
 		Topics.setTopicField(tid, 'deleted', 0);
 		Topics.getTopicField(tid, 'lastposttime', function(err, lastposttime) {
 			RDB.zadd('topics:recent', lastposttime, tid);
+		});
+
+		Topics.getTopicField(tid, 'cid', function(err, cid) {
+			feed.updateCategory(cid);
 		});
 	}
 
