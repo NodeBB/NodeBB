@@ -13,7 +13,7 @@ define(function() {
 			taskbar.taskbar.id = 'taskbar';
 
 			taskbar.tasklist = taskbar.taskbar.querySelector('ul');
-			document.body.insertBefore(taskbar.taskbar, footerEl);
+			document.body.insertBefore(taskbar.taskbar, footerEl.nextSibling);
 
 			// Posts bar events
 			jTaskbar.on('click', 'li', function() {

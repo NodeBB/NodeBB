@@ -1,4 +1,4 @@
-#################  
+#################
 ## npm
 #################
 
@@ -9,6 +9,7 @@ config.json
 public/config.json
 public/css/*.css
 public/themes/*
+!/public/themes/vanilla
 *.sublime-project
 *.sublime-workspace
 plugins/*
