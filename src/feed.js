@@ -37,11 +37,13 @@
 					site_url: nconf.get('url') + 'topic/' + topicData.slug,
 					image_url: topicData.main_posts[0].picture,
 					author: topicData.main_posts[0].username,
-					pubDate: new Date(parseInt(topicData.main_posts[0].timestamp, 10)).toUTCString(),
 					ttl: Feed.defaults.ttl
 				}),
 				topic_posts = topicData.main_posts.concat(topicData.posts),
 				title, postData, dateStamp;
+
+			// Add pubDate if topic contains posts
+			if (topicData.main_posts.length > 0) feed.pubDate = new Date(parseInt(topicData.main_posts[0].timestamp, 10)).toUTCString();
 
 			for (var i = 0, ii = topic_posts.length; i < ii; i++) {
 				postData = topic_posts[i];
@@ -74,11 +76,13 @@
 					description: categoryData.category_description,
 					feed_url: Feed.defaults.baseUrl + '/categories/' + cid + '.rss',
 					site_url: nconf.get('url') + 'category/' + categoryData.category_id,
-					pubDate: new Date(parseInt(categoryData.topics[0].lastposttime, 10)).toUTCString(),
 					ttl: Feed.defaults.ttl
 				}),
 				topics = categoryData.topics,
 				title, topicData, dateStamp;
+
+			// Add pubDate if category has topics
+			if (categoryData.topics.length > 0) feed.pubDate = new Date(parseInt(categoryData.topics[0].lastposttime, 10)).toUTCString();
 
 			for (var i = 0, ii = topics.length; i < ii; i++) {
 				topicData = topics[i];
