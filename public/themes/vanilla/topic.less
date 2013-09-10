@@ -1,45 +1,55 @@
-
 .topic {
-	list-style-type: none;
-	padding: 0;
-	margin: 0;
-	clear: both;
+	&.deleted {
+		-moz-opacity: 0.30;
+		opacity: 0.30;
+	}
 
-	li.row {
-		padding-bottom: 15px;
+	> ul {
+		list-style-type: none;
+		padding: 0;
 
-		&.deleted {
-			-moz-opacity: 0.30;
-			opacity: 0.30;
-			height:30px;
-			overflow-y:hidden;
-		}
+		> li {
+			padding-bottom: 15px;
 
-		&.deleted-expanded {
-			height:100%;
-			overflow-y:default;
+			&.deleted {
+				-moz-opacity: 0.30;
+				opacity: 0.30;
+				height:30px;
+				overflow-y:hidden;
+			}
+
+			&.deleted-expanded {
+				height:100%;
+				overflow-y:default;
+			}
 		}
 	}
 
+	@media (max-width: 767px) {
+		.topic-main-buttons {
+			margin-bottom: 0px;
+		}
+	}
+
+	@media (max-width: 475px) {
+		.post-tools {
+			display: none;
+		}
+		.favourite-text {
+			display: none;
+		}
+	}
+
+	// styling the chat button in the dropdown to match. surely there's a better way...
 	.chat {
 		display: block;
 		padding: 3px 20px;
 		clear: both;
 		.pointer;
-	}
-	.chat:hover, .chat:focus {
-		color: white;
-		background-color: rgb(66, 139, 202);
-	}
 
-	.profile-block, .post-block {
-		position: relative;
-		border: 1px solid rgba(0, 0, 0, 0.06);
-		border-radius: 5px;
-		padding: 10px;
-
-		p {
-			line-height: 1.75em;
+		&:hover, &:focus {
+			color: white;
+			background-color: rgb(66, 139, 202);
 		}
 	}
 
@@ -57,6 +67,17 @@
 		margin-left: 5px;
 	}
 
+	.profile-block, .post-block {
+		position: relative;
+		border: 1px solid rgba(0, 0, 0, 0.06);
+		border-radius: 5px;
+		padding: 10px;
+
+		p {
+			line-height: 1.75em;
+		}
+	}
+
 	.profile-block {
 		background: rgba(0, 0, 0, 0.02);
 		margin: 15px -11px -11px -11px;
@@ -65,16 +86,6 @@
 		line-height: 15px;
 		padding: 5px 8px 5px 5px;
 		color: #777;
-	}
-
-	.post-content {
-		min-height: 50px;
-		padding: 10px 5px 0 5px;
-		word-wrap: break-word;
-	}
-
-	.post-images{
-		padding: 2px 5px 0 5px;
 	}
 
 	.post-block {
@@ -94,40 +105,17 @@
 		}
 	}
 
-	&.deleted {
-		-moz-opacity: 0.30;
-		opacity: 0.30;
+	.post-content {
+		min-height: 50px;
+		padding: 10px 5px 0 5px;
+		word-wrap: break-word;
 	}
 
-	@media (min-width: 979px) {
-		.speech-bubble:after
-		{
-			content: "";
-			position: absolute;
-			top: 15px;
-			left: -7px;
-			border-style: solid;
-			border-width: 7px 7px 7px 0;
-			border-color: transparent rgb(250,250,250);
-			display: block;
-			width: 0;
-			z-index: 1;
-		}
-
-		.speech-bubble:before
-		{
-			content: "";
-			position: absolute;
-			top: 15px;
-			left: -8px;
-			border-style: solid;
-			border-width: 7px 7px 7px 0;
-			border-color: transparent rgba(0, 0, 0, 0.125);
-			display: block;
-			width: 0;
-			z-index: 0;
-		}
+	.post-images{
+		padding: 2px 5px 0 5px;
 	}
+
+
 
 	.sub-posts {
 		.post-tools {
@@ -227,91 +215,37 @@
 
 	}
 
-	.topic-main-buttons {
+
+
+
+	.mobile-author-info {
+		display: none;
+		z-index: 9999;
+
 		@media (max-width: 767px) {
-			margin-bottom: 0px;
+			display: block;
+			position: fixed;
+			width: 100%;
+			margin-left: -15px;
+			bottom: -50px;
+			height: 50px;
+			background: rgba(0,0,0,0.8);
+			-webkit-transition: bottom 150ms linear;
+			   -moz-transition: bottom 150ms linear;
+				-ms-transition: bottom 150ms linear;
+				 -o-transition: bottom 150ms linear;
+				    transition: bottom 150ms linear;
 		}
-	}
 
-	@media (max-width: 475px) {
-		.post-tools {
-			display: none;
+		img {
+			padding: 5px;
 		}
-		.favourite-text {
-			display: none;
+
+		h4 {
+			color: white;
+			margin: 16px 0 0 -35px;
+			font-weight: 300;
+			font-size: 16px;
 		}
-	}
-}
-
-.post-author-info {
-	display: none;
-
-	@media (max-width: 767px) {
-		display: block;
-		position: fixed;
-		width: 100%;
-		margin-left: -15px;
-		bottom: -50px;
-		height: 50px;
-		background: rgba(0,0,0,0.8);
-		-webkit-transition: bottom 150ms linear;
-		   -moz-transition: bottom 150ms linear;
-			-ms-transition: bottom 150ms linear;
-			 -o-transition: bottom 150ms linear;
-			    transition: bottom 150ms linear;
-	}
-
-	img {
-		padding: 5px;
-	}
-
-	h4 {
-		color: white;
-		margin: 16px 0 0 -35px;
-		font-weight: 300;
-		font-size: 16px;
-	}
-}
-
-
-
-.category-list {
-	li {
-		.inline-block;
-		.pointer;
-		padding: 0.5em 0;
-		text-align: center;
-		margin: 0.5em;
-		-webkit-border-radius: 5px;
-		-moz-border-radius: 5px;
-		border-radius: 5px;
-		padding: 0.5em;
-	}
-}
-
-
-.username-field {
-	.icon-circle {
-		font-size: 12px;
-		color: green;
-		margin-right:3px;
-	}
-	.icon-circle-blank {
-		font-size: 12px;
-		color: red;
-		margin-right:3px;
-	}
-}
-
-
-
-#thread_active_users {
-	float: right;
-	color: rgb(153,153,153);
-
-	strong {
-		color: rgb(100,100,100);
-		font-weight: 600;
-		.pointer;
 	}
 }

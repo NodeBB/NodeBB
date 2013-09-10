@@ -624,9 +624,9 @@
 			});
 		}
 
-		jQuery('.post-author-info').css('bottom', '0px');
-		postAuthorImage = postAuthorImage || document.getElementById('post-author-image');
-		postAuthorInfo = postAuthorInfo || document.getElementById('post-author-info');
+		jQuery('.mobile-author-info').css('bottom', '0px');
+		postAuthorImage = postAuthorImage || document.getElementById('mobile-author-image');
+		postAuthorInfo = postAuthorInfo || document.getElementById('mobile-author-info');
 		pagination = pagination || document.getElementById('pagination');
 
 		pagination.parentNode.style.display = 'block';
