@@ -18,44 +18,41 @@
 			<li class="row post-row main-post" data-pid="{main_posts.pid}" data-uid="{main_posts.uid}" data-username="{main_posts.username}" data-deleted="{main_posts.deleted}">
 				<div class="col-md-12">
 					<div class="post-block">
-						<div class="main-post-buttons">
-							<a class="main-avatar" href="/users/{main_posts.userslug}">
-								<img src="{main_posts.picture}" align="left" class="img-thumbnail" width=150 height=150 /><br />
-							</a>
-							<h3>
-								<p id="topic_title_{main_posts.pid}" class="topic-title">{topic_name}</p>
-							</h3>
+						<a class="avatar" href="/users/{main_posts.userslug}">
+							<img src="{main_posts.picture}" align="left" class="img-thumbnail" width=150 height=150 /><br />
+						</a>
+						<h3>
+							<p id="topic_title_{main_posts.pid}" class="topic-title">{topic_name}</p>
+						</h3>
 
-							<div class="topic-buttons" >
-								<div class="btn-group">
-									<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="Posted by {main_posts.username}">
-										<span class="username-field" href="/users/{main_posts.userslug}">{main_posts.username}&nbsp;</span>
-										<span class="caret"></span>
-									</button>
-								    <ul class="dropdown-menu">
-										<li><a href="/users/{main_posts.userslug}"><i class="icon-user"></i> Profile</a></li>
-										<li><div class="chat"><i class="icon-comment"></i> Chat</div></li>
-								    </ul>
-								</div>
-
-								<div class="btn-group">
-									<button class="btn btn-sm btn-default follow" type="button" title="Be notified of new replies in this topic"><i class="icon-eye-open"></i></button>
-									<button class="favourite btn btn-sm btn-default {main_posts.fav_button_class}" type="button">
-										<span class="favourite-text">Favourite</span>
-										<span class="post_rep_{main_posts.pid}">{main_posts.post_rep} </span><i class="{main_posts.fav_star_class}"></i>
-									</button>
-								</div>
-								<div class="btn-group">
-									<button class="btn btn-sm btn-default quote" type="button" title="Quote"><i class="icon-quote-left"></i></button>
-									<button class="btn btn-sm btn-primary btn post_reply" type="button">Reply <i class="icon-reply"></i></button>
-								</div>
-
-								<div class="btn-group pull-right post-tools">
-									<button class="btn btn-sm btn-default edit {main_posts.display_moderator_tools}" type="button" title="Edit"><i class="icon-pencil"></i></button>
-									<button class="btn btn-sm btn-default delete {main_posts.display_moderator_tools}" type="button" title="Delete"><i class="icon-trash"></i></button>
-								</div>
+						<div class="topic-buttons">
+							<div class="btn-group">
+								<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="Posted by {main_posts.username}">
+									<span class="username-field" href="/users/{main_posts.userslug}">{main_posts.username}&nbsp;</span>
+									<span class="caret"></span>
+								</button>
+							    <ul class="dropdown-menu">
+									<li><a href="/users/{main_posts.userslug}"><i class="icon-user"></i> Profile</a></li>
+									<li><div class="chat"><i class="icon-comment"></i> Chat</div></li>
+							    </ul>
 							</div>
-							<div style="clear:both; margin-bottom: 10px;"></div>
+
+							<div class="btn-group">
+								<button class="btn btn-sm btn-default follow" type="button" title="Be notified of new replies in this topic"><i class="icon-eye-open"></i></button>
+								<button class="favourite btn btn-sm btn-default {main_posts.fav_button_class}" type="button">
+									<span class="favourite-text">Favourite</span>
+									<span class="post_rep_{main_posts.pid}">{main_posts.post_rep} </span><i class="{main_posts.fav_star_class}"></i>
+								</button>
+							</div>
+							<div class="btn-group">
+								<button class="btn btn-sm btn-default quote" type="button" title="Quote"><i class="icon-quote-left"></i></button>
+								<button class="btn btn-sm btn-primary btn post_reply" type="button">Reply <i class="icon-reply"></i></button>
+							</div>
+
+							<div class="btn-group pull-right post-tools">
+								<button class="btn btn-sm btn-default edit {main_posts.display_moderator_tools}" type="button" title="Edit"><i class="icon-pencil"></i></button>
+								<button class="btn btn-sm btn-default delete {main_posts.display_moderator_tools}" type="button" title="Delete"><i class="icon-trash"></i></button>
+							</div>
 						</div>
 
 						<div id="content_{main_posts.pid}" class="post-content">{main_posts.content}</div>
@@ -88,37 +85,34 @@
 				</div>
 				<div class="col-md-11">
 					<div class="post-block">
-						<div class="post-buttons">
-							<div class="topic-buttons">
-								<div class="btn-group">
-									<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="Posted by {posts.username}">
-										<span class="username-field" href="/users/{posts.userslug}">{posts.username}&nbsp;</span>
-										<span class="caret"></span>
-									</button>
+						<div class="topic-buttons">
+							<div class="btn-group">
+								<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="Posted by {posts.username}">
+									<span class="username-field" href="/users/{posts.userslug}">{posts.username}&nbsp;</span>
+									<span class="caret"></span>
+								</button>
 
-								    <ul class="dropdown-menu">
-										<li><a href="/users/{posts.userslug}"><i class="icon-user"></i> Profile</a></li>
-										<li><div class="chat"><i class="icon-comment"></i> Chat</div></li>
-								    </ul>
-								</div>
-
-								<div class="btn-group">
-									<button class="favourite btn btn-sm btn-default {posts.fav_button_class}" type="button">
-										<span class="favourite-text">Favourite</span>
-										<span class="post_rep_{posts.pid}">{posts.post_rep} </span><i class="{posts.fav_star_class}"></i>
-									</button>
-								</div>
-								<div class="btn-group">
-									<button class="btn btn-sm btn-default quote" type="button" title="Quote"><i class="icon-quote-left"></i></button>
-									<button class="btn btn-sm btn-primary btn post_reply" type="button">Reply <i class="icon-reply"></i></button>
-								</div>
-
-								<div class="btn-group pull-right post-tools">
-									<button class="btn btn-sm btn-default edit {posts.display_moderator_tools}" type="button" title="Edit"><i class="icon-pencil"></i></button>
-									<button class="btn btn-sm btn-default delete {posts.display_moderator_tools}" type="button" title="Delete"><i class="icon-trash"></i></button>
-								</div>
+							    <ul class="dropdown-menu">
+									<li><a href="/users/{posts.userslug}"><i class="icon-user"></i> Profile</a></li>
+									<li><div class="chat"><i class="icon-comment"></i> Chat</div></li>
+							    </ul>
 							</div>
-							<div style="clear:both; margin-bottom: 7px;"></div>
+
+							<div class="btn-group">
+								<button class="favourite btn btn-sm btn-default {posts.fav_button_class}" type="button">
+									<span class="favourite-text">Favourite</span>
+									<span class="post_rep_{posts.pid}">{posts.post_rep} </span><i class="{posts.fav_star_class}"></i>
+								</button>
+							</div>
+							<div class="btn-group">
+								<button class="btn btn-sm btn-default quote" type="button" title="Quote"><i class="icon-quote-left"></i></button>
+								<button class="btn btn-sm btn-primary btn post_reply" type="button">Reply <i class="icon-reply"></i></button>
+							</div>
+
+							<div class="btn-group pull-right post-tools">
+								<button class="btn btn-sm btn-default edit {posts.display_moderator_tools}" type="button" title="Edit"><i class="icon-pencil"></i></button>
+								<button class="btn btn-sm btn-default delete {posts.display_moderator_tools}" type="button" title="Delete"><i class="icon-trash"></i></button>
+							</div>
 						</div>
 
 						<div id="content_{posts.pid}" class="post-content">{posts.content}</div>
@@ -162,13 +156,13 @@
 		</div>
 	</div>
 
-	<div class="mobile-author-info">
+	<div class="mobile-author-overlay">
 		<div class="row">
 			<div class="col-xs-3">
 				<img id="mobile-author-image" src="" width=50 height=50 />
 			</div>
 			<div class="col-xs-9">
-				<h4><div id="mobile-author-info"></div></h4>
+				<h4><div id="mobile-author-overlay"></div></h4>
 			</div>
 		</div>
 	</div>

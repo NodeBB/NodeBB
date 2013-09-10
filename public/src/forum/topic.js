@@ -611,7 +611,7 @@
 
 
 
-	var postAuthorImage, postAuthorInfo, pagination;
+	var postAuthorImage, mobileAuthorOverlay, pagination;
 	var	postcount = templates.get('postcount');
 
 	function updateHeader() {
@@ -624,9 +624,9 @@
 			});
 		}
 
-		jQuery('.mobile-author-info').css('bottom', '0px');
+		jQuery('.mobile-author-overlay').css('bottom', '0px');
 		postAuthorImage = postAuthorImage || document.getElementById('mobile-author-image');
-		postAuthorInfo = postAuthorInfo || document.getElementById('mobile-author-info');
+		mobileAuthorOverlay = mobileAuthorOverlay || document.getElementById('mobile-author-overlay');
 		pagination = pagination || document.getElementById('pagination');
 
 		pagination.parentNode.style.display = 'block';
@@ -637,7 +637,7 @@
 
 		if (scrollTop < 50 && postcount > 1) {
 			postAuthorImage.src = (jQuery('.main-avatar img').attr('src'));
-			postAuthorInfo.innerHTML = 'Posted by ' + jQuery('.main-post').attr('data-username') + ', ' + jQuery('.main-post').find('.relativeTimeAgo').html();
+			mobileAuthorOverlay.innerHTML = 'Posted by ' + jQuery('.main-post').attr('data-username') + ', ' + jQuery('.main-post').find('.relativeTimeAgo').html();
 			pagination.innerHTML = '0 out of ' + postcount;
 			return;
 		}
@@ -662,7 +662,7 @@
 		    if (inView) {
 		    	pagination.innerHTML = this.postnumber + ' out of ' + postcount;
 				postAuthorImage.src = (jQuery(this).find('.profile-image-block img').attr('src'));
-				postAuthorInfo.innerHTML = 'Posted by ' + jQuery(this).attr('data-username') + ', ' + jQuery(this).find('.relativeTimeAgo').html();
+				mobileAuthorOverlay.innerHTML = 'Posted by ' + jQuery(this).attr('data-username') + ', ' + jQuery(this).find('.relativeTimeAgo').html();
 		    }
 		});
 
