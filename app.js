@@ -18,13 +18,12 @@
 
 // Configuration setup
 nconf = require('nconf');
-nconf.argv().file({ file: __dirname + '/config.json'});
+nconf.argv();
 
 var fs = require('fs'),
 	winston = require('winston'),
 	pkg = require('./package.json'),
-	url = require('url'),
-	meta = require('./src/meta.js');
+	url = require('url');
 
 // Runtime environment
 global.env = process.env.NODE_ENV || 'production';
@@ -52,7 +51,12 @@ winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
 winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
 winston.info('');
 
-if (!nconf.get('setup') && !nconf.get('upgrade') && nconf.get('base_url')) {
+if (!fs.existsSync(__dirname + '/config.json') || (!nconf.get('setup') && !nconf.get('upgrade'))) {
+	// Load server-side config
+	nconf.file({ file: __dirname + '/config.json'});
+
+	var	meta = require('./src/meta.js');
+
 	nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path') + '/');
 	nconf.set('upload_url', nconf.get('url') + 'uploads/');
 
@@ -89,6 +93,10 @@ if (!nconf.get('setup') && !nconf.get('upgrade') && nconf.get('base_url')) {
 	});
 
 } else if (nconf.get('upgrade')) {
+	var	meta = require('./src/meta.js');
+
+	nconf.file({ file: __dirname + '/config.json'});
+
 	meta.configs.init(function() {
 		require('./src/upgrade').upgrade();
 	});
@@ -97,8 +105,10 @@ if (!nconf.get('setup') && !nconf.get('upgrade') && nconf.get('base_url')) {
 	if (nconf.get('setup')) winston.info('NodeBB Setup Triggered via Command Line');
 	else winston.warn('Configuration not found, starting NodeBB setup');
 
-	meta.config = {};
-	var	install = require('./src/install');
+	var	install = require('./src/install'),
+		meta = {
+			config: {}
+		};
 
 	winston.info('Welcome to NodeBB!');
 	winston.info('This looks like a new installation, so you\'ll have to answer a few questions about your environment before we can proceed.');

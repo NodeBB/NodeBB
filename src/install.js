@@ -3,16 +3,9 @@ var	async = require('async'),
 	fs = require('fs'),
 	url = require('url'),
 	path = require('path'),
-	meta = require('./meta'),
-	User = require('./user'),
-	Groups = require('./groups'),
-	Categories = require('./categories'),
-	Plugins = require('./plugins'),
 	prompt = require('prompt'),
-	admin = {
-		categories: require('./admin/categories')
-	},
 	winston = require('winston'),
+	reds = require('reds'),
 
 	install = {
 		questions: [
@@ -97,21 +90,29 @@ var	async = require('async'),
 						server_conf.base_url = protocol + '//' + host;
 						server_conf.relative_path = relative_path;
 
-						meta.configs.set('postDelay', 10000);
-						meta.configs.set('minimumPostLength', 8);
-						meta.configs.set('minimumTitleLength', 3);
-						meta.configs.set('minimumUsernameLength', 2);
-						meta.configs.set('maximumUsernameLength', 16);
-						meta.configs.set('minimumPasswordLength', 6);
-						meta.configs.set('imgurClientID', '');
-
 						install.save(server_conf, client_conf, next);
 					});
 				},
 				function(next) {
+					// Applying default database configs
+					var	meta = require('./meta');
+
+					meta.configs.set('postDelay', 10000);
+					meta.configs.set('minimumPostLength', 8);
+					meta.configs.set('minimumTitleLength', 3);
+					meta.configs.set('minimumUsernameLength', 2);
+					meta.configs.set('maximumUsernameLength', 16);
+					meta.configs.set('minimumPasswordLength', 6);
+					meta.configs.set('imgurClientID', '');
+
+					meta.configs.init(next);
+				},
+				function(next) {
 					// Check if an administrator needs to be created
+					var	Groups = require('./groups');
+
 					Groups.getGidFromName('Administrators', function(err, gid) {
-						if (err) return next(new Error('Could not save configs'));
+						if (err) return next(err.message);
 
 						if (gid) {
 							Groups.get(gid, {}, function(err, groupObj) {
@@ -125,6 +126,11 @@ var	async = require('async'),
 				},
 				function(next) {
 					// Categories
+					var	Categories = require('./categories'),
+						admin = {
+							categories: require('./admin/categories')
+						};
+
 					categories.getAllCategories(function(data) {
 						if (data.categories.length === 0) {
 							winston.warn('No categories found, populating instance with default categories')
@@ -147,6 +153,8 @@ var	async = require('async'),
 				},
 				function(next) {
 					// Default plugins
+					var	Plugins = require('./plugins');
+
 					winston.info('Enabling default plugins');
 
 					var	defaultEnabled = [
@@ -171,6 +179,9 @@ var	async = require('async'),
 			});
 		},
 		createAdmin: function(callback) {
+			var	User = require('./user'),
+				Groups = require('./groups');
+
 			winston.warn('No administrators have been detected, running initial user setup');
 			var	questions = [
 					{
@@ -233,6 +244,14 @@ var	async = require('async'),
 				}
 			], function(err) {
 				winston.info('Configuration Saved OK');
+
+				nconf.file({ file: path.join(__dirname, '..', 'config.json') });
+
+				var	RDB = require('./redis');
+				reds.createClient = function() {
+					return reds.client || (reds.client = RDB);
+				}
+
 				callback(err);
 			});
 		}

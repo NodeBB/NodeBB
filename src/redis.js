@@ -1,6 +1,5 @@
 (function(RedisDB) {
 	var redis = require('redis'),
-		nconf = require('nconf'),
 		utils = require('./../public/src/utils.js'),
 		winston = require('winston');
 
