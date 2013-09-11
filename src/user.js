@@ -584,7 +584,7 @@ var utils = require('./../public/src/utils.js'),
 				topics.getTopicField(tid, 'slug', function(err, slug) {
 					var message = '<strong>' + username + '</strong> made a new post';
 
-					notifications.create(message, 5, nconf.get('relative_path') + '/topic/' + slug + '#' + pid, 'notification_'+ Date.now(), function(nid) {
+					notifications.create(message, 5, nconf.get('relative_path') + '/topic/' + slug + '#' + pid, 'topic:'+ tid, function(nid) {
 		 				notifications.push(nid, followers);
 					});
 				});
