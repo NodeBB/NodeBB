@@ -150,8 +150,7 @@ var utils = require('./../public/src/utils.js'),
 
 	User.getMultipleUserFields = function(uids, fields, callback) {
 		if(uids.length === 0) {
-			callback([]);
-			return;
+			return callback(null, []);
 		}
 
 		var returnData = [];
@@ -160,22 +159,17 @@ var utils = require('./../public/src/utils.js'),
 			return self.indexOf(value) === index;
 		});
 
-		function iterator(uid, callback) {
+		function iterator(uid, next) {
 			User.getUserFields(uid, fields, function(err, userData) {
 				if(err)
-					return callback(err);
+					return next(err);
 				returnData.push(userData);
-				callback(null);
+				next(null);
 			});
 		}
 
 		async.eachSeries(uuids, iterator, function(err) {
-			if(!err) {
-				callback(returnData);
-			} else {
-				console.log(err);
-				callback(null);
-			}
+			callback(err, returnData);
 		});
 	}
 
@@ -600,7 +594,7 @@ var utils = require('./../public/src/utils.js'),
 				topics.getTopicField(tid, 'slug', function(err, slug) {
 					var message = '<strong>' + username + '</strong> made a new post';
 
-					notifications.create(message, 5, nconf.get('url') + 'topic/' + slug + '#' + pid, 'notification_'+ Date.now(), function(nid) {
+					notifications.create(message, 5, nconf.get('relative_path') + '/topic/' + slug + '#' + pid, 'notification_'+ Date.now(), function(nid) {
 		 				notifications.push(nid, followers);
 					});
 				});
