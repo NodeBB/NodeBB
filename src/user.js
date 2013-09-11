@@ -224,29 +224,27 @@ var utils = require('./../public/src/utils.js'),
 
 		async.series([isSignatureValid, isEmailAvailable], function(err, results) {
 			if(err) {
-				console.log(err);
-				callback(returnData);
+				callback(err, returnData);
 			} else {
 				async.each(fields, updateField, function(err) {
 					if(err) {
-						console.log(err);
-						callback(returnData);
+						callback(err, returnData);
 					} else {
 						returnData.success = true;
-						callback(returnData);
+						callback(null, returnData);
 					}
 				});
 			}
 		});
 
-		function updateField(field, callback) {
+		function updateField(field, next) {
 			if(data[field] !== undefined) {
 				if(field === 'email') {
 					var gravatarpicture = User.createGravatarURLFromEmail(data[field]);
 					User.setUserField(uid, 'gravatarpicture', gravatarpicture);
 					User.getUserFields(uid, ['email', 'picture', 'uploadedpicture'], function(err, userData) {
 						if(err)
-							return callback(err);
+							return next(err);
 
 						RDB.del('email:' + userData['email'] + ':uid');
 						RDB.set('email:' + data['email'] + ':uid', uid);
@@ -256,7 +254,7 @@ var utils = require('./../public/src/utils.js'),
 							User.setUserField(uid, 'picture', gravatarpicture);
 						}
 						returnData.gravatarpicture = gravatarpicture;
-						callback(null);
+						next(null);
 					});
 					return;
 				} else if(field === 'signature') {
@@ -265,9 +263,9 @@ var utils = require('./../public/src/utils.js'),
 
 				User.setUserField(uid, field, data[field]);
 
-				callback(null);
+				next(null);
 			} else {
-				callback(null);
+				next(null);
 			}
 		}
 	}

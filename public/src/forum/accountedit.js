@@ -107,7 +107,7 @@ $(document).ready(function() {
 			signature:$('#inputSignature').val()
 		};
 
-		socket.emit('api:user.updateProfile', userData, function(data) {
+		socket.emit('api:user.updateProfile', userData, function(err, data) {
 			if(data.success) {
 				app.alertSuccess('Your profile has been updated successfully!');
 				if(data.picture) {
