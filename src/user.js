@@ -298,7 +298,6 @@ var utils = require('./../public/src/utils.js'),
 						callback(null);
 					});
 				} else {
-					console.log('gg');
 					callback({error:'Your current password is not correct!'});
 				}
 			});
