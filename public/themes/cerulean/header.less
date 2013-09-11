@@ -1,0 +1,28 @@
+@import "../vanilla/header";
+
+.header {
+	//glowing animation for active state
+	.dropdown-toggle {
+		i {
+			@-webkit-keyframes glow
+			{
+				from {text-shadow: 0 0 5px #aaf, 0 0 5px #aaf, 0 0 5px #aaf;}
+				50% {text-shadow: 0 0 10px #aaf, 0 0 10px #aaf, 0 0 10px #aaf;}
+				to {text-shadow: 0 0 5px #aaf, 0 0 5px #aaf, 0 0 5px #aaf;}
+			}
+			@keyframes glow
+			{
+				from {text-shadow: 0 0 5px #aaf, 0 0 5px #aaf, 0 0 5px #aaf;}
+				50% {text-shadow: 0 0 10px #aaf, 0 0 10px #aaf, 0 0 10px #aaf;}
+				to {text-shadow: 0 0 5px #aaf, 0 0 5px #aaf, 0 0 5px #aaf;}
+			}
+
+			&.active {
+				color: #558;
+				text-shadow: 0 0 1em #aaf, 0 0 1em #aaf, 0 0 1em #aaf;
+				-webkit-animation:glow 1.5s infinite linear;
+					    animation:glow 1.5s infinite linear;
+			}
+		}
+	}
+}

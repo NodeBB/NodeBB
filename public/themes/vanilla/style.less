@@ -1,21 +1,8 @@
-@import "mixins";
-
 html {
 	overflow-y: scroll;
 }
 
 body {
-	/*background: #fdfdfd;*/  // port to default theme when it is implemented.
-	-webkit-transition: margin-bottom 250ms ease;
-	   -moz-transition: margin-bottom 250ms ease;
-	    -ms-transition: margin-bottom 250ms ease;
-	     -o-transition: margin-bottom 250ms ease;
-	        transition: margin-bottom 250ms ease;
-
-	&.composing {
-		margin-bottom: 350px;
-	}
-
 	@media (min-width: 979px)
 	{
 		padding-top: 70px;
@@ -49,27 +36,15 @@ a:hover, .btn-link:hover, .btn-link:active, .btn-link:focus {
 }
 
 
-
-
-
 #alert_window {
 	position: fixed;
 	right: 20px;
 	top: 60px;
 	width: 300px;
 	height: 0px;
-}
 
-.toaster-alert {
-	.pointer;
-}
-
-footer.footer {
-	color: #555;
-	text-align: center;
-
-	a {
-		color: #222;
+	.toaster-alert {
+		.pointer;
 	}
 }
 
@@ -87,53 +62,11 @@ footer.footer {
 		&.active {
 			.inline-block;
 		}
-
-		i {
-			-webkit-transition: color 100ms linear;
-			   -moz-transition: color 100ms linear;
-			    -ms-transition: color 100ms linear;
-			     -o-transition: color 100ms linear;
-			        transition: color 100ms linear;
-
-			&.icon-twitter-sign:hover {
-				color: #4099FF;
-			}
-
-			&.icon-facebook-sign:hover {
-				color: #3b5999;
-			}
-
-			&.icon-google-plus-sign:hover {
-				color: #d34836;
-			}
-		}
 	}
 }
 
 .jumbotron {
-	// goes into theme
-	background: #56BCDA;
-	color: white;
-	padding: 30px;
 	word-wrap: break-word;
-}
-
-.formatting-bar {
-	.no-select;
-
-	span:focus {
-		outline: none;
-	}
-}
-
-
-.breadcrumb {
-	li {
-		max-width: 35%;
-		white-space: nowrap;
-		text-overflow:ellipsis;
-		overflow: hidden;
-	}
 }
 
 #chat-content {
@@ -143,119 +76,6 @@ footer.footer {
 
 #content{
 	padding-bottom:20px;
-}
-
-
-/* START: post-window needs to go in its own plugin area */
-.post-window {
-	position: fixed;
-	display: none;
-	height: 350px;
-	visibility: hidden;
-	width: 100%;
-
-	> div {
-		position: absolute;
-		height: 100%;
-		background: rgba(64, 64, 64, 0.6);
-		visibility: visible;
-
-		.btn-toolbar {
-			&.formatting-bar {
-				width: 90%;
-				margin: 0 auto 8px auto;
-
-				span {
-					color: white;
-
-					&:hover {
-						text-decoration: none;
-					}
-				}
-			}
-
-			&.action-bar {
-				width: 90%;
-				margin: 8px auto 0 auto;
-			}
-		}
-
-		input {
-			width: 98%;
-			text-align: center;
-			border: none;
-			padding: 0.5em 0;
-			-webkit-border-radius: 0px;
-			-moz-border-radius: 0px;
-			border-radius: 0px;
-			margin: 5px auto 10px auto;
-			display: block;
-		}
-
-		textarea {
-			background: rgba(64, 64, 64, 0.95);
-			border: none;
-			padding: 0.5em;
-			display: block;
-			width: 90%;
-			margin: 0em auto;
-			resize: none;
-			color: white;
-			height: 200px;
-		}
-
-		.imagedrop {
-			text-align: center;
-			color: white;
-			position: absolute;
-			top: 0px;
-			left: 0px;
-			width: 100%;
-			height: 214px;
-			line-height: 214px;
-			font-size: 20px;
-			vertical-align: middle;
-			display: none;
-		}
-
-		.imagelist {
-			position: absolute;
-			bottom: 50px;
-			left: 5%;
-
-			div {
-				margin-right:5px;
-			}
-
-			span {
-				line-height:20px;
-				float:left;
-			}
-
-			button {
-				padding-left:5px;
-			}
-		}
-	}
-}
-
-@media (max-width: 979px) {
-	.post-window {
-		position: relative;
-		bottom: 0px !important;
-
-		> div {
-			position: static;
-			width: 100% !important;
-		}
-	}
-}
-/* END: post-window needs to go in its own plugin area */
-
-
-//theme
-#search-form .btn-link {
-	color: white;
 }
 
 
@@ -281,5 +101,4 @@ footer.footer {
 .modal {
 	overflow-y: hidden;
 }
-
 //END: FIXES FOR BS3, may need to remove these when we get out of the RC releases
