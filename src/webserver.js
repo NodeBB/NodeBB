@@ -99,9 +99,6 @@ var express = require('express'),
 			user.session_ping(req.sessionID, req.user.uid);
 		}
 
-		// (Re-)register the session as active
-		user.active.register(req.sessionID);
-
 		next();
 	});
 

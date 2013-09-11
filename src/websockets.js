@@ -76,6 +76,7 @@ var SocketIO = require('socket.io').listen(global.server, {
 
 			if(userSockets[uid].length === 0) {
 				delete users[sessionID];
+				emitOnlineUserCount();
 				if(uid) {
 					io.sockets.in('global').emit('api:user.isOnline', isUserOnline(uid));
 				}
@@ -410,8 +411,17 @@ var SocketIO = require('socket.io').listen(global.server, {
 			});
 		});
 
+		function emitOnlineUserCount() {
+			var online = Object.keys(users);
+
+			var returnObj = {
+				users: online.length
+			};
+			io.sockets.emit('api:user.active.get', returnObj)
+		}
+
 		socket.on('api:user.active.get', function() {
-			user.active.get();
+			emitOnlineUserCount();
 		});
 
 		socket.on('api:posts.favourite', function(data) {
@@ -420,10 +430,6 @@ var SocketIO = require('socket.io').listen(global.server, {
 
 		socket.on('api:posts.unfavourite', function(data) {
 			favourites.unfavourite(data.pid, data.room_id, uid, socket);
-		});
-
-		socket.on('api:user.active.get_record', function() {
-			user.active.get_record(socket);
 		});
 
 		socket.on('api:topic.delete', function(data) {

@@ -19,7 +19,7 @@
 
 	socket.emit('api:user.active.get');
 	socket.on('api:user.active.get', function(data) {
-		stats_online.innerHTML = data.users + data.anon;
+		stats_online.innerHTML = data.users;
 	});
 
 	socket.emit('api:updateHeader', { fields: ['username', 'picture', 'userslug'] });
