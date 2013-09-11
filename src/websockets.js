@@ -575,8 +575,8 @@ var SocketIO = require('socket.io').listen(global.server, {
 		});
 
 		socket.on('api:config.get', function(data) {
-			meta.configs.get(function(config) {
-				socket.emit('api:config.get', config);
+			meta.configs.list(function(err, config) {
+				if (!err) socket.emit('api:config.get', config);
 			});
 		});
 

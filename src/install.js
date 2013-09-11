@@ -95,17 +95,23 @@ var	async = require('async'),
 				},
 				function(next) {
 					// Applying default database configs
-					var	meta = require('./meta');
+					winston.info('Populating database with default configs, if not already set...')
+					var	meta = require('./meta'),
+						defaults = [
+							{ field: 'postDelay', value: 10000 },
+							{ field: 'minimumPostLength', value: 8 },
+							{ field: 'minimumTitleLength', value: 3 },
+							{ field: 'minimumUsernameLength', value: 2 },
+							{ field: 'maximumUsernameLength', value: 16 },
+							{ field: 'minimumPasswordLength', value: 6 },
+							{ field: 'imgurClientID', value: '' }
+						];
 
-					meta.configs.set('postDelay', 10000);
-					meta.configs.set('minimumPostLength', 8);
-					meta.configs.set('minimumTitleLength', 3);
-					meta.configs.set('minimumUsernameLength', 2);
-					meta.configs.set('maximumUsernameLength', 16);
-					meta.configs.set('minimumPasswordLength', 6);
-					meta.configs.set('imgurClientID', '');
-
-					meta.configs.init(next);
+					async.each(defaults, function(configObj, next) {
+						meta.configs.setOnEmpty(configObj.field, configObj.value, next);
+					}, function(err) {
+						meta.configs.init(next);
+					});
 				},
 				function(next) {
 					// Check if an administrator needs to be created
