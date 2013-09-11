@@ -149,17 +149,19 @@
 					<div class="control-group">
 						<label class="control-label" for="inputNewPassword">Password</label>
 						<div class="controls">
-							<input class="form-control" type="password" id="inputNewPassword" placeholder="New Password" value=""><span id="password-notify" class="label label-danger"></span>
+							<input class="form-control" type="password" id="inputNewPassword" placeholder="New Password" value="">
+							<div id="password-notify" class="alert alert-danger hide"></div>
 						</div>
 					</div>
 
 					<div class="control-group">
 						<label class="control-label" for="inputNewPasswordAgain">Confirm Password</label>
 						<div class="controls">
-							<input class="form-control" type="password" id="inputNewPasswordAgain" placeholder="Confirm Password" value=""><br/><span id="password-confirm-notify" class="label label-danger"></span>
+							<input class="form-control" type="password" id="inputNewPasswordAgain" placeholder="Confirm Password" value="">
+							<div id="password-confirm-notify" class="alert alert-danger hide"></div>
 						</div>
 					</div>
-
+					<br/>
 					<div class="form-actions">
 						<a id="changePasswordBtn" href="#" class="btn btn-primary">Change Password</a>
 					</div>
