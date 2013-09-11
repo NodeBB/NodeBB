@@ -32,9 +32,10 @@
 		</li>
 
 	<!-- END categories -->
-		<button class="btn btn-lg btn-primary" id="save">Save</button>
-		<button class="btn btn-lg btn-primary" id="addNew">Add New</button>
 	</ul>
+
+	<button class="btn btn-lg btn-primary" id="save">Save</button>
+	<button class="btn btn-lg btn-primary" id="addNew">Add New</button>
 </div>
 
 <div id="new-category-modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="Add New Modal" aria-hidden="true">
