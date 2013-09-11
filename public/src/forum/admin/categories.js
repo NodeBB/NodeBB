@@ -50,6 +50,33 @@ jQuery('.blockclass').each(function() {
 
 //DRY Failure. this needs to go into an ajaxify onready style fn. Currently is copy pasted into every single function so after ACP is off the ground fix asap
 (function() {
+	function showCreateCategoryModal() {
+		$('#new-category-modal').modal();
+	}
+
+	function createNewCategory() {
+		var category = {
+			name:$('#inputName').val(),
+			description:$('#inputDescription').val(),
+			icon:$('#new-category-modal i').val(),
+			blockclass:$('#inputBlockclass').val()
+		};
+
+		socket.emit('api:admin.categories.create', category, function(err, data) {
+			if(!err) {
+				app.alert({
+					alert_id: 'category_created',
+					title: 'Created',
+					message: 'Category successfully created!',
+					type: 'success',
+					timeout: 2000
+				});
+
+				$('#new-category-modal').modal('hide');
+			}
+		});
+	}
+
 	jQuery('document').ready(function() {
 		var url = window.location.href,
 			parts = url.split('/'),
@@ -64,6 +91,8 @@ jQuery('.blockclass').each(function() {
 		});
 
 		jQuery('#save').on('click', save);
+		jQuery('#addNew').on('click', showCreateCategoryModal);
+		jQuery('#create-category-btn').on('click', createNewCategory);
 
 		jQuery('.icon').on('click', function(ev) {
 			select_icon(ev.target);

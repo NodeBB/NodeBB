@@ -8,6 +8,32 @@ var	RDB = require('./redis.js'),
 
 (function(Categories) {
 
+	Categories.create = function(data, callback) {
+		RDB.incr('global:next_category_id', function(err, cid) {
+			if(err)
+				return callback(err, null);
+
+			var slug = cid + '/' + utils.slugify(data.name);
+			RDB.rpush('categories:cid', cid);
+
+			var category = {
+				cid: cid,
+				name: data.name,
+				description: data.description,
+				icon: data.icon,
+				blockclass: data.blockclass,
+				slug: slug,
+				topic_count: 0,
+				disabled: 0
+			};
+			RDB.hmset('category:' + cid, category);
+
+			RDB.set('categoryslug:' + slug + ':cid', cid);
+
+			callback(null, category);
+		});
+	}
+
 	Categories.getCategoryById = function(category_id, current_user, callback) {
 
 		Categories.getCategoryData(category_id, function(err, categoryData) {

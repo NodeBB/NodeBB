@@ -5,27 +5,7 @@ var	RDB = require('./../redis.js'),
 (function(CategoriesAdmin) {
 
 	CategoriesAdmin.create = function(data, callback) {
-		RDB.incr('global:next_category_id', function(err, cid) {
-			RDB.handle(err);
-
-			var slug = cid + '/' + utils.slugify(data.name);
-			RDB.rpush('categories:cid', cid);
-
-			RDB.hmset('category:' + cid, {
-				cid: cid,
-				name: data.name,
-				description: data.description,
-				icon: data.icon,
-				blockclass: data.blockclass,
-				slug: slug,
-				topic_count: 0,
-				disabled: 0
-			});
-
-			RDB.set('categoryslug:' + slug + ':cid', cid);
-
-			if (callback) callback(null);
-		});
+		categories.create(data, callback);
 	};
 
 	CategoriesAdmin.update = function(modified, socket) {
@@ -33,7 +13,7 @@ var	RDB = require('./../redis.js'),
 
 		for (var cid in modified) {
 			var category = modified[cid];
-			
+
 			for (var key in category) {
 				RDB.hset('category:' + cid, key, category[key]);
 

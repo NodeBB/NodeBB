@@ -742,6 +742,12 @@ var SocketIO = require('socket.io').listen(global.server, {
 			});
 		});
 
+		socket.on('api:admin.categories.create', function(data, callback) {
+			admin.categories.create(data, function(err, data) {
+				callback(err, data);
+			});
+		});
+
 		socket.on('api:admin.categories.update', function(data) {
 			admin.categories.update(data, socket);
 		});
