@@ -2,29 +2,33 @@ var utils = require('./../public/src/utils.js'),
 	RDB = require('./redis.js'),
 	async = require('async'),
 	path = require('path'),
-	fs = require('fs');
+	fs = require('fs'),
+	winston = require('winston');
 
 (function(Meta) {
 
 	Meta.configs = {
 		init: function(callback) {
-			Meta.configs.get(function(config) {
-				Meta.config = config;
-				callback();
+			Meta.configs.list(function(err, config) {
+				if (!err) {
+					Meta.config = config;
+					callback();
+				} else winston.error(err);
 			});
 		},
-		get: function(callback) {
+		list: function(callback) {
 			RDB.hgetall('config', function(err, config) {
 				if (!err) {
 					config = config || {};
 					config.status = 'ok';
-					callback(config);
+					callback(err, config);
 				} else {
-					callback({
-						status: 'error'
-					});
+					callback(new Error('could-not-read-config'));
 				}
 			});
+		},
+		get: function(field, callback) {
+			RDB.hget('config', field, callback);
 		},
 		getFields: function(fields, callback) {
 			RDB.hmgetObject('config', fields, callback);
@@ -33,6 +37,12 @@ var utils = require('./../public/src/utils.js'),
 			RDB.hset('config', field, value, function(err, res) {
 				if(callback)
 					callback(err, res);
+			});
+		},
+		setOnEmpty: function(field, value, callback) {
+			this.get(field, function(err, curValue) {
+				if (!curValue) Meta.configs.set(field, value, callback);
+				else callback();
 			});
 		},
 		remove: function(field) {
