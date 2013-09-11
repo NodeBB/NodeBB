@@ -1,5 +1,4 @@
-<div>
-
+<div class="users">
 	<ul class="nav nav-pills">
 		<li class=''><a href='/users-latest'>Latest Users</a></li>
 		<li class=''><a href='/users-sort-posts'>Top Posters</a></li>
@@ -18,7 +17,7 @@
 		</div>
 	</div>
 
-	<ul id="users-container" class="users">
+	<ul id="users-container" class="users-container">
 		<!-- BEGIN users -->
 		<div class="users-box">
 			<a href="/users/{users.userslug}">
@@ -38,10 +37,10 @@
 		</div>
 		<!-- END users -->
 	</ul>
-</div>
 
-<div class="text-center {loadmore_display}">
-	<button id="load-more-users-btn" class="btn btn-primary">Load More</button>
+	<div class="text-center {loadmore_display}">
+		<button id="load-more-users-btn" class="btn btn-primary">Load More</button>
+	</div>
 </div>
 
 <script type="text/javascript" src="{relative_path}/src/forum/users.js"></script>

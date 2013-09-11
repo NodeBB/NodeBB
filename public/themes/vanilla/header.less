@@ -1,130 +1,61 @@
-
-#user_label { //belongs in header.less
-	img {
-		border: 1px solid #454;
-		margin-right: 8px;
-		margin-top: -2px;
-		float: left;
-		width:24px;
-		height:24px;
-	}
-
-	span {
-		font-size: 14px;
-		font-weight: 400;
-		color: #ded;
-	}
-}
-
-
-
-.pagination-block {
-	position: absolute;
-	background: rgb(34, 34, 34);
-	right: 0px;
-	top: 50px;
-	color: white;
-	padding: 10px;
-	padding-bottom: 5px;
-	padding-top: 5px;
-	font-size: 15px;
-	display: none;
-}
-
-
-.taskbar {
-	display: none;
-	-moz-opacity: 0.5;
-	opacity: 0.5;
-	margin-top: 0;
-	-webkit-transition: opacity 250ms ease-in;
-	   -moz-transition: opacity 250ms ease-in;
-	    -ms-transition: opacity 250ms ease-in;
-	     -o-transition: opacity 250ms ease-in;
-	        transition: opacity 250ms ease-in;
-
-	&[data-active="1"] {
-		display: block;
-	}
-
-	&:hover {
-		-moz-opacity: 1;
-		opacity: 1;
-	}
-
-	li {
-		float: left;
-
-		a > span {
-			.inline-block;
-			max-width: 200px;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-			overflow: hidden;
+.header {
+	.dropdown-toggle {
+		i {
+			&.active {
+				color: #558;
+			}
 		}
+	}
 
+	#user_label {
 		img {
-			max-width: 24px;
-			max-height: 24px;
-			margin-right: 1em;
+			border: 1px solid #454;
+			margin: -2px 8px 0 0;
+			width: 24px;
+			height: 24px;
 		}
 
-		&.pulse {
-			-webkit-animation: pulsate 2500ms linear;
-			-webkit-animation-iteration-count: infinite;
+		span {
+			font-size: 14px;
+			font-weight: 400;
+			color: #ded;
 		}
+	}
 
-		@-webkit-keyframes pulsate {
-			0% { background: none; }
-			50% { background: #e5e5e5; }
-			100% { background: none; }
+	.pagination-block {
+		position: absolute;
+		background: rgb(34, 34, 34);
+		right: 0px;
+		top: 50px;
+		color: white;
+		padding: 5px 10px 5px 10px;
+		font-size: 15px;
+		display: none;
+	}
+
+	#notif-list {
+		li {
+			font-size: 12px;
+			width: 300px;
+			text-align: left;
+
+			a {
+				white-space: normal;
+			}
+
+			&.unread {
+				background: #eceff5;
+			}
 		}
 	}
 }
 
-#notif-list {
+
+.breadcrumb {
 	li {
-		font-size: 12px;
-		width: 300px;
-		text-align: left;
-
-		a {
-			white-space: normal;
-		}
-
-		&.unread {
-			background: #eceff5;
-		}
-	}
-}
-
-
-
-.dropdown-toggle {
-	i {
-		font-size: 12px;
-
-		@-webkit-keyframes glow
-		{
-			from {text-shadow: 0 0 5px #aaf, 0 0 5px #aaf, 0 0 5px #aaf;}
-			50% {text-shadow: 0 0 10px #aaf, 0 0 10px #aaf, 0 0 10px #aaf;}
-			to {text-shadow: 0 0 5px #aaf, 0 0 5px #aaf, 0 0 5px #aaf;}
-		}
-		@keyframes glow
-		{
-			from {text-shadow: 0 0 5px #aaf, 0 0 5px #aaf, 0 0 5px #aaf;}
-			50% {text-shadow: 0 0 10px #aaf, 0 0 10px #aaf, 0 0 10px #aaf;}
-			to {text-shadow: 0 0 5px #aaf, 0 0 5px #aaf, 0 0 5px #aaf;}
-		}
-
-
-		&.active {
-			color: #558;
-
-			text-shadow: 0 0 1em #aaf, 0 0 1em #aaf, 0 0 1em #aaf;
-			-webkit-animation:glow 1.5s infinite linear;
-				    animation:glow 1.5s infinite linear;
-		}
-
+		max-width: 35%;
+		white-space: nowrap;
+		text-overflow:ellipsis;
+		overflow: hidden;
 	}
 }

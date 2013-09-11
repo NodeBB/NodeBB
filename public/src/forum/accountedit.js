@@ -119,7 +119,7 @@ $(document).ready(function() {
 					gravatarPicture = data.gravatarpicture;
 				}
 			} else {
-				app.alertError('There was an error updating your profile!');
+				app.alertError('There was an error updating your profile! ' + err.error);
 			}
 		});
 		return false;
@@ -222,50 +222,59 @@ $(document).ready(function() {
 
 		function onPasswordChanged() {
 			passwordvalid = utils.isPasswordValid(password.val());
-			if (password.val().length < 6) {
+			if (password.val().length < config.minimumPasswordLength) {
 				password_notify.html('Password too short');
-				password_notify.attr('class', 'label label-danger');
+				password_notify.attr('class', 'alert alert-danger');
+				password_notify.removeClass('hide');
 			} else if(!passwordvalid) {
 				password_notify.html('Invalid password');
-				password_notify.attr('class', 'label label-danger');
+				password_notify.attr('class', 'alert alert-danger');
+				password_notify.removeClass('hide');
 			} else {
 				password_notify.html('OK!');
-				password_notify.attr('class', 'label label-success');
+				password_notify.attr('class', 'alert alert-success');
+				password_notify.removeClass('hide');
 			}
 
 			onPasswordConfirmChanged();
 		}
 
 		function onPasswordConfirmChanged() {
+			if(password_notify.hasClass('alert-danger') || !password_confirm.val()) {
+				password_confirm_notify.addClass('hide');
+				return;
+			}
 			if(password.val() !== password_confirm.val()) {
 				password_confirm_notify.html('Passwords must match!');
-				password_confirm_notify.attr('class', 'label label-danger');
+				password_confirm_notify.attr('class', 'alert alert-danger');
+				password_confirm_notify.removeClass('hide');
 				passwordsmatch = false;
 			} else {
 				password_confirm_notify.html('OK!');
-				password_confirm_notify.attr('class', 'label label-success');
+				password_confirm_notify.attr('class', 'alert alert-success');
+				password_confirm_notify.removeClass('hide');
 				passwordsmatch = true;
 			}
 		}
 
-		password.on('keyup', onPasswordChanged);
-		password_confirm.on('keyup', onPasswordConfirmChanged);
+		password.on('blur', onPasswordChanged);
+		password_confirm.on('blur', onPasswordConfirmChanged);
 
 		$('#changePasswordBtn').on('click', function() {
 
 			if(passwordvalid && passwordsmatch && currentPassword.val()) {
-				socket.emit('api:user.changePassword', {'currentPassword': currentPassword.val(),'newPassword': password.val()	}, function(data) {
+				socket.emit('api:user.changePassword', {'currentPassword': currentPassword.val(),'newPassword': password.val()	}, function(err) {
 
 					currentPassword.val('');
 					password.val('');
 					password_confirm.val('');
-					password_notify.html('');
-					password_confirm_notify.html('');
+					password_notify.addClass('hide');
+					password_confirm_notify.addClass('hide');
 					passwordsmatch = false;
 					passwordvalid = false;
 
-					if(data.err) {
-						app.alertError(data.err);
+					if(err) {
+						app.alertError(err.error);
 						return;
 					}
 

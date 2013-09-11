@@ -37,7 +37,9 @@ var utils = require('./../public/src/utils.js'),
 			},
 			function(next) {
 				if (email !== undefined) {
-					User.isEmailAvailable(email, function(available) {
+					User.isEmailAvailable(email, function(err, available) {
+						if(err)
+							return next(err);
 						next(!available ? new Error('Email taken!') : null);
 					});
 				} else next();
@@ -209,7 +211,9 @@ var utils = require('./../public/src/utils.js'),
 
 			User.getUserField(uid, 'email', function(err, email) {
 				if(email !== data['email']) {
-					User.isEmailAvailable(data['email'], function(available) {
+					User.isEmailAvailable(data['email'], function(err, available) {
+						if(err)
+							return next(err, null);
 						if(!available) {
 							next({error:'Email not available!'}, false);
 						} else {
@@ -272,38 +276,29 @@ var utils = require('./../public/src/utils.js'),
 
 	User.isEmailAvailable = function(email, callback) {
 		RDB.exists('email:' + email + ':uid' , function(err, exists) {
-			if(!err) {
-				callback(exists !== 1);
-				return;
-			} else {
-				console.log(err);
-				callback(false);
-			}
+			callback(err, !!exists);
 		});
 	}
 
 	User.changePassword = function(uid, data, callback) {
 		if(!utils.isPasswordValid(data.newPassword)) {
-			callback({err:'Invalid password!'});
-			return;
+			return callback({error:'Invalid password!'});
 		}
 
 		User.getUserField(uid, 'password', function(err, user_password) {
 			bcrypt.compare(data.currentPassword, user_password, function(err, res) {
 				if(err) {
-					console.log(err);
-					callback({err:'bcrpyt compare error!'});
-					return;
+					return callback(err);
 				}
 
 				if (res) {
 					User.hashPassword(data.newPassword, function(err, hash) {
 						User.setUserField(uid, 'password', hash);
 
-						callback({err:null});
+						callback(null);
 					});
 				} else {
-					callback({err:'Your current password is not correct!'});
+					callback({error:'Your current password is not correct!'});
 				}
 			});
 		});

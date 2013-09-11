@@ -2,7 +2,7 @@
 	{motd}
 </div>
 
-<div class="row categories">
+<div class="row home">
 	<!-- BEGIN categories -->
 	<div class="col-md-3 col-xs-6">
 		<a href="category/{categories.slug}">

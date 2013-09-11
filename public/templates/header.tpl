@@ -31,7 +31,7 @@
 </head>
 
 <body>
-	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="header-menu">
+	<div class="navbar navbar-inverse navbar-fixed-top header" role="navigation" id="header-menu">
 		<div class="container">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -93,6 +93,4 @@
 
 	<input id="csrf_token" type="hidden" template-variable="csrf" value="{csrf}" />
 
-
 	<div class="container" id="content">
-

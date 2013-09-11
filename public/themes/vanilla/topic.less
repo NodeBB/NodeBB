@@ -1,186 +1,149 @@
-
 .topic {
-	list-style-type: none;
-	padding: 0;
-	margin: 0;
-	clear: both;
-
-	li.row {
-		padding-bottom: 15px;
-
-		&.deleted {
-			-moz-opacity: 0.30;
-			opacity: 0.30;
-			height:30px;
-			overflow-y:hidden;
-		}
-
-		&.deleted-expanded {
-			height:100%;
-			overflow-y:default;
-		}
-	}
-
-	.chat {
-		display: block;
-		padding: 3px 20px;
-		clear: both;
-		.pointer;
-	}
-	.chat:hover, .chat:focus {
-		color: white;
-		background-color: rgb(66, 139, 202);
-	}
-
-	.profile-block, .post-block {
-		position: relative;
-		border: 1px solid rgba(0, 0, 0, 0.06);
-		border-radius: 5px;
-		padding: 10px;
-
-		p {
-			line-height: 1.75em;
-		}
-	}
-
-	.post-signature {
-		color: #666;
-		font-size: 12px;
-		border-top: 1px solid #ddd;
-		display: inline-block;
-
-		img {
-			max-width:200px;
-			max-height:60px;
-		}
-
-		margin-left: 5px;
-	}
-
-	.profile-block {
-		background: rgba(0, 0, 0, 0.02);
-		margin: 15px -11px -11px -11px;
-		border-radius: 0 0 5px 5px;
-		font-size: 10px;
-		line-height: 15px;
-		padding: 5px 8px 5px 5px;
-		color: #777;
-	}
-
-	.post-content {
-		min-height: 50px;
-		padding: 10px 5px 0 5px;
-		word-wrap: break-word;
-	}
-
-	.post-images{
-		padding: 2px 5px 0 5px;
-	}
-
-	.post-block {
-		.post-buttons {
-			background: rgba(0, 0, 0, 0.02);
-			border: 1px solid rgba(0, 0, 0, 0.06);
-			margin: -5px 0 0 0;
-			padding: 8px 0 0 23px;
-
-			button.show {
-				display: inline-block !important;
-			}
-
-			@media (max-width: 767px) {
-				padding-left: 9px;
-			}
-		}
-	}
-
 	&.deleted {
 		-moz-opacity: 0.30;
 		opacity: 0.30;
 	}
 
-	@media (min-width: 979px) {
-		.speech-bubble:after
-		{
-			content: "";
-			position: absolute;
-			top: 15px;
-			left: -7px;
-			border-style: solid;
-			border-width: 7px 7px 7px 0;
-			border-color: transparent rgb(250,250,250);
-			display: block;
-			width: 0;
-			z-index: 1;
+	> ul {
+		list-style-type: none;
+		padding: 0;
+
+		> li {
+			padding-bottom: 15px;
+
+			&.deleted {
+				-moz-opacity: 0.30;
+				opacity: 0.30;
+				height: 30px;
+				overflow-y: hidden;
+			}
+
+			&.deleted-expanded {
+				height: 100%;
+				overflow-y: default;
+			}
+		}
+	}
+
+	@media (max-width: 475px) {
+		.post-tools {
+			display: none;
 		}
 
-		.speech-bubble:before
-		{
-			content: "";
-			position: absolute;
-			top: 15px;
-			left: -8px;
-			border-style: solid;
-			border-width: 7px 7px 7px 0;
-			border-color: transparent rgba(0, 0, 0, 0.125);
-			display: block;
-			width: 0;
-			z-index: 0;
+		.favourite-text {
+			display: none;
+		}
+	}
+
+	@media (max-width: 767px) {
+		.topic-main-buttons {
+			margin-bottom: 0px;
+		}
+	}
+
+	.main-post, .sub-posts {
+		.profile-block, .post-block {
+			position: relative;
+			border: 1px solid rgba(0, 0, 0, 0.06);
+			border-radius: 5px;
+			padding: 10px;
+
+			.post-signature {
+				color: #666;
+				font-size: 12px;
+				border-top: 1px solid #ddd;
+				display: inline-block;
+
+				img {
+					max-width: 200px;
+					max-height: 60px;
+				}
+
+				margin-left: 5px;
+			}
+		}
+
+		.post-block {
+			.topic-buttons {
+				background: rgba(0, 0, 0, 0.02);
+				border: 1px solid rgba(0, 0, 0, 0.06);
+				margin: -5px 0 0 0;
+				padding: 8px 0 0 23px;
+
+				button.show {
+					display: inline-block !important;
+				}
+
+				@media (max-width: 767px) {
+					padding-left: 9px;
+				}
+			}
+
+			.post-content {
+				padding: 10px 5px 0 5px;
+				word-wrap: break-word;
+			}
+
+			.post-images{
+				padding: 2px 5px 0 5px;
+			}
 		}
 	}
 
 	.sub-posts {
-		.post-tools {
-			margin-right: 9px;
+		.post-block {
+			.post-signature {
+				margin-left: 15px;
+			}
+
+			.topic-buttons {
+				margin: -11px -10px 0px -10px;
+				border: 0;
+				border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+				padding: 8px 9px 7px 23px;
+			}
+
+			.post-content {
+				margin-left: 10px;
+			}
 		}
-		.post-content {
-			margin-left: 10px;
-		}
-		.post-signature {
-			margin-left: 15px;
-		}
+
 		.img-thumbnail {
 			padding: 2px;
 			border-radius: 0;
 			margin-left: 16px;
 		}
-		.post-buttons {
-			margin: -11px -10px 0 -10px;
-			border: 0;
-			border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-		}
 	}
 
 	.main-post {
-		.main-post-buttons {
-			h3 {
-				margin: 0;
+		h3 {
+			margin: 0;
 
-				.topic-title {
-					width: auto;
-					overflow: hidden;
-					margin: 0 0 -5px 0;
-					padding: 0 0 5px 0
-				}
+			.topic-title {
+				line-height: 1.5em;
+				width: auto;
+				overflow: hidden;
+				margin: 0 0 -5px 0;
+				padding: 0 0 5px 0
+			}
+		}
+
+		.avatar {
+			color: white;
+			position: relative;
+			float: left;
+			margin: 0 10px 0 0;
+			padding-bottom: 0px;
+			text-align: center;
+			width: 100px;
+
+			@media (max-width: 767px) {
+				display: none;
 			}
 
-			.main-avatar {
-				color: white;
-				position: relative;
-				float: left;
-				margin: 0 10px 0 0;
-				padding-bottom: 0px;
-				text-align: center;
-				width:100px;
-
-				@media (max-width: 767px) {
-					display: none;
-				}
-
-				.img-thumbnail {
-					padding: 2px;
-					border-radius: 0;
-				}
+			.img-thumbnail {
+				padding: 2px;
+				border-radius: 0;
 			}
 		}
 
@@ -193,125 +156,66 @@
 		}
 
 		.post-block {
-			.post-buttons {
+			.topic-buttons {
+				background: rgba(0, 0, 0, 0.02);
+				border: 1px solid rgba(0, 0, 0, 0.06);
+				margin: 0 -11px 0 92px;
+				padding: 10px;
+				border-right: 0;
+
+				@media (max-width: 767px) {
+					margin-left: -11px;
+					border-left: 0;
+				}
+
 				button.show {
 					display: inline-block!important;
 				}
-
 			}
 		}
-
-		.favourite {
-			.pointer;
-		}
-		.btn {
-			display: inline-block;
-		}
-
-		.topic-buttons { //main-post version is called post-buttons, needs to be consolidated.
-			background: rgba(0, 0, 0, 0.02);
-			border: 1px solid rgba(0, 0, 0, 0.06);
-			margin: 0 -11px 0 92px;
-			padding: 10px;
-			border-right: 0;
-
-			@media (max-width: 767px) {
-				margin-left: -11px;
-				border-left: 0;
-			}
-
-			button.show {
-				display: inline-block!important;
-			}
-		}
-
 	}
 
-	.topic-main-buttons {
+	.mobile-author-overlay {
+		display: none;
+		z-index: 9999;
+
 		@media (max-width: 767px) {
-			margin-bottom: 0px;
+			display: block;
+			position: fixed;
+			width: 100%;
+			margin-left: -15px;
+			bottom: -50px;
+			height: 50px;
+			background: rgba(0,0,0,0.8);
+			-webkit-transition: bottom 150ms linear;
+			   -moz-transition: bottom 150ms linear;
+				-ms-transition: bottom 150ms linear;
+				 -o-transition: bottom 150ms linear;
+				    transition: bottom 150ms linear;
+		}
+
+		img {
+			padding: 5px;
+		}
+
+		h4 {
+			color: white;
+			margin: 16px 0 0 -35px;
+			font-weight: 300;
+			font-size: 16px;
 		}
 	}
 
-	@media (max-width: 475px) {
-		.post-tools {
-			display: none;
-		}
-		.favourite-text {
-			display: none;
-		}
-	}
-}
-
-.post-author-info {
-	display: none;
-
-	@media (max-width: 767px) {
+	// styling the chat button in the dropdown to match. surely there's a better way...
+	.chat {
 		display: block;
-		position: fixed;
-		width: 100%;
-		margin-left: -15px;
-		bottom: -50px;
-		height: 50px;
-		background: rgba(0,0,0,0.8);
-		-webkit-transition: bottom 150ms linear;
-		   -moz-transition: bottom 150ms linear;
-			-ms-transition: bottom 150ms linear;
-			 -o-transition: bottom 150ms linear;
-			    transition: bottom 150ms linear;
-	}
-
-	img {
-		padding: 5px;
-	}
-
-	h4 {
-		color: white;
-		margin: 16px 0 0 -35px;
-		font-weight: 300;
-		font-size: 16px;
-	}
-}
-
-
-
-.category-list {
-	li {
-		.inline-block;
+		padding: 3px 20px;
+		clear: both;
 		.pointer;
-		padding: 0.5em 0;
-		text-align: center;
-		margin: 0.5em;
-		-webkit-border-radius: 5px;
-		-moz-border-radius: 5px;
-		border-radius: 5px;
-		padding: 0.5em;
-	}
-}
 
-
-.username-field {
-	.icon-circle {
-		font-size: 12px;
-		color: green;
-		margin-right:3px;
-	}
-	.icon-circle-blank {
-		font-size: 12px;
-		color: red;
-		margin-right:3px;
-	}
-}
-
-
-
-#thread_active_users {
-	float: right;
-	color: rgb(153,153,153);
-
-	strong {
-		color: rgb(100,100,100);
-		font-weight: 600;
-		.pointer;
+		&:hover, &:focus {
+			color: white;
+			background-color: rgb(66, 139, 202);
+		}
 	}
 }
