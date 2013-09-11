@@ -5,7 +5,7 @@ function modified(el) {
 	var cid = $(el).parents('li').attr('data-cid');
 
 	modified_categories[cid] = modified_categories[cid] || {};
-	modified_categories[cid][el.getAttribute('data-name')] = el.value;
+	modified_categories[cid][el.attr('data-name')] = el.val();
 }
 
 function save() {
@@ -14,16 +14,17 @@ function save() {
 }
 
 function select_icon(el) {
-	var selected = el.className.replace(' icon-2x', '');
+	var selected = el.attr('class').replace(' icon-2x', '');
 	jQuery('#icons .selected').removeClass('selected');
-	jQuery('#icons .' + selected).parent().addClass('selected');
+	if(selected)
+		jQuery('#icons .' + selected).parent().addClass('selected');
 
 
 	bootbox.confirm('<h2>Select an icon.</h2>' + document.getElementById('icons').innerHTML, function(confirm) {
 		if (confirm) {
 			var iconClass = jQuery('.bootbox .selected').children(':first').attr('class');
-			el.className = iconClass + ' icon icon-2x';
-			el.value = iconClass;
+			el.attr('class', iconClass + ' icon-2x');
+			el.val(iconClass);
 
 			modified(el);
 		}
@@ -97,8 +98,8 @@ jQuery('.blockclass').each(function() {
 		jQuery('#addNew').on('click', showCreateCategoryModal);
 		jQuery('#create-category-btn').on('click', createNewCategory);
 
-		jQuery('.icon').on('click', function(ev) {
-			select_icon(ev.target);
+		jQuery('#entry-container').on('click', '.icon', function(ev) {
+			select_icon($(this).find('i'));
 		});
 
 		jQuery('.blockclass').on('change', function(ev) {
