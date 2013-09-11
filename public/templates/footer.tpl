@@ -41,8 +41,8 @@
 	<div id="alert_window"></div>
 
 
-	<footer id="footer" class="container footer-stats">
-		<div class="row">
+	<footer id="footer" class="container footer">
+		<div class="row footer-stats">
 			<div class="col-md-3 col-xs-6">
 				<div class="stats-card well">
 					<h2><span id="stats_online"></span><br /><small>Online</small></h2>
