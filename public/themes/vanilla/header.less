@@ -49,58 +49,11 @@
 }
 
 
-
-
-
-
-
-//needs to go in modules/taskbar.less
-.taskbar {
-	display: none;
-	-moz-opacity: 0.5;
-	opacity: 0.5;
-	margin-top: 0;
-	-webkit-transition: opacity 250ms ease-in;
-	   -moz-transition: opacity 250ms ease-in;
-	    -ms-transition: opacity 250ms ease-in;
-	     -o-transition: opacity 250ms ease-in;
-	        transition: opacity 250ms ease-in;
-
-	&[data-active="1"] {
-		display: block;
-	}
-
-	&:hover {
-		-moz-opacity: 1;
-		opacity: 1;
-	}
-
+.breadcrumb {
 	li {
-		float: left;
-
-		a > span {
-			.inline-block;
-			max-width: 200px;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-			overflow: hidden;
-		}
-
-		img {
-			max-width: 24px;
-			max-height: 24px;
-			margin-right: 1em;
-		}
-
-		&.pulse {
-			-webkit-animation: pulsate 2500ms linear;
-			-webkit-animation-iteration-count: infinite;
-		}
-
-		@-webkit-keyframes pulsate {
-			0% { background: none; }
-			50% { background: #e5e5e5; }
-			100% { background: none; }
-		}
+		max-width: 35%;
+		white-space: nowrap;
+		text-overflow:ellipsis;
+		overflow: hidden;
 	}
 }
