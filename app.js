@@ -51,7 +51,7 @@ winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
 winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
 winston.info('');
 
-if (!fs.existsSync(__dirname + '/config.json') || (!nconf.get('setup') && !nconf.get('upgrade'))) {
+if (fs.existsSync(__dirname + '/config.json') && (!nconf.get('setup') && !nconf.get('upgrade'))) {
 	// Load server-side config
 	nconf.file({ file: __dirname + '/config.json'});
 
