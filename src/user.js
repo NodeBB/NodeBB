@@ -985,6 +985,18 @@ var utils = require('./../public/src/utils.js'),
 		},
 		getUnreadCount: function(uid, callback) {
 			RDB.zcount('uid:' + uid + ':notifications:unread', 0, 10, callback);
+		},
+		getUnreadByUniqueId: function(uid, uniqueId, callback) {
+			RDB.zrange('uid:' + uid + ':notifications:unread', 0, -1, function(err, nids) {
+				async.filter(nids, function(nid, next) {
+					notifications.get(nid, function(notifObj) {
+						if (notifObj.uniqueId === uniqueId) next(true);
+						else next(false);
+					});
+				}, function(nids) {
+					callback(null, nids);
+				});
+			});
 		}
 	}
 }(exports));
