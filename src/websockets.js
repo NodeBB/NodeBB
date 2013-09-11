@@ -144,8 +144,9 @@ var SocketIO = require('socket.io').listen(global.server, {
 			if (uids.length === 0) {
 				io.sockets.in(roomName).emit('api:get_users_in_room', userList([], anonymousCount, 0));
 			} else {
-				user.getMultipleUserFields(uids, ['username', 'userslug'], function(users) {
-					io.sockets.in(roomName).emit('api:get_users_in_room', userList(users, anonymousCount, users.length));
+				user.getMultipleUserFields(uids, ['username', 'userslug'], function(err, users) {
+					if(!err)
+						io.sockets.in(roomName).emit('api:get_users_in_room', userList(users, anonymousCount, users.length));
 				});
 			}
 		}

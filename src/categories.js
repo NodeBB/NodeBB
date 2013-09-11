@@ -57,8 +57,8 @@ var	RDB = require('./redis.js'),
 				}
 
 				function getActiveUsers(next) {
-					user.getMultipleUserFields(active_users, ['username', 'userslug', 'picture'], function(users) {
-						next(null, users);
+					user.getMultipleUserFields(active_users, ['username', 'userslug', 'picture'], function(err, users) {
+						next(err, users);
 					});
 				}
 
@@ -112,8 +112,8 @@ var	RDB = require('./redis.js'),
 		RDB.smembers('cid:' + cid + ':moderators', function(err, mods) {
 			if(!err) {
 				if(mods && mods.length) {
-					user.getMultipleUserFields(mods, ['username'], function(moderators) {
-						callback(null, moderators);
+					user.getMultipleUserFields(mods, ['username'], function(err, moderators) {
+						callback(err, moderators);
 					});
 				} else {
 					callback(null, []);
