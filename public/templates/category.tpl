@@ -31,12 +31,6 @@
 		<!-- BEGIN topics -->
 		<a href="../../topic/{topics.slug}"><li class="category-item {topics.deleted-class}">
 			<div class="row">
-				<!-- <div class="span1 thread-rating hidden-xs hidden-sm">
-					<span>
-						<i class="icon-star icon-3x"></i><br />
-						38
-					</span>
-				</div> -->
 				<div class="col-md-12 topic-row">
 					<div class="latest-post visible-lg visible-md">
 						<div class="pull-right">

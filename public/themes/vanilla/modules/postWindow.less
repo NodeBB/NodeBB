@@ -1,0 +1,107 @@
+.post-window {
+	position: fixed;
+	display: none;
+	height: 350px;
+	visibility: hidden;
+	width: 100%;
+
+	> div {
+		position: absolute;
+		height: 100%;
+		background: rgba(64, 64, 64, 0.6);
+		visibility: visible;
+
+		.btn-toolbar {
+			&.formatting-bar {
+				.no-select;
+
+				width: 90%;
+				margin: 0 auto 8px auto;
+
+				span {
+					color: white;
+
+					&:hover {
+						text-decoration: none;
+					}
+				}
+
+				span:focus {
+					outline: none;
+				}
+			}
+
+			&.action-bar {
+				width: 90%;
+				margin: 8px auto 0 auto;
+			}
+		}
+
+		input {
+			width: 98%;
+			text-align: center;
+			border: none;
+			padding: 0.5em 0;
+			-webkit-border-radius: 0px;
+			-moz-border-radius: 0px;
+			border-radius: 0px;
+			margin: 5px auto 10px auto;
+			display: block;
+		}
+
+		textarea {
+			background: rgba(64, 64, 64, 0.95);
+			border: none;
+			padding: 0.5em;
+			display: block;
+			width: 90%;
+			margin: 0em auto;
+			resize: none;
+			color: white;
+			height: 200px;
+		}
+
+		.imagedrop {
+			text-align: center;
+			color: white;
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			width: 100%;
+			height: 214px;
+			line-height: 214px;
+			font-size: 20px;
+			vertical-align: middle;
+			display: none;
+		}
+
+		.imagelist {
+			position: absolute;
+			bottom: 50px;
+			left: 5%;
+
+			div {
+				margin-right:5px;
+			}
+
+			span {
+				line-height:20px;
+				float:left;
+			}
+
+			button {
+				padding-left:5px;
+			}
+		}
+	}
+
+	@media (max-width: 979px) {
+		position: relative;
+		bottom: 0px !important;
+
+		> div {
+			position: static;
+			width: 100% !important;
+		}
+	}
+}
