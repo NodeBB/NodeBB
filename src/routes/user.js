@@ -14,7 +14,7 @@ var user = require('./../user.js'),
 			if(!req.params.uid)
 				return res.redirect('/404');
 
-			user.getUserData(req.params.uid, function(data) {
+			user.getUserData(req.params.uid, function(err, data) {
 				if(data) {
 					res.send(data);
 				} else {
@@ -406,7 +406,7 @@ var user = require('./../user.js'),
 					return;
 				}
 
-				user.getUserData(uid, function(data) {
+				user.getUserData(uid, function(err, data) {
 					if(data) {
 						data.joindate = utils.relativeTime(data.joindate);
 

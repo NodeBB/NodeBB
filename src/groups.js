@@ -29,9 +29,7 @@ var	async = require('async'),
 							if (err) return next(err);
 
 							async.map(uids, function(uid, next) {
-								User.getUserData(uid, function(data) {
-									next(null, data);
-								});
+								User.getUserData(uid, next);
 							}, function(err, users) {
 								next(err, users);
 							});

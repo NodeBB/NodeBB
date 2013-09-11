@@ -111,7 +111,7 @@ var utils = require('./../public/src/utils.js'),
 			if(exists === 1) {
 				console.log('deleting uid ' + uid);
 
-				User.getUserData(uid, function(data) {
+				User.getUserData(uid, function(err, data) {
 					RDB.del('username:' + data['username'] + ':uid');
 					RDB.del('email:' + data['email'] +':uid');
 					RDB.del('userslug:'+ data['userslug'] +':uid');
@@ -175,15 +175,11 @@ var utils = require('./../public/src/utils.js'),
 
 	User.getUserData = function(uid, callback) {
 		RDB.hgetall('user:' + uid, function(err, data) {
-			if(err === null) {
-				if(data) {
-					if(data['password'])
-						delete data['password'];
-				}
-				callback(data);
-			} else {
-				console.log(err);
+
+			if(data && data['password']) {
+				delete data['password'];
 			}
+			callback(err, data);
 		});
 	}
 
@@ -340,7 +336,7 @@ var utils = require('./../public/src/utils.js'),
 			}
 
 			function iterator(uid, callback) {
-				User.getUserData(uid, function(userData) {
+				User.getUserData(uid, function(err, userData) {
 					if(userData) {
 						data.push(userData);
 					}
@@ -576,7 +572,7 @@ var utils = require('./../public/src/utils.js'),
 		}
 
 		function iterator(uid, callback) {
-			User.getUserData(uid, function(userData) {
+			User.getUserData(uid, function(err, userData) {
 				returnData.push(userData);
 
 				callback(null);

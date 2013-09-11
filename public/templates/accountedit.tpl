@@ -79,8 +79,8 @@
 			</div>
 		</div>
 
-		<div class="col-md-10">
-			 <div>
+		<div class="col-md-5">
+			<div>
 				<form class='form-horizontal'>
 					<div class="control-group">
 						<label class="control-label" for="inputEmail">Email</label>
@@ -132,7 +132,11 @@
 
 				</form>
 			</div>
-			<hr />
+
+			<hr/>
+		</div>
+
+		<div class="col-md-5">
 			<div style="vertical-align:top;">
 				<form class='form-horizontal'>
 					<div class="control-group">
