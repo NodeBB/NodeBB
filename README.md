@@ -4,9 +4,9 @@ Please support NodeBB development! Check out our IndieGoGo campaign and like, sh
 # NodeBB
 **NodeBB** is a robust Node.js driven forum built on a redis database. It is powered by web sockets, and is compatible down to IE8.
 
-![NodeBB Main Category Listing](http://imgur.com/BdImzGs.png)
+![NodeBB Main Category Listing](http://i.imgur.com/ZBrHqLr.png)
 
-![NodeBB Topic Page](http://imgur.com/Lk7E3KR.png)
+![NodeBB Topic Page](http://i.imgur.com/YSBA6Vr.png)
 
 ## How can I follow along/contribute?
 
