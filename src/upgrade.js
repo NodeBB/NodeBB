@@ -51,13 +51,13 @@ function upgradeUser(uid, callback) {
 			},
 			function(next) {
 				if(userData.postcount)			
-					RDB.zadd('users:postcount', userData.postcount, uid);
+					RDB.zadd('users:postcount', userData.postcount, uid, next);
 				else
 					next(null);
 			},
 			function(next) {
 				if(userData.reputation)
-					RDB.zadd('users:reputation', userData.reputation, uid);
+					RDB.zadd('users:reputation', userData.reputation, uid, next);
 				else
 					next(null);
 			}
@@ -121,7 +121,7 @@ exports.upgrade = function() {
 
 				async.each(uids, upgradeUser, function(err) {
 					if(!err) {
-						winston.info('upgraded users')
+						winston.info('upgraded users');
 						next(null, null);
 					} else {
 						next(err, null);
