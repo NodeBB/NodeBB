@@ -19,7 +19,7 @@ var	RDB = require('./redis.js'),
 		posts.getPostFields(pid, ['uid', 'timestamp'], function(postData) {
 
 			Favourites.hasFavourited(pid, uid, function(hasFavourited) {
-				if (hasFavourited == false) {
+				if (hasFavourited === false) {
 					RDB.sadd('pid:' + pid + ':users_favourited', uid);
 					RDB.zadd('uid:' + uid + ':favourites', postData.timestamp, pid);
 
@@ -42,7 +42,7 @@ var	RDB = require('./redis.js'),
 				}
 			});
 		});
-	}
+	};
 
 	Favourites.unfavourite = function(pid, room_id, uid, socket) {
 		if (uid === 0) {
@@ -57,10 +57,8 @@ var	RDB = require('./redis.js'),
 		}
 
 		posts.getPostField(pid, 'uid', function(uid_of_poster) {
-
 			Favourites.hasFavourited(pid, uid, function(hasFavourited) {
-				if (hasFavourited == true) {
-
+				if (hasFavourited === true) {
 					RDB.srem('pid:' + pid + ':users_favourited', uid);
 					RDB.zrem('uid:' + uid + ':favourites', pid);
 
@@ -83,7 +81,7 @@ var	RDB = require('./redis.js'),
 				}
 			});
 		});
-	}
+	};
 
 	Favourites.hasFavourited = function(pid, uid, callback) {
 		RDB.sismember('pid:' + pid + ':users_favourited', uid, function(err, hasFavourited) {
@@ -91,7 +89,7 @@ var	RDB = require('./redis.js'),
 
 			callback(hasFavourited);
 		});
-	}
+	};
 
 	Favourites.getFavouritesByPostIDs = function(pids, uid, callback) {
 		var loaded = 0;
@@ -108,6 +106,6 @@ var	RDB = require('./redis.js'),
 				});
 			}(pids[i]));
 		}
-	}
+	};
 
 }(exports));
