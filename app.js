@@ -93,9 +93,8 @@ if (fs.existsSync(__dirname + '/config.json') && (!nconf.get('setup') && !nconf.
 	});
 
 } else if (nconf.get('upgrade')) {
-	var	meta = require('./src/meta.js');
-
 	nconf.file({ file: __dirname + '/config.json'});
+	var	meta = require('./src/meta.js');
 
 	meta.configs.init(function() {
 		require('./src/upgrade').upgrade();
