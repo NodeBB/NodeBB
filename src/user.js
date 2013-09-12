@@ -276,7 +276,7 @@ var utils = require('./../public/src/utils.js'),
 
 	User.isEmailAvailable = function(email, callback) {
 		RDB.exists('email:' + email + ':uid' , function(err, exists) {
-			callback(err, !!exists);
+			callback(err, !!!exists);
 		});
 	}
 
