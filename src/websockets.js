@@ -34,7 +34,7 @@ var SocketIO = require('socket.io').listen(global.server, {
 	winston = require('winston');
 
 (function(io) {
-	var	users = {},
+	var users = {},
 		userSockets = {},
 		rooms = {};
 
@@ -76,11 +76,13 @@ var SocketIO = require('socket.io').listen(global.server, {
 
 			if(userSockets[uid].length === 0) {
 				delete users[sessionID];
-				emitOnlineUserCount();
+				delete userSockets[uid];
 				if(uid) {
 					io.sockets.in('global').emit('api:user.isOnline', isUserOnline(uid));
 				}
 			}
+
+			emitOnlineUserCount();
 
 			for(var roomName in rooms) {
 
@@ -412,10 +414,13 @@ var SocketIO = require('socket.io').listen(global.server, {
 		});
 
 		function emitOnlineUserCount() {
-			var online = Object.keys(users);
+			var anon = userSockets[0] ? userSockets[0].length : 0;
+			var registered = Object.keys(userSockets).length;
+			if(anon)
+				registered = registered - 1;
 
 			var returnObj = {
-				users: online.length
+				users: registered + anon
 			};
 			io.sockets.emit('api:user.active.get', returnObj)
 		}
