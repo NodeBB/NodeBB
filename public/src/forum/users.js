@@ -59,7 +59,7 @@
 			var html = templates.prepare(templates['users'].blocks['users']).parse({
 					users: data
 				}),
-				userListEl = document.querySelector('.users');
+				userListEl = document.querySelector('#users-container');
 
 			userListEl.innerHTML = html;
 
