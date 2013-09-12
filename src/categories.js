@@ -32,7 +32,7 @@ var	RDB = require('./redis.js'),
 
 			callback(null, category);
 		});
-	}
+	};
 
 	Categories.getCategoryById = function(category_id, current_user, callback) {
 
@@ -109,7 +109,7 @@ var	RDB = require('./redis.js'),
 
 			});
 		});
-	}
+	};
 
 	Categories.getCategoryTopics = function(cid, start, stop, uid, callback) {
 		Categories.getTopicIds(cid, start, stop, function(err, tids) {
@@ -117,22 +117,22 @@ var	RDB = require('./redis.js'),
 				callback(topicsData);
 			}, cid);
 		});
-	}
+	};
 
 	Categories.getTopicIds = function(cid, start, stop, callback) {
 		RDB.zrevrange('categories:' + cid + ':tid', start, stop, callback);
-	}
+	};
 
 	Categories.getActiveUsers = function(cid, callback) {
 		RDB.smembers('cid:' + cid + ':active_users', callback);
-	}
+	};
 
 	Categories.getAllCategories = function(callback, current_user) {
 		RDB.lrange('categories:cid', 0, -1, function(err, cids) {
 			RDB.handle(err);
 			Categories.getCategories(cids, callback, current_user);
 		});
-	}
+	};
 
 	Categories.getModerators = function(cid, callback) {
 		RDB.smembers('cid:' + cid + ':moderators', function(err, mods) {
@@ -149,7 +149,7 @@ var	RDB = require('./redis.js'),
 			}
 
 		});
-	}
+	};
 
 
 	Categories.privileges = function(cid, uid, callback) {
@@ -171,7 +171,7 @@ var	RDB = require('./redis.js'),
 				view_deleted: results.indexOf(true) !== -1 ? true : false
 			});
 		});
-	}
+	};
 
 	Categories.isTopicsRead = function(cid, uid, callback) {
 		RDB.zrange('categories:' + cid + ':tid', 0, -1, function(err, tids) {
@@ -188,11 +188,11 @@ var	RDB = require('./redis.js'),
 				callback(allread);
 			});
 		});
-	}
+	};
 
 	Categories.markAsRead = function(cid, uid) {
 		RDB.sadd('cid:' + cid + ':read_by_uid', uid);
-	}
+	};
 
 	Categories.hasReadCategories = function(cids, uid, callback) {
 		var batch = RDB.multi();
@@ -204,7 +204,7 @@ var	RDB = require('./redis.js'),
 		batch.exec(function(err, hasRead) {
 			callback(hasRead);
 		});
-	}
+	};
 
 	Categories.hasReadCategory = function(cid, uid, callback) {
 		RDB.sismember('cid:' + cid + ':read_by_uid', uid, function(err, hasRead) {
@@ -212,7 +212,7 @@ var	RDB = require('./redis.js'),
 
 			callback(hasRead);
 		});
-	}
+	};
 
 	Categories.getRecentReplies = function(cid, count, callback) {
 		RDB.zrevrange('categories:recent_posts:cid:' + cid, 0, (count<10)?10:count, function(err, pids) {
@@ -223,7 +223,7 @@ var	RDB = require('./redis.js'),
 				return;
 			}
 
-			if (pids.length == 0) {
+			if (pids.length === 0) {
 				callback([]);
 				return;
 			}
@@ -235,22 +235,21 @@ var	RDB = require('./redis.js'),
 				callback(postData);
 			});
 		});
-	}
+	};
 
 	Categories.moveRecentReplies = function(tid, oldCid, cid, callback) {
+		function movePost(pid, callback) {
+			posts.getPostField(pid, 'timestamp', function(timestamp) {
+				RDB.zrem('categories:recent_posts:cid:' + oldCid, pid);
+				RDB.zadd('categories:recent_posts:cid:' + cid, timestamp, pid);
+			});
+		}
+
 		topics.getPids(tid, function(err, pids) {
 			if(!err) {
-
-				function movePost(pid, callback) {
-					posts.getPostField(pid, 'timestamp', function(timestamp) {
-						RDB.zrem('categories:recent_posts:cid:' + oldCid, pid);
-						RDB.zadd('categories:recent_posts:cid:' + cid, timestamp, pid);
-					});
-				}
-
 				async.each(pids, movePost, function(err) {
 					if(!err) {
-						callback(null, 1)
+						callback(null, 1);
 					} else {
 						winston.err(err);
 						callback(err, null);
@@ -261,38 +260,38 @@ var	RDB = require('./redis.js'),
 				callback(err, null);
 			}
 		});
-	}
+	};
 
 	Categories.moveActiveUsers = function(tid, oldCid, cid, callback) {
+		function updateUser(uid) {
+			Categories.addActiveUser(cid, uid);
+			Categories.isUserActiveIn(oldCid, uid, function(err, active) {
+
+				if(!err && !active) {
+					Categories.removeActiveUser(oldCid, uid);
+				}
+			});
+		}
+
 		topics.getUids(tid, function(err, uids) {
 			if(!err && uids) {
-				function updateUser(uid) {
-					Categories.addActiveUser(cid, uid);
-					Categories.isUserActiveIn(oldCid, uid, function(err, active) {
-
-						if(!err && !active) {
-							Categories.removeActiveUser(oldCid, uid);
-						}
-					});
-				}
-
 				for(var i=0; i<uids.length; ++i) {
 					updateUser(uids[i]);
 				}
 			}
 		});
-	}
+	};
 
 	Categories.getCategoryData = function(cid, callback) {
 		RDB.exists('category:' + cid, function(err, exists) {
 			if (exists) RDB.hgetall('category:' + cid, callback);
 			else callback(new Error('No category found!'));
 		});
-	}
+	};
 
 	Categories.getCategoryField = function(cid, field, callback) {
 		RDB.hget('category:' + cid, field, callback);
-	}
+	};
 
 	Categories.getCategoryFields = function(cid, fields, callback) {
 		RDB.hmgetObject('category:' + cid, fields, function(err, data) {
@@ -301,15 +300,15 @@ var	RDB = require('./redis.js'),
 			else
 				winston.err(err);
 		});
-	}
+	};
 
 	Categories.setCategoryField = function(cid, field, value) {
 		RDB.hset('category:' + cid, field, value);
-	}
+	};
 
 	Categories.incrementCategoryFieldBy = function(cid, field, value) {
 		RDB.hincrby('category:' + cid, field, value);
-	}
+	};
 
 	Categories.getCategories = function(cids, callback, current_user) {
 		if (!cids || !Array.isArray(cids) || cids.length === 0) {
@@ -381,7 +380,7 @@ var	RDB = require('./redis.js'),
 							active = true;
 						++index;
 						callback(null);
-					})
+					});
 				},
 				function(err) {
 					if(err)
@@ -391,15 +390,14 @@ var	RDB = require('./redis.js'),
 				}
 			);
 		});
-	}
+	};
 
 	Categories.addActiveUser = function(cid, uid) {
 		RDB.sadd('cid:' + cid + ':active_users', uid);
-	}
+	};
 
 	Categories.removeActiveUser = function(cid, uid) {
 		RDB.srem('cid:' + cid + ':active_users', uid);
-	}
+	};
 
 }(exports));
-
