@@ -75,7 +75,7 @@ if (fs.existsSync(__dirname + '/config.json') && (!nconf.get('setup') && !nconf.
 			templates = require('./public/src/templates.js'),
 			webserver = require('./src/webserver.js'),
 			websockets = require('./src/websockets.js'),
-			plugins = require('./src/plugins'),
+			plugins = require('./src/plugins'),	// Don't remove this - plugins initializes itself
 			admin = {
 				'categories': require('./src/admin/categories.js')
 			};

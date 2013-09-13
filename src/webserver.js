@@ -21,7 +21,8 @@ var express = require('express'),
 	testBed = require('./routes/testbed.js'),
 	auth = require('./routes/authentication.js'),
 	meta = require('./meta.js'),
-	feed = require('./feed');
+	feed = require('./feed'),
+	plugins = require('./plugins');
 
 (function(app) {
 	var templates = null;
@@ -79,6 +80,29 @@ var express = require('express'),
 	app.use(function(req, res, next) {
 		res.locals.csrf_token = req.session._csrf;
 		next();
+	});
+
+	// Static Directories for NodeBB Plugins
+	app.configure(function() {
+		var	tailMiddlewares = [];
+
+		plugins.ready(function() {
+			// Remove some middlewares until the router is gone
+			// This is not recommended behaviour: http://stackoverflow.com/a/13691542/122353
+			// Also: https://www.exratione.com/2013/03/nodejs-abusing-express-3-to-enable-late-addition-of-middleware/
+			tailMiddlewares.push(app.stack.pop());
+			tailMiddlewares.push(app.stack.pop());
+			tailMiddlewares.push(app.stack.pop());
+			for(d in plugins.staticDirs) {
+				app.use(nconf.get('relative_path') + '/plugins/' + d, express.static(plugins.staticDirs[d]));
+			}
+
+			// Push the removed middlewares back onto the application stack
+			tailMiddlewares.reverse();
+			app.stack.push(tailMiddlewares.shift());
+			app.stack.push(tailMiddlewares.shift());
+			app.stack.push(tailMiddlewares.shift());
+		});
 	});
 
 	module.exports.init = function() {

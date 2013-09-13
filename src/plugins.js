@@ -3,9 +3,15 @@ var	fs = require('fs'),
 	RDB = require('./redis.js'),
 	async = require('async'),
 	winston = require('winston'),
+	eventEmitter = require('events').EventEmitter,
 	plugins = {
 		libraries: {},
 		loadedHooks: {},
+		staticDirs: {},
+
+		// Events
+		readyEvent: new eventEmitter,
+
 		init: function() {
 			if (this.initialized) return;
 			if (global.env === 'development') winston.info('[plugins] Initializing plugins system');
@@ -50,7 +56,12 @@ var	fs = require('fs'),
 				}
 
 				if (global.env === 'development') winston.info('[plugins] Plugins OK');
+
+				_self.readyEvent.emit('ready');
 			});
+		},
+		ready: function(callback) {
+			this.readyEvent.once('ready', callback);
 		},
 		initialized: false,
 		loadPlugin: function(pluginPath, callback) {
@@ -59,19 +70,48 @@ var	fs = require('fs'),
 			fs.readFile(path.join(pluginPath, 'plugin.json'), function(err, data) {
 				if (err) return callback(err);
 
-				var	pluginData = JSON.parse(data);
-				_self.libraries[pluginData.id] = require(path.join(pluginPath, pluginData.library));
-				if (pluginData.hooks) {
-					for(var x=0,numHooks=pluginData.hooks.length;x<numHooks;x++) {
-						_self.registerHook(pluginData.id, pluginData.hooks[x]);
-					}
-				}
-				if (global.env === 'development') winston.info('[plugins] Loaded plugin: ' + pluginData.id);
+				var	pluginData = JSON.parse(data),
+					libraryPath, staticDir;
 
-				callback();
+				async.parallel([
+					function(next) {
+						if (pluginData.library) {
+							libraryPath = path.join(pluginPath, pluginData.library);
+
+							fs.exists(libraryPath, function(exists) {
+								if (exists) {
+									_self.libraries[pluginData.id] = require(libraryPath);
+
+									if (pluginData.hooks && Array.isArray(pluginData.hooks) && pluginData.hooks.length > 0) {
+										async.each(pluginData.hooks, function(hook, next) {
+											_self.registerHook(pluginData.id, hook, next);
+										}, next);
+									}
+								}
+							});
+						} else next();
+					},
+					function(next) {
+						if (pluginData.staticDir) {
+							staticDir = path.join(pluginPath, pluginData.staticDir);
+
+							fs.exists(staticDir, function(exists) {
+								if (exists) {
+									_self.staticDirs[pluginData.id] = staticDir;
+									next();
+								} else next();
+							});
+						} else next();
+					}
+				], function(err) {
+					if (!err) {
+						if (global.env === 'development') winston.info('[plugins] Loaded plugin: ' + pluginData.id);
+						callback();
+					} else callback(new Error('Could not load plugin system'))
+				});
 			});
 		},
-		registerHook: function(id, data) {
+		registerHook: function(id, data, callback) {
 			/*
 				`data` is an object consisting of (* is required):
 					`data.hook`*, the name of the NodeBB hook
@@ -89,6 +129,7 @@ var	fs = require('fs'),
 				_self.loadedHooks[data.hook].push([id, data.method, !!data.callbacked, data.priority]);
 
 				if (global.env === 'development') winston.info('[plugins] Hook registered: ' + data.hook + ' will call ' + id);
+				callback();
 			} else return;
 		},
 		fireHook: function(hook, args, callback) {
