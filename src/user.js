@@ -627,20 +627,20 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.get_uid_by_username = function(username, callback) {
-		RDB.get('username:' + username + ':uid', function(err, data) {
+		RDB.get('username:' + username + ':uid', function(err, uid) {
 			if (err) {
 				RDB.handle(err);
 			}
-			callback(data);
+			callback(parseInt(uid, 10)); // always return a number
 		});
 	};
 
 	User.get_uid_by_userslug = function(userslug, callback) {
-		RDB.get('userslug:' + userslug + ':uid', function(err, data) {
+		RDB.get('userslug:' + userslug + ':uid', function(err, uid) {
 			if (err) {
 				RDB.handle(err);
 			}
-			callback(data);
+			callback(parseInt(uid, 10)); // always return a number
 		});
 	};
 
