@@ -110,10 +110,12 @@ var user = require('./../user.js'),
 		app.get('/api/topic/:id/:slug?', function(req, res, next) {
 			var uid = (req.user) ? req.user.uid : 0;
 			topics.getTopicWithPosts(req.params.id, uid, 0, 10, function(err, data) {
-				if(data.deleted === '1' && data.expose_tools === 0) {
-					return res.json(404, {});
-				}
-				res.json(data);
+				if (!err) {
+					if(data.deleted === '1' && data.expose_tools === 0) {
+						return res.json(404, {});
+					}
+					res.json(data);
+				} else res.json(404, {});
 			});
 		});
 
