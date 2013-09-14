@@ -115,7 +115,7 @@ var user = require('./../user.js'),
 						return res.json(404, {});
 					}
 					res.json(data);
-				} else res.json(404, {});
+				} else next();
 			});
 		});
 
