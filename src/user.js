@@ -628,12 +628,7 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.get_uid_by_username = function(username, callback) {
-		RDB.hget('username::uid', username, function(err, data) {
-			if (err) {
-				RDB.handle(err);
-			}
-			callback(data);
-		});
+		RDB.hget('username:uid', username, callback);
 	};
 
 	User.get_uid_by_userslug = function(userslug, callback) {
