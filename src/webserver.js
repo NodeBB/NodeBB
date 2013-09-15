@@ -4,8 +4,7 @@ var express = require('express'),
 	server = require('http').createServer(WebServer),
 	RedisStore = require('connect-redis')(express),
 	path = require('path'),
-	redis = require('redis'),
-	redisServer = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host')),
+	RDB = require('./redis'),
 	utils = require('../public/src/utils.js'),
 	pkg = require('../package.json'),
 	fs = require('fs'),
@@ -67,7 +66,7 @@ var express = require('express'),
 	app.use(express.compress());
 	app.use(express.session({
 		store: new RedisStore({
-			client: redisServer,
+			client: RDB,
 			ttl: 60*60*24*30
 		}),
 		secret: nconf.get('secret'),
