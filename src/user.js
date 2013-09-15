@@ -603,7 +603,7 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.exists = function(userslug, callback) {
-		User.get_uid_by_userslug(userslug, function(exists) {
+		User.get_uid_by_userslug(userslug, function(err, exists) {
 			callback(!!exists);
 		});
 	};
@@ -632,12 +632,7 @@ var utils = require('./../public/src/utils.js'),
 	};
 
 	User.get_uid_by_userslug = function(userslug, callback) {
-		RDB.hget('userslug:uid', userslug, function(err, data) {
-			if (err) {
-				RDB.handle(err);
-			}
-			callback(data);
-		});
+		RDB.hget('userslug:uid', userslug, callback);
 	};
 
 	User.get_usernames_by_uids = function(uids, callback) {

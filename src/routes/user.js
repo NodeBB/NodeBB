@@ -61,7 +61,7 @@ var user = require('./../user.js'),
 				return;
 			}
 
-			user.get_uid_by_userslug(req.params.userslug, function(uid) {
+			user.get_uid_by_userslug(req.params.userslug, function(err, uid) {
 				if(!uid) {
 					return next();
 				}
@@ -194,7 +194,7 @@ var user = require('./../user.js'),
 			if(!req.user)
 				return res.redirect('/403');
 
-			user.get_uid_by_userslug(req.params.userslug, function(uid) {
+			user.get_uid_by_userslug(req.params.userslug, function(err, uid) {
 				if(!uid) {
 					res.redirect('/404');
 					return;
@@ -211,7 +211,7 @@ var user = require('./../user.js'),
 			if(!req.user)
 				return res.redirect('/403');
 
-			user.get_uid_by_userslug(req.params.userslug, function(uid) {
+			user.get_uid_by_userslug(req.params.userslug, function(err, uid) {
 				if(!uid) {
 					res.redirect('/404');
 					return;
@@ -227,7 +227,7 @@ var user = require('./../user.js'),
 			if(!req.user)
 				return res.redirect('/403');
 
-			user.get_uid_by_userslug(req.params.userslug, function(uid) {
+			user.get_uid_by_userslug(req.params.userslug, function(err, uid) {
 				if(!uid) {
 					res.redirect('/404');
 					return;
@@ -282,7 +282,7 @@ var user = require('./../user.js'),
 		app.get('/api/users/:userslug/settings', function(req, res, next) {
 			var callerUID = req.user ? req.user.uid : 0;
 
-			user.get_uid_by_userslug(req.params.userslug, function(uid) {
+			user.get_uid_by_userslug(req.params.userslug, function(err, uid) {
 				if(!uid) {
 					res.json(404, { error: 'User not found!' })	;
 					return;
@@ -312,7 +312,7 @@ var user = require('./../user.js'),
 		app.get('/api/users/:userslug/favourites', function(req, res, next) {
 			var callerUID = req.user ? req.user.uid : 0;
 
-			user.get_uid_by_userslug(req.params.userslug, function(uid) {
+			user.get_uid_by_userslug(req.params.userslug, function(err, uid) {
 				if(!uid) {
 					res.json(404, { error: 'User not found!' })	;
 					return;
@@ -399,7 +399,7 @@ var user = require('./../user.js'),
 		}
 
 		function getUserDataByUserSlug(userslug, callerUID, callback) {
-			user.get_uid_by_userslug(userslug, function(uid) {
+			user.get_uid_by_userslug(userslug, function(err, uid) {
 
 				if(uid === null) {
 					callback(null);
