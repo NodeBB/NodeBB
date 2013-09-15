@@ -67,6 +67,37 @@ function upgradeUser(uid, callback) {
 	});
 }
 
+function upgradeUserHash(uid, callback) {
+	user.getUserFields(uid, ['username', 'userslug', 'email'], function(err, userData) {
+		if(err)
+			return callback(err);
+
+		async.parallel([
+			function(next) {
+				if(userData.username)
+					RDB.hset('username:uid', userData.username, uid, next);
+				else
+					next(null);
+			},
+			function(next) {
+				if(userData.userslug)
+					RDB.hset('userslug:uid', userData.userslug, uid, next);
+				else
+					next(null);
+			},
+			function(next) {
+				if(userData.email)
+					RDB.hset('email:uid', userData.email, uid, next);
+				else
+					next(null);
+			}
+
+		], function(err, result) {
+			callback(err);
+		});
+	});
+}
+
 function upgradeAdmins(callback) {
 	Groups.getGidFromName('Administrators', function(err, gid) {
 		if (!err && !gid) {
@@ -80,7 +111,7 @@ function upgradeAdmins(callback) {
 					Groups.create('Administrators', 'Forum Administrators', next);
 				}
 			], function(err, results) {
-				var	gid = results[1].gid;
+				var gid = results[1].gid;
 
 				async.each(results[0], function(uid, next) {
 					Groups.join(gid, uid, next);
@@ -130,6 +161,24 @@ exports.upgrade = function() {
 
 			});
 		},
+
+		function upgradeUserHashes(next) {
+			winston.info('upgrading user hashes');
+			RDB.zrange('users:joindate', 0, -1, function(err, uids) {
+				if(err)
+					return next(err);
+
+				async.each(uids, upgradeUserHash, function(err) {
+					if(!err) {
+						winston.info('upgraded user hashes');
+						next(null, null);
+					} else {
+						next(err, null);
+					}
+				});
+			});
+		},
+
 		upgradeAdmins
 	];
 
