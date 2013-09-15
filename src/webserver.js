@@ -462,5 +462,5 @@ var express = require('express'),
 
 }(WebServer));
 
-server.listen(nconf.get('port'));
+server.listen(nconf.get('PORT') || nconf.get('port'));
 global.server = server;

@@ -18,7 +18,7 @@
 
 // Configuration setup
 nconf = require('nconf');
-nconf.argv();
+nconf.argv().env();
 
 var fs = require('fs'),
 	winston = require('winston'),
