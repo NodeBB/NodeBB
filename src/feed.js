@@ -28,7 +28,7 @@
 		if (process.env.NODE_ENV === 'development') winston.info('[rss] Updating RSS feeds for topic ' + tid);
 
 		topics.getTopicWithPosts(tid, 0, 0, -1, function(err, topicData) {
-			if (err) return winston.error('Problem saving topic RSS feed', err.stack);
+			if (err) return callback(new Error('topic-invalid'));
 
 			var	feed = new rss({
 					title: topicData.topic_name,
@@ -71,7 +71,7 @@
 	Feed.updateCategory = function(cid, callback) {
 		if (process.env.NODE_ENV === 'development') winston.info('[rss] Updating RSS feeds for category ' + cid);
 		categories.getCategoryById(cid, 0, function(err, categoryData) {
-			if (err) return winston.error('Could not update RSS feed for category ' + cid, err.stack);
+			if (err) return callback(new Error('category-invalid'));
 
 			var	feed = new rss({
 					title: categoryData.category_name,

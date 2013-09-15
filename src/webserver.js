@@ -244,8 +244,9 @@ var express = require('express'),
 					};
 
 				if (!fs.existsSync(rssPath)) {
-					feed.updateTopic(tid, function() {
-						loadFeed();
+					feed.updateTopic(tid, function(err) {
+						if (err) res.redirect('/404');
+						else loadFeed();
 					});
 				} else loadFeed();
 
@@ -320,8 +321,9 @@ var express = require('express'),
 					};
 
 				if (!fs.existsSync(rssPath)) {
-					feed.updateCategory(cid, function() {
-						loadFeed();
+					feed.updateCategory(cid, function(err) {
+						if (err) res.redirect('/404');
+						else loadFeed();
 					});
 				} else loadFeed();
 
