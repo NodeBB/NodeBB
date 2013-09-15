@@ -76,11 +76,11 @@ var utils = require('./../public/src/utils.js'),
 					'showemail': 0
 				});
 
-				RDB.set('username:' + username + ':uid', uid);
-				RDB.set('userslug:'+ userslug +':uid', uid);
+				RDB.hset('username:uid', username, uid);
+				RDB.hset('userslug:uid', userslug, uid);
 
 				if (email !== undefined) {
-					RDB.set('email:' + email +':uid', uid);
+					RDB.hset('email:uid', email, uid);
 					User.sendConfirmationEmail(email);
 				}
 
@@ -114,9 +114,10 @@ var utils = require('./../public/src/utils.js'),
 				console.log('deleting uid ' + uid);
 
 				User.getUserData(uid, function(err, data) {
-					RDB.del('username:' + data['username'] + ':uid');
-					RDB.del('email:' + data['email'] +':uid');
-					RDB.del('userslug:'+ data['userslug'] +':uid');
+
+					RDB.hdel('username:uid', data['username']);
+					RDB.hdel('email:uid', data['email']);
+					RDB.hdel('userslug:uid', data['userslug']);
 
 					RDB.del('user:' + uid);
 					RDB.del('followers:' + uid);
@@ -250,8 +251,8 @@ var utils = require('./../public/src/utils.js'),
 						if(err)
 							return next(err);
 
-						RDB.del('email:' + userData['email'] + ':uid');
-						RDB.set('email:' + data['email'] + ':uid', uid);
+						RDB.hdel('email:uid', userData['email']);
+						RDB.hset('email:uid', data['email'], uid);
 						User.setUserField(uid, field, data[field]);
 						if(userData.picture !== userData.uploadedpicture) {
 							returnData.picture = gravatarpicture;
@@ -275,7 +276,7 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.isEmailAvailable = function(email, callback) {
-		RDB.exists('email:' + email + ':uid' , function(err, exists) {
+		RDB.hexists('email:uid', email, function(err, exists) {
 			callback(err, !exists);
 		});
 	}
@@ -627,7 +628,7 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.get_uid_by_username = function(username, callback) {
-		RDB.get('username:' + username + ':uid', function(err, data) {
+		RDB.hget('username::uid', username, function(err, data) {
 			if (err) {
 				RDB.handle(err);
 			}
@@ -636,7 +637,7 @@ var utils = require('./../public/src/utils.js'),
 	};
 
 	User.get_uid_by_userslug = function(userslug, callback) {
-		RDB.get('userslug:' + userslug + ':uid', function(err, data) {
+		RDB.hget('userslug:uid', userslug, function(err, data) {
 			if (err) {
 				RDB.handle(err);
 			}
@@ -683,7 +684,7 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.get_uid_by_email = function(email, callback) {
-		RDB.get('email:' + email + ':uid', function(err, data) {
+		RDB.hget('email:uid', email, function(err, data) {
 			if (err) {
 				RDB.handle(err);
 			}

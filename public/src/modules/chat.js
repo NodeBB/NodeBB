@@ -25,9 +25,9 @@ define(['taskbar'], function(taskbar) {
 		socket.emit('api:user.isOnline', chatModal.touid, function(data) {
 			if(data.online !== chatModal.online) {
 				if(data.online) {
-					module.appendChatMessage(chatModal, chatModal.username + ' has come online.\n', data.timestamp);
+					module.appendChatMessage(chatModal, chatModal.username + ' is currently online.\n', data.timestamp);
 				} else {
-					module.appendChatMessage(chatModal, chatModal.username + ' has gone offline.\n', data.timestamp);
+					module.appendChatMessage(chatModal, chatModal.username + ' is currently offline.\n', data.timestamp);
 				}
 				chatModal.online = data.online;
 			}
@@ -38,7 +38,7 @@ define(['taskbar'], function(taskbar) {
 	
 	function checkOnlineStatus(chatModal) {
 		if(chatModal.intervalId === 0) {
-			chatModal.intervalId = setInterval(function(){
+			chatModal.intervalId = setInterval(function() {
 				checkStatus(chatModal);
 			}, 1000);
 		}
@@ -77,11 +77,8 @@ define(['taskbar'], function(taskbar) {
 		
 		addSendHandler(chatModal);
 
-		checkStatus(chatModal, function(online) {
-			chatModal.online = online;
-			getChatMessages(chatModal, function() {
-				checkOnlineStatus(chatModal);
-			});
+		getChatMessages(chatModal, function() {
+			checkOnlineStatus(chatModal);
 		});
 
 		taskbar.push('chat', chatModal.attr('UUID'), {title:'chat with ' + username});
