@@ -19,10 +19,9 @@ var SocketIO = require('socket.io').listen(global.server, {
 	meta = require('./meta.js'),
 	async = require('async'),
 	RedisStoreLib = require('connect-redis')(express),
-	redis = require('redis'),
-	redisServer = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host')),
+	RDB = require('./redis'),
 	RedisStore = new RedisStoreLib({
-		client: redisServer,
+		client: RDB,
 		ttl: 60*60*24*14
 	}),
 	socketCookieParser = express.cookieParser(nconf.get('secret')),
