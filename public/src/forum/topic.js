@@ -636,7 +636,7 @@
 		var scrollBottom = scrollTop + windowHeight;
 
 		if (scrollTop < 50 && postcount > 1) {
-			postAuthorImage.src = (jQuery('.main-avatar img').attr('src'));
+			postAuthorImage.src = (jQuery('.main-post .avatar img').attr('src'));
 			mobileAuthorOverlay.innerHTML = 'Posted by ' + jQuery('.main-post').attr('data-username') + ', ' + jQuery('.main-post').find('.relativeTimeAgo').html();
 			pagination.innerHTML = '0 out of ' + postcount;
 			return;
