@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	var	createEl = document.getElementById('create'),
+	var createEl = document.getElementById('create'),
 		createModal = $('#create-modal'),
 		createSubmitBtn = document.getElementById('create-modal-go'),
 		createNameEl = $('#create-group-name'),
@@ -19,25 +19,25 @@ $(document).ready(function() {
 	}, false);
 
 	createSubmitBtn.addEventListener('click', function() {
-		var	submitObj = {
-				name: createNameEl.val(),
-				description: $('#create-group-desc').val()
-			},
+		var submitObj = {
+			name: createNameEl.val(),
+			description: $('#create-group-desc').val()
+		},
 			errorEl = $('#create-modal-error'),
 			errorText;
 
 		socket.emit('api:groups.create', submitObj, function(err, data) {
 			if (err) {
-				switch(err) {
+				switch (err) {
 					case 'group-exists':
 						errorText = '<strong>Please choose another name</strong><p>There seems to be a group with this name already.</p>';
-					break;
+						break;
 					case 'name-too-short':
 						errorText = '<strong>Please specify a grou name</strong><p>A group name is required for administrative purposes.</p>';
-					break;
+						break;
 					default:
 						errorText = '<strong>Uh-Oh</strong><p>There was a problem creating your group. Please try again later!</p>';
-					break;
+						break;
 				}
 
 				errorEl.html(errorText).removeClass('hide');
@@ -51,10 +51,10 @@ $(document).ready(function() {
 	});
 
 	listEl.on('click', 'button[data-action]', function() {
-		var	action = this.getAttribute('data-action'),
+		var action = this.getAttribute('data-action'),
 			gid = $(this).parents('li[data-gid]').attr('data-gid');
 
-		switch(action) {
+		switch (action) {
 			case 'delete':
 				bootbox.confirm('Are you sure you wish to delete this group?', function(confirm) {
 					if (confirm) {
@@ -63,10 +63,10 @@ $(document).ready(function() {
 						});
 					}
 				});
-			break;
+				break;
 			case 'members':
 				socket.emit('api:groups.get', gid, function(err, groupObj) {
-					var	formEl = detailsModal.find('form'),
+					var formEl = detailsModal.find('form'),
 						nameEl = formEl.find('#change-group-name'),
 						descEl = formEl.find('#change-group-desc'),
 						memberIcon = document.createElement('li'),
@@ -83,7 +83,7 @@ $(document).ready(function() {
 					memberIconImg = memberIcon.querySelector('img');
 					memberIconLabel = memberIcon.querySelector('span');
 					if (numMembers > 0) {
-						for(x=0;x<numMembers;x++) {
+						for (x = 0; x < numMembers; x++) {
 							memberIconImg.src = groupObj.members[x].picture;
 							memberIconLabel.innerHTML = groupObj.members[x].username;
 							memberIcon.setAttribute('data-uid', groupObj.members[x].uid);
@@ -96,17 +96,17 @@ $(document).ready(function() {
 					detailsModal.attr('data-gid', groupObj.gid);
 					detailsModal.modal('show');
 				});
-			break;
+				break;
 		}
 	});
 
 	detailsSearch.on('keyup', function() {
-		var	searchEl = this;
+		var searchEl = this;
 
 		if (searchDelay) clearTimeout(searchDelay);
 
 		searchDelay = setTimeout(function() {
-			var	searchText = searchEl.value,
+			var searchText = searchEl.value,
 				resultsEl = document.getElementById('group-details-search-results'),
 				foundUser = document.createElement('li'),
 				foundUserImg, foundUserLabel;
@@ -117,11 +117,11 @@ $(document).ready(function() {
 
 			socket.emit('api:admin.user.search', searchText, function(err, results) {
 				if (!err && results && results.length > 0) {
-					var	numResults = results.length,
+					var numResults = results.length,
 						resultsSlug = document.createDocumentFragment(),
 						x;
 					if (numResults > 4) numResults = 4;
-					for(x=0;x<numResults;x++) {
+					for (x = 0; x < numResults; x++) {
 						foundUserImg.src = results[x].picture;
 						foundUserLabel.innerHTML = results[x].username;
 						foundUser.setAttribute('title', results[x].username);
@@ -137,7 +137,7 @@ $(document).ready(function() {
 	});
 
 	searchResults.on('click', 'li[data-uid]', function() {
-		var	userLabel = this,
+		var userLabel = this,
 			uid = parseInt(this.getAttribute('data-uid')),
 			gid = detailsModal.attr('data-gid'),
 			members = [];
@@ -159,7 +159,7 @@ $(document).ready(function() {
 	});
 
 	groupMembersEl.on('click', 'li[data-uid]', function() {
-		var	uid = this.getAttribute('data-uid'),
+		var uid = this.getAttribute('data-uid'),
 			gid = detailsModal.attr('data-gid');
 
 		socket.emit('api:groups.leave', {
@@ -173,7 +173,7 @@ $(document).ready(function() {
 	});
 
 	detailsModalSave.on('click', function() {
-		var	formEl = detailsModal.find('form'),
+		var formEl = detailsModal.find('form'),
 			nameEl = formEl.find('#change-group-name'),
 			descEl = formEl.find('#change-group-desc'),
 			gid = detailsModal.attr('data-gid');

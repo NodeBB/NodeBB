@@ -1,6 +1,3 @@
-
-
-
 var nodebb_admin = (function(nodebb_admin) {
 
 	nodebb_admin.config = undefined;
@@ -19,21 +16,21 @@ var nodebb_admin = (function(nodebb_admin) {
 			numFields = fields.length,
 			saveBtn = document.getElementById('save'),
 			x, key, inputType;
-		for(x=0;x<numFields;x++) {
+		for (x = 0; x < numFields; x++) {
 			key = fields[x].getAttribute('data-field');
 			inputType = fields[x].getAttribute('type');
 			if (fields[x].nodeName === 'INPUT') {
 				if (nodebb_admin.config[key]) {
-					switch(inputType) {
+					switch (inputType) {
 						case 'text':
 						case 'textarea':
 						case 'number':
 							fields[x].value = nodebb_admin.config[key];
-						break;
+							break;
 
 						case 'checkbox':
 							fields[x].checked = nodebb_admin.config[key] === '1' ? true : false;
-						break;
+							break;
 					}
 				}
 			} else if (fields[x].nodeName === 'TEXTAREA') {
@@ -45,25 +42,28 @@ var nodebb_admin = (function(nodebb_admin) {
 			var key, value;
 			e.preventDefault();
 
-			for(x=0;x<numFields;x++) {
+			for (x = 0; x < numFields; x++) {
 				key = fields[x].getAttribute('data-field');
 				if (fields[x].nodeName === 'INPUT') {
 					inputType = fields[x].getAttribute('type');
-					switch(inputType) {
+					switch (inputType) {
 						case 'text':
 						case 'number':
 							value = fields[x].value;
-						break;
+							break;
 
 						case 'checkbox':
 							value = fields[x].checked ? '1' : '0';
-						break;
+							break;
 					}
 				} else if (fields[x].nodeName === 'TEXTAREA') {
 					value = fields[x].value;
 				}
 
-				socket.emit('api:config.set', { key: key, value: value });
+				socket.emit('api:config.set', {
+					key: key,
+					value: value
+				});
 			}
 		});
 	}
@@ -82,7 +82,7 @@ var nodebb_admin = (function(nodebb_admin) {
 		menuEl.addEventListener('click', function(e) {
 			parentEl = e.target.parentNode;
 			if (parentEl.nodeName === 'LI') {
-				for(var x=0,numLis=liEls.length;x<numLis;x++) {
+				for (var x = 0, numLis = liEls.length; x < numLis; x++) {
 					if (liEls[x] !== parentEl) jQuery(liEls[x]).removeClass('active');
 					else jQuery(parentEl).addClass('active');
 				}
@@ -119,4 +119,3 @@ var nodebb_admin = (function(nodebb_admin) {
 	return nodebb_admin;
 
 }(nodebb_admin || {}));
-
