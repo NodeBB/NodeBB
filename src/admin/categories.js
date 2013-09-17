@@ -1,4 +1,4 @@
-var	RDB = require('./../redis.js'),
+var RDB = require('./../redis.js'),
 	utils = require('./../../public/src/utils.js'),
 	categories = require('./../categories.js');
 

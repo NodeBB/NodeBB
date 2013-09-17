@@ -12,7 +12,7 @@ var ajaxify = {};
 
 	var events = [];
 	ajaxify.register_events = function(new_page_events) {
-		for (var i = 0, ii = events.length; i<ii; i++) {
+		for (var i = 0, ii = events.length; i < ii; i++) {
 			socket.removeAllListeners(events[i]); // optimize this to user removeListener(event, listener) instead.
 		}
 
@@ -42,14 +42,14 @@ var ajaxify = {};
 
 		var hash = window.location.hash;
 
-		if(url.indexOf(RELATIVE_PATH.slice(1)) !== -1) {
+		if (url.indexOf(RELATIVE_PATH.slice(1)) !== -1) {
 			url = url.slice(RELATIVE_PATH.length);
 		}
 
 		var tpl_url = templates.get_custom_map(url.split('?')[0]);
 
 		if (tpl_url == false && !templates[url]) {
-			if(url === '' || url === '/') {
+			if (url === '' || url === '/') {
 				tpl_url = 'home';
 			} else {
 				tpl_url = url.split('/')[0].split('?')[0];
@@ -79,9 +79,9 @@ var ajaxify = {};
 				app.process_page();
 
 				jQuery('#content, #footer').stop(true, true).fadeIn(200, function() {
-					if(window.location.hash)
+					if (window.location.hash)
 						hash = window.location.hash;
-					if(hash)
+					if (hash)
 						app.scrollToPost(hash.substr(1));
 				});
 
@@ -107,9 +107,9 @@ var ajaxify = {};
 				return href == 'javascript:;' || href == window.location.href + "#" || href.slice(-1) === "#";
 			}
 
-			if(hrefEmpty(this.href)) return;
+			if (hrefEmpty(this.href)) return;
 
-			var url = this.href.replace(rootUrl +'/', '');
+			var url = this.href.replace(rootUrl + '/', '');
 
 			if (this.target !== '') return;
 
@@ -130,16 +130,16 @@ var ajaxify = {};
 		};
 
 		function evalScript(elem) {
-			var data = (elem.text || elem.textContent || elem.innerHTML || "" ),
-				head =	document.getElementsByTagName("head")[0] ||
-						document.documentElement,
+			var data = (elem.text || elem.textContent || elem.innerHTML || ""),
+				head = document.getElementsByTagName("head")[0] ||
+					document.documentElement,
 				script = document.createElement("script");
 
 			script.type = "text/javascript";
 			try {
-			  script.appendChild(document.createTextNode(data));
-			} catch(e) {
-			  script.text = data;
+				script.appendChild(document.createTextNode(data));
+			} catch (e) {
+				script.text = data;
 			}
 
 			if (elem.src) {
@@ -159,8 +159,8 @@ var ajaxify = {};
 
 		for (i = 0; children_nodes[i]; i++) {
 			child = children_nodes[i];
-			if (nodeName(child, "script" ) &&
-			(!child.type || child.type.toLowerCase() === "text/javascript")) {
+			if (nodeName(child, "script") &&
+				(!child.type || child.type.toLowerCase() === "text/javascript")) {
 				scripts.push(child);
 			}
 		}

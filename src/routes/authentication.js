@@ -25,7 +25,9 @@
 			callbackURL: nconf.get('url') + 'auth/twitter/callback'
 		}, function(token, tokenSecret, profile, done) {
 			login_module.loginViaTwitter(profile.id, profile.username, profile.photos, function(err, user) {
-				if (err) { return done(err); }
+				if (err) {
+					return done(err);
+				}
 				done(null, user);
 			});
 		}));
@@ -40,7 +42,9 @@
 			callbackURL: nconf.get('url') + 'auth/google/callback'
 		}, function(accessToken, refreshToken, profile, done) {
 			login_module.loginViaGoogle(profile.id, profile.displayName, profile.emails[0].value, function(err, user) {
-				if (err) { return done(err); }
+				if (err) {
+					return done(err);
+				}
 				done(null, user);
 			});
 		}));
@@ -55,7 +59,9 @@
 			callbackURL: nconf.get('url') + 'auth/facebook/callback'
 		}, function(accessToken, refreshToken, profile, done) {
 			login_module.loginViaFacebook(profile.id, profile.displayName, profile.emails[0].value, function(err, user) {
-				if (err) { return done(err); }
+				if (err) {
+					return done(err);
+				}
 				done(null, user);
 			});
 		}));
@@ -90,7 +96,10 @@
 				winston.info('[Auth] Session ' + req.sessionID + ' logout (uid: ' + req.user.uid + ')');
 				login_module.logout(req.sessionID, function(logout) {
 					req.logout();
-					app.build_header({ req: req, res: res }, function(err, header) {
+					app.build_header({
+						req: req,
+						res: res
+					}, function(err, header) {
 						res.send(header + templates['logout'] + templates['footer']);
 					});
 				});
@@ -107,7 +116,9 @@
 		}
 
 		if (login_strategies.indexOf('google') !== -1) {
-			app.get('/auth/google', passport.authenticate('google', { scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email' }));
+			app.get('/auth/google', passport.authenticate('google', {
+				scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
+			}));
 
 			app.get('/auth/google/callback', passport.authenticate('google', {
 				successRedirect: '/',
@@ -116,7 +127,9 @@
 		}
 
 		if (login_strategies.indexOf('facebook') !== -1) {
-			app.get('/auth/facebook', passport.authenticate('facebook', { scope: 'email' }));
+			app.get('/auth/facebook', passport.authenticate('facebook', {
+				scope: 'email'
+			}));
 
 			app.get('/auth/facebook/callback', passport.authenticate('facebook', {
 				successRedirect: '/',
@@ -127,29 +140,41 @@
 
 
 		app.get('/reset/:code', function(req, res) {
-			app.build_header({ req: req, res: res }, function(err, header) {
-				res.send(header + app.create_route('reset/'+req.params.code) + templates['footer']);
+			app.build_header({
+				req: req,
+				res: res
+			}, function(err, header) {
+				res.send(header + app.create_route('reset/' + req.params.code) + templates['footer']);
 			});
 		});
 
 		app.get('/reset', function(req, res) {
-			app.build_header({ req: req, res: res }, function(err, header) {
+			app.build_header({
+				req: req,
+				res: res
+			}, function(err, header) {
 				res.send(header + app.create_route('reset') + templates['footer']);
 			});
 		});
 
 		app.post('/login', function(req, res, next) {
 			passport.authenticate('local', function(err, user, info) {
-				if(err) {
+				if (err) {
 					return next(err);
 				}
 				if (!user) {
-					return res.send({ success : false, message : info.message });
+					return res.send({
+						success: false,
+						message: info.message
+					});
 				}
 				req.login({
 					uid: user.uid
 				}, function() {
-					res.send({ success : true, message : 'authentication succeeded' });
+					res.send({
+						success: true,
+						message: 'authentication succeeded'
+					});
 				});
 			})(req, res, next);
 		});

@@ -1,4 +1,4 @@
-var	fs = require('fs'),
+var fs = require('fs'),
 	path = require('path'),
 	RDB = require('./redis.js'),
 	async = require('async'),
@@ -16,7 +16,7 @@ var	fs = require('fs'),
 			if (this.initialized) return;
 			if (global.env === 'development') winston.info('[plugins] Initializing plugins system');
 
-			var	_self = this;
+			var _self = this;
 
 			// Read the list of activated plugins and require their libraries
 			async.waterfall([
@@ -27,13 +27,13 @@ var	fs = require('fs'),
 					if (plugins && Array.isArray(plugins) && plugins.length > 0) {
 						async.each(plugins, function(plugin, next) {
 							// TODO: Update this check to also check node_modules
-							var	pluginPath = path.join(__dirname, '../plugins/', plugin),
+							var pluginPath = path.join(__dirname, '../plugins/', plugin),
 								modulePath = path.join(__dirname, '../node_modules/', plugin);
 							if (fs.existsSync(pluginPath)) _self.loadPlugin(pluginPath, next);
 							else if (fs.existsSync(modulePath)) _self.loadPlugin(modulePath, next);
 							else {
 								if (global.env === 'development') winston.warn('[plugins] Plugin \'' + plugin + '\' not found');
-								next();	// Ignore this plugin silently
+								next(); // Ignore this plugin silently
 							}
 						}, next);
 					} else next();
@@ -41,7 +41,7 @@ var	fs = require('fs'),
 				function(next) {
 					if (global.env === 'development') winston.info('[plugins] Sorting hooks to fire in priority sequence');
 					Object.keys(_self.loadedHooks).forEach(function(hook) {
-						var	hooks = _self.loadedHooks[hook];
+						var hooks = _self.loadedHooks[hook];
 						hooks = hooks.sort(function(a, b) {
 							return a[3] - b[3];
 						});
@@ -65,12 +65,12 @@ var	fs = require('fs'),
 		},
 		initialized: false,
 		loadPlugin: function(pluginPath, callback) {
-			var	_self = this;
+			var _self = this;
 
 			fs.readFile(path.join(pluginPath, 'plugin.json'), function(err, data) {
 				if (err) return callback(err);
 
-				var	pluginData = JSON.parse(data),
+				var pluginData = JSON.parse(data),
 					libraryPath, staticDir;
 
 				async.parallel([
@@ -119,30 +119,30 @@ var	fs = require('fs'),
 					`data.callbacked`, whether or not the hook expects a callback (true), or a return (false). Only used for filters. (Default: false)
 					`data.priority`, the relative priority of the method when it is eventually called (default: 10)
 			*/
-			var	_self = this;
+			var _self = this;
 
 			if (data.hook && data.method) {
 				// Assign default priority of 10 if none is passed-in
 				if (!data.priority) data.priority = 10;
 
 				_self.loadedHooks[data.hook] = _self.loadedHooks[data.hook] || [];
-				_self.loadedHooks[data.hook].push([id, data.method, !!data.callbacked, data.priority]);
+				_self.loadedHooks[data.hook].push([id, data.method, !! data.callbacked, data.priority]);
 
 				if (global.env === 'development') winston.info('[plugins] Hook registered: ' + data.hook + ' will call ' + id);
 				callback();
 			} else return;
 		},
 		fireHook: function(hook, args, callback) {
-			var	_self = this
-				hookList = this.loadedHooks[hook];
+			var _self = this
+			hookList = this.loadedHooks[hook];
 
 			if (hookList && Array.isArray(hookList)) {
 				if (global.env === 'development') winston.info('[plugins] Firing hook: \'' + hook + '\'');
-				var	hookType = hook.split(':')[0];
-				switch(hookType) {
+				var hookType = hook.split(':')[0];
+				switch (hookType) {
 					case 'filter':
 						// Filters only take one argument, so only args[0] will be passed in
-						var	returnVal = (Array.isArray(args) ? args[0] : args);
+						var returnVal = (Array.isArray(args) ? args[0] : args);
 
 						async.eachSeries(hookList, function(hookObj, next) {
 							if (hookObj[2]) {
@@ -163,7 +163,7 @@ var	fs = require('fs'),
 
 							callback(returnVal);
 						});
-					break;
+						break;
 					case 'action':
 						async.each(hookList, function(hookObj) {
 							if (
@@ -176,14 +176,14 @@ var	fs = require('fs'),
 								if (global.env === 'development') winston.info('[plugins] Expected method \'' + hookObj[1] + '\' in plugin \'' + hookObj[0] + '\' not found, skipping.');
 							}
 						});
-					break;
+						break;
 					default:
 						// Do nothing...
-					break;
+						break;
 				}
 			} else {
 				// Otherwise, this hook contains no methods
-				var	returnVal = (Array.isArray(args) ? args[0] : args);
+				var returnVal = (Array.isArray(args) ? args[0] : args);
 				if (callback) callback(returnVal);
 			}
 		},
@@ -214,9 +214,9 @@ var	fs = require('fs'),
 		},
 		showInstalled: function(callback) {
 			// TODO: Also check /node_modules
-			var	_self = this;
-				localPluginPath = path.join(__dirname, '../plugins'),
-				npmPluginPath = path.join(__dirname, '../node_modules');
+			var _self = this;
+			localPluginPath = path.join(__dirname, '../plugins'),
+			npmPluginPath = path.join(__dirname, '../node_modules');
 
 			async.waterfall([
 				function(next) {
@@ -233,7 +233,7 @@ var	fs = require('fs'),
 						dirs[0] = dirs[0].map(function(file) {
 							return path.join(localPluginPath, file);
 						}).filter(function(file) {
-							var	stats = fs.statSync(file);
+							var stats = fs.statSync(file);
 							if (stats.isDirectory()) return true;
 							else return false;
 						});
@@ -241,8 +241,8 @@ var	fs = require('fs'),
 						dirs[1] = dirs[1].map(function(file) {
 							return path.join(npmPluginPath, file);
 						}).filter(function(file) {
-							var	stats = fs.statSync(file);
-							if (stats.isDirectory() && file.substr(npmPluginPath.length+1, 14) === 'nodebb-plugin-') return true;
+							var stats = fs.statSync(file);
+							if (stats.isDirectory() && file.substr(npmPluginPath.length + 1, 14) === 'nodebb-plugin-') return true;
 							else return false;
 						});
 
@@ -250,17 +250,17 @@ var	fs = require('fs'),
 					});
 				},
 				function(files, next) {
-					var	plugins = [];
+					var plugins = [];
 
 					async.each(files, function(file, next) {
-						var	configPath;
+						var configPath;
 
 						async.waterfall([
 							function(next) {
 								fs.readFile(path.join(file, 'plugin.json'), next);
 							},
 							function(configJSON, next) {
-								var	config = JSON.parse(configJSON);
+								var config = JSON.parse(configJSON);
 								_self.isActive(config.id, function(err, active) {
 									if (err) next(new Error('no-active-state'));
 
@@ -272,7 +272,7 @@ var	fs = require('fs'),
 								});
 							}
 						], function(err, config) {
-							if (err) return next();	// Silently fail
+							if (err) return next(); // Silently fail
 
 							plugins.push(config);
 							next();

@@ -6,7 +6,7 @@
 		$('.search-result-text').each(function() {
 			var text = $(this).html();
 			var regex = new RegExp(searchQuery, 'gi');
-			text = text.replace(regex, '<span class="label label-success">'+searchQuery+'</span>');
+			text = text.replace(regex, '<span class="label label-success">' + searchQuery + '</span>');
 			$(this).html(text);
 		});
 

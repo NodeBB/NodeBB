@@ -1,4 +1,3 @@
-
 var user = require('./../user.js'),
 	Groups = require('../groups'),
 	topics = require('./../topics.js'),
@@ -18,7 +17,7 @@ var user = require('./../user.js'),
 
 	Admin.build_header = function(res) {
 		return templates['admin/header'].parse({
-			csrf:res.locals.csrf_token,
+			csrf: res.locals.csrf_token,
 			relative_path: nconf.get('relative_path')
 		});
 	}
@@ -26,14 +25,14 @@ var user = require('./../user.js'),
 	Admin.create_routes = function(app) {
 
 		(function() {
-			var	routes = [
-					'categories/active', 'categories/disabled', 'users', 'topics', 'settings', 'themes',
-					'twitter', 'facebook', 'gplus', 'redis', 'motd', 'groups',
-					'users/latest', 'users/sort-posts', 'users/sort-reputation',
-					'users/search', 'plugins'
-				];
+			var routes = [
+				'categories/active', 'categories/disabled', 'users', 'topics', 'settings', 'themes',
+				'twitter', 'facebook', 'gplus', 'redis', 'motd', 'groups',
+				'users/latest', 'users/sort-posts', 'users/sort-reputation',
+				'users/search', 'plugins'
+			];
 
-			for (var i=0, ii=routes.length; i<ii; i++) {
+			for (var i = 0, ii = routes.length; i < ii; i++) {
 				(function(route) {
 					app.get('/admin/' + route, Admin.isAdmin, function(req, res) {
 						res.send(Admin.build_header(res) + app.create_route('admin/' + route) + templates['admin/footer']);
@@ -43,7 +42,7 @@ var user = require('./../user.js'),
 
 			var unit_tests = ['categories'];
 
-			for (var i=0, ii=unit_tests.length; i<ii; i++) {
+			for (var i = 0, ii = unit_tests.length; i < ii; i++) {
 				(function(route) {
 					app.get('/admin/testing/' + route, Admin.isAdmin, function(req, res) {
 						res.send(Admin.build_header(res) + app.create_route('admin/testing/' + route) + templates['admin/footer']);
@@ -56,40 +55,65 @@ var user = require('./../user.js'),
 		app.get('/admin', Admin.isAdmin, function(req, res) {
 			res.send(Admin.build_header(res) + app.create_route('admin/index') + templates['admin/footer']);
 		});
-		
+
 		app.get('/admin/index', Admin.isAdmin, function(req, res) {
 			res.send(Admin.build_header(res) + app.create_route('admin/index') + templates['admin/footer']);
 		});
 
 		app.get('/api/admin/index', function(req, res) {
-			res.json({version:pkg.version});
+			res.json({
+				version: pkg.version
+			});
 		});
 
 		app.get('/api/admin/users/search', function(req, res) {
-			res.json({search_display: 'block', loadmore_display:'none', users: []});
+			res.json({
+				search_display: 'block',
+				loadmore_display: 'none',
+				users: []
+			});
 		});
 
 		app.get('/api/admin/users/latest', function(req, res) {
 			user.getUsers('users:joindate', 0, 49, function(err, data) {
-				res.json({ search_display: 'none', loadmore_display:'block', users:data, yourid:req.user.uid });
+				res.json({
+					search_display: 'none',
+					loadmore_display: 'block',
+					users: data,
+					yourid: req.user.uid
+				});
 			});
 		});
 
 		app.get('/api/admin/users/sort-posts', function(req, res) {
 			user.getUsers('users:postcount', 0, 49, function(err, data) {
-				res.json({ search_display: 'none', loadmore_display:'block', users:data, yourid:req.user.uid });
+				res.json({
+					search_display: 'none',
+					loadmore_display: 'block',
+					users: data,
+					yourid: req.user.uid
+				});
 			});
 		});
 
 		app.get('/api/admin/users/sort-reputation', function(req, res) {
 			user.getUsers('users:reputation', 0, 49, function(err, data) {
-				res.json({ search_display: 'none', loadmore_display:'block', users:data, yourid:req.user.uid });
+				res.json({
+					search_display: 'none',
+					loadmore_display: 'block',
+					users: data,
+					yourid: req.user.uid
+				});
 			});
 		});
 
 		app.get('/api/admin/users', function(req, res) {
 			user.getUsers('users:joindate', 0, 49, function(err, data) {
-				res.json({ search_display: 'none', users:data, yourid:req.user.uid });
+				res.json({
+					search_display: 'none',
+					users: data,
+					yourid: req.user.uid
+				});
 			});
 		});
 
@@ -130,24 +154,24 @@ var user = require('./../user.js'),
 				data = data.split("\r\n");
 				var finalData = {};
 
-				for(var i in data) {
-					
-					if(data[i].indexOf(':') == -1 || !data[i])
+				for (var i in data) {
+
+					if (data[i].indexOf(':') == -1 || !data[i])
 						continue;
-					
+
 					try {
-						data[i] = data[i].replace(/:/,"\":\"");
+						data[i] = data[i].replace(/:/, "\":\"");
 						var json = "{\"" + data[i] + "\"}";
-						
+
 						var jsonObject = JSON.parse(json);
-						for(var key in jsonObject) {
+						for (var key in jsonObject) {
 							finalData[key] = jsonObject[key];
 						}
-					} catch(err){
+					} catch (err) {
 						winston.warn('can\'t parse redis status variable, ignoring', i, data[i], err);
 					}
 				}
-			
+
 				res.json(finalData);
 			});
 		});

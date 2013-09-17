@@ -36,7 +36,9 @@
 	]);
 
 	function onNewTopic(data) {
-		var html = templates.prepare(templates['category'].blocks['topics']).parse({ topics: [data] }),
+		var html = templates.prepare(templates['category'].blocks['topics']).parse({
+			topics: [data]
+		}),
 			topic = document.createElement('div'),
 			container = document.getElementById('topics-container'),
 			topics = document.querySelectorAll('#topics-container a'),
@@ -50,7 +52,7 @@
 		topic = topic.querySelector('a');
 
 		if (numTopics > 0) {
-			for(x=0;x<numTopics;x++) {
+			for (x = 0; x < numTopics; x++) {
 				if (topics[x].querySelector('.icon-pushpin')) continue;
 				container.insertBefore(topic, topics[x]);
 				$(topic).hide().fadeIn('slow');
@@ -76,20 +78,20 @@
 
 		recent_replies.innerHTML = '';
 
-		var	frag = document.createDocumentFragment(),
+		var frag = document.createDocumentFragment(),
 			li = document.createElement('li');
-		for (var i=0,numPosts=posts.length; i<numPosts; i++) {
+		for (var i = 0, numPosts = posts.length; i < numPosts; i++) {
 			var dateString = utils.relativeTime(posts[i].timestamp);
 			li.setAttribute('data-pid', posts[i].pid);
 
 
-			li.innerHTML =	'<a href="/users/' + posts[i].userslug + '"><img title="' + posts[i].username + '" style="width: 48px; height: 48px; /*temporary*/" class="img-rounded" src="' + posts[i].picture + '" class="" /></a>' +
-								'<a href="/topic/'+ posts[i].topicSlug + '#' + posts[i].pid + '">' +
-									'<p>' +
-										posts[i].content +
-									'</p>' +
-									'<span><strong>' + posts[i].username + '</strong> - ' + utils.relativeTime(posts[i].timestamp) + ' ago</span>' +
-								'</a>';
+			li.innerHTML = '<a href="/users/' + posts[i].userslug + '"><img title="' + posts[i].username + '" style="width: 48px; height: 48px; /*temporary*/" class="img-rounded" src="' + posts[i].picture + '" class="" /></a>' +
+				'<a href="/topic/' + posts[i].topicSlug + '#' + posts[i].pid + '">' +
+				'<p>' +
+				posts[i].content +
+				'</p>' +
+				'<span><strong>' + posts[i].username + '</strong> - ' + utils.relativeTime(posts[i].timestamp) + ' ago</span>' +
+				'</a>';
 
 			frag.appendChild(li.cloneNode(true));
 			recent_replies.appendChild(frag);
@@ -98,7 +100,9 @@
 
 	function onTopicsLoaded(topics) {
 
-		var html = templates.prepare(templates['category'].blocks['topics']).parse({ topics: topics }),
+		var html = templates.prepare(templates['category'].blocks['topics']).parse({
+			topics: topics
+		}),
 			container = $('#topics-container');
 
 		jQuery('#topics-container, .category-sidebar').removeClass('hidden');
@@ -115,7 +119,7 @@
 			cid: cid,
 			after: $('#topics-container').children().length
 		}, function(data) {
-			if(data.topics.length) {
+			if (data.topics.length) {
 				onTopicsLoaded(data.topics);
 			}
 			loadingMoreTopics = false;

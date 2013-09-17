@@ -1,13 +1,15 @@
-
-
 (function() {
 	// Alternate Logins
 	var altLoginEl = document.querySelector('.alt-logins');
 	altLoginEl.addEventListener('click', function(e) {
 		var target;
-		switch(e.target.nodeName) {
-			case 'LI': target = e.target; break;
-			case 'I': target = e.target.parentNode; break;
+		switch (e.target.nodeName) {
+			case 'LI':
+				target = e.target;
+				break;
+			case 'I':
+				target = e.target.parentNode;
+				break;
 		}
 		if (target) {
 			document.location.href = target.getAttribute('data-url');
@@ -26,14 +28,14 @@
 			url: RELATIVE_PATH + '/login',
 			data: loginData,
 			success: function(data, textStatus, jqXHR) {
-				if(!data.success) {
+				if (!data.success) {
 					$('#login-error-notify').show();
 				} else {
 					$('#login-error-notify').hide();
 					window.location.replace(RELATIVE_PATH + "/?loggedin");
 				}
 			},
-			error : function(data, textStatus, jqXHR) {
+			error: function(data, textStatus, jqXHR) {
 				$('#login-error-notify').show();
 			},
 			dataType: 'json',

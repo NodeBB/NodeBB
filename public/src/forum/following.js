@@ -6,22 +6,23 @@
 
 	$(document).ready(function() {
 
-		if(parseInt(followingCount, 10) === 0) {
+		if (parseInt(followingCount, 10) === 0) {
 			$('#no-following-notice').removeClass('hide');
 		}
 
 
-		if(yourid !== theirid) {
+		if (yourid !== theirid) {
 			$('.unfollow-btn').hide();
-		}
-		else {
-			$('.unfollow-btn').on('click',function() {
+		} else {
+			$('.unfollow-btn').on('click', function() {
 				var unfollowBtn = $(this);
 				var followingUid = $(this).attr('followingUid');
 
-				socket.emit('api:user.unfollow', {uid: followingUid}, function(success) {
+				socket.emit('api:user.unfollow', {
+					uid: followingUid
+				}, function(success) {
 					var username = unfollowBtn.attr('data-username');
-					if(success) {
+					if (success) {
 						unfollowBtn.parent().remove();
 						app.alertSuccess('You are no longer following ' + username + '!');
 					} else {

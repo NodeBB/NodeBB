@@ -1,4 +1,4 @@
-var	RDB = require('./redis.js'),
+var RDB = require('./redis.js'),
 	posts = require('./posts.js'),
 	user = require('./user.js');
 
@@ -32,7 +32,10 @@ var	RDB = require('./redis.js'),
 					}
 
 					if (room_id) {
-						io.sockets.in(room_id).emit('event:rep_up', {uid: uid !== postData.uid ? postData.uid : 0, pid: pid});
+						io.sockets. in (room_id).emit('event:rep_up', {
+							uid: uid !== postData.uid ? postData.uid : 0,
+							pid: pid
+						});
 					}
 
 					socket.emit('api:posts.favourite', {
@@ -71,7 +74,10 @@ var	RDB = require('./redis.js'),
 					}
 
 					if (room_id) {
-						io.sockets.in(room_id).emit('event:rep_down', {uid: uid !== uid_of_poster ? uid_of_poster : 0, pid: pid});
+						io.sockets. in (room_id).emit('event:rep_down', {
+							uid: uid !== uid_of_poster ? uid_of_poster : 0,
+							pid: pid
+						});
 					}
 
 					socket.emit('api:posts.unfavourite', {
@@ -95,12 +101,12 @@ var	RDB = require('./redis.js'),
 		var loaded = 0;
 		var data = {};
 
-		for (var i=0, ii=pids.length; i<ii; i++) {
+		for (var i = 0, ii = pids.length; i < ii; i++) {
 			(function(post_id) {
 				Favourites.hasFavourited(post_id, uid, function(hasFavourited) {
 
 					data[post_id] = hasFavourited;
-					loaded ++;
+					loaded++;
 					if (loaded === pids.length)
 						callback(data);
 				});

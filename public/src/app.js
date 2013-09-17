@@ -30,9 +30,9 @@ var socket,
 					app.alert(data);
 				});
 
-				socket.on('connect', function(data){
-					if(reconnecting) {
-						setTimeout(function(){
+				socket.on('connect', function(data) {
+					if (reconnecting) {
+						setTimeout(function() {
 							app.alert({
 								alert_id: 'connection_alert',
 								title: 'Connected',
@@ -43,18 +43,20 @@ var socket,
 						}, 1000);
 						reconnecting = false;
 						reconnectTries = 0;
-						socket.emit('api:updateHeader', { fields: ['username', 'picture', 'userslug'] });
+						socket.emit('api:updateHeader', {
+							fields: ['username', 'picture', 'userslug']
+						});
 					}
 				});
 
 				socket.on('reconnecting', function(data) {
 					function showDisconnectModal() {
 						$('#disconnect-modal').modal({
-							backdrop:'static',
-							show:true
+							backdrop: 'static',
+							show: true
 						});
 
-						$('#reload-button').on('click',function(){
+						$('#reload-button').on('click', function() {
 							$('#disconnect-modal').modal('hide');
 							window.location.reload();
 						});
@@ -63,7 +65,7 @@ var socket,
 					reconnecting = true;
 					reconnectTries++;
 
-					if(reconnectTries > 4) {
+					if (reconnectTries > 4) {
 						showDisconnectModal();
 						return;
 					}
@@ -129,10 +131,10 @@ var socket,
 	// Willingly stolen from: http://phpjs.org/functions/strip_tags/
 	app.strip_tags = function(input, allowed) {
 		allowed = (((allowed || "") + "").toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join(''); // making sure the allowed arg is a string containing only tags in lowercase (<a><b><c>)
-		var	tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+		var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
 			commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
 
-		return input.replace(commentsAndPhpTags, '').replace(tags, function ($0, $1) {
+		return input.replace(commentsAndPhpTags, '').replace(tags, function($0, $1) {
 			return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
 		});
 	}
@@ -146,7 +148,7 @@ var socket,
 	app.alert = function(params) {
 		var alert_id = 'alert_button_' + ((params.alert_id) ? params.alert_id : new Date().getTime());
 
-		var alert = $('#'+alert_id);
+		var alert = $('#' + alert_id);
 
 		function startTimeout(div, timeout) {
 			var timeoutId = setTimeout(function() {
@@ -158,15 +160,14 @@ var socket,
 			$(div).attr('timeoutId', timeoutId);
 		}
 
-		if(alert.length > 0) {
+		if (alert.length > 0) {
 			alert.find('strong').html(params.title);
 			alert.find('p').html(params.message);
 			alert.attr('class', "alert toaster-alert " + "alert-" + params.type);
 
 			clearTimeout(alert.attr('timeoutId'));
 			startTimeout(alert, params.timeout);
-		}
-		else {
+		} else {
 			var div = document.createElement('div'),
 				button = document.createElement('button'),
 				strong = document.createElement('strong'),
@@ -191,7 +192,7 @@ var socket,
 			if (params.location == null)
 				params.location = 'alert_window';
 
-			jQuery('#'+params.location).prepend(jQuery(div).fadeIn('100'));
+			jQuery('#' + params.location).prepend(jQuery(div).fadeIn('100'));
 
 			if (params.timeout) {
 				startTimeout(div, params.timeout);
@@ -209,7 +210,7 @@ var socket,
 	}
 
 	app.alertSuccess = function(message, timeout) {
-		if(!timeout)
+		if (!timeout)
 			timeout = 2000;
 
 		app.alert({
@@ -221,7 +222,7 @@ var socket,
 	}
 
 	app.alertError = function(message, timeout) {
-		if(!timeout)
+		if (!timeout)
 			timeout = 2000;
 
 		app.alert({
@@ -234,7 +235,7 @@ var socket,
 
 	app.current_room = null;
 	app.enter_room = function(room) {
-		if(socket) {
+		if (socket) {
 			if (app.current_room === room)
 				return;
 
@@ -268,13 +269,13 @@ var socket,
 
 		var url = window.location.href,
 			parts = url.split('/'),
-			active = parts[parts.length-1];
+			active = parts[parts.length - 1];
 
 		jQuery('#main-nav li').removeClass('active');
-		if(active) {
+		if (active) {
 			jQuery('#main-nav li a').each(function() {
 				var href = this.getAttribute('href');
-				if(active.match(/^users/))
+				if (active.match(/^users/))
 					active = 'users';
 				if (href && href.match(active)) {
 					jQuery(this.parentNode).addClass('active');
@@ -298,9 +299,9 @@ var socket,
 			});
 		}
 
-		if(showWelcomeMessage) {
+		if (showWelcomeMessage) {
 			showWelcomeMessage = false;
-			if(document.readyState !== 'complete') {
+			if (document.readyState !== 'complete') {
 				$(document).ready(showAlert);
 			} else {
 				showAlert();
@@ -317,7 +318,7 @@ var socket,
 	app.openChat = function(username, touid) {
 		require(['chat'], function(chat) {
 			var chatModal;
-			if(!chat.modalExists(touid)) {
+			if (!chat.modalExists(touid)) {
 				chatModal = chat.createModal(username, touid);
 			} else {
 				chatModal = chat.getModal(touid);
@@ -336,7 +337,7 @@ var socket,
 				.append(html)
 				.fadeIn('slow');
 
-		for(var x=0,numPosts=data.posts.length;x<numPosts;x++) {
+		for (var x = 0, numPosts = data.posts.length; x < numPosts; x++) {
 			socket.emit('api:post.privileges', data.posts[x].pid);
 		}
 
@@ -350,11 +351,11 @@ var socket,
 	app.infiniteLoaderActive = false;
 
 	app.loadMorePosts = function(tid, callback) {
-		if(app.infiniteLoaderActive)
+		if (app.infiniteLoaderActive)
 			return;
 		app.infiniteLoaderActive = true;
 
-		if($('#loading-indicator').attr('done') === '0')
+		if ($('#loading-indicator').attr('done') === '0')
 			$('#loading-indicator').removeClass('hide');
 
 		socket.emit('api:topic.loadMore', {
@@ -362,14 +363,14 @@ var socket,
 			after: document.querySelectorAll('#post-container li[data-pid]').length
 		}, function(data) {
 			app.infiniteLoaderActive = false;
-			if(data.posts.length) {
+			if (data.posts.length) {
 				$('#loading-indicator').attr('done', '0');
 				app.createNewPosts(data);
 			} else {
 				$('#loading-indicator').attr('done', '1');
 			}
 			$('#loading-indicator').addClass('hide');
-			if(callback)
+			if (callback)
 				callback(data.posts);
 		});
 	}
@@ -388,7 +389,7 @@ var socket,
 
 	app.scrollToPost = function(pid) {
 
-		if(!pid)
+		if (!pid)
 			return;
 
 		var container = $(document.body),
@@ -401,22 +402,22 @@ var socket,
 			});
 		}
 
-		if(!scrollTo.length && tid) {
+		if (!scrollTo.length && tid) {
 
 			var intervalID = setInterval(function() {
 				app.loadMorePosts(tid, function(posts) {
 					scrollTo = $('#post_anchor_' + pid);
 
-					if(tid && scrollTo.length) {
+					if (tid && scrollTo.length) {
 						animateScroll();
 					}
 
-					if(!posts.length || scrollTo.length)
+					if (!posts.length || scrollTo.length)
 						clearInterval(intervalID);
 				});
 			}, 100);
 
-		} else if(tid) {
+		} else if (tid) {
 			animateScroll();
 		}
 
@@ -425,7 +426,7 @@ var socket,
 	jQuery('document').ready(function() {
 		$('#search-form').on('submit', function() {
 			var input = $(this).find('input');
-			ajaxify.go("search/"+input.val(), null, "search");
+			ajaxify.go("search/" + input.val(), null, "search");
 			input.val('');
 			return false;
 		})

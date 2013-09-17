@@ -6,7 +6,7 @@
 
 	$(document).ready(function() {
 
-		if(parseInt(followersCount, 10) === 0) {
+		if (parseInt(followersCount, 10) === 0) {
 			$('#no-followers-notice').removeClass('hide');
 		}
 

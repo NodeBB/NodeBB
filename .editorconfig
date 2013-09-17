@@ -1,8 +1,4 @@
 root = true
 
-[*]
-end_of_line = lf
-insert_final_newline = true
-
 [*.js, *.css, *.tpl]
 indent_style = tab

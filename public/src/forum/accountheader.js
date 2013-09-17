@@ -24,7 +24,7 @@
 		var settingsLink = $('#settingsLink');
 		var favouritesLink = $('#favouritesLink');
 
-		if(yourid === "0" || yourid !== theirid) {
+		if (yourid === "0" || yourid !== theirid) {
 			editLink.hide();
 			settingsLink.hide();
 			favouritesLink.hide();

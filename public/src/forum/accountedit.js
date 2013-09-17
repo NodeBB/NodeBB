@@ -1,5 +1,3 @@
-
-
 var gravatarPicture = templates.get('gravatarpicture');
 var uploadedPicture = templates.get('uploadedpicture');
 
@@ -14,7 +12,7 @@ $(document).ready(function() {
 		$('#upload-progress-box').show();
 		$('#upload-progress-box').removeClass('hide');
 
-		if(!$('#userPhotoInput').val()) {
+		if (!$('#userPhotoInput').val()) {
 			error('select an image to upload!');
 			return false;
 		}
@@ -28,13 +26,13 @@ $(document).ready(function() {
 				error('Error: ' + xhr.status);
 			},
 
-			uploadProgress : function(event, position, total, percent) {
-				$('#upload-progress-bar').css('width', percent+'%');
+			uploadProgress: function(event, position, total, percent) {
+				$('#upload-progress-bar').css('width', percent + '%');
 			},
 
 
 			success: function(response) {
-				if(response.error) {
+				if (response.error) {
 					error(response.error);
 					return;
 				}
@@ -51,7 +49,9 @@ $(document).ready(function() {
 					$('#upload-picture-modal').modal('hide');
 				}, 750);
 
-				socket.emit('api:updateHeader', { fields: ['username', 'picture', 'userslug'] });
+				socket.emit('api:updateHeader', {
+					fields: ['username', 'picture', 'userslug']
+				});
 				success('File uploaded successfully!');
 			}
 		});
@@ -87,7 +87,7 @@ $(document).ready(function() {
 		};
 
 		socket.emit('api:user.changePicture', userData, function(success) {
-			if(!success) {
+			if (!success) {
 				app.alertError('There was an error changing picture!');
 			}
 		});
@@ -95,26 +95,26 @@ $(document).ready(function() {
 
 	var selectedImageType = '';
 
-	$('#submitBtn').on('click',function(){
+	$('#submitBtn').on('click', function() {
 
-	   var userData = {
-			uid:$('#inputUID').val(),
-			email:$('#inputEmail').val(),
-			fullname:$('#inputFullname').val(),
-			website:$('#inputWebsite').val(),
-			birthday:$('#inputBirthday').val(),
-			location:$('#inputLocation').val(),
-			signature:$('#inputSignature').val()
+		var userData = {
+			uid: $('#inputUID').val(),
+			email: $('#inputEmail').val(),
+			fullname: $('#inputFullname').val(),
+			website: $('#inputWebsite').val(),
+			birthday: $('#inputBirthday').val(),
+			location: $('#inputLocation').val(),
+			signature: $('#inputSignature').val()
 		};
 
 		socket.emit('api:user.updateProfile', userData, function(err, data) {
-			if(data.success) {
+			if (data.success) {
 				app.alertSuccess('Your profile has been updated successfully!');
-				if(data.picture) {
+				if (data.picture) {
 					$('#user-current-picture').attr('src', data.picture);
 					$('#user_label img').attr('src', data.picture);
 				}
-				if(data.gravatarpicture) {
+				if (data.gravatarpicture) {
 					$('#user-gravatar-picture').attr('src', data.gravatarpicture);
 					gravatarPicture = data.gravatarpicture;
 				}
@@ -128,27 +128,25 @@ $(document).ready(function() {
 	function updateImages() {
 		var currentPicture = $('#user-current-picture').attr('src');
 
-		if(gravatarPicture) {
+		if (gravatarPicture) {
 			$('#user-gravatar-picture').attr('src', gravatarPicture);
 			$('#gravatar-box').show();
-		}
-		else
+		} else
 			$('#gravatar-box').hide();
 
-		if(uploadedPicture) {
+		if (uploadedPicture) {
 			$('#user-uploaded-picture').attr('src', uploadedPicture);
 			$('#uploaded-box').show();
-		}
-		else
+		} else
 			$('#uploaded-box').hide();
 
 
-		 if(currentPicture == gravatarPicture)
+		if (currentPicture == gravatarPicture)
 			$('#gravatar-box .icon-ok').show();
 		else
 			$('#gravatar-box .icon-ok').hide();
 
-		if(currentPicture == uploadedPicture)
+		if (currentPicture == uploadedPicture)
 			$('#uploaded-box .icon-ok').show();
 		else
 			$('#uploaded-box .icon-ok').hide();
@@ -165,13 +163,13 @@ $(document).ready(function() {
 		return false;
 	});
 
-	$('#gravatar-box').on('click', function(){
+	$('#gravatar-box').on('click', function() {
 		$('#gravatar-box .icon-ok').show();
 		$('#uploaded-box .icon-ok').hide();
 		selectedImageType = 'gravatar';
 	});
 
-	$('#uploaded-box').on('click', function(){
+	$('#uploaded-box').on('click', function() {
 		$('#gravatar-box .icon-ok').hide();
 		$('#uploaded-box .icon-ok').show();
 		selectedImageType = 'uploaded';
@@ -180,12 +178,12 @@ $(document).ready(function() {
 	$('#savePictureChangesBtn').on('click', function() {
 		$('#change-picture-modal').modal('hide');
 
-		if(selectedImageType) {
+		if (selectedImageType) {
 			changeUserPicture(selectedImageType);
 
-			if(selectedImageType == 'gravatar')
+			if (selectedImageType == 'gravatar')
 				$('#user-current-picture').attr('src', gravatarPicture);
-			else if(selectedImageType == 'uploaded')
+			else if (selectedImageType == 'uploaded')
 				$('#user-current-picture').attr('src', uploadedPicture);
 		}
 
@@ -195,7 +193,7 @@ $(document).ready(function() {
 		$('#userPhotoInput').val('');
 	});
 
-	$('#uploadPictureBtn').on('click', function(){
+	$('#uploadPictureBtn').on('click', function() {
 
 		$('#change-picture-modal').modal('hide');
 		$('#upload-picture-modal').modal('show');
@@ -226,7 +224,7 @@ $(document).ready(function() {
 				password_notify.html('Password too short');
 				password_notify.attr('class', 'alert alert-danger');
 				password_notify.removeClass('hide');
-			} else if(!passwordvalid) {
+			} else if (!passwordvalid) {
 				password_notify.html('Invalid password');
 				password_notify.attr('class', 'alert alert-danger');
 				password_notify.removeClass('hide');
@@ -240,11 +238,11 @@ $(document).ready(function() {
 		}
 
 		function onPasswordConfirmChanged() {
-			if(password_notify.hasClass('alert-danger') || !password_confirm.val()) {
+			if (password_notify.hasClass('alert-danger') || !password_confirm.val()) {
 				password_confirm_notify.addClass('hide');
 				return;
 			}
-			if(password.val() !== password_confirm.val()) {
+			if (password.val() !== password_confirm.val()) {
 				password_confirm_notify.html('Passwords must match!');
 				password_confirm_notify.attr('class', 'alert alert-danger');
 				password_confirm_notify.removeClass('hide');
@@ -262,8 +260,11 @@ $(document).ready(function() {
 
 		$('#changePasswordBtn').on('click', function() {
 
-			if(passwordvalid && passwordsmatch && currentPassword.val()) {
-				socket.emit('api:user.changePassword', {'currentPassword': currentPassword.val(),'newPassword': password.val()	}, function(err) {
+			if (passwordvalid && passwordsmatch && currentPassword.val()) {
+				socket.emit('api:user.changePassword', {
+					'currentPassword': currentPassword.val(),
+					'newPassword': password.val()
+				}, function(err) {
 
 					currentPassword.val('');
 					password.val('');
@@ -273,7 +274,7 @@ $(document).ready(function() {
 					passwordsmatch = false;
 					passwordvalid = false;
 
-					if(err) {
+					if (err) {
 						app.alertError(err.error);
 						return;
 					}

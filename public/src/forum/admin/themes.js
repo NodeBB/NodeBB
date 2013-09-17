@@ -1,5 +1,3 @@
-
-
 var nodebb_admin = (function(nodebb_admin) {
 
 	var themes = {};
@@ -10,20 +8,20 @@ var nodebb_admin = (function(nodebb_admin) {
 			themeContainer = document.querySelector('#bootstrap_themes'),
 			numThemes = bootswatch.themes.length;
 
-		for(var x=0;x<numThemes;x++) {
+		for (var x = 0; x < numThemes; x++) {
 			var theme = bootswatch.themes[x];
 			themeEl.setAttribute('data-css', theme.cssMin);
 			themeEl.setAttribute('data-theme', theme.name);
-			themeEl.innerHTML =	'<img src="' + theme.thumbnail + '" />' +
-								'<div>' +
-									'<div class="pull-right">' +
-										'<button class="btn btn-primary" data-action="use">Use</button> ' +
-										'<button class="btn btn-default" data-action="preview">Preview</button>' +
-									'</div>' +
-									'<h4>' + theme.name + '</h4>' +
-									'<p>' + theme.description + '</p>' +
-								'</div>' +
-								'<div class="clear">';
+			themeEl.innerHTML = '<img src="' + theme.thumbnail + '" />' +
+				'<div>' +
+				'<div class="pull-right">' +
+				'<button class="btn btn-primary" data-action="use">Use</button> ' +
+				'<button class="btn btn-default" data-action="preview">Preview</button>' +
+				'</div>' +
+				'<h4>' + theme.name + '</h4>' +
+				'<p>' + theme.description + '</p>' +
+				'</div>' +
+				'<div class="clear">';
 			themeFrag.appendChild(themeEl.cloneNode(true));
 		}
 		themeContainer.innerHTML = '';
@@ -42,28 +40,30 @@ var nodebb_admin = (function(nodebb_admin) {
 	scriptEl.src = 'http://api.bootswatch.com/3/?callback=nodebb_admin.themes.render';
 	document.body.appendChild(scriptEl);
 
-	var	bootstrapThemeContainer = document.querySelector('#bootstrap_themes'),
+	var bootstrapThemeContainer = document.querySelector('#bootstrap_themes'),
 		installedThemeContainer = document.querySelector('#installed_themes'),
 		themeEvent = function(e) {
 			if (e.target.hasAttribute('data-action')) {
-				switch(e.target.getAttribute('data-action')) {
+				switch (e.target.getAttribute('data-action')) {
 					case 'preview':
-						var	cssSrc = $(e.target).parents('li').attr('data-css'),
+						var cssSrc = $(e.target).parents('li').attr('data-css'),
 							cssEl = document.getElementById('base-theme');
 
 						cssEl.href = cssSrc;
-					break;
+						break;
 					case 'use':
-						var	parentEl = $(e.target).parents('li'),
+						var parentEl = $(e.target).parents('li'),
 							cssSrc = parentEl.attr('data-css'),
 							cssName = parentEl.attr('data-theme');
 						socket.emit('api:config.set', {
-							key: 'theme:id', value: 'bootswatch:' + cssName
+							key: 'theme:id',
+							value: 'bootswatch:' + cssName
 						});
 						socket.emit('api:config.set', {
-							key: 'theme:src', value: cssSrc
+							key: 'theme:src',
+							value: cssSrc
 						});
-					break;
+						break;
 				}
 			}
 		};
@@ -82,27 +82,27 @@ var nodebb_admin = (function(nodebb_admin) {
 
 	// Installed Themes
 	socket.emit('api:admin.themes.getInstalled', function(themes) {
-		var	instListEl = document.getElementById('installed_themes'),
+		var instListEl = document.getElementById('installed_themes'),
 			themeFrag = document.createDocumentFragment(),
 			liEl = document.createElement('li');
 
 		if (themes.length > 0) {
-			for(var x=0,numThemes=themes.length;x<numThemes;x++) {
+			for (var x = 0, numThemes = themes.length; x < numThemes; x++) {
 				liEl.setAttribute('data-theme', themes[x].id);
 				liEl.setAttribute('data-css', themes[x].src);
-				liEl.innerHTML =	'<img src="' + themes[x].screenshot + '" />' +
-									'<div>' +
-										'<div class="pull-right">' +
-											'<button class="btn btn-primary" data-action="use">Use</button> ' +
-											'<button class="btn btn-default" data-action="preview">Preview</button>' +
-										'</div>' +
-										'<h4>' + themes[x].name + '</h4>' +
-										'<p>' +
-											themes[x].description +
-											(themes[x].url ? ' (<a href="' + themes[x].url + '">Homepage</a>)' : '') +
-										'</p>' +
-									'</div>' +
-									'<div class="clear">';
+				liEl.innerHTML = '<img src="' + themes[x].screenshot + '" />' +
+					'<div>' +
+					'<div class="pull-right">' +
+					'<button class="btn btn-primary" data-action="use">Use</button> ' +
+					'<button class="btn btn-default" data-action="preview">Preview</button>' +
+					'</div>' +
+					'<h4>' + themes[x].name + '</h4>' +
+					'<p>' +
+					themes[x].description +
+					(themes[x].url ? ' (<a href="' + themes[x].url + '">Homepage</a>)' : '') +
+					'</p>' +
+					'</div>' +
+					'<div class="clear">';
 				themeFrag.appendChild(liEl.cloneNode(true));
 			}
 		} else {

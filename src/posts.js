@@ -1,4 +1,4 @@
-var	RDB = require('./redis.js'),
+var RDB = require('./redis.js'),
 	utils = require('./../public/src/utils.js'),
 	schema = require('./schema.js'),
 	user = require('./user.js'),
@@ -34,7 +34,7 @@ var	RDB = require('./redis.js'),
 
 	Posts.addUserInfoToPost = function(post, callback) {
 		user.getUserFields(post.uid, ['username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned'], function(err, userData) {
-			if(err) return callback();
+			if (err) return callback();
 
 			postTools.toHTML(userData.signature, function(err, signature) {
 				post.username = userData.username || 'anonymous';
@@ -42,12 +42,12 @@ var	RDB = require('./redis.js'),
 				post.user_rep = userData.reputation || 0;
 				post.user_postcount = userData.postcount || 0;
 				post.user_banned = userData.banned || '0';
-				post.picture = userData.picture || require('gravatar').url('', {}, https=nconf.get('https'));
+				post.picture = userData.picture || require('gravatar').url('', {}, https = nconf.get('https'));
 				post.signature = signature;
 
-				if(post.editor !== '') {
+				if (post.editor !== '') {
 					user.getUserFields(post.editor, ['username', 'userslug'], function(err, editorData) {
-						if(err) return callback();
+						if (err) return callback();
 
 						post.editorname = editorData.username;
 						post.editorslug = editorData.userslug;
@@ -104,7 +104,7 @@ var	RDB = require('./redis.js'),
 		}
 
 		async.eachSeries(pids, getPostSummary, function(err) {
-			if(!err) {
+			if (!err) {
 				callback(null, posts);
 			} else {
 				callback(err, null);
@@ -120,22 +120,20 @@ var	RDB = require('./redis.js'),
 
 	Posts.getPostData = function(pid, callback) {
 		RDB.hgetall('post:' + pid, function(err, data) {
-			if(err === null) {
+			if (err === null) {
 				plugins.fireHook('filter:post.get', data, function(data) {
 					callback(data);
 				});
-			}
-			else
+			} else
 				console.log(err);
 		});
 	}
 
 	Posts.getPostFields = function(pid, fields, callback) {
 		RDB.hmgetObject('post:' + pid, fields, function(err, data) {
-			if(err === null) {
+			if (err === null) {
 				callback(data);
-			}
-			else {
+			} else {
 				console.log(err);
 			}
 		});
@@ -143,7 +141,7 @@ var	RDB = require('./redis.js'),
 
 	Posts.getPostField = function(pid, field, callback) {
 		RDB.hget('post:' + pid, field, function(err, data) {
-			if(err === null)
+			if (err === null)
 				callback(data);
 			else
 				console.log(err);
@@ -158,9 +156,9 @@ var	RDB = require('./redis.js'),
 	Posts.getPostsByPids = function(pids, callback) {
 		var posts = [];
 
-		async.eachSeries(pids, function (pid, callback) {
+		async.eachSeries(pids, function(pid, callback) {
 			Posts.getPostData(pid, function(postData) {
-				if(postData) {
+				if (postData) {
 					postData.relativeTime = utils.relativeTime(postData.timestamp);
 					postData.post_rep = postData.reputation;
 					postData['edited-class'] = postData.editor !== '' ? '' : 'none';
@@ -174,7 +172,7 @@ var	RDB = require('./redis.js'),
 				}
 			});
 		}, function(err) {
-			if(!err) {
+			if (!err) {
 				callback(null, posts);
 			} else {
 				callback(err, null);
@@ -209,7 +207,7 @@ var	RDB = require('./redis.js'),
 	Posts.emitTooManyPostsAlert = function(socket) {
 		socket.emit('event:alert', {
 			title: 'Too many posts!',
-			message: 'You can only post every '+ meta.config.postDelay/1000 + ' seconds.',
+			message: 'You can only post every ' + meta.config.postDelay / 1000 + ' seconds.',
 			type: 'danger',
 			timeout: 2000
 		});
@@ -226,7 +224,7 @@ var	RDB = require('./redis.js'),
 		}
 
 		user.getUserField(uid, 'lastposttime', function(lastposttime) {
-			if(Date.now() - lastposttime < meta.config.postDelay) {
+			if (Date.now() - lastposttime < meta.config.postDelay) {
 				callback(new Error('too-many-posts'), null);
 				return;
 			}
@@ -245,10 +243,12 @@ var	RDB = require('./redis.js'),
 					threadTools.notify_followers(tid, uid);
 
 					Posts.addUserInfoToPost(postData, function() {
-						var	socketData = { posts: [postData] };
-						io.sockets.in('topic_' + tid).emit('event:new_post', socketData);
-						io.sockets.in('recent_posts').emit('event:new_post', socketData);
-						io.sockets.in('users/' + uid).emit('event:new_post', socketData);
+						var socketData = {
+							posts: [postData]
+						};
+						io.sockets. in ('topic_' + tid).emit('event:new_post', socketData);
+						io.sockets. in ('recent_posts').emit('event:new_post', socketData);
+						io.sockets. in ('users/' + uid).emit('event:new_post', socketData);
 					});
 
 					callback(null, 'Reply successful');
@@ -369,28 +369,26 @@ var	RDB = require('./redis.js'),
 
 		user.getPostIds(uid, start, end, function(pids) {
 
-			if(pids && pids.length) {
+			if (pids && pids.length) {
 
 				Posts.getPostsByPids(pids, function(err, posts) {
 					callback(posts);
 				});
-			}
-			else
+			} else
 				callback([]);
 		});
 	}
 
 	Posts.getTopicPostStats = function(socket) {
 		RDB.mget(['totaltopiccount', 'totalpostcount'], function(err, data) {
-			if(err === null) {
+			if (err === null) {
 				var stats = {
-					topics: data[0]?data[0]:0,
-					posts: data[1]?data[1]:0
+					topics: data[0] ? data[0] : 0,
+					posts: data[1] ? data[1] : 0
 				};
 
 				socket.emit('post.stats', stats);
-			}
-			else
+			} else
 				console.log(err);
 		});
 	}
@@ -402,7 +400,7 @@ var	RDB = require('./redis.js'),
 			Posts.getPostField(pid, 'content', function(content) {
 				postSearch.remove(pid, function() {
 
-					if(content && content.length) {
+					if (content && content.length) {
 						postSearch.index(content, pid);
 					}
 					callback(null);
@@ -411,7 +409,7 @@ var	RDB = require('./redis.js'),
 		}
 
 		async.each(pids, reIndex, function(err) {
-			if(err) {
+			if (err) {
 				callback(err, null);
 			} else {
 				callback(null, 'Posts reindexed');
@@ -421,11 +419,11 @@ var	RDB = require('./redis.js'),
 
 	Posts.getFavourites = function(uid, callback) {
 		RDB.zrevrange('uid:' + uid + ':favourites', 0, -1, function(err, pids) {
-			if(err)
+			if (err)
 				return callback(err, null);
 
 			Posts.getPostSummaryByPids(pids, function(err, posts) {
-				if(err)
+				if (err)
 					return callback(err, null);
 
 				callback(null, posts);
