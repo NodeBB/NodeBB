@@ -4,7 +4,8 @@ var user = require('./../user.js'),
 	fs = require('fs'),
 	utils = require('./../../public/src/utils.js'),
 	path = require('path'),
-	winston = require('winston');
+	winston = require('winston'),
+	nconf = require('nconf');
 
 (function(User) {
 	User.create_routes = function(app) {
@@ -157,7 +158,7 @@ var user = require('./../user.js'),
 					return;
 				}
 
-				var absolutePath = path.join(process.cwd(), global.nconf.get('upload_path'), path.basename(oldpicture));
+				var absolutePath = path.join(process.cwd(), nconf.get('upload_path'), path.basename(oldpicture));
 
 				fs.unlink(absolutePath, function(err) {
 					if (err) {
@@ -178,7 +179,7 @@ var user = require('./../user.js'),
 			}
 
 			var filename = uid + '-profileimg' + extension;
-			var uploadPath = path.join(process.cwd(), global.nconf.get('upload_path'), filename);
+			var uploadPath = path.join(process.cwd(), nconf.get('upload_path'), filename);
 
 			winston.info('Attempting upload to: ' + uploadPath);
 
@@ -188,7 +189,7 @@ var user = require('./../user.js'),
 			is.on('end', function() {
 				fs.unlinkSync(tempPath);
 
-				var imageUrl = global.nconf.get('upload_url') + filename;
+				var imageUrl = nconf.get('upload_url') + filename;
 
 				user.setUserField(uid, 'uploadedpicture', imageUrl);
 				user.setUserField(uid, 'picture', imageUrl);

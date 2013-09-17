@@ -21,7 +21,8 @@ var express = require('express'),
 	auth = require('./routes/authentication.js'),
 	meta = require('./meta.js'),
 	feed = require('./feed'),
-	plugins = require('./plugins');
+	plugins = require('./plugins'),
+	nconf = require('nconf');
 
 (function(app) {
 	var templates = null;
@@ -116,6 +117,7 @@ var express = require('express'),
 
 	module.exports.init = function() {
 		templates = global.templates;
+		server.listen(nconf.get('PORT') || nconf.get('port'));
 	}
 
 	auth.initialize(app);
@@ -517,5 +519,5 @@ var express = require('express'),
 
 }(WebServer));
 
-server.listen(nconf.get('PORT') || nconf.get('port'));
+
 global.server = server;

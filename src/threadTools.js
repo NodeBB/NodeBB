@@ -8,7 +8,8 @@ var RDB = require('./redis.js'),
 	reds = require('reds'),
 	topicSearch = reds.createSearch('nodebbtopicsearch'),
 	winston = require('winston'),
-	meta = require('./meta');
+	meta = require('./meta'),
+	nconf = require('nconf');
 
 (function(ThreadTools) {
 

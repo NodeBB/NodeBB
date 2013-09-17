@@ -1,7 +1,8 @@
 (function(RedisDB) {
 	var redis = require('redis'),
 		utils = require('./../public/src/utils.js'),
-		winston = require('winston');
+		winston = require('winston'),
+		nconf = require('nconf');
 
 	RedisDB.exports = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host'));
 

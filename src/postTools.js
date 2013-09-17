@@ -4,6 +4,7 @@ var RDB = require('./redis.js'),
 	threadTools = require('./threadTools.js'),
 	user = require('./user.js'),
 	async = require('async'),
+	nconf = require('nconf'),
 
 	utils = require('../public/src/utils'),
 	plugins = require('./plugins'),

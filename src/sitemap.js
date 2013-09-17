@@ -2,6 +2,7 @@ var path = require('path'),
 	async = require('async'),
 	sm = require('sitemap'),
 	url = require('url'),
+	nconf = require('nconf'),
 	categories = require('./categories'),
 	topics = require('./topics'),
 	sitemap = {

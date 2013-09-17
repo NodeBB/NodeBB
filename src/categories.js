@@ -4,7 +4,8 @@ var RDB = require('./redis.js'),
 	user = require('./user.js'),
 	async = require('async'),
 	topics = require('./topics.js'),
-	winston = require('winston');
+	winston = require('winston'),
+	nconf = require('nconf');
 
 (function(Categories) {
 

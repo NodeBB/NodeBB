@@ -9,6 +9,7 @@ var utils = require('./../public/src/utils.js'),
 	notifications = require('./notifications.js'),
 	topics = require('./topics.js'),
 	async = require('async'),
+	nconf = require('nconf'),
 	userSearch = require('reds').createSearch('nodebbusersearch');
 
 (function(User) {

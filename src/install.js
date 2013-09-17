@@ -6,6 +6,7 @@ var async = require('async'),
 	prompt = require('prompt'),
 	winston = require('winston'),
 	reds = require('reds'),
+	nconf = require('nconf');
 
 	install = {
 		questions: [{

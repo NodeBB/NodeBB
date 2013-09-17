@@ -5,7 +5,8 @@ var user = require('./../user.js'),
 	utils = require('./../../public/src/utils.js'),
 	pkg = require('../../package.json'),
 	meta = require('./../meta.js'),
-	path = require('path');
+	path = require('path'),
+	nconf = require('nconf');
 
 
 (function(Api) {

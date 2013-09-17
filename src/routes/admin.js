@@ -5,7 +5,8 @@ var user = require('./../user.js'),
 	pkg = require('./../../package.json'),
 	categories = require('./../categories.js'),
 	plugins = require('../plugins'),
-	winston = require('winston');
+	winston = require('winston'),
+	nconf = require('nconf');
 
 (function(Admin) {
 	Admin.isAdmin = function(req, res, next) {
