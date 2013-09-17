@@ -4,7 +4,7 @@ function modified(el) {
 	var cid = $(el).parents('li').attr('data-cid');
 
 	modified_categories[cid] = modified_categories[cid] || {};
-	modified_categories[cid][el.attr('data-name')] = el.val();
+	modified_categories[cid][$(el).attr('data-name')] = $(el).val();
 }
 
 function save() {
