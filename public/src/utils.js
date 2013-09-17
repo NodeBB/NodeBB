@@ -1,4 +1,4 @@
-(function (module) {
+(function(module) {
 
 	var utils, fs;
 
@@ -10,7 +10,8 @@
 	module.exports = utils = {
 		generateUUID: function() {
 			return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-				var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+				var r = Math.random() * 16 | 0,
+					v = c == 'x' ? r : (r & 0x3 | 0x8);
 				return v.toString(16);
 			});
 		},
@@ -43,7 +44,7 @@
 		},
 
 		relativeTime: function(timestamp, min) {
-			var	now = +new Date(),
+			var now = +new Date(),
 				difference = now - Math.floor(parseFloat(timestamp));
 
 			difference = Math.floor(difference / 1000);
@@ -73,14 +74,14 @@
 
 			// remove accents, swap ñ for n, etc
 			var from = "àáäâèéëêìíïîıòóöôùúüûñçşğ·/_,:;";
-			var to   = "aaaaeeeeiiiiioooouuuuncsg------";
-			for (var i=0, l=from.length ; i<l ; i++) {
+			var to = "aaaaeeeeiiiiioooouuuuncsg------";
+			for (var i = 0, l = from.length; i < l; i++) {
 				str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
 			}
 
 			str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
-					.replace(/\s+/g, '-') // collapse whitespace and replace by -
-					.replace(/-+/g, '-'); // collapse dashes
+			.replace(/\s+/g, '-') // collapse whitespace and replace by -
+			.replace(/-+/g, '-'); // collapse dashes
 
 			return str;
 		},
@@ -103,21 +104,21 @@
 		// Blatently stolen from: http://phpjs.org/functions/strip_tags/
 		'strip_tags': function(input, allowed) {
 			allowed = (((allowed || "") + "").toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join(''); // making sure the allowed arg is a string containing only tags in lowercase (<a><b><c>)
-			var	tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+			var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
 				commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
 
-			return input.replace(commentsAndPhpTags, '').replace(tags, function ($0, $1) {
+			return input.replace(commentsAndPhpTags, '').replace(tags, function($0, $1) {
 				return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
 			});
 		},
 
 		buildMetaTags: function(tagsArr) {
-			var	tags = '',
+			var tags = '',
 				tag;
-			for(var x=0,numTags=tagsArr.length;x<numTags;x++) {
+			for (var x = 0, numTags = tagsArr.length; x < numTags; x++) {
 				if (tags.length > 0) tags += "\n\t";
 				tag = '<meta';
-				for(y in tagsArr[x]) {
+				for (y in tagsArr[x]) {
 					tag += ' ' + y + '="' + tagsArr[x][y] + '"';
 				}
 				tag += ' />';
@@ -130,14 +131,14 @@
 
 		refreshTitle: function(url) {
 			if (!url) {
-				var	a = document.createElement('a');
+				var a = document.createElement('a');
 				a.href = document.location;
 				url = a.pathname.slice(1);
 			}
 			var notificationIcon;
 
 			socket.emit('api:meta.buildTitle', url, function(title, numNotifications) {
-				document.title = (numNotifications > 0 ? '(' + numNotifications + ') ' : '') +  title;
+				document.title = (numNotifications > 0 ? '(' + numNotifications + ') ' : '') + title;
 				notificationIcon = notificationIcon || document.querySelector('.notifications a i');
 				if (numNotifications > 0 && notificationIcon) notificationIcon.className = 'icon-circle active';
 			});
@@ -150,8 +151,7 @@
 					badge
 						.removeClass('badge-inverse')
 						.addClass('badge-important')
-				}
-				else {
+				} else {
 					badge
 						.removeClass('badge-important')
 						.addClass('badge-inverse')
@@ -160,26 +160,34 @@
 		},
 
 		isRelativeUrl: function(url) {
-			var	firstChar = url.slice(0, 1);
+			var firstChar = url.slice(0, 1);
 			return (firstChar === '.' || firstChar === '/');
 		}
 	}
 
 
 	if (!String.prototype.trim) {
-		String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g, '');};
+		String.prototype.trim = function() {
+			return this.replace(/^\s+|\s+$/g, '');
+		};
 	}
 
 	if (!String.prototype.ltrim) {
-		String.prototype.ltrim=function(){return this.replace(/^\s+/,'');};
+		String.prototype.ltrim = function() {
+			return this.replace(/^\s+/, '');
+		};
 	}
 
 	if (!String.prototype.rtrim) {
-		String.prototype.rtrim=function(){return this.replace(/\s+$/,'');};
+		String.prototype.rtrim = function() {
+			return this.replace(/\s+$/, '');
+		};
 	}
 
 	if (!String.prototype.fulltrim) {
-		String.prototype.fulltrim=function(){return this.replace(/(?:(?:^|\n)\s+|\s+(?:$|\n))/g,'').replace(/\s+/g,' ');};
+		String.prototype.fulltrim = function() {
+			return this.replace(/(?:(?:^|\n)\s+|\s+(?:$|\n))/g, '').replace(/\s+/g, ' ');
+		};
 	}
 
 
@@ -187,4 +195,8 @@
 		window.utils = module.exports;
 	}
 
-})('undefined' === typeof module ? {module:{exports:{}}} : module)
+})('undefined' === typeof module ? {
+	module: {
+		exports: {}
+	}
+} : module)
