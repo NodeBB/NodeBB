@@ -56,13 +56,8 @@
 						</div>
 
 						<div id="content_{main_posts.pid}" class="post-content">{main_posts.content}</div>
-						<div id="images_{main_posts.pid}" class="post-images">
-							<!-- BEGIN uploadedImages -->
-							<i class="icon-picture icon-1"></i><a href="{main_posts.uploadedImages.url}"> {main_posts.uploadedImages.name}</a><br/>
-							<!-- END uploadedImages -->
-						</div>
 						<div class="post-signature">{main_posts.signature}</div>
-						<div class="profile-block">
+						<div class="post-info">
 							<span class="pull-right">
 								posted <span class="relativeTimeAgo">{main_posts.relativeTime} ago</span>
 								<span class="{main_posts.edited-class}">| last edited by <strong><a href="/users/{main_posts.editorslug}">{main_posts.editorname}</a></strong> {main_posts.relativeEditTime} ago</span>
@@ -116,13 +111,8 @@
 						</div>
 
 						<div id="content_{posts.pid}" class="post-content">{posts.content}</div>
-						<div id="images_{posts.pid}" class="post-images">
-							<!-- BEGIN uploadedImages -->
-							<i class="icon-picture icon-1"></i><a href="{posts.uploadedImages.url}"> {posts.uploadedImages.name}</a><br/>
-							<!-- END uploadedImages -->
-						</div>
 						<div class="post-signature">{posts.signature}</div>
-						<div class="profile-block">
+						<div class="post-info">
 							<span class="pull-right">
 								posted <span class="relativeTimeAgo">{posts.relativeTime} ago</span>
 								<span class="{posts.edited-class}">| last edited by <strong><a href="/users/{posts.editorslug}">{posts.editorname}</a></strong> {posts.relativeEditTime} ago</span>

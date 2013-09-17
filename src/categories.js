@@ -1,4 +1,4 @@
-var	RDB = require('./redis.js'),
+var RDB = require('./redis.js'),
 	posts = require('./posts.js'),
 	utils = require('./../public/src/utils.js'),
 	user = require('./user.js'),
@@ -10,7 +10,7 @@ var	RDB = require('./redis.js'),
 
 	Categories.create = function(data, callback) {
 		RDB.incr('global:next_category_id', function(err, cid) {
-			if(err)
+			if (err)
 				return callback(err, null);
 
 			var slug = cid + '/' + utils.slugify(data.name);
@@ -57,16 +57,16 @@ var	RDB = require('./redis.js'),
 					active_users = results[1];
 
 				var categoryData = {
-					'category_name' : category_name,
+					'category_name': category_name,
 					'category_description': category_description,
 					'disabled': disabled,
-					'show_sidebar' : 'show',
+					'show_sidebar': 'show',
 					'show_topic_button': 'inline-block',
 					'no_topics_message': 'hidden',
 					'topic_row_size': 'col-md-9',
 					'category_id': category_id,
 					'active_users': [],
-					'topics' : [],
+					'topics': [],
 					'twitter-intent-url': 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(nconf.get('url') + 'category/' + category_slug) + '&text=' + encodeURIComponent(category_name),
 					'facebook-share-url': 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(nconf.get('url') + 'category/' + category_slug),
 					'google-share-url': 'https://plus.google.com/share?url=' + encodeURIComponent(nconf.get('url') + 'category/' + category_slug)
@@ -102,7 +102,7 @@ var	RDB = require('./redis.js'),
 						categoryData.moderator_block_class = results[1].length > 0 ? '' : 'none';
 						categoryData.moderators = results[1];
 						categoryData.active_users = results[2];
-						categoryData.show_sidebar = categoryData.topics.length > 0 ? 'show':'hidden';
+						categoryData.show_sidebar = categoryData.topics.length > 0 ? 'show' : 'hidden';
 						callback(null, categoryData);
 					});
 				}
@@ -136,8 +136,8 @@ var	RDB = require('./redis.js'),
 
 	Categories.getModerators = function(cid, callback) {
 		RDB.smembers('cid:' + cid + ':moderators', function(err, mods) {
-			if(!err) {
-				if(mods && mods.length) {
+			if (!err) {
+				if (mods && mods.length) {
 					user.getMultipleUserFields(mods, ['username'], function(err, moderators) {
 						callback(err, moderators);
 					});
@@ -155,14 +155,14 @@ var	RDB = require('./redis.js'),
 	Categories.privileges = function(cid, uid, callback) {
 		function isModerator(next) {
 			user.isModerator(uid, cid, function(isMod) {
-					next(null, isMod);
-				});
+				next(null, isMod);
+			});
 		}
 
 		function isAdministrator(next) {
 			user.isAdministrator(uid, function(isAdmin) {
-					next(null, isAdmin);
-				});
+				next(null, isAdmin);
+			});
 		}
 
 		async.parallel([isModerator, isAdministrator], function(err, results) {
@@ -179,8 +179,8 @@ var	RDB = require('./redis.js'),
 			topics.hasReadTopics(tids, uid, function(hasRead) {
 
 				var allread = true;
-				for (var i=0, ii=tids.length; i<ii; i++) {
-					if(hasRead[i] === 0) {
+				for (var i = 0, ii = tids.length; i < ii; i++) {
+					if (hasRead[i] === 0) {
 						allread = false;
 						break;
 					}
@@ -197,7 +197,7 @@ var	RDB = require('./redis.js'),
 	Categories.hasReadCategories = function(cids, uid, callback) {
 		var batch = RDB.multi();
 
-		for (var i=0, ii=cids.length; i<ii; i++) {
+		for (var i = 0, ii = cids.length; i < ii; i++) {
 			batch.sismember('cid:' + cids[i] + ':read_by_uid', uid);
 		}
 
@@ -215,9 +215,9 @@ var	RDB = require('./redis.js'),
 	};
 
 	Categories.getRecentReplies = function(cid, count, callback) {
-		RDB.zrevrange('categories:recent_posts:cid:' + cid, 0, (count<10)?10:count, function(err, pids) {
+		RDB.zrevrange('categories:recent_posts:cid:' + cid, 0, (count < 10) ? 10 : count, function(err, pids) {
 
-			if(err) {
+			if (err) {
 				winston.err(err);
 				callback([]);
 				return;
@@ -229,7 +229,7 @@ var	RDB = require('./redis.js'),
 			}
 
 			posts.getPostSummaryByPids(pids, function(err, postData) {
-				if(postData.length > count) {
+				if (postData.length > count) {
 					postData = postData.slice(0, count);
 				}
 				callback(postData);
@@ -246,9 +246,9 @@ var	RDB = require('./redis.js'),
 		}
 
 		topics.getPids(tid, function(err, pids) {
-			if(!err) {
+			if (!err) {
 				async.each(pids, movePost, function(err) {
-					if(!err) {
+					if (!err) {
 						callback(null, 1);
 					} else {
 						winston.err(err);
@@ -267,15 +267,15 @@ var	RDB = require('./redis.js'),
 			Categories.addActiveUser(cid, uid);
 			Categories.isUserActiveIn(oldCid, uid, function(err, active) {
 
-				if(!err && !active) {
+				if (!err && !active) {
 					Categories.removeActiveUser(oldCid, uid);
 				}
 			});
 		}
 
 		topics.getUids(tid, function(err, uids) {
-			if(!err && uids) {
-				for(var i=0; i<uids.length; ++i) {
+			if (!err && uids) {
+				for (var i = 0; i < uids.length; ++i) {
 					updateUser(uids[i]);
 				}
 			}
@@ -295,7 +295,7 @@ var	RDB = require('./redis.js'),
 
 	Categories.getCategoryFields = function(cid, fields, callback) {
 		RDB.hmgetObject('category:' + cid, fields, function(err, data) {
-			if(err === null)
+			if (err === null)
 				callback(data);
 			else
 				winston.err(err);
@@ -312,7 +312,9 @@ var	RDB = require('./redis.js'),
 
 	Categories.getCategories = function(cids, callback, current_user) {
 		if (!cids || !Array.isArray(cids) || cids.length === 0) {
-			callback({'categories' : []});
+			callback({
+				'categories': []
+			});
 			return;
 		}
 
@@ -321,7 +323,7 @@ var	RDB = require('./redis.js'),
 		function getCategory(cid, callback) {
 			Categories.getCategoryData(cid, function(err, categoryData) {
 
-				if(err) {
+				if (err) {
 					callback(err);
 					return;
 				}
@@ -331,18 +333,20 @@ var	RDB = require('./redis.js'),
 
 					categories.push(categoryData);
 					callback(null);
-				}) ;
+				});
 			});
 		}
 
 		async.eachSeries(cids, getCategory, function(err) {
-			if(err) {
+			if (err) {
 				winston.err(err);
 				callback(null);
 				return;
 			}
 
-			callback({'categories': categories});
+			callback({
+				'categories': categories
+			});
 		});
 
 	};
@@ -350,14 +354,14 @@ var	RDB = require('./redis.js'),
 	Categories.isUserActiveIn = function(cid, uid, callback) {
 
 		RDB.lrange('uid:' + uid + ':posts', 0, -1, function(err, pids) {
-			if(err)
+			if (err)
 				return callback(err, null);
 
 			function getPostCategory(pid, callback) {
 				posts.getPostField(pid, 'tid', function(tid) {
 
 					topics.getTopicField(tid, 'cid', function(err, postCid) {
-						if(err)
+						if (err)
 							return callback(err, null);
 
 						return callback(null, postCid);
@@ -374,16 +378,16 @@ var	RDB = require('./redis.js'),
 				},
 				function(callback) {
 					getPostCategory(pids[index], function(err, postCid) {
-						if(err)
+						if (err)
 							return callback(err);
-						if(postCid === cid)
+						if (postCid === cid)
 							active = true;
 						++index;
 						callback(null);
 					});
 				},
 				function(err) {
-					if(err)
+					if (err)
 						return callback(err, null);
 
 					callback(null, active);

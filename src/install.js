@@ -1,4 +1,4 @@
-var	async = require('async'),
+var async = require('async'),
 	utils = require('../public/src/utils.js'),
 	fs = require('fs'),
 	url = require('url'),
@@ -8,46 +8,38 @@ var	async = require('async'),
 	reds = require('reds'),
 
 	install = {
-		questions: [
-			{
-				name: 'base_url',
-				description: 'URL of this installation',
-				'default': 'http://localhost',
-				pattern: /^http(?:s)?:\/\//,
-				message: 'Base URL must begin with \'http://\' or \'https://\'',
-			},
-			{
-				name: 'port',
-				description: 'Port number of your NodeBB',
-				'default': 4567
-			},
-			{
-				name: 'use_port',
-				description: 'Use a port number to access NodeBB?',
-				'default': 'y',
-				pattern: /y[es]*|n[o]?/,
-				message: 'Please enter \'yes\' or \'no\'',
-			},
-			{
-				name: 'secret',
-				description: 'Please enter a NodeBB secret',
-				'default': utils.generateUUID()
-			},
-			{
-				name: 'redis:host',
-				description: 'Host IP or address of your Redis instance',
-				'default': '127.0.0.1'
-			},
-			{
-				name: 'redis:port',
-				description: 'Host port of your Redis instance',
-				'default': 6379
-			},
-			{
-				name: 'redis:password',
-				description: 'Password of your Redis database'
-			}
-		],
+		questions: [{
+			name: 'base_url',
+			description: 'URL of this installation',
+			'default': 'http://localhost',
+			pattern: /^http(?:s)?:\/\//,
+			message: 'Base URL must begin with \'http://\' or \'https://\'',
+		}, {
+			name: 'port',
+			description: 'Port number of your NodeBB',
+			'default': 4567
+		}, {
+			name: 'use_port',
+			description: 'Use a port number to access NodeBB?',
+			'default': 'y',
+			pattern: /y[es]*|n[o]?/,
+			message: 'Please enter \'yes\' or \'no\'',
+		}, {
+			name: 'secret',
+			description: 'Please enter a NodeBB secret',
+			'default': utils.generateUUID()
+		}, {
+			name: 'redis:host',
+			description: 'Host IP or address of your Redis instance',
+			'default': '127.0.0.1'
+		}, {
+			name: 'redis:port',
+			description: 'Host port of your Redis instance',
+			'default': 6379
+		}, {
+			name: 'redis:password',
+			description: 'Password of your Redis database'
+		}],
 		setup: function(callback) {
 			async.series([
 				function(next) {
@@ -96,16 +88,29 @@ var	async = require('async'),
 				function(next) {
 					// Applying default database configs
 					winston.info('Populating database with default configs, if not already set...')
-					var	meta = require('./meta'),
-						defaults = [
-							{ field: 'postDelay', value: 10000 },
-							{ field: 'minimumPostLength', value: 8 },
-							{ field: 'minimumTitleLength', value: 3 },
-							{ field: 'minimumUsernameLength', value: 2 },
-							{ field: 'maximumUsernameLength', value: 16 },
-							{ field: 'minimumPasswordLength', value: 6 },
-							{ field: 'imgurClientID', value: '' }
-						];
+					var meta = require('./meta'),
+						defaults = [{
+							field: 'postDelay',
+							value: 10000
+						}, {
+							field: 'minimumPostLength',
+							value: 8
+						}, {
+							field: 'minimumTitleLength',
+							value: 3
+						}, {
+							field: 'minimumUsernameLength',
+							value: 2
+						}, {
+							field: 'maximumUsernameLength',
+							value: 16
+						}, {
+							field: 'minimumPasswordLength',
+							value: 6
+						}, {
+							field: 'imgurClientID',
+							value: ''
+						}];
 
 					async.each(defaults, function(configObj, next) {
 						meta.configs.setOnEmpty(configObj.field, configObj.value, next);
@@ -115,7 +120,7 @@ var	async = require('async'),
 				},
 				function(next) {
 					// Check if an administrator needs to be created
-					var	Groups = require('./groups');
+					var Groups = require('./groups');
 
 					Groups.getGidFromName('Administrators', function(err, gid) {
 						if (err) return next(err.message);
@@ -132,7 +137,7 @@ var	async = require('async'),
 				},
 				function(next) {
 					// Categories
-					var	Categories = require('./categories'),
+					var Categories = require('./categories'),
 						admin = {
 							categories: require('./admin/categories')
 						};
@@ -159,13 +164,13 @@ var	async = require('async'),
 				},
 				function(next) {
 					// Default plugins
-					var	Plugins = require('./plugins');
+					var Plugins = require('./plugins');
 
 					winston.info('Enabling default plugins');
 
-					var	defaultEnabled = [
-							'nodebb-plugin-markdown', 'nodebb-plugin-mentions'
-						];
+					var defaultEnabled = [
+						'nodebb-plugin-markdown', 'nodebb-plugin-mentions'
+					];
 
 					async.each(defaultEnabled, function(pluginId, next) {
 						Plugins.isActive(pluginId, function(err, active) {
@@ -185,31 +190,27 @@ var	async = require('async'),
 			});
 		},
 		createAdmin: function(callback) {
-			var	User = require('./user'),
+			var User = require('./user'),
 				Groups = require('./groups');
 
 			winston.warn('No administrators have been detected, running initial user setup');
-			var	questions = [
-					{
-						name: 'username',
-						description: 'Administrator username',
-						required: true,
-						type: 'string'
-					},
-					{
-						name: 'email',
-						description: 'Administrator email address',
-						pattern: /.+@.+/,
-						required: true
-					},
-					{
-						name: 'password',
-						description: 'Password',
-						required: true,
-						hidden: true,
-						type: 'string'
-					}
-				],
+			var questions = [{
+				name: 'username',
+				description: 'Administrator username',
+				required: true,
+				type: 'string'
+			}, {
+				name: 'email',
+				description: 'Administrator email address',
+				pattern: /.+@.+/,
+				required: true
+			}, {
+				name: 'password',
+				description: 'Password',
+				required: true,
+				hidden: true,
+				type: 'string'
+			}],
 				getAdminInfo = function(callback) {
 					prompt.get(questions, function(err, results) {
 						if (!results) return callback(new Error('aborted'));
@@ -251,9 +252,11 @@ var	async = require('async'),
 			], function(err) {
 				winston.info('Configuration Saved OK');
 
-				nconf.file({ file: path.join(__dirname, '..', 'config.json') });
+				nconf.file({
+					file: path.join(__dirname, '..', 'config.json')
+				});
 
-				var	RDB = require('./redis');
+				var RDB = require('./redis');
 				reds.createClient = function() {
 					return reds.client || (reds.client = RDB);
 				}

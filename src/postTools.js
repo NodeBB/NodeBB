@@ -1,4 +1,4 @@
-var	RDB = require('./redis.js'),
+var RDB = require('./redis.js'),
 	posts = require('./posts.js'),
 	topics = require('./topics'),
 	threadTools = require('./threadTools.js'),
@@ -56,7 +56,8 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
-	PostTools.edit = function(uid, pid, title, content, images) {
+
+	PostTools.edit = function(uid, pid, title, content) {
 		var	success = function() {
 			posts.setPostField(pid, 'content', content);
 			posts.setPostField(pid, 'edited', Date.now());
@@ -68,11 +69,6 @@ var	RDB = require('./redis.js'),
 
 			async.parallel([
 				function(next) {
-					posts.uploadPostImages(pid, images, function(err, uploadedImages) {
-						next(err, uploadedImages);
-					});
-				},
-				function(next) {
 					posts.getPostField(pid, 'tid', function(tid) {
 						PostTools.isMain(pid, tid, function(isMainPost) {
 							if (isMainPost) {
@@ -82,7 +78,10 @@ var	RDB = require('./redis.js'),
 								});
 							}
 
-							next(null, {tid:tid, isMainPost:isMainPost});
+							next(null, {
+								tid: tid,
+								isMainPost: isMainPost
+							});
 						});
 					});
 				},
@@ -90,12 +89,12 @@ var	RDB = require('./redis.js'),
 					PostTools.toHTML(content, next);
 				}
 			], function(err, results) {
-				io.sockets.in('topic_' + results[1].tid).emit('event:post_edited', {
+				io.sockets.in('topic_' + results[0].tid).emit('event:post_edited', {
 					pid: pid,
 					title: title,
-					isMainPost: results[1].isMainPost,
-					content: results[2],
-					uploadedImages:results[0]
+					isMainPost: results[0].isMainPost,
+					content: results[1]
+
 				});
 			});
 		};
@@ -117,13 +116,13 @@ var	RDB = require('./redis.js'),
 			postSearch.remove(pid);
 
 			posts.getPostFields(pid, ['tid', 'uid'], function(postData) {
-				RDB.hincrby('topic:'+postData.tid, 'postcount', -1);
+				RDB.hincrby('topic:' + postData.tid, 'postcount', -1);
 
 				user.decrementUserFieldBy(postData.uid, 'postcount', 1, function(err, postcount) {
 					RDB.zadd('users:postcount', postcount, postData.uid);
 				});
 
-				io.sockets.in('topic_' + postData.tid).emit('event:post_deleted', {
+				io.sockets. in ('topic_' + postData.tid).emit('event:post_deleted', {
 					pid: pid
 				});
 
@@ -153,35 +152,35 @@ var	RDB = require('./redis.js'),
 
 	PostTools.restore = function(uid, pid) {
 		var success = function() {
-				posts.setPostField(pid, 'deleted', 0);
+			posts.setPostField(pid, 'deleted', 0);
 
-				posts.getPostFields(pid, ['tid', 'uid', 'content'], function(postData) {
-					RDB.hincrby('topic:'+postData.tid, 'postcount', 1);
+			posts.getPostFields(pid, ['tid', 'uid', 'content'], function(postData) {
+				RDB.hincrby('topic:' + postData.tid, 'postcount', 1);
 
-					user.incrementUserFieldBy(postData.uid, 'postcount', 1);
+				user.incrementUserFieldBy(postData.uid, 'postcount', 1);
 
-					io.sockets.in('topic_' + postData.tid).emit('event:post_restored', {
-						pid: pid
-					});
-
-					threadTools.get_latest_undeleted_pid(postData.tid, function(err, pid) {
-						posts.getPostField(pid, 'timestamp', function(timestamp) {
-							topics.updateTimestamp(postData.tid, timestamp);
-						});
-					});
-
-					// Restore topic if it is the only post
-					topics.getTopicField(postData.tid, 'postcount', function(err, count) {
-						if (count === '1') {
-							threadTools.restore(postData.tid, uid);
-						}
-					});
-
-					Feed.updateTopic(postData.tid);
-
-					postSearch.index(postData.content, pid);
+				io.sockets. in ('topic_' + postData.tid).emit('event:post_restored', {
+					pid: pid
 				});
-			};
+
+				threadTools.get_latest_undeleted_pid(postData.tid, function(err, pid) {
+					posts.getPostField(pid, 'timestamp', function(timestamp) {
+						topics.updateTimestamp(postData.tid, timestamp);
+					});
+				});
+
+				// Restore topic if it is the only post
+				topics.getTopicField(postData.tid, 'postcount', function(err, count) {
+					if (count === '1') {
+						threadTools.restore(postData.tid, uid);
+					}
+				});
+
+				Feed.updateTopic(postData.tid);
+
+				postSearch.index(postData.content, pid);
+			});
+		};
 
 		PostTools.privileges(pid, uid, function(privileges) {
 			if (privileges.editable) {
@@ -193,11 +192,11 @@ var	RDB = require('./redis.js'),
 	PostTools.toHTML = function(raw, callback) {
 		raw = raw || '';
 		plugins.fireHook('filter:post.parse', raw, function(parsed) {
-			var	cheerio = require('cheerio');
+			var cheerio = require('cheerio');
 
 			if (parsed && parsed.length > 0) {
-				var	parsedContentDOM = cheerio.load(parsed);
-				var	domain = nconf.get('url');
+				var parsedContentDOM = cheerio.load(parsed);
+				var domain = nconf.get('url');
 
 				parsedContentDOM('a').each(function() {
 					this.attr('rel', 'nofollow');

@@ -22,7 +22,7 @@ var user = require('./../user.js'),
 			config['postDelay'] = meta.config['postDelay'];
 			config['minimumTitleLength'] = meta.config['minimumTitleLength'];
 			config['minimumPostLength'] = meta.config['minimumPostLength'];
-			config['imgurClientIDSet'] = !!meta.config['imgurClientID'];
+			config['imgurClientIDSet'] = !! meta.config['imgurClientID'];
 			config['minimumUsernameLength'] = meta.config['minimumUsernameLength'];
 			config['maximumUsernameLength'] = meta.config['maximumUsernameLength'];
 			config['minimumPasswordLength'] = meta.config['minimumPasswordLength'];
@@ -40,7 +40,7 @@ var user = require('./../user.js'),
 				function iterator(category, callback) {
 					categories.getRecentReplies(category.cid, 2, function(posts) {
 						category["posts"] = posts;
-						category["post_count"] = posts.length>2 ? 2 : posts.length;
+						category["post_count"] = posts.length > 2 ? 2 : posts.length;
 						callback(null);
 					});
 				}
@@ -69,7 +69,7 @@ var user = require('./../user.js'),
 					'login_window:spansize': 'col-md-6',
 					'alternate_logins:display': 'block'
 				}
-				for (var i=0, ii=num_strategies; i<ii; i++) {
+				for (var i = 0, ii = num_strategies; i < ii; i++) {
 					data[login_strategies[i] + ':display'] = 'active';
 				}
 			}
@@ -94,7 +94,7 @@ var user = require('./../user.js'),
 					'register_window:spansize': 'col-md-6',
 					'alternate_logins:display': 'block'
 				}
-				for (var i=0, ii=num_strategies; i<ii; i++) {
+				for (var i = 0, ii = num_strategies; i < ii; i++) {
 					data[login_strategies[i] + ':display'] = 'active';
 				}
 			}
@@ -110,7 +110,7 @@ var user = require('./../user.js'),
 			var uid = (req.user) ? req.user.uid : 0;
 			topics.getTopicWithPosts(req.params.id, uid, 0, 10, function(err, data) {
 				if (!err) {
-					if(data.deleted === '1' && data.expose_tools === 0) {
+					if (data.deleted === '1' && data.expose_tools === 0) {
 						return res.json(404, {});
 					}
 					res.json(data);
@@ -183,11 +183,11 @@ var user = require('./../user.js'),
 
 		app.get('/api/search', function(req, res) {
 			return res.json({
-				show_no_topics:'hide',
-				show_no_posts:'hide',
-				search_query:'',
-				posts:[],
-				topics:[]
+				show_no_topics: 'hide',
+				show_no_posts: 'hide',
+				search_query: '',
+				posts: [],
+				topics: []
 			});
 		});
 
@@ -205,11 +205,11 @@ var user = require('./../user.js'),
 
 			function searchPosts(callback) {
 				search(postSearch, function(err, pids) {
-					if(err)
+					if (err)
 						return callback(err, null);
 
 					posts.getPostSummaryByPids(pids, function(err, posts) {
-						if(err)
+						if (err)
 							return callback(err, null);
 						callback(null, posts);
 					});
@@ -218,7 +218,7 @@ var user = require('./../user.js'),
 
 			function searchTopics(callback) {
 				search(topicSearch, function(err, tids) {
-					if(err)
+					if (err)
 						return callback(err, null);
 
 					topics.getTopicsByTids(tids, 0, function(topics) {
@@ -232,11 +232,11 @@ var user = require('./../user.js'),
 					return next();
 
 				return res.json({
-					show_no_topics: results[1].length? 'hide':'',
-					show_no_posts: results[0].length? 'hide':'',
-					search_query:req.params.term,
-					posts:results[0],
-					topics:results[1]
+					show_no_topics: results[1].length ? 'hide' : '',
+					show_no_posts: results[0].length ? 'hide' : '',
+					search_query: req.params.term,
+					posts: results[0],
+					topics: results[1]
 				});
 			});
 		});
@@ -246,7 +246,9 @@ var user = require('./../user.js'),
 		});
 
 		app.get('/api/reset/:code', function(req, res) {
-			res.json({ reset_code: req.params.code });
+			res.json({
+				reset_code: req.params.code
+			});
 		});
 
 		app.get('/api/404', function(req, res) {

@@ -1,4 +1,4 @@
-var	RDB = require('../redis'),
+var RDB = require('../redis'),
 	utils = require('../../public/src/utils'),
 	user = require('../user'),
 	Groups = require('../groups');
@@ -7,7 +7,7 @@ var	RDB = require('../redis'),
 
 	UserAdmin.makeAdmin = function(uid, theirid, socket) {
 		user.isAdministrator(uid, function(isAdmin) {
-			if(isAdmin) {
+			if (isAdmin) {
 				Groups.getGidFromName('Administrators', function(err, gid) {
 					Groups.join(gid, theirid, function(err) {
 						if (!err) {
@@ -28,14 +28,14 @@ var	RDB = require('../redis'),
 					message: 'You need to be an administrator to make someone else an administrator!',
 					type: 'warning',
 					timeout: 2000
-				});					
+				});
 			}
 		});
 	};
 
 	UserAdmin.removeAdmin = function(uid, theirid, socket) {
 		user.isAdministrator(uid, function(isAdmin) {
-			if(isAdmin) {
+			if (isAdmin) {
 				Groups.getGidFromName('Administrators', function(err, gid) {
 					Groups.leave(gid, theirid, function(err) {
 						if (!err) {
@@ -57,7 +57,7 @@ var	RDB = require('../redis'),
 	UserAdmin.deleteUser = function(uid, theirid, socket) {
 		user.isAdministrator(uid, function(amIAdmin) {
 			user.isAdministrator(theirid, function(areTheyAdmin) {
-				if(amIAdmin && !areTheyAdmin) {
+				if (amIAdmin && !areTheyAdmin) {
 					user.delete(theirid, function(data) {
 
 						socket.emit('event:alert', {
@@ -75,7 +75,7 @@ var	RDB = require('../redis'),
 	UserAdmin.banUser = function(uid, theirid, socket) {
 		user.isAdministrator(uid, function(amIAdmin) {
 			user.isAdministrator(theirid, function(areTheyAdmin) {
-				if(amIAdmin && !areTheyAdmin) {
+				if (amIAdmin && !areTheyAdmin) {
 					user.ban(theirid, function(err, result) {
 
 						socket.emit('event:alert', {
@@ -86,13 +86,13 @@ var	RDB = require('../redis'),
 						});
 					});
 				}
-			});			
+			});
 		});
 	};
 
 	UserAdmin.unbanUser = function(uid, theirid, socket) {
 		user.isAdministrator(uid, function(amIAdmin) {
-			if(amIAdmin) {
+			if (amIAdmin) {
 				user.unban(theirid, function(err, result) {
 					socket.emit('event:alert', {
 						title: 'User Unbanned',
@@ -106,4 +106,3 @@ var	RDB = require('../redis'),
 	};
 
 }(exports));
-

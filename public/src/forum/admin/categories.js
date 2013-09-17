@@ -1,11 +1,10 @@
-
 var modified_categories = {};
 
 function modified(el) {
 	var cid = $(el).parents('li').attr('data-cid');
 
 	modified_categories[cid] = modified_categories[cid] || {};
-	modified_categories[cid][el.attr('data-name')] = el.val();
+	modified_categories[cid][$(el).attr('data-name')] = $(el).val();
 }
 
 function save() {
@@ -16,7 +15,7 @@ function save() {
 function select_icon(el) {
 	var selected = el.attr('class').replace(' icon-2x', '');
 	jQuery('#icons .selected').removeClass('selected');
-	if(selected)
+	if (selected)
 		jQuery('#icons .' + selected).parent().addClass('selected');
 
 
@@ -57,14 +56,14 @@ jQuery('.blockclass').each(function() {
 
 	function createNewCategory() {
 		var category = {
-			name:$('#inputName').val(),
-			description:$('#inputDescription').val(),
-			icon:$('#new-category-modal i').attr('value'),
-			blockclass:$('#inputBlockclass').val()
+			name: $('#inputName').val(),
+			description: $('#inputDescription').val(),
+			icon: $('#new-category-modal i').attr('value'),
+			blockclass: $('#inputBlockclass').val()
 		};
 
 		socket.emit('api:admin.categories.create', category, function(err, data) {
-			if(!err) {
+			if (!err) {
 				app.alert({
 					alert_id: 'category_created',
 					title: 'Created',
@@ -73,7 +72,9 @@ jQuery('.blockclass').each(function() {
 					timeout: 2000
 				});
 
-				var html = templates.prepare(templates['admin/categories'].blocks['categories']).parse({categories:[data]});
+				var html = templates.prepare(templates['admin/categories'].blocks['categories']).parse({
+					categories: [data]
+				});
 				$('#entry-container').append(html);
 
 				$('#new-category-modal').modal('hide');
@@ -84,7 +85,7 @@ jQuery('.blockclass').each(function() {
 	jQuery('document').ready(function() {
 		var url = window.location.href,
 			parts = url.split('/'),
-			active = parts[parts.length-1];
+			active = parts[parts.length - 1];
 
 		jQuery('.nav-pills li').removeClass('active');
 		jQuery('.nav-pills li a').each(function() {
@@ -112,7 +113,7 @@ jQuery('.blockclass').each(function() {
 
 		jQuery('.entry-row button').each(function(index, element) {
 			var disabled = $(element).attr('data-disabled');
-			if(disabled == "0" || disabled == "")
+			if (disabled == "0" || disabled == "")
 				$(element).html('Disable');
 			else
 				$(element).html('Enable');
@@ -124,7 +125,7 @@ jQuery('.blockclass').each(function() {
 			var categoryRow = btn.parents('li');
 			var cid = categoryRow.attr('data-cid');
 
-			var disabled = btn.html() == "Disable" ? "1":"0";
+			var disabled = btn.html() == "Disable" ? "1" : "0";
 			categoryRow.remove();
 			modified_categories[cid] = modified_categories[cid] || {};
 			modified_categories[cid]['disabled'] = disabled;

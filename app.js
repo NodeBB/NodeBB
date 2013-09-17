@@ -32,12 +32,12 @@ global.env = process.env.NODE_ENV || 'production';
 
 winston.remove(winston.transports.Console);
 winston.add(winston.transports.Console, {
-	colorize:true
+	colorize: true
 });
 
 winston.add(winston.transports.File, {
-	filename:'error.log',
-	level:'error'
+	filename: 'error.log',
+	level: 'error'
 });
 
 // TODO: remove once https://github.com/flatiron/winston/issues/280 is fixed
@@ -53,9 +53,11 @@ winston.info('');
 
 if (fs.existsSync(__dirname + '/config.json') && (!nconf.get('setup') && !nconf.get('upgrade'))) {
 	// Load server-side config
-	nconf.file({ file: __dirname + '/config.json'});
+	nconf.file({
+		file: __dirname + '/config.json'
+	});
 
-	var	meta = require('./src/meta.js');
+	var meta = require('./src/meta.js');
 
 	nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path') + '/');
 	nconf.set('upload_url', nconf.get('url') + 'uploads/');
@@ -65,7 +67,7 @@ if (fs.existsSync(__dirname + '/config.json') && (!nconf.get('setup') && !nconf.
 
 	meta.configs.init(function() {
 		// Initial setup for Redis & Reds
-		var	reds = require('reds');
+		var reds = require('reds');
 		RDB = require('./src/redis.js');
 		reds.createClient = function() {
 			return reds.client || (reds.client = RDB);
@@ -75,7 +77,7 @@ if (fs.existsSync(__dirname + '/config.json') && (!nconf.get('setup') && !nconf.
 			templates = require('./public/src/templates.js'),
 			webserver = require('./src/webserver.js'),
 			websockets = require('./src/websockets.js'),
-			plugins = require('./src/plugins'),	// Don't remove this - plugins initializes itself
+			plugins = require('./src/plugins'), // Don't remove this - plugins initializes itself
 			admin = {
 				'categories': require('./src/admin/categories.js')
 			};
@@ -93,8 +95,10 @@ if (fs.existsSync(__dirname + '/config.json') && (!nconf.get('setup') && !nconf.
 	});
 
 } else if (nconf.get('upgrade')) {
-	nconf.file({ file: __dirname + '/config.json'});
-	var	meta = require('./src/meta.js');
+	nconf.file({
+		file: __dirname + '/config.json'
+	});
+	var meta = require('./src/meta.js');
 
 	meta.configs.init(function() {
 		require('./src/upgrade').upgrade();
@@ -104,7 +108,7 @@ if (fs.existsSync(__dirname + '/config.json') && (!nconf.get('setup') && !nconf.
 	if (nconf.get('setup')) winston.info('NodeBB Setup Triggered via Command Line');
 	else winston.warn('Configuration not found, starting NodeBB setup');
 
-	var	install = require('./src/install'),
+	var install = require('./src/install'),
 		meta = {
 			config: {}
 		};

@@ -1,6 +1,4 @@
-
-
-(function (module) {
+(function(module) {
 
 	var config = {},
 		templates,
@@ -105,7 +103,7 @@
 	templates.getTemplateNameFromUrl = function(url) {
 		var parts = url.split('?')[0].split('/');
 
-		for(var i=0; i<parts.length; ++i) {
+		for (var i = 0; i < parts.length; ++i) {
 			if (templates.is_available(parts[i])) {
 				return parts[i];
 			}
@@ -124,7 +122,7 @@
 
 		var trimmed = api_url;
 
-		if(!tpl_url) {
+		if (!tpl_url) {
 			tpl_url = templates.getTemplateNameFromUrl(api_url);
 		}
 
@@ -160,7 +158,7 @@
 
 			jQuery.get(API_URL + api_url, function(data) {
 
-				if(!data) {
+				if (!data) {
 					ajaxify.go('404');
 					return;
 				}
@@ -177,7 +175,7 @@
 		function parse_template() {
 			if (!templates[tpl_url] || !template_data) return;
 
-			if(typeof global !== "undefined")
+			if (typeof global !== "undefined")
 				template_data['relative_path'] = nconf.get('relative_path');
 			else
 				template_data['relative_path'] = RELATIVE_PATH;
@@ -187,17 +185,17 @@
 			jQuery('#content [template-variable]').each(function(index, element) {
 				var value = null;
 
-				switch(element.getAttribute('template-type')) {
+				switch (element.getAttribute('template-type')) {
 					case 'boolean':
 						value = (element.value === 'true' || element.value === '1') ? true : false;
-					break;
-					case 'int':	// Intentional fall-through
+						break;
+					case 'int': // Intentional fall-through
 					case 'integer':
 						value = parseInt(element.value);
-					break;
+						break;
 					default:
 						value = element.value;
-					break;
+						break;
 				}
 
 				templates.set(element.getAttribute('template-variable'), value);
@@ -252,7 +250,8 @@
 			return template.replace(regex, block);
 		}
 
-		var template = this.html, regex, block;
+		var template = this.html,
+			regex, block;
 
 		return (function parse(data, namespace, template) {
 			if (!data || data.length == 0) {
@@ -267,14 +266,16 @@
 						namespace += d + '.';
 
 						var regex = makeRegex(d),
-							block = getBlock(regex, namespace.substring(0, namespace.length-1), template);
+							block = getBlock(regex, namespace.substring(0, namespace.length - 1), template);
 
 						if (block == null) {
 							namespace = namespace.replace(d + '.', '');
 							continue;
 						}
 
-						var numblocks = data[d].length - 1, i = 0, result = "";
+						var numblocks = data[d].length - 1,
+							i = 0,
+							result = "";
 
 						do {
 							result += parse(data[d][i], namespace, block);
@@ -312,7 +313,8 @@
 		templates.init();
 	}
 
-})('undefined' === typeof module ? {module:{exports:{}}} : module)
-
-
-
+})('undefined' === typeof module ? {
+	module: {
+		exports: {}
+	}
+} : module)

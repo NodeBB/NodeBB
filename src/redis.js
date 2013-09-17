@@ -5,7 +5,7 @@
 
 	RedisDB.exports = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host'));
 
-	if(nconf.get('redis:password')) {
+	if (nconf.get('redis:password')) {
 		RedisDB.exports.auth(nconf.get('redis:password'));
 	}
 
@@ -20,8 +20,8 @@
 
 
 	/*
-	* A possibly more efficient way of doing multiple sismember calls
-	*/
+	 * A possibly more efficient way of doing multiple sismember calls
+	 */
 	RedisDB.exports.sismembers = function(key, needles, callback) {
 		var tempkey = key + ':temp:' + utils.generateUUID();
 		RedisDB.exports.sadd(tempkey, needles, function() {
@@ -35,18 +35,17 @@
 	/*
 	 * gets fields of a hash as an object instead of an array
 	 */
-	RedisDB.exports.hmgetObject = function (key, fields, callback) {
+	RedisDB.exports.hmgetObject = function(key, fields, callback) {
 		RedisDB.exports.hmget(key, fields, function(err, data) {
-			if(err === null) {
+			if (err === null) {
 				var returnData = {};
 
-				for(var i=0, ii=fields.length; i<ii; ++i) {
+				for (var i = 0, ii = fields.length; i < ii; ++i) {
 					returnData[fields[i]] = data[i];
 				}
 
 				callback(null, returnData);
-			}
-			else {
+			} else {
 				console.log(err);
 				callback(err, null);
 			}

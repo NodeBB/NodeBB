@@ -12,8 +12,8 @@
 		var followBtn = $('#follow-btn');
 		var unfollowBtn = $('#unfollow-btn');
 
-		if(yourid !== theirid) {
-			if(isFollowing) {
+		if (yourid !== theirid) {
+			if (isFollowing) {
 				followBtn.hide();
 				unfollowBtn.show();
 			} else {
@@ -26,8 +26,10 @@
 		}
 
 		followBtn.on('click', function() {
-			socket.emit('api:user.follow', {uid: theirid}, function(success) {
-				if(success) {
+			socket.emit('api:user.follow', {
+				uid: theirid
+			}, function(success) {
+				if (success) {
 					followBtn.hide();
 					unfollowBtn.show();
 					app.alertSuccess('You are now following ' + username + '!');
@@ -39,8 +41,10 @@
 		});
 
 		unfollowBtn.on('click', function() {
-			socket.emit('api:user.unfollow', {uid: theirid}, function(success) {
-				if(success) {
+			socket.emit('api:user.unfollow', {
+				uid: theirid
+			}, function(success) {
+				if (success) {
 					followBtn.show();
 					unfollowBtn.hide();
 					app.alertSuccess('You are no longer following ' + username + '!');
@@ -58,7 +62,7 @@
 		var onlineStatus = $('.account-online-status');
 
 		function handleUserOnline(data) {
-			if(data.online) {
+			if (data.online) {
 				onlineStatus.find('span span').text('online');
 				onlineStatus.find('i').attr('class', 'icon-circle');
 			} else {

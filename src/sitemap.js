@@ -1,4 +1,4 @@
-var	path = require('path'),
+var path = require('path'),
 	async = require('async'),
 	sm = require('sitemap'),
 	url = require('url'),
@@ -6,14 +6,22 @@ var	path = require('path'),
 	topics = require('./topics'),
 	sitemap = {
 		getStaticUrls: function(callback) {
-			callback(null, [
-				{ url: '', changefreq: 'weekly', priority: '0.6' },
-				{ url: 'recent', changefreq: 'daily', priority: '0.4' },
-				{ url: 'users', changefreq: 'daily', priority: '0.4' }
-			]);
+			callback(null, [{
+				url: '',
+				changefreq: 'weekly',
+				priority: '0.6'
+			}, {
+				url: 'recent',
+				changefreq: 'daily',
+				priority: '0.4'
+			}, {
+				url: 'users',
+				changefreq: 'daily',
+				priority: '0.4'
+			}]);
 		},
 		getDynamicUrls: function(callback) {
-			var	returnUrls = [];
+			var returnUrls = [];
 
 			async.parallel([
 				function(next) {
@@ -33,7 +41,7 @@ var	path = require('path'),
 					}, 0);
 				},
 				function(next) {
-					var	topicUrls = [];
+					var topicUrls = [];
 					topics.getAllTopics(null, null, function(topics) {
 						topics.forEach(function(topic) {
 							if (topic.deleted !== '1') {

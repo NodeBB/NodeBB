@@ -1,4 +1,4 @@
-var	RDB = require('./redis.js'),
+var RDB = require('./redis.js'),
 	topics = require('./topics.js'),
 	categories = require('./categories.js'),
 	user = require('./user.js'),
@@ -15,7 +15,7 @@ var	RDB = require('./redis.js'),
 	ThreadTools.exists = function(tid, callback) {
 		RDB.sismember('topics:tid', tid, function(err, ismember) {
 			if (err) RDB.handle(err);
-			callback(!!ismember || false);
+			callback( !! ismember || false);
 		});
 	}
 
@@ -52,7 +52,7 @@ var	RDB = require('./redis.js'),
 				topics.setTopicField(tid, 'locked', 1);
 
 				if (socket) {
-					io.sockets.in('topic_' + tid).emit('event:topic_locked', {
+					io.sockets. in ('topic_' + tid).emit('event:topic_locked', {
 						tid: tid,
 						status: 'ok'
 					});
@@ -72,7 +72,7 @@ var	RDB = require('./redis.js'),
 				topics.setTopicField(tid, 'locked', 0);
 
 				if (socket) {
-					io.sockets.in('topic_' + tid).emit('event:topic_unlocked', {
+					io.sockets. in ('topic_' + tid).emit('event:topic_unlocked', {
 						tid: tid,
 						status: 'ok'
 					});
@@ -95,7 +95,7 @@ var	RDB = require('./redis.js'),
 
 				topicSearch.remove(tid);
 
-				io.sockets.in('topic_' + tid).emit('event:topic_deleted', {
+				io.sockets. in ('topic_' + tid).emit('event:topic_deleted', {
 					tid: tid,
 					status: 'ok'
 				});
@@ -112,7 +112,7 @@ var	RDB = require('./redis.js'),
 				topics.restore(tid);
 				ThreadTools.unlock(tid, uid);
 
-				io.sockets.in('topic_' + tid).emit('event:topic_restored', {
+				io.sockets. in ('topic_' + tid).emit('event:topic_restored', {
 					tid: tid,
 					status: 'ok'
 				});
@@ -137,11 +137,11 @@ var	RDB = require('./redis.js'),
 
 				topics.setTopicField(tid, 'pinned', 1);
 				topics.getTopicField(tid, 'cid', function(err, cid) {
-					RDB.zadd('categories:' + cid + ':tid', Math.pow(2,53), tid);
+					RDB.zadd('categories:' + cid + ':tid', Math.pow(2, 53), tid);
 				});
 
 				if (socket) {
-					io.sockets.in('topic_' + tid).emit('event:topic_pinned', {
+					io.sockets. in ('topic_' + tid).emit('event:topic_pinned', {
 						tid: tid,
 						status: 'ok'
 					});
@@ -164,7 +164,7 @@ var	RDB = require('./redis.js'),
 					RDB.zadd('categories:' + topicData.cid + ':tid', topicData.lastposttime, tid);
 				});
 				if (socket) {
-					io.sockets.in('topic_' + tid).emit('event:topic_unpinned', {
+					io.sockets. in ('topic_' + tid).emit('event:topic_unpinned', {
 						tid: tid,
 						status: 'ok'
 					});
@@ -194,13 +194,13 @@ var	RDB = require('./redis.js'),
 					topics.setTopicField(tid, 'cid', cid);
 
 					categories.moveRecentReplies(tid, oldCid, cid, function(err, data) {
-						if(err) {
+						if (err) {
 							winston.err(err);
 						}
 					});
 
 					categories.moveActiveUsers(tid, oldCid, cid, function(err, data) {
-						if(err) {
+						if (err) {
 							winston.err(err);
 						}
 					});
@@ -212,7 +212,7 @@ var	RDB = require('./redis.js'),
 						status: 'ok'
 					});
 
-					io.sockets.in('topic_' + tid).emit('event:topic_moved', {
+					io.sockets. in ('topic_' + tid).emit('event:topic_moved', {
 						tid: tid
 					});
 				} else {
@@ -240,7 +240,9 @@ var	RDB = require('./redis.js'),
 								status: 'ok',
 								follow: true
 							});
-						} else callback({ status: 'error' });
+						} else callback({
+							status: 'error'
+						});
 					}
 				});
 			} else {
@@ -251,7 +253,9 @@ var	RDB = require('./redis.js'),
 								status: 'ok',
 								follow: false
 							});
-						} else callback({ status: 'error' });
+						} else callback({
+							status: 'error'
+						});
 					}
 				});
 			}
@@ -297,11 +301,11 @@ var	RDB = require('./redis.js'),
 		posts.getPostsByTid(tid, 0, -1, function(posts) {
 
 			var numPosts = posts.length;
-			if(!numPosts)
+			if (!numPosts)
 				return callback(new Error('no-undeleted-pids-found'));
 
-			while(numPosts--) {
-				if(posts[numPosts].deleted !== '1') {
+			while (numPosts--) {
+				if (posts[numPosts].deleted !== '1') {
 					callback(null, posts[numPosts].pid);
 					return;
 				}

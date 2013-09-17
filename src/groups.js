@@ -1,4 +1,4 @@
-var	async = require('async'),
+var async = require('async'),
 	User = require('./user'),
 	RDB = RDB || require('./redis'),
 	Groups = {
@@ -68,9 +68,9 @@ var	async = require('async'),
 								description: description,
 								deleted: '0'
 							})
-						.exec(function(err) {
-							Groups.get(gid, {}, callback);
-						});
+							.exec(function(err) {
+								Groups.get(gid, {}, callback);
+							});
 					});
 				} else callback(new Error('group-exists'))
 			});

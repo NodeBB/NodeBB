@@ -1,4 +1,4 @@
-var	RDB = require('./redis.js'),
+var RDB = require('./redis.js'),
 	utils = require('./../public/src/utils.js'),
 	schema = require('./schema.js'),
 	user = require('./user.js'),
@@ -34,7 +34,7 @@ var	RDB = require('./redis.js'),
 
 	Posts.addUserInfoToPost = function(post, callback) {
 		user.getUserFields(post.uid, ['username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned'], function(err, userData) {
-			if(err) return callback();
+			if (err) return callback();
 
 			postTools.toHTML(userData.signature, function(err, signature) {
 				post.username = userData.username || 'anonymous';
@@ -42,12 +42,12 @@ var	RDB = require('./redis.js'),
 				post.user_rep = userData.reputation || 0;
 				post.user_postcount = userData.postcount || 0;
 				post.user_banned = userData.banned || '0';
-				post.picture = userData.picture || require('gravatar').url('', {}, https=nconf.get('https'));
+				post.picture = userData.picture || require('gravatar').url('', {}, https = nconf.get('https'));
 				post.signature = signature;
 
-				if(post.editor !== '') {
+				if (post.editor !== '') {
 					user.getUserFields(post.editor, ['username', 'userslug'], function(err, editorData) {
-						if(err) return callback();
+						if (err) return callback();
 
 						post.editorname = editorData.username;
 						post.editorslug = editorData.userslug;
@@ -104,7 +104,7 @@ var	RDB = require('./redis.js'),
 		}
 
 		async.eachSeries(pids, getPostSummary, function(err) {
-			if(!err) {
+			if (!err) {
 				callback(null, posts);
 			} else {
 				callback(err, null);
@@ -120,22 +120,20 @@ var	RDB = require('./redis.js'),
 
 	Posts.getPostData = function(pid, callback) {
 		RDB.hgetall('post:' + pid, function(err, data) {
-			if(err === null) {
+			if (err === null) {
 				plugins.fireHook('filter:post.get', data, function(data) {
 					callback(data);
 				});
-			}
-			else
+			} else
 				console.log(err);
 		});
 	}
 
 	Posts.getPostFields = function(pid, fields, callback) {
 		RDB.hmgetObject('post:' + pid, fields, function(err, data) {
-			if(err === null) {
+			if (err === null) {
 				callback(data);
-			}
-			else {
+			} else {
 				console.log(err);
 			}
 		});
@@ -143,7 +141,7 @@ var	RDB = require('./redis.js'),
 
 	Posts.getPostField = function(pid, field, callback) {
 		RDB.hget('post:' + pid, field, function(err, data) {
-			if(err === null)
+			if (err === null)
 				callback(data);
 			else
 				console.log(err);
@@ -158,24 +156,13 @@ var	RDB = require('./redis.js'),
 	Posts.getPostsByPids = function(pids, callback) {
 		var posts = [];
 
-		async.eachSeries(pids, function (pid, callback) {
+		async.eachSeries(pids, function(pid, callback) {
 			Posts.getPostData(pid, function(postData) {
-				if(postData) {
+				if (postData) {
 					postData.relativeTime = utils.relativeTime(postData.timestamp);
 					postData.post_rep = postData.reputation;
 					postData['edited-class'] = postData.editor !== '' ? '' : 'none';
 					postData['relativeEditTime'] = postData.edited !== '0' ? utils.relativeTime(postData.edited) : '';
-
-					if(postData.uploadedImages) {
-						try {
-							postData.uploadedImages = JSON.parse(postData.uploadedImages);
-						} catch(err) {
-							postData.uploadedImages = [];
-							winston.err(err);
-						}
-					} else {
-						postData.uploadedImages = [];
-					}
 
 					postTools.toHTML(postData.content, function(err, content) {
 						postData.content = content;
@@ -185,7 +172,7 @@ var	RDB = require('./redis.js'),
 				}
 			});
 		}, function(err) {
-			if(!err) {
+			if (!err) {
 				callback(null, posts);
 			} else {
 				callback(err, null);
@@ -220,13 +207,13 @@ var	RDB = require('./redis.js'),
 	Posts.emitTooManyPostsAlert = function(socket) {
 		socket.emit('event:alert', {
 			title: 'Too many posts!',
-			message: 'You can only post every '+ meta.config.postDelay/1000 + ' seconds.',
+			message: 'You can only post every ' + meta.config.postDelay / 1000 + ' seconds.',
 			type: 'danger',
 			timeout: 2000
 		});
 	}
 
-	Posts.reply = function(tid, uid, content, images, callback) {
+	Posts.reply = function(tid, uid, content, callback) {
 		if(content) {
 			content = content.trim();
 		}
@@ -237,12 +224,12 @@ var	RDB = require('./redis.js'),
 		}
 
 		user.getUserField(uid, 'lastposttime', function(lastposttime) {
-			if(Date.now() - lastposttime < meta.config.postDelay) {
+			if (Date.now() - lastposttime < meta.config.postDelay) {
 				callback(new Error('too-many-posts'), null);
 				return;
 			}
 
-			Posts.create(uid, tid, content, images, function(postData) {
+			Posts.create(uid, tid, content, function(postData) {
 				if (postData) {
 
 					topics.markUnRead(tid);
@@ -256,10 +243,12 @@ var	RDB = require('./redis.js'),
 					threadTools.notify_followers(tid, uid);
 
 					Posts.addUserInfoToPost(postData, function() {
-						var	socketData = { posts: [postData] };
-						io.sockets.in('topic_' + tid).emit('event:new_post', socketData);
-						io.sockets.in('recent_posts').emit('event:new_post', socketData);
-						io.sockets.in('users/' + uid).emit('event:new_post', socketData);
+						var socketData = {
+							posts: [postData]
+						};
+						io.sockets. in ('topic_' + tid).emit('event:new_post', socketData);
+						io.sockets. in ('recent_posts').emit('event:new_post', socketData);
+						io.sockets. in ('users/' + uid).emit('event:new_post', socketData);
 					});
 
 					callback(null, 'Reply successful');
@@ -270,7 +259,7 @@ var	RDB = require('./redis.js'),
 		});
 	};
 
-	Posts.create = function(uid, tid, content, images, callback) {
+	Posts.create = function(uid, tid, content, callback) {
 		if (uid === null) {
 			callback(null);
 			return;
@@ -293,7 +282,6 @@ var	RDB = require('./redis.js'),
 								'editor': '',
 								'edited': 0,
 								'deleted': 0,
-								'uploadedImages': '[]',
 								'fav_button_class': '',
 								'fav_star_class': 'icon-star-empty',
 								'show_banned': 'hide',
@@ -331,16 +319,6 @@ var	RDB = require('./redis.js'),
 						user.onNewPostMade(uid, tid, pid, timestamp);
 
 						async.parallel({
-							uploadedImages: function(next) {
-								Posts.uploadPostImages(postData.pid, images, function(err, uploadedImages) {
-									if(err) {
-										winston.error('Uploading images failed!', err.stack);
-										next(null, []);
-									} else {
-										next(null, uploadedImages);
-									}
-								});
-							},
 							content: function(next) {
 								plugins.fireHook('filter:post.get', postData, function(postData) {
 									postTools.toHTML(postData.content, function(err, content) {
@@ -349,7 +327,6 @@ var	RDB = require('./redis.js'),
 								});
 							}
 						}, function(err, results) {
-							postData.uploadedImages = results.uploadedImages;
 							postData.content = results.content;
 							callback(postData);
 						});
@@ -365,42 +342,25 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
-	Posts.uploadPostImages = function(pid, images, callback) {
+	Posts.uploadPostImage = function(image, callback) {
 		var imgur = require('./imgur');
 		imgur.setClientID(meta.config.imgurClientID);
 
-		if(!images)
-			return callback(null, []);
+		if(!image)
+			return callback('invalid image', null);
 
-		var uploadedImages = images.filter(function(image) { return !!image.url; });
-
-		function uploadImage(image, next) {
-			if(!image.data)
-				return next(null);
-
-			imgur.upload(image.data, 'base64', function(err, data) {
-				if(err) {
-					next(err);
-				} else {
-					if(data.success) {
-						var img= {url:data.data.link, name:image.name};
-						uploadedImages.push(img);
-						next(null);
-					} else {
-						winston.error('Can\'t upload image, did you set imgurClientID?');
-						next(data);
-					}
-				}
-			});
-		}
-
-		async.each(images, uploadImage, function(err) {
-			if(!err) {
-				Posts.setPostField(pid, 'uploadedImages', JSON.stringify(uploadedImages));
-				callback(null, uploadedImages);
+		imgur.upload(image.data, 'base64', function(err, data) {
+			if(err) {
+				callback('Can\'t upload image!', null);
 			} else {
-				console.log(err);
-				callback(err, null);
+				if(data.success) {
+					var img= {url:data.data.link, name:image.name};
+
+					callback(null, img);
+				} else {
+					winston.error('Can\'t upload image, did you set imgurClientID?');
+					callback("upload error", null);
+				}
 			}
 		});
 	}
@@ -409,28 +369,26 @@ var	RDB = require('./redis.js'),
 
 		user.getPostIds(uid, start, end, function(pids) {
 
-			if(pids && pids.length) {
+			if (pids && pids.length) {
 
 				Posts.getPostsByPids(pids, function(err, posts) {
 					callback(posts);
 				});
-			}
-			else
+			} else
 				callback([]);
 		});
 	}
 
 	Posts.getTopicPostStats = function(socket) {
 		RDB.mget(['totaltopiccount', 'totalpostcount'], function(err, data) {
-			if(err === null) {
+			if (err === null) {
 				var stats = {
-					topics: data[0]?data[0]:0,
-					posts: data[1]?data[1]:0
+					topics: data[0] ? data[0] : 0,
+					posts: data[1] ? data[1] : 0
 				};
 
 				socket.emit('post.stats', stats);
-			}
-			else
+			} else
 				console.log(err);
 		});
 	}
@@ -442,7 +400,7 @@ var	RDB = require('./redis.js'),
 			Posts.getPostField(pid, 'content', function(content) {
 				postSearch.remove(pid, function() {
 
-					if(content && content.length) {
+					if (content && content.length) {
 						postSearch.index(content, pid);
 					}
 					callback(null);
@@ -451,7 +409,7 @@ var	RDB = require('./redis.js'),
 		}
 
 		async.each(pids, reIndex, function(err) {
-			if(err) {
+			if (err) {
 				callback(err, null);
 			} else {
 				callback(null, 'Posts reindexed');
@@ -461,11 +419,11 @@ var	RDB = require('./redis.js'),
 
 	Posts.getFavourites = function(uid, callback) {
 		RDB.zrevrange('uid:' + uid + ':favourites', 0, -1, function(err, pids) {
-			if(err)
+			if (err)
 				return callback(err, null);
 
 			Posts.getPostSummaryByPids(pids, function(err, posts) {
-				if(err)
+				if (err)
 					return callback(err, null);
 
 				callback(null, posts);

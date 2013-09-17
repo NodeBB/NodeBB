@@ -1,11 +1,10 @@
-
 var user = require('./user.js'),
 	bcrypt = require('bcrypt'),
 	RDB = require('./redis.js'),
 	path = require('path'),
 	winston = require('winston');
 
-(function(Login){
+(function(Login) {
 
 	Login.loginViaLocal = function(username, password, next) {
 		if (!username || !password) {
@@ -24,9 +23,9 @@ var user = require('./user.js'),
 				}
 
 				user.getUserFields(uid, ['password', 'banned'], function(err, userData) {
-					if(err) return next(err);
+					if (err) return next(err);
 
-					if(userData.banned && userData.banned === '1') {
+					if (userData.banned && userData.banned === '1') {
 						return next({
 							status: "error",
 							message: "user-banned"
@@ -34,14 +33,18 @@ var user = require('./user.js'),
 					}
 
 					bcrypt.compare(password, userData.password, function(err, res) {
-						if(err) {
+						if (err) {
 							winston.err(err.message);
 							next(new Error('bcrypt compare error'));
 							return;
 						}
 
 						if (res) {
-							next(null, { user: { uid: uid } });
+							next(null, {
+								user: {
+									uid: uid
+								}
+							});
 						} else {
 							next(new Error('invalid-password'));
 						}
@@ -70,7 +73,7 @@ var user = require('./user.js'),
 
 						// Save their photo, if present
 						if (photos && photos.length > 0) {
-							var	photoUrl = photos[0].value;
+							var photoUrl = photos[0].value;
 							photoUrl = path.dirname(photoUrl) + '/' + path.basename(photoUrl, path.extname(photoUrl)).slice(0, -6) + 'bigger' + path.extname(photoUrl);
 							user.setUserField(uid, 'uploadedpicture', photoUrl);
 							user.setUserField(uid, 'picture', photoUrl);
@@ -158,4 +161,3 @@ var user = require('./user.js'),
 	}
 
 }(exports));
-

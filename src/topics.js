@@ -1,5 +1,5 @@
-var	RDB = require('./redis.js')
-	schema = require('./schema.js'),
+var RDB = require('./redis.js')
+schema = require('./schema.js'),
 	posts = require('./posts.js'),
 	utils = require('./../public/src/utils.js'),
 	user = require('./user.js'),
@@ -19,7 +19,7 @@ var	RDB = require('./redis.js')
 
 	Topics.getTopicData = function(tid, callback) {
 		RDB.hgetall('topic:' + tid, function(err, data) {
-			if(err === null)
+			if (err === null)
 				callback(data);
 			else
 				console.log(err);
@@ -37,12 +37,12 @@ var	RDB = require('./redis.js')
 
 	Topics.getTopicPosts = function(tid, start, end, current_user, callback) {
 		posts.getPostsByTid(tid, start, end, function(postData) {
-			if(Array.isArray(postData) && !postData.length)
+			if (Array.isArray(postData) && !postData.length)
 				return callback([]);
 
 			function getFavouritesData(next) {
 				var pids = [];
-				for(var i=0; i<postData.length; ++i)
+				for (var i = 0; i < postData.length; ++i)
 					pids.push(postData[i].pid);
 
 				favourites.getFavouritesByPostIDs(pids, current_user, function(fav_data) {
@@ -72,11 +72,11 @@ var	RDB = require('./redis.js')
 				var fav_data = results[0],
 					privileges = results[2];
 
-				for(var i=0; i<postData.length; ++i) {
-					postData[i].fav_button_class = fav_data[postData[i].pid]? 'btn-warning' : '';
+				for (var i = 0; i < postData.length; ++i) {
+					postData[i].fav_button_class = fav_data[postData[i].pid] ? 'btn-warning' : '';
 					postData[i].fav_star_class = fav_data[postData[i].pid] ? 'icon-star' : 'icon-star-empty';
 					postData[i]['display_moderator_tools'] = (postData[i].uid == current_user || privileges.editable) ? 'show' : 'none';
-					postData[i].show_banned = postData[i].user_banned === '1'?'show':'hide';
+					postData[i].show_banned = postData[i].user_banned === '1' ? 'show' : 'hide';
 				}
 
 				callback(postData);
@@ -94,18 +94,18 @@ var	RDB = require('./redis.js')
 
 		var timestamp = Date.now();
 
-		var args = [ 'topics:recent', '+inf', timestamp - 86400000, 'WITHSCORES', 'LIMIT', start, end - start + 1];
+		var args = ['topics:recent', '+inf', timestamp - 86400000, 'WITHSCORES', 'LIMIT', start, end - start + 1];
 
 		RDB.zrevrangebyscore(args, function(err, tids) {
 
 			var latestTopics = {
-				'category_name' : 'Recent',
-				'show_sidebar' : 'hidden',
-				'show_topic_button' : 'hidden',
-				'no_topics_message' : 'hidden',
+				'category_name': 'Recent',
+				'show_sidebar': 'hidden',
+				'show_topic_button': 'hidden',
+				'no_topics_message': 'hidden',
 				'topic_row_size': 'col-md-12',
 				'category_id': false,
-				'topics' : []
+				'topics': []
 			};
 
 			if (!tids || !tids.length) {
@@ -129,14 +129,16 @@ var	RDB = require('./redis.js')
 			done = false;
 
 		async.whilst(
-			function () { return unreadTids.length < 21 && !done; },
-			function (callback) {
+			function() {
+				return unreadTids.length < 21 && !done;
+			},
+			function(callback) {
 				RDB.zrevrange('topics:recent', start, stop, function(err, tids) {
 
-					if(err)
+					if (err)
 						return callback(err);
 
-					if(tids && !tids.length) {
+					if (tids && !tids.length) {
 						done = true;
 						return callback(null);
 					}
@@ -155,7 +157,7 @@ var	RDB = require('./redis.js')
 					});
 				});
 			},
-			function (err) {
+			function(err) {
 				callback({
 					count: unreadTids.length
 				});
@@ -166,13 +168,13 @@ var	RDB = require('./redis.js')
 	Topics.getUnreadTopics = function(uid, start, stop, callback) {
 
 		var unreadTopics = {
-			'category_name' : 'Unread',
-			'show_sidebar' : 'hidden',
-			'show_topic_button' : 'hidden',
+			'category_name': 'Unread',
+			'show_sidebar': 'hidden',
+			'show_topic_button': 'hidden',
 			'show_markallread_button': 'show',
-			'no_topics_message' : 'hidden',
+			'no_topics_message': 'hidden',
 			'topic_row_size': 'col-md-12',
-			'topics' : []
+			'topics': []
 		};
 
 		function noUnreadTopics() {
@@ -185,9 +187,9 @@ var	RDB = require('./redis.js')
 			Topics.getTopicsByTids(topicIds, uid, function(topicData) {
 				unreadTopics.topics = topicData;
 				unreadTopics.nextStart = start + topicIds.length;
-				if(!topicData || topicData.length === 0)
+				if (!topicData || topicData.length === 0)
 					unreadTopics.no_topics_message = 'show';
-				if(uid === 0 || topicData.length === 0)
+				if (uid === 0 || topicData.length === 0)
 					unreadTopics.show_markallread_button = 'hidden';
 				callback(unreadTopics);
 			});
@@ -197,18 +199,20 @@ var	RDB = require('./redis.js')
 			done = false;
 
 		async.whilst(
-			function () { return unreadTids.length < 20 && !done; },
-			function (callback) {
+			function() {
+				return unreadTids.length < 20 && !done;
+			},
+			function(callback) {
 				RDB.zrevrange('topics:recent', start, stop, function(err, tids) {
-					if(err)
+					if (err)
 						return callback(err);
 
-					if(tids && !tids.length) {
+					if (tids && !tids.length) {
 						done = true;
 						return callback(null);
 					}
 
-					if(uid === 0) {
+					if (uid === 0) {
 						unreadTids.push.apply(unreadTids, tids);
 						callback(null);
 					} else {
@@ -226,10 +230,10 @@ var	RDB = require('./redis.js')
 					}
 				});
 			},
-			function (err) {
-				if(err)
+			function(err) {
+				if (err)
 					return callback([]);
-				if(unreadTids.length)
+				if (unreadTids.length)
 					sendUnreadTopics(unreadTids);
 				else
 					noUnreadTopics();
@@ -242,7 +246,7 @@ var	RDB = require('./redis.js')
 
 		var retrieved_topics = [];
 
-		if(!Array.isArray(tids) || tids.length === 0) {
+		if (!Array.isArray(tids) || tids.length === 0) {
 			callback(retrieved_topics);
 			return;
 		}
@@ -266,6 +270,7 @@ var	RDB = require('./redis.js')
 			}
 
 			// temporary. I don't think this call should belong here
+
 			function getPrivileges(next) {
 				categories.privileges(category_id, current_user, function(user_privs) {
 					next(null, user_privs);
@@ -290,7 +295,7 @@ var	RDB = require('./redis.js')
 
 		function loadTopic(tid, callback) {
 			Topics.getTopicData(tid, function(topicData) {
-				if(!topicData) {
+				if (!topicData) {
 					return callback(null);
 				}
 
@@ -318,7 +323,7 @@ var	RDB = require('./redis.js')
 		}
 
 		async.eachSeries(tids, loadTopic, function(err) {
-			if(!err) {
+			if (!err) {
 				callback(retrieved_topics);
 			}
 		});
@@ -369,14 +374,14 @@ var	RDB = require('./redis.js')
 				var main_posts = topicPosts.splice(0, 1);
 
 				callback(null, {
-					'topic_name':topicData.title,
-					'category_name':categoryData.name,
-					'category_slug':categoryData.slug,
+					'topic_name': topicData.title,
+					'category_name': categoryData.name,
+					'category_slug': categoryData.slug,
 					'locked': topicData.locked,
 					'deleted': topicData.deleted,
 					'pinned': topicData.pinned,
 					'slug': topicData.slug,
-					'postcount' : topicData.postcount,
+					'postcount': topicData.postcount,
 					'topic_id': tid,
 					'expose_tools': privileges.editable ? 1 : 0,
 					'posts': topicPosts,
@@ -438,11 +443,13 @@ var	RDB = require('./redis.js')
 				numTids, x;
 
 			// Sort into ascending order
-			tids.sort(function(a, b) { return a - b; });
+			tids.sort(function(a, b) {
+				return a - b;
+			});
 
 			// Eliminate everything after the "after" tid
 			if (after) {
-				for(x=0,numTids=tids.length;x<numTids;x++) {
+				for (x = 0, numTids = tids.length; x < numTids; x++) {
 					if (tids[x] >= after) {
 						tids = tids.slice(0, x);
 						break;
@@ -457,7 +464,9 @@ var	RDB = require('./redis.js')
 			}
 
 			// Sort into descending order
-			tids.sort(function(a, b) { return b - a; });
+			tids.sort(function(a, b) {
+				return b - a;
+			});
 
 			async.each(tids, function(tid, next) {
 				Topics.getTopicDataWithUsername(tid, function(topicData) {
@@ -472,14 +481,14 @@ var	RDB = require('./redis.js')
 
 	Topics.markAllRead = function(uid, callback) {
 		RDB.smembers('topics:tid', function(err, tids) {
-			if(err) {
+			if (err) {
 				console.log(err);
 				callback(err, null);
 				return;
 			}
 
-			if(tids && tids.length) {
-				for(var i=0; i<tids.length; ++i) {
+			if (tids && tids.length) {
+				for (var i = 0; i < tids.length; ++i) {
 					Topics.markAsRead(tids[i], uid);
 				}
 			}
@@ -507,7 +516,7 @@ var	RDB = require('./redis.js')
 		Topics.getTopicField(tid, 'cid', function(err, cid) {
 
 			categories.isTopicsRead(cid, uid, function(read) {
-				if(read) {
+				if (read) {
 					categories.markAsRead(cid, uid);
 				}
 			});
@@ -525,7 +534,7 @@ var	RDB = require('./redis.js')
 	Topics.hasReadTopics = function(tids, uid, callback) {
 		var batch = RDB.multi();
 
-		for (var i=0, ii=tids.length; i<ii; i++) {
+		for (var i = 0, ii = tids.length; i < ii; i++) {
 			batch.sismember(schema.topics(tids[i]).read_by_uid, uid);
 		}
 
@@ -537,7 +546,7 @@ var	RDB = require('./redis.js')
 	Topics.hasReadTopic = function(tid, uid, callback) {
 		RDB.sismember(schema.topics(tid).read_by_uid, uid, function(err, hasRead) {
 
-			if(err === null) {
+			if (err === null) {
 				callback(hasRead);
 			} else {
 				console.log(err);
@@ -567,7 +576,7 @@ var	RDB = require('./redis.js')
 				posts.getPostFields(pid, ['content', 'uid', 'timestamp'], function(postData) {
 
 					user.getUserFields(postData.uid, ['username', 'picture'], function(err, userData) {
-						if(err)
+						if (err)
 							return callback(err, null);
 
 						var stripped = postData.content,
@@ -575,7 +584,7 @@ var	RDB = require('./redis.js')
 							returnObj = {
 								"username": userData.username,
 								"picture": userData.picture,
-								"timestamp" : timestamp
+								"timestamp": timestamp
 							};
 
 						if (postData.content) {
@@ -596,27 +605,27 @@ var	RDB = require('./redis.js')
 
 	Topics.emitTitleTooShortAlert = function(socket) {
 		socket.emit('event:alert', {
-				type: 'danger',
-				timeout: 2000,
-				title: 'Title too short',
-				message: "Please enter a longer title. At least " + meta.config.minimumTitleLength + " characters.",
-				alert_id: 'post_error'
-			});
+			type: 'danger',
+			timeout: 2000,
+			title: 'Title too short',
+			message: "Please enter a longer title. At least " + meta.config.minimumTitleLength + " characters.",
+			alert_id: 'post_error'
+		});
 	}
 
-	Topics.post = function(uid, title, content, category_id, images, callback) {
+	Topics.post = function(uid, title, content, category_id, callback) {
 		if (!category_id)
 			throw new Error('Attempted to post without a category_id');
 
-		if(content)
+		if (content)
 			content = content.trim();
-		if(title)
+		if (title)
 			title = title.trim();
 
 		if (uid === 0) {
 			callback(new Error('not-logged-in'), null);
 			return;
-		} else if(!title || title.length < meta.config.minimumTitleLength) {
+		} else if (!title || title.length < meta.config.minimumTitleLength) {
 			callback(new Error('title-too-short'), null);
 			return;
 		} else if (!content || content.length < meta.config.miminumPostLength) {
@@ -626,7 +635,7 @@ var	RDB = require('./redis.js')
 
 		user.getUserField(uid, 'lastposttime', function(err, lastposttime) {
 			if (err) lastposttime = 0;
-			if(Date.now() - lastposttime < meta.config.postDelay) {
+			if (Date.now() - lastposttime < meta.config.postDelay) {
 				callback(new Error('too-many-posts'), null);
 				return;
 			}
@@ -678,7 +687,7 @@ var	RDB = require('./redis.js')
 
 				feed.updateCategory(category_id);
 
-				posts.create(uid, tid, content, images, function(postData) {
+				posts.create(uid, tid, content, function(postData) {
 					if (postData) {
 
 						// Auto-subscribe the post creator to the newly created topic
@@ -686,9 +695,11 @@ var	RDB = require('./redis.js')
 
 						// Notify any users looking at the category that a new topic has arrived
 						Topics.getTopicForCategoryView(tid, uid, function(topicData) {
-							io.sockets.in('category_' + category_id).emit('event:new_topic', topicData);
-							io.sockets.in('recent_posts').emit('event:new_topic', topicData);
-							io.sockets.in('users/' + uid).emit('event:new_post', {posts:postData});
+							io.sockets. in ('category_' + category_id).emit('event:new_topic', topicData);
+							io.sockets. in ('recent_posts').emit('event:new_topic', topicData);
+							io.sockets. in ('users/' + uid).emit('event:new_post', {
+								posts: postData
+							});
 						});
 
 						callback(null, postData);
@@ -739,7 +750,7 @@ var	RDB = require('./redis.js')
 
 			function getUid(pid, next) {
 				posts.getPostField(pid, 'uid', function(uid) {
-					if(err)
+					if (err)
 						return next(err);
 					uids[uid] = 1;
 					next(null);
@@ -747,7 +758,7 @@ var	RDB = require('./redis.js')
 			}
 
 			async.each(pids, getUid, function(err) {
-				if(err)
+				if (err)
 					return callback(err, null);
 
 				callback(null, Object.keys(uids));
@@ -777,11 +788,11 @@ var	RDB = require('./redis.js')
 
 	Topics.reIndexTopic = function(tid, callback) {
 		Topics.getPids(tid, function(err, pids) {
-			if(err) {
+			if (err) {
 				callback(err);
 			} else {
 				posts.reIndexPids(pids, function(err) {
-					if(err) {
+					if (err) {
 						callback(err);
 					} else {
 						callback(null);
@@ -793,12 +804,12 @@ var	RDB = require('./redis.js')
 
 	Topics.reIndexAll = function(callback) {
 		RDB.smembers('topics:tid', function(err, tids) {
-			if(err) {
+			if (err) {
 				callback(err, null);
 			} else {
 
 				async.each(tids, Topics.reIndexTopic, function(err) {
-					if(err) {
+					if (err) {
 						callback(err, null);
 					} else {
 						callback(null, 'All topics reindexed.');

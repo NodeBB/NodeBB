@@ -1,4 +1,3 @@
-
 var RDB = require('./redis'),
 	async = require('async');
 
@@ -15,7 +14,7 @@ var RDB = require('./redis'),
 		var uids = sortUids(fromuid, touid);
 
 		RDB.incr('global:next_message_id', function(err, mid) {
-			if(err)
+			if (err)
 				return callback(err, null);
 
 			var message = {
@@ -36,10 +35,10 @@ var RDB = require('./redis'),
 		var uids = sortUids(fromuid, touid);
 
 		RDB.lrange('messages:' + uids[0] + ':' + uids[1], 0, -1, function(err, mids) {
-			if(err)
+			if (err)
 				return callback(err, null);
 
-			if(!mids || !mids.length) {
+			if (!mids || !mids.length) {
 				return callback(null, []);
 			}
 
@@ -50,10 +49,10 @@ var RDB = require('./redis'),
 
 				function getMessage(mid, next) {
 					RDB.hgetall('message:' + mid, function(err, message) {
-						if(err)
+						if (err)
 							return next(err);
 
-						if(message.fromuid === fromuid)
+						if (message.fromuid === fromuid)
 							message.content = 'You : ' + message.content;
 						else
 							message.content = tousername + ' : ' + message.content;
@@ -64,7 +63,7 @@ var RDB = require('./redis'),
 				}
 
 				async.eachSeries(mids, getMessage, function(err) {
-					if(err)
+					if (err)
 						return callback(err, null);
 
 					callback(null, messages);
