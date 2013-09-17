@@ -22,7 +22,9 @@
 		stats_online.innerHTML = data.users;
 	});
 
-	socket.emit('api:updateHeader', { fields: ['username', 'picture', 'userslug'] });
+	socket.emit('api:updateHeader', {
+		fields: ['username', 'picture', 'userslug']
+	});
 	socket.on('api:updateHeader', function(data) {
 
 		jQuery('#search-button').on('click', function() {
@@ -49,18 +51,18 @@
 			jQuery('.nodebb-loggedout').hide();
 
 			var userLabel = rightMenu.find('#user_label');
-			if(userLabel.length) {
-				if(data['userslug'])
-					userLabel.attr('href','/users/' + data['userslug']);
-				if(data['picture'])
-					userLabel.find('img').attr('src',data['picture']);
-				if(data['username'])
+			if (userLabel.length) {
+				if (data['userslug'])
+					userLabel.attr('href', '/users/' + data['userslug']);
+				if (data['picture'])
+					userLabel.find('img').attr('src', data['picture']);
+				if (data['username'])
 					userLabel.find('span').html(data['username']);
 			} else {
 				var userli = $('<li> \
-									<a id="user_label" href="/users/'+data['userslug']+'"> \
-										<img src="'+data['picture']+'"/> \
-										<span>'+data['username']+'</span> \
+									<a id="user_label" href="/users/' + data['userslug'] + '"> \
+										<img src="' + data['picture'] + '"/> \
+										<span>' + data['username'] + '</span> \
 									</a> \
 								</li>');
 				rightMenu.append(userli);
@@ -95,20 +97,20 @@
 		e.preventDefault();
 		if (notifContainer.className.indexOf('open') === -1) {
 			socket.emit('api:notifications.get', null, function(data) {
-				var	notifFrag = document.createDocumentFragment(),
+				var notifFrag = document.createDocumentFragment(),
 					notifEl = document.createElement('li'),
 					numRead = data.read.length,
 					numUnread = data.unread.length,
 					x;
 				notifList.innerHTML = '';
 				if ((data.read.length + data.unread.length) > 0) {
-					for(x=0;x<numUnread;x++) {
+					for (x = 0; x < numUnread; x++) {
 						notifEl.setAttribute('data-nid', data.unread[x].nid);
 						notifEl.className = 'unread';
 						notifEl.innerHTML = '<a href="' + data.unread[x].path + '"><span class="pull-right">' + utils.relativeTime(data.unread[x].datetime, true) + '</span>' + data.unread[x].text + '</a>';
 						notifFrag.appendChild(notifEl.cloneNode(true));
 					}
-					for(x=0;x<numRead;x++) {
+					for (x = 0; x < numRead; x++) {
 						notifEl.setAttribute('data-nid', data.read[x].nid);
 						notifEl.className = '';
 						notifEl.innerHTML = '<a href="' + data.read[x].path + '"><span class="pull-right">' + utils.relativeTime(data.read[x].datetime, true) + '</span>' + data.read[x].text + '</a>';
@@ -133,10 +135,16 @@
 
 	notifList.addEventListener('click', function(e) {
 		var target;
-		switch(e.target.nodeName) {
-			case 'SPAN': target = e.target.parentNode.parentNode; break;
-			case 'A': target = e.target.parentNode; break;
-			case 'li': target = e.target; break;
+		switch (e.target.nodeName) {
+			case 'SPAN':
+				target = e.target.parentNode.parentNode;
+				break;
+			case 'A':
+				target = e.target.parentNode;
+				break;
+			case 'li':
+				target = e.target;
+				break;
 		}
 		if (target) {
 			var nid = parseInt(target.getAttribute('data-nid'));
@@ -161,7 +169,7 @@
 
 		require(['chat'], function(chat) {
 			var modal = null;
-			if(chat.modalExists(data.fromuid)) {
+			if (chat.modalExists(data.fromuid)) {
 				modal = chat.getModal(data.fromuid);
 				chat.appendChatMessage(modal, data.message, data.timestamp);
 			} else {

@@ -29,16 +29,17 @@
 	}
 
 	function validateEmail() {
-		if(!emailEl.val()) {
+		if (!emailEl.val()) {
 			validationError = true;
 			return;
 		}
 
-		if(!utils.isEmailValid(emailEl.val())) {
+		if (!utils.isEmailValid(emailEl.val())) {
 			showError(email_notify, 'Invalid email address.');
-		}
-		else
-			socket.emit('user.email.exists', { email: emailEl.val() });
+		} else
+			socket.emit('user.email.exists', {
+				email: emailEl.val()
+			});
 	}
 
 	emailEl.on('blur', function() {
@@ -46,19 +47,21 @@
 	});
 
 	function validateUsername() {
-		if(!username.val()) {
+		if (!username.val()) {
 			validationError = true;
 			return;
 		}
 
-		if(username.val().length < config.minimumUsernameLength) {
+		if (username.val().length < config.minimumUsernameLength) {
 			showError(username_notify, 'Username too short!');
-		} else if(username.val().length > config.maximumUsernameLength) {
+		} else if (username.val().length > config.maximumUsernameLength) {
 			showError(username_notify, 'Username too long!');
-		} else if(!utils.isUserNameValid(username.val())) {
+		} else if (!utils.isUserNameValid(username.val())) {
 			showError(username_notify, 'Invalid username!');
 		} else {
-			socket.emit('user.exists', {username: username.val()});
+			socket.emit('user.exists', {
+				username: username.val()
+			});
 		}
 	}
 
@@ -70,20 +73,20 @@
 	});
 
 	function validatePassword() {
-		if(!password.val()){
+		if (!password.val()) {
 			validationError = true;
 			return;
 		}
 
 		if (password.val().length < config.minimumPasswordLength) {
 			showError(password_notify, 'Password too short!');
-		} else if(!utils.isPasswordValid(password.val())) {
+		} else if (!utils.isPasswordValid(password.val())) {
 			showError(password_notify, 'Invalid password!');
 		} else {
 			showSuccess(password_notify, successIcon);
 		}
 
-		if(password.val() !== password_confirm.val() && password_confirm.val() !== '') {
+		if (password.val() !== password_confirm.val() && password_confirm.val() !== '') {
 			showError(password_confirm_notify, 'Passwords must match!');
 		}
 	}
@@ -93,11 +96,11 @@
 	});
 
 	function validatePasswordConfirm() {
-		if(!password.val() || password_notify.hasClass('alert-error')) {
+		if (!password.val() || password_notify.hasClass('alert-error')) {
 			return;
 		}
 
-		if(password.val() !== password_confirm.val()) {
+		if (password.val() !== password_confirm.val()) {
 			showError(password_confirm_notify, 'Passwords must match!');
 		} else {
 			showSuccess(password_confirm_notify, successIcon);
