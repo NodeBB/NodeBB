@@ -1,35 +1,39 @@
 define(['taskbar'], function(taskbar) {
 	var composer = {
-			initialized: false,
-			active: undefined,
-			taskbar: taskbar,
-			posts: {},
-			postContainer: undefined,
-		};
+		initialized: false,
+		active: undefined,
+		taskbar: taskbar,
+		posts: {},
+		postContainer: undefined,
+	};
 
-	function createImageLabel(img, postImages) {
-		var imageLabel = $('<span class="label label-primary">' + img.name +'</span>');
-		var closeButton = $('<button class="close">&times;</button>');
+	var uploadsInProgress = [];
 
-		closeButton.on('click', function(e) {
+	function createImagePlaceholder(img) {
+		var text = $('.post-window textarea').val(),
+			textarea = $('.post-window textarea'),
+			imgText = "!["+img.name+"](uploading...)";
 
-			imageLabel.remove();
-			var index = postImages.indexOf(img);
-			if(index !== -1) {
-				postImages.splice(index, 1);
-			}
+		text += imgText;
+		textarea.val(text + " ");
+		uploadsInProgress.push(1);
+		socket.emit("api:posts.uploadImage", img, function(err, data) {
+
+			var currentText = textarea.val();
+			imgText = "!["+data.name+"](uploading...)";
+
+			if(!err)
+				textarea.val(currentText.replace(imgText, "!["+data.name+"]("+data.url+")"));
+			else
+				textarea.val(currentText.replace(imgText, "!["+data.name+"](upload error)"));
+			uploadsInProgress.pop();
 		});
-
-		imageLabel.append(closeButton);
-		return imageLabel;
 	}
 
 	function loadFile(file) {
 		var reader = new FileReader(),
 			dropDiv = $('.post-window .imagedrop'),
-			imagelist = $('.post-window .imagelist'),
-			uuid = dropDiv.parents('[data-uuid]').attr('data-uuid'),
-			posts = composer.posts[uuid];
+			uuid = dropDiv.parents('[data-uuid]').attr('data-uuid');
 
 		$(reader).on('loadend', function(e) {
 			var bin = this.result;
@@ -40,11 +44,8 @@ define(['taskbar'], function(taskbar) {
 				data: bin
 			};
 
-			posts.images.push(img);
+			createImagePlaceholder(img);
 
-			var imageLabel = createImageLabel(img, posts.images);
-
-			imagelist.append(imageLabel);
 			dropDiv.hide();
 		});
 
@@ -89,7 +90,6 @@ define(['taskbar'], function(taskbar) {
 			drop.on('drop', function(e) {
 				e.preventDefault();
 				var uuid = drop.parents('[data-uuid]').attr('data-uuid'),
-					posts = composer.posts[uuid],
 					dt = e.dataTransfer,
 					files = dt.files;
 
@@ -121,7 +121,6 @@ define(['taskbar'], function(taskbar) {
 														'</div>' +
 													'</div>' +
 													'<textarea tabIndex="2"></textarea>' +
-													'<div class="imagelist"></div>'+
 													'<div class="imagedrop"><div>Drag and Drop Images Here</div></div>'+
 													'<div class="btn-toolbar action-bar">' +
 														'<div class="btn-group" style="float: right; margin-right: -8px">' +
@@ -151,8 +150,7 @@ define(['taskbar'], function(taskbar) {
 						cid: threadData.cid,
 						pid: threadData.pid,
 						title: threadData.title || '',
-						body: threadData.body || '',
-						images: threadData.uploadedImages || []
+						body: threadData.body || ''
 					};
 					composer.load(uuid);
 				} else {
@@ -265,18 +263,6 @@ define(['taskbar'], function(taskbar) {
 		});
 	}
 
-	function createPostImages(images) {
-		var imagelist = $(composer.postContainer).find('.imagelist');
-		imagelist.empty();
-
-		if(images && images.length) {
-			for(var i=0; i<images.length; ++i) {
-				var imageLabel = createImageLabel(images[i], images);
-				imagelist.append(imageLabel);
-			}
-		}
-	}
-
 	composer.load = function(post_uuid) {
 		var post_data = composer.posts[post_uuid],
 			titleEl = composer.postContainer.querySelector('input'),
@@ -299,7 +285,6 @@ define(['taskbar'], function(taskbar) {
 		}
 		bodyEl.value = post_data.body;
 
-		createPostImages(post_data.images);
 
 		// Direct user focus to the correct element
 		if ((parseInt(post_data.tid) || parseInt(post_data.pid)) > 0) {
@@ -334,6 +319,16 @@ define(['taskbar'], function(taskbar) {
 		titleEl.value = titleEl.value.trim();
 		bodyEl.value = bodyEl.value.trim();
 
+		if(uploadsInProgress.length) {
+			return app.alert({
+				type: 'warning',
+				timeout: 2000,
+				title: 'Still uploading',
+				message: "Please wait for uploads to complete.",
+				alert_id: 'post_error'
+			});
+		}
+
 		if (titleEl.value.length < config.minimumTitleLength) {
 			return app.alert({
 				type: 'danger',
@@ -359,21 +354,18 @@ define(['taskbar'], function(taskbar) {
 			socket.emit('api:topics.post', {
 				'title' : titleEl.value,
 				'content' : bodyEl.value,
-				'category_id' : postData.cid,
-				images: composer.posts[post_uuid].images
+				'category_id' : postData.cid
 			});
 		} else if (parseInt(postData.tid) > 0) {
 			socket.emit('api:posts.reply', {
 				'topic_id' : postData.tid,
-				'content' : bodyEl.value,
-				images: composer.posts[post_uuid].images
+				'content' : bodyEl.value
 			});
 		} else if (parseInt(postData.pid) > 0) {
 			socket.emit('api:posts.edit', {
 				pid: postData.pid,
 				content: bodyEl.value,
-				title: titleEl.value,
-				images: composer.posts[post_uuid].images
+				title: titleEl.value
 			});
 		}
 
@@ -383,7 +375,6 @@ define(['taskbar'], function(taskbar) {
 	composer.discard = function(post_uuid) {
 		if (composer.posts[post_uuid]) {
 			$(composer.postContainer).find('.imagedrop').hide();
-			$(composer.postContainer).find('.imagelist').empty();
 			delete composer.posts[post_uuid];
 			composer.minimize();
 			taskbar.discard('composer', post_uuid);

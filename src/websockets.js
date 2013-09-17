@@ -322,7 +322,7 @@ var SocketIO = require('socket.io').listen(global.server, {
 
 		socket.on('api:topics.post', function(data) {
 
-			topics.post(uid, data.title, data.content, data.category_id, data.images, function(err, result) {
+			topics.post(uid, data.title, data.content, data.category_id, function(err, result) {
 				if(err) {
 					if(err.message === 'not-logged-in') {
 						socket.emit('event:alert', {
@@ -379,7 +379,7 @@ var SocketIO = require('socket.io').listen(global.server, {
 				return;
 			}
 
-			posts.reply(data.topic_id, uid, data.content, data.images, function(err, result) {
+			posts.reply(data.topic_id, uid, data.content, function(err, result) {
 				if(err) {
 					if(err.message === 'content-too-short') {
 						posts.emitContentTooShortAlert(socket);
@@ -475,6 +475,10 @@ var SocketIO = require('socket.io').listen(global.server, {
 			categories.getAllCategories(function(categories) {
 				socket.emit('api:categories.get', categories);
 			});
+		});
+
+		socket.on('api:posts.uploadImage', function(data, callback) {
+			posts.uploadPostImage(data, callback);
 		});
 
 		socket.on('api:posts.getRawPost', function(data) {
@@ -623,14 +627,7 @@ var SocketIO = require('socket.io').listen(global.server, {
 
 					async.parallel([
 						function(next) {
-							posts.getPostFields(data.pid, ['content', 'uploadedImages'], function(raw) {
-								try {
-									raw.uploadedImages = JSON.parse(raw.uploadedImages);
-								} catch(e) {
-									winston.err(e);
-									raw.uploadedImages = [];
-								}
-
+							posts.getPostFields(data.pid, ['content'], function(raw) {
 								next(null, raw);
 							});
 						},
@@ -643,8 +640,7 @@ var SocketIO = require('socket.io').listen(global.server, {
 						socket.emit('api:composer.push', {
 							title: results[1],
 							pid: data.pid,
-							body: results[0].content,
-							uploadedImages: results[0].uploadedImages
+							body: results[0].content
 						});
 					});
 				}

@@ -56,7 +56,7 @@ var	RDB = require('./redis.js'),
 		});
 	}
 
-	PostTools.edit = function(uid, pid, title, content, images) {
+	PostTools.edit = function(uid, pid, title, content) {
 		var	success = function() {
 			posts.setPostField(pid, 'content', content);
 			posts.setPostField(pid, 'edited', Date.now());
@@ -67,11 +67,6 @@ var	RDB = require('./redis.js'),
 			});
 
 			async.parallel([
-				function(next) {
-					posts.uploadPostImages(pid, images, function(err, uploadedImages) {
-						next(err, uploadedImages);
-					});
-				},
 				function(next) {
 					posts.getPostField(pid, 'tid', function(tid) {
 						PostTools.isMain(pid, tid, function(isMainPost) {
@@ -90,12 +85,12 @@ var	RDB = require('./redis.js'),
 					PostTools.toHTML(content, next);
 				}
 			], function(err, results) {
-				io.sockets.in('topic_' + results[1].tid).emit('event:post_edited', {
+				console.log("TEEEST");
+				io.sockets.in('topic_' + results[0].tid).emit('event:post_edited', {
 					pid: pid,
 					title: title,
-					isMainPost: results[1].isMainPost,
-					content: results[2],
-					uploadedImages:results[0]
+					isMainPost: results[0].isMainPost,
+					content: results[1]
 				});
 			});
 		};

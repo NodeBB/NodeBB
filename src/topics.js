@@ -604,7 +604,7 @@ var	RDB = require('./redis.js')
 			});
 	}
 
-	Topics.post = function(uid, title, content, category_id, images, callback) {
+	Topics.post = function(uid, title, content, category_id, callback) {
 		if (!category_id)
 			throw new Error('Attempted to post without a category_id');
 
@@ -678,7 +678,7 @@ var	RDB = require('./redis.js')
 
 				feed.updateCategory(category_id);
 
-				posts.create(uid, tid, content, images, function(postData) {
+				posts.create(uid, tid, content, function(postData) {
 					if (postData) {
 
 						// Auto-subscribe the post creator to the newly created topic

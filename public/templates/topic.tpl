@@ -56,11 +56,6 @@
 						</div>
 
 						<div id="content_{main_posts.pid}" class="post-content">{main_posts.content}</div>
-						<div id="images_{main_posts.pid}" class="post-images">
-							<!-- BEGIN uploadedImages -->
-							<i class="icon-picture icon-1"></i><a href="{main_posts.uploadedImages.url}"> {main_posts.uploadedImages.name}</a><br/>
-							<!-- END uploadedImages -->
-						</div>
 						<div class="post-signature">{main_posts.signature}</div>
 						<div class="profile-block">
 							<span class="pull-right">
@@ -116,11 +111,6 @@
 						</div>
 
 						<div id="content_{posts.pid}" class="post-content">{posts.content}</div>
-						<div id="images_{posts.pid}" class="post-images">
-							<!-- BEGIN uploadedImages -->
-							<i class="icon-picture icon-1"></i><a href="{posts.uploadedImages.url}"> {posts.uploadedImages.name}</a><br/>
-							<!-- END uploadedImages -->
-						</div>
 						<div class="post-signature">{posts.signature}</div>
 						<div class="profile-block">
 							<span class="pull-right">
