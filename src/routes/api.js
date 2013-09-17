@@ -33,7 +33,6 @@ var user = require('./../user.js'),
 		app.get('/api/home', function(req, res) {
 			var uid = (req.user) ? req.user.uid : 0;
 			categories.getAllCategories(function(data) {
-
 				data.categories = data.categories.filter(function(category) {
 					return (!category.disabled || category.disabled === "0");
 				});
