@@ -1,8 +1,7 @@
-
 var SocketIO = require('socket.io').listen(global.server, {
-		log: false,
-		transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket']
-	}),
+	log: false,
+	transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket']
+}),
 	cookie = require('cookie'),
 	express = require('express'),
 	user = require('./user.js'),
@@ -22,7 +21,7 @@ var SocketIO = require('socket.io').listen(global.server, {
 	RDB = require('./redis'),
 	RedisStore = new RedisStoreLib({
 		client: RDB,
-		ttl: 60*60*24*14
+		ttl: 60 * 60 * 24 * 14
 	}),
 	socketCookieParser = express.cookieParser(nconf.get('secret')),
 	admin = {
@@ -40,7 +39,7 @@ var SocketIO = require('socket.io').listen(global.server, {
 	global.io = io;
 
 	io.sockets.on('connection', function(socket) {
-		var	hs = socket.handshake,
+		var hs = socket.handshake,
 			sessionID, uid;
 
 		// Validate the session, if present
@@ -53,12 +52,16 @@ var SocketIO = require('socket.io').listen(global.server, {
 				userSockets[uid] = userSockets[uid] || [];
 				userSockets[uid].push(socket);
 
-				if(uid) {
+				if (uid) {
 					socket.join('uid_' + uid);
-					io.sockets.in('global').emit('api:user.isOnline', isUserOnline(uid));
+					io.sockets. in ('global').emit('api:user.isOnline', isUserOnline(uid));
 
 					user.getUserField(uid, 'username', function(err, username) {
-						socket.emit('event:connect', {status: 1, username:username, uid:uid});
+						socket.emit('event:connect', {
+							status: 1,
+							username: username,
+							uid: uid
+						});
 					});
 				}
 			});
@@ -69,25 +72,25 @@ var SocketIO = require('socket.io').listen(global.server, {
 		socket.on('disconnect', function() {
 
 			var index = userSockets[uid].indexOf(socket);
-			if(index !== -1) {
+			if (index !== -1) {
 				userSockets[uid].splice(index, 1);
 			}
 
-			if(userSockets[uid].length === 0) {
+			if (userSockets[uid].length === 0) {
 				delete users[sessionID];
 				delete userSockets[uid];
-				if(uid) {
-					io.sockets.in('global').emit('api:user.isOnline', isUserOnline(uid));
+				if (uid) {
+					io.sockets. in ('global').emit('api:user.isOnline', isUserOnline(uid));
 				}
 			}
 
 			emitOnlineUserCount();
 
-			for(var roomName in rooms) {
+			for (var roomName in rooms) {
 
 				socket.leave(roomName);
 
-				if(rooms[roomName][socket.id]) {
+				if (rooms[roomName][socket.id]) {
 					delete rooms[roomName][socket.id];
 				}
 
@@ -103,8 +106,8 @@ var SocketIO = require('socket.io').listen(global.server, {
 
 			function getUidsInRoom(room) {
 				var uids = [];
-				for(var socketId in room) {
-					if(uids.indexOf(room[socketId]) === -1)
+				for (var socketId in room) {
+					if (uids.indexOf(room[socketId]) === -1)
 						uids.push(room[socketId]);
 				}
 				return uids;
@@ -114,10 +117,10 @@ var SocketIO = require('socket.io').listen(global.server, {
 				var clients = io.sockets.clients(roomName);
 				var anonCount = 0;
 
-				for(var i=0; i<clients.length; ++i) {
+				for (var i = 0; i < clients.length; ++i) {
 					var hs = clients[i].handshake;
 
-					if(hs && !users[sessionID]) {
+					if (hs && !users[sessionID]) {
 						++anonCount;
 					}
 				}
@@ -131,24 +134,24 @@ var SocketIO = require('socket.io').listen(global.server, {
 			function userList(users, anonymousCount, userCount) {
 				var usernames = [];
 
-				for (var i = 0, ii=users.length; i<ii; ++i) {
-					usernames[i] = '<strong>' + '<a href="/users/'+users[i].userslug+'">' + users[i].username + '</a></strong>';
+				for (var i = 0, ii = users.length; i < ii; ++i) {
+					usernames[i] = '<strong>' + '<a href="/users/' + users[i].userslug + '">' + users[i].username + '</a></strong>';
 				}
 
 				var joiner = anonymousCount + userCount == 1 ? 'is' : 'are',
-				userList = anonymousCount > 0 ? usernames.concat(util.format('%d guest%s', anonymousCount, anonymousCount > 1 ? 's' : '')) : usernames,
-				lastUser = userList.length > 1 ? ' and ' + userList.pop() : '';
+					userList = anonymousCount > 0 ? usernames.concat(util.format('%d guest%s', anonymousCount, anonymousCount > 1 ? 's' : '')) : usernames,
+					lastUser = userList.length > 1 ? ' and ' + userList.pop() : '';
 
 				return util.format('%s%s %s browsing this thread', userList.join(', '), lastUser, joiner);
 			}
 
 
 			if (uids.length === 0) {
-				io.sockets.in(roomName).emit('api:get_users_in_room', userList([], anonymousCount, 0));
+				io.sockets. in (roomName).emit('api:get_users_in_room', userList([], anonymousCount, 0));
 			} else {
 				user.getMultipleUserFields(uids, ['username', 'userslug'], function(err, users) {
-					if(!err)
-						io.sockets.in(roomName).emit('api:get_users_in_room', userList(users, anonymousCount, users.length));
+					if (!err)
+						io.sockets. in (roomName).emit('api:get_users_in_room', userList(users, anonymousCount, users.length));
 				});
 			}
 		}
@@ -171,42 +174,45 @@ var SocketIO = require('socket.io').listen(global.server, {
 				}
 			}
 
-			if(data.leave)
+			if (data.leave)
 				updateRoomBrowsingText(data.leave);
 
 			updateRoomBrowsingText(data.enter);
 
 			if (data.enter != 'admin')
-				io.sockets.in('admin').emit('api:get_all_rooms', io.sockets.manager.rooms);
+				io.sockets. in ('admin').emit('api:get_all_rooms', io.sockets.manager.rooms);
 
 		});
 
 		// BEGIN: API calls (todo: organize)
 
 		socket.on('api:updateHeader', function(data) {
-			if(uid) {
+			if (uid) {
 				user.getUserFields(uid, data.fields, function(err, fields) {
-					if(!err && fields) {
+					if (!err && fields) {
 						fields.uid = uid;
 						socket.emit('api:updateHeader', fields);
 					}
 				});
-			}
-			else {
+			} else {
 				socket.emit('api:updateHeader', {
-					uid:0,
+					uid: 0,
 					username: "Anonymous User",
 					email: '',
-					picture: require('gravatar').url('', {s:'24'}, https=nconf.get('https'))
+					picture: require('gravatar').url('', {
+						s: '24'
+					}, https = nconf.get('https'))
 				});
 			}
 
 		});
 
 		socket.on('user.exists', function(data) {
-			if(data.username) {
-				user.exists(utils.slugify(data.username), function(exists){
-					socket.emit('user.exists', {exists: exists});
+			if (data.username) {
+				user.exists(utils.slugify(data.username), function(exists) {
+					socket.emit('user.exists', {
+						exists: exists
+					});
 				});
 			}
 		});
@@ -246,9 +252,9 @@ var SocketIO = require('socket.io').listen(global.server, {
 		socket.on('api:user.get_online_users', function(data) {
 			var returnData = [];
 
-			for(var i=0; i<data.length; ++i) {
+			for (var i = 0; i < data.length; ++i) {
 				var uid = data[i];
-				if(isUserOnline(uid))
+				if (isUserOnline(uid))
 					returnData.push(uid);
 				else
 					returnData.push(0);
@@ -257,7 +263,10 @@ var SocketIO = require('socket.io').listen(global.server, {
 		});
 
 		socket.on('api:user.isOnline', function(uid, callback) {
-			callback({online:isUserOnline(uid), timestamp:Date.now()});
+			callback({
+				online: isUserOnline(uid),
+				timestamp: Date.now()
+			});
 		});
 
 		socket.on('api:user.changePassword', function(data, callback) {
@@ -274,7 +283,7 @@ var SocketIO = require('socket.io').listen(global.server, {
 
 			function updateHeader() {
 				user.getUserFields(uid, ['picture'], function(err, fields) {
-					if(!err && fields) {
+					if (!err && fields) {
 						fields.uid = uid;
 						socket.emit('api:updateHeader', fields);
 						callback(true);
@@ -284,12 +293,12 @@ var SocketIO = require('socket.io').listen(global.server, {
 				});
 			}
 
-			if(type === 'gravatar') {
+			if (type === 'gravatar') {
 				user.getUserField(uid, 'gravatarpicture', function(err, gravatar) {
 					user.setUserField(uid, 'picture', gravatar);
 					updateHeader();
 				});
-			} else if(type === 'uploaded') {
+			} else if (type === 'uploaded') {
 				user.getUserField(uid, 'uploadedpicture', function(err, uploadedpicture) {
 					user.setUserField(uid, 'picture', uploadedpicture);
 					updateHeader();
@@ -300,21 +309,21 @@ var SocketIO = require('socket.io').listen(global.server, {
 		});
 
 		socket.on('api:user.follow', function(data, callback) {
-			if(uid) {
+			if (uid) {
 				user.follow(uid, data.uid, callback);
 			}
 		});
 
 		socket.on('api:user.unfollow', function(data, callback) {
-			if(uid) {
+			if (uid) {
 				user.unfollow(uid, data.uid, callback);
 			}
 		});
 
 		socket.on('api:user.saveSettings', function(data, callback) {
-			if(uid) {
+			if (uid) {
 				user.setUserFields(uid, {
-					showemail:data.showemail
+					showemail: data.showemail
 				});
 				callback(true);
 			}
@@ -323,8 +332,8 @@ var SocketIO = require('socket.io').listen(global.server, {
 		socket.on('api:topics.post', function(data) {
 
 			topics.post(uid, data.title, data.content, data.category_id, data.images, function(err, result) {
-				if(err) {
-					if(err.message === 'not-logged-in') {
+				if (err) {
+					if (err.message === 'not-logged-in') {
 						socket.emit('event:alert', {
 							title: 'Thank you for posting',
 							message: 'Since you are unregistered, your post is awaiting approval. Click here to register now.',
@@ -334,9 +343,9 @@ var SocketIO = require('socket.io').listen(global.server, {
 								ajaxify.go('register');
 							}
 						});
-					} else if(err.message === 'title-too-short') {
+					} else if (err.message === 'title-too-short') {
 						topics.emitTitleTooShortAlert(socket);
-					} else if(err.message === 'content-too-short') {
+					} else if (err.message === 'content-too-short') {
 						posts.emitContentTooShortAlert(socket);
 					} else if (err.message === 'too-many-posts') {
 						posts.emitTooManyPostsAlert(socket);
@@ -344,7 +353,7 @@ var SocketIO = require('socket.io').listen(global.server, {
 					return;
 				}
 
-				if(result) {
+				if (result) {
 					posts.getTopicPostStats(socket);
 
 					socket.emit('event:alert', {
@@ -360,7 +369,7 @@ var SocketIO = require('socket.io').listen(global.server, {
 
 		socket.on('api:topics.markAllRead', function(data, callback) {
 			topics.markAllRead(uid, function(err, success) {
-				if(!err && success)	{
+				if (!err && success) {
 					callback(true);
 				} else {
 					callback(false);
@@ -369,7 +378,7 @@ var SocketIO = require('socket.io').listen(global.server, {
 		});
 
 		socket.on('api:posts.reply', function(data) {
-			if(uid < 1) {
+			if (uid < 1) {
 				socket.emit('event:alert', {
 					title: 'Reply Unsuccessful',
 					message: 'You don&apos;t seem to be logged in, so you cannot reply.',
@@ -380,12 +389,12 @@ var SocketIO = require('socket.io').listen(global.server, {
 			}
 
 			posts.reply(data.topic_id, uid, data.content, data.images, function(err, result) {
-				if(err) {
-					if(err.message === 'content-too-short') {
+				if (err) {
+					if (err.message === 'content-too-short') {
 						posts.emitContentTooShortAlert(socket);
-					} else if(err.message === 'too-many-posts') {
+					} else if (err.message === 'too-many-posts') {
 						posts.emitTooManyPostsAlert(socket);
-					} else if(err.message === 'reply-error') {
+					} else if (err.message === 'reply-error') {
 						socket.emit('event:alert', {
 							title: 'Reply Unsuccessful',
 							message: 'Your reply could not be posted at this time. Please try again later.',
@@ -396,7 +405,7 @@ var SocketIO = require('socket.io').listen(global.server, {
 					return;
 				}
 
-				if(result) {
+				if (result) {
 
 					posts.getTopicPostStats(socket);
 
@@ -415,7 +424,7 @@ var SocketIO = require('socket.io').listen(global.server, {
 		function emitOnlineUserCount() {
 			var anon = userSockets[0] ? userSockets[0].length : 0;
 			var registered = Object.keys(userSockets).length;
-			if(anon)
+			if (anon)
 				registered = registered - 1;
 
 			var returnObj = {
@@ -479,12 +488,14 @@ var SocketIO = require('socket.io').listen(global.server, {
 
 		socket.on('api:posts.getRawPost', function(data) {
 			posts.getPostField(data.pid, 'content', function(raw) {
-				socket.emit('api:posts.getRawPost', { post: raw });
+				socket.emit('api:posts.getRawPost', {
+					post: raw
+				});
 			});
 		});
 
 		socket.on('api:posts.edit', function(data) {
-			if(!data.title || data.title.length < topics.minimumTitleLength) {
+			if (!data.title || data.title.length < topics.minimumTitleLength) {
 				topics.emitTitleTooShortAlert(socket);
 				return;
 			} else if (!data.content || data.content.length < require('../public/config.json').minimumPostLength) {
@@ -527,7 +538,7 @@ var SocketIO = require('socket.io').listen(global.server, {
 		socket.on('getChatMessages', function(data, callback) {
 			var touid = data.touid;
 			require('./messaging').getMessages(uid, touid, function(err, messages) {
-				if(err)
+				if (err)
 					return callback(null);
 
 				callback(messages);
@@ -537,7 +548,7 @@ var SocketIO = require('socket.io').listen(global.server, {
 		socket.on('sendChatMessage', function(data) {
 
 			var touid = data.touid;
-			if(touid === uid || uid === 0) {
+			if (touid === uid || uid === 0) {
 				return;
 			}
 
@@ -547,8 +558,8 @@ var SocketIO = require('socket.io').listen(global.server, {
 				var finalMessage = username + ' : ' + msg,
 					notifText = 'New message from <strong>' + username + '</strong>';
 
-				if(!isUserOnline(touid)) {
-					notifications.create(notifText, 5, 'javascript:app.openChat(&apos;'+username+'&apos;, '+uid+');', 'notification_' + uid + '_' + touid, function(nid) {
+				if (!isUserOnline(touid)) {
+					notifications.create(notifText, 5, 'javascript:app.openChat(&apos;' + username + '&apos;, ' + uid + ');', 'notification_' + uid + '_' + touid, function(nid) {
 						notifications.push(nid, [touid], function(success) {
 
 						});
@@ -558,20 +569,30 @@ var SocketIO = require('socket.io').listen(global.server, {
 				require('./messaging').addMessage(uid, touid, msg, function(err, message) {
 					var numSockets = 0;
 
-					if(userSockets[touid]) {
+					if (userSockets[touid]) {
 						numSockets = userSockets[touid].length;
 
-						for(var x=0; x<numSockets; ++x) {
-							userSockets[touid][x].emit('chatMessage', {fromuid:uid, username:username, message: finalMessage, timestamp: Date.now()});
+						for (var x = 0; x < numSockets; ++x) {
+							userSockets[touid][x].emit('chatMessage', {
+								fromuid: uid,
+								username: username,
+								message: finalMessage,
+								timestamp: Date.now()
+							});
 						}
 					}
 
-					if(userSockets[uid]) {
+					if (userSockets[uid]) {
 
 						numSockets = userSockets[uid].length;
 
-						for(var x=0; x<numSockets; ++x) {
-							userSockets[uid][x].emit('chatMessage', {fromuid:touid, username:username, message:'You : ' + msg, timestamp: Date.now()});
+						for (var x = 0; x < numSockets; ++x) {
+							userSockets[uid][x].emit('chatMessage', {
+								fromuid: touid,
+								username: username,
+								message: 'You : ' + msg,
+								timestamp: Date.now()
+							});
 						}
 					}
 				});
@@ -586,7 +607,9 @@ var SocketIO = require('socket.io').listen(global.server, {
 
 		socket.on('api:config.set', function(data) {
 			meta.configs.set(data.key, data.value, function(err) {
-				if (!err) socket.emit('api:config.set', { status: 'ok' });
+				if (!err) socket.emit('api:config.set', {
+					status: 'ok'
+				});
 			});
 		});
 
@@ -609,7 +632,7 @@ var SocketIO = require('socket.io').listen(global.server, {
 					});
 				} else if (parseInt(data.cid) > 0) {
 					user.getUserFields(uid, ['username', 'picture'], function(err, userData) {
-						if(!err && userData) {
+						if (!err && userData) {
 							socket.emit('api:composer.push', {
 								tid: 0,
 								cid: data.cid,
@@ -626,7 +649,7 @@ var SocketIO = require('socket.io').listen(global.server, {
 							posts.getPostFields(data.pid, ['content', 'uploadedImages'], function(raw) {
 								try {
 									raw.uploadedImages = JSON.parse(raw.uploadedImages);
-								} catch(e) {
+								} catch (e) {
 									winston.err(e);
 									raw.uploadedImages = [];
 								}
@@ -696,7 +719,9 @@ var SocketIO = require('socket.io').listen(global.server, {
 				end = start + 9;
 
 			topics.getTopicPosts(data.tid, start, end, uid, function(posts) {
-				callback({posts:posts});
+				callback({
+					posts: posts
+				});
 			});
 		});
 
@@ -705,7 +730,9 @@ var SocketIO = require('socket.io').listen(global.server, {
 				end = start + 9;
 
 			categories.getCategoryTopics(data.cid, start, end, uid, function(topics) {
-				callback({topics:topics});
+				callback({
+					topics: topics
+				});
 			});
 		});
 
@@ -732,10 +759,12 @@ var SocketIO = require('socket.io').listen(global.server, {
 				end = start + 19;
 
 			user.getUsers(data.set, start, end, function(err, data) {
-				if(err) {
+				if (err) {
 					winston.err(err);
 				} else {
-					callback({users:data});
+					callback({
+						users: data
+					});
 				}
 			});
 		});
@@ -757,37 +786,37 @@ var SocketIO = require('socket.io').listen(global.server, {
 		});
 
 		socket.on('api:admin.user.makeAdmin', function(theirid) {
-			if(uid && uid > 0) {
+			if (uid && uid > 0) {
 				admin.user.makeAdmin(uid, theirid, socket);
 			}
 		});
 
 		socket.on('api:admin.user.removeAdmin', function(theirid) {
-			if(uid && uid > 0) {
+			if (uid && uid > 0) {
 				admin.user.removeAdmin(uid, theirid, socket);
 			}
 		});
 
 		socket.on('api:admin.user.deleteUser', function(theirid) {
-			if(uid && uid > 0) {
+			if (uid && uid > 0) {
 				admin.user.deleteUser(uid, theirid, socket);
 			}
 		});
 
 		socket.on('api:admin.user.banUser', function(theirid) {
-			if(uid && uid > 0) {
+			if (uid && uid > 0) {
 				admin.user.banUser(uid, theirid, socket);
 			}
 		});
 
 		socket.on('api:admin.user.unbanUser', function(theirid) {
-			if(uid && uid > 0) {
+			if (uid && uid > 0) {
 				admin.user.unbanUser(uid, theirid, socket);
 			}
 		});
 
 		socket.on('api:admin.user.search', function(username, callback) {
-			if(uid && uid > 0) {
+			if (uid && uid > 0) {
 				user.search(username, function(data) {
 					if (!callback) socket.emit('api:admin.user.search', data);
 					else callback(null, data);

@@ -1,4 +1,4 @@
-var	RDB = require('./redis.js'),
+var RDB = require('./redis.js'),
 	async = require('async'),
 	utils = require('../public/src/utils.js'),
 
@@ -35,25 +35,25 @@ var	RDB = require('./redis.js'),
 					'path', path || null,
 					'datetime', Date.now(),
 					'uniqueId', uniqueId || utils.generateUUID(),
-				function(err, status) {
-					if (status === 'OK') callback(nid);
-				});
+					function(err, status) {
+						if (status === 'OK') callback(nid);
+					});
 			});
 		},
 		push: function(nid, uids, callback) {
 			if (!Array.isArray(uids)) uids = [uids];
 
-			var	numUids = uids.length,
+			var numUids = uids.length,
 				x;
 
 			notifications.get(nid, function(notif_data) {
-				for(x=0;x<numUids;x++) {
+				for (x = 0; x < numUids; x++) {
 					if (parseInt(uids[x]) > 0) {
 						(function(uid) {
 							notifications.remove_by_uniqueId(notif_data.uniqueId, uid, function() {
 								RDB.zadd('uid:' + uid + ':notifications:unread', notif_data.score, nid);
 								RDB.set('uid:' + uid + ':notifications:flag', 1);
-								global.io.sockets.in('uid_' + uid).emit('event:new_notification');
+								global.io.sockets. in ('uid_' + uid).emit('event:new_notification');
 								if (callback) callback(true);
 							});
 						})(uids[x]);

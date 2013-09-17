@@ -35,7 +35,7 @@ var utils = require('./../public/src/utils.js'),
 		},
 		set: function(field, value, callback) {
 			RDB.hset('config', field, value, function(err, res) {
-				if(callback)
+				if (callback)
 					callback(err, res);
 			});
 		},
@@ -52,7 +52,7 @@ var utils = require('./../public/src/utils.js'),
 
 	Meta.themes = {
 		get: function(callback) {
-			var	themePath = path.join(__dirname, '../node_modules');
+			var themePath = path.join(__dirname, '../node_modules');
 			fs.readdir(themePath, function(err, files) {
 				async.filter(files, function(file, next) {
 					fs.stat(path.join(themePath, file), function(err, fileStat) {
@@ -62,11 +62,11 @@ var utils = require('./../public/src/utils.js'),
 					});
 				}, function(themes) {
 					async.map(themes, function(theme, next) {
-						var	config = path.join(themePath, theme, 'theme.json');
+						var config = path.join(themePath, theme, 'theme.json');
 
 						if (fs.existsSync(config)) {
 							fs.readFile(config, function(err, file) {
-								var	configObj = JSON.parse(file.toString());
+								var configObj = JSON.parse(file.toString());
 								if (!configObj.screenshot) configObj.screenshot = nconf.get('relative_path') + '/images/themes/default.png';
 								next(err, configObj);
 							});
@@ -84,7 +84,7 @@ var utils = require('./../public/src/utils.js'),
 
 	Meta.title = {
 		build: function(urlFragment, current_user, callback) {
-			var	self = this,
+			var self = this,
 				user = require('./user');
 
 			async.parallel({
@@ -95,7 +95,7 @@ var utils = require('./../public/src/utils.js'),
 					user.notifications.getUnreadCount(current_user, next);
 				}
 			}, function(err, values) {
-				var	title;
+				var title;
 
 				if (err) title = Meta.config.title || 'NodeBB';
 				else title = (values.title ? values.title + ' | ' : '') + (Meta.config.title || 'NodeBB');
@@ -113,13 +113,13 @@ var utils = require('./../public/src/utils.js'),
 			} else if (urlFragment === 'users') {
 				callback(null, 'Registered Users');
 			} else if (/^category\/\d+\/?/.test(urlFragment)) {
-				var	cid = urlFragment.match(/category\/(\d+)/)[1];
+				var cid = urlFragment.match(/category\/(\d+)/)[1];
 
 				require('./categories').getCategoryField(cid, 'name', function(err, name) {
 					callback(null, name);
 				});
 			} else if (/^topic\/\d+\/?/.test(urlFragment)) {
-				var	tid = urlFragment.match(/topic\/(\d+)/)[1];
+				var tid = urlFragment.match(/topic\/(\d+)/)[1];
 
 				require('./topics').getTopicField(tid, 'title', function(err, title) {
 					callback(null, title);
@@ -130,4 +130,3 @@ var utils = require('./../public/src/utils.js'),
 
 
 }(exports));
-

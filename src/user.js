@@ -38,7 +38,7 @@ var utils = require('./../public/src/utils.js'),
 			function(next) {
 				if (email !== undefined) {
 					User.isEmailAvailable(email, function(err, available) {
-						if(err)
+						if (err)
 							return next(err);
 						next(!available ? new Error('Email taken!') : null);
 					});
@@ -53,19 +53,19 @@ var utils = require('./../public/src/utils.js'),
 				var gravatar = User.createGravatarURLFromEmail(email);
 				var timestamp = Date.now();
 
-				RDB.hmset('user:'+uid, {
+				RDB.hmset('user:' + uid, {
 					'uid': uid,
-					'username' : username,
-					'userslug' : userslug,
+					'username': username,
+					'userslug': userslug,
 					'fullname': '',
-					'location':'',
-					'birthday':'',
-					'website':'',
-					'email' : email || '',
-					'signature':'',
-					'joindate' : timestamp,
+					'location': '',
+					'birthday': '',
+					'website': '',
+					'email': email || '',
+					'signature': '',
+					'joindate': timestamp,
 					'picture': gravatar,
-					'gravatarpicture' : gravatar,
+					'gravatarpicture': gravatar,
 					'uploadedpicture': '',
 					'profileviews': 0,
 					'reputation': 0,
@@ -87,7 +87,9 @@ var utils = require('./../public/src/utils.js'),
 				RDB.incr('usercount', function(err, count) {
 					RDB.handle(err);
 
-					if (typeof io !== 'undefined') io.sockets.emit('user.count', {count: count});
+					if (typeof io !== 'undefined') io.sockets.emit('user.count', {
+						count: count
+					});
 				});
 
 				RDB.zadd('users:joindate', timestamp, uid);
@@ -96,7 +98,10 @@ var utils = require('./../public/src/utils.js'),
 
 				userSearch.index(username, uid);
 
-				if (typeof io !== 'undefined') io.sockets.emit('user.latest', {userslug: userslug, username: username});
+				if (typeof io !== 'undefined') io.sockets.emit('user.latest', {
+					userslug: userslug,
+					username: username
+				});
 
 				if (password !== undefined) {
 					User.hashPassword(password, function(err, hash) {
@@ -109,8 +114,8 @@ var utils = require('./../public/src/utils.js'),
 	};
 
 	User.delete = function(uid, callback) {
-		RDB.exists('user:'+uid, function(err, exists) {
-			if(exists === 1) {
+		RDB.exists('user:' + uid, function(err, exists) {
+			if (exists === 1) {
 				console.log('deleting uid ' + uid);
 
 				User.getUserData(uid, function(err, data) {
@@ -152,7 +157,7 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.getMultipleUserFields = function(uids, fields, callback) {
-		if(uids.length === 0) {
+		if (uids.length === 0) {
 			return callback(null, []);
 		}
 
@@ -164,7 +169,7 @@ var utils = require('./../public/src/utils.js'),
 
 		function iterator(uid, next) {
 			User.getUserFields(uid, fields, function(err, userData) {
-				if(err)
+				if (err)
 					return next(err);
 				returnData.push(userData);
 				next(null);
@@ -179,7 +184,7 @@ var utils = require('./../public/src/utils.js'),
 	User.getUserData = function(uid, callback) {
 		RDB.hgetall('user:' + uid, function(err, data) {
 
-			if(data && data['password']) {
+			if (data && data['password']) {
 				delete data['password'];
 			}
 			callback(err, data);
@@ -195,28 +200,34 @@ var utils = require('./../public/src/utils.js'),
 	User.updateProfile = function(uid, data, callback) {
 
 		var fields = ['email', 'fullname', 'website', 'location', 'birthday', 'signature'];
-		var returnData = {success:false};
+		var returnData = {
+			success: false
+		};
 
 		function isSignatureValid(next) {
-			if(data['signature'] !== undefined && data['signature'].length > 150) {
-				next({error:'Signature can\'t be longer than 150 characters!'}, false);
+			if (data['signature'] !== undefined && data['signature'].length > 150) {
+				next({
+					error: 'Signature can\'t be longer than 150 characters!'
+				}, false);
 			} else {
 				next(null, true);
 			}
 		}
 
 		function isEmailAvailable(next) {
-			if(!data['email']) {
+			if (!data['email']) {
 				return next(null, true);
 			}
 
 			User.getUserField(uid, 'email', function(err, email) {
-				if(email !== data['email']) {
+				if (email !== data['email']) {
 					User.isEmailAvailable(data['email'], function(err, available) {
-						if(err)
+						if (err)
 							return next(err, null);
-						if(!available) {
-							next({error:'Email not available!'}, false);
+						if (!available) {
+							next({
+								error: 'Email not available!'
+							}, false);
 						} else {
 							next(null, true);
 						}
@@ -228,11 +239,11 @@ var utils = require('./../public/src/utils.js'),
 		}
 
 		async.series([isSignatureValid, isEmailAvailable], function(err, results) {
-			if(err) {
+			if (err) {
 				callback(err, returnData);
 			} else {
 				async.each(fields, updateField, function(err) {
-					if(err) {
+					if (err) {
 						callback(err, returnData);
 					} else {
 						returnData.success = true;
@@ -243,18 +254,18 @@ var utils = require('./../public/src/utils.js'),
 		});
 
 		function updateField(field, next) {
-			if(data[field] !== undefined) {
-				if(field === 'email') {
+			if (data[field] !== undefined) {
+				if (field === 'email') {
 					var gravatarpicture = User.createGravatarURLFromEmail(data[field]);
 					User.setUserField(uid, 'gravatarpicture', gravatarpicture);
 					User.getUserFields(uid, ['email', 'picture', 'uploadedpicture'], function(err, userData) {
-						if(err)
+						if (err)
 							return next(err);
 
 						RDB.hdel('email:uid', userData['email']);
 						RDB.hset('email:uid', data['email'], uid);
 						User.setUserField(uid, field, data[field]);
-						if(userData.picture !== userData.uploadedpicture) {
+						if (userData.picture !== userData.uploadedpicture) {
 							returnData.picture = gravatarpicture;
 							User.setUserField(uid, 'picture', gravatarpicture);
 						}
@@ -262,7 +273,7 @@ var utils = require('./../public/src/utils.js'),
 						next(null);
 					});
 					return;
-				} else if(field === 'signature') {
+				} else if (field === 'signature') {
 					data[field] = utils.strip_tags(data[field]);
 				}
 
@@ -282,13 +293,15 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.changePassword = function(uid, data, callback) {
-		if(!utils.isPasswordValid(data.newPassword)) {
-			return callback({error:'Invalid password!'});
+		if (!utils.isPasswordValid(data.newPassword)) {
+			return callback({
+				error: 'Invalid password!'
+			});
 		}
 
 		User.getUserField(uid, 'password', function(err, user_password) {
 			bcrypt.compare(data.currentPassword, user_password, function(err, res) {
-				if(err) {
+				if (err) {
 					return callback(err);
 				}
 
@@ -299,7 +312,9 @@ var utils = require('./../public/src/utils.js'),
 						callback(null);
 					});
 				} else {
-					callback({error:'Your current password is not correct!'});
+					callback({
+						error: 'Your current password is not correct!'
+					});
 				}
 			});
 		});
@@ -325,13 +340,13 @@ var utils = require('./../public/src/utils.js'),
 		var data = [];
 
 		RDB.zrevrange(set, start, stop, function(err, uids) {
-			if(err) {
+			if (err) {
 				return callback(err, null);
 			}
 
 			function iterator(uid, callback) {
 				User.getUserData(uid, function(err, userData) {
-					if(userData) {
+					if (userData) {
 						data.push(userData);
 					}
 					callback(null);
@@ -356,11 +371,11 @@ var utils = require('./../public/src/utils.js'),
 			options.forcedefault = 'y';
 		}
 
-		return require('gravatar').url(email, options, https=nconf.get('https'));
+		return require('gravatar').url(email, options, https = nconf.get('https'));
 	}
 
 	User.hashPassword = function(password, callback) {
-		if(!password) {
+		if (!password) {
 			callback(password);
 			return;
 		}
@@ -372,17 +387,17 @@ var utils = require('./../public/src/utils.js'),
 
 	User.reIndexAll = function(callback) {
 		User.getUsers('users:joindate', 0, -1, function(err, usersData) {
-			if(err) {
+			if (err) {
 				return callback(err, null);
 			}
 
 			function reIndexUser(uid, username) {
-				userSearch.remove(uid, function(){
+				userSearch.remove(uid, function() {
 					userSearch.index(username, uid);
 				})
 			}
 
-			for(var i=0; i<usersData.length; ++i) {
+			for (var i = 0; i < usersData.length; ++i) {
 				reIndexUser(usersData[i].uid, usersData[i].username);
 			}
 			callback(null, 1);
@@ -390,17 +405,17 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.search = function(username, callback) {
-		if(!username) {
+		if (!username) {
 			callback([]);
 			return;
 		}
 
 		userSearch.query(query = username).type('or').end(function(err, uids) {
-			if(err) {
+			if (err) {
 				console.log(err);
 				return;
 			}
-			if(uids && uids.length) {
+			if (uids && uids.length) {
 				User.getDataForUsers(uids, function(userdata) {
 					callback(userdata);
 				});
@@ -432,8 +447,8 @@ var utils = require('./../public/src/utils.js'),
 
 	User.getPostIds = function(uid, start, end, callback) {
 		RDB.lrange('uid:' + uid + ':posts', start, end, function(err, pids) {
-			if(!err) {
-				if(pids && pids.length)
+			if (!err) {
+				if (pids && pids.length)
 					callback(pids);
 				else
 					callback([]);
@@ -444,15 +459,19 @@ var utils = require('./../public/src/utils.js'),
 		});
 	}
 
-	User.sendConfirmationEmail = function (email) {
+	User.sendConfirmationEmail = function(email) {
 		if (meta.config['email:host'] && meta.config['email:port'] && meta.config['email:from']) {
 			var confirm_code = utils.generateUUID(),
 				confirm_link = nconf.get('url') + 'confirm/' + confirm_code,
-				confirm_email = global.templates['emails/header'] + global.templates['emails/email_confirm'].parse({'CONFIRM_LINK': confirm_link}) + global.templates['emails/footer'],
-				confirm_email_plaintext = global.templates['emails/email_confirm_plaintext'].parse({ 'CONFIRM_LINK': confirm_link });
+				confirm_email = global.templates['emails/header'] + global.templates['emails/email_confirm'].parse({
+					'CONFIRM_LINK': confirm_link
+				}) + global.templates['emails/footer'],
+				confirm_email_plaintext = global.templates['emails/email_confirm_plaintext'].parse({
+					'CONFIRM_LINK': confirm_link
+				});
 
 			// Email confirmation code
-			var expiry_time = 60*60*2,	// Expire after 2 hours
+			var expiry_time = 60 * 60 * 2, // Expire after 2 hours
 				email_key = 'email:' + email + ':confirm',
 				confirm_key = 'confirm:' + confirm_code + ':email';
 
@@ -467,12 +486,10 @@ var utils = require('./../public/src/utils.js'),
 				from: meta.config.mailer.from,
 				to: email,
 				subject: '[NodeBB] Registration Email Verification',
-				attachment: [
-					{
-						data: confirm_email,
-						alternative: true
-					}
-				]
+				attachment: [{
+					data: confirm_email,
+					alternative: true
+				}]
 			});
 
 			emailjsServer.send(message, function(err, success) {
@@ -485,9 +502,9 @@ var utils = require('./../public/src/utils.js'),
 
 	User.follow = function(uid, followid, callback) {
 		RDB.sadd('following:' + uid, followid, function(err, data) {
-			if(!err) {
+			if (!err) {
 				RDB.sadd('followers:' + followid, uid, function(err, data) {
-					if(!err) {
+					if (!err) {
 						callback(true);
 					} else {
 						console.log(err);
@@ -502,9 +519,9 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.unfollow = function(uid, unfollowid, callback) {
-		RDB.srem('following:' + uid, unfollowid, function(err, data){
-			if(!err) {
-				RDB.srem('followers:' + unfollowid, uid, function(err, data){
+		RDB.srem('following:' + uid, unfollowid, function(err, data) {
+			if (!err) {
+				RDB.srem('followers:' + unfollowid, uid, function(err, data) {
 					callback(data);
 				});
 			} else {
@@ -515,7 +532,7 @@ var utils = require('./../public/src/utils.js'),
 
 	User.getFollowing = function(uid, callback) {
 		RDB.smembers('following:' + uid, function(err, userIds) {
-			if(!err) {
+			if (!err) {
 				User.getDataForUsers(userIds, callback);
 			} else {
 				console.log(err);
@@ -525,7 +542,7 @@ var utils = require('./../public/src/utils.js'),
 
 	User.getFollowers = function(uid, callback) {
 		RDB.smembers('followers:' + uid, function(err, userIds) {
-			if(!err) {
+			if (!err) {
 				User.getDataForUsers(userIds, callback);
 			} else {
 				console.log(err);
@@ -535,7 +552,7 @@ var utils = require('./../public/src/utils.js'),
 
 	User.getFollowingCount = function(uid, callback) {
 		RDB.smembers('following:' + uid, function(err, userIds) {
-			if(!err) {
+			if (!err) {
 				callback(userIds.length);
 			} else {
 				console.log(err);
@@ -549,7 +566,7 @@ var utils = require('./../public/src/utils.js'),
 			// either go with not-error-dosomething-else-dosomethingelse, or
 			// go with if-error-dosomething-return
 			// also why is console.log(err) being used when below we're using RDB.handle()?
-			if(!err) {
+			if (!err) {
 				callback(userIds.length);
 			} else {
 				console.log(err);
@@ -560,7 +577,7 @@ var utils = require('./../public/src/utils.js'),
 	User.getDataForUsers = function(uids, callback) {
 		var returnData = [];
 
-		if(!uids || !Array.isArray(uids) || uids.length === 0) {
+		if (!uids || !Array.isArray(uids) || uids.length === 0) {
 			callback(returnData);
 			return;
 		}
@@ -584,8 +601,8 @@ var utils = require('./../public/src/utils.js'),
 				topics.getTopicField(tid, 'slug', function(err, slug) {
 					var message = '<strong>' + username + '</strong> made a new post';
 
-					notifications.create(message, 5, nconf.get('relative_path') + '/topic/' + slug + '#' + pid, 'topic:'+ tid, function(nid) {
-		 				notifications.push(nid, followers);
+					notifications.create(message, 5, nconf.get('relative_path') + '/topic/' + slug + '#' + pid, 'topic:' + tid, function(nid) {
+						notifications.push(nid, followers);
 					});
 				});
 			});
@@ -594,7 +611,7 @@ var utils = require('./../public/src/utils.js'),
 
 	User.isFollowing = function(uid, theirid, callback) {
 		RDB.sismember('following:' + uid, theirid, function(err, data) {
-			if(!err) {
+			if (!err) {
 				callback(data === 1);
 			} else {
 				console.log(err);
@@ -604,7 +621,7 @@ var utils = require('./../public/src/utils.js'),
 
 	User.exists = function(userslug, callback) {
 		User.get_uid_by_userslug(userslug, function(err, exists) {
-			callback(!!exists);
+			callback( !! exists);
 		});
 	};
 
@@ -612,7 +629,9 @@ var utils = require('./../public/src/utils.js'),
 		RDB.get('usercount', function(err, count) {
 			RDB.handle(err);
 
-			socket.emit('user.count', { count: count ? count : 0 });
+			socket.emit('user.count', {
+				count: count ? count : 0
+			});
 		});
 	};
 
@@ -621,8 +640,11 @@ var utils = require('./../public/src/utils.js'),
 			RDB.handle(err);
 
 			User.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
-				if(!err && userData)
-					socket.emit('user.latest', {userslug: userData.userslug, username: userData.username});
+				if (!err && userData)
+					socket.emit('user.latest', {
+						userslug: userData.userslug,
+						username: userData.username
+					});
 			});
 		});
 	}
@@ -725,7 +747,7 @@ var utils = require('./../public/src/utils.js'),
 				RDB.handle(err);
 			}
 
-			var expiry = 60*60*24*14, // Login valid for two weeks
+			var expiry = 60 * 60 * 24 * 14, // Login valid for two weeks
 				sess_key = 'sess:' + sessionID + ':uid',
 				uid_key = 'uid:' + uid + ':session';
 
@@ -739,14 +761,14 @@ var utils = require('./../public/src/utils.js'),
 	User.isModerator = function(uid, cid, callback) {
 		RDB.sismember('cid:' + cid + ':moderators', uid, function(err, exists) {
 			RDB.handle(err);
-			callback(!!exists);
+			callback( !! exists);
 		});
 	}
 
 	User.isAdministrator = function(uid, callback) {
 		Groups.getGidFromName('Administrators', function(err, gid) {
 			Groups.isMember(uid, gid, function(err, isAdmin) {
-				callback(!!isAdmin);
+				callback( !! isAdmin);
 			});
 		});
 	}
@@ -769,9 +791,11 @@ var utils = require('./../public/src/utils.js'),
 							RDB.handle(err);
 						}
 
-						if (expiry >= +Date.now()/1000|0) {
+						if (expiry >= +Date.now() / 1000 | 0) {
 							if (!callback) {
-								socket.emit('user:reset.valid', { valid: true });
+								socket.emit('user:reset.valid', {
+									valid: true
+								});
 							} else {
 								callback(true);
 							}
@@ -780,7 +804,9 @@ var utils = require('./../public/src/utils.js'),
 							RDB.del('reset:' + code + ':uid');
 							RDB.del('reset:' + code + ':expiry');
 							if (!callback) {
-								socket.emit('user:reset.valid', { valid: false });
+								socket.emit('user:reset.valid', {
+									valid: false
+								});
 							} else {
 								callback(false);
 							}
@@ -788,7 +814,9 @@ var utils = require('./../public/src/utils.js'),
 					});
 				} else {
 					if (!callback) {
-						socket.emit('user:reset.valid', { valid: false });
+						socket.emit('user:reset.valid', {
+							valid: false
+						});
 					} else {
 						callback(false);
 					}
@@ -801,23 +829,25 @@ var utils = require('./../public/src/utils.js'),
 					// Generate a new reset code
 					var reset_code = utils.generateUUID();
 					RDB.set('reset:' + reset_code + ':uid', uid);
-					RDB.set('reset:' + reset_code + ':expiry', (60*60)+new Date()/1000|0);	// Active for one hour
+					RDB.set('reset:' + reset_code + ':expiry', (60 * 60) + new Date() / 1000 | 0); // Active for one hour
 
 					var reset_link = nconf.get('url') + 'reset/' + reset_code,
-						reset_email = global.templates['emails/reset'].parse({'RESET_LINK': reset_link}),
-						reset_email_plaintext = global.templates['emails/reset_plaintext'].parse({ 'RESET_LINK': reset_link });
+						reset_email = global.templates['emails/reset'].parse({
+							'RESET_LINK': reset_link
+						}),
+						reset_email_plaintext = global.templates['emails/reset_plaintext'].parse({
+							'RESET_LINK': reset_link
+						});
 
 					var message = emailjs.message.create({
 						text: reset_email_plaintext,
-						from: meta.config.mailer?meta.config.mailer.from:'localhost@example.org',
+						from: meta.config.mailer ? meta.config.mailer.from : 'localhost@example.org',
 						to: email,
 						subject: 'Password Reset Requested',
-						attachment: [
-							{
-								data: reset_email,
-								alternative: true
-							}
-						]
+						attachment: [{
+							data: reset_email,
+							alternative: true
+						}]
 					});
 
 					emailjsServer.send(message, function(err, success) {
@@ -860,7 +890,9 @@ var utils = require('./../public/src/utils.js'),
 						RDB.del('reset:' + code + ':uid');
 						RDB.del('reset:' + code + ':expiry');
 
-						socket.emit('user:reset.commit', { status: 'ok' });
+						socket.emit('user:reset.commit', {
+							status: 'ok'
+						});
 					});
 				}
 			});
@@ -870,9 +902,11 @@ var utils = require('./../public/src/utils.js'),
 	User.email = {
 		exists: function(socket, email, callback) {
 			User.get_uid_by_email(email, function(exists) {
-				exists = !!exists;
+				exists = !! exists;
 				if (typeof callback !== 'function') {
-					socket.emit('user.email.exists', { exists: exists });
+					socket.emit('user.email.exists', {
+						exists: exists
+					});
 				} else {
 					callback(exists);
 				}
@@ -887,9 +921,13 @@ var utils = require('./../public/src/utils.js'),
 				if (email !== null) {
 					RDB.set('email:' + email + ':confirm', true);
 					RDB.del('confirm:' + code + ':email');
-					callback({ status: 'ok' });
+					callback({
+						status: 'ok'
+					});
 				} else {
-					callback({ status: 'not_ok' });
+					callback({
+						status: 'not_ok'
+					});
 				}
 			});
 		}
@@ -897,7 +935,7 @@ var utils = require('./../public/src/utils.js'),
 
 	User.notifications = {
 		get: function(uid, callback) {
-			var	maxNotifs = 15;
+			var maxNotifs = 15;
 
 			async.parallel({
 				unread: function(next) {
@@ -946,7 +984,7 @@ var utils = require('./../public/src/utils.js'),
 				}
 			}, function(err, notifications) {
 				// While maintaining score sorting, sort by time
-				var	readCount = notifications.read.length,
+				var readCount = notifications.read.length,
 					unreadCount = notifications.unread.length;
 
 				notifications.read.sort(function(a, b) {

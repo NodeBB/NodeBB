@@ -1,5 +1,5 @@
 (function(Feed) {
-	var	RDB = require('./redis.js'),
+	var RDB = require('./redis.js'),
 		schema = require('./schema.js'),
 		posts = require('./posts.js'),
 		topics = require('./topics.js'),
@@ -15,10 +15,10 @@
 	};
 
 	Feed.saveFeed = function(location, feed, callback) {
-		var	savePath = path.join(__dirname, '../', location);
+		var savePath = path.join(__dirname, '../', location);
 
-		fs.writeFile(savePath, feed.xml(), function (err) {
-			if(err) return winston.err(err);
+		fs.writeFile(savePath, feed.xml(), function(err) {
+			if (err) return winston.err(err);
 
 			if (callback) callback(err);
 		});
@@ -30,15 +30,15 @@
 		topics.getTopicWithPosts(tid, 0, 0, -1, function(err, topicData) {
 			if (err) return callback(new Error('topic-invalid'));
 
-			var	feed = new rss({
-					title: topicData.topic_name,
-					description: topicData.main_posts[0].content,
-					feed_url: Feed.defaults.baseUrl + '/topics/' + tid + '.rss',
-					site_url: nconf.get('url') + 'topic/' + topicData.slug,
-					image_url: topicData.main_posts[0].picture,
-					author: topicData.main_posts[0].username,
-					ttl: Feed.defaults.ttl
-				}),
+			var feed = new rss({
+				title: topicData.topic_name,
+				description: topicData.main_posts[0].content,
+				feed_url: Feed.defaults.baseUrl + '/topics/' + tid + '.rss',
+				site_url: nconf.get('url') + 'topic/' + topicData.slug,
+				image_url: topicData.main_posts[0].picture,
+				author: topicData.main_posts[0].username,
+				ttl: Feed.defaults.ttl
+			}),
 				topic_posts = topicData.main_posts.concat(topicData.posts),
 				title, postData, dateStamp;
 
@@ -73,13 +73,13 @@
 		categories.getCategoryById(cid, 0, function(err, categoryData) {
 			if (err) return callback(new Error('category-invalid'));
 
-			var	feed = new rss({
-					title: categoryData.category_name,
-					description: categoryData.category_description,
-					feed_url: Feed.defaults.baseUrl + '/categories/' + cid + '.rss',
-					site_url: nconf.get('url') + 'category/' + categoryData.category_id,
-					ttl: Feed.defaults.ttl
-				}),
+			var feed = new rss({
+				title: categoryData.category_name,
+				description: categoryData.category_description,
+				feed_url: Feed.defaults.baseUrl + '/categories/' + cid + '.rss',
+				site_url: nconf.get('url') + 'category/' + categoryData.category_id,
+				ttl: Feed.defaults.ttl
+			}),
 				topics = categoryData.topics,
 				title, topicData, dateStamp;
 
