@@ -67,7 +67,7 @@
     "dojo" : false, // Dojo Toolkit
     "jquery" : true, // jQuery
     "mootools" : false, // MooTools
-    "node" : false, // Node.js
+    "node" : true, // Node.js
     "nonstandard" : false, // Widely adopted globals (escape, unescape, etc)
     "prototypejs" : false, // Prototype and Scriptaculous
     "rhino" : false, // Rhino
