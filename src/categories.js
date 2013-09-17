@@ -8,11 +8,13 @@ var RDB = require('./redis.js'),
 	nconf = require('nconf');
 
 (function(Categories) {
+	"use strict";
 
 	Categories.create = function(data, callback) {
 		RDB.incr('global:next_category_id', function(err, cid) {
-			if (err)
+			if (err) {
 				return callback(err, null);
+			}
 
 			var slug = cid + '/' + utils.slugify(data.name);
 			RDB.rpush('categories:cid', cid);
@@ -36,9 +38,10 @@ var RDB = require('./redis.js'),
 	};
 
 	Categories.getCategoryById = function(category_id, current_user, callback) {
-
 		Categories.getCategoryData(category_id, function(err, categoryData) {
-			if (err) return callback(err);
+			if (err) {
+				return callback(err);
+			}
 
 			var category_name = categoryData.name,
 				category_slug = categoryData.slug,
@@ -285,8 +288,11 @@ var RDB = require('./redis.js'),
 
 	Categories.getCategoryData = function(cid, callback) {
 		RDB.exists('category:' + cid, function(err, exists) {
-			if (exists) RDB.hgetall('category:' + cid, callback);
-			else callback(new Error('No category found!'));
+			if (exists) {
+				RDB.hgetall('category:' + cid, callback);
+			} else {
+				callback(new Error('No category found!'));
+			}
 		});
 	};
 
@@ -296,10 +302,11 @@ var RDB = require('./redis.js'),
 
 	Categories.getCategoryFields = function(cid, fields, callback) {
 		RDB.hmgetObject('category:' + cid, fields, function(err, data) {
-			if (err === null)
+			if (err === null) {
 				callback(data);
-			else
+			} else {
 				winston.err(err);
+			}
 		});
 	};
 
@@ -330,7 +337,7 @@ var RDB = require('./redis.js'),
 				}
 
 				Categories.hasReadCategory(cid, current_user, function(hasRead) {
-					categoryData['badgeclass'] = (parseInt(categoryData.topic_count, 10) === 0 || (hasRead && current_user != 0)) ? '' : 'badge-important';
+					categoryData.badgeclass = (parseInt(categoryData.topic_count, 10) === 0 || (hasRead && current_user !== 0)) ? '' : 'badge-important';
 
 					categories.push(categoryData);
 					callback(null);
@@ -355,15 +362,17 @@ var RDB = require('./redis.js'),
 	Categories.isUserActiveIn = function(cid, uid, callback) {
 
 		RDB.lrange('uid:' + uid + ':posts', 0, -1, function(err, pids) {
-			if (err)
+			if (err) {
 				return callback(err, null);
+			}
 
 			function getPostCategory(pid, callback) {
 				posts.getPostField(pid, 'tid', function(tid) {
 
 					topics.getTopicField(tid, 'cid', function(err, postCid) {
-						if (err)
+						if (err) {
 							return callback(err, null);
+						}
 
 						return callback(null, postCid);
 					});
@@ -379,17 +388,23 @@ var RDB = require('./redis.js'),
 				},
 				function(callback) {
 					getPostCategory(pids[index], function(err, postCid) {
-						if (err)
+						if (err) {
 							return callback(err);
-						if (postCid === cid)
+						}
+
+						if (postCid === cid) {
 							active = true;
+						}
+
 						++index;
 						callback(null);
 					});
 				},
 				function(err) {
-					if (err)
+					if (err) {
 						return callback(err, null);
+					}
+
 
 					callback(null, active);
 				}
