@@ -58,3 +58,7 @@ NodeBB can also be started with helper programs, such as `supervisor` and `forev
 *(Optional)* Some server configurations may install the node binary as `nodejs` instead of `node`. You can re-map it (so as to not break compatibility with `node-supervisor`) by running the following command:
 
     # update-alternatives --install /usr/bin/node node /usr/bin/nodejs 10
+
+## Upgrading NodeBB
+
+Detailed upgrade instructions are listed in [Upgrading NodeBB](https://github.com/designcreateplay/NodeBB/wiki/Upgrading-NodeBB)
