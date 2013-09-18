@@ -16,7 +16,7 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-(function() {
+(function () {
 	"use strict";
 
 	// Configuration setup
@@ -25,7 +25,8 @@
 
 	var fs = require('fs'),
 		winston = require('winston'),
-		pkg = require('./package.json');
+		pkg = require('./package.json'),
+		meta;
 
 	// Runtime environment
 	global.env = process.env.NODE_ENV || 'production';
@@ -41,7 +42,7 @@
 	});
 
 	// TODO: remove once https://github.com/flatiron/winston/issues/280 is fixed
-	winston.err = function(err) {
+	winston.err = function (err) {
 		winston.error(err.stack);
 	};
 
@@ -51,13 +52,13 @@
 	winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
 	winston.info('');
 
-	var meta = require('./src/meta.js');
 
 	if (fs.existsSync(__dirname + '/config.json') && (!nconf.get('setup') && !nconf.get('upgrade'))) {
-		// Load server-side config
+		// Load server-side configs
 		nconf.file({
 			file: __dirname + '/config.json'
 		});
+		meta = require('./src/meta.js');
 
 		nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path') + '/');
 		nconf.set('upload_url', nconf.get('url') + 'uploads/');
@@ -68,12 +69,12 @@
 			winston.info('Base Configuration OK.');
 		}
 
-		meta.configs.init(function() {
+		meta.configs.init(function () {
 			// Initial setup for Redis & Reds
 			var reds = require('reds'),
 				RDB = require('./src/redis.js');
 
-			reds.createClient = function() {
+			reds.createClient = function () {
 				return reds.client || (reds.client = RDB);
 			};
 
@@ -95,19 +96,16 @@
 		});
 
 	} else if (nconf.get('upgrade')) {
-		nconf.file({
-			file: __dirname + '/config.json'
-		});
+		meta = require('./src/meta.js');
 
-		meta.configs.init(function() {
+		meta.configs.init(function () {
 			require('./src/upgrade').upgrade();
 		});
 	} else {
 		// New install, ask setup questions
 		if (nconf.get('setup')) {
 			winston.info('NodeBB Setup Triggered via Command Line');
-		}
-		else {
+		} else {
 			winston.warn('Configuration not found, starting NodeBB setup');
 		}
 
@@ -117,7 +115,7 @@
 		winston.info('This looks like a new installation, so you\'ll have to answer a few questions about your environment before we can proceed.');
 		winston.info('Press enter to accept the default setting (shown in brackets).');
 
-		install.setup(function(err) {
+		install.setup(function (err) {
 			if (err) {
 				winston.error('There was a problem completing NodeBB setup: ', err.message);
 			} else {
