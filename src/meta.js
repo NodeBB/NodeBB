@@ -3,7 +3,8 @@ var utils = require('./../public/src/utils.js'),
 	async = require('async'),
 	path = require('path'),
 	fs = require('fs'),
-	winston = require('winston');
+	winston = require('winston'),
+	nconf = require('nconf');
 
 (function(Meta) {
 

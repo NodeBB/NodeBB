@@ -10,7 +10,7 @@
   },
   "main": "app.js",
   "dependencies": {
-    "socket.io": "~0.9.14",
+    "socket.io": "~0.9.16",
     "redis": "0.8.3",
     "express": "3.2.0",
     "express-namespace": "0.1.1",
