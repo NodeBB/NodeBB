@@ -1,4 +1,4 @@
-(function(Feed) {
+(function (Feed) {
 	var RDB = require('./redis.js'),
 		schema = require('./schema.js'),
 		posts = require('./posts.js'),
@@ -15,20 +15,20 @@
 		baseUrl: nconf.get('url') + 'feeds'
 	};
 
-	Feed.saveFeed = function(location, feed, callback) {
+	Feed.saveFeed = function (location, feed, callback) {
 		var savePath = path.join(__dirname, '../', location);
 
-		fs.writeFile(savePath, feed.xml(), function(err) {
+		fs.writeFile(savePath, feed.xml(), function (err) {
 			if (err) return winston.err(err);
 
 			if (callback) callback(err);
 		});
 	}
 
-	Feed.updateTopic = function(tid, callback) {
+	Feed.updateTopic = function (tid, callback) {
 		if (process.env.NODE_ENV === 'development') winston.info('[rss] Updating RSS feeds for topic ' + tid);
 
-		topics.getTopicWithPosts(tid, 0, 0, -1, function(err, topicData) {
+		topics.getTopicWithPosts(tid, 0, 0, -1, function (err, topicData) {
 			if (err) return callback(new Error('topic-invalid'));
 
 			var feed = new rss({
@@ -62,16 +62,16 @@
 				}
 			}
 
-			Feed.saveFeed('feeds/topics/' + tid + '.rss', feed, function(err) {
+			Feed.saveFeed('feeds/topics/' + tid + '.rss', feed, function (err) {
 				if (callback) callback();
 			});
 		});
 
 	};
 
-	Feed.updateCategory = function(cid, callback) {
+	Feed.updateCategory = function (cid, callback) {
 		if (process.env.NODE_ENV === 'development') winston.info('[rss] Updating RSS feeds for category ' + cid);
-		categories.getCategoryById(cid, 0, function(err, categoryData) {
+		categories.getCategoryById(cid, 0, function (err, categoryData) {
 			if (err) return callback(new Error('category-invalid'));
 
 			var feed = new rss({
@@ -100,7 +100,7 @@
 				});
 			}
 
-			Feed.saveFeed('feeds/categories/' + cid + '.rss', feed, function(err) {
+			Feed.saveFeed('feeds/categories/' + cid + '.rss', feed, function (err) {
 				if (callback) callback();
 			});
 		});

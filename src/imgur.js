@@ -1,10 +1,12 @@
 var request = require('request');
 
 
-(function(imgur) {
+(function (imgur) {
+	"use strict";
+
 	var clientID = '';
 
-	imgur.upload = function(image, type, callback) {
+	imgur.upload = function (image, type, callback) {
 		var options = {
 			url: 'https://api.imgur.com/3/upload.json',
 			headers: {
@@ -12,7 +14,7 @@ var request = require('request');
 			}
 		};
 
-		var post = request.post(options, function(err, req, body) {
+		var post = request.post(options, function (err, req, body) {
 			try {
 				callback(err, JSON.parse(body));
 			} catch (e) {
@@ -24,10 +26,10 @@ var request = require('request');
 			type: type,
 			image: image
 		});
-	}
+	};
 
-	imgur.setClientID = function(id) {
+	imgur.setClientID = function (id) {
 		clientID = id;
-	}
+	};
 
 }(exports));
