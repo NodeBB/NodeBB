@@ -1,0 +1,52 @@
+@import "../vanilla/topic";
+
+
+.topic {
+	.sub-posts {
+		/* speech bubbles for child posts */
+		@media (min-width: 979px) {
+			.post-block:after
+			{
+				content: "";
+				position: absolute;
+				top: 15px;
+				left: -7px;
+				border-style: solid;
+				border-width: 7px 7px 7px 0;
+				border-color: transparent rgb(250,250,250);
+				display: block;
+				width: 0;
+				z-index: 1;
+			}
+
+			.post-block:before
+			{
+				content: "";
+				position: absolute;
+				top: 15px;
+				left: -8px;
+				border-style: solid;
+				border-width: 7px 7px 7px 0;
+				border-color: transparent rgba(0, 0, 0, 0.125);
+				display: block;
+				width: 0;
+				z-index: 0;
+			}
+		}
+	}
+
+	.main-post, .sub-posts {
+		.post-info {
+			background: rgba(0, 0, 0, 0.02);
+			margin: 15px -11px -11px -11px;
+			border-radius: 0 0 5px 5px;
+			font-size: 10px;
+			color: #777;
+		}
+	}
+
+
+	.active-users {
+		color: rgb(153,153,153);
+	}
+}

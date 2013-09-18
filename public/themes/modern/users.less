@@ -1,0 +1,53 @@
+@import "../vanilla/users";
+
+.users {
+	.users-container {
+		padding-top: 20px; // might be better off in vanilla
+		padding-left: 6px;
+	}
+
+	.users-box {
+		padding: 0;
+		margin: 0px;
+		margin-left: -6px; // todo: check why do I have to do this?
+		max-width: 163px;
+		width: 163px;
+		height: 163px;
+		.animated-short;
+		.fadeIn;
+
+		a {
+			padding: 0;
+			margin: 0;
+
+			img {
+				padding: 0;
+				margin: 0;
+				width: 163px;
+				height: 163px;
+				border: 1px solid #777;
+				border-radius: 0;
+
+			}
+		}
+
+		position: relative;
+		.user-info {
+			background: rgba(0,0,0,0.65);
+			padding: 2px;
+			position: absolute;
+			bottom: 0px;
+			width: 163px;
+			a, span, i {
+				color: white;
+			}
+			a {
+				font-weight: 700;
+			}
+		}
+
+		.post-count, .reputation {
+			display: inline-block;
+		}
+	}
+}

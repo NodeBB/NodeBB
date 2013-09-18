@@ -11,6 +11,7 @@ public/css/*.css
 public/themes/*
 !/public/themes/vanilla
 !/public/themes/cerulean
+!/public/themes/modern
 *.sublime-project
 *.sublime-workspace
 plugins/*
