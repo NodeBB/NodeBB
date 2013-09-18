@@ -23,16 +23,18 @@
 			<a href="/users/{users.userslug}">
 				<img src="{users.picture}" class="img-thumbnail"/>
 			</a>
-			<br/>
-			<a href="/users/{users.userslug}">{users.username}</a>
-			<br/>
-			<div title="reputation">
-				<span class='formatted-number'>{users.reputation}</span>
-				<i class='icon-star'></i>
-			</div>
-			<div title="post count">
-				<span class='formatted-number'>{users.postcount}</span>
-				<i class='icon-pencil'></i>
+			<br />
+			<div class="user-info">
+				<a href="/users/{users.userslug}">{users.username}</a>
+				<br />
+				<div title="reputation" class="reputation">
+					<span class='formatted-number'>{users.reputation}</span>
+					<i class='icon-star'></i>
+				</div>
+				<div title="post count" class="post-count">
+					<span class='formatted-number'>{users.postcount}</span>
+					<i class='icon-pencil'></i>
+				</div>
 			</div>
 		</div>
 		<!-- END users -->
