@@ -1,9 +1,9 @@
 <div class="users">
 	<ul class="nav nav-pills">
-		<li class=''><a href='/users-latest'>Latest Users</a></li>
-		<li class=''><a href='/users-sort-posts'>Top Posters</a></li>
-		<li class=''><a href='/users-sort-reputation'>Most Reputation</a></li>
-		<li class=''><a href='/users-search'>Search</a></li>
+		<li class=''><a href='/users/latest'>Latest Users</a></li>
+		<li class=''><a href='/users/sort-posts'>Top Posters</a></li>
+		<li class=''><a href='/users/sort-reputation'>Most Reputation</a></li>
+		<li class=''><a href='/users/search'>Search</a></li>
 	</ul>
 
 	<br />
@@ -20,11 +20,11 @@
 	<ul id="users-container" class="users-container">
 		<!-- BEGIN users -->
 		<div class="users-box">
-			<a href="/users/{users.userslug}">
+			<a href="/user/{users.userslug}">
 				<img src="{users.picture}" class="img-thumbnail"/>
 			</a>
 			<br/>
-			<a href="/users/{users.userslug}">{users.username}</a>
+			<a href="/user/{users.userslug}">{users.username}</a>
 			<br/>
 			<div title="reputation">
 				<span class='formatted-number'>{users.reputation}</span>

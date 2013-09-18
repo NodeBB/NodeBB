@@ -53,14 +53,14 @@
 			var userLabel = rightMenu.find('#user_label');
 			if (userLabel.length) {
 				if (data['userslug'])
-					userLabel.attr('href', '/users/' + data['userslug']);
+					userLabel.attr('href', '/user/' + data['userslug']);
 				if (data['picture'])
 					userLabel.find('img').attr('src', data['picture']);
 				if (data['username'])
 					userLabel.find('span').html(data['username']);
 			} else {
 				var userli = $('<li> \
-									<a id="user_label" href="/users/' + data['userslug'] + '"> \
+									<a id="user_label" href="/user/' + data['userslug'] + '"> \
 										<img src="' + data['picture'] + '"/> \
 										<span>' + data['username'] + '</span> \
 									</a> \

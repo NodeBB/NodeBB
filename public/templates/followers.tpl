@@ -3,19 +3,19 @@
 
 	<div class="account-username-box" data-userslug="{userslug}">
 		<span class="account-username">
-			<a href="/users/{userslug}">{username}</a> <i class="icon-chevron-right"></i>
-			<a href="/users/{userslug}/followers">followers</a>
+			<a href="/user/{userslug}">{username}</a> <i class="icon-chevron-right"></i>
+			<a href="/user/{userslug}/followers">followers</a>
 		</span>
 	</div>
 
 	<div>
 		<!-- BEGIN followers -->
 		<div class="users-box">
-			<a href="/users/{followers.userslug}">
+			<a href="/user/{followers.userslug}">
 				<img src="{followers.picture}" class="img-thumbnail"/>
 			</a>
 			<br/>
-			<a href="/users/{followers.userslug}">{followers.username}</a>
+			<a href="/user/{followers.userslug}">{followers.username}</a>
 			<br/>
 			<div title="reputation">
 				<span class='formatted-number'>{followers.reputation}</span>

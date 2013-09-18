@@ -36,43 +36,43 @@ var user = require('./../user.js'),
 			});
 		});
 
-		app.get('/users-latest', function(req, res) {
+		app.get('/users/latest', function(req, res) {
 			app.build_header({
 				req: req,
 				res: res
 			}, function(err, header) {
-				res.send(header + app.create_route("users-latest", "users") + templates['footer']);
+				res.send(header + app.create_route("users/latest", "users") + templates['footer']);
 			});
 		});
 
-		app.get('/users-sort-posts', function(req, res) {
+		app.get('/users/sort-posts', function(req, res) {
 			app.build_header({
 				req: req,
 				res: res
 			}, function(err, header) {
-				res.send(header + app.create_route("users-sort-posts", "users") + templates['footer']);
+				res.send(header + app.create_route("users/sort-posts", "users") + templates['footer']);
 			});
 		});
 
-		app.get('/users-sort-reputation', function(req, res) {
+		app.get('/users/sort-reputation', function(req, res) {
 			app.build_header({
 				req: req,
 				res: res
 			}, function(err, header) {
-				res.send(header + app.create_route("users-sort-reputation", "users") + templates['footer']);
+				res.send(header + app.create_route("users/sort-reputation", "users") + templates['footer']);
 			});
 		});
 
-		app.get('/users-search', function(req, res) {
+		app.get('/users/search', function(req, res) {
 			app.build_header({
 				req: req,
 				res: res
 			}, function(err, header) {
-				res.send(header + app.create_route("users-search", "users") + templates['footer']);
+				res.send(header + app.create_route("users/search", "users") + templates['footer']);
 			});
 		});
 
-		app.get('/users/:userslug', function(req, res, next) {
+		app.get('/user/:userslug', function(req, res, next) {
 
 			if (!req.params.userslug) {
 				next();
@@ -88,13 +88,13 @@ var user = require('./../user.js'),
 					req: req,
 					res: res
 				}, function(err, header) {
-					res.send(header + app.create_route('users/' + req.params.userslug, 'account') + templates['footer']);
+					res.send(header + app.create_route('user/' + req.params.userslug, 'account') + templates['footer']);
 				});
 
 			});
 		});
 
-		app.get('/users/:userslug/edit', function(req, res) {
+		app.get('/user/:userslug/edit', function(req, res) {
 
 			if (!req.user)
 				return res.redirect('/403');
@@ -105,7 +105,7 @@ var user = require('./../user.js'),
 						req: req,
 						res: res
 					}, function(err, header) {
-						res.send(header + app.create_route('users/' + req.params.userslug + '/edit', 'accountedit') + templates['footer']);
+						res.send(header + app.create_route('user/' + req.params.userslug + '/edit', 'accountedit') + templates['footer']);
 					});
 				} else {
 					return res.redirect('/404');
@@ -113,7 +113,7 @@ var user = require('./../user.js'),
 			});
 		});
 
-		app.get('/users/:userslug/settings', function(req, res) {
+		app.get('/user/:userslug/settings', function(req, res) {
 
 			if (!req.user)
 				return res.redirect('/403');
@@ -124,7 +124,7 @@ var user = require('./../user.js'),
 						req: req,
 						res: res
 					}, function(err, header) {
-						res.send(header + app.create_route('users/' + req.params.userslug + '/settings', 'accountsettings') + templates['footer']);
+						res.send(header + app.create_route('user/' + req.params.userslug + '/settings', 'accountsettings') + templates['footer']);
 					})
 				} else {
 					return res.redirect('/404');
@@ -132,7 +132,7 @@ var user = require('./../user.js'),
 			});
 		});
 
-		app.post('/users/uploadpicture', function(req, res) {
+		app.post('/user/uploadpicture', function(req, res) {
 			if (!req.user)
 				return res.redirect('/403');
 
@@ -218,7 +218,7 @@ var user = require('./../user.js'),
 			is.pipe(os);
 		}
 
-		app.get('/users/:userslug/following', function(req, res) {
+		app.get('/user/:userslug/following', function(req, res) {
 
 			if (!req.user)
 				return res.redirect('/403');
@@ -233,12 +233,12 @@ var user = require('./../user.js'),
 					req: req,
 					res: res
 				}, function(err, header) {
-					res.send(header + app.create_route('users/' + req.params.userslug + '/following', 'following') + templates['footer']);
+					res.send(header + app.create_route('user/' + req.params.userslug + '/following', 'following') + templates['footer']);
 				});
 			});
 		});
 
-		app.get('/users/:userslug/followers', function(req, res) {
+		app.get('/user/:userslug/followers', function(req, res) {
 
 			if (!req.user)
 				return res.redirect('/403');
@@ -252,12 +252,12 @@ var user = require('./../user.js'),
 					req: req,
 					res: res
 				}, function(err, header) {
-					res.send(header + app.create_route('users/' + req.params.userslug + '/followers', 'followers') + templates['footer']);
+					res.send(header + app.create_route('user/' + req.params.userslug + '/followers', 'followers') + templates['footer']);
 				});
 			});
 		});
 
-		app.get('/users/:userslug/favourites', function(req, res) {
+		app.get('/user/:userslug/favourites', function(req, res) {
 
 			if (!req.user)
 				return res.redirect('/403');
@@ -271,12 +271,12 @@ var user = require('./../user.js'),
 					req: req,
 					res: res
 				}, function(err, header) {
-					res.send(header + app.create_route('users/' + req.params.userslug + '/favourites', 'favourites') + templates['footer']);
+					res.send(header + app.create_route('user/' + req.params.userslug + '/favourites', 'favourites') + templates['footer']);
 				});
 			});
 		});
 
-		app.get('/api/users/:userslug/following', function(req, res) {
+		app.get('/api/user/:userslug/following', function(req, res) {
 			var callerUID = req.user ? req.user.uid : 0;
 
 			getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
@@ -295,7 +295,7 @@ var user = require('./../user.js'),
 			});
 		});
 
-		app.get('/api/users/:userslug/followers', function(req, res) {
+		app.get('/api/user/:userslug/followers', function(req, res) {
 			var callerUID = req.user ? req.user.uid : 0;
 
 			getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
@@ -313,7 +313,7 @@ var user = require('./../user.js'),
 			});
 		});
 
-		app.get('/api/users/:userslug/edit', function(req, res) {
+		app.get('/api/user/:userslug/edit', function(req, res) {
 			var callerUID = req.user ? req.user.uid : 0;
 
 			getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
@@ -321,7 +321,7 @@ var user = require('./../user.js'),
 			});
 		});
 
-		app.get('/api/users/:userslug/settings', function(req, res, next) {
+		app.get('/api/user/:userslug/settings', function(req, res, next) {
 			var callerUID = req.user ? req.user.uid : 0;
 
 			user.get_uid_by_userslug(req.params.userslug, function(err, uid) {
@@ -357,7 +357,7 @@ var user = require('./../user.js'),
 			});
 		});
 
-		app.get('/api/users/:userslug/favourites', function(req, res, next) {
+		app.get('/api/user/:userslug/favourites', function(req, res, next) {
 			var callerUID = req.user ? req.user.uid : 0;
 
 			user.get_uid_by_userslug(req.params.userslug, function(err, uid) {
@@ -396,7 +396,7 @@ var user = require('./../user.js'),
 			});
 		});
 
-		app.get('/api/users/:userslug', function(req, res) {
+		app.get('/api/user/:userslug', function(req, res) {
 			var callerUID = req.user ? req.user.uid : 0;
 
 			getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
@@ -428,10 +428,10 @@ var user = require('./../user.js'),
 		});
 
 		app.get('/api/users', getUsersSortedByJoinDate);
-		app.get('/api/users-sort-posts', getUsersSortedByPosts);
-		app.get('/api/users-sort-reputation', getUsersSortedByReputation);
-		app.get('/api/users-latest', getUsersSortedByJoinDate);
-		app.get('/api/users-search', getUsersForSearch);
+		app.get('/api/users/sort-posts', getUsersSortedByPosts);
+		app.get('/api/users/sort-reputation', getUsersSortedByReputation);
+		app.get('/api/users/latest', getUsersSortedByJoinDate);
+		app.get('/api/users/search', getUsersForSearch);
 
 
 		function getUsersSortedByJoinDate(req, res) {

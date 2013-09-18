@@ -1,7 +1,7 @@
 <div class="well favourites">
 	<div class="account-username-box" data-userslug="{userslug}">
 		<span class="account-username">
-			<a href="/users/{userslug}">{username}</a>
+			<a href="/user/{userslug}">{username}</a>
 		</span>
 	</div>
 

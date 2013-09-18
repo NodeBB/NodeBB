@@ -18,16 +18,16 @@
 		"install/mail/?": "install/mail",
 		"install/social/?": "install/social",
 		"install/privileges/?": "install/privileges",
-        "users-sort-posts": "users",
-        "users-latest": "users",
-        "users-sort-reputation": "users",
-        "users-search": "users",
-		"users[^]*edit": "accountedit",
-		"users[^]*following": "following",
-		"users[^]*followers": "followers",
-		"users[^]*settings": "accountsettings",
-		"users[^]*favourites": "favourites",
-		"users/[^]*": "account",
+        "users/sort-posts": "users",
+        "users/latest": "users",
+        "users/sort-reputation": "users",
+        "users/search": "users",
+		"user[^]*edit": "accountedit",
+		"user[^]*following": "following",
+		"user[^]*followers": "followers",
+		"user[^]*settings": "accountsettings",
+		"user[^]*favourites": "favourites",
+		"user/[^]*": "account",
 
 		"recent": "recent",
 		"unread": "unread",
@@ -36,7 +36,7 @@
 		"search": "search",
 		"reset/[^]*": "reset_code",
 		"reset": "reset"
-		
+
 	},
 	"force_refresh": {
 		"logout": true

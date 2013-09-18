@@ -39,7 +39,7 @@
 					<h3 id="myModalLabel">Upload Picture</h3>
 				</div>
 				<div class="modal-body">
-					<form id="uploadForm" action="{relative_path}/users/uploadpicture" method="post" enctype="multipart/form-data">
+					<form id="uploadForm" action="{relative_path}/user/uploadpicture" method="post" enctype="multipart/form-data">
 						<div class="form-group">
 							<label for="userPhoto">Upload a picture</label>
 							<input type="file" id="userPhotoInput"  name="userPhoto">
@@ -66,8 +66,8 @@
 
 	<div class="account-username-box" data-userslug="{userslug}">
 		<span class="account-username">
-			<a href="/users/{userslug}">{username}</a> <i class="icon-chevron-right"></i>
-			<a href="/users/{userslug}/edit">edit</a>
+			<a href="/user/{userslug}">{username}</a> <i class="icon-chevron-right"></i>
+			<a href="/user/{userslug}/edit">edit</a>
 		</span>
 	</div>
 

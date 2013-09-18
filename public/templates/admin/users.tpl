@@ -17,11 +17,11 @@
 <ul id="users-container" class="users">
 	<!-- BEGIN users -->
 	<div class="users-box" data-uid="{users.uid}" data-admin="{users.administrator}" data-username="{users.username}" data-banned="{users.banned}">
-		<a href="/users/{users.userslug}">
+		<a href="/user/{users.userslug}">
 			<img src="{users.picture}" class="img-thumbnail"/>
 		</a>
 		<br/>
-		<a href="/users/{users.userslug}">{users.username}</a>
+		<a href="/user/{users.userslug}">{users.username}</a>
 		<br/>
 		<div title="reputation">
 			<span id='reputation'>{users.reputation}</span>

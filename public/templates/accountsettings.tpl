@@ -3,8 +3,8 @@
 
 	<div class="account-username-box" data-userslug="{userslug}">
 		<span class="account-username">
-			<a href="/users/{userslug}">{username}</a> <i class="icon-chevron-right"></i>
-			<a href="/users/{userslug}/settings">settings</a>
+			<a href="/user/{userslug}">{username}</a> <i class="icon-chevron-right"></i>
+			<a href="/user/{userslug}/settings">settings</a>
 		</span>
 	</div>
 

@@ -135,7 +135,7 @@ var SocketIO = require('socket.io').listen(global.server, {
 				var usernames = [];
 
 				for (var i = 0, ii = users.length; i < ii; ++i) {
-					usernames[i] = '<strong>' + '<a href="/users/' + users[i].userslug + '">' + users[i].username + '</a></strong>';
+					usernames[i] = '<strong>' + '<a href="/user/' + users[i].userslug + '">' + users[i].username + '</a></strong>';
 				}
 
 				var joiner = anonymousCount + userCount == 1 ? 'is' : 'are',

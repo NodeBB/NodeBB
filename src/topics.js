@@ -697,7 +697,7 @@ schema = require('./schema.js'),
 						Topics.getTopicForCategoryView(tid, uid, function(topicData) {
 							io.sockets. in ('category_' + category_id).emit('event:new_topic', topicData);
 							io.sockets. in ('recent_posts').emit('event:new_topic', topicData);
-							io.sockets. in ('users/' + uid).emit('event:new_post', {
+							io.sockets. in ('user/' + uid).emit('event:new_post', {
 								posts: postData
 							});
 						});

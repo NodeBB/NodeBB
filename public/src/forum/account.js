@@ -5,7 +5,7 @@
 
 	$(document).ready(function() {
 		var username = $('.account-username a').html();
-		app.enter_room('users/' + theirid);
+		app.enter_room('user/' + theirid);
 
 		app.addCommasToNumbers();
 

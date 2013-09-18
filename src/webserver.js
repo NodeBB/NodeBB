@@ -200,7 +200,7 @@ var express = require('express'),
 						if ((route === 'login' || route === 'register') && (req.user && req.user.uid > 0)) {
 
 							user.getUserField(req.user.uid, 'userslug', function(err, userslug) {
-								res.redirect('/users/' + userslug);
+								res.redirect('/user/' + userslug);
 							});
 							return;
 						}

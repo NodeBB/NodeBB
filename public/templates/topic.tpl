@@ -18,7 +18,7 @@
 			<li class="row post-row main-post" data-pid="{main_posts.pid}" data-uid="{main_posts.uid}" data-username="{main_posts.username}" data-deleted="{main_posts.deleted}">
 				<div class="col-md-12">
 					<div class="post-block">
-						<a class="avatar" href="/users/{main_posts.userslug}">
+						<a class="avatar" href="/user/{main_posts.userslug}">
 							<img src="{main_posts.picture}" align="left" class="img-thumbnail" width=150 height=150 /><br />
 						</a>
 						<h3>
@@ -28,11 +28,11 @@
 						<div class="topic-buttons">
 							<div class="btn-group">
 								<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="Posted by {main_posts.username}">
-									<span class="username-field" href="/users/{main_posts.userslug}">{main_posts.username}&nbsp;</span>
+									<span class="username-field" href="/user/{main_posts.userslug}">{main_posts.username}&nbsp;</span>
 									<span class="caret"></span>
 								</button>
 							    <ul class="dropdown-menu">
-									<li><a href="/users/{main_posts.userslug}"><i class="icon-user"></i> Profile</a></li>
+									<li><a href="/user/{main_posts.userslug}"><i class="icon-user"></i> Profile</a></li>
 									<li><div class="chat"><i class="icon-comment"></i> Chat</div></li>
 							    </ul>
 							</div>
@@ -60,7 +60,7 @@
 						<div class="post-info">
 							<span class="pull-right">
 								posted <span class="relativeTimeAgo">{main_posts.relativeTime} ago</span>
-								<span class="{main_posts.edited-class}">| last edited by <strong><a href="/users/{main_posts.editorslug}">{main_posts.editorname}</a></strong> {main_posts.relativeEditTime} ago</span>
+								<span class="{main_posts.edited-class}">| last edited by <strong><a href="/user/{main_posts.editorslug}">{main_posts.editorname}</a></strong> {main_posts.relativeEditTime} ago</span>
 							</span>
 							<div style="clear:both;"></div>
 						</div>
@@ -73,7 +73,7 @@
 			<a id="post_anchor_{posts.pid}" name="{posts.pid}"></a>
 			<li class="row post-row sub-posts" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-deleted="{posts.deleted}">
 				<div class="col-md-1 profile-image-block hidden-xs hidden-sm">
-					<a href="/users/{posts.userslug}">
+					<a href="/user/{posts.userslug}">
 						<img src="{posts.picture}" align="left" class="img-thumbnail" />
 					</a>
 					<span class="label label-danger {posts.show_banned}">banned</span>
@@ -83,12 +83,12 @@
 						<div class="topic-buttons">
 							<div class="btn-group">
 								<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="Posted by {posts.username}">
-									<span class="username-field" href="/users/{posts.userslug}">{posts.username}&nbsp;</span>
+									<span class="username-field" href="/user/{posts.userslug}">{posts.username}&nbsp;</span>
 									<span class="caret"></span>
 								</button>
 
 							    <ul class="dropdown-menu">
-									<li><a href="/users/{posts.userslug}"><i class="icon-user"></i> Profile</a></li>
+									<li><a href="/user/{posts.userslug}"><i class="icon-user"></i> Profile</a></li>
 									<li><div class="chat"><i class="icon-comment"></i> Chat</div></li>
 							    </ul>
 							</div>
@@ -115,7 +115,7 @@
 						<div class="post-info">
 							<span class="pull-right">
 								posted <span class="relativeTimeAgo">{posts.relativeTime} ago</span>
-								<span class="{posts.edited-class}">| last edited by <strong><a href="/users/{posts.editorslug}">{posts.editorname}</a></strong> {posts.relativeEditTime} ago</span>
+								<span class="{posts.edited-class}">| last edited by <strong><a href="/user/{posts.editorslug}">{posts.editorname}</a></strong> {posts.relativeEditTime} ago</span>
 							</span>
 							<div style="clear:both;"></div>
 						</div>
