@@ -277,7 +277,7 @@ var user = require('./../user.js'),
 		});
 
 		app.get('/api/user/:userslug/following', function(req, res) {
-			var callerUID = req.user ? req.user.uid : 0;
+			var callerUID = req.user ? req.user.uid : '0';
 
 			getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
 				if (userData) {
@@ -296,7 +296,7 @@ var user = require('./../user.js'),
 		});
 
 		app.get('/api/user/:userslug/followers', function(req, res) {
-			var callerUID = req.user ? req.user.uid : 0;
+			var callerUID = req.user ? req.user.uid : '0';
 
 			getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
 				if (userData) {
@@ -314,7 +314,7 @@ var user = require('./../user.js'),
 		});
 
 		app.get('/api/user/:userslug/edit', function(req, res) {
-			var callerUID = req.user ? req.user.uid : 0;
+			var callerUID = req.user ? req.user.uid : '0';
 
 			getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
 				res.json(userData);
@@ -322,7 +322,7 @@ var user = require('./../user.js'),
 		});
 
 		app.get('/api/user/:userslug/settings', function(req, res, next) {
-			var callerUID = req.user ? req.user.uid : 0;
+			var callerUID = req.user ? req.user.uid : '0';
 
 			user.get_uid_by_userslug(req.params.userslug, function(err, uid) {
 				if (!uid) {
@@ -332,7 +332,7 @@ var user = require('./../user.js'),
 					return;
 				}
 
-				if (uid !== callerUID || callerUID === "0") {
+				if (uid !== callerUID || callerUID === '0') {
 					res.json(403, {
 						error: 'Not allowed!'
 					});
@@ -358,7 +358,7 @@ var user = require('./../user.js'),
 		});
 
 		app.get('/api/user/:userslug/favourites', function(req, res, next) {
-			var callerUID = req.user ? req.user.uid : 0;
+			var callerUID = req.user ? req.user.uid : '0';
 
 			user.get_uid_by_userslug(req.params.userslug, function(err, uid) {
 				if (!uid) {
@@ -367,8 +367,8 @@ var user = require('./../user.js'),
 					});
 					return;
 				}
-
-				if (uid !== callerUID || callerUID === "0") {
+				console.log(uid, callerUID);
+				if (uid !== callerUID || callerUID === '0') {
 					res.json(403, {
 						error: 'Not allowed!'
 					});
@@ -397,7 +397,7 @@ var user = require('./../user.js'),
 		});
 
 		app.get('/api/user/:userslug', function(req, res) {
-			var callerUID = req.user ? req.user.uid : 0;
+			var callerUID = req.user ? req.user.uid : '0';
 
 			getUserDataByUserSlug(req.params.userslug, callerUID, function(userData) {
 				if (userData) {
