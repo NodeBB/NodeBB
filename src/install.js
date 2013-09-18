@@ -6,7 +6,7 @@ var async = require('async'),
 	prompt = require('prompt'),
 	winston = require('winston'),
 	reds = require('reds'),
-	nconf = require('nconf');
+	nconf = require('nconf'),
 
 	install = {
 		questions: [{
@@ -41,16 +41,18 @@ var async = require('async'),
 			name: 'redis:password',
 			description: 'Password of your Redis database'
 		}],
-		setup: function(callback) {
+		setup: function (callback) {
 			async.series([
-				function(next) {
+				function (next) {
 					// prompt prepends "prompt: " to questions, let's clear that.
 					prompt.start();
 					prompt.message = '';
 					prompt.delimiter = '';
 
-					prompt.get(install.questions, function(err, config) {
-						if (!config) return next(new Error('aborted'));
+					prompt.get(install.questions, function (err, config) {
+						if (!config) {
+							return next(new Error('aborted'));
+						}
 
 						// Translate redis properties into redis object
 						config.redis = {
@@ -63,9 +65,9 @@ var async = require('async'),
 						delete config['redis:password'];
 
 						// Add hardcoded values
-						config['bcrypt_rounds'] = 12,
-						config['upload_path'] = '/public/uploads';
-						config['use_port'] = (config['use_port'].slice(0, 1) === 'y') ? true : false;
+						config.bcrypt_rounds = 12;
+						config.upload_path = '/public/uploads';
+						config.use_port = (config.use_port.slice(0, 1) === 'y') ? true : false;
 
 						var urlObject = url.parse(config.base_url),
 							relative_path = (urlObject.pathname && urlObject.pathname.length > 1) ? urlObject.pathname : '',
@@ -86,9 +88,9 @@ var async = require('async'),
 						install.save(server_conf, client_conf, next);
 					});
 				},
-				function(next) {
+				function (next) {
 					// Applying default database configs
-					winston.info('Populating database with default configs, if not already set...')
+					winston.info('Populating database with default configs, if not already set...');
 					var meta = require('./meta'),
 						defaults = [{
 							field: 'postDelay',
@@ -113,48 +115,57 @@ var async = require('async'),
 							value: ''
 						}];
 
-					async.each(defaults, function(configObj, next) {
+					async.each(defaults, function (configObj, next) {
 						meta.configs.setOnEmpty(configObj.field, configObj.value, next);
-					}, function(err) {
+					}, function (err) {
 						meta.configs.init(next);
 					});
 				},
-				function(next) {
+				function (next) {
 					// Check if an administrator needs to be created
 					var Groups = require('./groups');
 
-					Groups.getGidFromName('Administrators', function(err, gid) {
-						if (err) return next(err.message);
+					Groups.getGidFromName('Administrators', function (err, gid) {
+						if (err) {
+							return next(err.message);
+						}
 
 						if (gid) {
-							Groups.get(gid, {}, function(err, groupObj) {
+							Groups.get(gid, {}, function (err, groupObj) {
 								if (groupObj.count > 0) {
 									winston.info('Administrator found, skipping Admin setup');
 									next();
-								} else install.createAdmin(next);
+								} else {
+									install.createAdmin(next);
+								}
 							});
-						} else install.createAdmin(next);
+						} else {
+							install.createAdmin(next);
+						}
 					});
 				},
-				function(next) {
+				function (next) {
 					// Categories
 					var Categories = require('./categories'),
 						admin = {
 							categories: require('./admin/categories')
 						};
 
-					categories.getAllCategories(function(data) {
+					Categories.getAllCategories(function (data) {
 						if (data.categories.length === 0) {
-							winston.warn('No categories found, populating instance with default categories')
+							winston.warn('No categories found, populating instance with default categories');
 
-							fs.readFile(path.join(__dirname, '../', 'install/data/categories.json'), function(err, default_categories) {
+							fs.readFile(path.join(__dirname, '../', 'install/data/categories.json'), function (err, default_categories) {
 								default_categories = JSON.parse(default_categories);
 
-								async.eachSeries(default_categories, function(category, next) {
+								async.eachSeries(default_categories, function (category, next) {
 									admin.categories.create(category, next);
-								}, function(err) {
-									if (!err) next();
-									else winston.error('Could not set up categories');
+								}, function (err) {
+									if (!err) {
+										next();
+									} else {
+										winston.error('Could not set up categories');
+									}
 								});
 							});
 						} else {
@@ -163,7 +174,7 @@ var async = require('async'),
 						}
 					});
 				},
-				function(next) {
+				function (next) {
 					// Default plugins
 					var Plugins = require('./plugins');
 
@@ -173,24 +184,28 @@ var async = require('async'),
 						'nodebb-plugin-markdown', 'nodebb-plugin-mentions'
 					];
 
-					async.each(defaultEnabled, function(pluginId, next) {
-						Plugins.isActive(pluginId, function(err, active) {
+					async.each(defaultEnabled, function (pluginId, next) {
+						Plugins.isActive(pluginId, function (err, active) {
 							if (!active) {
-								Plugins.toggleActive(pluginId, function() {
+								Plugins.toggleActive(pluginId, function () {
 									next();
 								});
-							} else next();
-						})
+							} else {
+								next();
+							}
+						});
 					}, next);
 				}
-			], function(err) {
+			], function (err) {
 				if (err) {
 					winston.warn('NodeBB Setup Aborted.');
 					process.exit();
-				} else callback();
+				} else {
+					callback();
+				}
 			});
 		},
-		createAdmin: function(callback) {
+		createAdmin: function (callback) {
 			var User = require('./user'),
 				Groups = require('./groups');
 
@@ -212,21 +227,24 @@ var async = require('async'),
 				hidden: true,
 				type: 'string'
 			}],
-				getAdminInfo = function(callback) {
-					prompt.get(questions, function(err, results) {
-						if (!results) return callback(new Error('aborted'));
+				getAdminInfo = function (callback) {
+					prompt.get(questions, function (err, results) {
+						if (!results) {
+							return callback(new Error('aborted'));
+						}
 
 						nconf.set('bcrypt_rounds', 12);
-						User.create(results.username, results.password, results.email, function(err, uid) {
+						User.create(results.username, results.password, results.email, function (err, uid) {
 							if (err) {
 								winston.warn(err.message + ' Please try again.');
 								return getAdminInfo();
 							}
 
-							Groups.getGidFromName('Administrators', function(err, gid) {
-								if (gid) Groups.join(gid, uid, callback);
-								else {
-									Groups.create('Administrators', 'Forum Administrators', function(err, groupObj) {
+							Groups.getGidFromName('Administrators', function (err, gid) {
+								if (gid) {
+									Groups.join(gid, uid, callback);
+								} else {
+									Groups.create('Administrators', 'Forum Administrators', function (err, groupObj) {
 										Groups.join(groupObj.gid, uid, callback);
 									});
 								}
@@ -237,20 +255,20 @@ var async = require('async'),
 
 			getAdminInfo(callback);
 		},
-		save: function(server_conf, client_conf, callback) {
+		save: function (server_conf, client_conf, callback) {
 			// Server Config
 			async.parallel([
-				function(next) {
-					fs.writeFile(path.join(__dirname, '../', 'config.json'), JSON.stringify(server_conf, null, 4), function(err) {
+				function (next) {
+					fs.writeFile(path.join(__dirname, '../', 'config.json'), JSON.stringify(server_conf, null, 4), function (err) {
 						next(err);
 					});
 				},
-				function(next) {
-					fs.writeFile(path.join(__dirname, '../', 'public', 'config.json'), JSON.stringify(client_conf, null, 4), function(err) {
+				function (next) {
+					fs.writeFile(path.join(__dirname, '../', 'public', 'config.json'), JSON.stringify(client_conf, null, 4), function (err) {
 						next(err);
 					});
 				}
-			], function(err) {
+			], function (err) {
 				winston.info('Configuration Saved OK');
 
 				nconf.file({
@@ -258,9 +276,9 @@ var async = require('async'),
 				});
 
 				var RDB = require('./redis');
-				reds.createClient = function() {
+				reds.createClient = function () {
 					return reds.client || (reds.client = RDB);
-				}
+				};
 
 				callback(err);
 			});
