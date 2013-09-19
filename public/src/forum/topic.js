@@ -281,6 +281,11 @@
 		}
 	});
 
+	$('#post-container').on('click', '.link', function() {
+		var pid = $(this).parents('li').attr('data-pid');
+		$('#post_' + pid + '_link').val(window.location.href + "#" + pid).fadeToggle().select();
+	});
+
 	$('#post-container').delegate('.edit', 'click', function(e) {
 		var pid = $(this).parents('li').attr('data-pid'),
 			main = $(this).parents('.main-post');
