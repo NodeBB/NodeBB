@@ -283,7 +283,10 @@
 
 	$('#post-container').on('click', '.link', function() {
 		var pid = $(this).parents('li').attr('data-pid');
-		$('#post_' + pid + '_link').val(window.location.href + "#" + pid).fadeToggle().select();
+		$('#post_' + pid + '_link').val(window.location.href + "#" + pid).stop(true, false).fadeIn().select();
+		$('#post_' + pid + '_link').off('blur').on('blur', function() {
+			$(this).fadeOut();
+		});
 	});
 
 	$('#post-container').delegate('.edit', 'click', function(e) {
