@@ -50,7 +50,7 @@
 							</div>
 
 							<div class="btn-group pull-right post-tools">
-								<button class="btn btn-sm btn-default link" type="button" title="Link" data-pid="{main_posts.pid}"><i class="icon-link"></i></button>
+								<button class="btn btn-sm btn-default link" type="button" title="Link"><i class="icon-link"></i></button>
 								<button class="btn btn-sm btn-default edit {main_posts.display_moderator_tools}" type="button" title="Edit"><i class="icon-pencil"></i></button>
 								<button class="btn btn-sm btn-default delete {main_posts.display_moderator_tools}" type="button" title="Delete"><i class="icon-trash"></i></button>
 
@@ -111,7 +111,7 @@
 							</div>
 
 							<div class="btn-group pull-right post-tools">
-								<button class="btn btn-sm btn-default link" type="button" title="Link" data-pid="{posts.pid}"><i class="icon-link"></i></button>
+								<button class="btn btn-sm btn-default link" type="button" title="Link"><i class="icon-link"></i></button>
 								<button class="btn btn-sm btn-default edit {posts.display_moderator_tools}" type="button" title="Edit"><i class="icon-pencil"></i></button>
 								<button class="btn btn-sm btn-default delete {posts.display_moderator_tools}" type="button" title="Delete"><i class="icon-trash"></i></button>
 							</div>
