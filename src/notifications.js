@@ -52,7 +52,6 @@ var RDB = require('./redis.js'),
 						(function(uid) {
 							notifications.remove_by_uniqueId(notif_data.uniqueId, uid, function() {
 								RDB.zadd('uid:' + uid + ':notifications:unread', notif_data.score, nid);
-								RDB.set('uid:' + uid + ':notifications:flag', 1);
 								global.io.sockets. in ('uid_' + uid).emit('event:new_notification');
 								if (callback) callback(true);
 							});

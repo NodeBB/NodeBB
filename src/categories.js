@@ -31,8 +31,6 @@ var RDB = require('./redis.js'),
 			};
 			RDB.hmset('category:' + cid, category);
 
-			RDB.set('categoryslug:' + slug + ':cid', cid);
-
 			callback(null, category);
 		});
 	};

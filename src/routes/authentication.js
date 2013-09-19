@@ -94,14 +94,13 @@
 		app.get('/logout', function(req, res) {
 			if (req.user && req.user.uid > 0) {
 				winston.info('[Auth] Session ' + req.sessionID + ' logout (uid: ' + req.user.uid + ')');
-				login_module.logout(req.sessionID, function(logout) {
-					req.logout();
-					app.build_header({
-						req: req,
-						res: res
-					}, function(err, header) {
-						res.send(header + templates['logout'] + templates['footer']);
-					});
+
+				req.logout();
+				app.build_header({
+					req: req,
+					res: res
+				}, function(err, header) {
+					res.send(header + templates['logout'] + templates['footer']);
 				});
 			} else res.redirect('/');
 		});

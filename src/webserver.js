@@ -126,13 +126,6 @@ var express = require('express'),
 
 		nconf.set('https', req.secure);
 
-		// Don't bother with session handling for API requests
-		if (/^\/api\//.test(req.url)) return next();
-
-		if (req.user && req.user.uid) {
-			user.session_ping(req.sessionID, req.user.uid);
-		}
-
 		next();
 	});
 

@@ -367,7 +367,7 @@ var user = require('./../user.js'),
 					});
 					return;
 				}
-				console.log(uid, callerUID);
+
 				if (uid !== callerUID || callerUID === '0') {
 					res.json(403, {
 						error: 'Not allowed!'

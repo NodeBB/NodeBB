@@ -670,7 +670,6 @@ schema = require('./schema.js'),
 				});
 
 				topicSearch.index(title, tid);
-				RDB.set('topicslug:' + slug + ':tid', tid);
 
 				user.addTopicIdToUser(uid, tid);
 

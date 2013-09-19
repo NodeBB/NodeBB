@@ -150,14 +150,4 @@ var user = require('./user.js'),
 		});
 	}
 
-	Login.logout = function(sessionID, callback) {
-		user.get_uid_by_session(sessionID, function(uid) {
-			if (uid) {
-				RDB.del('sess:' + sessionID + ':uid');
-				RDB.del('uid:' + uid + ':session');
-				callback(true);
-			} else callback(false);
-		});
-	}
-
 }(exports));

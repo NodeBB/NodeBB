@@ -705,15 +705,6 @@ var utils = require('./../public/src/utils.js'),
 		});
 	};
 
-	User.get_uid_by_session = function(session, callback) {
-		RDB.get('sess:' + session + ':uid', function(err, data) {
-			if (err) {
-				RDB.handle(err);
-			}
-			callback(data);
-		});
-	};
-
 	User.get_uid_by_twitter_id = function(twid, callback) {
 		RDB.hget('twid:uid', twid, function(err, uid) {
 			if (err) {
@@ -741,24 +732,6 @@ var utils = require('./../public/src/utils.js'),
 		});
 	}
 
-	User.session_ping = function(sessionID, uid) {
-		// Start, replace, or extend a session
-		RDB.get('sess:' + sessionID, function(err, session) {
-			if (err) {
-				RDB.handle(err);
-			}
-
-			var expiry = 60 * 60 * 24 * 14, // Login valid for two weeks
-				sess_key = 'sess:' + sessionID + ':uid',
-				uid_key = 'uid:' + uid + ':session';
-
-			RDB.set(sess_key, uid);
-			RDB.expire(sess_key, expiry);
-			RDB.set(uid_key, sessionID);
-			RDB.expire(uid_key, expiry);
-		});
-	}
-
 	User.isModerator = function(uid, cid, callback) {
 		RDB.sismember('cid:' + cid + ':moderators', uid, function(err, exists) {
 			RDB.handle(err);
@@ -781,13 +754,13 @@ var utils = require('./../public/src/utils.js'),
 				callback = null;
 			}
 
-			RDB.get('reset:' + code + ':uid', function(err, uid) {
+			RDB.hget('reset:uid', code, function(err, uid) {
 				if (err) {
 					RDB.handle(err);
 				}
 
 				if (uid !== null) {
-					RDB.get('reset:' + code + ':expiry', function(err, expiry) {
+					RDB.hget('reset:expiry', code, function(err, expiry) {
 						if (err) {
 							RDB.handle(err);
 						}
@@ -802,8 +775,8 @@ var utils = require('./../public/src/utils.js'),
 							}
 						} else {
 							// Expired, delete from db
-							RDB.del('reset:' + code + ':uid');
-							RDB.del('reset:' + code + ':expiry');
+							RDB.hdel('reset:uid', code);
+							RDB.hdel('reset:expiry', code);
 							if (!callback) {
 								socket.emit('user:reset.valid', {
 									valid: false
@@ -829,8 +802,8 @@ var utils = require('./../public/src/utils.js'),
 				if (uid !== null) {
 					// Generate a new reset code
 					var reset_code = utils.generateUUID();
-					RDB.set('reset:' + reset_code + ':uid', uid);
-					RDB.set('reset:' + reset_code + ':expiry', (60 * 60) + new Date() / 1000 | 0); // Active for one hour
+					RDB.hset('reset:uid', reset_code, uid);
+					RDB.hset('reset:expiry', reset_code, (60 * 60) + new Date() / 1000 | 0); // Active for one hour
 
 					var reset_link = nconf.get('url') + 'reset/' + reset_code,
 						reset_email = global.templates['emails/reset'].parse({
@@ -879,7 +852,7 @@ var utils = require('./../public/src/utils.js'),
 		commit: function(socket, code, password) {
 			this.validate(socket, code, function(validated) {
 				if (validated) {
-					RDB.get('reset:' + code + ':uid', function(err, uid) {
+					RDB.hget('reset:uid', code, function(err, uid) {
 						if (err) {
 							RDB.handle(err);
 						}
@@ -888,8 +861,8 @@ var utils = require('./../public/src/utils.js'),
 							User.setUserField(uid, 'password', hash);
 						});
 
-						RDB.del('reset:' + code + ':uid');
-						RDB.del('reset:' + code + ':expiry');
+						RDB.hdel('reset:uid', code);
+						RDB.hdel('reset:expiry', code);
 
 						socket.emit('user:reset.commit', {
 							status: 'ok'
