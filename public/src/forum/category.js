@@ -64,6 +64,7 @@
 		}
 
 		socket.emit('api:categories.getRecentReplies', cid);
+		$('#topics-container span.timeago').timeago();
 	}
 
 	socket.on('event:new_topic', onNewTopic);
