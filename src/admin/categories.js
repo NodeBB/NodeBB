@@ -21,7 +21,6 @@ var RDB = require('./../redis.js'),
 					// reset slugs if name is updated
 					var slug = cid + '/' + utils.slugify(category[key]);
 					RDB.hset('category:' + cid, 'slug', slug);
-					RDB.set('categoryslug:' + slug + ':cid', cid);
 				}
 			}
 

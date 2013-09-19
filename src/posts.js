@@ -70,7 +70,7 @@ var RDB = require('./redis.js'),
 					Posts.getPostFields(pid, ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'], function(postData) {
 						if (postData.deleted === '1') return callback(null);
 						else {
-							postData.relativeTime = utils.relativeTime(postData.timestamp);
+							postData.relativeTime = new Date(parseInt(postData.timestamp, 10)).toISOString();
 							next(null, postData);
 						}
 					});
@@ -159,10 +159,10 @@ var RDB = require('./redis.js'),
 		async.eachSeries(pids, function(pid, callback) {
 			Posts.getPostData(pid, function(postData) {
 				if (postData) {
-					postData.relativeTime = utils.relativeTime(postData.timestamp);
+					postData.relativeTime = new Date(parseInt(postData.timestamp,10)).toISOString();
 					postData.post_rep = postData.reputation;
 					postData['edited-class'] = postData.editor !== '' ? '' : 'none';
-					postData['relativeEditTime'] = postData.edited !== '0' ? utils.relativeTime(postData.edited) : '';
+					postData['relativeEditTime'] = postData.edited !== '0' ? (new Date(parseInt(postData.edited,10)).toISOString()) : '';
 
 					postTools.toHTML(postData.content, function(err, content) {
 						postData.content = content;
@@ -285,7 +285,7 @@ var RDB = require('./redis.js'),
 								'fav_button_class': '',
 								'fav_star_class': 'icon-star-empty',
 								'show_banned': 'hide',
-								'relativeTime': '0 seconds',
+								'relativeTime': new Date(timestamp).toISOString(),
 								'post_rep': '0',
 								'edited-class': 'none',
 								'relativeEditTime': ''

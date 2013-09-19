@@ -59,8 +59,9 @@
 						<div class="post-signature">{main_posts.signature}</div>
 						<div class="post-info">
 							<span class="pull-right">
-								posted <span class="relativeTimeAgo">{main_posts.relativeTime} ago</span>
-								<span class="{main_posts.edited-class}">| last edited by <strong><a href="/user/{main_posts.editorslug}">{main_posts.editorname}</a></strong> {main_posts.relativeEditTime} ago</span>
+								posted <span class="relativeTimeAgo timeago" title="{main_posts.relativeTime}"></span>
+								<span class="{main_posts.edited-class}">| last edited by <strong><a href="/user/{main_posts.editorslug}">{main_posts.editorname}</a></strong></span>
+								<span class="timeago" title="{main_posts.relativeEditTime}"></span>
 							</span>
 							<div style="clear:both;"></div>
 						</div>
@@ -114,8 +115,9 @@
 						<div class="post-signature">{posts.signature}</div>
 						<div class="post-info">
 							<span class="pull-right">
-								posted <span class="relativeTimeAgo">{posts.relativeTime} ago</span>
-								<span class="{posts.edited-class}">| last edited by <strong><a href="/user/{posts.editorslug}">{posts.editorname}</a></strong> {posts.relativeEditTime} ago</span>
+								posted <span class="relativeTimeAgo timeago" title="{posts.relativeTime}"></span>
+								<span class="{posts.edited-class}">| last edited by <strong><a href="/user/{posts.editorslug}">{posts.editorname}</a></strong></span>
+								<span class="timeago" title="{posts.relativeEditTime}"></span>
 							</span>
 							<div style="clear:both;"></div>
 						</div>

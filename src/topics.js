@@ -305,14 +305,15 @@ schema = require('./schema.js'),
 					topicData['lock-icon'] = topicData.locked === '1' ? 'icon-lock' : 'none';
 					topicData['deleted-class'] = topicData.deleted === '1' ? 'deleted' : '';
 
-					topicData.relativeTime = utils.relativeTime(topicData.timestamp);
+					topicData.relativeTime = new Date(parseInt(topicData.timestamp, 10)).toISOString();
 
 					topicData.username = topicInfo.username;
 					topicData.badgeclass = (topicInfo.hasread && current_user != 0) ? '' : 'badge-important';
 					topicData.teaser_text = topicInfo.teaserInfo.text || '',
 					topicData.teaser_username = topicInfo.teaserInfo.username || '';
 					topicData.teaser_userpicture = topicInfo.teaserInfo.picture || '';
-					topicData.teaser_timestamp = topicInfo.teaserInfo.timestamp ? utils.relativeTime(topicInfo.teaserInfo.timestamp) : '';
+
+					topicData.teaser_timestamp = topicInfo.teaserInfo.timestamp ? (new Date(parseInt(topicInfo.teaserInfo.timestamp, 10)).toISOString()) : '';
 
 					if (isTopicVisible(topicData, topicInfo))
 						retrieved_topics.push(topicData);
@@ -426,11 +427,11 @@ schema = require('./schema.js'),
 				hasRead = results[1],
 				teaser = results[2];
 
-			topicData.relativeTime = utils.relativeTime(topicData.timestamp);
+			topicData.relativeTime = new Date(parseInt(topicData.timestamp,10)).toISOString();
 			topicData.badgeclass = hasRead ? '' : 'badge-important';
 			topicData.teaser_text = teaser.text || '';
 			topicData.teaser_username = teaser.username || '';
-			topicData.teaser_timestamp = teaser.timestamp ? utils.relativeTime(teaser.timestamp) : '';
+			topicData.teaser_timestamp = teaser.timestamp ? (new Date(parseInt(teaser.timestamp,10)).toISOString()) : '';
 			topicData.teaser_userpicture = teaser.picture;
 
 			callback(topicData);

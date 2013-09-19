@@ -14,7 +14,7 @@
 				<span><strong>{posts.username}</strong> : </span>
 				<span>{posts.content}</span>
 				<div>
-					<span class="pull-right">{posts.relativeTime} ago</span>
+					<span class="pull-right timeago" title="{posts.relativeTime}"></span>
 				</div>
 			</div>
 			<br/>

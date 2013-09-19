@@ -47,8 +47,8 @@
 					<span>{age}</span>
 					<br/>
 					<hr/>
-					<span class="account-bio-label">member for</span>
-					<span>{joindate}</span>
+					<span class="account-bio-label">joined</span>
+					<span class="timeago" title="{joindate}"></span>
 					<br/>
 
 					<span class="account-bio-label">profile views</span>
@@ -84,7 +84,7 @@
 			<!-- BEGIN posts -->
 			<div class="topic-row img-thumbnail clearfix" topic-url="topic/{posts.tid}/#{posts.pid}">
 				<span>{posts.content}</span>
-				<span class="pull-right">{posts.relativeTime} ago</span>
+				<span class="pull-right timeago" title="{posts.relativeTime}"></span>
 			</div>
 			<!-- END posts -->
 		</div>

@@ -81,7 +81,7 @@
 		var frag = document.createDocumentFragment(),
 			li = document.createElement('li');
 		for (var i = 0, numPosts = posts.length; i < numPosts; i++) {
-			var dateString = utils.relativeTime(posts[i].timestamp);
+
 			li.setAttribute('data-pid', posts[i].pid);
 
 
@@ -90,12 +90,13 @@
 				'<p>' +
 				posts[i].content +
 				'</p>' +
-				'<span><strong>' + posts[i].username + '</strong> - ' + utils.relativeTime(posts[i].timestamp) + ' ago</span>' +
+				'<span><strong>' + posts[i].username + '</strong></span> -<span class="timeago" title="' + posts[i].relativeTime + '"></span>' +
 				'</a>';
 
 			frag.appendChild(li.cloneNode(true));
 			recent_replies.appendChild(frag);
 		}
+		$('#category_recent_replies span.timeago').timeago();
 	});
 
 	function onTopicsLoaded(topics) {
@@ -109,8 +110,9 @@
 		jQuery('#category-no-topics').remove();
 
 		container.append(html);
-	}
 
+		$('#topics-container span.timeago').timeago();
+	}
 
 
 	function loadMoreTopics(cid) {

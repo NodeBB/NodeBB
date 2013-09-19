@@ -482,7 +482,7 @@ var user = require('./../user.js'),
 
 				user.getUserData(uid, function(err, data) {
 					if (data) {
-						data.joindate = utils.relativeTime(data.joindate);
+						data.joindate = new Date(parseInt(data.joindate, 10)).toISOString();
 
 						if (!data.birthday) {
 							data.age = '';
