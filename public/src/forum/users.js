@@ -85,11 +85,11 @@
 
 		function loadMoreUsers() {
 			var set = '';
-			if (active === 'users-latest' || active === 'users') {
+			if (active === 'latest' || active === 'users') {
 				set = 'users:joindate';
-			} else if (active === 'users-sort-posts') {
+			} else if (active === 'sort-posts') {
 				set = 'users:postcount';
-			} else if (active === 'users-sort-reputation') {
+			} else if (active === 'sort-reputation') {
 				set = 'users:reputation';
 			}
 
