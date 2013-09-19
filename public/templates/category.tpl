@@ -36,7 +36,9 @@
 						<div class="pull-right">
 							<img class="img-rounded" style="width: 48px; height: 48px; /*temporary*/" src="{topics.teaser_userpicture}" />
 							<p>{topics.teaser_text}</p>
-							<span><strong>{topics.teaser_username}</strong> posted</span><span class="timeago" title="{topics.teaser_timestamp}"></span>
+							<p class="meta">
+								<strong>{topics.teaser_username}</strong> posted <span class="timeago" title="{topics.teaser_timestamp}"></span>
+							</p>
 						</div>
 					</div>
 					<div>

@@ -1,4 +1,4 @@
-(function() {
+(function () {
 	var cid = templates.get('category_id'),
 		room = 'category_' + cid,
 		twitterEl = document.getElementById('twitter-intent'),
@@ -11,22 +11,22 @@
 
 	app.enter_room(room);
 
-	twitterEl.addEventListener('click', function() {
+	twitterEl.addEventListener('click', function () {
 		window.open(twitter_url, '_blank', 'width=550,height=420,scrollbars=no,status=no');
 		return false;
 	}, false);
-	facebookEl.addEventListener('click', function() {
+	facebookEl.addEventListener('click', function () {
 		window.open(facebook_url, '_blank', 'width=626,height=436,scrollbars=no,status=no');
 		return false;
 	}, false);
-	googleEl.addEventListener('click', function() {
+	googleEl.addEventListener('click', function () {
 		window.open(google_url, '_blank', 'width=500,height=570,scrollbars=no,status=no');
 		return false;
 	}, false);
 
 	var new_post = document.getElementById('new_post');
-	new_post.onclick = function() {
-		require(['composer'], function(cmp) {
+	new_post.onclick = function () {
+		require(['composer'], function (cmp) {
 			cmp.push(0, cid);
 		});
 	}
@@ -70,7 +70,7 @@
 	socket.on('event:new_topic', onNewTopic);
 
 	socket.emit('api:categories.getRecentReplies', cid);
-	socket.on('api:categories.getRecentReplies', function(posts) {
+	socket.on('api:categories.getRecentReplies', function (posts) {
 		if (!posts || posts.length === 0) {
 			return;
 		}
@@ -91,7 +91,7 @@
 				'<p>' +
 				posts[i].content +
 				'</p>' +
-				'<span><strong>' + posts[i].username + '</strong></span> -<span class="timeago" title="' + posts[i].relativeTime + '"></span>' +
+				'<p class="meta"><strong>' + posts[i].username + '</strong></span> -<span class="timeago" title="' + posts[i].relativeTime + '"></span></p>' +
 				'</a>';
 
 			frag.appendChild(li.cloneNode(true));
@@ -121,7 +121,7 @@
 		socket.emit('api:category.loadMore', {
 			cid: cid,
 			after: $('#topics-container').children().length
-		}, function(data) {
+		}, function (data) {
 			if (data.topics.length) {
 				onTopicsLoaded(data.topics);
 			}
@@ -129,7 +129,7 @@
 		});
 	}
 
-	$(window).off('scroll').on('scroll', function(ev) {
+	$(window).off('scroll').on('scroll', function (ev) {
 		var bottom = ($(document).height() - $(window).height()) * 0.9;
 
 		if ($(window).scrollTop() > bottom && !loadingMoreTopics) {
