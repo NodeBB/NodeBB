@@ -3,7 +3,10 @@
 	/*global RELATIVE_PATH*/
 
 	/*
-	 * TODO: language en is hardcoded while system is developed.
+	 * TODO:
+	 *
+	 * 1. language en is hardcoded while system is developed.
+	 * 2. recursion needed when parsing language keys (ex. topics:modal.delete.title), right now json is all one level deep
 	 */
 
 	var translator = {},
@@ -11,11 +14,20 @@
 			loaded: {},
 			loading: {},
 			callbacks: {}
-		};
+		},
+		isServer = false;
 
 	module.exports = translator;
 
 	translator.load = function (filename, callback) {
+		if (isServer === true) {
+			if (callback) {
+				callback(files.loaded[filename]);
+			}
+
+			return files.loaded[filename];
+		}
+
 		if (files.loaded[filename] && !files.loading[filename]) {
 			if (callback) {
 				callback(files.loaded[filename]);
@@ -46,7 +58,9 @@
 		}
 	};
 
-	translator.loadAll = function (callback) {
+	translator.loadServer = function () {
+		isServer = true;
+
 		var utils = require('./utils.js'),
 			path = require('path'),
 			fs = require('fs');
@@ -56,16 +70,7 @@
 
 			for (var d in data) {
 				if (data.hasOwnProperty(d)) {
-					(function (file) {
-						fs.readFile(file, function (err, json) {
-							files.loaded[path.basename(file).replace('json', '')] = json;
-
-							loaded--;
-							if (loaded === 0) {
-								callback();
-							}
-						});
-					}(data[d]));
+					files.loaded[path.basename(data[d]).replace('.json', '')] = require(data[d]);
 				}
 			}
 		});
@@ -74,13 +79,22 @@
 	/*
 	 * TODO: DRY, see translator.translate. The hard part is to make sure both work node.js / js side
 	 */
-	translator.get = function (key) {
+	translator.get = function (key, callback) {
+		//console.log(files.loaded);
 		var parsedKey = key.split(':'),
 			languageFile = parsedKey[0];
 
 		parsedKey = parsedKey[1];
+		console.log(parsedKey);
+		translator.load(languageFile, function (languageData) {
+			console.log(languageData[parsedKey]);
+			if (callback) {
+				console.log('herped');
+				callback(languageData[parsedKey]);
+			}
 
-		return files.loaded[languageFile][parsedKey];
+			return languageData[parsedKey];
+		});
 	};
 
 

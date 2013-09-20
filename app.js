@@ -86,20 +86,18 @@
 
 			global.templates = {};
 
-			translator.loadAll(function () {
-				// todo: replace below with read directory code, derp.
-				templates.init([
-					'header', 'footer', 'logout', 'outgoing', 'admin/header', 'admin/footer', 'admin/index',
-					'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext',
-					'emails/header', 'emails/footer',
+			translator.loadServer();
 
-					'noscript/header', 'noscript/home', 'noscript/category', 'noscript/topic'
-				]);
+			// todo: replace below with read directory code, derp.
+			templates.init([
+				'header', 'footer', 'logout', 'outgoing', 'admin/header', 'admin/footer', 'admin/index',
+				'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext',
+				'emails/header', 'emails/footer',
 
-				templates.ready(webserver.init);
-			});
+				'noscript/header', 'noscript/home', 'noscript/category', 'noscript/topic'
+			]);
 
-
+			templates.ready(webserver.init);
 		});
 
 	} else if (nconf.get('upgrade')) {
