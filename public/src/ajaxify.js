@@ -1,7 +1,8 @@
 var ajaxify = {};
 
 
-(function($) {
+(function ($) {
+	/*global app, templates, utils*/
 
 	var location = document.location || window.location,
 		rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : ''),
@@ -11,7 +12,7 @@ var ajaxify = {};
 	var executed = {};
 
 	var events = [];
-	ajaxify.register_events = function(new_page_events) {
+	ajaxify.register_events = function (new_page_events) {
 		for (var i = 0, ii = events.length; i < ii; i++) {
 			socket.removeAllListeners(events[i]); // optimize this to user removeListener(event, listener) instead.
 		}
@@ -20,14 +21,14 @@ var ajaxify = {};
 	};
 
 
-	window.onpopstate = function(event) {
+	window.onpopstate = function (event) {
 		// "quiet": If set to true, will not call pushState
 		if (event !== null && event.state && event.state.url !== undefined) ajaxify.go(event.state.url, null, null, true);
 	};
 
 	var pagination;
 
-	ajaxify.go = function(url, callback, template, quiet) {
+	ajaxify.go = function (url, callback, template, quiet) {
 		// start: the following should be set like so: ajaxify.onchange(function(){}); where the code actually belongs
 		$(window).off('scroll');
 		app.enter_room('global');
@@ -66,10 +67,12 @@ var ajaxify = {};
 				}, url, RELATIVE_PATH + "/" + url);
 			}
 
+			translator.load(tpl_url);
+
 			jQuery('#footer, #content').fadeOut(100);
 
 			templates.flush();
-			templates.load_template(function() {
+			templates.load_template(function () {
 				exec_body_scripts(content);
 
 				if (callback) {
@@ -78,7 +81,7 @@ var ajaxify = {};
 
 				app.process_page();
 
-				jQuery('#content, #footer').stop(true, true).fadeIn(200, function() {
+				jQuery('#content, #footer').stop(true, true).fadeIn(200, function () {
 					if (window.location.hash)
 						hash = window.location.hash;
 					if (hash)
@@ -93,15 +96,15 @@ var ajaxify = {};
 		}
 
 		return false;
-	}
+	};
 
-	$('document').ready(function() {
+	$('document').ready(function () {
 		if (!window.history || !window.history.pushState) return; // no ajaxification for old browsers
 
 		content = content || document.getElementById('content');
 
 		// Enhancing all anchors to ajaxify...
-		$(document.body).on('click', 'a', function(e) {
+		$(document.body).on('click', 'a', function (e) {
 
 			function hrefEmpty(href) {
 				return href == 'javascript:;' || href == window.location.href + "#" || href.slice(-1) === "#";
@@ -127,7 +130,7 @@ var ajaxify = {};
 
 		function nodeName(elem, name) {
 			return elem.nodeName && elem.nodeName.toUpperCase() === name.toUpperCase();
-		};
+		}
 
 		function evalScript(elem) {
 			var data = (elem.text || elem.textContent || elem.innerHTML || ""),
@@ -149,7 +152,7 @@ var ajaxify = {};
 			head.insertBefore(script, head.firstChild);
 			//TODO: remove from head before inserting?, doing this breaks scripts in safari so commented out for now
 			//head.removeChild(script);
-		};
+		}
 
 		var scripts = [],
 			script,
@@ -172,6 +175,6 @@ var ajaxify = {};
 			}
 			evalScript(scripts[i]);
 		}
-	};
+	}
 
 }(jQuery));
