@@ -6,7 +6,11 @@
 	 * TODO:
 	 *
 	 * 1. language en is hardcoded while system is developed.
+	 *     b. need to write fallback system to default language
 	 * 2. recursion needed when parsing language keys (ex. topics:modal.delete.title), right now json is all one level deep
+	 * 3. server side settings for default language
+	 * 4. user side settings for preferred language
+	 *
 	 */
 
 	var translator = {},
