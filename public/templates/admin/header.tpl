@@ -17,8 +17,10 @@
 	<script type="text/javascript" src="{relative_path}/src/app.js"></script>
 	<script type="text/javascript" src="{relative_path}/src/templates.js"></script>
 	<script type="text/javascript" src="{relative_path}/src/ajaxify.js"></script>
+	<script src="{relative_path}/vendor/jquery/js/jquery.timeago.js"></script>
 	<script src="{relative_path}/vendor/requirejs/require.js"></script>
 	<script src="{relative_path}/vendor/bootbox/bootbox.min.js"></script>
+
 	<script>
 		require.config({
 			baseUrl: "{relative_path}/src/modules",

@@ -332,12 +332,14 @@ var user = require('./../user.js'),
 					return;
 				}
 
-				if (uid !== callerUID || callerUID === '0') {
+				if (uid != callerUID || callerUID == '0') {
 					res.json(403, {
 						error: 'Not allowed!'
 					});
 					return;
 				}
+
+				
 				user.getUserFields(uid, ['username', 'userslug', 'showemail'], function(err, userData) {
 					if (err)
 						return next(err);
@@ -368,7 +370,7 @@ var user = require('./../user.js'),
 					return;
 				}
 
-				if (uid !== callerUID || callerUID === '0') {
+				if (uid != callerUID || callerUID == '0') {
 					res.json(403, {
 						error: 'Not allowed!'
 					});
@@ -491,13 +493,13 @@ var user = require('./../user.js'),
 						}
 
 						function canSeeEmail() {
-							return callerUID === uid || (data.email && (data.showemail && data.showemail === "1"));
+							return callerUID == uid || (data.email && (data.showemail && data.showemail === "1"));
 						}
 
 						if (!canSeeEmail())
 							data.email = "";
 
-						if (callerUID === uid && (!data.showemail || data.showemail === "0"))
+						if (callerUID == uid && (!data.showemail || data.showemail === "0"))
 							data.emailClass = "";
 						else
 							data.emailClass = "hide";

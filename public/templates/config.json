@@ -8,7 +8,7 @@
 		"admin/index[^]*": "admin/index",
 		"admin/themes[^]*": "admin/themes",
 		"admin/plugins[^]*": "admin/plugins",
-		"admin/settings[^]*": "admin/settings",
+		"^admin/settings[^]*": "admin/settings",
 		"admin/twitter[^]*": "admin/twitter",
 		"admin/facebook[^]*": "admin/facebook",
 		"admin/gplus[^]*": "admin/gplus",
