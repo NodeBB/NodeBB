@@ -1,2 +1,7 @@
+1. NPM INSTALL
 For now, language packs will be stored here. Eventually, will be moved to server side to allow for npm installability.
 When that happens, server code will generate compressed JSON language files in this folder.
+
+
+2. SERVERSIDE METHODS
+Allow server side code to call language.get(key)

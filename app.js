@@ -79,20 +79,27 @@
 			};
 
 			var templates = require('./public/src/templates.js'),
+				translator = require('./public/src/translator.js'),
 				webserver = require('./src/webserver.js'),
 				websockets = require('./src/websockets.js'),
 				plugins = require('./src/plugins'); // Don't remove this - plugins initializes itself
 
 			global.templates = {};
-			templates.init([
-				'header', 'footer', 'logout', 'outgoing', 'admin/header', 'admin/footer', 'admin/index',
-				'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext',
-				'emails/header', 'emails/footer',
 
-				'noscript/header', 'noscript/home', 'noscript/category', 'noscript/topic'
-			]);
+			translator.loadAll(function () {
+				// todo: replace below with read directory code, derp.
+				templates.init([
+					'header', 'footer', 'logout', 'outgoing', 'admin/header', 'admin/footer', 'admin/index',
+					'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext',
+					'emails/header', 'emails/footer',
 
-			templates.ready(webserver.init);
+					'noscript/header', 'noscript/home', 'noscript/category', 'noscript/topic'
+				]);
+
+				templates.ready(webserver.init);
+			});
+
+
 		});
 
 	} else if (nconf.get('upgrade')) {
