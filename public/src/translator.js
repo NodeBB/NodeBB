@@ -108,6 +108,8 @@
 
 		for (var key in keys) {
 			if (keys.hasOwnProperty(key)) {
+				//check for additional variables then keys[key].split(/[,][?\s+]/);
+
 				var parsedKey = keys[key].replace('[[', '').replace(']]', '').split(':'),
 					languageFile = parsedKey[0];
 
