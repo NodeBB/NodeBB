@@ -1,6 +1,6 @@
 <div class="unread">
 	<ol class="breadcrumb">
-		<li><a href="/">Home</a></li>
+		<li><a href="/">[[global:home]]</a></li>
 		<li class="active">{category_name}</li>
 		<div id="category_active_users"></div>
 	</ol>
@@ -10,10 +10,10 @@
 	</a>
 
 	<div class="alert alert-warning {no_topics_message}" id="category-no-topics">
-		<strong>There are no unread topics.</strong>
+		<strong>[[unread:no_unread_topics]]</strong>
 	</div>
 
-	<button id="mark-allread-btn" class="btn btn-primary {show_markallread_button}">Mark all as Read</button>
+	<button id="mark-allread-btn" class="btn btn-primary {show_markallread_button}">[[unread:mark_all_read]]</button>
 
 	<div class="category row">
 		<div class="{topic_row_size}">
@@ -45,7 +45,7 @@
 			</a>
 			<!-- END topics -->
 			</ul>
-			<button id="load-more-btn" class="btn btn-primary hide">Load More</button>
+			<button id="load-more-btn" class="btn btn-primary hide">[[unread:load_more]]</button>
 		</div>
 	</div>
 </div>
