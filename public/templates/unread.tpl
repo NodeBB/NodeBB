@@ -27,14 +27,15 @@
 								<div class="pull-right">
 									<img style="width: 48px; height: 48px; /*temporary*/" src="{topics.teaser_userpicture}" />
 									<p><strong>{topics.teaser_username}</strong>: {topics.teaser_text}</p>
-									<span>posted {topics.teaser_timestamp} ago</span>
+									<span>posted</span>
+									<span class="timeago" title="{topics.teaser_timestamp}"></span>
 								</div>
 							</div>
 							<div>
 								<h3><span class="topic-title"><span class="badge {topics.badgeclass}">{topics.postcount}</span>{topics.title}</span></h3>
 								<small>
 									<strong><i class="{topics.pin-icon}"></i><i class="{topics.lock-icon}"></i></strong>
-									Posted {topics.relativeTime} ago by
+									<span>Posted </span><span class="timeago" title="{topics.relativeTime}"></span><span> by</span>
 									<strong>{topics.username}</strong>.
 								</small>
 							</div>
