@@ -56,13 +56,6 @@ var RDB = require('./redis.js'),
 
 	Favourites.unfavourite = function (pid, room_id, uid, socket) {
 		if (uid === 0) {
-			socket.emit('event:alert', {
-				alert_id: 'post_favourite',
-				title: 'Not Logged In',
-				message: 'Please log in in order to favourite this post',
-				type: 'danger',
-				timeout: 5000
-			});
 			return;
 		}
 

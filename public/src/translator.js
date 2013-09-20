@@ -80,16 +80,12 @@
 	 * TODO: DRY, see translator.translate. The hard part is to make sure both work node.js / js side
 	 */
 	translator.get = function (key, callback) {
-		//console.log(files.loaded);
 		var parsedKey = key.split(':'),
 			languageFile = parsedKey[0];
 
 		parsedKey = parsedKey[1];
-		console.log(parsedKey);
 		translator.load(languageFile, function (languageData) {
-			console.log(languageData[parsedKey]);
 			if (callback) {
-				console.log('herped');
 				callback(languageData[parsedKey]);
 			}
 
