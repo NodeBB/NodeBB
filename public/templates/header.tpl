@@ -24,6 +24,7 @@
 	</script>
 	<script src="{relative_path}/src/templates.js"></script>
 	<script src="{relative_path}/src/ajaxify.js"></script>
+	<script src="{relative_path}/src/translator.js"></script>
 	<script src="{relative_path}/src/jquery.form.js"></script>
 	<script src="{relative_path}/src/utils.js"></script>
 
