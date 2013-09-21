@@ -233,6 +233,11 @@ var express = require('express'),
 				},
 				"categories": function(next) {
 					categories.getAllCategories(function(returnData) {
+						returnData.categories = returnData.categories.filter(function(category) {
+							if (category.disabled !== '1') return true;
+							else return false; 
+						});
+
 						next(null, returnData);
 					}, 0);
 				}
