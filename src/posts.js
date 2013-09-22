@@ -158,8 +158,6 @@ var RDB = require('./redis.js'),
 	/* getPostsByPids using redis's multi pipeline */
 	Posts.getPostsByPids = function(pids, callback) {
 		var posts = []
-		var new_pids = []
-
 		var multi = RDB.multi();
 
 		for (v in pids) {
@@ -168,9 +166,7 @@ var RDB = require('./redis.js'),
 		}
 
 		multi.exec(function (err, replies) {
-			var pids = replies
-			async.eachSeries(pids, function(pid, _callback) {
-				var postData = pid
+			async.eachSeries(replies, function(postData, _callback) {
 				if(postData) {
 					postData.relativeTime = utils.relativeTime(postData.timestamp);
 					postData.post_rep = postData.reputation;
