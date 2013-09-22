@@ -590,7 +590,7 @@ schema = require('./schema.js'),
 
 						if (postData.content) {
 							stripped = postData.content.replace(/>.+\n\n/, '');
-							postTools.toHTML(stripped, function(err, stripped) {
+							postTools.parse(stripped, function(err, stripped) {
 								returnObj.text = utils.strip_tags(stripped);
 								callback(null, returnObj);
 							});

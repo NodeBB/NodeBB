@@ -418,7 +418,7 @@ var user = require('./../user.js'),
 							if (callerUID !== userData.uid)
 								user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
 
-							postTools.toHTML(userData.signature, function(err, signature) {
+							postTools.parse(userData.signature, function(err, signature) {
 								userData.signature = signature;
 								res.json(userData);
 							});
