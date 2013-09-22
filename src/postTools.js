@@ -128,7 +128,7 @@ var RDB = require('./redis.js'),
 				});
 
 				// Delete the thread if it is the last undeleted post
-				threadTools.get_latest_undeleted_pid(postData.tid, function(err, pid) {
+				threadTools.getLatestUndeletedPid(postData.tid, function(err, pid) {
 					if (err && err.message === 'no-undeleted-pids-found') {
 						threadTools.delete(postData.tid, -1, function(err) {
 							if (err) winston.error('Could not delete topic (tid: ' + postData.tid + ')', err.stack);
@@ -164,7 +164,7 @@ var RDB = require('./redis.js'),
 					pid: pid
 				});
 
-				threadTools.get_latest_undeleted_pid(postData.tid, function(err, pid) {
+				threadTools.getLatestUndeletedPid(postData.tid, function(err, pid) {
 					posts.getPostField(pid, 'timestamp', function(timestamp) {
 						topics.updateTimestamp(postData.tid, timestamp);
 					});

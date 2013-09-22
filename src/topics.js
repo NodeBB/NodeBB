@@ -572,7 +572,7 @@ schema = require('./schema.js'),
 	}
 
 	Topics.getTeaser = function(tid, callback) {
-		threadTools.get_latest_undeleted_pid(tid, function(err, pid) {
+		threadTools.getLatestUndeletedPid(tid, function(err, pid) {
 			if (!err) {
 				posts.getPostFields(pid, ['content', 'uid', 'timestamp'], function(postData) {
 

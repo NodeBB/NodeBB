@@ -297,7 +297,7 @@ var RDB = require('./redis.js'),
 		});
 	}
 
-	ThreadTools.get_latest_undeleted_pid = function(tid, callback) {
+	ThreadTools.getLatestUndeletedPid = function(tid, callback) {
 		RDB.lrange('tid:' + tid + ':posts', 0, -1, function(err, pids) {
 			if (pids.length === 0) return callback(new Error('no-undeleted-pids-found'));
 
