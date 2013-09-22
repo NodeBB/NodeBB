@@ -27,6 +27,7 @@ $(document).ready(function() {
 			},
 
 			uploadProgress: function(event, position, total, percent) {
+				console.log(percent);
 				$('#upload-progress-bar').css('width', percent + '%');
 			},
 
@@ -60,25 +61,25 @@ $(document).ready(function() {
 	});
 
 	function hideAlerts() {
-		$('#alert-status').hide();
-		$('#alert-success').hide();
-		$('#alert-error').hide();
-		$('#upload-progress-box').hide();
+		$('#alert-status').addClass('hide');
+		$('#alert-success').addClass('hide');
+		$('#alert-error').addClass('hide');
+		$('#upload-progress-box').addClass('hide');
 	}
 
 	function status(message) {
 		hideAlerts();
-		$('#alert-status').text(message).show();
+		$('#alert-status').text(message).removeClass('hide');
 	}
 
 	function success(message) {
 		hideAlerts();
-		$('#alert-success').text(message).show();
+		$('#alert-success').text(message).removeClass('hide');
 	}
 
 	function error(message) {
 		hideAlerts();
-		$('#alert-error').text(message).show();
+		$('#alert-error').text(message).removeClass('hide');
 	}
 
 	function changeUserPicture(type) {

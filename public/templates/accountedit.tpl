@@ -48,13 +48,15 @@
 						<input id="imageUploadCsrf" type="hidden" name="_csrf" value="" />
 					</form>
 
-					<div id="upload-progress-box" class="progress progress-striped active hide">
-						<div id="upload-progress-bar" class="bar" style="width: 0%;"></div>
+					<div id="upload-progress-box" class="progress progress-striped">
+						<div id="upload-progress-bar" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0">
+							<span class="sr-only"> success</span>
+						</div>
 					</div>
 
-					<div id="alert-status" class="alert hide"></div>
+					<div id="alert-status" class="alert alert-info hide"></div>
 					<div id="alert-success" class="alert alert-success hide"></div>
-					<div id="alert-error" class="alert alert-error hide"></div>
+					<div id="alert-error" class="alert alert-danger hide"></div>
 				</div>
 				<div class="modal-footer">
 					<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
