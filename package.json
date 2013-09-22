@@ -12,7 +12,7 @@
   "dependencies": {
     "socket.io": "~0.9.16",
     "redis": "0.8.3",
-	"hiredis" : "*",
+	"hiredis" : "~0.1.15",
     "express": "3.2.0",
     "express-namespace": "0.1.1",
     "emailjs": "0.3.4",
@@ -38,8 +38,7 @@
     "nodebb-plugin-mentions": "~0.1.0",
     "nodebb-plugin-markdown": "~0.1.0",
     "rss": "~0.2.0",
-    "prompt": "~0.2.11",
-	"underscore" : "*"
+    "prompt": "~0.2.11"
   },
   "bugs": {
     "url": "https://github.com/designcreateplay/NodeBB/issues"
