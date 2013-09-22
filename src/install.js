@@ -113,6 +113,9 @@ var async = require('async'),
 						}, {
 							field: 'imgurClientID',
 							value: ''
+						}, {
+							field: 'maximumProfileImageSize',
+							value: 256
 						}];
 
 					async.each(defaults, function (configObj, next) {

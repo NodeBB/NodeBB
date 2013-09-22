@@ -5,7 +5,8 @@ var user = require('./../user.js'),
 	utils = require('./../../public/src/utils.js'),
 	path = require('path'),
 	winston = require('winston'),
-	nconf = require('nconf');
+	nconf = require('nconf'),
+	meta = require('./../meta');
 
 (function(User) {
 	User.create_routes = function(app) {
@@ -135,10 +136,12 @@ var user = require('./../user.js'),
 		app.post('/user/uploadpicture', function(req, res) {
 			if (!req.user)
 				return res.redirect('/403');
+			
+			var uploadSize = meta.config.maximumProfileImageSize || 256;
 
-			if (req.files.userPhoto.size > 262144) {
+			if (req.files.userPhoto.size > uploadSize * 1024) {
 				res.send({
-					error: 'Images must be smaller than 256kb!'
+					error: 'Images must be smaller than ' + uploadSize + ' kb!'
 				});
 				return;
 			}
