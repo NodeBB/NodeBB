@@ -153,7 +153,65 @@ var RDB = require('./redis.js'),
 	}
 
 
+
+
+	/* getPostsByPids using redis's multi pipeline */
 	Posts.getPostsByPids = function(pids, callback) {
+		var posts = []
+		var new_pids = []
+
+		var multi = RDB.multi();
+
+		for (v in pids) {
+			var _pid = pids[v]
+			multi.hgetall("post:"+_pid);
+		}
+
+		multi.exec(function (err, replies) {
+			var pids = replies
+			async.eachSeries(pids, function(pid, _callback) {
+				var postData = pid
+				if(postData) {
+					postData.relativeTime = utils.relativeTime(postData.timestamp);
+					postData.post_rep = postData.reputation;
+					postData['edited-class'] = postData.editor !== '' ? '' : 'none';
+					postData['relativeEditTime'] = postData.edited !== '0' ? utils.relativeTime (postData.edited) : '';
+
+					if(postData.uploadedImages) {
+						try {
+							postData.uploadedImages = JSON.parse(postData.uploadedImages);
+						} catch(err) {
+							postData.uploadedImages = [];
+							winston.err(err);
+						}
+					} else {
+						postData.uploadedImages = [];
+					}
+
+                    postTools.toHTML(postData.content, function(err, content) {
+                        postData.content = content;
+                        posts.push(postData);
+                    });
+					return _callback(null)
+				}
+				else {
+					return _callback(null)
+				}
+			}, function(err) {
+				if(!err) {
+					return callback(null, posts);
+				} else {
+					return callback(err, null);
+				}
+			});
+		})
+	}
+
+
+
+
+
+	Posts.getPostsByPids_original = function(pids, callback) {
 		var posts = [];
 
 		async.eachSeries(pids, function(pid, callback) {
