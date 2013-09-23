@@ -75,7 +75,7 @@
 		});
 
 		socket.on('api:user.isOnline', function(data) {
-			if(active == 'online') {
+			if(active == 'online' && !loadMoreUsers) {
 				$('#users-container').empty();
 				startLoading('users:online', 0);
 			}
