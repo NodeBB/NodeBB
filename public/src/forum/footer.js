@@ -94,6 +94,10 @@
 			right_menu.appendChild(registerEl);
 			right_menu.appendChild(loginEl);
 		}
+
+		$('#main-nav a,#right-menu a').on('click', function() {
+			$('.navbar-header button').click();
+		});
 	});
 
 	// Notifications dropdown

@@ -75,8 +75,10 @@
 		});
 
 		socket.on('api:user.isOnline', function(data) {
-			$('#users-container').empty();
-			startLoading('users:online', 0);
+			if(active == 'online') {
+				$('#users-container').empty();
+				startLoading('users:online', 0);
+			}
 		});
 
 		function onUsersLoaded(users) {
@@ -99,12 +101,12 @@
 			}
 
 			if (set) {
-				loadingMoreUsers = true;
 				startLoading(set, $('#users-container').children().length);
 			}
 		}
 
 		function startLoading(set, after) {
+			loadingMoreUsers = true;
 			socket.emit('api:users.loadMore', {
 				set: set,
 				after: after

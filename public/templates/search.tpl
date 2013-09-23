@@ -3,6 +3,16 @@
 	<li class="active">Search</li>
 </ol>
 
+
+<form id="mobile-search-form" class="navbar-form navbar-right visible-xs" role="search" method="GET" action="">
+	<div class="" id="search-fields">
+		<div class="form-group">
+			<input type="text" class="form-control" placeholder="Search" name="query" value="">
+		</div>
+		<button type="submit" class="btn btn-default hide">Search</button>
+	</div>
+</form>
+
 <div class="category search">
 	<div class="">
 		<ul id="topics-container" data-search-query="{search_query}">

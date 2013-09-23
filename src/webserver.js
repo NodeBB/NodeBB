@@ -481,6 +481,8 @@ var express = require('express'),
 		});
 
 		app.get('/search', function (req, res) {
+			if (!req.user)
+				return res.redirect('/403');
 			app.build_header({
 				req: req,
 				res: res
@@ -490,6 +492,8 @@ var express = require('express'),
 		});
 
 		app.get('/search/:term', function (req, res) {
+			if (!req.user)
+				return res.redirect('/403');
 			app.build_header({
 				req: req,
 				res: res
