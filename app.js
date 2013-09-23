@@ -26,6 +26,8 @@
 	var fs = require('fs'),
 		winston = require('winston'),
 		pkg = require('./package.json'),
+		path = require('path'),
+		uglifyjs = require('uglify-js'),
 		meta;
 
 	// Runtime environment
@@ -68,6 +70,33 @@
 		if (process.env.NODE_ENV === 'development') {
 			winston.info('Base Configuration OK.');
 		}
+
+		// Minify JS
+		var toMinify = [
+			'/vendor/jquery/js/jquery-ui-1.10.3.custom.min.js',
+			'/vendor/jquery/js/jquery.timeago.js',
+			'/vendor/bootstrap/js/bootstrap.min.js',
+			'/src/app.js',
+			'/vendor/requirejs/require.js',
+			'/vendor/bootbox/bootbox.min.js',
+			'/src/templates.js',
+			'/src/ajaxify.js',
+			'/src/jquery.form.js',
+			'/src/utils.js'
+		],
+			minified;
+		toMinify = toMinify.map(function (jsPath) {
+			return path.join(__dirname + '/public', jsPath);
+		});
+		minified = uglifyjs.minify(toMinify);
+		fs.writeFile(path.join(__dirname, '/public/src', 'nodebb.min.js'), minified.code, function (err) {
+			if (!err) {
+				winston.info('Minified client-side libraries');
+			} else {
+				winston.error('Problem minifying client-side libraries, exiting.');
+				process.exit();
+			}
+		});
 
 		meta.configs.init(function () {
 			// Initial setup for Redis & Reds
