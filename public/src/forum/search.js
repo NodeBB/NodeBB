@@ -12,6 +12,13 @@
 
 
 		$('#search-form input').val(searchQuery);
+
+		$('#mobile-search-form').off('submit').on('submit', function() {
+			var input = $(this).find('input');
+			ajaxify.go("search/" + input.val(), null, "search");
+			input.val('');
+			return false;
+		});
 	});
 
 })();

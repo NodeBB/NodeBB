@@ -3,6 +3,7 @@
 		<li class=''><a href='/users/latest'>Latest Users</a></li>
 		<li class=''><a href='/users/sort-posts'>Top Posters</a></li>
 		<li class=''><a href='/users/sort-reputation'>Most Reputation</a></li>
+		<li class=''><a href='/users/online'>Online</a></li>
 		<li class=''><a href='/users/search'>Search</a></li>
 	</ul>
 

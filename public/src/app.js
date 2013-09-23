@@ -275,7 +275,7 @@ var socket,
 		if (active) {
 			jQuery('#main-nav li a').each(function() {
 				var href = this.getAttribute('href');
-				if (active == "sort-posts" || active == "sort-reputation" || active == "search" || active== "latest")
+				if (active == "sort-posts" || active == "sort-reputation" || active == "search" || active == "latest" || active == "online")
 					active = 'users';
 				if (href && href.match(active)) {
 					jQuery(this.parentNode).addClass('active');
@@ -285,6 +285,8 @@ var socket,
 		}
 
 		$('span.timeago').timeago();
+
+
 
 		setTimeout(function() {
 			window.scrollTo(0, 1); // rehide address bar on mobile after page load completes.
@@ -432,12 +434,14 @@ var socket,
 			ajaxify.go("search/" + input.val(), null, "search");
 			input.val('');
 			return false;
-		})
+		});
+
+
+
 	});
 
 	showWelcomeMessage = location.href.indexOf('loggedin') !== -1;
 
 	loadConfig();
-
 
 }());

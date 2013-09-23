@@ -43,9 +43,9 @@
 					<li>
 						<a href="/users">Users</a>
 					</li>
-					<!--Enable when /search form is completed <li class="visible-xs">
+					<li class="visible-xs">
 						<a href="/search">Search</a>
-					</li>-->
+					</li>
 					<li>
 						<a href="/"></a>
 					</li>
