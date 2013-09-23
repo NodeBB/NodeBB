@@ -14,7 +14,7 @@
 </form>
 
 <div class="category search">
-	<div class="">
+	<div class="{show_results}">
 		<ul id="topics-container" data-search-query="{search_query}">
 		<h3>Topics</h3>
 		<div class="alert alert-info {show_no_topics}">No topics found!</div>

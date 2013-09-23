@@ -70,7 +70,7 @@ var RDB = require('./redis.js'),
 					Posts.getPostFields(pid, ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'], function(postData) {
 						if (postData.deleted === '1') return callback(null);
 						else {
-							postData.relativeTime = new Date(parseInt(postData.timestamp, 10)).toISOString();
+							postData.relativeTime = new Date(parseInt(postData.timestamp || 0, 10)).toISOString();
 							next(null, postData);
 						}
 					});
