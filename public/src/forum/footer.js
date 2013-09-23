@@ -95,7 +95,7 @@
 			right_menu.appendChild(loginEl);
 		}
 
-		$('#main-nav a,#right-menu a').on('click', function() {
+		$('#main-nav a,#right-menu a').off('click').on('click', function() {
 			if($('.navbar .navbar-collapse').hasClass('in'))
 				$('.navbar-header button').click();
 		});
