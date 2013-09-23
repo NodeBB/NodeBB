@@ -73,6 +73,7 @@
 
 		// Minify JS
 		var toMinify = [
+			'/vendor/jquery/js/jquery.js',
 			'/vendor/jquery/js/jquery-ui-1.10.3.custom.min.js',
 			'/vendor/jquery/js/jquery.timeago.js',
 			'/vendor/bootstrap/js/bootstrap.min.js',

@@ -8,7 +8,6 @@
 	<script>
 		var RELATIVE_PATH = "{relative_path}";
 	</script>
-	<script src="http://code.jquery.com/jquery.js"></script>
 	<script src="{relative_path}/socket.io/socket.io.js"></script>
 	<script src="{relative_path}/src/nodebb.min.js"></script>
 	<script>
@@ -19,7 +18,6 @@
 	</script>
 
 	<link rel="stylesheet" type="text/css" href="{relative_path}/css/nodebb.css" />
-
 </head>
 
 <body>

@@ -63,7 +63,8 @@ var express = require('express'),
 	app.use(express.favicon(path.join(__dirname, '../', 'public', 'favicon.ico')));
 	app.use(require('less-middleware')({
 		src: path.join(__dirname, '../', 'public'),
-		prefix: nconf.get('relative_path')
+		prefix: nconf.get('relative_path'),
+		yuicompress: true
 	}));
 	app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../', 'public')));
 	app.use(express.bodyParser()); // Puts POST vars in request.body
