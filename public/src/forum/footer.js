@@ -96,7 +96,8 @@
 		}
 
 		$('#main-nav a,#right-menu a').on('click', function() {
-			$('.navbar-header button').click();
+			if($('.navbar .navbar-collapse').hasClass('in'))
+				$('.navbar-header button').click();
 		});
 	});
 
