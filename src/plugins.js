@@ -137,7 +137,7 @@ var fs = require('fs'),
 			hookList = this.loadedHooks[hook];
 
 			if (hookList && Array.isArray(hookList)) {
-				if (global.env === 'development') winston.info('[plugins] Firing hook: \'' + hook + '\'');
+				//if (global.env === 'development') winston.info('[plugins] Firing hook: \'' + hook + '\'');
 				var hookType = hook.split(':')[0];
 				switch (hookType) {
 					case 'filter':

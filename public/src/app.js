@@ -275,7 +275,7 @@ var socket,
 		if (active) {
 			jQuery('#main-nav li a').each(function() {
 				var href = this.getAttribute('href');
-				if (active == "sort-posts" || active == "sort-reputation" || active == "search" || active== "latest")
+				if (active == "sort-posts" || active == "sort-reputation" || active == "search" || active == "latest" || active == "online")
 					active = 'users';
 				if (href && href.match(active)) {
 					jQuery(this.parentNode).addClass('active');
