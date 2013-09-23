@@ -287,7 +287,6 @@ var socket,
 		$('span.timeago').timeago();
 
 
-
 		setTimeout(function() {
 			window.scrollTo(0, 1); // rehide address bar on mobile after page load completes.
 		}, 100);
@@ -435,9 +434,6 @@ var socket,
 			input.val('');
 			return false;
 		});
-
-
-
 	});
 
 	showWelcomeMessage = location.href.indexOf('loggedin') !== -1;

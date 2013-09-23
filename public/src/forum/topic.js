@@ -223,6 +223,15 @@
 			}
 		});
 
+		var bookmark = localStorage.getItem('topic:' + tid + ':bookmark');
+
+		if(bookmark) {
+			// need to find out why it doesnt work without setTimeout -baris
+			setTimeout(function() {
+				app.scrollToPost(parseInt(bookmark, 10));
+			}, 300);
+		}
+
 		$('#post-container').on('click', '.deleted', function(ev) {
 			$(this).toggleClass('deleted-expanded');
 		});
@@ -659,6 +668,7 @@
 		var scrollBottom = scrollTop + windowHeight;
 
 		if (scrollTop < 50 && postcount > 1) {
+			localStorage.removeItem("topic:" + tid + ":bookmark");
 			postAuthorImage.src = (jQuery('.main-post .avatar img').attr('src'));
 			mobileAuthorOverlay.innerHTML = 'Posted by ' + jQuery('.main-post').attr('data-username') + ', ' + jQuery('.main-post').find('.relativeTimeAgo').html();
 			pagination.innerHTML = '0 out of ' + postcount;
@@ -666,7 +676,7 @@
 		}
 
 
-		var count = 0;
+		var count = 0, smallestNonNegative = 0;
 
 		jQuery('.sub-posts').each(function() {
 			count++;
@@ -682,6 +692,11 @@
 
 
 			if (inView) {
+				if(elTop - scrollTop > smallestNonNegative) {
+					localStorage.setItem("topic:" + tid + ":bookmark", el.attr('data-pid'));
+					smallestNonNegative = Number.MAX_VALUE;
+				}
+
 				pagination.innerHTML = this.postnumber + ' out of ' + postcount;
 				postAuthorImage.src = (jQuery(this).find('.profile-image-block img').attr('src'));
 				mobileAuthorOverlay.innerHTML = 'Posted by ' + jQuery(this).attr('data-username') + ', ' + jQuery(this).find('.relativeTimeAgo').html();
