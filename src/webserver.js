@@ -48,20 +48,14 @@ var express = require('express'),
 			metaString = utils.buildMetaTags(defaultMetaTags.concat(options.metaTags || [])),
 			templateValues = {
 				cssSrc: meta.config['theme:src'] || nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
-				title: meta.config['title'] || 'NodeBB',
-				browserTitle: meta.config['title'] || 'NodeBB',
+				title: meta.config.title || 'NodeBB',
+				browserTitle: meta.config.title || 'NodeBB',
 				csrf: options.res.locals.csrf_token,
 				relative_path: nconf.get('relative_path'),
 				meta_tags: metaString
 			};
 
-		// meta.build_title(options.title, (options.req.user ? options.req.user.uid : 0), function(err, title) {
-		// 	if (!err) templateValues.browserTitle = title;
-
-		// 	callback(null, templates['header'].parse(templateValues));
-		// });
-
-		callback(null, templates['header'].parse(templateValues));
+		callback(null, templates.header.parse(templateValues));
 	};
 
 	// Middlewares
@@ -69,7 +63,8 @@ var express = require('express'),
 	app.use(express.favicon(path.join(__dirname, '../', 'public', 'favicon.ico')));
 	app.use(require('less-middleware')({
 		src: path.join(__dirname, '../', 'public'),
-		prefix: nconf.get('relative_path')
+		prefix: nconf.get('relative_path'),
+		yuicompress: true
 	}));
 	app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../', 'public')));
 	app.use(express.bodyParser()); // Puts POST vars in request.body
