@@ -3,8 +3,7 @@
 		stats_topics = document.getElementById('stats_topics'),
 		stats_posts = document.getElementById('stats_posts'),
 		stats_online = document.getElementById('stats_online'),
-		user_label = document.getElementById('user_label'),
-		right_menu = document.getElementById('right-menu');
+		user_label = document.getElementById('user_label');
 
 	socket.emit('user.count', {});
 	socket.on('user.count', function(data) {
@@ -25,6 +24,7 @@
 	socket.emit('api:updateHeader', {
 		fields: ['username', 'picture', 'userslug']
 	});
+
 	socket.on('api:updateHeader', function(data) {
 		jQuery('#search-button').on('click', function() {
 			jQuery('#search-fields').removeClass('hide').show();
@@ -42,14 +42,19 @@
 			});
 		});
 
-		var rightMenu = $('#right-menu'),
+		var loggedInMenu = $('#logged-in-menu'),
 			isLoggedIn = data.uid > 0;
 
 		if (isLoggedIn) {
 			jQuery('.nodebb-loggedin').show();
 			jQuery('.nodebb-loggedout').hide();
 
-			var userLabel = rightMenu.find('#user_label');
+			$('#logged-out-menu').addClass('hide');
+			$('#logged-in-menu').removeClass('hide');
+
+			$('#search-button').show();
+
+			var userLabel = loggedInMenu.find('#user_label');
 			if (userLabel.length) {
 				if (data['userslug'])
 					userLabel.attr('href', '/user/' + data['userslug']);
@@ -57,18 +62,8 @@
 					userLabel.find('img').attr('src', data['picture']);
 				if (data['username'])
 					userLabel.find('span').html(data['username']);
-			} else {
-				rightMenu.empty();
-				var userli = $('<li> \
-									<a id="user_label" href="/user/' + data['userslug'] + '"> \
-										<img src="' + data['picture'] + '"/> \
-										<span>' + data['username'] + '</span> \
-									</a> \
-								</li>');
-				rightMenu.append(userli);
 
-				var logoutli = $('<li><a href="#">Log out</a></li>');
-				logoutli.on('click', function() {
+				$('#logout-link').on('click', function() {
 					var	csrf_token = $('#csrf_token').val();
 
 					$.post(RELATIVE_PATH + '/logout', {
@@ -77,23 +72,16 @@
 						window.location = RELATIVE_PATH + '/';
 					});
 				});
-				rightMenu.append(logoutli);
 			}
 		} else {
 			$('#search-button').hide();
+
 			jQuery('.nodebb-loggedin').hide();
 			jQuery('.nodebb-loggedout').show();
 
-			rightMenu.html('');
+			$('#logged-out-menu').removeClass('hide');
+			$('#logged-in-menu').addClass('hide');
 
-			var registerEl = document.createElement('li'),
-				loginEl = document.createElement('li');
-
-			registerEl.innerHTML = '<a href="/register">Register</a>';
-			loginEl.innerHTML = '<a href="/login">Login</a>';
-
-			right_menu.appendChild(registerEl);
-			right_menu.appendChild(loginEl);
 		}
 
 		$('#main-nav a,#right-menu a').off('click').on('click', function() {

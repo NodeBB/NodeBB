@@ -65,14 +65,34 @@
 					<button id="search-button" type="button" class="btn btn-link"><i class="icon-search"></i></button>
 				</form>
 
-				<ul id="right-menu" class="nav navbar-nav navbar-right">
-					<li class="notifications dropdown text-center hidden-xs">
+				<ul id="logged-in-menu" class="nav navbar-nav navbar-right hide">
+					<li id="notifications-list" class="notifications dropdown text-center hidden-xs">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="notif_dropdown"><i class="icon-circle-blank"></i></a>
 						<ul id="notif-list" class="dropdown-menu" aria-labelledby="notif_dropdown">
 							<li>
 								<a href="#"><i class="icon-refresh icon-spin"></i> Loading Notifications</a>
 							</li>
 						</ul>
+					</li>
+
+					<li>
+						<a id="user_label" href="">
+							<img src=""/>
+							<span></span>
+						</a>
+					</li>
+
+					<li id="logout-link">
+						<a href="#">Log out</a>
+					</li>
+				</ul>
+
+				<ul id="logged-out-menu" class="nav navbar-nav navbar-right">
+					<li id="register-link">
+						<a href="/register">Register</a>
+					</li>
+					<li id="login-link">
+						<a href="/login">Login</a>
 					</li>
 				</ul>
 

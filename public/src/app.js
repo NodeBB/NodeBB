@@ -17,7 +17,9 @@ var socket,
 				config = data;
 				if(socket) {
 					socket.disconnect();
-					socket.socket.connect();
+					setTimeout(function() {
+						socket.socket.connect();
+					}, 200);
 				} else {
 					socket = io.connect(config.socket.address);
 
@@ -28,8 +30,8 @@ var socket,
 						app.username = data.username;
 						app.showLoginMessage();
 						socket.emit('api:updateHeader', {
-								fields: ['username', 'picture', 'userslug']
-							});
+							fields: ['username', 'picture', 'userslug']
+						});
 					});
 
 					socket.on('event:alert', function (data) {
@@ -49,10 +51,15 @@ var socket,
 							}, 1000);
 							reconnecting = false;
 							reconnectTries = 0;
-							socket.emit('api:updateHeader', {
-								fields: ['username', 'picture', 'userslug']
-							});
 						}
+
+						socket.emit('api:updateHeader', {
+							fields: ['username', 'picture', 'userslug']
+						});
+					});
+
+					socket.on('event:disconnect', function() {
+						socket.socket.connect();
 					});
 
 					socket.on('reconnecting', function (data) {

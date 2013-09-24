@@ -82,8 +82,11 @@
 
 			var templates = require('./public/src/templates.js'),
 				webserver = require('./src/webserver.js'),
+				SocketIO =  require('socket.io').listen(global.server, { log: false, transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket']}),
 				websockets = require('./src/websockets.js'),
 				plugins = require('./src/plugins'); // Don't remove this - plugins initializes itself
+
+			websockets.init(SocketIO);
 
 			global.templates = {};
 			templates.init([

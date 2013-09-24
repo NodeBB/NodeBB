@@ -1,8 +1,5 @@
-var SocketIO = require('socket.io').listen(global.server, {
-	log: false,
-	transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket']
-}),
-	cookie = require('cookie'),
+
+var	cookie = require('cookie'),
 	express = require('express'),
 	user = require('./user.js'),
 	Groups = require('./groups'),
@@ -32,10 +29,25 @@ var SocketIO = require('socket.io').listen(global.server, {
 	plugins = require('./plugins'),
 	winston = require('winston');
 
-(function(io) {
+//(function(io) {
+
 	var users = {},
 		userSockets = {},
 		rooms = {};
+
+module.exports.logoutUser = function(uid) {
+	if(userSockets[uid] && userSockets[uid].length) {
+		for(var i=0; i< userSockets[uid].length; ++i) {
+			userSockets[uid][i].emit('event:disconnect');
+			userSockets[uid][i].disconnect();
+
+			if(!userSockets[uid])
+				return;
+		}
+	}
+}
+
+module.exports.init = function(io) {
 
 	global.io = io;
 
@@ -886,4 +898,4 @@ var SocketIO = require('socket.io').listen(global.server, {
 		});
 	});
 
-}(SocketIO));
+}

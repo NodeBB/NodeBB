@@ -94,6 +94,9 @@
 			if (req.user && req.user.uid > 0) {
 				winston.info('[Auth] Session ' + req.sessionID + ' logout (uid: ' + req.user.uid + ')');
 
+				var ws = require('./../websockets');
+				ws.logoutUser(req.user.uid);
+
 				req.logout();
 			}
 
