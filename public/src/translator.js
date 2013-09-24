@@ -13,6 +13,8 @@
 	 *
 	 */
 
+	var DEFAULT_LANGUAGE = 'en';
+
 	var translator = {},
 		files = {
 			loaded: {},
@@ -61,7 +63,6 @@
 
 		for (var key in keys) {
 			if (keys.hasOwnProperty(key)) {
-				//check for additional variables then keys[key].split(/[,][?\s+]/);
 				var variables = keys[key].split(/[,][?\s+]/);
 
 				var parsedKey = keys[key].replace('[[', '').replace(']]', '').split(':'),
@@ -119,7 +120,7 @@
 
 			files.loading[filename] = true;
 
-			jQuery.getJSON(RELATIVE_PATH + '/language/en/' + filename + '.json?v=' + timestamp, function (language) {
+			jQuery.getJSON(RELATIVE_PATH + '/language/' + DEFAULT_LANGUAGE + '/' + filename + '.json?v=' + timestamp, function (language) {
 				files.loaded[filename] = language;
 
 				if (callback) {
@@ -142,7 +143,7 @@
 			path = require('path'),
 			fs = require('fs');
 
-		utils.walk(path.join(__dirname, '../../', 'public/language/en'), function (err, data) {
+		utils.walk(path.join(__dirname, '../../', 'public/language/' + DEFAULT_LANGUAGE), function (err, data) {
 			var loaded = data.length;
 
 			for (var d in data) {
