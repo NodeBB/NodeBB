@@ -12,7 +12,8 @@ schema = require('./schema.js'),
 	feed = require('./feed.js'),
 	favourites = require('./favourites.js'),
 	reds = require('reds'),
-	topicSearch = reds.createSearch('nodebbtopicsearch');
+	topicSearch = reds.createSearch('nodebbtopicsearch'),
+	validator = require('validator');
 
 
 (function(Topics) {
@@ -655,7 +656,7 @@ schema = require('./schema.js'),
 
 				var slug = tid + '/' + utils.slugify(title);
 				var timestamp = Date.now();
-
+				title = validator.sanitize(title).escape();
 				RDB.hmset('topic:' + tid, {
 					'tid': tid,
 					'uid': uid,
