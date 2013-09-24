@@ -4,9 +4,11 @@ var user = require('./../user.js'),
 	RDB = require('./../redis.js'),
 	pkg = require('./../../package.json'),
 	categories = require('./../categories.js'),
+	Meta = require('../meta'),
 	plugins = require('../plugins'),
 	winston = require('winston'),
-	nconf = require('nconf');
+	nconf = require('nconf'),
+	fs = require('fs');
 
 (function (Admin) {
 	Admin.isAdmin = function (req, res, next) {
@@ -153,31 +155,55 @@ var user = require('./../user.js'),
 				});
 			});
 
-			app.get('/redis', function (req, res) {
-				RDB.info(function (err, data) {
-					data = data.split("\r\n");
-					var finalData = {};
+			app.namespace('/redis', function () {
+				app.get('/', function (req, res) {
+					RDB.info(function (err, data) {
+						data = data.split("\r\n");
+						var finalData = {};
 
-					for (var i in data) {
+						for (var i in data) {
 
-						if (data[i].indexOf(':') == -1 || !data[i])
-							continue;
+							if (data[i].indexOf(':') == -1 || !data[i])
+								continue;
 
-						try {
-							data[i] = data[i].replace(/:/, "\":\"");
-							var json = "{\"" + data[i] + "\"}";
+							try {
+								data[i] = data[i].replace(/:/, "\":\"");
+								var json = "{\"" + data[i] + "\"}";
 
-							var jsonObject = JSON.parse(json);
-							for (var key in jsonObject) {
-								finalData[key] = jsonObject[key];
+								var jsonObject = JSON.parse(json);
+								for (var key in jsonObject) {
+									finalData[key] = jsonObject[key];
+								}
+							} catch (err) {
+								winston.warn('can\'t parse redis status variable, ignoring', i, data[i], err);
 							}
-						} catch (err) {
-							winston.warn('can\'t parse redis status variable, ignoring', i, data[i], err);
 						}
-					}
 
-					res.json(finalData);
+						res.json(finalData);
+					});
 				});
+
+				// app.get('/export', Admin.isAdmin, function (req, res) {
+				// 	Meta.db.getFile(function (err, dbFile) {
+				// 		if (!err) {
+				// 			res.download(dbFile, 'redis.rdb', function (err) {
+				// 				console.log(err);
+				// 				res.send(500);
+				// 				if (err) {
+				// 					res.send(500);
+				// 					switch (err.code) {
+				// 					case 'EACCES':
+				// 						res.send(500, 'Require permissions from Redis database file: ', dbFile);
+				// 						break;
+				// 					default:
+				// 						res.send(500);
+				// 						break;
+				// 					}
+				// 				}
+				// 			});
+				// 		} else res.send(500);
+				// 	});
+				// });
 			});
 
 			app.get('/plugins', function (req, res) {

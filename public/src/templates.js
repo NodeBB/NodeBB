@@ -180,7 +180,9 @@
 			else
 				template_data['relative_path'] = RELATIVE_PATH;
 
-			document.getElementById('content').innerHTML = templates[tpl_url].parse(template_data);
+			translator.translate(templates[tpl_url].parse(template_data), function (translatedTemplate) {
+				document.getElementById('content').innerHTML = translatedTemplate;
+			});
 
 			jQuery('#content [template-variable]').each(function (index, element) {
 				var value = null;

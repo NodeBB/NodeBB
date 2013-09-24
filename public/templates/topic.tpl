@@ -1,7 +1,7 @@
 <div class="topic">
 	<ol class="breadcrumb">
 		<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
-			<a href="/" itemprop="url"><span itemprop="title">Home</span></a>
+			<a href="/" itemprop="url"><span itemprop="title">[[global:home]]</span></a>
 		</li>
 		<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
 			<a href="/category/{category_slug}" itemprop="url"><span itemprop="title">{category_name}</span></a>
@@ -27,32 +27,32 @@
 
 						<div class="topic-buttons">
 							<div class="btn-group">
-								<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="Posted by {main_posts.username}">
+								<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="[[topic:posted_by, {main_posts.username}]]">
 									<span class="username-field" href="/user/{main_posts.userslug}">{main_posts.username}&nbsp;</span>
 									<span class="caret"></span>
 								</button>
 							    <ul class="dropdown-menu">
-									<li><a href="/user/{main_posts.userslug}"><i class="icon-user"></i> Profile</a></li>
-									<li><div class="chat"><i class="icon-comment"></i> Chat</div></li>
+									<li><a href="/user/{main_posts.userslug}"><i class="icon-user"></i> [[topic:profile]]</a></li>
+									<li><div class="chat"><i class="icon-comment"></i> [[topic:chat]]</div></li>
 							    </ul>
 							</div>
 
 							<div class="btn-group">
 								<button class="btn btn-sm btn-default follow" type="button" title="Be notified of new replies in this topic"><i class="icon-eye-open"></i></button>
 								<button class="favourite btn btn-sm btn-default {main_posts.fav_button_class}" type="button">
-									<span class="favourite-text">Favourite</span>
+									<span class="favourite-text">[[topic:favourite]]</span>
 									<span class="post_rep_{main_posts.pid}">{main_posts.post_rep} </span><i class="{main_posts.fav_star_class}"></i>
 								</button>
 							</div>
 							<div class="btn-group">
-								<button class="btn btn-sm btn-default quote" type="button" title="Quote"><i class="icon-quote-left"></i></button>
-								<button class="btn btn-sm btn-primary btn post_reply" type="button">Reply <i class="icon-reply"></i></button>
+								<button class="btn btn-sm btn-default quote" type="button" title="[[topic:quote]]"><i class="icon-quote-left"></i></button>
+								<button class="btn btn-sm btn-primary btn post_reply" type="button">[[topic:reply]] <i class="icon-reply"></i></button>
 							</div>
 
 							<div class="btn-group pull-right post-tools">
-								<button class="btn btn-sm btn-default link" type="button" title="Link"><i class="icon-link"></i></button>
-								<button class="btn btn-sm btn-default edit {main_posts.display_moderator_tools}" type="button" title="Edit"><i class="icon-pencil"></i></button>
-								<button class="btn btn-sm btn-default delete {main_posts.display_moderator_tools}" type="button" title="Delete"><i class="icon-trash"></i></button>
+								<button class="btn btn-sm btn-default link" type="button" title="[[topic:link]]"><i class="icon-link"></i></button>
+								<button class="btn btn-sm btn-default edit {main_posts.display_moderator_tools}" type="button" title="[[topic:edit]]"><i class="icon-pencil"></i></button>
+								<button class="btn btn-sm btn-default delete {main_posts.display_moderator_tools}" type="button" title="[[topic:delete]]"><i class="icon-trash"></i></button>
 
 							</div>
 
@@ -82,7 +82,7 @@
 					<a href="/user/{posts.userslug}">
 						<img src="{posts.picture}" align="left" class="img-thumbnail" />
 					</a>
-					<span class="label label-danger {posts.show_banned}">banned</span>
+					<span class="label label-danger {posts.show_banned}">[[topic:banned]]</span>
 				</div>
 				<div class="col-md-11">
 					<div class="post-block">
@@ -94,26 +94,26 @@
 								</button>
 
 							    <ul class="dropdown-menu">
-									<li><a href="/user/{posts.userslug}"><i class="icon-user"></i> Profile</a></li>
-									<li><div class="chat"><i class="icon-comment"></i> Chat</div></li>
+									<li><a href="/user/{posts.userslug}"><i class="icon-user"></i> [[topic:profile]]</a></li>
+									<li><div class="chat"><i class="icon-comment"></i> [[topic:chat]]</div></li>
 							    </ul>
 							</div>
 
 							<div class="btn-group">
 								<button class="favourite btn btn-sm btn-default {posts.fav_button_class}" type="button">
-									<span class="favourite-text">Favourite</span>
+									<span class="favourite-text">[[topic:favourite]]</span>
 									<span class="post_rep_{posts.pid}">{posts.post_rep} </span><i class="{posts.fav_star_class}"></i>
 								</button>
 							</div>
 							<div class="btn-group">
-								<button class="btn btn-sm btn-default quote" type="button" title="Quote"><i class="icon-quote-left"></i></button>
-								<button class="btn btn-sm btn-primary btn post_reply" type="button">Reply <i class="icon-reply"></i></button>
+								<button class="btn btn-sm btn-default quote" type="button" title="[[topic:quote]]"><i class="icon-quote-left"></i></button>
+								<button class="btn btn-sm btn-primary btn post_reply" type="button">[[topic:reply]] <i class="icon-reply"></i></button>
 							</div>
 
 							<div class="btn-group pull-right post-tools">
-								<button class="btn btn-sm btn-default link" type="button" title="Link"><i class="icon-link"></i></button>
-								<button class="btn btn-sm btn-default edit {posts.display_moderator_tools}" type="button" title="Edit"><i class="icon-pencil"></i></button>
-								<button class="btn btn-sm btn-default delete {posts.display_moderator_tools}" type="button" title="Delete"><i class="icon-trash"></i></button>
+								<button class="btn btn-sm btn-default link" type="button" title="[[topic:link]]"><i class="icon-link"></i></button>
+								<button class="btn btn-sm btn-default edit {posts.display_moderator_tools}" type="button" title="[[topic:edit]]"><i class="icon-pencil"></i></button>
+								<button class="btn btn-sm btn-default delete {posts.display_moderator_tools}" type="button" title="[[topic:delete]]"><i class="icon-trash"></i></button>
 							</div>
 
 							<input id="post_{posts.pid}_link" value="" class="pull-right" style="display:none;"></input>
@@ -142,16 +142,16 @@
 	<hr />
 
 	<div class="topic-main-buttons">
-		<button id="post_reply" class="btn btn-primary btn-lg post_reply" type="button">Reply</button>
+		<button id="post_reply" class="btn btn-primary btn-lg post_reply" type="button">[[topic:reply]]</button>
 		<div class="btn-group pull-right" id="thread-tools" style="visibility: hidden;">
-			<button class="btn btn-default btn-lg dropdown-toggle" data-toggle="dropdown" type="button">Thread Tools <span class="caret"></span></button>
+			<button class="btn btn-default btn-lg dropdown-toggle" data-toggle="dropdown" type="button">[[topic:thread_tools.title]] <span class="caret"></span></button>
 			<ul class="dropdown-menu">
-				<li><a href="#" id="pin_thread"><i class="icon-pushpin"></i> Pin Thread</a></li>
-				<li><a href="#" id="lock_thread"><i class="icon-lock"></i> Lock Thread</a></li>
+				<li><a href="#" id="pin_thread"><i class="icon-pushpin"></i> [[topic:thread_tools.pin]]</a></li>
+				<li><a href="#" id="lock_thread"><i class="icon-lock"></i> [[topic:thread_tools.lock]]</a></li>
 				<li class="divider"></li>
-				<li><a href="#" id="move_thread"><i class="icon-move"></i> Move Thread</a></li>
+				<li><a href="#" id="move_thread"><i class="icon-move"></i> [[topic:thread_tools.move]]</a></li>
 				<li class="divider"></li>
-				<li><a href="#" id="delete_thread"><span class="text-error"><i class="icon-trash"></i> Delete Thread</span></a></li>
+				<li><a href="#" id="delete_thread"><span class="text-error"><i class="icon-trash"></i> [[topic:thread_tools.delete]]</span></a></li>
 			</ul>
 		</div>
 	</div>
@@ -175,7 +175,7 @@
 					<h3>Move Thread</h3>
 				</div>
 				<div class="modal-body">
-					<p id="categories-loading"><i class="icon-spin icon-refresh"></i> Loading Categories</p>
+					<p id="categories-loading"><i class="icon-spin icon-refresh"></i> [[topic:load_categories]]</p>
 					<ul class="category-list"></ul>
 					<div id="move-confirm" style="display: none;">
 						<hr />
@@ -183,8 +183,8 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal" id="move_thread_cancel">Close</a>
-					<button type="button" class="btn btn-primary" id="move_thread_commit" disabled>Move</a>
+					<button type="button" class="btn btn-default" data-dismiss="modal" id="move_thread_cancel">[[global:buttons.close]]</a>
+					<button type="button" class="btn btn-primary" id="move_thread_commit" disabled>[[topic:confirm_move]]</a>
 				</div>
 			</div>
 		</div>

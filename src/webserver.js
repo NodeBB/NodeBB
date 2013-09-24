@@ -66,7 +66,9 @@ var express = require('express'),
 				clientScripts: clientScripts
 			};
 
-		callback(null, templates.header.parse(templateValues));
+		translator.translate(templates.header.parse(templateValues), function(template) {
+			callback(null, template);
+		});
 	};
 
 	// Middlewares
@@ -123,6 +125,15 @@ var express = require('express'),
 
 	module.exports.init = function () {
 		templates = global.templates;
+
+		// translate all static templates served by webserver here. ex. footer, logout
+		translator.translate(templates['footer'].toString(), function(parsedTemplate) {
+			templates['footer'] = parsedTemplate;
+		});
+		translator.translate(templates['logout'].toString(), function(parsedTemplate) {
+			templates['logout'] = parsedTemplate;
+		});
+
 		server.listen(nconf.get('PORT') || nconf.get('port'));
 	}
 

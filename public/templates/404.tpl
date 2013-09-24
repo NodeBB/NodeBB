@@ -1,4 +1,4 @@
 <div class="alert alert-danger">
-	<strong>Not found</strong>
-	<p>You seem to have stumbled upon a page that does not exist. Return to the <a href="/">home page</a></p>
+	<strong>[[global:404.title]]</strong>
+	<p>[[global:404.message]]</p>
 </div>

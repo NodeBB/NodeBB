@@ -1,16 +1,22 @@
 var RDB = require('./redis.js'),
 	posts = require('./posts.js'),
-	user = require('./user.js');
+	user = require('./user.js'),
+	translator = require('./../public/src/translator.js');
 
 (function (Favourites) {
 	"use strict";
 
 	Favourites.favourite = function (pid, room_id, uid, socket) {
 		if (uid === 0) {
+			var not_logged_in = {
+				message: translator.get('topic:favourites.not_logged_in.message'),
+				title: translator.get('topic:favourites.not_logged_in.title')
+			};
+
 			socket.emit('event:alert', {
 				alert_id: 'post_favourite',
-				title: 'Not Logged In',
-				message: 'Please log in in order to favourite this post',
+				title: not_logged_in.title,
+				message: not_logged_in.message,
 				type: 'danger',
 				timeout: 5000
 			});
@@ -50,13 +56,6 @@ var RDB = require('./redis.js'),
 
 	Favourites.unfavourite = function (pid, room_id, uid, socket) {
 		if (uid === 0) {
-			socket.emit('event:alert', {
-				alert_id: 'post_favourite',
-				title: 'Not Logged In',
-				message: 'Please log in in order to favourite this post',
-				type: 'danger',
-				timeout: 5000
-			});
 			return;
 		}
 

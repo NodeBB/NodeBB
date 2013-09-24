@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
 	<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
-		<a href="/" itemprop="url"><span itemprop="title">Home</span></a>
+		<a href="/" itemprop="url"><span itemprop="title">[[global:home]]</span></a>
 	</li>
 	<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
 		<span itemprop="title">{category_name} <a target="_blank" href="../{category_id}.rss"><i class="icon-rss-sign"></i></a></span>
@@ -9,7 +9,7 @@
 </ol>
 
 <div>
-	<button id="new_post" class="btn btn-primary btn-lg {show_topic_button}">New Topic</button>
+	<button id="new_post" class="btn btn-primary btn-lg {show_topic_button}">[[category:new_topic_button]]</button>
 
 	<div class="inline-block pull-right">
 		<a href="#" id="facebook-share"><i class="icon-facebook-sign icon-2x"></i></a>&nbsp;
@@ -21,8 +21,7 @@
 <hr/>
 
 <div class="alert alert-warning hide {no_topics_message}" id="category-no-topics">
-	<strong>There are no topics in this category.</strong><br />
-	Why don't you try posting one?
+	[[category:no_topics]]
 </div>
 
 <div class="category row">
@@ -65,7 +64,7 @@
 
 		<div class="sidebar-block img-thumbnail">
 			<div class="block-header">
-				Recent Replies
+				[[category:sidebar.recent_replies]]
 			</div>
 			<div class="block-content recent-replies">
 				<ul id="category_recent_replies"></ul>
@@ -73,7 +72,7 @@
 		</div>
 		<div class="sidebar-block img-thumbnail">
 			<div class="block-header">
-				Active Participants
+				[[category:sidebar.active_participants]]
 			</div>
 			<div class="block-content">
 				<!-- BEGIN active_users -->
@@ -83,7 +82,7 @@
 		</div>
 		<div class="sidebar-block img-thumbnail {moderator_block_class}">
 			<div class="block-header">
-				Moderators
+				[[category:sidebar.moderators]]
 			</div>
 			<div class="block-content">
 				<!-- BEGIN moderators -->

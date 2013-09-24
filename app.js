@@ -81,6 +81,7 @@
 			};
 
 			var templates = require('./public/src/templates.js'),
+				translator = require('./public/src/translator.js'),
 				webserver = require('./src/webserver.js'),
 				SocketIO =  require('socket.io').listen(global.server, { log: false, transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket']}),
 				websockets = require('./src/websockets.js'),
@@ -89,6 +90,11 @@
 			websockets.init(SocketIO);
 
 			global.templates = {};
+			global.translator = translator;
+
+			translator.loadServer();
+
+			// todo: replace below with read directory code, derp.
 			templates.init([
 				'header', 'footer', 'logout', 'outgoing', 'admin/header', 'admin/footer', 'admin/index',
 				'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext',

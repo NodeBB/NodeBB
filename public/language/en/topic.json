@@ -1,0 +1,21 @@
+{
+	"profile": "Profile",
+	"chat": "Chat",
+	"notify_me": "Be notified of new replies in this topic",
+	"favourite": "Favourite",
+	"quote": "Quote",
+	"reply": "Reply",
+	"edit": "Edit",
+	"delete": "Delete",
+	"banned": "banned",
+	"link": "Link",
+	"thread_tools.title": "Thread Tools",
+	"thread_tools.pin": "Pin Thread",
+	"thread_tools.lock": "Lock Thread",
+	"thread_tools.move": "Move Thread",
+	"thread_tools.delete": "Delete Thread",
+	"load_categories": "Loading Categories",
+	"confirm_move": "Move",
+	"favourites.not_logged_in.title": "Not Logged In",
+	"favourites.not_logged_in.message": "Please log in in order to favourite this post"
+}

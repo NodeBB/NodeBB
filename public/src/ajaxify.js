@@ -2,6 +2,7 @@ var ajaxify = {};
 
 
 (function ($) {
+	/*global app, templates, utils*/
 
 	var location = document.location || window.location,
 		rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : ''),
@@ -68,6 +69,8 @@ var ajaxify = {};
 				}
 			}
 
+			translator.load(tpl_url);
+
 			jQuery('#footer, #content').fadeOut(100);
 
 			templates.flush();
@@ -95,7 +98,7 @@ var ajaxify = {};
 		}
 
 		return false;
-	}
+	};
 
 	$('document').ready(function () {
 		if (!window.history || !window.history.pushState) return; // no ajaxification for old browsers
@@ -132,7 +135,7 @@ var ajaxify = {};
 
 		function nodeName(elem, name) {
 			return elem.nodeName && elem.nodeName.toUpperCase() === name.toUpperCase();
-		};
+		}
 
 		function evalScript(elem) {
 			var data = (elem.text || elem.textContent || elem.innerHTML || ""),
@@ -154,7 +157,7 @@ var ajaxify = {};
 			head.insertBefore(script, head.firstChild);
 			//TODO: remove from head before inserting?, doing this breaks scripts in safari so commented out for now
 			//head.removeChild(script);
-		};
+		}
 
 		var scripts = [],
 			script,
@@ -177,6 +180,6 @@ var ajaxify = {};
 			}
 			evalScript(scripts[i]);
 		}
-	};
+	}
 
 }(jQuery));

@@ -158,6 +158,7 @@ var utils = require('./../public/src/utils.js'),
 			'vendor/bootbox/bootbox.min.js',
 			'src/templates.js',
 			'src/ajaxify.js',
+			'src/translator.js',
 			'src/jquery.form.js',
 			'src/utils.js'
 		],
@@ -218,6 +219,28 @@ var utils = require('./../public/src/utils.js'),
 				} else {
 					winston.error('Problem minifying client-side libraries, exiting.');
 					process.exit();
+				}
+			});
+		}
+	};
+
+	Meta.db = {
+		getFile: function (callback) {
+			var multi = RDB.multi();
+
+			multi.config('get', 'dir');
+			multi.config('get', 'dbfilename');
+			multi.exec(function (err, results) {
+				if (err) {
+					return callback(err);
+				} else {
+					results = results.reduce(function (memo, config) {
+						memo[config[0]] = config[1];
+						return memo;
+					}, {});
+
+					var dbFile = path.join(results.dir, results.dbfilename);
+					callback(null, dbFile);
 				}
 			});
 		}
