@@ -313,6 +313,7 @@ schema = require('./schema.js'),
 					topicData.teaser_text = topicInfo.teaserInfo.text || '',
 					topicData.teaser_username = topicInfo.teaserInfo.username || '';
 					topicData.teaser_userpicture = topicInfo.teaserInfo.picture || '';
+					topicData.teaser_pid = topicInfo.teaserInfo.pid;
 
 					topicData.teaser_timestamp = topicInfo.teaserInfo.timestamp ? (new Date(parseInt(topicInfo.teaserInfo.timestamp, 10)).toISOString()) : '';
 
@@ -575,7 +576,7 @@ schema = require('./schema.js'),
 	Topics.getTeaser = function(tid, callback) {
 		threadTools.getLatestUndeletedPid(tid, function(err, pid) {
 			if (!err) {
-				posts.getPostFields(pid, ['content', 'uid', 'timestamp'], function(postData) {
+				posts.getPostFields(pid, ['pid', 'content', 'uid', 'timestamp'], function(postData) {
 
 					user.getUserFields(postData.uid, ['username', 'picture'], function(err, userData) {
 						if (err)
@@ -584,6 +585,7 @@ schema = require('./schema.js'),
 						var stripped = postData.content,
 							timestamp = postData.timestamp,
 							returnObj = {
+								"pid": postData.pid,
 								"username": userData.username,
 								"picture": userData.picture,
 								"timestamp": timestamp

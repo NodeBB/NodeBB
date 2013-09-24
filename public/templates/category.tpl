@@ -29,7 +29,7 @@
 	<div class="{topic_row_size}">
 		<ul id="topics-container">
 		<!-- BEGIN topics -->
-		<a href="../../topic/{topics.slug}"><li class="category-item {topics.deleted-class}">
+		<a href="../../topic/{topics.slug}#{topics.teaser_pid}"><li class="category-item {topics.deleted-class}">
 			<div class="row">
 				<div class="col-md-12 topic-row">
 					<div class="latest-post visible-lg visible-md">
