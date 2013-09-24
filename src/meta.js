@@ -149,17 +149,17 @@ var utils = require('./../public/src/utils.js'),
 
 	Meta.js = {
 		scripts: [
-			'/vendor/jquery/js/jquery.js',
-			'/vendor/jquery/js/jquery-ui-1.10.3.custom.min.js',
-			'/vendor/jquery/js/jquery.timeago.js',
-			'/vendor/bootstrap/js/bootstrap.min.js',
-			'/src/app.js',
-			'/vendor/requirejs/require.js',
-			'/vendor/bootbox/bootbox.min.js',
-			'/src/templates.js',
-			'/src/ajaxify.js',
-			'/src/jquery.form.js',
-			'/src/utils.js'
+			'vendor/jquery/js/jquery.js',
+			'vendor/jquery/js/jquery-ui-1.10.3.custom.min.js',
+			'vendor/jquery/js/jquery.timeago.js',
+			'vendor/bootstrap/js/bootstrap.min.js',
+			'src/app.js',
+			'vendor/requirejs/require.js',
+			'vendor/bootbox/bootbox.min.js',
+			'src/templates.js',
+			'src/ajaxify.js',
+			'src/jquery.form.js',
+			'src/utils.js'
 		],
 		minFile: path.join(__dirname, '..', 'public/src/nodebb.min.js'),
 		get: function (callback) {
