@@ -215,27 +215,29 @@
 			}, false);
 		}
 
-		$(window).off('scroll').on('scroll', function() {
-			var bottom = ($(document).height() - $(window).height()) * 0.9;
-
-			if ($(window).scrollTop() > bottom && !app.infiniteLoaderActive && $('#post-container').children().length) {
-				app.loadMorePosts(tid);
-			}
-		});
+		enableInfiniteLoading();
 
 		var bookmark = localStorage.getItem('topic:' + tid + ':bookmark');
 
 		if(bookmark) {
-			// need to find out why it doesnt work without setTimeout -baris
-			setTimeout(function() {
-				app.scrollToPost(parseInt(bookmark, 10));
-			}, 300);
+			app.scrollToPost(parseInt(bookmark, 10));
 		}
 
 		$('#post-container').on('click', '.deleted', function(ev) {
 			$(this).toggleClass('deleted-expanded');
 		});
 	});
+
+	function enableInfiniteLoading() {
+		$(window).off('scroll').on('scroll', function() {
+			var bottom = ($(document).height() - $(window).height()) * 0.9;
+
+			if ($(window).scrollTop() > bottom && !app.infiniteLoaderActive && $('#post-container').children().length) {
+				app.loadMorePosts(tid);
+				console.log('window scrolling');
+			}
+		});
+	}
 
 	var reply_fn = function() {
 		var selectionText = '',

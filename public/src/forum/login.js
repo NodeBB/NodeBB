@@ -32,7 +32,12 @@
 					$('#login-error-notify').show();
 				} else {
 					$('#login-error-notify').hide();
-					window.location.replace(RELATIVE_PATH + "/?loggedin");
+					//window.location.replace(RELATIVE_PATH + "/?loggedin");
+					history.go(-1);
+					//setTimeout(function(){
+						app.loadConfig();
+					//}, 500);
+					//socket.emit('api:updateHeader');
 				}
 			},
 			error: function(data, textStatus, jqXHR) {

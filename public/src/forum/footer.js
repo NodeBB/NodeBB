@@ -58,6 +58,7 @@
 				if (data['username'])
 					userLabel.find('span').html(data['username']);
 			} else {
+				rightMenu.empty();
 				var userli = $('<li> \
 									<a id="user_label" href="/user/' + data['userslug'] + '"> \
 										<img src="' + data['picture'] + '"/> \
