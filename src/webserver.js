@@ -55,13 +55,9 @@ var express = require('express'),
 				meta_tags: metaString
 			};
 
-		// meta.build_title(options.title, (options.req.user ? options.req.user.uid : 0), function(err, title) {
-		// 	if (!err) templateValues.browserTitle = title;
-
-		// 	callback(null, templates['header'].parse(templateValues));
-		// });
-
-		callback(null, templates['header'].parse(templateValues));
+		translator.translate(templates['header'].parse(templateValues), function(template) {
+			callback(null, template);
+		});
 	};
 
 	// Middlewares
@@ -117,6 +113,15 @@ var express = require('express'),
 
 	module.exports.init = function() {
 		templates = global.templates;
+
+		// translate all static templates served by webserver here. ex. footer, logout
+		translator.translate(templates['footer'].toString(), function(parsedTemplate) {
+			templates['footer'] = parsedTemplate;
+		});
+		translator.translate(templates['logout'].toString(), function(parsedTemplate) {
+			templates['logout'] = parsedTemplate;
+		});
+
 		server.listen(nconf.get('PORT') || nconf.get('port'));
 	}
 

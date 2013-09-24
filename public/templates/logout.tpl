@@ -1,13 +1,13 @@
 <ol class="breadcrumb">
 	<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
-		<a href="/" itemprop="url"><span itemprop="title">Home</span></a>
+		<a href="/" itemprop="url"><span itemprop="title">[[global:home]]</span></a>
 	</li>
 	<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
-		<span itemprop="title">Logout</span>
+		<span itemprop="title">[[global:logout]]</span>
 	</li>
 </ol>
 
 <div class="alert alert-success" id="message">
-	<h4>You are now logged out.</h4>
-	<p>You have successfully logged out of NodeBB</p>
+	<h4>[[global:logout.title]]</h4>
+	<p>[[global:logout.message]]</p>
 </div>

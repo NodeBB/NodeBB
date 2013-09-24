@@ -4,5 +4,8 @@
 	"403.title": "Access Denied",
 	"403.message": "You seem to have stumbled upon a page that you do not have access to. Perhaps you should <a href='/login'>try logging in</a>?",
 	"404.title": "Not Found",
-	"404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='/''>home page</a>."
+	"404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='/''>home page</a>.",
+	"logout": "Logout",
+	"logout.title": "You are now logged out.",
+	"logout.message": "You have successfully logged out of NodeBB"
 }

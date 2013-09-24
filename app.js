@@ -85,6 +85,7 @@
 				plugins = require('./src/plugins'); // Don't remove this - plugins initializes itself
 
 			global.templates = {};
+			global.translator = translator;
 
 			translator.loadServer();
 

@@ -17,11 +17,72 @@
 		files = {
 			loaded: {},
 			loading: {},
-			callbacks: {}
+			callbacks: {} // could be combined with "loading" in future.
 		},
 		isServer = false;
 
 	module.exports = translator;
+
+	/*
+	 * TODO: DRY, see translator.translate. The hard part is to make sure both work node.js / js side
+	 */
+	translator.get = function (key, callback) {
+		var parsedKey = key.split(':'),
+			languageFile = parsedKey[0];
+
+		parsedKey = parsedKey[1];
+		translator.load(languageFile, function (languageData) {
+			if (callback) {
+				callback(languageData[parsedKey]);
+			}
+
+			return languageData[parsedKey];
+		});
+	};
+
+	/*
+	 * TODO: Not fully converted to server side yet, ideally server should be able to parse whole templates on demand if necessary
+	 * fix: translator.load should determine if server side and immediately return appropriate language file.
+	 */
+	translator.translate = function (data, callback) {
+		var keys = data.match(/\[\[.*?\]\]/g),
+			loading = 0;
+
+		for (var key in keys) {
+			if (keys.hasOwnProperty(key)) {
+				//check for additional variables then keys[key].split(/[,][?\s+]/);
+
+				var parsedKey = keys[key].replace('[[', '').replace(']]', '').split(':'),
+					languageFile = parsedKey[0];
+
+				parsedKey = parsedKey[1];
+
+				if (files.loaded[languageFile]) {
+					data = data.replace(keys[key], files.loaded[languageFile][parsedKey]);
+				} else {
+					loading++;
+
+					(function (languageKey, parsedKey) {
+						translator.load(languageFile, function (languageData) {
+							data = data.replace(languageKey, languageData[parsedKey]);
+							loading--;
+							checkComplete();
+						});
+					}(keys[key], parsedKey));
+
+				}
+			}
+		}
+
+		checkComplete();
+
+		function checkComplete() {
+			if (loading === 0) {
+				callback(data);
+			}
+		}
+
+	};
 
 	translator.load = function (filename, callback) {
 		if (isServer === true) {
@@ -78,68 +139,6 @@
 				}
 			}
 		});
-	};
-
-	/*
-	 * TODO: DRY, see translator.translate. The hard part is to make sure both work node.js / js side
-	 */
-	translator.get = function (key, callback) {
-		var parsedKey = key.split(':'),
-			languageFile = parsedKey[0];
-
-		parsedKey = parsedKey[1];
-		translator.load(languageFile, function (languageData) {
-			if (callback) {
-				callback(languageData[parsedKey]);
-			}
-
-			return languageData[parsedKey];
-		});
-	};
-
-
-	/*
-	 * TODO: Not fully converted to server side yet, ideally server should be able to parse whole templates on demand if necessary
-	 * fix: translator.load should determine if server side and immediately return appropriate language file.
-	 */
-	translator.translate = function (data, callback) {
-		var keys = data.match(/\[\[.*?\]\]/g),
-			loading = 0;
-
-		for (var key in keys) {
-			if (keys.hasOwnProperty(key)) {
-				//check for additional variables then keys[key].split(/[,][?\s+]/);
-
-				var parsedKey = keys[key].replace('[[', '').replace(']]', '').split(':'),
-					languageFile = parsedKey[0];
-
-				parsedKey = parsedKey[1];
-
-				if (files.loaded[languageFile]) {
-					data = data.replace(keys[key], files.loaded[languageFile][parsedKey]);
-				} else {
-					loading++;
-
-					(function (languageKey, parsedKey) {
-						translator.load(languageFile, function (languageData) {
-							data = data.replace(languageKey, languageData[parsedKey]);
-							loading--;
-							checkComplete();
-						});
-					}(keys[key], parsedKey));
-
-				}
-			}
-		}
-
-		checkComplete();
-
-		function checkComplete() {
-			if (loading === 0) {
-				callback(data);
-			}
-		}
-
 	};
 
 	if ('undefined' !== typeof window) {
