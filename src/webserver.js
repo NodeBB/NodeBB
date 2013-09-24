@@ -66,7 +66,6 @@ var express = require('express'),
 				clientScripts: clientScripts
 			};
 
-		console.log(templateValues);
 		callback(null, templates.header.parse(templateValues));
 	};
 
