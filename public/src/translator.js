@@ -48,12 +48,15 @@
 			loading = 0;
 		
 		function insertLanguage(text, key, value, variables) {
-			for (var i = 1, ii = variables.length; i < ii; i++) {
-				var variable = variables[i].replace(']]', '');
-				value = value.replace('%' + i, variable);
-			}
+			if (value) {
+				for (var i = 1, ii = variables.length; i < ii; i++) {
+					var variable = variables[i].replace(']]', '');
+					value = value.replace('%' + i, variable);
+				}
 
-			text = text.replace(key, value);
+				text = text.replace(key, value);
+			}
+			
 
 			return text;
 		}
