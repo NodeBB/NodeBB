@@ -223,4 +223,26 @@ var utils = require('./../public/src/utils.js'),
 			});
 		}
 	};
+
+	Meta.db = {
+		getFile: function (callback) {
+			var multi = RDB.multi();
+
+			multi.config('get', 'dir');
+			multi.config('get', 'dbfilename');
+			multi.exec(function (err, results) {
+				if (err) {
+					return callback(err);
+				} else {
+					results = results.reduce(function (memo, config) {
+						memo[config[0]] = config[1];
+						return memo;
+					}, {});
+
+					var dbFile = path.join(results.dir, results.dbfilename);
+					callback(null, dbFile);
+				}
+			});
+		}
+	};
 }(exports));
