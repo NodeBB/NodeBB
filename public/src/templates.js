@@ -1,4 +1,4 @@
-(function(module) {
+(function (module) {
 
 	var config = {},
 		templates,
@@ -12,11 +12,11 @@
 		fs = require('fs');
 	} catch (e) {}
 
-	templates.force_refresh = function(tpl) {
+	templates.force_refresh = function (tpl) {
 		return !!config.force_refresh[tpl];
 	}
 
-	templates.get_custom_map = function(tpl) {
+	templates.get_custom_map = function (tpl) {
 		if (config['custom_mapping'] && tpl) {
 			for (var pattern in config['custom_mapping']) {
 				if (tpl.match(pattern)) {
@@ -28,11 +28,11 @@
 		return false;
 	}
 
-	templates.is_available = function(tpl) {
+	templates.is_available = function (tpl) {
 		return jQuery.inArray(tpl, available_templates) !== -1;
 	};
 
-	templates.ready = function(callback) {
+	templates.ready = function (callback) {
 		if (callback == null) {
 			if (this.ready_callback) {
 				this.ready_callback();
@@ -48,7 +48,7 @@
 		}
 	};
 
-	templates.prepare = function(raw_tpl, data) {
+	templates.prepare = function (raw_tpl, data) {
 		var template = {};
 		template.html = raw_tpl;
 		template.parse = parse;
@@ -62,10 +62,10 @@
 			var loaded = templatesToLoad.length;
 
 			for (var t in templatesToLoad) {
-				(function(file) {
-					fs.readFile(__dirname + '/../templates/' + file + '.tpl', function(err, html) {
-						var template = function() {
-							this.toString = function() {
+				(function (file) {
+					fs.readFile(__dirname + '/../templates/' + file + '.tpl', function (err, html) {
+						var template = function () {
+							this.toString = function () {
 								return this.html;
 							};
 						}
@@ -84,7 +84,7 @@
 		}
 
 		function loadClient() {
-			jQuery.when(jQuery.getJSON(RELATIVE_PATH + '/templates/config.json'), jQuery.getJSON(RELATIVE_PATH + '/api/get_templates_listing')).done(function(config_data, templates_data) {
+			jQuery.when(jQuery.getJSON(RELATIVE_PATH + '/templates/config.json'), jQuery.getJSON(RELATIVE_PATH + '/api/get_templates_listing')).done(function (config_data, templates_data) {
 				config = config_data[0];
 				available_templates = templates_data[0];
 				templates.ready();
@@ -96,11 +96,11 @@
 	}
 
 
-	templates.init = function(templates_to_load) {
+	templates.init = function (templates_to_load) {
 		loadTemplates(templates_to_load || []);
 	}
 
-	templates.getTemplateNameFromUrl = function(url) {
+	templates.getTemplateNameFromUrl = function (url) {
 		var parts = url.split('?')[0].split('/');
 
 		for (var i = 0; i < parts.length; ++i) {
@@ -112,7 +112,7 @@
 	}
 
 
-	templates.load_template = function(callback, url, template) {
+	templates.load_template = function (callback, url, template) {
 		var location = document.location || window.location,
 			rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : '');
 
@@ -129,13 +129,13 @@
 		var template_data = null;
 
 
-		(function() {
+		(function () {
 			var timestamp = new Date().getTime(); //debug
 
 			if (!templates[tpl_url]) {
-				jQuery.get(RELATIVE_PATH + '/templates/' + tpl_url + '.tpl?v=' + timestamp, function(html) {
-					var template = function() {
-						this.toString = function() {
+				jQuery.get(RELATIVE_PATH + '/templates/' + tpl_url + '.tpl?v=' + timestamp, function (html) {
+					var template = function () {
+						this.toString = function () {
 							return this.html;
 						};
 					}
@@ -154,9 +154,9 @@
 
 		}());
 
-		(function() {
+		(function () {
 
-			jQuery.get(API_URL + api_url, function(data) {
+			jQuery.get(API_URL + api_url, function (data) {
 
 				if (!data) {
 					ajaxify.go('404');
@@ -165,7 +165,7 @@
 
 				template_data = data;
 				parse_template();
-			}).fail(function(data) {
+			}).fail(function (data) {
 				template_data = {};
 				parse_template();
 			});
@@ -182,20 +182,20 @@
 
 			document.getElementById('content').innerHTML = templates[tpl_url].parse(template_data);
 
-			jQuery('#content [template-variable]').each(function(index, element) {
+			jQuery('#content [template-variable]').each(function (index, element) {
 				var value = null;
 
 				switch (element.getAttribute('template-type')) {
-					case 'boolean':
-						value = (element.value === 'true' || element.value === '1') ? true : false;
-						break;
-					case 'int': // Intentional fall-through
-					case 'integer':
-						value = parseInt(element.value);
-						break;
-					default:
-						value = element.value;
-						break;
+				case 'boolean':
+					value = (element.value === 'true' || element.value === '1') ? true : false;
+					break;
+				case 'int': // Intentional fall-through
+				case 'integer':
+					value = parseInt(element.value);
+					break;
+				default:
+					value = element.value;
+					break;
 				}
 
 				templates.set(element.getAttribute('template-variable'), value);
@@ -208,20 +208,20 @@
 
 	}
 
-	templates.flush = function() {
+	templates.flush = function () {
 		parsed_variables = {};
 	}
 
-	templates.get = function(key) {
+	templates.get = function (key) {
 		return parsed_variables[key];
 	}
 
-	templates.set = function(key, value) {
+	templates.set = function (key, value) {
 		parsed_variables[key] = value;
 	}
 
 	//modified from https://github.com/psychobunny/dcp.templates
-	var parse = function(data) {
+	var parse = function (data) {
 		var self = this;
 
 		function replace(key, value, template) {
@@ -230,7 +230,7 @@
 		}
 
 		function makeRegex(block) {
-			return new RegExp("<!-- BEGIN " + block + " -->[^]*<!-- END " + block + " -->", 'g');
+			return new RegExp("<!-- BEGIN " + block + " -->[\\s\\S]*<!-- END " + block + " -->", 'g');
 		}
 
 		function getBlock(regex, block, template) {
@@ -299,7 +299,7 @@
 			}
 
 			if (namespace) {
-				var regex = new RegExp("{" + namespace + "[^]*?}", 'g');
+				var regex = new RegExp("{" + namespace + "[\\s\\S]*?}", 'g');
 				template = template.replace(regex, '');
 			}
 
