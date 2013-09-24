@@ -428,7 +428,6 @@ var express = require('express'),
 		app.get('/robots.txt', function (req, res) {
 			res.set('Content-Type', 'text/plain');
 			res.send("User-agent: *\n" +
-				"Disallow: \n" +
 				"Disallow: /admin/\n" +
 				"Sitemap: " + nconf.get('url') + "sitemap.xml");
 		});

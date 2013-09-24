@@ -573,7 +573,7 @@ schema = require('./schema.js'),
 	}
 
 	Topics.getTeaser = function(tid, callback) {
-		threadTools.get_latest_undeleted_pid(tid, function(err, pid) {
+		threadTools.getLatestUndeletedPid(tid, function(err, pid) {
 			if (!err) {
 				posts.getPostFields(pid, ['content', 'uid', 'timestamp'], function(postData) {
 
@@ -591,7 +591,7 @@ schema = require('./schema.js'),
 
 						if (postData.content) {
 							stripped = postData.content.replace(/>.+\n\n/, '');
-							postTools.toHTML(stripped, function(err, stripped) {
+							postTools.parse(stripped, function(err, stripped) {
 								returnObj.text = utils.strip_tags(stripped);
 								callback(null, returnObj);
 							});

@@ -87,7 +87,7 @@ var RDB = require('./redis.js'),
 					});
 				},
 				function(next) {
-					PostTools.toHTML(content, next);
+					PostTools.parse(content, next);
 				}
 			], function(err, results) {
 				io.sockets.in('topic_' + results[0].tid).emit('event:post_edited', {
@@ -128,7 +128,7 @@ var RDB = require('./redis.js'),
 				});
 
 				// Delete the thread if it is the last undeleted post
-				threadTools.get_latest_undeleted_pid(postData.tid, function(err, pid) {
+				threadTools.getLatestUndeletedPid(postData.tid, function(err, pid) {
 					if (err && err.message === 'no-undeleted-pids-found') {
 						threadTools.delete(postData.tid, -1, function(err) {
 							if (err) winston.error('Could not delete topic (tid: ' + postData.tid + ')', err.stack);
@@ -164,7 +164,7 @@ var RDB = require('./redis.js'),
 					pid: pid
 				});
 
-				threadTools.get_latest_undeleted_pid(postData.tid, function(err, pid) {
+				threadTools.getLatestUndeletedPid(postData.tid, function(err, pid) {
 					posts.getPostField(pid, 'timestamp', function(timestamp) {
 						topics.updateTimestamp(postData.tid, timestamp);
 					});
@@ -190,28 +190,11 @@ var RDB = require('./redis.js'),
 		});
 	}
 
-	PostTools.toHTML = function(raw, callback) {
+	PostTools.parse = function(raw, callback) {
 		raw = raw || '';
+
 		plugins.fireHook('filter:post.parse', raw, function(parsed) {
-			var cheerio = require('cheerio');
-
-			if (parsed && parsed.length > 0) {
-				var parsedContentDOM = cheerio.load(parsed);
-				var domain = nconf.get('url');
-
-				parsedContentDOM('a').each(function() {
-					this.attr('rel', 'nofollow');
-					var href = this.attr('href');
-
-					if (href && !href.match(domain) && !utils.isRelativeUrl(href)) {
-						this.attr('href', domain + 'outgoing?url=' + encodeURIComponent(href));
-					}
-				});
-
-				callback(null, parsedContentDOM.html());
-			} else {
-				callback(null, '<p></p>');
-			}
+			callback(null, parsed);
 		});
 	}
 
