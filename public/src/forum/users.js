@@ -74,7 +74,12 @@
 
 		});
 
-
+		socket.on('api:user.isOnline', function(data) {
+			if(active == 'online' && !loadingMoreUsers) {
+				$('#users-container').empty();
+				startLoading('users:online', 0);
+			}
+		});
 
 		function onUsersLoaded(users) {
 			var html = templates.prepare(templates['users'].blocks['users']).parse({
@@ -91,23 +96,31 @@
 				set = 'users:postcount';
 			} else if (active === 'sort-reputation') {
 				set = 'users:reputation';
+			} else if (active === 'online') {
+				set = 'users:online';
 			}
 
 			if (set) {
-				loadingMoreUsers = true;
-				socket.emit('api:users.loadMore', {
-					set: set,
-					after: $('#users-container').children().length
-				}, function(data) {
-					if (data.users.length) {
-						onUsersLoaded(data.users);
-					} else {
-						$('#load-more-users-btn').addClass('disabled');
-					}
-					loadingMoreUsers = false;
-				});
+				startLoading(set, $('#users-container').children().length);
 			}
 		}
+
+		function startLoading(set, after) {
+			loadingMoreUsers = true;
+			socket.emit('api:users.loadMore', {
+				set: set,
+				after: after
+			}, function(data) {
+				if (data.users.length) {
+					onUsersLoaded(data.users);
+					$('#load-more-users-btn').removeClass('disabled');
+				} else {
+					$('#load-more-users-btn').addClass('disabled');
+				}
+				loadingMoreUsers = false;
+			});
+		}
+
 
 		$('#load-more-users-btn').on('click', loadMoreUsers);
 

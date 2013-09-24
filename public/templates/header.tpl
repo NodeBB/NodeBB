@@ -8,27 +8,16 @@
 	<script>
 		var RELATIVE_PATH = "{relative_path}";
 	</script>
-	<script src="http://code.jquery.com/jquery.js"></script>
-	<script src="{relative_path}/vendor/jquery/js/jquery-ui-1.10.3.custom.min.js"></script>
-	<script src="{relative_path}/vendor/jquery/js/jquery.timeago.js"></script>
-	<script src="{relative_path}/vendor/bootstrap/js/bootstrap.min.js"></script>
 	<script src="{relative_path}/socket.io/socket.io.js"></script>
-	<script src="{relative_path}/src/app.js"></script>
-	<script src="{relative_path}/vendor/requirejs/require.js"></script>
-	<script src="{relative_path}/vendor/bootbox/bootbox.min.js"></script>
+	<script src="{relative_path}/src/nodebb.min.js"></script>
 	<script>
 		require.config({
 			baseUrl: "{relative_path}/src/modules",
 			waitSeconds: 3
 		});
 	</script>
-	<script src="{relative_path}/src/templates.js"></script>
-	<script src="{relative_path}/src/ajaxify.js"></script>
-	<script src="{relative_path}/src/jquery.form.js"></script>
-	<script src="{relative_path}/src/utils.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="{relative_path}/css/nodebb.css" />
-
 </head>
 
 <body>
@@ -54,9 +43,9 @@
 					<li>
 						<a href="/users">Users</a>
 					</li>
-					<!--Enable when /search form is completed <li class="visible-xs">
+					<li class="visible-xs">
 						<a href="/search">Search</a>
-					</li>-->
+					</li>
 					<li>
 						<a href="/"></a>
 					</li>

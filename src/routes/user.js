@@ -25,7 +25,6 @@ var user = require('./../user.js'),
 					});
 				}
 			});
-
 		});
 
 		app.get('/users', function(req, res) {
@@ -61,6 +60,15 @@ var user = require('./../user.js'),
 				res: res
 			}, function(err, header) {
 				res.send(header + app.create_route("users/sort-reputation", "users") + templates['footer']);
+			});
+		});
+
+		app.get('/users/online', function(req, res) {
+			app.build_header({
+				req: req,
+				res: res
+			}, function(err, header) {
+				res.send(header + app.create_route("users/online", "users") + templates['footer']);
 			});
 		});
 
@@ -136,7 +144,7 @@ var user = require('./../user.js'),
 		app.post('/user/uploadpicture', function(req, res) {
 			if (!req.user)
 				return res.redirect('/403');
-			
+
 			var uploadSize = meta.config.maximumProfileImageSize || 256;
 
 			if (req.files.userPhoto.size > uploadSize * 1024) {
@@ -342,7 +350,7 @@ var user = require('./../user.js'),
 					return;
 				}
 
-				
+
 				user.getUserFields(uid, ['username', 'userslug', 'showemail'], function(err, userData) {
 					if (err)
 						return next(err);
@@ -436,6 +444,7 @@ var user = require('./../user.js'),
 		app.get('/api/users/sort-posts', getUsersSortedByPosts);
 		app.get('/api/users/sort-reputation', getUsersSortedByReputation);
 		app.get('/api/users/latest', getUsersSortedByJoinDate);
+		app.get('/api/users/online', getOnlineUsers);
 		app.get('/api/users/search', getUsersForSearch);
 
 
@@ -461,6 +470,16 @@ var user = require('./../user.js'),
 
 		function getUsersSortedByReputation(req, res) {
 			user.getUsers('users:reputation', 0, 49, function(err, data) {
+				res.json({
+					search_display: 'none',
+					loadmore_display: 'block',
+					users: data
+				});
+			});
+		}
+
+		function getOnlineUsers(req, res) {
+			user.getUsers('users:online', 0, 49, function(err, data) {
 				res.json({
 					search_display: 'none',
 					loadmore_display: 'block',

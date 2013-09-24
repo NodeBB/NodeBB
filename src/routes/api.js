@@ -186,6 +186,7 @@ var user = require('./../user.js'),
 			return res.json({
 				show_no_topics: 'hide',
 				show_no_posts: 'hide',
+				show_results: 'hide',
 				search_query: '',
 				posts: [],
 				topics: []
@@ -235,6 +236,7 @@ var user = require('./../user.js'),
 				return res.json({
 					show_no_topics: results[1].length ? 'hide' : '',
 					show_no_posts: results[0].length ? 'hide' : '',
+					show_results: '',
 					search_query: req.params.term,
 					posts: results[0],
 					topics: results[1]

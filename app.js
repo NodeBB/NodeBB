@@ -24,8 +24,11 @@
 	nconf.argv().env();
 
 	var fs = require('fs'),
+		async = require('async'),
 		winston = require('winston'),
 		pkg = require('./package.json'),
+		path = require('path'),
+		uglifyjs = require('uglify-js'),
 		meta;
 
 	// Runtime environment
@@ -68,6 +71,61 @@
 		if (process.env.NODE_ENV === 'development') {
 			winston.info('Base Configuration OK.');
 		}
+
+		// Minify JS
+		var toMinify = [
+			'/vendor/jquery/js/jquery.js',
+			'/vendor/jquery/js/jquery-ui-1.10.3.custom.min.js',
+			'/vendor/jquery/js/jquery.timeago.js',
+			'/vendor/bootstrap/js/bootstrap.min.js',
+			'/src/app.js',
+			'/vendor/requirejs/require.js',
+			'/vendor/bootbox/bootbox.min.js',
+			'/src/templates.js',
+			'/src/ajaxify.js',
+			'/src/jquery.form.js',
+			'/src/utils.js'
+		],
+			minified, mtime;
+		toMinify = toMinify.map(function (jsPath) {
+			return path.join(__dirname + '/public', jsPath);
+		});
+		async.parallel({
+			mtime: function (next) {
+				async.map(toMinify, fs.stat, function (err, stats) {
+					async.reduce(stats, 0, function (memo, item, callback) {
+						mtime = +new Date(item.mtime);
+						callback(null, mtime > memo ? mtime : memo);
+					}, next);
+				});
+			},
+			minFile: function (next) {
+				var minFile = path.join(__dirname, 'public/src/nodebb.min.js');
+				if (!fs.existsSync(minFile)) {
+					winston.warn('No minified client-side library found');
+					return next(null, 0);
+				}
+
+				fs.stat(minFile, function (err, stat) {
+					next(err, +new Date(stat.mtime));
+				});
+			}
+		}, function (err, results) {
+			if (results.minFile > results.mtime) {
+				winston.info('No changes to client-side libraries -- skipping minification');
+			} else {
+				winston.info('Minifying client-side libraries');
+				minified = uglifyjs.minify(toMinify);
+				fs.writeFile(path.join(__dirname, '/public/src', 'nodebb.min.js'), minified.code, function (err) {
+					if (!err) {
+						winston.info('Minified client-side libraries');
+					} else {
+						winston.error('Problem minifying client-side libraries, exiting.');
+						process.exit();
+					}
+				});
+			}
+		});
 
 		meta.configs.init(function () {
 			// Initial setup for Redis & Reds

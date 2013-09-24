@@ -26,7 +26,6 @@
 		fields: ['username', 'picture', 'userslug']
 	});
 	socket.on('api:updateHeader', function(data) {
-
 		jQuery('#search-button').on('click', function() {
 			jQuery('#search-fields').removeClass('hide').show();
 			jQuery(this).hide();
@@ -67,7 +66,16 @@
 								</li>');
 				rightMenu.append(userli);
 
-				var logoutli = $('<li><a href="' + RELATIVE_PATH + '/logout">Log out</a></li>');
+				var logoutli = $('<li><a href="#">Log out</a></li>');
+				logoutli.on('click', function() {
+					var	csrf_token = $('#csrf_token').val();
+
+					$.post(RELATIVE_PATH + '/logout', {
+						_csrf: csrf_token
+					}, function() {
+						window.location = RELATIVE_PATH + '/';
+					});
+				});
 				rightMenu.append(logoutli);
 			}
 		} else {
@@ -86,6 +94,11 @@
 			right_menu.appendChild(registerEl);
 			right_menu.appendChild(loginEl);
 		}
+
+		$('#main-nav a,#right-menu a').off('click').on('click', function() {
+			if($('.navbar .navbar-collapse').hasClass('in'))
+				$('.navbar-header button').click();
+		});
 	});
 
 	// Notifications dropdown

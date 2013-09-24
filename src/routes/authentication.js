@@ -90,19 +90,14 @@
 	}
 
 	Auth.create_routes = function(app) {
-
-		app.get('/logout', function(req, res) {
+		app.post('/logout', function(req, res) {
 			if (req.user && req.user.uid > 0) {
 				winston.info('[Auth] Session ' + req.sessionID + ' logout (uid: ' + req.user.uid + ')');
 
 				req.logout();
-				app.build_header({
-					req: req,
-					res: res
-				}, function(err, header) {
-					res.send(header + templates['logout'] + templates['footer']);
-				});
-			} else res.redirect('/');
+			}
+
+			res.send(200)
 		});
 
 		if (login_strategies.indexOf('twitter') !== -1) {

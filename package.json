@@ -1,69 +1,64 @@
 {
-  "name": "nodebb",
-  "license": "GPLv3 or later",
-  "description": "NodeBB Forum",
-  "version": "0.0.6",
-  "homepage": "http://www.nodebb.org",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/designcreateplay/NodeBB/"
-  },
-  "main": "app.js",
-  "dependencies": {
-    "socket.io": "~0.9.16",
-    "redis": "0.8.3",
-    "express": "3.2.0",
-    "express-namespace": "0.1.1",
-    "emailjs": "0.3.4",
-    "cookie": "0.0.6",
-    "connect-redis": "1.4.5",
-    "passport": "0.1.17",
-    "passport-local": "0.1.6",
-    "passport-twitter": "0.1.5",
-    "passport-google-oauth": "0.1.5",
-    "passport-facebook": "0.1.5",
-    "less-middleware": "0.1.12",
-    "marked": "0.2.8",
-    "bcrypt": "0.7.5",
-    "async": "0.2.8",
-    "node-imagemagick": "0.1.8",
-    "gravatar": "1.0.6",
-    "nconf": "~0.6.7",
-    "sitemap": "~0.6.0",
-    "request": "~2.25.0",
-    "reds": "~0.2.4",
-    "winston": "~0.7.2",
-    "nodebb-plugin-mentions": "~0.1.0",
-    "nodebb-plugin-markdown": "~0.1.0",
-    "rss": "~0.2.0",
-    "prompt": "~0.2.11"
-  },
-  "bugs": {
-    "url": "https://github.com/designcreateplay/NodeBB/issues"
-  },
-  "engines": {
-    "node": ">=0.8"
-  },
-  "contributors": [
-    {
-      "name": "Andrew Rodrigues",
-      "email": "andrew@designcreateplay.com"
-    },
-    {
-      "name": "Julian Lam",
-      "email": "julian@designcreateplay.com"
-    },
-    {
-      "name": "Barış Soner Uşaklı",
-      "email": "baris@designcreateplay.com"
-    },
-    {
-      "name": "Damian Bushong",
-      "url": "https://github.com/damianb"
-    },
-    {
-      "name": "Matt Smith",
-      "url": "https://github.com/soimafreak"
-    }
-  ]
+	"name": "nodebb",
+	"license": "GPLv3 or later",
+	"description": "NodeBB Forum",
+	"version": "0.0.6",
+	"homepage": "http://www.nodebb.org",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/designcreateplay/NodeBB/"
+	},
+	"main": "app.js",
+	"dependencies": {
+		"socket.io": "~0.9.16",
+		"redis": "0.8.3",
+		"express": "3.2.0",
+		"express-namespace": "0.1.1",
+		"emailjs": "0.3.4",
+		"cookie": "0.0.6",
+		"connect-redis": "1.4.5",
+		"passport": "0.1.17",
+		"passport-local": "0.1.6",
+		"passport-twitter": "0.1.5",
+		"passport-google-oauth": "0.1.5",
+		"passport-facebook": "0.1.5",
+		"less-middleware": "0.1.12",
+		"marked": "0.2.8",
+		"bcrypt": "0.7.5",
+		"async": "0.2.8",
+		"node-imagemagick": "0.1.8",
+		"gravatar": "1.0.6",
+		"nconf": "~0.6.7",
+		"sitemap": "~0.6.0",
+		"request": "~2.25.0",
+		"reds": "~0.2.4",
+		"winston": "~0.7.2",
+		"nodebb-plugin-mentions": "~0.1.0",
+		"nodebb-plugin-markdown": "~0.1.0",
+		"rss": "~0.2.0",
+		"prompt": "~0.2.11",
+		"uglify-js": "~2.4.0"
+	},
+	"bugs": {
+		"url": "https://github.com/designcreateplay/NodeBB/issues"
+	},
+	"engines": {
+		"node": ">=0.8"
+	},
+	"contributors": [{
+		"name": "Andrew Rodrigues",
+		"email": "andrew@designcreateplay.com"
+	}, {
+		"name": "Julian Lam",
+		"email": "julian@designcreateplay.com"
+	}, {
+		"name": "Barış Soner Uşaklı",
+		"email": "baris@designcreateplay.com"
+	}, {
+		"name": "Damian Bushong",
+		"url": "https://github.com/damianb"
+	}, {
+		"name": "Matt Smith",
+		"url": "https://github.com/soimafreak"
+	}]
 }

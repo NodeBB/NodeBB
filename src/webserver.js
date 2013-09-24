@@ -24,14 +24,14 @@ var express = require('express'),
 	plugins = require('./plugins'),
 	nconf = require('nconf');
 
-(function(app) {
+(function (app) {
 	var templates = null;
 
 	/**
 	 *	`options` object	requires:	req, res
 	 *						accepts:	metaTags
 	 */
-	app.build_header = function(options, callback) {
+	app.build_header = function (options, callback) {
 		var defaultMetaTags = [{
 			name: 'viewport',
 			content: 'width=device-width, initial-scale=1.0'
@@ -48,33 +48,28 @@ var express = require('express'),
 			metaString = utils.buildMetaTags(defaultMetaTags.concat(options.metaTags || [])),
 			templateValues = {
 				cssSrc: meta.config['theme:src'] || nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
-				title: meta.config['title'] || 'NodeBB',
-				browserTitle: meta.config['title'] || 'NodeBB',
+				title: meta.config.title || 'NodeBB',
+				browserTitle: meta.config.title || 'NodeBB',
 				csrf: options.res.locals.csrf_token,
 				relative_path: nconf.get('relative_path'),
 				meta_tags: metaString
 			};
 
-		// meta.build_title(options.title, (options.req.user ? options.req.user.uid : 0), function(err, title) {
-		// 	if (!err) templateValues.browserTitle = title;
-
-		// 	callback(null, templates['header'].parse(templateValues));
-		// });
-
-		callback(null, templates['header'].parse(templateValues));
+		callback(null, templates.header.parse(templateValues));
 	};
 
 	// Middlewares
+	app.use(express.compress());
 	app.use(express.favicon(path.join(__dirname, '../', 'public', 'favicon.ico')));
 	app.use(require('less-middleware')({
 		src: path.join(__dirname, '../', 'public'),
-		prefix: nconf.get('relative_path')
+		prefix: nconf.get('relative_path'),
+		yuicompress: true
 	}));
 	app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../', 'public')));
 	app.use(express.bodyParser()); // Puts POST vars in request.body
 
 	app.use(express.cookieParser()); // If you want to parse cookies (res.cookies)
-	app.use(express.compress());
 	app.use(express.session({
 		store: new RedisStore({
 			client: RDB,
@@ -87,16 +82,16 @@ var express = require('express'),
 		}
 	}));
 	app.use(express.csrf());
-	app.use(function(req, res, next) {
+	app.use(function (req, res, next) {
 		res.locals.csrf_token = req.session._csrf;
 		next();
 	});
 
 	// Static Directories for NodeBB Plugins
-	app.configure(function() {
+	app.configure(function () {
 		var tailMiddlewares = [];
 
-		plugins.ready(function() {
+		plugins.ready(function () {
 			// Remove some middlewares until the router is gone
 			// This is not recommended behaviour: http://stackoverflow.com/a/13691542/122353
 			// Also: https://www.exratione.com/2013/03/nodejs-abusing-express-3-to-enable-late-addition-of-middleware/
@@ -115,14 +110,14 @@ var express = require('express'),
 		});
 	});
 
-	module.exports.init = function() {
+	module.exports.init = function () {
 		templates = global.templates;
 		server.listen(nconf.get('PORT') || nconf.get('port'));
 	}
 
 	auth.initialize(app);
 
-	app.use(function(req, res, next) {
+	app.use(function (req, res, next) {
 
 		nconf.set('https', req.secure);
 
@@ -131,7 +126,7 @@ var express = require('express'),
 
 	app.use(app.router);
 
-	app.use(function(req, res, next) {
+	app.use(function (req, res, next) {
 		res.status(404);
 
 		// respond with html page
@@ -153,7 +148,7 @@ var express = require('express'),
 		res.type('txt').send('Not found');
 	});
 
-	app.use(function(err, req, res, next) {
+	app.use(function (err, req, res, next) {
 
 		// we may use properties of the error object
 		// here and next(err) appropriately, or if
@@ -168,12 +163,12 @@ var express = require('express'),
 	});
 
 
-	app.create_route = function(url, tpl) { // to remove
+	app.create_route = function (url, tpl) { // to remove
 		return '<script>templates.ready(function(){ajaxify.go("' + url + '", null, "' + tpl + '");});</script>';
 	};
 
 
-	app.namespace(nconf.get('relative_path'), function() {
+	app.namespace(nconf.get('relative_path'), function () {
 
 		auth.create_routes(app);
 		admin.create_routes(app);
@@ -183,16 +178,16 @@ var express = require('express'),
 
 
 		// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
-		(function() {
+		(function () {
 			var routes = ['login', 'register', 'account', 'recent', 'unread', 'popular', 'active', '403', '404'];
 
 			for (var i = 0, ii = routes.length; i < ii; i++) {
-				(function(route) {
+				(function (route) {
 
-					app.get('/' + route, function(req, res) {
+					app.get('/' + route, function (req, res) {
 						if ((route === 'login' || route === 'register') && (req.user && req.user.uid > 0)) {
 
-							user.getUserField(req.user.uid, 'userslug', function(err, userslug) {
+							user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
 								res.redirect('/user/' + userslug);
 							});
 							return;
@@ -201,7 +196,7 @@ var express = require('express'),
 						app.build_header({
 							req: req,
 							res: res
-						}, function(err, header) {
+						}, function (err, header) {
 							res.send(header + app.create_route(route) + templates['footer']);
 						});
 					});
@@ -210,9 +205,9 @@ var express = require('express'),
 		}());
 
 
-		app.get('/', function(req, res) {
+		app.get('/', function (req, res) {
 			async.parallel({
-				"header": function(next) {
+				"header": function (next) {
 					app.build_header({
 						req: req,
 						res: res,
@@ -231,17 +226,17 @@ var express = require('express'),
 						}]
 					}, next);
 				},
-				"categories": function(next) {
-					categories.getAllCategories(function(returnData) {
-						returnData.categories = returnData.categories.filter(function(category) {
+				"categories": function (next) {
+					categories.getAllCategories(function (returnData) {
+						returnData.categories = returnData.categories.filter(function (category) {
 							if (category.disabled !== '1') return true;
-							else return false; 
+							else return false;
 						});
 
 						next(null, returnData);
 					}, 0);
 				}
-			}, function(err, data) {
+			}, function (err, data) {
 				res.send(
 					data.header +
 					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/home'].parse(data.categories) + '\n\t</noscript>' +
@@ -252,14 +247,14 @@ var express = require('express'),
 		});
 
 
-		app.get('/topic/:topic_id/:slug?', function(req, res) {
+		app.get('/topic/:topic_id/:slug?', function (req, res) {
 			var tid = req.params.topic_id;
 
 			if (tid.match(/^\d+\.rss$/)) {
 				tid = tid.slice(0, -4);
 				var rssPath = path.join(__dirname, '../', 'feeds/topics', tid + '.rss'),
-					loadFeed = function() {
-						fs.readFile(rssPath, function(err, data) {
+					loadFeed = function () {
+						fs.readFile(rssPath, function (err, data) {
 							if (err) res.type('text').send(404, "Unable to locate an rss feed at this location.");
 							else res.type('xml').set('Content-Length', data.length).send(data);
 						});
@@ -267,7 +262,7 @@ var express = require('express'),
 					};
 
 				if (!fs.existsSync(rssPath)) {
-					feed.updateTopic(tid, function(err) {
+					feed.updateTopic(tid, function (err) {
 						if (err) res.redirect('/404');
 						else loadFeed();
 					});
@@ -277,8 +272,8 @@ var express = require('express'),
 			}
 
 			async.waterfall([
-				function(next) {
-					topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), 0, -1, function(err, topicData) {
+				function (next) {
+					topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), 0, -1, function (err, topicData) {
 						if (topicData) {
 							if (topicData.deleted === '1' && topicData.expose_tools === 0)
 								return next(new Error('Topic deleted'), null);
@@ -287,7 +282,7 @@ var express = require('express'),
 						next(err, topicData);
 					});
 				},
-				function(topicData, next) {
+				function (topicData, next) {
 					var lastMod = 0,
 						timestamp;
 
@@ -324,14 +319,14 @@ var express = require('express'),
 							property: 'article:section',
 							content: topicData.category_name
 						}]
-					}, function(err, header) {
+					}, function (err, header) {
 						next(err, {
 							header: header,
 							topics: topicData
 						});
 					});
 				},
-			], function(err, data) {
+			], function (err, data) {
 				if (err) return res.redirect('404');
 				var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
 
@@ -344,14 +339,14 @@ var express = require('express'),
 			});
 		});
 
-		app.get('/category/:category_id/:slug?', function(req, res) {
+		app.get('/category/:category_id/:slug?', function (req, res) {
 			var cid = req.params.category_id;
 
 			if (cid.match(/^\d+\.rss$/)) {
 				cid = cid.slice(0, -4);
 				var rssPath = path.join(__dirname, '../', 'feeds/categories', cid + '.rss'),
-					loadFeed = function() {
-						fs.readFile(rssPath, function(err, data) {
+					loadFeed = function () {
+						fs.readFile(rssPath, function (err, data) {
 							if (err) res.type('text').send(404, "Unable to locate an rss feed at this location.");
 							else res.type('xml').set('Content-Length', data.length).send(data);
 						});
@@ -359,7 +354,7 @@ var express = require('express'),
 					};
 
 				if (!fs.existsSync(rssPath)) {
-					feed.updateCategory(cid, function(err) {
+					feed.updateCategory(cid, function (err) {
 						if (err) res.redirect('/404');
 						else loadFeed();
 					});
@@ -369,8 +364,8 @@ var express = require('express'),
 			}
 
 			async.waterfall([
-				function(next) {
-					categories.getCategoryById(cid, 0, function(err, categoryData) {
+				function (next) {
+					categories.getCategoryById(cid, 0, function (err, categoryData) {
 
 						if (categoryData) {
 							if (categoryData.disabled === '1')
@@ -379,7 +374,7 @@ var express = require('express'),
 						next(err, categoryData);
 					});
 				},
-				function(categoryData, next) {
+				function (categoryData, next) {
 					app.build_header({
 						req: req,
 						res: res,
@@ -393,14 +388,14 @@ var express = require('express'),
 							property: "og:type",
 							content: 'website'
 						}]
-					}, function(err, header) {
+					}, function (err, header) {
 						next(err, {
 							header: header,
 							categories: categoryData
 						});
 					});
 				}
-			], function(err, data) {
+			], function (err, data) {
 				if (err) return res.redirect('404');
 				var category_url = cid + (req.params.slug ? '/' + req.params.slug : '');
 
@@ -413,24 +408,24 @@ var express = require('express'),
 			});
 		});
 
-		app.get('/confirm/:code', function(req, res) {
+		app.get('/confirm/:code', function (req, res) {
 			app.build_header({
 				req: req,
 				res: res
-			}, function(err, header) {
+			}, function (err, header) {
 				res.send(header + '<script>templates.ready(function(){ajaxify.go("confirm/' + req.params.code + '");});</script>' + templates['footer']);
 			});
 		});
 
-		app.get('/sitemap.xml', function(req, res) {
+		app.get('/sitemap.xml', function (req, res) {
 			var sitemap = require('./sitemap.js');
 
-			sitemap.render(function(xml) {
+			sitemap.render(function (xml) {
 				res.type('xml').set('Content-Length', xml.length).send(xml);
 			});
 		});
 
-		app.get('/robots.txt', function(req, res) {
+		app.get('/robots.txt', function (req, res) {
 			res.set('Content-Type', 'text/plain');
 			res.send("User-agent: *\n" +
 				"Disallow: \n" +
@@ -438,8 +433,8 @@ var express = require('express'),
 				"Sitemap: " + nconf.get('url') + "sitemap.xml");
 		});
 
-		app.get('/cid/:cid', function(req, res) {
-			categories.getCategoryData(req.params.cid, function(err, data) {
+		app.get('/cid/:cid', function (req, res) {
+			categories.getCategoryData(req.params.cid, function (err, data) {
 				if (data)
 					res.send(data);
 				else
@@ -447,8 +442,8 @@ var express = require('express'),
 			});
 		});
 
-		app.get('/tid/:tid', function(req, res) {
-			topics.getTopicData(req.params.tid, function(data) {
+		app.get('/tid/:tid', function (req, res) {
+			topics.getTopicData(req.params.tid, function (data) {
 				if (data)
 					res.send(data);
 				else
@@ -456,8 +451,8 @@ var express = require('express'),
 			});
 		});
 
-		app.get('/pid/:pid', function(req, res) {
-			posts.getPostData(req.params.pid, function(data) {
+		app.get('/pid/:pid', function (req, res) {
+			posts.getPostData(req.params.pid, function (data) {
 				if (data)
 					res.send(data);
 				else
@@ -465,13 +460,13 @@ var express = require('express'),
 			});
 		});
 
-		app.get('/outgoing', function(req, res) {
+		app.get('/outgoing', function (req, res) {
 			if (!req.query.url) return res.redirect('/404');
 
 			app.build_header({
 				req: req,
 				res: res
-			}, function(err, header) {
+			}, function (err, header) {
 				res.send(
 					header +
 					'\n\t<script>templates.ready(function(){ajaxify.go("outgoing?url=' + encodeURIComponent(req.query.url) + '", null, null, true);});</script>' +
@@ -480,31 +475,35 @@ var express = require('express'),
 			});
 		});
 
-		app.get('/search', function(req, res) {
+		app.get('/search', function (req, res) {
+			if (!req.user)
+				return res.redirect('/403');
 			app.build_header({
 				req: req,
 				res: res
-			}, function(err, header) {
+			}, function (err, header) {
 				res.send(header + app.create_route("search", null, "search") + templates['footer']);
 			});
 		});
 
-		app.get('/search/:term', function(req, res) {
+		app.get('/search/:term', function (req, res) {
+			if (!req.user)
+				return res.redirect('/403');
 			app.build_header({
 				req: req,
 				res: res
-			}, function(err, header) {
+			}, function (err, header) {
 				res.send(header + app.create_route("search/" + req.params.term, null, "search") + templates['footer']);
 			});
 		});
 
-		app.get('/reindex', function(req, res) {
-			topics.reIndexAll(function(err) {
+		app.get('/reindex', function (req, res) {
+			topics.reIndexAll(function (err) {
 				if (err) {
 					return res.json(err);
 				}
 
-				user.reIndexAll(function(err) {
+				user.reIndexAll(function (err) {
 					if (err) {
 						return res.json(err);
 					} else {
