@@ -24,8 +24,10 @@
 	nconf.argv().env();
 
 	var fs = require('fs'),
+		async = require('async'),
 		winston = require('winston'),
 		pkg = require('./package.json'),
+		path = require('path'),
 		meta;
 
 	// Runtime environment

@@ -7,7 +7,7 @@ var socket,
 (function () {
 	var showWelcomeMessage = false;
 
-	function loadConfig() {
+	app.loadConfig = function() {
 
 		$.ajax({
 			url: RELATIVE_PATH + '/api/config',
@@ -15,109 +15,114 @@ var socket,
 				API_URL = data.api_url;
 
 				config = data;
-				socket = io.connect(config.socket.address);
+				if(socket) {
+					socket.disconnect();
+					socket.socket.connect();
+				} else {
+					socket = io.connect(config.socket.address);
 
-				var reconnecting = false;
-				var reconnectTries = 0;
+					var reconnecting = false;
+					var reconnectTries = 0;
 
-				socket.on('event:connect', function (data) {
-					console.log('connected to nodebb socket: ', data);
-					app.username = data.username;
-					app.showLoginMessage();
-				});
-
-				socket.on('event:alert', function (data) {
-					app.alert(data);
-				});
-
-				socket.on('connect', function (data) {
-					if (reconnecting) {
-						setTimeout(function () {
-							app.alert({
-								alert_id: 'connection_alert',
-								title: 'Connected',
-								message: 'Connection successful.',
-								type: 'success',
-								timeout: 5000
-							});
-						}, 1000);
-						reconnecting = false;
-						reconnectTries = 0;
+					socket.on('event:connect', function (data) {
+						app.username = data.username;
+						app.showLoginMessage();
 						socket.emit('api:updateHeader', {
-							fields: ['username', 'picture', 'userslug']
-						});
-					}
-				});
-
-				socket.on('reconnecting', function (data) {
-					function showDisconnectModal() {
-						$('#disconnect-modal').modal({
-							backdrop: 'static',
-							show: true
-						});
-
-						$('#reload-button').on('click', function () {
-							$('#disconnect-modal').modal('hide');
-							window.location.reload();
-						});
-					}
-
-					reconnecting = true;
-					reconnectTries++;
-
-					if (reconnectTries > 4) {
-						showDisconnectModal();
-						return;
-					}
-
-					app.alert({
-						alert_id: 'connection_alert',
-						title: 'Reconnecting',
-						message: 'You have disconnected from NodeBB, we will try to reconnect you. <br/><i class="icon-refresh icon-spin"></i>',
-						type: 'warning',
-						timeout: 5000
+								fields: ['username', 'picture', 'userslug']
+							});
 					});
-				});
 
-				socket.on('api:user.get_online_users', function (users) {
-					jQuery('a.username-field').each(function () {
-						if (this.processed === true)
-							return;
+					socket.on('event:alert', function (data) {
+						app.alert(data);
+					});
 
-						var el = jQuery(this),
-							uid = el.parents('li').attr('data-uid');
+					socket.on('connect', function (data) {
+						if (reconnecting) {
+							setTimeout(function () {
+								app.alert({
+									alert_id: 'connection_alert',
+									title: 'Connected',
+									message: 'Connection successful.',
+									type: 'success',
+									timeout: 5000
+								});
+							}, 1000);
+							reconnecting = false;
+							reconnectTries = 0;
+							socket.emit('api:updateHeader', {
+								fields: ['username', 'picture', 'userslug']
+							});
+						}
+					});
 
-						if (uid && jQuery.inArray(uid, users) !== -1) {
-							el.find('i').remove();
-							el.prepend('<i class="icon-circle"></i>');
-						} else {
-							el.find('i').remove();
-							el.prepend('<i class="icon-circle-blank"></i>');
+					socket.on('reconnecting', function (data) {
+						function showDisconnectModal() {
+							$('#disconnect-modal').modal({
+								backdrop: 'static',
+								show: true
+							});
+
+							$('#reload-button').on('click', function () {
+								$('#disconnect-modal').modal('hide');
+								window.location.reload();
+							});
 						}
 
-						el.processed = true;
-					});
-					jQuery('button .username-field').each(function () {
-						//DRY FAIL
-						if (this.processed === true)
+						reconnecting = true;
+						reconnectTries++;
+
+						if (reconnectTries > 4) {
+							showDisconnectModal();
 							return;
-
-						var el = jQuery(this),
-							uid = el.parents('li').attr('data-uid');
-
-						if (uid && jQuery.inArray(uid, users) !== -1) {
-							el.parent().addClass('btn-success');
-						} else {
-							el.parent().addClass('btn-danger');
 						}
 
-						el.processed = true;
+						app.alert({
+							alert_id: 'connection_alert',
+							title: 'Reconnecting',
+							message: 'You have disconnected from NodeBB, we will try to reconnect you. <br/><i class="icon-refresh icon-spin"></i>',
+							type: 'warning',
+							timeout: 5000
+						});
 					});
-				});
 
-				app.enter_room('global');
+					socket.on('api:user.get_online_users', function (users) {
+						jQuery('a.username-field').each(function () {
+							if (this.processed === true)
+								return;
 
+							var el = jQuery(this),
+								uid = el.parents('li').attr('data-uid');
 
+							if (uid && jQuery.inArray(uid, users) !== -1) {
+								el.find('i').remove();
+								el.prepend('<i class="icon-circle"></i>');
+							} else {
+								el.find('i').remove();
+								el.prepend('<i class="icon-circle-blank"></i>');
+							}
+
+							el.processed = true;
+						});
+						jQuery('button .username-field').each(function () {
+							//DRY FAIL
+							if (this.processed === true)
+								return;
+
+							var el = jQuery(this),
+								uid = el.parents('li').attr('data-uid');
+
+							if (uid && jQuery.inArray(uid, users) !== -1) {
+								el.parent().addClass('btn-success');
+							} else {
+								el.parent().addClass('btn-danger');
+							}
+
+							el.processed = true;
+						});
+					});
+
+					app.enter_room('global');
+				}
 			},
 			async: false
 		});
@@ -275,7 +280,7 @@ var socket,
 		if (active) {
 			jQuery('#main-nav li a').each(function () {
 				var href = this.getAttribute('href');
-				if (active == "sort-posts" || active == "sort-reputation" || active == "search" || active == "latest")
+				if (active == "sort-posts" || active == "sort-reputation" || active == "search" || active == "latest" || active == "online")
 					active = 'users';
 				if (href && href.match(active)) {
 					jQuery(this.parentNode).addClass('active');
@@ -285,6 +290,7 @@ var socket,
 		}
 
 		$('span.timeago').timeago();
+
 
 		setTimeout(function () {
 			window.scrollTo(0, 1); // rehide address bar on mobile after page load completes.
@@ -402,7 +408,8 @@ var socket,
 		function animateScroll() {
 			$('body,html').animate({
 				scrollTop: scrollTo.offset().top - container.offset().top + container.scrollTop() - $('#header-menu').height()
-			});
+			}, 400);
+			//$('body,html').scrollTop(scrollTo.offset().top - container.offset().top + container.scrollTop() - $('#header-menu').height());
 		}
 
 		if (!scrollTo.length && tid) {
@@ -427,19 +434,16 @@ var socket,
 	}
 
 	jQuery('document').ready(function () {
-		translator.load('global');
-
 		$('#search-form').on('submit', function () {
 			var input = $(this).find('input');
 			ajaxify.go("search/" + input.val(), null, "search");
 			input.val('');
 			return false;
-		})
+		});
 	});
 
 	showWelcomeMessage = location.href.indexOf('loggedin') !== -1;
 
-	loadConfig();
-
+	app.loadConfig();
 
 }());

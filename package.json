@@ -13,7 +13,7 @@
     "socket.io": "~0.9.16",
     "redis": "0.8.3",
     "express": "3.2.0",
-    "express-namespace": "0.1.1",
+    "express-namespace": "~0.1.1",
     "emailjs": "0.3.4",
     "cookie": "0.0.6",
     "connect-redis": "1.4.5",
@@ -37,7 +37,9 @@
     "nodebb-plugin-mentions": "~0.1.0",
     "nodebb-plugin-markdown": "~0.1.0",
     "rss": "~0.2.0",
-    "prompt": "~0.2.11"
+    "prompt": "~0.2.11",
+    "uglify-js": "~2.4.0",
+    "validator": "~1.5.1"
   },
   "bugs": {
     "url": "https://github.com/designcreateplay/NodeBB/issues"

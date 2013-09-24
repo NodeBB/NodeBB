@@ -297,22 +297,20 @@ var RDB = require('./redis.js'),
 		});
 	}
 
-	ThreadTools.get_latest_undeleted_pid = function(tid, callback) {
+	ThreadTools.getLatestUndeletedPid = function(tid, callback) {
+		RDB.lrange('tid:' + tid + ':posts', 0, -1, function(err, pids) {
+			if (pids.length === 0) return callback(new Error('no-undeleted-pids-found'));
 
-		posts.getPostsByTid(tid, 0, -1, function(posts) {
-
-			var numPosts = posts.length;
-			if (!numPosts)
-				return callback(new Error('no-undeleted-pids-found'));
-
-			while (numPosts--) {
-				if (posts[numPosts].deleted !== '1') {
-					callback(null, posts[numPosts].pid);
-					return;
-				}
-			}
-
-			callback(new Error('no-undeleted-pids-found'));
+			pids.reverse();
+			async.detectSeries(pids, function(pid, next) {
+				RDB.hget('post:' + pid, 'deleted', function(err, deleted) {
+					if (deleted === '0') next(true);
+					else next(false);
+				});
+			}, function(pid) {
+				if (pid) callback(null, pid);
+				else callback(new Error('no-undeleted-pids-found'));
+			});
 		});
 	}
 }(exports));

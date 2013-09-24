@@ -180,7 +180,6 @@
 			else
 				template_data['relative_path'] = RELATIVE_PATH;
 
-
 			translator.translate(templates[tpl_url].parse(template_data), function (translatedTemplate) {
 				document.getElementById('content').innerHTML = translatedTemplate;
 			});
@@ -233,7 +232,7 @@
 		}
 
 		function makeRegex(block) {
-			return new RegExp("<!-- BEGIN " + block + " -->[^]*<!-- END " + block + " -->", 'g');
+			return new RegExp("<!-- BEGIN " + block + " -->[\\s\\S]*<!-- END " + block + " -->", 'g');
 		}
 
 		function getBlock(regex, block, template) {
@@ -302,7 +301,7 @@
 			}
 
 			if (namespace) {
-				var regex = new RegExp("{" + namespace + "[^]*?}", 'g');
+				var regex = new RegExp("{" + namespace + "[\\s\\S]*?}", 'g');
 				template = template.replace(regex, '');
 			}
 

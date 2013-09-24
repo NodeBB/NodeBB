@@ -23,6 +23,7 @@ var SocketIO = require('socket.io').listen(global.server, {
 		client: RDB,
 		ttl: 60 * 60 * 24 * 14
 	}),
+	nconf = require('nconf'),
 	socketCookieParser = express.cookieParser(nconf.get('secret')),
 	admin = {
 		'categories': require('./admin/categories.js'),
@@ -53,14 +54,17 @@ var SocketIO = require('socket.io').listen(global.server, {
 				userSockets[uid].push(socket);
 
 				if (uid) {
-					socket.join('uid_' + uid);
-					io.sockets. in ('global').emit('api:user.isOnline', isUserOnline(uid));
 
-					user.getUserField(uid, 'username', function(err, username) {
-						socket.emit('event:connect', {
-							status: 1,
-							username: username,
-							uid: uid
+					RDB.zadd('users:online', Date.now(), uid, function(err, data) {
+						socket.join('uid_' + uid);
+						io.sockets. in ('global').emit('api:user.isOnline', isUserOnline(uid));
+
+						user.getUserField(uid, 'username', function(err, username) {
+							socket.emit('event:connect', {
+								status: 1,
+								username: username,
+								uid: uid
+							});
 						});
 					});
 				}
@@ -80,7 +84,9 @@ var SocketIO = require('socket.io').listen(global.server, {
 				delete users[sessionID];
 				delete userSockets[uid];
 				if (uid) {
-					io.sockets. in ('global').emit('api:user.isOnline', isUserOnline(uid));
+					RDB.zrem('users:online', uid, function(err, data) {
+						io.sockets. in ('global').emit('api:user.isOnline', isUserOnline(uid));
+					});
 				}
 			}
 
@@ -100,7 +106,7 @@ var SocketIO = require('socket.io').listen(global.server, {
 
 		socket.on('api:get_all_rooms', function(data) {
 			socket.emit('api:get_all_rooms', io.sockets.manager.rooms);
-		})
+		});
 
 		function updateRoomBrowsingText(roomName) {
 

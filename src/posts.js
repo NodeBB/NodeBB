@@ -36,7 +36,7 @@ var RDB = require('./redis.js'),
 		user.getUserFields(post.uid, ['username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned'], function(err, userData) {
 			if (err) return callback();
 
-			postTools.toHTML(userData.signature, function(err, signature) {
+			postTools.parse(userData.signature, function(err, signature) {
 				post.username = userData.username || 'anonymous';
 				post.userslug = userData.userslug || '';
 				post.user_rep = userData.reputation || 0;
@@ -70,7 +70,7 @@ var RDB = require('./redis.js'),
 					Posts.getPostFields(pid, ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'], function(postData) {
 						if (postData.deleted === '1') return callback(null);
 						else {
-							postData.relativeTime = new Date(parseInt(postData.timestamp, 10)).toISOString();
+							postData.relativeTime = new Date(parseInt(postData.timestamp || 0, 10)).toISOString();
 							next(null, postData);
 						}
 					});
@@ -91,7 +91,7 @@ var RDB = require('./redis.js'),
 				},
 				function(postData, next) {
 					if (postData.content) {
-						postTools.toHTML(postData.content, function(err, content) {
+						postTools.parse(postData.content, function(err, content) {
 							if (!err) postData.content = utils.strip_tags(content);
 							next(err, postData);
 						});
@@ -164,7 +164,7 @@ var RDB = require('./redis.js'),
 					postData['edited-class'] = postData.editor !== '' ? '' : 'none';
 					postData['relativeEditTime'] = postData.edited !== '0' ? (new Date(parseInt(postData.edited,10)).toISOString()) : '';
 
-					postTools.toHTML(postData.content, function(err, content) {
+					postTools.parse(postData.content, function(err, content) {
 						postData.content = content;
 						posts.push(postData);
 						callback(null);
@@ -321,7 +321,7 @@ var RDB = require('./redis.js'),
 						async.parallel({
 							content: function(next) {
 								plugins.fireHook('filter:post.get', postData, function(postData) {
-									postTools.toHTML(postData.content, function(err, content) {
+									postTools.parse(postData.content, function(err, content) {
 										next(null, content);
 									});
 								});

@@ -1,8 +1,11 @@
-Please support NodeBB development! Check out our IndieGoGo campaign and like, share, and follow us :)
-[NodeBB Homepage](http://www.nodebb.org/ "NodeBB") # [Follow on Twitter](http://www.twitter.com/NodeBB/ "NodeBB Twitter") # [Like us on Facebook](http://www.facebook.com/NodeBB/ "NodeBB Facebook")
 
 # NodeBB
 **NodeBB** is a robust Node.js driven forum built on a redis database. It is powered by web sockets, and is compatible down to IE8.
+
+* [NodeBB Homepage](http://www.nodebb.org/ "NodeBB")
+* [Follow on Twitter](http://www.twitter.com/NodeBB/ "NodeBB Twitter")
+* [Like us on Facebook](http://www.facebook.com/NodeBB/ "NodeBB Facebook")
+* [Join us on IRC](https://kiwiirc.com/client/irc.freenode.net/nodebb) - #nodebb on Freenode
 
 ![NodeBB Main Category Listing](http://i.imgur.com/ZBrHqLr.png)
 

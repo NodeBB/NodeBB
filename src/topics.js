@@ -12,7 +12,8 @@ schema = require('./schema.js'),
 	feed = require('./feed.js'),
 	favourites = require('./favourites.js'),
 	reds = require('reds'),
-	topicSearch = reds.createSearch('nodebbtopicsearch');
+	topicSearch = reds.createSearch('nodebbtopicsearch'),
+	validator = require('validator');
 
 
 (function(Topics) {
@@ -312,6 +313,7 @@ schema = require('./schema.js'),
 					topicData.teaser_text = topicInfo.teaserInfo.text || '',
 					topicData.teaser_username = topicInfo.teaserInfo.username || '';
 					topicData.teaser_userpicture = topicInfo.teaserInfo.picture || '';
+					topicData.teaser_pid = topicInfo.teaserInfo.pid;
 
 					topicData.teaser_timestamp = topicInfo.teaserInfo.timestamp ? (new Date(parseInt(topicInfo.teaserInfo.timestamp, 10)).toISOString()) : '';
 
@@ -572,9 +574,9 @@ schema = require('./schema.js'),
 	}
 
 	Topics.getTeaser = function(tid, callback) {
-		threadTools.get_latest_undeleted_pid(tid, function(err, pid) {
+		threadTools.getLatestUndeletedPid(tid, function(err, pid) {
 			if (!err) {
-				posts.getPostFields(pid, ['content', 'uid', 'timestamp'], function(postData) {
+				posts.getPostFields(pid, ['pid', 'content', 'uid', 'timestamp'], function(postData) {
 
 					user.getUserFields(postData.uid, ['username', 'picture'], function(err, userData) {
 						if (err)
@@ -583,6 +585,7 @@ schema = require('./schema.js'),
 						var stripped = postData.content,
 							timestamp = postData.timestamp,
 							returnObj = {
+								"pid": postData.pid,
 								"username": userData.username,
 								"picture": userData.picture,
 								"timestamp": timestamp
@@ -590,7 +593,7 @@ schema = require('./schema.js'),
 
 						if (postData.content) {
 							stripped = postData.content.replace(/>.+\n\n/, '');
-							postTools.toHTML(stripped, function(err, stripped) {
+							postTools.parse(stripped, function(err, stripped) {
 								returnObj.text = utils.strip_tags(stripped);
 								callback(null, returnObj);
 							});
@@ -655,7 +658,7 @@ schema = require('./schema.js'),
 
 				var slug = tid + '/' + utils.slugify(title);
 				var timestamp = Date.now();
-
+				title = validator.sanitize(title).escape();
 				RDB.hmset('topic:' + tid, {
 					'tid': tid,
 					'uid': uid,

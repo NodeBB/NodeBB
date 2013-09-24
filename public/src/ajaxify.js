@@ -62,9 +62,11 @@ var ajaxify = {};
 
 		if (templates.is_available(tpl_url) && !templates.force_refresh(tpl_url)) {
 			if (quiet !== true) {
-				window.history.pushState({
-					"url": url
-				}, url, RELATIVE_PATH + "/" + url);
+				if (window.history && window.history.pushState) {
+					window.history.pushState({
+						"url": url
+					}, url, RELATIVE_PATH + "/" + url);
+				}
 			}
 
 			translator.load(tpl_url);
@@ -105,25 +107,28 @@ var ajaxify = {};
 
 		// Enhancing all anchors to ajaxify...
 		$(document.body).on('click', 'a', function (e) {
-
 			function hrefEmpty(href) {
 				return href == 'javascript:;' || href == window.location.href + "#" || href.slice(-1) === "#";
 			}
 
 			if (hrefEmpty(this.href)) return;
-
-			var url = this.href.replace(rootUrl + '/', '');
-
 			if (this.target !== '') return;
+			if (this.protocol === 'javascript:') return;
 
 			if (!e.ctrlKey && e.which === 1) {
-				if (ajaxify.go(url)) {
+				if (this.host === window.location.host) {
+					var url = this.href.replace(rootUrl + '/', '');
+
+					if (ajaxify.go(url)) {
+						e.preventDefault();
+					}
+				} else {
+					ajaxify.go('outgoing?url=' + encodeURIComponent(this.href));
 					e.preventDefault();
 				}
 			}
 		});
 	});
-
 
 	function exec_body_scripts(body_el) {
 		// modified from http://stackoverflow.com/questions/2592092/executing-script-elements-inserted-with-innerhtml
@@ -156,7 +161,7 @@ var ajaxify = {};
 
 		var scripts = [],
 			script,
-			children_nodes = body_el.childNodes,
+			children_nodes = $(body_el).children(),
 			child,
 			i;
 

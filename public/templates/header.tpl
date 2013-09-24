@@ -8,28 +8,18 @@
 	<script>
 		var RELATIVE_PATH = "{relative_path}";
 	</script>
-	<script src="http://code.jquery.com/jquery.js"></script>
-	<script src="{relative_path}/vendor/jquery/js/jquery-ui-1.10.3.custom.min.js"></script>
-	<script src="{relative_path}/vendor/jquery/js/jquery.timeago.js"></script>
-	<script src="{relative_path}/vendor/bootstrap/js/bootstrap.min.js"></script>
 	<script src="{relative_path}/socket.io/socket.io.js"></script>
-	<script src="{relative_path}/src/app.js"></script>
-	<script src="{relative_path}/vendor/requirejs/require.js"></script>
-	<script src="{relative_path}/vendor/bootbox/bootbox.min.js"></script>
+	<!-- BEGIN clientScripts -->
+	<script src="{relative_path}/{clientScripts.script}"></script>
+	<!-- END clientScripts -->
 	<script>
 		require.config({
 			baseUrl: "{relative_path}/src/modules",
 			waitSeconds: 3
 		});
 	</script>
-	<script src="{relative_path}/src/templates.js"></script>
-	<script src="{relative_path}/src/ajaxify.js"></script>
-	<script src="{relative_path}/src/translator.js"></script>
-	<script src="{relative_path}/src/jquery.form.js"></script>
-	<script src="{relative_path}/src/utils.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="{relative_path}/css/nodebb.css" />
-
 </head>
 
 <body>
@@ -37,12 +27,14 @@
 		<div class="container">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-		            <span class="icon-bar"></span>
-		            <span class="icon-bar"></span>
-		            <span class="icon-bar"></span>
-		        </button>
-		        <a class="navbar-brand" href="/">{title}</a>
-		    </div>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a href="/">
+					<h1 class="navbar-brand forum-title">{title}</h1>
+				</a>
+			</div>
 
 			<div class="navbar-collapse collapse navbar-ex1-collapse">
 				<ul id="main-nav" class="nav navbar-nav">
@@ -57,6 +49,9 @@
 					</li>
 					<li class="visible-xs">
 						<a href="/search">[[global:header.search]]</a>
+					</li>
+					<li class="visible-xs">
+						<a href="/search">Search</a>
 					</li>
 					<li>
 						<a href="/"></a>
