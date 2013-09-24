@@ -47,24 +47,36 @@
 	translator.translate = function (data, callback) {
 		var keys = data.match(/\[\[.*?\]\]/g),
 			loading = 0;
+		
+		function insertLanguage(text, key, value, variables) {
+			for (var i = 1, ii = variables.length; i < ii; i++) {
+				var variable = variables[i].replace(']]', '');
+				value = value.replace('%' + i, variable);
+			}
+
+			text = text.replace(key, value);
+
+			return text;
+		}
 
 		for (var key in keys) {
 			if (keys.hasOwnProperty(key)) {
 				//check for additional variables then keys[key].split(/[,][?\s+]/);
+				var variables = keys[key].split(/[,][?\s+]/);
 
 				var parsedKey = keys[key].replace('[[', '').replace(']]', '').split(':'),
 					languageFile = parsedKey[0];
 
-				parsedKey = parsedKey[1];
+				parsedKey = parsedKey[1].split(',')[0];
 
 				if (files.loaded[languageFile]) {
-					data = data.replace(keys[key], files.loaded[languageFile][parsedKey]);
+					data = insertLanguage(data, keys[key], files.loaded[languageFile][parsedKey], variables);
 				} else {
 					loading++;
 
 					(function (languageKey, parsedKey) {
 						translator.load(languageFile, function (languageData) {
-							data = data.replace(languageKey, languageData[parsedKey]);
+							data = insertLanguage(data, languageKey, languageData[parsedKey], variables);
 							loading--;
 							checkComplete();
 						});
