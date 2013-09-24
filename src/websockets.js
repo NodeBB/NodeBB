@@ -29,11 +29,10 @@ var	cookie = require('cookie'),
 	plugins = require('./plugins'),
 	winston = require('winston');
 
-//(function(io) {
 
-	var users = {},
-		userSockets = {},
-		rooms = {};
+var users = {},
+	userSockets = {},
+	rooms = {};
 
 module.exports.logoutUser = function(uid) {
 	if(userSockets[uid] && userSockets[uid].length) {
