@@ -27,14 +27,14 @@
 		<div class="container">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-		            <span class="icon-bar"></span>
-		            <span class="icon-bar"></span>
-		            <span class="icon-bar"></span>
-		        </button>
-		        <a href="/">
-		        	<h1 class="navbar-brand forum-title">{title}</h1>
-		    	</a>
-		    </div>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a href="/">
+					<h1 class="navbar-brand forum-title">{title}</h1>
+				</a>
+			</div>
 
 			<div class="navbar-collapse collapse navbar-ex1-collapse">
 				<ul id="main-nav" class="nav navbar-nav">
