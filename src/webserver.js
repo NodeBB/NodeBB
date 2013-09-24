@@ -25,7 +25,17 @@ var express = require('express'),
 	nconf = require('nconf');
 
 (function (app) {
-	var templates = null;
+	var templates = null,
+		clientScripts;
+
+	// Minify client-side libraries
+	meta.js.get(function (err, scripts) {
+		clientScripts = scripts.map(function (script) {
+			return script = {
+				script: script
+			}
+		});
+	});
 
 	/**
 	 *	`options` object	requires:	req, res
@@ -44,7 +54,7 @@ var express = require('express'),
 		}, {
 			property: 'og:site_name',
 			content: meta.config.title || 'NodeBB'
-		}, ],
+		}],
 			metaString = utils.buildMetaTags(defaultMetaTags.concat(options.metaTags || [])),
 			templateValues = {
 				cssSrc: meta.config['theme:src'] || nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
@@ -52,9 +62,11 @@ var express = require('express'),
 				browserTitle: meta.config.title || 'NodeBB',
 				csrf: options.res.locals.csrf_token,
 				relative_path: nconf.get('relative_path'),
-				meta_tags: metaString
+				meta_tags: metaString,
+				clientScripts: clientScripts
 			};
 
+		console.log(templateValues);
 		callback(null, templates.header.parse(templateValues));
 	};
 
