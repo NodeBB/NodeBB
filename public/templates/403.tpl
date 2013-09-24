@@ -1,4 +1,4 @@
 <div class="alert alert-danger">
-	<strong>Access Denied</strong>
-	<p>You seem to have stumbled upon a page that you do not have access to. Perhaps you should <a href="/login">try logging in?</a></p>
+	<strong>[[global:403.title]]</strong>
+	<p>[[global:403.message]]</p>
 </div>
