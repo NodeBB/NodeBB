@@ -47,17 +47,17 @@
 			<div class="navbar-collapse collapse navbar-ex1-collapse">
 				<ul id="main-nav" class="nav navbar-nav">
 					<li>
-						<a href="/recent">Recent</a>
+						<a href="/recent">[[global:header.recent]]</a>
 					</li>
 					<li class="nodebb-loggedin">
-						<a href="/unread"><span id="numUnreadBadge" class="badge badge-inverse">0</span> Unread</a>
+						<a href="/unread"><span id="numUnreadBadge" class="badge badge-inverse">0</span> [[global:header.unread]]</a>
 					</li>
 					<li>
-						<a href="/users">Users</a>
+						<a href="/users">[[global:header.users]]</a>
 					</li>
-					<!--Enable when /search form is completed <li class="visible-xs">
-						<a href="/search">Search</a>
-					</li>-->
+					<li class="visible-xs">
+						<a href="/search">[[global:header.search]]</a>
+					</li>
 					<li>
 						<a href="/"></a>
 					</li>
@@ -68,7 +68,7 @@
 						<div class="form-group">
 							<input type="text" class="form-control" placeholder="Search" name="query" value="">
 						</div>
-						<button type="submit" class="btn btn-default hide">Search</button>
+						<button type="submit" class="btn btn-default hide">[[global:search]]</button>
 					</div>
 					<button id="search-button" type="button" class="btn btn-link"><i class="icon-search"></i></button>
 				</form>
@@ -78,7 +78,7 @@
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="notif_dropdown"><i class="icon-circle-blank"></i></a>
 						<ul id="notif-list" class="dropdown-menu" aria-labelledby="notif_dropdown">
 							<li>
-								<a href="#"><i class="icon-refresh icon-spin"></i> Loading Notifications</a>
+								<a href="#"><i class="icon-refresh icon-spin"></i> [[global:notifications.loading]]</a>
 							</li>
 						</ul>
 					</li>
