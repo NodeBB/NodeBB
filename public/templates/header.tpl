@@ -31,7 +31,9 @@
 		            <span class="icon-bar"></span>
 		            <span class="icon-bar"></span>
 		        </button>
-		        <a class="navbar-brand" href="/">{title}</a>
+		        <a href="/">
+		        	<h1 class="navbar-brand forum-title">{title}</h1>
+		    	</a>
 		    </div>
 
 			<div class="navbar-collapse collapse navbar-ex1-collapse">
