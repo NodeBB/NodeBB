@@ -34,10 +34,8 @@
 					$('#login-error-notify').hide();
 					//window.location.replace(RELATIVE_PATH + "/?loggedin");
 					history.go(-1);
-					//setTimeout(function(){
-						app.loadConfig();
-					//}, 500);
-					//socket.emit('api:updateHeader');
+
+					app.loadConfig();
 				}
 			},
 			error: function(data, textStatus, jqXHR) {

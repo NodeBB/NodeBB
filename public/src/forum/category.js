@@ -39,28 +39,25 @@
 		var html = templates.prepare(templates['category'].blocks['topics']).parse({
 			topics: [data]
 		}),
-			topic = document.createElement('div'),
-			container = document.getElementById('topics-container'),
-			topics = document.querySelectorAll('#topics-container a'),
-			numTopics = topics.length,
-			x;
+			topic = $(html),
+			container = $('#topics-container'),
+			topics = $('#topics-container').children(),
+			numTopics = topics.length;
 
 		jQuery('#topics-container, .category-sidebar').removeClass('hidden');
 		jQuery('#category-no-topics').remove();
 
-		topic.innerHTML = html;
-		topic = topic.querySelector('a');
-
 		if (numTopics > 0) {
-			for (x = 0; x < numTopics; x++) {
-				if (topics[x].querySelector('.icon-pushpin')) continue;
-				container.insertBefore(topic, topics[x]);
-				$(topic).hide().fadeIn('slow');
+			for (var x = 0; x < numTopics; x++) {
+				if ($(topics[x]).find('.icon-pushpin').length)
+					continue;
+				topic.insertBefore(topics[x]);
+				topic.hide().fadeIn('slow');
 				break;
 			}
 		} else {
-			container.insertBefore(topic, null);
-			$(topic).hide().fadeIn('slow');
+			container.append(topic);
+			topic.hide().fadeIn('slow');
 		}
 
 		socket.emit('api:categories.getRecentReplies', cid);
