@@ -21,21 +21,26 @@
 				<div class="row">
 					<div class="col-md-12 col-xs-12 topic-row img-thumbnail">
 						<div class="latest-post visible-lg visible-md">
-							<div class="pull-right">
-								<img style="width: 48px; height: 48px; /*temporary*/" src="{topics.teaser_userpicture}" />
-								<p><strong>{topics.teaser_username}</strong>: {topics.teaser_text}</p>
-								<span>posted</span>
-								<span class="timeago" title="{topics.teaser_timestamp}"></span>
+							<a href="../../topic/{topics.slug}#{topics.teaser_pid}">
+								<div class="pull-right">
+									<img class="img-rounded" style="width: 48px; height: 48px; /*temporary*/" src="{topics.teaser_userpicture}" />
+									<p>{topics.teaser_text}</p>
+									<p class="meta">
+										<strong>{topics.teaser_username}</strong> posted <span class="timeago" title="{topics.teaser_timestamp}"></span>
+									</p>
+								</div>
+							</a>
+						</div>
+						<a href="../../topic/{topics.slug}">
+							<div>
+								<h3><span class="topic-title"><span class="badge {topics.badgeclass}">{topics.postcount}</span>{topics.title}</span></h3>
+								<small>
+									<strong><i class="{topics.pin-icon}"></i> <i class="{topics.lock-icon}"></i></strong>
+									Posted <span class="timeago" title="{topics.relativeTime}"></span> by
+									<strong>{topics.username}</strong>.
+								</small>
 							</div>
-						</div>
-						<div>
-							<h3><span class="topic-title"><span class="badge {topics.badgeclass}">{topics.postcount}</span>{topics.title}</span></h3>
-							<small>
-								<strong><i class="{topics.pin-icon}"></i><i class="{topics.lock-icon}"></i></strong>
-								<span>Posted </span><span class="timeago" title="{topics.relativeTime}"></span><span> by</span>
-								<strong>{topics.username}</strong>.
-							</small>
-						</div>
+						</a>
 					</div>
 				</div>
 			</li>
