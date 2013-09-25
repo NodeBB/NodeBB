@@ -117,12 +117,14 @@ var ajaxify = {};
 
 			if (!e.ctrlKey && e.which === 1) {
 				if (this.host === window.location.host) {
+					// Internal link
 					var url = this.href.replace(rootUrl + '/', '');
 
 					if (ajaxify.go(url)) {
 						e.preventDefault();
 					}
-				} else {
+				} else if (window.location.pathname !== '/outgoing') {
+					// External Link
 					ajaxify.go('outgoing?url=' + encodeURIComponent(this.href));
 					e.preventDefault();
 				}
