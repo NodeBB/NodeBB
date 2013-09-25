@@ -11,6 +11,8 @@
 		validationError = false,
 		successIcon = '<i class="icon icon-ok"></i>';
 
+	$('#referrer').val(app.previousUrl);
+
 	function showError(element, msg) {
 		element.html(msg);
 		element.parent()

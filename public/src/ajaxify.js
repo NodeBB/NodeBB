@@ -111,9 +111,10 @@ var ajaxify = {};
 				return href == 'javascript:;' || href == window.location.href + "#" || href.slice(-1) === "#";
 			}
 
-			if (hrefEmpty(this.href)) return;
-			if (this.target !== '') return;
-			if (this.protocol === 'javascript:') return;
+			if (hrefEmpty(this.href) || this.target !== '' || this.protocol === 'javascript:')
+				return;
+
+			app.previousUrl = window.location.href;
 
 			if (!e.ctrlKey && e.which === 1) {
 				if (this.host === window.location.host) {
@@ -121,6 +122,7 @@ var ajaxify = {};
 					var url = this.href.replace(rootUrl + '/', '');
 
 					if (ajaxify.go(url)) {
+
 						e.preventDefault();
 					}
 				} else if (window.location.pathname !== '/outgoing') {

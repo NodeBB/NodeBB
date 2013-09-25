@@ -183,7 +183,10 @@
 					req.login({
 						uid: uid
 					}, function() {
-						res.redirect(nconf.get('relative_path') + '/');
+						if(req.body.referrer)
+							res.redirect(req.body.referrer);
+						else
+							res.redirect(nconf.get('relative_path') + '/');
 					});
 				} else {
 					res.redirect(nconf.get('relative_path') + '/register');
