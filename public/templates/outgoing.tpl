@@ -13,6 +13,13 @@
 	</h3>
 	<p>
 		<a href="{url}" rel="nofollow" class="btn btn-primary btn-lg">Continue to {url}</a>
-		<a href="{home}" class="btn btn-lg btn-warning">Return to NodeBB</a>
+		<a id="return-btn" href="#" class="btn btn-lg btn-warning">Return to NodeBB</a>
 	</p>
 </div>
+
+<script>
+	$('#return-btn').on('click', function() {
+		history.back();
+		return false;
+	});
+</script>

@@ -174,8 +174,7 @@ var user = require('./../user.js'),
 
 				if (url) {
 					res.json({
-						url: url,
-						home: nconf.get('url')
+						url: url
 					});
 				} else {
 					res.status(404);
