@@ -43,7 +43,7 @@
 								</div>
 							</a>
 						</div>
-						
+						<a href="../../topic/{topics.slug}">
 							<div>
 								<h3><span class="topic-title"><span class="badge {topics.badgeclass}">{topics.postcount}</span>{topics.title}</span></h3>
 								<small>
@@ -52,7 +52,7 @@
 									<strong>{topics.username}</strong>.
 								</small>
 							</div>
-						
+						</a>
 					</div>
 				</div>
 			</li>
