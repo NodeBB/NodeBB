@@ -344,24 +344,26 @@ var socket,
 
 	app.createNewPosts = function (data) {
 		data.posts[0].display_moderator_tools = 'none';
-		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data),
-			uniqueid = new Date().getTime(),
-			tempContainer = jQuery('<div id="' + uniqueid + '"></div>')
-				.appendTo("#post-container")
-				.hide()
-				.append(html)
-				.fadeIn('slow');
+		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
+		translator.translate(html, function(translatedHTML) {
+			var uniqueid = new Date().getTime(),
+				tempContainer = jQuery('<div id="' + uniqueid + '"></div>')
+					.appendTo("#post-container")
+					.hide()
+					.append(translatedHTML)
+					.fadeIn('slow');
 
-		for (var x = 0, numPosts = data.posts.length; x < numPosts; x++) {
-			socket.emit('api:post.privileges', data.posts[x].pid);
-		}
+			for (var x = 0, numPosts = data.posts.length; x < numPosts; x++) {
+				socket.emit('api:post.privileges', data.posts[x].pid);
+			}
 
-		tempContainer.replaceWith(tempContainer.contents());
-		infiniteLoaderActive = false;
+			tempContainer.replaceWith(tempContainer.contents());
+			infiniteLoaderActive = false;
 
-		app.populate_online_users();
-		app.addCommasToNumbers();
-		$('span.timeago').timeago();
+			app.populate_online_users();
+			app.addCommasToNumbers();
+			$('span.timeago').timeago();
+		});
 	}
 
 	app.infiniteLoaderActive = false;
