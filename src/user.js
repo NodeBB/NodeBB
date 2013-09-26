@@ -3,7 +3,7 @@ var utils = require('./../public/src/utils.js'),
 	crypto = require('crypto'),
 	emailjs = require('emailjs'),
 	meta = require('./meta.js'),
-	emailjsServer = emailjs.server.connect(meta.config.mailer || '127.0.0.1'),
+	emailjsServer = emailjs.server.connect(meta.config['email:smtp:host'] || '127.0.0.1'),
 	bcrypt = require('bcrypt'),
 	Groups = require('./groups'),
 	notifications = require('./notifications.js'),
@@ -484,7 +484,7 @@ var utils = require('./../public/src/utils.js'),
 			// Send intro email w/ confirm code
 			var message = emailjs.message.create({
 				text: confirm_email_plaintext,
-				from: meta.config.mailer.from,
+				from: meta.config['email:from'] || 'localhost@example.org',
 				to: email,
 				subject: '[NodeBB] Registration Email Verification',
 				attachment: [{
@@ -815,7 +815,7 @@ var utils = require('./../public/src/utils.js'),
 
 					var message = emailjs.message.create({
 						text: reset_email_plaintext,
-						from: meta.config.mailer ? meta.config.mailer.from : 'localhost@example.org',
+						from: meta.config['email:from'] ? meta.config['email:from'] : 'localhost@example.org',
 						to: email,
 						subject: 'Password Reset Requested',
 						attachment: [{
