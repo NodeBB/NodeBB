@@ -461,7 +461,7 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.sendConfirmationEmail = function(email) {
-		if (meta.config['email:host'] && meta.config['email:port'] && meta.config['email:from']) {
+		if (meta.config['email:smtp:host'] && meta.config['email:smtp:port'] && meta.config['email:from']) {
 			var confirm_code = utils.generateUUID(),
 				confirm_link = nconf.get('url') + 'confirm/' + confirm_code,
 				confirm_email = global.templates['emails/header'] + global.templates['emails/email_confirm'].parse({
