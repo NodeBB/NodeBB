@@ -32,8 +32,10 @@
 					$('#login-error-notify').show();
 				} else {
 					$('#login-error-notify').hide();
-					//window.location.replace(RELATIVE_PATH + "/?loggedin");
-					history.go(-1);
+					if(app.previousUrl.indexOf('/reset/') != -1)
+						window.location.replace(RELATIVE_PATH + "/?loggedin");
+					else
+						window.location.replace(app.previousUrl + "?loggedin");
 
 					app.loadConfig();
 				}
