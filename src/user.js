@@ -836,8 +836,7 @@ var utils = require('./../public/src/utils.js'),
 								status: "error",
 								message: "send-failed"
 							});
-							// @todo handle error properly
-							throw new Error(err);
+							winston.err(err);
 						}
 					});
 				} else {
