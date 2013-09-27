@@ -30,11 +30,13 @@ var RDB = require('./redis.js'),
 				callback([]);
 			}
 		});
-	}
+	};
 
 	Posts.addUserInfoToPost = function(post, callback) {
 		user.getUserFields(post.uid, ['username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned'], function(err, userData) {
-			if (err) return callback();
+			if (err) {
+				return callback();
+			}
 
 			postTools.parse(userData.signature, function(err, signature) {
 				post.username = userData.username || 'anonymous';
@@ -58,7 +60,7 @@ var RDB = require('./redis.js'),
 				}
 			});
 		});
-	}
+	};
 
 	Posts.getPostSummaryByPids = function(pids, callback) {
 
@@ -184,7 +186,7 @@ var RDB = require('./redis.js'),
 						postData.uploadedImages = [];
 					}
 
-                    postTools.toHTML(postData.content, function(err, content) {
+                    postTools.parse(postData.content, function(err, content) {
                         postData.content = content;
                         posts.push(postData);
                     });

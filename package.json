@@ -12,7 +12,6 @@
   "dependencies": {
     "socket.io": "~0.9.16",
     "redis": "0.8.3",
-	"hiredis" : "~0.1.15",
     "express": "3.2.0",
     "express-namespace": "~0.1.1",
     "emailjs": "0.3.4",
@@ -41,6 +40,9 @@
     "prompt": "~0.2.11",
     "uglify-js": "~2.4.0",
     "validator": "~1.5.1"
+  },
+  "optionalDependencies": {
+    "hiredis" : "~0.1.15",
   },
   "bugs": {
     "url": "https://github.com/designcreateplay/NodeBB/issues"
