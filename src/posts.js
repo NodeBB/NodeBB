@@ -170,10 +170,10 @@ var RDB = require('./redis.js'),
 		multi.exec(function (err, replies) {
 			async.eachSeries(replies, function(postData, _callback) {
 				if(postData) {
-					postData.relativeTime = utils.relativeTime(postData.timestamp);
+					postData.relativeTime = new Date(parseInt(postData.timestamp,10)).toISOString();
 					postData.post_rep = postData.reputation;
 					postData['edited-class'] = postData.editor !== '' ? '' : 'none';
-					postData['relativeEditTime'] = postData.edited !== '0' ? utils.relativeTime (postData.edited) : '';
+					postData['relativeEditTime'] = postData.edited !== '0' ? (new Date(parseInt(postData.edited,10)).toISOString()) : '';
 
 					if(postData.uploadedImages) {
 						try {
