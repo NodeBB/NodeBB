@@ -134,7 +134,7 @@ var express = require('express'),
 			templates['logout'] = parsedTemplate;
 		});
 
-		server.listen(nconf.get('PORT') || nconf.get('port'));
+		server.listen(nconf.get('PORT') || nconf.get('port'), nconf.get('use_ip') ? nconf.get('hostname_set') : '0.0.0.0');
 	}
 
 	auth.initialize(app);
