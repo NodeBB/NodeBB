@@ -234,7 +234,6 @@
 
 			if ($(window).scrollTop() > bottom && !app.infiniteLoaderActive && $('#post-container').children().length) {
 				app.loadMorePosts(tid);
-				console.log('window scrolling');
 			}
 		});
 	}
