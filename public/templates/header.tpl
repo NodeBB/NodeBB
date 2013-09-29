@@ -69,6 +69,10 @@
 				</form>
 
 				<ul id="logged-in-menu" class="nav navbar-nav navbar-right hide">
+					<li>
+						<a href="#" id="reconnect"></a>
+					</li>
+
 					<li id="notifications-list" class="notifications dropdown text-center hidden-xs">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="notif_dropdown"><i class="icon-circle-blank"></i></a>
 						<ul id="notif-list" class="dropdown-menu" aria-labelledby="notif_dropdown">

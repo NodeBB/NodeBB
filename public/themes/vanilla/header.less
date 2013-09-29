@@ -65,3 +65,19 @@
 		overflow: hidden;
 	}
 }
+
+#reconnect {
+	font-size: 14px;
+	-webkit-transition: opacity 250ms linear;
+	-moz-transition: opacity 250ms linear;
+	-ms-transition: opacity 250ms linear;
+	-o-transition: opacity 250ms linear;
+	transition: opacity 250ms linear;
+	-moz-opacity: 0.00;
+	opacity: 0.00;
+
+	&.active {
+		-moz-opacity: 1;
+		opacity: 1;
+	}
+}
