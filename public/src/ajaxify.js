@@ -38,8 +38,8 @@ var ajaxify = {};
 		window.onscroll = null;
 		// end
 
-
-		var url = url.replace(/\/$/, "");
+		// Remove trailing slash
+		url = url.replace(/\/$/, "");
 
 		var hash = window.location.hash;
 

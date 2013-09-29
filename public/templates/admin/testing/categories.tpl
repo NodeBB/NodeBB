@@ -10,7 +10,7 @@ jQuery(document).ready(function () {
 	QUnit.init();
 	asyncTest( "Loading Categories", function() {
 		
-		jQuery.get(config.api_url + 'home', function(data) {
+		jQuery.get(RELATIVE_PATH + '/api/home', function(data) {
 			ok( data.categories.length > 0, JSON.stringify(data.categories) );
 			
 			start();

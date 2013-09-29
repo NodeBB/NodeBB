@@ -1,8 +1,6 @@
 var socket,
 	config,
-	app = {},
-	API_URL = null;
-
+	app = {};
 
 (function () {
 	var showWelcomeMessage = false;
@@ -12,8 +10,6 @@ var socket,
 		$.ajax({
 			url: RELATIVE_PATH + '/api/config',
 			success: function (data) {
-				API_URL = data.api_url;
-
 				config = data;
 				if(socket) {
 					socket.disconnect();
