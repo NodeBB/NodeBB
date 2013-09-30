@@ -317,25 +317,23 @@ var utils = require('./../public/src/utils.js'),
 				return callback(err, null);
 			}
 
-			Groups.getGidFromName('Administrators', function(err, gid) {
-
-				function iterator(uid, callback) {
-					User.getUserData(uid, function(err, userData) {
-						Groups.isMember(uid, gid, function(err, isMember) {
-							if (userData) {
-								userData.administrator = isMember;
-								data.push(userData);
-							}
-							callback(null);
-						});
+			function iterator(uid, callback) {
+				User.getUserData(uid, function(err, userData) {
+					User.isAdministrator(uid, function(isAdmin) {
+						if (userData) {
+							userData.administrator = isAdmin?"1":"0";
+							data.push(userData);
+						}
+						callback(null);
 					});
-				}
-
-				async.eachSeries(uids, iterator, function(err) {
-					callback(err, data);
 				});
+			}
+
+			async.eachSeries(uids, iterator, function(err) {
+				callback(err, data);
 			});
 		});
+
 	}
 
 	User.createGravatarURLFromEmail = function(email) {
