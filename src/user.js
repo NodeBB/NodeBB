@@ -317,17 +317,23 @@ var utils = require('./../public/src/utils.js'),
 				return callback(err, null);
 			}
 
-			function iterator(uid, callback) {
-				User.getUserData(uid, function(err, userData) {
-					if (userData) {
-						data.push(userData);
-					}
-					callback(null);
-				});
-			}
+			Groups.getGidFromName('Administrators', function(err, gid) {
 
-			async.eachSeries(uids, iterator, function(err) {
-				callback(err, data);
+				function iterator(uid, callback) {
+					User.getUserData(uid, function(err, userData) {
+						Groups.isMember(uid, gid, function(err, isMember) {
+							if (userData) {
+								userData.administrator = isMember;
+								data.push(userData);
+							}
+							callback(null);
+						});
+					});
+				}
+
+				async.eachSeries(uids, iterator, function(err) {
+					callback(err, data);
+				});
 			});
 		});
 	}
