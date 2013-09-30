@@ -185,7 +185,7 @@ var fs = require('fs'),
 			} else {
 				// Otherwise, this hook contains no methods
 				var returnVal = (Array.isArray(args) ? args[0] : args);
-				if (callback) callback(err, returnVal);
+				if (callback) callback(null, returnVal);
 			}
 		},
 		isActive: function(id, callback) {
