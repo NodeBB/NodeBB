@@ -162,7 +162,7 @@ var fs = require('fs'),
 								}
 							}
 
-							callback(returnVal);
+							callback(err, returnVal);
 						});
 						break;
 					case 'action':
@@ -185,7 +185,7 @@ var fs = require('fs'),
 			} else {
 				// Otherwise, this hook contains no methods
 				var returnVal = (Array.isArray(args) ? args[0] : args);
-				if (callback) callback(returnVal);
+				if (callback) callback(err, returnVal);
 			}
 		},
 		isActive: function(id, callback) {
