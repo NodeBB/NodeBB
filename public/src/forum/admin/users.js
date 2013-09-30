@@ -20,8 +20,8 @@
 	function updateUserButtons() {
 		jQuery('.ban-btn').each(function(index, element) {
 			var banBtn = $(element);
-
-			if (isUserAdmin(banBtn))
+			var uid = getUID(banBtn);
+			if (isUserAdmin(banBtn) || uid === yourid)
 				banBtn.addClass('disabled');
 			else if (isUserBanned(banBtn))
 				banBtn.addClass('btn-warning');
