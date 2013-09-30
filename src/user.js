@@ -319,10 +319,13 @@ var utils = require('./../public/src/utils.js'),
 
 			function iterator(uid, callback) {
 				User.getUserData(uid, function(err, userData) {
-					if (userData) {
-						data.push(userData);
-					}
-					callback(null);
+					User.isAdministrator(uid, function(isAdmin) {
+						if (userData) {
+							userData.administrator = isAdmin?"1":"0";
+							data.push(userData);
+						}
+						callback(null);
+					});
 				});
 			}
 
@@ -330,6 +333,7 @@ var utils = require('./../public/src/utils.js'),
 				callback(err, data);
 			});
 		});
+
 	}
 
 	User.createGravatarURLFromEmail = function(email) {
