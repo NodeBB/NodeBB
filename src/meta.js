@@ -11,6 +11,8 @@ var utils = require('./../public/src/utils.js'),
 
 	Meta.configs = {
 		init: function (callback) {
+			delete Meta.config;
+
 			Meta.configs.list(function (err, config) {
 				if (!err) {
 					Meta.config = config;
