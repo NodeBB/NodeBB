@@ -7,9 +7,12 @@ var utils = require('./../public/src/utils.js'),
 	nconf = require('nconf');
 
 (function (Meta) {
+	Meta.config = {};
 
 	Meta.configs = {
 		init: function (callback) {
+			delete Meta.config;
+
 			Meta.configs.list(function (err, config) {
 				if (!err) {
 					Meta.config = config;
@@ -39,6 +42,8 @@ var utils = require('./../public/src/utils.js'),
 		set: function (field, value, callback) {
 			RDB.hset('config', field, value, function (err, res) {
 				if (callback) {
+					if(!err && Meta.config)
+						Meta.config[field] = value;
 					callback(err, res);
 				}
 			});
@@ -160,33 +165,7 @@ var utils = require('./../public/src/utils.js'),
 			'src/ajaxify.js',
 			'src/translator.js',
 			'src/jquery.form.js',
-			'src/utils.js',
-			'src/forum/account.js',
-			'src/forum/accountedit.js',
-			'src/forum/accountheader.js',
-			'src/forum/accountsettings.js',
-			'src/forum/category.js',
-			'src/forum/favourites.js',
-			'src/forum/followers.js',
-			'src/forum/following.js',
-			'src/forum/footer.js',
-			'src/forum/login.js',
-			'src/forum/recent.js',
-			'src/forum/register.js',
-			'src/forum/reset.js',
-			'src/forum/reset_code.js',
-			'src/forum/search.js',
-			'src/forum/topic.js',
-			'src/forum/unread.js',
-			'src/forum/users.js',
-			'src/forum/admin/categories.js',
-			'src/forum/admin/footer.js',
-			'src/forum/admin/groups.js',
-			'src/forum/admin/index.js',
-			'src/forum/admin/plugins.js',
-			'src/forum/admin/themes.js',
-			'src/forum/admin/topics.js',
-			'src/forum/admin/users'
+			'src/utils.js'
 		],
 		minFile: path.join(__dirname, '..', 'public/src/nodebb.min.js'),
 		get: function (callback) {

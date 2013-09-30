@@ -27,7 +27,7 @@
 
 						<div class="topic-buttons">
 							<div class="btn-group">
-								<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="[[topic:posted_by, {main_posts.username}]]">
+								<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="[[topic:posted_by]] {main_posts.username}">
 									<span class="username-field" href="/user/{main_posts.userslug}">{main_posts.username}&nbsp;</span>
 									<span class="caret"></span>
 								</button>

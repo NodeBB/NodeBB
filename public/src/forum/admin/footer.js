@@ -102,7 +102,7 @@ var nodebb_admin = (function(nodebb_admin) {
 				alert_id: 'config_status',
 				timeout: 2500,
 				title: 'Changes Saved',
-				message: 'Your changes to the NodeBB configuration have been saved. You may have to restart NodeBB to see the changes.',
+				message: 'Your changes to the NodeBB configuration have been saved.',
 				type: 'success'
 			});
 		} else {

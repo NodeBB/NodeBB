@@ -2,22 +2,6 @@
 
 	</div><!--END container -->
 
-	<div id="disconnect-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="You were disconnected" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h3 id="myModalLabel">[[footer:disconnect.title]]</h3>
-				</div>
-				<div class="modal-body">
-					<span id="disconnect-text">[[footer:disconnect.message]]</span>
-				</div>
-				<div class="modal-footer">
-					<a id="reload-button" href="/" class="btn btn-primary">[[footer:disconnect.reload_button]]</a>
-				</div>
-			</div><!-- /.modal-content -->
-		</div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->
-
 	<div id="chat-modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="Chat" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">

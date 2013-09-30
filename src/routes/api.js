@@ -123,7 +123,7 @@ var user = require('./../user.js'),
 			app.get('/category/:id/:slug?', function (req, res, next) {
 				var uid = (req.user) ? req.user.uid : 0;
 				categories.getCategoryById(req.params.id, uid, function (err, data) {
-					if (!err)
+					if (!err && data && data.disabled === "0")
 						res.json(data);
 					else
 						next();

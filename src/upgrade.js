@@ -100,7 +100,7 @@ function upgradeUserHash(uid, callback) {
 function upgradeAdmins(callback) {
 	Groups.getGidFromName('Administrators', function(err, gid) {
 		if (!err && !gid) {
-			winston.info('Upgading Administrators');
+			winston.info('Upgrading Administrators');
 
 			async.parallel([
 				function(next) {

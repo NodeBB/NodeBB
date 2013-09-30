@@ -19,7 +19,6 @@ var RDB = require('./redis.js'),
 
 	Posts.getPostsByTid = function(tid, start, end, callback) {
 		RDB.lrange('tid:' + tid + ':posts', start, end, function(err, pids) {
-
 			RDB.handle(err);
 
 			if (pids.length) {
@@ -123,8 +122,9 @@ var RDB = require('./redis.js'),
 	Posts.getPostData = function(pid, callback) {
 		RDB.hgetall('post:' + pid, function(err, data) {
 			if (err === null) {
-				plugins.fireHook('filter:post.get', data, function(data) {
-					callback(data);
+				plugins.fireHook('filter:post.get', data, function(err, newData) {
+					if (!err) callback(newData);
+					else callback(data);
 				});
 			} else
 				console.log(err);
@@ -154,28 +154,23 @@ var RDB = require('./redis.js'),
 		RDB.hset('post:' + pid, field, value);
 	}
 
-
-
-
-	/* getPostsByPids using redis's multi pipeline */
 	Posts.getPostsByPids = function(pids, callback) {
-		var posts = []
-		var multi = RDB.multi();
+		var posts = [],
+			multi = RDB.multi();
 
-		for (v in pids) {
-			var _pid = pids[v]
-			multi.hgetall("post:"+_pid);
+		for(var x=0,numPids=pids.length;x<numPids;x++) {
+			multi.hgetall("post:"+pids[x]);
 		}
 
 		multi.exec(function (err, replies) {
-			async.eachSeries(replies, function(postData, _callback) {
-				if(postData) {
+			async.map(replies, function(postData, _callback) {
+				if (postData) {
 					postData.relativeTime = new Date(parseInt(postData.timestamp,10)).toISOString();
 					postData.post_rep = postData.reputation;
 					postData['edited-class'] = postData.editor !== '' ? '' : 'none';
 					postData['relativeEditTime'] = postData.edited !== '0' ? (new Date(parseInt(postData.edited,10)).toISOString()) : '';
 
-					if(postData.uploadedImages) {
+					if (postData.uploadedImages) {
 						try {
 							postData.uploadedImages = JSON.parse(postData.uploadedImages);
 						} catch(err) {
@@ -188,52 +183,19 @@ var RDB = require('./redis.js'),
 
                     postTools.parse(postData.content, function(err, content) {
                         postData.content = content;
-                        posts.push(postData);
+						_callback(null, postData);
                     });
-					return _callback(null)
+				} else {
+					_callback(null);
 				}
-				else {
-					return _callback(null)
-				}
-			}, function(err) {
-				if(!err) {
+			}, function(err, posts) {
+				if (!err) {
 					return callback(null, posts);
 				} else {
 					return callback(err, null);
 				}
 			});
 		})
-	}
-
-
-
-
-
-	Posts.getPostsByPids_original = function(pids, callback) {
-		var posts = [];
-
-		async.eachSeries(pids, function(pid, callback) {
-			Posts.getPostData(pid, function(postData) {
-				if (postData) {
-					postData.relativeTime = new Date(parseInt(postData.timestamp,10)).toISOString();
-					postData.post_rep = postData.reputation;
-					postData['edited-class'] = postData.editor !== '' ? '' : 'none';
-					postData['relativeEditTime'] = postData.edited !== '0' ? (new Date(parseInt(postData.edited,10)).toISOString()) : '';
-
-					postTools.parse(postData.content, function(err, content) {
-						postData.content = content;
-						posts.push(postData);
-						callback(null);
-					});
-				}
-			});
-		}, function(err) {
-			if (!err) {
-				callback(null, posts);
-			} else {
-				callback(err, null);
-			}
-		});
 	}
 
 	Posts.get_cid_by_pid = function(pid, callback) {
@@ -326,7 +288,9 @@ var RDB = require('./redis.js'),
 				RDB.incr('global:next_post_id', function(err, pid) {
 					RDB.handle(err);
 
-					plugins.fireHook('filter:post.save', content, function(content) {
+					plugins.fireHook('filter:post.save', content, function(err, newContent) {
+						if (!err) content = newContent;
+
 						var timestamp = Date.now(),
 							postData = {
 								'pid': pid,
@@ -376,7 +340,9 @@ var RDB = require('./redis.js'),
 
 						async.parallel({
 							content: function(next) {
-								plugins.fireHook('filter:post.get', postData, function(postData) {
+								plugins.fireHook('filter:post.get', postData, function(err, newPostData) {
+									if (!err) postData = newPostData;
+
 									postTools.parse(postData.content, function(err, content) {
 										next(null, content);
 									});

@@ -187,7 +187,15 @@ define(['taskbar'], function(taskbar) {
 				switch(action) {
 					case 'post': composer.post(uuid); break;
 					case 'minimize': composer.minimize(uuid); break;
-					case 'discard': composer.discard(uuid); break;
+					case 'discard':
+						if (postContentEl.value.length > 0) {
+							bootbox.confirm('Are you sure you wish to discard this post?', function(discard) {
+								if (discard) composer.discard(uuid);
+							});
+						} else {
+							composer.discard(uuid);
+						}
+						break;
 				}
 			});
 

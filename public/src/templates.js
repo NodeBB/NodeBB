@@ -114,20 +114,15 @@
 
 	templates.load_template = function (callback, url, template) {
 		var location = document.location || window.location,
-			rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : '');
-
-		var api_url = (url === '' || url === '/') ? 'home' : url;
-
-		var tpl_url = templates.get_custom_map(api_url.split('?')[0]);
-
-		var trimmed = api_url;
+			api_url = (url === '' || url === '/') ? 'home' : url,
+			tpl_url = templates.get_custom_map(api_url.split('?')[0]),
+			trimmed = api_url;
 
 		if (!tpl_url) {
 			tpl_url = templates.getTemplateNameFromUrl(api_url);
 		}
 
 		var template_data = null;
-
 
 		(function () {
 			var timestamp = new Date().getTime(); //debug
@@ -155,8 +150,7 @@
 		}());
 
 		(function () {
-
-			jQuery.get(API_URL + api_url, function (data) {
+			jQuery.get(RELATIVE_PATH + '/api/' + api_url, function (data) {
 
 				if (!data) {
 					ajaxify.go('404');

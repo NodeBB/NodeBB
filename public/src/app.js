@@ -1,8 +1,6 @@
 var socket,
 	config,
-	app = {},
-	API_URL = null;
-
+	app = {};
 
 (function () {
 	var showWelcomeMessage = false;
@@ -12,8 +10,6 @@ var socket,
 		$.ajax({
 			url: RELATIVE_PATH + '/api/config',
 			success: function (data) {
-				API_URL = data.api_url;
-
 				config = data;
 				if(socket) {
 					socket.disconnect();
@@ -23,8 +19,8 @@ var socket,
 				} else {
 					socket = io.connect(config.socket.address);
 
-					var reconnecting = false;
-					var reconnectTries = 0;
+					var reconnecting = false,
+						reconnectEl, reconnectTimer;
 
 					socket.on('event:connect', function (data) {
 						app.username = data.username;
@@ -40,17 +36,12 @@ var socket,
 
 					socket.on('connect', function (data) {
 						if (reconnecting) {
-							setTimeout(function () {
-								app.alert({
-									alert_id: 'connection_alert',
-									title: 'Connected',
-									message: 'Connection successful.',
-									type: 'success',
-									timeout: 5000
-								});
-							}, 1000);
+							reconnectEl.html('<i class="icon-ok"></i> Connected!');
 							reconnecting = false;
-							reconnectTries = 0;
+
+							setTimeout(function() {
+								reconnectEl.removeClass('active');
+							}, 3000);
 						}
 
 						socket.emit('api:updateHeader', {
@@ -63,33 +54,11 @@ var socket,
 					});
 
 					socket.on('reconnecting', function (data) {
-						function showDisconnectModal() {
-							$('#disconnect-modal').modal({
-								backdrop: 'static',
-								show: true
-							});
-
-							$('#reload-button').on('click', function () {
-								$('#disconnect-modal').modal('hide');
-								window.location.reload();
-							});
-						}
-
+						if (!reconnectEl) reconnectEl = $('#reconnect');
 						reconnecting = true;
-						reconnectTries++;
 
-						if (reconnectTries > 4) {
-							showDisconnectModal();
-							return;
-						}
-
-						app.alert({
-							alert_id: 'connection_alert',
-							title: 'Reconnecting',
-							message: 'You have disconnected from NodeBB, we will try to reconnect you. <br/><i class="icon-refresh icon-spin"></i>',
-							type: 'warning',
-							timeout: 5000
-						});
+						reconnectEl.addClass('active');
+						reconnectEl.html('<i class="icon-spinner icon-spin"></i> Reconnecting...');
 					});
 
 					socket.on('api:user.get_online_users', function (users) {
