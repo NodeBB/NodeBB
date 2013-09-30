@@ -22,7 +22,8 @@ var express = require('express'),
 	meta = require('./meta.js'),
 	feed = require('./feed'),
 	plugins = require('./plugins'),
-	nconf = require('nconf');
+	nconf = require('nconf'),
+	winston = require('winston');
 
 (function (app) {
 	var templates = null,
@@ -72,54 +73,104 @@ var express = require('express'),
 	};
 
 	// Middlewares
-	app.use(express.compress());
-	app.use(express.favicon(path.join(__dirname, '../', 'public', 'favicon.ico')));
-	app.use(require('less-middleware')({
-		src: path.join(__dirname, '../', 'public'),
-		prefix: nconf.get('relative_path'),
-		yuicompress: true
-	}));
-	app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../', 'public')));
-	app.use(express.bodyParser()); // Puts POST vars in request.body
+	app.configure(function() {
+		async.series([
+			function(next) {
+				// Pre-router middlewares
+				app.use(express.compress());
+				app.use(express.favicon(path.join(__dirname, '../', 'public', 'favicon.ico')));
+				app.use(require('less-middleware')({
+					src: path.join(__dirname, '../', 'public'),
+					prefix: nconf.get('relative_path'),
+					yuicompress: true
+				}));
+				app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../', 'public')));
+				app.use(express.bodyParser()); // Puts POST vars in request.body
+				app.use(express.cookieParser()); // If you want to parse cookies (res.cookies)
+				app.use(express.session({
+					store: new RedisStore({
+						client: RDB,
+						ttl: 60 * 60 * 24 * 30
+					}),
+					secret: nconf.get('secret'),
+					key: 'express.sid',
+					cookie: {
+						maxAge: 60 * 60 * 24 * 30 * 1000 // 30 days
+					}
+				}));
+				app.use(express.csrf());
 
-	app.use(express.cookieParser()); // If you want to parse cookies (res.cookies)
-	app.use(express.session({
-		store: new RedisStore({
-			client: RDB,
-			ttl: 60 * 60 * 24 * 30
-		}),
-		secret: nconf.get('secret'),
-		key: 'express.sid',
-		cookie: {
-			maxAge: 60 * 60 * 24 * 30 * 1000 // 30 days
-		}
-	}));
-	app.use(express.csrf());
-	app.use(function (req, res, next) {
-		res.locals.csrf_token = req.session._csrf;
-		next();
-	});
+				// Local vars, other assorted setup
+				app.use(function (req, res, next) {
+					nconf.set('https', req.secure);
+					res.locals.csrf_token = req.session._csrf;
+					next();
+				});
 
-	// Static Directories for NodeBB Plugins
-	app.configure(function () {
-		var tailMiddlewares = [];
+				// Authentication Routes
+				auth.initialize(app);
 
-		plugins.ready(function () {
-			// Remove some middlewares until the router is gone
-			// This is not recommended behaviour: http://stackoverflow.com/a/13691542/122353
-			// Also: https://www.exratione.com/2013/03/nodejs-abusing-express-3-to-enable-late-addition-of-middleware/
-			tailMiddlewares.push(app.stack.pop());
-			tailMiddlewares.push(app.stack.pop());
-			tailMiddlewares.push(app.stack.pop());
-			for (d in plugins.staticDirs) {
-				app.use(nconf.get('relative_path') + '/plugins/' + d, express.static(plugins.staticDirs[d]));
+				next();
+			},
+			function(next) {
+				// Static Directories for NodeBB Plugins
+				plugins.ready(function () {
+					for (d in plugins.staticDirs) {
+						app.use(nconf.get('relative_path') + '/plugins/' + d, express.static(plugins.staticDirs[d]));
+						winston.info('Static directory routed for plugin: ' + d);
+					}
+
+					next();
+				});
+			},
+			function(next) {
+				// Router & post-router middlewares
+				app.use(app.router);
+
+				// 404 catch-all
+				app.use(function (req, res, next) {
+					res.status(404);
+
+					// respond with html page
+					if (req.accepts('html')) {
+						res.redirect(nconf.get('relative_path') + '/404');
+						return;
+					}
+
+					// respond with json
+					if (req.accepts('json')) {
+						res.send({
+							error: 'Not found'
+						});
+						return;
+					}
+
+					// default to plain-text. send()
+					res.type('txt').send('Not found');
+				});
+
+				app.use(function (err, req, res, next) {
+
+					// we may use properties of the error object
+					// here and next(err) appropriately, or if
+					// we possibly recovered from the error, simply next().
+					console.error(err.stack);
+
+					res.status(err.status || 500);
+
+					res.json('500', {
+						error: err.message
+					});
+				});
+
+				next();
 			}
-
-			// Push the removed middlewares back onto the application stack
-			tailMiddlewares.reverse();
-			app.stack.push(tailMiddlewares.shift());
-			app.stack.push(tailMiddlewares.shift());
-			app.stack.push(tailMiddlewares.shift());
+		], function(err) {
+			if (err) {
+				winston.error('Errors were encountered while attempting to initialise NodeBB.');
+			} else {
+				winston.info('Middlewares loaded.');
+			}
 		});
 	});
 
@@ -137,58 +188,9 @@ var express = require('express'),
 		server.listen(nconf.get('PORT') || nconf.get('port'));
 	}
 
-	auth.initialize(app);
-
-	app.use(function (req, res, next) {
-
-		nconf.set('https', req.secure);
-
-		next();
-	});
-
-	app.use(app.router);
-
-	app.use(function (req, res, next) {
-		res.status(404);
-
-		// respond with html page
-		if (req.accepts('html')) {
-			//res.json('404', { url: req.url });
-			res.redirect(nconf.get('relative_path') + '/404');
-			return;
-		}
-
-		// respond with json
-		if (req.accepts('json')) {
-			res.send({
-				error: 'Not found'
-			});
-			return;
-		}
-
-		// default to plain-text. send()
-		res.type('txt').send('Not found');
-	});
-
-	app.use(function (err, req, res, next) {
-
-		// we may use properties of the error object
-		// here and next(err) appropriately, or if
-		// we possibly recovered from the error, simply next().
-		console.error(err.stack);
-
-		res.status(err.status || 500);
-
-		res.json('500', {
-			error: err.message
-		});
-	});
-
-
 	app.create_route = function (url, tpl) { // to remove
 		return '<script>templates.ready(function(){ajaxify.go("' + url + '", null, "' + tpl + '");});</script>';
 	};
-
 
 	app.namespace(nconf.get('relative_path'), function () {
 
