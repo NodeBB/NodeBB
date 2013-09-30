@@ -41,14 +41,8 @@ var async = require('async'),
 			name: 'redis:password',
 			description: 'Password of your Redis database'
 		}, {
-            name: 'use_ip',
-            description: 'Do you want to bind to an IP or hostname?',
-            'default': 'n',
-            pattern: /y[es]*|n[o]?/,
-            message: 'Please enter \'yes\' or \'no\'',
-        }, {
-            name: 'hostname_ip',
-            decription: 'Hostname or IP to bind to'
+            name: 'bind_address',
+            description: 'IP or Hostname to bind to',
             'default': '0.0.0.0'
         }],
 		setup: function (callback) {
