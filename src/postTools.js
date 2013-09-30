@@ -102,8 +102,8 @@ var RDB = require('./redis.js'),
 
 		PostTools.privileges(pid, uid, function(privileges) {
 			if (privileges.editable) {
-				plugins.fireHook('filter:post.save', content, function(parsedContent) {
-					content = parsedContent;
+				plugins.fireHook('filter:post.save', content, function(err, parsedContent) {
+					if (!err) content = parsedContent;
 					success();
 				});
 			}
@@ -193,8 +193,8 @@ var RDB = require('./redis.js'),
 	PostTools.parse = function(raw, callback) {
 		raw = raw || '';
 
-		plugins.fireHook('filter:post.parse', raw, function(parsed) {
-			callback(null, parsed);
+		plugins.fireHook('filter:post.parse', raw, function(err, parsed) {
+			callback(null, !err ? parsed : raw);
 		});
 	}
 
