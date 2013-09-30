@@ -23,7 +23,8 @@ var express = require('express'),
 	feed = require('./feed'),
 	plugins = require('./plugins'),
 	nconf = require('nconf'),
-	winston = require('winston');
+	winston = require('winston'),
+	validator = require('validator');
 
 (function (app) {
 	var templates = null,
@@ -321,6 +322,9 @@ var express = require('express'),
 						metaTags: [{
 							name: "title",
 							content: topicData.topic_name
+						}, {
+							name: "description",
+							content: validator.sanitize(topicData.main_posts[0].content.substr(0, 255)).escape().replace('\n', '')
 						}, {
 							property: 'og:title',
 							content: topicData.topic_name + ' | ' + (meta.config.title || 'NodeBB')
