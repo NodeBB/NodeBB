@@ -66,6 +66,7 @@
 		nconf.set('upload_url', nconf.get('url') + 'uploads/');
 
 		winston.info('Initializing NodeBB v' + pkg.version + ', on port ' + nconf.get('port') + ', using Redis store at ' + nconf.get('redis:host') + ':' + nconf.get('redis:port') + '.');
+		winston.info('NodeBB instance bound to: ' + (nconf.get('bind_address') || 'Any address'));
 
 		if (process.env.NODE_ENV === 'development') {
 			winston.info('Base Configuration OK.');

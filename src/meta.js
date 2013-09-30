@@ -7,9 +7,12 @@ var utils = require('./../public/src/utils.js'),
 	nconf = require('nconf');
 
 (function (Meta) {
+	Meta.config = {};
 
 	Meta.configs = {
 		init: function (callback) {
+			delete Meta.config;
+
 			Meta.configs.list(function (err, config) {
 				if (!err) {
 					Meta.config = config;

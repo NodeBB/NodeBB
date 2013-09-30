@@ -185,7 +185,7 @@ var express = require('express'),
 			templates['logout'] = parsedTemplate;
 		});
 
-		server.listen(nconf.get('PORT') || nconf.get('port'));
+		server.listen(nconf.get('PORT') || nconf.get('port'), nconf.get('bind_address'));
 	}
 
 	app.create_route = function (url, tpl) { // to remove
