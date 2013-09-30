@@ -32,12 +32,6 @@
 			<i class='icon-pencil'></i>
 		</div>
 		<div>
-			<a href="#" class="btn btn-default admin-btn">Admin</a>
-		</div>
-		<div>
-			<a href="#" class="btn delete-btn btn-danger">Delete</a>
-		</div>
-		<div>
 			<a href="#" class="btn btn-default ban-btn">Ban</a>
 		</div>
 	</div>
