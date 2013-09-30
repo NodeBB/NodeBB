@@ -11,8 +11,6 @@ var RDB = require('../redis'),
 				Groups.getGidFromName('Administrators', function(err, gid) {
 					Groups.join(gid, theirid, function(err) {
 						if (!err) {
-							user.setUserField(theirid, 'administrator', 1);
-
 							socket.emit('event:alert', {
 								title: 'User Modified',
 								message: 'This user is now an administrator!',
@@ -39,7 +37,6 @@ var RDB = require('../redis'),
 				Groups.getGidFromName('Administrators', function(err, gid) {
 					Groups.leave(gid, theirid, function(err) {
 						if (!err) {
-							user.setUserField(theirid, 'administrator', 0);
 
 							socket.emit('event:alert', {
 								title: 'User Modified',
@@ -51,24 +48,6 @@ var RDB = require('../redis'),
 					});
 				});
 			}
-		});
-	};
-
-	UserAdmin.deleteUser = function(uid, theirid, socket) {
-		user.isAdministrator(uid, function(amIAdmin) {
-			user.isAdministrator(theirid, function(areTheyAdmin) {
-				if (amIAdmin && !areTheyAdmin) {
-					user.delete(theirid, function(data) {
-
-						socket.emit('event:alert', {
-							title: 'User Deleted',
-							message: 'This user is deleted!',
-							type: 'success',
-							timeout: 2000
-						});
-					});
-				}
-			});
 		});
 	};
 

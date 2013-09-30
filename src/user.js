@@ -72,7 +72,6 @@ var utils = require('./../public/src/utils.js'),
 					'reputation': 0,
 					'postcount': 0,
 					'lastposttime': 0,
-					'administrator': (uid == 1) ? 1 : 0,
 					'banned': 0,
 					'showemail': 0
 				});
@@ -113,33 +112,6 @@ var utils = require('./../public/src/utils.js'),
 			});
 		});
 	};
-
-	User.delete = function(uid, callback) {
-		RDB.exists('user:' + uid, function(err, exists) {
-			if (exists === 1) {
-				console.log('deleting uid ' + uid);
-
-				User.getUserData(uid, function(err, data) {
-
-					RDB.hdel('username:uid', data['username']);
-					RDB.hdel('email:uid', data['email']);
-					RDB.hdel('userslug:uid', data['userslug']);
-
-					RDB.del('user:' + uid);
-					RDB.del('followers:' + uid);
-					RDB.del('following:' + uid);
-
-					RDB.zrem('users:joindate', uid);
-					RDB.zrem('users:postcount', uid);
-					RDB.zrem('users:reputation', uid);
-
-					callback(true);
-				});
-			} else {
-				callback(false);
-			}
-		});
-	}
 
 	User.ban = function(uid, callback) {
 		User.setUserField(uid, 'banned', 1, callback);

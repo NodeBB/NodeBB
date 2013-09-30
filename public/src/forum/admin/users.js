@@ -83,23 +83,6 @@
 			return false;
 		});
 
-		$('#users-container').on('click', '.delete-btn', function() {
-			var deleteBtn = $(this);
-			var isAdmin = isUserAdmin(deleteBtn);
-			var parent = deleteBtn.parents('.users-box');
-			var uid = getUID(deleteBtn);
-
-			if (!isAdmin) {
-				bootbox.confirm('Do you really want to delete "' + parent.attr('data-username') + '"?', function(confirm) {
-					if (confirm) {
-						socket.emit('api:admin.user.deleteUser', uid);
-					}
-				});
-			}
-
-			return false;
-		});
-
 		$('#users-container').on('click', '.ban-btn', function() {
 			var banBtn = $(this);
 			var isAdmin = isUserAdmin(banBtn);
