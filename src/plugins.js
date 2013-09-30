@@ -26,7 +26,6 @@ var fs = require('fs'),
 				function(plugins, next) {
 					if (plugins && Array.isArray(plugins) && plugins.length > 0) {
 						async.each(plugins, function(plugin, next) {
-							// TODO: Update this check to also check node_modules
 							var pluginPath = path.join(__dirname, '../plugins/', plugin),
 								modulePath = path.join(__dirname, '../node_modules/', plugin);
 							if (fs.existsSync(pluginPath)) _self.loadPlugin(pluginPath, next);
@@ -57,11 +56,13 @@ var fs = require('fs'),
 
 				if (global.env === 'development') winston.info('[plugins] Plugins OK');
 
+				_self.initialized = true;
 				_self.readyEvent.emit('ready');
 			});
 		},
 		ready: function(callback) {
-			this.readyEvent.once('ready', callback);
+			if (!this.initialized) this.readyEvent.once('ready', callback);
+			else callback();
 		},
 		initialized: false,
 		loadPlugin: function(pluginPath, callback) {
