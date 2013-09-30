@@ -14,7 +14,7 @@
 	<span id="user-notfound-notify" class="label label-danger hide">User not found!</span><br/>
 </div>
 
-<ul id="users-container" class="users">
+<ul id="users-container" class="users admin">
 	<!-- BEGIN users -->
 	<div class="users-box" data-uid="{users.uid}" data-admin="{users.administrator}" data-username="{users.username}" data-banned="{users.banned}">
 		<a href="/user/{users.userslug}">
