@@ -20,7 +20,8 @@ schema = require('./schema.js'),
 	Topics.getTopicData = function(tid, callback) {
 		RDB.hgetall('topic:' + tid, function(err, data) {
 			if (err === null) {
-				data.title = validator.sanitize(data.title).escape();
+				if(data)
+					data.title = validator.sanitize(data.title).escape();
 
 				callback(data);
 			} else {
@@ -97,7 +98,7 @@ schema = require('./schema.js'),
 
 		var timestamp = Date.now();
 
-		var args = ['topics:recent', '+inf', timestamp - 86400000, 'WITHSCORES', 'LIMIT', start, end - start + 1];
+		var args = ['topics:recent', '+inf', timestamp - 86400000, 'LIMIT', start, end - start + 1];
 
 		RDB.zrevrangebyscore(args, function(err, tids) {
 
