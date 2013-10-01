@@ -53,15 +53,22 @@
   "contributors": [
     {
       "name": "Andrew Rodrigues",
-      "email": "andrew@designcreateplay.com"
+      "email": "andrew@designcreateplay.com",
+      "url": "https://github.com/psychobunny"
     },
     {
       "name": "Julian Lam",
-      "email": "julian@designcreateplay.com"
+      "email": "julian@designcreateplay.com",
+      "url": "https://github.com/julianlam"
     },
     {
       "name": "Barış Soner Uşaklı",
-      "email": "baris@designcreateplay.com"
+      "email": "baris@designcreateplay.com",
+      "url": "https://github.com/barisusakli"
+    },
+    {
+      "name": "Andrew Darqui",
+      "url": "https://github.com/adarqui"
     },
     {
       "name": "Damian Bushong",
@@ -70,6 +77,10 @@
     {
       "name": "Matt Smith",
       "url": "https://github.com/soimafreak"
+    },
+    {
+      "name": "Quinton Marchi",
+      "url": "https://github.com/iamcardinal"
     }
   ]
 }
