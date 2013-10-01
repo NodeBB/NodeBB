@@ -14,7 +14,7 @@
 	<span id="user-notfound-notify" class="label label-danger hide">User not found!</span><br/>
 </div>
 
-<ul id="users-container" class="users">
+<ul id="users-container" class="users admin">
 	<!-- BEGIN users -->
 	<div class="users-box" data-uid="{users.uid}" data-admin="{users.administrator}" data-username="{users.username}" data-banned="{users.banned}">
 		<a href="/user/{users.userslug}">
@@ -30,12 +30,6 @@
 		<div title="post count">
 			<span id='postcount'>{users.postcount}</span>
 			<i class='icon-pencil'></i>
-		</div>
-		<div>
-			<a href="#" class="btn btn-default admin-btn">Admin</a>
-		</div>
-		<div>
-			<a href="#" class="btn delete-btn btn-danger">Delete</a>
 		</div>
 		<div>
 			<a href="#" class="btn btn-default ban-btn">Ban</a>

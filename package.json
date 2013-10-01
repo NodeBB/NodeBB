@@ -2,7 +2,7 @@
   "name": "nodebb",
   "license": "GPLv3 or later",
   "description": "NodeBB Forum",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "homepage": "http://www.nodebb.org",
   "repository": {
     "type": "git",
@@ -42,7 +42,7 @@
     "validator": "~1.5.1"
   },
   "optionalDependencies": {
-    "hiredis" : "~0.1.15"
+    "hiredis": "~0.1.15"
   },
   "bugs": {
     "url": "https://github.com/designcreateplay/NodeBB/issues"

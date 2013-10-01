@@ -3,13 +3,14 @@
 **NodeBB** is a robust Node.js driven forum built on a redis database. It is powered by web sockets, and is compatible down to IE8.
 
 * [NodeBB Homepage](http://www.nodebb.org/ "NodeBB")
+* [Demo & Meta Discussion](http://try.nodebb.org)
+* [Join us on IRC](https://kiwiirc.com/client/irc.freenode.net/nodebb) - #nodebb on Freenode
 * [Follow on Twitter](http://www.twitter.com/NodeBB/ "NodeBB Twitter")
 * [Like us on Facebook](http://www.facebook.com/NodeBB/ "NodeBB Facebook")
-* [Join us on IRC](https://kiwiirc.com/client/irc.freenode.net/nodebb) - #nodebb on Freenode
 
-![NodeBB Main Category Listing](http://i.imgur.com/ZBrHqLr.png)
+![NodeBB Main Category Listing](http://i.imgur.com/zffCFoh.png)
 
-![NodeBB Topic Page](http://i.imgur.com/YSBA6Vr.png)
+![NodeBB Topic Page](http://i.imgur.com/tcHW08M.png)
 
 ## How can I follow along/contribute?
 

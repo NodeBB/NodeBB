@@ -124,47 +124,40 @@
 
 		var template_data = null;
 
-		(function () {
-			var timestamp = new Date().getTime(); //debug
+		var timestamp = new Date().getTime(); //debug
 
-			if (!templates[tpl_url]) {
-				jQuery.get(RELATIVE_PATH + '/templates/' + tpl_url + '.tpl?v=' + timestamp, function (html) {
-					var template = function () {
-						this.toString = function () {
-							return this.html;
-						};
-					}
-
-					template.prototype.parse = parse;
-					template.prototype.html = String(html);
-					template.prototype.blocks = {};
-
-					templates[tpl_url] = new template;
-
-					parse_template();
-				});
-			} else {
-				parse_template();
-			}
-
-		}());
-
-		(function () {
-			jQuery.get(RELATIVE_PATH + '/api/' + api_url, function (data) {
-
-				if (!data) {
-					ajaxify.go('404');
-					return;
+		if (!templates[tpl_url]) {
+			jQuery.get(RELATIVE_PATH + '/templates/' + tpl_url + '.tpl?v=' + timestamp, function (html) {
+				var template = function () {
+					this.toString = function () {
+						return this.html;
+					};
 				}
 
-				template_data = data;
-				parse_template();
-			}).fail(function (data) {
-				template_data = {};
+				template.prototype.parse = parse;
+				template.prototype.html = String(html);
+				template.prototype.blocks = {};
+
+				templates[tpl_url] = new template;
+
 				parse_template();
 			});
-		}());
+		} else {
+			parse_template();
+		}
 
+		jQuery.get(RELATIVE_PATH + '/api/' + api_url, function (data) {
+
+			if (!data) {
+				ajaxify.go('404');
+				return;
+			}
+
+			template_data = data;
+			parse_template();
+		}).fail(function (data) {
+			app.alertError("Can't load template data!");
+		});
 
 		function parse_template() {
 			if (!templates[tpl_url] || !template_data) return;

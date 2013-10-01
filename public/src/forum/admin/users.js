@@ -18,33 +18,10 @@
 	}
 
 	function updateUserButtons() {
-
-		jQuery('.admin-btn').each(function(index, element) {
-			var adminBtn = $(element);
-			var uid = getUID(adminBtn);
-
-			if (isUserAdmin(adminBtn))
-				adminBtn.addClass('btn-success');
-			else
-				adminBtn.removeClass('btn-success');
-
-			if (uid === yourid)
-				adminBtn.addClass('disabled');
-		});
-
-		jQuery('.delete-btn').each(function(index, element) {
-			var deleteBtn = $(element);
-
-			if (isUserAdmin(deleteBtn))
-				deleteBtn.addClass('disabled');
-			else
-				deleteBtn.show();
-		});
-
 		jQuery('.ban-btn').each(function(index, element) {
 			var banBtn = $(element);
-
-			if (isUserAdmin(banBtn))
+			var uid = getUID(banBtn);
+			if (isUserAdmin(banBtn) || uid === yourid)
 				banBtn.addClass('disabled');
 			else if (isUserBanned(banBtn))
 				banBtn.addClass('btn-warning');
@@ -57,31 +34,6 @@
 	function initUsers() {
 
 		updateUserButtons();
-
-		$('#users-container').on('click', '.admin-btn', function() {
-			var adminBtn = $(this);
-			var isAdmin = isUserAdmin(adminBtn);
-			var parent = adminBtn.parents('.users-box');
-			var uid = getUID(adminBtn);
-
-			if (isAdmin && uid != yourid) {
-				socket.emit('api:admin.user.removeAdmin', uid);
-				adminBtn.removeClass('btn-success');
-				parent.find('.delete-btn').removeClass('disabled');
-				parent.attr('data-admin', 0);
-			} else if (uid != yourid) {
-				bootbox.confirm('Do you really want to make "' + parent.attr('data-username') + '" an admin?', function(confirm) {
-					if (confirm) {
-						socket.emit('api:admin.user.makeAdmin', uid);
-						adminBtn.addClass('btn-success');
-						parent.find('.delete-btn').addClass('disabled');
-						parent.attr('data-admin', 1);
-					}
-				});
-			}
-
-			return false;
-		});
 
 		$('#users-container').on('click', '.ban-btn', function() {
 			var banBtn = $(this);
