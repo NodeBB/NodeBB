@@ -309,7 +309,8 @@ var express = require('express'),
 				},
 				function (topicData, next) {
 					var lastMod = 0,
-						timestamp;
+						timestamp,
+						sanitize = validator.sanitize;
 
 					for (var x = 0, numPosts = topicData.posts.length; x < numPosts; x++) {
 						timestamp = parseInt(topicData.posts[x].timestamp, 10);
@@ -324,7 +325,7 @@ var express = require('express'),
 							content: topicData.topic_name
 						}, {
 							name: "description",
-							content: validator.sanitize(topicData.main_posts[0].content.substr(0, 255)).escape().replace('\n', '')
+							content: sanitize(topicData.main_posts[0].content.substr(0, 255)).escape().replace('\n', '')
 						}, {
 							property: 'og:title',
 							content: topicData.topic_name + ' | ' + (meta.config.title || 'NodeBB')

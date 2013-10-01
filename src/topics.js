@@ -15,15 +15,17 @@ schema = require('./schema.js'),
 	topicSearch = reds.createSearch('nodebbtopicsearch'),
 	validator = require('validator');
 
-
 (function(Topics) {
 
 	Topics.getTopicData = function(tid, callback) {
 		RDB.hgetall('topic:' + tid, function(err, data) {
-			if (err === null)
+			if (err === null) {
+				data.title = validator.sanitize(data.title).escape();
+
 				callback(data);
-			else
+			} else {
 				console.log(err);
+			}
 		});
 	}
 
@@ -658,7 +660,6 @@ schema = require('./schema.js'),
 
 				var slug = tid + '/' + utils.slugify(title);
 				var timestamp = Date.now();
-				title = validator.sanitize(title).escape();
 				RDB.hmset('topic:' + tid, {
 					'tid': tid,
 					'uid': uid,
@@ -698,9 +699,9 @@ schema = require('./schema.js'),
 
 						// Notify any users looking at the category that a new topic has arrived
 						Topics.getTopicForCategoryView(tid, uid, function(topicData) {
-							io.sockets. in ('category_' + category_id).emit('event:new_topic', topicData);
-							io.sockets. in ('recent_posts').emit('event:new_topic', topicData);
-							io.sockets. in ('user/' + uid).emit('event:new_post', {
+							io.sockets.in('category_' + category_id).emit('event:new_topic', topicData);
+							io.sockets.in('recent_posts').emit('event:new_topic', topicData);
+							io.sockets.in('user/' + uid).emit('event:new_post', {
 								posts: postData
 							});
 						});

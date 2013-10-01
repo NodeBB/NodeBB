@@ -5,6 +5,7 @@ var RDB = require('./redis.js'),
 	user = require('./user.js'),
 	async = require('async'),
 	nconf = require('nconf'),
+	validator = require('validator'),
 
 	utils = require('../public/src/utils'),
 	plugins = require('./plugins'),
@@ -92,10 +93,9 @@ var RDB = require('./redis.js'),
 			], function(err, results) {
 				io.sockets.in('topic_' + results[0].tid).emit('event:post_edited', {
 					pid: pid,
-					title: title,
+					title: validator.sanitize(title).escape(),
 					isMainPost: results[0].isMainPost,
 					content: results[1]
-
 				});
 			});
 		};
