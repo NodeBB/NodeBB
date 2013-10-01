@@ -127,8 +127,11 @@ var ajaxify = {};
 					}
 				} else if (window.location.pathname !== '/outgoing') {
 					// External Link
-					ajaxify.go('outgoing?url=' + encodeURIComponent(this.href));
-					e.preventDefault();
+
+					if (config.useOutgoingLinksPage == true) {
+						ajaxify.go('outgoing?url=' + encodeURIComponent(this.href));
+						e.preventDefault();
+					}
 				}
 			}
 		});
