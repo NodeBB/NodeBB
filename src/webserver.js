@@ -79,6 +79,9 @@ var express = require('express'),
 			function(next) {
 				// Pre-router middlewares
 				app.use(express.compress());
+				if(nconf.get("express:logger") == true) {
+					app.use(express.logger());
+				}
 				app.use(express.favicon(path.join(__dirname, '../', 'public', 'favicon.ico')));
 				app.use(require('less-middleware')({
 					src: path.join(__dirname, '../', 'public'),
