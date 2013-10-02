@@ -84,6 +84,7 @@
 						<li class=''><a href='{relative_path}/admin/plugins'><i class='icon-code-fork'></i> Plugins</a></li>
 						<li class=''><a href='{relative_path}/admin/settings'><i class='icon-cogs'></i> Settings</a></li>
 						<li class=''><a href='{relative_path}/admin/redis'><i class='icon-hdd'></i> Redis</a></li>
+						<li class=''><a href='{relative_path}/admin/logger'><i class='icon-th'></i> Logger</a></li>
 						<li class=''><a href="{relative_path}/admin/motd"><i class="icon-comment"></i> MOTD</a></li>
 
 						<li class="nav-header">Social Authentication</li>

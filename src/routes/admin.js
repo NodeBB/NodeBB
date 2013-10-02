@@ -30,7 +30,7 @@ var user = require('./../user.js'),
 		(function () {
 			var routes = [
 				'categories/active', 'categories/disabled', 'users', 'topics', 'settings', 'themes',
-				'twitter', 'facebook', 'gplus', 'redis', 'motd', 'groups',
+				'twitter', 'facebook', 'gplus', 'redis', 'motd', 'groups','logger',
 				'users/latest', 'users/sort-posts', 'users/sort-reputation',
 				'users/search', 'plugins'
 			];
@@ -221,6 +221,10 @@ var user = require('./../user.js'),
 			});
 
 			app.get('/motd', function (req, res) {
+				res.json(200, {});
+			});
+
+			app.get('/logger', function(req, res) {
 				res.json(200, {});
 			});
 
