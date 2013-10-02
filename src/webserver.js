@@ -56,6 +56,9 @@ var express = require('express'),
 		}, {
 			property: 'og:site_name',
 			content: meta.config.title || 'NodeBB'
+		}, {
+			property: 'keywords',
+			content: meta.config['keywords'] || ''
 		}],
 			metaString = utils.buildMetaTags(defaultMetaTags.concat(options.metaTags || [])),
 			templateValues = {
