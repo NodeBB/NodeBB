@@ -41,10 +41,10 @@ var async = require('async'),
 			name: 'redis:password',
 			description: 'Password of your Redis database'
 		}, {
-            name: 'bind_address',
-            description: 'IP or Hostname to bind to',
-            'default': '0.0.0.0'
-        }],
+			name: 'bind_address',
+			description: 'IP or Hostname to bind to',
+			'default': '0.0.0.0'
+		}],
 		setup: function (callback) {
 			async.series([
 				function (next) {
