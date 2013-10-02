@@ -5,15 +5,16 @@
 <div class="alert alert-warning">
 
     <p>
-		By enabling the check box, you will receive http logs to standard output. If you specify a path, logs will then be saved to a file instead.
+		By enabling the check boxes, you will receive logs to standard output. If you specify a path, logs will then be saved to a file instead. HTTP logging is useful for collecting statistics about who and when people access your forum. Socket.io logging, in combination with redis-cli monitor, can be very helpful for learning NodeBB's internals.
     </p>
 	<br/>
 
 	<form>
 
 		<label>
-			<input type="checkbox" data-field="loggerStatus"> <strong>Enable logging</strong>
+			<input type="checkbox" data-field="loggerStatus"> <strong>Enable HTTP logging</strong>
 		</label>
+		<br/>
 		<br/>
 
 		<label>Path to log file</label>
@@ -23,8 +24,9 @@
 		<br/>
 
 		<label>
-			<input type="checkbox" data-field="loggerIOStatus"> <strong>Enable socket.io logging</strong>
+			<input type="checkbox" data-field="loggerIOStatus"> <strong>Enable socket.io event logging</strong>
 		</label>
+		<br/>
 		<br/>
 
 		<label>Path to socket.io log file</label>

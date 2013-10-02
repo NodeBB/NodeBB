@@ -57,25 +57,6 @@ module.exports.init = function(io) {
 			sessionID, uid;
 
 
-
-/*
-(function() {
-  var emit = socket.emit;
-  socket.emit = function() {
-    console.log('***','emit', Array.prototype.slice.call(arguments));
-    emit.apply(socket, arguments);
-  };
-  var $emit = socket.$emit;
-  socket.$emit = function() {
-    console.log('***','on',Array.prototype.slice.call(arguments));
-    $emit.apply(socket, arguments);
-  };
-})();
-*/
-
-
-
-
 		// Validate the session, if present
 		socketCookieParser(hs, {}, function(err) {
 			sessionID = socket.handshake.signedCookies["express.sid"];
@@ -103,7 +84,9 @@ module.exports.init = function(io) {
 					if(!meta.config.loggerIOStream) {
                     	var loggerObj = {};
                     	if(meta.config.loggerIOPath) {
-                        	loggerObj.stream = fs.createWriteStream(meta.config.loggerIOPath, {flags: 'a'});
+							var actual_path = meta.config.loggerIOPath;
+							if(meta.config.loggerIOPath == meta.config.loggerPath) { actual_path = actual_path + ".io.log"; }
+                        	loggerObj.stream = fs.createWriteStream(actual_path, {flags: 'a'});
                     	}
                     	else {
                         	loggerObj.stream = process.stdout;
