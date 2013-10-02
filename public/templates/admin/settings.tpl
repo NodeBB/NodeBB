@@ -8,6 +8,8 @@
 		<input class="form-control" type="text" placeholder="Your Community Name" data-field="title" /><br />
 		<label>Site Description</label>
 		<input type="text" class="form-control" placeholder="A short description about your community" data-field="description" /><br />
+		<label>Site Keywords</label>
+		<input type="text" class="form-control" placeholder="Keywords describing your community, comma-seperated" data-field="keywords" /><br />
 		<label>Imgur Client ID</label>
 		<input type="text" class="form-control" placeholder="Imgur ClientID for image uploads" data-field="imgurClientID" /><br />
 		<label>Maximum User Image Size</label>
