@@ -81,11 +81,17 @@ var express = require('express'),
 				app.use(express.compress());
 
 				if(nconf.get("express:logger") == true || meta.config.loggerStatus > 0) {
+					/*
+					 * HTTP request logging is enabled
+					 */
 					var loggerObj = {};
 					if(meta.config.loggerPath) {
 						loggerObj.stream = fs.createWriteStream(meta.config.loggerPath, {flags: 'a'});
-						meta.config.loggerStream = loggerObj.stream
 					}
+					else {
+						loggerObj.stream = process.stdout;
+					}
+					meta.config.loggerStream = loggerObj.stream;
 					app.use(express.logger(loggerObj));
 				}
 

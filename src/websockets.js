@@ -16,6 +16,8 @@ var	cookie = require('cookie'),
 	async = require('async'),
 	RedisStoreLib = require('connect-redis')(express),
 	RDB = require('./redis'),
+	util = require('util'),
+	fs = require('fs')
 	RedisStore = new RedisStoreLib({
 		client: RDB,
 		ttl: 60 * 60 * 24 * 14
@@ -54,6 +56,26 @@ module.exports.init = function(io) {
 		var hs = socket.handshake,
 			sessionID, uid;
 
+
+
+/*
+(function() {
+  var emit = socket.emit;
+  socket.emit = function() {
+    console.log('***','emit', Array.prototype.slice.call(arguments));
+    emit.apply(socket, arguments);
+  };
+  var $emit = socket.$emit;
+  socket.$emit = function() {
+    console.log('***','on',Array.prototype.slice.call(arguments));
+    $emit.apply(socket, arguments);
+  };
+})();
+*/
+
+
+
+
 		// Validate the session, if present
 		socketCookieParser(hs, {}, function(err) {
 			sessionID = socket.handshake.signedCookies["express.sid"];
@@ -63,6 +85,49 @@ module.exports.init = function(io) {
 
 				userSockets[uid] = userSockets[uid] || [];
 				userSockets[uid].push(socket);
+
+
+				if(meta.config.loggerIOStatus > 0) {
+					var _prepare_loggerIO_string = function(_type, _uid, _args) {
+						try {
+							return 'io: '+_uid+' '+_type+' '+util.inspect(Array.prototype.slice.call(_args))+'\n';
+						} catch(err) {
+							winston.err(err)
+						}
+					}
+
+
+                    /*
+                     * socket.io emit/on logging is enabled
+                     */
+					if(!meta.config.loggerIOStream) {
+                    	var loggerObj = {};
+                    	if(meta.config.loggerIOPath) {
+                        	loggerObj.stream = fs.createWriteStream(meta.config.loggerIOPath, {flags: 'a'});
+                    	}
+                    	else {
+                        	loggerObj.stream = process.stdout;
+                    	}
+                    	meta.config.loggerIOStream = loggerObj.stream;
+					}
+
+
+					(function() {
+						// courtesy of: http://stackoverflow.com/a/9674248
+						var user = uid
+						if(!user) user = "?"
+						var emit = socket.emit;
+						socket.emit = function() {
+							meta.config.loggerIOStream.write(_prepare_loggerIO_string("emit",uid,arguments));
+							emit.apply(socket, arguments);
+						};
+						var $emit = socket.$emit;
+						socket.$emit = function() {
+							meta.config.loggerIOStream.write(_prepare_loggerIO_string("on",uid,arguments));
+							$emit.apply(socket, arguments);
+						};
+					})();
+				}
 
 				if (uid) {
 

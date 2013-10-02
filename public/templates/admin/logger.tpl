@@ -17,7 +17,22 @@
 		<br/>
 
 		<label>Path to log file</label>
-		<input class="form-control" type="text" placeholder="/path/to/log/file.log" data-field="loggerPath" /><br />
+		<input class="form-control" type="text" placeholder="/path/to/log/file.log" data-field="loggerPath" />
+		<br />
+		<br/>
+		<br/>
+
+		<label>
+			<input type="checkbox" data-field="loggerIOStatus"> <strong>Enable socket.io logging</strong>
+		</label>
+		<br/>
+
+		<label>Path to socket.io log file</label>
+        <input class="form-control" type="text" placeholder="/path/to/log/socket.io.file.log" data-field="loggerIOPath" />
+
+		<br/>
+		<br/>
+		
 	</form>
 </div>
 
