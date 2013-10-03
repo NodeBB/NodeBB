@@ -56,9 +56,6 @@
 					<li class="visible-xs">
 						<a href="/search">[[global:header.search]]</a>
 					</li>
-					<li class="visible-xs">
-						<a href="/search">Search</a>
-					</li>
 					<li>
 						<a href="/"></a>
 					</li>
