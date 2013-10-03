@@ -46,7 +46,7 @@ var express = require('express'),
 	app.build_header = function (options, callback) {
 		var defaultMetaTags = [{
 			name: 'viewport',
-			content: 'width=device-width, initial-scale=1.0'
+			content: 'width=device-width, initial-scale=1.0, user-scalable=no'
 		}, {
 			name: 'content-type',
 			content: 'text/html; charset=UTF-8'
