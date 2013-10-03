@@ -1,24 +1,11 @@
-(function() {
-	var yourid = templates.get('yourid'),
-		theirid = templates.get('theirid');
+define(function() {
+	var	AccountHeader = {};
 
+	AccountHeader.init = function() {
+		var yourid = templates.get('yourid'),
+			theirid = templates.get('theirid');
 
-	function createMenu() {
-		var userslug = $('.account-username-box').attr('data-userslug');
-		var links = $('<div class="account-sub-links inline-block pull-right">\
-			<span id="settingsLink" class="pull-right"><a href="/user/' + userslug + '/settings">settings</a></span>\
-			<span id="favouritesLink" class="pull-right"><a href="/user/' + userslug + '/favourites">favourites</a></span>\
-			<span class="pull-right"><a href="/user/' + userslug + '/followers">followers</a></span>\
-			<span class="pull-right"><a href="/user/' + userslug + '/following">following</a></span>\
-			<span id="editLink" class="pull-right"><a href="/user/' + userslug + '/edit">edit</a></span>\
-		</div>');
-
-		$('.account-username-box').append(links);
-	}
-
-	$(document).ready(function() {
-
-		createMenu();
+		AccountHeader.createMenu();
 
 		var editLink = $('#editLink');
 		var settingsLink = $('#settingsLink');
@@ -37,6 +24,20 @@
 				return false;
 			}
 		});
-	});
+	}
 
-}());
+	AccountHeader.createMenu = function() {
+		var userslug = $('.account-username-box').attr('data-userslug');
+		var links = $('<div class="account-sub-links inline-block pull-right">\
+			<span id="settingsLink" class="pull-right"><a href="/user/' + userslug + '/settings">settings</a></span>\
+			<span id="favouritesLink" class="pull-right"><a href="/user/' + userslug + '/favourites">favourites</a></span>\
+			<span class="pull-right"><a href="/user/' + userslug + '/followers">followers</a></span>\
+			<span class="pull-right"><a href="/user/' + userslug + '/following">following</a></span>\
+			<span id="editLink" class="pull-right"><a href="/user/' + userslug + '/edit">edit</a></span>\
+		</div>');
+
+		$('.account-username-box').append(links);
+	}
+
+	return AccountHeader;
+});

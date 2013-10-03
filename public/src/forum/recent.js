@@ -1,40 +1,56 @@
-(function() {
-	var loadingMoreTopics = false;
+define(function() {
+	var	Recent = {};
 
-	app.enter_room('recent_posts');
+	Recent.newTopicCount = 0;
+	Recent.newPostCount = 0;
+	Recent.loadingMoreTopics = false;
 
-	ajaxify.register_events([
-		'event:new_topic',
-		'event:new_post'
-	]);
+	Recent.init = function() {
+		app.enter_room('recent_posts');
 
-	var newTopicCount = 0,
-		newPostCount = 0;
+		ajaxify.register_events([
+			'event:new_topic',
+			'event:new_post'
+		]);
 
-	$('#new-topics-alert').on('click', function() {
-		$(this).hide();
-	});
+		$('#new-topics-alert').on('click', function() {
+			$(this).hide();
+		});
 
-	socket.on('event:new_topic', function(data) {
+		socket.on('event:new_topic', function(data) {
 
-		++newTopicCount;
-		updateAlertText();
+			++Recent.newTopicCount;
+			Recent.updateAlertText();
 
-	});
+		});
 
-	function updateAlertText() {
+		socket.on('event:new_post', function(data) {
+			++Recent.newPostCount;
+			Recent.updateAlertText();
+		});
+
+		$(window).off('scroll').on('scroll', function() {
+			var bottom = ($(document).height() - $(window).height()) * 0.9;
+
+			if ($(window).scrollTop() > bottom && !Recent.loadingMoreTopics) {
+				Recent.loadMoreTopics();
+			}
+		});
+	};
+
+	Recent.updateAlertText = function() {
 		var text = '';
 
-		if (newTopicCount > 1)
-			text = 'There are ' + newTopicCount + ' new topics';
-		else if (newTopicCount === 1)
+		if (Recent.newTopicCount > 1)
+			text = 'There are ' + Recent.newTopicCount + ' new topics';
+		else if (Recent.newTopicCount === 1)
 			text = 'There is 1 new topic';
 		else
 			text = 'There are no new topics';
 
-		if (newPostCount > 1)
-			text += ' and ' + newPostCount + ' new posts.';
-		else if (newPostCount === 1)
+		if (Recent.newPostCount > 1)
+			text += ' and ' + Recent.newPostCount + ' new posts.';
+		else if (Recent.newPostCount === 1)
 			text += ' and 1 new post.';
 		else
 			text += ' and no new posts.';
@@ -44,12 +60,7 @@
 		$('#new-topics-alert').html(text).fadeIn('slow');
 	}
 
-	socket.on('event:new_post', function(data) {
-		++newPostCount;
-		updateAlertText();
-	});
-
-	function onTopicsLoaded(topics) {
+	Recent.onTopicsLoaded = function(topics) {
 
 		var html = templates.prepare(templates['recent'].blocks['topics']).parse({
 			topics: topics
@@ -61,25 +72,17 @@
 		container.append(html);
 	}
 
-	function loadMoreTopics() {
-		loadingMoreTopics = true;
+	Recent.loadMoreTopics = function() {
+		Recent.loadingMoreTopics = true;
 		socket.emit('api:topics.loadMoreRecentTopics', {
 			after: $('#topics-container').children().length
 		}, function(data) {
 			if (data.topics && data.topics.length) {
-				onTopicsLoaded(data.topics);
+				Recent.onTopicsLoaded(data.topics);
 			}
-			loadingMoreTopics = false;
+			Recent.loadingMoreTopics = false;
 		});
 	}
 
-	$(window).off('scroll').on('scroll', function() {
-		var bottom = ($(document).height() - $(window).height()) * 0.9;
-
-		if ($(window).scrollTop() > bottom && !loadingMoreTopics) {
-			loadMoreTopics();
-		}
-	});
-
-
-})();
+	return Recent;
+});

@@ -53,7 +53,7 @@
 	</footer>
 
 	<script>
-		$.getScript(RELATIVE_PATH + '/src/forum/footer.js');
+		require(['forum/footer']);
 	</script>
 
 </body>

@@ -26,5 +26,3 @@
 		<button class="btn btn-primary btn-block btn-lg" id="reset" type="submit">Reset Password</button>
 	</form>
 </div>
-
-<script type="text/javascript" src="{relative_path}/src/forum/reset.js"></script>

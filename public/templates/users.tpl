@@ -45,5 +45,3 @@
 		<button id="load-more-users-btn" class="btn btn-primary">[[users:load_more]]</button>
 	</div>
 </div>
-
-<script type="text/javascript" src="{relative_path}/src/forum/users.js"></script>

@@ -9,7 +9,7 @@
 	</div>
 
 <script type="text/javascript">
-	$.getScript(RELATIVE_PATH + '/src/forum/admin/footer.js');
+	require(['forum/admin/footer']);
 </script>
 
 </body>

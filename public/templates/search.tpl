@@ -53,5 +53,3 @@
 		</ul>
 	</div>
 </div>
-
-<script type="text/javascript" src="{relative_path}/src/forum/search.js"></script>
