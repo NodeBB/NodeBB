@@ -35,6 +35,3 @@
 <input type="hidden" template-variable="yourid" value="{yourid}" />
 <input type="hidden" template-variable="theirid" value="{theirid}" />
 <input type="hidden" template-variable="followingCount" value="{followingCount}" />
-
-<script type="text/javascript" src="{relative_path}/src/forum/following.js"></script>
-<script type="text/javascript" src="{relative_path}/src/forum/accountheader.js"></script>

@@ -21,5 +21,3 @@
 		Full documentation regarding plugin authoring can be found in the <a target="_blank" href="https://github.com/designcreateplay/NodeBB/wiki/Writing-Plugins-for-NodeBB">NodeBB Wiki</a>.
 	</p>
 </div>
-
-<script type="text/javascript" src="{relative_path}/src/forum/admin/plugins.js"></script>

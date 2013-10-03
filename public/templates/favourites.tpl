@@ -22,6 +22,3 @@
 		</div>
 	</div>
 </div>
-
-<script type="text/javascript" src="{relative_path}/src/forum/accountheader.js"></script>
-<script type="text/javascript" src="{relative_path}/src/forum/favourites.js"></script>

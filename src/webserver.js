@@ -135,22 +135,22 @@ var express = require('express'),
 				app.use(function (req, res, next) {
 					res.status(404);
 
-					// respond with html page
-					if (req.accepts('html')) {
+					if (path.dirname(req.url) === '/src/forum') {
+						// Handle missing client-side scripts
+						res.type('text/javascript').send(200, '');
+					} else if (req.accepts('html')) {
+						// respond with html page
+						winston.warn('Route requested but not found: ' + req.url);
 						res.redirect(nconf.get('relative_path') + '/404');
-						return;
-					}
-
-					// respond with json
-					if (req.accepts('json')) {
-						res.send({
+					} else if (req.accepts('json')) {
+						// respond with json
+						res.json({
 							error: 'Not found'
 						});
-						return;
+					} else {
+						// default to plain-text. send()
+						res.type('txt').send('Not found');
 					}
-
-					// default to plain-text. send()
-					res.type('txt').send('Not found');
 				});
 
 				app.use(function (err, req, res, next) {

@@ -15,8 +15,14 @@
 	<script>
 		require.config({
 			baseUrl: "{relative_path}/src/modules",
-			waitSeconds: 3
+			waitSeconds: 3,
+			paths: {
+				"forum": '../forum'
+			}
 		});
+		requirejs.onError = function(err) {
+			console.log(err);
+		}
 	</script>
 
 	<link rel="stylesheet" type="text/css" href="{relative_path}/css/nodebb.css" />

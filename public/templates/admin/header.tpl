@@ -25,7 +25,10 @@
 	<script>
 		require.config({
 			baseUrl: "{relative_path}/src/modules",
-			waitSeconds: 3
+			waitSeconds: 3,
+			paths: {
+				"forum": '../forum'
+			}
 		});
 	</script>
 	<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">

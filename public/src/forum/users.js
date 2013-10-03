@@ -1,6 +1,7 @@
-(function() {
+define(function() {
+	var	Users = {};
 
-	$(document).ready(function() {
+	Users.init = function() {
 		var timeoutId = 0;
 		var loadingMoreUsers = false;
 
@@ -131,6 +132,7 @@
 				loadMoreUsers();
 			}
 		});
-	});
+	};
 
-}());
+	return Users;
+});

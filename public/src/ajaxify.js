@@ -76,6 +76,9 @@ var ajaxify = {};
 			templates.flush();
 			templates.load_template(function () {
 				exec_body_scripts(content);
+				require(['forum/' + tpl_url], function(script) {
+					if (script) script.init();
+				});
 
 				if (callback) {
 					callback();
