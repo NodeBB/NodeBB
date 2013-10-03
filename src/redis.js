@@ -17,6 +17,17 @@
 		RedisDB.exports.auth(nconf.get('redis:password'));
 	}
 
+	if( (db = nconf.get('redis:database')) ){
+		RedisDB.exports.select(db, function(error){
+			if(error !== null){
+				winston.err(error);
+				if (global.env !== 'production') {
+					throw new Error(error);
+				}
+			}
+		}); 	
+	}
+
 	RedisDB.exports.handle = function(error) {
 		if (error !== null) {
 			winston.err(error);
