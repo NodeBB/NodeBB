@@ -81,10 +81,6 @@ var async = require('async'),
 							protocol = urlObject.protocol,
 							server_conf = config,
 							client_conf = {
-								socket: {
-									address: protocol + '//' + host + (config.use_port ? ':' + config.port : '')
-								},
-								api_url: protocol + '//' + host + (config.use_port ? ':' + config.port : '') + relative_path + '/api/',
 								relative_path: relative_path
 							};
 
