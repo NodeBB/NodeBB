@@ -17,6 +17,7 @@ var	cookie = require('cookie'),
 	RedisStoreLib = require('connect-redis')(express),
 	RDB = require('./redis'),
 	util = require('util'),
+	logger = require('./logger.js'),
 	fs = require('fs')
 	RedisStore = new RedisStoreLib({
 		client: RDB,
@@ -67,50 +68,15 @@ module.exports.init = function(io) {
 				userSockets[uid] = userSockets[uid] || [];
 				userSockets[uid].push(socket);
 
-
-				if(meta.config.loggerIOStatus > 0) {
-					var _prepare_loggerIO_string = function(_type, _uid, _args) {
-						try {
-							return 'io: '+_uid+' '+_type+' '+util.inspect(Array.prototype.slice.call(_args))+'\n';
-						} catch(err) {
-							winston.err(err)
-						}
+				/* Need to save some state for the logger & maybe some other modules later on */
+				socket.state = {
+					user : {
+						uid : uid
 					}
+				};
 
-
-                    /*
-                     * socket.io emit/on logging is enabled
-                     */
-					if(!meta.config.loggerIOStream) {
-                    	var loggerObj = {};
-                    	if(meta.config.loggerIOPath) {
-							var actual_path = meta.config.loggerIOPath;
-							if(meta.config.loggerIOPath == meta.config.loggerPath) { actual_path = actual_path + ".io.log"; }
-                        	loggerObj.stream = fs.createWriteStream(actual_path, {flags: 'a'});
-                    	}
-                    	else {
-                        	loggerObj.stream = process.stdout;
-                    	}
-                    	meta.config.loggerIOStream = loggerObj.stream;
-					}
-
-
-					(function() {
-						// courtesy of: http://stackoverflow.com/a/9674248
-						var user = uid
-						if(!user) user = "?"
-						var emit = socket.emit;
-						socket.emit = function() {
-							meta.config.loggerIOStream.write(_prepare_loggerIO_string("emit",uid,arguments));
-							emit.apply(socket, arguments);
-						};
-						var $emit = socket.$emit;
-						socket.$emit = function() {
-							meta.config.loggerIOStream.write(_prepare_loggerIO_string("on",uid,arguments));
-							$emit.apply(socket, arguments);
-						};
-					})();
-				}
+				/* If meta.config.loggerIOStatus > 0, logger.io_one will hook into this socket */
+				logger.io_one(socket,uid);
 
 				if (uid) {
 
@@ -679,6 +645,8 @@ module.exports.init = function(io) {
 				if (!err) socket.emit('api:config.set', {
 					status: 'ok'
 				});
+				/* Another hook, for my (adarqui's) logger module */
+				logger.monitorConfig(this, data);
 			});
 		});
 
