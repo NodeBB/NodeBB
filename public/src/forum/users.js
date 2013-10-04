@@ -77,6 +77,7 @@ define(function() {
 
 		socket.on('api:user.isOnline', function(data) {
 			if(active == 'online' && !loadingMoreUsers) {
+				loadingMoreUsers = true;
 				$('#users-inner-container').empty();
 				startLoading('users:online', 0);
 				socket.emit('api:user.getOnlineAnonCount', {} , function(anonCount) {
