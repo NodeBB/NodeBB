@@ -17,7 +17,6 @@ var express = require('express'),
 	admin = require('./routes/admin.js'),
 	userRoute = require('./routes/user.js'),
 	apiRoute = require('./routes/api.js'),
-	testBed = require('./routes/testbed.js'),
 	auth = require('./routes/authentication.js'),
 	meta = require('./meta.js'),
 	feed = require('./feed'),
@@ -201,7 +200,6 @@ var express = require('express'),
 		auth.create_routes(app);
 		admin.create_routes(app);
 		userRoute.create_routes(app);
-		testBed.create_routes(app);
 		apiRoute.create_routes(app);
 
 
