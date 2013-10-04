@@ -265,14 +265,15 @@ var RDB = require('./redis.js'),
 
 	ThreadTools.get_followers = function(tid, callback) {
 		RDB.smembers('tid:' + tid + ':followers', function(err, followers) {
-			callback(err, followers);
+			callback(err, followers.map(function(follower) {
+				return parseInt(follower, 10);
+			}));
 		});
 	}
 
 	ThreadTools.notify_followers = function(tid, exceptUid) {
 		async.parallel([
 			function(next) {
-
 				topics.getTopicField(tid, 'title', function(err, title) {
 					topics.getTeaser(tid, function(err, teaser) {
 						if (!err) {
@@ -282,11 +283,10 @@ var RDB = require('./redis.js'),
 						} else next(err);
 					});
 				});
-
-
 			},
 			function(next) {
 				ThreadTools.get_followers(tid, function(err, followers) {
+					exceptUid = parseInt(exceptUid, 10);
 					if (followers.indexOf(exceptUid) !== -1) followers.splice(followers.indexOf(exceptUid), 1);
 					next(null, followers);
 				});
