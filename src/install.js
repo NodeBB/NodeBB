@@ -43,6 +43,10 @@ var async = require('async'),
 			name: 'redis:password',
 			description: 'Password of your Redis database'
 		}, {
+			name: "redis:database",
+			description: "Which database to use (0..n)",
+			'default': 0
+		}, {
 			name: 'bind_address',
 			description: 'IP or Hostname to bind to',
 			'default': '0.0.0.0'
@@ -64,12 +68,14 @@ var async = require('async'),
 						config.redis = {
 							host: config['redis:host'],
 							port: config['redis:port'],
-							password: config['redis:password']
+							password: config['redis:password'],
+							database: config['redis:database']
 						};
 						delete config['redis:host'];
 						delete config['redis:port'];
 						delete config['redis:password'];
-
+						delete config['redis:database'];
+						
 						// Add hardcoded values
 						config.bcrypt_rounds = 12;
 						config.upload_path = '/public/uploads';
