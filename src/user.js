@@ -578,7 +578,7 @@ var utils = require('./../public/src/utils.js'),
 				topics.getTopicField(tid, 'slug', function(err, slug) {
 					var message = '<strong>' + username + '</strong> made a new post';
 
-					notifications.create(message, 5, nconf.get('relative_path') + '/topic/' + slug + '#' + pid, 'topic:' + tid, function(nid) {
+					notifications.create(message, nconf.get('relative_path') + '/topic/' + slug + '#' + pid, 'topic:' + tid, function(nid) {
 						notifications.push(nid, followers);
 					});
 				});
@@ -888,7 +888,7 @@ var utils = require('./../public/src/utils.js'),
 
 			async.parallel({
 				unread: function(next) {
-					RDB.zrevrangebyscore('uid:' + uid + ':notifications:unread', 10, 0, function(err, nids) {
+					RDB.zrevrange('uid:' + uid + ':notifications:unread', 0, 10, function(err, nids) {
 						// @todo handle err
 						var unread = [];
 
@@ -910,7 +910,7 @@ var utils = require('./../public/src/utils.js'),
 					});
 				},
 				read: function(next) {
-					RDB.zrevrangebyscore('uid:' + uid + ':notifications:read', 10, 0, function(err, nids) {
+					RDB.zrevrange('uid:' + uid + ':notifications:read', 0, 10, function(err, nids) {
 						// @todo handle err
 						var read = [];
 
@@ -932,22 +932,6 @@ var utils = require('./../public/src/utils.js'),
 					});
 				}
 			}, function(err, notifications) {
-				// While maintaining score sorting, sort by time
-				var readCount = notifications.read.length,
-					unreadCount = notifications.unread.length;
-
-				notifications.read.sort(function(a, b) {
-					if (a.score === b.score) {
-						return (a.datetime - b.datetime) > 0 ? -1 : 1;
-					}
-				});
-
-				notifications.unread.sort(function(a, b) {
-					if (a.score === b.score) {
-						return (a.datetime - b.datetime) > 0 ? -1 : 1;
-					}
-				});
-
 				// Limit the number of notifications to `maxNotifs`, prioritising unread notifications
 				if (notifications.read.length + notifications.unread.length > maxNotifs) {
 					notifications.read.length = maxNotifs - notifications.unread.length;

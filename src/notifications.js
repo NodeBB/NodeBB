@@ -15,29 +15,22 @@ var RDB = require('./redis.js'),
 				});
 			});
 		},
-		create: function(text, score, path, uniqueId, callback) {
-			/*
-			 * Score guide:
-			 * 0	Low priority messages (probably unused)
-			 * 5	Normal messages
-			 * 10	High priority messages
-			 *
+		create: function(text, path, uniqueId, callback) {
+			/**
 			 * uniqueId is used solely to override stale nids.
 			 * 		If a new nid is pushed to a user and an existing nid in the user's
 			 *		(un)read list contains the same uniqueId, it will be removed, and
 			 *		the new one put in its place.
 			 */
 			RDB.incr('notifications:next_nid', function(err, nid) {
-				RDB.hmset(
-					'notifications:' + nid,
-					'text', text || '',
-					'score', score || 5,
-					'path', path || null,
-					'datetime', Date.now(),
-					'uniqueId', uniqueId || utils.generateUUID(),
-					function(err, status) {
-						if (status === 'OK') callback(nid);
-					});
+				RDB.hmset('notifications:' + nid, {
+					text: text || '',
+					path: path || null,
+					datetime: Date.now(),
+					uniqueId: uniqueId || utils.generateUUID()
+				}, function(err, status) {
+					if (!err) callback(nid);
+				});
 			});
 		},
 		push: function(nid, uids, callback) {
@@ -51,8 +44,8 @@ var RDB = require('./redis.js'),
 					if (parseInt(uids[x]) > 0) {
 						(function(uid) {
 							notifications.remove_by_uniqueId(notif_data.uniqueId, uid, function() {
-								RDB.zadd('uid:' + uid + ':notifications:unread', notif_data.score, nid);
-								global.io.sockets. in ('uid_' + uid).emit('event:new_notification');
+								RDB.zadd('uid:' + uid + ':notifications:unread', notif_data.datetime, nid);
+								global.io.sockets.in('uid_' + uid).emit('event:new_notification');
 								if (callback) callback(true);
 							});
 						})(uids[x]);
@@ -98,7 +91,7 @@ var RDB = require('./redis.js'),
 			if (parseInt(uid) > 0) {
 				notifications.get(nid, function(notif_data) {
 					RDB.zrem('uid:' + uid + ':notifications:unread', nid);
-					RDB.zadd('uid:' + uid + ':notifications:read', notif_data.score, nid);
+					RDB.zadd('uid:' + uid + ':notifications:read', notif_data.datetime, nid);
 					if (callback) callback();
 				});
 			}
