@@ -77,8 +77,11 @@ define(function() {
 
 		socket.on('api:user.isOnline', function(data) {
 			if(active == 'online' && !loadingMoreUsers) {
-				$('#users-container').empty();
+				$('#users-container .registered-user').remove();
 				startLoading('users:online', 0);
+				socket.emit('api:user.getOnlineAnonCount', {} , function(anonCount) {
+					$('#online_anon_count').html(anonCount);
+				});
 			}
 		});
 
@@ -86,7 +89,7 @@ define(function() {
 			var html = templates.prepare(templates['users'].blocks['users']).parse({
 				users: users
 			});
-			$('#users-container').append(html);
+			$('#users-container').prepend(html);
 		}
 
 		function loadMoreUsers() {

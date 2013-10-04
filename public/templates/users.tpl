@@ -20,7 +20,7 @@
 
 	<ul id="users-container" class="users-container">
 		<!-- BEGIN users -->
-		<div class="users-box">
+		<div class="users-box registered-user">
 			<a href="/user/{users.userslug}">
 				<img src="{users.picture}" class="img-thumbnail"/>
 			</a>
@@ -39,6 +39,17 @@
 			</div>
 		</div>
 		<!-- END users -->
+		<div class="users-box {show_anon}">
+			<a href="#">
+				<img src="" class="img-thumbnail"/>
+			</a>
+			<br/>
+			<div class="user-info">
+				<span id="online_anon_count">{anonymousUserCount}</span>
+				<br/>
+				<a href="#">Anonymous</a>
+			</div>
+		</div>
 	</ul>
 
 	<div class="text-center {loadmore_display}">
