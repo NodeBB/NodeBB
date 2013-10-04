@@ -23,6 +23,9 @@ var opts = {
 	}
 };
 
+
+/* -- Logger -- */
+
 (function(Logger) {
 
 
@@ -51,7 +54,10 @@ var opts = {
 	}
 
 	Logger.setup_one_log = function(value) {
-
+		/*
+		 * If logging is currently enabled, create a stream.
+		 * Otherwise, close the current stream
+		 */
 		if(meta.config.loggerStatus > 0 || meta.config.loggerIOStatus) {
 			var stream = Logger.open(value);
 			if(stream) opts.streams.log.f = stream;
@@ -60,18 +66,15 @@ var opts = {
 		else {
 			Logger.close(opts.streams.log);
 		}
-
 	}
 
 	Logger.open = function(value) {
-
 		/* Open the streams to log to: either a path or stdout */
 		var stream;
 		if(value)
 			stream = fs.createWriteStream(value, {flags: 'a'});
 		else
 			stream = process.stdout;
-
 		return stream;
 	}
 
@@ -145,6 +148,9 @@ var opts = {
 	}
 
 	Logger.io = function(socket) {
+		/*
+		 * Go through all of the currently established sockets & hook their .emit/.on
+		 */
 		if(socket == undefined && socket.io.sockets == undefined) {
 			return;
 		}
@@ -186,7 +192,7 @@ var opts = {
 						opts.streams.log.f.write(Logger.prepare_io_string("on",uid,arguments));
 					}
 					try {
-                      	$emit.apply(socket, arguments);
+						$emit.apply(socket, arguments);
 					} catch(err) {
 						winston.info("Logger.io_one: $emit.apply: Failed", err);
 					}
