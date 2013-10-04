@@ -139,10 +139,11 @@ var express = require('express'),
 						res.type('text/javascript').send(200, '');
 					} else if (req.accepts('html')) {
 						// respond with html page
-						winston.warn('Route requested but not found: ' + req.url);
+						if (process.env.NODE_ENV === 'development') winston.warn('Route requested but not found: ' + req.url);
 						res.redirect(nconf.get('relative_path') + '/404');
 					} else if (req.accepts('json')) {
 						// respond with json
+						if (process.env.NODE_ENV === 'development') winston.warn('Route requested but not found: ' + req.url);
 						res.json({
 							error: 'Not found'
 						});
