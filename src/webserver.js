@@ -17,13 +17,13 @@ var express = require('express'),
 	admin = require('./routes/admin.js'),
 	userRoute = require('./routes/user.js'),
 	apiRoute = require('./routes/api.js'),
-	testBed = require('./routes/testbed.js'),
 	auth = require('./routes/authentication.js'),
 	meta = require('./meta.js'),
 	feed = require('./feed'),
 	plugins = require('./plugins'),
 	nconf = require('nconf'),
-	winston = require('winston');
+	winston = require('winston'),
+	validator = require('validator');
 
 (function (app) {
 	var templates = null,
@@ -45,7 +45,7 @@ var express = require('express'),
 	app.build_header = function (options, callback) {
 		var defaultMetaTags = [{
 			name: 'viewport',
-			content: 'width=device-width, initial-scale=1.0'
+			content: 'width=device-width, initial-scale=1.0, user-scalable=no'
 		}, {
 			name: 'content-type',
 			content: 'text/html; charset=UTF-8'
@@ -55,6 +55,9 @@ var express = require('express'),
 		}, {
 			property: 'og:site_name',
 			content: meta.config.title || 'NodeBB'
+		}, {
+			property: 'keywords',
+			content: meta.config['keywords'] || ''
 		}],
 			metaString = utils.buildMetaTags(defaultMetaTags.concat(options.metaTags || [])),
 			templateValues = {
@@ -131,22 +134,23 @@ var express = require('express'),
 				app.use(function (req, res, next) {
 					res.status(404);
 
-					// respond with html page
-					if (req.accepts('html')) {
+					if (path.dirname(req.url) === '/src/forum') {
+						// Handle missing client-side scripts
+						res.type('text/javascript').send(200, '');
+					} else if (req.accepts('html')) {
+						// respond with html page
+						if (process.env.NODE_ENV === 'development') winston.warn('Route requested but not found: ' + req.url);
 						res.redirect(nconf.get('relative_path') + '/404');
-						return;
-					}
-
-					// respond with json
-					if (req.accepts('json')) {
-						res.send({
+					} else if (req.accepts('json')) {
+						// respond with json
+						if (process.env.NODE_ENV === 'development') winston.warn('Route requested but not found: ' + req.url);
+						res.json({
 							error: 'Not found'
 						});
-						return;
+					} else {
+						// default to plain-text. send()
+						res.type('txt').send('Not found');
 					}
-
-					// default to plain-text. send()
-					res.type('txt').send('Not found');
 				});
 
 				app.use(function (err, req, res, next) {
@@ -197,7 +201,6 @@ var express = require('express'),
 		auth.create_routes(app);
 		admin.create_routes(app);
 		userRoute.create_routes(app);
-		testBed.create_routes(app);
 		apiRoute.create_routes(app);
 
 
@@ -308,7 +311,8 @@ var express = require('express'),
 				},
 				function (topicData, next) {
 					var lastMod = 0,
-						timestamp;
+						timestamp,
+						sanitize = validator.sanitize;
 
 					for (var x = 0, numPosts = topicData.posts.length; x < numPosts; x++) {
 						timestamp = parseInt(topicData.posts[x].timestamp, 10);
@@ -321,6 +325,9 @@ var express = require('express'),
 						metaTags: [{
 							name: "title",
 							content: topicData.topic_name
+						}, {
+							name: "description",
+							content: sanitize(topicData.main_posts[0].content.substr(0, 255)).escape().replace('\n', '')
 						}, {
 							property: 'og:title',
 							content: topicData.topic_name + ' | ' + (meta.config.title || 'NodeBB')

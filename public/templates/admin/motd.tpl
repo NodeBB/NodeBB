@@ -24,10 +24,7 @@
 <button class="btn btn-lg btn-primary" id="save" checked>Save</button>
 
 <script>
-	var	loadDelay = setInterval(function() {
-		if (nodebb_admin) {
-			nodebb_admin.prepare();
-			clearInterval(loadDelay);
-		}
-	}, 500);
+	require(['forum/admin/settings'], function(Settings) {
+		Settings.prepare();
+	});
 </script>

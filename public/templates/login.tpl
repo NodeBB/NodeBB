@@ -60,5 +60,3 @@
 		</div>
 	</div>
 </div>
-
-<script type="text/javascript" src="{relative_path}/src/forum/login.js"></script>

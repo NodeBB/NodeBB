@@ -8,6 +8,8 @@
 		<input class="form-control" type="text" placeholder="Your Community Name" data-field="title" /><br />
 		<label>Site Description</label>
 		<input type="text" class="form-control" placeholder="A short description about your community" data-field="description" /><br />
+		<label>Site Keywords</label>
+		<input type="text" class="form-control" placeholder="Keywords describing your community, comma-seperated" data-field="keywords" /><br />
 		<label>Imgur Client ID</label>
 		<input type="text" class="form-control" placeholder="Imgur ClientID for image uploads" data-field="imgurClientID" /><br />
 		<label>Maximum User Image Size</label>
@@ -70,17 +72,18 @@
 		<strong>Post Delay</strong><br /> <input type="text" class="form-control" value="10000" data-field="postDelay"><br />
 		<strong>Minimum Title Length</strong><br /> <input type="text" class="form-control" value="3" data-field="minimumTitleLength"><br />
 		<strong>Minimum Post Length</strong><br /> <input type="text" class="form-control" value="8" data-field="minimumPostLength"><br />
-
+		<div class="checkbox">
+			<label>
+				<input type="checkbox" data-field="useOutgoingLinksPage"> <strong>Use Outgoing Links Warning Page</strong>
+			</label>
+		</div>
 	</div>
 </form>
 
 <button class="btn btn-lg btn-primary" id="save">Save</button>
 
 <script>
-	var	loadDelay = setInterval(function() {
-		if (nodebb_admin) {
-			nodebb_admin.prepare();
-			clearInterval(loadDelay);
-		}
-	}, 500);
+	require(['forum/admin/settings'], function(Settings) {
+		Settings.prepare();
+	});
 </script>

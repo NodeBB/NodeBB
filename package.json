@@ -2,7 +2,7 @@
   "name": "nodebb",
   "license": "GPLv3 or later",
   "description": "NodeBB Forum",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "homepage": "http://www.nodebb.org",
   "repository": {
     "type": "git",
@@ -34,15 +34,15 @@
     "request": "~2.25.0",
     "reds": "~0.2.4",
     "winston": "~0.7.2",
-    "nodebb-plugin-mentions": "~0.1.0",
-    "nodebb-plugin-markdown": "~0.1.0",
+    "nodebb-plugin-mentions": "~0.1.9",
+    "nodebb-plugin-markdown": "~0.1.2",
     "rss": "~0.2.0",
     "prompt": "~0.2.11",
     "uglify-js": "~2.4.0",
     "validator": "~1.5.1"
   },
   "optionalDependencies": {
-    "hiredis" : "~0.1.15"
+    "hiredis": "~0.1.15"
   },
   "bugs": {
     "url": "https://github.com/designcreateplay/NodeBB/issues"
@@ -53,15 +53,22 @@
   "contributors": [
     {
       "name": "Andrew Rodrigues",
-      "email": "andrew@designcreateplay.com"
+      "email": "andrew@designcreateplay.com",
+      "url": "https://github.com/psychobunny"
     },
     {
       "name": "Julian Lam",
-      "email": "julian@designcreateplay.com"
+      "email": "julian@designcreateplay.com",
+      "url": "https://github.com/julianlam"
     },
     {
       "name": "Barış Soner Uşaklı",
-      "email": "baris@designcreateplay.com"
+      "email": "baris@designcreateplay.com",
+      "url": "https://github.com/barisusakli"
+    },
+    {
+      "name": "Andrew Darqui",
+      "url": "https://github.com/adarqui"
     },
     {
       "name": "Damian Bushong",
@@ -70,6 +77,10 @@
     {
       "name": "Matt Smith",
       "url": "https://github.com/soimafreak"
+    },
+    {
+      "name": "Quinton Marchi",
+      "url": "https://github.com/iamcardinal"
     }
   ]
 }

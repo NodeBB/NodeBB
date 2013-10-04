@@ -1,7 +1,5 @@
-var nodebb_admin = nodebb_admin || {};
-
-(function() {
-	var plugins = {
+define(function() {
+	var Plugins = {
 		init: function() {
 			var pluginsList = $('.plugins'),
 				numPlugins = pluginsList[0].querySelectorAll('li').length,
@@ -31,8 +29,5 @@ var nodebb_admin = nodebb_admin || {};
 		}
 	};
 
-	jQuery(document).ready(function() {
-		nodebb_admin.plugins = plugins;
-		nodebb_admin.plugins.init();
-	});
-})();
+	return Plugins;
+});

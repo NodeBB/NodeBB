@@ -26,6 +26,3 @@
 		<a id="submitBtn" href="#" class="btn btn-primary">Save changes</a>
 	</div>
 </div>
-
-<script type="text/javascript" src="{relative_path}/src/forum/accountheader.js"></script>
-<script type="text/javascript" src="{relative_path}/src/forum/accountsettings.js"></script>

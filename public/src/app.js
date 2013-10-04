@@ -17,7 +17,7 @@ var socket,
 						socket.socket.connect();
 					}, 200);
 				} else {
-					socket = io.connect(config.socket.address);
+					socket = io.connect(RELATIVE_PATH);
 
 					var reconnecting = false,
 						reconnectEl, reconnectTimer;

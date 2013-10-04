@@ -1,6 +1,7 @@
-(function() {
+define(function() {
+	var	Search = {};
 
-	$(document).ready(function() {
+	Search.init = function() {
 		var searchQuery = $('#topics-container').attr('data-search-query');
 
 		$('.search-result-text').each(function() {
@@ -21,4 +22,5 @@
 		});
 	});
 
-})();
+	return Search;
+});

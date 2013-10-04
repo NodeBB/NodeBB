@@ -23,4 +23,10 @@
 	<button class="btn btn-warning" id="revert_theme">Revert</button> This will remove any custom theme applied to your NodeBB, and restore the base theme.
 </p>
 
-<script type="text/javascript" src="{relative_path}/src/forum/admin/themes.js"></script>
+<script>
+	var bootswatchListener = function(data) {
+		require(['forum/admin/themes'], function(t) {
+			t.render(data);
+		});
+	}
+</script>

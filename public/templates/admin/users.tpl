@@ -42,6 +42,3 @@
 	<button id="load-more-users-btn" class="btn btn-primary">Load More</button>
 </div>
 <input type="hidden" template-variable="yourid" value="{yourid}" />
-
-
-<script type="text/javascript" src="{relative_path}/src/forum/admin/users.js"></script>

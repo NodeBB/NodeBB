@@ -76,6 +76,9 @@ var ajaxify = {};
 			templates.flush();
 			templates.load_template(function () {
 				exec_body_scripts(content);
+				require(['forum/' + tpl_url], function(script) {
+					if (script && script.init) script.init();
+				});
 
 				if (callback) {
 					callback();
@@ -127,8 +130,11 @@ var ajaxify = {};
 					}
 				} else if (window.location.pathname !== '/outgoing') {
 					// External Link
-					ajaxify.go('outgoing?url=' + encodeURIComponent(this.href));
-					e.preventDefault();
+
+					if (config.useOutgoingLinksPage == true) {
+						ajaxify.go('outgoing?url=' + encodeURIComponent(this.href));
+						e.preventDefault();
+					}
 				}
 			}
 		});

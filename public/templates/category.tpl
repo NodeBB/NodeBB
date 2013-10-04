@@ -97,5 +97,3 @@
 <input type="hidden" template-variable="twitter-intent-url" value="{twitter-intent-url}" />
 <input type="hidden" template-variable="facebook-share-url" value="{facebook-share-url}" />
 <input type="hidden" template-variable="google-share-url" value="{google-share-url}" />
-
-<script type="text/javascript" src="{relative_path}/src/forum/category.js"></script>

@@ -18,5 +18,3 @@
 
 	</p>
 </div>
-
-<script type="text/javascript" src="{relative_path}/src/forum/admin/index.js"></script>
