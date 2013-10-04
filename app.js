@@ -109,6 +109,9 @@
 
 	} else if (nconf.get('upgrade')) {
 		meta = require('./src/meta.js');
+		nconf.file({
+			file: __dirname + '/config.json'
+		});
 
 		meta.configs.init(function () {
 			require('./src/upgrade').upgrade();
