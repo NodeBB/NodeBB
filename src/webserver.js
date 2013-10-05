@@ -23,7 +23,8 @@ var express = require('express'),
 	plugins = require('./plugins'),
 	nconf = require('nconf'),
 	winston = require('winston'),
-	validator = require('validator');
+	validator = require('validator'),
+	logger = require('./logger.js');
 
 (function (app) {
 	var templates = null,
@@ -81,6 +82,9 @@ var express = require('express'),
 			function(next) {
 				// Pre-router middlewares
 				app.use(express.compress());
+
+				logger.init(app);
+
 				app.use(express.favicon(path.join(__dirname, '../', 'public', 'favicon.ico')));
 				app.use(require('less-middleware')({
 					src: path.join(__dirname, '../', 'public'),
