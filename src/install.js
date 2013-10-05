@@ -53,13 +53,30 @@ var async = require('async'),
 		}],
 		setup: function (callback) {
 			async.series([
-				function (next) {
-					// prompt prepends "prompt: " to questions, let's clear that.
-					prompt.start();
-					prompt.message = '';
-					prompt.delimiter = '';
+				function(next) {
+					// Check if the `--setup` flag contained values we can work with
+					var	setupVal;
+					try {
+						setupVal = JSON.parse(nconf.get('setup'));
+					} catch (e) {
+						setupVal = undefined;
+					}
 
-					prompt.get(install.questions, function (err, config) {
+					if (setupVal && setupVal instanceof Object) {
+						if (setupVal['admin:username'] && setupVal['admin:password'] && setupVal['admin:email']) {
+							install.values = setupVal;
+							next();
+						} else {
+							winston.error('Required values are missing for automated setup:');
+							if (!setupVal['admin:username']) winston.error('  admin:username');
+							if (!setupVal['admin:password']) winston.error('  admin:password');
+							if (!setupVal['admin:email']) winston.error('  admin:email');
+							process.exit();
+						}
+					} else next();
+				},
+				function (next) {
+					var	success = function(err, config) {
 						if (!config) {
 							return next(new Error('aborted'));
 						}
@@ -94,7 +111,24 @@ var async = require('async'),
 						server_conf.relative_path = relative_path;
 
 						install.save(server_conf, client_conf, next);
-					});
+					};
+
+					// prompt prepends "prompt: " to questions, let's clear that.
+					prompt.start();
+					prompt.message = '';
+					prompt.delimiter = '';
+
+					if (!install.values) prompt.get(install.questions, success);
+					else {
+						// Use provided values, fall back to defaults
+						var	config = {},
+							question, x, numQ;
+						for(x=0,numQ=install.questions.length;x<numQ;x++) {
+							question = install.questions[x];
+							config[question.name] = install.values[question.name] || question['default'] || '';
+						}
+						success(null, config);
+					}
 				},
 				function (next) {
 					// Applying default database configs
@@ -222,49 +256,56 @@ var async = require('async'),
 
 			winston.warn('No administrators have been detected, running initial user setup');
 			var questions = [{
-				name: 'username',
-				description: 'Administrator username',
-				required: true,
-				type: 'string'
-			}, {
-				name: 'email',
-				description: 'Administrator email address',
-				pattern: /.+@.+/,
-				required: true
-			}, {
-				name: 'password',
-				description: 'Password',
-				required: true,
-				hidden: true,
-				type: 'string'
-			}],
-				getAdminInfo = function (callback) {
-					prompt.get(questions, function (err, results) {
-						if (!results) {
-							return callback(new Error('aborted'));
+					name: 'username',
+					description: 'Administrator username',
+					required: true,
+					type: 'string'
+				}, {
+					name: 'email',
+					description: 'Administrator email address',
+					pattern: /.+@.+/,
+					required: true
+				}, {
+					name: 'password',
+					description: 'Password',
+					required: true,
+					hidden: true,
+					type: 'string'
+				}],
+				success = function(err, results) {
+					if (!results) {
+						return callback(new Error('aborted'));
+					}
+
+					nconf.set('bcrypt_rounds', 12);
+					User.create(results.username, results.password, results.email, function (err, uid) {
+						if (err) {
+							winston.warn(err.message + ' Please try again.');
+							return getAdminInfo();
 						}
 
-						nconf.set('bcrypt_rounds', 12);
-						User.create(results.username, results.password, results.email, function (err, uid) {
-							if (err) {
-								winston.warn(err.message + ' Please try again.');
-								return getAdminInfo();
+						Groups.getGidFromName('Administrators', function (err, gid) {
+							if (gid) {
+								Groups.join(gid, uid, callback);
+							} else {
+								Groups.create('Administrators', 'Forum Administrators', function (err, groupObj) {
+									Groups.join(groupObj.gid, uid, callback);
+								});
 							}
-
-							Groups.getGidFromName('Administrators', function (err, gid) {
-								if (gid) {
-									Groups.join(gid, uid, callback);
-								} else {
-									Groups.create('Administrators', 'Forum Administrators', function (err, groupObj) {
-										Groups.join(groupObj.gid, uid, callback);
-									});
-								}
-							});
 						});
 					});
 				};
 
-			getAdminInfo(callback);
+			if (!install.values) prompt.get(questions, success);
+			else {
+				var results = {
+						username: install.values['admin:username'],
+						email: install.values['admin:email'],
+						password: install.values['admin:password']
+					};
+
+				success(null, results);
+			}
 		},
 		save: function (server_conf, client_conf, callback) {
 			// Server Config
