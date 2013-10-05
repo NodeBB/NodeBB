@@ -17,3 +17,4 @@ public/themes/*
 *.sublime-workspace
 plugins/*
 .project
+*.swp

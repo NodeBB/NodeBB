@@ -16,6 +16,9 @@ var	cookie = require('cookie'),
 	async = require('async'),
 	RedisStoreLib = require('connect-redis')(express),
 	RDB = require('./redis'),
+	util = require('util'),
+	logger = require('./logger.js'),
+	fs = require('fs')
 	RedisStore = new RedisStoreLib({
 		client: RDB,
 		ttl: 60 * 60 * 24 * 14
@@ -54,6 +57,7 @@ module.exports.init = function(io) {
 		var hs = socket.handshake,
 			sessionID, uid;
 
+
 		// Validate the session, if present
 		socketCookieParser(hs, {}, function(err) {
 			sessionID = socket.handshake.signedCookies["express.sid"];
@@ -63,6 +67,16 @@ module.exports.init = function(io) {
 
 				userSockets[uid] = userSockets[uid] || [];
 				userSockets[uid].push(socket);
+
+				/* Need to save some state for the logger & maybe some other modules later on */
+				socket.state = {
+					user : {
+						uid : uid
+					}
+				};
+
+				/* If meta.config.loggerIOStatus > 0, logger.io_one will hook into this socket */
+				logger.io_one(socket,uid);
 
 				if (uid) {
 
@@ -645,6 +659,8 @@ module.exports.init = function(io) {
 				if (!err) socket.emit('api:config.set', {
 					status: 'ok'
 				});
+				/* Another hook, for my (adarqui's) logger module */
+				logger.monitorConfig(this, data);
 			});
 		});
 
