@@ -15,18 +15,21 @@
 				<img src="{following.picture}" class="img-thumbnail"/>
 			</a>
 			<br/>
-			<a href="/user/{following.userslug}">{following.username}</a>
-			<br/>
-			<div title="reputation">
-				<span class='formatted-number'>{following.reputation}</span>
-				<i class='icon-star'></i>
-			</div>
-			<div title="post count">
-				<span class='formatted-number'>{following.postcount}</span>
-				<i class='icon-pencil'></i>
+			<div class="user-info">
+				<a href="/user/{following.userslug}">{following.username}</a>
+				<br/>
+				<div title="reputation" class="reputation">
+					<span class='formatted-number'>{following.reputation}</span>
+					<i class='icon-star'></i>
+				</div>
+				<div title="post count" class="post-count">
+					<span class='formatted-number'>{following.postcount}</span>
+					<i class='icon-pencil'></i>
+				</div>
 			</div>
 			<a id="unfollow-btn" href="#" class="btn btn-default unfollow-btn" followingUid="{following.uid}" data-username="{following.username}">Unfollow</a>
 		</div>
+
 		<!-- END following -->
 	</div>
 	<div id="no-following-notice" class="alert alert-warning hide">This user isn't following anyone :(</div>

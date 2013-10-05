@@ -68,7 +68,6 @@ module.exports.init = function(io) {
 
 					RDB.zadd('users:online', Date.now(), uid, function(err, data) {
 						socket.join('uid_' + uid);
-						io.sockets. in ('global').emit('api:user.isOnline', isUserOnline(uid));
 
 						user.getUserField(uid, 'username', function(err, username) {
 							socket.emit('event:connect', {
@@ -79,6 +78,8 @@ module.exports.init = function(io) {
 						});
 					});
 				}
+
+				io.sockets. in ('global').emit('api:user.isOnline', isUserOnline(uid));
 			});
 		});
 
@@ -96,10 +97,11 @@ module.exports.init = function(io) {
 				delete userSockets[uid];
 				if (uid) {
 					RDB.zrem('users:online', uid, function(err, data) {
-						io.sockets. in ('global').emit('api:user.isOnline', isUserOnline(uid));
 					});
 				}
 			}
+
+			io.sockets. in ('global').emit('api:user.isOnline', isUserOnline(uid));
 
 			emitOnlineUserCount();
 
@@ -266,6 +268,8 @@ module.exports.init = function(io) {
 			return !!userSockets[uid] && userSockets[uid].length > 0;
 		}
 
+		module.exports.isUserOnline = isUserOnline;
+
 		socket.on('api:user.get_online_users', function(data) {
 			var returnData = [];
 
@@ -282,6 +286,7 @@ module.exports.init = function(io) {
 		socket.on('api:user.isOnline', function(uid, callback) {
 			callback({
 				online: isUserOnline(uid),
+				uid: uid,
 				timestamp: Date.now()
 			});
 		});
@@ -438,6 +443,14 @@ module.exports.init = function(io) {
 			});
 		});
 
+		socket.on('api:user.getOnlineAnonCount', function(data, callback) {
+			callback(module.exports.getOnlineAnonCount());
+		});
+
+		module.exports.getOnlineAnonCount = function () {
+			return userSockets[0] ? userSockets[0].length : 0;
+		}
+
 		function emitOnlineUserCount() {
 			var anon = userSockets[0] ? userSockets[0].length : 0;
 			var registered = Object.keys(userSockets).length;
@@ -445,7 +458,8 @@ module.exports.init = function(io) {
 				registered = registered - 1;
 
 			var returnObj = {
-				users: registered + anon
+				users: registered + anon,
+				anon: anon
 			};
 			io.sockets.emit('api:user.active.get', returnObj)
 		}

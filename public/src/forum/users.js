@@ -60,7 +60,7 @@ define(function() {
 			var html = templates.prepare(templates['users'].blocks['users']).parse({
 				users: data
 			}),
-				userListEl = document.querySelector('#users-container');
+				userListEl = document.querySelector('#users-inner-container');
 
 			userListEl.innerHTML = html;
 
@@ -77,8 +77,12 @@ define(function() {
 
 		socket.on('api:user.isOnline', function(data) {
 			if(active == 'online' && !loadingMoreUsers) {
-				$('#users-container').empty();
+				loadingMoreUsers = true;
+				$('#users-inner-container').empty();
 				startLoading('users:online', 0);
+				socket.emit('api:user.getOnlineAnonCount', {} , function(anonCount) {
+					$('#online_anon_count').html(anonCount);
+				});
 			}
 		});
 
@@ -86,7 +90,7 @@ define(function() {
 			var html = templates.prepare(templates['users'].blocks['users']).parse({
 				users: users
 			});
-			$('#users-container').append(html);
+			$('#users-inner-container').append(html);
 		}
 
 		function loadMoreUsers() {
@@ -102,7 +106,7 @@ define(function() {
 			}
 
 			if (set) {
-				startLoading(set, $('#users-container').children().length);
+				startLoading(set, $('#users-inner-container').children().length);
 			}
 		}
 

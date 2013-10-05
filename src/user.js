@@ -227,7 +227,7 @@ var utils = require('./../public/src/utils.js'),
 		});
 
 		function updateField(field, next) {
-			if (data[field] !== undefined) {
+			if (data[field] !== undefined && typeof data[field] === 'string') {
 				if (field === 'email') {
 					var gravatarpicture = User.createGravatarURLFromEmail(data[field]);
 					User.setUserField(uid, 'gravatarpicture', gravatarpicture);

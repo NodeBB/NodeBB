@@ -156,6 +156,10 @@
 			template_data = data;
 			parse_template();
 		}).fail(function (data) {
+			if(data && data.status == 404) {
+				ajaxify.go('404');
+				return;
+			}
 			app.alertError("Can't load template data!");
 		});
 
