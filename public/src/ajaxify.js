@@ -117,7 +117,7 @@ var ajaxify = {};
 			if (hrefEmpty(this.href) || this.target !== '' || this.protocol === 'javascript:')
 				return;
 
-			if(window.location.pathname != '/403' && window.location.pathname != '/404')
+			if(!window.location.pathname.match(/\/(403|404)$/g))
 				app.previousUrl = window.location.href;
 
 			if (!e.ctrlKey && e.which === 1) {
