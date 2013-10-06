@@ -35,6 +35,9 @@ define(function() {
 						$('#login-error-notify').show();
 					} else {
 						$('#login-error-notify').hide();
+
+						if(!app.previousUrl) { app.previousUrl = '/'; }
+
 						if(app.previousUrl.indexOf('/reset/') != -1)
 							window.location.replace(RELATIVE_PATH + "/?loggedin");
 						else
