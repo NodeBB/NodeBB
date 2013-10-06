@@ -186,7 +186,7 @@ var utils = require('./../public/src/utils.js'),
 					},
 					minFile: function (next) {
 						if (!fs.existsSync(Meta.js.minFile)) {
-							winston.warn('No minified client-side library found');
+							if (process.env.NODE_ENV === 'development') winston.warn('No minified client-side library found');
 							return next(null, 0);
 						}
 
@@ -196,7 +196,7 @@ var utils = require('./../public/src/utils.js'),
 					}
 				}, function (err, results) {
 					if (results.minFile > results.mtime) {
-						winston.info('No changes to client-side libraries -- skipping minification');
+						if (process.env.NODE_ENV === 'development') winston.info('No changes to client-side libraries -- skipping minification');
 						callback(null, [path.relative(path.join(__dirname, '../public'), Meta.js.minFile)]);
 					} else {
 						Meta.js.minify(function () {

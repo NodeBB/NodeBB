@@ -63,6 +63,7 @@ var express = require('express'),
 			metaString = utils.buildMetaTags(defaultMetaTags.concat(options.metaTags || [])),
 			templateValues = {
 				cssSrc: meta.config['theme:src'] || nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
+				pluginCSS: plugins.cssFiles.map(function(file) { return { path: file } }),
 				title: meta.config.title || 'NodeBB',
 				browserTitle: meta.config.title || 'NodeBB',
 				csrf: options.res.locals.csrf_token,
@@ -120,26 +121,9 @@ var express = require('express'),
 				next();
 			},
 			function(next) {
-				// Static CSS files for NodeBB Plugins
-				plugins.ready(function() {
-					var file,x,numCss,route;
-					for(x=0,numCss=plugins.cssFiles.length;x<numCss;x++) {
-						file = plugins.cssFiles[x];
-						route = path.join(nconf.get('relative_path'), '/css/', file.plugin);
-						app.use(route, express.static(file.path));
-						if (process.env.NODE_ENV === 'development') winston.info('Plugin CSS file found: ' + route);
-						console.log('route', route);
-						console.log('path', file.path);
-					}
-
-					next();
-				});
-			},
-			function(next) {
 				// Static Directories for NodeBB Plugins
 				plugins.ready(function () {
 					for (d in plugins.staticDirs) {
-						console.log(plugins.staticDirs[d]);
 						app.use(nconf.get('relative_path') + '/plugins/' + d, express.static(plugins.staticDirs[d]));
 						if (process.env.NODE_ENV === 'development') winston.info('Static directory routed for plugin: ' + d);
 					}
@@ -148,7 +132,6 @@ var express = require('express'),
 				});
 			},
 			function(next) {
-				console.log('router');
 				// Router & post-router middlewares
 				app.use(app.router);
 
@@ -212,6 +195,7 @@ var express = require('express'),
 			templates['logout'] = parsedTemplate;
 		});
 
+		winston.info('NodeBB Ready');
 		server.listen(nconf.get('PORT') || nconf.get('port'), nconf.get('bind_address'));
 	}
 

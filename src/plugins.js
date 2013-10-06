@@ -109,12 +109,10 @@ var fs = require('fs'),
 					function(next) {
 						// CSS Files for plugins
 						if (pluginData.css && pluginData.css instanceof Array) {
-							for(var x=0,numCss=pluginData.css.length;x<numCss;x++) {
-								_self.cssFiles.push({
-									plugin: pluginData.id,
-									path: path.join(pluginPath, pluginData.css[x])
-								});
-							}
+							if (global.env === 'development') winston.info('[plugins] Found ' + pluginData.css.length + ' CSS file(s) for plugin ' + pluginData.id);
+							_self.cssFiles = _self.cssFiles.concat(pluginData.css.map(function(file) {
+								return path.join('/plugins', pluginData.id, file);
+							}));
 
 							next();
 						} else next();
