@@ -138,7 +138,7 @@ var express = require('express'),
 				app.use(function (req, res, next) {
 					res.status(404);
 
-					if (path.dirname(req.url) === '/src/forum') {
+					if (path.dirname(req.url).slice(0, 10) === '/src/forum') {
 						// Handle missing client-side scripts
 						res.type('text/javascript').send(200, '');
 					} else if (req.accepts('html')) {
