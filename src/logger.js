@@ -139,10 +139,10 @@ var opts = {
 		for(var v in clients) {
 			var client = clients[v];
 
-			if(client.oEmit != client.emit)
+			if(client.oEmit != undefined && client.oEmit != client.emit)
 				client.emit = client.oEmit;
 
-			if(client.$oEmit != client.$emit)
+			if(client.$oEmit != undefined && client.$oEmit != client.$emit)
 				client.$emit = client.$oEmit;
 		}
 	}
