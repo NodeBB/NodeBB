@@ -30,9 +30,9 @@ var user = require('./../user.js'),
 		(function () {
 			var routes = [
 				'categories/active', 'categories/disabled', 'users', 'topics', 'settings', 'themes',
-				'twitter', 'facebook', 'gplus', 'redis', 'motd', 'groups','logger',
+				'twitter', 'facebook', 'gplus', 'redis', 'motd', 'groups', 'plugins', 'logger',
 				'users/latest', 'users/sort-posts', 'users/sort-reputation',
-				'users/search', 'plugins'
+				'users/search'
 			];
 
 			for (var i = 0, ii = routes.length; i < ii; i++) {
