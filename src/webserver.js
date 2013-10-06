@@ -120,17 +120,35 @@ var express = require('express'),
 				next();
 			},
 			function(next) {
-				// Static Directories for NodeBB Plugins
-				plugins.ready(function () {
-					for (d in plugins.staticDirs) {
-						app.use(nconf.get('relative_path') + '/plugins/' + d, express.static(plugins.staticDirs[d]));
-						winston.info('Static directory routed for plugin: ' + d);
+				// Static CSS files for NodeBB Plugins
+				plugins.ready(function() {
+					var file,x,numCss,route;
+					for(x=0,numCss=plugins.cssFiles.length;x<numCss;x++) {
+						file = plugins.cssFiles[x];
+						route = path.join(nconf.get('relative_path'), '/css/', file.plugin);
+						app.use(route, express.static(file.path));
+						if (process.env.NODE_ENV === 'development') winston.info('Plugin CSS file found: ' + route);
+						console.log('route', route);
+						console.log('path', file.path);
 					}
 
 					next();
 				});
 			},
 			function(next) {
+				// Static Directories for NodeBB Plugins
+				plugins.ready(function () {
+					for (d in plugins.staticDirs) {
+						console.log(plugins.staticDirs[d]);
+						app.use(nconf.get('relative_path') + '/plugins/' + d, express.static(plugins.staticDirs[d]));
+						if (process.env.NODE_ENV === 'development') winston.info('Static directory routed for plugin: ' + d);
+					}
+
+					next();
+				});
+			},
+			function(next) {
+				console.log('router');
 				// Router & post-router middlewares
 				app.use(app.router);
 
@@ -176,8 +194,9 @@ var express = require('express'),
 		], function(err) {
 			if (err) {
 				winston.error('Errors were encountered while attempting to initialise NodeBB.');
+				process.exit();
 			} else {
-				winston.info('Middlewares loaded.');
+				if (process.env.NODE_ENV === 'development') winston.info('Middlewares loaded.');
 			}
 		});
 	});

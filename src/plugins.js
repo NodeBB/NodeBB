@@ -8,6 +8,7 @@ var fs = require('fs'),
 		libraries: {},
 		loadedHooks: {},
 		staticDirs: {},
+		cssFiles: [],
 
 		// Events
 		readyEvent: new eventEmitter,
@@ -93,6 +94,7 @@ var fs = require('fs'),
 						} else next();
 					},
 					function(next) {
+						// Static Directories for Plugins
 						if (pluginData.staticDir) {
 							staticDir = path.join(pluginPath, pluginData.staticDir);
 
@@ -102,6 +104,19 @@ var fs = require('fs'),
 									next();
 								} else next();
 							});
+						} else next();
+					},
+					function(next) {
+						// CSS Files for plugins
+						if (pluginData.css && pluginData.css instanceof Array) {
+							for(var x=0,numCss=pluginData.css.length;x<numCss;x++) {
+								_self.cssFiles.push({
+									plugin: pluginData.id,
+									path: path.join(pluginPath, pluginData.css[x])
+								});
+							}
+
+							next();
 						} else next();
 					}
 				], function(err) {

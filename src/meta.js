@@ -215,11 +215,11 @@ var utils = require('./../public/src/utils.js'),
 				}),
 				minified;
 
-			winston.info('Minifying client-side libraries');
+			if (process.env.NODE_ENV === 'development') winston.info('Minifying client-side libraries');
 			minified = uglifyjs.minify(jsPaths);
 			fs.writeFile(Meta.js.minFile, minified.code, function (err) {
 				if (!err) {
-					winston.info('Minified client-side libraries');
+					if (process.env.NODE_ENV === 'development') winston.info('Minified client-side libraries');
 					callback();
 				} else {
 					winston.error('Problem minifying client-side libraries, exiting.');
