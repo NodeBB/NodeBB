@@ -253,7 +253,9 @@
 
 			for (var d in data) {
 				if (data.hasOwnProperty(d)) {
-					if (data[d] === null) {
+					if (typeof data[d] === 'undefined') {
+						continue;
+					} else if (data[d] === null) {
 						template = replace(namespace + d, '', template);
 					} else if (data[d].constructor == Array) {
 						namespace += d + '.';
