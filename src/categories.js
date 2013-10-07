@@ -27,7 +27,8 @@ var RDB = require('./redis.js'),
 				blockclass: data.blockclass,
 				slug: slug,
 				topic_count: 0,
-				disabled: 0
+				disabled: 0,
+				order: data.order
 			};
 			RDB.hmset('category:' + cid, category);
 
@@ -349,6 +350,8 @@ var RDB = require('./redis.js'),
 				callback(null);
 				return;
 			}
+
+			categories = categories.sort(function(a, b) { return parseInt(a.order, 10) - parseInt(b.order, 10); });
 
 			callback({
 				'categories': categories

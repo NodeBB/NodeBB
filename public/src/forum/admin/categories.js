@@ -46,7 +46,22 @@ define(function() {
 			el.parentNode.parentNode.className = 'entry-row ' + el.value;
 		}
 
-		jQuery('#entry-container').sortable();
+		function updateCategoryOrders() {
+			var categories = $('.admin-categories #entry-container').children();
+			for(var i=0; i<categories.length; ++i) {
+				var input = $(categories[i]).find('input[data-name="order"]');
+
+				input.val(i+1).attr('data-value', i+1);
+				modified(input);
+			}
+		}
+
+		jQuery('#entry-container').sortable({
+			stop: function( event, ui ) {
+				console.log('sort stop', ui);
+				updateCategoryOrders();
+			}
+		});
 		jQuery('.blockclass').each(function() {
 			jQuery(this).val(this.getAttribute('data-value'));
 		});
