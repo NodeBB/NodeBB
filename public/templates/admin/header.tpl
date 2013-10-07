@@ -35,7 +35,6 @@
 	<script src="{relative_path}/src/utils.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="{relative_path}/css/nodebb.css" />
-	<link rel="stylesheet" type="text/css" href="{relative_path}/css/admin.css" />
 </head>
 
 <body class="admin">
