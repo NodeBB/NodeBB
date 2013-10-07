@@ -29,7 +29,7 @@ var socket,
 					socket.on('event:connect', function (data) {
 						app.username = data.username;
 						app.uid = data.uid;
-						
+
 						app.showLoginMessage();
 						socket.emit('api:updateHeader', {
 							fields: ['username', 'picture', 'userslug']
@@ -318,7 +318,10 @@ var socket,
 	}
 
 	app.createNewPosts = function (data) {
-		data.posts[0].display_moderator_tools = 'none';
+		if (data.posts[0].uid !== app.uid) {
+			data.posts[0].display_moderator_tools = 'none';
+		}
+		
 		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
 		translator.translate(html, function(translatedHTML) {
 			var uniqueid = new Date().getTime(),
