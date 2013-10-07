@@ -1,9 +1,13 @@
 var socket,
 	config,
-	app = {};
+	app = {
+		'username': null,
+		'uid': null
+	};
 
 (function () {
 	var showWelcomeMessage = false;
+
 
 	app.loadConfig = function() {
 
@@ -24,6 +28,8 @@ var socket,
 
 					socket.on('event:connect', function (data) {
 						app.username = data.username;
+						app.uid = data.uid;
+						
 						app.showLoginMessage();
 						socket.emit('api:updateHeader', {
 							fields: ['username', 'picture', 'userslug']
