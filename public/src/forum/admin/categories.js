@@ -58,7 +58,6 @@ define(function() {
 
 		jQuery('#entry-container').sortable({
 			stop: function( event, ui ) {
-				console.log('sort stop', ui);
 				updateCategoryOrders();
 			}
 		});
