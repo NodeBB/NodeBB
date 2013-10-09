@@ -82,8 +82,6 @@ define(function() {
 
 		socket.on('api:user.isOnline', function(data) {
 			if(getActiveSection() == 'online' && !loadingMoreUsers) {
-				loadingMoreUsers = true;
-
 				startLoading('users:online', 0, true);
 				socket.emit('api:user.getOnlineAnonCount', {} , function(anonCount) {
 					$('#online_anon_count').html(anonCount);
