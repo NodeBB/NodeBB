@@ -83,18 +83,20 @@ define(function() {
 		socket.on('api:user.isOnline', function(data) {
 			if(getActiveSection() == 'online' && !loadingMoreUsers) {
 				loadingMoreUsers = true;
-				$('#users-inner-container').empty();
-				startLoading('users:online', 0);
+
+				startLoading('users:online', 0, true);
 				socket.emit('api:user.getOnlineAnonCount', {} , function(anonCount) {
 					$('#online_anon_count').html(anonCount);
 				});
 			}
 		});
 
-		function onUsersLoaded(users) {
+		function onUsersLoaded(users, emptyContainer) {
 			var html = templates.prepare(templates['users'].blocks['users']).parse({
 				users: users
 			});
+			if(emptyContainer)
+				$('#users-inner-container').empty();
 			$('#users-inner-container').append(html);
 		}
 
@@ -115,14 +117,14 @@ define(function() {
 			}
 		}
 
-		function startLoading(set, after) {
+		function startLoading(set, after, emptyContainer) {
 			loadingMoreUsers = true;
 			socket.emit('api:users.loadMore', {
 				set: set,
 				after: after
 			}, function(data) {
 				if (data.users.length) {
-					onUsersLoaded(data.users);
+					onUsersLoaded(data.users, emptyContainer);
 					$('#load-more-users-btn').removeClass('disabled');
 				} else {
 					$('#load-more-users-btn').addClass('disabled');
