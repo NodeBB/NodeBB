@@ -5,9 +5,14 @@ define(function() {
 		var timeoutId = 0;
 		var loadingMoreUsers = false;
 
-		var url = window.location.href,
+		function getActiveSection() {
+			var url = window.location.href,
 			parts = url.split('/'),
 			active = parts[parts.length - 1];
+			return active;
+		}
+
+		var active = getActiveSection();
 
 		var lastSearch = null;
 
@@ -76,7 +81,7 @@ define(function() {
 		});
 
 		socket.on('api:user.isOnline', function(data) {
-			if(active == 'online' && !loadingMoreUsers) {
+			if(getActiveSection() == 'online' && !loadingMoreUsers) {
 				loadingMoreUsers = true;
 				$('#users-inner-container').empty();
 				startLoading('users:online', 0);
