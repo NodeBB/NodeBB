@@ -20,7 +20,7 @@ define(function() {
 			input.val('');
 			return false;
 		});
-	});
+	};
 
 	return Search;
 });
