@@ -488,6 +488,17 @@ var express = require('express'),
 			});
 		});
 
+		app.get('/recent/:term?', function (req, res) {
+			// TODO consolidate with /recent route as well -> that can be combined into this area. See "Basic Routes" near top.
+			app.build_header({
+				req: req,
+				res: res
+			}, function (err, header) {
+				res.send(header + app.create_route("recent/" + req.params.term, null, "recent") + templates['footer']);
+			});
+
+		});
+
 		app.get('/pid/:pid', function (req, res) {
 			posts.getPostData(req.params.pid, function (data) {
 				if (data)
