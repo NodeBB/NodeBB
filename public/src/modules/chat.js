@@ -20,7 +20,7 @@ define(['taskbar'], function(taskbar) {
 	module.modalExists = function(touid) {
 		return $('#chat-modal-' + touid).length !== 0;
 	}
-	
+
 	function checkStatus(chatModal, callback) {
 		socket.emit('api:user.isOnline', chatModal.touid, function(data) {
 			if(data.online !== chatModal.online) {
@@ -35,7 +35,7 @@ define(['taskbar'], function(taskbar) {
 				callback(data.online);
 		});
 	}
-	
+
 	function checkOnlineStatus(chatModal) {
 		if(chatModal.intervalId === 0) {
 			chatModal.intervalId = setInterval(function() {
@@ -43,12 +43,12 @@ define(['taskbar'], function(taskbar) {
 			}, 1000);
 		}
 	}
-	
+
 	module.createModal = function(username, touid, callback) {
-			
+
 		var chatModal = $('#chat-modal').clone(),
 			uuid = utils.generateUUID();
-			
+
 		chatModal.intervalId = 0;
 		chatModal.touid = touid;
 		chatModal.username = username;
@@ -61,7 +61,7 @@ define(['taskbar'], function(taskbar) {
 				module.bringModalToTop(chatModal);
 			}
 		});
-		
+
 		chatModal.find('#chat-with-name').html(username);
 
 		chatModal.find('.close').on('click', function(e) {
@@ -74,7 +74,7 @@ define(['taskbar'], function(taskbar) {
 		chatModal.on('click', function(e) {
 			module.bringModalToTop(chatModal);
 		});
-		
+
 		addSendHandler(chatModal);
 
 		getChatMessages(chatModal, function() {
@@ -85,9 +85,17 @@ define(['taskbar'], function(taskbar) {
 		return chatModal;
 	}
 
+	function center(chatModal) {
+		chatModal.css("position","absolute");
+		chatModal.css("top", Math.max(0, (($(window).height() - $(chatModal).outerHeight()) / 2) + $(window).scrollTop()) + "px");
+		chatModal.css("left", Math.max(0, (($(window).width() - $(chatModal).outerWidth()) / 2) + $(window).scrollLeft()) + "px");
+		return chatModal;
+	}
+
 	module.load = function(uuid) {
 		var chatModal = $('div[UUID="'+uuid+'"]');
 		chatModal.show();
+		center(chatModal);
 		module.bringModalToTop(chatModal);
 		checkOnlineStatus(chatModal);
 	}

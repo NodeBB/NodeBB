@@ -2,7 +2,7 @@
 
 	</div><!--END container -->
 
-	<div id="chat-modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="Chat" aria-hidden="true">
+	<div id="chat-modal" class="modal chat-modal" tabindex="-1" role="dialog" aria-labelledby="Chat" aria-hidden="true" data-backdrop="none">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
