@@ -7,7 +7,8 @@ define(function() {
 		Settings.prepare();
 	};
 
-	Settings.prepare = function() {
+	Settings.prepare = function() {	
+		console.dir(Settings.config);
 		// Come back in 500ms if the config isn't ready yet
 		if (Settings.config === undefined) {
 			setTimeout(function() {

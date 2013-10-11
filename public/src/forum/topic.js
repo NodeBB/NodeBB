@@ -218,7 +218,7 @@ define(function() {
 				}, false);
 			}
 
-			enableInfiniteLoading();
+			//enableInfiniteLoading();
 
 			var bookmark = localStorage.getItem('topic:' + tid + ':bookmark');
 

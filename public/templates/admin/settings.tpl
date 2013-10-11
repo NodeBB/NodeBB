@@ -13,7 +13,13 @@
 		<label>Imgur Client ID</label>
 		<input type="text" class="form-control" placeholder="Imgur ClientID for image uploads" data-field="imgurClientID" /><br />
 		<label>Maximum User Image Size</label>
-		<input type="text" class="form-control" placeholder="Maximum size of uploaded user images in kilobytes" data-field="maximumProfileImageSize" />
+		<input type="text" class="form-control" placeholder="Maximum size of uploaded user images in kilobytes" data-field="maximumProfileImageSize" /><br>
+		<div class="checkbox">
+			<label>
+				<input type="checkbox" class="" data-field="paginatedTopics">
+				<strong>Paginated Topics (as opposed to Pinterest style)</strong>
+			</label>
+		</div>
 	</form>
 </div>
 

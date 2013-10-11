@@ -343,6 +343,9 @@ schema = require('./schema.js'),
 
 			Topics.markAsRead(tid, current_user);
 
+			// get the config to check if we are displaying pagination or not
+			
+
 			function getTopicData(next) {
 				Topics.getTopicData(tid, function(topicData) {
 					next(null, topicData);
