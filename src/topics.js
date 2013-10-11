@@ -94,11 +94,22 @@ schema = require('./schema.js'),
 		});
 	}
 
-	Topics.getLatestTopics = function(current_user, start, end, callback) {
+	Topics.getLatestTopics = function(current_user, start, end, term, callback) {
 
 		var timestamp = Date.now();
 
-		var args = ['topics:recent', '+inf', timestamp - 86400000, 'LIMIT', start, end - start + 1];
+		var terms = {
+			hour: 3600000,
+			day: 86400000,
+			week: 604800000,
+			month: 18144000000
+		};
+
+		var since = terms['day'];
+		if(terms[term])
+			since = terms[term];
+
+		var args = ['topics:recent', '+inf', timestamp - since, 'LIMIT', start, end - start + 1];
 
 		RDB.zrevrangebyscore(args, function(err, tids) {
 

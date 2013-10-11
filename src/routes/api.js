@@ -131,9 +131,9 @@ var user = require('./../user.js'),
 				}, req.params.id, uid);
 			});
 
-			app.get('/recent', function (req, res) {
+			app.get('/recent/:term?', function (req, res) {
 				var uid = (req.user) ? req.user.uid : 0;
-				topics.getLatestTopics(uid, 0, 19, function (data) {
+				topics.getLatestTopics(uid, 0, 19, req.params.term, function (data) {
 					res.json(data);
 				});
 			});

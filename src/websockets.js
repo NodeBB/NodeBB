@@ -783,7 +783,7 @@ module.exports.init = function(io) {
 			var start = data.after,
 				end = start + 9;
 
-			topics.getLatestTopics(uid, start, end, function(latestTopics) {
+			topics.getLatestTopics(uid, start, end, data.term, function(latestTopics) {
 				callback(latestTopics);
 			});
 		});

@@ -26,6 +26,8 @@
 		"^user.*favourites": "favourites",
 		"^user/.*": "account",
 
+		"^recent/.*": "recent",
+
 		"reset/.*": "reset_code"
 	},
 	"force_refresh": {
