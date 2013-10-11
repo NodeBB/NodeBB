@@ -529,24 +529,26 @@ var utils = require('./../public/src/utils.js'),
 
 	User.getFollowingCount = function(uid, callback) {
 		RDB.smembers('following:' + uid, function(err, userIds) {
-			if (!err) {
-				callback(userIds.length);
-			} else {
+			if (err) {
 				console.log(err);
+			} else {
+				userIds = userIds.filter(function(value) {
+					return value === '0';
+				});
+				callback(userIds.length);
 			}
 		});
 	}
 
 	User.getFollowerCount = function(uid, callback) {
 		RDB.smembers('followers:' + uid, function(err, userIds) {
-			// @note why are error-handling styles being mixed?
-			// either go with not-error-dosomething-else-dosomethingelse, or
-			// go with if-error-dosomething-return
-			// also why is console.log(err) being used when below we're using RDB.handle()?
-			if (!err) {
-				callback(userIds.length);
-			} else {
+			if(err) {
 				console.log(err);
+			} else {
+				userIds = userIds.filter(function(value) {
+					return value === '0';
+				});
+				callback(userIds.length);
 			}
 		});
 	}
@@ -560,6 +562,9 @@ var utils = require('./../public/src/utils.js'),
 		}
 
 		function iterator(uid, callback) {
+			if(uid === "0")
+				return callback(null);
+
 			User.getUserData(uid, function(err, userData) {
 				returnData.push(userData);
 

@@ -17,7 +17,7 @@ define(['forum/accountheader'], function(header) {
 			var followBtn = $('#follow-btn');
 			var unfollowBtn = $('#unfollow-btn');
 
-			if (yourid !== theirid) {
+			if (yourid !== theirid && yourid !== "0") {
 				if (isFollowing) {
 					followBtn.hide();
 					unfollowBtn.show();
