@@ -112,6 +112,10 @@ var express = require('express'),
 				app.use(function (req, res, next) {
 					nconf.set('https', req.secure);
 					res.locals.csrf_token = req.session._csrf;
+					
+					// Disable framing
+					res.setHeader "x-frame-options", "DENY"
+					
 					next();
 				});
 
