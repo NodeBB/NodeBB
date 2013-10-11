@@ -90,12 +90,13 @@ define(function() {
 		$('#category-no-topics').remove();
 
 		container.append(html);
+		$('span.timeago').timeago();
 	}
 
 	Recent.loadMoreTopics = function() {
 		Recent.loadingMoreTopics = true;
 		socket.emit('api:topics.loadMoreRecentTopics', {
-			after: $('#topics-container').children().length,
+			after: $('#topics-container').children('li').length,
 			term: active
 		}, function(data) {
 			if (data.topics && data.topics.length) {
