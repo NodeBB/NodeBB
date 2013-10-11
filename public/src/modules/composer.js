@@ -384,6 +384,7 @@ define(['taskbar'], function(taskbar) {
 		if (composer.posts[post_uuid]) {
 			$(composer.postContainer).find('.imagedrop').hide();
 			delete composer.posts[post_uuid];
+			uploadsInProgress.length = 0;
 			composer.minimize();
 			taskbar.discard('composer', post_uuid);
 		}
