@@ -533,7 +533,7 @@ var utils = require('./../public/src/utils.js'),
 				console.log(err);
 			} else {
 				userIds = userIds.filter(function(value) {
-					return value === '0';
+					return value !== '0';
 				});
 				callback(userIds.length);
 			}
@@ -546,7 +546,7 @@ var utils = require('./../public/src/utils.js'),
 				console.log(err);
 			} else {
 				userIds = userIds.filter(function(value) {
-					return value === '0';
+					return value !== '0';
 				});
 				callback(userIds.length);
 			}
