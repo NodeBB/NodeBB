@@ -1,6 +1,5 @@
 {
-	"hour": "Last Hour",
 	"day": "Day",
-	"week": "Last Week",
-	"month": "Last Month"
+	"week": "Week",
+	"month": "Month"
 }

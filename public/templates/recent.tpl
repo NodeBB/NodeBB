@@ -5,7 +5,6 @@
 </ol>
 
 <ul class="nav nav-pills">
-	<li class=''><a href='/recent/hour'>[[recent:hour]]</a></li>
 	<li class=''><a href='/recent/day'>[[recent:day]]</a></li>
 	<li class=''><a href='/recent/week'>[[recent:week]]</a></li>
 	<li class=''><a href='/recent/month'>[[recent:month]]</a></li>

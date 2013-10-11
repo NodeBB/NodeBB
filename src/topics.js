@@ -99,7 +99,6 @@ schema = require('./schema.js'),
 		var timestamp = Date.now();
 
 		var terms = {
-			hour: 3600000,
 			day: 86400000,
 			week: 604800000,
 			month: 18144000000
