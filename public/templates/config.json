@@ -26,14 +26,9 @@
 		"user.*favourites": "favourites",
 		"user/.*": "account",
 
-		"recent": "recent",
-		"unread": "unread",
 		"popular": "category",
 		"active": "category",
-		"search": "search",
-		"reset/.*": "reset_code",
-		"reset": "reset"
-
+		"reset/.*": "reset_code"
 	},
 	"force_refresh": {
 		"logout": true
