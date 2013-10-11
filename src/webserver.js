@@ -114,7 +114,7 @@ var express = require('express'),
 					res.locals.csrf_token = req.session._csrf;
 					
 					// Disable framing
-					res.setHeader "x-frame-options", "DENY"
+					res.setHeader "X-Frame-Options", "DENY"
 					
 					next();
 				});
