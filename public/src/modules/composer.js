@@ -150,7 +150,8 @@ define(['taskbar'], function(taskbar) {
 						cid: threadData.cid,
 						pid: threadData.pid,
 						title: threadData.title || '',
-						body: threadData.body || ''
+						body: threadData.body || '',
+						modified: false
 					};
 					composer.load(uuid);
 				} else {
@@ -179,6 +180,9 @@ define(['taskbar'], function(taskbar) {
 				var uuid = $(this).parents('.post-window')[0].getAttribute('data-uuid');
 				if (this.nodeName === 'INPUT') composer.posts[uuid].title = this.value;
 				else if (this.nodeName === 'TEXTAREA') composer.posts[uuid].body = this.value;
+
+				// Mark this post window as having been changed
+				composer.posts[uuid].modified = true;
 			});
 
 			jPostContainer.on('click', '.action-bar button', function() {
@@ -188,7 +192,7 @@ define(['taskbar'], function(taskbar) {
 					case 'post': composer.post(uuid); break;
 					case 'minimize': composer.minimize(uuid); break;
 					case 'discard':
-						if (postContentEl.value.length > 0) {
+						if (composer.posts[uuid].modified) {
 							bootbox.confirm('Are you sure you wish to discard this post?', function(discard) {
 								if (discard) composer.discard(uuid);
 							});
