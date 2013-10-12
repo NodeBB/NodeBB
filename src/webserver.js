@@ -49,7 +49,6 @@ var express = require('express'),
 		};
 
 		plugins.fireHook('filter:header.build', custom_header, function(err, custom_header) {
-			console.log(custom_header);
 			var defaultMetaTags = [{
 				name: 'viewport',
 				content: 'width=device-width, initial-scale=1.0, user-scalable=no'
