@@ -15,7 +15,7 @@ describe('Categories', function() {
 				order: '5'
 			}, function(err, category) {
 				categoryObj = category;
-				done.apply(arguments);
+				done.apply(this, arguments);
 			});
 		});
 	});
