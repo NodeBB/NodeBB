@@ -155,27 +155,21 @@ var fs = require('fs'),
 				var hookType = hook.split(':')[0];
 				switch (hookType) {
 					case 'filter':
-						// Filters only take one argument, so only args[0] will be passed in
-						var returnVal = (Array.isArray(args) ? args[0] : args);
-
-						async.eachSeries(hookList, function(hookObj, next) {
-							if (hookObj[2]) {
-								_self.libraries[hookObj[0]][hookObj[1]](returnVal, function(err, afterVal) {
-									returnVal = afterVal;
-									next(err);
-								});
-							} else {
-								returnVal = _self.libraries[hookObj[0]][hookObj[1]](returnVal);
-								next();
+						async.reduce(hookList, args, function(value, hookObj, next) {
+							if (hookObj[2]) {	// If a callback is present (asynchronous method)
+								_self.libraries[hookObj[0]][hookObj[1]](value, next);
+							} else {	// Synchronous method
+								value = _self.libraries[hookObj[0]][hookObj[1]](value);
+								next(null, value);
 							}
-						}, function(err) {
+						}, function(err, value) {
 							if (err) {
 								if (global.env === 'development') {
 									winston.info('[plugins] Problem executing hook: ' + hook);
 								}
 							}
 
-							callback(err, returnVal);
+							callback.apply(plugins, arguments);
 						});
 						break;
 					case 'action':
@@ -197,7 +191,7 @@ var fs = require('fs'),
 				}
 			} else {
 				// Otherwise, this hook contains no methods
-				var returnVal = (Array.isArray(args) ? args[0] : args);
+				var returnVal = args;
 				if (callback) callback(null, returnVal);
 			}
 		},

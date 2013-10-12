@@ -17,18 +17,21 @@
 			<a id="post_anchor_{main_posts.pid}" name="{main_posts.pid}"></a>
 			<li class="row post-row main-post" data-pid="{main_posts.pid}" data-uid="{main_posts.uid}" data-username="{main_posts.username}" data-deleted="{main_posts.deleted}">
 				<div class="col-md-12">
-					<div class="post-block">
+					<div class="post-block" itemscope itemtype="http://schema.org/Article">
+						<meta itemprop="datePublished" content="{main_posts.relativeTime}">
+						<meta itemprop="datePublished" content="{main_posts.relativeEditTime}">
+						<meta itemprop="url" content="/topic/{slug}/">
 						<a class="avatar" href="/user/{main_posts.userslug}">
-							<img src="{main_posts.picture}" align="left" class="img-thumbnail" width=150 height=150 /><br />
+							<img itemprop="image" src="{main_posts.picture}" align="left" class="img-thumbnail" width=150 height=150 /><br />
 						</a>
 						<h3>
-							<p id="topic_title_{main_posts.pid}" class="topic-title">{topic_name}</p>
+							<p id="topic_title_{main_posts.pid}" class="topic-title" itemprop="name">{topic_name}</p>
 						</h3>
 
 						<div class="topic-buttons">
 							<div class="btn-group">
 								<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="[[topic:posted_by]] {main_posts.username}">
-									<span class="username-field" href="/user/{main_posts.userslug}">{main_posts.username}&nbsp;</span>
+									<span class="username-field" href="/user/{main_posts.userslug}" itemprop="author" itemscope itemtype="http://schema.org/Person">{main_posts.username}&nbsp;</span>
 									<span class="caret"></span>
 								</button>
 							    <ul class="dropdown-menu">
@@ -60,7 +63,7 @@
 
 						</div>
 
-						<div id="content_{main_posts.pid}" class="post-content">{main_posts.content}</div>
+						<div id="content_{main_posts.pid}" class="post-content" itemprop="articleBody">{main_posts.content}</div>
 						<div class="post-signature">{main_posts.signature}</div>
 						<div class="post-info">
 							<span class="pull-right">

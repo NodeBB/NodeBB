@@ -44,36 +44,43 @@ var express = require('express'),
 	 *						accepts:	metaTags
 	 */
 	app.build_header = function (options, callback) {
-		var defaultMetaTags = [{
-			name: 'viewport',
-			content: 'width=device-width, initial-scale=1.0, user-scalable=no'
-		}, {
-			name: 'content-type',
-			content: 'text/html; charset=UTF-8'
-		}, {
-			name: 'apple-mobile-web-app-capable',
-			content: 'yes'
-		}, {
-			property: 'og:site_name',
-			content: meta.config.title || 'NodeBB'
-		}, {
-			property: 'keywords',
-			content: meta.config['keywords'] || ''
-		}],
-			metaString = utils.buildMetaTags(defaultMetaTags.concat(options.metaTags || [])),
-			templateValues = {
-				cssSrc: meta.config['theme:src'] || nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
-				pluginCSS: plugins.cssFiles.map(function(file) { return { path: file } }),
-				title: meta.config.title || 'NodeBB',
-				browserTitle: meta.config.title || 'NodeBB',
-				csrf: options.res.locals.csrf_token,
-				relative_path: nconf.get('relative_path'),
-				meta_tags: metaString,
-				clientScripts: clientScripts
-			};
+		var custom_header = {
+			'navigation': []
+		};
 
-		translator.translate(templates.header.parse(templateValues), function(template) {
-			callback(null, template);
+		plugins.fireHook('filter:header.build', custom_header, function(err, custom_header) {
+			var defaultMetaTags = [{
+				name: 'viewport',
+				content: 'width=device-width, initial-scale=1.0, user-scalable=no'
+			}, {
+				name: 'content-type',
+				content: 'text/html; charset=UTF-8'
+			}, {
+				name: 'apple-mobile-web-app-capable',
+				content: 'yes'
+			}, {
+				property: 'og:site_name',
+				content: meta.config.title || 'NodeBB'
+			}, {
+				property: 'keywords',
+				content: meta.config['keywords'] || ''
+			}],
+				metaString = utils.buildMetaTags(defaultMetaTags.concat(options.metaTags || [])),
+				templateValues = {
+					cssSrc: meta.config['theme:src'] || nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
+					pluginCSS: plugins.cssFiles.map(function(file) { return { path: file } }),
+					title: meta.config.title || 'NodeBB',
+					browserTitle: meta.config.title || 'NodeBB',
+					csrf: options.res.locals.csrf_token,
+					relative_path: nconf.get('relative_path'),
+					meta_tags: metaString,
+					clientScripts: clientScripts,
+					navigation: custom_header.navigation
+				};
+
+			translator.translate(templates.header.parse(templateValues), function(template) {
+				callback(null, template);
+			});
 		});
 	};
 

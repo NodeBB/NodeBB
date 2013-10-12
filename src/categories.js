@@ -325,33 +325,40 @@ var RDB = require('./redis.js'),
 			return;
 		}
 
-		var categories = [];
+		// var categories = [];
 
 		function getCategory(cid, callback) {
 			Categories.getCategoryData(cid, function(err, categoryData) {
-
 				if (err) {
-					callback(err);
+					winston.warn('Attempted to retrieve cid ' + cid + ', but nothing was returned!');
+					callback(null, null);
 					return;
 				}
 
 				Categories.hasReadCategory(cid, current_user, function(hasRead) {
 					categoryData.badgeclass = (parseInt(categoryData.topic_count, 10) === 0 || (hasRead && current_user !== 0)) ? '' : 'badge-important';
 
-					categories.push(categoryData);
-					callback(null);
+					// categories.push(categoryData);
+					callback(null, categoryData);
 				});
 			});
 		}
 
-		async.eachSeries(cids, getCategory, function(err) {
+		async.map(cids, getCategory, function(err, categories) {
 			if (err) {
 				winston.err(err);
 				callback(null);
 				return;
 			}
 
-			categories = categories.sort(function(a, b) { return parseInt(a.order, 10) - parseInt(b.order, 10); });
+			categories = categories.filter(function(category) {
+				// Remove categories that have errored out
+				if (category) return true;
+				else return false;
+			}).sort(function(a, b) {
+				// Sort categories into their defined order
+				return parseInt(a.order, 10) - parseInt(b.order, 10);
+			});
 
 			callback({
 				'categories': categories

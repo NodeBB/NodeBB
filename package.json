@@ -9,6 +9,9 @@
     "url": "https://github.com/designcreateplay/NodeBB/"
   },
   "main": "app.js",
+  "scripts": {
+    "test": "mocha ./tests"
+  },
   "dependencies": {
     "socket.io": "~0.9.16",
     "redis": "0.8.3",
@@ -43,6 +46,9 @@
   },
   "optionalDependencies": {
     "hiredis": "~0.1.15"
+  },
+  "devDependencies": {
+    "mocha": "~1.13.0"
   },
   "bugs": {
     "url": "https://github.com/designcreateplay/NodeBB/issues"
