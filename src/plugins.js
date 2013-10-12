@@ -155,8 +155,7 @@ var fs = require('fs'),
 				var hookType = hook.split(':')[0];
 				switch (hookType) {
 					case 'filter':
-						// Filters only take one argument, so only args[0] will be passed in
-						var returnVal = (Array.isArray(args) ? args[0] : args);
+						var returnVal = args;
 
 						async.eachSeries(hookList, function(hookObj, next) {
 							if (hookObj[2]) {
@@ -197,7 +196,7 @@ var fs = require('fs'),
 				}
 			} else {
 				// Otherwise, this hook contains no methods
-				var returnVal = (Array.isArray(args) ? args[0] : args);
+				var returnVal = args;
 				if (callback) callback(null, returnVal);
 			}
 		},
