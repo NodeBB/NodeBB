@@ -59,9 +59,11 @@
 					<li class="visible-xs">
 						<a href="/search">[[global:header.search]]</a>
 					</li>
-					<li>
-						<a href="/"></a>
+					<!-- BEGIN navigation -->
+					<li class="{navigation.class}">
+						<a href="{navigation.route}">{navigation.text}</a>
 					</li>
+					<!-- END navigation -->
 				</ul>
 
 				<form id="search-form" class="navbar-form navbar-right hidden-xs" role="search" method="GET" action="">
