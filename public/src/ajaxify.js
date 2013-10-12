@@ -120,6 +120,10 @@ var ajaxify = {};
 			if(!window.location.pathname.match(/\/(403|404)$/g))
 				app.previousUrl = window.location.href;
 
+			if (this.getAttribute('data-ajaxify') == 'false') {
+				return;
+			}
+			
 			if (!e.ctrlKey && e.which === 1) {
 				if (this.host === window.location.host) {
 					// Internal link
