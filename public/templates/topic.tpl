@@ -15,11 +15,11 @@
 	<ul id="post-container" class="container" data-tid="{topic_id}">
 		<!-- BEGIN main_posts -->
 			<a id="post_anchor_{main_posts.pid}" name="{main_posts.pid}"></a>
-			<li class="row post-row main-post" data-pid="{main_posts.pid}" data-uid="{main_posts.uid}" data-username="{main_posts.username}" data-deleted="{main_posts.deleted}">
+			<li class="row post-row main-post" data-pid="{main_posts.pid}" data-uid="{main_posts.uid}" data-username="{main_posts.username}" data-deleted="{main_posts.deleted}" itemscope itemtype="http://schema.org/Article">
 				<div class="col-md-12">
-					<div class="post-block" itemscope itemtype="http://schema.org/Article">
+					<div class="post-block">
 						<meta itemprop="datePublished" content="{main_posts.relativeTime}">
-						<meta itemprop="datePublished" content="{main_posts.relativeEditTime}">
+						<meta itemprop="dateModified" content="{main_posts.relativeEditTime}">
 						<meta itemprop="url" content="/topic/{slug}/">
 						<a class="avatar" href="/user/{main_posts.userslug}">
 							<img itemprop="image" src="{main_posts.picture}" align="left" class="img-thumbnail" width=150 height=150 /><br />
@@ -80,10 +80,12 @@
 
 		<!-- BEGIN posts -->
 			<a id="post_anchor_{posts.pid}" name="{posts.pid}"></a>
-			<li class="row post-row sub-posts" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-deleted="{posts.deleted}">
+			<li class="row post-row sub-posts" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-deleted="{posts.deleted}" itemscope itemtype="http://schema.org/Comment">
+				<meta itemprop="datePublished" content="{posts.relativeTime}">
+				<meta itemprop="dateModified" content="{posts.relativeEditTime}">
 				<div class="col-md-1 profile-image-block hidden-xs hidden-sm">
 					<a href="/user/{posts.userslug}">
-						<img src="{posts.picture}" align="left" class="img-thumbnail" />
+						<img src="{posts.picture}" align="left" class="img-thumbnail" itemprop="image" />
 					</a>
 					<span class="label label-danger {posts.show_banned}">[[topic:banned]]</span>
 				</div>
@@ -92,7 +94,7 @@
 						<div class="topic-buttons">
 							<div class="btn-group">
 								<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="Posted by {posts.username}">
-									<span class="username-field" href="/user/{posts.userslug}">{posts.username}&nbsp;</span>
+									<span class="username-field" href="/user/{posts.userslug}" itemprop="author">{posts.username}&nbsp;</span>
 									<span class="caret"></span>
 								</button>
 
@@ -122,7 +124,7 @@
 							<input id="post_{posts.pid}_link" value="" class="pull-right" style="display:none;"></input>
 						</div>
 
-						<div id="content_{posts.pid}" class="post-content">{posts.content}</div>
+						<div id="content_{posts.pid}" class="post-content" itemprop="text">{posts.content}</div>
 						<div class="post-signature">{posts.signature}</div>
 						<div class="post-info">
 							<span class="pull-right">
