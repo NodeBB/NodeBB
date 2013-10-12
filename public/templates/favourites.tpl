@@ -2,6 +2,7 @@
 	<div class="account-username-box" data-userslug="{userslug}">
 		<span class="account-username">
 			<a href="/user/{userslug}">{username}</a>
+			<a href="/user/{userslug}/favourites">favourites</a>
 		</span>
 	</div>
 
