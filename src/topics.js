@@ -101,7 +101,7 @@ schema = require('./schema.js'),
 		var terms = {
 			day: 86400000,
 			week: 604800000,
-			month: 18144000000
+			month: 2592000000
 		};
 
 		var since = terms['day'];
