@@ -16,6 +16,7 @@ var RDB = require('./redis.js'),
 	winston = require('winston');
 
 (function(Posts) {
+	var customUserInfo = {};
 
 	Posts.getPostsByTid = function(tid, start, end, callback) {
 		RDB.lrange('tid:' + tid + ':posts', start, end, function(err, pids) {
@@ -46,17 +47,27 @@ var RDB = require('./redis.js'),
 				post.picture = userData.picture || require('gravatar').url('', {}, https = nconf.get('https'));
 				post.signature = signature;
 
-				if (post.editor !== '') {
-					user.getUserFields(post.editor, ['username', 'userslug'], function(err, editorData) {
-						if (err) return callback();
-
-						post.editorname = editorData.username;
-						post.editorslug = editorData.userslug;
-						callback();
-					});
-				} else {
-					callback();
+				for (var info in customUserInfo) {
+					if (customUserInfo.hasOwnProperty(info)) {
+						post[info] = userData[info] || customUserInfo[info];
+					}
 				}
+
+				plugins.fireHook('filter:posts.custom_profile_info', {profile: "", uid: post.uid}, function(err, profile_info) {
+					post.additional_profile_info = profile_info.profile;
+
+					if (post.editor !== '') {
+						user.getUserFields(post.editor, ['username', 'userslug'], function(err, editorData) {
+							if (err) return callback();
+
+							post.editorname = editorData.username;
+							post.editorslug = editorData.userslug;
+							callback();
+						});
+					} else {
+						callback();
+					}
+				});
 			});
 		});
 	};

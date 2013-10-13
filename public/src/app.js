@@ -136,6 +136,7 @@ var socket,
 		var alert_id = 'alert_button_' + ((params.alert_id) ? params.alert_id : new Date().getTime());
 
 		var alert = $('#' + alert_id);
+		var title = params.title || '';
 
 		function startTimeout(div, timeout) {
 			var timeoutId = setTimeout(function () {
@@ -148,7 +149,7 @@ var socket,
 		}
 
 		if (alert.length > 0) {
-			alert.find('strong').html(params.title);
+			alert.find('strong').html(title);
 			alert.find('p').html(params.message);
 			alert.attr('class', "alert toaster-alert " + "alert-" + params.type);
 
@@ -161,7 +162,7 @@ var socket,
 				p = document.createElement('p');
 
 			p.innerHTML = params.message;
-			strong.innerHTML = params.title;
+			strong.innerHTML = title;
 
 			div.className = "alert toaster-alert " + "alert-" + params.type;
 
