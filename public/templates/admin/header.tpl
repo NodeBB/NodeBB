@@ -104,7 +104,7 @@
 						<li class="nav-header">Plugins</li>
 						<!-- BEGIN plugins -->
 						<li>
-							<a href='{relative_path}/admin/{plugins.route}'><i class="{plugins.icon}"></i> {plugins.name}</a>
+							<a href='{relative_path}/admin{plugins.route}'><i class="{plugins.icon}"></i> {plugins.name}</a>
 						</li>
 						<!-- END plugins -->
 					</ul>

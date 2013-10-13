@@ -80,6 +80,30 @@ var user = require('./../user.js'),
 			});
 		});
 
+
+		var custom_routes = {
+			'routes': [],
+			'api_methods': []
+		};
+
+		plugins.ready(function() {
+			plugins.fireHook('filter:admin.create_routes', custom_routes, function(err, custom_routes) {
+				var routes = custom_routes.routes;
+				
+				for (var route in routes) {
+					if (routes.hasOwnProperty(route)) {
+						app[routes[route].method || 'get']('/admin' + routes[route].route, function(req, res) {
+							routes[route].options(req, res, function(options) {
+								Admin.build_header(res, function (err, header) {
+									res.send(header + options.content + templates['admin/footer']);
+								});
+							});
+						});							
+					}
+				}
+			});	
+		});
+
 		app.namespace('/api/admin', function () {
 			app.get('/index', function (req, res) {
 				res.json({
