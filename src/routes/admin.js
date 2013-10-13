@@ -18,10 +18,17 @@ var user = require('./../user.js'),
 		});
 	}
 
-	Admin.build_header = function (res) {
-		return templates['admin/header'].parse({
-			csrf: res.locals.csrf_token,
-			relative_path: nconf.get('relative_path')
+	Admin.build_header = function (res, callback) {
+		var custom_header = {
+			'plugins': []
+		};
+
+		plugins.fireHook('filter:admin.header.build', custom_header, function(err, custom_header) {
+			callback(err, templates['admin/header'].parse({
+				csrf: res.locals.csrf_token,
+				relative_path: nconf.get('relative_path'),
+				plugins: custom_header.plugins
+			}));
 		});
 	}
 
@@ -38,7 +45,9 @@ var user = require('./../user.js'),
 			for (var i = 0, ii = routes.length; i < ii; i++) {
 				(function (route) {
 					app.get('/admin/' + route, Admin.isAdmin, function (req, res) {
-						res.send(Admin.build_header(res) + app.create_route('admin/' + route) + templates['admin/footer']);
+						Admin.build_header(res, function(err, header) {
+							res.send(header + app.create_route('admin/' + route) + templates['admin/footer']);
+						});
 					});
 				}(routes[i]));
 			}
@@ -48,7 +57,9 @@ var user = require('./../user.js'),
 			for (var i = 0, ii = unit_tests.length; i < ii; i++) {
 				(function (route) {
 					app.get('/admin/testing/' + route, Admin.isAdmin, function (req, res) {
-						res.send(Admin.build_header(res) + app.create_route('admin/testing/' + route) + templates['admin/footer']);
+						Admin.build_header(res, function(err, header) {
+							res.send(header + app.create_route('admin/testing/' + route) + templates['admin/footer']);
+						});
 					});
 				}(unit_tests[i]));
 			}
@@ -57,11 +68,15 @@ var user = require('./../user.js'),
 
 		app.namespace('/admin', function () {
 			app.get('/', Admin.isAdmin, function (req, res) {
-				res.send(Admin.build_header(res) + app.create_route('admin/index') + templates['admin/footer']);
+				Admin.build_header(res, function(err, header) {
+					res.send(header + app.create_route('admin/index') + templates['admin/footer']);
+				});
 			});
 
 			app.get('/index', Admin.isAdmin, function (req, res) {
-				res.send(Admin.build_header(res) + app.create_route('admin/index') + templates['admin/footer']);
+				Admin.build_header(res, function(err, header) {
+					res.send(header + app.create_route('admin/index') + templates['admin/footer']);
+				});
 			});
 		});
 
