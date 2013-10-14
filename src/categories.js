@@ -55,9 +55,16 @@ var RDB = require('./redis.js'),
 				Categories.getActiveUsers(category_id, next);
 			}
 
-			async.parallel([getTopicIds, getActiveUsers], function(err, results) {
+			function getSidebars(next) {
+				plugins.fireHook('filter:category.build_sidebars', [], function(err, sidebars) {
+					next(err, sidebars);
+				});
+			}
+
+			async.parallel([getTopicIds, getActiveUsers, getSidebars], function(err, results) {
 				var tids = results[0],
-					active_users = results[1];
+					active_users = results[1],
+					sidebars = results[2];
 
 				var categoryData = {
 					'category_name': category_name,
@@ -72,7 +79,8 @@ var RDB = require('./redis.js'),
 					'topics': [],
 					'twitter-intent-url': 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(nconf.get('url') + 'category/' + category_slug) + '&text=' + encodeURIComponent(category_name),
 					'facebook-share-url': 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(nconf.get('url') + 'category/' + category_slug),
-					'google-share-url': 'https://plus.google.com/share?url=' + encodeURIComponent(nconf.get('url') + 'category/' + category_slug)
+					'google-share-url': 'https://plus.google.com/share?url=' + encodeURIComponent(nconf.get('url') + 'category/' + category_slug),
+					'sidebars': sidebars
 				};
 
 				function getTopics(next) {

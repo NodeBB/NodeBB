@@ -90,6 +90,16 @@
 				<!-- END moderators -->
 			</div>
 		</div>
+		<!-- BEGIN sidebars -->
+		<div class="sidebar-block img-thumbnail {sidebars.block_class}">
+			<div class="block-header">
+				{sidebars.header}
+			</div>
+			<div class="block-content">
+				{sidebars.content}
+			</div>
+		</div>
+		<!-- END sidebars -->
 	</div>
 </div>
 
