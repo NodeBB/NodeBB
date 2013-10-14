@@ -136,9 +136,16 @@ var fs = require('fs'),
 			var _self = this;
 
 			if (data.hook && data.method) {
-				// Assign default priority of 10 if none is passed-in
 				data.id = id;
 				if (!data.priority) data.priority = 10;
+				data.method = data.method.split('.').reduce(function(memo, prop) {
+					if (memo[prop]) {
+						return memo[prop];
+					} else {
+						// Couldn't find method by path, assuming property with periods in it (evil!)
+						_self.libraries[data.id][data.method];
+					}
+				}, _self.libraries[data.id]);
 
 				_self.loadedHooks[data.hook] = _self.loadedHooks[data.hook] || [];
 				_self.loadedHooks[data.hook].push(data);
@@ -157,10 +164,15 @@ var fs = require('fs'),
 				switch (hookType) {
 					case 'filter':
 						async.reduce(hookList, args, function(value, hookObj, next) {
-							if (hookObj.callbacked) {	// If a callback is present (asynchronous method)
-								_self.libraries[hookObj.id][hookObj.method](value, next);
-							} else {	// Synchronous method
-								value = _self.libraries[hookObj.id][hookObj.method](value);
+							if (hookObj.method) {
+								if (hookObj.callbacked) {	// If a callback is present (asynchronous method)
+									hookObj.method.call(_self.libraries[hookObj.id], value, next);
+								} else {	// Synchronous method
+									value = hookObj.method.call(_self.libraries[hookObj.id], value);
+									next(null, value);
+								}
+							} else {
+								if (global.env === 'development') winston.info('[plugins] Expected method \'' + hookObj.method + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
 								next(null, value);
 							}
 						}, function(err, value) {
@@ -175,13 +187,8 @@ var fs = require('fs'),
 						break;
 					case 'action':
 						async.each(hookList, function(hookObj) {
-							if (
-								_self.libraries[hookObj.id] &&
-								_self.libraries[hookObj.id][hookObj.method] &&
-								typeof _self.libraries[hookObj.id][hookObj.method] === 'function'
-							) {
-								_self.libraries[hookObj.id][hookObj.method].apply(_self.libraries[hookObj.id], args);
-							} else {
+							if (hookObj.method) hookObj.method.apply(_self.libraries[hookObj.id], args);
+							else {
 								if (global.env === 'development') winston.info('[plugins] Expected method \'' + hookObj.method + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
 							}
 						});
