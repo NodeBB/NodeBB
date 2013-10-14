@@ -137,16 +137,11 @@ var fs = require('fs'),
 
 			if (data.hook && data.method) {
 				// Assign default priority of 10 if none is passed-in
+				data.id = id;
 				if (!data.priority) data.priority = 10;
 
 				_self.loadedHooks[data.hook] = _self.loadedHooks[data.hook] || [];
-				_self.loadedHooks[data.hook].push({
-					// [id, data.method, !! data.callbacked, data.priority]
-					id: id,
-					method: data.method,
-					callbacked: data.callbacked,
-					priority: data.priority
-				});
+				_self.loadedHooks[data.hook].push(data);
 
 				if (global.env === 'development') winston.info('[plugins] Hook registered: ' + data.hook + ' will call ' + id);
 				callback();
