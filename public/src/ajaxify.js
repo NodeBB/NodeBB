@@ -176,7 +176,7 @@ var ajaxify = {};
 
 		var scripts = [],
 			script,
-			children_nodes = $(body_el).children(),
+			children_nodes = $(body_el).find('script'),
 			child,
 			i;
 

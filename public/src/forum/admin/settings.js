@@ -1,18 +1,16 @@
 define(function() {
 	var Settings = {};
 
-	Settings.config = {};
-
 	Settings.init = function() {
 		Settings.prepare();
 	};
 
 	Settings.prepare = function() {
-		// Come back in 500ms if the config isn't ready yet
-		if (Settings.config === undefined) {
+		// Come back in 125ms if the config isn't ready yet
+		if (!app.config) {
 			setTimeout(function() {
 				Settings.prepare();
-			}, 500);
+			}, 125);
 			return;
 		}
 
@@ -25,21 +23,21 @@ define(function() {
 			key = fields[x].getAttribute('data-field');
 			inputType = fields[x].getAttribute('type');
 			if (fields[x].nodeName === 'INPUT') {
-				if (Settings.config[key]) {
+				if (app.config[key]) {
 					switch (inputType) {
 						case 'text':
 						case 'textarea':
 						case 'number':
-							fields[x].value = Settings.config[key];
+							fields[x].value = app.config[key];
 							break;
 
 						case 'checkbox':
-							fields[x].checked = Settings.config[key] === '1' ? true : false;
+							fields[x].checked = app.config[key] === '1' ? true : false;
 							break;
 					}
 				}
 			} else if (fields[x].nodeName === 'TEXTAREA') {
-				if (Settings.config[key]) fields[x].value = Settings.config[key];
+				if (app.config[key]) fields[x].value = app.config[key];
 			}
 		}
 

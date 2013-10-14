@@ -274,7 +274,13 @@ var fs = require('fs'),
 								fs.readFile(path.join(file, 'plugin.json'), next);
 							},
 							function(configJSON, next) {
-								var config = JSON.parse(configJSON);
+								try {
+									var config = JSON.parse(configJSON);
+								} catch (err) {
+									winston.warn("Plugin: " + file + " is corrupted or invalid. Please check plugin.json for errors.")
+									return next(err, null);
+								}
+								
 								_self.isActive(config.id, function(err, active) {
 									if (err) next(new Error('no-active-state'));
 

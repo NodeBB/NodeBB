@@ -66,6 +66,9 @@
 						<div id="content_{main_posts.pid}" class="post-content" itemprop="articleBody">{main_posts.content}</div>
 						<div class="post-signature">{main_posts.signature}</div>
 						<div class="post-info">
+							<span class="pull-left">
+								{main_posts.additional_profile_info}
+							</span>
 							<span class="pull-right">
 								posted <span class="relativeTimeAgo timeago" title="{main_posts.relativeTime}"></span>
 								<span class="{main_posts.edited-class}">| last edited by <strong><a href="/user/{main_posts.editorslug}">{main_posts.editorname}</a></strong></span>
@@ -127,6 +130,9 @@
 						<div id="content_{posts.pid}" class="post-content" itemprop="text">{posts.content}</div>
 						<div class="post-signature">{posts.signature}</div>
 						<div class="post-info">
+							<span class="pull-left">
+								{posts.additional_profile_info}
+							</span>
 							<span class="pull-right">
 								posted <span class="relativeTimeAgo timeago" title="{posts.relativeTime}"></span>
 								<span class="{posts.edited-class}">| last edited by <strong><a href="/user/{posts.editorslug}">{posts.editorname}</a></strong></span>

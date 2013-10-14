@@ -1,5 +1,5 @@
-var RDB = require('./redis.js')
-schema = require('./schema.js'),
+var RDB = require('./redis.js'),
+	schema = require('./schema.js'),
 	posts = require('./posts.js'),
 	utils = require('./../public/src/utils.js'),
 	user = require('./user.js'),
