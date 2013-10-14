@@ -24,6 +24,7 @@ var express = require('express'),
 	nconf = require('nconf'),
 	winston = require('winston'),
 	validator = require('validator'),
+	async = require('async'),
 	logger = require('./logger.js');
 
 (function (app) {
