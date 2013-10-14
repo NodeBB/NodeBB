@@ -43,7 +43,7 @@ var fs = require('fs'),
 					Object.keys(_self.loadedHooks).forEach(function(hook) {
 						var hooks = _self.loadedHooks[hook];
 						hooks = hooks.sort(function(a, b) {
-							return a[3] - b[3];
+							return a.priority - b.priority;
 						});
 					});
 
@@ -140,7 +140,13 @@ var fs = require('fs'),
 				if (!data.priority) data.priority = 10;
 
 				_self.loadedHooks[data.hook] = _self.loadedHooks[data.hook] || [];
-				_self.loadedHooks[data.hook].push([id, data.method, !! data.callbacked, data.priority]);
+				_self.loadedHooks[data.hook].push({
+					// [id, data.method, !! data.callbacked, data.priority]
+					id: id,
+					method: data.method,
+					callbacked: data.callbacked,
+					priority: data.priority
+				});
 
 				if (global.env === 'development') winston.info('[plugins] Hook registered: ' + data.hook + ' will call ' + id);
 				callback();
@@ -156,10 +162,10 @@ var fs = require('fs'),
 				switch (hookType) {
 					case 'filter':
 						async.reduce(hookList, args, function(value, hookObj, next) {
-							if (hookObj[2]) {	// If a callback is present (asynchronous method)
-								_self.libraries[hookObj[0]][hookObj[1]](value, next);
+							if (hookObj.callbacked) {	// If a callback is present (asynchronous method)
+								_self.libraries[hookObj.id][hookObj.method](value, next);
 							} else {	// Synchronous method
-								value = _self.libraries[hookObj[0]][hookObj[1]](value);
+								value = _self.libraries[hookObj.id][hookObj.method](value);
 								next(null, value);
 							}
 						}, function(err, value) {
@@ -175,13 +181,13 @@ var fs = require('fs'),
 					case 'action':
 						async.each(hookList, function(hookObj) {
 							if (
-								_self.libraries[hookObj[0]] &&
-								_self.libraries[hookObj[0]][hookObj[1]] &&
-								typeof _self.libraries[hookObj[0]][hookObj[1]] === 'function'
+								_self.libraries[hookObj.id] &&
+								_self.libraries[hookObj.id][hookObj.method] &&
+								typeof _self.libraries[hookObj.id][hookObj.method] === 'function'
 							) {
-								_self.libraries[hookObj[0]][hookObj[1]].apply(_self.libraries[hookObj[0]], args);
+								_self.libraries[hookObj.id][hookObj.method].apply(_self.libraries[hookObj.id], args);
 							} else {
-								if (global.env === 'development') winston.info('[plugins] Expected method \'' + hookObj[1] + '\' in plugin \'' + hookObj[0] + '\' not found, skipping.');
+								if (global.env === 'development') winston.info('[plugins] Expected method \'' + hookObj.method + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
 							}
 						});
 						break;
