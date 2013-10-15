@@ -187,7 +187,7 @@ var fs = require('fs'),
 						break;
 					case 'action':
 						async.each(hookList, function(hookObj) {
-							if (hookObj.method) hookObj.method.apply(_self.libraries[hookObj.id], args);
+							if (hookObj.method) hookObj.method.call(_self.libraries[hookObj.id], args);
 							else {
 								if (global.env === 'development') winston.info('[plugins] Expected method \'' + hookObj.method + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
 							}
@@ -218,6 +218,9 @@ var fs = require('fs'),
 						if (global.env === 'development') winston.info('[plugins] Could not toggle active state on plugin \'' + id + '\'');
 						return;
 					}
+
+					// (De)activation Hooks
+					plugins.fireHook('action:plugin.' + (active ? 'de' : '') + 'activate', id);
 
 					if (callback) {
 						callback({
