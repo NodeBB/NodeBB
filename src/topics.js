@@ -11,6 +11,7 @@ var RDB = require('./redis.js'),
 	async = require('async'),
 	feed = require('./feed.js'),
 	favourites = require('./favourites.js'),
+	meta = require('./meta.js'),
 	reds = require('reds'),
 	topicSearch = reds.createSearch('nodebbtopicsearch'),
 	validator = require('validator');
