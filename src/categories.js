@@ -31,9 +31,10 @@ var RDB = require('./redis.js'),
 				disabled: 0,
 				order: data.order
 			};
-			RDB.hmset('category:' + cid, category);
 
-			callback(null, category);
+			RDB.hmset('category:' + cid, category, function(err, data) {
+				callback(err, category);
+			});
 		});
 	};
 
