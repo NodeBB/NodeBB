@@ -26,10 +26,10 @@
 
 <div class="category row">
 	<div class="{topic_row_size}">
-		<ul id="topics-container">
-		<!-- BEGIN topics -->
-
-			<li class="category-item {topics.deleted-class}">
+		<ul id="topics-container" itemscope itemtype="http://www.schema.org/ItemList">
+			<meta itemprop="itemListOrder" content="descending">
+			<!-- BEGIN topics -->
+			<li class="category-item {topics.deleted-class}" itemprop="itemListElement">
 				<div class="row">
 					<div class="col-md-12 topic-row">
 						<div class="latest-post visible-lg visible-md">
@@ -43,9 +43,12 @@
 								</div>
 							</a>
 						</div>
-						<a href="../../topic/{topics.slug}">
+						<a href="../../topic/{topics.slug}" itemprop="url">
 							<div>
-								<h3><span class="topic-title"><span class="badge {topics.badgeclass}">{topics.postcount}</span>{topics.title}</span></h3>
+								<h3>
+									<span class="badge {topics.badgeclass}">{topics.postcount}</span>
+									<span class="topic-title" itemprop="name">{topics.title}</span>
+								</h3>
 								<small>
 									<strong><i class="{topics.pin-icon}"></i> <i class="{topics.lock-icon}"></i></strong>
 									Posted <span class="timeago" title="{topics.relativeTime}"></span> by
@@ -56,8 +59,7 @@
 					</div>
 				</div>
 			</li>
-
-		<!-- END topics -->
+			<!-- END topics -->
 		</ul>
 	</div>
 	<div class="col-md-3 {show_sidebar} category-sidebar">
