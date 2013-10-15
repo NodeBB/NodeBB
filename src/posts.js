@@ -365,7 +365,7 @@ var RDB = require('./redis.js'),
 							callback(postData);
 						});
 
-						plugins.fireHook('action:post.save', [postData]);
+						plugins.fireHook('action:post.save', postData);
 
 						postSearch.index(content, pid);
 					});
