@@ -6,8 +6,8 @@
 	<!-- BEGIN categories -->
 	<div class="col-md-3 col-xs-6">
 		<a href="category/{categories.slug}" itemprop="url">
-			<span class="badge {categories.badgeclass}">{categories.topic_count} </span>
-			<h4 itemprop="name">{categories.name}</h4>
+			<meta itemprop="name" content="{categories.name}">
+			<h4><span class="badge {categories.badgeclass}">{categories.topic_count} </span> {categories.name}</h4>
 			<div class="icon {categories.blockclass}">
 				<div id="category-{categories.cid}" class="category-slider-{categories.post_count}">
 					<div class="category-box"><i class="{categories.icon} icon-4x"></i></div>

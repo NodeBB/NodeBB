@@ -46,8 +46,8 @@
 						<a href="../../topic/{topics.slug}" itemprop="url">
 							<div>
 								<h3>
-									<span class="badge {topics.badgeclass}">{topics.postcount}</span>
-									<span class="topic-title" itemprop="name">{topics.title}</span>
+									<meta itemprop="name" content="{topics.title}">
+									<span class="topic-title"><span class="badge {topics.badgeclass}">{topics.postcount}</span>{topics.title}</span>
 								</h3>
 								<small>
 									<strong><i class="{topics.pin-icon}"></i> <i class="{topics.lock-icon}"></i></strong>
