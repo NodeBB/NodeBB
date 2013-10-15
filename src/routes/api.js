@@ -1,7 +1,7 @@
 var user = require('./../user.js'),
 	auth = require('./authentication.js'),
 	topics = require('./../topics.js'),
-	categories = require('./../categories.js')
+	categories = require('./../categories.js'),
 	utils = require('./../../public/src/utils.js'),
 	pkg = require('../../package.json'),
 	meta = require('./../meta.js'),

@@ -18,7 +18,7 @@ var	cookie = require('cookie'),
 	RDB = require('./redis'),
 	util = require('util'),
 	logger = require('./logger.js'),
-	fs = require('fs')
+	fs = require('fs'),
 	RedisStore = new RedisStoreLib({
 		client: RDB,
 		ttl: 60 * 60 * 24 * 14
