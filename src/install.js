@@ -92,7 +92,7 @@ var async = require('async'),
 						delete config['redis:port'];
 						delete config['redis:password'];
 						delete config['redis:database'];
-						
+
 						// Add hardcoded values
 						config.bcrypt_rounds = 12;
 						config.upload_path = '/public/uploads';
@@ -281,7 +281,7 @@ var async = require('async'),
 					User.create(results.username, results.password, results.email, function (err, uid) {
 						if (err) {
 							winston.warn(err.message + ' Please try again.');
-							return getAdminInfo();
+							return callback(new Error('invalid-values'));
 						}
 
 						Groups.getGidFromName('Administrators', function (err, gid) {
