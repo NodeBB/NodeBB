@@ -1,9 +1,8 @@
 define(function () {
-	var	Category = {};
-
+	var	Category = {},
+		cid = templates.get('category_id');
 	Category.init = function() {
-		var cid = templates.get('category_id'),
-			room = 'category_' + cid,
+		var	room = 'category_' + cid,
 			twitterEl = document.getElementById('twitter-intent'),
 			facebookEl = document.getElementById('facebook-share'),
 			googleEl = document.getElementById('google-share'),
