@@ -162,6 +162,15 @@
 		isRelativeUrl: function(url) {
 			var firstChar = url.slice(0, 1);
 			return (firstChar === '.' || firstChar === '/');
+		},
+
+		makeNumberHumanReadable: function(num) {
+			num = parseInt(num, 10);
+			if (num > 999999)
+				return (num / 1000000).toFixed(1) + 'm';
+			else if(num > 999)
+				return (num / 1000).toFixed(1) + 'k';
+			return num;
 		}
 	}
 

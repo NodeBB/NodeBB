@@ -7,13 +7,16 @@
 
 	socket.emit('user.count', {});
 	socket.on('user.count', function(data) {
-		stats_users.innerHTML = data.count;
+		stats_users.innerHTML = utils.makeNumberHumanReadable(data.count);
+		stats_users.title = data.count;
 	});
 
 	socket.emit('post.stats');
 	socket.on('post.stats', function(data) {
-		stats_topics.innerHTML = data.topics;
-		stats_posts.innerHTML = data.posts;
+		stats_topics.innerHTML = utils.makeNumberHumanReadable(data.topics);
+		stats_topics.title = data.topics;
+		stats_posts.innerHTML = utils.makeNumberHumanReadable(data.posts);
+		stats_posts.title = data.posts;
 	});
 
 	socket.emit('api:user.active.get');
