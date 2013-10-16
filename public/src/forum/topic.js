@@ -37,9 +37,11 @@ define(function() {
 				$('#delete_thread').on('click', function(e) {
 					if (thread_state.deleted !== '1') {
 						bootbox.confirm('Are you sure you want to delete this thread?', function(confirm) {
-							if (confirm) socket.emit('api:topic.delete', {
-								tid: tid
-							});
+							if (confirm) {
+								socket.emit('api:topic.delete', {
+									tid: tid
+								});
+							}
 						});
 					} else {
 						bootbox.confirm('Are you sure you want to restore this thread?', function(confirm) {
@@ -87,6 +89,7 @@ define(function() {
 					var loadingEl = document.getElementById('categories-loading');
 					if (loadingEl) {
 						socket.once('api:categories.get', function(data) {
+							console.log(data);
 							// Render categories
 							var categoriesFrag = document.createDocumentFragment(),
 								categoryEl = document.createElement('li'),
@@ -102,7 +105,7 @@ define(function() {
 							categoriesEl.className = 'category-list';
 							for (x = 0; x < numCategories; x++) {
 								info = data.categories[x];
-								categoryEl.className = info.blockclass;
+								categoryEl.className = info.blockclass + (info.disabled === '1' ? ' disabled' : '');
 								categoryEl.innerHTML = '<i class="' + info.icon + '"></i> ' + info.name;
 								categoryEl.setAttribute('data-cid', info.cid);
 								categoriesFrag.appendChild(categoryEl.cloneNode(true));
