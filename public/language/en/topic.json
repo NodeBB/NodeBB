@@ -16,6 +16,7 @@
 	"thread_tools.move": "Move Thread",
 	"thread_tools.delete": "Delete Thread",
 	"load_categories": "Loading Categories",
+	"disabled_categories_note": "Disabled Categories are greyed out",
 	"confirm_move": "Move",
 	"favourites.not_logged_in.title": "Not Logged In",
 	"favourites.not_logged_in.message": "Please log in in order to favourite this post"

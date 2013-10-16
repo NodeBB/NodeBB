@@ -178,19 +178,22 @@
 		</div>
 	</div>
 
-	<div id="move_thread_modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="Chat" aria-hidden="true">
+	<div id="move_thread_modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="Move Topic" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3>Move Thread</h3>
+					<h3>Move Topic</h3>
 				</div>
 				<div class="modal-body">
 					<p id="categories-loading"><i class="icon-spin icon-refresh"></i> [[topic:load_categories]]</p>
 					<ul class="category-list"></ul>
+					<p>
+						[[topic:disabled_categories_note]]
+					</p>
 					<div id="move-confirm" style="display: none;">
 						<hr />
-						<div class="alert">This topic will be moved to the category <strong><span id="confirm-category-name"></span></strong></div>
+						<div class="alert alert-info">This topic will be moved to the category <strong><span id="confirm-category-name"></span></strong></div>
 					</div>
 				</div>
 				<div class="modal-footer">
