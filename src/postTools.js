@@ -110,10 +110,10 @@ var RDB = require('./redis.js'),
 		});
 	}
 
-	PostTools.delete = function(uid, pid) {
+	PostTools.delete = function(uid, pid, callback) {
 		var success = function() {
 			posts.setPostField(pid, 'deleted', 1);
-
+			RDB.decr('totalpostcount');
 			postSearch.remove(pid);
 
 			posts.getPostFields(pid, ['tid', 'uid'], function(postData) {
@@ -141,6 +141,8 @@ var RDB = require('./redis.js'),
 				});
 
 				Feed.updateTopic(postData.tid);
+
+				callback();
 			});
 		};
 
@@ -151,9 +153,10 @@ var RDB = require('./redis.js'),
 		});
 	}
 
-	PostTools.restore = function(uid, pid) {
+	PostTools.restore = function(uid, pid, callback) {
 		var success = function() {
 			posts.setPostField(pid, 'deleted', 0);
+			RDB.incr('totalpostcount');
 
 			posts.getPostFields(pid, ['tid', 'uid', 'content'], function(postData) {
 				RDB.hincrby('topic:' + postData.tid, 'postcount', 1);
@@ -180,6 +183,8 @@ var RDB = require('./redis.js'),
 				Feed.updateTopic(postData.tid);
 
 				postSearch.index(postData.content, pid);
+
+				callback();
 			});
 		};
 
