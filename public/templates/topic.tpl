@@ -178,7 +178,7 @@
 		</div>
 	</div>
 
-	<div id="move_thread_modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="Chat" aria-hidden="true">
+	<div id="move_thread_modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="Move Thread" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -190,7 +190,7 @@
 					<ul class="category-list"></ul>
 					<div id="move-confirm" style="display: none;">
 						<hr />
-						<div class="alert">This topic will be moved to the category <strong><span id="confirm-category-name"></span></strong></div>
+						<div class="alert alert-info">This topic will be moved to the category <strong><span id="confirm-category-name"></span></strong></div>
 					</div>
 				</div>
 				<div class="modal-footer">
