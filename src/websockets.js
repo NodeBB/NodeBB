@@ -493,6 +493,7 @@ module.exports.init = function(io) {
 		socket.on('api:topic.delete', function(data) {
 			threadTools.delete(data.tid, uid, function(err) {
 				if (!err) {
+					posts.getTopicPostStats(socket);
 					socket.emit('api:topic.delete', {
 						status: 'ok',
 						tid: data.tid
@@ -502,7 +503,14 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:topic.restore', function(data) {
-			threadTools.restore(data.tid, uid, socket);
+			threadTools.restore(data.tid, uid, socket, function(err) {
+				posts.getTopicPostStats(socket);
+
+				socket.emit('api:topic.restore', {
+					status: 'ok',
+					tid: data.tid
+				});
+			});
 		});
 
 		socket.on('api:topic.lock', function(data) {
@@ -555,11 +563,15 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:posts.delete', function(data) {
-			postTools.delete(uid, data.pid);
+			postTools.delete(uid, data.pid, function() {
+				posts.getTopicPostStats(socket);
+			});
 		});
 
 		socket.on('api:posts.restore', function(data) {
-			postTools.restore(uid, data.pid);
+			postTools.restore(uid, data.pid, function() {
+				posts.getTopicPostStats(socket);
+			});
 		});
 
 		socket.on('api:notifications.get', function(data, callback) {

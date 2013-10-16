@@ -92,6 +92,9 @@ var RDB = require('./redis.js'),
 			if (privileges.editable || uid === -1) {
 
 				topics.delete(tid);
+
+				RDB.decr('totaltopiccount');
+
 				ThreadTools.lock(tid, uid);
 
 				topicSearch.remove(tid);
@@ -106,11 +109,12 @@ var RDB = require('./redis.js'),
 		});
 	}
 
-	ThreadTools.restore = function(tid, uid, socket) {
+	ThreadTools.restore = function(tid, uid, socket, callback) {
 		ThreadTools.privileges(tid, uid, function(privileges) {
 			if (privileges.editable) {
 
 				topics.restore(tid);
+				RDB.incr('totaltopiccount');
 				ThreadTools.unlock(tid, uid);
 
 				io.sockets. in ('topic_' + tid).emit('event:topic_restored', {
@@ -118,16 +122,12 @@ var RDB = require('./redis.js'),
 					status: 'ok'
 				});
 
-				if (socket) {
-					socket.emit('api:topic.restore', {
-						status: 'ok',
-						tid: tid
-					});
-				}
-
 				topics.getTopicField(tid, 'title', function(err, title) {
 					topicSearch.index(title, tid);
 				});
+
+				if(callback)
+					callback(null);
 			}
 		});
 	}
