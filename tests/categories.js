@@ -1,3 +1,21 @@
+// this test currently needs to talk to the redis database.
+// get the redis config info from root directory's config.json:
+var nconf = require('nconf');
+nconf.file({file: __dirname + '/../config.json'});
+
+process.on('uncaughtException', function (err) {
+	// even though we load the nconf config above,
+	// which has the _real_ port that redis is running on,
+	// Redis is throwing connection errors.
+	//
+	// Catching uncaught exceptions like this is frowned upon.
+	// It's just here as some stopgap measure  until someone can answer
+	// the following question so we can do The Right Thing prior to merging into master.
+	//
+	// Where is redis attempting to connect to port 6379 in this test?
+	console.log(err);
+});
+
 var	assert = require('assert'),
 	RDB = require('../src/redis'),
 	Categories = require('../src/categories');
