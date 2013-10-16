@@ -788,6 +788,7 @@ var RDB = require('./redis.js'),
 
 		Topics.getTopicField(tid, 'cid', function(err, cid) {
 			feed.updateCategory(cid);
+			RDB.hincrby('category:' + cid, 'topic_count', -1);
 		});
 	}
 
@@ -799,6 +800,7 @@ var RDB = require('./redis.js'),
 
 		Topics.getTopicField(tid, 'cid', function(err, cid) {
 			feed.updateCategory(cid);
+			RDB.hincrby('category:' + cid, 'topic_count', 1);
 		});
 	}
 
