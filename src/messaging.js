@@ -1,5 +1,6 @@
 var RDB = require('./redis'),
-	async = require('async');
+	async = require('async'),
+	user = require('./user');
 
 
 (function(Messaging) {

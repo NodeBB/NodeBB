@@ -1,12 +1,14 @@
 var user = require('./../user.js'),
 	auth = require('./authentication.js'),
 	topics = require('./../topics.js'),
+	posts = require('./../posts.js'),
 	categories = require('./../categories.js'),
 	utils = require('./../../public/src/utils.js'),
 	pkg = require('../../package.json'),
 	meta = require('./../meta.js'),
 	path = require('path'),
-	nconf = require('nconf');
+	nconf = require('nconf'),
+	async = require('async');
 
 
 (function (Api) {
@@ -48,7 +50,7 @@ var user = require('./../user.js'),
 						});
 					}
 
-					require('async').each(data.categories, iterator, function (err) {
+					async.each(data.categories, iterator, function (err) {
 						data.motd_class = (meta.config.show_motd === '1' || meta.config.show_motd === undefined) ? '' : 'none';
 						data.motd = require('marked')(meta.config.motd || "# NodeBB <span>v " + pkg.version + "</span>\nWelcome to NodeBB, the discussion platform of the future.\n\n<div class='btn-group'><a target=\"_blank\" href=\"http://www.nodebb.org\" class=\"btn btn-default btn-lg\"><i class=\"icon-comment\"></i><span class='hidden-mobile'>&nbsp;Get NodeBB</span></a> <a target=\"_blank\" href=\"https://github.com/designcreateplay/NodeBB\" class=\"btn btn-default btn-lg\"><i class=\"icon-github-alt\"></i><span class='hidden-mobile'>&nbsp;Fork us on Github</span></a> <a target=\"_blank\" href=\"https://twitter.com/dcplabs\" class=\"btn btn-default btn-lg\"><i class=\"icon-twitter\"></i><span class='hidden-mobile'>&nbsp;@dcplabs</span></a></div>");
 						res.json(data);
