@@ -38,7 +38,7 @@
     "reds": "~0.2.4",
     "winston": "~0.7.2",
     "nodebb-plugin-mentions": "~0.1.10",
-    "nodebb-plugin-markdown": "~0.1.5",
+    "nodebb-plugin-markdown": "~0.1.6",
     "rss": "~0.2.0",
     "prompt": "~0.2.11",
     "uglify-js": "~2.4.0",
