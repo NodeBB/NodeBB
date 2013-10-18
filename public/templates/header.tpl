@@ -65,16 +65,7 @@
 					</li>
 					<!-- END navigation -->
 				</ul>
-
-				<form id="search-form" class="navbar-form navbar-right hidden-xs" role="search" method="GET" action="">
-					<div class="hide" id="search-fields">
-						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search" name="query" value="">
-						</div>
-						<button type="submit" class="btn btn-default hide">[[global:search]]</button>
-					</div>
-					<button id="search-button" type="button" class="btn btn-link"><i class="icon-search"></i></button>
-				</form>
+				
 
 				<ul id="logged-in-menu" class="nav navbar-nav navbar-right hide">
 					<li>
@@ -100,6 +91,16 @@
 					<li id="logout-link">
 						<a href="#">Log out</a>
 					</li>
+
+					<form id="search-form" class="navbar-form navbar-right hidden-xs" role="search" method="GET" action="">
+						<div class="hide" id="search-fields">
+							<div class="form-group">
+								<input type="text" class="form-control" placeholder="Search" name="query" value="">
+							</div>
+							<button type="submit" class="btn btn-default hide">[[global:search]]</button>
+						</div>
+						<button id="search-button" type="button" class="btn btn-link"><i class="icon-search"></i></button>
+					</form>
 				</ul>
 
 				<ul id="logged-out-menu" class="nav navbar-nav navbar-right">
