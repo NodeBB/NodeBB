@@ -49,6 +49,11 @@ module.exports.logoutUser = function(uid) {
 	}
 }
 
+function isUserOnline(uid) {
+	return !!userSockets[uid] && userSockets[uid].length > 0;
+}
+module.exports.isUserOnline = isUserOnline;
+
 module.exports.init = function(io) {
 
 	global.io = io;
@@ -277,12 +282,6 @@ module.exports.init = function(io) {
 		socket.on('user:reset.commit', function(data) {
 			user.reset.commit(socket, data.code, data.password);
 		});
-
-		function isUserOnline(uid) {
-			return !!userSockets[uid] && userSockets[uid].length > 0;
-		}
-
-		module.exports.isUserOnline = isUserOnline;
 
 		socket.on('api:user.get_online_users', function(data) {
 			var returnData = [];
