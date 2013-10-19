@@ -129,7 +129,7 @@
 			return tags;
 		},
 
-		refreshTitle: function(url) {
+		refreshTitle: function(url, callback) {
 			if (!url) {
 				var a = document.createElement('a');
 				a.href = document.location;
@@ -139,6 +139,10 @@
 
 			socket.emit('api:meta.buildTitle', url, function(title, numNotifications) {
 				document.title = (numNotifications > 0 ? '(' + numNotifications + ') ' : '') + title;
+				if (callback) {
+					callback();
+				}
+
 				notificationIcon = notificationIcon || document.querySelector('.notifications a i');
 				if (numNotifications > 0 && notificationIcon) notificationIcon.className = 'icon-circle active';
 			});

@@ -61,14 +61,6 @@ var ajaxify = {};
 		}
 
 		if (templates.is_available(tpl_url) && !templates.force_refresh(tpl_url)) {
-			if (quiet !== true) {
-				if (window.history && window.history.pushState) {
-					window.history.pushState({
-						"url": url
-					}, url, RELATIVE_PATH + "/" + url);
-				}
-			}
-
 			translator.load(tpl_url);
 
 			jQuery('#footer, #content').fadeOut(100);
@@ -84,16 +76,23 @@ var ajaxify = {};
 					callback();
 				}
 
-				jQuery('#content, #footer').stop(true, true).fadeIn(200, function () {
+				utils.refreshTitle(url, function() {
+					jQuery('#content, #footer').stop(true, true).fadeIn(200, function () {
+						if (quiet !== true) {
+							if (window.history && window.history.pushState) {
+								window.history.pushState({
+									"url": url
+								}, url, RELATIVE_PATH + "/" + url);
+							}
+						}
 
-					app.process_page();
-					if (window.location.hash)
-						hash = window.location.hash;
-					if (hash)
-						app.scrollToPost(hash.substr(1));
+						app.process_page();
+						if (window.location.hash)
+							hash = window.location.hash;
+						if (hash)
+							app.scrollToPost(hash.substr(1));
+					});
 				});
-
-				utils.refreshTitle(url);
 
 			}, url, template);
 
