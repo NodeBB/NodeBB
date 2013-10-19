@@ -37,12 +37,14 @@
     "request": "~2.25.0",
     "reds": "~0.2.4",
     "winston": "~0.7.2",
-    "nodebb-plugin-mentions": "~0.1.12",
-    "nodebb-plugin-markdown": "~0.1.7",
     "rss": "~0.2.0",
     "prompt": "~0.2.11",
     "uglify-js": "~2.4.0",
-    "validator": "~1.5.1"
+    "validator": "~1.5.1",
+    "nodebb-plugin-mentions": "~0.1.12",
+    "nodebb-plugin-markdown": "~0.1.7",
+    "nodebb-theme-vanilla": "0.0.1",
+    "nodebb-theme-cerulean": "0.0.1"
   },
   "optionalDependencies": {
     "hiredis": "~0.1.15"

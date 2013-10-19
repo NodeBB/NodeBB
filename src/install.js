@@ -163,7 +163,7 @@ var async = require('async'),
 							value: 'local'
 						}, {
 							field: 'theme:id',
-							value: 'nodebb-theme-vanilla'
+							value: 'nodebb-theme-cerulean'
 						}];
 
 					async.each(defaults, function (configObj, next) {
