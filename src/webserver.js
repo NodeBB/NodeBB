@@ -144,12 +144,25 @@ var express = require('express'),
 					},
 					function(next) {
 						RDB.hmget('config', 'theme:type', 'theme:id', function(err, themeData) {
+							var themeId = (themeData[1] || 'nodebb-theme-vanilla');
+
 							if (!themeData[0] || themeData[0] === 'local') {
-								var themeId = (themeData[1] || 'nodebb-theme-vanilla');
 								if (process.env.NODE_ENV === 'development') winston.info('[themes] Using theme ' + themeId);
 
 								app.use(require('less-middleware')({
 									src: path.join(__dirname, '../node_modules/' + themeId),
+									dest: path.join(__dirname, '../public/css'),
+									prefix: nconf.get('relative_path') + '/css',
+									yuicompress: true
+								}));
+
+								next();
+							} else {
+								// If not using a local theme (bootswatch, etc), drop back to vanilla
+								if (process.env.NODE_ENV === 'development') winston.info('[themes] Using theme ' + themeId);
+
+								app.use(require('less-middleware')({
+									src: path.join(__dirname, '../node_modules/nodebb-theme-vanilla'),
 									dest: path.join(__dirname, '../public/css'),
 									prefix: nconf.get('relative_path') + '/css',
 									yuicompress: true

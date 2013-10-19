@@ -158,6 +158,12 @@ var async = require('async'),
 						}, {
 							field: 'maximumProfileImageSize',
 							value: 256
+						}, {
+							field: 'theme:type',
+							value: 'local'
+						}, {
+							field: 'theme:id',
+							value: 'nodebb-theme-vanilla'
 						}];
 
 					async.each(defaults, function (configObj, next) {
