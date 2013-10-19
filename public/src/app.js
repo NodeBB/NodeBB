@@ -273,7 +273,7 @@ var socket,
 		}
 
 		$('span.timeago').timeago();
-
+		$('.post-content img').addClass('img-responsive');
 
 		setTimeout(function () {
 			window.scrollTo(0, 1); // rehide address bar on mobile after page load completes.
@@ -342,6 +342,7 @@ var socket,
 			app.populate_online_users();
 			app.addCommasToNumbers();
 			$('span.timeago').timeago();
+			$('.post-content img').addClass('img-responsive');
 		});
 	}
 
