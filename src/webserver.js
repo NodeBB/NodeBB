@@ -102,7 +102,6 @@ var express = require('express'),
 					prefix: nconf.get('relative_path'),
 					yuicompress: true
 				}));
-				app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../', 'public')));
 				app.use(express.bodyParser()); // Puts POST vars in request.body
 				app.use(express.cookieParser()); // If you want to parse cookies (res.cookies)
 				app.use(express.session({
@@ -131,19 +130,43 @@ var express = require('express'),
 				next();
 			},
 			function(next) {
-				// Static Directories for NodeBB Plugins
-				plugins.ready(function () {
-					for (d in plugins.staticDirs) {
-						app.use(nconf.get('relative_path') + '/plugins/' + d, express.static(plugins.staticDirs[d]));
-						if (process.env.NODE_ENV === 'development') winston.info('Static directory routed for plugin: ' + d);
-					}
+				async.parallel([
+					function(next) {
+						// Static Directories for NodeBB Plugins
+						plugins.ready(function () {
+							for (d in plugins.staticDirs) {
+								app.use(nconf.get('relative_path') + '/plugins/' + d, express.static(plugins.staticDirs[d]));
+								if (process.env.NODE_ENV === 'development') winston.info('Static directory routed for plugin: ' + d);
+							}
 
-					next();
-				});
+							next();
+						});
+					},
+					function(next) {
+						RDB.hmget('config', 'theme:type', 'theme:id', function(err, themeData) {
+							if (!themeData[0] || themeData[0] === 'local') {
+								var themeId = (themeData[1] || 'nodebb-theme-vanilla');
+								if (process.env.NODE_ENV === 'development') winston.info('[themes] Using theme ' + themeId);
+
+								app.use(require('less-middleware')({
+									src: path.join(__dirname, '../node_modules/' + themeId),
+									dest: path.join(__dirname, '../public/css'),
+									prefix: nconf.get('relative_path') + '/css',
+									yuicompress: true
+								}));
+
+								next();
+							}
+						});
+					}
+				], next);
 			},
 			function(next) {
 				// Router & post-router middlewares
 				app.use(app.router);
+
+				// Static directory /public
+				app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../', 'public')));
 
 				// 404 catch-all
 				app.use(function (req, res, next) {
