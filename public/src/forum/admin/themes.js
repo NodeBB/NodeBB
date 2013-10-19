@@ -16,20 +16,30 @@ define(function() {
 								cssEl = document.getElementById('base-theme');
 
 							cssEl.href = cssSrc;
-							break;
+						break;
 						case 'use':
 							var parentEl = $(e.target).parents('li'),
+								themeType = parentEl.attr('data-type'),
 								cssSrc = parentEl.attr('data-css'),
 								cssName = parentEl.attr('data-theme');
+
+							socket.emit('api:config.set', {
+								key: 'theme:type',
+								value: themeType
+							});
+
 							socket.emit('api:config.set', {
 								key: 'theme:id',
-								value: 'bootswatch:' + cssName
+								value: cssName
 							});
-							socket.emit('api:config.set', {
-								key: 'theme:src',
-								value: cssSrc
-							});
-							break;
+
+							if (themeType === 'bootswatch') {
+								socket.emit('api:config.set', {
+									key: 'theme:src',
+									value: cssSrc
+								});
+							}
+						break;
 					}
 				}
 			};
@@ -53,11 +63,11 @@ define(function() {
 			var instListEl = document.getElementById('installed_themes'),
 				themeFrag = document.createDocumentFragment(),
 				liEl = document.createElement('li');
+				liEl.setAttribute('data-type', 'local');
 
 			if (themes.length > 0) {
 				for (var x = 0, numThemes = themes.length; x < numThemes; x++) {
 					liEl.setAttribute('data-theme', themes[x].id);
-					liEl.setAttribute('data-css', themes[x].src);
 					liEl.innerHTML = '<img src="' + themes[x].screenshot + '" />' +
 						'<div>' +
 						'<div class="pull-right">' +
@@ -90,6 +100,8 @@ define(function() {
 			themeEl = document.createElement('li'),
 			themeContainer = document.querySelector('#bootstrap_themes'),
 			numThemes = bootswatch.themes.length;
+
+		themeEl.setAttribute('data-type', 'bootswatch');
 
 		for (var x = 0; x < numThemes; x++) {
 			var theme = bootswatch.themes[x];
