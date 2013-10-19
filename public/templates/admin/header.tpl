@@ -34,7 +34,7 @@
 	<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 	<script src="{relative_path}/src/utils.js"></script>
 
-	<link rel="stylesheet" type="text/css" href="{relative_path}/css/nodebb.css" />
+	<link rel="stylesheet" type="text/css" href="{relative_path}/css/theme.css" />
 </head>
 
 <body class="admin">
