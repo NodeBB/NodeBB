@@ -72,6 +72,18 @@
 						<a href="#" id="reconnect"></a>
 					</li>
 
+					<li>
+						<form id="search-form" class="navbar-form navbar-right hidden-xs" role="search" method="GET" action="">
+							<div class="hide" id="search-fields">
+								<div class="form-group">
+									<input type="text" class="form-control" placeholder="Search" name="query" value="">
+								</div>
+								<button type="submit" class="btn btn-default hide">[[global:search]]</button>
+							</div>
+							<button id="search-button" type="button" class="btn btn-link"><i class="icon-search"></i></button>
+						</form>
+					</li>
+
 					<li id="notifications-list" class="notifications dropdown text-center hidden-xs">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="notif_dropdown"><i class="icon-circle-blank"></i></a>
 						<ul id="notif-list" class="dropdown-menu" aria-labelledby="notif_dropdown">
@@ -81,26 +93,20 @@
 						</ul>
 					</li>
 
-					<li>
-						<a id="user_label" href="">
+					<li id="user_label" class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="user_dropdown">
 							<img src=""/>
-							<span></span>
 						</a>
+						<ul id="user-control-list" class="dropdown-menu" aria-labelledby="user_dropdown">
+							<li>
+								<a id="user-profile-link" href=""><span>Profile</span></a>
+							</li>
+							<li id="logout-link">
+								<a href="#">Log out</a>
+							</li>
+						</ul>
 					</li>
-
-					<li id="logout-link">
-						<a href="#">Log out</a>
-					</li>
-
-					<form id="search-form" class="navbar-form navbar-right hidden-xs" role="search" method="GET" action="">
-						<div class="hide" id="search-fields">
-							<div class="form-group">
-								<input type="text" class="form-control" placeholder="Search" name="query" value="">
-							</div>
-							<button type="submit" class="btn btn-default hide">[[global:search]]</button>
-						</div>
-						<button id="search-button" type="button" class="btn btn-link"><i class="icon-search"></i></button>
-					</form>
+					
 				</ul>
 
 				<ul id="logged-out-menu" class="nav navbar-nav navbar-right">
