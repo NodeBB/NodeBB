@@ -136,7 +136,9 @@ var express = require('express'),
 						plugins.ready(function () {
 							for (d in plugins.staticDirs) {
 								app.use(nconf.get('relative_path') + '/plugins/' + d, express.static(plugins.staticDirs[d]));
-								if (process.env.NODE_ENV === 'development') winston.info('Static directory routed for plugin: ' + d);
+								if (process.env.NODE_ENV === 'development') {
+									winston.info('Static directory routed for plugin: ' + d);
+								}
 							}
 
 							next();
@@ -147,7 +149,9 @@ var express = require('express'),
 							var themeId = (themeData[1] || 'nodebb-theme-vanilla');
 
 							if (!themeData[0] || themeData[0] === 'local') {
-								if (process.env.NODE_ENV === 'development') winston.info('[themes] Using theme ' + themeId);
+								if (process.env.NODE_ENV === 'development') {
+									winston.info('[themes] Using theme ' + themeId);
+								}
 
 								app.use(require('less-middleware')({
 									src: path.join(__dirname, '../node_modules/' + themeId),
@@ -159,7 +163,9 @@ var express = require('express'),
 								next();
 							} else {
 								// If not using a local theme (bootswatch, etc), drop back to vanilla
-								if (process.env.NODE_ENV === 'development') winston.info('[themes] Using theme ' + themeId);
+								if (process.env.NODE_ENV === 'development') {
+									winston.info('[themes] Using theme ' + themeId);
+								}
 
 								app.use(require('less-middleware')({
 									src: path.join(__dirname, '../node_modules/nodebb-theme-vanilla'),
@@ -183,11 +189,17 @@ var express = require('express'),
 
 				// 404 catch-all
 				app.use(function (req, res, next) {
+					var	isLanguage = /^\/language\/[\w]{2,}\/[\w]+\.json/,
+						isClientScript = /^\/src\/forum\/[\w]+\.js/;
+
 					res.status(404);
 
-					if (path.dirname(req.url).slice(0, 10) === '/src/forum') {
+					if (isClientScript.test(req.url)) {
 						// Handle missing client-side scripts
 						res.type('text/javascript').send(200, '');
+					} else if (isLanguage.test(req.url)) {
+						// Handle languages by sending an empty object
+						res.json(200, {});
 					} else if (req.accepts('html')) {
 						// respond with html page
 						if (process.env.NODE_ENV === 'development') winston.warn('Route requested but not found: ' + req.url);
@@ -277,7 +289,7 @@ var express = require('express'),
 							req: req,
 							res: res
 						}, function (err, header) {
-							res.send(header + app.create_route(route) + templates['footer']);
+							res.send((isNaN(parseInt(route, 10)) ? 200 : parseInt(route, 10)), header + app.create_route(route) + templates['footer']);
 						});
 					});
 				}(routes[i]));
@@ -627,12 +639,12 @@ var express = require('express'),
 									res.send(header + options.content + templates['footer']);
 								});
 							});
-						});							
+						});
 					}
 				}
-			});	
+			});
 		});
-		
+
 
 	});
 }(WebServer));
