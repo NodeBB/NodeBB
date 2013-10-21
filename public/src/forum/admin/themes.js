@@ -47,9 +47,17 @@ define(function() {
 		revertEl.addEventListener('click', function() {
 			bootbox.confirm('Are you sure you wish to remove the custom theme and restore the NodeBB default theme?', function(confirm) {
 				if (confirm) {
-					require(['forum/admin/settings'], function(Settings) {
-						Settings.remove('theme:id');
-						Settings.remove('theme:src');
+					socket.emit('api:admin.theme.set', {
+						type: 'local',
+						id: 'nodebb-theme-cerulean'
+					}, function(err) {
+						app.alert({
+							alert_id: 'admin:theme',
+							type: 'success',
+							title: 'Theme Changed',
+							message: 'You have successfully reverted your NodeBB back to it\'s default theme. Please restart to see the changes.',
+							timeout: 3500
+						});
 					});
 				}
 			});
