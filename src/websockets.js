@@ -936,6 +936,8 @@ module.exports.init = function(io) {
 				callback(err ? err.message : null);
 			});
 		});
+
+		socket.on('api:admin.theme.set', meta.themes.set);
 	});
 
 }

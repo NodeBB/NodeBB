@@ -21,24 +21,21 @@ define(function() {
 							var parentEl = $(e.target).parents('li'),
 								themeType = parentEl.attr('data-type'),
 								cssSrc = parentEl.attr('data-css'),
-								cssName = parentEl.attr('data-theme');
+								themeId = parentEl.attr('data-theme');
 
-							socket.emit('api:config.set', {
-								key: 'theme:type',
-								value: themeType
-							});
-
-							socket.emit('api:config.set', {
-								key: 'theme:id',
-								value: cssName
-							});
-
-							if (themeType === 'bootswatch') {
-								socket.emit('api:config.set', {
-									key: 'theme:src',
-									value: cssSrc
+							socket.emit('api:admin.theme.set', {
+								type: themeType,
+								id: themeId,
+								src: cssSrc
+							}, function(err) {
+								app.alert({
+									alert_id: 'admin:theme',
+									type: 'success',
+									title: 'Theme Changed',
+									message: 'You have successfully changed your NodeBB\'s theme. Please restart to see the changes.',
+									timeout: 2500
 								});
-							}
+							});
 						break;
 					}
 				}

@@ -98,6 +98,43 @@ var utils = require('./../public/src/utils.js'),
 					});
 				});
 			});
+		},
+		set: function(data, callback) {
+			var	themeData = {
+					'theme:type': data.type,
+					'theme:id': data.id,
+					'theme:staticDir': ''
+				};
+
+			switch(data.type) {
+				case 'local':
+					async.waterfall([
+						function(next) {
+							fs.readFile(path.join(__dirname, '../node_modules', data.id, 'theme.json'), function(err, config) {
+								if (!err) {
+									config = JSON.parse(config.toString());
+									next(null, config);
+								} else {
+									next(err);
+								}
+							});
+						},
+						function(config, next) {
+							if (config.staticDir) {
+								themeData['theme:staticDir'] = config.staticDir;
+							}
+
+							RDB.hmset('config', themeData, next);
+						}
+					], function(err) {
+						callback(err);
+					});
+				break;
+
+				case 'bootswatch':
+					RDB.hmset('config', themeData, callback);
+				break;
+			}
 		}
 	};
 

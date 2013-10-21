@@ -145,12 +145,23 @@ var express = require('express'),
 						});
 					},
 					function(next) {
-						RDB.hmget('config', 'theme:type', 'theme:id', function(err, themeData) {
+						// Theme configuration
+						RDB.hmget('config', 'theme:type', 'theme:id', 'theme:staticDir', function(err, themeData) {
 							var themeId = (themeData[1] || 'nodebb-theme-vanilla');
 
+							// Detect if a theme has been selected, and handle appropriately
 							if (!themeData[0] || themeData[0] === 'local') {
+								// Local theme
 								if (process.env.NODE_ENV === 'development') {
 									winston.info('[themes] Using theme ' + themeId);
+								}
+
+								// Theme's static directory
+								if (themeData[2]) {
+									app.use('/css/assets', express.static(path.join(__dirname, '../node_modules', themeData[1], themeData[2])));
+									if (process.env.NODE_ENV === 'development') {
+										winston.info('Static directory routed for theme: ' + themeData[1]);
+									}
 								}
 
 								app.use(require('less-middleware')({
@@ -189,7 +200,7 @@ var express = require('express'),
 
 				// 404 catch-all
 				app.use(function (req, res, next) {
-					var	isLanguage = /^\/language\/[\w]{2,}\/[\w]+\.json/,
+					var	isLanguage = /^\/language\/[\w]{2,}\/.*\.json/,
 						isClientScript = /^\/src\/forum\/[\w]+\.js/;
 
 					res.status(404);
