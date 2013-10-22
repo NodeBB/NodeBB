@@ -42,7 +42,9 @@
 					<span class="icon-bar"></span>
 				</button>
 				<div>
-					<img class="{brand:logo:display} forum-logo" src="{brand:logo}" />
+					<a href="/">
+						<img class="{brand:logo:display} forum-logo" src="{brand:logo}" />
+					</a>
 					<a href="/">
 						<h1 class="navbar-brand forum-title">{title}</h1>
 					</a>
