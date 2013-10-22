@@ -172,25 +172,27 @@
 				template_data['relative_path'] = RELATIVE_PATH;
 
 			translator.translate(templates[tpl_url].parse(template_data), function (translatedTemplate) {
-				document.getElementById('content').innerHTML = translatedTemplate;
+				
+				$('#content').html(translatedTemplate);
 
 				jQuery('#content [template-variable]').each(function (index, element) {
 					var value = null;
-
-					switch (element.getAttribute('template-type')) {
-					case 'boolean':
-						value = (element.value === 'true' || element.value === '1') ? true : false;
-						break;
-					case 'int': // Intentional fall-through
-					case 'integer':
-						value = parseInt(element.value);
-						break;
-					default:
-						value = element.value;
-						break;
+					console.log($(element).attr('value'));
+					console.log($(element).attr('template-variable'));
+					switch ($(element).attr('template-type')) {
+						case 'boolean':
+							value = ($(element).val() === 'true' || $(element).val() === '1') ? true : false;
+							break;
+						case 'int': // Intentional fall-through
+						case 'integer':
+							value = parseInt($(element).val());
+							break;
+						default:
+							value = $(element).val();
+							break;
 					}
 
-					templates.set(element.getAttribute('template-variable'), value);
+					templates.set($(element).attr('template-variable'), value);
 				});
 
 				if (callback) {
