@@ -428,7 +428,6 @@ var RDB = require('./redis.js'),
 	}
 
 	Posts.getPostsByUid = function(uid, start, end, callback) {
-
 		user.getPostIds(uid, start, end, function(pids) {
 			if (pids && pids.length) {
 				plugins.fireHook('filter:post.getTopic', pids, function(err, posts) {
