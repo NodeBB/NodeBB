@@ -425,7 +425,7 @@ var user = require('./../user.js'),
 						posts.getPostsByUid(userData.theirid, 0, 9, function (posts) {
 
 							userData.posts = posts.filter(function (p) {
-								return p.deleted !== "1";
+								return p && p.deleted !== "1";
 							});
 							userData.isFollowing = isFollowing;
 							if (!userData.profileviews)

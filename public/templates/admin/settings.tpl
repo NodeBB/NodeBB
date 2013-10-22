@@ -11,7 +11,8 @@
 		<label>Site Keywords</label>
 		<input type="text" class="form-control" placeholder="Keywords describing your community, comma-seperated" data-field="keywords" /><br />
 		<label>Site Logo</label>
-		<input type="text" class="form-control" placeholder="Path to a logo to display on forum header" data-field="brand:logo" /><br />
+		<input id="logoUrl" type="text" class="form-control" placeholder="Path to a logo to display on forum header" data-field="brand:logo" /><br />
+		<input id="uploadLogoBtn" type="button" class="btn btn-default" value="Upload"></input> <br />
 		<label>Imgur Client ID</label>
 		<input type="text" class="form-control" placeholder="Imgur ClientID for image uploads" data-field="imgurClientID" /><br />
 		<label>Maximum User Image Size</label>
