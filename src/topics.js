@@ -344,7 +344,9 @@ schema = require('./schema.js'),
 			Topics.markAsRead(tid, current_user);
 
 			// get the config to check if we are displaying pagination or not
-			
+			if(this.meta.config.paginatedTopics && this.meta.config.paginatedTopics == "1"){
+				console.log("Loading paginated posts start: "+start+" end: "+end);
+			}
 
 			function getTopicData(next) {
 				Topics.getTopicData(tid, function(topicData) {
