@@ -13,6 +13,7 @@ var ajaxify = {};
 
 	var events = [];
 	ajaxify.register_events = function (new_page_events) {
+
 		for (var i = 0, ii = events.length; i < ii; i++) {
 			socket.removeAllListeners(events[i]); // optimize this to user removeListener(event, listener) instead.
 		}
@@ -23,13 +24,18 @@ var ajaxify = {};
 
 	window.onpopstate = function (event) {
 		// "quiet": If set to true, will not call pushState
+		debugger;
+		console.dir(window.location);
 		if (event !== null && event.state && event.state.url !== undefined) ajaxify.go(event.state.url, null, null, true);
 	};
 
 	var pagination;
 
 	ajaxify.go = function (url, callback, template, quiet) {
+		
+		console.dir(window.location);
 		// start: the following should be set like so: ajaxify.onchange(function(){}); where the code actually belongs
+		console.dir(arguments);
 		$(window).off('scroll');
 		app.enter_room('global');
 
@@ -39,8 +45,10 @@ var ajaxify = {};
 		// end
 
 		// Remove trailing slash
+		
+		
 		url = url.replace(/\/$/, "");
-
+		
 		var hash = window.location.hash;
 
 		if (url.indexOf(RELATIVE_PATH.slice(1)) !== -1) {
