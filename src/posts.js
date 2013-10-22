@@ -24,9 +24,16 @@ var RDB = require('./redis.js'),
 			RDB.handle(err);
 
 			if (pids.length) {
-				Posts.getPostsByPids(pids, function(err, posts) {
-					callback(posts);
-				});
+				plugins.fireHook('filter:post.getTopic', pids, function(err, posts) {
+					if (!err & 0 < posts.length) {
+						Posts.getPostsByPids(pids, function(err, posts) {
+							plugins.fireHook('action:post.gotTopic', posts);
+							callback(posts);
+						});
+					} else {
+						callback(posts);
+					}
+				});			
 			} else {
 				callback([]);
 			}
@@ -131,6 +138,7 @@ var RDB = require('./redis.js'),
 		});
 	}
 
+	// TODO: this function is never called except from some debug route. clean up?
 	Posts.getPostData = function(pid, callback) {
 		RDB.hgetall('post:' + pid, function(err, data) {
 			if (err === null) {
@@ -146,7 +154,14 @@ var RDB = require('./redis.js'),
 	Posts.getPostFields = function(pid, fields, callback) {
 		RDB.hmgetObject('post:' + pid, fields, function(err, data) {
 			if (err === null) {
-				callback(data);
+				// TODO: I think the plugins system needs an optional 'parameters' paramter so I don't have to do this:
+				data = data || {};
+				data.pid = pid;
+				data.fields = fields;
+
+				plugins.fireHook('filter:post.getFields', data, function(err, data) {
+					callback(data);
+				});
 			} else {
 				console.log(err);
 			}
@@ -155,15 +170,28 @@ var RDB = require('./redis.js'),
 
 	Posts.getPostField = function(pid, field, callback) {
 		RDB.hget('post:' + pid, field, function(err, data) {
-			if (err === null)
-				callback(data);
-			else
+			if (err === null) {
+				// TODO: I think the plugins system needs an optional 'parameters' paramter so I don't have to do this:
+				data = data || {};
+				data.pid = pid;
+				data.field = field;
+				
+				plugins.fireHook('filter:post.getField', data, function(err, data) {
+					callback(data);
+				});
+			} else {
 				console.log(err);
+			}
 		});
 	}
 
-	Posts.setPostField = function(pid, field, value) {
+	Posts.setPostField = function(pid, field, value, done) {
 		RDB.hset('post:' + pid, field, value);
+		plugins.fireHook('action:post.setField', {
+			'pid': pid,
+			'field': field,
+			'value': value
+		}, done);
 	}
 
 	Posts.getPostsByPids = function(pids, callback) {
@@ -402,11 +430,16 @@ var RDB = require('./redis.js'),
 	Posts.getPostsByUid = function(uid, start, end, callback) {
 
 		user.getPostIds(uid, start, end, function(pids) {
-
 			if (pids && pids.length) {
-
-				Posts.getPostsByPids(pids, function(err, posts) {
-					callback(posts);
+				plugins.fireHook('filter:post.getTopic', pids, function(err, posts) {
+					if (!err & 0 < posts.length) {
+						Posts.getPostsByPids(pids, function(err, posts) {
+							plugins.fireHook('action:post.gotTopic', posts);
+							callback(posts);
+						});
+					} else {
+						callback(posts);
+					}
 				});
 			} else
 				callback([]);
