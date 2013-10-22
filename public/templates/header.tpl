@@ -40,9 +40,12 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a href="/">
-					<h1 class="navbar-brand forum-title">{title}</h1>
-				</a>
+				<div>
+					<img class="{brand:logo:display} forum-logo" src="{brand:logo}" />
+					<a href="/">
+						<h1 class="navbar-brand forum-title">{title}</h1>
+					</a>
+				</div>
 			</div>
 
 			<div class="navbar-collapse collapse navbar-ex1-collapse">
@@ -65,7 +68,7 @@
 					</li>
 					<!-- END navigation -->
 				</ul>
-				
+
 
 				<ul id="logged-in-menu" class="nav navbar-nav navbar-right hide">
 					<li>
@@ -106,7 +109,7 @@
 							</li>
 						</ul>
 					</li>
-					
+
 				</ul>
 
 				<ul id="logged-out-menu" class="nav navbar-nav navbar-right">
