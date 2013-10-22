@@ -129,6 +129,23 @@
 			return tags;
 		},
 
+		buildLinkTags: function(tagsArr) {
+			var tags = '',
+				tag;
+			for (var x = 0, numTags = tagsArr.length; x < numTags; x++) {
+				if (tags.length > 0) tags += "\n\t";
+				tag = '<link';
+				for (y in tagsArr[x]) {
+					tag += ' ' + y + '="' + tagsArr[x][y] + '"';
+				}
+				tag += ' />';
+
+				tags += tag;
+			}
+
+			return tags;
+		},
+
 		refreshTitle: function(url) {
 			if (!url) {
 				var a = document.createElement('a');

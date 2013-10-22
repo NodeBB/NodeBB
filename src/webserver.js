@@ -53,22 +53,23 @@ var express = require('express'),
 
 		plugins.fireHook('filter:header.build', custom_header, function(err, custom_header) {
 			var defaultMetaTags = [{
-				name: 'viewport',
-				content: 'width=device-width, initial-scale=1.0, user-scalable=no'
-			}, {
-				name: 'content-type',
-				content: 'text/html; charset=UTF-8'
-			}, {
-				name: 'apple-mobile-web-app-capable',
-				content: 'yes'
-			}, {
-				property: 'og:site_name',
-				content: meta.config.title || 'NodeBB'
-			}, {
-				property: 'keywords',
-				content: meta.config['keywords'] || ''
-			}],
+					name: 'viewport',
+					content: 'width=device-width, initial-scale=1.0, user-scalable=no'
+				}, {
+					name: 'content-type',
+					content: 'text/html; charset=UTF-8'
+				}, {
+					name: 'apple-mobile-web-app-capable',
+					content: 'yes'
+				}, {
+					property: 'og:site_name',
+					content: meta.config.title || 'NodeBB'
+				}, {
+					property: 'keywords',
+					content: meta.config['keywords'] || ''
+				}],
 				metaString = utils.buildMetaTags(defaultMetaTags.concat(options.metaTags || [])),
+				linkTags = utils.buildLinkTags(options.linkTags || []),
 				templateValues = {
 					cssSrc: meta.config['theme:src'] || nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
 					pluginCSS: plugins.cssFiles.map(function(file) { return { path: file } }),
@@ -79,6 +80,7 @@ var express = require('express'),
 					csrf: options.res.locals.csrf_token,
 					relative_path: nconf.get('relative_path'),
 					meta_tags: metaString,
+					link_tags: linkTags,
 					clientScripts: clientScripts,
 					navigation: custom_header.navigation
 				};
@@ -427,7 +429,18 @@ var express = require('express'),
 						}, {
 							property: 'article:section',
 							content: topicData.category_name
-						}]
+						}],
+						linkTags: [
+							{
+								rel: 'alternate',
+								type: 'application/rss+xml',
+								href: nconf.get('url') + 'topic/' + tid + '.rss'
+							},
+							{
+								rel: 'up',
+								href: nconf.get('url') + 'category/' + topicData.category_slug
+							}
+						]
 					}, function (err, header) {
 						next(err, {
 							header: header,
@@ -496,7 +509,18 @@ var express = require('express'),
 						}, {
 							property: "og:type",
 							content: 'website'
-						}]
+						}],
+						linkTags: [
+							{
+								rel: 'alternate',
+								type: 'application/rss+xml',
+								href: nconf.get('url') + 'category/' + cid + '.rss'
+							},
+							{
+								rel: 'up',
+								href: nconf.get('url')
+							}
+						]
 					}, function (err, header) {
 						next(err, {
 							header: header,

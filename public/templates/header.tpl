@@ -5,6 +5,7 @@
 	{meta_tags}
 	<link href="{cssSrc}" rel="stylesheet" media="screen">
 	<link rel="stylesheet" href="{relative_path}/vendor/fontawesome/css/font-awesome.min.css">
+	{link_tags}
 	<!-- BEGIN pluginCSS -->
 	<link rel="stylesheet" href="{pluginCSS.path}">
 	<!-- END pluginCSS -->
