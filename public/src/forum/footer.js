@@ -58,7 +58,7 @@
 			$('#search-button').show();
 
 			var userLabel = loggedInMenu.find('#user_label');
-			
+
 			if (userLabel.length) {
 				if (data['userslug'])
 					userLabel.find('#user-profile-link').attr('href', '/user/' + data['userslug']);
@@ -88,7 +88,7 @@
 
 		}
 
-		$('#main-nav a,#user-control-list a').off('click').on('click', function() {
+		$('#main-nav a,#user-control-list a,#logged-out-menu .dropdown-menu a').off('click').on('click', function() {
 			if($('.navbar .navbar-collapse').hasClass('in'))
 				$('.navbar-header button').click();
 		});

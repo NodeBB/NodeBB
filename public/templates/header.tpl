@@ -116,11 +116,16 @@
 				</ul>
 
 				<ul id="logged-out-menu" class="nav navbar-nav navbar-right">
-					<li id="register-link">
-						<a href="/register">Register</a>
-					</li>
-					<li id="login-link">
-						<a href="/login">Login</a>
+					<li>
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="loggedout_dropdown"><i class="icon-signin"></i></a>
+						<ul class="dropdown-menu" aria-labelledby="loggedout_dropdown">
+							<li>
+								<a href="/register">Register</a>
+							</li>
+							<li>
+								<a href="/login">Login</a>
+							</li>
+						</ul>
 					</li>
 				</ul>
 
