@@ -21,7 +21,12 @@ var socket,
 						socket.socket.connect();
 					}, 200);
 				} else {
-					socket = io.connect(RELATIVE_PATH);
+					var max_reconnection_attemps = 5;
+					var reconnection_delay = 200;
+					socket = io.connect(RELATIVE_PATH, {
+						'max reconnection attempts': max_reconnection_attemps,
+						'reconnection delay': reconnection_delay
+					});
 
 					var reconnecting = false,
 						reconnectEl, reconnectTimer;
@@ -59,7 +64,13 @@ var socket,
 						socket.socket.connect();
 					});
 
-					socket.on('reconnecting', function (data) {
+					socket.on('reconnecting', function (data, attempt) {
+						if(attempt == max_reconnection_attemps) {
+							socket.socket.reconnectionAttempts = 0;
+							socket.socket.reconnectionDelay = reconnection_delay;
+							return;
+						}
+
 						if (!reconnectEl) reconnectEl = $('#reconnect');
 						reconnecting = true;
 
@@ -322,7 +333,7 @@ var socket,
 		if (data.posts[0].uid !== app.uid) {
 			data.posts[0].display_moderator_tools = 'none';
 		}
-		
+
 		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
 		translator.translate(html, function(translatedHTML) {
 			var uniqueid = new Date().getTime(),
