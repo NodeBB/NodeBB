@@ -154,6 +154,16 @@ var user = require('./../user.js'),
 				});
 			});
 
+			app.get('/notifications', function(req, res) {
+				if (req.user && req.user.uid) {
+					user.notifications.getAll(req.user.uid, null, null, function(err, notifications) {
+						res.json({
+							notifications: notifications
+						});
+					});
+				} else res.send(403);
+			});
+
 			app.get('/confirm/:id', function (req, res) {
 				user.email.confirm(req.params.id, function (data) {
 					if (data.status === 'ok') {

@@ -902,7 +902,7 @@ var utils = require('./../public/src/utils.js'),
 
 						if (nids && nids.length > 0) {
 							async.eachSeries(nids, function(nid, next) {
-								notifications.get(nid, function(notif_data) {
+								notifications.get(nid, uid, function(notif_data) {
 									unread.push(notif_data);
 									next();
 								});
@@ -924,7 +924,7 @@ var utils = require('./../public/src/utils.js'),
 
 						if (nids && nids.length > 0) {
 							async.eachSeries(nids, function(nid, next) {
-								notifications.get(nid, function(notif_data) {
+								notifications.get(nid, uid, function(notif_data) {
 									read.push(notif_data);
 									next();
 								});
@@ -945,13 +945,44 @@ var utils = require('./../public/src/utils.js'),
 				callback(notifications);
 			});
 		},
+		getAll: function(uid, limit, before, callback) {
+			var	now = new Date();
+
+			if (!limit || parseInt(limit) <= 0) limit = 25;
+			if (before) before = new Date(parseInt(before, 10));
+
+			RDB.multi()
+				.zrevrangebyscore('uid:' + uid + ':notifications:read', before ? before.getTime(): now.getTime(), -Infinity, 'LIMIT', 0, limit)
+				.zrevrangebyscore('uid:' + uid + ':notifications:unread', before ? before.getTime(): now.getTime(), -Infinity, 'LIMIT', 0, limit)
+				.exec(function(err, results) {
+					// Merge the read and unread notifications
+					var	nids = results[0].concat(results[1]);
+
+					async.map(nids, function(nid, next) {
+						notifications.get(nid, uid, function(notif_data) {
+							next(null, notif_data);
+						});
+					}, function(err, notifs) {
+						notifs = notifs.sort(function(a, b) {
+							return parseInt(b.datetime, 10) - parseInt(a.datetime, 10);
+						}).map(function(notif) {
+							notif.datetimeISO = new Date(parseInt(notif.datetime, 10)).toISOString();
+							notif.readClass = !notif.read ? 'unread' : '';
+
+							return notif;
+						});
+
+						callback(err, notifs);
+					})
+				});
+		},
 		getUnreadCount: function(uid, callback) {
 			RDB.zcount('uid:' + uid + ':notifications:unread', 0, 10, callback);
 		},
 		getUnreadByUniqueId: function(uid, uniqueId, callback) {
 			RDB.zrange('uid:' + uid + ':notifications:unread', 0, -1, function(err, nids) {
 				async.filter(nids, function(nid, next) {
-					notifications.get(nid, function(notifObj) {
+					notifications.get(nid, uid, function(notifObj) {
 						if (notifObj.uniqueId === uniqueId) next(true);
 						else next(false);
 					});

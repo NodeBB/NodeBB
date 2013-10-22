@@ -61,9 +61,20 @@ var RDB = require('./redis.js'),
 
 	PostTools.edit = function(uid, pid, title, content) {
 		var	success = function() {
-			posts.setPostField(pid, 'content', content);
-			posts.setPostField(pid, 'edited', Date.now());
-			posts.setPostField(pid, 'editor', uid);
+			async.waterfall([
+				function(next) {
+					posts.setPostField(pid, 'edited', Date.now());
+					next(null);
+				},
+				function(next) {
+					posts.setPostField(pid, 'editor', uid);
+					next(null);
+				},
+				function(next) {
+					posts.setPostField(pid, 'content', content);
+					next(null);
+				}
+			]);
 
 			postSearch.remove(pid, function() {
 				postSearch.index(content, pid);
