@@ -902,7 +902,7 @@ var utils = require('./../public/src/utils.js'),
 
 						if (nids && nids.length > 0) {
 							async.eachSeries(nids, function(nid, next) {
-								notifications.get(nid, function(notif_data) {
+								notifications.get(nid, uid, function(notif_data) {
 									unread.push(notif_data);
 									next();
 								});
@@ -924,7 +924,7 @@ var utils = require('./../public/src/utils.js'),
 
 						if (nids && nids.length > 0) {
 							async.eachSeries(nids, function(nid, next) {
-								notifications.get(nid, function(notif_data) {
+								notifications.get(nid, uid, function(notif_data) {
 									read.push(notif_data);
 									next();
 								});
@@ -959,7 +959,7 @@ var utils = require('./../public/src/utils.js'),
 					var	nids = results[0].concat(results[1]);
 
 					async.map(nids, function(nid, next) {
-						notifications.get(nid, function(notif_data) {
+						notifications.get(nid, uid, function(notif_data) {
 							next(null, notif_data);
 						});
 					}, function(err, notifs) {
@@ -967,6 +967,7 @@ var utils = require('./../public/src/utils.js'),
 							return parseInt(b.datetime, 10) - parseInt(a.datetime, 10);
 						}).map(function(notif) {
 							notif.datetimeISO = new Date(parseInt(notif.datetime, 10)).toISOString();
+							notif.readClass = !notif.read ? 'unread' : '';
 
 							return notif;
 						});
@@ -981,7 +982,7 @@ var utils = require('./../public/src/utils.js'),
 		getUnreadByUniqueId: function(uid, uniqueId, callback) {
 			RDB.zrange('uid:' + uid + ':notifications:unread', 0, -1, function(err, nids) {
 				async.filter(nids, function(nid, next) {
-					notifications.get(nid, function(notifObj) {
+					notifications.get(nid, uid, function(notifObj) {
 						if (notifObj.uniqueId === uniqueId) next(true);
 						else next(false);
 					});

@@ -31,7 +31,7 @@ Upgrade.upgrade = function() {
 								async.each(keys, function(key, next) {
 									RDB.zrange(key, 0, -1, function(err, nids) {
 										async.each(nids, function(nid, next) {
-											notifications.get(nid, function(notif_data) {
+											notifications.get(nid, null, function(notif_data) {
 												RDB.zadd(key, notif_data.datetime, nid, next);
 											});
 										}, next);
