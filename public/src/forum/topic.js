@@ -352,12 +352,11 @@ define(function() {
 
 		socket.on('api:get_users_in_room', function(data) {
 			if(data) {
-				var activeEl = $('#thread_active_users');
+				var activeEl = $('.thread_active_users');
 
 				function createUserIcon(uid, picture, userslug, username) {
 					if(!activeEl.find("[href='/user/"+ data.users[i].userslug + "']").length) {
 						var userIcon = $('<img src="'+ picture +'"/>');
-						userIcon.css('height', '24px');
 
 						var userLink = $('<a href="/user/' + userslug + '"></a>').append(userIcon);
 						userLink.attr('data-uid', uid);
@@ -406,11 +405,10 @@ define(function() {
 				var remainingUsers = data.users.length - 9;
 				remainingUsers = remainingUsers < 0 ? 0 : remainingUsers;
 				var anonymousCount = parseInt(data.anonymousCount, 10);
-				activeEl.find('.anon').remove();
+				activeEl.find('.anonymous-box').remove();
 				if(anonymousCount || remainingUsers) {
 
-					var anonLink = $('<i class="icon-user anon"></i>');
-					anonLink.css('padding', '5px');
+					var anonLink = $('<i class="icon-user anonymous-box"></i>');
 					activeEl.append(anonLink);
 
 					var title = '';

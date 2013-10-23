@@ -18,7 +18,7 @@
 		<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
 			<span itemprop="title">{topic_name} <a target="_blank" href="../{topic_id}.rss"><i class="icon-rss-sign"></i></a></span>
 		</li>
-		<div id="thread_active_users" class="active-users pull-right hidden-xs"></div>
+		<div class="thread_active_users active-users pull-right hidden-xs"></div>
 	</ol>
 
 	<ul id="post-container" class="container" data-tid="{topic_id}">
