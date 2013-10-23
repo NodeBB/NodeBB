@@ -168,27 +168,10 @@ module.exports.init = function(io) {
 
 			var anonymousCount = getAnonymousCount(roomName);
 
-			function userList(users, anonymousCount, userCount) {
-				var usernames = [];
-
-				for (var i = 0, ii = users.length; i < ii; ++i) {
-					usernames[i] = '<strong>' + '<a href="/user/' + users[i].userslug + '">' + users[i].username + '</a></strong>';
-				}
-
-				var joiner = anonymousCount + userCount == 1 ? 'is' : 'are',
-					userList = anonymousCount > 0 ? usernames.concat(util.format('%d guest%s', anonymousCount, anonymousCount > 1 ? 's' : '')) : usernames,
-					lastUser = userList.length > 1 ? ' and ' + userList.pop() : '';
-
-				return util.format('%s%s %s browsing this thread', userList.join(', '), lastUser, joiner);
-			}
-
-
 			if (uids.length === 0) {
 				io.sockets. in (roomName).emit('api:get_users_in_room', { users: [], anonymousCount:0 });
 			} else {
 				user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, users) {
-					//if (!err)
-					//io.sockets. in (roomName).emit('api:get_users_in_room', userList(users, anonymousCount, users.length));
 					if(!err)
 						io.sockets. in (roomName).emit('api:get_users_in_room', { users: users, anonymousCount:anonymousCount });
 				});
