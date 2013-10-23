@@ -172,13 +172,12 @@
 				template_data['relative_path'] = RELATIVE_PATH;
 
 			translator.translate(templates[tpl_url].parse(template_data), function (translatedTemplate) {
-				
+
 				$('#content').html(translatedTemplate);
 
 				jQuery('#content [template-variable]').each(function (index, element) {
 					var value = null;
-					console.log($(element).attr('value'));
-					console.log($(element).attr('template-variable'));
+
 					switch ($(element).attr('template-type')) {
 						case 'boolean':
 							value = ($(element).val() === 'true' || $(element).val() === '1') ? true : false;

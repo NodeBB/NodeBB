@@ -157,8 +157,7 @@ module.exports.init = function(io) {
 
 				for (var i = 0; i < clients.length; ++i) {
 					var hs = clients[i].handshake;
-
-					if (hs && !users[sessionID]) {
+					if (hs && clients[i].state.user.uid === 0) {
 						++anonCount;
 					}
 				}
@@ -185,11 +184,13 @@ module.exports.init = function(io) {
 
 
 			if (uids.length === 0) {
-				io.sockets. in (roomName).emit('api:get_users_in_room', userList([], anonymousCount, 0));
+				io.sockets. in (roomName).emit('api:get_users_in_room', { users: [], anonymousCount:0 });
 			} else {
-				user.getMultipleUserFields(uids, ['username', 'userslug'], function(err, users) {
-					if (!err)
-						io.sockets. in (roomName).emit('api:get_users_in_room', userList(users, anonymousCount, users.length));
+				user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, users) {
+					//if (!err)
+					//io.sockets. in (roomName).emit('api:get_users_in_room', userList(users, anonymousCount, users.length));
+					if(!err)
+						io.sockets. in (roomName).emit('api:get_users_in_room', { users: users, anonymousCount:anonymousCount });
 				});
 			}
 		}
