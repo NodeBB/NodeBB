@@ -277,9 +277,10 @@ var express = require('express'),
 
 
 		app.get('/topic/:topic_id/:slug?', function (req, res) {
-			var posts_per_page = 10;
+			
+			var posts_per_page = parseInt(this.meta.config.maxPostsPerPage);
 			var tid = req.params.topic_id;
-			var page = req.param("page") ? req.param("page") : 1;
+			var page = req.param("page") ? parseInt(req.param("page")) : 1;
 			var offset = posts_per_page*(page-1);
 			if (tid.match(/^\d+\.rss$/)) {
 				tid = tid.slice(0, -4);
@@ -304,7 +305,7 @@ var express = require('express'),
 
 			async.waterfall([
 				function (next) {
-					topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), offset, offset+posts_per_page, function (err, topicData) {
+					topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), offset, offset+posts_per_page-1, function (err, topicData) {
 						if (topicData) {
 							if (topicData.deleted === '1' && topicData.expose_tools === 0)
 								return next(new Error('Topic deleted'), null);

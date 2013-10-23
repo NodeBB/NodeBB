@@ -40,7 +40,6 @@ schema = require('./schema.js'),
 	}
 
 	Topics.getTopicPosts = function(tid, start, end, current_user, callback) {
-		console.info("Topics:43 start: "+start+" end: "+end);
 		posts.getPostsByTid(tid, start, end, function(postData) {
 			if (Array.isArray(postData) && !postData.length)
 				return callback([]);
@@ -338,8 +337,7 @@ schema = require('./schema.js'),
 	}
 
 	Topics.getTopicWithPosts = function(tid, current_user, start, end, callback) {
-		console.log(start);
-		console.log(end);
+		
 		threadTools.exists(tid, function(exists) {
 			if (!exists)
 				return callback(new Error('Topic tid \'' + tid + '\' not found'));
@@ -373,7 +371,13 @@ schema = require('./schema.js'),
 				Topics.getCategoryData(tid, next);
 			}
 
-			async.parallel([getTopicData, getTopicPosts, getPrivileges, getCategoryData], function(err, results) {
+			function getOriginalPost(next){
+				Topics.getTopicPosts(tid,0,1, current_user, function(originalPost, privileges){
+					next(null, originalPost);
+				});
+			}
+
+			async.parallel([getTopicData, getTopicPosts, getPrivileges, getCategoryData, getOriginalPost], function(err, results) {
 				if (err) {
 					console.log(err.message);
 					callback(err, null);
@@ -384,8 +388,15 @@ schema = require('./schema.js'),
 					topicPosts = results[1],
 					privileges = results[2],
 					categoryData = results[3];
+					originalPost = results[4];
 
-				var main_posts = topicPosts.splice(0, 1);
+
+				var main_posts = null;
+				if( meta.config.paginatedTopics && start > 1){
+					main_posts = originalPost.splice(0, 1);
+				}else{
+					main_posts = topicPosts.splice(0,1);
+				}
 
 				callback(null, {
 					'topic_name': topicData.title,
@@ -605,7 +616,7 @@ schema = require('./schema.js'),
 						if (postData.content) {
 							stripped = postData.content.replace(/>.+\n\n/, '');
 							postTools.parse(stripped, function(err, stripped) {
-								returnObj.text = console.strip_tags(stripped);
+								returnObj.text = utils.strip_tags(stripped);
 								callback(null, returnObj);
 							});
 						} else {
@@ -667,7 +678,7 @@ schema = require('./schema.js'),
 					RDB.lpush(schema.topics().queued_tids, tid);
 				}
 
-				var slug = tid + '/' + console.slugify(title);
+				var slug = tid + '/' + utils.slugify(title);
 				var timestamp = Date.now();
 				RDB.hmset('topic:' + tid, {
 					'tid': tid,

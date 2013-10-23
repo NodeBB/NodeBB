@@ -154,6 +154,7 @@
 			}
 
 			template_data = data;
+			parsed_variables["data"] = data;
 			parse_template();
 		}).fail(function (data) {
 			app.alertError("Can't load template data!");

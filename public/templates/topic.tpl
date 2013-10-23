@@ -11,6 +11,12 @@
 		</li>
 		<div id="thread_active_users" class="active-users pull-right hidden-xs"></div>
 	</ol>
+	
+	<div class="hidden pagination-links clearfix">
+			<ul class="pagination pull-right">
+				
+			</ul>
+	</div>
 
 	<ul id="post-container" class="container" data-tid="{topic_id}">
 		<!-- BEGIN main_posts -->

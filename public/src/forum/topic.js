@@ -218,7 +218,12 @@ define(function() {
 				}, false);
 			}
 
-			//enableInfiniteLoading();
+			if( !config.paginatedTopics || config.paginatedTopics !== "1"){
+				enableInfiniteLoading();
+			}else{
+				// generate pagination links
+				generatePaginationLinks();
+			}
 
 			var bookmark = localStorage.getItem('topic:' + tid + ':bookmark');
 
@@ -230,6 +235,69 @@ define(function() {
 				$(this).toggleClass('deleted-expanded');
 			});
 		});
+
+		function generatePaginationLinks(){
+		
+			var postsPerPage = config.maxPostsPerPage;
+			var totalPosts = templates.get("postcount");
+			var	currentPage = utils.queryString().page || 1;
+			var offset = postsPerPage*currentPage;
+
+			
+			if(totalPosts > postsPerPage){
+				// -- Some visual fixes first
+				// hide the scroll link helper thingy
+				$(".pagination-block").remove();
+				// prevent the pagination links from "jumping" subsequent page loads"
+				$(".pagination-links").css("height", "76px");
+
+				// the container may still have links if we are ajaxifying
+				var container = $(".pagination-links .pagination").empty(),
+					  totalPages = Math.ceil(totalPosts/postsPerPage),
+					  page_counter = 0,
+					  path = window.location.pathname;
+
+				if(currentPage > 1){
+					// generate the previous link
+					var prevPage = parseInt(currentPage)-1;
+					$("<li><a href='"+path+"?page="+prevPage+"'>&laquo;</a></li>").appendTo(container);
+				}
+
+				// generate the page links
+				// TODO: Set a cut-off for pages, gap the links if there are lots of pages
+				do{
+					page_counter++;
+					classname = "";
+					if(page_counter == currentPage){
+							classname = "active";
+					}
+					html = "<li class='"+classname+"'><a href='"+path+"?page="+page_counter+"'>"+page_counter+"</a></li>";
+					$(html).appendTo(container);
+					
+				}while(page_counter < totalPages);
+
+				if( (offset + postsPerPage) < totalPosts){
+					var nextPage = parseInt(currentPage)+1;
+					$("<li><a href='"+path+"?page="+nextPage+"'>&raquo;</a></li>").appendTo(container);
+				}
+
+				// show the pagination controls
+				$(".pagination-links").removeClass("hidden");
+			}
+
+			// wire up the link clicks
+			$(container).on("click", "a", function(event){
+				event.preventDefault();
+				var url = $(this).attr("href").substr(1); //remove the first '/' 
+				
+				ajaxify.go(url,function(ok){
+					if( !ok ){
+						// handle the error
+					}
+				}, '', false);
+			});
+			
+		}
 
 		function enableInfiniteLoading() {
 			$(window).off('scroll').on('scroll', function() {
@@ -651,6 +719,9 @@ define(function() {
 		var postcount = templates.get('postcount');
 
 		function updateHeader() {
+			if( config.paginatedTopics === "1"){
+				return;
+			}
 			if (pagination == null) {
 				jQuery('.pagination-block i:first').on('click', function() {
 					app.scrollToTop();

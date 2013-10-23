@@ -727,6 +727,18 @@ module.exports.init = function(io) {
 			}
 		});
 
+		socket.on('api:topic.loadPage', function(data, callback) {
+			var maxPosts = meta.config.maxPostsPerPage,
+			    start = (data.page-1)*maxPosts,
+				  end = start + (maxPosts-1);
+
+			topics.getTopicPosts(data.tid, start, end, uid, function(posts) {
+				callback({
+					posts: posts
+				});
+			});
+		});
+
 		socket.on('api:topic.loadMore', function(data, callback) {
 			var start = data.after,
 				end = start + 9;

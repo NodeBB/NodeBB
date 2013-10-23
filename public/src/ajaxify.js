@@ -24,8 +24,6 @@ var ajaxify = {};
 
 	window.onpopstate = function (event) {
 		// "quiet": If set to true, will not call pushState
-		debugger;
-		console.dir(window.location);
 		if (event !== null && event.state && event.state.url !== undefined) ajaxify.go(event.state.url, null, null, true);
 	};
 
@@ -33,20 +31,19 @@ var ajaxify = {};
 
 	ajaxify.go = function (url, callback, template, quiet) {
 		
-		console.dir(window.location);
 		// start: the following should be set like so: ajaxify.onchange(function(){}); where the code actually belongs
-		console.dir(arguments);
 		$(window).off('scroll');
 		app.enter_room('global');
 
-		pagination = pagination || document.getElementById('pagination');
-		if (pagination) pagination.parentNode.style.display = 'none';
+		if( config.paginatedTopics != "1"){
+			pagination = pagination || document.getElementById('pagination');
+			if (pagination) pagination.parentNode.style.display = 'none';
+		}
 		window.onscroll = null;
+
 		// end
 
 		// Remove trailing slash
-		
-		
 		url = url.replace(/\/$/, "");
 		
 		var hash = window.location.hash;

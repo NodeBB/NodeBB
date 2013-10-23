@@ -20,7 +20,7 @@ var RDB = require('./redis.js'),
 	Posts.getPostsByTid = function(tid, start, end, callback) {
 		RDB.lrange('tid:' + tid + ':posts', start, end, function(err, pids) {
 			RDB.handle(err);
-			console.log("Getting posts from: "+start+" to: "+end);
+			
 			if (pids.length) {
 				Posts.getPostsByPids(pids, function(err, posts) {
 					callback(posts);

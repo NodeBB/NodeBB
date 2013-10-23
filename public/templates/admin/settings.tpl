@@ -20,6 +20,10 @@
 				<strong>Paginated Topics (as opposed to Pinterest style)</strong>
 			</label>
 		</div>
+		<label>Posts per page</label>
+		<input type="text" class="form-control" placeholder="Max posts per page" data-field="maxPostsPerPage">
+		<span class="help-inline">(only applies to pagination)</span>
+		<br>
 	</form>
 </div>
 
