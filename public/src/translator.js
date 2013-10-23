@@ -46,7 +46,7 @@
 	translator.translate = function (data, callback) {
 		var keys = data.match(/\[\[.*?\]\]/g),
 			loading = 0;
-		
+
 		function insertLanguage(text, key, value, variables) {
 			if (value) {
 				for (var i = 1, ii = variables.length; i < ii; i++) {
@@ -56,7 +56,7 @@
 
 				text = text.replace(key, value);
 			}
-			
+
 
 			return text;
 		}
@@ -74,14 +74,13 @@
 					data = insertLanguage(data, keys[key], files.loaded[languageFile][parsedKey], variables);
 				} else {
 					loading++;
-
-					(function (languageKey, parsedKey) {
+					(function (languageKey, parsedKey, languageFile, variables) {
 						translator.load(languageFile, function (languageData) {
 							data = insertLanguage(data, languageKey, languageData[parsedKey], variables);
 							loading--;
 							checkComplete();
 						});
-					}(keys[key], parsedKey));
+					}(keys[key], parsedKey, languageFile, variables));
 
 				}
 			}
