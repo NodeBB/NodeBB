@@ -353,6 +353,7 @@ var RDB = require('./redis.js'),
 				return callback(new Error('Topic tid \'' + tid + '\' not found'));
 
 			Topics.markAsRead(tid, current_user);
+			Topics.increaseViewCount(tid);
 
 			function getTopicData(next) {
 				Topics.getTopicData(tid, function(topicData) {
@@ -399,6 +400,7 @@ var RDB = require('./redis.js'),
 					'pinned': topicData.pinned,
 					'slug': topicData.slug,
 					'postcount': topicData.postcount,
+					'viewcount': topicData.viewcount,
 					'topic_id': tid,
 					'expose_tools': privileges.editable ? 1 : 0,
 					'posts': topicPosts,
@@ -681,6 +683,7 @@ var RDB = require('./redis.js'),
 					'timestamp': timestamp,
 					'lastposttime': 0,
 					'postcount': 0,
+					'viewcount': 0,
 					'locked': 0,
 					'deleted': 0,
 					'pinned': 0
@@ -739,6 +742,10 @@ var RDB = require('./redis.js'),
 
 	Topics.increasePostCount = function(tid) {
 		RDB.hincrby('topic:' + tid, 'postcount', 1);
+	}
+
+	Topics.increaseViewCount = function(tid) {
+		RDB.hincrby('topic:' + tid, 'viewcount', 1);
 	}
 
 	Topics.isLocked = function(tid, callback) {
