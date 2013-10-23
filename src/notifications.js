@@ -30,6 +30,7 @@ var RDB = require('./redis.js'),
 			 *		the new one put in its place.
 			 */
 			RDB.incr('notifications:next_nid', function(err, nid) {
+				RDB.sadd('notifications', nid);
 				RDB.hmset('notifications:' + nid, {
 					text: text || '',
 					path: path || null,
@@ -123,6 +124,14 @@ var RDB = require('./redis.js'),
 						callback(err);
 					});
 				} else callback();
+			});
+		},
+		prune: function(cutoff, callback) {
+			var	today = new Date();
+			if (!cutoff || !(cutoff instanceof Date)) cutoff = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+
+			RDB.smembers('notifications', function(err, nids) {
+
 			});
 		}
 	}

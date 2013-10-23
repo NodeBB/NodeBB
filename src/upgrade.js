@@ -59,6 +59,27 @@ Upgrade.upgrade = function() {
 					next();
 				}
 			});
+		},
+		function(next) {
+			RDB.exists('notifications', function(err, exists) {
+				if (!exists) {
+					RDB.keys('notifications:*', function(err, keys) {
+						var	multi = RDB.multi();
+
+						keys = keys.filter(function(key) {
+							if (key === 'notifications:next_nid') return false;
+							else return true;
+						}).map(function(key) {
+							return key.slice(14);
+						});
+
+						winston.info('[2013/10/23] Adding existing notifications to set');
+						RDB.sadd('notifications', keys, next);
+					});
+				} else {
+					winston.info('[2013/10/23] Updates to Notifications skipped.');
+				}
+			});
 		}
 		// Add new schema updates here
 	], function(err) {
