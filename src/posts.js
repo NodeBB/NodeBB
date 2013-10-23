@@ -365,13 +365,18 @@ var RDB = require('./redis.js'),
 
 						RDB.incr('totalpostcount');
 
-						topics.getTopicField(tid, 'cid', function(err, cid) {
+						topics.getTopicFields(tid, ['cid', 'pinned'], function(err, topicData) {
+
 							RDB.handle(err);
+
+							var cid = topicData.cid;
 
 							feed.updateTopic(tid);
 
 							RDB.zadd('categories:recent_posts:cid:' + cid, timestamp, pid);
-							RDB.zadd('categories:' + cid + ':tid', timestamp, tid);
+
+							if(topicData.pinned === '0')
+								RDB.zadd('categories:' + cid + ':tid', timestamp, tid);
 
 							RDB.scard('cid:' + cid + ':active_users', function(err, amount) {
 								if (amount > 10) {

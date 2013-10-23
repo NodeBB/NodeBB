@@ -87,11 +87,6 @@ var RDB = require('./redis.js'),
 
 				function getTopics(next) {
 					topics.getTopicsByTids(tids, current_user, function(topicsData) {
-						// Float pinned topics to the top of the list
-						topicsData = topicsData.sort(function(a, b) {
-							return parseInt(b.pinned, 10) - parseInt(a.pinned, 10);
-						});
-
 						next(null, topicsData);
 					}, category_id);
 				}
