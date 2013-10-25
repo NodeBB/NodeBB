@@ -11,17 +11,37 @@ define(function() {
 				deleted: templates.get('deleted'),
 				pinned: templates.get('pinned')
 			},
-			topic_name = templates.get('topic_name');
+			topic_name = templates.get('topic_name'),
+			twitter_url = templates.get('twitter-intent-url'),
+			facebook_url = templates.get('facebook-share-url'),
+			google_url = templates.get('google-share-url');
 
 
 		jQuery('document').ready(function() {
 
 			app.addCommasToNumbers();
 
+
 			var room = 'topic_' + tid,
 				adminTools = document.getElementById('thread-tools');
 
 			app.enter_room(room);
+
+
+			$('.twitter-share').on('click', function () {
+				window.open(twitter_url, '_blank', 'width=550,height=420,scrollbars=no,status=no');
+				return false;
+			});
+			
+			$('.facebook-share').on('click', function () {
+				window.open(facebook_url, '_blank', 'width=626,height=436,scrollbars=no,status=no');
+				return false;
+			});
+
+			$('.google-share').on('click', function () {
+				window.open(google_url, '_blank', 'width=500,height=570,scrollbars=no,status=no');
+				return false;
+			});
 
 			// Resetting thread state
 			if (thread_state.locked === '1') set_locked_state(true);
