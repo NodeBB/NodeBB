@@ -15,7 +15,7 @@ define(function() {
 			newPostCount = 0;
 
 		$('#new-topics-alert').on('click', function() {
-			$(this).hide();
+			$(this).addClass('hide');
 		});
 
 		socket.on('event:new_topic', function(data) {
@@ -44,7 +44,7 @@ define(function() {
 
 			text += ' Click here to reload.';
 
-			$('#new-topics-alert').html(text).fadeIn('slow');
+			$('#new-topics-alert').html(text).removeClass('hide').fadeIn('slow');
 		}
 
 		socket.on('event:new_post', function(data) {
