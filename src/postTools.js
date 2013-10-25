@@ -52,8 +52,8 @@ var RDB = require('./redis.js'),
 
 		async.parallel([getThreadPrivileges, isOwnPost, hasEnoughRep], function(err, results) {
 			callback({
-				editable: results[0].editable || results[1],
-				view_deleted: results[0].view_deleted || results[1]
+				editable: results[0].editable || results[1] || results[2],
+				view_deleted: results[0].view_deleted || results[1] || results[2]
 			});
 		});
 	}
