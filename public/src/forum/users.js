@@ -112,7 +112,7 @@ define(function() {
 			}
 
 			if (set) {
-				startLoading(set, $('#users-inner-container .registered-user').children().length);
+				startLoading(set, $('#users-inner-container').children('.registered-user').length);
 			}
 		}
 
