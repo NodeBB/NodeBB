@@ -1,3 +1,12 @@
+
+<input class="test1" type="hidden" template-variable="expose_tools" value="{expose_tools}" />
+<input class="test1" type="hidden" template-variable="topic_id" value="{topic_id}" />
+<input class="test1" type="hidden" template-variable="locked" value="{locked}" />
+<input class="test1" type="hidden" template-variable="deleted" value="{deleted}" />
+<input class="test1" type="hidden" template-variable="pinned" value="{pinned}" />
+<input class="test1" type="hidden" template-variable="topic_name" value="{topic_name}" />
+<input class="test1" type="hidden" template-variable="postcount" value="{postcount}" />
+
 <div class="topic">
 	<ol class="breadcrumb">
 		<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
@@ -9,7 +18,7 @@
 		<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
 			<span itemprop="title">{topic_name} <a target="_blank" href="../{topic_id}.rss"><i class="icon-rss-sign"></i></a></span>
 		</li>
-		<div id="thread_active_users" class="active-users pull-right hidden-xs"></div>
+		<div class="thread_active_users active-users pull-right hidden-xs"></div>
 	</ol>
 
 	<ul id="post-container" class="container" data-tid="{topic_id}">
@@ -197,19 +206,11 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal" id="move_thread_cancel">[[global:buttons.close]]</a>
-					<button type="button" class="btn btn-primary" id="move_thread_commit" disabled>[[topic:confirm_move]]</a>
+					<button type="button" class="btn btn-default" data-dismiss="modal" id="move_thread_cancel">[[global:buttons.close]]</button>
+					<button type="button" class="btn btn-primary" id="move_thread_commit" disabled>[[topic:confirm_move]]</button>
 				</div>
 			</div>
 		</div>
 	</div>
 
 </div>
-
-<input type="hidden" template-variable="expose_tools" value="{expose_tools}" />
-<input type="hidden" template-variable="topic_id" value="{topic_id}" />
-<input type="hidden" template-variable="locked" value="{locked}" />
-<input type="hidden" template-variable="deleted" value="{deleted}" />
-<input type="hidden" template-variable="pinned" value="{pinned}" />
-<input type="hidden" template-variable="topic_name" value="{topic_name}" />
-<input type="hidden" template-variable="postcount" value="{postcount}" />

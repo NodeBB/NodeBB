@@ -335,8 +335,6 @@ var RDB = require('./redis.js'),
 			return;
 		}
 
-		// var categories = [];
-
 		function getCategory(cid, callback) {
 			Categories.getCategoryData(cid, function(err, categoryData) {
 				if (err) {
@@ -348,7 +346,6 @@ var RDB = require('./redis.js'),
 				Categories.hasReadCategory(cid, current_user, function(hasRead) {
 					categoryData.badgeclass = (parseInt(categoryData.topic_count, 10) === 0 || (hasRead && current_user !== 0)) ? '' : 'badge-important';
 
-					// categories.push(categoryData);
 					callback(null, categoryData);
 				});
 			});
@@ -362,11 +359,8 @@ var RDB = require('./redis.js'),
 			}
 
 			categories = categories.filter(function(category) {
-				// Remove categories that have errored out
-				if (category) return true;
-				else return false;
+				return !!category;
 			}).sort(function(a, b) {
-				// Sort categories into their defined order
 				return parseInt(a.order, 10) - parseInt(b.order, 10);
 			});
 

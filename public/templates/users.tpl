@@ -40,18 +40,19 @@
 				</div>
 			</div>
 			<!-- END users -->
-		</div>
-		<div class="users-box {show_anon}">
-			<a href="#">
-				<img src="" class="img-thumbnail"/>
-			</a>
-			<br/>
-			<div class="user-info">
-				<span id="online_anon_count">{anonymousUserCount}</span>
+			<div class="users-box {show_anon} anon-user">
+				<a href="#">
+					<img src="" class="img-thumbnail"/>
+				</a>
 				<br/>
-				<a href="#">Anonymous</a>
+				<div class="user-info">
+					<span id="online_anon_count">{anonymousUserCount}</span>
+					<br/>
+					<a href="#">Anonymous</a>
+				</div>
 			</div>
 		</div>
+
 	</ul>
 
 	<div class="text-center {loadmore_display}">

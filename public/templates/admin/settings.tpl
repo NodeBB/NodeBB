@@ -11,7 +11,8 @@
 		<label>Site Keywords</label>
 		<input type="text" class="form-control" placeholder="Keywords describing your community, comma-seperated" data-field="keywords" /><br />
 		<label>Site Logo</label>
-		<input type="text" class="form-control" placeholder="Path to a logo to display on forum header" data-field="brand:logo" /><br />
+		<input id="logoUrl" type="text" class="form-control" placeholder="Path to a logo to display on forum header" data-field="brand:logo" /><br />
+		<input id="uploadLogoBtn" type="button" class="btn btn-default" value="Upload"></input> <br />
 		<label>Imgur Client ID</label>
 		<input type="text" class="form-control" placeholder="Imgur ClientID for image uploads" data-field="imgurClientID" /><br />
 		<label>Maximum User Image Size</label>
@@ -23,10 +24,8 @@
 	<h3>Privilege Thresholds</h3>
 	<div class="alert alert-warning">
 		<p>Use <strong>privilege thresholds</strong> to manage how much reputation a user must gain to receive moderator access.</p><br />
-		<strong>Manage Thread</strong><br /> <input type="text" class="form-control" value="1000"><br />
-		<strong>Moderate Users</strong><br /> <input type="text" class="form-control" value="10000"><br />
-		<strong>Create Pinned Topics</strong><br /> <input type="text" class="form-control" value="100000"><br />
-
+		<strong>Manage Thread</strong><br /> <input type="text" class="form-control" value="1000" data-field="privileges:manage_topic"><br />
+		<strong>Manage Content</strong><br /> <input type="text" class="form-control" value="1000" data-field="privileges:manage_content"><br />
 	</div>
 </form>
 

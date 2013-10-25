@@ -205,10 +205,16 @@ var RDB = require('./redis.js'),
 		multi.exec(function (err, replies) {
 			async.map(replies, function(postData, _callback) {
 				if (postData) {
-					postData.relativeTime = new Date(parseInt(postData.timestamp,10)).toISOString();
+
 					postData.post_rep = postData.reputation;
 					postData['edited-class'] = postData.editor !== '' ? '' : 'none';
-					postData['relativeEditTime'] = postData.edited !== '0' ? (new Date(parseInt(postData.edited,10)).toISOString()) : '';
+					try {
+						postData.relativeTime = new Date(parseInt(postData.timestamp,10)).toISOString();
+						postData['relativeEditTime'] = postData.edited !== '0' ? (new Date(parseInt(postData.edited,10)).toISOString()) : '';
+					} catch(e) {
+						winston.err('invalid time value');
+					}
+
 
 					if (postData.uploadedImages) {
 						try {
@@ -359,13 +365,18 @@ var RDB = require('./redis.js'),
 
 						RDB.incr('totalpostcount');
 
-						topics.getTopicField(tid, 'cid', function(err, cid) {
+						topics.getTopicFields(tid, ['cid', 'pinned'], function(err, topicData) {
+
 							RDB.handle(err);
+
+							var cid = topicData.cid;
 
 							feed.updateTopic(tid);
 
 							RDB.zadd('categories:recent_posts:cid:' + cid, timestamp, pid);
-							RDB.zadd('categories:' + cid + ':tid', timestamp, tid);
+
+							if(topicData.pinned === '0')
+								RDB.zadd('categories:' + cid + ':tid', timestamp, tid);
 
 							RDB.scard('cid:' + cid + ':active_users', function(err, amount) {
 								if (amount > 10) {

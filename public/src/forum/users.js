@@ -65,9 +65,9 @@ define(function() {
 			var html = templates.prepare(templates['users'].blocks['users']).parse({
 				users: data
 			}),
-				userListEl = document.querySelector('#users-inner-container');
+				userListEl = $('#users-inner-container');
 
-			userListEl.innerHTML = html;
+			userListEl.html(html);
 
 
 			if (data && data.length === 0) {
@@ -94,8 +94,9 @@ define(function() {
 				users: users
 			});
 			if(emptyContainer)
-				$('#users-inner-container').empty();
+				$('#users-inner-container .registered-user').remove();
 			$('#users-inner-container').append(html);
+			$('#users-inner-container .anon-user').appendTo($('#users-inner-container'));
 		}
 
 		function loadMoreUsers() {
@@ -111,7 +112,7 @@ define(function() {
 			}
 
 			if (set) {
-				startLoading(set, $('#users-inner-container').children().length);
+				startLoading(set, $('#users-inner-container').children('.registered-user').length);
 			}
 		}
 

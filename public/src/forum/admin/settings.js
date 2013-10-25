@@ -1,4 +1,4 @@
-define(function() {
+define(['uploader'], function(uploader) {
 	var Settings = {};
 
 	Settings.init = function() {
@@ -68,6 +68,15 @@ define(function() {
 					value: value
 				});
 			}
+		});
+
+		$('#uploadLogoBtn').on('click', function() {
+
+			uploader.open(config.relative_path + '/admin/uploadlogo', function(image) {
+				$('#logoUrl').val(image);
+			});
+
+			uploader.hideAlerts();
 		});
 	};
 

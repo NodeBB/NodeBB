@@ -18,6 +18,7 @@
 	<script type="text/javascript" src="{relative_path}/src/translator.js"></script>
 	<script type="text/javascript" src="{relative_path}/src/ajaxify.js"></script>
 	<script src="{relative_path}/vendor/jquery/js/jquery.timeago.js"></script>
+	<script src="{relative_path}/vendor/jquery/js/jquery.form.js"></script>
 	<script src="{relative_path}/vendor/requirejs/require.js"></script>
 	<script src="{relative_path}/vendor/bootbox/bootbox.min.js"></script>
 
@@ -69,6 +70,8 @@
 			</div>
 		</div>
 	</div>
+
+	<input id="csrf_token" type="hidden" template-variable="csrf" value="{csrf}" />
 
 	<div class="container">
 		<div class="row">
@@ -126,4 +129,5 @@
 					</ul>
 				</div><!--/.well -->
 			</div><!--/span-->
+
 			<div class="col-md-9" id="content">

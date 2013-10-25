@@ -126,6 +126,13 @@
 					notifEl.innerHTML = '<a>You have no notifications</a>';
 					notifFrag.appendChild(notifEl);
 				}
+
+				// Add dedicated link to /notifications
+				notifEl.removeAttribute('data-nid');
+				notifEl.className = 'pagelink';
+				notifEl.innerHTML = '<a href="' + RELATIVE_PATH + '/notifications">See all Notifications</a>';
+				notifFrag.appendChild(notifEl);
+
 				notifList.appendChild(notifFrag);
 
 				if (data.unread.length > 0) notifIcon.className = 'icon-circle active';

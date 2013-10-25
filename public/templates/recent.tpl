@@ -13,7 +13,7 @@
 <br />
 
 <a href="/recent">
-	<div class="alert hide" id="new-topics-alert"></div>
+	<div class="alert alert-warning hide" id="new-topics-alert"></div>
 </a>
 
 <div class="alert alert-warning hide {no_topics_message}" id="category-no-topics">

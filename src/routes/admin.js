@@ -8,7 +8,8 @@ var user = require('./../user.js'),
 	plugins = require('../plugins'),
 	winston = require('winston'),
 	nconf = require('nconf'),
-	fs = require('fs');
+	fs = require('fs'),
+	path = require('path');
 
 (function (Admin) {
 	Admin.isAdmin = function (req, res, next) {
@@ -78,6 +79,54 @@ var user = require('./../user.js'),
 					res.send(header + app.create_route('admin/index') + templates['admin/footer']);
 				});
 			});
+
+			app.post('/uploadlogo', Admin.isAdmin, function(req, res) {
+
+				if (!req.user)
+					return res.redirect('/403');
+
+				var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
+
+				if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
+					res.send({
+						error: 'Allowed image types are png, jpg and gif!'
+					});
+					return;
+				}
+
+				var tempPath = req.files.userPhoto.path;
+				var extension = path.extname(req.files.userPhoto.name);
+
+				if (!extension) {
+					res.send({
+						error: 'Error uploading file! Error : Invalid extension!'
+					});
+					return;
+				}
+
+				var filename =  'site-logo' + extension;
+				var uploadPath = path.join(process.cwd(), nconf.get('upload_path'), filename);
+
+				winston.info('Attempting upload to: ' + uploadPath);
+
+				var is = fs.createReadStream(tempPath);
+				var os = fs.createWriteStream(uploadPath);
+
+				is.on('end', function () {
+					fs.unlinkSync(tempPath);
+
+					res.json({
+						path: nconf.get('upload_url') + filename
+					});
+				});
+
+				os.on('error', function (err) {
+					fs.unlinkSync(tempPath);
+					winston.err(err);
+				});
+
+				is.pipe(os);
+			});
 		});
 
 
@@ -89,7 +138,7 @@ var user = require('./../user.js'),
 		plugins.ready(function() {
 			plugins.fireHook('filter:admin.create_routes', custom_routes, function(err, custom_routes) {
 				var routes = custom_routes.routes;
-				
+
 				for (var route in routes) {
 					if (routes.hasOwnProperty(route)) {
 						app[routes[route].method || 'get']('/admin' + routes[route].route, function(req, res) {
@@ -98,10 +147,10 @@ var user = require('./../user.js'),
 									res.send(header + options.content + templates['admin/footer']);
 								});
 							});
-						});							
+						});
 					}
 				}
-			});	
+			});
 		});
 
 		app.namespace('/api/admin', function () {
