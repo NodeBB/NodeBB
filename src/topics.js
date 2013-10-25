@@ -68,7 +68,7 @@ var RDB = require('./redis.js'),
 			}
 
 			function getPrivileges(next) {
-				threadTools.privileges(tid, current_user, function(privData) {
+				postTools.privileges(tid, current_user, function(privData) {
 					next(null, privData);
 				});
 			}
