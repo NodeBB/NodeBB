@@ -30,6 +30,7 @@
 			languageFile = parsedKey[0];
 
 		parsedKey = parsedKey[1];
+
 		translator.load(languageFile, function (languageData) {
 			if (callback) {
 				callback(languageData[parsedKey]);
@@ -38,6 +39,20 @@
 			return languageData[parsedKey];
 		});
 	};
+
+	translator.mget = function (keys, callback) {
+
+		var async = require('async');
+
+		function getKey(key, callback) {
+			translator.get(key, function(value) {
+				callback(null, value);
+			});
+		}
+
+		async.map(keys, getKey, callback);
+	}
+
 
 	/*
 	 * TODO: Not fully converted to server side yet, ideally server should be able to parse whole templates on demand if necessary

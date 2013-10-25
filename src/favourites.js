@@ -8,17 +8,15 @@ var RDB = require('./redis.js'),
 
 	Favourites.favourite = function (pid, room_id, uid, socket) {
 		if (uid === 0) {
-			var not_logged_in = {
-				message: translator.get('topic:favourites.not_logged_in.message'),
-				title: translator.get('topic:favourites.not_logged_in.title')
-			};
 
-			socket.emit('event:alert', {
-				alert_id: 'post_favourite',
-				title: not_logged_in.title,
-				message: not_logged_in.message,
-				type: 'danger',
-				timeout: 5000
+			translator.mget(['topic:favourites.not_logged_in.message', 'topic:favourites.not_logged_in.title'], function(err, results) {
+				socket.emit('event:alert', {
+					alert_id: 'post_favourite',
+					title: results[1],
+					message: results[0],
+					type: 'danger',
+					timeout: 5000
+				});
 			});
 			return;
 		}
