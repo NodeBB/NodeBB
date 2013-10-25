@@ -18,12 +18,10 @@ var user = require('./user.js'),
 			var userslug = utils.slugify(username);
 
 			user.get_uid_by_userslug(userslug, function(err, uid) {
-							console.log(err, uid);
+
 				if (err) {
 					return next(new Error('redis-error'));
-				}
-
-				if (uid == null) {
+				} else if (uid == null) {
 					return next(new Error('invalid-user'));
 				}
 
