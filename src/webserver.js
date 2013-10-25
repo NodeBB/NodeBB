@@ -656,6 +656,10 @@ var express = require('express'),
 			});
 		});
 
+		// Debug routes
+		if (process.env.NODE_ENV === 'development') {
+			require('./routes/debug')(app);
+		}
 
 		var custom_routes = {
 			'routes': [],

@@ -128,10 +128,19 @@ var RDB = require('./redis.js'),
 		},
 		prune: function(cutoff, callback) {
 			var	today = new Date();
-			if (!cutoff || !(cutoff instanceof Date)) cutoff = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+			if (!cutoff) cutoff = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+
+			var	cutoffTime = cutoff.getTime();
 
 			RDB.smembers('notifications', function(err, nids) {
-
+				async.filter(nids, function(nid, next) {
+					RDB.hget('notifications:' + nid, 'datetime', function(err, datetime) {
+						if (parseInt(datetime, 10) < cutoffTime) next(true);
+						else next(false);
+					});
+				}, function(expiredNids) {
+					console.log(expiredNids);
+				});
 			});
 		}
 	}
@@ -141,5 +150,6 @@ module.exports = {
 	create: notifications.create,
 	push: notifications.push,
 	mark_read: notifications.mark_read_multiple,
-	mark_all_read: notifications.mark_all_read
+	mark_all_read: notifications.mark_all_read,
+	prune: notifications.prune
 }
