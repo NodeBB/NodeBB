@@ -5,6 +5,8 @@ define(function() {
 	Recent.newPostCount = 0;
 	Recent.loadingMoreTopics = false;
 
+	var active = '';
+
 	Recent.init = function() {
 		app.enter_room('recent_posts');
 
@@ -13,8 +15,26 @@ define(function() {
 			'event:new_post'
 		]);
 
+
+		function getActiveSection() {
+			var url = window.location.href,
+			parts = url.split('/'),
+			active = parts[parts.length - 1];
+			return active;
+		}
+
+		active = getActiveSection();
+
+		jQuery('.nav-pills li').removeClass('active');
+		jQuery('.nav-pills li a').each(function() {
+			if (this.getAttribute('href').match(active)) {
+				jQuery(this.parentNode).addClass('active');
+				return false;
+			}
+		});
+
 		$('#new-topics-alert').on('click', function() {
-			$(this).hide();
+			$(this).addClass('hide');
 		});
 
 		socket.on('event:new_topic', function(data) {
@@ -57,7 +77,7 @@ define(function() {
 
 		text += ' Click here to reload.';
 
-		$('#new-topics-alert').html(text).fadeIn('slow');
+		$('#new-topics-alert').html(text).removeClass('hide').fadeIn('slow');
 	}
 
 	Recent.onTopicsLoaded = function(topics) {
@@ -70,12 +90,14 @@ define(function() {
 		$('#category-no-topics').remove();
 
 		container.append(html);
+		$('span.timeago').timeago();
 	}
 
 	Recent.loadMoreTopics = function() {
 		Recent.loadingMoreTopics = true;
 		socket.emit('api:topics.loadMoreRecentTopics', {
-			after: $('#topics-container').children().length
+			after: $('#topics-container').children('li').length,
+			term: active
 		}, function(data) {
 			if (data.topics && data.topics.length) {
 				Recent.onTopicsLoaded(data.topics);

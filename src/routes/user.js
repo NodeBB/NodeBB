@@ -6,7 +6,10 @@ var user = require('./../user.js'),
 	path = require('path'),
 	winston = require('winston'),
 	nconf = require('nconf'),
-	meta = require('./../meta');
+	meta = require('./../meta'),
+	async= require('async'),
+	RDB = require('./../redis'),
+	websockets = require('./../websockets.js');
 
 (function (User) {
 	User.create_routes = function (app) {
@@ -422,7 +425,7 @@ var user = require('./../user.js'),
 						posts.getPostsByUid(userData.theirid, 0, 9, function (posts) {
 
 							userData.posts = posts.filter(function (p) {
-								return p.deleted !== "1";
+								return p && p.deleted !== "1";
 							});
 							userData.isFollowing = isFollowing;
 							if (!userData.profileviews)
@@ -457,7 +460,8 @@ var user = require('./../user.js'),
 				res.json({
 					search_display: 'none',
 					loadmore_display: 'block',
-					users: data
+					users: data,
+					show_anon: 'hide'
 				});
 			});
 		}
@@ -467,7 +471,8 @@ var user = require('./../user.js'),
 				res.json({
 					search_display: 'none',
 					loadmore_display: 'block',
-					users: data
+					users: data,
+					show_anon: 'hide'
 				});
 			});
 		}
@@ -477,17 +482,36 @@ var user = require('./../user.js'),
 				res.json({
 					search_display: 'none',
 					loadmore_display: 'block',
-					users: data
+					users: data,
+					show_anon: 'hide'
 				});
 			});
 		}
 
 		function getOnlineUsers(req, res) {
 			user.getUsers('users:online', 0, 49, function (err, data) {
-				res.json({
-					search_display: 'none',
-					loadmore_display: 'block',
-					users: data
+
+				var onlineUsers = [];
+
+				function iterator(user, callback) {
+					if(websockets.isUserOnline(user.uid)) {
+						onlineUsers.push(user);
+					} else {
+						RDB.zrem('users:online', user.uid);
+					}
+					callback(null);
+				}
+
+				var anonymousUserCount = websockets.getOnlineAnonCount();
+
+				async.each(data, iterator, function(err) {
+					res.json({
+						search_display: 'none',
+						loadmore_display: 'block',
+						users: onlineUsers,
+						anonymousUserCount: anonymousUserCount,
+						show_anon: anonymousUserCount?'':'hide'
+					});
 				});
 			});
 		}
@@ -496,7 +520,8 @@ var user = require('./../user.js'),
 			res.json({
 				search_display: 'block',
 				loadmore_display: 'none',
-				users: []
+				users: [],
+				show_anon: 'hide'
 			});
 		}
 

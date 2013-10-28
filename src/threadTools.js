@@ -34,15 +34,15 @@ var RDB = require('./redis.js'),
 		function hasEnoughRep(next) {
 			user.getUserField(uid, 'reputation', function(err, reputation) {
 				if (err) return next(null, false);
-				next(null, reputation >= meta.config['privileges:manage_topic']);
+				next(null, parseInt(reputation, 10) >= parseInt(meta.config['privileges:manage_topic'], 10));
 			});
 		}
 
 
 		async.parallel([getCategoryPrivileges, hasEnoughRep], function(err, results) {
 			callback({
-				editable: results[0].editable || (results.slice(1).indexOf(true) !== -1 ? true : false),
-				view_deleted: results[0].view_deleted || (results.slice(1).indexOf(true) !== -1 ? true : false)
+				editable: results[0].editable || results[1],
+				view_deleted: results[0].view_deleted || results[1]
 			});
 		});
 	}
@@ -92,6 +92,9 @@ var RDB = require('./redis.js'),
 			if (privileges.editable || uid === -1) {
 
 				topics.delete(tid);
+
+				RDB.decr('totaltopiccount');
+
 				ThreadTools.lock(tid, uid);
 
 				topicSearch.remove(tid);
@@ -106,11 +109,12 @@ var RDB = require('./redis.js'),
 		});
 	}
 
-	ThreadTools.restore = function(tid, uid, socket) {
+	ThreadTools.restore = function(tid, uid, socket, callback) {
 		ThreadTools.privileges(tid, uid, function(privileges) {
 			if (privileges.editable) {
 
 				topics.restore(tid);
+				RDB.incr('totaltopiccount');
 				ThreadTools.unlock(tid, uid);
 
 				io.sockets. in ('topic_' + tid).emit('event:topic_restored', {
@@ -118,16 +122,12 @@ var RDB = require('./redis.js'),
 					status: 'ok'
 				});
 
-				if (socket) {
-					socket.emit('api:topic.restore', {
-						status: 'ok',
-						tid: tid
-					});
-				}
-
 				topics.getTopicField(tid, 'title', function(err, title) {
 					topicSearch.index(title, tid);
 				});
+
+				if(callback)
+					callback(null);
 			}
 		});
 	}
@@ -265,28 +265,28 @@ var RDB = require('./redis.js'),
 
 	ThreadTools.get_followers = function(tid, callback) {
 		RDB.smembers('tid:' + tid + ':followers', function(err, followers) {
-			callback(err, followers);
+			callback(err, followers.map(function(follower) {
+				return parseInt(follower, 10);
+			}));
 		});
 	}
 
 	ThreadTools.notify_followers = function(tid, exceptUid) {
 		async.parallel([
 			function(next) {
-
 				topics.getTopicField(tid, 'title', function(err, title) {
 					topics.getTeaser(tid, function(err, teaser) {
 						if (!err) {
-							notifications.create('<strong>' + teaser.username + '</strong> has posted a reply to: "<strong>' + title + '</strong>"', null, nconf.get('relative_path') + '/topic/' + tid, 'topic:' + tid, function(nid) {
+							notifications.create('<strong>' + teaser.username + '</strong> has posted a reply to: "<strong>' + title + '</strong>"', nconf.get('relative_path') + '/topic/' + tid, 'topic:' + tid, function(nid) {
 								next(null, nid);
 							});
 						} else next(err);
 					});
 				});
-
-
 			},
 			function(next) {
 				ThreadTools.get_followers(tid, function(err, followers) {
+					exceptUid = parseInt(exceptUid, 10);
 					if (followers.indexOf(exceptUid) !== -1) followers.splice(followers.indexOf(exceptUid), 1);
 					next(null, followers);
 				});
@@ -303,7 +303,7 @@ var RDB = require('./redis.js'),
 
 			pids.reverse();
 			async.detectSeries(pids, function(pid, next) {
-				RDB.hget('post:' + pid, 'deleted', function(err, deleted) {
+				posts.getPostField(pid, 'deleted', function(deleted) {
 					if (deleted === '0') next(true);
 					else next(false);
 				});

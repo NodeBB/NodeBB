@@ -227,7 +227,7 @@ var utils = require('./../public/src/utils.js'),
 		});
 
 		function updateField(field, next) {
-			if (data[field] !== undefined) {
+			if (data[field] !== undefined && typeof data[field] === 'string') {
 				if (field === 'email') {
 					var gravatarpicture = User.createGravatarURLFromEmail(data[field]);
 					User.setUserField(uid, 'gravatarpicture', gravatarpicture);
@@ -529,24 +529,26 @@ var utils = require('./../public/src/utils.js'),
 
 	User.getFollowingCount = function(uid, callback) {
 		RDB.smembers('following:' + uid, function(err, userIds) {
-			if (!err) {
-				callback(userIds.length);
-			} else {
+			if (err) {
 				console.log(err);
+			} else {
+				userIds = userIds.filter(function(value) {
+					return value !== '0';
+				});
+				callback(userIds.length);
 			}
 		});
 	}
 
 	User.getFollowerCount = function(uid, callback) {
 		RDB.smembers('followers:' + uid, function(err, userIds) {
-			// @note why are error-handling styles being mixed?
-			// either go with not-error-dosomething-else-dosomethingelse, or
-			// go with if-error-dosomething-return
-			// also why is console.log(err) being used when below we're using RDB.handle()?
-			if (!err) {
-				callback(userIds.length);
-			} else {
+			if(err) {
 				console.log(err);
+			} else {
+				userIds = userIds.filter(function(value) {
+					return value !== '0';
+				});
+				callback(userIds.length);
 			}
 		});
 	}
@@ -560,6 +562,9 @@ var utils = require('./../public/src/utils.js'),
 		}
 
 		function iterator(uid, callback) {
+			if(uid === "0")
+				return callback(null);
+
 			User.getUserData(uid, function(err, userData) {
 				returnData.push(userData);
 
@@ -578,7 +583,7 @@ var utils = require('./../public/src/utils.js'),
 				topics.getTopicField(tid, 'slug', function(err, slug) {
 					var message = '<strong>' + username + '</strong> made a new post';
 
-					notifications.create(message, 5, nconf.get('relative_path') + '/topic/' + slug + '#' + pid, 'topic:' + tid, function(nid) {
+					notifications.create(message, nconf.get('relative_path') + '/topic/' + slug + '#' + pid, 'topic:' + tid, function(nid) {
 						notifications.push(nid, followers);
 					});
 				});
@@ -888,7 +893,7 @@ var utils = require('./../public/src/utils.js'),
 
 			async.parallel({
 				unread: function(next) {
-					RDB.zrevrangebyscore('uid:' + uid + ':notifications:unread', 10, 0, function(err, nids) {
+					RDB.zrevrange('uid:' + uid + ':notifications:unread', 0, 10, function(err, nids) {
 						// @todo handle err
 						var unread = [];
 
@@ -897,7 +902,7 @@ var utils = require('./../public/src/utils.js'),
 
 						if (nids && nids.length > 0) {
 							async.eachSeries(nids, function(nid, next) {
-								notifications.get(nid, function(notif_data) {
+								notifications.get(nid, uid, function(notif_data) {
 									unread.push(notif_data);
 									next();
 								});
@@ -910,7 +915,7 @@ var utils = require('./../public/src/utils.js'),
 					});
 				},
 				read: function(next) {
-					RDB.zrevrangebyscore('uid:' + uid + ':notifications:read', 10, 0, function(err, nids) {
+					RDB.zrevrange('uid:' + uid + ':notifications:read', 0, 10, function(err, nids) {
 						// @todo handle err
 						var read = [];
 
@@ -919,7 +924,7 @@ var utils = require('./../public/src/utils.js'),
 
 						if (nids && nids.length > 0) {
 							async.eachSeries(nids, function(nid, next) {
-								notifications.get(nid, function(notif_data) {
+								notifications.get(nid, uid, function(notif_data) {
 									read.push(notif_data);
 									next();
 								});
@@ -932,22 +937,6 @@ var utils = require('./../public/src/utils.js'),
 					});
 				}
 			}, function(err, notifications) {
-				// While maintaining score sorting, sort by time
-				var readCount = notifications.read.length,
-					unreadCount = notifications.unread.length;
-
-				notifications.read.sort(function(a, b) {
-					if (a.score === b.score) {
-						return (a.datetime - b.datetime) > 0 ? -1 : 1;
-					}
-				});
-
-				notifications.unread.sort(function(a, b) {
-					if (a.score === b.score) {
-						return (a.datetime - b.datetime) > 0 ? -1 : 1;
-					}
-				});
-
 				// Limit the number of notifications to `maxNotifs`, prioritising unread notifications
 				if (notifications.read.length + notifications.unread.length > maxNotifs) {
 					notifications.read.length = maxNotifs - notifications.unread.length;
@@ -956,13 +945,44 @@ var utils = require('./../public/src/utils.js'),
 				callback(notifications);
 			});
 		},
+		getAll: function(uid, limit, before, callback) {
+			var	now = new Date();
+
+			if (!limit || parseInt(limit) <= 0) limit = 25;
+			if (before) before = new Date(parseInt(before, 10));
+
+			RDB.multi()
+				.zrevrangebyscore('uid:' + uid + ':notifications:read', before ? before.getTime(): now.getTime(), -Infinity, 'LIMIT', 0, limit)
+				.zrevrangebyscore('uid:' + uid + ':notifications:unread', before ? before.getTime(): now.getTime(), -Infinity, 'LIMIT', 0, limit)
+				.exec(function(err, results) {
+					// Merge the read and unread notifications
+					var	nids = results[0].concat(results[1]);
+
+					async.map(nids, function(nid, next) {
+						notifications.get(nid, uid, function(notif_data) {
+							next(null, notif_data);
+						});
+					}, function(err, notifs) {
+						notifs = notifs.sort(function(a, b) {
+							return parseInt(b.datetime, 10) - parseInt(a.datetime, 10);
+						}).map(function(notif) {
+							notif.datetimeISO = new Date(parseInt(notif.datetime, 10)).toISOString();
+							notif.readClass = !notif.read ? 'unread' : '';
+
+							return notif;
+						});
+
+						callback(err, notifs);
+					})
+				});
+		},
 		getUnreadCount: function(uid, callback) {
 			RDB.zcount('uid:' + uid + ':notifications:unread', 0, 10, callback);
 		},
 		getUnreadByUniqueId: function(uid, uniqueId, callback) {
 			RDB.zrange('uid:' + uid + ':notifications:unread', 0, -1, function(err, nids) {
 				async.filter(nids, function(nid, next) {
-					notifications.get(nid, function(notifObj) {
+					notifications.get(nid, uid, function(notifObj) {
 						if (notifObj.uniqueId === uniqueId) next(true);
 						else next(false);
 					});

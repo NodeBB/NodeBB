@@ -2,7 +2,8 @@ var user = require('./user.js'),
 	bcrypt = require('bcrypt'),
 	RDB = require('./redis.js'),
 	path = require('path'),
-	winston = require('winston');
+	winston = require('winston'),
+	utils = require('./../public/src/utils.js');
 
 (function(Login) {
 
@@ -13,12 +14,14 @@ var user = require('./user.js'),
 				message: 'invalid-user'
 			});
 		} else {
-			user.get_uid_by_username(username, function(err, uid) {
+
+			var userslug = utils.slugify(username);
+
+			user.get_uid_by_userslug(userslug, function(err, uid) {
+
 				if (err) {
 					return next(new Error('redis-error'));
-				}
-
-				if (uid == null) {
+				} else if (uid == null) {
 					return next(new Error('invalid-user'));
 				}
 

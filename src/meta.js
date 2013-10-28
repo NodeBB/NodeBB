@@ -98,6 +98,43 @@ var utils = require('./../public/src/utils.js'),
 					});
 				});
 			});
+		},
+		set: function(data, callback) {
+			var	themeData = {
+					'theme:type': data.type,
+					'theme:id': data.id,
+					'theme:staticDir': ''
+				};
+
+			switch(data.type) {
+				case 'local':
+					async.waterfall([
+						function(next) {
+							fs.readFile(path.join(__dirname, '../node_modules', data.id, 'theme.json'), function(err, config) {
+								if (!err) {
+									config = JSON.parse(config.toString());
+									next(null, config);
+								} else {
+									next(err);
+								}
+							});
+						},
+						function(config, next) {
+							if (config.staticDir) {
+								themeData['theme:staticDir'] = config.staticDir;
+							}
+
+							RDB.hmset('config', themeData, next);
+						}
+					], function(err) {
+						callback(err);
+					});
+				break;
+
+				case 'bootswatch':
+					RDB.hmset('config', themeData, callback);
+				break;
+			}
 		}
 	};
 
@@ -157,6 +194,7 @@ var utils = require('./../public/src/utils.js'),
 			'vendor/jquery/js/jquery.js',
 			'vendor/jquery/js/jquery-ui-1.10.3.custom.min.js',
 			'vendor/jquery/js/jquery.timeago.js',
+			'vendor/jquery/js/jquery.form.js',
 			'vendor/bootstrap/js/bootstrap.min.js',
 			'src/app.js',
 			'vendor/requirejs/require.js',
@@ -164,7 +202,6 @@ var utils = require('./../public/src/utils.js'),
 			'src/templates.js',
 			'src/ajaxify.js',
 			'src/translator.js',
-			'src/jquery.form.js',
 			'src/utils.js'
 		],
 		minFile: path.join(__dirname, '..', 'public/src/nodebb.min.js'),
@@ -186,7 +223,7 @@ var utils = require('./../public/src/utils.js'),
 					},
 					minFile: function (next) {
 						if (!fs.existsSync(Meta.js.minFile)) {
-							winston.warn('No minified client-side library found');
+							if (process.env.NODE_ENV === 'development') winston.warn('No minified client-side library found');
 							return next(null, 0);
 						}
 
@@ -196,7 +233,7 @@ var utils = require('./../public/src/utils.js'),
 					}
 				}, function (err, results) {
 					if (results.minFile > results.mtime) {
-						winston.info('No changes to client-side libraries -- skipping minification');
+						if (process.env.NODE_ENV === 'development') winston.info('No changes to client-side libraries -- skipping minification');
 						callback(null, [path.relative(path.join(__dirname, '../public'), Meta.js.minFile)]);
 					} else {
 						Meta.js.minify(function () {
@@ -215,11 +252,11 @@ var utils = require('./../public/src/utils.js'),
 				}),
 				minified;
 
-			winston.info('Minifying client-side libraries');
+			if (process.env.NODE_ENV === 'development') winston.info('Minifying client-side libraries');
 			minified = uglifyjs.minify(jsPaths);
 			fs.writeFile(Meta.js.minFile, minified.code, function (err) {
 				if (!err) {
-					winston.info('Minified client-side libraries');
+					if (process.env.NODE_ENV === 'development') winston.info('Minified client-side libraries');
 					callback();
 				} else {
 					winston.error('Problem minifying client-side libraries, exiting.');

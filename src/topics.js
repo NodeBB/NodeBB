@@ -1,5 +1,5 @@
-var RDB = require('./redis.js')
-schema = require('./schema.js'),
+var RDB = require('./redis.js'),
+	schema = require('./schema.js'),
 	posts = require('./posts.js'),
 	utils = require('./../public/src/utils.js'),
 	user = require('./user.js'),
@@ -11,8 +11,10 @@ schema = require('./schema.js'),
 	async = require('async'),
 	feed = require('./feed.js'),
 	favourites = require('./favourites.js'),
+	meta = require('./meta.js'),
 	reds = require('reds'),
 	topicSearch = reds.createSearch('nodebbtopicsearch'),
+	nconf = require('nconf'),
 	validator = require('validator');
 
 (function(Topics) {
@@ -67,7 +69,7 @@ schema = require('./schema.js'),
 			}
 
 			function getPrivileges(next) {
-				threadTools.privileges(tid, current_user, function(privData) {
+				postTools.privileges(tid, current_user, function(privData) {
 					next(null, privData);
 				});
 			}
@@ -94,11 +96,21 @@ schema = require('./schema.js'),
 		});
 	}
 
-	Topics.getLatestTopics = function(current_user, start, end, callback) {
+	Topics.getLatestTopics = function(current_user, start, end, term, callback) {
 
 		var timestamp = Date.now();
 
-		var args = ['topics:recent', '+inf', timestamp - 86400000, 'LIMIT', start, end - start + 1];
+		var terms = {
+			day: 86400000,
+			week: 604800000,
+			month: 2592000000
+		};
+
+		var since = terms['day'];
+		if(terms[term])
+			since = terms[term];
+
+		var args = ['topics:recent', '+inf', timestamp - since, 'LIMIT', start, end - start + 1];
 
 		RDB.zrevrangebyscore(args, function(err, tids) {
 
@@ -202,10 +214,12 @@ schema = require('./schema.js'),
 		var unreadTids = [],
 			done = false;
 
+		function continueCondition() {
+			return unreadTids.length < 20 && !done;
+		}
+
 		async.whilst(
-			function() {
-				return unreadTids.length < 20 && !done;
-			},
+			continueCondition,
 			function(callback) {
 				RDB.zrevrange('topics:recent', start, stop, function(err, tids) {
 					if (err)
@@ -223,12 +237,16 @@ schema = require('./schema.js'),
 						Topics.hasReadTopics(tids, uid, function(read) {
 
 							var newtids = tids.filter(function(tid, index, self) {
-								return read[index] === 0;
+								return parseInt(read[index], 10) === 0;
 							});
 
 							unreadTids.push.apply(unreadTids, newtids);
-							start = stop + 1;
-							stop = start + 19;
+
+							if(continueCondition()) {
+								start = stop + 1;
+								stop = start + 19;
+							}
+
 							callback(null);
 						});
 					}
@@ -343,6 +361,7 @@ schema = require('./schema.js'),
 				return callback(new Error('Topic tid \'' + tid + '\' not found'));
 
 			Topics.markAsRead(tid, current_user);
+			Topics.increaseViewCount(tid);
 
 			// get the config to check if we are displaying pagination or not
 			if(this.meta.config.paginatedTopics && this.meta.config.paginatedTopics == "1"){
@@ -407,10 +426,14 @@ schema = require('./schema.js'),
 					'pinned': topicData.pinned,
 					'slug': topicData.slug,
 					'postcount': topicData.postcount,
+					'viewcount': topicData.viewcount,
 					'topic_id': tid,
 					'expose_tools': privileges.editable ? 1 : 0,
 					'posts': topicPosts,
-					'main_posts': main_posts
+					'main_posts': main_posts,
+					'twitter-intent-url': 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(nconf.get('url') + 'topic/' + topicData.slug) + '&text=' + encodeURIComponent(topicData.title),
+					'facebook-share-url': 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(nconf.get('url') + 'topic/' + topicData.slug),
+					'google-share-url': 'https://plus.google.com/share?url=' + encodeURIComponent(nconf.get('url') + 'topic/' + topicData.slug)
 				});
 			});
 		});
@@ -689,6 +712,7 @@ schema = require('./schema.js'),
 					'timestamp': timestamp,
 					'lastposttime': 0,
 					'postcount': 0,
+					'viewcount': 0,
 					'locked': 0,
 					'deleted': 0,
 					'pinned': 0
@@ -749,6 +773,10 @@ schema = require('./schema.js'),
 		RDB.hincrby('topic:' + tid, 'postcount', 1);
 	}
 
+	Topics.increaseViewCount = function(tid) {
+		RDB.hincrby('topic:' + tid, 'viewcount', 1);
+	}
+
 	Topics.isLocked = function(tid, callback) {
 		Topics.getTopicField(tid, 'locked', function(err, locked) {
 			callback(locked);
@@ -796,6 +824,7 @@ schema = require('./schema.js'),
 
 		Topics.getTopicField(tid, 'cid', function(err, cid) {
 			feed.updateCategory(cid);
+			RDB.hincrby('category:' + cid, 'topic_count', -1);
 		});
 	}
 
@@ -807,6 +836,7 @@ schema = require('./schema.js'),
 
 		Topics.getTopicField(tid, 'cid', function(err, cid) {
 			feed.updateCategory(cid);
+			RDB.hincrby('category:' + cid, 'topic_count', 1);
 		});
 	}
 

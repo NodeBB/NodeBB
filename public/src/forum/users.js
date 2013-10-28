@@ -5,9 +5,14 @@ define(function() {
 		var timeoutId = 0;
 		var loadingMoreUsers = false;
 
-		var url = window.location.href,
+		function getActiveSection() {
+			var url = window.location.href,
 			parts = url.split('/'),
 			active = parts[parts.length - 1];
+			return active;
+		}
+
+		var active = getActiveSection();
 
 		var lastSearch = null;
 
@@ -60,9 +65,9 @@ define(function() {
 			var html = templates.prepare(templates['users'].blocks['users']).parse({
 				users: data
 			}),
-				userListEl = document.querySelector('#users-container');
+				userListEl = $('#users-inner-container');
 
-			userListEl.innerHTML = html;
+			userListEl.html(html);
 
 
 			if (data && data.length === 0) {
@@ -76,17 +81,22 @@ define(function() {
 		});
 
 		socket.on('api:user.isOnline', function(data) {
-			if(active == 'online' && !loadingMoreUsers) {
-				$('#users-container').empty();
-				startLoading('users:online', 0);
+			if(getActiveSection() == 'online' && !loadingMoreUsers) {
+				startLoading('users:online', 0, true);
+				socket.emit('api:user.getOnlineAnonCount', {} , function(anonCount) {
+					$('#online_anon_count').html(anonCount);
+				});
 			}
 		});
 
-		function onUsersLoaded(users) {
+		function onUsersLoaded(users, emptyContainer) {
 			var html = templates.prepare(templates['users'].blocks['users']).parse({
 				users: users
 			});
-			$('#users-container').append(html);
+			if(emptyContainer)
+				$('#users-inner-container .registered-user').remove();
+			$('#users-inner-container').append(html);
+			$('#users-inner-container .anon-user').appendTo($('#users-inner-container'));
 		}
 
 		function loadMoreUsers() {
@@ -102,18 +112,18 @@ define(function() {
 			}
 
 			if (set) {
-				startLoading(set, $('#users-container').children().length);
+				startLoading(set, $('#users-inner-container').children('.registered-user').length);
 			}
 		}
 
-		function startLoading(set, after) {
+		function startLoading(set, after, emptyContainer) {
 			loadingMoreUsers = true;
 			socket.emit('api:users.loadMore', {
 				set: set,
 				after: after
 			}, function(data) {
 				if (data.users.length) {
-					onUsersLoaded(data.users);
+					onUsersLoaded(data.users, emptyContainer);
 					$('#load-more-users-btn').removeClass('disabled');
 				} else {
 					$('#load-more-users-btn').addClass('disabled');

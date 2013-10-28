@@ -1,4 +1,4 @@
-define(['forum/accountheader'], function(header) {
+define(['forum/accountheader', 'uploader'], function(header, uploader) {
 	var AccountEdit = {};
 
 	AccountEdit.init = function() {
@@ -6,61 +6,6 @@ define(['forum/accountheader'], function(header) {
 
 		var gravatarPicture = templates.get('gravatarpicture');
 		var uploadedPicture = templates.get('uploadedpicture');
-
-		$('#uploadForm').submit(function() {
-			AccountEdit.status('uploading the file ...');
-
-			$('#upload-progress-bar').css('width', '0%');
-			$('#upload-progress-box').show();
-			$('#upload-progress-box').removeClass('hide');
-
-			if (!$('#userPhotoInput').val()) {
-				AccountEdit.error('select an image to upload!');
-				return false;
-			}
-
-			$(this).find('#imageUploadCsrf').val($('#csrf_token').val());
-
-
-			$(this).ajaxSubmit({
-
-				error: function(xhr) {
-					AccountEdit.error('Error: ' + xhr.status);
-				},
-
-				uploadProgress: function(event, position, total, percent) {
-					console.log(percent);
-					$('#upload-progress-bar').css('width', percent + '%');
-				},
-
-
-				success: function(response) {
-					if (response.error) {
-						AccountEdit.error(response.error);
-						return;
-					}
-
-					var imageUrlOnServer = response.path;
-
-					$('#user-current-picture').attr('src', imageUrlOnServer);
-					$('#user-uploaded-picture').attr('src', imageUrlOnServer);
-
-					uploadedPicture = imageUrlOnServer;
-
-					setTimeout(function() {
-						AccountEdit.hideAlerts();
-						$('#upload-picture-modal').modal('hide');
-					}, 750);
-
-					socket.emit('api:updateHeader', {
-						fields: ['username', 'picture', 'userslug']
-					});
-					AccountEdit.success('File uploaded successfully!');
-				}
-			});
-
-			return false;
-		});
 
 		var selectedImageType = '';
 
@@ -137,17 +82,21 @@ define(['forum/accountheader'], function(header) {
 		$('#uploadPictureBtn').on('click', function() {
 
 			$('#change-picture-modal').modal('hide');
-			$('#upload-picture-modal').modal('show');
-			$('#upload-picture-modal').removeClass('hide');
+			uploader.open(config.relative_path + '/user/uploadpicture', function(imageUrlOnServer) {
+				$('#user-current-picture').attr('src', imageUrlOnServer);
+				$('#user-uploaded-picture').attr('src', imageUrlOnServer);
 
-			AccountEdit.hideAlerts();
+				uploadedPicture = imageUrlOnServer;
+
+				socket.emit('api:updateHeader', {
+					fields: ['username', 'picture', 'userslug']
+				});
+			});
+
 
 			return false;
 		});
 
-		$('#pictureUploadSubmitBtn').on('click', function() {
-			$('#uploadForm').submit();
-		});
 
 		(function handlePasswordChange() {
 			var currentPassword = $('#inputCurrentPassword');
@@ -230,27 +179,6 @@ define(['forum/accountheader'], function(header) {
 		}());
 	};
 
-	AccountEdit.hideAlerts = function() {
-		$('#alert-status').addClass('hide');
-		$('#alert-success').addClass('hide');
-		$('#alert-error').addClass('hide');
-		$('#upload-progress-box').addClass('hide');
-	}
-
-	AccountEdit.status = function(message) {
-		AccountEdit.hideAlerts();
-		$('#alert-status').text(message).removeClass('hide');
-	}
-
-	AccountEdit.success = function(message) {
-		AccountEdit.hideAlerts();
-		$('#alert-success').text(message).removeClass('hide');
-	}
-
-	AccountEdit.error = function(message) {
-		AccountEdit.hideAlerts();
-		$('#alert-error').text(message).removeClass('hide');
-	}
 
 	AccountEdit.changeUserPicture = function(type) {
 		var userData = {

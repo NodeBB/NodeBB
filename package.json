@@ -9,6 +9,9 @@
     "url": "https://github.com/designcreateplay/NodeBB/"
   },
   "main": "app.js",
+  "scripts": {
+    "test": "mocha ./tests"
+  },
   "dependencies": {
     "socket.io": "~0.9.16",
     "redis": "0.8.3",
@@ -34,15 +37,20 @@
     "request": "~2.25.0",
     "reds": "~0.2.4",
     "winston": "~0.7.2",
-    "nodebb-plugin-mentions": "~0.1.0",
-    "nodebb-plugin-markdown": "~0.1.0",
     "rss": "~0.2.0",
     "prompt": "~0.2.11",
     "uglify-js": "~2.4.0",
-    "validator": "~1.5.1"
+    "validator": "~1.5.1",
+    "nodebb-plugin-mentions": "~0.1.12",
+    "nodebb-plugin-markdown": "~0.1.7",
+    "nodebb-theme-vanilla": "designcreateplay/nodebb-theme-vanilla",
+    "nodebb-theme-cerulean": "0.0.3"
   },
   "optionalDependencies": {
     "hiredis": "~0.1.15"
+  },
+  "devDependencies": {
+    "mocha": "~1.13.0"
   },
   "bugs": {
     "url": "https://github.com/designcreateplay/NodeBB/issues"

@@ -6,6 +6,7 @@ var RDB = require('./redis.js'),
 	favourites = require('./favourites.js'),
 	threadTools = require('./threadTools.js'),
 	postTools = require('./postTools'),
+	categories = require('./categories'),
 	feed = require('./feed.js'),
 	async = require('async'),
 	plugins = require('./plugins'),
@@ -16,15 +17,23 @@ var RDB = require('./redis.js'),
 	winston = require('winston');
 
 (function(Posts) {
+	var customUserInfo = {};
 
 	Posts.getPostsByTid = function(tid, start, end, callback) {
 		RDB.lrange('tid:' + tid + ':posts', start, end, function(err, pids) {
 			RDB.handle(err);
 			
 			if (pids.length) {
-				Posts.getPostsByPids(pids, function(err, posts) {
-					callback(posts);
-				});
+				plugins.fireHook('filter:post.getTopic', pids, function(err, posts) {
+					if (!err & 0 < posts.length) {
+						Posts.getPostsByPids(pids, function(err, posts) {
+							plugins.fireHook('action:post.gotTopic', posts);
+							callback(posts);
+						});
+					} else {
+						callback(posts);
+					}
+				});			
 			} else {
 				callback([]);
 			}
@@ -46,17 +55,27 @@ var RDB = require('./redis.js'),
 				post.picture = userData.picture || require('gravatar').url('', {}, https = nconf.get('https'));
 				post.signature = signature;
 
-				if (post.editor !== '') {
-					user.getUserFields(post.editor, ['username', 'userslug'], function(err, editorData) {
-						if (err) return callback();
-
-						post.editorname = editorData.username;
-						post.editorslug = editorData.userslug;
-						callback();
-					});
-				} else {
-					callback();
+				for (var info in customUserInfo) {
+					if (customUserInfo.hasOwnProperty(info)) {
+						post[info] = userData[info] || customUserInfo[info];
+					}
 				}
+
+				plugins.fireHook('filter:posts.custom_profile_info', {profile: "", uid: post.uid}, function(err, profile_info) {
+					post.additional_profile_info = profile_info.profile;
+
+					if (post.editor !== '') {
+						user.getUserFields(post.editor, ['username', 'userslug'], function(err, editorData) {
+							if (err) return callback();
+
+							post.editorname = editorData.username;
+							post.editorslug = editorData.userslug;
+							callback();
+						});
+					} else {
+						callback();
+					}
+				});
 			});
 		});
 	};
@@ -119,6 +138,7 @@ var RDB = require('./redis.js'),
 		});
 	}
 
+	// TODO: this function is never called except from some debug route. clean up?
 	Posts.getPostData = function(pid, callback) {
 		RDB.hgetall('post:' + pid, function(err, data) {
 			if (err === null) {
@@ -134,7 +154,14 @@ var RDB = require('./redis.js'),
 	Posts.getPostFields = function(pid, fields, callback) {
 		RDB.hmgetObject('post:' + pid, fields, function(err, data) {
 			if (err === null) {
-				callback(data);
+				// TODO: I think the plugins system needs an optional 'parameters' paramter so I don't have to do this:
+				data = data || {};
+				data.pid = pid;
+				data.fields = fields;
+
+				plugins.fireHook('filter:post.getFields', data, function(err, data) {
+					callback(data);
+				});
 			} else {
 				console.log(err);
 			}
@@ -143,15 +170,28 @@ var RDB = require('./redis.js'),
 
 	Posts.getPostField = function(pid, field, callback) {
 		RDB.hget('post:' + pid, field, function(err, data) {
-			if (err === null)
-				callback(data);
-			else
+			if (err === null) {
+				// TODO: I think the plugins system needs an optional 'parameters' paramter so I don't have to do this:
+				data = data || {};
+				data.pid = pid;
+				data.field = field;
+				
+				plugins.fireHook('filter:post.getField', data, function(err, data) {
+					callback(data);
+				});
+			} else {
 				console.log(err);
+			}
 		});
 	}
 
-	Posts.setPostField = function(pid, field, value) {
+	Posts.setPostField = function(pid, field, value, done) {
 		RDB.hset('post:' + pid, field, value);
+		plugins.fireHook('action:post.setField', {
+			'pid': pid,
+			'field': field,
+			'value': value
+		}, done);
 	}
 
 	Posts.getPostsByPids = function(pids, callback) {
@@ -165,10 +205,16 @@ var RDB = require('./redis.js'),
 		multi.exec(function (err, replies) {
 			async.map(replies, function(postData, _callback) {
 				if (postData) {
-					postData.relativeTime = new Date(parseInt(postData.timestamp,10)).toISOString();
+
 					postData.post_rep = postData.reputation;
 					postData['edited-class'] = postData.editor !== '' ? '' : 'none';
-					postData['relativeEditTime'] = postData.edited !== '0' ? (new Date(parseInt(postData.edited,10)).toISOString()) : '';
+					try {
+						postData.relativeTime = new Date(parseInt(postData.timestamp,10)).toISOString();
+						postData['relativeEditTime'] = postData.edited !== '0' ? (new Date(parseInt(postData.edited,10)).toISOString()) : '';
+					} catch(e) {
+						winston.err('invalid time value');
+					}
+
 
 					if (postData.uploadedImages) {
 						try {
@@ -319,13 +365,18 @@ var RDB = require('./redis.js'),
 
 						RDB.incr('totalpostcount');
 
-						topics.getTopicField(tid, 'cid', function(err, cid) {
+						topics.getTopicFields(tid, ['cid', 'pinned'], function(err, topicData) {
+
 							RDB.handle(err);
+
+							var cid = topicData.cid;
 
 							feed.updateTopic(tid);
 
 							RDB.zadd('categories:recent_posts:cid:' + cid, timestamp, pid);
-							RDB.zadd('categories:' + cid + ':tid', timestamp, tid);
+
+							if(topicData.pinned === '0')
+								RDB.zadd('categories:' + cid + ':tid', timestamp, tid);
 
 							RDB.scard('cid:' + cid + ':active_users', function(err, amount) {
 								if (amount > 10) {
@@ -353,7 +404,7 @@ var RDB = require('./redis.js'),
 							callback(postData);
 						});
 
-						plugins.fireHook('action:post.save', [postData]);
+						plugins.fireHook('action:post.save', postData);
 
 						postSearch.index(content, pid);
 					});
@@ -388,13 +439,17 @@ var RDB = require('./redis.js'),
 	}
 
 	Posts.getPostsByUid = function(uid, start, end, callback) {
-
 		user.getPostIds(uid, start, end, function(pids) {
-
 			if (pids && pids.length) {
-
-				Posts.getPostsByPids(pids, function(err, posts) {
-					callback(posts);
+				plugins.fireHook('filter:post.getTopic', pids, function(err, posts) {
+					if (!err & 0 < posts.length) {
+						Posts.getPostsByPids(pids, function(err, posts) {
+							plugins.fireHook('action:post.gotTopic', posts);
+							callback(posts);
+						});
+					} else {
+						callback(posts);
+					}
 				});
 			} else
 				callback([]);

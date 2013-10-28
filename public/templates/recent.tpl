@@ -4,8 +4,16 @@
 	<div id="category_active_users"></div>
 </ol>
 
+<ul class="nav nav-pills">
+	<li class=''><a href='/recent/day'>[[recent:day]]</a></li>
+	<li class=''><a href='/recent/week'>[[recent:week]]</a></li>
+	<li class=''><a href='/recent/month'>[[recent:month]]</a></li>
+</ul>
+
+<br />
+
 <a href="/recent">
-	<div class="alert hide" id="new-topics-alert"></div>
+	<div class="alert alert-warning hide" id="new-topics-alert"></div>
 </a>
 
 <div class="alert alert-warning hide {no_topics_message}" id="category-no-topics">

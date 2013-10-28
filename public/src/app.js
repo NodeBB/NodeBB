@@ -1,9 +1,13 @@
 var socket,
 	config,
-	app = {};
+	app = {
+		'username': null,
+		'uid': null
+	};
 
 (function () {
 	var showWelcomeMessage = false;
+
 
 	app.loadConfig = function() {
 
@@ -17,13 +21,20 @@ var socket,
 						socket.socket.connect();
 					}, 200);
 				} else {
-					socket = io.connect(RELATIVE_PATH);
+					var max_reconnection_attemps = 5;
+					var reconnection_delay = 200;
+					socket = io.connect(RELATIVE_PATH, {
+						'max reconnection attempts': max_reconnection_attemps,
+						'reconnection delay': reconnection_delay
+					});
 
 					var reconnecting = false,
 						reconnectEl, reconnectTimer;
 
 					socket.on('event:connect', function (data) {
 						app.username = data.username;
+						app.uid = data.uid;
+
 						app.showLoginMessage();
 						socket.emit('api:updateHeader', {
 							fields: ['username', 'picture', 'userslug']
@@ -53,7 +64,13 @@ var socket,
 						socket.socket.connect();
 					});
 
-					socket.on('reconnecting', function (data) {
+					socket.on('reconnecting', function (data, attempt) {
+						if(attempt == max_reconnection_attemps) {
+							socket.socket.reconnectionAttempts = 0;
+							socket.socket.reconnectionDelay = reconnection_delay;
+							return;
+						}
+
 						if (!reconnectEl) reconnectEl = $('#reconnect');
 						reconnecting = true;
 
@@ -130,6 +147,7 @@ var socket,
 		var alert_id = 'alert_button_' + ((params.alert_id) ? params.alert_id : new Date().getTime());
 
 		var alert = $('#' + alert_id);
+		var title = params.title || '';
 
 		function startTimeout(div, timeout) {
 			var timeoutId = setTimeout(function () {
@@ -142,7 +160,7 @@ var socket,
 		}
 
 		if (alert.length > 0) {
-			alert.find('strong').html(params.title);
+			alert.find('strong').html(title);
 			alert.find('p').html(params.message);
 			alert.attr('class', "alert toaster-alert " + "alert-" + params.type);
 
@@ -155,7 +173,7 @@ var socket,
 				p = document.createElement('p');
 
 			p.innerHTML = params.message;
-			strong.innerHTML = params.title;
+			strong.innerHTML = title;
 
 			div.className = "alert toaster-alert " + "alert-" + params.type;
 
@@ -266,7 +284,7 @@ var socket,
 		}
 
 		$('span.timeago').timeago();
-
+		$('.post-content img').addClass('img-responsive');
 
 		setTimeout(function () {
 			window.scrollTo(0, 1); // rehide address bar on mobile after page load completes.
@@ -312,7 +330,10 @@ var socket,
 	}
 
 	app.createNewPosts = function (data) {
-		data.posts[0].display_moderator_tools = 'none';
+		if (data.posts[0].uid !== app.uid) {
+			data.posts[0].display_moderator_tools = 'none';
+		}
+
 		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
 		translator.translate(html, function(translatedHTML) {
 			var uniqueid = new Date().getTime(),
@@ -332,6 +353,7 @@ var socket,
 			app.populate_online_users();
 			app.addCommasToNumbers();
 			$('span.timeago').timeago();
+			$('.post-content img').addClass('img-responsive');
 		});
 	}
 

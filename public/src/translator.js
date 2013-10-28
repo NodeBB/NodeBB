@@ -30,6 +30,7 @@
 			languageFile = parsedKey[0];
 
 		parsedKey = parsedKey[1];
+
 		translator.load(languageFile, function (languageData) {
 			if (callback) {
 				callback(languageData[parsedKey]);
@@ -39,6 +40,20 @@
 		});
 	};
 
+	translator.mget = function (keys, callback) {
+
+		var async = require('async');
+
+		function getKey(key, callback) {
+			translator.get(key, function(value) {
+				callback(null, value);
+			});
+		}
+
+		async.map(keys, getKey, callback);
+	}
+
+
 	/*
 	 * TODO: Not fully converted to server side yet, ideally server should be able to parse whole templates on demand if necessary
 	 * fix: translator.load should determine if server side and immediately return appropriate language file.
@@ -46,7 +61,7 @@
 	translator.translate = function (data, callback) {
 		var keys = data.match(/\[\[.*?\]\]/g),
 			loading = 0;
-		
+
 		function insertLanguage(text, key, value, variables) {
 			if (value) {
 				for (var i = 1, ii = variables.length; i < ii; i++) {
@@ -56,7 +71,7 @@
 
 				text = text.replace(key, value);
 			}
-			
+
 
 			return text;
 		}
@@ -74,14 +89,13 @@
 					data = insertLanguage(data, keys[key], files.loaded[languageFile][parsedKey], variables);
 				} else {
 					loading++;
-
-					(function (languageKey, parsedKey) {
+					(function (languageKey, parsedKey, languageFile, variables) {
 						translator.load(languageFile, function (languageData) {
 							data = insertLanguage(data, languageKey, languageData[parsedKey], variables);
 							loading--;
 							checkComplete();
 						});
-					}(keys[key], parsedKey));
+					}(keys[key], parsedKey, languageFile, variables));
 
 				}
 			}

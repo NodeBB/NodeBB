@@ -6,9 +6,10 @@ define(function() {
 
 		function modified(el) {
 			var cid = $(el).parents('li').attr('data-cid');
-
-			modified_categories[cid] = modified_categories[cid] || {};
-			modified_categories[cid][$(el).attr('data-name')] = $(el).val();
+			if(cid) {
+				modified_categories[cid] = modified_categories[cid] || {};
+				modified_categories[cid][$(el).attr('data-name')] = $(el).val();
+			}
 		}
 
 		function save() {
@@ -28,6 +29,7 @@ define(function() {
 					var iconClass = jQuery('.bootbox .selected').children(':first').attr('class');
 					el.attr('class', iconClass + ' icon-2x');
 					el.val(iconClass);
+					el.attr('value', iconClass);
 
 					modified(el);
 				}
@@ -46,13 +48,26 @@ define(function() {
 			el.parentNode.parentNode.className = 'entry-row ' + el.value;
 		}
 
-		jQuery('#entry-container').sortable();
+		function updateCategoryOrders() {
+			var categories = $('.admin-categories #entry-container').children();
+			for(var i=0; i<categories.length; ++i) {
+				var input = $(categories[i]).find('input[data-name="order"]');
+
+				input.val(i+1).attr('data-value', i+1);
+				modified(input);
+			}
+		}
+
+		jQuery('#entry-container').sortable({
+			stop: function( event, ui ) {
+				updateCategoryOrders();
+			}
+		});
 		jQuery('.blockclass').each(function() {
 			jQuery(this).val(this.getAttribute('data-value'));
 		});
 
 
-		//DRY Failure. this needs to go into an ajaxify onready style fn. Currently is copy pasted into every single function so after ACP is off the ground fix asap
 		function showCreateCategoryModal() {
 			$('#new-category-modal').modal();
 		}
@@ -61,7 +76,7 @@ define(function() {
 			var category = {
 				name: $('#inputName').val(),
 				description: $('#inputDescription').val(),
-				icon: $('#new-category-modal i').attr('value'),
+				icon: $('#new-category-modal i').val(),
 				blockclass: $('#inputBlockclass').val()
 			};
 
@@ -106,6 +121,10 @@ define(function() {
 				select_icon($(this).find('i'));
 			});
 
+			jQuery('#new-category-modal').on('click', '.icon', function(ev) {
+				select_icon($(this).find('i'));
+			});
+
 			jQuery('.blockclass').on('change', function(ev) {
 				update_blockclass(ev.target);
 			});
@@ -123,7 +142,7 @@ define(function() {
 
 			});
 
-			jQuery('.entry-row button').on('click', function(ev) {
+			jQuery('#entry-container').on('click', '.disable-btn', function(ev) {
 				var btn = jQuery(this);
 				var categoryRow = btn.parents('li');
 				var cid = categoryRow.attr('data-cid');

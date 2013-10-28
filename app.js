@@ -86,6 +86,7 @@
 				webserver = require('./src/webserver.js'),
 				SocketIO =  require('socket.io').listen(global.server, { log: false, transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket']}),
 				websockets = require('./src/websockets.js'),
+				posts = require('./src/posts.js'),
 				plugins = require('./src/plugins'); // Don't remove this - plugins initializes itself
 
 			websockets.init(SocketIO);
@@ -108,6 +109,9 @@
 		});
 
 	} else if (nconf.get('upgrade')) {
+		nconf.file({
+			file: __dirname + '/config.json'
+		});
 		meta = require('./src/meta.js');
 
 		meta.configs.init(function () {

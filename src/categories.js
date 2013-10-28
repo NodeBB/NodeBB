@@ -4,6 +4,7 @@ var RDB = require('./redis.js'),
 	user = require('./user.js'),
 	async = require('async'),
 	topics = require('./topics.js'),
+	plugins = require('./plugins'),
 	winston = require('winston'),
 	nconf = require('nconf');
 
@@ -27,11 +28,13 @@ var RDB = require('./redis.js'),
 				blockclass: data.blockclass,
 				slug: slug,
 				topic_count: 0,
-				disabled: 0
+				disabled: 0,
+				order: data.order
 			};
-			RDB.hmset('category:' + cid, category);
 
-			callback(null, category);
+			RDB.hmset('category:' + cid, category, function(err, data) {
+				callback(err, category);
+			});
 		});
 	};
 
@@ -54,9 +57,16 @@ var RDB = require('./redis.js'),
 				Categories.getActiveUsers(category_id, next);
 			}
 
-			async.parallel([getTopicIds, getActiveUsers], function(err, results) {
+			function getSidebars(next) {
+				plugins.fireHook('filter:category.build_sidebars', [], function(err, sidebars) {
+					next(err, sidebars);
+				});
+			}
+
+			async.parallel([getTopicIds, getActiveUsers, getSidebars], function(err, results) {
 				var tids = results[0],
-					active_users = results[1];
+					active_users = results[1],
+					sidebars = results[2];
 
 				var categoryData = {
 					'category_name': category_name,
@@ -71,7 +81,8 @@ var RDB = require('./redis.js'),
 					'topics': [],
 					'twitter-intent-url': 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(nconf.get('url') + 'category/' + category_slug) + '&text=' + encodeURIComponent(category_name),
 					'facebook-share-url': 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(nconf.get('url') + 'category/' + category_slug),
-					'google-share-url': 'https://plus.google.com/share?url=' + encodeURIComponent(nconf.get('url') + 'category/' + category_slug)
+					'google-share-url': 'https://plus.google.com/share?url=' + encodeURIComponent(nconf.get('url') + 'category/' + category_slug),
+					'sidebars': sidebars
 				};
 
 				function getTopics(next) {
@@ -324,31 +335,34 @@ var RDB = require('./redis.js'),
 			return;
 		}
 
-		var categories = [];
-
 		function getCategory(cid, callback) {
 			Categories.getCategoryData(cid, function(err, categoryData) {
-
 				if (err) {
-					callback(err);
+					winston.warn('Attempted to retrieve cid ' + cid + ', but nothing was returned!');
+					callback(null, null);
 					return;
 				}
 
 				Categories.hasReadCategory(cid, current_user, function(hasRead) {
 					categoryData.badgeclass = (parseInt(categoryData.topic_count, 10) === 0 || (hasRead && current_user !== 0)) ? '' : 'badge-important';
 
-					categories.push(categoryData);
-					callback(null);
+					callback(null, categoryData);
 				});
 			});
 		}
 
-		async.eachSeries(cids, getCategory, function(err) {
+		async.map(cids, getCategory, function(err, categories) {
 			if (err) {
 				winston.err(err);
 				callback(null);
 				return;
 			}
+
+			categories = categories.filter(function(category) {
+				return !!category;
+			}).sort(function(a, b) {
+				return parseInt(a.order, 10) - parseInt(b.order, 10);
+			});
 
 			callback({
 				'categories': categories

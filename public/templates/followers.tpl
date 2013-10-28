@@ -15,15 +15,17 @@
 				<img src="{followers.picture}" class="img-thumbnail"/>
 			</a>
 			<br/>
-			<a href="/user/{followers.userslug}">{followers.username}</a>
-			<br/>
-			<div title="reputation">
-				<span class='formatted-number'>{followers.reputation}</span>
-				<i class='icon-star'></i>
-			</div>
-			<div title="post count">
-				<span class='formatted-number'>{followers.postcount}</span>
-				<i class='icon-pencil'></i>
+			<div class="user-info">
+				<a href="/user/{followers.userslug}">{followers.username}</a>
+				<br/>
+				<div title="reputation" class="reputation">
+					<span class='formatted-number'>{followers.reputation}</span>
+					<i class='icon-star'></i>
+				</div>
+				<div title="post count" class="post-count">
+					<span class='formatted-number'>{followers.postcount}</span>
+					<i class='icon-pencil'></i>
+				</div>
 			</div>
 		</div>
 		<!-- END followers -->

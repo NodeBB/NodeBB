@@ -122,8 +122,13 @@ var ajaxify = {};
 			if (hrefEmpty(this.href) || this.target !== '' || this.protocol === 'javascript:')
 				return;
 
-			app.previousUrl = window.location.href;
+			if(!window.location.pathname.match(/\/(403|404)$/g))
+				app.previousUrl = window.location.href;
 
+			if (this.getAttribute('data-ajaxify') == 'false') {
+				return;
+			}
+			
 			if (!e.ctrlKey && e.which === 1) {
 				if (this.host === window.location.host) {
 					// Internal link
@@ -176,7 +181,7 @@ var ajaxify = {};
 
 		var scripts = [],
 			script,
-			children_nodes = $(body_el).children(),
+			children_nodes = $(body_el).find('script'),
 			child,
 			i;
 

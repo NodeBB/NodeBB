@@ -5,6 +5,10 @@
 	{meta_tags}
 	<link href="{cssSrc}" rel="stylesheet" media="screen">
 	<link rel="stylesheet" href="{relative_path}/vendor/fontawesome/css/font-awesome.min.css">
+	{link_tags}
+	<!-- BEGIN pluginCSS -->
+	<link rel="stylesheet" href="{pluginCSS.path}">
+	<!-- END pluginCSS -->
 	<script>
 		var RELATIVE_PATH = "{relative_path}";
 	</script>
@@ -25,7 +29,7 @@
 		}
 	</script>
 
-	<link rel="stylesheet" type="text/css" href="{relative_path}/css/nodebb.css" />
+	<link rel="stylesheet" type="text/css" href="{relative_path}/css/theme.css" />
 </head>
 
 <body>
@@ -37,9 +41,14 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a href="/">
-					<h1 class="navbar-brand forum-title">{title}</h1>
-				</a>
+				<div>
+					<a href="/">
+						<img class="{brand:logo:display} forum-logo" src="{brand:logo}" />
+					</a>
+					<a href="/">
+						<h1 class="navbar-brand forum-title">{title}</h1>
+					</a>
+				</div>
 			</div>
 
 			<div class="navbar-collapse collapse navbar-ex1-collapse">
@@ -56,27 +65,29 @@
 					<li class="visible-xs">
 						<a href="/search">[[global:header.search]]</a>
 					</li>
-					<li class="visible-xs">
-						<a href="/search">Search</a>
+					<!-- BEGIN navigation -->
+					<li class="{navigation.class}">
+						<a href="{navigation.route}">{navigation.text}</a>
 					</li>
-					<li>
-						<a href="/"></a>
-					</li>
+					<!-- END navigation -->
 				</ul>
 
-				<form id="search-form" class="navbar-form navbar-right hidden-xs" role="search" method="GET" action="">
-					<div class="hide" id="search-fields">
-						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search" name="query" value="">
-						</div>
-						<button type="submit" class="btn btn-default hide">[[global:search]]</button>
-					</div>
-					<button id="search-button" type="button" class="btn btn-link"><i class="icon-search"></i></button>
-				</form>
 
 				<ul id="logged-in-menu" class="nav navbar-nav navbar-right hide">
 					<li>
 						<a href="#" id="reconnect"></a>
+					</li>
+
+					<li>
+						<form id="search-form" class="navbar-form navbar-right hidden-xs" role="search" method="GET" action="">
+							<div class="hide" id="search-fields">
+								<div class="form-group">
+									<input type="text" class="form-control" placeholder="Search" name="query" value="">
+								</div>
+								<button type="submit" class="btn btn-default hide">[[global:search]]</button>
+							</div>
+							<button id="search-button" type="button" class="btn btn-link"><i class="icon-search"></i></button>
+						</form>
 					</li>
 
 					<li id="notifications-list" class="notifications dropdown text-center hidden-xs">
@@ -88,24 +99,33 @@
 						</ul>
 					</li>
 
-					<li>
-						<a id="user_label" href="">
+					<li id="user_label" class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="user_dropdown">
 							<img src=""/>
-							<span></span>
 						</a>
+						<ul id="user-control-list" class="dropdown-menu" aria-labelledby="user_dropdown">
+							<li>
+								<a id="user-profile-link" href=""><span>Profile</span></a>
+							</li>
+							<li id="logout-link">
+								<a href="#">Log out</a>
+							</li>
+						</ul>
 					</li>
 
-					<li id="logout-link">
-						<a href="#">Log out</a>
-					</li>
 				</ul>
 
 				<ul id="logged-out-menu" class="nav navbar-nav navbar-right">
-					<li id="register-link">
-						<a href="/register">Register</a>
-					</li>
-					<li id="login-link">
-						<a href="/login">Login</a>
+					<li>
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="loggedout_dropdown"><i class="icon-signin"></i></a>
+						<ul class="dropdown-menu" aria-labelledby="loggedout_dropdown">
+							<li>
+								<a href="/register">Register</a>
+							</li>
+							<li>
+								<a href="/login">Login</a>
+							</li>
+						</ul>
 					</li>
 				</ul>
 

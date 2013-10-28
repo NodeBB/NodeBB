@@ -8,6 +8,7 @@ var fs = require('fs'),
 		libraries: {},
 		loadedHooks: {},
 		staticDirs: {},
+		cssFiles: [],
 
 		// Events
 		readyEvent: new eventEmitter,
@@ -42,7 +43,7 @@ var fs = require('fs'),
 					Object.keys(_self.loadedHooks).forEach(function(hook) {
 						var hooks = _self.loadedHooks[hook];
 						hooks = hooks.sort(function(a, b) {
-							return a[3] - b[3];
+							return a.priority - b.priority;
 						});
 					});
 
@@ -93,6 +94,7 @@ var fs = require('fs'),
 						} else next();
 					},
 					function(next) {
+						// Static Directories for Plugins
 						if (pluginData.staticDir) {
 							staticDir = path.join(pluginPath, pluginData.staticDir);
 
@@ -102,6 +104,17 @@ var fs = require('fs'),
 									next();
 								} else next();
 							});
+						} else next();
+					},
+					function(next) {
+						// CSS Files for plugins
+						if (pluginData.css && pluginData.css instanceof Array) {
+							if (global.env === 'development') winston.info('[plugins] Found ' + pluginData.css.length + ' CSS file(s) for plugin ' + pluginData.id);
+							_self.cssFiles = _self.cssFiles.concat(pluginData.css.map(function(file) {
+								return path.join('/plugins', pluginData.id, file);
+							}));
+
+							next();
 						} else next();
 					}
 				], function(err) {
@@ -123,11 +136,19 @@ var fs = require('fs'),
 			var _self = this;
 
 			if (data.hook && data.method) {
-				// Assign default priority of 10 if none is passed-in
+				data.id = id;
 				if (!data.priority) data.priority = 10;
+				data.method = data.method.split('.').reduce(function(memo, prop) {
+					if (memo[prop]) {
+						return memo[prop];
+					} else {
+						// Couldn't find method by path, assuming property with periods in it (evil!)
+						_self.libraries[data.id][data.method];
+					}
+				}, _self.libraries[data.id]);
 
 				_self.loadedHooks[data.hook] = _self.loadedHooks[data.hook] || [];
-				_self.loadedHooks[data.hook].push([id, data.method, !! data.callbacked, data.priority]);
+				_self.loadedHooks[data.hook].push(data);
 
 				if (global.env === 'development') winston.info('[plugins] Hook registered: ' + data.hook + ' will call ' + id);
 				callback();
@@ -142,39 +163,33 @@ var fs = require('fs'),
 				var hookType = hook.split(':')[0];
 				switch (hookType) {
 					case 'filter':
-						// Filters only take one argument, so only args[0] will be passed in
-						var returnVal = (Array.isArray(args) ? args[0] : args);
-
-						async.eachSeries(hookList, function(hookObj, next) {
-							if (hookObj[2]) {
-								_self.libraries[hookObj[0]][hookObj[1]](returnVal, function(err, afterVal) {
-									returnVal = afterVal;
-									next(err);
-								});
+						async.reduce(hookList, args, function(value, hookObj, next) {
+							if (hookObj.method) {
+								if (hookObj.callbacked) {	// If a callback is present (asynchronous method)
+									hookObj.method.call(_self.libraries[hookObj.id], value, next);
+								} else {	// Synchronous method
+									value = hookObj.method.call(_self.libraries[hookObj.id], value);
+									next(null, value);
+								}
 							} else {
-								returnVal = _self.libraries[hookObj[0]][hookObj[1]](returnVal);
-								next();
+								if (global.env === 'development') winston.info('[plugins] Expected method \'' + hookObj.method + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
+								next(null, value);
 							}
-						}, function(err) {
+						}, function(err, value) {
 							if (err) {
 								if (global.env === 'development') {
 									winston.info('[plugins] Problem executing hook: ' + hook);
 								}
 							}
 
-							callback(err, returnVal);
+							callback.apply(plugins, arguments);
 						});
 						break;
 					case 'action':
 						async.each(hookList, function(hookObj) {
-							if (
-								_self.libraries[hookObj[0]] &&
-								_self.libraries[hookObj[0]][hookObj[1]] &&
-								typeof _self.libraries[hookObj[0]][hookObj[1]] === 'function'
-							) {
-								_self.libraries[hookObj[0]][hookObj[1]].apply(_self.libraries[hookObj[0]], args);
-							} else {
-								if (global.env === 'development') winston.info('[plugins] Expected method \'' + hookObj[1] + '\' in plugin \'' + hookObj[0] + '\' not found, skipping.');
+							if (hookObj.method) hookObj.method.call(_self.libraries[hookObj.id], args);
+							else {
+								if (global.env === 'development') winston.info('[plugins] Expected method \'' + hookObj.method + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
 							}
 						});
 						break;
@@ -184,7 +199,7 @@ var fs = require('fs'),
 				}
 			} else {
 				// Otherwise, this hook contains no methods
-				var returnVal = (Array.isArray(args) ? args[0] : args);
+				var returnVal = args;
 				if (callback) callback(null, returnVal);
 			}
 		},
@@ -204,6 +219,9 @@ var fs = require('fs'),
 						return;
 					}
 
+					// (De)activation Hooks
+					plugins.fireHook('action:plugin.' + (active ? 'de' : '') + 'activate', id);
+
 					if (callback) {
 						callback({
 							id: id,
@@ -214,32 +232,13 @@ var fs = require('fs'),
 			});
 		},
 		showInstalled: function(callback) {
-			// TODO: Also check /node_modules
 			var _self = this;
-			localPluginPath = path.join(__dirname, '../plugins'),
 			npmPluginPath = path.join(__dirname, '../node_modules');
 
 			async.waterfall([
 				function(next) {
-					async.parallel([
-						function(next) {
-							fs.readdir(localPluginPath, next);
-						},
-						function(next) {
-							fs.readdir(npmPluginPath, next);
-						}
-					], function(err, dirs) {
-						if (err) return next(err);
-
-						dirs[0] = dirs[0].map(function(file) {
-							return path.join(localPluginPath, file);
-						}).filter(function(file) {
-							var stats = fs.statSync(file);
-							if (stats.isDirectory()) return true;
-							else return false;
-						});
-
-						dirs[1] = dirs[1].map(function(file) {
+					fs.readdir(npmPluginPath, function(err, dirs) {
+						dirs = dirs.map(function(file) {
 							return path.join(npmPluginPath, file);
 						}).filter(function(file) {
 							var stats = fs.statSync(file);
@@ -247,7 +246,7 @@ var fs = require('fs'),
 							else return false;
 						});
 
-						next(err, dirs[0].concat(dirs[1]));
+						next(err, dirs);
 					});
 				},
 				function(files, next) {
@@ -261,7 +260,13 @@ var fs = require('fs'),
 								fs.readFile(path.join(file, 'plugin.json'), next);
 							},
 							function(configJSON, next) {
-								var config = JSON.parse(configJSON);
+								try {
+									var config = JSON.parse(configJSON);
+								} catch (err) {
+									winston.warn("Plugin: " + file + " is corrupted or invalid. Please check plugin.json for errors.")
+									return next(err, null);
+								}
+								
 								_self.isActive(config.id, function(err, active) {
 									if (err) next(new Error('no-active-state'));
 

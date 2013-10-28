@@ -11,17 +11,37 @@ define(function() {
 				deleted: templates.get('deleted'),
 				pinned: templates.get('pinned')
 			},
-			topic_name = templates.get('topic_name');
+			topic_name = templates.get('topic_name'),
+			twitter_url = templates.get('twitter-intent-url'),
+			facebook_url = templates.get('facebook-share-url'),
+			google_url = templates.get('google-share-url');
 
 
 		jQuery('document').ready(function() {
 
 			app.addCommasToNumbers();
 
+
 			var room = 'topic_' + tid,
 				adminTools = document.getElementById('thread-tools');
 
 			app.enter_room(room);
+
+
+			$('.twitter-share').on('click', function () {
+				window.open(twitter_url, '_blank', 'width=550,height=420,scrollbars=no,status=no');
+				return false;
+			});
+			
+			$('.facebook-share').on('click', function () {
+				window.open(facebook_url, '_blank', 'width=626,height=436,scrollbars=no,status=no');
+				return false;
+			});
+
+			$('.google-share').on('click', function () {
+				window.open(google_url, '_blank', 'width=500,height=570,scrollbars=no,status=no');
+				return false;
+			});
 
 			// Resetting thread state
 			if (thread_state.locked === '1') set_locked_state(true);
@@ -37,9 +57,11 @@ define(function() {
 				$('#delete_thread').on('click', function(e) {
 					if (thread_state.deleted !== '1') {
 						bootbox.confirm('Are you sure you want to delete this thread?', function(confirm) {
-							if (confirm) socket.emit('api:topic.delete', {
-								tid: tid
-							});
+							if (confirm) {
+								socket.emit('api:topic.delete', {
+									tid: tid
+								});
+							}
 						});
 					} else {
 						bootbox.confirm('Are you sure you want to restore this thread?', function(confirm) {
@@ -87,6 +109,7 @@ define(function() {
 					var loadingEl = document.getElementById('categories-loading');
 					if (loadingEl) {
 						socket.once('api:categories.get', function(data) {
+							console.log(data);
 							// Render categories
 							var categoriesFrag = document.createDocumentFragment(),
 								categoryEl = document.createElement('li'),
@@ -102,7 +125,7 @@ define(function() {
 							categoriesEl.className = 'category-list';
 							for (x = 0; x < numCategories; x++) {
 								info = data.categories[x];
-								categoryEl.className = info.blockclass;
+								categoryEl.className = info.blockclass + (info.disabled === '1' ? ' disabled' : '');
 								categoryEl.innerHTML = '<i class="' + info.icon + '"></i> ' + info.name;
 								categoryEl.setAttribute('data-cid', info.cid);
 								categoriesFrag.appendChild(categoryEl.cloneNode(true));
@@ -416,10 +439,80 @@ define(function() {
 
 
 		socket.on('api:get_users_in_room', function(data) {
-			var activeEl = $('#thread_active_users');
-			if (activeEl.length)
-				activeEl.html(data);
+			if(data) {
+				var activeEl = $('.thread_active_users');
 
+				function createUserIcon(uid, picture, userslug, username) {
+					if(!activeEl.find("[href='/user/"+ data.users[i].userslug + "']").length) {
+						var userIcon = $('<img src="'+ picture +'"/>');
+
+						var userLink = $('<a href="/user/' + userslug + '"></a>').append(userIcon);
+						userLink.attr('data-uid', uid);
+
+						userLink.tooltip({
+							placement: 'left',
+							title: username
+						});
+
+						return userLink;
+					}
+				}
+
+				// remove users that are no longer here
+				activeEl.children().each(function(index, element) {
+					if(element) {
+						var uid = $(element).attr('data-uid');
+						for(var i=0; i<data.users.length; ++i) {
+							if(data.users[i].uid == uid) {
+								return;
+							}
+						}
+						$(element).remove();
+					}
+				});
+
+				var i=0;
+				// add self
+				for(i = 0; i<data.users.length; ++i) {
+					if(data.users[i].uid == app.uid) {
+						var icon = createUserIcon(data.users[i].uid, data.users[i].picture, data.users[i].userslug, data.users[i].username);
+						activeEl.prepend(icon);
+						data.users.splice(i, 1);
+						break;
+					}
+				}
+				// add other users
+				for(i=0; i<data.users.length; ++i) {
+					icon = createUserIcon(data.users[i].uid, data.users[i].picture, data.users[i].userslug, data.users[i].username)
+					activeEl.append(icon);
+					if(activeEl.children().length > 8) {
+						break;
+					}
+				}
+
+				var remainingUsers = data.users.length - 9;
+				remainingUsers = remainingUsers < 0 ? 0 : remainingUsers;
+				var anonymousCount = parseInt(data.anonymousCount, 10);
+				activeEl.find('.anonymous-box').remove();
+				if(anonymousCount || remainingUsers) {
+
+					var anonLink = $('<i class="icon-user anonymous-box"></i>');
+					activeEl.append(anonLink);
+
+					var title = '';
+					if(remainingUsers && anonymousCount)
+						title = remainingUsers + ' more user(s) and ' + anonymousCount + ' guest(s)';
+					else if(remainingUsers)
+						title = remainingUsers + ' more user(s)';
+					else
+						title = anonymousCount + ' guest(s)';
+
+					anonLink.tooltip({
+						placement: 'left',
+						title: title
+					});
+				}
+			}
 			app.populate_online_users();
 		});
 

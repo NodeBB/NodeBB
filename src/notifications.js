@@ -3,41 +3,41 @@ var RDB = require('./redis.js'),
 	utils = require('../public/src/utils.js'),
 
 	notifications = {
-		get: function(nid, callback) {
-			RDB.hmget('notifications:' + nid, 'text', 'score', 'path', 'datetime', 'uniqueId', function(err, notification) {
-				callback({
-					nid: nid,
-					text: notification[0],
-					score: notification[1],
-					path: notification[2],
-					datetime: notification[3],
-					uniqueId: notification[4]
+		get: function(nid, uid, callback) {
+			RDB.multi()
+				.hmget('notifications:' + nid, 'text', 'score', 'path', 'datetime', 'uniqueId')
+				.zrank('uid:' + uid + ':notifications:read', nid)
+				.exec(function(err, results) {
+					var	notification = results[0]
+						readIdx = results[1];
+
+					callback({
+						nid: nid,
+						text: notification[0],
+						score: notification[1],
+						path: notification[2],
+						datetime: notification[3],
+						uniqueId: notification[4],
+						read: readIdx !== null ? true : false
+					});
 				});
-			});
 		},
-		create: function(text, score, path, uniqueId, callback) {
-			/*
-			 * Score guide:
-			 * 0	Low priority messages (probably unused)
-			 * 5	Normal messages
-			 * 10	High priority messages
-			 *
+		create: function(text, path, uniqueId, callback) {
+			/**
 			 * uniqueId is used solely to override stale nids.
 			 * 		If a new nid is pushed to a user and an existing nid in the user's
 			 *		(un)read list contains the same uniqueId, it will be removed, and
 			 *		the new one put in its place.
 			 */
 			RDB.incr('notifications:next_nid', function(err, nid) {
-				RDB.hmset(
-					'notifications:' + nid,
-					'text', text || '',
-					'score', score || 5,
-					'path', path || null,
-					'datetime', Date.now(),
-					'uniqueId', uniqueId || utils.generateUUID(),
-					function(err, status) {
-						if (status === 'OK') callback(nid);
-					});
+				RDB.hmset('notifications:' + nid, {
+					text: text || '',
+					path: path || null,
+					datetime: Date.now(),
+					uniqueId: uniqueId || utils.generateUUID()
+				}, function(err, status) {
+					if (!err) callback(nid);
+				});
 			});
 		},
 		push: function(nid, uids, callback) {
@@ -46,13 +46,13 @@ var RDB = require('./redis.js'),
 			var numUids = uids.length,
 				x;
 
-			notifications.get(nid, function(notif_data) {
+			notifications.get(nid, null, function(notif_data) {
 				for (x = 0; x < numUids; x++) {
 					if (parseInt(uids[x]) > 0) {
 						(function(uid) {
 							notifications.remove_by_uniqueId(notif_data.uniqueId, uid, function() {
-								RDB.zadd('uid:' + uid + ':notifications:unread', notif_data.score, nid);
-								global.io.sockets. in ('uid_' + uid).emit('event:new_notification');
+								RDB.zadd('uid:' + uid + ':notifications:unread', notif_data.datetime, nid);
+								global.io.sockets.in('uid_' + uid).emit('event:new_notification');
 								if (callback) callback(true);
 							});
 						})(uids[x]);
@@ -66,7 +66,7 @@ var RDB = require('./redis.js'),
 					RDB.zrange('uid:' + uid + ':notifications:unread', 0, -1, function(err, nids) {
 						if (nids && nids.length > 0) {
 							async.each(nids, function(nid, next) {
-								notifications.get(nid, function(nid_info) {
+								notifications.get(nid, uid, function(nid_info) {
 									if (nid_info.uniqueId === uniqueId) RDB.zrem('uid:' + uid + ':notifications:unread', nid);
 									next();
 								});
@@ -80,7 +80,7 @@ var RDB = require('./redis.js'),
 					RDB.zrange('uid:' + uid + ':notifications:read', 0, -1, function(err, nids) {
 						if (nids && nids.length > 0) {
 							async.each(nids, function(nid, next) {
-								notifications.get(nid, function(nid_info) {
+								notifications.get(nid, uid, function(nid_info) {
 									if (nid_info.uniqueId === uniqueId) RDB.zrem('uid:' + uid + ':notifications:read', nid);
 									next();
 								});
@@ -96,9 +96,9 @@ var RDB = require('./redis.js'),
 		},
 		mark_read: function(nid, uid, callback) {
 			if (parseInt(uid) > 0) {
-				notifications.get(nid, function(notif_data) {
+				notifications.get(nid, uid, function(notif_data) {
 					RDB.zrem('uid:' + uid + ':notifications:unread', nid);
-					RDB.zadd('uid:' + uid + ':notifications:read', notif_data.score, nid);
+					RDB.zadd('uid:' + uid + ':notifications:read', notif_data.datetime, nid);
 					if (callback) callback();
 				});
 			}

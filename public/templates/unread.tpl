@@ -5,15 +5,15 @@
 		<div id="category_active_users"></div>
 	</ol>
 
-	<a href="/unread">
-		<div class="alert hide" id="new-topics-alert"></div>
-	</a>
-
 	<div class="alert alert-warning {no_topics_message}" id="category-no-topics">
 		<strong>[[unread:no_unread_topics]]</strong>
 	</div>
 
 	<button id="mark-allread-btn" class="btn btn-primary {show_markallread_button}">[[unread:mark_all_read]]</button>
+
+	<a href="/unread">
+		<div class="alert alert-warning hide" id="new-topics-alert"></div>
+	</a>
 
 	<div class="category row">
 		<div class="{topic_row_size}">

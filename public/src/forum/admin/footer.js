@@ -16,9 +16,7 @@ jQuery('document').ready(function() {
 });
 
 socket.once('api:config.get', function(config) {
-	require(['forum/admin/settings'], function(Settings) {
-		Settings.config = config;
-	});
+	app.config = config;
 });
 
 socket.emit('api:config.get');

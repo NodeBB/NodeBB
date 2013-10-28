@@ -8,7 +8,8 @@ var user = require('./../user.js'),
 	plugins = require('../plugins'),
 	winston = require('winston'),
 	nconf = require('nconf'),
-	fs = require('fs');
+	fs = require('fs'),
+	path = require('path');
 
 (function (Admin) {
 	Admin.isAdmin = function (req, res, next) {
@@ -18,10 +19,17 @@ var user = require('./../user.js'),
 		});
 	}
 
-	Admin.build_header = function (res) {
-		return templates['admin/header'].parse({
-			csrf: res.locals.csrf_token,
-			relative_path: nconf.get('relative_path')
+	Admin.build_header = function (res, callback) {
+		var custom_header = {
+			'plugins': []
+		};
+
+		plugins.fireHook('filter:admin.header.build', custom_header, function(err, custom_header) {
+			callback(err, templates['admin/header'].parse({
+				csrf: res.locals.csrf_token,
+				relative_path: nconf.get('relative_path'),
+				plugins: custom_header.plugins
+			}));
 		});
 	}
 
@@ -30,15 +38,17 @@ var user = require('./../user.js'),
 		(function () {
 			var routes = [
 				'categories/active', 'categories/disabled', 'users', 'topics', 'settings', 'themes',
-				'twitter', 'facebook', 'gplus', 'redis', 'motd', 'groups',
+				'twitter', 'facebook', 'gplus', 'redis', 'motd', 'groups', 'plugins', 'logger',
 				'users/latest', 'users/sort-posts', 'users/sort-reputation',
-				'users/search', 'plugins'
+				'users/search'
 			];
 
 			for (var i = 0, ii = routes.length; i < ii; i++) {
 				(function (route) {
 					app.get('/admin/' + route, Admin.isAdmin, function (req, res) {
-						res.send(Admin.build_header(res) + app.create_route('admin/' + route) + templates['admin/footer']);
+						Admin.build_header(res, function(err, header) {
+							res.send(header + app.create_route('admin/' + route) + templates['admin/footer']);
+						});
 					});
 				}(routes[i]));
 			}
@@ -48,7 +58,9 @@ var user = require('./../user.js'),
 			for (var i = 0, ii = unit_tests.length; i < ii; i++) {
 				(function (route) {
 					app.get('/admin/testing/' + route, Admin.isAdmin, function (req, res) {
-						res.send(Admin.build_header(res) + app.create_route('admin/testing/' + route) + templates['admin/footer']);
+						Admin.build_header(res, function(err, header) {
+							res.send(header + app.create_route('admin/testing/' + route) + templates['admin/footer']);
+						});
 					});
 				}(unit_tests[i]));
 			}
@@ -57,11 +69,87 @@ var user = require('./../user.js'),
 
 		app.namespace('/admin', function () {
 			app.get('/', Admin.isAdmin, function (req, res) {
-				res.send(Admin.build_header(res) + app.create_route('admin/index') + templates['admin/footer']);
+				Admin.build_header(res, function(err, header) {
+					res.send(header + app.create_route('admin/index') + templates['admin/footer']);
+				});
 			});
 
 			app.get('/index', Admin.isAdmin, function (req, res) {
-				res.send(Admin.build_header(res) + app.create_route('admin/index') + templates['admin/footer']);
+				Admin.build_header(res, function(err, header) {
+					res.send(header + app.create_route('admin/index') + templates['admin/footer']);
+				});
+			});
+
+			app.post('/uploadlogo', Admin.isAdmin, function(req, res) {
+
+				if (!req.user)
+					return res.redirect('/403');
+
+				var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
+
+				if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
+					res.send({
+						error: 'Allowed image types are png, jpg and gif!'
+					});
+					return;
+				}
+
+				var tempPath = req.files.userPhoto.path;
+				var extension = path.extname(req.files.userPhoto.name);
+
+				if (!extension) {
+					res.send({
+						error: 'Error uploading file! Error : Invalid extension!'
+					});
+					return;
+				}
+
+				var filename =  'site-logo' + extension;
+				var uploadPath = path.join(process.cwd(), nconf.get('upload_path'), filename);
+
+				winston.info('Attempting upload to: ' + uploadPath);
+
+				var is = fs.createReadStream(tempPath);
+				var os = fs.createWriteStream(uploadPath);
+
+				is.on('end', function () {
+					fs.unlinkSync(tempPath);
+
+					res.json({
+						path: nconf.get('upload_url') + filename
+					});
+				});
+
+				os.on('error', function (err) {
+					fs.unlinkSync(tempPath);
+					winston.err(err);
+				});
+
+				is.pipe(os);
+			});
+		});
+
+
+		var custom_routes = {
+			'routes': [],
+			'api_methods': []
+		};
+
+		plugins.ready(function() {
+			plugins.fireHook('filter:admin.create_routes', custom_routes, function(err, custom_routes) {
+				var routes = custom_routes.routes;
+
+				for (var route in routes) {
+					if (routes.hasOwnProperty(route)) {
+						app[routes[route].method || 'get']('/admin' + routes[route].route, function(req, res) {
+							routes[route].options(req, res, function(options) {
+								Admin.build_header(res, function (err, header) {
+									res.send(header + options.content + templates['admin/footer']);
+								});
+							});
+						});
+					}
+				}
 			});
 		});
 
@@ -221,6 +309,10 @@ var user = require('./../user.js'),
 			});
 
 			app.get('/motd', function (req, res) {
+				res.json(200, {});
+			});
+
+			app.get('/logger', function(req, res) {
 				res.json(200, {});
 			});
 

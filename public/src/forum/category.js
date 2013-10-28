@@ -2,7 +2,7 @@ define(function () {
 	var	Category = {};
 
 	Category.init = function() {
-		var cid = templates.get('category_id'),
+		var	cid = templates.get('category_id'),
 			room = 'category_' + cid,
 			twitterEl = document.getElementById('twitter-intent'),
 			facebookEl = document.getElementById('facebook-share'),
@@ -86,7 +86,7 @@ define(function () {
 		}),
 			topic = $(html),
 			container = $('#topics-container'),
-			topics = $('#topics-container').children(),
+			topics = $('#topics-container').children('.category-item'),
 			numTopics = topics.length;
 
 		jQuery('#topics-container, .category-sidebar').removeClass('hidden');
@@ -105,7 +105,7 @@ define(function () {
 			topic.hide().fadeIn('slow');
 		}
 
-		socket.emit('api:categories.getRecentReplies', cid);
+		socket.emit('api:categories.getRecentReplies', templates.get('category_id'));
 		$('#topics-container span.timeago').timeago();
 	}
 

@@ -7,13 +7,16 @@
 
 	socket.emit('user.count', {});
 	socket.on('user.count', function(data) {
-		stats_users.innerHTML = data.count;
+		stats_users.innerHTML = utils.makeNumberHumanReadable(data.count);
+		stats_users.title = data.count;
 	});
 
 	socket.emit('post.stats');
 	socket.on('post.stats', function(data) {
-		stats_topics.innerHTML = data.topics;
-		stats_posts.innerHTML = data.posts;
+		stats_topics.innerHTML = utils.makeNumberHumanReadable(data.topics);
+		stats_topics.title = data.topics;
+		stats_posts.innerHTML = utils.makeNumberHumanReadable(data.posts);
+		stats_posts.title = data.posts;
 	});
 
 	socket.emit('api:user.active.get');
@@ -55,9 +58,10 @@
 			$('#search-button').show();
 
 			var userLabel = loggedInMenu.find('#user_label');
+
 			if (userLabel.length) {
 				if (data['userslug'])
-					userLabel.attr('href', '/user/' + data['userslug']);
+					userLabel.find('#user-profile-link').attr('href', '/user/' + data['userslug']);
 				if (data['picture'])
 					userLabel.find('img').attr('src', data['picture']);
 				if (data['username'])
@@ -84,7 +88,7 @@
 
 		}
 
-		$('#main-nav a,#right-menu a').off('click').on('click', function() {
+		$('#main-nav a,#user-control-list a,#logged-out-menu .dropdown-menu a').off('click').on('click', function() {
 			if($('.navbar .navbar-collapse').hasClass('in'))
 				$('.navbar-header button').click();
 		});
@@ -122,6 +126,13 @@
 					notifEl.innerHTML = '<a>You have no notifications</a>';
 					notifFrag.appendChild(notifEl);
 				}
+
+				// Add dedicated link to /notifications
+				notifEl.removeAttribute('data-nid');
+				notifEl.className = 'pagelink';
+				notifEl.innerHTML = '<a href="' + RELATIVE_PATH + '/notifications">See all Notifications</a>';
+				notifFrag.appendChild(notifEl);
+
 				notifList.appendChild(notifFrag);
 
 				if (data.unread.length > 0) notifIcon.className = 'icon-circle active';

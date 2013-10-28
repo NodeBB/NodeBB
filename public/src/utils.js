@@ -124,7 +124,7 @@
 		},
 
 		isUserNameValid: function(name) {
-			return (name && name !== "" && (/^[a-zA-Z0-9 _-]+$/.test(name)));
+			return (name && name !== "" && (/^['"\s\-.*0-9\u00BF-\u1FFF\u2C00-\uD7FF\w]+$/.test(name)));
 		},
 
 		isPasswordValid: function(password) {
@@ -148,6 +148,23 @@
 			for (var x = 0, numTags = tagsArr.length; x < numTags; x++) {
 				if (tags.length > 0) tags += "\n\t";
 				tag = '<meta';
+				for (y in tagsArr[x]) {
+					tag += ' ' + y + '="' + tagsArr[x][y] + '"';
+				}
+				tag += ' />';
+
+				tags += tag;
+			}
+
+			return tags;
+		},
+
+		buildLinkTags: function(tagsArr) {
+			var tags = '',
+				tag;
+			for (var x = 0, numTags = tagsArr.length; x < numTags; x++) {
+				if (tags.length > 0) tags += "\n\t";
+				tag = '<link';
 				for (y in tagsArr[x]) {
 					tag += ' ' + y + '="' + tagsArr[x][y] + '"';
 				}
@@ -192,6 +209,15 @@
 		isRelativeUrl: function(url) {
 			var firstChar = url.slice(0, 1);
 			return (firstChar === '.' || firstChar === '/');
+		},
+
+		makeNumberHumanReadable: function(num) {
+			num = parseInt(num, 10);
+			if (num > 999999)
+				return (num / 1000000).toFixed(1) + 'm';
+			else if(num > 999)
+				return (num / 1000).toFixed(1) + 'k';
+			return num;
 		}
 	}
 

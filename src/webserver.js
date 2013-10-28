@@ -18,14 +18,15 @@ var express = require('express'),
 	admin = require('./routes/admin.js'),
 	userRoute = require('./routes/user.js'),
 	apiRoute = require('./routes/api.js'),
-	testBed = require('./routes/testbed.js'),
 	auth = require('./routes/authentication.js'),
 	meta = require('./meta.js'),
 	feed = require('./feed'),
 	plugins = require('./plugins'),
 	nconf = require('nconf'),
 	winston = require('winston'),
-	validator = require('validator');
+	validator = require('validator'),
+	async = require('async'),
+	logger = require('./logger.js');
 
 (function (app) {
 	var templates = null,
@@ -40,40 +41,54 @@ var express = require('express'),
 		});
 	});
 
+	server.app = app;
+
 	/**
 	 *	`options` object	requires:	req, res
 	 *						accepts:	metaTags
 	 */
 	app.build_header = function (options, callback) {
-		var defaultMetaTags = [{
-			name: 'viewport',
-			content: 'width=device-width, initial-scale=1.0, user-scalable=no'
-		}, {
-			name: 'content-type',
-			content: 'text/html; charset=UTF-8'
-		}, {
-			name: 'apple-mobile-web-app-capable',
-			content: 'yes'
-		}, {
-			property: 'og:site_name',
-			content: meta.config.title || 'NodeBB'
-		}, {
-			property: 'keywords',
-			content: meta.config['keywords'] || ''
-		}],
-			metaString = utils.buildMetaTags(defaultMetaTags.concat(options.metaTags || [])),
-			templateValues = {
-				cssSrc: meta.config['theme:src'] || nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
-				title: meta.config.title || 'NodeBB',
-				browserTitle: meta.config.title || 'NodeBB',
-				csrf: options.res.locals.csrf_token,
-				relative_path: nconf.get('relative_path'),
-				meta_tags: metaString,
-				clientScripts: clientScripts
-			};
+		var custom_header = {
+			'navigation': []
+		};
 
-		translator.translate(templates.header.parse(templateValues), function(template) {
-			callback(null, template);
+		plugins.fireHook('filter:header.build', custom_header, function(err, custom_header) {
+			var defaultMetaTags = [{
+					name: 'viewport',
+					content: 'width=device-width, initial-scale=1.0, user-scalable=no'
+				}, {
+					name: 'content-type',
+					content: 'text/html; charset=UTF-8'
+				}, {
+					name: 'apple-mobile-web-app-capable',
+					content: 'yes'
+				}, {
+					property: 'og:site_name',
+					content: meta.config.title || 'NodeBB'
+				}, {
+					property: 'keywords',
+					content: meta.config['keywords'] || ''
+				}],
+				metaString = utils.buildMetaTags(defaultMetaTags.concat(options.metaTags || [])),
+				linkTags = utils.buildLinkTags(options.linkTags || []),
+				templateValues = {
+					cssSrc: meta.config['theme:src'] || nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
+					pluginCSS: plugins.cssFiles.map(function(file) { return { path: file } }),
+					title: meta.config.title || '',
+					'brand:logo': meta.config['brand:logo'] || '',
+					'brand:logo:display': meta.config['brand:logo']?'':'hide',
+					browserTitle: meta.config.title || 'NodeBB',
+					csrf: options.res.locals.csrf_token,
+					relative_path: nconf.get('relative_path'),
+					meta_tags: metaString,
+					link_tags: linkTags,
+					clientScripts: clientScripts,
+					navigation: custom_header.navigation
+				};
+
+			translator.translate(templates.header.parse(templateValues), function(template) {
+				callback(null, template);
+			});
 		});
 	};
 
@@ -83,13 +98,15 @@ var express = require('express'),
 			function(next) {
 				// Pre-router middlewares
 				app.use(express.compress());
+
+				logger.init(app);
+
 				app.use(express.favicon(path.join(__dirname, '../', 'public', 'favicon.ico')));
 				app.use(require('less-middleware')({
 					src: path.join(__dirname, '../', 'public'),
 					prefix: nconf.get('relative_path'),
 					yuicompress: true
 				}));
-				app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../', 'public')));
 				app.use(express.bodyParser()); // Puts POST vars in request.body
 				app.use(express.cookieParser()); // If you want to parse cookies (res.cookies)
 				app.use(express.session({
@@ -118,33 +135,94 @@ var express = require('express'),
 				next();
 			},
 			function(next) {
-				// Static Directories for NodeBB Plugins
-				plugins.ready(function () {
-					for (d in plugins.staticDirs) {
-						app.use(nconf.get('relative_path') + '/plugins/' + d, express.static(plugins.staticDirs[d]));
-						winston.info('Static directory routed for plugin: ' + d);
-					}
+				async.parallel([
+					function(next) {
+						// Static Directories for NodeBB Plugins
+						plugins.ready(function () {
+							for (d in plugins.staticDirs) {
+								app.use(nconf.get('relative_path') + '/plugins/' + d, express.static(plugins.staticDirs[d]));
+								if (process.env.NODE_ENV === 'development') {
+									winston.info('Static directory routed for plugin: ' + d);
+								}
+							}
 
-					next();
-				});
+							next();
+						});
+					},
+					function(next) {
+						// Theme configuration
+						RDB.hmget('config', 'theme:type', 'theme:id', 'theme:staticDir', function(err, themeData) {
+							var themeId = (themeData[1] || 'nodebb-theme-vanilla');
+
+							// Detect if a theme has been selected, and handle appropriately
+							if (!themeData[0] || themeData[0] === 'local') {
+								// Local theme
+								if (process.env.NODE_ENV === 'development') {
+									winston.info('[themes] Using theme ' + themeId);
+								}
+
+								// Theme's static directory
+								if (themeData[2]) {
+									app.use('/css/assets', express.static(path.join(__dirname, '../node_modules', themeData[1], themeData[2])));
+									if (process.env.NODE_ENV === 'development') {
+										winston.info('Static directory routed for theme: ' + themeData[1]);
+									}
+								}
+
+								app.use(require('less-middleware')({
+									src: path.join(__dirname, '../node_modules/' + themeId),
+									dest: path.join(__dirname, '../public/css'),
+									prefix: nconf.get('relative_path') + '/css',
+									yuicompress: true
+								}));
+
+								next();
+							} else {
+								// If not using a local theme (bootswatch, etc), drop back to vanilla
+								if (process.env.NODE_ENV === 'development') {
+									winston.info('[themes] Using theme ' + themeId);
+								}
+
+								app.use(require('less-middleware')({
+									src: path.join(__dirname, '../node_modules/nodebb-theme-vanilla'),
+									dest: path.join(__dirname, '../public/css'),
+									prefix: nconf.get('relative_path') + '/css',
+									yuicompress: true
+								}));
+
+								next();
+							}
+						});
+					}
+				], next);
 			},
 			function(next) {
 				// Router & post-router middlewares
 				app.use(app.router);
 
+				// Static directory /public
+				app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../', 'public')));
+
 				// 404 catch-all
 				app.use(function (req, res, next) {
+					var	isLanguage = /^\/language\/[\w]{2,}\/.*\.json/,
+						isClientScript = /^\/src\/forum\/[\w]+\.js/;
+
 					res.status(404);
 
-					if (path.dirname(req.url) === '/src/forum') {
+					if (isClientScript.test(req.url)) {
 						// Handle missing client-side scripts
 						res.type('text/javascript').send(200, '');
+					} else if (isLanguage.test(req.url)) {
+						// Handle languages by sending an empty object
+						res.json(200, {});
 					} else if (req.accepts('html')) {
 						// respond with html page
-						winston.warn('Route requested but not found: ' + req.url);
+						if (process.env.NODE_ENV === 'development') winston.warn('Route requested but not found: ' + req.url);
 						res.redirect(nconf.get('relative_path') + '/404');
 					} else if (req.accepts('json')) {
 						// respond with json
+						if (process.env.NODE_ENV === 'development') winston.warn('Route requested but not found: ' + req.url);
 						res.json({
 							error: 'Not found'
 						});
@@ -173,8 +251,9 @@ var express = require('express'),
 		], function(err) {
 			if (err) {
 				winston.error('Errors were encountered while attempting to initialise NodeBB.');
+				process.exit();
 			} else {
-				winston.info('Middlewares loaded.');
+				if (process.env.NODE_ENV === 'development') winston.info('Middlewares loaded.');
 			}
 		});
 	});
@@ -190,6 +269,7 @@ var express = require('express'),
 			templates['logout'] = parsedTemplate;
 		});
 
+		winston.info('NodeBB Ready');
 		server.listen(nconf.get('PORT') || nconf.get('port'), nconf.get('bind_address'));
 	}
 
@@ -202,13 +282,12 @@ var express = require('express'),
 		auth.create_routes(app);
 		admin.create_routes(app);
 		userRoute.create_routes(app);
-		testBed.create_routes(app);
 		apiRoute.create_routes(app);
 
 
 		// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 		(function () {
-			var routes = ['login', 'register', 'account', 'recent', 'unread', 'popular', 'active', '403', '404'];
+			var routes = ['login', 'register', 'account', 'recent', 'unread', 'notifications', '403', '404'];
 
 			for (var i = 0, ii = routes.length; i < ii; i++) {
 				(function (route) {
@@ -226,7 +305,7 @@ var express = require('express'),
 							req: req,
 							res: res
 						}, function (err, header) {
-							res.send(header + app.create_route(route) + templates['footer']);
+							res.send((isNaN(parseInt(route, 10)) ? 200 : parseInt(route, 10)), header + app.create_route(route) + templates['footer']);
 						});
 					});
 				}(routes[i]));
@@ -354,7 +433,18 @@ var express = require('express'),
 						}, {
 							property: 'article:section',
 							content: topicData.category_name
-						}]
+						}],
+						linkTags: [
+							{
+								rel: 'alternate',
+								type: 'application/rss+xml',
+								href: nconf.get('url') + 'topic/' + tid + '.rss'
+							},
+							{
+								rel: 'up',
+								href: nconf.get('url') + 'category/' + topicData.category_slug
+							}
+						]
 					}, function (err, header) {
 						next(err, {
 							header: header,
@@ -428,7 +518,18 @@ var express = require('express'),
 						}, {
 							property: "og:type",
 							content: 'website'
-						}]
+						}],
+						linkTags: [
+							{
+								rel: 'alternate',
+								type: 'application/rss+xml',
+								href: nconf.get('url') + 'category/' + cid + '.rss'
+							},
+							{
+								rel: 'up',
+								href: nconf.get('url')
+							}
+						]
 					}, function (err, header) {
 						next(err, {
 							header: header,
@@ -489,6 +590,17 @@ var express = require('express'),
 				else
 					res.send(404, "Topic doesn't exist!");
 			});
+		});
+
+		app.get('/recent/:term?', function (req, res) {
+			// TODO consolidate with /recent route as well -> that can be combined into this area. See "Basic Routes" near top.
+			app.build_header({
+				req: req,
+				res: res
+			}, function (err, header) {
+				res.send(header + app.create_route("recent/" + req.params.term, null, "recent") + templates['footer']);
+			});
+
 		});
 
 		app.get('/pid/:pid', function (req, res) {
@@ -552,6 +664,34 @@ var express = require('express'),
 				});
 			});
 		});
+
+
+		var custom_routes = {
+			'routes': [],
+			'api_methods': []
+		};
+
+		plugins.ready(function() {
+			plugins.fireHook('filter:server.create_routes', custom_routes, function(err, custom_routes) {
+				var routes = custom_routes.routes;
+				for (var route in routes) {
+					if (routes.hasOwnProperty(route)) {
+						app[routes[route].method || 'get'](routes[route].route, function(req, res) {
+							routes[route].options(req, res, function(options) {
+								app.build_header({
+									req: options.req,
+									res: options.res
+								}, function (err, header) {
+									res.send(header + options.content + templates['footer']);
+								});
+							});
+						});
+					}
+				}
+			});
+		});
+
+
 	});
 }(WebServer));
 

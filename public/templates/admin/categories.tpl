@@ -27,7 +27,8 @@
 					<option value="category-orange">category-orange</option>
 				</select>
 				<input data-name="description" placeholder="Category Description" value="{categories.description}" class="form-control category_description description"></input>
-				<button type="submit" class="btn btn-default" data-disabled="{categories.disabled}">Disable</button>
+				<input type="hidden" data-name="order" data-value="{categories.order}"></input>
+				<button type="submit" class="btn btn-default disable-btn" data-disabled="{categories.disabled}">Disable</button>
 			</form>
 		</li>
 

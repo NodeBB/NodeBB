@@ -16,6 +16,9 @@ var	cookie = require('cookie'),
 	async = require('async'),
 	RedisStoreLib = require('connect-redis')(express),
 	RDB = require('./redis'),
+	util = require('util'),
+	logger = require('./logger.js'),
+	fs = require('fs'),
 	RedisStore = new RedisStoreLib({
 		client: RDB,
 		ttl: 60 * 60 * 24 * 14
@@ -46,6 +49,11 @@ module.exports.logoutUser = function(uid) {
 	}
 }
 
+function isUserOnline(uid) {
+	return !!userSockets[uid] && userSockets[uid].length > 0;
+}
+module.exports.isUserOnline = isUserOnline;
+
 module.exports.init = function(io) {
 
 	global.io = io;
@@ -53,6 +61,7 @@ module.exports.init = function(io) {
 	io.sockets.on('connection', function(socket) {
 		var hs = socket.handshake,
 			sessionID, uid;
+
 
 		// Validate the session, if present
 		socketCookieParser(hs, {}, function(err) {
@@ -64,11 +73,20 @@ module.exports.init = function(io) {
 				userSockets[uid] = userSockets[uid] || [];
 				userSockets[uid].push(socket);
 
+				/* Need to save some state for the logger & maybe some other modules later on */
+				socket.state = {
+					user : {
+						uid : uid
+					}
+				};
+
+				/* If meta.config.loggerIOStatus > 0, logger.io_one will hook into this socket */
+				logger.io_one(socket,uid);
+
 				if (uid) {
 
 					RDB.zadd('users:online', Date.now(), uid, function(err, data) {
 						socket.join('uid_' + uid);
-						io.sockets. in ('global').emit('api:user.isOnline', isUserOnline(uid));
 
 						user.getUserField(uid, 'username', function(err, username) {
 							socket.emit('event:connect', {
@@ -79,6 +97,8 @@ module.exports.init = function(io) {
 						});
 					});
 				}
+
+				io.sockets. in ('global').emit('api:user.isOnline', isUserOnline(uid));
 			});
 		});
 
@@ -96,10 +116,11 @@ module.exports.init = function(io) {
 				delete userSockets[uid];
 				if (uid) {
 					RDB.zrem('users:online', uid, function(err, data) {
-						io.sockets. in ('global').emit('api:user.isOnline', isUserOnline(uid));
 					});
 				}
 			}
+
+			io.sockets. in ('global').emit('api:user.isOnline', isUserOnline(uid));
 
 			emitOnlineUserCount();
 
@@ -136,8 +157,7 @@ module.exports.init = function(io) {
 
 				for (var i = 0; i < clients.length; ++i) {
 					var hs = clients[i].handshake;
-
-					if (hs && !users[sessionID]) {
+					if (hs && clients[i].state.user.uid === 0) {
 						++anonCount;
 					}
 				}
@@ -148,27 +168,12 @@ module.exports.init = function(io) {
 
 			var anonymousCount = getAnonymousCount(roomName);
 
-			function userList(users, anonymousCount, userCount) {
-				var usernames = [];
-
-				for (var i = 0, ii = users.length; i < ii; ++i) {
-					usernames[i] = '<strong>' + '<a href="/user/' + users[i].userslug + '">' + users[i].username + '</a></strong>';
-				}
-
-				var joiner = anonymousCount + userCount == 1 ? 'is' : 'are',
-					userList = anonymousCount > 0 ? usernames.concat(util.format('%d guest%s', anonymousCount, anonymousCount > 1 ? 's' : '')) : usernames,
-					lastUser = userList.length > 1 ? ' and ' + userList.pop() : '';
-
-				return util.format('%s%s %s browsing this thread', userList.join(', '), lastUser, joiner);
-			}
-
-
 			if (uids.length === 0) {
-				io.sockets. in (roomName).emit('api:get_users_in_room', userList([], anonymousCount, 0));
+				io.sockets. in (roomName).emit('api:get_users_in_room', { users: [], anonymousCount:0 });
 			} else {
-				user.getMultipleUserFields(uids, ['username', 'userslug'], function(err, users) {
-					if (!err)
-						io.sockets. in (roomName).emit('api:get_users_in_room', userList(users, anonymousCount, users.length));
+				user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, users) {
+					if(!err)
+						io.sockets. in (roomName).emit('api:get_users_in_room', { users: users, anonymousCount:anonymousCount });
 				});
 			}
 		}
@@ -262,10 +267,6 @@ module.exports.init = function(io) {
 			user.reset.commit(socket, data.code, data.password);
 		});
 
-		function isUserOnline(uid) {
-			return !!userSockets[uid] && userSockets[uid].length > 0;
-		}
-
 		socket.on('api:user.get_online_users', function(data) {
 			var returnData = [];
 
@@ -282,6 +283,7 @@ module.exports.init = function(io) {
 		socket.on('api:user.isOnline', function(uid, callback) {
 			callback({
 				online: isUserOnline(uid),
+				uid: uid,
 				timestamp: Date.now()
 			});
 		});
@@ -438,6 +440,14 @@ module.exports.init = function(io) {
 			});
 		});
 
+		socket.on('api:user.getOnlineAnonCount', function(data, callback) {
+			callback(module.exports.getOnlineAnonCount());
+		});
+
+		module.exports.getOnlineAnonCount = function () {
+			return userSockets[0] ? userSockets[0].length : 0;
+		}
+
 		function emitOnlineUserCount() {
 			var anon = userSockets[0] ? userSockets[0].length : 0;
 			var registered = Object.keys(userSockets).length;
@@ -445,7 +455,8 @@ module.exports.init = function(io) {
 				registered = registered - 1;
 
 			var returnObj = {
-				users: registered + anon
+				users: registered + anon,
+				anon: anon
 			};
 			io.sockets.emit('api:user.active.get', returnObj)
 		}
@@ -465,6 +476,7 @@ module.exports.init = function(io) {
 		socket.on('api:topic.delete', function(data) {
 			threadTools.delete(data.tid, uid, function(err) {
 				if (!err) {
+					posts.getTopicPostStats(socket);
 					socket.emit('api:topic.delete', {
 						status: 'ok',
 						tid: data.tid
@@ -474,7 +486,14 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:topic.restore', function(data) {
-			threadTools.restore(data.tid, uid, socket);
+			threadTools.restore(data.tid, uid, socket, function(err) {
+				posts.getTopicPostStats(socket);
+
+				socket.emit('api:topic.restore', {
+					status: 'ok',
+					tid: data.tid
+				});
+			});
 		});
 
 		socket.on('api:topic.lock', function(data) {
@@ -527,11 +546,15 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:posts.delete', function(data) {
-			postTools.delete(uid, data.pid);
+			postTools.delete(uid, data.pid, function() {
+				posts.getTopicPostStats(socket);
+			});
 		});
 
 		socket.on('api:posts.restore', function(data) {
-			postTools.restore(uid, data.pid);
+			postTools.restore(uid, data.pid, function() {
+				posts.getTopicPostStats(socket);
+			});
 		});
 
 		socket.on('api:notifications.get', function(data, callback) {
@@ -580,7 +603,7 @@ module.exports.init = function(io) {
 					notifText = 'New message from <strong>' + username + '</strong>';
 
 				if (!isUserOnline(touid)) {
-					notifications.create(notifText, 5, 'javascript:app.openChat(&apos;' + username + '&apos;, ' + uid + ');', 'notification_' + uid + '_' + touid, function(nid) {
+					notifications.create(notifText, 'javascript:app.openChat(&apos;' + username + '&apos;, ' + uid + ');', 'notification_' + uid + '_' + touid, function(nid) {
 						notifications.push(nid, [touid], function(success) {
 
 						});
@@ -631,6 +654,8 @@ module.exports.init = function(io) {
 				if (!err) socket.emit('api:config.set', {
 					status: 'ok'
 				});
+				/* Another hook, for my (adarqui's) logger module */
+				logger.monitorConfig(this, data);
 			});
 		});
 
@@ -765,7 +790,7 @@ module.exports.init = function(io) {
 			var start = data.after,
 				end = start + 9;
 
-			topics.getLatestTopics(uid, start, end, function(latestTopics) {
+			topics.getLatestTopics(uid, start, end, data.term, function(latestTopics) {
 				callback(latestTopics);
 			});
 		});
@@ -907,6 +932,8 @@ module.exports.init = function(io) {
 				callback(err ? err.message : null);
 			});
 		});
+
+		socket.on('api:admin.theme.set', meta.themes.set);
 	});
 
 }

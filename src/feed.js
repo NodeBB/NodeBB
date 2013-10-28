@@ -7,7 +7,8 @@
 		rss = require('rss'),
 		winston = require('winston'),
 		path = require('path'),
-		nconf = require('nconf');
+		nconf = require('nconf'),
+		categories = require('./categories');
 
 	Feed.defaults = {
 		ttl: 60,

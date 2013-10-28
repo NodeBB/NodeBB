@@ -16,20 +16,27 @@ define(function() {
 								cssEl = document.getElementById('base-theme');
 
 							cssEl.href = cssSrc;
-							break;
+						break;
 						case 'use':
 							var parentEl = $(e.target).parents('li'),
+								themeType = parentEl.attr('data-type'),
 								cssSrc = parentEl.attr('data-css'),
-								cssName = parentEl.attr('data-theme');
-							socket.emit('api:config.set', {
-								key: 'theme:id',
-								value: 'bootswatch:' + cssName
+								themeId = parentEl.attr('data-theme');
+
+							socket.emit('api:admin.theme.set', {
+								type: themeType,
+								id: themeId,
+								src: cssSrc
+							}, function(err) {
+								app.alert({
+									alert_id: 'admin:theme',
+									type: 'success',
+									title: 'Theme Changed',
+									message: 'You have successfully changed your NodeBB\'s theme. Please restart to see the changes.',
+									timeout: 2500
+								});
 							});
-							socket.emit('api:config.set', {
-								key: 'theme:src',
-								value: cssSrc
-							});
-							break;
+						break;
 					}
 				}
 			};
@@ -40,9 +47,17 @@ define(function() {
 		revertEl.addEventListener('click', function() {
 			bootbox.confirm('Are you sure you wish to remove the custom theme and restore the NodeBB default theme?', function(confirm) {
 				if (confirm) {
-					require(['forum/admin/settings'], function(Settings) {
-						Settings.remove('theme:id');
-						Settings.remove('theme:src');
+					socket.emit('api:admin.theme.set', {
+						type: 'local',
+						id: 'nodebb-theme-cerulean'
+					}, function(err) {
+						app.alert({
+							alert_id: 'admin:theme',
+							type: 'success',
+							title: 'Theme Changed',
+							message: 'You have successfully reverted your NodeBB back to it\'s default theme. Please restart to see the changes.',
+							timeout: 3500
+						});
 					});
 				}
 			});
@@ -53,11 +68,11 @@ define(function() {
 			var instListEl = document.getElementById('installed_themes'),
 				themeFrag = document.createDocumentFragment(),
 				liEl = document.createElement('li');
+				liEl.setAttribute('data-type', 'local');
 
 			if (themes.length > 0) {
 				for (var x = 0, numThemes = themes.length; x < numThemes; x++) {
 					liEl.setAttribute('data-theme', themes[x].id);
-					liEl.setAttribute('data-css', themes[x].src);
 					liEl.innerHTML = '<img src="' + themes[x].screenshot + '" />' +
 						'<div>' +
 						'<div class="pull-right">' +
@@ -90,6 +105,8 @@ define(function() {
 			themeEl = document.createElement('li'),
 			themeContainer = document.querySelector('#bootstrap_themes'),
 			numThemes = bootswatch.themes.length;
+
+		themeEl.setAttribute('data-type', 'bootswatch');
 
 		for (var x = 0; x < numThemes; x++) {
 			var theme = bootswatch.themes[x];
