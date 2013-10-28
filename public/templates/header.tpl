@@ -24,9 +24,6 @@
 				"forum": '../forum'
 			}
 		});
-		requirejs.onError = function(err) {
-			console.log(err);
-		}
 	</script>
 
 	<link rel="stylesheet" type="text/css" href="{relative_path}/css/theme.css" />

@@ -903,7 +903,13 @@ var utils = require('./../public/src/utils.js'),
 						if (nids && nids.length > 0) {
 							async.eachSeries(nids, function(nid, next) {
 								notifications.get(nid, uid, function(notif_data) {
-									unread.push(notif_data);
+									// If the notification could not be found, silently drop it
+									if (notif_data) {
+										unread.push(notif_data);
+									} else {
+										RDB.zrem('uid:' + uid + ':notifications:unread', nid);
+									}
+
 									next();
 								});
 							}, function(err) {
@@ -925,7 +931,13 @@ var utils = require('./../public/src/utils.js'),
 						if (nids && nids.length > 0) {
 							async.eachSeries(nids, function(nid, next) {
 								notifications.get(nid, uid, function(notif_data) {
-									read.push(notif_data);
+									// If the notification could not be found, silently drop it
+									if (notif_data) {
+										read.push(notif_data);
+									} else {
+										RDB.zrem('uid:' + uid + ':notifications:read', nid);
+									}
+
 									next();
 								});
 							}, function(err) {
