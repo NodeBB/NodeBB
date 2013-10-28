@@ -87,7 +87,8 @@
 				SocketIO =  require('socket.io').listen(global.server, { log: false, transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket']}),
 				websockets = require('./src/websockets.js'),
 				posts = require('./src/posts.js'),
-				plugins = require('./src/plugins'); // Don't remove this - plugins initializes itself
+				plugins = require('./src/plugins'), // Don't remove this - plugins initializes itself
+				Notifications = require('./src/notifications');
 
 			websockets.init(SocketIO);
 
@@ -106,6 +107,8 @@
 			]);
 
 			templates.ready(webserver.init);
+
+			Notifications.init();
 		});
 
 	} else if (nconf.get('upgrade')) {
