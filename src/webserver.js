@@ -85,9 +85,20 @@ var express = require('express'),
 					navigation: custom_header.navigation
 				};
 
-			translator.translate(templates.header.parse(templateValues), function(template) {
-				callback(null, template);
-			});
+			var uid = '0';
+
+			if(options.req.user && options.req.user.uid)
+				uid = options.req.user.uid;
+
+			user.isAdministrator(uid, function(isAdmin) {
+				templateValues.adminDisplay = isAdmin ? 'show' : 'hide';
+
+				translator.translate(templates.header.parse(templateValues), function(template) {
+					callback(null, template);
+				});
+			})
+
+
 		});
 	};
 
