@@ -85,7 +85,7 @@ define(function () {
 		}),
 			topic = $(html),
 			container = $('#topics-container'),
-			topics = $('#topics-container').children(),
+			topics = $('#topics-container').children('.category-item'),
 			numTopics = topics.length;
 
 		jQuery('#topics-container, .category-sidebar').removeClass('hidden');
