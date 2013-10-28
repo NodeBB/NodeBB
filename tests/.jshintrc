@@ -1,0 +1,9 @@
+{
+    "strict" : false, // true: Requires all functions run in ES5 Strict Mode
+
+    // Custom Globals
+    "globals" : {
+		"it": false,
+		"describe": false
+	}
+}
