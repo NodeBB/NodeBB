@@ -51,12 +51,12 @@ var RDB = require('../redis'),
 		});
 	};
 
-	UserAdmin.banUser = function(uid, theirid, socket) {
+	UserAdmin.banUser = function(uid, theirid, socket, callback) {
 		user.isAdministrator(uid, function(amIAdmin) {
 			user.isAdministrator(theirid, function(areTheyAdmin) {
 				if (amIAdmin && !areTheyAdmin) {
 					user.ban(theirid, function(err, result) {
-
+						callback(true);
 						socket.emit('event:alert', {
 							title: 'User Banned',
 							message: 'This user is banned!',

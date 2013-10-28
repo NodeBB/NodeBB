@@ -843,7 +843,16 @@ module.exports.init = function(io) {
 
 		socket.on('api:admin.user.banUser', function(theirid) {
 			if (uid && uid > 0) {
-				admin.user.banUser(uid, theirid, socket);
+				admin.user.banUser(uid, theirid, socket, function(isBanned) {
+					if(isBanned) {
+						if(userSockets[theirid]) {
+							for(var i=0; i<userSockets[theirid].length; ++i) {
+								userSockets[theirid][i].emit('event:banned');
+							}
+						}
+						module.exports.logoutUser(theirid);
+					}
+				});
 			}
 		});
 

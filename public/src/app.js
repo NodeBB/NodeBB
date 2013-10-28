@@ -114,10 +114,29 @@ var socket,
 						});
 					});
 
+					socket.on('event:banned', function() {
+						app.alert({
+							title: 'Banned',
+							message: 'You are banned you will be logged out!',
+							type: 'warning',
+							timeout: 1000
+						});
+
+						setTimeout(app.logout, 1000);
+					});
+
 					app.enter_room('global');
 				}
 			},
 			async: false
+		});
+	}
+
+	app.logout = function() {
+		$.post(RELATIVE_PATH + '/logout', {
+			_csrf: $('#csrf_token').val()
+		}, function() {
+			window.location = RELATIVE_PATH + '/';
 		});
 	}
 

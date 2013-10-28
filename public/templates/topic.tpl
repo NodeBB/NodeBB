@@ -63,7 +63,7 @@
 								<button class="btn btn-sm btn-default quote" type="button" title="[[topic:quote]]"><i class="icon-quote-left"></i></button>
 								<button class="btn btn-sm btn-primary btn post_reply" type="button">[[topic:reply]] <i class="icon-reply"></i></button>
 							</div>
-						
+
 
 							<div class="btn-group pull-right post-tools">
 								<button class="btn btn-sm btn-default edit {main_posts.display_moderator_tools}" type="button" title="[[topic:edit]]"><i class="icon-pencil"></i></button>
@@ -105,10 +105,14 @@
 				<meta itemprop="datePublished" content="{posts.relativeTime}">
 				<meta itemprop="dateModified" content="{posts.relativeEditTime}">
 				<div class="col-md-1 profile-image-block hidden-xs hidden-sm">
+
 					<a href="/user/{posts.userslug}">
 						<img src="{posts.picture}" align="left" class="img-thumbnail" itemprop="image" />
+						<span class="label label-danger {posts.show_banned}">[[topic:banned]]</span>
 					</a>
-					<span class="label label-danger {posts.show_banned}">[[topic:banned]]</span>
+
+
+
 				</div>
 				<div class="col-md-11">
 					<div class="post-block">

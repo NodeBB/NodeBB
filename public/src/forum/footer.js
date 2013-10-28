@@ -67,15 +67,7 @@
 				if (data['username'])
 					userLabel.find('span').html(data['username']);
 
-				$('#logout-link').on('click', function() {
-					var	csrf_token = $('#csrf_token').val();
-
-					$.post(RELATIVE_PATH + '/logout', {
-						_csrf: csrf_token
-					}, function() {
-						window.location = RELATIVE_PATH + '/';
-					});
-				});
+				$('#logout-link').on('click', app.logout);
 			}
 		} else {
 			$('#search-button').hide();
