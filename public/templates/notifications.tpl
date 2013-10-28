@@ -5,10 +5,10 @@
 <ul class="notifications-list">
 <!-- BEGIN notifications -->
 	<li data-nid="{notifications.nid}" class="{notifications.readClass}">
+		<a href="..{notifications.path}">{notifications.text}</a>
 		<p class="timestamp">
 			<span class="timeago" title="{notifications.datetimeISO}"></span>
 		</p>
-		<a href="..{notifications.path}">{notifications.text}</a>
 	</li>
 <!-- END notifications -->
 </ul>
