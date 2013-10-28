@@ -1,10 +1,11 @@
 (function(module) {
+	'use strict';
 
 	var utils, fs;
 
-	try {
+	if ('undefined' === typeof window) {
 		fs = require('fs');
-	} catch (e) {}
+	}
 
 
 	module.exports = utils = {
@@ -23,20 +24,28 @@
 				main_dir = path.join(__dirname, '..', 'templates');
 
 			fs.readdir(dir, function(err, list) {
-				if (err) return done(err);
+				if (err) {
+					return done(err);
+				}
 				var pending = list.length;
-				if (!pending) return done(null, results);
+				if (!pending) {
+					return done(null, results);
+				}
 				list.forEach(function(file) {
 					file = dir + '/' + file;
 					fs.stat(file, function(err, stat) {
 						if (stat && stat.isDirectory()) {
 							utils.walk(file, function(err, res) {
 								results = results.concat(res);
-								if (!--pending) done(null, results);
+								if (!--pending) {
+									done(null, results);
+								}
 							});
 						} else {
 							results.push(file.replace(main_dir + '/', '').replace('.tpl', ''));
-							if (!--pending) done(null, results);
+							if (!--pending) {
+								done(null, results);
+							}
 						}
 					});
 				});
@@ -49,19 +58,29 @@
 
 			difference = Math.floor(difference / 1000);
 
-			if (difference < 60) return difference + (min ? 's' : ' second') + (difference !== 1 && !min ? 's' : '');
+			if (difference < 60) {
+				return difference + (min ? 's' : ' second') + (difference !== 1 && !min ? 's' : '');
+			}
 
 			difference = Math.floor(difference / 60);
-			if (difference < 60) return difference + (min ? 'm' : ' minute') + (difference !== 1 && !min ? 's' : '');
+			if (difference < 60) {
+				return difference + (min ? 'm' : ' minute') + (difference !== 1 && !min ? 's' : '');
+			}
 
 			difference = Math.floor(difference / 60);
-			if (difference < 24) return difference + (min ? 'h' : ' hour') + (difference !== 1 && !min ? 's' : '');
+			if (difference < 24) {
+				return difference + (min ? 'h' : ' hour') + (difference !== 1 && !min ? 's' : '');
+			}
 
 			difference = Math.floor(difference / 24);
-			if (difference < 30) return difference + (min ? 'd' : ' day') + (difference !== 1 && !min ? 's' : '');
+			if (difference < 30) {
+				return difference + (min ? 'd' : ' day') + (difference !== 1 && !min ? 's' : '');
+			}
 
 			difference = Math.floor(difference / 30);
-			if (difference < 12) return difference + (min ? 'mon' : ' month') + (difference !== 1 && !min ? 's' : '');
+			if (difference < 12) {
+				return difference + (min ? 'mon' : ' month') + (difference !== 1 && !min ? 's' : '');
+			}
 
 			difference = Math.floor(difference / 12);
 			return difference + (min ? 'y' : ' year') + (difference !== 1 && !min ? 's' : '');
@@ -116,8 +135,11 @@
 			var tags = '',
 				tag;
 			for (var x = 0, numTags = tagsArr.length; x < numTags; x++) {
-				if (tags.length > 0) tags += "\n\t";
+				if (tags.length > 0) {
+					tags += "\n\t";
+				}
 				tag = '<meta';
+				var y;
 				for (y in tagsArr[x]) {
 					tag += ' ' + y + '="' + tagsArr[x][y] + '"';
 				}
@@ -135,6 +157,7 @@
 			for (var x = 0, numTags = tagsArr.length; x < numTags; x++) {
 				if (tags.length > 0) tags += "\n\t";
 				tag = '<link';
+				var y;
 				for (y in tagsArr[x]) {
 					tag += ' ' + y + '="' + tagsArr[x][y] + '"';
 				}
@@ -157,7 +180,9 @@
 			socket.emit('api:meta.buildTitle', url, function(title, numNotifications) {
 				document.title = (numNotifications > 0 ? '(' + numNotifications + ') ' : '') + title;
 				notificationIcon = notificationIcon || document.querySelector('.notifications a i');
-				if (numNotifications > 0 && notificationIcon) notificationIcon.className = 'icon-circle active';
+				if (numNotifications > 0 && notificationIcon) {
+					notificationIcon.className = 'icon-circle active';
+				}
 			});
 
 			jQuery.getJSON(RELATIVE_PATH + '/api/unread/total', function(data) {
@@ -167,11 +192,11 @@
 				if (data.count > 0) {
 					badge
 						.removeClass('badge-inverse')
-						.addClass('badge-important')
+						.addClass('badge-important');
 				} else {
 					badge
 						.removeClass('badge-important')
-						.addClass('badge-inverse')
+						.addClass('badge-inverse');
 				}
 			});
 		},
@@ -183,13 +208,15 @@
 
 		makeNumberHumanReadable: function(num) {
 			num = parseInt(num, 10);
-			if (num > 999999)
+			if (num > 999999) {
 				return (num / 1000000).toFixed(1) + 'm';
-			else if(num > 999)
+			}
+			else if(num > 999) {
 				return (num / 1000).toFixed(1) + 'k';
+			}
 			return num;
 		}
-	}
+	};
 
 
 	if (!String.prototype.trim) {
@@ -197,25 +224,6 @@
 			return this.replace(/^\s+|\s+$/g, '');
 		};
 	}
-
-	if (!String.prototype.ltrim) {
-		String.prototype.ltrim = function() {
-			return this.replace(/^\s+/, '');
-		};
-	}
-
-	if (!String.prototype.rtrim) {
-		String.prototype.rtrim = function() {
-			return this.replace(/\s+$/, '');
-		};
-	}
-
-	if (!String.prototype.fulltrim) {
-		String.prototype.fulltrim = function() {
-			return this.replace(/(?:(?:^|\n)\s+|\s+(?:$|\n))/g, '').replace(/\s+/g, ' ');
-		};
-	}
-
 
 	if ('undefined' !== typeof window) {
 		window.utils = module.exports;
