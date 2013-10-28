@@ -34,15 +34,15 @@ var RDB = require('./redis.js'),
 		function hasEnoughRep(next) {
 			user.getUserField(uid, 'reputation', function(err, reputation) {
 				if (err) return next(null, false);
-				next(null, reputation >= meta.config['privileges:manage_topic']);
+				next(null, parseInt(reputation, 10) >= parseInt(meta.config['privileges:manage_topic'], 10));
 			});
 		}
 
 
 		async.parallel([getCategoryPrivileges, hasEnoughRep], function(err, results) {
 			callback({
-				editable: results[0].editable || (results.slice(1).indexOf(true) !== -1 ? true : false),
-				view_deleted: results[0].view_deleted || (results.slice(1).indexOf(true) !== -1 ? true : false)
+				editable: results[0].editable || results[1],
+				view_deleted: results[0].view_deleted || results[1]
 			});
 		});
 	}

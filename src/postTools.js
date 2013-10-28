@@ -38,7 +38,7 @@ var RDB = require('./redis.js'),
 		function isOwnPost(next) {
 			posts.getPostField(pid, 'uid', function(author) {
 				if (author && parseInt(author) > 0) {
-					next(null, author === uid);
+					next(null, parseInt(author, 10) === parseInt(uid, 10));
 				}
 			});
 		}
@@ -46,14 +46,14 @@ var RDB = require('./redis.js'),
 		function hasEnoughRep(next) {
 			user.getUserField(uid, 'reputation', function(err, reputation) {
 				if (err) return next(null, false);
-				next(null, reputation >= meta.config['privileges:manage_content']);
+				next(null, parseInt(reputation, 10) >= parseInt(meta.config['privileges:manage_content'], 10));
 			});
 		}
 
 		async.parallel([getThreadPrivileges, isOwnPost, hasEnoughRep], function(err, results) {
 			callback({
-				editable: results[0].editable || (results.slice(1).indexOf(true) !== -1 ? true : false),
-				view_deleted: results[0].view_deleted || (results.slice(1).indexOf(true) !== -1 ? true : false)
+				editable: results[0].editable || results[1] || results[2],
+				view_deleted: results[0].view_deleted || results[1] || results[2]
 			});
 		});
 	}

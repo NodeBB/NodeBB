@@ -14,6 +14,7 @@ var RDB = require('./redis.js'),
 	meta = require('./meta.js'),
 	reds = require('reds'),
 	topicSearch = reds.createSearch('nodebbtopicsearch'),
+	nconf = require('nconf'),
 	validator = require('validator');
 
 (function(Topics) {
@@ -68,7 +69,7 @@ var RDB = require('./redis.js'),
 			}
 
 			function getPrivileges(next) {
-				threadTools.privileges(tid, current_user, function(privData) {
+				postTools.privileges(tid, current_user, function(privData) {
 					next(null, privData);
 				});
 			}
@@ -213,10 +214,12 @@ var RDB = require('./redis.js'),
 		var unreadTids = [],
 			done = false;
 
+		function continueCondition() {
+			return unreadTids.length < 20 && !done;
+		}
+
 		async.whilst(
-			function() {
-				return unreadTids.length < 20 && !done;
-			},
+			continueCondition,
 			function(callback) {
 				RDB.zrevrange('topics:recent', start, stop, function(err, tids) {
 					if (err)
@@ -234,12 +237,16 @@ var RDB = require('./redis.js'),
 						Topics.hasReadTopics(tids, uid, function(read) {
 
 							var newtids = tids.filter(function(tid, index, self) {
-								return read[index] === 0;
+								return parseInt(read[index], 10) === 0;
 							});
 
 							unreadTids.push.apply(unreadTids, newtids);
-							start = stop + 1;
-							stop = start + 19;
+
+							if(continueCondition()) {
+								start = stop + 1;
+								stop = start + 19;
+							}
+
 							callback(null);
 						});
 					}
@@ -404,7 +411,10 @@ var RDB = require('./redis.js'),
 					'topic_id': tid,
 					'expose_tools': privileges.editable ? 1 : 0,
 					'posts': topicPosts,
-					'main_posts': main_posts
+					'main_posts': main_posts,
+					'twitter-intent-url': 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(nconf.get('url') + 'topic/' + topicData.slug) + '&text=' + encodeURIComponent(topicData.title),
+					'facebook-share-url': 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(nconf.get('url') + 'topic/' + topicData.slug),
+					'google-share-url': 'https://plus.google.com/share?url=' + encodeURIComponent(nconf.get('url') + 'topic/' + topicData.slug)
 				});
 			});
 		});

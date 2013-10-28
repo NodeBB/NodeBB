@@ -71,8 +71,9 @@ var opts = {
 	Logger.open = function(value) {
 		/* Open the streams to log to: either a path or stdout */
 		var stream;
-		if(value)
+		if(value && fs.existsSync(value)) {
 			stream = fs.createWriteStream(value, {flags: 'a'});
+		}
 		else
 			stream = process.stdout;
 		return stream;
@@ -113,7 +114,7 @@ var opts = {
 			return opts.express.ofn(req,res,next);
 		}
 		else {
-			return next()
+			return next();
 		}
 	}
 

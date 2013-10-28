@@ -6,6 +6,9 @@
 <input class="test1" type="hidden" template-variable="pinned" value="{pinned}" />
 <input class="test1" type="hidden" template-variable="topic_name" value="{topic_name}" />
 <input class="test1" type="hidden" template-variable="postcount" value="{postcount}" />
+<input type="hidden" template-variable="twitter-intent-url" value="{twitter-intent-url}" />
+<input type="hidden" template-variable="facebook-share-url" value="{facebook-share-url}" />
+<input type="hidden" template-variable="google-share-url" value="{google-share-url}" />
 
 <div class="topic">
 	<ol class="breadcrumb">
@@ -60,12 +63,18 @@
 								<button class="btn btn-sm btn-default quote" type="button" title="[[topic:quote]]"><i class="icon-quote-left"></i></button>
 								<button class="btn btn-sm btn-primary btn post_reply" type="button">[[topic:reply]] <i class="icon-reply"></i></button>
 							</div>
+						
+
+							<div class="btn-group pull-right post-tools">
+								<button class="btn btn-sm btn-default edit {main_posts.display_moderator_tools}" type="button" title="[[topic:edit]]"><i class="icon-pencil"></i></button>
+								<button class="btn btn-sm btn-default delete {main_posts.display_moderator_tools}" type="button" title="[[topic:delete]]"><i class="icon-trash"></i></button>
+							</div>
 
 							<div class="btn-group pull-right post-tools">
 								<button class="btn btn-sm btn-default link" type="button" title="[[topic:link]]"><i class="icon-link"></i></button>
-								<button class="btn btn-sm btn-default edit {main_posts.display_moderator_tools}" type="button" title="[[topic:edit]]"><i class="icon-pencil"></i></button>
-								<button class="btn btn-sm btn-default delete {main_posts.display_moderator_tools}" type="button" title="[[topic:delete]]"><i class="icon-trash"></i></button>
-
+								<button class="btn btn-sm btn-default facebook-share" type="button" title=""><i class="icon-facebook"></i></button>
+								<button class="btn btn-sm btn-default twitter-share" type="button" title=""><i class="icon-twitter"></i></button>
+								<button class="btn btn-sm btn-default google-share" type="button" title=""><i class="icon-google-plus"></i></button>
 							</div>
 
 							<input id="post_{main_posts.pid}_link" value="" class="pull-right" style="display:none;"></input>
