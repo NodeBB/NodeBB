@@ -1,8 +1,9 @@
 define(function () {
-	var	Category = {},
-		cid = templates.get('category_id');
+	var	Category = {};
+
 	Category.init = function() {
-		var	room = 'category_' + cid,
+		var	cid = templates.get('category_id'),
+			room = 'category_' + cid,
 			twitterEl = document.getElementById('twitter-intent'),
 			facebookEl = document.getElementById('facebook-share'),
 			googleEl = document.getElementById('google-share'),
@@ -104,7 +105,7 @@ define(function () {
 			topic.hide().fadeIn('slow');
 		}
 
-		socket.emit('api:categories.getRecentReplies', cid);
+		socket.emit('api:categories.getRecentReplies', templates.get('category_id'));
 		$('#topics-container span.timeago').timeago();
 	}
 
