@@ -38,7 +38,7 @@ var RDB = require('./redis.js'),
 		function isOwnPost(next) {
 			posts.getPostField(pid, 'uid', function(author) {
 				if (author && parseInt(author) > 0) {
-					next(null, author === uid);
+					next(null, parseInt(author, 10) === parseInt(uid, 10));
 				}
 			});
 		}
