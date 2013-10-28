@@ -109,6 +109,7 @@
 					numUnread = data.unread.length,
 					x;
 				notifList.innerHTML = '';
+				console.log(data);
 				if ((data.read.length + data.unread.length) > 0) {
 					for (x = 0; x < numUnread; x++) {
 						notifEl.setAttribute('data-nid', data.unread[x].nid);
@@ -123,15 +124,16 @@
 						notifFrag.appendChild(notifEl.cloneNode(true));
 					}
 				} else {
+					notifEl.className = 'no-notifs';
 					notifEl.innerHTML = '<a>You have no notifications</a>';
-					notifFrag.appendChild(notifEl);
+					notifFrag.appendChild(notifEl.cloneNode(true));
 				}
 
 				// Add dedicated link to /notifications
 				notifEl.removeAttribute('data-nid');
 				notifEl.className = 'pagelink';
 				notifEl.innerHTML = '<a href="' + RELATIVE_PATH + '/notifications">See all Notifications</a>';
-				notifFrag.appendChild(notifEl);
+				notifFrag.appendChild(notifEl.cloneNode(true));
 
 				notifList.appendChild(notifFrag);
 

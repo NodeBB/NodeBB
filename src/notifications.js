@@ -7,9 +7,12 @@ var RDB = require('./redis.js'),
 			RDB.multi()
 				.hmget('notifications:' + nid, 'text', 'score', 'path', 'datetime', 'uniqueId')
 				.zrank('uid:' + uid + ':notifications:read', nid)
+				.exists('notifications:' + nid)
 				.exec(function(err, results) {
 					var	notification = results[0]
 						readIdx = results[1];
+
+					if (!results[2]) return callback(null);
 
 					callback({
 						nid: nid,
@@ -39,6 +42,19 @@ var RDB = require('./redis.js'),
 				}, function(err, status) {
 					if (!err) callback(nid);
 				});
+			});
+		},
+		destroy: function(nid) {
+			var	multi = RDB.multi();
+
+			multi.del('notifications:' + nid);
+			multi.srem('notifications', nid);
+
+			multi.exec(function(err) {
+				if (err) {
+					winston.error('Problem deleting expired notifications. Stack follows.');
+					winston.error(err.stack);
+				}
 			});
 		},
 		push: function(nid, uids, callback) {
@@ -153,15 +169,24 @@ var RDB = require('./redis.js'),
 					var	numInboxes = results.inboxes.length,
 						x;
 
-					async.each(results.nids, function(nid, next) {
+					async.eachSeries(results.nids, function(nid, next) {
 						var	multi = RDB.multi();
 
 						for(x=0;x<numInboxes;x++) {
-							multi.zscore(inboxKey, results.inboxes[x]);
+							multi.zscore(results.inboxes[x], nid);
 						}
 
-						multi.exec(function(results) {
+						multi.exec(function(err, results) {
 							// If the notification is not present in any inbox, delete it altogether
+							var	expired = results.every(function(present) {
+									if (present === null) return true;
+								});
+
+							if (expired) {
+								notifications.destroy(nid);
+							}
+
+							next();
 						});
 					}, function(err) {
 
