@@ -45,6 +45,7 @@ define(function() {
 			text += ' Click here to reload.';
 
 			$('#new-topics-alert').html(text).removeClass('hide').fadeIn('slow');
+			$('#category-no-topics').addClass('hidden');
 		}
 
 		socket.on('event:new_post', function(data) {
