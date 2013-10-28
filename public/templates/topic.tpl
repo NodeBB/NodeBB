@@ -105,14 +105,10 @@
 				<meta itemprop="datePublished" content="{posts.relativeTime}">
 				<meta itemprop="dateModified" content="{posts.relativeEditTime}">
 				<div class="col-md-1 profile-image-block hidden-xs hidden-sm">
-
 					<a href="/user/{posts.userslug}">
 						<img src="{posts.picture}" align="left" class="img-thumbnail" itemprop="image" />
 						<span class="label label-danger {posts.show_banned}">[[topic:banned]]</span>
 					</a>
-
-
-
 				</div>
 				<div class="col-md-11">
 					<div class="post-block">
