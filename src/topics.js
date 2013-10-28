@@ -214,10 +214,12 @@ var RDB = require('./redis.js'),
 		var unreadTids = [],
 			done = false;
 
+		function continueCondition() {
+			return unreadTids.length < 20 && !done;
+		}
+
 		async.whilst(
-			function() {
-				return unreadTids.length < 20 && !done;
-			},
+			continueCondition,
 			function(callback) {
 				RDB.zrevrange('topics:recent', start, stop, function(err, tids) {
 					if (err)
@@ -235,12 +237,16 @@ var RDB = require('./redis.js'),
 						Topics.hasReadTopics(tids, uid, function(read) {
 
 							var newtids = tids.filter(function(tid, index, self) {
-								return read[index] === 0;
+								return parseInt(read[index], 10) === 0;
 							});
 
 							unreadTids.push.apply(unreadTids, newtids);
-							start = stop + 1;
-							stop = start + 19;
+
+							if(continueCondition()) {
+								start = stop + 1;
+								stop = start + 19;
+							}
+
 							callback(null);
 						});
 					}
