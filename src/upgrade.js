@@ -78,6 +78,7 @@ Upgrade.upgrade = function() {
 					});
 				} else {
 					winston.info('[2013/10/23] Updates to Notifications skipped.');
+					next();
 				}
 			});
 		}
