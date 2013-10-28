@@ -136,6 +136,10 @@ var express = require('express'),
 				app.use(function (req, res, next) {
 					nconf.set('https', req.secure);
 					res.locals.csrf_token = req.session._csrf;
+					
+					// Disable framing
+					res.setHeader("X-Frame-Options", "DENY");
+					
 					next();
 				});
 
@@ -667,6 +671,10 @@ var express = require('express'),
 			});
 		});
 
+		// Debug routes
+		if (process.env.NODE_ENV === 'development') {
+			require('./routes/debug')(app);
+		}
 
 		var custom_routes = {
 			'routes': [],

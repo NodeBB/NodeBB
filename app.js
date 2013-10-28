@@ -55,7 +55,7 @@
 	winston.info('');
 
 
-	if (fs.existsSync(__dirname + '/config.json') && (!nconf.get('setup') && !nconf.get('upgrade'))) {
+	if (!nconf.get('help') && !nconf.get('setup') && !nconf.get('upgrade') && fs.existsSync(__dirname + '/config.json')) {
 		// Load server-side configs
 		nconf.file({
 			file: __dirname + '/config.json'
@@ -66,7 +66,7 @@
 		nconf.set('upload_url', nconf.get('url') + 'uploads/');
 
 		winston.info('Initializing NodeBB v' + pkg.version + ', on port ' + nconf.get('port') + ', using Redis store at ' + nconf.get('redis:host') + ':' + nconf.get('redis:port') + '.');
-		winston.info('NodeBB instance bound to: ' + (nconf.get('bind_address') || 'Any address'));
+		winston.info('NodeBB instance bound to: ' + ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? 'Any address (0.0.0.0)' : nconf.get('bind_address')));
 
 		if (process.env.NODE_ENV === 'development') {
 			winston.info('Base Configuration OK.');
@@ -87,7 +87,8 @@
 				SocketIO =  require('socket.io').listen(global.server, { log: false, transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket']}),
 				websockets = require('./src/websockets.js'),
 				posts = require('./src/posts.js'),
-				plugins = require('./src/plugins'); // Don't remove this - plugins initializes itself
+				plugins = require('./src/plugins'), // Don't remove this - plugins initializes itself
+				Notifications = require('./src/notifications');
 
 			websockets.init(SocketIO);
 
@@ -106,18 +107,10 @@
 			]);
 
 			templates.ready(webserver.init);
-		});
 
-	} else if (nconf.get('upgrade')) {
-		nconf.file({
-			file: __dirname + '/config.json'
+			Notifications.init();
 		});
-		meta = require('./src/meta.js');
-
-		meta.configs.init(function () {
-			require('./src/upgrade').upgrade();
-		});
-	} else {
+	} else if (nconf.get('setup') || !fs.existsSync(__dirname + '/config.json')) {
 		// New install, ask setup questions
 		if (nconf.get('setup')) {
 			winston.info('NodeBB Setup Triggered via Command Line');
@@ -135,10 +128,29 @@
 			if (err) {
 				winston.error('There was a problem completing NodeBB setup: ', err.message);
 			} else {
-				winston.info('NodeBB Setup Completed.');
+				winston.info('NodeBB Setup Completed. Run \'node app\' to manually start your NodeBB server.');
 			}
 
 			process.exit();
 		});
-	}
+
+	} else if (nconf.get('upgrade')) {
+		nconf.file({
+			file: __dirname + '/config.json'
+		});
+		meta = require('./src/meta.js');
+
+		meta.configs.init(function () {
+			require('./src/upgrade').upgrade();
+		});
+	} else/* if (nconf.get('help') */{
+		winston.info('Usage: node app [options] [arguments]');
+		winston.info('       [NODE_ENV=development | NODE_ENV=production] node app [--start] [arguments]');
+		winston.info('');
+		winston.info('Options:');
+		winston.info('  --help              displays this usage information');
+		winston.info('  --setup             configure your environment and setup NodeBB');
+		winston.info('  --upgrade           upgrade NodeBB, first read: github.com/designcreateplay/NodeBB/wiki/Upgrading-NodeBB');
+		winston.info('  --start             manually start NodeBB (default when no options are given)');
+	};
 }());
