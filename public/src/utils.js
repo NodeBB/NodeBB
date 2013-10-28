@@ -225,25 +225,6 @@
 		};
 	}
 
-	if (!String.prototype.ltrim) {
-		String.prototype.ltrim = function() {
-			return this.replace(/^\s+/, '');
-		};
-	}
-
-	if (!String.prototype.rtrim) {
-		String.prototype.rtrim = function() {
-			return this.replace(/\s+$/, '');
-		};
-	}
-
-	if (!String.prototype.fulltrim) {
-		String.prototype.fulltrim = function() {
-			return this.replace(/(?:(?:^|\n)\s+|\s+(?:$|\n))/g, '').replace(/\s+/g, ' ');
-		};
-	}
-
-
 	if ('undefined' !== typeof window) {
 		window.utils = module.exports;
 	}
