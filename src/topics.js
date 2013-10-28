@@ -363,11 +363,6 @@ var RDB = require('./redis.js'),
 			Topics.markAsRead(tid, current_user);
 			Topics.increaseViewCount(tid);
 
-			// get the config to check if we are displaying pagination or not
-			if(this.meta.config.paginatedTopics && this.meta.config.paginatedTopics == "1"){
-				console.log("Loading paginated posts start: "+start+" end: "+end);
-			}
-
 			function getTopicData(next) {
 				Topics.getTopicData(tid, function(topicData) {
 					next(null, topicData);
@@ -412,7 +407,13 @@ var RDB = require('./redis.js'),
 
 				var main_posts = null;
 				if( meta.config.paginatedTopics && start > 1){
+					
+					if(parseInt(start) > parseInt(topicData.postcount)){
+						return callback(new Error('Page requested out of range'));
+					}
 					main_posts = originalPost.splice(0, 1);
+
+					
 				}else{
 					main_posts = topicPosts.splice(0,1);
 				}

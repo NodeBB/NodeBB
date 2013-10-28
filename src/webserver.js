@@ -53,6 +53,7 @@ var express = require('express'),
 		};
 
 		plugins.fireHook('filter:header.build', custom_header, function(err, custom_header) {
+
 			var defaultMetaTags = [{
 					name: 'viewport',
 					content: 'width=device-width, initial-scale=1.0, user-scalable=no'
@@ -357,7 +358,7 @@ var express = require('express'),
 
 		app.get('/topic/:topic_id/:slug?', function (req, res) {
 			
-			var posts_per_page = parseInt(this.meta.config.maxPostsPerPage);
+			var posts_per_page = parseInt(meta.config.maxPostsPerPage) || 10;
 			var tid = req.params.topic_id;
 			var page = req.param("page") ? parseInt(req.param("page")) : 1;
 			var offset = posts_per_page*(page-1);

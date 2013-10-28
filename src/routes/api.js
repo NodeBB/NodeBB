@@ -32,7 +32,7 @@ var user = require('./../user.js'),
 				config.minimumPasswordLength = meta.config.minimumPasswordLength;
 				config.useOutgoingLinksPage = meta.config.useOutgoingLinksPage;
 				config.paginatedTopics = meta.config.paginatedTopics;
-				config.maxPostsPerPage = meta.config.maxPostsPerPage;
+				config.maxPostsPerPage = meta.config.maxPostsPerPage || 10;
 				res.json(200, config);
 			});
 
@@ -113,7 +113,8 @@ var user = require('./../user.js'),
 			});
 
 			app.get('/topic/:id/:slug?', function (req, res, next) {
-				var topics_per_page = parseInt(this.meta.config.maxPostsPerPage);
+					
+				var topics_per_page = parseInt(meta.config.maxPostsPerPage) ||  10;
 				var page = (req.param("page")) ? parseInt(req.param("page")) : 1;
 				var offset = (page-1)*topics_per_page;
 				var uid = (req.user) ? req.user.uid : 0;
