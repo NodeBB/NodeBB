@@ -3,9 +3,9 @@
 
 	var utils, fs;
 
-	try {
+	if ('undefined' === typeof window) {
 		fs = require('fs');
-	} catch (e) {}
+	}
 
 
 	module.exports = utils = {
