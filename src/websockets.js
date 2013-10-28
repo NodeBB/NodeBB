@@ -244,7 +244,7 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('post.stats', function(data) {
-			posts.getTopicPostStats(socket);
+			posts.getTopicPostStats();
 		});
 
 		socket.on('user.latest', function(data) {
@@ -373,7 +373,7 @@ module.exports.init = function(io) {
 				}
 
 				if (result) {
-					posts.getTopicPostStats(socket);
+					posts.getTopicPostStats();
 
 					socket.emit('event:alert', {
 						title: 'Thank you for posting',
@@ -426,7 +426,7 @@ module.exports.init = function(io) {
 
 				if (result) {
 
-					posts.getTopicPostStats(socket);
+					posts.getTopicPostStats();
 
 					socket.emit('event:alert', {
 						title: 'Reply Successful',
@@ -476,7 +476,7 @@ module.exports.init = function(io) {
 		socket.on('api:topic.delete', function(data) {
 			threadTools.delete(data.tid, uid, function(err) {
 				if (!err) {
-					posts.getTopicPostStats(socket);
+					posts.getTopicPostStats();
 					socket.emit('api:topic.delete', {
 						status: 'ok',
 						tid: data.tid
@@ -487,7 +487,7 @@ module.exports.init = function(io) {
 
 		socket.on('api:topic.restore', function(data) {
 			threadTools.restore(data.tid, uid, socket, function(err) {
-				posts.getTopicPostStats(socket);
+				posts.getTopicPostStats();
 
 				socket.emit('api:topic.restore', {
 					status: 'ok',
@@ -547,13 +547,13 @@ module.exports.init = function(io) {
 
 		socket.on('api:posts.delete', function(data) {
 			postTools.delete(uid, data.pid, function() {
-				posts.getTopicPostStats(socket);
+				posts.getTopicPostStats();
 			});
 		});
 
 		socket.on('api:posts.restore', function(data) {
 			postTools.restore(uid, data.pid, function() {
-				posts.getTopicPostStats(socket);
+				posts.getTopicPostStats();
 			});
 		});
 

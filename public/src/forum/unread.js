@@ -87,7 +87,7 @@ define(function() {
 		function loadMoreTopics() {
 			loadingMoreTopics = true;
 			socket.emit('api:topics.loadMoreUnreadTopics', {
-				after: parseInt($('#topics-container').attr('data-next-start'), 10);
+				after: parseInt($('#topics-container').attr('data-next-start'), 10)
 			}, function(data) {
 				if (data.topics && data.topics.length) {
 					onTopicsLoaded(data.topics);
