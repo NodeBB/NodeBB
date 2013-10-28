@@ -41,7 +41,7 @@
     "prompt": "~0.2.11",
     "uglify-js": "~2.4.0",
     "validator": "~1.5.1",
-    "nodebb-plugin-mentions": "~0.1.12",
+    "nodebb-plugin-mentions": "~0.1.13",
     "nodebb-plugin-markdown": "~0.1.7",
     "nodebb-theme-vanilla": "designcreateplay/nodebb-theme-vanilla",
     "nodebb-theme-cerulean": "0.0.3"
