@@ -33,7 +33,7 @@ var RDB = require('./redis.js'),
 					} else {
 						callback(posts);
 					}
-				});			
+				});
 			} else {
 				callback([]);
 			}
@@ -175,7 +175,7 @@ var RDB = require('./redis.js'),
 				data = data || {};
 				data.pid = pid;
 				data.field = field;
-				
+
 				plugins.fireHook('filter:post.getField', data, function(err, data) {
 					callback(data);
 				});
@@ -464,7 +464,7 @@ var RDB = require('./redis.js'),
 					posts: data[1] ? data[1] : 0
 				};
 
-				socket.emit('post.stats', stats);
+				io.sockets.emit('post.stats', stats);
 			} else
 				console.log(err);
 		});
