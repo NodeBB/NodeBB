@@ -9,6 +9,7 @@
 	"logout": "Logout",
 	"logout.title": "You are now logged out.",
 	"logout.message": "You have successfully logged out of NodeBB",
+	"header.admin": "Admin",
 	"header.recent": "Recent",
 	"header.unread": "Unread",
 	"header.users": "Users",

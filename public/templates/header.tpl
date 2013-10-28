@@ -62,6 +62,10 @@
 					<li>
 						<a href="/users">[[global:header.users]]</a>
 					</li>
+					<li class="{adminDisplay}">
+
+						<a href="/admin"><i class="icon-cogs"></i> [[global:header.admin]]</a>
+					</li>
 					<li class="visible-xs">
 						<a href="/search">[[global:header.search]]</a>
 					</li>

@@ -23,7 +23,8 @@ var ajaxify = {};
 
 	window.onpopstate = function (event) {
 		// "quiet": If set to true, will not call pushState
-		if (event !== null && event.state && event.state.url !== undefined) ajaxify.go(event.state.url, null, null, true);
+		if (event !== null && event.state && event.state.url !== undefined)
+			ajaxify.go(event.state.url, null, null, true);
 	};
 
 	var pagination;
@@ -123,7 +124,7 @@ var ajaxify = {};
 			if (this.getAttribute('data-ajaxify') == 'false') {
 				return;
 			}
-			
+
 			if (!e.ctrlKey && e.which === 1) {
 				if (this.host === window.location.host) {
 					// Internal link
