@@ -86,7 +86,7 @@
 			if (customTemplateDir) {
 				fs.exists(customTemplateDir, function (exists) {
 					var directory = (exists ? customTemplateDir : __dirname + '/../templates');
-					getTemplates(customTemplateDir);
+					getTemplates(directory);
 				});
 			} else {
 				getTemplates(__dirname + '/../templates');
