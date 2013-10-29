@@ -1,16 +1,13 @@
 // this test currently needs to talk to the redis database.
 // get the redis config info from root directory's config.json:
-var path = require('path'),
-	nconf = require('nconf'),
-	winston = require('winston');
-nconf.file({ file: path.join(__dirname, '../config.json') });
+var winston = require('winston');
 
 process.on('uncaughtException', function (err) {
 	winston.error('Encountered error while running test suite: ' + err.message);
 });
 
 var	assert = require('assert'),
-	RDB = require('../src/redis');
+	RDB = require('../mocks/redismock');
 
 // Reds is not technically used in this test suite, but its invocation is required to stop the included
 // libraries from trying to connect to the default Redis host/port
