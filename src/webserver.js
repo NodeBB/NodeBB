@@ -165,7 +165,7 @@ var express = require('express'),
 					},
 					function(next) {
 						// Theme configuration
-						RDB.hmget('config', 'theme:type', 'theme:id', 'theme:staticDir', function(err, themeData) {
+						RDB.hmget('config', 'theme:type', 'theme:id', 'theme:staticDir', 'theme:templates', function(err, themeData) {
 							var themeId = (themeData[1] || 'nodebb-theme-vanilla');
 
 							// Detect if a theme has been selected, and handle appropriately
@@ -180,6 +180,13 @@ var express = require('express'),
 									app.use('/css/assets', express.static(path.join(__dirname, '../node_modules', themeData[1], themeData[2])));
 									if (process.env.NODE_ENV === 'development') {
 										winston.info('Static directory routed for theme: ' + themeData[1]);
+									}
+								}
+
+								if (themeData[3]) {
+									app.use('/templates', express.static(path.join(__dirname, '../node_modules', themeData[1], themeData[3])));
+									if (process.env.NODE_ENV === 'development') {
+										winston.info('Custom templates directory routed for theme: ' + themeData[1]);
 									}
 								}
 
