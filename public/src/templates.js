@@ -57,30 +57,41 @@
 		return template;
 	};
 
-	function loadTemplates(templatesToLoad) {
+	function loadTemplates(templatesToLoad, customTemplateDir) {
 		function loadServer() {
 			var loaded = templatesToLoad.length;
 
-			for (var t in templatesToLoad) {
-				(function (file) {
-					fs.readFile(__dirname + '/../templates/' + file + '.tpl', function (err, html) {
-						var template = function () {
-							this.toString = function () {
-								return this.html;
-							};
-						}
+			function getTemplates(directory) {
+				for (var t in templatesToLoad) {
+					(function (file) {
+						fs.readFile(directory + '/' + file + '.tpl', function (err, html) {
+							var template = function () {
+								this.toString = function () {
+									return this.html;
+								};
+							}
 
-						template.prototype.file = file;
-						template.prototype.parse = parse;
-						template.prototype.html = String(html);
+							template.prototype.file = file;
+							template.prototype.parse = parse;
+							template.prototype.html = String(html);
 
-						global.templates[file] = new template;
+							global.templates[file] = new template;
 
-						loaded--;
-						if (loaded == 0) templates.ready();
-					});
-				}(templatesToLoad[t]));
+							loaded--;
+							if (loaded == 0) templates.ready();
+						});
+					}(templatesToLoad[t]));
+				}
 			}
+			if (customTemplateDir) {
+				fs.exists(customTemplateDir, function (exists) {
+					var directory = (exists ? customTemplateDir : __dirname + '/../templates');
+					getTemplates(directory);
+				});
+			} else {
+				getTemplates(__dirname + '/../templates');
+			}
+			
 		}
 
 		function loadClient() {
@@ -96,8 +107,8 @@
 	}
 
 
-	templates.init = function (templates_to_load) {
-		loadTemplates(templates_to_load || []);
+	templates.init = function (templates_to_load, custom_templates) {
+		loadTemplates(templates_to_load || [], custom_templates || false);
 	}
 
 	templates.getTemplateNameFromUrl = function (url) {
@@ -227,6 +238,10 @@
 			return new RegExp("<!-- BEGIN " + block + " -->[\\s\\S]*<!-- END " + block + " -->", 'g');
 		}
 
+		function makeConditionalRegex(block) {
+			return new RegExp("<!-- IF " + block + " -->[\\s\\S]*<!-- ENDIF " + block + " -->", 'g');
+		}
+
 		function getBlock(regex, block, template) {
 			data = template.match(regex);
 			if (data == null) return;
@@ -236,6 +251,19 @@
 			data = data[0]
 				.replace("<!-- BEGIN " + block + " -->", "")
 				.replace("<!-- END " + block + " -->", "");
+
+			return data;
+		}
+
+		function getConditionalBlock(regex, block, template) {
+			data = template.match(regex);
+			if (data == null) return;
+
+			if (self.blocks && block !== undefined) self.blocks[block] = data[0];
+
+			data = data[0]
+				.replace("<!-- IF " + block + " -->", "")
+				.replace("<!-- ENDIF " + block + " -->", "");
 
 			return data;
 		}
@@ -289,6 +317,14 @@
 						block = parse(data[d], namespace, block);
 						template = setBlock(regex, block, template);
 					} else {
+						var conditional = makeConditionalRegex(d),
+							block = getConditionalBlock(conditional, namespace, template);
+
+						if (block && !data[d]) {
+							template = template.replace(conditional, '');
+						}
+
+
 						template = replace(namespace + d, data[d], template);
 					}
 				}

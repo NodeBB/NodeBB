@@ -59,6 +59,7 @@ define(function() {
 
 						topicsListEl.innerHTML += html;
 						btnEl.innerHTML = 'Load More Topics';
+						$('span.timeago').timeago();
 					} else {
 						// Exhausted all topics
 						btnEl.className += ' disabled';

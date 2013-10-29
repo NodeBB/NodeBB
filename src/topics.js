@@ -22,8 +22,12 @@ var RDB = require('./redis.js'),
 	Topics.getTopicData = function(tid, callback) {
 		RDB.hgetall('topic:' + tid, function(err, data) {
 			if (err === null) {
-				if(data)
+				if(data) {
 					data.title = validator.sanitize(data.title).escape();
+					if(data.timestamp) {
+						data.relativeTime = new Date(parseInt(data.timestamp, 10)).toISOString();
+					}
+				}
 
 				callback(data);
 			} else {
@@ -327,8 +331,6 @@ var RDB = require('./redis.js'),
 					topicData['lock-icon'] = topicData.locked === '1' ? 'icon-lock' : 'none';
 					topicData['deleted-class'] = topicData.deleted === '1' ? 'deleted' : '';
 
-					topicData.relativeTime = new Date(parseInt(topicData.timestamp, 10)).toISOString();
-
 					topicData.username = topicInfo.username;
 					topicData.badgeclass = (topicInfo.hasread && current_user != 0) ? '' : 'badge-important';
 					topicData.teaser_text = topicInfo.teaserInfo.text || '',
@@ -455,7 +457,6 @@ var RDB = require('./redis.js'),
 				hasRead = results[1],
 				teaser = results[2];
 
-			topicData.relativeTime = new Date(parseInt(topicData.timestamp,10)).toISOString();
 			topicData.badgeclass = hasRead ? '' : 'badge-important';
 			topicData.teaser_text = teaser.text || '';
 			topicData.teaser_username = teaser.username || '';
