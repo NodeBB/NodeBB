@@ -120,8 +120,8 @@ var utils = require('./../public/src/utils.js'),
 							});
 						},
 						function(config, next) {
-							themeData['theme:staticDir'] = config.staticDir ? config.staticDir : false;
-							themeData['theme:templates'] = config.templates ? config.templates : false;
+							themeData['theme:staticDir'] = config.staticDir ? config.staticDir : '';
+							themeData['theme:templates'] = config.templates ? config.templates : '';
 
 							RDB.hmset('config', themeData, next);
 						}
