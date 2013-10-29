@@ -61,26 +61,37 @@
 		function loadServer() {
 			var loaded = templatesToLoad.length;
 
-			for (var t in templatesToLoad) {
-				(function (file) {
-					fs.readFile((customTemplateDir ? customTemplateDir : __dirname + '/../templates') + '/' + file + '.tpl', function (err, html) {
-						var template = function () {
-							this.toString = function () {
-								return this.html;
-							};
-						}
+			function getTemplates(directory) {
+				for (var t in templatesToLoad) {
+					(function (file) {
+						fs.readFile(directory + '/' + file + '.tpl', function (err, html) {
+							var template = function () {
+								this.toString = function () {
+									return this.html;
+								};
+							}
 
-						template.prototype.file = file;
-						template.prototype.parse = parse;
-						template.prototype.html = String(html);
+							template.prototype.file = file;
+							template.prototype.parse = parse;
+							template.prototype.html = String(html);
 
-						global.templates[file] = new template;
+							global.templates[file] = new template;
 
-						loaded--;
-						if (loaded == 0) templates.ready();
-					});
-				}(templatesToLoad[t]));
+							loaded--;
+							if (loaded == 0) templates.ready();
+						});
+					}(templatesToLoad[t]));
+				}
 			}
+			if (customTemplateDir) {
+				fs.exists(customTemplateDir, function (exists) {
+					var directory = (exists ? customTemplateDir : __dirname + '/../templates');
+					getTemplates(customTemplateDir);
+				});
+			} else {
+				getTemplates(__dirname + '/../templates');
+			}
+			
 		}
 
 		function loadClient() {
