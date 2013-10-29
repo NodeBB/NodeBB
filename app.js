@@ -96,6 +96,8 @@
 			global.translator = translator;
 
 			translator.loadServer();
+			
+			var customTemplates = meta.config['theme:templates'] ? path.join(__dirname, 'node_modules', meta.config['theme:id'], meta.config['theme:templates']) : false;
 
 			// todo: replace below with read directory code, derp.
 			templates.init([
@@ -104,7 +106,8 @@
 				'emails/header', 'emails/footer',
 
 				'noscript/header', 'noscript/home', 'noscript/category', 'noscript/topic'
-			]);
+			], customTemplates);
+			
 
 			templates.ready(webserver.init);
 

@@ -57,13 +57,13 @@
 		return template;
 	};
 
-	function loadTemplates(templatesToLoad) {
+	function loadTemplates(templatesToLoad, customTemplateDir) {
 		function loadServer() {
 			var loaded = templatesToLoad.length;
 
 			for (var t in templatesToLoad) {
 				(function (file) {
-					fs.readFile(__dirname + '/../templates/' + file + '.tpl', function (err, html) {
+					fs.readFile((customTemplateDir ? customTemplateDir : __dirname + '/../templates') + '/' + file + '.tpl', function (err, html) {
 						var template = function () {
 							this.toString = function () {
 								return this.html;
@@ -96,8 +96,8 @@
 	}
 
 
-	templates.init = function (templates_to_load) {
-		loadTemplates(templates_to_load || []);
+	templates.init = function (templates_to_load, custom_templates) {
+		loadTemplates(templates_to_load || [], custom_templates || false);
 	}
 
 	templates.getTemplateNameFromUrl = function (url) {
