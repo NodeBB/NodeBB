@@ -11,7 +11,7 @@
 		</div>
 		<a target="_blank" href="{relative_path}/topic/{topics.slug}">{topics.title}</a>
 		<ul>
-			<li><i class="icon-time"></i> Posted {topics.relativeTime} ago by {topics.username}</li>
+			<li><i class="icon-time"></i> Posted <span class="timeago" title="{topics.relativeTime}"></span> by {topics.username}</li>
 			<li><i class="icon-comments"></i> {topics.postcount} post(s)</li>
 		</ul>
 		<div class="clear"></div>
