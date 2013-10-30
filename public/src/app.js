@@ -277,12 +277,6 @@ var socket,
 	}
 
 	app.process_page = function () {
-
-		// here is where all modules' onNavigate should be called, I think.
-		require(['mobileMenu'], function (mobileMenu) {
-			mobileMenu.onNavigate();
-		});
-
 		app.populate_online_users();
 
 		var url = window.location.href,
