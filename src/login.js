@@ -17,7 +17,7 @@ var user = require('./user.js'),
 
 			var userslug = utils.slugify(username);
 
-			user.get_uid_by_userslug(userslug, function(err, uid) {
+			user.getUidByUserslug(userslug, function(err, uid) {
 
 				if (err) {
 					return next(new Error('redis-error'));
@@ -58,7 +58,7 @@ var user = require('./user.js'),
 	}
 
 	Login.loginViaTwitter = function(twid, handle, photos, callback) {
-		user.get_uid_by_twitter_id(twid, function(uid) {
+		user.getUidByTwitterId(twid, function(uid) {
 			if (uid !== null) {
 				// Existing User
 				callback(null, {
@@ -92,7 +92,7 @@ var user = require('./user.js'),
 	}
 
 	Login.loginViaGoogle = function(gplusid, handle, email, callback) {
-		user.get_uid_by_google_id(gplusid, function(uid) {
+		user.getUidByGoogleId(gplusid, function(uid) {
 			if (uid !== null) {
 				// Existing User
 				callback(null, {
@@ -109,7 +109,7 @@ var user = require('./user.js'),
 					});
 				}
 
-				user.get_uid_by_email(email, function(uid) {
+				user.getUidByEmail(email, function(uid) {
 					if (!uid) {
 						user.create(handle, undefined, email, function(err, uid) {
 							if (err !== null) {
@@ -123,7 +123,7 @@ var user = require('./user.js'),
 	}
 
 	Login.loginViaFacebook = function(fbid, name, email, callback) {
-		user.get_uid_by_fbid(fbid, function(uid) {
+		user.getUidByFbid(fbid, function(uid) {
 			if (uid !== null) {
 				// Existing User
 				callback(null, {
@@ -140,7 +140,7 @@ var user = require('./user.js'),
 					});
 				}
 
-				user.get_uid_by_email(email, function(uid) {
+				user.getUidByEmail(email, function(uid) {
 					if (!uid) {
 						user.create(name, undefined, email, function(err, uid) {
 							if (err !== null) {

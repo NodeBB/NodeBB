@@ -602,10 +602,10 @@ var utils = require('./../public/src/utils.js'),
 	}
 
 	User.exists = function(userslug, callback) {
-		User.get_uid_by_userslug(userslug, function(err, exists) {
+		User.getUidByUserslug(userslug, function(err, exists) {
 			callback( !! exists);
 		});
-	};
+	}
 
 	User.count = function(socket) {
 		RDB.get('usercount', function(err, count) {
@@ -615,7 +615,7 @@ var utils = require('./../public/src/utils.js'),
 				count: count ? count : 0
 			});
 		});
-	};
+	}
 
 	User.latest = function(socket) {
 		RDB.zrevrange('users:joindate', 0, 0, function(err, uid) {
@@ -631,15 +631,15 @@ var utils = require('./../public/src/utils.js'),
 		});
 	}
 
-	User.get_uid_by_username = function(username, callback) {
+	User.getUidByUsername = function(username, callback) {
 		RDB.hget('username:uid', username, callback);
-	};
+	}
 
-	User.get_uid_by_userslug = function(userslug, callback) {
+	User.getUidByUserslug = function(userslug, callback) {
 		RDB.hget('userslug:uid', userslug, callback);
-	};
+	}
 
-	User.get_usernames_by_uids = function(uids, callback) {
+	User.getUsernamesByUids = function(uids, callback) {
 		var usernames = [];
 
 		if (!Array.isArray(uids)) {
@@ -658,7 +658,7 @@ var utils = require('./../public/src/utils.js'),
 		});
 	}
 
-	User.get_userslugs_by_uids = function(uids, callback) {
+	User.getUserSlugsByUids = function(uids, callback) {
 		var userslugs = [];
 
 		if (!Array.isArray(uids)) {
@@ -677,16 +677,16 @@ var utils = require('./../public/src/utils.js'),
 		});
 	}
 
-	User.get_uid_by_email = function(email, callback) {
+	User.getUidByEmail = function(email, callback) {
 		RDB.hget('email:uid', email, function(err, data) {
 			if (err) {
 				RDB.handle(err);
 			}
 			callback(data);
 		});
-	};
+	}
 
-	User.get_uid_by_twitter_id = function(twid, callback) {
+	User.getUidByTwitterId = function(twid, callback) {
 		RDB.hget('twid:uid', twid, function(err, uid) {
 			if (err) {
 				RDB.handle(err);
@@ -695,7 +695,7 @@ var utils = require('./../public/src/utils.js'),
 		});
 	}
 
-	User.get_uid_by_google_id = function(gplusid, callback) {
+	User.getUidByGoogleId = function(gplusid, callback) {
 		RDB.hget('gplusid:uid', gplusid, function(err, uid) {
 			if (err) {
 				RDB.handle(err);
@@ -704,7 +704,7 @@ var utils = require('./../public/src/utils.js'),
 		});
 	}
 
-	User.get_uid_by_fbid = function(fbid, callback) {
+	User.getUidByFbid = function(fbid, callback) {
 		RDB.hget('fbid:uid', fbid, function(err, uid) {
 			if (err) {
 				RDB.handle(err);
@@ -779,7 +779,7 @@ var utils = require('./../public/src/utils.js'),
 			});
 		},
 		send: function(socket, email) {
-			User.get_uid_by_email(email, function(uid) {
+			User.getUidByEmail(email, function(uid) {
 				if (uid !== null) {
 					// Generate a new reset code
 					var reset_code = utils.generateUUID();
@@ -855,7 +855,7 @@ var utils = require('./../public/src/utils.js'),
 
 	User.email = {
 		exists: function(socket, email, callback) {
-			User.get_uid_by_email(email, function(exists) {
+			User.getUidByEmail(email, function(exists) {
 				exists = !! exists;
 				if (typeof callback !== 'function') {
 					socket.emit('user.email.exists', {
