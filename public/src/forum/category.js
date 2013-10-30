@@ -4,9 +4,9 @@ define(function () {
 	Category.init = function() {
 		var	cid = templates.get('category_id'),
 			room = 'category_' + cid,
-			twitterEl = document.getElementById('twitter-intent'),
-			facebookEl = document.getElementById('facebook-share'),
-			googleEl = document.getElementById('google-share'),
+			twitterEl = jQuery('#twitter-intent'),
+			facebookEl = jQuery('#facebook-share'),
+			googleEl = jQuery('#google-share'),
 			twitter_url = templates.get('twitter-intent-url'),
 			facebook_url = templates.get('facebook-share-url'),
 			google_url = templates.get('google-share-url'),
@@ -14,18 +14,18 @@ define(function () {
 
 		app.enter_room(room);
 
-		twitterEl.addEventListener('click', function () {
+		twitterEl.on('click', function () {
 			window.open(twitter_url, '_blank', 'width=550,height=420,scrollbars=no,status=no');
 			return false;
-		}, false);
-		facebookEl.addEventListener('click', function () {
+		});
+		facebookEl.on('click', function () {
 			window.open(facebook_url, '_blank', 'width=626,height=436,scrollbars=no,status=no');
 			return false;
-		}, false);
-		googleEl.addEventListener('click', function () {
+		});
+		googleEl.on('click', function () {
 			window.open(google_url, '_blank', 'width=500,height=570,scrollbars=no,status=no');
 			return false;
-		}, false);
+		});
 
 		var new_post = document.getElementById('new_post');
 		new_post.onclick = function () {
