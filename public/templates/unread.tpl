@@ -22,7 +22,7 @@
 			<a href="../../topic/{topics.slug}" id="tid-{topics.tid}">
 				<li class="category-item {topics.deleted-class}">
 					<div class="row">
-						<div class="col-md-12 topic-row img-thumbnail">
+						<div class="col-md-12 topic-row">
 							<div class="latest-post visible-lg visible-md">
 								<a href="../../topic/{topics.slug}#{topics.teaser_pid}">
 									<div class="pull-right">
