@@ -55,9 +55,12 @@ define(function() {
 					topics = JSON.parse(topics);
 					if (topics.length > 0) {
 						var html = templates.prepare(templates['admin/topics'].blocks['topics']).parse({
-							topics: topics
-						}),
+								topics: topics
+							}),
 							topicsListEl = document.querySelector('.topics');
+
+						// Fix relative paths
+						html = html.replace(/\{relative_path\}/g, RELATIVE_PATH);
 
 						topicsListEl.innerHTML += html;
 
