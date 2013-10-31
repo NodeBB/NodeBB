@@ -19,39 +19,37 @@
 	</div>
 
 	<ul id="users-container" class="users-container">
-		<div id="users-inner-container" class="inline-block">
-			<!-- BEGIN users -->
-			<div class="users-box registered-user">
-				<a href="/user/{users.userslug}">
-					<img src="{users.picture}" class="img-thumbnail"/>
-				</a>
+		<!-- BEGIN users -->
+		<li class="users-box registered-user">
+			<a href="/user/{users.userslug}">
+				<img src="{users.picture}" class="img-thumbnail"/>
+			</a>
+			<br/>
+			<div class="user-info">
+				<a href="/user/{users.userslug}">{users.username}</a>
 				<br/>
-				<div class="user-info">
-					<a href="/user/{users.userslug}">{users.username}</a>
-					<br/>
-					<div title="reputation" class="reputation">
-						<span class='formatted-number'>{users.reputation}</span>
-						<i class='icon-star'></i>
-					</div>
-					<div title="post count" class="post-count">
-						<span class='formatted-number'>{users.postcount}</span>
-						<i class='icon-pencil'></i>
-					</div>
+				<div title="reputation" class="reputation">
+					<span class='formatted-number'>{users.reputation}</span>
+					<i class='icon-star'></i>
+				</div>
+				<div title="post count" class="post-count">
+					<span class='formatted-number'>{users.postcount}</span>
+					<i class='icon-pencil'></i>
 				</div>
 			</div>
-			<!-- END users -->
-			<div class="users-box {show_anon} anon-user">
-				<a href="#">
-					<img src="" class="img-thumbnail"/>
-				</a>
+		</li>
+		<!-- END users -->
+		<li class="users-box {show_anon} anon-user">
+			<a href="#">
+				<img src="" class="img-thumbnail"/>
+			</a>
+			<br/>
+			<div class="user-info">
+				<span id="online_anon_count">{anonymousUserCount}</span>
 				<br/>
-				<div class="user-info">
-					<span id="online_anon_count">{anonymousUserCount}</span>
-					<br/>
-					<a href="#">Anonymous</a>
-				</div>
+				<a href="#">Anonymous</a>
 			</div>
-		</div>
+		</li>
 
 	</ul>
 
