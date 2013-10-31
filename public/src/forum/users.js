@@ -65,7 +65,7 @@ define(function() {
 			var html = templates.prepare(templates['users'].blocks['users']).parse({
 				users: data
 			}),
-				userListEl = $('#users-inner-container');
+				userListEl = $('#users-container');
 
 			userListEl.html(html);
 
@@ -84,7 +84,12 @@ define(function() {
 			if(getActiveSection() == 'online' && !loadingMoreUsers) {
 				startLoading('users:online', 0, true);
 				socket.emit('api:user.getOnlineAnonCount', {} , function(anonCount) {
-					$('#online_anon_count').html(anonCount);
+					if(parseInt(anonCount, 10) > 0) {
+						$('#users-container .anon-user').removeClass('hide');
+						$('#online_anon_count').html(anonCount);
+					} else {
+						$('#users-container .anon-user').addClass('hide');
+					}
 				});
 			}
 		});
@@ -94,9 +99,9 @@ define(function() {
 				users: users
 			});
 			if(emptyContainer)
-				$('#users-inner-container .registered-user').remove();
-			$('#users-inner-container').append(html);
-			$('#users-inner-container .anon-user').appendTo($('#users-inner-container'));
+				$('#users-container .registered-user').remove();
+			$('#users-container').append(html);
+			$('#users-container .anon-user').appendTo($('#users-container'));
 		}
 
 		function loadMoreUsers() {
@@ -112,7 +117,7 @@ define(function() {
 			}
 
 			if (set) {
-				startLoading(set, $('#users-inner-container').children('.registered-user').length);
+				startLoading(set, $('#users-container').children('.registered-user').length);
 			}
 		}
 
