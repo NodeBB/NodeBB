@@ -5,6 +5,8 @@ define(function() {
 		var topicsListEl = document.querySelector('.topics'),
 			loadMoreEl = document.getElementById('topics_loadmore');
 
+		this.resolveButtonStates();
+
 		$(topicsListEl).on('click', '[data-action]', function() {
 			var $this = $(this),
 				action = this.getAttribute('data-action'),
@@ -58,6 +60,9 @@ define(function() {
 							topicsListEl = document.querySelector('.topics');
 
 						topicsListEl.innerHTML += html;
+
+						Topics.resolveButtonStates();
+
 						btnEl.innerHTML = 'Load More Topics';
 						$('span.timeago').timeago();
 					} else {
@@ -68,18 +73,6 @@ define(function() {
 				});
 			}
 		}, false);
-
-		// Resolve proper button state for all topics
-		var topicEls = topicsListEl.querySelectorAll('li'),
-			numTopics = topicEls.length;
-		for (var x = 0; x < numTopics; x++) {
-			if (topicEls[x].getAttribute('data-pinned') === '1') topicEls[x].querySelector('[data-action="pin"]').className += ' active';
-			if (topicEls[x].getAttribute('data-locked') === '1') topicEls[x].querySelector('[data-action="lock"]').className += ' active';
-			if (topicEls[x].getAttribute('data-deleted') === '1') topicEls[x].querySelector('[data-action="delete"]').className += ' active';
-			topicEls[x].removeAttribute('data-pinned');
-			topicEls[x].removeAttribute('data-locked');
-			topicEls[x].removeAttribute('data-deleted');
-		}
 
 		socket.on('api:topic.pin', function(response) {
 			if (response.status === 'ok') {
@@ -118,6 +111,7 @@ define(function() {
 				var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="delete"]');
 
 				$(btnEl).addClass('active');
+				$(btnEl).siblings('[data-action="lock"]').addClass('active');
 			}
 		});
 
@@ -126,9 +120,31 @@ define(function() {
 				var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="delete"]');
 
 				$(btnEl).removeClass('active');
+				$(btnEl).siblings('[data-action="lock"]').removeClass('active');
 			}
 		});
 	};
+
+	Topics.resolveButtonStates = function() {
+		// Resolve proper button state for all topics
+		var topicsListEl = document.querySelector('.topics'),
+			topicEls = topicsListEl.querySelectorAll('li'),
+			numTopics = topicEls.length;
+		for (var x = 0; x < numTopics; x++) {
+			if (topicEls[x].getAttribute('data-pinned') === '1') {
+				topicEls[x].querySelector('[data-action="pin"]').className += ' active';
+				topicEls[x].removeAttribute('data-pinned');
+			}
+			if (topicEls[x].getAttribute('data-locked') === '1') {
+				topicEls[x].querySelector('[data-action="lock"]').className += ' active';
+				topicEls[x].removeAttribute('data-locked');
+			}
+			if (topicEls[x].getAttribute('data-deleted') === '1') {
+				topicEls[x].querySelector('[data-action="delete"]').className += ' active';
+				topicEls[x].removeAttribute('data-deleted');
+			}
+		}
+	}
 
 	return Topics;
 });
