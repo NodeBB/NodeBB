@@ -189,8 +189,10 @@ define(function() {
 				}
 			}, function(err) {
 				if (!err) {
+					detailsModal.on('hidden.bs.modal', function() {
+						ajaxify.go('admin/groups');
+					});
 					detailsModal.modal('hide');
-					ajaxify.go('admin/groups');
 				}
 			});
 		});
