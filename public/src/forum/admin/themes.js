@@ -73,7 +73,7 @@ define(function() {
 			if (themes.length > 0) {
 				for (var x = 0, numThemes = themes.length; x < numThemes; x++) {
 					liEl.setAttribute('data-theme', themes[x].id);
-					liEl.innerHTML = '<img src="' + themes[x].screenshot + '" />' +
+					liEl.innerHTML = '<img src="' + (themes[x].screenshot ? '/css/previews/' + themes[x].id : RELATIVE_PATH + '/images/themes/default.png') + '" />' +
 						'<div>' +
 						'<div class="pull-right">' +
 						'<button class="btn btn-primary" data-action="use">Use</button> ' +

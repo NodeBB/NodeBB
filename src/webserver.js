@@ -137,10 +137,10 @@ var express = require('express'),
 				app.use(function (req, res, next) {
 					nconf.set('https', req.secure);
 					res.locals.csrf_token = req.session._csrf;
-					
+
 					// Disable framing
 					res.setHeader("X-Frame-Options", "DENY");
-					
+
 					next();
 				});
 
@@ -214,6 +214,26 @@ var express = require('express'),
 
 								next();
 							}
+						});
+
+						// Route paths to screenshots for installed themes
+						meta.themes.get(function(err, themes) {
+							var	screenshotPath;
+
+							async.each(themes, function(themeObj, next) {
+								if (themeObj.screenshot) {
+									screenshotPath = path.join(__dirname, '../node_modules', themeObj.id, themeObj.screenshot);
+									fs.exists(screenshotPath, function(exists) {
+										if (exists) {
+											app.get('/css/previews/' + themeObj.id, function(req, res) {
+												res.sendfile(screenshotPath);
+											});
+										}
+									});
+								} else {
+									next(false);
+								}
+							});
 						});
 					}
 				], next);

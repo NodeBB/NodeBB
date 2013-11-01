@@ -80,20 +80,9 @@ var utils = require('./../public/src/utils.js'),
 
 						if (fs.existsSync(config)) {
 							fs.readFile(config, function (err, file) {
-								var configObj = JSON.parse(file.toString());
-								if (configObj.staticDir && configObj.screenshot) {
-									// Verify that the provided path leads to a file that exists
-									fs.exists(path.join(__dirname, '../node_modules/', configObj.id, configObj.staticDir, configObj.screenshot), function(exists) {
-										if (exists) {
-											configObj.screenshot = path.join('/css/assets/', configObj.screenshot);
-										} else {
-											configObj.screenshot = nconf.get('relative_path') + '/images/themes/default.png';
-										}
-
-										next(err, configObj);
-									});
-								} else {
-									configObj.screenshot = nconf.get('relative_path') + '/images/themes/default.png';
+								if (err) return next();
+								else {
+									var configObj = JSON.parse(file.toString());
 									next(err, configObj);
 								}
 							});
