@@ -27,8 +27,7 @@ define(function () {
 			return false;
 		});
 
-		var new_post = document.getElementById('new_post');
-		new_post.onclick = function () {
+		$('#new_post').on('click', function () {
 			require(['composer'], function (cmp) {
 				cmp.push(0, cid);
 			});
