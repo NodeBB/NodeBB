@@ -20,14 +20,12 @@
 		RedisDB.auth(nconf.get('redis:password'));
 	}
 
-	var db = nconf.get('redis:database');
+	var db = parseInt(nconf.get('redis:database'), 10);
 	if (db){
 		RedisDB.select(db, function(error){
 			if(error !== null){
-				winston.err(error);
-				if (global.env !== 'production') {
-					throw new Error(error);
-				}
+				winston.error("NodeBB could not connect to your Redis database. Redis returned the following error: " + error.message);
+				process.exit();
 			}
 		});
 	}
