@@ -226,7 +226,6 @@ var express = require('express'),
 									(function(id, path) {
 										fs.exists(path, function(exists) {
 											if (exists) {
-												console.log('routing', id, path);
 												app.get('/css/previews/' + id, function(req, res) {
 													res.sendfile(path);
 												});
