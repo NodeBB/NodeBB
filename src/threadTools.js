@@ -263,7 +263,7 @@ var RDB = require('./redis.js'),
 		});
 	}
 
-	ThreadTools.get_followers = function(tid, callback) {
+	ThreadTools.getFollowers = function(tid, callback) {
 		RDB.smembers('tid:' + tid + ':followers', function(err, followers) {
 			callback(err, followers.map(function(follower) {
 				return parseInt(follower, 10);
@@ -271,7 +271,7 @@ var RDB = require('./redis.js'),
 		});
 	}
 
-	ThreadTools.notify_followers = function(tid, exceptUid) {
+	ThreadTools.notifyFollowers = function(tid, exceptUid) {
 		async.parallel([
 			function(next) {
 				topics.getTopicField(tid, 'title', function(err, title) {
@@ -285,7 +285,7 @@ var RDB = require('./redis.js'),
 				});
 			},
 			function(next) {
-				ThreadTools.get_followers(tid, function(err, followers) {
+				ThreadTools.getFollowers(tid, function(err, followers) {
 					exceptUid = parseInt(exceptUid, 10);
 					if (followers.indexOf(exceptUid) !== -1) followers.splice(followers.indexOf(exceptUid), 1);
 					next(null, followers);

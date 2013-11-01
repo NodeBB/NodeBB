@@ -287,41 +287,34 @@ var RDB = require('./redis.js'),
 			return;
 		}
 
-		user.getUserField(uid, 'lastposttime', function(lastposttime) {
-			if (Date.now() - lastposttime < meta.config.postDelay) {
-				callback(new Error('too-many-posts'), null);
-				return;
+		Posts.create(uid, tid, content, function(postData) {
+			if (postData) {
+
+				topics.markUnRead(tid);
+
+				Posts.get_cid_by_pid(postData.pid, function(cid) {
+					RDB.del('cid:' + cid + ':read_by_uid', function(err, data) {
+						topics.markAsRead(tid, uid);
+					});
+				});
+
+				threadTools.notifyFollowers(tid, uid);
+
+				Posts.addUserInfoToPost(postData, function() {
+					var socketData = {
+						posts: [postData]
+					};
+					io.sockets.in('topic_' + tid).emit('event:new_post', socketData);
+					io.sockets.in('recent_posts').emit('event:new_post', socketData);
+					io.sockets.in('user/' + uid).emit('event:new_post', socketData);
+				});
+
+				callback(null, 'Reply successful');
+			} else {
+				callback(new Error('reply-error'), null);
 			}
-
-			Posts.create(uid, tid, content, function(postData) {
-				if (postData) {
-
-					topics.markUnRead(tid);
-
-					Posts.get_cid_by_pid(postData.pid, function(cid) {
-						RDB.del('cid:' + cid + ':read_by_uid', function(err, data) {
-							topics.markAsRead(tid, uid);
-						});
-					});
-
-					threadTools.notify_followers(tid, uid);
-
-					Posts.addUserInfoToPost(postData, function() {
-						var socketData = {
-							posts: [postData]
-						};
-						io.sockets.in('topic_' + tid).emit('event:new_post', socketData);
-						io.sockets.in('recent_posts').emit('event:new_post', socketData);
-						io.sockets.in('user/' + uid).emit('event:new_post', socketData);
-					});
-
-					callback(null, 'Reply successful');
-				} else {
-					callback(new Error('reply-error'), null);
-				}
-			});
 		});
-	};
+	}
 
 	Posts.create = function(uid, tid, content, callback) {
 		if (uid === null) {

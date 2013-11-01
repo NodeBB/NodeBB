@@ -75,6 +75,11 @@
 		<strong>Minimum Post Length</strong><br /> <input type="text" class="form-control" value="8" data-field="minimumPostLength"><br />
 		<div class="checkbox">
 			<label>
+				<input type="checkbox" data-field="allowGuestPosting"> <strong>Allow guests to post without logging in</strong>
+			</label>
+		</div>
+		<div class="checkbox">
+			<label>
 				<input type="checkbox" data-field="useOutgoingLinksPage"> <strong>Use Outgoing Links Warning Page</strong>
 			</label>
 		</div>

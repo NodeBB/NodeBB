@@ -85,7 +85,8 @@ var RDB = require('./redis.js'),
 				for (var i = 0; i < postData.length; ++i) {
 					postData[i].fav_button_class = fav_data[postData[i].pid] ? 'btn-warning' : '';
 					postData[i].fav_star_class = fav_data[postData[i].pid] ? 'icon-star' : 'icon-star-empty';
-					postData[i]['display_moderator_tools'] = (postData[i].uid == current_user || privileges.editable) ? 'show' : 'none';
+					postData[i]['display_moderator_tools'] = ((current_user != 0) && (postData[i].uid == current_user || privileges.editable)) ? 'show' : 'none';
+
 					postData[i].show_banned = postData[i].user_banned === '1' ? 'show' : 'hide';
 				}
 

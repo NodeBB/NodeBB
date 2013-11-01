@@ -60,7 +60,7 @@ module.exports.init = function(io) {
 
 	io.sockets.on('connection', function(socket) {
 		var hs = socket.handshake,
-			sessionID, uid;
+			sessionID, uid, lastPostTime = 0;
 
 
 		// Validate the session, if present
@@ -397,7 +397,7 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:posts.reply', function(data) {
-			if (uid < 1) {
+			if (uid < 1 && meta.config.allowGuestPosting === '0') {
 				socket.emit('event:alert', {
 					title: 'Reply Unsuccessful',
 					message: 'You don&apos;t seem to be logged in, so you cannot reply.',
@@ -407,8 +407,14 @@ module.exports.init = function(io) {
 				return;
 			}
 
+			if (Date.now() - lastPostTime < meta.config.postDelay) {
+				posts.emitTooManyPostsAlert(socket);
+				return;
+			}
+
 			posts.reply(data.topic_id, uid, data.content, function(err, result) {
 				if(err) {
+
 					if(err.message === 'content-too-short') {
 						posts.emitContentTooShortAlert(socket);
 					} else if (err.message === 'too-many-posts') {
@@ -425,7 +431,7 @@ module.exports.init = function(io) {
 				}
 
 				if (result) {
-
+					lastPostTime = Date.now();
 					posts.getTopicPostStats();
 
 					socket.emit('event:alert', {
@@ -535,6 +541,7 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:posts.edit', function(data) {
+
 			if (!data.title || data.title.length < topics.minimumTitleLength) {
 				topics.emitTitleTooShortAlert(socket);
 				return;
@@ -542,6 +549,7 @@ module.exports.init = function(io) {
 				posts.emitContentTooShortAlert(socket);
 				return;
 			}
+
 			postTools.edit(uid, data.pid, data.title, data.content, data.images);
 		});
 
@@ -664,7 +672,7 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:composer.push', function(data) {
-			if (uid > 0) {
+			if (uid > 0 || meta.config.allowGuestPosting === '1') {
 				if (parseInt(data.tid) > 0) {
 					topics.getTopicData(data.tid, function(topicData) {
 						if (data.body)

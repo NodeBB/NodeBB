@@ -37,9 +37,7 @@ var RDB = require('./redis.js'),
 
 		function isOwnPost(next) {
 			posts.getPostField(pid, 'uid', function(author) {
-				if (author && parseInt(author) > 0) {
-					next(null, parseInt(author, 10) === parseInt(uid, 10));
-				}
+				next(null, parseInt(author, 10) === parseInt(uid, 10));
 			});
 		}
 
@@ -60,6 +58,7 @@ var RDB = require('./redis.js'),
 
 
 	PostTools.edit = function(uid, pid, title, content) {
+
 		var	success = function() {
 			async.waterfall([
 				function(next) {
