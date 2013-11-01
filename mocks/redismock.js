@@ -23,7 +23,7 @@
 		errorText = 'redis_test database is not defined';
 		winston.info(
 			"\n===========================================================\n"+
-			"Please, add parameters for test database in config.js\n"+
+			"Please, add parameters for test database in config.json\n"+
 			"For example:\n"+
 				'"redis_test": {' + '\n' +
 				'   "host": "127.0.0.1",' + '\n' +
