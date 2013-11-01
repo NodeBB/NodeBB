@@ -31,7 +31,7 @@ define(function () {
 			require(['composer'], function (cmp) {
 				cmp.push(0, cid);
 			});
-		}
+		});
 
 		ajaxify.register_events([
 			'event:new_topic'
@@ -80,6 +80,7 @@ define(function () {
 	};
 
 	Category.onNewTopic = function(data) {
+		console.log(data);
 		var html = templates.prepare(templates['category'].blocks['topics']).parse({
 			topics: [data]
 		}),
