@@ -96,7 +96,7 @@ var RDB = require('./redis.js'),
 				}
 
 				function getActiveUsers(next) {
-					user.getMultipleUserFields(active_users, ['username', 'userslug', 'picture'], function(err, users) {
+					user.getMultipleUserFields(active_users, ['uid', 'username', 'userslug', 'picture'], function(err, users) {
 						next(err, users);
 					});
 				}

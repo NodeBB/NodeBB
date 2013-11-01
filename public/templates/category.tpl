@@ -76,9 +76,9 @@
 			<div class="block-header">
 				[[category:sidebar.active_participants]]
 			</div>
-			<div class="block-content">
+			<div class="block-content active-users">
 				<!-- BEGIN active_users -->
-				<a href="/user/{active_users.userslug}"><img title="{active_users.username}" src="{active_users.picture}" class="img-rounded" /></a>
+				<a data-uid="{active_users.uid}" href="/user/{active_users.userslug}"><img title="{active_users.username}" src="{active_users.picture}" class="img-rounded" /></a>
 				<!-- END active_users -->
 			</div>
 		</div>

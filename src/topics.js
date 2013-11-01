@@ -461,6 +461,7 @@ var RDB = require('./redis.js'),
 			topicData.badgeclass = hasRead ? '' : 'badge-important';
 			topicData.teaser_text = teaser.text || '';
 			topicData.teaser_username = teaser.username || '';
+			topicData.userslug = teaser.userslug || '';
 			topicData.teaser_timestamp = teaser.timestamp ? (new Date(parseInt(teaser.timestamp,10)).toISOString()) : '';
 			topicData.teaser_userpicture = teaser.picture;
 
@@ -606,7 +607,7 @@ var RDB = require('./redis.js'),
 			if (!err) {
 				posts.getPostFields(pid, ['pid', 'content', 'uid', 'timestamp'], function(postData) {
 
-					user.getUserFields(postData.uid, ['username', 'picture'], function(err, userData) {
+					user.getUserFields(postData.uid, ['username', 'userslug', 'picture'], function(err, userData) {
 						if (err)
 							return callback(err, null);
 
@@ -615,6 +616,7 @@ var RDB = require('./redis.js'),
 							returnObj = {
 								"pid": postData.pid,
 								"username": userData.username,
+								"userslug": userData.userslug,
 								"picture": userData.picture,
 								"timestamp": timestamp
 							};

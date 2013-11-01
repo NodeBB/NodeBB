@@ -80,7 +80,6 @@ define(function () {
 	};
 
 	Category.onNewTopic = function(data) {
-		console.log(data);
 		var html = templates.prepare(templates['category'].blocks['topics']).parse({
 			topics: [data]
 		}),
@@ -106,7 +105,25 @@ define(function () {
 		}
 
 		socket.emit('api:categories.getRecentReplies', templates.get('category_id'));
+
+		addActiveUser(data);
+
 		$('#topics-container span.timeago').timeago();
+	}
+
+	function addActiveUser(data) {
+		var activeUser = $('.category-sidebar .active-users').find('a[data-uid="' + data.uid + '"]');
+		if(!activeUser.length) {
+			var newUser = templates.prepare(templates['category'].blocks['active_users']).parse({
+				active_users: [{
+					uid: data.uid,
+					username: data.username,
+					userslug: data.userslug,
+					picture: data.teaser_userpicture
+				}]
+			});
+			$(newUser).appendTo($('.category-sidebar .active-users'));
+		}
 	}
 
 	Category.onTopicsLoaded = function(topics) {
