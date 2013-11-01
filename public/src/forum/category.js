@@ -58,11 +58,12 @@ define(function () {
 
 				li.innerHTML = '<a href="/user/' + posts[i].userslug + '"><img title="' + posts[i].username + '" style="width: 48px; height: 48px; /*temporary*/" class="img-rounded" src="' + posts[i].picture + '" class="" /></a>' +
 					'<a href="/topic/' + posts[i].topicSlug + '#' + posts[i].pid + '">' +
+					'<strong><span>'+ posts[i].username + '</span></strong>' +
 					'<p>' +
 					posts[i].content +
 					'</p>' +
-					'<p class="meta"><strong>' + posts[i].username + '</strong></span> -<span class="timeago" title="' + posts[i].relativeTime + '"></span></p>' +
-					'</a>';
+					'</a>' +
+					'<span class="timeago pull-right" title="' + posts[i].relativeTime + '"></span>';
 
 				frag.appendChild(li.cloneNode(true));
 				recent_replies.appendChild(frag);
