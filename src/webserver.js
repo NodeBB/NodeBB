@@ -223,13 +223,16 @@ var express = require('express'),
 							async.each(themes, function(themeObj, next) {
 								if (themeObj.screenshot) {
 									screenshotPath = path.join(__dirname, '../node_modules', themeObj.id, themeObj.screenshot);
-									fs.exists(screenshotPath, function(exists) {
-										if (exists) {
-											app.get('/css/previews/' + themeObj.id, function(req, res) {
-												res.sendfile(screenshotPath);
-											});
-										}
-									});
+									(function(id, path) {
+										fs.exists(path, function(exists) {
+											if (exists) {
+												console.log('routing', id, path);
+												app.get('/css/previews/' + id, function(req, res) {
+													res.sendfile(path);
+												});
+											}
+										});
+									})(themeObj.id, screenshotPath);
 								} else {
 									next(false);
 								}
