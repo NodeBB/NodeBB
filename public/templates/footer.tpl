@@ -60,29 +60,6 @@
 
 
 	<footer id="footer" class="container footer">
-		<div class="row footer-stats">
-			<div class="col-md-3 col-xs-6">
-				<div class="stats-card well">
-					<h2><span id="stats_online"></span><br /><small>[[footer:stats.online]]</small></h2>
-				</div>
-			</div>
-			<div class="col-md-3 col-xs-6">
-				<div class="stats-card well">
-					<h2><span id="stats_users"></span><br /><small>[[footer:stats.users]]</small></h2>
-				</div>
-			</div>
-			<div class="col-md-3 col-xs-6">
-				<div class="stats-card well">
-					<h2><span id="stats_topics"></span><br /><small>[[footer:stats.topics]]</small></h2>
-				</div>
-			</div>
-			<div class="col-md-3 col-xs-6">
-				<div class="stats-card well">
-					<h2><span id="stats_posts"></span><br /><small>[[footer:stats.posts]]</small></h2>
-				</div>
-			</div>
-		</div>
-
 		<div class="copyright">Copyright &copy; 2013 <a target="_blank" href="http://www.nodebb.org">NodeBB</a> by <a target="_blank" href="https://github.com/psychobunny">psychobunny</a>, <a href="https://github.com/julianlam" target="_blank">julianlam</a>, <a href="https://github.com/barisusakli" target="_blank">barisusakli</a> from <a target="_blank" href="http://www.designcreateplay.com">designcreateplay</a></div>
 	</footer>
 
