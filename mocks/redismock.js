@@ -21,6 +21,18 @@
 		productionDbConfig = nconf.get('redis');
 	if(!testDbConfig){
 		errorText = 'redis_test database is not defined';
+		winston.info(
+			"\n===========================================================\n"+
+			"Please, add parameters for test database in config.js\n"+
+			"For example:\n"+
+				'"redis_test": {' + '\n' +
+				'   "host": "127.0.0.1",' + '\n' +
+				'   "port": "6379",' + '\n' +
+				'   "password": "",' + '\n' +
+				'   "database": "1"' + '\n' +
+			'}\n'+
+			"==========================================================="
+		);
 		winston.error(errorText);
 		throw new Error(errorText);
 	}
