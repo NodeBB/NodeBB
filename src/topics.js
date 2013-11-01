@@ -336,7 +336,7 @@ var RDB = require('./redis.js'),
 					topicData.badgeclass = (topicInfo.hasread && current_user != 0) ? '' : 'badge-important';
 					topicData.teaser_text = topicInfo.teaserInfo.text || '',
 					topicData.teaser_username = topicInfo.teaserInfo.username || '';
-					topicData.teaser_userpicture = topicInfo.teaserInfo.picture || '';
+					topicData.teaser_userpicture = topicInfo.teaserInfo.picture || require('gravatar').url('', {}, https = nconf.get('https'));
 					topicData.teaser_pid = topicInfo.teaserInfo.pid;
 
 					topicData.teaser_timestamp = topicInfo.teaserInfo.timestamp ? (new Date(parseInt(topicInfo.teaserInfo.timestamp, 10)).toISOString()) : '';

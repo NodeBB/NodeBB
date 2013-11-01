@@ -425,7 +425,8 @@ var RDB = require('./redis.js'),
 	};
 
 	Categories.addActiveUser = function(cid, uid) {
-		RDB.sadd('cid:' + cid + ':active_users', uid);
+		if(parseInt(uid, 10))
+			RDB.sadd('cid:' + cid + ':active_users', uid);
 	};
 
 	Categories.removeActiveUser = function(cid, uid) {
