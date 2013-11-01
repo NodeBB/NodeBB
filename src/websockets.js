@@ -541,8 +541,15 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:posts.edit', function(data) {
-
-			if (!data.title || data.title.length < topics.minimumTitleLength) {
+			if(!uid) {
+				socket.emit('event:alert', {
+					title: 'Can&apos;t edit',
+					message: 'Guests can&apos;t edit posts!',
+					type: 'warning',
+					timeout: 2000
+				});
+				return;
+			} else if (!data.title || data.title.length < topics.minimumTitleLength) {
 				topics.emitTitleTooShortAlert(socket);
 				return;
 			} else if (!data.content || data.content.length < require('../public/config.json').minimumPostLength) {

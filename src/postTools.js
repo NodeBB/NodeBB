@@ -25,7 +25,13 @@ var RDB = require('./redis.js'),
 	}
 
 	PostTools.privileges = function(pid, uid, callback) {
-		//todo: break early if one condition is true
+		if(uid == 0) {
+			callback({
+				editable: false,
+				view_deleted: false
+			});
+			return;
+		}
 
 		function getThreadPrivileges(next) {
 			posts.getPostField(pid, 'tid', function(tid) {

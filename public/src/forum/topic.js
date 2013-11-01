@@ -32,7 +32,7 @@ define(function() {
 				window.open(twitter_url, '_blank', 'width=550,height=420,scrollbars=no,status=no');
 				return false;
 			});
-			
+
 			$('.facebook-share').on('click', function () {
 				window.open(facebook_url, '_blank', 'width=626,height=436,scrollbars=no,status=no');
 				return false;
@@ -548,7 +548,7 @@ define(function() {
 		});
 
 		socket.on('api:post.privileges', function(privileges) {
-			if (privileges.editable) toggle_mod_tools(privileges.pid, true);
+			toggle_mod_tools(privileges.pid, privileges.editable);
 		});
 
 		function adjust_rep(value, pid, uid) {

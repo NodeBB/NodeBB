@@ -344,8 +344,8 @@ var socket,
 
 	app.createNewPosts = function (data) {
 		if (data.posts[0].uid !== app.uid) {
-			data.posts[0].display_moderator_tools = 'none';
-		}
+ 			data.posts[0].display_moderator_tools = 'none';
+ 		}
 
 		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
 		translator.translate(html, function(translatedHTML) {
