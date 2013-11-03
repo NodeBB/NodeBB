@@ -1,7 +1,3 @@
-#################
-## npm
-#################
-
 npm-debug.log
 node_modules/
 sftp-config.json
@@ -9,12 +5,10 @@ config.json
 public/src/nodebb.min.js
 public/config.json
 public/css/*.css
-public/themes/*
-!/public/themes/vanilla
-!/public/themes/cerulean
-!/public/themes/modern
 *.sublime-project
 *.sublime-workspace
-plugins/*
 .project
 *.swp
+Vagrantfile
+.vagrant
+provision.sh

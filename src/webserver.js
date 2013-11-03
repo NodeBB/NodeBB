@@ -152,19 +152,6 @@ var express = require('express'),
 			function(next) {
 				async.parallel([
 					function(next) {
-						// Static Directories for NodeBB Plugins
-						plugins.ready(function () {
-							for (d in plugins.staticDirs) {
-								app.use(nconf.get('relative_path') + '/plugins/' + d, express.static(plugins.staticDirs[d]));
-								if (process.env.NODE_ENV === 'development') {
-									winston.info('Static directory routed for plugin: ' + d);
-								}
-							}
-
-							next();
-						});
-					},
-					function(next) {
 						// Theme configuration
 						RDB.hmget('config', 'theme:type', 'theme:id', 'theme:staticDir', 'theme:templates', function(err, themeData) {
 							var themeId = (themeData[1] || 'nodebb-theme-vanilla');
@@ -700,6 +687,9 @@ var express = require('express'),
 				});
 			});
 		});
+
+		// Other routes
+		require('./routes/plugins')(app);
 
 		// Debug routes
 		if (process.env.NODE_ENV === 'development') {
