@@ -666,10 +666,17 @@ module.exports.init = function(io) {
 
 		socket.on('api:config.set', function(data) {
 			meta.configs.set(data.key, data.value, function(err) {
-				if (!err) socket.emit('api:config.set', {
-					status: 'ok'
-				});
-				/* Another hook, for my (adarqui's) logger module */
+				if (!err) {
+					socket.emit('api:config.set', {
+						status: 'ok'
+					});
+
+					plugins.fireHook('action:config.set', {
+						key: data.key,
+						value: data.value
+					});
+				}
+
 				logger.monitorConfig(this, data);
 			});
 		});
