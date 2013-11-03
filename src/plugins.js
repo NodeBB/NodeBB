@@ -27,10 +27,8 @@ var fs = require('fs'),
 				function(plugins, next) {
 					if (plugins && Array.isArray(plugins) && plugins.length > 0) {
 						async.each(plugins, function(plugin, next) {
-							var pluginPath = path.join(__dirname, '../plugins/', plugin),
-								modulePath = path.join(__dirname, '../node_modules/', plugin);
-							if (fs.existsSync(pluginPath)) _self.loadPlugin(pluginPath, next);
-							else if (fs.existsSync(modulePath)) _self.loadPlugin(modulePath, next);
+							var modulePath = path.join(__dirname, '../node_modules/', plugin);
+							if (fs.existsSync(modulePath)) _self.loadPlugin(modulePath, next);
 							else {
 								if (global.env === 'development') winston.warn('[plugins] Plugin \'' + plugin + '\' not found');
 								next(); // Ignore this plugin silently
