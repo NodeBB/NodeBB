@@ -132,12 +132,6 @@ var RDB = require('./redis.js'),
 		});
 	};
 
-	Posts.filterBannedPosts = function(posts) {
-		return posts.filter(function(post) {
-			return post.user_banned === '0';
-		});
-	}
-
 	// TODO: this function is never called except from some debug route. clean up?
 	Posts.getPostData = function(pid, callback) {
 		RDB.hgetall('post:' + pid, function(err, data) {
@@ -146,8 +140,9 @@ var RDB = require('./redis.js'),
 					if (!err) callback(newData);
 					else callback(data);
 				});
-			} else
-				console.log(err);
+			} else {
+				winston.error(err);
+			}
 		});
 	}
 
