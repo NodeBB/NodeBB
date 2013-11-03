@@ -234,11 +234,11 @@ var fs = require('fs'),
 						return;
 					}
 
-					// (De)activation Hooks
-					plugins.fireHook('action:plugin.' + (active ? 'de' : '') + 'activate', id);
-
 					// Reload meta data
 					plugins.reload(function() {
+						// (De)activation Hooks
+						plugins.fireHook('action:plugin.' + (active ? 'de' : '') + 'activate', id);
+
 						if (callback) {
 							callback({
 								id: id,
