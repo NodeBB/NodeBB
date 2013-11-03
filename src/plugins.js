@@ -237,12 +237,15 @@ var fs = require('fs'),
 					// (De)activation Hooks
 					plugins.fireHook('action:plugin.' + (active ? 'de' : '') + 'activate', id);
 
-					if (callback) {
-						callback({
-							id: id,
-							active: !active
-						});
-					}
+					// Reload meta data
+					plugins.reload(function() {
+						if (callback) {
+							callback({
+								id: id,
+								active: !active
+							});
+						}
+					});
 				});
 			});
 		},
