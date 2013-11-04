@@ -85,7 +85,7 @@ define(['taskbar'], function(taskbar) {
 		return chatModal;
 	}
 
-	function center(chatModal) {
+	module.center = function(chatModal) {
 		chatModal.css("position", "fixed");
 		chatModal.css("top", "100px");
 		chatModal.css("left", Math.max(0, (($(window).width() - $(chatModal).outerWidth()) / 2) + $(window).scrollLeft()) + "px");
@@ -95,7 +95,6 @@ define(['taskbar'], function(taskbar) {
 	module.load = function(uuid) {
 		var chatModal = $('div[UUID="'+uuid+'"]');
 		chatModal.show();
-		center(chatModal);
 		module.bringModalToTop(chatModal);
 		checkOnlineStatus(chatModal);
 	}

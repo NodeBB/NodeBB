@@ -339,6 +339,7 @@ var socket,
 				chatModal = chat.getModal(touid);
 			}
 			chat.load(chatModal.attr('UUID'));
+			chat.center(chatModal);
 		});
 	}
 
