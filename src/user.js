@@ -26,7 +26,7 @@ var utils = require('./../public/src/utils.js'),
 			function(next) {
 				if (email !== undefined) {
 					next(!utils.isEmailValid(email) ? new Error('Invalid Email!') : null);
-				}else {
+				} else {
 					next();
 				}
 			},
@@ -36,7 +36,7 @@ var utils = require('./../public/src/utils.js'),
 			function(next) {
 				if (password !== undefined) {
 					next(!utils.isPasswordValid(password) ? new Error('Invalid Password!') : null);
-				}else {
+				} else {
 					next();
 				}
 			},
@@ -450,7 +450,7 @@ var utils = require('./../public/src/utils.js'),
 			if (!err) {
 				if (pids && pids.length) {
 					callback(pids);
-				}else {
+				} else {
 					callback([]);
 				}
 			} else {
@@ -1031,7 +1031,7 @@ var utils = require('./../public/src/utils.js'),
 					notifications.get(nid, uid, function(notifObj) {
 						if (notifObj.uniqueId === uniqueId) {
 							next(true);
-						}else {
+						} else {
 							next(false);
 						}
 					});
