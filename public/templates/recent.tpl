@@ -33,37 +33,36 @@
 					</a>
 					<small>
 						<span class="topic-stats">
-							<span class="badge {topics.badgeclass}">{topics.postcount}</span> posts
-						</span>
-						<span class="topic-stats">
-							<span class="badge {topics.badgeclass}">{topics.viewcount}</span> views
+							<strong>posts</strong>
+							<span>{topics.postcount}</span>
 						</span>
 						|
-						<span> posted in
-							<a href="../../category/{topics.categorySlug}">
-								<i class="{topics.categoryIcon}"></i> {topics.categoryName}
-							</a>
+						<span class="topic-stats">
+							<strong>views</strong>
+							<span>{topics.viewcount}</span>
 						</span>
-
-						<span class="pull-right hidden-xs">
+						|
+						<span>
 							<a href="/user/{topics.userslug}">
 								<img class="img-rounded teaser-pic" src="{topics.picture}" title="{topics.username}"/>
 							</a>
-
-							<a href="../../topic/{topics.slug}">
-								<span>
-									posted <span class="timeago" title="{topics.relativeTime}"></span>
-								</span>
+							posted in
+							<a href="../../category/{topics.categorySlug}">
+								<i class="{topics.categoryIcon}"></i> {topics.categoryName}
 							</a>
-							|
+							<span class="timeago" title="{topics.relativeTime}"></span>
+							</span>
+						</span>
+
+						<span class="pull-right hidden-xs">
 							<a href="/user/{topics.teaser_userslug}">
 								<img class="img-rounded teaser-pic" src="{topics.teaser_userpicture}" title="{topics.teaser_username}"/>
 							</a>
 							<a href="../../topic/{topics.slug}#{topics.teaser_pid}">
-								<span>
-								 	replied <span class="timeago" title="{topics.teaser_timestamp}"></span>
-								</span>
+								replied
 							</a>
+							<span class="timeago" title="{topics.teaser_timestamp}"></span>
+
 						</span>
 					</small>
 				</div>
