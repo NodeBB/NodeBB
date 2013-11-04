@@ -308,7 +308,6 @@ var RDB = require('./redis.js'),
 
 			function getCategoryInfo(next) {
 				categories.getCategoryFields(topicData.cid, ['name', 'slug', 'icon'], function(err, categoryData) {
-					console.log(categoryData);
 					next(err, categoryData);
 				});
 			}
