@@ -56,14 +56,14 @@
 								|
 								<span>
 									<a href="/user/{topics.userslug}">
-										<img class="img-rounded teaser-pic" src="{topics.picture}" title="{topics.username}"/>
+										<img class="teaser-pic" src="{topics.picture}" title="{topics.username}"/>
 									</a>
 									posted <span class="timeago" title="{topics.relativeTime}"></span>
 								</span>
 
 								<span class="pull-right hidden-xs">
 									<a href="/user/{topics.teaser_userslug}">
-										<img class="img-rounded teaser-pic" src="{topics.teaser_userpicture}" title="{topics.teaser_username}"/>
+										<img class="teaser-pic" src="{topics.teaser_userpicture}" title="{topics.teaser_username}"/>
 									</a>
 									<a href="../../topic/{topics.slug}#{topics.teaser_pid}">
 										replied
