@@ -147,7 +147,7 @@ define(function () {
 		loadingMoreTopics = true;
 		socket.emit('api:category.loadMore', {
 			cid: cid,
-			after: $('#topics-container').children().length
+			after: $('#topics-container').children('.category-item').length
 		}, function (data) {
 			if (data.topics.length) {
 				Category.onTopicsLoaded(data.topics);
