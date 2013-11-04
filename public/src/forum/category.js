@@ -27,12 +27,11 @@ define(function () {
 			return false;
 		});
 
-		var new_post = document.getElementById('new_post');
-		new_post.onclick = function () {
+		$('#new_post').on('click', function () {
 			require(['composer'], function (cmp) {
 				cmp.push(0, cid);
 			});
-		}
+		});
 
 		ajaxify.register_events([
 			'event:new_topic'
@@ -59,11 +58,12 @@ define(function () {
 
 				li.innerHTML = '<a href="/user/' + posts[i].userslug + '"><img title="' + posts[i].username + '" style="width: 48px; height: 48px; /*temporary*/" class="img-rounded" src="' + posts[i].picture + '" class="" /></a>' +
 					'<a href="/topic/' + posts[i].topicSlug + '#' + posts[i].pid + '">' +
+					'<strong><span>'+ posts[i].username + '</span></strong>' +
 					'<p>' +
 					posts[i].content +
 					'</p>' +
-					'<p class="meta"><strong>' + posts[i].username + '</strong></span> -<span class="timeago" title="' + posts[i].relativeTime + '"></span></p>' +
-					'</a>';
+					'</a>' +
+					'<span class="timeago pull-right" title="' + posts[i].relativeTime + '"></span>';
 
 				frag.appendChild(li.cloneNode(true));
 				recent_replies.appendChild(frag);
@@ -106,7 +106,25 @@ define(function () {
 		}
 
 		socket.emit('api:categories.getRecentReplies', templates.get('category_id'));
+
+		addActiveUser(data);
+
 		$('#topics-container span.timeago').timeago();
+	}
+
+	function addActiveUser(data) {
+		var activeUser = $('.category-sidebar .active-users').find('a[data-uid="' + data.uid + '"]');
+		if(!activeUser.length) {
+			var newUser = templates.prepare(templates['category'].blocks['active_users']).parse({
+				active_users: [{
+					uid: data.uid,
+					username: data.username,
+					userslug: data.userslug,
+					picture: data.teaser_userpicture
+				}]
+			});
+			$(newUser).appendTo($('.category-sidebar .active-users'));
+		}
 	}
 
 	Category.onTopicsLoaded = function(topics) {

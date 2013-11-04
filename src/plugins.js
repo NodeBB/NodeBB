@@ -17,7 +17,30 @@ var fs = require('fs'),
 			if (this.initialized) return;
 			if (global.env === 'development') winston.info('[plugins] Initializing plugins system');
 
+			this.reload(function(err) {
+				if (err) {
+					if (global.env === 'development') winston.info('[plugins] NodeBB encountered a problem while loading plugins', err.message);
+					return;
+				}
+
+				if (global.env === 'development') winston.info('[plugins] Plugins OK');
+
+				plugins.initialized = true;
+				plugins.readyEvent.emit('ready');
+			});
+		},
+		ready: function(callback) {
+			if (!this.initialized) this.readyEvent.once('ready', callback);
+			else callback();
+		},
+		initialized: false,
+		reload: function(callback) {
 			var _self = this;
+
+			// Resetting all local plugin data
+			this.loadedHooks = {};
+			this.staticDirs = {};
+			this.cssFiles.length = 0;
 
 			// Read the list of activated plugins and require their libraries
 			async.waterfall([
@@ -27,10 +50,8 @@ var fs = require('fs'),
 				function(plugins, next) {
 					if (plugins && Array.isArray(plugins) && plugins.length > 0) {
 						async.each(plugins, function(plugin, next) {
-							var pluginPath = path.join(__dirname, '../plugins/', plugin),
-								modulePath = path.join(__dirname, '../node_modules/', plugin);
-							if (fs.existsSync(pluginPath)) _self.loadPlugin(pluginPath, next);
-							else if (fs.existsSync(modulePath)) _self.loadPlugin(modulePath, next);
+							var modulePath = path.join(__dirname, '../node_modules/', plugin);
+							if (fs.existsSync(modulePath)) _self.loadPlugin(modulePath, next);
 							else {
 								if (global.env === 'development') winston.warn('[plugins] Plugin \'' + plugin + '\' not found');
 								next(); // Ignore this plugin silently
@@ -49,23 +70,8 @@ var fs = require('fs'),
 
 					next();
 				}
-			], function(err) {
-				if (err) {
-					if (global.env === 'development') winston.info('[plugins] NodeBB encountered a problem while loading plugins', err.message);
-					return;
-				}
-
-				if (global.env === 'development') winston.info('[plugins] Plugins OK');
-
-				_self.initialized = true;
-				_self.readyEvent.emit('ready');
-			});
+			], callback);
 		},
-		ready: function(callback) {
-			if (!this.initialized) this.readyEvent.once('ready', callback);
-			else callback();
-		},
-		initialized: false,
 		loadPlugin: function(pluginPath, callback) {
 			var _self = this;
 
@@ -82,16 +88,25 @@ var fs = require('fs'),
 
 							fs.exists(libraryPath, function(exists) {
 								if (exists) {
-									_self.libraries[pluginData.id] = require(libraryPath);
+									if (!_self.libraries[pluginData.id]) {
+										_self.libraries[pluginData.id] = require(libraryPath);
+									}
 
+									// Register hooks for this plugin
 									if (pluginData.hooks && Array.isArray(pluginData.hooks) && pluginData.hooks.length > 0) {
 										async.each(pluginData.hooks, function(hook, next) {
 											_self.registerHook(pluginData.id, hook, next);
 										}, next);
 									}
+								} else {
+									winston.warn('[plugins.reload] Library not found for plugin: ' + pluginData.id);
+									next();
 								}
 							});
-						} else next();
+						} else {
+							winston.warn('[plugins.reload] Library not found for plugin: ' + pluginData.id);
+							next();
+						}
 					},
 					function(next) {
 						// Static Directories for Plugins
@@ -219,15 +234,18 @@ var fs = require('fs'),
 						return;
 					}
 
-					// (De)activation Hooks
-					plugins.fireHook('action:plugin.' + (active ? 'de' : '') + 'activate', id);
+					// Reload meta data
+					plugins.reload(function() {
+						// (De)activation Hooks
+						plugins.fireHook('action:plugin.' + (active ? 'de' : '') + 'activate', id);
 
-					if (callback) {
-						callback({
-							id: id,
-							active: !active
-						});
-					}
+						if (callback) {
+							callback({
+								id: id,
+								active: !active
+							});
+						}
+					});
 				});
 			});
 		},

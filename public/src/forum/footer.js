@@ -1,28 +1,4 @@
 (function() {
-	var stats_users = document.getElementById('stats_users'),
-		stats_topics = document.getElementById('stats_topics'),
-		stats_posts = document.getElementById('stats_posts'),
-		stats_online = document.getElementById('stats_online'),
-		user_label = document.getElementById('user_label');
-
-	socket.emit('user.count', {});
-	socket.on('user.count', function(data) {
-		stats_users.innerHTML = utils.makeNumberHumanReadable(data.count);
-		stats_users.title = data.count;
-	});
-
-	socket.emit('post.stats');
-	socket.on('post.stats', function(data) {
-		stats_topics.innerHTML = utils.makeNumberHumanReadable(data.topics);
-		stats_topics.title = data.topics;
-		stats_posts.innerHTML = utils.makeNumberHumanReadable(data.posts);
-		stats_posts.title = data.posts;
-	});
-
-	socket.emit('api:user.active.get');
-	socket.on('api:user.active.get', function(data) {
-		stats_online.innerHTML = data.users;
-	});
 
 	socket.emit('api:updateHeader', {
 		fields: ['username', 'picture', 'userslug']

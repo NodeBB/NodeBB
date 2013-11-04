@@ -42,7 +42,7 @@
     "uglify-js": "~2.4.0",
     "validator": "~1.5.1",
     "nodebb-plugin-mentions": "~0.1.14",
-    "nodebb-plugin-markdown": "~0.1.7",
+    "nodebb-plugin-markdown": "~0.1.8",
     "nodebb-theme-vanilla": "designcreateplay/nodebb-theme-vanilla",
     "nodebb-theme-cerulean": "0.0.5",
     "cron": "~1.0.1"

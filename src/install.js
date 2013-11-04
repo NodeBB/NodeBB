@@ -12,44 +12,44 @@ var async = require('async'),
 		questions: [{
 			name: 'base_url',
 			description: 'URL of this installation',
-			'default': 'http://localhost',
+			'default': nconf.get('base_url') || 'http://localhost',
 			pattern: /^http(?:s)?:\/\//,
 			message: 'Base URL must begin with \'http://\' or \'https://\'',
 		}, {
 			name: 'port',
 			description: 'Port number of your NodeBB',
-			'default': 4567,
+			'default': nconf.get('port') || 4567,
             pattern: /[0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]/,
             message: 'Please enter a value betweeen 1 and 65535'
 		}, {
 			name: 'use_port',
 			description: 'Use a port number to access NodeBB?',
-			'default': 'y',
+			'default': (nconf.get('use_port') ? 'y' : 'n') || 'y',
 			pattern: /y[es]*|n[o]?/,
 			message: 'Please enter \'yes\' or \'no\'',
 		}, {
 			name: 'secret',
 			description: 'Please enter a NodeBB secret',
-			'default': utils.generateUUID()
+			'default': nconf.get('secret') || utils.generateUUID()
 		}, {
 			name: 'redis:host',
 			description: 'Host IP or address of your Redis instance',
-			'default': '127.0.0.1'
+			'default': nconf.get('redis:host') || '127.0.0.1'
 		}, {
 			name: 'redis:port',
 			description: 'Host port of your Redis instance',
-			'default': 6379
+			'default': nconf.get('redis:port') || 6379
 		}, {
 			name: 'redis:password',
 			description: 'Password of your Redis database'
 		}, {
 			name: "redis:database",
 			description: "Which database to use (0..n)",
-			'default': 0
+			'default': nconf.get('redis:database') || 0
 		}, {
 			name: 'bind_address',
 			description: 'IP or Hostname to bind to',
-			'default': '0.0.0.0'
+			'default': nconf.get('bind_address') || '0.0.0.0'
 		}],
 		setup: function (callback) {
 			async.series([

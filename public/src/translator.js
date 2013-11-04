@@ -80,9 +80,10 @@
 			if (keys.hasOwnProperty(key)) {
 				var variables = keys[key].split(/[,][?\s+]/);
 
-				var parsedKey = keys[key].replace('[[', '').replace(']]', '').split(':'),
-					languageFile = parsedKey[0];
-
+				var parsedKey = keys[key].replace('[[', '').replace(']]', '').split(':');
+				if (!(parsedKey[0] && parsedKey[1])) continue;
+				
+				var languageFile = parsedKey[0];
 				parsedKey = parsedKey[1].split(',')[0];
 
 				if (files.loaded[languageFile]) {

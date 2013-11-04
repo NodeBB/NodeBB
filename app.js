@@ -121,6 +121,10 @@
 			winston.warn('Configuration not found, starting NodeBB setup');
 		}
 
+		nconf.file({
+			file: __dirname + '/config.json'
+		});
+
 		var install = require('./src/install');
 
 		winston.info('Welcome to NodeBB!');
