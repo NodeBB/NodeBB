@@ -306,7 +306,14 @@ var RDB = require('./redis.js'),
 				});
 			}
 
-			async.parallel([getUserInfo, hasReadTopic, getTeaserInfo, getPrivileges], function(err, results) {
+			function getCategoryInfo(next) {
+				categories.getCategoryFields(topicData.cid, ['name', 'slug', 'icon'], function(err, categoryData) {
+					console.log(categoryData);
+					next(err, categoryData);
+				});
+			}
+
+			async.parallel([getUserInfo, hasReadTopic, getTeaserInfo, getPrivileges, getCategoryInfo], function(err, results) {
 				callback({
 					username: results[0].username,
 					userslug: results[0].userslug,
@@ -314,7 +321,8 @@ var RDB = require('./redis.js'),
 					userbanned: results[0].banned,
 					hasread: results[1],
 					teaserInfo: results[2],
-					privileges: results[3]
+					privileges: results[3],
+					categoryData: results[4]
 				});
 			});
 		}
@@ -339,13 +347,15 @@ var RDB = require('./redis.js'),
 					topicData.username = topicInfo.username;
 					topicData.userslug = topicInfo.userslug;
 					topicData.picture = topicInfo.picture;
+					topicData.categoryIcon = topicInfo.categoryData.icon;
+					topicData.categoryName = topicInfo.categoryData.name;
+					topicData.categorySlug = topicInfo.categoryData.slug;
 					topicData.badgeclass = (topicInfo.hasread && current_user != 0) ? '' : 'badge-important';
 					topicData.teaser_text = topicInfo.teaserInfo.text || '',
 					topicData.teaser_username = topicInfo.teaserInfo.username || '';
 					topicData.teaser_userslug = topicInfo.teaserInfo.userslug || '';
 					topicData.teaser_userpicture = topicInfo.teaserInfo.picture || require('gravatar').url('', {}, https = nconf.get('https'));
 					topicData.teaser_pid = topicInfo.teaserInfo.pid;
-
 					topicData.teaser_timestamp = topicInfo.teaserInfo.timestamp ? (new Date(parseInt(topicInfo.teaserInfo.timestamp, 10)).toISOString()) : '';
 
 					if (isTopicVisible(topicData, topicInfo))
