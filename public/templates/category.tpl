@@ -39,7 +39,8 @@
 
 									<span class="topic-title">
 										<strong><i class="{topics.pin-icon}"></i> <i class="{topics.lock-icon}"></i></strong>
-										{topics.title}</span>
+										{topics.title}
+									</span>
 								</h3>
 							</a>
 							<small>
