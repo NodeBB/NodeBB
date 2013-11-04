@@ -36,10 +36,12 @@ var RDB = require('./redis.js'),
 		});
 	}
 
-	Topics.getTopicDataWithUsername = function(tid, callback) {
+	Topics.getTopicDataWithUser = function(tid, callback) {
 		Topics.getTopicData(tid, function(topic) {
-			user.getUserField(topic.uid, 'username', function(err, username) {
-				topic.username = username;
+			user.getUserFields(topic.uid, ['username', 'userslug', 'picture'] , function(err, userData) {
+				topic.username = userData.username;
+				topic.userslug = userData.userslug
+				topic.picture = userData.picture;
 				callback(topic);
 			});
 		});
@@ -281,7 +283,7 @@ var RDB = require('./redis.js'),
 		function getTopicInfo(topicData, callback) {
 
 			function getUserInfo(next) {
-				user.getUserFields(topicData.uid, ['username'], next);
+				user.getUserFields(topicData.uid, ['username', 'userslug', 'picture'], next);
 			}
 
 			function hasReadTopic(next) {
@@ -307,6 +309,8 @@ var RDB = require('./redis.js'),
 			async.parallel([getUserInfo, hasReadTopic, getTeaserInfo, getPrivileges], function(err, results) {
 				callback({
 					username: results[0].username,
+					userslug: results[0].userslug,
+					picture: results[0].picture,
 					userbanned: results[0].banned,
 					hasread: results[1],
 					teaserInfo: results[2],
@@ -333,9 +337,12 @@ var RDB = require('./redis.js'),
 					topicData['deleted-class'] = topicData.deleted === '1' ? 'deleted' : '';
 
 					topicData.username = topicInfo.username;
+					topicData.userslug = topicInfo.userslug;
+					topicData.picture = topicInfo.picture;
 					topicData.badgeclass = (topicInfo.hasread && current_user != 0) ? '' : 'badge-important';
 					topicData.teaser_text = topicInfo.teaserInfo.text || '',
 					topicData.teaser_username = topicInfo.teaserInfo.username || '';
+					topicData.teaser_userslug = topicInfo.teaserInfo.userslug || '';
 					topicData.teaser_userpicture = topicInfo.teaserInfo.picture || require('gravatar').url('', {}, https = nconf.get('https'));
 					topicData.teaser_pid = topicInfo.teaserInfo.pid;
 
@@ -427,7 +434,7 @@ var RDB = require('./redis.js'),
 	Topics.getTopicForCategoryView = function(tid, uid, callback) {
 
 		function getTopicData(next) {
-			Topics.getTopicDataWithUsername(tid, function(topic) {
+			Topics.getTopicDataWithUser(tid, function(topic) {
 				next(null, topic);
 			});
 		}
@@ -461,6 +468,7 @@ var RDB = require('./redis.js'),
 			topicData.badgeclass = hasRead ? '' : 'badge-important';
 			topicData.teaser_text = teaser.text || '';
 			topicData.teaser_username = teaser.username || '';
+			topicData.teaser_userslug = teaser.userslug || '';
 			topicData.userslug = teaser.userslug || '';
 			topicData.teaser_timestamp = teaser.timestamp ? (new Date(parseInt(teaser.timestamp,10)).toISOString()) : '';
 			topicData.teaser_userpicture = teaser.picture;
@@ -501,7 +509,7 @@ var RDB = require('./redis.js'),
 			});
 
 			async.each(tids, function(tid, next) {
-				Topics.getTopicDataWithUsername(tid, function(topicData) {
+				Topics.getTopicDataWithUser(tid, function(topicData) {
 					topics.push(topicData);
 					next();
 				});

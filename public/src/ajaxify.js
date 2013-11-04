@@ -85,9 +85,9 @@ var ajaxify = {};
 					callback();
 				}
 
-				jQuery('#content, #footer').stop(true, true).fadeIn(200, function () {
+				app.process_page();
 
-					app.process_page();
+				jQuery('#content, #footer').stop(true, true).fadeIn(200, function () {
 					if (window.location.hash)
 						hash = window.location.hash;
 					if (hash)
