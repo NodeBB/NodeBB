@@ -9,7 +9,7 @@
 <input type="hidden" template-variable="facebook-share-url" value="{facebook-share-url}" />
 <input type="hidden" template-variable="google-share-url" value="{google-share-url}" />
 
-<div class="topic">
+<div class="topic row">
 	<ol class="breadcrumb">
 		<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
 			<a href="/" itemprop="url"><span itemprop="title">[[global:home]]</span></a>
