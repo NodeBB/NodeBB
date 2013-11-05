@@ -142,7 +142,6 @@ var user = require('./../user.js'),
 				for (var route in routes) {
 					if (routes.hasOwnProperty(route)) {
 						(function(route) {
-							console.log(routes[route]);
 							app[routes[route].method || 'get']('/admin' + routes[route].route, function(req, res) {
 								routes[route].options(req, res, function(options) {
 									Admin.build_header(res, function (err, header) {
