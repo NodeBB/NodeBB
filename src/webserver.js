@@ -706,16 +706,18 @@ var express = require('express'),
 				var routes = custom_routes.routes;
 				for (var route in routes) {
 					if (routes.hasOwnProperty(route)) {
-						app[routes[route].method || 'get'](routes[route].route, function(req, res) {
-							routes[route].options(req, res, function(options) {
-								app.build_header({
-									req: options.req,
-									res: options.res
-								}, function (err, header) {
-									res.send(header + options.content + templates['footer']);
+						(function(route) {
+							app[routes[route].method || 'get'](routes[route].route, function(req, res) {
+								routes[route].options(req, res, function(options) {
+									app.build_header({
+										req: options.req,
+										res: options.res
+									}, function (err, header) {
+										res.send(header + options.content + templates['footer']);
+									});
 								});
 							});
-						});
+						}(route));
 					}
 				}
 			});
