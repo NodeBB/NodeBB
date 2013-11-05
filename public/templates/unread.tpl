@@ -27,13 +27,13 @@
 						</a>
 						<small>
 							<span class="topic-stats">
-								<strong>posts</strong>
-								<span>{topics.postcount}</span>
+								posts
+								<strong>{topics.postcount}</strong>
 							</span>
 							|
 							<span class="topic-stats">
-								<strong>views</strong>
-								<span>{topics.viewcount}</span>
+								views
+								<strong>{topics.viewcount}</strong>
 							</span>
 							|
 							<span>
