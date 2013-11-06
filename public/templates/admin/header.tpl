@@ -51,16 +51,16 @@
 			</div>
 			<div class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
-					<li data-toggle="collapse" data-target=".navbar-collapse">
+					<li>
 					  <a href="/" target="_blank"><i class="icon-book"></i> Forum</a>
 					</li>
-					<li data-toggle="collapse" data-target=".navbar-collapse">
+					<li>
 					  <a href="/admin/index"><i class="icon-home"></i> Home</a>
 					</li>
-					<li data-toggle="collapse" data-target=".navbar-collapse">
+					<li>
 					  <a href="/admin/settings"><i class="icon-cogs"></i> Settings</a>
 					</li>
-					<li data-toggle="collapse" data-target=".navbar-collapse">
+					<li>
 						<a href="#" id="reconnect"></a>
 					</li>
 				</ul>
