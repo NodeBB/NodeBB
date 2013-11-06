@@ -1,6 +1,5 @@
 var RDB = require('./redis.js'),
 	utils = require('./../public/src/utils.js'),
-	schema = require('./schema.js'),
 	user = require('./user.js'),
 	topics = require('./topics.js'),
 	favourites = require('./favourites.js'),
@@ -445,7 +444,7 @@ var RDB = require('./redis.js'),
 		});
 	}
 
-	Posts.getTopicPostStats = function(socket) {
+	Posts.getTopicPostStats = function() {
 		RDB.mget(['totaltopiccount', 'totalpostcount'], function(err, data) {
 			if (err === null) {
 				var stats = {

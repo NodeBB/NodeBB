@@ -1,5 +1,4 @@
 var RDB = require('./redis.js'),
-	schema = require('./schema.js'),
 	posts = require('./posts.js'),
 	utils = require('./../public/src/utils.js'),
 	user = require('./user.js'),
@@ -560,7 +559,7 @@ var RDB = require('./redis.js'),
 
 	Topics.markAsRead = function(tid, uid) {
 
-		RDB.sadd(schema.topics(tid).read_by_uid, uid);
+		RDB.sadd('tid:' + tid + ':read_by_uid', uid);
 
 		Topics.getTopicField(tid, 'cid', function(err, cid) {
 
@@ -584,7 +583,7 @@ var RDB = require('./redis.js'),
 		var batch = RDB.multi();
 
 		for (var i = 0, ii = tids.length; i < ii; i++) {
-			batch.sismember(schema.topics(tids[i]).read_by_uid, uid);
+			batch.sismember('tid:' + tids[i] + ':read_by_uid', uid);
 		}
 
 		batch.exec(function(err, hasRead) {
@@ -593,7 +592,7 @@ var RDB = require('./redis.js'),
 	}
 
 	Topics.hasReadTopic = function(tid, uid, callback) {
-		RDB.sismember(schema.topics(tid).read_by_uid, uid, function(err, hasRead) {
+		RDB.sismember('tid:' + tid + ':read_by_uid', uid, function(err, hasRead) {
 
 			if (err === null) {
 				callback(hasRead);
@@ -691,7 +690,7 @@ var RDB = require('./redis.js'),
 				return;
 			}
 
-			RDB.incr(schema.global().next_topic_id, function(err, tid) {
+			RDB.incr('next_topic_id', function(err, tid) {
 				RDB.handle(err);
 
 				// Global Topics
@@ -700,7 +699,7 @@ var RDB = require('./redis.js'),
 					RDB.sadd('topics:tid', tid);
 				} else {
 					// need to add some unique key sent by client so we can update this with the real uid later
-					RDB.lpush(schema.topics().queued_tids, tid);
+					RDB.lpush('topics:queued:tid', tid);
 				}
 
 				var slug = tid + '/' + utils.slugify(title);
