@@ -50,24 +50,24 @@
 
 			<div class="navbar-collapse collapse navbar-ex1-collapse">
 				<ul id="main-nav" class="nav navbar-nav">
-					<li>
+					<li data-toggle="collapse" data-target=".navbar-collapse">
 						<a href="/recent">[[global:header.recent]]</a>
 					</li>
-					<li class="nodebb-loggedin">
+					<li data-toggle="collapse" data-target=".navbar-collapse" class="nodebb-loggedin">
 						<a href="/unread"><span id="numUnreadBadge" class="badge badge-inverse">0</span> [[global:header.unread]]</a>
 					</li>
-					<li>
+					<li data-toggle="collapse" data-target=".navbar-collapse">
 						<a href="/users">[[global:header.users]]</a>
 					</li>
-					<li class="{adminDisplay}">
+					<li data-toggle="collapse" data-target=".navbar-collapse" class="{adminDisplay}">
 
 						<a href="/admin"><i class="icon-cogs"></i> [[global:header.admin]]</a>
 					</li>
-					<li class="visible-xs">
+					<li data-toggle="collapse" data-target=".navbar-collapse" class="visible-xs">
 						<a href="/search">[[global:header.search]]</a>
 					</li>
 					<!-- BEGIN navigation -->
-					<li class="{navigation.class}">
+					<li data-toggle="collapse" data-target=".navbar-collapse" class="{navigation.class}">
 						<a href="{navigation.route}">{navigation.text}</a>
 					</li>
 					<!-- END navigation -->
