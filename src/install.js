@@ -24,7 +24,7 @@ var async = require('async'),
 		}, {
 			name: 'use_port',
 			description: 'Use a port number to access NodeBB?',
-			'default': (nconf.get('use_port') ? 'y' : 'n') || 'y',
+			'default': (nconf.get('use_port') !== undefined ? (nconf.get('use_port') ? 'y' : 'n') : 'y'),
 			pattern: /y[es]*|n[o]?/,
 			message: 'Please enter \'yes\' or \'no\'',
 		}, {
