@@ -118,7 +118,7 @@ var RDB = require('./redis.js'),
 						if (nids && nids.length > 0) {
 							async.each(nids, function(nid, next) {
 								notifications.get(nid, uid, function(nid_info) {
-									if (nid_info.uniqueId === uniqueId) {
+									if (nid_info && nid_info.uniqueId === uniqueId) {
 										RDB.zrem('uid:' + uid + ':notifications:read', nid);
 									}
 
