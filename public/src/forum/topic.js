@@ -260,11 +260,11 @@ define(function() {
 		});
 
 		function generatePaginationLinks(){
-		
+			var totalPages = 0;
 			var postsPerPage = config.maxPostsPerPage;
 			var totalPosts = templates.get("postcount");
 			var	currentPage = utils.queryString().page || 1;
-			var offset = postsPerPage*currentPage;
+			var offset = postsPerPage*(currentPage-1);
 
 			
 			if(totalPosts > postsPerPage){
@@ -282,12 +282,14 @@ define(function() {
 
 				if(currentPage > 1){
 					// generate the previous link
-					var prevPage = parseInt(currentPage)-1;
-					$("<li><a href='"+path+"?page="+prevPage+"'>&laquo;</a></li>").appendTo(container);
+					var prevPage = parseInt(currentPage, 10)-1;
+					$("<li><a href='"+path+"?page=1'><span class='icon-double-angle-left'></span></a></li>").appendTo(container);
+					$("<li><a href='"+path+"?page="+prevPage+"'><span class='icon-angle-left'></span></a></li>").appendTo(container);
 				}
 
 				// generate the page links
-				// TODO: Set a cut-off for pages, gap the links if there are lots of pages
+				// Using arrow links to next, prev, first, last instead 
+				/*
 				do{
 					page_counter++;
 					classname = "";
@@ -298,28 +300,30 @@ define(function() {
 					$(html).appendTo(container);
 					
 				}while(page_counter < totalPages);
-
+				*/
 				if( (offset + postsPerPage) < totalPosts){
-					var nextPage = parseInt(currentPage)+1;
-					$("<li><a href='"+path+"?page="+nextPage+"'>&raquo;</a></li>").appendTo(container);
+					var nextPage = parseInt(currentPage, 10)+1;
+
+					$("<li><a href='"+path+"?page="+nextPage+"'><span class='icon-angle-right'></span></a></li>").appendTo(container);
+					$("<li><a href='"+path+"?page="+totalPages+"'><span class='icon-double-angle-right'></span></a></li>").appendTo(container);
 				}
 
 				// show the pagination controls
 				$(".pagination-links").removeClass("hidden");
-			}
 
-			// wire up the link clicks
-			$(container).on("click", "a", function(event){
-				event.preventDefault();
-				var url = $(this).attr("href").substr(1); //remove the first '/' 
-				
-				ajaxify.go(url,function(ok){
-					if( !ok ){
-						// handle the error
-					}
-				}, '', false);
-			});
-			
+				// wire up the link clicks
+				$(container).off("click", "a"); // unbind any previous events first
+				$(container).on("click", "a", function(event){
+					event.preventDefault();
+					var url = $(this).attr("href").substr(1); //remove the first '/' 
+					
+					ajaxify.go(url,function(ok){
+						if( !ok ){
+							// handle the error
+						}
+					}, '', false);
+				});
+			}			
 		}
 
 		function enableInfiniteLoading() {
