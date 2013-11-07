@@ -130,6 +130,7 @@ var utils = require('./../public/src/utils.js'),
 				break;
 
 				case 'bootswatch':
+					themeData['theme:src'] = data.src;
 					RDB.hmset('config', themeData, callback);
 				break;
 			}
