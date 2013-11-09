@@ -61,7 +61,7 @@ define(function() {
 				showError(username_notify, 'Username too short!');
 			} else if (username.val().length > config.maximumUsernameLength) {
 				showError(username_notify, 'Username too long!');
-			} else if (!utils.isUserNameValid(username.val())) {
+			} else if (!utils.isUserNameValid(username.val()) || !utils.slugify(username.val())) {
 				showError(username_notify, 'Invalid username!');
 			} else {
 				socket.emit('user.exists', {

@@ -31,7 +31,7 @@ var utils = require('./../public/src/utils.js'),
 				}
 			},
 			function(next) {
-				next(!utils.isUserNameValid(username) ? new Error('Invalid Username!') : null);
+				next((!utils.isUserNameValid(username) || !userslug) ? new Error('Invalid Username!') : null);
 			},
 			function(next) {
 				if (password !== undefined) {
