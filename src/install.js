@@ -139,7 +139,7 @@ var async = require('async'),
 							value: 'NodeBB'
 						}, {
 							field: 'postDelay',
-							value: 10000
+							value: 10
 						}, {
 							field: 'minimumPostLength',
 							value: 8
