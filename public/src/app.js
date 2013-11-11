@@ -279,8 +279,8 @@ var socket,
 	app.process_page = function () {
 		app.populate_online_users();
 
-		var url = window.location.href,
-			parts = url.split('/'),
+		var path = window.location.pathname,
+			parts = path.split('/'),
 			active = parts[parts.length - 1];
 
 		jQuery('#main-nav li').removeClass('active');

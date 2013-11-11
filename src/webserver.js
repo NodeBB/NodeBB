@@ -318,7 +318,7 @@ var express = require('express'),
 	};
 
 	app.create_route = function (url, tpl) { // to remove
-		return '<script>templates.ready(function(){ajaxify.go("' + url + '", null, "' + tpl + '");});</script>';
+		return '<script>templates.ready(function(){ajaxify.go("' + url + '", null, "' + tpl + '", true);});</script>';
 	};
 
 	app.namespace(nconf.get('relative_path'), function () {
@@ -331,29 +331,29 @@ var express = require('express'),
 
 		// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 		(function () {
-			var routes = ['login', 'register', 'account', 'recent', 'unread', 'notifications', '403', '404'];
+			var routes = ['login', 'register', 'account', 'recent', '403', '404'],
+				loginRequired = ['unread', 'search', 'notifications'];
 
-			for (var i = 0, ii = routes.length; i < ii; i++) {
-				(function (route) {
+			async.each(routes.concat(loginRequired), function(route, next) {
+				app.get('/' + route, function (req, res) {
+					if ((route === 'login' || route === 'register') && (req.user && req.user.uid > 0)) {
 
-					app.get('/' + route, function (req, res) {
-						if ((route === 'login' || route === 'register') && (req.user && req.user.uid > 0)) {
-
-							user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
-								res.redirect('/user/' + userslug);
-							});
-							return;
-						}
-
-						app.build_header({
-							req: req,
-							res: res
-						}, function (err, header) {
-							res.send((isNaN(parseInt(route, 10)) ? 200 : parseInt(route, 10)), header + app.create_route(route) + templates.footer);
+						user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
+							res.redirect('/user/' + userslug);
 						});
+						return;
+					} else if (loginRequired.indexOf(route) !== -1 && !req.user) {
+						return res.redirect('/403');
+					}
+
+					app.build_header({
+						req: req,
+						res: res
+					}, function (err, header) {
+						res.send((isNaN(parseInt(route, 10)) ? 200 : parseInt(route, 10)), header + app.create_route(route) + templates.footer);
 					});
-				}(routes[i]));
-			}
+				});
+			});
 		}());
 
 
@@ -516,7 +516,7 @@ var express = require('express'),
 				res.send(
 					data.header +
 					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/topic'].parse(data.topics) + '\n\t</noscript>' +
-					'\n\t<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '");});</script>' +
+					'\n\t<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '", undefined, undefined, true);});</script>' +
 					templates.footer
 				);
 			});
@@ -609,7 +609,7 @@ var express = require('express'),
 				res.send(
 					data.header +
 					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/category'].parse(data.categories) + '\n\t</noscript>' +
-					'\n\t<script>templates.ready(function(){ajaxify.go("category/' + category_url + '");});</script>' +
+					'\n\t<script>templates.ready(function(){ajaxify.go("category/' + category_url + '", undefined, undefined, true);});</script>' +
 					templates.footer
 				);
 			});
@@ -620,7 +620,7 @@ var express = require('express'),
 				req: req,
 				res: res
 			}, function (err, header) {
-				res.send(header + '<script>templates.ready(function(){ajaxify.go("confirm/' + req.params.code + '");});</script>' + templates.footer);
+				res.send(header + '<script>templates.ready(function(){ajaxify.go("confirm/' + req.params.code + '", undefined, undefined, true);});</script>' + templates.footer);
 			});
 		});
 
@@ -639,26 +639,6 @@ var express = require('express'),
 				"Sitemap: " + nconf.get('url') + "sitemap.xml");
 		});
 
-		app.get('/cid/:cid', function (req, res) {
-			categories.getCategoryData(req.params.cid, function (err, data) {
-				if (data) {
-					res.send(data);
-				} else {
-					res.send(404, "Category doesn't exist!");
-				}
-			});
-		});
-
-		app.get('/tid/:tid', function (req, res) {
-			topics.getTopicData(req.params.tid, function (data) {
-				if (data) {
-					res.send(data);
-				} else {
-					res.send(404, "Topic doesn't exist!");
-				}
-			});
-		});
-
 		app.get('/recent/:term?', function (req, res) {
 			// TODO consolidate with /recent route as well -> that can be combined into this area. See "Basic Routes" near top.
 			app.build_header({
@@ -668,16 +648,6 @@ var express = require('express'),
 				res.send(header + app.create_route("recent/" + req.params.term, null, "recent") + templates.footer);
 			});
 
-		});
-
-		app.get('/pid/:pid', function (req, res) {
-			posts.getPostData(req.params.pid, function (data) {
-				if (data) {
-					res.send(data);
-				} else {
-					res.send(404, "Post doesn't exist!");
-				}
-			});
 		});
 
 		app.get('/outgoing', function (req, res) {
@@ -697,7 +667,7 @@ var express = require('express'),
 			});
 		});
 
-		app.get('/search', function (req, res) {
+/*		app.get('/search', function (req, res) {
 			if (!req.user) {
 				return res.redirect('/403');
 			}
@@ -708,7 +678,7 @@ var express = require('express'),
 			}, function (err, header) {
 				res.send(header + app.create_route("search", null, "search") + templates.footer);
 			});
-		});
+		});*/
 
 		app.get('/search/:term', function (req, res) {
 			if (!req.user) {
