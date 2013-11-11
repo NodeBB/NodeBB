@@ -67,8 +67,11 @@ Upgrade.upgrade = function() {
 						var	multi = RDB.multi();
 
 						keys = keys.filter(function(key) {
-							if (key === 'notifications:next_nid') return false;
-							else return true;
+							if (key === 'notifications:next_nid') {
+								return false;
+							} else {
+								return true;
+							}
 						}).map(function(key) {
 							return key.slice(14);
 						});

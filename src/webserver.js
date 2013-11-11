@@ -28,15 +28,19 @@ var express = require('express'),
 	logger = require('./logger.js');
 
 (function (app) {
+	"use strict";
+
 	var templates = null,
 		clientScripts;
 
 	// Minify client-side libraries
 	meta.js.get(function (err, scripts) {
 		clientScripts = scripts.map(function (script) {
-			return script = {
+			script = {
 				script: script
-			}
+			};
+
+			return script;
 		});
 	});
 
@@ -66,13 +70,13 @@ var express = require('express'),
 					content: meta.config.title || 'NodeBB'
 				}, {
 					property: 'keywords',
-					content: meta.config['keywords'] || ''
+					content: meta.config.keywords || ''
 				}],
 				metaString = utils.buildMetaTags(defaultMetaTags.concat(options.metaTags || [])),
 				linkTags = utils.buildLinkTags(options.linkTags || []),
 				templateValues = {
 					cssSrc: meta.config['theme:src'] || nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
-					pluginCSS: plugins.cssFiles.map(function(file) { return { path: file } }),
+					pluginCSS: plugins.cssFiles.map(function(file) { return { path: file }; }),
 					title: meta.config.title || '',
 					description: meta.config.description || '',
 					'brand:logo': meta.config['brand:logo'] || '',
@@ -88,8 +92,9 @@ var express = require('express'),
 
 			var uid = '0';
 
-			if(options.req.user && options.req.user.uid)
+			if(options.req.user && options.req.user.uid) {
 				uid = options.req.user.uid;
+			}
 
 			user.isAdministrator(uid, function(isAdmin) {
 				templateValues.adminDisplay = isAdmin ? 'show' : 'hide';
@@ -97,7 +102,7 @@ var express = require('express'),
 				translator.translate(templates.header.parse(templateValues), function(template) {
 					callback(null, template);
 				});
-			})
+			});
 
 
 		});
@@ -249,11 +254,17 @@ var express = require('express'),
 						res.json(200, {});
 					} else if (req.accepts('html')) {
 						// respond with html page
-						if (process.env.NODE_ENV === 'development') winston.warn('Route requested but not found: ' + req.url);
+						if (process.env.NODE_ENV === 'development') {
+							winston.warn('Route requested but not found: ' + req.url);
+						}
+
 						res.redirect(nconf.get('relative_path') + '/404');
 					} else if (req.accepts('json')) {
 						// respond with json
-						if (process.env.NODE_ENV === 'development') winston.warn('Route requested but not found: ' + req.url);
+						if (process.env.NODE_ENV === 'development') {
+							winston.warn('Route requested but not found: ' + req.url);
+						}
+
 						res.json({
 							error: 'Not found'
 						});
@@ -284,7 +295,9 @@ var express = require('express'),
 				winston.error('Errors were encountered while attempting to initialise NodeBB.');
 				process.exit();
 			} else {
-				if (process.env.NODE_ENV === 'development') winston.info('Middlewares loaded.');
+				if (process.env.NODE_ENV === 'development') {
+					winston.info('Middlewares loaded.');
+				}
 			}
 		});
 	});
@@ -293,16 +306,16 @@ var express = require('express'),
 		templates = global.templates;
 
 		// translate all static templates served by webserver here. ex. footer, logout
-		translator.translate(templates['footer'].toString(), function(parsedTemplate) {
-			templates['footer'] = parsedTemplate;
+		translator.translate(templates.footer.toString(), function(parsedTemplate) {
+			templates.footer = parsedTemplate;
 		});
-		translator.translate(templates['logout'].toString(), function(parsedTemplate) {
-			templates['logout'] = parsedTemplate;
+		translator.translate(templates.logout.toString(), function(parsedTemplate) {
+			templates.logout = parsedTemplate;
 		});
 
 		winston.info('NodeBB Ready');
 		server.listen(nconf.get('PORT') || nconf.get('port'), nconf.get('bind_address'));
-	}
+	};
 
 	app.create_route = function (url, tpl) { // to remove
 		return '<script>templates.ready(function(){ajaxify.go("' + url + '", null, "' + tpl + '");});</script>';
@@ -336,7 +349,7 @@ var express = require('express'),
 							req: req,
 							res: res
 						}, function (err, header) {
-							res.send((isNaN(parseInt(route, 10)) ? 200 : parseInt(route, 10)), header + app.create_route(route) + templates['footer']);
+							res.send((isNaN(parseInt(route, 10)) ? 200 : parseInt(route, 10)), header + app.create_route(route) + templates.footer);
 						});
 					});
 				}(routes[i]));
@@ -368,8 +381,11 @@ var express = require('express'),
 				"categories": function (next) {
 					categories.getAllCategories(function (returnData) {
 						returnData.categories = returnData.categories.filter(function (category) {
-							if (category.disabled !== '1') return true;
-							else return false;
+							if (category.disabled !== '1') {
+								return true;
+							} else {
+								return false;
+							}
 						});
 
 						next(null, returnData);
@@ -380,11 +396,10 @@ var express = require('express'),
 					data.header +
 					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/home'].parse(data.categories) + '\n\t</noscript>' +
 					app.create_route('') +
-					templates['footer']
+					templates.footer
 				);
-			})
+			});
 		});
-
 
 		app.get('/topic/:topic_id/:slug?', function (req, res) {
 			var tid = req.params.topic_id;
@@ -394,18 +409,26 @@ var express = require('express'),
 				var rssPath = path.join(__dirname, '../', 'feeds/topics', tid + '.rss'),
 					loadFeed = function () {
 						fs.readFile(rssPath, function (err, data) {
-							if (err) res.type('text').send(404, "Unable to locate an rss feed at this location.");
-							else res.type('xml').set('Content-Length', data.length).send(data);
+							if (err) {
+								res.type('text').send(404, "Unable to locate an rss feed at this location.");
+							} else {
+								res.type('xml').set('Content-Length', data.length).send(data);
+							}
 						});
 
 					};
 
 				if (!fs.existsSync(rssPath)) {
 					feed.updateTopic(tid, function (err) {
-						if (err) res.redirect('/404');
-						else loadFeed();
+						if (err) {
+							res.redirect('/404');
+						} else {
+							loadFeed();
+						}
 					});
-				} else loadFeed();
+				} else {
+					loadFeed();
+				}
 
 				return;
 			}
@@ -414,8 +437,9 @@ var express = require('express'),
 				function (next) {
 					topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), 0, -1, function (err, topicData) {
 						if (topicData) {
-							if (topicData.deleted === '1' && topicData.expose_tools === 0)
+							if (topicData.deleted === '1' && topicData.expose_tools === 0) {
 								return next(new Error('Topic deleted'), null);
+							}
 						}
 
 						next(err, topicData);
@@ -428,7 +452,9 @@ var express = require('express'),
 
 					for (var x = 0, numPosts = topicData.posts.length; x < numPosts; x++) {
 						timestamp = parseInt(topicData.posts[x].timestamp, 10);
-						if (timestamp > lastMod) lastMod = timestamp;
+						if (timestamp > lastMod) {
+							lastMod = timestamp;
+						}
 					}
 
 					app.build_header({
@@ -481,14 +507,17 @@ var express = require('express'),
 					});
 				},
 			], function (err, data) {
-				if (err) return res.redirect('404');
+				if (err) {
+					return res.redirect('404');
+				}
+
 				var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
 
 				res.send(
 					data.header +
 					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/topic'].parse(data.topics) + '\n\t</noscript>' +
 					'\n\t<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '");});</script>' +
-					templates['footer']
+					templates.footer
 				);
 			});
 		});
@@ -501,18 +530,26 @@ var express = require('express'),
 				var rssPath = path.join(__dirname, '../', 'feeds/categories', cid + '.rss'),
 					loadFeed = function () {
 						fs.readFile(rssPath, function (err, data) {
-							if (err) res.type('text').send(404, "Unable to locate an rss feed at this location.");
-							else res.type('xml').set('Content-Length', data.length).send(data);
+							if (err) {
+								res.type('text').send(404, "Unable to locate an rss feed at this location.");
+							} else {
+								res.type('xml').set('Content-Length', data.length).send(data);
+							}
 						});
 
 					};
 
 				if (!fs.existsSync(rssPath)) {
 					feed.updateCategory(cid, function (err) {
-						if (err) res.redirect('/404');
-						else loadFeed();
+						if (err) {
+							res.redirect('/404');
+						} else {
+							loadFeed();
+						}
 					});
-				} else loadFeed();
+				} else {
+					loadFeed();
+				}
 
 				return;
 			}
@@ -522,9 +559,11 @@ var express = require('express'),
 					categories.getCategoryById(cid, 0, function (err, categoryData) {
 
 						if (categoryData) {
-							if (categoryData.disabled === '1')
+							if (categoryData.disabled === '1') {
 								return next(new Error('Category disabled'), null);
+							}
 						}
+
 						next(err, categoryData);
 					});
 				},
@@ -561,14 +600,17 @@ var express = require('express'),
 					});
 				}
 			], function (err, data) {
-				if (err) return res.redirect('404');
+				if (err) {
+					return res.redirect('404');
+				}
+
 				var category_url = cid + (req.params.slug ? '/' + req.params.slug : '');
 
 				res.send(
 					data.header +
 					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/category'].parse(data.categories) + '\n\t</noscript>' +
 					'\n\t<script>templates.ready(function(){ajaxify.go("category/' + category_url + '");});</script>' +
-					templates['footer']
+					templates.footer
 				);
 			});
 		});
@@ -578,7 +620,7 @@ var express = require('express'),
 				req: req,
 				res: res
 			}, function (err, header) {
-				res.send(header + '<script>templates.ready(function(){ajaxify.go("confirm/' + req.params.code + '");});</script>' + templates['footer']);
+				res.send(header + '<script>templates.ready(function(){ajaxify.go("confirm/' + req.params.code + '");});</script>' + templates.footer);
 			});
 		});
 
@@ -599,19 +641,21 @@ var express = require('express'),
 
 		app.get('/cid/:cid', function (req, res) {
 			categories.getCategoryData(req.params.cid, function (err, data) {
-				if (data)
+				if (data) {
 					res.send(data);
-				else
+				} else {
 					res.send(404, "Category doesn't exist!");
+				}
 			});
 		});
 
 		app.get('/tid/:tid', function (req, res) {
 			topics.getTopicData(req.params.tid, function (data) {
-				if (data)
+				if (data) {
 					res.send(data);
-				else
+				} else {
 					res.send(404, "Topic doesn't exist!");
+				}
 			});
 		});
 
@@ -621,22 +665,25 @@ var express = require('express'),
 				req: req,
 				res: res
 			}, function (err, header) {
-				res.send(header + app.create_route("recent/" + req.params.term, null, "recent") + templates['footer']);
+				res.send(header + app.create_route("recent/" + req.params.term, null, "recent") + templates.footer);
 			});
 
 		});
 
 		app.get('/pid/:pid', function (req, res) {
 			posts.getPostData(req.params.pid, function (data) {
-				if (data)
+				if (data) {
 					res.send(data);
-				else
+				} else {
 					res.send(404, "Post doesn't exist!");
+				}
 			});
 		});
 
 		app.get('/outgoing', function (req, res) {
-			if (!req.query.url) return res.redirect('/404');
+			if (!req.query.url) {
+				return res.redirect('/404');
+			}
 
 			app.build_header({
 				req: req,
@@ -645,30 +692,34 @@ var express = require('express'),
 				res.send(
 					header +
 					'\n\t<script>templates.ready(function(){ajaxify.go("outgoing?url=' + encodeURIComponent(req.query.url) + '", null, null, true);});</script>' +
-					templates['footer']
+					templates.footer
 				);
 			});
 		});
 
 		app.get('/search', function (req, res) {
-			if (!req.user)
+			if (!req.user) {
 				return res.redirect('/403');
+			}
+
 			app.build_header({
 				req: req,
 				res: res
 			}, function (err, header) {
-				res.send(header + app.create_route("search", null, "search") + templates['footer']);
+				res.send(header + app.create_route("search", null, "search") + templates.footer);
 			});
 		});
 
 		app.get('/search/:term', function (req, res) {
-			if (!req.user)
+			if (!req.user) {
 				return res.redirect('/403');
+			}
+
 			app.build_header({
 				req: req,
 				res: res
 			}, function (err, header) {
-				res.send(header + app.create_route("search/" + req.params.term, null, "search") + templates['footer']);
+				res.send(header + app.create_route("search/" + req.params.term, null, "search") + templates.footer);
 			});
 		});
 
@@ -713,7 +764,7 @@ var express = require('express'),
 										req: options.req,
 										res: options.res
 									}, function (err, header) {
-										res.send(header + options.content + templates['footer']);
+										res.send(header + options.content + templates.footer);
 									});
 								});
 							});
