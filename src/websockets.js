@@ -157,7 +157,7 @@ module.exports.init = function(io) {
 
 				for (var i = 0; i < clients.length; ++i) {
 					var hs = clients[i].handshake;
-					if (hs && clients[i].state.user.uid === 0) {
+					if (hs && clients[i].state && clients[i].state.user.uid === 0) {
 						++anonCount;
 					}
 				}
@@ -407,7 +407,7 @@ module.exports.init = function(io) {
 				return;
 			}
 
-			if (Date.now() - lastPostTime < meta.config.postDelay) {
+			if (Date.now() - lastPostTime < meta.config.postDelay * 1000) {
 				posts.emitTooManyPostsAlert(socket);
 				return;
 			}

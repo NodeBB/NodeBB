@@ -265,7 +265,7 @@ var RDB = require('./redis.js'),
 	Posts.emitTooManyPostsAlert = function(socket) {
 		socket.emit('event:alert', {
 			title: 'Too many posts!',
-			message: 'You can only post every ' + meta.config.postDelay / 1000 + ' seconds.',
+			message: 'You can only post every ' + meta.config.postDelay + ' seconds.',
 			type: 'danger',
 			timeout: 2000
 		});

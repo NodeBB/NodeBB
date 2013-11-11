@@ -81,6 +81,19 @@ Upgrade.upgrade = function() {
 					next();
 				}
 			});
+		},
+		function(next) {
+			RDB.hget('config', 'postDelay', function(err, postDelay) {
+				if(parseInt(postDelay, 10) > 10) {
+					RDB.hset('config', 'postDelay', 10, function(err, success) {
+						winston.info('[2013/11/11] Updated postDelay to 10 seconds.');
+						next();
+					});
+				} else {
+					winston.info('[2013/11/11] Update to postDelay skipped.');
+					next();
+				}
+			});
 		}
 		// Add new schema updates here
 	], function(err) {

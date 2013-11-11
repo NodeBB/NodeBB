@@ -685,7 +685,7 @@ var RDB = require('./redis.js'),
 
 		user.getUserField(uid, 'lastposttime', function(err, lastposttime) {
 			if (err) lastposttime = 0;
-			if (Date.now() - lastposttime < meta.config.postDelay) {
+			if (Date.now() - lastposttime < meta.config.postDelay * 1000) {
 				callback(new Error('too-many-posts'), null);
 				return;
 			}
