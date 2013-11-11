@@ -667,19 +667,6 @@ var express = require('express'),
 			});
 		});
 
-/*		app.get('/search', function (req, res) {
-			if (!req.user) {
-				return res.redirect('/403');
-			}
-
-			app.build_header({
-				req: req,
-				res: res
-			}, function (err, header) {
-				res.send(header + app.create_route("search", null, "search") + templates.footer);
-			});
-		});*/
-
 		app.get('/search/:term', function (req, res) {
 			if (!req.user) {
 				return res.redirect('/403');
