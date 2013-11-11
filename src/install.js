@@ -135,6 +135,9 @@ var async = require('async'),
 					winston.info('Populating database with default configs, if not already set...');
 					var meta = require('./meta'),
 						defaults = [{
+							field: 'title',
+							value: 'NodeBB'
+						}, {
 							field: 'postDelay',
 							value: 10000
 						}, {
