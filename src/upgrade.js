@@ -84,7 +84,7 @@ Upgrade.upgrade = function() {
 		},
 		function(next) {
 			RDB.hget('config', 'postDelay', function(err, postDelay) {
-				if(parseInt(postDelay, 10) > 10) {
+				if(parseInt(postDelay, 10) > 1000) {
 					RDB.hset('config', 'postDelay', 10, function(err, success) {
 						winston.info('[2013/11/11] Updated postDelay to 10 seconds.');
 						next();
