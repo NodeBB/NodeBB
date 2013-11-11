@@ -29,12 +29,12 @@
 				<a href="/user/{users.userslug}">{users.username}</a>
 				<br/>
 				<div title="reputation" class="reputation">
-					<span class='formatted-number'>{users.reputation}</span>
 					<i class='icon-star'></i>
+					<span class='formatted-number'>{users.reputation}</span>
 				</div>
 				<div title="post count" class="post-count">
-					<span class='formatted-number'>{users.postcount}</span>
 					<i class='icon-pencil'></i>
+					<span class='formatted-number'>{users.postcount}</span>
 				</div>
 			</div>
 		</li>

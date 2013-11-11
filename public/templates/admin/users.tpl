@@ -24,12 +24,12 @@
 		<a href="/user/{users.userslug}">{users.username}</a>
 		<br/>
 		<div title="reputation">
-			<span id='reputation'>{users.reputation}</span>
 			<i class='icon-star'></i>
+			<span id='reputation'>{users.reputation}</span>
 		</div>
 		<div title="post count">
-			<span id='postcount'>{users.postcount}</span>
 			<i class='icon-pencil'></i>
+			<span id='postcount'>{users.postcount}</span>
 		</div>
 		<div>
 			<a href="#" class="btn btn-default ban-btn">Ban</a>
