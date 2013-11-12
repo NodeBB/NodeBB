@@ -52,13 +52,13 @@
 			<div class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
 					<li>
-					  <a href="/" target="_blank"><i class="icon-book"></i> Forum</a>
+						<a href="/admin/index"><i class="icon-home"></i> Home</a>
 					</li>
 					<li>
-					  <a href="/admin/index"><i class="icon-home"></i> Home</a>
+						<a href="/admin/settings"><i class="icon-cogs"></i> Settings</a>
 					</li>
 					<li>
-					  <a href="/admin/settings"><i class="icon-cogs"></i> Settings</a>
+						<a href="/" target="_top"><i class="icon-book"></i> Forum</a>
 					</li>
 					<li>
 						<a href="#" id="reconnect"></a>
