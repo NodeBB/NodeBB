@@ -39,7 +39,7 @@
 </head>
 
 <body class="admin">
-	<div class="navbar navbar-inverse navbar-fixed-top">
+	<div class="navbar navbar-inverse navbar-fixed-top header">
 		<div class="container">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -64,8 +64,22 @@
 						<a href="#" id="reconnect"></a>
 					</li>
 				</ul>
-				<ul class="nav pull-right" id="right-menu">
-					<li><a href="/users" id="user_label"></a></li>
+
+				<ul id="logged-in-menu" class="nav navbar-nav navbar-right">
+					<li id="user_label" class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="user_dropdown">
+							<img src="{userpicture}"/>
+						</a>
+						<ul id="user-control-list" class="dropdown-menu" aria-labelledby="user_dropdown">
+							<li>
+								<a id="user-profile-link" href="/user/{userslug}" target="_top"><span>Profile</span></a>
+							</li>
+							<li id="logout-link">
+								<a href="#">Log out</a>
+							</li>
+						</ul>
+					</li>
+
 				</ul>
 			</div>
 		</div>

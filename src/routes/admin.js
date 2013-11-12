@@ -19,21 +19,27 @@ var user = require('./../user.js'),
 		});
 	}
 
-	Admin.build_header = function (res, callback) {
+	Admin.buildHeader = function (req, res, callback) {
 		var custom_header = {
 			'plugins': []
 		};
 
-		plugins.fireHook('filter:admin.header.build', custom_header, function(err, custom_header) {
-			callback(err, templates['admin/header'].parse({
-				csrf: res.locals.csrf_token,
-				relative_path: nconf.get('relative_path'),
-				plugins: custom_header.plugins
-			}));
+		user.getUserFields(req.user.uid, ['username', 'userslug', 'picture'], function(err, userData) {
+
+			plugins.fireHook('filter:admin.header.build', custom_header, function(err, custom_header) {
+				callback(err, templates['admin/header'].parse({
+					csrf: res.locals.csrf_token,
+					relative_path: nconf.get('relative_path'),
+					plugins: custom_header.plugins,
+					userpicture: userData.picture,
+					username: userData.username,
+					userslug: userData.userslug
+				}));
+			});
 		});
 	}
 
-	Admin.create_routes = function (app) {
+	Admin.createRoutes = function (app) {
 
 		(function () {
 			var routes = [
@@ -46,7 +52,7 @@ var user = require('./../user.js'),
 			for (var i = 0, ii = routes.length; i < ii; i++) {
 				(function (route) {
 					app.get('/admin/' + route, Admin.isAdmin, function (req, res) {
-						Admin.build_header(res, function(err, header) {
+						Admin.buildHeader(req, res, function(err, header) {
 							res.send(header + app.create_route('admin/' + route) + templates['admin/footer']);
 						});
 					});
@@ -58,7 +64,7 @@ var user = require('./../user.js'),
 			for (var i = 0, ii = unit_tests.length; i < ii; i++) {
 				(function (route) {
 					app.get('/admin/testing/' + route, Admin.isAdmin, function (req, res) {
-						Admin.build_header(res, function(err, header) {
+						Admin.buildHeader(req, res, function(err, header) {
 							res.send(header + app.create_route('admin/testing/' + route) + templates['admin/footer']);
 						});
 					});
@@ -69,13 +75,13 @@ var user = require('./../user.js'),
 
 		app.namespace('/admin', function () {
 			app.get('/', Admin.isAdmin, function (req, res) {
-				Admin.build_header(res, function(err, header) {
+				Admin.buildHeader(req, res, function(err, header) {
 					res.send(header + app.create_route('admin/index') + templates['admin/footer']);
 				});
 			});
 
 			app.get('/index', Admin.isAdmin, function (req, res) {
-				Admin.build_header(res, function(err, header) {
+				Admin.buildHeader(req, res, function(err, header) {
 					res.send(header + app.create_route('admin/index') + templates['admin/footer']);
 				});
 			});
@@ -144,7 +150,7 @@ var user = require('./../user.js'),
 						(function(route) {
 							app[routes[route].method || 'get']('/admin' + routes[route].route, function(req, res) {
 								routes[route].options(req, res, function(options) {
-									Admin.build_header(res, function (err, header) {
+									Admin.buildHeader(req, res, function (err, header) {
 										res.send(header + options.content + templates['admin/footer']);
 									});
 								});
@@ -158,7 +164,7 @@ var user = require('./../user.js'),
 		app.namespace('/api/admin', function () {
 			app.get('/index', function (req, res) {
 				res.json({
-					version: pkg.version
+					version: pkg.version,
 				});
 			});
 

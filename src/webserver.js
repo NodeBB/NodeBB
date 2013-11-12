@@ -323,10 +323,10 @@ var express = require('express'),
 
 	app.namespace(nconf.get('relative_path'), function () {
 
-		auth.create_routes(app);
-		admin.create_routes(app);
-		userRoute.create_routes(app);
-		apiRoute.create_routes(app);
+		auth.createRoutes(app);
+		admin.createRoutes(app);
+		userRoute.createRoutes(app);
+		apiRoute.createRoutes(app);
 
 
 		// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)

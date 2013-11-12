@@ -12,7 +12,7 @@ var user = require('./../user.js'),
 	websockets = require('./../websockets.js');
 
 (function (User) {
-	User.create_routes = function (app) {
+	User.createRoutes = function (app) {
 
 		app.get('/uid/:uid', function (req, res) {
 

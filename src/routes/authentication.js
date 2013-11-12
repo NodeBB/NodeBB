@@ -89,7 +89,7 @@
 		return login_strategies;
 	}
 
-	Auth.create_routes = function(app) {
+	Auth.createRoutes = function(app) {
 		app.post('/logout', function(req, res) {
 			if (req.user && req.user.uid > 0) {
 				winston.info('[Auth] Session ' + req.sessionID + ' logout (uid: ' + req.user.uid + ')');

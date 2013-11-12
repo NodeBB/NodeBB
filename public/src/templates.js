@@ -91,7 +91,7 @@
 			} else {
 				getTemplates(__dirname + '/../templates');
 			}
-			
+
 		}
 
 		function loadClient() {
