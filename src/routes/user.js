@@ -207,11 +207,6 @@ var user = require('./../user.js'),
 			is.on('end', function () {
 				fs.unlinkSync(tempPath);
 
-				var imageUrl = nconf.get('upload_url') + filename;
-
-				user.setUserField(uid, 'uploadedpicture', imageUrl);
-				user.setUserField(uid, 'picture', imageUrl);
-
 				require('node-imagemagick').crop({
 					srcPath: uploadPath,
 					dstPath: uploadPath,
@@ -220,7 +215,16 @@ var user = require('./../user.js'),
 				}, function (err, stdout, stderr) {
 					if (err) {
 						winston.err(err);
+						res.send({
+							error: 'Invalid image file!'
+						});
+						return;
 					}
+
+					var imageUrl = nconf.get('upload_url') + filename;
+
+					user.setUserField(uid, 'uploadedpicture', imageUrl);
+					user.setUserField(uid, 'picture', imageUrl);
 
 					res.json({
 						path: imageUrl
