@@ -54,7 +54,9 @@ Upgrade.upgrade = function() {
 								RDB.zrange(key, 0, -1, function(err, nids) {
 									async.each(nids, function(nid, next) {
 										notifications.get(nid, null, function(notif_data) {
-											RDB.zadd(key, notif_data.datetime, nid, next);
+											if (notif_data) {
+												RDB.zadd(key, notif_data.datetime, nid, next);
+											}
 										});
 									}, next);
 								});
