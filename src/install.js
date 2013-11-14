@@ -63,13 +63,14 @@ var async = require('async'),
 					}
 
 					if (setupVal && setupVal instanceof Object) {
-						if (setupVal['admin:username'] && setupVal['admin:password'] && setupVal['admin:email']) {
+						if (setupVal['admin:username'] && setupVal['admin:password'] && setupVal['admin:password:confirm'] && setupVal['admin:email']) {
 							install.values = setupVal;
 							next();
 						} else {
 							winston.error('Required values are missing for automated setup:');
 							if (!setupVal['admin:username']) winston.error('  admin:username');
 							if (!setupVal['admin:password']) winston.error('  admin:password');
+							if (!setupVal['admin:password:confirm']) winston.error('  admin:password:confirm');
 							if (!setupVal['admin:email']) winston.error('  admin:email');
 							process.exit();
 						}
@@ -345,7 +346,8 @@ var async = require('async'),
 				var results = {
 						username: install.values['admin:username'],
 						email: install.values['admin:email'],
-						password: install.values['admin:password']
+						password: install.values['admin:password'],
+						'password:confirm': install.values['admin:password:confirm']
 					};
 
 				success(null, results);
