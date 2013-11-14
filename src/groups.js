@@ -65,6 +65,15 @@
 			isMember: function (uid, gid, callback) {
 				RDB.sismember('gid:' + gid + ':members', uid, callback);
 			},
+			isMemberByGroupName: function(uid, groupName, callback) {
+				this.getGidFromName(groupName, function(err, gid) {
+					if (err || !gid) {
+						callback(null, false);
+					} else {
+						Groups.isMember(uid, gid, callback);
+					}
+				});
+			},
 			exists: function (name, callback) {
 				RDB.hexists('group:gid', name, callback);
 			},

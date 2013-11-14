@@ -3,6 +3,7 @@ var user = require('./../user.js'),
 	topics = require('./../topics.js'),
 	posts = require('./../posts.js'),
 	categories = require('./../categories.js'),
+	Groups = require('../groups'),
 	utils = require('./../../public/src/utils.js'),
 	pkg = require('../../package.json'),
 	meta = require('./../meta.js'),
@@ -127,12 +128,26 @@ var user = require('./../user.js'),
 
 			app.get('/category/:id/:slug?', function (req, res, next) {
 				var uid = (req.user) ? req.user.uid : 0;
-				categories.getCategoryById(req.params.id, uid, function (err, data) {
-					if (!err && data && data.disabled === "0")
-						res.json(data);
-					else
-						next();
-				}, req.params.id, uid);
+
+				// Category Whitelisting
+				Groups.exists('category:' + req.params.id + ':whitelist', function(err, exists) {
+					if (!err && exists) {
+						Groups.isMember(uid, gid, function(err, isMember) {
+							if (!err && isMember) {
+								categories.getCategoryById(req.params.id, uid, function (err, data) {
+									if (!err && data && data.disabled === "0")
+										res.json(data);
+									else
+										next();
+								}, req.params.id, uid);
+							} else {
+								res.send(403);
+							}
+						});
+					} else {
+						res.send(403);
+					}
+				});
 			});
 
 			app.get('/recent/:term?', function (req, res) {
