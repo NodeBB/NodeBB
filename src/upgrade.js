@@ -88,7 +88,6 @@ Upgrade.upgrade = function() {
 			thisSchemaDate = new Date(2013, 9, 23).getTime();
 			if (schemaDate < thisSchemaDate) {
 				RDB.keys('notifications:*', function(err, keys) {
-					var	multi = RDB.multi();
 
 					keys = keys.filter(function(key) {
 						if (key === 'notifications:next_nid') {
@@ -101,7 +100,13 @@ Upgrade.upgrade = function() {
 					});
 
 					winston.info('[2013/10/23] Adding existing notifications to set');
-					RDB.sadd('notifications', keys, next);
+
+					if(keys && Array.isArray(keys)) {
+						async.each(keys, function(key, cb) {
+							RDB.sadd('notifications', key, cb);
+						}, next);
+					} else next();
+
 				});
 			} else {
 				winston.info('[2013/10/23] Updates to Notifications skipped.');
