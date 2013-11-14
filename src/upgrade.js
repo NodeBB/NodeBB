@@ -56,6 +56,8 @@ Upgrade.upgrade = function() {
 										notifications.get(nid, null, function(notif_data) {
 											if (notif_data) {
 												RDB.zadd(key, notif_data.datetime, nid, next);
+											} else {
+												next();
 											}
 										});
 									}, next);
