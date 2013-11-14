@@ -165,6 +165,7 @@
 			}
 
 			template_data = data;
+			parsed_variables["data"] = data;
 			parse_template();
 		}).fail(function (data) {
 			if(data && data.status == 404) {

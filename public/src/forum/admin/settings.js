@@ -5,7 +5,8 @@ define(['uploader'], function(uploader) {
 		Settings.prepare();
 	};
 
-	Settings.prepare = function() {
+	Settings.prepare = function() {	
+		console.dir(Settings.config);
 		// Come back in 125ms if the config isn't ready yet
 		if (!app.config) {
 			setTimeout(function() {

@@ -22,6 +22,8 @@
 		</li>
 		<div class="thread_active_users active-users pull-right hidden-xs"></div>
 	</ol>
+	
+	
 
 	<ul id="post-container" class="container" data-tid="{topic_id}">
 		<!-- BEGIN main_posts -->
@@ -168,6 +170,12 @@
 	</div>
 
 	<hr />
+
+	<div class="hidden pagination-links clearfix text-center">
+			<ul class="pagination center">
+				
+			</ul>
+	</div>
 
 	<div class="topic-main-buttons">
 		<button id="post_reply" class="btn btn-primary btn-lg post_reply" type="button">[[topic:reply]]</button>

@@ -8,6 +8,7 @@ var express = require('express'),
 	utils = require('../public/src/utils.js'),
 	pkg = require('../package.json'),
 	fs = require('fs'),
+	url = require('url'),
 
 	user = require('./user.js'),
 	categories = require('./categories.js'),
@@ -56,6 +57,7 @@ var express = require('express'),
 		};
 
 		plugins.fireHook('filter:header.build', custom_header, function(err, custom_header) {
+
 			var defaultMetaTags = [{
 					name: 'viewport',
 					content: 'width=device-width, initial-scale=1.0, user-scalable=no'
@@ -402,8 +404,11 @@ var express = require('express'),
 		});
 
 		app.get('/topic/:topic_id/:slug?', function (req, res) {
+			
+			var posts_per_page = parseInt(meta.config.maxPostsPerPage) || 10;
 			var tid = req.params.topic_id;
-
+			var page = req.param("page") ? parseInt(req.param("page")) : 1;
+			var offset = posts_per_page*(page-1);
 			if (tid.match(/^\d+\.rss$/)) {
 				tid = tid.slice(0, -4);
 				var rssPath = path.join(__dirname, '../', 'feeds/topics', tid + '.rss'),
@@ -435,7 +440,7 @@ var express = require('express'),
 
 			async.waterfall([
 				function (next) {
-					topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), 0, -1, function (err, topicData) {
+					topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), offset, offset+posts_per_page-1, function (err, topicData) {
 						if (topicData) {
 							if (topicData.deleted === '1' && topicData.expose_tools === 0) {
 								return next(new Error('Topic deleted'), null);
@@ -512,7 +517,12 @@ var express = require('express'),
 				}
 
 				var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
-
+				// did we get any params?
+				query = req.originalUrl.split("?")[1];
+				if(query !== undefined){
+					topic_url += "?"+query;
+				}
+				
 				res.send(
 					data.header +
 					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/topic'].parse(data.topics) + '\n\t</noscript>' +

@@ -21,7 +21,7 @@ var RDB = require('./redis.js'),
 	Posts.getPostsByTid = function(tid, start, end, callback) {
 		RDB.lrange('tid:' + tid + ':posts', start, end, function(err, pids) {
 			RDB.handle(err);
-
+			
 			if (pids.length) {
 				plugins.fireHook('filter:post.getTopic', pids, function(err, posts) {
 					if (!err & 0 < posts.length) {

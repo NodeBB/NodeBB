@@ -31,7 +31,8 @@ var user = require('./../user.js'),
 				config.maximumUsernameLength = meta.config.maximumUsernameLength;
 				config.minimumPasswordLength = meta.config.minimumPasswordLength;
 				config.useOutgoingLinksPage = meta.config.useOutgoingLinksPage;
-
+				config.paginatedTopics = meta.config.paginatedTopics;
+				config.maxPostsPerPage = meta.config.maxPostsPerPage || 10;
 				res.json(200, config);
 			});
 
@@ -114,8 +115,12 @@ var user = require('./../user.js'),
 			});
 
 			app.get('/topic/:id/:slug?', function (req, res, next) {
+					
+				var topics_per_page = parseInt(meta.config.maxPostsPerPage) ||  10;
+				var page = (req.param("page")) ? parseInt(req.param("page")) : 1;
+				var offset = (page-1)*topics_per_page;
 				var uid = (req.user) ? req.user.uid : 0;
-				topics.getTopicWithPosts(req.params.id, uid, 0, 10, function (err, data) {
+				topics.getTopicWithPosts(req.params.id, uid, offset, offset+topics_per_page-1, function (err, data) {
 					if (!err) {
 						if (data.deleted === '1' && data.expose_tools === 0) {
 							return res.json(404, {});

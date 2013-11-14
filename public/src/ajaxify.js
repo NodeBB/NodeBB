@@ -13,6 +13,7 @@ var ajaxify = {};
 
 	var events = [];
 	ajaxify.register_events = function (new_page_events) {
+
 		for (var i = 0, ii = events.length; i < ii; i++) {
 			socket.removeAllListeners(events[i]); // optimize this to user removeListener(event, listener) instead.
 		}
@@ -30,18 +31,22 @@ var ajaxify = {};
 	var pagination;
 
 	ajaxify.go = function (url, callback, template, quiet) {
+		
 		// start: the following should be set like so: ajaxify.onchange(function(){}); where the code actually belongs
 		$(window).off('scroll');
 		app.enter_room('global');
 
-		pagination = pagination || document.getElementById('pagination');
-		if (pagination) pagination.parentNode.style.display = 'none';
+		if( config.paginatedTopics != "1"){
+			pagination = pagination || document.getElementById('pagination');
+			if (pagination) pagination.parentNode.style.display = 'none';
+		}
 		window.onscroll = null;
+
 		// end
 
 		// Remove trailing slash
 		url = url.replace(/\/$/, "");
-
+		
 		var hash = window.location.hash;
 
 		if (url.indexOf(RELATIVE_PATH.slice(1)) !== -1) {

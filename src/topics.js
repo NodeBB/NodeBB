@@ -373,6 +373,7 @@ var RDB = require('./redis.js'),
 	}
 
 	Topics.getTopicWithPosts = function(tid, current_user, start, end, callback) {
+		
 		threadTools.exists(tid, function(exists) {
 			if (!exists)
 				return callback(new Error('Topic tid \'' + tid + '\' not found'));
@@ -402,7 +403,13 @@ var RDB = require('./redis.js'),
 				Topics.getCategoryData(tid, next);
 			}
 
-			async.parallel([getTopicData, getTopicPosts, getPrivileges, getCategoryData], function(err, results) {
+			function getOriginalPost(next){
+				Topics.getTopicPosts(tid,0,1, current_user, function(originalPost, privileges){
+					next(null, originalPost);
+				});
+			}
+
+			async.parallel([getTopicData, getTopicPosts, getPrivileges, getCategoryData, getOriginalPost], function(err, results) {
 				if (err) {
 					console.log(err.message);
 					callback(err, null);
@@ -413,8 +420,21 @@ var RDB = require('./redis.js'),
 					topicPosts = results[1],
 					privileges = results[2],
 					categoryData = results[3];
+					originalPost = results[4];
 
-				var main_posts = topicPosts.splice(0, 1);
+
+				var main_posts = null;
+				if( meta.config.paginatedTopics && start > 1){
+					
+					if(parseInt(start) > parseInt(topicData.postcount)){
+						return callback(new Error('Page requested out of range'));
+					}
+					main_posts = originalPost.splice(0, 1);
+
+					
+				}else{
+					main_posts = topicPosts.splice(0,1);
+				}
 
 				callback(null, {
 					'topic_name': topicData.title,
