@@ -18,6 +18,100 @@ var RDB = require('./redis.js'),
 
 (function(Topics) {
 
+	Topics.post = function(uid, title, content, category_id, callback) {
+		if (!category_id)
+			throw new Error('Attempted to post without a category_id');
+
+		if (content)
+			content = content.trim();
+		if (title)
+			title = title.trim();
+
+		if (!uid) {
+			callback(new Error('not-logged-in'), null);
+			return;
+		} else if (!title || title.length < meta.config.minimumTitleLength) {
+			callback(new Error('title-too-short'), null);
+			return;
+		} else if (!content || content.length < meta.config.miminumPostLength) {
+			callback(new Error('content-too-short'), null);
+			return;
+		}
+
+		user.getUserField(uid, 'lastposttime', function(err, lastposttime) {
+			if (err) lastposttime = 0;
+			if (Date.now() - lastposttime < meta.config.postDelay * 1000) {
+				callback(new Error('too-many-posts'), null);
+				return;
+			}
+
+			RDB.incr('next_topic_id', function(err, tid) {
+				RDB.handle(err);
+
+				// Global Topics
+				if (uid == null) uid = 0;
+				if (uid !== null) {
+					RDB.sadd('topics:tid', tid);
+				} else {
+					// need to add some unique key sent by client so we can update this with the real uid later
+					RDB.lpush('topics:queued:tid', tid);
+				}
+
+				var slug = tid + '/' + utils.slugify(title);
+				var timestamp = Date.now();
+				RDB.hmset('topic:' + tid, {
+					'tid': tid,
+					'uid': uid,
+					'cid': category_id,
+					'title': title,
+					'slug': slug,
+					'timestamp': timestamp,
+					'lastposttime': 0,
+					'postcount': 0,
+					'viewcount': 0,
+					'locked': 0,
+					'deleted': 0,
+					'pinned': 0
+				});
+
+				topicSearch.index(title, tid);
+
+				user.addTopicIdToUser(uid, tid);
+
+				// let everyone know that there is an unread topic in this category
+				RDB.del('cid:' + category_id + ':read_by_uid', function(err, data) {
+					Topics.markAsRead(tid, uid);
+				});
+
+
+				// in future it may be possible to add topics to several categories, so leaving the door open here.
+				RDB.zadd('categories:' + category_id + ':tid', timestamp, tid);
+				RDB.hincrby('category:' + category_id, 'topic_count', 1);
+				RDB.incr('totaltopiccount');
+
+				feed.updateCategory(category_id);
+
+				posts.create(uid, tid, content, function(err, postData) {
+					if(err) {
+						return callback(err, null);
+					} else if(!postData) {
+						return callback(new Error('invalid-post'), null);
+					}
+
+					// Auto-subscribe the post creator to the newly created topic
+					threadTools.toggleFollow(tid, uid);
+
+					Topics.getTopicForCategoryView(tid, uid, function(topicData) {
+						callback(null, {
+							topicData: topicData,
+							postData: postData
+						});
+					});
+				});
+			});
+		});
+	};
+
 	Topics.getTopicData = function(tid, callback) {
 		RDB.hgetall('topic:' + tid, function(err, data) {
 			if(err) {
@@ -677,104 +771,6 @@ var RDB = require('./redis.js'),
 			alert_id: 'post_error'
 		});
 	}
-
-	Topics.post = function(uid, title, content, category_id, callback) {
-		if (!category_id)
-			throw new Error('Attempted to post without a category_id');
-
-		if (content)
-			content = content.trim();
-		if (title)
-			title = title.trim();
-
-		if (uid === 0) {
-			callback(new Error('not-logged-in'), null);
-			return;
-		} else if (!title || title.length < meta.config.minimumTitleLength) {
-			callback(new Error('title-too-short'), null);
-			return;
-		} else if (!content || content.length < meta.config.miminumPostLength) {
-			callback(new Error('content-too-short'), null);
-			return;
-		}
-
-		user.getUserField(uid, 'lastposttime', function(err, lastposttime) {
-			if (err) lastposttime = 0;
-			if (Date.now() - lastposttime < meta.config.postDelay * 1000) {
-				callback(new Error('too-many-posts'), null);
-				return;
-			}
-
-			RDB.incr('next_topic_id', function(err, tid) {
-				RDB.handle(err);
-
-				// Global Topics
-				if (uid == null) uid = 0;
-				if (uid !== null) {
-					RDB.sadd('topics:tid', tid);
-				} else {
-					// need to add some unique key sent by client so we can update this with the real uid later
-					RDB.lpush('topics:queued:tid', tid);
-				}
-
-				var slug = tid + '/' + utils.slugify(title);
-				var timestamp = Date.now();
-				RDB.hmset('topic:' + tid, {
-					'tid': tid,
-					'uid': uid,
-					'cid': category_id,
-					'title': title,
-					'slug': slug,
-					'timestamp': timestamp,
-					'lastposttime': 0,
-					'postcount': 0,
-					'viewcount': 0,
-					'locked': 0,
-					'deleted': 0,
-					'pinned': 0
-				});
-
-				topicSearch.index(title, tid);
-
-				user.addTopicIdToUser(uid, tid);
-
-				// let everyone know that there is an unread topic in this category
-				RDB.del('cid:' + category_id + ':read_by_uid', function(err, data) {
-					Topics.markAsRead(tid, uid);
-				});
-
-
-				// in future it may be possible to add topics to several categories, so leaving the door open here.
-				RDB.zadd('categories:' + category_id + ':tid', timestamp, tid);
-				RDB.hincrby('category:' + category_id, 'topic_count', 1);
-				RDB.incr('totaltopiccount');
-
-				feed.updateCategory(category_id);
-
-				posts.create(uid, tid, content, function(err, postData) {
-					if(err) {
-						return callback(err, null);
-					} else if(!postData) {
-						return callback(new Error('invalid-post'), null);
-					}
-
-					// Auto-subscribe the post creator to the newly created topic
-					threadTools.toggleFollow(tid, uid);
-
-					// Notify any users looking at the category that a new topic has arrived
-					Topics.getTopicForCategoryView(tid, uid, function(topicData) {
-						io.sockets.in('category_' + category_id).emit('event:new_topic', topicData);
-						io.sockets.in('recent_posts').emit('event:new_topic', topicData);
-						io.sockets.in('user/' + uid).emit('event:new_post', {
-							posts: postData
-						});
-					});
-
-					callback(null, postData);
-				});
-			});
-		});
-	};
 
 	Topics.getTopicField = function(tid, field, callback) {
 		RDB.hget('topic:' + tid, field, callback);

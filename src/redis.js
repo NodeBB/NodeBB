@@ -58,6 +58,7 @@
 	 */
 	RedisDB.hmgetObject = function(key, fields, callback) {
 		RedisDB.hmget(key, fields, function(err, data) {
+
 			if(err) {
 				return callback(err, null);
 			}

@@ -380,6 +380,12 @@ module.exports.init = function(io) {
 				}
 
 				if (result) {
+					io.sockets.in('category_' + data.category_id).emit('event:new_topic', topicData);
+					io.sockets.in('recent_posts').emit('event:new_topic', topicData);
+					io.sockets.in('user/' + uid).emit('event:new_post', {
+						posts: postData
+					});
+
 					posts.getTopicPostStats();
 
 					socket.emit('event:alert', {
