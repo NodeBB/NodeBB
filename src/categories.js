@@ -252,26 +252,28 @@ var RDB = require('./redis.js'),
 
 	Categories.moveRecentReplies = function(tid, oldCid, cid, callback) {
 		function movePost(pid, callback) {
-			posts.getPostField(pid, 'timestamp', function(timestamp) {
+			posts.getPostField(pid, 'timestamp', function(err, timestamp) {
+				if(err) {
+					return callback(err);
+				}
+
 				RDB.zrem('categories:recent_posts:cid:' + oldCid, pid);
 				RDB.zadd('categories:recent_posts:cid:' + cid, timestamp, pid);
+				callback(null);
 			});
 		}
 
 		topics.getPids(tid, function(err, pids) {
-			if (!err) {
-				async.each(pids, movePost, function(err) {
-					if (!err) {
-						callback(null, 1);
-					} else {
-						winston.err(err);
-						callback(err, null);
-					}
-				});
-			} else {
-				winston.err(err);
-				callback(err, null);
+			if(err) {
+				return callback(err, null);
 			}
+
+			async.each(pids, movePost, function(err) {
+				if(err) {
+					return callback(err, null);
+				}
+				callback(null, 1);
+			});
 		});
 	};
 
@@ -372,19 +374,6 @@ var RDB = require('./redis.js'),
 				return callback(err, null);
 			}
 
-			function getPostCategory(pid, callback) {
-				posts.getPostField(pid, 'tid', function(tid) {
-
-					topics.getTopicField(tid, 'cid', function(err, postCid) {
-						if (err) {
-							return callback(err, null);
-						}
-
-						return callback(null, postCid);
-					});
-				});
-			}
-
 			var index = 0,
 				active = false;
 
@@ -393,7 +382,7 @@ var RDB = require('./redis.js'),
 					return active === false && index < pids.length;
 				},
 				function(callback) {
-					getPostCategory(pids[index], function(err, postCid) {
+					posts.getCidByPid(pids[index], function(err, postCid) {
 						if (err) {
 							return callback(err);
 						}
@@ -410,7 +399,6 @@ var RDB = require('./redis.js'),
 					if (err) {
 						return callback(err, null);
 					}
-
 
 					callback(null, active);
 				}

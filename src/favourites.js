@@ -21,7 +21,7 @@ var RDB = require('./redis.js'),
 			return;
 		}
 
-		posts.getPostFields(pid, ['uid', 'timestamp'], function (postData) {
+		posts.getPostFields(pid, ['uid', 'timestamp'], function (err, postData) {
 
 			Favourites.hasFavourited(pid, uid, function (hasFavourited) {
 				if (hasFavourited === 0) {
@@ -57,7 +57,7 @@ var RDB = require('./redis.js'),
 			return;
 		}
 
-		posts.getPostField(pid, 'uid', function (uid_of_poster) {
+		posts.getPostField(pid, 'uid', function (err, uid_of_poster) {
 			Favourites.hasFavourited(pid, uid, function (hasFavourited) {
 				if (hasFavourited === 1) {
 					RDB.srem('pid:' + pid + ':users_favourited', uid);

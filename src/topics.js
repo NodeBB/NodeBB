@@ -477,6 +477,9 @@ var RDB = require('./redis.js'),
 				hasRead = results[1],
 				teaser = results[2];
 
+			topicData['pin-icon'] = topicData.pinned === '1' ? 'icon-pushpin' : 'none';
+			topicData['lock-icon'] = topicData.locked === '1' ? 'icon-lock' : 'none';
+
 			topicData.badgeclass = hasRead ? '' : 'badge-important';
 			topicData.teaser_text = teaser.text || '';
 			topicData.teaser_username = teaser.username || '';
@@ -550,15 +553,15 @@ var RDB = require('./redis.js'),
 	}
 
 	Topics.getTitleByPid = function(pid, callback) {
-		posts.getPostField(pid, 'tid', function(tid) {
+		posts.getPostField(pid, 'tid', function(err, tid) {
 			Topics.getTopicField(tid, 'title', function(err, title) {
 				callback(title);
 			});
 		});
 	}
 
-	Topics.markUnRead = function(tid) {
-		RDB.del('tid:' + tid + ':read_by_uid');
+	Topics.markUnRead = function(tid, callback) {
+		RDB.del('tid:' + tid + ':read_by_uid', callback);
 	}
 
 	Topics.markAsRead = function(tid, uid) {
@@ -624,36 +627,44 @@ var RDB = require('./redis.js'),
 
 	Topics.getTeaser = function(tid, callback) {
 		threadTools.getLatestUndeletedPid(tid, function(err, pid) {
-			if (!err) {
-				posts.getPostFields(pid, ['pid', 'content', 'uid', 'timestamp'], function(postData) {
+			if (err) {
+				return callback(err, null);
+			}
 
-					user.getUserFields(postData.uid, ['username', 'userslug', 'picture'], function(err, userData) {
-						if (err)
-							return callback(err, null);
+			posts.getPostFields(pid, ['pid', 'content', 'uid', 'timestamp'], function(err, postData) {
+				if (err) {
+					return callback(err, null);
+				} else if(!postData) {
+					return callback(new Error('no-teaser-found'));
+				}
 
-						var stripped = postData.content,
-							timestamp = postData.timestamp,
-							returnObj = {
-								"pid": postData.pid,
-								"username": userData.username,
-								"userslug": userData.userslug,
-								"picture": userData.picture,
-								"timestamp": timestamp
-							};
+				user.getUserFields(postData.uid, ['username', 'userslug', 'picture'], function(err, userData) {
+					if (err) {
+						return callback(err, null);
+					}
 
-						if (postData.content) {
-							stripped = postData.content.replace(/>.+\n\n/, '');
-							postTools.parse(stripped, function(err, stripped) {
-								returnObj.text = utils.strip_tags(stripped);
-								callback(null, returnObj);
-							});
-						} else {
-							returnObj.text = '';
+					var stripped = postData.content,
+						timestamp = postData.timestamp,
+						returnObj = {
+							"pid": postData.pid,
+							"username": userData.username,
+							"userslug": userData.userslug,
+							"picture": userData.picture,
+							"timestamp": timestamp
+						};
+
+					if (postData.content) {
+						stripped = postData.content.replace(/>.+\n\n/, '');
+						postTools.parse(stripped, function(err, stripped) {
+							returnObj.text = utils.strip_tags(stripped);
 							callback(null, returnObj);
-						}
-					});
+						});
+					} else {
+						returnObj.text = '';
+						callback(null, returnObj);
+					}
 				});
-			} else callback(new Error('no-teaser-found'));
+			});
 		});
 	}
 
@@ -740,23 +751,26 @@ var RDB = require('./redis.js'),
 
 				feed.updateCategory(category_id);
 
-				posts.create(uid, tid, content, function(postData) {
-					if (postData) {
-
-						// Auto-subscribe the post creator to the newly created topic
-						threadTools.toggleFollow(tid, uid);
-
-						// Notify any users looking at the category that a new topic has arrived
-						Topics.getTopicForCategoryView(tid, uid, function(topicData) {
-							io.sockets.in('category_' + category_id).emit('event:new_topic', topicData);
-							io.sockets.in('recent_posts').emit('event:new_topic', topicData);
-							io.sockets.in('user/' + uid).emit('event:new_post', {
-								posts: postData
-							});
-						});
-
-						callback(null, postData);
+				posts.create(uid, tid, content, function(err, postData) {
+					if(err) {
+						return callback(err, null);
+					} else if(!postData) {
+						return callback(new Error('invalid-post'), null);
 					}
+
+					// Auto-subscribe the post creator to the newly created topic
+					threadTools.toggleFollow(tid, uid);
+
+					// Notify any users looking at the category that a new topic has arrived
+					Topics.getTopicForCategoryView(tid, uid, function(topicData) {
+						io.sockets.in('category_' + category_id).emit('event:new_topic', topicData);
+						io.sockets.in('recent_posts').emit('event:new_topic', topicData);
+						io.sockets.in('user/' + uid).emit('event:new_post', {
+							posts: postData
+						});
+					});
+
+					callback(null, postData);
 				});
 			});
 		});
@@ -784,7 +798,10 @@ var RDB = require('./redis.js'),
 
 	Topics.isLocked = function(tid, callback) {
 		Topics.getTopicField(tid, 'locked', function(err, locked) {
-			callback(locked);
+			if(err) {
+				return callback(err, null);
+			}
+			callback(null, locked === "1");
 		});
 	}
 
@@ -806,7 +823,7 @@ var RDB = require('./redis.js'),
 		Topics.getPids(tid, function(err, pids) {
 
 			function getUid(pid, next) {
-				posts.getPostField(pid, 'uid', function(uid) {
+				posts.getPostField(pid, 'uid', function(err, uid) {
 					if (err)
 						return next(err);
 					uids[uid] = 1;

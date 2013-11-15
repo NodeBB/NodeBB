@@ -303,7 +303,7 @@ var RDB = require('./redis.js'),
 
 			pids.reverse();
 			async.detectSeries(pids, function(pid, next) {
-				posts.getPostField(pid, 'deleted', function(deleted) {
+				posts.getPostField(pid, 'deleted', function(err, deleted) {
 					if (deleted === '0') next(true);
 					else next(false);
 				});

@@ -368,6 +368,13 @@ module.exports.init = function(io) {
 						posts.emitContentTooShortAlert(socket);
 					} else if (err.message === 'too-many-posts') {
 						posts.emitTooManyPostsAlert(socket);
+					} else {
+						socket.emit('event:alert', {
+							title: 'Error',
+							message: err.message,
+							type: 'warning',
+							timeout: 7500
+						});
 					}
 					return;
 				}
@@ -533,7 +540,7 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:posts.getRawPost', function(data) {
-			posts.getPostField(data.pid, 'content', function(raw) {
+			posts.getPostField(data.pid, 'content', function(err, raw) {
 				socket.emit('api:posts.getRawPost', {
 					post: raw
 				});
@@ -714,9 +721,7 @@ module.exports.init = function(io) {
 
 					async.parallel([
 						function(next) {
-							posts.getPostFields(data.pid, ['content'], function(raw) {
-								next(null, raw);
-							});
+							posts.getPostFields(data.pid, ['content'], next);
 						},
 						function(next) {
 							topics.getTitleByPid(data.pid, function(title) {
@@ -739,7 +744,7 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:composer.editCheck', function(pid) {
-			posts.getPostField(pid, 'tid', function(tid) {
+			posts.getPostField(pid, 'tid', function(err, tid) {
 				postTools.isMain(pid, tid, function(isMain) {
 					socket.emit('api:composer.editCheck', {
 						titleEditable: isMain

@@ -34,7 +34,7 @@ var RDB = require('./redis.js'),
 		}
 
 		function getThreadPrivileges(next) {
-			posts.getPostField(pid, 'tid', function(tid) {
+			posts.getPostField(pid, 'tid', function(err, tid) {
 				threadTools.privileges(tid, uid, function(privileges) {
 					next(null, privileges);
 				});
@@ -42,7 +42,7 @@ var RDB = require('./redis.js'),
 		}
 
 		function isOwnPost(next) {
-			posts.getPostField(pid, 'uid', function(author) {
+			posts.getPostField(pid, 'uid', function(err, author) {
 				next(null, parseInt(author, 10) === parseInt(uid, 10));
 			});
 		}
@@ -87,7 +87,7 @@ var RDB = require('./redis.js'),
 
 			async.parallel([
 				function(next) {
-					posts.getPostField(pid, 'tid', function(tid) {
+					posts.getPostField(pid, 'tid', function(err, tid) {
 						PostTools.isMain(pid, tid, function(isMainPost) {
 							if (isMainPost) {
 								topics.setTopicField(tid, 'title', title);
@@ -132,7 +132,7 @@ var RDB = require('./redis.js'),
 			RDB.decr('totalpostcount');
 			postSearch.remove(pid);
 
-			posts.getPostFields(pid, ['tid', 'uid'], function(postData) {
+			posts.getPostFields(pid, ['tid', 'uid'], function(err, postData) {
 				RDB.hincrby('topic:' + postData.tid, 'postcount', -1);
 
 				user.decrementUserFieldBy(postData.uid, 'postcount', 1, function(err, postcount) {
@@ -150,7 +150,7 @@ var RDB = require('./redis.js'),
 							if (err) winston.error('Could not delete topic (tid: ' + postData.tid + ')', err.stack);
 						});
 					} else {
-						posts.getPostField(pid, 'timestamp', function(timestamp) {
+						posts.getPostField(pid, 'timestamp', function(err, timestamp) {
 							topics.updateTimestamp(postData.tid, timestamp);
 						});
 					}
@@ -174,7 +174,7 @@ var RDB = require('./redis.js'),
 			posts.setPostField(pid, 'deleted', 0);
 			RDB.incr('totalpostcount');
 
-			posts.getPostFields(pid, ['tid', 'uid', 'content'], function(postData) {
+			posts.getPostFields(pid, ['tid', 'uid', 'content'], function(err, postData) {
 				RDB.hincrby('topic:' + postData.tid, 'postcount', 1);
 
 				user.incrementUserFieldBy(postData.uid, 'postcount', 1);
@@ -184,7 +184,7 @@ var RDB = require('./redis.js'),
 				});
 
 				threadTools.getLatestUndeletedPid(postData.tid, function(err, pid) {
-					posts.getPostField(pid, 'timestamp', function(timestamp) {
+					posts.getPostField(pid, 'timestamp', function(err, timestamp) {
 						topics.updateTimestamp(postData.tid, timestamp);
 					});
 				});
