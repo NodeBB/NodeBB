@@ -688,7 +688,7 @@ module.exports.init = function(io) {
 		socket.on('api:composer.push', function(data) {
 			if (uid > 0 || meta.config.allowGuestPosting === '1') {
 				if (parseInt(data.tid) > 0) {
-					topics.getTopicData(data.tid, function(topicData) {
+					topics.getTopicData(data.tid, function(err, topicData) {
 						if (data.body)
 							topicData.body = data.body;
 

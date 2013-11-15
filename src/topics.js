@@ -20,28 +20,36 @@ var RDB = require('./redis.js'),
 
 	Topics.getTopicData = function(tid, callback) {
 		RDB.hgetall('topic:' + tid, function(err, data) {
-			if (err === null) {
-				if(data) {
-					data.title = validator.sanitize(data.title).escape();
-					if(data.timestamp) {
-						data.relativeTime = new Date(parseInt(data.timestamp, 10)).toISOString();
-					}
-				}
-
-				callback(data);
-			} else {
-				console.log(err);
+			if(err) {
+				return callback(err, null);
 			}
+
+			if(data) {
+				data.title = validator.sanitize(data.title).escape();
+				if(data.timestamp) {
+					data.relativeTime = new Date(parseInt(data.timestamp, 10)).toISOString();
+				}
+			}
+
+			callback(null, data);
 		});
 	}
 
 	Topics.getTopicDataWithUser = function(tid, callback) {
-		Topics.getTopicData(tid, function(topic) {
+		Topics.getTopicData(tid, function(err, topic) {
+			if(err) {
+				return callback(err, null);
+			}
+
 			user.getUserFields(topic.uid, ['username', 'userslug', 'picture'] , function(err, userData) {
+				if(err) {
+					return callback(err, null);
+				}
+
 				topic.username = userData.username;
 				topic.userslug = userData.userslug
 				topic.picture = userData.picture;
-				callback(topic);
+				callback(null, topic);
 			});
 		});
 	}
@@ -331,7 +339,7 @@ var RDB = require('./redis.js'),
 		}
 
 		function loadTopic(tid, callback) {
-			Topics.getTopicData(tid, function(topicData) {
+			Topics.getTopicData(tid, function(err, topicData) {
 				if (!topicData) {
 					return callback(null);
 				}
@@ -381,9 +389,7 @@ var RDB = require('./redis.js'),
 			Topics.increaseViewCount(tid);
 
 			function getTopicData(next) {
-				Topics.getTopicData(tid, function(topicData) {
-					next(null, topicData);
-				});
+				Topics.getTopicData(tid, next);
 			}
 
 			function getTopicPosts(next) {
@@ -442,9 +448,7 @@ var RDB = require('./redis.js'),
 	Topics.getTopicForCategoryView = function(tid, uid, callback) {
 
 		function getTopicData(next) {
-			Topics.getTopicDataWithUser(tid, function(topic) {
-				next(null, topic);
-			});
+			Topics.getTopicDataWithUser(tid, next);
 		}
 
 		function getReadStatus(next) {
@@ -517,7 +521,7 @@ var RDB = require('./redis.js'),
 			});
 
 			async.each(tids, function(tid, next) {
-				Topics.getTopicDataWithUser(tid, function(topicData) {
+				Topics.getTopicDataWithUser(tid, function(err, topicData) {
 					topics.push(topicData);
 					next();
 				});

@@ -14,22 +14,6 @@ var user = require('./../user.js'),
 (function (User) {
 	User.createRoutes = function (app) {
 
-		app.get('/uid/:uid', function (req, res) {
-
-			if (!req.params.uid)
-				return res.redirect('/404');
-
-			user.getUserData(req.params.uid, function (err, data) {
-				if (data) {
-					res.send(data);
-				} else {
-					res.json(404, {
-						error: "User doesn't exist!"
-					});
-				}
-			});
-		});
-
 		app.namespace('/users', function () {
 			app.get('', function (req, res) {
 				app.build_header({

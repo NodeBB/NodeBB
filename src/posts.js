@@ -131,17 +131,18 @@ var RDB = require('./redis.js'),
 		});
 	};
 
-	// TODO: this function is never called except from some debug route. clean up?
 	Posts.getPostData = function(pid, callback) {
 		RDB.hgetall('post:' + pid, function(err, data) {
-			if (err === null) {
-				plugins.fireHook('filter:post.get', data, function(err, newData) {
-					if (!err) callback(newData);
-					else callback(data);
-				});
-			} else {
-				winston.error(err);
+			if(err) {
+				return callback(err, null);
 			}
+
+			plugins.fireHook('filter:post.get', data, function(err, newData) {
+				if(err) {
+					return callback(err, null);
+				}
+				callback(null, newData);
+			});
 		});
 	}
 
