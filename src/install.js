@@ -63,13 +63,14 @@ var async = require('async'),
 					}
 
 					if (setupVal && setupVal instanceof Object) {
-						if (setupVal['admin:username'] && setupVal['admin:password'] && setupVal['admin:email']) {
+						if (setupVal['admin:username'] && setupVal['admin:password'] && setupVal['admin:password:confirm'] && setupVal['admin:email']) {
 							install.values = setupVal;
 							next();
 						} else {
 							winston.error('Required values are missing for automated setup:');
 							if (!setupVal['admin:username']) winston.error('  admin:username');
 							if (!setupVal['admin:password']) winston.error('  admin:password');
+							if (!setupVal['admin:password:confirm']) winston.error('  admin:password:confirm');
 							if (!setupVal['admin:email']) winston.error('  admin:email');
 							process.exit();
 						}
@@ -277,9 +278,16 @@ var async = require('async'),
 					description: 'Administrator email address',
 					pattern: /.+@.+/,
 					required: true
-				}, {
+				}],
+				passwordQuestions = [{
 					name: 'password',
 					description: 'Password',
+					required: true,
+					hidden: true,
+					type: 'string'
+				}, {
+					name: 'password:confirm',
+					description: 'Confirm Password',
 					required: true,
 					hidden: true,
 					type: 'string'
@@ -287,6 +295,13 @@ var async = require('async'),
 				success = function(err, results) {
 					if (!results) {
 						return callback(new Error('aborted'));
+					}
+
+					// Check if the passwords match
+					if (results['password:confirm'] !== results.password) {
+						winston.warn("Passwords did not match, please try again");
+						// Re-prompt password questions.
+						return retryPassword(results);
 					}
 
 					nconf.set('bcrypt_rounds', 12);
@@ -306,14 +321,33 @@ var async = require('async'),
 							}
 						});
 					});
+				},
+				retryPassword = function (originalResults) {
+					// Ask only the password questions
+					prompt.get(passwordQuestions, function (err, results) {
+						if (!results) {
+							return callback(new Error('aborted'));
+						}
+						
+						// Update the original data with newly collected password
+						originalResults.password = results.password;
+						originalResults['password:confirm'] = results['password:confirm'];
+
+						// Send back to success to handle
+						success(err, originalResults);
+					});
 				};
+
+			// Add the password questions
+			questions = questions.concat(passwordQuestions);
 
 			if (!install.values) prompt.get(questions, success);
 			else {
 				var results = {
 						username: install.values['admin:username'],
 						email: install.values['admin:email'],
-						password: install.values['admin:password']
+						password: install.values['admin:password'],
+						'password:confirm': install.values['admin:password:confirm']
 					};
 
 				success(null, results);
