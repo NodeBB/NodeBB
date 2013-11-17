@@ -1,6 +1,3 @@
-
-
-
 var winston = require('winston');
 
 process.on('uncaughtException', function (err) {
@@ -19,19 +16,19 @@ reds.createClient = function () {
 
 var Topics = require('../src/topics');
 
-describe('Topics', function() {
+describe('Topic\'s', function() {
 	var	newTopic;
 	var newPost;
 	var userInfo;
 
 	describe('.post', function() {
-		it('should post a new topic', function(done) {
-			var uid = 1,
-				cid = 1,
+		it('should create a new topic with proper parameters', function(done) {
+			var userId = 1,
+				categoryId = 1,
 				title = 'Test Topic Title',
 				content	= 'The content of test topic';
 
-			Topics.post(uid, title, content, cid, function(err, result) {
+			Topics.post(userId, title, content, categoryId, function(err, result) {
 				assert.equal(err, null, 'was created with error');
 				assert.ok(result);
 
@@ -42,7 +39,7 @@ describe('Topics', function() {
 			});
 		});
 
-		it('should fail posting a topic', function(done) {
+		it('should fail to create new topic with wrong parameters', function(done) {
 			var uid = null,
 				cid = 1,
 				title = 'Test Topic Title',
