@@ -62,18 +62,14 @@ describe('Topic\'s', function() {
 		});
 
 		describe('.getTopicData', function() {
-			it('should get Topic data', function(done) {
-				Topics.getTopicData(newTopic.tid, function(err, result) {
-					done.apply(this.arguments);
-				});
+			it('should not receive errors', function(done) {
+				Topics.getTopicData(newTopic.tid, done);
 			});
 		});
 
 		describe('.getTopicDataWithUser', function() {
-			it('should get Topic data with user info', function(done) {
-				Topics.getTopicDataWithUser(newTopic.tid, function(err, result) {
-					done.apply(this.arguments);
-				});
+			it('should not receive errors', function(done) {
+				Topics.getTopicDataWithUser(newTopic.tid, done);
 			});
 		});
 	});
