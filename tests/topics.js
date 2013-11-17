@@ -17,28 +17,23 @@ reds.createClient = function () {
 var Topics = require('../src/topics');
 
 describe('Topic\'s', function() {
-	var	newTopic;
-	var newPost;
+	var topic;
+
+	beforeEach(function(){
+		topic = {
+			userId: 1,
+			categoryId: 1,
+			title: 'Test Topic Title',
+			content: 'The content of test topic'
+		};
+	});
 
 	describe('.post', function() {
-		var topic;
-
-		beforeEach(function(){
-			topic = {
-				userId: 1,
-				categoryId: 1,
-				title: 'Test Topic Title',
-				content: 'The content of test topic'
-			};
-		});
 
 		it('should create a new topic with proper parameters', function(done) {
 			Topics.post(topic.userId, topic.title, topic.content, topic.categoryId, function(err, result) {
 				assert.equal(err, null, 'was created with error');
 				assert.ok(result);
-
-				newTopic = result.topicData;
-				newPost = result.postData;
 
 				done();
 			});
@@ -54,24 +49,34 @@ describe('Topic\'s', function() {
 		});
 	});
 
-	describe('.getTopicData', function() {
-		it('should get Topic data', function(done) {
-			Topics.getTopicData(newTopic.tid, function(err, result) {
-				done.apply(this.arguments);
+	describe('Get methods', function() {
+		var	newTopic;
+		var newPost;
+
+		beforeEach(function(done){
+			Topics.post(topic.userId, topic.title, topic.content, topic.categoryId, function(err, result) {
+				newTopic = result.topicData;
+				newPost = result.postData;
+				done();
+			});
+		});
+
+		describe('.getTopicData', function() {
+			it('should get Topic data', function(done) {
+				Topics.getTopicData(newTopic.tid, function(err, result) {
+					done.apply(this.arguments);
+				});
+			});
+		});
+
+		describe('.getTopicDataWithUser', function() {
+			it('should get Topic data with user info', function(done) {
+				Topics.getTopicDataWithUser(newTopic.tid, function(err, result) {
+					done.apply(this.arguments);
+				});
 			});
 		});
 	});
-
-
-	describe('.getTopicDataWithUser', function() {
-		it('should get Topic data with user info', function(done) {
-			Topics.getTopicDataWithUser(newTopic.tid, function(err, result) {
-
-				done.apply(this.arguments);
-			});
-		});
-	});
-
 
 	after(function() {
 		RDB.send_command('flushdb', [], function(error){
