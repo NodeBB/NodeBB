@@ -19,16 +19,21 @@ var Topics = require('../src/topics');
 describe('Topic\'s', function() {
 	var	newTopic;
 	var newPost;
-	var userInfo;
 
 	describe('.post', function() {
-		it('should create a new topic with proper parameters', function(done) {
-			var userId = 1,
-				categoryId = 1,
-				title = 'Test Topic Title',
-				content	= 'The content of test topic';
+		var topic;
 
-			Topics.post(userId, title, content, categoryId, function(err, result) {
+		beforeEach(function(){
+			topic = {
+				userId: 1,
+				categoryId: 1,
+				title: 'Test Topic Title',
+				content: 'The content of test topic'
+			};
+		});
+
+		it('should create a new topic with proper parameters', function(done) {
+			Topics.post(topic.userId, topic.title, topic.content, topic.categoryId, function(err, result) {
 				assert.equal(err, null, 'was created with error');
 				assert.ok(result);
 
@@ -40,12 +45,9 @@ describe('Topic\'s', function() {
 		});
 
 		it('should fail to create new topic with wrong parameters', function(done) {
-			var uid = null,
-				cid = 1,
-				title = 'Test Topic Title',
-				content	= 'The content of test topic';
+			topic.userId = null;
 
-			Topics.post(uid, title, content, cid, function(err, result) {
+			Topics.post(topic.userId, topic.title, topic.content, topic.categoryId, function(err, result) {
 				assert.equal(err.message, 'not-logged-in');
 				done();
 			});
