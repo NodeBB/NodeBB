@@ -1009,7 +1009,10 @@ var utils = require('./../public/src/utils.js'),
 							next(null, notif_data);
 						});
 					}, function(err, notifs) {
-						notifs = notifs.sort(function(a, b) {
+						notifs = notifs.filter(function(notif) {
+							if (notif !== null) return true;
+							else return false;
+						}).sort(function(a, b) {
 							return parseInt(b.datetime, 10) - parseInt(a.datetime, 10);
 						}).map(function(notif) {
 							notif.datetimeISO = new Date(parseInt(notif.datetime, 10)).toISOString();
