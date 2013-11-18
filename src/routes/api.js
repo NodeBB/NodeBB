@@ -31,6 +31,7 @@ var user = require('./../user.js'),
 				config.maximumUsernameLength = meta.config.maximumUsernameLength;
 				config.minimumPasswordLength = meta.config.minimumPasswordLength;
 				config.useOutgoingLinksPage = meta.config.useOutgoingLinksPage;
+				config.emailSetup = !!meta.config['email:from'];
 
 				res.json(200, config);
 			});
