@@ -247,10 +247,6 @@ module.exports.init = function(io) {
 			posts.getTopicPostStats();
 		});
 
-		socket.on('user.latest', function(data) {
-			user.latest(socket, data);
-		});
-
 		socket.on('user.email.exists', function(data) {
 			user.email.exists(socket, data.email);
 		});

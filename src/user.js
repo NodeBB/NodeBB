@@ -1,16 +1,17 @@
-var utils = require('./../public/src/utils.js'),
-	RDB = require('./redis.js'),
-	emailjs = require('emailjs'),
-	meta = require('./meta.js'),
-	emailjsServer = emailjs.server.connect(meta.config['email:smtp:host'] || '127.0.0.1'),
-	bcrypt = require('bcrypt'),
-	Groups = require('./groups'),
-	notifications = require('./notifications.js'),
-	topics = require('./topics.js'),
+var bcrypt = require('bcrypt'),
 	async = require('async'),
+	emailjs = require('emailjs'),
 	nconf = require('nconf'),
+	winston = require('winston'),
 	userSearch = require('reds').createSearch('nodebbusersearch'),
-	winston = require('winston');
+
+	utils = require('./../public/src/utils'),
+	RDB = require('./redis'),
+	meta = require('./meta'),
+	emailjsServer = emailjs.server.connect(meta.config['email:smtp:host'] || '127.0.0.1'),
+	Groups = require('./groups'),
+	notifications = require('./notifications'),
+	topics = require('./topics');
 
 (function(User) {
 	'use strict';
@@ -113,13 +114,6 @@ var utils = require('./../public/src/utils.js'),
 				RDB.zadd('users:reputation', 0, uid);
 
 				userSearch.index(username, uid);
-
-				if (typeof io !== 'undefined') {
-					io.sockets.emit('user.latest', {
-						userslug: userslug,
-						username: username
-					});
-				}
 
 				if (password !== undefined) {
 					User.hashPassword(password, function(err, hash) {
@@ -638,21 +632,6 @@ var utils = require('./../public/src/utils.js'),
 
 			socket.emit('user.count', {
 				count: count ? count : 0
-			});
-		});
-	};
-
-	User.latest = function(socket) {
-		RDB.zrevrange('users:joindate', 0, 0, function(err, uid) {
-			RDB.handle(err);
-
-			User.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
-				if (!err && userData) {
-					socket.emit('user.latest', {
-						userslug: userData.userslug,
-						username: userData.username
-					});
-				}
 			});
 		});
 	};
