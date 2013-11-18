@@ -1,31 +1,33 @@
-var express = require('express'),
+var path = require('path'),
+	fs = require('fs'),
+
+	express = require('express'),
 	express_namespace = require('express-namespace'),
 	WebServer = express(),
 	server = require('http').createServer(WebServer),
 	RedisStore = require('connect-redis')(express),
-	path = require('path'),
-	RDB = require('./redis'),
-	utils = require('../public/src/utils.js'),
-	pkg = require('../package.json'),
-	fs = require('fs'),
-
-	user = require('./user.js'),
-	categories = require('./categories.js'),
-	posts = require('./posts.js'),
-	topics = require('./topics.js'),
-	notifications = require('./notifications.js'),
-	admin = require('./routes/admin.js'),
-	userRoute = require('./routes/user.js'),
-	apiRoute = require('./routes/api.js'),
-	auth = require('./routes/authentication.js'),
-	meta = require('./meta.js'),
-	feed = require('./feed'),
-	plugins = require('./plugins'),
 	nconf = require('nconf'),
 	winston = require('winston'),
 	validator = require('validator'),
 	async = require('async'),
-	logger = require('./logger.js');
+
+	pkg = require('../package.json'),
+
+	utils = require('../public/src/utils'),
+	RDB = require('./redis'),
+	user = require('./user'),
+	categories = require('./categories'),
+	posts = require('./posts'),
+	topics = require('./topics'),
+	notifications = require('./notifications'),
+	admin = require('./routes/admin'),
+	userRoute = require('./routes/user'),
+	apiRoute = require('./routes/api'),
+	auth = require('./routes/authentication'),
+	meta = require('./meta'),
+	feed = require('./feed'),
+	plugins = require('./plugins'),
+	logger = require('./logger');
 
 (function (app) {
 	"use strict";
@@ -144,7 +146,7 @@ var express = require('express'),
 					res.locals.csrf_token = req.session._csrf;
 
 					// Disable framing
-					res.setHeader("X-Frame-Options", "DENY");
+					res.setHeader('X-Frame-Options', 'DENY');
 
 					next();
 				});
@@ -645,7 +647,7 @@ var express = require('express'),
 				req: req,
 				res: res
 			}, function (err, header) {
-				res.send(header + app.create_route("recent/" + req.params.term, null, "recent") + templates.footer);
+				res.send(header + app.create_route('recent/' + req.params.term, null, 'recent') + templates.footer);
 			});
 
 		});
@@ -676,7 +678,7 @@ var express = require('express'),
 				req: req,
 				res: res
 			}, function (err, header) {
-				res.send(header + app.create_route("search/" + req.params.term, null, "search") + templates.footer);
+				res.send(header + app.create_route('search/' + req.params.term, null, 'search') + templates.footer);
 			});
 		});
 
