@@ -1010,8 +1010,7 @@ var utils = require('./../public/src/utils.js'),
 						});
 					}, function(err, notifs) {
 						notifs = notifs.filter(function(notif) {
-							if (notif !== null) return true;
-							else return false;
+							return notif !== null;
 						}).sort(function(a, b) {
 							return parseInt(b.datetime, 10) - parseInt(a.datetime, 10);
 						}).map(function(notif) {
