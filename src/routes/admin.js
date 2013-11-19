@@ -111,7 +111,7 @@ var user = require('./../user.js'),
 				}
 
 				var filename =  'site-logo' + extension;
-				var uploadPath = path.join(process.cwd(), nconf.get('upload_path'), filename);
+				var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), filename);
 
 				winston.info('Attempting upload to: ' + uploadPath);
 
