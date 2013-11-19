@@ -63,17 +63,17 @@
 								<button class="btn btn-sm btn-primary btn post_reply" type="button">[[topic:reply]] <i class="icon-reply"></i></button>
 							</div>
 
-
-							<div class="btn-group pull-right post-tools">
-								<button class="btn btn-sm btn-default edit {main_posts.display_moderator_tools}" type="button" title="[[topic:edit]]"><i class="icon-pencil"></i></button>
-								<button class="btn btn-sm btn-default delete {main_posts.display_moderator_tools}" type="button" title="[[topic:delete]]"><i class="icon-trash"></i></button>
-							</div>
-
-							<div class="btn-group pull-right post-tools">
-								<button class="btn btn-sm btn-default link" type="button" title="[[topic:link]]"><i class="icon-link"></i></button>
-								<button class="btn btn-sm btn-default facebook-share" type="button" title=""><i class="icon-facebook"></i></button>
-								<button class="btn btn-sm btn-default twitter-share" type="button" title=""><i class="icon-twitter"></i></button>
-								<button class="btn btn-sm btn-default google-share" type="button" title=""><i class="icon-google-plus"></i></button>
+							<div class="pull-right">
+								<div class="btn-group post-tools">
+									<button class="btn btn-sm btn-default link" type="button" title="[[topic:link]]"><i class="icon-link"></i></button>
+									<button class="btn btn-sm btn-default facebook-share" type="button" title=""><i class="icon-facebook"></i></button>
+									<button class="btn btn-sm btn-default twitter-share" type="button" title=""><i class="icon-twitter"></i></button>
+									<button class="btn btn-sm btn-default google-share" type="button" title=""><i class="icon-google-plus"></i></button>
+								</div>
+								<div class="btn-group post-tools">
+									<button class="btn btn-sm btn-default edit {main_posts.display_moderator_tools}" type="button" title="[[topic:edit]]"><i class="icon-pencil"></i></button>
+									<button class="btn btn-sm btn-default delete {main_posts.display_moderator_tools}" type="button" title="[[topic:delete]]"><i class="icon-trash"></i></button>
+								</div>
 							</div>
 
 							<input id="post_{main_posts.pid}_link" value="" class="pull-right" style="display:none;"></input>
