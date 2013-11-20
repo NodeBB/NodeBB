@@ -17,6 +17,17 @@ define(function() {
 			google_url = templates.get('google-share-url');
 
 
+		function fixDeleteStateForPosts() {
+			var postEls = document.querySelectorAll('#post-container li[data-deleted]');
+			for (var x = 0, numPosts = postEls.length; x < numPosts; x++) {
+				if (postEls[x].getAttribute('data-deleted') === '1') {
+					toggle_post_delete_state(postEls[x].getAttribute('data-pid'));
+				}
+				postEls[x].removeAttribute('data-deleted');
+			}
+		}
+
+
 		jQuery('document').ready(function() {
 
 			app.addCommasToNumbers();
@@ -182,12 +193,8 @@ define(function() {
 				});
 			}
 
-			// Fix delete state for this thread's posts
-			var postEls = document.querySelectorAll('#post-container li[data-deleted]');
-			for (var x = 0, numPosts = postEls.length; x < numPosts; x++) {
-				if (postEls[x].getAttribute('data-deleted') === '1') toggle_post_delete_state(postEls[x].getAttribute('data-pid'));
-				postEls[x].removeAttribute('data-deleted');
-			}
+			fixDeleteStateForPosts();
+
 
 			// Follow Thread State
 			var followEl = $('.main-post .follow'),
@@ -259,7 +266,9 @@ define(function() {
 				var bottom = ($(document).height() - $(window).height()) * 0.9;
 
 				if ($(window).scrollTop() > bottom && !app.infiniteLoaderActive && $('#post-container').children().length) {
-					app.loadMorePosts(tid);
+					app.loadMorePosts(tid, function(posts) {
+						fixDeleteStateForPosts();
+					});
 				}
 			});
 		}
