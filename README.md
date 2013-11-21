@@ -10,7 +10,7 @@
 
 ![NodeBB Main Category Listing](http://i.imgur.com/zffCFoh.png)
 
-![NodeBB Topic Page](http://i.imgur.com/tcHW08M.png)
+![NodeBB Topic Page](http://i.imgur.com/JihdcUa.png)
 
 ## How can I follow along/contribute?
 
