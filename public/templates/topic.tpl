@@ -20,7 +20,7 @@
 		<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
 			<span itemprop="title">{topic_name} <a target="_blank" href="../{topic_id}.rss"><i class="icon-rss-sign"></i></a></span>
 		</li>
-		<div class="thread_active_users active-users pull-right hidden-xs"></div>
+
 	</ol>
 
 	<ul id="post-container" class="container" data-tid="{topic_id}">
@@ -98,6 +98,34 @@
 			</li>
 		<!-- END main_posts -->
 
+		<div class="well">
+			<div class="inline-block">
+				<small class="topic-stats">
+					<span>posts</span>
+					<strong><span class="formatted-number">{postcount}</span></strong> |
+					<span>views</span>
+					<strong><span class="formatted-number">{viewcount}</span></strong> |
+					<span>browsing</span>
+				</small>
+				<div class="thread_active_users active-users inline-block"></div>
+			</div>
+			<div class="topic-main-buttons pull-right inline-block">
+				<button class="btn btn-primary post_reply" type="button">[[topic:reply]]</button>
+				<div class="btn-group thread-tools hide">
+					<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">[[topic:thread_tools.title]] <span class="caret"></span></button>
+					<ul class="dropdown-menu">
+						<li><a href="#" class="pin_thread"><i class="icon-pushpin"></i> [[topic:thread_tools.pin]]</a></li>
+						<li><a href="#" class="lock_thread"><i class="icon-lock"></i> [[topic:thread_tools.lock]]</a></li>
+						<li class="divider"></li>
+						<li><a href="#" class="move_thread"><i class="icon-move"></i> [[topic:thread_tools.move]]</a></li>
+						<li class="divider"></li>
+						<li><a href="#" class="delete_thread"><span class="text-error"><i class="icon-trash"></i> [[topic:thread_tools.delete]]</span></a></li>
+					</ul>
+				</div>
+			</div>
+			<div style="clear:both;"></div>
+		</div>
+
 		<!-- BEGIN posts -->
 			<a id="post_anchor_{posts.pid}" name="{posts.pid}"></a>
 			<li class="row post-row sub-posts" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-deleted="{posts.deleted}" itemscope itemtype="http://schema.org/Comment">
@@ -167,21 +195,22 @@
 		<i class="icon-spinner icon-spin icon-large"></i>
 	</div>
 
-	<hr />
-
-	<div class="topic-main-buttons">
-		<button id="post_reply" class="btn btn-primary btn-lg post_reply" type="button">[[topic:reply]]</button>
-		<div class="btn-group pull-right" id="thread-tools" style="visibility: hidden;">
-			<button class="btn btn-default btn-lg dropdown-toggle" data-toggle="dropdown" type="button">[[topic:thread_tools.title]] <span class="caret"></span></button>
-			<ul class="dropdown-menu">
-				<li><a href="#" id="pin_thread"><i class="icon-pushpin"></i> [[topic:thread_tools.pin]]</a></li>
-				<li><a href="#" id="lock_thread"><i class="icon-lock"></i> [[topic:thread_tools.lock]]</a></li>
-				<li class="divider"></li>
-				<li><a href="#" id="move_thread"><i class="icon-move"></i> [[topic:thread_tools.move]]</a></li>
-				<li class="divider"></li>
-				<li><a href="#" id="delete_thread"><span class="text-error"><i class="icon-trash"></i> [[topic:thread_tools.delete]]</span></a></li>
-			</ul>
+	<div class="well col-md-11 pull-right">
+		<div class="topic-main-buttons pull-right inline-block hide">
+			<button class="btn btn-primary post_reply" type="button">[[topic:reply]]</button>
+			<div class="btn-group thread-tools hide">
+				<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">[[topic:thread_tools.title]] <span class="caret"></span></button>
+				<ul class="dropdown-menu">
+					<li><a href="#" class="pin_thread"><i class="icon-pushpin"></i> [[topic:thread_tools.pin]]</a></li>
+					<li><a href="#" class="lock_thread"><i class="icon-lock"></i> [[topic:thread_tools.lock]]</a></li>
+					<li class="divider"></li>
+					<li><a href="#" class="move_thread"><i class="icon-move"></i> [[topic:thread_tools.move]]</a></li>
+					<li class="divider"></li>
+					<li><a href="#" class="delete_thread"><span class="text-error"><i class="icon-trash"></i> [[topic:thread_tools.delete]]</span></a></li>
+				</ul>
+			</div>
 		</div>
+		<div style="clear:both;"></div>
 	</div>
 
 	<div class="mobile-author-overlay">
