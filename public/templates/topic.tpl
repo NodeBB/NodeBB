@@ -25,8 +25,9 @@
 
 	<ul id="post-container" class="container" data-tid="{topic_id}">
 		<!-- BEGIN main_posts -->
-			<a id="post_anchor_{main_posts.pid}" name="{main_posts.pid}"></a>
+
 			<li class="row post-row main-post" data-pid="{main_posts.pid}" data-uid="{main_posts.uid}" data-username="{main_posts.username}" data-deleted="{main_posts.deleted}" itemscope itemtype="http://schema.org/Article">
+				<a id="post_anchor_{main_posts.pid}" name="{main_posts.pid}"></a>
 				<div class="col-md-12">
 					<div class="post-block">
 						<meta itemprop="datePublished" content="{main_posts.relativeTime}">
@@ -98,7 +99,7 @@
 			</li>
 		<!-- END main_posts -->
 
-		<div class="well">
+		<li class="well">
 			<div class="inline-block">
 				<small class="topic-stats">
 					<span>posts</span>
@@ -124,11 +125,12 @@
 				</div>
 			</div>
 			<div style="clear:both;"></div>
-		</div>
+		</li>
 
 		<!-- BEGIN posts -->
-			<a id="post_anchor_{posts.pid}" name="{posts.pid}"></a>
+
 			<li class="row post-row sub-posts" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-deleted="{posts.deleted}" itemscope itemtype="http://schema.org/Comment">
+				<a id="post_anchor_{posts.pid}" name="{posts.pid}"></a>
 				<meta itemprop="datePublished" content="{posts.relativeTime}">
 				<meta itemprop="dateModified" content="{posts.relativeEditTime}">
 				<div class="col-md-1 profile-image-block hidden-xs hidden-sm">
