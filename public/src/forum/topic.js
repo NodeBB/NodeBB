@@ -362,9 +362,6 @@ define(function() {
 			var username = $(this).parents('li.row').attr('data-username');
 			var touid = $(this).parents('li.row').attr('data-uid');
 
-			if (username === app.username || !app.username)
-				return;
-
 			app.openChat(username, touid);
 		});
 

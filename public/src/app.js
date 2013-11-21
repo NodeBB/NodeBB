@@ -331,6 +331,28 @@ var socket,
 	}
 
 	app.openChat = function (username, touid) {
+		if (username === app.username) {
+			app.alert({
+				type: 'warning',
+				title: 'Invalid Chat',
+				message: "You can't chat with yourself!",
+				timeout: 5000
+			});
+
+			return;
+		}
+		
+		if (!app.username) {
+			app.alert({
+				type: 'danger',
+				title: 'Not Logged In',
+				message: 'Please log in to chat with <strong>' + username + '</strong>',
+				timeout: 5000
+			});
+
+			return;
+		}
+
 		require(['chat'], function (chat) {
 			var chatModal;
 			if (!chat.modalExists(touid)) {
