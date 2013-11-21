@@ -98,19 +98,21 @@
 			</li>
 		<!-- END main_posts -->
 
-		<div>
+		<div class="well">
 			<div class="inline-block">
-				<small><span>posts</span></small>
-				<strong><span class="formatted-number">{postcount}</span></strong> |
-				<small><span>views</span></small>
-				<strong><span class="formatted-number">{viewcount}</span></strong> |
-				<span><small>browsing</small></span>
+				<small class="topic-stats">
+					<span>posts</span>
+					<strong><span class="formatted-number">{postcount}</span></strong> |
+					<span>views</span>
+					<strong><span class="formatted-number">{viewcount}</span></strong> |
+					<span>browsing</span>
+				</small>
 				<div class="thread_active_users active-users inline-block"></div>
 			</div>
 			<div class="topic-main-buttons pull-right inline-block">
-				<button class="btn btn-primary btn-lg post_reply" type="button">[[topic:reply]]</button>
+				<button class="btn btn-primary post_reply" type="button">[[topic:reply]]</button>
 				<div class="btn-group thread-tools hide">
-					<button class="btn btn-default btn-lg dropdown-toggle" data-toggle="dropdown" type="button">[[topic:thread_tools.title]] <span class="caret"></span></button>
+					<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">[[topic:thread_tools.title]] <span class="caret"></span></button>
 					<ul class="dropdown-menu">
 						<li><a href="#" class="pin_thread"><i class="icon-pushpin"></i> [[topic:thread_tools.pin]]</a></li>
 						<li><a href="#" class="lock_thread"><i class="icon-lock"></i> [[topic:thread_tools.lock]]</a></li>
@@ -196,9 +198,9 @@
 	<hr />
 
 	<div class="topic-main-buttons pull-right inline-block hide">
-		<button class="btn btn-primary btn-lg post_reply" type="button">[[topic:reply]]</button>
+		<button class="btn btn-primary post_reply" type="button">[[topic:reply]]</button>
 		<div class="btn-group thread-tools hide">
-			<button class="btn btn-default btn-lg dropdown-toggle" data-toggle="dropdown" type="button">[[topic:thread_tools.title]] <span class="caret"></span></button>
+			<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">[[topic:thread_tools.title]] <span class="caret"></span></button>
 			<ul class="dropdown-menu">
 				<li><a href="#" class="pin_thread"><i class="icon-pushpin"></i> [[topic:thread_tools.pin]]</a></li>
 				<li><a href="#" class="lock_thread"><i class="icon-lock"></i> [[topic:thread_tools.lock]]</a></li>
