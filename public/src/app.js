@@ -331,6 +331,28 @@ var socket,
 	}
 
 	app.openChat = function (username, touid) {
+		if (username === app.username) {
+			app.alert({
+				type: 'warning',
+				title: 'Invalid Chat',
+				message: "You can't chat with yourself!",
+				timeout: 5000
+			});
+
+			return;
+		}
+		
+		if (!app.username) {
+			app.alert({
+				type: 'danger',
+				title: 'Not Logged In',
+				message: 'Please log in to chat with <strong>' + username + '</strong>',
+				timeout: 5000
+			});
+
+			return;
+		}
+
 		require(['chat'], function (chat) {
 			var chatModal;
 			if (!chat.modalExists(touid)) {
@@ -374,12 +396,15 @@ var socket,
 	app.infiniteLoaderActive = false;
 
 	app.loadMorePosts = function (tid, callback) {
-		if (app.infiniteLoaderActive)
+		if (app.infiniteLoaderActive) {
 			return;
+		}
+
 		app.infiniteLoaderActive = true;
 
-		if ($('#loading-indicator').attr('done') === '0')
+		if ($('#loading-indicator').attr('done') === '0') {
 			$('#loading-indicator').removeClass('hide');
+		}
 
 		socket.emit('api:topic.loadMore', {
 			tid: tid,
@@ -411,9 +436,9 @@ var socket,
 	}
 
 	app.scrollToPost = function (pid) {
-
-		if (!pid)
+		if (!pid) {
 			return;
+		}
 
 		var container = $(document.body),
 			scrollTo = $('#post_anchor_' + pid),
@@ -423,7 +448,6 @@ var socket,
 			$('body,html').animate({
 				scrollTop: scrollTo.offset().top - container.offset().top + container.scrollTop() - $('#header-menu').height()
 			}, 400);
-			//$('body,html').scrollTop(scrollTo.offset().top - container.offset().top + container.scrollTop() - $('#header-menu').height());
 		}
 
 		if (!scrollTo.length && tid) {
