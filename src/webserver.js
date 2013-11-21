@@ -308,13 +308,17 @@ var path = require('path'),
 		templates = global.templates;
 
 		// translate all static templates served by webserver here. ex. footer, logout
-		translator.translate(templates.footer.toString(), function(parsedTemplate) {
-			plugins.fireHook('filter:footer.build', '', function(err, appendHTML) {
-				templates.footer = templates.footer.parse({
-					footerHTML: appendHTML
-				});
+		plugins.fireHook('filter:footer.build', '', function(err, appendHTML) {
+			var footer = templates.footer.parse({
+				footerHTML: appendHTML
+			});
+
+			translator.translate(footer, function(parsedTemplate) {
+				templates.footer = parsedTemplate;
 			});
 		});
+
+		
 		translator.translate(templates.logout.toString(), function(parsedTemplate) {
 			templates.logout = parsedTemplate;
 		});
