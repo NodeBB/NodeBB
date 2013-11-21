@@ -210,13 +210,17 @@ define(['taskbar'], function(taskbar) {
 					selectionEnd = postContentEl.selectionEnd,
 					selectionLength = selectionEnd - selectionStart;
 
+				function insertIntoInput(element, value) {
+					var start = postContentEl.selectionStart;
+					element.value = element.value.slice(0, start) + value + element.value.slice(start, element.value.length);
+					postContentEl.selectionStart = postContentEl.selectionEnd = start + value.length;
+				}
+
 				switch(iconClass) {
 					case 'icon-bold':
 						if (selectionStart === selectionEnd) {
 							// Nothing selected
-							postContentEl.value = postContentEl.value + '**bolded text**';
-							postContentEl.selectionStart = cursorEnd+2;
-							postContentEl.selectionEnd = postContentEl.value.length - 2;
+							insertIntoInput(postContentEl, "**bolded text**");
 						} else {
 							// Text selected
 							postContentEl.value = postContentEl.value.slice(0, selectionStart) + '**' + postContentEl.value.slice(selectionStart, selectionEnd) + '**' + postContentEl.value.slice(selectionEnd);
@@ -227,9 +231,7 @@ define(['taskbar'], function(taskbar) {
 					case 'icon-italic':
 						if (selectionStart === selectionEnd) {
 							// Nothing selected
-							postContentEl.value = postContentEl.value + '*italicised text*';
-							postContentEl.selectionStart = cursorEnd+1;
-							postContentEl.selectionEnd = postContentEl.value.length - 1;
+							insertIntoInput(postContentEl, "*italicised text*");
 						} else {
 							// Text selected
 							postContentEl.value = postContentEl.value.slice(0, selectionStart) + '*' + postContentEl.value.slice(selectionStart, selectionEnd) + '*' + postContentEl.value.slice(selectionEnd);
@@ -239,16 +241,12 @@ define(['taskbar'], function(taskbar) {
 					break;
 					case 'icon-list':
 						// Nothing selected
-						postContentEl.value = postContentEl.value + "\n\n* list item";
-						postContentEl.selectionStart = cursorEnd+4;
-						postContentEl.selectionEnd = postContentEl.value.length;
+						insertIntoInput(postContentEl, "\n\n* list item");
 					break;
 					case 'icon-link':
 						if (selectionStart === selectionEnd) {
 							// Nothing selected
-							postContentEl.value = postContentEl.value + '[link text](link url)';
-							postContentEl.selectionStart = cursorEnd+12;
-							postContentEl.selectionEnd = postContentEl.value.length - 1;
+							insertIntoInput(postContentEl, "[link text](link url)");
 						} else {
 							// Text selected
 							postContentEl.value = postContentEl.value.slice(0, selectionStart) + '[' + postContentEl.value.slice(selectionStart, selectionEnd) + '](link url)' + postContentEl.value.slice(selectionEnd);
@@ -258,6 +256,7 @@ define(['taskbar'], function(taskbar) {
 					break;
 				}
 			});
+
 			window.addEventListener('resize', function() {
 				if (composer.active !== undefined) composer.reposition(composer.active);
 			});
