@@ -102,7 +102,9 @@ var utils = require('./../public/src/utils.js'),
 			var	themeData = {
 					'theme:type': data.type,
 					'theme:id': data.id,
-					'theme:staticDir': ''
+					'theme:staticDir': '',
+					'theme:templates': '',
+					'theme:src': ''
 				};
 
 			switch(data.type) {

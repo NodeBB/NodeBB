@@ -17,9 +17,7 @@
 				</div>
 				<div class="col-lg-4">
 					<ul class="pull-right members">
-					<!-- BEGIN members -->
-						<li data-uid="{groups.members.uid}" title="{groups.members.username}"><img src="{groups.members.picture}" /></li>
-					<!-- END members -->
+					<!-- BEGIN members --><li data-uid="{groups.members.uid}" title="{groups.members.username}"><img src="{groups.members.picture}" /></li><!-- END members -->
 					</ul>
 				</div>
 			</div>
