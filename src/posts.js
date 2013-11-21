@@ -85,7 +85,7 @@ var RDB = require('./redis.js'),
 							RDB.zadd('categories:' + cid + ':tid', timestamp, tid);
 
 						RDB.scard('cid:' + cid + ':active_users', function(err, amount) {
-							if (amount > 10) {
+							if (amount > 16) {
 								RDB.spop('cid:' + cid + ':active_users');
 							}
 
