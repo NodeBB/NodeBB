@@ -195,7 +195,8 @@
 		<i class="icon-spinner icon-spin icon-large"></i>
 	</div>
 
-	<div class="well col-md-11 pull-right">
+
+	<div class="well col-md-11 col-xs-12 pull-right">
 		<div class="topic-main-buttons pull-right inline-block hide">
 			<button class="btn btn-primary post_reply" type="button">[[topic:reply]]</button>
 			<div class="btn-group thread-tools hide">
