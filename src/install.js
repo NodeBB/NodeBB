@@ -253,6 +253,11 @@ var async = require('async'),
 							}
 						});
 					}, next);
+				},
+				function (next) {
+					// Upgrading schema
+					var	Upgrade = require('./upgrade');
+					Upgrade.upgrade(next);
 				}
 			], function (err) {
 				if (err) {
@@ -328,7 +333,7 @@ var async = require('async'),
 						if (!results) {
 							return callback(new Error('aborted'));
 						}
-						
+
 						// Update the original data with newly collected password
 						originalResults.password = results.password;
 						originalResults['password:confirm'] = results['password:confirm'];

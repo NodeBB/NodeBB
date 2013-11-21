@@ -20,7 +20,7 @@ Upgrade.check = function(callback) {
 	});
 };
 
-Upgrade.upgrade = function() {
+Upgrade.upgrade = function(callback) {
 	winston.info('Beginning Redis database schema update');
 
 	async.series([
@@ -136,13 +136,19 @@ Upgrade.upgrade = function() {
 			RDB.set('schemaDate', thisSchemaDate, function(err) {
 				if (!err) {
 					winston.info('[upgrade] Redis schema update complete!');
-					process.exit();
+					if (callback) {
+						callback(err);
+					} else {
+						process.exit();
+					}
 				} else {
 					winston.error('[upgrade] Could not update NodeBB schema date!');
+					process.exit();
 				}
 			});
 		} else {
 			winston.error('[upgrade] Errors were encountered while updating the NodeBB schema: ' + err.message);
+			process.exit();
 		}
 	});
 };
