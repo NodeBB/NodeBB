@@ -169,11 +169,11 @@ module.exports.init = function(io) {
 			var anonymousCount = getAnonymousCount(roomName);
 
 			if (uids.length === 0) {
-				io.sockets. in (roomName).emit('api:get_users_in_room', { users: [], anonymousCount:0 });
+				io.sockets. in (roomName).emit('api:get_users_in_room', { users: [], anonymousCount: anonymousCount });
 			} else {
 				user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, users) {
 					if(!err)
-						io.sockets. in (roomName).emit('api:get_users_in_room', { users: users, anonymousCount:anonymousCount });
+						io.sockets. in (roomName).emit('api:get_users_in_room', { users: users, anonymousCount: anonymousCount });
 				});
 			}
 		}
