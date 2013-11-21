@@ -195,21 +195,22 @@
 		<i class="icon-spinner icon-spin icon-large"></i>
 	</div>
 
-	<hr />
-
-	<div class="topic-main-buttons pull-right inline-block hide">
-		<button class="btn btn-primary post_reply" type="button">[[topic:reply]]</button>
-		<div class="btn-group thread-tools hide">
-			<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">[[topic:thread_tools.title]] <span class="caret"></span></button>
-			<ul class="dropdown-menu">
-				<li><a href="#" class="pin_thread"><i class="icon-pushpin"></i> [[topic:thread_tools.pin]]</a></li>
-				<li><a href="#" class="lock_thread"><i class="icon-lock"></i> [[topic:thread_tools.lock]]</a></li>
-				<li class="divider"></li>
-				<li><a href="#" class="move_thread"><i class="icon-move"></i> [[topic:thread_tools.move]]</a></li>
-				<li class="divider"></li>
-				<li><a href="#" class="delete_thread"><span class="text-error"><i class="icon-trash"></i> [[topic:thread_tools.delete]]</span></a></li>
-			</ul>
+	<div class="well col-md-11 pull-right">
+		<div class="topic-main-buttons pull-right inline-block hide">
+			<button class="btn btn-primary post_reply" type="button">[[topic:reply]]</button>
+			<div class="btn-group thread-tools hide">
+				<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">[[topic:thread_tools.title]] <span class="caret"></span></button>
+				<ul class="dropdown-menu">
+					<li><a href="#" class="pin_thread"><i class="icon-pushpin"></i> [[topic:thread_tools.pin]]</a></li>
+					<li><a href="#" class="lock_thread"><i class="icon-lock"></i> [[topic:thread_tools.lock]]</a></li>
+					<li class="divider"></li>
+					<li><a href="#" class="move_thread"><i class="icon-move"></i> [[topic:thread_tools.move]]</a></li>
+					<li class="divider"></li>
+					<li><a href="#" class="delete_thread"><span class="text-error"><i class="icon-trash"></i> [[topic:thread_tools.delete]]</span></a></li>
+				</ul>
+			</div>
 		</div>
+		<div style="clear:both;"></div>
 	</div>
 
 	<div class="mobile-author-overlay">
