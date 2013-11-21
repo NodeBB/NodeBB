@@ -94,17 +94,20 @@ define(function () {
 
 		if (numTopics > 0) {
 			for (var x = 0; x < numTopics; x++) {
-				if ($(topics[x]).find('.icon-pushpin').length)
+				if ($(topics[x]).find('.icon-pushpin').length) {
+					if(x === numTopics - 1) {
+						topic.insertAfter(topics[x]);
+					}
 					continue;
+				}
 				topic.insertBefore(topics[x]);
-				topic.hide().fadeIn('slow');
 				break;
 			}
 		} else {
 			container.append(topic);
-			topic.hide().fadeIn('slow');
 		}
 
+		topic.hide().fadeIn('slow');
 		socket.emit('api:categories.getRecentReplies', templates.get('category_id'));
 
 		addActiveUser(data);

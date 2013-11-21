@@ -34,8 +34,9 @@ define(function() {
 
 			app.enter_room('topic_' + tid);
 
-			if($('#post-container .sub-posts').length)
-				$('.topic-main-buttons').removeClass('hide');
+			if($('#post-container .sub-posts').length) {
+				$('.topic-main-buttons').removeClass('hide').parent().removeClass('hide');
+			}
 
 			$('.twitter-share').on('click', function () {
 				window.open(twitter_url, '_blank', 'width=550,height=420,scrollbars=no,status=no');
