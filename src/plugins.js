@@ -284,7 +284,7 @@ var fs = require('fs'),
 									winston.warn("Plugin: " + file + " is corrupted or invalid. Please check plugin.json for errors.")
 									return next(err, null);
 								}
-								
+
 								_self.isActive(config.id, function(err, active) {
 									if (err) next(new Error('no-active-state'));
 
