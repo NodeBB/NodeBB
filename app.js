@@ -113,7 +113,9 @@
 					], customTemplates);
 
 
-					templates.ready(webserver.init);
+					plugins.ready(function() {
+						templates.ready(webserver.init);
+					});
 
 					Notifications.init();
 				} else {

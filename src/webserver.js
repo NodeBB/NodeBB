@@ -309,7 +309,11 @@ var path = require('path'),
 
 		// translate all static templates served by webserver here. ex. footer, logout
 		translator.translate(templates.footer.toString(), function(parsedTemplate) {
-			templates.footer = parsedTemplate;
+			plugins.fireHook('filter:footer.build', '', function(err, appendHTML) {
+				templates.footer = templates.footer.parse({
+					footerHTML: appendHTML
+				});
+			});
 		});
 		translator.translate(templates.logout.toString(), function(parsedTemplate) {
 			templates.logout = parsedTemplate;

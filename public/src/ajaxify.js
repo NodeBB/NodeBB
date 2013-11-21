@@ -80,7 +80,8 @@ var ajaxify = {};
 							hook: 'page.load',
 							args: {
 								template: tpl_url,
-								url: '/' + url
+								url: url,
+								uid: app.uid
 							}
 						}
 					});
