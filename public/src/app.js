@@ -341,7 +341,7 @@ var socket,
 
 			return;
 		}
-		
+
 		if (!app.username) {
 			app.alert({
 				type: 'danger',
@@ -384,7 +384,7 @@ var socket,
 			}
 
 			tempContainer.replaceWith(tempContainer.contents());
-			infiniteLoaderActive = false;
+			app.infiniteLoaderActive = false;
 
 			app.populate_online_users();
 			app.addCommasToNumbers();
