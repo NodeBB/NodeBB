@@ -370,31 +370,31 @@ var socket,
 			return;
 
 		if (data.posts[0].uid !== app.uid) {
- 			data.posts[0].display_moderator_tools = 'none';
- 		}
+			data.posts[0].display_moderator_tools = 'none';
+		}
 
- 		function removeAlreadyAddedPosts() {
+		function removeAlreadyAddedPosts() {
 			data.posts = data.posts.filter(function(post) {
- 				return $('#post-container li[data-pid="' + post.pid +'"]').length === 0;
-	 		});
- 		}
+				return $('#post-container li[data-pid="' + post.pid +'"]').length === 0;
+			});
+		}
 
- 		function findInsertionPoint() {
- 			var after = null,
- 				firstPid = data.posts[0].pid;
- 			$('#post-container li[data-pid]').each(function() {
+		function findInsertionPoint() {
+			var after = null,
+				firstPid = data.posts[0].pid;
+			$('#post-container li[data-pid]').each(function() {
 				if(parseInt(firstPid, 10) > parseInt($(this).attr('data-pid'), 10))
 				after = $(this);
 			else
 				return false;
 			});
 			return after;
- 		}
+		}
 
- 		removeAlreadyAddedPosts();
- 		if(!data.posts.length)
- 			return;
- 		var insertAfter = findInsertionPoint();
+		removeAlreadyAddedPosts();
+		if(!data.posts.length)
+			return;
+		var insertAfter = findInsertionPoint();
 
 		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
 		translator.translate(html, function(translatedHTML) {
