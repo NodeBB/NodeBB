@@ -4,6 +4,8 @@ var bcrypt = require('bcrypt'),
 	nconf = require('nconf'),
 	winston = require('winston'),
 	userSearch = require('reds').createSearch('nodebbusersearch'),
+	check = require('validator').check,
+	sanitize = require('validator').sanitize,
 
 	utils = require('./../public/src/utils'),
 	RDB = require('./redis'),
@@ -12,6 +14,7 @@ var bcrypt = require('bcrypt'),
 	Groups = require('./groups'),
 	notifications = require('./notifications'),
 	topics = require('./topics');
+
 
 (function(User) {
 	'use strict';
@@ -244,6 +247,9 @@ var bcrypt = require('bcrypt'),
 
 		function updateField(field, next) {
 			if (data[field] !== undefined && typeof data[field] === 'string') {
+				data[field] = data[field].trim();
+				data[field] = sanitize(data[field]).escape();
+
 				if (field === 'email') {
 					var gravatarpicture = User.createGravatarURLFromEmail(data[field]);
 					User.setUserField(uid, 'gravatarpicture', gravatarpicture);
@@ -265,6 +271,10 @@ var bcrypt = require('bcrypt'),
 					return;
 				} else if (field === 'signature') {
 					data[field] = utils.strip_tags(data[field]);
+				} else if (field === 'website') {
+					if(data[field].substr(0, 7) !== 'http://' && data[field].substr(0, 8) !== 'https://') {
+						data[field] = 'http://' + data[field];
+					}
 				}
 
 				User.setUserField(uid, field, data[field]);
