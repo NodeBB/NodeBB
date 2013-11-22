@@ -221,6 +221,9 @@ var RDB = require('./redis.js'),
 		var args = ['topics:recent', '+inf', timestamp - since, 'LIMIT', start, end - start + 1];
 
 		RDB.zrevrangebyscore(args, function(err, tids) {
+			if (err) {
+				return callback(err);
+			}
 
 			var latestTopics = {
 				'category_name': 'Recent',
@@ -234,13 +237,13 @@ var RDB = require('./redis.js'),
 
 			if (!tids || !tids.length) {
 				latestTopics.no_topics_message = 'show';
-				callback(latestTopics);
+				callback(err, latestTopics);
 				return;
 			}
 
 			Topics.getTopicsByTids(tids, current_user, function(topicData) {
 				latestTopics.topics = topicData;
-				callback(latestTopics);
+				callback(err, latestTopics);
 			});
 		});
 	}

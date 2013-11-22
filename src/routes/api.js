@@ -138,8 +138,12 @@ var user = require('./../user.js'),
 
 			app.get('/recent/:term?', function (req, res) {
 				var uid = (req.user) ? req.user.uid : 0;
-				topics.getLatestTopics(uid, 0, 19, req.params.term, function (data) {
-					res.json(data);
+				topics.getLatestTopics(uid, 0, 19, req.params.term, function (err, data) {
+					if (!err) {
+						res.json(data);
+					} else {
+						res.send(500);
+					}
 				});
 			});
 

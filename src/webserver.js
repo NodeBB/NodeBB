@@ -318,7 +318,7 @@ var path = require('path'),
 			});
 		});
 
-		
+
 		translator.translate(templates.logout.toString(), function(parsedTemplate) {
 			templates.logout = parsedTemplate;
 		});
@@ -647,6 +647,32 @@ var path = require('path'),
 			res.send("User-agent: *\n" +
 				"Disallow: /admin/\n" +
 				"Sitemap: " + nconf.get('url') + "sitemap.xml");
+		});
+
+		app.get('/recent.rss', function(req, res) {
+			var rssPath = path.join(__dirname, '../', 'feeds/recent.rss'),
+				loadFeed = function () {
+					fs.readFile(rssPath, function (err, data) {
+						if (err) {
+							res.type('text').send(404, "Unable to locate an rss feed at this location.");
+						} else {
+							res.type('xml').set('Content-Length', data.length).send(data);
+						}
+					});
+
+				};
+
+			if (!fs.existsSync(rssPath)) {
+				feed.updaterecent(function (err) {
+					if (err) {
+						res.redirect('/404');
+					} else {
+						loadFeed();
+					}
+				});
+			} else {
+				loadFeed();
+			}
 		});
 
 		app.get('/recent/:term?', function (req, res) {

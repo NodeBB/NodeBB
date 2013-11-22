@@ -4,7 +4,6 @@ var user = require('./../user'),
 	topics = require('./../topics'),
 	posts = require('./../posts');
 
-
 var	DebugRoute = function(app) {
 
 	app.namespace('/debug', function() {

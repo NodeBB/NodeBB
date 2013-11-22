@@ -2,12 +2,14 @@
 	var RDB = require('./redis.js'),
 		posts = require('./posts.js'),
 		topics = require('./topics.js'),
+		categories = require('./categories'),
+
 		fs = require('fs'),
 		rss = require('rss'),
 		winston = require('winston'),
 		path = require('path'),
 		nconf = require('nconf'),
-		categories = require('./categories');
+		async = require('async');
 
 	Feed.defaults = {
 		ttl: 60,
@@ -26,43 +28,43 @@
 	}
 
 	Feed.updateTopic = function (tid, callback) {
-		if (process.env.NODE_ENV === 'development') winston.info('[rss] Updating RSS feeds for topic ' + tid);
-
 		topics.getTopicWithPosts(tid, 0, 0, -1, function (err, topicData) {
 			if (err) return callback(new Error('topic-invalid'));
 
 			var feed = new rss({
-				title: topicData.topic_name,
-				description: topicData.main_posts[0].content,
-				feed_url: Feed.defaults.baseUrl + '/topics/' + tid + '.rss',
-				site_url: nconf.get('url') + 'topic/' + topicData.slug,
-				image_url: topicData.main_posts[0].picture,
-				author: topicData.main_posts[0].username,
-				ttl: Feed.defaults.ttl
-			}),
+					title: topicData.topic_name,
+					description: topicData.main_posts[0].content,
+					feed_url: Feed.defaults.baseUrl + '/topics/' + tid + '.rss',
+					site_url: nconf.get('url') + 'topic/' + topicData.slug,
+					image_url: topicData.main_posts[0].picture,
+					author: topicData.main_posts[0].username,
+					ttl: Feed.defaults.ttl
+				}),
 				topic_posts = topicData.main_posts.concat(topicData.posts),
-				title, postData, dateStamp;
+				dateStamp;
 
 			// Add pubDate if topic contains posts
 			if (topicData.main_posts.length > 0) feed.pubDate = new Date(parseInt(topicData.main_posts[0].timestamp, 10)).toUTCString();
 
-			for (var i = 0, ii = topic_posts.length; i < ii; i++) {
-				if (topic_posts[i].deleted === '0') {
-					postData = topic_posts[i];
+			async.each(topic_posts, function(postData, next) {
+				if (postData.deleted === '0') {
 					dateStamp = new Date(parseInt(postData.edited === '0' ? postData.timestamp : postData.edited, 10)).toUTCString();
-					title = 'Reply to ' + topicData.topic_name + ' on ' + dateStamp;
 
 					feed.item({
-						title: title,
+						title: 'Reply to ' + topicData.topic_name + ' on ' + dateStamp,
 						description: postData.content,
 						url: nconf.get('url') + 'topic/' + topicData.slug + '#' + postData.pid,
 						author: postData.username,
 						date: dateStamp
 					});
 				}
-			}
 
-			Feed.saveFeed('feeds/topics/' + tid + '.rss', feed, function (err) {
+				next();
+			}, function() {
+				if (process.env.NODE_ENV === 'development') {
+					winston.info('[rss] Re-generated RSS Feed for tid ' + tid + '.');
+				}
+
 				if (callback) callback();
 			});
 		});
@@ -70,40 +72,75 @@
 	};
 
 	Feed.updateCategory = function (cid, callback) {
-		if (process.env.NODE_ENV === 'development') winston.info('[rss] Updating RSS feeds for category ' + cid);
 		categories.getCategoryById(cid, 0, function (err, categoryData) {
 			if (err) return callback(new Error('category-invalid'));
 
 			var feed = new rss({
-				title: categoryData.category_name,
-				description: categoryData.category_description,
-				feed_url: Feed.defaults.baseUrl + '/categories/' + cid + '.rss',
-				site_url: nconf.get('url') + 'category/' + categoryData.category_id,
-				ttl: Feed.defaults.ttl
-			}),
-				topics = categoryData.topics,
-				title, topicData, dateStamp;
+					title: categoryData.category_name,
+					description: categoryData.category_description,
+					feed_url: Feed.defaults.baseUrl + '/categories/' + cid + '.rss',
+					site_url: nconf.get('url') + 'category/' + categoryData.category_id,
+					ttl: Feed.defaults.ttl
+				});
 
 			// Add pubDate if category has topics
 			if (categoryData.topics.length > 0) feed.pubDate = new Date(parseInt(categoryData.topics[0].lastposttime, 10)).toUTCString();
 
-			for (var i = 0, ii = topics.length; i < ii; i++) {
-				topicData = topics[i];
-				dateStamp = new Date(parseInt(topicData.lastposttime, 10)).toUTCString();
-				title = topics[i].title;
-
+			async.eachSeries(categoryData.topics, function(topicData, next) {
 				feed.item({
-					title: title,
+					title: topicData.title,
 					url: nconf.get('url') + 'topic/' + topicData.slug,
 					author: topicData.username,
-					date: dateStamp
+					date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString()
 				});
-			}
 
-			Feed.saveFeed('feeds/categories/' + cid + '.rss', feed, function (err) {
-				if (callback) callback();
+				next();
+			}, function() {
+				Feed.saveFeed('feeds/categories/' + cid + '.rss', feed, function (err) {
+					if (process.env.NODE_ENV === 'development') {
+						winston.info('[rss] Re-generated RSS Feed for cid ' + cid + '.');
+					}
+
+					if (callback) callback();
+				});
 			});
 		});
+	};
 
+	Feed.updateRecent = function(callback) {
+		console.log('entered');
+		if (process.env.NODE_ENV === 'development') winston.info('[rss] Updating Recent Posts RSS feed');
+		topics.getLatestTopics(0, 0, 19, undefined, function (err, recentData) {
+			var	feed = new rss({
+					title: 'Recently Active Topics',
+					description: 'A list of topics that have been active within the past 24 hours',
+					feed_url: Feed.defaults.baseUrl + '/recent.rss',
+					site_url: nconf.get('url') + 'recent',
+					ttl: Feed.defaults.ttl
+				});
+
+			// Add pubDate if recent topics list contains topics
+			if (recentData.topics.length > 0) {
+				feed.pubDate = new Date(parseInt(recentData.topics[0].lastposttime, 10)).toUTCString();
+			}
+
+			async.eachSeries(recentData.topics, function(topicData, next) {
+				feed.item({
+					title: topicData.title,
+					url: nconf.get('url') + 'topic/' + topicData.slug,
+					author: topicData.username,
+					date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString()
+				});
+				next();
+			}, function() {
+				Feed.saveFeed('feeds/recent.rss', feed, function (err) {
+					if (process.env.NODE_ENV === 'development') {
+						winston.info('[rss] Re-generated "recent posts" RSS Feed.');
+					}
+
+					if (callback) callback();
+				});
+			});
+		});
 	};
 }(exports));

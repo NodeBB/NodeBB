@@ -807,8 +807,12 @@ module.exports.init = function(io) {
 			var start = data.after,
 				end = start + 9;
 
-			topics.getLatestTopics(uid, start, end, data.term, function(latestTopics) {
-				callback(latestTopics);
+			topics.getLatestTopics(uid, start, end, data.term, function(err, latestTopics) {
+				if (!err) {
+					callback(latestTopics);
+				} else {
+					winston.error('[socket api:topics.loadMoreRecentTopics] ' + err.message);
+				}
 			});
 		});
 

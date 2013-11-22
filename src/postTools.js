@@ -157,6 +157,7 @@ var RDB = require('./redis.js'),
 				});
 
 				Feed.updateTopic(postData.tid);
+				Feed.updateRecent();
 
 				callback();
 			});
@@ -197,6 +198,7 @@ var RDB = require('./redis.js'),
 				});
 
 				Feed.updateTopic(postData.tid);
+				Feed.updateRecent();
 
 				postSearch.index(postData.content, pid);
 
