@@ -1,4 +1,3 @@
-
 <h1>User Privilege Thresholds</h1>
 
 <form class="form-inline">
@@ -15,13 +14,13 @@
 		<label>Manage Content</label> <input type="number" class="input-mini" value="1000" placeholder="1000" data-field="privileges:manage_content" />
 	</p>
 	<p>
-		Users with reach the "Manage Content" threshold are able to edit/delete other users' posts.
+		Users who reach the "Manage Content" threshold are able to edit/delete other users' posts.
 	</p>
 	<p>
 		<label>Manage Topics</label> <input type="number" class="input-mini" value="2000" placeholder="2000" data-field="privileges:manage_topic" />
 	</p>
 	<p>
-		Users with reach the "Manage Topics" threshold are able to edit, lock, pin, close, and delete topics.
+		Users who reach the "Manage Topics" threshold are able to edit, lock, pin, close, and delete topics.
 	</p>
 </form>
 
