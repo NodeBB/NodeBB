@@ -190,7 +190,8 @@ var user = require('./../user.js'),
 
 				if (url) {
 					res.json({
-						url: url
+						url: url,
+						title: meta.config.title
 					});
 				} else {
 					res.status(404);
