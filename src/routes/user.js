@@ -543,6 +543,8 @@ var user = require('./../user.js'),
 						else
 							data.emailClass = "hide";
 
+						data.websiteName = data.website.replace('http://', '').replace('https://', '');
+
 						data.show_banned = data.banned === '1' ? '' : 'hide';
 
 						data.uid = uid;

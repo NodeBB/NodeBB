@@ -45,10 +45,12 @@ define(function() {
 
 					errorEl.html(errorText).removeClass('hide');
 				} else {
-					createModal.modal('hide');
 					errorEl.addClass('hide');
 					createNameEl.val('');
-					ajaxify.go('admin/groups');
+					createModal.on('hidden.bs.modal', function() {
+						ajaxify.go('admin/groups');
+					});
+					createModal.modal('hide');
 				}
 			});
 		});

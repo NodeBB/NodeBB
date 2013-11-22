@@ -372,18 +372,14 @@ var socket,
 
 		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
 		translator.translate(html, function(translatedHTML) {
-			var uniqueid = new Date().getTime(),
-				tempContainer = jQuery('<div id="' + uniqueid + '"></div>')
-					.appendTo("#post-container")
-					.hide()
-					.append(translatedHTML)
-					.fadeIn('slow');
+			$(translatedHTML).appendTo("#post-container")
+				.hide()
+				.fadeIn('slow');
 
 			for (var x = 0, numPosts = data.posts.length; x < numPosts; x++) {
 				socket.emit('api:post.privileges', data.posts[x].pid);
 			}
 
-			tempContainer.replaceWith(tempContainer.contents());
 			app.infiniteLoaderActive = false;
 
 			app.populate_online_users();
