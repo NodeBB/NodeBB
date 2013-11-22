@@ -1,7 +1,6 @@
 <ol class="breadcrumb">
 	<li><a href="/">Home</a></li>
-	<li class="active">{category_name}</li>
-	<div id="category_active_users"></div>
+	<li class="active">Recent</li>
 </ol>
 
 <ul class="nav nav-pills">
@@ -21,7 +20,7 @@
 </div>
 
 <div class="category row">
-	<div class="{topic_row_size}">
+	<div class="col-md-12">
 		<ul id="topics-container">
 		<!-- BEGIN topics -->
 		<li class="category-item {topics.deleted-class}">

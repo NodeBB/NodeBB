@@ -226,12 +226,7 @@ var RDB = require('./redis.js'),
 			}
 
 			var latestTopics = {
-				'category_name': 'Recent',
-				'show_sidebar': 'hidden',
-				'show_topic_button': 'hidden',
 				'no_topics_message': 'hidden',
-				'topic_row_size': 'col-md-12',
-				'category_id': false,
 				'topics': []
 			};
 
