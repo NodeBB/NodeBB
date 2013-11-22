@@ -3,6 +3,7 @@
 var	nconf = require('nconf'),
 	path = require('path'),
 	fs = require('fs'),
+	validator = require('validator'),
 	Plugins = require('../plugins'),
 
 	PluginRoutes = function(app) {
@@ -12,7 +13,7 @@ var	nconf = require('nconf'),
 				if (typeof returnData === 'object') {
 					res.json(200, returnData);
 				} else {
-					res.send(200, returnData);
+					res.send(200, validator.sanitize(returnData).escape());
 				}
 			});
 		});
