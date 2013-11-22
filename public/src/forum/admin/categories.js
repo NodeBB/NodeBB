@@ -10,8 +10,6 @@ define(function() {
 				modified_categories[cid] = modified_categories[cid] || {};
 				modified_categories[cid][$(el).attr('data-name')] = $(el).val();
 			}
-
-			console.log(modified_categories);
 		}
 
 		function save() {
