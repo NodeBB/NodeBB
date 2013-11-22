@@ -2,6 +2,7 @@ var RDB = require('./redis.js'),
 	utils = require('./../public/src/utils.js'),
 	user = require('./user.js'),
 	topics = require('./topics.js'),
+	categories = require('./categories.js'),
 	favourites = require('./favourites.js'),
 	threadTools = require('./threadTools.js'),
 	postTools = require('./postTools'),
@@ -13,6 +14,7 @@ var RDB = require('./redis.js'),
 	postSearch = reds.createSearch('nodebbpostsearch'),
 	nconf = require('nconf'),
 	meta = require('./meta.js'),
+	validator = require('validator'),
 	winston = require('winston');
 
 (function(Posts) {
@@ -270,12 +272,15 @@ var RDB = require('./redis.js'),
 					});
 				},
 				function(postData, next) {
-					topics.getTopicFields(postData.tid, ['slug', 'deleted'], function(err, topicData) {
+					topics.getTopicFields(postData.tid, ['title', 'cid', 'slug', 'deleted'], function(err, topicData) {
 						if (err) return callback(err);
 						else if (topicData.deleted === '1') return callback(null);
-
-						postData.topicSlug = topicData.slug;
-						next(null, postData);
+						categories.getCategoryField(topicData.cid, 'name', function(err, categoryData) {
+							postData.category_name = categoryData;
+							postData.title = validator.sanitize(topicData.title).escape();
+							postData.topicSlug = topicData.slug;
+							next(null, postData);
+						})
 					});
 				},
 				function(postData, next) {
