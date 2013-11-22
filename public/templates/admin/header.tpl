@@ -12,6 +12,7 @@
 	<script type="text/javascript" src="{relative_path}/vendor/bootstrap/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-git.js"></script>
 	<link rel="stylesheet" type="text/css" href="http://code.jquery.com/qunit/qunit-git.css">
+	<link rel="stylesheet" type="text/css" href="{relative_path}/vendor/colorpicker/colorpicker.css">
 	<script type="text/javascript" src="{relative_path}/socket.io/socket.io.js"></script>
 	<script type="text/javascript" src="{relative_path}/src/app.js"></script>
 	<script type="text/javascript" src="{relative_path}/src/templates.js"></script>
@@ -21,6 +22,7 @@
 	<script src="{relative_path}/vendor/jquery/js/jquery.form.js"></script>
 	<script src="{relative_path}/vendor/requirejs/require.js"></script>
 	<script src="{relative_path}/vendor/bootbox/bootbox.min.js"></script>
+	<script src="{relative_path}/vendor/colorpicker/colorpicker.js"></script>
 
 	<script>
 		require.config({
