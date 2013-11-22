@@ -129,7 +129,7 @@ define(function() {
 				update_blockclass(ev.target);
 			});
 
-			jQuery('.category_name, .category_description, .blockclass').on('change', function(ev) {
+			jQuery('.category_name, .category_description, .blockclass .category_bgColor').on('change', function(ev) {
 				modified(ev.target);
 			});
 
@@ -156,6 +156,20 @@ define(function() {
 				return false;
 			});
 
+			// Colour Picker
+			$('[data-name="bgColor"], [data-name="color"]').each(function(idx, inputEl) {
+				var	jinputEl = $(this),
+					parentEl = jinputEl.parents('[data-cid]');
+				jinputEl.ColorPicker({
+					color: this.value || '#000',
+					onChange: function(hsb, hex) {
+						jinputEl.val('#' + hex);
+						if (inputEl.getAttribute('data-name') === 'bgColor') parentEl.css('background', '#' + hex);
+						else if (inputEl.getAttribute('data-name') === 'color') parentEl.css('color', '#' + hex);
+						modified(inputEl);
+					}
+				});
+			});
 		});
 	};
 

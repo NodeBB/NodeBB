@@ -116,7 +116,13 @@
 				</ul>
 
 				<ul id="logged-out-menu" class="nav navbar-nav navbar-right">
-					<li>
+					<li class="visible-lg visible-md visible-sm">
+						<a href="/register">Register</a>
+					</li>
+					<li class="visible-lg visible-md visible-sm">
+						<a href="/login">Login</a>
+					</li>
+					<li class="visible-xs">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="loggedout_dropdown"><i class="icon-signin"></i></a>
 						<ul class="dropdown-menu" aria-labelledby="loggedout_dropdown">
 							<li>

@@ -9,7 +9,7 @@ var RDB = require('./redis.js'),
 	schemaDate, thisSchemaDate;
 
 Upgrade.check = function(callback) {
-	var	latestSchema = new Date(2013, 10, 11).getTime();
+	var	latestSchema = new Date(2013, 10, 22).getTime();
 
 	RDB.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -126,6 +126,52 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2013/11/11] Update to postDelay skipped.');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2013, 10, 22).getTime();
+			if (schemaDate < thisSchemaDate) {
+				RDB.keys('category:*', function(err, categories) {
+					async.each(categories, function(categoryStr, next) {
+						var	hex;
+						RDB.hgetall(categoryStr, function(err, categoryObj) {
+							switch(categoryObj.blockclass) {
+								case 'category-purple':
+									hex = '#ab1290';
+									break;
+
+								case 'category-darkblue':
+									hex = '#004c66';
+									break;
+
+								case 'category-blue':
+									hex = '#0059b2';
+									break;
+
+								case 'category-darkgreen':
+									hex = '#004000';
+									break;
+
+								case 'category-orange':
+									hex = '#ff7a4d';
+									break;
+
+								default:
+									hex = '#0059b2';
+									break;
+							}
+
+							RDB.hset(categoryStr, 'bgColor', hex, next);
+							RDB.hdel(categoryStr, 'blockclass');
+						});
+					}, function() {
+						winston.info('[2013/11/22] Updated Category colours.');
+						next();
+					});
+				});
+			} else {
+				winston.info('[2013/11/22] Update to Category colours skipped.');
 				next();
 			}
 		}
