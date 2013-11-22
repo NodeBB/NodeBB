@@ -26,7 +26,7 @@
 	<ul id="post-container" class="container" data-tid="{topic_id}">
 		<!-- BEGIN main_posts -->
 
-			<li class="row post-row main-post" data-pid="{main_posts.pid}" data-uid="{main_posts.uid}" data-username="{main_posts.username}" data-deleted="{main_posts.deleted}" itemscope itemtype="http://schema.org/Article">
+			<li class="row post-row main-post infiniteloaded" data-pid="{main_posts.pid}" data-uid="{main_posts.uid}" data-username="{main_posts.username}" data-deleted="{main_posts.deleted}" itemscope itemtype="http://schema.org/Article">
 				<a id="post_anchor_{main_posts.pid}" name="{main_posts.pid}"></a>
 				<div class="col-md-12">
 					<div class="post-block">
@@ -129,7 +129,7 @@
 
 		<!-- BEGIN posts -->
 
-			<li class="row post-row sub-posts" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-deleted="{posts.deleted}" itemscope itemtype="http://schema.org/Comment">
+			<li class="row post-row sub-posts infiniteloaded" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-deleted="{posts.deleted}" itemscope itemtype="http://schema.org/Comment">
 				<a id="post_anchor_{posts.pid}" name="{posts.pid}"></a>
 				<meta itemprop="datePublished" content="{posts.relativeTime}">
 				<meta itemprop="dateModified" content="{posts.relativeEditTime}">

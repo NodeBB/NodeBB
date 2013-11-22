@@ -365,14 +365,45 @@ var socket,
 		});
 	}
 
-	app.createNewPosts = function (data) {
+	app.createNewPosts = function (data, infiniteLoaded) {
+		if(!data || (data.posts && !data.posts.length))
+			return;
+
 		if (data.posts[0].uid !== app.uid) {
  			data.posts[0].display_moderator_tools = 'none';
  		}
 
+ 		function removeAlreadyAddedPosts() {
+			data.posts = data.posts.filter(function(post) {
+ 				return $('#post-container li[data-pid="' + post.pid +'"]').length === 0;
+	 		});
+ 		}
+
+ 		function findInsertionPoint() {
+ 			var after = null,
+ 				firstPid = data.posts[0].pid;
+ 			$('#post-container li[data-pid]').each(function() {
+				if(parseInt(firstPid, 10) > parseInt($(this).attr('data-pid'), 10))
+				after = $(this);
+			else
+				return false;
+			});
+			return after;
+ 		}
+
+ 		removeAlreadyAddedPosts();
+ 		if(!data.posts.length)
+ 			return;
+ 		var insertAfter = findInsertionPoint();
+
 		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
 		translator.translate(html, function(translatedHTML) {
-			$(translatedHTML).appendTo("#post-container")
+			var translated = $(translatedHTML);
+			if(!infiniteLoaded) {
+				translated.removeClass('infiniteloaded');
+			}
+
+			translated.insertAfter(insertAfter)
 				.hide()
 				.fadeIn('slow');
 
@@ -404,12 +435,12 @@ var socket,
 
 		socket.emit('api:topic.loadMore', {
 			tid: tid,
-			after: document.querySelectorAll('#post-container li[data-pid]').length
+			after: $('#post-container .post-row.infiniteloaded').length
 		}, function (data) {
 			app.infiniteLoaderActive = false;
 			if (data.posts.length) {
 				$('#loading-indicator').attr('done', '0');
-				app.createNewPosts(data);
+				app.createNewPosts(data, true);
 			} else {
 				$('#loading-indicator').attr('done', '1');
 			}

@@ -118,7 +118,6 @@ define(function() {
 					var loadingEl = document.getElementById('categories-loading');
 					if (loadingEl) {
 						socket.once('api:categories.get', function(data) {
-							console.log(data);
 							// Render categories
 							var categoriesFrag = document.createDocumentFragment(),
 								categoryEl = document.createElement('li'),
@@ -286,8 +285,7 @@ define(function() {
 				});
 			}
 		};
-		$('#post-container').on('click', '.post_reply', reply_fn);
-		$('.topic-main-buttons').on('click', '.post_reply', reply_fn);
+		$('.topic').on('click', '.post_reply', reply_fn);
 
 		$('#post-container').on('click', '.quote', function() {
 			if (thread_state.locked !== '1') {
