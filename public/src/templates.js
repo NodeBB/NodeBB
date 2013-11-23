@@ -255,19 +255,6 @@
 			return data;
 		}
 
-		function getConditionalBlock(regex, block, template) {
-			data = template.match(regex);
-			if (data == null) return;
-
-			if (self.blocks && block !== undefined) self.blocks[block] = data[0];
-
-			data = data[0]
-				.replace("<!-- IF " + block + " -->", "")
-				.replace("<!-- ENDIF " + block + " -->", "");
-
-			return data;
-		}
-
 		function setBlock(regex, block, template) {
 			return template.replace(regex, block);
 		}
@@ -317,13 +304,11 @@
 						block = parse(data[d], namespace, block);
 						template = setBlock(regex, block, template);
 					} else {
-						var conditional = makeConditionalRegex(d),
-							block = getConditionalBlock(conditional, namespace, template);
-
-						if (block && !data[d]) {
+						var conditional = makeConditionalRegex(namespace + d);
+						
+						if (conditional.test(template) && !data[d]) {
 							template = template.replace(conditional, '');
 						}
-
 
 						template = replace(namespace + d, data[d], template);
 					}
