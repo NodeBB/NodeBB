@@ -912,7 +912,7 @@ define(function() {
 	}
 
 	function loadMorePosts(tid, callback) {
-		var	indicatorEl = $('.loading-indicator');
+		var indicatorEl = $('.loading-indicator');
 
 		if (infiniteLoaderActive) {
 			return;
