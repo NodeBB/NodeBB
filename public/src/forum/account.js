@@ -13,6 +13,7 @@ define(['forum/accountheader'], function(header) {
 			app.enterRoom('user/' + theirid);
 
 			app.addCommasToNumbers();
+			$('.user-recent-posts img').addClass('img-responsive');
 
 			var followBtn = $('#follow-btn');
 			var unfollowBtn = $('#unfollow-btn');
