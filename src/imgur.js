@@ -1,12 +1,11 @@
-var request = require('request');
+var request = require('request'),
+	winston = require('winston');
 
 
 (function (imgur) {
 	"use strict";
 
-	var clientID = '';
-
-	imgur.upload = function (image, type, callback) {
+	imgur.upload = function (clientID, image, type, callback) {
 		var options = {
 			url: 'https://api.imgur.com/3/upload.json',
 			headers: {
@@ -15,21 +14,27 @@ var request = require('request');
 		};
 
 		var post = request.post(options, function (err, req, body) {
+			if(err) {
+				return callback(err, null);
+			}
+
 			try {
-				callback(err, JSON.parse(body));
-			} catch (e) {
-				callback(err, body);
+				var response = JSON.parse(body);
+				if(response.success) {
+					callback(null, response.data);
+				} else {
+					callback(new Error(response.data.error.message), null);
+				}
+			} catch(e) {
+				winston.error('Unable to parse Imgur json response. [' + body +']');
+				callback(e, null);
 			}
 		});
 
-		var upload = post.form({
+		post.form({
 			type: type,
 			image: image
 		});
-	};
-
-	imgur.setClientID = function (id) {
-		clientID = id;
 	};
 
 }(exports));

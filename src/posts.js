@@ -450,24 +450,18 @@ var RDB = require('./redis.js'),
 	}
 
 	Posts.uploadPostImage = function(image, callback) {
-		var imgur = require('./imgur');
-		imgur.setClientID(meta.config.imgurClientID);
 
 		if(!image)
 			return callback('invalid image', null);
 
-		imgur.upload(image.data, 'base64', function(err, data) {
+		require('./imgur').upload(meta.config.imgurClientID, image.data, 'base64', function(err, data) {
 			if(err) {
-				callback('Can\'t upload image!', null);
+				callback(err.message, null);
 			} else {
-				if(data.success) {
-					var img= {url:data.data.link, name:image.name};
-
-					callback(null, img);
-				} else {
-					winston.error('Can\'t upload image, did you set imgurClientID?');
-					callback("upload error", null);
-				}
+				callback(null, {
+					url: data.link,
+					name: image.name
+				});
 			}
 		});
 	}

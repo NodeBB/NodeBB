@@ -462,7 +462,7 @@ define(function() {
 			adjust_rep(-1, data.pid, data.uid);
 		});
 
-		socket.on('event:new_post', app.createNewPosts);
+		socket.on('event:new_post', createNewPosts);
 
 		socket.on('event:topic_deleted', function(data) {
 			if (data.tid === tid && data.status === 'ok') {
