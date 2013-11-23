@@ -3,7 +3,6 @@ define(function () {
 
 	Category.init = function() {
 		var	cid = templates.get('category_id'),
-			room = 'category_' + cid,
 			twitterEl = jQuery('#twitter-intent'),
 			facebookEl = jQuery('#facebook-share'),
 			googleEl = jQuery('#google-share'),
@@ -12,7 +11,7 @@ define(function () {
 			google_url = templates.get('google-share-url'),
 			loadingMoreTopics = false;
 
-		app.enter_room(room);
+		app.enterRoom('category_' + cid);
 
 		twitterEl.on('click', function () {
 			window.open(twitter_url, '_blank', 'width=550,height=420,scrollbars=no,status=no');

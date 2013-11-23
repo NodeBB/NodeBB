@@ -34,7 +34,7 @@ var ajaxify = {};
 	ajaxify.go = function (url, callback, template, quiet) {
 		// start: the following should be set like so: ajaxify.onchange(function(){}); where the code actually belongs
 		$(window).off('scroll');
-		app.enter_room('global');
+		app.enterRoom('global');
 
 		pagination = pagination || document.getElementById('pagination');
 		if (pagination) {
@@ -105,7 +105,7 @@ var ajaxify = {};
 					callback();
 				}
 
-				app.process_page();
+				app.processPage();
 
 				jQuery('#content, #footer').stop(true, true).fadeIn(200, function () {
 					if (window.location.hash) {
@@ -113,7 +113,9 @@ var ajaxify = {};
 					}
 
 					if (hash) {
-						app.scrollToPost(hash.substr(1));
+						require(['forum/topic'], function(topic) {
+							topic.scrollToPost(hash.substr(1))	
+						});
 					}
 				});
 

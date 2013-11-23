@@ -125,7 +125,7 @@ var socket,
 						setTimeout(app.logout, 1000);
 					});
 
-					app.enter_room('global');
+					app.enterRoom('global');
 				}
 			},
 			async: false
@@ -186,43 +186,35 @@ var socket,
 			clearTimeout(alert.attr('timeoutId'));
 			startTimeout(alert, params.timeout);
 		} else {
-			var div = document.createElement('div'),
-				button = document.createElement('button'),
-				strong = document.createElement('strong'),
-				p = document.createElement('p');
+			var div = $('<div id="' + alert_id + '" class="alert toaster-alert alert-' + params.type +'"></div>'),
+				button = $('<button class="close">&times;</button>'),
+				strong = $('<strong>' + title + '</strong>'),
+				p = $('<p>' + params.message + '</p>');
 
-			p.innerHTML = params.message;
-			strong.innerHTML = title;
+			div.append(button)
+				.append(strong)
+				.append(p);
 
-			div.className = "alert toaster-alert " + "alert-" + params.type;
-
-			div.setAttribute('id', alert_id);
-			div.appendChild(button);
-			div.appendChild(strong);
-			div.appendChild(p);
-
-			button.className = 'close';
-			button.innerHTML = '&times;';
-			button.onclick = function (ev) {
-				div.parentNode.removeChild(div);
-			}
+			button.on('click', function () {
+				div.remove();
+			});
 
 			if (params.location == null)
 				params.location = 'alert_window';
 
-			jQuery('#' + params.location).prepend(jQuery(div).fadeIn('100'));
+			$('#' + params.location).prepend(div.fadeIn('100'));
 
 			if (params.timeout) {
 				startTimeout(div, params.timeout);
 			}
 
 			if (params.clickfn) {
-				div.onclick = function () {
+				div.on('click', function () {
 					params.clickfn();
-					jQuery(div).fadeOut(500, function () {
-						this.remove();
+					div.fadeOut(500, function () {
+						$(this).remove();
 					});
-				}
+				});
 			}
 		}
 	}
@@ -251,22 +243,23 @@ var socket,
 		});
 	}
 
-	app.current_room = null;
-	app.enter_room = function (room) {
+	app.currentRoom = null;
+	app.enterRoom = function (room) {
 		if (socket) {
-			if (app.current_room === room)
+			if (app.currentRoom === room) {
 				return;
+			}
 
 			socket.emit('event:enter_room', {
 				'enter': room,
-				'leave': app.current_room
+				'leave': app.currentRoom
 			});
 
-			app.current_room = room;
+			app.currentRoom = room;
 		}
 	};
 
-	app.populate_online_users = function () {
+	app.populateOnlineUsers = function () {
 		var uids = [];
 
 		jQuery('.post-row').each(function () {
@@ -276,9 +269,7 @@ var socket,
 		socket.emit('api:user.get_online_users', uids);
 	}
 
-	app.process_page = function () {
-		app.populate_online_users();
-
+	function highlightNavigationLink() {
 		var path = window.location.pathname,
 			parts = path.split('/'),
 			active = parts[parts.length - 1];
@@ -295,6 +286,12 @@ var socket,
 				}
 			});
 		}
+	}
+
+	app.processPage = function () {
+		app.populateOnlineUsers();
+
+		highlightNavigationLink();
 
 		$('span.timeago').timeago();
 		$('.post-content img').addClass('img-responsive');
@@ -364,95 +361,7 @@ var socket,
 			chat.center(chatModal);
 		});
 	}
-
-	app.createNewPosts = function (data, infiniteLoaded) {
-		if(!data || (data.posts && !data.posts.length))
-			return;
-
-		if (data.posts[0].uid !== app.uid) {
-			data.posts[0].display_moderator_tools = 'none';
-		}
-
-		function removeAlreadyAddedPosts() {
-			data.posts = data.posts.filter(function(post) {
-				return $('#post-container li[data-pid="' + post.pid +'"]').length === 0;
-			});
-		}
-
-		function findInsertionPoint() {
-			var after = null,
-				firstPid = data.posts[0].pid;
-			$('#post-container li[data-pid]').each(function() {
-				if(parseInt(firstPid, 10) > parseInt($(this).attr('data-pid'), 10))
-				after = $(this);
-			else
-				return false;
-			});
-			return after;
-		}
-
-		removeAlreadyAddedPosts();
-		if(!data.posts.length)
-			return;
-		var insertAfter = findInsertionPoint();
-
-		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
-		translator.translate(html, function(translatedHTML) {
-			var translated = $(translatedHTML);
-			if(!infiniteLoaded) {
-				translated.removeClass('infiniteloaded');
-			}
-
-			translated.insertAfter(insertAfter)
-				.hide()
-				.fadeIn('slow');
-
-			for (var x = 0, numPosts = data.posts.length; x < numPosts; x++) {
-				socket.emit('api:post.privileges', data.posts[x].pid);
-			}
-
-			app.infiniteLoaderActive = false;
-
-			app.populate_online_users();
-			app.addCommasToNumbers();
-			$('span.timeago').timeago();
-			$('.post-content img').addClass('img-responsive');
-		});
-	}
-
-	app.infiniteLoaderActive = false;
-
-	app.loadMorePosts = function (tid, callback) {
-		var	indicatorEl = $('.loading-indicator');
-
-		if (app.infiniteLoaderActive) {
-			return;
-		}
-
-		app.infiniteLoaderActive = true;
-
-		if (indicatorEl.attr('done') === '0') {
-			indicatorEl.fadeIn();
-		}
-
-		socket.emit('api:topic.loadMore', {
-			tid: tid,
-			after: $('#post-container .post-row.infiniteloaded').length
-		}, function (data) {
-			app.infiniteLoaderActive = false;
-			if (data.posts.length) {
-				indicatorEl.attr('done', '0');
-				app.createNewPosts(data, true);
-			} else {
-				indicatorEl.attr('done', '1');
-			}
-			indicatorEl.fadeOut();
-			if (callback) {
-				callback(data.posts);
-			}
-		});
-	}
-
+	
 	app.scrollToTop = function () {
 		$('body,html').animate({
 			scrollTop: 0
@@ -463,42 +372,6 @@ var socket,
 		$('body,html').animate({
 			scrollTop: $('html').height() - 100
 		});
-	}
-
-	app.scrollToPost = function (pid) {
-		if (!pid) {
-			return;
-		}
-
-		var container = $(document.body),
-			scrollTo = $('#post_anchor_' + pid),
-			tid = $('#post-container').attr('data-tid');
-
-		function animateScroll() {
-			$('body,html').animate({
-				scrollTop: scrollTo.offset().top - container.offset().top + container.scrollTop() - $('#header-menu').height()
-			}, 400);
-		}
-
-		if (!scrollTo.length && tid) {
-
-			var intervalID = setInterval(function () {
-				app.loadMorePosts(tid, function (posts) {
-					scrollTo = $('#post_anchor_' + pid);
-
-					if (tid && scrollTo.length) {
-						animateScroll();
-					}
-
-					if (!posts.length || scrollTo.length)
-						clearInterval(intervalID);
-				});
-			}, 100);
-
-		} else if (tid) {
-			animateScroll();
-		}
-
 	}
 
 	jQuery('document').ready(function () {

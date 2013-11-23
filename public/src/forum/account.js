@@ -10,7 +10,7 @@ define(['forum/accountheader'], function(header) {
 
 		$(document).ready(function() {
 			var username = $('.account-username a').html();
-			app.enter_room('user/' + theirid);
+			app.enterRoom('user/' + theirid);
 
 			app.addCommasToNumbers();
 

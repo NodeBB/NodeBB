@@ -1,5 +1,7 @@
 define(function() {
-	var	Topic = {};
+	var	Topic = {},
+		infiniteLoaderActive = false;
+
 
 	Topic.init = function() {
 		var expose_tools = templates.get('expose_tools'),
@@ -32,7 +34,7 @@ define(function() {
 
 			app.addCommasToNumbers();
 
-			app.enter_room('topic_' + tid);
+			app.enterRoom('topic_' + tid);
 
 			if($('#post-container .sub-posts').length) {
 				$('.topic-main-buttons').removeClass('hide').parent().removeClass('hide');
@@ -250,7 +252,7 @@ define(function() {
 			var bookmark = localStorage.getItem('topic:' + tid + ':bookmark');
 
 			if(bookmark) {
-				app.scrollToPost(parseInt(bookmark, 10));
+				Topic.scrollToPost(parseInt(bookmark, 10));
 			}
 
 			$('#post-container').on('click', '.deleted', function(ev) {
@@ -262,15 +264,15 @@ define(function() {
 			$(window).off('scroll').on('scroll', function() {
 				var bottom = ($(document).height() - $(window).height()) * 0.9;
 
-				if ($(window).scrollTop() > bottom && !app.infiniteLoaderActive && $('#post-container').children().length) {
-					app.loadMorePosts(tid, function(posts) {
+				if ($(window).scrollTop() > bottom && !infiniteLoaderActive && $('#post-container').children().length) {
+					loadMorePosts(tid, function(posts) {
 						fixDeleteStateForPosts();
 					});
 				}
 			});
 		}
 
-		var reply_fn = function() {
+		$('.topic').on('click', '.post_reply', function() {
 			var selectionText = '',
 				selection = window.getSelection() || document.getSelection();
 
@@ -284,8 +286,7 @@ define(function() {
 					cmp.push(tid, null, null, selectionText.length > 0 ? selectionText + '\n\n' : '');
 				});
 			}
-		};
-		$('.topic').on('click', '.post_reply', reply_fn);
+		});
 
 		$('#post-container').on('click', '.quote', function() {
 			if (thread_state.locked !== '1') {
@@ -312,12 +313,12 @@ define(function() {
 			if (element.attr('class') == 'icon-star-empty') {
 				socket.emit('api:posts.favourite', {
 					pid: pid,
-					room_id: app.current_room
+					room_id: app.currentRoom
 				});
 			} else {
 				socket.emit('api:posts.unfavourite', {
 					pid: pid,
-					room_id: app.current_room
+					room_id: app.currentRoom
 				});
 			}
 		});
@@ -450,7 +451,7 @@ define(function() {
 					});
 				}
 			}
-			app.populate_online_users();
+			app.populateOnlineUsers();
 		});
 
 		socket.on('event:rep_up', function(data) {
@@ -816,6 +817,130 @@ define(function() {
 		window.onscroll = updateHeader;
 		window.onload = updateHeader;
 	};
+
+	Topic.scrollToPost = function(pid) {
+		if (!pid) {
+			return;
+		}
+
+		var container = $(document.body),
+			scrollTo = $('#post_anchor_' + pid),
+			tid = $('#post-container').attr('data-tid');
+
+		function animateScroll() {
+			$('body,html').animate({
+				scrollTop: scrollTo.offset().top - container.offset().top + container.scrollTop() - $('#header-menu').height()
+			}, 400);
+		}
+
+		if (!scrollTo.length && tid) {
+
+			var intervalID = setInterval(function () {
+				loadMorePosts(tid, function (posts) {
+					scrollTo = $('#post_anchor_' + pid);
+
+					if (tid && scrollTo.length) {
+						animateScroll();
+					}
+
+					if (!posts.length || scrollTo.length)
+						clearInterval(intervalID);
+				});
+			}, 100);
+
+		} else if (tid) {
+			animateScroll();
+		}
+	}
+
+	function createNewPosts(data, infiniteLoaded) {
+		if(!data || (data.posts && !data.posts.length))
+			return;
+
+		if (data.posts[0].uid !== app.uid) {
+			data.posts[0].display_moderator_tools = 'none';
+		}
+
+		function removeAlreadyAddedPosts() {
+			data.posts = data.posts.filter(function(post) {
+				return $('#post-container li[data-pid="' + post.pid +'"]').length === 0;
+			});
+		}
+
+		function findInsertionPoint() {
+			var after = null,
+				firstPid = data.posts[0].pid;
+			$('#post-container li[data-pid]').each(function() {
+				if(parseInt(firstPid, 10) > parseInt($(this).attr('data-pid'), 10))
+				after = $(this);
+			else
+				return false;
+			});
+			return after;
+		}
+
+		removeAlreadyAddedPosts();
+		if(!data.posts.length) {
+			return;
+		}
+		
+		var insertAfter = findInsertionPoint();
+
+		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
+		
+		translator.translate(html, function(translatedHTML) {
+			var translated = $(translatedHTML);
+			if(!infiniteLoaded) {
+				translated.removeClass('infiniteloaded');
+			}
+
+			translated.insertAfter(insertAfter)
+				.hide()
+				.fadeIn('slow');
+
+			for (var x = 0, numPosts = data.posts.length; x < numPosts; x++) {
+				socket.emit('api:post.privileges', data.posts[x].pid);
+			}
+
+			infiniteLoaderActive = false;
+
+			app.populateOnlineUsers();
+			app.addCommasToNumbers();
+			$('span.timeago').timeago();
+			$('.post-content img').addClass('img-responsive');
+		});
+	}
+
+	function loadMorePosts(tid, callback) {
+		var	indicatorEl = $('.loading-indicator');
+
+		if (infiniteLoaderActive) {
+			return;
+		}
+
+		infiniteLoaderActive = true;
+
+		if (indicatorEl.attr('done') === '0') {
+			indicatorEl.fadeIn();
+		}
+
+		socket.emit('api:topic.loadMore', {
+			tid: tid,
+			after: $('#post-container .post-row.infiniteloaded').length
+		}, function (data) {
+			infiniteLoaderActive = false;
+			if (data.posts.length) {
+				indicatorEl.attr('done', '0');
+				createNewPosts(data, true);
+			} else {
+				indicatorEl.attr('done', '1');
+			}
+			indicatorEl.fadeOut();
+			if (callback) {
+				callback(data.posts);
+			}
+		});
+	}
 
 	return Topic;
 });
