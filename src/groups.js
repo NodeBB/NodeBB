@@ -56,6 +56,8 @@
 					results.base.count = results.users.length;
 					results.base.members = results.users;
 
+					results.base.deletable = (results.base.gid !== '1');
+
 					callback(err, results.base);
 				});
 			},
@@ -103,7 +105,9 @@
 				});
 			},
 			destroy: function (gid, callback) {
-				RDB.hset('gid:' + gid, 'deleted', '1', callback);
+				if (gid !== 1) {
+					RDB.hset('gid:' + gid, 'deleted', '1', callback);
+				}
 			},
 			join: function (gid, uid, callback) {
 				RDB.sadd('gid:' + gid + ':members', uid, callback);
