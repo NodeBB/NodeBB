@@ -305,7 +305,7 @@
 						template = setBlock(regex, block, template);
 					} else {
 						var conditional = makeConditionalRegex(namespace + d);
-						
+
 						var conditionalBlock = conditional.exec(template);
 						
 						if (conditionalBlock !== null) {

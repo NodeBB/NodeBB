@@ -442,6 +442,7 @@ var RDB = require('./redis.js'),
 					topicData['lock-icon'] = topicData.locked === '1' ? 'icon-lock' : 'none';
 					topicData['deleted-class'] = topicData.deleted === '1' ? 'deleted' : '';
 
+					topicData.unreplied = topicData.postcount === '1';
 					topicData.username = topicInfo.username;
 					topicData.userslug = topicInfo.userslug;
 					topicData.picture = topicInfo.picture;
@@ -524,6 +525,7 @@ var RDB = require('./redis.js'),
 					'slug': topicData.slug,
 					'postcount': topicData.postcount,
 					'viewcount': topicData.viewcount,
+					'unreplied': topicData.postcount > 1,
 					'topic_id': tid,
 					'expose_tools': privileges.editable ? 1 : 0,
 					'posts': topicPosts,
