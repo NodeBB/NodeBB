@@ -423,14 +423,16 @@ var socket,
 	app.infiniteLoaderActive = false;
 
 	app.loadMorePosts = function (tid, callback) {
+		var	indicatorEl = $('.loading-indicator');
+
 		if (app.infiniteLoaderActive) {
 			return;
 		}
 
 		app.infiniteLoaderActive = true;
 
-		if ($('#loading-indicator').attr('done') === '0') {
-			$('#loading-indicator').removeClass('hide');
+		if (indicatorEl.attr('done') === '0') {
+			indicatorEl.fadeIn();
 		}
 
 		socket.emit('api:topic.loadMore', {
@@ -439,14 +441,15 @@ var socket,
 		}, function (data) {
 			app.infiniteLoaderActive = false;
 			if (data.posts.length) {
-				$('#loading-indicator').attr('done', '0');
+				indicatorEl.attr('done', '0');
 				app.createNewPosts(data, true);
 			} else {
-				$('#loading-indicator').attr('done', '1');
+				indicatorEl.attr('done', '1');
 			}
-			$('#loading-indicator').addClass('hide');
-			if (callback)
+			indicatorEl.fadeOut();
+			if (callback) {
 				callback(data.posts);
+			}
 		});
 	}
 
