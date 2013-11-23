@@ -306,8 +306,25 @@
 					} else {
 						var conditional = makeConditionalRegex(namespace + d);
 						
-						if (conditional.test(template) && !data[d]) {
-							template = template.replace(conditional, '');
+						var conditionalBlock = conditional.exec(template);
+						
+						if (conditionalBlock !== null) {
+							conditionalBlock = conditionalBlock[0].split('<!-- ELSE -->');
+							
+							if (conditionalBlock[1]) {
+								// there is an else statement
+								if (!data[d]) {
+									template = template.replace(conditional, conditionalBlock[1]);	
+								} else {
+									template = template.replace(conditional, conditionalBlock[0]);	
+								}
+								
+							} else {
+								// regular if 
+								if (!data[d]) {
+									template = template.replace(conditional, '');
+								}
+							}
 						}
 
 						template = replace(namespace + d, data[d], template);
