@@ -1,36 +1,37 @@
 
-var	cookie = require('cookie'),
+var cookie = require('cookie'),
 	express = require('express'),
-	user = require('./user.js'),
-	Groups = require('./groups'),
-	posts = require('./posts.js'),
-	favourites = require('./favourites.js'),
-	utils = require('../public/src/utils.js'),
 	util = require('util'),
-	topics = require('./topics.js'),
-	categories = require('./categories.js'),
-	notifications = require('./notifications.js'),
-	threadTools = require('./threadTools.js'),
-	postTools = require('./postTools.js'),
-	meta = require('./meta.js'),
 	async = require('async'),
+	fs = require('fs'),
+	nconf = require('nconf'),
+	winston = require('winston'),
+
 	RedisStoreLib = require('connect-redis')(express),
 	RDB = require('./redis'),
-	util = require('util'),
-	logger = require('./logger.js'),
-	fs = require('fs'),
 	RedisStore = new RedisStoreLib({
 		client: RDB,
 		ttl: 60 * 60 * 24 * 14
 	}),
-	nconf = require('nconf'),
+		
+	user = require('./user'),
+	Groups = require('./groups'),
+	posts = require('./posts'),
+	favourites = require('./favourites'),
+	utils = require('../public/src/utils'),
+	topics = require('./topics'),
+	categories = require('./categories'),
+	notifications = require('./notifications'),
+	threadTools = require('./threadTools'),
+	postTools = require('./postTools'),
+	meta = require('./meta'),
+	logger = require('./logger'),
 	socketCookieParser = express.cookieParser(nconf.get('secret')),
 	admin = {
-		'categories': require('./admin/categories.js'),
-		'user': require('./admin/user.js')
+		'categories': require('./admin/categories'),
+		'user': require('./admin/user')
 	},
-	plugins = require('./plugins'),
-	winston = require('winston');
+	plugins = require('./plugins');	
 
 
 var users = {},
@@ -43,8 +44,9 @@ module.exports.logoutUser = function(uid) {
 			userSockets[uid][i].emit('event:disconnect');
 			userSockets[uid][i].disconnect();
 
-			if(!userSockets[uid])
+			if(!userSockets[uid]) {
 				return;
+			}
 		}
 	}
 }
@@ -569,15 +571,33 @@ module.exports.init = function(io) {
 			postTools.edit(uid, data.pid, data.title, data.content, data.images);
 		});
 
-		socket.on('api:posts.delete', function(data) {
-			postTools.delete(uid, data.pid, function() {
+		socket.on('api:posts.delete', function(data, callback) {
+			postTools.delete(uid, data.pid, function(err) {
+				if(err) {
+					return callback(err);
+				}
+
 				posts.getTopicPostStats();
+				
+				io.sockets.in('topic_' + data.tid).emit('event:post_deleted', {
+					pid: data.pid
+				});
+				callback(null);
 			});
 		});
 
-		socket.on('api:posts.restore', function(data) {
-			postTools.restore(uid, data.pid, function() {
+		socket.on('api:posts.restore', function(data, callback) {
+			postTools.restore(uid, data.pid, function(err) {
+				if(err) {
+					return callback(err);
+				}
+				
 				posts.getTopicPostStats();
+				
+				io.sockets.in('topic_' + data.tid).emit('event:post_restored', {
+					pid: data.pid
+				});
+				callback(null);
 			});
 		});
 

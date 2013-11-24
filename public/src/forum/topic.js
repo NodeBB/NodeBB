@@ -347,13 +347,25 @@ define(function() {
 				confirmDel = confirm((deleteAction ? 'Delete' : 'Restore') + ' this post?');
 
 			if (confirmDel) {
-				deleteAction ?
+				if(deleteAction) {
 					socket.emit('api:posts.delete', {
-						pid: pid
-					}) :
-					socket.emit('api:posts.restore', {
-						pid: pid
+						pid: pid,
+						tid: tid
+					}, function(err) {
+						if(err) {
+							return app.alertError('Can\'t delete post!');
+						}
 					});
+				} else {
+					socket.emit('api:posts.restore', {
+						pid: pid,
+						tid: tid
+					}, function(err) {
+						if(err) {
+							return app.alertError('Can\'t restore post!');
+						}
+					});
+				}
 			}
 		});
 
@@ -546,11 +558,15 @@ define(function() {
 		});
 
 		socket.on('event:post_deleted', function(data) {
-			if (data.pid) toggle_post_delete_state(data.pid, true);
+			if (data.pid) {
+				 toggle_post_delete_state(data.pid);
+			}
 		});
 
 		socket.on('event:post_restored', function(data) {
-			if (data.pid) toggle_post_delete_state(data.pid, true);
+			if (data.pid) {
+				toggle_post_delete_state(data.pid);
+			}
 		});
 
 		socket.on('api:post.privileges', function(privileges) {
@@ -709,6 +725,7 @@ define(function() {
 					} else {
 						postEl.toggleClass('none');
 					}
+					updatePostCount();
 				});
 				socket.emit('api:post.privileges', pid);
 			}
@@ -871,10 +888,14 @@ define(function() {
 			var after = null,
 				firstPid = data.posts[0].pid;
 			$('#post-container li[data-pid]').each(function() {
-				if(parseInt(firstPid, 10) > parseInt($(this).attr('data-pid'), 10))
-				after = $(this);
-			else
-				return false;
+				if(parseInt(firstPid, 10) > parseInt($(this).attr('data-pid'), 10)) {
+					after = $(this);
+					if(after.hasClass('main-post')) {
+						after = after.next();
+					}
+				} else {
+					return false;
+				}
 			});
 			return after;
 		}
@@ -908,7 +929,12 @@ define(function() {
 			app.addCommasToNumbers();
 			$('span.timeago').timeago();
 			$('.post-content img').addClass('img-responsive');
+			updatePostCount();
 		});
+	}
+
+	function updatePostCount() {
+		$('#topic-post-count').html($('#post-container li[data-pid]:not(.deleted)').length);
 	}
 
 	function loadMorePosts(tid, callback) {

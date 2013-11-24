@@ -139,15 +139,13 @@ var RDB = require('./redis.js'),
 					RDB.zadd('users:postcount', postcount, postData.uid);
 				});
 
-				io.sockets. in ('topic_' + postData.tid).emit('event:post_deleted', {
-					pid: pid
-				});
-
 				// Delete the thread if it is the last undeleted post
 				threadTools.getLatestUndeletedPid(postData.tid, function(err, pid) {
 					if (err && err.message === 'no-undeleted-pids-found') {
 						threadTools.delete(postData.tid, -1, function(err) {
-							if (err) winston.error('Could not delete topic (tid: ' + postData.tid + ')', err.stack);
+							if (err) {
+								winston.error('Could not delete topic (tid: ' + postData.tid + ')', err.stack);
+							}
 						});
 					} else {
 						posts.getPostField(pid, 'timestamp', function(err, timestamp) {
@@ -159,15 +157,22 @@ var RDB = require('./redis.js'),
 				Feed.updateTopic(postData.tid);
 				Feed.updateRecent();
 
-				callback();
+				callback(null);
 			});
 		};
 
-		PostTools.privileges(pid, uid, function(privileges) {
-			if (privileges.editable) {
-				success();
+		posts.getPostField(pid, 'deleted', function(err, deleted) {
+			if(deleted === '1') {
+				return callback(new Error('Post already deleted!'));				
 			}
+			
+			PostTools.privileges(pid, uid, function(privileges) {
+				if (privileges.editable) {
+					success();
+				}
+			});			
 		});
+
 	}
 
 	PostTools.restore = function(uid, pid, callback) {
@@ -179,10 +184,6 @@ var RDB = require('./redis.js'),
 				RDB.hincrby('topic:' + postData.tid, 'postcount', 1);
 
 				user.incrementUserFieldBy(postData.uid, 'postcount', 1);
-
-				io.sockets. in ('topic_' + postData.tid).emit('event:post_restored', {
-					pid: pid
-				});
 
 				threadTools.getLatestUndeletedPid(postData.tid, function(err, pid) {
 					posts.getPostField(pid, 'timestamp', function(err, timestamp) {
@@ -206,10 +207,16 @@ var RDB = require('./redis.js'),
 			});
 		};
 
-		PostTools.privileges(pid, uid, function(privileges) {
-			if (privileges.editable) {
-				success();
-			}
+		posts.getPostField(pid, 'deleted', function(err, deleted) {
+			if(deleted === '0') {
+				return callback(new Error('Post already restored'));
+			}			
+			
+			PostTools.privileges(pid, uid, function(privileges) {
+				if (privileges.editable) {
+					success();
+				}
+			});
 		});
 	}
 

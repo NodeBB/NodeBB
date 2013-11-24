@@ -103,7 +103,7 @@
 			<div class="inline-block">
 				<small class="topic-stats">
 					<span>posts</span>
-					<strong><span class="formatted-number">{postcount}</span></strong> |
+					<strong><span id="topic-post-count" class="formatted-number">{postcount}</span></strong> |
 					<span>views</span>
 					<strong><span class="formatted-number">{viewcount}</span></strong> |
 					<span>browsing</span>
