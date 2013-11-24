@@ -663,7 +663,7 @@ var path = require('path'),
 				};
 
 			if (!fs.existsSync(rssPath)) {
-				feed.updaterecent(function (err) {
+				feed.updateRecent(function (err) {
 					if (err) {
 						res.redirect('/404');
 					} else {
