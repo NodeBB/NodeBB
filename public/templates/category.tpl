@@ -98,7 +98,7 @@
 			</div>
 			<div class="block-content active-users">
 				<!-- BEGIN active_users -->
-				<a data-uid="{active_users.uid}" href="/user/{active_users.userslug}"><img title="{active_users.username}" src="{active_users.picture}" class="img-rounded" /></a>
+				<a data-uid="{active_users.uid}" href="/user/{active_users.userslug}"><img title="{active_users.username}" src="{active_users.picture}" class="img-rounded user-img" /></a>
 				<!-- END active_users -->
 			</div>
 		</div>

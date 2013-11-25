@@ -288,6 +288,15 @@ var socket,
 		}
 	}
 
+	app.createUserTooltips = function() {
+		$('img[title].teaser-pic,img[title].user-img').each(function() {
+			$(this).tooltip({
+				placement: 'top',
+				title: $(this).attr('title')
+			});
+		});
+	}
+
 	app.processPage = function () {
 		app.populateOnlineUsers();
 
@@ -295,6 +304,8 @@ var socket,
 
 		$('span.timeago').timeago();
 		$('.post-content img').addClass('img-responsive');
+
+		app.createUserTooltips();
 
 		setTimeout(function () {
 			window.scrollTo(0, 1); // rehide address bar on mobile after page load completes.

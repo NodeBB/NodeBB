@@ -55,7 +55,7 @@ define(function () {
 				li.setAttribute('data-pid', posts[i].pid);
 
 
-				li.innerHTML = '<a href="/user/' + posts[i].userslug + '"><img title="' + posts[i].username + '" style="width: 48px; height: 48px; /*temporary*/" class="img-rounded" src="' + posts[i].picture + '" class="" /></a>' +
+				li.innerHTML = '<a href="/user/' + posts[i].userslug + '"><img title="' + posts[i].username + '" style="width: 48px; height: 48px; /*temporary*/" class="img-rounded user-img" src="' + posts[i].picture + '" class="" /></a>' +
 					'<a href="/topic/' + posts[i].topicSlug + '#' + posts[i].pid + '">' +
 					'<strong><span>'+ posts[i].username + '</span></strong>' +
 					'<p>' +
@@ -68,6 +68,7 @@ define(function () {
 				recent_replies.appendChild(frag);
 			}
 			$('#category_recent_replies span.timeago').timeago();
+			app.createUserTooltips();
 		});
 
 		$(window).off('scroll').on('scroll', function (ev) {

@@ -54,6 +54,9 @@
 						</span>
 
 						<span class="pull-right hidden-xs">
+							<!-- IF topics.unreplied -->
+							No one has replied
+							<!-- ELSE -->
 							<a href="/user/{topics.teaser_userslug}">
 								<img class="teaser-pic" src="{topics.teaser_userpicture}" title="{topics.teaser_username}"/>
 							</a>
@@ -61,7 +64,7 @@
 								replied
 							</a>
 							<span class="timeago" title="{topics.teaser_timestamp}"></span>
-
+							<!-- ENDIF topics.unreplied -->
 						</span>
 					</small>
 				</div>
