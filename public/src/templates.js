@@ -235,11 +235,11 @@
 		}
 
 		function makeRegex(block) {
-			return new RegExp("<!-- BEGIN " + block + " -->[\\s\\S]*<!-- END " + block + " -->", 'g');
+			return new RegExp("<!--[\\s]*BEGIN " + block + "[\\s]*-->[\\s\\S]*<!--[\\s]*END " + block + "[\\s]*-->", 'g');
 		}
 
 		function makeConditionalRegex(block) {
-			return new RegExp("<!-- IF " + block + " -->[\\s\\S]*<!-- ENDIF " + block + " -->", 'g');
+			return new RegExp("<!--[\\s]*IF " + block + "[\\s]*-->[\\s\\S]*<!--[\\s]*ENDIF " + block + "[\\s]*-->", 'g');
 		}
 
 		function getBlock(regex, block, template) {
@@ -249,8 +249,8 @@
 			if (self.blocks && block !== undefined) self.blocks[block] = data[0];
 
 			data = data[0]
-				.replace("<!-- BEGIN " + block + " -->", "")
-				.replace("<!-- END " + block + " -->", "");
+				.replace("<!--[\\s]*BEGIN " + block + "[\\s]*-->", "")
+				.replace("<!--[\\s]*END " + block + "[\\s]*-->", "");
 
 			return data;
 		}
@@ -309,7 +309,7 @@
 						var conditionalBlock = conditional.exec(template);
 						
 						if (conditionalBlock !== null) {
-							conditionalBlock = conditionalBlock[0].split('<!-- ELSE -->');
+							conditionalBlock = conditionalBlock[0].split(/<!-- ELSE -->/);
 							
 							if (conditionalBlock[1]) {
 								// there is an else statement
