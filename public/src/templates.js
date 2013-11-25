@@ -329,6 +329,8 @@
 						}
 
 						checkConditional(namespace + d, data[d]);
+						checkConditional('!' + namespace + d, !data[d]);
+						
 						if (blockInfo) {
 							checkConditional('@first', blockInfo.iterator === 0);
 							checkConditional('@last', blockInfo.iterator === blockInfo.total);
