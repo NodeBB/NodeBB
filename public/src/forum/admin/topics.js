@@ -42,8 +42,13 @@ define(function() {
 
 		loadMoreEl.addEventListener('click', function() {
 			if (this.className.indexOf('disabled') === -1) {
-				var topics = document.querySelectorAll('.topics li[data-tid]'),
-					lastTid = parseInt(topics[topics.length - 1].getAttribute('data-tid'));
+				var topics = document.querySelectorAll('.topics li[data-tid]');
+
+				if(!topics.length) {
+					return;
+				} 
+
+				var lastTid = parseInt(topics[topics.length - 1].getAttribute('data-tid'));
 
 				this.innerHTML = '<i class="icon-refresh icon-spin"></i> Retrieving topics';
 				socket.emit('api:admin.topics.getMore', {

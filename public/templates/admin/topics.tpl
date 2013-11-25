@@ -1,6 +1,12 @@
 <h1>Topics</h1>
 <hr />
 
+<!-- IF notopics -->
+<div class="alert alert-warning" id="category-no-topics">
+	<strong>There are no topics.</strong>
+</div>
+<!-- ENDIF notopics -->
+
 <ul class="topics">
 	<!-- BEGIN topics -->
 	<li data-tid="{topics.tid}" data-locked="{topics.locked}" data-pinned="{topics.pinned}" data-deleted="{topics.deleted}">
@@ -19,6 +25,8 @@
 	<!-- END topics -->
 </ul>
 
+<!-- IF showLoadMore -->
 <div class="text-center">
 	<button id="topics_loadmore" class="btn btn-primary btn-lg">Load More Topics</button>
 </div>
+<!-- ENDIF showLoadMore -->

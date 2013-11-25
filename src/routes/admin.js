@@ -246,7 +246,9 @@ var user = require('./../user.js'),
 			app.get('/topics', function (req, res) {
 				topics.getAllTopics(10, null, function (topics) {
 					res.json({
-						topics: topics
+						topics: topics,
+						notopics: topics.length === 0,
+						showLoadMore: topics.length > 0
 					});
 				});
 			});

@@ -307,6 +307,7 @@
 						var conditional = makeConditionalRegex(namespace + d);
 
 						var conditionalBlock = conditional.exec(template);
+						console.log(conditionalBlock);
 						
 						if (conditionalBlock !== null) {
 							conditionalBlock = conditionalBlock[0].split('<!-- ELSE -->');
