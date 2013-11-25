@@ -67,7 +67,7 @@ var ajaxify = {};
 		}
 
 		if (templates.is_available(tpl_url) && !templates.force_refresh(tpl_url)) {
-			if (quiet !== true) {
+			//if (quiet !== true) {
 				if (window.history && window.history.pushState) {
 					window.history.pushState({
 						url: url
@@ -86,7 +86,7 @@ var ajaxify = {};
 						}
 					});
 				}
-			}
+			//}
 
 			translator.load(tpl_url);
 
