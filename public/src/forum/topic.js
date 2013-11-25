@@ -36,7 +36,7 @@ define(function() {
 
 			app.enterRoom('topic_' + tid);
 
-			if($('#post-container .sub-posts').length > 1) {
+			if($('#post-container .posts').length > 1) {
 				$('.topic-main-buttons').removeClass('hide').parent().removeClass('hide');
 			}
 
@@ -799,7 +799,7 @@ define(function() {
 
 			var count = 0, smallestNonNegative = 0;
 
-			jQuery('.sub-posts').each(function() {
+			jQuery('.posts > .post-row').each(function() {
 				count++;
 				this.postnumber = count;
 

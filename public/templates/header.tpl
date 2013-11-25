@@ -72,7 +72,6 @@
 					<!-- END navigation -->
 				</ul>
 
-
 				<ul id="logged-in-menu" class="nav navbar-nav navbar-right hide">
 					<li>
 						<a href="#" id="reconnect"></a>
@@ -135,11 +134,15 @@
 					</li>
 				</ul>
 
-				<div class="pagination-block">
-					<i class="icon-upload pointer"></i>
-					<span id="pagination"></span>
-					<i class="icon-upload pointer icon-rotate-180"></i>
-				</div>
+				<ul class="nav navbar-nav navbar-right pagination-block">
+					<li class="active">
+						<a>
+							<i class="icon-upload pointer"></i>
+							<span id="pagination"></span>
+							<i class="icon-upload pointer icon-rotate-180"></i>
+						</a>
+					</li>
+				</ul>
 			</div>
 		</div>
 	</div>
