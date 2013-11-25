@@ -35,16 +35,20 @@ var path = require('path'),
 	var templates = null,
 		clientScripts;
 
-	// Minify client-side libraries
-	meta.js.get(function (err, scripts) {
-		clientScripts = scripts.map(function (script) {
-			script = {
-				script: script
-			};
+	
+	plugins.ready(function() {
+		// Minify client-side libraries
+		meta.js.get(function (err, scripts) {
+			clientScripts = scripts.map(function (script) {
+				script = {
+					script: script
+				};
 
-			return script;
+				return script;
+			});
 		});
 	});
+
 
 	server.app = app;
 
