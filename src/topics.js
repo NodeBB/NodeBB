@@ -588,6 +588,10 @@ var RDB = require('./redis.js'),
 
 	Topics.getAllTopics = function(limit, after, callback) {
 		RDB.smembers('topics:tid', function(err, tids) {
+			if(err) {
+				return callback(err, null);
+			}
+
 			var topics = [],
 				numTids, x;
 
@@ -623,7 +627,7 @@ var RDB = require('./redis.js'),
 					next();
 				});
 			}, function(err) {
-				callback(topics);
+				callback(err, topics);
 			});
 		});
 	}

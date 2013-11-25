@@ -244,7 +244,7 @@ var user = require('./../user.js'),
 			});
 
 			app.get('/topics', function (req, res) {
-				topics.getAllTopics(10, null, function (topics) {
+				topics.getAllTopics(10, null, function (err, topics) {
 					res.json({
 						topics: topics,
 						notopics: topics.length === 0
