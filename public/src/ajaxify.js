@@ -67,25 +67,23 @@ var ajaxify = {};
 		}
 
 		if (templates.is_available(tpl_url) && !templates.force_refresh(tpl_url)) {
-			if (quiet !== true) {
-				if (window.history && window.history.pushState) {
-					window.history.pushState({
-						url: url
-					}, url, RELATIVE_PATH + '/' + url);
+			if (window.history && window.history.pushState) {
+				window.history[!quiet ? 'pushState' : 'replaceState']({
+					url: url
+				}, url, RELATIVE_PATH + '/' + url);
 
-					$.ajax(RELATIVE_PATH + '/plugins/fireHook', {
-						type: 'PUT',
-						data: {
-							_csrf: $('#csrf_token').val(),
-							hook: 'page.load',
-							args: {
-								template: tpl_url,
-								url: url,
-								uid: app.uid
-							}
+				$.ajax(RELATIVE_PATH + '/plugins/fireHook', {
+					type: 'PUT',
+					data: {
+						_csrf: $('#csrf_token').val(),
+						hook: 'page.load',
+						args: {
+							template: tpl_url,
+							url: url,
+							uid: app.uid
 						}
-					});
-				}
+					}
+				});
 			}
 
 			translator.load(tpl_url);
@@ -114,7 +112,7 @@ var ajaxify = {};
 
 					if (hash) {
 						require(['forum/topic'], function(topic) {
-							topic.scrollToPost(hash.substr(1))	
+							topic.scrollToPost(hash.substr(1));
 						});
 					}
 				});

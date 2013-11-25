@@ -35,16 +35,20 @@ var path = require('path'),
 	var templates = null,
 		clientScripts;
 
-	// Minify client-side libraries
-	meta.js.get(function (err, scripts) {
-		clientScripts = scripts.map(function (script) {
-			script = {
-				script: script
-			};
 
-			return script;
+	plugins.ready(function() {
+		// Minify client-side libraries
+		meta.js.get(function (err, scripts) {
+			clientScripts = scripts.map(function (script) {
+				script = {
+					script: script
+				};
+
+				return script;
+			});
 		});
 	});
+
 
 	server.app = app;
 
@@ -318,6 +322,7 @@ var path = require('path'),
 			});
 		});
 
+		plugins.fireHook('action:app.load');
 
 		translator.translate(templates.logout.toString(), function(parsedTemplate) {
 			templates.logout = parsedTemplate;
@@ -337,7 +342,6 @@ var path = require('path'),
 		admin.createRoutes(app);
 		userRoute.createRoutes(app);
 		apiRoute.createRoutes(app);
-
 
 		// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 		(function () {
@@ -475,7 +479,7 @@ var path = require('path'),
 							content: topicData.topic_name
 						}, {
 							name: "description",
-							content: sanitize(topicData.main_posts[0].content.substr(0, 255)).escape().replace('\n', '')
+							content: sanitize(topicData.posts[0].content.substr(0, 255)).escape().replace('\n', '')
 						}, {
 							property: 'og:title',
 							content: topicData.topic_name + ' | ' + (meta.config.title || 'NodeBB')
@@ -487,10 +491,10 @@ var path = require('path'),
 							content: nconf.get('url') + 'topic/' + topicData.slug
 						}, {
 							property: 'og:image',
-							content: topicData.main_posts[0].picture
+							content: topicData.posts[0].picture
 						}, {
 							property: "article:published_time",
-							content: new Date(parseInt(topicData.main_posts[0].timestamp, 10)).toISOString()
+							content: new Date(parseInt(topicData.posts[0].timestamp, 10)).toISOString()
 						}, {
 							property: 'article:modified_time',
 							content: new Date(lastMod).toISOString()

@@ -13,7 +13,7 @@
 		<div class="input-group">
 			<input class="form-control" id="search-user" type="text" placeholder="[[users:enter_username]]"/>
 	        <span class="input-group-addon">
-	        	<span id="user-notfound-notify"><i class="icon icon-circle-blank"></i></span>
+	        	<span id="user-notfound-notify"><i class="icon icon-search"></i></span>
 	        </span>
 		</div>
 	</div>

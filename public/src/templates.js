@@ -235,11 +235,11 @@
 		}
 
 		function makeRegex(block) {
-			return new RegExp("<!-- BEGIN " + block + " -->[\\s\\S]*<!-- END " + block + " -->", 'g');
+			return new RegExp("<!--[\\s]*BEGIN " + block + "[\\s]*-->[\\s\\S]*<!--[\\s]*END " + block + "[\\s]*-->", 'g');
 		}
 
 		function makeConditionalRegex(block) {
-			return new RegExp("<!-- IF " + block + " -->[\\s\\S]*<!-- ENDIF " + block + " -->", 'g');
+			return new RegExp("<!--[\\s]*IF " + block + "[\\s]*-->[\\s\\S]*<!--[\\s]*ENDIF " + block + "[\\s]*-->", 'g');
 		}
 
 		function getBlock(regex, block, template) {
@@ -249,8 +249,8 @@
 			if (self.blocks && block !== undefined) self.blocks[block] = data[0];
 
 			data = data[0]
-				.replace("<!-- BEGIN " + block + " -->", "")
-				.replace("<!-- END " + block + " -->", "");
+				.replace("<!--[\\s]*BEGIN " + block + "[\\s]*-->", "")
+				.replace("<!--[\\s]*END " + block + "[\\s]*-->", "");
 
 			return data;
 		}
@@ -262,7 +262,7 @@
 		var template = this.html,
 			regex, block;
 
-		return (function parse(data, namespace, template) {
+		return (function parse(data, namespace, template, blockInfo) {
 			if (!data || data.length == 0) {
 				template = '';
 			}
@@ -289,7 +289,7 @@
 							result = "";
 
 						do {
-							result += parse(data[d][i], namespace, block);
+							result += parse(data[d][i], namespace, block, {iterator: i, total: numblocks});
 						} while (i++ < numblocks);
 
 						namespace = namespace.replace(d + '.', '');
@@ -304,29 +304,39 @@
 						block = parse(data[d], namespace, block);
 						template = setBlock(regex, block, template);
 					} else {
-						var conditional = makeConditionalRegex(namespace + d);
-
-						var conditionalBlock = conditional.exec(template);
-						
-						if (conditionalBlock !== null) {
-							conditionalBlock = conditionalBlock[0].split('<!-- ELSE -->');
+						function checkConditional(key, value) {
+							var conditional = makeConditionalRegex(key),
+								conditionalBlock = conditional.exec(template);
 							
-							if (conditionalBlock[1]) {
-								// there is an else statement
-								if (!data[d]) {
-									template = template.replace(conditional, conditionalBlock[1]);	
-								} else {
-									template = template.replace(conditional, conditionalBlock[0]);	
-								}
+							if (conditionalBlock !== null) {
+								conditionalBlock = conditionalBlock[0].split(/<!-- ELSE -->/);
 								
-							} else {
-								// regular if 
-								if (!data[d]) {
-									template = template.replace(conditional, '');
+								if (conditionalBlock[1]) {
+									// there is an else statement
+									if (!value) {
+										template = template.replace(conditional, conditionalBlock[1]);	
+									} else {
+										template = template.replace(conditional, conditionalBlock[0]);	
+									}
+									
+								} else {
+									// regular if 
+									if (!value) {
+										template = template.replace(conditional, '');
+									}
 								}
 							}
 						}
 
+						checkConditional(namespace + d, data[d]);
+						checkConditional('!' + namespace + d, !data[d]);
+						
+						if (blockInfo) {
+							checkConditional('@first', blockInfo.iterator === 0);
+							checkConditional('@last', blockInfo.iterator === blockInfo.total);
+						}
+						
+						
 						template = replace(namespace + d, data[d], template);
 					}
 				}

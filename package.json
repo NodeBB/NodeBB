@@ -2,7 +2,7 @@
   "name": "nodebb",
   "license": "GPLv3 or later",
   "description": "NodeBB Forum",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "http://www.nodebb.org",
   "repository": {
     "type": "git",
@@ -43,7 +43,7 @@
     "nodebb-plugin-mentions": "~0.1.14",
     "nodebb-plugin-markdown": "~0.1.8",
     "nodebb-theme-vanilla": "designcreateplay/nodebb-theme-vanilla",
-    "nodebb-theme-cerulean": "0.0.7",
+    "nodebb-theme-cerulean": "0.0.9",
     "cron": "~1.0.1"
   },
   "optionalDependencies": {
