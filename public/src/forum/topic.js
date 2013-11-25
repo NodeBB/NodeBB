@@ -36,7 +36,7 @@ define(function() {
 
 			app.enterRoom('topic_' + tid);
 
-			if($('#post-container .posts').length > 1) {
+			if($('#post-container .posts .post-row').length > 1) {
 				$('.topic-main-buttons').removeClass('hide').parent().removeClass('hide');
 			}
 
