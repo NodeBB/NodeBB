@@ -35,7 +35,7 @@ var path = require('path'),
 	var templates = null,
 		clientScripts;
 
-	
+
 	plugins.ready(function() {
 		// Minify client-side libraries
 		meta.js.get(function (err, scripts) {
@@ -322,6 +322,7 @@ var path = require('path'),
 			});
 		});
 
+		plugins.fireHook('action:app.load');
 
 		translator.translate(templates.logout.toString(), function(parsedTemplate) {
 			templates.logout = parsedTemplate;
@@ -341,7 +342,6 @@ var path = require('path'),
 		admin.createRoutes(app);
 		userRoute.createRoutes(app);
 		apiRoute.createRoutes(app);
-
 
 		// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 		(function () {
