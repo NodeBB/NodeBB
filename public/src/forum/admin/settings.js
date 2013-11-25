@@ -38,6 +38,8 @@ define(['uploader'], function(uploader) {
 				}
 			} else if (fields[x].nodeName === 'TEXTAREA') {
 				if (app.config[key]) fields[x].value = app.config[key];
+			} else if (fields[x].nodeName === 'SELECT') {
+				if (app.config[key]) fields[x].value = app.config[key];
 			}
 		}
 
@@ -60,6 +62,8 @@ define(['uploader'], function(uploader) {
 							break;
 					}
 				} else if (fields[x].nodeName === 'TEXTAREA') {
+					value = fields[x].value;
+				} else if (fields[x].nodeName === 'SELECT') {
 					value = fields[x].value;
 				}
 
