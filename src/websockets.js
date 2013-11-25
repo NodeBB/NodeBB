@@ -13,7 +13,7 @@ var cookie = require('cookie'),
 		client: RDB,
 		ttl: 60 * 60 * 24 * 14
 	}),
-		
+
 	user = require('./user'),
 	Groups = require('./groups'),
 	posts = require('./posts'),
@@ -31,7 +31,7 @@ var cookie = require('cookie'),
 		'categories': require('./admin/categories'),
 		'user': require('./admin/user')
 	},
-	plugins = require('./plugins');	
+	plugins = require('./plugins');
 
 
 var users = {},
@@ -578,7 +578,7 @@ module.exports.init = function(io) {
 				}
 
 				posts.getTopicPostStats();
-				
+
 				io.sockets.in('topic_' + data.tid).emit('event:post_deleted', {
 					pid: data.pid
 				});
@@ -591,9 +591,9 @@ module.exports.init = function(io) {
 				if(err) {
 					return callback(err);
 				}
-				
+
 				posts.getTopicPostStats();
-				
+
 				io.sockets.in('topic_' + data.tid).emit('event:post_restored', {
 					pid: data.pid
 				});
@@ -861,7 +861,7 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:admin.topics.getMore', function(data, callback) {
-			topics.getAllTopics(data.limit, data.after, function(topics) {
+			topics.getAllTopics(data.limit, data.after, function(err, topics) {
 				callback(JSON.stringify(topics));
 			});
 		});

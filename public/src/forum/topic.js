@@ -36,7 +36,7 @@ define(function() {
 
 			app.enterRoom('topic_' + tid);
 
-			if($('#post-container .sub-posts').length > 1) {
+			if($('#post-container .posts .post-row').length > 1) {
 				$('.topic-main-buttons').removeClass('hide').parent().removeClass('hide');
 			}
 
@@ -764,7 +764,7 @@ define(function() {
 
 
 
-		var postAuthorImage, mobileAuthorOverlay, pagination;
+		var pagination;
 		var postcount = templates.get('postcount');
 
 		function updateHeader() {
@@ -776,10 +776,6 @@ define(function() {
 					app.scrollToBottom();
 				});
 			}
-
-			jQuery('.mobile-author-overlay').css('bottom', '0px');
-			postAuthorImage = postAuthorImage || document.getElementById('mobile-author-image');
-			mobileAuthorOverlay = mobileAuthorOverlay || document.getElementById('mobile-author-overlay');
 			pagination = pagination || document.getElementById('pagination');
 
 			pagination.parentNode.style.display = 'block';
@@ -790,8 +786,6 @@ define(function() {
 
 			if (scrollTop < 50 && postcount > 1) {
 				localStorage.removeItem("topic:" + tid + ":bookmark");
-				postAuthorImage.src = (jQuery('.posts .avatar img').attr('src'));
-				mobileAuthorOverlay.innerHTML = 'Posted by ' + jQuery('.posts').attr('data-username') + ', ' + jQuery('.posts').find('.relativeTimeAgo').html();
 				pagination.innerHTML = '0 out of ' + postcount;
 				return;
 			}
@@ -799,7 +793,7 @@ define(function() {
 
 			var count = 0, smallestNonNegative = 0;
 
-			jQuery('.sub-posts').each(function() {
+			jQuery('.posts > .post-row').each(function() {
 				count++;
 				this.postnumber = count;
 
@@ -819,8 +813,6 @@ define(function() {
 					}
 
 					pagination.innerHTML = this.postnumber + ' out of ' + postcount;
-					postAuthorImage.src = (jQuery(this).find('.profile-image-block img').attr('src'));
-					mobileAuthorOverlay.innerHTML = 'Posted by ' + jQuery(this).attr('data-username') + ', ' + jQuery(this).find('.relativeTimeAgo').html();
 				}
 			});
 
