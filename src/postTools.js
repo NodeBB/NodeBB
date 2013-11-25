@@ -142,7 +142,7 @@ var RDB = require('./redis.js'),
 				// Delete the thread if it is the last undeleted post
 				threadTools.getLatestUndeletedPid(postData.tid, function(err, pid) {
 					if (err && err.message === 'no-undeleted-pids-found') {
-						threadTools.delete(postData.tid, -1, function(err) {
+						threadTools.delete(postData.tid, function(err) {
 							if (err) {
 								winston.error('Could not delete topic (tid: ' + postData.tid + ')', err.stack);
 							}
@@ -163,14 +163,14 @@ var RDB = require('./redis.js'),
 
 		posts.getPostField(pid, 'deleted', function(err, deleted) {
 			if(deleted === '1') {
-				return callback(new Error('Post already deleted!'));				
+				return callback(new Error('Post already deleted!'));
 			}
-			
+
 			PostTools.privileges(pid, uid, function(privileges) {
 				if (privileges.editable) {
 					success();
 				}
-			});			
+			});
 		});
 
 	}
@@ -210,8 +210,8 @@ var RDB = require('./redis.js'),
 		posts.getPostField(pid, 'deleted', function(err, deleted) {
 			if(deleted === '0') {
 				return callback(new Error('Post already restored'));
-			}			
-			
+			}
+
 			PostTools.privileges(pid, uid, function(privileges) {
 				if (privileges.editable) {
 					success();

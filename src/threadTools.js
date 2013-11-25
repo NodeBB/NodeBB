@@ -47,136 +47,111 @@ var RDB = require('./redis.js'),
 		});
 	}
 
-	ThreadTools.lock = function(tid, uid, socket) {
-		ThreadTools.privileges(tid, uid, function(privileges) {
-			if (privileges.editable) {
-				topics.setTopicField(tid, 'locked', 1);
+	ThreadTools.lock = function(tid, socket) {
+		topics.setTopicField(tid, 'locked', 1);
 
-				if (socket) {
-					io.sockets. in ('topic_' + tid).emit('event:topic_locked', {
-						tid: tid,
-						status: 'ok'
-					});
+		if (socket) {
+			io.sockets.in('topic_' + tid).emit('event:topic_locked', {
+				tid: tid,
+				status: 'ok'
+			});
 
-					socket.emit('api:topic.lock', {
-						status: 'ok',
-						tid: tid
-					});
-				}
-			}
-		});
+			socket.emit('api:topic.lock', {
+				status: 'ok',
+				tid: tid
+			});
+		}
 	}
 
-	ThreadTools.unlock = function(tid, uid, socket) {
-		ThreadTools.privileges(tid, uid, function(privileges) {
-			if (privileges.editable) {
-				topics.setTopicField(tid, 'locked', 0);
+	ThreadTools.unlock = function(tid, socket) {
+		topics.setTopicField(tid, 'locked', 0);
 
-				if (socket) {
-					io.sockets. in ('topic_' + tid).emit('event:topic_unlocked', {
-						tid: tid,
-						status: 'ok'
-					});
+		if (socket) {
+			io.sockets.in('topic_' + tid).emit('event:topic_unlocked', {
+				tid: tid,
+				status: 'ok'
+			});
 
-					socket.emit('api:topic.unlock', {
-						status: 'ok',
-						tid: tid
-					});
-				}
-			}
-		});
+			socket.emit('api:topic.unlock', {
+				status: 'ok',
+				tid: tid
+			});
+		}
 	}
 
-	ThreadTools.delete = function(tid, uid, callback) {
-		ThreadTools.privileges(tid, uid, function(privileges) {
-			if (privileges.editable || uid === -1) {
+	ThreadTools.delete = function(tid, callback) {
+		topics.delete(tid);
 
-				topics.delete(tid);
+		RDB.decr('totaltopiccount');
 
-				RDB.decr('totaltopiccount');
+		ThreadTools.lock(tid);
 
-				ThreadTools.lock(tid, uid);
+		topicSearch.remove(tid);
 
-				topicSearch.remove(tid);
-
-				io.sockets. in ('topic_' + tid).emit('event:topic_deleted', {
-					tid: tid,
-					status: 'ok'
-				});
-
-				callback(null);
-			} else callback(new Error('not-enough-privs'));
+		io.sockets.in('topic_' + tid).emit('event:topic_deleted', {
+			tid: tid,
+			status: 'ok'
 		});
+
+		if (callback) {
+			callback(null);
+		}
 	}
 
-	ThreadTools.restore = function(tid, uid, socket, callback) {
-		ThreadTools.privileges(tid, uid, function(privileges) {
-			if (privileges.editable) {
+	ThreadTools.restore = function(tid, socket, callback) {
+		topics.restore(tid);
+		RDB.incr('totaltopiccount');
+		ThreadTools.unlock(tid);
 
-				topics.restore(tid);
-				RDB.incr('totaltopiccount');
-				ThreadTools.unlock(tid, uid);
-
-				io.sockets. in ('topic_' + tid).emit('event:topic_restored', {
-					tid: tid,
-					status: 'ok'
-				});
-
-				topics.getTopicField(tid, 'title', function(err, title) {
-					topicSearch.index(title, tid);
-				});
-
-				if(callback)
-					callback(null);
-			}
+		io.sockets.in('topic_' + tid).emit('event:topic_restored', {
+			tid: tid,
+			status: 'ok'
 		});
+
+		topics.getTopicField(tid, 'title', function(err, title) {
+			topicSearch.index(title, tid);
+		});
+
+		if(callback) {
+			callback(null);
+		}
 	}
 
-	ThreadTools.pin = function(tid, uid, socket) {
-		ThreadTools.privileges(tid, uid, function(privileges) {
-			if (privileges.editable) {
-
-				topics.setTopicField(tid, 'pinned', 1);
-				topics.getTopicField(tid, 'cid', function(err, cid) {
-					RDB.zadd('categories:' + cid + ':tid', Math.pow(2, 53), tid);
-				});
-
-				if (socket) {
-					io.sockets. in ('topic_' + tid).emit('event:topic_pinned', {
-						tid: tid,
-						status: 'ok'
-					});
-
-					socket.emit('api:topic.pin', {
-						status: 'ok',
-						tid: tid
-					});
-				}
-			}
+	ThreadTools.pin = function(tid, socket) {
+		topics.setTopicField(tid, 'pinned', 1);
+		topics.getTopicField(tid, 'cid', function(err, cid) {
+			RDB.zadd('categories:' + cid + ':tid', Math.pow(2, 53), tid);
 		});
+
+		if (socket) {
+			io.sockets.in('topic_' + tid).emit('event:topic_pinned', {
+				tid: tid,
+				status: 'ok'
+			});
+
+			socket.emit('api:topic.pin', {
+				status: 'ok',
+				tid: tid
+			});
+		}
 	}
 
-	ThreadTools.unpin = function(tid, uid, socket) {
-		ThreadTools.privileges(tid, uid, function(privileges) {
-			if (privileges.editable) {
-
-				topics.setTopicField(tid, 'pinned', 0);
-				topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
-					RDB.zadd('categories:' + topicData.cid + ':tid', topicData.lastposttime, tid);
-				});
-				if (socket) {
-					io.sockets. in ('topic_' + tid).emit('event:topic_unpinned', {
-						tid: tid,
-						status: 'ok'
-					});
-
-					socket.emit('api:topic.unpin', {
-						status: 'ok',
-						tid: tid
-					});
-				}
-			}
+	ThreadTools.unpin = function(tid, socket) {
+		topics.setTopicField(tid, 'pinned', 0);
+		topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
+			RDB.zadd('categories:' + topicData.cid + ':tid', topicData.lastposttime, tid);
 		});
+		if (socket) {
+			io.sockets.in('topic_' + tid).emit('event:topic_unpinned', {
+				tid: tid,
+				status: 'ok'
+			});
+
+			socket.emit('api:topic.unpin', {
+				status: 'ok',
+				tid: tid
+			});
+		}
 	}
 
 	ThreadTools.move = function(tid, cid, socket) {
@@ -213,7 +188,7 @@ var RDB = require('./redis.js'),
 						status: 'ok'
 					});
 
-					io.sockets. in ('topic_' + tid).emit('event:topic_moved', {
+					io.sockets.in('topic_' + tid).emit('event:topic_moved', {
 						tid: tid
 					});
 				} else {

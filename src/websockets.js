@@ -491,42 +491,66 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:topic.delete', function(data) {
-			threadTools.delete(data.tid, uid, function(err) {
-				if (!err) {
-					posts.getTopicPostStats();
-					socket.emit('api:topic.delete', {
-						status: 'ok',
-						tid: data.tid
+			threadTools.privileges(data.tid, uid, function(privileges) {
+				if (privileges.editable) {
+					threadTools.delete(data.tid, function(err) {
+						if (!err) {
+							posts.getTopicPostStats();
+							socket.emit('api:topic.delete', {
+								status: 'ok',
+								tid: data.tid
+							});
+						}
 					});
 				}
 			});
 		});
 
 		socket.on('api:topic.restore', function(data) {
-			threadTools.restore(data.tid, uid, socket, function(err) {
-				posts.getTopicPostStats();
+			threadTools.privileges(data.tid, uid, function(privileges) {
+				if (privileges.editable) {
+					threadTools.restore(data.tid, socket, function(err) {
+						posts.getTopicPostStats();
 
-				socket.emit('api:topic.restore', {
-					status: 'ok',
-					tid: data.tid
-				});
+						socket.emit('api:topic.restore', {
+							status: 'ok',
+							tid: data.tid
+						});
+					});
+				}
 			});
 		});
 
 		socket.on('api:topic.lock', function(data) {
-			threadTools.lock(data.tid, uid, socket);
+			threadTools.privileges(data.tid, uid, function(privileges) {
+				if (privileges.editable) {
+					threadTools.lock(data.tid, socket);
+				}
+			});
 		});
 
 		socket.on('api:topic.unlock', function(data) {
-			threadTools.unlock(data.tid, uid, socket);
+			threadTools.privileges(data.tid, uid, function(privileges) {
+				if (privileges.editable) {
+					threadTools.unlock(data.tid, socket);
+				}
+			});
 		});
 
 		socket.on('api:topic.pin', function(data) {
-			threadTools.pin(data.tid, uid, socket);
+			threadTools.privileges(data.tid, uid, function(privileges) {
+				if (privileges.editable) {
+					threadTools.pin(data.tid, socket);
+				}
+			});
 		});
 
 		socket.on('api:topic.unpin', function(data) {
-			threadTools.unpin(data.tid, uid, socket);
+			threadTools.privileges(data.tid, uid, function(privileges) {
+				if (privileges.editable) {
+					threadTools.unpin(data.tid, socket);
+				}
+			});
 		});
 
 		socket.on('api:topic.move', function(data) {
