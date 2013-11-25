@@ -83,43 +83,35 @@
 		</ul>
 	</div>
 	<div class="col-md-3 {show_sidebar} category-sidebar">
-
-		<div class="sidebar-block img-thumbnail">
-			<div class="block-header">
-				[[category:sidebar.recent_replies]]
-			</div>
-			<div class="block-content recent-replies">
+		<div class="panel panel-default">
+			<div class="panel-heading">[[category:sidebar.recent_replies]]</div>
+			<div class="panel-body recent-replies">
 				<ul id="category_recent_replies"></ul>
 			</div>
 		</div>
-		<div class="sidebar-block img-thumbnail">
-			<div class="block-header">
-				[[category:sidebar.active_participants]]
-			</div>
-			<div class="block-content active-users">
+
+		<div class="panel panel-default">
+			<div class="panel-heading">[[category:sidebar.active_participants]]</div>
+			<div class="panel-body active-users">
 				<!-- BEGIN active_users -->
 				<a data-uid="{active_users.uid}" href="/user/{active_users.userslug}"><img title="{active_users.username}" src="{active_users.picture}" class="img-rounded user-img" /></a>
 				<!-- END active_users -->
 			</div>
 		</div>
-		<div class="sidebar-block img-thumbnail {moderator_block_class}">
-			<div class="block-header">
-				[[category:sidebar.moderators]]
-			</div>
-			<div class="block-content">
+
+		<div class="panel panel-default {moderator_block_class}">
+			<div class="panel-heading">[[category:sidebar.moderators]]</div>
+			<div class="panel-body moderators">
 				<!-- BEGIN moderators -->
 				<a href="/user/{moderators.userslug}"><img title="{moderators.username}" src="{moderators.picture}" class="img-rounded" /></a>
 				<!-- END moderators -->
 			</div>
 		</div>
+
 		<!-- BEGIN sidebars -->
-		<div class="sidebar-block img-thumbnail {sidebars.block_class}">
-			<div class="block-header">
-				{sidebars.header}
-			</div>
-			<div class="block-content">
-				{sidebars.content}
-			</div>
+		<div class="panel panel-default">
+			<div class="panel panel-default {sidebars.block_class}">{sidebars.header}</div>
+			<div class="panel-body">{sidebars.content}</div>
 		</div>
 		<!-- END sidebars -->
 	</div>
