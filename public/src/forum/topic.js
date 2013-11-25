@@ -765,7 +765,7 @@ define(function() {
 
 
 		var pagination;
-		var postcount = templates.get('postcount');
+		Topic.postCount = templates.get('postcount');
 
 		function updateHeader() {
 			if (pagination == null) {
@@ -784,9 +784,9 @@ define(function() {
 			var scrollTop = jQuery(window).scrollTop();
 			var scrollBottom = scrollTop + windowHeight;
 
-			if (scrollTop < 50 && postcount > 1) {
+			if (scrollTop < 50 && Topic.postCount > 1) {
 				localStorage.removeItem("topic:" + tid + ":bookmark");
-				pagination.innerHTML = '0 out of ' + postcount;
+				pagination.innerHTML = '0 out of ' + Topic.postCount;
 				return;
 			}
 
@@ -812,13 +812,13 @@ define(function() {
 						smallestNonNegative = Number.MAX_VALUE;
 					}
 
-					pagination.innerHTML = this.postnumber + ' out of ' + postcount;
+					pagination.innerHTML = this.postnumber + ' out of ' + Topic.postCount;
 				}
 			});
 
 			setTimeout(function() {
 				if (scrollTop + windowHeight == jQuery(document).height()) {
-					pagination.innerHTML = postcount + ' out of ' + postcount;
+					pagination.innerHTML = Topic.postCount + ' out of ' + Topic.postCount;
 				}
 			}, 100);
 		}
@@ -929,7 +929,8 @@ define(function() {
 	}
 
 	function updatePostCount() {
-		$('#topic-post-count').html($('#post-container li[data-pid]:not(.deleted)').length);
+		Topic.postCount = $('#post-container li[data-pid]:not(.deleted)').length;
+		$('#topic-post-count').html(Topic.postCount);
 	}
 
 	function loadMorePosts(tid, callback) {
