@@ -43,7 +43,7 @@
     "nodebb-plugin-mentions": "~0.1.14",
     "nodebb-plugin-markdown": "~0.1.8",
     "nodebb-theme-vanilla": "designcreateplay/nodebb-theme-vanilla",
-    "nodebb-theme-cerulean": "0.0.7",
+    "nodebb-theme-cerulean": "0.0.8",
     "cron": "~1.0.1"
   },
   "optionalDependencies": {
