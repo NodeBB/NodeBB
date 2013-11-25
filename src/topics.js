@@ -513,8 +513,6 @@ var RDB = require('./redis.js'),
 					privileges = results[2],
 					categoryData = results[3];
 
-				var main_posts = topicPosts.splice(0, 1);
-
 				callback(null, {
 					'topic_name': topicData.title,
 					'category_name': categoryData.name,
@@ -529,7 +527,6 @@ var RDB = require('./redis.js'),
 					'topic_id': tid,
 					'expose_tools': privileges.editable ? 1 : 0,
 					'posts': topicPosts,
-					'main_posts': main_posts,
 					'twitter-intent-url': 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(nconf.get('url') + 'topic/' + topicData.slug) + '&text=' + encodeURIComponent(topicData.title),
 					'facebook-share-url': 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(nconf.get('url') + 'topic/' + topicData.slug),
 					'google-share-url': 'https://plus.google.com/share?url=' + encodeURIComponent(nconf.get('url') + 'topic/' + topicData.slug)
