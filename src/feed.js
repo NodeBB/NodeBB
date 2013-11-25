@@ -33,18 +33,18 @@
 
 			var feed = new rss({
 					title: topicData.topic_name,
-					description: topicData.main_posts[0].content,
+					description: topicData.posts[0].content,
 					feed_url: Feed.defaults.baseUrl + '/topics/' + tid + '.rss',
 					site_url: nconf.get('url') + 'topic/' + topicData.slug,
-					image_url: topicData.main_posts[0].picture,
-					author: topicData.main_posts[0].username,
+					image_url: topicData.posts[0].picture,
+					author: topicData.posts[0].username,
 					ttl: Feed.defaults.ttl
 				}),
-				topic_posts = topicData.main_posts.concat(topicData.posts),
+				topic_posts = topicData.posts.concat(topicData.posts),
 				dateStamp;
 
 			// Add pubDate if topic contains posts
-			if (topicData.main_posts.length > 0) feed.pubDate = new Date(parseInt(topicData.main_posts[0].timestamp, 10)).toUTCString();
+			if (topicData.posts.length > 0) feed.pubDate = new Date(parseInt(topicData.posts[0].timestamp, 10)).toUTCString();
 
 			async.each(topic_posts, function(postData, next) {
 				if (postData.deleted === '0') {

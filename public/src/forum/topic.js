@@ -36,7 +36,7 @@ define(function() {
 
 			app.enterRoom('topic_' + tid);
 
-			if($('#post-container .sub-posts').length) {
+			if($('#post-container .sub-posts').length > 1) {
 				$('.topic-main-buttons').removeClass('hide').parent().removeClass('hide');
 			}
 
@@ -196,7 +196,7 @@ define(function() {
 
 
 			// Follow Thread State
-			var followEl = $('.main-post .follow'),
+			var followEl = $('.posts .follow'),
 				set_follow_state = function(state, quiet) {
 					if (state && !followEl.hasClass('btn-success')) {
 						followEl.addClass('btn-success');
@@ -333,7 +333,7 @@ define(function() {
 
 		$('#post-container').delegate('.edit', 'click', function(e) {
 			var pid = $(this).parents('li').attr('data-pid'),
-				main = $(this).parents('.main-post');
+				main = $(this).parents('.posts');
 
 			require(['composer'], function(cmp) {
 				cmp.push(null, null, pid);
@@ -790,8 +790,8 @@ define(function() {
 
 			if (scrollTop < 50 && postcount > 1) {
 				localStorage.removeItem("topic:" + tid + ":bookmark");
-				postAuthorImage.src = (jQuery('.main-post .avatar img').attr('src'));
-				mobileAuthorOverlay.innerHTML = 'Posted by ' + jQuery('.main-post').attr('data-username') + ', ' + jQuery('.main-post').find('.relativeTimeAgo').html();
+				postAuthorImage.src = (jQuery('.posts .avatar img').attr('src'));
+				mobileAuthorOverlay.innerHTML = 'Posted by ' + jQuery('.posts').attr('data-username') + ', ' + jQuery('.posts').find('.relativeTimeAgo').html();
 				pagination.innerHTML = '0 out of ' + postcount;
 				return;
 			}
@@ -890,7 +890,7 @@ define(function() {
 			$('#post-container li[data-pid]').each(function() {
 				if(parseInt(firstPid, 10) > parseInt($(this).attr('data-pid'), 10)) {
 					after = $(this);
-					if(after.hasClass('main-post')) {
+					if(after.hasClass('posts')) {
 						after = after.next();
 					}
 				} else {
@@ -908,9 +908,12 @@ define(function() {
 		var insertAfter = findInsertionPoint();
 
 		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
-		
+		var regexp = new RegExp("<!--[\\s]*IF @first[\\s]*-->[\\s\\S]*<!--[\\s]*ENDIF @first[\\s]*-->", 'g');
+		html = html.replace(regexp, '');
+
 		translator.translate(html, function(translatedHTML) {
 			var translated = $(translatedHTML);
+
 			if(!infiniteLoaded) {
 				translated.removeClass('infiniteloaded');
 			}

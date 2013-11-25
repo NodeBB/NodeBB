@@ -479,7 +479,7 @@ var path = require('path'),
 							content: topicData.topic_name
 						}, {
 							name: "description",
-							content: sanitize(topicData.main_posts[0].content.substr(0, 255)).escape().replace('\n', '')
+							content: sanitize(topicData.posts[0].content.substr(0, 255)).escape().replace('\n', '')
 						}, {
 							property: 'og:title',
 							content: topicData.topic_name + ' | ' + (meta.config.title || 'NodeBB')
@@ -491,10 +491,10 @@ var path = require('path'),
 							content: nconf.get('url') + 'topic/' + topicData.slug
 						}, {
 							property: 'og:image',
-							content: topicData.main_posts[0].picture
+							content: topicData.posts[0].picture
 						}, {
 							property: "article:published_time",
-							content: new Date(parseInt(topicData.main_posts[0].timestamp, 10)).toISOString()
+							content: new Date(parseInt(topicData.posts[0].timestamp, 10)).toISOString()
 						}, {
 							property: 'article:modified_time',
 							content: new Date(lastMod).toISOString()
