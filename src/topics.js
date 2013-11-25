@@ -102,6 +102,8 @@ var RDB = require('./redis.js'),
 					threadTools.toggleFollow(tid, uid);
 
 					Topics.getTopicForCategoryView(tid, uid, function(topicData) {
+						topicData.unreplied = 1;
+						
 						callback(null, {
 							topicData: topicData,
 							postData: postData
