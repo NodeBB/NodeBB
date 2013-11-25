@@ -764,7 +764,7 @@ define(function() {
 
 
 
-		var postAuthorImage, mobileAuthorOverlay, pagination;
+		var pagination;
 		var postcount = templates.get('postcount');
 
 		function updateHeader() {
@@ -776,10 +776,6 @@ define(function() {
 					app.scrollToBottom();
 				});
 			}
-
-			jQuery('.mobile-author-overlay').css('bottom', '0px');
-			postAuthorImage = postAuthorImage || document.getElementById('mobile-author-image');
-			mobileAuthorOverlay = mobileAuthorOverlay || document.getElementById('mobile-author-overlay');
 			pagination = pagination || document.getElementById('pagination');
 
 			pagination.parentNode.style.display = 'block';
@@ -790,8 +786,6 @@ define(function() {
 
 			if (scrollTop < 50 && postcount > 1) {
 				localStorage.removeItem("topic:" + tid + ":bookmark");
-				postAuthorImage.src = (jQuery('.posts .avatar img').attr('src'));
-				mobileAuthorOverlay.innerHTML = 'Posted by ' + jQuery('.posts').attr('data-username') + ', ' + jQuery('.posts').find('.relativeTimeAgo').html();
 				pagination.innerHTML = '0 out of ' + postcount;
 				return;
 			}
@@ -819,8 +813,6 @@ define(function() {
 					}
 
 					pagination.innerHTML = this.postnumber + ' out of ' + postcount;
-					postAuthorImage.src = (jQuery(this).find('.profile-image-block img').attr('src'));
-					mobileAuthorOverlay.innerHTML = 'Posted by ' + jQuery(this).attr('data-username') + ', ' + jQuery(this).find('.relativeTimeAgo').html();
 				}
 			});
 

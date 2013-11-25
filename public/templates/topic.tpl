@@ -153,17 +153,6 @@
 		<div style="clear:both;"></div>
 	</div>
 
-	<div class="mobile-author-overlay">
-		<div class="row">
-			<div class="col-xs-3">
-				<img id="mobile-author-image" src="" width=50 height=50 />
-			</div>
-			<div class="col-xs-9">
-				<h4><div id="mobile-author-overlay"></div></h4>
-			</div>
-		</div>
-	</div>
-
 	<div id="move_thread_modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="Move Topic" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
