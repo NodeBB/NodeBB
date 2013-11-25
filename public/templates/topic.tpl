@@ -24,123 +24,30 @@
 	</ol>
 
 	<ul id="post-container" class="container" data-tid="{topic_id}">
-		<!-- BEGIN main_posts -->
-
-			<li class="row post-row main-post infiniteloaded" data-pid="{main_posts.pid}" data-uid="{main_posts.uid}" data-username="{main_posts.username}" data-deleted="{main_posts.deleted}" itemscope itemtype="http://schema.org/Article">
-				<a id="post_anchor_{main_posts.pid}" name="{main_posts.pid}"></a>
-				<div class="col-md-12">
-					<div class="post-block">
-						<meta itemprop="datePublished" content="{main_posts.relativeTime}">
-						<meta itemprop="dateModified" content="{main_posts.relativeEditTime}">
-						<meta itemprop="url" content="/topic/{slug}/">
-						<a class="avatar" href="/user/{main_posts.userslug}">
-							<img itemprop="image" src="{main_posts.picture}" align="left" class="img-thumbnail" width=150 height=150 /><br />
-						</a>
-						<h3>
-							<p id="topic_title_{main_posts.pid}" class="topic-title" itemprop="name">{topic_name}</p>
-						</h3>
-
-						<div class="topic-buttons">
-							<div class="btn-group">
-								<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="[[topic:posted_by]] {main_posts.username}">
-									<span class="username-field" href="/user/{main_posts.userslug}" itemprop="author" itemscope itemtype="http://schema.org/Person">{main_posts.username}&nbsp;</span>
-									<span class="caret"></span>
-								</button>
-							    <ul class="dropdown-menu">
-									<li><a href="/user/{main_posts.userslug}"><i class="icon-user"></i> [[topic:profile]]</a></li>
-									<li><div class="chat"><i class="icon-comment"></i> [[topic:chat]]</div></li>
-							    </ul>
-							</div>
-
-							<div class="btn-group">
-								<button class="btn btn-sm btn-default follow" type="button" title="Be notified of new replies in this topic"><i class="icon-eye-open"></i></button>
-								<button class="favourite btn btn-sm btn-default {main_posts.fav_button_class}" type="button">
-									<span class="favourite-text">[[topic:favourite]]</span>
-									<span class="post_rep_{main_posts.pid}">{main_posts.post_rep} </span><i class="{main_posts.fav_star_class}"></i>
-								</button>
-							</div>
-							<div class="btn-group">
-								<button class="btn btn-sm btn-default quote" type="button" title="[[topic:quote]]"><i class="icon-quote-left"></i></button>
-								<button class="btn btn-sm btn-primary btn post_reply" type="button">[[topic:reply]] <i class="icon-reply"></i></button>
-							</div>
-
-							<div class="pull-right">
-								<div class="btn-group post-tools">
-									<button class="btn btn-sm btn-default link" type="button" title="[[topic:link]]"><i class="icon-link"></i></button>
-									<button class="btn btn-sm btn-default facebook-share" type="button" title=""><i class="icon-facebook"></i></button>
-									<button class="btn btn-sm btn-default twitter-share" type="button" title=""><i class="icon-twitter"></i></button>
-									<button class="btn btn-sm btn-default google-share" type="button" title=""><i class="icon-google-plus"></i></button>
-								</div>
-								<div class="btn-group post-tools">
-									<button class="btn btn-sm btn-default edit {main_posts.display_moderator_tools}" type="button" title="[[topic:edit]]"><i class="icon-pencil"></i></button>
-									<button class="btn btn-sm btn-default delete {main_posts.display_moderator_tools}" type="button" title="[[topic:delete]]"><i class="icon-trash"></i></button>
-								</div>
-							</div>
-
-							<input id="post_{main_posts.pid}_link" value="" class="pull-right" style="display:none;"></input>
-
-						</div>
-
-						<div id="content_{main_posts.pid}" class="post-content" itemprop="articleBody">{main_posts.content}</div>
-						<div class="post-signature">{main_posts.signature}</div>
-						<div class="post-info">
-							<span class="pull-left">
-								{main_posts.additional_profile_info}
-							</span>
-							<span class="pull-right">
-								posted <span class="relativeTimeAgo timeago" title="{main_posts.relativeTime}"></span>
-								<span class="{main_posts.edited-class}">| last edited by <strong><a href="/user/{main_posts.editorslug}">{main_posts.editorname}</a></strong></span>
-								<span class="timeago" title="{main_posts.relativeEditTime}"></span>
-							</span>
-							<div style="clear:both;"></div>
-						</div>
-					</div>
-				</div>
-			</li>
-		<!-- END main_posts -->
-
-		<li class="well">
-			<div class="inline-block">
-				<small class="topic-stats">
-					<span>posts</span>
-					<strong><span id="topic-post-count" class="formatted-number">{postcount}</span></strong> |
-					<span>views</span>
-					<strong><span class="formatted-number">{viewcount}</span></strong> |
-					<span>browsing</span>
-				</small>
-				<div class="thread_active_users active-users inline-block"></div>
-			</div>
-			<div class="topic-main-buttons pull-right inline-block">
-				<button class="btn btn-primary post_reply" type="button">[[topic:reply]]</button>
-				<div class="btn-group thread-tools hide">
-					<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">[[topic:thread_tools.title]] <span class="caret"></span></button>
-					<ul class="dropdown-menu">
-						<li><a href="#" class="pin_thread"><i class="icon-pushpin"></i> [[topic:thread_tools.pin]]</a></li>
-						<li><a href="#" class="lock_thread"><i class="icon-lock"></i> [[topic:thread_tools.lock]]</a></li>
-						<li class="divider"></li>
-						<li><a href="#" class="move_thread"><i class="icon-move"></i> [[topic:thread_tools.move]]</a></li>
-						<li class="divider"></li>
-						<li><a href="#" class="delete_thread"><span class="text-error"><i class="icon-trash"></i> [[topic:thread_tools.delete]]</span></a></li>
-					</ul>
-				</div>
-			</div>
-			<div style="clear:both;"></div>
-		</li>
-
+		<div class="posts">
 		<!-- BEGIN posts -->
-
-			<li class="row post-row sub-posts infiniteloaded" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-deleted="{posts.deleted}" itemscope itemtype="http://schema.org/Comment">
+			<li class="row post-row infiniteloaded" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-deleted="{posts.deleted}" itemscope itemtype="http://schema.org/Comment">
 				<a id="post_anchor_{posts.pid}" name="{posts.pid}"></a>
+
 				<meta itemprop="datePublished" content="{posts.relativeTime}">
 				<meta itemprop="dateModified" content="{posts.relativeEditTime}">
-				<div class="col-md-1 profile-image-block hidden-xs hidden-sm">
+
+				<div class="col-md-1 profile-image-block hidden-xs hidden-sm sub-post">
 					<a href="/user/{posts.userslug}">
 						<img src="{posts.picture}" align="left" class="img-thumbnail" itemprop="image" />
 						<span class="label label-danger {posts.show_banned}">[[topic:banned]]</span>
 					</a>
 				</div>
+
 				<div class="col-md-11">
 					<div class="post-block">
+						<a class="main-post avatar" href="/user/{posts.userslug}">
+							<img itemprop="image" src="{posts.picture}" align="left" class="img-thumbnail" width=150 height=150 />
+						</a>
+						<h3 class="main-post">
+							<p id="topic_title_{posts.pid}" class="topic-title" itemprop="name">{topic_name}</p>
+						</h3>
+
 						<div class="topic-buttons">
 							<div class="btn-group">
 								<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="Posted by {posts.username}">
@@ -155,6 +62,7 @@
 							</div>
 
 							<div class="btn-group">
+								<button class="btn btn-sm btn-default follow main-post" type="button" title="Be notified of new replies in this topic"><i class="icon-eye-open"></i></button>
 								<button class="favourite btn btn-sm btn-default {posts.fav_button_class}" type="button">
 									<span class="favourite-text">[[topic:favourite]]</span>
 									<span class="post_rep_{posts.pid}">{posts.post_rep} </span><i class="{posts.fav_star_class}"></i>
@@ -190,7 +98,38 @@
 					</div>
 				</div>
 			</li>
+
+			<!-- IF @first -->
+			<li class="well post-bar">
+				<div class="inline-block">
+					<small class="topic-stats">
+						<span>posts</span>
+						<strong><span id="topic-post-count" class="formatted-number">{postcount}</span></strong> |
+						<span>views</span>
+						<strong><span class="formatted-number">{viewcount}</span></strong> |
+						<span>browsing</span>
+					</small>
+					<div class="thread_active_users active-users inline-block"></div>
+				</div>
+				<div class="topic-main-buttons pull-right inline-block">
+					<button class="btn btn-primary post_reply" type="button">[[topic:reply]]</button>
+					<div class="btn-group thread-tools hide">
+						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">[[topic:thread_tools.title]] <span class="caret"></span></button>
+						<ul class="dropdown-menu">
+							<li><a href="#" class="pin_thread"><i class="icon-pushpin"></i> [[topic:thread_tools.pin]]</a></li>
+							<li><a href="#" class="lock_thread"><i class="icon-lock"></i> [[topic:thread_tools.lock]]</a></li>
+							<li class="divider"></li>
+							<li><a href="#" class="move_thread"><i class="icon-move"></i> [[topic:thread_tools.move]]</a></li>
+							<li class="divider"></li>
+							<li><a href="#" class="delete_thread"><span class="text-error"><i class="icon-trash"></i> [[topic:thread_tools.delete]]</span></a></li>
+						</ul>
+					</div>
+				</div>
+				<div style="clear:both;"></div>
+			</li>
+			<!-- ENDIF @first -->
 		<!-- END posts -->
+		</div>
 	</ul>
 
 	<div class="well col-md-11 col-xs-12 pull-right hide">
