@@ -10,7 +10,8 @@ var RDB = require('./redis.js'),
 	schemaDate, thisSchemaDate;
 
 Upgrade.check = function(callback) {
-	var	latestSchema = new Date(2013, 10, 22).getTime();
+	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
+	var	latestSchema = new Date(2013, 10, 26).getTime();
 
 	RDB.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
