@@ -27,7 +27,7 @@ var path = require('path'),
 			async.parallel([
 				function(next) {
 					var categoryUrls = [];
-					categories.getAllCategories(function(data) {
+					categories.getAllCategories(0, function(err, data) {
 						data.categories.forEach(function(category) {
 							if (!category.disabled) {
 								categoryUrls.push({

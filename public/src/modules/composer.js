@@ -114,19 +114,19 @@ define(['taskbar'], function(taskbar) {
 													'<input type="text" tabIndex="1" placeholder="Enter your topic title here..." />' +
 													'<div class="btn-toolbar formatting-bar">' +
 														'<div class="btn-group">' +
-															'<span class="btn btn-link" tabindex="-1"><i class="icon-bold"></i></span>' +
-															'<span class="btn btn-link" tabindex="-1"><i class="icon-italic"></i></span>' +
-															'<span class="btn btn-link" tabindex="-1"><i class="icon-list"></i></span>' +
-															'<span class="btn btn-link" tabindex="-1"><i class="icon-link"></i></span>' +
+															'<span class="btn btn-link" tabindex="-1"><i class="fa fa-bold"></i></span>' +
+															'<span class="btn btn-link" tabindex="-1"><i class="fa fa-italic"></i></span>' +
+															'<span class="btn btn-link" tabindex="-1"><i class="fa fa-list"></i></span>' +
+															'<span class="btn btn-link" tabindex="-1"><i class="fa fa-link"></i></span>' +
 														'</div>' +
 													'</div>' +
 													'<textarea tabIndex="2"></textarea>' +
 													'<div class="imagedrop"><div>Drag and Drop Images Here</div></div>'+
 													'<div class="btn-toolbar action-bar">' +
 														'<div class="btn-group" style="float: right; margin-right: -8px">' +
-															'<button data-action="minimize" class="btn hidden-xs" tabIndex="4"><i class="icon-download-alt"></i> Minimize</button>' +
-															'<button class="btn" data-action="discard" tabIndex="5"><i class="icon-remove"></i> Discard</button>' +
-															'<button data-action="post" class="btn" tabIndex="3"><i class="icon-ok"></i> Submit</button>' +
+															'<button data-action="minimize" class="btn hidden-xs" tabIndex="4"><i class="fa fa-download"></i> Minimize</button>' +
+															'<button class="btn" data-action="discard" tabIndex="5"><i class="fa fa-times"></i> Discard</button>' +
+															'<button data-action="post" class="btn" tabIndex="3"><i class="fa fa-check"></i> Submit</button>' +
 														'</div>' +
 													'</div>' +
 												'</div>';
@@ -217,7 +217,7 @@ define(['taskbar'], function(taskbar) {
 				}
 
 				switch(iconClass) {
-					case 'icon-bold':
+					case 'fa fa-bold':
 						if (selectionStart === selectionEnd) {
 							// Nothing selected
 							insertIntoInput(postContentEl, "**bolded text**");
@@ -228,7 +228,7 @@ define(['taskbar'], function(taskbar) {
 							postContentEl.selectionEnd = selectionEnd + 2;
 						}
 					break;
-					case 'icon-italic':
+					case 'fa fa-italic':
 						if (selectionStart === selectionEnd) {
 							// Nothing selected
 							insertIntoInput(postContentEl, "*italicised text*");
@@ -239,11 +239,11 @@ define(['taskbar'], function(taskbar) {
 							postContentEl.selectionEnd = selectionEnd + 1;
 						}
 					break;
-					case 'icon-list':
+					case 'fa fa-list':
 						// Nothing selected
 						insertIntoInput(postContentEl, "\n\n* list item");
 					break;
-					case 'icon-link':
+					case 'fa fa-link':
 						if (selectionStart === selectionEnd) {
 							// Nothing selected
 							insertIntoInput(postContentEl, "[link text](link url)");

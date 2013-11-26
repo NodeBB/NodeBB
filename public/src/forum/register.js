@@ -12,7 +12,7 @@ define(function() {
 			password_notify = $('#password-notify'),
 			password_confirm_notify = $('#password-confirm-notify'),
 			validationError = false,
-			successIcon = '<i class="icon icon-ok"></i>';
+			successIcon = '<i class="fa fa-check"></i>';
 
 		$('#referrer').val(app.previousUrl);
 

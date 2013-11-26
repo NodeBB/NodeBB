@@ -82,10 +82,10 @@ define(['forum/accountheader'], function(header) {
 
 		if (data.online) {
 			onlineStatus.find('span span').text('online');
-			onlineStatus.find('i').attr('class', 'icon-circle');
+			onlineStatus.find('i').attr('class', 'fa fa-circle');
 		} else {
 			onlineStatus.find('span span').text('offline');
-			onlineStatus.find('i').attr('class', 'icon-circle-blank');
+			onlineStatus.find('i').attr('class', 'fa fa-circle-o');
 		}
 	};
 

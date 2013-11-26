@@ -23,7 +23,7 @@
 				<div class="row">
 					<div class="col-md-12 topic-row">
 						<a href="../../topic/{topics.slug}">
-							<h3><span class="topic-title"><strong><i class="{topics.pin-icon}"></i> <i class="{topics.lock-icon}"></i></strong> {topics.title}</span></h3>
+							<h3><span class="topic-title"><strong><i class="fa {topics.pin-icon}"></i> <i class="fa {topics.lock-icon}"></i></strong> {topics.title}</span></h3>
 						</a>
 						<small>
 							<span class="topic-stats">
@@ -42,7 +42,7 @@
 								</a>
 								posted in
 								<a href="../../category/{topics.categorySlug}">
-									<i class="{topics.categoryIcon}"></i> {topics.categoryName}
+									<i class="fa {topics.categoryIcon}"></i> {topics.categoryName}
 								</a>
 								<span class="timeago" title="{topics.relativeTime}"></span>
 								</span>

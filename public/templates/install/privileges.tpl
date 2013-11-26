@@ -26,10 +26,10 @@
 
 <hr />
 <div class="pull-right">
-	<button id="start-nodebb" class="btn btn-success btn-lg"><i class="icon-thumbs-up"></i> Start using NodeBB!</button>
+	<button id="start-nodebb" class="btn btn-success btn-lg"><i class="fa fa-thumbs-up"></i> Start using NodeBB!</button>
 </div>
 <div>
-	<button data-path="social" class="btn btn-primary btn-lg">Previous &ndash; <i class="icon-facebook"></i> Social</button>
+	<button data-path="social" class="btn btn-primary btn-lg">Previous &ndash; <i class="fa fa-facebook"></i> Social</button>
 </div>
 
 <script>

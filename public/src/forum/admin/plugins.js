@@ -13,7 +13,7 @@ define(function() {
 
 				socket.on('api:admin.plugins.toggle', function(status) {
 					pluginTgl = document.querySelector('.plugins li[data-plugin-id="' + status.id + '"] button');
-					pluginTgl.innerHTML = '<i class="icon-off"></i> ' + (status.active ? 'Dea' : 'A') + 'ctivate';
+					pluginTgl.innerHTML = '<i class="fa fa-power-off"></i> ' + (status.active ? 'Dea' : 'A') + 'ctivate';
 
 					app.alert({
 						alert_id: 'plugin_toggled_' + status.id,

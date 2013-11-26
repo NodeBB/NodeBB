@@ -50,14 +50,14 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 		});
 
 		$('#gravatar-box').on('click', function() {
-			$('#gravatar-box .icon-ok').show();
-			$('#uploaded-box .icon-ok').hide();
+			$('#gravatar-box .fa-check').show();
+			$('#uploaded-box .fa-check').hide();
 			selectedImageType = 'gravatar';
 		});
 
 		$('#uploaded-box').on('click', function() {
-			$('#gravatar-box .icon-ok').hide();
-			$('#uploaded-box .icon-ok').show();
+			$('#gravatar-box .fa-check').hide();
+			$('#uploaded-box .fa-check').show();
 			selectedImageType = 'uploaded';
 		});
 
@@ -211,14 +211,14 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 
 
 		if (currentPicture == gravatarPicture)
-			$('#gravatar-box .icon-ok').show();
+			$('#gravatar-box .fa-check').show();
 		else
-			$('#gravatar-box .icon-ok').hide();
+			$('#gravatar-box .fa-check').hide();
 
 		if (currentPicture == uploadedPicture)
-			$('#uploaded-box .icon-ok').show();
+			$('#uploaded-box .fa-check').show();
 		else
-			$('#uploaded-box .icon-ok').hide();
+			$('#uploaded-box .fa-check').hide();
 	}
 
 	return AccountEdit;

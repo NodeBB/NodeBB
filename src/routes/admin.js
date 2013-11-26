@@ -220,13 +220,13 @@ var user = require('./../user.js'),
 			});
 
 			app.get('/categories', function (req, res) {
-				categories.getAllCategories(function (data) {
+				categories.getAllCategories(0, function (err, data) {
 					res.json(data);
 				});
 			});
 
 			app.get('/categories/active', function (req, res) {
-				categories.getAllCategories(function (data) {
+				categories.getAllCategories(0, function (err, data) {
 					data.categories = data.categories.filter(function (category) {
 						return (!category.disabled || category.disabled === "0");
 					});
@@ -235,7 +235,7 @@ var user = require('./../user.js'),
 			});
 
 			app.get('/categories/disabled', function (req, res) {
-				categories.getAllCategories(function (data) {
+				categories.getAllCategories(0, function (err, data) {
 					data.categories = data.categories.filter(function (category) {
 						return category.disabled === "1";
 					});

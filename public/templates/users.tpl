@@ -13,7 +13,7 @@
 		<div class="input-group">
 			<input class="form-control" id="search-user" type="text" placeholder="[[users:enter_username]]"/>
 	        <span class="input-group-addon">
-	        	<span id="user-notfound-notify"><i class="icon icon-search"></i></span>
+	        	<span id="user-notfound-notify"><i class="fa fa-search"></i></span>
 	        </span>
 		</div>
 	</div>
@@ -29,11 +29,11 @@
 				<a href="/user/{users.userslug}">{users.username}</a>
 				<br/>
 				<div title="reputation" class="reputation">
-					<i class='icon-star'></i>
+					<i class='fa fa-star'></i>
 					<span class='formatted-number'>{users.reputation}</span>
 				</div>
 				<div title="post count" class="post-count">
-					<i class='icon-pencil'></i>
+					<i class='fa fa-pencil'></i>
 					<span class='formatted-number'>{users.postcount}</span>
 				</div>
 			</div>

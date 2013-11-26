@@ -403,7 +403,7 @@ var path = require('path'),
 					}, next);
 				},
 				"categories": function (next) {
-					categories.getAllCategories(function (returnData) {
+					categories.getAllCategories(0, function (err, returnData) {
 						returnData.categories = returnData.categories.filter(function (category) {
 							if (category.disabled !== '1') {
 								return true;
@@ -413,7 +413,7 @@ var path = require('path'),
 						});
 
 						next(null, returnData);
-					}, 0);
+					});
 				}
 			}, function (err, data) {
 				res.send(

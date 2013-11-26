@@ -12,13 +12,13 @@
 					<div id="gravatar-box">
 						<img id="user-gravatar-picture" src="" class="img-thumbnail user-profile-picture">
 						<span class="user-picture-label">Gravatar</span>
-						<i class='icon-ok icon-2x'></i>
+						<i class='fa fa-check fa-2x'></i>
 					</div>
 					<br/>
 					<div id="uploaded-box">
 						<img id="user-uploaded-picture" src="" class="img-thumbnail user-profile-picture">
 						<span class="user-picture-label">Uploaded picture</span>
-						<i class='icon-ok icon-2x'></i>
+						<i class='fa fa-check fa-2x'></i>
 					</div>
 
 					<a id="uploadPictureBtn" href="#">Upload new picture</a>
@@ -33,7 +33,7 @@
 
 	<div class="account-username-box" data-userslug="{userslug}">
 		<span class="account-username">
-			<a href="/user/{userslug}">{username}</a> <i class="icon-chevron-right"></i>
+			<a href="/user/{userslug}">{username}</a> <i class="fa fa-chevron-right"></i>
 			<a href="/user/{userslug}/edit">edit</a>
 		</span>
 	</div>

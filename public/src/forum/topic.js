@@ -158,7 +158,7 @@ define(function() {
 									commitEl.disabled = true;
 									$(cancelEl).fadeOut(250);
 									$(moveThreadModal).find('.modal-header button').fadeOut(250);
-									commitEl.innerHTML = 'Moving <i class="icon-spin icon-refresh"></i>';
+									commitEl.innerHTML = 'Moving <i class="fa-spin fa-refresh"></i>';
 
 									socket.once('api:topic.move', function(data) {
 										moveThreadModal.modal('hide');
@@ -310,7 +310,7 @@ define(function() {
 			var uid = $(this).parents('li').attr('data-uid');
 
 			var element = $(this).find('i');
-			if (element.attr('class') == 'icon-star-empty') {
+			if ($(element).hasClass('fa-star-o')) {
 				socket.emit('api:posts.favourite', {
 					pid: pid,
 					room_id: app.currentRoom
@@ -446,7 +446,7 @@ define(function() {
 				activeEl.find('.anonymous-box').remove();
 				if(anonymousCount || remainingUsers) {
 
-					var anonLink = $('<div class="anonymous-box inline-block"><i class="icon-user"></i></div>');
+					var anonLink = $('<div class="anonymous-box inline-block"><i class="fa fa-user"></i></div>');
 					activeEl.append(anonLink);
 
 					var title = '';
@@ -541,7 +541,7 @@ define(function() {
 			if (data.status === 'ok' && data.pid) {
 				var favEl = document.querySelector('.post_rep_' + data.pid).nextSibling;
 				if (favEl) {
-					favEl.className = 'icon-star';
+					favEl.className = 'fa fa-star';
 					$(favEl).parent().addClass('btn-warning');
 				}
 			}
@@ -551,7 +551,7 @@ define(function() {
 			if (data.status === 'ok' && data.pid) {
 				var favEl = document.querySelector('.post_rep_' + data.pid).nextSibling;
 				if (favEl) {
-					favEl.className = 'icon-star-empty';
+					favEl.className = 'fa fa-star-o';
 					$(favEl).parent().removeClass('btn-warning');
 				}
 			}
@@ -598,11 +598,11 @@ define(function() {
 				x;
 
 			if (locked === true) {
-				lockThreadEl.html('<i class="icon-unlock"></i> Unlock Thread');
+				lockThreadEl.html('<i class="fa fa-unlock"></i> Unlock Thread');
 				threadReplyBtn.attr('disabled', true);
-				threadReplyBtn.html('Locked <i class="icon-lock"></i>');
+				threadReplyBtn.html('Locked <i class="fa fa-lock"></i>');
 				for (x = 0; x < numPosts; x++) {
-					postReplyBtns[x].innerHTML = 'Locked <i class="icon-lock"></i>';
+					postReplyBtns[x].innerHTML = 'Locked <i class="fa fa-lock"></i>';
 					quoteBtns[x].style.display = 'none';
 					editBtns[x].style.display = 'none';
 					deleteBtns[x].style.display = 'none';
@@ -620,11 +620,11 @@ define(function() {
 
 				thread_state.locked = '1';
 			} else {
-				lockThreadEl.html('<i class="icon-lock"></i> Lock Thread');
+				lockThreadEl.html('<i class="fa fa-lock"></i> Lock Thread');
 				threadReplyBtn.attr('disabled', false);
 				threadReplyBtn.html('Reply');
 				for (x = 0; x < numPosts; x++) {
-					postReplyBtns[x].innerHTML = 'Reply <i class="icon-reply"></i>';
+					postReplyBtns[x].innerHTML = 'Reply <i class="fa fa-reply"></i>';
 					quoteBtns[x].style.display = 'inline-block';
 					editBtns[x].style.display = 'inline-block';
 					deleteBtns[x].style.display = 'inline-block';
@@ -652,7 +652,7 @@ define(function() {
 				deleteNotice = document.getElementById('thread-deleted') || document.createElement('div');
 
 			if (deleted) {
-				deleteTextEl.html('<i class="icon-comment"></i> Restore Thread');
+				deleteTextEl.html('<i class="fa fa-comment"></i> Restore Thread');
 				threadEl.addClass('deleted');
 
 				// Spawn a 'deleted' notice at the top of the page
@@ -663,7 +663,7 @@ define(function() {
 
 				thread_state.deleted = '1';
 			} else {
-				deleteTextEl.html('<i class="icon-trash"></i> Delete Thread');
+				deleteTextEl.html('<i class="fa fa-trash-o"></i> Delete Thread');
 				threadEl.removeClass('deleted');
 				deleteNotice.parentNode.removeChild(deleteNotice);
 
@@ -675,7 +675,7 @@ define(function() {
 			var pinEl = $('.pin_thread');
 
 			if (pinned) {
-				pinEl.html('<i class="icon-pushpin"></i> Unpin Thread');
+				pinEl.html('<i class="fa fa-thumb-tack"></i> Unpin Thread');
 				if (alert) {
 					app.alert({
 						'alert_id': 'thread_pin',
@@ -688,7 +688,7 @@ define(function() {
 
 				thread_state.pinned = '1';
 			} else {
-				pinEl.html('<i class="icon-pushpin"></i> Pin Thread');
+				pinEl.html('<i class="fa fa-thumb-tack"></i> Pin Thread');
 				if (alert) {
 					app.alert({
 						'alert_id': 'thread_pin',
@@ -896,7 +896,7 @@ define(function() {
 		if(!data.posts.length) {
 			return;
 		}
-		
+
 		var insertAfter = findInsertionPoint();
 
 		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);

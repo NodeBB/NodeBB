@@ -209,7 +209,7 @@ var async = require('async'),
 							categories: require('./admin/categories')
 						};
 
-					Categories.getAllCategories(function (data) {
+					Categories.getAllCategories(0, function (err, data) {
 						if (data.categories.length === 0) {
 							winston.warn('No categories found, populating instance with default categories');
 

@@ -558,7 +558,7 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:categories.get', function() {
-			categories.getAllCategories(function(categories) {
+			categories.getAllCategories(0, function(err, categories) {
 				socket.emit('api:categories.get', categories);
 			});
 		});

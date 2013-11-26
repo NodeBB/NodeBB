@@ -91,7 +91,7 @@ define(function() {
 				timeoutId = setTimeout(function() {
 					var username = $('#search-user').val();
 
-					jQuery('.icon-spinner').removeClass('none');
+					jQuery('.fa-spinner').removeClass('none');
 					socket.emit('api:admin.user.search', username);
 
 				}, 250);
@@ -108,7 +108,7 @@ define(function() {
 					userListEl = document.querySelector('.users');
 
 				userListEl.innerHTML = html;
-				jQuery('.icon-spinner').addClass('none');
+				jQuery('.fa-spinner').addClass('none');
 
 				if (data && data.length === 0) {
 					$('#user-notfound-notify').html('User not found!')

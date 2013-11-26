@@ -18,7 +18,7 @@ define(function() {
 		}
 
 		function select_icon(el) {
-			var selected = el.attr('class').replace(' icon-2x', '');
+			var selected = el.attr('class').replace(' fa-2x', '');
 			jQuery('#icons .selected').removeClass('selected');
 			if (selected)
 				jQuery('#icons .' + selected).parent().addClass('selected');
@@ -27,9 +27,13 @@ define(function() {
 			bootbox.confirm('<h2>Select an icon.</h2>' + document.getElementById('icons').innerHTML, function(confirm) {
 				if (confirm) {
 					var iconClass = jQuery('.bootbox .selected').children(':first').attr('class');
-					el.attr('class', iconClass + ' icon-2x');
-					el.val(iconClass);
-					el.attr('value', iconClass);
+
+					el.attr('class', iconClass + ' fa-2x');
+
+					// remove the 'fa ' from the class name, just need the icon name itself
+					var categoryIconClass = iconClass.replace('fa ', '');
+					el.val(categoryIconClass);
+					el.attr('value', categoryIconClass);
 
 					modified(el);
 				}

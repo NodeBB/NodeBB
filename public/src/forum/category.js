@@ -94,7 +94,7 @@ define(function () {
 
 		if (numTopics > 0) {
 			for (var x = 0; x < numTopics; x++) {
-				if ($(topics[x]).find('.icon-pushpin').length) {
+				if ($(topics[x]).find('.fa-thumb-tack').length) {
 					if(x === numTopics - 1) {
 						topic.insertAfter(topics[x]);
 					}

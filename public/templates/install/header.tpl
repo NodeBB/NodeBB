@@ -34,13 +34,13 @@
 				<div class="nav-collapse collapse">
 					<ul class="nav nodebb-inline-block">
 						<li>
-							<a data-tab="email" href="/install/email"><i class="icon-envelope"></i> Mail</a>
+							<a data-tab="email" href="/install/email"><i class="fa fa-envelope"></i> Mail</a>
 						</li>
 						<li>
-							<a data-tab="social" href="/install/social"><i class="icon-facebook"></i> Social</a>
+							<a data-tab="social" href="/install/social"><i class="fa fa-facebook"></i> Social</a>
 						</li>
 						<li>
-							<a data-tab="privileges" href="/install/privileges"><i class="icon-legal"></i> Privileges</a>
+							<a data-tab="privileges" href="/install/privileges"><i class="fa fa-gavel"></i> Privileges</a>
 						</li>
 					</ul>
 				</div>

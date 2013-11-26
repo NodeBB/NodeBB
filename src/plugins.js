@@ -291,7 +291,7 @@ var fs = require('fs'),
 									delete config.library;
 									delete config.hooks;
 									config.active = active;
-									config.activeText = '<i class="icon-off"></i> ' + (active ? 'Dea' : 'A') + 'ctivate';
+									config.activeText = '<i class="fa fa-power-off"></i> ' + (active ? 'Dea' : 'A') + 'ctivate';
 									next(null, config);
 								});
 							}

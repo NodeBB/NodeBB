@@ -103,7 +103,7 @@ var RDB = require('./redis.js'),
 
 					Topics.getTopicForCategoryView(tid, uid, function(topicData) {
 						topicData.unreplied = 1;
-						
+
 						callback(null, {
 							topicData: topicData,
 							postData: postData
@@ -189,7 +189,7 @@ var RDB = require('./redis.js'),
 
 				for (var i = 0; i < postData.length; ++i) {
 					postData[i].fav_button_class = fav_data[postData[i].pid] ? 'btn-warning' : '';
-					postData[i].fav_star_class = fav_data[postData[i].pid] ? 'icon-star' : 'icon-star-empty';
+					postData[i].fav_star_class = fav_data[postData[i].pid] ? 'fa-star' : 'fa-star-o';
 					postData[i]['display_moderator_tools'] = ((current_user != 0) && (postData[i].uid == current_user || privileges.editable)) ? 'show' : 'none';
 
 					postData[i].show_banned = postData[i].user_banned === '1' ? 'show' : 'hide';
@@ -440,8 +440,8 @@ var RDB = require('./redis.js'),
 
 				getTopicInfo(topicData, function(topicInfo) {
 
-					topicData['pin-icon'] = topicData.pinned === '1' ? 'icon-pushpin' : 'none';
-					topicData['lock-icon'] = topicData.locked === '1' ? 'icon-lock' : 'none';
+					topicData['pin-icon'] = topicData.pinned === '1' ? 'fa-thumb-tack' : 'none';
+					topicData['lock-icon'] = topicData.locked === '1' ? 'fa-lock' : 'none';
 					topicData['deleted-class'] = topicData.deleted === '1' ? 'deleted' : '';
 
 					topicData.unreplied = topicData.postcount === '1';
@@ -570,8 +570,8 @@ var RDB = require('./redis.js'),
 				hasRead = results[1],
 				teaser = results[2];
 
-			topicData['pin-icon'] = topicData.pinned === '1' ? 'icon-pushpin' : 'none';
-			topicData['lock-icon'] = topicData.locked === '1' ? 'icon-lock' : 'none';
+			topicData['pin-icon'] = topicData.pinned === '1' ? 'fa-thumb-tack' : 'none';
+			topicData['lock-icon'] = topicData.locked === '1' ? 'fa-lock' : 'none';
 
 			topicData.badgeclass = hasRead ? '' : 'badge-important';
 			topicData.teaser_text = teaser.text || '';

@@ -36,7 +36,7 @@ define(function() {
 				var username = $('#search-user').val();
 
 				if (username == '') {
-					jQuery('#user-notfound-notify').html('<i class="icon icon-circle-blank"></i>');
+					jQuery('#user-notfound-notify').html('<i class="fa fa-circle-o"></i>');
 					jQuery('#user-notfound-notify').parent().removeClass('btn-warning label-warning btn-success label-success');
 					return;
 				}
@@ -44,7 +44,7 @@ define(function() {
 				if (lastSearch === username) return;
 				lastSearch = username;
 
-				jQuery('#user-notfound-notify').html('<i class="icon-spinner icon-spin"></i>');
+				jQuery('#user-notfound-notify').html('<i class="fa fa-spinner fa-spin"></i>');
 
 				setTimeout(function() {
 					socket.emit('api:admin.user.search', username);

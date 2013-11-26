@@ -46,11 +46,11 @@ define(function() {
 
 				if(!topics.length) {
 					return;
-				} 
+				}
 
 				var lastTid = parseInt(topics[topics.length - 1].getAttribute('data-tid'));
 
-				this.innerHTML = '<i class="icon-refresh icon-spin"></i> Retrieving topics';
+				this.innerHTML = '<i class="fa fa-refresh fa-spin"></i> Retrieving topics';
 				socket.emit('api:admin.topics.getMore', {
 					limit: 10,
 					after: lastTid

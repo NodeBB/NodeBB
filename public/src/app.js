@@ -47,7 +47,7 @@ var socket,
 
 					socket.on('connect', function (data) {
 						if (reconnecting) {
-							reconnectEl.html('<i class="icon-ok"></i> Connected!');
+							reconnectEl.html('<i class="fa fa-check"></i> Connected!');
 							reconnecting = false;
 
 							setTimeout(function() {
@@ -75,7 +75,7 @@ var socket,
 						reconnecting = true;
 
 						reconnectEl.addClass('active');
-						reconnectEl.html('<i class="icon-spinner icon-spin"></i> Reconnecting...');
+						reconnectEl.html('<i class="fa fa-spinner fa-spin"></i> Reconnecting...');
 					});
 
 					socket.on('api:user.get_online_users', function (users) {
@@ -88,10 +88,10 @@ var socket,
 
 							if (uid && jQuery.inArray(uid, users) !== -1) {
 								el.find('i').remove();
-								el.prepend('<i class="icon-circle"></i>');
+								el.prepend('<i class="fa fa-circle"></i>');
 							} else {
 								el.find('i').remove();
-								el.prepend('<i class="icon-circle-blank"></i>');
+								el.prepend('<i class="fa fa-circle-o"></i>');
 							}
 
 							el.processed = true;
@@ -372,7 +372,7 @@ var socket,
 			chat.center(chatModal);
 		});
 	}
-	
+
 	app.scrollToTop = function () {
 		$('body,html').animate({
 			scrollTop: 0

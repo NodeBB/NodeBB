@@ -18,7 +18,7 @@
 			<a href="/category/{category_slug}" itemprop="url"><span itemprop="title">{category_name}</span></a>
 		</li>
 		<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
-			<span itemprop="title">{topic_name} <a target="_blank" href="../{topic_id}.rss"><i class="icon-rss-sign"></i></a></span>
+			<span itemprop="title">{topic_name} <a target="_blank" href="../{topic_id}.rss"><i class="fa fa-rss-square"></i></a></span>
 		</li>
 
 	</ol>
@@ -56,27 +56,27 @@
 								</button>
 
 							    <ul class="dropdown-menu">
-									<li><a href="/user/{posts.userslug}"><i class="icon-user"></i> [[topic:profile]]</a></li>
-									<li><div class="chat"><i class="icon-comment"></i> [[topic:chat]]</div></li>
+									<li><a href="/user/{posts.userslug}"><i class="fa fa-user"></i> [[topic:profile]]</a></li>
+									<li><div class="chat"><i class="fa fa-comment"></i> [[topic:chat]]</div></li>
 							    </ul>
 							</div>
 
 							<div class="btn-group">
-								<button class="btn btn-sm btn-default follow main-post" type="button" title="Be notified of new replies in this topic"><i class="icon-eye-open"></i></button>
+								<button class="btn btn-sm btn-default follow main-post" type="button" title="Be notified of new replies in this topic"><i class="fa fa-eye"></i></button>
 								<button class="favourite btn btn-sm btn-default {posts.fav_button_class}" type="button">
 									<span class="favourite-text">[[topic:favourite]]</span>
-									<span class="post_rep_{posts.pid}">{posts.post_rep} </span><i class="{posts.fav_star_class}"></i>
+									<span class="post_rep_{posts.pid}">{posts.post_rep} </span><i class="fa {posts.fav_star_class}"></i>
 								</button>
 							</div>
 							<div class="btn-group">
-								<button class="btn btn-sm btn-default quote" type="button" title="[[topic:quote]]"><i class="icon-quote-left"></i></button>
-								<button class="btn btn-sm btn-primary btn post_reply" type="button">[[topic:reply]] <i class="icon-reply"></i></button>
+								<button class="btn btn-sm btn-default quote" type="button" title="[[topic:quote]]"><i class="fa fa-quote-left"></i></button>
+								<button class="btn btn-sm btn-primary btn post_reply" type="button">[[topic:reply]] <i class="fa fa-reply"></i></button>
 							</div>
 
 							<div class="btn-group pull-right post-tools">
-								<button class="btn btn-sm btn-default link" type="button" title="[[topic:link]]"><i class="icon-link"></i></button>
-								<button class="btn btn-sm btn-default edit {posts.display_moderator_tools}" type="button" title="[[topic:edit]]"><i class="icon-pencil"></i></button>
-								<button class="btn btn-sm btn-default delete {posts.display_moderator_tools}" type="button" title="[[topic:delete]]"><i class="icon-trash"></i></button>
+								<button class="btn btn-sm btn-default link" type="button" title="[[topic:link]]"><i class="fa fa-link"></i></button>
+								<button class="btn btn-sm btn-default edit {posts.display_moderator_tools}" type="button" title="[[topic:edit]]"><i class="fa fa-pencil"></i></button>
+								<button class="btn btn-sm btn-default delete {posts.display_moderator_tools}" type="button" title="[[topic:delete]]"><i class="fa fa-trash-o"></i></button>
 							</div>
 
 							<input id="post_{posts.pid}_link" value="" class="pull-right" style="display:none;"></input>
@@ -116,12 +116,12 @@
 					<div class="btn-group thread-tools hide">
 						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">[[topic:thread_tools.title]] <span class="caret"></span></button>
 						<ul class="dropdown-menu">
-							<li><a href="#" class="pin_thread"><i class="icon-pushpin"></i> [[topic:thread_tools.pin]]</a></li>
-							<li><a href="#" class="lock_thread"><i class="icon-lock"></i> [[topic:thread_tools.lock]]</a></li>
+							<li><a href="#" class="pin_thread"><i class="fa fa-thumb-tack"></i> [[topic:thread_tools.pin]]</a></li>
+							<li><a href="#" class="lock_thread"><i class="fa fa-lock"></i> [[topic:thread_tools.lock]]</a></li>
 							<li class="divider"></li>
-							<li><a href="#" class="move_thread"><i class="icon-move"></i> [[topic:thread_tools.move]]</a></li>
+							<li><a href="#" class="move_thread"><i class="fa fa-arrows"></i> [[topic:thread_tools.move]]</a></li>
 							<li class="divider"></li>
-							<li><a href="#" class="delete_thread"><span class="text-error"><i class="icon-trash"></i> [[topic:thread_tools.delete]]</span></a></li>
+							<li><a href="#" class="delete_thread"><span class="text-error"><i class="fa fa-trash-o"></i> [[topic:thread_tools.delete]]</span></a></li>
 						</ul>
 					</div>
 				</div>
@@ -135,18 +135,18 @@
 	<div class="well col-md-11 col-xs-12 pull-right hide">
 		<div class="topic-main-buttons pull-right inline-block hide">
 			<div class="loading-indicator" done="0" style="display:none;">
-				Loading <span class="hidden-xs">More Posts</span> <i class="icon-refresh icon-spin"></i>
+				Loading <span class="hidden-xs">More Posts</span> <i class="fa fa-refresh fa-spin"></i>
 			</div>
 			<button class="btn btn-primary post_reply" type="button">[[topic:reply]]</button>
 			<div class="btn-group thread-tools hide">
 				<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">[[topic:thread_tools.title]] <span class="caret"></span></button>
 				<ul class="dropdown-menu">
-					<li><a href="#" class="pin_thread"><i class="icon-pushpin"></i> [[topic:thread_tools.pin]]</a></li>
-					<li><a href="#" class="lock_thread"><i class="icon-lock"></i> [[topic:thread_tools.lock]]</a></li>
+					<li><a href="#" class="pin_thread"><i class="fa fa-thumb-tack"></i> [[topic:thread_tools.pin]]</a></li>
+					<li><a href="#" class="lock_thread"><i class="fa fa-lock"></i> [[topic:thread_tools.lock]]</a></li>
 					<li class="divider"></li>
-					<li><a href="#" class="move_thread"><i class="icon-move"></i> [[topic:thread_tools.move]]</a></li>
+					<li><a href="#" class="move_thread"><i class="fa fa-arrows"></i> [[topic:thread_tools.move]]</a></li>
 					<li class="divider"></li>
-					<li><a href="#" class="delete_thread"><span class="text-error"><i class="icon-trash"></i> [[topic:thread_tools.delete]]</span></a></li>
+					<li><a href="#" class="delete_thread"><span class="text-error"><i class="fa fa-trash-o"></i> [[topic:thread_tools.delete]]</span></a></li>
 				</ul>
 			</div>
 		</div>
@@ -161,7 +161,7 @@
 					<h3>Move Topic</h3>
 				</div>
 				<div class="modal-body">
-					<p id="categories-loading"><i class="icon-spin icon-refresh"></i> [[topic:load_categories]]</p>
+					<p id="categories-loading"><i class="fa fa-spin fa-refresh"></i> [[topic:load_categories]]</p>
 					<ul class="category-list"></ul>
 					<p>
 						[[topic:disabled_categories_note]]

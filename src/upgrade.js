@@ -4,6 +4,7 @@ var RDB = require('./redis.js'),
 	async = require('async'),
 	winston = require('winston'),
 	notifications = require('./notifications'),
+	categories = require('./categories'),
 	Upgrade = {},
 
 	schemaDate, thisSchemaDate;
@@ -172,6 +173,39 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2013/11/22] Update to Category colours skipped.');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2013, 10, 26).getTime();
+			if (schemaDate < thisSchemaDate || 1) {
+				categories.getAllCategories(0, function(err, categories) {
+
+					function updateIcon(category, next) {
+						var icon = '';
+						if(category.icon === 'icon-lightbulb') {
+							icon = 'fa-lightbulb-o';
+						} else if(category.icon === 'icon-plus-sign') {
+							icon = 'fa-plus';
+						} else if(category.icon === 'icon-screenshot') {
+							icon = 'fa-crosshairs';
+						} else {
+							icon = category.icon.replace('icon-', 'fa-');
+						}
+
+						RDB.hset('category:' + category.cid, 'icon', icon, next);
+					}
+
+					async.each(categories.categories, updateIcon, function(err) {
+						if(err) {
+							return next(err);
+						}
+						winston.info('[2013/11/26] Updated Category icons.');
+						next();
+					});
+				});
+			} else {
+				winston.info('[2013/11/26] Update to Category icons skipped.');
 				next();
 			}
 		}

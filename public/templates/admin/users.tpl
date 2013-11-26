@@ -10,7 +10,7 @@
 <br />
 <div class="search {search_display} well">
 	<input class="form-control" id="search-user" type="text" placeholder="Enter a username to search"/><br />
-	<i class="icon-spinner icon-spin none"></i>
+	<i class="fa fa-spinner fa-spin none"></i>
 	<span id="user-notfound-notify" class="label label-danger hide">User not found!</span><br/>
 </div>
 
@@ -24,11 +24,11 @@
 		<a href="/user/{users.userslug}">{users.username}</a>
 		<br/>
 		<div title="reputation">
-			<i class='icon-star'></i>
+			<i class='fa fa-star'></i>
 			<span id='reputation'>{users.reputation}</span>
 		</div>
 		<div title="post count">
-			<i class='icon-pencil'></i>
+			<i class='fa fa-pencil'></i>
 			<span id='postcount'>{users.postcount}</span>
 		</div>
 		<div>

@@ -40,7 +40,7 @@ define(function() {
 
 			var category = categories[i];
 
-			image.className = category.icon + ' icon-3x';
+			image.className = category.icon + ' fa-3x';
 			name.innerHTML = '<br />' + category.name;
 			icon.appendChild(image);
 			icon.appendChild(name);
@@ -82,7 +82,7 @@ define(function() {
 				    cmp.push(0, cid);
 				});
 			};
-			postBtn.children[0].className = 'icon-plus icon-2x';
+			postBtn.children[0].className = 'fa fa-plus fa-2x';
 		} else if (tid) {
 			postBtn.style.display = 'inline-block';
 			postBtn.onclick = function() {
@@ -90,7 +90,7 @@ define(function() {
 				    cmp.push(tid);
 				});
 			};
-			postBtn.children[0].className = 'icon-reply icon-2x'
+			postBtn.children[0].className = 'fa fa-reply fa-2x'
 		} else {
 			postBtn.style.display = 'none';
 		}

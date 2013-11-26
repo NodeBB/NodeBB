@@ -57,7 +57,7 @@ var RDB = require('./redis.js'),
 							'edited': 0,
 							'deleted': 0,
 							'fav_button_class': '',
-							'fav_star_class': 'icon-star-empty',
+							'fav_star_class': 'fa-star-o',
 							'show_banned': 'hide',
 							'relativeTime': new Date(timestamp).toISOString(),
 							'post_rep': '0',
@@ -84,8 +84,9 @@ var RDB = require('./redis.js'),
 
 						RDB.zadd('categories:recent_posts:cid:' + cid, timestamp, pid);
 
-						if(topicData.pinned === '0')
+						if(topicData.pinned === '0') {
 							RDB.zadd('categories:' + cid + ':tid', timestamp, tid);
+						}
 
 						RDB.scard('cid:' + cid + ':active_users', function(err, amount) {
 							if (amount > 16) {
