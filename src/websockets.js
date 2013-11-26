@@ -891,7 +891,7 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:admin.categories.create', function(data, callback) {
-			admin.categories.create(data, function(err, data) {
+			categories.create(data, function(err, data) {
 				callback(err, data);
 			});
 		});

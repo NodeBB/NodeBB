@@ -81,7 +81,8 @@ define(function() {
 				name: $('#inputName').val(),
 				description: $('#inputDescription').val(),
 				icon: $('#new-category-modal i').val(),
-				blockclass: $('#inputBlockclass').val()
+				bgColor: '#0059b2',
+				color: '#fff'
 			};
 
 			socket.emit('api:admin.categories.create', category, function(err, data) {
