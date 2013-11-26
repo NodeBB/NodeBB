@@ -18,8 +18,8 @@
 						<i data-name="icon" value="{categories.icon}" class="fa {categories.icon} fa-2x"></i>
 					</div>
 					<input placeholder="Category Name" data-name="name" value="{categories.name}" class="form-control category_name"></input>
-					<input placeholder="#000" data-name="bgColor" value="{categories.bgColor}" class="form-control category_bgColor" />
-					<input placeholder="#000" data-name="color" value="{categories.color}" class="form-control category_color" />
+					<input placeholder="#0059b2" data-name="bgColor" value="{categories.bgColor}" class="form-control category_bgColor" />
+					<input placeholder="#fff" data-name="color" value="{categories.color}" class="form-control category_color" />
 					<input data-name="description" placeholder="Category Description" value="{categories.description}" class="form-control category_description description"></input>
 					<input type="hidden" data-name="order" data-value="{categories.order}"></input>
 					<button type="submit" class="btn btn-default disable-btn" data-disabled="{categories.disabled}">Disable</button>
@@ -65,20 +65,6 @@
 								</div>
 							</div>
 						</div>
-
-						<div class="control-group">
-							<label class="control-label" for="inputBlockclass">Block Class</label>
-							<div class="controls">
-								<select id="inputBlockclass" class="form-control" data-name="blockclass" data-value="">
-									<option value="category-purple">category-purple</option>
-									<option value="category-darkblue">category-darkblue</option>
-									<option value="category-blue">category-blue</option>
-									<option value="category-darkgreen">category-darkgreen</option>
-									<option value="category-orange">category-orange</option>
-								</select>
-							</div>
-						</div>
-
 					</form>
 				</div>
 				</div>

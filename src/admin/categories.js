@@ -4,10 +4,6 @@ var RDB = require('./../redis.js'),
 
 (function(CategoriesAdmin) {
 
-	CategoriesAdmin.create = function(data, callback) {
-		categories.create(data, callback);
-	};
-
 	CategoriesAdmin.update = function(modified, socket) {
 		var updated = [];
 
