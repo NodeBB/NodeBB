@@ -88,7 +88,7 @@ var ajaxify = {};
 
 			translator.load(tpl_url);
 
-			jQuery('#footer, #content').fadeOut(100);
+			jQuery('#footer, #content').addClass('ajaxifying');
 
 			templates.flush();
 			templates.load_template(function () {
@@ -105,17 +105,17 @@ var ajaxify = {};
 
 				app.processPage();
 
-				jQuery('#content, #footer').stop(true, true).fadeIn(200, function () {
-					if (window.location.hash) {
-						hash = window.location.hash;
-					}
+				jQuery('#content, #footer').stop(true, true).removeClass('ajaxifying');
 
-					if (hash) {
-						require(['forum/topic'], function(topic) {
-							topic.scrollToPost(hash.substr(1));
-						});
-					}
-				});
+				if (window.location.hash) {
+					hash = window.location.hash;
+				}
+
+				if (hash) {
+					require(['forum/topic'], function(topic) {
+						topic.scrollToPost(hash.substr(1));
+					});
+				}
 
 				utils.refreshTitle(url);
 

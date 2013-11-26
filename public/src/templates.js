@@ -248,9 +248,12 @@
 
 			if (self.blocks && block !== undefined) self.blocks[block] = data[0];
 
+			var begin = new RegExp("(\r\n)*<!-- BEGIN " + block + " -->(\r\n)*", "g"),
+				end = new RegExp("(\r\n)*<!-- END " + block + " -->(\r\n)*", "g"),
+
 			data = data[0]
-				.replace("<!--[\\s]*BEGIN " + block + "[\\s]*-->", "")
-				.replace("<!--[\\s]*END " + block + "[\\s]*-->", "");
+				.replace(begin, "")
+				.replace(end, "");
 
 			return data;
 		}
