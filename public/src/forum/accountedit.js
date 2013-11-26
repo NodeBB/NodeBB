@@ -1,11 +1,13 @@
 define(['forum/accountheader', 'uploader'], function(header, uploader) {
-	var AccountEdit = {};
+	var AccountEdit = {},
+		gravatarPicture = '',
+		uploadedPicture = '';
 
 	AccountEdit.init = function() {
 		header.init();
 
-		var gravatarPicture = templates.get('gravatarpicture');
-		var uploadedPicture = templates.get('uploadedpicture');
+		gravatarPicture = templates.get('gravatarpicture');
+		uploadedPicture = templates.get('uploadedpicture');
 
 		var selectedImageType = '';
 
@@ -194,31 +196,33 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 
 	AccountEdit.updateImages = function() {
 		var currentPicture = $('#user-current-picture').attr('src');
-		var gravatarPicture = templates.get('gravatarpicture');
-		var uploadedPicture = templates.get('uploadedpicture');
 
 		if (gravatarPicture) {
 			$('#user-gravatar-picture').attr('src', gravatarPicture);
 			$('#gravatar-box').show();
-		} else
+		} else {
 			$('#gravatar-box').hide();
+		}
 
 		if (uploadedPicture) {
 			$('#user-uploaded-picture').attr('src', uploadedPicture);
 			$('#uploaded-box').show();
-		} else
+		} else {
 			$('#uploaded-box').hide();
+		}
 
 
-		if (currentPicture == gravatarPicture)
+		if (currentPicture == gravatarPicture) {
 			$('#gravatar-box .fa-check').show();
-		else
+		} else {
 			$('#gravatar-box .fa-check').hide();
+		}
 
-		if (currentPicture == uploadedPicture)
+		if (currentPicture == uploadedPicture) {
 			$('#uploaded-box .fa-check').show();
-		else
+		} else {
 			$('#uploaded-box .fa-check').hide();
+		}
 	}
 
 	return AccountEdit;
