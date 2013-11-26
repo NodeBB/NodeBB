@@ -136,7 +136,7 @@ define(function() {
 							for (x = 0; x < numCategories; x++) {
 								info = data.categories[x];
 								categoryEl.className = info.blockclass + (info.disabled === '1' ? ' disabled' : '');
-								categoryEl.innerHTML = '<i class="' + info.icon + '"></i> ' + info.name;
+								categoryEl.innerHTML = '<i class="fa ' + info.icon + '"></i> ' + info.name;
 								categoryEl.setAttribute('data-cid', info.cid);
 								categoriesFrag.appendChild(categoryEl.cloneNode(true));
 							}
