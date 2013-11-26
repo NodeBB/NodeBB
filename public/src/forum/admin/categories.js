@@ -130,11 +130,7 @@ define(function() {
 				select_icon($(this).find('i'));
 			});
 
-			jQuery('.blockclass').on('change', function(ev) {
-				update_blockclass(ev.target);
-			});
-
-			jQuery('.category_name, .category_description, .blockclass .category_bgColor').on('change', function(ev) {
+			jQuery('.admin-categories form input').on('change', function(ev) {
 				modified(ev.target);
 			});
 
@@ -164,13 +160,14 @@ define(function() {
 			// Colour Picker
 			$('[data-name="bgColor"], [data-name="color"]').each(function(idx, inputEl) {
 				var	jinputEl = $(this),
-					parentEl = jinputEl.parents('[data-cid]');
+					previewEl = jinputEl.parents('[data-cid]').find('.preview-box');
+
 				jinputEl.ColorPicker({
 					color: this.value || '#000',
 					onChange: function(hsb, hex) {
 						jinputEl.val('#' + hex);
-						if (inputEl.getAttribute('data-name') === 'bgColor') parentEl.css('background', '#' + hex);
-						else if (inputEl.getAttribute('data-name') === 'color') parentEl.css('color', '#' + hex);
+						if (inputEl.getAttribute('data-name') === 'bgColor') previewEl.css('background', '#' + hex);
+						else if (inputEl.getAttribute('data-name') === 'color') previewEl.css('color', '#' + hex);
 						modified(inputEl);
 					}
 				});

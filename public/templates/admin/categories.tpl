@@ -12,8 +12,64 @@
 	<div class="row admin-categories">
 		<ul class="col-md-12" id="entry-container">
 		<!-- BEGIN categories -->
-			<li data-cid="{categories.cid}" class="entry-row" style="background: {categories.bgColor}; color: {categories.color};">
-				<form class="form-inline">
+			<li data-cid="{categories.cid}" class="entry-row">
+				<div class="row">
+					<div class="col-sm-2 hidden-xs">
+						<div class="preview-box" style="background: {categories.bgColor}; color: {categories.color};">
+							<div class="icon">
+								<i data-name="icon" value="{categories.icon}" class="fa {categories.icon} fa-2x"></i>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-10">
+						<form class="form">
+							<div class="row">
+								<div class="col-sm-4 hidden-xs">
+									<div class="form-group">
+										<label for="cid-{categories.cid}-name">Category Name</label>
+										<input id="cid-{categories.cid}-name" type="text" class="form-control" placeholder="Category Name" data-name="name" value="{categories.name}" />
+									</div>
+								</div>
+								<div class="col-sm-4 hidden-xs">
+									<div class="form-group">
+										<div class="form-group">
+											<label for="cid-{categories.cid}-bgColor">Background Colour</label>
+											<input id="cid-{categories.cid}-bgColor" placeholder="#0059b2" data-name="bgColor" value="{categories.bgColor}" class="form-control category_bgColor" />
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-4 col-xs-12">
+									<div class="form-group">
+										<div class="form-group">
+											<label for="cid-{categories.cid}-color">Text Colour</label>
+											<input id="cid-{categories.cid}-color" placeholder="#fff" data-name="color" value="{categories.color}" class="form-control category_color" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-8">
+									<div class="form-group">
+										<div class="form-group">
+											<label for="cid-{categories.cid}-description">Description</label>
+											<input id="cid-{categories.cid}-description" data-name="description" placeholder="Category Description" value="{categories.description}" class="form-control category_description description"></input>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-4">
+									<div class="form-group">
+										<div class="form-group">
+											<label>&nbsp;</label>
+											<button type="submit" class="btn btn-default disable-btn" data-disabled="{categories.disabled}">Disable</button>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<input type="hidden" data-name="order" data-value="{categories.order}"></input>
+						</form>
+					</div>
+				<!-- <form class="form-inline">
 					<div class="icon">
 						<i data-name="icon" value="{categories.icon}" class="fa {categories.icon} fa-2x"></i>
 					</div>
@@ -23,7 +79,7 @@
 					<input data-name="description" placeholder="Category Description" value="{categories.description}" class="form-control category_description description"></input>
 					<input type="hidden" data-name="order" data-value="{categories.order}"></input>
 					<button type="submit" class="btn btn-default disable-btn" data-disabled="{categories.disabled}">Disable</button>
-				</form>
+				</form> -->
 			</li>
 
 		<!-- END categories -->
