@@ -78,8 +78,12 @@ var path = require('path'),
 					property: 'keywords',
 					content: meta.config.keywords || ''
 				}],
+				defaultLinkTags = [{
+					rel: 'apple-touch-icon',
+					href: meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png'
+				}],
 				metaString = utils.buildMetaTags(defaultMetaTags.concat(options.metaTags || [])),
-				linkTags = utils.buildLinkTags(options.linkTags || []),
+				linkTags = utils.buildLinkTags(defaultLinkTags.concat(options.linkTags || [])),
 				templateValues = {
 					cssSrc: meta.config['theme:src'] || nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
 					pluginCSS: plugins.cssFiles.map(function(file) { return { path: file }; }),
