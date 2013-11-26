@@ -135,7 +135,7 @@
 	<div class="well col-md-11 col-xs-12 pull-right hide">
 		<div class="topic-main-buttons pull-right inline-block hide">
 			<div class="loading-indicator" done="0" style="display:none;">
-				Loading More Posts <i class="icon-refresh icon-spin"></i>
+				Loading <span class="hidden-xs">More Posts</span> <i class="icon-refresh icon-spin"></i>
 			</div>
 			<button class="btn btn-primary post_reply" type="button">[[topic:reply]]</button>
 			<div class="btn-group thread-tools hide">
