@@ -102,15 +102,7 @@ var bcrypt = require('bcrypt'),
 					User.sendConfirmationEmail(email);
 				}
 
-				RDB.incr('usercount', function(err, count) {
-					RDB.handle(err);
-
-					if (typeof io !== 'undefined') {
-						io.sockets.emit('user.count', {
-							count: count
-						});
-					}
-				});
+				RDB.incr('usercount');
 
 				RDB.zadd('users:joindate', timestamp, uid);
 				RDB.zadd('users:postcount', 0, uid);

@@ -1,6 +1,6 @@
-var RDB = require('./redis.js'),
+var RDB = require('./redis'),
 	async = require('async'),
-	utils = require('../public/src/utils.js'),
+	utils = require('../public/src/utils'),
 	winston = require('winston'),
 	cron = require('cron').CronJob,
 
@@ -82,7 +82,12 @@ var RDB = require('./redis.js'),
 						(function(uid) {
 							notifications.remove_by_uniqueId(notif_data.uniqueId, uid, function() {
 								RDB.zadd('uid:' + uid + ':notifications:unread', notif_data.datetime, nid);
+
 								global.io.sockets.in('uid_' + uid).emit('event:new_notification');
+
+								// TODO: moving this require to the top of the file overwrites 'notifications' figure out why -baris
+								//require('./websockets').in('uid_' + uid).emit('event:new_notification');
+
 								if (callback) {
 									callback(true);
 								}

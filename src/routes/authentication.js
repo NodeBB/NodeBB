@@ -178,11 +178,13 @@
 
 		app.post('/register', function(req, res) {
 			user.create(req.body.username, req.body.password, req.body.email, function(err, uid) {
-
 				if (err === null && uid) {
 					req.login({
 						uid: uid
 					}, function() {
+
+						require('./../websockets').emitUserCount();
+
 						if(req.body.referrer)
 							res.redirect(req.body.referrer);
 						else

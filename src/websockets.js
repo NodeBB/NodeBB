@@ -636,7 +636,8 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:notifications.mark_all_read', function(data, callback) {
-			notifications.mark_all_read(uid, function(err) {
+			console.log(notifications);
+			require('./notifications').mark_all_read(uid, function(err) {
 				if (!err) callback();
 			});
 		});
@@ -1010,4 +1011,17 @@ module.exports.init = function(io) {
 		socket.on('api:admin.theme.set', meta.themes.set);
 	});
 
+	module.exports.emitUserCount = function() {
+		RDB.get('usercount', function(err, count) {
+			io.sockets.emit('user.count', {
+				count: count
+			});
+		});
+	};
+
+	module.exports.in = function(room) {
+		return io.sockets.in(room);
+	};
 }
+
+

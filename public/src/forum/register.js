@@ -151,7 +151,9 @@ define(function() {
 		}
 
 		register.on('click', function(e) {
-			if (validateForm()) e.preventDefault();
+			if (validateForm()) {
+				e.preventDefault();
+			}
 		});
 	};
 
