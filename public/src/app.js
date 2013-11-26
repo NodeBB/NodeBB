@@ -136,7 +136,7 @@ var socket,
 		$.post(RELATIVE_PATH + '/logout', {
 			_csrf: $('#csrf_token').val()
 		}, function() {
-			window.location.reload(false);
+			window.location.href = RELATIVE_PATH + '/';
 		});
 	}
 
