@@ -176,14 +176,18 @@ var path = require('path'),
 
 								// Theme's static directory
 								if (themeData[2]) {
-									app.use('/css/assets', express.static(path.join(__dirname, '../node_modules', themeData[1], themeData[2])));
+									app.use('/css/assets', express.static(path.join(__dirname, '../node_modules', themeData[1], themeData[2]), {
+										maxAge: 5184000000
+									}));
 									if (process.env.NODE_ENV === 'development') {
 										winston.info('Static directory routed for theme: ' + themeData[1]);
 									}
 								}
 
 								if (themeData[3]) {
-									app.use('/templates', express.static(path.join(__dirname, '../node_modules', themeData[1], themeData[3])));
+									app.use('/templates', express.static(path.join(__dirname, '../node_modules', themeData[1], themeData[3]), {
+										maxAge: 5184000000
+									}));
 									if (process.env.NODE_ENV === 'development') {
 										winston.info('Custom templates directory routed for theme: ' + themeData[1]);
 									}
@@ -243,7 +247,9 @@ var path = require('path'),
 				app.use(app.router);
 
 				// Static directory /public
-				app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../', 'public')));
+				app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../', 'public'), {
+					maxAge: 5184000000
+				}));
 
 				// 404 catch-all
 				app.use(function (req, res, next) {
