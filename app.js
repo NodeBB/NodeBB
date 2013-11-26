@@ -55,7 +55,7 @@
 	winston.info('');
 
 
-	if (!nconf.get('help') && !nconf.get('setup') && !nconf.get('upgrade') && fs.existsSync(__dirname + '/config.json')) {
+	if (!nconf.get('help') && !nconf.get('setup') && !nconf.get('install') && !nconf.get('upgrade') && fs.existsSync(__dirname + '/config.json')) {
 		// Load server-side configs
 		nconf.file({
 			file: __dirname + '/config.json'
@@ -127,7 +127,7 @@
 				}
 			});
 		});
-	} else if (nconf.get('setup') || !fs.existsSync(__dirname + '/config.json')) {
+	} else if (nconf.get('setup') || nconf.get('install') || !fs.existsSync(__dirname + '/config.json')) {
 		// New install, ask setup questions
 		if (nconf.get('setup')) {
 			winston.info('NodeBB Setup Triggered via Command Line');
