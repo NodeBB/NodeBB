@@ -137,9 +137,9 @@
 				<ul class="nav navbar-nav navbar-right pagination-block">
 					<li class="active">
 						<a>
-							<i class="icon-upload pointer"></i>
+							<i class="icon-chevron-up pointer"></i>
 							<span id="pagination"></span>
-							<i class="icon-upload pointer icon-rotate-180"></i>
+							<i class="icon-chevron-down pointer"></i>
 						</a>
 					</li>
 				</ul>
