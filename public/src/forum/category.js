@@ -1,5 +1,6 @@
 define(function () {
-	var	Category = {};
+	var Category = {},
+		loadingMoreTopics = false;
 
 	Category.init = function() {
 		var	cid = templates.get('category_id'),
@@ -8,8 +9,7 @@ define(function () {
 			googleEl = jQuery('#google-share'),
 			twitter_url = templates.get('twitter-intent-url'),
 			facebook_url = templates.get('facebook-share-url'),
-			google_url = templates.get('google-share-url'),
-			loadingMoreTopics = false;
+			google_url = templates.get('google-share-url');
 
 		app.enterRoom('category_' + cid);
 
@@ -147,6 +147,10 @@ define(function () {
 
 
 	Category.loadMoreTopics = function(cid) {
+		if (loadingMoreTopics) {
+			return;
+		}
+		
 		loadingMoreTopics = true;
 		socket.emit('api:category.loadMore', {
 			cid: cid,
