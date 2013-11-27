@@ -58,8 +58,6 @@ module.exports.isUserOnline = isUserOnline;
 
 module.exports.init = function(io) {
 
-	global.io = io;
-
 	io.sockets.on('connection', function(socket) {
 		var hs = socket.handshake,
 			sessionID, uid, lastPostTime = 0;
@@ -246,7 +244,7 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('post.stats', function(data) {
-			posts.getTopicPostStats();
+			emitTopicPostStats();
 		});
 
 		socket.on('user.email.exists', function(data) {
@@ -384,7 +382,7 @@ module.exports.init = function(io) {
 						posts: result.postData
 					});
 
-					posts.getTopicPostStats();
+					emitTopicPostStats();
 
 					socket.emit('event:alert', {
 						title: 'Thank you for posting',
@@ -423,7 +421,7 @@ module.exports.init = function(io) {
 				return;
 			}
 
-			posts.reply(data.topic_id, uid, data.content, function(err, result) {
+			posts.reply(data.topic_id, uid, data.content, function(err, postData) {
 				if(err) {
 
 					if(err.message === 'content-too-short') {
@@ -441,9 +439,9 @@ module.exports.init = function(io) {
 					return;
 				}
 
-				if (result) {
+				if (postData) {
 					lastPostTime = Date.now();
-					posts.getTopicPostStats();
+					emitTopicPostStats();
 
 					socket.emit('event:alert', {
 						title: 'Reply Successful',
@@ -451,6 +449,12 @@ module.exports.init = function(io) {
 						type: 'success',
 						timeout: 2000
 					});
+					var socketData = {
+						posts: [postData]
+					};
+					io.sockets.in('topic_' + postData.tid).emit('event:new_post', socketData);
+					io.sockets.in('recent_posts').emit('event:new_post', socketData);
+					io.sockets.in('user/' + postData.uid).emit('event:new_post', socketData);
 
 				}
 
@@ -495,7 +499,7 @@ module.exports.init = function(io) {
 				if (privileges.editable) {
 					threadTools.delete(data.tid, function(err) {
 						if (!err) {
-							posts.getTopicPostStats();
+							emitTopicPostStats();
 							socket.emit('api:topic.delete', {
 								status: 'ok',
 								tid: data.tid
@@ -510,7 +514,7 @@ module.exports.init = function(io) {
 			threadTools.privileges(data.tid, uid, function(privileges) {
 				if (privileges.editable) {
 					threadTools.restore(data.tid, socket, function(err) {
-						posts.getTopicPostStats();
+						emitTopicPostStats();
 
 						socket.emit('api:topic.restore', {
 							status: 'ok',
@@ -597,11 +601,12 @@ module.exports.init = function(io) {
 
 		socket.on('api:posts.delete', function(data, callback) {
 			postTools.delete(uid, data.pid, function(err) {
+
 				if(err) {
 					return callback(err);
 				}
 
-				posts.getTopicPostStats();
+				emitTopicPostStats();
 
 				io.sockets.in('topic_' + data.tid).emit('event:post_deleted', {
 					pid: data.pid
@@ -616,7 +621,7 @@ module.exports.init = function(io) {
 					return callback(err);
 				}
 
-				posts.getTopicPostStats();
+				emitTopicPostStats();
 
 				io.sockets.in('topic_' + data.tid).emit('event:post_restored', {
 					pid: data.pid
@@ -636,9 +641,10 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:notifications.mark_all_read', function(data, callback) {
-			console.log(notifications);
-			require('./notifications').mark_all_read(uid, function(err) {
-				if (!err) callback();
+			notifications.mark_all_read(uid, function(err) {
+				if (!err) {
+					callback();
+				}
 			});
 		});
 
@@ -1010,6 +1016,22 @@ module.exports.init = function(io) {
 
 		socket.on('api:admin.theme.set', meta.themes.set);
 	});
+
+
+	function emitTopicPostStats() {
+		RDB.mget(['totaltopiccount', 'totalpostcount'], function(err, data) {
+			if (err) {
+				return winston.err(err);
+			}
+
+			var stats = {
+				topics: data[0] ? data[0] : 0,
+				posts: data[1] ? data[1] : 0
+			};
+
+			io.sockets.emit('post.stats', stats);
+		});
+	}
 
 	module.exports.emitUserCount = function() {
 		RDB.get('usercount', function(err, count) {

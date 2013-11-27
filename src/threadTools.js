@@ -9,7 +9,8 @@ var RDB = require('./redis.js'),
 	topicSearch = reds.createSearch('nodebbtopicsearch'),
 	winston = require('winston'),
 	meta = require('./meta'),
-	nconf = require('nconf');
+	nconf = require('nconf'),
+	websockets = require('./websockets');
 
 (function(ThreadTools) {
 
@@ -51,7 +52,7 @@ var RDB = require('./redis.js'),
 		topics.setTopicField(tid, 'locked', 1);
 
 		if (socket) {
-			io.sockets.in('topic_' + tid).emit('event:topic_locked', {
+			websockets.in('topic_' + tid).emit('event:topic_locked', {
 				tid: tid,
 				status: 'ok'
 			});
@@ -69,7 +70,7 @@ var RDB = require('./redis.js'),
 		topics.setTopicField(tid, 'locked', 0);
 
 		if (socket) {
-			io.sockets.in('topic_' + tid).emit('event:topic_unlocked', {
+			websockets.in('topic_' + tid).emit('event:topic_unlocked', {
 				tid: tid,
 				status: 'ok'
 			});
@@ -92,7 +93,7 @@ var RDB = require('./redis.js'),
 
 		topicSearch.remove(tid);
 
-		io.sockets.in('topic_' + tid).emit('event:topic_deleted', {
+		websockets.in('topic_' + tid).emit('event:topic_deleted', {
 			tid: tid,
 			status: 'ok'
 		});
@@ -107,7 +108,7 @@ var RDB = require('./redis.js'),
 		RDB.incr('totaltopiccount');
 		ThreadTools.unlock(tid);
 
-		io.sockets.in('topic_' + tid).emit('event:topic_restored', {
+		websockets.in('topic_' + tid).emit('event:topic_restored', {
 			tid: tid,
 			status: 'ok'
 		});
@@ -128,7 +129,7 @@ var RDB = require('./redis.js'),
 		});
 
 		if (socket) {
-			io.sockets.in('topic_' + tid).emit('event:topic_pinned', {
+			websockets.in('topic_' + tid).emit('event:topic_pinned', {
 				tid: tid,
 				status: 'ok'
 			});
@@ -148,7 +149,7 @@ var RDB = require('./redis.js'),
 			RDB.zadd('categories:' + topicData.cid + ':tid', topicData.lastposttime, tid);
 		});
 		if (socket) {
-			io.sockets.in('topic_' + tid).emit('event:topic_unpinned', {
+			websockets.in('topic_' + tid).emit('event:topic_unpinned', {
 				tid: tid,
 				status: 'ok'
 			});
@@ -196,7 +197,7 @@ var RDB = require('./redis.js'),
 						status: 'ok'
 					});
 
-					io.sockets.in('topic_' + tid).emit('event:topic_moved', {
+					websockets.in('topic_' + tid).emit('event:topic_moved', {
 						tid: tid
 					});
 				} else {

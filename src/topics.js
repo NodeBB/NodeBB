@@ -675,11 +675,9 @@ var RDB = require('./redis.js'),
 		});
 
 		user.notifications.getUnreadByUniqueId(uid, 'topic:' + tid, function(err, nids) {
-			if (nids.length > 0) {
-				async.each(nids, function(nid, next) {
-					notifications.mark_read(nid, uid, next);
-				});
-			}
+			notifications.mark_read_multiple(nids, uid, function() {
+			
+			});
 		});
 	}
 

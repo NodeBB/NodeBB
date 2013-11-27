@@ -1,8 +1,9 @@
-var RDB = require('./redis.js'),
-	posts = require('./posts.js'),
+var RDB = require('./redis'),
+	posts = require('./posts'),
 	topics = require('./topics'),
-	threadTools = require('./threadTools.js'),
-	user = require('./user.js'),
+	threadTools = require('./threadTools'),
+	user = require('./user'),
+	websockets = require('./websockets'),
 	async = require('async'),
 	nconf = require('nconf'),
 	validator = require('validator'),
@@ -13,7 +14,7 @@ var RDB = require('./redis.js'),
 	postSearch = reds.createSearch('nodebbpostsearch'),
 	topicSearch = reds.createSearch('nodebbtopicsearch'),
 	winston = require('winston'),
-	meta = require('./meta.js'),
+	meta = require('./meta'),
 	Feed = require('./feed');
 
 (function(PostTools) {
@@ -107,7 +108,7 @@ var RDB = require('./redis.js'),
 					PostTools.parse(content, next);
 				}
 			], function(err, results) {
-				io.sockets.in('topic_' + results[0].tid).emit('event:post_edited', {
+				websockets.in('topic_' + results[0].tid).emit('event:post_edited', {
 					pid: pid,
 					title: validator.sanitize(title).escape(),
 					isMainPost: results[0].isMainPost,

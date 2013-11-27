@@ -139,7 +139,7 @@
 	});
 
 	socket.on('event:new_notification', function() {
-		document.querySelector('.notifications a i').className = 'fa-circle active';
+		document.querySelector('.notifications a i').className = 'fa fa-circle active';
 		app.alert({
 			alert_id: 'new_notif',
 			title: 'New notification',

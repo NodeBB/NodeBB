@@ -143,7 +143,13 @@ var RDB = require('./redis.js'),
 
 	Categories.getAllCategories = function(current_user, callback) {
 		RDB.lrange('categories:cid', 0, -1, function(err, cids) {
-			RDB.handle(err);
+			if(err) {
+				return callback(err);
+			}
+			if(cids && cids.length === 0) {
+				return callback(null, {categories : []});
+			}
+			
 			Categories.getCategories(cids, current_user, callback);
 		});
 	};
