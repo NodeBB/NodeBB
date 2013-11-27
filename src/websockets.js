@@ -737,7 +737,7 @@ module.exports.init = function(io) {
 					});
 				}
 
-				logger.monitorConfig(this, data);
+				logger.monitorConfig({io: io}, data);
 			});
 		});
 
