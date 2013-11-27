@@ -13,7 +13,7 @@
 				<img src="{picture}" class="user-profile-picture img-thumbnail"/>
 			</div>
 			<div class="account-online-status">
-				<span><i class="icon-circle-blank"></i> <span>offline</span></span>
+				<span><i class="fa fa-circle-o"></i> <span>offline</span></span>
 			</div>
 			<div class="{show_banned}">
 				<span class="label label-danger">banned</span>
@@ -27,7 +27,7 @@
 		<div class="col-md-4">
 			<div class="inline-block">
 				<div class="account-bio-block">
-					<span class="account-bio-label">email</span><i class="icon-eye-close {emailClass}" title="Email hidden"></i>
+					<span class="account-bio-label">email</span><i class="fa fa-eye-slash {emailClass}" title="Email hidden"></i>
 					<span>{email}</span>
 					<br/>
 
@@ -36,7 +36,7 @@
 					<br/>
 
 					<span class="account-bio-label">website</span>
-					<span><a href="{website}">{website}</a></span>
+					<span><a href="{website}">{websiteName}</a></span>
 					<br/>
 
 					<span class="account-bio-label">location</span>

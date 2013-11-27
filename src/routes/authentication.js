@@ -89,7 +89,7 @@
 		return login_strategies;
 	}
 
-	Auth.create_routes = function(app) {
+	Auth.createRoutes = function(app) {
 		app.post('/logout', function(req, res) {
 			if (req.user && req.user.uid > 0) {
 				winston.info('[Auth] Session ' + req.sessionID + ' logout (uid: ' + req.user.uid + ')');
@@ -178,11 +178,13 @@
 
 		app.post('/register', function(req, res) {
 			user.create(req.body.username, req.body.password, req.body.email, function(err, uid) {
-
 				if (err === null && uid) {
 					req.login({
 						uid: uid
 					}, function() {
+
+						require('./../websockets').emitUserCount();
+
 						if(req.body.referrer)
 							res.redirect(req.body.referrer);
 						else

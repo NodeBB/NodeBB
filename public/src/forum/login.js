@@ -26,17 +26,23 @@ define(function() {
 				'_csrf': $('#csrf-token').val()
 			};
 
+			$('#login').attr('disabled', 'disabled').html('Logging in...');
+			$('#login-error-notify').hide();
+
 			$.ajax({
 				type: "POST",
 				url: RELATIVE_PATH + '/login',
 				data: loginData,
 				success: function(data, textStatus, jqXHR) {
+
 					if (!data.success) {
 						$('#login-error-notify').show();
+						$('#login').removeAttr('disabled').html('Login');
 					} else {
-						$('#login-error-notify').hide();
-
-						if(!app.previousUrl) { app.previousUrl = '/'; }
+						$('#login').html('Redirecting...');
+						if(!app.previousUrl) {
+							app.previousUrl = '/';
+						}
 
 						if(app.previousUrl.indexOf('/reset/') != -1)
 							window.location.replace(RELATIVE_PATH + "/?loggedin");
@@ -48,6 +54,7 @@ define(function() {
 				},
 				error: function(data, textStatus, jqXHR) {
 					$('#login-error-notify').show();
+					$('#login').removeAttr('disabled').html('Login');
 				},
 				dataType: 'json',
 				async: true,
@@ -63,6 +70,12 @@ define(function() {
 		});
 
 		document.querySelector('#content input').focus();
+
+		if(!config.emailSetup)
+			$('#reset-link').addClass('hide');
+		else
+			$('#reset-link').removeClass('hide');
+
 	};
 
 	return Login;

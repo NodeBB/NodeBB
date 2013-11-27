@@ -3,7 +3,7 @@
 		<a href="/" itemprop="url"><span itemprop="title">[[global:home]]</span></a>
 	</li>
 	<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
-		<span itemprop="title">{category_name} <a target="_blank" href="../{category_id}.rss"><i class="icon-rss-sign"></i></a></span>
+		<span itemprop="title">{category_name} <a target="_blank" href="../{category_id}.rss"><i class="fa fa-rss-square"></i></a></span>
 	</li>
 	<div id="category_active_users"></div>
 </ol>
@@ -12,9 +12,9 @@
 	<button id="new_post" class="btn btn-primary btn-lg {show_topic_button}">[[category:new_topic_button]]</button>
 
 	<div class="inline-block pull-right">
-		<a href="#" id="facebook-share"><i class="icon-facebook-sign icon-2x"></i></a>&nbsp;
-		<a href="#" id="twitter-intent"><i class="icon-twitter-sign icon-2x"></i></a>&nbsp;
-		<a href="#" id="google-share"><i class="icon-google-plus-sign icon-2x"></i></a>&nbsp;
+		<a href="#" id="facebook-share"><i class="fa fa-facebook-square fa-2x"></i></a>&nbsp;
+		<a href="#" id="twitter-intent"><i class="fa fa-twitter-square fa-2x"></i></a>&nbsp;
+		<a href="#" id="google-share"><i class="fa fa-google-plus-square fa-2x"></i></a>&nbsp;
 	</div>
 </div>
 
@@ -38,7 +38,7 @@
 									<meta itemprop="name" content="{topics.title}">
 
 									<span class="topic-title">
-										<strong><i class="{topics.pin-icon}"></i> <i class="{topics.lock-icon}"></i></strong>
+										<strong><i class="fa {topics.pin-icon}"></i> <i class="fa {topics.lock-icon}"></i></strong>
 										{topics.title}
 									</span>
 								</h3>
@@ -62,6 +62,9 @@
 								</span>
 
 								<span class="pull-right hidden-xs">
+									<!-- IF topics.unreplied -->
+									No one has replied
+									<!-- ELSE -->
 									<a href="/user/{topics.teaser_userslug}">
 										<img class="teaser-pic" src="{topics.teaser_userpicture}" title="{topics.teaser_username}"/>
 									</a>
@@ -69,7 +72,7 @@
 										replied
 									</a>
 									<span class="timeago" title="{topics.teaser_timestamp}"></span>
-
+									<!-- ENDIF topics.unreplied -->
 								</span>
 							</small>
 						</div>
@@ -80,43 +83,35 @@
 		</ul>
 	</div>
 	<div class="col-md-3 {show_sidebar} category-sidebar">
-
-		<div class="sidebar-block img-thumbnail">
-			<div class="block-header">
-				[[category:sidebar.recent_replies]]
-			</div>
-			<div class="block-content recent-replies">
+		<div class="panel panel-default">
+			<div class="panel-heading">[[category:sidebar.recent_replies]]</div>
+			<div class="panel-body recent-replies">
 				<ul id="category_recent_replies"></ul>
 			</div>
 		</div>
-		<div class="sidebar-block img-thumbnail">
-			<div class="block-header">
-				[[category:sidebar.active_participants]]
-			</div>
-			<div class="block-content active-users">
+
+		<div class="panel panel-default">
+			<div class="panel-heading">[[category:sidebar.active_participants]]</div>
+			<div class="panel-body active-users">
 				<!-- BEGIN active_users -->
-				<a data-uid="{active_users.uid}" href="/user/{active_users.userslug}"><img title="{active_users.username}" src="{active_users.picture}" class="img-rounded" /></a>
+				<a data-uid="{active_users.uid}" href="/user/{active_users.userslug}"><img title="{active_users.username}" src="{active_users.picture}" class="img-rounded user-img" /></a>
 				<!-- END active_users -->
 			</div>
 		</div>
-		<div class="sidebar-block img-thumbnail {moderator_block_class}">
-			<div class="block-header">
-				[[category:sidebar.moderators]]
-			</div>
-			<div class="block-content">
+
+		<div class="panel panel-default {moderator_block_class}">
+			<div class="panel-heading">[[category:sidebar.moderators]]</div>
+			<div class="panel-body moderators">
 				<!-- BEGIN moderators -->
 				<a href="/user/{moderators.userslug}"><img title="{moderators.username}" src="{moderators.picture}" class="img-rounded" /></a>
 				<!-- END moderators -->
 			</div>
 		</div>
+
 		<!-- BEGIN sidebars -->
-		<div class="sidebar-block img-thumbnail {sidebars.block_class}">
-			<div class="block-header">
-				{sidebars.header}
-			</div>
-			<div class="block-content">
-				{sidebars.content}
-			</div>
+		<div class="panel panel-default">
+			<div class="panel panel-default {sidebars.block_class}">{sidebars.header}</div>
+			<div class="panel-body">{sidebars.content}</div>
 		</div>
 		<!-- END sidebars -->
 	</div>

@@ -114,19 +114,19 @@ define(['taskbar'], function(taskbar) {
 													'<input type="text" tabIndex="1" placeholder="Enter your topic title here..." />' +
 													'<div class="btn-toolbar formatting-bar">' +
 														'<div class="btn-group">' +
-															'<span class="btn btn-link" tabindex="-1"><i class="icon-bold"></i></span>' +
-															'<span class="btn btn-link" tabindex="-1"><i class="icon-italic"></i></span>' +
-															'<span class="btn btn-link" tabindex="-1"><i class="icon-list"></i></span>' +
-															'<span class="btn btn-link" tabindex="-1"><i class="icon-link"></i></span>' +
+															'<span class="btn btn-link" tabindex="-1"><i class="fa fa-bold"></i></span>' +
+															'<span class="btn btn-link" tabindex="-1"><i class="fa fa-italic"></i></span>' +
+															'<span class="btn btn-link" tabindex="-1"><i class="fa fa-list"></i></span>' +
+															'<span class="btn btn-link" tabindex="-1"><i class="fa fa-link"></i></span>' +
 														'</div>' +
 													'</div>' +
 													'<textarea tabIndex="2"></textarea>' +
 													'<div class="imagedrop"><div>Drag and Drop Images Here</div></div>'+
 													'<div class="btn-toolbar action-bar">' +
 														'<div class="btn-group" style="float: right; margin-right: -8px">' +
-															'<button data-action="minimize" class="btn hidden-xs" tabIndex="4"><i class="icon-download-alt"></i> Minimize</button>' +
-															'<button class="btn" data-action="discard" tabIndex="5"><i class="icon-remove"></i> Discard</button>' +
-															'<button data-action="post" class="btn" tabIndex="3"><i class="icon-ok"></i> Submit</button>' +
+															'<button data-action="minimize" class="btn hidden-xs" tabIndex="4"><i class="fa fa-download"></i> Minimize</button>' +
+															'<button class="btn" data-action="discard" tabIndex="5"><i class="fa fa-times"></i> Discard</button>' +
+															'<button data-action="post" class="btn" tabIndex="3"><i class="fa fa-check"></i> Submit</button>' +
 														'</div>' +
 													'</div>' +
 												'</div>';
@@ -210,13 +210,17 @@ define(['taskbar'], function(taskbar) {
 					selectionEnd = postContentEl.selectionEnd,
 					selectionLength = selectionEnd - selectionStart;
 
+				function insertIntoInput(element, value) {
+					var start = postContentEl.selectionStart;
+					element.value = element.value.slice(0, start) + value + element.value.slice(start, element.value.length);
+					postContentEl.selectionStart = postContentEl.selectionEnd = start + value.length;
+				}
+
 				switch(iconClass) {
-					case 'icon-bold':
+					case 'fa fa-bold':
 						if (selectionStart === selectionEnd) {
 							// Nothing selected
-							postContentEl.value = postContentEl.value + '**bolded text**';
-							postContentEl.selectionStart = cursorEnd+2;
-							postContentEl.selectionEnd = postContentEl.value.length - 2;
+							insertIntoInput(postContentEl, "**bolded text**");
 						} else {
 							// Text selected
 							postContentEl.value = postContentEl.value.slice(0, selectionStart) + '**' + postContentEl.value.slice(selectionStart, selectionEnd) + '**' + postContentEl.value.slice(selectionEnd);
@@ -224,12 +228,10 @@ define(['taskbar'], function(taskbar) {
 							postContentEl.selectionEnd = selectionEnd + 2;
 						}
 					break;
-					case 'icon-italic':
+					case 'fa fa-italic':
 						if (selectionStart === selectionEnd) {
 							// Nothing selected
-							postContentEl.value = postContentEl.value + '*italicised text*';
-							postContentEl.selectionStart = cursorEnd+1;
-							postContentEl.selectionEnd = postContentEl.value.length - 1;
+							insertIntoInput(postContentEl, "*italicised text*");
 						} else {
 							// Text selected
 							postContentEl.value = postContentEl.value.slice(0, selectionStart) + '*' + postContentEl.value.slice(selectionStart, selectionEnd) + '*' + postContentEl.value.slice(selectionEnd);
@@ -237,18 +239,14 @@ define(['taskbar'], function(taskbar) {
 							postContentEl.selectionEnd = selectionEnd + 1;
 						}
 					break;
-					case 'icon-list':
+					case 'fa fa-list':
 						// Nothing selected
-						postContentEl.value = postContentEl.value + "\n\n* list item";
-						postContentEl.selectionStart = cursorEnd+4;
-						postContentEl.selectionEnd = postContentEl.value.length;
+						insertIntoInput(postContentEl, "\n\n* list item");
 					break;
-					case 'icon-link':
+					case 'fa fa-link':
 						if (selectionStart === selectionEnd) {
 							// Nothing selected
-							postContentEl.value = postContentEl.value + '[link text](link url)';
-							postContentEl.selectionStart = cursorEnd+12;
-							postContentEl.selectionEnd = postContentEl.value.length - 1;
+							insertIntoInput(postContentEl, "[link text](link url)");
 						} else {
 							// Text selected
 							postContentEl.value = postContentEl.value.slice(0, selectionStart) + '[' + postContentEl.value.slice(selectionStart, selectionEnd) + '](link url)' + postContentEl.value.slice(selectionEnd);
@@ -258,6 +256,7 @@ define(['taskbar'], function(taskbar) {
 					break;
 				}
 			});
+
 			window.addEventListener('resize', function() {
 				if (composer.active !== undefined) composer.reposition(composer.active);
 			});

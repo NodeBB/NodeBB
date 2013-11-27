@@ -27,7 +27,7 @@ var path = require('path'),
 			async.parallel([
 				function(next) {
 					var categoryUrls = [];
-					categories.getAllCategories(function(data) {
+					categories.getAllCategories(0, function(err, data) {
 						data.categories.forEach(function(category) {
 							if (!category.disabled) {
 								categoryUrls.push({
@@ -43,7 +43,7 @@ var path = require('path'),
 				},
 				function(next) {
 					var topicUrls = [];
-					topics.getAllTopics(null, null, function(topics) {
+					topics.getAllTopics(null, null, function(err, topics) {
 						topics.forEach(function(topic) {
 							if (topic.deleted !== '1') {
 								topicUrls.push({

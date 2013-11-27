@@ -105,11 +105,14 @@
 
 				notifList.appendChild(notifFrag);
 
-				if (data.unread.length > 0) notifIcon.className = 'icon-circle active';
-				else notifIcon.className = 'icon-circle-blank';
+				if (data.unread.length > 0) {
+					notifIcon.className = 'fa fa-circle active';
+				} else {
+					notifIcon.className = 'fa fa-circle-o';
+				}
 
 				socket.emit('api:notifications.mark_all_read', null, function() {
-					notifIcon.className = 'icon-circle-blank';
+					notifIcon.className = 'fa fa-circle-o';
 					utils.refreshTitle();
 				});
 			});
@@ -136,7 +139,7 @@
 	});
 
 	socket.on('event:new_notification', function() {
-		document.querySelector('.notifications a i').className = 'icon-circle active';
+		document.querySelector('.notifications a i').className = 'fa fa-circle active';
 		app.alert({
 			alert_id: 'new_notif',
 			title: 'New notification',

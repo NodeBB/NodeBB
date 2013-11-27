@@ -18,7 +18,7 @@ define(function() {
 		}
 
 		function select_icon(el) {
-			var selected = el.attr('class').replace(' icon-2x', '');
+			var selected = el.attr('class').replace(' fa-2x', '');
 			jQuery('#icons .selected').removeClass('selected');
 			if (selected)
 				jQuery('#icons .' + selected).parent().addClass('selected');
@@ -27,9 +27,13 @@ define(function() {
 			bootbox.confirm('<h2>Select an icon.</h2>' + document.getElementById('icons').innerHTML, function(confirm) {
 				if (confirm) {
 					var iconClass = jQuery('.bootbox .selected').children(':first').attr('class');
-					el.attr('class', iconClass + ' icon-2x');
-					el.val(iconClass);
-					el.attr('value', iconClass);
+
+					el.attr('class', iconClass + ' fa-2x');
+
+					// remove the 'fa ' from the class name, just need the icon name itself
+					var categoryIconClass = iconClass.replace('fa ', '');
+					el.val(categoryIconClass);
+					el.attr('value', categoryIconClass);
 
 					modified(el);
 				}
@@ -77,7 +81,8 @@ define(function() {
 				name: $('#inputName').val(),
 				description: $('#inputDescription').val(),
 				icon: $('#new-category-modal i').val(),
-				blockclass: $('#inputBlockclass').val()
+				bgColor: '#0059b2',
+				color: '#fff'
 			};
 
 			socket.emit('api:admin.categories.create', category, function(err, data) {
@@ -125,11 +130,7 @@ define(function() {
 				select_icon($(this).find('i'));
 			});
 
-			jQuery('.blockclass').on('change', function(ev) {
-				update_blockclass(ev.target);
-			});
-
-			jQuery('.category_name, .category_description, .blockclass').on('change', function(ev) {
+			jQuery('.admin-categories form input').on('change', function(ev) {
 				modified(ev.target);
 			});
 
@@ -156,6 +157,21 @@ define(function() {
 				return false;
 			});
 
+			// Colour Picker
+			$('[data-name="bgColor"], [data-name="color"]').each(function(idx, inputEl) {
+				var	jinputEl = $(this),
+					previewEl = jinputEl.parents('[data-cid]').find('.preview-box');
+
+				jinputEl.ColorPicker({
+					color: this.value || '#000',
+					onChange: function(hsb, hex) {
+						jinputEl.val('#' + hex);
+						if (inputEl.getAttribute('data-name') === 'bgColor') previewEl.css('background', '#' + hex);
+						else if (inputEl.getAttribute('data-name') === 'color') previewEl.css('color', '#' + hex);
+						modified(inputEl);
+					}
+				});
+			});
 		});
 	};
 

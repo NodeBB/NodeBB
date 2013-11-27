@@ -34,10 +34,10 @@
 
 <hr />
 <div class="pull-right">
-	<button data-path="privileges" class="btn btn-primary btn-lg">Next &ndash; <i class="icon-legal"></i> Privileges</button>
+	<button data-path="privileges" class="btn btn-primary btn-lg">Next &ndash; <i class="fa fa-gavel"></i> Privileges</button>
 </div>
 <div>
-	<button data-path="mail" class="btn btn-primary btn-lg">Previous &ndash; <i class="icon-envelope"></i> Mail</button>
+	<button data-path="mail" class="btn btn-primary btn-lg">Previous &ndash; <i class="fa fa-envelope"></i> Mail</button>
 </div>
 
 <script>

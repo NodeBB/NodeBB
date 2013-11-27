@@ -2,6 +2,7 @@ var RDB = require('./redis.js'),
 	utils = require('./../public/src/utils.js'),
 	user = require('./user.js'),
 	topics = require('./topics.js'),
+	categories = require('./categories.js'),
 	favourites = require('./favourites.js'),
 	threadTools = require('./threadTools.js'),
 	postTools = require('./postTools'),
@@ -13,10 +14,174 @@ var RDB = require('./redis.js'),
 	postSearch = reds.createSearch('nodebbpostsearch'),
 	nconf = require('nconf'),
 	meta = require('./meta.js'),
+	validator = require('validator'),
 	winston = require('winston');
 
 (function(Posts) {
 	var customUserInfo = {};
+
+	Posts.create = function(uid, tid, content, callback) {
+		if (uid === null) {
+			callback(new Error('invalid-user'), null);
+			return;
+		}
+
+		topics.isLocked(tid, function(err, locked) {
+			if(err) {
+				return callback(err, null);
+			} else if(locked) {
+				callback(new Error('topic-locked'), null);
+			}
+
+			RDB.incr('global:next_post_id', function(err, pid) {
+				if(err) {
+					return callback(err, null);
+				}
+
+				plugins.fireHook('filter:post.save', content, function(err, newContent) {
+					if(err) {
+						return callback(err, null);
+					}
+
+					content = newContent;
+
+					var timestamp = Date.now(),
+						postData = {
+							'pid': pid,
+							'uid': uid,
+							'tid': tid,
+							'content': content,
+							'timestamp': timestamp,
+							'reputation': 0,
+							'editor': '',
+							'edited': 0,
+							'deleted': 0,
+							'fav_button_class': '',
+							'fav_star_class': 'fa-star-o',
+							'show_banned': 'hide',
+							'relativeTime': new Date(timestamp).toISOString(),
+							'post_rep': '0',
+							'edited-class': 'none',
+							'relativeEditTime': ''
+						};
+
+					RDB.hmset('post:' + pid, postData);
+
+					topics.addPostToTopic(tid, pid);
+					topics.increasePostCount(tid);
+					topics.updateTimestamp(tid, timestamp);
+
+					RDB.incr('totalpostcount');
+
+					topics.getTopicFields(tid, ['cid', 'pinned'], function(err, topicData) {
+
+						RDB.handle(err);
+
+						var cid = topicData.cid;
+
+						feed.updateTopic(tid);
+						feed.updateRecent();
+
+						RDB.zadd('categories:recent_posts:cid:' + cid, timestamp, pid);
+
+						if(topicData.pinned === '0') {
+							RDB.zadd('categories:' + cid + ':tid', timestamp, tid);
+						}
+
+						RDB.scard('cid:' + cid + ':active_users', function(err, amount) {
+							if (amount > 16) {
+								RDB.spop('cid:' + cid + ':active_users');
+							}
+
+							categories.addActiveUser(cid, uid);
+						});
+					});
+
+					user.onNewPostMade(uid, tid, pid, timestamp);
+
+					plugins.fireHook('filter:post.get', postData, function(err, newPostData) {
+						if(err) {
+							return callback(err, null);
+						}
+
+						postData = newPostData;
+
+						postTools.parse(postData.content, function(err, content) {
+							if(err) {
+								return callback(err, null);
+							}
+							postData.content = content;
+
+							plugins.fireHook('action:post.save', postData);
+
+							postSearch.index(content, pid);
+
+							callback(null, postData);
+						});
+					});
+				});
+			});
+		});
+	};
+
+	Posts.reply = function(tid, uid, content, callback) {
+		if(content) {
+			content = content.trim();
+		}
+
+		if (!content || content.length < meta.config.minimumPostLength) {
+			callback(new Error('content-too-short'), null);
+			return;
+		}
+
+		Posts.create(uid, tid, content, function(err, postData) {
+			if(err) {
+				return callback(err, null);
+			} else if(!postData) {
+				callback(new Error('reply-error'), null);
+			}
+
+			async.parallel([
+				function(next) {
+					topics.markUnRead(tid, function(err) {
+						if(err) {
+							return next(err);
+						}
+						topics.markAsRead(tid, uid);
+						next();
+					});
+				},
+				function(next) {
+					Posts.getCidByPid(postData.pid, function(err, cid) {
+						if(err) {
+							return next(err);
+						}
+
+						RDB.del('cid:' + cid + ':read_by_uid');
+						next();
+					});
+				},
+				function(next) {
+					threadTools.notifyFollowers(tid, uid);
+					next();
+				},
+				function(next) {
+					Posts.addUserInfoToPost(postData, function(err) {
+						if(err) {
+							return next(err);
+						}
+						next();
+					});
+				}
+			], function(err, results) {
+				if(err) {
+					return callback(err, null);
+				}
+
+				callback(null, postData);
+			});
+		});
+	}
 
 	Posts.getPostsByTid = function(tid, start, end, callback) {
 		RDB.lrange('tid:' + tid + ':posts', start, end, function(err, pids) {
@@ -86,7 +251,7 @@ var RDB = require('./redis.js'),
 		function getPostSummary(pid, callback) {
 			async.waterfall([
 				function(next) {
-					Posts.getPostFields(pid, ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'], function(postData) {
+					Posts.getPostFields(pid, ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'], function(err, postData) {
 						if (postData.deleted === '1') return callback(null);
 						else {
 							postData.relativeTime = new Date(parseInt(postData.timestamp || 0, 10)).toISOString();
@@ -100,12 +265,15 @@ var RDB = require('./redis.js'),
 					});
 				},
 				function(postData, next) {
-					topics.getTopicFields(postData.tid, ['slug', 'deleted'], function(err, topicData) {
+					topics.getTopicFields(postData.tid, ['title', 'cid', 'slug', 'deleted'], function(err, topicData) {
 						if (err) return callback(err);
 						else if (topicData.deleted === '1') return callback(null);
-
-						postData.topicSlug = topicData.slug;
-						next(null, postData);
+						categories.getCategoryField(topicData.cid, 'name', function(err, categoryData) {
+							postData.category_name = categoryData;
+							postData.title = validator.sanitize(topicData.title).escape();
+							postData.topicSlug = topicData.slug;
+							next(null, postData);
+						})
 					});
 				},
 				function(postData, next) {
@@ -131,51 +299,48 @@ var RDB = require('./redis.js'),
 		});
 	};
 
-	// TODO: this function is never called except from some debug route. clean up?
 	Posts.getPostData = function(pid, callback) {
 		RDB.hgetall('post:' + pid, function(err, data) {
-			if (err === null) {
-				plugins.fireHook('filter:post.get', data, function(err, newData) {
-					if (!err) callback(newData);
-					else callback(data);
-				});
-			} else {
-				winston.error(err);
+			if(err) {
+				return callback(err, null);
 			}
+
+			plugins.fireHook('filter:post.get', data, function(err, newData) {
+				if(err) {
+					return callback(err, null);
+				}
+				callback(null, newData);
+			});
 		});
 	}
 
 	Posts.getPostFields = function(pid, fields, callback) {
 		RDB.hmgetObject('post:' + pid, fields, function(err, data) {
-			if (err === null) {
-				// TODO: I think the plugins system needs an optional 'parameters' paramter so I don't have to do this:
-				data = data || {};
-				data.pid = pid;
-				data.fields = fields;
-
-				plugins.fireHook('filter:post.getFields', data, function(err, data) {
-					callback(data);
-				});
-			} else {
-				console.log(err);
+			if(err) {
+				return callback(err, null);
 			}
+
+			// TODO: I think the plugins system needs an optional 'parameters' paramter so I don't have to do this:
+			data = data || {};
+			data.pid = pid;
+			data.fields = fields;
+
+			plugins.fireHook('filter:post.getFields', data, function(err, data) {
+				if(err) {
+					return callback(err, null);
+				}
+				callback(null, data);
+			});
 		});
 	}
 
 	Posts.getPostField = function(pid, field, callback) {
-		RDB.hget('post:' + pid, field, function(err, data) {
-			if (err === null) {
-				// TODO: I think the plugins system needs an optional 'parameters' paramter so I don't have to do this:
-				data = data || {};
-				data.pid = pid;
-				data.field = field;
-
-				plugins.fireHook('filter:post.getField', data, function(err, data) {
-					callback(data);
-				});
-			} else {
-				console.log(err);
+		Posts.getPostFields(pid, [field], function(err, data) {
+			if(err) {
+				return callback(err, null);
 			}
+
+			callback(null, data[field]);
 		});
 	}
 
@@ -192,8 +357,8 @@ var RDB = require('./redis.js'),
 		var posts = [],
 			multi = RDB.multi();
 
-		for(var x=0,numPids=pids.length;x<numPids;x++) {
-			multi.hgetall("post:"+pids[x]);
+		for(var x=0, numPids=pids.length; x<numPids; x++) {
+			multi.hgetall("post:" + pids[x]);
 		}
 
 		multi.exec(function (err, replies) {
@@ -204,11 +369,10 @@ var RDB = require('./redis.js'),
 					postData['edited-class'] = postData.editor !== '' ? '' : 'none';
 					try {
 						postData.relativeTime = new Date(parseInt(postData.timestamp,10)).toISOString();
-						postData['relativeEditTime'] = postData.edited !== '0' ? (new Date(parseInt(postData.edited,10)).toISOString()) : '';
+						postData.relativeEditTime = postData.edited !== '0' ? (new Date(parseInt(postData.edited,10)).toISOString()) : '';
 					} catch(e) {
 						winston.err('invalid time value');
 					}
-
 
 					if (postData.uploadedImages) {
 						try {
@@ -238,17 +402,23 @@ var RDB = require('./redis.js'),
 		})
 	}
 
-	Posts.get_cid_by_pid = function(pid, callback) {
-		Posts.getPostField(pid, 'tid', function(tid) {
-			if (tid) {
-				topics.getTopicField(tid, 'cid', function(err, cid) {
-					if (cid) {
-						callback(cid);
-					} else {
-						callback(false);
-					}
-				});
+	Posts.getCidByPid = function(pid, callback) {
+		Posts.getPostField(pid, 'tid', function(err, tid) {
+			if(err) {
+				return callback(err, null);
 			}
+
+			topics.getTopicField(tid, 'cid', function(err, cid) {
+				if(err) {
+					return callback(err, null);
+				}
+
+				if (cid) {
+					callback(null, cid);
+				} else {
+					callback(new Error('invalid-category-id'), null);
+				}
+			});
 		});
 	}
 
@@ -265,163 +435,25 @@ var RDB = require('./redis.js'),
 	Posts.emitTooManyPostsAlert = function(socket) {
 		socket.emit('event:alert', {
 			title: 'Too many posts!',
-			message: 'You can only post every ' + meta.config.postDelay / 1000 + ' seconds.',
+			message: 'You can only post every ' + meta.config.postDelay + ' seconds.',
 			type: 'danger',
 			timeout: 2000
 		});
 	}
 
-	Posts.reply = function(tid, uid, content, callback) {
-		if(content) {
-			content = content.trim();
-		}
-
-		if (!content || content.length < meta.config.minimumPostLength) {
-			callback(new Error('content-too-short'), null);
-			return;
-		}
-
-		Posts.create(uid, tid, content, function(postData) {
-			if (postData) {
-
-				topics.markUnRead(tid);
-
-				Posts.get_cid_by_pid(postData.pid, function(cid) {
-					RDB.del('cid:' + cid + ':read_by_uid', function(err, data) {
-						topics.markAsRead(tid, uid);
-					});
-				});
-
-				threadTools.notifyFollowers(tid, uid);
-
-				Posts.addUserInfoToPost(postData, function() {
-					var socketData = {
-						posts: [postData]
-					};
-
-					io.sockets.in('topic_' + tid).emit('event:new_post', socketData);
-					io.sockets.in('recent_posts').emit('event:new_post', socketData);
-					io.sockets.in('user/' + uid).emit('event:new_post', socketData);
-				});
-
-				callback(null, 'Reply successful');
-			} else {
-				callback(new Error('reply-error'), null);
-			}
-		});
-	}
-
-	Posts.create = function(uid, tid, content, callback) {
-		if (uid === null) {
-			callback(null);
-			return;
-		}
-
-		topics.isLocked(tid, function(locked) {
-			if (!locked || locked === '0') {
-				RDB.incr('global:next_post_id', function(err, pid) {
-					RDB.handle(err);
-
-					plugins.fireHook('filter:post.save', content, function(err, newContent) {
-						if (!err) content = newContent;
-
-						var timestamp = Date.now(),
-							postData = {
-								'pid': pid,
-								'uid': uid,
-								'tid': tid,
-								'content': content,
-								'timestamp': timestamp,
-								'reputation': 0,
-								'editor': '',
-								'edited': 0,
-								'deleted': 0,
-								'fav_button_class': '',
-								'fav_star_class': 'icon-star-empty',
-								'show_banned': 'hide',
-								'relativeTime': new Date(timestamp).toISOString(),
-								'post_rep': '0',
-								'edited-class': 'none',
-								'relativeEditTime': ''
-							};
-
-						RDB.hmset('post:' + pid, postData);
-
-						topics.addPostToTopic(tid, pid);
-						topics.increasePostCount(tid);
-						topics.updateTimestamp(tid, timestamp);
-
-						RDB.incr('totalpostcount');
-
-						topics.getTopicFields(tid, ['cid', 'pinned'], function(err, topicData) {
-
-							RDB.handle(err);
-
-							var cid = topicData.cid;
-
-							feed.updateTopic(tid);
-
-							RDB.zadd('categories:recent_posts:cid:' + cid, timestamp, pid);
-
-							if(topicData.pinned === '0')
-								RDB.zadd('categories:' + cid + ':tid', timestamp, tid);
-
-							RDB.scard('cid:' + cid + ':active_users', function(err, amount) {
-								if (amount > 10) {
-									RDB.spop('cid:' + cid + ':active_users');
-								}
-
-								categories.addActiveUser(cid, uid);
-							});
-						});
-
-						user.onNewPostMade(uid, tid, pid, timestamp);
-
-						async.parallel({
-							content: function(next) {
-								plugins.fireHook('filter:post.get', postData, function(err, newPostData) {
-									if (!err) postData = newPostData;
-
-									postTools.parse(postData.content, function(err, content) {
-										next(null, content);
-									});
-								});
-							}
-						}, function(err, results) {
-							postData.content = results.content;
-							callback(postData);
-						});
-
-						plugins.fireHook('action:post.save', postData);
-
-						postSearch.index(content, pid);
-					});
-				});
-			} else {
-				callback(null);
-			}
-		});
-	}
-
 	Posts.uploadPostImage = function(image, callback) {
-		var imgur = require('./imgur');
-		imgur.setClientID(meta.config.imgurClientID);
 
 		if(!image)
 			return callback('invalid image', null);
 
-		imgur.upload(image.data, 'base64', function(err, data) {
+		require('./imgur').upload(meta.config.imgurClientID, image.data, 'base64', function(err, data) {
 			if(err) {
-				callback('Can\'t upload image!', null);
+				callback(err.message, null);
 			} else {
-				if(data.success) {
-					var img= {url:data.data.link, name:image.name};
-
-					callback(null, img);
-				} else {
-					winston.error('Can\'t upload image, did you set imgurClientID?');
-					callback("upload error", null);
-				}
+				callback(null, {
+					url: data.link,
+					name: image.name
+				});
 			}
 		});
 	}
@@ -444,25 +476,12 @@ var RDB = require('./redis.js'),
 		});
 	}
 
-	Posts.getTopicPostStats = function() {
-		RDB.mget(['totaltopiccount', 'totalpostcount'], function(err, data) {
-			if (err === null) {
-				var stats = {
-					topics: data[0] ? data[0] : 0,
-					posts: data[1] ? data[1] : 0
-				};
-
-				io.sockets.emit('post.stats', stats);
-			} else
-				console.log(err);
-		});
-	}
 
 	Posts.reIndexPids = function(pids, callback) {
 
 		function reIndex(pid, callback) {
 
-			Posts.getPostField(pid, 'content', function(content) {
+			Posts.getPostField(pid, 'content', function(err, content) {
 				postSearch.remove(pid, function() {
 
 					if (content && content.length) {

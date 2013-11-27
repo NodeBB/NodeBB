@@ -1,18 +1,17 @@
 define(function () {
-	var	Category = {};
+	var Category = {},
+		loadingMoreTopics = false;
 
 	Category.init = function() {
 		var	cid = templates.get('category_id'),
-			room = 'category_' + cid,
 			twitterEl = jQuery('#twitter-intent'),
 			facebookEl = jQuery('#facebook-share'),
 			googleEl = jQuery('#google-share'),
 			twitter_url = templates.get('twitter-intent-url'),
 			facebook_url = templates.get('facebook-share-url'),
-			google_url = templates.get('google-share-url'),
-			loadingMoreTopics = false;
+			google_url = templates.get('google-share-url');
 
-		app.enter_room(room);
+		app.enterRoom('category_' + cid);
 
 		twitterEl.on('click', function () {
 			window.open(twitter_url, '_blank', 'width=550,height=420,scrollbars=no,status=no');
@@ -56,7 +55,7 @@ define(function () {
 				li.setAttribute('data-pid', posts[i].pid);
 
 
-				li.innerHTML = '<a href="/user/' + posts[i].userslug + '"><img title="' + posts[i].username + '" style="width: 48px; height: 48px; /*temporary*/" class="img-rounded" src="' + posts[i].picture + '" class="" /></a>' +
+				li.innerHTML = '<a href="/user/' + posts[i].userslug + '"><img title="' + posts[i].username + '" style="width: 48px; height: 48px; /*temporary*/" class="img-rounded user-img" src="' + posts[i].picture + '" class="" /></a>' +
 					'<a href="/topic/' + posts[i].topicSlug + '#' + posts[i].pid + '">' +
 					'<strong><span>'+ posts[i].username + '</span></strong>' +
 					'<p>' +
@@ -69,6 +68,7 @@ define(function () {
 				recent_replies.appendChild(frag);
 			}
 			$('#category_recent_replies span.timeago').timeago();
+			app.createUserTooltips();
 		});
 
 		$(window).off('scroll').on('scroll', function (ev) {
@@ -94,17 +94,20 @@ define(function () {
 
 		if (numTopics > 0) {
 			for (var x = 0; x < numTopics; x++) {
-				if ($(topics[x]).find('.icon-pushpin').length)
+				if ($(topics[x]).find('.fa-thumb-tack').length) {
+					if(x === numTopics - 1) {
+						topic.insertAfter(topics[x]);
+					}
 					continue;
+				}
 				topic.insertBefore(topics[x]);
-				topic.hide().fadeIn('slow');
 				break;
 			}
 		} else {
 			container.append(topic);
-			topic.hide().fadeIn('slow');
 		}
 
+		topic.hide().fadeIn('slow');
 		socket.emit('api:categories.getRecentReplies', templates.get('category_id'));
 
 		addActiveUser(data);
@@ -144,6 +147,10 @@ define(function () {
 
 
 	Category.loadMoreTopics = function(cid) {
+		if (loadingMoreTopics) {
+			return;
+		}
+		
 		loadingMoreTopics = true;
 		socket.emit('api:category.loadMore', {
 			cid: cid,

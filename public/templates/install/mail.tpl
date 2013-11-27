@@ -23,7 +23,7 @@
 
 <hr />
 <div class="pull-right">
-	<button data-path="social" class="btn btn-primary btn-lg">Next &ndash; <i class="icon-facebook"></i> Social</button>
+	<button data-path="social" class="btn btn-primary btn-lg">Next &ndash; <i class="fa fa-facebook"></i> Social</button>
 </div>
 
 <script>

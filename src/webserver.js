@@ -1,44 +1,54 @@
-var express = require('express'),
+var path = require('path'),
+	fs = require('fs'),
+
+	express = require('express'),
 	express_namespace = require('express-namespace'),
 	WebServer = express(),
 	server = require('http').createServer(WebServer),
 	RedisStore = require('connect-redis')(express),
-	path = require('path'),
-	RDB = require('./redis'),
-	utils = require('../public/src/utils.js'),
-	pkg = require('../package.json'),
-	fs = require('fs'),
-
-	user = require('./user.js'),
-	categories = require('./categories.js'),
-	posts = require('./posts.js'),
-	topics = require('./topics.js'),
-	notifications = require('./notifications.js'),
-	admin = require('./routes/admin.js'),
-	userRoute = require('./routes/user.js'),
-	apiRoute = require('./routes/api.js'),
-	auth = require('./routes/authentication.js'),
-	meta = require('./meta.js'),
-	feed = require('./feed'),
-	plugins = require('./plugins'),
 	nconf = require('nconf'),
 	winston = require('winston'),
 	validator = require('validator'),
 	async = require('async'),
-	logger = require('./logger.js');
+
+	pkg = require('../package.json'),
+
+	utils = require('../public/src/utils'),
+	RDB = require('./redis'),
+	user = require('./user'),
+	categories = require('./categories'),
+	posts = require('./posts'),
+	topics = require('./topics'),
+	notifications = require('./notifications'),
+	admin = require('./routes/admin'),
+	userRoute = require('./routes/user'),
+	apiRoute = require('./routes/api'),
+	auth = require('./routes/authentication'),
+	meta = require('./meta'),
+	feed = require('./feed'),
+	plugins = require('./plugins'),
+	logger = require('./logger');
 
 (function (app) {
+	"use strict";
+
 	var templates = null,
 		clientScripts;
 
-	// Minify client-side libraries
-	meta.js.get(function (err, scripts) {
-		clientScripts = scripts.map(function (script) {
-			return script = {
-				script: script
-			}
+
+	plugins.ready(function() {
+		// Minify client-side libraries
+		meta.js.get(function (err, scripts) {
+			clientScripts = scripts.map(function (script) {
+				script = {
+					script: script
+				};
+
+				return script;
+			});
 		});
 	});
+
 
 	server.app = app;
 
@@ -66,13 +76,17 @@ var express = require('express'),
 					content: meta.config.title || 'NodeBB'
 				}, {
 					property: 'keywords',
-					content: meta.config['keywords'] || ''
+					content: meta.config.keywords || ''
+				}],
+				defaultLinkTags = [{
+					rel: 'apple-touch-icon',
+					href: meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png'
 				}],
 				metaString = utils.buildMetaTags(defaultMetaTags.concat(options.metaTags || [])),
-				linkTags = utils.buildLinkTags(options.linkTags || []),
+				linkTags = utils.buildLinkTags(defaultLinkTags.concat(options.linkTags || [])),
 				templateValues = {
 					cssSrc: meta.config['theme:src'] || nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
-					pluginCSS: plugins.cssFiles.map(function(file) { return { path: file } }),
+					pluginCSS: plugins.cssFiles.map(function(file) { return { path: file }; }),
 					title: meta.config.title || '',
 					description: meta.config.description || '',
 					'brand:logo': meta.config['brand:logo'] || '',
@@ -88,8 +102,9 @@ var express = require('express'),
 
 			var uid = '0';
 
-			if(options.req.user && options.req.user.uid)
+			if(options.req.user && options.req.user.uid) {
 				uid = options.req.user.uid;
+			}
 
 			user.isAdministrator(uid, function(isAdmin) {
 				templateValues.adminDisplay = isAdmin ? 'show' : 'hide';
@@ -97,7 +112,7 @@ var express = require('express'),
 				translator.translate(templates.header.parse(templateValues), function(template) {
 					callback(null, template);
 				});
-			})
+			});
 
 
 		});
@@ -139,7 +154,7 @@ var express = require('express'),
 					res.locals.csrf_token = req.session._csrf;
 
 					// Disable framing
-					res.setHeader("X-Frame-Options", "DENY");
+					res.setHeader('X-Frame-Options', 'DENY');
 
 					next();
 				});
@@ -165,14 +180,18 @@ var express = require('express'),
 
 								// Theme's static directory
 								if (themeData[2]) {
-									app.use('/css/assets', express.static(path.join(__dirname, '../node_modules', themeData[1], themeData[2])));
+									app.use('/css/assets', express.static(path.join(__dirname, '../node_modules', themeData[1], themeData[2]), {
+										maxAge: 5184000000
+									}));
 									if (process.env.NODE_ENV === 'development') {
 										winston.info('Static directory routed for theme: ' + themeData[1]);
 									}
 								}
 
 								if (themeData[3]) {
-									app.use('/templates', express.static(path.join(__dirname, '../node_modules', themeData[1], themeData[3])));
+									app.use('/templates', express.static(path.join(__dirname, '../node_modules', themeData[1], themeData[3]), {
+										maxAge: 5184000000
+									}));
 									if (process.env.NODE_ENV === 'development') {
 										winston.info('Custom templates directory routed for theme: ' + themeData[1]);
 									}
@@ -232,7 +251,9 @@ var express = require('express'),
 				app.use(app.router);
 
 				// Static directory /public
-				app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../', 'public')));
+				app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../', 'public'), {
+					maxAge: 5184000000
+				}));
 
 				// 404 catch-all
 				app.use(function (req, res, next) {
@@ -249,11 +270,17 @@ var express = require('express'),
 						res.json(200, {});
 					} else if (req.accepts('html')) {
 						// respond with html page
-						if (process.env.NODE_ENV === 'development') winston.warn('Route requested but not found: ' + req.url);
+						if (process.env.NODE_ENV === 'development') {
+							winston.warn('Route requested but not found: ' + req.url);
+						}
+
 						res.redirect(nconf.get('relative_path') + '/404');
 					} else if (req.accepts('json')) {
 						// respond with json
-						if (process.env.NODE_ENV === 'development') winston.warn('Route requested but not found: ' + req.url);
+						if (process.env.NODE_ENV === 'development') {
+							winston.warn('Route requested but not found: ' + req.url);
+						}
+
 						res.json({
 							error: 'Not found'
 						});
@@ -284,7 +311,9 @@ var express = require('express'),
 				winston.error('Errors were encountered while attempting to initialise NodeBB.');
 				process.exit();
 			} else {
-				if (process.env.NODE_ENV === 'development') winston.info('Middlewares loaded.');
+				if (process.env.NODE_ENV === 'development') {
+					winston.info('Middlewares loaded.');
+				}
 			}
 		});
 	});
@@ -293,54 +322,62 @@ var express = require('express'),
 		templates = global.templates;
 
 		// translate all static templates served by webserver here. ex. footer, logout
-		translator.translate(templates['footer'].toString(), function(parsedTemplate) {
-			templates['footer'] = parsedTemplate;
+		plugins.fireHook('filter:footer.build', '', function(err, appendHTML) {
+			var footer = templates.footer.parse({
+				footerHTML: appendHTML
+			});
+
+			translator.translate(footer, function(parsedTemplate) {
+				templates.footer = parsedTemplate;
+			});
 		});
-		translator.translate(templates['logout'].toString(), function(parsedTemplate) {
-			templates['logout'] = parsedTemplate;
+
+		plugins.fireHook('action:app.load');
+
+		translator.translate(templates.logout.toString(), function(parsedTemplate) {
+			templates.logout = parsedTemplate;
 		});
 
 		winston.info('NodeBB Ready');
 		server.listen(nconf.get('PORT') || nconf.get('port'), nconf.get('bind_address'));
-	}
+	};
 
 	app.create_route = function (url, tpl) { // to remove
-		return '<script>templates.ready(function(){ajaxify.go("' + url + '", null, "' + tpl + '");});</script>';
+		return '<script>templates.ready(function(){ajaxify.go("' + url + '", null, "' + tpl + '", true);});</script>';
 	};
 
 	app.namespace(nconf.get('relative_path'), function () {
 
-		auth.create_routes(app);
-		admin.create_routes(app);
-		userRoute.create_routes(app);
-		apiRoute.create_routes(app);
-
+		auth.createRoutes(app);
+		admin.createRoutes(app);
+		userRoute.createRoutes(app);
+		apiRoute.createRoutes(app);
 
 		// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 		(function () {
-			var routes = ['login', 'register', 'account', 'recent', 'unread', 'notifications', '403', '404'];
+			var routes = ['login', 'register', 'account', 'recent', '403', '404'],
+				loginRequired = ['unread', 'search', 'notifications'];
 
-			for (var i = 0, ii = routes.length; i < ii; i++) {
-				(function (route) {
+			async.each(routes.concat(loginRequired), function(route, next) {
+				app.get('/' + route, function (req, res) {
+					if ((route === 'login' || route === 'register') && (req.user && req.user.uid > 0)) {
 
-					app.get('/' + route, function (req, res) {
-						if ((route === 'login' || route === 'register') && (req.user && req.user.uid > 0)) {
-
-							user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
-								res.redirect('/user/' + userslug);
-							});
-							return;
-						}
-
-						app.build_header({
-							req: req,
-							res: res
-						}, function (err, header) {
-							res.send((isNaN(parseInt(route, 10)) ? 200 : parseInt(route, 10)), header + app.create_route(route) + templates['footer']);
+						user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
+							res.redirect('/user/' + userslug);
 						});
+						return;
+					} else if (loginRequired.indexOf(route) !== -1 && !req.user) {
+						return res.redirect('/403');
+					}
+
+					app.build_header({
+						req: req,
+						res: res
+					}, function (err, header) {
+						res.send((isNaN(parseInt(route, 10)) ? 200 : parseInt(route, 10)), header + app.create_route(route) + templates.footer);
 					});
-				}(routes[i]));
-			}
+				});
+			});
 		}());
 
 
@@ -366,25 +403,27 @@ var express = require('express'),
 					}, next);
 				},
 				"categories": function (next) {
-					categories.getAllCategories(function (returnData) {
+					categories.getAllCategories(0, function (err, returnData) {
 						returnData.categories = returnData.categories.filter(function (category) {
-							if (category.disabled !== '1') return true;
-							else return false;
+							if (category.disabled !== '1') {
+								return true;
+							} else {
+								return false;
+							}
 						});
 
 						next(null, returnData);
-					}, 0);
+					});
 				}
 			}, function (err, data) {
 				res.send(
 					data.header +
 					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/home'].parse(data.categories) + '\n\t</noscript>' +
 					app.create_route('') +
-					templates['footer']
+					templates.footer
 				);
-			})
+			});
 		});
-
 
 		app.get('/topic/:topic_id/:slug?', function (req, res) {
 			var tid = req.params.topic_id;
@@ -394,18 +433,26 @@ var express = require('express'),
 				var rssPath = path.join(__dirname, '../', 'feeds/topics', tid + '.rss'),
 					loadFeed = function () {
 						fs.readFile(rssPath, function (err, data) {
-							if (err) res.type('text').send(404, "Unable to locate an rss feed at this location.");
-							else res.type('xml').set('Content-Length', data.length).send(data);
+							if (err) {
+								res.type('text').send(404, "Unable to locate an rss feed at this location.");
+							} else {
+								res.type('xml').set('Content-Length', data.length).send(data);
+							}
 						});
 
 					};
 
 				if (!fs.existsSync(rssPath)) {
 					feed.updateTopic(tid, function (err) {
-						if (err) res.redirect('/404');
-						else loadFeed();
+						if (err) {
+							res.redirect('/404');
+						} else {
+							loadFeed();
+						}
 					});
-				} else loadFeed();
+				} else {
+					loadFeed();
+				}
 
 				return;
 			}
@@ -414,8 +461,9 @@ var express = require('express'),
 				function (next) {
 					topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), 0, -1, function (err, topicData) {
 						if (topicData) {
-							if (topicData.deleted === '1' && topicData.expose_tools === 0)
+							if (topicData.deleted === '1' && topicData.expose_tools === 0) {
 								return next(new Error('Topic deleted'), null);
+							}
 						}
 
 						next(err, topicData);
@@ -428,7 +476,9 @@ var express = require('express'),
 
 					for (var x = 0, numPosts = topicData.posts.length; x < numPosts; x++) {
 						timestamp = parseInt(topicData.posts[x].timestamp, 10);
-						if (timestamp > lastMod) lastMod = timestamp;
+						if (timestamp > lastMod) {
+							lastMod = timestamp;
+						}
 					}
 
 					app.build_header({
@@ -439,7 +489,7 @@ var express = require('express'),
 							content: topicData.topic_name
 						}, {
 							name: "description",
-							content: sanitize(topicData.main_posts[0].content.substr(0, 255)).escape().replace('\n', '')
+							content: sanitize(topicData.posts[0].content.substr(0, 255)).escape().replace('\n', '')
 						}, {
 							property: 'og:title',
 							content: topicData.topic_name + ' | ' + (meta.config.title || 'NodeBB')
@@ -451,10 +501,10 @@ var express = require('express'),
 							content: nconf.get('url') + 'topic/' + topicData.slug
 						}, {
 							property: 'og:image',
-							content: topicData.main_posts[0].picture
+							content: topicData.posts[0].picture
 						}, {
 							property: "article:published_time",
-							content: new Date(parseInt(topicData.main_posts[0].timestamp, 10)).toISOString()
+							content: new Date(parseInt(topicData.posts[0].timestamp, 10)).toISOString()
 						}, {
 							property: 'article:modified_time',
 							content: new Date(lastMod).toISOString()
@@ -481,14 +531,17 @@ var express = require('express'),
 					});
 				},
 			], function (err, data) {
-				if (err) return res.redirect('404');
+				if (err) {
+					return res.redirect('404');
+				}
+
 				var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
 
 				res.send(
 					data.header +
 					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/topic'].parse(data.topics) + '\n\t</noscript>' +
-					'\n\t<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '");});</script>' +
-					templates['footer']
+					'\n\t<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '", undefined, undefined, true);});</script>' +
+					templates.footer
 				);
 			});
 		});
@@ -501,18 +554,26 @@ var express = require('express'),
 				var rssPath = path.join(__dirname, '../', 'feeds/categories', cid + '.rss'),
 					loadFeed = function () {
 						fs.readFile(rssPath, function (err, data) {
-							if (err) res.type('text').send(404, "Unable to locate an rss feed at this location.");
-							else res.type('xml').set('Content-Length', data.length).send(data);
+							if (err) {
+								res.type('text').send(404, "Unable to locate an rss feed at this location.");
+							} else {
+								res.type('xml').set('Content-Length', data.length).send(data);
+							}
 						});
 
 					};
 
 				if (!fs.existsSync(rssPath)) {
 					feed.updateCategory(cid, function (err) {
-						if (err) res.redirect('/404');
-						else loadFeed();
+						if (err) {
+							res.redirect('/404');
+						} else {
+							loadFeed();
+						}
 					});
-				} else loadFeed();
+				} else {
+					loadFeed();
+				}
 
 				return;
 			}
@@ -522,9 +583,11 @@ var express = require('express'),
 					categories.getCategoryById(cid, 0, function (err, categoryData) {
 
 						if (categoryData) {
-							if (categoryData.disabled === '1')
+							if (categoryData.disabled === '1') {
 								return next(new Error('Category disabled'), null);
+							}
 						}
+
 						next(err, categoryData);
 					});
 				},
@@ -561,14 +624,17 @@ var express = require('express'),
 					});
 				}
 			], function (err, data) {
-				if (err) return res.redirect('404');
+				if (err) {
+					return res.redirect('404');
+				}
+
 				var category_url = cid + (req.params.slug ? '/' + req.params.slug : '');
 
 				res.send(
 					data.header +
 					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/category'].parse(data.categories) + '\n\t</noscript>' +
-					'\n\t<script>templates.ready(function(){ajaxify.go("category/' + category_url + '");});</script>' +
-					templates['footer']
+					'\n\t<script>templates.ready(function(){ajaxify.go("category/' + category_url + '", undefined, undefined, true);});</script>' +
+					templates.footer
 				);
 			});
 		});
@@ -578,7 +644,7 @@ var express = require('express'),
 				req: req,
 				res: res
 			}, function (err, header) {
-				res.send(header + '<script>templates.ready(function(){ajaxify.go("confirm/' + req.params.code + '");});</script>' + templates['footer']);
+				res.send(header + '<script>templates.ready(function(){ajaxify.go("confirm/' + req.params.code + '", undefined, undefined, true);});</script>' + templates.footer);
 			});
 		});
 
@@ -597,22 +663,30 @@ var express = require('express'),
 				"Sitemap: " + nconf.get('url') + "sitemap.xml");
 		});
 
-		app.get('/cid/:cid', function (req, res) {
-			categories.getCategoryData(req.params.cid, function (err, data) {
-				if (data)
-					res.send(data);
-				else
-					res.send(404, "Category doesn't exist!");
-			});
-		});
+		app.get('/recent.rss', function(req, res) {
+			var rssPath = path.join(__dirname, '../', 'feeds/recent.rss'),
+				loadFeed = function () {
+					fs.readFile(rssPath, function (err, data) {
+						if (err) {
+							res.type('text').send(404, "Unable to locate an rss feed at this location.");
+						} else {
+							res.type('xml').set('Content-Length', data.length).send(data);
+						}
+					});
 
-		app.get('/tid/:tid', function (req, res) {
-			topics.getTopicData(req.params.tid, function (data) {
-				if (data)
-					res.send(data);
-				else
-					res.send(404, "Topic doesn't exist!");
-			});
+				};
+
+			if (!fs.existsSync(rssPath)) {
+				feed.updateRecent(function (err) {
+					if (err) {
+						res.redirect('/404');
+					} else {
+						loadFeed();
+					}
+				});
+			} else {
+				loadFeed();
+			}
 		});
 
 		app.get('/recent/:term?', function (req, res) {
@@ -621,22 +695,15 @@ var express = require('express'),
 				req: req,
 				res: res
 			}, function (err, header) {
-				res.send(header + app.create_route("recent/" + req.params.term, null, "recent") + templates['footer']);
+				res.send(header + app.create_route('recent/' + req.params.term, null, 'recent') + templates.footer);
 			});
 
-		});
-
-		app.get('/pid/:pid', function (req, res) {
-			posts.getPostData(req.params.pid, function (data) {
-				if (data)
-					res.send(data);
-				else
-					res.send(404, "Post doesn't exist!");
-			});
 		});
 
 		app.get('/outgoing', function (req, res) {
-			if (!req.query.url) return res.redirect('/404');
+			if (!req.query.url) {
+				return res.redirect('/404');
+			}
 
 			app.build_header({
 				req: req,
@@ -645,30 +712,21 @@ var express = require('express'),
 				res.send(
 					header +
 					'\n\t<script>templates.ready(function(){ajaxify.go("outgoing?url=' + encodeURIComponent(req.query.url) + '", null, null, true);});</script>' +
-					templates['footer']
+					templates.footer
 				);
 			});
 		});
 
-		app.get('/search', function (req, res) {
-			if (!req.user)
-				return res.redirect('/403');
-			app.build_header({
-				req: req,
-				res: res
-			}, function (err, header) {
-				res.send(header + app.create_route("search", null, "search") + templates['footer']);
-			});
-		});
-
 		app.get('/search/:term', function (req, res) {
-			if (!req.user)
+			if (!req.user) {
 				return res.redirect('/403');
+			}
+
 			app.build_header({
 				req: req,
 				res: res
 			}, function (err, header) {
-				res.send(header + app.create_route("search/" + req.params.term, null, "search") + templates['footer']);
+				res.send(header + app.create_route('search/' + req.params.term, null, 'search') + templates.footer);
 			});
 		});
 
@@ -713,7 +771,7 @@ var express = require('express'),
 										req: options.req,
 										res: options.res
 									}, function (err, header) {
-										res.send(header + options.content + templates['footer']);
+										res.send(header + options.content + templates.footer);
 									});
 								});
 							});

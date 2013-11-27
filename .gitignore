@@ -12,3 +12,6 @@ public/css/*.css
 Vagrantfile
 .vagrant
 provision.sh
+*.komodoproject
+
+feeds/recent.rss

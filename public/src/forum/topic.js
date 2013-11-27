@@ -1,5 +1,7 @@
 define(function() {
-	var	Topic = {};
+	var	Topic = {},
+		infiniteLoaderActive = false;
+
 
 	Topic.init = function() {
 		var expose_tools = templates.get('expose_tools'),
@@ -17,16 +19,26 @@ define(function() {
 			google_url = templates.get('google-share-url');
 
 
+		function fixDeleteStateForPosts() {
+			var postEls = document.querySelectorAll('#post-container li[data-deleted]');
+			for (var x = 0, numPosts = postEls.length; x < numPosts; x++) {
+				if (postEls[x].getAttribute('data-deleted') === '1') {
+					toggle_post_delete_state(postEls[x].getAttribute('data-pid'));
+				}
+				postEls[x].removeAttribute('data-deleted');
+			}
+		}
+
+
 		jQuery('document').ready(function() {
 
 			app.addCommasToNumbers();
 
+			app.enterRoom('topic_' + tid);
 
-			var room = 'topic_' + tid,
-				adminTools = document.getElementById('thread-tools');
-
-			app.enter_room(room);
-
+			if($('#post-container .posts .post-row').length > 1) {
+				$('.topic-main-buttons').removeClass('hide').parent().removeClass('hide');
+			}
 
 			$('.twitter-share').on('click', function () {
 				window.open(twitter_url, '_blank', 'width=550,height=420,scrollbars=no,status=no');
@@ -50,11 +62,10 @@ define(function() {
 
 			if (expose_tools === '1') {
 				var moveThreadModal = $('#move_thread_modal');
-
-				adminTools.style.visibility = 'inherit';
+				$('.thread-tools').removeClass('hide');
 
 				// Add events to the thread tools
-				$('#delete_thread').on('click', function(e) {
+				$('.delete_thread').on('click', function(e) {
 					if (thread_state.deleted !== '1') {
 						bootbox.confirm('Are you sure you want to delete this thread?', function(confirm) {
 							if (confirm) {
@@ -73,7 +84,7 @@ define(function() {
 					return false;
 				});
 
-				$('#lock_thread').on('click', function(e) {
+				$('.lock_thread').on('click', function(e) {
 					if (thread_state.locked !== '1') {
 						socket.emit('api:topic.lock', {
 							tid: tid
@@ -86,7 +97,7 @@ define(function() {
 					return false;
 				});
 
-				$('#pin_thread').on('click', function(e) {
+				$('.pin_thread').on('click', function(e) {
 					if (thread_state.pinned !== '1') {
 						socket.emit('api:topic.pin', {
 							tid: tid
@@ -99,7 +110,7 @@ define(function() {
 					return false;
 				});
 
-				$('#move_thread').on('click', function(e) {
+				$('.move_thread').on('click', function(e) {
 					moveThreadModal.modal('show');
 					return false;
 				});
@@ -109,7 +120,6 @@ define(function() {
 					var loadingEl = document.getElementById('categories-loading');
 					if (loadingEl) {
 						socket.once('api:categories.get', function(data) {
-							console.log(data);
 							// Render categories
 							var categoriesFrag = document.createDocumentFragment(),
 								categoryEl = document.createElement('li'),
@@ -125,8 +135,10 @@ define(function() {
 							categoriesEl.className = 'category-list';
 							for (x = 0; x < numCategories; x++) {
 								info = data.categories[x];
-								categoryEl.className = info.blockclass + (info.disabled === '1' ? ' disabled' : '');
-								categoryEl.innerHTML = '<i class="' + info.icon + '"></i> ' + info.name;
+								categoryEl.style.background = info.bgColor;
+								categoryEl.style.color = info.color || '#fff';
+								categoryEl.className = info.disabled === '1' ? ' disabled' : '';
+								categoryEl.innerHTML = '<i class="fa ' + info.icon + '"></i> ' + info.name;
 								categoryEl.setAttribute('data-cid', info.cid);
 								categoriesFrag.appendChild(categoryEl.cloneNode(true));
 							}
@@ -148,7 +160,7 @@ define(function() {
 									commitEl.disabled = true;
 									$(cancelEl).fadeOut(250);
 									$(moveThreadModal).find('.modal-header button').fadeOut(250);
-									commitEl.innerHTML = 'Moving <i class="icon-spin icon-refresh"></i>';
+									commitEl.innerHTML = 'Moving <i class="fa-spin fa-refresh"></i>';
 
 									socket.once('api:topic.move', function(data) {
 										moveThreadModal.modal('hide');
@@ -182,15 +194,11 @@ define(function() {
 				});
 			}
 
-			// Fix delete state for this thread's posts
-			var postEls = document.querySelectorAll('#post-container li[data-deleted]');
-			for (var x = 0, numPosts = postEls.length; x < numPosts; x++) {
-				if (postEls[x].getAttribute('data-deleted') === '1') toggle_post_delete_state(postEls[x].getAttribute('data-pid'));
-				postEls[x].removeAttribute('data-deleted');
-			}
+			fixDeleteStateForPosts();
+
 
 			// Follow Thread State
-			var followEl = $('.main-post .follow'),
+			var followEl = $('.posts .follow'),
 				set_follow_state = function(state, quiet) {
 					if (state && !followEl.hasClass('btn-success')) {
 						followEl.addClass('btn-success');
@@ -246,7 +254,7 @@ define(function() {
 			var bookmark = localStorage.getItem('topic:' + tid + ':bookmark');
 
 			if(bookmark) {
-				app.scrollToPost(parseInt(bookmark, 10));
+				Topic.scrollToPost(parseInt(bookmark, 10));
 			}
 
 			$('#post-container').on('click', '.deleted', function(ev) {
@@ -258,13 +266,15 @@ define(function() {
 			$(window).off('scroll').on('scroll', function() {
 				var bottom = ($(document).height() - $(window).height()) * 0.9;
 
-				if ($(window).scrollTop() > bottom && !app.infiniteLoaderActive && $('#post-container').children().length) {
-					app.loadMorePosts(tid);
+				if ($(window).scrollTop() > bottom && !infiniteLoaderActive && $('#post-container').children().length) {
+					loadMorePosts(tid, function(posts) {
+						fixDeleteStateForPosts();
+					});
 				}
 			});
 		}
 
-		var reply_fn = function() {
+		$('.topic').on('click', '.post_reply', function() {
 			var selectionText = '',
 				selection = window.getSelection() || document.getSelection();
 
@@ -278,9 +288,7 @@ define(function() {
 					cmp.push(tid, null, null, selectionText.length > 0 ? selectionText + '\n\n' : '');
 				});
 			}
-		};
-		$('#post-container').on('click', '.post_reply', reply_fn);
-		$('#post_reply').on('click', reply_fn);
+		});
 
 		$('#post-container').on('click', '.quote', function() {
 			if (thread_state.locked !== '1') {
@@ -304,15 +312,15 @@ define(function() {
 			var uid = $(this).parents('li').attr('data-uid');
 
 			var element = $(this).find('i');
-			if (element.attr('class') == 'icon-star-empty') {
+			if ($(element).hasClass('fa-star-o')) {
 				socket.emit('api:posts.favourite', {
 					pid: pid,
-					room_id: app.current_room
+					room_id: app.currentRoom
 				});
 			} else {
 				socket.emit('api:posts.unfavourite', {
 					pid: pid,
-					room_id: app.current_room
+					room_id: app.currentRoom
 				});
 			}
 		});
@@ -327,7 +335,7 @@ define(function() {
 
 		$('#post-container').delegate('.edit', 'click', function(e) {
 			var pid = $(this).parents('li').attr('data-pid'),
-				main = $(this).parents('.main-post');
+				main = $(this).parents('.posts');
 
 			require(['composer'], function(cmp) {
 				cmp.push(null, null, pid);
@@ -341,22 +349,31 @@ define(function() {
 				confirmDel = confirm((deleteAction ? 'Delete' : 'Restore') + ' this post?');
 
 			if (confirmDel) {
-				deleteAction ?
+				if(deleteAction) {
 					socket.emit('api:posts.delete', {
-						pid: pid
-					}) :
-					socket.emit('api:posts.restore', {
-						pid: pid
+						pid: pid,
+						tid: tid
+					}, function(err) {
+						if(err) {
+							return app.alertError('Can\'t delete post!');
+						}
 					});
+				} else {
+					socket.emit('api:posts.restore', {
+						pid: pid,
+						tid: tid
+					}, function(err) {
+						if(err) {
+							return app.alertError('Can\'t restore post!');
+						}
+					});
+				}
 			}
 		});
 
 		$('#post-container').on('click', '.chat', function(e) {
 			var username = $(this).parents('li.row').attr('data-username');
 			var touid = $(this).parents('li.row').attr('data-uid');
-
-			if (username === app.username || !app.username)
-				return;
 
 			app.openChat(username, touid);
 		});
@@ -381,12 +398,15 @@ define(function() {
 						var userLink = $('<a href="/user/' + userslug + '"></a>').append(userIcon);
 						userLink.attr('data-uid', uid);
 
+						var div = $('<div class="inline-block"></div>');
+						div.append(userLink);
+
 						userLink.tooltip({
-							placement: 'left',
+							placement: 'top',
 							title: username
 						});
 
-						return userLink;
+						return div;
 					}
 				}
 
@@ -428,7 +448,7 @@ define(function() {
 				activeEl.find('.anonymous-box').remove();
 				if(anonymousCount || remainingUsers) {
 
-					var anonLink = $('<i class="icon-user anonymous-box"></i>');
+					var anonLink = $('<div class="anonymous-box inline-block"><i class="fa fa-user"></i></div>');
 					activeEl.append(anonLink);
 
 					var title = '';
@@ -440,12 +460,12 @@ define(function() {
 						title = anonymousCount + ' guest(s)';
 
 					anonLink.tooltip({
-						placement: 'left',
+						placement: 'top',
 						title: title
 					});
 				}
 			}
-			app.populate_online_users();
+			app.populateOnlineUsers();
 		});
 
 		socket.on('event:rep_up', function(data) {
@@ -456,7 +476,7 @@ define(function() {
 			adjust_rep(-1, data.pid, data.uid);
 		});
 
-		socket.on('event:new_post', app.createNewPosts);
+		socket.on('event:new_post', createNewPosts);
 
 		socket.on('event:topic_deleted', function(data) {
 			if (data.tid === tid && data.status === 'ok') {
@@ -523,7 +543,7 @@ define(function() {
 			if (data.status === 'ok' && data.pid) {
 				var favEl = document.querySelector('.post_rep_' + data.pid).nextSibling;
 				if (favEl) {
-					favEl.className = 'icon-star';
+					favEl.className = 'fa fa-star';
 					$(favEl).parent().addClass('btn-warning');
 				}
 			}
@@ -533,18 +553,22 @@ define(function() {
 			if (data.status === 'ok' && data.pid) {
 				var favEl = document.querySelector('.post_rep_' + data.pid).nextSibling;
 				if (favEl) {
-					favEl.className = 'icon-star-empty';
+					favEl.className = 'fa fa-star-o';
 					$(favEl).parent().removeClass('btn-warning');
 				}
 			}
 		});
 
 		socket.on('event:post_deleted', function(data) {
-			if (data.pid) toggle_post_delete_state(data.pid, true);
+			if (data.pid) {
+				 toggle_post_delete_state(data.pid);
+			}
 		});
 
 		socket.on('event:post_restored', function(data) {
-			if (data.pid) toggle_post_delete_state(data.pid, true);
+			if (data.pid) {
+				toggle_post_delete_state(data.pid);
+			}
 		});
 
 		socket.on('api:post.privileges', function(privileges) {
@@ -566,21 +590,21 @@ define(function() {
 		}
 
 		function set_locked_state(locked, alert) {
-			var threadReplyBtn = document.getElementById('post_reply'),
+			var threadReplyBtn = $('.topic-main-buttons .post_reply'),
 				postReplyBtns = document.querySelectorAll('#post-container .post_reply'),
 				quoteBtns = document.querySelectorAll('#post-container .quote'),
 				editBtns = document.querySelectorAll('#post-container .edit'),
 				deleteBtns = document.querySelectorAll('#post-container .delete'),
 				numPosts = document.querySelectorAll('#post_container li[data-pid]').length,
-				lockThreadEl = document.getElementById('lock_thread'),
+				lockThreadEl = $('.lock_thread'),
 				x;
 
 			if (locked === true) {
-				lockThreadEl.innerHTML = '<i class="icon-unlock"></i> Unlock Thread';
-				threadReplyBtn.disabled = true;
-				threadReplyBtn.innerHTML = 'Locked <i class="icon-lock"></i>';
+				lockThreadEl.html('<i class="fa fa-unlock"></i> Unlock Thread');
+				threadReplyBtn.attr('disabled', true);
+				threadReplyBtn.html('Locked <i class="fa fa-lock"></i>');
 				for (x = 0; x < numPosts; x++) {
-					postReplyBtns[x].innerHTML = 'Locked <i class="icon-lock"></i>';
+					postReplyBtns[x].innerHTML = 'Locked <i class="fa fa-lock"></i>';
 					quoteBtns[x].style.display = 'none';
 					editBtns[x].style.display = 'none';
 					deleteBtns[x].style.display = 'none';
@@ -598,11 +622,11 @@ define(function() {
 
 				thread_state.locked = '1';
 			} else {
-				lockThreadEl.innerHTML = '<i class="icon-lock"></i> Lock Thread';
-				threadReplyBtn.disabled = false;
-				threadReplyBtn.innerHTML = 'Reply';
+				lockThreadEl.html('<i class="fa fa-lock"></i> Lock Thread');
+				threadReplyBtn.attr('disabled', false);
+				threadReplyBtn.html('Reply');
 				for (x = 0; x < numPosts; x++) {
-					postReplyBtns[x].innerHTML = 'Reply <i class="icon-reply"></i>';
+					postReplyBtns[x].innerHTML = 'Reply <i class="fa fa-reply"></i>';
 					quoteBtns[x].style.display = 'inline-block';
 					editBtns[x].style.display = 'inline-block';
 					deleteBtns[x].style.display = 'inline-block';
@@ -623,13 +647,14 @@ define(function() {
 		}
 
 		function set_delete_state(deleted) {
-			var deleteThreadEl = document.getElementById('delete_thread'),
-				deleteTextEl = deleteThreadEl.getElementsByTagName('span')[0],
+			var deleteThreadEl = $('.delete_thread'),
+				deleteTextEl = $('.delete_thread span'),
+				//deleteThreadEl.getElementsByTagName('span')[0],
 				threadEl = $('#post-container'),
 				deleteNotice = document.getElementById('thread-deleted') || document.createElement('div');
 
 			if (deleted) {
-				deleteTextEl.innerHTML = '<i class="icon-comment"></i> Restore Thread';
+				deleteTextEl.html('<i class="fa fa-comment"></i> Restore Thread');
 				threadEl.addClass('deleted');
 
 				// Spawn a 'deleted' notice at the top of the page
@@ -640,7 +665,7 @@ define(function() {
 
 				thread_state.deleted = '1';
 			} else {
-				deleteTextEl.innerHTML = '<i class="icon-trash"></i> Delete Thread';
+				deleteTextEl.html('<i class="fa fa-trash-o"></i> Delete Thread');
 				threadEl.removeClass('deleted');
 				deleteNotice.parentNode.removeChild(deleteNotice);
 
@@ -649,10 +674,10 @@ define(function() {
 		}
 
 		function set_pinned_state(pinned, alert) {
-			var pinEl = document.getElementById('pin_thread');
+			var pinEl = $('.pin_thread');
 
 			if (pinned) {
-				pinEl.innerHTML = '<i class="icon-pushpin"></i> Unpin Thread';
+				pinEl.html('<i class="fa fa-thumb-tack"></i> Unpin Thread');
 				if (alert) {
 					app.alert({
 						'alert_id': 'thread_pin',
@@ -665,7 +690,7 @@ define(function() {
 
 				thread_state.pinned = '1';
 			} else {
-				pinEl.innerHTML = '<i class="icon-pushpin"></i> Pin Thread';
+				pinEl.html('<i class="fa fa-thumb-tack"></i> Pin Thread');
 				if (alert) {
 					app.alert({
 						'alert_id': 'thread_pin',
@@ -702,6 +727,7 @@ define(function() {
 					} else {
 						postEl.toggleClass('none');
 					}
+					updatePostCount();
 				});
 				socket.emit('api:post.privileges', pid);
 			}
@@ -740,8 +766,8 @@ define(function() {
 
 
 
-		var postAuthorImage, mobileAuthorOverlay, pagination;
-		var postcount = templates.get('postcount');
+		var pagination;
+		Topic.postCount = templates.get('postcount');
 
 		function updateHeader() {
 			if (pagination == null) {
@@ -752,10 +778,6 @@ define(function() {
 					app.scrollToBottom();
 				});
 			}
-
-			jQuery('.mobile-author-overlay').css('bottom', '0px');
-			postAuthorImage = postAuthorImage || document.getElementById('mobile-author-image');
-			mobileAuthorOverlay = mobileAuthorOverlay || document.getElementById('mobile-author-overlay');
 			pagination = pagination || document.getElementById('pagination');
 
 			pagination.parentNode.style.display = 'block';
@@ -764,18 +786,16 @@ define(function() {
 			var scrollTop = jQuery(window).scrollTop();
 			var scrollBottom = scrollTop + windowHeight;
 
-			if (scrollTop < 50 && postcount > 1) {
+			if (scrollTop < 50 && Topic.postCount > 1) {
 				localStorage.removeItem("topic:" + tid + ":bookmark");
-				postAuthorImage.src = (jQuery('.main-post .avatar img').attr('src'));
-				mobileAuthorOverlay.innerHTML = 'Posted by ' + jQuery('.main-post').attr('data-username') + ', ' + jQuery('.main-post').find('.relativeTimeAgo').html();
-				pagination.innerHTML = '0 out of ' + postcount;
+				pagination.innerHTML = '0 out of ' + Topic.postCount;
 				return;
 			}
 
 
 			var count = 0, smallestNonNegative = 0;
 
-			jQuery('.sub-posts').each(function() {
+			jQuery('.posts > .post-row').each(function() {
 				count++;
 				this.postnumber = count;
 
@@ -794,15 +814,13 @@ define(function() {
 						smallestNonNegative = Number.MAX_VALUE;
 					}
 
-					pagination.innerHTML = this.postnumber + ' out of ' + postcount;
-					postAuthorImage.src = (jQuery(this).find('.profile-image-block img').attr('src'));
-					mobileAuthorOverlay.innerHTML = 'Posted by ' + jQuery(this).attr('data-username') + ', ' + jQuery(this).find('.relativeTimeAgo').html();
+					pagination.innerHTML = this.postnumber + ' out of ' + Topic.postCount;
 				}
 			});
 
 			setTimeout(function() {
 				if (scrollTop + windowHeight == jQuery(document).height()) {
-					pagination.innerHTML = postcount + ' out of ' + postcount;
+					pagination.innerHTML = Topic.postCount + ' out of ' + Topic.postCount;
 				}
 			}, 100);
 		}
@@ -810,6 +828,143 @@ define(function() {
 		window.onscroll = updateHeader;
 		window.onload = updateHeader;
 	};
+
+	Topic.scrollToPost = function(pid) {
+		if (!pid) {
+			return;
+		}
+
+		var container = $(document.body),
+			scrollTo = $('#post_anchor_' + pid),
+			tid = $('#post-container').attr('data-tid');
+
+		function animateScroll() {
+			$('body,html').animate({
+				scrollTop: scrollTo.offset().top - container.offset().top + container.scrollTop() - $('#header-menu').height()
+			}, 400);
+		}
+
+		if (!scrollTo.length && tid) {
+
+			var intervalID = setInterval(function () {
+				loadMorePosts(tid, function (posts) {
+					scrollTo = $('#post_anchor_' + pid);
+
+					if (tid && scrollTo.length) {
+						animateScroll();
+					}
+
+					if (!posts.length || scrollTo.length)
+						clearInterval(intervalID);
+				});
+			}, 100);
+
+		} else if (tid) {
+			animateScroll();
+		}
+	}
+
+	function createNewPosts(data, infiniteLoaded) {
+		if(!data || (data.posts && !data.posts.length))
+			return;
+
+		if (data.posts[0].uid !== app.uid) {
+			data.posts[0].display_moderator_tools = 'none';
+		}
+
+		function removeAlreadyAddedPosts() {
+			data.posts = data.posts.filter(function(post) {
+				return $('#post-container li[data-pid="' + post.pid +'"]').length === 0;
+			});
+		}
+
+		function findInsertionPoint() {
+			var after = null,
+				firstPid = data.posts[0].pid;
+			$('#post-container li[data-pid]').each(function() {
+				if(parseInt(firstPid, 10) > parseInt($(this).attr('data-pid'), 10)) {
+					after = $(this);
+					if(after.hasClass('posts')) {
+						after = after.next();
+					}
+				} else {
+					return false;
+				}
+			});
+			return after;
+		}
+
+		removeAlreadyAddedPosts();
+		if(!data.posts.length) {
+			return;
+		}
+
+		var insertAfter = findInsertionPoint();
+
+		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
+		var regexp = new RegExp("<!--[\\s]*IF @first[\\s]*-->[\\s\\S]*<!--[\\s]*ENDIF @first[\\s]*-->", 'g');
+		html = html.replace(regexp, '');
+
+		translator.translate(html, function(translatedHTML) {
+			var translated = $(translatedHTML);
+
+			if(!infiniteLoaded) {
+				translated.removeClass('infiniteloaded');
+			}
+
+			translated.insertAfter(insertAfter)
+				.hide()
+				.fadeIn('slow');
+
+			for (var x = 0, numPosts = data.posts.length; x < numPosts; x++) {
+				socket.emit('api:post.privileges', data.posts[x].pid);
+			}
+
+			infiniteLoaderActive = false;
+
+			app.populateOnlineUsers();
+			app.addCommasToNumbers();
+			$('span.timeago').timeago();
+			$('.post-content img').addClass('img-responsive');
+			updatePostCount();
+		});
+	}
+
+	function updatePostCount() {
+		Topic.postCount = $('#post-container li[data-pid]:not(.deleted)').length;
+		$('#topic-post-count').html(Topic.postCount);
+	}
+
+	function loadMorePosts(tid, callback) {
+		var indicatorEl = $('.loading-indicator');
+
+		if (infiniteLoaderActive) {
+			return;
+		}
+
+		infiniteLoaderActive = true;
+
+		if (indicatorEl.attr('done') === '0') {
+			indicatorEl.fadeIn();
+		}
+
+		socket.emit('api:topic.loadMore', {
+			tid: tid,
+			after: $('#post-container .post-row.infiniteloaded').length
+		}, function (data) {
+			infiniteLoaderActive = false;
+			if (data.posts.length) {
+				indicatorEl.attr('done', '0');
+				createNewPosts(data, true);
+			} else {
+				indicatorEl.attr('done', '1');
+			}
+			indicatorEl.fadeOut();
+			if (callback) {
+				callback(data.posts);
+			}
+		});
+	}
 
 	return Topic;
 });

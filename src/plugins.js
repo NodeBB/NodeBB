@@ -284,14 +284,14 @@ var fs = require('fs'),
 									winston.warn("Plugin: " + file + " is corrupted or invalid. Please check plugin.json for errors.")
 									return next(err, null);
 								}
-								
+
 								_self.isActive(config.id, function(err, active) {
 									if (err) next(new Error('no-active-state'));
 
 									delete config.library;
 									delete config.hooks;
 									config.active = active;
-									config.activeText = '<i class="icon-off"></i> ' + (active ? 'Dea' : 'A') + 'ctivate';
+									config.activeText = '<i class="fa fa-power-off"></i> ' + (active ? 'Dea' : 'A') + 'ctivate';
 									next(null, config);
 								});
 							}

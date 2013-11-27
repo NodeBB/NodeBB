@@ -7,19 +7,19 @@
 	<!-- BEGIN groups -->
 		<li data-gid="{groups.gid}">
 			<div class="row">
-				<div class="col-lg-8">
+				<div class="col-lg-8">	
 					<h2>{groups.name}</h2>
 					<p>{groups.description}</p>
 					<div class="btn-group">
 						<button class="btn btn-default" data-action="members">Members</button>
+						<!-- IF groups.deletable -->
 						<button class="btn btn-danger" data-action="delete">Delete Group</button>
+						<!-- ENDIF groups.deletable -->
 					</div>
 				</div>
 				<div class="col-lg-4">
 					<ul class="pull-right members">
-					<!-- BEGIN members -->
-						<li data-uid="{groups.members.uid}" title="{groups.members.username}"><img src="{groups.members.picture}" /></li>
-					<!-- END members -->
+					<!-- BEGIN members --><li data-uid="{groups.members.uid}" title="{groups.members.username}"><img src="{groups.members.picture}" /></li><!-- END members -->
 					</ul>
 				</div>
 			</div>

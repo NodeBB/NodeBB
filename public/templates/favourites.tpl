@@ -1,7 +1,7 @@
 <div class="well favourites">
 	<div class="account-username-box" data-userslug="{userslug}">
 		<span class="account-username">
-			<a href="/user/{userslug}">{username}</a> <i class="icon-chevron-right"></i>
+			<a href="/user/{userslug}">{username}</a> <i class="fa fa-chevron-right"></i>
 			<a href="/user/{userslug}/favourites">favourites</a>
 		</span>
 	</div>
@@ -13,7 +13,8 @@
 			<!-- BEGIN posts -->
 			<div class="topic-row img-thumbnail clearfix" topic-url="topic/{posts.tid}/#{posts.pid}">
 				<span><strong>{posts.username}</strong> : </span>
-				<span>{posts.content}</span>
+				<span>{posts.category_name} >> {posts.title}</span>
+				<div>{posts.content}</div>
 				<div>
 					<span class="pull-right timeago" title="{posts.relativeTime}"></span>
 				</div>

@@ -1,5 +1,6 @@
-var ajaxify = {};
+"use strict";
 
+var ajaxify = {};
 
 (function ($) {
 	/*global app, templates, utils*/
@@ -23,8 +24,9 @@ var ajaxify = {};
 
 	window.onpopstate = function (event) {
 		// "quiet": If set to true, will not call pushState
-		if (event !== null && event.state && event.state.url !== undefined)
+		if (event !== null && event.state && event.state.url !== undefined) {
 			ajaxify.go(event.state.url, null, null, true);
+		}
 	};
 
 	var pagination;
@@ -32,10 +34,13 @@ var ajaxify = {};
 	ajaxify.go = function (url, callback, template, quiet) {
 		// start: the following should be set like so: ajaxify.onchange(function(){}); where the code actually belongs
 		$(window).off('scroll');
-		app.enter_room('global');
+		app.enterRoom('global');
 
 		pagination = pagination || document.getElementById('pagination');
-		if (pagination) pagination.parentNode.style.display = 'none';
+		if (pagination) {
+			pagination.parentNode.style.display = 'none';
+		}
+
 		window.onscroll = null;
 		// end
 
@@ -62,37 +67,55 @@ var ajaxify = {};
 		}
 
 		if (templates.is_available(tpl_url) && !templates.force_refresh(tpl_url)) {
-			if (quiet !== true) {
-				if (window.history && window.history.pushState) {
-					window.history.pushState({
-						"url": url
-					}, url, RELATIVE_PATH + "/" + url);
-				}
+			if (window.history && window.history.pushState) {
+				window.history[!quiet ? 'pushState' : 'replaceState']({
+					url: url
+				}, url, RELATIVE_PATH + '/' + url);
+
+				$.ajax(RELATIVE_PATH + '/plugins/fireHook', {
+					type: 'PUT',
+					data: {
+						_csrf: $('#csrf_token').val(),
+						hook: 'page.load',
+						args: {
+							template: tpl_url,
+							url: url,
+							uid: app.uid
+						}
+					}
+				});
 			}
 
 			translator.load(tpl_url);
 
-			jQuery('#footer, #content').fadeOut(100);
+			jQuery('#footer, #content').addClass('ajaxifying');
 
 			templates.flush();
 			templates.load_template(function () {
 				exec_body_scripts(content);
 				require(['forum/' + tpl_url], function(script) {
-					if (script && script.init) script.init();
+					if (script && script.init) {
+						script.init();
+					}
 				});
 
 				if (callback) {
 					callback();
 				}
 
-				app.process_page();
+				app.processPage();
 
-				jQuery('#content, #footer').stop(true, true).fadeIn(200, function () {
-					if (window.location.hash)
-						hash = window.location.hash;
-					if (hash)
-						app.scrollToPost(hash.substr(1));
-				});
+				jQuery('#content, #footer').stop(true, true).removeClass('ajaxifying');
+
+				if (window.location.hash) {
+					hash = window.location.hash;
+				}
+
+				if (hash) {
+					require(['forum/topic'], function(topic) {
+						topic.scrollToPost(hash.substr(1));
+					});
+				}
 
 				utils.refreshTitle(url);
 
@@ -105,23 +128,27 @@ var ajaxify = {};
 	};
 
 	$('document').ready(function () {
-		if (!window.history || !window.history.pushState) return; // no ajaxification for old browsers
+		if (!window.history || !window.history.pushState) {
+			return; // no ajaxification for old browsers
+		}
 
 		content = content || document.getElementById('content');
 
 		// Enhancing all anchors to ajaxify...
 		$(document.body).on('click', 'a', function (e) {
 			function hrefEmpty(href) {
-				return href == 'javascript:;' || href == window.location.href + "#" || href.slice(-1) === "#";
+				return href === 'javascript:;' || href === window.location.href + "#" || href.slice(-1) === "#";
 			}
 
-			if (hrefEmpty(this.href) || this.target !== '' || this.protocol === 'javascript:')
+			if (hrefEmpty(this.href) || this.target !== '' || this.protocol === 'javascript:') {
 				return;
+			}
 
-			if(!window.location.pathname.match(/\/(403|404)$/g))
+			if(!window.location.pathname.match(/\/(403|404)$/g)) {
 				app.previousUrl = window.location.href;
+			}
 
-			if (this.getAttribute('data-ajaxify') == 'false') {
+			if (this.getAttribute('data-ajaxify') === 'false') {
 				return;
 			}
 

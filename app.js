@@ -55,7 +55,7 @@
 	winston.info('');
 
 
-	if (!nconf.get('help') && !nconf.get('setup') && !nconf.get('upgrade') && fs.existsSync(__dirname + '/config.json')) {
+	if (!nconf.get('help') && !nconf.get('setup') && !nconf.get('install') && !nconf.get('upgrade') && fs.existsSync(__dirname + '/config.json')) {
 		// Load server-side configs
 		nconf.file({
 			file: __dirname + '/config.json'
@@ -64,6 +64,7 @@
 
 		nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path') + '/');
 		nconf.set('upload_url', nconf.get('url') + 'uploads/');
+		nconf.set('base_dir', __dirname);
 
 		winston.info('Initializing NodeBB v' + pkg.version + ', on port ' + nconf.get('port') + ', using Redis store at ' + nconf.get('redis:host') + ':' + nconf.get('redis:port') + '.');
 		winston.info('NodeBB instance bound to: ' + ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? 'Any address (0.0.0.0)' : nconf.get('bind_address')));
@@ -88,32 +89,45 @@
 				websockets = require('./src/websockets.js'),
 				posts = require('./src/posts.js'),
 				plugins = require('./src/plugins'), // Don't remove this - plugins initializes itself
-				Notifications = require('./src/notifications');
+				Notifications = require('./src/notifications'),
+				Upgrade = require('./src/upgrade');
 
-			websockets.init(SocketIO);
+			Upgrade.check(function(schema_ok) {
+				if (schema_ok || nconf.get('check-schema') === false) {
+					websockets.init(SocketIO);
 
-			global.templates = {};
-			global.translator = translator;
+					global.templates = {};
+					global.translator = translator;
 
-			translator.loadServer();
-			
-			var customTemplates = meta.config['theme:templates'] ? path.join(__dirname, 'node_modules', meta.config['theme:id'], meta.config['theme:templates']) : false;
+					translator.loadServer();
 
-			// todo: replace below with read directory code, derp.
-			templates.init([
-				'header', 'footer', 'logout', 'outgoing', 'admin/header', 'admin/footer', 'admin/index',
-				'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext',
-				'emails/header', 'emails/footer',
+					var customTemplates = meta.config['theme:templates'] ? path.join(__dirname, 'node_modules', meta.config['theme:id'], meta.config['theme:templates']) : false;
 
-				'noscript/header', 'noscript/home', 'noscript/category', 'noscript/topic'
-			], customTemplates);
-			
+					// todo: replace below with read directory code, derp.
+					templates.init([
+						'header', 'footer', 'logout', 'outgoing', 'admin/header', 'admin/footer', 'admin/index',
+						'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext',
+						'emails/header', 'emails/footer',
 
-			templates.ready(webserver.init);
+						'noscript/header', 'noscript/home', 'noscript/category', 'noscript/topic'
+					], customTemplates);
 
-			Notifications.init();
+
+					plugins.ready(function() {
+						templates.ready(webserver.init);
+					});
+
+					Notifications.init();
+				} else {
+					winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
+					winston.warn('    node app --upgrade');
+					winston.warn('To ignore this error (not recommended):');
+					winston.warn('    node app --no-check-schema')
+					process.exit();
+				}
+			});
 		});
-	} else if (nconf.get('setup') || !fs.existsSync(__dirname + '/config.json')) {
+	} else if (nconf.get('setup') || nconf.get('install') || !fs.existsSync(__dirname + '/config.json')) {
 		// New install, ask setup questions
 		if (nconf.get('setup')) {
 			winston.info('NodeBB Setup Triggered via Command Line');

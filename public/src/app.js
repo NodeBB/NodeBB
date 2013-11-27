@@ -47,7 +47,7 @@ var socket,
 
 					socket.on('connect', function (data) {
 						if (reconnecting) {
-							reconnectEl.html('<i class="icon-ok"></i> Connected!');
+							reconnectEl.html('<i class="fa fa-check"></i> Connected!');
 							reconnecting = false;
 
 							setTimeout(function() {
@@ -75,7 +75,7 @@ var socket,
 						reconnecting = true;
 
 						reconnectEl.addClass('active');
-						reconnectEl.html('<i class="icon-spinner icon-spin"></i> Reconnecting...');
+						reconnectEl.html('<i class="fa fa-spinner fa-spin"></i> Reconnecting...');
 					});
 
 					socket.on('api:user.get_online_users', function (users) {
@@ -88,10 +88,10 @@ var socket,
 
 							if (uid && jQuery.inArray(uid, users) !== -1) {
 								el.find('i').remove();
-								el.prepend('<i class="icon-circle"></i>');
+								el.prepend('<i class="fa fa-circle"></i>');
 							} else {
 								el.find('i').remove();
-								el.prepend('<i class="icon-circle-blank"></i>');
+								el.prepend('<i class="fa fa-circle-o"></i>');
 							}
 
 							el.processed = true;
@@ -125,7 +125,7 @@ var socket,
 						setTimeout(app.logout, 1000);
 					});
 
-					app.enter_room('global');
+					app.enterRoom('global');
 				}
 			},
 			async: false
@@ -136,7 +136,7 @@ var socket,
 		$.post(RELATIVE_PATH + '/logout', {
 			_csrf: $('#csrf_token').val()
 		}, function() {
-			window.location = RELATIVE_PATH + '/';
+			window.location.href = RELATIVE_PATH + '/';
 		});
 	}
 
@@ -186,43 +186,35 @@ var socket,
 			clearTimeout(alert.attr('timeoutId'));
 			startTimeout(alert, params.timeout);
 		} else {
-			var div = document.createElement('div'),
-				button = document.createElement('button'),
-				strong = document.createElement('strong'),
-				p = document.createElement('p');
+			var div = $('<div id="' + alert_id + '" class="alert toaster-alert alert-' + params.type +'"></div>'),
+				button = $('<button class="close">&times;</button>'),
+				strong = $('<strong>' + title + '</strong>'),
+				p = $('<p>' + params.message + '</p>');
 
-			p.innerHTML = params.message;
-			strong.innerHTML = title;
+			div.append(button)
+				.append(strong)
+				.append(p);
 
-			div.className = "alert toaster-alert " + "alert-" + params.type;
-
-			div.setAttribute('id', alert_id);
-			div.appendChild(button);
-			div.appendChild(strong);
-			div.appendChild(p);
-
-			button.className = 'close';
-			button.innerHTML = '&times;';
-			button.onclick = function (ev) {
-				div.parentNode.removeChild(div);
-			}
+			button.on('click', function () {
+				div.remove();
+			});
 
 			if (params.location == null)
 				params.location = 'alert_window';
 
-			jQuery('#' + params.location).prepend(jQuery(div).fadeIn('100'));
+			$('#' + params.location).prepend(div.fadeIn('100'));
 
 			if (params.timeout) {
 				startTimeout(div, params.timeout);
 			}
 
 			if (params.clickfn) {
-				div.onclick = function () {
+				div.on('click', function () {
 					params.clickfn();
-					jQuery(div).fadeOut(500, function () {
-						this.remove();
+					div.fadeOut(500, function () {
+						$(this).remove();
 					});
-				}
+				});
 			}
 		}
 	}
@@ -251,22 +243,23 @@ var socket,
 		});
 	}
 
-	app.current_room = null;
-	app.enter_room = function (room) {
+	app.currentRoom = null;
+	app.enterRoom = function (room) {
 		if (socket) {
-			if (app.current_room === room)
+			if (app.currentRoom === room) {
 				return;
+			}
 
 			socket.emit('event:enter_room', {
 				'enter': room,
-				'leave': app.current_room
+				'leave': app.currentRoom
 			});
 
-			app.current_room = room;
+			app.currentRoom = room;
 		}
 	};
 
-	app.populate_online_users = function () {
+	app.populateOnlineUsers = function () {
 		var uids = [];
 
 		jQuery('.post-row').each(function () {
@@ -276,11 +269,9 @@ var socket,
 		socket.emit('api:user.get_online_users', uids);
 	}
 
-	app.process_page = function () {
-		app.populate_online_users();
-
-		var url = window.location.href,
-			parts = url.split('/'),
+	function highlightNavigationLink() {
+		var path = window.location.pathname,
+			parts = path.split('/'),
 			active = parts[parts.length - 1];
 
 		jQuery('#main-nav li').removeClass('active');
@@ -295,9 +286,26 @@ var socket,
 				}
 			});
 		}
+	}
+
+	app.createUserTooltips = function() {
+		$('img[title].teaser-pic,img[title].user-img').each(function() {
+			$(this).tooltip({
+				placement: 'top',
+				title: $(this).attr('title')
+			});
+		});
+	}
+
+	app.processPage = function () {
+		app.populateOnlineUsers();
+
+		highlightNavigationLink();
 
 		$('span.timeago').timeago();
 		$('.post-content img').addClass('img-responsive');
+
+		app.createUserTooltips();
 
 		setTimeout(function () {
 			window.scrollTo(0, 1); // rehide address bar on mobile after page load completes.
@@ -331,6 +339,28 @@ var socket,
 	}
 
 	app.openChat = function (username, touid) {
+		if (username === app.username) {
+			app.alert({
+				type: 'warning',
+				title: 'Invalid Chat',
+				message: "You can't chat with yourself!",
+				timeout: 5000
+			});
+
+			return;
+		}
+
+		if (!app.username) {
+			app.alert({
+				type: 'danger',
+				title: 'Not Logged In',
+				message: 'Please log in to chat with <strong>' + username + '</strong>',
+				timeout: 5000
+			});
+
+			return;
+		}
+
 		require(['chat'], function (chat) {
 			var chatModal;
 			if (!chat.modalExists(touid)) {
@@ -340,61 +370,6 @@ var socket,
 			}
 			chat.load(chatModal.attr('UUID'));
 			chat.center(chatModal);
-		});
-	}
-
-	app.createNewPosts = function (data) {
-		if (data.posts[0].uid !== app.uid) {
- 			data.posts[0].display_moderator_tools = 'none';
- 		}
-
-		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
-		translator.translate(html, function(translatedHTML) {
-			var uniqueid = new Date().getTime(),
-				tempContainer = jQuery('<div id="' + uniqueid + '"></div>')
-					.appendTo("#post-container")
-					.hide()
-					.append(translatedHTML)
-					.fadeIn('slow');
-
-			for (var x = 0, numPosts = data.posts.length; x < numPosts; x++) {
-				socket.emit('api:post.privileges', data.posts[x].pid);
-			}
-
-			tempContainer.replaceWith(tempContainer.contents());
-			infiniteLoaderActive = false;
-
-			app.populate_online_users();
-			app.addCommasToNumbers();
-			$('span.timeago').timeago();
-			$('.post-content img').addClass('img-responsive');
-		});
-	}
-
-	app.infiniteLoaderActive = false;
-
-	app.loadMorePosts = function (tid, callback) {
-		if (app.infiniteLoaderActive)
-			return;
-		app.infiniteLoaderActive = true;
-
-		if ($('#loading-indicator').attr('done') === '0')
-			$('#loading-indicator').removeClass('hide');
-
-		socket.emit('api:topic.loadMore', {
-			tid: tid,
-			after: document.querySelectorAll('#post-container li[data-pid]').length
-		}, function (data) {
-			app.infiniteLoaderActive = false;
-			if (data.posts.length) {
-				$('#loading-indicator').attr('done', '0');
-				app.createNewPosts(data);
-			} else {
-				$('#loading-indicator').attr('done', '1');
-			}
-			$('#loading-indicator').addClass('hide');
-			if (callback)
-				callback(data.posts);
 		});
 	}
 
@@ -408,43 +383,6 @@ var socket,
 		$('body,html').animate({
 			scrollTop: $('html').height() - 100
 		});
-	}
-
-	app.scrollToPost = function (pid) {
-
-		if (!pid)
-			return;
-
-		var container = $(document.body),
-			scrollTo = $('#post_anchor_' + pid),
-			tid = $('#post-container').attr('data-tid');
-
-		function animateScroll() {
-			$('body,html').animate({
-				scrollTop: scrollTo.offset().top - container.offset().top + container.scrollTop() - $('#header-menu').height()
-			}, 400);
-			//$('body,html').scrollTop(scrollTo.offset().top - container.offset().top + container.scrollTop() - $('#header-menu').height());
-		}
-
-		if (!scrollTo.length && tid) {
-
-			var intervalID = setInterval(function () {
-				app.loadMorePosts(tid, function (posts) {
-					scrollTo = $('#post_anchor_' + pid);
-
-					if (tid && scrollTo.length) {
-						animateScroll();
-					}
-
-					if (!posts.length || scrollTo.length)
-						clearInterval(intervalID);
-				});
-			}, 100);
-
-		} else if (tid) {
-			animateScroll();
-		}
-
 	}
 
 	jQuery('document').ready(function () {

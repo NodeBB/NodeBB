@@ -181,7 +181,7 @@
 				document.title = (numNotifications > 0 ? '(' + numNotifications + ') ' : '') + title;
 				notificationIcon = notificationIcon || document.querySelector('.notifications a i');
 				if (numNotifications > 0 && notificationIcon) {
-					notificationIcon.className = 'icon-circle active';
+					notificationIcon.className = 'fa fa-circle active';
 				}
 			});
 

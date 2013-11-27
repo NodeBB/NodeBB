@@ -13,7 +13,7 @@ var user = require('./../user.js'),
 
 
 (function (Api) {
-	Api.create_routes = function (app) {
+	Api.createRoutes = function (app) {
 		app.namespace('/api', function () {
 			app.get('/get_templates_listing', function (req, res) {
 				utils.walk(path.join(__dirname, '../../', 'public/templates'), function (err, data) {
@@ -32,13 +32,14 @@ var user = require('./../user.js'),
 				config.maximumUsernameLength = meta.config.maximumUsernameLength;
 				config.minimumPasswordLength = meta.config.minimumPasswordLength;
 				config.useOutgoingLinksPage = meta.config.useOutgoingLinksPage;
+				config.emailSetup = !!meta.config['email:from'];
 
 				res.json(200, config);
 			});
 
 			app.get('/home', function (req, res) {
 				var uid = (req.user) ? req.user.uid : 0;
-				categories.getAllCategories(function (data) {
+				categories.getAllCategories(uid, function (err, data) {
 					data.categories = data.categories.filter(function (category) {
 						return (!category.disabled || category.disabled === "0");
 					});
@@ -55,11 +56,10 @@ var user = require('./../user.js'),
 						data.motd_class = (meta.config.show_motd === '1' || meta.config.show_motd === undefined) ? '' : ' none';
 						data.motd_class += (meta.config.motd && meta.config.motd.length > 0 ? '' : ' default');
 
-						data.motd = require('marked')(meta.config.motd || "<div class=\"pull-right btn-group\"><a target=\"_blank\" href=\"http://www.nodebb.org\" class=\"btn btn-default btn-lg\"><i class=\"icon-comment\"></i><span class='hidden-mobile'>&nbsp;Get NodeBB</span></a> <a target=\"_blank\" href=\"https://github.com/designcreateplay/NodeBB\" class=\"btn btn-default btn-lg\"><i class=\"icon-github-alt\"></i><span class='hidden-mobile'>&nbsp;Fork us on Github</span></a> <a target=\"_blank\" href=\"https://twitter.com/dcplabs\" class=\"btn btn-default btn-lg\"><i class=\"icon-twitter\"></i><span class='hidden-mobile'>&nbsp;@dcplabs</span></a></div>\n\n# NodeBB <span>v" + pkg.version + "</span>\nWelcome to NodeBB, the discussion platform of the future.");
+						data.motd = require('marked')(meta.config.motd || "<div class=\"pull-right btn-group\"><a target=\"_blank\" href=\"http://www.nodebb.org\" class=\"btn btn-default btn-lg\"><i class=\"fa fa-comment\"></i><span class='hidden-mobile'>&nbsp;Get NodeBB</span></a> <a target=\"_blank\" href=\"https://github.com/designcreateplay/NodeBB\" class=\"btn btn-default btn-lg\"><i class=\"fa fa-github\"></i><span class='hidden-mobile'>&nbsp;Fork us on Github</span></a> <a target=\"_blank\" href=\"https://twitter.com/dcplabs\" class=\"btn btn-default btn-lg\"><i class=\"fa fa-twitter\"></i><span class='hidden-mobile'>&nbsp;@dcplabs</span></a></div>\n\n# NodeBB <span>v" + pkg.version + "</span>\nWelcome to NodeBB, the discussion platform of the future.");
 						res.json(data);
 					});
-
-				}, uid);
+				});
 			});
 
 			app.get('/login', function (req, res) {
@@ -152,8 +152,12 @@ var user = require('./../user.js'),
 
 			app.get('/recent/:term?', function (req, res) {
 				var uid = (req.user) ? req.user.uid : 0;
-				topics.getLatestTopics(uid, 0, 19, req.params.term, function (data) {
-					res.json(data);
+				topics.getLatestTopics(uid, 0, 19, req.params.term, function (err, data) {
+					if (!err) {
+						res.json(data);
+					} else {
+						res.send(500);
+					}
 				});
 			});
 
@@ -204,7 +208,8 @@ var user = require('./../user.js'),
 
 				if (url) {
 					res.json({
-						url: url
+						url: url,
+						title: meta.config.title
 					});
 				} else {
 					res.status(404);

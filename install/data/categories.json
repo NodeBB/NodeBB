@@ -3,84 +3,84 @@
         "name": "Announcements",
         "description": "Announcements regarding our community",
         "blockclass": "category-blue",
-        "icon" : "icon-bullhorn",
+        "icon" : "fa-bullhorn",
         "order": 1
     },
     {
         "name": "General Discussion",
         "description": "A place to talk about whateeeever you want",
         "blockclass": "category-blue",
-        "icon" : "icon-comment",
+        "icon" : "fa-comment",
         "order": 2
     },
     {
         "name": "NodeBB Development",
         "description": "NodeBB development news and announcements",
         "blockclass": "category-blue",
-        "icon" : "icon-github",
+        "icon" : "fa-github",
         "order": 3
     },
     {
         "name": "Blogs",
         "description": "Blog posts from individual members",
         "blockclass": "category-blue",
-        "icon" : "icon-pencil",
+        "icon" : "fa-pencil",
         "order": 4
     },
     {
         "name": "Feature Requests",
         "description": "Got a feature request you'd like to see? Give us a shout here.",
         "blockclass": "category-purple",
-        "icon" : "icon-lightbulb",
+        "icon" : "fa-lightbulb-o",
         "order": 5
     },
     {
         "name": "Bug Reports",
         "description": "Having trouble with NodeBB? Let us know...",
         "blockclass": "category-purple",
-        "icon" : "icon-cogs",
+        "icon" : "fa-cogs",
         "order": 6
     },
     {
         "name": "NodeBB Plugins",
         "description": "Enhance your NodeBB with plugins!",
         "blockclass": "category-purple",
-        "icon" : "icon-plus-sign",
+        "icon" : "fa-plus-square",
         "order": 7
     },
     {
         "name": "NodeBB Link Exchange",
         "description": "Link exchange",
         "blockclass": "category-purple",
-        "icon" : "icon-exchange",
+        "icon" : "fa-exchange",
         "order": 8
     },
     {
         "name": "News",
         "description": "News from around the world",
         "blockclass": "category-darkblue",
-        "icon" : "icon-globe",
+        "icon" : "fa-globe",
         "order": 9
     },
     {
         "name": "Movies",
         "description": "Discuss the latest movies here",
         "blockclass": "category-darkblue",
-        "icon" : "icon-film",
+        "icon" : "fa-film",
         "order": 10
     },
     {
         "name": "Games",
         "description": "Discuss the latest games here",
         "blockclass": "category-darkblue",
-        "icon" : "icon-screenshot",
+        "icon" : "fa-crosshairs",
         "order": 11
     },
     {
         "name": "Random",
         "description": "Anything and (almost) everything welcome!",
         "blockclass": "category-darkblue",
-        "icon" : "icon-beer",
+        "icon" : "fa-beer",
         "order": 12
     }
 ]

@@ -23,7 +23,7 @@
 				<div class="row">
 					<div class="col-md-12 topic-row">
 						<a href="../../topic/{topics.slug}">
-							<h3><span class="topic-title"><strong><i class="{topics.pin-icon}"></i> <i class="{topics.lock-icon}"></i></strong> {topics.title}</span></h3>
+							<h3><span class="topic-title"><strong><i class="fa {topics.pin-icon}"></i> <i class="fa {topics.lock-icon}"></i></strong> {topics.title}</span></h3>
 						</a>
 						<small>
 							<span class="topic-stats">
@@ -42,21 +42,24 @@
 								</a>
 								posted in
 								<a href="../../category/{topics.categorySlug}">
-									<i class="{topics.categoryIcon}"></i> {topics.categoryName}
+									<i class="fa {topics.categoryIcon}"></i> {topics.categoryName}
 								</a>
 								<span class="timeago" title="{topics.relativeTime}"></span>
 								</span>
 							</span>
 
 							<span class="pull-right hidden-xs">
+								<!-- IF topics.unreplied -->
+								No one has replied
+								<!-- ELSE -->
 								<a href="/user/{topics.teaser_userslug}">
-									<img class="img-rounded teaser-pic" src="{topics.teaser_userpicture}" title="{topics.teaser_username}"/>
+									<img class="teaser-pic" src="{topics.teaser_userpicture}" title="{topics.teaser_username}"/>
 								</a>
 								<a href="../../topic/{topics.slug}#{topics.teaser_pid}">
 									replied
 								</a>
 								<span class="timeago" title="{topics.teaser_timestamp}"></span>
-
+								<!-- ENDIF topics.unreplied -->
 							</span>
 						</small>
 					</div>

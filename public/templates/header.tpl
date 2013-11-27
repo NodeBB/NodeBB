@@ -60,8 +60,7 @@
 						<a href="/users">[[global:header.users]]</a>
 					</li>
 					<li class="{adminDisplay}">
-
-						<a href="/admin"><i class="icon-cogs"></i> [[global:header.admin]]</a>
+						<a href="/admin"><i class="fa fa-cogs"></i> [[global:header.admin]]</a>
 					</li>
 					<li class="visible-xs">
 						<a href="/search">[[global:header.search]]</a>
@@ -72,7 +71,6 @@
 					</li>
 					<!-- END navigation -->
 				</ul>
-
 
 				<ul id="logged-in-menu" class="nav navbar-nav navbar-right hide">
 					<li>
@@ -87,15 +85,15 @@
 								</div>
 								<button type="submit" class="btn btn-default hide">[[global:search]]</button>
 							</div>
-							<button id="search-button" type="button" class="btn btn-link"><i class="icon-search"></i></button>
+							<button id="search-button" type="button" class="btn btn-link"><i class="fa fa-search"></i></button>
 						</form>
 					</li>
 
 					<li id="notifications-list" class="notifications dropdown text-center hidden-xs">
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="notif_dropdown"><i class="icon-circle-blank"></i></a>
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="notif_dropdown"><i class="fa fa-circle-o"></i></a>
 						<ul id="notif-list" class="dropdown-menu" aria-labelledby="notif_dropdown">
 							<li>
-								<a href="#"><i class="icon-refresh icon-spin"></i> [[global:notifications.loading]]</a>
+								<a href="#"><i class="fa fa-refresh fa-spin"></i> [[global:notifications.loading]]</a>
 							</li>
 						</ul>
 					</li>
@@ -117,8 +115,14 @@
 				</ul>
 
 				<ul id="logged-out-menu" class="nav navbar-nav navbar-right">
-					<li>
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="loggedout_dropdown"><i class="icon-signin"></i></a>
+					<li class="visible-lg visible-md visible-sm">
+						<a href="/register">Register</a>
+					</li>
+					<li class="visible-lg visible-md visible-sm">
+						<a href="/login">Login</a>
+					</li>
+					<li class="visible-xs">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="loggedout_dropdown"><i class="fa fa-sign-in"></i></a>
 						<ul class="dropdown-menu" aria-labelledby="loggedout_dropdown">
 							<li>
 								<a href="/register">Register</a>
@@ -130,11 +134,15 @@
 					</li>
 				</ul>
 
-				<div class="pagination-block">
-					<i class="icon-upload pointer"></i>
-					<span id="pagination"></span>
-					<i class="icon-upload pointer icon-rotate-180"></i>
-				</div>
+				<ul class="nav navbar-nav navbar-right pagination-block">
+					<li class="active">
+						<a>
+							<i class="fa fa-chevron-up pointer"></i>
+							<span id="pagination"></span>
+							<i class="fa fa-chevron-down pointer"></i>
+						</a>
+					</li>
+				</ul>
 			</div>
 		</div>
 	</div>

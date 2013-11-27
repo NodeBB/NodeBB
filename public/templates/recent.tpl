@@ -1,7 +1,6 @@
 <ol class="breadcrumb">
 	<li><a href="/">Home</a></li>
-	<li class="active">{category_name}</li>
-	<div id="category_active_users"></div>
+	<li class="active">Recent <a href="./recent.rss"><i class="fa fa-rss-square"></i></a></li>
 </ol>
 
 <ul class="nav nav-pills">
@@ -21,7 +20,7 @@
 </div>
 
 <div class="category row">
-	<div class="{topic_row_size}">
+	<div class="col-md-12">
 		<ul id="topics-container">
 		<!-- BEGIN topics -->
 		<li class="category-item {topics.deleted-class}">
@@ -29,7 +28,7 @@
 				<div class="col-md-12 col-xs-12 topic-row img-thumbnail">
 
 					<a href="../../topic/{topics.slug}">
-						<h3><span class="topic-title"><strong><i class="{topics.pin-icon}"></i> <i class="{topics.lock-icon}"></i></strong> {topics.title}</span></h3>
+						<h3><span class="topic-title"><strong><i class="fa {topics.pin-icon}"></i> <i class="fa {topics.lock-icon}"></i></strong> {topics.title}</span></h3>
 					</a>
 					<small>
 						<span class="topic-stats">
@@ -48,13 +47,16 @@
 							</a>
 							posted in
 							<a href="../../category/{topics.categorySlug}">
-								<i class="{topics.categoryIcon}"></i> {topics.categoryName}
+								<i class="fa {topics.categoryIcon}"></i> {topics.categoryName}
 							</a>
 							<span class="timeago" title="{topics.relativeTime}"></span>
 							</span>
 						</span>
 
 						<span class="pull-right hidden-xs">
+							<!-- IF topics.unreplied -->
+							No one has replied
+							<!-- ELSE -->
 							<a href="/user/{topics.teaser_userslug}">
 								<img class="teaser-pic" src="{topics.teaser_userpicture}" title="{topics.teaser_username}"/>
 							</a>
@@ -62,7 +64,7 @@
 								replied
 							</a>
 							<span class="timeago" title="{topics.teaser_timestamp}"></span>
-
+							<!-- ENDIF topics.unreplied -->
 						</span>
 					</small>
 				</div>

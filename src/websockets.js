@@ -1,36 +1,37 @@
 
-var	cookie = require('cookie'),
+var cookie = require('cookie'),
 	express = require('express'),
-	user = require('./user.js'),
-	Groups = require('./groups'),
-	posts = require('./posts.js'),
-	favourites = require('./favourites.js'),
-	utils = require('../public/src/utils.js'),
 	util = require('util'),
-	topics = require('./topics.js'),
-	categories = require('./categories.js'),
-	notifications = require('./notifications.js'),
-	threadTools = require('./threadTools.js'),
-	postTools = require('./postTools.js'),
-	meta = require('./meta.js'),
 	async = require('async'),
+	fs = require('fs'),
+	nconf = require('nconf'),
+	winston = require('winston'),
+
 	RedisStoreLib = require('connect-redis')(express),
 	RDB = require('./redis'),
-	util = require('util'),
-	logger = require('./logger.js'),
-	fs = require('fs'),
 	RedisStore = new RedisStoreLib({
 		client: RDB,
 		ttl: 60 * 60 * 24 * 14
 	}),
-	nconf = require('nconf'),
+
+	user = require('./user'),
+	Groups = require('./groups'),
+	posts = require('./posts'),
+	favourites = require('./favourites'),
+	utils = require('../public/src/utils'),
+	topics = require('./topics'),
+	categories = require('./categories'),
+	notifications = require('./notifications'),
+	threadTools = require('./threadTools'),
+	postTools = require('./postTools'),
+	meta = require('./meta'),
+	logger = require('./logger'),
 	socketCookieParser = express.cookieParser(nconf.get('secret')),
 	admin = {
-		'categories': require('./admin/categories.js'),
-		'user': require('./admin/user.js')
+		'categories': require('./admin/categories'),
+		'user': require('./admin/user')
 	},
-	plugins = require('./plugins'),
-	winston = require('winston');
+	plugins = require('./plugins');
 
 
 var users = {},
@@ -43,8 +44,9 @@ module.exports.logoutUser = function(uid) {
 			userSockets[uid][i].emit('event:disconnect');
 			userSockets[uid][i].disconnect();
 
-			if(!userSockets[uid])
+			if(!userSockets[uid]) {
 				return;
+			}
 		}
 	}
 }
@@ -55,8 +57,6 @@ function isUserOnline(uid) {
 module.exports.isUserOnline = isUserOnline;
 
 module.exports.init = function(io) {
-
-	global.io = io;
 
 	io.sockets.on('connection', function(socket) {
 		var hs = socket.handshake,
@@ -157,7 +157,7 @@ module.exports.init = function(io) {
 
 				for (var i = 0; i < clients.length; ++i) {
 					var hs = clients[i].handshake;
-					if (hs && clients[i].state.user.uid === 0) {
+					if (hs && clients[i].state && clients[i].state.user.uid === 0) {
 						++anonCount;
 					}
 				}
@@ -169,11 +169,11 @@ module.exports.init = function(io) {
 			var anonymousCount = getAnonymousCount(roomName);
 
 			if (uids.length === 0) {
-				io.sockets. in (roomName).emit('api:get_users_in_room', { users: [], anonymousCount:0 });
+				io.sockets. in (roomName).emit('api:get_users_in_room', { users: [], anonymousCount: anonymousCount });
 			} else {
 				user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, users) {
 					if(!err)
-						io.sockets. in (roomName).emit('api:get_users_in_room', { users: users, anonymousCount:anonymousCount });
+						io.sockets. in (roomName).emit('api:get_users_in_room', { users: users, anonymousCount: anonymousCount });
 				});
 			}
 		}
@@ -244,11 +244,7 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('post.stats', function(data) {
-			posts.getTopicPostStats();
-		});
-
-		socket.on('user.latest', function(data) {
-			user.latest(socket, data);
+			emitTopicPostStats();
 		});
 
 		socket.on('user.email.exists', function(data) {
@@ -368,12 +364,25 @@ module.exports.init = function(io) {
 						posts.emitContentTooShortAlert(socket);
 					} else if (err.message === 'too-many-posts') {
 						posts.emitTooManyPostsAlert(socket);
+					} else {
+						socket.emit('event:alert', {
+							title: 'Error',
+							message: err.message,
+							type: 'warning',
+							timeout: 7500
+						});
 					}
 					return;
 				}
 
 				if (result) {
-					posts.getTopicPostStats();
+					io.sockets.in('category_' + data.category_id).emit('event:new_topic', result.topicData);
+					io.sockets.in('recent_posts').emit('event:new_topic', result.topicData);
+					io.sockets.in('user/' + uid).emit('event:new_post', {
+						posts: result.postData
+					});
+
+					emitTopicPostStats();
 
 					socket.emit('event:alert', {
 						title: 'Thank you for posting',
@@ -407,12 +416,12 @@ module.exports.init = function(io) {
 				return;
 			}
 
-			if (Date.now() - lastPostTime < meta.config.postDelay) {
+			if (Date.now() - lastPostTime < meta.config.postDelay * 1000) {
 				posts.emitTooManyPostsAlert(socket);
 				return;
 			}
 
-			posts.reply(data.topic_id, uid, data.content, function(err, result) {
+			posts.reply(data.topic_id, uid, data.content, function(err, postData) {
 				if(err) {
 
 					if(err.message === 'content-too-short') {
@@ -430,9 +439,9 @@ module.exports.init = function(io) {
 					return;
 				}
 
-				if (result) {
+				if (postData) {
 					lastPostTime = Date.now();
-					posts.getTopicPostStats();
+					emitTopicPostStats();
 
 					socket.emit('event:alert', {
 						title: 'Reply Successful',
@@ -440,6 +449,12 @@ module.exports.init = function(io) {
 						type: 'success',
 						timeout: 2000
 					});
+					var socketData = {
+						posts: [postData]
+					};
+					io.sockets.in('topic_' + postData.tid).emit('event:new_post', socketData);
+					io.sockets.in('recent_posts').emit('event:new_post', socketData);
+					io.sockets.in('user/' + postData.uid).emit('event:new_post', socketData);
 
 				}
 
@@ -480,42 +495,66 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:topic.delete', function(data) {
-			threadTools.delete(data.tid, uid, function(err) {
-				if (!err) {
-					posts.getTopicPostStats();
-					socket.emit('api:topic.delete', {
-						status: 'ok',
-						tid: data.tid
+			threadTools.privileges(data.tid, uid, function(privileges) {
+				if (privileges.editable) {
+					threadTools.delete(data.tid, function(err) {
+						if (!err) {
+							emitTopicPostStats();
+							socket.emit('api:topic.delete', {
+								status: 'ok',
+								tid: data.tid
+							});
+						}
 					});
 				}
 			});
 		});
 
 		socket.on('api:topic.restore', function(data) {
-			threadTools.restore(data.tid, uid, socket, function(err) {
-				posts.getTopicPostStats();
+			threadTools.privileges(data.tid, uid, function(privileges) {
+				if (privileges.editable) {
+					threadTools.restore(data.tid, socket, function(err) {
+						emitTopicPostStats();
 
-				socket.emit('api:topic.restore', {
-					status: 'ok',
-					tid: data.tid
-				});
+						socket.emit('api:topic.restore', {
+							status: 'ok',
+							tid: data.tid
+						});
+					});
+				}
 			});
 		});
 
 		socket.on('api:topic.lock', function(data) {
-			threadTools.lock(data.tid, uid, socket);
+			threadTools.privileges(data.tid, uid, function(privileges) {
+				if (privileges.editable) {
+					threadTools.lock(data.tid, socket);
+				}
+			});
 		});
 
 		socket.on('api:topic.unlock', function(data) {
-			threadTools.unlock(data.tid, uid, socket);
+			threadTools.privileges(data.tid, uid, function(privileges) {
+				if (privileges.editable) {
+					threadTools.unlock(data.tid, socket);
+				}
+			});
 		});
 
 		socket.on('api:topic.pin', function(data) {
-			threadTools.pin(data.tid, uid, socket);
+			threadTools.privileges(data.tid, uid, function(privileges) {
+				if (privileges.editable) {
+					threadTools.pin(data.tid, socket);
+				}
+			});
 		});
 
 		socket.on('api:topic.unpin', function(data) {
-			threadTools.unpin(data.tid, uid, socket);
+			threadTools.privileges(data.tid, uid, function(privileges) {
+				if (privileges.editable) {
+					threadTools.unpin(data.tid, socket);
+				}
+			});
 		});
 
 		socket.on('api:topic.move', function(data) {
@@ -523,7 +562,7 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:categories.get', function() {
-			categories.getAllCategories(function(categories) {
+			categories.getAllCategories(0, function(err, categories) {
 				socket.emit('api:categories.get', categories);
 			});
 		});
@@ -533,7 +572,7 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:posts.getRawPost', function(data) {
-			posts.getPostField(data.pid, 'content', function(raw) {
+			posts.getPostField(data.pid, 'content', function(err, raw) {
 				socket.emit('api:posts.getRawPost', {
 					post: raw
 				});
@@ -560,15 +599,34 @@ module.exports.init = function(io) {
 			postTools.edit(uid, data.pid, data.title, data.content, data.images);
 		});
 
-		socket.on('api:posts.delete', function(data) {
-			postTools.delete(uid, data.pid, function() {
-				posts.getTopicPostStats();
+		socket.on('api:posts.delete', function(data, callback) {
+			postTools.delete(uid, data.pid, function(err) {
+
+				if(err) {
+					return callback(err);
+				}
+
+				emitTopicPostStats();
+
+				io.sockets.in('topic_' + data.tid).emit('event:post_deleted', {
+					pid: data.pid
+				});
+				callback(null);
 			});
 		});
 
-		socket.on('api:posts.restore', function(data) {
-			postTools.restore(uid, data.pid, function() {
-				posts.getTopicPostStats();
+		socket.on('api:posts.restore', function(data, callback) {
+			postTools.restore(uid, data.pid, function(err) {
+				if(err) {
+					return callback(err);
+				}
+
+				emitTopicPostStats();
+
+				io.sockets.in('topic_' + data.tid).emit('event:post_restored', {
+					pid: data.pid
+				});
+				callback(null);
 			});
 		});
 
@@ -584,7 +642,9 @@ module.exports.init = function(io) {
 
 		socket.on('api:notifications.mark_all_read', function(data, callback) {
 			notifications.mark_all_read(uid, function(err) {
-				if (!err) callback();
+				if (!err) {
+					callback();
+				}
 			});
 		});
 
@@ -677,7 +737,7 @@ module.exports.init = function(io) {
 					});
 				}
 
-				logger.monitorConfig(this, data);
+				logger.monitorConfig({io: io}, data);
 			});
 		});
 
@@ -688,7 +748,7 @@ module.exports.init = function(io) {
 		socket.on('api:composer.push', function(data) {
 			if (uid > 0 || meta.config.allowGuestPosting === '1') {
 				if (parseInt(data.tid) > 0) {
-					topics.getTopicData(data.tid, function(topicData) {
+					topics.getTopicData(data.tid, function(err, topicData) {
 						if (data.body)
 							topicData.body = data.body;
 
@@ -714,9 +774,7 @@ module.exports.init = function(io) {
 
 					async.parallel([
 						function(next) {
-							posts.getPostFields(data.pid, ['content'], function(raw) {
-								next(null, raw);
-							});
+							posts.getPostFields(data.pid, ['content'], next);
 						},
 						function(next) {
 							topics.getTitleByPid(data.pid, function(title) {
@@ -739,7 +797,7 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:composer.editCheck', function(pid) {
-			posts.getPostField(pid, 'tid', function(tid) {
+			posts.getPostField(pid, 'tid', function(err, tid) {
 				postTools.isMain(pid, tid, function(isMain) {
 					socket.emit('api:composer.editCheck', {
 						titleEditable: isMain
@@ -800,8 +858,12 @@ module.exports.init = function(io) {
 			var start = data.after,
 				end = start + 9;
 
-			topics.getLatestTopics(uid, start, end, data.term, function(latestTopics) {
-				callback(latestTopics);
+			topics.getLatestTopics(uid, start, end, data.term, function(err, latestTopics) {
+				if (!err) {
+					callback(latestTopics);
+				} else {
+					winston.error('[socket api:topics.loadMoreRecentTopics] ' + err.message);
+				}
 			});
 		});
 
@@ -830,13 +892,13 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:admin.topics.getMore', function(data, callback) {
-			topics.getAllTopics(data.limit, data.after, function(topics) {
+			topics.getAllTopics(data.limit, data.after, function(err, topics) {
 				callback(JSON.stringify(topics));
 			});
 		});
 
 		socket.on('api:admin.categories.create', function(data, callback) {
-			admin.categories.create(data, function(err, data) {
+			categories.create(data, function(err, data) {
 				callback(err, data);
 			});
 		});
@@ -955,4 +1017,33 @@ module.exports.init = function(io) {
 		socket.on('api:admin.theme.set', meta.themes.set);
 	});
 
+
+	function emitTopicPostStats() {
+		RDB.mget(['totaltopiccount', 'totalpostcount'], function(err, data) {
+			if (err) {
+				return winston.err(err);
+			}
+
+			var stats = {
+				topics: data[0] ? data[0] : 0,
+				posts: data[1] ? data[1] : 0
+			};
+
+			io.sockets.emit('post.stats', stats);
+		});
+	}
+
+	module.exports.emitUserCount = function() {
+		RDB.get('usercount', function(err, count) {
+			io.sockets.emit('user.count', {
+				count: count
+			});
+		});
+	};
+
+	module.exports.in = function(room) {
+		return io.sockets.in(room);
+	};
 }
+
+

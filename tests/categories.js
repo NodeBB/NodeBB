@@ -26,7 +26,7 @@ describe('Categories', function() {
 			Categories.create({
 				name: 'Test Category',
 				description: 'Test category created by testing script',
-				icon: 'icon-ok',
+				icon: 'fa-check',
 				blockclass: 'category-blue',
 				order: '5'
 			}, function(err, category) {

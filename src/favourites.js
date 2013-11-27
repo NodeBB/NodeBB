@@ -1,7 +1,8 @@
-var RDB = require('./redis.js'),
-	posts = require('./posts.js'),
-	user = require('./user.js'),
-	translator = require('./../public/src/translator.js');
+var RDB = require('./redis'),
+	posts = require('./posts'),
+	user = require('./user'),
+	websockets = require('./websockets')
+	translator = require('./../public/src/translator');
 
 (function (Favourites) {
 	"use strict";
@@ -21,7 +22,7 @@ var RDB = require('./redis.js'),
 			return;
 		}
 
-		posts.getPostFields(pid, ['uid', 'timestamp'], function (postData) {
+		posts.getPostFields(pid, ['uid', 'timestamp'], function (err, postData) {
 
 			Favourites.hasFavourited(pid, uid, function (hasFavourited) {
 				if (hasFavourited === 0) {
@@ -37,7 +38,7 @@ var RDB = require('./redis.js'),
 					}
 
 					if (room_id) {
-						io.sockets. in (room_id).emit('event:rep_up', {
+						websockets.in(room_id).emit('event:rep_up', {
 							uid: uid !== postData.uid ? postData.uid : 0,
 							pid: pid
 						});
@@ -57,7 +58,7 @@ var RDB = require('./redis.js'),
 			return;
 		}
 
-		posts.getPostField(pid, 'uid', function (uid_of_poster) {
+		posts.getPostField(pid, 'uid', function (err, uid_of_poster) {
 			Favourites.hasFavourited(pid, uid, function (hasFavourited) {
 				if (hasFavourited === 1) {
 					RDB.srem('pid:' + pid + ':users_favourited', uid);
@@ -72,7 +73,7 @@ var RDB = require('./redis.js'),
 					}
 
 					if (room_id) {
-						io.sockets. in (room_id).emit('event:rep_down', {
+						websockets.in(room_id).emit('event:rep_down', {
 							uid: uid !== uid_of_poster ? uid_of_poster : 0,
 							pid: pid
 						});

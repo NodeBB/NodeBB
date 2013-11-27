@@ -40,7 +40,7 @@
 				</div>
 				<div class="form-group">
 					<div class="col-lg-offset-2 col-lg-10">
-						<button class="btn btn-primary" id="login" type="submit">[[login:login]]</button> &nbsp; <a href="/reset">[[login:forgot_password]]</a>
+						<button class="btn btn-primary" id="login" type="submit">[[login:login]]</button> &nbsp; <a id="reset-link" class="hide" href="/reset">[[login:forgot_password]]</a>
 					</div>
 				</div>
 				<input type="hidden" name="_csrf" value="{token}" id="csrf-token" />
@@ -53,9 +53,9 @@
 		<div class="well well-lg">
 			<h4>[[login:alternative_logins]]</h4>
 			<ul class="alt-logins">
-				<li data-url="/auth/twitter" class="twitter {twitter:display}"><i class="icon-twitter-sign icon-3x"></i></li>
-				<li data-url="/auth/google" class="google {google:display}"><i class="icon-google-plus-sign icon-3x"></i></li>
-				<li data-url="/auth/facebook" class="facebook {facebook:display}"><i class="icon-facebook-sign icon-3x"></i></li>
+				<li data-url="/auth/twitter" class="twitter {twitter:display}"><i class="fa fa-twitter-square fa-3x"></i></li>
+				<li data-url="/auth/google" class="google {google:display}"><i class="fa fa-google-plus-square fa-3x"></i></li>
+				<li data-url="/auth/facebook" class="facebook {facebook:display}"><i class="fa fa-facebook-square fa-3x"></i></li>
 			</ul>
 		</div>
 	</div>

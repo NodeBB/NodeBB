@@ -17,7 +17,7 @@
 						<div class="input-group">
 							<input class="form-control" type="text" placeholder="[[register:email_address_placeholder]]" name="email" id="email" />
 					        <span class="input-group-addon">
-					        	<span id="email-notify"><i class="icon icon-circle-blank"></i></span>
+					        	<span id="email-notify"><i class="fa fa-circle-o"></i></span>
 					        </span>
 						</div>
 						<span class="help-block">[[register:help.email]]</span>
@@ -29,7 +29,7 @@
 						<div class="input-group">
 							<input class="form-control" type="text" placeholder="[[register:username_placeholder]]" name="username" id="username" />
 					        <span class="input-group-addon">
-					        	<span id="username-notify"><i class="icon icon-circle-blank"></i></span>
+					        	<span id="username-notify"><i class="fa fa-circle-o"></i></span>
 					        </span>
 						</div>
 						<span class="help-block">[[register:help.username_restrictions, {minimumUsernameLength}, {maximumUsernameLength}]]</span>
@@ -41,7 +41,7 @@
 						<div class="input-group">
 							<input class="form-control" type="password" placeholder="[[register:password_placeholder]]" name="password" id="password" />
 					        <span class="input-group-addon">
-					        	<span id="password-notify"><i class="icon icon-circle-blank"></i></span>
+					        	<span id="password-notify"><i class="fa fa-circle-o"></i></span>
 					        </span>
 						</div>
 						<span class="help-block">[[register:help.minimum_password_length, {minimumPasswordLength}]]</span>
@@ -53,7 +53,7 @@
 						<div class="input-group">
 							<input class="form-control" type="password" placeholder="[[register:confirm_password_placeholder]]" name="password-confirm" id="password-confirm" />
 					        <span class="input-group-addon">
-					        	<span id="password-confirm-notify"><i class="icon icon-circle-blank"></i></span>
+					        	<span id="password-confirm-notify"><i class="fa fa-circle-o"></i></span>
 					        </span>
 						</div>
 					</div>
@@ -73,9 +73,9 @@
 		<div class="well well-lg">
 			<h4>[[register:alternative_registration]]</h4>
 			<ul class="alt-logins">
-				<li data-url="/auth/twitter" class="twitter {twitter:display}"><i class="icon-twitter-sign icon-3x"></i></li>
-				<li data-url="/auth/google" class="google {google:display}"><i class="icon-google-plus-sign icon-3x"></i></li>
-				<li data-url="/auth/facebook" class="facebook {facebook:display}"><i class="icon-facebook-sign icon-3x"></i></li>
+				<li data-url="/auth/twitter" class="twitter {twitter:display}"><i class="fa fa-twitter-square fa-3x"></i></li>
+				<li data-url="/auth/google" class="google {google:display}"><i class="fa fa-google-plus-square fa-3x"></i></li>
+				<li data-url="/auth/facebook" class="facebook {facebook:display}"><i class="fa fa-facebook-square fa-3x"></i></li>
 			</ul>
 		</div>
 	</div>

@@ -1,16 +1,20 @@
-var utils = require('./../public/src/utils.js'),
-	RDB = require('./redis.js'),
-	emailjs = require('emailjs'),
-	meta = require('./meta.js'),
-	emailjsServer = emailjs.server.connect(meta.config['email:smtp:host'] || '127.0.0.1'),
-	bcrypt = require('bcrypt'),
-	Groups = require('./groups'),
-	notifications = require('./notifications.js'),
-	topics = require('./topics.js'),
+var bcrypt = require('bcrypt'),
 	async = require('async'),
+	emailjs = require('emailjs'),
 	nconf = require('nconf'),
+	winston = require('winston'),
 	userSearch = require('reds').createSearch('nodebbusersearch'),
-	winston = require('winston');
+	check = require('validator').check,
+	sanitize = require('validator').sanitize,
+
+	utils = require('./../public/src/utils'),
+	RDB = require('./redis'),
+	meta = require('./meta'),
+	emailjsServer = emailjs.server.connect(meta.config['email:smtp:host'] || '127.0.0.1'),
+	Groups = require('./groups'),
+	notifications = require('./notifications'),
+	topics = require('./topics');
+
 
 (function(User) {
 	'use strict';
@@ -98,28 +102,13 @@ var utils = require('./../public/src/utils.js'),
 					User.sendConfirmationEmail(email);
 				}
 
-				RDB.incr('usercount', function(err, count) {
-					RDB.handle(err);
-
-					if (typeof io !== 'undefined') {
-						io.sockets.emit('user.count', {
-							count: count
-						});
-					}
-				});
+				RDB.incr('usercount');
 
 				RDB.zadd('users:joindate', timestamp, uid);
 				RDB.zadd('users:postcount', 0, uid);
 				RDB.zadd('users:reputation', 0, uid);
 
 				userSearch.index(username, uid);
-
-				if (typeof io !== 'undefined') {
-					io.sockets.emit('user.latest', {
-						userslug: userslug,
-						username: username
-					});
-				}
 
 				if (password !== undefined) {
 					User.hashPassword(password, function(err, hash) {
@@ -250,6 +239,9 @@ var utils = require('./../public/src/utils.js'),
 
 		function updateField(field, next) {
 			if (data[field] !== undefined && typeof data[field] === 'string') {
+				data[field] = data[field].trim();
+				data[field] = sanitize(data[field]).escape();
+
 				if (field === 'email') {
 					var gravatarpicture = User.createGravatarURLFromEmail(data[field]);
 					User.setUserField(uid, 'gravatarpicture', gravatarpicture);
@@ -271,6 +263,10 @@ var utils = require('./../public/src/utils.js'),
 					return;
 				} else if (field === 'signature') {
 					data[field] = utils.strip_tags(data[field]);
+				} else if (field === 'website') {
+					if(data[field].substr(0, 7) !== 'http://' && data[field].substr(0, 8) !== 'https://') {
+						data[field] = 'http://' + data[field];
+					}
 				}
 
 				User.setUserField(uid, field, data[field]);
@@ -642,21 +638,6 @@ var utils = require('./../public/src/utils.js'),
 		});
 	};
 
-	User.latest = function(socket) {
-		RDB.zrevrange('users:joindate', 0, 0, function(err, uid) {
-			RDB.handle(err);
-
-			User.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
-				if (!err && userData) {
-					socket.emit('user.latest', {
-						userslug: userData.userslug,
-						username: userData.username
-					});
-				}
-			});
-		});
-	};
-
 	User.getUidByUsername = function(username, callback) {
 		RDB.hget('username:uid', username, callback);
 	};
@@ -1009,7 +990,9 @@ var utils = require('./../public/src/utils.js'),
 							next(null, notif_data);
 						});
 					}, function(err, notifs) {
-						notifs = notifs.sort(function(a, b) {
+						notifs = notifs.filter(function(notif) {
+							return notif !== null;
+						}).sort(function(a, b) {
 							return parseInt(b.datetime, 10) - parseInt(a.datetime, 10);
 						}).map(function(notif) {
 							notif.datetimeISO = new Date(parseInt(notif.datetime, 10)).toISOString();

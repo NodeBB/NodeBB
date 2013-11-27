@@ -1,9 +1,8 @@
 define(function() {
-	var	Unread = {};
+	var Unread = {},
+		loadingMoreTopics = false;
 
 	Unread.init = function() {
-		var loadingMoreTopics = false;
-
 		app.enter_room('recent_posts');
 
 		ajaxify.register_events([
@@ -109,8 +108,9 @@ define(function() {
 		});
 
 
-		if ($("body").height() <= $(window).height() && $('#topics-container').children().length >= 20)
+		if ($("body").height() <= $(window).height() && $('#topics-container').children().length >= 20) {
 			$('#load-more-btn').show();
+		}
 
 		$('#load-more-btn').on('click', function() {
 			loadMoreTopics();

@@ -58,18 +58,18 @@
 	 */
 	RedisDB.hmgetObject = function(key, fields, callback) {
 		RedisDB.hmget(key, fields, function(err, data) {
-			if (err === null) {
-				var returnData = {};
 
-				for (var i = 0, ii = fields.length; i < ii; ++i) {
-					returnData[fields[i]] = data[i];
-				}
-
-				callback(null, returnData);
-			} else {
-				console.log(err);
-				callback(err, null);
+			if(err) {
+				return callback(err, null);
 			}
+
+			var returnData = {};
+
+			for (var i = 0, ii = fields.length; i < ii; ++i) {
+				returnData[fields[i]] = data[i];
+			}
+
+			callback(null, returnData);
 		});
 	};
 

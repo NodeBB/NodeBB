@@ -6,7 +6,7 @@
 	The following themes are currently installed in this NodeBB instance.
 </p>
 <ul class="themes" id="installed_themes">
-	<li><i class="icon-refresh icon-spin"></i> Checking for installed themes...</li>
+	<li><i class="fa fa-refresh fa-spin"></i> Checking for installed themes...</li>
 </ul>
 
 <h3>Bootswatch Themes</h3>
@@ -15,7 +15,7 @@
 	with Bootstrap as a base theme.
 </p>
 <ul class="themes" id="bootstrap_themes">
-	<li><i class="icon-refresh icon-spin"></i> Loading Themes</li>
+	<li><i class="fa fa-refresh fa-spin"></i> Loading Themes</li>
 </ul>
 
 <h3>Revert to Default</h3>

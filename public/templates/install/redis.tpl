@@ -32,7 +32,7 @@
 
 <hr />
 <div class="pull-right">
-	<button data-path="basic" class="btn btn-primary btn-lg" disabled>Next &ndash; <i class="icon-cog"></i> Basic</button>
+	<button data-path="basic" class="btn btn-primary btn-lg" disabled>Next &ndash; <i class="fa fa-cog"></i> Basic</button>
 </div>
 
 <script>
@@ -43,7 +43,7 @@
 
 			if (e.target.className.indexOf('testing') === -1) {
 				e.target.className += ' testing';
-				e.target.innerHTML = '<i class="icon-spinner icon-spin"></i> Testing';
+				e.target.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Testing';
 				socket.once('api:config.redisTest', function(data) {
 					if (data && data.status === 'ok') {
 						e.target.className = 'btn btn-success testing';

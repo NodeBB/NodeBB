@@ -1,5 +1,6 @@
 var utils = require('./../public/src/utils.js'),
 	RDB = require('./redis.js'),
+	plugins = require('./plugins'),
 	async = require('async'),
 	path = require('path'),
 	fs = require('fs'),
@@ -102,7 +103,9 @@ var utils = require('./../public/src/utils.js'),
 			var	themeData = {
 					'theme:type': data.type,
 					'theme:id': data.id,
-					'theme:staticDir': ''
+					'theme:staticDir': '',
+					'theme:templates': '',
+					'theme:src': ''
 				};
 
 			switch(data.type) {
@@ -205,44 +208,46 @@ var utils = require('./../public/src/utils.js'),
 		],
 		minFile: path.join(__dirname, '..', 'public/src/nodebb.min.js'),
 		get: function (callback) {
-			var mtime,
-				jsPaths = this.scripts.map(function (jsPath) {
-					return path.join(__dirname, '..', '/public', jsPath);
-				});
+			plugins.fireHook('filter:scripts.get', this.scripts, function(err, scripts) {
+				var mtime,
+					jsPaths = scripts.map(function (jsPath) {
+						return path.join(__dirname, '..', '/public', jsPath);
+					});
 
-			if (process.env.NODE_ENV !== 'development') {
-				async.parallel({
-					mtime: function (next) {
-						async.map(jsPaths, fs.stat, function (err, stats) {
-							async.reduce(stats, 0, function (memo, item, callback) {
-								mtime = +new Date(item.mtime);
-								callback(null, mtime > memo ? mtime : memo);
-							}, next);
-						});
-					},
-					minFile: function (next) {
-						if (!fs.existsSync(Meta.js.minFile)) {
-							if (process.env.NODE_ENV === 'development') winston.warn('No minified client-side library found');
-							return next(null, 0);
+				if (process.env.NODE_ENV !== 'development') {
+					async.parallel({
+						mtime: function (next) {
+							async.map(jsPaths, fs.stat, function (err, stats) {
+								async.reduce(stats, 0, function (memo, item, callback) {
+									mtime = +new Date(item.mtime);
+									callback(null, mtime > memo ? mtime : memo);
+								}, next);
+							});
+						},
+						minFile: function (next) {
+							if (!fs.existsSync(Meta.js.minFile)) {
+								if (process.env.NODE_ENV === 'development') winston.warn('No minified client-side library found');
+								return next(null, 0);
+							}
+
+							fs.stat(Meta.js.minFile, function (err, stat) {
+								next(err, +new Date(stat.mtime));
+							});
 						}
-
-						fs.stat(Meta.js.minFile, function (err, stat) {
-							next(err, +new Date(stat.mtime));
-						});
-					}
-				}, function (err, results) {
-					if (results.minFile > results.mtime) {
-						if (process.env.NODE_ENV === 'development') winston.info('No changes to client-side libraries -- skipping minification');
-						callback(null, [path.relative(path.join(__dirname, '../public'), Meta.js.minFile)]);
-					} else {
-						Meta.js.minify(function () {
+					}, function (err, results) {
+						if (results.minFile > results.mtime) {
+							if (process.env.NODE_ENV === 'development') winston.info('No changes to client-side libraries -- skipping minification');
 							callback(null, [path.relative(path.join(__dirname, '../public'), Meta.js.minFile)]);
-						});
-					}
-				});
-			} else {
-				callback(null, this.scripts);
-			}
+						} else {
+							Meta.js.minify(function () {
+								callback(null, [path.relative(path.join(__dirname, '../public'), Meta.js.minFile)]);
+							});
+						}
+					});
+				} else {
+					callback(null, scripts);
+				}
+			});
 		},
 		minify: function (callback) {
 			var uglifyjs = require('uglify-js'),

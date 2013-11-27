@@ -1,11 +1,13 @@
 define(['forum/accountheader', 'uploader'], function(header, uploader) {
-	var AccountEdit = {};
+	var AccountEdit = {},
+		gravatarPicture = '',
+		uploadedPicture = '';
 
 	AccountEdit.init = function() {
 		header.init();
 
-		var gravatarPicture = templates.get('gravatarpicture');
-		var uploadedPicture = templates.get('uploadedpicture');
+		gravatarPicture = templates.get('gravatarpicture');
+		uploadedPicture = templates.get('uploadedpicture');
 
 		var selectedImageType = '';
 
@@ -50,14 +52,14 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 		});
 
 		$('#gravatar-box').on('click', function() {
-			$('#gravatar-box .icon-ok').show();
-			$('#uploaded-box .icon-ok').hide();
+			$('#gravatar-box .fa-check').show();
+			$('#uploaded-box .fa-check').hide();
 			selectedImageType = 'gravatar';
 		});
 
 		$('#uploaded-box').on('click', function() {
-			$('#gravatar-box .icon-ok').hide();
-			$('#uploaded-box .icon-ok').show();
+			$('#gravatar-box .fa-check').hide();
+			$('#uploaded-box .fa-check').show();
 			selectedImageType = 'uploaded';
 		});
 
@@ -194,31 +196,33 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 
 	AccountEdit.updateImages = function() {
 		var currentPicture = $('#user-current-picture').attr('src');
-		var gravatarPicture = templates.get('gravatarpicture');
-		var uploadedPicture = templates.get('uploadedpicture');
 
 		if (gravatarPicture) {
 			$('#user-gravatar-picture').attr('src', gravatarPicture);
 			$('#gravatar-box').show();
-		} else
+		} else {
 			$('#gravatar-box').hide();
+		}
 
 		if (uploadedPicture) {
 			$('#user-uploaded-picture').attr('src', uploadedPicture);
 			$('#uploaded-box').show();
-		} else
+		} else {
 			$('#uploaded-box').hide();
+		}
 
 
-		if (currentPicture == gravatarPicture)
-			$('#gravatar-box .icon-ok').show();
-		else
-			$('#gravatar-box .icon-ok').hide();
+		if (currentPicture == gravatarPicture) {
+			$('#gravatar-box .fa-check').show();
+		} else {
+			$('#gravatar-box .fa-check').hide();
+		}
 
-		if (currentPicture == uploadedPicture)
-			$('#uploaded-box .icon-ok').show();
-		else
-			$('#uploaded-box .icon-ok').hide();
+		if (currentPicture == uploadedPicture) {
+			$('#uploaded-box .fa-check').show();
+		} else {
+			$('#uploaded-box .fa-check').hide();
+		}
 	}
 
 	return AccountEdit;

@@ -20,7 +20,7 @@ define(function() {
 			document.getElementById('connections').innerHTML = total;
 		});
 
-		app.enter_room('admin');
+		app.enterRoom('admin');
 		socket.emit('api:get_all_rooms');
 	};
 

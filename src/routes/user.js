@@ -12,23 +12,7 @@ var user = require('./../user.js'),
 	websockets = require('./../websockets.js');
 
 (function (User) {
-	User.create_routes = function (app) {
-
-		app.get('/uid/:uid', function (req, res) {
-
-			if (!req.params.uid)
-				return res.redirect('/404');
-
-			user.getUserData(req.params.uid, function (err, data) {
-				if (data) {
-					res.send(data);
-				} else {
-					res.json(404, {
-						error: "User doesn't exist!"
-					});
-				}
-			});
-		});
+	User.createRoutes = function (app) {
 
 		app.namespace('/users', function () {
 			app.get('', function (req, res) {
@@ -175,7 +159,7 @@ var user = require('./../user.js'),
 						return;
 					}
 
-					var absolutePath = path.join(process.cwd(), nconf.get('upload_path'), path.basename(oldpicture));
+					var absolutePath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), path.basename(oldpicture));
 
 					fs.unlink(absolutePath, function (err) {
 						if (err) {
@@ -197,7 +181,7 @@ var user = require('./../user.js'),
 			}
 
 			var filename = uid + '-profileimg' + extension;
-			var uploadPath = path.join(process.cwd(), nconf.get('upload_path'), filename);
+			var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), filename);
 
 			winston.info('Attempting upload to: ' + uploadPath);
 
@@ -207,11 +191,6 @@ var user = require('./../user.js'),
 			is.on('end', function () {
 				fs.unlinkSync(tempPath);
 
-				var imageUrl = nconf.get('upload_url') + filename;
-
-				user.setUserField(uid, 'uploadedpicture', imageUrl);
-				user.setUserField(uid, 'picture', imageUrl);
-
 				require('node-imagemagick').crop({
 					srcPath: uploadPath,
 					dstPath: uploadPath,
@@ -220,7 +199,16 @@ var user = require('./../user.js'),
 				}, function (err, stdout, stderr) {
 					if (err) {
 						winston.err(err);
+						res.send({
+							error: 'Invalid image file!'
+						});
+						return;
 					}
+
+					var imageUrl = nconf.get('upload_url') + filename;
+
+					user.setUserField(uid, 'uploadedpicture', imageUrl);
+					user.setUserField(uid, 'picture', imageUrl);
 
 					res.json({
 						path: imageUrl
@@ -554,6 +542,8 @@ var user = require('./../user.js'),
 							data.emailClass = "";
 						else
 							data.emailClass = "hide";
+
+						data.websiteName = data.website.replace('http://', '').replace('https://', '');
 
 						data.show_banned = data.banned === '1' ? '' : 'hide';
 

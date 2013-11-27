@@ -10,11 +10,11 @@
 
 	<div class="well">
 		<h3>
-			You are now leaving NodeBB.
+			You are now leaving {title}.
 		</h3>
 		<p>
 			<a href="{url}" rel="nofollow" class="btn btn-primary btn-lg">Continue to {url}</a>
-			<a id="return-btn" href="#" class="btn btn-lg btn-warning">Return to NodeBB</a>
+			<a id="return-btn" href="#" class="btn btn-lg btn-warning">Return to {title}</a>
 		</p>
 	</div>
 </div>

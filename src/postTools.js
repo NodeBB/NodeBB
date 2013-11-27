@@ -1,8 +1,9 @@
-var RDB = require('./redis.js'),
-	posts = require('./posts.js'),
+var RDB = require('./redis'),
+	posts = require('./posts'),
 	topics = require('./topics'),
-	threadTools = require('./threadTools.js'),
-	user = require('./user.js'),
+	threadTools = require('./threadTools'),
+	user = require('./user'),
+	websockets = require('./websockets'),
 	async = require('async'),
 	nconf = require('nconf'),
 	validator = require('validator'),
@@ -13,7 +14,7 @@ var RDB = require('./redis.js'),
 	postSearch = reds.createSearch('nodebbpostsearch'),
 	topicSearch = reds.createSearch('nodebbtopicsearch'),
 	winston = require('winston'),
-	meta = require('./meta.js'),
+	meta = require('./meta'),
 	Feed = require('./feed');
 
 (function(PostTools) {
@@ -34,7 +35,7 @@ var RDB = require('./redis.js'),
 		}
 
 		function getThreadPrivileges(next) {
-			posts.getPostField(pid, 'tid', function(tid) {
+			posts.getPostField(pid, 'tid', function(err, tid) {
 				threadTools.privileges(tid, uid, function(privileges) {
 					next(null, privileges);
 				});
@@ -42,7 +43,7 @@ var RDB = require('./redis.js'),
 		}
 
 		function isOwnPost(next) {
-			posts.getPostField(pid, 'uid', function(author) {
+			posts.getPostField(pid, 'uid', function(err, author) {
 				next(null, parseInt(author, 10) === parseInt(uid, 10));
 			});
 		}
@@ -87,7 +88,7 @@ var RDB = require('./redis.js'),
 
 			async.parallel([
 				function(next) {
-					posts.getPostField(pid, 'tid', function(tid) {
+					posts.getPostField(pid, 'tid', function(err, tid) {
 						PostTools.isMain(pid, tid, function(isMainPost) {
 							if (isMainPost) {
 								topics.setTopicField(tid, 'title', title);
@@ -107,7 +108,7 @@ var RDB = require('./redis.js'),
 					PostTools.parse(content, next);
 				}
 			], function(err, results) {
-				io.sockets.in('topic_' + results[0].tid).emit('event:post_edited', {
+				websockets.in('topic_' + results[0].tid).emit('event:post_edited', {
 					pid: pid,
 					title: validator.sanitize(title).escape(),
 					isMainPost: results[0].isMainPost,
@@ -132,41 +133,47 @@ var RDB = require('./redis.js'),
 			RDB.decr('totalpostcount');
 			postSearch.remove(pid);
 
-			posts.getPostFields(pid, ['tid', 'uid'], function(postData) {
+			posts.getPostFields(pid, ['tid', 'uid'], function(err, postData) {
 				RDB.hincrby('topic:' + postData.tid, 'postcount', -1);
 
 				user.decrementUserFieldBy(postData.uid, 'postcount', 1, function(err, postcount) {
 					RDB.zadd('users:postcount', postcount, postData.uid);
 				});
 
-				io.sockets. in ('topic_' + postData.tid).emit('event:post_deleted', {
-					pid: pid
-				});
-
 				// Delete the thread if it is the last undeleted post
 				threadTools.getLatestUndeletedPid(postData.tid, function(err, pid) {
 					if (err && err.message === 'no-undeleted-pids-found') {
-						threadTools.delete(postData.tid, -1, function(err) {
-							if (err) winston.error('Could not delete topic (tid: ' + postData.tid + ')', err.stack);
+						threadTools.delete(postData.tid, function(err) {
+							if (err) {
+								winston.error('Could not delete topic (tid: ' + postData.tid + ')', err.stack);
+							}
 						});
 					} else {
-						posts.getPostField(pid, 'timestamp', function(timestamp) {
+						posts.getPostField(pid, 'timestamp', function(err, timestamp) {
 							topics.updateTimestamp(postData.tid, timestamp);
 						});
 					}
 				});
 
 				Feed.updateTopic(postData.tid);
+				Feed.updateRecent();
 
-				callback();
+				callback(null);
 			});
 		};
 
-		PostTools.privileges(pid, uid, function(privileges) {
-			if (privileges.editable) {
-				success();
+		posts.getPostField(pid, 'deleted', function(err, deleted) {
+			if(deleted === '1') {
+				return callback(new Error('Post already deleted!'));
 			}
+
+			PostTools.privileges(pid, uid, function(privileges) {
+				if (privileges.editable) {
+					success();
+				}
+			});
 		});
+
 	}
 
 	PostTools.restore = function(uid, pid, callback) {
@@ -174,17 +181,13 @@ var RDB = require('./redis.js'),
 			posts.setPostField(pid, 'deleted', 0);
 			RDB.incr('totalpostcount');
 
-			posts.getPostFields(pid, ['tid', 'uid', 'content'], function(postData) {
+			posts.getPostFields(pid, ['tid', 'uid', 'content'], function(err, postData) {
 				RDB.hincrby('topic:' + postData.tid, 'postcount', 1);
 
 				user.incrementUserFieldBy(postData.uid, 'postcount', 1);
 
-				io.sockets. in ('topic_' + postData.tid).emit('event:post_restored', {
-					pid: pid
-				});
-
 				threadTools.getLatestUndeletedPid(postData.tid, function(err, pid) {
-					posts.getPostField(pid, 'timestamp', function(timestamp) {
+					posts.getPostField(pid, 'timestamp', function(err, timestamp) {
 						topics.updateTimestamp(postData.tid, timestamp);
 					});
 				});
@@ -197,6 +200,7 @@ var RDB = require('./redis.js'),
 				});
 
 				Feed.updateTopic(postData.tid);
+				Feed.updateRecent();
 
 				postSearch.index(postData.content, pid);
 
@@ -204,10 +208,16 @@ var RDB = require('./redis.js'),
 			});
 		};
 
-		PostTools.privileges(pid, uid, function(privileges) {
-			if (privileges.editable) {
-				success();
+		posts.getPostField(pid, 'deleted', function(err, deleted) {
+			if(deleted === '0') {
+				return callback(new Error('Post already restored'));
 			}
+
+			PostTools.privileges(pid, uid, function(privileges) {
+				if (privileges.editable) {
+					success();
+				}
+			});
 		});
 	}
 

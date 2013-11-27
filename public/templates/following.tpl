@@ -3,7 +3,7 @@
 
 	<div class="account-username-box" data-userslug="{userslug}">
 		<span class="account-username">
-			<a href="/user/{userslug}">{username}</a> <i class="icon-chevron-right"></i>
+			<a href="/user/{userslug}">{username}</a> <i class="fa fa-chevron-right"></i>
 			<a href="/user/{userslug}/following">following</a>
 		</span>
 	</div>
@@ -20,11 +20,11 @@
 				<br/>
 				<div title="reputation" class="reputation">
 					<span class='formatted-number'>{following.reputation}</span>
-					<i class='icon-star'></i>
+					<i class='fa fa-star'></i>
 				</div>
 				<div title="post count" class="post-count">
 					<span class='formatted-number'>{following.postcount}</span>
-					<i class='icon-pencil'></i>
+					<i class='fa fa-pencil'></i>
 				</div>
 			</div>
 		</div>
