@@ -342,13 +342,13 @@ var RDB = require('./redis.js'),
 		});
 	}
 
-	Posts.setPostField = function(pid, field, value, done) {
-		RDB.hset('post:' + pid, field, value);
+	Posts.setPostField = function(pid, field, value, callback) {
+		RDB.hset('post:' + pid, field, value, callback);
 		plugins.fireHook('action:post.setField', {
 			'pid': pid,
 			'field': field,
 			'value': value
-		}, done);
+		});
 	}
 
 	Posts.getPostsByPids = function(pids, callback) {
