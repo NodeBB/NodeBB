@@ -76,6 +76,9 @@
 
 								<div class="btn-group pull-right post-tools">
 									<button class="btn btn-sm btn-default link" type="button" title="[[topic:link]]"><i class="fa fa-link"></i></button>
+									<button class="btn btn-sm btn-default main-post facebook-share" type="button" title=""><i class="fa fa-facebook"></i></button>
+									<button class="btn btn-sm btn-default main-post twitter-share" type="button" title=""><i class="fa fa-twitter"></i></button>
+									<button class="btn btn-sm btn-default main-post google-share" type="button" title=""><i class="fa fa-google-plus"></i></button>
 									<button class="btn btn-sm btn-default edit {posts.display_moderator_tools}" type="button" title="[[topic:edit]]"><i class="fa fa-pencil"></i></button>
 									<button class="btn btn-sm btn-default delete {posts.display_moderator_tools}" type="button" title="[[topic:delete]]"><i class="fa fa-trash-o"></i></button>
 								</div>
