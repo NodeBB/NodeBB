@@ -63,6 +63,16 @@
 		});
 	};
 
+	Groups.getByGroupName = function(groupName, options, callback) {
+		Groups.getGidFromName(groupName, function(err, gid) {
+			if (err || !gid) {
+				callback(new Error('gid-not-found'));
+			} else {
+				Groups.get(gid, options, callback);
+			}
+		});
+	};
+
 	Groups.isDeleted = function(gid, callback) {
 		RDB.hget('gid:' + gid, 'deleted', function(err, deleted) {
 			callback(err, deleted === '1');
@@ -156,8 +166,28 @@
 		RDB.sadd('gid:' + gid + ':members', uid, callback);
 	};
 
+	Groups.joinByGroupName = function(groupName, uid, callback) {
+		Groups.getGidFromName(groupName, function(err, gid) {
+			if (err || !gid) {
+				callback(new Error('gid-not-found'));
+			} else {
+				Groups.join(gid, uid, callback);
+			}
+		});
+	};
+
 	Groups.leave = function(gid, uid, callback) {
 		RDB.srem('gid:' + gid + ':members', uid, callback);
+	};
+
+	Groups.leaveByGroupName = function(groupName, uid, callback) {
+		Groups.getGidFromName(groupName, function(err, gid) {
+			if (err || !gid) {
+				callback(new Error('gid-not-found'));
+			} else {
+				Groups.leave(gid, uid, callback);
+			}
+		});
 	};
 	
 }(module.exports));

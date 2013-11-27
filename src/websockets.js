@@ -21,6 +21,7 @@ var cookie = require('cookie'),
 	utils = require('../public/src/utils'),
 	topics = require('./topics'),
 	categories = require('./categories'),
+	CategoryTools = require('./categoryTools'),
 	notifications = require('./notifications'),
 	threadTools = require('./threadTools'),
 	postTools = require('./postTools'),
@@ -969,6 +970,53 @@ module.exports.init = function(io) {
 				if (!callback) socket.emit('api:admin.user.search', null);
 				else callback();
 			}
+		});
+
+		socket.on('api:admin.categories.search', function(username, cid, callback) {
+			if (uid && uid > 0) {
+				user.search(username, function(data) {
+					async.map(data, function(userObj, next) {
+						CategoryTools.privileges(cid, userObj.uid, function(err, privileges) {
+							if (!err) {
+								userObj.privileges = privileges;
+							} else {
+								winston.error('[socket api:admin.categories.search] Could not retrieve permissions');
+							}
+
+							next(null, userObj);
+						});
+					}, function(err, data) {
+						if (!callback) socket.emit('api:admin.categories.search', data);
+						else callback(null, data);
+					});
+				});
+			} else {
+				if (!callback) socket.emit('api:admin.user.search', null);
+				else callback();
+			}
+		});
+
+		socket.on('api:admin.categories.setPrivilege', function(cid, uid, privilege, set, callback) {
+			var	cb = function(err) {
+				CategoryTools.privileges(cid, uid, callback);
+			};
+
+			if (set) {
+				Groups.joinByGroupName('cid:' + cid + ':privileges:' + privilege, uid, cb);
+			} else {
+				Groups.leaveByGroupName('cid:' + cid + ':privileges:' + privilege, uid, cb);
+			}
+		});
+
+		socket.on('api:admin.categories.getPrivilegeSettings', function(cid, callback) {
+			async.parallel({
+				"+r": function(next) {
+					Groups.getByGroupName('cid:' + cid + ':privileges:+r', { expand: true }, next);
+				},
+				"+w": function(next) {
+					Groups.getByGroupName('cid:' + cid + ':privileges:+w', { expand: true }, next);
+				}
+			}, callback);
 		});
 
 		socket.on('api:admin.themes.getInstalled', function(callback) {

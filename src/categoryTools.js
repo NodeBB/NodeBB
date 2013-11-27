@@ -33,6 +33,8 @@ CategoryTools.privileges = function(cid, uid, callback) {
 		}
 	}, function(err, privileges) {
 		callback(err, !privileges ? null : {
+			"+r": privileges['+r'],
+			"+w": privileges['+w'],
 			read: privileges['+r'] || privileges.moderator || privileges.admin,
 			write: privileges['+w'] || privileges.moderator || privileges.admin,
 			editable: privileges.moderator || privileges.admin,
