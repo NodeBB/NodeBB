@@ -84,7 +84,10 @@
 							</div>
 
 							<div id="content_{posts.pid}" class="post-content" itemprop="text">{posts.content}</div>
+							<!-- IF posts.signature -->
 							<div class="post-signature">{posts.signature}</div>
+							<!-- ENDIF posts.signature -->
+
 							<div class="post-info">
 								<span class="pull-left">
 									{posts.additional_profile_info}
