@@ -316,8 +316,8 @@ var bcrypt = require('bcrypt'),
 		RDB.hset('user:' + uid, field, value, callback);
 	};
 
-	User.setUserFields = function(uid, data) {
-		RDB.hmset('user:' + uid, data);
+	User.setUserFields = function(uid, data, callback) {
+		RDB.hmset('user:' + uid, data, callback);
 	};
 
 	User.incrementUserFieldBy = function(uid, field, value, callback) {

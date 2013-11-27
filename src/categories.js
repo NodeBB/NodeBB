@@ -149,7 +149,7 @@ var RDB = require('./redis.js'),
 			if(cids && cids.length === 0) {
 				return callback(null, {categories : []});
 			}
-			
+
 			Categories.getCategories(cids, current_user, callback);
 		});
 	};
@@ -322,12 +322,12 @@ var RDB = require('./redis.js'),
 		RDB.hmgetObject('category:' + cid, fields, callback);
 	};
 
-	Categories.setCategoryField = function(cid, field, value) {
-		RDB.hset('category:' + cid, field, value);
+	Categories.setCategoryField = function(cid, field, value, callback) {
+		RDB.hset('category:' + cid, field, value, callback);
 	};
 
-	Categories.incrementCategoryFieldBy = function(cid, field, value) {
-		RDB.hincrby('category:' + cid, field, value);
+	Categories.incrementCategoryFieldBy = function(cid, field, value, callback) {
+		RDB.hincrby('category:' + cid, field, value, callback);
 	};
 
 	Categories.getCategories = function(cids, uid, callback) {
