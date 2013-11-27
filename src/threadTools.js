@@ -1,16 +1,18 @@
-var RDB = require('./redis.js'),
-	topics = require('./topics.js'),
-	categories = require('./categories.js'),
-	user = require('./user.js'),
+var RDB = require('./redis'),
+	topics = require('./topics'),
+	categories = require('./categories'),
+	CategoryTools = require('./categoryTools'),
+	user = require('./user'),
 	async = require('async'),
-	notifications = require('./notifications.js'),
+	notifications = require('./notifications'),
 	posts = require('./posts'),
+	meta = require('./meta'),
+	websockets = require('./websockets');
+
 	reds = require('reds'),
 	topicSearch = reds.createSearch('nodebbtopicsearch'),
 	winston = require('winston'),
-	meta = require('./meta'),
 	nconf = require('nconf'),
-	websockets = require('./websockets');
 
 (function(ThreadTools) {
 
@@ -22,28 +24,24 @@ var RDB = require('./redis.js'),
 	}
 
 	ThreadTools.privileges = function(tid, uid, callback) {
-		//todo: break early if one condition is true
-
-		function getCategoryPrivileges(next) {
-			topics.getTopicField(tid, 'cid', function(err, cid) {
-				categories.privileges(cid, uid, function(privileges) {
-					next(null, privileges);
+		async.parallel({
+			categoryPrivs: function(next) {
+				topics.getTopicField(tid, 'cid', function(err, cid) {
+					CategoryTools.privileges(cid, uid, next);
 				});
-			});
-		}
-
-		function hasEnoughRep(next) {
-			user.getUserField(uid, 'reputation', function(err, reputation) {
-				if (err) return next(null, false);
-				next(null, parseInt(reputation, 10) >= parseInt(meta.config['privileges:manage_topic'], 10));
-			});
-		}
-
-
-		async.parallel([getCategoryPrivileges, hasEnoughRep], function(err, results) {
-			callback({
-				editable: results[0].editable || results[1],
-				view_deleted: results[0].view_deleted || results[1]
+			},
+			hasEnoughRep: function(next) {
+				user.getUserField(uid, 'reputation', function(err, reputation) {
+					if (err) return next(null, false);
+					next(null, parseInt(reputation, 10) >= parseInt(meta.config['privileges:manage_topic'], 10));
+				});
+			}
+		}, function(err, results) {
+			callback(err, !results ? undefined : {
+				read: results.categoryPrivs.read,
+				write: results.categoryPrivs.write,
+				editable: results.categoryPrivs.editable || results.hasEnoughRep,
+				view_deleted: results.categoryPrivs.view_deleted || results.hasEnoughRep
 			});
 		});
 	}

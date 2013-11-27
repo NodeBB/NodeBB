@@ -1,19 +1,20 @@
-var RDB = require('./redis.js'),
-	utils = require('./../public/src/utils.js'),
-	user = require('./user.js'),
-	topics = require('./topics.js'),
-	categories = require('./categories.js'),
-	favourites = require('./favourites.js'),
-	threadTools = require('./threadTools.js'),
+var RDB = require('./redis'),
+	utils = require('./../public/src/utils'),
+	user = require('./user'),
+	topics = require('./topics'),
+	categories = require('./categories'),
+	favourites = require('./favourites'),
+	threadTools = require('./threadTools'),
 	postTools = require('./postTools'),
 	categories = require('./categories'),
-	feed = require('./feed.js'),
-	async = require('async'),
+	feed = require('./feed'),
 	plugins = require('./plugins'),
+	meta = require('./meta'),
+
+	async = require('async'),
 	reds = require('reds'),
 	postSearch = reds.createSearch('nodebbpostsearch'),
 	nconf = require('nconf'),
-	meta = require('./meta.js'),
 	validator = require('validator'),
 	winston = require('winston');
 
@@ -125,60 +126,63 @@ var RDB = require('./redis.js'),
 	};
 
 	Posts.reply = function(tid, uid, content, callback) {
-		if(content) {
-			content = content.trim();
-		}
-
-		if (!content || content.length < meta.config.minimumPostLength) {
-			callback(new Error('content-too-short'), null);
-			return;
-		}
-
-		Posts.create(uid, tid, content, function(err, postData) {
-			if(err) {
-				return callback(err, null);
-			} else if(!postData) {
-				callback(new Error('reply-error'), null);
+		threadTools.privileges(tid, uid, function(err, privileges) {
+			if (content) {
+				content = content.trim();
 			}
 
-			async.parallel([
-				function(next) {
-					topics.markUnRead(tid, function(err) {
-						if(err) {
-							return next(err);
-						}
-						topics.markAsRead(tid, uid);
-						next();
-					});
-				},
-				function(next) {
-					Posts.getCidByPid(postData.pid, function(err, cid) {
-						if(err) {
-							return next(err);
-						}
+			if (!content || content.length < meta.config.minimumPostLength) {
+				return callback(new Error('content-too-short'));
+			} else if (!privileges.write) {
+				return callback(new Error('no-privileges'));
+			}
 
-						RDB.del('cid:' + cid + ':read_by_uid');
-						next();
-					});
-				},
-				function(next) {
-					threadTools.notifyFollowers(tid, uid);
-					next();
-				},
-				function(next) {
-					Posts.addUserInfoToPost(postData, function(err) {
-						if(err) {
-							return next(err);
-						}
-						next();
-					});
-				}
-			], function(err, results) {
+			Posts.create(uid, tid, content, function(err, postData) {
 				if(err) {
 					return callback(err, null);
+				} else if(!postData) {
+					callback(new Error('reply-error'), null);
 				}
 
-				callback(null, postData);
+				async.parallel([
+					function(next) {
+						topics.markUnRead(tid, function(err) {
+							if(err) {
+								return next(err);
+							}
+							topics.markAsRead(tid, uid);
+							next();
+						});
+					},
+					function(next) {
+						Posts.getCidByPid(postData.pid, function(err, cid) {
+							if(err) {
+								return next(err);
+							}
+
+							RDB.del('cid:' + cid + ':read_by_uid');
+							next();
+						});
+					},
+					function(next) {
+						threadTools.notifyFollowers(tid, uid);
+						next();
+					},
+					function(next) {
+						Posts.addUserInfoToPost(postData, function(err) {
+							if(err) {
+								return next(err);
+							}
+							next();
+						});
+					}
+				], function(err, results) {
+					if(err) {
+						return callback(err, null);
+					}
+
+					callback(null, postData);
+				});
 			});
 		});
 	}

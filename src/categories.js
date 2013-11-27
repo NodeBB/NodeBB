@@ -171,28 +171,6 @@ var RDB = require('./redis.js'),
 		});
 	};
 
-
-	Categories.privileges = function(cid, uid, callback) {
-		function isModerator(next) {
-			user.isModerator(uid, cid, function(isMod) {
-				next(null, isMod);
-			});
-		}
-
-		function isAdministrator(next) {
-			user.isAdministrator(uid, function(isAdmin) {
-				next(null, isAdmin);
-			});
-		}
-
-		async.parallel([isModerator, isAdministrator], function(err, results) {
-			callback({
-				editable: results.indexOf(true) !== -1 ? true : false,
-				view_deleted: results.indexOf(true) !== -1 ? true : false
-			});
-		});
-	};
-
 	Categories.isTopicsRead = function(cid, uid, callback) {
 		RDB.zrange('categories:' + cid + ':tid', 0, -1, function(err, tids) {
 

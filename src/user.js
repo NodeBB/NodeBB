@@ -723,14 +723,14 @@ var bcrypt = require('bcrypt'),
 	User.isModerator = function(uid, cid, callback) {
 		RDB.sismember('cid:' + cid + ':moderators', uid, function(err, exists) {
 			RDB.handle(err);
-			callback( !! exists);
+			callback(err, !! exists);
 		});
 	};
 
 	User.isAdministrator = function(uid, callback) {
 		Groups.getGidFromName('Administrators', function(err, gid) {
 			Groups.isMember(uid, gid, function(err, isAdmin) {
-				callback( !! isAdmin);
+				callback(err, !! isAdmin);
 			});
 		});
 	};

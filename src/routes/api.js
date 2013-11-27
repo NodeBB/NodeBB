@@ -130,7 +130,7 @@ var user = require('./../user.js'),
 				var uid = (req.user) ? req.user.uid : 0;
 
 				// Category Whitelisting (support for "-r" to come later)
-				var	whitelistReadKey = 'cid:' + req.params.id + ':permissions:+r',
+				var	whitelistReadKey = 'cid:' + req.params.id + ':privileges:+r',
 					success = function() {
 						categories.getCategoryById(req.params.id, uid, function (err, data) {
 							if (!err && data && data.disabled === "0")

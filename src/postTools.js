@@ -36,9 +36,7 @@ var RDB = require('./redis'),
 
 		function getThreadPrivileges(next) {
 			posts.getPostField(pid, 'tid', function(err, tid) {
-				threadTools.privileges(tid, uid, function(privileges) {
-					next(null, privileges);
-				});
+				threadTools.privileges(tid, uid, next);
 			});
 		}
 

@@ -348,7 +348,7 @@ module.exports.init = function(io) {
 
 			topics.post(uid, data.title, data.content, data.category_id, function(err, result) {
 				if(err) {
-					if(err.message === 'not-logged-in') {
+					if (err.message === 'not-logged-in') {
 						socket.emit('event:alert', {
 							title: 'Thank you for posting',
 							message: 'Since you are unregistered, your post is awaiting approval. Click here to register now.',
@@ -364,6 +364,13 @@ module.exports.init = function(io) {
 						posts.emitContentTooShortAlert(socket);
 					} else if (err.message === 'too-many-posts') {
 						posts.emitTooManyPostsAlert(socket);
+					} else if (err.message === 'no-privileges') {
+						socket.emit('event:alert', {
+							title: 'Unable to post',
+							message: 'You do not have posting privileges in this category.',
+							type: 'danger',
+							timeout: 7500
+						});
 					} else {
 						socket.emit('event:alert', {
 							title: 'Error',
@@ -423,8 +430,7 @@ module.exports.init = function(io) {
 
 			posts.reply(data.topic_id, uid, data.content, function(err, postData) {
 				if(err) {
-
-					if(err.message === 'content-too-short') {
+					if (err.message === 'content-too-short') {
 						posts.emitContentTooShortAlert(socket);
 					} else if (err.message === 'too-many-posts') {
 						posts.emitTooManyPostsAlert(socket);
@@ -434,6 +440,13 @@ module.exports.init = function(io) {
 							message: 'Your reply could not be posted at this time. Please try again later.',
 							type: 'warning',
 							timeout: 2000
+						});
+					} else if (err.message === 'no-privileges') {
+						socket.emit('event:alert', {
+							title: 'Unable to post',
+							message: 'You do not have posting privileges in this category.',
+							type: 'danger',
+							timeout: 7500
 						});
 					}
 					return;
@@ -495,8 +508,8 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:topic.delete', function(data) {
-			threadTools.privileges(data.tid, uid, function(privileges) {
-				if (privileges.editable) {
+			threadTools.privileges(data.tid, uid, function(err, privileges) {
+				if (!err && privileges.editable) {
 					threadTools.delete(data.tid, function(err) {
 						if (!err) {
 							emitTopicPostStats();
@@ -511,8 +524,8 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:topic.restore', function(data) {
-			threadTools.privileges(data.tid, uid, function(privileges) {
-				if (privileges.editable) {
+			threadTools.privileges(data.tid, uid, function(err, privileges) {
+				if (!err && privileges.editable) {
 					threadTools.restore(data.tid, socket, function(err) {
 						emitTopicPostStats();
 
@@ -526,32 +539,32 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:topic.lock', function(data) {
-			threadTools.privileges(data.tid, uid, function(privileges) {
-				if (privileges.editable) {
+			threadTools.privileges(data.tid, uid, function(err, privileges) {
+				if (!err && privileges.editable) {
 					threadTools.lock(data.tid, socket);
 				}
 			});
 		});
 
 		socket.on('api:topic.unlock', function(data) {
-			threadTools.privileges(data.tid, uid, function(privileges) {
-				if (privileges.editable) {
+			threadTools.privileges(data.tid, uid, function(err, privileges) {
+				if (!err && privileges.editable) {
 					threadTools.unlock(data.tid, socket);
 				}
 			});
 		});
 
 		socket.on('api:topic.pin', function(data) {
-			threadTools.privileges(data.tid, uid, function(privileges) {
-				if (privileges.editable) {
+			threadTools.privileges(data.tid, uid, function(err, privileges) {
+				if (!err && privileges.editable) {
 					threadTools.pin(data.tid, socket);
 				}
 			});
 		});
 
 		socket.on('api:topic.unpin', function(data) {
-			threadTools.privileges(data.tid, uid, function(privileges) {
-				if (privileges.editable) {
+			threadTools.privileges(data.tid, uid, function(err, privileges) {
+				if (!err && privileges.editable) {
 					threadTools.unpin(data.tid, socket);
 				}
 			});

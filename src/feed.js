@@ -108,8 +108,6 @@
 	};
 
 	Feed.updateRecent = function(callback) {
-		console.log('entered');
-		if (process.env.NODE_ENV === 'development') winston.info('[rss] Updating Recent Posts RSS feed');
 		topics.getLatestTopics(0, 0, 19, undefined, function (err, recentData) {
 			var	feed = new rss({
 					title: 'Recently Active Topics',
