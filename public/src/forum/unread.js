@@ -3,7 +3,7 @@ define(function() {
 		loadingMoreTopics = false;
 
 	Unread.init = function() {
-		app.enter_room('recent_posts');
+		app.enterRoom('recent_posts');
 
 		ajaxify.register_events([
 			'event:new_topic',

@@ -43,14 +43,12 @@ var RDB = require('./redis.js'),
 						return callback(err, null);
 					}
 
-					content = newContent;
-
 					var timestamp = Date.now(),
 						postData = {
 							'pid': pid,
 							'uid': uid,
 							'tid': tid,
-							'content': content,
+							'content': newContent,
 							'timestamp': timestamp,
 							'reputation': 0,
 							'editor': '',
