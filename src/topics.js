@@ -682,7 +682,7 @@ var RDB = require('./redis'),
 
 		user.notifications.getUnreadByUniqueId(uid, 'topic:' + tid, function(err, nids) {
 			notifications.mark_read_multiple(nids, uid, function() {
-			
+
 			});
 		});
 	}
@@ -787,16 +787,16 @@ var RDB = require('./redis'),
 		RDB.hmgetObject('topic:' + tid, fields, callback);
 	}
 
-	Topics.setTopicField = function(tid, field, value) {
-		RDB.hset('topic:' + tid, field, value);
+	Topics.setTopicField = function(tid, field, value, callback) {
+		RDB.hset('topic:' + tid, field, value, callback);
 	}
 
-	Topics.increasePostCount = function(tid) {
-		RDB.hincrby('topic:' + tid, 'postcount', 1);
+	Topics.increasePostCount = function(tid, callback) {
+		RDB.hincrby('topic:' + tid, 'postcount', 1, callback);
 	}
 
-	Topics.increaseViewCount = function(tid) {
-		RDB.hincrby('topic:' + tid, 'viewcount', 1);
+	Topics.increaseViewCount = function(tid, callback) {
+		RDB.hincrby('topic:' + tid, 'viewcount', 1, callback);
 	}
 
 	Topics.isLocked = function(tid, callback) {

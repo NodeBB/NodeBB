@@ -44,14 +44,12 @@ var RDB = require('./redis'),
 						return callback(err, null);
 					}
 
-					content = newContent;
-
 					var timestamp = Date.now(),
 						postData = {
 							'pid': pid,
 							'uid': uid,
 							'tid': tid,
-							'content': content,
+							'content': newContent,
 							'timestamp': timestamp,
 							'reputation': 0,
 							'editor': '',
@@ -348,13 +346,13 @@ var RDB = require('./redis'),
 		});
 	}
 
-	Posts.setPostField = function(pid, field, value, done) {
-		RDB.hset('post:' + pid, field, value);
+	Posts.setPostField = function(pid, field, value, callback) {
+		RDB.hset('post:' + pid, field, value, callback);
 		plugins.fireHook('action:post.setField', {
 			'pid': pid,
 			'field': field,
 			'value': value
-		}, done);
+		});
 	}
 
 	Posts.getPostsByPids = function(pids, callback) {
