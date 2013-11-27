@@ -71,12 +71,14 @@
 		RDB.sismember('gid:' + gid + ':members', uid, callback);
 	};
 
-	Groups.isMemberByGroupName = function(uid, groupName, callback)
-		this.getGidFromName(groupName, function(err, gid
+	Groups.isMemberByGroupName = function(uid, groupName, callback) {
+		Groups.getGidFromName(groupName, function(err, gid) {
 			if (err || !gid) {
 				callback(null, false);
 			} else {
-				Groups.isMember(uid, gid, callba
+				Groups.isMember(uid, gid, function(err, isMember) {
+					callback(err, !!isMember);
+				});
 			}
 		});
 	};
