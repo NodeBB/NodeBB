@@ -83,8 +83,8 @@
 									</div>
 
 									<div class="btn-group post-tools">
-										<button class="btn btn-sm btn-default edit {main_posts.display_moderator_tools}" type="button" title="[[topic:edit]]"><i class="fa fa-pencil"></i></button>
-										<button class="btn btn-sm btn-default delete {main_posts.display_moderator_tools}" type="button" title="[[topic:delete]]"><i class="fa fa-trash-o"></i></button>
+										<button class="btn btn-sm btn-default edit {posts.display_moderator_tools}" type="button" title="[[topic:edit]]"><i class="fa fa-pencil"></i></button>
+										<button class="btn btn-sm btn-default delete {posts.display_moderator_tools}" type="button" title="[[topic:delete]]"><i class="fa fa-trash-o"></i></button>
 									</div>
 								</div>
 
