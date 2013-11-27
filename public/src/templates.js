@@ -167,11 +167,13 @@
 			template_data = data;
 			parse_template();
 		}).fail(function (data) {
-			if(data && data.status == 404) {
-				ajaxify.go('404');
-				return;
+			if (data && data.status == 404) {
+				return ajaxify.go('404');
+			} else if (data && data.status === 403) {
+				return ajaxify.go('403');
+			} else {
+				app.alertError("Can't load template data!");
 			}
-			app.alertError("Can't load template data!");
 		});
 
 		function parse_template() {
