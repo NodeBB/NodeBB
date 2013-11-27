@@ -1,12 +1,14 @@
-var user = require('./../user.js'),
-	auth = require('./authentication.js'),
-	topics = require('./../topics.js'),
-	posts = require('./../posts.js'),
-	categories = require('./../categories.js'),
+var user = require('../user'),
+	auth = require('./authentication'),
+	topics = require('../topics'),
+	posts = require('../posts'),
+	categories = require('../categories'),
+	CategoryTools = require('../categoryTools')
 	Groups = require('../groups'),
-	utils = require('./../../public/src/utils.js'),
+	utils = require('../../public/src/utils'),
 	pkg = require('../../package.json'),
-	meta = require('./../meta.js'),
+	meta = require('../meta'),
+
 	path = require('path'),
 	nconf = require('nconf'),
 	async = require('async');
@@ -129,27 +131,15 @@ var user = require('./../user.js'),
 			app.get('/category/:id/:slug?', function (req, res, next) {
 				var uid = (req.user) ? req.user.uid : 0;
 
-				// Category Whitelisting (support for "-r" to come later)
-				var	whitelistReadKey = 'cid:' + req.params.id + ':privileges:+r',
-					success = function() {
+				// Category Whitelisting
+				CategoryTools.privileges(req.params.id, uid, function(err, privileges) {
+					if (!err && privileges.read) {
 						categories.getCategoryById(req.params.id, uid, function (err, data) {
 							if (!err && data && data.disabled === "0")
 								res.json(data);
 							else
 								next();
 						}, req.params.id, uid);
-					};
-				Groups.exists(whitelistReadKey, function(err, exists) {
-					if (!err && exists) {
-						Groups.isMemberByGroupName(uid, whitelistReadKey, function(err, isMember) {
-							if (!err && isMember) {
-								success();
-							} else {
-								res.send(403);
-							}
-						});
-					} else if (!err && !exists) {
-						success();
 					} else {
 						res.send(403);
 					}

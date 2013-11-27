@@ -6,7 +6,7 @@ var RDB = require('../redis'),
 (function(UserAdmin) {
 
 	UserAdmin.makeAdmin = function(uid, theirid, socket) {
-		user.isAdministrator(uid, function(isAdmin) {
+		user.isAdministrator(uid, function(err, isAdmin) {
 			if (isAdmin) {
 				Groups.getGidFromName('Administrators', function(err, gid) {
 					Groups.join(gid, theirid, function(err) {
@@ -32,7 +32,7 @@ var RDB = require('../redis'),
 	};
 
 	UserAdmin.removeAdmin = function(uid, theirid, socket) {
-		user.isAdministrator(uid, function(isAdmin) {
+		user.isAdministrator(uid, function(err, isAdmin) {
 			if (isAdmin) {
 				Groups.getGidFromName('Administrators', function(err, gid) {
 					Groups.leave(gid, theirid, function(err) {
@@ -52,8 +52,8 @@ var RDB = require('../redis'),
 	};
 
 	UserAdmin.banUser = function(uid, theirid, socket, callback) {
-		user.isAdministrator(uid, function(amIAdmin) {
-			user.isAdministrator(theirid, function(areTheyAdmin) {
+		user.isAdministrator(uid, function(err, amIAdmin) {
+			user.isAdministrator(theirid, function(err, areTheyAdmin) {
 				if (amIAdmin && !areTheyAdmin) {
 					user.ban(theirid, function(err, result) {
 						callback(true);
@@ -70,7 +70,7 @@ var RDB = require('../redis'),
 	};
 
 	UserAdmin.unbanUser = function(uid, theirid, socket) {
-		user.isAdministrator(uid, function(amIAdmin) {
+		user.isAdministrator(uid, function(err, amIAdmin) {
 			if (amIAdmin) {
 				user.unban(theirid, function(err, result) {
 					socket.emit('event:alert', {

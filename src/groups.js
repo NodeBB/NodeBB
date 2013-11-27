@@ -63,12 +63,24 @@
 		});
 	};
 
+	Groups.isDeleted = function(gid, callback) {
+		RDB.hget('gid:' + gid, 'deleted', function(err, deleted) {
+			callback(err, deleted === '1');
+		});
+	};
+
 	Groups.getGidFromName = function(name, callback) {
 		RDB.hget('group:gid', name, callback);
 	};
 
 	Groups.isMember = function(uid, gid, callback) {
-		RDB.sismember('gid:' + gid + ':members', uid, callback);
+		Groups.isDeleted(gid, function(err, deleted) {
+			if (!deleted) {
+				RDB.sismember('gid:' + gid + ':members', uid, callback);
+			} else {
+				callback(err, false);
+			}
+		});
 	};
 
 	Groups.isMemberByGroupName = function(uid, groupName, callback) {
@@ -84,7 +96,18 @@
 	};
 
 	Groups.exists = function(name, callback) {
-		RDB.hexists('group:gid', name, callback);
+		async.parallel({
+			exists: function(next) {
+				RDB.hexists('group:gid', name, next);
+			},
+			deleted: function(next) {
+				Groups.getGidFromName(name, function(err, gid) {
+					Groups.isDeleted(gid, next);
+				});
+			}
+		}, function(err, results) {
+			callback(err, !results ? null : (results.exists && !results.deleted));
+		});
 	};
 
 	Groups.create = function(name, description, callback) {

@@ -338,7 +338,7 @@ var bcrypt = require('bcrypt'),
 
 			function iterator(uid, callback) {
 				User.getUserData(uid, function(err, userData) {
-					User.isAdministrator(uid, function(isAdmin) {
+					User.isAdministrator(uid, function(err, isAdmin) {
 						if (userData) {
 							userData.administrator = isAdmin?"1":"0";
 							data.push(userData);

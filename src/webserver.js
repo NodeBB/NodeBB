@@ -106,7 +106,7 @@ var path = require('path'),
 				uid = options.req.user.uid;
 			}
 
-			user.isAdministrator(uid, function(isAdmin) {
+			user.isAdministrator(uid, function(err, isAdmin) {
 				templateValues.adminDisplay = isAdmin ? 'show' : 'hide';
 
 				translator.translate(templates.header.parse(templateValues), function(template) {

@@ -13,7 +13,7 @@ var user = require('./../user.js'),
 
 (function (Admin) {
 	Admin.isAdmin = function (req, res, next) {
-		user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (isAdmin) {
+		user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {
 			if (!isAdmin) res.redirect('/403');
 			else next();
 		});

@@ -8,10 +8,22 @@ var	Groups = require('./groups'),
 CategoryTools.privileges = function(cid, uid, callback) {
 	async.parallel({
 		"+r": function(next) {
-			Groups.isMemberByGroupName(uid, 'cid:' + cid + ':privileges:+r', next);
+			Groups.exists('cid:' + cid + ':privileges:+r', function(err, exists) {
+				if (exists) {
+					Groups.isMemberByGroupName(uid, 'cid:' + cid + ':privileges:+r', next);
+				} else {
+					next(null, true);
+				}
+			});
 		},
 		"+w": function(next) {
-			Groups.isMemberByGroupName(uid, 'cid:' + cid + ':privileges:+w', next);
+			Groups.exists('cid:' + cid + ':privileges:+w', function(err, exists) {
+				if (exists) {
+					Groups.isMemberByGroupName(uid, 'cid:' + cid + ':privileges:+w', next);
+				} else {
+					next(null, true);
+				}
+			});
 		},
 		moderator: function(next) {
 			User.isModerator(uid, cid, next);
