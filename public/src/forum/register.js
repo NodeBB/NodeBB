@@ -134,11 +134,6 @@ define(function() {
 			}
 		});
 
-		// Alternate Logins
-		$('.alt-logins li').on('click', function(e) {
-			document.location.href = $(this).attr('data-url');
-		});
-
 		function validateForm() {
 			validationError = false;
 

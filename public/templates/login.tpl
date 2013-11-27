@@ -49,14 +49,16 @@
 		</div>
 	</div>
 
-	<div class="col-md-6 {alternate_logins:display}">
+	<!-- IF alternate_logins -->
+	<div class="col-md-6">
 		<div class="well well-lg">
 			<h4>[[login:alternative_logins]]</h4>
 			<ul class="alt-logins">
-				<li data-url="/auth/twitter" class="twitter {twitter:display}"><i class="fa fa-twitter-square fa-3x"></i></li>
-				<li data-url="/auth/google" class="google {google:display}"><i class="fa fa-google-plus-square fa-3x"></i></li>
-				<li data-url="/auth/facebook" class="facebook {facebook:display}"><i class="fa fa-facebook-square fa-3x"></i></li>
+				<!-- BEGIN authentication -->
+				<li class="{authentication.name}"><a rel="nofollow" href="{authentication.url}"><i class="fa fa-{authentication.icon}-square fa-3x"></i></a></li>
+				<!-- END authentication -->
 			</ul>
 		</div>
 	</div>
+	<!-- ENDIF alternate_logins -->
 </div>

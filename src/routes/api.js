@@ -72,17 +72,16 @@ var user = require('../user'),
 				if (num_strategies == 0) {
 					data = {
 						'login_window:spansize': 'col-md-12',
-						'alternate_logins:display': 'none'
+						'alternate_logins': false
 					};
 				} else {
 					data = {
 						'login_window:spansize': 'col-md-6',
-						'alternate_logins:display': 'block'
-					}
-					for (var i = 0, ii = num_strategies; i < ii; i++) {
-						data[login_strategies[i] + ':display'] = 'active';
+						'alternate_logins': true
 					}
 				}
+
+				data.authentication = login_strategies;
 
 				data.token = res.locals.csrf_token;
 
@@ -97,17 +96,16 @@ var user = require('../user'),
 				if (num_strategies == 0) {
 					data = {
 						'register_window:spansize': 'col-md-12',
-						'alternate_logins:display': 'none'
+						'alternate_logins': false
 					};
 				} else {
 					data = {
 						'register_window:spansize': 'col-md-6',
-						'alternate_logins:display': 'block'
-					}
-					for (var i = 0, ii = num_strategies; i < ii; i++) {
-						data[login_strategies[i] + ':display'] = 'active';
+						'alternate_logins': true
 					}
 				}
+
+				data.authentication = login_strategies;
 
 				data.token = res.locals.csrf_token;
 				data.minimumUsernameLength = meta.config['minimumUsernameLength'];
