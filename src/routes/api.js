@@ -129,21 +129,27 @@ var user = require('./../user.js'),
 			app.get('/category/:id/:slug?', function (req, res, next) {
 				var uid = (req.user) ? req.user.uid : 0;
 
-				// Category Whitelisting
-				Groups.exists('category:' + req.params.id + ':whitelist', function(err, exists) {
+				// Category Whitelisting (support for "-r" to come later)
+				var	whitelistReadKey = 'cid:' + req.params.id + ':permissions:+r',
+					success = function() {
+						categories.getCategoryById(req.params.id, uid, function (err, data) {
+							if (!err && data && data.disabled === "0")
+								res.json(data);
+							else
+								next();
+						}, req.params.id, uid);
+					};
+				Groups.exists(whitelistReadKey, function(err, exists) {
 					if (!err && exists) {
-						Groups.isMember(uid, gid, function(err, isMember) {
+						Groups.isMemberByGroupName(uid, whitelistReadKey, function(err, isMember) {
 							if (!err && isMember) {
-								categories.getCategoryById(req.params.id, uid, function (err, data) {
-									if (!err && data && data.disabled === "0")
-										res.json(data);
-									else
-										next();
-								}, req.params.id, uid);
+								success();
 							} else {
 								res.send(403);
 							}
 						});
+					} else if (!err && !exists) {
+						success();
 					} else {
 						res.send(403);
 					}
