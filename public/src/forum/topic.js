@@ -31,7 +31,7 @@ define(function() {
 
 			app.enterRoom('topic_' + tid);
 
-			if($('#post-container .posts .post-row').length > 1) {
+			if($('#post-container .post-row').length > 1) {
 				$('.topic-main-buttons').removeClass('hide').parent().removeClass('hide');
 			}
 
@@ -331,8 +331,7 @@ define(function() {
 		});
 
 		$('#post-container').delegate('.edit', 'click', function(e) {
-			var pid = $(this).parents('li').attr('data-pid'),
-				main = $(this).parents('.posts');
+			var pid = $(this).parents('li').attr('data-pid');
 
 			require(['composer'], function(cmp) {
 				cmp.push(null, null, pid);
@@ -902,7 +901,7 @@ define(function() {
 
 		translator.translate(html, function(translatedHTML) {
 			var translated = $(translatedHTML);
-
+console.log(translated);
 			if(!infiniteLoaded) {
 				translated.removeClass('infiniteloaded');
 			}
