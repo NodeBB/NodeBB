@@ -901,7 +901,7 @@ define(function() {
 
 		translator.translate(html, function(translatedHTML) {
 			var translated = $(translatedHTML);
-console.log(translated);
+
 			if(!infiniteLoaded) {
 				translated.removeClass('infiniteloaded');
 			}
