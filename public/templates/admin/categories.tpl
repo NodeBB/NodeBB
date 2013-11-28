@@ -157,9 +157,6 @@
 					</form>
 					<ul class="search-results"></ul>
 				</div>
-				<div class="modal-footer">
-					<button type="button" id="save-permissions" href="#" class="btn btn-primary btn-lg btn-block">Save Permissions</button>
-				</div>
 			</div>
 		</div>
 	</div>

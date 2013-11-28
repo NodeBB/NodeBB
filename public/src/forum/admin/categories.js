@@ -252,19 +252,31 @@ define(function() {
 				liEl = document.createElement('li'),
 				x, userObj;
 
-			for(x=0;x<readLength;x++) {
-				userObj = privilegeList['+r'][x];
-				liEl.setAttribute('data-uid', userObj.uid);
+			if (readLength > 0) {
+				for(x=0;x<readLength;x++) {
+					userObj = privilegeList['+r'][x];
+					liEl.setAttribute('data-uid', userObj.uid);
 
-				liEl.innerHTML = '<img src="' + userObj.picture + '" title="' + userObj.username + '" />';
+					liEl.innerHTML = '<img src="' + userObj.picture + '" title="' + userObj.username + '" />';
+					readFrag.appendChild(liEl.cloneNode(true));
+				}
+			} else {
+				liEl.className = 'empty';
+				liEl.innerHTML = 'No users are in this list';
 				readFrag.appendChild(liEl.cloneNode(true));
 			}
 
-			for(x=0;x<writeLength;x++) {
-				userObj = privilegeList['+w'][x];
-				liEl.setAttribute('data-uid', userObj.uid);
+			if (writeLength > 0) {
+				for(x=0;x<writeLength;x++) {
+					userObj = privilegeList['+w'][x];
+					liEl.setAttribute('data-uid', userObj.uid);
 
-				liEl.innerHTML = '<img src="' + userObj.picture + '" title="' + userObj.username + '" />';
+					liEl.innerHTML = '<img src="' + userObj.picture + '" title="' + userObj.username + '" />';
+					writeFrag.appendChild(liEl.cloneNode(true));
+				}
+			} else {
+				liEl.className = 'empty';
+				liEl.innerHTML = 'No users are in this list';
 				writeFrag.appendChild(liEl.cloneNode(true));
 			}
 
