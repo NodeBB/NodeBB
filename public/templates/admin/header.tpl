@@ -91,7 +91,7 @@
 
 	<div class="container">
 		<div class="row">
-			<div class="col-md-3">
+			<div class="col-sm-3">
 				<div class="well sidebar-nav">
 					<ul class="nav nav-list">
 						<li class="nav-header">NodeBB</li>
@@ -146,4 +146,4 @@
 				</div><!--/.well -->
 			</div><!--/span-->
 
-			<div class="col-md-9" id="content">
+			<div class="col-sm-9" id="content">

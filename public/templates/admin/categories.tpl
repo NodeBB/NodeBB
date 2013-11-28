@@ -24,7 +24,7 @@
 					<div class="col-sm-10">
 						<form class="form">
 							<div class="row">
-								<div class="col-sm-4 hidden-xs">
+								<div class="col-sm-4 col-xs-12">
 									<div class="form-group">
 										<label for="cid-{categories.cid}-name">Category Name</label>
 										<input id="cid-{categories.cid}-name" type="text" class="form-control" placeholder="Category Name" data-name="name" value="{categories.name}" />
@@ -38,7 +38,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="col-sm-4 col-xs-12">
+								<div class="col-sm-4 hidden-xs">
 									<div class="form-group">
 										<div class="form-group">
 											<label for="cid-{categories.cid}-color">Text Colour</label>
@@ -48,7 +48,7 @@
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-sm-8">
+								<div class="col-md-8 col-sm-6">
 									<div class="form-group">
 										<div class="form-group">
 											<label for="cid-{categories.cid}-description">Description</label>
@@ -56,7 +56,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="col-sm-4">
+								<div class="col-md-4 col-sm-6">
 									<div class="form-group">
 										<div class="form-group">
 											<label>&nbsp;</label>

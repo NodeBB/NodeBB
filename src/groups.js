@@ -150,7 +150,8 @@
 							gid: gid,
 							name: name,
 							description: description,
-							deleted: '0'
+							deleted: '0',
+							hidden: '0'
 						})
 						.exec(function (err) {
 							Groups.get(gid, {}, callback);
@@ -158,6 +159,16 @@
 				});
 			} else {
 				callback(new Error('group-exists'));
+			}
+		});
+	};
+
+	Groups.hide = function(gid) {
+		Groups.exists(gid, function(err, exists) {
+			if (exists) {
+				Groups.update(gid, {
+					hidden: '1'
+				});
 			}
 		});
 	};
@@ -186,6 +197,7 @@
 		Groups.getGidFromName(groupName, function(err, gid) {
 			if (err || !gid) {
 				Groups.create(groupName, '', function(err, groupObj) {
+					Groups.hide(groupObj.gid);
 					Groups.join(groupObj.gid, uid, callback);
 				});
 			} else {
