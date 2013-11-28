@@ -85,8 +85,8 @@ var RDB = require('./redis'),
 
 						var cid = topicData.cid;
 
-						//feed.updateTopic(tid);
-						//feed.updateRecent();
+						feed.updateTopic(tid);
+						feed.updateRecent();
 
 						RDB.zadd('categories:recent_posts:cid:' + cid, timestamp, pid);
 

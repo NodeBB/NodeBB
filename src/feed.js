@@ -42,7 +42,6 @@
 					author: topicData.posts[0].username,
 					ttl: Feed.defaults.ttl
 				}),
-				topic_posts = topicData.posts.concat(topicData.posts),
 				dateStamp;
 
 			// Add pubDate if topic contains posts
@@ -50,7 +49,7 @@
 				feed.pubDate = new Date(parseInt(topicData.posts[0].timestamp, 10)).toUTCString();
 			}
 
-			async.each(topic_posts, function(postData, next) {
+			async.each(topicData.posts, function(postData, next) {
 				if (postData.deleted === '0') {
 					dateStamp = new Date(parseInt(postData.edited === '0' ? postData.timestamp : postData.edited, 10)).toUTCString();
 
