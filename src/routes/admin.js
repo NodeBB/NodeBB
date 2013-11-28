@@ -21,7 +21,8 @@ var user = require('./../user.js'),
 
 	Admin.buildHeader = function (req, res, callback) {
 		var custom_header = {
-			'plugins': []
+			'plugins': [],
+			'authentication': []
 		};
 
 		user.getUserFields(req.user.uid, ['username', 'userslug', 'picture'], function(err, userData) {
@@ -31,6 +32,7 @@ var user = require('./../user.js'),
 					csrf: res.locals.csrf_token,
 					relative_path: nconf.get('relative_path'),
 					plugins: custom_header.plugins,
+					authentication: custom_header.authentication,
 					userpicture: userData.picture,
 					username: userData.username,
 					userslug: userData.userslug
