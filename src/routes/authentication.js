@@ -8,6 +8,7 @@
 		nconf = require('nconf'),
 		meta = require('../meta'),
 		user = require('../user'),
+		plugins = require('../plugins'),
 		winston = require('winston'),
 		login_module = require('./../login.js');
 
@@ -17,6 +18,14 @@
 			else next(null, false, err);
 		});
 	}));
+
+	plugins.ready(function() {
+		plugins.fireHook('filter:auth.init', login_strategies, function(err) {
+			if (err) {
+				winston.error('filter:auth.init - plugin failure');
+			}
+		});
+	});
 
 	if (meta.config['social:twitter:key'] && meta.config['social:twitter:secret']) {
 		passport.use(new passportTwitter({
@@ -35,7 +44,7 @@
 		login_strategies.push({
 			name: 'twitter',
 			url: '/auth/twitter',
-			callbackURL: '/auth/twitter/callback',
+			callbackURL: nconf.get('url') + '/auth/twitter/callback',
 			icon: 'twitter',
 			scope: ''
 		});
@@ -58,7 +67,7 @@
 		login_strategies.push({
 			name: 'google',
 			url: '/auth/google',
-			callbackURL: '/auth/google/callback',
+			callbackURL: nconf.get('url') + '/auth/google/callback',
 			icon: 'google-plus',
 			scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
 		});
@@ -81,7 +90,7 @@
 		login_strategies.push({
 			name: 'facebook',
 			url: '/auth/facebook',
-			callbackURL: '/auth/facebook/callback',
+			callbackURL: nconf.get('url') + '/auth/facebook/callback',
 			icon: 'facebook',
 			scope: 'email'
 		});
@@ -132,7 +141,6 @@
 				failureRedirect: '/login'
 			}));
 		}
-
 
 		app.get('/reset/:code', function(req, res) {
 			app.build_header({
