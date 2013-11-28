@@ -8,20 +8,42 @@ var	Groups = require('./groups'),
 CategoryTools.privileges = function(cid, uid, callback) {
 	async.parallel({
 		"+r": function(next) {
-			Groups.exists('cid:' + cid + ':privileges:+r', function(err, exists) {
+			var	key = 'cid:' + cid + ':privileges:+r';
+			Groups.exists(key, function(err, exists) {
 				if (exists) {
-					Groups.isMemberByGroupName(uid, 'cid:' + cid + ':privileges:+r', next);
+					async.parallel({
+						isMember: function(next) {
+							Groups.isMemberByGroupName(uid, key, next);
+						},
+						isEmpty: function(next) {
+							Groups.isEmptyByGroupName(key, next);
+						}
+					}, next);
 				} else {
-					next(null, true);
+					next(null, {
+						isMember: false,
+						isEmpty: true
+					});
 				}
 			});
 		},
 		"+w": function(next) {
-			Groups.exists('cid:' + cid + ':privileges:+w', function(err, exists) {
+			var	key = 'cid:' + cid + ':privileges:+w';
+			Groups.exists(key, function(err, exists) {
 				if (exists) {
-					Groups.isMemberByGroupName(uid, 'cid:' + cid + ':privileges:+w', next);
+					async.parallel({
+						isMember: function(next) {
+							Groups.isMemberByGroupName(uid, key, next);
+						},
+						isEmpty: function(next) {
+							Groups.isEmptyByGroupName(key, next);
+						}
+					}, next);
 				} else {
-					next(null, true);
+					next(null, {
+						isMember: false,
+						isEmpty: true
+					});
 				}
 			});
 		},
@@ -33,10 +55,10 @@ CategoryTools.privileges = function(cid, uid, callback) {
 		}
 	}, function(err, privileges) {
 		callback(err, !privileges ? null : {
-			"+r": privileges['+r'],
-			"+w": privileges['+w'],
-			read: privileges['+r'] || privileges.moderator || privileges.admin,
-			write: privileges['+w'] || privileges.moderator || privileges.admin,
+			"+r": privileges['+r'].isMember,
+			"+w": privileges['+w'].isMember,
+			read: (privileges['+r'].isMember || privileges['+r'].isEmpty) || privileges.moderator || privileges.admin,
+			write: (privileges['+w'].isMember || privileges['+w'].isEmpty) || privileges.moderator || privileges.admin,
 			editable: privileges.moderator || privileges.admin,
 			view_deleted: privileges.moderator || privileges.admin
 		});

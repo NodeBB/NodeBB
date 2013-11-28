@@ -105,6 +105,22 @@
 		});
 	};
 
+	Groups.isEmpty = function(gid, callback) {
+		RDB.scard('gid:' + gid + ':members', function(err, numMembers) {
+			callback(err, numMembers === 0);
+		});
+	};
+
+	Groups.isEmptyByGroupName = function(groupName, callback) {
+		Groups.getGidFromName(groupName, function(err, gid) {
+			if (err || !gid) {
+				callback(new Error('gid-not-found'));
+			} else {
+				Groups.isEmpty(gid, callback);
+			}
+		});
+	};
+
 	Groups.exists = function(name, callback) {
 		async.parallel({
 			exists: function(next) {
@@ -169,7 +185,9 @@
 	Groups.joinByGroupName = function(groupName, uid, callback) {
 		Groups.getGidFromName(groupName, function(err, gid) {
 			if (err || !gid) {
-				callback(new Error('gid-not-found'));
+				Groups.create(groupName, '', function(err, groupObj) {
+					Groups.join(groupObj.gid, uid, callback);
+				});
 			} else {
 				Groups.join(gid, uid, callback);
 			}

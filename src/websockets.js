@@ -1016,7 +1016,19 @@ module.exports.init = function(io) {
 				"+w": function(next) {
 					Groups.getByGroupName('cid:' + cid + ':privileges:+w', { expand: true }, next);
 				}
-			}, callback);
+			}, function(err, data) {
+				if (!err) {
+					callback(null, {
+						"+r": data['+r'].members,
+						"+w": data['+w'].members
+					});
+				} else {
+					callback(null, {
+						"+r": [],
+						"+w": []
+					});
+				}
+			});
 		});
 
 		socket.on('api:admin.themes.getInstalled', function(callback) {

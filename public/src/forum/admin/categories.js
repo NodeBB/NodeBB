@@ -246,15 +246,15 @@ define(function() {
 			readMembers = modalEl.find('#category-permissions-read'),
 			writeMembers = modalEl.find('#category-permissions-write');
 		socket.emit('api:admin.categories.getPrivilegeSettings', cid, function(err, privilegeList) {
-			var	readLength = privilegeList['+r'].members.length,
-				writeLength = privilegeList['+w'].members.length,
+			var	readLength = privilegeList['+r'].length,
+				writeLength = privilegeList['+w'].length,
 				readFrag = document.createDocumentFragment(),
 				writeFrag = document.createDocumentFragment(),
 				liEl = document.createElement('li'),
 				x, userObj;
 
 			for(x=0;x<readLength;x++) {
-				userObj = privilegeList['+r'].members[x];
+				userObj = privilegeList['+r'][x];
 				liEl.setAttribute('data-uid', userObj.uid);
 
 				liEl.innerHTML = '<img src="' + userObj.picture + '" title="' + userObj.username + '" />';
@@ -262,7 +262,7 @@ define(function() {
 			}
 
 			for(x=0;x<writeLength;x++) {
-				userObj = privilegeList['+w'].members[x];
+				userObj = privilegeList['+w'][x];
 				liEl.setAttribute('data-uid', userObj.uid);
 
 				liEl.innerHTML = '<img src="' + userObj.picture + '" title="' + userObj.username + '" />';
