@@ -66,7 +66,7 @@
 
 								<div class="btn-group">
 									<button class="btn btn-sm btn-default follow main-post" type="button" title="Be notified of new replies in this topic"><i class="fa fa-eye"></i></button>
-									<button class="favourite btn btn-sm btn-default " type="button">
+									<button class="favourite btn btn-sm btn-default <!-- IF posts.favourited --> btn-warning <!-- ENDIF posts.favourited -->" type="button">
 										<span class="favourite-text">[[topic:favourite]]</span>
 										<span class="post_rep_{posts.pid}">{posts.reputation} </span>
 
