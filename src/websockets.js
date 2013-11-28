@@ -1011,23 +1011,32 @@ module.exports.init = function(io) {
 		socket.on('api:admin.categories.getPrivilegeSettings', function(cid, callback) {
 			async.parallel({
 				"+r": function(next) {
-					Groups.getByGroupName('cid:' + cid + ':privileges:+r', { expand: true }, next);
+					Groups.getByGroupName('cid:' + cid + ':privileges:+r', { expand: true }, function(err, groupObj) {
+						if (!err) {
+							next.apply(this, arguments);
+						} else {
+							next(null, {
+								members: []
+							});
+						}
+					});
 				},
 				"+w": function(next) {
-					Groups.getByGroupName('cid:' + cid + ':privileges:+w', { expand: true }, next);
+					Groups.getByGroupName('cid:' + cid + ':privileges:+w', { expand: true }, function(err, groupObj) {
+						if (!err) {
+							next.apply(this, arguments);
+						} else {
+							next(null, {
+								members: []
+							});
+						}
+					});
 				}
 			}, function(err, data) {
-				if (!err) {
-					callback(null, {
-						"+r": data['+r'].members,
-						"+w": data['+w'].members
-					});
-				} else {
-					callback(null, {
-						"+r": [],
-						"+w": []
-					});
-				}
+				callback(null, {
+					"+r": data['+r'].members,
+					"+w": data['+w'].members
+				});
 			});
 		});
 

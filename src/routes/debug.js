@@ -54,6 +54,14 @@ var	DebugRoute = function(app) {
 				}
 			});
 		});
+
+		app.get('/groups/prune', function(req, res) {
+			var	Groups = require('../groups');
+
+			Groups.prune(function(err) {
+				res.send('pruned');
+			});
+		});
 	});
 };
 

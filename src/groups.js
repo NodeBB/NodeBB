@@ -15,7 +15,6 @@
 				}, function (err, groups) {
 					// Remove deleted and hidden groups from this list
 					callback(err, groups.filter(function (group) {
-						console.log(group);
 						if (group.deleted === '1' || group.hidden === '1') {
 							return false;
 						} else {
@@ -165,30 +164,25 @@
 		});
 	};
 
-	Groups.hide = function(gid) {
-		Groups.exists(gid, function(err, exists) {
-			if (exists) {
-				Groups.update(gid, {
-					hidden: '1'
-				});
-			}
-		});
+	Groups.hide = function(gid, callback) {
+		Groups.update(gid, {
+			hidden: '1'
+		}, callback);
 	};
 
 	Groups.update = function(gid, values, callback) {
 		RDB.exists('gid:' + gid, function (err, exists) {
+			console.log('exists?', gid, exists, values);
 			if (!err && exists) {
 				RDB.hmset('gid:' + gid, values, callback);
 			} else {
-				callback(new Error('gid-not-found'));
+				if (callback) callback(new Error('gid-not-found'));
 			}
 		});
 	};
 
 	Groups.destroy = function(gid, callback) {
-		if (gid !== 1) {
-			RDB.hset('gid:' + gid, 'deleted', '1', callback);
-		}
+		RDB.hset('gid:' + gid, 'deleted', '1', callback);
 	};
 
 	Groups.join = function(gid, uid, callback) {
@@ -199,8 +193,15 @@
 		Groups.getGidFromName(groupName, function(err, gid) {
 			if (err || !gid) {
 				Groups.create(groupName, '', function(err, groupObj) {
-					Groups.hide(groupObj.gid);
-					Groups.join(groupObj.gid, uid, callback);
+					console.log('creating group, calling hide', groupObj.gid);
+					async.parallel([
+						function(next) {
+							Groups.hide(groupObj.gid, next);
+						},
+						function(next) {
+							Groups.join(groupObj.gid, uid, next);
+						}
+					], callback);
 				});
 			} else {
 				Groups.join(gid, uid, callback);

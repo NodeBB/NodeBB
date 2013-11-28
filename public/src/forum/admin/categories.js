@@ -187,7 +187,7 @@ define(function() {
 			resultsEl = modal.find('.search-results'),
 			searchDelay;
 
-		searchEl.off('keyup').on('keyup', function() {
+		searchEl.off().on('keyup', function() {
 			var	searchEl = this,
 				resultsFrag = document.createDocumentFragment(),
 				liEl = document.createElement('li');
@@ -219,7 +219,7 @@ define(function() {
 
 		Categories.refreshPrivilegeList(cid);
 
-		resultsEl.on('click', '[data-priv]', function(e) {
+		resultsEl.off().on('click', '[data-priv]', function(e) {
 			var	btnEl = $(this),
 				uid = btnEl.parents('li[data-uid]').attr('data-uid'),
 				privilege = this.getAttribute('data-priv');
@@ -232,8 +232,7 @@ define(function() {
 			});
 		});
 
-		modal.on('click', '.members li > img', function() {
-			console.log('clicked', this);
+		modal.off().on('click', '.members li > img', function() {
 			searchEl.val(this.getAttribute('title'));
 			searchEl.keyup();
 		});
@@ -246,6 +245,7 @@ define(function() {
 			readMembers = modalEl.find('#category-permissions-read'),
 			writeMembers = modalEl.find('#category-permissions-write');
 		socket.emit('api:admin.categories.getPrivilegeSettings', cid, function(err, privilegeList) {
+			console.log('privlist', privilegeList);
 			var	readLength = privilegeList['+r'].length,
 				writeLength = privilegeList['+w'].length,
 				readFrag = document.createDocumentFragment(),
