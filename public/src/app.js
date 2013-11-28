@@ -297,8 +297,8 @@ var socket,
 		});
 	}
 
-	app.makeNumbersHumanReadable = function() {
-		$('.human-readable-number').each(function() {
+	app.makeNumbersHumanReadable = function(selector) {
+		$(selector).each(function() {
 			var num = parseInt($(this).html(), 10);
 			$(this).html(utils.makeNumberHumanReadable(num));
 		});
@@ -312,7 +312,7 @@ var socket,
 		$('span.timeago').timeago();
 		$('.post-content img').addClass('img-responsive');
 
-		app.makeNumbersHumanReadable();
+		app.makeNumbersHumanReadable('.human-readable-number');
 
 		app.createUserTooltips();
 
