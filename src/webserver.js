@@ -118,6 +118,11 @@ var path = require('path'),
 		});
 	};
 
+	// Cache static files on production
+	if (global.env !== 'development') {
+		app.enable('cache');
+	}
+
 	// Middlewares
 	app.configure(function() {
 		async.series([
@@ -181,7 +186,7 @@ var path = require('path'),
 								// Theme's static directory
 								if (themeData[2]) {
 									app.use('/css/assets', express.static(path.join(__dirname, '../node_modules', themeData[1], themeData[2]), {
-										maxAge: 5184000000
+										maxAge: app.enabled('cache') ? 5184000000 : 0
 									}));
 									if (process.env.NODE_ENV === 'development') {
 										winston.info('Static directory routed for theme: ' + themeData[1]);
@@ -190,7 +195,7 @@ var path = require('path'),
 
 								if (themeData[3]) {
 									app.use('/templates', express.static(path.join(__dirname, '../node_modules', themeData[1], themeData[3]), {
-										maxAge: 5184000000
+										maxAge: app.enabled('cache') ? 5184000000 : 0
 									}));
 									if (process.env.NODE_ENV === 'development') {
 										winston.info('Custom templates directory routed for theme: ' + themeData[1]);
@@ -252,7 +257,7 @@ var path = require('path'),
 
 				// Static directory /public
 				app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../', 'public'), {
-					maxAge: 5184000000
+					maxAge: app.enabled('cache') ? 5184000000 : 0
 				}));
 
 				// 404 catch-all
