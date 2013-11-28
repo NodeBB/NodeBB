@@ -297,6 +297,13 @@ var socket,
 		});
 	}
 
+	app.makeNumbersHumanReadable = function() {
+		$('.human-readable-number').each(function() {
+			var num = parseInt($(this).html(), 10);
+			$(this).html(utils.makeNumberHumanReadable(num));
+		});
+	}
+
 	app.processPage = function () {
 		app.populateOnlineUsers();
 
@@ -304,6 +311,8 @@ var socket,
 
 		$('span.timeago').timeago();
 		$('.post-content img').addClass('img-responsive');
+
+		app.makeNumbersHumanReadable();
 
 		app.createUserTooltips();
 

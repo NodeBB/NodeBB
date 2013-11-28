@@ -143,14 +143,14 @@ define(function () {
 		container.append(html);
 
 		$('#topics-container span.timeago').timeago();
+		app.makeNumbersHumanReadable('#topics-container .human-readable-number');
 	}
-
 
 	Category.loadMoreTopics = function(cid) {
 		if (loadingMoreTopics) {
 			return;
 		}
-		
+
 		loadingMoreTopics = true;
 		socket.emit('api:category.loadMore', {
 			cid: cid,

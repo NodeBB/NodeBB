@@ -28,12 +28,12 @@
 						<small>
 							<span class="topic-stats">
 								posts
-								<strong>{topics.postcount}</strong>
+								<strong class="human-readable-number" title="{topics.postcount}">{topics.postcount}</strong>
 							</span>
 							|
 							<span class="topic-stats">
 								views
-								<strong>{topics.viewcount}</strong>
+								<strong class="human-readable-number" title="{topics.viewcount}">{topics.viewcount}</strong>
 							</span>
 							|
 							<span>
