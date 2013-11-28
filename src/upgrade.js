@@ -241,7 +241,7 @@ Upgrade.upgrade = function(callback) {
 					});
 				});
 			} else {
-				winston.info('[2013/11/26] Update to Post data skipped.');
+				winston.info('[2013/11/28] Update to Post data skipped.');
 				next();
 			}
 		}
