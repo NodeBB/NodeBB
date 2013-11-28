@@ -55,14 +55,6 @@ var RDB = require('./redis'),
 							'editor': '',
 							'edited': 0,
 							'deleted': 0
-							//TODO : write upgrade script to remove these fields from the database -barisu
-							//'fav_button_class': '',
-							//'fav_star_class': 'fa-star-o',
-							//'show_banned': 'hide',
-							//'relativeTime': new Date(timestamp).toISOString(),
-							//'post_rep': '0',
-							//'edited-class': 'none',
-							//'relativeEditTime': ''
 						};
 
 					RDB.hmset('post:' + pid, postData);
@@ -70,8 +62,6 @@ var RDB = require('./redis'),
 					postData.favourited = false;
 					postData.display_moderator_tools = true;
 					postData.relativeTime = new Date(timestamp).toISOString();
-					//TODO : remove this once template bug is fixed -barisu (https://github.com/designcreateplay/NodeBB/issues/574)
-					postData.fav_star_class = 'fa-star-o';
 
 					topics.addPostToTopic(tid, pid);
 					topics.increasePostCount(tid);
@@ -95,7 +85,7 @@ var RDB = require('./redis'),
 						}
 
 						RDB.scard('cid:' + cid + ':active_users', function(err, amount) {
-							if (amount > 16) {
+							if (amount > 15) {
 								RDB.spop('cid:' + cid + ':active_users');
 							}
 
