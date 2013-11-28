@@ -1,24 +1,7 @@
 define(function() {
 	var	Login = {};
 
-	Login.init = function() {
-		// Alternate Logins
-		var altLoginEl = document.querySelector('.alt-logins');
-		altLoginEl.addEventListener('click', function(e) {
-			var target;
-			switch (e.target.nodeName) {
-				case 'LI':
-					target = e.target;
-					break;
-				case 'I':
-					target = e.target.parentNode;
-					break;
-			}
-			if (target) {
-				document.location.href = target.getAttribute('data-url');
-			}
-		});
-
+	Login.init = function() {		
 		$('#login').on('click', function() {
 			var loginData = {
 				'username': $('#username').val(),
