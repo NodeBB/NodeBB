@@ -55,14 +55,6 @@ var RDB = require('./redis'),
 							'editor': '',
 							'edited': 0,
 							'deleted': 0
-							//TODO : write upgrade script to remove these fields from the database -barisu
-							//'fav_button_class': '',
-							//'fav_star_class': 'fa-star-o',
-							//'show_banned': 'hide',
-							//'relativeTime': new Date(timestamp).toISOString(),
-							//'post_rep': '0',
-							//'edited-class': 'none',
-							//'relativeEditTime': ''
 						};
 
 					RDB.hmset('post:' + pid, postData);

@@ -312,20 +312,20 @@
 						function checkConditional(key, value) {
 							var conditional = makeConditionalRegex(key),
 								conditionalBlock = conditional.exec(template);
-							
+
 							if (conditionalBlock !== null) {
 								conditionalBlock = conditionalBlock[0].split(/<!-- ELSE -->/);
-								
+
 								if (conditionalBlock[1]) {
 									// there is an else statement
 									if (!value) {
-										template = template.replace(conditional, conditionalBlock[1]);	
+										template = template.replace(conditional, conditionalBlock[1]);
 									} else {
-										template = template.replace(conditional, conditionalBlock[0]);	
+										template = template.replace(conditional, conditionalBlock[0]);
 									}
-									
+
 								} else {
-									// regular if 
+									// regular if
 									if (!value) {
 										template = template.replace(conditional, '');
 									}
@@ -335,13 +335,13 @@
 
 						checkConditional(namespace + d, data[d]);
 						checkConditional('!' + namespace + d, !data[d]);
-						
+
 						if (blockInfo) {
 							checkConditional('@first', blockInfo.iterator === 0);
 							checkConditional('@last', blockInfo.iterator === blockInfo.total);
 						}
-						
-						
+
+
 						template = replace(namespace + d, data[d], template);
 					}
 				}
