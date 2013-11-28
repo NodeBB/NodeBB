@@ -85,7 +85,7 @@
 			var templates = require('./public/src/templates.js'),
 				translator = require('./public/src/translator.js'),
 				webserver = require('./src/webserver.js'),
-				SocketIO =  require('socket.io').listen(global.server, { log: false, transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket']}),
+				SocketIO =  require('socket.io').listen(global.server, { log: false, transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket'], 'browser client minification': true}),
 				websockets = require('./src/websockets.js'),
 				posts = require('./src/posts.js'),
 				plugins = require('./src/plugins'), // Don't remove this - plugins initializes itself
