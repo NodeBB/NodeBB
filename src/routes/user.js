@@ -535,18 +535,18 @@ var user = require('./../user.js'),
 							return callerUID == uid || (data.email && (data.showemail && data.showemail === "1"));
 						}
 
-						if (!canSeeEmail())
+						if (!canSeeEmail()) {
 							data.email = "";
+						}
 
-						if (callerUID == uid && (!data.showemail || data.showemail === "0"))
+						if (callerUID == uid && (!data.showemail || data.showemail === "0")) {
 							data.emailClass = "";
-						else
+						} else {
 							data.emailClass = "hide";
+						}
 
 						data.websiteName = data.website.replace('http://', '').replace('https://', '');
-
-						data.show_banned = data.banned === '1' ? '' : 'hide';
-
+						data.banned = data.banned === '1';
 						data.uid = uid;
 						data.yourid = callerUID;
 						data.theirid = uid;

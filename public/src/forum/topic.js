@@ -866,10 +866,6 @@ define(function() {
 		if(!data || (data.posts && !data.posts.length))
 			return;
 
-		if (data.posts[0].uid !== app.uid) {
-			data.posts[0].display_moderator_tools = 'none';
-		}
-
 		function removeAlreadyAddedPosts() {
 			data.posts = data.posts.filter(function(post) {
 				return $('#post-container li[data-pid="' + post.pid +'"]').length === 0;

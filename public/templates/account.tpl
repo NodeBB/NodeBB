@@ -15,9 +15,11 @@
 			<div class="account-online-status">
 				<span><i class="fa fa-circle-o"></i> <span>offline</span></span>
 			</div>
-			<div class="{show_banned}">
+			<!-- IF banned -->
+			<div>
 				<span class="label label-danger">banned</span>
 			</div>
+			<!-- ENDIF banned -->
 			<div id="user-actions">
 				<a id="follow-btn" href="#" class="btn btn-default">Follow</a>
 				<a id="unfollow-btn" href="#" class="btn btn-default">Unfollow</a>

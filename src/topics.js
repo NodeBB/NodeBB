@@ -196,11 +196,10 @@ var RDB = require('./redis'),
 					privileges = results[2];
 
 				for (var i = 0; i < postData.length; ++i) {
+					postData[i].favourited = fav_data[postData[i].pid] === 1;
 					postData[i].fav_button_class = fav_data[postData[i].pid] ? 'btn-warning' : '';
 					postData[i].fav_star_class = fav_data[postData[i].pid] ? 'fa-star' : 'fa-star-o';
-					postData[i]['display_moderator_tools'] = ((current_user != 0) && (postData[i].uid == current_user || privileges.editable)) ? 'show' : 'none';
-
-					postData[i].show_banned = postData[i].user_banned === '1' ? 'show' : 'hide';
+					postData[i].display_moderator_tools = ((current_user != 0) && (postData[i].uid == current_user || privileges.editable));
 				}
 
 				callback(postData);

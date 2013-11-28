@@ -29,7 +29,9 @@
 
 	Feed.updateTopic = function (tid, callback) {
 		topics.getTopicWithPosts(tid, 0, 0, -1, function (err, topicData) {
-			if (err) return callback(new Error('topic-invalid'));
+			if (err) {
+				return callback(new Error('topic-invalid'));
+			}
 
 			var feed = new rss({
 					title: topicData.topic_name,
@@ -44,7 +46,9 @@
 				dateStamp;
 
 			// Add pubDate if topic contains posts
-			if (topicData.posts.length > 0) feed.pubDate = new Date(parseInt(topicData.posts[0].timestamp, 10)).toUTCString();
+			if (topicData.posts.length > 0) {
+				feed.pubDate = new Date(parseInt(topicData.posts[0].timestamp, 10)).toUTCString();
+			}
 
 			async.each(topic_posts, function(postData, next) {
 				if (postData.deleted === '0') {
@@ -65,7 +69,9 @@
 					winston.info('[rss] Re-generated RSS Feed for tid ' + tid + '.');
 				}
 
-				if (callback) callback();
+				if (callback) {
+					callback();
+				}
 			});
 		});
 

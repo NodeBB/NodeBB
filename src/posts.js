@@ -54,17 +54,24 @@ var RDB = require('./redis'),
 							'reputation': 0,
 							'editor': '',
 							'edited': 0,
-							'deleted': 0,
-							'fav_button_class': '',
-							'fav_star_class': 'fa-star-o',
-							'show_banned': 'hide',
-							'relativeTime': new Date(timestamp).toISOString(),
-							'post_rep': '0',
-							'edited-class': 'none',
-							'relativeEditTime': ''
+							'deleted': 0
+							//TODO : write upgrade script to remove these fields from the database -barisu
+							//'fav_button_class': '',
+							//'fav_star_class': 'fa-star-o',
+							//'show_banned': 'hide',
+							//'relativeTime': new Date(timestamp).toISOString(),
+							//'post_rep': '0',
+							//'edited-class': 'none',
+							//'relativeEditTime': ''
 						};
 
 					RDB.hmset('post:' + pid, postData);
+
+					postData.favourited = false;
+					postData.display_moderator_tools = true;
+					postData.relativeTime = new Date(timestamp).toISOString();
+					//TODO : remove this once template bug is fixed -barisu (https://github.com/designcreateplay/NodeBB/issues/574)
+					postData.fav_star_class = 'fa-star-o';
 
 					topics.addPostToTopic(tid, pid);
 					topics.increasePostCount(tid);
@@ -78,8 +85,8 @@ var RDB = require('./redis'),
 
 						var cid = topicData.cid;
 
-						feed.updateTopic(tid);
-						feed.updateRecent();
+						//feed.updateTopic(tid);
+						//feed.updateRecent();
 
 						RDB.zadd('categories:recent_posts:cid:' + cid, timestamp, pid);
 
@@ -178,7 +185,6 @@ var RDB = require('./redis'),
 					if(err) {
 						return callback(err, null);
 					}
-
 					callback(null, postData);
 				});
 			});
@@ -217,7 +223,7 @@ var RDB = require('./redis'),
 				post.userslug = userData.userslug || '';
 				post.user_rep = userData.reputation || 0;
 				post.user_postcount = userData.postcount || 0;
-				post.user_banned = userData.banned || '0';
+				post.user_banned = userData.banned === '1';
 				post.picture = userData.picture || require('gravatar').url('', {}, https = nconf.get('https'));
 				post.signature = signature;
 
@@ -367,8 +373,6 @@ var RDB = require('./redis'),
 			async.map(replies, function(postData, _callback) {
 				if (postData) {
 
-					postData.post_rep = postData.reputation;
-					postData['edited-class'] = postData.editor !== '' ? '' : 'none';
 					try {
 						postData.relativeTime = new Date(parseInt(postData.timestamp,10)).toISOString();
 						postData.relativeEditTime = postData.edited !== '0' ? (new Date(parseInt(postData.edited,10)).toISOString()) : '';
