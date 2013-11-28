@@ -31,7 +31,9 @@ var	nconf = require('nconf'),
 				var	fullPath = path.join(Plugins.staticDirs[req.params.id], relPath);
 				fs.exists(fullPath, function(exists) {
 					if (exists) {
-						res.sendfile(fullPath);
+						res.sendfile(fullPath, {
+							maxAge: app.enabled('cache') ? 5184000000 : 0
+						});
 					} else {
 						res.redirect('/404');
 					}

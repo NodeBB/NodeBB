@@ -245,7 +245,6 @@ define(function() {
 			readMembers = modalEl.find('#category-permissions-read'),
 			writeMembers = modalEl.find('#category-permissions-write');
 		socket.emit('api:admin.categories.getPrivilegeSettings', cid, function(err, privilegeList) {
-			console.log('privlist', privilegeList);
 			var	readLength = privilegeList['+r'].length,
 				writeLength = privilegeList['+w'].length,
 				readFrag = document.createDocumentFragment(),
