@@ -410,8 +410,8 @@ var RDB = require('./redis'),
 			// temporary. I don't think this call should belong here
 
 			function getPrivileges(next) {
-				CategoryTools.privileges(category_id, current_user, function(user_privs) {
-					next(null, user_privs);
+				CategoryTools.privileges(category_id, current_user, function(err, user_privs) {
+					next(err, user_privs);
 				});
 			}
 
