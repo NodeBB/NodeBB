@@ -538,24 +538,22 @@ define(function() {
 
 		socket.on('api:posts.favourite', function(data) {
 			if (data.status === 'ok' && data.pid) {
-				var favEl = document.querySelector('.post_rep_' + data.pid).nextSibling;
-				if (favEl) {
-					favEl.className = 'fa fa-star';
-					$(favEl).parent()
-						.addClass('btn-warning')
-						.attr('data-favourited', true);
+				var favBtn = $('li[data-pid="' + data.pid + '"] .favourite');
+				if(favBtn.length) {
+					favBtn.addClass('btn-warning')
+						.attr('data-favourited', true)
+						.find('i').attr('class', 'fa fa-star');
 				}
 			}
 		});
 
 		socket.on('api:posts.unfavourite', function(data) {
 			if (data.status === 'ok' && data.pid) {
-				var favEl = document.querySelector('.post_rep_' + data.pid).nextSibling;
-				if (favEl) {
-					favEl.className = 'fa fa-star-o';
-					$(favEl).parent()
-						.removeClass('btn-warning')
-						.attr('data-favourited', false);
+				var favBtn = $('li[data-pid="' + data.pid + '"] .favourite');
+				if(favBtn.length) {
+					favBtn.removeClass('btn-warning')
+						.attr('data-favourited', false)
+						.find('i').attr('class', 'fa fa-star-o');
 				}
 			}
 		});
