@@ -11,7 +11,7 @@ var RDB = require('./redis.js'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2013, 10, 26).getTime();
+	var	latestSchema = new Date(2013, 10, 28).getTime();
 
 	RDB.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -179,7 +179,7 @@ Upgrade.upgrade = function(callback) {
 		},
 		function(next) {
 			thisSchemaDate = new Date(2013, 10, 26).getTime();
-			if (schemaDate < thisSchemaDate || 1) {
+			if (schemaDate < thisSchemaDate) {
 				categories.getAllCategories(0, function(err, categories) {
 
 					function updateIcon(category, next) {
@@ -207,6 +207,41 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2013/11/26] Update to Category icons skipped.');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2013, 10, 28).getTime();
+			if (schemaDate < thisSchemaDate) {
+				var keysToDelete = [
+					'fav_button_class',
+					'fav_star_class',
+					'show_banned',
+					'relativeTime',
+					'post_rep',
+					'edited-class',
+					'relativeEditTime'
+				];
+
+				RDB.keys('post:*', function(err, posts) {
+					if(err) {
+						return next(err);
+					}
+
+					function deleteRemovedData(key, callback) {
+						RDB.hdel(key, keysToDelete, callback)
+					}
+
+					async.each(posts, deleteRemovedData, function(err) {
+						if(err) {
+							return next(err);
+						}
+						winston.info('[2013/11/28] Deleted removed post data.');
+						next(err);
+					});
+				});
+			} else {
+				winston.info('[2013/11/26] Update to Post data skipped.');
 				next();
 			}
 		}
