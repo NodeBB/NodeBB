@@ -291,8 +291,7 @@ define(function() {
 			var pid = $(this).parents('li').attr('data-pid');
 			var uid = $(this).parents('li').attr('data-uid');
 
-			var element = $(this).find('i');
-			if ($(element).hasClass('fa-star-o')) {
+			if ($(this).attr('data-favourited') == 'false') {
 				socket.emit('api:posts.favourite', {
 					pid: pid,
 					room_id: app.currentRoom
@@ -542,7 +541,9 @@ define(function() {
 				var favEl = document.querySelector('.post_rep_' + data.pid).nextSibling;
 				if (favEl) {
 					favEl.className = 'fa fa-star';
-					$(favEl).parent().addClass('btn-warning');
+					$(favEl).parent()
+						.addClass('btn-warning')
+						.attr('data-favourited', true);
 				}
 			}
 		});
@@ -552,7 +553,9 @@ define(function() {
 				var favEl = document.querySelector('.post_rep_' + data.pid).nextSibling;
 				if (favEl) {
 					favEl.className = 'fa fa-star-o';
-					$(favEl).parent().removeClass('btn-warning');
+					$(favEl).parent()
+						.removeClass('btn-warning')
+						.attr('data-favourited', false);
 				}
 			}
 		});
