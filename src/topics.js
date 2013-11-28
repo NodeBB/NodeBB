@@ -534,10 +534,7 @@ var RDB = require('./redis'),
 					'unreplied': topicData.postcount > 1,
 					'topic_id': tid,
 					'expose_tools': privileges.editable ? 1 : 0,
-					'posts': topicPosts,
-					'twitter-intent-url': 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(nconf.get('url') + 'topic/' + topicData.slug) + '&text=' + encodeURIComponent(topicData.title),
-					'facebook-share-url': 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(nconf.get('url') + 'topic/' + topicData.slug),
-					'google-share-url': 'https://plus.google.com/share?url=' + encodeURIComponent(nconf.get('url') + 'topic/' + topicData.slug)
+					'posts': topicPosts
 				});
 			});
 		});

@@ -6,17 +6,12 @@ define(function() {
 	Topic.init = function() {
 		var expose_tools = templates.get('expose_tools'),
 			tid = templates.get('topic_id'),
-			postListEl = document.getElementById('post-container'),
-			editBtns = document.querySelectorAll('#post-container .post-buttons .edit, #post-container .post-buttons .edit i'),
 			thread_state = {
 				locked: templates.get('locked'),
 				deleted: templates.get('deleted'),
 				pinned: templates.get('pinned')
 			},
-			topic_name = templates.get('topic_name'),
-			twitter_url = templates.get('twitter-intent-url'),
-			facebook_url = templates.get('facebook-share-url'),
-			google_url = templates.get('google-share-url');
+			topic_name = templates.get('topic_name');
 
 
 		function fixDeleteStateForPosts() {
@@ -39,21 +34,6 @@ define(function() {
 			if($('#post-container .posts .post-row').length > 1) {
 				$('.topic-main-buttons').removeClass('hide').parent().removeClass('hide');
 			}
-
-			$('.twitter-share').on('click', function () {
-				window.open(twitter_url, '_blank', 'width=550,height=420,scrollbars=no,status=no');
-				return false;
-			});
-
-			$('.facebook-share').on('click', function () {
-				window.open(facebook_url, '_blank', 'width=626,height=436,scrollbars=no,status=no');
-				return false;
-			});
-
-			$('.google-share').on('click', function () {
-				window.open(google_url, '_blank', 'width=500,height=570,scrollbars=no,status=no');
-				return false;
-			});
 
 			// Resetting thread state
 			if (thread_state.locked === '1') set_locked_state(true);
@@ -331,6 +311,24 @@ define(function() {
 			$('#post_' + pid + '_link').off('blur').on('blur', function() {
 				$(this).fadeOut();
 			});
+		});
+
+		$('#post-container').on('click', '.twitter-share', function () {
+			var pid = $(this).parents('li').attr('data-pid');
+			window.open('https://twitter.com/intent/tweet?url=' + encodeURIComponent(window.location.href + '#' + pid) + '&text=' + topic_name, '_blank', 'width=550,height=420,scrollbars=no,status=no');
+			return false;
+		});
+
+		$('#post-container').on('click', '.facebook-share', function () {
+			var pid = $(this).parents('li').attr('data-pid');
+			window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href + '#' + pid), '_blank', 'width=626,height=436,scrollbars=no,status=no');
+			return false;
+		});
+
+		$('#post-container').on('click', '.google-share', function () {
+			var pid = $(this).parents('li').attr('data-pid');
+			window.open('https://plus.google.com/share?url=' + encodeURIComponent(window.location.href + '#' + pid), '_blank', 'width=500,height=570,scrollbars=no,status=no');
+			return false;
 		});
 
 		$('#post-container').delegate('.edit', 'click', function(e) {
