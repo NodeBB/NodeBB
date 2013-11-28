@@ -348,7 +348,7 @@ var path = require('path'),
 
 	app.namespace(nconf.get('relative_path'), function () {
 
-		auth.createRoutes(app);
+		auth.registerApp(app);
 		admin.createRoutes(app);
 		userRoute.createRoutes(app);
 		apiRoute.createRoutes(app);

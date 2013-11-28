@@ -24,6 +24,8 @@
 			if (err) {
 				winston.error('filter:auth.init - plugin failure');
 			}
+
+			Auth.createRoutes(Auth.app);
 		});
 	});
 
@@ -31,7 +33,7 @@
 		passport.use(new passportTwitter({
 			consumerKey: meta.config['social:twitter:key'],
 			consumerSecret: meta.config['social:twitter:secret'],
-			callbackURL: nconf.get('url') + 'auth/twitter/callback'
+			callbackURL: 'auth/twitter/callback'
 		}, function(token, tokenSecret, profile, done) {
 			login_module.loginViaTwitter(profile.id, profile.username, profile.photos, function(err, user) {
 				if (err) {
@@ -44,7 +46,7 @@
 		login_strategies.push({
 			name: 'twitter',
 			url: '/auth/twitter',
-			callbackURL: nconf.get('url') + '/auth/twitter/callback',
+			callbackURL: '/auth/twitter/callback',
 			icon: 'twitter',
 			scope: ''
 		});
@@ -54,7 +56,7 @@
 		passport.use(new passportGoogle({
 			clientID: meta.config['social:google:id'],
 			clientSecret: meta.config['social:google:secret'],
-			callbackURL: nconf.get('url') + 'auth/google/callback'
+			callbackURL: 'auth/google/callback'
 		}, function(accessToken, refreshToken, profile, done) {
 			login_module.loginViaGoogle(profile.id, profile.displayName, profile.emails[0].value, function(err, user) {
 				if (err) {
@@ -114,6 +116,10 @@
 
 	Auth.get_login_strategies = function() {
 		return login_strategies;
+	}
+
+	Auth.registerApp = function(app) {
+		Auth.app = app;
 	}
 
 	Auth.createRoutes = function(app) {
