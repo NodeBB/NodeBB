@@ -13,8 +13,10 @@
 						expand: options.expand
 					}, next);
 				}, function (err, groups) {
+					// Remove deleted and hidden groups from this list
 					callback(err, groups.filter(function (group) {
-						if (group.deleted === '1') {
+						console.log(group);
+						if (group.deleted === '1' || group.hidden === '1') {
 							return false;
 						} else {
 							return true;
@@ -217,6 +219,34 @@
 			} else {
 				Groups.leave(gid, uid, callback);
 			}
+		});
+	};
+
+	Groups.prune = function(callback) {
+		// Actually deletes groups (with the deleted flag) from the redis database
+		RDB.hvals('group:gid', function (err, gids) {
+			var	multi = RDB.multi(),
+				groupsDeleted = 0;
+
+			async.each(gids, function(gid, next) {
+				Groups.get(gid, {}, function(err, groupObj) {
+					if (!err && groupObj.deleted === '1') {
+						multi.hdel('group:gid', groupObj.name);
+						multi.del('gid:' + gid);
+						groupsDeleted++;
+					}
+
+					next(null);
+				});
+			}, function(err) {
+				multi.exec(function(err) {
+					if (!err && process.env.NODE_ENV === 'development') {
+						winston.info('[groups.prune] Pruned ' + groupsDeleted + ' deleted groups from Redis');
+					}
+
+					callback(err);
+				});
+			});
 		});
 	};
 	

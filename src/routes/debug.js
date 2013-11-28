@@ -54,12 +54,6 @@ var	DebugRoute = function(app) {
 				}
 			});
 		});
-
-		app.get('/uuidtest', function(req, res) {
-			var	Utils = require('../../public/src/utils.js');
-
-			res.send(Utils.generateUUID());
-		});
 	});
 };
 
