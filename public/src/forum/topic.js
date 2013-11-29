@@ -786,7 +786,7 @@ define(function() {
 
 			if (scrollTop < 50 && Topic.postCount > 1) {
 				localStorage.removeItem("topic:" + tid + ":bookmark");
-				pagination.innerHTML = '0 out of ' + Topic.postCount;
+				pagination.innerHTML = '1 out of ' + Topic.postCount;
 				return;
 			}
 
@@ -812,7 +812,7 @@ define(function() {
 						smallestNonNegative = Number.MAX_VALUE;
 					}
 
-					pagination.innerHTML = this.postnumber + ' out of ' + Topic.postCount;
+					pagination.innerHTML = (this.postnumber-1) + ' out of ' + Topic.postCount;
 				}
 			});
 
@@ -863,8 +863,9 @@ define(function() {
 	}
 
 	function createNewPosts(data, infiniteLoaded) {
-		if(!data || (data.posts && !data.posts.length))
+		if(!data || (data.posts && !data.posts.length)) {
 			return;
+		}
 
 		function removeAlreadyAddedPosts() {
 			data.posts = data.posts.filter(function(post) {
@@ -944,7 +945,7 @@ define(function() {
 
 		socket.emit('api:topic.loadMore', {
 			tid: tid,
-			after: $('#post-container .post-row.infiniteloaded').length
+			after: $('#post-container .post-row.infiniteloaded').last().attr('data-index') + 1
 		}, function (data) {
 			infiniteLoaderActive = false;
 			if (data.posts.length) {
