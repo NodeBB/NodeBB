@@ -65,7 +65,7 @@
 
 								<div class="btn-group">
 									<!-- IF @first -->
-									<button class="btn btn-sm btn-default follow main-post" type="button" title="Be notified of new replies in this topic"><i class="fa fa-eye"></i></button>
+									<button class="btn btn-sm btn-default follow" type="button" title="Be notified of new replies in this topic"><i class="fa fa-eye"></i></button>
 									<!-- ENDIF @first -->
 									<button data-favourited="{posts.favourited}" class="favourite btn btn-sm btn-default <!-- IF posts.favourited --> btn-warning <!-- ENDIF posts.favourited -->" type="button">
 										<span class="favourite-text">[[topic:favourite]]</span>
