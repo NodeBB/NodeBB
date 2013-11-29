@@ -787,7 +787,7 @@ define(function() {
 
 			if (scrollTop < 50 && Topic.postCount > 1) {
 				localStorage.removeItem("topic:" + tid + ":bookmark");
-				pagination.innerHTML = '0 out of ' + Topic.postCount;
+				pagination.innerHTML = '1 out of ' + Topic.postCount;
 				progressBar.width(0);
 				return;
 			}
@@ -814,9 +814,8 @@ define(function() {
 						smallestNonNegative = Number.MAX_VALUE;
 					}
 
-					pagination.innerHTML = this.postnumber + ' out of ' + Topic.postCount;
-					console.log((this.postnumber / Topic.postCount * 100) + '%');
-					progressBar.width((this.postnumber / Topic.postCount * 100) + '%');
+					pagination.innerHTML = (this.postnumber-1) + ' out of ' + Topic.postCount;
+					progressBar.width(((this.postnumber-1) / Topic.postCount * 100) + '%');
 				}
 			});
 
@@ -867,8 +866,9 @@ define(function() {
 	}
 
 	function createNewPosts(data, infiniteLoaded) {
-		if(!data || (data.posts && !data.posts.length))
+		if(!data || (data.posts && !data.posts.length)) {
 			return;
+		}
 
 		function removeAlreadyAddedPosts() {
 			data.posts = data.posts.filter(function(post) {
@@ -900,7 +900,7 @@ define(function() {
 		var insertAfter = findInsertionPoint();
 
 		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
-		var regexp = new RegExp("<!--[\\s]*IF @first[\\s]*-->[\\s\\S]*<!--[\\s]*ENDIF @first[\\s]*-->", 'g');
+		var regexp = new RegExp("<!--[\\s]*IF @first[\\s]*-->([\\s\\S]*?)<!--[\\s]*ENDIF @first[\\s]*-->", 'g');
 		html = html.replace(regexp, '');
 
 		translator.translate(html, function(translatedHTML) {
@@ -948,7 +948,7 @@ define(function() {
 
 		socket.emit('api:topic.loadMore', {
 			tid: tid,
-			after: $('#post-container .post-row.infiniteloaded').length
+			after: $('#post-container .post-row.infiniteloaded').last().attr('data-index') + 1
 		}, function (data) {
 			infiniteLoaderActive = false;
 			if (data.posts.length) {

@@ -187,7 +187,7 @@ var RDB = require('./redis'),
 
 			if (pids.length) {
 				plugins.fireHook('filter:post.getTopic', pids, function(err, posts) {
-					if (!err & 0 < posts.length) {
+					if (!err && posts.length > 0) {
 						Posts.getPostsByPids(pids, function(err, posts) {
 							plugins.fireHook('action:post.gotTopic', posts);
 							callback(posts);
@@ -370,18 +370,7 @@ var RDB = require('./redis'),
 						winston.err('invalid time value');
 					}
 
-					if (postData.uploadedImages) {
-						try {
-							postData.uploadedImages = JSON.parse(postData.uploadedImages);
-						} catch(err) {
-							postData.uploadedImages = [];
-							winston.err(err);
-						}
-					} else {
-						postData.uploadedImages = [];
-					}
-
-                    postTools.parse(postData.content, function(err, content) {
+				    postTools.parse(postData.content, function(err, content) {
                         postData.content = content;
 						_callback(null, postData);
                     });

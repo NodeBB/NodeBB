@@ -26,7 +26,7 @@
 
 		<ul id="post-container" class="container posts" data-tid="{topic_id}">
 			<!-- BEGIN posts -->
-				<li class="row post-row infiniteloaded" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-deleted="{posts.deleted}" itemscope itemtype="http://schema.org/Comment">
+				<li class="row post-row infiniteloaded" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-index="{posts.index}" data-deleted="{posts.deleted}" itemscope itemtype="http://schema.org/Comment">
 					<a id="post_anchor_{posts.pid}" name="{posts.pid}"></a>
 
 					<meta itemprop="datePublished" content="{posts.relativeTime}">
@@ -65,7 +65,7 @@
 
 								<div class="btn-group">
 									<!-- IF @first -->
-									<button class="btn btn-sm btn-default follow main-post" type="button" title="Be notified of new replies in this topic"><i class="fa fa-eye"></i></button>
+									<button class="btn btn-sm btn-default follow" type="button" title="Be notified of new replies in this topic"><i class="fa fa-eye"></i></button>
 									<!-- ENDIF @first -->
 									<button data-favourited="{posts.favourited}" class="favourite btn btn-sm btn-default <!-- IF posts.favourited --> btn-warning <!-- ENDIF posts.favourited -->" type="button">
 										<span class="favourite-text">[[topic:favourite]]</span>

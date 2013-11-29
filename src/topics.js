@@ -160,8 +160,17 @@ var RDB = require('./redis'),
 
 	Topics.getTopicPosts = function(tid, start, end, current_user, callback) {
 		posts.getPostsByTid(tid, start, end, function(postData) {
-			if (Array.isArray(postData) && !postData.length)
+			if (Array.isArray(postData) && !postData.length) {
 				return callback([]);
+			}
+
+			for(var i=0; i<postData.length; ++i) {
+				postData[i].index = start + i;
+			}
+
+			postData = postData.filter(function(post) {
+				return parseInt(current_user, 10) !== 0 || post.deleted === "0";
+			});
 
 			function getFavouritesData(next) {
 				var pids = [];
@@ -482,8 +491,9 @@ var RDB = require('./redis'),
 
 	Topics.getTopicWithPosts = function(tid, current_user, start, end, callback) {
 		threadTools.exists(tid, function(exists) {
-			if (!exists)
+			if (!exists) {
 				return callback(new Error('Topic tid \'' + tid + '\' not found'));
+			}
 
 			Topics.markAsRead(tid, current_user);
 			Topics.increaseViewCount(tid);
