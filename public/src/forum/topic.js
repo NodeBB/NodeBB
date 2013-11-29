@@ -793,7 +793,7 @@ define(function() {
 
 			var count = 0, smallestNonNegative = 0;
 
-			jQuery('.posts > .post-row').each(function() {
+			jQuery('.posts > .post-row:not(".deleted")').each(function() {
 				count++;
 				this.postnumber = count;
 
