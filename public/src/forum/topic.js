@@ -822,6 +822,7 @@ define(function() {
 			setTimeout(function() {
 				if (scrollTop + windowHeight == jQuery(document).height()) {
 					pagination.innerHTML = Topic.postCount + ' out of ' + Topic.postCount;
+					progressBar.width('100%');
 				}
 			}, 100);
 		}
