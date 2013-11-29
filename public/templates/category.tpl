@@ -9,7 +9,7 @@
 </ol>
 
 <div>
-	<button id="new_post" class="btn btn-primary btn-lg {show_topic_button}">[[category:new_topic_button]]</button>
+	<button id="new_post" class="btn btn-primary {show_topic_button}">[[category:new_topic_button]]</button>
 
 	<div class="inline-block pull-right">
 		<a href="#" id="facebook-share"><i class="fa fa-facebook-square fa-2x"></i></a>&nbsp;
