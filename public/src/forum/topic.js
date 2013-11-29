@@ -3,6 +3,12 @@ define(function() {
 		infiniteLoaderActive = false;
 
 
+	function showBottomPostBar() {
+		if($('#post-container .post-row').length > 1) {
+			$('.topic-main-buttons').removeClass('hide').parent().removeClass('hide');
+		}
+	}
+
 	Topic.init = function() {
 		var expose_tools = templates.get('expose_tools'),
 			tid = templates.get('topic_id'),
@@ -24,16 +30,13 @@ define(function() {
 			}
 		}
 
-
 		jQuery('document').ready(function() {
 
 			app.addCommasToNumbers();
 
 			app.enterRoom('topic_' + tid);
 
-			if($('#post-container .post-row').length > 1) {
-				$('.topic-main-buttons').removeClass('hide').parent().removeClass('hide');
-			}
+			showBottomPostBar();
 
 			// Resetting thread state
 			if (thread_state.locked === '1') set_locked_state(true);
@@ -883,7 +886,7 @@ define(function() {
 			$('#post-container li[data-pid]').each(function() {
 				if(parseInt(firstPid, 10) > parseInt($(this).attr('data-pid'), 10)) {
 					after = $(this);
-					if(after.hasClass('posts')) {
+					if(after.next().length && after.next().hasClass('post-bar')) {
 						after = after.next();
 					}
 				} else {
@@ -926,6 +929,7 @@ define(function() {
 			$('span.timeago').timeago();
 			$('.post-content img').addClass('img-responsive');
 			updatePostCount();
+			showBottomPostBar();
 		});
 	}
 
