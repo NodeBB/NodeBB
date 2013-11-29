@@ -187,7 +187,7 @@ var RDB = require('./redis'),
 
 			if (pids.length) {
 				plugins.fireHook('filter:post.getTopic', pids, function(err, posts) {
-					if (!err & 0 < posts.length) {
+					if (!err && posts.length > 0) {
 						Posts.getPostsByPids(pids, function(err, posts) {
 							plugins.fireHook('action:post.gotTopic', posts);
 							callback(posts);
