@@ -141,6 +141,9 @@
 							<span id="pagination"></span>
 							<i class="fa fa-chevron-down pointer"></i>
 						</a>
+						<div class="progress-container">
+							<div class="progress-bar"></div>
+						</div>
 					</li>
 				</ul>
 			</div>

@@ -783,10 +783,12 @@ define(function() {
 			var windowHeight = jQuery(window).height();
 			var scrollTop = jQuery(window).scrollTop();
 			var scrollBottom = scrollTop + windowHeight;
+			var progressBar = $('.progress-bar');
 
 			if (scrollTop < 50 && Topic.postCount > 1) {
 				localStorage.removeItem("topic:" + tid + ":bookmark");
 				pagination.innerHTML = '0 out of ' + Topic.postCount;
+				progressBar.width(0);
 				return;
 			}
 
@@ -813,6 +815,8 @@ define(function() {
 					}
 
 					pagination.innerHTML = this.postnumber + ' out of ' + Topic.postCount;
+					console.log((this.postnumber / Topic.postCount * 100) + '%');
+					progressBar.width((this.postnumber / Topic.postCount * 100) + '%');
 				}
 			});
 
