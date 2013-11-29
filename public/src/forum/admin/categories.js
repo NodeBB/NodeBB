@@ -134,21 +134,22 @@ define(function() {
 				modified(ev.target);
 			});
 
-			$('.entry-row button[data-disabled]').each(function(index, element) {
+			$('.dropdown li[data-disabled]').each(function(index, element) {
 				var disabled = $(element).attr('data-disabled');
 				if (disabled == "0" || disabled == "") {
-					$(element).html('Disable');
+					$(element).html('<a href="#"><i class="fa fa-power-off"></i> Disable</a>');
 				} else {
-					$(element).html('Enable');
+					$(element).html('<a href="#"><i class="fa fa-power-off"></i> Enable</a>');
 				}
 			});
 
-			$('#entry-container').on('click', '.disable-btn', function(ev) {
+			$('.dropdown').on('click', '[data-disabled]', function(ev) {
 				var btn = $(this);
 				var categoryRow = btn.parents('li');
 				var cid = categoryRow.attr('data-cid');
+				console.log(this.getAttribute('data-disabled'));
 
-				var disabled = btn.html() == "Disable" ? "1" : "0";
+				var disabled = this.getAttribute('data-disabled') === '0' ? '1' : '0';
 				categoryRow.remove();
 				modified_categories[cid] = modified_categories[cid] || {};
 				modified_categories[cid]['disabled'] = disabled;

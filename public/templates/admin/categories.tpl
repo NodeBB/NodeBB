@@ -60,10 +60,18 @@
 									<div class="form-group">
 										<div class="form-group">
 											<label>&nbsp;</label>
-											<div class="btn-group">
+											<div class="dropdown">
+												<button type="button" class="btn btn-default" data-toggle="dropdown"><i class="fa fa-cogs"></i> Options</button>
+												<ul class="dropdown-menu" role="menu">
+													<li class="permissions"><a href="#"><i class="fa fa-ban"></i> Access Control</a></li>
+													<hr />
+													<li data-disabled="{categories.disabled}"><a href="#"></a></li>
+												</ul>
+											</div>
+											<!-- <div class="btn-group">
 												<button type="submit" class="btn btn-default disable-btn" data-disabled="{categories.disabled}">Disable</button>
 												<button type="button" class="btn btn-default permissions">Permissions</button>
-											</div>
+											</div> -->
 										</div>
 									</div>
 								</div>
