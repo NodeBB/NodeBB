@@ -949,7 +949,7 @@ define(function() {
 
 		socket.emit('api:topic.loadMore', {
 			tid: tid,
-			after: $('#post-container .post-row.infiniteloaded').last().attr('data-index') + 1
+			after: parseInt($('#post-container .post-row.infiniteloaded').last().attr('data-index'), 10) + 1
 		}, function (data) {
 			infiniteLoaderActive = false;
 			if (data.posts.length) {
