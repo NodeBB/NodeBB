@@ -62,6 +62,22 @@ var	DebugRoute = function(app) {
 				res.send('pruned');
 			});
 		});
+
+		app.get('/reindex', function (req, res) {
+			topics.reIndexAll(function (err) {
+				if (err) {
+					return res.json(err);
+				}
+
+				user.reIndexAll(function (err) {
+					if (err) {
+						return res.json(err);
+					} else {
+						res.send('Topics and users reindexed');
+					}
+				});
+			});
+		});
 	});
 };
 

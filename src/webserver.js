@@ -735,22 +735,6 @@ var path = require('path'),
 			});
 		});
 
-		app.get('/reindex', function (req, res) {
-			topics.reIndexAll(function (err) {
-				if (err) {
-					return res.json(err);
-				}
-
-				user.reIndexAll(function (err) {
-					if (err) {
-						return res.json(err);
-					} else {
-						res.send('Topics and users reindexed');
-					}
-				});
-			});
-		});
-
 		// Other routes
 		require('./routes/plugins')(app);
 

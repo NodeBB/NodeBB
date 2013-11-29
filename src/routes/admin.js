@@ -14,8 +14,11 @@ var user = require('./../user.js'),
 (function (Admin) {
 	Admin.isAdmin = function (req, res, next) {
 		user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {
-			if (!isAdmin) res.redirect('/403');
-			else next();
+			if (!isAdmin) {
+				 res.redirect('/403');
+			} else {
+				next();
+			}
 		});
 	}
 
@@ -43,6 +46,9 @@ var user = require('./../user.js'),
 
 	Admin.createRoutes = function (app) {
 
+		app.all('/api/admin/*', Admin.isAdmin);
+		app.all('/admin/*', Admin.isAdmin);
+
 		(function () {
 			var routes = [
 				'categories/active', 'categories/disabled', 'users', 'topics', 'settings', 'themes',
@@ -53,7 +59,7 @@ var user = require('./../user.js'),
 
 			for (var i = 0, ii = routes.length; i < ii; i++) {
 				(function (route) {
-					app.get('/admin/' + route, Admin.isAdmin, function (req, res) {
+					app.get('/admin/' + route, function (req, res) {
 						Admin.buildHeader(req, res, function(err, header) {
 							res.send(header + app.create_route('admin/' + route) + templates['admin/footer']);
 						});
@@ -65,7 +71,7 @@ var user = require('./../user.js'),
 
 			for (var i = 0, ii = unit_tests.length; i < ii; i++) {
 				(function (route) {
-					app.get('/admin/testing/' + route, Admin.isAdmin, function (req, res) {
+					app.get('/admin/testing/' + route, function (req, res) {
 						Admin.buildHeader(req, res, function(err, header) {
 							res.send(header + app.create_route('admin/testing/' + route) + templates['admin/footer']);
 						});
@@ -76,19 +82,19 @@ var user = require('./../user.js'),
 		}());
 
 		app.namespace('/admin', function () {
-			app.get('/', Admin.isAdmin, function (req, res) {
+			app.get('/', function (req, res) {
 				Admin.buildHeader(req, res, function(err, header) {
 					res.send(header + app.create_route('admin/index') + templates['admin/footer']);
 				});
 			});
 
-			app.get('/index', Admin.isAdmin, function (req, res) {
+			app.get('/index', function (req, res) {
 				Admin.buildHeader(req, res, function(err, header) {
 					res.send(header + app.create_route('admin/index') + templates['admin/footer']);
 				});
 			});
 
-			app.post('/uploadlogo', Admin.isAdmin, function(req, res) {
+			app.post('/uploadlogo', function(req, res) {
 
 				if (!req.user)
 					return res.redirect('/403');
@@ -163,7 +169,9 @@ var user = require('./../user.js'),
 			});
 		});
 
+
 		app.namespace('/api/admin', function () {
+
 			app.get('/index', function (req, res) {
 				res.json({
 					version: pkg.version,
@@ -282,7 +290,7 @@ var user = require('./../user.js'),
 					});
 				});
 
-				// app.get('/export', Admin.isAdmin, function (req, res) {
+				// app.get('/export', function (req, res) {
 				// 	Meta.db.getFile(function (err, dbFile) {
 				// 		if (!err) {
 				// 			res.download(dbFile, 'redis.rdb', function (err) {
