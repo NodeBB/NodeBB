@@ -897,9 +897,9 @@ define(function() {
 		var insertAfter = findInsertionPoint();
 
 		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
-		var regexp = new RegExp("<!--[\\s]*IF @first[\\s]*-->[\\s\\S]*<!--[\\s]*ENDIF @first[\\s]*-->", 'g');
+		var regexp = new RegExp("<!--[\\s]*IF @first[\\s]*-->([\\s\\S]*?)<!--[\\s]*ENDIF @first[\\s]*-->", 'g');	
 		html = html.replace(regexp, '');
-
+		
 		translator.translate(html, function(translatedHTML) {
 			var translated = $(translatedHTML);
 
