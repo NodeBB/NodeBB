@@ -263,12 +263,20 @@ define(function() {
 
 			if ($(selection.baseNode).parents('.post-content').length > 0) {
 				var snippet = selection.toString();
-				if (snippet.length > 0) selectionText = '> ' + snippet.replace(/\n/g, '\n> ');
+				if (snippet.length > 0) {
+					selectionText = '> ' + snippet.replace(/\n/g, '\n> ');
+				}
+			}
+
+			var username = '',
+				post = $(this).parents('li[data-pid]');
+			if(post.length) {
+				username = '@' + post.attr('data-username') + ' ';
 			}
 
 			if (thread_state.locked !== '1') {
 				require(['composer'], function(cmp) {
-					cmp.push(tid, null, null, selectionText.length > 0 ? selectionText + '\n\n' : '');
+					cmp.push(tid, null, null, selectionText.length > 0 ? selectionText + '\n\n' + username : '' + username);
 				});
 			}
 		});
