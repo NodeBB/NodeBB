@@ -159,7 +159,7 @@ var path = require('path'),
 					res.locals.csrf_token = req.session._csrf;
 
 					// Disable framing
-					res.setHeader('X-Frame-Options', 'DENY');
+					res.setHeader('X-Frame-Options', 'SAMEORIGIN');
 
 					next();
 				});
