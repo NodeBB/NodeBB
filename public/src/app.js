@@ -299,8 +299,7 @@ var socket,
 
 	app.makeNumbersHumanReadable = function(selector) {
 		$(selector).each(function() {
-			var num = parseInt($(this).html(), 10);
-			$(this).html(utils.makeNumberHumanReadable(num));
+			$(this).html(utils.makeNumberHumanReadable($(this).attr('title')));
 		});
 	}
 

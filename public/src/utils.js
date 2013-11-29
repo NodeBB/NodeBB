@@ -207,14 +207,17 @@
 		},
 
 		makeNumberHumanReadable: function(num) {
-			num = parseInt(num, 10);
-			if (num > 999999) {
-				return (num / 1000000).toFixed(1) + 'm';
+			var n = parseInt(num, 10);
+			if(!n) {
+				return num;
 			}
-			else if(num > 999) {
-				return (num / 1000).toFixed(1) + 'k';
+			if (n > 999999) {
+				return (n / 1000000).toFixed(1) + 'm';
 			}
-			return num;
+			else if(n > 999) {
+				return (n / 1000).toFixed(1) + 'k';
+			}
+			return n;
 		}
 	};
 
