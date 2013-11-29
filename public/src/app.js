@@ -311,7 +311,7 @@ var socket,
 		$('span.timeago').timeago();
 		$('.post-content img').addClass('img-responsive');
 
-		app.makeNumbersHumanReadable($('.human-readable-number');
+		app.makeNumbersHumanReadable($('.human-readable-number'));
 
 		app.createUserTooltips();
 
