@@ -297,8 +297,8 @@ var socket,
 		});
 	}
 
-	app.makeNumbersHumanReadable = function(selector) {
-		$(selector).each(function() {
+	app.makeNumbersHumanReadable = function(elements) {
+		elements.each(function() {
 			$(this).html(utils.makeNumberHumanReadable($(this).attr('title')));
 		});
 	}
@@ -311,7 +311,7 @@ var socket,
 		$('span.timeago').timeago();
 		$('.post-content img').addClass('img-responsive');
 
-		app.makeNumbersHumanReadable('.human-readable-number');
+		app.makeNumbersHumanReadable($('.human-readable-number');
 
 		app.createUserTooltips();
 

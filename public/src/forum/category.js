@@ -143,7 +143,7 @@ define(function () {
 		container.append(html);
 
 		$('#topics-container span.timeago').timeago();
-		app.makeNumbersHumanReadable('#topics-container .human-readable-number');
+		app.makeNumbersHumanReadable($(html).find('.human-readable-number'));
 	}
 
 	Category.loadMoreTopics = function(cid) {
