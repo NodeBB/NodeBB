@@ -20,9 +20,12 @@ var RDB = require('./redis'),
 (function(PostTools) {
 	PostTools.isMain = function(pid, tid, callback) {
 		RDB.lrange('tid:' + tid + ':posts', 0, 0, function(err, pids) {
-			if (pids[0] === pid) callback(true);
-			else callback(false);
-		})
+			if(err) {
+				return callback(err);
+			}
+
+			callback(null, pids[0] === pid);
+		});
 	}
 
 	PostTools.privileges = function(pid, uid, callback) {
@@ -87,7 +90,7 @@ var RDB = require('./redis'),
 			async.parallel([
 				function(next) {
 					posts.getPostField(pid, 'tid', function(err, tid) {
-						PostTools.isMain(pid, tid, function(isMainPost) {
+						PostTools.isMain(pid, tid, function(err, isMainPost) {
 							if (isMainPost) {
 								topics.setTopicField(tid, 'title', title);
 								topicSearch.remove(tid, function() {

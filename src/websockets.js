@@ -811,7 +811,7 @@ module.exports.init = function(io) {
 
 		socket.on('api:composer.editCheck', function(pid) {
 			posts.getPostField(pid, 'tid', function(err, tid) {
-				postTools.isMain(pid, tid, function(isMain) {
+				postTools.isMain(pid, tid, function(err, isMain) {
 					socket.emit('api:composer.editCheck', {
 						titleEditable: isMain
 					});
