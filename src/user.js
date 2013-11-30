@@ -3,10 +3,11 @@ var bcrypt = require('bcrypt'),
 	emailjs = require('emailjs'),
 	nconf = require('nconf'),
 	winston = require('winston'),
+	gravatar = require('gravatar'),
 	userSearch = require('reds').createSearch('nodebbusersearch'),
 	check = require('validator').check,
 	sanitize = require('validator').sanitize,
-
+	
 	utils = require('./../public/src/utils'),
 	RDB = require('./redis'),
 	meta = require('./meta'),
@@ -368,7 +369,7 @@ var bcrypt = require('bcrypt'),
 			options.forcedefault = 'y';
 		}
 
-		return require('gravatar').url(email, options, https);
+		return gravatar.url(email, options, https);
 	};
 
 	User.hashPassword = function(password, callback) {
