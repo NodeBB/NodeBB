@@ -20,105 +20,104 @@ var RDB = require('./redis'),
 
 (function(Topics) {
 
-	Topics.post = function(uid, title, content, category_id, callback) {
-		CategoryTools.privileges(category_id, uid, function(err, privileges) {
-			if (privileges.write) {
-				if (!category_id)
-					throw new Error('Attempted to post without a category_id');
+	Topics.post = function(uid, title, content, cid, callback) {
 
-				if (content)
-					content = content.trim();
-				if (title)
-					title = title.trim();
+		CategoryTools.privileges(cid, uid, function(err, privileges) {
 
-				if (!uid) {
-					callback(new Error('not-logged-in'), null);
-					return;
-				} else if (!title || title.length < meta.config.minimumTitleLength) {
-					callback(new Error('title-too-short'), null);
-					return;
-				} else if (!content || content.length < meta.config.miminumPostLength) {
-					callback(new Error('content-too-short'), null);
-					return;
+			if(err) {
+				return callback(err);
+			} else if(!privileges.write) {
+				return callback(new Error('no-privileges'));
+			} else if (!cid) {
+				return callback(new Error('invalid-cid'));
+			} else if (!title || title.length < meta.config.minimumTitleLength) {
+				return callback(new Error('title-too-short'), null);
+			} else if (!content || content.length < meta.config.miminumPostLength) {
+				return callback(new Error('content-too-short'), null);
+			}
+
+			if (content) {
+				content = content.trim();
+			}
+			if (title) {
+				title = title.trim();
+			}
+
+			user.getUserField(uid, 'lastposttime', function(err, lastposttime) {
+				if (err) {
+					return callback(err);
 				}
 
-				user.getUserField(uid, 'lastposttime', function(err, lastposttime) {
-					if (err) lastposttime = 0;
-					if (Date.now() - lastposttime < meta.config.postDelay * 1000) {
-						callback(new Error('too-many-posts'), null);
-						return;
+				if(!lastposttime) {
+					lastposttime = 0;
+				}
+
+				if (Date.now() - lastposttime < meta.config.postDelay * 1000) {
+					return callback(new Error('too-many-posts'), null);
+				}
+
+				RDB.incr('next_topic_id', function(err, tid) {
+					if(err) {
+						return callback(err);
 					}
 
-					RDB.incr('next_topic_id', function(err, tid) {
-						RDB.handle(err);
+					RDB.sadd('topics:tid', tid);
 
-						// Global Topics
-						if (uid == null) uid = 0;
-						if (uid !== null) {
-							RDB.sadd('topics:tid', tid);
-						} else {
-							// need to add some unique key sent by client so we can update this with the real uid later
-							RDB.lpush('topics:queued:tid', tid);
+					var slug = tid + '/' + utils.slugify(title);
+					var timestamp = Date.now();
+					RDB.hmset('topic:' + tid, {
+						'tid': tid,
+						'uid': uid,
+						'cid': cid,
+						'title': title,
+						'slug': slug,
+						'timestamp': timestamp,
+						'lastposttime': 0,
+						'postcount': 0,
+						'viewcount': 0,
+						'locked': 0,
+						'deleted': 0,
+						'pinned': 0
+					});
+
+					topicSearch.index(title, tid);
+
+					user.addTopicIdToUser(uid, tid);
+
+					// let everyone know that there is an unread topic in this category
+					RDB.del('cid:' + cid + ':read_by_uid', function(err, data) {
+						Topics.markAsRead(tid, uid);
+					});
+
+
+					// in future it may be possible to add topics to several categories, so leaving the door open here.
+					RDB.zadd('categories:' + cid + ':tid', timestamp, tid);
+					RDB.hincrby('category:' + cid, 'topic_count', 1);
+					RDB.incr('totaltopiccount');
+
+					feed.updateCategory(cid);
+
+					posts.create(uid, tid, content, function(err, postData) {
+						if(err) {
+							return callback(err, null);
+						} else if(!postData) {
+							return callback(new Error('invalid-post'), null);
 						}
 
-						var slug = tid + '/' + utils.slugify(title);
-						var timestamp = Date.now();
-						RDB.hmset('topic:' + tid, {
-							'tid': tid,
-							'uid': uid,
-							'cid': category_id,
-							'title': title,
-							'slug': slug,
-							'timestamp': timestamp,
-							'lastposttime': 0,
-							'postcount': 0,
-							'viewcount': 0,
-							'locked': 0,
-							'deleted': 0,
-							'pinned': 0
-						});
+						// Auto-subscribe the post creator to the newly created topic
+						threadTools.toggleFollow(tid, uid);
 
-						topicSearch.index(title, tid);
+						Topics.getTopicForCategoryView(tid, uid, function(topicData) {
+							topicData.unreplied = 1;
 
-						user.addTopicIdToUser(uid, tid);
-
-						// let everyone know that there is an unread topic in this category
-						RDB.del('cid:' + category_id + ':read_by_uid', function(err, data) {
-							Topics.markAsRead(tid, uid);
-						});
-
-
-						// in future it may be possible to add topics to several categories, so leaving the door open here.
-						RDB.zadd('categories:' + category_id + ':tid', timestamp, tid);
-						RDB.hincrby('category:' + category_id, 'topic_count', 1);
-						RDB.incr('totaltopiccount');
-
-						feed.updateCategory(category_id);
-
-						posts.create(uid, tid, content, function(err, postData) {
-							if(err) {
-								return callback(err, null);
-							} else if(!postData) {
-								return callback(new Error('invalid-post'), null);
-							}
-
-							// Auto-subscribe the post creator to the newly created topic
-							threadTools.toggleFollow(tid, uid);
-
-							Topics.getTopicForCategoryView(tid, uid, function(topicData) {
-								topicData.unreplied = 1;
-
-								callback(null, {
-									topicData: topicData,
-									postData: postData
-								});
+							callback(null, {
+								topicData: topicData,
+								postData: postData
 							});
 						});
 					});
 				});
-			} else {
-				callback(new Error('no-privileges'));
-			}
+			});
 		});
 	};
 
@@ -459,9 +458,9 @@ var RDB = require('./redis'),
 					topicData['deleted-class'] = topicData.deleted === '1' ? 'deleted' : '';
 
 					topicData.unreplied = topicData.postcount === '1';
-					topicData.username = topicInfo.username;
-					topicData.userslug = topicInfo.userslug;
-					topicData.picture = topicInfo.picture;
+					topicData.username = topicInfo.username || 'anonymous';
+					topicData.userslug = topicInfo.userslug || '';
+					topicData.picture = topicInfo.picture || require('gravatar').url('', {}, https = nconf.get('https'));;
 					topicData.categoryIcon = topicInfo.categoryData.icon;
 					topicData.categoryName = topicInfo.categoryData.name;
 					topicData.categorySlug = topicInfo.categoryData.slug;
@@ -644,9 +643,7 @@ var RDB = require('./redis'),
 	Topics.markAllRead = function(uid, callback) {
 		RDB.smembers('topics:tid', function(err, tids) {
 			if (err) {
-				console.log(err);
-				callback(err, null);
-				return;
+				return callback(err, null);
 			}
 
 			if (tids && tids.length) {

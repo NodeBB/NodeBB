@@ -1,7 +1,7 @@
 define(function() {
 	var	Admin = {};
 
-		Admin.init = function() {
+	Admin.init = function() {
 		ajaxify.register_events(['api:get_all_rooms']);
 		socket.on('api:get_all_rooms', function(data) {
 
@@ -22,6 +22,14 @@ define(function() {
 
 		app.enterRoom('admin');
 		socket.emit('api:get_all_rooms');
+
+		$('#logout-link').on('click', function() {
+			$.post(RELATIVE_PATH + '/logout', {
+				_csrf: $('#csrf_token').val()
+			}, function() {
+				window.location.href = RELATIVE_PATH + '/';
+			});
+		})
 	};
 
 	return Admin;

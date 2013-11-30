@@ -346,20 +346,19 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:topics.post', function(data) {
+			if (uid < 1 && meta.config.allowGuestPosting === '0') {
+				socket.emit('event:alert', {
+					title: 'Post Unsuccessful',
+					message: 'You don&apos;t seem to be logged in, so you cannot reply.',
+					type: 'danger',
+					timeout: 2000
+				});
+				return;
+			}
 
 			topics.post(uid, data.title, data.content, data.category_id, function(err, result) {
 				if(err) {
-					if (err.message === 'not-logged-in') {
-						socket.emit('event:alert', {
-							title: 'Thank you for posting',
-							message: 'Since you are unregistered, your post is awaiting approval. Click here to register now.',
-							type: 'warning',
-							timeout: 7500,
-							clickfn: function() {
-								ajaxify.go('register');
-							}
-						});
-					} else if (err.message === 'title-too-short') {
+				 	if (err.message === 'title-too-short') {
 						topics.emitTitleTooShortAlert(socket);
 					} else if (err.message === 'content-too-short') {
 						posts.emitContentTooShortAlert(socket);
