@@ -4,7 +4,7 @@ var	nconf = require('nconf'),
 	path = require('path'),
 	fs = require('fs'),
 	validator = require('validator'),
-	Plugins = require('../plugins'),
+	plugins = require('../plugins'),
 
 	PluginRoutes = function(app) {
 		app.get('/plugins/fireHook', function(req, res) {
@@ -20,7 +20,7 @@ var	nconf = require('nconf'),
 
 		app.put('/plugins/fireHook', function(req, res) {
 			// PUT = action
-			Plugins.fireHook('action:' + req.body.hook, req.body.args);
+			plugins.fireHook('action:' + req.body.hook, req.body.args);
 			res.send(200);
 		});
 

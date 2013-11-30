@@ -1,6 +1,6 @@
-var RDB = require('./../redis.js'),
-	utils = require('./../../public/src/utils.js'),
-	categories = require('./../categories.js');
+var RDB = require('./../redis'),
+	utils = require('./../../public/src/utils'),
+	categories = require('./../categories');
 
 (function(CategoriesAdmin) {
 

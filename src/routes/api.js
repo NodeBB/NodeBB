@@ -1,17 +1,16 @@
-var user = require('../user'),
+var path = require('path'),
+	nconf = require('nconf'),
+	async = require('async'),
+
+	user = require('../user'),
 	auth = require('./authentication'),
 	topics = require('../topics'),
 	posts = require('../posts'),
 	categories = require('../categories'),
-	CategoryTools = require('../categoryTools')
-	Groups = require('../groups'),
+	categoryTools = require('../categoryTools')
 	utils = require('../../public/src/utils'),
 	pkg = require('../../package.json'),
-	meta = require('../meta'),
-
-	path = require('path'),
-	nconf = require('nconf'),
-	async = require('async');
+	meta = require('../meta');
 
 
 (function (Api) {
@@ -130,7 +129,7 @@ var user = require('../user'),
 				var uid = (req.user) ? req.user.uid : 0;
 
 				// Category Whitelisting
-				CategoryTools.privileges(req.params.id, uid, function(err, privileges) {
+				categoryTools.privileges(req.params.id, uid, function(err, privileges) {
 					if (!err && privileges.read) {
 						categories.getCategoryById(req.params.id, uid, function (err, data) {
 							if (!err && data && data.disabled === "0")
@@ -176,7 +175,9 @@ var user = require('../user'),
 							notifications: notifications
 						});
 					});
-				} else res.send(403);
+				} else {
+					res.send(403);
+				}
 			});
 
 			app.get('/confirm/:id', function (req, res) {
@@ -236,12 +237,14 @@ var user = require('../user'),
 
 				function searchPosts(callback) {
 					search(postSearch, function (err, pids) {
-						if (err)
+						if (err) {
 							return callback(err, null);
+						}
 
 						posts.getPostSummaryByPids(pids, function (err, posts) {
-							if (err)
+							if (err){
 								return callback(err, null);
+							}
 							callback(null, posts);
 						});
 					})
@@ -249,8 +252,9 @@ var user = require('../user'),
 
 				function searchTopics(callback) {
 					search(topicSearch, function (err, tids) {
-						if (err)
+						if (err) {
 							return callback(err, null);
+						}
 
 						topics.getTopicsByTids(tids, 0, function (topics) {
 							callback(null, topics);
@@ -259,8 +263,9 @@ var user = require('../user'),
 				}
 
 				async.parallel([searchPosts, searchTopics], function (err, results) {
-					if (err)
+					if (err) {
 						return next();
+					}
 
 					return res.json({
 						show_no_topics: results[1].length ? 'hide' : '',

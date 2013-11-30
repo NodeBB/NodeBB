@@ -10,7 +10,7 @@
 		user = require('../user'),
 		plugins = require('../plugins'),
 		winston = require('winston'),
-		login_module = require('./../login.js');
+		login_module = require('./../login');
 
 	passport.use(new passportLocal(function(user, password, next) {
 		login_module.loginViaLocal(user, password, function(err, login) {

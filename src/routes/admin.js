@@ -1,15 +1,18 @@
-var user = require('./../user.js'),
-	Groups = require('../groups'),
-	topics = require('./../topics.js'),
-	RDB = require('./../redis.js'),
-	pkg = require('./../../package.json'),
-	categories = require('./../categories.js'),
-	Meta = require('../meta'),
-	plugins = require('../plugins'),
-	winston = require('winston'),
-	nconf = require('nconf'),
+var nconf = require('nconf'),
 	fs = require('fs'),
-	path = require('path');
+	path = require('path'),
+	winston = require('winston'),
+
+	RDB = require('./../redis'),
+	user = require('./../user'),
+	groups = require('../groups'),
+	topics = require('./../topics'),
+	pkg = require('./../../package.json'),
+	categories = require('./../categories'),
+	meta = require('../meta'),
+	plugins = require('../plugins');
+
+
 
 (function (Admin) {
 	Admin.isAdmin = function (req, res, next) {
@@ -291,7 +294,7 @@ var user = require('./../user.js'),
 				});
 
 				// app.get('/export', function (req, res) {
-				// 	Meta.db.getFile(function (err, dbFile) {
+				// 	meta.db.getFile(function (err, dbFile) {
 				// 		if (!err) {
 				// 			res.download(dbFile, 'redis.rdb', function (err) {
 				// 				console.log(err);
@@ -356,7 +359,7 @@ var user = require('./../user.js'),
 			});
 
 			app.get('/groups', function (req, res) {
-				Groups.list({
+				groups.list({
 					expand: true
 				}, function (err, groups) {
 					res.json(200, {
