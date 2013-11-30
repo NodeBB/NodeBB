@@ -1,84 +1,51 @@
-var user = require('./../user.js'),
-	posts = require('./../posts.js'),
-	postTools = require('../postTools'),
-	fs = require('fs'),
-	utils = require('./../../public/src/utils.js'),
+var fs = require('fs'),
 	path = require('path'),
 	winston = require('winston'),
 	nconf = require('nconf'),
-	meta = require('./../meta'),
 	async= require('async'),
+
+	user = require('./../user'),
+	posts = require('./../posts'),
+	postTools = require('../postTools'),
+	utils = require('./../../public/src/utils'),
+	meta = require('./../meta'),
 	RDB = require('./../redis'),
-	websockets = require('./../websockets.js');
+	websockets = require('./../websockets');
 
 (function (User) {
 	User.createRoutes = function (app) {
 
 		app.namespace('/users', function () {
-			app.get('', function (req, res) {
-				app.build_header({
-					req: req,
-					res: res
-				}, function (err, header) {
-					res.send(header + app.create_route("users", "users") + templates['footer']);
-				});
-			});
+			var routes = ['', '/latest', '/sort-posts', '/sort-reputation', '/online', '/search'];
 
-			app.get('/latest', function (req, res) {
-				app.build_header({
-					req: req,
-					res: res
-				}, function (err, header) {
-					res.send(header + app.create_route("users/latest", "users") + templates['footer']);
+			function createRoute(routeName) {
+				app.get(routeName, function (req, res) {
+					app.build_header({
+						req: req,
+						res: res
+					}, function (err, header) {
+						res.send(header + app.create_route("users" + routeName, "users") + templates['footer']);
+					});
 				});
-			});
+			}
 
-			app.get('/sort-posts', function (req, res) {
-				app.build_header({
-					req: req,
-					res: res
-				}, function (err, header) {
-					res.send(header + app.create_route("users/sort-posts", "users") + templates['footer']);
-				});
-			});
-
-			app.get('/sort-reputation', function (req, res) {
-				app.build_header({
-					req: req,
-					res: res
-				}, function (err, header) {
-					res.send(header + app.create_route("users/sort-reputation", "users") + templates['footer']);
-				});
-			});
-
-			app.get('/online', function (req, res) {
-				app.build_header({
-					req: req,
-					res: res
-				}, function (err, header) {
-					res.send(header + app.create_route("users/online", "users") + templates['footer']);
-				});
-			});
-
-			app.get('/search', function (req, res) {
-				app.build_header({
-					req: req,
-					res: res
-				}, function (err, header) {
-					res.send(header + app.create_route("users/search", "users") + templates['footer']);
-				});
-			});
+			for (var i=0; i<routes.length; ++i) {
+				createRoute(routes[i]);
+			}
 		});
 
 		app.namespace('/user', function () {
 			app.get('/:userslug', function (req, res, next) {
 
 				if (!req.params.userslug) {
-					next();
-					return;
+					return next();
 				}
 
 				user.getUidByUserslug(req.params.userslug, function (err, uid) {
+					if (err) {
+						return next(err);
+					}
+
 					if (!uid) {
 						return next();
 					}
@@ -89,14 +56,14 @@ var user = require('./../user.js'),
 					}, function (err, header) {
 						res.send(header + app.create_route('user/' + req.params.userslug, 'account') + templates['footer']);
 					});
-
 				});
 			});
 
 			app.get('/:userslug/edit', function (req, res) {
 
-				if (!req.user)
+				if (!req.user) {
 					return res.redirect('/403');
+				}
 
 				user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
 					if (req.params.userslug && userslug === req.params.userslug) {
