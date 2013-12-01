@@ -42,7 +42,7 @@
     "validator": "~1.5.1",
     "nodebb-plugin-mentions": "~0.1.15",
     "nodebb-plugin-markdown": "~0.1.8",
-    "nodebb-theme-vanilla": "designcreateplay/nodebb-theme-vanilla",
+    "nodebb-theme-vanilla": "~0.0.9",
     "nodebb-theme-cerulean": "0.0.10",
     "cron": "~1.0.1"
   },

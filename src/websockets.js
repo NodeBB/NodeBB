@@ -343,8 +343,9 @@ websockets.init = function(io) {
 			if (uid) {
 				user.setUserFields(uid, {
 					showemail: data.showemail
+				}, function(err, result) {
+					callback(err);
 				});
-				callback(true);
 			}
 		});
 
