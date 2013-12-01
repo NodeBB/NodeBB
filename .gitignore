@@ -8,6 +8,7 @@ public/css/*.css
 *.sublime-project
 *.sublime-workspace
 .project
+.idea
 *.swp
 Vagrantfile
 .vagrant
