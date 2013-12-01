@@ -340,8 +340,9 @@ module.exports.init = function(io) {
 			if (uid) {
 				user.setUserFields(uid, {
 					showemail: data.showemail
+				}, function(err) {
+					callback(err ? err.message : null);
 				});
-				callback(true);
 			}
 		});
 
