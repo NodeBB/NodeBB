@@ -403,6 +403,10 @@ module.exports.init = function(io) {
 
 		});
 
+		socket.on('api:topics.postcount', function(tid, callback) {
+			topics.getTopicField(tid, 'postcount', callback);
+		});
+
 		socket.on('api:topics.markAllRead', function(data, callback) {
 			topics.markAllRead(uid, function(err, success) {
 				if (!err && success) {
