@@ -60,7 +60,7 @@ function isUserOnline(uid) {
 }
 websockets.isUserOnline = isUserOnline;
 
-websockets.exports.init = function(io) {
+websockets.init = function(io) {
 
 	io.sockets.on('connection', function(socket) {
 		var hs = socket.handshake,
