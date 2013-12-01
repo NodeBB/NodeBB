@@ -1,3 +1,4 @@
+'use strict';
 
 var cookie = require('cookie'),
 	express = require('express'),
