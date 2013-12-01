@@ -789,12 +789,14 @@ define(function() {
 			}
 			pagination = pagination || document.getElementById('pagination');
 
-			pagination.parentNode.style.display = 'block';
-
 			var windowHeight = jQuery(window).height();
 			var scrollTop = jQuery(window).scrollTop();
 			var scrollBottom = scrollTop + windowHeight;
 			var progressBar = $('.progress-bar');
+			var	progressBarContainer = $('.progress-container');
+
+			pagination.parentNode.style.display = 'block';
+			progressBarContainer.css('display', '');
 
 			if (scrollTop < 50 && Topic.postCount > 1) {
 				localStorage.removeItem("topic:" + tid + ":bookmark");

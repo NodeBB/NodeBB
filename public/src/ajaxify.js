@@ -29,7 +29,7 @@ var ajaxify = {};
 		}
 	};
 
-	var pagination;
+	var pagination, paginator_bar;
 
 	ajaxify.go = function (url, callback, template, quiet) {
 		// start: the following should be set like so: ajaxify.onchange(function(){}); where the code actually belongs
@@ -37,8 +37,10 @@ var ajaxify = {};
 		app.enterRoom('global');
 
 		pagination = pagination || document.getElementById('pagination');
+		paginator_bar = pagination ? document.body.querySelector('.progress-container') : undefined;
 		if (pagination) {
 			pagination.parentNode.style.display = 'none';
+			paginator_bar.style.display = 'none';
 		}
 
 		window.onscroll = null;
