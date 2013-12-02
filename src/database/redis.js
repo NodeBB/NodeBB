@@ -48,6 +48,27 @@
 	//
 	// Exported functions
 	//
+	module.getFileName = function(callback) {
+		var multi = redisClient.multi();
+
+		multi.config('get', 'dir');
+		multi.config('get', 'dbfilename');
+		multi.exec(function (err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			results = results.reduce(function (memo, config) {
+				memo[config[0]] = config[1];
+				return memo;
+			}, {});
+
+			var dbFile = path.join(results.dir, results.dbfilename);
+			callback(null, dbFile);
+		});
+	}
+
+
 	module.setObject = function(key, data, callback) {
 		redisClient.hmset(key, data, callback);
 	}
