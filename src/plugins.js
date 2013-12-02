@@ -97,6 +97,8 @@ var fs = require('fs'),
 										async.each(pluginData.hooks, function(hook, next) {
 											_self.registerHook(pluginData.id, hook, next);
 										}, next);
+									} else {
+										next(null);
 									}
 								} else {
 									winston.warn('[plugins.reload] Library not found for plugin: ' + pluginData.id);
