@@ -46,7 +46,7 @@ var fs = require('fs'),
 			// Read the list of activated plugins and require their libraries
 			async.waterfall([
 				function(next) {
-					RDB.smembers('plugins:active', next);
+					db.getSetMembers('plugins:active', next);
 				},
 				function(plugins, next) {
 					if (plugins && Array.isArray(plugins) && plugins.length > 0) {
@@ -230,7 +230,7 @@ var fs = require('fs'),
 			}
 		},
 		isActive: function(id, callback) {
-			RDB.sismember('plugins:active', id, callback);
+			db.isSetMember('plugins:active', id, callback);
 		},
 		toggleActive: function(id, callback) {
 			this.isActive(id, function(err, active) {
@@ -239,7 +239,7 @@ var fs = require('fs'),
 					return;
 				}
 
-				RDB[(active ? 'srem' : 'sadd')]('plugins:active', id, function(err, success) {
+				db[(active ? 'setRemove' : 'setAdd')]('plugins:active', id, function(err, success) {
 					if (err) {
 						if (global.env === 'development') winston.info('[plugins] Could not toggle active state on plugin \'' + id + '\'');
 						return;

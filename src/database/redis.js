@@ -116,6 +116,21 @@
 	}
 
 
+	module.setAdd = function(key, value, callback) {
+		redisClient.sadd(key, value, callback);
+	}
+
+	module.setRemove = function(key, value, callback) {
+		redisClient.srem(key, value, callback);
+	}
+
+	module.isSetMember = function(key, value, callback) {
+		redisClient.sismember(key, value, callback);
+	}
+
+	module.getSetMembers = function(key, callback) {
+		redisClient.smembers(key, callback);
+	}
 
 
 
