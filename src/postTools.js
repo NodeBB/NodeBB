@@ -227,15 +227,12 @@ var RDB = require('./redis'),
 
 		async.waterfall([
 			function(next) {
-				console.log('parsing');
 				plugins.fireHook('filter:post.parse', raw, next);
 			},
 			function(parsed, next) {
-				console.log('footering');
 				plugins.fireHook('filter:post.buildFooter', parsed, next);
 			}
 		], function(err, parsed) {
-			console.log('doneing');
 			callback(null, !err ? parsed : raw);
 		});
 	}
