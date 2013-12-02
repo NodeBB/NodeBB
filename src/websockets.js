@@ -1,3 +1,4 @@
+'use strict';
 
 var cookie = require('cookie'),
 	express = require('express'),
@@ -5,6 +6,7 @@ var cookie = require('cookie'),
 	async = require('async'),
 	fs = require('fs'),
 	nconf = require('nconf'),
+	gravatar = require('gravatar'),
 	winston = require('winston'),
 
 	RedisStoreLib = require('connect-redis')(express),
@@ -34,12 +36,13 @@ var cookie = require('cookie'),
 	},
 	plugins = require('./plugins');
 
+(function(websockets) {
 
 var users = {},
 	userSockets = {},
 	rooms = {};
 
-module.exports.logoutUser = function(uid) {
+websockets.logoutUser = function(uid) {
 	if(userSockets[uid] && userSockets[uid].length) {
 		for(var i=0; i< userSockets[uid].length; ++i) {
 			userSockets[uid][i].emit('event:disconnect');
@@ -55,9 +58,9 @@ module.exports.logoutUser = function(uid) {
 function isUserOnline(uid) {
 	return !!userSockets[uid] && userSockets[uid].length > 0;
 }
-module.exports.isUserOnline = isUserOnline;
+websockets.isUserOnline = isUserOnline;
 
-module.exports.init = function(io) {
+websockets.init = function(io) {
 
 	io.sockets.on('connection', function(socket) {
 		var hs = socket.handshake,
@@ -222,9 +225,9 @@ module.exports.init = function(io) {
 					uid: 0,
 					username: "Anonymous User",
 					email: '',
-					picture: require('gravatar').url('', {
+					picture: gravatar.url('', {
 						s: '24'
-					}, https = nconf.get('https'))
+					}, nconf.get('https'))
 				});
 			}
 
@@ -480,12 +483,12 @@ module.exports.init = function(io) {
 		});
 
 		socket.on('api:user.getOnlineAnonCount', function(data, callback) {
-			callback(module.exports.getOnlineAnonCount());
+			callback(websockets.getOnlineAnonCount());
 		});
 
-		module.exports.getOnlineAnonCount = function () {
+		websockets.getOnlineAnonCount = function () {
 			return userSockets[0] ? userSockets[0].length : 0;
-		}
+		};
 
 		function emitOnlineUserCount() {
 			var anon = userSockets[0] ? userSockets[0].length : 0;
@@ -952,7 +955,7 @@ module.exports.init = function(io) {
 								userSockets[theirid][i].emit('event:banned');
 							}
 						}
-						module.exports.logoutUser(theirid);
+						websockets.logoutUser(theirid);
 					}
 				});
 			}
@@ -1119,7 +1122,7 @@ module.exports.init = function(io) {
 		});
 	}
 
-	module.exports.emitUserCount = function() {
+	websockets.emitUserCount = function() {
 		RDB.get('usercount', function(err, count) {
 			io.sockets.emit('user.count', {
 				count: count
@@ -1127,9 +1130,10 @@ module.exports.init = function(io) {
 		});
 	};
 
-	module.exports.in = function(room) {
+	websockets.in = function(room) {
 		return io.sockets.in(room);
 	};
 }
+})(module.exports);
 
 

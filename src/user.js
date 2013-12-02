@@ -9,6 +9,7 @@ var bcrypt = require('bcrypt'),
 	sanitize = require('validator').sanitize,
 
 	utils = require('./../public/src/utils'),
+	plugins = require('./plugins'),
 	RDB = require('./redis'),
 	meta = require('./meta'),
 	emailjsServer = emailjs.server.connect(meta.config['email:smtp:host'] || '127.0.0.1'),
@@ -103,6 +104,7 @@ var bcrypt = require('bcrypt'),
 					User.sendConfirmationEmail(email);
 				}
 
+				plugins.fireHook('action:user.create', {uid: uid, username: username, email: email, picture: gravatar, timestamp: timestamp});
 				RDB.incr('usercount');
 
 				RDB.zadd('users:joindate', timestamp, uid);
