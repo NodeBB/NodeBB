@@ -14,7 +14,7 @@ var path = require('path'),
 	pkg = require('../package.json'),
 
 	utils = require('../public/src/utils'),
-	RDB = require('./redis'),
+	db = require('./database'),
 	user = require('./user'),
 	categories = require('./categories'),
 	posts = require('./posts'),
@@ -140,7 +140,9 @@ var path = require('path'),
 				}));
 				app.use(express.bodyParser()); // Puts POST vars in request.body
 				app.use(express.cookieParser()); // If you want to parse cookies (res.cookies)
-				app.use(express.session({
+
+				// TODO : this uses redis
+				/*app.use(express.session({
 					store: new RedisStore({
 						client: RDB,
 						ttl: 60 * 60 * 24 * 30
@@ -150,7 +152,16 @@ var path = require('path'),
 					cookie: {
 						maxAge: 60 * 60 * 24 * 30 * 1000 // 30 days
 					}
+				}));*/
+
+				app.use(express.cookieSession({
+					secret: nconf.get('secret'),
+					key: 'express.sid',
+					cookie: {
+						maxAge: 60 * 60 * 24 * 30 * 1000 // 30 days
+					}
 				}));
+
 				app.use(express.csrf());
 
 				// Local vars, other assorted setup
@@ -172,33 +183,33 @@ var path = require('path'),
 			function(next) {
 				async.parallel([
 					function(next) {
-						// Theme configuration
-						RDB.hmget('config', 'theme:type', 'theme:id', 'theme:staticDir', 'theme:templates', function(err, themeData) {
-							var themeId = (themeData[1] || 'nodebb-theme-vanilla');
+
+						db.getObjectFields('config', ['theme:type', 'theme:id', 'theme:staticDir', 'theme:templates'], function(err, themeData) {
+							var themeId = (themeData['theme:id'] || 'nodebb-theme-vanilla');
 
 							// Detect if a theme has been selected, and handle appropriately
-							if (!themeData[0] || themeData[0] === 'local') {
+							if (!themeData['theme:type'] || themeData['theme:type'] === 'local') {
 								// Local theme
 								if (process.env.NODE_ENV === 'development') {
 									winston.info('[themes] Using theme ' + themeId);
 								}
 
 								// Theme's static directory
-								if (themeData[2]) {
-									app.use('/css/assets', express.static(path.join(__dirname, '../node_modules', themeData[1], themeData[2]), {
+								if (themeData['theme:staticDir']) {
+									app.use('/css/assets', express.static(path.join(__dirname, '../node_modules', themeData['theme:id'], themeData['theme:staticDir']), {
 										maxAge: app.enabled('cache') ? 5184000000 : 0
 									}));
 									if (process.env.NODE_ENV === 'development') {
-										winston.info('Static directory routed for theme: ' + themeData[1]);
+										winston.info('Static directory routed for theme: ' + themeData['theme:id']);
 									}
 								}
 
-								if (themeData[3]) {
-									app.use('/templates', express.static(path.join(__dirname, '../node_modules', themeData[1], themeData[3]), {
+								if (themeData['theme:templates']) {
+									app.use('/templates', express.static(path.join(__dirname, '../node_modules', themeData['theme:id'], themeData['theme:templates']), {
 										maxAge: app.enabled('cache') ? 5184000000 : 0
 									}));
 									if (process.env.NODE_ENV === 'development') {
-										winston.info('Custom templates directory routed for theme: ' + themeData[1]);
+										winston.info('Custom templates directory routed for theme: ' + themeData['theme:id']);
 									}
 								}
 

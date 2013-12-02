@@ -111,10 +111,13 @@
 		redisClient.hdel(key, field, callback);
 	}
 
-	module.incrObjectField = function(key, field, value, callback) {
-		redisClient.hincrby(key, field, value, callback);
+	module.incrObjectField = function(key, field, callback) {
+		redisClient.hincrby(key, field, 1, callback);
 	}
 
+	module.incrObjectFieldBy = function(key, field, value, callback) {
+		redisClient.hincrby(key, field, value, callback);
+	}
 
 	module.setAdd = function(key, value, callback) {
 		redisClient.sadd(key, value, callback);
@@ -131,6 +134,16 @@
 	module.getSetMembers = function(key, callback) {
 		redisClient.smembers(key, callback);
 	}
+
+	module.sortedSetAdd = function(key, score, value, callback) {
+		redisClient.zadd(key, score, value, callback);
+	}
+
+	module.sortedSetRemove = function(key, value, callback) {
+		redisClient.zrem(key, value, callback);
+	}
+
+
 
 
 

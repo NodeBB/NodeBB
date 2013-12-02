@@ -74,25 +74,26 @@
 		}
 
 		meta.configs.init(function () {
-			// Initial setup for Redis & Reds
-			var reds = require('reds'),
-				RDB = require('./src/redis.js');
 
-			reds.createClient = function () {
-				return reds.client || (reds.client = RDB);
-			};
+			//
+			// TODO : figure out reds search after dbal is complete
+			//
+			//var reds = require('reds'),
+			//	db = require('./src/database');
+			/*reds.createClient = function () {
+				return reds.client || (reds.client = db);
+			};*/
 
-			var templates = require('./public/src/templates.js'),
-				translator = require('./public/src/translator.js'),
-				webserver = require('./src/webserver.js'),
+			var templates = require('./public/src/templates'),
+				translator = require('./public/src/translator'),
+				webserver = require('./src/webserver'),
 				SocketIO =  require('socket.io').listen(global.server, { log: false, transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket'], 'browser client minification': true}),
-				websockets = require('./src/websockets.js'),
-				posts = require('./src/posts.js'),
+				websockets = require('./src/websockets'),
 				plugins = require('./src/plugins'), // Don't remove this - plugins initializes itself
-				Notifications = require('./src/notifications'),
-				Upgrade = require('./src/upgrade');
+				notifications = require('./src/notifications'),
+				upgrade = require('./src/upgrade');
 
-			Upgrade.check(function(schema_ok) {
+			upgrade.check(function(schema_ok) {
 				if (schema_ok || nconf.get('check-schema') === false) {
 					websockets.init(SocketIO);
 
@@ -117,7 +118,7 @@
 						templates.ready(webserver.init);
 					});
 
-					Notifications.init();
+					notifications.init();
 				} else {
 					winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
 					winston.warn('    node app --upgrade');

@@ -10,7 +10,7 @@ var bcrypt = require('bcrypt'),
 
 	utils = require('./../public/src/utils'),
 	plugins = require('./plugins'),
-	RDB = require('./redis'),
+	db = require('./database'),
 	meta = require('./meta'),
 	emailjsServer = emailjs.server.connect(meta.config['email:smtp:host'] || '127.0.0.1'),
 	Groups = require('./groups'),
@@ -65,16 +65,18 @@ var bcrypt = require('bcrypt'),
 			}
 		], function(err, results) {
 			if (err) {
-				return callback(err, null);
+				return callback(err);
 			}
 
-			RDB.incr('global:next_user_id', function(err, uid) {
-				RDB.handle(err);
+			db.incrObjectField('global', 'nextUserId', function(err, uid) {
+				if(err) {
+					return callback(err);
+				}
 
 				var gravatar = User.createGravatarURLFromEmail(email);
 				var timestamp = Date.now();
 
-				RDB.hmset('user:' + uid, {
+				db.setObject('user:' + uid, {
 					'uid': uid,
 					'username': username,
 					'userslug': userslug,
@@ -96,20 +98,20 @@ var bcrypt = require('bcrypt'),
 					'showemail': 0
 				});
 
-				RDB.hset('username:uid', username, uid);
-				RDB.hset('userslug:uid', userslug, uid);
+				db.setObjectField('username:uid', username, uid);
+				db.setObjectField('userslug:uid', userslug, uid);
 
 				if (email !== undefined) {
-					RDB.hset('email:uid', email, uid);
+					db.setObjectField('email:uid', email, uid);
 					User.sendConfirmationEmail(email);
 				}
 
 				plugins.fireHook('action:user.create', {uid: uid, username: username, email: email, picture: gravatar, timestamp: timestamp});
-				RDB.incr('usercount');
+				db.incrObjectField('global', 'usercount');
 
-				RDB.zadd('users:joindate', timestamp, uid);
-				RDB.zadd('users:postcount', 0, uid);
-				RDB.zadd('users:reputation', 0, uid);
+				db.sortedSetAdd('users:joindate', timestamp, uid);
+				db.sortedSetAdd('users:postcount', 0, uid);
+				db.sortedSetAdd('users:reputation', 0, uid);
 
 				userSearch.index(username, uid);
 
@@ -134,11 +136,11 @@ var bcrypt = require('bcrypt'),
 	};
 
 	User.getUserField = function(uid, field, callback) {
-		RDB.hget('user:' + uid, field, callback);
+		db.getObjectField('user:' + uid, field, callback);
 	};
 
 	User.getUserFields = function(uid, fields, callback) {
-		RDB.hmgetObject('user:' + uid, fields, callback);
+		db.getObjectFields('user:' + uid, fields, callback);
 	};
 
 	User.getMultipleUserFields = function(uids, fields, callback) {
@@ -168,7 +170,10 @@ var bcrypt = require('bcrypt'),
 	};
 
 	User.getUserData = function(uid, callback) {
-		RDB.hgetall('user:' + uid, function(err, data) {
+		db.getObject('user:' + uid, function(err, data) {
+			if(err) {
+				return callback(err);
+			}
 
 			if (data && data.password) {
 				delete data.password;
@@ -253,8 +258,8 @@ var bcrypt = require('bcrypt'),
 							return next(err);
 						}
 
-						RDB.hdel('email:uid', userData.email);
-						RDB.hset('email:uid', data.email, uid);
+						db.deleteObjectField('email:uid', userData.email);
+						db.setObjectField('email:uid', data.email, uid);
 						User.setUserField(uid, field, data[field]);
 						if (userData.picture !== userData.uploadedpicture) {
 							returnData.picture = gravatarpicture;
