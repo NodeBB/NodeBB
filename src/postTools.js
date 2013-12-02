@@ -225,10 +225,26 @@ var RDB = require('./redis'),
 	PostTools.parse = function(raw, callback) {
 		raw = raw || '';
 
-		plugins.fireHook('filter:post.parse', raw, function(err, parsed) {
+		async.waterfall([
+			function(next) {
+				console.log('parsing');
+				plugins.fireHook('filter:post.parse', raw, next);
+			},
+			function(parsed, next) {
+				console.log('footering');
+				plugins.fireHook('filter:post.buildFooter', parsed, next);
+			}
+		], function(err, parsed) {
+			console.log('doneing');
 			callback(null, !err ? parsed : raw);
 		});
 	}
 
+	PostTools.parseSignature = function(raw, callback) {
+		raw = raw || '';
 
+		plugins.fireHook('filter:post.parseSignature', raw, function(err, parsedSignature) {
+			callback(null, !err ? parsedSignature : raw);
+		});
+	}
 }(exports));
