@@ -14,7 +14,7 @@
 		<div class="col-md-12 user-favourite-posts">
 			<!-- BEGIN posts -->
 			<div class="topic-row img-thumbnail clearfix">
-				<a href="/user/baris">
+				<a href="../../user/{posts.userslug}">
 					<img title="{posts.username}" class="img-rounded user-img" src="{posts.picture}">
 				</a>
 
