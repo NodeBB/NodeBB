@@ -301,10 +301,10 @@ var path = require('path'),
 					// here and next(err) appropriately, or if
 					// we possibly recovered from the error, simply next().
 					console.error(err.stack);
+					var status = err.status || 500;
+					res.status(status);
 
-					res.status(err.status || 500);
-
-					res.json('500', {
+					res.json(status, {
 						error: err.message
 					});
 				});
@@ -360,7 +360,7 @@ var path = require('path'),
 
 		// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 		(function () {
-			var routes = ['login', 'register', 'account', 'recent', '403', '404'],
+			var routes = ['login', 'register', 'account', 'recent', '403', '404', '500'],
 				loginRequired = ['unread', 'search', 'notifications'];
 
 			async.each(routes.concat(loginRequired), function(route, next) {

@@ -6,17 +6,31 @@
 		</span>
 	</div>
 
-	<div id="no-favourites-notice" class="alert alert-warning {show_nofavourites}">You don't have any favourites, favourite some posts to see them here!</div>
+	<!-- IF show_nofavourites -->
+		<div id="no-favourites-notice" class="alert alert-warning">You don't have any favourites, favourite some posts to see them here!</div>
+	<!-- ENDIF show_nofavourites -->
 
 	<div class="row">
 		<div class="col-md-12 user-favourite-posts">
 			<!-- BEGIN posts -->
-			<div class="topic-row img-thumbnail clearfix" topic-url="topic/{posts.tid}/#{posts.pid}">
-				<span><strong>{posts.username}</strong> : </span>
-				<span>{posts.category_name} >> {posts.title}</span>
-				<div>{posts.content}</div>
+			<div class="topic-row img-thumbnail clearfix">
+				<a href="/user/baris">
+					<img title="{posts.username}" class="img-rounded user-img" src="{posts.picture}">
+				</a>
+
+				<a href="../../topic/{posts.tid}/#{posts.pid}">
+					<strong><span>{posts.username}</span></strong>
+					<p>{posts.content}</p>
+				</a>
+
 				<div>
-					<span class="pull-right timeago" title="{posts.relativeTime}"></span>
+					<span class="pull-right">
+						posted in
+						<a href="../../category/{posts.categorySlug}">
+							<i class="fa {posts.categoryIcon}"></i> {posts.categoryName}
+						</a>
+						<span class="timeago" title="{posts.relativeTime}"></span>
+					</span>
 				</div>
 			</div>
 			<br/>

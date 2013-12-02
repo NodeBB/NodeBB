@@ -351,15 +351,17 @@ var fs = require('fs'),
 				}
 
 				user.getUserFields(uid, ['username', 'userslug'], function (err, userData) {
-					if (err)
+					if (err) {
 						return next(err);
+					}
 
 					if (userData) {
 						posts.getFavourites(uid, function (err, posts) {
-							if (err)
+							if (err) {
 								return next(err);
+							}
 							userData.posts = posts;
-							userData.show_nofavourites = posts.length ? 'hide' : 'show';
+							userData.show_nofavourites = posts.length === 0;
 							res.json(userData);
 						});
 					} else {

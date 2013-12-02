@@ -172,7 +172,7 @@
 			} else if (data && data.status === 403) {
 				return ajaxify.go('403');
 			} else {
-				app.alertError("Can't load template data!");
+				app.alertError(data.responseJSON.error);
 			}
 		});
 
@@ -319,18 +319,18 @@
 
 									if (conditionalBlock[1]) {
 										// there is an else statement
-										if (!value) {	
-											template = template.replace(matches[i], conditionalBlock[1]);	
+										if (!value) {
+											template = template.replace(matches[i], conditionalBlock[1]);
 										} else {
-											template = template.replace(matches[i], conditionalBlock[0]);	
+											template = template.replace(matches[i], conditionalBlock[0]);
 										}
 									} else {
-										// regular if statement				
+										// regular if statement
 										if (!value) {
 											template = template.replace(matches[i], '');
 										}
 									}
-								}								
+								}
 							}
 						}
 
@@ -341,7 +341,7 @@
 							checkConditional('@first', blockInfo.iterator === 0);
 							checkConditional('@last', blockInfo.iterator === blockInfo.total);
 						}
-						
+
 						template = replace(namespace + d, data[d], template);
 					}
 				}
