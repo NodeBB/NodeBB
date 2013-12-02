@@ -225,14 +225,7 @@ var RDB = require('./redis'),
 	PostTools.parse = function(raw, callback) {
 		raw = raw || '';
 
-		async.waterfall([
-			function(next) {
-				plugins.fireHook('filter:post.parse', raw, next);
-			},
-			function(parsed, next) {
-				plugins.fireHook('filter:post.buildFooter', parsed, next);
-			}
-		], function(err, parsed) {
+		plugins.fireHook('filter:post.parse', raw, function(err, parsed) {
 			callback(null, !err ? parsed : raw);
 		});
 	}
