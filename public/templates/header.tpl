@@ -90,7 +90,7 @@
 					</li>
 
 					<li id="notifications-list" class="notifications dropdown text-center hidden-xs">
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="notif_dropdown"><i class="fa fa-circle-o"></i></a>
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="notif_dropdown"><i class="fa fa-bell-o"></i></a>
 						<ul id="notif-list" class="dropdown-menu" aria-labelledby="notif_dropdown">
 							<li>
 								<a href="#"><i class="fa fa-refresh fa-spin"></i> [[global:notifications.loading]]</a>
