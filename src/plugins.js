@@ -1,9 +1,10 @@
 var fs = require('fs'),
 	path = require('path'),
-	RDB = require('./redis.js'),
 	async = require('async'),
 	winston = require('winston'),
 	eventEmitter = require('events').EventEmitter,
+	db = require('./database'),
+
 	plugins = {
 		libraries: {},
 		loadedHooks: {},
