@@ -7,7 +7,7 @@ var bcrypt = require('bcrypt'),
 	userSearch = require('reds').createSearch('nodebbusersearch'),
 	check = require('validator').check,
 	sanitize = require('validator').sanitize,
-	
+
 	utils = require('./../public/src/utils'),
 	RDB = require('./redis'),
 	meta = require('./meta'),

@@ -115,17 +115,21 @@
 
 					<div class="control-group">
 						<label class="control-label" for="inputNewPassword">Password</label>
-						<div class="controls">
+						<div class="input-group">
 							<input class="form-control" type="password" id="inputNewPassword" placeholder="New Password" value="">
-							<div id="password-notify" class="alert alert-danger hide"></div>
+							<span class="input-group-addon">
+								<span id="password-notify"><i class="fa fa-circle-o"></i></span>
+							</span>
 						</div>
 					</div>
 
 					<div class="control-group">
 						<label class="control-label" for="inputNewPasswordAgain">Confirm Password</label>
-						<div class="controls">
+						<div class="input-group">
 							<input class="form-control" type="password" id="inputNewPasswordAgain" placeholder="Confirm Password" value="">
-							<div id="password-confirm-notify" class="alert alert-danger hide"></div>
+							<span class="input-group-addon">
+								<span id="password-confirm-notify"><i class="fa fa-circle-o"></i></span>
+							</span>
 						</div>
 					</div>
 					<br/>

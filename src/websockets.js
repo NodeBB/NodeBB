@@ -340,8 +340,8 @@ module.exports.init = function(io) {
 			if (uid) {
 				user.setUserFields(uid, {
 					showemail: data.showemail
-				}, function(err) {
-					callback(err ? err.message : null);
+				}, function(err, result) {
+					callback(err);
 				});
 			}
 		});
@@ -401,6 +401,10 @@ module.exports.init = function(io) {
 				}
 			});
 
+		});
+
+		socket.on('api:topics.postcount', function(tid, callback) {
+			topics.getTopicField(tid, 'postcount', callback);
 		});
 
 		socket.on('api:topics.markAllRead', function(data, callback) {
