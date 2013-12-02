@@ -52,9 +52,9 @@
 					<div class="col-lg-8">
 						<div class="input-group">
 							<input class="form-control" type="password" placeholder="[[register:confirm_password_placeholder]]" name="password-confirm" id="password-confirm" />
-					        <span class="input-group-addon">
-					        	<span id="password-confirm-notify"><i class="fa fa-circle-o"></i></span>
-					        </span>
+							<span class="input-group-addon">
+								<span id="password-confirm-notify"><i class="fa fa-circle-o"></i></span>
+							</span>
 						</div>
 					</div>
 				</div>

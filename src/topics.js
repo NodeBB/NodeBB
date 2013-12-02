@@ -1,28 +1,30 @@
-var RDB = require('./redis'),
+var async = require('async'),
+	gravatar = require('gravatar'),
+	nconf = require('nconf'),
+	validator = require('validator'),
+	reds = require('reds'),
+	topicSearch = reds.createSearch('nodebbtopicsearch'),
+
+	RDB = require('./redis'),
 	posts = require('./posts'),
 	utils = require('./../public/src/utils'),
 	user = require('./user'),
 	categories = require('./categories'),
-	CategoryTools = require('./categoryTools'),
+	categoryTools = require('./categoryTools'),
 	posts = require('./posts'),
 	threadTools = require('./threadTools'),
 	postTools = require('./postTools'),
 	notifications = require('./notifications'),
 	feed = require('./feed'),
 	favourites = require('./favourites'),
-	meta = require('./meta'),
+	meta = require('./meta');
 
-	async = require('async'),
-	reds = require('reds'),
-	topicSearch = reds.createSearch('nodebbtopicsearch'),
-	nconf = require('nconf'),
-	validator = require('validator');
 
 (function(Topics) {
 
 	Topics.post = function(uid, title, content, cid, callback) {
 
-		CategoryTools.privileges(cid, uid, function(err, privileges) {
+		categoryTools.privileges(cid, uid, function(err, privileges) {
 
 			if(err) {
 				return callback(err);
@@ -415,7 +417,7 @@ var RDB = require('./redis'),
 			// temporary. I don't think this call should belong here
 
 			function getPrivileges(next) {
-				CategoryTools.privileges(category_id, current_user, function(err, user_privs) {
+				categoryTools.privileges(category_id, current_user, function(err, user_privs) {
 					next(err, user_privs);
 				});
 			}
@@ -460,7 +462,7 @@ var RDB = require('./redis'),
 					topicData.unreplied = topicData.postcount === '1';
 					topicData.username = topicInfo.username || 'anonymous';
 					topicData.userslug = topicInfo.userslug || '';
-					topicData.picture = topicInfo.picture || require('gravatar').url('', {}, https = nconf.get('https'));;
+					topicData.picture = topicInfo.picture || gravatar.url('', {}, https = nconf.get('https'));
 					topicData.categoryIcon = topicInfo.categoryData.icon;
 					topicData.categoryName = topicInfo.categoryData.name;
 					topicData.categorySlug = topicInfo.categoryData.slug;
@@ -468,7 +470,7 @@ var RDB = require('./redis'),
 					topicData.teaser_text = topicInfo.teaserInfo.text || '',
 					topicData.teaser_username = topicInfo.teaserInfo.username || '';
 					topicData.teaser_userslug = topicInfo.teaserInfo.userslug || '';
-					topicData.teaser_userpicture = topicInfo.teaserInfo.picture || require('gravatar').url('', {}, https = nconf.get('https'));
+					topicData.teaser_userpicture = topicInfo.teaserInfo.picture || gravatar.url('', {}, https = nconf.get('https'));
 					topicData.teaser_pid = topicInfo.teaserInfo.pid;
 					topicData.teaser_timestamp = topicInfo.teaserInfo.timestamp ? (new Date(parseInt(topicInfo.teaserInfo.timestamp, 10)).toISOString()) : '';
 
@@ -749,9 +751,9 @@ var RDB = require('./redis'),
 						timestamp = postData.timestamp,
 						returnObj = {
 							"pid": postData.pid,
-							"username": userData.username,
+							"username": userData.username || 'anonymous',
 							"userslug": userData.userslug,
-							"picture": userData.picture,
+							"picture": userData.picture || gravatar.url('', {}, https = nconf.get('https')),
 							"timestamp": timestamp
 						};
 
