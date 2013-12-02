@@ -208,7 +208,7 @@ var RDB = require('./redis'),
 				return callback();
 			}
 
-			postTools.parse(userData.signature, function(err, signature) {
+			postTools.parseSignature(userData.signature, function(err, signature) {
 				post.username = userData.username || 'anonymous';
 				post.userslug = userData.userslug || '';
 				post.user_rep = userData.reputation || 0;
