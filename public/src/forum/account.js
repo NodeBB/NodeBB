@@ -17,18 +17,21 @@ define(['forum/accountheader'], function(header) {
 
 			var followBtn = $('#follow-btn');
 			var unfollowBtn = $('#unfollow-btn');
+			var chatBtn = $('#chat-btn');
 
 			if (yourid !== theirid && yourid !== "0") {
 				if (isFollowing) {
-					followBtn.hide();
-					unfollowBtn.show();
+					followBtn.addClass('hide');
+					unfollowBtn.removeClass('hide');
 				} else {
-					followBtn.show();
-					unfollowBtn.hide();
+					followBtn.removeClass('hide');
+					unfollowBtn.addClass('hide');
 				}
+				chatBtn.removeClass('hide');
 			} else {
-				followBtn.hide();
-				unfollowBtn.hide();
+				followBtn.addClass('hide');
+				unfollowBtn.addClass('hide');
+				chatBtn.addClass('hide');
 			}
 
 			followBtn.on('click', function() {
@@ -36,8 +39,8 @@ define(['forum/accountheader'], function(header) {
 					uid: theirid
 				}, function(success) {
 					if (success) {
-						followBtn.hide();
-						unfollowBtn.show();
+						followBtn.addClasss('hide');
+						unfollowBtn.removeClass('hide');
 						app.alertSuccess('You are now following ' + username + '!');
 					} else {
 						app.alertError('There was an error following' + username + '!');
@@ -51,14 +54,18 @@ define(['forum/accountheader'], function(header) {
 					uid: theirid
 				}, function(success) {
 					if (success) {
-						followBtn.show();
-						unfollowBtn.hide();
+						followBtn.removeClass('hide');
+						unfollowBtn.addClass('hide');
 						app.alertSuccess('You are no longer following ' + username + '!');
 					} else {
 						app.alertError('There was an error unfollowing ' + username + '!');
 					}
 				});
 				return false;
+			});
+
+			chatBtn.on('click', function() {
+				app.openChat(username, theirid);
 			});
 
 			$('.user-recent-posts .topic-row').on('click', function() {
