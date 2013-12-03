@@ -2,31 +2,35 @@
 
 (function(module) {
 	'use strict';
-	var mongoClient,
-		mongo = require('mongo')
+	var mongodb = require('mongodb')
+		mongoClient = mongodb.MongoClient,
 		winston = require('winston'),
 		nconf = require('nconf'),
-		mongoHost = nconf.get('mongo:host'),
-		utils = require('./../../public/src/utils.js');
+		express = require('express'),
+		mongoStore = require('connect-mongo')(express);
+		mongoHost = nconf.get('mongo:host');
 
-	// temp, look this up
-	mongoClient = mongo.createClient(nconf.get('mongo:port'), nconf.get('mongo:host'));
+
+	// mongoClient.connect("mongodb://localhost:27017/exampleDb", function(err, db) {
+	mongoClient.connect('mongodb://' + mongoHost + ':' + nconf.get('mongo:port') + '/' + nconf.get('mongo:database'), function(err, db) {
+		if(err) {
+			winston.error("NodeBB could not connect to your Mongo database. Mongo returned the following error: " + error.message);
+			process.exit();
+		}
+	});
 
 	// look up how its done in mongo
 	/*if (nconf.get('mongo:password')) {
 		redisClient.auth(nconf.get('mongo:password'));
 	}
+	*/
 
-	var db = parseInt(nconf.get('mongo:database'), 10);
+	// TODO: fill out settings.db
+	module.sessionStore = new mongoStore({
+      db: settings.db
+    });
 
-	if (db){
-		mongoClient.select(db, function(error) {
-			if(error) {
-				winston.error("NodeBB could not connect to your Redis database. Redis returned the following error: " + error.message);
-				process.exit();
-			}
-		});
-	}*/
+
 
 	//
 	// Exported functions
