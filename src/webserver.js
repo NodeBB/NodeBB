@@ -745,7 +745,7 @@ var path = require('path'),
 
 		var custom_routes = {
 			'routes': [],
-			'api_methods': []
+			'api': []
 		};
 
 		plugins.ready(function() {
@@ -767,6 +767,20 @@ var path = require('path'),
 						}(route));
 					}
 				}
+
+				var apiRoutes = custom_routes.api;
+				for (var route in apiRoutes) {
+					if (apiRoutes.hasOwnProperty(route)) {
+						(function(route) {
+							app[apiRoutes[route].method || 'get']('/api' + apiRoutes[route].route, function(req, res) {
+								apiRoutes[route].callback(req, res, function(data) {
+									res.json(data);
+								});
+							});
+						}(route));
+					}
+				}
+
 			});
 		});
 
