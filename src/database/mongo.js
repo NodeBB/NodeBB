@@ -163,21 +163,27 @@
 		var data = {};
 		data[field] = "";
 		db.collection('objects').update({_key:key}, {$unset : data}, function(err, result) {
-			console.log(err, result);
 			callback(err, result);
 		});
 	}
 
 	module.incrObjectField = function(key, field, callback) {
-		throw new Error('not-implemented');
+		module.incrObjectFieldBy(key, field, 1, callback);
 	}
 
 	module.decrObjectField = function(key, field, callback) {
-		throw new Error('not-implemented');
+		module.incrObjectFieldBy(key, field, -1, callback);
 	}
 
 	module.incrObjectFieldBy = function(key, field, value, callback) {
-		throw new Error('not-implemented');
+		var data = {};
+		data[field] = value;
+		db.collection('objects').update({_key:key}, {$inc : data}, function(err, result) {
+			console.log('incrObjectFieldBy', err, result);
+			module.getObjectField(key, field, function(err, value) {
+				callback(err, value);
+			});
+		});
 	}
 
 

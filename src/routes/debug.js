@@ -141,6 +141,13 @@ var	DebugRoute = function(app) {
 				});
 			}
 
+			function incrObjectFieldBy(callback) {
+				db.incrObjectFieldBy(objectKey, 'age', 3, function(err, data) {
+					console.log('incrObjectFieldBy return', data);
+					callback(err, {'incrObjectFieldBy':data});
+				});
+			}
+
 			var tasks = [
 				setObject,
 				getObject,
@@ -153,7 +160,9 @@ var	DebugRoute = function(app) {
 				getObjectField,
 				getObjectFields,
 				getObjectValues,
-				isObjectField
+				isObjectField,
+				incrObjectFieldBy,
+				getObject
 			];
 
 			require('async').series(tasks, function(err, results) {
