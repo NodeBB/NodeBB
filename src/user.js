@@ -68,7 +68,7 @@ var bcrypt = require('bcrypt'),
 				return callback(err);
 			}
 
-			db.incrObjectField('global', 'nextUserId', function(err, uid) {
+			db.incrObjectField('global', 'nextUid', function(err, uid) {
 				if(err) {
 					return callback(err);
 				}
@@ -103,7 +103,7 @@ var bcrypt = require('bcrypt'),
 
 				if (email !== undefined) {
 					db.setObjectField('email:uid', email, uid);
-					User.sendConfirmationEmail(email);
+					//User.sendConfirmationEmail(email);
 				}
 
 				plugins.fireHook('action:user.create', {uid: uid, username: username, email: email, picture: gravatar, timestamp: timestamp});

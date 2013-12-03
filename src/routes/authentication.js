@@ -14,8 +14,12 @@
 
 	passport.use(new passportLocal(function(user, password, next) {
 		login_module.loginViaLocal(user, password, function(err, login) {
-			if (!err) next(null, login.user);
-			else next(null, false, err);
+			if (!err) {
+				console.log('LOGGED IN');
+				next(null, login.user);
+			} else {
+				next(null, false, err);
+			}
 		});
 	}));
 
@@ -189,7 +193,9 @@
 		});
 
 		app.post('/register', function(req, res) {
+			console.log('CALLING USER CREATE');
 			user.create(req.body.username, req.body.password, req.body.email, function(err, uid) {
+				console.log('USER CREATE DONE', err, uid);
 				if (err === null && uid) {
 					req.login({
 						uid: uid

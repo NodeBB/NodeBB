@@ -126,7 +126,12 @@
 	//hashes
 
 	module.setObject = function(key, data, callback) {
-		redisClient.hmset(key, data, callback);
+		// TODO: this crashes if callback isnt supplied -baris
+		redisClient.hmset(key, data, function(err, res) {
+			if(callback) {
+				callback(err, res);
+			}
+		});
 	}
 
 	module.setObjectField = function(key, field, value, callback) {
