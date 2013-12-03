@@ -45,12 +45,12 @@
 							</a>
 							<small>
 								<span class="topic-stats">
-									posts
+									[[category:posts]]
 									<strong class="human-readable-number" title="{topics.postcount}">{topics.postcount}</strong>
 								</span>
 								|
 								<span class="topic-stats">
-									views
+									[[category:views]]
 									<strong class="human-readable-number" title="{topics.viewcount}">{topics.viewcount}</strong>
 								</span>
 								|
@@ -58,18 +58,18 @@
 									<a href="/user/{topics.userslug}">
 										<img class="teaser-pic" src="{topics.picture}" title="{topics.username}"/>
 									</a>
-									posted <span class="timeago" title="{topics.relativeTime}"></span>
+									[[category:posted]] <span class="timeago" title="{topics.relativeTime}"></span>
 								</span>
 
 								<span class="pull-right hidden-xs">
 									<!-- IF topics.unreplied -->
-									No one has replied
+									[[category:no_one_has_replied]]
 									<!-- ELSE -->
 									<a href="/user/{topics.teaser_userslug}">
 										<img class="teaser-pic" src="{topics.teaser_userpicture}" title="{topics.teaser_username}"/>
 									</a>
 									<a href="../../topic/{topics.slug}#{topics.teaser_pid}">
-										replied
+										[[category:replied]]
 									</a>
 									<span class="timeago" title="{topics.teaser_timestamp}"></span>
 									<!-- ENDIF topics.unreplied -->

@@ -1,23 +1,39 @@
 {
+	"topic": "Topic",
+	"topics": "Topics",
+
+	"no_topics_found": "No topics found!",
+
 	"profile": "Profile",
 	"posted_by": "Posted by",
 	"chat": "Chat",
 	"notify_me": "Be notified of new replies in this topic",
-	"favourite": "Favourite",
 	"quote": "Quote",
 	"reply": "Reply",
 	"edit": "Edit",
 	"delete": "Delete",
 	"banned": "banned",
 	"link": "Link",
+
 	"thread_tools.title": "Thread Tools",
 	"thread_tools.pin": "Pin Thread",
 	"thread_tools.lock": "Lock Thread",
 	"thread_tools.move": "Move Thread",
 	"thread_tools.delete": "Delete Thread",
+
 	"load_categories": "Loading Categories",
 	"disabled_categories_note": "Disabled Categories are greyed out",
 	"confirm_move": "Move",
+
+	"favourite": "Favourite",
+	"favourites": "Favorites",
 	"favourites.not_logged_in.title": "Not Logged In",
-	"favourites.not_logged_in.message": "Please log in in order to favourite this post"
+	"favourites.not_logged_in.message": "Please log in in order to favourite this post",
+	"favourites.haz_no_favourites": "You don't have any favourites, favourite some posts to see them here!",
+
+	"posted_by": "posted by",
+	"loading": "Lade",
+	"more_posts": "More Posts",
+	"move_topic": "Move Topic",
+	"topic_will_be_moved_to": "This topic will be moved to the category"
 }
