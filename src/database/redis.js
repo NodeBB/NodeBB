@@ -137,7 +137,7 @@
 	}
 
 	module.keys = function(key, callback) {
-		redisClient.keys(keym callback);
+		redisClient.keys(key, callback);
 	}
 
 	//hashes
