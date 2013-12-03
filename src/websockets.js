@@ -13,7 +13,7 @@ var cookie = require('cookie'),
 	db = require('./database'),
 
 	user = require('./user'),
-	Groups = require('./groups'),
+	groups = require('./groups'),
 	posts = require('./posts'),
 	favourites = require('./favourites'),
 	utils = require('../public/src/utils'),
@@ -1008,16 +1008,16 @@ websockets.init = function(io) {
 			};
 
 			if (set) {
-				Groups.joinByGroupName('cid:' + cid + ':privileges:' + privilege, uid, cb);
+				groups.joinByGroupName('cid:' + cid + ':privileges:' + privilege, uid, cb);
 			} else {
-				Groups.leaveByGroupName('cid:' + cid + ':privileges:' + privilege, uid, cb);
+				groups.leaveByGroupName('cid:' + cid + ':privileges:' + privilege, uid, cb);
 			}
 		});
 
 		socket.on('api:admin.categories.getPrivilegeSettings', function(cid, callback) {
 			async.parallel({
 				"+r": function(next) {
-					Groups.getByGroupName('cid:' + cid + ':privileges:+r', { expand: true }, function(err, groupObj) {
+					groups.getByGroupName('cid:' + cid + ':privileges:+r', { expand: true }, function(err, groupObj) {
 						if (!err) {
 							next.apply(this, arguments);
 						} else {
@@ -1028,7 +1028,7 @@ websockets.init = function(io) {
 					});
 				},
 				"+w": function(next) {
-					Groups.getByGroupName('cid:' + cid + ':privileges:+w', { expand: true }, function(err, groupObj) {
+					groups.getByGroupName('cid:' + cid + ':privileges:+w', { expand: true }, function(err, groupObj) {
 						if (!err) {
 							next.apply(this, arguments);
 						} else {
@@ -1069,19 +1069,19 @@ websockets.init = function(io) {
 		*/
 
 		socket.on('api:groups.create', function(data, callback) {
-			Groups.create(data.name, data.description, function(err, groupObj) {
+			groups.create(data.name, data.description, function(err, groupObj) {
 				callback(err ? err.message : null, groupObj || undefined);
 			});
 		});
 
 		socket.on('api:groups.delete', function(gid, callback) {
-			Groups.destroy(gid, function(err) {
+			groups.destroy(gid, function(err) {
 				callback(err ? err.message : null, err ? null : 'OK');
 			});
 		});
 
 		socket.on('api:groups.get', function(gid, callback) {
-			Groups.get(gid, {
+			groups.get(gid, {
 				expand: true
 			}, function(err, groupObj) {
 				callback(err ? err.message : null, groupObj || undefined);
@@ -1089,15 +1089,15 @@ websockets.init = function(io) {
 		});
 
 		socket.on('api:groups.join', function(data, callback) {
-			Groups.join(data.gid, data.uid, callback);
+			groups.join(data.gid, data.uid, callback);
 		});
 
 		socket.on('api:groups.leave', function(data, callback) {
-			Groups.leave(data.gid, data.uid, callback);
+			groups.leave(data.gid, data.uid, callback);
 		});
 
 		socket.on('api:groups.update', function(data, callback) {
-			Groups.update(data.gid, data.values, function(err) {
+			groups.update(data.gid, data.values, function(err) {
 				callback(err ? err.message : null);
 			});
 		});
