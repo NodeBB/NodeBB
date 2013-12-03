@@ -136,6 +136,10 @@
 		redisClient.get(key, callback);
 	}
 
+	module.keys = function(key, callback) {
+		redisClient.keys(keym callback);
+	}
+
 	//hashes
 
 	module.setObject = function(key, data, callback) {

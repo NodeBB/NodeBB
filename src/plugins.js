@@ -153,13 +153,19 @@ var fs = require('fs'),
 						}));
 
 						next();
-					} else next();
+					} else {
+						next();
+					}
 				}
 			], function(err) {
 				if (!err) {
-					if (global.env === 'development') winston.info('[plugins] Loaded plugin: ' + pluginData.id);
+					if (global.env === 'development') {
+						winston.info('[plugins] Loaded plugin: ' + pluginData.id);
+					}
 					callback();
-				} else callback(new Error('Could not load plugin system'))
+				} else {
+					callback(new Error('Could not load plugin system'));
+				}
 			});
 		});
 	};
@@ -212,7 +218,9 @@ var fs = require('fs'),
 								next(null, value);
 							}
 						} else {
-							if (global.env === 'development') winston.info('[plugins] Expected method \'' + hookObj.method + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
+							if (global.env === 'development') {
+								winston.info('[plugins] Expected method \'' + hookObj.method + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
+							}
 							next(null, value);
 						}
 					}, function(err, value) {
@@ -222,7 +230,7 @@ var fs = require('fs'),
 							}
 						}
 
-						callback.apply(plugins, arguments);
+						callback.apply(Plugins, arguments);
 					});
 					break;
 				case 'action':

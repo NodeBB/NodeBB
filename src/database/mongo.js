@@ -109,7 +109,7 @@
 			}
 
 			callback(null, data[field]);
-		})
+		});
 	}
 
 	module.getObjectFields = function(key, fields, callback) {
@@ -179,7 +179,6 @@
 		var data = {};
 		data[field] = value;
 		db.collection('objects').update({_key:key}, {$inc : data}, function(err, result) {
-			console.log('incrObjectFieldBy', err, result);
 			module.getObjectField(key, field, function(err, value) {
 				callback(err, value);
 			});
