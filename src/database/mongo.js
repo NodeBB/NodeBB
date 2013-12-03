@@ -184,7 +184,7 @@
 	module.incrObjectFieldBy = function(key, field, value, callback) {
 		var data = {};
 		data[field] = value;
-		db.collection('objects').update({_key:key}, {$inc : data}, function(err, result) {
+		db.collection('objects').update({_key:key}, {$inc : data},  {upsert:true}, function(err, result) {
 			module.getObjectField(key, field, function(err, value) {
 				callback(err, value);
 			});
