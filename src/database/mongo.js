@@ -154,8 +154,14 @@
 	}
 
 	module.isObjectField = function(key, field, callback) {
-		module.getObjectField(key, field, function(err, item) {
-			callback(err, item !== undefined);
+		var data = {};
+		data[field] = '';
+		db.collection('objects').findOne({_key:key}, {fields:data}, function(err, item) {
+			if(err) {
+				return callback(err);
+			}
+
+			callback(err, item && item[field]!== undefined && item[field] !== null);
 		});
 	}
 

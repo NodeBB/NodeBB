@@ -85,6 +85,14 @@ var	DebugRoute = function(app) {
 			var db = require('./../database');
 			var objectKey = 'someotherObj';
 
+			function createUser(callback) {
+				user.create('baris','123456', 'barisusakli@gmail.com', callback);
+			}
+
+			function getUser(callback) {
+				user.getUserData(1, callback);
+			}
+
 			function setObject(callback) {
 				db.setObject(objectKey, {name:'baris', 'lastname':'usakli', age:3}, function(err, result) {
 					console.log('setObject return ', result);
@@ -149,6 +157,8 @@ var	DebugRoute = function(app) {
 			}
 
 			var tasks = [
+				//createUser,
+				getUser,
 				setObject,
 				getObject,
 				deleteObjectField,
