@@ -208,7 +208,7 @@ var RDB = require('./redis'),
 				return callback();
 			}
 
-			postTools.parse(userData.signature, function(err, signature) {
+			postTools.parseSignature(userData.signature, function(err, signature) {
 				post.username = userData.username || 'anonymous';
 				post.userslug = userData.userslug || '';
 				post.user_rep = userData.reputation || 0;
@@ -250,8 +250,9 @@ var RDB = require('./redis'),
 			async.waterfall([
 				function(next) {
 					Posts.getPostFields(pid, ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'], function(err, postData) {
-						if (postData.deleted === '1') return callback(null);
-						else {
+						if (postData.deleted === '1') {
+							return callback(null);
+						} else {
 							postData.relativeTime = new Date(parseInt(postData.timestamp || 0, 10)).toISOString();
 							next(null, postData);
 						}
@@ -264,10 +265,15 @@ var RDB = require('./redis'),
 				},
 				function(postData, next) {
 					topics.getTopicFields(postData.tid, ['title', 'cid', 'slug', 'deleted'], function(err, topicData) {
-						if (err) return callback(err);
-						else if (topicData.deleted === '1') return callback(null);
-						categories.getCategoryField(topicData.cid, 'name', function(err, categoryData) {
-							postData.category_name = categoryData;
+						if (err) {
+							return callback(err);
+						} else if (topicData.deleted === '1') {
+							return callback(null);
+						}
+						categories.getCategoryFields(topicData.cid, ['name', 'icon', 'slug'], function(err, categoryData) {
+							postData.categoryName = categoryData.name;
+							postData.categoryIcon = categoryData.icon;
+							postData.categorySlug = categoryData.slug;
 							postData.title = validator.sanitize(topicData.title).escape();
 							postData.topicSlug = topicData.slug;
 							next(null, postData);
@@ -277,13 +283,19 @@ var RDB = require('./redis'),
 				function(postData, next) {
 					if (postData.content) {
 						postTools.parse(postData.content, function(err, content) {
-							if (!err) postData.content = utils.strip_tags(content);
+							if (!err) {
+								postData.content = utils.strip_tags(content);
+							}
 							next(err, postData);
 						});
-					} else next(null, postData);
+					} else {
+						next(null, postData);
+					}
 				}
 			], function(err, postData) {
-				if (!err) posts.push(postData);
+				if (!err) {
+					posts.push(postData);
+				}
 				callback(err);
 			});
 		}

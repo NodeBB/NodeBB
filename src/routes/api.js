@@ -143,14 +143,14 @@ var path = require('path'),
 				});
 			});
 
-			app.get('/recent/:term?', function (req, res) {
+			app.get('/recent/:term?', function (req, res, next) {
 				var uid = (req.user) ? req.user.uid : 0;
 				topics.getLatestTopics(uid, 0, 19, req.params.term, function (err, data) {
-					if (!err) {
-						res.json(data);
-					} else {
-						res.send(500);
+					if(err) {
+						return next(err);
 					}
+
+					res.json(data);
 				});
 			});
 
@@ -295,6 +295,10 @@ var path = require('path'),
 			app.get('/403', function (req, res) {
 				res.json({});
 			});
+
+			app.get('/500', function(req, res) {
+				res.json({errorMessage: 'testing'});
+			})
 		});
 	}
 }(exports));

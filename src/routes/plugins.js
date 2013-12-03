@@ -9,7 +9,7 @@ var	nconf = require('nconf'),
 	PluginRoutes = function(app) {
 		app.get('/plugins/fireHook', function(req, res) {
 			// GET = filter
-			Plugins.fireHook('filter:' + req.query.hook, req.query.args, function(err, returnData) {
+			plugins.fireHook('filter:' + req.query.hook, req.query.args, function(err, returnData) {
 				if (typeof returnData === 'object') {
 					res.json(200, returnData);
 				} else {

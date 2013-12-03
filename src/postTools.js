@@ -230,5 +230,11 @@ var RDB = require('./redis'),
 		});
 	}
 
+	PostTools.parseSignature = function(raw, callback) {
+		raw = raw || '';
 
+		plugins.fireHook('filter:post.parseSignature', raw, function(err, parsedSignature) {
+			callback(null, !err ? parsedSignature : raw);
+		});
+	}
 }(exports));

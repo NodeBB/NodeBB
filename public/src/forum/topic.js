@@ -1,7 +1,7 @@
 define(function() {
 	var	Topic = {},
-		infiniteLoaderActive = false;
-
+		infiniteLoaderActive = false,
+		pagination;
 
 	function showBottomPostBar() {
 		if($('#post-container .post-row').length > 1) {
@@ -775,74 +775,75 @@ define(function() {
 
 
 
-		var pagination;
+
 		Topic.postCount = templates.get('postcount');
-
-		function updateHeader() {
-			if (pagination == null) {
-				jQuery('.pagination-block i:first').on('click', function() {
-					app.scrollToTop();
-				});
-				jQuery('.pagination-block i:last').on('click', function() {
-					app.scrollToBottom();
-				});
-			}
-			pagination = pagination || document.getElementById('pagination');
-
-			var windowHeight = jQuery(window).height();
-			var scrollTop = jQuery(window).scrollTop();
-			var scrollBottom = scrollTop + windowHeight;
-			var progressBar = $('.progress-bar');
-			var	progressBarContainer = $('.progress-container');
-
-			pagination.parentNode.style.display = 'block';
-			progressBarContainer.css('display', '');
-
-			if (scrollTop < 50 && Topic.postCount > 1) {
-				localStorage.removeItem("topic:" + tid + ":bookmark");
-				pagination.innerHTML = '1 out of ' + Topic.postCount;
-				progressBar.width(0);
-				return;
-			}
-
-
-			var count = 0, smallestNonNegative = 0;
-
-			jQuery('.posts > .post-row:not(".deleted")').each(function() {
-				count++;
-				this.postnumber = count;
-
-
-				var el = jQuery(this);
-				var elTop = el.offset().top;
-				var height = Math.floor(el.height());
-				var elBottom = elTop + (height < 300 ? height : 300);
-
-				var inView = ((elBottom >= scrollTop) && (elTop <= scrollBottom) && (elBottom <= scrollBottom) && (elTop >= scrollTop));
-
-
-				if (inView) {
-					if(elTop - scrollTop > smallestNonNegative) {
-						localStorage.setItem("topic:" + tid + ":bookmark", el.attr('data-pid'));
-						smallestNonNegative = Number.MAX_VALUE;
-					}
-
-					pagination.innerHTML = (this.postnumber-1) + ' out of ' + Topic.postCount;
-					progressBar.width(((this.postnumber-1) / Topic.postCount * 100) + '%');
-				}
-			});
-
-			setTimeout(function() {
-				if (scrollTop + windowHeight == jQuery(document).height()) {
-					pagination.innerHTML = Topic.postCount + ' out of ' + Topic.postCount;
-					progressBar.width('100%');
-				}
-			}, 100);
-		}
 
 		window.onscroll = updateHeader;
 		window.onload = updateHeader;
 	};
+
+	function updateHeader() {
+		if (pagination == null) {
+			jQuery('.pagination-block i:first').on('click', function() {
+				app.scrollToTop();
+			});
+			jQuery('.pagination-block i:last').on('click', function() {
+				app.scrollToBottom();
+			});
+		}
+		pagination = pagination || document.getElementById('pagination');
+
+		var windowHeight = jQuery(window).height();
+		var scrollTop = jQuery(window).scrollTop();
+		var scrollBottom = scrollTop + windowHeight;
+		var progressBar = $('.progress-bar');
+		var	progressBarContainer = $('.progress-container');
+		var tid = templates.get('topic_id');
+
+		pagination.parentNode.style.display = 'block';
+		progressBarContainer.css('display', '');
+
+		if (scrollTop < 50 && Topic.postCount > 1) {
+			localStorage.removeItem("topic:" + tid + ":bookmark");
+			pagination.innerHTML = '1 out of ' + Topic.postCount;
+			progressBar.width(0);
+			return;
+		}
+
+
+		var count = 0, smallestNonNegative = 0;
+
+		jQuery('.posts > .post-row:not(".deleted")').each(function() {
+			count++;
+			this.postnumber = count;
+
+
+			var el = jQuery(this);
+			var elTop = el.offset().top;
+			var height = Math.floor(el.height());
+			var elBottom = elTop + (height < 300 ? height : 300);
+
+			var inView = ((elBottom >= scrollTop) && (elTop <= scrollBottom) && (elBottom <= scrollBottom) && (elTop >= scrollTop));
+
+
+			if (inView) {
+				if(elTop - scrollTop > smallestNonNegative) {
+					localStorage.setItem("topic:" + tid + ":bookmark", el.attr('data-pid'));
+					smallestNonNegative = Number.MAX_VALUE;
+				}
+
+				pagination.innerHTML = (this.postnumber-1) + ' out of ' + Topic.postCount;
+				progressBar.width(((this.postnumber-1) / Topic.postCount * 100) + '%');
+			}
+		});
+
+		setTimeout(function() {
+			if (scrollTop + windowHeight == jQuery(document).height()) {
+				pagination.innerHTML = Topic.postCount + ' out of ' + Topic.postCount;
+				progressBar.width('100%');
+			}
+		}, 100);
+	}
 
 	Topic.scrollToPost = function(pid) {
 		if (!pid) {
@@ -944,8 +945,13 @@ define(function() {
 	}
 
 	function updatePostCount() {
-		Topic.postCount = $('#post-container li[data-pid]:not(.deleted)').length;
-		$('#topic-post-count').html(Topic.postCount);
+		socket.emit('api:topics.postcount', templates.get('topic_id'), function(err, postcount) {
+			if(!err) {
+				Topic.postCount = postcount;
+				$('#topic-post-count').html(Topic.postCount);
+				updateHeader();
+			}
+		})
 	}
 
 	function loadMorePosts(tid, callback) {

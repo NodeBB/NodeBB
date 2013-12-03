@@ -99,6 +99,22 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 			return false;
 		});
 
+		function showError(element, msg) {
+			element.html(msg);
+			element.parent()
+				.removeClass('alert-success')
+				.addClass('alert-danger');
+			element.show();
+			validationError = true;
+		}
+
+		function showSuccess(element, msg) {
+			element.html(msg);
+			element.parent()
+				.removeClass('alert-danger')
+				.addClass('alert-success');
+			element.show();
+		}
 
 		(function handlePasswordChange() {
 			var currentPassword = $('#inputCurrentPassword');
@@ -108,42 +124,29 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 			var password_confirm = $('#inputNewPasswordAgain');
 			var passwordvalid = false;
 			var passwordsmatch = false;
+			var successIcon = '<i class="fa fa-check"></i>';
 
 
 			function onPasswordChanged() {
 				passwordvalid = utils.isPasswordValid(password.val());
 				if (password.val().length < config.minimumPasswordLength) {
-					password_notify.html('Password too short');
-					password_notify.attr('class', 'alert alert-danger');
-					password_notify.removeClass('hide');
+					showError(password_notify, 'Password too short!');
 				} else if (!passwordvalid) {
-					password_notify.html('Invalid password');
-					password_notify.attr('class', 'alert alert-danger');
-					password_notify.removeClass('hide');
+					showError(password_notify, 'Invalid password!');
 				} else {
-					password_notify.html('OK!');
-					password_notify.attr('class', 'alert alert-success');
-					password_notify.removeClass('hide');
+					showSuccess(password_notify, successIcon);
 				}
-
-				onPasswordConfirmChanged();
 			}
 
 			function onPasswordConfirmChanged() {
-				if (password_notify.hasClass('alert-danger') || !password_confirm.val()) {
-					password_confirm_notify.addClass('hide');
-					return;
-				}
-				if (password.val() !== password_confirm.val()) {
-					password_confirm_notify.html('Passwords must match!');
-					password_confirm_notify.attr('class', 'alert alert-danger');
-					password_confirm_notify.removeClass('hide');
-					passwordsmatch = false;
-				} else {
-					password_confirm_notify.html('OK!');
-					password_confirm_notify.attr('class', 'alert alert-success');
-					password_confirm_notify.removeClass('hide');
-					passwordsmatch = true;
+				if(password.val()) {
+					if (password.val() !== password_confirm.val()) {
+						showError(password_confirm_notify, 'Passwords must match!')
+						passwordsmatch = false;
+					} else {
+						showSuccess(password_confirm_notify, successIcon);
+						passwordsmatch = true;
+					}
 				}
 			}
 
@@ -161,8 +164,6 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 						currentPassword.val('');
 						password.val('');
 						password_confirm.val('');
-						password_notify.addClass('hide');
-						password_confirm_notify.addClass('hide');
 						passwordsmatch = false;
 						passwordvalid = false;
 
