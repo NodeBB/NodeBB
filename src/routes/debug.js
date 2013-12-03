@@ -78,6 +78,66 @@ var	DebugRoute = function(app) {
 				});
 			});
 		});
+
+
+		app.get('/mongo', function(req, res) {
+
+			var db = require('./../database');
+			var objectKey = 'someotherObj';
+
+			function setObject(callback) {
+				db.setObject(objectKey, {name:'baris', 'lastname':'usakli', age:3}, function(err, result) {
+					console.log('setObject return ', result);
+					callback(err, {'setObject':result});
+				});
+			}
+
+			function getObject(callback) {
+				db.getObject(objectKey, function(err, data) {
+					console.log('getObject return ', data);
+					callback(err, {'getObject':data});
+				});
+			}
+
+			function setObjectField(callback) {
+				db.setObjectField(objectKey, 'reputation', 5, function(err, result) {
+					console.log('setObjectField return', result);
+					callback(err, {'setObjectField': result});
+				});
+			}
+
+			function getObjectField(callback) {
+				db.getObjectField(objectKey, 'age', function(err, age) {
+					console.log('getObjectField return', age);
+					callback(err, {'getObjectField' : age});
+				});
+			}
+
+			function getObjectFields(callback) {
+				db.getObjectFields(objectKey, ['name', 'lastname'], function(err, data) {
+					console.log('getObjectFields return', data);
+					callback(err, {'getObjectFields':data});
+				});
+			}
+
+			var tasks = [
+				//setObject,
+				getObject,
+				setObjectField,
+				getObject,
+				getObjectField,
+				getObjectFields,
+			];
+
+			require('async').series(tasks, function(err, results) {
+				if(err) {
+					console.log(err);
+					res.send(err.message);
+				} else {
+					res.json(results);
+				}
+			});
+		});
 	});
 };
 

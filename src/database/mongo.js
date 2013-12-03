@@ -32,6 +32,7 @@
 			db.createCollection('sets', function(err, collection) {
 			});
 
+
 			callback(err);
 		});
 		// look up how its done in mongo
@@ -74,20 +75,27 @@
 	//hashes
 
 	module.setObject = function(key, data, callback) {
+		console.log('SET OBJECT CALLED', key, data);
 		data['_key'] = key;
-		db.collection('objects').insert(data, {w:1}, function(err, result) {
+		db.collection('objects').update({_key:key}, {$set:data}, {upsert:true, w: 1}, function(err, result) {
+			console.log('SET OBJECT COMPLETE', err, result);
 			callback(err, result);
 		});
 	}
 
 	module.setObjectField = function(key, field, value, callback) {
-		db.collection('objects').update();
+		var data = {};
+		data[field] = value;
+		db.collection('objects').update({_key:key}, {$set:data}, {upsert:true, w: 1}, function(err, result) {
+			console.log('SET OBJECT COMPLETE', err, result);
+			callback(err, result);
+		});
 	}
 
 	module.getObject = function(key, callback) {
-		console.log('calling findOne');
+		console.log('GET OBJECT', key);
 		db.collection('objects').findOne({_key:key}, function(err, item) {
-			console.log(item);
+			console.log('RETURNING OBJECT', item);
 			callback(err, item);
 		});
 	}
@@ -106,7 +114,7 @@
 
 		var _fields = {};
 		for(var i=0; i<fields.length; ++i) {
-			_fields[fields[i]] = 1;
+			_fields[fields[i]] = 'baris';
 		}
 
 		db.collection('objects').findOne({_key:key}, {fields:_fields}, function(err, item) {
@@ -172,10 +180,19 @@
 	}
 
 	module.getSetMembers = function(key, callback) {
-		console.log('getting set members');
+		console.log('GETTING SET MEMBERS', key);
 		db.collection('sets').findOne({_key:key}, function(err, data) {
-			console.log('derp', err, data);
-			callback(err, data);
+			if(err) {
+				return callback(err);
+			}
+
+			if(!data) {
+				console.log('GOT SET MEMBERS', []);
+				callback(null, []);
+			} else {
+				console.log('GOT SET MEMBERS', data);
+				callback(null, data);
+			}
 		});
 	}
 
