@@ -1,4 +1,4 @@
-var RDB = require('./redis'),
+var db = require('./database'),
 	posts = require('./posts'),
 	user = require('./user'),
 	websockets = require('./websockets')
@@ -26,14 +26,14 @@ var RDB = require('./redis'),
 
 			Favourites.hasFavourited(pid, uid, function (hasFavourited) {
 				if (hasFavourited === 0) {
-					RDB.sadd('pid:' + pid + ':users_favourited', uid);
-					RDB.zadd('uid:' + uid + ':favourites', postData.timestamp, pid);
+					db.setAdd('pid:' + pid + ':users_favourited', uid);
+					db.sortedSetAdd('uid:' + uid + ':favourites', postData.timestamp, pid);
 
-					RDB.hincrby('post:' + pid, 'reputation', 1);
+					db.incrObjectFieldBy('post:' + pid, 'reputation', 1);
 
 					if (uid !== postData.uid) {
 						user.incrementUserFieldBy(postData.uid, 'reputation', 1, function (err, newreputation) {
-							RDB.zadd('users:reputation', newreputation, postData.uid);
+							db.sortedSetAdd('users:reputation', newreputation, postData.uid);
 						});
 					}
 
@@ -61,14 +61,14 @@ var RDB = require('./redis'),
 		posts.getPostField(pid, 'uid', function (err, uid_of_poster) {
 			Favourites.hasFavourited(pid, uid, function (hasFavourited) {
 				if (hasFavourited === 1) {
-					RDB.srem('pid:' + pid + ':users_favourited', uid);
-					RDB.zrem('uid:' + uid + ':favourites', pid);
+					db.setRemove('pid:' + pid + ':users_favourited', uid);
+					db.sortedSetRemove('uid:' + uid + ':favourites', pid);
 
-					RDB.hincrby('post:' + pid, 'reputation', -1);
+					db.incrObjectFieldBy('post:' + pid, 'reputation', -1);
 
 					if (uid !== uid_of_poster) {
 						user.incrementUserFieldBy(uid_of_poster, 'reputation', -1, function (err, newreputation) {
-							RDB.zadd('users:reputation', newreputation, uid_of_poster);
+							db.sortedSetAdd('users:reputation', newreputation, uid_of_poster);
 						});
 					}
 
@@ -89,8 +89,7 @@ var RDB = require('./redis'),
 	};
 
 	Favourites.hasFavourited = function (pid, uid, callback) {
-		RDB.sismember('pid:' + pid + ':users_favourited', uid, function (err, hasFavourited) {
-			RDB.handle(err);
+		db.isSetMember('pid:' + pid + ':users_favourited', uid, function (err, hasFavourited) {
 
 			callback(hasFavourited);
 		});

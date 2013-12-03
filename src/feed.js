@@ -1,7 +1,7 @@
 (function (Feed) {
-	var RDB = require('./redis.js'),
-		posts = require('./posts.js'),
-		topics = require('./topics.js'),
+	var db = require('./database'),
+		posts = require('./posts'),
+		topics = require('./topics'),
 		categories = require('./categories'),
 
 		fs = require('fs'),

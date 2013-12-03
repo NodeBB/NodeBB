@@ -1,9 +1,9 @@
-var user = require('./user.js'),
+var user = require('./user'),
 	bcrypt = require('bcrypt'),
-	RDB = require('./redis.js'),
+	db = require('./database'),
 	path = require('path'),
 	winston = require('winston'),
-	utils = require('./../public/src/utils.js');
+	utils = require('./../public/src/utils');
 
 (function(Login) {
 
@@ -77,7 +77,7 @@ var user = require('./user.js'),
 
 					// Save twitter-specific information to the user
 					user.setUserField(uid, 'twid', twid);
-					RDB.hset('twid:uid', twid, uid);
+					db.setObjectField('twid:uid', twid, uid);
 
 					// Save their photo, if present
 					if (photos && photos.length > 0) {
@@ -111,7 +111,7 @@ var user = require('./user.js'),
 				var success = function(uid) {
 					// Save google-specific information to the user
 					user.setUserField(uid, 'gplusid', gplusid);
-					RDB.hset('gplusid:uid', gplusid, uid);
+					db.setObjectField('gplusid:uid', gplusid, uid);
 					callback(null, {
 						uid: uid
 					});
@@ -154,7 +154,7 @@ var user = require('./user.js'),
 				var success = function(uid) {
 					// Save facebook-specific information to the user
 					user.setUserField(uid, 'fbid', fbid);
-					RDB.hset('fbid:uid', fbid, uid);
+					db.setObjectField('fbid:uid', fbid, uid);
 					callback(null, {
 						uid: uid
 					});

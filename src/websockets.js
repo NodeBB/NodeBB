@@ -10,9 +10,13 @@ var cookie = require('cookie'),
 	winston = require('winston'),
 
 	RedisStoreLib = require('connect-redis')(express),
-	RDB = require('./redis'),
+	db = require('./database'),
+
+	redis = require('redis'),
+	redisClient = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host')),
+
 	RedisStore = new RedisStoreLib({
-		client: RDB,
+		client: redisClient,
 		ttl: 60 * 60 * 24 * 14
 	}),
 
@@ -71,8 +75,11 @@ websockets.init = function(io) {
 		socketCookieParser(hs, {}, function(err) {
 			sessionID = socket.handshake.signedCookies["express.sid"];
 			RedisStore.get(sessionID, function(err, sessionData) {
-				if (!err && sessionData && sessionData.passport && sessionData.passport.user) uid = users[sessionID] = sessionData.passport.user;
-				else uid = users[sessionID] = 0;
+				if (!err && sessionData && sessionData.passport && sessionData.passport.user) {
+					uid = users[sessionID] = sessionData.passport.user;
+				} else {
+					uid = users[sessionID] = 0;
+				}
 
 				userSockets[uid] = userSockets[uid] || [];
 				userSockets[uid].push(socket);
@@ -89,7 +96,7 @@ websockets.init = function(io) {
 
 				if (uid) {
 
-					RDB.zadd('users:online', Date.now(), uid, function(err, data) {
+					db.sortedSetAdd('users:online', Date.now(), uid, function(err, data) {
 						socket.join('uid_' + uid);
 
 						user.getUserField(uid, 'username', function(err, username) {
@@ -119,7 +126,7 @@ websockets.init = function(io) {
 				delete users[sessionID];
 				delete userSockets[uid];
 				if (uid) {
-					RDB.zrem('users:online', uid, function(err, data) {
+					db.sortedSetRemove('users:online', uid, function(err, data) {
 					});
 				}
 			}
@@ -1108,14 +1115,14 @@ websockets.init = function(io) {
 
 
 	function emitTopicPostStats() {
-		RDB.mget(['totaltopiccount', 'totalpostcount'], function(err, data) {
+		db.getObjectFields('global', ['topicCount', 'postCount'], function(err, data) {
 			if (err) {
 				return winston.err(err);
 			}
 
 			var stats = {
-				topics: data[0] ? data[0] : 0,
-				posts: data[1] ? data[1] : 0
+				topics: data.topicCount ? data.topicCount : 0,
+				posts: data.postCount ? data.postCount : 0
 			};
 
 			io.sockets.emit('post.stats', stats);
@@ -1123,7 +1130,7 @@ websockets.init = function(io) {
 	}
 
 	websockets.emitUserCount = function() {
-		RDB.get('usercount', function(err, count) {
+		db.getObjectField('global', 'userCount', function(err, count) {
 			io.sockets.emit('user.count', {
 				count: count
 			});

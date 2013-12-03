@@ -9,7 +9,7 @@ var fs = require('fs'),
 	postTools = require('../postTools'),
 	utils = require('./../../public/src/utils'),
 	meta = require('./../meta'),
-	RDB = require('./../redis'),
+	db = require('./../database'),
 	websockets = require('./../websockets');
 
 (function (User) {
@@ -454,7 +454,7 @@ var fs = require('fs'),
 					if(websockets.isUserOnline(user.uid)) {
 						onlineUsers.push(user);
 					} else {
-						RDB.zrem('users:online', user.uid);
+						db.sortedSetRemove('users:online', user.uid);
 					}
 					callback(null);
 				}

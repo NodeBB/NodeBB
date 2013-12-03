@@ -5,7 +5,7 @@ var async = require('async'),
 	reds = require('reds'),
 	topicSearch = reds.createSearch('nodebbtopicsearch'),
 
-	RDB = require('./redis'),
+	db = require('./database'),
 	posts = require('./posts'),
 	utils = require('./../public/src/utils'),
 	user = require('./user'),
@@ -58,16 +58,16 @@ var async = require('async'),
 					return callback(new Error('too-many-posts'), null);
 				}
 
-				RDB.incr('next_topic_id', function(err, tid) {
+				db.incrObjectField('global', 'nextTid', function(err, tid) {
 					if(err) {
 						return callback(err);
 					}
 
-					RDB.sadd('topics:tid', tid);
+					db.setAdd('topics:tid', tid);
 
 					var slug = tid + '/' + utils.slugify(title);
 					var timestamp = Date.now();
-					RDB.hmset('topic:' + tid, {
+					db.setObject('topic:' + tid, {
 						'tid': tid,
 						'uid': uid,
 						'cid': cid,
@@ -87,15 +87,15 @@ var async = require('async'),
 					user.addTopicIdToUser(uid, tid);
 
 					// let everyone know that there is an unread topic in this category
-					RDB.del('cid:' + cid + ':read_by_uid', function(err, data) {
+					db.delete('cid:' + cid + ':read_by_uid', function(err, data) {
 						Topics.markAsRead(tid, uid);
 					});
 
 
 					// in future it may be possible to add topics to several categories, so leaving the door open here.
-					RDB.zadd('categories:' + cid + ':tid', timestamp, tid);
-					RDB.hincrby('category:' + cid, 'topic_count', 1);
-					RDB.incr('totaltopiccount');
+					db.sortedSetAdd('categories:' + cid + ':tid', timestamp, tid);
+					db.incrObjectField('category:' + cid, 'topic_count', 1);
+					db.incrObjectField('global', 'topicCount');
 
 					feed.updateCategory(cid);
 
@@ -124,7 +124,7 @@ var async = require('async'),
 	};
 
 	Topics.getTopicData = function(tid, callback) {
-		RDB.hgetall('topic:' + tid, function(err, data) {
+		db.getObject('topic:' + tid, function(err, data) {
 			if(err) {
 				return callback(err, null);
 			}
@@ -236,8 +236,7 @@ var async = require('async'),
 			since = terms[term];
 
 		var args = ['topics:recent', '+inf', timestamp - since, 'LIMIT', start, end - start + 1];
-
-		RDB.zrevrangebyscore(args, function(err, tids) {
+		db.getSortedSetRevRangeByScore(args, function(err, tids) {
 			if (err) {
 				return callback(err);
 			}
@@ -272,7 +271,7 @@ var async = require('async'),
 				return unreadTids.length < 21 && !done;
 			},
 			function(callback) {
-				RDB.zrevrange('topics:recent', start, stop, function(err, tids) {
+				db.getSortedSetRevRange('topics:recent', start, stop, function(err, tids) {
 
 					if (err)
 						return callback(err);
@@ -344,7 +343,7 @@ var async = require('async'),
 		async.whilst(
 			continueCondition,
 			function(callback) {
-				RDB.zrevrange('topics:recent', start, stop, function(err, tids) {
+				db.getSortedSetRevRange('topics:recent', start, stop, function(err, tids) {
 					if (err)
 						return callback(err);
 
@@ -597,7 +596,7 @@ var async = require('async'),
 	}
 
 	Topics.getAllTopics = function(limit, after, callback) {
-		RDB.smembers('topics:tid', function(err, tids) {
+		db.getSetMembers('topics:tid', function(err, tids) {
 			if(err) {
 				return callback(err, null);
 			}
@@ -643,7 +642,7 @@ var async = require('async'),
 	}
 
 	Topics.markAllRead = function(uid, callback) {
-		RDB.smembers('topics:tid', function(err, tids) {
+		db.getSetMembers('topics:tid', function(err, tids) {
 			if (err) {
 				return callback(err, null);
 			}
@@ -667,12 +666,12 @@ var async = require('async'),
 	}
 
 	Topics.markUnRead = function(tid, callback) {
-		RDB.del('tid:' + tid + ':read_by_uid', callback);
+		db.delete('tid:' + tid + ':read_by_uid', callback);
 	}
 
 	Topics.markAsRead = function(tid, uid) {
 
-		RDB.sadd('tid:' + tid + ':read_by_uid', uid);
+		db.setAdd('tid:' + tid + ':read_by_uid', uid);
 
 		Topics.getTopicField(tid, 'cid', function(err, cid) {
 
@@ -691,19 +690,19 @@ var async = require('async'),
 	}
 
 	Topics.hasReadTopics = function(tids, uid, callback) {
-		var batch = RDB.multi();
+		var sets = [];
 
 		for (var i = 0, ii = tids.length; i < ii; i++) {
-			batch.sismember('tid:' + tids[i] + ':read_by_uid', uid);
+			sets.push('tid:' + tids[i] + ':read_by_uid');
 		}
 
-		batch.exec(function(err, hasRead) {
+		db.isMemberOfSets(sets, uid, function(err, hasRead) {
 			callback(hasRead);
 		});
 	}
 
 	Topics.hasReadTopic = function(tid, uid, callback) {
-		RDB.sismember('tid:' + tid + ':read_by_uid', uid, function(err, hasRead) {
+		db.isSetMember('tid:' + tid + ':read_by_uid', uid, function(err, hasRead) {
 
 			if (err === null) {
 				callback(hasRead);
@@ -719,7 +718,9 @@ var async = require('async'),
 		if (Array.isArray(tids)) {
 			async.eachSeries(tids, function(tid, next) {
 				Topics.getTeaser(tid, function(err, teaser_info) {
-					if (err) teaser_info = {};
+					if (err) {
+						teaser_info = {};
+					}
 					teasers.push(teaser_info);
 					next();
 				});
@@ -783,23 +784,23 @@ var async = require('async'),
 	}
 
 	Topics.getTopicField = function(tid, field, callback) {
-		RDB.hget('topic:' + tid, field, callback);
+		db.getObjectField('topic:' + tid, field, callback);
 	}
 
 	Topics.getTopicFields = function(tid, fields, callback) {
-		RDB.hmgetObject('topic:' + tid, fields, callback);
+		db.getObjectFields('topic:' + tid, fields, callback);
 	}
 
 	Topics.setTopicField = function(tid, field, value, callback) {
-		RDB.hset('topic:' + tid, field, value, callback);
+		db.setObjectField('topic:' + tid, field, value, callback);
 	}
 
 	Topics.increasePostCount = function(tid, callback) {
-		RDB.hincrby('topic:' + tid, 'postcount', 1, callback);
+		db.incrObjectField('topic:' + tid, 'postcount', callback);
 	}
 
 	Topics.increaseViewCount = function(tid, callback) {
-		RDB.hincrby('topic:' + tid, 'viewcount', 1, callback);
+		db.incrObjectField('topic:' + tid, 'viewcount', callback);
 	}
 
 	Topics.isLocked = function(tid, callback) {
@@ -812,16 +813,16 @@ var async = require('async'),
 	}
 
 	Topics.updateTimestamp = function(tid, timestamp) {
-		RDB.zadd('topics:recent', timestamp, tid);
+		db.sortedSetAdd('topics:recent', timestamp, tid);
 		Topics.setTopicField(tid, 'lastposttime', timestamp);
 	}
 
 	Topics.addPostToTopic = function(tid, pid) {
-		RDB.rpush('tid:' + tid + ':posts', pid);
+		db.listAppend('tid:' + tid + ':posts', pid);
 	}
 
 	Topics.getPids = function(tid, callback) {
-		RDB.lrange('tid:' + tid + ':posts', 0, -1, callback);
+		db.getListRange('tid:' + tid + ':posts', 0, -1, callback);
 	}
 
 	Topics.getUids = function(tid, callback) {
@@ -848,23 +849,23 @@ var async = require('async'),
 
 	Topics.delete = function(tid) {
 		Topics.setTopicField(tid, 'deleted', 1);
-		RDB.zrem('topics:recent', tid);
+		db.sortedSetRemove('topics:recent', tid);
 
 		Topics.getTopicField(tid, 'cid', function(err, cid) {
 			feed.updateCategory(cid);
-			RDB.hincrby('category:' + cid, 'topic_count', -1);
+			db.incrObjectFieldBy('category:' + cid, 'topic_count', -1);
 		});
 	}
 
 	Topics.restore = function(tid) {
 		Topics.setTopicField(tid, 'deleted', 0);
 		Topics.getTopicField(tid, 'lastposttime', function(err, lastposttime) {
-			RDB.zadd('topics:recent', lastposttime, tid);
+			db.sortedSetAdd('topics:recent', lastposttime, tid);
 		});
 
 		Topics.getTopicField(tid, 'cid', function(err, cid) {
 			feed.updateCategory(cid);
-			RDB.hincrby('category:' + cid, 'topic_count', 1);
+			db.incrObjectFieldBy('category:' + cid, 'topic_count', 1);
 		});
 	}
 
@@ -885,7 +886,7 @@ var async = require('async'),
 	}
 
 	Topics.reIndexAll = function(callback) {
-		RDB.smembers('topics:tid', function(err, tids) {
+		db.getSetMembers('topics:tid', function(err, tids) {
 			if (err) {
 				callback(err, null);
 			} else {

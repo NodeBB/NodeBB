@@ -1,4 +1,4 @@
-var RDB = require('./redis'),
+var db = require('./database'),
 	posts = require('./posts'),
 	topics = require('./topics'),
 	threadTools = require('./threadTools'),
@@ -19,7 +19,7 @@ var RDB = require('./redis'),
 
 (function(PostTools) {
 	PostTools.isMain = function(pid, tid, callback) {
-		RDB.lrange('tid:' + tid + ':posts', 0, 0, function(err, pids) {
+		db.getListRange('tid:' + tid + ':posts', 0, 0, function(err, pids) {
 			if(err) {
 				return callback(err);
 			}
@@ -131,14 +131,14 @@ var RDB = require('./redis'),
 	PostTools.delete = function(uid, pid, callback) {
 		var success = function() {
 			posts.setPostField(pid, 'deleted', 1);
-			RDB.decr('totalpostcount');
+			db.decrObjectField('global', 'postCount');
 			postSearch.remove(pid);
 
 			posts.getPostFields(pid, ['tid', 'uid'], function(err, postData) {
-				RDB.hincrby('topic:' + postData.tid, 'postcount', -1);
+				db.incrObjectFieldBy('topic:' + postData.tid, 'postcount', -1);
 
 				user.decrementUserFieldBy(postData.uid, 'postcount', 1, function(err, postcount) {
-					RDB.zadd('users:postcount', postcount, postData.uid);
+					db.sortedSetAdd('users:postcount', postcount, postData.uid);
 				});
 
 				// Delete the thread if it is the last undeleted post
@@ -180,10 +180,10 @@ var RDB = require('./redis'),
 	PostTools.restore = function(uid, pid, callback) {
 		var success = function() {
 			posts.setPostField(pid, 'deleted', 0);
-			RDB.incr('totalpostcount');
+			db.incrObjectField('global', 'postCount');
 
 			posts.getPostFields(pid, ['tid', 'uid', 'content'], function(err, postData) {
-				RDB.hincrby('topic:' + postData.tid, 'postcount', 1);
+				db.incrObjectFieldBy('topic:' + postData.tid, 'postcount', 1);
 
 				user.incrementUserFieldBy(postData.uid, 'postcount', 1);
 

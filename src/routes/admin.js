@@ -3,7 +3,7 @@ var nconf = require('nconf'),
 	path = require('path'),
 	winston = require('winston'),
 
-	RDB = require('./../redis'),
+	db = require('./../database'),
 	user = require('./../user'),
 	groups = require('../groups'),
 	topics = require('./../topics'),
@@ -267,29 +267,8 @@ var nconf = require('nconf'),
 
 			app.namespace('/redis', function () {
 				app.get('/', function (req, res) {
-					RDB.info(function (err, data) {
-						data = data.split("\r\n");
-						var finalData = {};
-
-						for (var i in data) {
-
-							if (data[i].indexOf(':') == -1 || !data[i])
-								continue;
-
-							try {
-								data[i] = data[i].replace(/:/, "\":\"");
-								var json = "{\"" + data[i] + "\"}";
-
-								var jsonObject = JSON.parse(json);
-								for (var key in jsonObject) {
-									finalData[key] = jsonObject[key];
-								}
-							} catch (err) {
-								winston.warn('can\'t parse redis status variable, ignoring', i, data[i], err);
-							}
-						}
-
-						res.json(finalData);
+					db.info(function (err, data) {
+						res.json(data);
 					});
 				});
 

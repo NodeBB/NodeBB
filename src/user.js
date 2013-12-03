@@ -486,7 +486,7 @@ var bcrypt = require('bcrypt'),
 	User.unfollow = function(uid, unfollowid, callback) {
 		db.setRemove('following:' + uid, unfollowid, function(err, data) {
 			if (!err) {
-				RDB.srem('followers:' + unfollowid, uid, function(err, data) {
+				db.setRemove('followers:' + unfollowid, uid, function(err, data) {
 					callback(data);
 				});
 			} else {

@@ -17,6 +17,9 @@
 		redisClient = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host'));
 	}
 
+	module.client = redisClient;
+	module.type = 'redis';
+
 	if (nconf.get('redis:password')) {
 		redisClient.auth(nconf.get('redis:password'));
 	}
@@ -68,6 +71,38 @@
 		});
 	}
 
+
+	module.info = function(callback) {
+		redisClient.info(function (err, data) {
+			if(err) {
+				return callback(err);
+			}
+
+			data = data.split("\r\n");
+			var finalData = {};
+
+			for (var i in data) {
+
+				if (data[i].indexOf(':') == -1 || !data[i])
+					continue;
+
+				try {
+					data[i] = data[i].replace(/:/, "\":\"");
+					var json = "{\"" + data[i] + "\"}";
+
+					var jsonObject = JSON.parse(json);
+					for (var key in jsonObject) {
+						finalData[key] = jsonObject[key];
+					}
+				} catch (err) {
+					winston.warn('can\'t parse redis status variable, ignoring', i, data[i], err);
+				}
+			}
+
+			callback(null, finalData);
+		});
+	}
+
 	// key
 
 	module.exists = function(key, callback) {
@@ -78,6 +113,14 @@
 
 	module.delete = function(key, callback) {
 		redisClient.del(key, callback);
+	}
+
+	module.get = function(key, callback) {
+		redisClient.get(key, callback);
+	}
+
+	module.set = function(key, callback) {
+		redisClient.get(key, callback);
 	}
 
 	//hashes
@@ -91,7 +134,7 @@
 	}
 
 	module.getObject = function(key, callback) {
-		redisClient.hgetall(key, callback)
+		redisClient.hgetall(key, callback);
 	}
 
 	module.getObjectField = function(key, field, callback) {
@@ -138,6 +181,10 @@
 		redisClient.hincrby(key, field, 1, callback);
 	}
 
+	module.decrObjectField = function(key, field, callback) {
+		redisClient.hincrby(key, field, -1, callback);
+	}
+
 	module.incrObjectFieldBy = function(key, field, value, callback) {
 		redisClient.hincrby(key, field, value, callback);
 	}
@@ -157,12 +204,26 @@
 		redisClient.sismember(key, value, callback);
 	}
 
+	module.isMemberOfSets = function(sets, value, callback) {
+		var batch = redisClient.multi();
+
+		for (var i = 0, ii = sets.length; i < ii; i++) {
+			batch.sismember(sets[i], value);
+		}
+
+		batch.exec(callback);
+	}
+
 	module.getSetMembers = function(key, callback) {
 		redisClient.smembers(key, callback);
 	}
 
 	module.setCount = function(key, callback) {
 		redisClient.scard(key, callback);
+	}
+
+	module.setRemoveRandom = function(key, callback) {
+		redisClient.spop(key, callback);
 	}
 
 	// sorted sets
@@ -176,11 +237,15 @@
 	}
 
 	module.getSortedSetRange = function(key, start, stop, callback) {
-		redisClient.zrange(set, start, stop, callback);
+		redisClient.zrange(key, start, stop, callback);
 	}
 
 	module.getSortedSetRevRange = function(key, start, stop, callback) {
-		redisClient.zrevrange(set, start, stop, callback);
+		redisClient.zrevrange(key, start, stop, callback);
+	}
+
+	module.getSortedSetRevRangeByScore = function(args, callback) {
+		redisClient.zrevrangebyscore(args, callback);
 	}
 
 	module.sortedSetCount = function(key, min, max, callback) {
@@ -199,6 +264,8 @@
 	module.getListRange = function(key, start, stop, callback) {
 		redisClient.lrange(key, start, stop, callback);
 	}
+
+
 
 }(exports));
 
