@@ -193,9 +193,7 @@
 		});
 
 		app.post('/register', function(req, res) {
-			console.log('CALLING USER CREATE');
 			user.create(req.body.username, req.body.password, req.body.email, function(err, uid) {
-				console.log('USER CREATE DONE', err, uid);
 				if (err === null && uid) {
 					req.login({
 						uid: uid
