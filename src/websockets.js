@@ -12,14 +12,6 @@ var cookie = require('cookie'),
 	RedisStoreLib = require('connect-redis')(express),
 	db = require('./database'),
 
-	redis = require('redis'),
-	redisClient = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host')),
-
-	RedisStore = new RedisStoreLib({
-		client: redisClient,
-		ttl: 60 * 60 * 24 * 14
-	}),
-
 	user = require('./user'),
 	Groups = require('./groups'),
 	posts = require('./posts'),
@@ -74,7 +66,7 @@ websockets.init = function(io) {
 		// Validate the session, if present
 		socketCookieParser(hs, {}, function(err) {
 			sessionID = socket.handshake.signedCookies["express.sid"];
-			RedisStore.get(sessionID, function(err, sessionData) {
+			db.sessionStore.get(sessionID, function(err, sessionData) {
 				if (!err && sessionData && sessionData.passport && sessionData.passport.user) {
 					uid = users[sessionID] = sessionData.passport.user;
 				} else {

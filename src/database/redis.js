@@ -6,6 +6,9 @@
 		redis = require('redis'),
 		winston = require('winston'),
 		nconf = require('nconf'),
+		express = require('express'),
+		connectRedis = require('connect-redis')(express),
+
 		redis_socket_or_host = nconf.get('redis:host'),
 		utils = require('./../../public/src/utils.js');
 
@@ -16,6 +19,11 @@
 		/* Else, connect over tcp/ip */
 		redisClient = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host'));
 	}
+
+	module.sessionStore = new connectRedis({
+		client: redisClient,
+		ttl: 60 * 60 * 24 * 30
+	});
 
 	module.client = redisClient;
 	module.type = 'redis';

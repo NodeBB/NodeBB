@@ -43,7 +43,6 @@ var user = require('./user'),
 						}
 
 						if (res) {
-							console.log('logged in', uid);
 							next(null, {
 								user: {
 									uid: uid

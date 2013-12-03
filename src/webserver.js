@@ -5,7 +5,6 @@ var path = require('path'),
 	express_namespace = require('express-namespace'),
 	WebServer = express(),
 	server = require('http').createServer(WebServer),
-	RedisStore = require('connect-redis')(express),
 	nconf = require('nconf'),
 	winston = require('winston'),
 	validator = require('validator'),
@@ -142,19 +141,8 @@ var path = require('path'),
 				app.use(express.cookieParser()); // If you want to parse cookies (res.cookies)
 
 				// TODO : this uses redis
-				/*app.use(express.session({
-					store: new RedisStore({
-						client: RDB,
-						ttl: 60 * 60 * 24 * 30
-					}),
-					secret: nconf.get('secret'),
-					key: 'express.sid',
-					cookie: {
-						maxAge: 60 * 60 * 24 * 30 * 1000 // 30 days
-					}
-				}));*/
-
-				app.use(express.cookieSession({
+				app.use(express.session({
+					store: db.sessionStore,
 					secret: nconf.get('secret'),
 					key: 'express.sid',
 					cookie: {
