@@ -120,13 +120,21 @@ var	DebugRoute = function(app) {
 				});
 			}
 
+			function getObjectValues(callback) {
+				db.getObjectValues(objectKey, function(err, data) {
+					console.log('getObjectValues return', data);
+					callback(err, {'getObjectValues':data});
+				});
+			}
+
 			var tasks = [
-				//setObject,
+				setObject,
 				getObject,
 				setObjectField,
 				getObject,
 				getObjectField,
 				getObjectFields,
+				getObjectValues,
 			];
 
 			require('async').series(tasks, function(err, results) {

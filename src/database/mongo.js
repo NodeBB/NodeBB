@@ -72,13 +72,15 @@
 		throw new Error('not-implemented');
 	}
 
+	module.keys = function(key, callback) {
+		throw new Error('not-implemented');
+	}
+
 	//hashes
 
 	module.setObject = function(key, data, callback) {
-		console.log('SET OBJECT CALLED', key, data);
 		data['_key'] = key;
 		db.collection('objects').update({_key:key}, {$set:data}, {upsert:true, w: 1}, function(err, result) {
-			console.log('SET OBJECT COMPLETE', err, result);
 			callback(err, result);
 		});
 	}
@@ -87,15 +89,15 @@
 		var data = {};
 		data[field] = value;
 		db.collection('objects').update({_key:key}, {$set:data}, {upsert:true, w: 1}, function(err, result) {
-			console.log('SET OBJECT COMPLETE', err, result);
 			callback(err, result);
 		});
 	}
 
 	module.getObject = function(key, callback) {
-		console.log('GET OBJECT', key);
 		db.collection('objects').findOne({_key:key}, function(err, item) {
-			console.log('RETURNING OBJECT', item);
+			if(item && item._id) {
+				delete item._id;
+			}
 			callback(err, item);
 		});
 	}
@@ -127,17 +129,28 @@
 				for(var i=0; i<fields.length; ++i) {
 					data[fields[i]] = null;
 				}
-				console.log('getObjectFields', data);
 				return callback(null, data);
 			}
 
-			console.log('getObjectFields', item);
+			if(item._id) {
+				delete item._id;
+			}
 			callback(err, item);
 		});
 	}
 
 	module.getObjectValues = function(key, callback) {
-		throw new Error('not-implemented');
+		module.getObject(key, function(err, data) {
+			if(err) {
+				return callback(err);
+			}
+
+			var values = [];
+			for(var key in data) {
+				values.push(data[key]);
+			}
+			callback(null, values);
+		});
 	}
 
 	module.isObjectField = function(key, field, callback) {
