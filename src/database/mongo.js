@@ -116,7 +116,7 @@
 
 		var _fields = {};
 		for(var i=0; i<fields.length; ++i) {
-			_fields[fields[i]] = 'baris';
+			_fields[fields[i]] = 1;
 		}
 
 		db.collection('objects').findOne({_key:key}, {fields:_fields}, function(err, item) {
@@ -154,11 +154,18 @@
 	}
 
 	module.isObjectField = function(key, field, callback) {
-		throw new Error('not-implemented');
+		module.getObjectField(key, field, function(err, item) {
+			callback(err, item !== undefined);
+		});
 	}
 
 	module.deleteObjectField = function(key, field, callback) {
-		throw new Error('not-implemented');
+		var data = {};
+		data[field] = "";
+		db.collection('objects').update({_key:key}, {$unset : data}, function(err, result) {
+			console.log(err, result);
+			callback(err, result);
+		});
 	}
 
 	module.incrObjectField = function(key, field, callback) {

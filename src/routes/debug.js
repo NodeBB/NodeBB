@@ -127,14 +127,33 @@ var	DebugRoute = function(app) {
 				});
 			}
 
+			function isObjectField(callback) {
+				db.isObjectField(objectKey, 'age', function(err, data) {
+					console.log('isObjectField return', data);
+					callback(err, {'isObjectField':data});
+				});
+			}
+
+			function deleteObjectField(callback) {
+				db.deleteObjectField(objectKey, 'reputation', function(err, data) {
+					console.log('deleteObjectField return', data);
+					callback(err, {'deleteObjectField':data});
+				});
+			}
+
 			var tasks = [
 				setObject,
 				getObject,
+				deleteObjectField,
+				getObject,
 				setObjectField,
+				getObject,
+				deleteObjectField,
 				getObject,
 				getObjectField,
 				getObjectFields,
 				getObjectValues,
+				isObjectField
 			];
 
 			require('async').series(tasks, function(err, results) {
