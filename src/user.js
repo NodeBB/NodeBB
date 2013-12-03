@@ -103,7 +103,7 @@ var bcrypt = require('bcrypt'),
 
 				if (email !== undefined) {
 					db.setObjectField('email:uid', email, uid);
-					//User.sendConfirmationEmail(email);
+					User.sendConfirmationEmail(email);
 				}
 
 				plugins.fireHook('action:user.create', {uid: uid, username: username, email: email, picture: gravatar, timestamp: timestamp});
