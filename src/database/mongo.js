@@ -27,8 +27,8 @@
 
 	// TODO: fill out settings.db
 	module.sessionStore = new mongoStore({
-      db: settings.db
-    });
+		db: settings.db
+	});
 
 
 
