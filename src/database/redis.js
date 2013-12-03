@@ -12,6 +12,7 @@
 		redis_socket_or_host = nconf.get('redis:host'),
 		utils = require('./../../public/src/utils.js');
 
+
 	if (redis_socket_or_host && redis_socket_or_host.indexOf('/')>=0) {
 		/* If redis.host contains a path name character, use the unix dom sock connection. ie, /tmp/redis.sock */
 		redisClient = redis.createClient(nconf.get('redis:host'));
@@ -20,13 +21,12 @@
 		redisClient = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host'));
 	}
 
+	module.client = redisClient;
+
 	module.sessionStore = new connectRedis({
 		client: redisClient,
 		ttl: 60 * 60 * 24 * 30
 	});
-
-	module.client = redisClient;
-	module.type = 'redis';
 
 	if (nconf.get('redis:password')) {
 		redisClient.auth(nconf.get('redis:password'));
@@ -42,6 +42,11 @@
 			}
 		});
 	}
+
+	module.init = function(callback) {
+		callback(null);
+	}
+
 
 	/*
 	 * A possibly more efficient way of doing multiple sismember calls

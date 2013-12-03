@@ -18,7 +18,6 @@ var fs = require('fs'),
 	Plugins.readyEvent = new eventEmitter;
 
 	Plugins.init = function() {
-		console.log('plugins init called');
 		if (Plugins.initialized) {
 			return;
 		}
@@ -39,7 +38,7 @@ var fs = require('fs'),
 				winston.info('[plugins] Plugins OK');
 			}
 			Plugins.initialized = true;
-			plugins.readyEvent.emit('ready');
+			Plugins.readyEvent.emit('ready');
 		});
 	};
 

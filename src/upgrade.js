@@ -1,10 +1,9 @@
 "use strict";
 
-var db = require('./database'),
+var //db = require('./database'),
 
 	// TODO: temp until upgrade is figured out with dbal,
-	// db.client is redisClient for now
-	RDB = db.client,
+	RDB = require('./database/redis').client,
 
 	async = require('async'),
 	winston = require('winston'),

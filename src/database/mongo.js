@@ -2,9 +2,7 @@
 
 (function(module) {
 	'use strict';
-	var Db = require('mongodb').Db,
-		mongoClient = require('mongodb').MongoClient,
-		Server = require('mongodb').Server,
+	var mongoClient = require('mongodb').MongoClient,
 		winston = require('winston'),
 		nconf = require('nconf'),
 		express = require('express'),
@@ -12,45 +10,36 @@
 		mongoHost = nconf.get('mongo:host'),
 		db;
 
+	module.init = function(callback) {
+		mongoClient.connect('mongodb://'+ mongoHost + ':' + nconf.get('mongo:port') + '/' + nconf.get('mongo:database'), function(err, _db) {
+			db = _db;
+			console.log('WE ARE CONNECTED');
 
-	var db = new Db(nconf.get('mongo:database'), new Server(mongoHost, nconf.get('mongo:port')), {w:1});
-	//console.log(db.collection);
+			if(err) {
+				winston.error("NodeBB could not connect to your Mongo database. Mongo returned the following error: " + err.message);
+				process.exit();
+			}
 
-	db.open(function(err, _db) {
-	//mongoClient.connect('mongodb://'+ mongoHost + ':' + nconf.get('mongo:port') + '/' + nconf.get('mongo:database'), function(err, _db) {
-		console.log('WE ARE CONNECTED');
-		if(err) {
-			winston.error("NodeBB could not connect to your Mongo database. Mongo returned the following error: " + err.message);
-			process.exit();
+			// TODO: fill out settings.db
+			module.sessionStore = new mongoStore({
+				db: db
+			});
+
+
+			db.createCollection('objects', function(err, collection) {
+			});
+
+			db.createCollection('sets', function(err, collection) {
+			});
+
+			callback(err);
+		});
+		// look up how its done in mongo
+		/*if (nconf.get('mongo:password')) {
+			redisClient.auth(nconf.get('mongo:password'));
 		}
-
-		// TODO: fill out settings.db
-		module.sessionStore = new mongoStore({
-			db: db
-		});
-
-		db.collection('objects').findOne({_key:'config'}, {timeout:true}, function(err, item) {
-			console.log('fail');
-			console.log(item);
-			callback(err, item);
-		});
-
-	});
-
-	db.createCollection('objects', function(err, collection) {
-		console.log('collection created', err, collection);
-	});
-
-	db.createCollection('sets', function(err, collection) {
-
-	});
-
-
-	// look up how its done in mongo
-	/*if (nconf.get('mongo:password')) {
-		redisClient.auth(nconf.get('mongo:password'));
+		*/
 	}
-	*/
 
 
 	//
@@ -97,18 +86,46 @@
 
 	module.getObject = function(key, callback) {
 		console.log('calling findOne');
-		db.collection('objects').findOne({_key:key}, {timeout:true},function(err, item) {
+		db.collection('objects').findOne({_key:key}, function(err, item) {
 			console.log(item);
 			callback(err, item);
 		});
 	}
 
 	module.getObjectField = function(key, field, callback) {
-		throw new Error('not-implemented');
+		module.getObjectFields(key, [field], function(err, data) {
+			if(err) {
+				return callback(err);
+			}
+
+			callback(null, data[field]);
+		})
 	}
 
 	module.getObjectFields = function(key, fields, callback) {
-		throw new Error('not-implemented');
+
+		var _fields = {};
+		for(var i=0; i<fields.length; ++i) {
+			_fields[fields[i]] = 1;
+		}
+
+		db.collection('objects').findOne({_key:key}, {fields:_fields}, function(err, item) {
+			if(err) {
+				return callback(err);
+			}
+
+			var data = {};
+			if(item === null) {
+				for(var i=0; i<fields.length; ++i) {
+					data[fields[i]] = null;
+				}
+				console.log('getObjectFields', data);
+				return callback(null, data);
+			}
+
+			console.log('getObjectFields', item);
+			callback(err, item);
+		});
 	}
 
 	module.getObjectValues = function(key, callback) {

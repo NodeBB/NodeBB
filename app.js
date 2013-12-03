@@ -60,7 +60,7 @@
 		nconf.file({
 			file: __dirname + '/config.json'
 		});
-		meta = require('./src/meta.js');
+		meta = require('./src/meta');
 
 		nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path') + '/');
 		nconf.set('upload_url', nconf.get('url') + 'uploads/');
@@ -73,60 +73,62 @@
 			winston.info('Base Configuration OK.');
 		}
 
-		meta.configs.init(function () {
+		require('./src/database').init(function(err) {
+			meta.configs.init(function () {
 
-			//
-			// TODO : figure out reds search after dbal is complete
-			//
-			//var reds = require('reds'),
-			//	db = require('./src/database');
-			/*reds.createClient = function () {
-				return reds.client || (reds.client = db);
-			};*/
+				//
+				// TODO : figure out reds search after dbal is complete
+				//
+				//var reds = require('reds'),
+				//	db = require('./src/database');
+				/*reds.createClient = function () {
+					return reds.client || (reds.client = db);
+				};*/
 
-			var templates = require('./public/src/templates'),
-				translator = require('./public/src/translator'),
-				webserver = require('./src/webserver'),
-				SocketIO =  require('socket.io').listen(global.server, { log: false, transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket'], 'browser client minification': true}),
-				websockets = require('./src/websockets'),
-				plugins = require('./src/plugins'),
-				notifications = require('./src/notifications'),
-				upgrade = require('./src/upgrade');
+				var templates = require('./public/src/templates'),
+					translator = require('./public/src/translator'),
+					webserver = require('./src/webserver'),
+					SocketIO =  require('socket.io').listen(global.server, { log: false, transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket'], 'browser client minification': true}),
+					websockets = require('./src/websockets'),
+					plugins = require('./src/plugins'),
+					notifications = require('./src/notifications'),
+					upgrade = require('./src/upgrade');
 
-			upgrade.check(function(schema_ok) {
-				if (schema_ok || nconf.get('check-schema') === false) {
-					websockets.init(SocketIO);
-					console.log('calling plugins init');
-					plugins.init();
-					global.templates = {};
-					global.translator = translator;
+				upgrade.check(function(schema_ok) {
+					if (schema_ok || nconf.get('check-schema') === false) {
+						websockets.init(SocketIO);
 
-					translator.loadServer();
+						plugins.init();
+						global.templates = {};
+						global.translator = translator;
 
-					var customTemplates = meta.config['theme:templates'] ? path.join(__dirname, 'node_modules', meta.config['theme:id'], meta.config['theme:templates']) : false;
+						translator.loadServer();
 
-					// todo: replace below with read directory code, derp.
-					templates.init([
-						'header', 'footer', 'logout', 'outgoing', 'admin/header', 'admin/footer', 'admin/index',
-						'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext',
-						'emails/header', 'emails/footer',
+						var customTemplates = meta.config['theme:templates'] ? path.join(__dirname, 'node_modules', meta.config['theme:id'], meta.config['theme:templates']) : false;
 
-						'noscript/header', 'noscript/home', 'noscript/category', 'noscript/topic'
-					], customTemplates);
+						// todo: replace below with read directory code, derp.
+						templates.init([
+							'header', 'footer', 'logout', 'outgoing', 'admin/header', 'admin/footer', 'admin/index',
+							'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext',
+							'emails/header', 'emails/footer',
+
+							'noscript/header', 'noscript/home', 'noscript/category', 'noscript/topic'
+						], customTemplates);
 
 
-					plugins.ready(function() {
-						templates.ready(webserver.init);
-					});
+						plugins.ready(function() {
+							templates.ready(webserver.init);
+						});
 
-					notifications.init();
-				} else {
-					winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
-					winston.warn('    node app --upgrade');
-					winston.warn('To ignore this error (not recommended):');
-					winston.warn('    node app --no-check-schema')
-					process.exit();
-				}
+						notifications.init();
+					} else {
+						winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
+						winston.warn('    node app --upgrade');
+						winston.warn('To ignore this error (not recommended):');
+						winston.warn('    node app --no-check-schema')
+						process.exit();
+					}
+				});
 			});
 		});
 	} else if (nconf.get('setup') || nconf.get('install') || !fs.existsSync(__dirname + '/config.json')) {
