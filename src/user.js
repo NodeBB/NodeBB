@@ -107,7 +107,7 @@ var bcrypt = require('bcrypt'),
 				}
 
 				plugins.fireHook('action:user.create', {uid: uid, username: username, email: email, picture: gravatar, timestamp: timestamp});
-				db.incrObjectField('global', 'usercount');
+				db.incrObjectField('global', 'userCount');
 
 				db.sortedSetAdd('users:joindate', timestamp, uid);
 				db.sortedSetAdd('users:postcount', 0, uid);
@@ -597,7 +597,7 @@ var bcrypt = require('bcrypt'),
 	};
 
 	User.count = function(socket) {
-		db.getObjectField('global', 'usercount', function(err, count) {
+		db.getObjectField('global', 'userCount', function(err, count) {
 			if(err) {
 				return;
 			}

@@ -16,7 +16,7 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2013, 10, 26).getTime();
+	var	latestSchema = new Date(2013, 11, 2).getTime();
 
 	RDB.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -184,7 +184,7 @@ Upgrade.upgrade = function(callback) {
 		},
 		function(next) {
 			thisSchemaDate = new Date(2013, 10, 26).getTime();
-			if (schemaDate < thisSchemaDate || 1) {
+			if (schemaDate < thisSchemaDate) {
 				categories.getAllCategories(0, function(err, categories) {
 
 					function updateIcon(category, next) {
@@ -214,7 +214,57 @@ Upgrade.upgrade = function(callback) {
 				winston.info('[2013/11/26] Update to Category icons skipped.');
 				next();
 			}
-		}
+		},
+		function(next) {
+
+			function updateKeyToHash(key, next) {
+				RDB.get(key, function(err, value) {
+					RDB.hset('global', newKeys[key], value, next);
+				});
+			}
+
+			thisSchemaDate = new Date(2013, 11, 2).getTime();
+			if (schemaDate < thisSchemaDate) {
+
+				var keys = [
+					'global:next_user_id',
+					'next_topic_id',
+					'next_gid',
+					'notifications:next_nid',
+					'global:next_category_id',
+					'global:next_message_id',
+					'global:next_post_id',
+					'usercount',
+					'totaltopiccount',
+					'totalpostcount'
+				];
+
+				var newKeys = {
+					'global:next_user_id':'nextUid',
+					'next_topic_id':'nextTid',
+					'next_gid':'nextGid',
+					'notifications:next_nid':'nextNid',
+					'global:next_category_id':'nextCid',
+					'global:next_message_id':'nextMid',
+					'global:next_post_id':'nextPid',
+					'usercount':'userCount',
+					'totaltopiccount':'topicCount',
+					'totalpostcount':'postCount'
+				};
+
+				async.each(keys, updateKeyToHash, function(err) {
+					if(err) {
+						return next(err);
+					}
+					winston.info('[2013/12/2] Updated global keys to hash.');
+					next();
+				});
+
+			} else {
+				winston.info('[2013/12/2] Update to global keys skipped');
+				next();
+			}
+		},
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 12!!!
 	], function(err) {
