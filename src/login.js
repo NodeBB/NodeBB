@@ -58,7 +58,11 @@ var user = require('./user.js'),
 	}
 
 	Login.loginViaTwitter = function(twid, handle, photos, callback) {
-		user.getUidByTwitterId(twid, function(uid) {
+		user.getUidByTwitterId(twid, function(err, uid) {
+			if(err) {
+				return callback(err);
+			}
+
 			if (uid !== null) {
 				// Existing User
 				callback(null, {
@@ -67,32 +71,36 @@ var user = require('./user.js'),
 			} else {
 				// New User
 				user.create(handle, undefined, undefined, function(err, uid) {
-					if (err !== null) {
-						callback(err);
-					} else {
-						// Save twitter-specific information to the user
-						user.setUserField(uid, 'twid', twid);
-						RDB.hset('twid:uid', twid, uid);
-
-						// Save their photo, if present
-						if (photos && photos.length > 0) {
-							var photoUrl = photos[0].value;
-							photoUrl = path.dirname(photoUrl) + '/' + path.basename(photoUrl, path.extname(photoUrl)).slice(0, -6) + 'bigger' + path.extname(photoUrl);
-							user.setUserField(uid, 'uploadedpicture', photoUrl);
-							user.setUserField(uid, 'picture', photoUrl);
-						}
-
-						callback(null, {
-							uid: uid
-						});
+					if(err) {
+						return callback(err);
 					}
+
+					// Save twitter-specific information to the user
+					user.setUserField(uid, 'twid', twid);
+					RDB.hset('twid:uid', twid, uid);
+
+					// Save their photo, if present
+					if (photos && photos.length > 0) {
+						var photoUrl = photos[0].value;
+						photoUrl = path.dirname(photoUrl) + '/' + path.basename(photoUrl, path.extname(photoUrl)).slice(0, -6) + 'bigger' + path.extname(photoUrl);
+						user.setUserField(uid, 'uploadedpicture', photoUrl);
+						user.setUserField(uid, 'picture', photoUrl);
+					}
+
+					callback(null, {
+						uid: uid
+					});
 				});
 			}
 		});
 	}
 
 	Login.loginViaGoogle = function(gplusid, handle, email, callback) {
-		user.getUidByGoogleId(gplusid, function(uid) {
+		user.getUidByGoogleId(gplusid, function(err, uid) {
+			if(err) {
+				return callback(err);
+			}
+
 			if (uid !== null) {
 				// Existing User
 				callback(null, {
@@ -109,21 +117,33 @@ var user = require('./user.js'),
 					});
 				}
 
-				user.getUidByEmail(email, function(uid) {
+				user.getUidByEmail(email, function(err, uid) {
+					if(err) {
+						return callback(err);
+					}
+
 					if (!uid) {
 						user.create(handle, undefined, email, function(err, uid) {
-							if (err !== null) {
-								callback(err);
-							} else success(uid);
+							if(err) {
+								return callback(err);
+							}
+
+							success(uid);
 						});
-					} else success(uid); // Existing account -- merge
+					} else {
+						success(uid); // Existing account -- merge
+					}
 				});
 			}
 		});
 	}
 
 	Login.loginViaFacebook = function(fbid, name, email, callback) {
-		user.getUidByFbid(fbid, function(uid) {
+		user.getUidByFbid(fbid, function(err, uid) {
+			if(err) {
+				return callback(err);
+			}
+
 			if (uid !== null) {
 				// Existing User
 				callback(null, {
@@ -140,14 +160,22 @@ var user = require('./user.js'),
 					});
 				}
 
-				user.getUidByEmail(email, function(uid) {
+				user.getUidByEmail(email, function(err, uid) {
+					if(err) {
+						return callback(err);
+					}
+
 					if (!uid) {
 						user.create(name, undefined, email, function(err, uid) {
-							if (err !== null) {
-								callback(err);
-							} else success(uid);
+							if(err) {
+								return callback(err);
+							}
+
+							success(uid);
 						});
-					} else success(uid); // Existing account -- merge
+					} else {
+						success(uid); // Existing account -- merge
+					}
 				});
 			}
 		});

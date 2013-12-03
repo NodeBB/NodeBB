@@ -68,13 +68,26 @@
 		});
 	}
 
+	// key
+
+	module.exists = function(key, callback) {
+		redisClient.exists(key, function(err, exists) {
+			callback(err, exists === 1);
+		});
+	}
+
+	module.delete = function(key, callback) {
+		redisClient.del(key, callback);
+	}
+
+	//hashes
 
 	module.setObject = function(key, data, callback) {
 		redisClient.hmset(key, data, callback);
 	}
 
-	module.setObjectField = function(key, field, callback) {
-		redisClient.hset(key, field, callback)
+	module.setObjectField = function(key, field, value, callback) {
+		redisClient.hset(key, field, value, callback)
 	}
 
 	module.getObject = function(key, callback) {
@@ -107,6 +120,16 @@
 		});
 	}
 
+	module.getObjectValues = function(key, callback) {
+		redisClient.hvals(key, callback);
+	}
+
+	module.isObjectField = function(key, field, callback) {
+		redisClient.hexists(key, field, function(err, exists) {
+			callback(err, exists === 1);
+		});
+	}
+
 	module.deleteObjectField = function(key, field, callback) {
 		redisClient.hdel(key, field, callback);
 	}
@@ -118,6 +141,9 @@
 	module.incrObjectFieldBy = function(key, field, value, callback) {
 		redisClient.hincrby(key, field, value, callback);
 	}
+
+
+	// sets
 
 	module.setAdd = function(key, value, callback) {
 		redisClient.sadd(key, value, callback);
@@ -135,6 +161,12 @@
 		redisClient.smembers(key, callback);
 	}
 
+	module.setCount = function(key, callback) {
+		redisClient.scard(key, callback);
+	}
+
+	// sorted sets
+
 	module.sortedSetAdd = function(key, score, value, callback) {
 		redisClient.zadd(key, score, value, callback);
 	}
@@ -143,9 +175,30 @@
 		redisClient.zrem(key, value, callback);
 	}
 
+	module.getSortedSetRange = function(key, start, stop, callback) {
+		redisClient.zrange(set, start, stop, callback);
+	}
 
+	module.getSortedSetRevRange = function(key, start, stop, callback) {
+		redisClient.zrevrange(set, start, stop, callback);
+	}
 
+	module.sortedSetCount = function(key, min, max, callback) {
+		redisClient.zcount(key, min, max, callback);
+	}
 
+	// lists
+	module.listPrepend = function(key, value, callback) {
+		redisClient.lpush(key, value, callback);
+	}
+
+	module.listAppend = function(key, value, callback) {
+		redisClient.rpush(key, value, callback);
+	}
+
+	module.getListRange = function(key, start, stop, callback) {
+		redisClient.lrange(key, start, stop, callback);
+	}
 
 }(exports));
 
