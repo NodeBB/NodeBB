@@ -113,6 +113,10 @@
 				socket.emit('api:notifications.mark_all_read', null, function() {
 					notifIcon.toggleClass('active', false);
 					utils.refreshTitle();
+
+					// Update favicon + local count
+					Tinycon.setBubble(0);
+					localStorage.setItem('notifications:count', 0);
 				});
 			});
 		}
@@ -137,7 +141,7 @@
 		}
 	});
 
-	socket.emit('api:notifications.getCount', function(count) {
+	socket.emit('api:notifications.getCount', function(err, count) {
 		// Update notification icon, if necessary
 		if (count > 0) {
 			notifIcon.toggleClass('active', true);
@@ -145,9 +149,17 @@
 			notifIcon.toggleClass('active', false);
 		}
 
+		// Update the saved local count
+		localStorage.setItem('notifications:count', count);
+		Tinycon.setBubble(localStorage.getItem('notifications:count'));
+
 		// Update favicon
 		Tinycon.setBubble(count);
 	});
+
+	if (localStorage.getItem('notifications:count') !== null) {
+		Tinycon.setBubble(localStorage.getItem('notifications:count'));
+	}
 
 	socket.on('event:new_notification', function() {
 		notifIcon.toggleClass('active', true);
@@ -159,6 +171,11 @@
 			timeout: 2000
 		});
 		utils.refreshTitle();
+
+		// Update the favicon + local storage
+		var	savedCount = parseInt(localStorage.getItem('notifications:count'),10) || 0;
+		localStorage.setItem('notifications:count', savedCount+1);
+		Tinycon.setBubble(savedCount+1);
 	});
 
 
