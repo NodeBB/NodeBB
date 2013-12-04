@@ -26,15 +26,13 @@
 			});
 
 
-			db.createCollection('objects', function(err, collection) {
-			});
+			db.createCollection('objects', function(err, _collection) {
 
-			db.createCollection('sets', function(err, collection) {
 			});
-
 
 			callback(err);
 		});
+
 		// look up how its done in mongo
 		/*if (nconf.get('mongo:password')) {
 			redisClient.auth(nconf.get('mongo:password'));
@@ -68,7 +66,7 @@
 		throw new Error('not-implemented');
 	}
 
-	module.set = function(key, callback) {
+	module.set = function(key, value, callback) {
 		throw new Error('not-implemented');
 	}
 
@@ -124,15 +122,20 @@
 				return callback(err);
 			}
 
-			var data = {};
 			if(item === null) {
+				item = {};
 				for(var i=0; i<fields.length; ++i) {
-					data[fields[i]] = null;
+					item[fields[i]] = null;
 				}
-				return callback(null, data);
+			} else {
+				for(var i=0; i<fields.length; ++i) {
+					if(item[fields[i]] === null || item[fields[i]] === undefined) {
+						item[fields[i]] = null;
+					}
+				}
 			}
 
-			if(item._id) {
+			if(item && item._id) {
 				delete item._id;
 			}
 			callback(err, item);
@@ -238,23 +241,73 @@
 	// sorted sets
 
 	module.sortedSetAdd = function(key, score, value, callback) {
-		throw new Error('not-implemented');
+
+		var data = {
+			score:score,
+			value:value
+		};
+
+		data.setName = key
+		module.setObject(key+':'+value, data, callback);
 	}
 
 	module.sortedSetRemove = function(key, value, callback) {
 		throw new Error('not-implemented');
 	}
 
+	function getSortedSetRange(key, start, stop, sort, callback) {
+		db.collection('objects').find({setName:key}, {fields:{value:1}})
+			.limit(stop - start + 1)
+			.skip(start)
+			.sort({score: sort})
+			.toArray(function(err, data) {
+				if(err) {
+					return callback(err);
+				}
+
+				// maybe this can be done with mongo?
+				data = data.map(function(item) {
+					return item.value;
+				});
+
+				callback(err, data);
+			});
+	}
+
 	module.getSortedSetRange = function(key, start, stop, callback) {
-		throw new Error('not-implemented');
+		getSortedSetRange(key, start, stop, 1, callback);
 	}
 
 	module.getSortedSetRevRange = function(key, start, stop, callback) {
-		throw new Error('not-implemented');
+		getSortedSetRange(key, start, stop, -1, callback);
 	}
 
 	module.getSortedSetRevRangeByScore = function(args, callback) {
-		throw new Error('not-implemented');
+
+		//var args = ['topics:recent', '+inf', timestamp - since, 'LIMIT', start, end - start + 1];
+		var key = args[0],
+			max = (args[1] === '+inf')?Number.MAX_VALUE:args[1],
+			min = args[2],
+			start = args[4],
+			stop = args[5];
+
+
+		db.collection('objects').find({setName:key, score: {$gt:min, $lt:max}}, {fields:{value:1}})
+			.limit(stop - start + 1)
+			.skip(start)
+			.sort({score: -1})
+			.toArray(function(err, data) {
+				if(err) {
+					return callback(err);
+				}
+
+				// maybe this can be done with mongo?
+				data = data.map(function(item) {
+					return item.value;
+				});
+
+				callback(err, data);
+			});
 	}
 
 	module.sortedSetCount = function(key, min, max, callback) {

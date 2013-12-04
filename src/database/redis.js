@@ -132,8 +132,8 @@
 		redisClient.get(key, callback);
 	}
 
-	module.set = function(key, callback) {
-		redisClient.get(key, callback);
+	module.set = function(key, value, callback) {
+		redisClient.set(key, value, callback);
 	}
 
 	module.keys = function(key, callback) {

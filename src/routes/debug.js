@@ -83,7 +83,7 @@ var	DebugRoute = function(app) {
 		app.get('/mongo', function(req, res) {
 
 			var db = require('./../database');
-			var objectKey = 'someotherObj';
+			var objectKey = 'testing4';
 
 			function createUser(callback) {
 				user.create('baris','123456', 'barisusakli@gmail.com', callback);
@@ -156,7 +156,27 @@ var	DebugRoute = function(app) {
 				});
 			}
 
-			var tasks = [
+
+			function sortedSetAdd(callback) {
+				db.sortedSetAdd('sortedSet2', 1, 12, function(err, data) {
+					console.log('sortedSetAdd return', data);
+					callback(err, {'sortedSetAdd': data});
+				});
+			}
+
+			function getSortedSetRange(callback) {
+				db.getSortedSetRevRange('sortedSet2', 0, -1, function(err, data) {
+					console.log('getSortedSetRange return', data);
+					callback(err, {'getSortedSetRange': data});
+				});
+				/*var args = ['sortedSet2', '+inf', 100, 'LIMIT', 0, 10];
+				db.getSortedSetRevRangeByScore(args, function(err, data) {
+					console.log('getSortedSetRevRangeByScore return', data);
+					callback(err, {'getSortedSetRevRangeByScore': data});
+				});*/
+			}
+
+			var objectTasks = [
 				//createUser,
 				getUser,
 				setObject,
@@ -175,7 +195,15 @@ var	DebugRoute = function(app) {
 				getObject
 			];
 
-			require('async').series(tasks, function(err, results) {
+			var sortedSetTasks = [
+				//sortedSetAdd,
+				getSortedSetRange,
+				sortedSetAdd,
+				getSortedSetRange
+			];
+
+
+			require('async').series(sortedSetTasks, function(err, results) {
 				if(err) {
 					console.log(err);
 					res.send(err.message);
@@ -184,6 +212,8 @@ var	DebugRoute = function(app) {
 				}
 			});
 		});
+
+
 	});
 };
 
