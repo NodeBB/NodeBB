@@ -55,25 +55,37 @@
 	// key
 
 	module.exists = function(key, callback) {
-		module.isObjectField('global', key, callback);
+		db.collection('objects').findOne({_key:key}, function(err, item) {
+			callback(err, item !== undefined && item !== null);
+		});
 	}
 
 	module.delete = function(key, callback) {
-		module.deleteObjectField('global', key, callback);
+		db.collection('objects').remove({_key:key}, function(err, result) {
+			if(err) {
+				return callback(err);
+			}
+			if(result === 0) {
+				db.collection('objects').remove({setName:key}, function(err, result) {
+					callback(err, result);
+				});
+			} else {
+				callback(null, result);
+			}
+		});
 	}
 
 	module.get = function(key, callback) {
-		module.getObjectField('global', key, callback);
+		module.getObjectField(key, 'value', callback);
 	}
 
 	module.set = function(key, value, callback) {
-		var data = {};
-		data[key] = value;
-		module.setObject('global', data, callback);
+		var data = {value:value};
+		module.setObject(key, data, callback);
 	}
 
 	module.keys = function(key, callback) {
-		db.collection.find( { _key: { $regex: key /*, $options: 'i'*/ } } );
+		db.collection('objects').find( { _key: { $regex: key /*, $options: 'i'*/ } } );
 	}
 
 	//hashes
@@ -200,15 +212,25 @@
 	// sets
 
 	module.setAdd = function(key, value, callback) {
-		throw new Error('not-implemented');
+
+		var data = {
+			value:value
+		};
+
+		data.setName = key;
+		module.setObject(key + ':' + value, data, callback);
 	}
 
 	module.setRemove = function(key, value, callback) {
-		throw new Error('not-implemented');
+		db.collection('objects').remove({setName:key, value:value}, function(err, result) {
+			callback(err, result);
+		});
 	}
 
 	module.isSetMember = function(key, value, callback) {
-		throw new Error('not-implemented');
+		db.collection('objects').findOne({setName:key, value:value}, function(err, item) {
+			callback(err, item !== null && item !== undefined);
+		});
 	}
 
 	module.isMemberOfSets = function(sets, value, callback) {
@@ -216,28 +238,51 @@
 	}
 
 	module.getSetMembers = function(key, callback) {
-		console.log('GETTING SET MEMBERS', key);
-		db.collection('sets').findOne({_key:key}, function(err, data) {
+		db.collection('objects').find({setName:key}).toArray(function(err, data) {
 			if(err) {
 				return callback(err);
 			}
 
 			if(!data) {
-				console.log('GOT SET MEMBERS', []);
 				callback(null, []);
 			} else {
-				console.log('GOT SET MEMBERS', data);
+				data = data.map(function(item) {
+					return item.value;
+				});
 				callback(null, data);
 			}
 		});
 	}
 
 	module.setCount = function(key, callback) {
-		throw new Error('not-implemented');
+		db.collection('objects').count({setName:key}, function(err, count) {
+			if(err) {
+				return callback(err);
+			}
+
+			if(!count) {
+				return callback(null, 0);
+			}
+			callback(null,count);
+		});
 	}
 
 	module.setRemoveRandom = function(key, callback) {
-		throw new Error('not-implemented');
+		db.collection('objects').find({setName:key}).toArray(function(err, data) {
+			if(err) {
+				return callback(err);
+			}
+
+			if(!data) {
+				callback(null, 0);
+			} else {
+				var randomIndex = Math.floor(Math.random() * data.length);
+				var item = data[randomIndex];
+				module.setRemove(item.setName, item.value, function(err, result) {
+					callback(err, item.value);
+				});
+			}
+		});
 	}
 
 
@@ -316,7 +361,16 @@
 	}
 
 	module.sortedSetCount = function(key, min, max, callback) {
-		throw new Error('not-implemented');
+		db.collection('objects').count({setName:key, score: {$gt:min, $lt:max}}, function(err, count) {
+			if(err) {
+				return callback(err);
+			}
+
+			if(!count) {
+				return callback(null, 0);
+			}
+			callback(null,count);
+		});
 	}
 
 	// lists

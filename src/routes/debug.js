@@ -233,6 +233,43 @@ var	DebugRoute = function(app) {
 			}
 
 
+			function setAdd(callback) {
+				db.setAdd('myTestSet', 5, function(err, data) {
+					console.log('setAdd return', data);
+					callback(err, {'setAdd': data});
+				});
+			}
+
+			function setRemove(callback) {
+				db.setRemove('myTestSet', 11, function(err, data) {
+					console.log('setRemove return', data);
+					callback(err, {'setRemove': data});
+				});
+			}
+
+			function getSetMembers(callback) {
+				db.getSetMembers('myTestSet', function(err, data) {
+					console.log('getSetMembers return', data);
+					callback(err, {'getSetMembers': data});
+				});
+			}
+
+			function isSetMember(callback) {
+				db.isSetMember('myTestSet', 5, function(err, data) {
+					console.log('isSetMember return', data);
+					callback(err, {'isSetMember': data});
+				});
+			}
+
+			function setRemoveRandom(callback) {
+				db.setRemoveRandom('myTestSet', function(err, data) {
+					console.log('setRemoveRandom return', data);
+					callback(err, {'setRemoveRandom': data});
+				});
+			}
+
+
+
 			var objectTasks = [
 				//createUser,
 				getUser,
@@ -273,11 +310,26 @@ var	DebugRoute = function(app) {
 				get,
 				exists,
 				deleteKey,
+				deleteKey,
 				get,
 				exists
 			];
 
-			require('async').series(keyTasks, function(err, results) {
+			var setTasks = [
+				getSetMembers,
+			//	setRemove,
+				setAdd,
+				setAdd,
+				getSetMembers,
+				isSetMember,
+			//	setRemove,
+				isSetMember,
+				getSetMembers,
+				setRemoveRandom,
+				getSetMembers
+			];
+
+			require('async').series(setTasks, function(err, results) {
 				if(err) {
 					console.log(err);
 					res.send(err.message);
