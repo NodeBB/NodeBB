@@ -48,9 +48,11 @@
 			}
 		} else {
 			if (allowGuestSearching) {
-				$('.nodebb-logged-conditional-search').removeClass('hide').show();
+				$('#search-button').removeClass('hide').show();
+				$('.nodebb-logged-conditional-search').addClass('visible-xs').show();
 			} else {
-				$('.nodebb-logged-conditional-search').addClass('hide');
+				$('.nodebb-logged-conditional-search').removeClass('visible-xs').hide();
+				$('#search-button').addClass('hide');
 			}
 			jQuery('.nodebb-loggedin').hide();
 			jQuery('.nodebb-loggedout').show();

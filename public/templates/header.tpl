@@ -132,7 +132,7 @@
 								</div>
 								<button type="submit" class="btn btn-default hide">[[global:search]]</button>
 							</div>
-							<button id="search-button" type="button" class="btn btn-link hide nodebb-logged-conditional-search"><i class="fa fa-search"></i></button>
+							<button id="search-button" type="button" class="btn btn-link hide"><i class="fa fa-search"></i></button>
 						</form>
 					</li>
 
