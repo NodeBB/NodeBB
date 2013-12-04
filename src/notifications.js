@@ -9,6 +9,7 @@ var RDB = require('./redis'),
 
 
 (function(Notifications) {
+	"use strict";
 
 	Notifications.init = function() {
 		if (process.env.NODE_ENV === 'development') {
@@ -16,7 +17,7 @@ var RDB = require('./redis'),
 		}
 		new cron('0 0 * * *', Notifications.prune, null, true);
 	};
-	
+
 	Notifications.get = function(nid, uid, callback) {
 		RDB.multi()
 			.hmget('notifications:' + nid, 'text', 'score', 'path', 'datetime', 'uniqueId')
@@ -41,7 +42,7 @@ var RDB = require('./redis'),
 				});
 			});
 	};
-	
+
 	Notifications.create = function(text, path, uniqueId, callback) {
 		/**
 		 * uniqueId is used solely to override stale nids.
@@ -63,7 +64,7 @@ var RDB = require('./redis'),
 			});
 		});
 	};
-	
+
 	function destroy(nid) {
 		var	multi = RDB.multi();
 
@@ -77,9 +78,11 @@ var RDB = require('./redis'),
 			}
 		});
 	}
-	
+
 	Notifications.push = function(nid, uids, callback) {
-		if (!Array.isArray(uids)) uids = [uids];
+		if (!Array.isArray(uids)) {
+			uids = [uids];
+		}
 
 		var numUids = uids.length,
 			x;
@@ -102,7 +105,7 @@ var RDB = require('./redis'),
 			}
 		});
 	};
-	
+
 	function remove_by_uniqueId(uniqueId, uid, callback) {
 		async.parallel([
 			function(next) {
@@ -149,19 +152,19 @@ var RDB = require('./redis'),
 			}
 		});
 	}
-		
+
 	Notifications.mark_read = function(nid, uid, callback) {
-			if (parseInt(uid) > 0) {
-				Notifications.get(nid, uid, function(notif_data) {
-					RDB.zrem('uid:' + uid + ':notifications:unread', nid);
-					RDB.zadd('uid:' + uid + ':notifications:read', notif_data.datetime, nid);
-					if (callback) {
-						callback();
-					}
-				});
-			}
+		if (parseInt(uid, 10) > 0) {
+			Notifications.get(nid, uid, function(notif_data) {
+				RDB.zrem('uid:' + uid + ':notifications:unread', nid);
+				RDB.zadd('uid:' + uid + ':notifications:read', notif_data.datetime, nid);
+				if (callback) {
+					callback();
+				}
+			});
 		}
-		
+	};
+
 	Notifications.mark_read_multiple = function(nids, uid, callback) {
 		if (!Array.isArray(nids) && parseInt(nids, 10) > 0) {
 			nids = [nids];
@@ -179,7 +182,7 @@ var RDB = require('./redis'),
 			}
 		});
 	};
-		
+
 	Notifications.mark_all_read = function(uid, callback) {
 		RDB.zrange('uid:' + uid + ':notifications:unread', 0, 10, function(err, nids) {
 			if (err) {
@@ -195,7 +198,7 @@ var RDB = require('./redis'),
 			}
 		});
 	};
-	
+
 	Notifications.prune = function(cutoff) {
 		if (process.env.NODE_ENV === 'development') {
 			winston.info('[notifications.prune] Removing expired notifications from the database.');
@@ -269,6 +272,6 @@ var RDB = require('./redis'),
 			}
 		});
 	};
-	
+
 }(exports));
 

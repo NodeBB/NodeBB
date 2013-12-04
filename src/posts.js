@@ -223,7 +223,7 @@ var RDB = require('./redis'),
 					}
 				}
 
-				plugins.fireHook('filter:posts.custom_profile_info', {profile: "", uid: post.uid}, function(err, profile_info) {
+				plugins.fireHook('filter:posts.custom_profile_info', {profile: "", uid: post.uid, pid: post.pid}, function(err, profile_info) {
 					post.additional_profile_info = profile_info.profile;
 
 					if (post.editor !== '') {
