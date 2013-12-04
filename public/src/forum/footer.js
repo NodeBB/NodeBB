@@ -149,16 +149,13 @@
 			notifIcon.toggleClass('active', false);
 		}
 
-		// Update the saved local count
-		localStorage.setItem('notifications:count', count);
-		Tinycon.setBubble(localStorage.getItem('notifications:count'));
-
-		// Update favicon
+		// Update the favicon + saved local count
 		Tinycon.setBubble(count);
+		localStorage.setItem('notifications:count', count);
 	});
 
 	if (localStorage.getItem('notifications:count') !== null) {
-		Tinycon.setBubble(localStorage.getItem('notifications:count'));
+		Tinycon.setBubble(parseInt(localStorage.getItem('notifications:count'), 10));
 	}
 
 	socket.on('event:new_notification', function() {
