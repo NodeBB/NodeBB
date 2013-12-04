@@ -22,7 +22,7 @@ var db = require('./database'),
 				callback(false);
 			}
 
-			callback( !! ismember || false);
+			callback(ismember);
 		});
 	}
 

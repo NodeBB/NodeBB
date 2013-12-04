@@ -581,9 +581,9 @@ var bcrypt = require('bcrypt'),
 	};
 
 	User.isFollowing = function(uid, theirid, callback) {
-		db.isSetMember('following:' + uid, theirid, function(err, data) {
+		db.isSetMember('following:' + uid, theirid, function(err, isMember) {
 			if (!err) {
-				callback(data === 1);
+				callback(isMember);
 			} else {
 				console.log(err);
 			}
@@ -695,14 +695,14 @@ var bcrypt = require('bcrypt'),
 			if(err) {
 				return calback(err);
 			}
-			callback(err, !! exists);
+			callback(err, exists);
 		});
 	};
 
 	User.isAdministrator = function(uid, callback) {
 		groups.getGidFromName('Administrators', function(err, gid) {
 			groups.isMember(uid, gid, function(err, isAdmin) {
-				callback(err, !! isAdmin);
+				callback(err, isAdmin);
 			});
 		});
 	};

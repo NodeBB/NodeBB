@@ -261,6 +261,13 @@ var	DebugRoute = function(app) {
 				});
 			}
 
+			function isMemberOfSets(callback) {
+				db.isMemberOfSets(['doesntexist', 'myTestSet', 'nonexistingSet'], 5, function(err, data) {
+					console.log('isMemberOfSets return', data);
+					callback(err, {'isMemberOfSets': data});
+				});
+			}
+
 			function setRemoveRandom(callback) {
 				db.setRemoveRandom('myTestSet', function(err, data) {
 					console.log('setRemoveRandom return', data);
@@ -317,16 +324,11 @@ var	DebugRoute = function(app) {
 
 			var setTasks = [
 				getSetMembers,
-			//	setRemove,
-				setAdd,
 				setAdd,
 				getSetMembers,
 				isSetMember,
-			//	setRemove,
-				isSetMember,
 				getSetMembers,
-				setRemoveRandom,
-				getSetMembers
+				isMemberOfSets
 			];
 
 			require('async').series(setTasks, function(err, results) {

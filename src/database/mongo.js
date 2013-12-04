@@ -4,6 +4,7 @@
 	'use strict';
 	var mongoClient = require('mongodb').MongoClient,
 		winston = require('winston'),
+		async = require('async'),
 		nconf = require('nconf'),
 		express = require('express'),
 		mongoStore = require('connect-mongo')(express),
@@ -279,7 +280,17 @@
 	}
 
 	module.isMemberOfSets = function(sets, value, callback) {
-		throw new Error('not-implemented');
+
+
+		function iterator(set, next) {
+			module.isSetMember(set, value, next);
+		}
+
+		async.map(sets, iterator, function(err, result) {
+			console.log(err, result);
+			callback(err, result);
+		});
+
 	}
 
 	module.getSetMembers = function(key, callback) {
@@ -469,15 +480,15 @@
 		}
 
 		db.collection('objects').findOne({_key:key}, { array: { $slice: [start, stop - start + 1] }}, function(err, data) {
-				if(err) {
-					return callback(err);
-				}
-				if(data && data.array) {
-					callback(null, data.array);
-				} else {
-					callback(null, []);
-				}
-			});
+			if(err) {
+				return callback(err);
+			}
+			if(data && data.array) {
+				callback(null, data.array);
+			} else {
+				callback(null, []);
+			}
+		});
 	}
 
 

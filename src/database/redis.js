@@ -234,7 +234,13 @@
 	}
 
 	module.isSetMember = function(key, value, callback) {
-		redisClient.sismember(key, value, callback);
+		redisClient.sismember(key, value, function(err, result) {
+			if(err) {
+				return callback(err);
+			}
+
+			callback(null, result === 1);
+		});
 	}
 
 	module.isMemberOfSets = function(sets, value, callback) {
