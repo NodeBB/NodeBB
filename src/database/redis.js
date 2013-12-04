@@ -64,6 +64,17 @@
 	//
 	// Exported functions
 	//
+
+	module.flushdb = function(callback) {
+		redisClient.send_command('flushdb', [], function(err) {
+			if(err){
+				winston.error(error);
+				return callback(err);
+			}
+			callback(null);
+		});
+	}
+
 	module.getFileName = function(callback) {
 		var multi = redisClient.multi();
 

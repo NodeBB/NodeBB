@@ -13,7 +13,6 @@
 	module.init = function(callback) {
 		mongoClient.connect('mongodb://'+ mongoHost + ':' + nconf.get('mongo:port') + '/' + nconf.get('mongo:database'), function(err, _db) {
 			db = _db;
-			console.log('WE ARE CONNECTED');
 
 			if(err) {
 				winston.error("NodeBB could not connect to your Mongo database. Mongo returned the following error: " + err.message);
@@ -44,6 +43,18 @@
 	//
 	// Exported functions
 	//
+
+	module.flushdb = function(callback) {
+		db.dropDatabase(function(err, result) {
+			if(err){
+				winston.error(error);
+				return callback(err);
+			}
+			callback(null);
+		});
+	}
+
+
 	module.getFileName = function(callback) {
 		throw new Error('not-implemented');
 	}
@@ -63,14 +74,23 @@
 	module.delete = function(key, callback) {
 		db.collection('objects').remove({_key:key}, function(err, result) {
 			if(err) {
-				return callback(err);
+				if(callback) {
+					return callback(err);
+				} else {
+					return winston.error(err.message);
+				}
 			}
+
 			if(result === 0) {
 				db.collection('objects').remove({setName:key}, function(err, result) {
-					callback(err, result);
+					if(callback) {
+						callback(err, result);
+					}
 				});
 			} else {
-				callback(null, result);
+				if(callback) {
+					callback(null, result);
+				}
 			}
 		});
 	}
@@ -85,15 +105,33 @@
 	}
 
 	module.keys = function(key, callback) {
-		db.collection('objects').find( { _key: { $regex: key /*, $options: 'i'*/ } } );
+		db.collection('objects').find( { _key: { $regex: key /*, $options: 'i'*/ } }, function(err, result) {
+			callback(err, result);
+		});
 	}
 
 	//hashes
+	function removeHiddenFields(item) {
+		if(item) {
+			if(item._id) {
+				delete item._id;
+			}
+			if(item._key) {
+				delete item._key;
+			}
+			if(item.setName) {
+				delete item.setName;
+			}
+		}
+		return item;
+	}
 
 	module.setObject = function(key, data, callback) {
 		data['_key'] = key;
 		db.collection('objects').update({_key:key}, {$set:data}, {upsert:true, w: 1}, function(err, result) {
-			callback(err, result);
+			if(callback) {
+				callback(err, result);
+			}
 		});
 	}
 
@@ -101,15 +139,16 @@
 		var data = {};
 		data[field] = value;
 		db.collection('objects').update({_key:key}, {$set:data}, {upsert:true, w: 1}, function(err, result) {
-			callback(err, result);
+			if(callback) {
+				callback(err, result);
+			}
 		});
 	}
 
 	module.getObject = function(key, callback) {
 		db.collection('objects').findOne({_key:key}, function(err, item) {
-			if(item && item._id) {
-				delete item._id;
-			}
+			removeHiddenFields(item);
+
 			callback(err, item);
 		});
 	}
@@ -131,7 +170,8 @@
 			_fields[fields[i]] = 1;
 		}
 
-		db.collection('objects').findOne({_key:key}, {fields:_fields}, function(err, item) {
+		db.collection('objects').findOne({_key:key}, _fields, function(err, item) {
+
 			if(err) {
 				return callback(err);
 			}
@@ -149,9 +189,8 @@
 				}
 			}
 
-			if(item && item._id) {
-				delete item._id;
-			}
+			removeHiddenFields(item);
+
 			callback(err, item);
 		});
 	}
@@ -186,7 +225,9 @@
 		var data = {};
 		data[field] = "";
 		db.collection('objects').update({_key:key}, {$unset : data}, function(err, result) {
-			callback(err, result);
+			if(callback) {
+				callback(err, result);
+			}
 		});
 	}
 
@@ -203,7 +244,9 @@
 		data[field] = value;
 		db.collection('objects').update({_key:key}, {$inc : data}, {upsert:true}, function(err, result) {
 			module.getObjectField(key, field, function(err, value) {
-				callback(err, value);
+				if(callback) {
+					callback(err, value);
+				}
 			});
 		});
 	}
@@ -223,7 +266,9 @@
 
 	module.setRemove = function(key, value, callback) {
 		db.collection('objects').remove({setName:key, value:value}, function(err, result) {
-			callback(err, result);
+			if(callback) {
+				callback(err, result);
+			}
 		});
 	}
 
@@ -270,16 +315,24 @@
 	module.setRemoveRandom = function(key, callback) {
 		db.collection('objects').find({setName:key}).toArray(function(err, data) {
 			if(err) {
-				return callback(err);
+				if(callback) {
+					return callback(err);
+				} else {
+					return winston.error(err.message);
+				}
 			}
 
 			if(!data) {
-				callback(null, 0);
+				if(callback) {
+					callback(null, 0);
+				}
 			} else {
 				var randomIndex = Math.floor(Math.random() * data.length);
 				var item = data[randomIndex];
 				module.setRemove(item.setName, item.value, function(err, result) {
-					callback(err, item.value);
+					if(callback) {
+						callback(err, item.value);
+					}
 				});
 			}
 		});
@@ -301,7 +354,9 @@
 
 	module.sortedSetRemove = function(key, value, callback) {
 		db.collection('objects').remove({setName:key, value:value}, function(err, result) {
-			callback(err, result);
+			if(callback) {
+				callback(err, result);
+			}
 		});
 	}
 
@@ -377,11 +432,18 @@
 	module.listPrepend = function(key, value, callback) {
 		module.isObjectField(key, 'array', function(err, exists) {
 			if(err) {
-				return callback(err);
+				if(callback) {
+					return callback(err);
+				} else {
+					return winston.error(err.message);
+				}
 			}
+
 			if(exists) {
  				db.collection('objects').update({_key:key}, {'$set': {'array.-1': value}}, {upsert:true, w:1 }, function(err, result) {
-					callback(err, result);
+					if(callback) {
+						callback(err, result);
+					}
 	 			});
  			} else {
  				module.listAppend(key, value, callback);
@@ -392,7 +454,9 @@
 
 	module.listAppend = function(key, value, callback) {
 		db.collection('objects').update({ _key: key }, { $push: { array: value } }, {upsert:true, w:1}, function(err, result) {
-			callback(err, result);
+			if(callback) {
+				callback(err, result);
+			}
 		});
 	}
 
