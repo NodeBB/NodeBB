@@ -19,8 +19,7 @@ var async = require('async'),
 
 	Notifications.get = function(nid, uid, callback) {
 
-		db.exists('nofitications:' + nid, function(err, exists) {
-
+		db.exists('notifications:' + nid, function(err, exists) {
 			if(!exists) {
 				return callback(null);
 			}

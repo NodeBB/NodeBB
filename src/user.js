@@ -1039,8 +1039,12 @@ var bcrypt = require('bcrypt'),
 		},
 		getUnreadByUniqueId: function(uid, uniqueId, callback) {
 			db.getSortedSetRange('uid:' + uid + ':notifications:unread', 0, -1, function(err, nids) {
+
 				async.filter(nids, function(nid, next) {
 					notifications.get(nid, uid, function(notifObj) {
+						if(!notifObj) {
+							next(false);
+						}
 						if (notifObj.uniqueId === uniqueId) {
 							next(true);
 						} else {
