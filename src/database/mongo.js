@@ -439,6 +439,20 @@
 		});
 	}
 
+	module.sortedSetRank = function(key, value, callback) {
+		module.getSortedSetRange(key, 0, -1, function(err, result) {
+			if(err) {
+				return callback(err);
+			}
+			var rank = result.indexOf(value);
+			if(rank === -1) {
+				return callback(null, null);
+			}
+
+			callback(null, rank);
+		});
+	}
+
 	// lists
 	module.listPrepend = function(key, value, callback) {
 		module.isObjectField(key, 'array', function(err, exists) {
@@ -468,6 +482,26 @@
 			if(callback) {
 				callback(err, result);
 			}
+		});
+	}
+
+	module.listRemoveLast = function(key, callback) {
+		module.getListRange(key, -1, 0, function(err, value) {
+			if(err) {
+				return callback(err);
+			}
+
+			db.collection('objects').update({_key: key }, { $pop: { array: 1 } }, function(err, result) {
+				if(err) {
+					return callback(err);
+				}
+
+				if(value && value.length) {
+					callback(err, value[0]);
+				} else {
+					callback(err, null);
+				}
+			});
 		});
 	}
 

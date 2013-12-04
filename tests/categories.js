@@ -62,9 +62,11 @@ describe('Categories', function() {
 	});
 
 	after(function() {
+		// TODO : replace with dbal
 		RDB.multi()
 			.del('category:'+categoryObj.cid)
 			.rpop('categories:cid')
 		.exec();
+
 	});
 });

@@ -1005,14 +1005,13 @@ var bcrypt = require('bcrypt'),
 				before = new Date(parseInt(before, 10));
 			}
 
-			// TODO : figure out how to do this with dbal
-			RDB.multi()
-				.zrevrangebyscore('uid:' + uid + ':notifications:read', before ? before.getTime(): now.getTime(), -Infinity, 'LIMIT', 0, limit)
-				.zrevrangebyscore('uid:' + uid + ':notifications:unread', before ? before.getTime(): now.getTime(), -Infinity, 'LIMIT', 0, limit)
-				.exec(function(err, results) {
-					// Merge the read and unread notifications
-					var	nids = results[0].concat(results[1]);
+			var args1 = ['uid:' + uid + ':notifications:read', before ? before.getTime(): now.getTime(), -Infinity, 'LIMIT', 0, limit];
+			var args2 = ['uid:' + uid + ':notifications:unread', before ? before.getTime(): now.getTime(), -Infinity, 'LIMIT', 0, limit];
 
+			db.getSortedSetRevRangeByScore(args1, function(err, results1) {
+				db.getSortedSetRevRangeByScore(args2, function(err, results2) {
+
+					var nids = results1.concat(results2);
 					async.map(nids, function(nid, next) {
 						notifications.get(nid, uid, function(notif_data) {
 							next(null, notif_data);
@@ -1032,6 +1031,8 @@ var bcrypt = require('bcrypt'),
 						callback(err, notifs);
 					});
 				});
+			});
+
 		},
 		getUnreadCount: function(uid, callback) {
 			db.sortedSetCount('uid:' + uid + ':notifications:unread', 0, 10, callback);

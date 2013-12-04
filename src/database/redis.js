@@ -291,6 +291,10 @@
 		redisClient.zcount(key, min, max, callback);
 	}
 
+	module.sortedSetRank = function(key, value, callback) {
+		redisClient.zrank(key, value, callback);
+	}
+
 	// lists
 	module.listPrepend = function(key, value, callback) {
 		redisClient.lpush(key, value, callback);
@@ -300,9 +304,14 @@
 		redisClient.rpush(key, value, callback);
 	}
 
+	module.listRemoveLast = function(key, callback) {
+		redisClient.rpop(key, callback);
+	}
+
 	module.getListRange = function(key, start, stop, callback) {
 		redisClient.lrange(key, start, stop, callback);
 	}
+
 
 
 

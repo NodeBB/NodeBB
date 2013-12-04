@@ -18,28 +18,22 @@ var async = require('async'),
 	};
 
 	Notifications.get = function(nid, uid, callback) {
-		RDB.multi()
-			.hmget('notifications:' + nid, 'text', 'score', 'path', 'datetime', 'uniqueId')
-			.zrank('uid:' + uid + ':notifications:read', nid)
-			.exists('notifications:' + nid)
-			.exec(function(err, results) {
-				var	notification = results[0],
-					readIdx = results[1];
 
-				if (!results[2]) {
-					return callback(null);
-				}
+		db.exists('nofitications:' + nid, function(err, exists) {
 
-				callback({
-					nid: nid,
-					text: notification[0],
-					score: notification[1],
-					path: notification[2],
-					datetime: notification[3],
-					uniqueId: notification[4],
-					read: readIdx !== null ? true : false
+			if(!exists) {
+				return callback(null);
+			}
+
+			db.sortedSetRank('uid:' + uid + ':notifications:read', nid, function(err, rank) {
+
+				db.getObjectFields('notifications:' + nid, ['nid', 'text', 'score', 'path', 'datetime', 'uniqueId'], function(err, notification) {
+
+					notification.read = rank !== null ? true:false;
+					callback(notification);
 				});
 			});
+		});
 	};
 
 	Notifications.create = function(text, path, uniqueId, callback) {

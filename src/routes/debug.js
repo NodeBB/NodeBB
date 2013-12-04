@@ -197,8 +197,17 @@ var	DebugRoute = function(app) {
 				});
 			}
 
+
+			function listRemoveLast(callback) {
+				db.listRemoveLast('myList5', function(err, data) {
+					console.log('listRemoveLast return', data);
+					callback(err, {'listRemoveLast': data});
+				});
+			}
+
+
 			function getListRange(callback) {
-				db.getListRange('myList5', 0, 5, function(err, data) {
+				db.getListRange('myList5', 0, -1, function(err, data) {
 					console.log('getListRange return', data);
 					callback(err, {'getListRange': data});
 				});
@@ -306,8 +315,10 @@ var	DebugRoute = function(app) {
 			];
 
 			var listTasks = [
-				listAppend,
-				listPrepend,
+				//listAppend,
+				//listPrepend,
+				getListRange,
+				listRemoveLast,
 				getListRange
 			];
 
@@ -331,7 +342,7 @@ var	DebugRoute = function(app) {
 				isMemberOfSets
 			];
 
-			require('async').series(setTasks, function(err, results) {
+			require('async').series(listTasks, function(err, results) {
 				if(err) {
 					console.log(err);
 					res.send(err.message);
