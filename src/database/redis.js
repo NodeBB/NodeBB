@@ -170,6 +170,18 @@
 		redisClient.hgetall(key, callback);
 	}
 
+	module.getObjects = function(keys, callback) {
+		var	multi = redisClient.multi();
+
+		for(var x=0; x<keys.length; ++x) {
+			multi.hgetall(keys[x]);
+		}
+
+		multi.exec(function (err, replies) {
+			callback(err, replies);
+		});
+	}
+
 	module.getObjectField = function(key, field, callback) {
 		module.getObjectFields(key, [field], function(err, data) {
 			if(err) {

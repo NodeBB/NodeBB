@@ -364,15 +364,14 @@ var db = require('./database'),
 	}
 
 	Posts.getPostsByPids = function(pids, callback) {
-		var posts = [],
-			multi = RDB.multi();
+		var keys = [];
 
 		for(var x=0, numPids=pids.length; x<numPids; x++) {
-			multi.hgetall("post:" + pids[x]);
+			keys.push('post:' + pids[x]);
 		}
 
-		multi.exec(function (err, replies) {
-			async.map(replies, function(postData, _callback) {
+		db.getObjects(keys, function(err, data) {
+			async.map(data, function(postData, _callback) {
 				if (postData) {
 
 					try {
@@ -382,10 +381,10 @@ var db = require('./database'),
 						winston.err('invalid time value');
 					}
 
-				    postTools.parse(postData.content, function(err, content) {
-                        postData.content = content;
+					postTools.parse(postData.content, function(err, content) {
+						postData.content = content;
 						_callback(null, postData);
-                    });
+					});
 				} else {
 					_callback(null);
 				}
@@ -396,7 +395,7 @@ var db = require('./database'),
 					return callback(err, null);
 				}
 			});
-		})
+		});
 	}
 
 	Posts.getCidByPid = function(pid, callback) {

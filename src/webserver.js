@@ -140,7 +140,6 @@ var path = require('path'),
 				app.use(express.bodyParser()); // Puts POST vars in request.body
 				app.use(express.cookieParser()); // If you want to parse cookies (res.cookies)
 
-				// TODO : this uses redis
 				app.use(express.session({
 					store: db.sessionStore,
 					secret: nconf.get('secret'),

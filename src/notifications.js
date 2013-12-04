@@ -59,16 +59,14 @@ var async = require('async'),
 	};
 
 	function destroy(nid) {
-		var	multi = RDB.multi();
 
-		multi.del('notifications:' + nid);
-		multi.srem('notifications', nid);
-
-		multi.exec(function(err) {
-			if (err) {
-				winston.error('Problem deleting expired notifications. Stack follows.');
-				winston.error(err.stack);
-			}
+		db.delete('notifications:' + nid, function(err, result) {
+			db.setRemove('notifications', nid, function(err, result) {
+				if (err) {
+					winston.error('Problem deleting expired notifications. Stack follows.');
+					winston.error(err.stack);
+				}
+			});
 		});
 	}
 
@@ -193,6 +191,11 @@ var async = require('async'),
 	};
 
 	Notifications.prune = function(cutoff) {
+		// TODO: this function wont work with dbal in its current state
+		// things to figure out
+		// 1 - RDB.keys mongo uses regex, redis uses global patterns?
+		// 2 - Need to remove the RDB.multi
+
 		if (process.env.NODE_ENV === 'development') {
 			winston.info('[notifications.prune] Removing expired notifications from the database.');
 		}

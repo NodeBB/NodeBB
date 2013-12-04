@@ -154,6 +154,13 @@
 		});
 	}
 
+	module.getObjects = function(keys, callback) {
+		db.collection('objects').find({_key:{$in:keys}}, {_id:0, _key:0}).toArray(function(err, data) {
+
+			callback(err, data);
+		});
+	}
+
 	module.getObjectField = function(key, field, callback) {
 		module.getObjectFields(key, [field], function(err, data) {
 			if(err) {

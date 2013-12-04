@@ -107,6 +107,13 @@ var	DebugRoute = function(app) {
 				});
 			}
 
+			function getObjects(callback) {
+				db.getObjects(['testing1', 'testing2', 'retardation', 'user:1'], function(err, data) {
+					console.log('getObjects return ', data);
+					callback(err, {'getObjects':data});
+				});
+			}
+
 			function setObjectField(callback) {
 				db.setObjectField(objectKey, 'reputation', 5, function(err, result) {
 					console.log('setObjectField return', result);
@@ -302,7 +309,8 @@ var	DebugRoute = function(app) {
 				getObjectValues,
 				isObjectField,
 				incrObjectFieldBy,
-				getObject
+				getObject,
+				getObjects
 			];
 
 			var sortedSetTasks = [
@@ -342,7 +350,7 @@ var	DebugRoute = function(app) {
 				isMemberOfSets
 			];
 
-			require('async').series(listTasks, function(err, results) {
+			require('async').series(objectTasks, function(err, results) {
 				if(err) {
 					console.log(err);
 					res.send(err.message);

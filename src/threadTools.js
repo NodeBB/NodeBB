@@ -168,14 +168,16 @@ var db = require('./database'),
 
 		topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
 			var oldCid = topicData.cid;
-			var multi = RDB.multi();
 
-			multi.zrem('categories:' + oldCid + ':tid', tid);
-			multi.zadd('categories:' + cid + ':tid', topicData.lastposttime, tid);
+			db.sortedSetRemove('categories:' + oldCid + ':tid', tid, function(err, result) {
+				db.sortedSetAdd('categories:' + cid + ':tid', topicData.lastposttime, tid, function(err, result) {
 
-			multi.exec(function(err, result) {
-
-				if (!err && result[0] === 1 && result[1] === 1) {
+					if(err) {
+						socket.emit('api:topic.move', {
+							status: 'error'
+						});
+						return;
+					}
 
 					topics.setTopicField(tid, 'cid', cid);
 
@@ -201,11 +203,7 @@ var db = require('./database'),
 					websockets.in('topic_' + tid).emit('event:topic_moved', {
 						tid: tid
 					});
-				} else {
-					socket.emit('api:topic.move', {
-						status: 'error'
-					});
-				}
+				});
 			});
 		});
 	}
