@@ -247,12 +247,14 @@
 			value:value
 		};
 
-		data.setName = key
+		data.setName = key;
 		module.setObject(key+':'+value, data, callback);
 	}
 
 	module.sortedSetRemove = function(key, value, callback) {
-		throw new Error('not-implemented');
+		db.collection('objects').remove({setName:key, value:value}, function(err, result) {
+			callback(err, result);
+		});
 	}
 
 	function getSortedSetRange(key, start, stop, sort, callback) {

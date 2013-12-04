@@ -164,6 +164,13 @@ var	DebugRoute = function(app) {
 				});
 			}
 
+			function sortedSetRemove(callback) {
+				db.sortedSetRemove('sortedSet2', 12, function(err, data) {
+					console.log('sortedSetRemove return', data);
+					callback(err, {'sortedSetRemove': data});
+				});
+			}
+
 			function getSortedSetRange(callback) {
 				db.getSortedSetRevRange('sortedSet2', 0, -1, function(err, data) {
 					console.log('getSortedSetRange return', data);
@@ -199,7 +206,9 @@ var	DebugRoute = function(app) {
 				//sortedSetAdd,
 				getSortedSetRange,
 				sortedSetAdd,
-				getSortedSetRange
+				getSortedSetRange,
+				sortedSetRemove,
+				getSortedSetRange,
 			];
 
 
