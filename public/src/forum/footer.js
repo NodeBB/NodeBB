@@ -66,7 +66,7 @@
 	var notifContainer = document.getElementsByClassName('notifications')[0],
 		notifTrigger = notifContainer.querySelector('a'),
 		notifList = document.getElementById('notif-list'),
-		notifIcon = document.querySelector('.notifications a i');
+		notifIcon = $('.notifications a');
 	notifTrigger.addEventListener('click', function(e) {
 		e.preventDefault();
 		if (notifContainer.className.indexOf('open') === -1) {
@@ -77,7 +77,6 @@
 					numUnread = data.unread.length,
 					x;
 				notifList.innerHTML = '';
-				console.log(data);
 				if ((data.read.length + data.unread.length) > 0) {
 					for (x = 0; x < numUnread; x++) {
 						notifEl.setAttribute('data-nid', data.unread[x].nid);
@@ -106,13 +105,13 @@
 				notifList.appendChild(notifFrag);
 
 				if (data.unread.length > 0) {
-					notifIcon.className = 'fa fa-bell active';
+					notifIcon.toggleClass('active', true);
 				} else {
-					notifIcon.className = 'fa fa-bell-o';
+					notifIcon.toggleClass('active', false);
 				}
 
 				socket.emit('api:notifications.mark_all_read', null, function() {
-					notifIcon.className = 'fa fa-bell-o';
+					notifIcon.toggleClass('active', false);
 					utils.refreshTitle();
 				});
 			});
@@ -138,8 +137,20 @@
 		}
 	});
 
+	socket.emit('api:notifications.getCount', function(count) {
+		// Update notification icon, if necessary
+		if (count > 0) {
+			notifIcon.toggleClass('active', true);
+		} else {
+			notifIcon.toggleClass('active', false);
+		}
+
+		// Update favicon
+		Tinycon.setBubble(count);
+	});
+
 	socket.on('event:new_notification', function() {
-		document.querySelector('.notifications a i').className = 'fa fa-bell active';
+		notifIcon.toggleClass('active', true);
 		app.alert({
 			alert_id: 'new_notif',
 			title: 'New notification',
