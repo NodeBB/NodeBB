@@ -73,7 +73,7 @@
 	}
 
 	module.keys = function(key, callback) {
-		throw new Error('not-implemented');
+		db.collection.find( { _key: { $regex: key /*, $options: 'i'*/ } } );
 	}
 
 	//hashes
