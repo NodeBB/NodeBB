@@ -32,7 +32,6 @@
 
 			loggedOutMenu.addClass('hide');
 			loggedInMenu.removeClass('hide');
-			console.log("showing-searchbutton");
 			$('#search-button').removeClass('hide').show();
 
 			var userLabel = loggedInMenu.find('#user_label');
