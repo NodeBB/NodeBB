@@ -106,13 +106,13 @@
 				notifList.appendChild(notifFrag);
 
 				if (data.unread.length > 0) {
-					notifIcon.className = 'fa fa-circle active';
+					notifIcon.className = 'fa fa-bell active';
 				} else {
-					notifIcon.className = 'fa fa-circle-o';
+					notifIcon.className = 'fa fa-bell-o';
 				}
 
 				socket.emit('api:notifications.mark_all_read', null, function() {
-					notifIcon.className = 'fa fa-circle-o';
+					notifIcon.className = 'fa fa-bell-o';
 					utils.refreshTitle();
 				});
 			});
@@ -139,7 +139,7 @@
 	});
 
 	socket.on('event:new_notification', function() {
-		document.querySelector('.notifications a i').className = 'fa fa-circle active';
+		document.querySelector('.notifications a i').className = 'fa fa-bell active';
 		app.alert({
 			alert_id: 'new_notif',
 			title: 'New notification',
