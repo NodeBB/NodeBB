@@ -670,7 +670,6 @@ websockets.init = function(io) {
 		});
 
 		socket.on('api:notifications.getCount', function(callback) {
-			console.log('checking uid', uid);
 			user.notifications.getUnreadCount(uid, function(err, count) {
 				callback(err ? err.message : null, count);
 			});
