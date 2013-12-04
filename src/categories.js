@@ -193,13 +193,14 @@ var db = require('./database.js'),
 	};
 
 	Categories.hasReadCategories = function(cids, uid, callback) {
-		var batch = RDB.multi();
+
+		var sets = [];
 
 		for (var i = 0, ii = cids.length; i < ii; i++) {
-			batch.sismember('cid:' + cids[i] + ':read_by_uid', uid);
+			sets.push('cid:' + cids[i] + ':read_by_uid');
 		}
 
-		batch.exec(function(err, hasRead) {
+		db.isMemberOfSets(sets, uid, function(err, hasRead) {
 			callback(hasRead);
 		});
 	};
