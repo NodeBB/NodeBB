@@ -375,10 +375,10 @@ var async = require('async'),
 					file: path.join(__dirname, '..', 'config.json')
 				});
 
-				var RDB = require('./redis');
+				/*var RDB = require('./redis');
 				reds.createClient = function () {
 					return reds.client || (reds.client = RDB);
-				};
+				};*/
 
 				callback(err);
 			});
