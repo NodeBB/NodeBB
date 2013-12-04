@@ -318,15 +318,45 @@
 
 	// lists
 	module.listPrepend = function(key, value, callback) {
-		throw new Error('not-implemented');
+		module.isObjectField(key, 'array', function(err, exists) {
+			if(err) {
+				return callback(err);
+			}
+			if(exists) {
+ 				db.collection('objects').update({_key:key}, {'$set': {'array.-1': value}}, {upsert:true, w:1 }, function(err, result) {
+					callback(err, result);
+	 			});
+ 			} else {
+ 				module.listAppend(key, value, callback);
+ 			}
+
+ 		})
 	}
 
 	module.listAppend = function(key, value, callback) {
-		throw new Error('not-implemented');
+		db.collection('objects').update({ _key: key }, { $push: { array: value } }, {upsert:true, w:1}, function(err, result) {
+			callback(err, result);
+		});
 	}
 
 	module.getListRange = function(key, start, stop, callback) {
-		throw new Error('not-implemented');
+
+		if(stop === -1) {
+			// mongo doesnt allow -1 as the count argument in slice
+			// pass in a large value to retrieve the whole array
+			stop = Math.pow(2, 31) - 2;
+		}
+
+		db.collection('objects').findOne({_key:key}, { array: { $slice: [start, stop - start + 1] }}, function(err, data) {
+				if(err) {
+					return callback(err);
+				}
+				if(data && data.array) {
+					callback(err, data.array);
+				} else {
+					callback(err, []);
+				}
+			});
 	}
 
 

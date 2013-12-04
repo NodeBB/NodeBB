@@ -183,6 +183,28 @@ var	DebugRoute = function(app) {
 				});*/
 			}
 
+			function listAppend(callback) {
+				db.listAppend('myList5', 5, function(err, data) {
+					console.log('listAppend return', data);
+					callback(err, {'listAppend': data});
+				});
+			}
+
+			function listPrepend(callback) {
+				db.listPrepend('myList5', 4, function(err, data) {
+					console.log('listPrepend return', data);
+					callback(err, {'listPrepend': data});
+				});
+			}
+
+			function getListRange(callback) {
+				db.getListRange('myList5', 0, 5, function(err, data) {
+					console.log('getListRange return', data);
+					callback(err, {'getListRange': data});
+				});
+			}
+
+
 			var objectTasks = [
 				//createUser,
 				getUser,
@@ -211,8 +233,13 @@ var	DebugRoute = function(app) {
 				getSortedSetRange,
 			];
 
+			var listTasks = [
+				listAppend,
+				listPrepend,
+				getListRange
+			];
 
-			require('async').series(sortedSetTasks, function(err, results) {
+			require('async').series(listTasks, function(err, results) {
 				if(err) {
 					console.log(err);
 					res.send(err.message);
