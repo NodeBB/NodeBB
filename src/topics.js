@@ -94,7 +94,7 @@ var async = require('async'),
 
 					// in future it may be possible to add topics to several categories, so leaving the door open here.
 					db.sortedSetAdd('categories:' + cid + ':tid', timestamp, tid);
-					db.incrObjectField('category:' + cid, 'topic_count', 1);
+					db.incrObjectField('category:' + cid, 'topic_count');
 					db.incrObjectField('global', 'topicCount');
 
 					feed.updateCategory(cid);
