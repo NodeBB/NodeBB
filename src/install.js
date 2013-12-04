@@ -19,8 +19,8 @@ var async = require('async'),
 			name: 'port',
 			description: 'Port number of your NodeBB',
 			'default': nconf.get('port') || 4567,
-            pattern: /[0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]/,
-            message: 'Please enter a value betweeen 1 and 65535'
+			pattern: /[0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]/,
+			message: 'Please enter a value betweeen 1 and 65535'
 		}, {
 			name: 'use_port',
 			description: 'Use a port number to access NodeBB?',
@@ -32,6 +32,15 @@ var async = require('async'),
 			description: 'Please enter a NodeBB secret',
 			'default': nconf.get('secret') || utils.generateUUID()
 		}, {
+			name: 'bind_address',
+			description: 'IP or Hostname to bind to',
+			'default': nconf.get('bind_address') || '0.0.0.0'
+		}, {
+			name: 'database',
+			description: 'Which database to use',
+			'default': nconf.get('database') || 'redis'
+		}],
+		redisQuestions : [{
 			name: 'redis:host',
 			description: 'Host IP or address of your Redis instance',
 			'default': nconf.get('redis:host') || '127.0.0.1'
@@ -46,11 +55,24 @@ var async = require('async'),
 			name: "redis:database",
 			description: "Which database to use (0..n)",
 			'default': nconf.get('redis:database') || 0
-		}, {
-			name: 'bind_address',
-			description: 'IP or Hostname to bind to',
-			'default': nconf.get('bind_address') || '0.0.0.0'
 		}],
+		mongoQuestions : [{
+			name: 'mongo:host',
+			description: 'Host IP or address of your MongoDB instance',
+			'default': nconf.get('mongo:host') || '127.0.0.1'
+		}, {
+			name: 'mongo:port',
+			description: 'Host port of your MongoDB instance',
+			'default': nconf.get('mongo:port') || 27017
+		}, {
+			name: 'mongo:password',
+			description: 'Password of your MongoDB database'
+		}, {
+			name: "mongo:database",
+			description: "Which database to use (0..n)",
+			'default': nconf.get('mongo:database') || 0
+		}],
+
 		setup: function (callback) {
 			async.series([
 				function(next) {
@@ -74,7 +96,9 @@ var async = require('async'),
 							if (!setupVal['admin:email']) winston.error('  admin:email');
 							process.exit();
 						}
-					} else next();
+					} else {
+						next();
+					}
 				},
 				function (next) {
 					var	success = function(err, config) {
@@ -82,36 +106,54 @@ var async = require('async'),
 							return next(new Error('aborted'));
 						}
 
-						// Translate redis properties into redis object
-						config.redis = {
-							host: config['redis:host'],
-							port: config['redis:port'],
-							password: config['redis:password'],
-							database: config['redis:database']
-						};
-						delete config['redis:host'];
-						delete config['redis:port'];
-						delete config['redis:password'];
-						delete config['redis:database'];
+						function dbQuestionsSuccess(err, databaseConfig) {
+							if (!config) {
+								return next(new Error('aborted'));
+							}
 
-						// Add hardcoded values
-						config.bcrypt_rounds = 12;
-						config.upload_path = '/public/uploads';
-						config.use_port = (config.use_port.slice(0, 1) === 'y') ? true : false;
+							// Translate redis properties into redis object
+							if(config.database === 'redis') {
+								config.redis = {
+									host: databaseConfig['redis:host'],
+									port: databaseConfig['redis:port'],
+									password: databaseConfig['redis:password'],
+									database: databaseConfig['redis:database']
+								};
+							} else if (config.database === 'mongo') {
+								config.mongo = {
+									host: databaseConfig['mongo:host'],
+									port: databaseConfig['mongo:port'],
+									password: databaseConfig['mongo:password'],
+									database: databaseConfig['mongo:database']
+								};
+							}
 
-						var urlObject = url.parse(config.base_url),
-							relative_path = (urlObject.pathname && urlObject.pathname.length > 1) ? urlObject.pathname : '',
-							host = urlObject.host,
-							protocol = urlObject.protocol,
-							server_conf = config,
-							client_conf = {
-								relative_path: relative_path
-							};
+							// Add hardcoded values
+							config.bcrypt_rounds = 12;
+							config.upload_path = '/public/uploads';
+							config.use_port = (config.use_port.slice(0, 1) === 'y') ? true : false;
 
-						server_conf.base_url = protocol + '//' + host;
-						server_conf.relative_path = relative_path;
+							var urlObject = url.parse(config.base_url),
+								relative_path = (urlObject.pathname && urlObject.pathname.length > 1) ? urlObject.pathname : '',
+								host = urlObject.host,
+								protocol = urlObject.protocol,
+								server_conf = config,
+								client_conf = {
+									relative_path: relative_path
+								};
 
-						install.save(server_conf, client_conf, next);
+							server_conf.base_url = protocol + '//' + host;
+							server_conf.relative_path = relative_path;
+
+							install.save(server_conf, client_conf, function(err) {
+								require('./database').init(next);
+							});
+						}
+
+						if(config.database === 'redis')
+							prompt.get(install.redisQuestions, dbQuestionsSuccess);
+						else if(config.database === 'mongo')
+							prompt.get(install.mongoQuestions, dbQuestionsSuccess);
 					};
 
 					// prompt prepends "prompt: " to questions, let's clear that.
@@ -119,8 +161,9 @@ var async = require('async'),
 					prompt.message = '';
 					prompt.delimiter = '';
 
-					if (!install.values) prompt.get(install.questions, success);
-					else {
+					if (!install.values) {
+						prompt.get(install.questions, success);
+					} else {
 						// Use provided values, fall back to defaults
 						var	config = {},
 							question, x, numQ;
@@ -176,6 +219,7 @@ var async = require('async'),
 					async.each(defaults, function (configObj, next) {
 						meta.configs.setOnEmpty(configObj.field, configObj.value, next);
 					}, function (err) {
+						console.log('calling meta.configs.init');
 						meta.configs.init(next);
 					});
 				},
@@ -343,8 +387,9 @@ var async = require('async'),
 			// Add the password questions
 			questions = questions.concat(passwordQuestions);
 
-			if (!install.values) prompt.get(questions, success);
-			else {
+			if (!install.values) {
+				prompt.get(questions, success);
+			} else {
 				var results = {
 						username: install.values['admin:username'],
 						email: install.values['admin:email'],

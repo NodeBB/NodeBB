@@ -275,9 +275,9 @@ var fs = require('fs'),
 				}
 
 				// Reload meta data
-				plugins.reload(function() {
+				Plugins.reload(function() {
 					// (De)activation Hooks
-					plugins.fireHook('action:plugin.' + (active ? 'de' : '') + 'activate', id);
+					Plugins.fireHook('action:plugin.' + (active ? 'de' : '') + 'activate', id);
 
 					if (callback) {
 						callback({
@@ -326,7 +326,9 @@ var fs = require('fs'),
 							}
 
 							Plugins.isActive(config.id, function(err, active) {
-								if (err) next(new Error('no-active-state'));
+								if (err) {
+									next(new Error('no-active-state'));
+								}
 
 								delete config.library;
 								delete config.hooks;

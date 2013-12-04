@@ -163,7 +163,7 @@
 	}
 
 	module.setObjectField = function(key, field, value, callback) {
-		redisClient.hset(key, field, value, callback)
+		redisClient.hset(key, field, value, callback);
 	}
 
 	module.getObject = function(key, callback) {

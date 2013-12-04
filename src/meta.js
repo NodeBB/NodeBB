@@ -44,7 +44,7 @@ var fs = require('fs'),
 			db.getObjectFields('config', fields, callback);
 		},
 		set: function (field, value, callback) {
-			db.setObjectField(field, value, function(err, res) {
+			db.setObjectField('config', field, value, function(err, res) {
 				if (callback) {
 					if(!err && Meta.config)
 						Meta.config[field] = value;
@@ -53,7 +53,7 @@ var fs = require('fs'),
 			});
 		},
 		setOnEmpty: function (field, value, callback) {
-			this.get(field, function (err, curValue) {
+			Meta.configs.get(field, function (err, curValue) {
 				if (!curValue) {
 					Meta.configs.set(field, value, callback);
 				} else {
