@@ -8,7 +8,7 @@
 		jQuery('#search-button').on('click', function() {
 			jQuery('#search-fields').removeClass('hide').show();
 			jQuery(this).hide();
-			jQuery('#search-fields input').focus()
+			jQuery('#search-fields input').focus();
 
 			jQuery('#search-form').on('submit', function() {
 				jQuery('#search-fields').hide();
@@ -22,16 +22,18 @@
 		});
 
 		var loggedInMenu = $('#logged-in-menu'),
-			isLoggedIn = data.uid > 0;
+			loggedOutMenu = $('#logged-out-menu'),
+			isLoggedIn = data.uid > 0,
+			allowGuestSearching = (data.config || {}).allowGuestSearching === '1';
 
 		if (isLoggedIn) {
 			jQuery('.nodebb-loggedin').show();
 			jQuery('.nodebb-loggedout').hide();
 
-			$('#logged-out-menu').addClass('hide');
-			$('#logged-in-menu').removeClass('hide');
-
-			$('#search-button').show();
+			loggedOutMenu.addClass('hide');
+			loggedInMenu.removeClass('hide');
+			console.log("showing-searchbutton");
+			$('#search-button').removeClass('hide').show();
 
 			var userLabel = loggedInMenu.find('#user_label');
 
@@ -46,13 +48,16 @@
 				$('#logout-link').on('click', app.logout);
 			}
 		} else {
-			$('#search-button').hide();
-
+			if (allowGuestSearching) {
+				$('.nodebb-logged-conditional-search').removeClass('hide').show();
+			} else {
+				$('.nodebb-logged-conditional-search').addClass('hide');
+			}
 			jQuery('.nodebb-loggedin').hide();
 			jQuery('.nodebb-loggedout').show();
 
-			$('#logged-out-menu').removeClass('hide');
-			$('#logged-in-menu').addClass('hide');
+			loggedOutMenu.removeClass('hide');
+			loggedInMenu.addClass('hide');
 
 		}
 

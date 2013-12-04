@@ -62,7 +62,7 @@
 					<li class="{adminDisplay}">
 						<a href="/admin"><i class="fa fa-cogs"></i> [[global:header.admin]]</a>
 					</li>
-					<li class="visible-xs">
+					<li class="visible-xs nodebb-logged-conditional-search">
 						<a href="/search">[[global:header.search]]</a>
 					</li>
 					<!-- BEGIN navigation -->
@@ -75,18 +75,6 @@
 				<ul id="logged-in-menu" class="nav navbar-nav navbar-right hide">
 					<li>
 						<a href="#" id="reconnect"></a>
-					</li>
-
-					<li>
-						<form id="search-form" class="navbar-form navbar-right hidden-xs" role="search" method="GET" action="">
-							<div class="hide" id="search-fields">
-								<div class="form-group">
-									<input type="text" class="form-control" placeholder="Search" name="query" value="">
-								</div>
-								<button type="submit" class="btn btn-default hide">[[global:search]]</button>
-							</div>
-							<button id="search-button" type="button" class="btn btn-link"><i class="fa fa-search"></i></button>
-						</form>
 					</li>
 
 					<li id="notifications-list" class="notifications dropdown text-center hidden-xs">
@@ -132,6 +120,22 @@
 							</li>
 						</ul>
 					</li>
+				</ul>
+
+				<ul id="logged-conditionals-menu" class="nav navbar-nav navbar-right">
+
+					<li>
+						<form id="search-form" class="navbar-form navbar-right hidden-xs" role="search" method="GET" action="">
+							<div class="hide" id="search-fields">
+								<div class="form-group">
+									<input type="text" class="form-control" placeholder="Search" name="query" value="">
+								</div>
+								<button type="submit" class="btn btn-default hide">[[global:search]]</button>
+							</div>
+							<button id="search-button" type="button" class="btn btn-link hide nodebb-logged-conditional-search"><i class="fa fa-search"></i></button>
+						</form>
+					</li>
+
 				</ul>
 
 				<ul class="nav navbar-nav navbar-right pagination-block">
