@@ -204,6 +204,34 @@ var	DebugRoute = function(app) {
 				});
 			}
 
+			function get(callback) {
+				db.get('testingStr', function(err, data) {
+					console.log('get return', data);
+					callback(err, {'get': data});
+				});
+			}
+
+			function set(callback) {
+				db.set('testingStr', 'opppa gangastayla', function(err, data) {
+					console.log('set return', data);
+					callback(err, {'set': data});
+				});
+			}
+
+			function deleteKey(callback) {
+				db.delete('testingStr', function(err, data) {
+					console.log('delete return', data);
+					callback(err, {'delete': data});
+				});
+			}
+
+			function exists(callback) {
+				db.exists('testingStr', function(err, data) {
+					console.log('exists return', data);
+					callback(err, {'exists': data});
+				});
+			}
+
 
 			var objectTasks = [
 				//createUser,
@@ -239,7 +267,17 @@ var	DebugRoute = function(app) {
 				getListRange
 			];
 
-			require('async').series(listTasks, function(err, results) {
+			var keyTasks = [
+				get,
+				set,
+				get,
+				exists,
+				deleteKey,
+				get,
+				exists
+			];
+
+			require('async').series(keyTasks, function(err, results) {
 				if(err) {
 					console.log(err);
 					res.send(err.message);

@@ -55,19 +55,21 @@
 	// key
 
 	module.exists = function(key, callback) {
-		throw new Error('not-implemented');
+		module.isObjectField('global', key, callback);
 	}
 
 	module.delete = function(key, callback) {
-		throw new Error('not-implemented');
+		module.deleteObjectField('global', key, callback);
 	}
 
 	module.get = function(key, callback) {
-		throw new Error('not-implemented');
+		module.getObjectField('global', key, callback);
 	}
 
 	module.set = function(key, value, callback) {
-		throw new Error('not-implemented');
+		var data = {};
+		data[key] = value;
+		module.setObject('global', data, callback);
 	}
 
 	module.keys = function(key, callback) {
@@ -238,6 +240,7 @@
 		throw new Error('not-implemented');
 	}
 
+
 	// sorted sets
 
 	module.sortedSetAdd = function(key, score, value, callback) {
@@ -352,9 +355,9 @@
 					return callback(err);
 				}
 				if(data && data.array) {
-					callback(err, data.array);
+					callback(null, data.array);
 				} else {
-					callback(err, []);
+					callback(null, []);
 				}
 			});
 	}
