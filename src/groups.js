@@ -146,7 +146,16 @@
 			if (!exists) {
 				db.incrObjectField('global', 'nextGid', function (err, gid) {
 					db.setObjectField('group:gid', name, gid, function(err) {
-						db.setObject('gid:' + gid, {}, function(err) {
+
+						var groupData = {
+							gid: gid,
+							name: name,
+							description: description,
+							deleted: '0',
+							hidden: '0'
+						};
+
+						db.setObject('gid:' + gid, groupData, function(err) {
 
 							Groups.get(gid, {}, callback);
 

@@ -287,14 +287,11 @@
 	}
 
 	module.isMemberOfSets = function(sets, value, callback) {
-
-
 		function iterator(set, next) {
 			module.isSetMember(set, value, next);
 		}
 
 		async.map(sets, iterator, function(err, result) {
-			console.log(err, result);
 			callback(err, result);
 		});
 
