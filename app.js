@@ -76,15 +76,6 @@
 		require('./src/database').init(function(err) {
 			meta.configs.init(function () {
 
-				//
-				// TODO : figure out reds search after dbal is complete
-				//
-				//var reds = require('reds'),
-				//	db = require('./src/database');
-				/*reds.createClient = function () {
-					return reds.client || (reds.client = db);
-				};*/
-
 				var templates = require('./public/src/templates'),
 					translator = require('./public/src/translator'),
 					webserver = require('./src/webserver'),
