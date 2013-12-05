@@ -668,6 +668,12 @@ websockets.init = function(io) {
 			});
 		});
 
+		socket.on('api:notifications.getCount', function(callback) {
+			user.notifications.getUnreadCount(uid, function(err, count) {
+				callback(err ? err.message : null, count);
+			});
+		});
+
 		socket.on('api:categories.getRecentReplies', function(tid) {
 			categories.getRecentReplies(tid, 4, function(replies) {
 				socket.emit('api:categories.getRecentReplies', replies);

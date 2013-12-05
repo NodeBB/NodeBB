@@ -1035,7 +1035,7 @@ var bcrypt = require('bcrypt'),
 
 		},
 		getUnreadCount: function(uid, callback) {
-			db.sortedSetCount('uid:' + uid + ':notifications:unread', 0, 10, callback);
+			db.sortedSetCount('uid:' + uid + ':notifications:unread', -Infinity, Infinity, callback);
 		},
 		getUnreadByUniqueId: function(uid, uniqueId, callback) {
 			db.getSortedSetRange('uid:' + uid + ':notifications:unread', 0, -1, function(err, nids) {

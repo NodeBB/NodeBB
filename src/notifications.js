@@ -9,6 +9,7 @@ var async = require('async'),
 
 
 (function(Notifications) {
+	"use strict";
 
 	Notifications.init = function() {
 		if (process.env.NODE_ENV === 'development') {
@@ -144,16 +145,16 @@ var async = require('async'),
 	}
 
 	Notifications.mark_read = function(nid, uid, callback) {
-			if (parseInt(uid) > 0) {
-				Notifications.get(nid, uid, function(notif_data) {
-					db.sortedSetRemove('uid:' + uid + ':notifications:unread', nid);
-					db.sortedSetAdd('uid:' + uid + ':notifications:read', notif_data.datetime, nid);
-					if (callback) {
-						callback();
-					}
-				});
-			}
+		if (parseInt(uid, 10) > 0) {
+			Notifications.get(nid, uid, function(notif_data) {
+				db.sortedSetRemove('uid:' + uid + ':notifications:unread', nid);
+				db.sortedSetAdd('uid:' + uid + ':notifications:read', notif_data.datetime, nid);
+				if (callback) {
+					callback();
+				}
+			});
 		}
+	};
 
 	Notifications.mark_read_multiple = function(nids, uid, callback) {
 		if (!Array.isArray(nids) && parseInt(nids, 10) > 0) {

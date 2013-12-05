@@ -66,7 +66,7 @@
 	var notifContainer = document.getElementsByClassName('notifications')[0],
 		notifTrigger = notifContainer.querySelector('a'),
 		notifList = document.getElementById('notif-list'),
-		notifIcon = document.querySelector('.notifications a i');
+		notifIcon = $('.notifications a');
 	notifTrigger.addEventListener('click', function(e) {
 		e.preventDefault();
 		if (notifContainer.className.indexOf('open') === -1) {
@@ -77,7 +77,6 @@
 					numUnread = data.unread.length,
 					x;
 				notifList.innerHTML = '';
-				console.log(data);
 				if ((data.read.length + data.unread.length) > 0) {
 					for (x = 0; x < numUnread; x++) {
 						notifEl.setAttribute('data-nid', data.unread[x].nid);
@@ -106,14 +105,18 @@
 				notifList.appendChild(notifFrag);
 
 				if (data.unread.length > 0) {
-					notifIcon.className = 'fa fa-circle active';
+					notifIcon.toggleClass('active', true);
 				} else {
-					notifIcon.className = 'fa fa-circle-o';
+					notifIcon.toggleClass('active', false);
 				}
 
 				socket.emit('api:notifications.mark_all_read', null, function() {
-					notifIcon.className = 'fa fa-circle-o';
+					notifIcon.toggleClass('active', false);
 					utils.refreshTitle();
+
+					// Update favicon + local count
+					Tinycon.setBubble(0);
+					localStorage.setItem('notifications:count', 0);
 				});
 			});
 		}
@@ -138,8 +141,25 @@
 		}
 	});
 
+	socket.emit('api:notifications.getCount', function(err, count) {
+		// Update notification icon, if necessary
+		if (count > 0) {
+			notifIcon.toggleClass('active', true);
+		} else {
+			notifIcon.toggleClass('active', false);
+		}
+
+		// Update the favicon + saved local count
+		Tinycon.setBubble(count);
+		localStorage.setItem('notifications:count', count);
+	});
+
+	if (localStorage.getItem('notifications:count') !== null) {
+		Tinycon.setBubble(parseInt(localStorage.getItem('notifications:count'), 10));
+	}
+
 	socket.on('event:new_notification', function() {
-		document.querySelector('.notifications a i').className = 'fa fa-circle active';
+		notifIcon.toggleClass('active', true);
 		app.alert({
 			alert_id: 'new_notif',
 			title: 'New notification',
@@ -148,6 +168,11 @@
 			timeout: 2000
 		});
 		utils.refreshTitle();
+
+		// Update the favicon + local storage
+		var	savedCount = parseInt(localStorage.getItem('notifications:count'),10) || 0;
+		localStorage.setItem('notifications:count', savedCount+1);
+		Tinycon.setBubble(savedCount+1);
 	});
 
 
@@ -158,11 +183,16 @@
 			if (chat.modalExists(data.fromuid)) {
 				modal = chat.getModal(data.fromuid);
 				chat.appendChatMessage(modal, data.message, data.timestamp);
+				
+				if (modal.is(":visible")) {
+					chat.load(modal.attr('UUID'));
+				} else {
+					chat.toggleNew(modal.attr('UUID'), true);
+				}
 			} else {
 				modal = chat.createModal(data.username, data.fromuid);
+				chat.toggleNew(modal.attr('UUID'), true);
 			}
-
-			chat.load(modal.attr('UUID'));
 		});
 	});
 

@@ -190,6 +190,13 @@ var	DebugRoute = function(app) {
 				});*/
 			}
 
+			function sortedSetCount(callback) {
+				db.sortedSetCount('sortedSet3', -Infinity, Infinity, function(err, data) {
+					console.log('sortedSetCount return', data);
+					callback(err, {'sortedSetCount': data});
+				});
+			}
+
 			function listAppend(callback) {
 				db.listAppend('myList5', 5, function(err, data) {
 					console.log('listAppend return', data);
@@ -327,6 +334,7 @@ var	DebugRoute = function(app) {
 				getSortedSetRange,
 				//sortedSetRemove,
 				getSortedSetRange,
+				sortedSetCount
 			];
 
 			var listTasks = [

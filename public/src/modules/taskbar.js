@@ -25,6 +25,7 @@ define(function() {
 					if (_btn.className.indexOf('active') === -1) {
 						taskbar.minimizeAll();
 						module.load(uuid);
+						taskbar.toggleNew(uuid, false);
 
 						// Highlight the button
 						$(taskbar.tasklist).removeClass('active');
@@ -69,7 +70,7 @@ define(function() {
 								'</a>';
 			btnEl.setAttribute('data-module', module);
 			btnEl.setAttribute('data-uuid', uuid);
-			btnEl.className = options.state || 'active';
+			btnEl.className = options.state !== undefined ? options.state : 'active';
 
 			if (!options.state || options.state === 'active') taskbar.minimizeAll();
 			taskbar.tasklist.appendChild(btnEl);
@@ -82,14 +83,21 @@ define(function() {
 		},
 		minimizeAll: function() {
 			$(taskbar.tasklist.querySelectorAll('.active')).removeClass('active');
+		},
+		toggleNew: function(uuid, state) {
+			var btnEl = $(taskbar.tasklist.querySelector('[data-uuid="' + uuid + '"]'));
+			btnEl.toggleClass('new', state);
 		}
 	}
 
-	if (!taskbar.initialized) taskbar.init();
+	if (!taskbar.initialized) {
+		taskbar.init();
+	}
 
 	return {
 		push: taskbar.push,
 		discard: taskbar.discard,
-		minimize: taskbar.minimize
+		minimize: taskbar.minimize,
+		toggleNew: taskbar.toggleNew
 	}
 });

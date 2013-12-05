@@ -48,9 +48,9 @@ var nconf = require('nconf'),
 	}
 
 	Admin.createRoutes = function (app) {
-
 		app.all('/api/admin/*', Admin.isAdmin);
 		app.all('/admin/*', Admin.isAdmin);
+		app.get('/admin', Admin.isAdmin);
 
 		(function () {
 			var routes = [

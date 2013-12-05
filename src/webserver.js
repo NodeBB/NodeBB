@@ -120,6 +120,7 @@ var path = require('path'),
 	// Cache static files on production
 	if (global.env !== 'development') {
 		app.enable('cache');
+		app.enable('minification');
 	}
 
 	// Middlewares
@@ -135,7 +136,7 @@ var path = require('path'),
 				app.use(require('less-middleware')({
 					src: path.join(__dirname, '../', 'public'),
 					prefix: nconf.get('relative_path'),
-					yuicompress: true
+					yuicompress: app.enabled('minification') ? true : false
 				}));
 				app.use(express.bodyParser()); // Puts POST vars in request.body
 				app.use(express.cookieParser()); // If you want to parse cookies (res.cookies)
@@ -204,7 +205,7 @@ var path = require('path'),
 									src: path.join(__dirname, '../node_modules/' + themeId),
 									dest: path.join(__dirname, '../public/css'),
 									prefix: nconf.get('relative_path') + '/css',
-									yuicompress: true
+									yuicompress: app.enabled('minification') ? true : false
 								}));
 
 								next();
@@ -218,7 +219,7 @@ var path = require('path'),
 									src: path.join(__dirname, '../node_modules/nodebb-theme-vanilla'),
 									dest: path.join(__dirname, '../public/css'),
 									prefix: nconf.get('relative_path') + '/css',
-									yuicompress: true
+									yuicompress: app.enabled('minification') ? true : false
 								}));
 
 								next();
@@ -743,7 +744,7 @@ var path = require('path'),
 
 		var custom_routes = {
 			'routes': [],
-			'api_methods': []
+			'api': []
 		};
 
 		plugins.ready(function() {
@@ -765,6 +766,20 @@ var path = require('path'),
 						}(route));
 					}
 				}
+
+				var apiRoutes = custom_routes.api;
+				for (var route in apiRoutes) {
+					if (apiRoutes.hasOwnProperty(route)) {
+						(function(route) {
+							app[apiRoutes[route].method || 'get']('/api' + apiRoutes[route].route, function(req, res) {
+								apiRoutes[route].callback(req, res, function(data) {
+									res.json(data);
+								});
+							});
+						}(route));
+					}
+				}
+
 			});
 		});
 

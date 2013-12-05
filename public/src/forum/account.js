@@ -39,7 +39,7 @@ define(['forum/accountheader'], function(header) {
 					uid: theirid
 				}, function(success) {
 					if (success) {
-						followBtn.addClasss('hide');
+						followBtn.addClass('hide');
 						unfollowBtn.removeClass('hide');
 						app.alertSuccess('You are now following ' + username + '!');
 					} else {

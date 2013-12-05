@@ -67,7 +67,8 @@ define(['taskbar'], function(taskbar) {
 		chatModal.find('.close').on('click', function(e) {
 			clearInterval(chatModal.intervalId);
 			chatModal.intervalId = 0;
-			chatModal.hide();
+			chatModal.remove();
+			chatModal.data('modal', null);
 			taskbar.discard('chat', uuid);
 		});
 
@@ -81,7 +82,11 @@ define(['taskbar'], function(taskbar) {
 			checkOnlineStatus(chatModal);
 		});
 
-		taskbar.push('chat', chatModal.attr('UUID'), {title:'chat with ' + username});
+		taskbar.push('chat', chatModal.attr('UUID'), {
+			title:'<i class="fa fa-comment"></i> ' + username,
+			state: ''
+		});
+
 		return chatModal;
 	}
 
@@ -149,7 +154,11 @@ define(['taskbar'], function(taskbar) {
 		chatContent.scrollTop(
 			chatContent[0].scrollHeight - chatContent.height()
 		);
-	}
+	};
+
+	module.toggleNew = function(uuid, state) {
+		taskbar.toggleNew(uuid, state);
+	};
 
 	return module;
 });
