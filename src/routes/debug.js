@@ -372,7 +372,16 @@ var	DebugRoute = function(app) {
 				isMemberOfSets
 			];
 
-			require('async').series(sortedSetTasks, function(err, results) {
+			var miscTests = [
+				function(next) {
+					db.isObjectField('email:uid', 'barisusakli@gmail.com', function(err, exists) {
+						console.log(err, exists);
+						next(err, exists);
+					});
+				}
+			];
+
+			require('async').series(miscTests, function(err, results) {
 				if(err) {
 					console.log(err);
 					res.send(err.message);

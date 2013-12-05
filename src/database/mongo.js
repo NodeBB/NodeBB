@@ -148,6 +148,8 @@
 
 	module.setObjectField = function(key, field, value, callback) {
 		var data = {};
+		// if there is a '.' in the field name it inserts subdocument in mongo, replace '.'s with \uff0E
+		field = field.replace(/\./g, '\uff0E');
 		data[field] = value;
 		db.collection('objects').update({_key:key}, {$set:data}, {upsert:true, w: 1}, function(err, result) {
 			if(callback) {
@@ -185,7 +187,7 @@
 
 		var _fields = {};
 		for(var i=0; i<fields.length; ++i) {
-			_fields[fields[i]] = 1;
+			_fields[fields[i].replace(/\./g, '\uff0E')] = 1;
 		}
 
 		db.collection('objects').findOne({_key:key}, _fields, function(err, item) {
@@ -229,6 +231,7 @@
 
 	module.isObjectField = function(key, field, callback) {
 		var data = {};
+		field = field.replace(/\./g, '\uff0E');
 		data[field] = '';
 		db.collection('objects').findOne({_key:key}, {fields:data}, function(err, item) {
 			if(err) {
@@ -241,6 +244,7 @@
 
 	module.deleteObjectField = function(key, field, callback) {
 		var data = {};
+		field = field.replace(/\./g, '\uff0E');
 		data[field] = "";
 		db.collection('objects').update({_key:key}, {$unset : data}, function(err, result) {
 			if(callback) {
@@ -259,6 +263,7 @@
 
 	module.incrObjectFieldBy = function(key, field, value, callback) {
 		var data = {};
+		field = field.replace(/\./g, '\uff0E');
 		data[field] = value;
 		db.collection('objects').update({_key:key}, {$inc : data}, {upsert:true}, function(err, result) {
 			module.getObjectField(key, field, function(err, value) {
