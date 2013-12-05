@@ -250,14 +250,14 @@ var	DebugRoute = function(app) {
 
 
 			function setAdd(callback) {
-				db.setAdd('myTestSet', 5, function(err, data) {
+				db.setAdd('myTestSet', 15, function(err, data) {
 					console.log('setAdd return', data);
 					callback(err, {'setAdd': data});
 				});
 			}
 
 			function setRemove(callback) {
-				db.setRemove('myTestSet', 11, function(err, data) {
+				db.setRemove('myTestSet', 15, function(err, data) {
 					console.log('setRemove return', data);
 					callback(err, {'setRemove': data});
 				});
@@ -271,14 +271,14 @@ var	DebugRoute = function(app) {
 			}
 
 			function isSetMember(callback) {
-				db.isSetMember('myTestSet', 5, function(err, data) {
+				db.isSetMember('myTestSet', 15, function(err, data) {
 					console.log('isSetMember return', data);
 					callback(err, {'isSetMember': data});
 				});
 			}
 
 			function isMemberOfSets(callback) {
-				db.isMemberOfSets(['doesntexist', 'myTestSet', 'nonexistingSet'], 5, function(err, data) {
+				db.isMemberOfSets(['doesntexist', 'myTestSet', 'nonexistingSet'], 15, function(err, data) {
 					console.log('isMemberOfSets return', data);
 					callback(err, {'isMemberOfSets': data});
 				});
@@ -288,6 +288,13 @@ var	DebugRoute = function(app) {
 				db.setRemoveRandom('myTestSet', function(err, data) {
 					console.log('setRemoveRandom return', data);
 					callback(err, {'setRemoveRandom': data});
+				});
+			}
+
+			function setCount(callback) {
+				db.setCount('myTestSet', function(err, data) {
+					console.log('setCount return', data);
+					callback(err, {'setCount': data});
 				});
 			}
 
@@ -345,8 +352,15 @@ var	DebugRoute = function(app) {
 				getSetMembers,
 				setAdd,
 				getSetMembers,
-				isSetMember,
+				setRemove,
 				getSetMembers,
+				isSetMember,
+				setAdd,
+				getSetMembers,
+				isSetMember,
+				setRemoveRandom,
+				getSetMembers,
+				setCount,
 				isMemberOfSets
 			];
 

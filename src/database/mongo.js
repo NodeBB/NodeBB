@@ -267,17 +267,15 @@
 	// sets
 
 	module.setAdd = function(key, value, callback) {
-
-		var data = {
-			value:value
-		};
-
-		data.setName = key;
-		module.setObject(key + ':' + value, data, callback);
+		db.collection('objects').update({_key:key}, {$addToSet: { members: value }}, {upsert:true, w: 1},  function(err, result) {
+			if(callback) {
+				callback(err, result);
+			}
+		});
 	}
 
 	module.setRemove = function(key, value, callback) {
-		db.collection('objects').remove({setName:key, value:value}, function(err, result) {
+		db.collection('objects').update({_key:key, members: value}, {$pull : {members: value}}, function(err, result) {
 			if(callback) {
 				callback(err, result);
 			}
@@ -285,7 +283,7 @@
 	}
 
 	module.isSetMember = function(key, value, callback) {
-		db.collection('objects').findOne({setName:key, value:value}, function(err, item) {
+		db.collection('objects').findOne({_key:key, members: value}, function(err, item) {
 			callback(err, item !== null && item !== undefined);
 		});
 	}
@@ -302,7 +300,7 @@
 	}
 
 	module.getSetMembers = function(key, callback) {
-		db.collection('objects').find({setName:key}).toArray(function(err, data) {
+		db.collection('objects').findOne({_key:key}, {members:1}, function(err, data) {
 			if(err) {
 				return callback(err);
 			}
@@ -310,29 +308,26 @@
 			if(!data) {
 				callback(null, []);
 			} else {
-				data = data.map(function(item) {
-					return item.value;
-				});
-				callback(null, data);
+				callback(null, data.members);
 			}
 		});
 	}
 
 	module.setCount = function(key, callback) {
-		db.collection('objects').count({setName:key}, function(err, count) {
+		db.collection('objects').findOne({_key:key}, function(err, data) {
 			if(err) {
 				return callback(err);
 			}
-
-			if(!count) {
+			if(!data) {
 				return callback(null, 0);
 			}
-			callback(null,count);
+
+			callback(null, data.members.length);
 		});
 	}
 
 	module.setRemoveRandom = function(key, callback) {
-		db.collection('objects').find({setName:key}).toArray(function(err, data) {
+		db.collection('objects').findOne({_key:key}, function(err, data) {
 			if(err) {
 				if(callback) {
 					return callback(err);
@@ -346,11 +341,11 @@
 					callback(null, 0);
 				}
 			} else {
-				var randomIndex = Math.floor(Math.random() * data.length);
-				var item = data[randomIndex];
-				module.setRemove(item.setName, item.value, function(err, result) {
+				var randomIndex = Math.floor(Math.random() * data.members.length);
+				var value = data.members[randomIndex];
+				module.setRemove(data._key, value, function(err, result) {
 					if(callback) {
-						callback(err, item.value);
+						callback(err, value);
 					}
 				});
 			}
