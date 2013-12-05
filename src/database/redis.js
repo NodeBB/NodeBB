@@ -8,6 +8,7 @@
 		nconf = require('nconf'),
 		express = require('express'),
 		connectRedis = require('connect-redis')(express),
+		reds = require('reds'),
 
 		redis_socket_or_host = nconf.get('redis:host'),
 		utils = require('./../../public/src/utils.js');
@@ -27,6 +28,10 @@
 		client: redisClient,
 		ttl: 60 * 60 * 24 * 30
 	});
+
+	reds.createClient = function () {
+		return reds.client || (reds.client = redisClient);
+	};
 
 	if (nconf.get('redis:password')) {
 		redisClient.auth(nconf.get('redis:password'));

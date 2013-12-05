@@ -243,7 +243,7 @@ var async = require('async'),
 
 			async.eachSeries(results.expiredNids, function(nid, next) {
 
-				db.sortedSetsScore(results.inboxes, function(err, results) {
+				db.sortedSetsScore(results.inboxes, nid, function(err, results) {
 					if(err) {
 						return next(err);
 					}
