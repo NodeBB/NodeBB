@@ -350,7 +350,7 @@ var	DebugRoute = function(app) {
 				isMemberOfSets
 			];
 
-			require('async').series(objectTasks, function(err, results) {
+			require('async').series(setTasks, function(err, results) {
 				if(err) {
 					console.log(err);
 					res.send(err.message);
