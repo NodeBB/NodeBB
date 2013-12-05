@@ -190,17 +190,21 @@
 				numChats = chats.length,
 				x, userObj;
 
-			for(x=0;x<numChats;x++) {
-				userObj = chats[x];
-				chatEl.setAttribute('data-uid', userObj.uid);
-				chatEl.innerHTML = '<a href="javascript:app.openChat(\'' + userObj.username + '\', ' + userObj.uid + ');"><img src="' + userObj.picture + '" title="' + userObj.username + '" />' + userObj.username + '</a>';
+			if (numChats > 0) {
+				for(x=0;x<numChats;x++) {
+					userObj = chats[x];
+					chatEl.setAttribute('data-uid', userObj.uid);
+					chatEl.innerHTML = '<a href="javascript:app.openChat(\'' + userObj.username + '\', ' + userObj.uid + ');"><img src="' + userObj.picture + '" title="' + userObj.username + '" />' + userObj.username + '</a>';
 
+					chatsFrag.appendChild(chatEl.cloneNode(true));
+				}
+			} else {
+				chatEl.innerHTML = '<a href="#">No Recent Chats</a>';
 				chatsFrag.appendChild(chatEl.cloneNode(true));
 			}
 
 			chatsListEl.empty();
 			chatsListEl.html(chatsFrag);
-			// console.log('received chats: ', chats);
 		});
 	});
 
