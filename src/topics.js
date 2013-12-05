@@ -398,7 +398,6 @@ var async = require('async'),
 	};
 
 	Topics.pushUnreadCount = function(uids, callback) {
-		if (uids == 0) throw new Error();
 		if (!uids) {
 			clients = websockets.getConnectedClients();
 			uids = Object.keys(clients);
