@@ -244,13 +244,10 @@ var async = require('async'),
 				return;
 			}
 
-			var	numInboxes = results.inboxes.length,
-				x;
-
 			async.eachSeries(results.expiredNids, function(nid, next) {
 				var	multi = RDB.multi();
 
-				for(x=0; x<numInboxes; ++x) {
+				for(var x=0; x<results.inboxes.length; ++x) {
 					multi.zscore(results.inboxes[x], nid);
 				}
 
