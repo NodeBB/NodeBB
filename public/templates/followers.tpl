@@ -30,7 +30,7 @@
 		</div>
 		<!-- END followers -->
 	</div>
-	<div id="no-followers-notice" class="alert alert-warning hide">[[user:haz_no_follower]]</div>
+	<div id="no-followers-notice" class="alert alert-warning hide">[[user:has_no_follower]]</div>
 </div>
 
 <input type="hidden" template-variable="yourid" value="{yourid}" />

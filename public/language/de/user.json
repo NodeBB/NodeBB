@@ -31,8 +31,8 @@
 	"settings": "Einstellungen",
 	"show_my_email": "Zeige meine E-Mail Adresse an.",
 
-	"haz_no_follower": "Dieser User hat noch keine Follower.",
+	"has_no_follower": "Dieser User hat noch keine Follower.",
 	"follows_no_one": "Dieser User folgt noch niemanden."
-	
-	
+
+
 }

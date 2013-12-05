@@ -7,7 +7,7 @@
 	</div>
 
 	<!-- IF show_nofavourites -->
-		<div id="no-favourites-notice" class="alert alert-warning">[[topic:haz_no_favourites]]</div>
+		<div id="no-favourites-notice" class="alert alert-warning">[[topic:has_no_favourites]]</div>
 	<!-- ENDIF show_nofavourites -->
 
 	<div class="row">

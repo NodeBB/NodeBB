@@ -15,7 +15,7 @@
 	"logout": "Logout",
 	"logout.title": "Du bist ausgeloggt.",
 	"logout.message": "Du hast dich soeben erfolgreich aus dem Forum ausgeloggt.",
-	
+
 	"save_changes": "Speichere Änderungen",
 	"close": "Schließen",
 
@@ -26,5 +26,6 @@
 	"header.search": "Suche",
 	"header.profile": "Profil",
 
-	"notifications.loading": "Benachrichtigungen laden"
+	"notifications.loading": "Benachrichtigungen laden",
+	"chats.loading": "Nachrichten werden geladen"
 }

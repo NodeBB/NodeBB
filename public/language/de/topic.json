@@ -30,7 +30,7 @@
 	"favourites": "Favoriten",
 	"favourites.not_logged_in.title": "Nicht eingeloggt!",
 	"favourites.not_logged_in.message": "Bitte logge dich ein, um diesen Beitrag favorisieren zu können.",
-	"favourites.haz_no_favourites":"Du hast noch keine Favoriten.",
+	"favourites.has_no_favourites":"Du hast noch keine Favoriten.",
 
 	"posted_by": "Geposted von",
 	"loading": "Lade",

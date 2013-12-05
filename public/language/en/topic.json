@@ -29,7 +29,7 @@
 	"favourites": "Favorites",
 	"favourites.not_logged_in.title": "Not Logged In",
 	"favourites.not_logged_in.message": "Please log in in order to favourite this post",
-	"favourites.haz_no_favourites": "You don't have any favourites, favourite some posts to see them here!",
+	"favourites.has_no_favourites": "You don't have any favourites, favourite some posts to see them here!",
 
 	"posted_by": "posted by",
 	"loading": "Lade",
