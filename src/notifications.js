@@ -211,9 +211,18 @@ var async = require('async'),
 
 		async.parallel({
 			"inboxes": function(next) {
-				RDB.keys('uid:*:notifications:unread', next);
+				//RDB.keys('uid:*:notifications:unread', next);
+				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
+					if(err) {
+						return next(err);
+					}
+					uids = uids.map(function(uid) {
+						return 'uid:' + uid + ':notifications:unread';
+					});
+					next(null, uids);
+				});
 			},
-			"nids": function(next) {
+			"expiredNids": function(next) {
 				db.getSetMembers('notifications', function(err, nids) {
 					async.filter(nids, function(nid, next) {
 						db.getObjectField('notifications:' + nid, 'datetime', function(err, datetime) {
@@ -229,43 +238,45 @@ var async = require('async'),
 				});
 			}
 		}, function(err, results) {
-			if (!err) {
-				var	numInboxes = results.inboxes.length,
-					x;
-
-				async.eachSeries(results.nids, function(nid, next) {
-					var	multi = RDB.multi();
-
-					for(x=0;x<numInboxes;x++) {
-						multi.zscore(results.inboxes[x], nid);
-					}
-
-					multi.exec(function(err, results) {
-						// If the notification is not present in any inbox, delete it altogether
-						var	expired = results.every(function(present) {
-								if (present === null) {
-									return true;
-								}
-							});
-
-						if (expired) {
-							destroy(nid);
-							numPruned++;
-						}
-
-						next();
-					});
-				}, function(err) {
-					if (process.env.NODE_ENV === 'development') {
-						winston.info('[notifications.prune] Notification pruning completed. ' + numPruned + ' expired notification' + (numPruned !== 1 ? 's' : '') + ' removed.');
-					}
-				});
-			} else {
+			if(err) {
 				if (process.env.NODE_ENV === 'development') {
 					winston.error('[notifications.prune] Ran into trouble pruning expired notifications. Stack trace to follow.');
 					winston.error(err.stack);
 				}
+				return;
 			}
+
+			var	numInboxes = results.inboxes.length,
+				x;
+			console.log(results.inboxes, results.expiredNids);
+			async.eachSeries(results.expiredNids, function(nid, next) {
+				var	multi = RDB.multi();
+
+				for(x=0; x<numInboxes; ++x) {
+					multi.zscore(results.inboxes[x], nid);
+				}
+
+				multi.exec(function(err, results) {
+					// If the notification is not present in any inbox, delete it altogether
+					var	expired = results.every(function(present) {
+							if (present === null) {
+								return true;
+							}
+						});
+
+					if (expired) {
+						destroy(nid);
+						numPruned++;
+					}
+
+					next();
+				});
+			}, function(err) {
+				if (process.env.NODE_ENV === 'development') {
+					winston.info('[notifications.prune] Notification pruning completed. ' + numPruned + ' expired notification' + (numPruned !== 1 ? 's' : '') + ' removed.');
+				}
+			});
+
 		});
 	};
 

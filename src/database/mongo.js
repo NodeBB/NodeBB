@@ -20,7 +20,6 @@
 				process.exit();
 			}
 
-			// TODO: fill out settings.db
 			module.sessionStore = new mongoStore({
 				db: db
 			});
@@ -475,6 +474,14 @@
 
 			callback(null, rank);
 		});
+	}
+
+	module.sortedSetScore = function(key, value, callback) {
+		throw new Error('not-implemented');
+	}
+
+	module.sortedSetsScore = function(keys, value, callback) {
+		throw new Error('not-implemented');
 	}
 
 	// lists

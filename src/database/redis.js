@@ -311,6 +311,20 @@
 		redisClient.zrank(key, value, callback);
 	}
 
+	module.sortedSetScore = function(key, value, callback) {
+		redisClient.zscore(key, value, callback);
+	}
+
+	module.sortedSetsScore = function(keys, value, callback) {
+		var	multi = redisClient.multi();
+
+		for(x=0; x<keys.length; ++x) {
+			multi.zscore(keys[x], value);
+		}
+
+		multi.exec(callback);
+	}
+
 	// lists
 	module.listPrepend = function(key, value, callback) {
 		redisClient.lpush(key, value, callback);

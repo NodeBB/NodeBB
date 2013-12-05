@@ -79,6 +79,18 @@ var	DebugRoute = function(app) {
 			});
 		});
 
+		app.get('/prune', function(req, res) {
+			require('./../notifications').prune();
+
+			//function(err, result) {
+			//	if(err) {
+			//		res.send(err.message);
+			//		return;
+			//	}
+				res.send('done');
+			//}
+		});
+
 		app.get('/mongo', function(req, res) {
 
 			var db = require('./../database');
