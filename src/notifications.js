@@ -193,7 +193,6 @@ var async = require('async'),
 	Notifications.prune = function(cutoff) {
 		// TODO: this function wont work with dbal in its current state
 		// things to figure out
-		// 1 - RDB.keys mongo uses regex, redis uses global patterns?
 		// 2 - Need to remove the RDB.multi
 
 		if (process.env.NODE_ENV === 'development') {
@@ -211,7 +210,6 @@ var async = require('async'),
 
 		async.parallel({
 			"inboxes": function(next) {
-				//RDB.keys('uid:*:notifications:unread', next);
 				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
 					if(err) {
 						return next(err);
@@ -248,7 +246,7 @@ var async = require('async'),
 
 			var	numInboxes = results.inboxes.length,
 				x;
-			console.log(results.inboxes, results.expiredNids);
+
 			async.eachSeries(results.expiredNids, function(nid, next) {
 				var	multi = RDB.multi();
 
