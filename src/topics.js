@@ -398,7 +398,6 @@ var async = require('async'),
 	};
 
 	Topics.pushUnreadCount = function(uids, callback) {
-		console.log('uids', uids);
 		if (uids == 0) throw new Error();
 		if (!uids) {
 			clients = websockets.getConnectedClients();
@@ -410,9 +409,12 @@ var async = require('async'),
 		async.each(uids, function(uid, next) {
 			Topics.getUnreadTids(uid, 0, 19, function(err, tids) {
 				websockets.in('uid_' + uid).emit('event:unread.updateCount', tids.length);
+				next();
 			});
 		}, function(err) {
-			winston.error(err);
+			if (err) {
+				winston.error(err.message);
+			}
 
 			if (callback) {
 				callback();
