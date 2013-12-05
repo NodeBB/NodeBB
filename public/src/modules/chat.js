@@ -81,7 +81,7 @@ define(['taskbar'], function(taskbar) {
 			checkOnlineStatus(chatModal);
 		});
 
-		taskbar.push('chat', chatModal.attr('UUID'), {title:'chat with ' + username});
+		taskbar.push('chat', chatModal.attr('UUID'), {title:'<i class="fa fa-comment"></i> ' + username});
 		return chatModal;
 	}
 
