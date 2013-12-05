@@ -24,6 +24,11 @@
 	<span>Keyspace Hits</span> <span class="text-right">{keyspace_hits}</span><br/>
 	<span>Keyspace Misses</span> <span class="text-right">{keyspace_misses}</span><br/>
 </div>
+<hr />
+<h3>Raw Info </h3>
+<div class="highlight">
+<pre>{raw}</pre>
+</div>
 <!-- ENDIF redis -->
 
 <!-- IF mongo -->
@@ -38,5 +43,10 @@
 	<span>Data Size</span> <span class="text-right">{dataSize} kb</span><br/>
 	<span>Storage Size</span> <span class="text-right">{storageSize} kb</span><br/>
 	<span>File Size</span> <span class="text-right">{fileSize} kb</span><br/>
+</div>
+<hr />
+<h3>Raw Info </h3>
+<div class="highlight">
+<pre>{raw}</pre>
 </div>
 <!-- ENDIF mongo -->

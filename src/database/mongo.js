@@ -75,6 +75,8 @@
 
 			stats.avgObjSize = (stats.avgObjSize / 1024).toFixed(2);
 
+			stats.raw = JSON.stringify(stats, null, 4);
+
 			stats.mongo = true;
 			//remove this when andrew adds in undefined checking to templates
 			stats.redis = false;
