@@ -102,6 +102,7 @@ define(['taskbar'], function(taskbar) {
 		chatModal.show();
 		module.bringModalToTop(chatModal);
 		checkOnlineStatus(chatModal);
+		taskbar.updateActive(uuid);
 	}
 
 	module.minimize = function(uuid) {

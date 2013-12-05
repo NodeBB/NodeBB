@@ -27,6 +27,7 @@ var cookie = require('cookie'),
 	notifications = require('./notifications'),
 	threadTools = require('./threadTools'),
 	postTools = require('./postTools'),
+	Messaging = require('./messaging'),
 	meta = require('./meta'),
 	logger = require('./logger'),
 	socketCookieParser = express.cookieParser(nconf.get('secret')),
@@ -680,7 +681,7 @@ websockets.init = function(io) {
 
 		socket.on('getChatMessages', function(data, callback) {
 			var touid = data.touid;
-			require('./messaging').getMessages(uid, touid, function(err, messages) {
+			Messaging.getMessages(uid, touid, function(err, messages) {
 				if (err)
 					return callback(null);
 
@@ -709,7 +710,7 @@ websockets.init = function(io) {
 					});
 				}
 
-				require('./messaging').addMessage(uid, touid, msg, function(err, message) {
+				Messaging.addMessage(uid, touid, msg, function(err, message) {
 					var numSockets = 0;
 
 					if (userSockets[touid]) {
@@ -739,6 +740,16 @@ websockets.init = function(io) {
 						}
 					}
 				});
+			});
+		});
+
+		socket.on('api:chats.list', function(callback) {
+			Messaging.getRecentChats(uid, function(err, uids) {
+				if (err) {
+					winston.warn('[(socket) api:chats.list] Problem retrieving chats: ' + err.message);
+				}
+
+				callback(uids || []);
 			});
 		});
 

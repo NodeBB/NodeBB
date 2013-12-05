@@ -87,6 +87,11 @@ define(function() {
 		toggleNew: function(uuid, state) {
 			var btnEl = $(taskbar.tasklist.querySelector('[data-uuid="' + uuid + '"]'));
 			btnEl.toggleClass('new', state);
+		},
+		updateActive: function(uuid) {
+			var	tasks = $(taskbar.tasklist).find('li');
+			tasks.removeClass('active');
+			tasks.filter('[data-uuid="' + uuid + '"]').addClass('active');
 		}
 	}
 
@@ -98,6 +103,7 @@ define(function() {
 		push: taskbar.push,
 		discard: taskbar.discard,
 		minimize: taskbar.minimize,
-		toggleNew: taskbar.toggleNew
+		toggleNew: taskbar.toggleNew,
+		updateActive: taskbar.updateActive
 	}
 });

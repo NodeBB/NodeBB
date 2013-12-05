@@ -89,11 +89,20 @@
 						</form>
 					</li>
 
-					<li id="notifications-list" class="notifications dropdown text-center hidden-xs">
+					<li class="notifications dropdown text-center hidden-xs">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="notif_dropdown"></a>
 						<ul id="notif-list" class="dropdown-menu" aria-labelledby="notif_dropdown">
 							<li>
 								<a href="#"><i class="fa fa-refresh fa-spin"></i> [[global:notifications.loading]]</a>
+							</li>
+						</ul>
+					</li>
+
+					<li class="chats dropdown text-center hidden-xs">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="chat_dropdown"><i class="fa fa-comment"></i></a>
+						<ul id="chat-list" class="dropdown-menu" aria-labelledby="chat_dropdown">
+							<li>
+								<a href="#"><i class="fa fa-refresh fa-spin"></i> [[global:chats.loading]]</a>
 							</li>
 						</ul>
 					</li>
