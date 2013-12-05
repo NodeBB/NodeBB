@@ -4,7 +4,7 @@
 	<div class="account-username-box" data-userslug="{userslug}">
 		<span class="account-username">
 			<a href="/user/{userslug}">{username}</a> <i class="fa fa-chevron-right"></i>
-			<a href="/user/{userslug}/followers">followers</a>
+			<a href="/user/{userslug}/followers">[[user:followers]]</a>
 		</span>
 	</div>
 
@@ -30,7 +30,7 @@
 		</div>
 		<!-- END followers -->
 	</div>
-	<div id="no-followers-notice" class="alert alert-warning hide">This user doesn't have any followers :(</div>
+	<div id="no-followers-notice" class="alert alert-warning hide">[[user:haz_no_follower]]</div>
 </div>
 
 <input type="hidden" template-variable="yourid" value="{yourid}" />

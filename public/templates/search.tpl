@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
-	<li><a href="/">Home</a></li>
-	<li class="active">Search</li>
+	<li><a href="/">[[global:home]]</a></li>
+	<li class="active">[[global:header.search]]</li>
 </ol>
 
 
@@ -9,15 +9,15 @@
 		<div class="form-group">
 			<input type="text" class="form-control" placeholder="Search" name="query" value="">
 		</div>
-		<button type="submit" class="btn btn-default hide">Search</button>
+		<button type="submit" class="btn btn-default hide">[[global:header.search]]</button>
 	</div>
 </form>
 
 <div class="category search">
 	<div class="{show_results}">
 		<ul id="topics-container" data-search-query="{search_query}">
-		<h3>Topics</h3>
-		<div class="alert alert-info {show_no_topics}">No topics found!</div>
+		<h3>[[topic:topics]]</h3>
+		<div class="alert alert-info {show_no_topics}">[[topic:no_topics_found]]</div>
 		<!-- BEGIN topics -->
 		<a href="../../topic/{topics.slug}" id="tid-{topics.tid}">
 			<li class="category-item">

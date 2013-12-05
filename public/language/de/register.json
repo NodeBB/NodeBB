@@ -1,0 +1,16 @@
+{
+	"register": "Registrieren",
+	"help.email": "Deine E-Mail Adresse ist standardmäßig nicht öffentlich sichtbar.",
+	"help.username_restrictions": "Einen einmaligen Benutzernamen. 3-16 Zeichen. Andere Benutzer können dich mit @<span id='yourUsername'>Benutzername</span> anschreiben.",
+	"help.minimum_password_length": "Dein Passwort muss mindestens sechs Zeichen lang sein.",
+	"email_address": "E-Mail",
+	"email_address_placeholder": "E-Mail Adresse hier eingeben",
+	"username": "Benutzername",
+	"username_placeholder": "Benutzernamen eingeben",
+	"password": "Passwort",
+	"password_placeholder": "Passwort eingeben",
+	"confirm_password": "Passwort bestätigen",
+	"confirm_password_placeholder": "Passwort zur Bestätigung erneut eingeben",
+	"register_now_button": "Jetzt registrieren",
+	"alternative_registration": "Alternative Registrierung"
+}

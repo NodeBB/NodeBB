@@ -52,7 +52,7 @@
 
 							<div class="topic-buttons">
 								<div class="btn-group">
-									<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="Posted by {posts.username}">
+									<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="[[topic:posted_by]] {posts.username}">
 										<span class="username-field" href="/user/{posts.userslug}" itemprop="author">{posts.username}&nbsp;</span>
 										<span class="caret"></span>
 									</button>
@@ -111,9 +111,9 @@
 									{posts.additional_profile_info}
 								</span>
 								<span class="pull-right">
-									posted <span class="relativeTimeAgo timeago" title="{posts.relativeTime}"></span>
+									[[category:posted]] <span class="relativeTimeAgo timeago" title="{posts.relativeTime}"></span>
 									<!-- IF posts.editor -->
-									<span>| last edited by <strong><a href="/user/{posts.editorslug}">{posts.editorname}</a></strong></span>
+									<span>| [[category:last_edited_by]] <strong><a href="/user/{posts.editorslug}">{posts.editorname}</a></strong></span>
 									<span class="timeago" title="{posts.relativeEditTime}"></span>
 									<!-- ENDIF posts.editor -->
 								</span>
@@ -127,11 +127,11 @@
 				<li class="well post-bar">
 					<div class="inline-block">
 						<small class="topic-stats">
-							<span>posts</span>
+							<span>[[category:posts]]</span>
 							<strong><span id="topic-post-count" class="human-readable-number" title="{postcount}">{postcount}</span></strong> |
-							<span>views</span>
+							<span>[[category:views]]</span>
 							<strong><span class="human-readable-number" title="{viewcount}">{viewcount}</span></strong> |
-							<span>browsing</span>
+							<span>[[category:browsing]]</span>
 						</small>
 						<div class="thread_active_users active-users inline-block"></div>
 					</div>
@@ -158,7 +158,7 @@
 		<div class="well col-md-11 col-xs-12 pull-right hide">
 			<div class="topic-main-buttons pull-right inline-block hide">
 				<div class="loading-indicator" done="0" style="display:none;">
-					Loading <span class="hidden-xs" style="display:inline!important;">More Posts</span> <i class="fa fa-refresh fa-spin"></i>
+					[[topic:loading]] <span class="hidden-xs" style="display:inline!important;">[[topic:more_posts]]</span> <i class="fa fa-refresh fa-spin"></i>
 				</div>
 				<button class="btn btn-primary post_reply" type="button">[[topic:reply]]</button>
 				<div class="btn-group thread-tools hide">
@@ -181,7 +181,7 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h3>Move Topic</h3>
+						<h3>[[topic:move_topic]]</h3>
 					</div>
 					<div class="modal-body">
 						<p id="categories-loading"><i class="fa fa-spin fa-refresh"></i> [[topic:load_categories]]</p>
@@ -191,7 +191,7 @@
 						</p>
 						<div id="move-confirm" style="display: none;">
 							<hr />
-							<div class="alert alert-info">This topic will be moved to the category <strong><span id="confirm-category-name"></span></strong></div>
+							<div class="alert alert-info">[[topic:topic_will_be_moved_to]] <strong><span id="confirm-category-name"></span></strong></div>
 						</div>
 					</div>
 					<div class="modal-footer">
