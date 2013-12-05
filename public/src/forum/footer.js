@@ -183,11 +183,16 @@
 			if (chat.modalExists(data.fromuid)) {
 				modal = chat.getModal(data.fromuid);
 				chat.appendChatMessage(modal, data.message, data.timestamp);
+				
+				if (modal.is(":visible")) {
+					chat.load(modal.attr('UUID'));
+				} else {
+					chat.toggleNew(modal.attr('UUID'), true);
+				}
 			} else {
 				modal = chat.createModal(data.username, data.fromuid);
+				chat.toggleNew(modal.attr('UUID'), true);
 			}
-
-			chat.load(modal.attr('UUID'));
 		});
 	});
 
