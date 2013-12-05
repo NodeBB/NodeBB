@@ -71,7 +71,15 @@
 	}
 
 	module.info = function(callback) {
-		throw new Error('not-implemented');
+		db.stats({scale:1024}, function(err, stats) {
+
+			stats.avgObjSize = (stats.avgObjSize / 1024).toFixed(2);
+
+			stats.mongo = true;
+			//remove this when andrew adds in undefined checking to templates
+			stats.redis = false;
+			callback(err, stats);
+		});
 	}
 
 	// key

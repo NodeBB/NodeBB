@@ -103,7 +103,7 @@
 			}
 
 			data = data.split("\r\n");
-			var finalData = {};
+			var redisData = {};
 
 			for (var i in data) {
 
@@ -116,14 +116,18 @@
 
 					var jsonObject = JSON.parse(json);
 					for (var key in jsonObject) {
-						finalData[key] = jsonObject[key];
+						redisData[key] = jsonObject[key];
 					}
 				} catch (err) {
 					winston.warn('can\'t parse redis status variable, ignoring', i, data[i], err);
 				}
 			}
 
-			callback(null, finalData);
+			redisData.redis = true;
+			//remove this when andrew adds in undefined checking to templates
+			redisData.mongo = false;
+
+			callback(null, redisData);
 		});
 	}
 

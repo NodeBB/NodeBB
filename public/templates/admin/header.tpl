@@ -105,7 +105,7 @@
 						<li><a href='{relative_path}/admin/themes'><i class='fa fa-th'></i> Themes</a></li>
 						<li><a href='{relative_path}/admin/plugins'><i class='fa fa-code-fork'></i> Plugins</a></li>
 						<li><a href='{relative_path}/admin/settings'><i class='fa fa-cogs'></i> Settings</a></li>
-						<li><a href='{relative_path}/admin/redis'><i class='fa fa-hdd-o'></i> Redis</a></li>
+						<li><a href='{relative_path}/admin/database'><i class='fa fa-hdd-o'></i> Database</a></li>
 						<li><a href='{relative_path}/admin/logger'><i class='fa fa-th'></i> Logger</a></li>
 						<li><a href="{relative_path}/admin/motd"><i class="fa fa-comment"></i> MOTD</a></li>
 					</ul>

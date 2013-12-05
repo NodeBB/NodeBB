@@ -55,7 +55,7 @@ var nconf = require('nconf'),
 		(function () {
 			var routes = [
 				'categories/active', 'categories/disabled', 'users', 'topics', 'settings', 'themes',
-				'twitter', 'facebook', 'gplus', 'redis', 'motd', 'groups', 'plugins', 'logger',
+				'twitter', 'facebook', 'gplus', 'database', 'motd', 'groups', 'plugins', 'logger',
 				'users/latest', 'users/sort-posts', 'users/sort-reputation',
 				'users/search'
 			];
@@ -265,7 +265,7 @@ var nconf = require('nconf'),
 				});
 			});
 
-			app.namespace('/redis', function () {
+			app.namespace('/database', function () {
 				app.get('/', function (req, res) {
 					db.info(function (err, data) {
 						res.json(data);

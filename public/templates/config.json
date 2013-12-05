@@ -4,7 +4,7 @@
 		"^admin/topics.*": "admin/topics",
 		"^admin/categories.*": "admin/categories",
 		"^admin/users.*": "admin/users",
-		"^admin/redis.*": "admin/redis",
+		"^admin/database.*": "admin/database",
 		"^admin/index.*": "admin/index",
 		"^admin/themes.*": "admin/themes",
 		"^admin/plugins/?$": "admin/plugins",
