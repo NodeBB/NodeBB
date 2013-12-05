@@ -30,7 +30,12 @@
 	Feed.updateTopic = function (tid, callback) {
 		topics.getTopicWithPosts(tid, 0, 0, -1, function (err, topicData) {
 			if (err) {
-				return callback(new Error('topic-invalid'));
+				if(callback) {
+					return callback(new Error('topic-invalid'));
+				} else {
+					winston.error(err.message);
+					return;
+				}
 			}
 
 			var feed = new rss({

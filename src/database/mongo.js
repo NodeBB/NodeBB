@@ -273,7 +273,7 @@
 	// sets
 
 	module.setAdd = function(key, value, callback) {
-		db.collection('objects').update({_key:key}, {$addToSet: { members: value }}, {upsert:true, w: 1},  function(err, result) {
+		db.collection('objects').update({_key:key}, {$addToSet: { members: value.toString() }}, {upsert:true, w: 1},  function(err, result) {
 			if(callback) {
 				callback(err, result);
 			}
@@ -289,7 +289,7 @@
 	}
 
 	module.isSetMember = function(key, value, callback) {
-		db.collection('objects').findOne({_key:key, members: value}, function(err, item) {
+		db.collection('objects').findOne({_key:key, members: value.toString()}, function(err, item) {
 			callback(err, item !== null && item !== undefined);
 		});
 	}
