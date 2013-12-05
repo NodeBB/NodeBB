@@ -304,8 +304,52 @@ var async = require('async'),
 		);
 	};
 
-	Topics.getUnreadTopics = function(uid, start, stop, callback) {
+	Topics.getUnreadTids = function(uid, start, stop, callback) {
+		var unreadTids = [],
+			done = false;
 
+		function continueCondition() {
+			return unreadTids.length < 20 && !done;
+		}
+
+		async.whilst(continueCondition, function(callback) {
+			RDB.zrevrange('topics:recent', start, stop, function(err, tids) {
+				if (err) {
+					return callback(err);
+				}
+
+				if (tids && !tids.length) {
+					done = true;
+					return callback(null);
+				}
+
+				if (uid === 0) {
+					unreadTids.push.apply(unreadTids, tids);
+					callback(null);
+				} else {
+					Topics.hasReadTopics(tids, uid, function(read) {
+
+						var newtids = tids.filter(function(tid, index, self) {
+							return parseInt(read[index], 10) === 0;
+						});
+
+						unreadTids.push.apply(unreadTids, newtids);
+
+						if(continueCondition()) {
+							start = stop + 1;
+							stop = start + 19;
+						}
+
+						callback(null);
+					});
+				}
+			});
+		}, function(err) {
+			callback(err, unreadTids);
+		});
+	};
+
+	Topics.getUnreadTopics = function(uid, start, stop, callback) {
 		var unreadTopics = {
 			'category_name': 'Unread',
 			'show_sidebar': 'hidden',
@@ -326,66 +370,29 @@ var async = require('async'),
 			Topics.getTopicsByTids(topicIds, uid, function(topicData) {
 				unreadTopics.topics = topicData;
 				unreadTopics.nextStart = start + topicIds.length;
-				if (!topicData || topicData.length === 0)
+				if (!topicData || topicData.length === 0) {
 					unreadTopics.no_topics_message = 'show';
-				if (uid === 0 || topicData.length === 0)
+				}
+				if (uid === 0 || topicData.length === 0) {
 					unreadTopics.show_markallread_button = 'hidden';
+				}
+
 				callback(unreadTopics);
 			});
 		}
 
-		var unreadTids = [],
-			done = false;
-
-		function continueCondition() {
-			return unreadTids.length < 20 && !done;
-		}
-
-		async.whilst(
-			continueCondition,
-			function(callback) {
-				RDB.zrevrange('topics:recent', start, stop, function(err, tids) {
-					if (err)
-						return callback(err);
-
-					if (tids && !tids.length) {
-						done = true;
-						return callback(null);
-					}
-
-					if (uid === 0) {
-						unreadTids.push.apply(unreadTids, tids);
-						callback(null);
-					} else {
-						Topics.hasReadTopics(tids, uid, function(read) {
-
-							var newtids = tids.filter(function(tid, index, self) {
-								return parseInt(read[index], 10) === 0;
-							});
-
-							unreadTids.push.apply(unreadTids, newtids);
-
-							if(continueCondition()) {
-								start = stop + 1;
-								stop = start + 19;
-							}
-
-							callback(null);
-						});
-					}
-				});
-			},
-			function(err) {
-				if (err)
-					return callback([]);
-				if (unreadTids.length)
-					sendUnreadTopics(unreadTids);
-				else
-					noUnreadTopics();
-
+		Topics.getUnreadTids(uid, start, stop, function(err, unreadTids) {
+			if (err) {
+				return callback([]);
 			}
-		);
-	}
+
+			if (unreadTids.length) {
+				sendUnreadTopics(unreadTids);
+			} else {
+				noUnreadTopics();
+			}
+		});
+	};
 
 	Topics.getTopicsByTids = function(tids, current_user, callback, category_id) {
 
