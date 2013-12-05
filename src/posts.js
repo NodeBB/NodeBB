@@ -78,7 +78,7 @@ var db = require('./database'),
 
 						db.sortedSetAdd('categories:recent_posts:cid:' + cid, timestamp, pid);
 
-						if(topicData.pinned === '0') {
+						if(parseInt(topicData.pinned, 10) === 0) {
 							db.sortedSetAdd('categories:' + cid + ':tid', timestamp, tid);
 						}
 
@@ -213,7 +213,7 @@ var db = require('./database'),
 				post.userslug = userData.userslug || '';
 				post.user_rep = userData.reputation || 0;
 				post.user_postcount = userData.postcount || 0;
-				post.user_banned = userData.banned === '1';
+				post.user_banned = parseInt(userData.banned, 10) === 1;
 				post.picture = userData.picture || require('gravatar').url('', {}, https = nconf.get('https'));
 				post.signature = signature;
 
@@ -250,7 +250,7 @@ var db = require('./database'),
 			async.waterfall([
 				function(next) {
 					Posts.getPostFields(pid, ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'], function(err, postData) {
-						if (postData.deleted === '1') {
+						if (parseInt(postData.deleted, 10) === 1) {
 							return callback(null);
 						} else {
 							postData.relativeTime = new Date(parseInt(postData.timestamp || 0, 10)).toISOString();
@@ -267,7 +267,7 @@ var db = require('./database'),
 					topics.getTopicFields(postData.tid, ['title', 'cid', 'slug', 'deleted'], function(err, topicData) {
 						if (err) {
 							return callback(err);
-						} else if (topicData.deleted === '1') {
+						} else if (parseInt(topicData.deleted, 10) === 1) {
 							return callback(null);
 						}
 						categories.getCategoryFields(topicData.cid, ['name', 'icon', 'slug'], function(err, categoryData) {

@@ -32,7 +32,7 @@ define(['uploader'], function(uploader) {
 							break;
 
 						case 'checkbox':
-							fields[x].checked = app.config[key] === '1' ? true : false;
+							fields[x].checked = parseInt(app.config[key], 10) === 1;
 							break;
 					}
 				}

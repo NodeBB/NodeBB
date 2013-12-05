@@ -349,7 +349,7 @@ websockets.init = function(io) {
 		});
 
 		socket.on('api:topics.post', function(data) {
-			if (uid < 1 && meta.config.allowGuestPosting === '0') {
+			if (uid < 1 && parseInt(meta.config.allowGuestPosting, 10) === 0) {
 				socket.emit('event:alert', {
 					title: 'Post Unsuccessful',
 					message: 'You don&apos;t seem to be logged in, so you cannot reply.',
@@ -420,7 +420,7 @@ websockets.init = function(io) {
 		});
 
 		socket.on('api:posts.reply', function(data) {
-			if (uid < 1 && meta.config.allowGuestPosting === '0') {
+			if (uid < 1 && parseInt(meta.config.allowGuestPosting, 10) === 0) {
 				socket.emit('event:alert', {
 					title: 'Reply Unsuccessful',
 					message: 'You don&apos;t seem to be logged in, so you cannot reply.',
@@ -772,7 +772,7 @@ websockets.init = function(io) {
 		});
 
 		socket.on('api:composer.push', function(data) {
-			if (uid > 0 || meta.config.allowGuestPosting === '1') {
+			if (parseInt(uid, 10) > 0 || parseInt(meta.config.allowGuestPosting, 10) === 1) {
 				if (parseInt(data.tid) > 0) {
 					topics.getTopicData(data.tid, function(err, topicData) {
 						if (data.body)

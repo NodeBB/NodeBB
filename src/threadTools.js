@@ -292,7 +292,7 @@ var db = require('./database'),
 			pids.reverse();
 			async.detectSeries(pids, function(pid, next) {
 				posts.getPostField(pid, 'deleted', function(err, deleted) {
-					if (deleted === '0') {
+					if (parseInt(deleted, 10) === 0) {
 						next(true);
 					} else {
 						next(false);

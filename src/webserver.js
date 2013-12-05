@@ -465,7 +465,7 @@ var path = require('path'),
 				function (next) {
 					topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), 0, -1, function (err, topicData) {
 						if (topicData) {
-							if (topicData.deleted === '1' && topicData.expose_tools === 0) {
+							if (parseInt(topicData.deleted, 10) === 1 && parseInt(topicData.expose_tools, 10) === 0) {
 								return next(new Error('Topic deleted'), null);
 							}
 						}
@@ -587,7 +587,7 @@ var path = require('path'),
 					categories.getCategoryById(cid, 0, function (err, categoryData) {
 
 						if (categoryData) {
-							if (categoryData.disabled === '1') {
+							if (parseInt(categoryData.disabled, 10) === 1) {
 								return next(new Error('Category disabled'), null);
 							}
 						}

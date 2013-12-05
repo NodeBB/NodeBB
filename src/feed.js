@@ -55,8 +55,8 @@
 			}
 
 			async.each(topicData.posts, function(postData, next) {
-				if (postData.deleted === '0') {
-					dateStamp = new Date(parseInt(postData.edited === '0' ? postData.timestamp : postData.edited, 10)).toUTCString();
+				if (parseInt(postData.deleted, 10) === 0) {
+					dateStamp = new Date(parseInt(parseInt(postData.edited, 10) === 0 ? postData.timestamp : postData.edited, 10)).toUTCString();
 
 					feed.item({
 						title: 'Reply to ' + topicData.topic_name + ' on ' + dateStamp,

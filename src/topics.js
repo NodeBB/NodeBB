@@ -170,7 +170,7 @@ var async = require('async'),
 			}
 
 			postData = postData.filter(function(post) {
-				return parseInt(current_user, 10) !== 0 || post.deleted === "0";
+				return parseInt(current_user, 10) !== 0 || parseInt(post.deleted, 10) === 0;
 			});
 
 			function getFavouritesData(next) {
@@ -454,18 +454,18 @@ var async = require('async'),
 
 				getTopicInfo(topicData, function(topicInfo) {
 
-					topicData['pin-icon'] = topicData.pinned === '1' ? 'fa-thumb-tack' : 'none';
-					topicData['lock-icon'] = topicData.locked === '1' ? 'fa-lock' : 'none';
-					topicData['deleted-class'] = topicData.deleted === '1' ? 'deleted' : '';
+					topicData['pin-icon'] = parseInt(topicData.pinned, 10) === 1 ? 'fa-thumb-tack' : 'none';
+					topicData['lock-icon'] = parseInt(topicData.locked, 10) === 1 ? 'fa-lock' : 'none';
+					topicData['deleted-class'] = parseInt(topicData.deleted, 10) === 1 ? 'deleted' : '';
 
-					topicData.unreplied = topicData.postcount === '1';
+					topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
 					topicData.username = topicInfo.username || 'anonymous';
 					topicData.userslug = topicInfo.userslug || '';
 					topicData.picture = topicInfo.picture || gravatar.url('', {}, https = nconf.get('https'));
 					topicData.categoryIcon = topicInfo.categoryData.icon;
 					topicData.categoryName = topicInfo.categoryData.name;
 					topicData.categorySlug = topicInfo.categoryData.slug;
-					topicData.badgeclass = (topicInfo.hasread && current_user != 0) ? '' : 'badge-important';
+					topicData.badgeclass = (topicInfo.hasread && parseInt(current_user, 10) !== 0) ? '' : 'badge-important';
 					topicData.teaser_text = topicInfo.teaserInfo.text || '',
 					topicData.teaser_username = topicInfo.teaserInfo.username || '';
 					topicData.teaser_userslug = topicInfo.teaserInfo.userslug || '';
@@ -555,7 +555,7 @@ var async = require('async'),
 		}
 
 		function getReadStatus(next) {
-			if (uid && parseInt(uid) > 0) {
+			if (uid && parseInt(uid, 10) > 0) {
 				Topics.hasReadTopic(tid, uid, function(read) {
 					next(null, read);
 				});
@@ -580,8 +580,8 @@ var async = require('async'),
 				hasRead = results[1],
 				teaser = results[2];
 
-			topicData['pin-icon'] = topicData.pinned === '1' ? 'fa-thumb-tack' : 'none';
-			topicData['lock-icon'] = topicData.locked === '1' ? 'fa-lock' : 'none';
+			topicData['pin-icon'] = parseInt(topicData.pinned, 10) === 1 ? 'fa-thumb-tack' : 'none';
+			topicData['lock-icon'] = parseInt(topicData.locked, 10) === 1 ? 'fa-lock' : 'none';
 
 			topicData.badgeclass = hasRead ? '' : 'badge-important';
 			topicData.teaser_text = teaser.text || '';
@@ -808,7 +808,7 @@ var async = require('async'),
 			if(err) {
 				return callback(err, null);
 			}
-			callback(null, locked === "1");
+			callback(null, parseInt(locked, 10) === 1);
 		});
 	}
 

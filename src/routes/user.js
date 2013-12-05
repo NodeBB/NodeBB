@@ -318,10 +318,11 @@ var fs = require('fs'),
 						return next(err);
 
 					if (userData) {
-						if (userData.showemail && userData.showemail === "1")
+						if (userData.showemail && parseInt(userData.showemail, 10) === 1) {
 							userData.showemail = "checked";
-						else
+						} else {
 							userData.showemail = "";
+						}
 						res.json(userData);
 					} else {
 						res.json(404, {
@@ -501,21 +502,21 @@ var fs = require('fs'),
 						}
 
 						function canSeeEmail() {
-							return callerUID == uid || (data.email && (data.showemail && data.showemail === "1"));
+							return callerUID == uid || (data.email && (data.showemail && parseInt(data.showemail, 10) === 1));
 						}
 
 						if (!canSeeEmail()) {
 							data.email = "";
 						}
 
-						if (callerUID == uid && (!data.showemail || data.showemail === "0")) {
+						if (callerUID == uid && (!data.showemail || parseInt(data.showemail, 10) === 0)) {
 							data.emailClass = "";
 						} else {
 							data.emailClass = "hide";
 						}
 
 						data.websiteName = data.website.replace('http://', '').replace('https://', '');
-						data.banned = data.banned === '1';
+						data.banned = parseInt(data.banned, 10) === 1;
 						data.uid = uid;
 						data.yourid = callerUID;
 						data.theirid = uid;

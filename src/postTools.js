@@ -164,7 +164,7 @@ var db = require('./database'),
 		};
 
 		posts.getPostField(pid, 'deleted', function(err, deleted) {
-			if(deleted === '1') {
+			if(parseInt(deleted, 10) === 1) {
 				return callback(new Error('Post already deleted!'));
 			}
 
@@ -195,7 +195,7 @@ var db = require('./database'),
 
 				// Restore topic if it is the only post
 				topics.getTopicField(postData.tid, 'postcount', function(err, count) {
-					if (count === '1') {
+					if (parseInt(count, 10) === 1) {
 						threadTools.restore(postData.tid, uid);
 					}
 				});
@@ -210,7 +210,7 @@ var db = require('./database'),
 		};
 
 		posts.getPostField(pid, 'deleted', function(err, deleted) {
-			if(deleted === '0') {
+			if(parseInt(deleted, 10) === 0) {
 				return callback(new Error('Post already restored'));
 			}
 

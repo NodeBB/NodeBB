@@ -15,7 +15,7 @@
 				}, function (err, groups) {
 					// Remove deleted and hidden groups from this list
 					callback(err, groups.filter(function (group) {
-						if (group.deleted === '1' || group.hidden === '1') {
+						if (parseInt(group.deleted, 10) === 1 || parseInt(group.hidden, 10) === 1) {
 							return false;
 						} else {
 							return true;
@@ -76,7 +76,7 @@
 
 	Groups.isDeleted = function(gid, callback) {
 		db.getObjectField('gid:' + gid, 'deleted', function(err, deleted) {
-			callback(err, deleted === '1');
+			callback(err, parseInt(deleted, 10) === 1);
 		});
 	};
 
@@ -240,7 +240,7 @@
 						return next(err);
 					}
 
-					if (groupObj.deleted === '1') {
+					if (parseInt(groupObj.deleted, 10) === 1) {
 
 						db.deleteObjectField('group:gid', groupObj.name, function(err) {
 							db.delete('gid:' + gid, function(err) {

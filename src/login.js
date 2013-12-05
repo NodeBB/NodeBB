@@ -28,7 +28,7 @@ var user = require('./user'),
 				user.getUserFields(uid, ['password', 'banned'], function(err, userData) {
 					if (err) return next(err);
 
-					if (userData.banned && userData.banned === '1') {
+					if (userData.banned && parseInt(userData.banned, 10) === 1) {
 						return next({
 							status: "error",
 							message: "user-banned"

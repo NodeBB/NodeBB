@@ -369,7 +369,7 @@
 		};
 
 		data.setName = key;
-		module.setObject(key+':'+value, data, callback);
+		module.setObject(key + ':' + value, data, callback);
 	}
 
 	module.sortedSetRemove = function(key, value, callback) {

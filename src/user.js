@@ -182,12 +182,6 @@ var bcrypt = require('bcrypt'),
 		});
 	};
 
-	User.filterBannedUsers = function(users) {
-		return users.filter(function(user) {
-			return (!user.banned || user.banned === '0');
-		});
-	};
-
 	User.updateProfile = function(uid, data, callback) {
 
 		var fields = ['email', 'fullname', 'website', 'location', 'birthday', 'signature'];
@@ -550,7 +544,7 @@ var bcrypt = require('bcrypt'),
 		}
 
 		function iterator(uid, callback) {
-			if(uid === "0") {
+			if(parseInt(uid, 10) === 0) {
 				return callback(null);
 			}
 
