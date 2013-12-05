@@ -191,9 +191,6 @@ var async = require('async'),
 	};
 
 	Notifications.prune = function(cutoff) {
-		// TODO: this function wont work with dbal in its current state
-		// things to figure out
-		// 2 - Need to remove the RDB.multi
 
 		if (process.env.NODE_ENV === 'development') {
 			winston.info('[notifications.prune] Removing expired notifications from the database.');
@@ -250,11 +247,10 @@ var async = require('async'),
 					if(err) {
 						return next(err);
 					}
+
 					// If the notification is not present in any inbox, delete it altogether
 					var	expired = results.every(function(present) {
-							if (present === null) {
-								return true;
-							}
+							return present === null;
 						});
 
 					if (expired) {
