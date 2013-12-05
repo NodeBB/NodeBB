@@ -86,7 +86,7 @@
 	// key
 
 	module.exists = function(key, callback) {
-		db.collection('objects').findOne({_key:key}, function(err, item) {
+		db.collection('objects').findOne({$or:[{_key:key}, {setName:key}]}, function(err, item) {
 			callback(err, item !== undefined && item !== null);
 		});
 	}
@@ -176,9 +176,27 @@
 	}
 
 	module.getObjects = function(keys, callback) {
-		db.collection('objects').find({_key:{$in:keys}}, {_id:0, _key:0}).toArray(function(err, data) {
+		db.collection('objects').find({_key:{$in:keys}}, {_id:0}).toArray(function(err, data) {
 
-			callback(err, data);
+			if(err) {
+				return callback(err);
+			}
+
+			var returnData = [],
+				resultIndex = 0;
+
+			for(var i=0; i<keys.length; ++i) {
+
+				if(data && resultIndex < data.length && keys[i] === data[resultIndex]._key) {
+					delete data[resultIndex]._key;
+					returnData.push(data[resultIndex]);
+					++resultIndex;
+				} else {
+					returnData.push(null);
+				}
+			}
+
+			callback(err, returnData);
 		});
 	}
 
@@ -207,14 +225,11 @@
 
 			if(item === null) {
 				item = {};
-				for(var i=0; i<fields.length; ++i) {
+			}
+
+			for(var i=0; i<fields.length; ++i) {
+				if(item[fields[i]] === null || item[fields[i]] === undefined) {
 					item[fields[i]] = null;
-				}
-			} else {
-				for(var i=0; i<fields.length; ++i) {
-					if(item[fields[i]] === null || item[fields[i]] === undefined) {
-						item[fields[i]] = null;
-					}
 				}
 			}
 
@@ -246,8 +261,7 @@
 			if(err) {
 				return callback(err);
 			}
-
-			callback(err, item && item[field]!== undefined && item[field] !== null);
+			callback(err, !!item && item[field] !== undefined && item[field] !== null);
 		});
 	}
 
@@ -310,7 +324,13 @@
 
 	module.isMemberOfSets = function(sets, value, callback) {
 		function iterator(set, next) {
-			module.isSetMember(set, value, next);
+			module.isSetMember(set, value, function(err, result) {
+				if(err) {
+					return next(err);
+				}
+
+				next(null, result?1:0);
+			});
 		}
 
 		async.map(sets, iterator, function(err, result) {
@@ -477,11 +497,39 @@
 	}
 
 	module.sortedSetScore = function(key, value, callback) {
-		throw new Error('not-implemented');
+		db.collection('objects').findOne({setName:key, value: value}, {fields:{score:1}}, function(err, result) {
+			if(err) {
+				return callback(err);
+			}
+			if(result) {
+				return callback(null, result.score);
+			}
+
+			callback(err, null);
+		});
 	}
 
 	module.sortedSetsScore = function(keys, value, callback) {
-		throw new Error('not-implemented');
+		db.collection('objects').find({setName:{$in:keys}, value: value}).toArray(function(err, result) {
+			if(err) {
+				return callback(err);
+			}
+
+			var returnData = [],
+				resultIndex = 0;
+
+			for(var i=0; i<keys.length; ++i) {
+
+				if(result && resultIndex < result.length && keys[i] === result[resultIndex].setName) {
+					returnData.push(result[resultIndex].score);
+					++resultIndex;
+				} else {
+					returnData.push(null);
+				}
+			}
+
+			callback(null, returnData);
+		});
 	}
 
 	// lists

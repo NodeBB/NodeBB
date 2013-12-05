@@ -318,7 +318,7 @@
 	module.sortedSetsScore = function(keys, value, callback) {
 		var	multi = redisClient.multi();
 
-		for(x=0; x<keys.length; ++x) {
+		for(var x=0; x<keys.length; ++x) {
 			multi.zscore(keys[x], value);
 		}
 

@@ -92,8 +92,14 @@ var	DebugRoute = function(app) {
 		});
 
 		app.get('/mongo', function(req, res) {
+			var dbtype = 'mongo';
+			if(req.query.db) {
+				dbtype = req.query.db;
+			}
 
-			var db = require('./../database');
+			var db = require('./../database/' + dbtype);
+
+
 			var objectKey = 'testing4';
 
 			function createUser(callback) {
@@ -205,6 +211,20 @@ var	DebugRoute = function(app) {
 				db.sortedSetCount('sortedSet3', -Infinity, Infinity, function(err, data) {
 					console.log('sortedSetCount return', data);
 					callback(err, {'sortedSetCount': data});
+				});
+			}
+
+			function sortedSetScore(callback) {
+				db.sortedSetScore('users:joindate', 1, function(err, data) {
+					console.log('sortedSetScore return', data);
+					callback(err, {'sortedSetScore': data});
+				});
+			}
+
+			function sortedSetsScore(callback) {
+				db.sortedSetsScore(['users:joindate', 'users:derp', 'users:postcount'], 1, function(err, data) {
+					console.log('sortedSetsScore return', data);
+					callback(err, {'sortedSetsScore': data});
 				});
 			}
 
@@ -345,7 +365,9 @@ var	DebugRoute = function(app) {
 				getSortedSetRange,
 				//sortedSetRemove,
 				getSortedSetRange,
-				sortedSetCount
+				sortedSetCount,
+				sortedSetScore,
+				sortedSetsScore
 			];
 
 			var listTasks = [
@@ -385,10 +407,9 @@ var	DebugRoute = function(app) {
 
 			var miscTests = [
 				function(next) {
-					db.isObjectField('email:uid', 'barisusakli@gmail.com', function(err, exists) {
-						console.log(err, exists);
-						next(err, exists);
-					});
+					db.sortedSetScore('users:joindate', 1, function(err, result) {
+						next(err, result);
+					})
 				}
 			];
 

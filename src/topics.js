@@ -315,7 +315,7 @@ var async = require('async'),
 		}
 
 		async.whilst(continueCondition, function(callback) {
-			RDB.zrevrange('topics:recent', start, stop, function(err, tids) {
+			db.getSortedSetRevRange('topics:recent', start, stop, function(err, tids) {
 				if (err) {
 					return callback(err);
 				}
