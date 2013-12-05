@@ -27,11 +27,17 @@
 
 
 			db.createCollection('objects', function(err, collection) {
-				collection.ensureIndex({_key :1}, {background:true}, function(err, name){
-					if(err) {
-						winston.error("Error creating index " + err.message);
-					}
-				});
+				if(err) {
+					winston.error("Error creating collection " + err.message);
+					return;
+				}
+				if(collection) {
+					collection.ensureIndex({_key :1, setName:1}, {background:true}, function(err, name){
+						if(err) {
+							winston.error("Error creating index " + err.message);
+						}
+					});
+				}
 			});
 
 			callback(err);

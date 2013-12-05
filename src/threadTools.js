@@ -17,7 +17,9 @@ var db = require('./database'),
 (function(ThreadTools) {
 
 	ThreadTools.exists = function(tid, callback) {
+
 		db.isSetMember('topics:tid', tid, function(err, ismember) {
+
 			if (err) {
 				callback(false);
 			}
