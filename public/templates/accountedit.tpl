@@ -1,27 +1,27 @@
 
 <div class="well">
 
-	<div id="change-picture-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Change Picture" aria-hidden="true">
+	<div id="change-picture-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="[[user:change_picture]]" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-					<h3 id="myModalLabel">Change Picture</h3>
+					<h3 id="myModalLabel">[[user:change_picture]]</h3>
 				</div>
 				<div class="modal-body">
 					<div id="gravatar-box">
 						<img id="user-gravatar-picture" src="" class="img-thumbnail user-profile-picture">
-						<span class="user-picture-label">Gravatar</span>
+						<span class="user-picture-label">[[user: gravatar]]</span>
 						<i class='fa fa-check fa-2x'></i>
 					</div>
 					<br/>
 					<div id="uploaded-box">
 						<img id="user-uploaded-picture" src="" class="img-thumbnail user-profile-picture">
-						<span class="user-picture-label">Uploaded picture</span>
+						<span class="user-picture-label">[[user: uploaded_picture]]</span>
 						<i class='fa fa-check fa-2x'></i>
 					</div>
 
-					<a id="uploadPictureBtn" href="#">Upload new picture</a>
+					<a id="uploadPictureBtn" href="#">[[user: upload_new_picture]]</a>
 				</div>
 				<div class="modal-footer">
 					<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
@@ -34,7 +34,7 @@
 	<div class="account-username-box" data-userslug="{userslug}">
 		<span class="account-username">
 			<a href="/user/{userslug}">{username}</a> <i class="fa fa-chevron-right"></i>
-			<a href="/user/{userslug}/edit">edit</a>
+			<a href="/user/{userslug}/edit">[[user:edit]]</a>
 		</span>
 	</div>
 
@@ -42,7 +42,7 @@
 		<div class="col-md-2" style="text-align: center; margin-bottom:20px;">
 			<div class="account-picture-block text-center">
 				<img id="user-current-picture" class="user-profile-picture img-thumbnail" src="{picture}" /><br /><br />
-				<a id="changePictureBtn" href="#" class="btn btn-primary">change picture</a>
+				<a id="changePictureBtn" href="#" class="btn btn-primary">[[user:change_picture]]</a>
 			</div>
 		</div>
 
@@ -50,42 +50,42 @@
 			<div>
 				<form class='form-horizontal'>
 					<div class="control-group">
-						<label class="control-label" for="inputEmail">Email</label>
+						<label class="control-label" for="inputEmail">[[user:email]]</label>
 						<div class="controls">
 							<input class="form-control" type="text" id="inputEmail" placeholder="Email" value="{email}">
 						</div>
 					</div>
 
 					<div class="control-group">
-						<label class="control-label" for="inputFullname">Full Name</label>
+						<label class="control-label" for="inputFullname">[[user:fullname]]</label>
 						<div class="controls">
 							<input class="form-control" type="text" id="inputFullname" placeholder="Full Name" value="{fullname}">
 						</div>
 					</div>
 
 					<div class="control-group">
-						<label class="control-label" for="inputWebsite">Website</label>
+						<label class="control-label" for="inputWebsite">[[user:website]]</label>
 						<div class="controls">
 							<input class="form-control" type="text" id="inputWebsite" placeholder="http://website.com" value="{website}">
 						</div>
 					</div>
 
 					<div class="control-group">
-						<label class="control-label" for="inputLocation">Location</label>
+						<label class="control-label" for="inputLocation">[[user:location]]</label>
 						<div class="controls">
 							<input class="form-control" type="text" id="inputLocation" placeholder="Location" value="{location}">
 						</div>
 					</div>
 
 					<div class="control-group">
-						<label class="control-label" for="inputBirthday">Birthday</label>
+						<label class="control-label" for="inputBirthday">[[user:birthday]]</label>
 						<div class="controls">
 							<input class="form-control" type="date" id="inputBirthday" placeholder="mm/dd/yyyy" value="{birthday}">
 						</div>
 					</div>
 
 					<div class="control-group">
-						<label class="control-label" for="inputSignature">Signature</label>
+						<label class="control-label" for="inputSignature">[[user:signature]]</label>
 						<div class="controls">
 							<textarea class="form-control" id="inputSignature" placeholder="max 150 chars" rows="5">{signature}</textarea>
 						</div>
@@ -94,7 +94,7 @@
 					<input type="hidden" id="inputUID" value="{uid}"><br />
 
 					<div class="form-actions">
-						<a id="submitBtn" href="#" class="btn btn-primary">Save changes</a>
+						<a id="submitBtn" href="#" class="btn btn-primary">[[global:save_changes]]</a>
 					</div>
 
 				</form>
@@ -114,7 +114,7 @@
 					</div>
 
 					<div class="control-group">
-						<label class="control-label" for="inputNewPassword">Password</label>
+						<label class="control-label" for="inputNewPassword">[[user:password]]</label>
 						<div class="input-group">
 							<input class="form-control" type="password" id="inputNewPassword" placeholder="New Password" value="">
 							<span class="input-group-addon">
@@ -124,7 +124,7 @@
 					</div>
 
 					<div class="control-group">
-						<label class="control-label" for="inputNewPasswordAgain">Confirm Password</label>
+						<label class="control-label" for="inputNewPasswordAgain">[[user:confirm_password]]</label>
 						<div class="input-group">
 							<input class="form-control" type="password" id="inputNewPasswordAgain" placeholder="Confirm Password" value="">
 							<span class="input-group-addon">
@@ -134,7 +134,7 @@
 					</div>
 					<br/>
 					<div class="form-actions">
-						<a id="changePasswordBtn" href="#" class="btn btn-primary">Change Password</a>
+						<a id="changePasswordBtn" href="#" class="btn btn-primary">[[user:change_password]]</a>
 					</div>
 
 				</form>

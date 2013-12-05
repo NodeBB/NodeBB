@@ -20,13 +20,13 @@
 				<div class="form-group">
 					<label for="username" class="col-lg-2 control-label">[[login:username]]</label>
 					<div class="col-lg-10">
-						<input class="form-control" type="text" placeholder="Enter Username" name="username" id="username" />
+						<input class="form-control" type="text" placeholder="[[login:username]]" name="username" id="username" />
 					</div>
 				</div>
 				<div class="form-group">
 					<label for="password" class="col-lg-2 control-label">[[login:password]]</label>
 					<div class="col-lg-10">
-						<input class="form-control" type="password" placeholder="Enter Password" name="password" id="password" />
+						<input class="form-control" type="password" placeholder="[[login:password]]" name="password" id="password" />
 					</div>
 				</div>
 				<div class="form-group">

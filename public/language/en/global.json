@@ -8,14 +8,24 @@
 	"404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='/'>home page</a>.",
 	"500.title": "Internal error.",
 	"500.message": "Ooops! Looks like something went wrong!",
+
+	"register": "register",
+	"login": "Login",
+
 	"logout": "Logout",
 	"logout.title": "You are now logged out.",
 	"logout.message": "You have successfully logged out of NodeBB",
+
+	"save_changes": "save changes",
+	"close": "close",
+
 	"header.admin": "Admin",
 	"header.recent": "Recent",
 	"header.unread": "Unread",
 	"header.users": "Users",
 	"header.search": "Search",
+	"header.profile": "Profile",
+
 	"notifications.loading": "Loading Notifications",
 	"chats.loading": "Loading Chats"
 }

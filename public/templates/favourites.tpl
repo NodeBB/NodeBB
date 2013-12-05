@@ -2,19 +2,19 @@
 	<div class="account-username-box" data-userslug="{userslug}">
 		<span class="account-username">
 			<a href="/user/{userslug}">{username}</a> <i class="fa fa-chevron-right"></i>
-			<a href="/user/{userslug}/favourites">favourites</a>
+			<a href="/user/{userslug}/favourites">[[topic:favourites]]</a>
 		</span>
 	</div>
 
 	<!-- IF show_nofavourites -->
-		<div id="no-favourites-notice" class="alert alert-warning">You don't have any favourites, favourite some posts to see them here!</div>
+		<div id="no-favourites-notice" class="alert alert-warning">[[topic:haz_no_favourites]]</div>
 	<!-- ENDIF show_nofavourites -->
 
 	<div class="row">
 		<div class="col-md-12 user-favourite-posts">
 			<!-- BEGIN posts -->
 			<div class="topic-row img-thumbnail clearfix">
-				<a href="../../user/{posts.userslug}">
+				<a href="/user/baris">
 					<img title="{posts.username}" class="img-rounded user-img" src="{posts.picture}">
 				</a>
 
