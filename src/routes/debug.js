@@ -359,8 +359,6 @@ var	DebugRoute = function(app) {
 				}
 			});
 		});
-
-
 	});
 };
 
