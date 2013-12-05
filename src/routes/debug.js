@@ -165,21 +165,21 @@ var	DebugRoute = function(app) {
 
 
 			function sortedSetAdd(callback) {
-				db.sortedSetAdd('sortedSet2', 1, 12, function(err, data) {
+				db.sortedSetAdd('sortedSet3', 12, 5, function(err, data) {
 					console.log('sortedSetAdd return', data);
 					callback(err, {'sortedSetAdd': data});
 				});
 			}
 
 			function sortedSetRemove(callback) {
-				db.sortedSetRemove('sortedSet2', 12, function(err, data) {
+				db.sortedSetRemove('sortedSet3', 12, function(err, data) {
 					console.log('sortedSetRemove return', data);
 					callback(err, {'sortedSetRemove': data});
 				});
 			}
 
 			function getSortedSetRange(callback) {
-				db.getSortedSetRevRange('sortedSet2', 0, -1, function(err, data) {
+				db.getSortedSetRevRange('sortedSet3', 0, -1, function(err, data) {
 					console.log('getSortedSetRange return', data);
 					callback(err, {'getSortedSetRange': data});
 				});
@@ -325,7 +325,7 @@ var	DebugRoute = function(app) {
 				getSortedSetRange,
 				sortedSetAdd,
 				getSortedSetRange,
-				sortedSetRemove,
+				//sortedSetRemove,
 				getSortedSetRange,
 			];
 
@@ -364,7 +364,7 @@ var	DebugRoute = function(app) {
 				isMemberOfSets
 			];
 
-			require('async').series(setTasks, function(err, results) {
+			require('async').series(sortedSetTasks, function(err, results) {
 				if(err) {
 					console.log(err);
 					res.send(err.message);
