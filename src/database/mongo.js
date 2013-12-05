@@ -281,7 +281,7 @@
 	}
 
 	module.setRemove = function(key, value, callback) {
-		db.collection('objects').update({_key:key, members: value}, {$pull : {members: value}}, function(err, result) {
+		db.collection('objects').update({_key:key, members: value.toString()}, {$pull : {members: value}}, function(err, result) {
 			if(callback) {
 				callback(err, result);
 			}
