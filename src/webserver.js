@@ -465,7 +465,7 @@ var path = require('path'),
 
 			async.waterfall([
 				function (next) {
-					topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), 0, -1, function (err, topicData) {
+					topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), 0, -1, true, function (err, topicData) {
 						if (topicData) {
 							if (topicData.deleted === '1' && topicData.expose_tools === 0) {
 								return next(new Error('Topic deleted'), null);

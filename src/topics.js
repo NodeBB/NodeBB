@@ -17,7 +17,9 @@ var async = require('async'),
 	notifications = require('./notifications'),
 	feed = require('./feed'),
 	favourites = require('./favourites'),
-	meta = require('./meta');
+	meta = require('./meta')
+
+	websockets = require('./websockets');
 
 
 (function(Topics) {
@@ -91,7 +93,6 @@ var async = require('async'),
 						Topics.markAsRead(tid, uid);
 					});
 
-
 					// in future it may be possible to add topics to several categories, so leaving the door open here.
 					RDB.zadd('categories:' + cid + ':tid', timestamp, tid);
 					RDB.hincrby('category:' + cid, 'topic_count', 1);
@@ -108,6 +109,8 @@ var async = require('async'),
 
 						// Auto-subscribe the post creator to the newly created topic
 						threadTools.toggleFollow(tid, uid);
+
+						Topics.pushUnreadCount();
 
 						Topics.getTopicForCategoryView(tid, uid, function(topicData) {
 							topicData.unreplied = 1;
@@ -394,6 +397,29 @@ var async = require('async'),
 		});
 	};
 
+	Topics.pushUnreadCount = function(uids, callback) {
+		console.log('uids', uids);
+		if (uids == 0) throw new Error();
+		if (!uids) {
+			clients = websockets.getConnectedClients();
+			uids = Object.keys(clients);
+		} else if (!Array.isArray(uids)) {
+			uids = [uids];
+		}
+
+		async.each(uids, function(uid, next) {
+			Topics.getUnreadTids(uid, 0, 19, function(err, tids) {
+				websockets.in('uid_' + uid).emit('event:unread.updateCount', tids.length);
+			});
+		}, function(err) {
+			winston.error(err);
+
+			if (callback) {
+				callback();
+			}
+		});
+	};
+
 	Topics.getTopicsByTids = function(tids, current_user, callback, category_id) {
 
 		var retrieved_topics = [];
@@ -497,14 +523,18 @@ var async = require('async'),
 
 	}
 
-	Topics.getTopicWithPosts = function(tid, current_user, start, end, callback) {
+	Topics.getTopicWithPosts = function(tid, current_user, start, end, quiet, callback) {
 		threadTools.exists(tid, function(exists) {
 			if (!exists) {
 				return callback(new Error('Topic tid \'' + tid + '\' not found'));
 			}
 
-			Topics.markAsRead(tid, current_user);
-			Topics.increaseViewCount(tid);
+			// "quiet" is used for things like RSS feed updating, HTML parsing for non-js users, etc
+			if (!quiet) {
+				Topics.markAsRead(tid, current_user);
+				Topics.pushUnreadCount(current_user);
+				Topics.increaseViewCount(tid);
+			}
 
 			function getTopicData(next) {
 				Topics.getTopicData(tid, next);

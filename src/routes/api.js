@@ -115,7 +115,7 @@ var path = require('path'),
 
 			app.get('/topic/:id/:slug?', function (req, res, next) {
 				var uid = (req.user) ? req.user.uid : 0;
-				topics.getTopicWithPosts(req.params.id, uid, 0, 10, function (err, data) {
+				topics.getTopicWithPosts(req.params.id, uid, 0, 10, false, function (err, data) {
 					if (!err) {
 						if (data.deleted === '1' && data.expose_tools === 0) {
 							return res.json(404, {});

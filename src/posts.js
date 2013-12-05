@@ -150,6 +150,9 @@ var RDB = require('./redis'),
 						});
 					},
 					function(next) {
+						topics.pushUnreadCount(null, next);
+					},
+					function(next) {
 						Posts.getCidByPid(postData.pid, function(err, cid) {
 							if(err) {
 								return next(err);

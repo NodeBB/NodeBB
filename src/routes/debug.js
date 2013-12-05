@@ -78,6 +78,11 @@ var	DebugRoute = function(app) {
 				});
 			});
 		});
+
+		app.get('/test', function(req, res) {
+			topics.pushUnreadCount();
+			res.send();
+		});
 	});
 };
 
