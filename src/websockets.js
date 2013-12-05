@@ -61,7 +61,6 @@ websockets.init = function(io) {
 		var hs = socket.handshake,
 			sessionID, uid, lastPostTime = 0;
 
-
 		// Validate the session, if present
 		socketCookieParser(hs, {}, function(err) {
 			sessionID = socket.handshake.signedCookies["express.sid"];
@@ -103,8 +102,6 @@ websockets.init = function(io) {
 				io.sockets. in ('global').emit('api:user.isOnline', isUserOnline(uid));
 			});
 		});
-
-
 
 		socket.on('disconnect', function() {
 
@@ -868,6 +865,12 @@ websockets.init = function(io) {
 			});
 		});
 
+		socket.on('api:unread.count', function(callback) {
+			topics.getUnreadTids(uid, 0, 19, function(err, tids) {
+				socket.emit('event:unread.updateCount', tids.length);
+			});
+		});
+
 		socket.on('api:category.loadMore', function(data, callback) {
 			var start = data.after,
 				end = start + 9;
@@ -1137,6 +1140,10 @@ websockets.init = function(io) {
 	websockets.in = function(room) {
 		return io.sockets.in(room);
 	};
+
+	websockets.getConnectedClients = function() {
+		return userSockets;
+	}
 }
 })(module.exports);
 

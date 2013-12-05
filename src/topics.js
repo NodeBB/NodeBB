@@ -17,7 +17,9 @@ var async = require('async'),
 	notifications = require('./notifications'),
 	feed = require('./feed'),
 	favourites = require('./favourites'),
-	meta = require('./meta');
+	meta = require('./meta')
+
+	websockets = require('./websockets');
 
 
 (function(Topics) {
@@ -91,7 +93,6 @@ var async = require('async'),
 						Topics.markAsRead(tid, uid);
 					});
 
-
 					// in future it may be possible to add topics to several categories, so leaving the door open here.
 					db.sortedSetAdd('categories:' + cid + ':tid', timestamp, tid);
 					db.incrObjectField('category:' + cid, 'topic_count');
@@ -108,6 +109,8 @@ var async = require('async'),
 
 						// Auto-subscribe the post creator to the newly created topic
 						threadTools.toggleFollow(tid, uid);
+
+						Topics.pushUnreadCount();
 
 						Topics.getTopicForCategoryView(tid, uid, function(topicData) {
 							topicData.unreplied = 1;
@@ -303,8 +306,52 @@ var async = require('async'),
 		);
 	};
 
-	Topics.getUnreadTopics = function(uid, start, stop, callback) {
+	Topics.getUnreadTids = function(uid, start, stop, callback) {
+		var unreadTids = [],
+			done = false;
 
+		function continueCondition() {
+			return unreadTids.length < 20 && !done;
+		}
+
+		async.whilst(continueCondition, function(callback) {
+			RDB.zrevrange('topics:recent', start, stop, function(err, tids) {
+				if (err) {
+					return callback(err);
+				}
+
+				if (tids && !tids.length) {
+					done = true;
+					return callback(null);
+				}
+
+				if (uid === 0) {
+					unreadTids.push.apply(unreadTids, tids);
+					callback(null);
+				} else {
+					Topics.hasReadTopics(tids, uid, function(read) {
+
+						var newtids = tids.filter(function(tid, index, self) {
+							return parseInt(read[index], 10) === 0;
+						});
+
+						unreadTids.push.apply(unreadTids, newtids);
+
+						if(continueCondition()) {
+							start = stop + 1;
+							stop = start + 19;
+						}
+
+						callback(null);
+					});
+				}
+			});
+		}, function(err) {
+			callback(err, unreadTids);
+		});
+	};
+
+	Topics.getUnreadTopics = function(uid, start, stop, callback) {
 		var unreadTopics = {
 			'category_name': 'Unread',
 			'show_sidebar': 'hidden',
@@ -325,66 +372,54 @@ var async = require('async'),
 			Topics.getTopicsByTids(topicIds, uid, function(topicData) {
 				unreadTopics.topics = topicData;
 				unreadTopics.nextStart = start + topicIds.length;
-				if (!topicData || topicData.length === 0)
+				if (!topicData || topicData.length === 0) {
 					unreadTopics.no_topics_message = 'show';
-				if (uid === 0 || topicData.length === 0)
+				}
+				if (uid === 0 || topicData.length === 0) {
 					unreadTopics.show_markallread_button = 'hidden';
+				}
+
 				callback(unreadTopics);
 			});
 		}
 
-		var unreadTids = [],
-			done = false;
+		Topics.getUnreadTids(uid, start, stop, function(err, unreadTids) {
+			if (err) {
+				return callback([]);
+			}
 
-		function continueCondition() {
-			return unreadTids.length < 20 && !done;
+			if (unreadTids.length) {
+				sendUnreadTopics(unreadTids);
+			} else {
+				noUnreadTopics();
+			}
+		});
+	};
+
+	Topics.pushUnreadCount = function(uids, callback) {
+		if (uids == 0) throw new Error();
+		if (!uids) {
+			clients = websockets.getConnectedClients();
+			uids = Object.keys(clients);
+		} else if (!Array.isArray(uids)) {
+			uids = [uids];
 		}
 
-		async.whilst(
-			continueCondition,
-			function(callback) {
-				db.getSortedSetRevRange('topics:recent', start, stop, function(err, tids) {
-					if (err)
-						return callback(err);
-
-					if (tids && !tids.length) {
-						done = true;
-						return callback(null);
-					}
-
-					if (uid === 0) {
-						unreadTids.push.apply(unreadTids, tids);
-						callback(null);
-					} else {
-						Topics.hasReadTopics(tids, uid, function(read) {
-
-							var newtids = tids.filter(function(tid, index, self) {
-								return parseInt(read[index], 10) === 0;
-							});
-
-							unreadTids.push.apply(unreadTids, newtids);
-
-							if(continueCondition()) {
-								start = stop + 1;
-								stop = start + 19;
-							}
-
-							callback(null);
-						});
-					}
-				});
-			},
-			function(err) {
-				if (err)
-					return callback([]);
-				if (unreadTids.length)
-					sendUnreadTopics(unreadTids);
-				else
-					noUnreadTopics();
-
+		async.each(uids, function(uid, next) {
+			Topics.getUnreadTids(uid, 0, 19, function(err, tids) {
+				websockets.in('uid_' + uid).emit('event:unread.updateCount', tids.length);
+				next();
+			});
+		}, function(err) {
+			if (err) {
+				winston.error(err.message);
 			}
-		);
-	}
+
+			if (callback) {
+				callback();
+			}
+		});
+	};
 
 	Topics.getTopicsByTids = function(tids, current_user, callback, category_id) {
 
@@ -489,14 +524,18 @@ var async = require('async'),
 
 	}
 
-	Topics.getTopicWithPosts = function(tid, current_user, start, end, callback) {
+	Topics.getTopicWithPosts = function(tid, current_user, start, end, quiet, callback) {
 		threadTools.exists(tid, function(exists) {
 			if (!exists) {
 				return callback(new Error('Topic tid \'' + tid + '\' not found'));
 			}
 
-			Topics.markAsRead(tid, current_user);
-			Topics.increaseViewCount(tid);
+			// "quiet" is used for things like RSS feed updating, HTML parsing for non-js users, etc
+			if (!quiet) {
+				Topics.markAsRead(tid, current_user);
+				Topics.pushUnreadCount(current_user);
+				Topics.increaseViewCount(tid);
+			}
 
 			function getTopicData(next) {
 				Topics.getTopicData(tid, next);

@@ -183,7 +183,7 @@
 			if (chat.modalExists(data.fromuid)) {
 				modal = chat.getModal(data.fromuid);
 				chat.appendChatMessage(modal, data.message, data.timestamp);
-				
+
 				if (modal.is(":visible")) {
 					chat.load(modal.attr('UUID'));
 				} else {
@@ -195,6 +195,24 @@
 			}
 		});
 	});
+
+	function updateUnreadCount(count) {
+		var badge = $('#numUnreadBadge');
+			badge.html(count > 20 ? '20+' : count);
+
+			if (count > 0) {
+				badge
+					.removeClass('badge-inverse')
+					.addClass('badge-important');
+			} else {
+				badge
+					.removeClass('badge-important')
+					.addClass('badge-inverse');
+			}
+	}
+
+	socket.on('event:unread.updateCount', updateUnreadCount);
+	socket.emit('api:unread.count', updateUnreadCount);
 
 	require(['mobileMenu'], function(mobileMenu) {
 		mobileMenu.init();

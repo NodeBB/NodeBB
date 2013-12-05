@@ -79,7 +79,6 @@ var	DebugRoute = function(app) {
 			});
 		});
 
-
 		app.get('/mongo', function(req, res) {
 
 			var db = require('./../database');
@@ -390,6 +389,12 @@ var	DebugRoute = function(app) {
 				}
 			});
 		});
+
+		app.get('/test', function(req, res) {
+			topics.pushUnreadCount();
+			res.send();
+		});
+
 	});
 };
 
