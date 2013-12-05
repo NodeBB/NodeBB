@@ -245,13 +245,11 @@ var async = require('async'),
 			}
 
 			async.eachSeries(results.expiredNids, function(nid, next) {
-				var	multi = RDB.multi();
 
-				for(var x=0; x<results.inboxes.length; ++x) {
-					multi.zscore(results.inboxes[x], nid);
-				}
-
-				multi.exec(function(err, results) {
+				db.sortedSetsScore(results.inboxes, function(err, results) {
+					if(err) {
+						return next(err);
+					}
 					// If the notification is not present in any inbox, delete it altogether
 					var	expired = results.every(function(present) {
 							if (present === null) {
