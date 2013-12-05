@@ -74,7 +74,7 @@
 
 				<ul id="logged-in-menu" class="nav navbar-nav navbar-right hide">
 					<li>
-						<a href="#" id="reconnect"></a>
+						<a href="#" id="reconnect" title="Connection to {title} has been lost, attempting to reconnect..."><i class="fa fa-check"></i></a>
 					</li>
 
 					<li>
