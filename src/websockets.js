@@ -9,7 +9,6 @@ var cookie = require('cookie'),
 	gravatar = require('gravatar'),
 	winston = require('winston'),
 
-	RedisStoreLib = require('connect-redis')(express),
 	db = require('./database'),
 
 	user = require('./user'),
