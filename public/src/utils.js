@@ -169,23 +169,6 @@
 			return tags;
 		},
 
-		refreshTitle: function(url) {
-			if (!url) {
-				var a = document.createElement('a');
-				a.href = document.location;
-				url = a.pathname.slice(1);
-			}
-			var notificationIcon;
-
-			socket.emit('api:meta.buildTitle', url, function(title, numNotifications) {
-				document.title = (numNotifications > 0 ? '(' + numNotifications + ') ' : '') + title;
-				notificationIcon = notificationIcon || document.querySelector('.notifications a i');
-				if (numNotifications > 0 && notificationIcon) {
-					notificationIcon.className = 'fa fa-circle active';
-				}
-			});
-		},
-
 		isRelativeUrl: function(url) {
 			var firstChar = url.slice(0, 1);
 			return (firstChar === '.' || firstChar === '/');

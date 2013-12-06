@@ -119,7 +119,7 @@ var ajaxify = {};
 					});
 				}
 
-				utils.refreshTitle(url);
+				app.refreshTitle(url);
 
 			}, url, template);
 

@@ -396,7 +396,44 @@ var socket,
 		$('body,html').animate({
 			scrollTop: $('html').height() - 100
 		});
-	}
+	};
+
+	var	titleObj = {
+			active: false,
+			interval: undefined,
+			titles: []
+		};
+	app.alternatingTitle = function (title) {
+		if (typeof title !== 'string') return;
+
+		if (title.length > 0) {
+			titleObj.titles[1] = title;
+			if (titleObj.interval) {
+				clearInterval(titleObj.interval);
+			}
+			titleObj.interval = setInterval(function() {
+				window.document.title = titleObj.titles[titleObj.titles.indexOf(window.document.title) ^ 1];
+			}, 2000);
+		} else {
+			if (titleObj.interval) {
+				clearInterval(titleObj.interval);
+			}
+			if (titleObj.titles[0]) window.document.title = titleObj.titles[0];
+		}
+	};
+
+	app.refreshTitle = function(url) {
+		if (!url) {
+			var a = document.createElement('a');
+			a.href = document.location;
+			url = a.pathname.slice(1);
+		}
+
+		socket.emit('api:meta.buildTitle', url, function(title, numNotifications) {
+			titleObj.titles[0] = (numNotifications > 0 ? '(' + numNotifications + ') ' : '') + title;
+			app.alternatingTitle('');
+		});
+	};
 
 	jQuery('document').ready(function () {
 		$('#search-form').on('submit', function () {
@@ -410,5 +447,5 @@ var socket,
 	showWelcomeMessage = location.href.indexOf('loggedin') !== -1;
 
 	app.loadConfig();
-
+	app.alternatingTitle('');
 }());
