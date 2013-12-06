@@ -12,8 +12,6 @@ var db = require('./database'),
 	meta = require('./meta'),
 
 	async = require('async'),
-	reds = require('reds'),
-	postSearch = reds.createSearch('nodebbpostsearch'),
 	nconf = require('nconf'),
 	validator = require('validator'),
 	winston = require('winston');
@@ -108,7 +106,7 @@ var db = require('./database'),
 
 							plugins.fireHook('action:post.save', postData);
 
-							postSearch.index(content, pid);
+							db.searchIndex('post', content, pid);
 
 							callback(null, postData);
 						});
@@ -481,10 +479,10 @@ var db = require('./database'),
 		function reIndex(pid, callback) {
 
 			Posts.getPostField(pid, 'content', function(err, content) {
-				postSearch.remove(pid, function() {
+				db.searchRemove('post', pid, function() {
 
 					if (content && content.length) {
-						postSearch.index(content, pid);
+						db.searchIndex('post', content, pid);
 					}
 					callback(null);
 				});

@@ -8,9 +8,6 @@ var db = require('./database'),
 	posts = require('./posts'),
 	meta = require('./meta'),
 	websockets = require('./websockets');
-
-	reds = require('reds'),
-	topicSearch = reds.createSearch('nodebbtopicsearch'),
 	winston = require('winston'),
 	nconf = require('nconf'),
 
@@ -94,7 +91,7 @@ var db = require('./database'),
 
 		ThreadTools.lock(tid);
 
-		topicSearch.remove(tid);
+		db.searchRemove('topic', tid);
 
 		websockets.in('topic_' + tid).emit('event:topic_deleted', {
 			tid: tid,
@@ -117,7 +114,7 @@ var db = require('./database'),
 		});
 
 		topics.getTopicField(tid, 'title', function(err, title) {
-			topicSearch.index(title, tid);
+			db.searchIndex('topic', title, tid);
 		});
 
 		if(callback) {

@@ -4,7 +4,6 @@ var bcrypt = require('bcrypt'),
 	nconf = require('nconf'),
 	winston = require('winston'),
 	gravatar = require('gravatar'),
-	userSearch = require('reds').createSearch('nodebbusersearch'),
 	check = require('validator').check,
 	sanitize = require('validator').sanitize,
 
@@ -113,7 +112,7 @@ var bcrypt = require('bcrypt'),
 				db.sortedSetAdd('users:postcount', 0, uid);
 				db.sortedSetAdd('users:reputation', 0, uid);
 
-				userSearch.index(username, uid);
+				db.searchIndex('user', username, uid);
 
 				if (password !== undefined) {
 					User.hashPassword(password, function(err, hash) {
@@ -390,8 +389,8 @@ var bcrypt = require('bcrypt'),
 			}
 
 			function reIndexUser(uid, username) {
-				userSearch.remove(uid, function() {
-					userSearch.index(username, uid);
+				db.searchRemove('user', uid, function() {
+					db.searchIndex('user', username, uid);
 				});
 			}
 
@@ -407,7 +406,7 @@ var bcrypt = require('bcrypt'),
 			callback([]);
 			return;
 		}
-		userSearch.query(username).type('or').end(function(err, uids) {
+		db.search('user', username, (function(err, uids) {
 			if (err) {
 				console.log(err);
 				return;

@@ -407,9 +407,11 @@ var	DebugRoute = function(app) {
 
 			var miscTests = [
 				function(next) {
-					db.sortedSetScore('users:joindate', 1, function(err, result) {
+					//db.searchIndex('post', 'here is content tomato testing purple orange', 1);
+					db.search('post', 'tomato', function(err, result) {
 						next(err, result);
 					})
+
 				}
 			];
 

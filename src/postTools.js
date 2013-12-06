@@ -10,9 +10,7 @@ var db = require('./database'),
 
 	utils = require('../public/src/utils'),
 	plugins = require('./plugins'),
-	reds = require('reds'),
-	postSearch = reds.createSearch('nodebbpostsearch'),
-	topicSearch = reds.createSearch('nodebbtopicsearch'),
+
 	winston = require('winston'),
 	meta = require('./meta'),
 	Feed = require('./feed');
@@ -83,8 +81,8 @@ var db = require('./database'),
 				}
 			]);
 
-			postSearch.remove(pid, function() {
-				postSearch.index(content, pid);
+			db.searchRemove('post', pid, function() {
+				db.searchIndex('post', content, pid);
 			});
 
 			async.parallel([
@@ -93,8 +91,8 @@ var db = require('./database'),
 						PostTools.isMain(pid, tid, function(err, isMainPost) {
 							if (isMainPost) {
 								topics.setTopicField(tid, 'title', title);
-								topicSearch.remove(tid, function() {
-									topicSearch.index(title, tid);
+								db.searchRemove('topic', tid, function() {
+									db.searchIndex('topic', title, tid);
 								});
 							}
 
@@ -132,7 +130,7 @@ var db = require('./database'),
 		var success = function() {
 			posts.setPostField(pid, 'deleted', 1);
 			db.decrObjectField('global', 'postCount');
-			postSearch.remove(pid);
+			db.searchRemove('post', pid);
 
 			posts.getPostFields(pid, ['tid', 'uid'], function(err, postData) {
 				db.incrObjectFieldBy('topic:' + postData.tid, 'postcount', -1);
@@ -203,7 +201,7 @@ var db = require('./database'),
 				Feed.updateTopic(postData.tid);
 				Feed.updateRecent();
 
-				postSearch.index(postData.content, pid);
+				db.searchIndex('post', postData.content, pid);
 
 				callback();
 			});

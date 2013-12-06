@@ -2,8 +2,6 @@ var async = require('async'),
 	gravatar = require('gravatar'),
 	nconf = require('nconf'),
 	validator = require('validator'),
-	reds = require('reds'),
-	topicSearch = reds.createSearch('nodebbtopicsearch'),
 
 	db = require('./database'),
 	posts = require('./posts'),
@@ -84,7 +82,7 @@ var async = require('async'),
 						'pinned': 0
 					});
 
-					topicSearch.index(title, tid);
+					db.searchIndex('topic', title, tid);
 
 					user.addTopicIdToUser(uid, tid);
 

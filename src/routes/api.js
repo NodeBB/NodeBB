@@ -226,18 +226,8 @@ var path = require('path'),
 
 			app.get('/search/:term', function (req, res, next) {
 
-				var reds = require('reds');
-				var postSearch = reds.createSearch('nodebbpostsearch');
-				var topicSearch = reds.createSearch('nodebbtopicsearch');
-
-				function search(searchObj, callback) {
-					searchObj
-						.query(query = req.params.term).type('or')
-						.end(callback);
-				}
-
 				function searchPosts(callback) {
-					search(postSearch, function (err, pids) {
+					db.search('post', req.params.term, function(err, pids) {
 						if (err) {
 							return callback(err, null);
 						}
@@ -248,11 +238,11 @@ var path = require('path'),
 							}
 							callback(null, posts);
 						});
-					})
+					});
 				}
 
 				function searchTopics(callback) {
-					search(topicSearch, function (err, tids) {
+					db.search('topic', req.params.term, function(err, tids) {
 						if (err) {
 							return callback(err, null);
 						}

@@ -39,6 +39,20 @@
 				}
 			});
 
+			db.createCollection('search', function(err, collection) {
+				if(err) {
+					winston.error("Error creating collection " + err.message);
+					return;
+				}
+				if(collection) {
+					collection.ensureIndex({content:'text'}, {background:true}, function(err, name){
+						if(err) {
+							winston.error("Error creating index " + err.message);
+						}
+					});
+				}
+			})
+
 			callback(err);
 		});
 
@@ -53,6 +67,28 @@
 	//
 	// Exported functions
 	//
+
+	module.searchIndex = function(key, content, id) {
+
+		db.collection('search').update({key:key, content:content, _id:id}, {upsert:true, w: 1}, function(err, result) {
+
+		});
+	}
+
+	module.search = function(key, term, callback) {
+		db.command({text:"search" , search: term }, function(err, result) {
+			callback(err, result)
+		});
+		/*db.runCommand("text", { search: term }, function(err, result) {
+			callback(err, result);
+		});*/
+	}
+
+	module.searchRemove = function(key, id) {
+		db.collection('search').remove({_id:id}, function(err, result) {
+			callback(err, result);
+		});
+	}
 
 	module.flushdb = function(callback) {
 		db.dropDatabase(function(err, result) {
@@ -72,14 +108,20 @@
 	module.info = function(callback) {
 		db.stats({scale:1024}, function(err, stats) {
 
-			stats.avgObjSize = (stats.avgObjSize / 1024).toFixed(2);
+			db.serverStatus(function(err, serverStatus) {
 
-			stats.raw = JSON.stringify(stats, null, 4);
+				stats.avgObjSize = (stats.avgObjSize / 1024).toFixed(2);
 
-			stats.mongo = true;
-			//remove this when andrew adds in undefined checking to templates
-			stats.redis = false;
-			callback(err, stats);
+				stats.serverStatus = serverStatus;
+
+				stats.raw = JSON.stringify(stats, null, 4);
+
+				stats.mongo = true;
+				//remove this when andrew adds in undefined checking to templates
+				stats.redis = false;
+				callback(err, stats);
+
+			});
 		});
 	}
 

@@ -33,6 +33,10 @@
 		return reds.client || (reds.client = redisClient);
 	};
 
+	var	userSearch = reds.createSearch('nodebbusersearch'),
+		postSearch = reds.createSearch('nodebbpostsearch'),
+		topicSearch = reds.createSearch('nodebbtopicsearch');
+
 	if (nconf.get('redis:password')) {
 		redisClient.auth(nconf.get('redis:password'));
 	}
@@ -69,6 +73,41 @@
 	//
 	// Exported functions
 	//
+	module.searchIndex = function(key, content, id) {
+		if(key === 'post') {
+			postSearch.index(content, id);
+		} else if(key === 'topic') {
+			topicSearch.index(content, id);
+		} else if(key === 'user') {
+			userSearch.index(content, id);
+		}
+	}
+
+	module.search = function(key, term, callback) {
+		function search(searchObj, callback) {
+			searchObj
+				.query(query = term).type('or')
+				.end(callback);
+		}
+
+		if(key === 'post') {
+			search(postSearch, callback);
+		} else if(key === 'topic') {
+			search(topicSearch, callback);
+		} else if(key === 'user') {
+			search(userSearch, callback);
+		}
+	}
+
+	module.searchRemove = function(key, id) {
+		if(key === 'post') {
+			postSearch.remove(id);
+		} else if(key === 'topic') {
+			topicSearch.remove(id);
+		} else if(key === 'user') {
+			userSearch.remove(id);
+		}
+	}
 
 	module.flushdb = function(callback) {
 		redisClient.send_command('flushdb', [], function(err) {
