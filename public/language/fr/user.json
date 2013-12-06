@@ -1,0 +1,36 @@
+{
+	"banned": "Banni",
+	"offline": "Hors-ligne",
+	"email": "email",
+	"fullname": "Nom",
+	"website": "Site Web",
+	"location": "Emplacement",
+	"age": "age",
+	"joined": "adhésion",
+	"profil_views": "vues du profil",
+	"reputation": "réputation",
+	"posts": "messages",
+	"followers": "suiveurs",
+	"following": "suivis",
+	"signature": "signature",
+	"gravatar": "gravatar",
+	"birthday": "anniversaire",
+
+	"change_picture": "changer d'image",
+	"edit": "editer",
+	"uploaded_pictures": "images uploadées",
+	"upload_new_picture": "uploader une nouvelle image",
+	"change_password": "chnger le mot de passe",
+	"confirm_password": "confirmer le mot de passe",
+	"password": "mot de passe",
+
+	"upload_picture": "Uploader un image",
+	"upload_a_picture": "Uploader un image",
+	"image_spec": "Vous pouvez uploader seulement des fichiers de types PNG, JPG, ou GIF en dessous de 256kb.",
+
+	"settings": "paramètres",
+	"show_my_email": "montrer mon email",
+
+	"has_no_follower": "Cet utilisateur n'a aucun suiver :(",
+	"follows_no_one": "Cet utilisateur ne suit personne :("
+}

@@ -1,0 +1,39 @@
+{
+	"topic": "Sujet",
+	"topics": "Sujets",
+
+	"no_topics_found": "Aucun sujet trouvé!",
+
+	"profile": "Profile",
+	"posted_by": "Envoyé by",
+	"chat": "Chat",
+	"notify_me": "Être notifié des réponses dans ce sujet",
+	"quote": "Citer",
+	"reply": "Répondre",
+	"edit": "Editer",
+	"delete": "Supprimer",
+	"banned": "bannir",
+	"link": "Lien",
+
+	"thread_tools.title": "Outils du Fil",
+	"thread_tools.pin": "Epingler le fil",
+	"thread_tools.lock": "Verrouiller le fil",
+	"thread_tools.move": "Déplacer le fil",
+	"thread_tools.delete": "Supprimer le fil",
+
+	"load_categories": "Chargement des Categories",
+	"disabled_categories_note": "Les Catégories Désactivées sont grisées",
+	"confirm_move": "Déplacer",
+
+	"favourite": "Favoris",
+	"favourites": "Favoris",
+	"favourites.not_logged_in.title": "Non Connecté",
+	"favourites.not_logged_in.message": "Veuillez vous connecter avant de mettre ce message en Favoris",
+	"favourites.has_no_favourites": "Vous n'avez aucun Favoris, mettre en favoris des messages pour les voir apparaître ici!",
+
+	"posted_by": "posté par",
+	"loading": "Chargement",
+	"more_posts": "d'autres Messages",
+	"move_topic": "Déplacer le Sujet",
+	"topic_will_be_moved_to": "Ce sujet sera déplacé vers la catégorie"
+}

@@ -1,0 +1,31 @@
+{
+	"home": "Accueil",
+	"search": "Recherche",
+	"buttons.close": "Fermer",
+	"403.title": "Accès Refusé",
+	"403.message": "Il semble que vous vous soyez retrouvé sur une page dont vous n'avez pas accès. Peut-être devriez vous <a href='/login'>essayez de vous connecter</a>?",
+	"404.title": "Introuvable",
+	"404.message": "Il semble que vous vous soyez retrouvé sur une page qui n'existe pas. Retourner à <a href='/'>l'accueil</a>.",
+	"500.title": "Erreur Interne.",
+	"500.message": "Oops! Il semblerait que quelque chose se soit mal passé!",
+
+	"register": "S'inscrire",
+	"login": "Connecter",
+
+	"logout": "Déconnection",
+	"logout.title": "Vous êtes maintenant déconnecté.",
+	"logout.message": "Vous vous êtes déconnecté de NodeBB avec succès",
+
+	"save_changes": "Enregistrer les changements",
+	"close": "Fermer",
+
+	"header.admin": "Admin",
+	"header.recent": "Récent",
+	"header.unread": "Non Lu",
+	"header.users": "Utilisateurs",
+	"header.search": "Recherche",
+	"header.profile": "Profile",
+
+	"notifications.loading": "Chargement des Notifications",
+	"chats.loading": "Chargement des Chats"
+}
