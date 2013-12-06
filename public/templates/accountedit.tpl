@@ -1,5 +1,4 @@
-
-<div class="well">
+<div class="well account">
 
 	<div id="change-picture-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="[[user:change_picture]]" aria-hidden="true">
 		<div class="modal-dialog">

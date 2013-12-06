@@ -1,5 +1,4 @@
-
-<div class="well users">
+<div class="well users account">
 
 	<div class="account-username-box" data-userslug="{userslug}">
 		<span class="account-username">
