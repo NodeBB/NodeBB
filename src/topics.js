@@ -574,7 +574,7 @@ var async = require('async'),
 					'slug': topicData.slug,
 					'postcount': topicData.postcount,
 					'viewcount': topicData.viewcount,
-					'unreplied': topicData.postcount > 1,
+					'unreplied': parseInt(topicData.postcount, 10) > 1,
 					'topic_id': tid,
 					'expose_tools': privileges.editable ? 1 : 0,
 					'posts': topicPosts
