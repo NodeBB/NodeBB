@@ -21,15 +21,14 @@ var db = require('./database'),
 
 	Posts.create = function(uid, tid, content, callback) {
 		if (uid === null) {
-			callback(new Error('invalid-user'), null);
-			return;
+			return callback(new Error('invalid-user'), null);
 		}
 
 		topics.isLocked(tid, function(err, locked) {
 			if(err) {
 				return callback(err, null);
 			} else if(locked) {
-				callback(new Error('topic-locked'), null);
+				return callback(new Error('topic-locked'), null);
 			}
 
 			db.incrObjectField('global', 'nextPid', function(err, pid) {
