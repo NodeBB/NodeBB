@@ -409,7 +409,7 @@ var path = require('path'),
 				"categories": function (next) {
 					categories.getAllCategories(0, function (err, returnData) {
 						returnData.categories = returnData.categories.filter(function (category) {
-							if (category.disabled !== '1') {
+							if (parseInt(category.disabled, 10) !== 1) {
 								return true;
 							} else {
 								return false;

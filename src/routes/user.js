@@ -383,13 +383,15 @@ var fs = require('fs'),
 						posts.getPostsByUid(userData.theirid, 0, 9, function (posts) {
 
 							userData.posts = posts.filter(function (p) {
-								return p && p.deleted !== "1";
+								return p && parseInt(p.deleted, 10) !== 1;
 							});
 							userData.isFollowing = isFollowing;
-							if (!userData.profileviews)
+							if (!userData.profileviews) {
 								userData.profileviews = 1;
-							if (callerUID !== userData.uid)
+							}
+							if (callerUID !== userData.uid) {
 								user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
+							}
 
 							postTools.parse(userData.signature, function (err, signature) {
 								userData.signature = signature;

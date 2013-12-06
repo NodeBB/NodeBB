@@ -62,8 +62,6 @@
 
 			callback(err);
 		});
-
-
 	}
 
 
@@ -132,20 +130,15 @@
 	module.info = function(callback) {
 		db.stats({scale:1024}, function(err, stats) {
 
-			db.serverStatus(function(err, serverStatus) {
+			stats.avgObjSize = (stats.avgObjSize / 1024).toFixed(2);
 
-				stats.avgObjSize = (stats.avgObjSize / 1024).toFixed(2);
+			stats.raw = JSON.stringify(stats, null, 4);
 
-				stats.serverStatus = serverStatus;
+			stats.mongo = true;
+			//remove this when andrew adds in undefined checking to templates
+			stats.redis = false;
+			callback(err, stats);
 
-				stats.raw = JSON.stringify(stats, null, 4);
-
-				stats.mongo = true;
-				//remove this when andrew adds in undefined checking to templates
-				stats.redis = false;
-				callback(err, stats);
-
-			});
 		});
 	}
 
@@ -242,6 +235,7 @@
 	}
 
 	module.getObjects = function(keys, callback) {
+
 		db.collection('objects').find({_key:{$in:keys}}, {_id:0}).toArray(function(err, data) {
 
 			if(err) {
@@ -251,15 +245,27 @@
 			var returnData = [],
 				resultIndex = 0;
 
-			for(var i=0; i<keys.length; ++i) {
 
-				if(data && resultIndex < data.length && keys[i] === data[resultIndex]._key) {
-					delete data[resultIndex]._key;
-					returnData.push(data[resultIndex]);
-					++resultIndex;
-				} else {
-					returnData.push(null);
+			function findData(key) {
+				if(!data) {
+					return null;
 				}
+
+				for(var i=0; i<data.length; ++i) {
+					if(data[i]._key === key) {
+						var item = data.splice(i, 1);
+						if(item && item.length) {
+							return item[0];
+						} else {
+							return null;
+						}
+					}
+				}
+				return null;
+			}
+
+			for(var i=0; i<keys.length; ++i) {
+				returnData.push(findData(keys[i]));
 			}
 
 			callback(err, returnData);

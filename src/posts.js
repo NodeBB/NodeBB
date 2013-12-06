@@ -377,7 +377,7 @@ var db = require('./database'),
 
 					try {
 						postData.relativeTime = new Date(parseInt(postData.timestamp,10)).toISOString();
-						postData.relativeEditTime = postData.edited !== '0' ? (new Date(parseInt(postData.edited,10)).toISOString()) : '';
+						postData.relativeEditTime = parseInt(postData.edited, 10) !== 0 ? (new Date(parseInt(postData.edited, 10)).toISOString()) : '';
 					} catch(e) {
 						winston.err('invalid time value');
 					}
@@ -457,8 +457,10 @@ var db = require('./database'),
 
 	Posts.getPostsByUid = function(uid, start, end, callback) {
 		user.getPostIds(uid, start, end, function(pids) {
+
 			if (pids && pids.length) {
 				plugins.fireHook('filter:post.getTopic', pids, function(err, posts) {
+
 					if (!err & 0 < posts.length) {
 						Posts.getPostsByPids(pids, function(err, posts) {
 							plugins.fireHook('action:post.gotTopic', posts);

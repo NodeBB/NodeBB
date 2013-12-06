@@ -409,9 +409,10 @@ var	DebugRoute = function(app) {
 				function(next) {
 					/*db.searchIndex('post', 'green tomato is healthy', 2);
 					next();*/
-					db.search('post', 'tomato', function(err, result) {
+					/*db.search('post', 'tomato', function(err, result) {
 						next(err, result);
-					});
+					});*/
+					db.getObjects(['deeerp', 'user:1', 'bonanza', 'post:1'], next);
 
 				}
 			];

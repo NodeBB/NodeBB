@@ -514,7 +514,7 @@ var bcrypt = require('bcrypt'),
 				console.log(err);
 			} else {
 				userIds = userIds.filter(function(value) {
-					return value !== '0';
+					return parseInt(value, 10) !== 0;
 				});
 				callback(userIds.length);
 			}
@@ -527,7 +527,7 @@ var bcrypt = require('bcrypt'),
 				console.log(err);
 			} else {
 				userIds = userIds.filter(function(value) {
-					return value !== '0';
+					return parseInt(value, 10) !== 0;
 				});
 				callback(userIds.length);
 			}
