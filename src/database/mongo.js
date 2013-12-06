@@ -118,9 +118,14 @@
 		db.dropDatabase(function(err, result) {
 			if(err){
 				winston.error(error);
-				return callback(err);
+				if(callback) {
+					return callback(err);
+				}
 			}
-			callback(null);
+
+			if(callback) {
+				callback(null);
+			}
 		});
 	}
 
@@ -379,7 +384,10 @@
 	// sets
 
 	module.setAdd = function(key, value, callback) {
-		db.collection('objects').update({_key:key}, {$addToSet: { members: value.toString() }}, {upsert:true, w: 1},  function(err, result) {
+		if(value !== null && value !== undefined) {
+			value = value.toString();
+		}
+		db.collection('objects').update({_key:key}, {$addToSet: { members: value }}, {upsert:true, w: 1},  function(err, result) {
 			if(callback) {
 				callback(err, result);
 			}
@@ -387,7 +395,10 @@
 	}
 
 	module.setRemove = function(key, value, callback) {
-		db.collection('objects').update({_key:key, members: value.toString()}, {$pull : {members: value}}, function(err, result) {
+		if(value !== null && value !== undefined) {
+			value = value.toString();
+		}
+		db.collection('objects').update({_key:key, members: value}, {$pull : {members: value}}, function(err, result) {
 			if(callback) {
 				callback(err, result);
 			}
@@ -395,7 +406,10 @@
 	}
 
 	module.isSetMember = function(key, value, callback) {
-		db.collection('objects').findOne({_key:key, members: value.toString()}, function(err, item) {
+		if(value !== null && value !== undefined) {
+			value = value.toString();
+		}
+		db.collection('objects').findOne({_key:key, members: value}, function(err, item) {
 			callback(err, item !== null && item !== undefined);
 		});
 	}
@@ -650,13 +664,20 @@
 
 			db.collection('objects').update({_key: key }, { $pop: { array: 1 } }, function(err, result) {
 				if(err) {
-					return callback(err);
+					if(callback) {
+						return callback(err);
+					}
+					return;
 				}
 
 				if(value && value.length) {
-					callback(err, value[0]);
+					if(callback) {
+						callback(err, value[0]);
+					}
 				} else {
-					callback(err, null);
+					if(callback) {
+						callback(err, null);
+					}
 				}
 			});
 		});

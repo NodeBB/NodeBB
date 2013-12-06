@@ -1152,8 +1152,10 @@ websockets.init = function(io) {
 		return io.sockets.in(room);
 	};
 
+}
+
 	websockets.getConnectedClients = function() {
 		return userSockets;
 	}
-}
+
 })(module.exports);

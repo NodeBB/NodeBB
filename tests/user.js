@@ -7,7 +7,7 @@ process.on('uncaughtException', function (err) {
 });
 
 var	assert = require('assert'),
-	RDB = require('../mocks/redismock');
+	db = require('../mocks/databasemock');
 
 var User = require('../src/user');
 
@@ -43,12 +43,6 @@ describe('User', function() {
 	});
 
 	after(function() {
-		//Clean up
-		RDB.send_command('flushdb', [], function(error){
-			if(error){
-				winston.error(error);
-				throw new Error(error);
-			}
-		});
+		db.flushdb();
 	});
 });
