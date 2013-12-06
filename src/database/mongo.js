@@ -46,7 +46,7 @@
 						return;
 					}
 					if(collection) {
-						collection.ensureIndex({_key :1, setName:1}, {background:true}, function(err, name){
+						collection.ensureIndex({_key :1}, {background:true}, function(err, name){
 							if(err) {
 								winston.error("Error creating index " + err.message);
 							}
@@ -71,6 +71,39 @@
 				callback(null);
 			}
 		});
+	}
+
+	//
+	// helper functions
+	//
+	function removeHiddenFields(item) {
+		if(item) {
+			if(item._id) {
+				delete item._id;
+			}
+			if(item._key) {
+				delete item._key;
+			}
+		}
+		return item;
+	}
+
+	function findItem(data, key) {
+		if(!data) {
+			return null;
+		}
+
+		for(var i=0; i<data.length; ++i) {
+			if(data[i]._key === key) {
+				var item = data.splice(i, 1);
+				if(item && item.length) {
+					return item[0];
+				} else {
+					return null;
+				}
+			}
+		}
+		return null;
 	}
 
 
@@ -165,7 +198,7 @@
 	// key
 
 	module.exists = function(key, callback) {
-		db.collection('objects').findOne({$or:[{_key:key}, {setName:key}]}, function(err, item) {
+		db.collection('objects').findOne({_key:key}, function(err, item) {
 			callback(err, item !== undefined && item !== null);
 		});
 	}
@@ -180,16 +213,8 @@
 				}
 			}
 
-			if(result === 0) {
-				db.collection('objects').remove({setName:key}, function(err, result) {
-					if(callback) {
-						callback(err, result);
-					}
-				});
-			} else {
-				if(callback) {
-					callback(null, result);
-				}
+			if(callback) {
+				callback(null, result);
 			}
 		});
 	}
@@ -210,21 +235,6 @@
 	}
 
 	//hashes
-	function removeHiddenFields(item) {
-		if(item) {
-			if(item._id) {
-				delete item._id;
-			}
-			if(item._key) {
-				delete item._key;
-			}
-			if(item.setName) {
-				delete item.setName;
-			}
-		}
-		return item;
-	}
-
 	module.setObject = function(key, data, callback) {
 		data['_key'] = key;
 		db.collection('objects').update({_key:key}, {$set:data}, {upsert:true, w: 1}, function(err, result) {
@@ -262,30 +272,10 @@
 				return callback(err);
 			}
 
-			var returnData = [],
-				resultIndex = 0;
-
-
-			function findData(key) {
-				if(!data) {
-					return null;
-				}
-
-				for(var i=0; i<data.length; ++i) {
-					if(data[i]._key === key) {
-						var item = data.splice(i, 1);
-						if(item && item.length) {
-							return item[0];
-						} else {
-							return null;
-						}
-					}
-				}
-				return null;
-			}
+			var returnData = [];
 
 			for(var i=0; i<keys.length; ++i) {
-				returnData.push(findData(keys[i]));
+				returnData.push(findItem(data, keys[i]));
 			}
 
 			callback(err, returnData);
@@ -505,15 +495,18 @@
 			value:value
 		};
 
-		data.setName = key;
-		module.setObject(key + ':' + value, data, callback);
+		db.collection('objects').update({_key:key, value:value}, {$set:data}, {upsert:true, w: 1}, function(err, result) {
+			if(callback) {
+				callback(err, result);
+			}
+		});
 	}
 
 	module.sortedSetRemove = function(key, value, callback) {
 		if(value !== null && value !== undefined) {
 			value = value.toString();
 		}
-		db.collection('objects').remove({setName:key, value:value}, function(err, result) {
+		db.collection('objects').remove({_key:key, value:value}, function(err, result) {
 			if(callback) {
 				callback(err, result);
 			}
@@ -521,7 +514,7 @@
 	}
 
 	function getSortedSetRange(key, start, stop, sort, callback) {
-		db.collection('objects').find({setName:key}, {fields:{value:1}})
+		db.collection('objects').find({_key:key}, {fields:{value:1}})
 			.limit(stop - start + 1)
 			.skip(start)
 			.sort({score: sort})
@@ -557,7 +550,7 @@
 			stop = args[5];
 
 
-		db.collection('objects').find({setName:key, score: {$gt:min, $lt:max}}, {fields:{value:1}})
+		db.collection('objects').find({_key:key, score: {$gte:min, $lte:max}}, {fields:{value:1}})
 			.limit(stop - start + 1)
 			.skip(start)
 			.sort({score: -1})
@@ -576,7 +569,7 @@
 	}
 
 	module.sortedSetCount = function(key, min, max, callback) {
-		db.collection('objects').count({setName:key, score: {$gt:min, $lt:max}}, function(err, count) {
+		db.collection('objects').count({_key:key, score: {$gte:min, $lte:max}}, function(err, count) {
 			if(err) {
 				return callback(err);
 			}
@@ -609,7 +602,7 @@
 		if(value !== null && value !== undefined) {
 			value = value.toString();
 		}
-		db.collection('objects').findOne({setName:key, value: value}, {fields:{score:1}}, function(err, result) {
+		db.collection('objects').findOne({_key:key, value: value}, {fields:{score:1}}, function(err, result) {
 			if(err) {
 				return callback(err);
 			}
@@ -625,22 +618,17 @@
 		if(value !== null && value !== undefined) {
 			value = value.toString();
 		}
-		db.collection('objects').find({setName:{$in:keys}, value: value}).toArray(function(err, result) {
+		db.collection('objects').find({_key:{$in:keys}, value: value}).toArray(function(err, result) {
 			if(err) {
 				return callback(err);
 			}
 
 			var returnData = [],
-				resultIndex = 0;
+				item;
 
 			for(var i=0; i<keys.length; ++i) {
-
-				if(result && resultIndex < result.length && keys[i] === result[resultIndex].setName) {
-					returnData.push(result[resultIndex].score);
-					++resultIndex;
-				} else {
-					returnData.push(null);
-				}
+				item = findItem(result, keys[i]);
+				returnData.push(item ? item.score : null);
 			}
 
 			callback(null, returnData);
