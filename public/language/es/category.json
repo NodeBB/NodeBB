@@ -3,5 +3,12 @@
 	"no_topics": "<strong>No hay temas en esta categoría.</strong><br />Por que no te animas y publicas uno?",
 	"sidebar.recent_replies": "Respuestas recientes",
 	"sidebar.active_participants": "Miembros más activos",
-	"sidebar.moderators": "Moderadores"
+	"sidebar.moderators": "Moderadores",
+	"posts": "posts",
+	"views": "views",
+	"posted": "posted",
+	"browsing": "browsing",
+	"no_replies": "No one has replied",
+	"replied": "replied",
+	"last_edited_by": "last edited by"
 }

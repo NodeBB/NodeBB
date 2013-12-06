@@ -1,0 +1,36 @@
+{
+	"banned": "Banned",
+	"offline": "offline",
+	"email": "email",
+	"fullname": "full name",
+	"website": "website",
+	"location": "location",
+	"age": "age",
+	"joined": "joined",
+	"profil_views": "profil views",
+	"reputation": "reputation",
+	"posts": "posts",
+	"followers": "followers",
+	"following": "following",
+	"signature": "signature",
+	"gravatar": "gravatar",
+	"birthday": "birthday",
+
+	"change_picture": "change picture",
+	"edit": "edit",
+	"uploaded_pictures": "uploaded pictures",
+	"upload_new_picture": "upload new picture",
+	"change_password": "change password",
+	"confirm_password": "confirm password",
+	"password": "password",
+
+	"upload_picture": "Upload picture",
+	"upload_a_picture": "Upload a picture",
+	"image_spec": "You may only upload PNG, JPG, or GIF files under 256kb.",
+
+	"settings": "settings",
+	"show_my_email": "show my email",
+
+	"has_no_follower": "This user doesn't have any followers :(",
+	"follows_no_one": "This user isn't following anyone :("
+}
