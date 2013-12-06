@@ -406,7 +406,7 @@ var bcrypt = require('bcrypt'),
 			callback([]);
 			return;
 		}
-		db.search('user', username, (function(err, uids) {
+		db.search('user', username, function(err, uids) {
 			if (err) {
 				console.log(err);
 				return;
