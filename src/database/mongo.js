@@ -108,7 +108,9 @@
 
 	module.searchRemove = function(key, id) {
 		db.collection('search').remove({id:id, key:key}, function(err, result) {
-			callback(err, result);
+			if(err) {
+				winston.error('Error removing search ' + err.message);
+			}
 		});
 	}
 

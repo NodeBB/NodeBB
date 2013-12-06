@@ -504,6 +504,7 @@ websockets.init = function(io) {
 		});
 
 		socket.on('api:posts.favourite', function(data) {
+			console.log('fave');
 			favourites.favourite(data.pid, data.room_id, uid, socket);
 		});
 

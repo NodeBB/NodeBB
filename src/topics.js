@@ -207,7 +207,7 @@ var async = require('async'),
 					privileges = results[2];
 
 				for (var i = 0; i < postData.length; ++i) {
-					postData[i].favourited = fav_data[postData[i].pid] === 1;
+					postData[i].favourited = fav_data[postData[i].pid];
 					postData[i].display_moderator_tools = ((current_user != 0) && (postData[i].uid == current_user || privileges.editable));
 				}
 

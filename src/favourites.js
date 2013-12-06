@@ -8,6 +8,7 @@ var db = require('./database'),
 	"use strict";
 
 	Favourites.favourite = function (pid, room_id, uid, socket) {
+
 		if (uid === 0) {
 
 			translator.mget(['topic:favourites.not_logged_in.message', 'topic:favourites.not_logged_in.title'], function(err, results) {
@@ -25,7 +26,8 @@ var db = require('./database'),
 		posts.getPostFields(pid, ['uid', 'timestamp'], function (err, postData) {
 
 			Favourites.hasFavourited(pid, uid, function (hasFavourited) {
-				if (hasFavourited === 0) {
+
+				if (!hasFavourited) {
 					db.setAdd('pid:' + pid + ':users_favourited', uid);
 					db.sortedSetAdd('uid:' + uid + ':favourites', postData.timestamp, pid);
 
@@ -60,7 +62,7 @@ var db = require('./database'),
 
 		posts.getPostField(pid, 'uid', function (err, uid_of_poster) {
 			Favourites.hasFavourited(pid, uid, function (hasFavourited) {
-				if (hasFavourited === 1) {
+				if (hasFavourited) {
 					db.setRemove('pid:' + pid + ':users_favourited', uid);
 					db.sortedSetRemove('uid:' + uid + ':favourites', pid);
 
