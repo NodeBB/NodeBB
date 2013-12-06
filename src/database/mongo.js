@@ -130,6 +130,10 @@
 	module.info = function(callback) {
 		db.stats({scale:1024}, function(err, stats) {
 
+			// TODO : if this it not deleted the templates break,
+			// it is a nested object inside stats
+			delete stats.dataFileVersion;
+
 			stats.avgObjSize = (stats.avgObjSize / 1024).toFixed(2);
 
 			stats.raw = JSON.stringify(stats, null, 4);
