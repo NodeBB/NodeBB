@@ -1,0 +1,21 @@
+{
+	"home": "Inicio",
+	"search": "Buscar",
+	"buttons.close": "Cerrar",
+	"403.title": "Acceso denegado",
+	"403.message": "Al parecer no tienes premisos necesarios para estar en este lugar. Tal vez puedes <a href='/login'>intentar conectarte</a>?",
+	"404.title": "Ups... 404, no se encontra che!",
+	"404.message": "Al parecer lo que estas buscando no existe. Te recomendamos que vuelvas al <a href='/''>inicio</a>.",
+	"500.title": "Error Interno.",
+	"500.message": "Ooops! Algo salio mal!, No te alarmes. Nuestros simios hiperinteligentes lo solucionarán",
+	"logout": "Salir",
+	"logout.title": "Te has desconectado.",
+	"logout.message": "Haz sido desconectado correctamente",
+	"header.admin": "Admin",
+	"header.recent": "Recientes",
+	"header.unread": "No Leeidos",
+	"header.users": "Miembros",
+	"header.search": "Buscar",
+	"notifications.loading": "Cargando Notificaciones"
+	"chats.loading": "Cargando Chats"
+}
