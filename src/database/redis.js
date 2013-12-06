@@ -86,7 +86,7 @@
 	module.search = function(key, term, callback) {
 		function search(searchObj, callback) {
 			searchObj
-				.query(query = term).type('or')
+				.query(term).type('or')
 				.end(callback);
 		}
 

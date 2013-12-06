@@ -25,6 +25,13 @@
 			});
 
 
+			// TODO : what is the db user name??
+			/*if(nconf.get('mongo:password')) {
+				db.authenticate(dbUser, nconf.get('mongo:password'), function (err) {
+				});
+			}*/
+
+
 			db.createCollection('objects', function(err, collection) {
 				if(err) {
 					winston.error("Error creating collection " + err.message);
@@ -56,11 +63,7 @@
 			callback(err);
 		});
 
-		// look up how its done in mongo
-		/*if (nconf.get('mongo:password')) {
-			redisClient.auth(nconf.get('mongo:password'));
-		}
-		*/
+
 	}
 
 
@@ -69,22 +72,44 @@
 	//
 
 	module.searchIndex = function(key, content, id) {
-		// REQUIRES MONGO 2.4
-		db.collection('search').update({key:key, content:content, _id:id}, {upsert:true, w: 1}, function(err, result) {
 
+		var data = {
+			id:id,
+			key:key,
+			content:content
+		};
+
+		db.collection('search').update({id:id, key:key}, {$set:data}, {upsert:true, w: 1}, function(err, result) {
+			if(err) {
+				winston.error('Error indexing ' + err.message);
+			}
 		});
 	}
 
 	module.search = function(key, term, callback) {
-		// REQUIRES MONGO 2.4
-		db.command({text:"search" , search: term }, function(err, result) {
-			callback(err, result)
+
+		db.command({text:"search" , search: term, filter: {key:key} }, function(err, result) {
+			if(err) {
+				return callback(err);
+			}
+
+			if(!result) {
+				return callback(null, []);
+			}
+
+			if(result.results && result.results.length) {
+				var data = result.results.map(function(item) {
+					return item.obj.id;
+				});
+				callback(null, data);
+			} else {
+				callback(null, []);
+			}
 		});
 	}
 
 	module.searchRemove = function(key, id) {
-		// REQUIRES MONGO 2.4
-		db.collection('search').remove({_id:id}, function(err, result) {
+		db.collection('search').remove({id:id, key:key}, function(err, result) {
 			callback(err, result);
 		});
 	}

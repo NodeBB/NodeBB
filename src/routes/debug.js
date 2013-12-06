@@ -407,10 +407,11 @@ var	DebugRoute = function(app) {
 
 			var miscTests = [
 				function(next) {
-					//db.searchIndex('post', 'here is content tomato testing purple orange', 1);
+					/*db.searchIndex('post', 'green tomato is healthy', 2);
+					next();*/
 					db.search('post', 'tomato', function(err, result) {
 						next(err, result);
-					})
+					});
 
 				}
 			];

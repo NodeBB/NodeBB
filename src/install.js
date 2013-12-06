@@ -219,7 +219,6 @@ var async = require('async'),
 					async.each(defaults, function (configObj, next) {
 						meta.configs.setOnEmpty(configObj.field, configObj.value, next);
 					}, function (err) {
-						console.log('calling meta.configs.init');
 						meta.configs.init(next);
 					});
 				},
