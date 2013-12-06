@@ -110,7 +110,7 @@ var async = require('async'),
 						}
 
 						function dbQuestionsSuccess(err, databaseConfig) {
-							if (!config) {
+							if (!databaseConfig) {
 								return next(new Error('aborted'));
 							}
 
@@ -129,9 +129,10 @@ var async = require('async'),
 									password: databaseConfig['mongo:password'],
 									database: databaseConfig['mongo:database']
 								};
+							} else {
+								return next(new Error('unknown database : ' + config.database));
 							}
 
-							// Add hardcoded values
 							config.bcrypt_rounds = 12;
 							config.upload_path = '/public/uploads';
 							config.use_port = (config.use_port.slice(0, 1) === 'y') ? true : false;
@@ -153,10 +154,13 @@ var async = require('async'),
 							});
 						}
 
-						if(config.database === 'redis')
+						if(config.database === 'redis') {
 							prompt.get(install.redisQuestions, dbQuestionsSuccess);
-						else if(config.database === 'mongo')
+						} else if(config.database === 'mongo') {
 							prompt.get(install.mongoQuestions, dbQuestionsSuccess);
+						} else {
+							return next(new Error('unknown database : ' + config.database));
+						}
 					};
 
 					// prompt prepends "prompt: " to questions, let's clear that.
