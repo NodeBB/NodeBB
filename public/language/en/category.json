@@ -4,11 +4,11 @@
 	"sidebar.recent_replies": "Recent Replies",
 	"sidebar.active_participants": "Active Participants",
 	"sidebar.moderators": "Moderators",
-	"posts": "Posts",
-	"views": "Aufrufe",
-	"posted": "Geposted",
+	"posts": "posts",
+	"views": "views",
+	"posted": "posted",
 	"browsing": "browsing",
-	"no_one_has_replied": "Niemand hat geantwortet",
-	"replied": "geantwortet",
+	"no_replies": "No one has replied",
+	"replied": "replied",
 	"last_edited_by": "last edited by"
 }

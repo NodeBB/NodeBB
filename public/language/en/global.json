@@ -7,17 +7,17 @@
 	"404.title": "Not Found",
 	"404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='/'>home page</a>.",
 	"500.title": "Internal error.",
-	"500.message": "Ooops! Looks like something went wrong!",
+	"500.message": "Oops! Looks like something went wrong!",
 
-	"register": "register",
+	"register": "Register",
 	"login": "Login",
 
 	"logout": "Logout",
 	"logout.title": "You are now logged out.",
 	"logout.message": "You have successfully logged out of NodeBB",
 
-	"save_changes": "save changes",
-	"close": "close",
+	"save_changes": "Save Changes",
+	"close": "Close",
 
 	"header.admin": "Admin",
 	"header.recent": "Recent",

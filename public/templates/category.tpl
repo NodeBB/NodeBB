@@ -63,7 +63,7 @@
 
 								<span class="pull-right hidden-xs">
 									<!-- IF topics.unreplied -->
-									[[category:no_one_has_replied]]
+									[[category:no_replies]]
 									<!-- ELSE -->
 									<a href="/user/{topics.teaser_userslug}">
 										<img class="teaser-pic" src="{topics.teaser_userpicture}" title="{topics.teaser_username}"/>
