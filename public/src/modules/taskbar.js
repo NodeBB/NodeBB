@@ -26,6 +26,7 @@ define(function() {
 						taskbar.minimizeAll();
 						module.load(uuid);
 						taskbar.toggleNew(uuid, false);
+						app.alternatingTitle('');
 
 						// Highlight the button
 						$(taskbar.tasklist).removeClass('active');

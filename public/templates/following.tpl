@@ -4,7 +4,7 @@
 	<div class="account-username-box" data-userslug="{userslug}">
 		<span class="account-username">
 			<a href="/user/{userslug}">{username}</a> <i class="fa fa-chevron-right"></i>
-			<a href="/user/{userslug}/following">following</a>
+			<a href="/user/{userslug}/following">[[user:following]]</a>
 		</span>
 	</div>
 
@@ -31,7 +31,7 @@
 
 		<!-- END following -->
 	</div>
-	<div id="no-following-notice" class="alert alert-warning hide">This user isn't following anyone :(</div>
+	<div id="no-following-notice" class="alert alert-warning hide">[[user:follows_no_one]]</div>
 </div>
 
 <input type="hidden" template-variable="yourid" value="{yourid}" />

@@ -1,0 +1,39 @@
+{
+	"topic": "Tema",
+	"topics": "Temas",
+
+	"no_topics_found": "No se encontraron temas!",
+
+	"profile": "Perfil",
+	"posted_by": "Publicado por",
+	"chat": "Chat",
+	"notify_me": "Seras notificado cuando haya nuevas respuestas en este tema",
+	"quote": "Citar",
+	"reply": "Responder",
+	"edit": "Editar",
+	"delete": "Borrar",
+	"banned": "banneado",
+	"link": "Link",
+
+	"thread_tools.title": "Herramientas del Tema",
+	"thread_tools.pin": "Poner Sticky",
+	"thread_tools.lock": "Cerrar Tema",
+	"thread_tools.move": "Mover Tema",
+	"thread_tools.delete": "Borrar Tema",
+
+	"load_categories": "Cargando Categorias",
+	"disabled_categories_note": "Las categorías deshabilidas estan en gris",
+	"confirm_move": "Mover",
+
+	"favourite": "Favorito",
+	"favourites": "Favoritos",
+	"favourites.not_logged_in.title": "No estas conectado :(",
+	"favourites.not_logged_in.message": "Por favor, conectate para agregar a favorito este post.",
+	"favourites.has_no_favourites": "No tienes favoritos, puedes agregar alguno y volver a verlos aqui!",
+
+	"posted_by": "Publicado por",
+	"loading": "Cargando",
+	"more_posts": "Más posts",
+	"move_topic": "Mover Tema",
+	"topic_will_be_moved_to": "Este tema sera movido a la categoría"
+}

@@ -1,0 +1,10 @@
+{
+	"chat.chatting_with": "Chatear con <span id='chat-with-name'></span>",
+	"chat.placeholder": "ingresa tu mensaje aqui, y presiona enter para enviar",
+	"chat.send": "Enviar",
+	"stats.online": "Online",
+	"stats.users": "Usuarios",
+	"stats.topics": "Temas",
+	"stats.posts": "Posts",
+	"success": "exito!"
+}

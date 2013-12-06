@@ -82,7 +82,7 @@
 
 				var parsedKey = keys[key].replace('[[', '').replace(']]', '').split(':');
 				if (!(parsedKey[0] && parsedKey[1])) continue;
-				
+
 				var languageFile = parsedKey[0];
 				parsedKey = parsedKey[1].split(',')[0];
 

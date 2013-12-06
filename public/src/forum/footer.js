@@ -112,7 +112,7 @@
 
 				socket.emit('api:notifications.mark_all_read', null, function() {
 					notifIcon.toggleClass('active', false);
-					utils.refreshTitle();
+					app.refreshTitle();
 
 					// Update favicon + local count
 					Tinycon.setBubble(0);
@@ -167,7 +167,7 @@
 			type: 'warning',
 			timeout: 2000
 		});
-		utils.refreshTitle();
+		app.refreshTitle();
 
 		// Update the favicon + local storage
 		var	savedCount = parseInt(localStorage.getItem('notifications:count'),10) || 0;
@@ -209,7 +209,6 @@
 	});
 
 	socket.on('chatMessage', function(data) {
-
 		require(['chat'], function(chat) {
 			var modal = null;
 			if (chat.modalExists(data.fromuid)) {
@@ -220,10 +219,12 @@
 					chat.load(modal.attr('UUID'));
 				} else {
 					chat.toggleNew(modal.attr('UUID'), true);
+					app.alternatingTitle(data.username + ' has messaged you');
 				}
 			} else {
 				modal = chat.createModal(data.username, data.fromuid);
 				chat.toggleNew(modal.attr('UUID'), true);
+				app.alternatingTitle(data.username + ' has messaged you');
 			}
 		});
 	});

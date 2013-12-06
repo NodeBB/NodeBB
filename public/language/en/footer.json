@@ -1,9 +1,10 @@
 {
-	"chat.chatting_with": "Chat with <span id='chat-with-name'></span>",
+	"chat.chatting_with": "Chat with <span id=\"chat-with-name\"></span>",
 	"chat.placeholder": "type chat message here, press enter to send",
 	"chat.send": "Send",
 	"stats.online": "Online",
 	"stats.users": "Users",
 	"stats.topics": "Topics",
-	"stats.posts": "Posts"
+	"stats.posts": "Posts",
+	"success": "success"
 }

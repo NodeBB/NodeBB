@@ -26,21 +26,21 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-					<h3 id="myModalLabel">Upload Picture</h3>
+					<h3 id="myModalLabel">[[user:upload_picture]]</h3>
 				</div>
 				<div class="modal-body">
 					<form id="uploadForm" action="" method="post" enctype="multipart/form-data">
 						<div class="form-group">
-							<label for="userPhoto">Upload a picture</label>
+							<label for="userPhoto">[[user:upload_a_picture]]</label>
 							<input type="file" id="userPhotoInput"  name="userPhoto">
-							<p class="help-block">You may only upload PNG, JPG, or GIF files under 256kb.</p>
+							<p class="help-block">[[user:image_spec]]</p>
 						</div>
 						<input id="imageUploadCsrf" type="hidden" name="_csrf" value="" />
 					</form>
 
 					<div id="upload-progress-box" class="progress progress-striped">
 						<div id="upload-progress-bar" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0">
-							<span class="sr-only"> success</span>
+							<span class="sr-only"> [[footer:success]]</span>
 						</div>
 					</div>
 
@@ -50,7 +50,7 @@
 				</div>
 				<div class="modal-footer">
 					<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
-					<button id="pictureUploadSubmitBtn" class="btn btn-primary">Upload Picture</button>
+					<button id="pictureUploadSubmitBtn" class="btn btn-primary">[[user:upload_picture]]</button>
 				</div>
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal-dialog -->
@@ -61,7 +61,9 @@
 
 	<footer id="footer" class="container footer">
 		{footerHTML}
-		<div class="copyright">Copyright &copy; 2013 <a target="_blank" href="http://www.nodebb.org">NodeBB</a> by <a target="_blank" href="https://github.com/psychobunny">psychobunny</a>, <a href="https://github.com/julianlam" target="_blank">julianlam</a>, <a href="https://github.com/barisusakli" target="_blank">barisusakli</a> from <a target="_blank" href="http://www.designcreateplay.com">designcreateplay</a></div>
+		<div class="copyright">
+			Copyright &copy; 2013 <a target="_blank" href="http://www.nodebb.com">NodeBB Forums</a> | <a target="_blank" href="//github.com/designcreateplay/NodeBB/graphs/contributors">Contributors</a>
+		</div>
 	</footer>
 
 	<script>

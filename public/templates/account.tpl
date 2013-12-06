@@ -13,71 +13,68 @@
 				<img src="{picture}" class="user-profile-picture img-thumbnail"/>
 			</div>
 			<div class="account-online-status">
-				<span><i class="fa fa-circle-o"></i> <span>offline</span></span>
+				<span><i class="fa fa-circle-o"></i> <span>[[user:offline]]</span></span>
 			</div>
 			<!-- IF banned -->
 			<div>
-				<span class="label label-danger">banned</span>
+				<span class="label label-danger">[[user:banned]]</span>
 			</div>
 			<!-- ENDIF banned -->
-			<div>
-				<a id="chat-btn" href="#" class="btn btn-default hide">Chat</a>
-			</div>
 			<div id="user-actions">
-				<a id="follow-btn" href="#" class="btn btn-default hide">Follow</a>
-				<a id="unfollow-btn" href="#" class="btn btn-default hide">Unfollow</a>
+				<a id="follow-btn" href="#" class="btn btn-default">Follow</a>
+				<a id="unfollow-btn" href="#" class="btn btn-default">Unfollow</a>
 			</div>
 		</div>
 
 		<div class="col-md-4">
 			<div class="inline-block">
 				<div class="account-bio-block">
-					<span class="account-bio-label">email</span><i class="fa fa-eye-slash {emailClass}" title="Email hidden"></i>
+					<span class="account-bio-label">[[user:email]]</span><i class="fa fa-eye-slash {emailClass}" title="Email hidden"></i>
 					<span>{email}</span>
 					<br/>
 
-					<span class="account-bio-label">full name</span>
+					<span class="account-bio-label">[[user:fullname]]</span>
 					<span>{fullname}</span>
 					<br/>
 
-					<span class="account-bio-label">website</span>
+					<span class="account-bio-label">[[user:website]]</span>
 					<span><a href="{website}">{websiteName}</a></span>
 					<br/>
 
-					<span class="account-bio-label">location</span>
+					<span class="account-bio-label">[[user:location]]</span>
 					<span>{location}</span>
 					<br/>
 
-					<span class="account-bio-label">age</span>
+					<span class="account-bio-label">[[user:age]]</span>
 					<span>{age}</span>
 					<br/>
 					<hr/>
-					<span class="account-bio-label">joined</span>
+					<span class="account-bio-label">[[user:joined]]</span>
 					<span class="timeago" title="{joindate}"></span>
 					<br/>
 
-					<span class="account-bio-label">profile views</span>
+					<span class="account-bio-label">[[user:profil_views]]</span>
 					<span class="formatted-number">{profileviews}</span>
 					<br/>
 
-					<span class="account-bio-label">reputation</span>
+					<span class="account-bio-label">[[user:reputation]]</span>
 					<span class="formatted-number">{reputation}</span>
 					<br/>
 
-					<span class="account-bio-label">posts</span>
+					<span class="account-bio-label">[[user:posts]]</span>
 					<span class="formatted-number">{postcount}</span>
 					<br/>
 
-					<span class="account-bio-label">followers</span>
+					<span class="account-bio-label">[[user:followers]]</span>
 					<span class="formatted-number">{followerCount}</span>
 					<br/>
 
-					<span class="account-bio-label">following</span>
+					<span class="account-bio-label">[[user:following]]</span>
 					<span class="formatted-number">{followingCount}</span>
 					<br/>
 
 					<hr/>
-					<span class="account-bio-label">signature</span>
+					<span class="account-bio-label">[[user:signature]]</span>
 					<div class="post-signature">
 						<span id='signature'>{signature}</span>
 					</div>

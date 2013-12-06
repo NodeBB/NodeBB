@@ -1,0 +1,36 @@
+{
+	"banned": "Banneado",
+	"offline": "desconectado",
+	"email": "email",
+	"fullname": "nombre completo",
+	"website": "website",
+	"location": "ubicación",
+	"age": "edad",
+	"joined": "registro",
+	"profil_views": "visitas en su perfil",
+	"reputation": "reputación",
+	"posts": "posts",
+	"followers": "seguidores",
+	"following": "siguiendo",
+	"signature": "firma",
+	"gravatar": "gravatar",
+	"birthday": "cumpleaños",
+
+	"change_picture": "cambiar foto",
+	"edit": "editar",
+	"uploaded_pictures": "fotos cargadas",
+	"upload_new_picture": "cargar nueva foto",
+	"change_password": "cambiar contraseña",
+	"confirm_password": "confirmar contraseña",
+	"password": "contraseña",
+
+	"upload_picture": "Cargar foto",
+	"upload_a_picture": "Cargar una foto",
+	"image_spec": "Solo puedes usar PNG, JPG, o GIF hasta 256kb.",
+
+	"settings": "opciones",
+	"show_my_email": "mostrar mi email",
+
+	"has_no_follower": "Este miembro no tiene seguidores :(",
+	"follows_no_one": "Este miembro no sigue a nadie, que pena :("
+}

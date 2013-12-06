@@ -113,10 +113,10 @@
 						</a>
 						<ul id="user-control-list" class="dropdown-menu" aria-labelledby="user_dropdown">
 							<li>
-								<a id="user-profile-link" href=""><span>Profile</span></a>
+								<a id="user-profile-link" href=""><span>[[global:header.profile]]</span></a>
 							</li>
 							<li id="logout-link">
-								<a href="#">Log out</a>
+								<a href="#">[[global:logout]]</a>
 							</li>
 						</ul>
 					</li>
@@ -125,19 +125,19 @@
 
 				<ul id="logged-out-menu" class="nav navbar-nav navbar-right">
 					<li class="visible-lg visible-md visible-sm">
-						<a href="/register">Register</a>
+						<a href="/register">[[global:register]]</a>
 					</li>
 					<li class="visible-lg visible-md visible-sm">
-						<a href="/login">Login</a>
+						<a href="/login">[[global:login]]</a>
 					</li>
 					<li class="visible-xs">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="loggedout_dropdown"><i class="fa fa-sign-in"></i></a>
 						<ul class="dropdown-menu" aria-labelledby="loggedout_dropdown">
 							<li>
-								<a href="/register">Register</a>
+								<a href="/register">[[global:register]]</a>
 							</li>
 							<li>
-								<a href="/login">Login</a>
+								<a href="/login">[[global:login]]</a>
 							</li>
 						</ul>
 					</li>

@@ -1157,5 +1157,3 @@ websockets.init = function(io) {
 	}
 }
 })(module.exports);
-
-
