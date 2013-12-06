@@ -1,14 +1,11 @@
 "use strict";
 
-var //db = require('./database'),
-
-	// TODO: temp until upgrade is figured out with dbal,
-	RDB = require('./database/redis').client,
-
+var db = require('./database'),
 	async = require('async'),
 	winston = require('winston'),
 	notifications = require('./notifications'),
 	categories = require('./categories'),
+	nconf = require('nconf'),
 	Upgrade = {},
 
 	schemaDate, thisSchemaDate;
@@ -17,7 +14,7 @@ Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
 	var	latestSchema = new Date(2013, 11, 2).getTime();
 
-	RDB.get('schemaDate', function(err, value) {
+	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
 			callback(true);
 		} else {
@@ -27,6 +24,22 @@ Upgrade.check = function(callback) {
 };
 
 Upgrade.upgrade = function(callback) {
+	var databaseType = nconf.get('database');
+
+	if(databaseType === 'redis') {
+		Upgrade.upgradeRedis(callback);
+	} else if(databaseType === 'mongo') {
+		Upgrade.upgradeMongo(callback);
+	} else {
+		winston.error('Unknown database type. Aborting upgrade');
+		callback(new Error('unknown-database'));
+	}
+};
+
+Upgrade.upgradeRedis = function(callback) {
+
+	var RDB = db.client;
+
 	winston.info('Beginning Redis database schema update');
 
 	async.series([
@@ -287,5 +300,43 @@ Upgrade.upgrade = function(callback) {
 		}
 	});
 };
+
+Upgrade.upgradeMongo = function(callback) {
+	var MDB = db.client;
+
+	winston.info('Beginning Mongo database schema update');
+
+	async.series([
+		function(next) {
+			db.get('schemaDate', function(err, value) {
+				console.log(schemaDate)
+				schemaDate = value;
+				thisSchemaDate = new Date(2013, 11, 6).getTime();
+				next();
+			});
+		}
+		// Add new schema updates here
+
+	], function(err) {
+		if (!err) {
+			db.set('schemaDate', thisSchemaDate, function(err) {
+				if (!err) {
+					winston.info('[upgrade] Mongo schema update complete!');
+					if (callback) {
+						callback(err);
+					} else {
+						process.exit();
+					}
+				} else {
+					winston.error('[upgrade] Could not update NodeBB schema date!');
+					process.exit();
+				}
+			});
+		} else {
+			winston.error('[upgrade] Errors were encountered while updating the NodeBB schema: ' + err.message);
+			process.exit();
+		}
+	});
+}
 
 module.exports = Upgrade;

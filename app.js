@@ -154,10 +154,12 @@
 		nconf.file({
 			file: __dirname + '/config.json'
 		});
-		meta = require('./src/meta.js');
+		require('./src/database').init(function(err) {
+			meta = require('./src/meta.js');
 
-		meta.configs.init(function () {
-			require('./src/upgrade').upgrade();
+			meta.configs.init(function () {
+				require('./src/upgrade').upgrade();
+			});
 		});
 	} else/* if (nconf.get('help') */{
 		winston.info('Usage: node app [options] [arguments]');

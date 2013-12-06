@@ -20,6 +20,8 @@
 				process.exit();
 			}
 
+			module.client = db;
+
 			module.sessionStore = new mongoStore({
 				db: db
 			});

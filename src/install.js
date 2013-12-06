@@ -295,9 +295,7 @@ var async = require('async'),
 					}, next);
 				},
 				function (next) {
-					// Upgrading schema
-					var	Upgrade = require('./upgrade');
-					Upgrade.upgrade(next);
+					require('./upgrade').upgrade(next);
 				}
 			], function (err) {
 				if (err) {
