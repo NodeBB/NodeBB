@@ -69,22 +69,21 @@
 	//
 
 	module.searchIndex = function(key, content, id) {
-
+		// REQUIRES MONGO 2.4
 		db.collection('search').update({key:key, content:content, _id:id}, {upsert:true, w: 1}, function(err, result) {
 
 		});
 	}
 
 	module.search = function(key, term, callback) {
+		// REQUIRES MONGO 2.4
 		db.command({text:"search" , search: term }, function(err, result) {
 			callback(err, result)
 		});
-		/*db.runCommand("text", { search: term }, function(err, result) {
-			callback(err, result);
-		});*/
 	}
 
 	module.searchRemove = function(key, id) {
+		// REQUIRES MONGO 2.4
 		db.collection('search').remove({_id:id}, function(err, result) {
 			callback(err, result);
 		});
