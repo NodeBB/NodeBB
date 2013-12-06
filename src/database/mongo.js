@@ -497,7 +497,9 @@
 	// sorted sets
 
 	module.sortedSetAdd = function(key, score, value, callback) {
-
+		if(value !== null && value !== undefined) {
+			value = value.toString();
+		}
 		var data = {
 			score:score,
 			value:value
@@ -508,6 +510,9 @@
 	}
 
 	module.sortedSetRemove = function(key, value, callback) {
+		if(value !== null && value !== undefined) {
+			value = value.toString();
+		}
 		db.collection('objects').remove({setName:key, value:value}, function(err, result) {
 			if(callback) {
 				callback(err, result);
@@ -584,6 +589,9 @@
 	}
 
 	module.sortedSetRank = function(key, value, callback) {
+		if(value !== null && value !== undefined) {
+			value = value.toString();
+		}
 		module.getSortedSetRange(key, 0, -1, function(err, result) {
 			if(err) {
 				return callback(err);
@@ -598,6 +606,9 @@
 	}
 
 	module.sortedSetScore = function(key, value, callback) {
+		if(value !== null && value !== undefined) {
+			value = value.toString();
+		}
 		db.collection('objects').findOne({setName:key, value: value}, {fields:{score:1}}, function(err, result) {
 			if(err) {
 				return callback(err);
@@ -611,6 +622,9 @@
 	}
 
 	module.sortedSetsScore = function(keys, value, callback) {
+		if(value !== null && value !== undefined) {
+			value = value.toString();
+		}
 		db.collection('objects').find({setName:{$in:keys}, value: value}).toArray(function(err, result) {
 			if(err) {
 				return callback(err);
@@ -635,6 +649,9 @@
 
 	// lists
 	module.listPrepend = function(key, value, callback) {
+		if(value !== null && value !== undefined) {
+			value = value.toString();
+		}
 		module.isObjectField(key, 'array', function(err, exists) {
 			if(err) {
 				if(callback) {
@@ -658,6 +675,9 @@
 	}
 
 	module.listAppend = function(key, value, callback) {
+		if(value !== null && value !== undefined) {
+			value = value.toString();
+		}
 		db.collection('objects').update({ _key: key }, { $push: { array: value } }, {upsert:true, w:1}, function(err, result) {
 			if(callback) {
 				callback(err, result);
