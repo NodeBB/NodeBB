@@ -47,7 +47,8 @@ var socket,
 
 					socket.on('connect', function (data) {
 						if (reconnecting) {
-							reconnectEl.html('<i class="fa fa-check"></i> Connected!');
+							reconnectEl.tooltip('destroy');
+							reconnectEl.html('<i class="fa fa-check"></i>');
 							reconnecting = false;
 
 							setTimeout(function() {
@@ -74,8 +75,12 @@ var socket,
 						if (!reconnectEl) reconnectEl = $('#reconnect');
 						reconnecting = true;
 
+						if (!reconnectEl.hasClass('active')) reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
 						reconnectEl.addClass('active');
-						reconnectEl.html('<i class="fa fa-spinner fa-spin"></i> Reconnecting...');
+
+						reconnectEl.tooltip({
+							placement: 'bottom'
+						});
 					});
 
 					socket.on('api:user.get_online_users', function (users) {

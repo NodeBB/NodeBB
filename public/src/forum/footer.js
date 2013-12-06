@@ -175,6 +175,38 @@
 		Tinycon.setBubble(savedCount+1);
 	});
 
+	// Chats Dropdown
+	var	chatsToggleEl = $('#chat_dropdown'),
+		chatsListEl = $('#chat-list'),
+		chatDropdownEl = chatsToggleEl.parent();
+	chatsToggleEl.on('click', function() {
+		if (chatDropdownEl.hasClass('open')) {
+			return;
+		}
+
+		socket.emit('api:chats.list', function(chats) {
+			var	chatsFrag = document.createDocumentFragment(),
+				chatEl = document.createElement('li'),
+				numChats = chats.length,
+				x, userObj;
+
+			if (numChats > 0) {
+				for(x=0;x<numChats;x++) {
+					userObj = chats[x];
+					chatEl.setAttribute('data-uid', userObj.uid);
+					chatEl.innerHTML = '<a href="javascript:app.openChat(\'' + userObj.username + '\', ' + userObj.uid + ');"><img src="' + userObj.picture + '" title="' + userObj.username + '" />' + userObj.username + '</a>';
+
+					chatsFrag.appendChild(chatEl.cloneNode(true));
+				}
+			} else {
+				chatEl.innerHTML = '<a href="#">No Recent Chats</a>';
+				chatsFrag.appendChild(chatEl.cloneNode(true));
+			}
+
+			chatsListEl.empty();
+			chatsListEl.html(chatsFrag);
+		});
+	});
 
 	socket.on('chatMessage', function(data) {
 

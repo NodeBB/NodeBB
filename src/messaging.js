@@ -29,6 +29,8 @@ var db = require('./database'),
 			db.setObject('message:' + mid, message);
 			db.listAppend('messages:' + uids[0] + ':' + uids[1], mid);
 
+			Messaging.updateChatTime(fromuid, touid);
+			Messaging.updateChatTime(touid, fromuid);
 			callback(null, message);
 		});
 	}
@@ -77,5 +79,23 @@ var db = require('./database'),
 			});
 		});
 	}
+
+	Messaging.updateChatTime = function(uid, toUid, callback) {
+		RDB.zadd('uid:' + uid + ':chats', Date.now(), toUid, function(err) {
+			if (callback) {
+				callback(err);
+			}
+		});
+	};
+
+	Messaging.getRecentChats = function(uid, callback) {
+		RDB.zrevrange('uid:' + uid + ':chats', 0, 9, function(err, uids) {
+			if (!err) {
+				user.getMultipleUserFields(uids, ['username', 'picture', 'uid'], callback);
+			} else {
+				callback(err);
+			}
+		});
+	};
 
 }(exports));
