@@ -1,5 +1,4 @@
-var RDB = require('../redis'),
-	utils = require('../../public/src/utils'),
+var utils = require('../../public/src/utils'),
 	user = require('../user'),
 	groups = require('../groups');
 

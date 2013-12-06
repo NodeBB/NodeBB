@@ -7,14 +7,7 @@ process.on('uncaughtException', function (err) {
 });
 
 var	assert = require('assert'),
-	RDB = require('../mocks/redismock');
-
-// Reds is not technically used in this test suite, but its invocation is required to stop the included
-// libraries from trying to connect to the default Redis host/port
-var reds = require('reds');
-reds.createClient = function () {
-	return reds.client || (reds.client = RDB);
-};
+	db = require('../mocks/databasemock');
 
 var Categories = require('../src/categories');
 
@@ -23,6 +16,7 @@ describe('Categories', function() {
 
 	describe('.create', function() {
 		it('should create a new category', function(done) {
+
 			Categories.create({
 				name: 'Test Category',
 				description: 'Test category created by testing script',
@@ -62,9 +56,7 @@ describe('Categories', function() {
 	});
 
 	after(function() {
-		RDB.multi()
-			.del('category:'+categoryObj.cid)
-			.rpop('categories:cid')
-		.exec();
+		db.delete('category:' + categoryObj.cid);
+		db.listRemoveLast('categories:cid');
 	});
 });

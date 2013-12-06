@@ -1,4 +1,4 @@
-var RDB = require('./redis'),
+var db = require('./database'),
 	topics = require('./topics'),
 	categories = require('./categories'),
 	CategoryTools = require('./categoryTools'),
@@ -8,18 +8,20 @@ var RDB = require('./redis'),
 	posts = require('./posts'),
 	meta = require('./meta'),
 	websockets = require('./websockets');
-
-	reds = require('reds'),
-	topicSearch = reds.createSearch('nodebbtopicsearch'),
 	winston = require('winston'),
 	nconf = require('nconf'),
 
 (function(ThreadTools) {
 
 	ThreadTools.exists = function(tid, callback) {
-		RDB.sismember('topics:tid', tid, function(err, ismember) {
-			if (err) RDB.handle(err);
-			callback( !! ismember || false);
+
+		db.isSetMember('topics:tid', tid, function(err, ismember) {
+
+			if (err) {
+				callback(false);
+			}
+
+			callback(ismember);
 		});
 	}
 
@@ -85,11 +87,11 @@ var RDB = require('./redis'),
 	ThreadTools.delete = function(tid, callback) {
 		topics.delete(tid);
 
-		RDB.decr('totaltopiccount');
+		db.decrObjectField('global', 'topicCount');
 
 		ThreadTools.lock(tid);
 
-		topicSearch.remove(tid);
+		db.searchRemove('topic', tid);
 
 		websockets.in('topic_' + tid).emit('event:topic_deleted', {
 			tid: tid,
@@ -103,7 +105,7 @@ var RDB = require('./redis'),
 
 	ThreadTools.restore = function(tid, socket, callback) {
 		topics.restore(tid);
-		RDB.incr('totaltopiccount');
+		db.incrObjectField('global', 'topicCount');
 		ThreadTools.unlock(tid);
 
 		websockets.in('topic_' + tid).emit('event:topic_restored', {
@@ -112,7 +114,7 @@ var RDB = require('./redis'),
 		});
 
 		topics.getTopicField(tid, 'title', function(err, title) {
-			topicSearch.index(title, tid);
+			db.searchIndex('topic', title, tid);
 		});
 
 		if(callback) {
@@ -123,7 +125,7 @@ var RDB = require('./redis'),
 	ThreadTools.pin = function(tid, socket) {
 		topics.setTopicField(tid, 'pinned', 1);
 		topics.getTopicField(tid, 'cid', function(err, cid) {
-			RDB.zadd('categories:' + cid + ':tid', Math.pow(2, 53), tid);
+			db.sortedSetAdd('categories:' + cid + ':tid', Math.pow(2, 53), tid);
 		});
 
 		if (socket) {
@@ -144,7 +146,7 @@ var RDB = require('./redis'),
 	ThreadTools.unpin = function(tid, socket) {
 		topics.setTopicField(tid, 'pinned', 0);
 		topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
-			RDB.zadd('categories:' + topicData.cid + ':tid', topicData.lastposttime, tid);
+			db.sortedSetAdd('categories:' + topicData.cid + ':tid', topicData.lastposttime, tid);
 		});
 		if (socket) {
 			websockets.in('topic_' + tid).emit('event:topic_unpinned', {
@@ -165,14 +167,16 @@ var RDB = require('./redis'),
 
 		topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
 			var oldCid = topicData.cid;
-			var multi = RDB.multi();
 
-			multi.zrem('categories:' + oldCid + ':tid', tid);
-			multi.zadd('categories:' + cid + ':tid', topicData.lastposttime, tid);
+			db.sortedSetRemove('categories:' + oldCid + ':tid', tid, function(err, result) {
+				db.sortedSetAdd('categories:' + cid + ':tid', topicData.lastposttime, tid, function(err, result) {
 
-			multi.exec(function(err, result) {
-
-				if (!err && result[0] === 1 && result[1] === 1) {
+					if(err) {
+						socket.emit('api:topic.move', {
+							status: 'error'
+						});
+						return;
+					}
 
 					topics.setTopicField(tid, 'cid', cid);
 
@@ -198,17 +202,13 @@ var RDB = require('./redis'),
 					websockets.in('topic_' + tid).emit('event:topic_moved', {
 						tid: tid
 					});
-				} else {
-					socket.emit('api:topic.move', {
-						status: 'error'
-					});
-				}
+				});
 			});
 		});
 	}
 
 	ThreadTools.isFollowing = function(tid, current_user, callback) {
-		RDB.sismember('tid:' + tid + ':followers', current_user, function(err, following) {
+		db.isSetMember('tid:' + tid + ':followers', current_user, function(err, following) {
 			callback(following);
 		});
 	}
@@ -216,7 +216,7 @@ var RDB = require('./redis'),
 	ThreadTools.toggleFollow = function(tid, current_user, callback) {
 		ThreadTools.isFollowing(tid, current_user, function(following) {
 			if (!following) {
-				RDB.sadd('tid:' + tid + ':followers', current_user, function(err, success) {
+				db.setAdd('tid:' + tid + ':followers', current_user, function(err, success) {
 					if (callback) {
 						if (!err) {
 							callback({
@@ -229,7 +229,7 @@ var RDB = require('./redis'),
 					}
 				});
 			} else {
-				RDB.srem('tid:' + tid + ':followers', current_user, function(err, success) {
+				db.setRemove('tid:' + tid + ':followers', current_user, function(err, success) {
 					if (callback) {
 						if (!err) {
 							callback({
@@ -246,7 +246,7 @@ var RDB = require('./redis'),
 	}
 
 	ThreadTools.getFollowers = function(tid, callback) {
-		RDB.smembers('tid:' + tid + ':followers', function(err, followers) {
+		db.getSetMembers('tid:' + tid + ':followers', function(err, followers) {
 			callback(err, followers.map(function(follower) {
 				return parseInt(follower, 10);
 			}));
@@ -274,24 +274,33 @@ var RDB = require('./redis'),
 				});
 			}
 		], function(err, results) {
-			if (!err) notifications.push(results[0], results[1]);
-			// Otherwise, do nothing
+			if (!err) {
+				notifications.push(results[0], results[1]);
+			}
 		});
 	}
 
 	ThreadTools.getLatestUndeletedPid = function(tid, callback) {
-		RDB.lrange('tid:' + tid + ':posts', 0, -1, function(err, pids) {
-			if (pids.length === 0) return callback(new Error('no-undeleted-pids-found'));
+		db.getListRange('tid:' + tid + ':posts', 0, -1, function(err, pids) {
+			if (pids.length === 0) {
+				return callback(new Error('no-undeleted-pids-found'));
+			}
 
 			pids.reverse();
 			async.detectSeries(pids, function(pid, next) {
 				posts.getPostField(pid, 'deleted', function(err, deleted) {
-					if (deleted === '0') next(true);
-					else next(false);
+					if (parseInt(deleted, 10) === 0) {
+						next(true);
+					} else {
+						next(false);
+					}
 				});
 			}, function(pid) {
-				if (pid) callback(null, pid);
-				else callback(new Error('no-undeleted-pids-found'));
+				if (pid) {
+					callback(null, pid);
+				} else {
+					callback(new Error('no-undeleted-pids-found'));
+				}
 			});
 		});
 	}

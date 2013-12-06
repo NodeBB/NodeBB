@@ -1,7 +1,7 @@
 (function (Feed) {
-	var RDB = require('./redis.js'),
-		posts = require('./posts.js'),
-		topics = require('./topics.js'),
+	var db = require('./database'),
+		posts = require('./posts'),
+		topics = require('./topics'),
 		categories = require('./categories'),
 
 		fs = require('fs'),
@@ -30,7 +30,12 @@
 	Feed.updateTopic = function (tid, callback) {
 		topics.getTopicWithPosts(tid, 0, 0, -1, true, function (err, topicData) {
 			if (err) {
-				return callback(new Error('topic-invalid'));
+				if(callback) {
+					return callback(new Error('topic-invalid'));
+				} else {
+					winston.error(err.message);
+					return;
+				}
 			}
 
 			var feed = new rss({
@@ -50,8 +55,8 @@
 			}
 
 			async.each(topicData.posts, function(postData, next) {
-				if (postData.deleted === '0') {
-					dateStamp = new Date(parseInt(postData.edited === '0' ? postData.timestamp : postData.edited, 10)).toUTCString();
+				if (parseInt(postData.deleted, 10) === 0) {
+					dateStamp = new Date(parseInt(parseInt(postData.edited, 10) === 0 ? postData.timestamp : postData.edited, 10)).toUTCString();
 
 					feed.item({
 						title: 'Reply to ' + topicData.topic_name + ' on ' + dateStamp,

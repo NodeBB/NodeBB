@@ -4,16 +4,15 @@ var bcrypt = require('bcrypt'),
 	nconf = require('nconf'),
 	winston = require('winston'),
 	gravatar = require('gravatar'),
-	userSearch = require('reds').createSearch('nodebbusersearch'),
 	check = require('validator').check,
 	sanitize = require('validator').sanitize,
 
 	utils = require('./../public/src/utils'),
 	plugins = require('./plugins'),
-	RDB = require('./redis'),
+	db = require('./database'),
 	meta = require('./meta'),
 	emailjsServer = emailjs.server.connect(meta.config['email:smtp:host'] || '127.0.0.1'),
-	Groups = require('./groups'),
+	groups = require('./groups'),
 	notifications = require('./notifications'),
 	topics = require('./topics');
 
@@ -65,16 +64,18 @@ var bcrypt = require('bcrypt'),
 			}
 		], function(err, results) {
 			if (err) {
-				return callback(err, null);
+				return callback(err);
 			}
 
-			RDB.incr('global:next_user_id', function(err, uid) {
-				RDB.handle(err);
+			db.incrObjectField('global', 'nextUid', function(err, uid) {
+				if(err) {
+					return callback(err);
+				}
 
 				var gravatar = User.createGravatarURLFromEmail(email);
 				var timestamp = Date.now();
 
-				RDB.hmset('user:' + uid, {
+				db.setObject('user:' + uid, {
 					'uid': uid,
 					'username': username,
 					'userslug': userslug,
@@ -96,22 +97,22 @@ var bcrypt = require('bcrypt'),
 					'showemail': 0
 				});
 
-				RDB.hset('username:uid', username, uid);
-				RDB.hset('userslug:uid', userslug, uid);
+				db.setObjectField('username:uid', username, uid);
+				db.setObjectField('userslug:uid', userslug, uid);
 
 				if (email !== undefined) {
-					RDB.hset('email:uid', email, uid);
+					db.setObjectField('email:uid', email, uid);
 					User.sendConfirmationEmail(email);
 				}
 
 				plugins.fireHook('action:user.create', {uid: uid, username: username, email: email, picture: gravatar, timestamp: timestamp});
-				RDB.incr('usercount');
+				db.incrObjectField('global', 'userCount');
 
-				RDB.zadd('users:joindate', timestamp, uid);
-				RDB.zadd('users:postcount', 0, uid);
-				RDB.zadd('users:reputation', 0, uid);
+				db.sortedSetAdd('users:joindate', timestamp, uid);
+				db.sortedSetAdd('users:postcount', 0, uid);
+				db.sortedSetAdd('users:reputation', 0, uid);
 
-				userSearch.index(username, uid);
+				db.searchIndex('user', username, uid);
 
 				if (password !== undefined) {
 					User.hashPassword(password, function(err, hash) {
@@ -134,11 +135,11 @@ var bcrypt = require('bcrypt'),
 	};
 
 	User.getUserField = function(uid, field, callback) {
-		RDB.hget('user:' + uid, field, callback);
+		db.getObjectField('user:' + uid, field, callback);
 	};
 
 	User.getUserFields = function(uid, fields, callback) {
-		RDB.hmgetObject('user:' + uid, fields, callback);
+		db.getObjectFields('user:' + uid, fields, callback);
 	};
 
 	User.getMultipleUserFields = function(uids, fields, callback) {
@@ -168,18 +169,15 @@ var bcrypt = require('bcrypt'),
 	};
 
 	User.getUserData = function(uid, callback) {
-		RDB.hgetall('user:' + uid, function(err, data) {
+		db.getObject('user:' + uid, function(err, data) {
+			if(err) {
+				return callback(err);
+			}
 
 			if (data && data.password) {
 				delete data.password;
 			}
 			callback(err, data);
-		});
-	};
-
-	User.filterBannedUsers = function(users) {
-		return users.filter(function(user) {
-			return (!user.banned || user.banned === '0');
 		});
 	};
 
@@ -253,8 +251,8 @@ var bcrypt = require('bcrypt'),
 							return next(err);
 						}
 
-						RDB.hdel('email:uid', userData.email);
-						RDB.hset('email:uid', data.email, uid);
+						db.deleteObjectField('email:uid', userData.email);
+						db.setObjectField('email:uid', data.email, uid);
 						User.setUserField(uid, field, data[field]);
 						if (userData.picture !== userData.uploadedpicture) {
 							returnData.picture = gravatarpicture;
@@ -282,7 +280,7 @@ var bcrypt = require('bcrypt'),
 	};
 
 	User.isEmailAvailable = function(email, callback) {
-		RDB.hexists('email:uid', email, function(err, exists) {
+		db.isObjectField('email:uid', email, function(err, exists) {
 			callback(err, !exists);
 		});
 	};
@@ -316,25 +314,25 @@ var bcrypt = require('bcrypt'),
 	};
 
 	User.setUserField = function(uid, field, value, callback) {
-		RDB.hset('user:' + uid, field, value, callback);
+		db.setObjectField('user:' + uid, field, value, callback);
 	};
 
 	User.setUserFields = function(uid, data, callback) {
-		RDB.hmset('user:' + uid, data, callback);
+		db.setObject('user:' + uid, data, callback);
 	};
 
 	User.incrementUserFieldBy = function(uid, field, value, callback) {
-		RDB.hincrby('user:' + uid, field, value, callback);
+		db.incrObjectFieldBy('user:' + uid, field, value, callback);
 	};
 
 	User.decrementUserFieldBy = function(uid, field, value, callback) {
-		RDB.hincrby('user:' + uid, field, -value, callback);
+		db.incrObjectFieldBy('user:' + uid, field, -value, callback);
 	};
 
 	User.getUsers = function(set, start, stop, callback) {
 		var data = [];
 
-		RDB.zrevrange(set, start, stop, function(err, uids) {
+		db.getSortedSetRevRange(set, start, stop, function(err, uids) {
 			if (err) {
 				return callback(err, null);
 			}
@@ -355,7 +353,6 @@ var bcrypt = require('bcrypt'),
 				callback(err, data);
 			});
 		});
-
 	};
 
 	User.createGravatarURLFromEmail = function(email) {
@@ -392,8 +389,8 @@ var bcrypt = require('bcrypt'),
 			}
 
 			function reIndexUser(uid, username) {
-				userSearch.remove(uid, function() {
-					userSearch.index(username, uid);
+				db.searchRemove('user', uid, function() {
+					db.searchIndex('user', username, uid);
 				});
 			}
 
@@ -409,7 +406,7 @@ var bcrypt = require('bcrypt'),
 			callback([]);
 			return;
 		}
-		userSearch.query(username).type('or').end(function(err, uids) {
+		db.search('user', username, function(err, uids) {
 			if (err) {
 				console.log(err);
 				return;
@@ -428,7 +425,7 @@ var bcrypt = require('bcrypt'),
 		User.addPostIdToUser(uid, pid);
 
 		User.incrementUserFieldBy(uid, 'postcount', 1, function(err, newpostcount) {
-			RDB.zadd('users:postcount', newpostcount, uid);
+			db.sortedSetAdd('users:postcount', newpostcount, uid);
 		});
 
 		User.setUserField(uid, 'lastposttime', timestamp);
@@ -437,15 +434,15 @@ var bcrypt = require('bcrypt'),
 	};
 
 	User.addPostIdToUser = function(uid, pid) {
-		RDB.lpush('uid:' + uid + ':posts', pid);
+		db.listPrepend('uid:' + uid + ':posts', pid);
 	};
 
 	User.addTopicIdToUser = function(uid, tid) {
-		RDB.lpush('uid:' + uid + ':topics', tid);
+		db.listPrepend('uid:' + uid + ':topics', tid);
 	};
 
-	User.getPostIds = function(uid, start, end, callback) {
-		RDB.lrange('uid:' + uid + ':posts', start, end, function(err, pids) {
+	User.getPostIds = function(uid, start, stop, callback) {
+		db.getListRange('uid:' + uid + ':posts', start, stop, function(err, pids) {
 			if (!err) {
 				if (pids && pids.length) {
 					callback(pids);
@@ -459,51 +456,12 @@ var bcrypt = require('bcrypt'),
 		});
 	};
 
-	User.sendConfirmationEmail = function(email) {
-		if (meta.config['email:smtp:host'] && meta.config['email:smtp:port'] && meta.config['email:from']) {
-			var confirm_code = utils.generateUUID(),
-				confirm_link = nconf.get('url') + 'confirm/' + confirm_code,
-				confirm_email = global.templates['emails/header'] + global.templates['emails/email_confirm'].parse({
-					'CONFIRM_LINK': confirm_link
-				}) + global.templates['emails/footer'],
-				confirm_email_plaintext = global.templates['emails/email_confirm_plaintext'].parse({
-					'CONFIRM_LINK': confirm_link
-				});
 
-			// Email confirmation code
-			var expiry_time = 60 * 60 * 2, // Expire after 2 hours
-				email_key = 'email:' + email + ':confirm',
-				confirm_key = 'confirm:' + confirm_code + ':email';
-
-			RDB.set(email_key, confirm_code);
-			RDB.expire(email_key, expiry_time);
-			RDB.set(confirm_key, email);
-			RDB.expire(confirm_key, expiry_time);
-
-			// Send intro email w/ confirm code
-			var message = emailjs.message.create({
-				text: confirm_email_plaintext,
-				from: meta.config['email:from'] || 'localhost@example.org',
-				to: email,
-				subject: '[NodeBB] Registration Email Verification',
-				attachment: [{
-					data: confirm_email,
-					alternative: true
-				}]
-			});
-
-			emailjsServer.send(message, function(err, success) {
-				if (err) {
-					console.log(err);
-				}
-			});
-		}
-	};
 
 	User.follow = function(uid, followid, callback) {
-		RDB.sadd('following:' + uid, followid, function(err, data) {
+		db.setAdd('following:' + uid, followid, function(err, data) {
 			if (!err) {
-				RDB.sadd('followers:' + followid, uid, function(err, data) {
+				db.setAdd('followers:' + followid, uid, function(err, data) {
 					if (!err) {
 						callback(true);
 					} else {
@@ -519,9 +477,9 @@ var bcrypt = require('bcrypt'),
 	};
 
 	User.unfollow = function(uid, unfollowid, callback) {
-		RDB.srem('following:' + uid, unfollowid, function(err, data) {
+		db.setRemove('following:' + uid, unfollowid, function(err, data) {
 			if (!err) {
-				RDB.srem('followers:' + unfollowid, uid, function(err, data) {
+				db.setRemove('followers:' + unfollowid, uid, function(err, data) {
 					callback(data);
 				});
 			} else {
@@ -531,7 +489,7 @@ var bcrypt = require('bcrypt'),
 	};
 
 	User.getFollowing = function(uid, callback) {
-		RDB.smembers('following:' + uid, function(err, userIds) {
+		db.getSetMembers('following:' + uid, function(err, userIds) {
 			if (!err) {
 				User.getDataForUsers(userIds, callback);
 			} else {
@@ -541,7 +499,7 @@ var bcrypt = require('bcrypt'),
 	};
 
 	User.getFollowers = function(uid, callback) {
-		RDB.smembers('followers:' + uid, function(err, userIds) {
+		db.getSetMembers('followers:' + uid, function(err, userIds) {
 			if (!err) {
 				User.getDataForUsers(userIds, callback);
 			} else {
@@ -551,12 +509,12 @@ var bcrypt = require('bcrypt'),
 	};
 
 	User.getFollowingCount = function(uid, callback) {
-		RDB.smembers('following:' + uid, function(err, userIds) {
+		db.getSetMembers('following:' + uid, function(err, userIds) {
 			if (err) {
 				console.log(err);
 			} else {
 				userIds = userIds.filter(function(value) {
-					return value !== '0';
+					return parseInt(value, 10) !== 0;
 				});
 				callback(userIds.length);
 			}
@@ -564,12 +522,12 @@ var bcrypt = require('bcrypt'),
 	};
 
 	User.getFollowerCount = function(uid, callback) {
-		RDB.smembers('followers:' + uid, function(err, userIds) {
+		db.getSetMembers('followers:' + uid, function(err, userIds) {
 			if(err) {
 				console.log(err);
 			} else {
 				userIds = userIds.filter(function(value) {
-					return value !== '0';
+					return parseInt(value, 10) !== 0;
 				});
 				callback(userIds.length);
 			}
@@ -585,7 +543,7 @@ var bcrypt = require('bcrypt'),
 		}
 
 		function iterator(uid, callback) {
-			if(uid === "0") {
+			if(parseInt(uid, 10) === 0) {
 				return callback(null);
 			}
 
@@ -603,7 +561,7 @@ var bcrypt = require('bcrypt'),
 
 	User.sendPostNotificationToFollowers = function(uid, tid, pid) {
 		User.getUserField(uid, 'username', function(err, username) {
-			RDB.smembers('followers:' + uid, function(err, followers) {
+			db.getSetMembers('followers:' + uid, function(err, followers) {
 				topics.getTopicField(tid, 'slug', function(err, slug) {
 					var message = '<strong>' + username + '</strong> made a new post';
 
@@ -616,9 +574,9 @@ var bcrypt = require('bcrypt'),
 	};
 
 	User.isFollowing = function(uid, theirid, callback) {
-		RDB.sismember('following:' + uid, theirid, function(err, data) {
+		db.isSetMember('following:' + uid, theirid, function(err, isMember) {
 			if (!err) {
-				callback(data === 1);
+				callback(isMember);
 			} else {
 				console.log(err);
 			}
@@ -632,8 +590,10 @@ var bcrypt = require('bcrypt'),
 	};
 
 	User.count = function(socket) {
-		RDB.get('usercount', function(err, count) {
-			RDB.handle(err);
+		db.getObjectField('global', 'userCount', function(err, count) {
+			if(err) {
+				return;
+			}
 
 			socket.emit('user.count', {
 				count: count ? count : 0
@@ -642,11 +602,11 @@ var bcrypt = require('bcrypt'),
 	};
 
 	User.getUidByUsername = function(username, callback) {
-		RDB.hget('username:uid', username, callback);
+		db.getObjectField('username:uid', username, callback);
 	};
 
 	User.getUidByUserslug = function(userslug, callback) {
-		RDB.hget('userslug:uid', userslug, callback);
+		db.getObjectField('userslug:uid', userslug, callback);
 	};
 
 	User.getUsernamesByUids = function(uids, callback) {
@@ -688,52 +648,54 @@ var bcrypt = require('bcrypt'),
 	};
 
 	User.getUidByEmail = function(email, callback) {
-		RDB.hget('email:uid', email, function(err, data) {
+		db.getObjectField('email:uid', email, function(err, data) {
 			if (err) {
-				RDB.handle(err);
+				return callback(err);
 			}
-			callback(data);
+			callback(null, data);
 		});
 	};
 
 	User.getUidByTwitterId = function(twid, callback) {
-		RDB.hget('twid:uid', twid, function(err, uid) {
+		db.getObjectField('twid:uid', twid, function(err, uid) {
 			if (err) {
-				RDB.handle(err);
+				return callback(err);
 			}
-			callback(uid);
+			callback(null, uid);
 		});
 	};
 
 	User.getUidByGoogleId = function(gplusid, callback) {
-		RDB.hget('gplusid:uid', gplusid, function(err, uid) {
+		db.getObjectField('gplusid:uid', gplusid, function(err, uid) {
 			if (err) {
-				RDB.handle(err);
+				return callback(err);
 			}
-			callback(uid);
+			callback(null, uid);
 		});
 	};
 
 	User.getUidByFbid = function(fbid, callback) {
-		RDB.hget('fbid:uid', fbid, function(err, uid) {
+		db.getObjectField('fbid:uid', fbid, function(err, uid) {
 			if (err) {
-				RDB.handle(err);
+				return callback(err);
 			}
-			callback(uid);
+			callback(null, uid);
 		});
 	};
 
 	User.isModerator = function(uid, cid, callback) {
-		RDB.sismember('cid:' + cid + ':moderators', uid, function(err, exists) {
-			RDB.handle(err);
-			callback(err, !! exists);
+		db.isSetMember('cid:' + cid + ':moderators', uid, function(err, exists) {
+			if(err) {
+				return calback(err);
+			}
+			callback(err, exists);
 		});
 	};
 
 	User.isAdministrator = function(uid, callback) {
-		Groups.getGidFromName('Administrators', function(err, gid) {
-			Groups.isMember(uid, gid, function(err, isAdmin) {
-				callback(err, !! isAdmin);
+		groups.getGidFromName('Administrators', function(err, gid) {
+			groups.isMember(uid, gid, function(err, isAdmin) {
+				callback(err, isAdmin);
 			});
 		});
 	};
@@ -745,15 +707,15 @@ var bcrypt = require('bcrypt'),
 				callback = null;
 			}
 
-			RDB.hget('reset:uid', code, function(err, uid) {
+			db.getObjectField('reset:uid', code, function(err, uid) {
 				if (err) {
-					RDB.handle(err);
+					return callback(false);
 				}
 
 				if (uid !== null) {
-					RDB.hget('reset:expiry', code, function(err, expiry) {
+					db.getObjectField('reset:expiry', code, function(err, expiry) {
 						if (err) {
-							RDB.handle(err);
+							return callback(false);
 						}
 
 						if (expiry >= +Date.now() / 1000 | 0) {
@@ -766,8 +728,8 @@ var bcrypt = require('bcrypt'),
 							}
 						} else {
 							// Expired, delete from db
-							RDB.hdel('reset:uid', code);
-							RDB.hdel('reset:expiry', code);
+							db.deleteObjectField('reset:uid', code);
+							db.deleteObjectField('reset:expiry', code);
 							if (!callback) {
 								socket.emit('user:reset.valid', {
 									valid: false
@@ -789,12 +751,12 @@ var bcrypt = require('bcrypt'),
 			});
 		},
 		send: function(socket, email) {
-			User.getUidByEmail(email, function(uid) {
+			User.getUidByEmail(email, function(err, uid) {
 				if (uid !== null) {
 					// Generate a new reset code
 					var reset_code = utils.generateUUID();
-					RDB.hset('reset:uid', reset_code, uid);
-					RDB.hset('reset:expiry', reset_code, (60 * 60) + new Date() / 1000 | 0); // Active for one hour
+					db.setObjectField('reset:uid', reset_code, uid);
+					db.setobjectField('reset:expiry', reset_code, (60 * 60) + new Date() / 1000 | 0); // Active for one hour
 
 					var reset_link = nconf.get('url') + 'reset/' + reset_code,
 						reset_email = global.templates['emails/reset'].parse({
@@ -842,17 +804,17 @@ var bcrypt = require('bcrypt'),
 		commit: function(socket, code, password) {
 			this.validate(socket, code, function(validated) {
 				if (validated) {
-					RDB.hget('reset:uid', code, function(err, uid) {
+					db.getObjectField('reset:uid', code, function(err, uid) {
 						if (err) {
-							RDB.handle(err);
+							return;
 						}
 
 						User.hashPassword(password, function(err, hash) {
 							User.setUserField(uid, 'password', hash);
 						});
 
-						RDB.hdel('reset:uid', code);
-						RDB.hdel('reset:expiry', code);
+						db.deleteObjectField('reset:uid', code);
+						db.deleteObjectField('reset:expiry', code);
 
 						socket.emit('user:reset.commit', {
 							status: 'ok'
@@ -863,9 +825,48 @@ var bcrypt = require('bcrypt'),
 		}
 	};
 
+	User.sendConfirmationEmail = function(email) {
+		if (meta.config['email:smtp:host'] && meta.config['email:smtp:port'] && meta.config['email:from']) {
+			var confirm_code = utils.generateUUID(),
+				confirm_link = nconf.get('url') + 'confirm/' + confirm_code,
+				confirm_email = global.templates['emails/header'] + global.templates['emails/email_confirm'].parse({
+					'CONFIRM_LINK': confirm_link
+				}) + global.templates['emails/footer'],
+				confirm_email_plaintext = global.templates['emails/email_confirm_plaintext'].parse({
+					'CONFIRM_LINK': confirm_link
+				});
+
+			// Email confirmation code
+			var expiry_time = Date.now() / 1000 + 60 * 60 * 2;
+
+			db.setObjectField('email:confirm', email, confirm_code);
+
+			db.setObjectField('confirm:email', confirm_code, email);
+			db.setObjectField('confirm:email', confirm_code + ':expire', expiry_time);
+
+			// Send intro email w/ confirm code
+			var message = emailjs.message.create({
+				text: confirm_email_plaintext,
+				from: meta.config['email:from'] || 'localhost@example.org',
+				to: email,
+				subject: '[NodeBB] Registration Email Verification',
+				attachment: [{
+					data: confirm_email,
+					alternative: true
+				}]
+			});
+
+			emailjsServer.send(message, function(err, success) {
+				if (err) {
+					console.log(err);
+				}
+			});
+		}
+	};
+
 	User.email = {
 		exists: function(socket, email, callback) {
-			User.getUidByEmail(email, function(exists) {
+			User.getUidByEmail(email, function(err, exists) {
 				exists = !! exists;
 				if (typeof callback !== 'function') {
 					socket.emit('user.email.exists', {
@@ -877,14 +878,30 @@ var bcrypt = require('bcrypt'),
 			});
 		},
 		confirm: function(code, callback) {
-			RDB.get('confirm:' + code + ':email', function(err, email) {
+			db.getObjectFields('confirm:email', [code, code + ':expire'], function(err, data) {
 				if (err) {
-					RDB.handle(err);
+					return callback({
+						status:'error'
+					});
+				}
+
+				var email = data.email;
+				var expiry = data[code + ':expire'];
+				if (parseInt(expiry, 10) >= Date.now() / 1000) {
+
+					db.deleteObjectField('confirm:email', code);
+					db.deleteObjectField('confirm:email', code + ':expire');
+
+					return callback({
+						status: 'expired'
+					});
 				}
 
 				if (email !== null) {
-					RDB.set('email:' + email + ':confirm', true);
-					RDB.del('confirm:' + code + ':email');
+					db.setObjectField('email:confirm', email, true);
+
+					db.deleteObjectField('confirm:email', code);
+					db.deleteObjectField('confirm:email', code + ':expire');
 					callback({
 						status: 'ok'
 					});
@@ -903,7 +920,7 @@ var bcrypt = require('bcrypt'),
 
 			async.parallel({
 				unread: function(next) {
-					RDB.zrevrange('uid:' + uid + ':notifications:unread', 0, 10, function(err, nids) {
+					db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, 10, function(err, nids) {
 						// @todo handle err
 						var unread = [];
 
@@ -919,7 +936,7 @@ var bcrypt = require('bcrypt'),
 									if (notif_data) {
 										unread.push(notif_data);
 									} else {
-										RDB.zrem('uid:' + uid + ':notifications:unread', nid);
+										db.sortedSetRemove('uid:' + uid + ':notifications:unread', nid);
 									}
 
 									next();
@@ -933,7 +950,7 @@ var bcrypt = require('bcrypt'),
 					});
 				},
 				read: function(next) {
-					RDB.zrevrange('uid:' + uid + ':notifications:read', 0, 10, function(err, nids) {
+					db.getSortedSetRevRange('uid:' + uid + ':notifications:read', 0, 10, function(err, nids) {
 						// @todo handle err
 						var read = [];
 
@@ -949,7 +966,7 @@ var bcrypt = require('bcrypt'),
 									if (notif_data) {
 										read.push(notif_data);
 									} else {
-										RDB.zrem('uid:' + uid + ':notifications:read', nid);
+										db.sortedSetRemove('uid:' + uid + ':notifications:read', nid);
 									}
 
 									next();
@@ -981,13 +998,13 @@ var bcrypt = require('bcrypt'),
 				before = new Date(parseInt(before, 10));
 			}
 
-			RDB.multi()
-				.zrevrangebyscore('uid:' + uid + ':notifications:read', before ? before.getTime(): now.getTime(), -Infinity, 'LIMIT', 0, limit)
-				.zrevrangebyscore('uid:' + uid + ':notifications:unread', before ? before.getTime(): now.getTime(), -Infinity, 'LIMIT', 0, limit)
-				.exec(function(err, results) {
-					// Merge the read and unread notifications
-					var	nids = results[0].concat(results[1]);
+			var args1 = ['uid:' + uid + ':notifications:read', before ? before.getTime(): now.getTime(), -Infinity, 'LIMIT', 0, limit];
+			var args2 = ['uid:' + uid + ':notifications:unread', before ? before.getTime(): now.getTime(), -Infinity, 'LIMIT', 0, limit];
 
+			db.getSortedSetRevRangeByScore(args1, function(err, results1) {
+				db.getSortedSetRevRangeByScore(args2, function(err, results2) {
+
+					var nids = results1.concat(results2);
 					async.map(nids, function(nid, next) {
 						notifications.get(nid, uid, function(notif_data) {
 							next(null, notif_data);
@@ -1007,14 +1024,20 @@ var bcrypt = require('bcrypt'),
 						callback(err, notifs);
 					});
 				});
+			});
+
 		},
 		getUnreadCount: function(uid, callback) {
-			RDB.zcount('uid:' + uid + ':notifications:unread', -Infinity, Infinity, callback);
+			db.sortedSetCount('uid:' + uid + ':notifications:unread', -Infinity, Infinity, callback);
 		},
 		getUnreadByUniqueId: function(uid, uniqueId, callback) {
-			RDB.zrange('uid:' + uid + ':notifications:unread', 0, -1, function(err, nids) {
+			db.getSortedSetRange('uid:' + uid + ':notifications:unread', 0, -1, function(err, nids) {
+
 				async.filter(nids, function(nid, next) {
 					notifications.get(nid, uid, function(notifObj) {
+						if(!notifObj) {
+							next(false);
+						}
 						if (notifObj.uniqueId === uniqueId) {
 							next(true);
 						} else {

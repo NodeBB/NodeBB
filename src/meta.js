@@ -1,11 +1,13 @@
-var utils = require('./../public/src/utils.js'),
-	RDB = require('./redis.js'),
-	plugins = require('./plugins'),
-	async = require('async'),
+var fs = require('fs'),
 	path = require('path'),
-	fs = require('fs'),
+	async = require('async'),
 	winston = require('winston'),
-	nconf = require('nconf');
+	nconf = require('nconf'),
+
+	utils = require('./../public/src/utils'),
+	db = require('./database'),
+	plugins = require('./plugins');
+
 
 (function (Meta) {
 	Meta.config = {};
@@ -15,33 +17,34 @@ var utils = require('./../public/src/utils.js'),
 			delete Meta.config;
 
 			Meta.configs.list(function (err, config) {
-				if (!err) {
-					Meta.config = config;
-					callback();
-				} else {
+				if(err) {
 					winston.error(err);
+					return callback(err);
 				}
+
+				Meta.config = config;
+				callback();
 			});
 		},
 		list: function (callback) {
-			RDB.hgetall('config', function (err, config) {
-				if (!err) {
-					config = config || {};
-					config.status = 'ok';
-					callback(err, config);
-				} else {
-					callback(new Error('could-not-read-config'));
+			db.getObject('config', function (err, config) {
+				if(err) {
+					return callback(new Error('could-not-read-config'));
 				}
+
+				config = config || {};
+				config.status = 'ok';
+				callback(err, config);
 			});
 		},
 		get: function (field, callback) {
-			RDB.hget('config', field, callback);
+			db.getObjectField('config', field, callback);
 		},
 		getFields: function (fields, callback) {
-			RDB.hmgetObject('config', fields, callback);
+			db.getObjectFields('config', fields, callback);
 		},
 		set: function (field, value, callback) {
-			RDB.hset('config', field, value, function (err, res) {
+			db.setObjectField('config', field, value, function(err, res) {
 				if (callback) {
 					if(!err && Meta.config)
 						Meta.config[field] = value;
@@ -50,7 +53,7 @@ var utils = require('./../public/src/utils.js'),
 			});
 		},
 		setOnEmpty: function (field, value, callback) {
-			this.get(field, function (err, curValue) {
+			Meta.configs.get(field, function (err, curValue) {
 				if (!curValue) {
 					Meta.configs.set(field, value, callback);
 				} else {
@@ -59,7 +62,7 @@ var utils = require('./../public/src/utils.js'),
 			});
 		},
 		remove: function (field) {
-			RDB.hdel('config', field);
+			db.deleteObjectField('config', field);
 		}
 	};
 
@@ -125,7 +128,7 @@ var utils = require('./../public/src/utils.js'),
 							themeData['theme:staticDir'] = config.staticDir ? config.staticDir : '';
 							themeData['theme:templates'] = config.templates ? config.templates : '';
 
-							RDB.hmset('config', themeData, next);
+							db.setObject('config', themeData, next);
 						}
 					], function(err) {
 						callback(err);
@@ -134,7 +137,7 @@ var utils = require('./../public/src/utils.js'),
 
 				case 'bootswatch':
 					themeData['theme:src'] = data.src;
-					RDB.hmset('config', themeData, callback);
+					db.setObject('config', themeData, callback);
 				break;
 			}
 		}
@@ -257,11 +260,16 @@ var utils = require('./../public/src/utils.js'),
 				}),
 				minified;
 
-			if (process.env.NODE_ENV === 'development') winston.info('Minifying client-side libraries');
+			if (process.env.NODE_ENV === 'development') {
+				winston.info('Minifying client-side libraries');
+			}
+
 			minified = uglifyjs.minify(jsPaths);
 			fs.writeFile(Meta.js.minFile, minified.code, function (err) {
 				if (!err) {
-					if (process.env.NODE_ENV === 'development') winston.info('Minified client-side libraries');
+					if (process.env.NODE_ENV === 'development') {
+						winston.info('Minified client-side libraries');
+					}
 					callback();
 				} else {
 					winston.error('Problem minifying client-side libraries, exiting.');
@@ -273,23 +281,7 @@ var utils = require('./../public/src/utils.js'),
 
 	Meta.db = {
 		getFile: function (callback) {
-			var multi = RDB.multi();
-
-			multi.config('get', 'dir');
-			multi.config('get', 'dbfilename');
-			multi.exec(function (err, results) {
-				if (err) {
-					return callback(err);
-				} else {
-					results = results.reduce(function (memo, config) {
-						memo[config[0]] = config[1];
-						return memo;
-					}, {});
-
-					var dbFile = path.join(results.dir, results.dbfilename);
-					callback(null, dbFile);
-				}
-			});
+			db.getFileName(callback);
 		}
 	};
 }(exports));

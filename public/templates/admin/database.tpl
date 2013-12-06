@@ -1,3 +1,6 @@
+
+
+<!-- IF redis -->
 <h1>Redis</h1>
 <hr />
 <div id="admin-redis-info">
@@ -21,4 +24,29 @@
 	<span>Keyspace Hits</span> <span class="text-right">{keyspace_hits}</span><br/>
 	<span>Keyspace Misses</span> <span class="text-right">{keyspace_misses}</span><br/>
 </div>
+<hr />
+<h3>Raw Info </h3>
+<div class="highlight">
+<pre>{raw}</pre>
+</div>
+<!-- ENDIF redis -->
 
+<!-- IF mongo -->
+<h1>Mongo</h1>
+<hr />
+<div id="admin-redis-info">
+
+	<span>Collections</span> <span class="text-right">{collections}</span><br/>
+	<span>Objects</span> <span class="text-right">{objects}</span><br/>
+	<span>Avg. Object Size</span> <span class="text-right">{avgObjSize} kb</span><br/>
+	<hr/>
+	<span>Data Size</span> <span class="text-right">{dataSize} kb</span><br/>
+	<span>Storage Size</span> <span class="text-right">{storageSize} kb</span><br/>
+	<span>File Size</span> <span class="text-right">{fileSize} kb</span><br/>
+</div>
+<hr />
+<h3>Raw Info </h3>
+<div class="highlight">
+<pre>{raw}</pre>
+</div>
+<!-- ENDIF mongo -->

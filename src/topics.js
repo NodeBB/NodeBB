@@ -2,10 +2,8 @@ var async = require('async'),
 	gravatar = require('gravatar'),
 	nconf = require('nconf'),
 	validator = require('validator'),
-	reds = require('reds'),
-	topicSearch = reds.createSearch('nodebbtopicsearch'),
 
-	RDB = require('./redis'),
+	db = require('./database'),
 	posts = require('./posts'),
 	utils = require('./../public/src/utils'),
 	user = require('./user'),
@@ -60,16 +58,16 @@ var async = require('async'),
 					return callback(new Error('too-many-posts'), null);
 				}
 
-				RDB.incr('next_topic_id', function(err, tid) {
+				db.incrObjectField('global', 'nextTid', function(err, tid) {
 					if(err) {
 						return callback(err);
 					}
 
-					RDB.sadd('topics:tid', tid);
+					db.setAdd('topics:tid', tid);
 
 					var slug = tid + '/' + utils.slugify(title);
 					var timestamp = Date.now();
-					RDB.hmset('topic:' + tid, {
+					db.setObject('topic:' + tid, {
 						'tid': tid,
 						'uid': uid,
 						'cid': cid,
@@ -84,19 +82,19 @@ var async = require('async'),
 						'pinned': 0
 					});
 
-					topicSearch.index(title, tid);
+					db.searchIndex('topic', title, tid);
 
 					user.addTopicIdToUser(uid, tid);
 
 					// let everyone know that there is an unread topic in this category
-					RDB.del('cid:' + cid + ':read_by_uid', function(err, data) {
+					db.delete('cid:' + cid + ':read_by_uid', function(err, data) {
 						Topics.markAsRead(tid, uid);
 					});
 
 					// in future it may be possible to add topics to several categories, so leaving the door open here.
-					RDB.zadd('categories:' + cid + ':tid', timestamp, tid);
-					RDB.hincrby('category:' + cid, 'topic_count', 1);
-					RDB.incr('totaltopiccount');
+					db.sortedSetAdd('categories:' + cid + ':tid', timestamp, tid);
+					db.incrObjectField('category:' + cid, 'topic_count');
+					db.incrObjectField('global', 'topicCount');
 
 					feed.updateCategory(cid);
 
@@ -127,7 +125,7 @@ var async = require('async'),
 	};
 
 	Topics.getTopicData = function(tid, callback) {
-		RDB.hgetall('topic:' + tid, function(err, data) {
+		db.getObject('topic:' + tid, function(err, data) {
 			if(err) {
 				return callback(err, null);
 			}
@@ -173,7 +171,7 @@ var async = require('async'),
 			}
 
 			postData = postData.filter(function(post) {
-				return parseInt(current_user, 10) !== 0 || post.deleted === "0";
+				return parseInt(current_user, 10) !== 0 || parseInt(post.deleted, 10) === 0;
 			});
 
 			function getFavouritesData(next) {
@@ -209,7 +207,7 @@ var async = require('async'),
 					privileges = results[2];
 
 				for (var i = 0; i < postData.length; ++i) {
-					postData[i].favourited = fav_data[postData[i].pid] === 1;
+					postData[i].favourited = fav_data[postData[i].pid];
 					postData[i].display_moderator_tools = ((current_user != 0) && (postData[i].uid == current_user || privileges.editable));
 				}
 
@@ -239,8 +237,7 @@ var async = require('async'),
 			since = terms[term];
 
 		var args = ['topics:recent', '+inf', timestamp - since, 'LIMIT', start, end - start + 1];
-
-		RDB.zrevrangebyscore(args, function(err, tids) {
+		db.getSortedSetRevRangeByScore(args, function(err, tids) {
 			if (err) {
 				return callback(err);
 			}
@@ -275,7 +272,7 @@ var async = require('async'),
 				return unreadTids.length < 21 && !done;
 			},
 			function(callback) {
-				RDB.zrevrange('topics:recent', start, stop, function(err, tids) {
+				db.getSortedSetRevRange('topics:recent', start, stop, function(err, tids) {
 
 					if (err)
 						return callback(err);
@@ -316,7 +313,7 @@ var async = require('async'),
 		}
 
 		async.whilst(continueCondition, function(callback) {
-			RDB.zrevrange('topics:recent', start, stop, function(err, tids) {
+			db.getSortedSetRevRange('topics:recent', start, stop, function(err, tids) {
 				if (err) {
 					return callback(err);
 				}
@@ -489,18 +486,18 @@ var async = require('async'),
 
 				getTopicInfo(topicData, function(topicInfo) {
 
-					topicData['pin-icon'] = topicData.pinned === '1' ? 'fa-thumb-tack' : 'none';
-					topicData['lock-icon'] = topicData.locked === '1' ? 'fa-lock' : 'none';
-					topicData['deleted-class'] = topicData.deleted === '1' ? 'deleted' : '';
+					topicData['pin-icon'] = parseInt(topicData.pinned, 10) === 1 ? 'fa-thumb-tack' : 'none';
+					topicData['lock-icon'] = parseInt(topicData.locked, 10) === 1 ? 'fa-lock' : 'none';
+					topicData['deleted-class'] = parseInt(topicData.deleted, 10) === 1 ? 'deleted' : '';
 
-					topicData.unreplied = topicData.postcount === '1';
+					topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
 					topicData.username = topicInfo.username || 'anonymous';
 					topicData.userslug = topicInfo.userslug || '';
 					topicData.picture = topicInfo.picture || gravatar.url('', {}, https = nconf.get('https'));
 					topicData.categoryIcon = topicInfo.categoryData.icon;
 					topicData.categoryName = topicInfo.categoryData.name;
 					topicData.categorySlug = topicInfo.categoryData.slug;
-					topicData.badgeclass = (topicInfo.hasread && current_user != 0) ? '' : 'badge-important';
+					topicData.badgeclass = (topicInfo.hasread && parseInt(current_user, 10) !== 0) ? '' : 'badge-important';
 					topicData.teaser_text = topicInfo.teaserInfo.text || '',
 					topicData.teaser_username = topicInfo.teaserInfo.username || '';
 					topicData.teaser_userslug = topicInfo.teaserInfo.userslug || '';
@@ -577,7 +574,7 @@ var async = require('async'),
 					'slug': topicData.slug,
 					'postcount': topicData.postcount,
 					'viewcount': topicData.viewcount,
-					'unreplied': topicData.postcount > 1,
+					'unreplied': parseInt(topicData.postcount, 10) > 1,
 					'topic_id': tid,
 					'expose_tools': privileges.editable ? 1 : 0,
 					'posts': topicPosts
@@ -594,7 +591,7 @@ var async = require('async'),
 		}
 
 		function getReadStatus(next) {
-			if (uid && parseInt(uid) > 0) {
+			if (uid && parseInt(uid, 10) > 0) {
 				Topics.hasReadTopic(tid, uid, function(read) {
 					next(null, read);
 				});
@@ -619,8 +616,8 @@ var async = require('async'),
 				hasRead = results[1],
 				teaser = results[2];
 
-			topicData['pin-icon'] = topicData.pinned === '1' ? 'fa-thumb-tack' : 'none';
-			topicData['lock-icon'] = topicData.locked === '1' ? 'fa-lock' : 'none';
+			topicData['pin-icon'] = parseInt(topicData.pinned, 10) === 1 ? 'fa-thumb-tack' : 'none';
+			topicData['lock-icon'] = parseInt(topicData.locked, 10) === 1 ? 'fa-lock' : 'none';
 
 			topicData.badgeclass = hasRead ? '' : 'badge-important';
 			topicData.teaser_text = teaser.text || '';
@@ -635,7 +632,7 @@ var async = require('async'),
 	}
 
 	Topics.getAllTopics = function(limit, after, callback) {
-		RDB.smembers('topics:tid', function(err, tids) {
+		db.getSetMembers('topics:tid', function(err, tids) {
 			if(err) {
 				return callback(err, null);
 			}
@@ -681,7 +678,7 @@ var async = require('async'),
 	}
 
 	Topics.markAllRead = function(uid, callback) {
-		RDB.smembers('topics:tid', function(err, tids) {
+		db.getSetMembers('topics:tid', function(err, tids) {
 			if (err) {
 				return callback(err, null);
 			}
@@ -705,12 +702,12 @@ var async = require('async'),
 	}
 
 	Topics.markUnRead = function(tid, callback) {
-		RDB.del('tid:' + tid + ':read_by_uid', callback);
+		db.delete('tid:' + tid + ':read_by_uid', callback);
 	}
 
 	Topics.markAsRead = function(tid, uid) {
 
-		RDB.sadd('tid:' + tid + ':read_by_uid', uid);
+		db.setAdd('tid:' + tid + ':read_by_uid', uid);
 
 		Topics.getTopicField(tid, 'cid', function(err, cid) {
 
@@ -729,19 +726,19 @@ var async = require('async'),
 	}
 
 	Topics.hasReadTopics = function(tids, uid, callback) {
-		var batch = RDB.multi();
+		var sets = [];
 
 		for (var i = 0, ii = tids.length; i < ii; i++) {
-			batch.sismember('tid:' + tids[i] + ':read_by_uid', uid);
+			sets.push('tid:' + tids[i] + ':read_by_uid');
 		}
 
-		batch.exec(function(err, hasRead) {
+		db.isMemberOfSets(sets, uid, function(err, hasRead) {
 			callback(hasRead);
 		});
 	}
 
 	Topics.hasReadTopic = function(tid, uid, callback) {
-		RDB.sismember('tid:' + tid + ':read_by_uid', uid, function(err, hasRead) {
+		db.isSetMember('tid:' + tid + ':read_by_uid', uid, function(err, hasRead) {
 
 			if (err === null) {
 				callback(hasRead);
@@ -757,7 +754,9 @@ var async = require('async'),
 		if (Array.isArray(tids)) {
 			async.eachSeries(tids, function(tid, next) {
 				Topics.getTeaser(tid, function(err, teaser_info) {
-					if (err) teaser_info = {};
+					if (err) {
+						teaser_info = {};
+					}
 					teasers.push(teaser_info);
 					next();
 				});
@@ -821,23 +820,23 @@ var async = require('async'),
 	}
 
 	Topics.getTopicField = function(tid, field, callback) {
-		RDB.hget('topic:' + tid, field, callback);
+		db.getObjectField('topic:' + tid, field, callback);
 	}
 
 	Topics.getTopicFields = function(tid, fields, callback) {
-		RDB.hmgetObject('topic:' + tid, fields, callback);
+		db.getObjectFields('topic:' + tid, fields, callback);
 	}
 
 	Topics.setTopicField = function(tid, field, value, callback) {
-		RDB.hset('topic:' + tid, field, value, callback);
+		db.setObjectField('topic:' + tid, field, value, callback);
 	}
 
 	Topics.increasePostCount = function(tid, callback) {
-		RDB.hincrby('topic:' + tid, 'postcount', 1, callback);
+		db.incrObjectField('topic:' + tid, 'postcount', callback);
 	}
 
 	Topics.increaseViewCount = function(tid, callback) {
-		RDB.hincrby('topic:' + tid, 'viewcount', 1, callback);
+		db.incrObjectField('topic:' + tid, 'viewcount', callback);
 	}
 
 	Topics.isLocked = function(tid, callback) {
@@ -845,21 +844,21 @@ var async = require('async'),
 			if(err) {
 				return callback(err, null);
 			}
-			callback(null, locked === "1");
+			callback(null, parseInt(locked, 10) === 1);
 		});
 	}
 
 	Topics.updateTimestamp = function(tid, timestamp) {
-		RDB.zadd('topics:recent', timestamp, tid);
+		db.sortedSetAdd('topics:recent', timestamp, tid);
 		Topics.setTopicField(tid, 'lastposttime', timestamp);
 	}
 
 	Topics.addPostToTopic = function(tid, pid) {
-		RDB.rpush('tid:' + tid + ':posts', pid);
+		db.listAppend('tid:' + tid + ':posts', pid);
 	}
 
 	Topics.getPids = function(tid, callback) {
-		RDB.lrange('tid:' + tid + ':posts', 0, -1, callback);
+		db.getListRange('tid:' + tid + ':posts', 0, -1, callback);
 	}
 
 	Topics.getUids = function(tid, callback) {
@@ -886,23 +885,23 @@ var async = require('async'),
 
 	Topics.delete = function(tid) {
 		Topics.setTopicField(tid, 'deleted', 1);
-		RDB.zrem('topics:recent', tid);
+		db.sortedSetRemove('topics:recent', tid);
 
 		Topics.getTopicField(tid, 'cid', function(err, cid) {
 			feed.updateCategory(cid);
-			RDB.hincrby('category:' + cid, 'topic_count', -1);
+			db.incrObjectFieldBy('category:' + cid, 'topic_count', -1);
 		});
 	}
 
 	Topics.restore = function(tid) {
 		Topics.setTopicField(tid, 'deleted', 0);
 		Topics.getTopicField(tid, 'lastposttime', function(err, lastposttime) {
-			RDB.zadd('topics:recent', lastposttime, tid);
+			db.sortedSetAdd('topics:recent', lastposttime, tid);
 		});
 
 		Topics.getTopicField(tid, 'cid', function(err, cid) {
 			feed.updateCategory(cid);
-			RDB.hincrby('category:' + cid, 'topic_count', 1);
+			db.incrObjectFieldBy('category:' + cid, 'topic_count', 1);
 		});
 	}
 
@@ -923,7 +922,7 @@ var async = require('async'),
 	}
 
 	Topics.reIndexAll = function(callback) {
-		RDB.smembers('topics:tid', function(err, tids) {
+		db.getSetMembers('topics:tid', function(err, tids) {
 			if (err) {
 				callback(err, null);
 			} else {

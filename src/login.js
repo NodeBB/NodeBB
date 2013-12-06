@@ -1,9 +1,9 @@
-var user = require('./user.js'),
+var user = require('./user'),
 	bcrypt = require('bcrypt'),
-	RDB = require('./redis.js'),
+	db = require('./database'),
 	path = require('path'),
 	winston = require('winston'),
-	utils = require('./../public/src/utils.js');
+	utils = require('./../public/src/utils');
 
 (function(Login) {
 
@@ -28,7 +28,7 @@ var user = require('./user.js'),
 				user.getUserFields(uid, ['password', 'banned'], function(err, userData) {
 					if (err) return next(err);
 
-					if (userData.banned && userData.banned === '1') {
+					if (userData.banned && parseInt(userData.banned, 10) === 1) {
 						return next({
 							status: "error",
 							message: "user-banned"
@@ -58,7 +58,11 @@ var user = require('./user.js'),
 	}
 
 	Login.loginViaTwitter = function(twid, handle, photos, callback) {
-		user.getUidByTwitterId(twid, function(uid) {
+		user.getUidByTwitterId(twid, function(err, uid) {
+			if(err) {
+				return callback(err);
+			}
+
 			if (uid !== null) {
 				// Existing User
 				callback(null, {
@@ -67,32 +71,36 @@ var user = require('./user.js'),
 			} else {
 				// New User
 				user.create(handle, undefined, undefined, function(err, uid) {
-					if (err !== null) {
-						callback(err);
-					} else {
-						// Save twitter-specific information to the user
-						user.setUserField(uid, 'twid', twid);
-						RDB.hset('twid:uid', twid, uid);
-
-						// Save their photo, if present
-						if (photos && photos.length > 0) {
-							var photoUrl = photos[0].value;
-							photoUrl = path.dirname(photoUrl) + '/' + path.basename(photoUrl, path.extname(photoUrl)).slice(0, -6) + 'bigger' + path.extname(photoUrl);
-							user.setUserField(uid, 'uploadedpicture', photoUrl);
-							user.setUserField(uid, 'picture', photoUrl);
-						}
-
-						callback(null, {
-							uid: uid
-						});
+					if(err) {
+						return callback(err);
 					}
+
+					// Save twitter-specific information to the user
+					user.setUserField(uid, 'twid', twid);
+					db.setObjectField('twid:uid', twid, uid);
+
+					// Save their photo, if present
+					if (photos && photos.length > 0) {
+						var photoUrl = photos[0].value;
+						photoUrl = path.dirname(photoUrl) + '/' + path.basename(photoUrl, path.extname(photoUrl)).slice(0, -6) + 'bigger' + path.extname(photoUrl);
+						user.setUserField(uid, 'uploadedpicture', photoUrl);
+						user.setUserField(uid, 'picture', photoUrl);
+					}
+
+					callback(null, {
+						uid: uid
+					});
 				});
 			}
 		});
 	}
 
 	Login.loginViaGoogle = function(gplusid, handle, email, callback) {
-		user.getUidByGoogleId(gplusid, function(uid) {
+		user.getUidByGoogleId(gplusid, function(err, uid) {
+			if(err) {
+				return callback(err);
+			}
+
 			if (uid !== null) {
 				// Existing User
 				callback(null, {
@@ -103,27 +111,39 @@ var user = require('./user.js'),
 				var success = function(uid) {
 					// Save google-specific information to the user
 					user.setUserField(uid, 'gplusid', gplusid);
-					RDB.hset('gplusid:uid', gplusid, uid);
+					db.setObjectField('gplusid:uid', gplusid, uid);
 					callback(null, {
 						uid: uid
 					});
 				}
 
-				user.getUidByEmail(email, function(uid) {
+				user.getUidByEmail(email, function(err, uid) {
+					if(err) {
+						return callback(err);
+					}
+
 					if (!uid) {
 						user.create(handle, undefined, email, function(err, uid) {
-							if (err !== null) {
-								callback(err);
-							} else success(uid);
+							if(err) {
+								return callback(err);
+							}
+
+							success(uid);
 						});
-					} else success(uid); // Existing account -- merge
+					} else {
+						success(uid); // Existing account -- merge
+					}
 				});
 			}
 		});
 	}
 
 	Login.loginViaFacebook = function(fbid, name, email, callback) {
-		user.getUidByFbid(fbid, function(uid) {
+		user.getUidByFbid(fbid, function(err, uid) {
+			if(err) {
+				return callback(err);
+			}
+
 			if (uid !== null) {
 				// Existing User
 				callback(null, {
@@ -134,20 +154,28 @@ var user = require('./user.js'),
 				var success = function(uid) {
 					// Save facebook-specific information to the user
 					user.setUserField(uid, 'fbid', fbid);
-					RDB.hset('fbid:uid', fbid, uid);
+					db.setObjectField('fbid:uid', fbid, uid);
 					callback(null, {
 						uid: uid
 					});
 				}
 
-				user.getUidByEmail(email, function(uid) {
+				user.getUidByEmail(email, function(err, uid) {
+					if(err) {
+						return callback(err);
+					}
+
 					if (!uid) {
 						user.create(name, undefined, email, function(err, uid) {
-							if (err !== null) {
-								callback(err);
-							} else success(uid);
+							if(err) {
+								return callback(err);
+							}
+
+							success(uid);
 						});
-					} else success(uid); // Existing account -- merge
+					} else {
+						success(uid); // Existing account -- merge
+					}
 				});
 			}
 		});

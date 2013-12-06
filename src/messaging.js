@@ -1,4 +1,4 @@
-var RDB = require('./redis'),
+var db = require('./database'),
 	async = require('async'),
 	user = require('./user');
 
@@ -14,9 +14,10 @@ var RDB = require('./redis'),
 	Messaging.addMessage = function(fromuid, touid, content, callback) {
 		var uids = sortUids(fromuid, touid);
 
-		RDB.incr('global:next_message_id', function(err, mid) {
-			if (err)
+		db.incrObjectField('global', 'nextMid', function(err, mid) {
+			if (err) {
 				return callback(err, null);
+			}
 
 			var message = {
 				content: content,
@@ -25,8 +26,8 @@ var RDB = require('./redis'),
 				touid: touid
 			};
 
-			RDB.hmset('message:' + mid, message);
-			RDB.rpush('messages:' + uids[0] + ':' + uids[1], mid);
+			db.setObject('message:' + mid, message);
+			db.listAppend('messages:' + uids[0] + ':' + uids[1], mid);
 
 			Messaging.updateChatTime(fromuid, touid);
 			Messaging.updateChatTime(touid, fromuid);
@@ -37,9 +38,10 @@ var RDB = require('./redis'),
 	Messaging.getMessages = function(fromuid, touid, callback) {
 		var uids = sortUids(fromuid, touid);
 
-		RDB.lrange('messages:' + uids[0] + ':' + uids[1], 0, -1, function(err, mids) {
-			if (err)
+		db.getListRange('messages:' + uids[0] + ':' + uids[1], 0, -1, function(err, mids) {
+			if (err) {
 				return callback(err, null);
+			}
 
 			if (!mids || !mids.length) {
 				return callback(null, []);
@@ -51,14 +53,16 @@ var RDB = require('./redis'),
 				var messages = [];
 
 				function getMessage(mid, next) {
-					RDB.hgetall('message:' + mid, function(err, message) {
-						if (err)
+					db.getObject('message:' + mid, function(err, message) {
+						if (err) {
 							return next(err);
+						}
 
-						if (message.fromuid === fromuid)
+						if (message.fromuid === fromuid) {
 							message.content = 'You : ' + message.content;
-						else
+						} else {
 							message.content = tousername + ' : ' + message.content;
+						}
 
 						messages.push(message);
 						next(null);
@@ -66,8 +70,9 @@ var RDB = require('./redis'),
 				}
 
 				async.eachSeries(mids, getMessage, function(err) {
-					if (err)
+					if (err) {
 						return callback(err, null);
+					}
 
 					callback(null, messages);
 				});
@@ -76,7 +81,7 @@ var RDB = require('./redis'),
 	}
 
 	Messaging.updateChatTime = function(uid, toUid, callback) {
-		RDB.zadd('uid:' + uid + ':chats', Date.now(), toUid, function(err) {
+		db.sortedSetAdd('uid:' + uid + ':chats', Date.now(), toUid, function(err) {
 			if (callback) {
 				callback(err);
 			}
@@ -84,7 +89,7 @@ var RDB = require('./redis'),
 	};
 
 	Messaging.getRecentChats = function(uid, callback) {
-		RDB.zrevrange('uid:' + uid + ':chats', 0, 9, function(err, uids) {
+		db.getSortedSetRevRange('uid:' + uid + ':chats', 0, 9, function(err, uids) {
 			if (!err) {
 				user.getMultipleUserFields(uids, ['username', 'picture', 'uid'], callback);
 			} else {

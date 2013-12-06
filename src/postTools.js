@@ -1,4 +1,4 @@
-var RDB = require('./redis'),
+var db = require('./database'),
 	posts = require('./posts'),
 	topics = require('./topics'),
 	threadTools = require('./threadTools'),
@@ -10,16 +10,14 @@ var RDB = require('./redis'),
 
 	utils = require('../public/src/utils'),
 	plugins = require('./plugins'),
-	reds = require('reds'),
-	postSearch = reds.createSearch('nodebbpostsearch'),
-	topicSearch = reds.createSearch('nodebbtopicsearch'),
+
 	winston = require('winston'),
 	meta = require('./meta'),
 	Feed = require('./feed');
 
 (function(PostTools) {
 	PostTools.isMain = function(pid, tid, callback) {
-		RDB.lrange('tid:' + tid + ':posts', 0, 0, function(err, pids) {
+		db.getListRange('tid:' + tid + ':posts', 0, 0, function(err, pids) {
 			if(err) {
 				return callback(err);
 			}
@@ -83,8 +81,8 @@ var RDB = require('./redis'),
 				}
 			]);
 
-			postSearch.remove(pid, function() {
-				postSearch.index(content, pid);
+			db.searchRemove('post', pid, function() {
+				db.searchIndex('post', content, pid);
 			});
 
 			async.parallel([
@@ -93,8 +91,8 @@ var RDB = require('./redis'),
 						PostTools.isMain(pid, tid, function(err, isMainPost) {
 							if (isMainPost) {
 								topics.setTopicField(tid, 'title', title);
-								topicSearch.remove(tid, function() {
-									topicSearch.index(title, tid);
+								db.searchRemove('topic', tid, function() {
+									db.searchIndex('topic', title, tid);
 								});
 							}
 
@@ -131,14 +129,14 @@ var RDB = require('./redis'),
 	PostTools.delete = function(uid, pid, callback) {
 		var success = function() {
 			posts.setPostField(pid, 'deleted', 1);
-			RDB.decr('totalpostcount');
-			postSearch.remove(pid);
+			db.decrObjectField('global', 'postCount');
+			db.searchRemove('post', pid);
 
 			posts.getPostFields(pid, ['tid', 'uid'], function(err, postData) {
-				RDB.hincrby('topic:' + postData.tid, 'postcount', -1);
+				db.incrObjectFieldBy('topic:' + postData.tid, 'postcount', -1);
 
 				user.decrementUserFieldBy(postData.uid, 'postcount', 1, function(err, postcount) {
-					RDB.zadd('users:postcount', postcount, postData.uid);
+					db.sortedSetAdd('users:postcount', postcount, postData.uid);
 				});
 
 				// Delete the thread if it is the last undeleted post
@@ -164,7 +162,7 @@ var RDB = require('./redis'),
 		};
 
 		posts.getPostField(pid, 'deleted', function(err, deleted) {
-			if(deleted === '1') {
+			if(parseInt(deleted, 10) === 1) {
 				return callback(new Error('Post already deleted!'));
 			}
 
@@ -180,10 +178,10 @@ var RDB = require('./redis'),
 	PostTools.restore = function(uid, pid, callback) {
 		var success = function() {
 			posts.setPostField(pid, 'deleted', 0);
-			RDB.incr('totalpostcount');
+			db.incrObjectField('global', 'postCount');
 
 			posts.getPostFields(pid, ['tid', 'uid', 'content'], function(err, postData) {
-				RDB.hincrby('topic:' + postData.tid, 'postcount', 1);
+				db.incrObjectFieldBy('topic:' + postData.tid, 'postcount', 1);
 
 				user.incrementUserFieldBy(postData.uid, 'postcount', 1);
 
@@ -195,7 +193,7 @@ var RDB = require('./redis'),
 
 				// Restore topic if it is the only post
 				topics.getTopicField(postData.tid, 'postcount', function(err, count) {
-					if (count === '1') {
+					if (parseInt(count, 10) === 1) {
 						threadTools.restore(postData.tid, uid);
 					}
 				});
@@ -203,14 +201,14 @@ var RDB = require('./redis'),
 				Feed.updateTopic(postData.tid);
 				Feed.updateRecent();
 
-				postSearch.index(postData.content, pid);
+				db.searchIndex('post', postData.content, pid);
 
 				callback();
 			});
 		};
 
 		posts.getPostField(pid, 'deleted', function(err, deleted) {
-			if(deleted === '0') {
+			if(parseInt(deleted, 10) === 0) {
 				return callback(new Error('Post already restored'));
 			}
 

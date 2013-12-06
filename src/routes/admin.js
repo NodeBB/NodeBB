@@ -3,7 +3,7 @@ var nconf = require('nconf'),
 	path = require('path'),
 	winston = require('winston'),
 
-	RDB = require('./../redis'),
+	db = require('./../database'),
 	user = require('./../user'),
 	groups = require('../groups'),
 	topics = require('./../topics'),
@@ -55,7 +55,7 @@ var nconf = require('nconf'),
 		(function () {
 			var routes = [
 				'categories/active', 'categories/disabled', 'users', 'topics', 'settings', 'themes',
-				'twitter', 'facebook', 'gplus', 'redis', 'motd', 'groups', 'plugins', 'logger',
+				'twitter', 'facebook', 'gplus', 'database', 'motd', 'groups', 'plugins', 'logger',
 				'users/latest', 'users/sort-posts', 'users/sort-reputation',
 				'users/search'
 			];
@@ -241,7 +241,7 @@ var nconf = require('nconf'),
 			app.get('/categories/active', function (req, res) {
 				categories.getAllCategories(0, function (err, data) {
 					data.categories = data.categories.filter(function (category) {
-						return (!category.disabled || category.disabled === "0");
+						return (!category.disabled || parseInt(category.disabled, 10) === 0);
 					});
 					res.json(data);
 				});
@@ -250,7 +250,7 @@ var nconf = require('nconf'),
 			app.get('/categories/disabled', function (req, res) {
 				categories.getAllCategories(0, function (err, data) {
 					data.categories = data.categories.filter(function (category) {
-						return category.disabled === "1";
+						return parseInt(category.disabled, 10) === 1;
 					});
 					res.json(data);
 				});
@@ -265,31 +265,10 @@ var nconf = require('nconf'),
 				});
 			});
 
-			app.namespace('/redis', function () {
+			app.namespace('/database', function () {
 				app.get('/', function (req, res) {
-					RDB.info(function (err, data) {
-						data = data.split("\r\n");
-						var finalData = {};
-
-						for (var i in data) {
-
-							if (data[i].indexOf(':') == -1 || !data[i])
-								continue;
-
-							try {
-								data[i] = data[i].replace(/:/, "\":\"");
-								var json = "{\"" + data[i] + "\"}";
-
-								var jsonObject = JSON.parse(json);
-								for (var key in jsonObject) {
-									finalData[key] = jsonObject[key];
-								}
-							} catch (err) {
-								winston.warn('can\'t parse redis status variable, ignoring', i, data[i], err);
-							}
-						}
-
-						res.json(finalData);
+					db.info(function (err, data) {
+						res.json(data);
 					});
 				});
 

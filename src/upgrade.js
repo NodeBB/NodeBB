@@ -1,19 +1,20 @@
 "use strict";
 
-var RDB = require('./redis.js'),
+var db = require('./database'),
 	async = require('async'),
 	winston = require('winston'),
 	notifications = require('./notifications'),
 	categories = require('./categories'),
+	nconf = require('nconf'),
 	Upgrade = {},
 
 	schemaDate, thisSchemaDate;
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2013, 10, 26).getTime();
+	var	latestSchema = new Date(2013, 11, 2).getTime();
 
-	RDB.get('schemaDate', function(err, value) {
+	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
 			callback(true);
 		} else {
@@ -23,6 +24,22 @@ Upgrade.check = function(callback) {
 };
 
 Upgrade.upgrade = function(callback) {
+	var databaseType = nconf.get('database');
+
+	if(databaseType === 'redis') {
+		Upgrade.upgradeRedis(callback);
+	} else if(databaseType === 'mongo') {
+		Upgrade.upgradeMongo(callback);
+	} else {
+		winston.error('Unknown database type. Aborting upgrade');
+		callback(new Error('unknown-database'));
+	}
+};
+
+Upgrade.upgradeRedis = function(callback) {
+
+	var RDB = db.client;
+
 	winston.info('Beginning Redis database schema update');
 
 	async.series([
@@ -179,7 +196,7 @@ Upgrade.upgrade = function(callback) {
 		},
 		function(next) {
 			thisSchemaDate = new Date(2013, 10, 26).getTime();
-			if (schemaDate < thisSchemaDate || 1) {
+			if (schemaDate < thisSchemaDate) {
 				categories.getAllCategories(0, function(err, categories) {
 
 					function updateIcon(category, next) {
@@ -209,7 +226,57 @@ Upgrade.upgrade = function(callback) {
 				winston.info('[2013/11/26] Update to Category icons skipped.');
 				next();
 			}
-		}
+		},
+		function(next) {
+
+			function updateKeyToHash(key, next) {
+				RDB.get(key, function(err, value) {
+					RDB.hset('global', newKeys[key], value, next);
+				});
+			}
+
+			thisSchemaDate = new Date(2013, 11, 2).getTime();
+			if (schemaDate < thisSchemaDate) {
+
+				var keys = [
+					'global:next_user_id',
+					'next_topic_id',
+					'next_gid',
+					'notifications:next_nid',
+					'global:next_category_id',
+					'global:next_message_id',
+					'global:next_post_id',
+					'usercount',
+					'totaltopiccount',
+					'totalpostcount'
+				];
+
+				var newKeys = {
+					'global:next_user_id':'nextUid',
+					'next_topic_id':'nextTid',
+					'next_gid':'nextGid',
+					'notifications:next_nid':'nextNid',
+					'global:next_category_id':'nextCid',
+					'global:next_message_id':'nextMid',
+					'global:next_post_id':'nextPid',
+					'usercount':'userCount',
+					'totaltopiccount':'topicCount',
+					'totalpostcount':'postCount'
+				};
+
+				async.each(keys, updateKeyToHash, function(err) {
+					if(err) {
+						return next(err);
+					}
+					winston.info('[2013/12/2] Updated global keys to hash.');
+					next();
+				});
+
+			} else {
+				winston.info('[2013/12/2] Update to global keys skipped');
+				next();
+			}
+		},
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 12!!!
 	], function(err) {
@@ -233,5 +300,42 @@ Upgrade.upgrade = function(callback) {
 		}
 	});
 };
+
+Upgrade.upgradeMongo = function(callback) {
+	var MDB = db.client;
+
+	winston.info('Beginning Mongo database schema update');
+
+	async.series([
+		function(next) {
+			db.get('schemaDate', function(err, value) {
+				schemaDate = value;
+				thisSchemaDate = new Date(2013, 11, 6).getTime();
+				next();
+			});
+		}
+		// Add new schema updates here
+
+	], function(err) {
+		if (!err) {
+			db.set('schemaDate', thisSchemaDate, function(err) {
+				if (!err) {
+					winston.info('[upgrade] Mongo schema update complete!');
+					if (callback) {
+						callback(err);
+					} else {
+						process.exit();
+					}
+				} else {
+					winston.error('[upgrade] Could not update NodeBB schema date!');
+					process.exit();
+				}
+			});
+		} else {
+			winston.error('[upgrade] Errors were encountered while updating the NodeBB schema: ' + err.message);
+			process.exit();
+		}
+	});
+}
 
 module.exports = Upgrade;

@@ -1,4 +1,4 @@
-var RDB = require('./../redis'),
+var db = require('./../database'),
 	utils = require('./../../public/src/utils'),
 	categories = require('./../categories');
 
@@ -11,12 +11,12 @@ var RDB = require('./../redis'),
 			var category = modified[cid];
 
 			for (var key in category) {
-				RDB.hset('category:' + cid, key, category[key]);
+				db.setObjectField('category:' + cid, key, category[key]);
 
 				if (key == 'name') {
 					// reset slugs if name is updated
 					var slug = cid + '/' + utils.slugify(category[key]);
-					RDB.hset('category:' + cid, 'slug', slug);
+					db.setObjectField('category:' + cid, 'slug', slug);
 				}
 			}
 

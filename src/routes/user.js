@@ -9,7 +9,7 @@ var fs = require('fs'),
 	postTools = require('../postTools'),
 	utils = require('./../../public/src/utils'),
 	meta = require('./../meta'),
-	RDB = require('./../redis'),
+	db = require('./../database'),
 	websockets = require('./../websockets');
 
 (function (User) {
@@ -318,10 +318,11 @@ var fs = require('fs'),
 						return next(err);
 
 					if (userData) {
-						if (userData.showemail && userData.showemail === "1")
+						if (userData.showemail && parseInt(userData.showemail, 10) === 1) {
 							userData.showemail = "checked";
-						else
+						} else {
 							userData.showemail = "";
+						}
 						res.json(userData);
 					} else {
 						res.json(404, {
@@ -382,13 +383,15 @@ var fs = require('fs'),
 						posts.getPostsByUid(userData.theirid, 0, 9, function (posts) {
 
 							userData.posts = posts.filter(function (p) {
-								return p && p.deleted !== "1";
+								return p && parseInt(p.deleted, 10) !== 1;
 							});
 							userData.isFollowing = isFollowing;
-							if (!userData.profileviews)
+							if (!userData.profileviews) {
 								userData.profileviews = 1;
-							if (callerUID !== userData.uid)
+							}
+							if (callerUID !== userData.uid) {
 								user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
+							}
 
 							postTools.parse(userData.signature, function (err, signature) {
 								userData.signature = signature;
@@ -454,7 +457,7 @@ var fs = require('fs'),
 					if(websockets.isUserOnline(user.uid)) {
 						onlineUsers.push(user);
 					} else {
-						RDB.zrem('users:online', user.uid);
+						db.sortedSetRemove('users:online', user.uid);
 					}
 					callback(null);
 				}
@@ -501,21 +504,21 @@ var fs = require('fs'),
 						}
 
 						function canSeeEmail() {
-							return callerUID == uid || (data.email && (data.showemail && data.showemail === "1"));
+							return callerUID == uid || (data.email && (data.showemail && parseInt(data.showemail, 10) === 1));
 						}
 
 						if (!canSeeEmail()) {
 							data.email = "";
 						}
 
-						if (callerUID == uid && (!data.showemail || data.showemail === "0")) {
+						if (callerUID == uid && (!data.showemail || parseInt(data.showemail, 10) === 0)) {
 							data.emailClass = "";
 						} else {
 							data.emailClass = "hide";
 						}
 
 						data.websiteName = data.website.replace('http://', '').replace('https://', '');
-						data.banned = data.banned === '1';
+						data.banned = parseInt(data.banned, 10) === 1;
 						data.uid = uid;
 						data.yourid = callerUID;
 						data.theirid = uid;

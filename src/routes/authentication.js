@@ -14,8 +14,11 @@
 
 	passport.use(new passportLocal(function(user, password, next) {
 		login_module.loginViaLocal(user, password, function(err, login) {
-			if (!err) next(null, login.user);
-			else next(null, false, err);
+			if (!err) {
+				next(null, login.user);
+			} else {
+				next(null, false, err);
+			}
 		});
 	}));
 

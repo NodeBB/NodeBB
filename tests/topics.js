@@ -5,14 +5,8 @@ process.on('uncaughtException', function (err) {
 });
 
 var	assert = require('assert'),
-	RDB = require('../mocks/redismock');
+	db = require('../mocks/databasemock');
 
-// Reds is not technically used in this test suite, but its invocation is required to stop the included
-// libraries from trying to connect to the default Redis host/port
-var reds = require('reds');
-reds.createClient = function () {
-	return reds.client || (reds.client = RDB);
-};
 
 var Topics = require('../src/topics');
 
@@ -43,7 +37,7 @@ describe('Topic\'s', function() {
 			topic.userId = null;
 
 			Topics.post(topic.userId, topic.title, topic.content, topic.categoryId, function(err, result) {
-				assert.equal(err.message, 'not-logged-in');
+				assert.equal(err.message, 'invalid-user');
 				done();
 			});
 		});
@@ -75,11 +69,6 @@ describe('Topic\'s', function() {
 	});
 
 	after(function() {
-		RDB.send_command('flushdb', [], function(error){
-			if(error){
-				winston.error(error);
-				throw new Error(error);
-			}
-		});
+		db.flushdb();
 	});
 });

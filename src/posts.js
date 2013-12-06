@@ -1,4 +1,4 @@
-var RDB = require('./redis'),
+var db = require('./database'),
 	utils = require('./../public/src/utils'),
 	user = require('./user'),
 	topics = require('./topics'),
@@ -12,8 +12,6 @@ var RDB = require('./redis'),
 	meta = require('./meta'),
 
 	async = require('async'),
-	reds = require('reds'),
-	postSearch = reds.createSearch('nodebbpostsearch'),
 	nconf = require('nconf'),
 	validator = require('validator'),
 	winston = require('winston');
@@ -23,18 +21,17 @@ var RDB = require('./redis'),
 
 	Posts.create = function(uid, tid, content, callback) {
 		if (uid === null) {
-			callback(new Error('invalid-user'), null);
-			return;
+			return callback(new Error('invalid-user'), null);
 		}
 
 		topics.isLocked(tid, function(err, locked) {
 			if(err) {
 				return callback(err, null);
 			} else if(locked) {
-				callback(new Error('topic-locked'), null);
+				return callback(new Error('topic-locked'), null);
 			}
 
-			RDB.incr('global:next_post_id', function(err, pid) {
+			db.incrObjectField('global', 'nextPid', function(err, pid) {
 				if(err) {
 					return callback(err, null);
 				}
@@ -57,7 +54,7 @@ var RDB = require('./redis'),
 							'deleted': 0
 						};
 
-					RDB.hmset('post:' + pid, postData);
+					db.setObject('post:' + pid, postData);
 
 					postData.favourited = false;
 					postData.display_moderator_tools = true;
@@ -67,26 +64,24 @@ var RDB = require('./redis'),
 					topics.increasePostCount(tid);
 					topics.updateTimestamp(tid, timestamp);
 
-					RDB.incr('totalpostcount');
+					db.incrObjectField('global', 'postCount');
 
 					topics.getTopicFields(tid, ['cid', 'pinned'], function(err, topicData) {
-
-						RDB.handle(err);
 
 						var cid = topicData.cid;
 
 						feed.updateTopic(tid);
 						feed.updateRecent();
 
-						RDB.zadd('categories:recent_posts:cid:' + cid, timestamp, pid);
+						db.sortedSetAdd('categories:recent_posts:cid:' + cid, timestamp, pid);
 
-						if(topicData.pinned === '0') {
-							RDB.zadd('categories:' + cid + ':tid', timestamp, tid);
+						if(parseInt(topicData.pinned, 10) === 0) {
+							db.sortedSetAdd('categories:' + cid + ':tid', timestamp, tid);
 						}
 
-						RDB.scard('cid:' + cid + ':active_users', function(err, amount) {
+						db.setCount('cid:' + cid + ':active_users', function(err, amount) {
 							if (amount > 15) {
-								RDB.spop('cid:' + cid + ':active_users');
+								db.setRemoveRandom('cid:' + cid + ':active_users');
 							}
 
 							categories.addActiveUser(cid, uid);
@@ -110,7 +105,7 @@ var RDB = require('./redis'),
 
 							plugins.fireHook('action:post.save', postData);
 
-							postSearch.index(content, pid);
+							db.searchIndex('post', content, pid);
 
 							callback(null, postData);
 						});
@@ -158,7 +153,7 @@ var RDB = require('./redis'),
 								return next(err);
 							}
 
-							RDB.del('cid:' + cid + ':read_by_uid');
+							db.delete('cid:' + cid + ':read_by_uid');
 							next();
 						});
 					},
@@ -185,8 +180,10 @@ var RDB = require('./redis'),
 	}
 
 	Posts.getPostsByTid = function(tid, start, end, callback) {
-		RDB.lrange('tid:' + tid + ':posts', start, end, function(err, pids) {
-			RDB.handle(err);
+		db.getListRange('tid:' + tid + ':posts', start, end, function(err, pids) {
+			if(err) {
+				return callback(err);
+			}
 
 			if (pids.length) {
 				plugins.fireHook('filter:post.getTopic', pids, function(err, posts) {
@@ -216,7 +213,7 @@ var RDB = require('./redis'),
 				post.userslug = userData.userslug || '';
 				post.user_rep = userData.reputation || 0;
 				post.user_postcount = userData.postcount || 0;
-				post.user_banned = userData.banned === '1';
+				post.user_banned = parseInt(userData.banned, 10) === 1;
 				post.picture = userData.picture || require('gravatar').url('', {}, https = nconf.get('https'));
 				post.signature = signature;
 
@@ -253,7 +250,7 @@ var RDB = require('./redis'),
 			async.waterfall([
 				function(next) {
 					Posts.getPostFields(pid, ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'], function(err, postData) {
-						if (postData.deleted === '1') {
+						if (parseInt(postData.deleted, 10) === 1) {
 							return callback(null);
 						} else {
 							postData.relativeTime = new Date(parseInt(postData.timestamp || 0, 10)).toISOString();
@@ -270,7 +267,7 @@ var RDB = require('./redis'),
 					topics.getTopicFields(postData.tid, ['title', 'cid', 'slug', 'deleted'], function(err, topicData) {
 						if (err) {
 							return callback(err);
-						} else if (topicData.deleted === '1') {
+						} else if (parseInt(topicData.deleted, 10) === 1) {
 							return callback(null);
 						}
 						categories.getCategoryFields(topicData.cid, ['name', 'icon', 'slug'], function(err, categoryData) {
@@ -313,7 +310,7 @@ var RDB = require('./redis'),
 	};
 
 	Posts.getPostData = function(pid, callback) {
-		RDB.hgetall('post:' + pid, function(err, data) {
+		db.getObject('post:' + pid, function(err, data) {
 			if(err) {
 				return callback(err, null);
 			}
@@ -328,7 +325,7 @@ var RDB = require('./redis'),
 	}
 
 	Posts.getPostFields = function(pid, fields, callback) {
-		RDB.hmgetObject('post:' + pid, fields, function(err, data) {
+		db.getObjectFields('post:' + pid, fields, function(err, data) {
 			if(err) {
 				return callback(err, null);
 			}
@@ -358,7 +355,7 @@ var RDB = require('./redis'),
 	}
 
 	Posts.setPostField = function(pid, field, value, callback) {
-		RDB.hset('post:' + pid, field, value, callback);
+		db.setObjectField('post:' + pid, field, value, callback);
 		plugins.fireHook('action:post.setField', {
 			'pid': pid,
 			'field': field,
@@ -367,28 +364,27 @@ var RDB = require('./redis'),
 	}
 
 	Posts.getPostsByPids = function(pids, callback) {
-		var posts = [],
-			multi = RDB.multi();
+		var keys = [];
 
 		for(var x=0, numPids=pids.length; x<numPids; x++) {
-			multi.hgetall("post:" + pids[x]);
+			keys.push('post:' + pids[x]);
 		}
 
-		multi.exec(function (err, replies) {
-			async.map(replies, function(postData, _callback) {
+		db.getObjects(keys, function(err, data) {
+			async.map(data, function(postData, _callback) {
 				if (postData) {
 
 					try {
 						postData.relativeTime = new Date(parseInt(postData.timestamp,10)).toISOString();
-						postData.relativeEditTime = postData.edited !== '0' ? (new Date(parseInt(postData.edited,10)).toISOString()) : '';
+						postData.relativeEditTime = parseInt(postData.edited, 10) !== 0 ? (new Date(parseInt(postData.edited, 10)).toISOString()) : '';
 					} catch(e) {
 						winston.err('invalid time value');
 					}
 
-				    postTools.parse(postData.content, function(err, content) {
-                        postData.content = content;
+					postTools.parse(postData.content, function(err, content) {
+						postData.content = content;
 						_callback(null, postData);
-                    });
+					});
 				} else {
 					_callback(null);
 				}
@@ -399,7 +395,7 @@ var RDB = require('./redis'),
 					return callback(err, null);
 				}
 			});
-		})
+		});
 	}
 
 	Posts.getCidByPid = function(pid, callback) {
@@ -460,8 +456,10 @@ var RDB = require('./redis'),
 
 	Posts.getPostsByUid = function(uid, start, end, callback) {
 		user.getPostIds(uid, start, end, function(pids) {
+
 			if (pids && pids.length) {
 				plugins.fireHook('filter:post.getTopic', pids, function(err, posts) {
+
 					if (!err & 0 < posts.length) {
 						Posts.getPostsByPids(pids, function(err, posts) {
 							plugins.fireHook('action:post.gotTopic', posts);
@@ -482,10 +480,10 @@ var RDB = require('./redis'),
 		function reIndex(pid, callback) {
 
 			Posts.getPostField(pid, 'content', function(err, content) {
-				postSearch.remove(pid, function() {
+				db.searchRemove('post', pid, function() {
 
 					if (content && content.length) {
-						postSearch.index(content, pid);
+						db.searchIndex('post', content, pid);
 					}
 					callback(null);
 				});
@@ -502,7 +500,7 @@ var RDB = require('./redis'),
 	}
 
 	Posts.getFavourites = function(uid, callback) {
-		RDB.zrevrange('uid:' + uid + ':favourites', 0, -1, function(err, pids) {
+		db.getSortedSetRevRange('uid:' + uid + ':favourites', 0, -1, function(err, pids) {
 			if (err)
 				return callback(err, null);
 

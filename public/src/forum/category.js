@@ -140,10 +140,11 @@ define(function () {
 		jQuery('#topics-container, .category-sidebar').removeClass('hidden');
 		jQuery('#category-no-topics').remove();
 
+		html = $(html);
 		container.append(html);
 
 		$('#topics-container span.timeago').timeago();
-		app.makeNumbersHumanReadable($(html).find('.human-readable-number'));
+		app.makeNumbersHumanReadable(html.find('.human-readable-number'));
 	}
 
 	Category.loadMoreTopics = function(cid) {

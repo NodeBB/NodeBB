@@ -1,9 +1,9 @@
-var RDB = require('./redis'),
-	async = require('async'),
-	utils = require('../public/src/utils'),
+var async = require('async'),
 	winston = require('winston'),
 	cron = require('cron').CronJob,
 
+	db = require('./database'),
+	utils = require('../public/src/utils'),
 	websockets = require('./websockets');
 
 
@@ -19,28 +19,21 @@ var RDB = require('./redis'),
 	};
 
 	Notifications.get = function(nid, uid, callback) {
-		RDB.multi()
-			.hmget('notifications:' + nid, 'text', 'score', 'path', 'datetime', 'uniqueId')
-			.zrank('uid:' + uid + ':notifications:read', nid)
-			.exists('notifications:' + nid)
-			.exec(function(err, results) {
-				var	notification = results[0],
-					readIdx = results[1];
 
-				if (!results[2]) {
-					return callback(null);
-				}
+		db.exists('notifications:' + nid, function(err, exists) {
+			if(!exists) {
+				return callback(null);
+			}
 
-				callback({
-					nid: nid,
-					text: notification[0],
-					score: notification[1],
-					path: notification[2],
-					datetime: notification[3],
-					uniqueId: notification[4],
-					read: readIdx !== null ? true : false
+			db.sortedSetRank('uid:' + uid + ':notifications:read', nid, function(err, rank) {
+
+				db.getObjectFields('notifications:' + nid, ['nid', 'text', 'score', 'path', 'datetime', 'uniqueId'], function(err, notification) {
+
+					notification.read = rank !== null ? true:false;
+					callback(notification);
 				});
 			});
+		});
 	};
 
 	Notifications.create = function(text, path, uniqueId, callback) {
@@ -50,9 +43,9 @@ var RDB = require('./redis'),
 		 *		(un)read list contains the same uniqueId, it will be removed, and
 		 *		the new one put in its place.
 		 */
-		RDB.incr('notifications:next_nid', function(err, nid) {
-			RDB.sadd('notifications', nid);
-			RDB.hmset('notifications:' + nid, {
+		db.incrObjectField('global', 'nextNid', function(err, nid) {
+			db.setAdd('notifications', nid);
+			db.setObject('notifications:' + nid, {
 				text: text || '',
 				path: path || null,
 				datetime: Date.now(),
@@ -66,16 +59,14 @@ var RDB = require('./redis'),
 	};
 
 	function destroy(nid) {
-		var	multi = RDB.multi();
 
-		multi.del('notifications:' + nid);
-		multi.srem('notifications', nid);
-
-		multi.exec(function(err) {
-			if (err) {
-				winston.error('Problem deleting expired notifications. Stack follows.');
-				winston.error(err.stack);
-			}
+		db.delete('notifications:' + nid, function(err, result) {
+			db.setRemove('notifications', nid, function(err, result) {
+				if (err) {
+					winston.error('Problem deleting expired notifications. Stack follows.');
+					winston.error(err.stack);
+				}
+			});
 		});
 	}
 
@@ -92,7 +83,7 @@ var RDB = require('./redis'),
 				if (parseInt(uids[x], 10) > 0) {
 					(function(uid) {
 						remove_by_uniqueId(notif_data.uniqueId, uid, function() {
-							RDB.zadd('uid:' + uid + ':notifications:unread', notif_data.datetime, nid);
+							db.sortedSetAdd('uid:' + uid + ':notifications:unread', notif_data.datetime, nid);
 
 							websockets.in('uid_' + uid).emit('event:new_notification');
 
@@ -109,12 +100,12 @@ var RDB = require('./redis'),
 	function remove_by_uniqueId(uniqueId, uid, callback) {
 		async.parallel([
 			function(next) {
-				RDB.zrange('uid:' + uid + ':notifications:unread', 0, -1, function(err, nids) {
+				db.getSortedSetRange('uid:' + uid + ':notifications:unread', 0, -1, function(err, nids) {
 					if (nids && nids.length > 0) {
 						async.each(nids, function(nid, next) {
 							Notifications.get(nid, uid, function(nid_info) {
 								if (nid_info.uniqueId === uniqueId) {
-									RDB.zrem('uid:' + uid + ':notifications:unread', nid);
+									db.sortedSetRemove('uid:' + uid + ':notifications:unread', nid);
 								}
 
 								next();
@@ -128,12 +119,12 @@ var RDB = require('./redis'),
 				});
 			},
 			function(next) {
-				RDB.zrange('uid:' + uid + ':notifications:read', 0, -1, function(err, nids) {
+				db.getSortedSetRange('uid:' + uid + ':notifications:read', 0, -1, function(err, nids) {
 					if (nids && nids.length > 0) {
 						async.each(nids, function(nid, next) {
 							Notifications.get(nid, uid, function(nid_info) {
 								if (nid_info && nid_info.uniqueId === uniqueId) {
-									RDB.zrem('uid:' + uid + ':notifications:read', nid);
+									db.sortedSetRemove('uid:' + uid + ':notifications:read', nid);
 								}
 
 								next();
@@ -156,8 +147,8 @@ var RDB = require('./redis'),
 	Notifications.mark_read = function(nid, uid, callback) {
 		if (parseInt(uid, 10) > 0) {
 			Notifications.get(nid, uid, function(notif_data) {
-				RDB.zrem('uid:' + uid + ':notifications:unread', nid);
-				RDB.zadd('uid:' + uid + ':notifications:read', notif_data.datetime, nid);
+				db.sortedSetRemove('uid:' + uid + ':notifications:unread', nid);
+				db.sortedSetAdd('uid:' + uid + ':notifications:read', notif_data.datetime, nid);
 				if (callback) {
 					callback();
 				}
@@ -184,7 +175,7 @@ var RDB = require('./redis'),
 	};
 
 	Notifications.mark_all_read = function(uid, callback) {
-		RDB.zrange('uid:' + uid + ':notifications:unread', 0, 10, function(err, nids) {
+		db.getSortedSetRange('uid:' + uid + ':notifications:unread', 0, 10, function(err, nids) {
 			if (err) {
 				return callback(err);
 			}
@@ -200,6 +191,7 @@ var RDB = require('./redis'),
 	};
 
 	Notifications.prune = function(cutoff) {
+
 		if (process.env.NODE_ENV === 'development') {
 			winston.info('[notifications.prune] Removing expired notifications from the database.');
 		}
@@ -215,12 +207,20 @@ var RDB = require('./redis'),
 
 		async.parallel({
 			"inboxes": function(next) {
-				RDB.keys('uid:*:notifications:unread', next);
+				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
+					if(err) {
+						return next(err);
+					}
+					uids = uids.map(function(uid) {
+						return 'uid:' + uid + ':notifications:unread';
+					});
+					next(null, uids);
+				});
 			},
-			"nids": function(next) {
-				RDB.smembers('notifications', function(err, nids) {
+			"expiredNids": function(next) {
+				db.getSetMembers('notifications', function(err, nids) {
 					async.filter(nids, function(nid, next) {
-						RDB.hget('notifications:' + nid, 'datetime', function(err, datetime) {
+						db.getObjectField('notifications:' + nid, 'datetime', function(err, datetime) {
 							if (parseInt(datetime, 10) < cutoffTime) {
 								next(true);
 							} else {
@@ -233,43 +233,39 @@ var RDB = require('./redis'),
 				});
 			}
 		}, function(err, results) {
-			if (!err) {
-				var	numInboxes = results.inboxes.length,
-					x;
-
-				async.eachSeries(results.nids, function(nid, next) {
-					var	multi = RDB.multi();
-
-					for(x=0;x<numInboxes;x++) {
-						multi.zscore(results.inboxes[x], nid);
-					}
-
-					multi.exec(function(err, results) {
-						// If the notification is not present in any inbox, delete it altogether
-						var	expired = results.every(function(present) {
-								if (present === null) {
-									return true;
-								}
-							});
-
-						if (expired) {
-							destroy(nid);
-							numPruned++;
-						}
-
-						next();
-					});
-				}, function(err) {
-					if (process.env.NODE_ENV === 'development') {
-						winston.info('[notifications.prune] Notification pruning completed. ' + numPruned + ' expired notification' + (numPruned !== 1 ? 's' : '') + ' removed.');
-					}
-				});
-			} else {
+			if(err) {
 				if (process.env.NODE_ENV === 'development') {
 					winston.error('[notifications.prune] Ran into trouble pruning expired notifications. Stack trace to follow.');
 					winston.error(err.stack);
 				}
+				return;
 			}
+
+			async.eachSeries(results.expiredNids, function(nid, next) {
+
+				db.sortedSetsScore(results.inboxes, nid, function(err, results) {
+					if(err) {
+						return next(err);
+					}
+
+					// If the notification is not present in any inbox, delete it altogether
+					var	expired = results.every(function(present) {
+							return present === null;
+						});
+
+					if (expired) {
+						destroy(nid);
+						numPruned++;
+					}
+
+					next();
+				});
+			}, function(err) {
+				if (process.env.NODE_ENV === 'development') {
+					winston.info('[notifications.prune] Notification pruning completed. ' + numPruned + ' expired notification' + (numPruned !== 1 ? 's' : '') + ' removed.');
+				}
+			});
+
 		});
 	};
 

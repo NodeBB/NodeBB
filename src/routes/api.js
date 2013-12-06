@@ -42,7 +42,7 @@ var path = require('path'),
 				var uid = (req.user) ? req.user.uid : 0;
 				categories.getAllCategories(uid, function (err, data) {
 					data.categories = data.categories.filter(function (category) {
-						return (!category.disabled || category.disabled === "0");
+						return (!category.disabled || parseInt(category.disabled, 10) === 0);
 					});
 
 					function iterator(category, callback) {
@@ -54,7 +54,7 @@ var path = require('path'),
 					}
 
 					async.each(data.categories, iterator, function (err) {
-						data.motd_class = (meta.config.show_motd === '1' || meta.config.show_motd === undefined) ? '' : ' none';
+						data.motd_class = (parseInt(meta.config.show_motd, 10) === 1 || meta.config.show_motd === undefined) ? '' : ' none';
 						data.motd_class += (meta.config.motd && meta.config.motd.length > 0 ? '' : ' default');
 
 						data.motd = require('marked')(meta.config.motd || "<div class=\"pull-right btn-group\"><a target=\"_blank\" href=\"http://www.nodebb.org\" class=\"btn btn-default btn-lg\"><i class=\"fa fa-comment\"></i><span class='hidden-mobile'>&nbsp;Get NodeBB</span></a> <a target=\"_blank\" href=\"https://github.com/designcreateplay/NodeBB\" class=\"btn btn-default btn-lg\"><i class=\"fa fa-github\"></i><span class='hidden-mobile'>&nbsp;Fork us on Github</span></a> <a target=\"_blank\" href=\"https://twitter.com/dcplabs\" class=\"btn btn-default btn-lg\"><i class=\"fa fa-twitter\"></i><span class='hidden-mobile'>&nbsp;@dcplabs</span></a></div>\n\n# NodeBB <span>v" + pkg.version + "</span>\nWelcome to NodeBB, the discussion platform of the future.");
@@ -117,7 +117,7 @@ var path = require('path'),
 				var uid = (req.user) ? req.user.uid : 0;
 				topics.getTopicWithPosts(req.params.id, uid, 0, 10, false, function (err, data) {
 					if (!err) {
-						if (data.deleted === '1' && data.expose_tools === 0) {
+						if (parseInt(data.deleted, 10) === 1 && parseInt(data.expose_tools, 10) === 0) {
 							return res.json(404, {});
 						}
 						res.json(data);
@@ -132,10 +132,11 @@ var path = require('path'),
 				categoryTools.privileges(req.params.id, uid, function(err, privileges) {
 					if (!err && privileges.read) {
 						categories.getCategoryById(req.params.id, uid, function (err, data) {
-							if (!err && data && data.disabled === "0")
+							if (!err && data && parseInt(data.disabled, 10) === 0) {
 								res.json(data);
-							else
+							} else {
 								next();
+							}
 						}, req.params.id, uid);
 					} else {
 						res.send(403);
@@ -225,18 +226,8 @@ var path = require('path'),
 
 			app.get('/search/:term', function (req, res, next) {
 
-				var reds = require('reds');
-				var postSearch = reds.createSearch('nodebbpostsearch');
-				var topicSearch = reds.createSearch('nodebbtopicsearch');
-
-				function search(searchObj, callback) {
-					searchObj
-						.query(query = req.params.term).type('or')
-						.end(callback);
-				}
-
 				function searchPosts(callback) {
-					search(postSearch, function (err, pids) {
+					db.search('post', req.params.term, function(err, pids) {
 						if (err) {
 							return callback(err, null);
 						}
@@ -247,11 +238,11 @@ var path = require('path'),
 							}
 							callback(null, posts);
 						});
-					})
+					});
 				}
 
 				function searchTopics(callback) {
-					search(topicSearch, function (err, tids) {
+					db.search('topic', req.params.term, function(err, tids) {
 						if (err) {
 							return callback(err, null);
 						}

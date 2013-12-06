@@ -9,15 +9,10 @@ var cookie = require('cookie'),
 	gravatar = require('gravatar'),
 	winston = require('winston'),
 
-	RedisStoreLib = require('connect-redis')(express),
-	RDB = require('./redis'),
-	RedisStore = new RedisStoreLib({
-		client: RDB,
-		ttl: 60 * 60 * 24 * 14
-	}),
+	db = require('./database'),
 
 	user = require('./user'),
-	Groups = require('./groups'),
+	groups = require('./groups'),
 	posts = require('./posts'),
 	favourites = require('./favourites'),
 	utils = require('../public/src/utils'),
@@ -70,9 +65,12 @@ websockets.init = function(io) {
 		// Validate the session, if present
 		socketCookieParser(hs, {}, function(err) {
 			sessionID = socket.handshake.signedCookies["express.sid"];
-			RedisStore.get(sessionID, function(err, sessionData) {
-				if (!err && sessionData && sessionData.passport && sessionData.passport.user) uid = users[sessionID] = sessionData.passport.user;
-				else uid = users[sessionID] = 0;
+			db.sessionStore.get(sessionID, function(err, sessionData) {
+				if (!err && sessionData && sessionData.passport && sessionData.passport.user) {
+					uid = users[sessionID] = sessionData.passport.user;
+				} else {
+					uid = users[sessionID] = 0;
+				}
 
 				userSockets[uid] = userSockets[uid] || [];
 				userSockets[uid].push(socket);
@@ -89,7 +87,7 @@ websockets.init = function(io) {
 
 				if (uid) {
 
-					RDB.zadd('users:online', Date.now(), uid, function(err, data) {
+					db.sortedSetAdd('users:online', Date.now(), uid, function(err, data) {
 						socket.join('uid_' + uid);
 
 						user.getUserField(uid, 'username', function(err, username) {
@@ -117,7 +115,7 @@ websockets.init = function(io) {
 				delete users[sessionID];
 				delete userSockets[uid];
 				if (uid) {
-					RDB.zrem('users:online', uid, function(err, data) {
+					db.sortedSetRemove('users:online', uid, function(err, data) {
 					});
 				}
 			}
@@ -348,7 +346,7 @@ websockets.init = function(io) {
 		});
 
 		socket.on('api:topics.post', function(data) {
-			if (uid < 1 && meta.config.allowGuestPosting === '0') {
+			if (uid < 1 && parseInt(meta.config.allowGuestPosting, 10) === 0) {
 				socket.emit('event:alert', {
 					title: 'Post Unsuccessful',
 					message: 'You don&apos;t seem to be logged in, so you cannot reply.',
@@ -419,7 +417,7 @@ websockets.init = function(io) {
 		});
 
 		socket.on('api:posts.reply', function(data) {
-			if (uid < 1 && meta.config.allowGuestPosting === '0') {
+			if (uid < 1 && parseInt(meta.config.allowGuestPosting, 10) === 0) {
 				socket.emit('event:alert', {
 					title: 'Reply Unsuccessful',
 					message: 'You don&apos;t seem to be logged in, so you cannot reply.',
@@ -781,7 +779,7 @@ websockets.init = function(io) {
 		});
 
 		socket.on('api:composer.push', function(data) {
-			if (uid > 0 || meta.config.allowGuestPosting === '1') {
+			if (parseInt(uid, 10) > 0 || parseInt(meta.config.allowGuestPosting, 10) === 1) {
 				if (parseInt(data.tid) > 0) {
 					topics.getTopicData(data.tid, function(err, topicData) {
 						if (data.body)
@@ -1029,16 +1027,16 @@ websockets.init = function(io) {
 			};
 
 			if (set) {
-				Groups.joinByGroupName('cid:' + cid + ':privileges:' + privilege, uid, cb);
+				groups.joinByGroupName('cid:' + cid + ':privileges:' + privilege, uid, cb);
 			} else {
-				Groups.leaveByGroupName('cid:' + cid + ':privileges:' + privilege, uid, cb);
+				groups.leaveByGroupName('cid:' + cid + ':privileges:' + privilege, uid, cb);
 			}
 		});
 
 		socket.on('api:admin.categories.getPrivilegeSettings', function(cid, callback) {
 			async.parallel({
 				"+r": function(next) {
-					Groups.getByGroupName('cid:' + cid + ':privileges:+r', { expand: true }, function(err, groupObj) {
+					groups.getByGroupName('cid:' + cid + ':privileges:+r', { expand: true }, function(err, groupObj) {
 						if (!err) {
 							next.apply(this, arguments);
 						} else {
@@ -1049,7 +1047,7 @@ websockets.init = function(io) {
 					});
 				},
 				"+w": function(next) {
-					Groups.getByGroupName('cid:' + cid + ':privileges:+w', { expand: true }, function(err, groupObj) {
+					groups.getByGroupName('cid:' + cid + ':privileges:+w', { expand: true }, function(err, groupObj) {
 						if (!err) {
 							next.apply(this, arguments);
 						} else {
@@ -1090,19 +1088,19 @@ websockets.init = function(io) {
 		*/
 
 		socket.on('api:groups.create', function(data, callback) {
-			Groups.create(data.name, data.description, function(err, groupObj) {
+			groups.create(data.name, data.description, function(err, groupObj) {
 				callback(err ? err.message : null, groupObj || undefined);
 			});
 		});
 
 		socket.on('api:groups.delete', function(gid, callback) {
-			Groups.destroy(gid, function(err) {
+			groups.destroy(gid, function(err) {
 				callback(err ? err.message : null, err ? null : 'OK');
 			});
 		});
 
 		socket.on('api:groups.get', function(gid, callback) {
-			Groups.get(gid, {
+			groups.get(gid, {
 				expand: true
 			}, function(err, groupObj) {
 				callback(err ? err.message : null, groupObj || undefined);
@@ -1110,15 +1108,15 @@ websockets.init = function(io) {
 		});
 
 		socket.on('api:groups.join', function(data, callback) {
-			Groups.join(data.gid, data.uid, callback);
+			groups.join(data.gid, data.uid, callback);
 		});
 
 		socket.on('api:groups.leave', function(data, callback) {
-			Groups.leave(data.gid, data.uid, callback);
+			groups.leave(data.gid, data.uid, callback);
 		});
 
 		socket.on('api:groups.update', function(data, callback) {
-			Groups.update(data.gid, data.values, function(err) {
+			groups.update(data.gid, data.values, function(err) {
 				callback(err ? err.message : null);
 			});
 		});
@@ -1128,14 +1126,14 @@ websockets.init = function(io) {
 
 
 	function emitTopicPostStats() {
-		RDB.mget(['totaltopiccount', 'totalpostcount'], function(err, data) {
+		db.getObjectFields('global', ['topicCount', 'postCount'], function(err, data) {
 			if (err) {
 				return winston.err(err);
 			}
 
 			var stats = {
-				topics: data[0] ? data[0] : 0,
-				posts: data[1] ? data[1] : 0
+				topics: data.topicCount ? data.topicCount : 0,
+				posts: data.postCount ? data.postCount : 0
 			};
 
 			io.sockets.emit('post.stats', stats);
@@ -1143,7 +1141,7 @@ websockets.init = function(io) {
 	}
 
 	websockets.emitUserCount = function() {
-		RDB.get('usercount', function(err, count) {
+		db.getObjectField('global', 'userCount', function(err, count) {
 			io.sockets.emit('user.count', {
 				count: count
 			});
@@ -1154,8 +1152,10 @@ websockets.init = function(io) {
 		return io.sockets.in(room);
 	};
 
+}
+
 	websockets.getConnectedClients = function() {
 		return userSockets;
 	}
-}
+
 })(module.exports);

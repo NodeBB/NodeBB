@@ -89,9 +89,10 @@ define(function() {
 
 		$('#category-no-topics').remove();
 
+		html = $(html);
 		container.append(html);
 		$('span.timeago').timeago();
-		app.makeNumbersHumanReadable($(html).find('.human-readable-number'));
+		app.makeNumbersHumanReadable(html.find('.human-readable-number'));
 	}
 
 	Recent.loadMoreTopics = function() {
