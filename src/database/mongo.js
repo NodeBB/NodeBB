@@ -13,12 +13,12 @@
 
 	module.init = function(callback) {
 		mongoClient.connect('mongodb://'+ mongoHost + ':' + nconf.get('mongo:port') + '/' + nconf.get('mongo:database'), function(err, _db) {
-			db = _db;
-
 			if(err) {
 				winston.error("NodeBB could not connect to your Mongo database. Mongo returned the following error: " + err.message);
 				process.exit();
 			}
+
+			db = _db;
 
 			module.client = db;
 
@@ -27,46 +27,49 @@
 			});
 
 
-			// TODO : what is the db user name??
 			if(nconf.get('mongo:password') && nconf.get('mongo:username')) {
 				db.authenticate(nconf.get('mongo:username'), nconf.get('mongo:password'), function (err) {
 					if(err) {
 						winston.error(err.message);
+						process.exit();
 					}
-					process.exit();
+					createCollections();
 				});
+			} else {
+				createCollections();
 			}
 
+			function createCollections() {
+				db.createCollection('objects', function(err, collection) {
+					if(err) {
+						winston.error("Error creating collection " + err.message);
+						return;
+					}
+					if(collection) {
+						collection.ensureIndex({_key :1, setName:1}, {background:true}, function(err, name){
+							if(err) {
+								winston.error("Error creating index " + err.message);
+							}
+						});
+					}
+				});
 
-			db.createCollection('objects', function(err, collection) {
-				if(err) {
-					winston.error("Error creating collection " + err.message);
-					return;
-				}
-				if(collection) {
-					collection.ensureIndex({_key :1, setName:1}, {background:true}, function(err, name){
-						if(err) {
-							winston.error("Error creating index " + err.message);
-						}
-					});
-				}
-			});
+				db.createCollection('search', function(err, collection) {
+					if(err) {
+						winston.error("Error creating collection " + err.message);
+						return;
+					}
+					if(collection) {
+						collection.ensureIndex({content:'text'}, {background:true}, function(err, name){
+							if(err) {
+								winston.error("Error creating index " + err.message);
+							}
+						});
+					}
+				});
 
-			db.createCollection('search', function(err, collection) {
-				if(err) {
-					winston.error("Error creating collection " + err.message);
-					return;
-				}
-				if(collection) {
-					collection.ensureIndex({content:'text'}, {background:true}, function(err, name){
-						if(err) {
-							winston.error("Error creating index " + err.message);
-						}
-					});
-				}
-			});
-
-			callback(err);
+				callback(null);
+			}
 		});
 	}
 

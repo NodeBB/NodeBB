@@ -309,7 +309,6 @@ Upgrade.upgradeMongo = function(callback) {
 	async.series([
 		function(next) {
 			db.get('schemaDate', function(err, value) {
-				console.log(schemaDate)
 				schemaDate = value;
 				thisSchemaDate = new Date(2013, 11, 6).getTime();
 				next();
