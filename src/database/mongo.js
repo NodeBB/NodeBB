@@ -28,10 +28,14 @@
 
 
 			// TODO : what is the db user name??
-			/*if(nconf.get('mongo:password')) {
-				db.authenticate(dbUser, nconf.get('mongo:password'), function (err) {
+			if(nconf.get('mongo:password') && nconf.get('mongo:username')) {
+				db.authenticate(nconf.get('mongo:username'), nconf.get('mongo:password'), function (err) {
+					if(err) {
+						winston.error(err.message);
+					}
+					process.exit();
 				});
-			}*/
+			}
 
 
 			db.createCollection('objects', function(err, collection) {
@@ -60,7 +64,7 @@
 						}
 					});
 				}
-			})
+			});
 
 			callback(err);
 		});
