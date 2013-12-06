@@ -1,8 +1,8 @@
 {
-	"topic": "Topic",
-	"topics": "Topics",
+	"topic": "Tema",
+	"topics": "Temas",
 
-	"no_topics_found": "No topics found!",
+	"no_topics_found": "No se encontraron temas!",
 
 	"profile": "Perfil",
 	"posted_by": "Publicado por",
@@ -29,11 +29,11 @@
 	"favourites": "Favoritos",
 	"favourites.not_logged_in.title": "No estas conectado :(",
 	"favourites.not_logged_in.message": "Por favor, conectate para agregar a favorito este post.",
-	"favourites.has_no_favourites": "You don't have any favourites, favourite some posts to see them here!",
+	"favourites.has_no_favourites": "No tienes favoritos, puedes agregar alguno y volver a verlos aqui!",
 
-	"posted_by": "posted by",
-	"loading": "Lade",
-	"more_posts": "More Posts",
-	"move_topic": "Move Topic",
-	"topic_will_be_moved_to": "This topic will be moved to the category"
+	"posted_by": "Publicado por",
+	"loading": "Cargando",
+	"more_posts": "Más posts",
+	"move_topic": "Mover Tema",
+	"topic_will_be_moved_to": "Este tema sera movido a la categoría"
 }

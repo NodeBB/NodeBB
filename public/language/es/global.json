@@ -9,22 +9,22 @@
 	"500.title": "Error Interno.",
 	"500.message": "Ooops! Algo salio mal!, No te alarmes. Nuestros simios hiperinteligentes lo solucionarán",
 	
-	"register": "Register",
-	"login": "Login",
+	"register": "Registrarse",
+	"login": "Conectarse",
 
 	"logout": "Salir",
 	"logout.title": "Te has desconectado.",
 	"logout.message": "Haz sido desconectado correctamente",
 
-	"save_changes": "Save Changes",
-	"close": "Close",
+	"save_changes": "Guardar Cambios",
+	"close": "Cerrar",
 
 	"header.admin": "Admin",
 	"header.recent": "Recientes",
 	"header.unread": "No Leeidos",
 	"header.users": "Miembros",
 	"header.search": "Buscar",
-	"header.profile": "Profile",
+	"header.profile": "Perfil",
 
 	"notifications.loading": "Cargando Notificaciones",
 	"chats.loading": "Cargando Chats"

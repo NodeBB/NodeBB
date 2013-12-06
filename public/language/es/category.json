@@ -4,11 +4,11 @@
 	"sidebar.recent_replies": "Respuestas recientes",
 	"sidebar.active_participants": "Miembros más activos",
 	"sidebar.moderators": "Moderadores",
-	"posts": "posts",
-	"views": "views",
+	"posts": "respuestas",
+	"views": "visitas",
 	"posted": "posted",
-	"browsing": "browsing",
-	"no_replies": "No one has replied",
-	"replied": "replied",
-	"last_edited_by": "last edited by"
+	"browsing": "viendo ahora",
+	"no_replies": "Nadie ha respondido aún",
+	"replied": "respondio",
+	"last_edited_by": "ultima edición por"
 }

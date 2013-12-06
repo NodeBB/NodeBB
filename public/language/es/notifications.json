@@ -1,9 +1,9 @@
 {
 	"title": "Notificaciones",
-	"back_to_home": "back to NodeBB",
-	"mark_all_as_read": "Mark All as Read",
-	"outgoing_link": "Outgoing Link",
-	"outgoing_link_message": "You are now leaving",
-	"continue_to": "Continue to",
-	"return_to": "Return to "
+	"back_to_home": "volver al Inicio",
+	"mark_all_as_read": "Marcar todo como leeido",
+	"outgoing_link": "Link Externo",
+	"outgoing_link_message": "Estas saliendo del sitio",
+	"continue_to": "Continuar",
+	"return_to": "Volver a "
 }
