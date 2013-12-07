@@ -5,7 +5,7 @@ var nconf = require('nconf'),
 	winston = require('winston');
 
 if(!databaseType) {
-	winston.info('Database type not set! Run npm app --setup');
+	winston.info('Database type not set! Run node app --setup');
 	process.exit();
 }
 
