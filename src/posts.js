@@ -135,38 +135,29 @@ var db = require('./database'),
 				}
 
 				Posts.getCidByPid(postData.pid, function(err, cid) {
-					db.delete('cid:' + cid + ':read_by_uid');
-				});
-
-				async.parallel([
-					function(next) {
-						topics.markUnRead(tid, function(err) {
-							if(err) {
-								return next(err);
-							}
-							topics.markAsRead(tid, uid);
-							next();
-						});
-					},
-					function(next) {
-						topics.pushUnreadCount(null, next);
-					},
-					function(next) {
-						threadTools.notifyFollowers(tid, uid);
-						next();
-					},
-					function(next) {
-						Posts.addUserInfoToPost(postData, function(err) {
-							if(err) {
-								return next(err);
-							}
-							next();
-						});
-					}
-				], function(err, results) {
 					if(err) {
 						return callback(err, null);
 					}
+
+					db.delete('cid:' + cid + ':read_by_uid');
+				});
+
+				topics.markAsUnreadForAll(tid, function(err) {
+					if(err) {
+						return callback(err, null);
+					}
+
+					topics.markAsRead(tid, uid);
+					topics.pushUnreadCount();
+				});
+
+				threadTools.notifyFollowers(tid, uid);
+				
+				Posts.addUserInfoToPost(postData, function(err) {
+					if(err) {
+						return callback(err, null);
+					}
+
 					callback(null, postData);
 				});
 			});
