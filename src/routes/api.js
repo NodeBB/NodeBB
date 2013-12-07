@@ -2,6 +2,7 @@ var path = require('path'),
 	nconf = require('nconf'),
 	async = require('async'),
 
+	db = require('../database'),
 	user = require('../user'),
 	auth = require('./authentication'),
 	topics = require('../topics'),
@@ -232,7 +233,7 @@ var path = require('path'),
 							return callback(err, null);
 						}
 
-						posts.getPostSummaryByPids(pids, function (err, posts) {
+						posts.getPostSummaryByPids(pids, false, function (err, posts) {
 							if (err){
 								return callback(err, null);
 							}

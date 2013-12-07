@@ -229,7 +229,7 @@ var db = require('./database.js'),
 				return;
 			}
 
-			posts.getPostSummaryByPids(pids, function(err, postData) {
+			posts.getPostSummaryByPids(pids, true, function(err, postData) {
 				if (postData.length > count) {
 					postData = postData.slice(0, count);
 				}

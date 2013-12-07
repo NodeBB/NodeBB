@@ -205,7 +205,7 @@ var db = require('./database'),
 	Posts.addUserInfoToPost = function(post, callback) {
 		user.getUserFields(post.uid, ['username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned'], function(err, userData) {
 			if (err) {
-				return callback();
+				return callback(err);
 			}
 
 			postTools.parseSignature(userData.signature, function(err, signature) {
@@ -242,7 +242,7 @@ var db = require('./database'),
 		});
 	};
 
-	Posts.getPostSummaryByPids = function(pids, callback) {
+	Posts.getPostSummaryByPids = function(pids, stripTags, callback) {
 
 		var posts = [];
 
@@ -283,10 +283,17 @@ var db = require('./database'),
 				function(postData, next) {
 					if (postData.content) {
 						postTools.parse(postData.content, function(err, content) {
-							if (!err) {
-								postData.content = utils.strip_tags(content);
+							if(err) {
+								return next(err);
 							}
-							next(err, postData);
+
+							if(stripTags) {
+								postData.content = utils.strip_tags(content);
+							} else {
+								postData.content = content;
+							}
+
+							next(null, postData);
 						});
 					} else {
 						next(null, postData);
@@ -504,7 +511,7 @@ var db = require('./database'),
 			if (err)
 				return callback(err, null);
 
-			Posts.getPostSummaryByPids(pids, function(err, posts) {
+			Posts.getPostSummaryByPids(pids, false, function(err, posts) {
 				if (err)
 					return callback(err, null);
 
