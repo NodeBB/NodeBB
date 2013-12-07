@@ -71,7 +71,6 @@ define(function() {
 		});
 
 		function onTopicsLoaded(topics) {
-
 			var html = templates.prepare(templates['unread'].blocks['topics']).parse({
 				topics: topics
 			});
