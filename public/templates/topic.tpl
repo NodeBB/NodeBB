@@ -39,6 +39,7 @@
 							<span class="label label-danger">[[topic:banned]]</span>
 							<!-- ENDIF posts.user_banned -->
 						</a>
+
 					</div>
 
 					<div class="col-md-11">
@@ -108,6 +109,7 @@
 
 							<div class="post-info">
 								<span class="pull-left">
+									[[topic:reputation]]: <i class='fa fa-star'></i> <span class='formatted-number'>{posts.user_rep}</span>&nbsp;|&nbsp;[[topic:posts]]: <i class='fa fa-pencil'></i> <span class='formatted-number'>{posts.user_postcount}</span>
 									{posts.additional_profile_info}
 								</span>
 								<span class="pull-right">
