@@ -215,14 +215,18 @@ var path = require('path'),
 			});
 
 			app.get('/search', function (req, res) {
-				return res.json({
-					show_no_topics: 'hide',
-					show_no_posts: 'hide',
-					show_results: 'hide',
-					search_query: '',
-					posts: [],
-					topics: []
-				});
+				if (req.user && req.user.uid) {
+					return res.json({
+						show_no_topics: 'hide',
+						show_no_posts: 'hide',
+						show_results: 'hide',
+						search_query: '',
+						posts: [],
+						topics: []
+					});
+				} else {
+					res.send(403);
+				}
 			});
 
 			app.get('/search/:term', function (req, res, next) {
@@ -254,20 +258,24 @@ var path = require('path'),
 					});
 				}
 
-				async.parallel([searchPosts, searchTopics], function (err, results) {
-					if (err) {
-						return next();
-					}
+				if (req.user && req.user.uid) {
+					async.parallel([searchPosts, searchTopics], function (err, results) {
+						if (err) {
+							return next();
+						}
 
-					return res.json({
-						show_no_topics: results[1].length ? 'hide' : '',
-						show_no_posts: results[0].length ? 'hide' : '',
-						show_results: '',
-						search_query: req.params.term,
-						posts: results[0],
-						topics: results[1]
+						return res.json({
+							show_no_topics: results[1].length ? 'hide' : '',
+							show_no_posts: results[0].length ? 'hide' : '',
+							show_results: '',
+							search_query: req.params.term,
+							posts: results[0],
+							topics: results[1]
+						});
 					});
-				});
+				} else {
+					res.send(403);
+				}
 			});
 
 			app.get('/reset', function (req, res) {
