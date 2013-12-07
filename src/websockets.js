@@ -1084,8 +1084,8 @@ websockets.init = function(io) {
 		});
 
 		socket.on('api:meta.buildTitle', function(text, callback) {
-			meta.title.build(text, uid, function(err, title, numNotifications) {
-				callback(title, numNotifications);
+			meta.title.build(text, function(err, title) {
+				callback(title);
 			});
 		});
 
