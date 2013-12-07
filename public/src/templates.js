@@ -353,7 +353,7 @@
 				var regex = new RegExp("{" + namespace + "[\\s\\S]*?}", 'g');
 				template = template.replace(regex, '');
 			}
-			//console.log (template);
+			
 			// clean up all undefined conditionals
 			template = template.replace(/<!-- IF([\s\S]*?)ENDIF([\s\S]*?)-->/gi, '');
 
