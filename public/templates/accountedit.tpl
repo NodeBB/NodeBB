@@ -10,17 +10,17 @@
 				<div class="modal-body">
 					<div id="gravatar-box">
 						<img id="user-gravatar-picture" src="" class="img-thumbnail user-profile-picture">
-						<span class="user-picture-label">[[user: gravatar]]</span>
+						<span class="user-picture-label">[[user:gravatar]]</span>
 						<i class='fa fa-check fa-2x'></i>
 					</div>
 					<br/>
 					<div id="uploaded-box">
 						<img id="user-uploaded-picture" src="" class="img-thumbnail user-profile-picture">
-						<span class="user-picture-label">[[user: uploaded_picture]]</span>
+						<span class="user-picture-label">[[user:uploaded_picture]]</span>
 						<i class='fa fa-check fa-2x'></i>
 					</div>
 
-					<a id="uploadPictureBtn" href="#">[[user: upload_new_picture]]</a>
+					<a id="uploadPictureBtn" href="#">[[user:upload_new_picture]]</a>
 				</div>
 				<div class="modal-footer">
 					<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
