@@ -134,6 +134,10 @@ var db = require('./database'),
 					callback(new Error('reply-error'), null);
 				}
 
+				Posts.getCidByPid(postData.pid, function(err, cid) {
+					db.delete('cid:' + cid + ':read_by_uid');
+				});
+
 				async.parallel([
 					function(next) {
 						topics.markUnRead(tid, function(err) {
@@ -146,16 +150,6 @@ var db = require('./database'),
 					},
 					function(next) {
 						topics.pushUnreadCount(null, next);
-					},
-					function(next) {
-						Posts.getCidByPid(postData.pid, function(err, cid) {
-							if(err) {
-								return next(err);
-							}
-
-							db.delete('cid:' + cid + ':read_by_uid');
-							next();
-						});
 					},
 					function(next) {
 						threadTools.notifyFollowers(tid, uid);
