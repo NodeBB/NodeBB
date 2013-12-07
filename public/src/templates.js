@@ -320,14 +320,16 @@
 									if (conditionalBlock[1]) {
 										// there is an else statement
 										if (!value) {
-											template = template.replace(matches[i], conditionalBlock[1]);
+											template = template.replace(matches[i], conditionalBlock[1].replace(/<!-- ((\IF\b)|(\bENDIF\b))(.*?)-->/gi, ''));
 										} else {
-											template = template.replace(matches[i], conditionalBlock[0]);
+											template = template.replace(matches[i], conditionalBlock[0].replace(/<!-- ((\IF\b)|(\bENDIF\b))(.*?)-->/gi, ''));
 										}
 									} else {
 										// regular if statement
 										if (!value) {
 											template = template.replace(matches[i], '');
+										} else {
+											template = template.replace(matches[i], matches[i].replace(/<!-- ((\IF\b)|(\bENDIF\b))(.*?)-->/gi, ''));
 										}
 									}
 								}
@@ -351,6 +353,9 @@
 				var regex = new RegExp("{" + namespace + "[\\s\\S]*?}", 'g');
 				template = template.replace(regex, '');
 			}
+			//console.log (template);
+			// clean up all undefined conditionals
+			template = template.replace(/<!-- IF([\s\S]*?)ENDIF([\s\S]*?)-->/gi, '');
 
 			return template;
 
