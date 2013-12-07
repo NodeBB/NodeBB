@@ -48,6 +48,13 @@
 		winston.error(err.stack);
 	};
 
+	require('child_process').exec('/usr/bin/which convert', function(err, stdout, stderr) {
+		if(err) {
+			winston.warn('Counldn\'t find convert. Did you install imagemagick? ', err.message);
+		}
+		winston.warn('Counldn\'t find convert. Did you install imagemagick? ', err);
+	});
+
 	// Log GNU copyright info along with server info
 	winston.info('NodeBB v' + pkg.version + ' Copyright (C) 2013 DesignCreatePlay Inc.');
 	winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
