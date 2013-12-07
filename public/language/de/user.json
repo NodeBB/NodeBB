@@ -7,7 +7,7 @@
 	"location": "Wohnort",
 	"age": "Alter",
 	"joined": "Beigetreten",
-	"profil_views": "Profilaufrufe",
+	"profile_views": "Profilaufrufe",
 	"reputation": "Reputation",
 	"posts": "Posts",
 	"followers": "Follower",
@@ -29,7 +29,7 @@
 	"image_spec": "Du solltest nur Dateien die PNG, JPG, oder GIF kleiner als 256kb hochladen.",
 
 	"settings": "Einstellungen",
-	"show_my_email": "Zeige meine E-Mail Adresse an.",
+	"show_email": "Zeige meine E-Mail Adresse an.",
 
 	"has_no_follower": "Dieser User hat noch keine Follower.",
 	"follows_no_one": "Dieser User folgt noch niemanden."

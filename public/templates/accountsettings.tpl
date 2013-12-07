@@ -12,7 +12,7 @@
 			<h4>privacy</h4>
 			<div class="checkbox">
 				<label>
-	      			<input id="showemailCheckBox" type="checkbox" {showemail}> [[user:show_my_email]]
+	      			<input id="showemailCheckBox" type="checkbox" {showemail}> [[user:show_email]]
 	    		</label>
 	    	</div>
 		</div>
