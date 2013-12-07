@@ -696,9 +696,15 @@ websockets.init = function(io) {
 
 			var msg = utils.strip_tags(data.message);
 
-			user.getUserField(uid, 'username', function(err, username) {
+			user.getMultipleUserFields([uid, touid], ['username'], function(err, usersData) {
+				if(err) {
+					return;
+				}
+
 				var finalMessage = username + ' : ' + msg,
-					notifText = 'New message from <strong>' + username + '</strong>';
+					notifText = 'New message from <strong>' + username + '</strong>',
+					username = usersData[0].username,
+					toUsername = usersData[1].username;
 
 				if (!isUserOnline(touid)) {
 					notifications.create(notifText, 'javascript:app.openChat(&apos;' + username + '&apos;, ' + uid + ');', 'notification_' + uid + '_' + touid, function(nid) {
@@ -731,7 +737,7 @@ websockets.init = function(io) {
 						for (var x = 0; x < numSockets; ++x) {
 							userSockets[uid][x].emit('event:chats.receive', {
 								fromuid: touid,
-								username: username,
+								username: toUsername,
 								message: 'You : ' + msg,
 								timestamp: Date.now()
 							});
