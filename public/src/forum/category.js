@@ -134,20 +134,22 @@ define(function () {
 	}
 
 	Category.onTopicsLoaded = function(topics) {
-
 		var html = templates.prepare(templates['category'].blocks['topics']).parse({
 			topics: topics
-		}),
-			container = $('#topics-container');
+		});
+		
+		translator.translate(html, function(translatedHTML) {
+			var container = $('#topics-container');
 
-		jQuery('#topics-container, .category-sidebar').removeClass('hidden');
-		jQuery('#category-no-topics').remove();
+			jQuery('#topics-container, .category-sidebar').removeClass('hidden');
+			jQuery('#category-no-topics').remove();
 
-		html = $(html);
-		container.append(html);
+			html = $(translatedHTML);
+			container.append(html);
 
-		$('#topics-container span.timeago').timeago();
-		app.makeNumbersHumanReadable(html.find('.human-readable-number'));
+			$('#topics-container span.timeago').timeago();
+			app.makeNumbersHumanReadable(html.find('.human-readable-number'));
+		});
 	}
 
 	Category.loadMoreTopics = function(cid) {
