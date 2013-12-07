@@ -31,6 +31,7 @@ var ajaxify = {};
 
 	var pagination, paginator_bar;
 
+	ajaxify.currentPage = null;
 	ajaxify.go = function (url, callback, template, quiet) {
 		// start: the following should be set like so: ajaxify.onchange(function(){}); where the code actually belongs
 		$(window).off('scroll');
@@ -69,6 +70,9 @@ var ajaxify = {};
 		}
 
 		if (templates.is_available(tpl_url) && !templates.force_refresh(tpl_url)) {
+			console.log(tpl_url);
+			ajaxify.currentPage = tpl_url;
+
 			if (window.history && window.history.pushState) {
 				window.history[!quiet ? 'pushState' : 'replaceState']({
 					url: url
