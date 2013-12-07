@@ -67,6 +67,7 @@
 		notifTrigger = notifContainer.querySelector('a'),
 		notifList = document.getElementById('notif-list'),
 		notifIcon = $('.notifications a');
+
 	notifTrigger.addEventListener('click', function(e) {
 		e.preventDefault();
 		if (notifContainer.className.indexOf('open') === -1) {
@@ -168,6 +169,10 @@
 			timeout: 2000
 		});
 		app.refreshTitle();
+
+		if (ajaxify.currentPage === 'notifications') {
+			ajaxify.refresh();
+		}
 
 		// Update the favicon + local storage
 		var	savedCount = parseInt(localStorage.getItem('notifications:count'),10) || 0;

@@ -81,18 +81,20 @@ define(function() {
 	}
 
 	Recent.onTopicsLoaded = function(topics) {
-
 		var html = templates.prepare(templates['recent'].blocks['topics']).parse({
 			topics: topics
-		}),
-			container = $('#topics-container');
+		});
+		
+		translator.translate(html, function(translatedHTML) {
+			var container = $('#topics-container');
 
-		$('#category-no-topics').remove();
+			$('#category-no-topics').remove();
 
-		html = $(html);
-		container.append(html);
-		$('span.timeago').timeago();
-		app.makeNumbersHumanReadable(html.find('.human-readable-number'));
+			html = $(html);
+			container.append(html);
+			$('span.timeago').timeago();
+			app.makeNumbersHumanReadable(html.find('.human-readable-number'));
+		});
 	}
 
 	Recent.loadMoreTopics = function() {
