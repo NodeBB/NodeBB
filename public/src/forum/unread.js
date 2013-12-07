@@ -74,15 +74,18 @@ define(function() {
 
 			var html = templates.prepare(templates['unread'].blocks['topics']).parse({
 				topics: topics
-			}),
-				container = $('#topics-container');
+			});
 
-			$('#category-no-topics').remove();
+			translator.translate(html, function(translatedHTML) {
+				var container = $('#topics-container');
 
-			html = $(html);
-			container.append(html);
-			$('span.timeago').timeago();
-			app.makeNumbersHumanReadable(html.find('.human-readable-number'));
+				$('#category-no-topics').remove();
+
+				html = $(translatedHTML);
+				container.append(html);
+				$('span.timeago').timeago();
+				app.makeNumbersHumanReadable(html.find('.human-readable-number'));
+			});
 		}
 
 		function loadMoreTopics() {
