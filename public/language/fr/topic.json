@@ -35,5 +35,8 @@
 	"loading": "Chargement",
 	"more_posts": "d'autres Messages",
 	"move_topic": "Déplacer le Sujet",
-	"topic_will_be_moved_to": "Ce sujet sera déplacé vers la catégorie"
+	"topic_will_be_moved_to": "Ce sujet sera déplacé vers la catégorie",
+
+	"reputation": "réputation",
+	"posts": "messages"
 }

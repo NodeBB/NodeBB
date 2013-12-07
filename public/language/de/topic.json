@@ -36,5 +36,8 @@
 	"loading": "Lade",
 	"more_posts": "Mehr Posts",
 	"move_topic": "Thema verschieben",
-	"topic_will_be_moved_to": "Dieses Thema wird verschoben nach"
+	"topic_will_be_moved_to": "Dieses Thema wird verschoben nach",
+
+	"reputation": "Reputation",
+	"posts": "Posts"
 }

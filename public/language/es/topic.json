@@ -35,5 +35,8 @@
 	"loading": "Cargando",
 	"more_posts": "Más posts",
 	"move_topic": "Mover Tema",
-	"topic_will_be_moved_to": "Este tema sera movido a la categoría"
+	"topic_will_be_moved_to": "Este tema sera movido a la categoría",
+
+	"reputation": "Reputación",
+	"posts": "Posts"
 }
