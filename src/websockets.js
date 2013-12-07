@@ -677,7 +677,7 @@ websockets.init = function(io) {
 			});
 		});
 
-		socket.on('getChatMessages', function(data, callback) {
+		socket.on('api:chats.get', function(data, callback) {
 			var touid = data.touid;
 			Messaging.getMessages(uid, touid, function(err, messages) {
 				if (err)
@@ -687,7 +687,7 @@ websockets.init = function(io) {
 			});
 		});
 
-		socket.on('sendChatMessage', function(data) {
+		socket.on('api:chats.send', function(data) {
 
 			var touid = data.touid;
 			if (touid === uid || uid === 0) {
@@ -715,7 +715,7 @@ websockets.init = function(io) {
 						numSockets = userSockets[touid].length;
 
 						for (var x = 0; x < numSockets; ++x) {
-							userSockets[touid][x].emit('chatMessage', {
+							userSockets[touid][x].emit('event:chats.receive', {
 								fromuid: uid,
 								username: username,
 								message: finalMessage,
@@ -729,7 +729,7 @@ websockets.init = function(io) {
 						numSockets = userSockets[uid].length;
 
 						for (var x = 0; x < numSockets; ++x) {
-							userSockets[uid][x].emit('chatMessage', {
+							userSockets[uid][x].emit('event:chats.receive', {
 								fromuid: touid,
 								username: username,
 								message: 'You : ' + msg,
