@@ -90,7 +90,7 @@ var ajaxify = {};
 
 			translator.load(tpl_url);
 
-			jQuery('#footer, #content').addClass('ajaxifying');
+			jQuery('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
 			templates.flush();
 			templates.load_template(function () {
@@ -154,7 +154,7 @@ var ajaxify = {};
 				return;
 			}
 
-			if (!e.ctrlKey && e.which === 1) {
+			if ((!e.ctrlKey && !e.shiftKey) && e.which === 1) {
 				if (this.host === window.location.host) {
 					// Internal link
 					var url = this.href.replace(rootUrl + '/', '');

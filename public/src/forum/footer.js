@@ -208,7 +208,7 @@
 		});
 	});
 
-	socket.on('chatMessage', function(data) {
+	socket.on('event:chats.receive', function(data) {
 		require(['chat'], function(chat) {
 			var modal = null;
 			if (chat.modalExists(data.fromuid)) {

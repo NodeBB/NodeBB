@@ -168,8 +168,6 @@
 			}
 			redisData.raw = JSON.stringify(redisData, null, 4);
 			redisData.redis = true;
-			//remove this when andrew adds in undefined checking to templates
-			redisData.mongo = false;
 
 			callback(null, redisData);
 		});
