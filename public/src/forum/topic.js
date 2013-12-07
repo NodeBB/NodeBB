@@ -802,8 +802,8 @@ define(function() {
 
 		pagination.parentNode.style.display = 'block';
 		progressBarContainer.css('display', '');
-
-		if (scrollTop < 50 && Topic.postCount > 1) {
+		
+		if (scrollTop < jQuery('.posts > .post-row:first-child').height() && Topic.postCount > 1) {
 			localStorage.removeItem("topic:" + tid + ":bookmark");
 			pagination.innerHTML = '1 out of ' + Topic.postCount;
 			progressBar.width(0);
