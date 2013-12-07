@@ -83,36 +83,39 @@ define(function () {
 	Category.onNewTopic = function(data) {
 		var html = templates.prepare(templates['category'].blocks['topics']).parse({
 			topics: [data]
-		}),
-			topic = $(html),
-			container = $('#topics-container'),
-			topics = $('#topics-container').children('.category-item'),
-			numTopics = topics.length;
+		});
+		
+		translator.translate(html, function(translatedHTML) {
+			var topic = $(translatedHTML),
+				container = $('#topics-container'),
+				topics = $('#topics-container').children('.category-item'),
+				numTopics = topics.length;
 
-		jQuery('#topics-container, .category-sidebar').removeClass('hidden');
-		jQuery('#category-no-topics').remove();
+			jQuery('#topics-container, .category-sidebar').removeClass('hidden');
+			jQuery('#category-no-topics').remove();
 
-		if (numTopics > 0) {
-			for (var x = 0; x < numTopics; x++) {
-				if ($(topics[x]).find('.fa-thumb-tack').length) {
-					if(x === numTopics - 1) {
-						topic.insertAfter(topics[x]);
+			if (numTopics > 0) {
+				for (var x = 0; x < numTopics; x++) {
+					if ($(topics[x]).find('.fa-thumb-tack').length) {
+						if(x === numTopics - 1) {
+							topic.insertAfter(topics[x]);
+						}
+						continue;
 					}
-					continue;
+					topic.insertBefore(topics[x]);
+					break;
 				}
-				topic.insertBefore(topics[x]);
-				break;
+			} else {
+				container.append(topic);
 			}
-		} else {
-			container.append(topic);
-		}
 
-		topic.hide().fadeIn('slow');
-		socket.emit('api:categories.getRecentReplies', templates.get('category_id'));
+			topic.hide().fadeIn('slow');
+			socket.emit('api:categories.getRecentReplies', templates.get('category_id'));
 
-		addActiveUser(data);
+			addActiveUser(data);
 
-		$('#topics-container span.timeago').timeago();
+			$('#topics-container span.timeago').timeago();
+		});
 	}
 
 	function addActiveUser(data) {
