@@ -25,6 +25,7 @@
 
 	var fs = require('fs'),
 		async = require('async'),
+		semver = require('semver'),
 		winston = require('winston'),
 		pkg = require('./package.json'),
 		path = require('path'),
@@ -77,6 +78,10 @@
 
 		if (process.env.NODE_ENV === 'development') {
 			winston.info('Base Configuration OK.');
+		}
+
+		if (semver.gt(pkg.dependencies['nodebb-theme-cerulean'], require('./node_modules/nodebb-theme-cerulean/package.json').version)) {
+			winston.error('nodebb-theme-cerulean is out of date - please run npm install.')
 		}
 
 		require('./src/database').init(function(err) {
