@@ -355,7 +355,7 @@
 			}
 			
 			// clean up all undefined conditionals
-			template = template.replace(/<!-- IF([\s\S]*?)ENDIF([\s\S]*?)-->/gi, '');
+			template = template.replace(/<!-- IF([^@]*?)ENDIF([^@]*?)-->/gi, '');
 
 			return template;
 
