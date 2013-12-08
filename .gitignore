@@ -16,3 +16,6 @@ provision.sh
 *.komodoproject
 
 feeds/recent.rss
+
+# winston?
+error.log
