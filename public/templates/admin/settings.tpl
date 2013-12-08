@@ -61,6 +61,17 @@
 </form>
 
 <form>
+	<h3>Profile Settings</h3>
+	<div class="alert alert-warning">
+		<div class="checkbox">
+			<label>
+				<input type="checkbox" data-field="profile:convertProfileImageToPNG"> <strong>Convert profile image uploads to PNG</strong>
+			</label>
+		</div>
+	</div>
+</form>
+
+<form>
 	<h3>User Settings</h3>
 	<div class="alert alert-warning">
 		<strong>Minimum Username Length</strong><br />
