@@ -289,7 +289,6 @@ var db = require('./database.js'),
 		db.exists('category:' + cid, function(err, exists) {
 			if (exists) {
 				db.getObject('category:' + cid, function(err, data) {
-					if (data.cid == "15") console.log(data);
 					data.background = data.image ? 'url(' + data.image + ')' : data.bgColor;
 					callback(err, data);
 				});
