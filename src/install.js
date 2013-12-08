@@ -104,12 +104,12 @@ var async = require('async'),
 					}
 				},
 				function (next) {
-					var	success = function(err, config) {
+					var	success = function (err, config) {
 						if (!config) {
 							return next(new Error('aborted'));
 						}
 
-						function dbQuestionsSuccess(err, databaseConfig) {
+						var dbQuestionsSuccess = function (err, databaseConfig) {
 							if (!databaseConfig) {
 								return next(new Error('aborted'));
 							}
@@ -135,7 +135,7 @@ var async = require('async'),
 
 							config.bcrypt_rounds = 12;
 							config.upload_path = '/public/uploads';
-							config.use_port = (config.use_port.slice(0, 1) === 'y') ? true : false;
+							config.use_port = config.use_port.slice(0, 1) === 'y';
 
 							var urlObject = url.parse(config.base_url),
 								relative_path = (urlObject.pathname && urlObject.pathname.length > 1) ? urlObject.pathname : '',
@@ -152,12 +152,20 @@ var async = require('async'),
 							install.save(server_conf, client_conf, function(err) {
 								require('./database').init(next);
 							});
-						}
+						};
 
 						if(config.database === 'redis') {
-							prompt.get(install.redisQuestions, dbQuestionsSuccess);
+							if (config['redis:host'] && config['redis:port']) {
+								dbQuestionsSuccess(null, config);
+							} else {
+								prompt.get(install.redisQuestions, dbQuestionsSuccess);
+							}
 						} else if(config.database === 'mongo') {
-							prompt.get(install.mongoQuestions, dbQuestionsSuccess);
+							if (config['mongo:host'] && config['mongo:port']) {
+								dbQuestionsSuccess(null, config);
+							} else {
+								prompt.get(install.mongoQuestions, dbQuestionsSuccess);
+							}
 						} else {
 							return next(new Error('unknown database : ' + config.database));
 						}
@@ -173,9 +181,9 @@ var async = require('async'),
 					} else {
 						// Use provided values, fall back to defaults
 						var	config = {},
-							question, x, numQ;
-						for(x=0,numQ=install.questions.length;x<numQ;x++) {
-							question = install.questions[x];
+							question, x, numQ, allQuestions = install.questions.concat(install.redisQuestions).concat(install.mongoQuestions);
+						for(x=0,numQ=allQuestions.length;x<numQ;x++) {
+							question = allQuestions[x];
 							config[question.name] = install.values[question.name] || question['default'] || '';
 						}
 						success(null, config);
