@@ -1,4 +1,4 @@
-define(function() {
+define(['uploader'], function(uploader) {
 	var	Categories = {};
 
 	Categories.init = function() {
@@ -147,7 +147,6 @@ define(function() {
 				var btn = $(this);
 				var categoryRow = btn.parents('li');
 				var cid = categoryRow.attr('data-cid');
-				console.log(this.getAttribute('data-disabled'));
 
 				var disabled = this.getAttribute('data-disabled') === '0' ? '1' : '0';
 				categoryRow.remove();
@@ -178,6 +177,17 @@ define(function() {
 			$('.permissions').on('click', function() {
 				var	cid = $(this).parents('li[data-cid]').attr('data-cid');
 				Categories.launchPermissionsModal(cid);
+			});
+
+
+			$('.upload-button').on('click', function() {
+				var inputEl = this;
+				
+				uploader.open(config.relative_path + '/admin/category/uploadpicture', function(imageUrlOnServer) {
+					inputEl.value = imageUrlOnServer;
+					$(inputEl).parents('li[data-cid]').find('.preview-box').css('background', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')');
+					modified(inputEl);
+				});
 			});
 		});
 	};

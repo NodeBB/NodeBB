@@ -8,7 +8,7 @@
 		<a href="category/{categories.slug}" itemprop="url">
 			<meta itemprop="name" content="{categories.name}">
 			<h4><span class="badge {categories.badgeclass}">{categories.topic_count} </span> {categories.name}</h4>
-			<div class="icon" style="background: {categories.bgColor}; color: {categories.color};">
+			<div class="icon" style="background: {categories.background}; color: {categories.color};">
 				<div id="category-{categories.cid}" class="category-slider-{categories.post_count}">
 					<div class="category-box"><i class="fa {categories.icon} fa-4x"></i></div>
 					<div class="category-box" itemprop="description">{categories.description}</div>

@@ -25,7 +25,7 @@ var db = require('./database.js'),
 				name: data.name,
 				description: data.description,
 				icon: data.icon,
-				bgColor: data.bgColor,
+				background: data.bgColor,
 				color: data.color,
 				slug: slug,
 				topic_count: 0,
@@ -288,7 +288,11 @@ var db = require('./database.js'),
 	Categories.getCategoryData = function(cid, callback) {
 		db.exists('category:' + cid, function(err, exists) {
 			if (exists) {
-				db.getObject('category:' + cid, callback);
+				db.getObject('category:' + cid, function(err, data) {
+					if (data.cid == "15") console.log(data);
+					data.background = data.image ? 'url(' + data.image + ')' : data.bgColor;
+					callback(err, data);
+				});
 			} else {
 				callback(new Error('No category found!'));
 			}

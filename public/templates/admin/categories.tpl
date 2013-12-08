@@ -15,7 +15,7 @@
 			<li data-cid="{categories.cid}" class="entry-row">
 				<div class="row">
 					<div class="col-sm-2 hidden-xs">
-						<div class="preview-box" style="background: {categories.bgColor}; color: {categories.color};">
+						<div class="preview-box" style="background: {categories.background}; color: {categories.color};">
 							<div class="icon">
 								<i data-name="icon" value="{categories.icon}" class="fa {categories.icon} fa-2x"></i>
 							</div>
@@ -67,6 +67,7 @@
 													<hr />
 													<li data-disabled="{categories.disabled}"><a href="#"></a></li>
 												</ul>
+												<button type="button" data-name="image" data-value="{categories.image}" class="btn btn-default upload-button"><i class="fa fa-upload"></i> Image</button>
 											</div>
 											<!-- <div class="btn-group">
 												<button type="submit" class="btn btn-default disable-btn" data-disabled="{categories.disabled}">Disable</button>

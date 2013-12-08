@@ -10,7 +10,8 @@ var nconf = require('nconf'),
 	pkg = require('./../../package.json'),
 	categories = require('./../categories'),
 	meta = require('../meta'),
-	plugins = require('../plugins');
+	plugins = require('../plugins'),
+	utils = require('./../../public/src/utils.js');
 
 
 
@@ -95,6 +96,53 @@ var nconf = require('nconf'),
 				Admin.buildHeader(req, res, function(err, header) {
 					res.send(header + app.create_route('admin/index') + templates['admin/footer']);
 				});
+			});
+
+			app.post('/category/uploadpicture', function(req, res) {
+				if (!req.user)
+					return res.redirect('/403');
+
+				var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
+
+				if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
+					res.send({
+						error: 'Allowed image types are png, jpg and gif!'
+					});
+					return;
+				}
+
+				var tempPath = req.files.userPhoto.path;
+				var extension = path.extname(req.files.userPhoto.name);
+
+				if (!extension) {
+					res.send({
+						error: 'Error uploading file! Error : Invalid extension!'
+					});
+					return;
+				}
+
+				var filename =  'category' + utils.generateUUID() + extension;
+				var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), filename);
+
+				winston.info('Attempting upload to: ' + uploadPath);
+
+				var is = fs.createReadStream(tempPath);
+				var os = fs.createWriteStream(uploadPath);
+
+				is.on('end', function () {
+					fs.unlinkSync(tempPath);
+					console.log(nconf.get('upload_url') + filename);
+					res.json({
+						path: nconf.get('upload_url') + filename
+					});
+				});
+
+				os.on('error', function (err) {
+					fs.unlinkSync(tempPath);
+					winston.err(err);
+				});
+
+				is.pipe(os);
 			});
 
 			app.post('/uploadlogo', function(req, res) {
