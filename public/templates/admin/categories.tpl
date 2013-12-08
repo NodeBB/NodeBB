@@ -14,12 +14,15 @@
 		<!-- BEGIN categories -->
 			<li data-cid="{categories.cid}" class="entry-row">
 				<div class="row">
-					<div class="col-sm-2 hidden-xs">
+					<div class="col-sm-2 hidden-xs text-center">
 						<div class="preview-box" style="background: {categories.background}; color: {categories.color};">
 							<div class="icon">
 								<i data-name="icon" value="{categories.icon}" class="fa {categories.icon} fa-2x"></i>
 							</div>
-						</div>
+						</div><br />
+						<!-- IF categories.image -->
+						<small class="pointer delete-image"><i data-name="icon" value="fa-times" class="fa fa-times"></i> Delete Image</small>
+						<!-- ENDIF categories.image -->
 					</div>
 					<div class="col-sm-10">
 						<form class="form">
