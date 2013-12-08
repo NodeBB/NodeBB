@@ -300,14 +300,7 @@
 						namespace = namespace.replace(d + '.', '');
 						template = setBlock(regex, result, template);
 					} else if (data[d] instanceof Object) {
-						namespace += d + '.';
-
-						regex = makeRegex(d),
-						block = getBlock(regex, namespace, template)
-						if (block == null) continue;
-
-						block = parse(data[d], namespace, block);
-						template = setBlock(regex, block, template);
+						template = parse(data[d], d + '.', template);
 					} else {
 						function checkConditional(key, value) {
 							var conditional = makeConditionalRegex(key),
@@ -352,6 +345,7 @@
 			if (namespace) {
 				var regex = new RegExp("{" + namespace + "[\\s\\S]*?}", 'g');
 				template = template.replace(regex, '');
+				namespace = '';
 			}
 			
 			// clean up all undefined conditionals
