@@ -231,7 +231,15 @@ Upgrade.upgradeRedis = function(callback) {
 
 			function updateKeyToHash(key, next) {
 				RDB.get(key, function(err, value) {
-					RDB.hset('global', newKeys[key], value, next);
+					if(err) {
+						return next(err);
+					}
+
+					if(value === null) {
+						RDB.hset('global', newKeys[key], 0, next);
+					} else {
+						RDB.hset('global', newKeys[key], value, next);
+					}
 				});
 			}
 
