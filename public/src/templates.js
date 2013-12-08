@@ -320,16 +320,16 @@
 									if (conditionalBlock[1]) {
 										// there is an else statement
 										if (!value) {
-											template = template.replace(matches[i], conditionalBlock[1].replace(/<!-- ((\IF\b)|(\bENDIF\b))(.*?)-->/gi, ''));
+											template = template.replace(matches[i], conditionalBlock[1].replace(/<!-- ((\IF\b)|(\bENDIF\b))([^@]*?)-->/gi, ''));
 										} else {
-											template = template.replace(matches[i], conditionalBlock[0].replace(/<!-- ((\IF\b)|(\bENDIF\b))(.*?)-->/gi, ''));
+											template = template.replace(matches[i], conditionalBlock[0].replace(/<!-- ((\IF\b)|(\bENDIF\b))([^@]*?)-->/gi, ''));
 										}
 									} else {
 										// regular if statement
 										if (!value) {
 											template = template.replace(matches[i], '');
 										} else {
-											template = template.replace(matches[i], matches[i].replace(/<!-- ((\IF\b)|(\bENDIF\b))(.*?)-->/gi, ''));
+											template = template.replace(matches[i], matches[i].replace(/<!-- ((\IF\b)|(\bENDIF\b))([^@]*?)-->/gi, ''));
 										}
 									}
 								}
