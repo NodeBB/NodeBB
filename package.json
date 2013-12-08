@@ -46,7 +46,8 @@
     "nodebb-plugin-markdown": "~0.2.0",
     "nodebb-theme-vanilla": "~0.0.9",
     "nodebb-theme-cerulean": "0.0.10",
-    "cron": "~1.0.1"
+    "cron": "~1.0.1",
+    "semver": "~2.2.1"
   },
   "optionalDependencies": {
     "hiredis": "~0.1.15"
