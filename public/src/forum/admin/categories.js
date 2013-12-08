@@ -190,6 +190,20 @@ define(['uploader'], function(uploader) {
 					modified(inputEl);
 				});
 			});
+
+			$('.admin-categories').delegate('.delete-image', 'click', function() {
+				var parent = $(this).parents('li[data-cid]'),
+					inputEl = parent.find('.upload-button'),
+					preview = parent.find('.preview-box'),
+					bgColor = parent.find('.category_bgColor').val();
+
+				inputEl.value = '';
+				modified(inputEl);
+
+				preview.css('background', bgColor);
+
+				$(this).hide();
+			});
 		});
 	};
 
