@@ -103,6 +103,7 @@ define(['taskbar'], function(taskbar) {
 		module.bringModalToTop(chatModal);
 		checkOnlineStatus(chatModal);
 		taskbar.updateActive(uuid);
+		chatModal.find('#chat-message-input').focus();
 	}
 
 	module.minimize = function(uuid) {
