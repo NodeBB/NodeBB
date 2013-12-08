@@ -48,10 +48,14 @@ var db = require('./database'),
 		}
 
 		function hasEnoughRep(next) {
-			user.getUserField(uid, 'reputation', function(err, reputation) {
-				if (err) return next(null, false);
-				next(null, parseInt(reputation, 10) >= parseInt(meta.config['privileges:manage_content'], 10));
-			});
+			if (meta.config['privileges:disabled']) {
+				return next(null, false);
+			} else {
+				user.getUserField(uid, 'reputation', function(err, reputation) {
+					if (err) return next(null, false);
+					next(null, parseInt(reputation, 10) >= parseInt(meta.config['privileges:manage_content'], 10));
+				});
+			}
 		}
 
 		async.parallel([getThreadPrivileges, isOwnPost, hasEnoughRep], function(err, results) {
