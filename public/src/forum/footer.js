@@ -224,6 +224,9 @@
 					chat.load(modal.attr('UUID'));
 				} else {
 					chat.toggleNew(modal.attr('UUID'), true);
+				}
+
+				if (!modal.is(":visible") || !app.isFocused) {
 					app.alternatingTitle(data.username + ' has messaged you');
 				}
 			} else {
