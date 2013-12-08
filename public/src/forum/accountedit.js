@@ -85,6 +85,8 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 
 			$('#change-picture-modal').modal('hide');
 			uploader.open(config.relative_path + '/user/uploadpicture', function(imageUrlOnServer) {
+				imageUrlOnServer = imageUrlOnServer + '?' + new Date().getTime();
+
 				$('#user-current-picture').attr('src', imageUrlOnServer);
 				$('#user-uploaded-picture').attr('src', imageUrlOnServer);
 
