@@ -51,7 +51,7 @@
 
 	require('child_process').exec('/usr/bin/which convert', function(err, stdout, stderr) {
 		if(err || !stdout) {
-			winston.warn('Counldn\'t find convert. Did you install imagemagick?');
+			winston.warn('Couldn\'t find convert. Did you install imagemagick?');
 		}
 	});
 
