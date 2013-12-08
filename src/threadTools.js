@@ -33,7 +33,7 @@ var db = require('./database'),
 				});
 			},
 			hasEnoughRep: function(next) {
-				if (meta.config['privileges:disabled']) {
+				if (parseInt(meta.config['privileges:disabled'], 10)) {
 					return next(null, false);
 				} else {
 					user.getUserField(uid, 'reputation', function(err, reputation) {
