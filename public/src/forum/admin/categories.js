@@ -82,7 +82,8 @@ define(['uploader'], function(uploader) {
 				description: $('#inputDescription').val(),
 				icon: $('#new-category-modal i').val(),
 				bgColor: '#0059b2',
-				color: '#fff'
+				color: '#fff',
+				order: $('.admin-categories #entry-container').children().length + 1
 			};
 
 			socket.emit('api:admin.categories.create', category, function(err, data) {
