@@ -26,6 +26,11 @@
 		<p>Use <strong>privilege thresholds</strong> to manage how much reputation a user must gain to receive moderator access.</p><br />
 		<strong>Manage Thread</strong><br /> <input type="text" class="form-control" value="1000" data-field="privileges:manage_topic"><br />
 		<strong>Manage Content</strong><br /> <input type="text" class="form-control" value="1000" data-field="privileges:manage_content"><br />
+		<div class="checkbox">
+			<label>
+				<input type="checkbox" data-field="privileges:disabled"> <strong>Disable Privilege Threshold System</strong>
+			</label>
+		</div>
 	</div>
 </form>
 
