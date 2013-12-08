@@ -236,7 +236,7 @@ Upgrade.upgradeRedis = function(callback) {
 					}
 
 					if(value === null) {
-						RDB.hset('global', newKeys[key], 0, next);
+						RDB.hset('global', newKeys[key], initialValues[key], next);
 					} else {
 						RDB.hset('global', newKeys[key], value, next);
 					}
@@ -270,6 +270,19 @@ Upgrade.upgradeRedis = function(callback) {
 					'usercount':'userCount',
 					'totaltopiccount':'topicCount',
 					'totalpostcount':'postCount'
+				};
+
+				var initialValues = {
+					'global:next_user_id': 1,
+					'next_topic_id': 0,
+					'next_gid': 1,
+					'notifications:next_nid': 0,
+					'global:next_category_id': 12,
+					'global:next_message_id': 0,
+					'global:next_post_id': 0,
+					'usercount': 1,
+					'totaltopiccount': 0,
+					'totalpostcount': 0
 				};
 
 				async.each(keys, updateKeyToHash, function(err) {
