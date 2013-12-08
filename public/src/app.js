@@ -1,16 +1,16 @@
 var socket,
 	config,
 	app = {
-		'username': null,
-		'uid': null
+		"username": null,
+		"uid": null,
+		"isFocused": true,
+		"currentRoom": null
 	};
 
 (function () {
 	var showWelcomeMessage = false;
 
-
 	app.loadConfig = function() {
-
 		$.ajax({
 			url: RELATIVE_PATH + '/api/config',
 			success: function (data) {
@@ -135,7 +135,7 @@ var socket,
 			},
 			async: false
 		});
-	}
+	};
 
 	app.logout = function() {
 		$.post(RELATIVE_PATH + '/logout', {
@@ -143,12 +143,12 @@ var socket,
 		}, function() {
 			window.location.href = RELATIVE_PATH + '/';
 		});
-	}
+	};
 
 	// takes a string like 1000 and returns 1,000
 	app.addCommas = function (text) {
 		return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
-	}
+	};
 
 	// Willingly stolen from: http://phpjs.org/functions/strip_tags/
 	app.strip_tags = function (input, allowed) {
@@ -159,7 +159,7 @@ var socket,
 		return input.replace(commentsAndPhpTags, '').replace(tags, function ($0, $1) {
 			return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
 		});
-	}
+	};
 
 	// use unique alert_id to have multiple alerts visible at a time, use the same alert_id to fade out the current instance
 	// type : error, success, info, warning/notify
@@ -222,7 +222,7 @@ var socket,
 				});
 			}
 		}
-	}
+	};
 
 	app.alertSuccess = function (message, timeout) {
 		if (!timeout)
@@ -234,7 +234,7 @@ var socket,
 			type: 'success',
 			timeout: timeout
 		});
-	}
+	};
 
 	app.alertError = function (message, timeout) {
 		if (!timeout)
@@ -246,9 +246,8 @@ var socket,
 			type: 'danger',
 			timeout: timeout
 		});
-	}
+	};
 
-	app.currentRoom = null;
 	app.enterRoom = function (room) {
 		if (socket) {
 			if (app.currentRoom === room) {
@@ -272,7 +271,7 @@ var socket,
 		});
 
 		socket.emit('api:user.get_online_users', uids);
-	}
+	};
 
 	function highlightNavigationLink() {
 		var path = window.location.pathname,
@@ -291,7 +290,7 @@ var socket,
 				}
 			});
 		}
-	}
+	};
 
 	app.createUserTooltips = function() {
 		$('img[title].teaser-pic,img[title].user-img').each(function() {
@@ -300,13 +299,13 @@ var socket,
 				title: $(this).attr('title')
 			});
 		});
-	}
+	};
 
 	app.makeNumbersHumanReadable = function(elements) {
 		elements.each(function() {
 			$(this).html(utils.makeNumberHumanReadable($(this).attr('title')));
 		});
-	}
+	};
 
 	app.processPage = function () {
 		app.populateOnlineUsers();
@@ -323,7 +322,7 @@ var socket,
 		setTimeout(function () {
 			window.scrollTo(0, 1); // rehide address bar on mobile after page load completes.
 		}, 100);
-	}
+	};
 
 	app.showLoginMessage = function () {
 		function showAlert() {
@@ -343,13 +342,13 @@ var socket,
 				showAlert();
 			}
 		}
-	}
+	};
 
 	app.addCommasToNumbers = function () {
 		$('.formatted-number').each(function (index, element) {
 			$(element).html(app.addCommas($(element).html()));
 		});
-	}
+	};
 
 	app.openChat = function (username, touid) {
 		if (username === app.username) {
@@ -384,7 +383,7 @@ var socket,
 			chat.load(chatModal.attr('UUID'));
 			chat.center(chatModal);
 		});
-	}
+	};
 
 	app.scrollToTop = function () {
 		$('body,html').animate({
@@ -441,6 +440,14 @@ var socket,
 			ajaxify.go("search/" + input.val(), null, "search");
 			input.val('');
 			return false;
+		});
+
+		$(window).blur(function(){
+			app.isFocused = false;
+		});
+
+		$(window).focus(function(){
+			app.isFocused = true;
 		});
 	});
 
