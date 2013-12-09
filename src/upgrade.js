@@ -38,7 +38,8 @@ Upgrade.upgrade = function(callback) {
 
 Upgrade.upgradeRedis = function(callback) {
 
-	var RDB = db.client;
+	var RDB = db.client,
+		updatesMade = false;
 
 	winston.info('Beginning Redis database schema update');
 
@@ -52,6 +53,7 @@ Upgrade.upgradeRedis = function(callback) {
 		function(next) {
 			thisSchemaDate = new Date(2013, 9, 3).getTime();
 			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
 				async.series([
 					function(next) {
 						RDB.keys('uid:*:notifications:flag', function(err, keys) {
@@ -110,6 +112,7 @@ Upgrade.upgradeRedis = function(callback) {
 		function(next) {
 			thisSchemaDate = new Date(2013, 9, 23).getTime();
 			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
 				RDB.keys('notifications:*', function(err, keys) {
 
 					keys = keys.filter(function(key) {
@@ -139,6 +142,7 @@ Upgrade.upgradeRedis = function(callback) {
 		function(next) {
 			thisSchemaDate = new Date(2013, 10, 11).getTime();
 			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
 				RDB.hset('config', 'postDelay', 10, function(err, success) {
 					winston.info('[2013/11/11] Updated postDelay to 10 seconds.');
 					next();
@@ -151,6 +155,7 @@ Upgrade.upgradeRedis = function(callback) {
 		function(next) {
 			thisSchemaDate = new Date(2013, 10, 22).getTime();
 			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
 				RDB.keys('category:*', function(err, categories) {
 					async.each(categories, function(categoryStr, next) {
 						var	hex;
@@ -197,6 +202,7 @@ Upgrade.upgradeRedis = function(callback) {
 		function(next) {
 			thisSchemaDate = new Date(2013, 10, 26).getTime();
 			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
 				categories.getAllCategories(0, function(err, categories) {
 
 					function updateIcon(category, next) {
@@ -237,7 +243,7 @@ Upgrade.upgradeRedis = function(callback) {
 
 			thisSchemaDate = new Date(2013, 11, 2).getTime();
 			if (schemaDate < thisSchemaDate) {
-
+				updatesMade = true;
 				var keys = [
 					'global:next_user_id',
 					'next_topic_id',
@@ -276,14 +282,18 @@ Upgrade.upgradeRedis = function(callback) {
 				winston.info('[2013/12/2] Update to global keys skipped');
 				next();
 			}
-		},
+		}
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 12!!!
 	], function(err) {
 		if (!err) {
 			RDB.set('schemaDate', thisSchemaDate, function(err) {
 				if (!err) {
-					winston.info('[upgrade] Redis schema update complete!');
+					if(updatesMade) {
+						winston.info('[upgrade] Redis schema update complete!');
+					} else {
+						winston.info('[upgrade] Redis schema already up to date!');
+					}
 					if (callback) {
 						callback(err);
 					} else {
