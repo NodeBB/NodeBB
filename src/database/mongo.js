@@ -2,17 +2,25 @@
 
 (function(module) {
 	'use strict';
-	var mongoClient = require('mongodb').MongoClient,
-		winston = require('winston'),
+	var winston = require('winston'),
 		async = require('async'),
 		nconf = require('nconf'),
 		express = require('express'),
-		mongoStore = require('connect-mongo')(express),
-		mongoHost = nconf.get('mongo:host'),
-		db;
+		db,
+		mongoClient,
+		mongoStore;
+
+	try {
+		mongoClient = require('mongodb').MongoClient;
+		mongoStore = require('connect-mongo')(express);
+	} catch (err) {
+		winston.error('Unable to initialize mongo! ' + err.message);
+		process.exit();
+	}
+
 
 	module.init = function(callback) {
-		mongoClient.connect('mongodb://'+ mongoHost + ':' + nconf.get('mongo:port') + '/' + nconf.get('mongo:database'), function(err, _db) {
+		mongoClient.connect('mongodb://'+ nconf.get('mongo:host') + ':' + nconf.get('mongo:port') + '/' + nconf.get('mongo:database'), function(err, _db) {
 			if(err) {
 				winston.error("NodeBB could not connect to your Mongo database. Mongo returned the following error: " + err.message);
 				process.exit();
