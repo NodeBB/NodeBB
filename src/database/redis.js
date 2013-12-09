@@ -2,16 +2,24 @@
 
 (function(module) {
 	'use strict';
-	var redisClient,
-		redis = require('redis'),
-		winston = require('winston'),
+	var winston = require('winston'),
 		nconf = require('nconf'),
 		express = require('express'),
-		connectRedis = require('connect-redis')(express),
-		reds = require('reds'),
-
 		redis_socket_or_host = nconf.get('redis:host'),
-		utils = require('./../../public/src/utils.js');
+		utils = require('./../../public/src/utils.js'),
+		redis,
+		connectRedis,
+		reds,
+		redisClient;
+
+	try {
+		redis = require('redis');
+		connectRedis = require('connect-redis')(express);
+		reds = require('reds');
+	} catch (err) {
+		winston.error('Unable to initialize Redis! Is Redis installed? Error :' + err.message);
+		process.exit();
+	}
 
 
 	if (redis_socket_or_host && redis_socket_or_host.indexOf('/')>=0) {
