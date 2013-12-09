@@ -25,8 +25,8 @@
 			}
 		});
 	</script>
-
 	<link rel="stylesheet" type="text/css" href="{relative_path}/css/theme.css" />
+	<link rel="icon" type="image/x-icon" href="{brand:favicon}" />
 </head>
 
 <body>

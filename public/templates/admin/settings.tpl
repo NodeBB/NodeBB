@@ -18,7 +18,7 @@
 		<label>Maximum User Image Size</label>
 		<input type="text" class="form-control" placeholder="Maximum size of uploaded user images in kilobytes" data-field="maximumProfileImageSize" /><br />
 		<label>Favicon</label><br />
-		<img id="favicon" src="./../favicon.ico" />&nbsp;
+		<input id="faviconUrl" type="text" class="form-control" placeholder="favicon.ico" data-field="brand:favicon" /><br />
 		<input id="uploadFaviconBtn" type="button" class="btn btn-default" value="Upload Favicon"></input> <br />
 	</form>
 </div>

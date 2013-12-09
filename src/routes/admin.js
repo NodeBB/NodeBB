@@ -169,7 +169,7 @@ var nconf = require('nconf'),
 				}
 
 				var filename =  'favicon.ico';
-				var uploadPath = path.join(nconf.get('base_dir'), 'public', filename);
+				var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), filename);
 
 				winston.info('Attempting upload to: ' + uploadPath);
 

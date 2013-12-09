@@ -83,8 +83,8 @@ define(['uploader'], function(uploader) {
 		});
 
 		$('#uploadFaviconBtn').on('click', function() {
-			uploader.open(RELATIVE_PATH + '/admin/uploadfavicon', function() {
-				$('#favicon').attr('src', './../favicon.ico?v=' + new Date().getTime());
+			uploader.open(RELATIVE_PATH + '/admin/uploadfavicon', function(icon) {
+				$('#faviconUrl').val(icon);
 			});
 
 			uploader.hideAlerts();
