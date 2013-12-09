@@ -145,6 +145,53 @@ var nconf = require('nconf'),
 				is.pipe(os);
 			});
 
+			app.post('/uploadfavicon', function(req, res) {
+				if (!req.user)
+					return res.redirect('/403');
+
+				var allowedTypes = ['image/x-icon', 'image/vnd.microsoft.icon'];
+
+				if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
+					res.send({
+						error: 'You can only upload icon file type!'
+					});
+					return;
+				}
+
+				var tempPath = req.files.userPhoto.path;
+				var extension = path.extname(req.files.userPhoto.name);
+
+				if (!extension) {
+					res.send({
+						error: 'Error uploading file! Error : Invalid extension!'
+					});
+					return;
+				}
+
+				var filename =  'favicon.ico';
+				var uploadPath = path.join(nconf.get('base_dir'), 'public', filename);
+
+				winston.info('Attempting upload to: ' + uploadPath);
+
+				var is = fs.createReadStream(tempPath);
+				var os = fs.createWriteStream(uploadPath);
+
+				is.on('end', function () {
+					fs.unlinkSync(tempPath);
+
+					res.json({
+						path: nconf.get('upload_url') + filename
+					});
+				});
+
+				os.on('error', function (err) {
+					fs.unlinkSync(tempPath);
+					winston.err(err);
+				});
+
+				is.pipe(os);
+			});
+
 			app.post('/uploadlogo', function(req, res) {
 
 				if (!req.user)
