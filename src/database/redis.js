@@ -17,7 +17,7 @@
 		connectRedis = require('connect-redis')(express);
 		reds = require('reds');
 	} catch (err) {
-		winston.error('Unable to initialize redis! ' + err.message);
+		winston.error('Unable to initialize Redis! Is Redis installed? Error :' + err.message);
 		process.exit();
 	}
 

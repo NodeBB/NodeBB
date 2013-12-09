@@ -14,7 +14,7 @@
 		mongoClient = require('mongodb').MongoClient;
 		mongoStore = require('connect-mongo')(express);
 	} catch (err) {
-		winston.error('Unable to initialize mongo! ' + err.message);
+		winston.error('Unable to initialize MongoDB! Is MongoDB installed? Error :' + err.message);
 		process.exit();
 	}
 
