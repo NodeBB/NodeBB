@@ -3,8 +3,10 @@
 <head>
 	<title>{browserTitle}</title>
 	{meta_tags}
+	<link rel="icon" type="image/x-icon" href="{brand:favicon}" />
 	<link href="{cssSrc}" rel="stylesheet" media="screen">
 	<link rel="stylesheet" href="{relative_path}/vendor/fontawesome/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="{relative_path}/css/theme.css" />
 	{link_tags}
 	<!-- BEGIN pluginCSS -->
 	<link rel="stylesheet" href="{pluginCSS.path}">
@@ -25,8 +27,6 @@
 			}
 		});
 	</script>
-
-	<link rel="stylesheet" type="text/css" href="{relative_path}/css/theme.css" />
 </head>
 
 <body>
