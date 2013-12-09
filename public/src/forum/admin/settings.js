@@ -75,9 +75,16 @@ define(['uploader'], function(uploader) {
 		});
 
 		$('#uploadLogoBtn').on('click', function() {
-
 			uploader.open(RELATIVE_PATH + '/admin/uploadlogo', function(image) {
 				$('#logoUrl').val(image);
+			});
+
+			uploader.hideAlerts();
+		});
+
+		$('#uploadLogoBtn').on('click', function() {
+			uploader.open(RELATIVE_PATH + '/admin/uploadfavicon', function() {
+				$('#favicon').attr('src', './../favicon.ico?v=' + new Date().getTime());
 			});
 
 			uploader.hideAlerts();
