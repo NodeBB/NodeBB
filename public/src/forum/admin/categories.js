@@ -184,7 +184,7 @@ define(['uploader'], function(uploader) {
 			$('.upload-button').on('click', function() {
 				var inputEl = this;
 				
-				uploader.open(config.relative_path + '/admin/category/uploadpicture', function(imageUrlOnServer) {
+				uploader.open(RELATIVE_PATH + '/admin/category/uploadpicture', function(imageUrlOnServer) {
 					inputEl.value = imageUrlOnServer;
 					$(inputEl).parents('li[data-cid]').find('.preview-box').css('background', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')');
 					modified(inputEl);
