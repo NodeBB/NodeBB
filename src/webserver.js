@@ -85,7 +85,7 @@ var path = require('path'),
 				linkTags = utils.buildLinkTags(defaultLinkTags.concat(options.linkTags || [])),
 				templateValues = {
 					cssSrc: meta.config['theme:src'] || nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
-					pluginCSS: plugins.cssFiles.map(function(file) { return { path: file }; }),
+					pluginCSS: plugins.cssFiles.map(function(file) { return { path: file + (meta.config['cache-buster'] ? '?v=' + meta.config['cache-buster'] : '') }; }),
 					title: meta.config.title || '',
 					description: meta.config.description || '',
 					'brand:logo': meta.config['brand:logo'] || '',
@@ -97,7 +97,8 @@ var path = require('path'),
 					meta_tags: metaString,
 					link_tags: linkTags,
 					clientScripts: clientScripts,
-					navigation: custom_header.navigation
+					navigation: custom_header.navigation,
+					'cache-buster': meta.config['cache-buster'] ? '?v=' + meta.config['cache-buster'] : ''
 				};
 
 			var uid = '0';
@@ -123,6 +124,23 @@ var path = require('path'),
 		app.enable('cache');
 		app.enable('minification');
 	}
+
+	// Configure cache-buster timestamp
+	require('child_process').exec('git describe --tags', {
+		cwd: path.join(__dirname, '../')
+	}, function(err, stdOut) {
+		if (!err) {
+			meta.config['cache-buster'] = stdOut.trim();
+
+			if (global.env === 'development') {
+				winston.info('[init] Cache buster value set to: ' + stdOut);
+			}
+		} else {
+			if (global.env === 'development') {
+				winston.warn('[init] Cache buster not set');
+			}
+		}
+	});
 
 	// Middlewares
 	app.configure(function() {

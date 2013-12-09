@@ -236,11 +236,18 @@ var fs = require('fs'),
 							callback(null, [path.relative(path.join(__dirname, '../public'), Meta.js.minFile)]);
 						} else {
 							Meta.js.minify(function () {
-								callback(null, [path.relative(path.join(__dirname, '../public'), Meta.js.minFile)]);
+								callback(null, [
+									path.relative(path.join(__dirname, '../public'), Meta.js.minFile) + (meta.config['cache-buster'] ? '?v=' + meta.config['cache-buster'] : '')
+								]);
 							});
 						}
 					});
 				} else {
+					if (meta.config['cache-buster']) {
+						scripts = scripts.map(function(script) {
+							return script + '?v=' + meta.config['cache-buster'];
+						});
+					}
 					callback(null, scripts);
 				}
 			});
