@@ -102,7 +102,7 @@ var fs = require('fs'),
 				if (!req.user)
 					return res.redirect('/403');
 
-				var uploadSize = meta.config.maximumProfileImageSize || 256;
+				var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
 
 				if (req.files.userPhoto.size > uploadSize * 1024) {
 					res.send({
@@ -147,18 +147,21 @@ var fs = require('fs'),
 				return;
 			}
 
-			var filename = uid + '-profileimg' + extension;
+			var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10);
+
+			var filename = uid + '-profileimg' + (convertToPNG ? '.png' : extension);
 			var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), filename);
 
 			winston.info('Attempting upload to: ' + uploadPath);
 
 			var is = fs.createReadStream(tempPath);
 			var os = fs.createWriteStream(uploadPath);
+			var im = require('node-imagemagick');
 
 			is.on('end', function () {
 				fs.unlinkSync(tempPath);
 
-				require('node-imagemagick').crop({
+				im.crop({
 					srcPath: uploadPath,
 					dstPath: uploadPath,
 					width: 128,
@@ -176,6 +179,22 @@ var fs = require('fs'),
 
 					user.setUserField(uid, 'uploadedpicture', imageUrl);
 					user.setUserField(uid, 'picture', imageUrl);
+
+					if (convertToPNG) {
+						im.convert([uploadPath, 'png:-'], 
+							function(err, stdout){
+								if (err) {
+									winston.err(err);
+									res.send({
+										error: 'Unable to convert image to PNG.'
+									});
+									return;
+								}
+
+								fs.writeFileSync(uploadPath, stdout, 'binary');  
+							});
+					}
+					
 
 					res.json({
 						path: imageUrl

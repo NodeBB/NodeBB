@@ -701,7 +701,7 @@ var async = require('async'),
 		});
 	}
 
-	Topics.markUnRead = function(tid, callback) {
+	Topics.markAsUnreadForAll = function(tid, callback) {
 		db.delete('tid:' + tid + ':read_by_uid', callback);
 	}
 

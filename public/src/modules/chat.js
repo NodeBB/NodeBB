@@ -103,6 +103,7 @@ define(['taskbar'], function(taskbar) {
 		module.bringModalToTop(chatModal);
 		checkOnlineStatus(chatModal);
 		taskbar.updateActive(uuid);
+		chatModal.find('#chat-message-input').focus();
 	}
 
 	module.minimize = function(uuid) {
@@ -114,7 +115,7 @@ define(['taskbar'], function(taskbar) {
 	}
 
 	function getChatMessages(chatModal, callback) {
-		socket.emit('getChatMessages', {touid:chatModal.touid}, function(messages) {
+		socket.emit('api:chats.get', {touid:chatModal.touid}, function(messages) {
 			for(var i = 0; i<messages.length; ++i) {
 				module.appendChatMessage(chatModal, messages[i].content, messages[i].timestamp);
 			}
@@ -141,7 +142,7 @@ define(['taskbar'], function(taskbar) {
 		var msg = app.strip_tags(chatModal.find('#chat-message-input').val());
 		if(msg.length) {
 			msg = msg +'\n';
-			socket.emit('sendChatMessage', { touid:chatModal.touid, message:msg});
+			socket.emit('api:chats.send', { touid:chatModal.touid, message:msg});
 			chatModal.find('#chat-message-input').val('');
 		}
 	}

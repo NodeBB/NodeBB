@@ -76,7 +76,7 @@ define(['uploader'], function(uploader) {
 
 		$('#uploadLogoBtn').on('click', function() {
 
-			uploader.open(config.relative_path + '/admin/uploadlogo', function(image) {
+			uploader.open(RELATIVE_PATH + '/admin/uploadlogo', function(image) {
 				$('#logoUrl').val(image);
 			});
 

@@ -144,27 +144,19 @@ var fs = require('fs'),
 	};
 
 	Meta.title = {
-		build: function (urlFragment, current_user, callback) {
-			var self = this,
-				user = require('./user');
+		build: function (urlFragment, callback) {
+			var user = require('./user');
 
-			async.parallel({
-				title: function (next) {
-					self.parseFragment(urlFragment, next);
-				},
-				notifCount: function (next) {
-					user.notifications.getUnreadCount(current_user, next);
-				}
-			}, function (err, values) {
+			Meta.title.parseFragment(urlFragment, function(err, title) {
 				var title;
 
 				if (err) {
 					title = Meta.config.title || 'NodeBB';
 				} else {
-					title = (values.title ? values.title + ' | ' : '') + (Meta.config.title || 'NodeBB');
+					title = (title ? title + ' | ' : '') + (Meta.config.title || 'NodeBB');
 				}
 
-				callback(null, title, values.notifCount);
+				callback(null, title);
 			});
 		},
 		parseFragment: function (urlFragment, callback) {

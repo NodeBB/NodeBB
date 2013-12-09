@@ -134,45 +134,30 @@ var db = require('./database'),
 					callback(new Error('reply-error'), null);
 				}
 
-				async.parallel([
-					function(next) {
-						topics.markUnRead(tid, function(err) {
-							if(err) {
-								return next(err);
-							}
-							topics.markAsRead(tid, uid);
-							next();
-						});
-					},
-					function(next) {
-						topics.pushUnreadCount(null, next);
-					},
-					function(next) {
-						Posts.getCidByPid(postData.pid, function(err, cid) {
-							if(err) {
-								return next(err);
-							}
-
-							db.delete('cid:' + cid + ':read_by_uid');
-							next();
-						});
-					},
-					function(next) {
-						threadTools.notifyFollowers(tid, uid);
-						next();
-					},
-					function(next) {
-						Posts.addUserInfoToPost(postData, function(err) {
-							if(err) {
-								return next(err);
-							}
-							next();
-						});
-					}
-				], function(err, results) {
+				Posts.getCidByPid(postData.pid, function(err, cid) {
 					if(err) {
 						return callback(err, null);
 					}
+
+					db.delete('cid:' + cid + ':read_by_uid');
+				});
+
+				topics.markAsUnreadForAll(tid, function(err) {
+					if(err) {
+						return callback(err, null);
+					}
+
+					topics.markAsRead(tid, uid);
+					topics.pushUnreadCount();
+				});
+
+				threadTools.notifyFollowers(tid, uid);
+				
+				Posts.addUserInfoToPost(postData, function(err) {
+					if(err) {
+						return callback(err, null);
+					}
+
 					callback(null, postData);
 				});
 			});
@@ -205,7 +190,7 @@ var db = require('./database'),
 	Posts.addUserInfoToPost = function(post, callback) {
 		user.getUserFields(post.uid, ['username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned'], function(err, userData) {
 			if (err) {
-				return callback();
+				return callback(err);
 			}
 
 			postTools.parseSignature(userData.signature, function(err, signature) {
@@ -242,7 +227,7 @@ var db = require('./database'),
 		});
 	};
 
-	Posts.getPostSummaryByPids = function(pids, callback) {
+	Posts.getPostSummaryByPids = function(pids, stripTags, callback) {
 
 		var posts = [];
 
@@ -283,10 +268,17 @@ var db = require('./database'),
 				function(postData, next) {
 					if (postData.content) {
 						postTools.parse(postData.content, function(err, content) {
-							if (!err) {
-								postData.content = utils.strip_tags(content);
+							if(err) {
+								return next(err);
 							}
-							next(err, postData);
+
+							if(stripTags) {
+								postData.content = utils.strip_tags(content);
+							} else {
+								postData.content = content;
+							}
+
+							next(null, postData);
 						});
 					} else {
 						next(null, postData);
@@ -504,7 +496,7 @@ var db = require('./database'),
 			if (err)
 				return callback(err, null);
 
-			Posts.getPostSummaryByPids(pids, function(err, posts) {
+			Posts.getPostSummaryByPids(pids, false, function(err, posts) {
 				if (err)
 					return callback(err, null);
 

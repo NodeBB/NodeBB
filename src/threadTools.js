@@ -33,10 +33,14 @@ var db = require('./database'),
 				});
 			},
 			hasEnoughRep: function(next) {
-				user.getUserField(uid, 'reputation', function(err, reputation) {
-					if (err) return next(null, false);
-					next(null, parseInt(reputation, 10) >= parseInt(meta.config['privileges:manage_topic'], 10));
-				});
+				if (parseInt(meta.config['privileges:disabled'], 10)) {
+					return next(null, false);
+				} else {
+					user.getUserField(uid, 'reputation', function(err, reputation) {
+						if (err) return next(null, false);
+						next(null, parseInt(reputation, 10) >= parseInt(meta.config['privileges:manage_topic'], 10));
+					});
+				}
 			}
 		}, function(err, results) {
 			callback(err, !results ? undefined : {

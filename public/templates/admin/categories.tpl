@@ -14,12 +14,15 @@
 		<!-- BEGIN categories -->
 			<li data-cid="{categories.cid}" class="entry-row">
 				<div class="row">
-					<div class="col-sm-2 hidden-xs">
-						<div class="preview-box" style="background: {categories.bgColor}; color: {categories.color};">
+					<div class="col-sm-2 hidden-xs text-center">
+						<div class="preview-box" style="background: {categories.background}; color: {categories.color};">
 							<div class="icon">
 								<i data-name="icon" value="{categories.icon}" class="fa {categories.icon} fa-2x"></i>
 							</div>
-						</div>
+						</div><br />
+						<!-- IF categories.image -->
+						<small class="pointer delete-image"><i data-name="icon" value="fa-times" class="fa fa-times"></i> Delete Image</small>
+						<!-- ENDIF categories.image -->
 					</div>
 					<div class="col-sm-10">
 						<form class="form">
@@ -67,11 +70,8 @@
 													<hr />
 													<li data-disabled="{categories.disabled}"><a href="#"></a></li>
 												</ul>
+												<button type="button" data-name="image" data-value="{categories.image}" class="btn btn-default upload-button"><i class="fa fa-upload"></i> Image</button>
 											</div>
-											<!-- <div class="btn-group">
-												<button type="submit" class="btn btn-default disable-btn" data-disabled="{categories.disabled}">Disable</button>
-												<button type="button" class="btn btn-default permissions">Permissions</button>
-											</div> -->
 										</div>
 									</div>
 								</div>
@@ -80,17 +80,7 @@
 							<input type="hidden" data-name="order" data-value="{categories.order}"></input>
 						</form>
 					</div>
-				<!-- <form class="form-inline">
-					<div class="icon">
-						<i data-name="icon" value="{categories.icon}" class="fa {categories.icon} fa-2x"></i>
-					</div>
-					<input placeholder="Category Name" data-name="name" value="{categories.name}" class="form-control category_name"></input>
-					<input placeholder="#0059b2" data-name="bgColor" value="{categories.bgColor}" class="form-control category_bgColor" />
-					<input placeholder="#fff" data-name="color" value="{categories.color}" class="form-control category_color" />
-					<input data-name="description" placeholder="Category Description" value="{categories.description}" class="form-control category_description description"></input>
-					<input type="hidden" data-name="order" data-value="{categories.order}"></input>
-					<button type="submit" class="btn btn-default disable-btn" data-disabled="{categories.disabled}">Disable</button>
-				</form> -->
+				</div>
 			</li>
 
 		<!-- END categories -->

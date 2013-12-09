@@ -31,6 +31,8 @@ var ajaxify = {};
 
 	var pagination, paginator_bar;
 
+	ajaxify.currentPage = null;
+
 	ajaxify.go = function (url, callback, template, quiet) {
 		// start: the following should be set like so: ajaxify.onchange(function(){}); where the code actually belongs
 		$(window).off('scroll');
@@ -69,6 +71,8 @@ var ajaxify = {};
 		}
 
 		if (templates.is_available(tpl_url) && !templates.force_refresh(tpl_url)) {
+			ajaxify.currentPage = tpl_url;
+
 			if (window.history && window.history.pushState) {
 				window.history[!quiet ? 'pushState' : 'replaceState']({
 					url: url
@@ -90,7 +94,7 @@ var ajaxify = {};
 
 			translator.load(tpl_url);
 
-			jQuery('#footer, #content').addClass('ajaxifying');
+			jQuery('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
 			templates.flush();
 			templates.load_template(function () {
@@ -129,6 +133,10 @@ var ajaxify = {};
 		return false;
 	};
 
+	ajaxify.refresh = function() {
+		ajaxify.go(ajaxify.currentPage);
+	};
+
 	$('document').ready(function () {
 		if (!window.history || !window.history.pushState) {
 			return; // no ajaxification for old browsers
@@ -154,7 +162,7 @@ var ajaxify = {};
 				return;
 			}
 
-			if (!e.ctrlKey && e.which === 1) {
+			if ((!e.ctrlKey && !e.shiftKey) && e.which === 1) {
 				if (this.host === window.location.host) {
 					// Internal link
 					var url = this.href.replace(rootUrl + '/', '');

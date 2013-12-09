@@ -1,0 +1,10 @@
+{
+	"login": "Connexion",
+	"username": "Identifiant",
+	"password": "Mot de passe",
+	"remember_me": "Se souvenir de moi?",
+	"forgot_password": "Mot de passe oublié?",
+	"alternative_logins": "Connexion Alternative",
+	"failed_login_attempt": "Echèc d'authentification, veuillez réessayer.",
+	"login_successful": "Vous êtes maintenant connecté!"
+}

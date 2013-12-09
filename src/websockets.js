@@ -677,7 +677,7 @@ websockets.init = function(io) {
 			});
 		});
 
-		socket.on('getChatMessages', function(data, callback) {
+		socket.on('api:chats.get', function(data, callback) {
 			var touid = data.touid;
 			Messaging.getMessages(uid, touid, function(err, messages) {
 				if (err)
@@ -687,7 +687,7 @@ websockets.init = function(io) {
 			});
 		});
 
-		socket.on('sendChatMessage', function(data) {
+		socket.on('api:chats.send', function(data) {
 
 			var touid = data.touid;
 			if (touid === uid || uid === 0) {
@@ -696,9 +696,15 @@ websockets.init = function(io) {
 
 			var msg = utils.strip_tags(data.message);
 
-			user.getUserField(uid, 'username', function(err, username) {
+			user.getMultipleUserFields([uid, touid], ['username'], function(err, usersData) {
+				if(err) {
+					return;
+				}
+
 				var finalMessage = username + ' : ' + msg,
-					notifText = 'New message from <strong>' + username + '</strong>';
+					notifText = 'New message from <strong>' + username + '</strong>',
+					username = usersData[0].username,
+					toUsername = usersData[1].username;
 
 				if (!isUserOnline(touid)) {
 					notifications.create(notifText, 'javascript:app.openChat(&apos;' + username + '&apos;, ' + uid + ');', 'notification_' + uid + '_' + touid, function(nid) {
@@ -715,7 +721,7 @@ websockets.init = function(io) {
 						numSockets = userSockets[touid].length;
 
 						for (var x = 0; x < numSockets; ++x) {
-							userSockets[touid][x].emit('chatMessage', {
+							userSockets[touid][x].emit('event:chats.receive', {
 								fromuid: uid,
 								username: username,
 								message: finalMessage,
@@ -729,9 +735,9 @@ websockets.init = function(io) {
 						numSockets = userSockets[uid].length;
 
 						for (var x = 0; x < numSockets; ++x) {
-							userSockets[uid][x].emit('chatMessage', {
+							userSockets[uid][x].emit('event:chats.receive', {
 								fromuid: touid,
-								username: username,
+								username: toUsername,
 								message: 'You : ' + msg,
 								timestamp: Date.now()
 							});
@@ -1078,8 +1084,8 @@ websockets.init = function(io) {
 		});
 
 		socket.on('api:meta.buildTitle', function(text, callback) {
-			meta.title.build(text, uid, function(err, title, numNotifications) {
-				callback(title, numNotifications);
+			meta.title.build(text, function(err, title) {
+				callback(title);
 			});
 		});
 

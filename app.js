@@ -25,6 +25,7 @@
 
 	var fs = require('fs'),
 		async = require('async'),
+		semver = require('semver'),
 		winston = require('winston'),
 		pkg = require('./package.json'),
 		path = require('path'),
@@ -47,6 +48,12 @@
 	winston.err = function (err) {
 		winston.error(err.stack);
 	};
+
+	require('child_process').exec('/usr/bin/which convert', function(err, stdout, stderr) {
+		if(err || !stdout) {
+			winston.warn('Couldn\'t find convert. Did you install imagemagick?');
+		}
+	});
 
 	// Log GNU copyright info along with server info
 	winston.info('NodeBB v' + pkg.version + ' Copyright (C) 2013 DesignCreatePlay Inc.');
@@ -71,6 +78,10 @@
 
 		if (process.env.NODE_ENV === 'development') {
 			winston.info('Base Configuration OK.');
+		}
+
+		if (semver.gt(pkg.dependencies['nodebb-theme-cerulean'], require('./node_modules/nodebb-theme-cerulean/package.json').version)) {
+			winston.error('nodebb-theme-cerulean is out of date - please run npm install.')
 		}
 
 		require('./src/database').init(function(err) {

@@ -300,14 +300,7 @@
 						namespace = namespace.replace(d + '.', '');
 						template = setBlock(regex, result, template);
 					} else if (data[d] instanceof Object) {
-						namespace += d + '.';
-
-						regex = makeRegex(d),
-						block = getBlock(regex, namespace, template)
-						if (block == null) continue;
-
-						block = parse(data[d], namespace, block);
-						template = setBlock(regex, block, template);
+						template = parse(data[d], d + '.', template);
 					} else {
 						function checkConditional(key, value) {
 							var conditional = makeConditionalRegex(key),
@@ -320,14 +313,16 @@
 									if (conditionalBlock[1]) {
 										// there is an else statement
 										if (!value) {
-											template = template.replace(matches[i], conditionalBlock[1]);
+											template = template.replace(matches[i], conditionalBlock[1].replace(/<!-- ((\IF\b)|(\bENDIF\b))([^@]*?)-->/gi, ''));
 										} else {
-											template = template.replace(matches[i], conditionalBlock[0]);
+											template = template.replace(matches[i], conditionalBlock[0].replace(/<!-- ((\IF\b)|(\bENDIF\b))([^@]*?)-->/gi, ''));
 										}
 									} else {
 										// regular if statement
 										if (!value) {
 											template = template.replace(matches[i], '');
+										} else {
+											template = template.replace(matches[i], matches[i].replace(/<!-- ((\IF\b)|(\bENDIF\b))([^@]*?)-->/gi, ''));
 										}
 									}
 								}
@@ -350,7 +345,11 @@
 			if (namespace) {
 				var regex = new RegExp("{" + namespace + "[\\s\\S]*?}", 'g');
 				template = template.replace(regex, '');
+				namespace = '';
 			}
+			
+			// clean up all undefined conditionals
+			template = template.replace(/<!-- IF([^@]*?)ENDIF([^@]*?)-->/gi, '');
 
 			return template;
 

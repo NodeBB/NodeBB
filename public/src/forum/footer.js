@@ -67,6 +67,7 @@
 		notifTrigger = notifContainer.querySelector('a'),
 		notifList = document.getElementById('notif-list'),
 		notifIcon = $('.notifications a');
+
 	notifTrigger.addEventListener('click', function(e) {
 		e.preventDefault();
 		if (notifContainer.className.indexOf('open') === -1) {
@@ -169,6 +170,10 @@
 		});
 		app.refreshTitle();
 
+		if (ajaxify.currentPage === 'notifications') {
+			ajaxify.refresh();
+		}
+
 		// Update the favicon + local storage
 		var	savedCount = parseInt(localStorage.getItem('notifications:count'),10) || 0;
 		localStorage.setItem('notifications:count', savedCount+1);
@@ -208,7 +213,7 @@
 		});
 	});
 
-	socket.on('chatMessage', function(data) {
+	socket.on('event:chats.receive', function(data) {
 		require(['chat'], function(chat) {
 			var modal = null;
 			if (chat.modalExists(data.fromuid)) {
@@ -219,6 +224,9 @@
 					chat.load(modal.attr('UUID'));
 				} else {
 					chat.toggleNew(modal.attr('UUID'), true);
+				}
+
+				if (!modal.is(":visible") || !app.isFocused) {
 					app.alternatingTitle(data.username + ' has messaged you');
 				}
 			} else {

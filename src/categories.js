@@ -229,7 +229,7 @@ var db = require('./database.js'),
 				return;
 			}
 
-			posts.getPostSummaryByPids(pids, function(err, postData) {
+			posts.getPostSummaryByPids(pids, true, function(err, postData) {
 				if (postData.length > count) {
 					postData = postData.slice(0, count);
 				}
@@ -288,7 +288,10 @@ var db = require('./database.js'),
 	Categories.getCategoryData = function(cid, callback) {
 		db.exists('category:' + cid, function(err, exists) {
 			if (exists) {
-				db.getObject('category:' + cid, callback);
+				db.getObject('category:' + cid, function(err, data) {
+					data.background = data.image ? 'url(' + data.image + ')' : data.bgColor;
+					callback(err, data);
+				});
 			} else {
 				callback(new Error('No category found!'));
 			}
