@@ -672,7 +672,7 @@ websockets.init = function(io) {
 		});
 
 		socket.on('api:categories.getRecentReplies', function(tid) {
-			categories.getRecentReplies(tid, 4, function(replies) {
+			categories.getRecentReplies(tid, 4, function(err, replies) {
 				socket.emit('api:categories.getRecentReplies', replies);
 			});
 		});

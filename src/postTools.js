@@ -143,6 +143,12 @@ var db = require('./database'),
 					db.sortedSetAdd('users:postcount', postcount, postData.uid);
 				});
 
+				topics.getTopicField(postData.tid, 'cid', function(err, cid) {
+					if(!err) {
+						db.sortedSetRemove('categories:recent_posts:cid:' + cid, pid);
+					}
+				});
+
 				// Delete the thread if it is the last undeleted post
 				threadTools.getLatestUndeletedPid(postData.tid, function(err, pid) {
 					if (err && err.message === 'no-undeleted-pids-found') {
@@ -192,6 +198,12 @@ var db = require('./database'),
 				threadTools.getLatestUndeletedPid(postData.tid, function(err, pid) {
 					posts.getPostField(pid, 'timestamp', function(err, timestamp) {
 						topics.updateTimestamp(postData.tid, timestamp);
+
+						topics.getTopicField(postData.tid, 'cid', function(err, cid) {
+							if(!err) {
+								db.sortedSetAdd('categories:recent_posts:cid:' + cid, timestamp, pid);
+							}
+						});
 					});
 				});
 

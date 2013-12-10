@@ -39,22 +39,29 @@ var path = require('path'),
 				res.json(200, config);
 			});
 
-			app.get('/home', function (req, res) {
+			app.get('/home', function (req, res, next) {
 				var uid = (req.user) ? req.user.uid : 0;
 				categories.getAllCategories(uid, function (err, data) {
 					data.categories = data.categories.filter(function (category) {
 						return (!category.disabled || parseInt(category.disabled, 10) === 0);
 					});
 
-					function iterator(category, callback) {
-						categories.getRecentReplies(category.cid, 2, function (posts) {
+					function getRecentReplies(category, callback) {
+						categories.getRecentReplies(category.cid, 2, function (err, posts) {
+							if(err) {
+								return callback(err);
+							}
 							category.posts = posts;
 							category.post_count = posts.length > 2 ? 2 : posts.length;
 							callback(null);
 						});
 					}
 
-					async.each(data.categories, iterator, function (err) {
+					async.each(data.categories, getRecentReplies, function (err) {
+						if(err) {
+							return next(err);
+						}
+
 						data.motd_class = (parseInt(meta.config.show_motd, 10) === 1 || meta.config.show_motd === undefined) ? '' : ' none';
 						data.motd_class += (meta.config.motd && meta.config.motd.length > 0 ? '' : ' default');
 

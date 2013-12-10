@@ -216,24 +216,22 @@ var db = require('./database.js'),
 	};
 
 	Categories.getRecentReplies = function(cid, count, callback) {
-		db.getSortedSetRevRange('categories:recent_posts:cid:' + cid, 0, (count < 10) ? 10 : count, function(err, pids) {
+		db.getSortedSetRevRange('categories:recent_posts:cid:' + cid, 0, count - 1, function(err, pids) {
 
 			if (err) {
 				winston.err(err);
-				callback([]);
-				return;
+				return callback([]);
 			}
 
 			if (pids.length === 0) {
-				callback([]);
-				return;
+				return callback([]);
 			}
 
 			posts.getPostSummaryByPids(pids, true, function(err, postData) {
-				if (postData.length > count) {
-					postData = postData.slice(0, count);
+				if(err) {
+					return callback(err);
 				}
-				callback(postData);
+				callback(null, postData);
 			});
 		});
 	};
