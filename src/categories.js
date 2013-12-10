@@ -220,11 +220,11 @@ var db = require('./database.js'),
 
 			if (err) {
 				winston.err(err);
-				return callback([]);
+				return callback(err, []);
 			}
 
 			if (pids.length === 0) {
-				return callback([]);
+				return callback(null, []);
 			}
 
 			posts.getPostSummaryByPids(pids, true, function(err, postData) {
