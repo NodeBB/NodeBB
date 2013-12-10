@@ -237,6 +237,10 @@ var path = require('path'),
 							return callback(err, null);
 						}
 
+						if(pids.length > 50) {
+							pids = pids.splice(0, 50);
+						}
+
 						posts.getPostSummaryByPids(pids, false, function (err, posts) {
 							if (err){
 								return callback(err, null);
@@ -250,6 +254,10 @@ var path = require('path'),
 					db.search('topic', req.params.term, function(err, tids) {
 						if (err) {
 							return callback(err, null);
+						}
+
+						if(tids.length > 50) {
+							tids = tids.splice(0, 50);
 						}
 
 						topics.getTopicsByTids(tids, 0, function (topics) {
