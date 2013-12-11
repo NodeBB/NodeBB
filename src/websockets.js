@@ -57,7 +57,6 @@ function isUserOnline(uid) {
 websockets.isUserOnline = isUserOnline;
 
 websockets.init = function(io) {
-
 	io.sockets.on('connection', function(socket) {
 		var hs = socket.handshake,
 			sessionID, uid, lastPostTime = 0;
@@ -100,7 +99,7 @@ websockets.init = function(io) {
 					});
 				}
 
-				io.sockets. in ('global').emit('api:user.isOnline', isUserOnline(uid));
+				io.sockets.in('global').emit('api:user.isOnline', isUserOnline(uid));
 			});
 		});
 
@@ -120,7 +119,7 @@ websockets.init = function(io) {
 				}
 			}
 
-			io.sockets. in ('global').emit('api:user.isOnline', isUserOnline(uid));
+			io.sockets.in('global').emit('api:user.isOnline', isUserOnline(uid));
 
 			emitOnlineUserCount();
 
@@ -169,11 +168,11 @@ websockets.init = function(io) {
 			var anonymousCount = getAnonymousCount(roomName);
 
 			if (uids.length === 0) {
-				io.sockets. in (roomName).emit('api:get_users_in_room', { users: [], anonymousCount: anonymousCount });
+				io.sockets.in(roomName).emit('api:get_users_in_room', { users: [], anonymousCount: anonymousCount });
 			} else {
 				user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, users) {
 					if(!err)
-						io.sockets. in (roomName).emit('api:get_users_in_room', { users: users, anonymousCount: anonymousCount });
+						io.sockets.in(roomName).emit('api:get_users_in_room', { users: users, anonymousCount: anonymousCount });
 				});
 			}
 		}
@@ -201,9 +200,9 @@ websockets.init = function(io) {
 
 			updateRoomBrowsingText(data.enter);
 
-			if (data.enter != 'admin')
-				io.sockets. in ('admin').emit('api:get_all_rooms', io.sockets.manager.rooms);
-
+			if (data.enter != 'admin') {
+				io.sockets.in('admin').emit('api:get_all_rooms', io.sockets.manager.rooms);
+			}
 		});
 
 		// BEGIN: API calls (todo: organize)
