@@ -123,24 +123,24 @@ var path = require('path'),
 	if (global.env !== 'development') {
 		app.enable('cache');
 		app.enable('minification');
+
+		// Configure cache-buster timestamp
+		require('child_process').exec('git describe --tags', {
+			cwd: path.join(__dirname, '../')
+		}, function(err, stdOut) {
+			if (!err) {
+				meta.config['cache-buster'] = stdOut.trim();
+
+				if (global.env === 'development') {
+					winston.info('[init] Cache buster value set to: ' + stdOut);
+				}
+			} else {
+				if (global.env === 'development') {
+					winston.warn('[init] Cache buster not set');
+				}
+			}
+		});
 	}
-
-	// Configure cache-buster timestamp
-	require('child_process').exec('git describe --tags', {
-		cwd: path.join(__dirname, '../')
-	}, function(err, stdOut) {
-		if (!err) {
-			meta.config['cache-buster'] = stdOut.trim();
-
-			if (global.env === 'development') {
-				winston.info('[init] Cache buster value set to: ' + stdOut);
-			}
-		} else {
-			if (global.env === 'development') {
-				winston.warn('[init] Cache buster not set');
-			}
-		}
-	});
 
 	// Middlewares
 	app.configure(function() {
