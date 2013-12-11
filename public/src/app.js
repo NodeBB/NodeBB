@@ -77,6 +77,8 @@ var socket,
 							}
 							app.enterRoom(room, true);
 
+							socket.emit('reconnected');
+
 							setTimeout(function() {
 								reconnectEl.removeClass('active');
 							}, 3000);

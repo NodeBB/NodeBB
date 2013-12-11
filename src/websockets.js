@@ -135,6 +135,21 @@ websockets.init = function(io) {
 			}
 		});
 
+		socket.on('reconnected', function() {
+			if (uid) {
+				topics.pushUnreadCount(uid);
+				user.pushNotifCount(uid);
+			}
+
+			if (process.env.NODE_ENV === 'development') {
+				if (uid) {
+					winston.info('[socket] uid ' + uid + ' (' + sessionID + ') has successfully reconnected.');
+				} else {
+					winston.info('[socket] An anonymous user (' + sessionID + ') has successfully reconnected.');
+				}
+			}
+		});
+
 		socket.on('api:get_all_rooms', function(data) {
 			socket.emit('api:get_all_rooms', io.sockets.manager.rooms);
 		});

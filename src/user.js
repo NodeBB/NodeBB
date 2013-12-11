@@ -867,7 +867,6 @@ var bcrypt = require('bcrypt'),
 
 	User.pushNotifCount = function(uid) {
 		User.notifications.getUnreadCount(uid, function(err, count) {
-			console.log('unread count is', count);
 			if (!err) {
 				websockets.in('uid_' + uid).emit('event:notifications.updateCount', count);
 			} else {
