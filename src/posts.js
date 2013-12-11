@@ -152,7 +152,7 @@ var db = require('./database'),
 				});
 
 				threadTools.notifyFollowers(tid, uid);
-				
+
 				Posts.addUserInfoToPost(postData, function(err) {
 					if(err) {
 						return callback(err, null);
@@ -170,20 +170,28 @@ var db = require('./database'),
 				return callback(err);
 			}
 
-			if (pids.length) {
-				plugins.fireHook('filter:post.getTopic', pids, function(err, posts) {
-					if (!err && posts.length > 0) {
-						Posts.getPostsByPids(pids, function(err, posts) {
-							plugins.fireHook('action:post.gotTopic', posts);
-							callback(posts);
-						});
-					} else {
-						callback(posts);
-					}
-				});
-			} else {
-				callback([]);
+			if(!pids.length) {
+				return callback(null, []);
 			}
+
+			plugins.fireHook('filter:post.getTopic', pids, function(err, posts) {
+				if(err) {
+					return callback(err);
+				}
+
+				if(!posts.length) {
+					return callback(null, []);
+				}
+
+
+				Posts.getPostsByPids(pids, function(err, posts) {
+					if(err) {
+						return callback(err);
+					}
+					plugins.fireHook('action:post.gotTopic', posts);
+					callback(null, posts);
+				});
+			});
 		});
 	};
 
