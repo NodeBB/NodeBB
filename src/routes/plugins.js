@@ -26,7 +26,7 @@ var	nconf = require('nconf'),
 
 		// Static Assets
 		app.get('/plugins/:id/*', function(req, res) {
-			var	relPath = req.url.replace('/plugins/' + req.params.id, '');
+			var	relPath = req._parsedUrl.pathname.replace('/plugins/' + req.params.id, '');
 			if (plugins.staticDirs[req.params.id]) {
 				var	fullPath = path.join(plugins.staticDirs[req.params.id], relPath);
 				fs.exists(fullPath, function(exists) {
