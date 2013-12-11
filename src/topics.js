@@ -161,9 +161,13 @@ var async = require('async'),
 	}
 
 	Topics.getTopicPosts = function(tid, start, end, current_user, callback) {
-		posts.getPostsByTid(tid, start, end, function(postData) {
+		posts.getPostsByTid(tid, start, end, function(err, postData) {
+			if(err) {
+				return callback(err);
+			}
+
 			if (Array.isArray(postData) && !postData.length) {
-				return callback([]);
+				return callback(null, []);
 			}
 
 			for(var i=0; i<postData.length; ++i) {
@@ -176,8 +180,9 @@ var async = require('async'),
 
 			function getFavouritesData(next) {
 				var pids = [];
-				for (var i = 0; i < postData.length; ++i)
+				for (var i = 0; i < postData.length; ++i) {
 					pids.push(postData[i].pid);
+				}
 
 				favourites.getFavouritesByPostIDs(pids, current_user, function(fav_data) {
 					next(null, fav_data);
@@ -203,6 +208,10 @@ var async = require('async'),
 			}
 
 			async.parallel([getFavouritesData, addUserInfoToPosts, getPrivileges], function(err, results) {
+				if(err) {
+					return callback(err);
+				}
+
 				var fav_data = results[0],
 					privileges = results[2];
 
@@ -211,7 +220,7 @@ var async = require('async'),
 					postData[i].display_moderator_tools = ((current_user != 0) && (postData[i].uid == current_user || privileges.editable));
 				}
 
-				callback(postData);
+				callback(null, postData);
 			});
 		});
 	}
@@ -539,9 +548,7 @@ var async = require('async'),
 			};
 
 			function getTopicPosts(next) {
-				Topics.getTopicPosts(tid, start, end, current_user, function(topicPosts) {
-					next(null, topicPosts);
-				});
+				Topics.getTopicPosts(tid, start, end, current_user, next);
 			};
 
 			function getPrivileges(next) {

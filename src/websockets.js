@@ -875,7 +875,7 @@ websockets.init = function(io) {
 			var start = data.after,
 				end = start + 9;
 
-			topics.getTopicPosts(data.tid, start, end, uid, function(posts) {
+			topics.getTopicPosts(data.tid, start, end, uid, function(err, posts) {
 				callback({
 					posts: posts
 				});
