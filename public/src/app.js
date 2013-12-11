@@ -51,6 +51,32 @@ var socket,
 							reconnectEl.html('<i class="fa fa-check"></i>');
 							reconnecting = false;
 
+							// Rejoin room that was left when we disconnected
+							var	url_parts = document.location.pathname.slice(RELATIVE_PATH.length).split('/').slice(1),
+								room;
+							switch(url_parts[0]) {
+								case 'user':
+									room = 'user/' + templates.get('theirid');
+								case 'topic':
+									room = 'topic_' + url_parts[1];
+									break;
+								case 'category':
+									room = 'category_' + url_parts[1];
+									break;
+								case 'recent':	// intentional fall-through
+								case 'unread':
+									room = 'recent_posts';
+									break;
+								case 'admin':
+									room = 'admin';
+									break;
+
+								default:
+									room = 'global';
+									break;
+							}
+							app.enterRoom(room, true);
+
 							setTimeout(function() {
 								reconnectEl.removeClass('active');
 							}, 3000);
@@ -248,9 +274,9 @@ var socket,
 		});
 	};
 
-	app.enterRoom = function (room) {
+	app.enterRoom = function (room, force) {
 		if (socket) {
-			if (app.currentRoom === room) {
+			if (app.currentRoom === room && !force) {
 				return;
 			}
 

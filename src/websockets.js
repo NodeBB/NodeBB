@@ -163,9 +163,8 @@ websockets.init = function(io) {
 				return anonCount;
 			}
 
-			var uids = getUidsInRoom(rooms[roomName]);
-
-			var anonymousCount = getAnonymousCount(roomName);
+			var	uids = getUidsInRoom(rooms[roomName]),
+				anonymousCount = getAnonymousCount(roomName);
 
 			if (uids.length === 0) {
 				io.sockets.in(roomName).emit('api:get_users_in_room', { users: [], anonymousCount: anonymousCount });
@@ -184,19 +183,19 @@ websockets.init = function(io) {
 			}
 
 			socket.join(data.enter);
-
 			rooms[data.enter] = rooms[data.enter] || {};
 
 			if (uid) {
 				rooms[data.enter][socket.id] = uid;
 
-				if (data.leave && rooms[data.leave] && rooms[data.leave][socket.id]) {
+				if (data.leave && rooms[data.leave] && rooms[data.leave][socket.id] && data.enter !== data.leave) {
 					delete rooms[data.leave][socket.id];
 				}
 			}
 
-			if (data.leave)
+			if (data.leave) {
 				updateRoomBrowsingText(data.leave);
+			}
 
 			updateRoomBrowsingText(data.enter);
 
