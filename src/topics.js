@@ -720,7 +720,7 @@ var async = require('async'),
 
 		user.notifications.getUnreadByUniqueId(uid, 'topic:' + tid, function(err, nids) {
 			notifications.mark_read_multiple(nids, uid, function() {
-
+				user.pushNotifCount(uid);
 			});
 		});
 	}

@@ -14,8 +14,9 @@ var bcrypt = require('bcrypt'),
 	emailjsServer = emailjs.server.connect(meta.config['email:smtp:host'] || '127.0.0.1'),
 	groups = require('./groups'),
 	notifications = require('./notifications'),
-	topics = require('./topics');
+	topics = require('./topics'),
 
+	websockets = require('./websockets');
 
 (function(User) {
 	'use strict';
@@ -862,6 +863,17 @@ var bcrypt = require('bcrypt'),
 				}
 			});
 		}
+	};
+
+	User.pushNotifCount = function(uid) {
+		User.notifications.getUnreadCount(uid, function(err, count) {
+			console.log('unread count is', count);
+			if (!err) {
+				websockets.in('uid_' + uid).emit('event:notifications.updateCount', count);
+			} else {
+				winston.warn('[User.pushNotifCount] Count not retrieve unread notifications count to push to uid ' + uid + '\'s client(s)');
+			}
+		});
 	};
 
 	User.email = {

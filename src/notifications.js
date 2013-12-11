@@ -147,11 +147,18 @@ var async = require('async'),
 	Notifications.mark_read = function(nid, uid, callback) {
 		if (parseInt(uid, 10) > 0) {
 			Notifications.get(nid, uid, function(notif_data) {
-				db.sortedSetRemove('uid:' + uid + ':notifications:unread', nid);
-				db.sortedSetAdd('uid:' + uid + ':notifications:read', notif_data.datetime, nid);
-				if (callback) {
-					callback();
-				}
+				async.parallel([
+					function(next) {
+						db.sortedSetRemove('uid:' + uid + ':notifications:unread', nid, next);
+					},
+					function(next) {
+						db.sortedSetAdd('uid:' + uid + ':notifications:read', notif_data.datetime, nid, next);
+					}
+				], function(err) {
+					if (callback) {
+						callback();
+					}
+				});
 			});
 		}
 	};

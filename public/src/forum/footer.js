@@ -142,7 +142,7 @@
 		}
 	});
 
-	socket.emit('api:notifications.getCount', function(err, count) {
+	var	updateNotifCount = function(count) {
 		// Update notification icon, if necessary
 		if (count > 0) {
 			notifIcon.toggleClass('active', true);
@@ -153,11 +153,15 @@
 		// Update the favicon + saved local count
 		Tinycon.setBubble(count);
 		localStorage.setItem('notifications:count', count);
-	});
+	};
 
-	if (localStorage.getItem('notifications:count') !== null) {
-		Tinycon.setBubble(parseInt(localStorage.getItem('notifications:count'), 10));
-	}
+	socket.emit('api:notifications.getCount', function(err, count) {
+		if (!err) {
+			updateNotifCount(count);
+		} else {
+			updateNotifCount(0);
+		}
+	});
 
 	socket.on('event:new_notification', function() {
 		notifIcon.toggleClass('active', true);
@@ -176,8 +180,10 @@
 
 		// Update the favicon + local storage
 		var	savedCount = parseInt(localStorage.getItem('notifications:count'),10) || 0;
-		localStorage.setItem('notifications:count', savedCount+1);
-		Tinycon.setBubble(savedCount+1);
+		updateNotifCount(savedCount+1);
+	});
+	socket.on('event:notifications.updateCount', function(count) {
+		updateNotifCount(count);
 	});
 
 	// Chats Dropdown
