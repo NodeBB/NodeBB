@@ -230,7 +230,7 @@ var db = require('./database'),
 					if (post.editor !== '') {
 						user.getUserFields(post.editor, ['username', 'userslug'], function(err, editorData) {
 							if (err) {
-								return callback();
+								return callback(err);
 							}
 
 							post.editorname = editorData.username;
