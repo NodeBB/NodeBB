@@ -39,29 +39,22 @@ var path = require('path'),
 				res.json(200, config);
 			});
 
-			app.get('/home', function (req, res, next) {
+			app.get('/home', function (req, res) {
 				var uid = (req.user) ? req.user.uid : 0;
 				categories.getAllCategories(uid, function (err, data) {
 					data.categories = data.categories.filter(function (category) {
 						return (!category.disabled || parseInt(category.disabled, 10) === 0);
 					});
 
-					function getRecentReplies(category, callback) {
-						categories.getRecentReplies(category.cid, 2, function (err, posts) {
-							if(err) {
-								return callback(err);
-							}
+					function iterator(category, callback) {
+						categories.getRecentReplies(category.cid, 2, function (posts) {
 							category.posts = posts;
 							category.post_count = posts.length > 2 ? 2 : posts.length;
 							callback(null);
 						});
 					}
 
-					async.each(data.categories, getRecentReplies, function (err) {
-						if(err) {
-							return next(err);
-						}
-
+					async.each(data.categories, iterator, function (err) {
 						data.motd_class = (parseInt(meta.config.show_motd, 10) === 1 || meta.config.show_motd === undefined) ? '' : ' none';
 						data.motd_class += (meta.config.motd && meta.config.motd.length > 0 ? '' : ' default');
 
@@ -244,10 +237,6 @@ var path = require('path'),
 							return callback(err, null);
 						}
 
-						if(pids.length > 50) {
-							pids = pids.splice(0, 50);
-						}
-
 						posts.getPostSummaryByPids(pids, false, function (err, posts) {
 							if (err){
 								return callback(err, null);
@@ -261,10 +250,6 @@ var path = require('path'),
 					db.search('topic', req.params.term, function(err, tids) {
 						if (err) {
 							return callback(err, null);
-						}
-
-						if(tids.length > 50) {
-							tids = tids.splice(0, 50);
 						}
 
 						topics.getTopicsByTids(tids, 0, function (topics) {
@@ -313,7 +298,7 @@ var path = require('path'),
 
 			app.get('/500', function(req, res) {
 				res.json({errorMessage: 'testing'});
-			})
+			});
 		});
 	}
 }(exports));
