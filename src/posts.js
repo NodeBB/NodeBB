@@ -14,7 +14,8 @@ var db = require('./database'),
 	async = require('async'),
 	nconf = require('nconf'),
 	validator = require('validator'),
-	winston = require('winston');
+	winston = require('winston'),
+	gravatar = require('gravatar');
 
 (function(Posts) {
 	var customUserInfo = {};
@@ -202,12 +203,16 @@ var db = require('./database'),
 			}
 
 			postTools.parseSignature(userData.signature, function(err, signature) {
+				if(err) {
+					return callback(err);
+				}
+
 				post.username = userData.username || 'anonymous';
 				post.userslug = userData.userslug || '';
 				post.user_rep = userData.reputation || 0;
 				post.user_postcount = userData.postcount || 0;
 				post.user_banned = parseInt(userData.banned, 10) === 1;
-				post.picture = userData.picture || require('gravatar').url('', {}, https = nconf.get('https'));
+				post.picture = userData.picture || gravatar.url('', {}, https = nconf.get('https'));
 				post.signature = signature;
 
 				for (var info in customUserInfo) {
@@ -217,11 +222,16 @@ var db = require('./database'),
 				}
 
 				plugins.fireHook('filter:posts.custom_profile_info', {profile: "", uid: post.uid, pid: post.pid}, function(err, profile_info) {
+					if(err) {
+						return callback(err);
+					}
 					post.additional_profile_info = profile_info.profile;
 
 					if (post.editor !== '') {
 						user.getUserFields(post.editor, ['username', 'userslug'], function(err, editorData) {
-							if (err) return callback();
+							if (err) {
+								return callback();
+							}
 
 							post.editorname = editorData.username;
 							post.editorslug = editorData.userslug;
