@@ -222,7 +222,7 @@ var path = require('path'),
 			});
 
 			app.get('/search', function (req, res) {
-				if (req.user && req.user.uid) {
+				if ((req.user && req.user.uid) || meta.config.allowGuestSearching === '1') {
 					return res.json({
 						show_no_topics: 'hide',
 						show_no_posts: 'hide',
@@ -273,7 +273,7 @@ var path = require('path'),
 					});
 				}
 
-				if (req.user && req.user.uid) {
+				if ((req.user && req.user.uid) || meta.config.allowGuestSearching === '1') {
 					async.parallel([searchPosts, searchTopics], function (err, results) {
 						if (err) {
 							return next();

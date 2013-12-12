@@ -80,7 +80,7 @@ var socket,
 							socket.emit('reconnected');
 
 							setTimeout(function() {
-								reconnectEl.removeClass('active');
+								reconnectEl.removeClass('active').addClass("hide");
 							}, 3000);
 						}
 
@@ -104,7 +104,7 @@ var socket,
 						reconnecting = true;
 
 						if (!reconnectEl.hasClass('active')) reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
-						reconnectEl.addClass('active');
+						reconnectEl.addClass('active').removeClass("hide");
 
 						reconnectEl.tooltip({
 							placement: 'bottom'

@@ -74,19 +74,7 @@
 
 				<ul id="logged-in-menu" class="nav navbar-nav navbar-right hide">
 					<li>
-						<a href="#" id="reconnect" title="Connection to {title} has been lost, attempting to reconnect..."><i class="fa fa-check"></i></a>
-					</li>
-
-					<li>
-						<form id="search-form" class="navbar-form navbar-right hidden-xs" role="search" method="GET" action="">
-							<div class="hide" id="search-fields">
-								<div class="form-group">
-									<input type="text" class="form-control" placeholder="Search" name="query" value="">
-								</div>
-								<button type="submit" class="btn btn-default hide">[[global:search]]</button>
-							</div>
-							<button id="search-button" type="button" class="btn btn-link"><i class="fa fa-search"></i></button>
-						</form>
+						<a href="#" id="reconnect" class="hide" title="Connection to {title} has been lost, attempting to reconnect..."><i class="fa fa-check"></i></a>
 					</li>
 
 					<li class="notifications dropdown text-center hidden-xs">
@@ -140,6 +128,20 @@
 								<a href="/login">[[global:login]]</a>
 							</li>
 						</ul>
+					</li>
+				</ul>
+
+				<ul id="logged-conditional-menu" class="nav navbar-nav navbar-right">
+					<li>
+						<form id="search-form" class="navbar-form navbar-right hidden-xs" role="search" method="GET" action="">
+							<div class="hide" id="search-fields">
+								<div class="form-group">
+									<input type="text" class="form-control" placeholder="Search" name="query" value="">
+								</div>
+								<button type="submit" class="btn btn-default hide">[[global:search]]</button>
+							</div>
+							<button id="search-button" type="button" class="btn btn-link hide"><i class="fa fa-search"></i></button>
+						</form>
 					</li>
 				</ul>
 
