@@ -714,10 +714,10 @@ websockets.init = function(io) {
 					return;
 				}
 
-				var finalMessage = username + ' : ' + msg,
-					notifText = 'New message from <strong>' + username + '</strong>',
-					username = usersData[0].username,
-					toUsername = usersData[1].username;
+				var username = usersData[0].username,
+					toUsername = usersData[1].username,
+					finalMessage = username + ' : ' + msg,
+					notifText = 'New message from <strong>' + username + '</strong>';
 
 				if (!isUserOnline(touid)) {
 					notifications.create(notifText, 'javascript:app.openChat(&apos;' + username + '&apos;, ' + uid + ');', 'notification_' + uid + '_' + touid, function(nid) {
