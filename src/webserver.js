@@ -741,7 +741,7 @@ var path = require('path'),
 		});
 
 		app.get('/search/:term', function (req, res) {
-			if (!req.user && !meta.config.allowGuestSearching) {
+			if (!req.user && meta.config.allowGuestSearching !== '1') {
 				return res.redirect('/403');
 			}
 
