@@ -305,25 +305,16 @@ Upgrade.upgradeRedis = function(callback) {
 			}
 		},
 		function(next) {
-
 			thisSchemaDate = new Date(2013, 11, 11).getTime();
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 
-				RDB.hmget('config', 'allowGuestSearching', function(err, value) {
-					if(err) {
+				RDB.hset('config', 'allowGuestSearching', '0', function(err){
+					if (err) {
 						return next(err);
 					}
-
-					if(value[0] === null) {
-						RDB.hset('config', 'allowGuestSearching', '0', function(err){
-							if (err) {
-								return next(err);
-							}
-							winston.info('[2013/12/11] Updated guest search config.');
-							next();
-						});
-					}
+					winston.info('[2013/12/11] Updated guest search config.');
+					next();
 				});
 			} else {
 				winston.info('[2013/12/11] Update to guest search skipped');
@@ -379,20 +370,12 @@ Upgrade.upgradeMongo = function(callback) {
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 
-				db.getObjectField('config', 'allowGuestSearching', function(err, value) {
-					if(err) {
+				db.setObjectField('config', 'allowGuestSearching', '0', function(err){
+					if (err) {
 						return next(err);
 					}
-
-					if(!value) {
-						db.setObjectField('config', 'allowGuestSearching', '0', function(err){
-							if (err) {
-								return next(err);
-							}
-							winston.info('[2013/12/11] Updated guest search config.');
-							next();
-						});
-					}
+					winston.info('[2013/12/11] Updated guest search config.');
+					next();
 				});
 			} else {
 				winston.info('[2013/12/11] Update to guest search skipped');
