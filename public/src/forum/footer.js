@@ -1,4 +1,4 @@
-(function($) {
+(function() {
 
 	socket.emit('api:updateHeader', {
 		fields: ['username', 'picture', 'userslug']
@@ -270,4 +270,4 @@
 	require(['mobileMenu'], function(mobileMenu) {
 		mobileMenu.init();
 	});
-}(jQuery));
+}());
