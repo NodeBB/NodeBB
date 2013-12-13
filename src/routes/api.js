@@ -270,7 +270,9 @@ var path = require('path'),
 							show_results: '',
 							search_query: req.params.term,
 							posts: results[0],
-							topics: results[1]
+							topics: results[1],
+							post_matches : results[0].length,
+							topic_matches : results[1].length
 						});
 					});
 				} else {
