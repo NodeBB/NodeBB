@@ -444,20 +444,17 @@ var bcrypt = require('bcrypt'),
 
 	User.getPostIds = function(uid, start, stop, callback) {
 		db.getListRange('uid:' + uid + ':posts', start, stop, function(err, pids) {
-			if (!err) {
-				if (pids && pids.length) {
-					callback(pids);
-				} else {
-					callback([]);
-				}
+			if(err) {
+				return callback(err);
+			}
+
+			if (pids && pids.length) {
+				callback(null, pids);
 			} else {
-				console.log(err);
-				callback([]);
+				callback(null, []);
 			}
 		});
 	};
-
-
 
 	User.follow = function(uid, followid, callback) {
 		db.setAdd('following:' + uid, followid, function(err, data) {

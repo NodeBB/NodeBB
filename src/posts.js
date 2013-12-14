@@ -449,8 +449,9 @@ var db = require('./database'),
 
 	Posts.uploadPostImage = function(image, callback) {
 
-		if(!image)
+		if(!image) {
 			return callback('invalid image', null);
+		}
 
 		require('./imgur').upload(meta.config.imgurClientID, image.data, 'base64', function(err, data) {
 			if(err) {
@@ -465,22 +466,29 @@ var db = require('./database'),
 	}
 
 	Posts.getPostsByUid = function(uid, start, end, callback) {
-		user.getPostIds(uid, start, end, function(pids) {
+		user.getPostIds(uid, start, end, function(err, pids) {
+			if(err) {
+				return callback(err);
+			}
 
 			if (pids && pids.length) {
 				plugins.fireHook('filter:post.getTopic', pids, function(err, posts) {
+					if(err) {
+						return callback(err);
+					}
 
-					if (!err & 0 < posts.length) {
+					if (posts && posts.length) {
 						Posts.getPostsByPids(pids, function(err, posts) {
 							plugins.fireHook('action:post.gotTopic', posts);
-							callback(posts);
+							callback(null, posts);
 						});
 					} else {
-						callback(posts);
+						callback(null, []);
 					}
 				});
-			} else
-				callback([]);
+			} else {
+				callback(null, []);
+			}
 		});
 	}
 
