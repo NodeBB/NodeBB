@@ -244,7 +244,7 @@ var nconf = require('nconf'),
 
 		var custom_routes = {
 			'routes': [],
-			'api_methods': []
+			'api': []
 		};
 
 		plugins.ready(function() {
@@ -259,6 +259,19 @@ var nconf = require('nconf'),
 									Admin.buildHeader(req, res, function (err, header) {
 										res.send(header + options.content + templates['admin/footer']);
 									});
+								});
+							});
+						}(route));
+					}
+				}
+
+				var apiRoutes = custom_routes.api;
+				for (var route in apiRoutes) {
+					if (apiRoutes.hasOwnProperty(route)) {
+						(function(route) {
+							app[apiRoutes[route].method || 'get']('/admin/api' + apiRoutes[route].route, function(req, res) {
+								apiRoutes[route].callback(req, res, function(data) {
+									res.json(data);
 								});
 							});
 						}(route));
