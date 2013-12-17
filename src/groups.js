@@ -176,7 +176,6 @@
 
 	Groups.update = function(gid, values, callback) {
 		db.exists('gid:' + gid, function (err, exists) {
-			console.log('exists?', gid, exists, values);
 			if (!err && exists) {
 				db.setObject('gid:' + gid, values, callback);
 			} else {
@@ -199,7 +198,6 @@
 		Groups.getGidFromName(groupName, function(err, gid) {
 			if (err || !gid) {
 				Groups.create(groupName, '', function(err, groupObj) {
-					console.log('creating group, calling hide', groupObj.gid);
 					async.parallel([
 						function(next) {
 							Groups.hide(groupObj.gid, next);
