@@ -40,7 +40,8 @@
 				</div>
 				<div class="form-group">
 					<div class="col-lg-offset-2 col-lg-10">
-						<button class="btn btn-primary" id="login" type="submit">[[login:login]]</button> &nbsp; <a id="reset-link" class="hide" href="/reset">[[login:forgot_password]]</a>
+						<hr />
+						<button class="btn btn-primary btn-lg btn-block"  id="login" type="submit">[[login:login]]</button> &nbsp; <a id="reset-link" class="hide" href="/reset">[[login:forgot_password]]</a>
 					</div>
 				</div>
 				<input type="hidden" name="_csrf" value="{token}" id="csrf-token" />
