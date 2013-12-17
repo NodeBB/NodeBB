@@ -482,7 +482,21 @@ define(function() {
 			adjust_rep(-1, data.pid, data.uid);
 		});
 
-		socket.on('event:new_post', createNewPosts);
+		socket.on('event:new_post', function(data) {
+			var posts = data.posts;
+			for (var p in posts) {
+				if (posts.hasOwnProperty(p)) {
+					var post = posts[p],
+						postcount = jQuery('.user_postcount_' + post.uid),
+						ptotal = parseInt(postcount.html(), 10);
+
+					ptotal += 1;
+					postcount.html(ptotal);
+				}
+			}
+
+			createNewPosts(data);
+		});
 
 		socket.on('event:topic_deleted', function(data) {
 			if (data.tid === tid && data.status === 'ok') {
