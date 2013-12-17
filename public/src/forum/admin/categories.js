@@ -211,6 +211,7 @@ define(['uploader'], function(uploader) {
 		var	modal = $('#category-permissions-modal'),
 			searchEl = modal.find('#permission-search'),
 			resultsEl = modal.find('.search-results'),
+                        groupsResultsEl = modal.find('.groups-results'),
 			searchDelay;
 
 		searchEl.off().on('keyup', function() {
@@ -262,6 +263,40 @@ define(['uploader'], function(uploader) {
 			searchEl.val(this.getAttribute('title'));
 			searchEl.keyup();
 		});
+
+                // User Groups and privileges
+		socket.emit('api:admin.categories.groupsearch', cid, function(err, results) {
+			var groupsFrag = document.createDocumentFragment(),
+			liEl = document.createElement('li');
+			var numResults = results.length,
+			    resultObj;
+			
+			for(var x=0;x<numResults;x++) {
+				resultObj = results[x];
+				liEl.setAttribute('data-gid', resultObj.gid);
+				liEl.innerHTML = '<div class="pull-right">' +
+							'<div class="btn-group">' +
+							  '<button type="button" data-gpriv="+gr" class="btn btn-default' + (resultObj.privileges['+gr'] ? ' active' : '') + '">Read</button>' +
+							  '<button type="button" data-gpriv="+gw" class="btn btn-default' + (resultObj.privileges['+gw'] ? ' active' : '') + '">Write</button>' +
+							'</div>' +
+						 '</div>' +
+						 ' '+resultObj.name;
+	
+				groupsFrag.appendChild(liEl.cloneNode(true));
+			}
+			
+			groupsResultsEl.html(groupsFrag);
+		});
+		
+		groupsResultsEl.off().on('click', '[data-gpriv]', function(e) {
+			var btnEl = $(this),
+			    gid = btnEl.parents('li[data-gid]').attr('data-gid'),
+			    privilege = this.getAttribute('data-gpriv');
+			e.preventDefault();
+			socket.emit('api:admin.categories.setGroupPrivilege', cid, gid, privilege, !btnEl.hasClass('active'), function(err, privileges) {
+			    btnEl.toggleClass('active', privileges[privilege]);
+			});
+		})
 
 		modal.modal();
 	};

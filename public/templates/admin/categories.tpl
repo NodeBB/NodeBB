@@ -154,6 +154,12 @@
 						</div>
 					</form>
 					<ul class="search-results"></ul>
+					<form role="form">
+						<div class="form-group">
+							<label for="permission-group-pick">User Groups</label>
+						</div>
+					</form>
+					<ul class="groups-results"></ul>
 				</div>
 			</div>
 		</div>
