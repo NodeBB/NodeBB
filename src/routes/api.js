@@ -4,6 +4,7 @@ var path = require('path'),
 
 	db = require('../database'),
 	user = require('../user'),
+	groups = require('../groups'),
 	auth = require('./authentication'),
 	topics = require('../topics'),
 	posts = require('../posts'),
@@ -121,7 +122,15 @@ var path = require('path'),
 						if (parseInt(data.deleted, 10) === 1 && parseInt(data.expose_tools, 10) === 0) {
 							return res.json(404, {});
 						}
-						res.json(data);
+						// get the category this post belongs to and check category access
+						var cid = data.category_slug.split("/")[0];
+						groups.getCategoryAccess(cid, uid, function(err, access){
+							if (access){
+								res.json(data);
+							} else {
+								res.send(403);
+							}
+						})
 					} else next();
 				});
 			});
@@ -132,13 +141,20 @@ var path = require('path'),
 				// Category Whitelisting
 				categoryTools.privileges(req.params.id, uid, function(err, privileges) {
 					if (!err && privileges.read) {
-						categories.getCategoryById(req.params.id, uid, function (err, data) {
-							if (!err && data && parseInt(data.disabled, 10) === 0) {
-								res.json(data);
+						groups.getCategoryAccess(req.params.id, uid, function(err, access){
+							if (access){
+								categories.getCategoryById(req.params.id, uid, function (err, data) {
+									if (!err && data && parseInt(data.disabled, 10) === 0) {
+										res.json(data);
+									} else {
+										next();
+									}
+								}, req.params.id, uid);	
 							} else {
-								next();
+								res.send(403);
 							}
-						}, req.params.id, uid);
+							
+						});
 					} else {
 						res.send(403);
 					}
