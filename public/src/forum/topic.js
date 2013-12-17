@@ -102,7 +102,7 @@ define(function() {
 
 					var loadingEl = document.getElementById('categories-loading');
 					if (loadingEl) {
-						socket.once('api:categories.get', function(data) {
+						socket.emit('api:categories.get', function(data) {
 							// Render categories
 							var categoriesFrag = document.createDocumentFragment(),
 								categoryEl = document.createElement('li'),
@@ -172,7 +172,6 @@ define(function() {
 								}
 							});
 						});
-						socket.emit('api:categories.get');
 					}
 				});
 			}
@@ -802,7 +801,7 @@ define(function() {
 
 		pagination.parentNode.style.display = 'block';
 		progressBarContainer.css('display', '');
-		
+
 		if (scrollTop < jQuery('.posts > .post-row:first-child').height() && Topic.postCount > 1) {
 			localStorage.removeItem("topic:" + tid + ":bookmark");
 			pagination.innerHTML = '1 out of ' + Topic.postCount;

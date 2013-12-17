@@ -591,9 +591,9 @@ websockets.init = function(io) {
 			threadTools.move(data.tid, data.cid, socket);
 		});
 
-		socket.on('api:categories.get', function() {
+		socket.on('api:categories.get', function(callback) {
 			categories.getAllCategories(0, function(err, categories) {
-				socket.emit('api:categories.get', categories);
+				callback(categories);
 			});
 		});
 
