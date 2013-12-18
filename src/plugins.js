@@ -274,10 +274,17 @@ var fs = require('fs'),
 					return;
 				}
 
+
+				if(active) {
+					Plugins.fireHook('action:plugin.deactivate', id);
+				}
+
 				// Reload meta data
 				Plugins.reload(function() {
-					// (De)activation Hooks
-					Plugins.fireHook('action:plugin.' + (active ? 'de' : '') + 'activate', id);
+
+					if(!active) {
+						Plugins.fireHook('action:plugin.activate', id);
+					}
 
 					if (callback) {
 						callback({
