@@ -20,9 +20,12 @@
 				<span class="label label-danger">[[user:banned]]</span>
 			</div>
 			<!-- ENDIF banned -->
+			<div>
+				<a id="chat-btn" href="#" class="btn btn-default hide">Chat</a>
+			</div>
 			<div id="user-actions">
-				<a id="follow-btn" href="#" class="btn btn-default">Follow</a>
-				<a id="unfollow-btn" href="#" class="btn btn-default">Unfollow</a>
+				<a id="follow-btn" href="#" class="btn btn-default hide">Follow</a>
+				<a id="unfollow-btn" href="#" class="btn btn-default hide">Unfollow</a>
 			</div>
 		</div>
 
