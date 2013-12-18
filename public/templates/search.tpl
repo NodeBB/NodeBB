@@ -15,41 +15,54 @@
 
 <div class="category search">
 	<div class="{show_results}">
-		<ul id="topics-container" data-search-query="{search_query}">
 		<h3>[[topic:topics]]</h3>
+
+		<!-- IF topic_matches -->
+		<small>{topic_matches} result(s) matching "{search_query}"</small>
+		<!-- ENDIF topic_matches -->
 		<div class="alert alert-info {show_no_topics}">[[topic:no_topics_found]]</div>
-		<!-- BEGIN topics -->
-		<a href="../../topic/{topics.slug}" id="tid-{topics.tid}">
-			<li class="category-item">
-				<div>
-					<div class="col-md-12 img-thumbnail">
-						<div class="search-result-post">
-							<img src="{topics.teaser_userpicture}" />
-							<strong>{topics.teaser_username}</strong>: <span class="search-result-text">{topics.title}</span>
-						</div>
 
+		<ul id="topics-container" data-search-query="{search_query}">
+
+			<!-- BEGIN topics -->
+			<li class="category-item">
+				<a href="../../topic/{topics.slug}" id="tid-{topics.tid}">
+					<div>
+						<div class="col-md-12 img-thumbnail">
+							<div class="search-result-post">
+								<img src="{topics.teaser_userpicture}" />
+								<strong>{topics.teaser_username}</strong>: <span class="search-result-text">{topics.title}</span>
+							</div>
+
+						</div>
 					</div>
-				</div>
+				</a>
 			</li>
-		</a>
-		<!-- END topics -->
+			<!-- END topics -->
+		</ul>
+
 		<h3>Posts</h3>
+		<!-- IF post_matches -->
+		<small>{post_matches} result(s) matching "{search_query}"</small>
+		<!-- ENDIF post_matches -->
 		<div class="alert alert-info {show_no_posts}">No posts found!</div>
-		<!-- BEGIN posts -->
-		<a href="../../topic/{posts.topicSlug}#{posts.pid}" id="tid-{posts.tid}">
-			<li class="category-item">
-				<div>
-					<div class="col-md-12 img-thumbnail">
-						<div class="search-result-post">
-							<img src="{posts.picture}" />
-							<strong>{posts.username}</strong>: <span class="search-result-text">{posts.content}</span>
-						</div>
 
+		<ul id="topics-container" data-search-query="{search_query}">
+			<!-- BEGIN posts -->
+			<li class="category-item">
+				<a href="../../topic/{posts.topicSlug}#{posts.pid}" id="tid-{posts.tid}">
+					<div>
+						<div class="col-md-12 img-thumbnail">
+							<div class="search-result-post">
+								<img src="{posts.picture}" />
+								<strong>{posts.username}</strong>: <span class="search-result-text">{posts.content}</span>
+							</div>
+
+						</div>
 					</div>
-				</div>
+				</a>
 			</li>
-		</a>
-		<!-- END posts -->
+			<!-- END posts -->
 		</ul>
 	</div>
 </div>

@@ -181,7 +181,7 @@ var fs = require('fs'),
 					user.setUserField(uid, 'picture', imageUrl);
 
 					if (convertToPNG) {
-						im.convert([uploadPath, 'png:-'], 
+						im.convert([uploadPath, 'png:-'],
 							function(err, stdout){
 								if (err) {
 									winston.err(err);
@@ -191,10 +191,10 @@ var fs = require('fs'),
 									return;
 								}
 
-								fs.writeFileSync(uploadPath, stdout, 'binary');  
+								fs.writeFileSync(uploadPath, stdout, 'binary');
 							});
 					}
-					
+
 
 					res.json({
 						path: imageUrl
@@ -393,18 +393,24 @@ var fs = require('fs'),
 			});
 		});
 
-		app.get('/api/user/:userslug', function (req, res) {
+		app.get('/api/user/:userslug', function (req, res, next) {
 			var callerUID = req.user ? req.user.uid : '0';
 
 			getUserDataByUserSlug(req.params.userslug, callerUID, function (userData) {
 				if (userData) {
 					user.isFollowing(callerUID, userData.theirid, function (isFollowing) {
-						posts.getPostsByUid(userData.theirid, 0, 9, function (posts) {
+						posts.getPostsByUid(userData.theirid, 0, 9, function (err, posts) {
+
+							if(err) {
+								return next(err);
+							}
 
 							userData.posts = posts.filter(function (p) {
 								return p && parseInt(p.deleted, 10) !== 1;
 							});
+
 							userData.isFollowing = isFollowing;
+
 							if (!userData.profileviews) {
 								userData.profileviews = 1;
 							}

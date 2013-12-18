@@ -20,34 +20,51 @@
 				<span class="label label-danger">[[user:banned]]</span>
 			</div>
 			<!-- ENDIF banned -->
+			<div>
+				<a id="chat-btn" href="#" class="btn btn-default hide">Chat</a>
+			</div>
 			<div id="user-actions">
-				<a id="follow-btn" href="#" class="btn btn-default">Follow</a>
-				<a id="unfollow-btn" href="#" class="btn btn-default">Unfollow</a>
+				<a id="follow-btn" href="#" class="btn btn-default hide">Follow</a>
+				<a id="unfollow-btn" href="#" class="btn btn-default hide">Unfollow</a>
 			</div>
 		</div>
 
 		<div class="col-md-4">
 			<div class="inline-block">
 				<div class="account-bio-block">
-					<span class="account-bio-label">[[user:email]]</span><i class="fa fa-eye-slash {emailClass}" title="Email hidden"></i>
+					<span class="account-bio-label">[[user:email]]</span><i class="fa fa-eye-slash {emailClass}" title="[[user:email_hidden]]"></i>
+					<!-- IF email -->
 					<span>{email}</span>
+					<!-- ELSE -->
+					<i class="fa fa-eye-slash" title="[[user:email_hidden]]"></i> [[user:hidden]]
+					<!-- ENDIF email -->
 					<br/>
 
+
+					<!-- IF fullname -->
 					<span class="account-bio-label">[[user:fullname]]</span>
 					<span>{fullname}</span>
 					<br/>
+					<!-- ENDIF fullname -->
 
+					<!-- IF website -->
 					<span class="account-bio-label">[[user:website]]</span>
 					<span><a href="{website}">{websiteName}</a></span>
 					<br/>
+					<!-- ENDIF website -->
 
+					<!-- IF location -->
 					<span class="account-bio-label">[[user:location]]</span>
 					<span>{location}</span>
 					<br/>
+					<!-- ENDIF location -->
 
+					<!-- IF age -->
 					<span class="account-bio-label">[[user:age]]</span>
 					<span>{age}</span>
 					<br/>
+					<!-- ENDIF age -->
+
 					<hr/>
 					<span class="account-bio-label">[[user:joined]]</span>
 					<span class="timeago" title="{joindate}"></span>
@@ -74,10 +91,12 @@
 					<br/>
 
 					<hr/>
+					<!-- IF signature -->
 					<span class="account-bio-label">[[user:signature]]</span>
 					<div class="post-signature">
 						<span id='signature'>{signature}</span>
 					</div>
+					<!-- ENDIF signature -->
 				</div>
 			</div>
 		</div>

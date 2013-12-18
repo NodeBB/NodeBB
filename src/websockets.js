@@ -591,9 +591,9 @@ websockets.init = function(io) {
 			threadTools.move(data.tid, data.cid, socket);
 		});
 
-		socket.on('api:categories.get', function() {
+		socket.on('api:categories.get', function(callback) {
 			categories.getAllCategories(0, function(err, categories) {
-				socket.emit('api:categories.get', categories);
+				callback(categories);
 			});
 		});
 
@@ -714,10 +714,10 @@ websockets.init = function(io) {
 					return;
 				}
 
-				var finalMessage = username + ' : ' + msg,
-					notifText = 'New message from <strong>' + username + '</strong>',
-					username = usersData[0].username,
-					toUsername = usersData[1].username;
+				var username = usersData[0].username,
+					toUsername = usersData[1].username,
+					finalMessage = username + ' : ' + msg,
+					notifText = 'New message from <strong>' + username + '</strong>';
 
 				if (!isUserOnline(touid)) {
 					notifications.create(notifText, 'javascript:app.openChat(&apos;' + username + '&apos;, ' + uid + ');', 'notification_' + uid + '_' + touid, function(nid) {
@@ -1081,6 +1081,37 @@ websockets.init = function(io) {
 					"+r": data['+r'].members,
 					"+w": data['+w'].members
 				});
+			});
+		});
+
+		socket.on('api:admin.categories.setGroupPrivilege', function(cid, gid, privilege, set, callback) {
+			var	cb = function(err) {
+				CategoryTools.groupPrivileges(cid, gid, callback);
+			};
+
+			if (set) {
+				groups.joinByGroupName('cid:' + cid + ':privileges:' + privilege, gid, cb);
+			} else {
+				groups.leaveByGroupName('cid:' + cid + ':privileges:' + privilege, gid, cb);
+			}
+		});
+		
+		socket.on('api:admin.categories.groupsearch', function(cid, callback) {
+			groups.list({expand:false}, function(err, data){
+				async.map(data, function(groupObj, next) {
+					CategoryTools.groupPrivileges(cid, groupObj.gid, function(err, privileges) {
+						if (!err) {
+							groupObj.privileges = privileges;
+						} else {
+							winston.error('[socket api:admin.categories.groupsearch] Could not retrieve permissions');
+						}
+
+						next(null, groupObj);
+					});
+				}, function(err, data) {
+					if (!callback) socket.emit('api:admin.categories.groupsearch', data);
+					else callback(null, data);
+				});		
 			});
 		});
 

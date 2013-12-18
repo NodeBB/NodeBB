@@ -102,7 +102,7 @@ define(function() {
 
 					var loadingEl = document.getElementById('categories-loading');
 					if (loadingEl) {
-						socket.once('api:categories.get', function(data) {
+						socket.emit('api:categories.get', function(data) {
 							// Render categories
 							var categoriesFrag = document.createDocumentFragment(),
 								categoryEl = document.createElement('li'),
@@ -172,7 +172,6 @@ define(function() {
 								}
 							});
 						});
-						socket.emit('api:categories.get');
 					}
 				});
 			}
@@ -483,7 +482,21 @@ define(function() {
 			adjust_rep(-1, data.pid, data.uid);
 		});
 
-		socket.on('event:new_post', createNewPosts);
+		socket.on('event:new_post', function(data) {
+			var posts = data.posts;
+			for (var p in posts) {
+				if (posts.hasOwnProperty(p)) {
+					var post = posts[p],
+						postcount = jQuery('.user_postcount_' + post.uid),
+						ptotal = parseInt(postcount.html(), 10);
+
+					ptotal += 1;
+					postcount.html(ptotal);
+				}
+			}
+
+			createNewPosts(data);
+		});
 
 		socket.on('event:topic_deleted', function(data) {
 			if (data.tid === tid && data.status === 'ok') {
@@ -802,7 +815,7 @@ define(function() {
 
 		pagination.parentNode.style.display = 'block';
 		progressBarContainer.css('display', '');
-		
+
 		if (scrollTop < jQuery('.posts > .post-row:first-child').height() && Topic.postCount > 1) {
 			localStorage.removeItem("topic:" + tid + ":bookmark");
 			pagination.innerHTML = '1 out of ' + Topic.postCount;

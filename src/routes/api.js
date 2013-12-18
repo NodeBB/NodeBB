@@ -4,6 +4,7 @@ var path = require('path'),
 
 	db = require('../database'),
 	user = require('../user'),
+	groups = require('../groups'),
 	auth = require('./authentication'),
 	topics = require('../topics'),
 	posts = require('../posts'),
@@ -39,33 +40,26 @@ var path = require('path'),
 				res.json(200, config);
 			});
 
-			app.get('/home', function (req, res, next) {
+			app.get('/home', function (req, res) {
 				var uid = (req.user) ? req.user.uid : 0;
 				categories.getAllCategories(uid, function (err, data) {
 					data.categories = data.categories.filter(function (category) {
 						return (!category.disabled || parseInt(category.disabled, 10) === 0);
 					});
 
-					function getRecentReplies(category, callback) {
+					function iterator(category, callback) {
 						categories.getRecentReplies(category.cid, 2, function (err, posts) {
-							if(err) {
-								return callback(err);
-							}
 							category.posts = posts;
 							category.post_count = posts.length > 2 ? 2 : posts.length;
 							callback(null);
 						});
 					}
 
-					async.each(data.categories, getRecentReplies, function (err) {
-						if(err) {
-							return next(err);
-						}
-
+					async.each(data.categories, iterator, function (err) {
 						data.motd_class = (parseInt(meta.config.show_motd, 10) === 1 || meta.config.show_motd === undefined) ? '' : ' none';
 						data.motd_class += (meta.config.motd && meta.config.motd.length > 0 ? '' : ' default');
 
-						data.motd = require('marked')(meta.config.motd || "<div class=\"pull-right btn-group\"><a target=\"_blank\" href=\"http://www.nodebb.org\" class=\"btn btn-default btn-lg\"><i class=\"fa fa-comment\"></i><span class='hidden-mobile'>&nbsp;Get NodeBB</span></a> <a target=\"_blank\" href=\"https://github.com/designcreateplay/NodeBB\" class=\"btn btn-default btn-lg\"><i class=\"fa fa-github\"></i><span class='hidden-mobile'>&nbsp;Fork us on Github</span></a> <a target=\"_blank\" href=\"https://twitter.com/dcplabs\" class=\"btn btn-default btn-lg\"><i class=\"fa fa-twitter\"></i><span class='hidden-mobile'>&nbsp;@dcplabs</span></a></div>\n\n# NodeBB <span>v" + pkg.version + "</span>\nWelcome to NodeBB, the discussion platform of the future.");
+						data.motd = require('marked')(meta.config.motd || "<div class=\"pull-right btn-group\"><a target=\"_blank\" href=\"http://www.nodebb.org\" class=\"btn btn-default btn-lg\"><i class=\"fa fa-comment\"></i><span class='hidden-mobile'>&nbsp;Get NodeBB</span></a> <a target=\"_blank\" href=\"https://github.com/designcreateplay/NodeBB\" class=\"btn btn-default btn-lg\"><i class=\"fa fa-github\"></i><span class='hidden-mobile'>&nbsp;Fork us on Github</span></a> <a target=\"_blank\" href=\"https://twitter.com/dcplabs\" class=\"btn btn-default btn-lg\"><i class=\"fa fa-twitter\"></i><span class='hidden-mobile'>&nbsp;@NodeBB</span></a></div>\n\n# NodeBB <span>v" + pkg.version + "</span>\nWelcome to NodeBB, the discussion platform of the future.");
 						res.json(data);
 					});
 				});
@@ -128,7 +122,15 @@ var path = require('path'),
 						if (parseInt(data.deleted, 10) === 1 && parseInt(data.expose_tools, 10) === 0) {
 							return res.json(404, {});
 						}
-						res.json(data);
+						// get the category this post belongs to and check category access
+						var cid = data.category_slug.split("/")[0];
+						groups.getCategoryAccess(cid, uid, function(err, access){
+							if (access){
+								res.json(data);
+							} else {
+								res.send(403);
+							}
+						})
 					} else next();
 				});
 			});
@@ -139,13 +141,20 @@ var path = require('path'),
 				// Category Whitelisting
 				categoryTools.privileges(req.params.id, uid, function(err, privileges) {
 					if (!err && privileges.read) {
-						categories.getCategoryById(req.params.id, uid, function (err, data) {
-							if (!err && data && parseInt(data.disabled, 10) === 0) {
-								res.json(data);
+						groups.getCategoryAccess(req.params.id, uid, function(err, access){
+							if (access){
+								categories.getCategoryById(req.params.id, uid, function (err, data) {
+									if (!err && data && parseInt(data.disabled, 10) === 0) {
+										res.json(data);
+									} else {
+										next();
+									}
+								}, req.params.id, uid);	
 							} else {
-								next();
+								res.send(403);
 							}
-						}, req.params.id, uid);
+							
+						});
 					} else {
 						res.send(403);
 					}
@@ -244,10 +253,6 @@ var path = require('path'),
 							return callback(err, null);
 						}
 
-						if(pids.length > 50) {
-							pids = pids.splice(0, 50);
-						}
-
 						posts.getPostSummaryByPids(pids, false, function (err, posts) {
 							if (err){
 								return callback(err, null);
@@ -261,10 +266,6 @@ var path = require('path'),
 					db.search('topic', req.params.term, function(err, tids) {
 						if (err) {
 							return callback(err, null);
-						}
-
-						if(tids.length > 50) {
-							tids = tids.splice(0, 50);
 						}
 
 						topics.getTopicsByTids(tids, 0, function (topics) {
@@ -285,7 +286,9 @@ var path = require('path'),
 							show_results: '',
 							search_query: req.params.term,
 							posts: results[0],
-							topics: results[1]
+							topics: results[1],
+							post_matches : results[0].length,
+							topic_matches : results[1].length
 						});
 					});
 				} else {
@@ -313,7 +316,7 @@ var path = require('path'),
 
 			app.get('/500', function(req, res) {
 				res.json({errorMessage: 'testing'});
-			})
+			});
 		});
 	}
 }(exports));

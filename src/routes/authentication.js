@@ -72,7 +72,7 @@
 		login_strategies.push({
 			name: 'google',
 			url: '/auth/google',
-			callbackURL: nconf.get('url') + '/auth/google/callback',
+			callbackURL: '/auth/google/callback',
 			icon: 'google-plus',
 			scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
 		});
@@ -95,7 +95,7 @@
 		login_strategies.push({
 			name: 'facebook',
 			url: '/auth/facebook',
-			callbackURL: nconf.get('url') + '/auth/facebook/callback',
+			callbackURL: '/auth/facebook/callback',
 			icon: 'facebook',
 			scope: 'email'
 		});

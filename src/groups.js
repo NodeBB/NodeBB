@@ -176,7 +176,6 @@
 
 	Groups.update = function(gid, values, callback) {
 		db.exists('gid:' + gid, function (err, exists) {
-			console.log('exists?', gid, exists, values);
 			if (!err && exists) {
 				db.setObject('gid:' + gid, values, callback);
 			} else {
@@ -199,7 +198,6 @@
 		Groups.getGidFromName(groupName, function(err, gid) {
 			if (err || !gid) {
 				Groups.create(groupName, '', function(err, groupObj) {
-					console.log('creating group, calling hide', groupObj.gid);
 					async.parallel([
 						function(next) {
 							Groups.hide(groupObj.gid, next);
@@ -260,6 +258,42 @@
 
 				callback(err);
 			});
+		});
+	};
+
+	Groups.getCategoryAccess = function(cid, uid, callback){
+		var access = false;
+		// check user group read access level
+		async.series([function(callback){
+			// get groups with read permission
+			db.getObjectField('group:gid', 'cid:' + cid + ':privileges:+gr', function(err, gid){
+				// get the user groups that belong to this read group
+				db.getSetMembers('gid:' + gid + ':members', function (err, gids) {
+					// check if user belong to any of these user groups
+					var groups_check = new Array();
+					gids.forEach(function(cgid){
+						groups_check.push(function(callback){
+							Groups.isMember(uid, cgid, function(err, isMember){
+								if (isMember){
+									access = true;
+								}
+								callback(null, gids);
+							})
+						});
+					});
+					// do a series check. We want to make sure we check all the groups before determining if the user
+					// has access or not.
+					async.series(groups_check, function(err, results){
+						callback(null, results);
+					});								
+				});
+			});
+		
+		}],
+		function(err, results){
+			// if the read group is empty we will asume that read access has been granted to ALL
+			if (results[0].length == 0){ access = true; }
+			callback(false, access);
 		});
 	};
 

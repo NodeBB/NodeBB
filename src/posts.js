@@ -14,7 +14,8 @@ var db = require('./database'),
 	async = require('async'),
 	nconf = require('nconf'),
 	validator = require('validator'),
-	winston = require('winston');
+	winston = require('winston'),
+	gravatar = require('gravatar');
 
 (function(Posts) {
 	var customUserInfo = {};
@@ -202,12 +203,16 @@ var db = require('./database'),
 			}
 
 			postTools.parseSignature(userData.signature, function(err, signature) {
+				if(err) {
+					return callback(err);
+				}
+
 				post.username = userData.username || 'anonymous';
 				post.userslug = userData.userslug || '';
 				post.user_rep = userData.reputation || 0;
 				post.user_postcount = userData.postcount || 0;
 				post.user_banned = parseInt(userData.banned, 10) === 1;
-				post.picture = userData.picture || require('gravatar').url('', {}, https = nconf.get('https'));
+				post.picture = userData.picture || gravatar.url('', {}, https = nconf.get('https'));
 				post.signature = signature;
 
 				for (var info in customUserInfo) {
@@ -217,11 +222,16 @@ var db = require('./database'),
 				}
 
 				plugins.fireHook('filter:posts.custom_profile_info', {profile: "", uid: post.uid, pid: post.pid}, function(err, profile_info) {
+					if(err) {
+						return callback(err);
+					}
 					post.additional_profile_info = profile_info.profile;
 
 					if (post.editor !== '') {
 						user.getUserFields(post.editor, ['username', 'userslug'], function(err, editorData) {
-							if (err) return callback();
+							if (err) {
+								return callback(err);
+							}
 
 							post.editorname = editorData.username;
 							post.editorslug = editorData.userslug;
@@ -439,8 +449,9 @@ var db = require('./database'),
 
 	Posts.uploadPostImage = function(image, callback) {
 
-		if(!image)
+		if(!image) {
 			return callback('invalid image', null);
+		}
 
 		require('./imgur').upload(meta.config.imgurClientID, image.data, 'base64', function(err, data) {
 			if(err) {
@@ -455,22 +466,29 @@ var db = require('./database'),
 	}
 
 	Posts.getPostsByUid = function(uid, start, end, callback) {
-		user.getPostIds(uid, start, end, function(pids) {
+		user.getPostIds(uid, start, end, function(err, pids) {
+			if(err) {
+				return callback(err);
+			}
 
 			if (pids && pids.length) {
 				plugins.fireHook('filter:post.getTopic', pids, function(err, posts) {
+					if(err) {
+						return callback(err);
+					}
 
-					if (!err & 0 < posts.length) {
+					if (posts && posts.length) {
 						Posts.getPostsByPids(pids, function(err, posts) {
 							plugins.fireHook('action:post.gotTopic', posts);
-							callback(posts);
+							callback(null, posts);
 						});
 					} else {
-						callback(posts);
+						callback(null, []);
 					}
 				});
-			} else
-				callback([]);
+			} else {
+				callback(null, []);
+			}
 		});
 	}
 
