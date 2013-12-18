@@ -465,7 +465,7 @@ var socket,
 	jQuery('document').ready(function () {
 		$('#search-form').on('submit', function () {
 			var input = $(this).find('input');
-			ajaxify.go("search/" + input.val(), null, "search");
+			ajaxify.go("search/" + input.val());
 			input.val('');
 			return false;
 		});
@@ -476,6 +476,8 @@ var socket,
 
 		$(window).focus(function(){
 			app.isFocused = true;
+
+			app.alternatingTitle('');
 		});
 	});
 

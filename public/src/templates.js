@@ -126,8 +126,7 @@
 	templates.load_template = function (callback, url, template) {
 		var location = document.location || window.location,
 			api_url = (url === '' || url === '/') ? 'home' : url,
-			tpl_url = templates.get_custom_map(api_url.split('?')[0]),
-			trimmed = api_url;
+			tpl_url = templates.get_custom_map(api_url.split('?')[0]);
 
 		if (!tpl_url) {
 			tpl_url = templates.getTemplateNameFromUrl(api_url);
