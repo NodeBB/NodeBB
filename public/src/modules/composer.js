@@ -158,7 +158,8 @@ define(['taskbar'], function(taskbar) {
 
 				// Post Window events
 				var	jPostContainer = $(composer.postContainer),
-					postContentEl = composer.postContainer.querySelector('textarea');
+					postContentEl = composer.postContainer.querySelector('textarea'),
+					resizeEl = jPostContainer.find('.resizer');
 
 				jPostContainer.on('change', 'input, textarea', function() {
 					var uuid = $(this).parents('.post-window')[0].getAttribute('data-uuid');
@@ -174,7 +175,6 @@ define(['taskbar'], function(taskbar) {
 						uuid = $(this).parents('.post-window').attr('data-uuid');
 					switch(action) {
 						case 'post': composer.post(uuid); break;
-						case 'minimize': composer.minimize(uuid); break;
 						case 'discard':
 							if (composer.posts[uuid].modified) {
 								bootbox.confirm('Are you sure you wish to discard this post?', function(discard) {
@@ -241,6 +241,10 @@ define(['taskbar'], function(taskbar) {
 					}
 				});
 
+				resizeEl.on('dragstart', function() {
+					console.log('dragging');
+				});
+
 				window.addEventListener('resize', function() {
 					if (composer.active !== undefined) composer.reposition(composer.active);
 				});
@@ -277,12 +281,19 @@ define(['taskbar'], function(taskbar) {
 	}
 
 	composer.push = function(tid, cid, pid, text) {
-		socket.emit('api:composer.push', {
-			tid: tid,	// Replying
-			cid: cid,	// Posting
-			pid: pid,	// Editing
-			body: text	// Predefined text
-		});
+		if (!composer.initialized) {
+			var	args = arguments;
+			setTimeout(function() {
+				composer.push.apply(composer, args);
+			}, 500);
+		} else {
+			socket.emit('api:composer.push', {
+				tid: tid,	// Replying
+				cid: cid,	// Posting
+				pid: pid,	// Editing
+				body: text	// Predefined text
+			});
+		}
 	}
 
 	composer.load = function(post_uuid) {
@@ -290,6 +301,7 @@ define(['taskbar'], function(taskbar) {
 			titleEl = composer.postContainer.querySelector('input'),
 			bodyEl = composer.postContainer.querySelector('textarea');
 
+		console.log('load');
 		composer.reposition(post_uuid);
 		composer.active = post_uuid;
 
@@ -319,17 +331,18 @@ define(['taskbar'], function(taskbar) {
 	}
 
 	composer.reposition = function(post_uuid) {
-		var postWindowEl = composer.postContainer.querySelector('.col-md-5'),
+		console.log('reposition');
+		var postWindowEl = composer.postContainer.querySelector('.col-md-5')/*,
 			taskbarBtn = document.querySelector('#taskbar [data-uuid="' + post_uuid + '"]'),
 			btnRect = taskbarBtn.getBoundingClientRect(),
 			taskbarRect = document.getElementById('taskbar').getBoundingClientRect(),
-			windowRect, leftPos;
+			windowRect, leftPos*/;
 
-		composer.postContainer.style.display = 'block';
-		windowRect = postWindowEl.getBoundingClientRect();
-		leftPos = btnRect.left + btnRect.width - windowRect.width;
-		postWindowEl.style.left = (leftPos > 0 ? leftPos : 0) + 'px';
-		composer.postContainer.style.bottom = taskbarRect.height + "px";
+		composer.postContainer.style.visibility = 'visible';
+		// windowRect = postWindowEl.getBoundingClientRect();
+		// leftPos = btnRect.left + btnRect.width - windowRect.width;
+		// postWindowEl.style.left = (leftPos > 0 ? leftPos : 0) + 'px';
+		// composer.postContainer.style.bottom = taskbarRect.height + "px";
 	}
 
 	composer.post = function(post_uuid) {
