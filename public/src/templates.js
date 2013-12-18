@@ -122,6 +122,27 @@
 		return '';
 	}
 
+	templates.preload_template = function(tpl_name, callback) {
+		// TODO: This should be "load_template", and the current load_template
+		// should be named something else
+		// TODO: The "Date.now()" in the line below is only there for development purposes.
+		// It should be removed at some point.
+		jQuery.get(RELATIVE_PATH + '/templates/' + tpl_name + '.tpl?v=' + Date.now(), function (html) {
+			var template = function () {
+				this.toString = function () {
+					return this.html;
+				};
+			}
+
+			template.prototype.parse = parse;
+			template.prototype.html = String(html);
+			template.prototype.blocks = {};
+
+			templates[tpl_name] = new template;
+
+			callback();
+		});
+	}
 
 	templates.load_template = function (callback, url, template) {
 		var location = document.location || window.location,
@@ -137,19 +158,7 @@
 		var timestamp = new Date().getTime(); //debug
 
 		if (!templates[tpl_url]) {
-			jQuery.get(RELATIVE_PATH + '/templates/' + tpl_url + '.tpl?v=' + timestamp, function (html) {
-				var template = function () {
-					this.toString = function () {
-						return this.html;
-					};
-				}
-
-				template.prototype.parse = parse;
-				template.prototype.html = String(html);
-				template.prototype.blocks = {};
-
-				templates[tpl_url] = new template;
-
+			templates.preload_template(tpl_url, function() {
 				parse_template();
 			});
 		} else {

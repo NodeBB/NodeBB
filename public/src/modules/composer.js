@@ -112,163 +112,167 @@ define(['taskbar'], function(taskbar) {
 
 	composer.init = function() {
 		if (!composer.initialized) {
-			var taskbar = document.getElementById('taskbar');
+			templates.preload_template('composer', function() {
+				$(document.body).append(templates['composer'].parse({}));
+				composer.postContainer = $('.composer')[0];
 
-			composer.postContainer = document.createElement('div');
-			composer.postContainer.className = 'post-window row';
-			composer.postContainer.innerHTML =	'<div class="col-md-5">' +
-													'<input type="text" tabIndex="1" placeholder="Enter your topic title here..." />' +
-													'<div class="btn-toolbar formatting-bar">' +
-														'<div class="btn-group">' +
-															'<span class="btn btn-link" tabindex="-1"><i class="fa fa-bold"></i></span>' +
-															'<span class="btn btn-link" tabindex="-1"><i class="fa fa-italic"></i></span>' +
-															'<span class="btn btn-link" tabindex="-1"><i class="fa fa-list"></i></span>' +
-															'<span class="btn btn-link" tabindex="-1"><i class="fa fa-link"></i></span>' +
-														'</div>' +
-													'</div>' +
-													'<textarea tabIndex="2"></textarea>' +
-													'<div class="imagedrop"><div>Drag and Drop Images Here</div></div>'+
-													'<div class="btn-toolbar action-bar">' +
-														'<div class="btn-group" style="float: right; margin-right: -8px">' +
-															'<button data-action="minimize" class="btn hidden-xs" tabIndex="4"><i class="fa fa-download"></i> Minimize</button>' +
-															'<button class="btn" data-action="discard" tabIndex="5"><i class="fa fa-times"></i> Discard</button>' +
-															'<button data-action="post" class="btn" tabIndex="3"><i class="fa fa-check"></i> Submit</button>' +
-														'</div>' +
-													'</div>' +
-												'</div>';
-
-			document.body.insertBefore(composer.postContainer, taskbar);
-
-			if(config.imgurClientIDSet) {
-				initializeFileReader();
-			}
-
-			socket.on('api:composer.push', function(threadData) {
-				if (!threadData.error) {
-					var uuid = utils.generateUUID();
-
-					composer.taskbar.push('composer', uuid, {
-						title: (!threadData.cid ? (threadData.title || '') : 'New Topic'),
-						icon: threadData.picture
-					});
-
-					composer.posts[uuid] = {
-						tid: threadData.tid,
-						cid: threadData.cid,
-						pid: threadData.pid,
-						title: threadData.title || '',
-						body: threadData.body || '',
-						modified: false
-					};
-					composer.load(uuid);
-				} else {
-					app.alert({
-						type: 'danger',
-						timeout: 5000,
-						alert_id: 'post_error',
-						title: 'Please Log In to Post',
-						message: 'Posting is currently restricted to registered members only, click here to log in',
-						clickfn: function() {
-							ajaxify.go('login');
-						}
-					});
+				if(config.imgurClientIDSet) {
+					initializeFileReader();
 				}
-			});
 
-			socket.on('api:composer.editCheck', function(editCheck) {
-				if (editCheck.titleEditable === true) composer.postContainer.querySelector('input').readOnly = false;
-			});
+				socket.on('api:composer.push', function(threadData) {
+					if (!threadData.error) {
+						var uuid = utils.generateUUID();
 
-			// Post Window events
-			var	jPostContainer = $(composer.postContainer),
-				postContentEl = composer.postContainer.querySelector('textarea');
+						composer.taskbar.push('composer', uuid, {
+							title: (!threadData.cid ? (threadData.title || '') : 'New Topic'),
+							icon: threadData.picture
+						});
 
-			jPostContainer.on('change', 'input, textarea', function() {
-				var uuid = $(this).parents('.post-window')[0].getAttribute('data-uuid');
-				if (this.nodeName === 'INPUT') composer.posts[uuid].title = this.value;
-				else if (this.nodeName === 'TEXTAREA') composer.posts[uuid].body = this.value;
+						composer.posts[uuid] = {
+							tid: threadData.tid,
+							cid: threadData.cid,
+							pid: threadData.pid,
+							title: threadData.title || '',
+							body: threadData.body || '',
+							modified: false
+						};
+						composer.load(uuid);
+					} else {
+						app.alert({
+							type: 'danger',
+							timeout: 5000,
+							alert_id: 'post_error',
+							title: 'Please Log In to Post',
+							message: 'Posting is currently restricted to registered members only, click here to log in',
+							clickfn: function() {
+								ajaxify.go('login');
+							}
+						});
+					}
+				});
 
-				// Mark this post window as having been changed
-				composer.posts[uuid].modified = true;
-			});
+				socket.on('api:composer.editCheck', function(editCheck) {
+					if (editCheck.titleEditable === true) composer.postContainer.querySelector('input').readOnly = false;
+				});
 
-			jPostContainer.on('click', '.action-bar button', function() {
-				var	action = this.getAttribute('data-action'),
-					uuid = $(this).parents('.post-window').attr('data-uuid');
-				switch(action) {
-					case 'post': composer.post(uuid); break;
-					case 'minimize': composer.minimize(uuid); break;
-					case 'discard':
-						if (composer.posts[uuid].modified) {
-							bootbox.confirm('Are you sure you wish to discard this post?', function(discard) {
-								if (discard) composer.discard(uuid);
-							});
-						} else {
-							composer.discard(uuid);
-						}
+				// Post Window events
+				var	jPostContainer = $(composer.postContainer),
+					postContentEl = composer.postContainer.querySelector('textarea');
+
+				jPostContainer.on('change', 'input, textarea', function() {
+					var uuid = $(this).parents('.post-window')[0].getAttribute('data-uuid');
+					if (this.nodeName === 'INPUT') composer.posts[uuid].title = this.value;
+					else if (this.nodeName === 'TEXTAREA') composer.posts[uuid].body = this.value;
+
+					// Mark this post window as having been changed
+					composer.posts[uuid].modified = true;
+				});
+
+				jPostContainer.on('click', '.action-bar button', function() {
+					var	action = this.getAttribute('data-action'),
+						uuid = $(this).parents('.post-window').attr('data-uuid');
+					switch(action) {
+						case 'post': composer.post(uuid); break;
+						case 'minimize': composer.minimize(uuid); break;
+						case 'discard':
+							if (composer.posts[uuid].modified) {
+								bootbox.confirm('Are you sure you wish to discard this post?', function(discard) {
+									if (discard) composer.discard(uuid);
+								});
+							} else {
+								composer.discard(uuid);
+							}
+							break;
+					}
+				});
+
+				jPostContainer.on('click', '.formatting-bar span', function() {
+					var iconClass = this.querySelector('i').className,
+						cursorEnd = postContentEl.value.length,
+						selectionStart = postContentEl.selectionStart,
+						selectionEnd = postContentEl.selectionEnd,
+						selectionLength = selectionEnd - selectionStart;
+
+					function insertIntoInput(element, value) {
+						var start = postContentEl.selectionStart;
+						element.value = element.value.slice(0, start) + value + element.value.slice(start, element.value.length);
+						postContentEl.selectionStart = postContentEl.selectionEnd = start + value.length;
+					}
+
+					switch(iconClass) {
+						case 'fa fa-bold':
+							if (selectionStart === selectionEnd) {
+								// Nothing selected
+								insertIntoInput(postContentEl, "**bolded text**");
+							} else {
+								// Text selected
+								postContentEl.value = postContentEl.value.slice(0, selectionStart) + '**' + postContentEl.value.slice(selectionStart, selectionEnd) + '**' + postContentEl.value.slice(selectionEnd);
+								postContentEl.selectionStart = selectionStart + 2;
+								postContentEl.selectionEnd = selectionEnd + 2;
+							}
 						break;
-				}
-			});
-
-			jPostContainer.on('click', '.formatting-bar span', function() {
-				var iconClass = this.querySelector('i').className,
-					cursorEnd = postContentEl.value.length,
-					selectionStart = postContentEl.selectionStart,
-					selectionEnd = postContentEl.selectionEnd,
-					selectionLength = selectionEnd - selectionStart;
-
-				function insertIntoInput(element, value) {
-					var start = postContentEl.selectionStart;
-					element.value = element.value.slice(0, start) + value + element.value.slice(start, element.value.length);
-					postContentEl.selectionStart = postContentEl.selectionEnd = start + value.length;
-				}
-
-				switch(iconClass) {
-					case 'fa fa-bold':
-						if (selectionStart === selectionEnd) {
+						case 'fa fa-italic':
+							if (selectionStart === selectionEnd) {
+								// Nothing selected
+								insertIntoInput(postContentEl, "*italicised text*");
+							} else {
+								// Text selected
+								postContentEl.value = postContentEl.value.slice(0, selectionStart) + '*' + postContentEl.value.slice(selectionStart, selectionEnd) + '*' + postContentEl.value.slice(selectionEnd);
+								postContentEl.selectionStart = selectionStart + 1;
+								postContentEl.selectionEnd = selectionEnd + 1;
+							}
+						break;
+						case 'fa fa-list':
 							// Nothing selected
-							insertIntoInput(postContentEl, "**bolded text**");
-						} else {
-							// Text selected
-							postContentEl.value = postContentEl.value.slice(0, selectionStart) + '**' + postContentEl.value.slice(selectionStart, selectionEnd) + '**' + postContentEl.value.slice(selectionEnd);
-							postContentEl.selectionStart = selectionStart + 2;
-							postContentEl.selectionEnd = selectionEnd + 2;
-						}
-					break;
-					case 'fa fa-italic':
-						if (selectionStart === selectionEnd) {
-							// Nothing selected
-							insertIntoInput(postContentEl, "*italicised text*");
-						} else {
-							// Text selected
-							postContentEl.value = postContentEl.value.slice(0, selectionStart) + '*' + postContentEl.value.slice(selectionStart, selectionEnd) + '*' + postContentEl.value.slice(selectionEnd);
-							postContentEl.selectionStart = selectionStart + 1;
-							postContentEl.selectionEnd = selectionEnd + 1;
-						}
-					break;
-					case 'fa fa-list':
-						// Nothing selected
-						insertIntoInput(postContentEl, "\n\n* list item");
-					break;
-					case 'fa fa-link':
-						if (selectionStart === selectionEnd) {
-							// Nothing selected
-							insertIntoInput(postContentEl, "[link text](link url)");
-						} else {
-							// Text selected
-							postContentEl.value = postContentEl.value.slice(0, selectionStart) + '[' + postContentEl.value.slice(selectionStart, selectionEnd) + '](link url)' + postContentEl.value.slice(selectionEnd);
-							postContentEl.selectionStart = selectionStart + selectionLength + 3;
-							postContentEl.selectionEnd = selectionEnd + 11;
-						}
-					break;
-				}
-			});
+							insertIntoInput(postContentEl, "\n\n* list item");
+						break;
+						case 'fa fa-link':
+							if (selectionStart === selectionEnd) {
+								// Nothing selected
+								insertIntoInput(postContentEl, "[link text](link url)");
+							} else {
+								// Text selected
+								postContentEl.value = postContentEl.value.slice(0, selectionStart) + '[' + postContentEl.value.slice(selectionStart, selectionEnd) + '](link url)' + postContentEl.value.slice(selectionEnd);
+								postContentEl.selectionStart = selectionStart + selectionLength + 3;
+								postContentEl.selectionEnd = selectionEnd + 11;
+							}
+						break;
+					}
+				});
 
-			window.addEventListener('resize', function() {
-				if (composer.active !== undefined) composer.reposition(composer.active);
-			});
+				window.addEventListener('resize', function() {
+					if (composer.active !== undefined) composer.reposition(composer.active);
+				});
 
-			composer.initialized = true;
+				composer.initialized = true;
+			});
+			// var taskbar = document.getElementById('taskbar');
+
+			// composer.postContainer = document.createElement('div');
+			// composer.postContainer.className = 'post-window row';
+			// composer.postContainer.innerHTML =	'<div class="col-md-5">' +
+			// 										'<input type="text" tabIndex="1" placeholder="Enter your topic title here..." />' +
+			// 										'<div class="btn-toolbar formatting-bar">' +
+			// 											'<div class="btn-group">' +
+			// 												'<span class="btn btn-link" tabindex="-1"><i class="fa fa-bold"></i></span>' +
+			// 												'<span class="btn btn-link" tabindex="-1"><i class="fa fa-italic"></i></span>' +
+			// 												'<span class="btn btn-link" tabindex="-1"><i class="fa fa-list"></i></span>' +
+			// 												'<span class="btn btn-link" tabindex="-1"><i class="fa fa-link"></i></span>' +
+			// 											'</div>' +
+			// 										'</div>' +
+			// 										'<textarea tabIndex="2"></textarea>' +
+			// 										'<div class="imagedrop"><div>Drag and Drop Images Here</div></div>'+
+			// 										'<div class="btn-toolbar action-bar">' +
+			// 											'<div class="btn-group" style="float: right; margin-right: -8px">' +
+			// 												'<button data-action="minimize" class="btn hidden-xs" tabIndex="4"><i class="fa fa-download"></i> Minimize</button>' +
+			// 												'<button class="btn" data-action="discard" tabIndex="5"><i class="fa fa-times"></i> Discard</button>' +
+			// 												'<button data-action="post" class="btn" tabIndex="3"><i class="fa fa-check"></i> Submit</button>' +
+			// 											'</div>' +
+			// 										'</div>' +
+			// 									'</div>';
+
+			// document.body.insertBefore(composer.postContainer, taskbar);
 		}
 	}
 
