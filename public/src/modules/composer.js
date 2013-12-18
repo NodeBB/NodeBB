@@ -241,9 +241,50 @@ define(['taskbar'], function(taskbar) {
 					}
 				});
 
-				resizeEl.on('dragstart', function() {
-					console.log('dragging');
-				});
+				var	resizeActive = false,
+					resizeCenterX = 0,
+					resizeOffset = 0,
+					resizeAction = function(e) {
+						if (resizeActive) {
+							position = (e.clientX + resizeOffset);
+							if (Math.abs(position - resizeSnaps.half) <= 15) {
+								// Half snap
+								jPostContainer.css('width', resizeSnaps.half);
+							} else if (Math.abs(position - resizeSnaps.none) <= 15) {
+								// Minimize snap
+								jPostContainer.css('width', bodyRect.width - resizeSnaps.none);
+							} else if (position <= 15) {
+								// Full snap
+								jPostContainer.css('width', bodyRect.width - 15);
+							} else {
+								// OH SNAP, NO SNAPS!
+								jPostContainer.css('width', bodyRect.width - position);
+							}
+						}
+					},
+					resizeSnaps = {
+						none: 0,
+						half: 0,
+						full: 0
+					},
+					resizeRect, bodyRect;
+
+				resizeEl
+					.on('mousedown', function(e) {
+						bodyRect = document.body.getBoundingClientRect();
+						resizeRect = resizeEl[0].getBoundingClientRect();
+						resizeCenterX = resizeRect.left + (resizeRect.width/2);
+						resizeOffset = resizeCenterX - e.clientX;
+						resizeSnaps.half = bodyRect.width / 2;
+						resizeSnaps.none = bodyRect.width;
+						resizeActive = true;
+
+						$(document.body).on('mousemove', resizeAction);
+					})
+					.on('mouseup', function() {
+						resizeActive = false;
+						$(document.body).off('mousemove', resizeAction);
+					});
 
 				window.addEventListener('resize', function() {
 					if (composer.active !== undefined) composer.reposition(composer.active);
