@@ -251,11 +251,11 @@ define(['taskbar'], function(taskbar) {
 								// Half snap
 								jPostContainer.css('width', resizeSnaps.half);
 								resizeSavePosition(resizeSnaps.half);
-							} else if (Math.abs(position - resizeSnaps.none) <= 15) {
+							} else if (Math.abs(position - resizeSnaps.none) <= 30) {
 								// Minimize snap
-								jPostContainer.css('width', bodyRect.width - resizeSnaps.none);
+								jPostContainer.css('width', bodyRect.width - resizeSnaps.none + 15);
 								resizeSavePosition(resizeSnaps.none);
-							} else if (position <= 15) {
+							} else if (position <= 30) {
 								// Full snap
 								jPostContainer.css('width', bodyRect.width - 15);
 								resizeSavePosition(bodyRect.width - 15);
