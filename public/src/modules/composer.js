@@ -385,6 +385,8 @@ define(['taskbar'], function(taskbar) {
 
 		if (bodyRect.width >= 768) {
 			composer.postContainer.style.width = Math.floor(bodyRect.width * percentage) + 'px';
+		} else {
+			composer.postContainer.style.width = '100%';
 		}
 
 		composer.postContainer.style.visibility = 'visible';
