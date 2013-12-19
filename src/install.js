@@ -221,6 +221,9 @@ var async = require('async'),
 							field: 'imgurClientID',
 							value: ''
 						}, {
+							field: 'maximumSignatureLength',
+							value: 255
+						}, {
 							field: 'maximumProfileImageSize',
 							value: 256
 						}, {

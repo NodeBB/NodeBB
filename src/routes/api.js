@@ -34,6 +34,7 @@ var path = require('path'),
 				config.minimumUsernameLength = meta.config.minimumUsernameLength;
 				config.maximumUsernameLength = meta.config.maximumUsernameLength;
 				config.minimumPasswordLength = meta.config.minimumPasswordLength;
+				config.maximumSignatureLength = meta.config.maximumSignatureLength;
 				config.useOutgoingLinksPage = meta.config.useOutgoingLinksPage;
 				config.emailSetup = !!meta.config['email:from'];
 
@@ -149,11 +150,11 @@ var path = require('path'),
 									} else {
 										next();
 									}
-								}, req.params.id, uid);	
+								}, req.params.id, uid);
 							} else {
 								res.send(403);
 							}
-							
+
 						});
 					} else {
 						res.send(403);

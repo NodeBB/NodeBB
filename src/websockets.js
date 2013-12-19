@@ -593,7 +593,9 @@ websockets.init = function(io) {
 
 		socket.on('api:categories.get', function(callback) {
 			categories.getAllCategories(0, function(err, categories) {
-				callback(categories);
+				if(callback) {
+					callback(categories);
+				}
 			});
 		});
 
@@ -1095,7 +1097,7 @@ websockets.init = function(io) {
 				groups.leaveByGroupName('cid:' + cid + ':privileges:' + privilege, gid, cb);
 			}
 		});
-		
+
 		socket.on('api:admin.categories.groupsearch', function(cid, callback) {
 			groups.list({expand:false}, function(err, data){
 				async.map(data, function(groupObj, next) {
@@ -1111,7 +1113,7 @@ websockets.init = function(io) {
 				}, function(err, data) {
 					if (!callback) socket.emit('api:admin.categories.groupsearch', data);
 					else callback(null, data);
-				});		
+				});
 			});
 		});
 

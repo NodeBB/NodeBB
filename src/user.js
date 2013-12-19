@@ -190,9 +190,9 @@ var bcrypt = require('bcrypt'),
 		};
 
 		function isSignatureValid(next) {
-			if (data.signature !== undefined && data.signature.length > 150) {
+			if (data.signature !== undefined && data.signature.length > meta.config.maximumSignatureLength) {
 				next({
-					error: 'Signature can\'t be longer than 150 characters!'
+					error: 'Signature can\'t be longer than ' + meta.config.maximumSignatureLength + ' characters!'
 				}, false);
 			} else {
 				next(null, true);
