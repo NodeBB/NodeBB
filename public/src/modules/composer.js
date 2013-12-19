@@ -162,7 +162,7 @@ define(['taskbar'], function(taskbar) {
 					resizeEl = jPostContainer.find('.resizer');
 
 				jPostContainer.on('change', 'input, textarea', function() {
-					var uuid = $(this).parents('.post-window')[0].getAttribute('data-uuid');
+					var uuid = $(this).parents('.composer').attr('data-uuid');
 					if (this.nodeName === 'INPUT') composer.posts[uuid].title = this.value;
 					else if (this.nodeName === 'TEXTAREA') composer.posts[uuid].body = this.value;
 
@@ -172,7 +172,7 @@ define(['taskbar'], function(taskbar) {
 
 				jPostContainer.on('click', '.action-bar button', function() {
 					var	action = this.getAttribute('data-action'),
-						uuid = $(this).parents('.post-window').attr('data-uuid');
+						uuid = $(this).parents('.composer').attr('data-uuid');
 					switch(action) {
 						case 'post': composer.post(uuid); break;
 						case 'discard':
@@ -458,7 +458,7 @@ define(['taskbar'], function(taskbar) {
 	}
 
 	composer.minimize = function(uuid) {
-		composer.postContainer.style.display = 'none';
+		composer.postContainer.style.visibility = 'hidden';
 		composer.active = undefined;
 		taskbar.minimize('composer', uuid);
 	}
