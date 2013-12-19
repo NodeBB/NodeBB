@@ -250,17 +250,25 @@ define(['taskbar'], function(taskbar) {
 							if (Math.abs(position - resizeSnaps.half) <= 15) {
 								// Half snap
 								jPostContainer.css('width', resizeSnaps.half);
+								resizeSavePosition(resizeSnaps.half);
 							} else if (Math.abs(position - resizeSnaps.none) <= 15) {
 								// Minimize snap
 								jPostContainer.css('width', bodyRect.width - resizeSnaps.none);
+								resizeSavePosition(resizeSnaps.none);
 							} else if (position <= 15) {
 								// Full snap
 								jPostContainer.css('width', bodyRect.width - 15);
+								resizeSavePosition(bodyRect.width - 15);
 							} else {
 								// OH SNAP, NO SNAPS!
 								jPostContainer.css('width', bodyRect.width - position);
+								resizeSavePosition(bodyRect.width - position);
 							}
 						}
+					},
+					resizeSavePosition = function(px) {
+						var	percentage = px/bodyRect.width;
+						localStorage.setItem('composer:resizePercentage', percentage);
 					},
 					resizeSnaps = {
 						none: 0,
@@ -342,7 +350,6 @@ define(['taskbar'], function(taskbar) {
 			titleEl = composer.postContainer.querySelector('input'),
 			bodyEl = composer.postContainer.querySelector('textarea');
 
-		console.log('load');
 		composer.reposition(post_uuid);
 		composer.active = post_uuid;
 
@@ -372,18 +379,15 @@ define(['taskbar'], function(taskbar) {
 	}
 
 	composer.reposition = function(post_uuid) {
-		console.log('reposition');
-		var postWindowEl = composer.postContainer.querySelector('.col-md-5')/*,
-			taskbarBtn = document.querySelector('#taskbar [data-uuid="' + post_uuid + '"]'),
-			btnRect = taskbarBtn.getBoundingClientRect(),
-			taskbarRect = document.getElementById('taskbar').getBoundingClientRect(),
-			windowRect, leftPos*/;
+		// Resize the composer to the saved size
+		var	percentage = localStorage.getItem('composer:resizePercentage'),
+			bodyRect = document.body.getBoundingClientRect();
+
+		if (bodyRect.width >= 768) {
+			composer.postContainer.style.width = Math.floor(bodyRect.width * percentage) + 'px';
+		}
 
 		composer.postContainer.style.visibility = 'visible';
-		// windowRect = postWindowEl.getBoundingClientRect();
-		// leftPos = btnRect.left + btnRect.width - windowRect.width;
-		// postWindowEl.style.left = (leftPos > 0 ? leftPos : 0) + 'px';
-		// composer.postContainer.style.bottom = taskbarRect.height + "px";
 	}
 
 	composer.post = function(post_uuid) {

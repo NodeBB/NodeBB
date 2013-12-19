@@ -8,7 +8,7 @@
 				<span class="btn btn-link" tabindex="-1"><i class="fa fa-list"></i></span>
 				<span class="btn btn-link" tabindex="-1"><i class="fa fa-link"></i></span>
 			</div>
-			<div class="btn btn-link pull-right">Preview</div>
+			<!-- <div class="btn btn-link pull-right">Preview</div> -->
 		</div>
 		<textarea tabIndex="2"></textarea>
 		<div class="preview"></div>
