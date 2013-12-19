@@ -41,6 +41,17 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 			return false;
 		});
 
+
+		function getSignatureCharsLeft() {
+			return '(' + $('#inputSignature').val().length + '/' + config.maximumSignatureLength + ')';
+		}
+
+		$('#signatureCharCountLeft').html(getSignatureCharsLeft());
+
+		$('#inputSignature').on('keyup change', function(ev) {
+			$('#signatureCharCountLeft').html(getSignatureCharsLeft());
+		});
+
 		$('#changePictureBtn').on('click', function() {
 			selectedImageType = '';
 			AccountEdit.updateImages();
