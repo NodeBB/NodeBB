@@ -799,14 +799,15 @@ websockets.init = function(io) {
 			meta.configs.remove(key);
 		});
 
-		socket.on('api:composer.push', function(data) {
+		socket.on('api:composer.push', function(data, callback) {
 			if (parseInt(uid, 10) > 0 || parseInt(meta.config.allowGuestPosting, 10) === 1) {
 				if (parseInt(data.tid) > 0) {
 					topics.getTopicData(data.tid, function(err, topicData) {
-						if (data.body)
+						if (data.body) {
 							topicData.body = data.body;
+						}
 
-						socket.emit('api:composer.push', {
+						callback({
 							tid: data.tid,
 							title: topicData.title,
 							body: topicData.body
@@ -815,7 +816,7 @@ websockets.init = function(io) {
 				} else if (parseInt(data.cid) > 0) {
 					user.getUserFields(uid, ['username', 'picture'], function(err, userData) {
 						if (!err && userData) {
-							socket.emit('api:composer.push', {
+							callback({
 								tid: 0,
 								cid: data.cid,
 								username: userData.username,
@@ -836,7 +837,7 @@ websockets.init = function(io) {
 							});
 						}
 					], function(err, results) {
-						socket.emit('api:composer.push', {
+						callback({
 							title: results[1],
 							pid: data.pid,
 							body: results[0].content
@@ -844,16 +845,16 @@ websockets.init = function(io) {
 					});
 				}
 			} else {
-				socket.emit('api:composer.push', {
+				callback({
 					error: 'no-uid'
 				});
 			}
 		});
 
-		socket.on('api:composer.editCheck', function(pid) {
+		socket.on('api:composer.editCheck', function(pid, callback) {
 			posts.getPostField(pid, 'tid', function(err, tid) {
 				postTools.isMain(pid, tid, function(err, isMain) {
-					socket.emit('api:composer.editCheck', {
+					callback({
 						titleEditable: isMain
 					});
 				})
