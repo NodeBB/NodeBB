@@ -300,32 +300,6 @@ define(['taskbar'], function(taskbar) {
 
 				composer.initialized = true;
 			});
-			// var taskbar = document.getElementById('taskbar');
-
-			// composer.postContainer = document.createElement('div');
-			// composer.postContainer.className = 'post-window row';
-			// composer.postContainer.innerHTML =	'<div class="col-md-5">' +
-			// 										'<input type="text" tabIndex="1" placeholder="Enter your topic title here..." />' +
-			// 										'<div class="btn-toolbar formatting-bar">' +
-			// 											'<div class="btn-group">' +
-			// 												'<span class="btn btn-link" tabindex="-1"><i class="fa fa-bold"></i></span>' +
-			// 												'<span class="btn btn-link" tabindex="-1"><i class="fa fa-italic"></i></span>' +
-			// 												'<span class="btn btn-link" tabindex="-1"><i class="fa fa-list"></i></span>' +
-			// 												'<span class="btn btn-link" tabindex="-1"><i class="fa fa-link"></i></span>' +
-			// 											'</div>' +
-			// 										'</div>' +
-			// 										'<textarea tabIndex="2"></textarea>' +
-			// 										'<div class="imagedrop"><div>Drag and Drop Images Here</div></div>'+
-			// 										'<div class="btn-toolbar action-bar">' +
-			// 											'<div class="btn-group" style="float: right; margin-right: -8px">' +
-			// 												'<button data-action="minimize" class="btn hidden-xs" tabIndex="4"><i class="fa fa-download"></i> Minimize</button>' +
-			// 												'<button class="btn" data-action="discard" tabIndex="5"><i class="fa fa-times"></i> Discard</button>' +
-			// 												'<button data-action="post" class="btn" tabIndex="3"><i class="fa fa-check"></i> Submit</button>' +
-			// 											'</div>' +
-			// 										'</div>' +
-			// 									'</div>';
-
-			// document.body.insertBefore(composer.postContainer, taskbar);
 		}
 	}
 
@@ -383,10 +357,12 @@ define(['taskbar'], function(taskbar) {
 		var	percentage = localStorage.getItem('composer:resizePercentage'),
 			bodyRect = document.body.getBoundingClientRect();
 
-		if (bodyRect.width >= 768) {
-			composer.postContainer.style.width = Math.floor(bodyRect.width * percentage) + 'px';
-		} else {
-			composer.postContainer.style.width = '100%';
+		if (percentage) {
+			if (bodyRect.width >= 768) {
+				composer.postContainer.style.width = Math.floor(bodyRect.width * percentage) + 'px';
+			} else {
+				composer.postContainer.style.width = '100%';
+			}
 		}
 
 		composer.postContainer.style.visibility = 'visible';
