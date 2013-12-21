@@ -1,4 +1,4 @@
-define(function() {
+define(['composer'], function(composer) {
 	var	Topic = {},
 		infiniteLoaderActive = false,
 		pagination;
@@ -274,9 +274,7 @@ define(function() {
 			}
 
 			if (thread_state.locked !== '1') {
-				require(['composer'], function(cmp) {
-					cmp.push(tid, null, null, selectionText.length > 0 ? selectionText + '\n\n' + username : '' + username);
-				});
+				composer.push(tid, null, null, selectionText.length > 0 ? selectionText + '\n\n' + username : '' + username);
 			}
 		});
 
@@ -284,15 +282,11 @@ define(function() {
 			if (thread_state.locked !== '1') {
 				var pid = $(this).parents('li').attr('data-pid');
 
-				socket.once('api:posts.getRawPost', function(data) {
+				socket.emit('api:posts.getRawPost', {pid: pid}, function(data) {
 
 					quoted = '> ' + data.post.replace(/\n/g, '\n> ') + '\n\n';
-					require(['composer'], function(cmp) {
-						cmp.push(tid, null, null, quoted);
-					});
-				});
-				socket.emit('api:posts.getRawPost', {
-					pid: pid
+
+					composer.push(tid, null, null, quoted);
 				});
 			}
 		});
@@ -343,9 +337,8 @@ define(function() {
 		$('#post-container').delegate('.edit', 'click', function(e) {
 			var pid = $(this).parents('li').attr('data-pid');
 
-			require(['composer'], function(cmp) {
-				cmp.push(null, null, pid);
-			});
+
+			composer.push(null, null, pid);
 		});
 
 		$('#post-container').delegate('.delete', 'click', function(e) {

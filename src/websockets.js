@@ -603,9 +603,9 @@ websockets.init = function(io) {
 			posts.uploadPostImage(data, callback);
 		});
 
-		socket.on('api:posts.getRawPost', function(data) {
+		socket.on('api:posts.getRawPost', function(data, callback) {
 			posts.getPostField(data.pid, 'content', function(err, raw) {
-				socket.emit('api:posts.getRawPost', {
+				callback({
 					post: raw
 				});
 			});
