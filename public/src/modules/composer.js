@@ -1,7 +1,6 @@
 define(['taskbar'], function(taskbar) {
 	var composer = {
 		active: undefined,
-		taskbar: taskbar,
 		posts: {}
 	};
 
@@ -30,7 +29,7 @@ define(['taskbar'], function(taskbar) {
 
 			var uuid = utils.generateUUID();
 
-			composer.taskbar.push('composer', uuid, {
+			taskbar.push('composer', uuid, {
 				title: (!threadData.cid ? (threadData.title || '') : 'New Topic'),
 				icon: threadData.picture
 			});
