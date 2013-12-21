@@ -236,7 +236,10 @@ websockets.init = function(io) {
 					email: '',
 					picture: gravatar.url('', {
 						s: '24'
-					}, nconf.get('https'))
+					}, nconf.get('https')),
+					config: {
+						allowGuestSearching: meta.config.allowGuestSearching
+					}
 				});
 			}
 
