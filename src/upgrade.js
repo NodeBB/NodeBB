@@ -12,7 +12,7 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2013, 11, 2).getTime();
+	var	latestSchema = new Date(2013, 11, 11).getTime();
 
 	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -303,6 +303,23 @@ Upgrade.upgradeRedis = function(callback) {
 				winston.info('[2013/12/2] Update to global keys skipped');
 				next();
 			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2013, 11, 11).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				RDB.hset('config', 'allowGuestSearching', '0', function(err){
+					if (err) {
+						return next(err);
+					}
+					winston.info('[2013/12/11] Updated guest search config.');
+					next();
+				});
+			} else {
+				winston.info('[2013/12/11] Update to guest search skipped');
+				next();
+			}
 		}
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 12!!!
@@ -333,7 +350,9 @@ Upgrade.upgradeRedis = function(callback) {
 };
 
 Upgrade.upgradeMongo = function(callback) {
-	var MDB = db.client;
+	// why can't we just use the abstracted db module here? and in upgradeRedis()?
+	var MDB = db.client,
+		updatesMade = false;
 
 	winston.info('Beginning Mongo database schema update');
 
@@ -344,6 +363,24 @@ Upgrade.upgradeMongo = function(callback) {
 				thisSchemaDate = new Date(2013, 11, 6).getTime();
 				next();
 			});
+		},
+		function(next) {
+
+			thisSchemaDate = new Date(2013, 11, 11).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				db.setObjectField('config', 'allowGuestSearching', '0', function(err){
+					if (err) {
+						return next(err);
+					}
+					winston.info('[2013/12/11] Updated guest search config.');
+					next();
+				});
+			} else {
+				winston.info('[2013/12/11] Update to guest search skipped');
+				next();
+			}
 		}
 		// Add new schema updates here
 
@@ -351,7 +388,11 @@ Upgrade.upgradeMongo = function(callback) {
 		if (!err) {
 			db.set('schemaDate', thisSchemaDate, function(err) {
 				if (!err) {
-					winston.info('[upgrade] Mongo schema update complete!');
+					if(updatesMade) {
+						winston.info('[upgrade] Mongo schema update complete!');
+					} else {
+						winston.info('[upgrade] Mongo schema already up to date!');
+					}
 					if (callback) {
 						callback(err);
 					} else {
