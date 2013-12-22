@@ -332,7 +332,7 @@ var db = require('./database'),
 				callback(null, newData);
 			});
 		});
-	}
+	};
 
 	Posts.getPostFields = function(pid, fields, callback) {
 		db.getObjectFields('post:' + pid, fields, function(err, data) {
@@ -352,7 +352,7 @@ var db = require('./database'),
 				callback(null, data);
 			});
 		});
-	}
+	};
 
 	Posts.getPostField = function(pid, field, callback) {
 		Posts.getPostFields(pid, [field], function(err, data) {
@@ -362,7 +362,7 @@ var db = require('./database'),
 
 			callback(null, data[field]);
 		});
-	}
+	};
 
 	Posts.setPostField = function(pid, field, value, callback) {
 		db.setObjectField('post:' + pid, field, value, callback);
@@ -371,7 +371,11 @@ var db = require('./database'),
 			'field': field,
 			'value': value
 		});
-	}
+	};
+
+	Posts.setPostFields = function(pid, data, callback) {
+		db.setObject('post:' + pid, data, callback);
+	};
 
 	Posts.getPostsByPids = function(pids, callback) {
 		var keys = [];

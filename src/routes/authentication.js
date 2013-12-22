@@ -102,6 +102,7 @@
 	}
 
 	passport.serializeUser(function(user, done) {
+		console.log('serializeUser');
 		done(null, user.uid);
 	});
 

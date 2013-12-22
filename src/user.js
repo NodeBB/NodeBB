@@ -15,6 +15,7 @@ var bcrypt = require('bcrypt'),
 	groups = require('./groups'),
 	notifications = require('./notifications'),
 	topics = require('./topics'),
+	events = require('./events'),
 
 	websockets = require('./websockets');
 
@@ -260,6 +261,7 @@ var bcrypt = require('bcrypt'),
 							User.setUserField(uid, 'picture', gravatarpicture);
 						}
 						returnData.gravatarpicture = gravatarpicture;
+						events.logEmailChange(uid, userData.email, data.email);
 						next(null);
 					});
 					return;
@@ -302,7 +304,7 @@ var bcrypt = require('bcrypt'),
 				if (res) {
 					User.hashPassword(data.newPassword, function(err, hash) {
 						User.setUserField(uid, 'password', hash);
-
+						events.logPasswordChange(uid);
 						callback(null);
 					});
 				} else {
@@ -809,6 +811,7 @@ var bcrypt = require('bcrypt'),
 
 						User.hashPassword(password, function(err, hash) {
 							User.setUserField(uid, 'password', hash);
+							events.logPasswordReset(uid);
 						});
 
 						db.deleteObjectField('reset:uid', code);

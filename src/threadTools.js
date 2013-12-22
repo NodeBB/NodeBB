@@ -1,15 +1,18 @@
-var db = require('./database'),
+var winston = require('winston'),
+	nconf = require('nconf'),
+	async = require('async'),
+
+	db = require('./database'),
 	topics = require('./topics'),
 	categories = require('./categories'),
 	CategoryTools = require('./categoryTools'),
 	user = require('./user'),
-	async = require('async'),
 	notifications = require('./notifications'),
 	posts = require('./posts'),
 	meta = require('./meta'),
-	websockets = require('./websockets');
-	winston = require('winston'),
-	nconf = require('nconf'),
+	websockets = require('./websockets'),
+	events = require('./events');
+
 
 (function(ThreadTools) {
 
@@ -97,6 +100,8 @@ var db = require('./database'),
 
 		db.searchRemove('topic', tid);
 
+		events.logTopicDelete(uid, tid);
+
 		websockets.in('topic_' + tid).emit('event:topic_deleted', {
 			tid: tid,
 			status: 'ok'
@@ -111,6 +116,8 @@ var db = require('./database'),
 		topics.restore(tid);
 		db.incrObjectField('global', 'topicCount');
 		ThreadTools.unlock(tid);
+
+		events.logTopicRestore(uid, tid);
 
 		websockets.in('topic_' + tid).emit('event:topic_restored', {
 			tid: tid,

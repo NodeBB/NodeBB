@@ -1,17 +1,17 @@
-var db = require('./database'),
+var winston = require('winston'),
+	async = require('async'),
+	nconf = require('nconf'),
+	validator = require('validator'),
+
+	db = require('./database'),
 	posts = require('./posts'),
 	topics = require('./topics'),
 	threadTools = require('./threadTools'),
 	user = require('./user'),
 	websockets = require('./websockets'),
-	async = require('async'),
-	nconf = require('nconf'),
-	validator = require('validator'),
-
 	utils = require('../public/src/utils'),
 	plugins = require('./plugins'),
-
-	winston = require('winston'),
+	events = require('./events'),
 	meta = require('./meta'),
 	Feed = require('./feed');
 
@@ -70,20 +70,13 @@ var db = require('./database'),
 	PostTools.edit = function(uid, pid, title, content) {
 
 		var	success = function() {
-			async.waterfall([
-				function(next) {
-					posts.setPostField(pid, 'edited', Date.now());
-					next(null);
-				},
-				function(next) {
-					posts.setPostField(pid, 'editor', uid);
-					next(null);
-				},
-				function(next) {
-					posts.setPostField(pid, 'content', content);
-					next(null);
-				}
-			]);
+			posts.setPostFields(pid, {
+				edited: Date.now(),
+				editor: uid,
+				content: content
+			});
+
+			events.logPostEdit(uid, pid);
 
 			db.searchRemove('post', pid, function() {
 				db.searchIndex('post', content, pid);
@@ -135,6 +128,8 @@ var db = require('./database'),
 			posts.setPostField(pid, 'deleted', 1);
 			db.decrObjectField('global', 'postCount');
 			db.searchRemove('post', pid);
+
+			events.logPostDelete(uid, pid);
 
 			posts.getPostFields(pid, ['tid', 'uid'], function(err, postData) {
 				db.incrObjectFieldBy('topic:' + postData.tid, 'postcount', -1);
@@ -189,6 +184,8 @@ var db = require('./database'),
 		var success = function() {
 			posts.setPostField(pid, 'deleted', 0);
 			db.incrObjectField('global', 'postCount');
+
+			events.logPostRestore(uid, pid);
 
 			posts.getPostFields(pid, ['tid', 'uid', 'content'], function(err, postData) {
 				db.incrObjectFieldBy('topic:' + postData.tid, 'postcount', 1);
