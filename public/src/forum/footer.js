@@ -267,7 +267,4 @@
 	socket.on('event:unread.updateCount', updateUnreadCount);
 	socket.emit('api:unread.count', updateUnreadCount);
 
-	require(['mobileMenu'], function(mobileMenu) {
-		mobileMenu.init();
-	});
 }());
