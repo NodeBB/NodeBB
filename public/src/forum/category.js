@@ -1,4 +1,4 @@
-define(function () {
+define(['composer'], function(composer) {
 	var Category = {},
 		loadingMoreTopics = false;
 
@@ -27,9 +27,7 @@ define(function () {
 		});
 
 		$('#new_post').on('click', function () {
-			require(['composer'], function (cmp) {
-				cmp.push(0, cid);
-			});
+			composer.newTopic(cid);
 		});
 
 		ajaxify.register_events([
@@ -84,7 +82,7 @@ define(function () {
 		var html = templates.prepare(templates['category'].blocks['topics']).parse({
 			topics: [data]
 		});
-		
+
 		translator.translate(html, function(translatedHTML) {
 			var topic = $(translatedHTML),
 				container = $('#topics-container'),
@@ -137,7 +135,7 @@ define(function () {
 		var html = templates.prepare(templates['category'].blocks['topics']).parse({
 			topics: topics
 		});
-		
+
 		translator.translate(html, function(translatedHTML) {
 			var container = $('#topics-container');
 

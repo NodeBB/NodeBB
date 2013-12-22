@@ -123,6 +123,11 @@
 	}
 
 	templates.preload_template = function(tpl_name, callback) {
+
+		if(templates[tpl_name]) {
+			return callback();
+		}
+
 		// TODO: This should be "load_template", and the current load_template
 		// should be named something else
 		// TODO: The "Date.now()" in the line below is only there for development purposes.
@@ -355,7 +360,7 @@
 				template = template.replace(regex, '');
 				namespace = '';
 			}
-			
+
 			// clean up all undefined conditionals
 			template = template.replace(/<!-- IF([^@]*?)ENDIF([^@]*?)-->/gi, '');
 

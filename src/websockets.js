@@ -803,32 +803,9 @@ websockets.init = function(io) {
 		});
 
 		socket.on('api:composer.push', function(data, callback) {
-			if (parseInt(uid, 10) > 0 || parseInt(meta.config.allowGuestPosting, 10) === 1) {
-				if (parseInt(data.tid) > 0) {
-					topics.getTopicData(data.tid, function(err, topicData) {
-						if (data.body) {
-							topicData.body = data.body;
-						}
 
-						callback({
-							tid: data.tid,
-							title: topicData.title,
-							body: topicData.body
-						});
-					});
-				} else if (parseInt(data.cid) > 0) {
-					user.getUserFields(uid, ['username', 'picture'], function(err, userData) {
-						if (!err && userData) {
-							callback({
-								tid: 0,
-								cid: data.cid,
-								username: userData.username,
-								picture: userData.picture,
-								title: undefined
-							});
-						}
-					});
-				} else if (parseInt(data.pid) > 0) {
+			if (parseInt(uid, 10) > 0 || parseInt(meta.config.allowGuestPosting, 10) === 1) {
+				if (parseInt(data.pid) > 0) {
 
 					async.parallel([
 						function(next) {

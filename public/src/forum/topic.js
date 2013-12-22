@@ -274,7 +274,7 @@ define(['composer'], function(composer) {
 			}
 
 			if (thread_state.locked !== '1') {
-				composer.push(tid, null, null, selectionText.length > 0 ? selectionText + '\n\n' + username : '' + username);
+				composer.newReply(tid, topic_name, selectionText.length > 0 ? selectionText + '\n\n' + username : '' + username);
 			}
 		});
 
@@ -286,7 +286,7 @@ define(['composer'], function(composer) {
 
 					quoted = '> ' + data.post.replace(/\n/g, '\n> ') + '\n\n';
 
-					composer.push(tid, null, null, quoted);
+					composer.newReply(tid, topic_name, quoted);
 				});
 			}
 		});
@@ -337,8 +337,7 @@ define(['composer'], function(composer) {
 		$('#post-container').delegate('.edit', 'click', function(e) {
 			var pid = $(this).parents('li').attr('data-pid');
 
-
-			composer.push(null, null, pid);
+			composer.editPost(pid);
 		});
 
 		$('#post-container').delegate('.delete', 'click', function(e) {

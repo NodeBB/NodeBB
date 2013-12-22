@@ -4,47 +4,72 @@ define(['taskbar'], function(taskbar) {
 		posts: {}
 	};
 
-	composer.push = function(tid, cid, pid, text) {
-
-		socket.emit('api:composer.push', {
-			tid: tid,	// Replying
-			cid: cid,	// Posting
-			pid: pid,	// Editing
-			body: text	// Predefined text
-		}, function(threadData) {
-
-			if(threadData.error) {
-				app.alert({
-					type: 'danger',
-					timeout: 5000,
-					alert_id: 'post_error',
-					title: 'Please Log In to Post',
-					message: 'Posting is currently restricted to registered members only, click here to log in',
-					clickfn: function() {
-						ajaxify.go('login');
-					}
-				});
-				return;
-			}
-
-			var uuid = utils.generateUUID();
-
-			taskbar.push('composer', uuid, {
-				title: (!threadData.cid ? (threadData.title || '') : 'New Topic'),
-				icon: threadData.picture
+	function allowed() {
+		if(!(parseInt(app.uid, 10) > 0  || parseInt(config.allowGuestPosting, 10) === 1)) {
+			app.alert({
+				type: 'danger',
+				timeout: 5000,
+				alert_id: 'post_error',
+				title: 'Please Log In to Post',
+				message: 'Posting is currently restricted to registered members only, click here to log in',
+				clickfn: function() {
+					ajaxify.go('login');
+				}
 			});
+			return false;
+		}
+		return true;
+	}
 
-			composer.posts[uuid] = {
-				tid: threadData.tid,
-				cid: threadData.cid,
-				pid: threadData.pid,
-				title: threadData.title || '',
-				body: threadData.body || '',
+	composer.newTopic = function(cid) {
+		if(allowed()) {
+			push({
+				cid: cid,
+				title: '',
+				body: '',
 				modified: false
-			};
+			});
+		}
+	}
 
-			composer.load(uuid);
+	composer.newReply = function(tid, title, text) {
+		if(allowed()) {
+			push({
+				tid: tid,
+				title: title,
+				body: text,
+				modified: false
+			});
+		}
+	}
+
+	composer.editPost = function(pid) {
+		if(allowed()) {
+			socket.emit('api:composer.push', {
+				pid: pid
+			}, function(threadData) {
+				console.log(threadData);
+				push({
+					pid: pid,
+					title: threadData.title,
+					body: threadData.body,
+					modified: false
+				});
+			});
+		}
+	}
+
+	function push(post) {
+		var uuid = utils.generateUUID();
+
+		taskbar.push('composer', uuid, {
+			title: post.title ? post.title : 'New Topic',
+			icon: post.picture
 		});
+
+		composer.posts[uuid] = post;
+
+		composer.load(uuid);
 	}
 
 	composer.load = function(post_uuid) {
@@ -470,7 +495,9 @@ define(['taskbar'], function(taskbar) {
 	}
 
 	return {
-		push: composer.push,
+		newTopic: composer.newTopic,
+		newReply: composer.newReply,
+		editPost: composer.editPost,
 		load: composer.load,
 		minimize: composer.minimize
 	};
