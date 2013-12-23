@@ -87,7 +87,12 @@ var winston = require('winston'),
 					posts.getPostField(pid, 'tid', function(err, tid) {
 						PostTools.isMain(pid, tid, function(err, isMainPost) {
 							if (isMainPost) {
+								title = title.trim();
+								var slug = tid + '/' + utils.slugify(title);
+
 								topics.setTopicField(tid, 'title', title);
+								topics.setTopicField(tid, 'slug', slug);
+
 								db.searchRemove('topic', tid, function() {
 									db.searchIndex('topic', title, tid);
 								});
