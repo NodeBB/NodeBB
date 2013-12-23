@@ -65,7 +65,7 @@ var async = require('async'),
 			description: 'Host port of your MongoDB instance',
 			'default': nconf.get('mongo:port') || 27017
 		}, {
-			name: 'mongo:user',
+			name: 'mongo:username',
 			description: 'MongoDB username'
 		}, {
 			name: 'mongo:password',
@@ -126,6 +126,7 @@ var async = require('async'),
 								config.mongo = {
 									host: databaseConfig['mongo:host'],
 									port: databaseConfig['mongo:port'],
+									username: databaseConfig['mongo:username'],
 									password: databaseConfig['mongo:password'],
 									database: databaseConfig['mongo:database']
 								};
