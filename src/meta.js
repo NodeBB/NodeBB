@@ -73,7 +73,7 @@ var fs = require('fs'),
 				async.filter(files, function (file, next) {
 					fs.stat(path.join(themePath, file), function (err, fileStat) {
 						if (err) {
-							next(false);
+							return next(false);
 						}
 
 						next((fileStat.isDirectory() && file.slice(0, 13) === 'nodebb-theme-'));

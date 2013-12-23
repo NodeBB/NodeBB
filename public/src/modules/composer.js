@@ -205,6 +205,27 @@ define(['taskbar'], function(taskbar) {
 			var	resizeActive = false,
 				resizeCenterX = 0,
 				resizeOffset = 0,
+				resizeStart = function(e) {
+					bodyRect = document.body.getBoundingClientRect();
+					resizeRect = resizeEl.getBoundingClientRect();
+					resizeCenterX = resizeRect.left + (resizeRect.width/2);
+					resizeOffset = resizeCenterX - e.clientX;
+					resizeSnaps.half = bodyRect.width / 2;
+					resizeSnaps.none = bodyRect.width;
+					resizeActive = true;
+
+					$(document.body).on('mousemove', resizeAction);
+					document.body.addEventListener('touchmove', resizeTouchAction);
+				},
+				resizeStop = function() {
+					resizeActive = false;
+					$(document.body).off('mousemove', resizeAction);
+					document.body.removeEventListener('touchmove', resizeTouchAction);
+				},
+				resizeTouchAction = function(e) {
+					e.preventDefault();
+					resizeAction(e.touches[0]);
+				},
 				resizeAction = function(e) {
 					if (resizeActive) {
 						position = (e.clientX + resizeOffset);
@@ -238,24 +259,20 @@ define(['taskbar'], function(taskbar) {
 				},
 				resizeRect, bodyRect;
 
-			var resizeEl = postContainer.find('.resizer');
+			var resizeEl = postContainer.find('.resizer')[0];
 
-			resizeEl
-				.on('mousedown', function(e) {
-					bodyRect = document.body.getBoundingClientRect();
-					resizeRect = resizeEl[0].getBoundingClientRect();
-					resizeCenterX = resizeRect.left + (resizeRect.width/2);
-					resizeOffset = resizeCenterX - e.clientX;
-					resizeSnaps.half = bodyRect.width / 2;
-					resizeSnaps.none = bodyRect.width;
-					resizeActive = true;
-
-					$(document.body).on('mousemove', resizeAction);
-				})
-				.on('mouseup', function() {
-					resizeActive = false;
-					$(document.body).off('mousemove', resizeAction);
-				});
+			resizeEl.addEventListener('mousedown', resizeStart);
+			resizeEl.addEventListener('mouseup', resizeStop);
+			resizeEl.addEventListener('touchstart', function(e) {
+				e.preventDefault();
+				resizeStart(e.touches[0]);
+			});
+			resizeEl.addEventListener('touchend', function(e) {
+				e.preventDefault();
+				resizeStop();
+			});
+				// .on('mousedown touchstart', resizeStart)
+				// .on('mouseup touchend', resizeStop)
 
 			window.addEventListener('resize', function() {
 				if (composer.active !== undefined) {
