@@ -193,6 +193,10 @@
 		});
 
 		app.post('/register', function(req, res) {
+			if(parseInt(meta.config.allowRegistration, 10) === 0) {
+				return res.send(403);
+			}
+
 			user.create(req.body.username, req.body.password, req.body.email, function(err, uid) {
 				if (err === null && uid) {
 					req.login({

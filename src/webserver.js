@@ -98,7 +98,8 @@ var path = require('path'),
 					link_tags: linkTags,
 					clientScripts: clientScripts,
 					navigation: custom_header.navigation,
-					'cache-buster': meta.config['cache-buster'] ? '?v=' + meta.config['cache-buster'] : ''
+					'cache-buster': meta.config['cache-buster'] ? '?v=' + meta.config['cache-buster'] : '',
+					allowRegistration: parseInt(meta.config.allowRegistration, 10) === 1
 				};
 
 			var uid = '0';
@@ -389,6 +390,8 @@ var path = require('path'),
 							res.redirect('/user/' + userslug);
 						});
 						return;
+					} else if(route === 'register' && parseInt(meta.config.allowRegistration, 10) === 0) {
+						return res.redirect('/403');
 					} else if (loginRequired.indexOf(route) !== -1 && !req.user) {
 						return res.redirect('/403');
 					}

@@ -623,10 +623,10 @@ websockets.init = function(io) {
 					timeout: 2000
 				});
 				return;
-			} else if (!data.title || data.title.length < topics.minimumTitleLength) {
+			} else if (!data.title || data.title.length < parseInt(meta.config.minimumTitleLength, 10)) {
 				topics.emitTitleTooShortAlert(socket);
 				return;
-			} else if (!data.content || data.content.length < require('../public/config.json').minimumPostLength) {
+			} else if (!data.content || data.content.length < parseInt(meta.config.minimumPostLength, 10)) {
 				posts.emitContentTooShortAlert(socket);
 				return;
 			}
@@ -960,9 +960,10 @@ websockets.init = function(io) {
 			}
 		});
 
-		socket.on('api:admin.user.deleteUser', function(theirid) {
+		socket.on('api:admin.user.createUser', function(user, callback) {
+			console.log('heeerp');
 			if (uid && uid > 0) {
-				admin.user.deleteUser(uid, theirid, socket);
+				admin.user.createUser(uid, user, callback);
 			}
 		});
 

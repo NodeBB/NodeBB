@@ -4,6 +4,21 @@ var utils = require('../../public/src/utils'),
 
 (function(UserAdmin) {
 
+	UserAdmin.createUser = function(uid, userData, callback) {
+		user.isAdministrator(uid, function(err, isAdmin) {
+			if (isAdmin) {
+				user.create(userData.username, userData.password, userData.email, function(err) {
+					if(err) {
+						return callback(err.message);
+					}
+					callback(null);
+				});
+			} else {
+				callback(new Error('You are not an administrator'));
+			}
+		});
+	}
+
 	UserAdmin.makeAdmin = function(uid, theirid, socket) {
 		user.isAdministrator(uid, function(err, isAdmin) {
 			if (isAdmin) {

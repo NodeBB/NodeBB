@@ -64,6 +64,39 @@ define(function() {
 			});
 		}
 
+		function handleUserCreate() {
+			$('#createUser').on('click', function() {
+				$('#create-modal').modal('show');
+			});
+
+			$('#create-modal-go').on('click', function() {
+				var username = $('#create-user-name').val(),
+					email = $('#create-user-email').val(),
+					password = $('#create-user-password').val(),
+					passwordAgain = $('#create-user-password-again').val(),
+					errorEl = $('#create-modal-error');
+
+				if(password !== passwordAgain) {
+					return errorEl.html('<strong>Error</strong><p>Passwords must match!</p>').removeClass('hide');
+				}
+
+				var user = {
+					username: username,
+					email: email,
+					password: password
+				};
+
+				socket.emit('api:admin.user.createUser', user, function(err, data) {
+					if(err) {
+						return errorEl.html('<strong>Error</strong><p>' + err + '</p>').removeClass('hide');
+					}
+					$('#create-modal').modal('hide');
+					app.alertSuccess('User created!');
+				});
+
+			});
+		}
+
 
 		jQuery('document').ready(function() {
 
@@ -98,6 +131,8 @@ define(function() {
 			});
 
 			initUsers();
+
+			handleUserCreate();
 
 			socket.removeAllListeners('api:admin.user.search');
 
