@@ -41,10 +41,11 @@ define(function() {
 
 			if (!utils.isEmailValid(emailEl.val())) {
 				showError(email_notify, 'Invalid email address.');
-			} else
+			} else {
 				socket.emit('user.email.exists', {
 					email: emailEl.val()
 				});
+			}
 		}
 
 		emailEl.on('blur', function() {

@@ -960,9 +960,10 @@ websockets.init = function(io) {
 			}
 		});
 
-		socket.on('api:admin.user.deleteUser', function(theirid) {
+		socket.on('api:admin.user.createUser', function(user, callback) {
+			console.log('heeerp');
 			if (uid && uid > 0) {
-				admin.user.deleteUser(uid, theirid, socket);
+				admin.user.createUser(uid, user, callback);
 			}
 		});
 
