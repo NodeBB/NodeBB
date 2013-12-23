@@ -210,6 +210,9 @@ var async = require('async'),
 							field: 'allowGuestSearching',
 							value: 0
 						}, {
+							field: 'allowRegistration',
+							value: 1
+						}, {
 							field: 'minimumTitleLength',
 							value: 3
 						}, {
