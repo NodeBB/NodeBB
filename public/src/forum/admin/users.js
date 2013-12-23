@@ -91,7 +91,7 @@ define(function() {
 						return errorEl.html('<strong>Error</strong><p>' + err + '</p>').removeClass('hide');
 					}
 					$('#create-modal').modal('hide');
-					app.alert();
+					app.alertSuccess('User created!');
 				});
 
 			});
