@@ -51,16 +51,16 @@
 			<div class="navbar-collapse collapse navbar-ex1-collapse">
 				<ul id="main-nav" class="nav navbar-nav">
 					<li>
-						<a href="/recent">[[global:header.recent]]</a>
+						<a href="/recent"><i class="fa fa-clock-o" title="[[global:header.recent]]"></i></a>
 					</li>
 					<li class="nodebb-loggedin">
-						<a href="/unread"><span id="numUnreadBadge" class="badge badge-inverse">0</span> [[global:header.unread]]</a>
+						<a href="/unread"><i class="fa fa-envelope" title="[[global:header.unread]]"> <span id="numUnreadBadge" class="">0</span></i></a>
 					</li>
 					<li>
-						<a href="/users">[[global:header.users]]</a>
+						<a href="/users"><i class="fa fa-users" title="[[global:header.users]]"></i></a>
 					</li>
 					<li class="{adminDisplay}">
-						<a href="/admin"><i class="fa fa-cogs"></i> [[global:header.admin]]</a>
+						<a href="/admin"><i class="fa fa-cogs" title="[[global:header.admin]]"></i></a>
 					</li>
 					<li class="visible-xs">
 						<a href="/search">[[global:header.search]]</a>
