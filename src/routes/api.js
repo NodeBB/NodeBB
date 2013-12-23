@@ -37,6 +37,7 @@ var path = require('path'),
 				config.maximumSignatureLength = meta.config.maximumSignatureLength;
 				config.useOutgoingLinksPage = meta.config.useOutgoingLinksPage;
 				config.allowGuestPosting = meta.config.allowGuestPosting;
+				config.allowRegistration = meta.config.allowRegistration || '1';
 				config.emailSetup = !!meta.config['email:from'];
 
 				res.json(200, config);

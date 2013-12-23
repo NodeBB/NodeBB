@@ -112,9 +112,11 @@
 				</ul>
 
 				<ul id="logged-out-menu" class="nav navbar-nav navbar-right">
+					<!-- IF allowRegistration -->
 					<li class="visible-lg visible-md visible-sm">
 						<a href="/register">[[global:register]]</a>
 					</li>
+					<!-- ENDIF allowRegistration -->
 					<li class="visible-lg visible-md visible-sm">
 						<a href="/login">[[global:login]]</a>
 					</li>
