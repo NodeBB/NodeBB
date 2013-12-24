@@ -92,6 +92,7 @@ define(function() {
 					}
 					$('#create-modal').modal('hide');
 					app.alertSuccess('User created!');
+					ajaxify.go('admin/users');
 				});
 
 			});
