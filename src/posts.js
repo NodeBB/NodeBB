@@ -213,7 +213,10 @@ var db = require('./database'),
 				post.user_postcount = userData.postcount || 0;
 				post.user_banned = parseInt(userData.banned, 10) === 1;
 				post.picture = userData.picture || gravatar.url('', {}, https = nconf.get('https'));
-				post.signature = signature;
+
+				if(meta.config.disableSignatures === undefined || parseInt(meta.config.disableSignatures, 10) === 0) {
+					post.signature = signature;
+				}
 
 				for (var info in customUserInfo) {
 					if (customUserInfo.hasOwnProperty(info)) {

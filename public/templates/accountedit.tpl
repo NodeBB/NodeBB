@@ -83,12 +83,14 @@
 						</div>
 					</div>
 
+					<!-- IF !disableSignatures -->
 					<div class="control-group">
 						<label class="control-label" for="inputSignature">[[user:signature]]</label> <small><label id="signatureCharCountLeft"></label></small>
 						<div class="controls">
 							<textarea class="form-control" id="inputSignature" rows="5">{signature}</textarea>
 						</div>
 					</div>
+					<!-- ENDIF !disableSignatures -->
 
 					<input type="hidden" id="inputUID" value="{uid}"><br />
 

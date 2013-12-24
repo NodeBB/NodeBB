@@ -82,6 +82,11 @@
 				<input type="checkbox" data-field="allowRegistration" checked> <strong>Allow registration</strong>
 			</label>
 		</div>
+		<div class="checkbox">
+			<label>
+				<input type="checkbox" data-field="disableSignatures"> <strong>Disable signatures</strong>
+			</label>
+		</div>
 		<strong>Minimum Username Length</strong><br />
 		<input type="text" class="form-control" value="2" data-field="minimumUsernameLength"><br />
 		<strong>Maximum Username Length</strong><br />

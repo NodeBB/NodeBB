@@ -548,6 +548,8 @@ var fs = require('fs'),
 						data.yourid = callerUID;
 						data.theirid = uid;
 
+						data.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
+
 						user.getFollowingCount(uid, function (followingCount) {
 							user.getFollowerCount(uid, function (followerCount) {
 								data.followingCount = followingCount;

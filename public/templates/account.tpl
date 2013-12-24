@@ -91,12 +91,14 @@
 					<br/>
 
 					<hr/>
+					<!-- IF !disableSignatures -->
 					<!-- IF signature -->
 					<span class="account-bio-label">[[user:signature]]</span>
 					<div class="post-signature">
 						<span id='signature'>{signature}</span>
 					</div>
 					<!-- ENDIF signature -->
+					<!-- ENDIF !disableSignatures -->
 				</div>
 			</div>
 		</div>
