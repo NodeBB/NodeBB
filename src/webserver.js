@@ -18,6 +18,7 @@ var path = require('path'),
 	categories = require('./categories'),
 	posts = require('./posts'),
 	topics = require('./topics'),
+	ThreadTools = require('./threadTools'),
 	notifications = require('./notifications'),
 	admin = require('./routes/admin'),
 	userRoute = require('./routes/user'),
@@ -484,6 +485,20 @@ var path = require('path'),
 			}
 
 			async.waterfall([
+				function(next) {
+					// Check whether this user is allowed to access this topic
+					ThreadTools.privileges(tid, ((req.user) ? req.user.uid : 0), function(err, privileges) {
+						if (!err) {
+							if (!privileges.read) {
+								next(new Error('not-enough-privileges'));
+							} else {
+								next();
+							}
+						} else {
+							next(err);
+						}
+					});
+				},
 				function (next) {
 					topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), 0, -1, true, function (err, topicData) {
 						if (topicData) {
@@ -558,7 +573,11 @@ var path = require('path'),
 				},
 			], function (err, data) {
 				if (err) {
-					return res.redirect('404');
+					if (err.message === 'not-enough-privileges') {
+						return res.redirect('403');
+					} else {
+						return res.redirect('404');
+					}
 				}
 
 				var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
