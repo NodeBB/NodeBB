@@ -961,7 +961,6 @@ websockets.init = function(io) {
 		});
 
 		socket.on('api:admin.user.createUser', function(user, callback) {
-			console.log('heeerp');
 			if (uid && uid > 0) {
 				admin.user.createUser(uid, user, callback);
 			}
