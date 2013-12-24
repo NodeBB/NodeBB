@@ -30,6 +30,12 @@
 		redisClient = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host'));
 	}
 
+	redisClient.on('error', function (err) {
+		winston.error(err.message);
+		process.exit();
+	});
+
+
 	module.client = redisClient;
 
 	module.sessionStore = new connectRedis({

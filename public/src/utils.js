@@ -56,6 +56,10 @@
 			var now = +new Date(),
 				difference = now - Math.floor(parseFloat(timestamp));
 
+			if(difference < 0) {
+				difference = 0;
+			}
+
 			difference = Math.floor(difference / 1000);
 
 			if (difference < 60) {
