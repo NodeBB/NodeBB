@@ -202,6 +202,20 @@ define(['taskbar'], function(taskbar) {
 				}
 			});
 
+			postContainer.on('click', '.formatting-bar span .fa-picture-o', function() {
+				$('#files').click();
+			});
+
+			$('#files').on('change', function(e) {
+				var files = e.target.files;
+				if(files) {
+					for (var i=0; i<files.length; i++) {
+						loadFile(post_uuid, files[i]);
+					}
+				}
+			});
+
+
 			var	resizeActive = false,
 				resizeCenterX = 0,
 				resizeOffset = 0,
@@ -300,6 +314,10 @@ define(['taskbar'], function(taskbar) {
 			} else {
 				postContainer.css('width', '100%');
 			}
+		}
+
+		if(config.imgurClientIDSet) {
+			postContainer.find('.upload-instructions').removeClass('hide')
 		}
 
 		postContainer.css('visibility', 'visible');
@@ -459,12 +477,16 @@ define(['taskbar'], function(taskbar) {
 	}
 
 	function loadFile(post_uuid, file) {
+
+		if (!file.type.match('image.*')) {
+			return;
+		}
+
 		var reader = new FileReader(),
 			dropDiv = $('#cmp-uuid-' + post_uuid).find('.imagedrop');
 
 		$(reader).on('loadend', function(e) {
-			var bin = this.result;
-			bin = bin.split(',')[1];
+			var bin = this.result.split(',')[1];
 
 			var img = {
 				name: file.name,

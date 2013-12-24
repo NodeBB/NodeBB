@@ -7,12 +7,19 @@
 				<span class="btn btn-link" tabindex="-1"><i class="fa fa-italic"></i></span>
 				<span class="btn btn-link" tabindex="-1"><i class="fa fa-list"></i></span>
 				<span class="btn btn-link" tabindex="-1"><i class="fa fa-link"></i></span>
+				<span class="btn btn-link" tabindex="-1">
+				<input type="file" id="files" name="files[]" multiple class="hide"/>
+					<i class="fa fa-picture-o"></i>
+				</span>
 			</div>
 			<!-- <div class="btn btn-link pull-right">Preview</div> -->
 		</div>
 		<textarea tabIndex="2"></textarea>
 		<div class="preview"></div>
 		<div class="imagedrop"><div>Drag and Drop Images Here</div></div>
+		<div class="text-center upload-instructions hide">
+			<small>Upload images by dragging & dropping them</small>
+		</div>
 		<div class="btn-toolbar action-bar">
 			<div class="btn-group pull-right">
 				<button class="btn btn-default" data-action="discard" tabIndex="5"><i class="fa fa-times"></i> Discard</button>

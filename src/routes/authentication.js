@@ -193,7 +193,7 @@
 		});
 
 		app.post('/register', function(req, res) {
-			if(parseInt(meta.config.allowRegistration, 10) === 0) {
+			if(meta.config.allowRegistration !== undefined && parseInt(meta.config.allowRegistration, 10) === 0) {
 				return res.send(403);
 			}
 

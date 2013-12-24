@@ -390,7 +390,7 @@ var path = require('path'),
 							res.redirect('/user/' + userslug);
 						});
 						return;
-					} else if(route === 'register' && parseInt(meta.config.allowRegistration, 10) === 0) {
+					} else if(route === 'register' && meta.config.allowRegistration !== undefined && parseInt(meta.config.allowRegistration, 10) === 0) {
 						return res.redirect('/403');
 					} else if (loginRequired.indexOf(route) !== -1 && !req.user) {
 						return res.redirect('/403');
