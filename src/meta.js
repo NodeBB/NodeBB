@@ -18,7 +18,7 @@ var fs = require('fs'),
 
 			Meta.configs.list(function (err, config) {
 				if(err) {
-					winston.error(err);
+					winston.error(err.message);
 					return callback(err);
 				}
 
@@ -29,7 +29,7 @@ var fs = require('fs'),
 		list: function (callback) {
 			db.getObject('config', function (err, config) {
 				if(err) {
-					return callback(new Error('could-not-read-config'));
+					return callback(err);
 				}
 
 				config = config || {};
