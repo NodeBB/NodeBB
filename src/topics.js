@@ -262,9 +262,20 @@ var async = require('async'),
 				return;
 			}
 
-			Topics.getTopicsByTids(tids, current_user, function(topicData) {
-				latestTopics.topics = topicData;
-				callback(err, latestTopics);
+			// Filter out topics that belong to categories that this user cannot access
+			async.filter(tids, function(tid, next) {
+				threadTools.privileges(tid, current_user, function(err, privileges) {
+					if (!err && privileges.read) {
+						next(true);
+					} else {
+						next(false);
+					}
+				});
+			}, function(tids) {
+				Topics.getTopicsByTids(tids, current_user, function(topicData) {
+					latestTopics.topics = topicData;
+					callback(err, latestTopics);
+				});
 			});
 		});
 	}
@@ -342,14 +353,25 @@ var async = require('async'),
 							return parseInt(read[index], 10) === 0;
 						});
 
-						unreadTids.push.apply(unreadTids, newtids);
+						// Filter out topics that belong to categories that this user cannot access
+						async.filter(newtids, function(tid, next) {
+							threadTools.privileges(tid, uid, function(err, privileges) {
+								if (!err && privileges.read) {
+									next(true);
+								} else {
+									next(false);
+								}
+							});
+						}, function(newtids) {
+							unreadTids.push.apply(unreadTids, newtids);
 
-						if(continueCondition()) {
-							start = stop + 1;
-							stop = start + 19;
-						}
+							if(continueCondition()) {
+								start = stop + 1;
+								stop = start + 19;
+							}
 
-						callback(null);
+							callback(null);
+						});
 					});
 				}
 			});

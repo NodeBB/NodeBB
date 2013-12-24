@@ -7,6 +7,7 @@ var path = require('path'),
 	groups = require('../groups'),
 	auth = require('./authentication'),
 	topics = require('../topics'),
+	ThreadTools = require('../threadTools'),
 	posts = require('../posts'),
 	categories = require('../categories'),
 	categoryTools = require('../categoryTools')
@@ -120,21 +121,27 @@ var path = require('path'),
 
 			app.get('/topic/:id/:slug?', function (req, res, next) {
 				var uid = (req.user) ? req.user.uid : 0;
-				topics.getTopicWithPosts(req.params.id, uid, 0, 10, false, function (err, data) {
-					if (!err) {
-						if (parseInt(data.deleted, 10) === 1 && parseInt(data.expose_tools, 10) === 0) {
-							return res.json(404, {});
-						}
-						// get the category this post belongs to and check category access
-						var cid = data.category_slug.split("/")[0];
-						groups.getCategoryAccess(cid, uid, function(err, access){
-							if (access){
-								res.json(data);
-							} else {
-								res.send(403);
-							}
-						})
-					} else next();
+				ThreadTools.privileges(req.params.id, uid, function(err, privileges) {
+					if (privileges.read) {
+						topics.getTopicWithPosts(req.params.id, uid, 0, 10, false, function (err, data) {
+							if (!err) {
+								if (parseInt(data.deleted, 10) === 1 && parseInt(data.expose_tools, 10) === 0) {
+									return res.json(404, {});
+								}
+								// get the category this post belongs to and check category access
+								var cid = data.category_slug.split("/")[0];
+								groups.getCategoryAccess(cid, uid, function(err, access){
+									if (access){
+										res.json(data);
+									} else {
+										res.send(403);
+									}
+								})
+							} else next();
+						});
+					} else {
+						res.send(403);
+					}
 				});
 			});
 
