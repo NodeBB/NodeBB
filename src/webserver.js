@@ -99,7 +99,7 @@ var path = require('path'),
 					link_tags: linkTags,
 					clientScripts: clientScripts,
 					navigation: custom_header.navigation,
-					'cache-buster': meta.config['cache-buster'] ? '?v=' + meta.config['cache-buster'] : '',
+					'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
 					allowRegistration: meta.config.allowRegistration === undefined || parseInt(meta.config.allowRegistration, 10) === 1
 				};
 
@@ -132,14 +132,9 @@ var path = require('path'),
 		}, function(err, stdOut) {
 			if (!err) {
 				meta.config['cache-buster'] = stdOut.trim();
-
-				if (global.env === 'development') {
-					winston.info('[init] Cache buster value set to: ' + stdOut);
-				}
+				// winston.info('[init] Cache buster value set to: ' + stdOut);
 			} else {
-				if (global.env === 'development') {
-					winston.warn('[init] Cache buster not set');
-				}
+				winston.warn('[init] Cache buster not set');
 			}
 		});
 	}
