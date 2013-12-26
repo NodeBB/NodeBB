@@ -67,7 +67,15 @@
 					</li>
 					<!-- BEGIN navigation -->
 					<li class="{navigation.class}">
-						<a href="{navigation.route}">{navigation.text}</a>
+						<a href="{navigation.route}" title="{navigation.title}">
+						    <!-- IF navigation.iconClass -->
+							<i class="fa {navigation.iconClass}"></i>
+							<!-- ENDIF navigation.iconClass -->
+
+							<!-- IF navigation.text -->
+							<span class="{navigation.textClass}">{navigation.text}</span>
+							<!-- ENDIF navigation.text -->
+						</a>
 					</li>
 					<!-- END navigation -->
 				</ul>
