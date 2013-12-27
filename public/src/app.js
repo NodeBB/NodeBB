@@ -178,17 +178,6 @@ var socket,
 		return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
 	};
 
-	// Willingly stolen from: http://phpjs.org/functions/strip_tags/
-	app.strip_tags = function (input, allowed) {
-		allowed = (((allowed || "") + "").toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join(''); // making sure the allowed arg is a string containing only tags in lowercase (<a><b><c>)
-		var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
-			commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
-
-		return input.replace(commentsAndPhpTags, '').replace(tags, function ($0, $1) {
-			return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
-		});
-	};
-
 	// use unique alert_id to have multiple alerts visible at a time, use the same alert_id to fade out the current instance
 	// type : error, success, info, warning/notify
 	// title = bolded title text

@@ -1,4 +1,4 @@
-define(['taskbar'], function(taskbar) {
+define(['taskbar', 'string'], function(taskbar, S) {
 
 	var module = {};
 
@@ -139,7 +139,7 @@ define(['taskbar'], function(taskbar) {
 	}
 
 	function sendMessage(chatModal) {
-		var msg = app.strip_tags(chatModal.find('#chat-message-input').val());
+		var msg = S(chatModal.find('#chat-message-input').val()).stripTags().s;
 		if(msg.length) {
 			msg = msg +'\n';
 			socket.emit('api:chats.send', { touid:chatModal.touid, message:msg});

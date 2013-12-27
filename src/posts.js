@@ -15,7 +15,8 @@ var db = require('./database'),
 	nconf = require('nconf'),
 	validator = require('validator'),
 	winston = require('winston'),
-	gravatar = require('gravatar');
+	gravatar = require('gravatar'),
+	S = require('string');
 
 (function(Posts) {
 	var customUserInfo = {};
@@ -294,7 +295,7 @@ var db = require('./database'),
 							}
 
 							if(stripTags) {
-								postData.content = utils.strip_tags(content);
+								postData.content = S(content).stripTags().s;
 							} else {
 								postData.content = content;
 							}

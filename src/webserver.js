@@ -510,7 +510,7 @@ var path = require('path'),
 					var lastMod = 0,
 						sanitize = validator.sanitize,
 						description = (function() {
-							var	content = S(topicData.posts[0].content).stripTags();
+							var	content = S(topicData.posts[0].content).stripTags().s;
 
 							if (content.length > 255) {
 								content = content.substr(0, 255) + '...';

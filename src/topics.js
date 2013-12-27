@@ -2,6 +2,7 @@ var async = require('async'),
 	gravatar = require('gravatar'),
 	nconf = require('nconf'),
 	validator = require('validator'),
+	S = require('string'),
 
 	db = require('./database'),
 	posts = require('./posts'),
@@ -826,7 +827,7 @@ var async = require('async'),
 					if (postData.content) {
 						stripped = postData.content.replace(/>.+\n\n/, '');
 						postTools.parse(stripped, function(err, stripped) {
-							returnObj.text = utils.strip_tags(stripped);
+							returnObj.text = S(stripped).stripTags().s;
 							callback(null, returnObj);
 						});
 					} else {

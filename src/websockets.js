@@ -8,6 +8,7 @@ var cookie = require('cookie'),
 	nconf = require('nconf'),
 	gravatar = require('gravatar'),
 	winston = require('winston'),
+	S = require('string'),
 
 	db = require('./database'),
 
@@ -712,7 +713,7 @@ websockets.init = function(io) {
 				return;
 			}
 
-			var msg = utils.strip_tags(data.message);
+			var msg = S(data.message).stripTags().s;
 
 			user.getMultipleUserFields([uid, touid], ['username'], function(err, usersData) {
 				if(err) {

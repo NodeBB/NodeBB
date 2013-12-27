@@ -6,6 +6,7 @@ var bcrypt = require('bcrypt'),
 	gravatar = require('gravatar'),
 	check = require('validator').check,
 	sanitize = require('validator').sanitize,
+	S = require('string'),
 
 	utils = require('./../public/src/utils'),
 	plugins = require('./plugins'),
@@ -266,7 +267,7 @@ var bcrypt = require('bcrypt'),
 					});
 					return;
 				} else if (field === 'signature') {
-					data[field] = utils.strip_tags(data[field]);
+					data[field] = S(data[field]).stripTags().s;
 				} else if (field === 'website') {
 					if(data[field].substr(0, 7) !== 'http://' && data[field].substr(0, 8) !== 'https://') {
 						data[field] = 'http://' + data[field];
