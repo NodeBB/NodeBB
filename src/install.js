@@ -234,6 +234,9 @@ var async = require('async'),
 							field: 'maximumProfileImageSize',
 							value: 256
 						}, {
+							field: 'chatMessagesToDisplay',
+							value: 50
+						}, {
 							field: 'theme:type',
 							value: 'local'
 						}, {

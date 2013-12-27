@@ -1,6 +1,7 @@
 var db = require('./database'),
 	async = require('async'),
-	user = require('./user');
+	user = require('./user'),
+	meta = require('./meta');
 
 
 (function(Messaging) {
@@ -38,7 +39,7 @@ var db = require('./database'),
 	Messaging.getMessages = function(fromuid, touid, callback) {
 		var uids = sortUids(fromuid, touid);
 
-		db.getListRange('messages:' + uids[0] + ':' + uids[1], 0, -1, function(err, mids) {
+		db.getListRange('messages:' + uids[0] + ':' + uids[1], -((meta.config.chatMessagesToDisplay || 50) - 1), -1, function(err, mids) {
 			if (err) {
 				return callback(err, null);
 			}
@@ -49,6 +50,9 @@ var db = require('./database'),
 
 
 			user.getUserField(touid, 'username', function(err, tousername) {
+				if(err) {
+					return callback(err, null);
+				}
 
 				var messages = [];
 
@@ -78,7 +82,7 @@ var db = require('./database'),
 				});
 			});
 		});
-	}
+	};
 
 	Messaging.updateChatTime = function(uid, toUid, callback) {
 		db.sortedSetAdd('uid:' + uid + ':chats', Date.now(), toUid, function(err) {
@@ -90,11 +94,11 @@ var db = require('./database'),
 
 	Messaging.getRecentChats = function(uid, callback) {
 		db.getSortedSetRevRange('uid:' + uid + ':chats', 0, 9, function(err, uids) {
-			if (!err) {
-				user.getMultipleUserFields(uids, ['username', 'picture', 'uid'], callback);
-			} else {
-				callback(err);
+			if(err) {
+				return callback(err);
 			}
+
+			user.getMultipleUserFields(uids, ['username', 'picture', 'uid'], callback);
 		});
 	};
 

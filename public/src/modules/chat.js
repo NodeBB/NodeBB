@@ -103,6 +103,7 @@ define(['taskbar', 'string'], function(taskbar, S) {
 		module.bringModalToTop(chatModal);
 		checkOnlineStatus(chatModal);
 		taskbar.updateActive(uuid);
+		scrollToBottom(chatModal.find('#chat-content'));
 		chatModal.find('#chat-message-input').focus();
 	}
 
@@ -153,10 +154,14 @@ define(['taskbar', 'string'], function(taskbar, S) {
 		var date = new Date(parseInt(timestamp, 10));
 
 		chatContent.append('[' + date.toLocaleTimeString() + '] ' + message);
+		scrollToBottom(chatContent);
+	};
+
+	function scrollToBottom(chatContent) {
 		chatContent.scrollTop(
 			chatContent[0].scrollHeight - chatContent.height()
 		);
-	};
+	}
 
 	module.toggleNew = function(uuid, state) {
 		taskbar.toggleNew(uuid, state);
