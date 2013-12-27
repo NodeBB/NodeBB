@@ -9,6 +9,7 @@ var path = require('path'),
 	winston = require('winston'),
 	validator = require('validator'),
 	async = require('async'),
+	S = require('string'),
 
 	pkg = require('../package.json'),
 
@@ -507,8 +508,17 @@ var path = require('path'),
 				},
 				function (topicData, next) {
 					var lastMod = 0,
-						timestamp,
-						sanitize = validator.sanitize;
+						sanitize = validator.sanitize,
+						description = (function() {
+							var	content = S(topicData.posts[0].content).stripTags();
+
+							if (content.length > 255) {
+								content = content.substr(0, 255) + '...';
+							}
+
+							return sanitize(content).escape();
+						})(),
+						timestamp;
 
 					for (var x = 0, numPosts = topicData.posts.length; x < numPosts; x++) {
 						timestamp = parseInt(topicData.posts[x].timestamp, 10);
@@ -520,34 +530,48 @@ var path = require('path'),
 					app.build_header({
 						req: req,
 						res: res,
-						metaTags: [{
-							name: "title",
-							content: topicData.topic_name
-						}, {
-							name: "description",
-							content: sanitize(topicData.posts[0].content.substr(0, 255)).escape().replace('\n', '')
-						}, {
-							property: 'og:title',
-							content: topicData.topic_name + ' | ' + (meta.config.title || 'NodeBB')
-						}, {
-							property: "og:type",
-							content: 'article'
-						}, {
-							property: "og:url",
-							content: nconf.get('url') + 'topic/' + topicData.slug
-						}, {
-							property: 'og:image',
-							content: topicData.posts[0].picture
-						}, {
-							property: "article:published_time",
-							content: new Date(parseInt(topicData.posts[0].timestamp, 10)).toISOString()
-						}, {
-							property: 'article:modified_time',
-							content: new Date(lastMod).toISOString()
-						}, {
-							property: 'article:section',
-							content: topicData.category_name
-						}],
+						metaTags: [
+							{
+								name: "title",
+								content: topicData.topic_name
+							},
+							{
+								name: "description",
+								content: description
+							},
+							{
+								property: 'og:title',
+								content: topicData.topic_name + ' | ' + (meta.config.title || 'NodeBB')
+							},
+							{
+								property: 'og:description',
+								content: description
+							},
+							{
+								property: "og:type",
+								content: 'article'
+							},
+							{
+								property: "og:url",
+								content: nconf.get('url') + 'topic/' + topicData.slug
+							},
+							{
+								property: 'og:image',
+								content: topicData.posts[0].picture
+							},
+							{
+								property: "article:published_time",
+								content: new Date(parseInt(topicData.posts[0].timestamp, 10)).toISOString()
+							},
+							{
+								property: 'article:modified_time',
+								content: new Date(lastMod).toISOString()
+							},
+							{
+								property: 'article:section',
+								content: topicData.category_name
+							}
+						],
 						linkTags: [
 							{
 								rel: 'alternate',
