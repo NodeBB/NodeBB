@@ -1,7 +1,7 @@
 define(function() {
 	var	Login = {};
 
-	Login.init = function() {		
+	Login.init = function() {
 		$('#login').on('click', function() {
 			var loginData = {
 				'username': $('#username').val(),
@@ -40,8 +40,7 @@ define(function() {
 					$('#login').removeAttr('disabled').html('Login');
 				},
 				dataType: 'json',
-				async: true,
-				timeout: 2000
+				async: true
 			});
 
 			return false;
