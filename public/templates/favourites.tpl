@@ -18,14 +18,15 @@
 					<img title="{posts.username}" class="img-rounded user-img" src="{posts.picture}">
 				</a>
 
-				<a href="../../topic/{posts.tid}/#{posts.pid}">
+				<a href="../../user/{posts.userslug}">
 					<strong><span>{posts.username}</span></strong>
-					<p>{posts.content}</p>
 				</a>
+				<p>{posts.content}</p>
 
 				<div>
 					<span class="pull-right">
-						posted in
+						<a href="../../topic/{posts.tid}/#{posts.pid}">posted</a>
+						in
 						<a href="../../category/{posts.categorySlug}">
 							<i class="fa {posts.categoryIcon}"></i> {posts.categoryName}
 						</a>

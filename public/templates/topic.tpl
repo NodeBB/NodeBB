@@ -60,7 +60,7 @@
 
 							    <ul class="dropdown-menu">
 									<li><a href="/user/{posts.userslug}"><i class="fa fa-user"></i> [[topic:profile]]</a></li>
-									<li><div class="chat"><i class="fa fa-comment"></i> [[topic:chat]]</div></li>
+									<li><a href="#" class="chat"><i class="fa fa-comment"></i> [[topic:chat]]</a></li>
 							    </ul>
 							</div>
 

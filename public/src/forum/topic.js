@@ -372,8 +372,9 @@ define(['composer'], function(composer) {
 		$('#post-container').on('click', '.chat', function(e) {
 			var username = $(this).parents('li.row').attr('data-username');
 			var touid = $(this).parents('li.row').attr('data-uid');
-
 			app.openChat(username, touid);
+			$(this).parents('.btn-group').find('.dropdown-toggle').click();
+			return false;
 		});
 
 		ajaxify.register_events([
