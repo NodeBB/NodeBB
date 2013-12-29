@@ -757,7 +757,7 @@ var bcrypt = require('bcrypt'),
 					// Generate a new reset code
 					var reset_code = utils.generateUUID();
 					db.setObjectField('reset:uid', reset_code, uid);
-					db.setobjectField('reset:expiry', reset_code, (60 * 60) + new Date() / 1000 | 0); // Active for one hour
+					db.setObjectField('reset:expiry', reset_code, (60 * 60) + new Date() / 1000 | 0); // Active for one hour
 
 					var reset_link = nconf.get('url') + 'reset/' + reset_code,
 						reset_email = global.templates['emails/reset'].parse({
