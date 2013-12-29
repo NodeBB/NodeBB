@@ -40,7 +40,7 @@
     "validator": "~1.5.1",
     "nodebb-plugin-mentions": "~0.1.16",
     "nodebb-plugin-markdown": "~0.2.1",
-    "nodebb-theme-vanilla": "~0.0.10",
+    "nodebb-theme-vanilla": "~0.0.12",
     "nodebb-theme-cerulean": "0.0.10",
     "cron": "~1.0.1",
     "semver": "~2.2.1",
