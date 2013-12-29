@@ -2,12 +2,12 @@
 
 	</div><!--END container -->
 
-	<div id="chat-modal" class="modal chat-modal" tabindex="-1" role="dialog" aria-labelledby="Chat" aria-hidden="true" data-backdrop="none">
+	<div id="chat-modal" class="modal chat-modal col-lg-12 col-md-12" tabindex="-1" role="dialog" aria-labelledby="Chat" aria-hidden="true" data-backdrop="none">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 id="myModalLabel">[[footer:chat.chatting_with]]</h3>
+					<h4 id="myModalLabel">[[footer:chat.chatting_with]]</h4>
 				</div>
 				<div class="modal-body">
 					<textarea class="form-control" id="chat-content" cols="40" rows="10" readonly></textarea><br/>

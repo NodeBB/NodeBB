@@ -92,7 +92,6 @@ define(['taskbar', 'string'], function(taskbar, S) {
 
 	module.center = function(chatModal) {
 		chatModal.css("position", "fixed");
-		chatModal.css("top", "100px");
 		chatModal.css("left", Math.max(0, (($(window).width() - $(chatModal).outerWidth()) / 2) + $(window).scrollLeft()) + "px");
 		return chatModal;
 	}
