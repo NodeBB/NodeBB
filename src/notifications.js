@@ -85,7 +85,7 @@ var async = require('async'),
 						remove_by_uniqueId(notif_data.uniqueId, uid, function() {
 							db.sortedSetAdd('uid:' + uid + ':notifications:unread', notif_data.datetime, nid);
 
-							websockets.in('uid_' + uid).emit('event:new_notification');
+							websockets.in('uid_' + uid).emit('event:new_notification', notif_data);
 
 							if (callback) {
 								callback(true);
