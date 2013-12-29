@@ -108,6 +108,7 @@
 						<li><a href='{relative_path}/admin/database'><i class='fa fa-hdd-o'></i> Database</a></li>
 						<li><a href='{relative_path}/admin/logger'><i class='fa fa-th'></i> Logger</a></li>
 						<li><a href="{relative_path}/admin/motd"><i class="fa fa-comment"></i> MOTD</a></li>
+						<li><a href="{relative_path}/admin/events"><i class="fa fa-calendar-o"></i> Events</a></li>
 					</ul>
 				</div>
 				<div class="well sidebar-nav">

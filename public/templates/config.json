@@ -5,6 +5,7 @@
 		"^admin/categories.*": "admin/categories",
 		"^admin/users.*": "admin/users",
 		"^admin/database.*": "admin/database",
+		"^admin/events.*": "admin/events",
 		"^admin/index.*": "admin/index",
 		"^admin/themes.*": "admin/themes",
 		"^admin/plugins/?$": "admin/plugins",

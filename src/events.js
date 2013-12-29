@@ -7,6 +7,8 @@ var fs = require('fs'),
 
 
 (function(events) {
+	var logFileName = 'events.log';
+
 	events.logPasswordChange = function(uid) {
 		log(uid, 'changed password');
 	}
@@ -54,7 +56,7 @@ var fs = require('fs'),
 			var date = new Date().toUTCString();
 
 			var msg = '[' + date + '] - ' + username + '(uid ' + uid + ') ' + string + '\n';
-			var logFile = path.join(nconf.get('base_dir'), 'events.log');
+			var logFile = path.join(nconf.get('base_dir'), logFileName);
 
 			fs.appendFile(logFile, msg, function(err) {
 				if(err) {
@@ -63,8 +65,12 @@ var fs = require('fs'),
 				}
 			});
 		});
+	}
 
+	events.getLog = function(callback) {
+		var logFile = path.join(nconf.get('base_dir'), logFileName);
 
+		fs.readFile(logFile, callback);
 	}
 
 }(module.exports));

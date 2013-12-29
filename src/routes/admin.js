@@ -11,6 +11,7 @@ var nconf = require('nconf'),
 	categories = require('./../categories'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
+	events = require('./../events'),
 	utils = require('./../../public/src/utils.js');
 
 
@@ -56,7 +57,7 @@ var nconf = require('nconf'),
 		(function () {
 			var routes = [
 				'categories/active', 'categories/disabled', 'users', 'topics', 'settings', 'themes',
-				'twitter', 'facebook', 'gplus', 'database', 'motd', 'groups', 'plugins', 'logger',
+				'twitter', 'facebook', 'gplus', 'database', 'events', 'motd', 'groups', 'plugins', 'logger',
 				'users/latest', 'users/sort-posts', 'users/sort-reputation',
 				'users/search'
 			];
@@ -401,6 +402,15 @@ var nconf = require('nconf'),
 				// 		} else res.send(500);
 				// 	});
 				// });
+			});
+
+			app.get('/events', function(req, res, next) {
+				events.getLog(function(err, data) {
+					if(err) {
+						return next(err);
+					}
+					res.json(200, {eventdata: data.toString()});
+				});
 			});
 
 			app.get('/plugins', function (req, res) {
