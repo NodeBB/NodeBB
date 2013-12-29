@@ -215,8 +215,12 @@ var fs = require('fs'),
 						mtime: function (next) {
 							async.map(jsPaths, fs.stat, function (err, stats) {
 								async.reduce(stats, 0, function (memo, item, callback) {
-									mtime = +new Date(item.mtime);
-									callback(null, mtime > memo ? mtime : memo);
+									if(item) {
+										mtime = +new Date(item.mtime);
+										callback(null, mtime > memo ? mtime : memo);
+									} else {
+										callback(null, memo);
+									}
 								}, next);
 							});
 						},
