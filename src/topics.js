@@ -154,8 +154,6 @@ var async = require('async'),
 				});
 
 				db.getObjectField('tid:lastFeedUpdate', tid, function(err, lastFeedUpdate) {
-					console.log(lastFeedUpdate);
-					console.log(Date.now());
 					var now = Date.now();
 					if(!lastFeedUpdate || parseInt(lastFeedUpdate, 10) < now - 3600000) {
 						feed.updateTopic(tid);
