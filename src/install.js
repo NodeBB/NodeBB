@@ -134,6 +134,11 @@ var async = require('async'),
 								return next(new Error('unknown database : ' + config.database));
 							}
 
+							var allQuestions = install.redisQuestions.concat(install.mongoQuestions);
+							for(var x=0;x<allQuestions.length;x++) {
+								delete config[allQuestions[x].name];
+							}
+
 							config.bcrypt_rounds = 12;
 							config.upload_path = '/public/uploads';
 							config.use_port = config.use_port.slice(0, 1) === 'y';
