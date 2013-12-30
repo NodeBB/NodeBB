@@ -207,8 +207,18 @@ var fs = require('fs'),
 			plugins.fireHook('filter:scripts.get', this.scripts, function(err, scripts) {
 				var mtime,
 					jsPaths = scripts.map(function (jsPath) {
-						return path.join(__dirname, '..', '/public', jsPath);
+						if (jsPath.substring(0, 7) === 'plugins') {
+							var paths = jsPath.split('/'),
+								pluginID = paths[1];
+							
+							jsPath = jsPath.replace(path.join('plugins', pluginID), '');
+							return path.join(plugins.staticDirs[pluginID], jsPath);
+						} else {
+							return path.join(__dirname, '..', '/public', jsPath);	
+						}
 					});
+
+				Meta.js.scripts = jsPaths;
 
 				if (process.env.NODE_ENV !== 'development') {
 					async.parallel({
@@ -226,7 +236,7 @@ var fs = require('fs'),
 						},
 						minFile: function (next) {
 							if (!fs.existsSync(Meta.js.minFile)) {
-								if (process.env.NODE_ENV === 'development') winston.warn('No minified client-side library found');
+								winston.warn('No minified client-side library found');
 								return next(null, 0);
 							}
 
@@ -236,12 +246,12 @@ var fs = require('fs'),
 						}
 					}, function (err, results) {
 						if (results.minFile > results.mtime) {
-							if (process.env.NODE_ENV === 'development') winston.info('No changes to client-side libraries -- skipping minification');
+							winston.info('No changes to client-side libraries -- skipping minification');
 							callback(null, [path.relative(path.join(__dirname, '../public'), Meta.js.minFile)]);
 						} else {
 							Meta.js.minify(function () {
 								callback(null, [
-									path.relative(path.join(__dirname, '../public'), Meta.js.minFile) + (meta.config['cache-buster'] ? '?v=' + meta.config['cache-buster'] : '')
+									path.relative(path.join(__dirname, '../public'), Meta.js.minFile) + (meta.config['cache-buster'] ? '?vs=' + meta.config['cache-buster'] : '')
 								]);
 							});
 						}
@@ -258,15 +268,13 @@ var fs = require('fs'),
 		},
 		minify: function (callback) {
 			var uglifyjs = require('uglify-js'),
-				jsPaths = this.scripts.map(function (jsPath) {
-					return path.join(__dirname, '..', '/public', jsPath);
-				}),
+				jsPaths = this.scripts,
 				minified;
 
 			if (process.env.NODE_ENV === 'development') {
 				winston.info('Minifying client-side libraries');
 			}
-
+			
 			minified = uglifyjs.minify(jsPaths);
 			fs.writeFile(Meta.js.minFile, minified.code, function (err) {
 				if (!err) {
