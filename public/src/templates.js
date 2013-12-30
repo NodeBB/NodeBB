@@ -48,7 +48,7 @@
 		}
 	};
 
-	templates.prepare = function (raw_tpl, data) {
+	templates.prepare = function (raw_tpl) {
 		var template = {};
 		template.html = raw_tpl;
 		template.parse = parse;
