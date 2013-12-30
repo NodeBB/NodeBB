@@ -87,11 +87,6 @@ var async = require('async'),
 
 					user.addTopicIdToUser(uid, tid);
 
-					// let everyone know that there is an unread topic in this category
-					db.delete('cid:' + cid + ':read_by_uid', function(err, data) {
-						Topics.markAsRead(tid, uid);
-					});
-
 					// in future it may be possible to add topics to several categories, so leaving the door open here.
 					db.sortedSetAdd('categories:' + cid + ':tid', timestamp, tid);
 					db.incrObjectField('category:' + cid, 'topic_count');
@@ -99,17 +94,14 @@ var async = require('async'),
 
 					feed.updateCategory(cid);
 
-					posts.create(uid, tid, content, function(err, postData) {
+					Topics.reply(tid, uid, content, function(err, postData) {
 						if(err) {
 							return callback(err, null);
 						} else if(!postData) {
 							return callback(new Error('invalid-post'), null);
 						}
 
-						// Auto-subscribe the post creator to the newly created topic
 						threadTools.toggleFollow(tid, uid);
-
-						Topics.pushUnreadCount();
 
 						Topics.getTopicForCategoryView(tid, uid, function(topicData) {
 							topicData.unreplied = 1;
@@ -124,6 +116,73 @@ var async = require('async'),
 			});
 		});
 	};
+
+	Topics.reply = function(tid, uid, content, callback) {
+		threadTools.privileges(tid, uid, function(err, privileges) {
+			if (content) {
+				content = content.trim();
+			}
+
+			if (!content || content.length < meta.config.minimumPostLength) {
+				return callback(new Error('content-too-short'));
+			} else if (!privileges.write) {
+				return callback(new Error('no-privileges'));
+			}
+
+			posts.create(uid, tid, content, function(err, postData) {
+				if(err) {
+					return callback(err, null);
+				} else if(!postData) {
+					callback(new Error('reply-error'), null);
+				}
+
+				posts.getCidByPid(postData.pid, function(err, cid) {
+					if(err) {
+						return callback(err, null);
+					}
+
+					db.delete('cid:' + cid + ':read_by_uid', function(err) {
+						Topics.markAsUnreadForAll(tid, function(err) {
+							if(err) {
+								return callback(err, null);
+							}
+
+							Topics.markAsRead(tid, uid);
+							Topics.pushUnreadCount();
+						});
+					});
+				});
+
+				db.getObjectField('tid:lastFeedUpdate', tid, function(err, lastFeedUpdate) {
+					console.log(lastFeedUpdate);
+					console.log(Date.now());
+					var now = Date.now();
+					if(!lastFeedUpdate || parseInt(lastFeedUpdate, 10) < now - 3600000) {
+						feed.updateTopic(tid);
+						db.setObjectField('tid:lastFeedUpdate', tid, now);
+					}
+				});
+
+				feed.updateRecent();
+
+				threadTools.notifyFollowers(tid, uid);
+
+				user.sendPostNotificationToFollowers(uid, tid, postData.pid);
+
+				posts.addUserInfoToPost(postData, function(err) {
+					if(err) {
+						return callback(err, null);
+					}
+
+					postData.favourited = false;
+					postData.display_moderator_tools = true;
+					postData.relativeTime = new Date(postData.timestamp).toISOString();
+
+					callback(null, postData);
+				});
+			});
+		});
+	}
 
 	Topics.getTopicData = function(tid, callback) {
 		db.getObject('topic:' + tid, function(err, data) {
@@ -881,6 +940,12 @@ var async = require('async'),
 	Topics.updateTimestamp = function(tid, timestamp) {
 		db.sortedSetAdd('topics:recent', timestamp, tid);
 		Topics.setTopicField(tid, 'lastposttime', timestamp);
+	}
+
+	Topics.onNewPostMade = function(tid, pid, timestamp) {
+		Topics.addPostToTopic(tid, pid);
+		Topics.increasePostCount(tid);
+		Topics.updateTimestamp(tid, timestamp);
 	}
 
 	Topics.addPostToTopic = function(tid, pid) {

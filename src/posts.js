@@ -57,39 +57,10 @@ var db = require('./database'),
 						};
 
 					db.setObject('post:' + pid, postData);
-
-					postData.favourited = false;
-					postData.display_moderator_tools = true;
-					postData.relativeTime = new Date(timestamp).toISOString();
-
-					topics.addPostToTopic(tid, pid);
-					topics.increasePostCount(tid);
-					topics.updateTimestamp(tid, timestamp);
-
 					db.incrObjectField('global', 'postCount');
 
-					topics.getTopicFields(tid, ['cid', 'pinned'], function(err, topicData) {
-
-						var cid = topicData.cid;
-
-						feed.updateTopic(tid);
-						feed.updateRecent();
-
-						db.sortedSetAdd('categories:recent_posts:cid:' + cid, timestamp, pid);
-
-						if(parseInt(topicData.pinned, 10) === 0) {
-							db.sortedSetAdd('categories:' + cid + ':tid', timestamp, tid);
-						}
-
-						db.setCount('cid:' + cid + ':active_users', function(err, amount) {
-							if (amount > 15) {
-								db.setRemoveRandom('cid:' + cid + ':active_users');
-							}
-
-							categories.addActiveUser(cid, uid);
-						});
-					});
-
+					topics.onNewPostMade(tid, pid, timestamp);
+					categories.onNewPostMade(uid, tid, pid, timestamp);
 					user.onNewPostMade(uid, tid, pid, timestamp);
 
 					plugins.fireHook('filter:post.get', postData, function(err, newPostData) {
@@ -97,74 +68,23 @@ var db = require('./database'),
 							return callback(err, null);
 						}
 
-						postData = newPostData;
-
-						postTools.parse(postData.content, function(err, content) {
+						postTools.parse(newPostData.content, function(err, content) {
 							if(err) {
 								return callback(err, null);
 							}
-							postData.content = content;
+							newPostData.content = content;
 
-							plugins.fireHook('action:post.save', postData);
+							plugins.fireHook('action:post.save', newPostData);
 
 							db.searchIndex('post', content, pid);
 
-							callback(null, postData);
+							callback(null, newPostData);
 						});
 					});
 				});
 			});
 		});
 	};
-
-	Posts.reply = function(tid, uid, content, callback) {
-		threadTools.privileges(tid, uid, function(err, privileges) {
-			if (content) {
-				content = content.trim();
-			}
-
-			if (!content || content.length < meta.config.minimumPostLength) {
-				return callback(new Error('content-too-short'));
-			} else if (!privileges.write) {
-				return callback(new Error('no-privileges'));
-			}
-
-			Posts.create(uid, tid, content, function(err, postData) {
-				if(err) {
-					return callback(err, null);
-				} else if(!postData) {
-					callback(new Error('reply-error'), null);
-				}
-
-				Posts.getCidByPid(postData.pid, function(err, cid) {
-					if(err) {
-						return callback(err, null);
-					}
-
-					db.delete('cid:' + cid + ':read_by_uid');
-				});
-
-				topics.markAsUnreadForAll(tid, function(err) {
-					if(err) {
-						return callback(err, null);
-					}
-
-					topics.markAsRead(tid, uid);
-					topics.pushUnreadCount();
-				});
-
-				threadTools.notifyFollowers(tid, uid);
-
-				Posts.addUserInfoToPost(postData, function(err) {
-					if(err) {
-						return callback(err, null);
-					}
-
-					callback(null, postData);
-				});
-			});
-		});
-	}
 
 	Posts.getPostsByTid = function(tid, start, end, callback) {
 		db.getListRange('tid:' + tid + ':posts', start, end, function(err, pids) {

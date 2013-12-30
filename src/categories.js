@@ -400,4 +400,25 @@ var db = require('./database.js'),
 		db.setRemove('cid:' + cid + ':active_users', uid);
 	};
 
+	Categories.onNewPostMade = function(uid, tid, pid, timestamp) {
+		topics.getTopicFields(tid, ['cid', 'pinned'], function(err, topicData) {
+
+			var cid = topicData.cid;
+
+			db.sortedSetAdd('categories:recent_posts:cid:' + cid, timestamp, pid);
+
+			if(parseInt(topicData.pinned, 10) === 0) {
+				db.sortedSetAdd('categories:' + cid + ':tid', timestamp, tid);
+			}
+
+			db.setCount('cid:' + cid + ':active_users', function(err, amount) {
+				if (amount > 15) {
+					db.setRemoveRandom('cid:' + cid + ':active_users');
+				}
+
+				Categories.addActiveUser(cid, uid);
+			});
+		});
+	}
+
 }(exports));

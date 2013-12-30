@@ -449,7 +449,7 @@ websockets.init = function(io) {
 				return;
 			}
 
-			posts.reply(data.topic_id, uid, data.content, function(err, postData) {
+			topics.reply(data.topic_id, uid, data.content, function(err, postData) {
 				if(err) {
 					if (err.message === 'content-too-short') {
 						posts.emitContentTooShortAlert(socket);

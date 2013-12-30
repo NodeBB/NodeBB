@@ -433,8 +433,6 @@ var bcrypt = require('bcrypt'),
 		});
 
 		User.setUserField(uid, 'lastposttime', timestamp);
-
-		User.sendPostNotificationToFollowers(uid, tid, pid);
 	};
 
 	User.addPostIdToUser = function(uid, pid) {
