@@ -254,6 +254,21 @@ var async = require('async'),
 					}, function (err) {
 						meta.configs.init(next);
 					});
+
+					if (install.values) {
+						if (install.values['social:twitter:key'] && install.values['social:twitter:secret']) {
+							meta.configs.setOnEmpty('social:twitter:key', install.values['social:twitter:key']);
+							meta.configs.setOnEmpty('social:twitter:secret', install.values['social:twitter:secret']);
+						}
+						if (install.values['social:google:id'] && install.values['social:google:secret']) {
+							meta.configs.setOnEmpty('social:google:id', install.values['social:google:id']);
+							meta.configs.setOnEmpty('social:google:secret', install.values['social:google:secret']);
+						}
+						if (install.values['social:facebook:key'] && install.values['social:facebook:secret']) {
+							meta.configs.setOnEmpty('social:facebook:app_id', install.values['social:facebook:app_id']);
+							meta.configs.setOnEmpty('social:facebook:secret', install.values['social:facebook:secret']);
+						}
+					}
 				},
 				function (next) {
 					// Check if an administrator needs to be created
