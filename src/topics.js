@@ -456,9 +456,10 @@ var async = require('async'),
 		}
 
 		function sendUnreadTopics(topicIds) {
+
 			Topics.getTopicsByTids(topicIds, uid, function(topicData) {
 				unreadTopics.topics = topicData;
-				unreadTopics.nextStart = start + topicIds.length;
+				unreadTopics.nextStart = stop + 1;
 				if (!topicData || topicData.length === 0) {
 					unreadTopics.no_topics_message = 'show';
 				}
