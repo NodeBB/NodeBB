@@ -78,7 +78,9 @@
 							global.templates[file] = new template;
 
 							loaded--;
-							if (loaded == 0) templates.ready();
+							if (loaded === 0) {
+								templates.ready();
+							}
 						});
 					}(templatesToLoad[t]));
 				}

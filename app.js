@@ -27,8 +27,9 @@
 		async = require('async'),
 		semver = require('semver'),
 		winston = require('winston'),
-		pkg = require('./package.json'),
 		path = require('path'),
+		pkg = require('./package.json'),
+		utils = require('./public/src/utils.js'),
 		meta;
 
 	// Runtime environment
@@ -108,16 +109,11 @@
 
 						var customTemplates = meta.config['theme:templates'] ? path.join(__dirname, 'node_modules', meta.config['theme:id'], meta.config['theme:templates']) : false;
 
-						// todo: replace below with read directory code, derp.
-						templates.init([
-							'header', 'footer', 'logout', 'outgoing', 'admin/header', 'admin/footer', 'admin/index',
-							'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext',
-							'emails/header', 'emails/footer',
-
-							'noscript/header', 'noscript/home', 'noscript/category', 'noscript/topic'
-						], customTemplates);
-
-
+						
+						utils.walk(path.join(__dirname, 'public/templates'), function (err, tplsToLoad) {
+							templates.init(tplsToLoad, customTemplates);
+						});
+						
 						plugins.ready(function() {
 							templates.ready(webserver.init);
 						});
