@@ -8,9 +8,9 @@
 * [Follow on Twitter](http://www.twitter.com/NodeBB/ "NodeBB Twitter")
 * [Like us on Facebook](http://www.facebook.com/NodeBB/ "NodeBB Facebook")
 
-![NodeBB Main Category Listing](http://i.imgur.com/zffCFoh.png)
+![NodeBB Main Category Listing](http://i.imgur.com/zRdzCcj.png)
 
-![NodeBB Topic Page](http://i.imgur.com/JihdcUa.png)
+![NodeBB Topic Page](http://i.imgur.com/ZC8W39a.png)
 
 ## How can I follow along/contribute?
 
