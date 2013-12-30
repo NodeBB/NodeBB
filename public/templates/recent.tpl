@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
 	<li><a href="/">Home</a></li>
-	<li class="active">Recent <a href="./recent.rss"><i class="fa fa-rss-square"></i></a></li>
+	<li class="active">Recent <a href="/recent.rss"><i class="fa fa-rss-square"></i></a></li>
 </ol>
 
 <ul class="nav nav-pills">

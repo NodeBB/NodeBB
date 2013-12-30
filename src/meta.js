@@ -210,11 +210,11 @@ var fs = require('fs'),
 						if (jsPath.substring(0, 7) === 'plugins') {
 							var paths = jsPath.split('/'),
 								pluginID = paths[1];
-							
+
 							jsPath = jsPath.replace(path.join('plugins', pluginID), '');
 							return path.join(plugins.staticDirs[pluginID], jsPath);
 						} else {
-							return path.join(__dirname, '..', '/public', jsPath);	
+							return path.join(__dirname, '..', '/public', jsPath);
 						}
 					});
 
@@ -274,7 +274,7 @@ var fs = require('fs'),
 			if (process.env.NODE_ENV === 'development') {
 				winston.info('Minifying client-side libraries');
 			}
-			
+
 			minified = uglifyjs.minify(jsPaths);
 			fs.writeFile(Meta.js.minFile, minified.code, function (err) {
 				if (!err) {
