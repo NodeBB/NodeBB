@@ -19,3 +19,4 @@ feeds/recent.rss
 
 # winston?
 error.log
+events.log

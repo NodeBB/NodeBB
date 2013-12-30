@@ -80,7 +80,12 @@ var	DebugRoute = function(app) {
 		});
 
 		app.get('/test', function(req, res) {
-			user.pushNotifCount(2);
+			var	Emailer = require('../emailer');
+			Emailer.send('welcome', {
+				username: 'test',
+				site_title: 'derp',
+				confirm_link: 'linkylink'
+			});
 			res.send();
 		});
 
