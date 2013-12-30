@@ -69,13 +69,15 @@
 
 				next();
 			}, function() {
-				if (process.env.NODE_ENV === 'development') {
-					winston.info('[rss] Re-generated RSS Feed for tid ' + tid + '.');
-				}
+				Feed.saveFeed('feeds/topics/' + tid + '.rss', feed, function (err) {
+					if (process.env.NODE_ENV === 'development') {
+						winston.info('[rss] Re-generated RSS Feed for tid ' + tid + '.');
+					}
 
-				if (callback) {
-					callback();
-				}
+					if (callback) {
+						callback();
+					}
+				});
 			});
 		});
 
@@ -111,7 +113,9 @@
 						winston.info('[rss] Re-generated RSS Feed for cid ' + cid + '.');
 					}
 
-					if (callback) callback();
+					if (callback) {
+						callback();
+					}
 				});
 			});
 		});
