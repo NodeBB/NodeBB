@@ -356,25 +356,6 @@ var db = require('./database'),
 		});
 	}
 
-	Posts.emitContentTooShortAlert = function(socket) {
-		socket.emit('event:alert', {
-			type: 'danger',
-			timeout: 2000,
-			title: 'Content too short',
-			message: "Please enter a longer post. At least " + meta.config.minimumPostLength + " characters.",
-			alert_id: 'post_error'
-		});
-	}
-
-	Posts.emitTooManyPostsAlert = function(socket) {
-		socket.emit('event:alert', {
-			title: 'Too many posts!',
-			message: 'You can only post every ' + meta.config.postDelay + ' seconds.',
-			type: 'danger',
-			timeout: 2000
-		});
-	}
-
 	Posts.uploadPostImage = function(image, callback) {
 
 		if(!image) {

@@ -30,6 +30,7 @@ var path = require('path'),
 
 				config.postDelay = meta.config.postDelay;
 				config.minimumTitleLength = meta.config.minimumTitleLength;
+				config.maximumTitleLength = meta.config.maximumTitleLength;
 				config.minimumPostLength = meta.config.minimumPostLength;
 				config.imgurClientIDSet = !! meta.config.imgurClientID;
 				config.minimumUsernameLength = meta.config.minimumUsernameLength;

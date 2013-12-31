@@ -362,6 +362,35 @@ websockets.init = function(io) {
 			}
 		});
 
+		function emitAlert(socket, title, message) {
+			socket.emit('event:alert', {
+				type: 'danger',
+				timeout: 2000,
+				title: title,
+				message: message,
+				alert_id: 'post_error'
+			});
+		}
+
+		function emitContentTooShortAlert(socket) {
+			socket.emit('event:alert', {
+				type: 'danger',
+				timeout: 2000,
+				title: 'Content too short',
+				message: "Please enter a longer post. At least " + meta.config.minimumPostLength + " characters.",
+				alert_id: 'post_error'
+			});
+		}
+
+		function emitTooManyPostsAlert(socket) {
+			socket.emit('event:alert', {
+				title: 'Too many posts!',
+				message: 'You can only post every ' + meta.config.postDelay + ' seconds.',
+				type: 'danger',
+				timeout: 2000
+			});
+		}
+
 		socket.on('api:topics.post', function(data) {
 			if (uid < 1 && parseInt(meta.config.allowGuestPosting, 10) === 0) {
 				socket.emit('event:alert', {
@@ -376,11 +405,13 @@ websockets.init = function(io) {
 			topics.post(uid, data.title, data.content, data.category_id, function(err, result) {
 				if(err) {
 				 	if (err.message === 'title-too-short') {
-						topics.emitTitleTooShortAlert(socket);
+						emitAlert(socket, 'Title too short', 'Please enter a longer title. At least ' + meta.config.minimumTitleLength + ' characters.');
+					} else if (err.message === 'title-too-long') {
+						emitAlert(socket, 'Title too long', 'Please enter a shorter title. Titles can\'t be longer than ' + meta.config.maximumTitleLength + ' characters.');
 					} else if (err.message === 'content-too-short') {
-						posts.emitContentTooShortAlert(socket);
+						emitContentTooShortAlert(socket);
 					} else if (err.message === 'too-many-posts') {
-						posts.emitTooManyPostsAlert(socket);
+						emitTooManyPostsAlert(socket);
 					} else if (err.message === 'no-privileges') {
 						socket.emit('event:alert', {
 							title: 'Unable to post',
@@ -445,16 +476,16 @@ websockets.init = function(io) {
 			}
 
 			if (Date.now() - lastPostTime < meta.config.postDelay * 1000) {
-				posts.emitTooManyPostsAlert(socket);
+				emitTooManyPostsAlert(socket);
 				return;
 			}
 
 			topics.reply(data.topic_id, uid, data.content, function(err, postData) {
 				if(err) {
 					if (err.message === 'content-too-short') {
-						posts.emitContentTooShortAlert(socket);
+						emitContentTooShortAlert(socket);
 					} else if (err.message === 'too-many-posts') {
-						posts.emitTooManyPostsAlert(socket);
+						emitTooManyPostsAlert(socket);
 					} else if (err.message === 'reply-error') {
 						socket.emit('event:alert', {
 							title: 'Reply Unsuccessful',
@@ -628,7 +659,7 @@ websockets.init = function(io) {
 				topics.emitTitleTooShortAlert(socket);
 				return;
 			} else if (!data.content || data.content.length < parseInt(meta.config.minimumPostLength, 10)) {
-				posts.emitContentTooShortAlert(socket);
+				emitContentTooShortAlert(socket);
 				return;
 			}
 

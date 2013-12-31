@@ -33,8 +33,10 @@ var async = require('async'),
 				return callback(new Error('no-privileges'));
 			} else if (!cid) {
 				return callback(new Error('invalid-cid'));
-			} else if (!title || title.length < meta.config.minimumTitleLength) {
+			} else if (!title || title.length < parseInt(meta.config.minimumTitleLength, 10)) {
 				return callback(new Error('title-too-short'), null);
+			} else if(title.length > parseInt(meta.config.maximumTitleLength, 10)) {
+				return callback(new Error('title-too-long'), null);
 			} else if (!content || content.length < meta.config.miminumPostLength) {
 				return callback(new Error('content-too-short'), null);
 			}
@@ -894,16 +896,6 @@ var async = require('async'),
 					}
 				});
 			});
-		});
-	}
-
-	Topics.emitTitleTooShortAlert = function(socket) {
-		socket.emit('event:alert', {
-			type: 'danger',
-			timeout: 2000,
-			title: 'Title too short',
-			message: "Please enter a longer title. At least " + meta.config.minimumTitleLength + " characters.",
-			alert_id: 'post_error'
 		});
 	}
 

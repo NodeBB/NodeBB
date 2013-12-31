@@ -81,6 +81,33 @@ Upgrade.upgrade = function(callback) {
 				winston.info('[2013/12/31] Re-slugify Topics and Users skipped');
 				next();
 			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 0, 1).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				db.isObjectField('config', 'maximumTitleLength', function(err, isField) {
+					if(err) {
+						return next(err);
+					}
+					if(!isField) {
+						db.setObjectField('config', 'maximumTitleLength', 255, function(err) {
+							if(err) {
+								return next(err);
+							}
+							winston.info('[2013/12/31] Added maximumTitleLength');
+							next();
+						});
+					} else {
+						winston.info('[2013/12/31] maximumTitleLength already set');
+						next();
+					}
+				});
+			} else {
+				winston.info('[2013/12/31] maximumTitleLength skipped');
+				next();
+			}
 		}
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 17!!!
