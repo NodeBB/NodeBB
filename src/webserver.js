@@ -183,6 +183,13 @@ var path = require('path'),
 				// Authentication Routes
 				auth.initialize(app);
 
+				app.use(function(req, res, next) {
+					if(req.user) {
+						user.setUserField(req.user.uid, 'lastonline', Date.now());
+					}
+					next();
+				})
+
 				next();
 			},
 			function(next) {
@@ -807,7 +814,8 @@ var path = require('path'),
 
 		var custom_routes = {
 			'routes': [],
-			'api': []
+			'api': [],
+			'templates': []
 		};
 
 		plugins.ready(function() {
@@ -838,6 +846,17 @@ var path = require('path'),
 								apiRoutes[route].callback(req, res, function(data) {
 									res.json(data);
 								});
+							});
+						}(route));
+					}
+				}
+
+				var templateRoutes = custom_routes.templates;
+				for (var route in templateRoutes) {
+					if (templateRoutes.hasOwnProperty(route)) {
+						(function(route) {
+							app.get('/templates/' + templateRoutes[route].template, function(req, res) {
+								res.send(templateRoutes[route].content);
 							});
 						}(route));
 					}

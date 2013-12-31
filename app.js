@@ -27,8 +27,9 @@
 		async = require('async'),
 		semver = require('semver'),
 		winston = require('winston'),
-		pkg = require('./package.json'),
 		path = require('path'),
+		pkg = require('./package.json'),
+		utils = require('./public/src/utils.js'),
 		meta;
 
 	// Runtime environment
@@ -69,8 +70,8 @@
 		});
 		meta = require('./src/meta');
 
-		nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path') + '/');
-		nconf.set('upload_url', nconf.get('url') + 'uploads/');
+		nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path') + path.sep);
+		nconf.set('upload_url', path.join(path.sep, nconf.get('relative_path'), 'uploads', path.sep));
 		nconf.set('base_dir', __dirname);
 
 		winston.info('Initializing NodeBB v' + pkg.version + ', on port ' + nconf.get('port') + ', using Redis store at ' + nconf.get('redis:host') + ':' + nconf.get('redis:port') + '.');
@@ -108,15 +109,10 @@
 
 						var customTemplates = meta.config['theme:templates'] ? path.join(__dirname, 'node_modules', meta.config['theme:id'], meta.config['theme:templates']) : false;
 
-						// todo: replace below with read directory code, derp.
-						templates.init([
-							'header', 'footer', 'logout', 'outgoing', 'admin/header', 'admin/footer', 'admin/index',
-							'emails/reset', 'emails/reset_plaintext', 'emails/email_confirm', 'emails/email_confirm_plaintext',
-							'emails/header', 'emails/footer',
 
-							'noscript/header', 'noscript/home', 'noscript/category', 'noscript/topic'
-						], customTemplates);
-
+						utils.walk(path.join(__dirname, 'public/templates'), function (err, tplsToLoad) {
+							templates.init(tplsToLoad, customTemplates);
+						});
 
 						plugins.ready(function() {
 							templates.ready(webserver.init);

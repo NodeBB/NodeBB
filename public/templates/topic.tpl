@@ -86,9 +86,11 @@
 							<div class="pull-right">
 								<div class="btn-group post-tools">
 									<button class="btn btn-sm btn-default link" type="button" title="[[topic:link]]"><i class="fa fa-link"></i></button>
+									<!-- IF !disableSocialButtons -->
 									<button class="btn btn-sm btn-default facebook-share" type="button" title=""><i class="fa fa-facebook"></i></button>
 									<button class="btn btn-sm btn-default twitter-share" type="button" title=""><i class="fa fa-twitter"></i></button>
 									<button class="btn btn-sm btn-default google-share" type="button" title=""><i class="fa fa-google-plus"></i></button>
+									<!-- ENDIF !disableSocialButtons -->
 								</div>
 
 								<!-- IF posts.display_moderator_tools -->

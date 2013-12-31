@@ -183,8 +183,8 @@ define(['uploader'], function(uploader) {
 
 			$('.upload-button').on('click', function() {
 				var inputEl = this;
-				
-				uploader.open(RELATIVE_PATH + '/admin/category/uploadpicture', function(imageUrlOnServer) {
+				var	cid = $(this).parents('li[data-cid]').attr('data-cid');
+				uploader.open(RELATIVE_PATH + '/admin/category/uploadpicture', {cid:cid}, function(imageUrlOnServer) {
 					inputEl.value = imageUrlOnServer;
 					$(inputEl).parents('li[data-cid]').find('.preview-box').css('background', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')');
 					modified(inputEl);
@@ -270,7 +270,7 @@ define(['uploader'], function(uploader) {
 			liEl = document.createElement('li');
 			var numResults = results.length,
 			    resultObj;
-			
+
 			for(var x=0;x<numResults;x++) {
 				resultObj = results[x];
 				liEl.setAttribute('data-gid', resultObj.gid);
@@ -281,13 +281,13 @@ define(['uploader'], function(uploader) {
 							'</div>' +
 						 '</div>' +
 						 ' '+resultObj.name;
-	
+
 				groupsFrag.appendChild(liEl.cloneNode(true));
 			}
-			
+
 			groupsResultsEl.html(groupsFrag);
 		});
-		
+
 		groupsResultsEl.off().on('click', '[data-gpriv]', function(e) {
 			var btnEl = $(this),
 			    gid = btnEl.parents('li[data-gid]').attr('data-gid'),

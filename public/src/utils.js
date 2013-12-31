@@ -1,10 +1,11 @@
 (function(module) {
 	'use strict';
 
-	var utils, fs;
+	var utils, fs, XRegExp;
 
 	if ('undefined' === typeof window) {
 		fs = require('fs');
+		XRegExp = require('xregexp').XRegExp;
 	}
 
 
@@ -92,19 +93,13 @@
 
 		//http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
 		slugify: function(str) {
+			var	invalidChars = XRegExp('[^\\p{L} 0-9\-]', 'g');
+
 			str = str.replace(/^\s+|\s+$/g, ''); // trim
 			str = str.toLowerCase();
-
-			// remove accents, swap ñ for n, etc
-			var from = "àáäâèéëêìíïîıòóöôùúüûñçşğ·/_,:;";
-			var to = "aaaaeeeeiiiiioooouuuuncsg------";
-			for (var i = 0, l = from.length; i < l; i++) {
-				str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
-			}
-
-			str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
-			.replace(/\s+/g, '-') // collapse whitespace and replace by -
-			.replace(/-+/g, '-'); // collapse dashes
+			str = XRegExp.replace(str, invalidChars, '');
+			str = str.replace(/\s+/g, '-') // collapse whitespace and replace by -
+			str = str.replace(/-+/g, '-'); // collapse dashes
 
 			return str;
 		},

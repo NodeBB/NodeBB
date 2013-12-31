@@ -48,7 +48,7 @@
 		}
 	};
 
-	templates.prepare = function (raw_tpl, data) {
+	templates.prepare = function (raw_tpl) {
 		var template = {};
 		template.html = raw_tpl;
 		template.parse = parse;
@@ -78,7 +78,9 @@
 							global.templates[file] = new template;
 
 							loaded--;
-							if (loaded == 0) templates.ready();
+							if (loaded === 0) {
+								templates.ready();
+							}
 						});
 					}(templatesToLoad[t]));
 				}

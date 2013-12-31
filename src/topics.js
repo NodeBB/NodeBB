@@ -33,8 +33,10 @@ var async = require('async'),
 				return callback(new Error('no-privileges'));
 			} else if (!cid) {
 				return callback(new Error('invalid-cid'));
-			} else if (!title || title.length < meta.config.minimumTitleLength) {
+			} else if (!title || title.length < parseInt(meta.config.minimumTitleLength, 10)) {
 				return callback(new Error('title-too-short'), null);
+			} else if(title.length > parseInt(meta.config.maximumTitleLength, 10)) {
+				return callback(new Error('title-too-long'), null);
 			} else if (!content || content.length < meta.config.miminumPostLength) {
 				return callback(new Error('content-too-short'), null);
 			}
@@ -456,9 +458,10 @@ var async = require('async'),
 		}
 
 		function sendUnreadTopics(topicIds) {
+
 			Topics.getTopicsByTids(topicIds, uid, function(topicData) {
 				unreadTopics.topics = topicData;
-				unreadTopics.nextStart = start + topicIds.length;
+				unreadTopics.nextStart = stop + 1;
 				if (!topicData || topicData.length === 0) {
 					unreadTopics.no_topics_message = 'show';
 				}
@@ -664,6 +667,7 @@ var async = require('async'),
 					'unreplied': parseInt(topicData.postcount, 10) > 1,
 					'topic_id': tid,
 					'expose_tools': privileges.editable ? 1 : 0,
+					'disableSocialButtons': meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false,
 					'posts': topicPosts
 				});
 			});
@@ -893,16 +897,6 @@ var async = require('async'),
 					}
 				});
 			});
-		});
-	}
-
-	Topics.emitTitleTooShortAlert = function(socket) {
-		socket.emit('event:alert', {
-			type: 'danger',
-			timeout: 2000,
-			title: 'Title too short',
-			message: "Please enter a longer title. At least " + meta.config.minimumTitleLength + " characters.",
-			alert_id: 'post_error'
 		});
 	}
 

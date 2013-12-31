@@ -7,10 +7,15 @@
 				<span class="btn btn-link" tabindex="-1"><i class="fa fa-italic"></i></span>
 				<span class="btn btn-link" tabindex="-1"><i class="fa fa-list"></i></span>
 				<span class="btn btn-link" tabindex="-1"><i class="fa fa-link"></i></span>
-				<span class="btn btn-link" tabindex="-1">
-				<input type="file" id="files" name="files[]" multiple class="hide"/>
+				<span class="btn btn-link img-upload-btn hide" tabindex="-1">
 					<i class="fa fa-picture-o"></i>
 				</span>
+				<span class="btn btn-link file-upload-btn hide" tabindex="-1">
+					<i class="fa fa-upload"></i>
+				</span>
+				<form id="fileForm">
+						<input type="file" id="files" name="files[]" multiple class="hide"/>
+				</form>
 			</div>
 			<!-- <div class="btn btn-link pull-right">Preview</div> -->
 		</div>

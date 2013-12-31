@@ -303,7 +303,11 @@
 
 		var _fields = {};
 		for(var i=0; i<fields.length; ++i) {
-			_fields[fields[i].replace(/\./g, '\uff0E')] = 1;
+			if(typeof fields[i] !== string) {
+				_fields[fields[i].toString().replace(/\./g, '\uff0E')] = 1;
+			} else {
+				_fields[fields[i].replace(/\./g, '\uff0E')] = 1;
+			}
 		}
 
 		db.collection('objects').findOne({_key:key}, _fields, function(err, item) {

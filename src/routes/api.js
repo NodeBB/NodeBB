@@ -30,6 +30,7 @@ var path = require('path'),
 
 				config.postDelay = meta.config.postDelay;
 				config.minimumTitleLength = meta.config.minimumTitleLength;
+				config.maximumTitleLength = meta.config.maximumTitleLength;
 				config.minimumPostLength = meta.config.minimumPostLength;
 				config.imgurClientIDSet = !! meta.config.imgurClientID;
 				config.minimumUsernameLength = meta.config.minimumUsernameLength;
@@ -39,6 +40,8 @@ var path = require('path'),
 				config.useOutgoingLinksPage = meta.config.useOutgoingLinksPage;
 				config.allowGuestPosting = meta.config.allowGuestPosting;
 				config.allowRegistration = meta.config.allowRegistration || '1';
+				config.allowFileUploads = meta.config.allowFileUploads;
+				config.maximumFileSize = meta.config.maximumFileSize;
 				config.emailSetup = !!meta.config['email:from'];
 
 				res.json(200, config);

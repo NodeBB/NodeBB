@@ -48,7 +48,6 @@ define(['taskbar'], function(taskbar) {
 			socket.emit('api:composer.push', {
 				pid: pid
 			}, function(threadData) {
-				console.log(threadData);
 				push({
 					pid: pid,
 					title: threadData.title,
@@ -202,7 +201,7 @@ define(['taskbar'], function(taskbar) {
 				}
 			});
 
-			postContainer.on('click', '.formatting-bar span .fa-picture-o', function() {
+			postContainer.on('click', '.formatting-bar span .fa-picture-o, .formatting-bar span .fa-upload', function() {
 				$('#files').click();
 			});
 
@@ -213,6 +212,7 @@ define(['taskbar'], function(taskbar) {
 						loadFile(post_uuid, files[i]);
 					}
 				}
+				$('#fileForm')[0].reset();
 			});
 
 
@@ -317,7 +317,12 @@ define(['taskbar'], function(taskbar) {
 		}
 
 		if(config.imgurClientIDSet) {
-			postContainer.find('.upload-instructions').removeClass('hide')
+			postContainer.find('.upload-instructions').removeClass('hide');
+			postContainer.find('.img-upload-btn').removeClass('hide');
+		}
+
+		if(config.allowFileUploads) {
+			postContainer.find('.file-upload-btn').removeClass('hide');
 		}
 
 		postContainer.css('visibility', 'visible');
@@ -340,6 +345,7 @@ define(['taskbar'], function(taskbar) {
 		}
 	}
 
+
 	composer.post = function(post_uuid) {
 		var postData = composer.posts[post_uuid],
 			postContainer = $('#cmp-uuid-' + post_uuid),
@@ -350,33 +356,13 @@ define(['taskbar'], function(taskbar) {
 		bodyEl.val(bodyEl.val().trim());
 
 		if(postData.uploadsInProgress && postData.uploadsInProgress.length) {
-			return app.alert({
-				type: 'warning',
-				timeout: 2000,
-				title: 'Still uploading',
-				message: "Please wait for uploads to complete.",
-				alert_id: 'post_error'
-			});
-		}
-
-		if (titleEl.val().length < config.minimumTitleLength) {
-			return app.alert({
-				type: 'danger',
-				timeout: 2000,
-				title: 'Title too short',
-				message: "Please enter a longer title. At least " + config.minimumTitleLength+ " characters.",
-				alert_id: 'post_error'
-			});
-		}
-
-		if (bodyEl.val().length < config.minimumPostLength) {
-			return app.alert({
-				type: 'danger',
-				timeout: 2000,
-				title: 'Content too short',
-				message: "Please enter a longer post. At least " + config.minimumPostLength + " characters.",
-				alert_id: 'post_error'
-			});
+			return composerAlert('Still uploading', 'Please wait for uploads to complete.');
+		} else if (titleEl.val().length < parseInt(config.minimumTitleLength, 10)) {
+			return composerAlert('Title too short', 'Please enter a longer title. At least ' + config.minimumTitleLength+ ' characters.');
+		} else if (titleEl.val().length > parseInt(config.maximumTitleLength, 10)) {
+			return composerAlert('Title too long', 'Please enter a shorter title. Titles can\'t be longer than ' + config.maximumTitleLength + ' characters.');
+		} else if (bodyEl.val().length < parseInt(config.minimumPostLength, 10)) {
+			return composerAlert('Content too short', 'Please enter a longer post. At least ' + config.minimumPostLength + ' characters.');
 		}
 
 		// Still here? Let's post.
@@ -401,6 +387,17 @@ define(['taskbar'], function(taskbar) {
 
 		composer.discard(post_uuid);
 	}
+
+	function composerAlert(title, message) {
+		app.alert({
+			type: 'danger',
+			timeout: 2000,
+			title: title,
+			message: message,
+			alert_id: 'post_error'
+		});
+	}
+
 
 	composer.discard = function(post_uuid) {
 		if (composer.posts[post_uuid]) {
@@ -477,36 +474,41 @@ define(['taskbar'], function(taskbar) {
 	}
 
 	function loadFile(post_uuid, file) {
-
-		if (!file.type.match('image.*')) {
-			return;
-		}
-
 		var reader = new FileReader(),
 			dropDiv = $('#cmp-uuid-' + post_uuid).find('.imagedrop');
 
 		$(reader).on('loadend', function(e) {
-			var bin = this.result.split(',')[1];
+			var regex = /^data:.*;base64,(.*)$/;
+			console.log(file);
+			var matches = this.result.match(regex);
 
-			var img = {
+			var fileData = {
 				name: file.name,
-				data: bin
+				data: matches[1]
 			};
 
-			createImagePlaceholder(post_uuid, img);
-
 			dropDiv.hide();
+
+			if(file.type.match('image.*')) {
+				uploadFile('api:posts.uploadImage', post_uuid, fileData);
+			} else {
+				if(file.size > parseInt(config.maximumFileSize, 10) * 1024) {
+					return composerAlert('File too big', 'Maximum allowed file size is ' + config.maximumFileSize + 'kbs');
+				}
+				uploadFile('api:posts.uploadFile', post_uuid, fileData);
+			}
 		});
 
 		reader.readAsDataURL(file);
 	}
 
 
-	function createImagePlaceholder(post_uuid, img) {
-		var postContainer = $('#cmp-uuid-' + post_uuid),
+	function uploadFile(method, post_uuid, img) {
+		var linkStart = method === 'api:posts.uploadImage' ? '!' : '',
+			postContainer = $('#cmp-uuid-' + post_uuid),
 			textarea = postContainer.find('textarea'),
 			text = textarea.val(),
-			imgText = "![" + img.name + "](uploading...)";
+			imgText = linkStart + '[' + img.name + '](uploading...)';
 
 		text += imgText;
 		textarea.val(text + " ");
@@ -517,18 +519,17 @@ define(['taskbar'], function(taskbar) {
 
 		composer.posts[post_uuid].uploadsInProgress.push(1);
 
-		socket.emit("api:posts.uploadImage", img, function(err, data) {
+		socket.emit(method, img, function(err, data) {
+
+			var currentText = textarea.val();
+
 			if(err) {
+				textarea.val(currentText.replace(imgText, linkStart + '[' + img.name + '](upload error)'));
 				return app.alertError(err.message);
 			}
-			var currentText = textarea.val();
-			imgText = "![" + data.name + "](uploading...)";
 
-			if(!err) {
-				textarea.val(currentText.replace(imgText, "![" + data.name + "](" + data.url + ")"));
-			} else {
-				textarea.val(currentText.replace(imgText, "![" + data.name + "](upload error)"));
-			}
+			textarea.val(currentText.replace(imgText, linkStart + '[' + data.name + '](' + data.url + ')'));
+
 			composer.posts[post_uuid].uploadsInProgress.pop();
 		});
 	}

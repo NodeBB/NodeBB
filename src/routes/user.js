@@ -161,12 +161,7 @@ var fs = require('fs'),
 			is.on('end', function () {
 				fs.unlinkSync(tempPath);
 
-				im.crop({
-					srcPath: uploadPath,
-					dstPath: uploadPath,
-					width: 128,
-					height: 128
-				}, function (err, stdout, stderr) {
+				function done(err) {
 					if (err) {
 						winston.err(err);
 						res.send({
@@ -180,7 +175,7 @@ var fs = require('fs'),
 					user.setUserField(uid, 'uploadedpicture', imageUrl);
 					user.setUserField(uid, 'picture', imageUrl);
 
-					if (convertToPNG) {
+					if (convertToPNG && extension !== '.png') {
 						im.convert([uploadPath, 'png:-'],
 							function(err, stdout){
 								if (err) {
@@ -195,11 +190,25 @@ var fs = require('fs'),
 							});
 					}
 
-
 					res.json({
 						path: imageUrl
 					});
-				});
+				}
+
+				if(extension === '.gif') {
+					im.convert([uploadPath, '-coalesce', '-repage', '0x0', '-crop', '128x128+0+0', '+repage', 'uploadPath'], function(err, stdout) {
+						done(err);
+					});
+				} else {
+					im.crop({
+						srcPath: uploadPath,
+						dstPath: uploadPath,
+						width: 128,
+						height: 128
+					}, function (err, stdout, stderr) {
+						done(err);
+					});
+				}
 			});
 
 			os.on('error', function (err) {
@@ -521,6 +530,11 @@ var fs = require('fs'),
 				user.getUserData(uid, function (err, data) {
 					if (data) {
 						data.joindate = new Date(parseInt(data.joindate, 10)).toISOString();
+						if(data.lastonline) {
+							data.lastonline = new Date(parseInt(data.lastonline, 10)).toISOString();
+						} else {
+							data.lastonline = data.joindate;
+						}
 
 						if (!data.birthday) {
 							data.age = '';
