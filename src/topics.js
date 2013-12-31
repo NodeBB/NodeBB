@@ -33,7 +33,7 @@ var async = require('async'),
 				return callback(new Error('no-privileges'));
 			} else if (!cid) {
 				return callback(new Error('invalid-cid'));
-			} else if (!title || title.length < parseInt(meta.config.minimumTitleLength, 10) {
+			} else if (!title || title.length < parseInt(meta.config.minimumTitleLength, 10)) {
 				return callback(new Error('title-too-short'), null);
 			} else if(title.length > parseInt(meta.config.maximumTitleLength, 10)) {
 				return callback(new Error('title-too-long'), null);
