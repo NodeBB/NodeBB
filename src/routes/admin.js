@@ -120,19 +120,9 @@ var nconf = require('nconf'),
 					return;
 				}
 
-				var tempPath = req.files.userPhoto.path;
-				var extension = path.extname(req.files.userPhoto.name);
+				var filename =  'category-' + params.cid + path.extname(req.files.userPhoto.name);
 
-				if (!extension) {
-					res.send({
-						error: 'Error uploading file! Error : Invalid extension!'
-					});
-					return;
-				}
-
-				var filename =  'category-' + params.cid + extension;
-
-				uploadImage(filename, tempPath, res);
+				uploadImage(filename, req, res);
 			});
 
 			app.post('/uploadfavicon', function(req, res) {
@@ -148,17 +138,7 @@ var nconf = require('nconf'),
 					return;
 				}
 
-				var tempPath = req.files.userPhoto.path;
-				var extension = path.extname(req.files.userPhoto.name);
-
-				if (!extension) {
-					res.send({
-						error: 'Error uploading file! Error : Invalid extension!'
-					});
-					return;
-				}
-
-				uploadImage('favicon.ico', tempPath, res);
+				uploadImage('favicon.ico', req, res);
 			});
 
 			app.post('/uploadlogo', function(req, res) {
@@ -175,23 +155,24 @@ var nconf = require('nconf'),
 					return;
 				}
 
-				var tempPath = req.files.userPhoto.path;
-				var extension = path.extname(req.files.userPhoto.name);
+				var filename =  'site-logo' + path.extname(req.files.userPhoto.name);
 
-				if (!extension) {
-					res.send({
-						error: 'Error uploading file! Error : Invalid extension!'
-					});
-					return;
-				}
-
-				var filename =  'site-logo' + extension;
-
-				uploadImage(filename, tempPath, res);
+				uploadImage(filename, req, res);
 			});
 		});
 
-		function uploadImage(filename, tempPath, res) {
+		function uploadImage(filename, req, res) {
+
+			var tempPath = req.files.userPhoto.path;
+			var extension = path.extname(req.files.userPhoto.name);
+
+			if (!extension) {
+				res.send({
+					error: 'Error uploading file! Error : Invalid extension!'
+				});
+				return;
+			}
+
 			var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), filename);
 
 			winston.info('Attempting upload to: ' + uploadPath);
