@@ -219,7 +219,7 @@ var fs = require('fs'),
 							}
 						} else {
 							if (global.env === 'development') {
-								winston.info('[plugins] Expected method \'' + hookObj.method + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
+								winston.info('[plugins] Expected method for hook \'' + hook + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
 							}
 							next(null, value);
 						}
