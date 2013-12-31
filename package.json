@@ -44,7 +44,8 @@
     "nodebb-theme-cerulean": "0.0.10",
     "cron": "~1.0.1",
     "semver": "~2.2.1",
-    "string": "~1.7.0"
+    "string": "~1.7.0",
+    "xregexp": "~2.0.0"
   },
   "optionalDependencies": {
     "redis": "0.8.3",
