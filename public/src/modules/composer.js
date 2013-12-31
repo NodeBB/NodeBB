@@ -340,6 +340,7 @@ define(['taskbar'], function(taskbar) {
 		}
 	}
 
+
 	composer.post = function(post_uuid) {
 		var postData = composer.posts[post_uuid],
 			postContainer = $('#cmp-uuid-' + post_uuid),
@@ -350,33 +351,13 @@ define(['taskbar'], function(taskbar) {
 		bodyEl.val(bodyEl.val().trim());
 
 		if(postData.uploadsInProgress && postData.uploadsInProgress.length) {
-			return app.alert({
-				type: 'warning',
-				timeout: 2000,
-				title: 'Still uploading',
-				message: "Please wait for uploads to complete.",
-				alert_id: 'post_error'
-			});
-		}
-
-		if (titleEl.val().length < config.minimumTitleLength) {
-			return app.alert({
-				type: 'danger',
-				timeout: 2000,
-				title: 'Title too short',
-				message: "Please enter a longer title. At least " + config.minimumTitleLength+ " characters.",
-				alert_id: 'post_error'
-			});
-		}
-
-		if (bodyEl.val().length < config.minimumPostLength) {
-			return app.alert({
-				type: 'danger',
-				timeout: 2000,
-				title: 'Content too short',
-				message: "Please enter a longer post. At least " + config.minimumPostLength + " characters.",
-				alert_id: 'post_error'
-			});
+			return composerAlert('Still uploading', 'Please wait for uploads to complete.');
+		} else if (titleEl.val().length < parseInt(config.minimumTitleLength, 10)) {
+			return composerAlert('Title too short', 'Please enter a longer title. At least ' + config.minimumTitleLength+ ' characters.');
+		} else if (titleEl.val().length > parseInt(config.maximumTitleLength, 10)) {
+			return composerAlert('Title too long', 'Please enter a shorter title. Titles can\'t be longer than ' + config.maximumTitleLength + ' characters.');
+		} else if (bodyEl.val().length < parseInt(config.minimumPostLength, 10)) {
+			return composerAlert('Content too short', 'Please enter a longer post. At least ' + config.minimumPostLength + ' characters.');
 		}
 
 		// Still here? Let's post.
@@ -401,6 +382,17 @@ define(['taskbar'], function(taskbar) {
 
 		composer.discard(post_uuid);
 	}
+
+	function composerAlert(title, message) {
+		app.alert({
+			type: 'danger',
+			timeout: 2000,
+			title: title,
+			message: message,
+			alert_id: 'post_error'
+		});
+	}
+
 
 	composer.discard = function(post_uuid) {
 		if (composer.posts[post_uuid]) {

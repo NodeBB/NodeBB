@@ -216,6 +216,9 @@ var async = require('async'),
 							field: 'minimumTitleLength',
 							value: 3
 						}, {
+							field: 'maximumTitleLength',
+							value: 255
+						}, {
 							field: 'minimumUsernameLength',
 							value: 2
 						}, {
