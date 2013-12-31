@@ -50,8 +50,8 @@ Upgrade.upgrade = function(callback) {
 
 							async.each(tids, function(tid, next) {
 								Topics.getTopicField(tid, 'title', function(err, title) {
-									newTitle = Utils.slugify(title);
-									Topics.setTopicField(tid, 'title', newTitle, next);
+									newTitle = tid + '/' + Utils.slugify(title);
+									Topics.setTopicField(tid, 'slug', newTitle, next);
 								});
 							}, function(err) {
 								next(err);
