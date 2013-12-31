@@ -121,6 +121,12 @@
 				<input type="checkbox" data-field="useOutgoingLinksPage"> <strong>Use Outgoing Links Warning Page</strong>
 			</label>
 		</div>
+		<div class="checkbox">
+			<label>
+				<input type="checkbox" data-field="allowFileUploads"> <strong>Allow users to upload regular files</strong>
+			</label>
+		</div>
+		<strong>Maximum File Size</strong><br /> <input type="text" class="form-control" value="2048" data-field="maximumFileSize"><br />
 	</div>
 </form>
 

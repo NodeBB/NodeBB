@@ -70,6 +70,10 @@
 					<span class="timeago" title="{joindate}"></span>
 					<br/>
 
+					<span class="account-bio-label">[[user:lastonline]]</span>
+					<span class="timeago" title="{lastonline}"></span>
+					<br/>
+
 					<span class="account-bio-label">[[user:profile_views]]</span>
 					<span class="formatted-number">{profileviews}</span>
 					<br/>

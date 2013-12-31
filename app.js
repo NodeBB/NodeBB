@@ -109,11 +109,11 @@
 
 						var customTemplates = meta.config['theme:templates'] ? path.join(__dirname, 'node_modules', meta.config['theme:id'], meta.config['theme:templates']) : false;
 
-						
+
 						utils.walk(path.join(__dirname, 'public/templates'), function (err, tplsToLoad) {
 							templates.init(tplsToLoad, customTemplates);
 						});
-						
+
 						plugins.ready(function() {
 							templates.ready(webserver.init);
 						});

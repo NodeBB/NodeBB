@@ -213,6 +213,12 @@ var async = require('async'),
 							field: 'allowRegistration',
 							value: 1
 						}, {
+							field: 'allowFileUploads',
+							value: 0,
+						}, {
+							filed: 'maximumFileSize',
+							value: 2048
+						}, {
 							field: 'minimumTitleLength',
 							value: 3
 						}, {

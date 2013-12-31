@@ -48,7 +48,6 @@ define(['taskbar'], function(taskbar) {
 			socket.emit('api:composer.push', {
 				pid: pid
 			}, function(threadData) {
-				console.log(threadData);
 				push({
 					pid: pid,
 					title: threadData.title,
@@ -202,7 +201,7 @@ define(['taskbar'], function(taskbar) {
 				}
 			});
 
-			postContainer.on('click', '.formatting-bar span .fa-picture-o', function() {
+			postContainer.on('click', '.formatting-bar span .fa-picture-o, .formatting-bar span .fa-upload', function() {
 				$('#files').click();
 			});
 
@@ -213,6 +212,7 @@ define(['taskbar'], function(taskbar) {
 						loadFile(post_uuid, files[i]);
 					}
 				}
+				$('#fileForm')[0].reset();
 			});
 
 
@@ -317,7 +317,12 @@ define(['taskbar'], function(taskbar) {
 		}
 
 		if(config.imgurClientIDSet) {
-			postContainer.find('.upload-instructions').removeClass('hide')
+			postContainer.find('.upload-instructions').removeClass('hide');
+			postContainer.find('.img-upload-btn').removeClass('hide');
+		}
+
+		if(config.allowFileUploads) {
+			postContainer.find('.file-upload-btn').removeClass('hide');
 		}
 
 		postContainer.css('visibility', 'visible');
@@ -469,36 +474,41 @@ define(['taskbar'], function(taskbar) {
 	}
 
 	function loadFile(post_uuid, file) {
-
-		if (!file.type.match('image.*')) {
-			return;
-		}
-
 		var reader = new FileReader(),
 			dropDiv = $('#cmp-uuid-' + post_uuid).find('.imagedrop');
 
 		$(reader).on('loadend', function(e) {
-			var bin = this.result.split(',')[1];
+			var regex = /^data:.*;base64,(.*)$/;
+			console.log(file);
+			var matches = this.result.match(regex);
 
-			var img = {
+			var fileData = {
 				name: file.name,
-				data: bin
+				data: matches[1]
 			};
 
-			createImagePlaceholder(post_uuid, img);
-
 			dropDiv.hide();
+
+			if(file.type.match('image.*')) {
+				uploadFile('api:posts.uploadImage', post_uuid, fileData);
+			} else {
+				if(file.size > parseInt(config.maximumFileSize, 10) * 1024) {
+					return composerAlert('File too big', 'Maximum allowed file size is ' + config.maximumFileSize + 'kbs');
+				}
+				uploadFile('api:posts.uploadFile', post_uuid, fileData);
+			}
 		});
 
 		reader.readAsDataURL(file);
 	}
 
 
-	function createImagePlaceholder(post_uuid, img) {
-		var postContainer = $('#cmp-uuid-' + post_uuid),
+	function uploadFile(method, post_uuid, img) {
+		var linkStart = method === 'api:posts.uploadImage' ? '!' : '',
+			postContainer = $('#cmp-uuid-' + post_uuid),
 			textarea = postContainer.find('textarea'),
 			text = textarea.val(),
-			imgText = "![" + img.name + "](uploading...)";
+			imgText = linkStart + '[' + img.name + '](uploading...)';
 
 		text += imgText;
 		textarea.val(text + " ");
@@ -509,18 +519,17 @@ define(['taskbar'], function(taskbar) {
 
 		composer.posts[post_uuid].uploadsInProgress.push(1);
 
-		socket.emit("api:posts.uploadImage", img, function(err, data) {
+		socket.emit(method, img, function(err, data) {
+
+			var currentText = textarea.val();
+
 			if(err) {
+				textarea.val(currentText.replace(imgText, linkStart + '[' + img.name + '](upload error)'));
 				return app.alertError(err.message);
 			}
-			var currentText = textarea.val();
-			imgText = "![" + data.name + "](uploading...)";
 
-			if(!err) {
-				textarea.val(currentText.replace(imgText, "![" + data.name + "](" + data.url + ")"));
-			} else {
-				textarea.val(currentText.replace(imgText, "![" + data.name + "](upload error)"));
-			}
+			textarea.val(currentText.replace(imgText, linkStart + '[' + data.name + '](' + data.url + ')'));
+
 			composer.posts[post_uuid].uploadsInProgress.pop();
 		});
 	}
