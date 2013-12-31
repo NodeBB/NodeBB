@@ -15,7 +15,7 @@ var bcrypt = require('bcrypt'),
 	notifications = require('./notifications'),
 	topics = require('./topics'),
 	events = require('./events'),
-
+	Emailer = require('./emailer'),
 	websockets = require('./websockets');
 
 (function(User) {
@@ -103,7 +103,7 @@ var bcrypt = require('bcrypt'),
 
 				if (email !== undefined) {
 					db.setObjectField('email:uid', email, uid);
-					User.sendConfirmationEmail(email);
+					User.sendConfirmationEmail(uid, email);
 				}
 
 				plugins.fireHook('action:user.create', {uid: uid, username: username, email: email, picture: gravatar, timestamp: timestamp});
@@ -823,15 +823,9 @@ var bcrypt = require('bcrypt'),
 		}
 	};
 
-	User.sendConfirmationEmail = function(email) {
+	User.sendConfirmationEmail = function(uid, email) {
 		var confirm_code = utils.generateUUID(),
-			confirm_link = nconf.get('url') + 'confirm/' + confirm_code/*,
-			confirm_email = global.templates['emails/header'] + global.templates['emails/email_confirm'].parse({
-				'CONFIRM_LINK': confirm_link
-			}) + global.templates['emails/footer'],
-			confirm_email_plaintext = global.templates['emails/email_confirm_plaintext'].parse({
-				'CONFIRM_LINK': confirm_link
-			})*/;
+			confirm_link = nconf.get('url') + 'confirm/' + confirm_code;
 
 		// Email confirmation code
 		var expiry_time = Date.now() / 1000 + 60 * 60 * 2;

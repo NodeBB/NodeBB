@@ -59,8 +59,8 @@ Emailer.send = function(template, uid, params) {
 			if (!err) {
 				Plugins.fireHook('action:email.send', {
 					to: email,
-					from: Meta.config['email:from'],
-					subject: subject,
+					from: Meta.config['email:from'] || 'no-reply@localhost.lan',
+					subject: params.subject,
 					html: results.html,
 					plaintext: results.plaintext
 				});
