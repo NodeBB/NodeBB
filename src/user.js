@@ -1,6 +1,5 @@
 var bcrypt = require('bcrypt'),
 	async = require('async'),
-	emailjs = require('emailjs'),
 	nconf = require('nconf'),
 	winston = require('winston'),
 	gravatar = require('gravatar'),
@@ -12,7 +11,6 @@ var bcrypt = require('bcrypt'),
 	plugins = require('./plugins'),
 	db = require('./database'),
 	meta = require('./meta'),
-	emailjsServer = emailjs.server.connect(meta.config['email:smtp:host'] || '127.0.0.1'),
 	groups = require('./groups'),
 	notifications = require('./notifications'),
 	topics = require('./topics'),
@@ -826,42 +824,48 @@ var bcrypt = require('bcrypt'),
 	};
 
 	User.sendConfirmationEmail = function(email) {
-		if (meta.config['email:smtp:host'] && meta.config['email:smtp:port'] && meta.config['email:from']) {
-			var confirm_code = utils.generateUUID(),
-				confirm_link = nconf.get('url') + 'confirm/' + confirm_code,
-				confirm_email = global.templates['emails/header'] + global.templates['emails/email_confirm'].parse({
-					'CONFIRM_LINK': confirm_link
-				}) + global.templates['emails/footer'],
-				confirm_email_plaintext = global.templates['emails/email_confirm_plaintext'].parse({
-					'CONFIRM_LINK': confirm_link
-				});
+		var confirm_code = utils.generateUUID(),
+			confirm_link = nconf.get('url') + 'confirm/' + confirm_code/*,
+			confirm_email = global.templates['emails/header'] + global.templates['emails/email_confirm'].parse({
+				'CONFIRM_LINK': confirm_link
+			}) + global.templates['emails/footer'],
+			confirm_email_plaintext = global.templates['emails/email_confirm_plaintext'].parse({
+				'CONFIRM_LINK': confirm_link
+			})*/;
 
-			// Email confirmation code
-			var expiry_time = Date.now() / 1000 + 60 * 60 * 2;
+		// Email confirmation code
+		var expiry_time = Date.now() / 1000 + 60 * 60 * 2;
 
-			db.setObjectField('email:confirm', email, confirm_code);
+		db.setObjectField('email:confirm', email, confirm_code);
 
-			db.setObjectField('confirm:email', confirm_code, email);
-			db.setObjectField('confirm:email', confirm_code + ':expire', expiry_time);
+		db.setObjectField('confirm:email', confirm_code, email);
+		db.setObjectField('confirm:email', confirm_code + ':expire', expiry_time);
 
-			// Send intro email w/ confirm code
-			var message = emailjs.message.create({
-				text: confirm_email_plaintext,
-				from: meta.config['email:from'] || 'localhost@example.org',
-				to: email,
-				subject: '[NodeBB] Registration Email Verification',
-				attachment: [{
-					data: confirm_email,
-					alternative: true
-				}]
+		// Send intro email w/ confirm code
+		User.getUserField(uid, 'username', function(err, username) {
+			Emailer.send('welcome', uid, {
+				'site_title': (meta.config['title'] || 'NodeBB'),
+				subject: 'Welcome to ' + (meta.config['title'] || 'NodeBB') + '!',
+				username: username,
+				'confirm_link': confirm_link
 			});
+		});
+		// var message = emailjs.message.create({
+		// 	text: confirm_email_plaintext,
+		// 	from: meta.config['email:from'] || 'localhost@example.org',
+		// 	to: email,
+		// 	subject: '[NodeBB] Registration Email Verification',
+		// 	attachment: [{
+		// 		data: confirm_email,
+		// 		alternative: true
+		// 	}]
+		// });
 
-			emailjsServer.send(message, function(err, success) {
-				if (err) {
-					console.log(err);
-				}
-			});
-		}
+		// emailjsServer.send(message, function(err, success) {
+		// 	if (err) {
+		// 		console.log(err);
+		// 	}
+		// });
 	};
 
 	User.pushNotifCount = function(uid) {

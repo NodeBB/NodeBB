@@ -1,5 +1,6 @@
 var	User = require('./user'),
 	Plugins = require('./plugins'),
+	Meta = require('./meta'),
 
 	Handlebars = require('handlebars'),
 	fs = require('fs'),
@@ -57,7 +58,9 @@ Emailer.send = function(template, uid, params) {
 		User.getUserField(uid, 'email', function(err, email) {
 			if (!err) {
 				Plugins.fireHook('action:email.send', {
-					email: email,
+					to: email,
+					from: Meta.config['email:from'],
+					subject: subject,
 					html: results.html,
 					plaintext: results.plaintext
 				});
