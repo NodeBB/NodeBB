@@ -123,6 +123,11 @@
 		</div>
 		<div class="checkbox">
 			<label>
+				<input type="checkbox" data-field="disableSocialButtons"> <strong>Disable social buttons on posts</strong>
+			</label>
+		</div>
+		<div class="checkbox">
+			<label>
 				<input type="checkbox" data-field="allowFileUploads"> <strong>Allow users to upload regular files</strong>
 			</label>
 		</div>
