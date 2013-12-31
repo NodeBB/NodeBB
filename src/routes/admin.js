@@ -104,6 +104,14 @@ var nconf = require('nconf'),
 					return res.redirect('/403');
 
 				var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
+				var params = null;
+				try {
+					params = JSON.parse(req.body.params);
+				} catch (e) {
+					return res.send({
+						error: 'Error uploading file! Error :' + e.message
+					});
+				}
 
 				if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
 					res.send({
@@ -122,28 +130,9 @@ var nconf = require('nconf'),
 					return;
 				}
 
-				var filename =  'category' + utils.generateUUID() + extension;
-				var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), filename);
+				var filename =  'category-' + params.cid + extension;
 
-				winston.info('Attempting upload to: ' + uploadPath);
-
-				var is = fs.createReadStream(tempPath);
-				var os = fs.createWriteStream(uploadPath);
-
-				is.on('end', function () {
-					fs.unlinkSync(tempPath);
-					console.log(nconf.get('upload_url') + filename);
-					res.json({
-						path: nconf.get('upload_url') + filename
-					});
-				});
-
-				os.on('error', function (err) {
-					fs.unlinkSync(tempPath);
-					winston.err(err);
-				});
-
-				is.pipe(os);
+				uploadImage(filename, tempPath, res);
 			});
 
 			app.post('/uploadfavicon', function(req, res) {
@@ -169,28 +158,7 @@ var nconf = require('nconf'),
 					return;
 				}
 
-				var filename =  'favicon.ico';
-				var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), filename);
-
-				winston.info('Attempting upload to: ' + uploadPath);
-
-				var is = fs.createReadStream(tempPath);
-				var os = fs.createWriteStream(uploadPath);
-
-				is.on('end', function () {
-					fs.unlinkSync(tempPath);
-
-					res.json({
-						path: nconf.get('upload_url') + filename
-					});
-				});
-
-				os.on('error', function (err) {
-					fs.unlinkSync(tempPath);
-					winston.err(err);
-				});
-
-				is.pipe(os);
+				uploadImage('favicon.ico', tempPath, res);
 			});
 
 			app.post('/uploadlogo', function(req, res) {
@@ -218,29 +186,33 @@ var nconf = require('nconf'),
 				}
 
 				var filename =  'site-logo' + extension;
-				var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), filename);
 
-				winston.info('Attempting upload to: ' + uploadPath);
-
-				var is = fs.createReadStream(tempPath);
-				var os = fs.createWriteStream(uploadPath);
-
-				is.on('end', function () {
-					fs.unlinkSync(tempPath);
-
-					res.json({
-						path: nconf.get('upload_url') + filename
-					});
-				});
-
-				os.on('error', function (err) {
-					fs.unlinkSync(tempPath);
-					winston.err(err);
-				});
-
-				is.pipe(os);
+				uploadImage(filename, tempPath, res);
 			});
 		});
+
+		function uploadImage(filename, tempPath, res) {
+			var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), filename);
+
+			winston.info('Attempting upload to: ' + uploadPath);
+			var is = fs.createReadStream(tempPath);
+			var os = fs.createWriteStream(uploadPath);
+
+			is.on('end', function () {
+				fs.unlinkSync(tempPath);
+
+				res.json({
+					path: nconf.get('upload_url') + filename
+				});
+			});
+
+			os.on('error', function (err) {
+				fs.unlinkSync(tempPath);
+				winston.err(err);
+			});
+
+			is.pipe(os);
+		}
 
 
 		var custom_routes = {

@@ -17,6 +17,7 @@
 							<p class="help-block">You may only upload PNG, JPG, or GIF files under 256kb.</p>
 						</div>
 						<input id="imageUploadCsrf" type="hidden" name="_csrf" value="" />
+						<input type="hidden" id="params" name="params">
 					</form>
 
 					<div id="upload-progress-box" class="progress progress-striped">

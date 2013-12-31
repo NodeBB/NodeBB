@@ -2,12 +2,13 @@ define(function() {
 
 	var module = {};
 
-	module.open = function(route, callback) {
+	module.open = function(route, params, callback) {
 		$('#upload-picture-modal').modal('show').removeClass('hide');
 		module.hideAlerts();
 
 		$('#uploadForm')[0].reset();
 		$('#uploadForm').attr('action', route);
+		$('#uploadForm').find('#params').val(JSON.stringify(params));
 
 		$('#pictureUploadSubmitBtn').off('click').on('click', function() {
 			$('#uploadForm').submit();
