@@ -807,7 +807,8 @@ var path = require('path'),
 
 		var custom_routes = {
 			'routes': [],
-			'api': []
+			'api': [],
+			'templates': []
 		};
 
 		plugins.ready(function() {
@@ -838,6 +839,17 @@ var path = require('path'),
 								apiRoutes[route].callback(req, res, function(data) {
 									res.json(data);
 								});
+							});
+						}(route));
+					}
+				}
+
+				var templateRoutes = custom_routes.templates;
+				for (var route in templateRoutes) {
+					if (templateRoutes.hasOwnProperty(route)) {
+						(function(route) {
+							app.get('/templates/' + templateRoutes[route].template, function(req, res) {
+								res.send(templateRoutes[route].content);
 							});
 						}(route));
 					}
