@@ -36,6 +36,7 @@
 							<p class="help-block">[[user:image_spec]]</p>
 						</div>
 						<input id="imageUploadCsrf" type="hidden" name="_csrf" value="" />
+						<input type="hidden" id="params" name="params">
 					</form>
 
 					<div id="upload-progress-box" class="progress progress-striped">

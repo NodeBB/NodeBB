@@ -106,12 +106,12 @@ websockets.init = function(io) {
 
 		socket.on('disconnect', function() {
 
-			var index = userSockets[uid].indexOf(socket);
+			var index = (userSockets[uid] || []).indexOf(socket);
 			if (index !== -1) {
 				userSockets[uid].splice(index, 1);
 			}
 
-			if (userSockets[uid].length === 0) {
+			if (userSockets[uid] && userSockets[uid].length === 0) {
 				delete users[sessionID];
 				delete userSockets[uid];
 				if (uid) {
