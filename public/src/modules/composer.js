@@ -94,9 +94,8 @@ define(['taskbar'], function(taskbar) {
 
 			var postContainer = $(composerTemplate[0]);
 
-			if(config.imgurClientIDSet) {
+			if(config.allowFileUploads || config.imgurClientIDSet)
 				initializeFileReader(post_uuid);
-			}
 
 			var postData = composer.posts[post_uuid],
 				titleEl = postContainer.find('.title'),
