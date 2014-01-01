@@ -565,7 +565,6 @@ websockets.init = function(io) {
 					threadTools.delete(data.tid, uid, function(err) {
 						if (!err) {
 							emitTopicPostStats();
-							events.logTopicDelete(uid, data.tid);
 							socket.emit('api:topic.delete', {
 								status: 'ok',
 								tid: data.tid
