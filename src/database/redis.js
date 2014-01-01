@@ -211,6 +211,14 @@
 		redisClient.keys(key, callback);
 	}
 
+	module.expire = function(key, seconds, callback) {
+		redisClient.expire(key, seconds, callback);
+	}
+
+	module.expireAt = function(key, timestamp, callback) {
+		redisClient.expireat(key, timestamp, callback);
+	}
+
 	//hashes
 
 	module.setObject = function(key, data, callback) {

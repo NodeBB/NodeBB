@@ -50,13 +50,20 @@
 			function createCollections() {
 				db.createCollection('objects', function(err, collection) {
 					if(err) {
-						winston.error("Error creating collection " + err.message);
+						winston.error('Error creating collection ' + err.message);
 						return;
 					}
+
 					if(collection) {
-						collection.ensureIndex({_key :1}, {background:true}, function(err, name){
+						collection.ensureIndex({_key :1}, {background:true}, function(err, name) {
 							if(err) {
-								winston.error("Error creating index " + err.message);
+								winston.error('Error creating index ' + err.message);
+							}
+						});
+
+						collection.ensureIndex({'expireAt':1}, {expireAfterSeconds:0, background:true}, function(err, name) {
+							if(err) {
+								winston.error('Error creating index ' + err.message);
 							}
 						});
 					}
@@ -64,13 +71,13 @@
 
 				db.createCollection('search', function(err, collection) {
 					if(err) {
-						winston.error("Error creating collection " + err.message);
+						winston.error('Error creating collection ' + err.message);
 						return;
 					}
 					if(collection) {
 						collection.ensureIndex({content:'text'}, {background:true}, function(err, name){
 							if(err) {
-								winston.error("Error creating index " + err.message);
+								winston.error('Error creating index ' + err.message);
 							}
 						});
 					}
@@ -239,6 +246,14 @@
 		db.collection('objects').find( { _key: { $regex: key /*, $options: 'i'*/ } }, function(err, result) {
 			callback(err, result);
 		});
+	}
+
+	module.expire = function(key, seconds, callback) {
+		module.expireAt(key, Math.round(Date.now() / 1000) + seconds, callback);
+	}
+
+	module.expireAt = function(key, timestamp, callback) {
+		module.setObjectField(key, 'expireAt', new Date(timestamp * 1000), callback);
 	}
 
 	//hashes
