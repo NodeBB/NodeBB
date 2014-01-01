@@ -20,6 +20,7 @@ var request = require('request'),
 
 			try {
 				var response = JSON.parse(body);
+
 				if(response.success) {
 					callback(null, response.data);
 				} else {

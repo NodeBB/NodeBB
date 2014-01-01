@@ -188,6 +188,13 @@ var path = require('path'),
 				// Authentication Routes
 				auth.initialize(app);
 
+				app.use(function(req, res, next) {
+					if(req.user) {
+						user.setUserField(req.user.uid, 'lastonline', Date.now());
+					}
+					next();
+				})
+
 				next();
 			},
 			function(next) {

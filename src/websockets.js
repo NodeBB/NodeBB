@@ -638,6 +638,10 @@ websockets.init = function(io) {
 			posts.uploadPostImage(data, callback);
 		});
 
+		socket.on('api:posts.uploadFile', function(data, callback) {
+			posts.uploadPostFile(data, callback);
+		});
+
 		socket.on('api:posts.getRawPost', function(data, callback) {
 			posts.getPostField(data.pid, 'content', function(err, raw) {
 				callback({

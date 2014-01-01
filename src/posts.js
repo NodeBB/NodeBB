@@ -12,6 +12,8 @@ var db = require('./database'),
 	meta = require('./meta'),
 
 	async = require('async'),
+	path = require('path'),
+	fs = require('fs'),
 	nconf = require('nconf'),
 	validator = require('validator'),
 	winston = require('winston'),
@@ -358,6 +360,10 @@ var db = require('./database'),
 
 	Posts.uploadPostImage = function(image, callback) {
 
+		if(!meta.config.imgurClientID) {
+			return callback('imgurClientID not set', null);
+		}
+
 		if(!image) {
 			return callback('invalid image', null);
 		}
@@ -369,6 +375,37 @@ var db = require('./database'),
 				callback(null, {
 					url: data.link,
 					name: image.name
+				});
+			}
+		});
+	}
+
+	Posts.uploadPostFile = function(file, callback) {
+
+		if(!meta.config.allowFileUploads) {
+			return callback('File uploads are not allowed');
+		}
+
+		if(!file) {
+			return callback('invalid file');
+		}
+
+		var buffer = new Buffer(file.data, 'base64');
+
+		if(buffer.length > parseInt(meta.config.maximumFileSize, 10) * 1024) {
+			return callback('File too big');
+		}
+
+		var filename = 'upload-' + utils.generateUUID() + path.extname(file.name);
+		var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), filename);
+
+		fs.writeFile(uploadPath, buffer, function (err) {
+  			if(err) {
+				callback(err.message, null);
+			} else {
+				callback(null, {
+					url: nconf.get('upload_url') + filename,
+					name: file.name
 				});
 			}
 		});

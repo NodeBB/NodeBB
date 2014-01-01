@@ -530,6 +530,11 @@ var fs = require('fs'),
 				user.getUserData(uid, function (err, data) {
 					if (data) {
 						data.joindate = new Date(parseInt(data.joindate, 10)).toISOString();
+						if(data.lastonline) {
+							data.lastonline = new Date(parseInt(data.lastonline, 10)).toISOString();
+						} else {
+							data.lastonline = data.joindate;
+						}
 
 						if (!data.birthday) {
 							data.age = '';
