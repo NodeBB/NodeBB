@@ -269,6 +269,9 @@
 	module.setObjectField = function(key, field, value, callback) {
 		var data = {};
 		// if there is a '.' in the field name it inserts subdocument in mongo, replace '.'s with \uff0E
+		if(typeof field !== 'string') {
+			field = field.toString();
+		}
 		field = field.replace(/\./g, '\uff0E');
 		data[field] = value;
 		db.collection('objects').update({_key:key}, {$set:data}, {upsert:true, w: 1}, function(err, result) {
@@ -318,7 +321,7 @@
 
 		var _fields = {};
 		for(var i=0; i<fields.length; ++i) {
-			if(typeof fields[i] !== string) {
+			if(typeof fields[i] !== 'string') {
 				_fields[fields[i].toString().replace(/\./g, '\uff0E')] = 1;
 			} else {
 				_fields[fields[i].replace(/\./g, '\uff0E')] = 1;
@@ -363,6 +366,9 @@
 
 	module.isObjectField = function(key, field, callback) {
 		var data = {};
+		if(typeof field !== 'string') {
+			field = field.toString();
+		}
 		field = field.replace(/\./g, '\uff0E');
 		data[field] = '';
 		db.collection('objects').findOne({_key:key}, {fields:data}, function(err, item) {
@@ -375,6 +381,9 @@
 
 	module.deleteObjectField = function(key, field, callback) {
 		var data = {};
+		if(typeof field !== 'string') {
+			field = field.toString();
+		}
 		field = field.replace(/\./g, '\uff0E');
 		data[field] = "";
 		db.collection('objects').update({_key:key}, {$unset : data}, function(err, result) {
@@ -394,6 +403,9 @@
 
 	module.incrObjectFieldBy = function(key, field, value, callback) {
 		var data = {};
+		if(typeof field !== 'string') {
+			field = field.toString();
+		}
 		field = field.replace(/\./g, '\uff0E');
 		data[field] = value;
 		db.collection('objects').update({_key:key}, {$inc : data}, {upsert:true}, function(err, result) {

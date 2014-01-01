@@ -360,24 +360,26 @@ var db = require('./database'),
 
 	Posts.uploadPostImage = function(image, callback) {
 
-		if(!meta.config.imgurClientID) {
-			return callback('imgurClientID not set', null);
-		}
-
-		if(!image) {
-			return callback('invalid image', null);
-		}
-
-		require('./imgur').upload(meta.config.imgurClientID, image.data, 'base64', function(err, data) {
-			if(err) {
-				callback(err.message, null);
-			} else {
-				callback(null, {
-					url: data.link,
-					name: image.name
-				});
+		if(meta.config.imgurClientID) {
+			if(!image) {
+				return callback('invalid image', null);
 			}
-		});
+
+			require('./imgur').upload(meta.config.imgurClientID, image.data, 'base64', function(err, data) {
+				if(err) {
+					callback(err.message, null);
+				} else {
+					callback(null, {
+						url: data.link,
+						name: image.name
+					});
+				}
+			});
+		} else if (meta.config.allowFileUploads) {
+			Posts.uploadPostFile(image, callback);
+		} else {
+			callback('Uploads are disabled!');
+		}
 	}
 
 	Posts.uploadPostFile = function(file, callback) {
@@ -400,7 +402,7 @@ var db = require('./database'),
 		var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), filename);
 
 		fs.writeFile(uploadPath, buffer, function (err) {
-  			if(err) {
+			if(err) {
 				callback(err.message, null);
 			} else {
 				callback(null, {
