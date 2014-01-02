@@ -72,18 +72,26 @@ var opts = {
 	Logger.open = function(value) {
 		/* Open the streams to log to: either a path or stdout */
 		var stream;
-		if(value && fs.existsSync(value)) {
-			fs.stat(value, function(err, stats) {
-				if(stats.isDirectory()) {
-					stream = fs.createWriteStream(path.join(value, 'nodebb.log'), {flags: 'a'});
-				} else {
-					stream = fs.createWriteStream(value, {flags: 'a'});
+		if(value) {
+			if(fs.existsSync(value)) {
+				stats = fs.statSync(value);
+				if(stats) {
+					if(stats.isDirectory()) {
+						stream = fs.createWriteStream(path.join(value, 'nodebb.log'), {flags: 'a'});
+					} else {
+						stream = fs.createWriteStream(value, {flags: 'a'});
+					}
 				}
+			} else {
+				stream = fs.createWriteStream(value, {flags: 'a'});
+
+			}
+
+			if(stream) {
 				stream.on('error', function(err) {
 					winston.error(err.message);
 				});
-			});
-
+			}
 		} else {
 			stream = process.stdout;
 		}
@@ -189,8 +197,9 @@ var opts = {
 				var emit = socket.emit;
 				socket.emit = function() {
 					if(opts.streams.log.f != null) {
-						opts.streams.log.f.write(Logger.prepare_io_string("emit",uid,arguments));
+						opts.streams.log.f.write(Logger.prepare_io_string("emit", uid, arguments));
 					}
+
 					try {
 						emit.apply(socket, arguments);
 					} catch(err) {
