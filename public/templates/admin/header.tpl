@@ -95,31 +95,29 @@
 				<div class="well sidebar-nav">
 					<ul class="nav nav-list">
 						<li class="nav-header">NodeBB</li>
-						<li class='active'>
-							<a href='{relative_path}/admin/index'><i class='fa fa-home'></i> Home</a>
-						</li>
-						<li><a href='{relative_path}/admin/categories/active'><i class='fa fa-folder'></i> Categories</a></li>
-						<li><a href='{relative_path}/admin/users/latest'><i class='fa fa-user'></i> Users</a></li>
-						<li><a href="{relative_path}/admin/groups"><i class="fa fa-group"></i> Groups</a></li>
-						<li><a href='{relative_path}/admin/topics'><i class='fa fa-book'></i> Topics</a></li>
-						<li><a href='{relative_path}/admin/themes'><i class='fa fa-th'></i> Themes</a></li>
-						<li><a href='{relative_path}/admin/plugins'><i class='fa fa-code-fork'></i> Plugins</a></li>
-						<li><a href='{relative_path}/admin/settings'><i class='fa fa-cogs'></i> Settings</a></li>
-						<li><a href='{relative_path}/admin/database'><i class='fa fa-hdd-o'></i> Database</a></li>
-						<li><a href='{relative_path}/admin/logger'><i class='fa fa-th'></i> Logger</a></li>
-						<li><a href="{relative_path}/admin/motd"><i class="fa fa-comment"></i> MOTD</a></li>
-						<li><a href="{relative_path}/admin/events"><i class="fa fa-calendar-o"></i> Events</a></li>
+						<li class="active"><a href="{relative_path}/admin/index"><i class="fa fa-fw fa-home"></i> Home</a></li>
+						<li><a href="{relative_path}/admin/categories/active"><i class="fa fa-fw fa-folder"></i> Categories</a></li>
+						<li><a href="{relative_path}/admin/users/latest"><i class="fa fa-fw fa-user"></i> Users</a></li>
+						<li><a href="{relative_path}/admin/groups"><i class="fa fa-fw fa-group"></i> Groups</a></li>
+						<li><a href="{relative_path}/admin/topics"><i class="fa fa-fw fa-book"></i> Topics</a></li>
+						<li><a href="{relative_path}/admin/themes"><i class="fa fa-fw fa-th"></i> Themes</a></li>
+						<li><a href="{relative_path}/admin/plugins"><i class="fa fa-fw fa-code-fork"></i> Plugins</a></li>
+						<li><a href="{relative_path}/admin/settings"><i class="fa fa-fw fa-cogs"></i> Settings</a></li>
+						<li><a href="{relative_path}/admin/database"><i class="fa fa-fw fa-hdd-o"></i> Database</a></li>
+						<li><a href="{relative_path}/admin/logger"><i class="fa fa-fw fa-th"></i> Logger</a></li>
+						<li><a href="{relative_path}/admin/motd"><i class="fa fa-fw fa-comment"></i> MOTD</a></li>
+						<li><a href="{relative_path}/admin/events"><i class="fa fa-fw fa-calendar-o"></i> Events</a></li>
 					</ul>
 				</div>
 				<div class="well sidebar-nav">
 					<ul class="nav nav-list">
 						<li class="nav-header">Social Authentication</li>
-						<li><a href='{relative_path}/admin/twitter'><i class='fa fa-twitter-square'></i> Twitter</a></li>
-						<li><a href='{relative_path}/admin/facebook'><i class='fa fa-facebook-square'></i> Facebook</a></li>
-						<li><a href='{relative_path}/admin/gplus'><i class='fa fa-google-plus-square'></i> Google+</a></li>
+						<li><a href="{relative_path}/admin/twitter"><i class="fa fa-fw fa-twitter-square"></i> Twitter</a></li>
+						<li><a href="{relative_path}/admin/facebook"><i class="fa fa-fw fa-facebook-square"></i> Facebook</a></li>
+						<li><a href="{relative_path}/admin/gplus"><i class="fa fa-fw fa-google-plus-square"></i> Google+</a></li>
 						<!-- BEGIN authentication -->
 						<li>
-							<a href='{relative_path}/admin{authentication.route}'><i class="fa {authentication.icon}"></i> {authentication.name}</a>
+							<a href="{relative_path}/admin{authentication.route}"><i class="fa fa-fw {authentication.icon}"></i> {authentication.name}</a>
 						</li>
 						<!-- END authentication -->
 					</ul>
@@ -129,7 +127,7 @@
 						<li class="nav-header">Plugins</li>
 						<!-- BEGIN plugins -->
 						<li>
-							<a href='{relative_path}/admin{plugins.route}'><i class="fa {plugins.icon}"></i> {plugins.name}</a>
+							<a href="{relative_path}/admin{plugins.route}"><i class="fa fa-fw {plugins.icon}"></i> {plugins.name}</a>
 						</li>
 						<!-- END plugins -->
 					</ul>
@@ -138,15 +136,15 @@
 					<ul class="nav nav-list">
 						<li class="nav-header">Unit Tests</li>
 						<ul class="nav nav-list">
-							<li><a href='{relative_path}/admin/testing/categories'>Categories</a></li>
-							<!--<li><a href='{relative_path}/admin/testing/topics'>Topics</a></li>
-							<li><a href='{relative_path}/admin/testing/posts'>Posts</a></li>
-							<li><a href='{relative_path}/admin/testing/accounts'>Accounts</a></li>
-							<li><a href='{relative_path}/admin/testing/chat'>Chat</a></li>
-							<li><a href='{relative_path}/admin/testing/notifications'>Notifications</a></li>
-							<li><a href='{relative_path}/admin/testing/friends'>Friends</a></li>
-							<li><a href='{relative_path}/admin/testing/feed'>RSS Feed</a></li>
-							<li><a href='{relative_path}/admin/testing/emails'>Emails</a></li>-->
+							<li><a href="{relative_path}/admin/testing/categories">Categories</a></li>
+							<!--<li><a href="{relative_path}/admin/testing/topics">Topics</a></li>
+							<li><a href="{relative_path}/admin/testing/posts">Posts</a></li>
+							<li><a href="{relative_path}/admin/testing/accounts">Accounts</a></li>
+							<li><a href="{relative_path}/admin/testing/chat">Chat</a></li>
+							<li><a href="{relative_path}/admin/testing/notifications">Notifications</a></li>
+							<li><a href="{relative_path}/admin/testing/friends">Friends</a></li>
+							<li><a href="{relative_path}/admin/testing/feed">RSS Feed</a></li>
+							<li><a href="{relative_path}/admin/testing/emails">Emails</a></li>-->
 						</ul>
 					</ul>
 				</div><!--/.well -->
