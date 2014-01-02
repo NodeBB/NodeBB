@@ -123,7 +123,7 @@
 		</div>
 		<div class="checkbox">
 			<label>
-				<input type="checkbox" data-field="disableSocialButtons"> <strong>Disable social buttons on posts</strong>
+				<input type="checkbox" data-field="disableSocialButtons"> <strong>Disable social buttons</strong>
 			</label>
 		</div>
 		<div class="checkbox">
