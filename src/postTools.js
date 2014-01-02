@@ -152,7 +152,7 @@ var winston = require('winston'),
 				// Delete the thread if it is the last undeleted post
 				threadTools.getLatestUndeletedPid(postData.tid, function(err, pid) {
 					if (err && err.message === 'no-undeleted-pids-found') {
-						threadTools.delete(postData.tid, function(err) {
+						threadTools.delete(postData.tid, uid, function(err) {
 							if (err) {
 								winston.error('Could not delete topic (tid: ' + postData.tid + ')', err.stack);
 							}

@@ -55,7 +55,7 @@ var path = require('path'),
 
 	/**
 	 *	`options` object	requires:	req, res
-	 *						accepts:	metaTags
+	 *						accepts:	metaTags, linkTags
 	 */
 	app.build_header = function (options, callback) {
 		var custom_header = {
@@ -83,8 +83,6 @@ var path = require('path'),
 					rel: 'apple-touch-icon',
 					href: meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png'
 				}],
-				metaString = utils.buildMetaTags(defaultMetaTags.concat(options.metaTags || [])),
-				linkTags = utils.buildLinkTags(defaultLinkTags.concat(options.linkTags || [])),
 				templateValues = {
 					cssSrc: meta.config['theme:src'] || nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
 					pluginCSS: plugins.cssFiles.map(function(file) { return { path: file + (meta.config['cache-buster'] ? '?v=' + meta.config['cache-buster'] : '') }; }),
@@ -96,15 +94,29 @@ var path = require('path'),
 					browserTitle: meta.config.title || 'NodeBB',
 					csrf: options.res.locals.csrf_token,
 					relative_path: nconf.get('relative_path'),
-					meta_tags: metaString,
-					link_tags: linkTags,
 					clientScripts: clientScripts,
 					navigation: custom_header.navigation,
 					'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
 					allowRegistration: meta.config.allowRegistration === undefined || parseInt(meta.config.allowRegistration, 10) === 1
+				},
+				escapeList = {
+					'&': '&amp;',
+					'<': '&lt;',
+					'>': '&gt;',
+					"'": '&apos;',
+					'"': '&quot;'
 				};
 
 			var uid = '0';
+
+			// Meta Tags
+			templateValues.meta_tags = utils.buildMetaTags(defaultMetaTags.concat(options.metaTags || []).map(function(tag) {
+				tag.content = tag.content.replace(/[&<>'"]/g, function(tag) {
+					return escapeList[tag] || tag;
+				});
+				return tag;
+			}));
+			templateValues.link_tags = utils.buildLinkTags(defaultLinkTags.concat(options.linkTags || []));
 
 			if(options.req.user && options.req.user.uid) {
 				uid = options.req.user.uid;

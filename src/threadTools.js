@@ -91,7 +91,7 @@ var winston = require('winston'),
 		}
 	}
 
-	ThreadTools.delete = function(tid, callback) {
+	ThreadTools.delete = function(tid, uid, callback) {
 		topics.delete(tid);
 
 		db.decrObjectField('global', 'topicCount');
@@ -112,7 +112,7 @@ var winston = require('winston'),
 		}
 	}
 
-	ThreadTools.restore = function(tid, socket, callback) {
+	ThreadTools.restore = function(tid, uid, callback) {
 		topics.restore(tid);
 		db.incrObjectField('global', 'topicCount');
 		ThreadTools.unlock(tid);

@@ -50,13 +50,20 @@
 			function createCollections() {
 				db.createCollection('objects', function(err, collection) {
 					if(err) {
-						winston.error("Error creating collection " + err.message);
+						winston.error('Error creating collection ' + err.message);
 						return;
 					}
+
 					if(collection) {
-						collection.ensureIndex({_key :1}, {background:true}, function(err, name){
+						collection.ensureIndex({_key :1}, {background:true}, function(err, name) {
 							if(err) {
-								winston.error("Error creating index " + err.message);
+								winston.error('Error creating index ' + err.message);
+							}
+						});
+
+						collection.ensureIndex({'expireAt':1}, {expireAfterSeconds:0, background:true}, function(err, name) {
+							if(err) {
+								winston.error('Error creating index ' + err.message);
 							}
 						});
 					}
@@ -64,13 +71,13 @@
 
 				db.createCollection('search', function(err, collection) {
 					if(err) {
-						winston.error("Error creating collection " + err.message);
+						winston.error('Error creating collection ' + err.message);
 						return;
 					}
 					if(collection) {
 						collection.ensureIndex({content:'text'}, {background:true}, function(err, name){
 							if(err) {
-								winston.error("Error creating index " + err.message);
+								winston.error('Error creating index ' + err.message);
 							}
 						});
 					}
@@ -241,6 +248,14 @@
 		});
 	}
 
+	module.expire = function(key, seconds, callback) {
+		module.expireAt(key, Math.round(Date.now() / 1000) + seconds, callback);
+	}
+
+	module.expireAt = function(key, timestamp, callback) {
+		module.setObjectField(key, 'expireAt', new Date(timestamp * 1000), callback);
+	}
+
 	//hashes
 	module.setObject = function(key, data, callback) {
 		data['_key'] = key;
@@ -254,6 +269,9 @@
 	module.setObjectField = function(key, field, value, callback) {
 		var data = {};
 		// if there is a '.' in the field name it inserts subdocument in mongo, replace '.'s with \uff0E
+		if(typeof field !== 'string') {
+			field = field.toString();
+		}
 		field = field.replace(/\./g, '\uff0E');
 		data[field] = value;
 		db.collection('objects').update({_key:key}, {$set:data}, {upsert:true, w: 1}, function(err, result) {
@@ -303,7 +321,7 @@
 
 		var _fields = {};
 		for(var i=0; i<fields.length; ++i) {
-			if(typeof fields[i] !== string) {
+			if(typeof fields[i] !== 'string') {
 				_fields[fields[i].toString().replace(/\./g, '\uff0E')] = 1;
 			} else {
 				_fields[fields[i].replace(/\./g, '\uff0E')] = 1;
@@ -348,6 +366,9 @@
 
 	module.isObjectField = function(key, field, callback) {
 		var data = {};
+		if(typeof field !== 'string') {
+			field = field.toString();
+		}
 		field = field.replace(/\./g, '\uff0E');
 		data[field] = '';
 		db.collection('objects').findOne({_key:key}, {fields:data}, function(err, item) {
@@ -360,6 +381,9 @@
 
 	module.deleteObjectField = function(key, field, callback) {
 		var data = {};
+		if(typeof field !== 'string') {
+			field = field.toString();
+		}
 		field = field.replace(/\./g, '\uff0E');
 		data[field] = "";
 		db.collection('objects').update({_key:key}, {$unset : data}, function(err, result) {
@@ -379,6 +403,9 @@
 
 	module.incrObjectFieldBy = function(key, field, value, callback) {
 		var data = {};
+		if(typeof field !== 'string') {
+			field = field.toString();
+		}
 		field = field.replace(/\./g, '\uff0E');
 		data[field] = value;
 		db.collection('objects').update({_key:key}, {$inc : data}, {upsert:true}, function(err, result) {

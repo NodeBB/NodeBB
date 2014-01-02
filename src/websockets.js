@@ -562,7 +562,7 @@ websockets.init = function(io) {
 		socket.on('api:topic.delete', function(data) {
 			threadTools.privileges(data.tid, uid, function(err, privileges) {
 				if (!err && privileges.editable) {
-					threadTools.delete(data.tid, function(err) {
+					threadTools.delete(data.tid, uid, function(err) {
 						if (!err) {
 							emitTopicPostStats();
 							socket.emit('api:topic.delete', {
@@ -578,7 +578,7 @@ websockets.init = function(io) {
 		socket.on('api:topic.restore', function(data) {
 			threadTools.privileges(data.tid, uid, function(err, privileges) {
 				if (!err && privileges.editable) {
-					threadTools.restore(data.tid, socket, function(err) {
+					threadTools.restore(data.tid, uid, function(err) {
 						emitTopicPostStats();
 
 						socket.emit('api:topic.restore', {
