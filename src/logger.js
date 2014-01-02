@@ -65,7 +65,6 @@ var opts = {
 			else opts.streams.log.f = process.stdout;
 		}
 		else {
-			console.log('CLOSING');
 			Logger.close(opts.streams.log);
 		}
 	}
