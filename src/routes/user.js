@@ -539,7 +539,7 @@ var fs = require('fs'),
 						if (!data.birthday) {
 							data.age = '';
 						} else {
-							data.age = new Date().getFullYear() - new Date(data.birthday).getFullYear();
+							data.age = Math.floor((new Date().getTime() - new Date(data.birthday).getTime()) / 31536000000);
 						}
 
 						function canSeeEmail() {
