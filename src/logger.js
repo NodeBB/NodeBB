@@ -3,11 +3,12 @@
  */
 
 var fs = require('fs'),
+	path = require('path'),
 	express = require('express'),
 	winston = require('winston'),
 	util = require('util'),
 	socketio = require('socket.io'),
-	meta = require('./meta.js');
+	meta = require('./meta');
 
 var opts = {
 	/*
@@ -72,10 +73,20 @@ var opts = {
 		/* Open the streams to log to: either a path or stdout */
 		var stream;
 		if(value && fs.existsSync(value)) {
-			stream = fs.createWriteStream(value, {flags: 'a'});
-		}
-		else
+			fs.stat(value, function(err, stats) {
+				if(stats.isDirectory()) {
+					stream = fs.createWriteStream(path.join(value, 'nodebb.log'), {flags: 'a'});
+				} else {
+					stream = fs.createWriteStream(value, {flags: 'a'});
+				}
+				stream.on('error', function(err) {
+					winston.error(err.message);
+				});
+			});
+
+		} else {
 			stream = process.stdout;
+		}
 		return stream;
 	}
 
@@ -112,8 +123,7 @@ var opts = {
 		 */
 		if(meta.config.loggerStatus > 0) {
 			return opts.express.ofn(req,res,next);
-		}
-		else {
+		} else {
 			return next();
 		}
 	}
@@ -140,11 +150,13 @@ var opts = {
 		for(var v in clients) {
 			var client = clients[v];
 
-			if(client.oEmit != undefined && client.oEmit != client.emit)
+			if(client.oEmit != undefined && client.oEmit != client.emit) {
 				client.emit = client.oEmit;
+			}
 
-			if(client.$oEmit != undefined && client.$oEmit != client.$emit)
+			if(client.$oEmit != undefined && client.$oEmit != client.$emit) {
 				client.$emit = client.$oEmit;
+			}
 		}
 	}
 
