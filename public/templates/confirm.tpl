@@ -2,6 +2,6 @@
 	<strong>{title}</strong>
 	<p>{text}</p>
 	<p>
-		<a href="/">[[notification:back_to_home]]</a>
+		<a href="/">[[notifications:back_to_home]]</a>
 	</p>
 </div>

@@ -103,7 +103,7 @@ var bcrypt = require('bcrypt'),
 
 				if (email !== undefined) {
 					db.setObjectField('email:uid', email, uid);
-					User.sendConfirmationEmail(uid, email);
+					User.email.verify(uid, email);
 				}
 
 				plugins.fireHook('action:user.create', {uid: uid, username: username, email: email, picture: gravatar, timestamp: timestamp});
@@ -823,45 +823,6 @@ var bcrypt = require('bcrypt'),
 		}
 	};
 
-	User.sendConfirmationEmail = function(uid, email) {
-		var confirm_code = utils.generateUUID(),
-			confirm_link = nconf.get('url') + 'confirm/' + confirm_code;
-
-		// Email confirmation code
-		var expiry_time = Date.now() / 1000 + 60 * 60 * 2;
-
-		db.setObjectField('email:confirm', email, confirm_code);
-
-		db.setObjectField('confirm:email', confirm_code, email);
-		db.setObjectField('confirm:email', confirm_code + ':expire', expiry_time);
-
-		// Send intro email w/ confirm code
-		User.getUserField(uid, 'username', function(err, username) {
-			Emailer.send('welcome', uid, {
-				'site_title': (meta.config['title'] || 'NodeBB'),
-				subject: 'Welcome to ' + (meta.config['title'] || 'NodeBB') + '!',
-				username: username,
-				'confirm_link': confirm_link
-			});
-		});
-		// var message = emailjs.message.create({
-		// 	text: confirm_email_plaintext,
-		// 	from: meta.config['email:from'] || 'localhost@example.org',
-		// 	to: email,
-		// 	subject: '[NodeBB] Registration Email Verification',
-		// 	attachment: [{
-		// 		data: confirm_email,
-		// 		alternative: true
-		// 	}]
-		// });
-
-		// emailjsServer.send(message, function(err, success) {
-		// 	if (err) {
-		// 		console.log(err);
-		// 	}
-		// });
-	};
-
 	User.pushNotifCount = function(uid) {
 		User.notifications.getUnreadCount(uid, function(err, count) {
 			if (!err) {
@@ -873,6 +834,32 @@ var bcrypt = require('bcrypt'),
 	};
 
 	User.email = {
+		verify: function(uid, email) {
+			var confirm_code = utils.generateUUID(),
+				confirm_link = nconf.get('url') + 'confirm/' + confirm_code;
+
+			async.series([
+				function(next) {
+					db.setObject('confirm:' + confirm_code, {
+						email: email,
+						uid: uid
+					}, next);
+				},
+				function(next) {
+					db.expireAt('confirm:' + confirm_code, Math.floor(Date.now() / 1000 + 60 * 60 * 2), next);
+				}
+			], function(err) {
+				// Send intro email w/ confirm code
+				User.getUserField(uid, 'username', function(err, username) {
+					Emailer.send('welcome', uid, {
+						'site_title': (meta.config['title'] || 'NodeBB'),
+						subject: 'Welcome to ' + (meta.config['title'] || 'NodeBB') + '!',
+						username: username,
+						'confirm_link': confirm_link
+					});
+				});
+			});
+		},
 		exists: function(socket, email, callback) {
 			User.getUidByEmail(email, function(err, exists) {
 				exists = !! exists;
@@ -886,37 +873,23 @@ var bcrypt = require('bcrypt'),
 			});
 		},
 		confirm: function(code, callback) {
-			db.getObjectFields('confirm:email', [code, code + ':expire'], function(err, data) {
+			db.getObject('confirm:' + code, function(err, confirmObj) {
 				if (err) {
-					return callback({
+					callback({
 						status:'error'
 					});
-				}
-
-				var email = data.email;
-				var expiry = data[code + ':expire'];
-				if (parseInt(expiry, 10) >= Date.now() / 1000) {
-
-					db.deleteObjectField('confirm:email', code);
-					db.deleteObjectField('confirm:email', code + ':expire');
-
-					return callback({
-						status: 'expired'
-					});
-				}
-
-				if (email !== null) {
-					db.setObjectField('email:confirm', email, true);
-
-					db.deleteObjectField('confirm:email', code);
-					db.deleteObjectField('confirm:email', code + ':expire');
-					callback({
-						status: 'ok'
-					});
 				} else {
-					callback({
-						status: 'not_ok'
-					});
+					if (confirmObj.uid && confirmObj.email) {
+						db.setObjectField('email:confirmed', confirmObj.email, '1', function() {
+							callback({
+								status: 'ok'
+							});
+						});
+					} else {
+						callback({
+							status: 'not_ok'
+						});
+					}
 				}
 			});
 		}

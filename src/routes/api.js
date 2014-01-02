@@ -221,7 +221,7 @@ var path = require('path'),
 						});
 					} else {
 						res.json({
-							'alert-class': 'alert-error',
+							'alert-class': 'alert-danger',
 							title: 'An error occurred...',
 							text: 'There was a problem validating your email address. Perhaps the code was invalid or has expired.'
 						});
