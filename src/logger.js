@@ -32,7 +32,6 @@ var opts = {
 
 	Logger.init = function(app) {
 		opts.express.app = app;
-		console.log(meta.config);
 		/* Open log file stream & initialize express logging if meta.config.logger* variables are set */
 		Logger.setup();
 	}
