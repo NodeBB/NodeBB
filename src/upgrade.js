@@ -121,8 +121,8 @@ Upgrade.upgrade = function(callback) {
 					}
 
 					for (var cid in cids) {
-						db.setObjectField('category:' + cid, 'link', '');
-						db.setObjectField('category:' + cid, 'class', 'col-md-3 col-xs-6');
+						db.setObjectField('category:' + cids[cid], 'link', '');
+						db.setObjectField('category:' + cids[cid], 'class', 'col-md-3 col-xs-6');
 					}
 
 					winston.info('[2013/12/31] Added categories.class, categories.link fields');
