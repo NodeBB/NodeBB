@@ -19,7 +19,7 @@ define(function() {
 			return parent.attr('data-uid');
 		}
 
-		  function updateUserBanButtons() {
+		function updateUserBanButtons() {
 			jQuery('.ban-btn').each(function(index, element) {
 				var banBtn = $(element);
 				var uid = getUID(banBtn);
@@ -31,31 +31,31 @@ define(function() {
 					banBtn.removeClass('disabled');
 				else
 					banBtn.removeClass('btn-warning');
-				    updateUserAdminButtons();
-
+					updateUserAdminButtons();
 			});
 		}
-        function updateUserAdminButtons() {
+
+		function updateUserAdminButtons() {
 			jQuery('.admin-btn').each(function(index, element) {
-				var banBtn = $(element);
-				var uid = getUID(banBtn);
-				if (isUserAdmin(banBtn) || uid === yourid)
-					
-				banBtn.attr('value', 'UnMake Admin').html('Remove as Admin');
-
-				else if (isUserBanned(banBtn))
-					banBtn.addClass('disabled');
-				else if (!isUserBanned(banBtn))
-					banBtn.removeClass('disabled');
+				var adminBtn = $(element);
+				var uid = getUID(adminBtn);
+				if (isUserAdmin(adminBtn)) {
+					adminBtn.attr('value', 'UnMake Admin').html('Remove Admin');
+					if (uid === yourid) {
+						adminBtn.addClass('disabled');
+					}
+				}
+				else if (isUserBanned(adminBtn))
+					adminBtn.addClass('disabled');
+				else if (!isUserBanned(adminBtn))
+					adminBtn.removeClass('disabled');
 				else
-					banBtn.removeClass('btn-warning');
+					adminBtn.removeClass('btn-warning');
 
 			});
 		}
-
 
 		function initUsers() {
-
 			updateUserBanButtons();
 			updateUserAdminButtons();
 
@@ -95,11 +95,16 @@ define(function() {
 				var uid = getUID(adminBtn);
 			
 				    if(uid === yourid){
-				    	alert("you can't remove yourself as admin");
+						app.alert({
+							title: 'Error',
+							message: 'You can\'t remove yourself as Administrator!',
+							type: 'danger',
+							timeout: 5000
+						});
 				    }
 					else if (!isAdmin) {
 						socket.emit('api:admin.user.makeAdmin', uid);
-						adminBtn.attr('value', 'UnMake Admin').html('Remove as Admin');
+						adminBtn.attr('value', 'UnMake Admin').html('Remove Admin');
 						parent.attr('data-admin', 1);
 						updateUserBanButtons();
 						
