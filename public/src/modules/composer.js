@@ -478,7 +478,6 @@ define(['taskbar'], function(taskbar) {
 
 		$(reader).on('loadend', function(e) {
 			var regex = /^data:.*;base64,(.*)$/;
-			console.log(file);
 			var matches = this.result.match(regex);
 
 			var fileData = {
