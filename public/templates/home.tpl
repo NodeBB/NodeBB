@@ -4,7 +4,7 @@
 
 <div class="row home" itemscope itemtype="http://www.schema.org/ItemList">
 	<!-- BEGIN categories -->
-	<div class="col-md-3 col-xs-6">
+	<div class="{categories.class}">
 		<a href="category/{categories.slug}" itemprop="url">
 			<meta itemprop="name" content="{categories.name}">
 			<h4><span class="badge {categories.badgeclass}">{categories.topic_count} </span> {categories.name}</h4>
