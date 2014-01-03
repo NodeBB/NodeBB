@@ -14,7 +14,7 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2014, 0, 1).getTime();
+	var	latestSchema = new Date(2014, 0, 3).getTime();
 
 	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -106,6 +106,30 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2013/12/31] maximumTitleLength skipped');
+				next();
+			}
+		},
+		function(next) {
+			// Custom classes for each category, adding link field for each category
+			thisSchemaDate = new Date(2014, 0, 3).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				db.getListRange('categories:cid', 0, -1, function(err, cids) {
+					if(err) {
+						return next(err);
+					}
+
+					for (var cid in cids) {
+						db.setObjectField('category:' + cid, 'link', '');
+						db.setObjectField('category:' + cid, 'class', 'col-md-3 col-xs-6');
+					}
+
+					winston.info('[2013/12/31] Added categories.class, categories.link fields');
+					next();
+				});
+			} else {
+				winston.info('[2014/1/3] categories.class, categories.link fields skipped');
 				next();
 			}
 		}
