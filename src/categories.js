@@ -217,6 +217,10 @@ var db = require('./database.js'),
 	};
 
 	Categories.getRecentReplies = function(cid, count, callback) {
+		if(count === 0) {
+			return callback(null, []);
+		}
+
 		db.getSortedSetRevRange('categories:recent_posts:cid:' + cid, 0, count - 1, function(err, pids) {
 
 			if (err) {
