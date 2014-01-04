@@ -468,6 +468,8 @@ var socket,
 
 			app.alternatingTitle('');
 		});
+
+		templates.setGlobal('relative_path', RELATIVE_PATH);
 	});
 
 	showWelcomeMessage = location.href.indexOf('loggedin') !== -1;
