@@ -138,9 +138,7 @@ var db = require('./database.js'),
 		db.getSortedSetRevRange('categories:' + cid + ':tid', start, stop, callback);
 	};
 
-	Categories.getActiveUsers = function(cid, callback) {
-		db.getSetMembers('cid:' + cid + ':active_users', callback);
-	};
+
 
 	Categories.getAllCategories = function(current_user, callback) {
 		db.getListRange('categories:cid', 0, -1, function(err, cids) {
@@ -268,25 +266,7 @@ var db = require('./database.js'),
 		});
 	};
 
-	Categories.moveActiveUsers = function(tid, oldCid, cid, callback) {
-		function updateUser(uid) {
-			Categories.addActiveUser(cid, uid);
-			Categories.isUserActiveIn(oldCid, uid, function(err, active) {
 
-				if (!err && !active) {
-					Categories.removeActiveUser(oldCid, uid);
-				}
-			});
-		}
-
-		topics.getUids(tid, function(err, uids) {
-			if (!err && uids) {
-				for (var i = 0; i < uids.length; ++i) {
-					updateUser(uids[i]);
-				}
-			}
-		});
-	};
 
 	Categories.getCategoryData = function(cid, callback) {
 		db.exists('category:' + cid, function(err, exists) {
@@ -395,14 +375,38 @@ var db = require('./database.js'),
 		});
 	};
 
-	Categories.addActiveUser = function(cid, uid) {
+	Categories.addActiveUser = function(cid, uid, timestamp) {
 		if(parseInt(uid, 10)) {
-			db.setAdd('cid:' + cid + ':active_users', uid);
+			db.sortedSetAdd('cid:' + cid + ':active_users', timestamp, uid);
 		}
 	};
 
 	Categories.removeActiveUser = function(cid, uid) {
-		db.setRemove('cid:' + cid + ':active_users', uid);
+		db.sortedSetRemove('cid:' + cid + ':active_users', uid);
+	};
+
+	Categories.getActiveUsers = function(cid, callback) {
+		db.getSortedSetRevRange('cid:' + cid + ':active_users', 0, 15, callback);
+	};
+
+	Categories.moveActiveUsers = function(tid, oldCid, cid, callback) {
+		function updateUser(uid) {
+			Categories.addActiveUser(cid, uid);
+			Categories.isUserActiveIn(oldCid, uid, function(err, active) {
+
+				if (!err && !active) {
+					Categories.removeActiveUser(oldCid, uid);
+				}
+			});
+		}
+
+		topics.getUids(tid, function(err, uids) {
+			if (!err && uids) {
+				for (var i = 0; i < uids.length; ++i) {
+					updateUser(uids[i]);
+				}
+			}
+		});
 	};
 
 	Categories.onNewPostMade = function(uid, tid, pid, timestamp) {
@@ -416,13 +420,7 @@ var db = require('./database.js'),
 				db.sortedSetAdd('categories:' + cid + ':tid', timestamp, tid);
 			}
 
-			db.setCount('cid:' + cid + ':active_users', function(err, amount) {
-				if (amount > 15) {
-					db.setRemoveRandom('cid:' + cid + ':active_users');
-				}
-
-				Categories.addActiveUser(cid, uid);
-			});
+			Categories.addActiveUser(cid, uid, timestamp);
 		});
 	}
 

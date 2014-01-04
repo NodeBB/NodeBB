@@ -14,7 +14,7 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2014, 0, 4).getTime();
+	var	latestSchema = new Date(2014, 0, 5).getTime();
 
 	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -133,7 +133,7 @@ Upgrade.upgrade = function(callback) {
 						db.setObjectField('category:' + cids[cid], 'class', 'col-md-3 col-xs-6');
 					}
 
-					winston.info('[2013/12/31] Added categories.class, categories.link fields');
+					winston.info('[2014/1/3] Added categories.class, categories.link fields');
 					next();
 				});
 			} else {
@@ -156,14 +156,58 @@ Upgrade.upgrade = function(callback) {
 						db.setObjectField('category:' + cids[cid], 'numRecentReplies', '2');
 					}
 
-					winston.info('[2013/12/31] Added categories.numRecentReplies fields');
+					winston.info('[2014/1/4] Added categories.numRecentReplies fields');
 					next();
 				});
 			} else {
-				winston.info('[2014/1/3] categories.numRecentReplies fields skipped');
+				winston.info('[2014/1/4] categories.numRecentReplies fields skipped');
 				next();
 			}
-		}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 0, 5).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				db.getListRange('categories:cid', 0, -1, function(err, cids) {
+					if(err) {
+						return next(err);
+					}
+
+					var timestamp = Date.now();
+
+					function upgradeCategory(cid, next) {
+						db.getSetMembers('cid:' + cid + ':active_users', function(err, uids) {
+							if(err) {
+								return next(err);
+							}
+
+							db.delete('cid:' + cid + ':active_users', function(err) {
+								if(err) {
+									return next(err);
+								}
+
+								for(var i=0; i<uids.length; ++i) {
+									db.sortedSetAdd('cid:' + cid + ':active_users', timestamp, uids[i]);
+								}
+								next();
+							});
+						});
+					}
+
+					async.each(cids, upgradeCategory, function(err) {
+						if(err) {
+							return next(err)
+						}
+						winston.info('[2014/1/5] Upgraded categories active users');
+						next();
+					});
+				});
+			} else {
+				winston.info('[2014/1/5] categories active users skipped');
+				next();
+			}
+		},
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 17!!!
 	], function(err) {
