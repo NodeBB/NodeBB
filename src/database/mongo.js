@@ -738,6 +738,21 @@
 		});
 	}
 
+	module.listRemoveAll = function(key, value, callback) {
+		db.collection('objects').update({_key: key }, { $pull: { array: value } }, function(err, result) {
+			if(err) {
+				if(callback) {
+					return callback(err);
+				}
+				return;
+			}
+
+			if(callback) {
+				callback(null, result);
+			}
+		});
+	}
+
 	module.getListRange = function(key, start, stop, callback) {
 
 		if(stop === -1) {

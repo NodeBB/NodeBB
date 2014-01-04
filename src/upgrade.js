@@ -14,7 +14,7 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2014, 0, 1).getTime();
+	var	latestSchema = new Date(2014, 0, 5).getTime();
 
 	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -65,8 +65,16 @@ Upgrade.upgrade = function(callback) {
 
 							async.each(uids, function(uid, next) {
 								User.getUserField(uid, 'username', function(err, username) {
-									newUserSlug = Utils.slugify(username);
-									User.setUserField(uid, 'userslug', newUserSlug, next);
+									if(err) {
+										return next(err);
+									}
+									if(username) {
+										newUserSlug = Utils.slugify(username);
+										User.setUserField(uid, 'userslug', newUserSlug, next);
+									} else {
+										winston.warn('uid '+ uid + ' doesn\'t have a valid username (' + username + '), skipping');
+										next(null);
+									}
 								});
 							}, function(err) {
 								next(err);
@@ -106,6 +114,97 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2013/12/31] maximumTitleLength skipped');
+				next();
+			}
+		},
+		function(next) {
+			// Custom classes for each category, adding link field for each category
+			thisSchemaDate = new Date(2014, 0, 3).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				db.getListRange('categories:cid', 0, -1, function(err, cids) {
+					if(err) {
+						return next(err);
+					}
+
+					for (var cid in cids) {
+						db.setObjectField('category:' + cids[cid], 'link', '');
+						db.setObjectField('category:' + cids[cid], 'class', 'col-md-3 col-xs-6');
+					}
+
+					winston.info('[2014/1/3] Added categories.class, categories.link fields');
+					next();
+				});
+			} else {
+				winston.info('[2014/1/3] categories.class, categories.link fields skipped');
+				next();
+			}
+		},
+		function(next) {
+			// Custom classes for each category, adding link field for each category
+			thisSchemaDate = new Date(2014, 0, 4).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				db.getListRange('categories:cid', 0, -1, function(err, cids) {
+					if(err) {
+						return next(err);
+					}
+
+					for (var cid in cids) {
+						db.setObjectField('category:' + cids[cid], 'numRecentReplies', '2');
+					}
+
+					winston.info('[2014/1/4] Added categories.numRecentReplies fields');
+					next();
+				});
+			} else {
+				winston.info('[2014/1/4] categories.numRecentReplies fields skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 0, 5).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				db.getListRange('categories:cid', 0, -1, function(err, cids) {
+					if(err) {
+						return next(err);
+					}
+
+					var timestamp = Date.now();
+
+					function upgradeCategory(cid, next) {
+						db.getSetMembers('cid:' + cid + ':active_users', function(err, uids) {
+							if(err) {
+								return next(err);
+							}
+
+							db.delete('cid:' + cid + ':active_users', function(err) {
+								if(err) {
+									return next(err);
+								}
+
+								for(var i=0; i<uids.length; ++i) {
+									db.sortedSetAdd('cid:' + cid + ':active_users', timestamp, uids[i]);
+								}
+								next();
+							});
+						});
+					}
+
+					async.each(cids, upgradeCategory, function(err) {
+						if(err) {
+							return next(err)
+						}
+						winston.info('[2014/1/5] Upgraded categories active users');
+						next();
+					});
+				});
+			} else {
+				winston.info('[2014/1/5] categories active users skipped');
 				next();
 			}
 		}

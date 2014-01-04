@@ -33,6 +33,9 @@
 			<i class='fa fa-pencil'></i>
 			<span id='postcount'>{users.postcount}</span>
 		</div>
+	    <div>
+			<a href="#" class="btn btn-default admin-btn">Make Admin</a>
+		</div>
 		<div>
 			<a href="#" class="btn btn-default ban-btn">Ban</a>
 		</div>

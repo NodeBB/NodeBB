@@ -97,6 +97,9 @@
 								<div class="btn-group post-tools">
 									<button class="btn btn-sm btn-default edit" type="button" title="[[topic:edit]]"><i class="fa fa-pencil"></i></button>
 									<button class="btn btn-sm btn-default delete" type="button" title="[[topic:delete]]"><i class="fa fa-trash-o"></i></button>
+									<!-- IF !@first -->
+									<button class="btn btn-sm btn-default fork-post" type="button" title="[[topic:fork]]"><i class="fa fa-code-fork"></i></button>
+									<!-- ENDIF !@first -->
 								</div>
 								<!-- ENDIF posts.display_moderator_tools -->
 							</div>

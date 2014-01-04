@@ -28,63 +28,70 @@ var db = require('./database'),
 			return callback(new Error('invalid-user'), null);
 		}
 
-		topics.isLocked(tid, function(err, locked) {
-			if(err) {
-				return callback(err, null);
-			} else if(locked) {
-				return callback(new Error('topic-locked'), null);
-			}
-
-			db.incrObjectField('global', 'nextPid', function(err, pid) {
-				if(err) {
-					return callback(err, null);
+		async.waterfall([
+			function(next) {
+				topics.isLocked(tid, next);
+			},
+			function(locked, next) {
+				if(locked) {
+					return next(new Error('topic-locked'));
 				}
 
+				db.incrObjectField('global', 'nextPid', next);
+			},
+			function(pid, next) {
 				plugins.fireHook('filter:post.save', content, function(err, newContent) {
+					next(err, pid, newContent)
+				});
+			},
+			function(pid, newContent, next) {
+				var timestamp = Date.now(),
+					postData = {
+						'pid': pid,
+						'uid': uid,
+						'tid': tid,
+						'content': newContent,
+						'timestamp': timestamp,
+						'reputation': 0,
+						'editor': '',
+						'edited': 0,
+						'deleted': 0
+					};
+
+				db.setObject('post:' + pid, postData, function(err) {
 					if(err) {
-						return callback(err, null);
+						return next(err);
 					}
 
-					var timestamp = Date.now(),
-						postData = {
-							'pid': pid,
-							'uid': uid,
-							'tid': tid,
-							'content': newContent,
-							'timestamp': timestamp,
-							'reputation': 0,
-							'editor': '',
-							'edited': 0,
-							'deleted': 0
-						};
-
-					db.setObject('post:' + pid, postData);
 					db.incrObjectField('global', 'postCount');
 
 					topics.onNewPostMade(tid, pid, timestamp);
 					categories.onNewPostMade(uid, tid, pid, timestamp);
 					user.onNewPostMade(uid, tid, pid, timestamp);
 
-					plugins.fireHook('filter:post.get', postData, function(err, newPostData) {
-						if(err) {
-							return callback(err, null);
-						}
-
-						postTools.parse(newPostData.content, function(err, content) {
-							if(err) {
-								return callback(err, null);
-							}
-							newPostData.content = content;
-
-							plugins.fireHook('action:post.save', newPostData);
-
-							db.searchIndex('post', content, pid);
-
-							callback(null, newPostData);
-						});
-					});
+					next(null, postData);
 				});
-			});
+			},
+			function(postData, next) {
+				plugins.fireHook('filter:post.get', postData, next);
+			},
+			function(postData, next) {
+				postTools.parse(postData.content, function(err, content) {
+					if(err) {
+						return next(err, null);
+					}
+
+					postData.content = content;
+
+					plugins.fireHook('action:post.save', postData);
+
+					db.searchIndex('post', content, postData.pid);
+
+					next(null, postData);
+				});
+			}
+		], function(err, postData) {
+			callback(err, postData);
 		});
 	};
 

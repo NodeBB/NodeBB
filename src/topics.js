@@ -23,6 +23,50 @@ var async = require('async'),
 
 (function(Topics) {
 
+	Topics.create = function(uid, title, cid, callback) {
+		db.incrObjectField('global', 'nextTid', function(err, tid) {
+			if(err) {
+				return callback(err);
+			}
+
+			db.setAdd('topics:tid', tid);
+
+			var slug = tid + '/' + utils.slugify(title),
+				timestamp = Date.now();
+
+			db.setObject('topic:' + tid, {
+				'tid': tid,
+				'uid': uid,
+				'cid': cid,
+				'title': title,
+				'slug': slug,
+				'timestamp': timestamp,
+				'lastposttime': 0,
+				'postcount': 0,
+				'viewcount': 0,
+				'locked': 0,
+				'deleted': 0,
+				'pinned': 0
+			}, function(err) {
+				if(err) {
+					return callback(err);
+				}
+				db.searchIndex('topic', title, tid);
+
+				user.addTopicIdToUser(uid, tid);
+
+				// in future it may be possible to add topics to several categories, so leaving the door open here.
+				db.sortedSetAdd('categories:' + cid + ':tid', timestamp, tid);
+				db.incrObjectField('category:' + cid, 'topic_count');
+				db.incrObjectField('global', 'topicCount');
+
+				feed.updateCategory(cid);
+
+				callback(null, tid);
+			});
+		});
+	};
+
 	Topics.post = function(uid, title, content, cid, callback) {
 
 		categoryTools.privileges(cid, uid, function(err, privileges) {
@@ -61,40 +105,10 @@ var async = require('async'),
 					return callback(new Error('too-many-posts'), null);
 				}
 
-				db.incrObjectField('global', 'nextTid', function(err, tid) {
+				Topics.create(uid, title, cid, function(err, tid) {
 					if(err) {
 						return callback(err);
 					}
-
-					db.setAdd('topics:tid', tid);
-
-					var slug = tid + '/' + utils.slugify(title);
-					var timestamp = Date.now();
-					db.setObject('topic:' + tid, {
-						'tid': tid,
-						'uid': uid,
-						'cid': cid,
-						'title': title,
-						'slug': slug,
-						'timestamp': timestamp,
-						'lastposttime': 0,
-						'postcount': 0,
-						'viewcount': 0,
-						'locked': 0,
-						'deleted': 0,
-						'pinned': 0
-					});
-
-					db.searchIndex('topic', title, tid);
-
-					user.addTopicIdToUser(uid, tid);
-
-					// in future it may be possible to add topics to several categories, so leaving the door open here.
-					db.sortedSetAdd('categories:' + cid + ':tid', timestamp, tid);
-					db.incrObjectField('category:' + cid, 'topic_count');
-					db.incrObjectField('global', 'topicCount');
-
-					feed.updateCategory(cid);
 
 					Topics.reply(tid, uid, content, function(err, postData) {
 						if(err) {
@@ -179,6 +193,40 @@ var async = require('async'),
 					postData.relativeTime = new Date(postData.timestamp).toISOString();
 
 					callback(null, postData);
+				});
+			});
+		});
+	}
+
+	Topics.createTopicFromPost = function(pid, callback) {
+		posts.getPostData(pid, function(err, postData) {
+			if(err) {
+				return callback(err);
+			}
+
+			posts.getCidByPid(pid, function(err, cid) {
+				if(err) {
+					return callback(err);
+				}
+
+				// TODO : title should be given by client
+				var title = postData.content.substr(0, 20);
+
+				Topics.create(postData.uid, title, cid, function(err, tid) {
+					if(err) {
+						return callback(err);
+					}
+
+					Topics.removePostFromTopic(postData.tid, postData.pid);
+					Topics.decreasePostCount(postData.tid);
+
+					posts.setPostField(pid, 'tid', tid);
+
+					Topics.onNewPostMade(tid, postData.pid, postData.timestamp);
+
+					Topics.getTopicData(tid, function(err, topicData) {
+						callback(err, topicData);
+					});
 				});
 			});
 		});
@@ -916,6 +964,10 @@ var async = require('async'),
 		db.incrObjectField('topic:' + tid, 'postcount', callback);
 	}
 
+	Topics.decreasePostCount = function(tid, callback) {
+		db.decrObjectField('topic:' + tid, 'postcount', callback);
+	}
+
 	Topics.increaseViewCount = function(tid, callback) {
 		db.incrObjectField('topic:' + tid, 'viewcount', callback);
 	}
@@ -942,6 +994,10 @@ var async = require('async'),
 
 	Topics.addPostToTopic = function(tid, pid) {
 		db.listAppend('tid:' + tid + ':posts', pid);
+	}
+
+	Topics.removePostFromTopic = function(tid, pid) {
+		db.listRemoveAll('tid:' + tid + ':posts', pid);
 	}
 
 	Topics.getPids = function(tid, callback) {

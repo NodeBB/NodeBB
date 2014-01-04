@@ -402,6 +402,10 @@
 		redisClient.rpop(key, callback);
 	}
 
+	module.listRemoveAll = function(key, value, callback) {
+		redisClient.lrem(key, 0, value, callback);
+	}
+
 	module.getListRange = function(key, start, stop, callback) {
 		redisClient.lrange(key, start, stop, callback);
 	}

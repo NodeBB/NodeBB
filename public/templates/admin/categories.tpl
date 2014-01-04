@@ -76,6 +76,21 @@
 									</div>
 								</div>
 							</div>
+							<div class="row">
+								<div class="col-sm-4 col-xs-12">
+									<div class="form-group">
+										<label for="cid-{categories.cid}-class">Custom Class</label>
+										<input id="cid-{categories.cid}-class" type="text" class="form-control" placeholder="col-md-6 col-xs-6" data-name="class" value="{categories.class}" />
+									</div>
+								</div>
+								<div class="col-sm-4 col-xs-12">
+									<div class="form-group">
+										<label for="cid-{categories.cid}-numRecentReplies"># of Recent Replies Displayed</label>
+										<input id="cid-{categories.cid}-numRecentReplies" type="text" class="form-control" placeholder="2" data-name="numRecentReplies" value="{categories.numRecentReplies}" />
+									</div>
+								</div>
+							</div>
+
 
 							<input type="hidden" data-name="order" data-value="{categories.order}"></input>
 						</form>
