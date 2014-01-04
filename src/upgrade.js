@@ -72,7 +72,7 @@ Upgrade.upgrade = function(callback) {
 										newUserSlug = Utils.slugify(username);
 										User.setUserField(uid, 'userslug', newUserSlug, next);
 									} else {
-										winston.warn('uid '+ uid + 'doesn\'t have a valid username (' + username + '), skipping');
+										winston.warn('uid '+ uid + ' doesn\'t have a valid username (' + username + '), skipping');
 										next(null);
 									}
 								});
