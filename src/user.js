@@ -755,39 +755,21 @@ var bcrypt = require('bcrypt'),
 					db.setObjectField('reset:uid', reset_code, uid);
 					db.setObjectField('reset:expiry', reset_code, (60 * 60) + new Date() / 1000 | 0); // Active for one hour
 
-					var reset_link = nconf.get('url') + 'reset/' + reset_code,
-						reset_email = global.templates['emails/reset'].parse({
-							'RESET_LINK': reset_link
-						}),
-						reset_email_plaintext = global.templates['emails/reset_plaintext'].parse({
-							'RESET_LINK': reset_link
-						});
+					var reset_link = nconf.get('url') + 'reset/' + reset_code;
 
-					var message = emailjs.message.create({
-						text: reset_email_plaintext,
-						from: meta.config['email:from'] ? meta.config['email:from'] : 'localhost@example.org',
-						to: email,
-						subject: 'Password Reset Requested',
-						attachment: [{
-							data: reset_email,
-							alternative: true
-						}]
+					Emailer.send('reset', uid, {
+						'site_title': (meta.config['title'] || 'NodeBB'),
+						'reset_link': reset_link,
+
+						subject: 'Password Reset Requested - ' + (meta.config['title'] || 'NodeBB') + '!',
+						template: 'reset',
+						uid: uid
 					});
 
-					emailjsServer.send(message, function(err, success) {
-						if (err === null) {
-							socket.emit('user.send_reset', {
-								status: "ok",
-								message: "code-sent",
-								email: email
-							});
-						} else {
-							socket.emit('user.send_reset', {
-								status: "error",
-								message: "send-failed"
-							});
-							winston.err(err);
-						}
+					socket.emit('user.send_reset', {
+						status: "ok",
+						message: "code-sent",
+						email: email
 					});
 				} else {
 					socket.emit('user.send_reset', {
@@ -853,9 +835,12 @@ var bcrypt = require('bcrypt'),
 				User.getUserField(uid, 'username', function(err, username) {
 					Emailer.send('welcome', uid, {
 						'site_title': (meta.config['title'] || 'NodeBB'),
-						subject: 'Welcome to ' + (meta.config['title'] || 'NodeBB') + '!',
 						username: username,
-						'confirm_link': confirm_link
+						'confirm_link': confirm_link,
+
+						subject: 'Welcome to ' + (meta.config['title'] || 'NodeBB') + '!',
+						template: 'welcome',
+						uid: uid
 					});
 				});
 			});

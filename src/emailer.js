@@ -62,7 +62,10 @@ Emailer.send = function(template, uid, params) {
 					from: Meta.config['email:from'] || 'no-reply@localhost.lan',
 					subject: params.subject,
 					html: results.html,
-					plaintext: results.plaintext
+					plaintext: results.plaintext,
+
+					template: template,
+					uid: uid
 				});
 			}
 		});
