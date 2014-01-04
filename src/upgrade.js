@@ -145,14 +145,14 @@ Upgrade.upgrade = function(callback) {
 					}
 
 					for (var cid in cids) {
-						db.setObjectField('category:' + cids[cid], 'numRecentTopics', '2');
+						db.setObjectField('category:' + cids[cid], 'numRecentReplies', '2');
 					}
 
-					winston.info('[2013/12/31] Added categories.numRecentTopics fields');
+					winston.info('[2013/12/31] Added categories.numRecentReplies fields');
 					next();
 				});
 			} else {
-				winston.info('[2014/1/3] categories.numRecentTopics fields skipped');
+				winston.info('[2014/1/3] categories.numRecentReplies fields skipped');
 				next();
 			}
 		}

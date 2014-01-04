@@ -85,8 +85,8 @@
 								</div>
 								<div class="col-sm-4 col-xs-12">
 									<div class="form-group">
-										<label for="cid-{categories.cid}-numRecentTopics"># of Recent Topics Displayed</label>
-										<input id="cid-{categories.cid}-numRecentTopics" type="text" class="form-control" placeholder="2" data-name="numRecentTopics" value="{categories.numRecentTopics}" />
+										<label for="cid-{categories.cid}-numRecentReplies"># of Recent Replies Displayed</label>
+										<input id="cid-{categories.cid}-numRecentReplies" type="text" class="form-control" placeholder="2" data-name="numRecentReplies" value="{categories.numRecentReplies}" />
 									</div>
 								</div>
 							</div>
