@@ -11,10 +11,10 @@
 </p>
 
 <blockquote>
-	{{reset_link}}
+	{reset_link}
 </blockquote>
 
 <p>
 	Thanks!<br />
-	<strong>{{site_title}}</strong>
+	<strong>{site_title}</strong>
 </p>
