@@ -349,7 +349,9 @@
 
 						if (blockInfo) {
 							checkConditional('@first', blockInfo.iterator === 0);
+							checkConditional('!@first', blockInfo.iterator !== 0);
 							checkConditional('@last', blockInfo.iterator === blockInfo.total);
+							checkConditional('!@last', blockInfo.iterator !== blockInfo.total);
 						}
 
 						template = replace(namespace + d, data[d], template);
