@@ -18,6 +18,7 @@ var path = require('path'),
 
 (function (Api) {
 	Api.createRoutes = function (app) {
+
 		app.namespace('/api', function () {
 			app.get('/get_templates_listing', function (req, res) {
 				utils.walk(path.join(__dirname, '../../', 'public/templates'), function (err, data) {

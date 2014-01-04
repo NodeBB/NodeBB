@@ -126,92 +126,94 @@
 	}
 
 	Auth.createRoutes = function(app) {
-		app.post('/logout', function(req, res) {
-			if (req.user && req.user.uid > 0) {
-				winston.info('[Auth] Session ' + req.sessionID + ' logout (uid: ' + req.user.uid + ')');
+		app.namespace(nconf.get('relative_path'), function () {
+			app.post('/logout', function(req, res) {
+				if (req.user && req.user.uid > 0) {
+					winston.info('[Auth] Session ' + req.sessionID + ' logout (uid: ' + req.user.uid + ')');
 
-				var ws = require('./../websockets');
-				ws.logoutUser(req.user.uid);
+					var ws = require('./../websockets');
+					ws.logoutUser(req.user.uid);
 
-				req.logout();
+					req.logout();
+				}
+
+				res.send(200)
+			});
+
+			for (var i in login_strategies) {
+				var strategy = login_strategies[i];
+				app.get(strategy.url, passport.authenticate(strategy.name, {
+					scope: strategy.scope
+				}));
+
+				app.get(strategy.callbackURL, passport.authenticate(strategy.name, {
+					successRedirect: '/',
+					failureRedirect: '/login'
+				}));
 			}
 
-			res.send(200)
-		});
-
-		for (var i in login_strategies) {
-			var strategy = login_strategies[i];
-			app.get(strategy.url, passport.authenticate(strategy.name, {
-				scope: strategy.scope
-			}));
-
-			app.get(strategy.callbackURL, passport.authenticate(strategy.name, {
-				successRedirect: '/',
-				failureRedirect: '/login'
-			}));
-		}
-
-		app.get('/reset/:code', function(req, res) {
-			app.build_header({
-				req: req,
-				res: res
-			}, function(err, header) {
-				res.send(header + app.create_route('reset/' + req.params.code) + templates['footer']);
-			});
-		});
-
-		app.get('/reset', function(req, res) {
-			app.build_header({
-				req: req,
-				res: res
-			}, function(err, header) {
-				res.send(header + app.create_route('reset') + templates['footer']);
-			});
-		});
-
-		app.post('/login', function(req, res, next) {
-			passport.authenticate('local', function(err, user, info) {
-				if (err) {
-					return next(err);
-				}
-				if (!user) {
-					return res.send({
-						success: false,
-						message: info.message
-					});
-				}
-				req.login({
-					uid: user.uid
-				}, function() {
-					res.send({
-						success: true,
-						message: 'authentication succeeded'
-					});
+			app.get('/reset/:code', function(req, res) {
+				app.build_header({
+					req: req,
+					res: res
+				}, function(err, header) {
+					res.send(header + app.create_route('reset/' + req.params.code) + templates['footer']);
 				});
-			})(req, res, next);
-		});
+			});
 
-		app.post('/register', function(req, res) {
-			if(meta.config.allowRegistration !== undefined && parseInt(meta.config.allowRegistration, 10) === 0) {
-				return res.send(403);
-			}
+			app.get('/reset', function(req, res) {
+				app.build_header({
+					req: req,
+					res: res
+				}, function(err, header) {
+					res.send(header + app.create_route('reset') + templates['footer']);
+				});
+			});
 
-			user.create(req.body.username, req.body.password, req.body.email, function(err, uid) {
-				if (err === null && uid) {
+			app.post('/login', function(req, res, next) {
+				passport.authenticate('local', function(err, user, info) {
+					if (err) {
+						return next(err);
+					}
+					if (!user) {
+						return res.send({
+							success: false,
+							message: info.message
+						});
+					}
 					req.login({
-						uid: uid
+						uid: user.uid
 					}, function() {
-
-						require('./../websockets').emitUserCount();
-
-						if(req.body.referrer)
-							res.redirect(req.body.referrer);
-						else
-							res.redirect(nconf.get('relative_path') + '/');
+						res.send({
+							success: true,
+							message: 'authentication succeeded'
+						});
 					});
-				} else {
-					res.redirect(nconf.get('relative_path') + '/register');
+				})(req, res, next);
+			});
+
+			app.post('/register', function(req, res) {
+				if(meta.config.allowRegistration !== undefined && parseInt(meta.config.allowRegistration, 10) === 0) {
+					return res.send(403);
 				}
+
+				user.create(req.body.username, req.body.password, req.body.email, function(err, uid) {
+					if (err === null && uid) {
+						req.login({
+							uid: uid
+						}, function() {
+
+							require('./../websockets').emitUserCount();
+
+							if(req.body.referrer)
+								res.redirect(req.body.referrer);
+							else
+								res.redirect(nconf.get('relative_path') + '/');
+						});
+					} else {
+						res.redirect(nconf.get('relative_path') + '/register');
+					}
+				});
 			});
 		});
 	}
