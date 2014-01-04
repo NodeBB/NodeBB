@@ -65,8 +65,16 @@ Upgrade.upgrade = function(callback) {
 
 							async.each(uids, function(uid, next) {
 								User.getUserField(uid, 'username', function(err, username) {
-									newUserSlug = Utils.slugify(username);
-									User.setUserField(uid, 'userslug', newUserSlug, next);
+									if(err) {
+										return next(err);
+									}
+									if(username) {
+										newUserSlug = Utils.slugify(username);
+										User.setUserField(uid, 'userslug', newUserSlug, next);
+									} else {
+										winston.warn('uid '+ uid + 'doesn\'t have a valid username (' + username + '), skipping');
+										next(null);
+									}
 								});
 							}, function(err) {
 								next(err);
