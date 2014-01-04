@@ -839,8 +839,8 @@ var path = require('path'),
 							app[routes[route].method || 'get'](routes[route].route, function(req, res) {
 								routes[route].options(req, res, function(options) {
 									app.build_header({
-										req: options.req,
-										res: options.res
+										req: options.req || req,
+										res: options.res || res
 									}, function (err, header) {
 										res.send(header + options.content + templates.footer);
 									});
