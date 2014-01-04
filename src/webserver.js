@@ -1,11 +1,10 @@
 var path = require('path'),
 	fs = require('fs'),
-
+	nconf = require('nconf'),
 	express = require('express'),
 	express_namespace = require('express-namespace'),
 	WebServer = express(),
-	server = require('http').createServer(WebServer),
-	nconf = require('nconf'),
+	server,
 	winston = require('winston'),
 	validator = require('validator'),
 	async = require('async'),
@@ -29,6 +28,16 @@ var path = require('path'),
 	feed = require('./feed'),
 	plugins = require('./plugins'),
 	logger = require('./logger');
+
+if(nconf.get('ssl')) {
+	server = require('https').createServer({
+		key: fs.readFileSync(nconf.get('ssl').key),
+  		cert: fs.readFileSync(nconf.get('ssl').cert)
+	}, WebServer);
+} else {
+	server = require('http').createServer(WebServer);
+}
+
 
 (function (app) {
 	"use strict";

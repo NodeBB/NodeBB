@@ -63,7 +63,7 @@
 	<footer id="footer" class="container footer hide">
 		{footerHTML}
 		<div class="copyright">
-			Copyright &copy; 2013 <a target="_blank" href="http://www.nodebb.com">NodeBB Forums</a> | <a target="_blank" href="//github.com/designcreateplay/NodeBB/graphs/contributors">Contributors</a>
+			Copyright &copy; 2013 <a target="_blank" href="https://www.nodebb.com">NodeBB Forums</a> | <a target="_blank" href="//github.com/designcreateplay/NodeBB/graphs/contributors">Contributors</a>
 		</div>
 	</footer>
 
