@@ -25,6 +25,15 @@
 
 	module.exports = translator;
 
+	// Use this in plugins to add your own translation files.
+	translator.addTranslation = function(filename, translations) {
+		files.loaded[filename] = translations;
+	};
+
+	translator.getLanguage = function() {
+		return DEFAULT_LANGUAGE;
+	};
+
 	translator.get = function (key, callback) {
 		var parsedKey = key.split(':'),
 			languageFile = parsedKey[0];
