@@ -79,8 +79,14 @@
 							<div class="row">
 								<div class="col-sm-4 col-xs-12">
 									<div class="form-group">
-										<label for="cid-{categories.cid}-name">Custom Class</label>
-										<input id="cid-{categories.cid}-name" type="text" class="form-control" placeholder="Custom Class" data-name="class" value="{categories.class}" />
+										<label for="cid-{categories.cid}-class">Custom Class</label>
+										<input id="cid-{categories.cid}-class" type="text" class="form-control" placeholder="col-md-6 col-xs-6" data-name="class" value="{categories.class}" />
+									</div>
+								</div>
+								<div class="col-sm-4 col-xs-12">
+									<div class="form-group">
+										<label for="cid-{categories.cid}-numRecentTopics"># of Recent Topics Displayed</label>
+										<input id="cid-{categories.cid}-numRecentTopics" type="text" class="form-control" placeholder="2" data-name="numRecentTopics" value="{categories.show}" />
 									</div>
 								</div>
 							</div>
