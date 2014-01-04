@@ -6,6 +6,8 @@
 	if ('undefined' === typeof window) {
 		fs = require('fs');
 		XRegExp = require('xregexp').XRegExp;
+	} else {
+		XRegExp = window.XRegExp;
 	}
 
 
