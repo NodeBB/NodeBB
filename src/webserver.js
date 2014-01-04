@@ -32,7 +32,7 @@ var path = require('path'),
 if(nconf.get('ssl')) {
 	server = require('https').createServer({
 		key: fs.readFileSync(nconf.get('ssl').key),
-  		cert: fs.readFileSync(nconf.get('ssl').cert)
+		cert: fs.readFileSync(nconf.get('ssl').cert)
 	}, WebServer);
 } else {
 	server = require('http').createServer(WebServer);
