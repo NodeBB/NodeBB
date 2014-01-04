@@ -334,13 +334,13 @@ define(['composer'], function(composer) {
 			return false;
 		});
 
-		$('#post-container').delegate('.edit', 'click', function(e) {
+		$('#post-container').on('click', '.edit', function(e) {
 			var pid = $(this).parents('li').attr('data-pid');
 
 			composer.editPost(pid);
 		});
 
-		$('#post-container').delegate('.delete', 'click', function(e) {
+		$('#post-container').on('click', '.delete', function(e) {
 			var pid = $(this).parents('li').attr('data-pid'),
 				postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
 				deleteAction = !postEl.hasClass('deleted') ? true : false,
@@ -368,6 +368,21 @@ define(['composer'], function(composer) {
 				}
 			}
 		});
+
+		$('#post-container').on('click', '.fork-post', function(e) {
+			var post = $(this).parents('li'),
+				pid = post.attr('data-pid');
+
+			socket.emit('api:topic.createTopicFromPost', {pid:pid}, function(err) {
+				if(err) {
+					return app.alertError(err.message);
+				}
+				post.fadeOut(500, function() {
+					post.remove();
+				});
+			});
+		});
+
 
 		$('#post-container').on('click', '.chat', function(e) {
 			var username = $(this).parents('li.row').attr('data-username');

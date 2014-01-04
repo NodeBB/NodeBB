@@ -622,6 +622,12 @@ websockets.init = function(io) {
 			});
 		});
 
+		socket.on('api:topic.createTopicFromPost', function(data, callback) {
+			topics.createTopicFromPost(data.pid, function(err, data) {
+				callback(err?{message:err.message}:null, data);
+			});
+		});
+
 		socket.on('api:topic.move', function(data) {
 			threadTools.move(data.tid, data.cid, socket);
 		});

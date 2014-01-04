@@ -137,7 +137,7 @@ var winston = require('winston'),
 			events.logPostDelete(uid, pid);
 
 			posts.getPostFields(pid, ['tid', 'uid'], function(err, postData) {
-				db.incrObjectFieldBy('topic:' + postData.tid, 'postcount', -1);
+				topics.decreasePostCount(postData.tid);
 
 				user.decrementUserFieldBy(postData.uid, 'postcount', 1, function(err, postcount) {
 					db.sortedSetAdd('users:postcount', postcount, postData.uid);
@@ -193,7 +193,7 @@ var winston = require('winston'),
 			events.logPostRestore(uid, pid);
 
 			posts.getPostFields(pid, ['tid', 'uid', 'content'], function(err, postData) {
-				db.incrObjectFieldBy('topic:' + postData.tid, 'postcount', 1);
+				topics.increasePostCount(postData.tid);
 
 				user.incrementUserFieldBy(postData.uid, 'postcount', 1);
 
