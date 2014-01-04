@@ -99,7 +99,7 @@
 
 			str = str.replace(/^\s+|\s+$/g, ''); // trim
 			str = str.toLowerCase();
-			str = XRegExp.replace(str, invalidChars, '');
+			str = XRegExp.replace(str, invalidChars, '-');
 			str = str.replace(/\s+/g, '-') // collapse whitespace and replace by -
 			str = str.replace(/-+/g, '-'); // collapse dashes
 

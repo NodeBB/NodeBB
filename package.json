@@ -45,7 +45,6 @@
     "cron": "~1.0.1",
     "semver": "~2.2.1",
     "string": "~1.7.0",
-    "handlebars": "~1.2.1",
     "xregexp": "~2.0.0"
   },
   "optionalDependencies": {

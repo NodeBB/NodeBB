@@ -4,7 +4,7 @@ We received a request to reset your password, possibly because you have forgotte
 
 To continue with the password reset, please click on the following link:
 
-    {RESET_LINK}
+    {reset_link}
 
 Thanks!
-NodeBB
+{site_title}

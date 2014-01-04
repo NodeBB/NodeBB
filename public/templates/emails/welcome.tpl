@@ -1,9 +1,9 @@
 <p>
-	Hello {{username}},
+	Hello {username},
 </p>
 
 <p>
-	<strong>Thank you for registering with {{site_title}}!</strong>
+	<strong>Thank you for registering with {site_title}!</strong>
 </p>
 
 <p>
@@ -11,10 +11,10 @@
 </p>
 
 <blockquote>
-	{{confirm_link}}
+	{confirm_link}
 </blockquote>
 
 <p>
 	Thanks!<br />
-	<strong>{{site_title}}</strong>
+	<strong>{site_title}</strong>
 </p>
