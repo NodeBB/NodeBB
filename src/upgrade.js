@@ -207,7 +207,7 @@ Upgrade.upgrade = function(callback) {
 				winston.info('[2014/1/5] categories active users skipped');
 				next();
 			}
-		},
+		}
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 17!!!
 	], function(err) {
