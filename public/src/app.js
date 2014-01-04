@@ -23,7 +23,7 @@ var socket,
 				} else {
 					var max_reconnection_attemps = 5;
 					var reconnection_delay = 200;
-					socket = io.connect(RELATIVE_PATH, {
+					socket = io.connect('', {
 						'max reconnection attempts': max_reconnection_attemps,
 						'reconnection delay': reconnection_delay
 					});
@@ -468,6 +468,8 @@ var socket,
 
 			app.alternatingTitle('');
 		});
+
+		templates.setGlobal('relative_path', RELATIVE_PATH);
 	});
 
 	showWelcomeMessage = location.href.indexOf('loggedin') !== -1;

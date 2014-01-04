@@ -6,7 +6,9 @@
 		available_templates = [],
 		parsed_variables = {};
 
-	module.exports = templates = {};
+	module.exports = templates = {
+		"globals": {}
+	};
 
 	try {
 		fs = require('fs');
@@ -242,6 +244,10 @@
 		parsed_variables[key] = value;
 	}
 
+	templates.setGlobal = function(key, value) {
+		templates.globals[key] = value;
+	}
+
 	//modified from https://github.com/psychobunny/dcp.templates
 	var parse = function (data) {
 		var self = this;
@@ -282,6 +288,13 @@
 		var template = this.html,
 			regex, block;
 
+		// registering globals
+		for (var g in templates.globals) {
+			if (templates.globals.hasOwnProperty(g)) {
+				data[g] = data[g] || templates.globals[g];
+			}
+		}
+		
 		return (function parse(data, namespace, template, blockInfo) {
 			if (!data || data.length == 0) {
 				template = '';

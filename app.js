@@ -97,6 +97,8 @@
 					notifications = require('./src/notifications'),
 					upgrade = require('./src/upgrade');
 
+				templates.setGlobal('relative_path', nconf.get('relative_path'));
+
 				upgrade.check(function(schema_ok) {
 					if (schema_ok || nconf.get('check-schema') === false) {
 						websockets.init(SocketIO);
