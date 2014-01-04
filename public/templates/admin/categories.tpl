@@ -76,6 +76,15 @@
 									</div>
 								</div>
 							</div>
+							<div class="row">
+								<div class="col-sm-4 col-xs-12">
+									<div class="form-group">
+										<label for="cid-{categories.cid}-name">Custom Class</label>
+										<input id="cid-{categories.cid}-name" type="text" class="form-control" placeholder="Custom Class" data-name="class" value="{categories.class}" />
+									</div>
+								</div>
+							</div>
+
 
 							<input type="hidden" data-name="order" data-value="{categories.order}"></input>
 						</form>
