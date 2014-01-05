@@ -1,13 +1,13 @@
 <div class="well favourites">
 	<div class="account-username-box" data-userslug="{userslug}">
 		<span class="account-username">
-			<a href="/user/{userslug}">{username}</a> <i class="fa fa-chevron-right"></i>
-			<a href="/user/{userslug}/favourites">[[topic:favourites]]</a>
+			<a href="{relative_path}/user/{userslug}">{username}</a> <i class="fa fa-chevron-right"></i>
+			<a href="{relative_path}/user/{userslug}/favourites">[[topic:favourites]]</a>
 		</span>
 	</div>
 
 	<!-- IF show_nofavourites -->
-		<div id="no-favourites-notice" class="alert alert-warning">[[topic:has_no_favourites]]</div>
+		<div id="no-favourites-notice" class="alert alert-warning">[[topic:favourites.has_no_favourites]]</div>
 	<!-- ENDIF show_nofavourites -->
 
 	<div class="row">

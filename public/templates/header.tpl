@@ -40,10 +40,10 @@
 					<span class="icon-bar"></span>
 				</button>
 				<div>
-					<a href="/">
+					<a href="{relative_path}/">
 						<img class="{brand:logo:display} forum-logo" src="{brand:logo}" />
 					</a>
-					<a href="/">
+					<a href="{relative_path}/">
 						<h1 class="navbar-brand forum-title">{title}</h1>
 					</a>
 				</div>
@@ -52,24 +52,24 @@
 			<div class="navbar-collapse collapse navbar-ex1-collapse">
 				<ul id="main-nav" class="nav navbar-nav">
 					<li>
-						<a href="/recent"><i class="fa fa-clock-o" title="[[global:header.recent]]"></i></a>
+						<a href="{relative_path}/recent"><i class="fa fa-clock-o" title="[[global:header.recent]]"></i></a>
 					</li>
 					<li class="nodebb-loggedin">
-						<a href="/unread"><i class="fa fa-envelope" title="[[global:header.unread]]"> <span id="numUnreadBadge" class="">0</span></i></a>
+						<a href="{relative_path}/unread"><i class="fa fa-envelope" title="[[global:header.unread]]"> <span id="numUnreadBadge" class="">0</span></i></a>
 					</li>
 					<li>
-						<a href="/users"><i class="fa fa-users" title="[[global:header.users]]"></i></a>
+						<a href="{relative_path}/users"><i class="fa fa-users" title="[[global:header.users]]"></i></a>
 					</li>
 					<li class="{adminDisplay}">
-						<a href="/admin"><i class="fa fa-cogs" title="[[global:header.admin]]"></i></a>
+						<a href="{relative_path}/admin"><i class="fa fa-cogs" title="[[global:header.admin]]"></i></a>
 					</li>
 					<li class="visible-xs">
-						<a href="/search">[[global:header.search]]</a>
+						<a href="{relative_path}/search">[[global:header.search]]</a>
 					</li>
 					<!-- BEGIN navigation -->
 					<li class="{navigation.class}">
-						<a href="{navigation.route}" title="{navigation.title}">
-						    <!-- IF navigation.iconClass -->
+						<a href="{relative_path}{navigation.route}" title="{navigation.title}">
+							<!-- IF navigation.iconClass -->
 							<i class="fa {navigation.iconClass}"></i>
 							<!-- ENDIF navigation.iconClass -->
 
@@ -123,20 +123,20 @@
 				<ul id="logged-out-menu" class="nav navbar-nav navbar-right">
 					<!-- IF allowRegistration -->
 					<li class="visible-lg visible-md visible-sm">
-						<a href="/register">[[global:register]]</a>
+						<a href="{relative_path}/register">[[global:register]]</a>
 					</li>
 					<!-- ENDIF allowRegistration -->
 					<li class="visible-lg visible-md visible-sm">
-						<a href="/login">[[global:login]]</a>
+						<a href="{relative_path}/login">[[global:login]]</a>
 					</li>
 					<li class="visible-xs">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="loggedout_dropdown"><i class="fa fa-sign-in"></i></a>
 						<ul class="dropdown-menu" aria-labelledby="loggedout_dropdown">
 							<li>
-								<a href="/register">[[global:register]]</a>
+								<a href="{relative_path}/register">[[global:register]]</a>
 							</li>
 							<li>
-								<a href="/login">[[global:login]]</a>
+								<a href="{relative_path}/login">[[global:login]]</a>
 							</li>
 						</ul>
 					</li>

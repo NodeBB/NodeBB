@@ -2,20 +2,20 @@
 
 	<div class="account-username-box" data-userslug="{userslug}">
 		<span class="account-username">
-			<a href="/user/{userslug}">{username}</a> <i class="fa fa-chevron-right"></i>
-			<a href="/user/{userslug}/followers">[[user:followers]]</a>
+			<a href="../../user/{userslug}">{username}</a> <i class="fa fa-chevron-right"></i>
+			<a href="../../user/{userslug}/followers">[[user:followers]]</a>
 		</span>
 	</div>
 
 	<div>
 		<!-- BEGIN followers -->
 		<div class="users-box">
-			<a href="/user/{followers.userslug}">
+			<a href="../../user/{followers.userslug}">
 				<img src="{followers.picture}" class="img-thumbnail"/>
 			</a>
 			<br/>
 			<div class="user-info">
-				<a href="/user/{followers.userslug}">{followers.username}</a>
+				<a href="../../user/{followers.userslug}">{followers.username}</a>
 				<br/>
 				<div title="reputation" class="reputation">
 					<i class='fa fa-star'></i>

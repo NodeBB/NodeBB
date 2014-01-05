@@ -1,15 +1,15 @@
 <div class="users">
 	<ul class="nav nav-pills">
-		<li class=''><a href='/users/latest'>[[users:latest_users]]</a></li>
-		<li class=''><a href='/users/sort-posts'>[[users:top_posters]]</a></li>
-		<li class=''><a href='/users/sort-reputation'>[[users:most_reputation]]</a></li>
-		<li class=''><a href='/users/online'>[[users:online]]</a></li>
-		<li class=''><a href='/users/search'>[[users:search]]</a></li>
+		<li class=''><a href='{relative_path}/users/latest'>[[users:latest_users]]</a></li>
+		<li class=''><a href='{relative_path}/users/sort-posts'>[[users:top_posters]]</a></li>
+		<li class=''><a href='{relative_path}/users/sort-reputation'>[[users:most_reputation]]</a></li>
+		<li class=''><a href='{relative_path}/users/online'>[[users:online]]</a></li>
+		<li class=''><a href='{relative_path}/users/search'>[[users:search]]</a></li>
 	</ul>
 
 	<br />
-	<div class="search {search_display} well">
 
+	<div class="search {search_display} well">
 		<div class="input-group">
 			<input class="form-control" id="search-user" type="text" placeholder="[[users:enter_username]]"/>
 	        <span class="input-group-addon">
@@ -21,12 +21,12 @@
 	<ul id="users-container" class="users-container">
 		<!-- BEGIN users -->
 		<li class="users-box registered-user">
-			<a href="/user/{users.userslug}">
+			<a href="{relative_path}/user/{users.userslug}">
 				<img src="{users.picture}" class="img-thumbnail"/>
 			</a>
 			<br/>
 			<div class="user-info">
-				<a href="/user/{users.userslug}">{users.username}</a>
+				<a href="{relative_path}/user/{users.userslug}">{users.username}</a>
 				<br/>
 				<div title="reputation" class="reputation">
 					<i class='fa fa-star'></i>

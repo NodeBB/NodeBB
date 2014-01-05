@@ -406,10 +406,10 @@ define(['composer'], function(composer) {
 				var activeEl = $('.thread_active_users');
 
 				function createUserIcon(uid, picture, userslug, username) {
-					if(!activeEl.find("[href='/user/"+ data.users[i].userslug + "']").length) {
+					if(!activeEl.find('[href="'+ RELATIVE_PATH +'/user/' + data.users[i].userslug + '"]').length) {
 						var userIcon = $('<img src="'+ picture +'"/>');
 
-						var userLink = $('<a href="/user/' + userslug + '"></a>').append(userIcon);
+						var userLink = $('<a href="' + RELATIVE_PATH + '/user/' + userslug + '"></a>').append(userIcon);
 						userLink.attr('data-uid', uid);
 
 						var div = $('<div class="inline-block"></div>');

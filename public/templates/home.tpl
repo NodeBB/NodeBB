@@ -5,7 +5,7 @@
 <div class="row home" itemscope itemtype="http://www.schema.org/ItemList">
 	<!-- BEGIN categories -->
 	<div class="{categories.class}">
-		<a href="category/{categories.slug}" itemprop="url">
+		<a href="{relative_path}/category/{categories.slug}" itemprop="url">
 			<meta itemprop="name" content="{categories.name}">
 			<h4><span class="badge {categories.badgeclass}">{categories.topic_count} </span> {categories.name}</h4>
 			<div class="icon" style="background: {categories.background}; color: {categories.color};">

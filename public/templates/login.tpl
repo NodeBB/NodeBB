@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
 	<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
-		<a href="/" itemprop="url"><span itemprop="title">[[global:home]]</span></a>
+		<a href="{relative_path}/" itemprop="url"><span itemprop="title">[[global:home]]</span></a>
 	</li>
 	<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
 		<span itemprop="title">[[login:login]]</span>
@@ -41,7 +41,7 @@
 				<div class="form-group">
 					<div class="col-lg-offset-2 col-lg-10">
 						<hr />
-						<button class="btn btn-primary btn-lg btn-block"  id="login" type="submit">[[login:login]]</button> &nbsp; <a id="reset-link" class="hide" href="/reset">[[login:forgot_password]]</a>
+						<button class="btn btn-primary btn-lg btn-block"  id="login" type="submit">[[login:login]]</button> &nbsp; <a id="reset-link" class="hide" href="{relative_path}/reset">[[login:forgot_password]]</a>
 					</div>
 				</div>
 				<input type="hidden" name="_csrf" value="{token}" id="csrf-token" />

@@ -1,7 +1,6 @@
 		<ol class="breadcrumb">
 			<li><a href="/">Home</a></li>
 			<li class="active">{category_name}</li>
-			<div id="category_active_users"></div>
 		</ol>
 		<ul class="topics">
 			<!-- BEGIN topics -->

@@ -8,10 +8,10 @@
 	</script>
 	<link id="base-theme" href="{relative_path}/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	<link rel="stylesheet" href="{relative_path}/vendor/fontawesome/css/font-awesome.min.css">
-	<script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
+	<script type="text/javascript" src="//code.jquery.com/jquery.js"></script>
 	<script type="text/javascript" src="{relative_path}/vendor/bootstrap/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-git.js"></script>
-	<link rel="stylesheet" type="text/css" href="http://code.jquery.com/qunit/qunit-git.css">
+	<script type="text/javascript" src="//code.jquery.com/qunit/qunit-git.js"></script>
+	<link rel="stylesheet" type="text/css" href="//code.jquery.com/qunit/qunit-git.css">
 	<link rel="stylesheet" type="text/css" href="{relative_path}/vendor/colorpicker/colorpicker.css">
 	<script type="text/javascript" src="{relative_path}/socket.io/socket.io.js"></script>
 	<script type="text/javascript" src="{relative_path}/src/app.js"></script>
@@ -33,8 +33,8 @@
 			}
 		});
 	</script>
-	<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
-	<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+	<link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+	<script type="text/javascript" src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 	<script src="{relative_path}/src/utils.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="{relative_path}/css/theme.css" />
@@ -49,18 +49,18 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="/admin/index">NodeBB ACP</a>
+				<a class="navbar-brand" href="{relative_path}/admin/index">NodeBB ACP</a>
 			</div>
 			<div class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
 					<li>
-						<a href="/admin/index"><i class="fa fa-home" title="Home"></i></a>
+						<a href="{relative_path}/admin/index"><i class="fa fa-home" title="Home"></i></a>
 					</li>
 					<li>
-						<a href="/admin/settings"><i class="fa fa-cogs" title="Settings"></i></a>
+						<a href="{relative_path}/admin/settings"><i class="fa fa-cogs" title="Settings"></i></a>
 					</li>
 					<li>
-						<a href="/" target="_top"><i class="fa fa-book" title="Forum"></i></a>
+						<a href="{relative_path}/" target="_top"><i class="fa fa-book" title="Forum"></i></a>
 					</li>
 					<li>
 						<a href="#" id="reconnect"></a>
@@ -74,7 +74,7 @@
 						</a>
 						<ul id="user-control-list" class="dropdown-menu" aria-labelledby="user_dropdown">
 							<li>
-								<a id="user-profile-link" href="/user/{userslug}" target="_top"><span>Profile</span></a>
+								<a id="user-profile-link" href="{relative_path}/user/{userslug}" target="_top"><span>Profile</span></a>
 							</li>
 							<li id="logout-link">
 								<a href="#">Log out</a>

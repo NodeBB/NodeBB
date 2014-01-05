@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
 	<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
-		<a href="/" itemprop="url"><span itemprop="title">[[global:home]]</span></a>
+		<a href="{relative_path}/" itemprop="url"><span itemprop="title">[[global:home]]</span></a>
 	</li>
 	<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
 		<span itemprop="title">[[reset_password:reset_password]]</span>
@@ -8,8 +8,9 @@
 </ol>
 
 <div class="alert alert-info">
-			[[reset_password:reset_password:enter_email]]
-		</div>
+	[[reset_password:reset_password:enter_email]]
+</div>
+
 <div class="well">
 	<div class="alert alert-success" id="success" style="display:none">
 		<button type="button" class="close" data-dismiss="alert">&times;</button>
