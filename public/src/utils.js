@@ -95,7 +95,7 @@
 
 		//http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
 		slugify: function(str) {
-			var	invalidChars = XRegExp('[^\\p{L} 0-9\-]', 'g');
+			var	invalidChars = XRegExp('[^\\p{L} 0-9\-_]', 'g');
 
 			str = str.replace(/^\s+|\s+$/g, ''); // trim
 			str = str.toLowerCase();
