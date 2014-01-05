@@ -245,23 +245,29 @@ var bcrypt = require('bcrypt'),
 				data[field] = sanitize(data[field]).escape();
 
 				if (field === 'email') {
-					var gravatarpicture = User.createGravatarURLFromEmail(data[field]);
-					User.setUserField(uid, 'gravatarpicture', gravatarpicture);
 					User.getUserFields(uid, ['email', 'picture', 'uploadedpicture'], function(err, userData) {
 						if (err) {
 							return next(err);
 						}
 
+						if(userData.email === data.email) {
+							return next();
+						}
+
+						var gravatarpicture = User.createGravatarURLFromEmail(data.email);
+						User.setUserField(uid, 'gravatarpicture', gravatarpicture);
+
 						db.deleteObjectField('email:uid', userData.email);
 						db.setObjectField('email:uid', data.email, uid);
-						User.setUserField(uid, field, data[field]);
+						User.setUserField(uid, 'email', data.email);
 						if (userData.picture !== userData.uploadedpicture) {
 							returnData.picture = gravatarpicture;
 							User.setUserField(uid, 'picture', gravatarpicture);
 						}
 						returnData.gravatarpicture = gravatarpicture;
+
 						events.logEmailChange(uid, userData.email, data.email);
-						next(null);
+						next();
 					});
 					return;
 				} else if (field === 'signature') {
@@ -274,9 +280,9 @@ var bcrypt = require('bcrypt'),
 
 				User.setUserField(uid, field, data[field]);
 
-				next(null);
+				next();
 			} else {
-				next(null);
+				next();
 			}
 		}
 	};
