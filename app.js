@@ -143,7 +143,8 @@
 			file: __dirname + '/config.json'
 		});
 
-		var install = require('./src/install');
+		var templates = require('./public/src/templates'),
+			install = require('./src/install');
 
 		winston.info('Welcome to NodeBB!');
 		winston.info('This looks like a new installation, so you\'ll have to answer a few questions about your environment before we can proceed.');
