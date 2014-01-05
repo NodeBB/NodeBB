@@ -158,7 +158,11 @@ var path = require('path'),
 						groups.getCategoryAccess(req.params.id, uid, function(err, access){
 							if (access){
 								categories.getCategoryById(req.params.id, uid, function (err, data) {
-									if (!err && data && parseInt(data.disabled, 10) === 0) {
+									if(err) {
+										return next(err);
+									}
+
+									if (data && parseInt(data.disabled, 10) === 0) {
 										res.json(data);
 									} else {
 										next();

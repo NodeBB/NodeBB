@@ -720,6 +720,10 @@ if(nconf.get('ssl')) {
 					return res.redirect('404');
 				}
 
+				if(data.categories.link) {
+					return res.redirect(data.categories.link);
+				}
+
 				var category_url = cid + (req.params.slug ? '/' + req.params.slug : '');
 
 				res.send(

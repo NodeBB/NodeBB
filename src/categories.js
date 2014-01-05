@@ -45,11 +45,6 @@ var db = require('./database.js'),
 				return callback(err);
 			}
 
-			var category_name = categoryData.name,
-				category_slug = categoryData.slug,
-				disabled = categoryData.disabled || '0',
-				category_description = categoryData.description;
-
 			function getTopicIds(next) {
 				Categories.getTopicIds(category_id, 0, 19, next);
 			}
@@ -69,10 +64,11 @@ var db = require('./database.js'),
 					active_users = results[1],
 					sidebars = results[2];
 
-				var categoryData = {
-					'category_name': category_name,
-					'category_description': category_description,
-					'disabled': disabled,
+				var category = {
+					'category_name': categoryData.name,
+					'category_description': categoryData.description,
+					'link': categoryData.link,
+					'disabled': categoryData.disabled || '0',
 					'show_sidebar': 'show',
 					'show_topic_button': 'inline-block',
 					'no_topics_message': 'hidden',
@@ -81,9 +77,9 @@ var db = require('./database.js'),
 					'active_users': [],
 					'topics': [],
 					'disableSocialButtons': meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false,
-					'twitter-intent-url': 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(nconf.get('url') + 'category/' + category_slug) + '&text=' + encodeURIComponent(category_name),
-					'facebook-share-url': 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(nconf.get('url') + 'category/' + category_slug),
-					'google-share-url': 'https://plus.google.com/share?url=' + encodeURIComponent(nconf.get('url') + 'category/' + category_slug),
+					'twitter-intent-url': 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(nconf.get('url') + 'category/' + categoryData.slug) + '&text=' + encodeURIComponent(categoryData.name),
+					'facebook-share-url': 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(nconf.get('url') + 'category/' + categoryData.slug),
+					'google-share-url': 'https://plus.google.com/share?url=' + encodeURIComponent(nconf.get('url') + 'category/' + categoryData.slug),
 					'sidebars': sidebars
 				};
 
@@ -105,20 +101,20 @@ var db = require('./database.js'),
 
 				if (tids.length === 0) {
 					getModerators(function(err, moderators) {
-						categoryData.moderator_block_class = moderators.length > 0 ? '' : 'none';
-						categoryData.moderators = moderators;
-						categoryData.show_sidebar = 'hidden';
-						categoryData.no_topics_message = 'show';
-						callback(null, categoryData);
+						category.moderator_block_class = moderators.length > 0 ? '' : 'none';
+						category.moderators = moderators;
+						category.show_sidebar = 'hidden';
+						category.no_topics_message = 'show';
+						callback(null, category);
 					});
 				} else {
 					async.parallel([getTopics, getModerators, getActiveUsers], function(err, results) {
-						categoryData.topics = results[0];
-						categoryData.moderator_block_class = results[1].length > 0 ? '' : 'none';
-						categoryData.moderators = results[1];
-						categoryData.active_users = results[2];
-						categoryData.show_sidebar = categoryData.topics.length > 0 ? 'show' : 'hidden';
-						callback(null, categoryData);
+						category.topics = results[0];
+						category.moderator_block_class = results[1].length > 0 ? '' : 'none';
+						category.moderators = results[1];
+						category.active_users = results[2];
+						category.show_sidebar = category.topics.length > 0 ? 'show' : 'hidden';
+						callback(null, category);
 					});
 				}
 
