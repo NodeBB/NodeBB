@@ -14,7 +14,7 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2014, 0, 5).getTime();
+	var	latestSchema = new Date(2014, 0, 5, 14, 5).getTime();
 
 	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -205,6 +205,38 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/1/5] categories active users skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 0, 5, 14, 5).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				// Re-slugify all users
+				db.getObjectValues('username:uid', function(err, uids) {
+					var	newUserSlug;
+
+					async.each(uids, function(uid, next) {
+						User.getUserField(uid, 'username', function(err, username) {
+							if(err) {
+								return next(err);
+							}
+							if(username) {
+								newUserSlug = Utils.slugify(username);
+								User.setUserField(uid, 'userslug', newUserSlug, next);
+							} else {
+								winston.warn('uid '+ uid + ' doesn\'t have a valid username (' + username + '), skipping');
+								next(null);
+							}
+						});
+					}, function(err) {
+						winston.info('[2014/1/5] Re-slugify usernames (again)');
+						next(err);
+					});
+				});
+			} else {
+				winston.info('[2014/1/5] Re-slugify usernames (again) skipped');
 				next();
 			}
 		}
