@@ -9,6 +9,21 @@ case "$1" in
 		node app
 		;;
 
+	upgrade)
+		echo "Upgrading dependencies (this command is intended to be run after a successful \"git pull\")";
+		read -p "Continue? " yn
+		case $yn in
+			[Yy]* )
+				npm install
+				ls -d node_modules/nodebb* | xargs -n1 basename | xargs npm update
+				node app --upgrade
+				echo -e "\n\e[00;32mNodeBB Dependencies up-to-date!\e[00;00m";
+				;;
+			[Nn]* ) exit;;
+				* ) echo "Please answer yes or no.";;
+		esac
+		;;
+
 	dev)
 		echo "Launching NodeBB in \"development\" mode."
 		echo "To run the production build of NodeBB, please use \"forever\"."
@@ -23,22 +38,22 @@ case "$1" in
 		NODE_ENV=development supervisor -q --extensions 'node|js|tpl' -- app $1
 		;;
 
-	language)
-		case "$2" in
-			check)
-				node app --language="check"
-				;;
+	# language)
+	# 	case "$2" in
+	# 		check)
+	# 			node app --language="check"
+	# 			;;
 
-			*)
-				echo "Language Settings"
-				echo $"Usage: $0 language {check}"
-				echo ''
-				column -s '	' -t <<< '
-				check	Compare language files against the /en directory
-				'
-				;;
-		esac
-		;;
+	# 		*)
+	# 			echo "Language Settings"
+	# 			echo $"Usage: $0 language {check}"
+	# 			echo ''
+	# 			column -s '	' -t <<< '
+	# 			check	Compare language files against the /en directory
+	# 			'
+	# 			;;
+	# 	esac
+	# 	;;
 
 	*)
 		echo "Welcome to NodeBB"
