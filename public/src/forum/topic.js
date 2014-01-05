@@ -269,7 +269,7 @@ define(['composer'], function(composer) {
 
 			var username = '',
 				post = $(this).parents('li[data-pid]');
-			if(post.length) {
+			if (post.length) {
 				username = '@' + post.attr('data-username') + ' ';
 			}
 
@@ -280,13 +280,19 @@ define(['composer'], function(composer) {
 
 		$('#post-container').on('click', '.quote', function() {
 			if (thread_state.locked !== '1') {
-				var pid = $(this).parents('li').attr('data-pid');
+				var username = '',
+					post = $(this).parents('li[data-pid]'),
+					pid = $(this).parents('li').attr('data-pid');
+
+				if (post.length) {
+					username = '@' + post.attr('data-username');
+				}
 
 				socket.emit('api:posts.getRawPost', {pid: pid}, function(data) {
 
 					quoted = '> ' + data.post.replace(/\n/g, '\n> ') + '\n\n';
 
-					composer.newReply(tid, topic_name, quoted);
+					composer.newReply(tid, topic_name, username + ' said:\n' + quoted);
 				});
 			}
 		});
