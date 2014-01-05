@@ -1,6 +1,7 @@
 var	User = require('./user'),
 	Plugins = require('./plugins'),
 	Meta = require('./meta'),
+	Translator = require('../public/src/translator'),
 
 	fs = require('fs'),
 	async = require('async'),
@@ -10,7 +11,9 @@ var	User = require('./user'),
 
 var	render = function(template, params, callback) {
 	if (templates[template] !== null) {
-		callback(null, templates[template].parse(params));
+		Translator.translate(templates[template].parse(params), function(template) {
+			callback(null, template);
+		});
 	} else {
 		callback(null, null);
 	}
