@@ -186,7 +186,9 @@ define(['uploader'], function(uploader) {
 				var	cid = $(this).parents('li[data-cid]').attr('data-cid');
 				uploader.open(RELATIVE_PATH + '/admin/category/uploadpicture', {cid:cid}, function(imageUrlOnServer) {
 					inputEl.value = imageUrlOnServer;
-					$(inputEl).parents('li[data-cid]').find('.preview-box').css('background', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')');
+					var previewBox = $(inputEl).parents('li[data-cid]').find('.preview-box');
+					previewBox.css('background', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')')
+						.css('background-size', 'cover');
 					modified(inputEl);
 				});
 			});
