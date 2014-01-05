@@ -47,19 +47,6 @@
 			</p>
 			<input type="text" class="form-control input-lg" data-field="email:from" placeholder="info@example.org" /><br />
 		</div>
-		<div>
-			<p>
-				<strong>SMTP Server Host</strong><br />
-				(Default: <em>127.0.0.1</em>)
-			</p>
-			<input type="text" class="form-control input-md" data-field="email:smtp:host" placeholder="127.0.0.1" /><br />
-		</div>
-		<div>
-			<p>
-				<strong>SMTP Server Port</strong>
-			</p>
-			<input type="text" class="form-control input-md" data-field="email:smtp:port" placeholder="25" /><br />
-		</div>
 	</div>
 </form>
 
