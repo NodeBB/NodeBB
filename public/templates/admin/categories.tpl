@@ -89,6 +89,12 @@
 										<input id="cid-{categories.cid}-numRecentReplies" type="text" class="form-control" placeholder="2" data-name="numRecentReplies" value="{categories.numRecentReplies}" />
 									</div>
 								</div>
+								<div class="col-sm-4 col-xs-12">
+									<div class="form-group">
+										<label for="cid-{categories.cid}-link">Is Link (if set, category acts as external link)</label>
+										<input id="cid-{categories.cid}-link" type="text" class="form-control" placeholder="http://domain.com" data-name="link" value="{categories.link}" />
+									</div>
+								</div>
 							</div>
 
 
