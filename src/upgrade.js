@@ -209,32 +209,43 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = new Date(2014, 0, 5, 14, 5).getTime();
+			thisSchemaDate = new Date(2014, 0, 5, 14, 6).getTime();
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 
 				// Re-slugify all users
-				db.getObjectValues('username:uid', function(err, uids) {
-					var	newUserSlug;
+				db.delete('userslug:uid', function(err) {
+					if (!err) {
+						db.getObjectValues('username:uid', function(err, uids) {
+							var	newUserSlug;
 
-					async.each(uids, function(uid, next) {
-						User.getUserField(uid, 'username', function(err, username) {
-							if(err) {
-								return next(err);
-							}
-							if(username) {
-								newUserSlug = Utils.slugify(username);
-								User.setUserField(uid, 'userslug', newUserSlug, next);
-							} else {
-								winston.warn('uid '+ uid + ' doesn\'t have a valid username (' + username + '), skipping');
-								next(null);
-							}
+							async.each(uids, function(uid, next) {
+								User.getUserField(uid, 'username', function(err, username) {
+									if(err) {
+										return next(err);
+									}
+									if(username) {
+										newUserSlug = Utils.slugify(username);
+										async.parallel([
+											function(next) {
+												User.setUserField(uid, 'userslug', newUserSlug, next);
+											},
+											function(next) {
+												db.setObjectField('userslug:uid', newUserSlug, uid, next);
+											}
+										], next);
+									} else {
+										winston.warn('uid '+ uid + ' doesn\'t have a valid username (' + username + '), skipping');
+										next(null);
+									}
+								});
+							}, function(err) {
+								winston.info('[2014/1/5] Re-slugify usernames (again)');
+								next(err);
+							});
 						});
-					}, function(err) {
-						winston.info('[2014/1/5] Re-slugify usernames (again)');
-						next(err);
-					});
-				});
+					}
+				})
 			} else {
 				winston.info('[2014/1/5] Re-slugify usernames (again) skipped');
 				next();
