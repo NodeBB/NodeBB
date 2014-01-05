@@ -3,10 +3,10 @@
 <button id="createUser" class="btn btn-primary">Create User</button>
 <hr />
 <ul class="nav nav-pills">
-	<li class='active'><a href='/admin/users/latest'>Latest Users</a></li>
-	<li class=''><a href='/admin/users/sort-posts'>Top Posters</a></li>
-	<li class=''><a href='/admin/users/sort-reputation'>Most Reputation</a></li>
-	<li class=''><a href='/admin/users/search'>Search</a></li>
+	<li class='active'><a href='{relative_path}/admin/users/latest'>Latest Users</a></li>
+	<li class=''><a href='{relative_path}/admin/users/sort-posts'>Top Posters</a></li>
+	<li class=''><a href='{relative_path}/admin/users/sort-reputation'>Most Reputation</a></li>
+	<li class=''><a href='{relative_path}/admin/users/search'>Search</a></li>
 </ul>
 
 <br />
@@ -19,11 +19,11 @@
 <ul id="users-container" class="users admin">
 	<!-- BEGIN users -->
 	<div class="users-box" data-uid="{users.uid}" data-admin="{users.administrator}" data-username="{users.username}" data-banned="{users.banned}">
-		<a href="/user/{users.userslug}">
+		<a href="{relative_path}/user/{users.userslug}">
 			<img src="{users.picture}" class="img-thumbnail"/>
 		</a>
 		<br/>
-		<a href="/user/{users.userslug}">{users.username}</a>
+		<a href="{relative_path}/user/{users.userslug}">{users.username}</a>
 		<br/>
 		<div title="reputation">
 			<i class='fa fa-star'></i>
