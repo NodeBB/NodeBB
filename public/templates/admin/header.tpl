@@ -74,7 +74,7 @@
 						</a>
 						<ul id="user-control-list" class="dropdown-menu" aria-labelledby="user_dropdown">
 							<li>
-								<a id="user-profile-link" href="/user/{userslug}" target="_top"><span>Profile</span></a>
+								<a id="user-profile-link" href="{relative_path}/user/{userslug}" target="_top"><span>Profile</span></a>
 							</li>
 							<li id="logout-link">
 								<a href="#">Log out</a>

@@ -29,11 +29,11 @@ define(function() {
 	AccountHeader.createMenu = function() {
 		var userslug = $('.account-username-box').attr('data-userslug');
 		var links = $('<div class="account-sub-links inline-block pull-right">\
-			<span id="settingsLink" class="pull-right"><a href="/user/' + userslug + '/settings">settings</a></span>\
-			<span id="favouritesLink" class="pull-right"><a href="/user/' + userslug + '/favourites">favourites</a></span>\
-			<span class="pull-right"><a href="/user/' + userslug + '/followers">followers</a></span>\
-			<span class="pull-right"><a href="/user/' + userslug + '/following">following</a></span>\
-			<span id="editLink" class="pull-right"><a href="/user/' + userslug + '/edit">edit</a></span>\
+			<span id="settingsLink" class="pull-right"><a href="' + RELATIVE_PATH + '/user/' + userslug + '/settings">settings</a></span>\
+			<span id="favouritesLink" class="pull-right"><a href="' + RELATIVE_PATH + '/user/' + userslug + '/favourites">favourites</a></span>\
+			<span class="pull-right"><a href="' + RELATIVE_PATH + '/user/' + userslug + '/followers">followers</a></span>\
+			<span class="pull-right"><a href="' + RELATIVE_PATH + '/user/' + userslug + '/following">following</a></span>\
+			<span id="editLink" class="pull-right"><a href="' + RELATIVE_PATH + '/user/' + userslug + '/edit">edit</a></span>\
 		</div>');
 
 		$('.account-username-box').append(links);
