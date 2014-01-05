@@ -1,5 +1,5 @@
 <ol class="breadcrumb">
-	<li><a href="/">[[global:home]]</a></li>
+	<li><a href="{relative_path}/">[[global:home]]</a></li>
 	<li class="active">[[global:header.search]]</li>
 </ol>
 
@@ -26,7 +26,7 @@
 
 			<!-- BEGIN topics -->
 			<li class="category-item">
-				<a href="../../topic/{topics.slug}" id="tid-{topics.tid}">
+				<a href="{relative_path}/topic/{topics.slug}" id="tid-{topics.tid}">
 					<div>
 						<div class="col-md-12 img-thumbnail">
 							<div class="search-result-post">
@@ -50,7 +50,7 @@
 		<ul id="topics-container" data-search-query="{search_query}">
 			<!-- BEGIN posts -->
 			<li class="category-item">
-				<a href="../../topic/{posts.topicSlug}#{posts.pid}" id="tid-{posts.tid}">
+				<a href="{relative_path}/topic/{posts.topicSlug}#{posts.pid}" id="tid-{posts.tid}">
 					<div>
 						<div class="col-md-12 img-thumbnail">
 							<div class="search-result-post">

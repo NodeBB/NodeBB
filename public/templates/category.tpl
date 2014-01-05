@@ -1,11 +1,10 @@
 <ol class="breadcrumb">
 	<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
-		<a href="/" itemprop="url"><span itemprop="title">[[global:home]]</span></a>
+		<a href="{relative_path}/" itemprop="url"><span itemprop="title">[[global:home]]</span></a>
 	</li>
 	<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
 		<span itemprop="title">{category_name} <a target="_blank" href="../{category_id}.rss"><i class="fa fa-rss-square"></i></a></span>
 	</li>
-	<div id="category_active_users"></div>
 </ol>
 
 <div>
@@ -56,7 +55,7 @@
 								</span>
 								|
 								<span>
-									<a href="/user/{topics.userslug}">
+									<a href="../../user/{topics.userslug}">
 										<img class="teaser-pic" src="{topics.picture}" title="{topics.username}"/>
 									</a>
 									[[category:posted]] <span class="timeago" title="{topics.relativeTime}"></span>
@@ -66,7 +65,7 @@
 									<!-- IF topics.unreplied -->
 									[[category:no_replies]]
 									<!-- ELSE -->
-									<a href="/user/{topics.teaser_userslug}">
+									<a href="../../user/{topics.teaser_userslug}">
 										<img class="teaser-pic" src="{topics.teaser_userpicture}" title="{topics.teaser_username}"/>
 									</a>
 									<a href="../../topic/{topics.slug}#{topics.teaser_pid}">
@@ -95,7 +94,7 @@
 			<div class="panel-heading">[[category:sidebar.active_participants]]</div>
 			<div class="panel-body active-users">
 				<!-- BEGIN active_users -->
-				<a data-uid="{active_users.uid}" href="/user/{active_users.userslug}"><img title="{active_users.username}" src="{active_users.picture}" class="img-rounded user-img" /></a>
+				<a data-uid="{active_users.uid}" href="../../user/{active_users.userslug}"><img title="{active_users.username}" src="{active_users.picture}" class="img-rounded user-img" /></a>
 				<!-- END active_users -->
 			</div>
 		</div>
@@ -104,7 +103,7 @@
 			<div class="panel-heading">[[category:sidebar.moderators]]</div>
 			<div class="panel-body moderators">
 				<!-- BEGIN moderators -->
-				<a href="/user/{moderators.userslug}"><img title="{moderators.username}" src="{moderators.picture}" class="img-rounded" /></a>
+				<a href="../../user/{moderators.userslug}"><img title="{moderators.username}" src="{moderators.picture}" class="img-rounded" /></a>
 				<!-- END moderators -->
 			</div>
 		</div>

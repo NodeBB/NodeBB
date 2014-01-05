@@ -13,10 +13,10 @@
 <div class="topic">
 	<ol class="breadcrumb">
 		<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
-			<a href="/" itemprop="url"><span itemprop="title">[[global:home]]</span></a>
+			<a href="{relative_path}/" itemprop="url"><span itemprop="title">[[global:home]]</span></a>
 		</li>
 		<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
-			<a href="/category/{category_slug}" itemprop="url"><span itemprop="title">{category_name}</span></a>
+			<a href="{relative_path}/category/{category_slug}" itemprop="url"><span itemprop="title">{category_name}</span></a>
 		</li>
 		<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
 			<span itemprop="title">{topic_name} <a target="_blank" href="../{topic_id}.rss"><i class="fa fa-rss-square"></i></a></span>
@@ -33,7 +33,7 @@
 				<meta itemprop="dateModified" content="{posts.relativeEditTime}">
 
 				<div class="col-md-1 profile-image-block hidden-xs hidden-sm sub-post">
-					<a href="/user/{posts.userslug}">
+					<a href="{relative_path}/user/{posts.userslug}">
 						<img src="{posts.picture}" align="left" class="img-thumbnail" itemprop="image" />
 						<!-- IF posts.user_banned -->
 						<span class="label label-danger">[[topic:banned]]</span>
@@ -44,7 +44,7 @@
 
 				<div class="col-md-11">
 					<div class="post-block">
-						<a class="main-post avatar" href="/user/{posts.userslug}">
+						<a class="main-post avatar" href="{relative_path}/user/{posts.userslug}">
 							<img itemprop="image" src="{posts.picture}" align="left" class="img-thumbnail" width=150 height=150 />
 						</a>
 						<h3 class="main-post">
@@ -54,12 +54,12 @@
 						<div class="topic-buttons">
 							<div class="btn-group">
 								<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="[[topic:posted_by]] {posts.username}">
-									<span class="username-field" href="/user/{posts.userslug}" itemprop="author">{posts.username}&nbsp;</span>
+									<span class="username-field" href="{relative_path}/user/{posts.userslug}" itemprop="author">{posts.username}&nbsp;</span>
 									<span class="caret"></span>
 								</button>
 
 							    <ul class="dropdown-menu">
-									<li><a href="/user/{posts.userslug}"><i class="fa fa-user"></i> [[topic:profile]]</a></li>
+									<li><a href="{relative_path}/user/{posts.userslug}"><i class="fa fa-user"></i> [[topic:profile]]</a></li>
 									<li><a href="#" class="chat"><i class="fa fa-comment"></i> [[topic:chat]]</a></li>
 							    </ul>
 							</div>
@@ -120,7 +120,7 @@
 							<span class="pull-right">
 								[[category:posted]] <span class="relativeTimeAgo timeago" title="{posts.relativeTime}"></span>
 								<!-- IF posts.editor -->
-								<span>| [[category:last_edited_by]] <strong><a href="/user/{posts.editorslug}">{posts.editorname}</a></strong></span>
+								<span>| [[category:last_edited_by]] <strong><a href="{relative_path}/user/{posts.editorslug}">{posts.editorname}</a></strong></span>
 								<span class="timeago" title="{posts.relativeEditTime}"></span>
 								<!-- ENDIF posts.editor -->
 							</span>

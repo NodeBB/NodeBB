@@ -1,8 +1,7 @@
 <div class="unread">
 	<ol class="breadcrumb">
-		<li><a href="/">[[global:home]]</a></li>
+		<li><a href="{relative_path}/">[[global:home]]</a></li>
 		<li class="active">{category_name}</li>
-		<div id="category_active_users"></div>
 	</ol>
 
 	<div class="alert alert-warning {no_topics_message}" id="category-no-topics">
@@ -11,7 +10,7 @@
 
 	<button id="mark-allread-btn" class="btn btn-primary {show_markallread_button}">[[unread:mark_all_read]]</button>
 
-	<a href="/unread">
+	<a href="{relative_path}/unread">
 		<div class="alert alert-warning hide" id="new-topics-alert"></div>
 	</a>
 
@@ -22,7 +21,7 @@
 			<li class="category-item {topics.deleted-class}">
 				<div class="row">
 					<div class="col-md-12 topic-row">
-						<a href="../../topic/{topics.slug}">
+						<a href="{relative_path}/topic/{topics.slug}">
 							<h3><span class="topic-title"><strong><i class="fa {topics.pin-icon}"></i> <i class="fa {topics.lock-icon}"></i></strong> {topics.title}</span></h3>
 						</a>
 						<small>
@@ -37,11 +36,11 @@
 							</span>
 							|
 							<span>
-								<a href="/user/{topics.userslug}">
-									<img class="img-rounded teaser-pic" src="{topics.picture}" title="{topics.username}"/>
+								<a href="{relative_path}/user/{topics.userslug}">
+									<img class="teaser-pic" src="{topics.picture}" title="{topics.username}"/>
 								</a>
 								posted in
-								<a href="../../category/{topics.categorySlug}">
+								<a href="{relative_path}/category/{topics.categorySlug}">
 									<i class="fa {topics.categoryIcon}"></i> {topics.categoryName}
 								</a>
 								<span class="timeago" title="{topics.relativeTime}"></span>
@@ -52,10 +51,10 @@
 								<!-- IF topics.unreplied -->
 								No one has replied
 								<!-- ELSE -->
-								<a href="/user/{topics.teaser_userslug}">
+								<a href="{relative_path}/user/{topics.teaser_userslug}">
 									<img class="teaser-pic" src="{topics.teaser_userpicture}" title="{topics.teaser_username}"/>
 								</a>
-								<a href="../../topic/{topics.slug}#{topics.teaser_pid}">
+								<a href="{relative_path}/topic/{topics.slug}#{topics.teaser_pid}">
 									replied
 								</a>
 								<span class="timeago" title="{topics.teaser_timestamp}"></span>
