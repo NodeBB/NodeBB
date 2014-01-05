@@ -43,7 +43,11 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 
 
 		function getSignatureCharsLeft() {
-			return '(' + $('#inputSignature').val().length + '/' + config.maximumSignatureLength + ')';
+			if($('#inputSignature').length) {
+				return '(' + $('#inputSignature').val().length + '/' + config.maximumSignatureLength + ')';
+			} else {
+				return '';
+			}
 		}
 
 		$('#signatureCharCountLeft').html(getSignatureCharsLeft());
