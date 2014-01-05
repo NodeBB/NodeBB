@@ -221,7 +221,7 @@ var async = require('async'),
 							field: 'allowFileUploads',
 							value: 0,
 						}, {
-							filed: 'maximumFileSize',
+							field: 'maximumFileSize',
 							value: 2048
 						}, {
 							field: 'minimumTitleLength',

@@ -48,9 +48,9 @@
 			}
 
 			function createCollections() {
-				db.createCollection('objects', function(err, collection) {
+				db.createCollection('objects', {w:1}, function(err, collection) {
 					if(err) {
-						winston.error('Error creating collection ' + err.message);
+						winston.error('Error creating collection (objects) ' + err.message);
 						return;
 					}
 
@@ -69,9 +69,9 @@
 					}
 				});
 
-				db.createCollection('search', function(err, collection) {
+				db.createCollection('search', {w:1}, function(err, collection) {
 					if(err) {
-						winston.error('Error creating collection ' + err.message);
+						winston.error('Error creating collection (search) ' + err.message);
 						return;
 					}
 					if(collection) {
