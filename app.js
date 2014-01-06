@@ -82,7 +82,11 @@
 		}
 
 		if (semver.gt(pkg.dependencies['nodebb-theme-cerulean'], require('./node_modules/nodebb-theme-cerulean/package.json').version)) {
-			winston.error('nodebb-theme-cerulean is out of date - please run npm install.')
+			winston.error('nodebb-theme-cerulean is out of date - please run npm install.');
+		}
+
+		if (!semver.satisfies(require('./node_modules/nodebb-theme-vanilla/package.json').version, pkg.dependencies['nodebb-theme-vanilla'])) {
+			winston.error('nodebb-theme-vanilla is out of data - please run npm install.');
 		}
 
 		require('./src/database').init(function(err) {
