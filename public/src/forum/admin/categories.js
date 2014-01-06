@@ -269,22 +269,21 @@ define(['uploader'], function(uploader) {
                 // User Groups and privileges
 		socket.emit('api:admin.categories.groupsearch', cid, function(err, results) {
 			var groupsFrag = document.createDocumentFragment(),
-			liEl = document.createElement('li');
+			trEl = document.createElement('tr');
 			var numResults = results.length,
 			    resultObj;
 
 			for(var x=0;x<numResults;x++) {
 				resultObj = results[x];
-				liEl.setAttribute('data-gid', resultObj.gid);
-				liEl.innerHTML = '<div class="pull-right">' +
-							'<div class="btn-group">' +
+				trEl.setAttribute('data-gid', resultObj.gid);
+				trEl.innerHTML = '<td><h4>' + resultObj.name + '</h4></td><td>' +
+							'<div class="btn-group pull-right">' +
 							  '<button type="button" data-gpriv="+gr" class="btn btn-default' + (resultObj.privileges['+gr'] ? ' active' : '') + '">Read</button>' +
 							  '<button type="button" data-gpriv="+gw" class="btn btn-default' + (resultObj.privileges['+gw'] ? ' active' : '') + '">Write</button>' +
 							'</div>' +
-						 '</div>' +
-						 ' '+resultObj.name;
+						 '</td>';
 
-				groupsFrag.appendChild(liEl.cloneNode(true));
+				groupsFrag.appendChild(trEl.cloneNode(true));
 			}
 
 			groupsResultsEl.html(groupsFrag);

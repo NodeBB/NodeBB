@@ -175,12 +175,15 @@
 						</div>
 					</form>
 					<ul class="search-results"></ul>
+
+					<hr />
 					<form role="form">
 						<div class="form-group">
 							<label for="permission-group-pick">User Groups</label>
 						</div>
 					</form>
-					<ul class="groups-results"></ul>
+					<table class="table table-striped groups-results"></table>
+
 				</div>
 			</div>
 		</div>
