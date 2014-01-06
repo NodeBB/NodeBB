@@ -20,11 +20,13 @@
 	"thread_tools.pin": "Pin Thread",
 	"thread_tools.lock": "Lock Thread",
 	"thread_tools.move": "Move Thread",
+	"thread_tools.fork": "Fork Thread",
 	"thread_tools.delete": "Delete Thread",
 
 	"load_categories": "Loading Categories",
 	"disabled_categories_note": "Disabled Categories are greyed out",
 	"confirm_move": "Move",
+	"confirm_fork": "Fork",
 
 	"favourite": "Favourite",
 	"favourites": "Favorites",
@@ -36,7 +38,11 @@
 	"loading": "Loading",
 	"more_posts": "More Posts",
 	"move_topic": "Move Topic",
+	"fork_topic": "Fork Topic",
 	"topic_will_be_moved_to": "This topic will be moved to the category",
+	"fork_topic_instruction": "Click the posts you want to fork",
+	"fork_no_pids": "No posts selected!",
+	"fork_success": "Succesfully forked topic!",
 
 	"reputation": "Reputation",
 	"posts": "Posts"

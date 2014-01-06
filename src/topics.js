@@ -198,38 +198,68 @@ var async = require('async'),
 		});
 	}
 
-	Topics.createTopicFromPost = function(pid, callback) {
-		posts.getPostData(pid, function(err, postData) {
+	Topics.createTopicFromPosts = function(title, pids, callback) {
+		if(title) {
+			title = title.trim();
+		}
+
+		if(!title) {
+			return callback(new Error('invalid-title'));
+		}
+
+		if(!pids || !pids.length) {
+			return callback(new Error('invalid-pids'));
+		}
+
+		pids.sort();
+		var mainPid = pids[0];
+
+		posts.getPostData(mainPid, function(err, postData) {
 			if(err) {
 				return callback(err);
 			}
 
-			posts.getCidByPid(pid, function(err, cid) {
+			posts.getCidByPid(mainPid, function(err, cid) {
 				if(err) {
 					return callback(err);
 				}
-
-				// TODO : title should be given by client
-				var title = postData.content.substr(0, 20);
 
 				Topics.create(postData.uid, title, cid, function(err, tid) {
 					if(err) {
 						return callback(err);
 					}
 
-					Topics.removePostFromTopic(postData.tid, postData.pid);
-					Topics.decreasePostCount(postData.tid);
+					async.eachSeries(pids, move, function(err) {
+						if(err) {
+							return callback(err);
+						}
 
-					posts.setPostField(pid, 'tid', tid);
-
-					Topics.onNewPostMade(tid, postData.pid, postData.timestamp);
-
-					Topics.getTopicData(tid, function(err, topicData) {
-						callback(err, topicData);
+						Topics.getTopicData(tid, function(err, topicData) {
+							callback(err, topicData);
+						});
 					});
+
+					function move(pid, next) {
+						posts.getPostField(pid, 'timestamp', function(err, timestamp) {
+							if(err) {
+								return next(err);
+							}
+
+							Topics.movePostToTopic(pid, postData.tid, tid, timestamp, next);
+						});
+					}
 				});
 			});
 		});
+	}
+
+	Topics.movePostToTopic = function(pid, oldTid, newTid, timestamp, callback) {
+		Topics.removePostFromTopic(oldTid, pid);
+		Topics.decreasePostCount(oldTid);
+
+		posts.setPostField(pid, 'tid', newTid);
+
+		Topics.onNewPostMade(newTid, pid, timestamp, callback);
 	}
 
 	Topics.getTopicData = function(tid, callback) {
@@ -986,14 +1016,14 @@ var async = require('async'),
 		Topics.setTopicField(tid, 'lastposttime', timestamp);
 	}
 
-	Topics.onNewPostMade = function(tid, pid, timestamp) {
-		Topics.addPostToTopic(tid, pid);
+	Topics.onNewPostMade = function(tid, pid, timestamp, callback) {
 		Topics.increasePostCount(tid);
 		Topics.updateTimestamp(tid, timestamp);
+		Topics.addPostToTopic(tid, pid, callback);
 	}
 
-	Topics.addPostToTopic = function(tid, pid) {
-		db.listAppend('tid:' + tid + ':posts', pid);
+	Topics.addPostToTopic = function(tid, pid, callback) {
+		db.listAppend('tid:' + tid + ':posts', pid, callback);
 	}
 
 	Topics.removePostFromTopic = function(tid, pid) {

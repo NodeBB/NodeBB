@@ -622,8 +622,8 @@ websockets.init = function(io) {
 			});
 		});
 
-		socket.on('api:topic.createTopicFromPost', function(data, callback) {
-			topics.createTopicFromPost(data.pid, function(err, data) {
+		socket.on('api:topic.createTopicFromPosts', function(data, callback) {
+			topics.createTopicFromPosts(data.title, data.pids, function(err, data) {
 				callback(err?{message:err.message}:null, data);
 			});
 		});
