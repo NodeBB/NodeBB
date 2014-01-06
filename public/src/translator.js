@@ -62,11 +62,6 @@
 		async.map(keys, getKey, callback);
 	}
 
-
-	/*
-	 * TODO: Not fully converted to server side yet, ideally server should be able to parse whole templates on demand if necessary
-	 * fix: translator.load should determine if server side and immediately return appropriate language file.
-	 */
 	translator.translate = function (data, callback) {
 		var keys = data.match(/\[\[.*?\]\]/g),
 			loading = 0;
@@ -79,8 +74,10 @@
 				}
 
 				text = text.replace(key, value);
+			} else {
+				var string = key.split(':');
+				text = text.replace(key, string[string.length-1].replace(/\]+$/, ''));
 			}
-
 
 			return text;
 		}
