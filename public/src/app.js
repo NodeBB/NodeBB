@@ -391,14 +391,16 @@ var socket,
 		}
 
 		require(['chat'], function (chat) {
-			var chatModal;
 			if (!chat.modalExists(touid)) {
-				chatModal = chat.createModal(username, touid);
+				chat.createModal(username, touid, loadAndCenter);
 			} else {
-				chatModal = chat.getModal(touid);
+				loadAndCenter(chat.getModal(touid));
 			}
-			chat.load(chatModal.attr('UUID'));
-			chat.center(chatModal);
+
+			function loadAndCenter(chatModal) {
+				chat.load(chatModal.attr('UUID'));
+				chat.center(chatModal);
+			}
 		});
 	};
 

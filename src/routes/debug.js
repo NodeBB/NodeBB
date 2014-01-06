@@ -87,6 +87,7 @@ var	DebugRoute = function(app) {
 				site_title: 'derp',
 				confirm_link: 'linkylink'
 			});
+
 			res.send();
 		});
 	});

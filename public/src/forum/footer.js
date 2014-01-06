@@ -227,9 +227,8 @@
 
 	socket.on('event:chats.receive', function(data) {
 		require(['chat'], function(chat) {
-			var modal = null;
 			if (chat.modalExists(data.fromuid)) {
-				modal = chat.getModal(data.fromuid);
+				var modal = chat.getModal(data.fromuid);
 				chat.appendChatMessage(modal, data.message, data.timestamp);
 
 				if (modal.is(":visible")) {
@@ -242,9 +241,10 @@
 					app.alternatingTitle(data.username + ' has messaged you');
 				}
 			} else {
-				modal = chat.createModal(data.username, data.fromuid);
-				chat.toggleNew(modal.attr('UUID'), true);
-				app.alternatingTitle(data.username + ' has messaged you');
+				chat.createModal(data.username, data.fromuid, function(modal) {
+					chat.toggleNew(modal.attr('UUID'), true);
+					app.alternatingTitle(data.username + ' has messaged you');
+				});
 			}
 		});
 	});
