@@ -86,7 +86,7 @@
 		}
 
 		if (!semver.satisfies(require('./node_modules/nodebb-theme-vanilla/package.json').version, pkg.dependencies['nodebb-theme-vanilla'])) {
-			winston.error('nodebb-theme-vanilla is out of data - please run npm install.');
+			winston.error('nodebb-theme-vanilla is out of date - please run npm install.');
 		}
 
 		require('./src/database').init(function(err) {
