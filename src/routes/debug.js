@@ -89,7 +89,6 @@ var	DebugRoute = function(app) {
 			});
 			res.send();
 		});
-
 	});
 };
 
