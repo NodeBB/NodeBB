@@ -754,9 +754,14 @@ if(nconf.get('ssl')) {
 
 		app.get('/robots.txt', function (req, res) {
 			res.set('Content-Type', 'text/plain');
-			res.send("User-agent: *\n" +
-				"Disallow: /admin/\n" +
-				"Sitemap: " + nconf.get('url') + "sitemap.xml");
+
+			if (meta.config["robots.txt"]) {
+				res.send(meta.config["robots.txt"])
+			} else {
+				res.send("User-agent: *\n" +
+					"Disallow: /admin/\n" +
+					"Sitemap: " + nconf.get('url') + "sitemap.xml");
+			}
 		});
 
 		app.get('/recent.rss', function(req, res) {

@@ -125,6 +125,14 @@
 	</div>
 </form>
 
+<form>
+	<h3>Web Crawler Settings</h3>
+	<div class="alert alert-warning">
+		<strong>Custom Robots.txt <small>Leave blank for default</small></strong><br /> 
+		<textarea class="form-control" data-field="robots.txt"></textarea>
+	</div>
+</form>
+
 <button class="btn btn-lg btn-primary" id="save">Save</button>
 
 <script>
