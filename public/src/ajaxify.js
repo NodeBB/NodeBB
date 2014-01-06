@@ -48,6 +48,10 @@ var ajaxify = {};
 		window.onscroll = null;
 		// end
 
+		if ($('#content').hasClass('ajaxifying')) {
+			return true;
+		}
+		
 		// Remove trailing slash
 		url = url.replace(/\/$/, "");
 
