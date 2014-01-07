@@ -622,8 +622,18 @@ websockets.init = function(io) {
 			});
 		});
 
-		socket.on('api:topic.createTopicFromPost', function(data, callback) {
-			topics.createTopicFromPost(data.pid, function(err, data) {
+		socket.on('api:topic.createTopicFromPosts', function(data, callback) {
+			if(!uid) {
+				socket.emit('event:alert', {
+					title: 'Can&apos;t fork',
+					message: 'Guests can&apos;t fork topics!',
+					type: 'warning',
+					timeout: 2000
+				});
+				return;
+			}
+
+			topics.createTopicFromPosts(uid, data.title, data.pids, function(err, data) {
 				callback(err?{message:err.message}:null, data);
 			});
 		});

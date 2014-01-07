@@ -27,7 +27,7 @@ var winston = require('winston'),
 	}
 
 	PostTools.privileges = function(pid, uid, callback) {
-		if(uid == 0) {
+		if(parseInt(uid, 10) === 0) {
 			callback({
 				editable: false,
 				view_deleted: false
@@ -52,7 +52,9 @@ var winston = require('winston'),
 				return next(null, false);
 			} else {
 				user.getUserField(uid, 'reputation', function(err, reputation) {
-					if (err) return next(null, false);
+					if (err) {
+						return next(null, false);
+					}
 					next(null, parseInt(reputation, 10) >= parseInt(meta.config['privileges:manage_content'], 10));
 				});
 			}

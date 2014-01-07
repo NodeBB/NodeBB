@@ -174,6 +174,96 @@ define(['composer'], function(composer) {
 						});
 					}
 				});
+
+				$('.fork_thread').on('click', function() {
+					var pids = [];
+					var forkModal = $('#fork-thread-modal'),
+						forkCommit = forkModal.find('#fork_thread_commit');
+					forkModal.removeClass('hide');
+					forkModal.css("position", "fixed")
+						.css("left", Math.max(0, (($(window).width() - $(forkModal).outerWidth()) / 2) + $(window).scrollLeft()) + "px")
+						.css("top", "0px")
+						.css("z-index", "2000");
+
+					showNoPostsSelected();
+
+					forkModal.find('.close,#fork_thread_cancel').on('click', closeForkModal);
+					forkModal.find('#fork-title').on('change', checkForkButtonEnable);
+					$('#post-container').on('click', 'li', togglePostSelection);
+					forkCommit.on('click', createTopicFromPosts);
+
+					function createTopicFromPosts() {
+						socket.emit('api:topic.createTopicFromPosts', {
+							title: forkModal.find('#fork-title').val(),
+							pids: pids
+						}, function(err) {
+							if(err) {
+								return app.alertError(err.message);
+							}
+
+							translator.get('topic:fork_success', function(translated) {
+								app.alertSuccess(translated);
+							});
+
+							for(var i=0; i<pids.length; ++i) {
+								$('#post-container li[data-pid="' + pids[i] + '"]').fadeOut(500, function() {
+									$(this).remove();
+								});
+							}
+							closeForkModal();
+						});
+					}
+
+					function togglePostSelection() {
+
+						var newPid = $(this).attr('data-pid');
+
+						if($(this).attr('data-index') === '0') {
+							return;
+						}
+
+						if(newPid) {
+							var index = pids.indexOf(newPid);
+							if(index === -1) {
+								pids.push(newPid);
+								$(this).css('opacity', '0.5');
+							} else {
+								pids.splice(index, 1);
+								$(this).css('opacity', '1.0');
+							}
+
+							if(pids.length) {
+								pids.sort();
+								forkModal.find('#fork-pids').html(pids.toString());
+							} else {
+								showNoPostsSelected();
+							}
+							checkForkButtonEnable();
+						}
+					}
+
+					function closeForkModal() {
+						for(var i=0; i<pids.length; ++i) {
+							$('#post-container li[data-pid="' + pids[i] + '"]').css('opacity', 1.0);
+						}
+						forkModal.addClass('hide');
+						$('#post-container').off('click', 'li');
+					}
+
+					function checkForkButtonEnable() {
+						if(forkModal.find('#fork-title').length && pids.length) {
+							forkCommit.removeAttr('disabled');
+						} else {
+							forkCommit.attr('disabled', true);
+						}
+					}
+
+					function showNoPostsSelected() {
+						translator.get('topic:fork_no_pids', function(translated) {
+							forkModal.find('#fork-pids').html(translated);
+						});
+					}
+				});
 			}
 
 			fixDeleteStateForPosts();
@@ -374,21 +464,6 @@ define(['composer'], function(composer) {
 				}
 			}
 		});
-
-		$('#post-container').on('click', '.fork-post', function(e) {
-			var post = $(this).parents('li'),
-				pid = post.attr('data-pid');
-
-			socket.emit('api:topic.createTopicFromPost', {pid:pid}, function(err) {
-				if(err) {
-					return app.alertError(err.message);
-				}
-				post.fadeOut(500, function() {
-					post.remove();
-				});
-			});
-		});
-
 
 		$('#post-container').on('click', '.chat', function(e) {
 			var username = $(this).parents('li.row').attr('data-username');

@@ -4,11 +4,11 @@ define(['taskbar', 'string'], function(taskbar, S) {
 
 	module.bringModalToTop = function(chatModal) {
 		var topZ = 0;
-		$('.modal').each(function() {
-		  var thisZ = parseInt($(this).css('zIndex'), 10);
-		  if (thisZ > topZ) {
-			topZ = thisZ;
-		  }
+		$('.chat-modal').each(function() {
+			var thisZ = parseInt($(this).css('zIndex'), 10);
+			if (thisZ > topZ) {
+				topZ = thisZ;
+			}
 		});
 		chatModal.css('zIndex', topZ + 1);
 	}

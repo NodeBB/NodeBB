@@ -97,9 +97,6 @@
 								<div class="btn-group post-tools">
 									<button class="btn btn-sm btn-default edit" type="button" title="[[topic:edit]]"><i class="fa fa-pencil"></i></button>
 									<button class="btn btn-sm btn-default delete" type="button" title="[[topic:delete]]"><i class="fa fa-trash-o"></i></button>
-									<!-- IF !@first -->
-									<button class="btn btn-sm btn-default fork-post" type="button" title="[[topic:fork]]"><i class="fa fa-code-fork"></i></button>
-									<!-- ENDIF !@first -->
 								</div>
 								<!-- ENDIF posts.display_moderator_tools -->
 							</div>
@@ -151,6 +148,7 @@
 							<li><a href="#" class="lock_thread"><i class="fa fa-lock"></i> [[topic:thread_tools.lock]]</a></li>
 							<li class="divider"></li>
 							<li><a href="#" class="move_thread"><i class="fa fa-arrows"></i> [[topic:thread_tools.move]]</a></li>
+							<li><a href="#" class="fork_thread"><i class="fa fa-code-fork"></i> [[topic:thread_tools.fork]]</a></li>
 							<li class="divider"></li>
 							<li><a href="#" class="delete_thread"><span class="text-error"><i class="fa fa-trash-o"></i> [[topic:thread_tools.delete]]</span></a></li>
 						</ul>
@@ -175,6 +173,7 @@
 					<li><a href="#" class="lock_thread"><i class="fa fa-lock"></i> [[topic:thread_tools.lock]]</a></li>
 					<li class="divider"></li>
 					<li><a href="#" class="move_thread"><i class="fa fa-arrows"></i> [[topic:thread_tools.move]]</a></li>
+					<li><a href="#" class="fork_thread"><i class="fa fa-code-fork"></i> [[topic:thread_tools.fork]]</a></li>
 					<li class="divider"></li>
 					<li><a href="#" class="delete_thread"><span class="text-error"><i class="fa fa-trash-o"></i> [[topic:thread_tools.delete]]</span></a></li>
 				</ul>
@@ -208,5 +207,30 @@
 			</div>
 		</div>
 	</div>
+
+
+	<div id="fork-thread-modal" class="hide" tabindex="-1" role="dialog" aria-labelledby="Chat" aria-hidden="true" data-backdrop="none">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4>[[topic:fork_topic]]</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<label for="title">Title</label>
+					<input id="fork-title" type="text" class="form-control" placeholder="Enter new thread title"><br/>
+					<label>[[topic:fork_topic_instruction]]</label> <br/>
+					<span id="fork-pids"></span>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" id="fork_thread_cancel">[[global:buttons.close]]</button>
+				<button type="button" class="btn btn-primary" id="fork_thread_commit" disabled>[[topic:confirm_fork]]</button>
+			</div>
+		</div>
+	</div>
+</div>
 
 </div>
