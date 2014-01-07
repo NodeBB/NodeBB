@@ -242,13 +242,7 @@ var async = require('async'),
 					function move(pid, next) {
 						postTools.privileges(pid, uid, function(privileges) {
 							if(privileges.editable) {
-								posts.getPostField(pid, 'timestamp', function(err, timestamp) {
-									if(err) {
-										return next(err);
-									}
-
-									Topics.movePostToTopic(pid, postData.tid, tid, timestamp, next);
-								});
+								Topics.movePostToTopic(pid, tid, next);
 							} else {
 								next();
 							}
@@ -259,13 +253,35 @@ var async = require('async'),
 		});
 	}
 
-	Topics.movePostToTopic = function(pid, oldTid, newTid, timestamp, callback) {
-		Topics.removePostFromTopic(oldTid, pid);
-		Topics.decreasePostCount(oldTid);
+	Topics.movePostToTopic = function(pid, tid, callback) {
+		threadTools.exists(tid, function(exists) {
+			if(!exists) {
+				return callback(new Error('Topic doesn\'t exist'));
+			}
 
-		posts.setPostField(pid, 'tid', newTid);
+			posts.getPostField(pid, 'tid', function(err, oldTid) {
+				if(err) {
+					return callback(err);
+				}
 
-		Topics.onNewPostMade(newTid, pid, timestamp, callback);
+				if(!oldTid) {
+					return callback(new Error('Post doesn\'t exist'));
+				}
+
+				Topics.removePostFromTopic(oldTid, pid, function(err) {
+					if(err) {
+						return callback(err);
+					}
+
+					Topics.decreasePostCount(oldTid);
+
+					posts.setPostField(pid, 'tid', tid);
+
+					Topics.increasePostCount(tid);
+					Topics.addPostToTopic(tid, pid, callback);
+				});
+			});
+		});
 	}
 
 	Topics.getTopicData = function(tid, callback) {
@@ -1032,8 +1048,8 @@ var async = require('async'),
 		db.listAppend('tid:' + tid + ':posts', pid, callback);
 	}
 
-	Topics.removePostFromTopic = function(tid, pid) {
-		db.listRemoveAll('tid:' + tid + ':posts', pid);
+	Topics.removePostFromTopic = function(tid, pid, callback) {
+		db.listRemoveAll('tid:' + tid + ':posts', pid, callback);
 	}
 
 	Topics.getPids = function(tid, callback) {

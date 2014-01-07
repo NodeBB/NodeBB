@@ -638,6 +638,22 @@ websockets.init = function(io) {
 			});
 		});
 
+		socket.on('api:topic.movePost', function(data, callback) {
+			if(!uid) {
+				socket.emit('event:alert', {
+					title: 'Can&apos;t fork',
+					message: 'Guests can&apos;t fork topics!',
+					type: 'warning',
+					timeout: 2000
+				});
+				return;
+			}
+
+			topics.movePostToTopic(data.pid, data.tid, function(err, data) {
+				callback(err?{message:err.message}:null, data);
+			});
+		});
+
 		socket.on('api:topic.move', function(data) {
 			threadTools.move(data.tid, data.cid, socket);
 		});

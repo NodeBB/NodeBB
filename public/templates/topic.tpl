@@ -97,6 +97,9 @@
 								<div class="btn-group post-tools">
 									<button class="btn btn-sm btn-default edit" type="button" title="[[topic:edit]]"><i class="fa fa-pencil"></i></button>
 									<button class="btn btn-sm btn-default delete" type="button" title="[[topic:delete]]"><i class="fa fa-trash-o"></i></button>
+									<!-- IF !@first -->
+									<button class="btn btn-sm btn-default move" type="button" title="[[topic:move]]"><i class="fa fa-arrows"></i></button>
+									<!-- ENDIF !@first -->
 								</div>
 								<!-- ENDIF posts.display_moderator_tools -->
 							</div>
@@ -209,28 +212,50 @@
 	</div>
 
 
-	<div id="fork-thread-modal" class="hide" tabindex="-1" role="dialog" aria-labelledby="Chat" aria-hidden="true" data-backdrop="none">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4>[[topic:fork_topic]]</h4>
-			</div>
-			<div class="modal-body">
-				<div class="form-group">
-					<label for="title">Title</label>
-					<input id="fork-title" type="text" class="form-control" placeholder="Enter new thread title"><br/>
-					<label>[[topic:fork_topic_instruction]]</label> <br/>
-					<span id="fork-pids"></span>
+	<div id="fork-thread-modal" class="hide" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true" data-backdrop="none">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4>[[topic:fork_topic]]</h4>
 				</div>
-			</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="title">Title</label>
+						<input id="fork-title" type="text" class="form-control" placeholder="Enter new thread title"><br/>
+						<label>[[topic:fork_topic_instruction]]</label> <br/>
+						<span id="fork-pids"></span>
+					</div>
+				</div>
 
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal" id="fork_thread_cancel">[[global:buttons.close]]</button>
-				<button type="button" class="btn btn-primary" id="fork_thread_commit" disabled>[[topic:confirm_fork]]</button>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" id="fork_thread_cancel">[[global:buttons.close]]</button>
+					<button type="button" class="btn btn-primary" id="fork_thread_commit" disabled>[[topic:confirm_fork]]</button>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
+
+	<div id="move-post-modal" class="hide" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true" data-backdrop="none">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4>[[topic:move_post]]</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="topicId">Topic ID</label>
+						<input id="topicId" type="text" class="form-control" placeholder="Enter topic ID"><br/>
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" id="move_post_cancel">[[global:buttons.close]]</button>
+					<button type="button" class="btn btn-primary" id="move_post_commit" disabled>[[topic:confirm_move]]</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 </div>

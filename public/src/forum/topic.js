@@ -465,6 +465,50 @@ define(['composer'], function(composer) {
 			}
 		});
 
+		$('#post-container').on('click', '.move', function(e) {
+			var moveModal = $('#move-post-modal'),
+				moveBtn = moveModal.find('#move_post_commit'),
+				topicId = moveModal.find('#topicId'),
+				post = $(this),
+				pid = $(this).parents('li').attr('data-pid');
+
+			moveModal.removeClass('hide');
+			moveModal.css("position", "fixed")
+				.css("left", Math.max(0, (($(window).width() - $(moveModal).outerWidth()) / 2) + $(window).scrollLeft()) + "px")
+				.css("top", "0px")
+				.css("z-index", "2000");
+
+			moveModal.find('.close,#move_post_cancel').on('click', function() {
+				moveModal.addClass('hide');
+			});
+
+			topicId.on('change', function() {
+				if(topicId.val().length) {
+					moveBtn.removeAttr('disabled');
+				} else {
+					moveBtn.attr('disabled', true);
+				}
+			});
+
+			moveBtn.on('click', function() {
+				socket.emit('api:topic.movePost', {pid: pid, tid: topicId.val()}, function(err) {
+					if(err) {
+						return app.alertError(err.message);
+					}
+
+					post.fadeOut(500, function() {
+						post.remove();
+					});
+
+					moveModal.addClass('hide');
+					$('#topicId').val('');
+
+					app.alertSuccess('Post moved!');
+				});
+			});
+		});
+
+
 		$('#post-container').on('click', '.chat', function(e) {
 			var username = $(this).parents('li.row').attr('data-username');
 			var touid = $(this).parents('li.row').attr('data-uid');
