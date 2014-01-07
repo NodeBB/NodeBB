@@ -3,6 +3,7 @@ var async = require('async'),
 	nconf = require('nconf'),
 	validator = require('validator'),
 	S = require('string'),
+	winston = require('winston'),
 
 	db = require('./database'),
 	posts = require('./posts'),
@@ -53,7 +54,7 @@ var async = require('async'),
 				}
 				db.searchIndex('topic', title, tid);
 
-				user.addTopicIdToUser(uid, tid);
+				user.addTopicIdToUser(uid, tid, timestamp);
 
 				// in future it may be possible to add topics to several categories, so leaving the door open here.
 				db.sortedSetAdd('categories:' + cid + ':tid', timestamp, tid);
@@ -111,6 +112,7 @@ var async = require('async'),
 					}
 
 					Topics.reply(tid, uid, content, function(err, postData) {
+
 						if(err) {
 							return callback(err, null);
 						} else if(!postData) {
@@ -259,26 +261,26 @@ var async = require('async'),
 				return callback(new Error('Topic doesn\'t exist'));
 			}
 
-			posts.getPostField(pid, 'tid', function(err, oldTid) {
+			posts.getPostFields(pid, ['tid', 'timestamp'], function(err, postData) {
 				if(err) {
 					return callback(err);
 				}
 
-				if(!oldTid) {
+				if(!postData) {
 					return callback(new Error('Post doesn\'t exist'));
 				}
 
-				Topics.removePostFromTopic(oldTid, pid, function(err) {
+				Topics.removePostFromTopic(postData.tid, pid, function(err) {
 					if(err) {
 						return callback(err);
 					}
 
-					Topics.decreasePostCount(oldTid);
+					Topics.decreasePostCount(postData.tid);
 
 					posts.setPostField(pid, 'tid', tid);
 
 					Topics.increasePostCount(tid);
-					Topics.addPostToTopic(tid, pid, callback);
+					Topics.addPostToTopic(tid, pid, postData.timestamp, callback);
 				});
 			});
 		});
@@ -1041,19 +1043,19 @@ var async = require('async'),
 	Topics.onNewPostMade = function(tid, pid, timestamp, callback) {
 		Topics.increasePostCount(tid);
 		Topics.updateTimestamp(tid, timestamp);
-		Topics.addPostToTopic(tid, pid, callback);
+		Topics.addPostToTopic(tid, pid, timestamp, callback);
 	}
 
-	Topics.addPostToTopic = function(tid, pid, callback) {
-		db.listAppend('tid:' + tid + ':posts', pid, callback);
+	Topics.addPostToTopic = function(tid, pid, timestamp, callback) {
+		db.sortedSetAdd('tid:' + tid + ':posts', timestamp, pid, callback);
 	}
 
 	Topics.removePostFromTopic = function(tid, pid, callback) {
-		db.listRemoveAll('tid:' + tid + ':posts', pid, callback);
+		db.sortedSetRemove('tid:' + tid + ':posts', pid, callback);
 	}
 
 	Topics.getPids = function(tid, callback) {
-		db.getListRange('tid:' + tid + ':posts', 0, -1, callback);
+		db.getSortedSetRange('tid:' + tid + ':posts', 0, -1, callback);
 	}
 
 	Topics.getUids = function(tid, callback) {

@@ -905,8 +905,8 @@ websockets.init = function(io) {
 					callback({
 						titleEditable: isMain
 					});
-				})
-			})
+				});
+			});
 		});
 
 		socket.on('api:post.privileges', function(pid) {

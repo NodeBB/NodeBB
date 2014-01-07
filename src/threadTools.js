@@ -292,7 +292,10 @@ var winston = require('winston'),
 	}
 
 	ThreadTools.getLatestUndeletedPid = function(tid, callback) {
-		db.getListRange('tid:' + tid + ':posts', 0, -1, function(err, pids) {
+		db.getSortedSetRange('tid:' + tid + ':posts', 0, -1, function(err, pids) {
+			if(err) {
+				return callback(err);
+			}
 			if (pids.length === 0) {
 				return callback(new Error('no-undeleted-pids-found'));
 			}

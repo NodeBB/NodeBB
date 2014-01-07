@@ -6,6 +6,7 @@ var db = require('./database'),
 
 	User = require('./user'),
 	Topics = require('./topics'),
+	Posts = require('./posts'),
 	Utils = require('../public/src/utils'),
 
 	Upgrade = {},
@@ -14,7 +15,7 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2014, 0, 5, 14, 5).getTime();
+	var	latestSchema = new Date(2014, 0, 7).getTime();
 
 	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -248,6 +249,132 @@ Upgrade.upgrade = function(callback) {
 				})
 			} else {
 				winston.info('[2014/1/5] Re-slugify usernames (again) skipped');
+				next();
+			}
+		},
+		function(next) {
+			function upgradeUserPostsTopics(next) {
+
+				function upgradeUser(uid, next) {
+
+					function upgradeUserPosts(next) {
+
+						function addPostToUser(pid) {
+							Posts.getPostField(pid, 'timestamp', function(err, timestamp) {
+								db.sortedSetAdd('uid:' + uid + ':posts', timestamp, pid);
+							});
+						}
+
+						db.getListRange('uid:' + uid + ':posts', 0, -1, function(err, pids) {
+							if(err) {
+								return next(err);
+							}
+
+							if(!pids || !pids.length) {
+								return next();
+							}
+
+							db.delete('uid:' + uid + ':posts', function(err) {
+								for(var i = 0; i< pids.length; ++i)	 {
+									addPostToUser(pids[i]);
+								}
+								next();
+							});
+						});
+					}
+
+					function upgradeUserTopics(next) {
+
+						function addTopicToUser(tid) {
+							Topics.getTopicField(tid, 'timestamp', function(err, timestamp) {
+								db.sortedSetAdd('uid:' + uid + ':topics', timestamp, tid);
+							});
+						}
+
+						db.getListRange('uid:' + uid + ':topics', 0, -1, function(err, tids) {
+							if(err) {
+								return next(err);
+							}
+
+							if(!tids || !tids.length) {
+								return next();
+							}
+
+							db.delete('uid:' + uid + ':topics', function(err) {
+								for(var i = 0; i< tids.length; ++i)	 {
+									addTopicToUser(tids[i]);
+								}
+								next();
+							});
+						});
+					}
+
+					async.series([upgradeUserPosts, upgradeUserTopics], function(err, result) {
+						next(err);
+					});
+				}
+
+
+				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
+					if(err) {
+						return next(err);
+					}
+
+					async.each(uids, upgradeUser, function(err, result) {
+						next(err);
+					});
+				});
+			}
+
+			function upgradeTopicPosts(next) {
+				function upgradeTopic(tid, next) {
+					function addPostToTopic(pid) {
+						Posts.getPostField(pid, 'timestamp', function(err, timestamp) {
+							db.sortedSetAdd('tid:' + tid + ':posts', timestamp, pid);
+						});
+					}
+
+					db.getListRange('tid:' + tid + ':posts', 0, -1, function(err, pids) {
+						if(err) {
+							return next(err);
+						}
+
+						if(!pids || !pids.length) {
+							return next();
+						}
+
+						db.delete('tid:' + tid + ':posts', function(err) {
+							for(var i = 0; i< pids.length; ++i)	 {
+								addPostToTopic(pids[i]);
+							}
+							next();
+						});
+					});
+				}
+
+				db.getSetMembers('topics:tid', function(err, tids) {
+					async.each(tids, upgradeTopic, function(err, results) {
+						next(err);
+					});
+				});
+			}
+
+			thisSchemaDate = new Date(2014, 0, 7).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				async.series([upgradeUserPostsTopics, upgradeTopicPosts], function(err, results) {
+					if(err) {
+						winston.err('Error upgrading '+ err.message);
+						return next(err);
+					}
+
+					winston.info('[2014/1/7] Updated topic and user posts to sorted set');
+					next();
+				});
+
+			} else {
+				winston.info('[2014/1/7] Update to topic and user posts to sorted set skipped');
 				next();
 			}
 		}

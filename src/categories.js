@@ -334,7 +334,7 @@ var db = require('./database.js'),
 
 	Categories.isUserActiveIn = function(cid, uid, callback) {
 
-		db.getListRange('uid:' + uid + ':posts', 0, -1, function(err, pids) {
+		db.getSortedSetRange('uid:' + uid + ':posts', 0, -1, function(err, pids) {
 			if (err) {
 				return callback(err, null);
 			}

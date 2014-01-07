@@ -96,7 +96,7 @@ var db = require('./database'),
 	};
 
 	Posts.getPostsByTid = function(tid, start, end, callback) {
-		db.getListRange('tid:' + tid + ':posts', start, end, function(err, pids) {
+		db.getSortedSetRange('tid:' + tid + ':posts', start, end, function(err, pids) {
 			if(err) {
 				return callback(err);
 			}
@@ -325,7 +325,7 @@ var db = require('./database'),
 						postData.relativeTime = new Date(parseInt(postData.timestamp,10)).toISOString();
 						postData.relativeEditTime = parseInt(postData.edited, 10) !== 0 ? (new Date(parseInt(postData.edited, 10)).toISOString()) : '';
 					} catch(e) {
-						winston.err('invalid time value');
+						require('winston').err('invalid time value');
 					}
 
 					postTools.parse(postData.content, function(err, content) {

@@ -17,12 +17,12 @@ var winston = require('winston'),
 
 (function(PostTools) {
 	PostTools.isMain = function(pid, tid, callback) {
-		db.getListRange('tid:' + tid + ':posts', 0, 0, function(err, pids) {
+		db.getSortedSetRange('tid:' + tid + ':posts', 0, 0, function(err, pids) {
 			if(err) {
 				return callback(err);
 			}
 
-			callback(null, pids[0] === pid);
+			callback(null, parseInt(pids[0], 10) === parseInt(pid, 10));
 		});
 	}
 

@@ -454,7 +454,7 @@ var bcrypt = require('bcrypt'),
 	};
 
 	User.onNewPostMade = function(uid, tid, pid, timestamp) {
-		User.addPostIdToUser(uid, pid);
+		User.addPostIdToUser(uid, pid, timestamp);
 
 		User.incrementUserFieldBy(uid, 'postcount', 1, function(err, newpostcount) {
 			db.sortedSetAdd('users:postcount', newpostcount, uid);
@@ -463,16 +463,16 @@ var bcrypt = require('bcrypt'),
 		User.setUserField(uid, 'lastposttime', timestamp);
 	};
 
-	User.addPostIdToUser = function(uid, pid) {
-		db.listPrepend('uid:' + uid + ':posts', pid);
+	User.addPostIdToUser = function(uid, pid, timestamp) {
+		db.sortedSetAdd('uid:' + uid + ':posts', timestamp, pid);
 	};
 
-	User.addTopicIdToUser = function(uid, tid) {
-		db.listPrepend('uid:' + uid + ':topics', tid);
+	User.addTopicIdToUser = function(uid, tid, timestamp) {
+		db.sortedSetAdd('uid:' + uid + ':topics', timestamp, tid);
 	};
 
 	User.getPostIds = function(uid, start, stop, callback) {
-		db.getListRange('uid:' + uid + ':posts', start, stop, function(err, pids) {
+		db.getSortedSetRevRange('uid:' + uid + ':posts', start, stop, function(err, pids) {
 			if(err) {
 				return callback(err);
 			}
