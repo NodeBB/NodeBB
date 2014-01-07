@@ -214,9 +214,6 @@ var async = require('async'),
 		pids.sort();
 		var mainPid = pids[0];
 
-		//TODO: check if we can move all the pids, threadTools privs? -baris
-
-
 		posts.getPostData(mainPid, function(err, postData) {
 			if(err) {
 				return callback(err);
@@ -243,12 +240,18 @@ var async = require('async'),
 					});
 
 					function move(pid, next) {
-						posts.getPostField(pid, 'timestamp', function(err, timestamp) {
-							if(err) {
-								return next(err);
-							}
+						postTools.privileges(pid, uid, function(privileges) {
+							if(privileges.editable) {
+								posts.getPostField(pid, 'timestamp', function(err, timestamp) {
+									if(err) {
+										return next(err);
+									}
 
-							Topics.movePostToTopic(pid, postData.tid, tid, timestamp, next);
+									Topics.movePostToTopic(pid, postData.tid, tid, timestamp, next);
+								});
+							} else {
+								next();
+							}
 						});
 					}
 				});
