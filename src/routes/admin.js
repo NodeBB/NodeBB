@@ -159,6 +159,14 @@ var nconf = require('nconf'),
 
 				uploadImage(filename, req, res);
 			});
+
+			app.get('/users/csv', function(req, res) {
+				user.getUsersCSV(function(err, data) {
+					res.attachment('users.csv');
+				    res.setHeader('Content-Type', 'text/csv');
+				    res.end(data);
+				});
+			});
 		});
 
 		function uploadImage(filename, req, res) {
