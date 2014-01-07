@@ -198,7 +198,7 @@ var async = require('async'),
 		});
 	}
 
-	Topics.createTopicFromPosts = function(title, pids, callback) {
+	Topics.createTopicFromPosts = function(uid, title, pids, callback) {
 		if(title) {
 			title = title.trim();
 		}
@@ -213,6 +213,9 @@ var async = require('async'),
 
 		pids.sort();
 		var mainPid = pids[0];
+
+		//TODO: check if we can move all the pids, threadTools privs? -baris
+
 
 		posts.getPostData(mainPid, function(err, postData) {
 			if(err) {

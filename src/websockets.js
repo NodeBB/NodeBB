@@ -623,7 +623,17 @@ websockets.init = function(io) {
 		});
 
 		socket.on('api:topic.createTopicFromPosts', function(data, callback) {
-			topics.createTopicFromPosts(data.title, data.pids, function(err, data) {
+			if(!uid) {
+				socket.emit('event:alert', {
+					title: 'Can&apos;t fork',
+					message: 'Guests can&apos;t fork topics!',
+					type: 'warning',
+					timeout: 2000
+				});
+				return;
+			}
+
+			topics.createTopicFromPosts(uid, data.title, data.pids, function(err, data) {
 				callback(err?{message:err.message}:null, data);
 			});
 		});
