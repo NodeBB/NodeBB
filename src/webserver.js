@@ -94,7 +94,7 @@ if(nconf.get('ssl')) {
 				}],
 				templateValues = {
 					cssSrc: meta.config['theme:src'] || nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
-					pluginCSS: plugins.cssFiles.map(function(file) { return { path: '/nodebb'+file + (meta.config['cache-buster'] ? '?v=' + meta.config['cache-buster'] : '') }; }),
+					pluginCSS: plugins.cssFiles.map(function(file) { return { path: nconf.get('relative_path') + file + (meta.config['cache-buster'] ? '?v=' + meta.config['cache-buster'] : '') }; }),
 					title: meta.config.title || '',
 					description: meta.config.description || '',
 					'brand:logo': meta.config['brand:logo'] || '',
