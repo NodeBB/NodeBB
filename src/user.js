@@ -409,6 +409,30 @@ var bcrypt = require('bcrypt'),
 		});
 	};
 
+	// thanks to @akhoury
+	User.getUsersCSV = function(callback) {
+		var csvContent = "";
+
+		db.getObjectValues('username:uid', function(err, uids) {
+			async.each(uids, function(uid, next) {
+				User.getUserFields(uid, ['email', 'username'], function(err, userData) {
+					if(err) {
+						return next(err);
+					}
+
+					csvContent += userData.email+ ',' + userData.username + ',' + uid +'\n';
+					next();
+				});
+			}, function(err) {
+				if (err) {
+					throw err;
+				}
+
+				callback(err, csvContent);
+			});
+		});
+	}
+
 	User.search = function(username, callback) {
 		if (!username) {
 			callback([]);
