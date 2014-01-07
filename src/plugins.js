@@ -2,6 +2,7 @@ var fs = require('fs'),
 	path = require('path'),
 	async = require('async'),
 	winston = require('winston'),
+	nconf = require('nconf'),
 	eventEmitter = require('events').EventEmitter,
 	db = require('./database');
 
