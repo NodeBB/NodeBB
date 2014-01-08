@@ -28,6 +28,9 @@
 			}
 		});
 	</script>
+
+	<!-- TODO : this has to be refactored, maybe configured from ACP? -baris -->
+	<link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
 </head>
 
 <body>

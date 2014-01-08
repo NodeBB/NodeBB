@@ -26,7 +26,7 @@
 
 	<ul id="post-container" class="posts" data-tid="{topic_id}">
 		<!-- BEGIN posts -->
-			<li class="row post-row infiniteloaded" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-index="{posts.index}" data-deleted="{posts.deleted}" itemscope itemtype="http://schema.org/Comment">
+			<li class="row post-row infiniteloaded" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-userslug="{posts.userslug}" data-index="{posts.index}" data-deleted="{posts.deleted}" itemscope itemtype="http://schema.org/Comment">
 				<a id="post_anchor_{posts.pid}" name="{posts.pid}"></a>
 
 				<meta itemprop="datePublished" content="{posts.relativeTime}">

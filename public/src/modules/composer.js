@@ -115,13 +115,69 @@ define(['taskbar'], function(taskbar) {
 			} else {
 				titleEl.val(postData.title);
 				titleEl.prop('readOnly', false);
-			}
+			}$
 
 			bodyEl.val(postData.body);
+
 
 			postContainer.on('change', 'input, textarea', function() {
 				composer.posts[post_uuid].modified = true;
 			});
+
+			function getUniqueUserslugs() {
+				var postContainer = $('#post-container');
+				if(postContainer.length) {
+					var elements = $('#post-container li[data-userslug]');
+					if(!elements.length) {
+						return [];
+					}
+
+					var slugs = [];
+					for(var i=0; i<elements.length; ++i) {
+						var slug = $(elements[i]).attr('data-userslug');
+						if(slugs.indexOf('@' + slug) === -1) {
+							slugs.push('@' + slug);
+						}
+					}
+
+					return slugs;
+				} else {
+					return [];
+				}
+			}
+
+			$(bodyEl).autocomplete({
+				source: function(request, response) {
+					var term = request.term;
+					var lastMention = request.term.lastIndexOf('@');
+					if(lastMention !== -1) {
+						term = request.term.substr(lastMention);
+					}
+
+					var userslugs = getUniqueUserslugs();
+					userslugs = userslugs.filter(function(slug) {
+						return term && slug.indexOf(term) === 0;
+					});
+
+					response(userslugs);
+					$('.ui-autocomplete a').attr('href', '#');
+				},
+				response: function(event, ui) {
+					var content = $(bodyEl).val();
+					var lastIndex = content.lastIndexOf('@');
+					if(content === '@') {
+						content = '';
+					} else if(lastIndex !== -1) {
+						content = content.substr(0, lastIndex);
+					}
+
+					for(var i=0; i<ui.content.length; ++i) {
+						ui.content[i].value = content + ui.content[i].value;
+					}
+				},
+				position: { my : "left bottom", at: "left bottom" }
+			});
+
 
 			postContainer.on('click', '.action-bar button', function() {
 				var	action = $(this).attr('data-action');
