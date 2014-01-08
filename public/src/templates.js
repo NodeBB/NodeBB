@@ -4,7 +4,8 @@
 		templates,
 		fs = null,
 		available_templates = [],
-		parsed_variables = {};
+		parsed_variables = {},
+		apiXHR;
 
 	module.exports = templates = {
 		"globals": {}
@@ -174,7 +175,7 @@
 			parse_template();
 		}
 
-		jQuery.get(RELATIVE_PATH + '/api/' + api_url, function (data) {
+		apiXHR = jQuery.get(RELATIVE_PATH + '/api/' + api_url, function (data) {
 
 			if (!data) {
 				ajaxify.go('404');
@@ -183,12 +184,12 @@
 
 			template_data = data;
 			parse_template();
-		}).fail(function (data) {
+		}).fail(function (data, textStatus) {
 			if (data && data.status == 404) {
 				return ajaxify.go('404');
 			} else if (data && data.status === 403) {
 				return ajaxify.go('403');
-			} else {
+			} else if (textStatus !== "abort") {
 				app.alertError(data.responseJSON.error);
 			}
 		});
@@ -230,6 +231,12 @@
 			});
 		}
 
+	}
+
+	templates.cancelRequest = function() {
+		if (apiXHR) {
+			apiXHR.abort();
+		}
 	}
 
 	templates.flush = function () {
@@ -294,7 +301,7 @@
 				data[g] = data[g] || templates.globals[g];
 			}
 		}
-		
+
 		return (function parse(data, namespace, template, blockInfo) {
 			if (!data || data.length == 0) {
 				template = '';

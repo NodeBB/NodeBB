@@ -49,9 +49,9 @@ var ajaxify = {};
 		// end
 
 		if ($('#content').hasClass('ajaxifying')) {
-			return true;
+			templates.cancelRequest();
 		}
-		
+
 		// Remove trailing slash
 		url = url.replace(/\/$/, "");
 
