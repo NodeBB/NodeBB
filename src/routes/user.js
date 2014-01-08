@@ -176,23 +176,25 @@ var fs = require('fs'),
 					user.setUserField(uid, 'picture', imageUrl);
 
 					if (convertToPNG && extension !== '.png') {
-						im.convert([uploadPath, 'png:-'],
-							function(err, stdout){
-								if (err) {
-									winston.err(err);
-									res.send({
-										error: 'Unable to convert image to PNG.'
-									});
-									return;
-								}
+						im.convert([uploadPath, 'png:-'], function(err, stdout) {
+							if (err) {
+								winston.err(err);
+								res.send({
+									error: 'Unable to convert image to PNG.'
+								});
+								return;
+							}
 
-								fs.writeFileSync(uploadPath, stdout, 'binary');
+							fs.writeFileSync(uploadPath, stdout, 'binary');
+							res.json({
+								path: imageUrl
 							});
+						});
+					} else {
+						res.json({
+							path: imageUrl
+						});
 					}
-
-					res.json({
-						path: imageUrl
-					});
 				}
 
 				if(extension === '.gif') {
