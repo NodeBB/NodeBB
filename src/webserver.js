@@ -16,6 +16,7 @@ var path = require('path'),
 	db = require('./database'),
 	user = require('./user'),
 	categories = require('./categories'),
+	CategoryTools = require('./categoryTools'),
 	posts = require('./posts'),
 	topics = require('./topics'),
 	ThreadTools = require('./threadTools'),
@@ -511,7 +512,7 @@ if(nconf.get('ssl')) {
 			async.waterfall([
 				function(next) {
 					// Check whether this user is allowed to access this topic
-					ThreadTools.privileges(tid, ((req.user) ? req.user.uid : 0), function(err, privileges) {
+					ThreadTools.privileges(tid, ((req.user) ? req.user.uid || 0 : 0), function(err, privileges) {
 						if (!err) {
 							if (!privileges.read) {
 								next(new Error('not-enough-privileges'));
@@ -671,6 +672,20 @@ if(nconf.get('ssl')) {
 			}
 
 			async.waterfall([
+				function(next) {
+					// Check whether this user is allowed to access this category
+					CategoryTools.privileges(cid, ((req.user) ? req.user.uid || 0 : 0), function(err, privileges) {
+						if (!err) {
+							if (!privileges.read) {
+								next(new Error('not-enough-privileges'));
+							} else {
+								next();
+							}
+						} else {
+							next(err);
+						}
+					});
+				},
 				function (next) {
 					categories.getCategoryById(cid, 0, function (err, categoryData) {
 
@@ -717,7 +732,11 @@ if(nconf.get('ssl')) {
 				}
 			], function (err, data) {
 				if (err) {
-					return res.redirect('404');
+					if (err.message === 'not-enough-privileges') {
+						return res.redirect('403');
+					} else {
+						return res.redirect('404');
+					}
 				}
 
 				if(data.categories.link) {
