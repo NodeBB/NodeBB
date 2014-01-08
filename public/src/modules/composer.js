@@ -115,7 +115,7 @@ define(['taskbar'], function(taskbar) {
 			} else {
 				titleEl.val(postData.title);
 				titleEl.prop('readOnly', false);
-			}$
+			}
 
 			bodyEl.val(postData.body);
 
