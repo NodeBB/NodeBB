@@ -149,9 +149,13 @@ define(['taskbar'], function(taskbar) {
 			$(bodyEl).autocomplete({
 				source: function(request, response) {
 					var term = request.term;
-					var lastMention = request.term.lastIndexOf('@');
+
+					var cursorPosition = $(bodyEl).getCursorPosition();
+					term = term.substr(0, cursorPosition);
+
+					var lastMention = term.lastIndexOf('@');
 					if(lastMention !== -1) {
-						term = request.term.substr(lastMention);
+						term = term.substr(lastMention);
 					}
 
 					var userslugs = getUniqueUserslugs();
@@ -162,18 +166,22 @@ define(['taskbar'], function(taskbar) {
 					response(userslugs);
 					$('.ui-autocomplete a').attr('href', '#');
 				},
-				response: function(event, ui) {
-					var content = $(bodyEl).val();
-					var lastIndex = content.lastIndexOf('@');
-					if(content === '@') {
-						content = '';
-					} else if(lastIndex !== -1) {
-						content = content.substr(0, lastIndex);
-					}
+				focus: function(event, ui) {
+					return false;
+				},
+				select: function(event, ui) {
+					var cursorPosition = $(bodyEl).getCursorPosition();
+					var upToCursor = $(bodyEl).val().substr(0, cursorPosition);
+					var index = upToCursor.lastIndexOf('@');
 
-					for(var i=0; i<ui.content.length; ++i) {
-						ui.content[i].value = content + ui.content[i].value;
+					if(index !== -1) {
+						var firstPart = $(bodyEl).val().substr(0, index);
+						var lastPart = $(bodyEl).val().substr(cursorPosition);
+
+						$(bodyEl).val(firstPart + ui.item.value + lastPart);
+						$(bodyEl).selectRange(index + ui.item.value.length);
 					}
+					return false;
 				},
 				position: { my : "left bottom", at: "left bottom" }
 			});
