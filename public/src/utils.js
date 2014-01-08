@@ -102,6 +102,7 @@
 			str = XRegExp.replace(str, invalidChars, '-');
 			str = str.replace(/\s+/g, '-') // collapse whitespace and replace by -
 			str = str.replace(/-+/g, '-'); // collapse dashes
+			str = str.replace(/-$/g, '');
 
 			return str;
 		},
