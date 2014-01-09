@@ -996,13 +996,13 @@ define(['composer'], function(composer) {
 			return;
 		}
 
-		var container = $(document.body),
+		var container = $(window),
 			scrollTo = $('#post_anchor_' + pid),
 			tid = $('#post-container').attr('data-tid');
 
 		function animateScroll() {
-			$('body,html').animate({
-				scrollTop: scrollTo.offset().top - container.offset().top + container.scrollTop() - $('#header-menu').height()
+			$('window,html').animate({
+				scrollTop: scrollTo.offset().top + container.scrollTop() - $('#header-menu').height()
 			}, 400);
 		}
 
