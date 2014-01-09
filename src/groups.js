@@ -106,6 +106,28 @@
 		});
 	};
 
+	Groups.isMemberOfGroupAny = function(uid, groupListKey, callback) {
+		Groups.getGidFromName(groupListKey, function(err, gid) {
+			if (err || !gid) {
+				return callback(new Error('error-checking-group'));
+			}
+
+			db.getSetMembers('gid:' + gid + ':members', function(err, gids) {
+				async.some(gids, function(gid, next) {
+					Groups.isMember(uid, gid, function(err, isMember) {
+						if (!err && isMember) {
+							next(true);
+						} else {
+							next(false);
+						}
+					});
+				}, function(result) {
+					callback(null, result);
+				});
+			});
+		})
+	};
+
 	Groups.isEmpty = function(gid, callback) {
 		db.setCount('gid:' + gid + ':members', function(err, numMembers) {
 			callback(err, numMembers === 0);
@@ -266,7 +288,7 @@
 		// check user group read access level
 		async.series([function(callback){
 			// get groups with read permission
-			db.getObjectField('group:gid', 'cid:' + cid + ':privileges:+gr', function(err, gid){
+			db.getObjectField('group:gid', 'cid:' + cid + ':privileges:g+r', function(err, gid){
 				// get the user groups that belong to this read group
 				db.getSetMembers('gid:' + gid + ':members', function (err, gids) {
 					// check if user belong to any of these user groups
@@ -285,10 +307,10 @@
 					// has access or not.
 					async.series(groups_check, function(err, results){
 						callback(null, results);
-					});								
+					});
 				});
 			});
-		
+
 		}],
 		function(err, results){
 			// if the read group is empty we will asume that read access has been granted to ALL
