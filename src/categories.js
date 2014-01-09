@@ -32,7 +32,10 @@ var db = require('./database.js'),
 				slug: slug,
 				topic_count: 0,
 				disabled: 0,
-				order: data.order
+				order: data.order,
+				link: "",
+				numRecentReplies: 2,
+				"class": 'col-md-3 col-xs-6'
 			};
 
 			db.setObject('category:' + cid, category, function(err, data) {
@@ -213,7 +216,7 @@ var db = require('./database.js'),
 	};
 
 	Categories.getRecentReplies = function(cid, uid, count, callback) {
-		if(count === 0) {
+		if(count === 0 || !count) {
 			return callback(null, []);
 		}
 
