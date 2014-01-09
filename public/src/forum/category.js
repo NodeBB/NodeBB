@@ -53,7 +53,7 @@ define(['composer'], function(composer) {
 				li.setAttribute('data-pid', posts[i].pid);
 
 
-				li.innerHTML = '<a href="' + RELATIVE_PATH + '/user/' + posts[i].userslug + '"><img title="' + posts[i].username + '" style="width: 48px; height: 48px; /*temporary*/" class="img-rounded user-img" src="' + posts[i].picture + '"/></a>' +
+				li.innerHTML = '<a href="' + RELATIVE_PATH + '/user/' + posts[i].userslug + '"><img title="' + posts[i].username + '" class="img-rounded user-img" src="' + posts[i].picture + '"/></a>' +
 					'<a href="' + RELATIVE_PATH + '/topic/' + posts[i].topicSlug + '#' + posts[i].pid + '">' +
 					'<strong><span>'+ posts[i].username + '</span></strong>' +
 					'<p>' +

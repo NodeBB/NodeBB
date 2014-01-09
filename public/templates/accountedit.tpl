@@ -48,6 +48,14 @@
 		<div class="col-md-5">
 			<div>
 				<form class='form-horizontal'>
+
+					<div class="control-group">
+						<label class="control-label" for="inputUsername">[[user:username]]</label>
+						<div class="controls">
+							<input class="form-control" type="text" id="inputUsername" placeholder="Username" value="{username}">
+						</div>
+					</div>
+
 					<div class="control-group">
 						<label class="control-label" for="inputEmail">[[user:email]]</label>
 						<div class="controls">

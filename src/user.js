@@ -184,7 +184,7 @@ var bcrypt = require('bcrypt'),
 
 	User.updateProfile = function(uid, data, callback) {
 
-		var fields = ['email', 'fullname', 'website', 'location', 'birthday', 'signature'];
+		var fields = ['username', 'email', 'fullname', 'website', 'location', 'birthday', 'signature'];
 		var returnData = {
 			success: false
 		};
@@ -205,38 +205,66 @@ var bcrypt = require('bcrypt'),
 			}
 
 			User.getUserField(uid, 'email', function(err, email) {
-				if (email !== data.email) {
-					User.isEmailAvailable(data.email, function(err, available) {
-						if (err) {
-							return next(err, null);
-						}
-						if (!available) {
-							next({
-								error: 'Email not available!'
-							}, false);
-						} else {
-							next(null, true);
-						}
-					});
-				} else {
-					next(null, true);
+				if(email === data.email) {
+					return next(null, true);
 				}
+
+				User.isEmailAvailable(data.email, function(err, available) {
+					if (err) {
+						return next(err, null);
+					}
+
+					if (!available) {
+						next({
+							error: 'Email not available!'
+						}, false);
+					} else {
+						next(null, true);
+					}
+				});
 			});
 		}
 
-		async.series([isSignatureValid, isEmailAvailable], function(err, results) {
-			if (err) {
-				callback(err, returnData);
-			} else {
-				async.each(fields, updateField, function(err) {
-					if (err) {
-						callback(err, returnData);
+		function isUsernameAvailable(next) {
+			User.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
+
+				var userslug = utils.slugify(data.username);
+
+				if(userslug === userData.userslug) {
+					return next(null, true);
+				}
+
+				if(!utils.isUserNameValid(data.username) || !userslug) {
+					return next({
+						error: 'Invalid Username!'
+					}, false);
+				}
+
+				User.exists(userslug, function(exists) {
+					if(exists) {
+						next({
+							error: 'Username not available!'
+						}, false);
 					} else {
-						returnData.success = true;
-						callback(null, returnData);
+						next(null, true);
 					}
 				});
+			});
+		}
+
+		async.series([isSignatureValid, isEmailAvailable, isUsernameAvailable], function(err, results) {
+			if (err) {
+				return callback(err, returnData);
 			}
+
+			async.each(fields, updateField, function(err) {
+				if (err) {
+					return callback(err, returnData);
+				}
+
+				returnData.success = true;
+				callback(null, returnData);
+			});
 		});
 
 		function updateField(field, next) {
@@ -269,6 +297,27 @@ var bcrypt = require('bcrypt'),
 						events.logEmailChange(uid, userData.email, data.email);
 						next();
 					});
+					return;
+				} else if (field === 'username') {
+
+					User.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
+						var userslug = utils.slugify(data.username);
+
+						if(data.username !== userData.username) {
+							User.setUserField(uid, 'username', data.username);
+							db.deleteObjectField('username:uid', userData.username);
+							db.setObjectField('username:uid', data.username, uid);
+						}
+
+						if(userslug !== userData.userslug) {
+							User.setUserField(uid, 'userslug', userslug);
+							db.deleteObjectField('userslug:uid', userData.userslug);
+							db.setObjectField('userslug:uid', userslug, uid);
+						}
+
+						next();
+					});
+
 					return;
 				} else if (field === 'signature') {
 					data[field] = S(data[field]).stripTags().s;

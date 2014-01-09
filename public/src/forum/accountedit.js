@@ -15,6 +15,7 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 
 			var userData = {
 				uid: $('#inputUID').val(),
+				username: $('#inputUsername').val(),
 				email: $('#inputEmail').val(),
 				fullname: $('#inputFullname').val(),
 				website: $('#inputWebsite').val(),
