@@ -1056,15 +1056,30 @@ websockets.init = function(io) {
 		});
 
 		socket.on('api:admin.user.search', function(username, callback) {
-			if (uid && uid > 0) {
-				user.search(username, function(data) {
-					if (!callback) socket.emit('api:admin.user.search', data);
-					else callback(null, data);
-				});
-			} else {
-				if (!callback) socket.emit('api:admin.user.search', null);
-				else callback();
+			if (!(uid && uid > 0)) {
+				return callback();
 			}
+
+			user.search(username, function(data) {
+				function isAdmin(userData, next) {
+					user.isAdministrator(userData.uid, function(err, isAdmin) {
+						if(err) {
+							return next(err);
+						}
+
+						userData.administrator = isAdmin?'1':'0';
+						next();
+					});
+				}
+
+				async.each(data, isAdmin, function(err) {
+					if(err) {
+						return callback({message: err.message});
+					}
+
+					callback(null, data);
+				});
+			});
 		});
 
 		socket.on('api:admin.categories.search', function(username, cid, callback) {

@@ -487,9 +487,9 @@ var bcrypt = require('bcrypt'),
 
 	User.search = function(username, callback) {
 		if (!username) {
-			callback([]);
-			return;
+			return callback([]);
 		}
+
 		db.search('user', username, function(err, uids) {
 			if (err) {
 				console.log(err);

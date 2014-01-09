@@ -93,7 +93,7 @@ define(function() {
 				var parent = adminBtn.parents('.users-box');
 				var isBanned = isUserBanned(adminBtn);
 				var uid = getUID(adminBtn);
-			
+
 				    if(uid === yourid){
 						app.alert({
 							title: 'Error',
@@ -107,7 +107,7 @@ define(function() {
 						adminBtn.attr('value', 'UnMake Admin').html('Remove Admin');
 						parent.attr('data-admin', 1);
 						updateUserBanButtons();
-						
+
 					} else if(uid !== yourid) {
 						bootbox.confirm('Do you really want to remove this user as admin "' + parent.attr('data-username') + '"?', function(confirm) {
 							if (confirm) {
@@ -115,11 +115,11 @@ define(function() {
 								adminBtn.attr('value', 'Make Admin').html('Make Admin');
 								parent.attr('data-admin', 0);
 								updateUserBanButtons();
-								
+
 							}
 						});
 					}
-				
+
 
 				return false;
 			});
@@ -187,40 +187,41 @@ define(function() {
 					var username = $('#search-user').val();
 
 					jQuery('.fa-spinner').removeClass('none');
-					socket.emit('api:admin.user.search', username);
 
+					socket.emit('api:admin.user.search', username, function(err, data) {
+						console.log(data);
+						if(err) {
+							return app.alertError(err.message);
+						}
+
+						var html = templates.prepare(templates['admin/users'].blocks['users']).parse({
+							users: data
+						}),
+							userListEl = document.querySelector('.users');
+
+						userListEl.innerHTML = html;
+						jQuery('.fa-spinner').addClass('none');
+
+						if (data && data.length === 0) {
+							$('#user-notfound-notify').html('User not found!')
+								.show()
+								.addClass('label-danger')
+								.removeClass('label-success');
+						} else {
+							$('#user-notfound-notify').html(data.length + ' user' + (data.length > 1 ? 's' : '') + ' found!')
+								.show()
+								.addClass('label-success')
+								.removeClass('label-danger');
+						}
+
+						initUsers();
+					});
 				}, 250);
 			});
 
 			initUsers();
 
 			handleUserCreate();
-
-			socket.removeAllListeners('api:admin.user.search');
-
-			socket.on('api:admin.user.search', function(data) {
-				var html = templates.prepare(templates['admin/users'].blocks['users']).parse({
-					users: data
-				}),
-					userListEl = document.querySelector('.users');
-
-				userListEl.innerHTML = html;
-				jQuery('.fa-spinner').addClass('none');
-
-				if (data && data.length === 0) {
-					$('#user-notfound-notify').html('User not found!')
-						.show()
-						.addClass('label-danger')
-						.removeClass('label-success');
-				} else {
-					$('#user-notfound-notify').html(data.length + ' user' + (data.length > 1 ? 's' : '') + ' found!')
-						.show()
-						.addClass('label-success')
-						.removeClass('label-danger');
-				}
-
-				initUsers();
-			});
 
 			function onUsersLoaded(users) {
 				var html = templates.prepare(templates['admin/users'].blocks['users']).parse({

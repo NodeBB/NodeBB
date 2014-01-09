@@ -47,37 +47,38 @@ define(function() {
 				jQuery('#user-notfound-notify').html('<i class="fa fa-spinner fa-spin"></i>');
 
 				setTimeout(function() {
-					socket.emit('api:admin.user.search', username);
+					socket.emit('api:admin.user.search', username, function(err, data) {
+						console.log(err, data);
+						if(err) {
+							return app.alert(err.message);
+						}
+
+						if (!data) {
+							$('#user-notfound-notify').html('You need to be logged in to search!');
+							$('#user-notfound-notify').parent().addClass('btn-warning label-warning');
+							return;
+						}
+
+						var html = templates.prepare(templates['users'].blocks['users']).parse({
+							users: data
+						}),
+							userListEl = $('#users-container');
+
+						userListEl.html(html);
+
+
+						if (data && data.length === 0) {
+							$('#user-notfound-notify').html('User not found!');
+							$('#user-notfound-notify').parent().addClass('btn-warning label-warning');
+						} else {
+							$('#user-notfound-notify').html(data.length + ' user' + (data.length > 1 ? 's' : '') + ' found!');
+							$('#user-notfound-notify').parent().addClass('btn-success label-success');
+						}
+
+					});
 				}, 500); //replace this with global throttling function/constant
 
 			}, 250);
-		});
-
-		socket.removeAllListeners('api:admin.user.search');
-
-		socket.on('api:admin.user.search', function(data) {
-			if (data === null) {
-				$('#user-notfound-notify').html('You need to be logged in to search!');
-				$('#user-notfound-notify').parent().addClass('btn-warning label-warning');
-				return;
-			}
-
-			var html = templates.prepare(templates['users'].blocks['users']).parse({
-				users: data
-			}),
-				userListEl = $('#users-container');
-
-			userListEl.html(html);
-
-
-			if (data && data.length === 0) {
-				$('#user-notfound-notify').html('User not found!');
-				$('#user-notfound-notify').parent().addClass('btn-warning label-warning');
-			} else {
-				$('#user-notfound-notify').html(data.length + ' user' + (data.length > 1 ? 's' : '') + ' found!');
-				$('#user-notfound-notify').parent().addClass('btn-success label-success');
-			}
-
 		});
 
 		socket.on('api:user.isOnline', function(data) {
