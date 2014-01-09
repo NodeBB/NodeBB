@@ -1,4 +1,4 @@
-<h1>Groups</h1>
+<h1><i class="fa fa-group"></i> Groups</h1>
 
 <hr />
 
@@ -7,7 +7,7 @@
 	<!-- BEGIN groups -->
 		<li data-gid="{groups.gid}">
 			<div class="row">
-				<div class="col-lg-8">	
+				<div class="col-lg-8">
 					<h2>{groups.name}</h2>
 					<p>{groups.description}</p>
 					<div class="btn-group">

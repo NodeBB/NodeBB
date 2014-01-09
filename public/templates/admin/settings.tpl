@@ -1,4 +1,4 @@
-<h1>Settings</h1>
+<h1><i class="fa fa-cogs"></i> Settings</h1>
 <hr />
 
 <h3>General Settings</h3>
@@ -128,7 +128,7 @@
 <form>
 	<h3>Web Crawler Settings</h3>
 	<div class="alert alert-warning">
-		<strong>Custom Robots.txt <small>Leave blank for default</small></strong><br /> 
+		<strong>Custom Robots.txt <small>Leave blank for default</small></strong><br />
 		<textarea class="form-control" data-field="robots.txt"></textarea>
 	</div>
 </form>

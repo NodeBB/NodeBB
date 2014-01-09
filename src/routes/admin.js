@@ -11,10 +11,9 @@ var nconf = require('nconf'),
 	categories = require('./../categories'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
+	Languages = require('../languages'),
 	events = require('./../events'),
 	utils = require('./../../public/src/utils.js');
-
-
 
 (function (Admin) {
 	Admin.isAdmin = function (req, res, next) {
@@ -57,9 +56,9 @@ var nconf = require('nconf'),
 		(function () {
 			var routes = [
 				'categories/active', 'categories/disabled', 'users', 'topics', 'settings', 'themes',
-				'twitter', 'facebook', 'gplus', 'database', 'events', 'motd', 'groups', 'plugins', 'logger',
-				'users/latest', 'users/sort-posts', 'users/sort-reputation',
-				'users/search'
+				'twitter', 'facebook', 'gplus', 'database', 'events', 'motd', 'groups', 'plugins',
+				'languages', 'logger',
+				'users/latest', 'users/sort-posts', 'users/sort-reputation', 'users/search'
 			];
 
 			for (var i = 0, ii = routes.length; i < ii; i++) {
@@ -380,6 +379,14 @@ var nconf = require('nconf'),
 
 					res.json(200, {
 						plugins: plugins
+					});
+				});
+			});
+
+			app.get('/languages', function(req, res) {
+				Languages.list(function(err, languages) {
+					res.send(200, {
+						languages: languages
 					});
 				});
 			});

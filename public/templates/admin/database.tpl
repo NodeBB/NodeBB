@@ -1,7 +1,7 @@
 
 
 <!-- IF redis -->
-<h1>Redis</h1>
+<h1><i class="fa fa-hdd-o"></i> Redis</h1>
 <hr />
 <div id="admin-redis-info">
 	<span>Redis Version</span> <span class="text-right">{redis_version}</span><br/>
@@ -32,7 +32,7 @@
 <!-- ENDIF redis -->
 
 <!-- IF mongo -->
-<h1>Mongo</h1>
+<h1><i class="fa fa-hdd-o"></i> Mongo</h1>
 <hr />
 <div id="admin-redis-info">
 

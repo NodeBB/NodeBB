@@ -1,4 +1,4 @@
-<h1>Themes</h1>
+<h1><i class="fa fa-th"></i> Themes</h1>
 <hr />
 
 <h3>Custom Themes</h3>

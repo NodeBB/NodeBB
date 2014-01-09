@@ -1,4 +1,4 @@
-<h1>Topics</h1>
+<h1><i class="fa fa-book"></i> Topics</h1>
 <hr />
 
 

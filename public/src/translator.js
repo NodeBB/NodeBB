@@ -8,8 +8,7 @@
 	 * 1. language en is hardcoded while system is developed. to switch language packs for now please edit DEFAULT_LANGUAGE
 	 *     b. need to write fallback system to default language if keys are missing (is this even necessary?)
 	 * 2. recursion needed when parsing language keys (ex. topics:modal.delete.title), right now json is all one level deep
-	 * 3. server side settings for default language
-	 * 4. user side settings for preferred language
+	 * 3. user side settings for preferred language
 	 *
 	 */
 

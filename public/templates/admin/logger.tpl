@@ -1,4 +1,4 @@
-<h1>Logger</h1>
+<h1><i class="fa fa-th"></i> Logger</h1>
 <hr />
 
 <h3>Logger Settings</h3>

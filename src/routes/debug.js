@@ -80,14 +80,6 @@ var	DebugRoute = function(app) {
 		});
 
 		app.get('/test', function(req, res) {
-			var	Emailer = require('../emailer');
-			Emailer.send('welcome', 1, {
-				username: 'test',
-				subject: 'this is a subject',
-				site_title: 'derp',
-				confirm_link: 'linkylink'
-			});
-
 			res.send();
 		});
 	});

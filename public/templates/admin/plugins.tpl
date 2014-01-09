@@ -1,4 +1,4 @@
-<h1>Plugins</h1>
+<h1><i class="fa fa-code-fork"></i> Plugins</h1>
 
 <ul class="plugins">
 	<!-- BEGIN plugins -->

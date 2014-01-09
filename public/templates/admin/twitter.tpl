@@ -1,4 +1,4 @@
-<h1>Twitter Social Authentication</h1>
+<h1><i class="fa fa-twitter-square"></i> Twitter Social Authentication</h1>
 <hr />
 
 <form>

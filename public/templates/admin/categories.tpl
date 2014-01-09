@@ -1,6 +1,6 @@
 
 <div class="categories">
-	<h1>Categories</h1>
+	<h1><i class="fa fa-folder"></i> Categories</h1>
 	<hr />
 
 	<ul class="nav nav-pills">

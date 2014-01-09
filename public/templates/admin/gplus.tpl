@@ -1,4 +1,4 @@
-<h1>Google Accounts Social Authentication</h1>
+<h1><i class="fa fa-google-plus-square"></i> Google Accounts Social Authentication</h1>
 <hr />
 
 <form>

@@ -9,6 +9,7 @@
 		"^admin/index.*": "admin/index",
 		"^admin/themes.*": "admin/themes",
 		"^admin/plugins/?$": "admin/plugins",
+		"^admin/languages/?$": "admin/languages",
 		"^admin/settings.*": "admin/settings",
 		"^admin/twitter.*": "admin/twitter",
 		"^admin/facebook.*": "admin/facebook",

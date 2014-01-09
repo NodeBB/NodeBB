@@ -1,4 +1,4 @@
-<h1>Facebook Social Authentication</h1>
+<h1><i class="fa fa-facebook-square"></i> Facebook Social Authentication</h1>
 <hr />
 
 <form>

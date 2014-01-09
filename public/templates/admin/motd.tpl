@@ -1,5 +1,4 @@
-
-<h1>MOTD</h1>
+<h1><i class="fa fa-comment"></i> MOTD</h1>
 <hr />
 <div class="alert alert-warning motd">
 	<p>
