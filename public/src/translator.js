@@ -5,14 +5,10 @@
 	/*
 	 * TODO:
 	 *
-	 * 1. language en is hardcoded while system is developed. to switch language packs for now please edit DEFAULT_LANGUAGE
-	 *     b. need to write fallback system to default language if keys are missing (is this even necessary?)
-	 * 2. recursion needed when parsing language keys (ex. topics:modal.delete.title), right now json is all one level deep
-	 * 3. user side settings for preferred language
+	 * 1. recursion needed when parsing language keys (ex. topics:modal.delete.title), right now json is all one level deep
+	 * 2. user side settings for preferred language
 	 *
 	 */
-
-	var DEFAULT_LANGUAGE = 'en';
 
 	var translator = {},
 		files = {
@@ -30,7 +26,7 @@
 	};
 
 	translator.getLanguage = function() {
-		return DEFAULT_LANGUAGE;
+		return config.defaultLang;
 	};
 
 	translator.get = function (key, callback) {
@@ -140,7 +136,7 @@
 
 			files.loading[filename] = true;
 
-			jQuery.getJSON(RELATIVE_PATH + '/language/' + DEFAULT_LANGUAGE + '/' + filename + '.json?v=' + timestamp, function (language) {
+			jQuery.getJSON(RELATIVE_PATH + '/language/' + config.defaultLang + '/' + filename + '.json?v=' + timestamp, function (language) {
 				files.loaded[filename] = language;
 
 				if (callback) {
@@ -161,9 +157,10 @@
 
 		var utils = require('./utils.js'),
 			path = require('path'),
-			fs = require('fs');
+			fs = require('fs'),
+			Meta = require('../../src/meta');
 
-		utils.walk(path.join(__dirname, '../../', 'public/language/' + DEFAULT_LANGUAGE), function (err, data) {
+		utils.walk(path.join(__dirname, '../../', 'public/language/' + Meta.config.defaultLang), function (err, data) {
 			var loaded = data.length;
 
 			for (var d in data) {
