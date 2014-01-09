@@ -44,7 +44,7 @@ var path = require('path'),
 				config.allowFileUploads = meta.config.allowFileUploads;
 				config.maximumFileSize = meta.config.maximumFileSize;
 				config.emailSetup = !!meta.config['email:from'];
-				config.defaultLang = meta.config.defaultLang;
+				config.defaultLang = meta.config.defaultLang || 'en';
 
 				res.json(200, config);
 			});

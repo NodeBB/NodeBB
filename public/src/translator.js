@@ -160,7 +160,7 @@
 			fs = require('fs'),
 			Meta = require('../../src/meta');
 
-		utils.walk(path.join(__dirname, '../../', 'public/language/' + Meta.config.defaultLang), function (err, data) {
+		utils.walk(path.join(__dirname, '../../', 'public/language/' + (Meta.config.defaultLang || 'en')), function (err, data) {
 			var loaded = data.length;
 
 			for (var d in data) {
