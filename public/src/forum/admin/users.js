@@ -189,7 +189,6 @@ define(function() {
 					jQuery('.fa-spinner').removeClass('none');
 
 					socket.emit('api:admin.user.search', username, function(err, data) {
-						console.log(data);
 						if(err) {
 							return app.alertError(err.message);
 						}

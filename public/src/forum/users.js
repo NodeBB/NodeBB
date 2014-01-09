@@ -48,7 +48,6 @@ define(function() {
 
 				setTimeout(function() {
 					socket.emit('api:admin.user.search', username, function(err, data) {
-						console.log(err, data);
 						if(err) {
 							return app.alert(err.message);
 						}
