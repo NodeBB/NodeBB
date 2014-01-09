@@ -1136,32 +1136,27 @@ websockets.init = function(io) {
 		});
 
 		socket.on('api:admin.categories.setGroupPrivilege', function(cid, gid, privilege, set, callback) {
-			var	cb = function(err) {
-				CategoryTools.groupPrivileges(cid, gid, callback);
-			};
-
 			if (set) {
-				groups.joinByGroupName('cid:' + cid + ':privileges:' + privilege, gid, cb);
+				groups.joinByGroupName('cid:' + cid + ':privileges:' + privilege, gid, callback);
 			} else {
-				groups.leaveByGroupName('cid:' + cid + ':privileges:' + privilege, gid, cb);
+				groups.leaveByGroupName('cid:' + cid + ':privileges:' + privilege, gid, callback);
 			}
 		});
 
-		socket.on('api:admin.categories.groupsearch', function(cid, callback) {
+		socket.on('api:admin.categories.groupsList', function(cid, callback) {
 			groups.list({expand:false}, function(err, data){
 				async.map(data, function(groupObj, next) {
 					CategoryTools.groupPrivileges(cid, groupObj.gid, function(err, privileges) {
 						if (!err) {
 							groupObj.privileges = privileges;
 						} else {
-							winston.error('[socket api:admin.categories.groupsearch] Could not retrieve permissions');
+							winston.error('[socket api:admin.categories.groupsList] Could not retrieve permissions');
 						}
 
 						next(null, groupObj);
 					});
 				}, function(err, data) {
-					if (!callback) socket.emit('api:admin.categories.groupsearch', data);
-					else callback(null, data);
+					callback(null, data);
 				});
 			});
 		});

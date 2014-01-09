@@ -47,6 +47,46 @@ CategoryTools.privileges = function(cid, uid, callback) {
 				}
 			});
 		},
+		"g+r": function(next) {
+			var	key = 'cid:' + cid + ':privileges:g+r';
+			Groups.exists(key, function(err, exists) {
+				if (exists) {
+					async.parallel({
+						isMember: function(next) {
+							Groups.isMemberOfGroupAny(uid, key, next);
+						},
+						isEmpty: function(next) {
+							Groups.isEmptyByGroupName(key, next);
+						}
+					}, next);
+				} else {
+					next(null, {
+						isMember: false,
+						isEmpty: true
+					});
+				}
+			});
+		},
+		"g+w": function(next) {
+			var	key = 'cid:' + cid + ':privileges:g+w';
+			Groups.exists(key, function(err, exists) {
+				if (exists) {
+					async.parallel({
+						isMember: function(next) {
+							Groups.isMemberOfGroupAny(uid, key, next);
+						},
+						isEmpty: function(next) {
+							Groups.isEmptyByGroupName(key, next);
+						}
+					}, next);
+				} else {
+					next(null, {
+						isMember: false,
+						isEmpty: true
+					});
+				}
+			});
+		},
 		moderator: function(next) {
 			User.isModerator(uid, cid, next);
 		},
@@ -57,8 +97,24 @@ CategoryTools.privileges = function(cid, uid, callback) {
 		callback(err, !privileges ? null : {
 			"+r": privileges['+r'].isMember,
 			"+w": privileges['+w'].isMember,
-			read: (privileges['+r'].isMember || privileges['+r'].isEmpty) || privileges.moderator || privileges.admin,
-			write: (privileges['+w'].isMember || privileges['+w'].isEmpty) || privileges.moderator || privileges.admin,
+			"g+r": privileges['g+r'].isMember,
+			"g+w": privileges['g+w'].isMember,
+			read: (
+				(
+					(privileges['+r'].isMember || privileges['+r'].isEmpty) &&
+					(privileges['g+r'].isMember || privileges['g+r'].isEmpty)
+				) ||
+				privileges.moderator ||
+				privileges.admin
+			),
+			write: (
+				(
+					(privileges['+w'].isMember || privileges['+w'].isEmpty) &&
+					(privileges['g+w'].isMember || privileges['g+w'].isEmpty)
+				) ||
+				privileges.moderator ||
+				privileges.admin
+			),
 			editable: privileges.moderator || privileges.admin,
 			view_deleted: privileges.moderator || privileges.admin
 		});
@@ -67,16 +123,13 @@ CategoryTools.privileges = function(cid, uid, callback) {
 
 CategoryTools.groupPrivileges = function(cid, gid, callback) {
 	async.parallel({
-		"+gr": function(next) {
-			var	key = 'cid:' + cid + ':privileges:+gr';
+		"g+r": function(next) {
+			var	key = 'cid:' + cid + ':privileges:g+r';
 			Groups.exists(key, function(err, exists) {
 				if (exists) {
 					async.parallel({
 						isMember: function(next) {
 							Groups.isMemberByGroupName(gid, key, next);
-						},
-						isEmpty: function(next) {
-							Groups.isEmptyByGroupName(key, next);
 						}
 					}, next);
 				} else {
@@ -87,16 +140,13 @@ CategoryTools.groupPrivileges = function(cid, gid, callback) {
 				}
 			});
 		},
-		"+gw": function(next) {
-			var	key = 'cid:' + cid + ':privileges:+gw';
+		"g+w": function(next) {
+			var	key = 'cid:' + cid + ':privileges:g+w';
 			Groups.exists(key, function(err, exists) {
 				if (exists) {
 					async.parallel({
 						isMember: function(next) {
 							Groups.isMemberByGroupName(gid, key, next);
-						},
-						isEmpty: function(next) {
-							Groups.isEmptyByGroupName(key, next);
 						}
 					}, next);
 				} else {
@@ -109,10 +159,8 @@ CategoryTools.groupPrivileges = function(cid, gid, callback) {
 		}
 	}, function(err, privileges) {
 		callback(err, !privileges ? null : {
-			"+gr": privileges['+gr'].isMember,
-			"+gw": privileges['+gw'].isMember,
-			read: (privileges['+gr'].isMember || privileges['+gr'].isEmpty),
-			write: (privileges['+gw'].isMember || privileges['+gw'].isEmpty),
+			"g+r": privileges['g+r'].isMember,
+			"g+w": privileges['g+w'].isMember
 		});
 	});
 };

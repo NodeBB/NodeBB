@@ -213,7 +213,7 @@ define(['uploader'], function(uploader) {
 		var	modal = $('#category-permissions-modal'),
 			searchEl = modal.find('#permission-search'),
 			resultsEl = modal.find('.search-results'),
-                        groupsResultsEl = modal.find('.groups-results'),
+			groupsResultsEl = modal.find('.groups-results'),
 			searchDelay;
 
 		searchEl.off().on('keyup', function() {
@@ -266,22 +266,23 @@ define(['uploader'], function(uploader) {
 			searchEl.keyup();
 		});
 
-                // User Groups and privileges
-		socket.emit('api:admin.categories.groupsearch', cid, function(err, results) {
+		// User Groups and privileges
+		socket.emit('api:admin.categories.groupsList', cid, function(err, results) {
 			var groupsFrag = document.createDocumentFragment(),
-			trEl = document.createElement('tr');
-			var numResults = results.length,
+				numResults = results.length,
+				trEl = document.createElement('tr'),
 			    resultObj;
 
 			for(var x=0;x<numResults;x++) {
 				resultObj = results[x];
 				trEl.setAttribute('data-gid', resultObj.gid);
-				trEl.innerHTML = '<td><h4>' + resultObj.name + '</h4></td><td>' +
-							'<div class="btn-group pull-right">' +
-							  '<button type="button" data-gpriv="+gr" class="btn btn-default' + (resultObj.privileges['+gr'] ? ' active' : '') + '">Read</button>' +
-							  '<button type="button" data-gpriv="+gw" class="btn btn-default' + (resultObj.privileges['+gw'] ? ' active' : '') + '">Write</button>' +
-							'</div>' +
-						 '</td>';
+				trEl.innerHTML =	'<td><h4>' + resultObj.name + '</h4></td>' +
+									'<td>' +
+										'<div class="btn-group pull-right">' +
+											'<button type="button" data-gpriv="g+r" class="btn btn-default' + (resultObj.privileges['g+r'] ? ' active' : '') + '">Read</button>' +
+											'<button type="button" data-gpriv="g+w" class="btn btn-default' + (resultObj.privileges['g+w'] ? ' active' : '') + '">Write</button>' +
+										'</div>' +
+									'</td>';
 
 				groupsFrag.appendChild(trEl.cloneNode(true));
 			}
@@ -290,12 +291,14 @@ define(['uploader'], function(uploader) {
 		});
 
 		groupsResultsEl.off().on('click', '[data-gpriv]', function(e) {
-			var btnEl = $(this),
-			    gid = btnEl.parents('li[data-gid]').attr('data-gid'),
-			    privilege = this.getAttribute('data-gpriv');
+			var	btnEl = $(this),
+				gid = btnEl.parents('tr[data-gid]').attr('data-gid'),
+				privilege = this.getAttribute('data-gpriv');
 			e.preventDefault();
-			socket.emit('api:admin.categories.setGroupPrivilege', cid, gid, privilege, !btnEl.hasClass('active'), function(err, privileges) {
-			    btnEl.toggleClass('active', privileges[privilege]);
+			socket.emit('api:admin.categories.setGroupPrivilege', cid, gid, privilege, !btnEl.hasClass('active'), function(err) {
+				if (!err) {
+					btnEl.toggleClass('active');
+				}
 			});
 		})
 
