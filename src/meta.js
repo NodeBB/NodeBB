@@ -46,9 +46,17 @@ var fs = require('fs'),
 		set: function (field, value, callback) {
 			db.setObjectField('config', field, value, function(err, res) {
 				if (callback) {
-					if(!err && Meta.config)
+					if(!err && Meta.config) {
 						Meta.config[field] = value;
+					}
+
 					callback(err, res);
+				}
+
+				// this might be a good spot to add a hook
+				if (field === 'defaultLang') {
+					var translator = require('../public/src/translator');
+					translator.loadServer();
 				}
 			});
 		},
