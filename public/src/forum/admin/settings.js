@@ -89,6 +89,12 @@ define(['uploader'], function(uploader) {
 
 			uploader.hideAlerts();
 		});
+
+		$('#settings-tab a').click(function (e) {
+			e.preventDefault();
+			$(this).tab('show');
+			return false;
+		});
 	};
 
 	Settings.remove = function(key) {
