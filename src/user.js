@@ -307,6 +307,9 @@ var bcrypt = require('bcrypt'),
 							User.setUserField(uid, 'username', data.username);
 							db.deleteObjectField('username:uid', userData.username);
 							db.setObjectField('username:uid', data.username, uid);
+							db.searchRemove('user', uid, function() {
+								db.searchIndex('user', data.username, uid);
+							});
 						}
 
 						if(userslug !== userData.userslug) {
