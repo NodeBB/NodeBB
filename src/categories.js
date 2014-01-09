@@ -2,9 +2,11 @@ var db = require('./database.js'),
 	posts = require('./posts.js'),
 	utils = require('./../public/src/utils.js'),
 	user = require('./user.js'),
-	async = require('async'),
 	topics = require('./topics.js'),
 	plugins = require('./plugins'),
+	CategoryTools = require('./categoryTools'),
+
+	async = require('async'),
 	winston = require('winston'),
 	nconf = require('nconf');
 
@@ -210,28 +212,34 @@ var db = require('./database.js'),
 		});
 	};
 
-	Categories.getRecentReplies = function(cid, count, callback) {
+	Categories.getRecentReplies = function(cid, uid, count, callback) {
 		if(count === 0) {
 			return callback(null, []);
 		}
 
-		db.getSortedSetRevRange('categories:recent_posts:cid:' + cid, 0, count - 1, function(err, pids) {
+		CategoryTools.privileges(cid, uid, function(err, privileges) {
+			if (privileges.read) {
+				db.getSortedSetRevRange('categories:recent_posts:cid:' + cid, 0, count - 1, function(err, pids) {
 
-			if (err) {
-				winston.err(err);
-				return callback(err, []);
+					if (err) {
+						winston.err(err);
+						return callback(err, []);
+					}
+
+					if (pids.length === 0) {
+						return callback(null, []);
+					}
+
+					posts.getPostSummaryByPids(pids, true, function(err, postData) {
+						if(err) {
+							return callback(err);
+						}
+						callback(null, postData);
+					});
+				});
+			} else {
+				callback(null, []);
 			}
-
-			if (pids.length === 0) {
-				return callback(null, []);
-			}
-
-			posts.getPostSummaryByPids(pids, true, function(err, postData) {
-				if(err) {
-					return callback(err);
-				}
-				callback(null, postData);
-			});
 		});
 	};
 

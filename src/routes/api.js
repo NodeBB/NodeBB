@@ -56,7 +56,7 @@ var path = require('path'),
 					});
 
 					function iterator(category, callback) {
-						categories.getRecentReplies(category.cid, parseInt(category.numRecentReplies, 10), function (err, posts) {
+						categories.getRecentReplies(category.cid, uid, parseInt(category.numRecentReplies, 10), function (err, posts) {
 							category.posts = posts;
 							category.post_count = posts.length > 2 ? 2 : posts.length; // this was a hack to make metro work back in the day, post_count should just = length
 							callback(null);
