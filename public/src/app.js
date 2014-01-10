@@ -235,7 +235,7 @@ var socket,
 				return;
 			}
 
-			socket.emit('event:enter_room', {
+			socket.emit('api:meta.rooms.enter', {
 				'enter': room,
 				'leave': app.currentRoom
 			});

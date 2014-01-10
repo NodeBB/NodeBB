@@ -14,29 +14,41 @@ define(function() {
 
 			switch (action) {
 				case 'pin':
-					if (!$this.hasClass('active')) socket.emit('api:topic.pin', {
-						tid: tid
-					});
-					else socket.emit('api:topic.unpin', {
-						tid: tid
-					});
+					if (!$this.hasClass('active')) {
+						socket.emit('api:topics.pin', {
+							tid: tid
+						}, Topics.pin);
+					} else {
+						socket.emit('api:topics.unpin', {
+							tid: tid
+						}, Topics.unpin);
+					}
 					break;
+
 				case 'lock':
-					if (!$this.hasClass('active')) socket.emit('api:topic.lock', {
-						tid: tid
-					});
-					else socket.emit('api:topic.unlock', {
-						tid: tid
-					});
+					if (!$this.hasClass('active')) {
+						socket.emit('api:topics.lock', {
+							tid: tid
+						}, Topics.lock);
+					} else {
+						socket.emit('api:topics.unlock', {
+							tid: tid
+						}, Topics.unlock);
+					}
 					break;
+
 				case 'delete':
-					if (!$this.hasClass('active')) socket.emit('api:topic.delete', {
-						tid: tid
-					});
-					else socket.emit('api:topic.restore', {
-						tid: tid
-					});
+					if (!$this.hasClass('active')) {
+						socket.emit('api:topics.delete', {
+							tid: tid
+						}, Topics.setDeleted);
+					} else {
+						socket.emit('api:topics.restore', {
+							tid: tid
+						}, Topics.restore);
+					}
 					break;
+
 			}
 		});
 
@@ -81,56 +93,6 @@ define(function() {
 				});
 			}
 		}, false);
-
-		socket.on('api:topic.pin', function(response) {
-			if (response.status === 'ok') {
-				var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="pin"]');
-
-				$(btnEl).addClass('active');
-			}
-		});
-
-		socket.on('api:topic.unpin', function(response) {
-			if (response.status === 'ok') {
-				var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="pin"]');
-
-				$(btnEl).removeClass('active');
-			}
-		});
-
-		socket.on('api:topic.lock', function(response) {
-			if (response.status === 'ok') {
-				var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="lock"]');
-
-				$(btnEl).addClass('active');
-			}
-		});
-
-		socket.on('api:topic.unlock', function(response) {
-			if (response.status === 'ok') {
-				var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="lock"]');
-
-				$(btnEl).removeClass('active');
-			}
-		});
-
-		socket.on('api:topic.delete', function(response) {
-			if (response.status === 'ok') {
-				var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="delete"]');
-
-				$(btnEl).addClass('active');
-				$(btnEl).siblings('[data-action="lock"]').addClass('active');
-			}
-		});
-
-		socket.on('api:topic.restore', function(response) {
-			if (response.status === 'ok') {
-				var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="delete"]');
-
-				$(btnEl).removeClass('active');
-				$(btnEl).siblings('[data-action="lock"]').removeClass('active');
-			}
-		});
 	};
 
 	Topics.resolveButtonStates = function() {
@@ -153,6 +115,57 @@ define(function() {
 			}
 		}
 	}
+
+	Topics.setDeleted = function(response) {
+		if (response.status === 'ok') {
+			var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="delete"]');
+
+			$(btnEl).addClass('active');
+			$(btnEl).siblings('[data-action="lock"]').addClass('active');
+		}
+	};
+
+	Topics.restore = function(response) {
+		if (response.status === 'ok') {
+			var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="delete"]');
+
+			$(btnEl).removeClass('active');
+			$(btnEl).siblings('[data-action="lock"]').removeClass('active');
+		}
+	};
+
+	Topics.lock = function(response) {
+		if (response.status === 'ok') {
+			var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="lock"]');
+
+			$(btnEl).addClass('active');
+		}
+	};
+
+	Topics.unlock = function(response) {
+		if (response.status === 'ok') {
+			var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="lock"]');
+
+			$(btnEl).removeClass('active');
+		}
+	};
+
+
+	Topics.unpin = function(response) {
+		if (response.status === 'ok') {
+			var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="pin"]');
+
+			$(btnEl).removeClass('active');
+		}
+	};
+
+	Topics.pin = function(response) {
+		if (response.status === 'ok') {
+			var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="pin"]');
+
+			$(btnEl).addClass('active');
+		}
+	};
 
 	return Topics;
 });

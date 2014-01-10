@@ -13,7 +13,7 @@ define(function() {
 			$('#stats_users').html(utils.makeNumberHumanReadable(data.count)).attr('title', data.count);
 		});
 
-		socket.emit('post.stats', function(data) {
+		socket.emit('api:meta.getUsageStats', function(data) {
 			$('#stats_topics').html(utils.makeNumberHumanReadable(data.topics)).attr('title', data.topics);
 			$('#stats_posts').html(utils.makeNumberHumanReadable(data.posts)).attr('title', data.posts);
 		});

@@ -147,25 +147,36 @@ Sockets.init = function() {
 					executeHandler = function(args) {
 						// Session data
 						var	sessionData = {
-							uid: uid
-						};
+								uid: uid,
+								socket: socket,
+								rooms: rooms,
+								server: io
+							},
+							socketArgs = [];
 
-						winston.info('[socket.io] Executing: ' + payload.name);
+						// Construct the arguments that'll get passed into each socket method
+						if (args.length) {
+							socketArgs = socketArgs.concat(args);
+						}
+						if (callback !== undefined) {
+							socketArgs.push(callback);
+						}
+						socketArgs.push(sessionData);
+
+						// winston.info('[socket.io] Executing: ' + payload.name);
 						if (!subcommand) {
-							Namespaces[namespace][command].call(Namespaces[namespace], args.length ? args[0] : callback ? callback : sessionData, args.length ? callback : sessionData, args.length && callback ? sessionData : undefined);
+							Namespaces[namespace][command].apply(Namespaces[namespace], socketArgs);
 						} else {
-							Namespaces[namespace][command][subcommand].call(Namespaces[namespace][command], args.length ? args[0] : callback ? callback : sessionData, args.length ? callback : sessionData, args.length && callback ? sessionData : undefined);
+							Namespaces[namespace][command][subcommand].apply(Namespaces[namespace][command], socketArgs);
 						}
 					};
 
 				if (Namespaces[namespace]) {
-					console.log(payload);
 					executeHandler(payload.args);
 				} else {
 					winston.warn('[socket.io] Unrecognized message: ' + payload.name);
 				}
 			}
-			console.log('message!', arguments);
 		});
 	});
 }
@@ -210,6 +221,7 @@ function isUserOnline(uid) {
 }
 Sockets.isUserOnline = isUserOnline;
 
+Sockets.updateRoomBrowsingText = updateRoomBrowsingText;
 function updateRoomBrowsingText(roomName) {
 
 	function getUidsInRoom(room) {
@@ -247,7 +259,8 @@ function updateRoomBrowsingText(roomName) {
 	}
 }
 
-function emitTopicPostStats() {
+Sockets.emitTopicPostStats = emitTopicPostStats;
+function emitTopicPostStats(callback) {
 	db.getObjectFields('global', ['topicCount', 'postCount'], function(err, data) {
 		if (err) {
 			return winston.err(err);
@@ -258,7 +271,11 @@ function emitTopicPostStats() {
 			posts: data.postCount ? data.postCount : 0
 		};
 
-		io.sockets.emit('post.stats', stats);
+		if (!callback) {
+			io.sockets.emit('post.stats', stats);
+		} else {
+			callback(stats);
+		}
 	});
 }
 

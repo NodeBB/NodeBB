@@ -52,16 +52,16 @@ define(['composer'], function(composer) {
 					if (thread_state.deleted !== '1') {
 						bootbox.confirm('Are you sure you want to delete this thread?', function(confirm) {
 							if (confirm) {
-								socket.emit('api:topic.delete', {
+								socket.emit('api:topics.delete', {
 									tid: tid
-								});
+								}, null);
 							}
 						});
 					} else {
 						bootbox.confirm('Are you sure you want to restore this thread?', function(confirm) {
-							if (confirm) socket.emit('api:topic.restore', {
+							if (confirm) socket.emit('api:topics.restore', {
 								tid: tid
-							});
+							}, null);
 						});
 					}
 					return false;
@@ -69,26 +69,26 @@ define(['composer'], function(composer) {
 
 				$('.lock_thread').on('click', function(e) {
 					if (thread_state.locked !== '1') {
-						socket.emit('api:topic.lock', {
+						socket.emit('api:topics.lock', {
 							tid: tid
-						});
+						}, null);
 					} else {
-						socket.emit('api:topic.unlock', {
+						socket.emit('api:topics.unlock', {
 							tid: tid
-						});
+						}, null);
 					}
 					return false;
 				});
 
 				$('.pin_thread').on('click', function(e) {
 					if (thread_state.pinned !== '1') {
-						socket.emit('api:topic.pin', {
+						socket.emit('api:topics.pin', {
 							tid: tid
-						});
+						}, null);
 					} else {
-						socket.emit('api:topic.unpin', {
+						socket.emit('api:topics.unpin', {
 							tid: tid
-						});
+						}, null);
 					}
 					return false;
 				});
@@ -145,7 +145,10 @@ define(['composer'], function(composer) {
 									$(moveThreadModal).find('.modal-header button').fadeOut(250);
 									commitEl.innerHTML = 'Moving <i class="fa-spin fa-refresh"></i>';
 
-									socket.once('api:topic.move', function(data) {
+									socket.emit('api:topics.move', {
+										tid: tid,
+										cid: targetCid
+									}, function(data) {
 										moveThreadModal.modal('hide');
 										if (data.status === 'ok') {
 											app.alert({
@@ -164,10 +167,6 @@ define(['composer'], function(composer) {
 												timeout: 5000
 											});
 										}
-									});
-									socket.emit('api:topic.move', {
-										tid: tid,
-										cid: targetCid
 									});
 								}
 							});
@@ -193,7 +192,7 @@ define(['composer'], function(composer) {
 					forkCommit.on('click', createTopicFromPosts);
 
 					function createTopicFromPosts() {
-						socket.emit('api:topic.createTopicFromPosts', {
+						socket.emit('api:topics.createTopicFromPosts', {
 							title: forkModal.find('#fork-title').val(),
 							pids: pids
 						}, function(err) {
@@ -298,26 +297,24 @@ define(['composer'], function(composer) {
 						}
 					}
 				};
-			socket.on('api:topic.followCheck', function(state) {
+
+			socket.emit('api:topics.followCheck', tid, function(state) {
 				set_follow_state(state, true);
 			});
-			socket.on('api:topic.follow', function(data) {
-				if (data.status && data.status === 'ok') set_follow_state(data.follow);
-				else {
-					app.alert({
-						type: 'danger',
-						alert_id: 'topic_follow',
-						title: 'Please Log In',
-						message: 'Please register or log in in order to subscribe to this topic',
-						timeout: 5000
-					});
-				}
-			});
-
-			socket.emit('api:topic.followCheck', tid);
 			if (followEl[0]) {
 				followEl[0].addEventListener('click', function() {
-					socket.emit('api:topic.follow', tid);
+					socket.emit('api:topics.follow', tid, function(data) {
+						if (data.status && data.status === 'ok') set_follow_state(data.follow);
+						else {
+							app.alert({
+								type: 'danger',
+								alert_id: 'topic_follow',
+								title: 'Please Log In',
+								message: 'Please register or log in in order to subscribe to this topic',
+								timeout: 5000
+							});
+						}
+					});
 				}, false);
 			}
 
@@ -491,7 +488,7 @@ define(['composer'], function(composer) {
 			});
 
 			moveBtn.on('click', function() {
-				socket.emit('api:topic.movePost', {pid: pid, tid: topicId.val()}, function(err) {
+				socket.emit('api:topics.movePost', {pid: pid, tid: topicId.val()}, function(err) {
 					if(err) {
 						return app.alertError(err.message);
 					}
@@ -1113,7 +1110,7 @@ define(['composer'], function(composer) {
 			indicatorEl.fadeIn();
 		}
 
-		socket.emit('api:topic.loadMore', {
+		socket.emit('api:topics.loadMore', {
 			tid: tid,
 			after: parseInt($('#post-container .post-row.infiniteloaded').last().attr('data-index'), 10) + 1
 		}, function (data) {
