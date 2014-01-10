@@ -2,6 +2,7 @@ var	SocketIO = require('socket.io'),
 	socketioWildcard = require('socket.io-wildcard'),
 	util = require('util'),
 	async = require('async'),
+	path = require('path'),
 	fs = require('fs'),
 	nconf = require('nconf'),
 	express = require('express'),
@@ -28,6 +29,16 @@ Sockets.init = function() {
 		log: false,
 		transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket'],
 		'browser client minification': true
+	});
+
+	fs.readdir(__dirname, function(err, files) {
+		files.splice(files.indexOf('index.js'), 1);
+
+		async.each(files, function(lib, next) {
+			lib = lib.slice(0, -3);
+			Namespaces[lib] = require('./' + lib);
+			next();
+		});
 	});
 
 	io.sockets.on('connection', function(socket) {
@@ -123,35 +134,30 @@ Sockets.init = function() {
 			}
 		});
 
-		socket.on('*', function(payload) {
+		socket.on('*', function(payload, callback) {
 			// Ignore all non-api messages
 			if (payload.name.substr(0, 4) !== 'api:') {
 				return;
 			} else {
 				// Deconstruct the message
-				var parts = payload.name.split('.'),
+				var parts = payload.name.slice(4).split('.'),
 					namespace = parts[0],
 					command = parts[1],
 					subcommand = parts[2],	// MUST ADD RECURSION (:P)
 					executeHandler = function(args) {
+						winston.info('[socket.io] Executing: ' + payload.name);
 						if (!subcommand) {
-							Namespaces[namespace][command](args);
+							Namespaces[namespace][command].call(Namespaces[namespace], args.length ? args : callback ? callback : undefined, args.length ? callback : undefined);
 						} else {
-							Namespaces[namespace][command][subcommand](args);
+							Namespaces[namespace][command][subcommand].call(Namespaces[namespace][command], args, callback);
 						}
 					};
 
 				if (Namespaces[namespace]) {
+					console.log(payload);
 					executeHandler(payload.args);
 				} else {
-					fs.exists(path.join(__dirname, namespace + '.js'), function(exists) {
-						if (exists) {
-							Namespaces[namespace] = require('./' + namespace);
-							executeHandler(payload.args);
-						} else {
-							winston.warn('[socket.io] Unrecognized message: ' + payload.name);
-						}
-					})
+					winston.warn('[socket.io] Unrecognized message: ' + payload.name);
 				}
 			}
 			console.log('message!', arguments);
@@ -251,7 +257,8 @@ function emitTopicPostStats() {
 	});
 }
 
-function emitOnlineUserCount() {
+Sockets.emitOnlineUserCount = emitOnlineUserCount;
+function emitOnlineUserCount(callback) {
 	var anon = userSockets[0] ? userSockets[0].length : 0;
 	var registered = Object.keys(userSockets).length;
 	if (anon)
@@ -261,7 +268,12 @@ function emitOnlineUserCount() {
 		users: registered + anon,
 		anon: anon
 	};
-	io.sockets.emit('api:user.active.get', returnObj)
+
+	if (callback) {
+		callback(returnObj);
+	} else {
+		io.sockets.emit('api:user.active.get', returnObj)
+	}
 }
 
 function emitAlert(socket, title, message) {

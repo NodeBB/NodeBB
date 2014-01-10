@@ -667,13 +667,13 @@ var bcrypt = require('bcrypt'),
 		});
 	};
 
-	User.count = function(socket) {
+	User.count = function(callback) {
 		db.getObjectField('global', 'userCount', function(err, count) {
 			if(err) {
 				return;
 			}
 
-			socket.emit('user.count', {
+			callback({
 				count: count ? count : 0
 			});
 		});

@@ -93,121 +93,19 @@ websockets.init = function(io) {
 
 		});
 
-		socket.on('user.exists', function(data) {
-			if (data.username) {
-				user.exists(utils.slugify(data.username), function(exists) {
-					socket.emit('user.exists', {
-						exists: exists
-					});
-				});
-			}
-		});
 
-		socket.on('user.count', function(data) {
-			user.count(socket, data);
-		});
+
+
 
 		socket.on('post.stats', function(data) {
 			emitTopicPostStats();
 		});
 
-		socket.on('user.email.exists', function(data) {
-			user.email.exists(socket, data.email);
-		});
 
-		socket.on('user:reset.send', function(data) {
-			user.reset.send(socket, data.email);
-		});
 
-		socket.on('user:reset.valid', function(data) {
-			user.reset.validate(socket, data.code);
-		});
 
-		socket.on('user:reset.commit', function(data) {
-			user.reset.commit(socket, data.code, data.password);
-		});
 
-		socket.on('api:user.get_online_users', function(data) {
-			var returnData = [];
 
-			for (var i = 0; i < data.length; ++i) {
-				var uid = data[i];
-				if (isUserOnline(uid))
-					returnData.push(uid);
-				else
-					returnData.push(0);
-			}
-			socket.emit('api:user.get_online_users', returnData);
-		});
-
-		socket.on('api:user.isOnline', function(uid, callback) {
-			callback({
-				online: isUserOnline(uid),
-				uid: uid,
-				timestamp: Date.now()
-			});
-		});
-
-		socket.on('api:user.changePassword', function(data, callback) {
-			user.changePassword(uid, data, callback);
-		});
-
-		socket.on('api:user.updateProfile', function(data, callback) {
-			user.updateProfile(uid, data, callback);
-		});
-
-		socket.on('api:user.changePicture', function(data, callback) {
-
-			var type = data.type;
-
-			function updateHeader() {
-				user.getUserFields(uid, ['picture'], function(err, fields) {
-					if (!err && fields) {
-						fields.uid = uid;
-						socket.emit('api:updateHeader', fields);
-						callback(true);
-					} else {
-						callback(false);
-					}
-				});
-			}
-
-			if (type === 'gravatar') {
-				user.getUserField(uid, 'gravatarpicture', function(err, gravatar) {
-					user.setUserField(uid, 'picture', gravatar);
-					updateHeader();
-				});
-			} else if (type === 'uploaded') {
-				user.getUserField(uid, 'uploadedpicture', function(err, uploadedpicture) {
-					user.setUserField(uid, 'picture', uploadedpicture);
-					updateHeader();
-				});
-			} else {
-				callback(false);
-			}
-		});
-
-		socket.on('api:user.follow', function(data, callback) {
-			if (uid) {
-				user.follow(uid, data.uid, callback);
-			}
-		});
-
-		socket.on('api:user.unfollow', function(data, callback) {
-			if (uid) {
-				user.unfollow(uid, data.uid, callback);
-			}
-		});
-
-		socket.on('api:user.saveSettings', function(data, callback) {
-			if (uid) {
-				user.setUserFields(uid, {
-					showemail: data.showemail
-				}, function(err, result) {
-					callback(err);
-				});
-			}
-		});
 
 
 
@@ -346,17 +244,7 @@ websockets.init = function(io) {
 			});
 		});
 
-		socket.on('api:user.getOnlineAnonCount', function(data, callback) {
-			callback(websockets.getOnlineAnonCount());
-		});
 
-
-
-
-
-		socket.on('api:user.active.get', function() {
-			emitOnlineUserCount();
-		});
 
 		socket.on('api:posts.favourite', function(data) {
 			favourites.favourite(data.pid, data.room_id, uid, socket);
@@ -995,11 +883,7 @@ websockets.init = function(io) {
 			});
 		});
 
-		socket.on('api:meta.buildTitle', function(text, callback) {
-			meta.title.build(text, function(err, title) {
-				callback(title);
-			});
-		});
+
 
 		/*
 			GROUPS

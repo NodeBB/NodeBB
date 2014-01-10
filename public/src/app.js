@@ -111,42 +111,6 @@ var socket,
 						});
 					});
 
-					socket.on('api:user.get_online_users', function (users) {
-						jQuery('a.username-field').each(function () {
-							if (this.processed === true)
-								return;
-
-							var el = jQuery(this),
-								uid = el.parents('li').attr('data-uid');
-
-							if (uid && jQuery.inArray(uid, users) !== -1) {
-								el.find('i').remove();
-								el.prepend('<i class="fa fa-circle"></i>');
-							} else {
-								el.find('i').remove();
-								el.prepend('<i class="fa fa-circle-o"></i>');
-							}
-
-							el.processed = true;
-						});
-						jQuery('button .username-field').each(function () {
-							//DRY FAIL
-							if (this.processed === true)
-								return;
-
-							var el = jQuery(this),
-								uid = el.parents('li').attr('data-uid');
-
-							if (uid && jQuery.inArray(uid, users) !== -1) {
-								el.parent().addClass('btn-success');
-							} else {
-								el.parent().addClass('btn-danger');
-							}
-
-							el.processed = true;
-						});
-					});
-
 					socket.on('event:banned', function() {
 						app.alert({
 							title: 'Banned',
@@ -287,7 +251,41 @@ var socket,
 			uids.push(this.getAttribute('data-uid'));
 		});
 
-		socket.emit('api:user.get_online_users', uids);
+		socket.emit('api:user.get_online_users', uids, function (users) {
+			jQuery('a.username-field').each(function () {
+				if (this.processed === true)
+					return;
+
+				var el = jQuery(this),
+					uid = el.parents('li').attr('data-uid');
+
+				if (uid && jQuery.inArray(uid, users) !== -1) {
+					el.find('i').remove();
+					el.prepend('<i class="fa fa-circle"></i>');
+				} else {
+					el.find('i').remove();
+					el.prepend('<i class="fa fa-circle-o"></i>');
+				}
+
+				el.processed = true;
+			});
+			jQuery('button .username-field').each(function () {
+				//DRY FAIL
+				if (this.processed === true)
+					return;
+
+				var el = jQuery(this),
+					uid = el.parents('li').attr('data-uid');
+
+				if (uid && jQuery.inArray(uid, users) !== -1) {
+					el.parent().addClass('btn-success');
+				} else {
+					el.parent().addClass('btn-danger');
+				}
+
+				el.processed = true;
+			});
+		});
 	};
 
 	function highlightNavigationLink() {
