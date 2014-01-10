@@ -242,7 +242,7 @@ define(function() {
 
 				if (set) {
 					loadingMoreUsers = true;
-					socket.emit('api:users.loadMore', {
+					socket.emit('api:user.loadMore', {
 						set: set,
 						after: $('#users-container').children().length
 					}, function(data) {

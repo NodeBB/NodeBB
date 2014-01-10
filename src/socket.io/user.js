@@ -133,6 +133,21 @@ SocketUser.getActiveUsers = function(callback) {
 	module.parent.exports.emitOnlineUserCount(callback);
 };
 
+SocketUser.loadMore = function(data, callback) {
+	var start = data.after,
+		end = start + 19;
+
+	user.getUsers(data.set, start, end, function(err, data) {
+		if (err) {
+			winston.err(err);
+		} else {
+			callback({
+				users: data
+			});
+		}
+	});
+};
+
 /* Exports */
 
 module.exports = SocketUser;

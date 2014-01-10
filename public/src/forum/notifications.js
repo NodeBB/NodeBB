@@ -14,7 +14,7 @@ define(function() {
 
 		// Mark all as read button
 		$(markAllReadEl).click(function() {
-			socket.emit('api:notifications.mark_all_read', {}, function() {
+			socket.emit('api:modules.notifications.mark_all_read', {}, function() {
 				ajaxify.go('notifications');
 				app.alert({
 					alert_id: "notifications:mark_all_read",

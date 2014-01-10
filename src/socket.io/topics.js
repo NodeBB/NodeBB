@@ -17,13 +17,13 @@ SocketTopics.post = function(data, sessionData) {
 	topics.post(sessionData.uid, data.title, data.content, data.category_id, function(err, result) {
 		if(err) {
 		 	if (err.message === 'title-too-short') {
-				emitAlert(socket, 'Title too short', 'Please enter a longer title. At least ' + meta.config.minimumTitleLength + ' characters.');
+				module.parent.exports.emitAlert(socket, 'Title too short', 'Please enter a longer title. At least ' + meta.config.minimumTitleLength + ' characters.');
 			} else if (err.message === 'title-too-long') {
-				emitAlert(socket, 'Title too long', 'Please enter a shorter title. Titles can\'t be longer than ' + meta.config.maximumTitleLength + ' characters.');
+				module.parent.exports.emitAlert(socket, 'Title too long', 'Please enter a shorter title. Titles can\'t be longer than ' + meta.config.maximumTitleLength + ' characters.');
 			} else if (err.message === 'content-too-short') {
-				emitContentTooShortAlert(socket);
+				module.parent.exports.emitContentTooShortAlert(socket);
 			} else if (err.message === 'too-many-posts') {
-				emitTooManyPostsAlert(socket);
+				module.parent.exports.emitTooManyPostsAlert(socket);
 			} else if (err.message === 'no-privileges') {
 				socket.emit('event:alert', {
 					title: 'Unable to post',

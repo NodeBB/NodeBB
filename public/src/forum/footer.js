@@ -53,7 +53,7 @@
 					notifIcon.toggleClass('active', false);
 				}
 
-				socket.emit('api:notifications.mark_all_read', null, function() {
+				socket.emit('api:modules.notifications.mark_all_read', null, function() {
 					notifIcon.toggleClass('active', false);
 					app.refreshTitle();
 
@@ -80,7 +80,7 @@
 		}
 		if (target) {
 			var nid = parseInt(target.getAttribute('data-nid'));
-			if (nid > 0) socket.emit('api:notifications.mark_read', nid);
+			if (nid > 0) socket.emit('api:modules.notifications.mark_read', nid);
 		}
 	});
 
@@ -137,7 +137,7 @@
 			return;
 		}
 
-		socket.emit('api:chats.list', function(chats) {
+		socket.emit('api:modules.chats.list', function(chats) {
 			var	chatsFrag = document.createDocumentFragment(),
 				chatEl = document.createElement('li'),
 				numChats = chats.length,

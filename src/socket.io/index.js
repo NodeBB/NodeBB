@@ -299,6 +299,7 @@ function emitOnlineUserCount(callback) {
 	}
 }
 
+Sockets.emitAlert = emitAlert;
 function emitAlert(socket, title, message) {
 	socket.emit('event:alert', {
 		type: 'danger',
@@ -309,6 +310,7 @@ function emitAlert(socket, title, message) {
 	});
 }
 
+Sockets.emitContentTooShortAlert = emitContentTooShortAlert;
 function emitContentTooShortAlert(socket) {
 	socket.emit('event:alert', {
 		type: 'danger',
@@ -319,6 +321,7 @@ function emitContentTooShortAlert(socket) {
 	});
 }
 
+Sockets.emitTooManyPostsAlert = emitTooManyPostsAlert;
 function emitTooManyPostsAlert(socket) {
 	socket.emit('event:alert', {
 		title: 'Too many posts!',

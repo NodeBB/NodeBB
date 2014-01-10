@@ -123,7 +123,7 @@ define(['taskbar', 'string'], function(taskbar, S) {
 	}
 
 	function getChatMessages(chatModal, callback) {
-		socket.emit('api:chats.get', {touid:chatModal.touid}, function(messages) {
+		socket.emit('api:modules.chats.get', {touid:chatModal.touid}, function(messages) {
 			for(var i = 0; i<messages.length; ++i) {
 				module.appendChatMessage(chatModal, messages[i].content, messages[i].timestamp);
 			}
@@ -150,7 +150,7 @@ define(['taskbar', 'string'], function(taskbar, S) {
 		var msg = S(chatModal.find('#chat-message-input').val()).stripTags().s;
 		if(msg.length) {
 			msg = msg +'\n';
-			socket.emit('api:chats.send', { touid:chatModal.touid, message:msg});
+			socket.emit('api:modules.chats.send', { touid:chatModal.touid, message:msg});
 			chatModal.find('#chat-message-input').val('');
 		}
 	}

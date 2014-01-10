@@ -123,7 +123,7 @@ define(function() {
 
 		function startLoading(set, after, emptyContainer) {
 			loadingMoreUsers = true;
-			socket.emit('api:users.loadMore', {
+			socket.emit('api:user.loadMore', {
 				set: set,
 				after: after
 			}, function(data) {

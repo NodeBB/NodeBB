@@ -45,7 +45,7 @@ define(['taskbar'], function(taskbar) {
 
 	composer.editPost = function(pid) {
 		if(allowed()) {
-			socket.emit('api:composer.push', {
+			socket.emit('api:modules.composer.push', {
 				pid: pid
 			}, function(threadData) {
 				push({
@@ -107,7 +107,7 @@ define(['taskbar'], function(taskbar) {
 			} else if (parseInt(postData.pid) > 0) {
 				titleEl.val(postData.title);
 				titleEl.prop('readOnly', true);
-				socket.emit('api:composer.editCheck', postData.pid, function(editCheck) {
+				socket.emit('api:modules.composer.editCheck', postData.pid, function(editCheck) {
 					if (editCheck.titleEditable) {
 						postContainer.find('input').prop('readonly', false);
 					}

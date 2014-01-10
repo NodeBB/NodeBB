@@ -723,10 +723,6 @@ define(['composer'], function(composer) {
 			}
 		});
 
-		socket.on('api:post.privileges', function(privileges) {
-			toggle_mod_tools(privileges.pid, privileges.editable);
-		});
-
 		function adjust_rep(value, pid, uid) {
 			var post_rep = jQuery('.post_rep_' + pid),
 				user_rep = jQuery('.user_rep_' + uid);
@@ -861,11 +857,11 @@ define(['composer'], function(composer) {
 			var postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]'));
 
 			if (postEl[0]) {
-				quoteEl = $(postEl[0].querySelector('.quote')),
-				favEl = $(postEl[0].querySelector('.favourite')),
-				replyEl = $(postEl[0].querySelector('.post_reply'));
+				quoteEl = postEl.find('.quote'),
+				favEl = postEl.find('.favourite'),
+				replyEl = postEl.find('.post_reply');
 
-				socket.once('api:post.privileges', function(privileges) {
+				socket.emit('api:posts.getPrivileges', pid, function(privileges) {
 					if (privileges.editable) {
 						if (!postEl.hasClass('deleted')) {
 							toggle_post_tools(pid, false);
@@ -881,7 +877,6 @@ define(['composer'], function(composer) {
 					}
 					updatePostCount();
 				});
-				socket.emit('api:post.privileges', pid);
 			}
 		}
 
@@ -1073,7 +1068,9 @@ define(['composer'], function(composer) {
 				.fadeIn('slow');
 
 			for (var x = 0, numPosts = data.posts.length; x < numPosts; x++) {
-				socket.emit('api:post.privileges', data.posts[x].pid);
+				socket.emit('api:posts.getPrivileges', data.posts[x].pid, function(privileges) {
+					toggle_mod_tools(privileges.pid, privileges.editable);
+				});
 			}
 
 			infiniteLoaderActive = false;
