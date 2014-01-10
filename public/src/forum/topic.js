@@ -466,7 +466,7 @@ define(['composer'], function(composer) {
 			var moveModal = $('#move-post-modal'),
 				moveBtn = moveModal.find('#move_post_commit'),
 				topicId = moveModal.find('#topicId'),
-				post = $(this),
+				post = $(this).parents('li'),
 				pid = $(this).parents('li').attr('data-pid');
 
 			moveModal.removeClass('hide');
