@@ -72,6 +72,7 @@ var utils = require('../../public/src/utils'),
 					user.ban(theirid, function(err, result) {
 						callback(true);
 						socket.emit('event:alert', {
+							alert_id: 'ban_user',
 							title: 'User Banned',
 							message: 'This user is banned!',
 							type: 'success',
@@ -88,6 +89,7 @@ var utils = require('../../public/src/utils'),
 			if (amIAdmin) {
 				user.unban(theirid, function(err, result) {
 					socket.emit('event:alert', {
+						alert_id: 'ban_user',
 						title: 'User Unbanned',
 						message: 'This user is unbanned!',
 						type: 'success',

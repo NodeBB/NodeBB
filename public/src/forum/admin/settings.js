@@ -67,9 +67,27 @@ define(['uploader'], function(uploader) {
 					value = fields[x].value;
 				}
 
-				socket.emit('api:config.set', {
+				socket.emit('api:meta.config.set', {
 					key: key,
 					value: value
+				}, function(data) {
+					if (data.status === 'ok') {
+						app.alert({
+							alert_id: 'config_status',
+							timeout: 2500,
+							title: 'Changes Saved',
+							message: 'Your changes to the NodeBB configuration have been saved.',
+							type: 'success'
+						});
+					} else {
+						app.alert({
+							alert_id: 'config_status',
+							timeout: 2500,
+							title: 'Changes Not Saved',
+							message: 'NodeBB encountered a problem saving your changes',
+							type: 'danger'
+						});
+					}
 				});
 			}
 		});
@@ -98,7 +116,7 @@ define(['uploader'], function(uploader) {
 	};
 
 	Settings.remove = function(key) {
-		socket.emit('api:config.remove', key);
+		socket.emit('api:meta.config.remove', key);
 	};
 
 	return Settings;

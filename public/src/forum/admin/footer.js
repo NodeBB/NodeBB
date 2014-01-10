@@ -15,28 +15,6 @@ jQuery('document').ready(function() {
 	}, false);
 });
 
-socket.once('api:config.get', function(config) {
+socket.emit('api:meta.config.get', function(config) {
 	app.config = config;
-});
-
-socket.emit('api:config.get');
-
-socket.on('api:config.set', function(data) {
-	if (data.status === 'ok') {
-		app.alert({
-			alert_id: 'config_status',
-			timeout: 2500,
-			title: 'Changes Saved',
-			message: 'Your changes to the NodeBB configuration have been saved.',
-			type: 'success'
-		});
-	} else {
-		app.alert({
-			alert_id: 'config_status',
-			timeout: 2500,
-			title: 'Changes Not Saved',
-			message: 'NodeBB encountered a problem saving your changes',
-			type: 'danger'
-		});
-	}
 });

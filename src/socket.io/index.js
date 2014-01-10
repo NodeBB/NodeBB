@@ -150,7 +150,8 @@ Sockets.init = function() {
 								uid: uid,
 								socket: socket,
 								rooms: rooms,
-								server: io
+								server: io,
+								userSockets: userSockets
 							},
 							socketArgs = [];
 

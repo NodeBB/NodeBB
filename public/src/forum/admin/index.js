@@ -3,7 +3,9 @@ define(function() {
 
 	Admin.init = function() {
 		ajaxify.register_events(['api:get_all_rooms']);
-		socket.on('api:get_all_rooms', function(data) {
+
+		app.enterRoom('admin');
+		socket.emit('api:meta.rooms.getAll', function(data) {
 
 			var active_users = document.getElementById('active_users'),
 				total = 0;
@@ -19,9 +21,6 @@ define(function() {
 
 			document.getElementById('connections').innerHTML = total;
 		});
-
-		app.enterRoom('admin');
-		socket.emit('api:get_all_rooms');
 
 		$('#logout-link').on('click', function() {
 			$.post(RELATIVE_PATH + '/logout', {

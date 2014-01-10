@@ -35,9 +35,7 @@ var cookie = require('cookie'),
 
 websockets.init = function(io) {
 
-		socket.on('api:get_all_rooms', function(data) {
-			socket.emit('api:get_all_rooms', io.sockets.manager.rooms);
-		});
+
 
 
 
@@ -299,32 +297,7 @@ websockets.init = function(io) {
 			});
 		});
 
-		socket.on('api:config.get', function(data) {
-			meta.configs.list(function(err, config) {
-				if (!err) socket.emit('api:config.get', config);
-			});
-		});
 
-		socket.on('api:config.set', function(data) {
-			meta.configs.set(data.key, data.value, function(err) {
-				if (!err) {
-					socket.emit('api:config.set', {
-						status: 'ok'
-					});
-
-					plugins.fireHook('action:config.set', {
-						key: data.key,
-						value: data.value
-					});
-				}
-
-				logger.monitorConfig({io: io}, data);
-			});
-		});
-
-		socket.on('api:config.remove', function(key) {
-			meta.configs.remove(key);
-		});
 
 		socket.on('api:composer.push', function(data, callback) {
 
@@ -389,193 +362,7 @@ websockets.init = function(io) {
 			});
 		});
 
-		socket.on('api:admin.topics.getMore', function(data, callback) {
-			topics.getAllTopics(data.limit, data.after, function(err, topics) {
-				callback(JSON.stringify(topics));
-			});
-		});
 
-		socket.on('api:admin.categories.create', function(data, callback) {
-			categories.create(data, function(err, data) {
-				callback(err, data);
-			});
-		});
-
-		socket.on('api:admin.categories.update', function(data) {
-			admin.categories.update(data, socket);
-		});
-
-		socket.on('api:admin.user.makeAdmin', function(theirid) {
-			if (uid && uid > 0) {
-				admin.user.makeAdmin(uid, theirid, socket);
-			}
-		});
-
-		socket.on('api:admin.user.removeAdmin', function(theirid) {
-			if (uid && uid > 0) {
-				admin.user.removeAdmin(uid, theirid, socket);
-			}
-		});
-
-		socket.on('api:admin.user.createUser', function(user, callback) {
-			if (uid && uid > 0) {
-				admin.user.createUser(uid, user, callback);
-			}
-		});
-
-		socket.on('api:admin.user.banUser', function(theirid) {
-			if (uid && uid > 0) {
-				admin.user.banUser(uid, theirid, socket, function(isBanned) {
-					if(isBanned) {
-						if(userSockets[theirid]) {
-							for(var i=0; i<userSockets[theirid].length; ++i) {
-								userSockets[theirid][i].emit('event:banned');
-							}
-						}
-						websockets.logoutUser(theirid);
-					}
-				});
-			}
-		});
-
-		socket.on('api:admin.user.unbanUser', function(theirid) {
-			if (uid && uid > 0) {
-				admin.user.unbanUser(uid, theirid, socket);
-			}
-		});
-
-		socket.on('api:admin.user.search', function(username, callback) {
-			if (!(uid && uid > 0)) {
-				return callback();
-			}
-
-			user.search(username, function(data) {
-				function isAdmin(userData, next) {
-					user.isAdministrator(userData.uid, function(err, isAdmin) {
-						if(err) {
-							return next(err);
-						}
-
-						userData.administrator = isAdmin?'1':'0';
-						next();
-					});
-				}
-
-				async.each(data, isAdmin, function(err) {
-					if(err) {
-						return callback({message: err.message});
-					}
-
-					callback(null, data);
-				});
-			});
-		});
-
-		socket.on('api:admin.categories.search', function(username, cid, callback) {
-			if (uid && uid > 0) {
-				user.search(username, function(data) {
-					async.map(data, function(userObj, next) {
-						CategoryTools.privileges(cid, userObj.uid, function(err, privileges) {
-							if (!err) {
-								userObj.privileges = privileges;
-							} else {
-								winston.error('[socket api:admin.categories.search] Could not retrieve permissions');
-							}
-
-							next(null, userObj);
-						});
-					}, function(err, data) {
-						if (!callback) socket.emit('api:admin.categories.search', data);
-						else callback(null, data);
-					});
-				});
-			} else {
-				if (!callback) socket.emit('api:admin.user.search', null);
-				else callback();
-			}
-		});
-
-		socket.on('api:admin.categories.setPrivilege', function(cid, uid, privilege, set, callback) {
-			var	cb = function(err) {
-				CategoryTools.privileges(cid, uid, callback);
-			};
-
-			if (set) {
-				groups.joinByGroupName('cid:' + cid + ':privileges:' + privilege, uid, cb);
-			} else {
-				groups.leaveByGroupName('cid:' + cid + ':privileges:' + privilege, uid, cb);
-			}
-		});
-
-		socket.on('api:admin.categories.getPrivilegeSettings', function(cid, callback) {
-			async.parallel({
-				"+r": function(next) {
-					groups.getByGroupName('cid:' + cid + ':privileges:+r', { expand: true }, function(err, groupObj) {
-						if (!err) {
-							next.apply(this, arguments);
-						} else {
-							next(null, {
-								members: []
-							});
-						}
-					});
-				},
-				"+w": function(next) {
-					groups.getByGroupName('cid:' + cid + ':privileges:+w', { expand: true }, function(err, groupObj) {
-						if (!err) {
-							next.apply(this, arguments);
-						} else {
-							next(null, {
-								members: []
-							});
-						}
-					});
-				}
-			}, function(err, data) {
-				callback(null, {
-					"+r": data['+r'].members,
-					"+w": data['+w'].members
-				});
-			});
-		});
-
-		socket.on('api:admin.categories.setGroupPrivilege', function(cid, gid, privilege, set, callback) {
-			if (set) {
-				groups.joinByGroupName('cid:' + cid + ':privileges:' + privilege, gid, callback);
-			} else {
-				groups.leaveByGroupName('cid:' + cid + ':privileges:' + privilege, gid, callback);
-			}
-		});
-
-		socket.on('api:admin.categories.groupsList', function(cid, callback) {
-			groups.list({expand:false}, function(err, data){
-				async.map(data, function(groupObj, next) {
-					CategoryTools.groupPrivileges(cid, groupObj.gid, function(err, privileges) {
-						if (!err) {
-							groupObj.privileges = privileges;
-						} else {
-							winston.error('[socket api:admin.categories.groupsList] Could not retrieve permissions');
-						}
-
-						next(null, groupObj);
-					});
-				}, function(err, data) {
-					callback(null, data);
-				});
-			});
-		});
-
-		socket.on('api:admin.themes.getInstalled', function(callback) {
-			meta.themes.get(function(err, themeArr) {
-				callback(themeArr);
-			});
-		});
-
-		socket.on('api:admin.plugins.toggle', function(plugin_id) {
-			plugins.toggleActive(plugin_id, function(status) {
-				socket.emit('api:admin.plugins.toggle', status);
-			});
-		});
 
 
 
