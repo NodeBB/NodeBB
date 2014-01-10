@@ -124,7 +124,6 @@
 
 
 	templates.init = function (templates_to_load, custom_templates) {
-		console.log(templates_to_load, custom_templates);
 		loadTemplates(templates_to_load || [], custom_templates || false);
 	}
 
