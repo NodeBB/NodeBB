@@ -58,7 +58,7 @@
 						<a href="{relative_path}/recent"><i class="fa fa-clock-o" title="[[global:header.recent]]"></i></a>
 					</li>
 					<li class="nodebb-loggedin">
-						<a href="{relative_path}/unread"><i class="fa fa-envelope" title="[[global:header.unread]]"> <span id="numUnreadBadge" class="">0</span></i></a>
+						<a href="{relative_path}/unread"><i id="unread-count" class="fa fa-inbox" data-content="0" title="[[global:header.unread]]"></i></a>
 					</li>
 					<li>
 						<a href="{relative_path}/users"><i class="fa fa-users" title="[[global:header.users]]"></i></a>
