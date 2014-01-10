@@ -145,11 +145,16 @@ Sockets.init = function() {
 					command = parts[1],
 					subcommand = parts[2],	// MUST ADD RECURSION (:P)
 					executeHandler = function(args) {
+						// Session data
+						var	sessionData = {
+							uid: uid
+						};
+
 						winston.info('[socket.io] Executing: ' + payload.name);
 						if (!subcommand) {
-							Namespaces[namespace][command].call(Namespaces[namespace], args.length ? args : callback ? callback : undefined, args.length ? callback : undefined);
+							Namespaces[namespace][command].call(Namespaces[namespace], args.length ? args[0] : callback ? callback : sessionData, args.length ? callback : sessionData, args.length && callback ? sessionData : undefined);
 						} else {
-							Namespaces[namespace][command][subcommand].call(Namespaces[namespace][command], args, callback);
+							Namespaces[namespace][command][subcommand].call(Namespaces[namespace][command], args.length ? args[0] : callback ? callback : sessionData, args.length ? callback : sessionData, args.length && callback ? sessionData : undefined);
 						}
 					};
 

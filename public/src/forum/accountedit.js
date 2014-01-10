@@ -108,9 +108,9 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 
 				uploadedPicture = imageUrlOnServer;
 
-				socket.emit('api:updateHeader', {
+				socket.emit('api:meta.updateHeader', {
 					fields: ['username', 'picture', 'userslug']
-				});
+				}, app.updateHeader);
 			});
 
 

@@ -69,29 +69,7 @@ websockets.init = function(io) {
 
 		// BEGIN: API calls (todo: organize)
 
-		socket.on('api:updateHeader', function(data) {
-			if (uid) {
-				user.getUserFields(uid, data.fields, function(err, fields) {
-					if (!err && fields) {
-						fields.uid = uid;
-						socket.emit('api:updateHeader', fields);
-					}
-				});
-			} else {
-				socket.emit('api:updateHeader', {
-					uid: 0,
-					username: "Anonymous User",
-					email: '',
-					picture: gravatar.url('', {
-						s: '24'
-					}, nconf.get('https')),
-					config: {
-						allowGuestSearching: meta.config.allowGuestSearching
-					}
-				});
-			}
 
-		});
 
 
 
@@ -353,13 +331,7 @@ websockets.init = function(io) {
 			threadTools.move(data.tid, data.cid, socket);
 		});
 
-		socket.on('api:categories.get', function(callback) {
-			categories.getAllCategories(0, function(err, categories) {
-				if(callback) {
-					callback(categories);
-				}
-			});
-		});
+
 
 		socket.on('api:posts.uploadImage', function(data, callback) {
 			posts.uploadPostImage(data, callback);
@@ -428,11 +400,6 @@ websockets.init = function(io) {
 			});
 		});
 
-		socket.on('api:notifications.get', function(data, callback) {
-			user.notifications.get(uid, function(notifs) {
-				callback(notifs);
-			});
-		});
 
 		socket.on('api:notifications.mark_read', function(nid) {
 			notifications.mark_read(nid, uid);
@@ -446,17 +413,7 @@ websockets.init = function(io) {
 			});
 		});
 
-		socket.on('api:notifications.getCount', function(callback) {
-			user.notifications.getUnreadCount(uid, function(err, count) {
-				callback(err ? err.message : null, count);
-			});
-		});
 
-		socket.on('api:categories.getRecentReplies', function(tid) {
-			categories.getRecentReplies(tid, uid, 4, function(err, replies) {
-				socket.emit('api:categories.getRecentReplies', replies);
-			});
-		});
 
 		socket.on('api:chats.get', function(data, callback) {
 			var touid = data.touid;
@@ -637,23 +594,6 @@ websockets.init = function(io) {
 			topics.getTopicPosts(data.tid, start, end, uid, function(err, posts) {
 				callback({
 					posts: posts
-				});
-			});
-		});
-
-		socket.on('api:unread.count', function(callback) {
-			topics.getUnreadTids(uid, 0, 19, function(err, tids) {
-				socket.emit('event:unread.updateCount', tids.length);
-			});
-		});
-
-		socket.on('api:category.loadMore', function(data, callback) {
-			var start = data.after,
-				end = start + 9;
-
-			categories.getCategoryTopics(data.cid, start, end, uid, function(topics) {
-				callback({
-					topics: topics
 				});
 			});
 		});

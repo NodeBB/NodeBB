@@ -36,38 +36,7 @@ define(['composer'], function(composer) {
 
 		socket.on('event:new_topic', Category.onNewTopic);
 
-		socket.emit('api:categories.getRecentReplies', cid);
-		socket.on('api:categories.getRecentReplies', function (posts) {
-			if (!posts || posts.length === 0) {
-				return;
-			}
-
-			var recent_replies = document.getElementById('category_recent_replies');
-
-			recent_replies.innerHTML = '';
-
-			var frag = document.createDocumentFragment(),
-				li = document.createElement('li');
-			for (var i = 0, numPosts = posts.length; i < numPosts; i++) {
-
-				li.setAttribute('data-pid', posts[i].pid);
-
-
-				li.innerHTML = '<a href="' + RELATIVE_PATH + '/user/' + posts[i].userslug + '"><img title="' + posts[i].username + '" class="img-rounded user-img" src="' + posts[i].picture + '"/></a>' +
-					'<a href="' + RELATIVE_PATH + '/topic/' + posts[i].topicSlug + '#' + posts[i].pid + '">' +
-					'<strong><span>'+ posts[i].username + '</span></strong>' +
-					'<p>' +
-					posts[i].content +
-					'</p>' +
-					'</a>' +
-					'<span class="timeago pull-right" title="' + posts[i].relativeTime + '"></span>';
-
-				frag.appendChild(li.cloneNode(true));
-				recent_replies.appendChild(frag);
-			}
-			$('#category_recent_replies span.timeago').timeago();
-			app.createUserTooltips();
-		});
+		socket.emit('api:categories.getRecentReplies', cid, renderRecentReplies);
 
 		$(window).off('scroll').on('scroll', function (ev) {
 			var bottom = ($(document).height() - $(window).height()) * 0.9;
@@ -108,7 +77,7 @@ define(['composer'], function(composer) {
 			}
 
 			topic.hide().fadeIn('slow');
-			socket.emit('api:categories.getRecentReplies', templates.get('category_id'));
+			socket.emit('api:categories.getRecentReplies', templates.get('category_id'), renderRecentReplies);
 
 			addActiveUser(data);
 
@@ -156,7 +125,7 @@ define(['composer'], function(composer) {
 		}
 
 		loadingMoreTopics = true;
-		socket.emit('api:category.loadMore', {
+		socket.emit('api:categories.loadMore', {
 			cid: cid,
 			after: $('#topics-container').children('.category-item').length
 		}, function (data) {
@@ -166,6 +135,38 @@ define(['composer'], function(composer) {
 			loadingMoreTopics = false;
 		});
 	}
+
+	function renderRecentReplies(posts) {
+		if (!posts || posts.length === 0) {
+			return;
+		}
+
+		var recent_replies = document.getElementById('category_recent_replies');
+
+		recent_replies.innerHTML = '';
+
+		var frag = document.createDocumentFragment(),
+			li = document.createElement('li');
+		for (var i = 0, numPosts = posts.length; i < numPosts; i++) {
+
+			li.setAttribute('data-pid', posts[i].pid);
+
+
+			li.innerHTML = '<a href="' + RELATIVE_PATH + '/user/' + posts[i].userslug + '"><img title="' + posts[i].username + '" class="img-rounded user-img" src="' + posts[i].picture + '"/></a>' +
+				'<a href="' + RELATIVE_PATH + '/topic/' + posts[i].topicSlug + '#' + posts[i].pid + '">' +
+				'<strong><span>'+ posts[i].username + '</span></strong>' +
+				'<p>' +
+				posts[i].content +
+				'</p>' +
+				'</a>' +
+				'<span class="timeago pull-right" title="' + posts[i].relativeTime + '"></span>';
+
+			frag.appendChild(li.cloneNode(true));
+			recent_replies.appendChild(frag);
+		}
+		$('#category_recent_replies span.timeago').timeago();
+		app.createUserTooltips();
+	};
 
 	return Category;
 });

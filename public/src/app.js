@@ -36,9 +36,9 @@ var socket,
 						app.uid = data.uid;
 
 						app.showLoginMessage();
-						socket.emit('api:updateHeader', {
+						socket.emit('api:meta.updateHeader', {
 							fields: ['username', 'picture', 'userslug']
-						});
+						}, app.updateHeader);
 					});
 
 					socket.on('event:alert', function (data) {
@@ -84,9 +84,9 @@ var socket,
 							}, 3000);
 						}
 
-						socket.emit('api:updateHeader', {
+						socket.emit('api:meta.updateHeader', {
 							fields: ['username', 'picture', 'userslug']
-						});
+						}, app.updateHeader);
 					});
 
 					socket.on('event:disconnect', function() {
@@ -448,6 +448,69 @@ var socket,
 		socket.emit('api:meta.buildTitle', url, function(title, numNotifications) {
 			titleObj.titles[0] = (numNotifications > 0 ? '(' + numNotifications + ') ' : '') + title;
 			app.alternatingTitle('');
+		});
+	};
+
+	app.updateHeader = function(data) {
+		$('#search-button').on('click', function() {
+			$('#search-fields').removeClass('hide').show();
+			$(this).hide();
+			$('#search-fields input').focus();
+
+			$('#search-form').on('submit', function() {
+				$('#search-fields').hide();
+				$('#search-button').show();
+			});
+
+			$('#search-fields input').on('blur', function() {
+				$('#search-fields').hide();
+				$('#search-button').show();
+			});
+		});
+
+		var loggedInMenu = $('#logged-in-menu'),
+			isLoggedIn = data.uid > 0,
+			allowGuestSearching = (data.config || {}).allowGuestSearching === '1';
+
+		if (isLoggedIn) {
+			$('.nodebb-loggedin').show();
+			$('.nodebb-loggedout').hide();
+
+			$('#logged-out-menu').addClass('hide');
+			$('#logged-in-menu').removeClass('hide');
+
+			$('#search-button').removeClass("hide").show();
+
+			var userLabel = loggedInMenu.find('#user_label');
+
+			if (userLabel.length) {
+				if (data['userslug'])
+					userLabel.find('#user-profile-link').attr('href', RELATIVE_PATH + '/user/' + data['userslug']);
+				if (data['picture'])
+					userLabel.find('img').attr('src', data['picture']);
+				if (data['username'])
+					userLabel.find('span').html(data['username']);
+
+				$('#logout-link').on('click', app.logout);
+			}
+		} else {
+			if (allowGuestSearching) {
+				$('#search-button').removeClass("hide").show();
+			} else {
+				$('#search-button').addClass("hide").hide();
+			}
+
+			$('.nodebb-loggedin').hide();
+			$('.nodebb-loggedout').show();
+
+			$('#logged-out-menu').removeClass('hide');
+			$('#logged-in-menu').addClass('hide');
+
+		}
+
+		$('#main-nav a,#user-control-list a,#logged-out-menu .dropdown-menu a').off('click').on('click', function() {
+			if($('.navbar .navbar-collapse').hasClass('in'))
+				$('.navbar-header button').click();
 		});
 	};
 
