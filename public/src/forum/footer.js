@@ -250,18 +250,9 @@
 	});
 
 	function updateUnreadCount(count) {
-		var badge = $('#numUnreadBadge');
-			badge.html(count > 20 ? '20+' : count);
 
-			if (count > 0) {
-				badge
-					.removeClass('badge-inverse')
-					.addClass('badge-important');
-			} else {
-				badge
-					.removeClass('badge-important')
-					.addClass('badge-inverse');
-			}
+		$('#unread-count').toggleClass('unread-count', count > 0);
+		$('#unread-count').attr('data-content', count > 20 ? '20+' : count);
 	}
 
 	socket.on('event:unread.updateCount', updateUnreadCount);

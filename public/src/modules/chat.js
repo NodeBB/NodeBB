@@ -58,6 +58,7 @@ define(['taskbar', 'string'], function(taskbar, S) {
 
 				chatModal.attr('id', 'chat-modal-' + touid);
 				chatModal.attr('UUID', uuid);
+				chatModal.css("position", "fixed");
 				chatModal.appendTo($('body'));
 				chatModal.draggable({
 					start:function() {
@@ -96,9 +97,10 @@ define(['taskbar', 'string'], function(taskbar, S) {
 	}
 
 	module.center = function(chatModal) {
-		chatModal.css("position", "fixed");
 		chatModal.css("left", Math.max(0, (($(window).width() - $(chatModal).outerWidth()) / 2) + $(window).scrollLeft()) + "px");
 		chatModal.css("top", "0px");
+		chatModal.css("zIndex", 2000);
+		chatModal.find('#chat-message-input').focus();
 		return chatModal;
 	}
 
@@ -109,7 +111,7 @@ define(['taskbar', 'string'], function(taskbar, S) {
 		checkOnlineStatus(chatModal);
 		taskbar.updateActive(uuid);
 		scrollToBottom(chatModal.find('#chat-content'));
-		chatModal.find('#chat-message-input').focus();
+		module.center(chatModal);
 	}
 
 	module.minimize = function(uuid) {
@@ -163,9 +165,11 @@ define(['taskbar', 'string'], function(taskbar, S) {
 	};
 
 	function scrollToBottom(chatContent) {
-		chatContent.scrollTop(
-			chatContent[0].scrollHeight - chatContent.height()
-		);
+		if(chatContent[0]) {
+			chatContent.scrollTop(
+				chatContent[0].scrollHeight - chatContent.height()
+			);
+		}
 	}
 
 	module.toggleNew = function(uuid, state) {
