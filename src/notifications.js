@@ -3,10 +3,7 @@ var async = require('async'),
 	cron = require('cron').CronJob,
 
 	db = require('./database'),
-	utils = require('../public/src/utils'),
-	websockets = require('./websockets');
-
-
+	utils = require('../public/src/utils');
 
 (function(Notifications) {
 	"use strict";
@@ -71,6 +68,7 @@ var async = require('async'),
 	}
 
 	Notifications.push = function(nid, uids, callback) {
+		var websockets = require('./socket.io');
 		if (!Array.isArray(uids)) {
 			uids = [uids];
 		}

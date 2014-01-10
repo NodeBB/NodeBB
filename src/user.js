@@ -15,8 +15,7 @@ var bcrypt = require('bcrypt'),
 	notifications = require('./notifications'),
 	topics = require('./topics'),
 	events = require('./events'),
-	Emailer = require('./emailer'),
-	websockets = require('./websockets');
+	Emailer = require('./emailer');
 
 (function(User) {
 	'use strict';
@@ -888,6 +887,8 @@ var bcrypt = require('bcrypt'),
 	};
 
 	User.pushNotifCount = function(uid) {
+		var	websockets = require('./socket.io');
+
 		User.notifications.getUnreadCount(uid, function(err, count) {
 			if (!err) {
 				websockets.in('uid_' + uid).emit('event:notifications.updateCount', count);

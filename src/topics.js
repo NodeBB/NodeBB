@@ -17,10 +17,7 @@ var async = require('async'),
 	notifications = require('./notifications'),
 	feed = require('./feed'),
 	favourites = require('./favourites'),
-	meta = require('./meta')
-
-	websockets = require('./websockets');
-
+	meta = require('./meta');
 
 (function(Topics) {
 
@@ -589,6 +586,8 @@ var async = require('async'),
 	};
 
 	Topics.pushUnreadCount = function(uids, callback) {
+		var	websockets = require('./socket.io');
+
 		if (!uids) {
 			clients = websockets.getConnectedClients();
 			uids = Object.keys(clients);

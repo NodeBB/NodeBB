@@ -1,13 +1,13 @@
 var db = require('./database'),
 	posts = require('./posts'),
 	user = require('./user'),
-	websockets = require('./websockets')
 	translator = require('./../public/src/translator');
 
 (function (Favourites) {
 	"use strict";
 
 	Favourites.favourite = function (pid, room_id, uid, socket) {
+		var	websockets = require('./socket.io');
 
 		if (uid === 0) {
 
@@ -56,6 +56,8 @@ var db = require('./database'),
 	};
 
 	Favourites.unfavourite = function (pid, room_id, uid, socket) {
+		var	websockets = require('./socket.io');
+
 		if (uid === 0) {
 			return;
 		}

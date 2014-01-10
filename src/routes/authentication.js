@@ -131,7 +131,7 @@
 				if (req.user && req.user.uid > 0) {
 					winston.info('[Auth] Session ' + req.sessionID + ' logout (uid: ' + req.user.uid + ')');
 
-					var ws = require('./../websockets');
+					var ws = require('../socket.io');
 					ws.logoutUser(req.user.uid);
 
 					req.logout();
@@ -203,7 +203,7 @@
 							uid: uid
 						}, function() {
 
-							require('./../websockets').emitUserCount();
+							require('../socket.io').emitUserCount();
 
 							if(req.body.referrer)
 								res.redirect(req.body.referrer);

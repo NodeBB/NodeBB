@@ -10,7 +10,7 @@ var winston = require('winston'),
 	notifications = require('./notifications'),
 	posts = require('./posts'),
 	meta = require('./meta'),
-	websockets = require('./websockets'),
+	websockets = require('./socket.io'),
 	events = require('./events');
 
 

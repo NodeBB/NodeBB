@@ -45,7 +45,8 @@
     "cron": "~1.0.1",
     "semver": "~2.2.1",
     "string": "~1.7.0",
-    "xregexp": "~2.0.0"
+    "xregexp": "~2.0.0",
+    "socket.io-wildcard": "~0.1.1"
   },
   "optionalDependencies": {
     "redis": "0.8.3",

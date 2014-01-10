@@ -8,7 +8,6 @@ var winston = require('winston'),
 	topics = require('./topics'),
 	threadTools = require('./threadTools'),
 	user = require('./user'),
-	websockets = require('./websockets'),
 	utils = require('../public/src/utils'),
 	plugins = require('./plugins'),
 	events = require('./events'),
@@ -70,55 +69,55 @@ var winston = require('winston'),
 
 
 	PostTools.edit = function(uid, pid, title, content) {
+		var	websockets = require('./socket.io'),
+			success = function() {
+				posts.setPostFields(pid, {
+					edited: Date.now(),
+					editor: uid,
+					content: content
+				});
 
-		var	success = function() {
-			posts.setPostFields(pid, {
-				edited: Date.now(),
-				editor: uid,
-				content: content
-			});
+				events.logPostEdit(uid, pid);
 
-			events.logPostEdit(uid, pid);
+				db.searchRemove('post', pid, function() {
+					db.searchIndex('post', content, pid);
+				});
 
-			db.searchRemove('post', pid, function() {
-				db.searchIndex('post', content, pid);
-			});
+				async.parallel([
+					function(next) {
+						posts.getPostField(pid, 'tid', function(err, tid) {
+							PostTools.isMain(pid, tid, function(err, isMainPost) {
+								if (isMainPost) {
+									title = title.trim();
+									var slug = tid + '/' + utils.slugify(title);
 
-			async.parallel([
-				function(next) {
-					posts.getPostField(pid, 'tid', function(err, tid) {
-						PostTools.isMain(pid, tid, function(err, isMainPost) {
-							if (isMainPost) {
-								title = title.trim();
-								var slug = tid + '/' + utils.slugify(title);
+									topics.setTopicField(tid, 'title', title);
+									topics.setTopicField(tid, 'slug', slug);
 
-								topics.setTopicField(tid, 'title', title);
-								topics.setTopicField(tid, 'slug', slug);
+									db.searchRemove('topic', tid, function() {
+										db.searchIndex('topic', title, tid);
+									});
+								}
 
-								db.searchRemove('topic', tid, function() {
-									db.searchIndex('topic', title, tid);
+								next(null, {
+									tid: tid,
+									isMainPost: isMainPost
 								});
-							}
-
-							next(null, {
-								tid: tid,
-								isMainPost: isMainPost
 							});
 						});
+					},
+					function(next) {
+						PostTools.parse(content, next);
+					}
+				], function(err, results) {
+					websockets.in('topic_' + results[0].tid).emit('event:post_edited', {
+						pid: pid,
+						title: validator.sanitize(title).escape(),
+						isMainPost: results[0].isMainPost,
+						content: results[1]
 					});
-				},
-				function(next) {
-					PostTools.parse(content, next);
-				}
-			], function(err, results) {
-				websockets.in('topic_' + results[0].tid).emit('event:post_edited', {
-					pid: pid,
-					title: validator.sanitize(title).escape(),
-					isMainPost: results[0].isMainPost,
-					content: results[1]
 				});
-			});
-		};
+			};
 
 		PostTools.privileges(pid, uid, function(privileges) {
 			if (privileges.editable) {

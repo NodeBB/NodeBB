@@ -9,8 +9,7 @@ var fs = require('fs'),
 	postTools = require('../postTools'),
 	utils = require('./../../public/src/utils'),
 	meta = require('./../meta'),
-	db = require('./../database'),
-	websockets = require('./../websockets');
+	db = require('./../database');
 
 (function (User) {
 	User.createRoutes = function (app) {
@@ -485,6 +484,8 @@ var fs = require('fs'),
 		}
 
 		function getOnlineUsers(req, res) {
+			var	websockets = require('../socket.io');
+
 			user.getUsers('users:online', 0, 49, function (err, data) {
 
 				var onlineUsers = [];
