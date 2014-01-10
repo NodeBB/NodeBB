@@ -135,6 +135,7 @@ var fs = require('fs'),
 						function(config, next) {
 							themeData['theme:staticDir'] = config.staticDir ? config.staticDir : '';
 							themeData['theme:templates'] = config.templates ? config.templates : '';
+							themeData['theme:src'] = config.frameworkCSS ? config.frameworkCSS : '';
 
 							db.setObject('config', themeData, next);
 						}
