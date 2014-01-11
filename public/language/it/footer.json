@@ -1,5 +1,5 @@
 {
-	"chat.chatting_with": "Chatta con &lt;span id=\"chat-with-name\"&gt;&lt;/span&gt;",
+	"chat.chatting_with": "Chatta con <span id=\"chat-with-name\"></span>",
 	"chat.placeholder": "scrivi un messaggio qui e premi Invio",
 	"chat.send": "Invia",
 	"stats.online": "Online",

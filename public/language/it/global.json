@@ -3,9 +3,9 @@
 	"search": "Cerca",
 	"buttons.close": "Chiudi",
 	"403.title": "Accesso Proibito",
-	"403.message": "Non hai accesso alla pagina che stavi cercando di aprire. Probabilmente devi &lt;a href='/login'&gt;effettuare il log in&lt;/a&gt;?",
+	"403.message": "Non hai accesso alla pagina che stavi cercando di aprire. Probabilmente devi <a href='/login'>effettuare il log in</a>?",
 	"404.title": "Non trovato",
-	"404.message": "La pagina che stavi cercando di aprire non esiste. Ritorna alla &lt;a href='/'&gt;pagina iniziale&lt;/a&gt;.",
+	"404.message": "La pagina che stavi cercando di aprire non esiste. Ritorna alla <a href='/'>pagina iniziale</a>.",
 	"500.title": "Errore interno.",
 	"500.message": "Oops! Qualcosa non funziona come si deve!",
 
