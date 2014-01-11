@@ -77,7 +77,7 @@ var socket,
 							}
 							app.enterRoom(room, true);
 
-							socket.emit('reconnected');
+							socket.emit('api:meta.reconnected');
 
 							setTimeout(function() {
 								reconnectEl.removeClass('active').addClass("hide");

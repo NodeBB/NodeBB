@@ -119,21 +119,6 @@ Sockets.init = function() {
 			}
 		});
 
-		socket.on('reconnected', function() {
-			if (uid) {
-				topics.pushUnreadCount(uid);
-				user.pushNotifCount(uid);
-			}
-
-			if (process.env.NODE_ENV === 'development') {
-				if (uid) {
-					winston.info('[socket] uid ' + uid + ' (' + sessionID + ') has successfully reconnected.');
-				} else {
-					winston.info('[socket] An anonymous user (' + sessionID + ') has successfully reconnected.');
-				}
-			}
-		});
-
 		socket.on('*', function(payload, callback) {
 			// Ignore all non-api messages
 			if (payload.name.substr(0, 4) !== 'api:') {

@@ -1,12 +1,32 @@
 var	meta = require('../meta'),
 	user = require('../user'),
+	topics = require('../topics'),
 	logger = require('../logger'),
 	plugins = require('../plugins'),
 
 	nconf = require('nconf'),
 	gravatar = require('gravatar'),
+	winston = require('winston'),
 
 	SocketMeta = {};
+
+SocketMeta.reconnected = function(sessionData) {
+	var	uid = sessionData.uid,
+		sessionID = sessionData.socket.id;
+
+	if (uid) {
+		topics.pushUnreadCount(uid);
+		user.pushNotifCount(uid);
+	}
+
+	if (process.env.NODE_ENV === 'development') {
+		if (uid) {
+			winston.info('[socket] uid ' + uid + ' (' + sessionID + ') has successfully reconnected.');
+		} else {
+			winston.info('[socket] An anonymous user (' + sessionID + ') has successfully reconnected.');
+		}
+	}
+};
 
 SocketMeta.buildTitle = function(text, callback) {
 	meta.title.build(text, function(err, title) {
