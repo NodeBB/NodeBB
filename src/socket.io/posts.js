@@ -6,7 +6,7 @@ var	posts = require('../posts'),
 
 	SocketPosts = {};
 
-SocketPosts.reply = function(data, sessionData) {
+SocketPosts.reply = function(data, callback, sessionData) {
 	if (sessionData.uid < 1 && parseInt(meta.config.allowGuestPosting, 10) === 0) {
 		sessionData.socket.emit('event:alert', {
 			title: 'Reply Unsuccessful',
@@ -16,12 +16,6 @@ SocketPosts.reply = function(data, sessionData) {
 		});
 		return;
 	}
-
-	// FIXME: postDelay in sockets? I am disappoint.
-	// if (Date.now() - lastPostTime < meta.config.postDelay * 1000) {
-	// 	module.parent.exports.emitTooManyPostsAlert(sessionData.socket);
-	// 	return;
-	// }
 
 	topics.reply(data.topic_id, sessionData.uid, data.content, function(err, postData) {
 		if(err) {
@@ -48,7 +42,7 @@ SocketPosts.reply = function(data, sessionData) {
 		}
 
 		if (postData) {
-			lastPostTime = Date.now();
+
 			module.parent.exports.emitTopicPostStats();
 
 			sessionData.socket.emit('event:alert', {
@@ -63,7 +57,7 @@ SocketPosts.reply = function(data, sessionData) {
 			sessionData.server.sockets.in('topic_' + postData.tid).emit('event:new_post', socketData);
 			sessionData.server.sockets.in('recent_posts').emit('event:new_post', socketData);
 			sessionData.server.sockets.in('user/' + postData.uid).emit('event:new_post', socketData);
-
+			callback();
 		}
 
 	});
@@ -93,7 +87,7 @@ SocketPosts.getRawPost = function(data, callback) {
 	});
 };
 
-SocketPosts.edit = function(data, sessionData) {
+SocketPosts.edit = function(data, callback, sessionData) {
 	if(!sessionData.uid) {
 		sessionData.socket.emit('event:alert', {
 			title: 'Can&apos;t edit',
@@ -111,6 +105,7 @@ SocketPosts.edit = function(data, sessionData) {
 	}
 
 	postTools.edit(sessionData.uid, data.pid, data.title, data.content, data.images);
+	callback();
 };
 
 SocketPosts.delete = function(data, callback, sessionData) {

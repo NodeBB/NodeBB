@@ -3,7 +3,7 @@ var topics = require('../topics'),
 
 	SocketTopics = {};
 
-SocketTopics.post = function(data, sessionData) {
+SocketTopics.post = function(data, callback, sessionData) {
 	if (sessionData.uid < 1 && parseInt(meta.config.allowGuestPosting, 10) === 0) {
 		socket.emit('event:alert', {
 			title: 'Post Unsuccessful',
@@ -57,6 +57,7 @@ SocketTopics.post = function(data, sessionData) {
 				type: 'success',
 				timeout: 2000
 			});
+			callback();
 		}
 	});
 };

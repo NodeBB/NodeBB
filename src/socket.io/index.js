@@ -120,6 +120,7 @@ Sockets.init = function() {
 		});
 
 		socket.on('*', function(payload, callback) {
+			console.log(this.event);
 			// Ignore all non-api messages
 			if (payload.name.substr(0, 4) !== 'api:') {
 				return;
