@@ -1,7 +1,4 @@
 {
-	"chat.chatting_with": "Chatta con <span id=\"chat-with-name\"></span>",
-	"chat.placeholder": "scrivi un messaggio qui e premi Invio",
-	"chat.send": "Invia",
 	"stats.online": "Online",
 	"stats.users": "Utenti",
 	"stats.topics": "Discussioni",

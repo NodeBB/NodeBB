@@ -151,13 +151,18 @@
 
 					chatsFrag.appendChild(chatEl.cloneNode(true));
 				}
-			} else {
-				chatEl.innerHTML = '<a href="#">No Recent Chats</a>';
-				chatsFrag.appendChild(chatEl.cloneNode(true));
-			}
 
-			chatsListEl.empty();
-			chatsListEl.html(chatsFrag);
+				chatsListEl.empty();
+				chatsListEl.html(chatsFrag);
+			} else {
+				translator.get('modules:chat.no_active', function(str) {
+					chatEl.innerHTML = '<a href="#">' + str + '</a>';
+					chatsFrag.appendChild(chatEl.cloneNode(true));
+
+					chatsListEl.empty();
+					chatsListEl.html(chatsFrag);
+				});
+			}
 		});
 	});
 
