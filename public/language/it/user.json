@@ -1,0 +1,41 @@
+{
+	"banned": "Bannato",
+	"offline": "Non in linea",
+	"username": "Nome Utente",
+	"email": "Email",
+	"fullname": "Nome e Cognome",
+	"website": "Sito Internet",
+	"location": "Località",
+	"age": "Età",
+	"joined": "Iscrizione",
+	"lastonline": "Ultima volta in linea",
+	"profile_views": "Visite al profilo",
+	"reputation": "Reputazione",
+	"posts": "Post",
+	"followers": "Da chi è seguito",
+	"following": "Chi segue",
+	"signature": "Firma",
+	"gravatar": "Gravatar",
+	"birthday": "Data di nascita",
+
+	"change_picture": "Cambia la foto",
+	"edit": "Modifica",
+	"uploaded_picture": "Foto caricata",
+	"upload_new_picture": "Carica una nuova foto",
+	"change_password": "Cambia la Password",
+	"confirm_password": "Conferma la Password",
+	"password": "Password",
+
+	"upload_picture": "Carica foto",
+	"upload_a_picture": "Carica una foto",
+	"image_spec": "È possibile caricare solo immagini in formato PNG, JPG, o GIF, non più grandi di 256kb.",
+
+	"settings": "impostazioni",
+	"show_email": "Mostra la mia Email",
+
+	"has_no_follower": "Questo utente non è seguito da nessuno :(",
+	"follows_no_one": "Questo utente non segue nessuno :(",
+
+	"email_hidden": "Email Nascosta",
+	"hidden": "nascosta"
+}

@@ -1,0 +1,31 @@
+{
+	"home": "Home",
+	"search": "Cerca",
+	"buttons.close": "Chiudi",
+	"403.title": "Accesso Proibito",
+	"403.message": "Non hai accesso alla pagina che stavi cercando di aprire. Probabilmente devi &lt;a href='/login'&gt;effettuare il log in&lt;/a&gt;?",
+	"404.title": "Non trovato",
+	"404.message": "La pagina che stavi cercando di aprire non esiste. Ritorna alla &lt;a href='/'&gt;pagina iniziale&lt;/a&gt;.",
+	"500.title": "Errore interno.",
+	"500.message": "Oops! Qualcosa non funziona come si deve!",
+
+	"register": "Registrazione",
+	"login": "Login",
+
+	"logout": "Logout",
+	"logout.title": "Disconnessione avvenuta.",
+	"logout.message": "Logout effettuato con successo",
+
+	"save_changes": "Salva",
+	"close": "Chiudi",
+
+	"header.admin": "Amministratore",
+	"header.recent": "Recenti",
+	"header.unread": "Non letti",
+	"header.users": "Utenti",
+	"header.search": "Cerca",
+	"header.profile": "Profilo",
+
+	"notifications.loading": "Caricamento delle Notifiche",
+	"chats.loading": "Caricamento delle Chat"
+}
