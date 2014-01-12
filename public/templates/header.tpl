@@ -135,8 +135,8 @@
 				</ul>
 
 				<ul id="logged-conditional-menu" class="nav navbar-nav navbar-right">
-					<li>
-						<form id="search-form" class="navbar-form navbar-right hidden-xs" role="search" method="GET" action="">
+					<li class="hidden-xs">
+						<form id="search-form" class="navbar-form navbar-right" role="search" method="GET" action="">
 							<div class="hide" id="search-fields">
 								<div class="form-group">
 									<input type="text" class="form-control" placeholder="Search" name="query" value="">
@@ -145,7 +145,7 @@
 							</div>
 						</form>
 					</li>
-					<li>
+					<li class="hidden-xs">
 						<a id="search-button" class="hide"><i class="fa fa-search"></i></a>
 					</li>
 				</ul>
