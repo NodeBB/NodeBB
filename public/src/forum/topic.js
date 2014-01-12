@@ -897,23 +897,6 @@ define(['composer'], function(composer) {
 			}
 		}
 
-		function toggle_mod_tools(pid, state) {
-			var postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
-				editEl = postEl.find('.edit'),
-				deleteEl = postEl.find('.delete');
-
-			if (state) {
-				editEl.removeClass('none');
-				deleteEl.removeClass('none');
-			} else {
-				editEl.addClass('none');
-				deleteEl.addClass('none');
-			}
-		}
-
-
-
-
 		Topic.postCount = templates.get('postcount');
 
 		window.onscroll = updateHeader;
@@ -1082,6 +1065,20 @@ define(['composer'], function(composer) {
 			updatePostCount();
 			showBottomPostBar();
 		});
+	}
+
+	function toggle_mod_tools(pid, state) {
+		var postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
+			editEl = postEl.find('.edit'),
+			deleteEl = postEl.find('.delete');
+
+		if (state) {
+			editEl.removeClass('none');
+			deleteEl.removeClass('none');
+		} else {
+			editEl.addClass('none');
+			deleteEl.addClass('none');
+		}
 	}
 
 	function updatePostCount() {
