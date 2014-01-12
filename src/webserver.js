@@ -307,8 +307,8 @@ if(nconf.get('ssl')) {
 
 				// 404 catch-all
 				app.use(function (req, res, next) {
-					var	isLanguage = new RegExp("^" + nconf.get('relative_path') + "/language/[\\w]{2,}/.*.json"),
-						isClientScript = /^\/src\/forum\/[\w]+\.js/;
+					var	isLanguage = new RegExp('^' + nconf.get('relative_path') + '/language/[\\w]{2,}/.*.json'),
+						isClientScript = new RegExp('^' + nconf.get('relative_path') + '\\/src\\/forum(\\/admin)?\\/[\\w]+\\.js');
 
 					res.status(404);
 
