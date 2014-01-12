@@ -930,14 +930,7 @@ var bcrypt = require('bcrypt'),
 		},
 		exists: function(socket, email, callback) {
 			User.getUidByEmail(email, function(err, exists) {
-				exists = !! exists;
-				if (typeof callback !== 'function') {
-					socket.emit('user.email.exists', {
-						exists: exists
-					});
-				} else {
-					callback(exists);
-				}
+				callback(!!exists);
 			});
 		},
 		confirm: function(code, callback) {

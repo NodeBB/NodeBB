@@ -44,8 +44,8 @@ define(function() {
 			} else {
 				socket.emit('api:user.emailExists', {
 					email: emailEl.val()
-				}, function(data) {
-					if (data.exists === true) {
+				}, function(exists) {
+					if (exists === true) {
 						showError(email_notify, 'Email address already taken!');
 					} else {
 						showSuccess(email_notify, successIcon);
