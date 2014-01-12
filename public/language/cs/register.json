@@ -1,0 +1,16 @@
+{
+	"register": "Registrace",
+	"help.email": "Váš email nebude bez vašeho svolení zveřejněn.",
+	"help.username_restrictions": "Jedinečné uživatelské jméno dlouhé %1 až %2 znaků. Ostatní uživatelé Vás mohou zmínit jako @<span id='yourUsername'>uživatelské-jméno</span>.",
+	"help.minimum_password_length": "Délka vašeho hesla musí být alespoň %1 znaků.",
+	"email_address": "Email",
+	"email_address_placeholder": "Zadejte email",
+	"username": "Uživatelské jméno",
+	"username_placeholder": "Zadejte uživatelské jméno",
+	"password": "Heslo",
+	"password_placeholder": "Zadejte heslo",
+	"confirm_password": "Potvrzení hesla",
+	"confirm_password_placeholder": "Potvrďte heslo",
+	"register_now_button": "Zaregistrovat se",
+	"alternative_registration": "Jiný způsob registrace"
+}
