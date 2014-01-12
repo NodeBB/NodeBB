@@ -66,9 +66,11 @@
 					<li class="{adminDisplay}">
 						<a href="{relative_path}/admin"><i class="fa fa-cogs" title="[[global:header.admin]]"></i></a>
 					</li>
+					<!-- IF allowGuestSearching -->
 					<li class="visible-xs">
 						<a href="{relative_path}/search">[[global:header.search]]</a>
 					</li>
+					<!-- ENDIF allowGuestSearching -->
 					<!-- BEGIN navigation -->
 					<li class="{navigation.class}">
 						<a href="{relative_path}{navigation.route}" title="{navigation.title}">

@@ -508,7 +508,7 @@ var socket,
 
 		}
 
-		$('#main-nav a,#user-control-list a,#logged-out-menu .dropdown-menu a').off('click').on('click', function() {
+		$('#main-nav a,#user-control-list a,#logged-out-menu li a').off('click').on('click', function() {
 			if($('.navbar .navbar-collapse').hasClass('in'))
 				$('.navbar-header button').click();
 		});
