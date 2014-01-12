@@ -154,8 +154,10 @@
 								</div>
 								<button type="submit" class="btn btn-default hide">[[global:search]]</button>
 							</div>
-							<button id="search-button" type="button" class="btn btn-link hide"><i class="fa fa-search"></i></button>
 						</form>
+					</li>
+					<li>
+						<a id="search-button" class="hide"><i class="fa fa-search"></i></a>
 					</li>
 				</ul>
 

@@ -434,21 +434,25 @@ define(['taskbar'], function(taskbar) {
 				'title' : titleEl.val(),
 				'content' : bodyEl.val(),
 				'category_id' : postData.cid
+			}, function() {
+				composer.discard(post_uuid);
 			});
 		} else if (parseInt(postData.tid) > 0) {
 			socket.emit('api:posts.reply', {
 				'topic_id' : postData.tid,
 				'content' : bodyEl.val()
+			}, function() {
+				composer.discard(post_uuid);
 			});
 		} else if (parseInt(postData.pid) > 0) {
 			socket.emit('api:posts.edit', {
 				pid: postData.pid,
 				content: bodyEl.val(),
 				title: titleEl.val()
+			}, function() {
+				composer.discard(post_uuid);
 			});
 		}
-
-		composer.discard(post_uuid);
 	}
 
 	function composerAlert(title, message) {
