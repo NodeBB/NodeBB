@@ -66,9 +66,11 @@
 					<li class="{adminDisplay}">
 						<a href="{relative_path}/admin"><i class="fa fa-cogs" title="[[global:header.admin]]"></i></a>
 					</li>
+					<!-- IF allowGuestSearching -->
 					<li class="visible-xs">
 						<a href="{relative_path}/search">[[global:header.search]]</a>
 					</li>
+					<!-- ENDIF allowGuestSearching -->
 					<!-- BEGIN navigation -->
 					<li class="{navigation.class}">
 						<a href="{relative_path}{navigation.route}" title="{navigation.title}">
@@ -123,14 +125,19 @@
 
 				</ul>
 
-				<ul id="logged-out-menu" class="nav navbar-nav navbar-right">
-					<!-- IF allowRegistration -->
-					<li>
-						<a href="{relative_path}/register">[[global:register]]</a>
-					</li>
-					<!-- ENDIF allowRegistration -->
-					<li>
-						<a href="{relative_path}/login">[[global:login]]</a>
+				<ul id="logged-out-menu" class="nav navbar-nav navbar-right hide">
+					<li class="visible-xs">
+					 	<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="loggedout_dropdown"><i class="fa fa-sign-in"></i></a>
+						<ul class="dropdown-menu" aria-labelledby="loggedout_dropdown">
+							<!-- IF allowRegistration -->
+							<li>
+								<a href="{relative_path}/register">[[global:register]]</a>
+							</li>
+							<!-- ENDIF allowRegistration -->
+							<li>
+								<a href="{relative_path}/login">[[global:login]]</a>
+							</li>
+						</ul>
 					</li>
 				</ul>
 
