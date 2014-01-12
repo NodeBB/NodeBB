@@ -127,25 +127,12 @@
 
 				<ul id="logged-out-menu" class="nav navbar-nav navbar-right">
 					<!-- IF allowRegistration -->
-					<li class="visible-lg visible-md visible-sm">
+					<li>
 						<a href="{relative_path}/register">[[global:register]]</a>
 					</li>
 					<!-- ENDIF allowRegistration -->
-					<li class="visible-lg visible-md visible-sm">
+					<li>
 						<a href="{relative_path}/login">[[global:login]]</a>
-					</li>
-					<li class="visible-xs">
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="loggedout_dropdown"><i class="fa fa-sign-in"></i></a>
-						<ul class="dropdown-menu" aria-labelledby="loggedout_dropdown">
-							<!-- IF allowRegistration -->
-							<li>
-								<a href="{relative_path}/register">[[global:register]]</a>
-							</li>
-							<!-- ENDIF allowRegistration -->
-							<li>
-								<a href="{relative_path}/login">[[global:login]]</a>
-							</li>
-						</ul>
 					</li>
 				</ul>
 
