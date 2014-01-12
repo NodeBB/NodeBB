@@ -3,10 +3,10 @@ var	user = require('../user'),
 
 	SocketUser = {};
 
-SocketUser.exists = function(data) {
+SocketUser.exists = function(data, sessionData) {
 	if (data.username) {
 		user.exists(utils.slugify(data.username), function(exists) {
-			socket.emit('user.exists', {
+			sessionData.socket.emit('api:user.exists', {
 				exists: exists
 			});
 		});
@@ -17,23 +17,23 @@ SocketUser.count = function(callback) {
 	user.count(callback);
 };
 
-SocketUser.emailExists = function(data) {
-	user.email.exists(socket, data.email);
+SocketUser.emailExists = function(data, callback, sessionData) {
+	user.email.exists(undefined, data.email, callback);
 };
 
 // Password Reset
 SocketUser.reset = {};
 
-SocketUser.reset.send = function(data) {
-	user.reset.send(socket, data.email);
+SocketUser.reset.send = function(data, sessionData) {
+	user.reset.send(sessionData.socket, data.email);
 };
 
-SocketUser.reset.valid = function(data) {
-	user.reset.validate(socket, data.code);
+SocketUser.reset.valid = function(data, sessionData) {
+	user.reset.validate(sessionData.socket, data.code);
 };
 
-SocketUser.reset.commit = function(data) {
-	user.reset.commit(socket, data.code, data.password);
+SocketUser.reset.commit = function(data, sessionData) {
+	user.reset.commit(sessionData.socket, data.code, data.password);
 };
 
 SocketUser.isOnline = function(uid, callback) {
@@ -44,23 +44,23 @@ SocketUser.isOnline = function(uid, callback) {
 	});
 };
 
-SocketUser.changePassword = function(data, callback) {
-	user.changePassword(uid, data, callback);
+SocketUser.changePassword = function(data, callback, sessionData) {
+	user.changePassword(sessionData.uid, data, callback);
 };
 
-SocketUser.updateProfile = function(data, callback) {
-	user.updateProfile(uid, data, callback);
+SocketUser.updateProfile = function(data, callback, sessionData) {
+	user.updateProfile(sessionData.uid, data, callback);
 };
 
-SocketUser.changePicture = function(data, callback) {
+SocketUser.changePicture = function(data, callback, sessionData) {
 
 	var type = data.type;
 
 	function updateHeader() {
-		user.getUserFields(uid, ['picture'], function(err, fields) {
+		user.getUserFields(sessionData.uid, ['picture'], function(err, fields) {
 			if (!err && fields) {
-				fields.uid = uid;
-				socket.emit('api:updateHeader', fields);
+				fields.uid = sessionData.uid;
+				sessionData.socket.emit('api:updateHeader', fields);
 				callback(true);
 			} else {
 				callback(false);
@@ -69,13 +69,13 @@ SocketUser.changePicture = function(data, callback) {
 	}
 
 	if (type === 'gravatar') {
-		user.getUserField(uid, 'gravatarpicture', function(err, gravatar) {
-			user.setUserField(uid, 'picture', gravatar);
+		user.getUserField(sessionData.uid, 'gravatarpicture', function(err, gravatar) {
+			user.setUserField(sessionData.uid, 'picture', gravatar);
 			updateHeader();
 		});
 	} else if (type === 'uploaded') {
-		user.getUserField(uid, 'uploadedpicture', function(err, uploadedpicture) {
-			user.setUserField(uid, 'picture', uploadedpicture);
+		user.getUserField(sessionData.uid, 'uploadedpicture', function(err, uploadedpicture) {
+			user.setUserField(sessionData.uid, 'picture', uploadedpicture);
 			updateHeader();
 		});
 	} else {
@@ -83,21 +83,21 @@ SocketUser.changePicture = function(data, callback) {
 	}
 };
 
-SocketUser.follow = function(data, callback) {
-	if (uid) {
-		user.follow(uid, data.uid, callback);
+SocketUser.follow = function(data, callback, sessionData) {
+	if (sessionData.uid) {
+		user.follow(sessionData.uid, data.uid, callback);
 	}
 };
 
-SocketUser.unfollow = function(data, callback) {
-	if (uid) {
-		user.unfollow(uid, data.uid, callback);
+SocketUser.unfollow = function(data, callback, sessionData) {
+	if (sessionData.uid) {
+		user.unfollow(sessionData.uid, data.uid, callback);
 	}
 };
 
-SocketUser.saveSettings = function(data, callback) {
-	if (uid) {
-		user.setUserFields(uid, {
+SocketUser.saveSettings = function(data, callback, sessionData) {
+	if (sessionData.uid) {
+		user.setUserFields(sessionData.uid, {
 			showemail: data.showemail
 		}, function(err, result) {
 			callback(err);

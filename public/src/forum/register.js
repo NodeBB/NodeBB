@@ -44,6 +44,12 @@ define(function() {
 			} else {
 				socket.emit('api:user.emailExists', {
 					email: emailEl.val()
+				}, function(data) {
+					if (data.exists === true) {
+						showError(email_notify, 'Email address already taken!');
+					} else {
+						showSuccess(email_notify, successIcon);
+					}
 				});
 			}
 		}
@@ -65,7 +71,7 @@ define(function() {
 			} else if (!utils.isUserNameValid(username.val()) || !utils.slugify(username.val())) {
 				showError(username_notify, 'Invalid username!');
 			} else {
-				socket.emit('user.exists', {
+				socket.emit('api:user.exists', {
 					username: username.val()
 				});
 			}
@@ -124,14 +130,6 @@ define(function() {
 				showError(username_notify, 'Username already taken!');
 			} else {
 				showSuccess(username_notify, successIcon);
-			}
-		});
-
-		socket.on('api:user.emailExists', function(data) {
-			if (data.exists === true) {
-				showError(email_notify, 'Email address already taken!');
-			} else {
-				showSuccess(email_notify, successIcon);
 			}
 		});
 
