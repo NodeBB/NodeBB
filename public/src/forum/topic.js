@@ -905,9 +905,14 @@ define(['composer'], function(composer) {
 
 	function updateHeader() {
 		if (pagination == null) {
+			$('.pagination-block a').on('click', function() {
+				return false;
+			});
+
 			jQuery('.pagination-block i:first').on('click', function() {
 				app.scrollToTop();
 			});
+
 			jQuery('.pagination-block i:last').on('click', function() {
 				app.scrollToBottom();
 			});
