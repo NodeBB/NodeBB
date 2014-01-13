@@ -1,9 +1,13 @@
+"use strict";
+
 var	groups = require('../groups'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
 	user = require('../user'),
 	topics = require('../topics'),
+	categories = require('../categories'),
 	CategoryTools = require('../categoryTools'),
+	logger = require('../logger'),
 	admin = {
 		user: require('../admin/user'),
 		categories: require('../admin/categories')
@@ -133,13 +137,19 @@ SocketAdmin.categories.search = function(username, cid, callback, sessionData) {
 					next(null, userObj);
 				});
 			}, function(err, data) {
-				if (!callback) sessionData.socket.emit('api:admin.categories.search', data);
-				else callback(null, data);
+				if (!callback) {
+					sessionData.socket.emit('api:admin.categories.search', data);
+				} else {
+					callback(null, data);
+				}
 			});
 		});
 	} else {
-		if (!callback) sessionData.socket.emit('api:admin.user.search', null);
-		else callback();
+		if (!callback) {
+			sessionData.socket.emit('api:admin.user.search', null);
+		} else {
+			callback();
+		}
 	}
 };
 
@@ -230,6 +240,39 @@ SocketAdmin.plugins.toggle = function(plugin_id, sessionData) {
 	plugins.toggleActive(plugin_id, function(status) {
 		sessionData.socket.emit('api:admin.plugins.toggle', status);
 	});
+};
+
+/* Configs */
+
+SocketAdmin.config = {};
+
+SocketAdmin.config.get = function(callback, sessionData) {
+	meta.configs.list(function(err, config) {
+		if (!err) {
+			callback(config);
+		}
+	});
+};
+
+SocketAdmin.config.set = function(data, callback, sessionData) {
+	meta.configs.set(data.key, data.value, function(err) {
+		if (!err) {
+			callback({
+				status: 'ok'
+			});
+
+			plugins.fireHook('action:config.set', {
+				key: data.key,
+				value: data.value
+			});
+		}
+
+		logger.monitorConfig({io: sessionData.server}, data);
+	});
+};
+
+SocketAdmin.config.remove = function(key) {
+	meta.configs.remove(key);
 };
 
 module.exports = SocketAdmin;

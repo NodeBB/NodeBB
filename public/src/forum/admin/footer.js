@@ -15,6 +15,6 @@ jQuery('document').ready(function() {
 	}, false);
 });
 
-socket.emit('api:meta.config.get', function(config) {
+socket.emit('api:admin.config.get', function(config) {
 	app.config = config;
 });
