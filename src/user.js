@@ -114,6 +114,9 @@ var bcrypt = require('bcrypt'),
 
 				db.searchIndex('user', username, uid);
 
+				// Join the "registered-users" meta group
+				groups.joinByGroupName('registered-users', uid);
+
 				if (password !== undefined) {
 					User.hashPassword(password, function(err, hash) {
 						User.setUserField(uid, 'password', hash);
