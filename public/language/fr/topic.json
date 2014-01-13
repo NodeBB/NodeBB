@@ -32,8 +32,7 @@
 	"favourites.has_no_favourites": "Vous n'avez aucun Favoris, mettre en favoris des messages pour les voir apparaître ici!",
 
 	"posted_by": "posté par",
-	"loading": "Chargement",
-	"more_posts": "d'autres Messages",
+	"loading_more_posts": "Chargement d'autres Messages",
 	"move_topic": "Déplacer le Sujet",
 	"topic_will_be_moved_to": "Ce sujet sera déplacé vers la catégorie",
 

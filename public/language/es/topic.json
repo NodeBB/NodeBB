@@ -32,8 +32,7 @@
 	"favourites.has_no_favourites": "No tienes favoritos, puedes agregar alguno y volver a verlos aqui!",
 
 	"posted_by": "Publicado por",
-	"loading": "Cargando",
-	"more_posts": "Más posts",
+	"loading_more_posts": "Cargando más posts",
 	"move_topic": "Mover Tema",
 	"topic_will_be_moved_to": "Este tema sera movido a la categoría",
 

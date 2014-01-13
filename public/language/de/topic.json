@@ -33,8 +33,7 @@
 	"favourites.has_no_favourites":"Du hast noch keine Favoriten.",
 
 	"posted_by": "Geposted von",
-	"loading": "Lade",
-	"more_posts": "Mehr Posts",
+	"loading_more_posts": "Lade Mehr Posts",
 	"move_topic": "Thema verschieben",
 	"topic_will_be_moved_to": "Dieses Thema wird verschoben nach",
 
