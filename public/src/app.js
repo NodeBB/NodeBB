@@ -496,8 +496,10 @@ var socket,
 		} else {
 			if (allowGuestSearching) {
 				$('#search-button').removeClass("hide").show();
+				$('#mobile-search-button').removeClass("hide").show();
 			} else {
 				$('#search-button').addClass("hide").hide();
+				$('#mobile-search-button').addClass("hide").hide();
 			}
 
 			$('.nodebb-loggedin').hide();
