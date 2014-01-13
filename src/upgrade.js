@@ -7,6 +7,7 @@ var db = require('./database'),
 	User = require('./user'),
 	Topics = require('./topics'),
 	Posts = require('./posts'),
+	Groups = require('./groups'),
 	Utils = require('../public/src/utils'),
 
 	Upgrade = {},
@@ -15,7 +16,7 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2014, 0, 7).getTime();
+	var	latestSchema = new Date(2014, 0, 13, 12, 0).getTime();
 
 	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -198,7 +199,7 @@ Upgrade.upgrade = function(callback) {
 
 					async.each(cids, upgradeCategory, function(err) {
 						if(err) {
-							return next(err)
+							return next(err);
 						}
 						winston.info('[2014/1/5] Upgraded categories active users');
 						next();
@@ -246,7 +247,7 @@ Upgrade.upgrade = function(callback) {
 							});
 						});
 					}
-				})
+				});
 			} else {
 				winston.info('[2014/1/5] Re-slugify usernames (again) skipped');
 				next();
@@ -275,7 +276,7 @@ Upgrade.upgrade = function(callback) {
 							}
 
 							db.delete('uid:' + uid + ':posts', function(err) {
-								for(var i = 0; i< pids.length; ++i)	 {
+								for(var i = 0; i< pids.length; ++i)	{
 									addPostToUser(pids[i]);
 								}
 								next();
@@ -301,7 +302,7 @@ Upgrade.upgrade = function(callback) {
 							}
 
 							db.delete('uid:' + uid + ':topics', function(err) {
-								for(var i = 0; i< tids.length; ++i)	 {
+								for(var i = 0; i< tids.length; ++i)	{
 									addTopicToUser(tids[i]);
 								}
 								next();
@@ -344,7 +345,7 @@ Upgrade.upgrade = function(callback) {
 						}
 
 						db.delete('tid:' + tid + ':posts', function(err) {
-							for(var i = 0; i< pids.length; ++i)	 {
+							for(var i = 0; i< pids.length; ++i) {
 								addPostToTopic(pids[i]);
 							}
 							next();
@@ -375,6 +376,30 @@ Upgrade.upgrade = function(callback) {
 
 			} else {
 				winston.info('[2014/1/7] Update to topic and user posts to sorted set skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 0, 13, 12, 0).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				db.getObjectValues('username:uid', function(err, uids) {
+					console.log(uids);
+					async.eachSeries(uids, function(uid, next) {
+						Groups.joinByGroupName('registered-users', uid, next);
+					}, function(err) {
+						if(err) {
+							winston.err('Error upgrading '+ err.message);
+							process.exit();
+						} else {
+							winston.info('[2014/1/13] Set up "Registered Users" user group');
+							next();
+						}
+					});
+				});
+			} else {
+				winston.info('[2014/1/13] Set up "Registered Users" user group - skipped');
 				next();
 			}
 		}
