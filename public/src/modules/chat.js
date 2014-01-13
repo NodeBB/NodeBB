@@ -31,6 +31,7 @@ define(['taskbar', 'string'], function(taskbar, S) {
 					chatsListEl.html(chatsFrag);
 				} else {
 					translator.get('modules:chat.no_active', function(str) {
+						chatEl.className = 'no_active';
 						chatEl.innerHTML = '<a href="#">' + str + '</a>';
 						chatsFrag.appendChild(chatEl.cloneNode(true));
 
