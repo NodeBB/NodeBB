@@ -1,3 +1,5 @@
+"use strict";
+
 var	SocketIO = require('socket.io'),
 	socketioWildcard = require('socket.io-wildcard'),
 	util = require('util'),
@@ -13,6 +15,7 @@ var	SocketIO = require('socket.io'),
 	user = require('../user'),
 	topics = require('../topics'),
 	logger = require('../logger'),
+	meta = require('../meta'),
 
 	Sockets = {},
 	Namespaces = {};
@@ -108,14 +111,15 @@ Sockets.init = function() {
 			emitOnlineUserCount();
 
 			for (var roomName in rooms) {
+				if (rooms.hasOwnProperty(roomName)) {
+					socket.leave(roomName);
 
-				socket.leave(roomName);
+					if (rooms[roomName][socket.id]) {
+						delete rooms[roomName][socket.id];
+					}
 
-				if (rooms[roomName][socket.id]) {
-					delete rooms[roomName][socket.id];
+					updateRoomBrowsingText(roomName);
 				}
-
-				updateRoomBrowsingText(roomName);
 			}
 		});
 
@@ -166,7 +170,7 @@ Sockets.init = function() {
 			}
 		});
 	});
-}
+};
 
 Sockets.logoutUser = function(uid) {
 	if(userSockets[uid] && userSockets[uid].length) {
@@ -179,7 +183,7 @@ Sockets.logoutUser = function(uid) {
 			}
 		}
 	}
-}
+};
 
 Sockets.emitUserCount = function() {
 	db.getObjectField('global', 'userCount', function(err, count) {
@@ -189,13 +193,14 @@ Sockets.emitUserCount = function() {
 	});
 };
 
+// Use sessionData.server.sockets.in() instead of this method.
 Sockets.in = function(room) {
 	return io.sockets.in(room);
 };
 
 Sockets.getConnectedClients = function() {
 	return userSockets;
-}
+};
 
 Sockets.getOnlineAnonCount = function () {
 	return userSockets[0] ? userSockets[0].length : 0;
@@ -203,10 +208,10 @@ Sockets.getOnlineAnonCount = function () {
 
 /* Helpers */
 
+Sockets.isUserOnline = isUserOnline;
 function isUserOnline(uid) {
 	return !!userSockets[uid] && userSockets[uid].length > 0;
 }
-Sockets.isUserOnline = isUserOnline;
 
 Sockets.updateRoomBrowsingText = updateRoomBrowsingText;
 function updateRoomBrowsingText(roomName) {
@@ -214,8 +219,9 @@ function updateRoomBrowsingText(roomName) {
 	function getUidsInRoom(room) {
 		var uids = [];
 		for (var socketId in room) {
-			if (uids.indexOf(room[socketId]) === -1)
+			if (uids.indexOf(room[socketId]) === -1) {
 				uids.push(room[socketId]);
+			}
 		}
 		return uids;
 	}
@@ -240,8 +246,9 @@ function updateRoomBrowsingText(roomName) {
 		io.sockets.in(roomName).emit('api:get_users_in_room', { users: [], anonymousCount: anonymousCount });
 	} else {
 		user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, users) {
-			if(!err)
+			if(!err) {
 				io.sockets.in(roomName).emit('api:get_users_in_room', { users: users, anonymousCount: anonymousCount });
+			}
 		});
 	}
 }
@@ -270,8 +277,9 @@ Sockets.emitOnlineUserCount = emitOnlineUserCount;
 function emitOnlineUserCount(callback) {
 	var anon = userSockets[0] ? userSockets[0].length : 0;
 	var registered = Object.keys(userSockets).length;
-	if (anon)
+	if (anon) {
 		registered = registered - 1;
+	}
 
 	var returnObj = {
 		users: registered + anon,
@@ -281,7 +289,7 @@ function emitOnlineUserCount(callback) {
 	if (callback) {
 		callback(returnObj);
 	} else {
-		io.sockets.emit('api:user.active.get', returnObj)
+		io.sockets.emit('api:user.active.get', returnObj);
 	}
 }
 
