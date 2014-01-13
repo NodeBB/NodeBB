@@ -62,6 +62,10 @@ var fs = require('fs'),
 		},
 		setOnEmpty: function (field, value, callback) {
 			Meta.configs.get(field, function (err, curValue) {
+				if(err) {
+					return callback(err);
+				}
+
 				if (!curValue) {
 					Meta.configs.set(field, value, callback);
 				} else {
