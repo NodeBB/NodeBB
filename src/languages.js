@@ -32,14 +32,14 @@ Languages.list = function(callback) {
 				}
 			});
 		}, function(err) {
-			// Float "en" to the top
+			// Float "en" to the top, otherwise sort alphabetically
 			languages = languages.sort(function(a, b) {
 				if (a.code === 'en') {
 					return -1;
 				} else if (b.code === 'en') {
 					return 1;
 				} else {
-					return 0;
+					return a.code > b.code;
 				}
 			});
 
