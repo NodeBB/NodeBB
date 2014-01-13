@@ -36,8 +36,7 @@
 	"favourites.has_no_favourites": "Nemáte žádné oblíbené příspěvky, přidejte některý příspěvek k oblíbeným a uvidíte ho zde!",
 
 	"posted_by": "odeslal",
-	"loading": "Načítání",
-	"more_posts": "více příspěvků",
+	"loading_more_posts": "Načítání více příspěvků",
 	"move_topic": "Přesunout téma",
 	"move_post": "Přesunout příspěvek",
 	"fork_topic": "Rozdělit příspěvek",

@@ -36,8 +36,7 @@
 	"favourites.has_no_favourites": "You don't have any favourites, favourite some posts to see them here!",
 
 	"posted_by": "posted by",
-	"loading": "Loading",
-	"more_posts": "More Posts",
+	"loading_more_posts": "Loading More Posts",
 	"move_topic": "Move Topic",
 	"move_post": "Move Post",
 	"fork_topic": "Fork Topic",

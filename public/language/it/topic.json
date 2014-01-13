@@ -36,8 +36,7 @@
 	"favourites.has_no_favourites": "Non hai ancun post preferito; aggiungi qualche post ai preferiti per vederli qui!",
 
 	"posted_by": "scritto da",
-	"loading": "Caricamento",
-	"more_posts": "Altri Post",
+	"loading_more_posts": "Caricamento altri post",
 	"move_topic": "Spsota Discussione",
 	"move_post": "Sposta Post",
 	"fork_topic": "Fork Topic",
