@@ -29,7 +29,7 @@ define(function() {
 				errorEl = $('#create-modal-error'),
 				errorText;
 
-			socket.emit('api:groups.create', submitObj, function(err, data) {
+			socket.emit('api:admin.groups.create', submitObj, function(err, data) {
 				if (err) {
 					switch (err) {
 						case 'group-exists':
@@ -63,14 +63,14 @@ define(function() {
 				case 'delete':
 					bootbox.confirm('Are you sure you wish to delete this group?', function(confirm) {
 						if (confirm) {
-							socket.emit('api:groups.delete', gid, function(err, data) {
+							socket.emit('api:admin.groups.delete', gid, function(err, data) {
 								if (data === 'OK') ajaxify.go('admin/groups');
 							});
 						}
 					});
 					break;
 				case 'members':
-					socket.emit('api:groups.get', gid, function(err, groupObj) {
+					socket.emit('api:admin.groups.get', gid, function(err, groupObj) {
 						var formEl = detailsModal.find('form'),
 							nameEl = formEl.find('#change-group-name'),
 							descEl = formEl.find('#change-group-desc'),
@@ -152,7 +152,7 @@ define(function() {
 			});
 
 			if (members.indexOf(uid) === -1) {
-				socket.emit('api:groups.join', {
+				socket.emit('api:admin.groups.join', {
 					gid: gid,
 					uid: uid
 				}, function(err, data) {
@@ -167,7 +167,7 @@ define(function() {
 			var uid = this.getAttribute('data-uid'),
 				gid = detailsModal.attr('data-gid');
 
-			socket.emit('api:groups.leave', {
+			socket.emit('api:admin.groups.leave', {
 				gid: gid,
 				uid: uid
 			}, function(err, data) {
@@ -183,7 +183,7 @@ define(function() {
 				descEl = formEl.find('#change-group-desc'),
 				gid = detailsModal.attr('data-gid');
 
-			socket.emit('api:groups.update', {
+			socket.emit('api:admin.groups.update', {
 				gid: gid,
 				values: {
 					name: nameEl.val(),

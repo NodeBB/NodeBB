@@ -275,4 +275,42 @@ SocketAdmin.config.remove = function(key) {
 	meta.configs.remove(key);
 };
 
+/* Groups */
+
+SocketAdmin.groups = {};
+
+SocketAdmin.groups.create = function(data, callback) {
+	groups.create(data.name, data.description, function(err, groupObj) {
+		callback(err ? err.message : null, groupObj || undefined);
+	});
+};
+
+SocketAdmin.groups.delete = function(gid, callback) {
+	groups.destroy(gid, function(err) {
+		callback(err ? err.message : null, err ? null : 'OK');
+	});
+};
+
+SocketAdmin.groups.get = function(gid, callback) {
+	groups.get(gid, {
+		expand: true
+	}, function(err, groupObj) {
+		callback(err ? err.message : null, groupObj || undefined);
+	});
+};
+
+SocketAdmin.groups.join = function(data, callback) {
+	groups.join(data.gid, data.uid, callback);
+};
+
+SocketAdmin.groups.leave = function(data, callback) {
+	groups.leave(data.gid, data.uid, callback);
+};
+
+SocketAdmin.groups.update = function(data, callback) {
+	groups.update(data.gid, data.values, function(err) {
+		callback(err ? err.message : null);
+	});
+};
+
 module.exports = SocketAdmin;
