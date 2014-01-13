@@ -96,39 +96,6 @@ SocketMeta.rooms.getAll = function(callback, sessionData) {
 	callback(sessionData.server.sockets.manager.rooms);
 };
 
-/* Config */
-
-SocketMeta.config = {};
-
-SocketMeta.config.get = function(callback, sessionData) {
-	meta.configs.list(function(err, config) {
-		if (!err) {
-			callback(config);
-		}
-	});
-};
-
-SocketMeta.config.set = function(data, callback, sessionData) {
-	meta.configs.set(data.key, data.value, function(err) {
-		if (!err) {
-			callback({
-				status: 'ok'
-			});
-
-			plugins.fireHook('action:config.set', {
-				key: data.key,
-				value: data.value
-			});
-		}
-
-		logger.monitorConfig({io: sessionData.server}, data);
-	});
-};
-
-SocketMeta.config.remove = function(key) {
-	meta.configs.remove(key);
-};
-
 /* Exports */
 
 module.exports = SocketMeta;
