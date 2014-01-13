@@ -5,8 +5,8 @@
 	<p>
 		The following setting(s) determine the language settings for your NodeBB.
 		The default language determines the language settings for all users who
-		are visiting your NodeBB. Keep in mind that individual users may decide
-		to switch languages for their own accounts.
+		are visiting your NodeBB. <!-- Keep in mind that individual users may decide
+		to switch languages for their own accounts. -->
 	</p>
 
 	<form class="row">
@@ -14,7 +14,7 @@
 			<label for="defaultLang">Default Language</label>
 			<select data-field="defaultLang" class="form-control">
 				<!-- BEGIN languages -->
-				<option value="{languages.code}">{languages.name}</option>
+				<option value="{languages.code}">{languages.name} ({languages.code})</option>
 				<!-- END languages -->
 			</select>
 		</div>
