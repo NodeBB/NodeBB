@@ -124,46 +124,41 @@ Sockets.init = function() {
 		});
 
 		socket.on('*', function(payload, callback) {
-
 			// Ignore all non-api messages
 			if (payload.name.substr(0, 4) !== 'api:') {
 				return;
 			} else {
 				// Deconstruct the message
 				var parts = payload.name.slice(4).split('.'),
-					namespace = parts[0],
-					command = parts[1],
-					subcommand = parts[2],	// MUST ADD RECURSION (:P)
-					executeHandler = function(args) {
-						// Session data
-						var	sessionData = {
-								uid: uid,
-								socket: socket,
-								rooms: rooms,
-								server: io,
-								userSockets: userSockets
-							},
-							socketArgs = [];
-
-						// Construct the arguments that'll get passed into each socket method
-						if (args.length) {
-							socketArgs = socketArgs.concat(args);
-						}
-						if (callback !== undefined) {
-							socketArgs.push(callback);
-						}
-						socketArgs.push(sessionData);
-
-						// winston.info('[socket.io] Executing: ' + payload.name);
-						if (!subcommand) {
-							Namespaces[namespace][command].apply(Namespaces[namespace], socketArgs);
+					methodToCall = parts.reduce(function(prev, cur) {
+						if (prev !== null && prev[cur]) {
+							return prev[cur];
 						} else {
-							Namespaces[namespace][command][subcommand].apply(Namespaces[namespace][command], socketArgs);
+							return null;
 						}
-					};
+					}, Namespaces);
 
-				if (Namespaces[namespace]) {
-					executeHandler(payload.args);
+				if (methodToCall !== null) {
+					var	sessionData = {
+							uid: uid,
+							socket: socket,
+							rooms: rooms,
+							server: io,
+							userSockets: userSockets
+						},
+						socketArgs = [];
+
+					// Construct the arguments that'll get passed into each socket method
+					if (payload.args.length) {
+						socketArgs = socketArgs.concat(payload.args);
+					}
+					if (callback !== undefined) {
+						socketArgs.push(callback);
+					}
+					socketArgs.push(sessionData);
+
+					// winston.info('[socket.io] Executing: ' + payload.name);
+					methodToCall.apply(Namespaces, socketArgs);
 				} else {
 					winston.warn('[socket.io] Unrecognized message: ' + payload.name);
 				}
