@@ -2,6 +2,70 @@ define(['taskbar', 'string'], function(taskbar, S) {
 
 	var module = {};
 
+	module.prepareDOM = function() {
+		// Chats Dropdown
+		var	chatsToggleEl = $('#chat_dropdown'),
+			chatsListEl = $('#chat-list'),
+			chatDropdownEl = chatsToggleEl.parent();
+		chatsToggleEl.on('click', function() {
+			if (chatDropdownEl.hasClass('open')) {
+				return;
+			}
+
+			socket.emit('api:modules.chats.list', function(chats) {
+				var	chatsFrag = document.createDocumentFragment(),
+					chatEl = document.createElement('li'),
+					numChats = chats.length,
+					x, userObj;
+
+				if (numChats > 0) {
+					for(x=0;x<numChats;x++) {
+						userObj = chats[x];
+						chatEl.setAttribute('data-uid', userObj.uid);
+						chatEl.innerHTML = '<a href="javascript:app.openChat(\'' + userObj.username + '\', ' + userObj.uid + ');"><img src="' + userObj.picture + '" title="' + userObj.username + '" />' + userObj.username + '</a>';
+
+						chatsFrag.appendChild(chatEl.cloneNode(true));
+					}
+
+					chatsListEl.empty();
+					chatsListEl.html(chatsFrag);
+				} else {
+					translator.get('modules:chat.no_active', function(str) {
+						chatEl.innerHTML = '<a href="#">' + str + '</a>';
+						chatsFrag.appendChild(chatEl.cloneNode(true));
+
+						chatsListEl.empty();
+						chatsListEl.html(chatsFrag);
+					});
+				}
+			});
+		});
+
+		socket.on('event:chats.receive', function(data) {
+			require(['chat'], function(chat) {
+				if (chat.modalExists(data.fromuid)) {
+					var modal = chat.getModal(data.fromuid);
+					chat.appendChatMessage(modal, data.message, data.timestamp);
+
+					if (modal.is(":visible")) {
+						chat.load(modal.attr('UUID'));
+					} else {
+						chat.toggleNew(modal.attr('UUID'), true);
+					}
+
+					if (!modal.is(":visible") || !app.isFocused) {
+						app.alternatingTitle(data.username + ' has messaged you');
+					}
+				} else {
+					chat.createModal(data.username, data.fromuid, function(modal) {
+						chat.toggleNew(modal.attr('UUID'), true);
+						app.alternatingTitle(data.username + ' has messaged you');
+					});
+				}
+			});
+		});
+	}
+
 	module.bringModalToTop = function(chatModal) {
 		var topZ = 0;
 		$('.chat-modal').each(function() {
