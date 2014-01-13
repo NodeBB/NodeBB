@@ -21,6 +21,10 @@ var fs = require('fs'),
 		log(uid,'changed email from "' + oldEmail + '" to "' + newEmail +'"');
 	}
 
+	events.logUsernameChange = function(uid, oldUsername, newUsername) {
+		log(uid,'changed username from "' + oldUsername + '" to "' + newUsername +'"');
+	}
+
 	events.logAdminLogin = function(uid) {
 		log(uid, 'logged into admin panel');
 	}

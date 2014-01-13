@@ -312,6 +312,7 @@ var bcrypt = require('bcrypt'),
 							db.searchRemove('user', uid, function() {
 								db.searchIndex('user', data.username, uid);
 							});
+							events.logUsernameChange(uid, userData.username, data.username);
 						}
 
 						if(userslug !== userData.userslug) {
