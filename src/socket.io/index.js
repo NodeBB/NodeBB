@@ -130,6 +130,7 @@ Sockets.init = function() {
 			} else {
 				// Deconstruct the message
 				var parts = payload.name.slice(4).split('.'),
+					namespace = parts.slice(0, 1),
 					methodToCall = parts.reduce(function(prev, cur) {
 						if (prev !== null && prev[cur]) {
 							return prev[cur];
@@ -157,8 +158,15 @@ Sockets.init = function() {
 					}
 					socketArgs.push(sessionData);
 
+					// Call the requested method
+					if (Namespaces[namespace].before) {
+						Namespaces[namespace].before(sessionData, function() {
+							methodToCall.apply(Namespaces, socketArgs);
+						});
+					} else {
+						methodToCall.apply(Namespaces, socketArgs);
+					}
 					// winston.info('[socket.io] Executing: ' + payload.name);
-					methodToCall.apply(Namespaces, socketArgs);
 				} else {
 					winston.warn('[socket.io] Unrecognized message: ' + payload.name);
 				}
