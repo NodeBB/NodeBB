@@ -10,8 +10,20 @@ var	groups = require('../groups'),
 	},
 
 	async = require('async'),
+	winston = require('winston'),
 
 	SocketAdmin = {};
+
+SocketAdmin.before = function(sessionData, next) {
+	// Verify administrative privileges
+	user.isAdministrator(sessionData.uid, function(err, isAdmin) {
+		if (isAdmin) {
+			next();
+		} else {
+			winston.warn('[socket.io] Call to admin method blocked (accessed by uid ' + sessionData.uid + ')');
+		}
+	});
+};
 
 /* Topics */
 

@@ -88,7 +88,7 @@ SocketMeta.rooms.enter = function(data, sessionData) {
 	module.parent.exports.updateRoomBrowsingText(data.enter);
 
 	if (data.enter != 'admin') {
-		sessionData.server.sockets.in('admin').emit('api:get_all_rooms', sessionData.server.sockets.manager.rooms);
+		sessionData.server.sockets.in('admin').emit('event:meta.rooms.update', sessionData.server.sockets.manager.rooms);
 	}
 };
 
