@@ -740,14 +740,16 @@
 	}
 
 	module.getListRange = function(key, start, stop, callback) {
-
 		if(stop === -1) {
 			// mongo doesnt allow -1 as the count argument in slice
 			// pass in a large value to retrieve the whole array
 			stop = Math.pow(2, 31) - 2;
 		}
-
-		db.collection('objects').findOne({_key:key}, { array: { $slice: [start, stop - start + 1] }}, function(err, data) {
+        var projection = [start, stop - start + 1];
+        if(start < 0) {
+            projection = start;
+        }
+		db.collection('objects').findOne({_key:key}, { array: { $slice: projection }}, function(err, data) {
 			if(err) {
 				return callback(err);
 			}
