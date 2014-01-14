@@ -10,18 +10,10 @@ case "$1" in
 		;;
 
 	upgrade)
-		echo "Upgrading dependencies (this command is intended to be run after a successful \"git pull\")";
-		read -p "Continue? " yn
-		case $yn in
-			[Yy]* )
-				npm install
-				ls -d node_modules/nodebb* | xargs -n1 basename | xargs npm update
-				node app --upgrade
-				echo -e "\n\e[00;32mNodeBB Dependencies up-to-date!\e[00;00m";
-				;;
-			[Nn]* ) exit;;
-				* ) echo "Please answer yes or no.";;
-		esac
+		npm install
+		ls -d node_modules/nodebb* | xargs -n1 basename | xargs npm update
+		node app --upgrade
+		echo -e "\n\e[00;32mNodeBB Dependencies up-to-date!\e[00;00m";
 		;;
 
 	dev)
