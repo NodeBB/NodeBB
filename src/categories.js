@@ -82,9 +82,6 @@ var db = require('./database.js'),
 					'active_users': [],
 					'topics': [],
 					'disableSocialButtons': meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false,
-					'twitter-intent-url': 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(nconf.get('url') + 'category/' + categoryData.slug) + '&text=' + encodeURIComponent(categoryData.name),
-					'facebook-share-url': 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(nconf.get('url') + 'category/' + categoryData.slug),
-					'google-share-url': 'https://plus.google.com/share?url=' + encodeURIComponent(nconf.get('url') + 'category/' + categoryData.slug),
 					'sidebars': sidebars
 				};
 

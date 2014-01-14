@@ -72,6 +72,7 @@ SocketTopics.markAllRead = function(data, callback, sessionData) {
 	topics.markAllRead(sessionData.uid, function(err, success) {
 		if (!err && success) {
 			callback(true);
+			sessionData.server.sockets.in('uid_' + sessionData.uid).emit('event:unread.updateCount', 0);
 		} else {
 			callback(false);
 		}
