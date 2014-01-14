@@ -741,17 +741,44 @@
 
 	module.getListRange = function(key, start, stop, callback) {
 
-		if(stop === -1) {
-			// mongo doesnt allow -1 as the count argument in slice
-			// pass in a large value to retrieve the whole array
-			stop = Math.pow(2, 31) - 2;
+		var skip = start,
+			limit = stop - start + 1,
+			splice = false;
+
+		if((start < 0 && stop >= 0) || (start >= 0 && stop < 0)) {
+			skip = 0;
+			limit = Math.pow(2, 31) - 2;
+			splice = true;
+		} else if (start > stop) {
+			return callback(null, []);
 		}
 
-		db.collection('objects').findOne({_key:key}, { array: { $slice: [start, stop - start + 1] }}, function(err, data) {
+		db.collection('objects').findOne({_key:key}, { array: { $slice: [skip, limit] }}, function(err, data) {
 			if(err) {
 				return callback(err);
 			}
+
 			if(data && data.array) {
+				if(splice) {
+
+					if(start < 0) {
+						start = data.array.length - Math.abs(start);
+					}
+
+					if(stop < 0) {
+						stop = data.array.length - Math.abs(stop);
+					}
+
+					if(start > stop) {
+						return callback(null, []);
+					}
+
+					var howMany = stop - start + 1;
+					if(start !== 0 || howMany !== data.array.length) {
+						data.array = data.array.splice(start, howMany);
+					}
+				}
+
 				callback(null, data.array);
 			} else {
 				callback(null, []);
