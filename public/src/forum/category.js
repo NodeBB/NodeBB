@@ -4,25 +4,27 @@ define(['composer'], function(composer) {
 
 	Category.init = function() {
 		var	cid = templates.get('category_id'),
+			categoryName = templates.get('category_name'),
 			twitterEl = jQuery('#twitter-intent'),
 			facebookEl = jQuery('#facebook-share'),
 			googleEl = jQuery('#google-share'),
-			twitter_url = templates.get('twitter-intent-url'),
-			facebook_url = templates.get('facebook-share-url'),
-			google_url = templates.get('google-share-url');
+			categoryUrl = encodeURIComponent(window.location.href),
+			twitterUrl = "https://twitter.com/intent/tweet?url=" + categoryUrl + "&text=" + encodeURIComponent(categoryName),
+			facebookUrl = "https://www.facebook.com/sharer/sharer.php?u=" + categoryUrl,
+			googleUrl = "https://plus.google.com/share?url=" + categoryUrl;
 
 		app.enterRoom('category_' + cid);
 
 		twitterEl.on('click', function () {
-			window.open(twitter_url, '_blank', 'width=550,height=420,scrollbars=no,status=no');
+			window.open(twitterUrl, '_blank', 'width=550,height=420,scrollbars=no,status=no');
 			return false;
 		});
 		facebookEl.on('click', function () {
-			window.open(facebook_url, '_blank', 'width=626,height=436,scrollbars=no,status=no');
+			window.open(facebookUrl, '_blank', 'width=626,height=436,scrollbars=no,status=no');
 			return false;
 		});
 		googleEl.on('click', function () {
-			window.open(google_url, '_blank', 'width=500,height=570,scrollbars=no,status=no');
+			window.open(googleUrl, '_blank', 'width=500,height=570,scrollbars=no,status=no');
 			return false;
 		});
 

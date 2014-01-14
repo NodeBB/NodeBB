@@ -19,7 +19,8 @@ var nconf = require('nconf'),
 	Admin.isAdmin = function (req, res, next) {
 		user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {
 			if (!isAdmin) {
-				 res.redirect(403, '/403');
+				res.status(403);
+				res.redirect('/403');
 			} else {
 				next();
 			}

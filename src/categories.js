@@ -82,9 +82,6 @@ var db = require('./database.js'),
 					'active_users': [],
 					'topics': [],
 					'disableSocialButtons': meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false,
-					'twitter-intent-url': 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(nconf.get('url') + 'category/' + categoryData.slug) + '&text=' + encodeURIComponent(categoryData.name),
-					'facebook-share-url': 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(nconf.get('url') + 'category/' + categoryData.slug),
-					'google-share-url': 'https://plus.google.com/share?url=' + encodeURIComponent(nconf.get('url') + 'category/' + categoryData.slug),
 					'sidebars': sidebars
 				};
 
@@ -397,8 +394,8 @@ var db = require('./database.js'),
 	};
 
 	Categories.moveActiveUsers = function(tid, oldCid, cid, callback) {
-		function updateUser(uid) {
-			Categories.addActiveUser(cid, uid, Date.now());
+		function updateUser(uid, timestamp) {
+			Categories.addActiveUser(cid, uid, timestamp);
 			Categories.isUserActiveIn(oldCid, uid, function(err, active) {
 
 				if (!err && !active) {
@@ -407,11 +404,15 @@ var db = require('./database.js'),
 			});
 		}
 
-		topics.getUids(tid, function(err, uids) {
-			if (!err && uids) {
-				for (var i = 0; i < uids.length; ++i) {
-					updateUser(uids[i]);
-				}
+		topics.getTopicField(tid, 'timestamp', function(err, timestamp) {
+			if(!err) {
+				topics.getUids(tid, function(err, uids) {
+					if (!err && uids) {
+						for (var i = 0; i < uids.length; ++i) {
+							updateUser(uids[i], timestamp);
+						}
+					}
+				});
 			}
 		});
 	};
