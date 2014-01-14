@@ -398,7 +398,7 @@ var db = require('./database.js'),
 
 	Categories.moveActiveUsers = function(tid, oldCid, cid, callback) {
 		function updateUser(uid) {
-			Categories.addActiveUser(cid, uid);
+			Categories.addActiveUser(cid, uid, Date.now());
 			Categories.isUserActiveIn(oldCid, uid, function(err, active) {
 
 				if (!err && !active) {

@@ -177,8 +177,8 @@ SocketTopics.movePost = function(data, callback, sessionData) {
 	});
 };
 
-SocketTopics.move = function(data, sessionData) {
-	threadTools.move(data.tid, data.cid, sessionData.socket);
+SocketTopics.move = function(data, callback, sessionData) {
+	threadTools.move(data.tid, data.cid, callback, sessionData);
 };
 
 SocketTopics.followCheck = function(tid, callback, sessionData) {
