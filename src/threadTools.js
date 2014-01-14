@@ -188,11 +188,7 @@ var winston = require('winston'),
 						}
 					});
 
-					categories.moveActiveUsers(tid, oldCid, cid, function(err, data) {
-						if (err) {
-							winston.err(err);
-						}
-					});
+					categories.moveActiveUsers(tid, oldCid, cid);
 
 					categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1);
 					categories.incrementCategoryFieldBy(cid, 'topic_count', 1);
