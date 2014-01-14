@@ -424,7 +424,7 @@ var fs = require('fs'),
 							if (!userData.profileviews) {
 								userData.profileviews = 1;
 							}
-							if (callerUID !== userData.uid) {
+							if (parseInt(callerUID, 10) !== parseInt(userData.uid, 10)) {
 								user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
 							}
 
