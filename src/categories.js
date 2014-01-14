@@ -397,8 +397,8 @@ var db = require('./database.js'),
 	};
 
 	Categories.moveActiveUsers = function(tid, oldCid, cid, callback) {
-		function updateUser(uid) {
-			Categories.addActiveUser(cid, uid, Date.now());
+		function updateUser(uid, timestamp) {
+			Categories.addActiveUser(cid, uid, timestamp);
 			Categories.isUserActiveIn(oldCid, uid, function(err, active) {
 
 				if (!err && !active) {
@@ -407,11 +407,15 @@ var db = require('./database.js'),
 			});
 		}
 
-		topics.getUids(tid, function(err, uids) {
-			if (!err && uids) {
-				for (var i = 0; i < uids.length; ++i) {
-					updateUser(uids[i]);
-				}
+		topics.getTopicField(tid, 'timestamp', function(err, timestamp) {
+			if(!err) {
+				topics.getUids(tid, function(err, uids) {
+					if (!err && uids) {
+						for (var i = 0; i < uids.length; ++i) {
+							updateUser(uids[i], timestamp);
+						}
+					}
+				});
 			}
 		});
 	};
