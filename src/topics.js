@@ -982,7 +982,7 @@ var async = require('async'),
 				return callback(err, null);
 			}
 
-			posts.getPostFields(pid, ['pid', 'content', 'uid', 'timestamp'], function(err, postData) {
+			posts.getPostFields(pid, ['pid', 'uid', 'timestamp'], function(err, postData) {
 				if (err) {
 					return callback(err, null);
 				} else if(!postData) {
@@ -994,26 +994,13 @@ var async = require('async'),
 						return callback(err, null);
 					}
 
-					var stripped = postData.content,
-						timestamp = postData.timestamp,
-						returnObj = {
-							"pid": postData.pid,
-							"username": userData.username || 'anonymous',
-							"userslug": userData.userslug,
-							"picture": userData.picture || gravatar.url('', {}, https = nconf.get('https')),
-							"timestamp": timestamp
-						};
-
-					if (postData.content) {
-						stripped = postData.content.replace(/>.+\n\n/, '');
-						postTools.parse(stripped, function(err, stripped) {
-							returnObj.text = S(stripped).stripTags().s;
-							callback(null, returnObj);
-						});
-					} else {
-						returnObj.text = '';
-						callback(null, returnObj);
-					}
+					callback(null, {
+						pid: postData.pid,
+						username: userData.username || 'anonymous',
+						userslug: userData.userslug,
+						picture: userData.picture || gravatar.url('', {}, https = nconf.get('https')),
+						timestamp: postData.timestamp
+					});
 				});
 			});
 		});

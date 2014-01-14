@@ -5,7 +5,6 @@ var async = require('async'),
 	path = require('path'),
 	prompt = require('prompt'),
 	winston = require('winston'),
-	reds = require('reds'),
 	nconf = require('nconf'),
 
 	install = {
@@ -473,11 +472,6 @@ var async = require('async'),
 				nconf.file({
 					file: path.join(__dirname, '..', 'config.json')
 				});
-
-				/*var RDB = require('./redis');
-				reds.createClient = function () {
-					return reds.client || (reds.client = RDB);
-				};*/
 
 				callback(err);
 			});

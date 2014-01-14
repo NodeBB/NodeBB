@@ -285,7 +285,7 @@ var winston = require('winston'),
 	}
 
 	ThreadTools.getLatestUndeletedPid = function(tid, callback) {
-		db.getSortedSetRange('tid:' + tid + ':posts', 0, -1, function(err, pids) {
+		db.getSortedSetRevRange('tid:' + tid + ':posts', 0, -1, function(err, pids) {
 			if(err) {
 				return callback(err);
 			}
@@ -293,14 +293,9 @@ var winston = require('winston'),
 				return callback(new Error('no-undeleted-pids-found'));
 			}
 
-			pids.reverse();
 			async.detectSeries(pids, function(pid, next) {
 				posts.getPostField(pid, 'deleted', function(err, deleted) {
-					if (parseInt(deleted, 10) === 0) {
-						next(true);
-					} else {
-						next(false);
-					}
+					next(parseInt(deleted, 10) === 0);
 				});
 			}, function(pid) {
 				if (pid) {

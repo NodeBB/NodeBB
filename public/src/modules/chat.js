@@ -7,6 +7,7 @@ define(['taskbar', 'string'], function(taskbar, S) {
 		var	chatsToggleEl = $('#chat_dropdown'),
 			chatsListEl = $('#chat-list'),
 			chatDropdownEl = chatsToggleEl.parent();
+
 		chatsToggleEl.on('click', function() {
 			if (chatDropdownEl.hasClass('open')) {
 				return;
@@ -43,27 +44,29 @@ define(['taskbar', 'string'], function(taskbar, S) {
 		});
 
 		socket.on('event:chats.receive', function(data) {
-			require(['chat'], function(chat) {
-				if (chat.modalExists(data.fromuid)) {
-					var modal = chat.getModal(data.fromuid);
-					chat.appendChatMessage(modal, data.message, data.timestamp);
 
-					if (modal.is(":visible")) {
-						chat.load(modal.attr('UUID'));
-					} else {
-						chat.toggleNew(modal.attr('UUID'), true);
-					}
+			if (module.modalExists(data.fromuid)) {
+				var modal = module.getModal(data.fromuid);
+				module.appendChatMessage(modal, data.message, data.timestamp);
 
-					if (!modal.is(":visible") || !app.isFocused) {
-						app.alternatingTitle(data.username + ' has messaged you');
-					}
+				if (modal.is(":visible")) {
+					module.bringModalToTop(modal);
+					checkOnlineStatus(modal);
+					taskbar.updateActive(modal.attr('UUID'));
+					scrollToBottom(modal.find('#chat-content'));
 				} else {
-					chat.createModal(data.username, data.fromuid, function(modal) {
-						chat.toggleNew(modal.attr('UUID'), true);
-						app.alternatingTitle(data.username + ' has messaged you');
-					});
+					module.toggleNew(modal.attr('UUID'), true);
 				}
-			});
+
+				if (!modal.is(":visible") || !app.isFocused) {
+					app.alternatingTitle(data.username + ' has messaged you');
+				}
+			} else {
+				module.createModal(data.username, data.fromuid, function(modal) {
+					module.toggleNew(modal.attr('UUID'), true);
+					app.alternatingTitle(data.username + ' has messaged you');
+				});
+			}
 		});
 	}
 
