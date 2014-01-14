@@ -203,7 +203,7 @@ var fs = require('fs'),
 		scripts: [
 			'vendor/jquery/js/jquery.js',
 			'vendor/jquery/js/jquery-ui-1.10.3.custom.min.js',
-			'vendor/jquery/js/jquery.timeago.js',
+			'vendor/jquery/timeago/jquery.timeago.js',
 			'vendor/jquery/js/jquery.form.js',
 			'vendor/bootstrap/js/bootstrap.min.js',
 			'vendor/requirejs/require.js',
@@ -266,7 +266,7 @@ var fs = require('fs'),
 						} else {
 							Meta.js.minify(function () {
 								callback(null, [
-									path.relative(path.join(__dirname, '../public'), Meta.js.minFile) + (meta.config['cache-buster'] ? '?vs=' + meta.config['cache-buster'] : '')
+									path.relative(path.join(__dirname, '../public'), Meta.js.minFile) + (meta.config['cache-buster'] ? '?v=' + meta.config['cache-buster'] : '')
 								]);
 							});
 						}
