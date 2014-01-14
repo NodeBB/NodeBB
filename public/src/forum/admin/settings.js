@@ -26,6 +26,7 @@ define(['uploader'], function(uploader) {
 				if (app.config[key]) {
 					switch (inputType) {
 						case 'text':
+						case 'password':
 						case 'textarea':
 						case 'number':
 							fields[x].value = app.config[key];
@@ -53,6 +54,8 @@ define(['uploader'], function(uploader) {
 					inputType = fields[x].getAttribute('type');
 					switch (inputType) {
 						case 'text':
+						case 'password':
+						case 'textarea':
 						case 'number':
 							value = fields[x].value;
 							break;
