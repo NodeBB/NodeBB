@@ -147,7 +147,6 @@ Sockets.init = function() {
 							server: io,
 							userSockets: userSockets
 						},
-						signatureLen = methodToCall.length,
 						socketArgs = [];
 
 					// Construct the arguments that'll get passed into each socket method
@@ -157,10 +156,6 @@ Sockets.init = function() {
 					if (callback !== undefined) {
 						socketArgs.push(callback);
 					}
-
-					// Do not execute the requested method if the signature is not correct
-					console.log('expecting', signatureLen, 'sending', socketArgs.length);
-
 					socketArgs.push(sessionData);
 
 					// Call the requested method
@@ -171,11 +166,6 @@ Sockets.init = function() {
 					} else {
 						methodToCall.apply(Namespaces, socketArgs);
 					}
-					// } catch (err) {
-					// 	console.log('HEREHEHREH');
-					// 	winston.error('[socket.io] Error executing socket method (' + payload.name + '). Dropping.');
-					// 	winston.error('[socket.io] ' + err.message);
-					// }
 					// winston.info('[socket.io] Executing: ' + payload.name);
 				} else {
 					winston.warn('[socket.io] Unrecognized message: ' + payload.name);
