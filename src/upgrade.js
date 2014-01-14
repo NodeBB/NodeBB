@@ -385,7 +385,6 @@ Upgrade.upgrade = function(callback) {
 				updatesMade = true;
 
 				db.getObjectValues('username:uid', function(err, uids) {
-					console.log(uids);
 					async.eachSeries(uids, function(uid, next) {
 						Groups.joinByGroupName('registered-users', uid, next);
 					}, function(err) {
