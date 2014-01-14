@@ -29,6 +29,27 @@
 		return config.defaultLang;
 	};
 
+	translator.prepareDOM = function() {
+		// Load the appropriate timeago locale file
+		if (config.defaultLang !== 'en') {
+			// Correct NodeBB language codes to timeago codes, if necessary
+			var	languageCode;
+			switch(config.defaultLang) {
+				case 'cs':
+					languageCode = 'cz';
+					break;
+
+				default:
+					languageCode = config.defaultLang;
+					break;
+			}
+
+			$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').fail(function() {
+				$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.en.js');
+			});
+		}
+	}
+
 	translator.get = function (key, callback) {
 		var parsedKey = key.split(':'),
 			languageFile = parsedKey[0];
