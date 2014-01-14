@@ -420,7 +420,9 @@ var socket,
 			titles: []
 		};
 	app.alternatingTitle = function (title) {
-		if (typeof title !== 'string') return;
+		if (typeof title !== 'string') {
+			return;
+		}
 
 		if (title.length > 0) {
 			titleObj.titles[1] = title;
@@ -434,7 +436,9 @@ var socket,
 			if (titleObj.interval) {
 				clearInterval(titleObj.interval);
 			}
-			if (titleObj.titles[0]) window.document.title = titleObj.titles[0];
+			if (titleObj.titles[0]) {
+				window.document.title = titleObj.titles[0];
+			}
 		}
 	};
 
@@ -452,7 +456,8 @@ var socket,
 	};
 
 	app.updateHeader = function(data) {
-		$('#search-button').on('click', function() {
+		$('#search-button').off().on('click', function(e) {
+			e.stopPropagation();
 			$('#search-fields').removeClass('hide').show();
 			$(this).hide();
 			$('#search-fields input').focus();
@@ -484,12 +489,15 @@ var socket,
 			var userLabel = loggedInMenu.find('#user_label');
 
 			if (userLabel.length) {
-				if (data['userslug'])
-					userLabel.find('#user-profile-link').attr('href', RELATIVE_PATH + '/user/' + data['userslug']);
-				if (data['picture'])
-					userLabel.find('img').attr('src', data['picture']);
-				if (data['username'])
-					userLabel.find('span').html(data['username']);
+				if (data.userslug) {
+					userLabel.find('#user-profile-link').attr('href', RELATIVE_PATH + '/user/' + data.userslug);
+				}
+				if (data.picture) {
+					userLabel.find('img').attr('src', data.picture);
+				}
+				if (data.username) {
+					userLabel.find('span').html(data.username);
+				}
 
 				$('#logout-link').on('click', app.logout);
 			}
@@ -511,8 +519,9 @@ var socket,
 		}
 
 		$('#main-nav a,#user-control-list a,#logged-out-menu li a').off('click').on('click', function() {
-			if($('.navbar .navbar-collapse').hasClass('in'))
+			if($('.navbar .navbar-collapse').hasClass('in')) {
 				$('.navbar-header button').click();
+			}
 		});
 	};
 
