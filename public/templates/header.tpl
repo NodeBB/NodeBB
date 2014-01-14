@@ -54,7 +54,6 @@
 
 			<div class="navbar-collapse collapse navbar-ex1-collapse">
 				<ul id="main-nav" class="nav navbar-nav">
-
 					<li>
 						<a href="{relative_path}/recent"><i class="fa fa-fw fa-clock-o" title="[[global:header.recent]]"></i><span class="visible-xs-inline"> [[global:header.recent]]</span></a>
 					</li>
@@ -150,7 +149,7 @@
 					</li>
 
 					<li class="hidden-xs">
-						<a id="search-button" class="hide"><i class="fa fa-search"></i></a>
+						<a href="#" id="search-button" class="hide"><i class="fa fa-search"></i></a>
 					</li>
 				</ul>
 
