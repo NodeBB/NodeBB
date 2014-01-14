@@ -7,7 +7,8 @@ define(function() {
 
 		ajaxify.register_events([
 			'event:new_topic',
-			'event:new_post'
+			'event:new_post',
+			'api:topics.markAllRead'
 		]);
 
 		var newTopicCount = 0,
