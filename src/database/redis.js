@@ -160,26 +160,15 @@
 				return callback(err);
 			}
 
-			data = data.split("\r\n");
+			var lines = data.toString().split("\r\n").sort();
 			var redisData = {};
-
-			for (var i in data) {
-
-				if (data[i].indexOf(':') == -1 || !data[i])
-					continue;
-
-				try {
-					data[i] = data[i].replace(/:/, "\":\"");
-					var json = "{\"" + data[i] + "\"}";
-
-					var jsonObject = JSON.parse(json);
-					for (var key in jsonObject) {
-						redisData[key] = jsonObject[key];
-					}
-				} catch (err) {
-					winston.warn('can\'t parse redis status variable, ignoring', i, data[i], err);
+			lines.forEach(function (line) {
+				var parts = line.split(':');
+				if (parts[1]) {
+					redisData[parts[0]] = parts[1];
 				}
-			}
+			});
+
 			redisData.raw = JSON.stringify(redisData, null, 4);
 			redisData.redis = true;
 
