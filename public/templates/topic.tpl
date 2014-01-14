@@ -5,9 +5,6 @@
 <input type="hidden" template-variable="pinned" value="{pinned}" />
 <input type="hidden" template-variable="topic_name" value="{topic_name}" />
 <input type="hidden" template-variable="postcount" value="{postcount}" />
-<input type="hidden" template-variable="twitter-intent-url" value="{twitter-intent-url}" />
-<input type="hidden" template-variable="facebook-share-url" value="{facebook-share-url}" />
-<input type="hidden" template-variable="google-share-url" value="{google-share-url}" />
 
 
 <div class="topic">
