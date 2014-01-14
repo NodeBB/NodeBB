@@ -80,7 +80,7 @@
 							<!-- ENDIF navigation.iconClass -->
 
 							<!-- IF navigation.text -->
-							<span class="{navigation.textClass} visible-xs-inline">{navigation.text}</span>
+							<span class="{navigation.textClass}">{navigation.text}</span>
 							<!-- ENDIF navigation.text -->
 						</a>
 					</li>
