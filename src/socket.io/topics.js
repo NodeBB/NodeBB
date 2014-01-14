@@ -4,6 +4,8 @@ var topics = require('../topics'),
 	SocketTopics = {};
 
 SocketTopics.post = function(data, callback, sessionData) {
+	var socket = sessionData.socket;
+
 	if (sessionData.uid < 1 && parseInt(meta.config.allowGuestPosting, 10) === 0) {
 		socket.emit('event:alert', {
 			title: 'Post Unsuccessful',
@@ -51,7 +53,7 @@ SocketTopics.post = function(data, callback, sessionData) {
 
 			module.parent.exports.emitTopicPostStats();
 
-			sessionData.socket.emit('event:alert', {
+			socket.emit('event:alert', {
 				title: 'Thank you for posting',
 				message: 'You have successfully posted. Click here to view your post.',
 				type: 'success',
