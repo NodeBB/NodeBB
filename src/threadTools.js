@@ -167,8 +167,7 @@ var winston = require('winston'),
 		}
 	}
 
-	ThreadTools.move = function(tid, cid, socket) {
-
+	ThreadTools.move = function(tid, cid, callback, sessionData) {
 		topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
 			var oldCid = topicData.cid;
 
@@ -176,10 +175,9 @@ var winston = require('winston'),
 				db.sortedSetAdd('categories:' + cid + ':tid', topicData.lastposttime, tid, function(err, result) {
 
 					if(err) {
-						socket.emit('api:topic.move', {
+						return callback({
 							status: 'error'
 						});
-						return;
 					}
 
 					topics.setTopicField(tid, 'cid', cid);
@@ -199,11 +197,11 @@ var winston = require('winston'),
 					categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1);
 					categories.incrementCategoryFieldBy(cid, 'topic_count', 1);
 
-					socket.emit('api:topic.move', {
+					callback({
 						status: 'ok'
 					});
 
-					websockets.in('topic_' + tid).emit('event:topic_moved', {
+					sessionData.server.sockets.in('topic_' + tid).emit('event:topic_moved', {
 						tid: tid
 					});
 				});
