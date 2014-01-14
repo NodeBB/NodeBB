@@ -251,16 +251,13 @@ var path = require('path'),
 			});
 
 			app.get('/search/:term', function (req, res, next) {
+				var limit = 50;
 
 				function searchPosts(callback) {
-					db.search('post', req.params.term, function(err, pids) {
+					db.search('post', req.params.term, limit, function(err, pids) {
 						if (err) {
 							return callback(err, null);
 						}
-
-						if(pids.length > 50) {
- 							pids = pids.splice(0, 50);
- 						}
 
 						posts.getPostSummaryByPids(pids, false, function (err, posts) {
 							if (err){
@@ -272,14 +269,10 @@ var path = require('path'),
 				}
 
 				function searchTopics(callback) {
-					db.search('topic', req.params.term, function(err, tids) {
+					db.search('topic', req.params.term, limit, function(err, tids) {
 						if (err) {
 							return callback(err, null);
 						}
-
-						if(tids.length > 50) {
- 							tids = tids.splice(0, 50);
- 						}
 
 						topics.getTopicsByTids(tids, 0, function (topics) {
 							callback(null, topics);
@@ -290,7 +283,7 @@ var path = require('path'),
 				if ((req.user && req.user.uid) || meta.config.allowGuestSearching === '1') {
 					async.parallel([searchPosts, searchTopics], function (err, results) {
 						if (err) {
-							return next();
+							return next(err);
 						}
 
 						return res.json({
