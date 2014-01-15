@@ -94,8 +94,9 @@ define(['taskbar'], function(taskbar) {
 
 			var postContainer = $(composerTemplate[0]);
 
-			if(config.allowFileUploads || config.imgurClientIDSet)
+			if(config.allowFileUploads || config.imgurClientIDSet) {
 				initializeFileReader(post_uuid);
+			}
 
 			var postData = composer.posts[post_uuid],
 				titleEl = postContainer.find('.title'),
@@ -540,6 +541,14 @@ define(['taskbar'], function(taskbar) {
 				}
 				return false;
 			});
+
+			$(window).off('paste').on('paste', function(event) {
+				var items = (event.clipboardData || event.originalEvent.clipboardData).items;
+				if(items && items.length) {
+					var blob = items[0].getAsFile();
+					loadFile(post_uuid, blob);
+				}
+			});
 		}
 	}
 
@@ -552,7 +561,7 @@ define(['taskbar'], function(taskbar) {
 			var matches = this.result.match(regex);
 
 			var fileData = {
-				name: file.name,
+				name: file.name || '',
 				data: matches[1]
 			};
 
