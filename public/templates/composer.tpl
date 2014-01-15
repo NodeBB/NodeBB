@@ -22,7 +22,7 @@
 		<textarea tabIndex="2"></textarea>
 		<div class="preview"></div>
 		<div class="imagedrop"><div>Drag and Drop Images Here</div></div>
-		<div class="text-center upload-instructions hide">
+		<div class="text-center upload-instructions hide visible-lg visible-md">
 			<small>Upload images by dragging & dropping them</small>
 		</div>
 		<div class="btn-toolbar action-bar">
