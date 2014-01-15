@@ -38,10 +38,9 @@ var path = require('path'),
 				config.maximumUsernameLength = meta.config.maximumUsernameLength;
 				config.minimumPasswordLength = meta.config.minimumPasswordLength;
 				config.maximumSignatureLength = meta.config.maximumSignatureLength;
-				config.useOutgoingLinksPage = meta.config.useOutgoingLinksPage;
-				config.allowGuestPosting = meta.config.allowGuestPosting;
-				config.allowRegistration = meta.config.allowRegistration || '1';
-				config.allowFileUploads = meta.config.allowFileUploads;
+				config.useOutgoingLinksPage = parseInt(meta.config.useOutgoingLinksPage, 10) === 1;
+				config.allowGuestPosting = parseInt(meta.config.allowGuestPosting, 10) === 1;
+				config.allowFileUploads = parseInt(meta.config.allowFileUploads, 10) === 1;
 				config.maximumFileSize = meta.config.maximumFileSize;
 				config.emailSetup = !!meta.config['email:from'];
 				config.defaultLang = meta.config.defaultLang || 'en';
