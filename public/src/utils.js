@@ -6,6 +6,12 @@
 	if ('undefined' === typeof window) {
 		fs = require('fs');
 		XRegExp = require('xregexp').XRegExp;
+
+		process.profile = function(operation, start) {
+			var diff = process.hrtime(start);
+			console.log('%s took %d milliseconds', operation, diff[0] * 1e3 + diff[1] / 1e6);
+		}
+
 	} else {
 		XRegExp = window.XRegExp;
 	}

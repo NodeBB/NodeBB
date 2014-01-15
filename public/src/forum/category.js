@@ -15,6 +15,8 @@ define(['composer'], function(composer) {
 
 		app.enterRoom('category_' + cid);
 
+
+
 		twitterEl.on('click', function () {
 			window.open(twitterUrl, '_blank', 'width=550,height=420,scrollbars=no,status=no');
 			return false;
@@ -143,29 +145,22 @@ define(['composer'], function(composer) {
 			return;
 		}
 
-		var recent_replies = document.getElementById('category_recent_replies');
+		var recentReplies = $('#category_recent_replies');
+		var reply;
+		for (var i = 0, numPosts = posts.length; i < numPosts; ++i) {
 
-		recent_replies.innerHTML = '';
+			reply = $('<li data-pid="'+ posts[i].pid +'">' +
+						'<a href="' + RELATIVE_PATH + '/user/' + posts[i].userslug + '"><img title="' + posts[i].username + '" class="img-rounded user-img" src="' + posts[i].picture + '"/></a>' +
+						'<a href="' + RELATIVE_PATH + '/topic/' + posts[i].topicSlug + '#' + posts[i].pid + '">' +
+							'<strong><span>'+ posts[i].username + '</span></strong>' +
+							'<p>' +	posts[i].content + '</p>' +
+						'</a>' +
+						'<span class="timeago pull-right" title="' + posts[i].relativeTime + '"></span>' +
+					   '</li>');
 
-		var frag = document.createDocumentFragment(),
-			li = document.createElement('li');
-		for (var i = 0, numPosts = posts.length; i < numPosts; i++) {
-
-			li.setAttribute('data-pid', posts[i].pid);
-
-
-			li.innerHTML = '<a href="' + RELATIVE_PATH + '/user/' + posts[i].userslug + '"><img title="' + posts[i].username + '" class="img-rounded user-img" src="' + posts[i].picture + '"/></a>' +
-				'<a href="' + RELATIVE_PATH + '/topic/' + posts[i].topicSlug + '#' + posts[i].pid + '">' +
-				'<strong><span>'+ posts[i].username + '</span></strong>' +
-				'<p>' +
-				posts[i].content +
-				'</p>' +
-				'</a>' +
-				'<span class="timeago pull-right" title="' + posts[i].relativeTime + '"></span>';
-
-			frag.appendChild(li.cloneNode(true));
-			recent_replies.appendChild(frag);
+			recentReplies.append(reply);
 		}
+
 		$('#category_recent_replies span.timeago').timeago();
 		app.createUserTooltips();
 	};
