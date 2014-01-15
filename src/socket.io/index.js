@@ -162,10 +162,18 @@ Sockets.init = function() {
 					// Call the requested method
 					if (Namespaces[namespace].before) {
 						Namespaces[namespace].before(sessionData, function() {
-							methodToCall.apply(Namespaces, socketArgs);
+							try {
+								methodToCall.apply(Namespaces, socketArgs);
+							} catch (e) {
+								winston.error(e.message);
+							}
 						});
 					} else {
-						methodToCall.apply(Namespaces, socketArgs);
+						try {
+							methodToCall.apply(Namespaces, socketArgs);
+						} catch (e) {
+							winston.error(e.message);
+						}
 					}
 					// winston.info('[socket.io] Executing: ' + payload.name);
 				} else {
