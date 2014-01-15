@@ -97,38 +97,40 @@ SocketModules.chats.send = function(data, sessionData) {
 				});
 			});
 		}
+        Messaging.parse(msg, sessionData.uid, sessionData.uid, toUsername, function(parsed) {
+            Messaging.addMessage(sessionData.uid, touid, msg, function(err, message) {
+                var numSockets = 0,
+                    x;
 
-		Messaging.addMessage(sessionData.uid, touid, msg, function(err, message) {
-			var numSockets = 0,
-				x;
+                if (sessionData.userSockets[touid]) {
+                    numSockets = sessionData.userSockets[touid].length;
 
-			if (sessionData.userSockets[touid]) {
-				numSockets = sessionData.userSockets[touid].length;
+                    for (x = 0; x < numSockets; ++x) {
+                        sessionData.userSockets[touid][x].emit('event:chats.receive', {
+                            fromuid: sessionData.uid,
+                            username: username,
+                            // todo this isnt very nice, but can't think of a better way atm
+                            message: parsed.replace("chat-user-you'>You", "'>" + username),
+                            timestamp: Date.now()
+                        });
+                    }
+                }
 
-				for (x = 0; x < numSockets; ++x) {
-					sessionData.userSockets[touid][x].emit('event:chats.receive', {
-						fromuid: sessionData.uid,
-						username: username,
-						message: finalMessage,
-						timestamp: Date.now()
-					});
-				}
-			}
+                if (sessionData.userSockets[sessionData.uid]) {
 
-			if (sessionData.userSockets[sessionData.uid]) {
+                    numSockets = sessionData.userSockets[sessionData.uid].length;
 
-				numSockets = sessionData.userSockets[sessionData.uid].length;
-
-				for (x = 0; x < numSockets; ++x) {
-					sessionData.userSockets[sessionData.uid][x].emit('event:chats.receive', {
-						fromuid: touid,
-						username: toUsername,
-						message: 'You : ' + msg,
-						timestamp: Date.now()
-					});
-				}
-			}
-		});
+                    for (x = 0; x < numSockets; ++x) {
+                        sessionData.userSockets[sessionData.uid][x].emit('event:chats.receive', {
+                            fromuid: touid,
+                            username: toUsername,
+                            message: parsed,
+                            timestamp: Date.now()
+                        });
+                    }
+                }
+            });
+        });
 	});
 };
 
