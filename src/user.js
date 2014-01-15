@@ -493,11 +493,12 @@ var bcrypt = require('bcrypt'),
 			return callback([]);
 		}
 
-		db.search('user', username, function(err, uids) {
+		db.search('user', username, 50, function(err, uids) {
 			if (err) {
 				console.log(err);
 				return;
 			}
+
 			if (uids && uids.length) {
 				User.getDataForUsers(uids, function(userdata) {
 					callback(userdata);

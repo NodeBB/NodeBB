@@ -97,10 +97,12 @@
 		}
 	}
 
-	module.search = function(key, term, callback) {
+	module.search = function(key, term, limit, callback) {
 		function search(searchObj, callback) {
 			searchObj
-				.query(term).type('or')
+				.query(term)
+				.between(0, limit - 1)
+				.type('or')
 				.end(callback);
 		}
 

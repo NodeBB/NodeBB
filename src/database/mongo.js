@@ -124,9 +124,8 @@
 		});
 	}
 
-	module.search = function(key, term, callback) {
-
-		db.command({text:"search" , search: term, filter: {key:key} }, function(err, result) {
+	module.search = function(key, term, limit, callback) {
+		db.command({text:"search" , search: term, filter: {key:key}, limit: limit }, function(err, result) {
 			if(err) {
 				return callback(err);
 			}

@@ -28,6 +28,7 @@ var users = {},
 	io;
 
 Sockets.init = function() {
+
 	io = socketioWildcard(SocketIO).listen(global.server, {
 		log: false,
 		transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket'],
