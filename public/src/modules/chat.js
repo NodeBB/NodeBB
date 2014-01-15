@@ -227,9 +227,9 @@ define(['taskbar', 'string'], function(taskbar, S) {
 		var chatContent = chatModal.find('#chat-content');
 
 		var date = new Date(parseInt(timestamp, 10));
-        // todo Add this to a stylesheet instead of style tag
-        var prefix = '<span style="color: darkgrey;" class="chat-timestamp">' + date.toLocaleTimeString() + '</span> ';
-        message = "<div>" + S(prefix + message).stripTags('p').s + "</div>";
+
+        var prefix = '<span class="chat-timestamp">' + date.toLocaleTimeString() + '</span> ';
+        message = '<li>' + S(prefix + message).stripTags('p').s + '</li>';
 
 		chatContent.append(message);
 		scrollToBottom(chatContent);
