@@ -7,11 +7,13 @@
 				<h4>[[modules:chat.chatting_with]]</h4>
 			</div>
 			<div class="modal-body">
-				<textarea class="form-control" id="chat-content" cols="40" rows="10" readonly></textarea><br/>
-				<input id="chat-message-input" type="text" class="form-control" name="chat-message" placeholder="[[modules:chat.placeholder]]"/>
-			</div>
-			<div class="modal-footer">
-				<button type="button" id="chat-message-send-btn" href="#" class="btn btn-primary btn-lg btn-block">[[modules:chat.send]]</button>
+                <div id="chat-content" class="well well-sm" style="height:250px; overflow-y:scroll; font-size: 14px;"></div>
+                <div class="input-group">
+                    <input id="chat-message-input" type="text" placeholder="[[modules:chat.placeholder]]" name="chat-message" class="form-control">
+                    <span class="input-group-btn">
+                        <button id="chat-message-send-btn" class="btn btn-primary" href="#" type="button">[[modules:chat.send]]</button>
+                    </span>
+                </div>
 			</div>
 		</div>
 	</div>
