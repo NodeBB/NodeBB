@@ -426,24 +426,30 @@ var db = require('./database'),
 				return callback(err);
 			}
 
-			if (pids && pids.length) {
-				plugins.fireHook('filter:post.getTopic', pids, function(err, posts) {
-					if(err) {
-						return callback(err);
-					}
-
-					if (posts && posts.length) {
-						Posts.getPostsByPids(pids, function(err, posts) {
-							plugins.fireHook('action:post.gotTopic', posts);
-							callback(null, posts);
-						});
-					} else {
-						callback(null, []);
-					}
+			async.filter(pids, function(pid, next) {
+				postTools.privileges(pid, 0, function(privileges) {
+					next(privileges.read);
 				});
-			} else {
-				callback(null, []);
-			}
+			}, function(pids) {
+				if (pids && pids.length) {
+					plugins.fireHook('filter:post.getTopic', pids, function(err, posts) {
+						if(err) {
+							return callback(err);
+						}
+
+						if (posts && posts.length) {
+							Posts.getPostsByPids(pids, function(err, posts) {
+								plugins.fireHook('action:post.gotTopic', posts);
+								callback(null, posts);
+							});
+						} else {
+							callback(null, []);
+						}
+					});
+				} else {
+					callback(null, []);
+				}
+			});
 		});
 	}
 
