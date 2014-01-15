@@ -5,7 +5,7 @@ define(['taskbar'], function(taskbar) {
 	};
 
 	function allowed() {
-		if(!(parseInt(app.uid, 10) > 0  || parseInt(config.allowGuestPosting, 10) === 1)) {
+		if(!(parseInt(app.uid, 10) > 0 || config.allowGuestPosting)) {
 			app.alert({
 				type: 'danger',
 				timeout: 5000,
@@ -146,6 +146,8 @@ define(['taskbar'], function(taskbar) {
 				}
 			}
 
+
+
 			$(bodyEl).autocomplete({
 				source: function(request, response) {
 					var term = request.term;
@@ -181,6 +183,7 @@ define(['taskbar'], function(taskbar) {
 						$(bodyEl).val(firstPart + ui.item.value + lastPart);
 						$(bodyEl).selectRange(index + ui.item.value.length);
 					}
+					event.preventDefault();
 					return false;
 				},
 				position: { my : "left bottom", at: "left bottom" }
