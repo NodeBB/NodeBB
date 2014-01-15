@@ -26,43 +26,35 @@ var winston = require('winston'),
 	}
 
 	PostTools.privileges = function(pid, uid, callback) {
-		if(parseInt(uid, 10) === 0) {
-			callback({
-				editable: false,
-				view_deleted: false
-			});
-			return;
-		}
-
-		function getThreadPrivileges(next) {
-			posts.getPostField(pid, 'tid', function(err, tid) {
-				threadTools.privileges(tid, uid, next);
-			});
-		}
-
-		function isOwnPost(next) {
-			posts.getPostField(pid, 'uid', function(err, author) {
-				next(null, parseInt(author, 10) === parseInt(uid, 10));
-			});
-		}
-
-		function hasEnoughRep(next) {
-			if (parseInt(meta.config['privileges:disabled'], 10)) {
-				return next(null, false);
-			} else {
-				user.getUserField(uid, 'reputation', function(err, reputation) {
-					if (err) {
-						return next(null, false);
-					}
-					next(null, parseInt(reputation, 10) >= parseInt(meta.config['privileges:manage_content'], 10));
+		async.parallel({
+			topicPrivs: function(next) {
+				posts.getPostField(pid, 'tid', function(err, tid) {
+					threadTools.privileges(tid, uid, next);
 				});
+			},
+			isOwner: function(next) {
+				posts.getPostField(pid, 'uid', function(err, author) {
+					next(null, parseInt(author, 10) === parseInt(uid, 10));
+				});
+			},
+			hasEnoughRep: function(next) {
+				if (parseInt(meta.config['privileges:disabled'], 10)) {
+					return next(null, false);
+				} else {
+					user.getUserField(uid, 'reputation', function(err, reputation) {
+						if (err) {
+							return next(null, false);
+						}
+						next(null, parseInt(reputation, 10) >= parseInt(meta.config['privileges:manage_content'], 10));
+					});
+				}
 			}
-		}
-
-		async.parallel([getThreadPrivileges, isOwnPost, hasEnoughRep], function(err, results) {
+			// [getThreadPrivileges, isOwnPost, hasEnoughRep]
+		}, function(err, results) {
 			callback({
-				editable: results[0].editable || results[1] || results[2],
-				view_deleted: results[0].view_deleted || results[1] || results[2]
+				read: results.topicPrivs.read,
+				editable: results.topicPrivs.editable || results.isOwner || results.hasEnoughRep,
+				view_deleted: results.topicPrivs.view_deleted || results.isOwner || results.hasEnoughRep
 			});
 		});
 	}
