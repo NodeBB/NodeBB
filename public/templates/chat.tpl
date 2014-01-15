@@ -7,7 +7,7 @@
 				<h4>[[modules:chat.chatting_with]]</h4>
 			</div>
 			<div class="modal-body">
-                <div id="chat-content" class="well well-sm" style="height:250px; overflow-y:scroll; font-size: 14px;"></div>
+                <ul id="chat-content" class="well well-sm"></ul>
                 <div class="input-group">
                     <input id="chat-message-input" type="text" placeholder="[[modules:chat.placeholder]]" name="chat-message" class="form-control">
                     <span class="input-group-btn">
