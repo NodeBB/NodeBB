@@ -178,7 +178,7 @@ var ajaxify = {};
 				} else if (window.location.pathname !== '/outgoing') {
 					// External Link
 
-					if (config.useOutgoingLinksPage == true) {
+					if (config.useOutgoingLinksPage) {
 						ajaxify.go('outgoing?url=' + encodeURIComponent(this.href));
 						e.preventDefault();
 					}
