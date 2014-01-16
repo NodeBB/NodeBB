@@ -248,7 +248,7 @@ var path = require('path'),
 					res.send(403);
 				}
 			});
-
+			if (!meta.config.disableDbSearch)
 			app.get('/search/:term', function (req, res, next) {
 				var limit = 50;
 
