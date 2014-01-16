@@ -11,7 +11,7 @@ define(function() {
 		notifTrigger.addEventListener('click', function(e) {
 			e.preventDefault();
 			if (notifContainer.className.indexOf('open') === -1) {
-				socket.emit('api:notifications.get', null, function(data) {
+				socket.emit('notifications.get', null, function(data) {
 					var notifFrag = document.createDocumentFragment(),
 						notifEl = document.createElement('li'),
 						numRead = data.read.length,
@@ -51,7 +51,7 @@ define(function() {
 						notifIcon.toggleClass('active', false);
 					}
 
-					socket.emit('api:modules.notifications.mark_all_read', null, function() {
+					socket.emit('modules.notifications.mark_all_read', null, function() {
 						notifIcon.toggleClass('active', false);
 						app.refreshTitle();
 
@@ -78,7 +78,7 @@ define(function() {
 			}
 			if (target) {
 				var nid = parseInt(target.getAttribute('data-nid'));
-				if (nid > 0) socket.emit('api:modules.notifications.mark_read', nid);
+				if (nid > 0) socket.emit('modules.notifications.mark_read', nid);
 			}
 		});
 
@@ -95,7 +95,7 @@ define(function() {
 			localStorage.setItem('notifications:count', count);
 		};
 
-		socket.emit('api:notifications.getCount', function(err, count) {
+		socket.emit('notifications.getCount', function(err, count) {
 			if (!err) {
 				updateNotifCount(count);
 			} else {

@@ -42,7 +42,7 @@ define(function() {
 			if (!utils.isEmailValid(emailEl.val())) {
 				showError(email_notify, 'Invalid email address.');
 			} else {
-				socket.emit('api:user.emailExists', {
+				socket.emit('user.emailExists', {
 					email: emailEl.val()
 				}, function(exists) {
 					if (exists === true) {
@@ -71,7 +71,7 @@ define(function() {
 			} else if (!utils.isUserNameValid(username.val()) || !utils.slugify(username.val())) {
 				showError(username_notify, 'Invalid username!');
 			} else {
-				socket.emit('api:user.exists', {
+				socket.emit('user.exists', {
 					username: username.val()
 				});
 			}
@@ -123,9 +123,9 @@ define(function() {
 			validatePasswordConfirm();
 		});
 
-		ajaxify.register_events(['api:user.exists', 'api:user.emailExists']);
+		ajaxify.register_events(['user.exists', 'user.emailExists']);
 
-		socket.on('api:user.exists', function(data) {
+		socket.on('user.exists', function(data) {
 			if (data.exists === true) {
 				showError(username_notify, 'Username already taken!');
 			} else {

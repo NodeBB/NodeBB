@@ -1,6 +1,6 @@
 define(['notifications', 'chat'], function(Notifications, Chat) {
 
-	socket.emit('api:meta.updateHeader', {
+	socket.emit('meta.updateHeader', {
 		fields: ['username', 'picture', 'userslug']
 	}, app.updateHeader);
 
@@ -14,5 +14,5 @@ define(['notifications', 'chat'], function(Notifications, Chat) {
 	}
 
 	socket.on('event:unread.updateCount', updateUnreadCount);
-	socket.emit('api:user.getUnreadCount', updateUnreadCount);
+	socket.emit('user.getUnreadCount', updateUnreadCount);
 });

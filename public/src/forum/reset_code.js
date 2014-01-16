@@ -21,7 +21,7 @@ define(function() {
 				noticeEl.querySelector('p').innerHTML = 'The two passwords you\'ve entered do not match.';
 				noticeEl.style.display = 'block';
 			} else {
-				socket.emit('api:user.reset.commit', {
+				socket.emit('user.reset.commit', {
 					code: reset_code,
 					password: password.value
 				});
@@ -29,13 +29,13 @@ define(function() {
 		}, false);
 
 		// Enable the form if the code is valid
-		socket.emit('api:user.reset.valid', {
+		socket.emit('user.reset.valid', {
 			code: reset_code
 		});
 
 
-		ajaxify.register_events(['api:user.reset.valid', 'api:user.reset.commit']);
-		socket.on('api:user.reset.valid', function(data) {
+		ajaxify.register_events(['user.reset.valid', 'user.reset.commit']);
+		socket.on('user.reset.valid', function(data) {
 			if ( !! data.valid) resetEl.disabled = false;
 			else {
 				var formEl = document.getElementById('reset-form');
@@ -45,7 +45,7 @@ define(function() {
 			}
 		})
 
-		socket.on('api:user.reset.commit', function(data) {
+		socket.on('user.reset.commit', function(data) {
 			if (data.status === 'ok') {
 				$('#error').hide();
 				$('#notice').hide();

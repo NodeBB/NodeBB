@@ -52,14 +52,14 @@ define(['composer'], function(composer) {
 					if (thread_state.deleted !== '1') {
 						bootbox.confirm('Are you sure you want to delete this thread?', function(confirm) {
 							if (confirm) {
-								socket.emit('api:topics.delete', {
+								socket.emit('topics.delete', {
 									tid: tid
 								}, null);
 							}
 						});
 					} else {
 						bootbox.confirm('Are you sure you want to restore this thread?', function(confirm) {
-							if (confirm) socket.emit('api:topics.restore', {
+							if (confirm) socket.emit('topics.restore', {
 								tid: tid
 							}, null);
 						});
@@ -69,11 +69,11 @@ define(['composer'], function(composer) {
 
 				$('.lock_thread').on('click', function(e) {
 					if (thread_state.locked !== '1') {
-						socket.emit('api:topics.lock', {
+						socket.emit('topics.lock', {
 							tid: tid
 						}, null);
 					} else {
-						socket.emit('api:topics.unlock', {
+						socket.emit('topics.unlock', {
 							tid: tid
 						}, null);
 					}
@@ -82,11 +82,11 @@ define(['composer'], function(composer) {
 
 				$('.pin_thread').on('click', function(e) {
 					if (thread_state.pinned !== '1') {
-						socket.emit('api:topics.pin', {
+						socket.emit('topics.pin', {
 							tid: tid
 						}, null);
 					} else {
-						socket.emit('api:topics.unpin', {
+						socket.emit('topics.unpin', {
 							tid: tid
 						}, null);
 					}
@@ -102,7 +102,7 @@ define(['composer'], function(composer) {
 
 					var loadingEl = document.getElementById('categories-loading');
 					if (loadingEl) {
-						socket.emit('api:categories.get', function(data) {
+						socket.emit('categories.get', function(data) {
 							// Render categories
 							var categoriesFrag = document.createDocumentFragment(),
 								categoryEl = document.createElement('li'),
@@ -145,7 +145,7 @@ define(['composer'], function(composer) {
 									$(moveThreadModal).find('.modal-header button').fadeOut(250);
 									commitEl.innerHTML = 'Moving <i class="fa-spin fa-refresh"></i>';
 
-									socket.emit('api:topics.move', {
+									socket.emit('topics.move', {
 										tid: tid,
 										cid: targetCid
 									}, function(data) {
@@ -192,7 +192,7 @@ define(['composer'], function(composer) {
 					forkCommit.on('click', createTopicFromPosts);
 
 					function createTopicFromPosts() {
-						socket.emit('api:topics.createTopicFromPosts', {
+						socket.emit('topics.createTopicFromPosts', {
 							title: forkModal.find('#fork-title').val(),
 							pids: pids
 						}, function(err) {
@@ -298,12 +298,12 @@ define(['composer'], function(composer) {
 					}
 				};
 
-			socket.emit('api:topics.followCheck', tid, function(state) {
+			socket.emit('topics.followCheck', tid, function(state) {
 				set_follow_state(state, true);
 			});
 			if (followEl[0]) {
 				followEl[0].addEventListener('click', function() {
-					socket.emit('api:topics.follow', tid, function(data) {
+					socket.emit('topics.follow', tid, function(data) {
 						if (data.status && data.status === 'ok') set_follow_state(data.follow);
 						else {
 							app.alert({
@@ -375,7 +375,7 @@ define(['composer'], function(composer) {
 					username = '@' + post.attr('data-username');
 				}
 
-				socket.emit('api:posts.getRawPost', {pid: pid}, function(data) {
+				socket.emit('posts.getRawPost', {pid: pid}, function(data) {
 
 					quoted = '> ' + data.post.replace(/\n/g, '\n> ') + '\n\n';
 
@@ -389,12 +389,12 @@ define(['composer'], function(composer) {
 			var uid = $(this).parents('li').attr('data-uid');
 
 			if ($(this).attr('data-favourited') == 'false') {
-				socket.emit('api:posts.favourite', {
+				socket.emit('posts.favourite', {
 					pid: pid,
 					room_id: app.currentRoom
 				});
 			} else {
-				socket.emit('api:posts.unfavourite', {
+				socket.emit('posts.unfavourite', {
 					pid: pid,
 					room_id: app.currentRoom
 				});
@@ -441,7 +441,7 @@ define(['composer'], function(composer) {
 
 			if (confirmDel) {
 				if(deleteAction) {
-					socket.emit('api:posts.delete', {
+					socket.emit('posts.delete', {
 						pid: pid,
 						tid: tid
 					}, function(err) {
@@ -450,7 +450,7 @@ define(['composer'], function(composer) {
 						}
 					});
 				} else {
-					socket.emit('api:posts.restore', {
+					socket.emit('posts.restore', {
 						pid: pid,
 						tid: tid
 					}, function(err) {
@@ -488,7 +488,7 @@ define(['composer'], function(composer) {
 			});
 
 			moveBtn.on('click', function() {
-				socket.emit('api:topics.movePost', {pid: pid, tid: topicId.val()}, function(err) {
+				socket.emit('topics.movePost', {pid: pid, tid: topicId.val()}, function(err) {
 					if(err) {
 						return app.alertError(err.message);
 					}
@@ -515,15 +515,15 @@ define(['composer'], function(composer) {
 		});
 
 		ajaxify.register_events([
-			'event:rep_up', 'event:rep_down', 'event:new_post', 'api:get_users_in_room',
+			'event:rep_up', 'event:rep_down', 'event:new_post', 'get_users_in_room',
 			'event:topic_deleted', 'event:topic_restored', 'event:topic:locked',
 			'event:topic_unlocked', 'event:topic_pinned', 'event:topic_unpinned',
 			'event:topic_moved', 'event:post_edited', 'event:post_deleted', 'event:post_restored',
-			'api:posts.favourite'
+			'posts.favourite'
 		]);
 
 
-		socket.on('api:get_users_in_room', function(data) {
+		socket.on('get_users_in_room', function(data) {
 			if(data) {
 				var activeEl = $('.thread_active_users');
 
@@ -689,7 +689,7 @@ define(['composer'], function(composer) {
 
 		});
 
-		socket.on('api:posts.favourite', function(data) {
+		socket.on('posts.favourite', function(data) {
 			if (data.status === 'ok' && data.pid) {
 				var favBtn = $('li[data-pid="' + data.pid + '"] .favourite');
 				if(favBtn.length) {
@@ -700,7 +700,7 @@ define(['composer'], function(composer) {
 			}
 		});
 
-		socket.on('api:posts.unfavourite', function(data) {
+		socket.on('posts.unfavourite', function(data) {
 			if (data.status === 'ok' && data.pid) {
 				var favBtn = $('li[data-pid="' + data.pid + '"] .favourite');
 				if(favBtn.length) {
@@ -861,7 +861,7 @@ define(['composer'], function(composer) {
 				favEl = postEl.find('.favourite'),
 				replyEl = postEl.find('.post_reply');
 
-				socket.emit('api:posts.getPrivileges', pid, function(privileges) {
+				socket.emit('posts.getPrivileges', pid, function(privileges) {
 					if (privileges.editable) {
 						if (!postEl.hasClass('deleted')) {
 							toggle_post_tools(pid, false);
@@ -1056,7 +1056,7 @@ define(['composer'], function(composer) {
 				.fadeIn('slow');
 
 			for (var x = 0, numPosts = data.posts.length; x < numPosts; x++) {
-				socket.emit('api:posts.getPrivileges', data.posts[x].pid, function(privileges) {
+				socket.emit('posts.getPrivileges', data.posts[x].pid, function(privileges) {
 					toggle_mod_tools(privileges.pid, privileges.editable);
 				});
 			}
@@ -1087,7 +1087,7 @@ define(['composer'], function(composer) {
 	}
 
 	function updatePostCount() {
-		socket.emit('api:topics.postcount', templates.get('topic_id'), function(err, postcount) {
+		socket.emit('topics.postcount', templates.get('topic_id'), function(err, postcount) {
 			if(!err) {
 				Topic.postCount = postcount;
 				$('#topic-post-count').html(Topic.postCount);
@@ -1109,7 +1109,7 @@ define(['composer'], function(composer) {
 			indicatorEl.fadeIn();
 		}
 
-		socket.emit('api:topics.loadMore', {
+		socket.emit('topics.loadMore', {
 			tid: tid,
 			after: parseInt($('#post-container .post-row.infiniteloaded').last().attr('data-index'), 10) + 1
 		}, function (data) {

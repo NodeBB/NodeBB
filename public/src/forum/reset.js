@@ -8,7 +8,7 @@ define(function() {
 
 		document.getElementById('reset').onclick = function() {
 			if (inputEl.value.length > 0 && inputEl.value.indexOf('@') !== -1) {
-				socket.emit('api:user.reset.send', {
+				socket.emit('user.reset.send', {
 					email: inputEl.value
 				});
 			} else {

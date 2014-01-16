@@ -23,7 +23,7 @@ define(function() {
 								cssSrc = parentEl.attr('data-css'),
 								themeId = parentEl.attr('data-theme');
 
-							socket.emit('api:admin.themes.set', {
+							socket.emit('admin.themes.set', {
 								type: themeType,
 								id: themeId,
 								src: cssSrc
@@ -47,7 +47,7 @@ define(function() {
 		revertEl.addEventListener('click', function() {
 			bootbox.confirm('Are you sure you wish to remove the custom theme and restore the NodeBB default theme?', function(confirm) {
 				if (confirm) {
-					socket.emit('api:admin.themes.set', {
+					socket.emit('admin.themes.set', {
 						type: 'local',
 						id: 'nodebb-theme-cerulean'
 					}, function(err) {
@@ -64,7 +64,7 @@ define(function() {
 		}, false);
 
 		// Installed Themes
-		socket.emit('api:admin.themes.getInstalled', function(themes) {
+		socket.emit('admin.themes.getInstalled', function(themes) {
 			var instListEl = document.getElementById('installed_themes'),
 				themeFrag = document.createDocumentFragment(),
 				liEl = document.createElement('li');

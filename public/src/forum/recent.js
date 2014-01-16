@@ -84,7 +84,7 @@ define(function() {
 		var html = templates.prepare(templates['recent'].blocks['topics']).parse({
 			topics: topics
 		});
-		
+
 		translator.translate(html, function(translatedHTML) {
 			var container = $('#topics-container');
 
@@ -99,7 +99,7 @@ define(function() {
 
 	Recent.loadMoreTopics = function() {
 		Recent.loadingMoreTopics = true;
-		socket.emit('api:topics.loadMoreRecentTopics', {
+		socket.emit('topics.loadMoreRecentTopics', {
 			after: $('#topics-container').children('li').length,
 			term: active
 		}, function(data) {

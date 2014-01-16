@@ -70,7 +70,7 @@ define(['uploader'], function(uploader) {
 					value = fields[x].value;
 				}
 
-				socket.emit('api:admin.config.set', {
+				socket.emit('admin.config.set', {
 					key: key,
 					value: value
 				}, function(data) {
@@ -119,7 +119,7 @@ define(['uploader'], function(uploader) {
 	};
 
 	Settings.remove = function(key) {
-		socket.emit('api:admin.config.remove', key);
+		socket.emit('admin.config.remove', key);
 	};
 
 	return Settings;

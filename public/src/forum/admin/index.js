@@ -2,10 +2,10 @@ define(function() {
 	var	Admin = {};
 
 	Admin.init = function() {
-		ajaxify.register_events(['api:meta.rooms.getAll']);
+		ajaxify.register_events(['meta.rooms.getAll']);
 
 		app.enterRoom('admin');
-		socket.emit('api:meta.rooms.getAll', Admin.updateRoomUsage);
+		socket.emit('meta.rooms.getAll', Admin.updateRoomUsage);
 		socket.on('event:meta.rooms.update', Admin.updateRoomUsage);
 
 		$('#logout-link').on('click', function() {

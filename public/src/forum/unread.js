@@ -8,7 +8,7 @@ define(function() {
 		ajaxify.register_events([
 			'event:new_topic',
 			'event:new_post',
-			'api:topics.markAllRead'
+			'topics.markAllRead'
 		]);
 
 		var newTopicCount = 0,
@@ -55,7 +55,7 @@ define(function() {
 
 		$('#mark-allread-btn').on('click', function() {
 			var btn = $(this);
-			socket.emit('api:topics.markAllRead', {}, function(success) {
+			socket.emit('topics.markAllRead', {}, function(success) {
 				if (success) {
 					btn.remove();
 					$('#topics-container').empty();
@@ -91,7 +91,7 @@ define(function() {
 
 		function loadMoreTopics() {
 			loadingMoreTopics = true;
-			socket.emit('api:topics.loadMoreUnreadTopics', {
+			socket.emit('topics.loadMoreUnreadTopics', {
 				after: parseInt($('#topics-container').attr('data-next-start'), 10)
 			}, function(data) {
 				if (data.topics && data.topics.length) {

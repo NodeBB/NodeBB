@@ -36,7 +36,7 @@ var socket,
 						app.uid = data.uid;
 
 						app.showLoginMessage();
-						socket.emit('api:meta.updateHeader', {
+						socket.emit('meta.updateHeader', {
 							fields: ['username', 'picture', 'userslug']
 						}, app.updateHeader);
 					});
@@ -77,14 +77,14 @@ var socket,
 							}
 							app.enterRoom(room, true);
 
-							socket.emit('api:meta.reconnected');
+							socket.emit('meta.reconnected');
 
 							setTimeout(function() {
 								reconnectEl.removeClass('active').addClass("hide");
 							}, 3000);
 						}
 
-						socket.emit('api:meta.updateHeader', {
+						socket.emit('meta.updateHeader', {
 							fields: ['username', 'picture', 'userslug']
 						}, app.updateHeader);
 					});
@@ -235,7 +235,7 @@ var socket,
 				return;
 			}
 
-			socket.emit('api:meta.rooms.enter', {
+			socket.emit('meta.rooms.enter', {
 				'enter': room,
 				'leave': app.currentRoom
 			});
@@ -251,7 +251,7 @@ var socket,
 			uids.push(this.getAttribute('data-uid'));
 		});
 
-		socket.emit('api:user.get_online_users', uids, function (users) {
+		socket.emit('user.get_online_users', uids, function (users) {
 			jQuery('a.username-field').each(function () {
 				if (this.processed === true)
 					return;
@@ -449,7 +449,7 @@ var socket,
 			url = a.pathname.slice(1);
 		}
 
-		socket.emit('api:meta.buildTitle', url, function(title, numNotifications) {
+		socket.emit('meta.buildTitle', url, function(title, numNotifications) {
 			titleObj.titles[0] = (numNotifications > 0 ? '(' + numNotifications + ') ' : '') + title;
 			app.alternatingTitle('');
 		});

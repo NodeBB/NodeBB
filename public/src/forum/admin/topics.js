@@ -15,11 +15,11 @@ define(function() {
 			switch (action) {
 				case 'pin':
 					if (!$this.hasClass('active')) {
-						socket.emit('api:topics.pin', {
+						socket.emit('topics.pin', {
 							tid: tid
 						}, Topics.pin);
 					} else {
-						socket.emit('api:topics.unpin', {
+						socket.emit('topics.unpin', {
 							tid: tid
 						}, Topics.unpin);
 					}
@@ -27,11 +27,11 @@ define(function() {
 
 				case 'lock':
 					if (!$this.hasClass('active')) {
-						socket.emit('api:topics.lock', {
+						socket.emit('topics.lock', {
 							tid: tid
 						}, Topics.lock);
 					} else {
-						socket.emit('api:topics.unlock', {
+						socket.emit('topics.unlock', {
 							tid: tid
 						}, Topics.unlock);
 					}
@@ -39,11 +39,11 @@ define(function() {
 
 				case 'delete':
 					if (!$this.hasClass('active')) {
-						socket.emit('api:topics.delete', {
+						socket.emit('topics.delete', {
 							tid: tid
 						}, Topics.setDeleted);
 					} else {
-						socket.emit('api:topics.restore', {
+						socket.emit('topics.restore', {
 							tid: tid
 						}, Topics.restore);
 					}
@@ -63,7 +63,7 @@ define(function() {
 				var lastTid = parseInt(topics[topics.length - 1].getAttribute('data-tid'));
 
 				this.innerHTML = '<i class="fa fa-refresh fa-spin"></i> Retrieving topics';
-				socket.emit('api:admin.topics.getMore', {
+				socket.emit('admin.topics.getMore', {
 					limit: 10,
 					after: lastTid
 				}, function(topics) {

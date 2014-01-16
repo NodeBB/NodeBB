@@ -35,7 +35,7 @@ define(['forum/accountheader'], function(header) {
 			}
 
 			followBtn.on('click', function() {
-				socket.emit('api:user.follow', {
+				socket.emit('user.follow', {
 					uid: theirid
 				}, function(success) {
 					if (success) {
@@ -50,7 +50,7 @@ define(['forum/accountheader'], function(header) {
 			});
 
 			unfollowBtn.on('click', function() {
-				socket.emit('api:user.unfollow', {
+				socket.emit('user.unfollow', {
 					uid: theirid
 				}, function(success) {
 					if (success) {
@@ -72,9 +72,9 @@ define(['forum/accountheader'], function(header) {
 				ajaxify.go($(this).attr('topic-url'));
 			});
 
-			socket.on('api:user.isOnline', Account.handleUserOnline);
+			socket.on('user.isOnline', Account.handleUserOnline);
 
-			socket.emit('api:user.isOnline', theirid, Account.handleUserOnline);
+			socket.emit('user.isOnline', theirid, Account.handleUserOnline);
 
 			socket.on('event:new_post', function(data) {
 				var html = templates.prepare(templates['account'].blocks['posts']).parse(data);

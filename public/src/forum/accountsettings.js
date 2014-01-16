@@ -10,7 +10,7 @@ define(['forum/accountheader'], function(header) {
 				showemail: $('#showemailCheckBox').is(':checked') ? 1 : 0
 			};
 
-			socket.emit('api:user.saveSettings', settings, function(err) {
+			socket.emit('user.saveSettings', settings, function(err) {
 				if (!err) {
 					app.alertSuccess('Settings saved!');
 				} else {

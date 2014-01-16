@@ -40,7 +40,7 @@ define(['composer'], function(composer) {
 
 		socket.on('event:new_topic', Category.onNewTopic);
 
-		socket.emit('api:categories.getRecentReplies', cid, renderRecentReplies);
+		socket.emit('categories.getRecentReplies', cid, renderRecentReplies);
 
 		$(window).off('scroll').on('scroll', function (ev) {
 			var bottom = ($(document).height() - $(window).height()) * 0.9;
@@ -81,7 +81,7 @@ define(['composer'], function(composer) {
 			}
 
 			topic.hide().fadeIn('slow');
-			socket.emit('api:categories.getRecentReplies', templates.get('category_id'), renderRecentReplies);
+			socket.emit('categories.getRecentReplies', templates.get('category_id'), renderRecentReplies);
 
 			addActiveUser(data);
 
@@ -129,7 +129,7 @@ define(['composer'], function(composer) {
 		}
 
 		loadingMoreTopics = true;
-		socket.emit('api:categories.loadMore', {
+		socket.emit('categories.loadMore', {
 			cid: cid,
 			after: $('#topics-container').children('.category-item').length
 		}, function (data) {
