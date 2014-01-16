@@ -6,7 +6,7 @@ var	user = require('../user'),
 SocketUser.exists = function(data, sessionData) {
 	if (data.username) {
 		user.exists(utils.slugify(data.username), function(exists) {
-			sessionData.socket.emit('api:user.exists', {
+			sessionData.socket.emit('user.exists', {
 				exists: exists
 			});
 		});
@@ -60,7 +60,7 @@ SocketUser.changePicture = function(data, callback, sessionData) {
 		user.getUserFields(sessionData.uid, ['picture'], function(err, fields) {
 			if (!err && fields) {
 				fields.uid = sessionData.uid;
-				sessionData.socket.emit('api:updateHeader', fields);
+				sessionData.socket.emit('meta.updateHeader', fields);
 				callback(true);
 			} else {
 				callback(false);

@@ -122,6 +122,8 @@ var socket,
 						setTimeout(app.logout, 1000);
 					});
 
+					socket.on('meta.updateHeader', app.updateHeader);
+
 					app.enterRoom('global');
 				}
 			},
