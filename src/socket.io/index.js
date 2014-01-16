@@ -140,8 +140,11 @@ Sockets.init = function() {
 				});
 			}
 
+			if(!payload.name) {
+				return winston.warn('[socket.io] Empty method name');
+			}
 
-			var parts = payload.name.split('.'),
+			var parts = payload.name.toString().split('.'),
 				namespace = parts.slice(0, 1),
 				methodToCall = parts.reduce(function(prev, cur) {
 					if (prev !== null && prev[cur]) {
@@ -151,17 +154,16 @@ Sockets.init = function() {
 					}
 				}, Namespaces);
 
-			if (methodToCall !== null) {
+			if(!methodToCall) {
+				return winston.warn('[socket.io] Unrecognized message: ' + payload.name);
+			}
 
-				if (Namespaces[namespace].before) {
-					Namespaces[namespace].before(socket, function() {
-						callMethod(methodToCall);
-					});
-				} else {
+			if (Namespaces[namespace].before) {
+				Namespaces[namespace].before(socket, function() {
 					callMethod(methodToCall);
-				}
+				});
 			} else {
-				winston.warn('[socket.io] Unrecognized message: ' + payload.name);
+				callMethod(methodToCall);
 			}
 		});
 	});
