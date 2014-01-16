@@ -95,7 +95,7 @@ SocketMeta.rooms.enter = function(socket, data) {
 	module.parent.exports.updateRoomBrowsingText(data.enter);
 
 	if (data.enter != 'admin') {
-		server.in('admin').emit('event:meta.rooms.update', server.rooms);
+		server.in('admin').emit('event:meta.rooms.update', null, server.rooms);
 	}
 };
 
