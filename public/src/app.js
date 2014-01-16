@@ -421,6 +421,7 @@ var socket,
 			interval: undefined,
 			titles: []
 		};
+
 	app.alternatingTitle = function (title) {
 		if (typeof title !== 'string') {
 			return;
@@ -451,7 +452,7 @@ var socket,
 			url = a.pathname.slice(1);
 		}
 
-		socket.emit('meta.buildTitle', url, function(title, numNotifications) {
+		socket.emit('meta.buildTitle', url, function(err, title, numNotifications) {
 			titleObj.titles[0] = (numNotifications > 0 ? '(' + numNotifications + ') ' : '') + title;
 			app.alternatingTitle('');
 		});

@@ -31,7 +31,7 @@ SocketMeta.reconnected = function(socket) {
 
 SocketMeta.buildTitle = function(socket, text, callback) {
 	meta.title.build(text, function(err, title) {
-		callback(title);
+		callback(err, title);
 	});
 };
 
