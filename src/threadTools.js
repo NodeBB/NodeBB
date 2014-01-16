@@ -167,7 +167,7 @@ var winston = require('winston'),
 		}
 	}
 
-	ThreadTools.move = function(tid, cid, callback, sessionData) {
+	ThreadTools.move = function(tid, cid, callback) {
 		topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
 			var oldCid = topicData.cid;
 
@@ -197,9 +197,6 @@ var winston = require('winston'),
 						status: 'ok'
 					});
 
-					sessionData.server.sockets.in('topic_' + tid).emit('event:topic_moved', {
-						tid: tid
-					});
 				});
 			});
 		});
