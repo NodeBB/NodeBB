@@ -49,9 +49,11 @@
 						</h3>
 
 						<div class="topic-buttons">
+
 							<div class="btn-group">
 								<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="[[topic:posted_by]] {posts.username}">
-									<span class="username-field" href="{relative_path}/user/{posts.userslug}" itemprop="author">{posts.username}&nbsp;</span>
+									<img class="visible-xs visible-sm pull-left" src="{posts.picture}" width=18 height=18 />
+									<span class="username-field" href="{relative_path}/user/{posts.userslug}" itemprop="author">&nbsp; {posts.username}&nbsp;</span>
 									<span class="caret"></span>
 								</button>
 
