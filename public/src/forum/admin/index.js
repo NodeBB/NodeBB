@@ -17,8 +17,8 @@ define(function() {
 		})
 	};
 
-	Admin.updateRoomUsage = function(data) {
-		console.log('room usage updating', data);
+	Admin.updateRoomUsage = function(err, data) {
+		console.log(arguments);
 		var active_users = document.getElementById('active_users'),
 			total = 0;
 			active_users.innerHTML = '';
