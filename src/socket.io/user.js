@@ -33,7 +33,7 @@ SocketUser.reset.commit = function(socket, data, callback) {
 };
 
 SocketUser.isOnline = function(socket, uid, callback) {
-	callback({
+	callback(null, {
 		online: module.parent.exports.isUserOnline(uid),
 		uid: uid,
 		timestamp: Date.now()
@@ -54,29 +54,31 @@ SocketUser.changePicture = function(socket, data, callback) {
 
 	function updateHeader() {
 		user.getUserFields(socket.uid, ['picture'], function(err, fields) {
-			if (!err && fields) {
-				fields.uid = socket.uid;
-				socket.emit('meta.updateHeader', fields);
-				callback(true);
-			} else {
-				callback(false);
+			if(err) {
+				return callback(err);
 			}
+
+			if (fields) {
+				fields.uid = socket.uid;
+				socket.emit('meta.updateHeader', null, fields);
+			}
+
+			callback(null);
 		});
 	}
 
 	if (type === 'gravatar') {
-		user.getUserField(socket.uid, 'gravatarpicture', function(err, gravatar) {
-			user.setUserField(socket.uid, 'picture', gravatar);
-			updateHeader();
-		});
+		type = 'gravatarpicture';
 	} else if (type === 'uploaded') {
-		user.getUserField(socket.uid, 'uploadedpicture', function(err, uploadedpicture) {
-			user.setUserField(socket.uid, 'picture', uploadedpicture);
-			updateHeader();
-		});
+		type = 'uploadedpicture';
 	} else {
-		callback(false);
+		return callback(new Error('invalid-image-type'));
 	}
+
+	user.getUserField(socket.uid, type, function(err, picture) {
+		user.setUserField(socket.uid, 'picture', picture);
+		updateHeader();
+	});
 };
 
 SocketUser.follow = function(socket, data, callback) {

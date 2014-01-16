@@ -347,13 +347,11 @@ var bcrypt = require('bcrypt'),
 
 	User.changePassword = function(uid, data, callback) {
 		if (!utils.isPasswordValid(data.newPassword)) {
-			return callback({
-				error: 'Invalid password!'
-			});
+			return callback(new Error('Invalid password!'));
 		}
 
-		User.getUserField(uid, 'password', function(err, user_password) {
-			bcrypt.compare(data.currentPassword, user_password, function(err, res) {
+		User.getUserField(uid, 'password', function(err, currentPassword) {
+			bcrypt.compare(data.currentPassword, currentPassword, function(err, res) {
 				if (err) {
 					return callback(err);
 				}
@@ -365,9 +363,7 @@ var bcrypt = require('bcrypt'),
 						callback(null);
 					});
 				} else {
-					callback({
-						error: 'Your current password is not correct!'
-					});
+					callback(new Error('Your current password is not correct!'));
 				}
 			});
 		});

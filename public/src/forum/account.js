@@ -85,7 +85,7 @@ define(['forum/accountheader'], function(header) {
 		});
 	};
 
-	Account.handleUserOnline = function(data) {
+	Account.handleUserOnline = function(err, data) {
 		var onlineStatus = $('.account-online-status');
 
 		if (data.online) {

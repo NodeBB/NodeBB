@@ -80,7 +80,7 @@ define(function() {
 			}, 250);
 		});
 
-		socket.on('user.isOnline', function(data) {
+		socket.on('user.isOnline', function(err, data) {
 			if(getActiveSection() == 'online' && !loadingMoreUsers) {
 				startLoading('users:online', 0, true);
 				socket.emit('user.getOnlineAnonCount', {} , function(anonCount) {
