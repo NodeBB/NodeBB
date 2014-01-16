@@ -83,7 +83,7 @@ define(function() {
 		socket.on('user.isOnline', function(err, data) {
 			if(getActiveSection() == 'online' && !loadingMoreUsers) {
 				startLoading('users:online', 0, true);
-				socket.emit('user.getOnlineAnonCount', {} , function(anonCount) {
+				socket.emit('user.getOnlineAnonCount', {} , function(err, anonCount) {
 					if(parseInt(anonCount, 10) > 0) {
 						$('#users-container .anon-user').removeClass('hide');
 						$('#online_anon_count').html(anonCount);

@@ -8,7 +8,7 @@ define(['notifications', 'chat'], function(Notifications, Chat) {
 	Chat.prepareDOM();
 	translator.prepareDOM();
 
-	function updateUnreadCount(count) {
+	function updateUnreadCount(err, count) {
 		$('#unread-count').toggleClass('unread-count', count > 0);
 		$('#unread-count').attr('data-content', count > 20 ? '20+' : count);
 	}

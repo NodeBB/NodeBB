@@ -117,12 +117,12 @@ SocketUser.getOnlineUsers = function(socket, data, callback) {
 };
 
 SocketUser.getOnlineAnonCount = function(socket, data, callback) {
-	callback(module.parent.exports.getOnlineAnonCount());
+	callback(null, module.parent.exports.getOnlineAnonCount());
 };
 
 SocketUser.getUnreadCount = function(socket, data, callback) {
 	topics.getUnreadTids(socket.uid, 0, 19, function(err, tids) {
-		callback(tids.length);
+		callback(err, tids?tids.length:0);
 	});
 };
 
@@ -135,13 +135,13 @@ SocketUser.loadMore = function(socket, data, callback) {
 		end = start + 19;
 
 	user.getUsers(data.set, start, end, function(err, data) {
-		if (err) {
-			winston.err(err);
-		} else {
-			callback({
-				users: data
-			});
+		if(err) {
+			return callback(err);
 		}
+
+		callback(null, {
+			users: data
+		});
 	});
 };
 
