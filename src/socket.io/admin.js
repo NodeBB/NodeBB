@@ -77,16 +77,10 @@ SocketAdmin.user.banUser = function(theirid, sessionData) {
 };
 
 SocketAdmin.user.unbanUser = function(theirid, sessionData) {
-	if (sessionData.uid && sessionData.uid > 0) {
-		admin.user.unbanUser(sessionData.uid, theirid, sessionData.socket);
-	}
+	admin.user.unbanUser(sessionData.uid, theirid, sessionData.socket);
 };
 
 SocketAdmin.user.search = function(username, callback, sessionData) {
-	if (!(sessionData.uid && sessionData.uid > 0)) {
-		return callback();
-	}
-
 	user.search(username, function(data) {
 		function isAdmin(userData, next) {
 			user.isAdministrator(userData.uid, function(err, isAdmin) {
@@ -124,33 +118,25 @@ SocketAdmin.categories.update = function(data, sessionData) {
 };
 
 SocketAdmin.categories.search = function(username, cid, callback, sessionData) {
-	if (sessionData.uid && sessionData.uid > 0) {
-		user.search(username, function(data) {
-			async.map(data, function(userObj, next) {
-				CategoryTools.privileges(cid, userObj.uid, function(err, privileges) {
-					if (!err) {
-						userObj.privileges = privileges;
-					} else {
-						winston.error('[socket api:admin.categories.search] Could not retrieve permissions');
-					}
-
-					next(null, userObj);
-				});
-			}, function(err, data) {
-				if (!callback) {
-					sessionData.socket.emit('api:admin.categories.search', data);
+	user.search(username, function(data) {
+		async.map(data, function(userObj, next) {
+			CategoryTools.privileges(cid, userObj.uid, function(err, privileges) {
+				if (!err) {
+					userObj.privileges = privileges;
 				} else {
-					callback(null, data);
+					winston.error('[socket api:admin.categories.search] Could not retrieve permissions');
 				}
+
+				next(null, userObj);
 			});
+		}, function(err, data) {
+			if (!callback) {
+				sessionData.socket.emit('api:admin.categories.search', data);
+			} else {
+				callback(null, data);
+			}
 		});
-	} else {
-		if (!callback) {
-			sessionData.socket.emit('api:admin.user.search', null);
-		} else {
-			callback();
-		}
-	}
+	});
 };
 
 SocketAdmin.categories.setPrivilege = function(cid, uid, privilege, set, callback) {
