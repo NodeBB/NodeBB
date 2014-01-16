@@ -233,25 +233,21 @@ SocketAdmin.plugins.toggle = function(socket, plugin_id) {
 SocketAdmin.config = {};
 
 SocketAdmin.config.get = function(socket, data, callback) {
-	meta.configs.list(function(err, config) {
-		if (!err) {
-			callback(config);
-		}
-	});
+	meta.configs.list(callback);
 };
 
 SocketAdmin.config.set = function(socket, data, callback) {
 	meta.configs.set(data.key, data.value, function(err) {
-		if (!err) {
-			callback({
-				status: 'ok'
-			});
-
-			plugins.fireHook('action:config.set', {
-				key: data.key,
-				value: data.value
-			});
+		if(err) {
+			return callback(err);
 		}
+
+		callback(null);
+
+		plugins.fireHook('action:config.set', {
+			key: data.key,
+			value: data.value
+		});
 
 		logger.monitorConfig({io: index.server}, data);
 	});

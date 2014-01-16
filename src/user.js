@@ -537,31 +537,21 @@ var bcrypt = require('bcrypt'),
 
 	User.follow = function(uid, followid, callback) {
 		db.setAdd('following:' + uid, followid, function(err, data) {
-			if (!err) {
-				db.setAdd('followers:' + followid, uid, function(err, data) {
-					if (!err) {
-						callback(true);
-					} else {
-						console.log(err);
-						callback(false);
-					}
-				});
-			} else {
-				console.log(err);
-				callback(false);
+			if(err) {
+				return callback(err);
 			}
+
+			db.setAdd('followers:' + followid, uid, callback);
 		});
 	};
 
 	User.unfollow = function(uid, unfollowid, callback) {
 		db.setRemove('following:' + uid, unfollowid, function(err, data) {
-			if (!err) {
-				db.setRemove('followers:' + unfollowid, uid, function(err, data) {
-					callback(data);
-				});
-			} else {
-				console.log(err);
+			if(err) {
+				return callback(err);
 			}
+
+			db.setRemove('followers:' + unfollowid, uid, callback);
 		});
 	};
 

@@ -253,7 +253,7 @@ var socket,
 			uids.push(this.getAttribute('data-uid'));
 		});
 
-		socket.emit('user.get_online_users', uids, function (users) {
+		socket.emit('user.getOnlineUsers', uids, function (err, users) {
 			jQuery('a.username-field').each(function () {
 				if (this.processed === true)
 					return;

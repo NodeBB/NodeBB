@@ -97,13 +97,11 @@ SocketUser.saveSettings = function(socket, data, callback) {
 	if (socket.uid) {
 		user.setUserFields(socket.uid, {
 			showemail: data.showemail
-		}, function(err, result) {
-			callback(err);
-		});
+		}, callback);
 	}
 };
 
-SocketUser.get_online_users = function(socket, data, callback) {
+SocketUser.getOnlineUsers = function(socket, data, callback) {
 	var returnData = [];
 
 	for (var i = 0; i < data.length; ++i) {
@@ -115,7 +113,7 @@ SocketUser.get_online_users = function(socket, data, callback) {
 		}
 	}
 
-	callback(returnData);
+	callback(null, returnData);
 };
 
 SocketUser.getOnlineAnonCount = function(socket, data, callback) {

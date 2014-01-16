@@ -11,11 +11,10 @@ define(['forum/accountheader'], function(header) {
 			};
 
 			socket.emit('user.saveSettings', settings, function(err) {
-				if (!err) {
-					app.alertSuccess('Settings saved!');
-				} else {
-					app.alertError('There was an error saving settings!');
+				if (err) {
+					return app.alertError('There was an error saving settings!');
 				}
+				app.alertSuccess('Settings saved!');
 			});
 			return false;
 		});
