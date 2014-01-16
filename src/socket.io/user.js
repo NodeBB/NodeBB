@@ -14,22 +14,30 @@ SocketUser.count = function(socket, data, callback) {
 };
 
 SocketUser.emailExists = function(socket, data, callback) {
-	user.email.exists(data.email, callback);
+	if(data && data.email) {
+		user.email.exists(data.email, callback);
+	}
 };
 
 // Password Reset
 SocketUser.reset = {};
 
 SocketUser.reset.send = function(socket, data, callback) {
-	user.reset.send(socket, data.email);
+	if(data && data.email) {
+		user.reset.send(socket, data.email);
+	}
 };
 
 SocketUser.reset.valid = function(socket, data, callback) {
-	user.reset.validate(socket, data.code);
+	if(data && data.code) {
+		user.reset.validate(socket, data.code);
+	}
 };
 
 SocketUser.reset.commit = function(socket, data, callback) {
-	user.reset.commit(socket, data.code, data.password);
+	if(data && data.code && data.password) {
+		user.reset.commit(socket, data.code, data.password);
+	}
 };
 
 SocketUser.isOnline = function(socket, uid, callback) {
@@ -41,14 +49,21 @@ SocketUser.isOnline = function(socket, uid, callback) {
 };
 
 SocketUser.changePassword = function(socket, data, callback) {
-	user.changePassword(socket.uid, data, callback);
+	if(data) {
+		user.changePassword(socket.uid, data, callback);
+	}
 };
 
 SocketUser.updateProfile = function(socket, data, callback) {
-	user.updateProfile(socket.uid, data, callback);
+	if(data) {
+		user.updateProfile(socket.uid, data, callback);
+	}
 };
 
 SocketUser.changePicture = function(socket, data, callback) {
+	if(!data) {
+		return;
+	}
 
 	var type = data.type;
 
@@ -82,19 +97,19 @@ SocketUser.changePicture = function(socket, data, callback) {
 };
 
 SocketUser.follow = function(socket, data, callback) {
-	if (socket.uid) {
+	if (socket.uid && data) {
 		user.follow(socket.uid, data.uid, callback);
 	}
 };
 
 SocketUser.unfollow = function(socket, data, callback) {
-	if (socket.uid) {
+	if (socket.uid && data) {
 		user.unfollow(socket.uid, data.uid, callback);
 	}
 };
 
 SocketUser.saveSettings = function(socket, data, callback) {
-	if (socket.uid) {
+	if (socket.uid && data) {
 		user.setUserFields(socket.uid, {
 			showemail: data.showemail
 		}, callback);
@@ -103,13 +118,14 @@ SocketUser.saveSettings = function(socket, data, callback) {
 
 SocketUser.getOnlineUsers = function(socket, data, callback) {
 	var returnData = [];
-
-	for (var i = 0; i < data.length; ++i) {
-		var uid = data[i];
-		if (module.parent.exports.isUserOnline(uid)) {
-			returnData.push(uid);
-		} else {
-			returnData.push(0);
+	if(data) {
+		for (var i = 0; i < data.length; ++i) {
+			var uid = data[i];
+			if (module.parent.exports.isUserOnline(uid)) {
+				returnData.push(uid);
+			} else {
+				returnData.push(0);
+			}
 		}
 	}
 
@@ -131,18 +147,20 @@ SocketUser.getActiveUsers = function(socket, data, callback) {
 };
 
 SocketUser.loadMore = function(socket, data, callback) {
-	var start = data.after,
-		end = start + 19;
+	if(data) {
+		var start = data.after,
+			end = start + 19;
 
-	user.getUsers(data.set, start, end, function(err, data) {
-		if(err) {
-			return callback(err);
-		}
+		user.getUsers(data.set, start, end, function(err, data) {
+			if(err) {
+				return callback(err);
+			}
 
-		callback(null, {
-			users: data
+			callback(null, {
+				users: data
+			});
 		});
-	});
+	}
 };
 
 /* Exports */
