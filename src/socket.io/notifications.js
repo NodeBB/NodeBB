@@ -8,7 +8,7 @@ SocketNotifs.get = function(socket, data, callback) {
 	});
 };
 
-SocketNotifs.getCount = function(socket, callback) {
+SocketNotifs.getCount = function(socket, data, callback) {
 	user.notifications.getUnreadCount(socket.uid, function(err, count) {
 		callback(err ? err.message : null, count);
 	});

@@ -72,13 +72,13 @@ SocketMeta.rooms.enter = function(socket, data) {
 	}
 
 	socket.join(data.enter);
-	server.rooms[data.enter] = server.rooms[data.enter] || {};
+	socket.manager.rooms[data.enter] = socket.manager.rooms[data.enter] || {};
 
 	if (socket.uid) {
-		server.rooms[data.enter][socket.id] = socket.uid;
+		socket.manager.rooms[data.enter][socket.id] = socket.uid;
 
-		if (data.leave && server.rooms[data.leave] && server.rooms[data.leave][socket.id] && data.enter !== data.leave) {
-			delete server.rooms[data.leave][socket.id];
+		if (data.leave && socket.manager.rooms[data.leave] && socket.manager.rooms[data.leave][socket.id] && data.enter !== data.leave) {
+			delete socket.manager.rooms[data.leave][socket.id];
 		}
 	}
 
@@ -94,7 +94,7 @@ SocketMeta.rooms.enter = function(socket, data) {
 };
 
 SocketMeta.rooms.getAll = function(socket, data, callback) {
-	callback(server.manager.rooms);
+	callback(socket.manager.rooms);
 };
 
 /* Exports */
