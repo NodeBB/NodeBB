@@ -223,7 +223,10 @@ define(['uploader'], function(uploader) {
 			clearTimeout(searchDelay);
 
 			searchDelay = setTimeout(function() {
-				socket.emit('api:admin.categories.search', searchEl.value, cid, function(err, results) {
+				socket.emit('api:admin.categories.search', {
+					username: searchEl.value,
+					cid: cid
+				}, function(err, results) {
 					var	numResults = results.length,
 						resultObj;
 					for(var x=0;x<numResults;x++) {
@@ -254,7 +257,12 @@ define(['uploader'], function(uploader) {
 				privilege = this.getAttribute('data-priv');
 			e.preventDefault();
 
-			socket.emit('api:admin.categories.setPrivilege', cid, uid, privilege, !btnEl.hasClass('active'), function(err, privileges) {
+			socket.emit('api:admin.categories.setPrivilege', {
+				cid: cid,
+				uid: uid,
+				privilege: privilege,
+				set: !btnEl.hasClass('active')
+			}, function(err, privileges) {
 				btnEl.toggleClass('active', privileges[privilege]);
 
 				Categories.refreshPrivilegeList(cid);
