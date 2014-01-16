@@ -126,8 +126,8 @@ define(function() {
 			socket.emit('user.loadMore', {
 				set: set,
 				after: after
-			}, function(data) {
-				if (data.users.length) {
+			}, function(err, data) {
+				if (data && data.users.length) {
 					onUsersLoaded(data.users, emptyContainer);
 					$('#load-more-users-btn').removeClass('disabled');
 				} else {
