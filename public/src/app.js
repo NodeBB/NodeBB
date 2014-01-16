@@ -458,7 +458,7 @@ var socket,
 		});
 	};
 
-	app.updateHeader = function(data) {
+	app.updateHeader = function(err, data) {
 		$('#search-button').off().on('click', function(e) {
 			e.stopPropagation();
 			$('#search-fields').removeClass('hide').show();

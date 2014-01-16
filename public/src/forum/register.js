@@ -45,7 +45,7 @@ define(function() {
 				socket.emit('user.emailExists', {
 					email: emailEl.val()
 				}, function(exists) {
-					if (exists === true) {
+					if (exists) {
 						showError(email_notify, 'Email address already taken!');
 					} else {
 						showSuccess(email_notify, successIcon);
@@ -73,6 +73,16 @@ define(function() {
 			} else {
 				socket.emit('user.exists', {
 					username: username.val()
+				}, function(err, exists) {
+					if(err) {
+						return app.alertError(err.message);
+					}
+
+					if (exists) {
+						showError(username_notify, 'Username already taken!');
+					} else {
+						showSuccess(username_notify, successIcon);
+					}
 				});
 			}
 		}
@@ -80,6 +90,7 @@ define(function() {
 		username.on('keyup', function() {
 			jQuery('#yourUsername').html(this.value.length > 0 ? this.value : 'username');
 		});
+
 		username.on('blur', function() {
 			validateUsername();
 		});
@@ -121,16 +132,6 @@ define(function() {
 
 		$(password_confirm).on('blur', function() {
 			validatePasswordConfirm();
-		});
-
-		ajaxify.register_events(['user.exists', 'user.emailExists']);
-
-		socket.on('user.exists', function(data) {
-			if (data.exists === true) {
-				showError(username_notify, 'Username already taken!');
-			} else {
-				showSuccess(username_notify, successIcon);
-			}
 		});
 
 		function validateForm() {

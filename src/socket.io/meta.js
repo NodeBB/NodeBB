@@ -38,13 +38,19 @@ SocketMeta.buildTitle = function(socket, text, callback) {
 SocketMeta.updateHeader = function(socket, data, callback) {
 	if (socket.uid) {
 		user.getUserFields(socket.uid, data.fields, function(err, fields) {
-			if (!err && fields) {
+			if(err) {
+				return callback(err);
+			}
+
+			if (fields) {
 				fields.uid = socket.uid;
-				callback(fields);
+				callback(null, fields);
+			} else {
+				callback([]);
 			}
 		});
 	} else {
-		callback({
+		callback(null, {
 			uid: 0,
 			username: "Anonymous User",
 			email: '',
