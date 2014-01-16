@@ -25,7 +25,7 @@ define(function() {
 
 		for (var room in data) {
 			if (room !== '') {
-				var count = data[room].length;
+				var count = $(data[room]).length;
 				total += count;
 				active_users.innerHTML = active_users.innerHTML + "<div class='alert alert-success'><strong>" + room + "</strong> " + count + " active user" + (count > 1 ? "s" : "") + "</div>";
 			}
