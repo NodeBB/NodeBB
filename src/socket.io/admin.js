@@ -150,7 +150,7 @@ SocketAdmin.categories.setPrivilege = function(socket, data, callback) {
 	}
 };
 
-SocketAdmin.categories.getPrivilegeSettings = function(cid, callback) {
+SocketAdmin.categories.getPrivilegeSettings = function(socket, cid, callback) {
 	async.parallel({
 		"+r": function(next) {
 			groups.getByGroupName('cid:' + cid + ':privileges:+r', { expand: true }, function(err, groupObj) {
@@ -182,15 +182,15 @@ SocketAdmin.categories.getPrivilegeSettings = function(cid, callback) {
 	});
 };
 
-SocketAdmin.categories.setGroupPrivilege = function(cid, gid, privilege, set, callback) {
-	if (set) {
-		groups.joinByGroupName('cid:' + cid + ':privileges:' + privilege, gid, callback);
+SocketAdmin.categories.setGroupPrivilege = function(socket, data, callback) {
+	if (data.set) {
+		groups.joinByGroupName('cid:' + data.cid + ':privileges:' + data.privilege, data.gid, callback);
 	} else {
-		groups.leaveByGroupName('cid:' + cid + ':privileges:' + privilege, gid, callback);
+		groups.leaveByGroupName('cid:' + data.cid + ':privileges:' + data.privilege, data.gid, callback);
 	}
 };
 
-SocketAdmin.categories.groupsList = function(cid, callback) {
+SocketAdmin.categories.groupsList = function(socket, cid, callback) {
 	groups.list({expand:false}, function(err, data){
 		async.map(data, function(groupObj, next) {
 			CategoryTools.groupPrivileges(cid, groupObj.gid, function(err, privileges) {
@@ -213,7 +213,7 @@ SocketAdmin.categories.groupsList = function(cid, callback) {
 SocketAdmin.themes = {};
 SocketAdmin.plugins = {};
 
-SocketAdmin.themes.getInstalled = function(callback) {
+SocketAdmin.themes.getInstalled = function(socket, data, callback) {
 	meta.themes.get(function(err, themeArr) {
 		callback(themeArr);
 	});
@@ -221,9 +221,9 @@ SocketAdmin.themes.getInstalled = function(callback) {
 
 SocketAdmin.themes.set = meta.themes.set;
 
-SocketAdmin.plugins.toggle = function(plugin_id, sessionData) {
+SocketAdmin.plugins.toggle = function(socket, plugin_id) {
 	plugins.toggleActive(plugin_id, function(status) {
-		sessionData.socket.emit('api:admin.plugins.toggle', status);
+		socket.emit('api:admin.plugins.toggle', status);
 	});
 };
 
@@ -231,7 +231,7 @@ SocketAdmin.plugins.toggle = function(plugin_id, sessionData) {
 
 SocketAdmin.config = {};
 
-SocketAdmin.config.get = function(callback, sessionData) {
+SocketAdmin.config.get = function(socket, data, callback) {
 	meta.configs.list(function(err, config) {
 		if (!err) {
 			callback(config);
@@ -239,7 +239,7 @@ SocketAdmin.config.get = function(callback, sessionData) {
 	});
 };
 
-SocketAdmin.config.set = function(data, callback, sessionData) {
+SocketAdmin.config.set = function(socket, data, callback) {
 	meta.configs.set(data.key, data.value, function(err) {
 		if (!err) {
 			callback({
@@ -252,11 +252,11 @@ SocketAdmin.config.set = function(data, callback, sessionData) {
 			});
 		}
 
-		logger.monitorConfig({io: sessionData.server}, data);
+		logger.monitorConfig({io: socket.server}, data);
 	});
 };
 
-SocketAdmin.config.remove = function(key) {
+SocketAdmin.config.remove = function(socket, key) {
 	meta.configs.remove(key);
 };
 
@@ -264,19 +264,19 @@ SocketAdmin.config.remove = function(key) {
 
 SocketAdmin.groups = {};
 
-SocketAdmin.groups.create = function(data, callback) {
+SocketAdmin.groups.create = function(socket, data, callback) {
 	groups.create(data.name, data.description, function(err, groupObj) {
 		callback(err ? err.message : null, groupObj || undefined);
 	});
 };
 
-SocketAdmin.groups.delete = function(gid, callback) {
+SocketAdmin.groups.delete = function(socket, gid, callback) {
 	groups.destroy(gid, function(err) {
 		callback(err ? err.message : null, err ? null : 'OK');
 	});
 };
 
-SocketAdmin.groups.get = function(gid, callback) {
+SocketAdmin.groups.get = function(socket, gid, callback) {
 	groups.get(gid, {
 		expand: true
 	}, function(err, groupObj) {
@@ -284,15 +284,15 @@ SocketAdmin.groups.get = function(gid, callback) {
 	});
 };
 
-SocketAdmin.groups.join = function(data, callback) {
+SocketAdmin.groups.join = function(socket, data, callback) {
 	groups.join(data.gid, data.uid, callback);
 };
 
-SocketAdmin.groups.leave = function(data, callback) {
+SocketAdmin.groups.leave = function(socket, data, callback) {
 	groups.leave(data.gid, data.uid, callback);
 };
 
-SocketAdmin.groups.update = function(data, callback) {
+SocketAdmin.groups.update = function(socket, data, callback) {
 	groups.update(data.gid, data.values, function(err) {
 		callback(err ? err.message : null);
 	});

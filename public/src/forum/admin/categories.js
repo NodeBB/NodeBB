@@ -303,7 +303,12 @@ define(['uploader'], function(uploader) {
 				gid = btnEl.parents('tr[data-gid]').attr('data-gid'),
 				privilege = this.getAttribute('data-gpriv');
 			e.preventDefault();
-			socket.emit('admin.categories.setGroupPrivilege', cid, gid, privilege, !btnEl.hasClass('active'), function(err) {
+			socket.emit('admin.categories.setGroupPrivilege', {
+				cid: cid,
+				gid: gid,
+				privilege: privilege,
+				set: !btnEl.hasClass('active')
+			}, function(err) {
 				if (!err) {
 					btnEl.toggleClass('active');
 				}
