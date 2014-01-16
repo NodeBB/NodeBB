@@ -139,8 +139,8 @@ Sockets.init = function() {
 					}
 				});
 			}
-console.log('derp');
-console.log(payload, callback);
+
+
 			var parts = payload.name.split('.'),
 				namespace = parts.slice(0, 1),
 				methodToCall = parts.reduce(function(prev, cur) {
@@ -182,7 +182,7 @@ Sockets.logoutUser = function(uid) {
 
 Sockets.emitUserCount = function() {
 	db.getObjectField('global', 'userCount', function(err, count) {
-		io.sockets.emit('user.count', {
+		io.sockets.emit('user.count', err?{message:err.message}:null, {
 			count: count
 		});
 	});
@@ -261,9 +261,9 @@ function emitTopicPostStats(callback) {
 		};
 
 		if (!callback) {
-			io.sockets.emit('post.stats', stats);
+			io.sockets.emit('post.stats', null, stats);
 		} else {
-			callback(stats);
+			callback(null, stats);
 		}
 	});
 }
@@ -282,9 +282,9 @@ function emitOnlineUserCount(callback) {
 	};
 
 	if (callback) {
-		callback(returnObj);
+		callback(null, returnObj);
 	} else {
-		io.sockets.emit('user.active.get', returnObj);
+		io.sockets.emit('user.getActiveUsers', null, returnObj);
 	}
 }
 

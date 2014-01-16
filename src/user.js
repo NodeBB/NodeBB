@@ -673,10 +673,10 @@ var bcrypt = require('bcrypt'),
 	User.count = function(callback) {
 		db.getObjectField('global', 'userCount', function(err, count) {
 			if(err) {
-				return;
+				return callback(err);
 			}
 
-			callback({
+			callback(null, {
 				count: count ? count : 0
 			});
 		});
