@@ -7,6 +7,7 @@ var	meta = require('../meta'),
 	nconf = require('nconf'),
 	gravatar = require('gravatar'),
 	winston = require('winston'),
+	server = require('./'),
 
 	SocketMeta = {};
 
@@ -71,13 +72,13 @@ SocketMeta.rooms.enter = function(socket, data) {
 	}
 
 	socket.join(data.enter);
-	socket.rooms[data.enter] = socket.rooms[data.enter] || {};
+	server.rooms[data.enter] = server.rooms[data.enter] || {};
 
 	if (socket.uid) {
-		socket.rooms[data.enter][socket.id] = socket.uid;
+		server.rooms[data.enter][socket.id] = socket.uid;
 
-		if (data.leave && socket.rooms[data.leave] && socket.rooms[data.leave][socket.id] && data.enter !== data.leave) {
-			delete socket.rooms[data.leave][socket.id];
+		if (data.leave && server.rooms[data.leave] && server.rooms[data.leave][socket.id] && data.enter !== data.leave) {
+			delete server.rooms[data.leave][socket.id];
 		}
 	}
 
@@ -88,12 +89,12 @@ SocketMeta.rooms.enter = function(socket, data) {
 	module.parent.exports.updateRoomBrowsingText(data.enter);
 
 	if (data.enter != 'admin') {
-		socket.server.sockets.in('admin').emit('event:meta.rooms.update', socket.server.sockets.manager.rooms);
+		server.in('admin').emit('event:meta.rooms.update', socket.manager.rooms);
 	}
 };
 
 SocketMeta.rooms.getAll = function(socket, data, callback) {
-	callback(socket.server.sockets.manager.rooms);
+	callback(server.manager.rooms);
 };
 
 /* Exports */
