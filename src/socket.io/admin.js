@@ -119,14 +119,14 @@ SocketAdmin.categories.search = function(socket, data, callback) {
 				if (!err) {
 					userObj.privileges = privileges;
 				} else {
-					winston.error('[socket api:admin.categories.search] Could not retrieve permissions');
+					winston.error('[socket admin.categories.search] Could not retrieve permissions');
 				}
 
 				next(null, userObj);
 			});
 		}, function(err, data) {
 			if (!callback) {
-				socket.emit('api:admin.categories.search', data);
+				socket.emit('admin.categories.search', data);
 			} else {
 				callback(null, data);
 			}
@@ -197,7 +197,7 @@ SocketAdmin.categories.groupsList = function(cid, callback) {
 				if (!err) {
 					groupObj.privileges = privileges;
 				} else {
-					winston.error('[socket api:admin.categories.groupsList] Could not retrieve permissions');
+					winston.error('[socket admin.categories.groupsList] Could not retrieve permissions');
 				}
 
 				next(null, groupObj);
@@ -223,7 +223,7 @@ SocketAdmin.themes.set = meta.themes.set;
 
 SocketAdmin.plugins.toggle = function(plugin_id, sessionData) {
 	plugins.toggleActive(plugin_id, function(status) {
-		sessionData.socket.emit('api:admin.plugins.toggle', status);
+		sessionData.socket.emit('admin.plugins.toggle', status);
 	});
 };
 

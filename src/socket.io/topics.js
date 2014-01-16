@@ -86,7 +86,7 @@ SocketTopics.delete = function(data, callback, sessionData) {
 				if (!err) {
 					module.parent.exports.emitTopicPostStats();
 					if (callback) {
-						callback('api:topic.delete', {
+						callback('topic.delete', {
 							status: 'ok',
 							tid: data.tid
 						});
@@ -104,7 +104,7 @@ SocketTopics.restore = function(data, callback, sessionData) {
 				module.parent.exports.emitTopicPostStats();
 
 				if (callback) {
-					callback('api:topic.restore', {
+					callback('topic.restore', {
 						status: 'ok',
 						tid: data.tid
 					});
@@ -220,7 +220,7 @@ SocketTopics.loadMoreRecentTopics = function(data, callback, sessionData) {
 		if (!err) {
 			callback(latestTopics);
 		} else {
-			winston.error('[socket api:topics.loadMoreRecentTopics] ' + err.message);
+			winston.error('[socket topics.loadMoreRecentTopics] ' + err.message);
 		}
 	});
 };

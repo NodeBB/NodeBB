@@ -137,7 +137,7 @@ SocketModules.chats.send = function(data, sessionData) {
 SocketModules.chats.list = function(callback, sessionData) {
 	Messaging.getRecentChats(sessionData.uid, function(err, uids) {
 		if (err) {
-			winston.warn('[(socket) api:chats.list] Problem retrieving chats: ' + err.message);
+			winston.warn('[(socket) chats.list] Problem retrieving chats: ' + err.message);
 		}
 
 		callback(uids || []);

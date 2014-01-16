@@ -94,7 +94,7 @@ Sockets.init = function() {
 					});
 				}
 
-				io.sockets.in('global').emit('api:user.isOnline', isUserOnline(uid));
+				io.sockets.in('global').emit('user.isOnline', isUserOnline(uid));
 			});
 		});
 
@@ -114,7 +114,7 @@ Sockets.init = function() {
 				}
 			}
 
-			io.sockets.in('global').emit('api:user.isOnline', isUserOnline(uid));
+			io.sockets.in('global').emit('user.isOnline', isUserOnline(uid));
 
 			emitOnlineUserCount();
 
@@ -238,11 +238,11 @@ function updateRoomBrowsingText(roomName) {
 		anonymousCount = getAnonymousCount(roomName);
 
 	if (uids.length === 0) {
-		io.sockets.in(roomName).emit('api:get_users_in_room', { users: [], anonymousCount: anonymousCount });
+		io.sockets.in(roomName).emit('get_users_in_room', { users: [], anonymousCount: anonymousCount });
 	} else {
 		user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, users) {
 			if(!err) {
-				io.sockets.in(roomName).emit('api:get_users_in_room', { users: users, anonymousCount: anonymousCount });
+				io.sockets.in(roomName).emit('get_users_in_room', { users: users, anonymousCount: anonymousCount });
 			}
 		});
 	}
@@ -284,7 +284,7 @@ function emitOnlineUserCount(callback) {
 	if (callback) {
 		callback(returnObj);
 	} else {
-		io.sockets.emit('api:user.active.get', returnObj);
+		io.sockets.emit('user.active.get', returnObj);
 	}
 }
 
