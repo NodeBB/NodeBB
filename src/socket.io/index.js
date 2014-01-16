@@ -64,7 +64,7 @@ Sockets.init = function() {
 					uid = users[sessionID] = 0;
 				}
 
-				socket.uid = uid;
+				socket.uid = parseInt(uid, 10);
 
 				Sockets.userSockets[uid] = Sockets.userSockets[uid] || [];
 				Sockets.userSockets[uid].push(socket);

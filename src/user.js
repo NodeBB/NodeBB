@@ -932,7 +932,7 @@ var bcrypt = require('bcrypt'),
 				});
 			});
 		},
-		exists: function(socket, email, callback) {
+		exists: function(email, callback) {
 			User.getUidByEmail(email, function(err, exists) {
 				callback(!!exists);
 			});
