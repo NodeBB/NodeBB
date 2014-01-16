@@ -15,6 +15,7 @@ var	groups = require('../groups'),
 
 	async = require('async'),
 	winston = require('winston'),
+	index = require('./index'),
 
 	SocketAdmin = {};
 
@@ -252,7 +253,7 @@ SocketAdmin.config.set = function(socket, data, callback) {
 			});
 		}
 
-		logger.monitorConfig({io: socket.server}, data);
+		logger.monitorConfig({io: index.server}, data);
 	});
 };
 

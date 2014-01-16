@@ -933,7 +933,7 @@ var bcrypt = require('bcrypt'),
 		},
 		exists: function(email, callback) {
 			User.getUidByEmail(email, function(err, exists) {
-				callback(!!exists);
+				callback(err, !!exists);
 			});
 		},
 		confirm: function(code, callback) {
