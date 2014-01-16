@@ -10,9 +10,9 @@ var	meta = require('../meta'),
 
 	SocketMeta = {};
 
-SocketMeta.reconnected = function(sessionData) {
-	var	uid = sessionData.uid,
-		sessionID = sessionData.socket.id;
+SocketMeta.reconnected = function(socket) {
+	var	uid = socket.uid,
+		sessionID = socket.id;
 
 	if (uid) {
 		topics.pushUnreadCount(uid);
@@ -28,17 +28,17 @@ SocketMeta.reconnected = function(sessionData) {
 	}
 };
 
-SocketMeta.buildTitle = function(text, callback) {
+SocketMeta.buildTitle = function(socket, text, callback) {
 	meta.title.build(text, function(err, title) {
 		callback(title);
 	});
 };
 
-SocketMeta.updateHeader = function(data, callback, sessionData) {
-	if (sessionData.uid) {
-		user.getUserFields(sessionData.uid, data.fields, function(err, fields) {
+SocketMeta.updateHeader = function(socket, data, callback) {
+	if (socket.uid) {
+		user.getUserFields(socket.uid, data.fields, function(err, fields) {
 			if (!err && fields) {
-				fields.uid = sessionData.uid;
+				fields.uid = socket.uid;
 				callback(fields);
 			}
 		});
@@ -57,7 +57,7 @@ SocketMeta.updateHeader = function(data, callback, sessionData) {
 	}
 };
 
-SocketMeta.getUsageStats = function(callback) {
+SocketMeta.getUsageStats = function(socket, data, callback) {
 	module.parent.exports.emitTopicPostStats(callback);
 };
 
@@ -65,19 +65,19 @@ SocketMeta.getUsageStats = function(callback) {
 
 SocketMeta.rooms = {};
 
-SocketMeta.rooms.enter = function(data, sessionData) {
+SocketMeta.rooms.enter = function(socket, data) {
 	if (data.leave !== null) {
-		sessionData.socket.leave(data.leave);
+		socket.leave(data.leave);
 	}
 
-	sessionData.socket.join(data.enter);
-	sessionData.rooms[data.enter] = sessionData.rooms[data.enter] || {};
+	socket.join(data.enter);
+	socket.rooms[data.enter] = socket.rooms[data.enter] || {};
 
-	if (sessionData.uid) {
-		sessionData.rooms[data.enter][sessionData.socket.id] = sessionData.uid;
+	if (socket.uid) {
+		socket.rooms[data.enter][socket.id] = socket.uid;
 
-		if (data.leave && sessionData.rooms[data.leave] && sessionData.rooms[data.leave][sessionData.socket.id] && data.enter !== data.leave) {
-			delete sessionData.rooms[data.leave][sessionData.socket.id];
+		if (data.leave && socket.rooms[data.leave] && socket.rooms[data.leave][socket.id] && data.enter !== data.leave) {
+			delete socket.rooms[data.leave][socket.id];
 		}
 	}
 
@@ -88,12 +88,12 @@ SocketMeta.rooms.enter = function(data, sessionData) {
 	module.parent.exports.updateRoomBrowsingText(data.enter);
 
 	if (data.enter != 'admin') {
-		sessionData.server.sockets.in('admin').emit('event:meta.rooms.update', sessionData.server.sockets.manager.rooms);
+		socket.server.sockets.in('admin').emit('event:meta.rooms.update', socket.server.sockets.manager.rooms);
 	}
 };
 
-SocketMeta.rooms.getAll = function(callback, sessionData) {
-	callback(sessionData.server.sockets.manager.rooms);
+SocketMeta.rooms.getAll = function(socket, data, callback) {
+	callback(socket.server.sockets.manager.rooms);
 };
 
 /* Exports */
