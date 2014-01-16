@@ -125,6 +125,11 @@
 				</div>
 				<div class="checkbox">
 					<label>
+						<input type="checkbox" data-field="disableDbSearch"> <strong>Disable DB search (e.g. to use search plugin)</strong>
+					</label>
+				</div>
+				<div class="checkbox">
+					<label>
 						<input type="checkbox" data-field="allowFileUploads"> <strong>Allow users to upload regular files</strong>
 					</label>
 				</div>
