@@ -46,7 +46,10 @@ var bcrypt = require('bcrypt'),
 				}
 			},
 			function(next) {
-				User.exists(userslug, function(exists) {
+				User.exists(userslug, function(err, exists) {
+					if (err) {
+						return next(err);
+					}
 					next(exists ? new Error('Username taken!') : null);
 				});
 			},
@@ -193,9 +196,7 @@ var bcrypt = require('bcrypt'),
 
 		function isSignatureValid(next) {
 			if (data.signature !== undefined && data.signature.length > meta.config.maximumSignatureLength) {
-				next({
-					error: 'Signature can\'t be longer than ' + meta.config.maximumSignatureLength + ' characters!'
-				}, false);
+				next(new Error('Signature can\'t be longer than ' + meta.config.maximumSignatureLength + ' characters!'), false);
 			} else {
 				next(null, true);
 			}
@@ -217,9 +218,7 @@ var bcrypt = require('bcrypt'),
 					}
 
 					if (!available) {
-						next({
-							error: 'Email not available!'
-						}, false);
+						next(new Error('Email not available!'), false);
 					} else {
 						next(null, true);
 					}
@@ -237,16 +236,16 @@ var bcrypt = require('bcrypt'),
 				}
 
 				if(!utils.isUserNameValid(data.username) || !userslug) {
-					return next({
-						error: 'Invalid Username!'
-					}, false);
+					return next(new Error('Invalid Username!'), false);
 				}
 
-				User.exists(userslug, function(exists) {
+				User.exists(userslug, function(err, exists) {
+					if(err) {
+						return next(err);
+					}
+
 					if(exists) {
-						next({
-							error: 'Username not available!'
-						}, false);
+						next(new Error('Username not available!'), false);
 					} else {
 						next(null, true);
 					}
@@ -667,7 +666,7 @@ var bcrypt = require('bcrypt'),
 
 	User.exists = function(userslug, callback) {
 		User.getUidByUserslug(userslug, function(err, exists) {
-			callback( !! exists);
+			callback(err, !! exists);
 		});
 	};
 

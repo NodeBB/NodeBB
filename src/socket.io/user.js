@@ -5,11 +5,7 @@ var	user = require('../user'),
 
 SocketUser.exists = function(socket, data, callback) {
 	if (data && data.username) {
-		user.exists(utils.slugify(data.username), function(exists) {
-			socket.emit('user.exists', {
-				exists: exists
-			});
-		});
+		user.exists(utils.slugify(data.username), callback);
 	}
 };
 

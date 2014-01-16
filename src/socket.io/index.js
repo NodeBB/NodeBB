@@ -139,8 +139,8 @@ Sockets.init = function() {
 					}
 				});
 			}
-
-
+console.log('derp');
+console.log(payload, callback);
 			var parts = payload.name.split('.'),
 				namespace = parts.slice(0, 1),
 				methodToCall = parts.reduce(function(prev, cur) {
