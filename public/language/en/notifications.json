@@ -1,7 +1,6 @@
 {
 	"title": "Notifications",
 	"back_to_home": "Back to NodeBB",
-	"mark_all_as_read": "Mark All as Read",
 	"outgoing_link": "Outgoing Link",
 	"outgoing_link_message": "You are now leaving",
 	"continue_to": "Continue to",
