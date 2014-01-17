@@ -47,7 +47,6 @@ var db = require('./database'),
 					}
 
 					socket.emit('posts.favourite', {
-						status: 'ok',
 						pid: pid
 					});
 				}
@@ -84,7 +83,6 @@ var db = require('./database'),
 					}
 
 					socket.emit('posts.unfavourite', {
-						status: 'ok',
 						pid: pid
 					});
 				}

@@ -262,7 +262,7 @@ var async = require('async'),
 					});
 
 					function move(pid, next) {
-						postTools.privileges(pid, uid, function(privileges) {
+						postTools.privileges(pid, uid, function(err, privileges) {
 							if(privileges.editable) {
 								Topics.movePostToTopic(pid, tid, next);
 							} else {
@@ -384,9 +384,7 @@ var async = require('async'),
 			}
 
 			function getPrivileges(next) {
-				postTools.privileges(tid, current_user, function(privData) {
-					next(null, privData);
-				});
+				postTools.privileges(tid, current_user, next);
 			}
 
 			async.parallel([getFavouritesData, addUserInfoToPosts, getPrivileges], function(err, results) {

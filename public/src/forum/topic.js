@@ -367,9 +367,14 @@ define(['composer'], function(composer) {
 					username = '@' + post.attr('data-username');
 				}
 
-				socket.emit('posts.getRawPost', {pid: pid}, function(data) {
-
-					quoted = '> ' + data.post.replace(/\n/g, '\n> ') + '\n\n';
+				socket.emit('posts.getRawPost', pid, function(err, post) {
+					if(err) {
+						return app.alert(err.message);
+					}
+					var quoted = '';
+					if(post) {
+						quoted = '> ' + post.replace(/\n/g, '\n> ') + '\n\n';
+					}
 
 					composer.newReply(tid, topic_name, username + ' said:\n' + quoted);
 				});
@@ -428,30 +433,20 @@ define(['composer'], function(composer) {
 		$('#post-container').on('click', '.delete', function(e) {
 			var pid = $(this).parents('li').attr('data-pid'),
 				postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
-				deleteAction = !postEl.hasClass('deleted') ? true : false,
-				confirmDel = confirm((deleteAction ? 'Delete' : 'Restore') + ' this post?');
+				action = !postEl.hasClass('deleted') ? 'delete' : 'restore';
 
-			if (confirmDel) {
-				if(deleteAction) {
-					socket.emit('posts.delete', {
+			bootbox.confirm('Are you sure you want to ' + action + ' this post?', function(confirm) {
+				if (confirm) {
+					socket.emit('posts.' + action, {
 						pid: pid,
 						tid: tid
 					}, function(err) {
 						if(err) {
-							return app.alertError('Can\'t delete post!');
-						}
-					});
-				} else {
-					socket.emit('posts.restore', {
-						pid: pid,
-						tid: tid
-					}, function(err) {
-						if(err) {
-							return app.alertError('Can\'t restore post!');
+							return app.alertError('Can\'t ' + action + ' post!');
 						}
 					});
 				}
-			}
+			});
 		});
 
 		$('#post-container').on('click', '.move', function(e) {
@@ -684,7 +679,7 @@ define(['composer'], function(composer) {
 		});
 
 		socket.on('posts.favourite', function(data) {
-			if (data.status === 'ok' && data.pid) {
+			if (data && data.pid) {
 				var favBtn = $('li[data-pid="' + data.pid + '"] .favourite');
 				if(favBtn.length) {
 					favBtn.addClass('btn-warning')
@@ -695,7 +690,7 @@ define(['composer'], function(composer) {
 		});
 
 		socket.on('posts.unfavourite', function(data) {
-			if (data.status === 'ok' && data.pid) {
+			if (data && data.pid) {
 				var favBtn = $('li[data-pid="' + data.pid + '"] .favourite');
 				if(favBtn.length) {
 					favBtn.removeClass('btn-warning')
@@ -855,7 +850,11 @@ define(['composer'], function(composer) {
 				favEl = postEl.find('.favourite'),
 				replyEl = postEl.find('.post_reply');
 
-				socket.emit('posts.getPrivileges', pid, function(privileges) {
+				socket.emit('posts.getPrivileges', pid, function(err, privileges) {
+					if(err) {
+						return app.alert(err.message);
+					}
+
 					if (privileges.editable) {
 						if (!postEl.hasClass('deleted')) {
 							toggle_post_tools(pid, false);

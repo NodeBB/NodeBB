@@ -3,11 +3,12 @@ var	posts = require('../posts'),
 	topics = require('../topics'),
 	favourites = require('../favourites'),
 	postTools = require('../postTools'),
+	index = require('./index'),
 
 	SocketPosts = {};
 
 SocketPosts.reply = function(socket, data, callback) {
-	if (socket.uid < 1 && parseInt(meta.config.allowGuestPosting, 10) === 0) {
+	if (!socket.uid && !parseInt(meta.config.allowGuestPosting, 10)) {
 		socket.emit('event:alert', {
 			title: 'Reply Unsuccessful',
 			message: 'You don&apos;t seem to be logged in, so you cannot reply.',
@@ -15,6 +16,10 @@ SocketPosts.reply = function(socket, data, callback) {
 			timeout: 2000
 		});
 		return;
+	}
+
+	if(!data || !data.topic_id || !data.content) {
+		return callback(new Error('invalid data'));
 	}
 
 	topics.reply(data.topic_id, socket.uid, data.content, function(err, postData) {
@@ -38,7 +43,7 @@ SocketPosts.reply = function(socket, data, callback) {
 					timeout: 7500
 				});
 			}
-			return;
+			return callback(err);
 		}
 
 		if (postData) {
@@ -54,37 +59,40 @@ SocketPosts.reply = function(socket, data, callback) {
 			var socketData = {
 				posts: [postData]
 			};
-			socket.server.sockets.in('topic_' + postData.tid).emit('event:new_post', socketData);
-			socket.server.sockets.in('recent_posts').emit('event:new_post', socketData);
-			socket.server.sockets.in('user/' + postData.uid).emit('event:new_post', socketData);
+			index.server.sockets.in('topic_' + postData.tid).emit('event:new_post', socketData);
+			index.server.sockets.in('recent_posts').emit('event:new_post', socketData);
+			index.server.sockets.in('user/' + postData.uid).emit('event:new_post', socketData);
 			callback();
 		}
-
 	});
 };
 
 SocketPosts.favourite = function(socket, data) {
-	favourites.favourite(data.pid, data.room_id, socket.uid, socket);
+	if(data && data.pid && data.room_id) {
+		favourites.favourite(data.pid, data.room_id, socket.uid, socket);
+	}
 };
 
 SocketPosts.unfavourite = function(socket, data) {
-	favourites.unfavourite(data.pid, data.room_id, socket.uid, socket);
+	if(data && data.pid && data.room_id) {
+		favourites.unfavourite(data.pid, data.room_id, socket.uid, socket);
+	}
 };
 
 SocketPosts.uploadImage = function(socket, data, callback) {
-	posts.uploadPostImage(data, callback);
+	if(data) {
+		posts.uploadPostImage(data, callback);
+	}
 };
 
 SocketPosts.uploadFile = function(socket, data, callback) {
-	posts.uploadPostFile(data, callback);
+	if(data) {
+		posts.uploadPostFile(data, callback);
+	}
 };
 
-SocketPosts.getRawPost = function(socket, data, callback) {
-	posts.getPostField(data.pid, 'content', function(err, raw) {
-		callback({
-			post: raw
-		});
-	});
+SocketPosts.getRawPost = function(socket, pid, callback) {
+	posts.getPostField(pid, 'content', callback);
 };
 
 SocketPosts.edit = function(socket, data, callback) {
@@ -96,6 +104,8 @@ SocketPosts.edit = function(socket, data, callback) {
 			timeout: 2000
 		});
 		return;
+	} else if(!data || !data.pid || !data.title || !data.content) {
+		return callback(new Error('invalid data'));
 	} else if (!data.title || data.title.length < parseInt(meta.config.minimumTitleLength, 10)) {
 		topics.emitTitleTooShortAlert(socket);
 		return;
@@ -104,11 +114,15 @@ SocketPosts.edit = function(socket, data, callback) {
 		return;
 	}
 
-	postTools.edit(socket.uid, data.pid, data.title, data.content, data.images);
+	postTools.edit(socket.uid, data.pid, data.title, data.content);
 	callback();
 };
 
 SocketPosts.delete = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
+
 	postTools.delete(socket.uid, data.pid, function(err) {
 
 		if(err) {
@@ -117,14 +131,18 @@ SocketPosts.delete = function(socket, data, callback) {
 
 		module.parent.exports.emitTopicPostStats();
 
-		socket.server.sockets.in('topic_' + data.tid).emit('event:post_deleted', {
+		index.server.sockets.in('topic_' + data.tid).emit('event:post_deleted', {
 			pid: data.pid
 		});
-		callback(null);
+		callback();
 	});
 };
 
 SocketPosts.restore = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
+
 	postTools.restore(socket.uid, data.pid, function(err) {
 		if(err) {
 			return callback(err);
@@ -132,17 +150,21 @@ SocketPosts.restore = function(socket, data, callback) {
 
 		module.parent.exports.emitTopicPostStats();
 
-		socket.server.sockets.in('topic_' + data.tid).emit('event:post_restored', {
+		index.server.sockets.in('topic_' + data.tid).emit('event:post_restored', {
 			pid: data.pid
 		});
-		callback(null);
+
+		callback();
 	});
 };
 
 SocketPosts.getPrivileges = function(socket, pid, callback) {
-	postTools.privileges(pid, socket.uid, function(privileges) {
+	postTools.privileges(pid, socket.uid, function(err, privileges) {
+		if(err) {
+			return callback(err);
+		}
 		privileges.pid = parseInt(pid);
-		callback(privileges);
+		callback(null, privileges);
 	});
 };
 

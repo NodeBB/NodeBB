@@ -45,9 +45,10 @@ define(['taskbar'], function(taskbar) {
 
 	composer.editPost = function(pid) {
 		if(allowed()) {
-			socket.emit('modules.composer.push', {
-				pid: pid
-			}, function(err, threadData) {
+			socket.emit('modules.composer.push', pid, function(err, threadData) {
+				if(err) {
+					return app.alertError(err.message);
+				}
 				push({
 					pid: pid,
 					title: threadData.title,

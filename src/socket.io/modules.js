@@ -19,31 +19,29 @@ var	posts = require('../posts'),
 
 SocketModules.composer = {};
 
-SocketModules.composer.push = function(socket, data, callback) {
-	if (parseInt(socket.uid, 10) > 0 || parseInt(meta.config.allowGuestPosting, 10) === 1) {
-		if (parseInt(data.pid, 10) > 0) {
+SocketModules.composer.push = function(socket, pid, callback) {
+	if (socket.uid || parseInt(meta.config.allowGuestPosting, 10)) {
+		if (parseInt(pid, 10) > 0) {
 
 			async.parallel([
 				function(next) {
-					posts.getPostFields(data.pid, ['content'], next);
+					posts.getPostFields(pid, ['content'], next);
 				},
 				function(next) {
-					topics.getTitleByPid(data.pid, function(title) {
+					topics.getTitleByPid(pid, function(title) {
 						next(null, title);
 					});
 				}
 			], function(err, results) {
 				callback(err, {
 					title: results[1],
-					pid: data.pid,
+					pid: pid,
 					body: results[0].content
 				});
 			});
 		}
 	} else {
-		callback(null, {
-			error: 'no-uid'
-		});
+		callback(new Error('no-uid'));
 	}
 };
 
