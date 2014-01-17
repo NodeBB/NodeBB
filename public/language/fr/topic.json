@@ -12,6 +12,8 @@
 	"reply": "Répondre",
 	"edit": "Editer",
 	"delete": "Supprimer",
+	"move": "Déplacer",
+	"fork": "Scinder",
 	"banned": "bannir",
 	"link": "Lien",
 
@@ -19,11 +21,13 @@
 	"thread_tools.pin": "Epingler le fil",
 	"thread_tools.lock": "Verrouiller le fil",
 	"thread_tools.move": "Déplacer le fil",
+	"thread_tools.fork": "Scinder le fil",
 	"thread_tools.delete": "Supprimer le fil",
 
 	"load_categories": "Chargement des Categories",
 	"disabled_categories_note": "Les Catégories Désactivées sont grisées",
 	"confirm_move": "Déplacer",
+	"confirm_fork": "Scinder",
 
 	"favourite": "Favoris",
 	"favourites": "Favoris",
@@ -34,7 +38,12 @@
 	"posted_by": "posté par",
 	"loading_more_posts": "Chargement d'autres Messages",
 	"move_topic": "Déplacer le Sujet",
+	"move_post": "Déplacer le Post",
+	"fork_topic": "Scinder le Topic",
 	"topic_will_be_moved_to": "Ce sujet sera déplacé vers la catégorie",
+	"fork_topic_instruction": "Cliquer sur les postes à scinder",
+	"fork_no_pids": "Aucun poste sélectionné!",
+	"fork_success": "Topic scinder!",
 
 	"reputation": "réputation",
 	"posts": "messages"
