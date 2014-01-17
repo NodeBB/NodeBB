@@ -402,7 +402,9 @@ define(['taskbar'], function(taskbar) {
 		}
 
 		if(config.imgurClientIDSet) {
-			postContainer.find('.upload-instructions').removeClass('hide');
+			if(env === 'md' || env === 'lg') {
+				postContainer.find('.upload-instructions').removeClass('hide');
+			}
 			postContainer.find('.img-upload-btn').removeClass('hide');
 		}
 

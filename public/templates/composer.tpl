@@ -38,8 +38,13 @@
 		</div>
 
 		<div class="imagedrop"><div>Drag and Drop Images Here</div></div>
-		<div class="text-center upload-instructions hide visible-lg visible-md">
-			<small>Upload images by dragging & dropping them</small>
+
+		<div class="text-center">
+			<span>
+				<small>Content is parsed with <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a>. </small>
+				<span class="upload-instructions hide"><small>Upload images by dragging & dropping them.</small></span>
+			</span>
+
 		</div>
 
 		<div class="resizer"><div class="trigger text-center"><i class="fa fa-chevron-up"></i></div></div>
