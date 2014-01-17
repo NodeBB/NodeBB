@@ -124,9 +124,11 @@ var db = require('./database.js'),
 
 	Categories.getCategoryTopics = function(cid, start, stop, uid, callback) {
 		Categories.getTopicIds(cid, start, stop, function(err, tids) {
-			topics.getTopicsByTids(tids, cid, uid, function(err, topicsData) {
-				callback(err, topicsData);
-			});
+			if(err) {
+				return callback(err);
+			}
+
+			topics.getTopicsByTids(tids, cid, uid, callback);
 		});
 	};
 

@@ -11,11 +11,15 @@ SocketCategories.get = function(socket, data, callback) {
 };
 
 SocketCategories.loadMore = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
+
 	var start = data.after,
 		end = start + 9;
 
-	categories.getCategoryTopics(data.cid, start, end, socket.uid, function(topics) {
-		callback(null, {
+	categories.getCategoryTopics(data.cid, start, end, socket.uid, function(err, topics) {
+		callback(err, {
 			topics: topics
 		});
 	});

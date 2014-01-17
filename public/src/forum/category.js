@@ -133,7 +133,11 @@ define(['composer'], function(composer) {
 			cid: cid,
 			after: $('#topics-container').children('.category-item').length
 		}, function (err, data) {
-			if (!err && data.topics.length) {
+			if(err) {
+				return app.alertError(err.message);
+			}
+
+			if (data && data.topics.length) {
 				Category.onTopicsLoaded(data.topics);
 			}
 			loadingMoreTopics = false;
