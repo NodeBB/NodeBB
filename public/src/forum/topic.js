@@ -92,7 +92,7 @@ define(['composer'], function(composer) {
 
 					var loadingEl = document.getElementById('categories-loading');
 					if (loadingEl) {
-						socket.emit('categories.get', function(data) {
+						socket.emit('categories.get', function(err, data) {
 							// Render categories
 							var categoriesFrag = document.createDocumentFragment(),
 								categoryEl = document.createElement('li'),

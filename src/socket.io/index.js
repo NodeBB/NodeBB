@@ -134,7 +134,7 @@ Sockets.init = function() {
 		socket.on('*', function(payload, callback) {
 			function callMethod(method) {
 				method.call(null, socket, payload.args.length ? payload.args[0] : null, function(err, result) {
-					if(callback) {
+					if (callback) {
 						callback(err?{message:err.message}:null, result);
 					}
 				});
