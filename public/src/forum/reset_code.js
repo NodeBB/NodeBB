@@ -39,12 +39,12 @@ define(function() {
 		// Enable the form if the code is valid
 		socket.emit('user.reset.valid', {
 			code: reset_code
-		}, function(err, data) {
+		}, function(err, valid) {
 			if(err) {
 				return app.alertError(err.message);
 			}
 
-			if ( !! data.valid) {
+			if (valid) {
 				resetEl.disabled = false;
 			} else {
 				var formEl = document.getElementById('reset-form');
