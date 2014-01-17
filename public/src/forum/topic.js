@@ -321,6 +321,17 @@ define(['composer'], function(composer) {
 			$('#post-container').on('click', '.deleted', function(ev) {
 				$(this).toggleClass('deleted-expanded');
 			});
+
+			// Show the paginator block, now that the DOM has finished loading
+			(function delayedHeaderUpdate() {
+				if (!Topic.postCount) {
+					setTimeout(function() {
+						delayedHeaderUpdate();
+					}, 25);
+				} else {
+					updateHeader();
+				}
+			})();
 		});
 
 		function enableInfiniteLoading() {
@@ -893,7 +904,6 @@ define(['composer'], function(composer) {
 		Topic.postCount = templates.get('postcount');
 
 		window.onscroll = updateHeader;
-		window.onload = updateHeader;
 	};
 
 	function updateHeader() {
