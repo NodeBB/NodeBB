@@ -295,6 +295,9 @@ var path = require('path'),
 						}
 
 						topics.getTopicsByTids(tids, 0, 0, function (err, topics) {
+							if (err){
+								return callback(err, null);
+							}
 							callback(null, topics);
 						});
 					});
