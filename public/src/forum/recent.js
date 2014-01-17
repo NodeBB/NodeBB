@@ -102,7 +102,10 @@ define(function() {
 		socket.emit('topics.loadMoreRecentTopics', {
 			after: $('#topics-container').children('li').length,
 			term: active
-		}, function(data) {
+		}, function(err, data) {
+			if(err) {
+				return app.alertError(err.message);
+			}
 			if (data.topics && data.topics.length) {
 				Recent.onTopicsLoaded(data.topics);
 			}

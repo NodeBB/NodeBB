@@ -138,9 +138,11 @@ SocketTopics.createTopicFromPosts = function(socket, data, callback) {
 		return;
 	}
 
-	topics.createTopicFromPosts(socket.uid, data.title, data.pids, function(err, data) {
-		callback(err, data);
-	});
+	if(!data || !data.title || !data.pids || !Array.isArray(data.pids)) {
+		return callback(new Error('invalid data'));
+	}
+
+	topics.createTopicFromPosts(socket.uid, data.title, data.pids, callback);
 };
 
 SocketTopics.movePost = function(socket, data, callback) {
@@ -154,79 +156,74 @@ SocketTopics.movePost = function(socket, data, callback) {
 		return;
 	}
 
-	topics.movePostToTopic(data.pid, data.tid, function(err, data) {
-		callback(err, data);
-	});
+	if(!data || !data.pid || !data.tid) {
+		return callback(new Error('invalid data'));
+	}
+
+	topics.movePostToTopic(data.pid, data.tid, callback);
 };
 
 SocketTopics.move = function(socket, data, callback) {
+
+	if(!data || !data.tid || !data.cid) {
+		return callback(new Error('invalid data'));
+	}
+
 	threadTools.move(data.tid, data.cid, function(err) {
 		if(err) {
 			return callback(err);
 		}
 
 		index.server.sockets.in('topic_' + data.tid).emit('event:topic_moved', {
-			tid: tid
+			tid: data.tid
 		});
+
+		callback(null);
 	});
 };
 
 SocketTopics.followCheck = function(socket, tid, callback) {
-	threadTools.isFollowing(tid, socket.uid, function(following) {
-		callback(following);
-	});
+	threadTools.isFollowing(tid, socket.uid, callback);
 };
 
 SocketTopics.follow = function(socket, tid, callback) {
-	if (socket.uid) {
-		threadTools.toggleFollow(tid, socket.uid, function(follow) {
-			if (follow.status === 'ok') {
-				callback(follow);
-			}
-		});
-	} else {
-		callback({
-			status: 'error',
-			error: 'not-logged-in'
-		});
+	if(!socket.uid) {
+		return callback(new Error('not-logged-in'));
 	}
+
+
+	threadTools.toggleFollow(tid, socket.uid, callback);
 };
 
 SocketTopics.loadMore = function(socket, data, callback) {
+	if(!data || !data.tid) {
+		return callback(new Error('invalid data'));
+	}
+
 	var start = data.after,
 		end = start + 9;
 
 	topics.getTopicPosts(data.tid, start, end, socket.uid, function(err, posts) {
-		if(err) {
-			return callback(err);
-
-		}
-		callback(null, {
-			posts: posts
-		});
+		callback(err, {posts: posts});
 	});
 };
 
 SocketTopics.loadMoreRecentTopics = function(socket, data, callback) {
+	if(!data || !data.term) {
+		return callback(new Error('invalid data'));
+	}
+
 	var start = data.after,
 		end = start + 9;
 
-	topics.getLatestTopics(socket.uid, start, end, data.term, function(err, latestTopics) {
-		if(err) {
-			return callback(err);
-		}
-
-		callback(null, latestTopics);
-	});
+	topics.getLatestTopics(socket.uid, start, end, data.term, callback);
 };
 
 SocketTopics.loadMoreUnreadTopics = function(socket, data, callback) {
 	var start = data.after,
 		end = start + 9;
 
-	topics.getUnreadTopics(socket.uid, start, end, function(unreadTopics) {
-		callback(null, unreadTopics);
-	});
+	topics.getUnreadTopics(socket.uid, start, end, callback);
 };
 
 module.exports = SocketTopics;

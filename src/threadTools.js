@@ -195,49 +195,40 @@ var winston = require('winston'),
 		});
 	}
 
-	ThreadTools.isFollowing = function(tid, current_user, callback) {
-		db.isSetMember('tid:' + tid + ':followers', current_user, function(err, following) {
-			callback(following);
-		});
+	ThreadTools.isFollowing = function(tid, uid, callback) {
+		db.isSetMember('tid:' + tid + ':followers', uid, callback);
 	}
 
-	ThreadTools.toggleFollow = function(tid, current_user, callback) {
-		ThreadTools.isFollowing(tid, current_user, function(following) {
-			if (!following) {
-				db.setAdd('tid:' + tid + ':followers', current_user, function(err, success) {
-					if (callback) {
-						if (!err) {
-							callback({
-								status: 'ok',
-								follow: true
-							});
-						} else callback({
-							status: 'error'
-						});
-					}
-				});
-			} else {
-				db.setRemove('tid:' + tid + ':followers', current_user, function(err, success) {
-					if (callback) {
-						if (!err) {
-							callback({
-								status: 'ok',
-								follow: false
-							});
-						} else callback({
-							status: 'error'
-						});
-					}
-				});
+	ThreadTools.toggleFollow = function(tid, uid, callback) {
+		ThreadTools.isFollowing(tid, uid, function(err, following) {
+			if(err) {
+				return callback(err);
 			}
+
+			db[following?'setRemove':'setAdd']('tid:' + tid + ':followers', uid, function(err, success) {
+				if (callback) {
+					if(err) {
+						return callback(err);
+					}
+
+					callback(null, !following);
+				}
+			});
 		});
 	}
 
 	ThreadTools.getFollowers = function(tid, callback) {
 		db.getSetMembers('tid:' + tid + ':followers', function(err, followers) {
-			callback(err, followers.map(function(follower) {
-				return parseInt(follower, 10);
-			}));
+			if(err) {
+				return callback(err);
+			}
+
+			if(followers) {
+				followers = followers.map(function(follower) {
+					return parseInt(follower, 10);
+				});
+			}
+			callback(null, followers);
 		});
 	}
 

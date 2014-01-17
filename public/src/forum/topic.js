@@ -138,18 +138,10 @@ define(['composer'], function(composer) {
 									socket.emit('topics.move', {
 										tid: tid,
 										cid: targetCid
-									}, function(data) {
+									}, function(err) {
 										moveThreadModal.modal('hide');
-										if (data.status === 'ok') {
-											app.alert({
-												'alert_id': 'thread_move',
-												type: 'success',
-												title: 'Topic Successfully Moved',
-												message: 'This topic has been successfully moved to ' + targetCatLabel,
-												timeout: 5000
-											});
-										} else {
-											app.alert({
+										if(err) {
+											return app.alert({
 												'alert_id': 'thread_move',
 												type: 'danger',
 												title: 'Unable to Move Topic',
@@ -157,6 +149,14 @@ define(['composer'], function(composer) {
 												timeout: 5000
 											});
 										}
+
+										app.alert({
+											'alert_id': 'thread_move',
+											type: 'success',
+											title: 'Topic Successfully Moved',
+											message: 'This topic has been successfully moved to ' + targetCatLabel,
+											timeout: 5000
+										});
 									});
 								}
 							});
@@ -288,15 +288,15 @@ define(['composer'], function(composer) {
 					}
 				};
 
-			socket.emit('topics.followCheck', tid, function(state) {
+			socket.emit('topics.followCheck', tid, function(err, state) {
 				set_follow_state(state, true);
 			});
+
 			if (followEl[0]) {
 				followEl[0].addEventListener('click', function() {
-					socket.emit('topics.follow', tid, function(data) {
-						if (data.status && data.status === 'ok') set_follow_state(data.follow);
-						else {
-							app.alert({
+					socket.emit('topics.follow', tid, function(err, state) {
+						if(err) {
+							return app.alert({
 								type: 'danger',
 								alert_id: 'topic_follow',
 								title: 'Please Log In',
@@ -304,6 +304,8 @@ define(['composer'], function(composer) {
 								timeout: 5000
 							});
 						}
+
+						set_follow_state(state);
 					});
 				}, false);
 			}
@@ -1104,9 +1106,13 @@ define(['composer'], function(composer) {
 		socket.emit('topics.loadMore', {
 			tid: tid,
 			after: parseInt($('#post-container .post-row.infiniteloaded').last().attr('data-index'), 10) + 1
-		}, function (data) {
+		}, function (err, data) {
+			if(err) {
+				return app.alertError(err.message);
+			}
+
 			infiniteLoaderActive = false;
-			if (data.posts.length) {
+			if (data && data.posts && data.posts.length) {
 				indicatorEl.attr('done', '0');
 				createNewPosts(data, true);
 			} else {
