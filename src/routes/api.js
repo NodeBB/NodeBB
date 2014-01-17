@@ -300,6 +300,7 @@ var path = require('path'),
 						}
 
 						if(!results) {
+							results = [];
 							results[0] = results[1] = [];
 						}
 
