@@ -372,7 +372,7 @@ define(['composer'], function(composer) {
 			if (thread_state.locked !== '1') {
 				var username = '',
 					post = $(this).parents('li[data-pid]'),
-					pid = $(this).parents('li').attr('data-pid');
+					pid = $(this).parents('.post-row').attr('data-pid');
 
 				if (post.length) {
 					username = '@' + post.attr('data-username');
@@ -393,8 +393,8 @@ define(['composer'], function(composer) {
 		});
 
 		$('#post-container').on('click', '.favourite', function() {
-			var pid = $(this).parents('li').attr('data-pid');
-			var uid = $(this).parents('li').attr('data-uid');
+			var pid = $(this).parents('.post-row').attr('data-pid');
+			var uid = $(this).parents('.post-row').attr('data-uid');
 
 			if ($(this).attr('data-favourited') == 'false') {
 				socket.emit('posts.favourite', {
@@ -410,7 +410,7 @@ define(['composer'], function(composer) {
 		});
 
 		$('#post-container').on('click', '.link', function() {
-			var pid = $(this).parents('li').attr('data-pid');
+			var pid = $(this).parents('.post-row').attr('data-pid');
 			$('#post_' + pid + '_link').val(window.location.href + "#" + pid).stop(true, false).fadeIn().select();
 			$('#post_' + pid + '_link').off('blur').on('blur', function() {
 				$(this).fadeOut();
@@ -418,31 +418,31 @@ define(['composer'], function(composer) {
 		});
 
 		$('#post-container').on('click', '.twitter-share', function () {
-			var pid = $(this).parents('li').attr('data-pid');
+			var pid = $(this).parents('.post-row').attr('data-pid');
 			window.open('https://twitter.com/intent/tweet?url=' + encodeURIComponent(window.location.href + '#' + pid) + '&text=' + topic_name, '_blank', 'width=550,height=420,scrollbars=no,status=no');
 			return false;
 		});
 
 		$('#post-container').on('click', '.facebook-share', function () {
-			var pid = $(this).parents('li').attr('data-pid');
+			var pid = $(this).parents('.post-row').attr('data-pid');
 			window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href + '#' + pid), '_blank', 'width=626,height=436,scrollbars=no,status=no');
 			return false;
 		});
 
 		$('#post-container').on('click', '.google-share', function () {
-			var pid = $(this).parents('li').attr('data-pid');
+			var pid = $(this).parents('.post-row').attr('data-pid');
 			window.open('https://plus.google.com/share?url=' + encodeURIComponent(window.location.href + '#' + pid), '_blank', 'width=500,height=570,scrollbars=no,status=no');
 			return false;
 		});
 
 		$('#post-container').on('click', '.edit', function(e) {
-			var pid = $(this).parents('li').attr('data-pid');
+			var pid = $(this).parents('.post-row').attr('data-pid');
 
 			composer.editPost(pid);
 		});
 
 		$('#post-container').on('click', '.delete', function(e) {
-			var pid = $(this).parents('li').attr('data-pid'),
+			var pid = $(this).parents('.post-row').attr('data-pid'),
 				postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
 				action = !postEl.hasClass('deleted') ? 'delete' : 'restore';
 
@@ -464,8 +464,8 @@ define(['composer'], function(composer) {
 			var moveModal = $('#move-post-modal'),
 				moveBtn = moveModal.find('#move_post_commit'),
 				topicId = moveModal.find('#topicId'),
-				post = $(this).parents('li'),
-				pid = $(this).parents('li').attr('data-pid');
+				post = $(this).parents('.post-row'),
+				pid = $(this).parents('.post-row').attr('data-pid');
 
 			moveModal.removeClass('hide');
 			moveModal.css("position", "fixed")
