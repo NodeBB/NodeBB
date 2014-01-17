@@ -3,17 +3,11 @@ var	categories = require('../categories'),
 	SocketCategories = {};
 
 SocketCategories.getRecentReplies = function(socket, tid, callback) {
-	categories.getRecentReplies(tid, socket.uid, 4, function(err, replies) {
-		callback(replies);
-	});
+	categories.getRecentReplies(tid, socket.uid, 4, callback);
 };
 
 SocketCategories.get = function(socket, data, callback) {
-	categories.getAllCategories(0, function(err, categories) {
-		if(callback) {
-			callback(categories);
-		}
-	});
+	categories.getAllCategories(0, callback);
 };
 
 SocketCategories.loadMore = function(socket, data, callback) {
@@ -21,7 +15,7 @@ SocketCategories.loadMore = function(socket, data, callback) {
 		end = start + 9;
 
 	categories.getCategoryTopics(data.cid, start, end, socket.uid, function(topics) {
-		callback({
+		callback(null, {
 			topics: topics
 		});
 	});

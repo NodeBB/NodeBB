@@ -132,16 +132,16 @@ define(['composer'], function(composer) {
 		socket.emit('categories.loadMore', {
 			cid: cid,
 			after: $('#topics-container').children('.category-item').length
-		}, function (data) {
-			if (data.topics.length) {
+		}, function (err, data) {
+			if (!err && data.topics.length) {
 				Category.onTopicsLoaded(data.topics);
 			}
 			loadingMoreTopics = false;
 		});
 	}
 
-	function renderRecentReplies(posts) {
-		if (!posts || posts.length === 0) {
+	function renderRecentReplies(err, posts) {
+		if (err || !posts || posts.length === 0) {
 			return;
 		}
 
