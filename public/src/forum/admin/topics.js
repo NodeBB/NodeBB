@@ -54,10 +54,13 @@ define(function() {
 				socket.emit('admin.topics.getMore', {
 					limit: 10,
 					after: lastTid
-				}, function(topics) {
+				}, function(err, topics) {
+					if(err) {
+						return app.alertError(err.message);
+					}
+
 					var btnEl = document.getElementById('topics_loadmore');
 
-					topics = JSON.parse(topics);
 					if (topics.length > 0) {
 						var html = templates.prepare(templates['admin/topics'].blocks['topics']).parse({
 								topics: topics

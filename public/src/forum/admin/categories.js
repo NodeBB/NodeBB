@@ -87,22 +87,25 @@ define(['uploader'], function(uploader) {
 			};
 
 			socket.emit('admin.categories.create', category, function(err, data) {
-				if (!err) {
-					app.alert({
-						alert_id: 'category_created',
-						title: 'Created',
-						message: 'Category successfully created!',
-						type: 'success',
-						timeout: 2000
-					});
-
-					var html = templates.prepare(templates['admin/categories'].blocks['categories']).parse({
-						categories: [data]
-					});
-					$('#entry-container').append(html);
-
-					$('#new-category-modal').modal('hide');
+				if(err) {
+					return app.alertError(err.message);
 				}
+
+				app.alert({
+					alert_id: 'category_created',
+					title: 'Created',
+					message: 'Category successfully created!',
+					type: 'success',
+					timeout: 2000
+				});
+
+				var html = templates.prepare(templates['admin/categories'].blocks['categories']).parse({
+					categories: [data]
+				});
+
+				$('#entry-container').append(html);
+				$('#new-category-modal').modal('hide');
+
 			});
 		}
 
@@ -227,6 +230,10 @@ define(['uploader'], function(uploader) {
 					username: searchEl.value,
 					cid: cid
 				}, function(err, results) {
+					if(err) {
+						return app.alertError(err.message);
+					}
+
 					var	numResults = results.length,
 						resultObj;
 					for(var x=0;x<numResults;x++) {
@@ -276,6 +283,9 @@ define(['uploader'], function(uploader) {
 
 		// User Groups and privileges
 		socket.emit('admin.categories.groupsList', cid, function(err, results) {
+			if(err) {
+				return app.alertError(err.message);
+			}
 			var groupsFrag = document.createDocumentFragment(),
 				numResults = results.length,
 				trEl = document.createElement('tr'),

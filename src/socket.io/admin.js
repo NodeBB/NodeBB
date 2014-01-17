@@ -35,9 +35,11 @@ SocketAdmin.before = function(socket, next) {
 SocketAdmin.topics = {};
 
 SocketAdmin.topics.getMore = function(socket, data, callback) {
-	topics.getAllTopics(data.limit, data.after, function(err, topics) {
-		callback(JSON.stringify(topics));
-	});
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
+
+	topics.getAllTopics(data.limit, data.after, callback);
 };
 
 /* User */
@@ -53,15 +55,18 @@ SocketAdmin.user.removeAdmin = function(socket, theirid) {
 };
 
 SocketAdmin.user.createUser = function(socket, user, callback) {
+	if(!user) {
+		return callback(new Error('invalid data'));
+	}
 	admin.user.createUser(socket.uid, user, callback);
 };
 
 SocketAdmin.user.banUser = function(socket, theirid) {
 	admin.user.banUser(socket.uid, theirid, socket, function(isBanned) {
 		if(isBanned) {
-			if(socket.userSockets[theirid]) {
-				for(var i=0; i<socket.userSockets[theirid].length; ++i) {
-					socket.userSockets[theirid][i].emit('event:banned');
+			if(index.userSockets[theirid]) {
+				for(var i=0; i<index.userSockets[theirid].length; ++i) {
+					index.userSockets[theirid][i].emit('event:banned');
 				}
 			}
 			module.parent.exports.logoutUser(theirid);
@@ -97,46 +102,56 @@ SocketAdmin.user.search = function(socket, username, callback) {
 SocketAdmin.categories = {};
 
 SocketAdmin.categories.create = function(socket, data, callback) {
-	categories.create(data, function(err, data) {
-		callback(err, data);
-	});
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
+
+	categories.create(data, callback);
 };
 
 SocketAdmin.categories.update = function(socket, data) {
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
+
 	admin.categories.update(data, socket);
 };
 
 SocketAdmin.categories.search = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
+
 	var	username = data.username,
 		cid = data.cid;
 
 	user.search(username, function(data) {
 		async.map(data, function(userObj, next) {
 			CategoryTools.privileges(cid, userObj.uid, function(err, privileges) {
-				if (!err) {
-					userObj.privileges = privileges;
-				} else {
-					winston.error('[socket admin.categories.search] Could not retrieve permissions');
+				if(err) {
+					return next(err);
 				}
 
+				userObj.privileges = privileges;
 				next(null, userObj);
 			});
-		}, function(err, data) {
-			if (!callback) {
-				socket.emit('admin.categories.search', data);
-			} else {
-				callback(null, data);
-			}
-		});
+		}, callback);
 	});
 };
 
 SocketAdmin.categories.setPrivilege = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
+
 	var	cid = data.cid,
 		uid = data.uid,
 		privilege = data.privilege,
 		set = data.set,
 		cb = function(err) {
+			if(err) {
+				return callback(err);
+			}
 			CategoryTools.privileges(cid, uid, callback);
 		};
 
@@ -172,6 +187,10 @@ SocketAdmin.categories.getPrivilegeSettings = function(socket, cid, callback) {
 			});
 		}
 	}, function(err, data) {
+		if(err) {
+			return callback(err);
+		}
+
 		callback(null, {
 			"+r": data['+r'].members,
 			"+w": data['+w'].members
@@ -180,6 +199,10 @@ SocketAdmin.categories.getPrivilegeSettings = function(socket, cid, callback) {
 };
 
 SocketAdmin.categories.setGroupPrivilege = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
+
 	if (data.set) {
 		groups.joinByGroupName('cid:' + data.cid + ':privileges:' + data.privilege, data.gid, callback);
 	} else {
@@ -189,19 +212,20 @@ SocketAdmin.categories.setGroupPrivilege = function(socket, data, callback) {
 
 SocketAdmin.categories.groupsList = function(socket, cid, callback) {
 	groups.list({expand:false}, function(err, data){
+		if(err) {
+			return callback(err);
+		}
+
 		async.map(data, function(groupObj, next) {
 			CategoryTools.groupPrivileges(cid, groupObj.gid, function(err, privileges) {
-				if (!err) {
-					groupObj.privileges = privileges;
-				} else {
-					winston.error('[socket admin.categories.groupsList] Could not retrieve permissions');
+				if(err) {
+					return next(err);
 				}
 
+				groupObj.privileges = privileges;
 				next(null, groupObj);
 			});
-		}, function(err, data) {
-			callback(null, data);
-		});
+		}, callback);
 	});
 };
 
@@ -211,12 +235,15 @@ SocketAdmin.themes = {};
 SocketAdmin.plugins = {};
 
 SocketAdmin.themes.getInstalled = function(socket, data, callback) {
-	meta.themes.get(function(err, themeArr) {
-		callback(themeArr);
-	});
+	meta.themes.get(callback);
 };
 
-SocketAdmin.themes.set = meta.themes.set;
+SocketAdmin.themes.set = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
+	meta.themes.set(data, callback);
+}
 
 SocketAdmin.plugins.toggle = function(socket, plugin_id) {
 	plugins.toggleActive(plugin_id, function(status) {
@@ -233,6 +260,10 @@ SocketAdmin.config.get = function(socket, data, callback) {
 };
 
 SocketAdmin.config.set = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
+
 	meta.configs.set(data.key, data.value, function(err) {
 		if(err) {
 			return callback(err);
@@ -258,34 +289,48 @@ SocketAdmin.config.remove = function(socket, key) {
 SocketAdmin.groups = {};
 
 SocketAdmin.groups.create = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
+
 	groups.create(data.name, data.description, function(err, groupObj) {
-		callback(err ? err.message : null, groupObj || undefined);
+		callback(err, groupObj || undefined);
 	});
 };
 
 SocketAdmin.groups.delete = function(socket, gid, callback) {
-	groups.destroy(gid, function(err) {
-		callback(err ? err.message : null, err ? null : 'OK');
-	});
+	groups.destroy(gid, callback);
 };
 
 SocketAdmin.groups.get = function(socket, gid, callback) {
 	groups.get(gid, {
 		expand: true
 	}, function(err, groupObj) {
-		callback(err ? err.message : null, groupObj || undefined);
+		callback(err, groupObj || undefined);
 	});
 };
 
 SocketAdmin.groups.join = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
+
 	groups.join(data.gid, data.uid, callback);
 };
 
 SocketAdmin.groups.leave = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
+
 	groups.leave(data.gid, data.uid, callback);
 };
 
 SocketAdmin.groups.update = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
+
 	groups.update(data.gid, data.values, function(err) {
 		callback(err ? err.message : null);
 	});

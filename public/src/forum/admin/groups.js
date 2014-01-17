@@ -64,7 +64,12 @@ define(function() {
 					bootbox.confirm('Are you sure you wish to delete this group?', function(confirm) {
 						if (confirm) {
 							socket.emit('admin.groups.delete', gid, function(err, data) {
-								if (data === 'OK') ajaxify.go('admin/groups');
+								console.log(err, data);
+								if(err) {
+									return app.alertError(err.message);
+								}
+
+								ajaxify.go('admin/groups');
 							});
 						}
 					});

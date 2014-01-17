@@ -64,7 +64,11 @@ define(function() {
 		}, false);
 
 		// Installed Themes
-		socket.emit('admin.themes.getInstalled', function(themes) {
+		socket.emit('admin.themes.getInstalled', function(err, themes) {
+			if(err) {
+				return app.alertError(err.message);
+			}
+
 			var instListEl = document.getElementById('installed_themes'),
 				themeFrag = document.createDocumentFragment(),
 				liEl = document.createElement('li');

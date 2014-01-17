@@ -126,16 +126,19 @@ define(function() {
 		}
 
 		function handleUserCreate() {
+			var errorEl = $('#create-modal-error');
 			$('#createUser').on('click', function() {
 				$('#create-modal').modal('show');
+				$('#create-modal form')[0].reset();
+				errorEl.addClass('hide');
 			});
 
 			$('#create-modal-go').on('click', function() {
 				var username = $('#create-user-name').val(),
 					email = $('#create-user-email').val(),
 					password = $('#create-user-password').val(),
-					passwordAgain = $('#create-user-password-again').val(),
-					errorEl = $('#create-modal-error');
+					passwordAgain = $('#create-user-password-again').val();
+
 
 				if(password !== passwordAgain) {
 					return errorEl.html('<strong>Error</strong><p>Passwords must match!</p>').removeClass('hide');
@@ -147,13 +150,15 @@ define(function() {
 					password: password
 				};
 
-				socket.emit('admin.user.createUser', user, function(err, data) {
+				socket.emit('admin.user.createUser', user, function(err) {
 					if(err) {
-						return errorEl.html('<strong>Error</strong><p>' + err + '</p>').removeClass('hide');
+						return errorEl.html('<strong>Error</strong><p>' + err.message + '</p>').removeClass('hide');
 					}
 					$('#create-modal').modal('hide');
+					$('#create-modal').on('hidden.bs.modal', function() {
+						ajaxify.go('admin/users');
+					});
 					app.alertSuccess('User created!');
-					ajaxify.go('admin/users');
 				});
 
 			});
@@ -191,7 +196,7 @@ define(function() {
 					socket.emit('admin.user.search', username, function(err, data) {
 						if(err) {
 							return app.alertError(err.message);
-						}
+						}console.log(data)
 
 						var html = templates.prepare(templates['admin/users'].blocks['users']).parse({
 							users: data
