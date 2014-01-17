@@ -12,6 +12,7 @@ var path = require('path'),
 	categories = require('../categories'),
 	categoryTools = require('../categoryTools')
 	utils = require('../../public/src/utils'),
+	translator = require('../../public/src/translator'),
 	pkg = require('../../package.json'),
 	meta = require('../meta');
 
@@ -51,10 +52,12 @@ var path = require('path'),
 			app.get('/home', function (req, res) {
 				var uid = (req.user) ? req.user.uid : 0;
 				categories.getAllCategories(uid, function (err, data) {
+					// Remove disabled categories
 					data.categories = data.categories.filter(function (category) {
 						return (!category.disabled || parseInt(category.disabled, 10) === 0);
 					});
 
+					// Retrieve category information for /
 					function iterator(category, callback) {
 						categories.getRecentReplies(category.cid, uid, parseInt(category.numRecentReplies, 10), function (err, posts) {
 							category.posts = posts;
@@ -64,10 +67,20 @@ var path = require('path'),
 					}
 
 					async.each(data.categories, iterator, function (err) {
+						// Assemble the MOTD
+						var	motdString;
+						if (!meta.config.motd) {
+							// Construct default MOTD
+							translator.mget(['global:motd.welcome', 'global:motd.get', 'global:motd.fork', 'global:motd.like', 'global:motd.follow'], function(err, strings) {
+								motdString = '<div class="pull-right btn-group"><a target="_blank" href="https://www.nodebb.org" class="btn btn-default btn-lg"><i class="fa fa-comment"></i><span class="hidden-mobile">&nbsp;' + strings[1] + '</span></a><a target="_blank" href="https://github.com/designcreateplay/NodeBB" class="btn btn-default btn-lg hidden-mobile"><i class="fa fa-github"></i><span class="hidden-mobile">&nbsp;' + strings[2] + '</span></a><a target="_blank" href="https://facebook.com/NodeBB" class="btn btn-default btn-lg"><i class="fa fa-facebook"></i><span class="hidden-mobile">&nbsp;' + strings[4] + '</span></a><a target="_blank" href="https://twitter.com/NodeBB" class="btn btn-default btn-lg"><i class="fa fa-twitter"></i><span class="hidden-mobile">&nbsp;' + strings[4] + '</span></a></div>\n\n# NodeBB <span>v' + pkg.version + '</span>\n' + strings[0];
+							});
+						} else {
+							motdString = meta.config.motd;
+						}
 						data.motd_class = (parseInt(meta.config.show_motd, 10) === 1 || meta.config.show_motd === undefined) ? '' : ' none';
 						data.motd_class += (meta.config.motd && meta.config.motd.length > 0 ? '' : ' default');
 
-						data.motd = require('marked')(meta.config.motd || "<div class=\"pull-right btn-group\"><a target=\"_blank\" href=\"https://www.nodebb.org\" class=\"btn btn-default btn-lg\"><i class=\"fa fa-comment\"></i><span class='hidden-mobile'>&nbsp;Get NodeBB</span></a>	<a target=\"_blank\" href=\"https://github.com/designcreateplay/NodeBB\" class=\"btn btn-default btn-lg hidden-mobile\"><i class=\"fa fa-github\"></i><span class='hidden-mobile'>&nbsp;Fork</span></a><a target=\"_blank\" href=\"https://facebook.com/NodeBB\" class=\"btn btn-default btn-lg\"><i class=\"fa fa-facebook\"></i><span class='hidden-mobile'>&nbsp;Like</span></a><a target=\"_blank\" href=\"https://twitter.com/NodeBB\" class=\"btn btn-default btn-lg\"><i class=\"fa fa-twitter\"></i><span class='hidden-mobile'>&nbsp;Follow</span></a></div>\n\n# NodeBB <span>v" + pkg.version + "</span>\nWelcome to NodeBB, the discussion platform of the future.");
+						data.motd = require('marked')(motdString);
 						res.json(data);
 					});
 				});

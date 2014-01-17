@@ -27,5 +27,11 @@
 	"header.profile": "Profil",
 
 	"notifications.loading": "Benachrichtigungen laden",
-	"chats.loading": "Nachrichten werden geladen"
+	"chats.loading": "Nachrichten werden geladen",
+
+	"motd.welcome": "Willkommen auf NodeBB, der Diskussionsplattform der Zukunft.",
+	"motd.get": "Bekommen NodeBB",
+	"motd.fork": "Fork",
+	"motd.like": "Gefällt mir",
+	"motd.follow": "Folgen"
 }

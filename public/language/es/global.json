@@ -8,7 +8,7 @@
 	"404.message": "Al parecer lo que estas buscando no existe. Te recomendamos que vuelvas al <a href='/''>inicio</a>.",
 	"500.title": "Error Interno.",
 	"500.message": "Ooops! Algo salio mal!, No te alarmes. Nuestros simios hiperinteligentes lo solucionarán",
-	
+
 	"register": "Registrarse",
 	"login": "Conectarse",
 
@@ -27,5 +27,11 @@
 	"header.profile": "Perfil",
 
 	"notifications.loading": "Cargando Notificaciones",
-	"chats.loading": "Cargando Chats"
+	"chats.loading": "Cargando Chats",
+
+	"motd.welcome": "Bienvenido a NodeBB, la plataforma de debate sobre el futuro.",
+	"motd.get": "Obtener",
+	"motd.fork": "Fork",
+	"motd.like": "Me gusta",
+	"motd.follow": "Seguir"
 }

@@ -27,5 +27,11 @@
 	"header.profile": "Profile",
 
 	"notifications.loading": "Chargement des Notifications",
-	"chats.loading": "Chargement des Chats"
+	"chats.loading": "Chargement des Chats",
+
+	"motd.welcome": "Bienvenue à NodeBB, la plate-forme de discussion sur l'avenir.",
+	"motd.get": "Obtenir NodeBB",
+	"motd.fork": "Fork",
+	"motd.like": "J'aime",
+	"motd.follow": "Suivre"
 }
