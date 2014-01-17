@@ -803,8 +803,6 @@ var bcrypt = require('bcrypt'),
 
 				if(!uid) {
 					return callback(new Error('invalid-email'));
-				} else if(parseInt(uid, 10) !== socket.uid) {
-					return callback(new Error('invalid-user'));
 				}
 
 				// Generate a new reset code

@@ -19,7 +19,7 @@ define(function() {
 
 					jQuery('#error').hide();
 					jQuery('#success').show();
-					jQuery('#success p').html('An email has been dispatched to "' + data.email + '" with instructions on setting a new password.');
+					jQuery('#success p').html('An email has been dispatched to "' + inputEl.value + '" with instructions on setting a new password.');
 					inputEl.value = '';
 				});
 			} else {
