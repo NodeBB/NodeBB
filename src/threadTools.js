@@ -66,13 +66,16 @@ var winston = require('winston'),
 
 		events.logTopicDelete(uid, tid);
 
+		websockets.emitTopicPostStats();
+
 		websockets.in('topic_' + tid).emit('event:topic_deleted', {
-			tid: tid,
-			status: 'ok'
+			tid: tid
 		});
 
 		if (callback) {
-			callback(null);
+			callback(null, {
+				tid: tid
+			});
 		}
 	}
 
@@ -83,9 +86,10 @@ var winston = require('winston'),
 
 		events.logTopicRestore(uid, tid);
 
+		websockets.emitTopicPostStats();
+
 		websockets.in('topic_' + tid).emit('event:topic_restored', {
-			tid: tid,
-			status: 'ok'
+			tid: tid
 		});
 
 		topics.getTopicField(tid, 'title', function(err, title) {
@@ -93,75 +97,69 @@ var winston = require('winston'),
 		});
 
 		if(callback) {
-			callback(null);
+			callback(null, {
+				tid:tid
+			});
 		}
 	}
 
-	ThreadTools.lock = function(tid, callback) {
+	ThreadTools.lock = function(tid, uid, callback) {
 		topics.setTopicField(tid, 'locked', 1);
 
 		websockets.in('topic_' + tid).emit('event:topic_locked', {
-			tid: tid,
-			status: 'ok'
+			tid: tid
 		});
 
 		if (callback) {
-			callback({
-				status: 'ok',
+			callback(null, {
 				tid: tid
 			});
 		}
 	}
 
-	ThreadTools.unlock = function(tid, callback) {
+	ThreadTools.unlock = function(tid, uid, callback) {
 		topics.setTopicField(tid, 'locked', 0);
 
 		websockets.in('topic_' + tid).emit('event:topic_unlocked', {
-			tid: tid,
-			status: 'ok'
+			tid: tid
 		});
 
 		if (callback) {
-			callback({
-				status: 'ok',
+			callback(null, {
 				tid: tid
 			});
 		}
 	}
 
-	ThreadTools.pin = function(tid, callback) {
+	ThreadTools.pin = function(tid, uid, callback) {
 		topics.setTopicField(tid, 'pinned', 1);
 		topics.getTopicField(tid, 'cid', function(err, cid) {
 			db.sortedSetAdd('categories:' + cid + ':tid', Math.pow(2, 53), tid);
 		});
 
 		websockets.in('topic_' + tid).emit('event:topic_pinned', {
-			tid: tid,
-			status: 'ok'
+			tid: tid
 		});
 
 		if (callback) {
-			callback({
-				status: 'ok',
+			callback(null, {
 				tid: tid
 			});
 		}
 	}
 
-	ThreadTools.unpin = function(tid, callback) {
+	ThreadTools.unpin = function(tid, uid, callback) {
 		topics.setTopicField(tid, 'pinned', 0);
 		topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
 			db.sortedSetAdd('categories:' + topicData.cid + ':tid', topicData.lastposttime, tid);
 		});
 
 		websockets.in('topic_' + tid).emit('event:topic_unpinned', {
-			tid: tid,
-			status: 'ok'
+			tid: tid
 		});
 
 		if (callback) {
-			callback({
-				status: 'ok',
+			callback(null, {
 				tid: tid
 			});
 		}
@@ -175,9 +173,7 @@ var winston = require('winston'),
 				db.sortedSetAdd('categories:' + cid + ':tid', topicData.lastposttime, tid, function(err, result) {
 
 					if(err) {
-						return callback({
-							status: 'error'
-						});
+						return callback(err);
 					}
 
 					topics.setTopicField(tid, 'cid', cid);
@@ -193,10 +189,7 @@ var winston = require('winston'),
 					categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1);
 					categories.incrementCategoryFieldBy(cid, 'topic_count', 1);
 
-					callback({
-						status: 'ok'
-					});
-
+					callback(null);
 				});
 			});
 		});

@@ -55,19 +55,19 @@ define(function() {
 
 		$('#mark-allread-btn').on('click', function() {
 			var btn = $(this);
-			socket.emit('topics.markAllRead', {}, function(success) {
-				if (success) {
-					btn.remove();
-					$('#topics-container').empty();
-					$('#category-no-topics').removeClass('hidden');
-					app.alertSuccess('All topics marked as read!');
-					$('#numUnreadBadge')
-						.removeClass('badge-important')
-						.addClass('badge-inverse')
-						.html('0');
-				} else {
-					app.alertError('There was an error marking topics read!');
+			socket.emit('topics.markAllRead', function(err) {
+				if(err) {
+					return app.alertError('There was an error marking topics read!');
 				}
+
+				btn.remove();
+				$('#topics-container').empty();
+				$('#category-no-topics').removeClass('hidden');
+				app.alertSuccess('All topics marked as read!');
+				$('#numUnreadBadge')
+					.removeClass('badge-important')
+					.addClass('badge-inverse')
+					.html('0');
 			});
 		});
 

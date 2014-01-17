@@ -52,16 +52,14 @@ define(['composer'], function(composer) {
 					if (thread_state.deleted !== '1') {
 						bootbox.confirm('Are you sure you want to delete this thread?', function(confirm) {
 							if (confirm) {
-								socket.emit('topics.delete', {
-									tid: tid
-								}, null);
+								socket.emit('topics.delete', tid);
 							}
 						});
 					} else {
 						bootbox.confirm('Are you sure you want to restore this thread?', function(confirm) {
-							if (confirm) socket.emit('topics.restore', {
-								tid: tid
-							}, null);
+							if (confirm) {
+								socket.emit('topics.restore', tid);
+							}
 						});
 					}
 					return false;
@@ -69,26 +67,18 @@ define(['composer'], function(composer) {
 
 				$('.lock_thread').on('click', function(e) {
 					if (thread_state.locked !== '1') {
-						socket.emit('topics.lock', {
-							tid: tid
-						}, null);
+						socket.emit('topics.lock', tid);
 					} else {
-						socket.emit('topics.unlock', {
-							tid: tid
-						}, null);
+						socket.emit('topics.unlock', tid);
 					}
 					return false;
 				});
 
 				$('.pin_thread').on('click', function(e) {
 					if (thread_state.pinned !== '1') {
-						socket.emit('topics.pin', {
-							tid: tid
-						}, null);
+						socket.emit('topics.pin', tid);
 					} else {
-						socket.emit('topics.unpin', {
-							tid: tid
-						}, null);
+						socket.emit('topics.unpin', tid);
 					}
 					return false;
 				});
@@ -629,45 +619,47 @@ define(['composer'], function(composer) {
 		});
 
 		socket.on('event:topic_deleted', function(data) {
-			if (data.tid === tid && data.status === 'ok') {
+			if (data && data.tid === tid) {
 				set_locked_state(true);
 				set_delete_state(true);
 			}
 		});
 
 		socket.on('event:topic_restored', function(data) {
-			if (data.tid === tid && data.status === 'ok') {
+			if (data && data.tid === tid) {
 				set_locked_state(false);
 				set_delete_state(false);
 			}
 		});
 
 		socket.on('event:topic_locked', function(data) {
-			if (data.tid === tid && data.status === 'ok') {
+			if (data && data.tid === tid) {
 				set_locked_state(true, 1);
 			}
 		});
 
 		socket.on('event:topic_unlocked', function(data) {
-			if (data.tid === tid && data.status === 'ok') {
+			if (data && data.tid === tid) {
 				set_locked_state(false, 1);
 			}
 		});
 
 		socket.on('event:topic_pinned', function(data) {
-			if (data.tid === tid && data.status === 'ok') {
+			if (data && data.tid === tid) {
 				set_pinned_state(true, 1);
 			}
 		});
 
 		socket.on('event:topic_unpinned', function(data) {
-			if (data.tid === tid && data.status === 'ok') {
+			if (data && data.tid === tid) {
 				set_pinned_state(false, 1);
 			}
 		});
 
 		socket.on('event:topic_moved', function(data) {
-			if (data && data.tid > 0) ajaxify.go('topic/' + data.tid);
+			if (data && data.tid > 0) {
+				ajaxify.go('topic/' + data.tid);
+			}
 		});
 
 		socket.on('event:post_edited', function(data) {

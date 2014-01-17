@@ -15,37 +15,25 @@ define(function() {
 			switch (action) {
 				case 'pin':
 					if (!$this.hasClass('active')) {
-						socket.emit('topics.pin', {
-							tid: tid
-						}, Topics.pin);
+						socket.emit('topics.pin', tid, Topics.pin);
 					} else {
-						socket.emit('topics.unpin', {
-							tid: tid
-						}, Topics.unpin);
+						socket.emit('topics.unpin', tid, Topics.unpin);
 					}
 					break;
 
 				case 'lock':
 					if (!$this.hasClass('active')) {
-						socket.emit('topics.lock', {
-							tid: tid
-						}, Topics.lock);
+						socket.emit('topics.lock', tid, Topics.lock);
 					} else {
-						socket.emit('topics.unlock', {
-							tid: tid
-						}, Topics.unlock);
+						socket.emit('topics.unlock', tid, Topics.unlock);
 					}
 					break;
 
 				case 'delete':
 					if (!$this.hasClass('active')) {
-						socket.emit('topics.delete', {
-							tid: tid
-						}, Topics.setDeleted);
+						socket.emit('topics.delete', tid, Topics.setDeleted);
 					} else {
-						socket.emit('topics.restore', {
-							tid: tid
-						}, Topics.restore);
+						socket.emit('topics.restore', tid, Topics.restore);
 					}
 					break;
 
@@ -116,8 +104,12 @@ define(function() {
 		}
 	}
 
-	Topics.setDeleted = function(response) {
-		if (response.status === 'ok') {
+	Topics.setDeleted = function(err, response) {
+		if(err) {
+			return app.alert(err.message);
+		}
+
+		if (response && response.tid) {
 			var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="delete"]');
 
 			$(btnEl).addClass('active');
@@ -125,8 +117,12 @@ define(function() {
 		}
 	};
 
-	Topics.restore = function(response) {
-		if (response.status === 'ok') {
+	Topics.restore = function(err, response) {
+		if(err) {
+			return app.alert(err.message);
+		}
+
+		if (response && response.tid) {
 			var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="delete"]');
 
 			$(btnEl).removeClass('active');
@@ -134,16 +130,24 @@ define(function() {
 		}
 	};
 
-	Topics.lock = function(response) {
-		if (response.status === 'ok') {
+	Topics.lock = function(err, response) {
+		if(err) {
+			return app.alert(err.message);
+		}
+
+		if (response && response.tid) {
 			var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="lock"]');
 
 			$(btnEl).addClass('active');
 		}
 	};
 
-	Topics.unlock = function(response) {
-		if (response.status === 'ok') {
+	Topics.unlock = function(err, response) {
+		if(err) {
+			return app.alert(err.message);
+		}
+
+		if (response && response.tid) {
 			var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="lock"]');
 
 			$(btnEl).removeClass('active');
@@ -151,16 +155,24 @@ define(function() {
 	};
 
 
-	Topics.unpin = function(response) {
-		if (response.status === 'ok') {
+	Topics.unpin = function(err, response) {
+		if(err) {
+			return app.alert(err.message);
+		}
+
+		if (response && response.tid) {
 			var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="pin"]');
 
 			$(btnEl).removeClass('active');
 		}
 	};
 
-	Topics.pin = function(response) {
-		if (response.status === 'ok') {
+	Topics.pin = function(err, response) {
+		if(err) {
+			return app.alert(err.message);
+		}
+
+		if (response && response.tid) {
 			var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="pin"]');
 
 			$(btnEl).addClass('active');
