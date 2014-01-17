@@ -63,6 +63,11 @@ SocketModules.composer.editCheck = function(socket, pid, callback) {
 	});
 };
 
+SocketModules.composer.renderPreview = function(socket, content, callback) {
+	var preview = require('marked')(content);
+	callback(null, preview);
+}
+
 /* Chat */
 
 SocketModules.chats = {};

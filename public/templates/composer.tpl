@@ -17,20 +17,31 @@
 						<input type="file" id="files" name="files[]" multiple class="hide"/>
 				</form>
 			</div>
-			<!-- <div class="btn btn-link pull-right">Preview</div> -->
-		</div>
-		<textarea tabIndex="2"></textarea>
-		<div class="preview"></div>
-		<div class="imagedrop"><div>Drag and Drop Images Here</div></div>
-		<div class="text-center upload-instructions hide visible-lg visible-md">
-			<small>Upload images by dragging & dropping them</small>
-		</div>
-		<div class="btn-toolbar action-bar">
 			<div class="btn-group pull-right">
 				<button class="btn btn-default" data-action="discard" tabIndex="5"><i class="fa fa-times"></i> Discard</button>
 				<button data-action="post" class="btn btn-default" tabIndex="3"><i class="fa fa-check"></i> Submit</button>
 			</div>
 		</div>
-		<div class="resizer"><div class="trigger"><i class="fa fa-chevron-left"></i></div></div>
+
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="#write" data-toggle="tab">Write</a></li>
+			<li><a href="#preview" data-toggle="tab">Preview</a></li>
+		</ul>
+
+		<div class="tab-content">
+			<div class="tab-pane active" id="write">
+				<textarea class="write" tabIndex="2"></textarea>
+			</div>
+			<div class="tab-pane" id="preview">
+				<div class="preview well"></div>
+			</div>
+		</div>
+
+		<div class="imagedrop"><div>Drag and Drop Images Here</div></div>
+		<div class="text-center upload-instructions hide visible-lg visible-md">
+			<small>Upload images by dragging & dropping them</small>
+		</div>
+
+		<div class="resizer"><div class="trigger text-center"><i class="fa fa-chevron-up"></i></div></div>
 	</div>
 </div>

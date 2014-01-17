@@ -192,7 +192,7 @@ define(['taskbar'], function(taskbar) {
 			});
 
 
-			postContainer.on('click', '.action-bar button', function() {
+			postContainer.on('click', '.formatting-bar button', function() {
 				var	action = $(this).attr('data-action');
 
 				switch(action) {
@@ -283,25 +283,39 @@ define(['taskbar'], function(taskbar) {
 				$('#fileForm')[0].reset();
 			});
 
+			postContainer.find('.nav-tabs a').click(function (e) {
+				e.preventDefault();
+				$(this).tab('show');
+				return false;
+			});
+
+			postContainer.find('.nav-tabs a').on('shown.bs.tab', function (e) {
+  				if($(e.target).attr('href') === '#preview') {
+  					socket.emit('modules.composer.renderPreview', bodyEl.val(), function(err, preview) {
+  						postContainer.find('.preview').html(preview);
+  					});
+  				}
+			});
+
 
 			var	resizeActive = false,
-				resizeCenterX = 0,
+				resizeCenterY = 0,
 				resizeOffset = 0,
 				resizeStart = function(e) {
 					bodyRect = document.body.getBoundingClientRect();
 					resizeRect = resizeEl.getBoundingClientRect();
-					resizeCenterX = resizeRect.left + (resizeRect.width/2);
-					resizeOffset = resizeCenterX - e.clientX;
-					resizeSnaps.half = bodyRect.width / 2;
-					resizeSnaps.none = bodyRect.width;
+					resizeCenterY = resizeRect.top + (resizeRect.height/2);
+					resizeOffset = resizeCenterY - e.clientY;
 					resizeActive = true;
 
 					$(document.body).on('mousemove', resizeAction);
+					$(document.body).on('mouseup', resizeStop);
 					document.body.addEventListener('touchmove', resizeTouchAction);
 				},
 				resizeStop = function() {
 					resizeActive = false;
 					$(document.body).off('mousemove', resizeAction);
+					$(document.body).off('mouseup', resizeStop);
 					document.body.removeEventListener('touchmove', resizeTouchAction);
 				},
 				resizeTouchAction = function(e) {
@@ -310,41 +324,23 @@ define(['taskbar'], function(taskbar) {
 				},
 				resizeAction = function(e) {
 					if (resizeActive) {
-						position = (e.clientX + resizeOffset);
-						if (Math.abs(position - resizeSnaps.half) <= 15) {
-							// Half snap
-							postContainer.css('width', resizeSnaps.half);
-							resizeSavePosition(resizeSnaps.half);
-						} else if (Math.abs(position - resizeSnaps.none) <= 30) {
-							// Minimize snap
-							postContainer.css('width', bodyRect.width - resizeSnaps.none + 15);
-							resizeSavePosition(resizeSnaps.none);
-						} else if (position <= 30) {
-							// Full snap
-							postContainer.css('width', bodyRect.width - 15);
-							resizeSavePosition(bodyRect.width - 15);
-						} else {
-							// OH SNAP, NO SNAPS!
-							postContainer.css('width', bodyRect.width - position);
-							resizeSavePosition(bodyRect.width - position);
-						}
+						position = (e.clientY + resizeOffset);
+
+						postContainer.css('height', $(window).height() - position);
+						resizeSavePosition($(window).height() - position);
 					}
+					return false;
 				},
 				resizeSavePosition = function(px) {
-					var	percentage = px/bodyRect.width;
+					var	percentage = px / $(window).height();
 					localStorage.setItem('composer:resizePercentage', percentage);
-				},
-				resizeSnaps = {
-					none: 0,
-					half: 0,
-					full: 0
 				},
 				resizeRect, bodyRect;
 
 			var resizeEl = postContainer.find('.resizer')[0];
 
 			resizeEl.addEventListener('mousedown', resizeStart);
-			resizeEl.addEventListener('mouseup', resizeStop);
+
 			resizeEl.addEventListener('touchstart', function(e) {
 				e.preventDefault();
 				resizeStart(e.touches[0]);
@@ -364,6 +360,24 @@ define(['taskbar'], function(taskbar) {
 		});
 	}
 
+	//http://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api
+	function findBootstrapEnvironment() {
+		var envs = ['xs', 'sm', 'md', 'lg'];
+
+		$el = $('<div>');
+		$el.appendTo($('body'));
+
+		for (var i = envs.length - 1; i >= 0; i--) {
+			var env = envs[i];
+
+			$el.addClass('hidden-'+env);
+			if ($el.is(':hidden')) {
+				$el.remove();
+				return env;
+			}
+		}
+	}
+
 	composer.activateReposition = function(post_uuid) {
 
 		if(composer.active && composer.active !== post_uuid) {
@@ -375,13 +389,16 @@ define(['taskbar'], function(taskbar) {
 			postContainer = $('#cmp-uuid-' + post_uuid);
 
 		composer.active = post_uuid;
+		var env = findBootstrapEnvironment();
 
 		if (percentage) {
-			if (bodyRect.width >= 768) {
-				postContainer.css('width', Math.floor(bodyRect.width * percentage) + 'px');
-			} else {
-				postContainer.css('width', '100%');
+			if ( env === 'md' || env === 'lg') {
+				postContainer.css('height', Math.floor($(window).height() * percentage) + 'px');
 			}
+		}
+
+		if(env === 'sm' || env === 'xs') {
+			postContainer.css('height', $(window).height() - $('#header-menu').height());
 		}
 
 		if(config.imgurClientIDSet) {
