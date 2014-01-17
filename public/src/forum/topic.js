@@ -1049,7 +1049,10 @@ define(['composer'], function(composer) {
 				.fadeIn('slow');
 
 			for (var x = 0, numPosts = data.posts.length; x < numPosts; x++) {
-				socket.emit('posts.getPrivileges', data.posts[x].pid, function(privileges) {
+				socket.emit('posts.getPrivileges', data.posts[x].pid, function(err, privileges) {
+					if(err) {
+						return app.alertError(err.message);
+					}
 					toggle_mod_tools(privileges.pid, privileges.editable);
 				});
 			}

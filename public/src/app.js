@@ -250,42 +250,22 @@ var socket,
 		var uids = [];
 
 		jQuery('.post-row').each(function () {
-			uids.push(this.getAttribute('data-uid'));
+			var uid = $(this).attr('data-uid');
+			if(uids.indexOf(uid) === -1) {
+				uids.push(uid);
+			}
 		});
 
 		socket.emit('user.getOnlineUsers', uids, function (err, users) {
-			jQuery('a.username-field').each(function () {
-				if (this.processed === true)
-					return;
-
+			jQuery('button .username-field').each(function (index, element) {
 				var el = jQuery(this),
 					uid = el.parents('li').attr('data-uid');
 
 				if (uid && jQuery.inArray(uid, users) !== -1) {
-					el.find('i').remove();
-					el.prepend('<i class="fa fa-circle"></i>');
+					el.parent().addClass('btn-success').removeClass('btn-danger');
 				} else {
-					el.find('i').remove();
-					el.prepend('<i class="fa fa-circle-o"></i>');
+					el.parent().addClass('btn-danger').removeClass('btn-success');
 				}
-
-				el.processed = true;
-			});
-			jQuery('button .username-field').each(function () {
-				//DRY FAIL
-				if (this.processed === true)
-					return;
-
-				var el = jQuery(this),
-					uid = el.parents('li').attr('data-uid');
-
-				if (uid && jQuery.inArray(uid, users) !== -1) {
-					el.parent().addClass('btn-success');
-				} else {
-					el.parent().addClass('btn-danger');
-				}
-
-				el.processed = true;
 			});
 		});
 	};
