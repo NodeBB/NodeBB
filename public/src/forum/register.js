@@ -44,7 +44,11 @@ define(function() {
 			} else {
 				socket.emit('user.emailExists', {
 					email: emailEl.val()
-				}, function(exists) {
+				}, function(err, exists) {
+					if(err) {
+						return app.alertError(err.message);
+					}
+
 					if (exists) {
 						showError(email_notify, 'Email address already taken!');
 					} else {

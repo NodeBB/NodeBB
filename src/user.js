@@ -347,13 +347,11 @@ var bcrypt = require('bcrypt'),
 
 	User.changePassword = function(uid, data, callback) {
 		if (!utils.isPasswordValid(data.newPassword)) {
-			return callback({
-				error: 'Invalid password!'
-			});
+			return callback(new Error('Invalid password!'));
 		}
 
-		User.getUserField(uid, 'password', function(err, user_password) {
-			bcrypt.compare(data.currentPassword, user_password, function(err, res) {
+		User.getUserField(uid, 'password', function(err, currentPassword) {
+			bcrypt.compare(data.currentPassword, currentPassword, function(err, res) {
 				if (err) {
 					return callback(err);
 				}
@@ -365,9 +363,7 @@ var bcrypt = require('bcrypt'),
 						callback(null);
 					});
 				} else {
-					callback({
-						error: 'Your current password is not correct!'
-					});
+					callback(new Error('Your current password is not correct!'));
 				}
 			});
 		});
@@ -541,31 +537,21 @@ var bcrypt = require('bcrypt'),
 
 	User.follow = function(uid, followid, callback) {
 		db.setAdd('following:' + uid, followid, function(err, data) {
-			if (!err) {
-				db.setAdd('followers:' + followid, uid, function(err, data) {
-					if (!err) {
-						callback(true);
-					} else {
-						console.log(err);
-						callback(false);
-					}
-				});
-			} else {
-				console.log(err);
-				callback(false);
+			if(err) {
+				return callback(err);
 			}
+
+			db.setAdd('followers:' + followid, uid, callback);
 		});
 	};
 
 	User.unfollow = function(uid, unfollowid, callback) {
 		db.setRemove('following:' + uid, unfollowid, function(err, data) {
-			if (!err) {
-				db.setRemove('followers:' + unfollowid, uid, function(err, data) {
-					callback(data);
-				});
-			} else {
-				console.log(err);
+			if(err) {
+				return callback(err);
 			}
+
+			db.setRemove('followers:' + unfollowid, uid, callback);
 		});
 	};
 
@@ -933,7 +919,7 @@ var bcrypt = require('bcrypt'),
 		},
 		exists: function(email, callback) {
 			User.getUidByEmail(email, function(err, exists) {
-				callback(!!exists);
+				callback(err, !!exists);
 			});
 		},
 		confirm: function(code, callback) {

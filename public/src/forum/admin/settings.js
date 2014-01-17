@@ -73,17 +73,9 @@ define(['uploader'], function(uploader) {
 				socket.emit('admin.config.set', {
 					key: key,
 					value: value
-				}, function(data) {
-					if (data.status === 'ok') {
-						app.alert({
-							alert_id: 'config_status',
-							timeout: 2500,
-							title: 'Changes Saved',
-							message: 'Your changes to the NodeBB configuration have been saved.',
-							type: 'success'
-						});
-					} else {
-						app.alert({
+				}, function(err) {
+					if(err) {
+						return app.alert({
 							alert_id: 'config_status',
 							timeout: 2500,
 							title: 'Changes Not Saved',
@@ -91,6 +83,15 @@ define(['uploader'], function(uploader) {
 							type: 'danger'
 						});
 					}
+
+					app.alert({
+						alert_id: 'config_status',
+						timeout: 2500,
+						title: 'Changes Saved',
+						message: 'Your changes to the NodeBB configuration have been saved.',
+						type: 'success'
+					});
+
 				});
 			}
 		});

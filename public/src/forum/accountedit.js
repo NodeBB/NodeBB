@@ -36,7 +36,7 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 						gravatarPicture = data.gravatarpicture;
 					}
 				} else {
-					app.alertError('There was an error updating your profile! ' + err.error);
+					app.alertError('There was an error updating your profile! ' + err.message);
 				}
 			});
 			return false;
@@ -186,7 +186,7 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 						passwordvalid = false;
 
 						if (err) {
-							app.alertError(err.error);
+							app.alertError(err.message);
 							return;
 						}
 
@@ -206,9 +206,9 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 			type: type
 		};
 
-		socket.emit('user.changePicture', userData, function(success) {
-			if (!success) {
-				app.alertError('There was an error changing picture!');
+		socket.emit('user.changePicture', userData, function(err) {
+			if(err) {
+				app.alertError(err.message);
 			}
 		});
 	}

@@ -90,7 +90,7 @@ define(['taskbar', 'string'], function(taskbar, S) {
 	}
 
 	function checkStatus(chatModal, callback) {
-		socket.emit('user.isOnline', chatModal.touid, function(data) {
+		socket.emit('user.isOnline', chatModal.touid, function(err, data) {
 			if(data.online !== chatModal.online) {
 				if(data.online) {
 					module.appendChatMessage(chatModal, chatModal.username + ' is currently online.\n', data.timestamp);

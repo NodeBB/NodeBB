@@ -80,10 +80,10 @@ define(function() {
 			}, 250);
 		});
 
-		socket.on('user.isOnline', function(data) {
+		socket.on('user.isOnline', function(err, data) {
 			if(getActiveSection() == 'online' && !loadingMoreUsers) {
 				startLoading('users:online', 0, true);
-				socket.emit('user.getOnlineAnonCount', {} , function(anonCount) {
+				socket.emit('user.getOnlineAnonCount', {} , function(err, anonCount) {
 					if(parseInt(anonCount, 10) > 0) {
 						$('#users-container .anon-user').removeClass('hide');
 						$('#online_anon_count').html(anonCount);
@@ -126,8 +126,8 @@ define(function() {
 			socket.emit('user.loadMore', {
 				set: set,
 				after: after
-			}, function(data) {
-				if (data.users.length) {
+			}, function(err, data) {
+				if (data && data.users.length) {
 					onUsersLoaded(data.users, emptyContainer);
 					$('#load-more-users-btn').removeClass('disabled');
 				} else {

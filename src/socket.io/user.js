@@ -14,26 +14,34 @@ SocketUser.count = function(socket, data, callback) {
 };
 
 SocketUser.emailExists = function(socket, data, callback) {
-	user.email.exists(data.email, callback);
+	if(data && data.email) {
+		user.email.exists(data.email, callback);
+	}
 };
 
 // Password Reset
 SocketUser.reset = {};
 
 SocketUser.reset.send = function(socket, data, callback) {
-	user.reset.send(socket, data.email);
+	if(data && data.email) {
+		user.reset.send(socket, data.email);
+	}
 };
 
 SocketUser.reset.valid = function(socket, data, callback) {
-	user.reset.validate(socket, data.code);
+	if(data && data.code) {
+		user.reset.validate(socket, data.code);
+	}
 };
 
 SocketUser.reset.commit = function(socket, data, callback) {
-	user.reset.commit(socket, data.code, data.password);
+	if(data && data.code && data.password) {
+		user.reset.commit(socket, data.code, data.password);
+	}
 };
 
 SocketUser.isOnline = function(socket, uid, callback) {
-	callback({
+	callback(null, {
 		online: module.parent.exports.isUserOnline(uid),
 		uid: uid,
 		timestamp: Date.now()
@@ -41,88 +49,96 @@ SocketUser.isOnline = function(socket, uid, callback) {
 };
 
 SocketUser.changePassword = function(socket, data, callback) {
-	user.changePassword(socket.uid, data, callback);
+	if(data) {
+		user.changePassword(socket.uid, data, callback);
+	}
 };
 
 SocketUser.updateProfile = function(socket, data, callback) {
-	user.updateProfile(socket.uid, data, callback);
+	if(data) {
+		user.updateProfile(socket.uid, data, callback);
+	}
 };
 
 SocketUser.changePicture = function(socket, data, callback) {
+	if(!data) {
+		return;
+	}
 
 	var type = data.type;
 
 	function updateHeader() {
 		user.getUserFields(socket.uid, ['picture'], function(err, fields) {
-			if (!err && fields) {
-				fields.uid = socket.uid;
-				socket.emit('meta.updateHeader', fields);
-				callback(true);
-			} else {
-				callback(false);
+			if(err) {
+				return callback(err);
 			}
+
+			if (fields) {
+				fields.uid = socket.uid;
+				socket.emit('meta.updateHeader', null, fields);
+			}
+
+			callback(null);
 		});
 	}
 
 	if (type === 'gravatar') {
-		user.getUserField(socket.uid, 'gravatarpicture', function(err, gravatar) {
-			user.setUserField(socket.uid, 'picture', gravatar);
-			updateHeader();
-		});
+		type = 'gravatarpicture';
 	} else if (type === 'uploaded') {
-		user.getUserField(socket.uid, 'uploadedpicture', function(err, uploadedpicture) {
-			user.setUserField(socket.uid, 'picture', uploadedpicture);
-			updateHeader();
-		});
+		type = 'uploadedpicture';
 	} else {
-		callback(false);
+		return callback(new Error('invalid-image-type'));
 	}
+
+	user.getUserField(socket.uid, type, function(err, picture) {
+		user.setUserField(socket.uid, 'picture', picture);
+		updateHeader();
+	});
 };
 
 SocketUser.follow = function(socket, data, callback) {
-	if (socket.uid) {
+	if (socket.uid && data) {
 		user.follow(socket.uid, data.uid, callback);
 	}
 };
 
 SocketUser.unfollow = function(socket, data, callback) {
-	if (socket.uid) {
+	if (socket.uid && data) {
 		user.unfollow(socket.uid, data.uid, callback);
 	}
 };
 
 SocketUser.saveSettings = function(socket, data, callback) {
-	if (socket.uid) {
+	if (socket.uid && data) {
 		user.setUserFields(socket.uid, {
 			showemail: data.showemail
-		}, function(err, result) {
-			callback(err);
-		});
+		}, callback);
 	}
 };
 
-SocketUser.get_online_users = function(socket, data, callback) {
+SocketUser.getOnlineUsers = function(socket, data, callback) {
 	var returnData = [];
-
-	for (var i = 0; i < data.length; ++i) {
-		var uid = data[i];
-		if (module.parent.exports.isUserOnline(uid)) {
-			returnData.push(uid);
-		} else {
-			returnData.push(0);
+	if(data) {
+		for (var i = 0; i < data.length; ++i) {
+			var uid = data[i];
+			if (module.parent.exports.isUserOnline(uid)) {
+				returnData.push(uid);
+			} else {
+				returnData.push(0);
+			}
 		}
 	}
 
-	callback(returnData);
+	callback(null, returnData);
 };
 
 SocketUser.getOnlineAnonCount = function(socket, data, callback) {
-	callback(module.parent.exports.getOnlineAnonCount());
+	callback(null, module.parent.exports.getOnlineAnonCount());
 };
 
 SocketUser.getUnreadCount = function(socket, data, callback) {
 	topics.getUnreadTids(socket.uid, 0, 19, function(err, tids) {
-		callback(tids.length);
+		callback(err, tids?tids.length:0);
 	});
 };
 
@@ -131,18 +147,20 @@ SocketUser.getActiveUsers = function(socket, data, callback) {
 };
 
 SocketUser.loadMore = function(socket, data, callback) {
-	var start = data.after,
-		end = start + 19;
+	if(data) {
+		var start = data.after,
+			end = start + 19;
 
-	user.getUsers(data.set, start, end, function(err, data) {
-		if (err) {
-			winston.err(err);
-		} else {
-			callback({
+		user.getUsers(data.set, start, end, function(err, data) {
+			if(err) {
+				return callback(err);
+			}
+
+			callback(null, {
 				users: data
 			});
-		}
-	});
+		});
+	}
 };
 
 /* Exports */

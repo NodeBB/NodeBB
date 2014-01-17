@@ -245,8 +245,8 @@ define(function() {
 					socket.emit('user.loadMore', {
 						set: set,
 						after: $('#users-container').children().length
-					}, function(data) {
-						if (data.users.length) {
+					}, function(err, data) {
+						if (data && data.users.length) {
 							onUsersLoaded(data.users);
 						}
 						loadingMoreUsers = false;

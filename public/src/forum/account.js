@@ -37,14 +37,14 @@ define(['forum/accountheader'], function(header) {
 			followBtn.on('click', function() {
 				socket.emit('user.follow', {
 					uid: theirid
-				}, function(success) {
-					if (success) {
-						followBtn.addClass('hide');
-						unfollowBtn.removeClass('hide');
-						app.alertSuccess('You are now following ' + username + '!');
-					} else {
-						app.alertError('There was an error following' + username + '!');
+				}, function(err) {
+					if(err) {
+						return app.alertError('There was an error following' + username + '!');
 					}
+
+					followBtn.addClass('hide');
+					unfollowBtn.removeClass('hide');
+					app.alertSuccess('You are now following ' + username + '!');
 				});
 				return false;
 			});
@@ -52,14 +52,14 @@ define(['forum/accountheader'], function(header) {
 			unfollowBtn.on('click', function() {
 				socket.emit('user.unfollow', {
 					uid: theirid
-				}, function(success) {
-					if (success) {
-						followBtn.removeClass('hide');
-						unfollowBtn.addClass('hide');
-						app.alertSuccess('You are no longer following ' + username + '!');
-					} else {
-						app.alertError('There was an error unfollowing ' + username + '!');
+				}, function(err) {
+					if(err) {
+						return app.alertError('There was an error unfollowing ' + username + '!');
 					}
+
+					followBtn.removeClass('hide');
+					unfollowBtn.addClass('hide');
+					app.alertSuccess('You are no longer following ' + username + '!');
 				});
 				return false;
 			});
@@ -85,7 +85,7 @@ define(['forum/accountheader'], function(header) {
 		});
 	};
 
-	Account.handleUserOnline = function(data) {
+	Account.handleUserOnline = function(err, data) {
 		var onlineStatus = $('.account-online-status');
 
 		if (data.online) {
