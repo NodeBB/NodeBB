@@ -88,6 +88,15 @@ define(['composer'], function(composer) {
 					return false;
 				});
 
+				$('.markAsUnreadForAll').on('click', function() {
+					socket.emit('topics.markAsUnreadForAll', tid, function(err) {
+						if(err) {
+							return app.alertError(err.message);
+						}
+					});
+					return false;
+				})
+
 				moveThreadModal.on('shown.bs.modal', function() {
 
 					var loadingEl = document.getElementById('categories-loading');

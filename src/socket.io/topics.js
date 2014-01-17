@@ -83,6 +83,16 @@ SocketTopics.markAllRead = function(socket, data, callback) {
 	});
 };
 
+SocketTopics.markAsUnreadForAll = function(socket, tid, callback) {
+	topics.markAsUnreadForAll(tid, function(err) {
+		if(err) {
+			return callback(err);
+		}
+		topics.pushUnreadCount();
+		callback();
+	});
+}
+
 function doTopicAction(action, socket, tid, callback) {
 	if(!tid) {
 		return callback(new Error('Invalid tid'));

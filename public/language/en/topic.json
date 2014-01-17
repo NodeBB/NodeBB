@@ -18,6 +18,7 @@
 	"link": "Link",
 
 	"thread_tools.title": "Thread Tools",
+	"thread_tools.markAsUnreadForAll": "Mark Unread",
 	"thread_tools.pin": "Pin Thread",
 	"thread_tools.lock": "Lock Thread",
 	"thread_tools.move": "Move Thread",
