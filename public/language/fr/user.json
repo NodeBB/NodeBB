@@ -26,14 +26,14 @@
 	"confirm_password": "Confirmer le mot de passe",
 	"password": "Mot de passe",
 
-	"upload_picture": "Uploader un image",
-	"upload_a_picture": "Uploader un image",
+	"upload_picture": "Uploader une image",
+	"upload_a_picture": "Uploader une image",
 	"image_spec": "Vous pouvez uploader seulement des fichiers de types PNG, JPG, ou GIF en dessous de 256kb.",
 
 	"settings": "paramètres",
 	"show_my_email": "Montrer mon email",
 
-	"has_no_follower": "Cet utilisateur n'a aucun suiver :(",
+	"has_no_follower": "Cet utilisateur n'a aucun suiveur :(",
 	"follows_no_one": "Cet utilisateur ne suit personne :(",
 
 	"email_hidden": "Email masqué",
