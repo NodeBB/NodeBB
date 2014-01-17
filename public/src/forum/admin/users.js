@@ -68,14 +68,14 @@ define(function() {
 
 				if (!isAdmin) {
 					if (isBanned) {
-						socket.emit('api:admin.user.unbanUser', uid);
+						socket.emit('admin.user.unbanUser', uid);
 						banBtn.removeClass('btn-warning');
 						parent.attr('data-banned', 0);
 						updateUserAdminButtons();
 					} else {
 						bootbox.confirm('Do you really want to ban "' + parent.attr('data-username') + '"?', function(confirm) {
 							if (confirm) {
-								socket.emit('api:admin.user.banUser', uid);
+								socket.emit('admin.user.banUser', uid);
 								banBtn.addClass('btn-warning');
 								parent.attr('data-banned', 1);
 								updateUserAdminButtons();
@@ -103,7 +103,7 @@ define(function() {
 						});
 				    }
 					else if (!isAdmin) {
-						socket.emit('api:admin.user.makeAdmin', uid);
+						socket.emit('admin.user.makeAdmin', uid);
 						adminBtn.attr('value', 'UnMake Admin').html('Remove Admin');
 						parent.attr('data-admin', 1);
 						updateUserBanButtons();
@@ -111,7 +111,7 @@ define(function() {
 					} else if(uid !== yourid) {
 						bootbox.confirm('Do you really want to remove this user as admin "' + parent.attr('data-username') + '"?', function(confirm) {
 							if (confirm) {
-								socket.emit('api:admin.user.removeAdmin', uid);
+								socket.emit('admin.user.removeAdmin', uid);
 								adminBtn.attr('value', 'Make Admin').html('Make Admin');
 								parent.attr('data-admin', 0);
 								updateUserBanButtons();
@@ -126,16 +126,19 @@ define(function() {
 		}
 
 		function handleUserCreate() {
+			var errorEl = $('#create-modal-error');
 			$('#createUser').on('click', function() {
 				$('#create-modal').modal('show');
+				$('#create-modal form')[0].reset();
+				errorEl.addClass('hide');
 			});
 
 			$('#create-modal-go').on('click', function() {
 				var username = $('#create-user-name').val(),
 					email = $('#create-user-email').val(),
 					password = $('#create-user-password').val(),
-					passwordAgain = $('#create-user-password-again').val(),
-					errorEl = $('#create-modal-error');
+					passwordAgain = $('#create-user-password-again').val();
+
 
 				if(password !== passwordAgain) {
 					return errorEl.html('<strong>Error</strong><p>Passwords must match!</p>').removeClass('hide');
@@ -147,13 +150,15 @@ define(function() {
 					password: password
 				};
 
-				socket.emit('api:admin.user.createUser', user, function(err, data) {
+				socket.emit('admin.user.createUser', user, function(err) {
 					if(err) {
-						return errorEl.html('<strong>Error</strong><p>' + err + '</p>').removeClass('hide');
+						return errorEl.html('<strong>Error</strong><p>' + err.message + '</p>').removeClass('hide');
 					}
 					$('#create-modal').modal('hide');
+					$('#create-modal').on('hidden.bs.modal', function() {
+						ajaxify.go('admin/users');
+					});
 					app.alertSuccess('User created!');
-					ajaxify.go('admin/users');
 				});
 
 			});
@@ -188,10 +193,10 @@ define(function() {
 
 					jQuery('.fa-spinner').removeClass('none');
 
-					socket.emit('api:admin.user.search', username, function(err, data) {
+					socket.emit('admin.user.search', username, function(err, data) {
 						if(err) {
 							return app.alertError(err.message);
-						}
+						}console.log(data)
 
 						var html = templates.prepare(templates['admin/users'].blocks['users']).parse({
 							users: data
@@ -242,11 +247,11 @@ define(function() {
 
 				if (set) {
 					loadingMoreUsers = true;
-					socket.emit('api:user.loadMore', {
+					socket.emit('user.loadMore', {
 						set: set,
 						after: $('#users-container').children().length
-					}, function(data) {
-						if (data.users.length) {
+					}, function(err, data) {
+						if (data && data.users.length) {
 							onUsersLoaded(data.users);
 						}
 						loadingMoreUsers = false;

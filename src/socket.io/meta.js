@@ -7,12 +7,13 @@ var	meta = require('../meta'),
 	nconf = require('nconf'),
 	gravatar = require('gravatar'),
 	winston = require('winston'),
+	server = require('./'),
 
 	SocketMeta = {};
 
-SocketMeta.reconnected = function(sessionData) {
-	var	uid = sessionData.uid,
-		sessionID = sessionData.socket.id;
+SocketMeta.reconnected = function(socket) {
+	var	uid = socket.uid,
+		sessionID = socket.id;
 
 	if (uid) {
 		topics.pushUnreadCount(uid);
@@ -28,22 +29,30 @@ SocketMeta.reconnected = function(sessionData) {
 	}
 };
 
-SocketMeta.buildTitle = function(text, callback) {
-	meta.title.build(text, function(err, title) {
-		callback(title);
-	});
+SocketMeta.buildTitle = function(socket, text, callback) {
+	meta.title.build(text, callback);
 };
 
-SocketMeta.updateHeader = function(data, callback, sessionData) {
-	if (sessionData.uid) {
-		user.getUserFields(sessionData.uid, data.fields, function(err, fields) {
-			if (!err && fields) {
-				fields.uid = sessionData.uid;
-				callback(fields);
+SocketMeta.updateHeader = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
+
+	if (socket.uid) {
+		user.getUserFields(socket.uid, data.fields, function(err, fields) {
+			if(err) {
+				return callback(err);
+			}
+
+			if (fields) {
+				fields.uid = socket.uid;
+				callback(null, fields);
+			} else {
+				callback(null, []);
 			}
 		});
 	} else {
-		callback({
+		callback(null, {
 			uid: 0,
 			username: "Anonymous User",
 			email: '',
@@ -57,7 +66,7 @@ SocketMeta.updateHeader = function(data, callback, sessionData) {
 	}
 };
 
-SocketMeta.getUsageStats = function(callback) {
+SocketMeta.getUsageStats = function(socket, data, callback) {
 	module.parent.exports.emitTopicPostStats(callback);
 };
 
@@ -65,19 +74,23 @@ SocketMeta.getUsageStats = function(callback) {
 
 SocketMeta.rooms = {};
 
-SocketMeta.rooms.enter = function(data, sessionData) {
-	if (data.leave !== null) {
-		sessionData.socket.leave(data.leave);
+SocketMeta.rooms.enter = function(socket, data) {
+	if(!data) {
+		return callback(new Error('invalid data'));
 	}
 
-	sessionData.socket.join(data.enter);
-	sessionData.rooms[data.enter] = sessionData.rooms[data.enter] || {};
+	if (data.leave !== null) {
+		socket.leave(data.leave);
+	}
 
-	if (sessionData.uid) {
-		sessionData.rooms[data.enter][sessionData.socket.id] = sessionData.uid;
+	socket.join(data.enter);
+	server.rooms[data.enter] = server.rooms[data.enter] || {};
 
-		if (data.leave && sessionData.rooms[data.leave] && sessionData.rooms[data.leave][sessionData.socket.id] && data.enter !== data.leave) {
-			delete sessionData.rooms[data.leave][sessionData.socket.id];
+	if (socket.uid) {
+		server.rooms[data.enter][socket.id] = socket.uid;
+
+		if (data.leave && server.rooms[data.leave] && server.rooms[data.leave][socket.id] && data.enter !== data.leave) {
+			delete server.rooms[data.leave][socket.id];
 		}
 	}
 
@@ -88,12 +101,12 @@ SocketMeta.rooms.enter = function(data, sessionData) {
 	module.parent.exports.updateRoomBrowsingText(data.enter);
 
 	if (data.enter != 'admin') {
-		sessionData.server.sockets.in('admin').emit('event:meta.rooms.update', sessionData.server.sockets.manager.rooms);
+		server.in('admin').emit('event:meta.rooms.update', null, server.rooms);
 	}
 };
 
-SocketMeta.rooms.getAll = function(callback, sessionData) {
-	callback(sessionData.server.sockets.manager.rooms);
+SocketMeta.rooms.getAll = function(socket, data, callback) {
+	callback(null, server.rooms);
 };
 
 /* Exports */

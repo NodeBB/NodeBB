@@ -15,7 +15,7 @@
 	</a>
 
 	<div class="category row">
-		<div class="{topic_row_size}">
+		<div class="col-md-12">
 			<ul id="topics-container" data-next-start="{nextStart}">
 			<!-- BEGIN topics -->
 			<li class="category-item {topics.deleted-class}">

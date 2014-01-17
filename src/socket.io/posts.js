@@ -3,12 +3,13 @@ var	posts = require('../posts'),
 	topics = require('../topics'),
 	favourites = require('../favourites'),
 	postTools = require('../postTools'),
+	index = require('./index'),
 
 	SocketPosts = {};
 
-SocketPosts.reply = function(data, callback, sessionData) {
-	if (sessionData.uid < 1 && parseInt(meta.config.allowGuestPosting, 10) === 0) {
-		sessionData.socket.emit('event:alert', {
+SocketPosts.reply = function(socket, data, callback) {
+	if (!socket.uid && !parseInt(meta.config.allowGuestPosting, 10)) {
+		socket.emit('event:alert', {
 			title: 'Reply Unsuccessful',
 			message: 'You don&apos;t seem to be logged in, so you cannot reply.',
 			type: 'danger',
@@ -17,35 +18,39 @@ SocketPosts.reply = function(data, callback, sessionData) {
 		return;
 	}
 
-	topics.reply(data.topic_id, sessionData.uid, data.content, function(err, postData) {
+	if(!data || !data.topic_id || !data.content) {
+		return callback(new Error('invalid data'));
+	}
+
+	topics.reply(data.topic_id, socket.uid, data.content, function(err, postData) {
 		if(err) {
 			if (err.message === 'content-too-short') {
-				module.parent.exports.emitContentTooShortAlert(sessionData.socket);
+				module.parent.exports.emitContentTooShortAlert(socket);
 			} else if (err.message === 'too-many-posts') {
-				module.parent.exports.emitTooManyPostsAlert(sessionData.socket);
+				module.parent.exports.emitTooManyPostsAlert(socket);
 			} else if (err.message === 'reply-error') {
-				sessionData.socket.emit('event:alert', {
+				socket.emit('event:alert', {
 					title: 'Reply Unsuccessful',
 					message: 'Your reply could not be posted at this time. Please try again later.',
 					type: 'warning',
 					timeout: 2000
 				});
 			} else if (err.message === 'no-privileges') {
-				sessionData.socket.emit('event:alert', {
+				socket.emit('event:alert', {
 					title: 'Unable to post',
 					message: 'You do not have posting privileges in this category.',
 					type: 'danger',
 					timeout: 7500
 				});
 			}
-			return;
+			return callback(err);
 		}
 
 		if (postData) {
 
 			module.parent.exports.emitTopicPostStats();
 
-			sessionData.socket.emit('event:alert', {
+			socket.emit('event:alert', {
 				title: 'Reply Successful',
 				message: 'You have successfully replied. Click here to view your reply.',
 				type: 'success',
@@ -54,62 +59,71 @@ SocketPosts.reply = function(data, callback, sessionData) {
 			var socketData = {
 				posts: [postData]
 			};
-			sessionData.server.sockets.in('topic_' + postData.tid).emit('event:new_post', socketData);
-			sessionData.server.sockets.in('recent_posts').emit('event:new_post', socketData);
-			sessionData.server.sockets.in('user/' + postData.uid).emit('event:new_post', socketData);
+			index.server.sockets.in('topic_' + postData.tid).emit('event:new_post', socketData);
+			index.server.sockets.in('recent_posts').emit('event:new_post', socketData);
+			index.server.sockets.in('user/' + postData.uid).emit('event:new_post', socketData);
 			callback();
 		}
-
 	});
 };
 
-SocketPosts.favourite = function(data, sessionData) {
-	favourites.favourite(data.pid, data.room_id, sessionData.uid, sessionData.socket);
+SocketPosts.favourite = function(socket, data) {
+	if(data && data.pid && data.room_id) {
+		favourites.favourite(data.pid, data.room_id, socket.uid, socket);
+	}
 };
 
-SocketPosts.unfavourite = function(data, sessionData) {
-	favourites.unfavourite(data.pid, data.room_id, sessionData.uid, sessionData.socket);
+SocketPosts.unfavourite = function(socket, data) {
+	if(data && data.pid && data.room_id) {
+		favourites.unfavourite(data.pid, data.room_id, socket.uid, socket);
+	}
 };
 
-SocketPosts.uploadImage = function(data, callback) {
-	posts.uploadPostImage(data, callback);
+SocketPosts.uploadImage = function(socket, data, callback) {
+	if(data) {
+		posts.uploadPostImage(data, callback);
+	}
 };
 
-SocketPosts.uploadFile = function(data, callback) {
-	posts.uploadPostFile(data, callback);
+SocketPosts.uploadFile = function(socket, data, callback) {
+	if(data) {
+		posts.uploadPostFile(data, callback);
+	}
 };
 
-SocketPosts.getRawPost = function(data, callback) {
-	posts.getPostField(data.pid, 'content', function(err, raw) {
-		callback({
-			post: raw
-		});
-	});
+SocketPosts.getRawPost = function(socket, pid, callback) {
+	posts.getPostField(pid, 'content', callback);
 };
 
-SocketPosts.edit = function(data, callback, sessionData) {
-	if(!sessionData.uid) {
-		sessionData.socket.emit('event:alert', {
+SocketPosts.edit = function(socket, data, callback) {
+	if(!socket.uid) {
+		socket.emit('event:alert', {
 			title: 'Can&apos;t edit',
 			message: 'Guests can&apos;t edit posts!',
 			type: 'warning',
 			timeout: 2000
 		});
 		return;
+	} else if(!data || !data.pid || !data.title || !data.content) {
+		return callback(new Error('invalid data'));
 	} else if (!data.title || data.title.length < parseInt(meta.config.minimumTitleLength, 10)) {
-		topics.emitTitleTooShortAlert(sessionData.socket);
+		topics.emitTitleTooShortAlert(socket);
 		return;
 	} else if (!data.content || data.content.length < parseInt(meta.config.minimumPostLength, 10)) {
-		module.parent.exports.emitContentTooShortAlert(sessionData.socket);
+		module.parent.exports.emitContentTooShortAlert(socket);
 		return;
 	}
 
-	postTools.edit(sessionData.uid, data.pid, data.title, data.content, data.images);
+	postTools.edit(socket.uid, data.pid, data.title, data.content);
 	callback();
 };
 
-SocketPosts.delete = function(data, callback, sessionData) {
-	postTools.delete(sessionData.uid, data.pid, function(err) {
+SocketPosts.delete = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
+
+	postTools.delete(socket.uid, data.pid, function(err) {
 
 		if(err) {
 			return callback(err);
@@ -117,32 +131,40 @@ SocketPosts.delete = function(data, callback, sessionData) {
 
 		module.parent.exports.emitTopicPostStats();
 
-		sessionData.server.sockets.in('topic_' + data.tid).emit('event:post_deleted', {
+		index.server.sockets.in('topic_' + data.tid).emit('event:post_deleted', {
 			pid: data.pid
 		});
-		callback(null);
+		callback();
 	});
 };
 
-SocketPosts.restore = function(data, callback, sessionData) {
-	postTools.restore(sessionData.uid, data.pid, function(err) {
+SocketPosts.restore = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
+
+	postTools.restore(socket.uid, data.pid, function(err) {
 		if(err) {
 			return callback(err);
 		}
 
 		module.parent.exports.emitTopicPostStats();
 
-		sessionData.server.sockets.in('topic_' + data.tid).emit('event:post_restored', {
+		index.server.sockets.in('topic_' + data.tid).emit('event:post_restored', {
 			pid: data.pid
 		});
-		callback(null);
+
+		callback();
 	});
 };
 
-SocketPosts.getPrivileges = function(pid, callback, sessionData) {
-	postTools.privileges(pid, sessionData.uid, function(privileges) {
+SocketPosts.getPrivileges = function(socket, pid, callback) {
+	postTools.privileges(pid, socket.uid, function(err, privileges) {
+		if(err) {
+			return callback(err);
+		}
 		privileges.pid = parseInt(pid);
-		callback(privileges);
+		callback(null, privileges);
 	});
 };
 

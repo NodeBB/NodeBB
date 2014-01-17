@@ -8,7 +8,7 @@ define(function() {
 		ajaxify.register_events([
 			'event:new_topic',
 			'event:new_post',
-			'api:topics.markAllRead'
+			'topics.markAllRead'
 		]);
 
 		var newTopicCount = 0,
@@ -55,19 +55,19 @@ define(function() {
 
 		$('#mark-allread-btn').on('click', function() {
 			var btn = $(this);
-			socket.emit('api:topics.markAllRead', {}, function(success) {
-				if (success) {
-					btn.remove();
-					$('#topics-container').empty();
-					$('#category-no-topics').removeClass('hidden');
-					app.alertSuccess('All topics marked as read!');
-					$('#numUnreadBadge')
-						.removeClass('badge-important')
-						.addClass('badge-inverse')
-						.html('0');
-				} else {
-					app.alertError('There was an error marking topics read!');
+			socket.emit('topics.markAllRead', function(err) {
+				if(err) {
+					return app.alertError('There was an error marking topics read!');
 				}
+
+				btn.remove();
+				$('#topics-container').empty();
+				$('#category-no-topics').removeClass('hidden');
+				app.alertSuccess('All topics marked as read!');
+				$('#numUnreadBadge')
+					.removeClass('badge-important')
+					.addClass('badge-inverse')
+					.html('0');
 			});
 		});
 
@@ -91,9 +91,13 @@ define(function() {
 
 		function loadMoreTopics() {
 			loadingMoreTopics = true;
-			socket.emit('api:topics.loadMoreUnreadTopics', {
+			socket.emit('topics.loadMoreUnreadTopics', {
 				after: parseInt($('#topics-container').attr('data-next-start'), 10)
-			}, function(data) {
+			}, function(err, data) {
+				if(err) {
+					return app.alertError(err.message);
+				}
+
 				if (data.topics && data.topics.length) {
 					onTopicsLoaded(data.topics);
 					$('#topics-container').attr('data-next-start', data.nextStart);

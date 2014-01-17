@@ -36,7 +36,7 @@ var socket,
 						app.uid = data.uid;
 
 						app.showLoginMessage();
-						socket.emit('api:meta.updateHeader', {
+						socket.emit('meta.updateHeader', {
 							fields: ['username', 'picture', 'userslug']
 						}, app.updateHeader);
 					});
@@ -77,14 +77,14 @@ var socket,
 							}
 							app.enterRoom(room, true);
 
-							socket.emit('api:meta.reconnected');
+							socket.emit('meta.reconnected');
 
 							setTimeout(function() {
 								reconnectEl.removeClass('active').addClass("hide");
 							}, 3000);
 						}
 
-						socket.emit('api:meta.updateHeader', {
+						socket.emit('meta.updateHeader', {
 							fields: ['username', 'picture', 'userslug']
 						}, app.updateHeader);
 					});
@@ -121,6 +121,8 @@ var socket,
 
 						setTimeout(app.logout, 1000);
 					});
+
+					socket.on('meta.updateHeader', app.updateHeader);
 
 					app.enterRoom('global');
 				}
@@ -235,7 +237,7 @@ var socket,
 				return;
 			}
 
-			socket.emit('api:meta.rooms.enter', {
+			socket.emit('meta.rooms.enter', {
 				'enter': room,
 				'leave': app.currentRoom
 			});
@@ -248,42 +250,22 @@ var socket,
 		var uids = [];
 
 		jQuery('.post-row').each(function () {
-			uids.push(this.getAttribute('data-uid'));
+			var uid = $(this).attr('data-uid');
+			if(uids.indexOf(uid) === -1) {
+				uids.push(uid);
+			}
 		});
 
-		socket.emit('api:user.get_online_users', uids, function (users) {
-			jQuery('a.username-field').each(function () {
-				if (this.processed === true)
-					return;
-
+		socket.emit('user.getOnlineUsers', uids, function (err, users) {
+			jQuery('button .username-field').each(function (index, element) {
 				var el = jQuery(this),
 					uid = el.parents('li').attr('data-uid');
 
 				if (uid && jQuery.inArray(uid, users) !== -1) {
-					el.find('i').remove();
-					el.prepend('<i class="fa fa-circle"></i>');
+					el.parent().addClass('btn-success').removeClass('btn-danger');
 				} else {
-					el.find('i').remove();
-					el.prepend('<i class="fa fa-circle-o"></i>');
+					el.parent().addClass('btn-danger').removeClass('btn-success');
 				}
-
-				el.processed = true;
-			});
-			jQuery('button .username-field').each(function () {
-				//DRY FAIL
-				if (this.processed === true)
-					return;
-
-				var el = jQuery(this),
-					uid = el.parents('li').attr('data-uid');
-
-				if (uid && jQuery.inArray(uid, users) !== -1) {
-					el.parent().addClass('btn-success');
-				} else {
-					el.parent().addClass('btn-danger');
-				}
-
-				el.processed = true;
 			});
 		});
 	};
@@ -419,6 +401,7 @@ var socket,
 			interval: undefined,
 			titles: []
 		};
+
 	app.alternatingTitle = function (title) {
 		if (typeof title !== 'string') {
 			return;
@@ -449,13 +432,13 @@ var socket,
 			url = a.pathname.slice(1);
 		}
 
-		socket.emit('api:meta.buildTitle', url, function(title, numNotifications) {
+		socket.emit('meta.buildTitle', url, function(err, title, numNotifications) {
 			titleObj.titles[0] = (numNotifications > 0 ? '(' + numNotifications + ') ' : '') + title;
 			app.alternatingTitle('');
 		});
 	};
 
-	app.updateHeader = function(data) {
+	app.updateHeader = function(err, data) {
 		$('#search-button').off().on('click', function(e) {
 			e.stopPropagation();
 			$('#search-fields').removeClass('hide').show();

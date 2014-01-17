@@ -52,16 +52,14 @@ define(['composer'], function(composer) {
 					if (thread_state.deleted !== '1') {
 						bootbox.confirm('Are you sure you want to delete this thread?', function(confirm) {
 							if (confirm) {
-								socket.emit('api:topics.delete', {
-									tid: tid
-								}, null);
+								socket.emit('topics.delete', tid);
 							}
 						});
 					} else {
 						bootbox.confirm('Are you sure you want to restore this thread?', function(confirm) {
-							if (confirm) socket.emit('api:topics.restore', {
-								tid: tid
-							}, null);
+							if (confirm) {
+								socket.emit('topics.restore', tid);
+							}
 						});
 					}
 					return false;
@@ -69,26 +67,18 @@ define(['composer'], function(composer) {
 
 				$('.lock_thread').on('click', function(e) {
 					if (thread_state.locked !== '1') {
-						socket.emit('api:topics.lock', {
-							tid: tid
-						}, null);
+						socket.emit('topics.lock', tid);
 					} else {
-						socket.emit('api:topics.unlock', {
-							tid: tid
-						}, null);
+						socket.emit('topics.unlock', tid);
 					}
 					return false;
 				});
 
 				$('.pin_thread').on('click', function(e) {
 					if (thread_state.pinned !== '1') {
-						socket.emit('api:topics.pin', {
-							tid: tid
-						}, null);
+						socket.emit('topics.pin', tid);
 					} else {
-						socket.emit('api:topics.unpin', {
-							tid: tid
-						}, null);
+						socket.emit('topics.unpin', tid);
 					}
 					return false;
 				});
@@ -102,7 +92,7 @@ define(['composer'], function(composer) {
 
 					var loadingEl = document.getElementById('categories-loading');
 					if (loadingEl) {
-						socket.emit('api:categories.get', function(data) {
+						socket.emit('categories.get', function(err, data) {
 							// Render categories
 							var categoriesFrag = document.createDocumentFragment(),
 								categoryEl = document.createElement('li'),
@@ -145,21 +135,13 @@ define(['composer'], function(composer) {
 									$(moveThreadModal).find('.modal-header button').fadeOut(250);
 									commitEl.innerHTML = 'Moving <i class="fa-spin fa-refresh"></i>';
 
-									socket.emit('api:topics.move', {
+									socket.emit('topics.move', {
 										tid: tid,
 										cid: targetCid
-									}, function(data) {
+									}, function(err) {
 										moveThreadModal.modal('hide');
-										if (data.status === 'ok') {
-											app.alert({
-												'alert_id': 'thread_move',
-												type: 'success',
-												title: 'Topic Successfully Moved',
-												message: 'This topic has been successfully moved to ' + targetCatLabel,
-												timeout: 5000
-											});
-										} else {
-											app.alert({
+										if(err) {
+											return app.alert({
 												'alert_id': 'thread_move',
 												type: 'danger',
 												title: 'Unable to Move Topic',
@@ -167,6 +149,14 @@ define(['composer'], function(composer) {
 												timeout: 5000
 											});
 										}
+
+										app.alert({
+											'alert_id': 'thread_move',
+											type: 'success',
+											title: 'Topic Successfully Moved',
+											message: 'This topic has been successfully moved to ' + targetCatLabel,
+											timeout: 5000
+										});
 									});
 								}
 							});
@@ -192,7 +182,7 @@ define(['composer'], function(composer) {
 					forkCommit.on('click', createTopicFromPosts);
 
 					function createTopicFromPosts() {
-						socket.emit('api:topics.createTopicFromPosts', {
+						socket.emit('topics.createTopicFromPosts', {
 							title: forkModal.find('#fork-title').val(),
 							pids: pids
 						}, function(err) {
@@ -298,15 +288,15 @@ define(['composer'], function(composer) {
 					}
 				};
 
-			socket.emit('api:topics.followCheck', tid, function(state) {
+			socket.emit('topics.followCheck', tid, function(err, state) {
 				set_follow_state(state, true);
 			});
+
 			if (followEl[0]) {
 				followEl[0].addEventListener('click', function() {
-					socket.emit('api:topics.follow', tid, function(data) {
-						if (data.status && data.status === 'ok') set_follow_state(data.follow);
-						else {
-							app.alert({
+					socket.emit('topics.follow', tid, function(err, state) {
+						if(err) {
+							return app.alert({
 								type: 'danger',
 								alert_id: 'topic_follow',
 								title: 'Please Log In',
@@ -314,6 +304,8 @@ define(['composer'], function(composer) {
 								timeout: 5000
 							});
 						}
+
+						set_follow_state(state);
 					});
 				}, false);
 			}
@@ -375,9 +367,14 @@ define(['composer'], function(composer) {
 					username = '@' + post.attr('data-username');
 				}
 
-				socket.emit('api:posts.getRawPost', {pid: pid}, function(data) {
-
-					quoted = '> ' + data.post.replace(/\n/g, '\n> ') + '\n\n';
+				socket.emit('posts.getRawPost', pid, function(err, post) {
+					if(err) {
+						return app.alert(err.message);
+					}
+					var quoted = '';
+					if(post) {
+						quoted = '> ' + post.replace(/\n/g, '\n> ') + '\n\n';
+					}
 
 					composer.newReply(tid, topic_name, username + ' said:\n' + quoted);
 				});
@@ -389,12 +386,12 @@ define(['composer'], function(composer) {
 			var uid = $(this).parents('li').attr('data-uid');
 
 			if ($(this).attr('data-favourited') == 'false') {
-				socket.emit('api:posts.favourite', {
+				socket.emit('posts.favourite', {
 					pid: pid,
 					room_id: app.currentRoom
 				});
 			} else {
-				socket.emit('api:posts.unfavourite', {
+				socket.emit('posts.unfavourite', {
 					pid: pid,
 					room_id: app.currentRoom
 				});
@@ -436,30 +433,20 @@ define(['composer'], function(composer) {
 		$('#post-container').on('click', '.delete', function(e) {
 			var pid = $(this).parents('li').attr('data-pid'),
 				postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
-				deleteAction = !postEl.hasClass('deleted') ? true : false,
-				confirmDel = confirm((deleteAction ? 'Delete' : 'Restore') + ' this post?');
+				action = !postEl.hasClass('deleted') ? 'delete' : 'restore';
 
-			if (confirmDel) {
-				if(deleteAction) {
-					socket.emit('api:posts.delete', {
+			bootbox.confirm('Are you sure you want to ' + action + ' this post?', function(confirm) {
+				if (confirm) {
+					socket.emit('posts.' + action, {
 						pid: pid,
 						tid: tid
 					}, function(err) {
 						if(err) {
-							return app.alertError('Can\'t delete post!');
-						}
-					});
-				} else {
-					socket.emit('api:posts.restore', {
-						pid: pid,
-						tid: tid
-					}, function(err) {
-						if(err) {
-							return app.alertError('Can\'t restore post!');
+							return app.alertError('Can\'t ' + action + ' post!');
 						}
 					});
 				}
-			}
+			});
 		});
 
 		$('#post-container').on('click', '.move', function(e) {
@@ -488,7 +475,7 @@ define(['composer'], function(composer) {
 			});
 
 			moveBtn.on('click', function() {
-				socket.emit('api:topics.movePost', {pid: pid, tid: topicId.val()}, function(err) {
+				socket.emit('topics.movePost', {pid: pid, tid: topicId.val()}, function(err) {
 					if(err) {
 						return app.alertError(err.message);
 					}
@@ -515,15 +502,15 @@ define(['composer'], function(composer) {
 		});
 
 		ajaxify.register_events([
-			'event:rep_up', 'event:rep_down', 'event:new_post', 'api:get_users_in_room',
+			'event:rep_up', 'event:rep_down', 'event:new_post', 'get_users_in_room',
 			'event:topic_deleted', 'event:topic_restored', 'event:topic:locked',
 			'event:topic_unlocked', 'event:topic_pinned', 'event:topic_unpinned',
 			'event:topic_moved', 'event:post_edited', 'event:post_deleted', 'event:post_restored',
-			'api:posts.favourite'
+			'posts.favourite'
 		]);
 
 
-		socket.on('api:get_users_in_room', function(data) {
+		socket.on('get_users_in_room', function(data) {
 			if(data) {
 				var activeEl = $('.thread_active_users');
 
@@ -629,45 +616,47 @@ define(['composer'], function(composer) {
 		});
 
 		socket.on('event:topic_deleted', function(data) {
-			if (data.tid === tid && data.status === 'ok') {
+			if (data && data.tid === tid) {
 				set_locked_state(true);
 				set_delete_state(true);
 			}
 		});
 
 		socket.on('event:topic_restored', function(data) {
-			if (data.tid === tid && data.status === 'ok') {
+			if (data && data.tid === tid) {
 				set_locked_state(false);
 				set_delete_state(false);
 			}
 		});
 
 		socket.on('event:topic_locked', function(data) {
-			if (data.tid === tid && data.status === 'ok') {
+			if (data && data.tid === tid) {
 				set_locked_state(true, 1);
 			}
 		});
 
 		socket.on('event:topic_unlocked', function(data) {
-			if (data.tid === tid && data.status === 'ok') {
+			if (data && data.tid === tid) {
 				set_locked_state(false, 1);
 			}
 		});
 
 		socket.on('event:topic_pinned', function(data) {
-			if (data.tid === tid && data.status === 'ok') {
+			if (data && data.tid === tid) {
 				set_pinned_state(true, 1);
 			}
 		});
 
 		socket.on('event:topic_unpinned', function(data) {
-			if (data.tid === tid && data.status === 'ok') {
+			if (data && data.tid === tid) {
 				set_pinned_state(false, 1);
 			}
 		});
 
 		socket.on('event:topic_moved', function(data) {
-			if (data && data.tid > 0) ajaxify.go('topic/' + data.tid);
+			if (data && data.tid > 0) {
+				ajaxify.go('topic/' + data.tid);
+			}
 		});
 
 		socket.on('event:post_edited', function(data) {
@@ -689,8 +678,8 @@ define(['composer'], function(composer) {
 
 		});
 
-		socket.on('api:posts.favourite', function(data) {
-			if (data.status === 'ok' && data.pid) {
+		socket.on('posts.favourite', function(data) {
+			if (data && data.pid) {
 				var favBtn = $('li[data-pid="' + data.pid + '"] .favourite');
 				if(favBtn.length) {
 					favBtn.addClass('btn-warning')
@@ -700,8 +689,8 @@ define(['composer'], function(composer) {
 			}
 		});
 
-		socket.on('api:posts.unfavourite', function(data) {
-			if (data.status === 'ok' && data.pid) {
+		socket.on('posts.unfavourite', function(data) {
+			if (data && data.pid) {
 				var favBtn = $('li[data-pid="' + data.pid + '"] .favourite');
 				if(favBtn.length) {
 					favBtn.removeClass('btn-warning')
@@ -861,7 +850,11 @@ define(['composer'], function(composer) {
 				favEl = postEl.find('.favourite'),
 				replyEl = postEl.find('.post_reply');
 
-				socket.emit('api:posts.getPrivileges', pid, function(privileges) {
+				socket.emit('posts.getPrivileges', pid, function(err, privileges) {
+					if(err) {
+						return app.alert(err.message);
+					}
+
 					if (privileges.editable) {
 						if (!postEl.hasClass('deleted')) {
 							toggle_post_tools(pid, false);
@@ -1056,7 +1049,10 @@ define(['composer'], function(composer) {
 				.fadeIn('slow');
 
 			for (var x = 0, numPosts = data.posts.length; x < numPosts; x++) {
-				socket.emit('api:posts.getPrivileges', data.posts[x].pid, function(privileges) {
+				socket.emit('posts.getPrivileges', data.posts[x].pid, function(err, privileges) {
+					if(err) {
+						return app.alertError(err.message);
+					}
 					toggle_mod_tools(privileges.pid, privileges.editable);
 				});
 			}
@@ -1087,7 +1083,7 @@ define(['composer'], function(composer) {
 	}
 
 	function updatePostCount() {
-		socket.emit('api:topics.postcount', templates.get('topic_id'), function(err, postcount) {
+		socket.emit('topics.postcount', templates.get('topic_id'), function(err, postcount) {
 			if(!err) {
 				Topic.postCount = postcount;
 				$('#topic-post-count').html(Topic.postCount);
@@ -1109,12 +1105,16 @@ define(['composer'], function(composer) {
 			indicatorEl.fadeIn();
 		}
 
-		socket.emit('api:topics.loadMore', {
+		socket.emit('topics.loadMore', {
 			tid: tid,
 			after: parseInt($('#post-container .post-row.infiniteloaded').last().attr('data-index'), 10) + 1
-		}, function (data) {
+		}, function (err, data) {
+			if(err) {
+				return app.alertError(err.message);
+			}
+
 			infiniteLoaderActive = false;
-			if (data.posts.length) {
+			if (data && data.posts && data.posts.length) {
 				indicatorEl.attr('done', '0');
 				createNewPosts(data, true);
 			} else {

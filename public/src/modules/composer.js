@@ -45,9 +45,10 @@ define(['taskbar'], function(taskbar) {
 
 	composer.editPost = function(pid) {
 		if(allowed()) {
-			socket.emit('api:modules.composer.push', {
-				pid: pid
-			}, function(threadData) {
+			socket.emit('modules.composer.push', pid, function(err, threadData) {
+				if(err) {
+					return app.alertError(err.message);
+				}
 				push({
 					pid: pid,
 					title: threadData.title,
@@ -108,8 +109,8 @@ define(['taskbar'], function(taskbar) {
 			} else if (parseInt(postData.pid) > 0) {
 				titleEl.val(postData.title);
 				titleEl.prop('readOnly', true);
-				socket.emit('api:modules.composer.editCheck', postData.pid, function(editCheck) {
-					if (editCheck.titleEditable) {
+				socket.emit('modules.composer.editCheck', postData.pid, function(err, editCheck) {
+					if (!err && editCheck.titleEditable) {
 						postContainer.find('input').prop('readonly', false);
 					}
 				});
@@ -434,7 +435,7 @@ define(['taskbar'], function(taskbar) {
 
 		// Still here? Let's post.
 		if (parseInt(postData.cid) > 0) {
-			socket.emit('api:topics.post', {
+			socket.emit('topics.post', {
 				'title' : titleEl.val(),
 				'content' : bodyEl.val(),
 				'category_id' : postData.cid
@@ -442,14 +443,14 @@ define(['taskbar'], function(taskbar) {
 				composer.discard(post_uuid);
 			});
 		} else if (parseInt(postData.tid) > 0) {
-			socket.emit('api:posts.reply', {
+			socket.emit('posts.reply', {
 				'topic_id' : postData.tid,
 				'content' : bodyEl.val()
 			}, function() {
 				composer.discard(post_uuid);
 			});
 		} else if (parseInt(postData.pid) > 0) {
-			socket.emit('api:posts.edit', {
+			socket.emit('posts.edit', {
 				pid: postData.pid,
 				content: bodyEl.val(),
 				title: titleEl.val()
@@ -568,12 +569,12 @@ define(['taskbar'], function(taskbar) {
 			dropDiv.hide();
 
 			if(file.type.match('image.*')) {
-				uploadFile('api:posts.uploadImage', post_uuid, fileData);
+				uploadFile('posts.uploadImage', post_uuid, fileData);
 			} else {
 				if(file.size > parseInt(config.maximumFileSize, 10) * 1024) {
 					return composerAlert('File too big', 'Maximum allowed file size is ' + config.maximumFileSize + 'kbs');
 				}
-				uploadFile('api:posts.uploadFile', post_uuid, fileData);
+				uploadFile('posts.uploadFile', post_uuid, fileData);
 			}
 		});
 
@@ -582,7 +583,7 @@ define(['taskbar'], function(taskbar) {
 
 
 	function uploadFile(method, post_uuid, img) {
-		var linkStart = method === 'api:posts.uploadImage' ? '!' : '',
+		var linkStart = method === 'posts.uploadImage' ? '!' : '',
 			postContainer = $('#cmp-uuid-' + post_uuid),
 			textarea = postContainer.find('textarea'),
 			text = textarea.val(),

@@ -6,11 +6,16 @@ var utils = require('../../public/src/utils'),
 
 	UserAdmin.createUser = function(uid, userData, callback) {
 		user.isAdministrator(uid, function(err, isAdmin) {
+			if(err) {
+				return callback(err);
+			}
+
 			if (isAdmin) {
 				user.create(userData.username, userData.password, userData.email, function(err) {
 					if(err) {
-						return callback(err.message);
+						return callback(err);
 					}
+
 					callback(null);
 				});
 			} else {

@@ -75,19 +75,24 @@ var async = require('async'),
 				return callback(new Error('no-privileges'));
 			} else if (!cid) {
 				return callback(new Error('invalid-cid'));
-			} else if (!title || title.length < parseInt(meta.config.minimumTitleLength, 10)) {
+			}
+
+			if (title) {
+				title = title.trim();
+			}
+
+			if (!title || title.length < parseInt(meta.config.minimumTitleLength, 10)) {
 				return callback(new Error('title-too-short'), null);
 			} else if(title.length > parseInt(meta.config.maximumTitleLength, 10)) {
 				return callback(new Error('title-too-long'), null);
-			} else if (!content || content.length < meta.config.miminumPostLength) {
-				return callback(new Error('content-too-short'), null);
 			}
 
 			if (content) {
 				content = content.trim();
 			}
-			if (title) {
-				title = title.trim();
+
+			if (!content || content.length < meta.config.miminumPostLength) {
+				return callback(new Error('content-too-short'), null);
 			}
 
 			user.getUserField(uid, 'lastposttime', function(err, lastposttime) {
@@ -257,7 +262,7 @@ var async = require('async'),
 					});
 
 					function move(pid, next) {
-						postTools.privileges(pid, uid, function(privileges) {
+						postTools.privileges(pid, uid, function(err, privileges) {
 							if(privileges.editable) {
 								Topics.movePostToTopic(pid, tid, next);
 							} else {
@@ -379,9 +384,7 @@ var async = require('async'),
 			}
 
 			function getPrivileges(next) {
-				postTools.privileges(tid, current_user, function(privData) {
-					next(null, privData);
-				});
+				postTools.privileges(tid, current_user, next);
 			}
 
 			async.parallel([getFavouritesData, addUserInfoToPosts, getPrivileges], function(err, results) {
@@ -449,7 +452,7 @@ var async = require('async'),
 					}
 				});
 			}, function(tids) {
-				Topics.getTopicsByTids(tids, current_user, function(topicData) {
+				Topics.getTopicsByTids(tids, 0, current_user, function(err, topicData) {
 					latestTopics.topics = topicData;
 					callback(err, latestTopics);
 				});
@@ -471,8 +474,9 @@ var async = require('async'),
 			function(callback) {
 				db.getSortedSetRevRange('topics:recent', start, stop, function(err, tids) {
 
-					if (err)
+					if (err) {
 						return callback(err);
+					}
 
 					if (tids && !tids.length) {
 						done = true;
@@ -494,7 +498,7 @@ var async = require('async'),
 				});
 			},
 			function(err) {
-				callback({
+				callback(null, {
 					count: unreadTids.length
 				});
 			}
@@ -564,19 +568,22 @@ var async = require('async'),
 			'show_topic_button': 'hidden',
 			'show_markallread_button': 'show',
 			'no_topics_message': 'hidden',
-			'topic_row_size': 'col-md-12',
 			'topics': []
 		};
 
 		function noUnreadTopics() {
 			unreadTopics.no_topics_message = 'show';
 			unreadTopics.show_markallread_button = 'hidden';
-			callback(unreadTopics);
+			callback(null, unreadTopics);
 		}
 
 		function sendUnreadTopics(topicIds) {
 
-			Topics.getTopicsByTids(topicIds, uid, function(topicData) {
+			Topics.getTopicsByTids(topicIds, 0, uid, function(err, topicData) {
+				if(err) {
+					return callback(err);
+				}
+
 				unreadTopics.topics = topicData;
 				unreadTopics.nextStart = stop + 1;
 				if (!topicData || topicData.length === 0) {
@@ -586,13 +593,13 @@ var async = require('async'),
 					unreadTopics.show_markallread_button = 'hidden';
 				}
 
-				callback(unreadTopics);
+				callback(null, unreadTopics);
 			});
 		}
 
 		Topics.getUnreadTids(uid, start, stop, function(err, unreadTids) {
 			if (err) {
-				return callback([]);
+				return callback(err);
 			}
 
 			if (unreadTids.length) {
@@ -615,7 +622,7 @@ var async = require('async'),
 
 		async.each(uids, function(uid, next) {
 			Topics.getUnreadTids(uid, 0, 19, function(err, tids) {
-				websockets.in('uid_' + uid).emit('event:unread.updateCount', tids.length);
+				websockets.in('uid_' + uid).emit('event:unread.updateCount', null, tids.length);
 				next();
 			});
 		}, function(err) {
@@ -629,13 +636,12 @@ var async = require('async'),
 		});
 	};
 
-	Topics.getTopicsByTids = function(tids, current_user, callback, category_id) {
+	Topics.getTopicsByTids = function(tids, cid, current_user, callback) {
 
 		var retrieved_topics = [];
 
 		if (!Array.isArray(tids) || tids.length === 0) {
-			callback(retrieved_topics);
-			return;
+			return callback(null, retrieved_topics);
 		}
 
 		function getTopicInfo(topicData, callback) {
@@ -659,19 +665,19 @@ var async = require('async'),
 			// temporary. I don't think this call should belong here
 
 			function getPrivileges(next) {
-				categoryTools.privileges(category_id, current_user, function(err, user_privs) {
-					next(err, user_privs);
-				});
+				categoryTools.privileges(cid, current_user, next);
 			}
 
 			function getCategoryInfo(next) {
-				categories.getCategoryFields(topicData.cid, ['name', 'slug', 'icon'], function(err, categoryData) {
-					next(err, categoryData);
-				});
+				categories.getCategoryFields(topicData.cid, ['name', 'slug', 'icon'], next);
 			}
 
 			async.parallel([getUserInfo, hasReadTopic, getTeaserInfo, getPrivileges, getCategoryInfo], function(err, results) {
-				callback({
+				if(err) {
+					return callback(err);
+				}
+
+				callback(null, {
 					username: results[0].username,
 					userslug: results[0].userslug,
 					picture: results[0].picture,
@@ -689,13 +695,20 @@ var async = require('async'),
 			return !deleted || (deleted && topicInfo.privileges.view_deleted) || topicData.uid === current_user;
 		}
 
-		function loadTopic(tid, callback) {
+		function loadTopic(tid, next) {
 			Topics.getTopicData(tid, function(err, topicData) {
-				if (!topicData) {
-					return callback(null);
+				if(err) {
+					return next(err);
 				}
 
-				getTopicInfo(topicData, function(topicInfo) {
+				if (!topicData) {
+					return next();
+				}
+
+				getTopicInfo(topicData, function(err, topicInfo) {
+					if(err) {
+						return next(err);
+					}
 
 					topicData['pin-icon'] = parseInt(topicData.pinned, 10) === 1 ? 'fa-thumb-tack' : 'none';
 					topicData['lock-icon'] = parseInt(topicData.locked, 10) === 1 ? 'fa-lock' : 'none';
@@ -715,18 +728,17 @@ var async = require('async'),
 					topicData.teaser_pid = topicInfo.teaserInfo.pid;
 					topicData.teaser_timestamp = topicInfo.teaserInfo.timestamp ? (new Date(parseInt(topicInfo.teaserInfo.timestamp, 10)).toISOString()) : '';
 
-					if (isTopicVisible(topicData, topicInfo))
+					if (isTopicVisible(topicData, topicInfo)) {
 						retrieved_topics.push(topicData);
+					}
 
-					callback(null);
+					next(null);
 				});
 			});
 		}
 
 		async.eachSeries(tids, loadTopic, function(err) {
-			if (!err) {
-				callback(retrieved_topics);
-			}
+			callback(err, retrieved_topics);
 		});
 
 	}
@@ -888,7 +900,7 @@ var async = require('async'),
 	Topics.markAllRead = function(uid, callback) {
 		db.getSetMembers('topics:tid', function(err, tids) {
 			if (err) {
-				return callback(err, null);
+				return callback(err);
 			}
 
 			if (tids && tids.length) {
@@ -897,7 +909,7 @@ var async = require('async'),
 				}
 			}
 
-			callback(null, true);
+			callback(null);
 		});
 	}
 

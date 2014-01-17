@@ -189,16 +189,24 @@ var path = require('path'),
 				});
 			});
 
-			app.get('/unread', function (req, res) {
+			app.get('/unread', function (req, res, next) {
 				var uid = (req.user) ? req.user.uid : 0;
-				topics.getUnreadTopics(uid, 0, 19, function (data) {
+				topics.getUnreadTopics(uid, 0, 19, function (err, data) {
+					if(err) {
+						return next(err);
+					}
+
 					res.json(data);
 				});
 			});
 
-			app.get('/unread/total', function (req, res) {
+			app.get('/unread/total', function (req, res, next) {
 				var uid = (req.user) ? req.user.uid : 0;
-				topics.getTotalUnread(uid, function (data) {
+				topics.getTotalUnread(uid, function (err, data) {
+					if(err) {
+						return next(err);
+					}
+
 					res.json(data);
 				});
 			});
@@ -286,9 +294,9 @@ var path = require('path'),
 							return callback(err, null);
 						}
 
-						topics.getTopicsByTids(tids, 0, function (topics) {
+						topics.getTopicsByTids(tids, 0, 0, function (topics) {
 							callback(null, topics);
-						}, 0);
+						});
 					});
 				}
 

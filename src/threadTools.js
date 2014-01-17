@@ -66,13 +66,16 @@ var winston = require('winston'),
 
 		events.logTopicDelete(uid, tid);
 
+		websockets.emitTopicPostStats();
+
 		websockets.in('topic_' + tid).emit('event:topic_deleted', {
-			tid: tid,
-			status: 'ok'
+			tid: tid
 		});
 
 		if (callback) {
-			callback(null);
+			callback(null, {
+				tid: tid
+			});
 		}
 	}
 
@@ -83,9 +86,10 @@ var winston = require('winston'),
 
 		events.logTopicRestore(uid, tid);
 
+		websockets.emitTopicPostStats();
+
 		websockets.in('topic_' + tid).emit('event:topic_restored', {
-			tid: tid,
-			status: 'ok'
+			tid: tid
 		});
 
 		topics.getTopicField(tid, 'title', function(err, title) {
@@ -93,81 +97,75 @@ var winston = require('winston'),
 		});
 
 		if(callback) {
-			callback(null);
+			callback(null, {
+				tid:tid
+			});
 		}
 	}
 
-	ThreadTools.lock = function(tid, callback) {
+	ThreadTools.lock = function(tid, uid, callback) {
 		topics.setTopicField(tid, 'locked', 1);
 
 		websockets.in('topic_' + tid).emit('event:topic_locked', {
-			tid: tid,
-			status: 'ok'
+			tid: tid
 		});
 
 		if (callback) {
-			callback({
-				status: 'ok',
+			callback(null, {
 				tid: tid
 			});
 		}
 	}
 
-	ThreadTools.unlock = function(tid, callback) {
+	ThreadTools.unlock = function(tid, uid, callback) {
 		topics.setTopicField(tid, 'locked', 0);
 
 		websockets.in('topic_' + tid).emit('event:topic_unlocked', {
-			tid: tid,
-			status: 'ok'
+			tid: tid
 		});
 
 		if (callback) {
-			callback({
-				status: 'ok',
+			callback(null, {
 				tid: tid
 			});
 		}
 	}
 
-	ThreadTools.pin = function(tid, callback) {
+	ThreadTools.pin = function(tid, uid, callback) {
 		topics.setTopicField(tid, 'pinned', 1);
 		topics.getTopicField(tid, 'cid', function(err, cid) {
 			db.sortedSetAdd('categories:' + cid + ':tid', Math.pow(2, 53), tid);
 		});
 
 		websockets.in('topic_' + tid).emit('event:topic_pinned', {
-			tid: tid,
-			status: 'ok'
+			tid: tid
 		});
 
 		if (callback) {
-			callback({
-				status: 'ok',
+			callback(null, {
 				tid: tid
 			});
 		}
 	}
 
-	ThreadTools.unpin = function(tid, callback) {
+	ThreadTools.unpin = function(tid, uid, callback) {
 		topics.setTopicField(tid, 'pinned', 0);
 		topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
 			db.sortedSetAdd('categories:' + topicData.cid + ':tid', topicData.lastposttime, tid);
 		});
 
 		websockets.in('topic_' + tid).emit('event:topic_unpinned', {
-			tid: tid,
-			status: 'ok'
+			tid: tid
 		});
 
 		if (callback) {
-			callback({
-				status: 'ok',
+			callback(null, {
 				tid: tid
 			});
 		}
 	}
 
-	ThreadTools.move = function(tid, cid, callback, sessionData) {
+	ThreadTools.move = function(tid, cid, callback) {
 		topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
 			var oldCid = topicData.cid;
 
@@ -175,9 +173,7 @@ var winston = require('winston'),
 				db.sortedSetAdd('categories:' + cid + ':tid', topicData.lastposttime, tid, function(err, result) {
 
 					if(err) {
-						return callback({
-							status: 'error'
-						});
+						return callback(err);
 					}
 
 					topics.setTopicField(tid, 'cid', cid);
@@ -193,61 +189,46 @@ var winston = require('winston'),
 					categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1);
 					categories.incrementCategoryFieldBy(cid, 'topic_count', 1);
 
-					callback({
-						status: 'ok'
-					});
-
-					sessionData.server.sockets.in('topic_' + tid).emit('event:topic_moved', {
-						tid: tid
-					});
+					callback(null);
 				});
 			});
 		});
 	}
 
-	ThreadTools.isFollowing = function(tid, current_user, callback) {
-		db.isSetMember('tid:' + tid + ':followers', current_user, function(err, following) {
-			callback(following);
-		});
+	ThreadTools.isFollowing = function(tid, uid, callback) {
+		db.isSetMember('tid:' + tid + ':followers', uid, callback);
 	}
 
-	ThreadTools.toggleFollow = function(tid, current_user, callback) {
-		ThreadTools.isFollowing(tid, current_user, function(following) {
-			if (!following) {
-				db.setAdd('tid:' + tid + ':followers', current_user, function(err, success) {
-					if (callback) {
-						if (!err) {
-							callback({
-								status: 'ok',
-								follow: true
-							});
-						} else callback({
-							status: 'error'
-						});
-					}
-				});
-			} else {
-				db.setRemove('tid:' + tid + ':followers', current_user, function(err, success) {
-					if (callback) {
-						if (!err) {
-							callback({
-								status: 'ok',
-								follow: false
-							});
-						} else callback({
-							status: 'error'
-						});
-					}
-				});
+	ThreadTools.toggleFollow = function(tid, uid, callback) {
+		ThreadTools.isFollowing(tid, uid, function(err, following) {
+			if(err) {
+				return callback(err);
 			}
+
+			db[following?'setRemove':'setAdd']('tid:' + tid + ':followers', uid, function(err, success) {
+				if (callback) {
+					if(err) {
+						return callback(err);
+					}
+
+					callback(null, !following);
+				}
+			});
 		});
 	}
 
 	ThreadTools.getFollowers = function(tid, callback) {
 		db.getSetMembers('tid:' + tid + ':followers', function(err, followers) {
-			callback(err, followers.map(function(follower) {
-				return parseInt(follower, 10);
-			}));
+			if(err) {
+				return callback(err);
+			}
+
+			if(followers) {
+				followers = followers.map(function(follower) {
+					return parseInt(follower, 10);
+				});
+			}
+			callback(null, followers);
 		});
 	}
 

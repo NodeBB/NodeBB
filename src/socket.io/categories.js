@@ -2,26 +2,24 @@ var	categories = require('../categories'),
 
 	SocketCategories = {};
 
-SocketCategories.getRecentReplies = function(tid, callback, sessionData) {
-	categories.getRecentReplies(tid, sessionData.uid, 4, function(err, replies) {
-		callback(replies);
-	});
+SocketCategories.getRecentReplies = function(socket, tid, callback) {
+	categories.getRecentReplies(tid, socket.uid, 4, callback);
 };
 
-SocketCategories.get = function(callback) {
-	categories.getAllCategories(0, function(err, categories) {
-		if(callback) {
-			callback(categories);
-		}
-	});
+SocketCategories.get = function(socket, data, callback) {
+	categories.getAllCategories(0, callback);
 };
 
-SocketCategories.loadMore = function(data, callback, sessionData) {
+SocketCategories.loadMore = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
+
 	var start = data.after,
 		end = start + 9;
 
-	categories.getCategoryTopics(data.cid, start, end, sessionData.uid, function(topics) {
-		callback({
+	categories.getCategoryTopics(data.cid, start, end, socket.uid, function(err, topics) {
+		callback(err, {
 			topics: topics
 		});
 	});

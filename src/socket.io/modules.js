@@ -11,6 +11,7 @@ var	posts = require('../posts'),
 	async = require('async'),
 	S = require('string'),
 	winston = require('winston'),
+	server = require('./'),
 
 	SocketModules = {};
 
@@ -18,38 +19,44 @@ var	posts = require('../posts'),
 
 SocketModules.composer = {};
 
-SocketModules.composer.push = function(data, callback, sessionData) {
-	if (parseInt(sessionData.uid, 10) > 0 || parseInt(meta.config.allowGuestPosting, 10) === 1) {
-		if (parseInt(data.pid, 10) > 0) {
+SocketModules.composer.push = function(socket, pid, callback) {
+	if (socket.uid || parseInt(meta.config.allowGuestPosting, 10)) {
+		if (parseInt(pid, 10) > 0) {
 
 			async.parallel([
 				function(next) {
-					posts.getPostFields(data.pid, ['content'], next);
+					posts.getPostFields(pid, ['content'], next);
 				},
 				function(next) {
-					topics.getTitleByPid(data.pid, function(title) {
+					topics.getTitleByPid(pid, function(title) {
 						next(null, title);
 					});
 				}
 			], function(err, results) {
-				callback({
+				if(err) {
+					return callback(err);
+				}
+
+				callback(null, {
 					title: results[1],
-					pid: data.pid,
+					pid: pid,
 					body: results[0].content
 				});
 			});
 		}
 	} else {
-		callback({
-			error: 'no-uid'
-		});
+		callback(new Error('no-uid'));
 	}
 };
 
-SocketModules.composer.editCheck = function(pid, callback) {
+SocketModules.composer.editCheck = function(socket, pid, callback) {
 	posts.getPostField(pid, 'tid', function(err, tid) {
+		if (err) {
+			return callback(err);
+		}
+
 		postTools.isMain(pid, tid, function(err, isMain) {
-			callback({
+			callback(err, {
 				titleEditable: isMain
 			});
 		});
@@ -60,27 +67,27 @@ SocketModules.composer.editCheck = function(pid, callback) {
 
 SocketModules.chats = {};
 
-SocketModules.chats.get = function(data, callback, sessionData) {
-	var touid = data.touid;
-	Messaging.getMessages(sessionData.uid, touid, function(err, messages) {
-		if (err) {
-			return callback(null);
-		}
+SocketModules.chats.get = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
 
-		callback(messages);
-	});
+	Messaging.getMessages(socket.uid, data.touid, callback);
 };
 
-SocketModules.chats.send = function(data, sessionData) {
+SocketModules.chats.send = function(socket, data) {
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
 
 	var touid = data.touid;
-	if (touid === sessionData.uid || sessionData.uid === 0) {
+	if (touid === socket.uid || socket.uid === 0) {
 		return;
 	}
 
 	var msg = S(data.message).stripTags().s;
 
-	user.getMultipleUserFields([sessionData.uid, touid], ['username'], function(err, usersData) {
+	user.getMultipleUserFields([socket.uid, touid], ['username'], function(err, usersData) {
 		if(err) {
 			return;
 		}
@@ -91,23 +98,23 @@ SocketModules.chats.send = function(data, sessionData) {
 			notifText = 'New message from <strong>' + username + '</strong>';
 
 		if (!module.parent.exports.isUserOnline(touid)) {
-			notifications.create(notifText, 'javascript:app.openChat(&apos;' + username + '&apos;, ' + sessionData.uid + ');', 'notification_' + sessionData.uid + '_' + touid, function(nid) {
+			notifications.create(notifText, 'javascript:app.openChat(&apos;' + username + '&apos;, ' + socket.uid + ');', 'notification_' + socket.uid + '_' + touid, function(nid) {
 				notifications.push(nid, [touid], function(success) {
 
 				});
 			});
 		}
-        Messaging.parse(msg, sessionData.uid, sessionData.uid, toUsername, function(parsed) {
-            Messaging.addMessage(sessionData.uid, touid, msg, function(err, message) {
+        Messaging.parse(msg, socket.uid, socket.uid, toUsername, function(parsed) {
+            Messaging.addMessage(socket.uid, touid, msg, function(err, message) {
                 var numSockets = 0,
                     x;
 
-                if (sessionData.userSockets[touid]) {
-                    numSockets = sessionData.userSockets[touid].length;
+                if (server.userSockets[touid]) {
+                    numSockets = server.userSockets[touid].length;
 
                     for (x = 0; x < numSockets; ++x) {
-                        sessionData.userSockets[touid][x].emit('event:chats.receive', {
-                            fromuid: sessionData.uid,
+                        server.userSockets[touid][x].emit('event:chats.receive', {
+                            fromuid: socket.uid,
                             username: username,
                             // todo this isnt very nice, but can't think of a better way atm
                             message: parsed.replace("chat-user-you'>You", "'>" + username),
@@ -116,12 +123,12 @@ SocketModules.chats.send = function(data, sessionData) {
                     }
                 }
 
-                if (sessionData.userSockets[sessionData.uid]) {
+                if (server.userSockets[socket.uid]) {
 
-                    numSockets = sessionData.userSockets[sessionData.uid].length;
+                    numSockets = server.userSockets[socket.uid].length;
 
                     for (x = 0; x < numSockets; ++x) {
-                        sessionData.userSockets[sessionData.uid][x].emit('event:chats.receive', {
+                        server.userSockets[socket.uid][x].emit('event:chats.receive', {
                             fromuid: touid,
                             username: toUsername,
                             message: parsed,
@@ -134,30 +141,20 @@ SocketModules.chats.send = function(data, sessionData) {
 	});
 };
 
-SocketModules.chats.list = function(callback, sessionData) {
-	Messaging.getRecentChats(sessionData.uid, function(err, uids) {
-		if (err) {
-			winston.warn('[(socket) api:chats.list] Problem retrieving chats: ' + err.message);
-		}
-
-		callback(uids || []);
-	});
+SocketModules.chats.list = function(socket, data, callback) {
+	Messaging.getRecentChats(socket.uid, callback);
 };
 
 /* Notifications */
 
 SocketModules.notifications = {};
 
-SocketModules.notifications.mark_read = function(nid, sessionData) {
-	notifications.mark_read(nid, sessionData.uid);
+SocketModules.notifications.mark_read = function(socket, nid) {
+	notifications.mark_read(nid, socket.uid);
 };
 
-SocketModules.notifications.mark_all_read = function(data, callback, sessionData) {
-	notifications.mark_all_read(sessionData.uid, function(err) {
-		if (!err) {
-			callback();
-		}
-	});
+SocketModules.notifications.mark_all_read = function(socket, data, callback) {
+	notifications.mark_all_read(socket.uid, callback);
 };
 
 module.exports = SocketModules;

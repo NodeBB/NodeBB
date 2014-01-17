@@ -46,7 +46,10 @@ var bcrypt = require('bcrypt'),
 				}
 			},
 			function(next) {
-				User.exists(userslug, function(exists) {
+				User.exists(userslug, function(err, exists) {
+					if (err) {
+						return next(err);
+					}
 					next(exists ? new Error('Username taken!') : null);
 				});
 			},
@@ -193,9 +196,7 @@ var bcrypt = require('bcrypt'),
 
 		function isSignatureValid(next) {
 			if (data.signature !== undefined && data.signature.length > meta.config.maximumSignatureLength) {
-				next({
-					error: 'Signature can\'t be longer than ' + meta.config.maximumSignatureLength + ' characters!'
-				}, false);
+				next(new Error('Signature can\'t be longer than ' + meta.config.maximumSignatureLength + ' characters!'), false);
 			} else {
 				next(null, true);
 			}
@@ -217,9 +218,7 @@ var bcrypt = require('bcrypt'),
 					}
 
 					if (!available) {
-						next({
-							error: 'Email not available!'
-						}, false);
+						next(new Error('Email not available!'), false);
 					} else {
 						next(null, true);
 					}
@@ -237,16 +236,16 @@ var bcrypt = require('bcrypt'),
 				}
 
 				if(!utils.isUserNameValid(data.username) || !userslug) {
-					return next({
-						error: 'Invalid Username!'
-					}, false);
+					return next(new Error('Invalid Username!'), false);
 				}
 
-				User.exists(userslug, function(exists) {
+				User.exists(userslug, function(err, exists) {
+					if(err) {
+						return next(err);
+					}
+
 					if(exists) {
-						next({
-							error: 'Username not available!'
-						}, false);
+						next(new Error('Username not available!'), false);
 					} else {
 						next(null, true);
 					}
@@ -348,13 +347,11 @@ var bcrypt = require('bcrypt'),
 
 	User.changePassword = function(uid, data, callback) {
 		if (!utils.isPasswordValid(data.newPassword)) {
-			return callback({
-				error: 'Invalid password!'
-			});
+			return callback(new Error('Invalid password!'));
 		}
 
-		User.getUserField(uid, 'password', function(err, user_password) {
-			bcrypt.compare(data.currentPassword, user_password, function(err, res) {
+		User.getUserField(uid, 'password', function(err, currentPassword) {
+			bcrypt.compare(data.currentPassword, currentPassword, function(err, res) {
 				if (err) {
 					return callback(err);
 				}
@@ -366,9 +363,7 @@ var bcrypt = require('bcrypt'),
 						callback(null);
 					});
 				} else {
-					callback({
-						error: 'Your current password is not correct!'
-					});
+					callback(new Error('Your current password is not correct!'));
 				}
 			});
 		});
@@ -542,31 +537,21 @@ var bcrypt = require('bcrypt'),
 
 	User.follow = function(uid, followid, callback) {
 		db.setAdd('following:' + uid, followid, function(err, data) {
-			if (!err) {
-				db.setAdd('followers:' + followid, uid, function(err, data) {
-					if (!err) {
-						callback(true);
-					} else {
-						console.log(err);
-						callback(false);
-					}
-				});
-			} else {
-				console.log(err);
-				callback(false);
+			if(err) {
+				return callback(err);
 			}
+
+			db.setAdd('followers:' + followid, uid, callback);
 		});
 	};
 
 	User.unfollow = function(uid, unfollowid, callback) {
 		db.setRemove('following:' + uid, unfollowid, function(err, data) {
-			if (!err) {
-				db.setRemove('followers:' + unfollowid, uid, function(err, data) {
-					callback(data);
-				});
-			} else {
-				console.log(err);
+			if(err) {
+				return callback(err);
 			}
+
+			db.setRemove('followers:' + unfollowid, uid, callback);
 		});
 	};
 
@@ -667,17 +652,17 @@ var bcrypt = require('bcrypt'),
 
 	User.exists = function(userslug, callback) {
 		User.getUidByUserslug(userslug, function(err, exists) {
-			callback( !! exists);
+			callback(err, !! exists);
 		});
 	};
 
 	User.count = function(callback) {
 		db.getObjectField('global', 'userCount', function(err, count) {
 			if(err) {
-				return;
+				return callback(err);
 			}
 
-			callback({
+			callback(null, {
 				count: count ? count : 0
 			});
 		});
@@ -785,92 +770,70 @@ var bcrypt = require('bcrypt'),
 	User.reset = {
 		validate: function(socket, code, callback) {
 
-			if (typeof callback !== 'function') {
-				callback = null;
-			}
-
 			db.getObjectField('reset:uid', code, function(err, uid) {
 				if (err) {
-					return callback(false);
+					return callback(err);
 				}
 
 				if (uid !== null) {
 					db.getObjectField('reset:expiry', code, function(err, expiry) {
 						if (err) {
-							return callback(false);
+							return callback(err);
 						}
 
 						if (expiry >= +Date.now() / 1000 | 0) {
-							if (!callback) {
-								socket.emit('user:reset.valid', {
-									valid: true
-								});
-							} else {
-								callback(true);
-							}
+							callback(null, true);
 						} else {
 							// Expired, delete from db
 							db.deleteObjectField('reset:uid', code);
 							db.deleteObjectField('reset:expiry', code);
-							if (!callback) {
-								socket.emit('user:reset.valid', {
-									valid: false
-								});
-							} else {
-								callback(false);
-							}
+							callback(null, false);
 						}
 					});
 				} else {
-					if (!callback) {
-						socket.emit('user:reset.valid', {
-							valid: false
-						});
-					} else {
-						callback(false);
-					}
+					callback(null, false);
 				}
 			});
 		},
-		send: function(socket, email) {
+		send: function(socket, email, callback) {
 			User.getUidByEmail(email, function(err, uid) {
-				if (uid !== null) {
-					// Generate a new reset code
-					var reset_code = utils.generateUUID();
-					db.setObjectField('reset:uid', reset_code, uid);
-					db.setObjectField('reset:expiry', reset_code, (60 * 60) + new Date() / 1000 | 0); // Active for one hour
-
-					var reset_link = nconf.get('url') + 'reset/' + reset_code;
-
-					Emailer.send('reset', uid, {
-						'site_title': (meta.config['title'] || 'NodeBB'),
-						'reset_link': reset_link,
-
-						subject: 'Password Reset Requested - ' + (meta.config['title'] || 'NodeBB') + '!',
-						template: 'reset',
-						uid: uid
-					});
-
-					socket.emit('user.send_reset', {
-						status: "ok",
-						message: "code-sent",
-						email: email
-					});
-				} else {
-					socket.emit('user.send_reset', {
-						status: "error",
-						message: "invalid-email",
-						email: email
-					});
+				if(err) {
+					return callback(err);
 				}
+
+				if(!uid) {
+					return callback(new Error('invalid-email'));
+				}
+
+				// Generate a new reset code
+				var reset_code = utils.generateUUID();
+				db.setObjectField('reset:uid', reset_code, uid);
+				db.setObjectField('reset:expiry', reset_code, (60 * 60) + new Date() / 1000 | 0); // Active for one hour
+
+				var reset_link = nconf.get('url') + 'reset/' + reset_code;
+
+				Emailer.send('reset', uid, {
+					'site_title': (meta.config['title'] || 'NodeBB'),
+					'reset_link': reset_link,
+
+					subject: 'Password Reset Requested - ' + (meta.config['title'] || 'NodeBB') + '!',
+					template: 'reset',
+					uid: uid
+				});
+
+				callback(null);
 			});
 		},
-		commit: function(socket, code, password) {
-			this.validate(socket, code, function(validated) {
+		commit: function(socket, code, password, callback) {
+			this.validate(socket, code, function(err, validated) {
+				if(err) {
+					return callback(err);
+				}
+
 				if (validated) {
 					db.getObjectField('reset:uid', code, function(err, uid) {
 						if (err) {
-							return;
+							return callback(err);
 						}
 
 						User.hashPassword(password, function(err, hash) {
@@ -881,9 +844,7 @@ var bcrypt = require('bcrypt'),
 						db.deleteObjectField('reset:uid', code);
 						db.deleteObjectField('reset:expiry', code);
 
-						socket.emit('user:reset.commit', {
-							status: 'ok'
-						});
+						callback(null);
 					});
 				}
 			});
@@ -932,9 +893,9 @@ var bcrypt = require('bcrypt'),
 				});
 			});
 		},
-		exists: function(socket, email, callback) {
+		exists: function(email, callback) {
 			User.getUidByEmail(email, function(err, exists) {
-				callback(!!exists);
+				callback(err, !!exists);
 			});
 		},
 		confirm: function(code, callback) {
@@ -1031,7 +992,7 @@ var bcrypt = require('bcrypt'),
 					notifications.read.length = maxNotifs - notifications.unread.length;
 				}
 
-				callback(notifications);
+				callback(err, notifications);
 			});
 		},
 		getAll: function(uid, limit, before, callback) {

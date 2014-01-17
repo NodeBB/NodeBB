@@ -42,10 +42,14 @@ define(function() {
 			if (!utils.isEmailValid(emailEl.val())) {
 				showError(email_notify, 'Invalid email address.');
 			} else {
-				socket.emit('api:user.emailExists', {
+				socket.emit('user.emailExists', {
 					email: emailEl.val()
-				}, function(exists) {
-					if (exists === true) {
+				}, function(err, exists) {
+					if(err) {
+						return app.alertError(err.message);
+					}
+
+					if (exists) {
 						showError(email_notify, 'Email address already taken!');
 					} else {
 						showSuccess(email_notify, successIcon);
@@ -71,8 +75,18 @@ define(function() {
 			} else if (!utils.isUserNameValid(username.val()) || !utils.slugify(username.val())) {
 				showError(username_notify, 'Invalid username!');
 			} else {
-				socket.emit('api:user.exists', {
+				socket.emit('user.exists', {
 					username: username.val()
+				}, function(err, exists) {
+					if(err) {
+						return app.alertError(err.message);
+					}
+
+					if (exists) {
+						showError(username_notify, 'Username already taken!');
+					} else {
+						showSuccess(username_notify, successIcon);
+					}
 				});
 			}
 		}
@@ -80,6 +94,7 @@ define(function() {
 		username.on('keyup', function() {
 			jQuery('#yourUsername').html(this.value.length > 0 ? this.value : 'username');
 		});
+
 		username.on('blur', function() {
 			validateUsername();
 		});
@@ -121,16 +136,6 @@ define(function() {
 
 		$(password_confirm).on('blur', function() {
 			validatePasswordConfirm();
-		});
-
-		ajaxify.register_events(['api:user.exists', 'api:user.emailExists']);
-
-		socket.on('api:user.exists', function(data) {
-			if (data.exists === true) {
-				showError(username_notify, 'Username already taken!');
-			} else {
-				showSuccess(username_notify, successIcon);
-			}
 		});
 
 		function validateForm() {

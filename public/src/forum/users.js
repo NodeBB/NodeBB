@@ -47,7 +47,7 @@ define(function() {
 				jQuery('#user-notfound-notify').html('<i class="fa fa-spinner fa-spin"></i>');
 
 				setTimeout(function() {
-					socket.emit('api:admin.user.search', username, function(err, data) {
+					socket.emit('admin.user.search', username, function(err, data) {
 						if(err) {
 							return app.alert(err.message);
 						}
@@ -80,10 +80,10 @@ define(function() {
 			}, 250);
 		});
 
-		socket.on('api:user.isOnline', function(data) {
+		socket.on('user.isOnline', function(err, data) {
 			if(getActiveSection() == 'online' && !loadingMoreUsers) {
 				startLoading('users:online', 0, true);
-				socket.emit('api:user.getOnlineAnonCount', {} , function(anonCount) {
+				socket.emit('user.getOnlineAnonCount', {} , function(err, anonCount) {
 					if(parseInt(anonCount, 10) > 0) {
 						$('#users-container .anon-user').removeClass('hide');
 						$('#online_anon_count').html(anonCount);
@@ -123,11 +123,11 @@ define(function() {
 
 		function startLoading(set, after, emptyContainer) {
 			loadingMoreUsers = true;
-			socket.emit('api:user.loadMore', {
+			socket.emit('user.loadMore', {
 				set: set,
 				after: after
-			}, function(data) {
-				if (data.users.length) {
+			}, function(err, data) {
+				if (data && data.users.length) {
 					onUsersLoaded(data.users, emptyContainer);
 					$('#load-more-users-btn').removeClass('disabled');
 				} else {

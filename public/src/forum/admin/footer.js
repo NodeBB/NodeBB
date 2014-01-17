@@ -15,6 +15,15 @@ jQuery('document').ready(function() {
 	}, false);
 });
 
-socket.emit('api:admin.config.get', function(config) {
+socket.emit('admin.config.get', function(err, config) {
+	if(err) {
+		return app.alert({
+			alert_id: 'config_status',
+			timeout: 2500,
+			title: 'Error',
+			message: 'NodeBB encountered a problem getting config',
+			type: 'danger'
+		});
+	}
 	app.config = config;
 });
