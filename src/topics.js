@@ -624,7 +624,7 @@ var async = require('async'),
 
 		async.each(uids, function(uid, next) {
 			Topics.getUnreadTids(uid, 0, 19, function(err, tids) {
-				websockets.in('uid_' + uid).emit('event:unread.updateCount', tids.length);
+				websockets.in('uid_' + uid).emit('event:unread.updateCount', null, tids.length);
 				next();
 			});
 		}, function(err) {

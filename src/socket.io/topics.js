@@ -77,7 +77,7 @@ SocketTopics.markAllRead = function(socket, data, callback) {
 			return callback(err);
 		}
 
-		index.server.sockets.in('uid_' + socket.uid).emit('event:unread.updateCount', 0);
+		index.server.sockets.in('uid_' + socket.uid).emit('event:unread.updateCount', null, 0);
 
 		callback(null);
 	});

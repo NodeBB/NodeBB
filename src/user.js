@@ -770,92 +770,72 @@ var bcrypt = require('bcrypt'),
 	User.reset = {
 		validate: function(socket, code, callback) {
 
-			if (typeof callback !== 'function') {
-				callback = null;
-			}
-
 			db.getObjectField('reset:uid', code, function(err, uid) {
 				if (err) {
-					return callback(false);
+					return callback(err);
 				}
 
 				if (uid !== null) {
 					db.getObjectField('reset:expiry', code, function(err, expiry) {
 						if (err) {
-							return callback(false);
+							return callback(err);
 						}
 
 						if (expiry >= +Date.now() / 1000 | 0) {
-							if (!callback) {
-								socket.emit('user:reset.valid', {
-									valid: true
-								});
-							} else {
-								callback(true);
-							}
+							callback(null, true);
 						} else {
 							// Expired, delete from db
 							db.deleteObjectField('reset:uid', code);
 							db.deleteObjectField('reset:expiry', code);
-							if (!callback) {
-								socket.emit('user:reset.valid', {
-									valid: false
-								});
-							} else {
-								callback(false);
-							}
+							callback(null, false);
 						}
 					});
 				} else {
-					if (!callback) {
-						socket.emit('user:reset.valid', {
-							valid: false
-						});
-					} else {
-						callback(false);
-					}
+					callback(null, false);
 				}
 			});
 		},
-		send: function(socket, email) {
+		send: function(socket, email, callback) {
 			User.getUidByEmail(email, function(err, uid) {
-				if (uid !== null) {
-					// Generate a new reset code
-					var reset_code = utils.generateUUID();
-					db.setObjectField('reset:uid', reset_code, uid);
-					db.setObjectField('reset:expiry', reset_code, (60 * 60) + new Date() / 1000 | 0); // Active for one hour
-
-					var reset_link = nconf.get('url') + 'reset/' + reset_code;
-
-					Emailer.send('reset', uid, {
-						'site_title': (meta.config['title'] || 'NodeBB'),
-						'reset_link': reset_link,
-
-						subject: 'Password Reset Requested - ' + (meta.config['title'] || 'NodeBB') + '!',
-						template: 'reset',
-						uid: uid
-					});
-
-					socket.emit('user.send_reset', {
-						status: "ok",
-						message: "code-sent",
-						email: email
-					});
-				} else {
-					socket.emit('user.send_reset', {
-						status: "error",
-						message: "invalid-email",
-						email: email
-					});
+				if(err) {
+					return callback(err);
 				}
+
+				if(!uid) {
+					return callback(new Error('invalid-email'));
+				} else if(parseInt(uid, 10) !== socket.uid) {
+					return callback(new Error('invalid-user'));
+				}
+
+				// Generate a new reset code
+				var reset_code = utils.generateUUID();
+				db.setObjectField('reset:uid', reset_code, uid);
+				db.setObjectField('reset:expiry', reset_code, (60 * 60) + new Date() / 1000 | 0); // Active for one hour
+
+				var reset_link = nconf.get('url') + 'reset/' + reset_code;
+
+				Emailer.send('reset', uid, {
+					'site_title': (meta.config['title'] || 'NodeBB'),
+					'reset_link': reset_link,
+
+					subject: 'Password Reset Requested - ' + (meta.config['title'] || 'NodeBB') + '!',
+					template: 'reset',
+					uid: uid
+				});
+
+				callback(null);
 			});
 		},
-		commit: function(socket, code, password) {
-			this.validate(socket, code, function(validated) {
+		commit: function(socket, code, password, callback) {
+			this.validate(socket, code, function(err, validated) {
+				if(err) {
+					return callback(err);
+				}
+
 				if (validated) {
 					db.getObjectField('reset:uid', code, function(err, uid) {
 						if (err) {
-							return;
+							return callback(err);
 						}
 
 						User.hashPassword(password, function(err, hash) {
@@ -866,9 +846,7 @@ var bcrypt = require('bcrypt'),
 						db.deleteObjectField('reset:uid', code);
 						db.deleteObjectField('reset:expiry', code);
 
-						socket.emit('user:reset.commit', {
-							status: 'ok'
-						});
+						callback(null);
 					});
 				}
 			});

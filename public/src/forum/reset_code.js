@@ -24,6 +24,14 @@ define(function() {
 				socket.emit('user.reset.commit', {
 					code: reset_code,
 					password: password.value
+				}, function(err) {
+					if(err) {
+						return app.alert(err.message);
+					}
+
+					$('#error').hide();
+					$('#notice').hide();
+					$('#success').show();
 				});
 			}
 		}, false);
@@ -31,25 +39,18 @@ define(function() {
 		// Enable the form if the code is valid
 		socket.emit('user.reset.valid', {
 			code: reset_code
-		});
+		}, function(err, data) {
+			if(err) {
+				return app.alertError(err.message);
+			}
 
-
-		ajaxify.register_events(['user.reset.valid', 'user.reset.commit']);
-		socket.on('user.reset.valid', function(data) {
-			if ( !! data.valid) resetEl.disabled = false;
-			else {
+			if ( !! data.valid) {
+				resetEl.disabled = false;
+			} else {
 				var formEl = document.getElementById('reset-form');
 				// Show error message
 				$('#error').show();
 				formEl.parentNode.removeChild(formEl);
-			}
-		})
-
-		socket.on('user.reset.commit', function(data) {
-			if (data.status === 'ok') {
-				$('#error').hide();
-				$('#notice').hide();
-				$('#success').show();
 			}
 		});
 	};

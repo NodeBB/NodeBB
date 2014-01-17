@@ -24,19 +24,19 @@ SocketUser.reset = {};
 
 SocketUser.reset.send = function(socket, data, callback) {
 	if(data && data.email) {
-		user.reset.send(socket, data.email);
+		user.reset.send(socket, data.email, callback);
 	}
 };
 
 SocketUser.reset.valid = function(socket, data, callback) {
 	if(data && data.code) {
-		user.reset.validate(socket, data.code);
+		user.reset.validate(socket, data.code, callback);
 	}
 };
 
 SocketUser.reset.commit = function(socket, data, callback) {
 	if(data && data.code && data.password) {
-		user.reset.commit(socket, data.code, data.password);
+		user.reset.commit(socket, data.code, data.password, callback);
 	}
 };
 
