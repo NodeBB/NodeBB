@@ -30,12 +30,14 @@ SocketMeta.reconnected = function(socket) {
 };
 
 SocketMeta.buildTitle = function(socket, text, callback) {
-	meta.title.build(text, function(err, title) {
-		callback(err, title);
-	});
+	meta.title.build(text, callback);
 };
 
 SocketMeta.updateHeader = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
+
 	if (socket.uid) {
 		user.getUserFields(socket.uid, data.fields, function(err, fields) {
 			if(err) {
@@ -46,7 +48,7 @@ SocketMeta.updateHeader = function(socket, data, callback) {
 				fields.uid = socket.uid;
 				callback(null, fields);
 			} else {
-				callback([]);
+				callback(null, []);
 			}
 		});
 	} else {
@@ -73,6 +75,10 @@ SocketMeta.getUsageStats = function(socket, data, callback) {
 SocketMeta.rooms = {};
 
 SocketMeta.rooms.enter = function(socket, data) {
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
+
 	if (data.leave !== null) {
 		socket.leave(data.leave);
 	}
