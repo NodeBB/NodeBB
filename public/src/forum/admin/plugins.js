@@ -17,7 +17,7 @@ define(function() {
 
 					app.alert({
 						alert_id: 'plugin_toggled_' + status.id,
-						title: 'Plugin Enabled',
+						title: 'Plugin ' + (status.active ? 'Enabled' : 'Disabled'),
 						message: 'You may need to restart NodeBB in order for these changes to be reflected.',
 						type: 'warning',
 						timeout: 5000
