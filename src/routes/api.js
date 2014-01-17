@@ -279,12 +279,7 @@ var path = require('path'),
 							return callback(err, null);
 						}
 
-						posts.getPostSummaryByPids(pids, false, function (err, posts) {
-							if (err){
-								return callback(err, null);
-							}
-							callback(null, posts);
-						});
+						posts.getPostSummaryByPids(pids, false, callback);
 					});
 				}
 
@@ -294,12 +289,7 @@ var path = require('path'),
 							return callback(err, null);
 						}
 
-						topics.getTopicsByTids(tids, 0, 0, function (err, topics) {
-							if (err){
-								return callback(err, null);
-							}
-							callback(null, topics);
-						});
+						topics.getTopicsByTids(tids, 0, 0, callback);
 					});
 				}
 
@@ -307,6 +297,10 @@ var path = require('path'),
 					async.parallel([searchPosts, searchTopics], function (err, results) {
 						if (err) {
 							return next(err);
+						}
+
+						if(!results) {
+							results[0] = results[1] = [];
 						}
 
 						return res.json({
