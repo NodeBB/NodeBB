@@ -29,7 +29,7 @@
 	"notifications.loading": "Chargement des Notifications",
 	"chats.loading": "Chargement des Chats",
 
-	"motd.welcome": "Bienvenue à NodeBB, la plate-forme de discussion sur l'avenir.",
+	"motd.welcome": "Bienvenue sur NodeBB, la plate-forme de discussion de l'avenir.",
 	"motd.get": "Obtenir NodeBB",
 	"motd.fork": "Fork",
 	"motd.like": "J'aime",
