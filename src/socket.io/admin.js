@@ -127,7 +127,6 @@ SocketAdmin.categories.search = function(username, cid, callback, sessionData) {
 					winston.error('[socket api:admin.categories.search] Could not retrieve permissions');
 				}
 
-<<<<<<< HEAD
 					next(null, userObj);
 				});
 			}, function(err, data) {
@@ -136,28 +135,8 @@ SocketAdmin.categories.search = function(username, cid, callback, sessionData) {
 				} else {
 					callback(null, data);
 				}
-=======
-				next(null, userObj);
->>>>>>> 3a57c3b6d8c1733fa758f682475c86a561a51f6f
-			});
-		}, function(err, data) {
-			if (!callback) {
-				sessionData.socket.emit('api:admin.categories.search', data);
-			} else {
-				callback(null, data);
-			}
 		});
-<<<<<<< HEAD
-	} else {
-		if (!callback) {
-			sessionData.socket.emit('api:admin.user.search', null);
-		} else {
-			callback();
-		}
-	}
-=======
 	});
->>>>>>> 3a57c3b6d8c1733fa758f682475c86a561a51f6f
 };
 
 SocketAdmin.categories.setPrivilege = function(cid, uid, privilege, set, callback) {
