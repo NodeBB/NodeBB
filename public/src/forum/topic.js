@@ -321,6 +321,17 @@ define(['composer'], function(composer) {
 			$('#post-container').on('click', '.deleted', function(ev) {
 				$(this).toggleClass('deleted-expanded');
 			});
+
+			// Show the paginator block, now that the DOM has finished loading
+			(function delayedHeaderUpdate() {
+				if (!Topic.postCount) {
+					setTimeout(function() {
+						delayedHeaderUpdate();
+					}, 25);
+				} else {
+					updateHeader();
+				}
+			})();
 		});
 
 		function enableInfiniteLoading() {
@@ -893,7 +904,6 @@ define(['composer'], function(composer) {
 		Topic.postCount = templates.get('postcount');
 
 		window.onscroll = updateHeader;
-		window.onload = updateHeader;
 	};
 
 	function updateHeader() {
@@ -957,7 +967,7 @@ define(['composer'], function(composer) {
 		});
 
 		setTimeout(function() {
-			if (scrollTop + windowHeight == jQuery(document).height()) {
+			if (scrollTop + windowHeight == jQuery(document).height() && !infiniteLoaderActive) {
 				pagination.innerHTML = Topic.postCount + ' out of ' + Topic.postCount;
 				progressBar.width('100%');
 			}
@@ -1099,32 +1109,35 @@ define(['composer'], function(composer) {
 			return;
 		}
 
-		infiniteLoaderActive = true;
 
 		if (indicatorEl.attr('done') === '0') {
+			infiniteLoaderActive = true;
 			indicatorEl.fadeIn();
+
+			socket.emit('topics.loadMore', {
+				tid: tid,
+				after: parseInt($('#post-container .post-row.infiniteloaded').last().attr('data-index'), 10) + 1
+			}, function (err, data) {
+				if(err) {
+					return app.alertError(err.message);
+				}
+
+				infiniteLoaderActive = false;
+				if (data && data.posts && data.posts.length) {
+					indicatorEl.attr('done', '0');
+					createNewPosts(data, true);
+				} else {
+					indicatorEl.attr('done', '1');
+					updateHeader();
+				}
+
+				indicatorEl.fadeOut();
+
+				if (callback) {
+					callback(data.posts);
+				}
+			});
 		}
-
-		socket.emit('topics.loadMore', {
-			tid: tid,
-			after: parseInt($('#post-container .post-row.infiniteloaded').last().attr('data-index'), 10) + 1
-		}, function (err, data) {
-			if(err) {
-				return app.alertError(err.message);
-			}
-
-			infiniteLoaderActive = false;
-			if (data && data.posts && data.posts.length) {
-				indicatorEl.attr('done', '0');
-				createNewPosts(data, true);
-			} else {
-				indicatorEl.attr('done', '1');
-			}
-			indicatorEl.fadeOut();
-			if (callback) {
-				callback(data.posts);
-			}
-		});
 	}
 
 	return Topic;
