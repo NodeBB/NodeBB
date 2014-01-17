@@ -87,11 +87,7 @@ SocketAdmin.user.search = function(socket, username, callback) {
 		}
 
 		async.each(data, isAdmin, function(err) {
-			if(err) {
-				return callback({message: err.message});
-			}
-
-			callback(null, data);
+			callback(err, data);
 		});
 	});
 };
