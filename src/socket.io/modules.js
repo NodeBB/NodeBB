@@ -11,6 +11,7 @@ var	posts = require('../posts'),
 	async = require('async'),
 	S = require('string'),
 	winston = require('winston'),
+	server = require('./'),
 
 	SocketModules = {};
 
@@ -32,7 +33,7 @@ SocketModules.composer.push = function(socket, data, callback) {
 					});
 				}
 			], function(err, results) {
-				callback({
+				callback(err, {
 					title: results[1],
 					pid: data.pid,
 					body: results[0].content
@@ -40,7 +41,7 @@ SocketModules.composer.push = function(socket, data, callback) {
 			});
 		}
 	} else {
-		callback({
+		callback(null, {
 			error: 'no-uid'
 		});
 	}
@@ -48,8 +49,12 @@ SocketModules.composer.push = function(socket, data, callback) {
 
 SocketModules.composer.editCheck = function(socket, pid, callback) {
 	posts.getPostField(pid, 'tid', function(err, tid) {
+		if (err) {
+			return callback(err);
+		}
+
 		postTools.isMain(pid, tid, function(err, isMain) {
-			callback({
+			callback(err, {
 				titleEditable: isMain
 			});
 		});
@@ -62,13 +67,7 @@ SocketModules.chats = {};
 
 SocketModules.chats.get = function(socket, data, callback) {
 	var touid = data.touid;
-	Messaging.getMessages(socket.uid, touid, function(err, messages) {
-		if (err) {
-			return callback(null);
-		}
-
-		callback(messages);
-	});
+	Messaging.getMessages(socket.uid, touid, callback);
 };
 
 SocketModules.chats.send = function(socket, data) {
@@ -102,11 +101,11 @@ SocketModules.chats.send = function(socket, data) {
                 var numSockets = 0,
                     x;
 
-                if (socket.userSockets[touid]) {
-                    numSockets = socket.userSockets[touid].length;
+                if (server.userSockets[touid]) {
+                    numSockets = server.userSockets[touid].length;
 
                     for (x = 0; x < numSockets; ++x) {
-                        socket.userSockets[touid][x].emit('event:chats.receive', {
+                        server.userSockets[touid][x].emit('event:chats.receive', {
                             fromuid: socket.uid,
                             username: username,
                             // todo this isnt very nice, but can't think of a better way atm
@@ -116,12 +115,12 @@ SocketModules.chats.send = function(socket, data) {
                     }
                 }
 
-                if (socket.userSockets[socket.uid]) {
+                if (server.userSockets[socket.uid]) {
 
-                    numSockets = socket.userSockets[socket.uid].length;
+                    numSockets = server.userSockets[socket.uid].length;
 
                     for (x = 0; x < numSockets; ++x) {
-                        socket.userSockets[socket.uid][x].emit('event:chats.receive', {
+                        server.userSockets[socket.uid][x].emit('event:chats.receive', {
                             fromuid: touid,
                             username: toUsername,
                             message: parsed,
@@ -135,13 +134,7 @@ SocketModules.chats.send = function(socket, data) {
 };
 
 SocketModules.chats.list = function(socket, data, callback) {
-	Messaging.getRecentChats(socket.uid, function(err, uids) {
-		if (err) {
-			winston.warn('[(socket) chats.list] Problem retrieving chats: ' + err.message);
-		}
-
-		callback(uids || []);
-	});
+	Messaging.getRecentChats(socket.uid, callback);
 };
 
 /* Notifications */
@@ -153,11 +146,7 @@ SocketModules.notifications.mark_read = function(socket, nid) {
 };
 
 SocketModules.notifications.mark_all_read = function(socket, data, callback) {
-	notifications.mark_all_read(socket.uid, function(err) {
-		if (!err) {
-			callback();
-		}
-	});
+	notifications.mark_all_read(socket.uid, callback);
 };
 
 module.exports = SocketModules;

@@ -51,13 +51,15 @@ define(function() {
 						notifIcon.toggleClass('active', false);
 					}
 
-					socket.emit('modules.notifications.mark_all_read', null, function() {
-						notifIcon.toggleClass('active', false);
-						app.refreshTitle();
+					socket.emit('modules.notifications.mark_all_read', null, function(err) {
+						if (!err) {
+							notifIcon.toggleClass('active', false);
+							app.refreshTitle();
 
-						// Update favicon + local count
-						Tinycon.setBubble(0);
-						localStorage.setItem('notifications:count', 0);
+							// Update favicon + local count
+							Tinycon.setBubble(0);
+							localStorage.setItem('notifications:count', 0);
+						}
 					});
 				});
 			}

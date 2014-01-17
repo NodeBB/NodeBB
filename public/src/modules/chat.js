@@ -13,13 +13,13 @@ define(['taskbar', 'string'], function(taskbar, S) {
 				return;
 			}
 
-			socket.emit('modules.chats.list', function(chats) {
+			socket.emit('modules.chats.list', function(err, chats) {
 				var	chatsFrag = document.createDocumentFragment(),
 					chatEl = document.createElement('li'),
 					numChats = chats.length,
 					x, userObj;
 
-				if (numChats > 0) {
+				if (!err && numChats > 0) {
 					for(x=0;x<numChats;x++) {
 						userObj = chats[x];
 						chatEl.setAttribute('data-uid', userObj.uid);
@@ -191,7 +191,7 @@ define(['taskbar', 'string'], function(taskbar, S) {
 	}
 
 	function getChatMessages(chatModal, callback) {
-		socket.emit('modules.chats.get', {touid:chatModal.touid}, function(messages) {
+		socket.emit('modules.chats.get', {touid:chatModal.touid}, function(err, messages) {
 			for(var i = 0; i<messages.length; ++i) {
 				module.appendChatMessage(chatModal, messages[i].content, messages[i].timestamp);
 			}
