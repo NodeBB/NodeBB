@@ -204,9 +204,7 @@ SocketTopics.loadMore = function(socket, data, callback) {
 		end = start + 9;
 
 	topics.getTopicPosts(data.tid, start, end, socket.uid, function(err, posts) {
-		setTimeout(function() {
-			callback(err, {posts: posts});
-		}, 2500);
+		callback(err, {posts: posts});
 	});
 };
 

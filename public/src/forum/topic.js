@@ -957,7 +957,6 @@ define(['composer'], function(composer) {
 		});
 
 		setTimeout(function() {
-			console.log(infiniteLoaderActive);
 			if (scrollTop + windowHeight == jQuery(document).height() && !infiniteLoaderActive) {
 				pagination.innerHTML = Topic.postCount + ' out of ' + Topic.postCount;
 				progressBar.width('100%');
