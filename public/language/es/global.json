@@ -30,7 +30,7 @@
 	"chats.loading": "Cargando Chats",
 
 	"motd.welcome": "Bienvenido a NodeBB, la plataforma de debate sobre el futuro.",
-	"motd.get": "Obtener",
+	"motd.get": "Obtener NodeBB",
 	"motd.fork": "Fork",
 	"motd.like": "Me gusta",
 	"motd.follow": "Seguir"
