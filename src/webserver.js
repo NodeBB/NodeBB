@@ -767,7 +767,8 @@ if(nconf.get('ssl')) {
 			var sitemap = require('./sitemap.js');
 
 			sitemap.render(function (xml) {
-				res.type('xml').set('Content-Length', xml.length).send(xml);
+				res.header('Content-Type', 'application/xml');
+				res.send( xml );
 			});
 		});
 

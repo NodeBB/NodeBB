@@ -30,7 +30,7 @@
     "node-imagemagick": "0.1.8",
     "gravatar": "1.0.6",
     "nconf": "~0.6.7",
-    "sitemap": "~0.6.0",
+    "sitemap": "~0.7.1",
     "request": "~2.25.0",
     "reds": "~0.2.4",
     "winston": "~0.7.2",
