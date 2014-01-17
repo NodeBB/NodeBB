@@ -1016,7 +1016,7 @@ var bcrypt = require('bcrypt'),
 					notifications.read.length = maxNotifs - notifications.unread.length;
 				}
 
-				callback(notifications);
+				callback(err, notifications);
 			});
 		},
 		getAll: function(uid, limit, before, callback) {

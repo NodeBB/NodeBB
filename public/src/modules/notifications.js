@@ -11,14 +11,14 @@ define(function() {
 		notifTrigger.addEventListener('click', function(e) {
 			e.preventDefault();
 			if (notifContainer.className.indexOf('open') === -1) {
-				socket.emit('notifications.get', null, function(data) {
+				socket.emit('notifications.get', null, function(err, data) {
 					var notifFrag = document.createDocumentFragment(),
 						notifEl = document.createElement('li'),
 						numRead = data.read.length,
 						numUnread = data.unread.length,
 						x;
 					notifList.innerHTML = '';
-					if ((data.read.length + data.unread.length) > 0) {
+					if (!err && (data.read.length + data.unread.length) > 0) {
 						for (x = 0; x < numUnread; x++) {
 							notifEl.setAttribute('data-nid', data.unread[x].nid);
 							notifEl.className = 'unread';
