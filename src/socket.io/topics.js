@@ -5,7 +5,11 @@ var topics = require('../topics'),
 
 SocketTopics.post = function(socket, data, callback) {
 
-	if (socket.uid < 1 && parseInt(meta.config.allowGuestPosting, 10) === 0) {
+	if(!data) {
+		return callback(new Error('Invalid data'));
+	}
+
+	if (!socket.uid && !parseInt(meta.config.allowGuestPosting, 10)) {
 		socket.emit('event:alert', {
 			title: 'Post Unsuccessful',
 			message: 'You don&apos;t seem to be logged in, so you cannot reply.',
@@ -58,7 +62,7 @@ SocketTopics.post = function(socket, data, callback) {
 				type: 'success',
 				timeout: 2000
 			});
-			callback();
+			callback(null);
 		}
 	});
 };
@@ -68,122 +72,59 @@ SocketTopics.postcount = function(socket, tid, callback) {
 };
 
 SocketTopics.markAllRead = function(socket, data, callback) {
-	topics.markAllRead(socket.uid, function(err, success) {
-		if (!err && success) {
-			callback(true);
-			index.server.sockets.in('uid_' + socket.uid).emit('event:unread.updateCount', 0);
-		} else {
-			callback(false);
-		}
-	});
-};
-
-SocketTopics.delete = function(socket, data, callback) {
-	threadTools.privileges(data.tid, socket.uid, function(err, privileges) {
+	topics.markAllRead(socket.uid, function(err) {
 		if(err) {
 			return callback(err);
 		}
 
-		if(!privileges.editable) {
-			return callback(new Error('not-allowed'));
-		}
+		index.server.sockets.in('uid_' + socket.uid).emit('event:unread.updateCount', 0);
 
-		threadTools.delete(data.tid, socket.uid, function(err) {
-			if(err) {
-				return callback(err);
-			}
-
-			module.parent.exports.emitTopicPostStats();
-
-
-			callback(null, 'topic.delete', {
-				status: 'ok',
-				tid: data.tid
-			});
-		});
+		callback(null);
 	});
 };
 
-SocketTopics.restore = function(socket, data, callback) {
-	threadTools.privileges(data.tid, socket.uid, function(err, privileges) {
+function doTopicAction(action, socket, tid, callback) {
+	if(!tid) {
+		return callback(new Error('Invalid tid'));
+	}
+
+	threadTools.privileges(tid, socket.uid, function(err, privileges) {
 		if(err) {
 			return callback(err);
 		}
 
-		if(!privileges.editable) {
+		if(!privileges || !privileges.editable) {
 			return callback(new Error('not-allowed'));
 		}
 
-		threadTools.restore(data.tid, socket.uid, function(err) {
-			if(err) {
-				return callback(err);
-			}
-
-			module.parent.exports.emitTopicPostStats();
-
-			callback(null, 'topic.restore', {
-				status: 'ok',
-				tid: data.tid
-			});
-		});
-
+		if(threadTools[action]) {
+			threadTools[action](tid, socket.uid, callback);
+		}
 	});
+}
+
+SocketTopics.delete = function(socket, tid, callback) {
+	doTopicAction('delete', socket, tid, callback);
 };
 
-SocketTopics.lock = function(socket, data, callback) {
-	threadTools.privileges(data.tid, socket.uid, function(err, privileges) {
-		if(err) {
-			return callback(err);
-		}
-
-		if (!privileges.editable) {
-			return callback(new Error('not-allowed'));
-		}
-
-		threadTools.lock(data.tid, callback);
-	});
+SocketTopics.restore = function(socket, tid, callback) {
+	doTopicAction('restore', socket, tid, callback);
 };
 
-SocketTopics.unlock = function(socket, data, callback) {
-	threadTools.privileges(data.tid, socket.uid, function(err, privileges) {
-		if(err) {
-			return callback(err);
-		}
-
-		if (!privileges.editable) {
-			return callback(new Error('not-allowed'));
-		}
-
-		threadTools.unlock(data.tid, callback);
-	});
+SocketTopics.lock = function(socket, tid, callback) {
+	doTopicAction('lock', socket, tid, callback);
 };
 
-SocketTopics.pin = function(socket, data, callback) {
-	threadTools.privileges(data.tid, sessionData.uid, function(err, privileges) {
-		if(err) {
-			return callback(err);
-		}
-
-		if (!privileges.editable) {
-			return callback(new Error('not-allowed'));
-		}
-
-		threadTools.pin(data.tid, callback);
-	});
+SocketTopics.unlock = function(socket, tid, callback) {
+	doTopicAction('unlock', socket, tid, callback);
 };
 
-SocketTopics.unpin = function(socket, data, callback) {
-	threadTools.privileges(data.tid, socket.uid, function(err, privileges) {
-		if(err) {
-			return callback(err);
-		}
+SocketTopics.pin = function(socket, tid, callback) {
+	doTopicAction('pin', socket, tid, callback);
+};
 
-		if (!privileges.editable) {
-			return callback(new Error('not-allowed'));
-		}
-
-		threadTools.unpin(data.tid, callback);
-	});
+SocketTopics.unpin = function(socket, tid, callback) {
+	doTopicAction('unpin', socket, tid, callback);
 };
 
 SocketTopics.createTopicFromPosts = function(socket, data, callback) {
