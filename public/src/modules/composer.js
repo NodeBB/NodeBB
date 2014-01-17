@@ -47,7 +47,7 @@ define(['taskbar'], function(taskbar) {
 		if(allowed()) {
 			socket.emit('modules.composer.push', {
 				pid: pid
-			}, function(threadData) {
+			}, function(err, threadData) {
 				push({
 					pid: pid,
 					title: threadData.title,
@@ -108,8 +108,8 @@ define(['taskbar'], function(taskbar) {
 			} else if (parseInt(postData.pid) > 0) {
 				titleEl.val(postData.title);
 				titleEl.prop('readOnly', true);
-				socket.emit('modules.composer.editCheck', postData.pid, function(editCheck) {
-					if (editCheck.titleEditable) {
+				socket.emit('modules.composer.editCheck', postData.pid, function(err, editCheck) {
+					if (!err && editCheck.titleEditable) {
 						postContainer.find('input').prop('readonly', false);
 					}
 				});
