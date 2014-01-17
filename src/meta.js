@@ -122,7 +122,7 @@ var fs = require('fs'),
 					'theme:templates': '',
 					'theme:src': ''
 				};
-console.log(themeData);
+
 			switch(data.type) {
 				case 'local':
 					async.waterfall([
