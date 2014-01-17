@@ -77,16 +77,10 @@ SocketAdmin.user.banUser = function(theirid, sessionData) {
 };
 
 SocketAdmin.user.unbanUser = function(theirid, sessionData) {
-	if (sessionData.uid && sessionData.uid > 0) {
-		admin.user.unbanUser(sessionData.uid, theirid, sessionData.socket);
-	}
+	admin.user.unbanUser(sessionData.uid, theirid, sessionData.socket);
 };
 
 SocketAdmin.user.search = function(username, callback, sessionData) {
-	if (!(sessionData.uid && sessionData.uid > 0)) {
-		return callback();
-	}
-
 	user.search(username, function(data) {
 		function isAdmin(userData, next) {
 			user.isAdministrator(userData.uid, function(err, isAdmin) {
@@ -124,16 +118,16 @@ SocketAdmin.categories.update = function(data, sessionData) {
 };
 
 SocketAdmin.categories.search = function(username, cid, callback, sessionData) {
-	if (sessionData.uid && sessionData.uid > 0) {
-		user.search(username, function(data) {
-			async.map(data, function(userObj, next) {
-				CategoryTools.privileges(cid, userObj.uid, function(err, privileges) {
-					if (!err) {
-						userObj.privileges = privileges;
-					} else {
-						winston.error('[socket api:admin.categories.search] Could not retrieve permissions');
-					}
+	user.search(username, function(data) {
+		async.map(data, function(userObj, next) {
+			CategoryTools.privileges(cid, userObj.uid, function(err, privileges) {
+				if (!err) {
+					userObj.privileges = privileges;
+				} else {
+					winston.error('[socket api:admin.categories.search] Could not retrieve permissions');
+				}
 
+<<<<<<< HEAD
 					next(null, userObj);
 				});
 			}, function(err, data) {
@@ -142,8 +136,18 @@ SocketAdmin.categories.search = function(username, cid, callback, sessionData) {
 				} else {
 					callback(null, data);
 				}
+=======
+				next(null, userObj);
+>>>>>>> 3a57c3b6d8c1733fa758f682475c86a561a51f6f
 			});
+		}, function(err, data) {
+			if (!callback) {
+				sessionData.socket.emit('api:admin.categories.search', data);
+			} else {
+				callback(null, data);
+			}
 		});
+<<<<<<< HEAD
 	} else {
 		if (!callback) {
 			sessionData.socket.emit('api:admin.user.search', null);
@@ -151,6 +155,9 @@ SocketAdmin.categories.search = function(username, cid, callback, sessionData) {
 			callback();
 		}
 	}
+=======
+	});
+>>>>>>> 3a57c3b6d8c1733fa758f682475c86a561a51f6f
 };
 
 SocketAdmin.categories.setPrivilege = function(cid, uid, privilege, set, callback) {

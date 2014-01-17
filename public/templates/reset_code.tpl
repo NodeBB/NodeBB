@@ -30,7 +30,7 @@
 		<input class="form-control input-lg" type="password" placeholder="A new password" id="password" /><br />
 		<label for="repeat">[[reset_password:repeat_password]]</label>
 		<input class="form-control input-lg" type="password" placeholder="The same password" id="repeat" /><br />
-		<button class="btn btn-primary btn-lg btn-block" id="reset" type="submit" disabled>[[reset_password:reset_password]]</button>
+		<button class="btn btn-primary btn-lg btn-block" id="reset" type="submit">[[reset_password:reset_password]]</button>
 	</form>
 </div>
 <input type="hidden" template-variable="reset_code" value="{reset_code}" />

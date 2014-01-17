@@ -309,10 +309,15 @@ var bcrypt = require('bcrypt'),
 							User.setUserField(uid, 'username', data.username);
 							db.deleteObjectField('username:uid', userData.username);
 							db.setObjectField('username:uid', data.username, uid);
+<<<<<<< HEAD
 							db.searchRemove('user', uid, function() {
 								db.searchIndex('user', data.username, uid);
 							});
 							events.logUsernameChange(uid, userData.username, data.username);
+=======
+							events.logUsernameChange(uid, userData.username, data.username);
+							User.reIndexUser(uid, data.username);
+>>>>>>> 3a57c3b6d8c1733fa758f682475c86a561a51f6f
 						}
 
 						if(userslug !== userData.userslug) {
@@ -451,16 +456,17 @@ var bcrypt = require('bcrypt'),
 				return callback(err, null);
 			}
 
-			function reIndexUser(uid, username) {
-				db.searchRemove('user', uid, function() {
-					db.searchIndex('user', username, uid);
-				});
+			for (var i = 0; i < usersData.length; ++i) {
+				User.reIndexUser(usersData[i].uid, usersData[i].username);
 			}
 
-			for (var i = 0; i < usersData.length; ++i) {
-				reIndexUser(usersData[i].uid, usersData[i].username);
-			}
 			callback(null, 1);
+		});
+	};
+
+	User.reIndexUser = function(uid, username) {
+		db.searchRemove('user', uid, function() {
+			db.searchIndex('user', username, uid);
 		});
 	};
 

@@ -115,13 +115,17 @@
 		}
 	}
 
-	module.searchRemove = function(key, id) {
+	module.searchRemove = function(key, id, callback) {
 		if(key === 'post') {
 			postSearch.remove(id);
 		} else if(key === 'topic') {
 			topicSearch.remove(id);
 		} else if(key === 'user') {
 			userSearch.remove(id);
+		}
+
+		if (typeof callback === 'function') {
+			callback()
 		}
 	}
 
