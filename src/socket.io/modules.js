@@ -33,7 +33,11 @@ SocketModules.composer.push = function(socket, pid, callback) {
 					});
 				}
 			], function(err, results) {
-				callback(err, {
+				if(err) {
+					return callback(err);
+				}
+
+				callback(null, {
 					title: results[1],
 					pid: pid,
 					body: results[0].content
@@ -64,11 +68,17 @@ SocketModules.composer.editCheck = function(socket, pid, callback) {
 SocketModules.chats = {};
 
 SocketModules.chats.get = function(socket, data, callback) {
-	var touid = data.touid;
-	Messaging.getMessages(socket.uid, touid, callback);
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
+
+	Messaging.getMessages(socket.uid, data.touid, callback);
 };
 
 SocketModules.chats.send = function(socket, data) {
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
 
 	var touid = data.touid;
 	if (touid === socket.uid || socket.uid === 0) {
