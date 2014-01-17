@@ -239,12 +239,12 @@ console.log(themeData);
 					async.parallel({
 						mtime: function (next) {
 							async.map(jsPaths, fs.stat, function (err, stats) {
-								async.reduce(stats, 0, function (memo, item, callback) {
+								async.reduce(stats, 0, function (memo, item, next) {
 									if(item) {
 										mtime = +new Date(item.mtime);
-										callback(null, mtime > memo ? mtime : memo);
+										next(null, mtime > memo ? mtime : memo);
 									} else {
-										callback(null, memo);
+										next(null, memo);
 									}
 								}, next);
 							});
@@ -262,7 +262,7 @@ console.log(themeData);
 					}, function (err, results) {
 						if (results.minFile > results.mtime) {
 							winston.info('No changes to client-side libraries -- skipping minification');
-							callback(null, [path.relative(path.join(__dirname, '../public'), Meta.js.minFile)]);
+							callback(null, [path.relative(path.join(__dirname, '../public'), Meta.js.minFile) + (meta.config['cache-buster'] ? '?v=' + meta.config['cache-buster'] : '')]);
 						} else {
 							Meta.js.minify(function () {
 								callback(null, [
