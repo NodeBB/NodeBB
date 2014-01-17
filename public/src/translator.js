@@ -177,16 +177,24 @@
 		isServer = true;
 
 		var utils = require('./utils.js'),
+			Meta = require('../../src/meta'),
 			path = require('path'),
 			fs = require('fs'),
-			Meta = require('../../src/meta');
+			winston = require('winston');
 
-		utils.walk(path.join(__dirname, '../../', 'public/language/' + (Meta.config.defaultLang || 'en')), function (err, data) {
+		utils.walk(path.join(__dirname, '../language', (Meta.config.defaultLang || 'en')), function (err, data) {
 			var loaded = data.length;
 
 			for (var d in data) {
 				if (data.hasOwnProperty(d)) {
-					files.loaded[path.basename(data[d]).replace('.json', '')] = require(data[d]);
+					// Only load .json files
+					if (path.extname(data[d]) === '.json') {
+						files.loaded[path.basename(data[d]).replace('.json', '')] = require(data[d]);
+					} else {
+						if (process.env.NODE_ENV === 'development') {
+							winston.warn('[translator] Skipping language file: ' + path.relative(path.join(__dirname, '../language'), data[d]));
+						}
+					}
 				}
 			}
 		});
