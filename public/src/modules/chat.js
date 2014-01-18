@@ -200,15 +200,13 @@ define(['taskbar', 'string'], function(taskbar, S) {
 	}
 
 	function addSendHandler(chatModal) {
-		chatModal.find('#chat-message-input').off('keypress');
-		chatModal.find('#chat-message-input').on('keypress', function(e) {
+		chatModal.find('#chat-message-input').off('keypress').on('keypress', function(e) {
 			if(e.which === 13) {
 				sendMessage(chatModal);
 			}
 		});
 
-		chatModal.find('#chat-message-send-btn').off('click');
-		chatModal.find('#chat-message-send-btn').on('click', function(e){
+		chatModal.find('#chat-message-send-btn').off('click').on('click', function(e){
 			sendMessage(chatModal);
 			return false;
 		});
