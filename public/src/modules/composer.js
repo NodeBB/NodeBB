@@ -286,11 +286,14 @@ define(['taskbar'], function(taskbar) {
 			postContainer.find('.nav-tabs a').click(function (e) {
 				e.preventDefault();
 				$(this).tab('show');
+				var selector = $(this).attr('data-pane');
+				postContainer.find('.tab-content div').removeClass('active');
+				postContainer.find(selector).addClass('active');
 				return false;
 			});
 
 			postContainer.find('.nav-tabs a').on('shown.bs.tab', function (e) {
-  				if($(e.target).attr('href') === '#preview') {
+  				if($(e.target).attr('data-pane') === '.tab-preview') {
   					socket.emit('modules.composer.renderPreview', bodyEl.val(), function(err, preview) {
   						postContainer.find('.preview').html(preview);
   					});
@@ -412,7 +415,9 @@ define(['taskbar'], function(taskbar) {
 			postContainer.find('.file-upload-btn').removeClass('hide');
 		}
 
-		postContainer.css('visibility', 'visible');
+		postContainer.css('visibility', 'visible')
+			.css('z-index', 1);
+
 
 		composer.focusElements(post_uuid);
 	}

@@ -24,15 +24,15 @@
 		</div>
 
 		<ul class="nav nav-tabs">
-			<li class="active"><a href="#write" data-toggle="tab">Write</a></li>
-			<li><a href="#preview" data-toggle="tab">Preview</a></li>
+			<li class="active"><a data-pane=".tab-write" data-toggle="tab">Write</a></li>
+			<li><a data-pane=".tab-preview" data-toggle="tab">Preview</a></li>
 		</ul>
 
 		<div class="tab-content">
-			<div class="tab-pane active" id="write">
+			<div class="tab-pane active tab-write">
 				<textarea class="write" tabIndex="2"></textarea>
 			</div>
-			<div class="tab-pane" id="preview">
+			<div class="tab-pane tab-preview">
 				<div class="preview well"></div>
 			</div>
 		</div>
