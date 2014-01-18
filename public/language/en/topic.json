@@ -31,7 +31,7 @@
 	"confirm_fork": "Fork",
 
 	"favourite": "Favourite",
-	"favourites": "Favorites",
+	"favourites": "Favourites",
 	"favourites.not_logged_in.title": "Not Logged In",
 	"favourites.not_logged_in.message": "Please log in in order to favourite this post",
 	"favourites.has_no_favourites": "You don't have any favourites, favourite some posts to see them here!",
