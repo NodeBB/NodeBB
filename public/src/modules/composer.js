@@ -192,7 +192,7 @@ define(['taskbar'], function(taskbar) {
 			});
 
 
-			postContainer.on('click', '.formatting-bar button', function() {
+			postContainer.on('click', '.action-bar button', function() {
 				var	action = $(this).attr('data-action');
 
 				switch(action) {

@@ -17,15 +17,15 @@
 						<input type="file" id="files" name="files[]" multiple class="hide"/>
 				</form>
 			</div>
-			<div class="btn-group pull-right">
-				<button class="btn btn-default" data-action="discard" tabIndex="5"><i class="fa fa-times"></i> Discard</button>
-				<button data-action="post" class="btn btn-default" tabIndex="3"><i class="fa fa-check"></i> Submit</button>
-			</div>
 		</div>
 
 		<ul class="nav nav-tabs">
 			<li class="active"><a data-pane=".tab-write" data-toggle="tab">Write</a></li>
 			<li><a data-pane=".tab-preview" data-toggle="tab">Preview</a></li>
+			<li class="btn-group pull-right action-bar">
+				<button class="btn btn-default" data-action="discard" tabIndex="5"><i class="fa fa-times"></i> Discard</button>
+				<button data-action="post" class="btn btn-default" tabIndex="3"><i class="fa fa-check"></i> Submit</button>
+			</li>
 		</ul>
 
 		<div class="tab-content">
