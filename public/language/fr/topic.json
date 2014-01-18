@@ -18,6 +18,7 @@
 	"link": "Lien",
 
 	"thread_tools.title": "Outils du Fil",
+	"thread_tools.markAsUnreadForAll": "Marqué comme non lu",
 	"thread_tools.pin": "Epingler le fil",
 	"thread_tools.lock": "Verrouiller le fil",
 	"thread_tools.move": "Déplacer le fil",
