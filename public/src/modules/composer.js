@@ -292,12 +292,10 @@ define(['taskbar'], function(taskbar) {
 				return false;
 			});
 
-			postContainer.find('.nav-tabs a').on('shown.bs.tab', function (e) {
-  				if($(e.target).attr('data-pane') === '.tab-preview') {
-  					socket.emit('modules.composer.renderPreview', bodyEl.val(), function(err, preview) {
-  						postContainer.find('.preview').html(preview);
-  					});
-  				}
+			bodyEl.on('blur', function() {
+				socket.emit('modules.composer.renderPreview', bodyEl.val(), function(err, preview) {
+  					postContainer.find('.preview').html(preview);
+  				});
 			});
 
 
@@ -305,20 +303,19 @@ define(['taskbar'], function(taskbar) {
 				resizeCenterY = 0,
 				resizeOffset = 0,
 				resizeStart = function(e) {
-					bodyRect = document.body.getBoundingClientRect();
 					resizeRect = resizeEl.getBoundingClientRect();
 					resizeCenterY = resizeRect.top + (resizeRect.height/2);
 					resizeOffset = resizeCenterY - e.clientY;
 					resizeActive = true;
 
-					$(document.body).on('mousemove', resizeAction);
-					$(document.body).on('mouseup', resizeStop);
+					$(window).on('mousemove', resizeAction);
+					$(window).on('mouseup', resizeStop);
 					document.body.addEventListener('touchmove', resizeTouchAction);
 				},
 				resizeStop = function() {
 					resizeActive = false;
-					$(document.body).off('mousemove', resizeAction);
-					$(document.body).off('mouseup', resizeStop);
+					$(window).off('mousemove', resizeAction);
+					$(window).off('mouseup', resizeStop);
 					document.body.removeEventListener('touchmove', resizeTouchAction);
 				},
 				resizeTouchAction = function(e) {
@@ -328,17 +325,21 @@ define(['taskbar'], function(taskbar) {
 				resizeAction = function(e) {
 					if (resizeActive) {
 						position = (e.clientY + resizeOffset);
-
-						postContainer.css('height', $(window).height() - position);
-						resizeSavePosition($(window).height() - position);
+						var newHeight = $(window).height() - position;
+						if(newHeight > $(window).height() - $('#header-menu').height() - 20) {
+							newHeight = $(window).height() - $('#header-menu').height() - 20;
+						}
+						postContainer.css('height', newHeight);
+						resizeSavePosition(newHeight);
 					}
+					e.preventDefault();
 					return false;
 				},
 				resizeSavePosition = function(px) {
 					var	percentage = px / $(window).height();
 					localStorage.setItem('composer:resizePercentage', percentage);
 				},
-				resizeRect, bodyRect;
+				resizeRect;
 
 			var resizeEl = postContainer.find('.resizer')[0];
 

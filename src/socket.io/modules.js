@@ -7,6 +7,7 @@ var	posts = require('../posts'),
 	Messaging = require('../messaging'),
 	user = require('../user'),
 	notifications = require('../notifications'),
+	plugins = require('../plugins'),
 
 	async = require('async'),
 	S = require('string'),
@@ -64,8 +65,7 @@ SocketModules.composer.editCheck = function(socket, pid, callback) {
 };
 
 SocketModules.composer.renderPreview = function(socket, content, callback) {
-	var preview = require('marked')(content);
-	callback(null, preview);
+	plugins.fireHook('filter:post.parse', content, callback);
 }
 
 /* Chat */
