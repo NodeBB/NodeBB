@@ -47,7 +47,7 @@
 			<div class="user-info">
 				<span id="online_anon_count">{anonymousUserCount}</span>
 				<br/>
-				<a href="#">Anonymous</a>
+				<a href="#">匿名</a>
 			</div>
 		</li>
 

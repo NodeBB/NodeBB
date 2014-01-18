@@ -25,8 +25,8 @@
 
 				<div>
 					<span class="pull-right">
-						<a href="../../topic/{posts.tid}/#{posts.pid}">posted</a>
-						in
+						<a href="../../topic/{posts.tid}/#{posts.pid}">发布</a>
+						于
 						<a href="../../category/{posts.categorySlug}">
 							<i class="fa {posts.categoryIcon}"></i> {posts.categoryName}
 						</a>

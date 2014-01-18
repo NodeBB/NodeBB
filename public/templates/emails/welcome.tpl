@@ -1,13 +1,13 @@
 <p>
-	Hello {username},
+	{username}你好，
 </p>
 
 <p>
-	<strong>Thank you for registering with {site_title}!</strong>
+	<strong>感谢你注册{site_title}！</strong>
 </p>
 
 <p>
-	To fully activate your account, we need to verify that you own the email address you registered with. Please click on the following link:
+	为了完全激活你的账号，我们需要验证你注册时所填写的邮箱。请点击下面的链接：
 </p>
 
 <blockquote>
@@ -15,6 +15,6 @@
 </blockquote>
 
 <p>
-	Thanks!<br />
+	谢谢！<br />
 	<strong>{site_title}</strong>
 </p>

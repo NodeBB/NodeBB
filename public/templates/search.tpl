@@ -41,11 +41,11 @@
 			<!-- END topics -->
 		</ul>
 
-		<h3>Posts</h3>
+		<h3>帖子</h3>
 		<!-- IF post_matches -->
-		<small>{post_matches} result(s) matching "{search_query}"</small>
+		<small>找到{post_matches}条与"{search_query}"相关的结果。</small>
 		<!-- ENDIF post_matches -->
-		<div class="alert alert-info {show_no_posts}">No posts found!</div>
+		<div class="alert alert-info {show_no_posts}">没有找到匹配的帖子！</div>
 
 		<ul id="topics-container" data-search-query="{search_query}">
 			<!-- BEGIN posts -->

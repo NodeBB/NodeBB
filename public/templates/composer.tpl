@@ -21,14 +21,14 @@
 		</div>
 		<textarea tabIndex="2"></textarea>
 		<div class="preview"></div>
-		<div class="imagedrop"><div>Drag and Drop Images Here</div></div>
+		<div class="imagedrop"><div>拖拽图片至此</div></div>
 		<div class="text-center upload-instructions hide visible-lg visible-md">
-			<small>Upload images by dragging & dropping them</small>
+			<small>通过拖拽上传图片</small>
 		</div>
 		<div class="btn-toolbar action-bar">
 			<div class="btn-group pull-right">
-				<button class="btn btn-default" data-action="discard" tabIndex="5"><i class="fa fa-times"></i> Discard</button>
-				<button data-action="post" class="btn btn-default" tabIndex="3"><i class="fa fa-check"></i> Submit</button>
+				<button class="btn btn-default" data-action="discard" tabIndex="5"><i class="fa fa-times"></i>舍弃</button>
+				<button data-action="post" class="btn btn-default" tabIndex="3"><i class="fa fa-check"></i>提交</button>
 			</div>
 		</div>
 		<div class="resizer"><div class="trigger"><i class="fa fa-chevron-left"></i></div></div>

@@ -49,13 +49,13 @@
 
 							<span class="pull-right hidden-xs">
 								<!-- IF topics.unreplied -->
-								No one has replied
+								还没有回复
 								<!-- ELSE -->
 								<a href="{relative_path}/user/{topics.teaser_userslug}">
 									<img class="teaser-pic" src="{topics.teaser_userpicture}" title="{topics.teaser_username}"/>
 								</a>
 								<a href="{relative_path}/topic/{topics.slug}#{topics.teaser_pid}">
-									replied
+									回复
 								</a>
 								<span class="timeago" title="{topics.teaser_timestamp}"></span>
 								<!-- ENDIF topics.unreplied -->

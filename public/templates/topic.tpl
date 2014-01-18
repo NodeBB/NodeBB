@@ -244,7 +244,7 @@
 				</div>
 				<div class="modal-body">
 					<div class="form-group">
-						<label for="topicId">Topic ID</label>
+						<label for="topicId">主题ID</label>
 						<input id="topicId" type="text" class="form-control" placeholder="Enter topic ID"><br/>
 					</div>
 				</div>

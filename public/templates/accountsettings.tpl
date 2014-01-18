@@ -9,7 +9,7 @@
 
 	<div class="row">
 		<div class="col-md-6">
-			<h4>privacy</h4>
+			<h4>隐私设置</h4>
 			<div class="checkbox">
 				<label>
 	      			<input id="showemailCheckBox" type="checkbox" {showemail}> [[user:show_email]]
