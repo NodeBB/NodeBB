@@ -211,6 +211,7 @@ var async = require('async'),
 
 						postData.favourited = false;
 						postData.display_moderator_tools = true;
+						postData.display_move_tools = privileges.admin || privileges.moderator;
 						postData.relativeTime = utils.toISOString(postData.timestamp);
 
 						callback(null, postData);
@@ -358,12 +359,11 @@ var async = require('async'),
 				return parseInt(current_user, 10) !== 0 || parseInt(post.deleted, 10) === 0;
 			});
 
-			function getFavouritesData(next) {
-				var pids = [];
-				for (var i = 0; i < postData.length; ++i) {
-					pids.push(postData[i].pid);
-				}
+			pids = postData.map(function(post) {
+				return post.pid;
+			});
 
+			function getFavouritesData(next) {
 				favourites.getFavouritesByPostIDs(pids, current_user, function(fav_data) {
 					next(null, fav_data);
 				});
@@ -382,7 +382,20 @@ var async = require('async'),
 			}
 
 			function getPrivileges(next) {
-				postTools.privileges(tid, current_user, next);
+				var privs = {};
+				async.each(pids, getPostPrivileges, function(err) {
+					next(err, privs);
+				});
+
+				function getPostPrivileges(pid, next) {
+					postTools.privileges(pid, current_user, function(err, postPrivileges) {
+						if(err) {
+							return next(err);
+						}
+						privs[pid] = postPrivileges;
+						next();
+					});
+				}
 			}
 
 			async.parallel([getFavouritesData, addUserInfoToPosts, getPrivileges], function(err, results) {
@@ -394,8 +407,10 @@ var async = require('async'),
 					privileges = results[2];
 
 				for (var i = 0; i < postData.length; ++i) {
-					postData[i].favourited = fav_data[postData[i].pid];
-					postData[i].display_moderator_tools = ((current_user != 0) && (postData[i].uid == current_user || privileges.editable));
+					var pid = postData[i].pid;
+					postData[i].favourited = fav_data[pid];
+					postData[i].display_moderator_tools = (current_user != 0) && privileges[pid].editable;
+					postData[i].display_move_tools = privileges[pid].move;
 				}
 
 				callback(null, postData);

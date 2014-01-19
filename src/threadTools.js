@@ -50,7 +50,9 @@ var winston = require('winston'),
 				read: results.categoryPrivs.read,
 				write: results.categoryPrivs.write,
 				editable: results.categoryPrivs.editable || results.hasEnoughRep,
-				view_deleted: results.categoryPrivs.view_deleted || results.hasEnoughRep
+				view_deleted: results.categoryPrivs.view_deleted || results.hasEnoughRep,
+				moderator: results.categoryPrivs.moderator,
+				admin: results.categoryPrivs.admin
 			});
 		});
 	}

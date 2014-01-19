@@ -170,7 +170,17 @@ SocketTopics.movePost = function(socket, data, callback) {
 		return callback(new Error('invalid data'));
 	}
 
-	topics.movePostToTopic(data.pid, data.tid, callback);
+	threadTools.privileges(data.tid, socket.uid, function(err, privileges) {
+		if(err) {
+			return callback(err);
+		}
+
+		if(!(privileges.admin || privileges.moderator)) {
+			return callback(new Error('not allowed'));
+		}
+
+		topics.movePostToTopic(data.pid, data.tid, callback);
+	});
 };
 
 SocketTopics.move = function(socket, data, callback) {

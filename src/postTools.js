@@ -58,7 +58,8 @@ var winston = require('winston'),
 			callback(null, {
 				read: results.topicPrivs.read,
 				editable: results.topicPrivs.editable || results.isOwner || results.hasEnoughRep,
-				view_deleted: results.topicPrivs.view_deleted || results.isOwner || results.hasEnoughRep
+				view_deleted: results.topicPrivs.view_deleted || results.isOwner || results.hasEnoughRep,
+				move: results.topicPrivs.admin || results.topicPrivs.moderator
 			});
 		});
 	}

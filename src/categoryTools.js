@@ -116,7 +116,9 @@ CategoryTools.privileges = function(cid, uid, callback) {
 				privileges.admin
 			),
 			editable: privileges.moderator || privileges.admin,
-			view_deleted: privileges.moderator || privileges.admin
+			view_deleted: privileges.moderator || privileges.admin,
+			moderator: privileges.moderator,
+			admin: privileges.moderator
 		});
 	});
 };
