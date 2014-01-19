@@ -202,7 +202,7 @@ var fs = require('fs'),
 	Meta.js = {
 		scripts: [
 			'vendor/jquery/js/jquery.js',
-			'vendor/jquery/js/jquery-ui-1.10.3.custom.min.js',
+			'vendor/jquery/js/jquery-ui-1.10.4.custom.js',
 			'vendor/jquery/timeago/jquery.timeago.js',
 			'vendor/jquery/js/jquery.form.js',
 			'vendor/bootstrap/js/bootstrap.min.js',
