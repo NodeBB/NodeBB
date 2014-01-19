@@ -259,6 +259,16 @@ var winston = require('winston'),
 		});
 	}
 
+	ThreadTools.getLatestUndeletedPost = function(tid, callback) {
+		ThreadTools.getLatestUndeletedPid(tid, function(err, pid) {
+			if(err) {
+				return callback(err);
+			}
+
+			posts.getPostData(pid, callback);
+		});
+	}
+
 	ThreadTools.getLatestUndeletedPid = function(tid, callback) {
 		db.getSortedSetRevRange('tid:' + tid + ':posts', 0, -1, function(err, pids) {
 			if(err) {

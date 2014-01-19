@@ -1022,7 +1022,7 @@ var bcrypt = require('bcrypt'),
 						}).sort(function(a, b) {
 							return parseInt(b.datetime, 10) - parseInt(a.datetime, 10);
 						}).map(function(notif) {
-							notif.datetimeISO = new Date(parseInt(notif.datetime, 10)).toISOString();
+							notif.datetimeISO = utils.toISOString(notif.datetime);
 							notif.readClass = !notif.read ? 'unread' : '';
 
 							return notif;

@@ -189,7 +189,7 @@ var db = require('./database'),
 						if (parseInt(postData.deleted, 10) === 1) {
 							return callback(null);
 						} else {
-							postData.relativeTime = new Date(parseInt(postData.timestamp || 0, 10)).toISOString();
+							postData.relativeTime = utils.toISOString(postData.timestamp);
 							next(null, postData);
 						}
 					});
@@ -318,30 +318,28 @@ var db = require('./database'),
 		}
 
 		db.getObjects(keys, function(err, data) {
-			async.map(data, function(postData, _callback) {
-				if (postData) {
+			if(err) {
+				return callback(err);
+			}
 
-					try {
-						postData.relativeTime = new Date(parseInt(postData.timestamp,10)).toISOString();
-						postData.relativeEditTime = parseInt(postData.edited, 10) !== 0 ? (new Date(parseInt(postData.edited, 10)).toISOString()) : '';
-					} catch(e) {
-						require('winston').err('invalid time value');
+			async.map(data, function(postData, next) {
+				if(!postData) {
+					return next(null);
+				}
+
+				postData.relativeTime = utils.toISOString(postData.timestamp);
+				postData.relativeEditTime = parseInt(postData.edited, 10) !== 0 ? utils.toISOString(postData.edited) : '';
+
+				postTools.parse(postData.content, function(err, content) {
+					if(err) {
+						return next(err);
 					}
 
-					postTools.parse(postData.content, function(err, content) {
-						postData.content = content;
-						_callback(null, postData);
-					});
-				} else {
-					_callback(null);
-				}
-			}, function(err, posts) {
-				if (!err) {
-					return callback(null, posts);
-				} else {
-					return callback(err, null);
-				}
-			});
+					postData.content = content;
+					next(null, postData);
+				});
+
+			}, callback);
 		});
 	}
 

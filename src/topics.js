@@ -211,7 +211,7 @@ var async = require('async'),
 
 						postData.favourited = false;
 						postData.display_moderator_tools = true;
-						postData.relativeTime = new Date(postData.timestamp).toISOString();
+						postData.relativeTime = utils.toISOString(postData.timestamp);
 
 						callback(null, postData);
 					});
@@ -314,9 +314,7 @@ var async = require('async'),
 
 			if(data) {
 				data.title = validator.sanitize(data.title).escape();
-				if(data.timestamp) {
-					data.relativeTime = new Date(parseInt(data.timestamp, 10)).toISOString();
-				}
+				data.relativeTime = utils.toISOString(data.timestamp);
 			}
 
 			callback(null, data);
@@ -726,7 +724,7 @@ var async = require('async'),
 					topicData.teaser_userslug = topicInfo.teaserInfo.userslug || '';
 					topicData.teaser_userpicture = topicInfo.teaserInfo.picture || gravatar.url('', {}, https = nconf.get('https'));
 					topicData.teaser_pid = topicInfo.teaserInfo.pid;
-					topicData.teaser_timestamp = topicInfo.teaserInfo.timestamp ? (new Date(parseInt(topicInfo.teaserInfo.timestamp, 10)).toISOString()) : '';
+					topicData.teaser_timestamp = utils.toISOString(topicInfo.teaserInfo.timestamp);
 
 					if (isTopicVisible(topicData, topicInfo)) {
 						retrieved_topics.push(topicData);
@@ -775,8 +773,7 @@ var async = require('async'),
 			async.parallel([getTopicData, getTopicPosts, getPrivileges, getCategoryData], function(err, results) {
 				if (err) {
 					winston.error('[Topics.getTopicWithPosts] Could not retrieve topic data: ', err.message);
-					callback(err, null);
-					return;
+					return callback(err, null);
 				}
 
 				var topicData = results[0],
@@ -791,6 +788,7 @@ var async = require('async'),
 					'locked': topicData.locked,
 					'deleted': topicData.deleted,
 					'pinned': topicData.pinned,
+					'timestamp': topicData.timestamp,
 					'slug': topicData.slug,
 					'postcount': topicData.postcount,
 					'viewcount': topicData.viewcount,
@@ -844,7 +842,7 @@ var async = require('async'),
 			topicData.teaser_username = teaser.username || '';
 			topicData.teaser_userslug = teaser.userslug || '';
 			topicData.userslug = teaser.userslug || '';
-			topicData.teaser_timestamp = teaser.timestamp ? (new Date(parseInt(teaser.timestamp,10)).toISOString()) : '';
+			topicData.teaser_timestamp = utils.toISOString(teaser.timestamp);
 			topicData.teaser_userpicture = teaser.picture;
 
 			callback(topicData);

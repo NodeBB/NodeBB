@@ -182,7 +182,17 @@
 				return (n / 1000).toFixed(1) + 'k';
 			}
 			return n;
+		},
+
+		toISOString: function(timestamp) {
+			try {
+				return new Date(parseInt(timestamp, 10)).toISOString();
+			} catch(e){
+				console.log(e.message);
+			}
+			return new Date(parseInt(0, 10)).toISOString();
 		}
+
 	};
 
 
