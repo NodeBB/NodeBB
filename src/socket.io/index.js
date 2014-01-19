@@ -94,7 +94,11 @@ Sockets.init = function() {
 					});
 				}
 
-				io.sockets.in('global').emit('user.isOnline', isUserOnline(uid));
+				socket.broadcast.emit('user.isOnline', null, {
+					online: isUserOnline(uid),
+					uid: uid,
+					timestamp: Date.now()
+				});
 			});
 		});
 
@@ -114,7 +118,11 @@ Sockets.init = function() {
 				}
 			}
 
-			io.sockets.in('global').emit('user.isOnline', isUserOnline(uid));
+			socket.broadcast.emit('user.isOnline', null, {
+				online: isUserOnline(uid),
+				uid: uid,
+				timestamp: Date.now()
+			});
 
 			emitOnlineUserCount();
 
@@ -190,7 +198,6 @@ Sockets.emitUserCount = function() {
 	});
 };
 
-// Use sessionData.server.sockets.in() instead of this method.
 Sockets.in = function(room) {
 	return io.sockets.in(room);
 };
@@ -239,15 +246,15 @@ function updateRoomBrowsingText(roomName) {
 	var	uids = getUidsInRoom(Sockets.rooms[roomName]),
 		anonymousCount = getAnonymousCount(roomName);
 
-	if (uids.length === 0) {
-		io.sockets.in(roomName).emit('get_users_in_room', { users: [], anonymousCount: anonymousCount });
-	} else {
-		user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, users) {
-			if(!err) {
-				io.sockets.in(roomName).emit('get_users_in_room', { users: users, anonymousCount: anonymousCount });
-			}
-		});
-	}
+	user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, users) {
+		if(!err) {
+			io.sockets.in(roomName).emit('get_users_in_room', {
+				users: users,
+				anonymousCount: anonymousCount,
+				room: roomName
+			});
+		}
+	});
 }
 
 Sockets.emitTopicPostStats = emitTopicPostStats;
