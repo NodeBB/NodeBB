@@ -81,7 +81,7 @@
 			winston.info('Base Configuration OK.');
 		}
 
-		if (semver.gt(pkg.dependencies['nodebb-theme-cerulean'], require('./node_modules/nodebb-theme-cerulean/package.json').version)) {
+		if (!semver.satisfies(require('./node_modules/nodebb-theme-cerulean/package.json').version, pkg.dependencies['nodebb-theme-cerulean'])) {
 			winston.error('nodebb-theme-cerulean is out of date - please run npm install.');
 		}
 
