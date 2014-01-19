@@ -537,7 +537,8 @@ define(['composer'], function(composer) {
 
 
 		socket.on('get_users_in_room', function(data) {
-			if(data) {
+
+			if(data && data.room.indexOf('topic') !== -1) {
 				var activeEl = $('.thread_active_users');
 
 				function createUserIcon(uid, picture, userslug, username) {
