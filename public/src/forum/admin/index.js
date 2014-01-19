@@ -18,19 +18,26 @@ define(function() {
 	};
 
 	Admin.updateRoomUsage = function(err, data) {
-		console.log(arguments);
-		var active_users = document.getElementById('active_users'),
+		var active_users = $('#active_users'),
 			total = 0;
-			active_users.innerHTML = '';
+
+		if(!active_users.length) {
+			return;
+		}
+
+		active_users.html('');
+
+		var usersHtml = '';
 
 		for (var room in data) {
 			if (room !== '') {
 				var count = $(data[room]).length;
 				total += count;
-				active_users.innerHTML = active_users.innerHTML + "<div class='alert alert-success'><strong>" + room + "</strong> " + count + " active user" + (count > 1 ? "s" : "") + "</div>";
+				usersHtml += "<div class='alert alert-success'><strong>" + room + "</strong> " + count + " active user" + (count > 1 ? "s" : "") + "</div>";
 			}
 		}
 
+		active_users.html(usersHtml);
 		document.getElementById('connections').innerHTML = total;
 	};
 

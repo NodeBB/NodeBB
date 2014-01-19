@@ -686,22 +686,21 @@ define(['composer'], function(composer) {
 		});
 
 		socket.on('event:post_edited', function(data) {
-			var editedPostEl = document.getElementById('content_' + data.pid);
+			var editedPostEl = $('#content_' + data.pid),
+				editedPostTitle = $('#topic_title_' + data.pid);
 
-			var editedPostTitle = $('#topic_title_' + data.pid);
-
-			if (editedPostTitle.length > 0) {
+			if (editedPostTitle.length) {
 				editedPostTitle.fadeOut(250, function() {
 					editedPostTitle.html(data.title);
 					editedPostTitle.fadeIn(250);
 				});
 			}
 
-			$(editedPostEl).fadeOut(250, function() {
-				this.innerHTML = data.content;
-				$(this).fadeIn(250);
+			editedPostEl.fadeOut(250, function() {
+				editedPostEl.html(data.content);
+				editedPostEl.find('img').addClass('img-responsive');
+				editedPostEl.fadeIn(250);
 			});
-
 		});
 
 		socket.on('posts.favourite', function(data) {
