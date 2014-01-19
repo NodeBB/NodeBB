@@ -206,6 +206,10 @@
 		redisClient.keys(key, callback);
 	}
 
+	module.rename = function(oldKey, newKey, callback) {
+		redisClient.rename(oldKey, newKey, callback);
+	}
+
 	module.expire = function(key, seconds, callback) {
 		redisClient.expire(key, seconds, callback);
 	}

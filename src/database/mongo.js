@@ -230,6 +230,14 @@
 		});
 	}
 
+	module.rename = function(oldKey, newKey, callback) {
+		db.collection('objects').update({_key: oldKey}, {$set:{_key: newKey}}, function(err, result) {
+			if(callback) {
+				callback(err, result);
+			}
+		});
+	}
+
 	module.expire = function(key, seconds, callback) {
 		module.expireAt(key, Math.round(Date.now() / 1000) + seconds, callback);
 	}
