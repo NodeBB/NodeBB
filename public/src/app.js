@@ -407,7 +407,7 @@ var socket,
 			return;
 		}
 
-		if (title.length > 0) {
+		if (title.length > 0 && !app.isFocused) {
 			titleObj.titles[1] = title;
 			if (titleObj.interval) {
 				clearInterval(titleObj.interval);
