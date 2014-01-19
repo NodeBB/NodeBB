@@ -503,6 +503,8 @@ define(['composer'], function(composer) {
 			moveBtn.on('click', function() {
 				socket.emit('topics.movePost', {pid: pid, tid: topicId.val()}, function(err) {
 					if(err) {
+						$('#topicId').val('');
+						moveModal.addClass('hide');
 						return app.alertError(err.message);
 					}
 
