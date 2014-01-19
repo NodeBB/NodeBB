@@ -16,6 +16,8 @@
 	"fork": "Fork",
 	"banned": "banned",
 	"link": "Link",
+	"share": "Share",
+	"tools": "Tools",
 
 	"thread_tools.title": "Thread Tools",
 	"thread_tools.markAsUnreadForAll": "Mark Unread",

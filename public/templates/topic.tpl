@@ -84,26 +84,36 @@
 
 							<div class="pull-right">
 								<div class="btn-group post-tools">
-									<button class="btn btn-sm btn-default link" type="button" title="[[topic:link]]"><i class="fa fa-link"></i></button>
-									<!-- IF !disableSocialButtons -->
-									<button class="btn btn-sm btn-default facebook-share" type="button" title=""><i class="fa fa-facebook"></i></button>
-									<button class="btn btn-sm btn-default twitter-share" type="button" title=""><i class="fa fa-twitter"></i></button>
-									<button class="btn btn-sm btn-default google-share" type="button" title=""><i class="fa fa-google-plus"></i></button>
-									<!-- ENDIF !disableSocialButtons -->
+									<div class="dropdown share-dropdown">
+										<button title="[[topic:share]]"class="btn btn-sm btn-default share" data-toggle="dropdown" href="#"><i class="fa fa-share-square-o"></i></button>
+										<ul class="dropdown-menu text-center pull-right" role="menu" aria-labelledby="dLabel">
+											<!-- IF !disableSocialButtons -->
+											<li class="btn btn-sm btn-default facebook-share" type="button" title=""><i class="fa fa-facebook"></i></li>
+											<li class="btn btn-sm btn-default twitter-share" type="button" title=""><i class="fa fa-twitter"></i></li>
+											<li class="btn btn-sm btn-default google-share" type="button" title=""><i class="fa fa-google-plus"></i></li>
+											<!-- ENDIF !disableSocialButtons -->
+											<li>
+												<input type="text" id="post_{posts.pid}_link" value="" class="form-control pull-right post-link" style=""></input>
+											<li>
+										</ul>
+									</div>
 								</div>
 
 								<!-- IF posts.display_moderator_tools -->
 								<div class="btn-group post-tools">
-									<button class="btn btn-sm btn-default edit" type="button" title="[[topic:edit]]"><i class="fa fa-pencil"></i></button>
-									<button class="btn btn-sm btn-default delete" type="button" title="[[topic:delete]]"><i class="fa fa-trash-o"></i></button>
-									<!-- IF !@first -->
-									<button class="btn btn-sm btn-default move" type="button" title="[[topic:move]]"><i class="fa fa-arrows"></i></button>
-									<!-- ENDIF !@first -->
+									<div class="dropdown">
+										<button title="[[topic:tools]]" class="btn btn-sm btn-default" data-toggle="dropdown" href="#"><i class="fa fa-gear"></i></button>
+										<ul class="dropdown-menu text-center pull-right" role="menu" aria-labelledby="dLabel">
+											<button class="btn btn-sm btn-default edit" type="button" title="[[topic:edit]]"><i class="fa fa-pencil"></i></button>
+											<button class="btn btn-sm btn-default delete" type="button" title="[[topic:delete]]"><i class="fa fa-trash-o"></i></button>
+											<!-- IF !@first -->
+											<button class="btn btn-sm btn-default move" type="button" title="[[topic:move]]"><i class="fa fa-arrows"></i></button>
+											<!-- ENDIF !@first -->
+										</ul>
+									</div>
 								</div>
 								<!-- ENDIF posts.display_moderator_tools -->
 							</div>
-
-							<input id="post_{posts.pid}_link" value="" class="pull-right" style="display:none;"></input>
 						</div>
 
 						<div id="content_{posts.pid}" class="post-content" itemprop="text">{posts.content}</div>

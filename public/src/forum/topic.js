@@ -418,12 +418,18 @@ define(['composer'], function(composer) {
 			}
 		});
 
-		$('#post-container').on('click', '.link', function() {
+		$('#post-container').on('shown.bs.dropdown', '.share-dropdown', function() {
 			var pid = $(this).parents('.post-row').attr('data-pid');
-			$('#post_' + pid + '_link').val(window.location.href + "#" + pid).stop(true, false).fadeIn().select();
-			$('#post_' + pid + '_link').off('blur').on('blur', function() {
-				$(this).fadeOut();
-			});
+			$('#post_' + pid + '_link').val(window.location.href + "#" + pid);
+			// without the setTimeout can't select the text in the input
+			setTimeout(function(){
+				$('#post_' + pid + '_link').select();
+			}, 50);
+		});
+
+		$('#post-container').on('click', '.post-link', function(e) {
+			e.preventDefault();
+			return false;
 		});
 
 		$('#post-container').on('click', '.twitter-share', function () {
