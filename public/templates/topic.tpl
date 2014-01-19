@@ -106,9 +106,9 @@
 										<ul class="dropdown-menu text-center pull-right" role="menu" aria-labelledby="dLabel">
 											<button class="btn btn-sm btn-default edit" type="button" title="[[topic:edit]]"><i class="fa fa-pencil"></i></button>
 											<button class="btn btn-sm btn-default delete" type="button" title="[[topic:delete]]"><i class="fa fa-trash-o"></i></button>
-											<!-- IF posts.display_move_tools -->
-											<button class="btn btn-sm btn-default move" type="button" title="[[topic:move]]"><i class="fa fa-arrows"></i></button>
-											<!-- ENDIF posts.display_move_tools -->
+
+											<button class="btn btn-sm btn-default move {posts.display_move_tools}" type="button" title="[[topic:move]]"><i class="fa fa-arrows"></i></button>
+
 										</ul>
 									</div>
 								</div>
@@ -155,7 +155,7 @@
 					<button class="btn btn-primary post_reply" type="button">[[topic:reply]]</button>
 					<div class="btn-group thread-tools hide">
 						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">[[topic:thread_tools.title]] <span class="caret"></span></button>
-						<ul class="dropdown-menu">
+						<ul class="dropdown-menu pull-right">
 							<li><a href="#" class="markAsUnreadForAll"><i class="fa fa-inbox"></i> [[topic:thread_tools.markAsUnreadForAll]]</a></li>
 							<li><a href="#" class="pin_thread"><i class="fa fa-thumb-tack"></i> [[topic:thread_tools.pin]]</a></li>
 							<li><a href="#" class="lock_thread"><i class="fa fa-lock"></i> [[topic:thread_tools.lock]]</a></li>
@@ -181,7 +181,7 @@
 			<button class="btn btn-primary post_reply" type="button">[[topic:reply]]</button>
 			<div class="btn-group thread-tools hide">
 				<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">[[topic:thread_tools.title]] <span class="caret"></span></button>
-				<ul class="dropdown-menu">
+				<ul class="dropdown-menu pull-right">
 					<li><a href="#" class="markAsUnreadForAll"><i class="fa fa-inbox"></i> [[topic:thread_tools.markAsUnreadForAll]]</a></li>
 					<li><a href="#" class="pin_thread"><i class="fa fa-thumb-tack"></i> [[topic:thread_tools.pin]]</a></li>
 					<li><a href="#" class="lock_thread"><i class="fa fa-lock"></i> [[topic:thread_tools.lock]]</a></li>

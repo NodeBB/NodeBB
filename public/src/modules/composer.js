@@ -105,18 +105,18 @@ define(['taskbar'], function(taskbar) {
 
 			if (parseInt(postData.tid) > 0) {
 				titleEl.val('Replying to: ' + postData.title);
-				titleEl.prop('readOnly', true);
+				titleEl.prop('disabled', true);
 			} else if (parseInt(postData.pid) > 0) {
 				titleEl.val(postData.title);
-				titleEl.prop('readOnly', true);
+				titleEl.prop('disabled', true);
 				socket.emit('modules.composer.editCheck', postData.pid, function(err, editCheck) {
 					if (!err && editCheck.titleEditable) {
-						postContainer.find('input').prop('readonly', false);
+						titleEl.prop('disabled', false);
 					}
 				});
 			} else {
 				titleEl.val(postData.title);
-				titleEl.prop('readOnly', false);
+				titleEl.prop('disabled', false);
 			}
 
 			bodyEl.val(postData.body);

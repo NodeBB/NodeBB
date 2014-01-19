@@ -761,9 +761,11 @@ var bcrypt = require('bcrypt'),
 
 	User.isAdministrator = function(uid, callback) {
 		groups.getGidFromName('Administrators', function(err, gid) {
-			groups.isMember(uid, gid, function(err, isAdmin) {
-				callback(err, isAdmin);
-			});
+			if(err) {
+				return callback(err);
+			}
+
+			groups.isMember(uid, gid, callback);
 		});
 	};
 
