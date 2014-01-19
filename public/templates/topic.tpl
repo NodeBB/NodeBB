@@ -106,9 +106,9 @@
 										<ul class="dropdown-menu text-center pull-right" role="menu" aria-labelledby="dLabel">
 											<button class="btn btn-sm btn-default edit" type="button" title="[[topic:edit]]"><i class="fa fa-pencil"></i></button>
 											<button class="btn btn-sm btn-default delete" type="button" title="[[topic:delete]]"><i class="fa fa-trash-o"></i></button>
-											<!-- IF posts.display_move_tools -->
-											<button class="btn btn-sm btn-default move" type="button" title="[[topic:move]]"><i class="fa fa-arrows"></i></button>
-											<!-- ENDIF posts.display_move_tools -->
+
+											<button class="btn btn-sm btn-default move {posts.display_move_tools}" type="button" title="[[topic:move]]"><i class="fa fa-arrows"></i></button>
+
 										</ul>
 									</div>
 								</div>

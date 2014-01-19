@@ -410,7 +410,7 @@ var async = require('async'),
 					var pid = postData[i].pid;
 					postData[i].favourited = fav_data[pid];
 					postData[i].display_moderator_tools = (current_user != 0) && privileges[pid].editable;
-					postData[i].display_move_tools = privileges[pid].move;
+					postData[i].display_move_tools = privileges[pid].move ? '' : 'hidden';
 				}
 
 				callback(null, postData);
