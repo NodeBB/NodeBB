@@ -185,12 +185,16 @@
 		},
 
 		toISOString: function(timestamp) {
+			if(!timestamp) {
+				return '';
+			}
+
 			try {
 				return new Date(parseInt(timestamp, 10)).toISOString();
 			} catch(e){
-				console.log(e.message);
+				console.log(timestamp, e.stack);
 			}
-			return new Date(parseInt(0, 10)).toISOString();
+			return '';
 		}
 
 	};
