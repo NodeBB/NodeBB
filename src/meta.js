@@ -44,6 +44,10 @@ var fs = require('fs'),
 			db.getObjectFields('config', fields, callback);
 		},
 		set: function (field, value, callback) {
+			if(!field) {
+				return callback(new Error('invalid config field'));
+			}
+
 			db.setObjectField('config', field, value, function(err, res) {
 				if (callback) {
 					if(!err && Meta.config) {
