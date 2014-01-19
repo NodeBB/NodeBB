@@ -1,6 +1,6 @@
 <div class="composer">
 	<div class="composer-container">
-		<input class="title" type="text" tabIndex="1" placeholder="Enter your topic title here..." />
+		<input class="title form-control" type="text" tabIndex="1" placeholder="Enter your topic title here..." />
 		<div class="btn-toolbar formatting-bar">
 			<div class="btn-group">
 				<span class="btn btn-link" tabindex="-1"><i class="fa fa-bold"></i></span>
@@ -24,7 +24,7 @@
 			<li><a data-pane=".tab-preview" data-toggle="tab">Preview</a></li>
 			<li class="btn-group pull-right action-bar">
 				<button class="btn btn-default" data-action="discard" tabIndex="5"><i class="fa fa-times"></i> Discard</button>
-				<button data-action="post" class="btn btn-default" tabIndex="3"><i class="fa fa-check"></i> Submit</button>
+				<button data-action="post" class="btn btn-default btn-primary" tabIndex="3"><i class="fa fa-check"></i> Submit</button>
 			</li>
 		</ul>
 
