@@ -18,6 +18,13 @@ define(function() {
 	};
 
 	Admin.updateRoomUsage = function(err, data) {
+		function getUserCountIn(room) {
+			var count = 0;
+			for(var user in data[room]) {
+				++count;
+			}
+			return count;
+		}
 		var active_users = $('#active_users'),
 			total = 0;
 
@@ -31,7 +38,7 @@ define(function() {
 
 		for (var room in data) {
 			if (room !== '') {
-				var count = $(data[room]).length;
+				var count = getUserCountIn(room);
 				total += count;
 				usersHtml += "<div class='alert alert-success'><strong>" + room + "</strong> " + count + " active user" + (count > 1 ? "s" : "") + "</div>";
 			}

@@ -91,6 +91,9 @@ SocketMeta.rooms.enter = function(socket, data) {
 
 		if (data.leave && server.rooms[data.leave] && server.rooms[data.leave][socket.id] && data.enter !== data.leave) {
 			delete server.rooms[data.leave][socket.id];
+			if(!Object.keys(server.rooms[data.leave]).length) {
+				delete server.rooms[data.leave];
+			}
 		}
 	}
 
