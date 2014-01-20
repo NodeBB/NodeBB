@@ -429,8 +429,7 @@ var nconf = require('nconf'),
 					expand: true
 				}, function (err, groups) {
 					res.json(200, {
-						groups: groups,
-						yourid: req.user.uid
+						groups: groups
 					});
 				});
 			});
