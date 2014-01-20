@@ -158,7 +158,7 @@
 			if (err) {
 				winston.error('There was a problem completing NodeBB setup: ', err.message);
 			} else {
-				winston.info('NodeBB Setup Completed. Run \'node app\' to manually start your NodeBB server.');
+				winston.info('NodeBB Setup Completed. Run \'./nodebb start\' to manually start your NodeBB server.');
 			}
 
 			process.exit();

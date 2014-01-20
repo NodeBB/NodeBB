@@ -12,6 +12,7 @@ var db = require('./database'),
 
 	Upgrade = {},
 
+	minSchemaDate = new Date(2014, 0, 4).getTime(),		// This value gets updated every new MINOR version
 	schemaDate, thisSchemaDate;
 
 Upgrade.check = function(callback) {
@@ -34,137 +35,16 @@ Upgrade.upgrade = function(callback) {
 
 	async.series([
 		function(next) {
+			// Prepare for upgrade & check to make sure the upgrade is possible
 			db.get('schemaDate', function(err, value) {
 				schemaDate = value;
-				next();
+
+				if (schemaDate >= minSchemaDate || schemaDate === null) {
+					next();
+				} else {
+					next(new Error('upgrade-not-possible'));
+				}
 			});
-		},
-		function(next) {
-			thisSchemaDate = new Date(2013, 11, 31).getTime();
-			if (schemaDate < thisSchemaDate) {
-				updatesMade = true;
-
-				async.parallel([
-					function(next) {
-						// Re-slugify all topics
-						db.getSortedSetRange('topics:recent', 0, -1, function(err, tids) {
-							var	newTitle;
-
-							async.each(tids, function(tid, next) {
-								Topics.getTopicField(tid, 'title', function(err, title) {
-									newTitle = tid + '/' + Utils.slugify(title);
-									Topics.setTopicField(tid, 'slug', newTitle, next);
-								});
-							}, function(err) {
-								next(err);
-							});
-						});
-					},
-					function(next) {
-						// Re-slugify all users
-						db.getObjectValues('username:uid', function(err, uids) {
-							var	newUserSlug;
-
-							async.each(uids, function(uid, next) {
-								User.getUserField(uid, 'username', function(err, username) {
-									if(err) {
-										return next(err);
-									}
-									if(username) {
-										newUserSlug = Utils.slugify(username);
-										User.setUserField(uid, 'userslug', newUserSlug, next);
-									} else {
-										winston.warn('uid '+ uid + ' doesn\'t have a valid username (' + username + '), skipping');
-										next(null);
-									}
-								});
-							}, function(err) {
-								next(err);
-							});
-						});
-					}
-				], function(err) {
-					winston.info('[2013/12/31] Re-slugify Topics and Users');
-					next(err);
-				});
-			} else {
-				winston.info('[2013/12/31] Re-slugify Topics and Users skipped');
-				next();
-			}
-		},
-		function(next) {
-			thisSchemaDate = new Date(2014, 0, 1).getTime();
-			if (schemaDate < thisSchemaDate) {
-				updatesMade = true;
-
-				db.isObjectField('config', 'maximumTitleLength', function(err, isField) {
-					if(err) {
-						return next(err);
-					}
-					if(!isField) {
-						db.setObjectField('config', 'maximumTitleLength', 255, function(err) {
-							if(err) {
-								return next(err);
-							}
-							winston.info('[2013/12/31] Added maximumTitleLength');
-							next();
-						});
-					} else {
-						winston.info('[2013/12/31] maximumTitleLength already set');
-						next();
-					}
-				});
-			} else {
-				winston.info('[2013/12/31] maximumTitleLength skipped');
-				next();
-			}
-		},
-		function(next) {
-			// Custom classes for each category, adding link field for each category
-			thisSchemaDate = new Date(2014, 0, 3).getTime();
-			if (schemaDate < thisSchemaDate) {
-				updatesMade = true;
-
-				db.getListRange('categories:cid', 0, -1, function(err, cids) {
-					if(err) {
-						return next(err);
-					}
-
-					for (var cid in cids) {
-						db.setObjectField('category:' + cids[cid], 'link', '');
-						db.setObjectField('category:' + cids[cid], 'class', 'col-md-3 col-xs-6');
-					}
-
-					winston.info('[2014/1/3] Added categories.class, categories.link fields');
-					next();
-				});
-			} else {
-				winston.info('[2014/1/3] categories.class, categories.link fields skipped');
-				next();
-			}
-		},
-		function(next) {
-			// Custom classes for each category, adding link field for each category
-			thisSchemaDate = new Date(2014, 0, 4).getTime();
-			if (schemaDate < thisSchemaDate) {
-				updatesMade = true;
-
-				db.getListRange('categories:cid', 0, -1, function(err, cids) {
-					if(err) {
-						return next(err);
-					}
-
-					for (var cid in cids) {
-						db.setObjectField('category:' + cids[cid], 'numRecentReplies', '2');
-					}
-
-					winston.info('[2014/1/4] Added categories.numRecentReplies fields');
-					next();
-				});
-			} else {
-				winston.info('[2014/1/4] categories.numRecentReplies fields skipped');
-				next();
-			}
 		},
 		function(next) {
 			thisSchemaDate = new Date(2014, 0, 5).getTime();
@@ -424,8 +304,19 @@ Upgrade.upgrade = function(callback) {
 				}
 			});
 		} else {
-			winston.error('[upgrade] Errors were encountered while updating the NodeBB schema: ' + err.message);
-			process.exit();
+			switch(err.message) {
+				case 'upgrade-not-possible':
+					winston.error('[upgrade] NodeBB upgrade could not complete, as your database schema is too far out of date.');
+					winston.error('[upgrade]   Please ensure that you did not skip any minor version upgrades.');
+					winston.error('[upgrade]   (e.g. v0.1.x directly to v0.3.x)');
+					process.exit();
+					break;
+
+				default:
+					winston.error('[upgrade] Errors were encountered while updating the NodeBB schema: ' + err.message);
+					process.exit();
+					break;
+			}
 		}
 	});
 };
