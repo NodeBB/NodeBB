@@ -72,13 +72,32 @@ var path = require('path'),
 						if (!meta.config.motd) {
 							// Construct default MOTD
 							translator.mget(['global:motd.welcome', 'global:motd.get', 'global:motd.fork', 'global:motd.like', 'global:motd.follow'], function(err, strings) {
-								motdString = '<div class="pull-right btn-group"><a target="_blank" href="https://www.nodebb.org" class="btn btn-default btn-lg"><i class="fa fa-comment"></i><span class="hidden-mobile">&nbsp;' + strings[1] + '</span></a><a target="_blank" href="https://github.com/designcreateplay/NodeBB" class="btn btn-default btn-lg hidden-mobile"><i class="fa fa-github"></i><span class="hidden-mobile">&nbsp;' + strings[2] + '</span></a><a target="_blank" href="https://facebook.com/NodeBB" class="btn btn-default btn-lg"><i class="fa fa-facebook"></i><span class="hidden-mobile">&nbsp;' + strings[3] + '</span></a><a target="_blank" href="https://twitter.com/NodeBB" class="btn btn-default btn-lg"><i class="fa fa-twitter"></i><span class="hidden-mobile">&nbsp;' + strings[4] + '</span></a></div>\n\n# NodeBB <span>v' + pkg.version + '</span>\n' + strings[0];
+								motdString = '\n\n# NodeBB \n<small><span>v' + pkg.version + '</span></small>\n\n' + strings[0] +
+								'<div class="btn-group">\
+									<a target="_blank" href="https://www.nodebb.org" class="btn btn-default btn-lg">\
+										<i class="fa fa-comment"></i>\
+										<span class="hidden-mobile">&nbsp;' + strings[1] + '</span>\
+									</a>\
+									<a target="_blank" href="https://github.com/designcreateplay/NodeBB" class="btn btn-default btn-lg hidden-mobile">\
+										<i class="fa fa-github"></i>\
+										<span class="hidden-mobile">&nbsp;' + strings[2] + '</span>\
+									</a>\
+									<a target="_blank" href="https://facebook.com/NodeBB" class="btn btn-default btn-lg">\
+										<i class="fa fa-facebook"></i>\
+										<span class="hidden-mobile">&nbsp;' + strings[3] + '</span>\
+									</a>\
+									<a target="_blank" href="https://twitter.com/NodeBB" class="btn btn-default btn-lg">\
+										<i class="fa fa-twitter"></i>\
+										<span class="hidden-mobile">&nbsp;' + strings[4] + '</span>\
+									</a>\
+								</div>';
 							});
 						} else {
 							motdString = meta.config.motd;
 						}
 						data.motd_class = (parseInt(meta.config.show_motd, 10) === 1 || meta.config.show_motd === undefined) ? '' : ' none';
 						data.motd_class += (meta.config.motd && meta.config.motd.length > 0 ? '' : ' default');
+						data.motd_class += meta.config.motd_class ? ' ' + meta.config.motd_class : '';
 
 						data.motd = require('marked')(motdString);
 						res.json(data);
