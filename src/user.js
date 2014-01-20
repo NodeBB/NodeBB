@@ -471,7 +471,7 @@ var bcrypt = require('bcrypt'),
 			}
 
 			var	usernames = Object.keys(usernamesHash),
-				filterRegex = new RegExp('^' + query + '.*?$'),
+				filterRegex = new RegExp('^' + query + '.*?$', 'i'),
 				results = [];
 
 			results = usernames.filter(function(username) {		// Remove non-matches
