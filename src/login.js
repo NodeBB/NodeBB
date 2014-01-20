@@ -70,7 +70,7 @@ var user = require('./user'),
 				});
 			} else {
 				// New User
-				user.create(handle, undefined, undefined, function(err, uid) {
+				user.create({username: handle}, function(err, uid) {
 					if(err) {
 						return callback(err);
 					}
@@ -123,7 +123,7 @@ var user = require('./user'),
 					}
 
 					if (!uid) {
-						user.create(handle, undefined, email, function(err, uid) {
+						user.create({username: handle, email: email}, function(err, uid) {
 							if(err) {
 								return callback(err);
 							}
@@ -166,7 +166,7 @@ var user = require('./user'),
 					}
 
 					if (!uid) {
-						user.create(name, undefined, email, function(err, uid) {
+						user.create({username: name, email: email}, function(err, uid) {
 							if(err) {
 								return callback(err);
 							}

@@ -404,7 +404,7 @@ var async = require('async'),
 					}
 
 					nconf.set('bcrypt_rounds', 12);
-					User.create(results.username, results.password, results.email, function (err, uid) {
+					User.create({username: results.username, password: results.password, email: results.email}, function (err, uid) {
 						if (err) {
 							winston.warn(err.message + ' Please try again.');
 							return callback(new Error('invalid-values'));
