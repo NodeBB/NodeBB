@@ -171,7 +171,7 @@ define(function() {
 		groupMembersEl.on('click', 'li[data-uid]', function() {
 			var uid = this.getAttribute('data-uid'),
 				gid = detailsModal.attr('data-gid');
-			groups.getGidFromName('Administrators', function(err, gid) {});
+			
 			bootbox.confirm('Are you sure you want to remove this user?', function(confirm) {
 				if (confirm){
 					socket.emit('admin.groups.leave', {
