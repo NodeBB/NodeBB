@@ -2,7 +2,8 @@ define(function() {
 	var	Groups = {};
 
 	Groups.init = function() {
-		var createEl = document.getElementById('create'),
+		var yourid = templates.get('yourid'),
+			createEl = document.getElementById('create'),
 			createModal = $('#create-modal'),
 			createSubmitBtn = document.getElementById('create-modal-go'),
 			createNameEl = $('#create-group-name'),
@@ -171,13 +172,16 @@ define(function() {
 		groupMembersEl.on('click', 'li[data-uid]', function() {
 			var uid = this.getAttribute('data-uid'),
 				gid = detailsModal.attr('data-gid');
-
-			socket.emit('admin.groups.leave', {
-				gid: gid,
-				uid: uid
-			}, function(err, data) {
-				if (!err) {
-					groupMembersEl.find('li[data-uid="' + uid + '"]').remove();
+			bootbox.confirm('Are you sure you want to remove this user?', function(confirm) {
+				if (confirm){
+					socket.emit('admin.groups.leave', {
+						gid: gid,
+						uid: uid
+						}, function(err, data) {
+						if (!err) {
+							groupMembersEl.find('li[data-uid="' + uid + '"]').remove();
+						}
+					});
 				}
 			});
 		});

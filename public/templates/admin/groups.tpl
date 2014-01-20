@@ -96,3 +96,4 @@
 		</div>
 	</div>
 </div>
+<input type="hidden" template-variable="yourid" value="{yourid}" />
