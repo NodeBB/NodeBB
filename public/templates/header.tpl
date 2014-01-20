@@ -4,11 +4,9 @@
 	<title>{browserTitle}</title>
 	{meta_tags}
 	<link rel="icon" type="image/x-icon" href="{brand:favicon}" />
-	<!-- IF bootswatchCSS -->
-	<link href="{bootswatchCSS}" rel="stylesheet" media="screen">
-	<!-- ENDIF bootswatchCSS -->
 	<link rel="stylesheet" href="{relative_path}/vendor/fontawesome/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="{relative_path}/css/theme.css?{cache-buster}" />
+	<!-- IF bootswatchCSS --><link href="{bootswatchCSS}" rel="stylesheet" media="screen"><!-- ENDIF bootswatchCSS -->
 	{link_tags}
 	<!-- BEGIN pluginCSS -->
 	<link rel="stylesheet" href="{pluginCSS.path}">
