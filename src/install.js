@@ -25,7 +25,13 @@ var async = require('async'),
 			description: 'Use a port number to access NodeBB?',
 			'default': (nconf.get('use_port') !== undefined ? (nconf.get('use_port') ? 'y' : 'n') : 'y'),
 			pattern: /y[es]*|n[o]?/,
-			message: 'Please enter \'yes\' or \'no\'',
+			message: 'Please enter \'yes\' or \'no\''
+		}, {
+			name: 'use_proxy',
+			description: 'is NodeBB behind a proxy?',
+			'default': (nconf.get('use_proxy') !== undefined ? (nconf.get('use_proxy') ? 'y' : 'n') : 'y'),
+			pattern: /y[es]*|n[o]?/,
+			message: 'Please enter \'yes\' or \'no\''
 		}, {
 			name: 'secret',
 			description: 'Please enter a NodeBB secret',
@@ -141,6 +147,7 @@ var async = require('async'),
 							config.bcrypt_rounds = 12;
 							config.upload_path = '/public/uploads';
 							config.use_port = config.use_port.slice(0, 1) === 'y';
+							config.use_proxy = config.use_proxy.slice(0, 1) === 'y';
 
 							var urlObject = url.parse(config.base_url),
 								relative_path = (urlObject.pathname && urlObject.pathname.length > 1) ? urlObject.pathname : '',
@@ -218,7 +225,7 @@ var async = require('async'),
 							value: 1
 						}, {
 							field: 'allowFileUploads',
-							value: 0,
+							value: 0
 						}, {
 							field: 'maximumFileSize',
 							value: 2048

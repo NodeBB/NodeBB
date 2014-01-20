@@ -93,7 +93,7 @@ var user = require('./user'),
 				});
 			}
 		});
-	}
+	};
 
 	Login.loginViaGoogle = function(gplusid, handle, email, callback) {
 		user.getUidByGoogleId(gplusid, function(err, uid) {
@@ -115,7 +115,7 @@ var user = require('./user'),
 					callback(null, {
 						uid: uid
 					});
-				}
+				};
 
 				user.getUidByEmail(email, function(err, uid) {
 					if(err) {
@@ -136,7 +136,7 @@ var user = require('./user'),
 				});
 			}
 		});
-	}
+	};
 
 	Login.loginViaFacebook = function(fbid, name, email, callback) {
 		user.getUidByFbid(fbid, function(err, uid) {
@@ -158,7 +158,7 @@ var user = require('./user'),
 					callback(null, {
 						uid: uid
 					});
-				}
+				};
 
 				user.getUidByEmail(email, function(err, uid) {
 					if(err) {

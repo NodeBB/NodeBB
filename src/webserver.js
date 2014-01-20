@@ -191,6 +191,24 @@ if(nconf.get('ssl')) {
 
 				app.use(express.csrf());
 
+				// double negative here to support config.json without 'use_proxy' set to true, so unless it's specifically set to false, it's true
+				// todo: remove double negative with a minor release, where backward compatibility can be broken
+				// and if dev mode, then it's probably not behind a proxy but it can be forced by setting 'use_proxy' to '1'
+
+				if (nconf.get('use_proxy') === false) {
+					winston.info('\'use_proxy\' is set to false in config file, skipping \'trust proxy\'');
+
+				} else if (!nconf.get('use_proxy') && process.env.NODE_ENV === 'development') {
+					winston.info('\'use_proxy\' is not set, skipping because you\'re in development env. Set to true to force enabling it.');
+
+				} else {
+					winston.info('\'use_proxy\''
+						+ (nconf.get('use_proxy') === true ? ' is set to true ' : ' is not set ')
+						+ 'in config file, enabling \'trust proxy\', set to false to disable it.');
+
+					app.enable('trust proxy');
+				}
+
 				// Local vars, other assorted setup
 				app.use(function (req, res, next) {
 					nconf.set('https', req.secure);
@@ -210,7 +228,7 @@ if(nconf.get('ssl')) {
 						user.setUserField(req.user.uid, 'lastonline', Date.now());
 					}
 					next();
-				})
+				});
 
 				next();
 			},
