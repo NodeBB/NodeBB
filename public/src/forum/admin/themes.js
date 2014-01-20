@@ -114,7 +114,7 @@ define(function() {
 
 		for (var x = 0; x < numThemes; x++) {
 			var theme = bootswatch.themes[x];
-			themeEl.setAttribute('data-css', theme.cssMin);
+			themeEl.setAttribute('data-css', theme.cssCdn);
 			themeEl.setAttribute('data-theme', theme.name);
 			themeEl.innerHTML = '<img src="' + theme.thumbnail + '" />' +
 				'<div>' +

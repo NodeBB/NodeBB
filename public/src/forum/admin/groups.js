@@ -171,13 +171,17 @@ define(function() {
 		groupMembersEl.on('click', 'li[data-uid]', function() {
 			var uid = this.getAttribute('data-uid'),
 				gid = detailsModal.attr('data-gid');
-
-			socket.emit('admin.groups.leave', {
-				gid: gid,
-				uid: uid
-			}, function(err, data) {
-				if (!err) {
-					groupMembersEl.find('li[data-uid="' + uid + '"]').remove();
+			
+			bootbox.confirm('Are you sure you want to remove this user?', function(confirm) {
+				if (confirm){
+					socket.emit('admin.groups.leave', {
+						gid: gid,
+						uid: uid
+						}, function(err, data) {
+						if (!err) {
+							groupMembersEl.find('li[data-uid="' + uid + '"]').remove();
+						}
+					});
 				}
 			});
 		});

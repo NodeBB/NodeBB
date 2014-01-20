@@ -131,7 +131,8 @@ define(['taskbar', 'string'], function(taskbar, S) {
 				chatModal.draggable({
 					start:function() {
 						module.bringModalToTop(chatModal);
-					}
+					},
+					handle: '.modal-header'
 				});
 
 				chatModal.find('#chat-with-name').html(username);
