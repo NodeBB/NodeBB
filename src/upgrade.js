@@ -17,7 +17,7 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2014, 0, 13, 12, 0).getTime();
+	var	latestSchema = new Date(2014, 0, 19, 22, 19).getTime();
 
 	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -279,6 +279,24 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/1/13] Set up "Registered Users" user group - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 0, 19, 22, 19).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				db.getObjectValues('username:uid', function(err, uids) {
+					async.each(uids, function(uid, next) {
+						db.searchRemove('user', uid, next);
+					}, function(err) {
+						winston.info('[2014/1/19] Remove user search from Reds');
+						next();
+					});
+				});
+			} else {
+				winston.info('[2014/1/19] Remove user search from Reds -- skipped');
 				next();
 			}
 		}

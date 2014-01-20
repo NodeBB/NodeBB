@@ -115,8 +115,6 @@ var bcrypt = require('bcrypt'),
 				db.sortedSetAdd('users:postcount', 0, uid);
 				db.sortedSetAdd('users:reputation', 0, uid);
 
-				db.searchIndex('user', username, uid);
-
 				// Join the "registered-users" meta group
 				groups.joinByGroupName('registered-users', uid);
 
@@ -309,7 +307,6 @@ var bcrypt = require('bcrypt'),
 							db.deleteObjectField('username:uid', userData.username);
 							db.setObjectField('username:uid', data.username, uid);
 							events.logUsernameChange(uid, userData.username, data.username);
-							User.reIndexUser(uid, data.username);
 						}
 
 						if(userslug !== userData.userslug) {
@@ -438,26 +435,6 @@ var bcrypt = require('bcrypt'),
 		});
 	};
 
-	User.reIndexAll = function(callback) {
-		User.getUsers('users:joindate', 0, -1, function(err, usersData) {
-			if (err) {
-				return callback(err, null);
-			}
-
-			for (var i = 0; i < usersData.length; ++i) {
-				User.reIndexUser(usersData[i].uid, usersData[i].username);
-			}
-
-			callback(null, 1);
-		});
-	};
-
-	User.reIndexUser = function(uid, username) {
-		db.searchRemove('user', uid, function() {
-			db.searchIndex('user', username, uid);
-		});
-	};
-
 	// thanks to @akhoury
 	User.getUsersCSV = function(callback) {
 		var csvContent = "";
@@ -482,23 +459,36 @@ var bcrypt = require('bcrypt'),
 		});
 	}
 
-	User.search = function(username, callback) {
-		if (!username) {
-			return callback([]);
+	User.search = function(query, callback) {
+		if (!query || query.length === 0) {
+			return callback(null, []);
 		}
 
-		db.search('user', username, 50, function(err, uids) {
+		// TODO: Have this use db.getObjectKeys (doesn't exist yet)
+		db.getObject('username:uid', function(err, usernamesHash) {
 			if (err) {
-				console.log(err);
-				return;
+				return callback(null, []);
 			}
 
-			if (uids && uids.length) {
-				User.getDataForUsers(uids, function(userdata) {
-					callback(userdata);
+			var	usernames = Object.keys(usernamesHash),
+				filterRegex = new RegExp('^' + query + '.*?$'),
+				results = [];
+
+			results = usernames.filter(function(username) {		// Remove non-matches
+				return filterRegex.test(username);
+			}).sort(function(a, b) {							// Sort alphabetically
+				return a > b;
+			}).slice(0, 5)										// Limit 5
+			.map(function(username) {							// Translate to uids
+				return usernamesHash[username];
+			});
+
+			if (results && results.length) {
+				User.getDataForUsers(results, function(userdata) {
+					callback(null, userdata);
 				});
 			} else {
-				callback([]);
+				callback(null, []);
 			}
 		});
 	};

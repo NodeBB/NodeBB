@@ -19,6 +19,10 @@ SocketUser.emailExists = function(socket, data, callback) {
 	}
 };
 
+SocketUser.search = function(socket, username, callback) {
+	user.search(username, callback);
+};
+
 // Password Reset
 SocketUser.reset = {};
 

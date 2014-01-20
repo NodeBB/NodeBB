@@ -67,15 +67,9 @@ var	DebugRoute = function(app) {
 			topics.reIndexAll(function (err) {
 				if (err) {
 					return res.json(err);
+				} else {
+					res.send('Topics and users reindexed');
 				}
-
-				user.reIndexAll(function (err) {
-					if (err) {
-						return res.json(err);
-					} else {
-						res.send('Topics and users reindexed');
-					}
-				});
 			});
 		});
 
