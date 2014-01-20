@@ -92,7 +92,7 @@ SocketModules.chats.send = function(socket, data) {
 
 	var msg = S(data.message).stripTags().s;
 
-	user.getMultipleUserFields([socket.uid, touid], ['username'], function(err, usersData) {
+	user.getMultipleUserFields([socket.uid, touid], ['username', 'picture'], function(err, usersData) {
 		if(err) {
 			return;
 		}
@@ -109,7 +109,7 @@ SocketModules.chats.send = function(socket, data) {
 				});
 			});
 		}
-        Messaging.parse(msg, socket.uid, socket.uid, toUsername, function(parsed) {
+        Messaging.parse(msg, socket.uid, socket.uid, usersData[1], usersData[0], function(parsed) {
             Messaging.addMessage(socket.uid, touid, msg, function(err, message) {
                 var numSockets = 0,
                     x;
@@ -121,8 +121,7 @@ SocketModules.chats.send = function(socket, data) {
                         server.userSockets[touid][x].emit('event:chats.receive', {
                             fromuid: socket.uid,
                             username: username,
-                            // todo this isnt very nice, but can't think of a better way atm
-                            message: parsed.replace("chat-user-you'>You", "'>" + username),
+                            message: parsed,
                             timestamp: Date.now()
                         });
                     }

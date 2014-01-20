@@ -49,8 +49,7 @@ var db = require('./database'),
 				return callback(null, []);
 			}
 
-
-			user.getUserField(touid, 'username', function(err, tousername) {
+			user.getMultipleUserFields([fromuid, touid], ['username', 'picture'], function(err, userData) {
 				if(err) {
 					return callback(err, null);
 				}
@@ -63,7 +62,7 @@ var db = require('./database'),
 							return next(err);
 						}
 
-						Messaging.parse(message.content, message.fromuid, fromuid, tousername, function(result) {
+						Messaging.parse(message.content, message.fromuid, fromuid, userData[1], userData[0], function(result) {
 							message.content = result;
 							messages.push(message);
 							next(null);
@@ -82,19 +81,23 @@ var db = require('./database'),
 		});
 	};
 
-	Messaging.parse = function (message, fromuid, myuid, tousername, callback) {
+	Messaging.parse = function (message, fromuid, myuid, toUserData, myUserData, callback) {
 		plugins.fireHook('filter:post.parse', message, function(err, parsed) {
 			if (err) {
 				return callback(message);
 			}
-			var username;
-			if (fromuid === myuid) {
-				username = "<span class='chat-user chat-user-you'>You</span>: ";
+			var username,
+				picture;
+
+			if (parseInt(fromuid, 10) === parseInt(myuid, 10)) {
+				picture = '<img class="chat-user-image" src="' + myUserData.picture + '">';
+				username = '<span class="chat-user chat-user-you"> '+ myUserData.username + '</span>: ';
 			} else {
-				username = "<span class='chat-user'>" + tousername + "</span>: ";
+				picture = '<img class="chat-user-image" src="' + toUserData.picture + '">';
+				username = '<span class="chat-user"> ' + toUserData.username + '</span>: ';
 			}
 
-			callback(username + parsed);
+			callback(picture + username + parsed);
 		});
 	};
 
