@@ -44,6 +44,10 @@ var fs = require('fs'),
 			db.getObjectFields('config', fields, callback);
 		},
 		set: function (field, value, callback) {
+			if(!field) {
+				return callback(new Error('invalid config field'));
+			}
+
 			db.setObjectField('config', field, value, function(err, res) {
 				if (callback) {
 					if(!err && Meta.config) {
@@ -202,7 +206,7 @@ var fs = require('fs'),
 	Meta.js = {
 		scripts: [
 			'vendor/jquery/js/jquery.js',
-			'vendor/jquery/js/jquery-ui-1.10.3.custom.min.js',
+			'vendor/jquery/js/jquery-ui-1.10.4.custom.js',
 			'vendor/jquery/timeago/jquery.timeago.js',
 			'vendor/jquery/js/jquery.form.js',
 			'vendor/bootstrap/js/bootstrap.min.js',
@@ -239,12 +243,12 @@ var fs = require('fs'),
 					async.parallel({
 						mtime: function (next) {
 							async.map(jsPaths, fs.stat, function (err, stats) {
-								async.reduce(stats, 0, function (memo, item, callback) {
+								async.reduce(stats, 0, function (memo, item, next) {
 									if(item) {
 										mtime = +new Date(item.mtime);
-										callback(null, mtime > memo ? mtime : memo);
+										next(null, mtime > memo ? mtime : memo);
 									} else {
-										callback(null, memo);
+										next(null, memo);
 									}
 								}, next);
 							});
@@ -262,7 +266,7 @@ var fs = require('fs'),
 					}, function (err, results) {
 						if (results.minFile > results.mtime) {
 							winston.info('No changes to client-side libraries -- skipping minification');
-							callback(null, [path.relative(path.join(__dirname, '../public'), Meta.js.minFile)]);
+							callback(null, [path.relative(path.join(__dirname, '../public'), Meta.js.minFile) + (meta.config['cache-buster'] ? '?v=' + meta.config['cache-buster'] : '')]);
 						} else {
 							Meta.js.minify(function () {
 								callback(null, [

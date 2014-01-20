@@ -24,7 +24,7 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 				signature: $('#inputSignature').val()
 			};
 
-			socket.emit('api:user.updateProfile', userData, function(err, data) {
+			socket.emit('user.updateProfile', userData, function(err, data) {
 				if (data.success) {
 					app.alertSuccess('Your profile has been updated successfully!');
 					if (data.picture) {
@@ -36,7 +36,7 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 						gravatarPicture = data.gravatarpicture;
 					}
 				} else {
-					app.alertError('There was an error updating your profile! ' + err.error);
+					app.alertError('There was an error updating your profile! ' + err.message);
 				}
 			});
 			return false;
@@ -108,7 +108,7 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 
 				uploadedPicture = imageUrlOnServer;
 
-				socket.emit('api:meta.updateHeader', {
+				socket.emit('meta.updateHeader', {
 					fields: ['username', 'picture', 'userslug']
 				}, app.updateHeader);
 			});
@@ -174,7 +174,7 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 			$('#changePasswordBtn').on('click', function() {
 
 				if (passwordvalid && passwordsmatch && currentPassword.val()) {
-					socket.emit('api:user.changePassword', {
+					socket.emit('user.changePassword', {
 						'currentPassword': currentPassword.val(),
 						'newPassword': password.val()
 					}, function(err) {
@@ -186,7 +186,7 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 						passwordvalid = false;
 
 						if (err) {
-							app.alertError(err.error);
+							app.alertError(err.message);
 							return;
 						}
 
@@ -206,9 +206,9 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 			type: type
 		};
 
-		socket.emit('api:user.changePicture', userData, function(success) {
-			if (!success) {
-				app.alertError('There was an error changing picture!');
+		socket.emit('user.changePicture', userData, function(err) {
+			if(err) {
+				app.alertError(err.message);
 			}
 		});
 	}

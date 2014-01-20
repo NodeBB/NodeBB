@@ -45,6 +45,7 @@ var path = require('path'),
 					var topicUrls = [];
 					topics.getAllTopics(null, null, function(err, topics) {
 						topics.forEach(function(topic) {
+
 							if (parseInt(topic.deleted, 10) !== 1) {
 								topicUrls.push({
 									url: path.join('topic', topic.slug),

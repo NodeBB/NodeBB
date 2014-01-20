@@ -6,18 +6,17 @@
 	<script>
 		var RELATIVE_PATH = "{relative_path}";
 	</script>
-	<link id="base-theme" href="{relative_path}/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	<link rel="stylesheet" href="{relative_path}/vendor/fontawesome/css/font-awesome.min.css">
-	<script type="text/javascript" src="//code.jquery.com/jquery.js"></script>
-	<script type="text/javascript" src="{relative_path}/vendor/bootstrap/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="//code.jquery.com/qunit/qunit-git.js"></script>
+	<script src="//code.jquery.com/jquery.js"></script>
+	<script src="{relative_path}/vendor/bootstrap/js/bootstrap.min.js"></script>
+	<script src="//code.jquery.com/qunit/qunit-git.js"></script>
 	<link rel="stylesheet" type="text/css" href="//code.jquery.com/qunit/qunit-git.css">
 	<link rel="stylesheet" type="text/css" href="{relative_path}/vendor/colorpicker/colorpicker.css">
-	<script type="text/javascript" src="{relative_path}/socket.io/socket.io.js"></script>
-	<script type="text/javascript" src="{relative_path}/src/app.js"></script>
-	<script type="text/javascript" src="{relative_path}/src/templates.js"></script>
-	<script type="text/javascript" src="{relative_path}/src/translator.js"></script>
-	<script type="text/javascript" src="{relative_path}/src/ajaxify.js"></script>
+	<script src="{relative_path}/socket.io/socket.io.js"></script>
+	<script src="{relative_path}/src/app.js?{cache-buster}"></script>
+	<script src="{relative_path}/src/templates.js?{cache-buster}"></script>
+	<script src="{relative_path}/src/translator.js?{cache-buster}"></script>
+	<script src="{relative_path}/src/ajaxify.js?{cache-buster}"></script>
 	<script src="{relative_path}/vendor/jquery/timeago/jquery.timeago.js"></script>
 	<script src="{relative_path}/vendor/jquery/js/jquery.form.js"></script>
 	<script src="{relative_path}/vendor/requirejs/require.js"></script>
@@ -28,13 +27,14 @@
 		require.config({
 			baseUrl: "{relative_path}/src/modules",
 			waitSeconds: 3,
+			urlArgs: "{cache-buster}",
 			paths: {
 				"forum": '../forum'
 			}
 		});
 	</script>
 	<link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
-	<script type="text/javascript" src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+	<script src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 	<script src="{relative_path}/src/utils.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="{relative_path}/css/theme.css" />

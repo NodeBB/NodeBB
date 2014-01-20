@@ -40,7 +40,7 @@ define(['composer'], function(composer) {
 
 		socket.on('event:new_topic', Category.onNewTopic);
 
-		socket.emit('api:categories.getRecentReplies', cid, renderRecentReplies);
+		socket.emit('categories.getRecentReplies', cid, renderRecentReplies);
 
 		$(window).off('scroll').on('scroll', function (ev) {
 			var bottom = ($(document).height() - $(window).height()) * 0.9;
@@ -81,7 +81,7 @@ define(['composer'], function(composer) {
 			}
 
 			topic.hide().fadeIn('slow');
-			socket.emit('api:categories.getRecentReplies', templates.get('category_id'), renderRecentReplies);
+			socket.emit('categories.getRecentReplies', templates.get('category_id'), renderRecentReplies);
 
 			addActiveUser(data);
 
@@ -129,37 +129,41 @@ define(['composer'], function(composer) {
 		}
 
 		loadingMoreTopics = true;
-		socket.emit('api:categories.loadMore', {
+		socket.emit('categories.loadMore', {
 			cid: cid,
 			after: $('#topics-container').children('.category-item').length
-		}, function (data) {
-			if (data.topics.length) {
+		}, function (err, data) {
+			if(err) {
+				return app.alertError(err.message);
+			}
+
+			if (data && data.topics.length) {
 				Category.onTopicsLoaded(data.topics);
 			}
 			loadingMoreTopics = false;
 		});
 	}
 
-	function renderRecentReplies(posts) {
-		if (!posts || posts.length === 0) {
+	function renderRecentReplies(err, posts) {
+		if (err || !posts || posts.length === 0) {
 			return;
 		}
 
 		var recentReplies = $('#category_recent_replies');
-		var reply;
+		var replies = '';
 		for (var i = 0, numPosts = posts.length; i < numPosts; ++i) {
 
-			reply = $('<li data-pid="'+ posts[i].pid +'">' +
+			replies += '<li data-pid="'+ posts[i].pid +'">' +
 						'<a href="' + RELATIVE_PATH + '/user/' + posts[i].userslug + '"><img title="' + posts[i].username + '" class="img-rounded user-img" src="' + posts[i].picture + '"/></a>' +
 						'<a href="' + RELATIVE_PATH + '/topic/' + posts[i].topicSlug + '#' + posts[i].pid + '">' +
 							'<strong><span>'+ posts[i].username + '</span></strong>' +
 							'<p>' +	posts[i].content + '</p>' +
 						'</a>' +
 						'<span class="timeago pull-right" title="' + posts[i].relativeTime + '"></span>' +
-					   '</li>');
-
-			recentReplies.append(reply);
+					   '</li>';
 		}
+
+		recentReplies.html(replies);
 
 		$('#category_recent_replies span.timeago').timeago();
 		app.createUserTooltips();

@@ -86,9 +86,7 @@ var db = require('./database.js'),
 				};
 
 				function getTopics(next) {
-					topics.getTopicsByTids(tids, current_user, function(topicsData) {
-						next(null, topicsData);
-					}, category_id);
+					topics.getTopicsByTids(tids, category_id, current_user, next);
 				}
 
 				function getModerators(next) {
@@ -126,16 +124,17 @@ var db = require('./database.js'),
 
 	Categories.getCategoryTopics = function(cid, start, stop, uid, callback) {
 		Categories.getTopicIds(cid, start, stop, function(err, tids) {
-			topics.getTopicsByTids(tids, uid, function(topicsData) {
-				callback(topicsData);
-			}, cid);
+			if(err) {
+				return callback(err);
+			}
+
+			topics.getTopicsByTids(tids, cid, uid, callback);
 		});
 	};
 
 	Categories.getTopicIds = function(cid, start, stop, callback) {
 		db.getSortedSetRevRange('categories:' + cid + ':tid', start, stop, callback);
 	};
-
 
 
 	Categories.getAllCategories = function(current_user, callback) {

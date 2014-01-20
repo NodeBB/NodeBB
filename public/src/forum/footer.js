@@ -1,6 +1,6 @@
 define(['notifications', 'chat'], function(Notifications, Chat) {
 
-	socket.emit('api:meta.updateHeader', {
+	socket.emit('meta.updateHeader', {
 		fields: ['username', 'picture', 'userslug']
 	}, app.updateHeader);
 
@@ -8,11 +8,11 @@ define(['notifications', 'chat'], function(Notifications, Chat) {
 	Chat.prepareDOM();
 	translator.prepareDOM();
 
-	function updateUnreadCount(count) {
+	function updateUnreadCount(err, count) {
 		$('#unread-count').toggleClass('unread-count', count > 0);
 		$('#unread-count').attr('data-content', count > 20 ? '20+' : count);
 	}
 
 	socket.on('event:unread.updateCount', updateUnreadCount);
-	socket.emit('api:user.getUnreadCount', updateUnreadCount);
+	socket.emit('user.getUnreadCount', updateUnreadCount);
 });

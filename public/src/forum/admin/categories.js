@@ -13,7 +13,7 @@ define(['uploader'], function(uploader) {
 		}
 
 		function save() {
-			socket.emit('api:admin.categories.update', modified_categories);
+			socket.emit('admin.categories.update', modified_categories);
 			modified_categories = {};
 		}
 
@@ -86,23 +86,26 @@ define(['uploader'], function(uploader) {
 				order: $('.admin-categories #entry-container').children().length + 1
 			};
 
-			socket.emit('api:admin.categories.create', category, function(err, data) {
-				if (!err) {
-					app.alert({
-						alert_id: 'category_created',
-						title: 'Created',
-						message: 'Category successfully created!',
-						type: 'success',
-						timeout: 2000
-					});
-
-					var html = templates.prepare(templates['admin/categories'].blocks['categories']).parse({
-						categories: [data]
-					});
-					$('#entry-container').append(html);
-
-					$('#new-category-modal').modal('hide');
+			socket.emit('admin.categories.create', category, function(err, data) {
+				if(err) {
+					return app.alertError(err.message);
 				}
+
+				app.alert({
+					alert_id: 'category_created',
+					title: 'Created',
+					message: 'Category successfully created!',
+					type: 'success',
+					timeout: 2000
+				});
+
+				var html = templates.prepare(templates['admin/categories'].blocks['categories']).parse({
+					categories: [data]
+				});
+
+				$('#entry-container').append(html);
+				$('#new-category-modal').modal('hide');
+
 			});
 		}
 
@@ -223,7 +226,14 @@ define(['uploader'], function(uploader) {
 			clearTimeout(searchDelay);
 
 			searchDelay = setTimeout(function() {
-				socket.emit('api:admin.categories.search', searchEl.value, cid, function(err, results) {
+				socket.emit('admin.categories.search', {
+					username: searchEl.value,
+					cid: cid
+				}, function(err, results) {
+					if(err) {
+						return app.alertError(err.message);
+					}
+
 					var	numResults = results.length,
 						resultObj;
 					for(var x=0;x<numResults;x++) {
@@ -254,7 +264,12 @@ define(['uploader'], function(uploader) {
 				privilege = this.getAttribute('data-priv');
 			e.preventDefault();
 
-			socket.emit('api:admin.categories.setPrivilege', cid, uid, privilege, !btnEl.hasClass('active'), function(err, privileges) {
+			socket.emit('admin.categories.setPrivilege', {
+				cid: cid,
+				uid: uid,
+				privilege: privilege,
+				set: !btnEl.hasClass('active')
+			}, function(err, privileges) {
 				btnEl.toggleClass('active', privileges[privilege]);
 
 				Categories.refreshPrivilegeList(cid);
@@ -267,7 +282,10 @@ define(['uploader'], function(uploader) {
 		});
 
 		// User Groups and privileges
-		socket.emit('api:admin.categories.groupsList', cid, function(err, results) {
+		socket.emit('admin.categories.groupsList', cid, function(err, results) {
+			if(err) {
+				return app.alertError(err.message);
+			}
 			var groupsFrag = document.createDocumentFragment(),
 				numResults = results.length,
 				trEl = document.createElement('tr'),
@@ -295,7 +313,12 @@ define(['uploader'], function(uploader) {
 				gid = btnEl.parents('tr[data-gid]').attr('data-gid'),
 				privilege = this.getAttribute('data-gpriv');
 			e.preventDefault();
-			socket.emit('api:admin.categories.setGroupPrivilege', cid, gid, privilege, !btnEl.hasClass('active'), function(err) {
+			socket.emit('admin.categories.setGroupPrivilege', {
+				cid: cid,
+				gid: gid,
+				privilege: privilege,
+				set: !btnEl.hasClass('active')
+			}, function(err) {
 				if (!err) {
 					btnEl.toggleClass('active');
 				}
@@ -309,7 +332,7 @@ define(['uploader'], function(uploader) {
 		var	modalEl = $('#category-permissions-modal'),
 			readMembers = modalEl.find('#category-permissions-read'),
 			writeMembers = modalEl.find('#category-permissions-write');
-		socket.emit('api:admin.categories.getPrivilegeSettings', cid, function(err, privilegeList) {
+		socket.emit('admin.categories.getPrivilegeSettings', cid, function(err, privilegeList) {
 			var	readLength = privilegeList['+r'].length,
 				writeLength = privilegeList['+w'].length,
 				readFrag = document.createDocumentFragment(),

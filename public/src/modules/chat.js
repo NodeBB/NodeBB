@@ -13,13 +13,13 @@ define(['taskbar', 'string'], function(taskbar, S) {
 				return;
 			}
 
-			socket.emit('api:modules.chats.list', function(chats) {
+			socket.emit('modules.chats.list', function(err, chats) {
 				var	chatsFrag = document.createDocumentFragment(),
 					chatEl = document.createElement('li'),
 					numChats = chats.length,
 					x, userObj;
 
-				if (numChats > 0) {
+				if (!err && numChats > 0) {
 					for(x=0;x<numChats;x++) {
 						userObj = chats[x];
 						chatEl.setAttribute('data-uid', userObj.uid);
@@ -90,7 +90,7 @@ define(['taskbar', 'string'], function(taskbar, S) {
 	}
 
 	function checkStatus(chatModal, callback) {
-		socket.emit('api:user.isOnline', chatModal.touid, function(data) {
+		socket.emit('user.isOnline', chatModal.touid, function(err, data) {
 			if(data.online !== chatModal.online) {
 				if(data.online) {
 					module.appendChatMessage(chatModal, chatModal.username + ' is currently online.\n', data.timestamp);
@@ -191,7 +191,7 @@ define(['taskbar', 'string'], function(taskbar, S) {
 	}
 
 	function getChatMessages(chatModal, callback) {
-		socket.emit('api:modules.chats.get', {touid:chatModal.touid}, function(messages) {
+		socket.emit('modules.chats.get', {touid:chatModal.touid}, function(err, messages) {
 			for(var i = 0; i<messages.length; ++i) {
 				module.appendChatMessage(chatModal, messages[i].content, messages[i].timestamp);
 			}
@@ -200,15 +200,13 @@ define(['taskbar', 'string'], function(taskbar, S) {
 	}
 
 	function addSendHandler(chatModal) {
-		chatModal.find('#chat-message-input').off('keypress');
-		chatModal.find('#chat-message-input').on('keypress', function(e) {
+		chatModal.find('#chat-message-input').off('keypress').on('keypress', function(e) {
 			if(e.which === 13) {
 				sendMessage(chatModal);
 			}
 		});
 
-		chatModal.find('#chat-message-send-btn').off('click');
-		chatModal.find('#chat-message-send-btn').on('click', function(e){
+		chatModal.find('#chat-message-send-btn').off('click').on('click', function(e){
 			sendMessage(chatModal);
 			return false;
 		});
@@ -218,7 +216,7 @@ define(['taskbar', 'string'], function(taskbar, S) {
 		var msg = S(chatModal.find('#chat-message-input').val()).stripTags().s;
 		if(msg.length) {
 			msg = msg +'\n';
-			socket.emit('api:modules.chats.send', { touid:chatModal.touid, message:msg});
+			socket.emit('modules.chats.send', { touid:chatModal.touid, message:msg});
 			chatModal.find('#chat-message-input').val('');
 		}
 	}

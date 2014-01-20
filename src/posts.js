@@ -189,7 +189,7 @@ var db = require('./database'),
 						if (parseInt(postData.deleted, 10) === 1) {
 							return callback(null);
 						} else {
-							postData.relativeTime = new Date(parseInt(postData.timestamp || 0, 10)).toISOString();
+							postData.relativeTime = utils.toISOString(postData.timestamp);
 							next(null, postData);
 						}
 					});
@@ -318,30 +318,28 @@ var db = require('./database'),
 		}
 
 		db.getObjects(keys, function(err, data) {
-			async.map(data, function(postData, _callback) {
-				if (postData) {
+			if(err) {
+				return callback(err);
+			}
 
-					try {
-						postData.relativeTime = new Date(parseInt(postData.timestamp,10)).toISOString();
-						postData.relativeEditTime = parseInt(postData.edited, 10) !== 0 ? (new Date(parseInt(postData.edited, 10)).toISOString()) : '';
-					} catch(e) {
-						require('winston').err('invalid time value');
+			async.map(data, function(postData, next) {
+				if(!postData) {
+					return next(null);
+				}
+
+				postData.relativeTime = utils.toISOString(postData.timestamp);
+				postData.relativeEditTime = parseInt(postData.edited, 10) !== 0 ? utils.toISOString(postData.edited) : '';
+
+				postTools.parse(postData.content, function(err, content) {
+					if(err) {
+						return next(err);
 					}
 
-					postTools.parse(postData.content, function(err, content) {
-						postData.content = content;
-						_callback(null, postData);
-					});
-				} else {
-					_callback(null);
-				}
-			}, function(err, posts) {
-				if (!err) {
-					return callback(null, posts);
-				} else {
-					return callback(err, null);
-				}
-			});
+					postData.content = content;
+					next(null, postData);
+				});
+
+			}, callback);
 		});
 	}
 
@@ -368,41 +366,41 @@ var db = require('./database'),
 	Posts.uploadPostImage = function(image, callback) {
 
 		if(meta.config.imgurClientID) {
-			if(!image) {
+			if(!image || !image.data) {
 				return callback('invalid image', null);
 			}
 
 			require('./imgur').upload(meta.config.imgurClientID, image.data, 'base64', function(err, data) {
 				if(err) {
-					callback(err.message, null);
-				} else {
-					callback(null, {
-						url: data.link,
-						name: image.name
-					});
+					return callback(err);
 				}
+
+				callback(null, {
+					url: data.link,
+					name: image.name
+				});
 			});
 		} else if (meta.config.allowFileUploads) {
 			Posts.uploadPostFile(image, callback);
 		} else {
-			callback('Uploads are disabled!');
+			callback(new Error('Uploads are disabled!'));
 		}
 	}
 
 	Posts.uploadPostFile = function(file, callback) {
 
 		if(!meta.config.allowFileUploads) {
-			return callback('File uploads are not allowed');
+			return callback(new Error('File uploads are not allowed'));
 		}
 
-		if(!file) {
-			return callback('invalid file');
+		if(!file || !file.data) {
+			return callback(new Error('invalid file'));
 		}
 
 		var buffer = new Buffer(file.data, 'base64');
 
 		if(buffer.length > parseInt(meta.config.maximumFileSize, 10) * 1024) {
-			return callback('File too big');
+			return callback(new Error('File too big'));
 		}
 
 		var filename = 'upload-' + utils.generateUUID() + path.extname(file.name);
@@ -410,13 +408,13 @@ var db = require('./database'),
 
 		fs.writeFile(uploadPath, buffer, function (err) {
 			if(err) {
-				callback(err.message, null);
-			} else {
-				callback(null, {
-					url: nconf.get('upload_url') + filename,
-					name: file.name
-				});
+				return callback(err);
 			}
+
+			callback(null, {
+				url: nconf.get('upload_url') + filename,
+				name: file.name
+			});
 		});
 	}
 
@@ -427,7 +425,7 @@ var db = require('./database'),
 			}
 
 			async.filter(pids, function(pid, next) {
-				postTools.privileges(pid, 0, function(privileges) {
+				postTools.privileges(pid, 0, function(err, privileges) {
 					next(privileges.read);
 				});
 			}, function(pids) {

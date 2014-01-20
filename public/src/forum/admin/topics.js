@@ -15,37 +15,25 @@ define(function() {
 			switch (action) {
 				case 'pin':
 					if (!$this.hasClass('active')) {
-						socket.emit('api:topics.pin', {
-							tid: tid
-						}, Topics.pin);
+						socket.emit('topics.pin', tid, Topics.pin);
 					} else {
-						socket.emit('api:topics.unpin', {
-							tid: tid
-						}, Topics.unpin);
+						socket.emit('topics.unpin', tid, Topics.unpin);
 					}
 					break;
 
 				case 'lock':
 					if (!$this.hasClass('active')) {
-						socket.emit('api:topics.lock', {
-							tid: tid
-						}, Topics.lock);
+						socket.emit('topics.lock', tid, Topics.lock);
 					} else {
-						socket.emit('api:topics.unlock', {
-							tid: tid
-						}, Topics.unlock);
+						socket.emit('topics.unlock', tid, Topics.unlock);
 					}
 					break;
 
 				case 'delete':
 					if (!$this.hasClass('active')) {
-						socket.emit('api:topics.delete', {
-							tid: tid
-						}, Topics.setDeleted);
+						socket.emit('topics.delete', tid, Topics.setDeleted);
 					} else {
-						socket.emit('api:topics.restore', {
-							tid: tid
-						}, Topics.restore);
+						socket.emit('topics.restore', tid, Topics.restore);
 					}
 					break;
 
@@ -63,13 +51,16 @@ define(function() {
 				var lastTid = parseInt(topics[topics.length - 1].getAttribute('data-tid'));
 
 				this.innerHTML = '<i class="fa fa-refresh fa-spin"></i> Retrieving topics';
-				socket.emit('api:admin.topics.getMore', {
+				socket.emit('admin.topics.getMore', {
 					limit: 10,
 					after: lastTid
-				}, function(topics) {
+				}, function(err, topics) {
+					if(err) {
+						return app.alertError(err.message);
+					}
+
 					var btnEl = document.getElementById('topics_loadmore');
 
-					topics = JSON.parse(topics);
 					if (topics.length > 0) {
 						var html = templates.prepare(templates['admin/topics'].blocks['topics']).parse({
 								topics: topics
@@ -116,8 +107,12 @@ define(function() {
 		}
 	}
 
-	Topics.setDeleted = function(response) {
-		if (response.status === 'ok') {
+	Topics.setDeleted = function(err, response) {
+		if(err) {
+			return app.alert(err.message);
+		}
+
+		if (response && response.tid) {
 			var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="delete"]');
 
 			$(btnEl).addClass('active');
@@ -125,8 +120,12 @@ define(function() {
 		}
 	};
 
-	Topics.restore = function(response) {
-		if (response.status === 'ok') {
+	Topics.restore = function(err, response) {
+		if(err) {
+			return app.alert(err.message);
+		}
+
+		if (response && response.tid) {
 			var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="delete"]');
 
 			$(btnEl).removeClass('active');
@@ -134,16 +133,24 @@ define(function() {
 		}
 	};
 
-	Topics.lock = function(response) {
-		if (response.status === 'ok') {
+	Topics.lock = function(err, response) {
+		if(err) {
+			return app.alert(err.message);
+		}
+
+		if (response && response.tid) {
 			var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="lock"]');
 
 			$(btnEl).addClass('active');
 		}
 	};
 
-	Topics.unlock = function(response) {
-		if (response.status === 'ok') {
+	Topics.unlock = function(err, response) {
+		if(err) {
+			return app.alert(err.message);
+		}
+
+		if (response && response.tid) {
 			var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="lock"]');
 
 			$(btnEl).removeClass('active');
@@ -151,16 +158,24 @@ define(function() {
 	};
 
 
-	Topics.unpin = function(response) {
-		if (response.status === 'ok') {
+	Topics.unpin = function(err, response) {
+		if(err) {
+			return app.alert(err.message);
+		}
+
+		if (response && response.tid) {
 			var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="pin"]');
 
 			$(btnEl).removeClass('active');
 		}
 	};
 
-	Topics.pin = function(response) {
-		if (response.status === 'ok') {
+	Topics.pin = function(err, response) {
+		if(err) {
+			return app.alert(err.message);
+		}
+
+		if (response && response.tid) {
 			var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="pin"]');
 
 			$(btnEl).addClass('active');

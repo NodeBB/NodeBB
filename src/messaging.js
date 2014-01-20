@@ -63,13 +63,11 @@ var db = require('./database'),
 							return next(err);
 						}
 
-                        Messaging.parse(message.content, message.fromuid, fromuid, tousername, function(result) {
-                            message.content = result;
-                            messages.push(message);
-                            next(null);
-                        });
-
-
+						Messaging.parse(message.content, message.fromuid, fromuid, tousername, function(result) {
+							message.content = result;
+							messages.push(message);
+							next(null);
+						});
 					});
 				}
 
@@ -84,21 +82,21 @@ var db = require('./database'),
 		});
 	};
 
-    Messaging.parse = function (message, fromuid, myuid, tousername, callback) {
-        plugins.fireHook('filter:post.parse', message, function(err, parsed) {
-            if (err) {
-                return callback(message);
-            }
-            var username;
-            if (fromuid === myuid) {
-                username = "<span class='chat-user chat-user-you'>You</span>: ";
-            } else {
-                username = "<span class='chat-user'>" + tousername + "</span>: ";
-            }
-            var result = username + parsed;
-            callback(result);
-        });
-    };
+	Messaging.parse = function (message, fromuid, myuid, tousername, callback) {
+		plugins.fireHook('filter:post.parse', message, function(err, parsed) {
+			if (err) {
+				return callback(message);
+			}
+			var username;
+			if (fromuid === myuid) {
+				username = "<span class='chat-user chat-user-you'>You</span>: ";
+			} else {
+				username = "<span class='chat-user'>" + tousername + "</span>: ";
+			}
+
+			callback(username + parsed);
+		});
+	};
 
 	Messaging.updateChatTime = function(uid, toUid, callback) {
 		db.sortedSetAdd('uid:' + uid + ':chats', Date.now(), toUid, function(err) {

@@ -16,8 +16,11 @@
 	"fork": "Fork",
 	"banned": "banned",
 	"link": "Link",
+	"share": "Share",
+	"tools": "Tools",
 
 	"thread_tools.title": "Thread Tools",
+	"thread_tools.markAsUnreadForAll": "Mark Unread",
 	"thread_tools.pin": "Pin Thread",
 	"thread_tools.lock": "Lock Thread",
 	"thread_tools.move": "Move Thread",
@@ -30,7 +33,7 @@
 	"confirm_fork": "Fork",
 
 	"favourite": "Favourite",
-	"favourites": "Favorites",
+	"favourites": "Favourites",
 	"favourites.not_logged_in.title": "Not Logged In",
 	"favourites.not_logged_in.message": "Please log in in order to favourite this post",
 	"favourites.has_no_favourites": "You don't have any favourites, favourite some posts to see them here!",

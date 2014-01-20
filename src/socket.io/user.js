@@ -3,149 +3,164 @@ var	user = require('../user'),
 
 	SocketUser = {};
 
-SocketUser.exists = function(data, sessionData) {
-	if (data.username) {
-		user.exists(utils.slugify(data.username), function(exists) {
-			sessionData.socket.emit('api:user.exists', {
-				exists: exists
-			});
-		});
+SocketUser.exists = function(socket, data, callback) {
+	if (data && data.username) {
+		user.exists(utils.slugify(data.username), callback);
 	}
 };
 
-SocketUser.count = function(callback) {
+SocketUser.count = function(socket, data, callback) {
 	user.count(callback);
 };
 
-SocketUser.emailExists = function(data, callback, sessionData) {
-	user.email.exists(undefined, data.email, callback);
+SocketUser.emailExists = function(socket, data, callback) {
+	if(data && data.email) {
+		user.email.exists(data.email, callback);
+	}
 };
 
 // Password Reset
 SocketUser.reset = {};
 
-SocketUser.reset.send = function(data, sessionData) {
-	user.reset.send(sessionData.socket, data.email);
+SocketUser.reset.send = function(socket, data, callback) {
+	if(data && data.email) {
+		user.reset.send(socket, data.email, callback);
+	}
 };
 
-SocketUser.reset.valid = function(data, sessionData) {
-	user.reset.validate(sessionData.socket, data.code);
+SocketUser.reset.valid = function(socket, data, callback) {
+	if(data && data.code) {
+		user.reset.validate(socket, data.code, callback);
+	}
 };
 
-SocketUser.reset.commit = function(data, sessionData) {
-	user.reset.commit(sessionData.socket, data.code, data.password);
+SocketUser.reset.commit = function(socket, data, callback) {
+	if(data && data.code && data.password) {
+		user.reset.commit(socket, data.code, data.password, callback);
+	}
 };
 
-SocketUser.isOnline = function(uid, callback) {
-	callback({
+SocketUser.isOnline = function(socket, uid, callback) {
+	callback(null, {
 		online: module.parent.exports.isUserOnline(uid),
 		uid: uid,
 		timestamp: Date.now()
 	});
 };
 
-SocketUser.changePassword = function(data, callback, sessionData) {
-	user.changePassword(sessionData.uid, data, callback);
+SocketUser.changePassword = function(socket, data, callback) {
+	if(data) {
+		user.changePassword(socket.uid, data, callback);
+	}
 };
 
-SocketUser.updateProfile = function(data, callback, sessionData) {
-	user.updateProfile(sessionData.uid, data, callback);
+SocketUser.updateProfile = function(socket, data, callback) {
+	if(data) {
+		user.updateProfile(socket.uid, data, callback);
+	}
 };
 
-SocketUser.changePicture = function(data, callback, sessionData) {
+SocketUser.changePicture = function(socket, data, callback) {
+	if(!data) {
+		return;
+	}
 
 	var type = data.type;
 
 	function updateHeader() {
-		user.getUserFields(sessionData.uid, ['picture'], function(err, fields) {
-			if (!err && fields) {
-				fields.uid = sessionData.uid;
-				sessionData.socket.emit('api:updateHeader', fields);
-				callback(true);
-			} else {
-				callback(false);
+		user.getUserFields(socket.uid, ['picture'], function(err, fields) {
+			if(err) {
+				return callback(err);
 			}
+
+			if (fields) {
+				fields.uid = socket.uid;
+				socket.emit('meta.updateHeader', null, fields);
+			}
+
+			callback(null);
 		});
 	}
 
 	if (type === 'gravatar') {
-		user.getUserField(sessionData.uid, 'gravatarpicture', function(err, gravatar) {
-			user.setUserField(sessionData.uid, 'picture', gravatar);
-			updateHeader();
-		});
+		type = 'gravatarpicture';
 	} else if (type === 'uploaded') {
-		user.getUserField(sessionData.uid, 'uploadedpicture', function(err, uploadedpicture) {
-			user.setUserField(sessionData.uid, 'picture', uploadedpicture);
-			updateHeader();
-		});
+		type = 'uploadedpicture';
 	} else {
-		callback(false);
-	}
-};
-
-SocketUser.follow = function(data, callback, sessionData) {
-	if (sessionData.uid) {
-		user.follow(sessionData.uid, data.uid, callback);
-	}
-};
-
-SocketUser.unfollow = function(data, callback, sessionData) {
-	if (sessionData.uid) {
-		user.unfollow(sessionData.uid, data.uid, callback);
-	}
-};
-
-SocketUser.saveSettings = function(data, callback, sessionData) {
-	if (sessionData.uid) {
-		user.setUserFields(sessionData.uid, {
-			showemail: data.showemail
-		}, function(err, result) {
-			callback(err);
-		});
-	}
-};
-
-SocketUser.get_online_users = function(data, callback) {
-	var returnData = [];
-
-	for (var i = 0; i < data.length; ++i) {
-		var uid = data[i];
-		if (module.parent.exports.isUserOnline(uid))
-			returnData.push(uid);
-		else
-			returnData.push(0);
+		return callback(new Error('invalid-image-type'));
 	}
 
-	callback(returnData);
-};
-
-SocketUser.getOnlineAnonCount = function(data, callback) {
-	callback(module.parent.exports.getOnlineAnonCount());
-};
-
-SocketUser.getUnreadCount = function(callback, sessionData) {
-	topics.getUnreadTids(sessionData.uid, 0, 19, function(err, tids) {
-		callback(tids.length);
+	user.getUserField(socket.uid, type, function(err, picture) {
+		user.setUserField(socket.uid, 'picture', picture);
+		updateHeader();
 	});
 };
 
-SocketUser.getActiveUsers = function(callback) {
+SocketUser.follow = function(socket, data, callback) {
+	if (socket.uid && data) {
+		user.follow(socket.uid, data.uid, callback);
+	}
+};
+
+SocketUser.unfollow = function(socket, data, callback) {
+	if (socket.uid && data) {
+		user.unfollow(socket.uid, data.uid, callback);
+	}
+};
+
+SocketUser.saveSettings = function(socket, data, callback) {
+	if (socket.uid && data) {
+		user.setUserFields(socket.uid, {
+			showemail: data.showemail
+		}, callback);
+	}
+};
+
+SocketUser.getOnlineUsers = function(socket, data, callback) {
+	var returnData = [];
+	if(data) {
+		for (var i = 0; i < data.length; ++i) {
+			var uid = data[i];
+			if (module.parent.exports.isUserOnline(uid)) {
+				returnData.push(uid);
+			} else {
+				returnData.push(0);
+			}
+		}
+	}
+
+	callback(null, returnData);
+};
+
+SocketUser.getOnlineAnonCount = function(socket, data, callback) {
+	callback(null, module.parent.exports.getOnlineAnonCount());
+};
+
+SocketUser.getUnreadCount = function(socket, data, callback) {
+	topics.getUnreadTids(socket.uid, 0, 19, function(err, tids) {
+		callback(err, tids?tids.length:0);
+	});
+};
+
+SocketUser.getActiveUsers = function(socket, data, callback) {
 	module.parent.exports.emitOnlineUserCount(callback);
 };
 
-SocketUser.loadMore = function(data, callback) {
-	var start = data.after,
-		end = start + 19;
+SocketUser.loadMore = function(socket, data, callback) {
+	if(data) {
+		var start = data.after,
+			end = start + 19;
 
-	user.getUsers(data.set, start, end, function(err, data) {
-		if (err) {
-			winston.err(err);
-		} else {
-			callback({
+		user.getUsers(data.set, start, end, function(err, data) {
+			if(err) {
+				return callback(err);
+			}
+
+			callback(null, {
 				users: data
 			});
-		}
-	});
+		});
+	}
 };
 
 /* Exports */

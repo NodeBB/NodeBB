@@ -94,7 +94,7 @@ if(nconf.get('ssl')) {
 					href: meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png'
 				}],
 				templateValues = {
-					cssSrc: meta.config['theme:src'] || nconf.get('relative_path') + '/vendor/bootstrap/css/bootstrap.min.css',
+					bootswatchCSS: meta.config['theme:src'],
 					pluginCSS: plugins.cssFiles.map(function(file) { return { path: nconf.get('relative_path') + file + (meta.config['cache-buster'] ? '?v=' + meta.config['cache-buster'] : '') }; }),
 					title: meta.config.title || '',
 					description: meta.config.description || '',
@@ -536,10 +536,14 @@ if(nconf.get('ssl')) {
 					});
 				},
 				function (topicData, next) {
-					var lastMod = 0,
+
+					var lastMod = topicData.timestamp,
 						sanitize = validator.sanitize,
 						description = (function() {
-							var	content = S(topicData.posts[0].content).stripTags().s;
+							var	content = '';
+							if(topicData.posts.length) {
+								content = S(topicData.posts[0].content).stripTags().s;
+							}
 
 							if (content.length > 255) {
 								content = content.substr(0, 255) + '...';
@@ -586,15 +590,15 @@ if(nconf.get('ssl')) {
 							},
 							{
 								property: 'og:image',
-								content: topicData.posts[0].picture
+								content: topicData.posts.length?topicData.posts[0].picture:''
 							},
 							{
 								property: "article:published_time",
-								content: new Date(parseInt(topicData.posts[0].timestamp, 10)).toISOString()
+								content: utils.toISOString(topicData.timestamp)
 							},
 							{
 								property: 'article:modified_time',
-								content: new Date(lastMod).toISOString()
+								content: utils.toISOString(lastMod)
 							},
 							{
 								property: 'article:section',
@@ -767,7 +771,8 @@ if(nconf.get('ssl')) {
 			var sitemap = require('./sitemap.js');
 
 			sitemap.render(function (xml) {
-				res.type('xml').set('Content-Length', xml.length).send(xml);
+				res.header('Content-Type', 'application/xml');
+				res.send( xml );
 			});
 		});
 

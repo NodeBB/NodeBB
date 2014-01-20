@@ -21,35 +21,36 @@ define(function() {
 				noticeEl.querySelector('p').innerHTML = 'The two passwords you\'ve entered do not match.';
 				noticeEl.style.display = 'block';
 			} else {
-				socket.emit('api:user.reset.commit', {
+				socket.emit('user.reset.commit', {
 					code: reset_code,
 					password: password.value
+				}, function(err) {
+					if(err) {
+						return app.alert(err.message);
+					}
+
+					$('#error').hide();
+					$('#notice').hide();
+					$('#success').show();
 				});
 			}
 		}, false);
 
 		// Enable the form if the code is valid
-		socket.emit('api:user.reset.valid', {
+		socket.emit('user.reset.valid', {
 			code: reset_code
-		});
+		}, function(err, valid) {
+			if(err) {
+				return app.alertError(err.message);
+			}
 
-
-		ajaxify.register_events(['api:user.reset.valid', 'api:user.reset.commit']);
-		socket.on('api:user.reset.valid', function(data) {
-			if ( !! data.valid) resetEl.disabled = false;
-			else {
+			if (valid) {
+				resetEl.disabled = false;
+			} else {
 				var formEl = document.getElementById('reset-form');
 				// Show error message
 				$('#error').show();
 				formEl.parentNode.removeChild(formEl);
-			}
-		})
-
-		socket.on('api:user.reset.commit', function(data) {
-			if (data.status === 'ok') {
-				$('#error').hide();
-				$('#notice').hide();
-				$('#success').show();
 			}
 		});
 	};

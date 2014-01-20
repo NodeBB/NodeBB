@@ -81,7 +81,7 @@
 			winston.info('Base Configuration OK.');
 		}
 
-		if (semver.gt(pkg.dependencies['nodebb-theme-cerulean'], require('./node_modules/nodebb-theme-cerulean/package.json').version)) {
+		if (!semver.satisfies(require('./node_modules/nodebb-theme-cerulean/package.json').version, pkg.dependencies['nodebb-theme-cerulean'])) {
 			winston.error('nodebb-theme-cerulean is out of date - please run npm install.');
 		}
 
@@ -158,7 +158,7 @@
 			if (err) {
 				winston.error('There was a problem completing NodeBB setup: ', err.message);
 			} else {
-				winston.info('NodeBB Setup Completed. Run \'node app\' to manually start your NodeBB server.');
+				winston.info('NodeBB Setup Completed. Run \'./nodebb start\' to manually start your NodeBB server.');
 			}
 
 			process.exit();

@@ -34,7 +34,6 @@ var nconf = require('nconf'),
 		};
 
 		user.getUserFields(req.user.uid, ['username', 'userslug', 'picture'], function(err, userData) {
-
 			plugins.fireHook('filter:admin.header.build', custom_header, function(err, custom_header) {
 				callback(err, templates['admin/header'].parse({
 					csrf: res.locals.csrf_token,
@@ -43,7 +42,8 @@ var nconf = require('nconf'),
 					authentication: custom_header.authentication,
 					userpicture: userData.picture,
 					username: userData.username,
-					userslug: userData.userslug
+					userslug: userData.userslug,
+					'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
 				}));
 			});
 		});

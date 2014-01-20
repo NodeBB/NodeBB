@@ -51,10 +51,15 @@ var winston = require('winston'),
 			}
 			// [getThreadPrivileges, isOwnPost, hasEnoughRep]
 		}, function(err, results) {
-			callback({
+			if(err) {
+				return callback(err);
+			}
+
+			callback(null, {
 				read: results.topicPrivs.read,
 				editable: results.topicPrivs.editable || results.isOwner || results.hasEnoughRep,
-				view_deleted: results.topicPrivs.view_deleted || results.isOwner || results.hasEnoughRep
+				view_deleted: results.topicPrivs.view_deleted || results.isOwner || results.hasEnoughRep,
+				move: results.topicPrivs.admin || results.topicPrivs.moderator
 			});
 		});
 	}
@@ -111,7 +116,7 @@ var winston = require('winston'),
 				});
 			};
 
-		PostTools.privileges(pid, uid, function(privileges) {
+		PostTools.privileges(pid, uid, function(err, privileges) {
 			if (privileges.editable) {
 				plugins.fireHook('filter:post.save', content, function(err, parsedContent) {
 					if (!err) content = parsedContent;
@@ -169,7 +174,7 @@ var winston = require('winston'),
 				return callback(new Error('Post already deleted!'));
 			}
 
-			PostTools.privileges(pid, uid, function(privileges) {
+			PostTools.privileges(pid, uid, function(err, privileges) {
 				if (privileges.editable) {
 					success();
 				}
@@ -223,7 +228,7 @@ var winston = require('winston'),
 				return callback(new Error('Post already restored'));
 			}
 
-			PostTools.privileges(pid, uid, function(privileges) {
+			PostTools.privileges(pid, uid, function(err, privileges) {
 				if (privileges.editable) {
 					success();
 				}

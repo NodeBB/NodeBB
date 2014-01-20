@@ -45,9 +45,10 @@ define(['taskbar'], function(taskbar) {
 
 	composer.editPost = function(pid) {
 		if(allowed()) {
-			socket.emit('api:modules.composer.push', {
-				pid: pid
-			}, function(threadData) {
+			socket.emit('modules.composer.push', pid, function(err, threadData) {
+				if(err) {
+					return app.alertError(err.message);
+				}
 				push({
 					pid: pid,
 					title: threadData.title,
@@ -104,18 +105,18 @@ define(['taskbar'], function(taskbar) {
 
 			if (parseInt(postData.tid) > 0) {
 				titleEl.val('Replying to: ' + postData.title);
-				titleEl.prop('readOnly', true);
+				titleEl.prop('disabled', true);
 			} else if (parseInt(postData.pid) > 0) {
 				titleEl.val(postData.title);
-				titleEl.prop('readOnly', true);
-				socket.emit('api:modules.composer.editCheck', postData.pid, function(editCheck) {
-					if (editCheck.titleEditable) {
-						postContainer.find('input').prop('readonly', false);
+				titleEl.prop('disabled', true);
+				socket.emit('modules.composer.editCheck', postData.pid, function(err, editCheck) {
+					if (!err && editCheck.titleEditable) {
+						titleEl.prop('disabled', false);
 					}
 				});
 			} else {
 				titleEl.val(postData.title);
-				titleEl.prop('readOnly', false);
+				titleEl.prop('disabled', false);
 			}
 
 			bodyEl.val(postData.body);
@@ -124,72 +125,6 @@ define(['taskbar'], function(taskbar) {
 			postContainer.on('change', 'input, textarea', function() {
 				composer.posts[post_uuid].modified = true;
 			});
-
-			function getUniqueUserslugs() {
-				var postContainer = $('#post-container');
-				if(postContainer.length) {
-					var elements = $('#post-container li[data-userslug]');
-					if(!elements.length) {
-						return [];
-					}
-
-					var slugs = [];
-					for(var i=0; i<elements.length; ++i) {
-						var slug = $(elements[i]).attr('data-userslug');
-						if(slugs.indexOf('@' + slug) === -1) {
-							slugs.push('@' + slug);
-						}
-					}
-
-					return slugs;
-				} else {
-					return [];
-				}
-			}
-
-
-
-			$(bodyEl).autocomplete({
-				source: function(request, response) {
-					var term = request.term;
-
-					var cursorPosition = $(bodyEl).getCursorPosition();
-					term = term.substr(0, cursorPosition);
-
-					var lastMention = term.lastIndexOf('@');
-					if(lastMention !== -1) {
-						term = term.substr(lastMention);
-					}
-
-					var userslugs = getUniqueUserslugs();
-					userslugs = userslugs.filter(function(slug) {
-						return term && slug.indexOf(term) === 0;
-					});
-
-					response(userslugs);
-					$('.ui-autocomplete a').attr('href', '#');
-				},
-				focus: function(event, ui) {
-					return false;
-				},
-				select: function(event, ui) {
-					var cursorPosition = $(bodyEl).getCursorPosition();
-					var upToCursor = $(bodyEl).val().substr(0, cursorPosition);
-					var index = upToCursor.lastIndexOf('@');
-
-					if(index !== -1) {
-						var firstPart = $(bodyEl).val().substr(0, index);
-						var lastPart = $(bodyEl).val().substr(cursorPosition);
-
-						$(bodyEl).val(firstPart + ui.item.value + lastPart);
-						$(bodyEl).selectRange(index + ui.item.value.length);
-					}
-					event.preventDefault();
-					return false;
-				},
-				position: { my : "left bottom", at: "left bottom" }
-			});
-
 
 			postContainer.on('click', '.action-bar button', function() {
 				var	action = $(this).attr('data-action');
@@ -282,25 +217,39 @@ define(['taskbar'], function(taskbar) {
 				$('#fileForm')[0].reset();
 			});
 
+			postContainer.find('.nav-tabs a').click(function (e) {
+				e.preventDefault();
+				$(this).tab('show');
+				var selector = $(this).attr('data-pane');
+				postContainer.find('.tab-content div').removeClass('active');
+				postContainer.find(selector).addClass('active');
+				return false;
+			});
+
+			bodyEl.on('blur', function() {
+				socket.emit('modules.composer.renderPreview', bodyEl.val(), function(err, preview) {
+  					postContainer.find('.preview').html(preview);
+  				});
+			});
+
 
 			var	resizeActive = false,
-				resizeCenterX = 0,
+				resizeCenterY = 0,
 				resizeOffset = 0,
 				resizeStart = function(e) {
-					bodyRect = document.body.getBoundingClientRect();
 					resizeRect = resizeEl.getBoundingClientRect();
-					resizeCenterX = resizeRect.left + (resizeRect.width/2);
-					resizeOffset = resizeCenterX - e.clientX;
-					resizeSnaps.half = bodyRect.width / 2;
-					resizeSnaps.none = bodyRect.width;
+					resizeCenterY = resizeRect.top + (resizeRect.height/2);
+					resizeOffset = resizeCenterY - e.clientY;
 					resizeActive = true;
 
-					$(document.body).on('mousemove', resizeAction);
+					$(window).on('mousemove', resizeAction);
+					$(window).on('mouseup', resizeStop);
 					document.body.addEventListener('touchmove', resizeTouchAction);
 				},
 				resizeStop = function() {
 					resizeActive = false;
-					$(document.body).off('mousemove', resizeAction);
+					$(window).off('mousemove', resizeAction);
+					$(window).off('mouseup', resizeStop);
 					document.body.removeEventListener('touchmove', resizeTouchAction);
 				},
 				resizeTouchAction = function(e) {
@@ -309,41 +258,27 @@ define(['taskbar'], function(taskbar) {
 				},
 				resizeAction = function(e) {
 					if (resizeActive) {
-						position = (e.clientX + resizeOffset);
-						if (Math.abs(position - resizeSnaps.half) <= 15) {
-							// Half snap
-							postContainer.css('width', resizeSnaps.half);
-							resizeSavePosition(resizeSnaps.half);
-						} else if (Math.abs(position - resizeSnaps.none) <= 30) {
-							// Minimize snap
-							postContainer.css('width', bodyRect.width - resizeSnaps.none + 15);
-							resizeSavePosition(resizeSnaps.none);
-						} else if (position <= 30) {
-							// Full snap
-							postContainer.css('width', bodyRect.width - 15);
-							resizeSavePosition(bodyRect.width - 15);
-						} else {
-							// OH SNAP, NO SNAPS!
-							postContainer.css('width', bodyRect.width - position);
-							resizeSavePosition(bodyRect.width - position);
+						position = (e.clientY + resizeOffset);
+						var newHeight = $(window).height() - position;
+						if(newHeight > $(window).height() - $('#header-menu').height() - 20) {
+							newHeight = $(window).height() - $('#header-menu').height() - 20;
 						}
+						postContainer.css('height', newHeight);
+						resizeSavePosition(newHeight);
 					}
+					e.preventDefault();
+					return false;
 				},
 				resizeSavePosition = function(px) {
-					var	percentage = px/bodyRect.width;
+					var	percentage = px / $(window).height();
 					localStorage.setItem('composer:resizePercentage', percentage);
 				},
-				resizeSnaps = {
-					none: 0,
-					half: 0,
-					full: 0
-				},
-				resizeRect, bodyRect;
+				resizeRect;
 
 			var resizeEl = postContainer.find('.resizer')[0];
 
 			resizeEl.addEventListener('mousedown', resizeStart);
-			resizeEl.addEventListener('mouseup', resizeStop);
+
 			resizeEl.addEventListener('touchstart', function(e) {
 				e.preventDefault();
 				resizeStart(e.touches[0]);
@@ -363,6 +298,24 @@ define(['taskbar'], function(taskbar) {
 		});
 	}
 
+	//http://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api
+	function findBootstrapEnvironment() {
+		var envs = ['xs', 'sm', 'md', 'lg'];
+
+		$el = $('<div>');
+		$el.appendTo($('body'));
+
+		for (var i = envs.length - 1; i >= 0; i--) {
+			var env = envs[i];
+
+			$el.addClass('hidden-'+env);
+			if ($el.is(':hidden')) {
+				$el.remove();
+				return env;
+			}
+		}
+	}
+
 	composer.activateReposition = function(post_uuid) {
 
 		if(composer.active && composer.active !== post_uuid) {
@@ -374,17 +327,22 @@ define(['taskbar'], function(taskbar) {
 			postContainer = $('#cmp-uuid-' + post_uuid);
 
 		composer.active = post_uuid;
+		var env = findBootstrapEnvironment();
 
 		if (percentage) {
-			if (bodyRect.width >= 768) {
-				postContainer.css('width', Math.floor(bodyRect.width * percentage) + 'px');
-			} else {
-				postContainer.css('width', '100%');
+			if ( env === 'md' || env === 'lg') {
+				postContainer.css('height', Math.floor($(window).height() * percentage) + 'px');
 			}
 		}
 
+		if(env === 'sm' || env === 'xs') {
+			postContainer.css('height', $(window).height() - $('#header-menu').height());
+		}
+
 		if(config.imgurClientIDSet) {
-			postContainer.find('.upload-instructions').removeClass('hide');
+			if(env === 'md' || env === 'lg') {
+				postContainer.find('.upload-instructions').removeClass('hide');
+			}
 			postContainer.find('.img-upload-btn').removeClass('hide');
 		}
 
@@ -392,7 +350,9 @@ define(['taskbar'], function(taskbar) {
 			postContainer.find('.file-upload-btn').removeClass('hide');
 		}
 
-		postContainer.css('visibility', 'visible');
+		postContainer.css('visibility', 'visible')
+			.css('z-index', 1);
+
 
 		composer.focusElements(post_uuid);
 	}
@@ -434,7 +394,7 @@ define(['taskbar'], function(taskbar) {
 
 		// Still here? Let's post.
 		if (parseInt(postData.cid) > 0) {
-			socket.emit('api:topics.post', {
+			socket.emit('topics.post', {
 				'title' : titleEl.val(),
 				'content' : bodyEl.val(),
 				'category_id' : postData.cid
@@ -442,14 +402,14 @@ define(['taskbar'], function(taskbar) {
 				composer.discard(post_uuid);
 			});
 		} else if (parseInt(postData.tid) > 0) {
-			socket.emit('api:posts.reply', {
+			socket.emit('posts.reply', {
 				'topic_id' : postData.tid,
 				'content' : bodyEl.val()
 			}, function() {
 				composer.discard(post_uuid);
 			});
 		} else if (parseInt(postData.pid) > 0) {
-			socket.emit('api:posts.edit', {
+			socket.emit('posts.edit', {
 				pid: postData.pid,
 				content: bodyEl.val(),
 				title: titleEl.val()
@@ -568,12 +528,12 @@ define(['taskbar'], function(taskbar) {
 			dropDiv.hide();
 
 			if(file.type.match('image.*')) {
-				uploadFile('api:posts.uploadImage', post_uuid, fileData);
+				uploadFile('posts.uploadImage', post_uuid, fileData);
 			} else {
 				if(file.size > parseInt(config.maximumFileSize, 10) * 1024) {
 					return composerAlert('File too big', 'Maximum allowed file size is ' + config.maximumFileSize + 'kbs');
 				}
-				uploadFile('api:posts.uploadFile', post_uuid, fileData);
+				uploadFile('posts.uploadFile', post_uuid, fileData);
 			}
 		});
 
@@ -582,7 +542,7 @@ define(['taskbar'], function(taskbar) {
 
 
 	function uploadFile(method, post_uuid, img) {
-		var linkStart = method === 'api:posts.uploadImage' ? '!' : '',
+		var linkStart = method === 'posts.uploadImage' ? '!' : '',
 			postContainer = $('#cmp-uuid-' + post_uuid),
 			textarea = postContainer.find('textarea'),
 			text = textarea.val(),
