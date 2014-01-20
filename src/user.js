@@ -115,8 +115,6 @@ var bcrypt = require('bcrypt'),
 				db.sortedSetAdd('users:postcount', 0, uid);
 				db.sortedSetAdd('users:reputation', 0, uid);
 
-				db.searchIndex('user', username, uid);
-
 				// Join the "registered-users" meta group
 				groups.joinByGroupName('registered-users', uid);
 
@@ -309,7 +307,6 @@ var bcrypt = require('bcrypt'),
 							db.deleteObjectField('username:uid', userData.username);
 							db.setObjectField('username:uid', data.username, uid);
 							events.logUsernameChange(uid, userData.username, data.username);
-							User.reIndexUser(uid, data.username);
 						}
 
 						if(userslug !== userData.userslug) {
@@ -435,26 +432,6 @@ var bcrypt = require('bcrypt'),
 
 		bcrypt.genSalt(nconf.get('bcrypt_rounds'), function(err, salt) {
 			bcrypt.hash(password, salt, callback);
-		});
-	};
-
-	User.reIndexAll = function(callback) {
-		User.getUsers('users:joindate', 0, -1, function(err, usersData) {
-			if (err) {
-				return callback(err, null);
-			}
-
-			for (var i = 0; i < usersData.length; ++i) {
-				User.reIndexUser(usersData[i].uid, usersData[i].username);
-			}
-
-			callback(null, 1);
-		});
-	};
-
-	User.reIndexUser = function(uid, username) {
-		db.searchRemove('user', uid, function() {
-			db.searchIndex('user', username, uid);
 		});
 	};
 
