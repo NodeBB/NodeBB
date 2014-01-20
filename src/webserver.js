@@ -95,7 +95,7 @@ if(nconf.get('ssl')) {
 				}],
 				templateValues = {
 					bootswatchCSS: meta.config['theme:src'],
-					pluginCSS: plugins.cssFiles.map(function(file) { return { path: nconf.get('relative_path') + file + (meta.config['cache-buster'] ? '?v=' + meta.config['cache-buster'] : '') }; }),
+					pluginCSS: plugins.cssFiles.map(function(file) { return { path: nconf.get('relative_path') + file.replace(/\\/g, '/') + (meta.config['cache-buster'] ? '?v=' + meta.config['cache-buster'] : '') }; }),
 					title: meta.config.title || '',
 					description: meta.config.description || '',
 					'brand:logo': meta.config['brand:logo'] || '',
