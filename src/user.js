@@ -84,6 +84,7 @@ var bcrypt = require('bcrypt'),
 
 				var gravatar = User.createGravatarURLFromEmail(userData.email);
 				var timestamp = Date.now();
+				var password = userData.password;
 
 				userData = {
 					'uid': uid,
@@ -127,8 +128,8 @@ var bcrypt = require('bcrypt'),
 				// Join the "registered-users" meta group
 				groups.joinByGroupName('registered-users', uid);
 
-				if (userData.password) {
-					User.hashPassword(userData.password, function(err, hash) {
+				if (password) {
+					User.hashPassword(password, function(err, hash) {
 						User.setUserField(uid, 'password', hash);
 						callback(null, uid);
 					});
