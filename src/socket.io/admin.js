@@ -79,7 +79,7 @@ SocketAdmin.user.unbanUser = function(socket, theirid) {
 };
 
 SocketAdmin.user.search = function(socket, username, callback) {
-	user.search(username, function(data) {
+	user.search(username, function(err, data) {
 		function isAdmin(userData, next) {
 			user.isAdministrator(userData.uid, function(err, isAdmin) {
 				if(err) {
@@ -125,7 +125,7 @@ SocketAdmin.categories.search = function(socket, data, callback) {
 	var	username = data.username,
 		cid = data.cid;
 
-	user.search(username, function(data) {
+	user.search(username, function(err, data) {
 		async.map(data, function(userObj, next) {
 			CategoryTools.privileges(cid, userObj.uid, function(err, privileges) {
 				if(err) {

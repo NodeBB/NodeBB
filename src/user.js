@@ -482,27 +482,6 @@ var bcrypt = require('bcrypt'),
 		});
 	}
 
-	// User.search = function(username, callback) {
-	// 	if (!username) {
-	// 		return callback([]);
-	// 	}
-
-	// 	db.search('user', username, 50, function(err, uids) {
-	// 		if (err) {
-	// 			console.log(err);
-	// 			return;
-	// 		}
-
-	// 		if (uids && uids.length) {
-	// 			User.getDataForUsers(uids, function(userdata) {
-	// 				callback(userdata);
-	// 			});
-	// 		} else {
-	// 			callback([]);
-	// 		}
-	// 	});
-	// };
-
 	User.search = function(query, callback) {
 		if (!query || query.length === 0) {
 			return callback(null, []);
@@ -519,12 +498,21 @@ var bcrypt = require('bcrypt'),
 				results = [];
 
 			results = usernames.filter(function(username) {		// Remove non-matches
-				return filterRegex.text(username);
+				return filterRegex.test(username);
 			}).sort(function(a, b) {							// Sort alphabetically
 				return a > b;
-			}).slice(0, 5);										// Limit 5
+			}).slice(0, 5)										// Limit 5
+			.map(function(username) {							// Translate to uids
+				return usernamesHash[username];
+			});
 
-			callback(null, results);
+			if (results && results.length) {
+				User.getDataForUsers(results, function(userdata) {
+					callback(null, userdata);
+				});
+			} else {
+				callback(null, []);
+			}
 		});
 	};
 

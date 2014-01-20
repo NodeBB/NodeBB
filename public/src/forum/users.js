@@ -47,7 +47,7 @@ define(function() {
 				jQuery('#user-notfound-notify').html('<i class="fa fa-spinner fa-spin"></i>');
 
 				setTimeout(function() {
-					socket.emit('admin.user.search', username, function(err, data) {
+					socket.emit('user.search', username, function(err, data) {
 						if(err) {
 							return app.alert(err.message);
 						}
