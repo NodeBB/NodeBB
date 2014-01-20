@@ -34,8 +34,6 @@ var user = require('./user'),
 							message: "user-banned"
 						});
 					}
-					console.log(password);
-					console.log(JSON.stringify(userData));
 
 					bcrypt.compare(password, userData.password || '', function(err, res) {
 						if (err) {
