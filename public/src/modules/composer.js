@@ -264,6 +264,7 @@ define(['taskbar'], function(taskbar) {
 							newHeight = $(window).height() - $('#header-menu').height() - 20;
 						}
 						postContainer.css('height', newHeight);
+						$('body').css({'margin-bottom': newHeight});
 						resizeSavePosition(newHeight);
 					}
 					e.preventDefault();
@@ -353,6 +354,7 @@ define(['taskbar'], function(taskbar) {
 		postContainer.css('visibility', 'visible')
 			.css('z-index', 1);
 
+		$('body').css({'margin-bottom': postContainer.css('height')});
 
 		composer.focusElements(post_uuid);
 	}
@@ -436,6 +438,7 @@ define(['taskbar'], function(taskbar) {
 			delete composer.posts[post_uuid];
 			composer.active = undefined;
 			taskbar.discard('composer', post_uuid);
+			$('body').css({'margin-bottom': 0});
 		}
 	}
 
