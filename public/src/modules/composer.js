@@ -456,6 +456,7 @@ define(['taskbar'], function(taskbar) {
 		if(window.FileReader) {
 			var postContainer = $('#cmp-uuid-' + post_uuid),
 				drop = postContainer.find('.imagedrop'),
+				tabContent = postContainer.find('.tab-content'),
 				textarea = postContainer.find('textarea');
 
 			$(document).off('dragstart').on('dragstart', function(e) {
@@ -468,7 +469,7 @@ define(['taskbar'], function(taskbar) {
 				if(draggingDocument) {
 					return;
 				}
-				drop.css('top', textarea.position().top + 'px');
+				drop.css('top', tabContent.position().top + 'px');
 				drop.css('height', textarea.height());
 				drop.css('line-height', textarea.height() + 'px');
 				drop.show();
