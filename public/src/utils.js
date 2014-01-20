@@ -116,8 +116,7 @@
 		// from http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
 		isEmailValid: function(email) {
 			// var re = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-			var valid = email.indexOf('@') !== -1 ? true : false;
-			return valid;
+			return email.indexOf('@') !== -1;
 		},
 
 		isUserNameValid: function(name) {
@@ -126,6 +125,21 @@
 
 		isPasswordValid: function(password) {
 			return password && password.indexOf(' ') === -1;
+		},
+		isNumber: function(n) {
+			return !isNaN(parseFloat(n)) && isFinite(n);
+		},
+		// shallow objects merge
+		merge: function() {
+			var result = {}, obj, keys;
+			for (var i = 0; i < arguments.length; i++) {
+				obj = arguments[i] || {};
+				keys = Object.keys(obj);
+				for (var j = 0; j < keys.length; j++) {
+					result[keys[j]] = obj[keys[j]];
+				}
+			}
+			return result;
 		},
 		buildMetaTags: function(tagsArr) {
 			var tags = '',
