@@ -1,0 +1,41 @@
+{
+	"banned": "محظور",
+	"offline": "ليس موجود حالياً",
+	"username": "إسم المستخدم",
+	"email": "البريد الإلكتروني",
+	"fullname": "الاسم الكامل",
+	"website": "الموقع الإلكتروني",
+	"location": "موقع",
+	"age": "عمر",
+	"joined": "تاريخ التسجيل",
+	"lastonline": "تاريخ أخر دخول",
+	"profile_views": "مشاهد الملف",
+	"reputation": "سمعة",
+	"posts": "ردود",
+	"followers": "أتباع",
+	"following": "يتبع",
+	"signature": "توقيع",
+	"gravatar": "Gravatar",
+	"birthday": "عيد ميلاد",
+
+	"change_picture": "تغيير الصورة",
+	"edit": "صحح",
+	"uploaded_picture": "صورة تم تحميلها",
+	"upload_new_picture": "تحميل صورة جديدة",
+	"change_password": "تغيير كلمة السر",
+	"confirm_password": "تأكيد كلمة السر",
+	"password": "كلمة السر",
+
+	"upload_picture": "تحميل الصورة",
+	"upload_a_picture": "تحميل صورة",
+	"image_spec": "تستطيع تحميل سوى PNG، JPG، GIF تحت 256KB.",
+
+	"settings": "إعدادات",
+	"show_email": "أظهر بريدي الإلكتروني",
+
+	"has_no_follower": "هذا المستخدم ليس لديه أي أتباع :(",
+	"follows_no_one": "هذا المستخدم لا يتبع أحد :(",
+
+	"email_hidden": "البريد الإلكتروني مخفي",
+	"hidden": "مخفي"
+}
