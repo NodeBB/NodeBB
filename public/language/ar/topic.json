@@ -1,0 +1,52 @@
+{
+	"topic": "موضوع",
+	"topics": "مواضيع",
+
+	"no_topics_found": "لا توجد مواضيع !",
+
+	"profile": "ملف",
+	"posted_by": "رد من",
+	"chat": "دردشة",
+	"notify_me": "تنبه من ردود جديدة في هذا الموضوع",
+	"quote": "اقتبس",
+	"reply": "رد",
+	"edit": "صحح",
+	"delete": "حذف",
+	"move": "انقل",
+	"fork": "فرع",
+	"banned": "محظور",
+	"link": "رابط",
+	"share": "شارك",
+	"tools": "أدوات",
+
+	"thread_tools.title": "أدوات الموضوع",
+	"thread_tools.markAsUnreadForAll": "علم غير مقروء",
+	"thread_tools.pin": "علق الموضوع",
+	"thread_tools.lock": "قفل الموضوع",
+	"thread_tools.move": "نقل الموضوع",
+	"thread_tools.fork": "تفرع الموضوع",
+	"thread_tools.delete": "حذف الموضوع",
+
+	"load_categories": "تحميل الفئات",
+	"disabled_categories_note": "الفئات المجلدة رمادية",
+	"confirm_move": "انقل",
+	"confirm_fork": "فرع",
+
+	"favourite": "المفضل",
+	"favourites": "المفضلة",
+	"favourites.not_logged_in.title": "ليس موجود حالياً",
+	"favourites.not_logged_in.message": "الرجاء تسجيل الدخول لتفضل هذا الرد",
+	"favourites.has_no_favourites": "ليس لديك أي ردود مفضلة. فضل بعد الردود لرؤيتهم هنا",
+
+	"loading_more_posts": "تحميل المزيد من المشاركات",
+	"move_topic": "نقل الموضوع",
+	"move_post": "نقل الرد",
+	"fork_topic": "فرع الموضوع",
+	"topic_will_be_moved_to": "هذا الموضوع سوف ينقل إلى فئة",
+	"fork_topic_instruction": "إضغط على الردود لتفريعهم",
+	"fork_no_pids": "لم تختار أي رد",
+	"fork_success": "تفريع الموضوع بنجاح!",
+
+	"reputation": "سمعة",
+	"posts": "ردود"
+}

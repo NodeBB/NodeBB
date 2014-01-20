@@ -1,0 +1,37 @@
+{
+	"home": "الصفحة الرئيسية",
+	"search": "بحث",
+	"buttons.close": "أغلق",
+	"403.title": "غير مسموح بالدخول",
+	"403.message": "يبدو أنك قد تعثر على الصفحة التي لم يكن لديك الوصول إليها. ربما يجب عليك <a href='/login'> تسجيل الدخول </a> ",
+	"404.title": "لم يتم العثور",
+	"404.message": "يبدو أنك قد تعثرت على صفحة غير موجودة. عودة إلى الصفحة الرئيسية.",
+	"500.title": "خطأ داخلي.",
+	"500.message": "عفوا! يبدو وكأنه شيء ذهب على نحو خاطئ!",
+
+	"register": "تسجيل",
+	"login": "دخول",
+
+	"logout": "تسجيل الخروج",
+	"logout.title": "تم تسجيل الخروج",
+	"logout.message": "قمت بتسجيل الخروج بنجاح من NodeBB",
+
+	"save_changes": "حفظ التغييرات",
+	"close": "أغلق",
+
+	"header.admin": "مشرف",
+	"header.recent": "حديث",
+	"header.unread": "غير مقروء",
+	"header.users": "المستخدمين",
+	"header.search": "بحث",
+	"header.profile": "ملف",
+
+	"notifications.loading": "تحميل التبليغات",
+	"chats.loading": "تحميل الدردشات",
+
+	"motd.welcome": "مرحبا بكم  NodeBB، منصة مناقشة المستقبل",
+	"motd.get": "NodeBB إحصل على",
+	"motd.fork": "فرع",
+	"motd.like": "ود",
+	"motd.follow": "تابع"
+}
