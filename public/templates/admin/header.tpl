@@ -37,7 +37,7 @@
 	<script src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 	<script src="{relative_path}/src/utils.js"></script>
 
-	<link rel="stylesheet" type="text/css" href="{relative_path}/css/theme.css" />
+	<link rel="stylesheet" type="text/css" href="{relative_path}/css/theme.css?{cache-buster}" />
 </head>
 
 <body class="admin">

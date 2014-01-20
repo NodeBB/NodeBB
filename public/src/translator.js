@@ -39,6 +39,10 @@
 					languageCode = 'cz';
 					break;
 
+				case 'zh_cn':
+					languageCode = 'zh-CN';
+					break;
+
 				default:
 					languageCode = config.defaultLang;
 					break;
