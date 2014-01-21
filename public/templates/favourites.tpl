@@ -25,14 +25,16 @@
 					<p>{posts.content}</p>
 
 					<div>
-						<span class="pull-right">
-							<a href="../../topic/{posts.tid}/#{posts.pid}">posted</a>
-							in
-							<a href="../../category/{posts.categorySlug}">
-								<i class="fa {posts.categoryIcon}"></i> {posts.categoryName}
-							</a>
-							<span class="timeago" title="{posts.relativeTime}"></span>
-						</span>
+						<small>
+							<span class="pull-right">
+								<a href="../../topic/{posts.tid}/#{posts.pid}">posted</a>
+								in
+								<a href="../../category/{posts.categorySlug}">
+									<i class="fa {posts.categoryIcon}"></i> {posts.categoryName}
+								</a>
+								<span class="timeago" title="{posts.relativeTime}"></span>
+							</span>
+						</small>
 					</div>
 				</div>
 			</div>
