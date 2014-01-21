@@ -407,38 +407,41 @@ var fs = require('fs'),
 			var callerUID = req.user ? req.user.uid : '0';
 
 			getUserDataByUserSlug(req.params.userslug, callerUID, function (userData) {
-				if (userData) {
-					user.isFollowing(callerUID, userData.theirid, function (isFollowing) {
-						posts.getPostsByUid(userData.theirid, 0, 9, function (err, posts) {
-
-							if(err) {
-								return next(err);
-							}
-
-							userData.posts = posts.filter(function (p) {
-								return p && parseInt(p.deleted, 10) !== 1;
-							});
-
-							userData.isFollowing = isFollowing;
-
-							if (!userData.profileviews) {
-								userData.profileviews = 1;
-							}
-							if (parseInt(callerUID, 10) !== parseInt(userData.uid, 10)) {
-								user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
-							}
-
-							postTools.parse(userData.signature, function (err, signature) {
-								userData.signature = signature;
-								res.json(userData);
-							});
-						});
-					});
-				} else {
-					res.json(404, {
+				if(!userData) {
+					return res.json(404, {
 						error: 'User not found!'
 					});
 				}
+
+				user.isFollowing(callerUID, userData.theirid, function (isFollowing) {
+
+					posts.getPostsByUid(callerUID, userData.theirid, 0, 9, function (err, posts) {
+
+						if(err) {
+							return next(err);
+						}
+
+						userData.posts = posts.filter(function (p) {
+							return p && parseInt(p.deleted, 10) !== 1;
+						});
+
+						userData.isFollowing = isFollowing;
+
+						if (!userData.profileviews) {
+							userData.profileviews = 1;
+						}
+
+						if (parseInt(callerUID, 10) !== parseInt(userData.uid, 10)) {
+							user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
+						}
+
+						postTools.parse(userData.signature, function (err, signature) {
+							userData.signature = signature;
+							res.json(userData);
+						});
+					});
+				});
+
 			});
 		});
 

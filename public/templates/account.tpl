@@ -108,12 +108,28 @@
 		</div>
 
 		<div class="col-md-6 user-recent-posts">
-			<!-- BEGIN posts -->
-			<div class="topic-row img-thumbnail clearfix" topic-url="topic/{posts.tid}/#{posts.pid}">
-				<span>{posts.content}</span>
-				<span class="pull-right timeago" title="{posts.relativeTime}"></span>
+			<div class="topic-row panel panel-default clearfix">
+				<div class="panel-heading">
+					<h3 class="panel-title">Recent Posts</h3>
+				</div>
+				<div class="panel-body">
+					<!-- BEGIN posts -->
+					<div class="clearfix">
+						<p>{posts.content}</p>
+						<span class="pull-right">
+							<a href="../../topic/{posts.tid}/#{posts.pid}">posted</a>
+							in
+							<a href="../../category/{posts.categorySlug}">
+								<i class="fa {posts.categoryIcon}"></i> {posts.categoryName}
+							</a>
+							<span class="timeago" title="{posts.relativeTime}"></span>
+						</span>
+					</div>
+					<hr/>
+					<!-- END posts -->
+				</div>
 			</div>
-			<!-- END posts -->
+
 		</div>
 	</div>
 

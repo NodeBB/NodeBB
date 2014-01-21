@@ -126,6 +126,60 @@ var db = require('./database'),
 		});
 	};
 
+	Posts.getPostsByPids = function(pids, callback) {
+		var keys = [];
+
+		for(var x=0, numPids=pids.length; x<numPids; ++x) {
+			keys.push('post:' + pids[x]);
+		}
+
+		db.getObjects(keys, function(err, data) {
+			if(err) {
+				return callback(err);
+			}
+
+			async.map(data, function(postData, next) {
+				if(!postData) {
+					return next(null);
+				}
+
+				postData.relativeTime = utils.toISOString(postData.timestamp);
+				postData.relativeEditTime = parseInt(postData.edited, 10) !== 0 ? utils.toISOString(postData.edited) : '';
+
+				postTools.parse(postData.content, function(err, content) {
+					if(err) {
+						return next(err);
+					}
+
+					postData.content = content;
+					next(null, postData);
+				});
+
+			}, callback);
+		});
+	};
+
+	Posts.getPostsByUid = function(callerUid, uid, start, end, callback) {
+		user.getPostIds(uid, start, end, function(err, pids) {
+			if(err) {
+				return callback(err);
+			}
+
+			async.filter(pids, function(pid, next) {
+				postTools.privileges(pid, callerUid, function(err, privileges) {
+					next(privileges.read);
+				});
+			}, function(pids) {
+				if (!(pids && pids.length)) {
+					return callback(null, []);
+				}
+
+
+				Posts.getPostSummaryByPids(pids, false, callback);
+			});
+		});
+	}
+
 	Posts.addUserInfoToPost = function(post, callback) {
 		user.getUserFields(post.uid, ['username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned'], function(err, userData) {
 			if (err) {
@@ -310,39 +364,6 @@ var db = require('./database'),
 		db.setObject('post:' + pid, data, callback);
 	};
 
-	Posts.getPostsByPids = function(pids, callback) {
-		var keys = [];
-
-		for(var x=0, numPids=pids.length; x<numPids; x++) {
-			keys.push('post:' + pids[x]);
-		}
-
-		db.getObjects(keys, function(err, data) {
-			if(err) {
-				return callback(err);
-			}
-
-			async.map(data, function(postData, next) {
-				if(!postData) {
-					return next(null);
-				}
-
-				postData.relativeTime = utils.toISOString(postData.timestamp);
-				postData.relativeEditTime = parseInt(postData.edited, 10) !== 0 ? utils.toISOString(postData.edited) : '';
-
-				postTools.parse(postData.content, function(err, content) {
-					if(err) {
-						return next(err);
-					}
-
-					postData.content = content;
-					next(null, postData);
-				});
-
-			}, callback);
-		});
-	}
-
 	Posts.getCidByPid = function(pid, callback) {
 		Posts.getPostField(pid, 'tid', function(err, tid) {
 			if(err) {
@@ -418,40 +439,6 @@ var db = require('./database'),
 		});
 	}
 
-	Posts.getPostsByUid = function(uid, start, end, callback) {
-		user.getPostIds(uid, start, end, function(err, pids) {
-			if(err) {
-				return callback(err);
-			}
-
-			async.filter(pids, function(pid, next) {
-				postTools.privileges(pid, 0, function(err, privileges) {
-					next(privileges.read);
-				});
-			}, function(pids) {
-				if (pids && pids.length) {
-					plugins.fireHook('filter:post.getTopic', pids, function(err, posts) {
-						if(err) {
-							return callback(err);
-						}
-
-						if (posts && posts.length) {
-							Posts.getPostsByPids(pids, function(err, posts) {
-								plugins.fireHook('action:post.gotTopic', posts);
-								callback(null, posts);
-							});
-						} else {
-							callback(null, []);
-						}
-					});
-				} else {
-					callback(null, []);
-				}
-			});
-		});
-	}
-
-
 	Posts.reIndexPids = function(pids, callback) {
 
 		function reIndex(pid, callback) {
@@ -478,16 +465,11 @@ var db = require('./database'),
 
 	Posts.getFavourites = function(uid, callback) {
 		db.getSortedSetRevRange('uid:' + uid + ':favourites', 0, -1, function(err, pids) {
-			if (err)
+			if (err) {
 				return callback(err, null);
+			}
 
-			Posts.getPostSummaryByPids(pids, false, function(err, posts) {
-				if (err)
-					return callback(err, null);
-
-				callback(null, posts);
-			});
-
+			Posts.getPostSummaryByPids(pids, false, callback);
 		});
 	}
 

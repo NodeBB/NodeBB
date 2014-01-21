@@ -1,22 +1,31 @@
-<div class="motd{motd_class}">
+<div class="panel motd{motd_class}">
 	{motd}
 </div>
 
 <div class="row home" itemscope itemtype="http://www.schema.org/ItemList">
 	<!-- BEGIN categories -->
 	<div class="{categories.class}">
+
+		<meta itemprop="name" content="{categories.name}">
+		<h4>
+			<!-- IF !categories.link -->
+			<span class="badge {categories.badgeclass}">{categories.topic_count} </span>
+			<!-- ENDIF !categories.link -->
+
+			<!-- IF categories.link -->
+			<a href="{categories.link}" itemprop="url" target="_blank">
+			<!-- ELSE -->
+			<a href="{relative_path}/category/{categories.slug}" itemprop="url">
+			<!-- ENDIF categories.link -->
+			{categories.name}
+			</a>
+		</h4>
+
 		<!-- IF categories.link -->
 		<a href="{categories.link}" itemprop="url" target="_blank">
 		<!-- ELSE -->
 		<a href="{relative_path}/category/{categories.slug}" itemprop="url">
 		<!-- ENDIF categories.link -->
-			<meta itemprop="name" content="{categories.name}">
-			<h4>
-				<!-- IF !categories.link -->
-				<span class="badge {categories.badgeclass}">{categories.topic_count} </span>
-				<!-- ENDIF !categories.link -->
-				{categories.name}
-			</h4>
 			<div class="icon" style="background: {categories.background}; color: {categories.color};">
 				<div id="category-{categories.cid}" class="category-slider-{categories.post_count}">
 					<div class="category-box"><i class="fa {categories.icon} fa-4x"></i></div>
