@@ -31,7 +31,7 @@
 			<!-- BEGIN topics -->
 			<li class="category-item {topics.deleted-class}" itemprop="itemListElement">
 
-				<div class="col-md-12 panel panel-default topic-row">
+				<div class="col-md-12 col-xs-12 panel panel-default topic-row">
 					<a href="../../user/{topics.userslug}" class="pull-left">
 						<img class="img-rounded user-img" src="{topics.picture}" title="{topics.username}" />
 					</a>
@@ -62,7 +62,7 @@
 							[[category:posted]] <span class="timeago" title="{topics.relativeTime}"></span>
 						</span>
 
-						<span class="pull-right hidden-xs">
+						<span class="pull-right">
 							<!-- IF topics.unreplied -->
 							[[category:no_replies]]
 							<!-- ELSE -->
@@ -83,7 +83,7 @@
 			<!-- END topics -->
 		</ul>
 	</div>
-	<div class="col-md-3 {show_sidebar} category-sidebar">
+	<div class="col-md-3 col-xs-12 {show_sidebar} category-sidebar">
 		<div class="panel panel-default">
 			<div class="panel-heading">[[category:sidebar.recent_replies]]</div>
 			<div class="panel-body recent-replies">

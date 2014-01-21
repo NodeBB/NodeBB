@@ -99,17 +99,21 @@
 			return difference + (min ? 'y' : ' year') + (difference !== 1 && !min ? 's' : '');
 		},
 
+		invalidUnicodeChars : XRegExp('[^\\p{L}\\s\\d\\-_]', 'g'),
+		invalidLatinChars : /[^\w\s\d\-_]/g,
+
 		//http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
 		slugify: function(str) {
-			var	invalidChars = XRegExp('[^\\p{L}\\s\\d\\-_]', 'g');
-
 			str = str.replace(/^\s+|\s+$/g, ''); // trim
 			str = str.toLowerCase();
-			str = XRegExp.replace(str, invalidChars, '-');
+			if(/^[\w]+$/.test(str)) {
+				str = str.replace(utils.invalidLatinChars, '-');
+			} else {
+				str = XRegExp.replace(str, utils.invalidUnicodeChars, '-');
+			}
 			str = str.replace(/\s+/g, '-') // collapse whitespace and replace by -
 			str = str.replace(/-+/g, '-'); // collapse dashes
 			str = str.replace(/-$/g, '');
-
 			return str;
 		},
 

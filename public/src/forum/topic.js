@@ -642,6 +642,8 @@ define(['composer'], function(composer) {
 				}
 			}
 
+			socket.emit('topics.markAsRead', {tid: tid, uid: app.uid});
+
 			createNewPosts(data);
 		});
 

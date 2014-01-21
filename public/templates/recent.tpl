@@ -61,7 +61,7 @@
 						</span>
 					</span>
 
-					<span class="pull-right hidden-xs">
+					<span class="pull-right">
 						<!-- IF topics.unreplied -->
 						No one has replied
 						<!-- ELSE -->
