@@ -932,6 +932,7 @@ var bcrypt = require('bcrypt'),
 								notifications.get(nid, uid, function(notif_data) {
 									// If the notification could not be found, silently drop it
 									if (notif_data) {
+										notif_data.readClass = !notif_data.read ? 'label-warning' : '';
 										unread.push(notif_data);
 									} else {
 										db.sortedSetRemove('uid:' + uid + ':notifications:unread', nid);
