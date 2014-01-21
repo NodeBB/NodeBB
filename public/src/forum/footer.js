@@ -8,13 +8,6 @@ define(['notifications', 'chat'], function(Notifications, Chat) {
 	Chat.prepareDOM();
 	translator.prepareDOM();
 
-	function markCurrentTopicRead(tid) {
-		if(tids && tids.length > 0 && tids.indexOf(tid) !== -1) {
-			socket.emit('topics.markAsRead', {tid: tid, uid: app.uid});
-			return;
-		}
-	}
-
 	function updateUnreadCount(err, tids) {
 		var count = 0;
 		if(tids && tids.length) {
@@ -23,8 +16,11 @@ define(['notifications', 'chat'], function(Notifications, Chat) {
 
 		var postContainer = $('#post-container');
 		if(postContainer.length) {
-			markCurrentTopicRead(postContainer.attr('data-tid'));
-			return;
+			var tid = postContainer.attr('data-tid');
+			if(tids && tids.length > 0 && tids.indexOf(tid) !== -1) {
+				socket.emit('topics.markAsRead', {tid: tid, uid: app.uid});
+				return;
+			}
 		}
 
 		$('#unread-count').toggleClass('unread-count', count > 0);
