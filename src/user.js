@@ -1015,7 +1015,7 @@ var bcrypt = require('bcrypt'),
 							return parseInt(b.datetime, 10) - parseInt(a.datetime, 10);
 						}).map(function(notif) {
 							notif.datetimeISO = utils.toISOString(notif.datetime);
-							notif.readClass = !notif.read ? 'unread' : '';
+							notif.readClass = !notif.read ? 'label-warning' : '';
 
 							return notif;
 						});
