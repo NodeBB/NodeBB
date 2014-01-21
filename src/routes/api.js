@@ -79,23 +79,23 @@ var path = require('path'),
 							};
 						if (!meta.config.motd) {
 							// Construct default MOTD
-							translator.translate('\n\n# NodeBB \n<small><span>v' + pkg.version + '</span></small>\n\n[[global:motd.welcome]]\
+							translator.translate('\n\n# NodeBB \n<small><span>v' + pkg.version + '</span></small>\n\n<h4>[[global:motd.welcome]]</h4>\
 								<div class="btn-group">\
 									<a target="_blank" href="https://www.nodebb.org" class="btn btn-default btn-lg">\
 										<i class="fa fa-comment"></i>\
-										<span class="hidden-mobile">&nbsp;[[global:motd.get]]</span>\
+										<span class="">&nbsp;[[global:motd.get]]</span>\
 									</a>\
-									<a target="_blank" href="https://github.com/designcreateplay/NodeBB" class="btn btn-default btn-lg hidden-mobile">\
+									<a target="_blank" href="https://github.com/designcreateplay/NodeBB" class="btn btn-default btn-lg">\
 										<i class="fa fa-github"></i>\
-										<span class="hidden-mobile">&nbsp;[[global:motd.fork]]</span>\
+										<span class="">&nbsp;[[global:motd.fork]]</span>\
 									</a>\
 									<a target="_blank" href="https://facebook.com/NodeBB" class="btn btn-default btn-lg">\
 										<i class="fa fa-facebook"></i>\
-										<span class="hidden-mobile">&nbsp;[[global:motd.like]]</span>\
+										<span class="">&nbsp;[[global:motd.like]]</span>\
 									</a>\
 									<a target="_blank" href="https://twitter.com/NodeBB" class="btn btn-default btn-lg">\
 										<i class="fa fa-twitter"></i>\
-										<span class="hidden-mobile">&nbsp;[[global:motd.follow]]</span>\
+										<span class="">&nbsp;[[global:motd.follow]]</span>\
 									</a>\
 								</div>\
 							', function(motd) {
