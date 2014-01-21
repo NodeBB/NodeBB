@@ -192,7 +192,7 @@ define(function() {
 						}
 					});
 				}
-		    });
+			});
 		});
 
 		detailsModalSave.on('click', function() {
