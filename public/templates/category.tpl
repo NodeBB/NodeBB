@@ -8,7 +8,9 @@
 </ol>
 
 <div>
+	<!-- IF privileges.write -->
 	<button id="new_post" class="btn btn-primary {show_topic_button}">[[category:new_topic_button]]</button>
+	<!-- ENDIF privileges.write -->
 	<!-- IF !disableSocialButtons -->
 	<div class="inline-block pull-right">
 		<a href="#" id="facebook-share"><i class="fa fa-facebook-square fa-2x"></i></a>&nbsp;

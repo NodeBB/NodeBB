@@ -190,6 +190,9 @@ var path = require('path'),
 								return next(err);
 							}
 
+							// Add privilege data to template data
+							data.privileges = privileges;
+
 							if (data && parseInt(data.disabled, 10) === 0) {
 								res.json(data);
 							} else {
