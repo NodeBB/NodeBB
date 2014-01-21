@@ -166,6 +166,9 @@ var path = require('path'),
 					if (privileges.read) {
 						topics.getTopicWithPosts(req.params.id, uid, 0, 10, false, function (err, data) {
 							if (!err) {
+								// Send in privilege data as well
+								data.privileges = privileges;
+
 								if (parseInt(data.deleted, 10) === 1 && parseInt(data.expose_tools, 10) === 0) {
 									return res.json(404, {});
 								}
