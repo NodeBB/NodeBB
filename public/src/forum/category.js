@@ -155,8 +155,8 @@ define(['composer'], function(composer) {
 
 			replies += '<li data-pid="'+ posts[i].pid +'">' +
 						'<a href="' + RELATIVE_PATH + '/user/' + posts[i].userslug + '"><img title="' + posts[i].username + '" class="img-rounded user-img" src="' + posts[i].picture + '"/></a>' +
+						'<strong><span>'+ posts[i].username + '</span></strong>' +
 						'<a href="' + RELATIVE_PATH + '/topic/' + posts[i].topicSlug + '#' + posts[i].pid + '">' +
-							'<strong><span>'+ posts[i].username + '</span></strong>' +
 							'<p>' +	posts[i].content + '</p>' +
 						'</a>' +
 						'<span class="timeago pull-right" title="' + posts[i].relativeTime + '"></span>' +

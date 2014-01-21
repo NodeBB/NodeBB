@@ -522,8 +522,10 @@ define(['composer'], function(composer) {
 
 
 		$('#post-container').on('click', '.chat', function(e) {
-			var username = $(this).parents('li.row').attr('data-username');
-			var touid = $(this).parents('li.row').attr('data-uid');
+			var post = $(this).parents('li.post-row'),
+				username = post.attr('data-username'),
+				touid = post.attr('data-uid');
+
 			app.openChat(username, touid);
 			$(this).parents('.btn-group').find('.dropdown-toggle').click();
 			return false;
