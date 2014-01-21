@@ -539,7 +539,6 @@ define(['composer'], function(composer) {
 			'posts.favourite'
 		]);
 
-
 		socket.on('get_users_in_room', function(data) {
 
 			if(data && data.room.indexOf('topic') !== -1) {

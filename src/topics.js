@@ -184,8 +184,9 @@ var async = require('async'),
 									return callback(err, null);
 								}
 
-								Topics.markAsRead(tid, uid);
-								Topics.pushUnreadCount();
+								Topics.markAsRead(tid, uid, function(err) {
+									Topics.pushUnreadCount(null);
+								});
 							});
 						});
 					});
@@ -633,9 +634,13 @@ var async = require('async'),
 			uids = [uids];
 		}
 
+		uids = uids.filter(function(value) {
+			return parseInt(value, 10) !== 0;
+		});
+
 		async.each(uids, function(uid, next) {
 			Topics.getUnreadTids(uid, 0, 19, function(err, tids) {
-				websockets.in('uid_' + uid).emit('event:unread.updateCount', null, tids.length);
+				websockets.in('uid_' + uid).emit('event:unread.updateCount', null, tids);
 				next();
 			});
 		}, function(err) {
@@ -764,8 +769,9 @@ var async = require('async'),
 
 			// "quiet" is used for things like RSS feed updating, HTML parsing for non-js users, etc
 			if (!quiet) {
-				Topics.markAsRead(tid, current_user);
-				Topics.pushUnreadCount(current_user);
+				Topics.markAsRead(tid, current_user, function(err) {
+					Topics.pushUnreadCount(current_user);
+				});
 				Topics.increaseViewCount(tid);
 			}
 
@@ -916,13 +922,15 @@ var async = require('async'),
 				return callback(err);
 			}
 
-			if (tids && tids.length) {
-				for (var i = 0; i < tids.length; ++i) {
-					Topics.markAsRead(tids[i], uid);
-				}
+			if(!tids || !tids.length) {
+				return callback(null);
 			}
 
-			callback(null);
+			function markRead(tid, next) {
+				Topics.markAsRead(tid, uid, next);
+			}
+
+			async.each(tids, markRead, callback);
 		});
 	}
 
@@ -938,9 +946,13 @@ var async = require('async'),
 		db.delete('tid:' + tid + ':read_by_uid', callback);
 	}
 
-	Topics.markAsRead = function(tid, uid) {
+	Topics.markAsRead = function(tid, uid, callback) {
 
-		db.setAdd('tid:' + tid + ':read_by_uid', uid);
+		db.setAdd('tid:' + tid + ':read_by_uid', uid, function(err) {
+			if(callback) {
+				callback(err);
+			}
+		});
 
 		Topics.getTopicField(tid, 'cid', function(err, cid) {
 
