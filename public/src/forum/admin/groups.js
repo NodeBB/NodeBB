@@ -2,7 +2,8 @@ define(function() {
 	var	Groups = {};
 
 	Groups.init = function() {
-		var createEl = document.getElementById('create'),
+		var yourid = templates.get('yourid'),
+		    createEl = document.getElementById('create'),
 			createModal = $('#create-modal'),
 			createSubmitBtn = document.getElementById('create-modal-go'),
 			createNameEl = $('#create-group-name'),
@@ -171,19 +172,27 @@ define(function() {
 		groupMembersEl.on('click', 'li[data-uid]', function() {
 			var uid = this.getAttribute('data-uid'),
 				gid = detailsModal.attr('data-gid');
-			
-			bootbox.confirm('Are you sure you want to remove this user?', function(confirm) {
-				if (confirm){
-					socket.emit('admin.groups.leave', {
-						gid: gid,
-						uid: uid
-						}, function(err, data) {
-						if (!err) {
-							groupMembersEl.find('li[data-uid="' + uid + '"]').remove();
-						}
-					});
+				
+			socket.emit('admin.groups.get', gid, function(err, groupObj){
+                if (!err){
+				    if (groupObj.name == 'Administrators' && uid == yourid){
+				        bootbox.alert('You cannot remove yourself from the Administrator Group');
+				        return;
+				    }
+				    bootbox.confirm('Are you sure you want to remove this user?', function(confirm) {
+				        if (confirm){
+					        socket.emit('admin.groups.leave', {
+						        gid: gid,
+						        uid: uid
+						        }, function(err, data) {
+						            if (!err) {
+							            groupMembersEl.find('li[data-uid="' + uid + '"]').remove();
+						            }
+					        });
+				        }
+			        });
 				}
-			});
+		    });
 		});
 
 		detailsModalSave.on('click', function() {
