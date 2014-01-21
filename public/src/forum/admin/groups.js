@@ -180,17 +180,17 @@ define(function() {
 				        return;
 				    }
 				    bootbox.confirm('Are you sure you want to remove this user?', function(confirm) {
-				        if (confirm){
-					        socket.emit('admin.groups.leave', {
-						        gid: gid,
-						        uid: uid
-						        }, function(err, data) {
-						            if (!err) {
-							            groupMembersEl.find('li[data-uid="' + uid + '"]').remove();
-						            }
-					        });
-				        }
-			        });
+						if (confirm){
+							socket.emit('admin.groups.leave', {
+								gid: gid,
+								uid: uid
+							}, function(err, data) {
+								if (!err) {
+									groupMembersEl.find('li[data-uid="' + uid + '"]').remove();
+								}
+							});
+						}
+					});
 				}
 		    });
 		});
