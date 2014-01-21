@@ -106,18 +106,19 @@
 		collapseWhitespace : /\s+/g,
 		collapseDash : /-+/g,
 		trimTrailingDash : /-$/g,
+		isLatin : /^[\w]+$/,
 
 		//http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
 		slugify: function(str) {
 			str = str.replace(utils.trimRegex, '');
 			str = str.toLowerCase();
-			if(/^[\w]+$/.test(str)) {
+			if(utils.isLatin.test(str)) {
 				str = str.replace(utils.invalidLatinChars, '-');
 			} else {
 				str = XRegExp.replace(str, utils.invalidUnicodeChars, '-');
 			}
-			str = str.replace(utils.collapseWhitespace, '-') // collapse whitespace and replace by -
-			str = str.replace(utils.collapseDash, '-'); // collapse dashes
+			str = str.replace(utils.collapseWhitespace, '-')
+			str = str.replace(utils.collapseDash, '-');
 			str = str.replace(utils.trimTrailingDash, '');
 			return str;
 		},
