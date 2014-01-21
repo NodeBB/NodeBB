@@ -1,4 +1,4 @@
-<div class="panel motd{motd_class}">
+<div class="panel panel-default motd{motd_class}">
 	{motd}
 </div>
 
