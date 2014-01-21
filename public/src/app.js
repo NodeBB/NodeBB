@@ -454,6 +454,7 @@ var socket,
 				$('#search-fields').hide();
 				$('#search-button').show();
 			});
+			return false;
 		});
 
 		var loggedInMenu = $('#logged-in-menu'),
