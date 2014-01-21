@@ -471,11 +471,10 @@ var bcrypt = require('bcrypt'),
 			}
 
 			var	usernames = Object.keys(usernamesHash),
-				filterRegex = new RegExp('^' + query + '.*?$', 'i'),
 				results = [];
 
 			results = usernames.filter(function(username) {		// Remove non-matches
-				return filterRegex.test(username);
+				return username.indexOf(query) === 0;
 			}).sort(function(a, b) {							// Sort alphabetically
 				return a > b;
 			}).slice(0, 5)										// Limit 5
