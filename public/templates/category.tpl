@@ -32,7 +32,9 @@
 			<li class="category-item {topics.deleted-class}" itemprop="itemListElement">
 
 				<div class="col-md-12 panel panel-default topic-row">
-
+					<a href="../../user/{topics.userslug}" class="pull-left">
+						<img class="img-rounded user-img" src="{topics.picture}" title="{topics.username}" />
+					</a>
 
 					<h3>
 						<a href="../../topic/{topics.slug}" itemprop="url">
@@ -57,9 +59,6 @@
 						</span>
 						|
 						<span>
-							<a href="../../user/{topics.userslug}">
-								<img class="teaser-pic" src="{topics.picture}" title="{topics.username}"/>
-							</a>
 							[[category:posted]] <span class="timeago" title="{topics.relativeTime}"></span>
 						</span>
 

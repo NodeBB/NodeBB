@@ -25,6 +25,9 @@
 		<!-- BEGIN topics -->
 		<li class="category-item {topics.deleted-class}">
 			<div class="col-md-12 col-xs-12 panel panel-default topic-row">
+				<a href="{relative_path}/user/{topics.userslug}" class="pull-left">
+					<img class="img-rounded user-img" src="{topics.picture}" title="{topics.username}" />
+				</a>
 
 				<h3>
 					<a href="{relative_path}/topic/{topics.slug}">
@@ -50,9 +53,6 @@
 					</span>
 					|
 					<span>
-						<a href="{relative_path}/user/{topics.userslug}">
-							<img class="teaser-pic" src="{topics.picture}" title="{topics.username}"/>
-						</a>
 						posted in
 						<a href="{relative_path}/category/{topics.categorySlug}">
 							<i class="fa {topics.categoryIcon}"></i> {topics.categoryName}
