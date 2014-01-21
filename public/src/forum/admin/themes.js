@@ -11,12 +11,6 @@ define(function() {
 			themeEvent = function(e) {
 				if (e.target.hasAttribute('data-action')) {
 					switch (e.target.getAttribute('data-action')) {
-						case 'preview':
-							var cssSrc = $(e.target).parents('li').attr('data-css'),
-								cssEl = document.getElementById('base-theme');
-
-							cssEl.href = cssSrc;
-						break;
 						case 'use':
 							var parentEl = $(e.target).parents('li'),
 								themeType = parentEl.attr('data-type'),
@@ -40,6 +34,7 @@ define(function() {
 					}
 				}
 			};
+
 		bootstrapThemeContainer.addEventListener('click', themeEvent);
 		installedThemeContainer.addEventListener('click', themeEvent);
 
@@ -81,7 +76,6 @@ define(function() {
 						'<div>' +
 						'<div class="pull-right">' +
 						'<button class="btn btn-primary" data-action="use">Use</button> ' +
-						'<button class="btn btn-default" data-action="preview">Preview</button>' +
 						'</div>' +
 						'<h4>' + themes[x].name + '</h4>' +
 						'<p>' +
@@ -120,7 +114,6 @@ define(function() {
 				'<div>' +
 				'<div class="pull-right">' +
 				'<button class="btn btn-primary" data-action="use">Use</button> ' +
-				'<button class="btn btn-default" data-action="preview">Preview</button>' +
 				'</div>' +
 				'<h4>' + theme.name + '</h4>' +
 				'<p>' + theme.description + '</p>' +
