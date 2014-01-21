@@ -51,8 +51,8 @@
 
 						<div class="btn-group">
 							<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="[[topic:posted_by]] {posts.username}">
-								<img class="visible-xs visible-sm pull-left" src="{posts.picture}" width=18 height=18 />
-								<span class="username-field" href="{relative_path}/user/{posts.userslug}" itemprop="author">&nbsp; {posts.username}&nbsp;</span>
+								<span class="visible-xs visible-sm pull-left"><img class="" src="{posts.picture}" width=18 height=18 />&nbsp;</span>
+								<span class="username-field" href="{relative_path}/user/{posts.userslug}" itemprop="author">{posts.username}&nbsp;</span>
 								<span class="caret"></span>
 							</button>
 
