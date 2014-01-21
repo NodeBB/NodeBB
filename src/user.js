@@ -471,11 +471,10 @@ var bcrypt = require('bcrypt'),
 			}
 
 			var	usernames = Object.keys(usernamesHash),
-				filterRegex = new RegExp('^' + query + '.*?$', 'i'),
 				results = [];
 
 			results = usernames.filter(function(username) {		// Remove non-matches
-				return filterRegex.test(username);
+				return username.indexOf(query) === 0;
 			}).sort(function(a, b) {							// Sort alphabetically
 				return a > b;
 			}).slice(0, 5)										// Limit 5
@@ -933,6 +932,7 @@ var bcrypt = require('bcrypt'),
 								notifications.get(nid, uid, function(notif_data) {
 									// If the notification could not be found, silently drop it
 									if (notif_data) {
+										notif_data.readClass = !notif_data.read ? 'label-warning' : '';
 										unread.push(notif_data);
 									} else {
 										db.sortedSetRemove('uid:' + uid + ':notifications:unread', nid);
@@ -1015,7 +1015,7 @@ var bcrypt = require('bcrypt'),
 							return parseInt(b.datetime, 10) - parseInt(a.datetime, 10);
 						}).map(function(notif) {
 							notif.datetimeISO = utils.toISOString(notif.datetime);
-							notif.readClass = !notif.read ? 'unread' : '';
+							notif.readClass = !notif.read ? 'label-warning' : '';
 
 							return notif;
 						});

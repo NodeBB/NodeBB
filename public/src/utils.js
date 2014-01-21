@@ -99,17 +99,27 @@
 			return difference + (min ? 'y' : ' year') + (difference !== 1 && !min ? 's' : '');
 		},
 
+		invalidUnicodeChars : XRegExp('[^\\p{L}\\s\\d\\-_]', 'g'),
+		invalidLatinChars : /[^\w\s\d\-_]/g,
+
+		trimRegex : /^\s+|\s+$/g,
+		collapseWhitespace : /\s+/g,
+		collapseDash : /-+/g,
+		trimTrailingDash : /-$/g,
+		isLatin : /^[\w]+$/,
+
 		//http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
 		slugify: function(str) {
-			var	invalidChars = XRegExp('[^\\p{L}\\s\\d\\-_]', 'g');
-
-			str = str.replace(/^\s+|\s+$/g, ''); // trim
+			str = str.replace(utils.trimRegex, '');
 			str = str.toLowerCase();
-			str = XRegExp.replace(str, invalidChars, '-');
-			str = str.replace(/\s+/g, '-') // collapse whitespace and replace by -
-			str = str.replace(/-+/g, '-'); // collapse dashes
-			str = str.replace(/-$/g, '');
-
+			if(utils.isLatin.test(str)) {
+				str = str.replace(utils.invalidLatinChars, '-');
+			} else {
+				str = XRegExp.replace(str, utils.invalidUnicodeChars, '-');
+			}
+			str = str.replace(utils.collapseWhitespace, '-')
+			str = str.replace(utils.collapseDash, '-');
+			str = str.replace(utils.trimTrailingDash, '');
 			return str;
 		},
 
@@ -202,7 +212,7 @@
 
 	if (!String.prototype.trim) {
 		String.prototype.trim = function() {
-			return this.replace(/^\s+|\s+$/g, '');
+			return this.replace(utils.trimRegex, '');
 		};
 	}
 

@@ -68,39 +68,44 @@ var path = require('path'),
 
 					async.each(data.categories, iterator, function (err) {
 						// Assemble the MOTD
-						var	motdString;
+						var	motdString,
+							assemble = function() {
+								data.motd_class = (parseInt(meta.config.show_motd, 10) === 1 || meta.config.show_motd === undefined) ? '' : ' none';
+								data.motd_class += (meta.config.motd && meta.config.motd.length > 0 ? '' : ' default');
+								data.motd_class += meta.config.motd_class ? ' ' + meta.config.motd_class : '';
+
+								data.motd = require('marked')(motdString);
+								res.json(data);
+							};
 						if (!meta.config.motd) {
 							// Construct default MOTD
-							translator.mget(['global:motd.welcome', 'global:motd.get', 'global:motd.fork', 'global:motd.like', 'global:motd.follow'], function(err, strings) {
-								motdString = '\n\n# NodeBB \n<small><span>v' + pkg.version + '</span></small>\n\n' + strings[0] +
-								'<div class="btn-group">\
+							translator.translate('\n\n# NodeBB \n<small><span>v' + pkg.version + '</span></small>\n\n<h4>[[global:motd.welcome]]</h4>\
+								<div class="btn-group">\
 									<a target="_blank" href="https://www.nodebb.org" class="btn btn-default btn-lg">\
 										<i class="fa fa-comment"></i>\
-										<span class="hidden-mobile">&nbsp;' + strings[1] + '</span>\
+										<span class="">&nbsp;[[global:motd.get]]</span>\
 									</a>\
-									<a target="_blank" href="https://github.com/designcreateplay/NodeBB" class="btn btn-default btn-lg hidden-mobile">\
+									<a target="_blank" href="https://github.com/designcreateplay/NodeBB" class="btn btn-default btn-lg">\
 										<i class="fa fa-github"></i>\
-										<span class="hidden-mobile">&nbsp;' + strings[2] + '</span>\
+										<span class="">&nbsp;[[global:motd.fork]]</span>\
 									</a>\
 									<a target="_blank" href="https://facebook.com/NodeBB" class="btn btn-default btn-lg">\
 										<i class="fa fa-facebook"></i>\
-										<span class="hidden-mobile">&nbsp;' + strings[3] + '</span>\
+										<span class="">&nbsp;[[global:motd.like]]</span>\
 									</a>\
 									<a target="_blank" href="https://twitter.com/NodeBB" class="btn btn-default btn-lg">\
 										<i class="fa fa-twitter"></i>\
-										<span class="hidden-mobile">&nbsp;' + strings[4] + '</span>\
+										<span class="">&nbsp;[[global:motd.follow]]</span>\
 									</a>\
-								</div>';
+								</div>\
+							', function(motd) {
+								motdString = motd;
+								assemble();
 							});
 						} else {
 							motdString = meta.config.motd;
+							assemble();
 						}
-						data.motd_class = (parseInt(meta.config.show_motd, 10) === 1 || meta.config.show_motd === undefined) ? '' : ' none';
-						data.motd_class += (meta.config.motd && meta.config.motd.length > 0 ? '' : ' default');
-						data.motd_class += meta.config.motd_class ? ' ' + meta.config.motd_class : '';
-
-						data.motd = require('marked')(motdString);
-						res.json(data);
 					});
 				});
 			});

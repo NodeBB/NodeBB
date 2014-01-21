@@ -21,7 +21,7 @@ define(function() {
 					if (!err && (data.read.length + data.unread.length) > 0) {
 						for (x = 0; x < numUnread; x++) {
 							notifEl.setAttribute('data-nid', data.unread[x].nid);
-							notifEl.className = 'unread';
+							notifEl.className = data.unread[x].readClass;
 							notifEl.innerHTML = '<a href="' + data.unread[x].path + '"><span class="pull-right">' + utils.relativeTime(data.unread[x].datetime, true) + '</span>' + data.unread[x].text + '</a>';
 							notifFrag.appendChild(notifEl.cloneNode(true));
 						}

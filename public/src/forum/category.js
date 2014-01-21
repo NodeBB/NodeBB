@@ -153,13 +153,14 @@ define(['composer'], function(composer) {
 		var replies = '';
 		for (var i = 0, numPosts = posts.length; i < numPosts; ++i) {
 
-			replies += '<li data-pid="'+ posts[i].pid +'">' +
+			replies += '<li data-pid="'+ posts[i].pid +'" class="clearfix">' +
 						'<a href="' + RELATIVE_PATH + '/user/' + posts[i].userslug + '"><img title="' + posts[i].username + '" class="img-rounded user-img" src="' + posts[i].picture + '"/></a>' +
-						'<a href="' + RELATIVE_PATH + '/topic/' + posts[i].topicSlug + '#' + posts[i].pid + '">' +
-							'<strong><span>'+ posts[i].username + '</span></strong>' +
-							'<p>' +	posts[i].content + '</p>' +
-						'</a>' +
-						'<span class="timeago pull-right" title="' + posts[i].relativeTime + '"></span>' +
+						'<strong><span>'+ posts[i].username + '</span></strong>' +
+						'<p>' +	posts[i].content + '</p>' +
+						'<span class="pull-right">'+
+							'<a href="' + RELATIVE_PATH + '/topic/' + posts[i].topicSlug + '#' + posts[i].pid + '">posted</a> '+
+							'<span class="timeago" title="' + posts[i].relativeTime + '"></span>' +
+						'</span>'+
 					   '</li>';
 		}
 

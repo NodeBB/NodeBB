@@ -23,7 +23,7 @@
 
 	<ul id="post-container" class="posts" data-tid="{topic_id}">
 		<!-- BEGIN posts -->
-			<li class="row post-row infiniteloaded" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-userslug="{posts.userslug}" data-index="{posts.index}" data-deleted="{posts.deleted}" itemscope itemtype="http://schema.org/Comment">
+			<li class="post-row infiniteloaded" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-userslug="{posts.userslug}" data-index="{posts.index}" data-deleted="{posts.deleted}" itemscope itemtype="http://schema.org/Comment">
 				<a id="post_anchor_{posts.pid}" name="{posts.pid}"></a>
 
 				<meta itemprop="datePublished" content="{posts.relativeTime}">
@@ -36,107 +36,106 @@
 						<span class="label label-danger">[[topic:banned]]</span>
 						<!-- ENDIF posts.user_banned -->
 					</a>
-
 				</div>
 
-				<div class="col-md-11">
-					<div class="post-block">
-						<a class="main-post avatar" href="{relative_path}/user/{posts.userslug}">
-							<img itemprop="image" src="{posts.picture}" align="left" class="img-thumbnail" width=150 height=150 />
-						</a>
-						<h3 class="main-post">
-							<p id="topic_title_{posts.pid}" class="topic-title" itemprop="name">{topic_name}</p>
-						</h3>
+				<div class="col-md-11 panel panel-default post-block">
 
-						<div class="topic-buttons">
+					<a class="main-post avatar" href="{relative_path}/user/{posts.userslug}">
+						<img itemprop="image" src="{posts.picture}" align="left" class="img-thumbnail" width=150 height=150 />
+					</a>
+					<h3 class="main-post">
+						<p id="topic_title_{posts.pid}" class="topic-title" itemprop="name">{topic_name}</p>
+					</h3>
 
-							<div class="btn-group">
-								<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="[[topic:posted_by]] {posts.username}">
-									<img class="visible-xs visible-sm pull-left" src="{posts.picture}" width=18 height=18 />
-									<span class="username-field" href="{relative_path}/user/{posts.userslug}" itemprop="author">&nbsp; {posts.username}&nbsp;</span>
-									<span class="caret"></span>
-								</button>
+					<div class="topic-buttons">
 
-							    <ul class="dropdown-menu">
-									<li><a href="{relative_path}/user/{posts.userslug}"><i class="fa fa-user"></i> [[topic:profile]]</a></li>
-									<li><a href="#" class="chat"><i class="fa fa-comment"></i> [[topic:chat]]</a></li>
-							    </ul>
-							</div>
+						<div class="btn-group">
+							<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="[[topic:posted_by]] {posts.username}">
+								<span class="visible-xs visible-sm pull-left"><img class="" src="{posts.picture}" width=18 height=18 />&nbsp;</span>
+								<span class="username-field" href="{relative_path}/user/{posts.userslug}" itemprop="author">{posts.username}&nbsp;</span>
+								<span class="caret"></span>
+							</button>
 
-							<div class="btn-group">
-								<!-- IF @first -->
-								<button class="btn btn-sm btn-default follow" type="button" title="Be notified of new replies in this topic"><i class="fa fa-eye"></i></button>
-								<!-- ENDIF @first -->
-								<button data-favourited="{posts.favourited}" class="favourite btn btn-sm btn-default <!-- IF posts.favourited --> btn-warning <!-- ENDIF posts.favourited -->" type="button">
-									<span class="favourite-text">[[topic:favourite]]</span>
-									<span class="post_rep_{posts.pid}">{posts.reputation} </span>
-									<!-- IF posts.favourited -->
-									<i class="fa fa-star"></i>
-									<!-- ELSE -->
-									<i class="fa fa-star-o"></i>
-									<!-- ENDIF posts.favourited -->
-								</button>
-							</div>
-							<div class="btn-group">
-								<button class="btn btn-sm btn-default quote" type="button" title="[[topic:quote]]"><i class="fa fa-quote-left"></i></button>
-								<button class="btn btn-sm btn-primary btn post_reply" type="button">[[topic:reply]] <i class="fa fa-reply"></i></button>
-							</div>
-
-							<div class="pull-right">
-								<div class="btn-group post-tools">
-									<div class="dropdown share-dropdown">
-										<button title="[[topic:share]]"class="btn btn-sm btn-default share" data-toggle="dropdown" href="#"><i class="fa fa-share-square-o"></i></button>
-										<ul class="dropdown-menu text-center pull-right" role="menu" aria-labelledby="dLabel">
-											<!-- IF !disableSocialButtons -->
-											<li class="btn btn-sm btn-default facebook-share" type="button" title=""><i class="fa fa-facebook"></i></li>
-											<li class="btn btn-sm btn-default twitter-share" type="button" title=""><i class="fa fa-twitter"></i></li>
-											<li class="btn btn-sm btn-default google-share" type="button" title=""><i class="fa fa-google-plus"></i></li>
-											<!-- ENDIF !disableSocialButtons -->
-											<li>
-												<input type="text" id="post_{posts.pid}_link" value="" class="form-control pull-right post-link" style=""></input>
-											<li>
-										</ul>
-									</div>
-								</div>
-
-								<!-- IF posts.display_moderator_tools -->
-								<div class="btn-group post-tools">
-									<div class="dropdown">
-										<button title="[[topic:tools]]" class="btn btn-sm btn-default" data-toggle="dropdown" href="#"><i class="fa fa-gear"></i></button>
-										<ul class="dropdown-menu text-center pull-right" role="menu" aria-labelledby="dLabel">
-											<button class="btn btn-sm btn-default edit" type="button" title="[[topic:edit]]"><i class="fa fa-pencil"></i></button>
-											<button class="btn btn-sm btn-default delete" type="button" title="[[topic:delete]]"><i class="fa fa-trash-o"></i></button>
-
-											<button class="btn btn-sm btn-default move {posts.display_move_tools}" type="button" title="[[topic:move]]"><i class="fa fa-arrows"></i></button>
-
-										</ul>
-									</div>
-								</div>
-								<!-- ENDIF posts.display_moderator_tools -->
-							</div>
+						    <ul class="dropdown-menu">
+								<li><a href="{relative_path}/user/{posts.userslug}"><i class="fa fa-user"></i> [[topic:profile]]</a></li>
+								<li><a href="#" class="chat"><i class="fa fa-comment"></i> [[topic:chat]]</a></li>
+						    </ul>
 						</div>
 
-						<div id="content_{posts.pid}" class="post-content" itemprop="text">{posts.content}</div>
-						<!-- IF posts.signature -->
-						<div class="post-signature">{posts.signature}</div>
-						<!-- ENDIF posts.signature -->
+						<div class="btn-group">
+							<!-- IF @first -->
+							<button class="btn btn-sm btn-default follow" type="button" title="Be notified of new replies in this topic"><i class="fa fa-eye"></i></button>
+							<!-- ENDIF @first -->
+							<button data-favourited="{posts.favourited}" class="favourite btn btn-sm btn-default <!-- IF posts.favourited --> btn-warning <!-- ENDIF posts.favourited -->" type="button">
+								<span class="favourite-text">[[topic:favourite]]</span>
+								<span class="post_rep_{posts.pid}">{posts.reputation} </span>
+								<!-- IF posts.favourited -->
+								<i class="fa fa-star"></i>
+								<!-- ELSE -->
+								<i class="fa fa-star-o"></i>
+								<!-- ENDIF posts.favourited -->
+							</button>
+						</div>
+						<div class="btn-group">
+							<button class="btn btn-sm btn-default quote" type="button" title="[[topic:quote]]"><i class="fa fa-quote-left"></i></button>
+							<button class="btn btn-sm btn-primary btn post_reply" type="button">[[topic:reply]] <i class="fa fa-reply"></i></button>
+						</div>
 
-						<div class="post-info">
-							<span class="pull-left">
-								[[topic:reputation]]: <i class='fa fa-star'></i> <span class='formatted-number post_rep_{posts.uid}'>{posts.user_rep}</span>&nbsp;|&nbsp;[[topic:posts]]: <i class='fa fa-pencil'></i> <span class='formatted-number user_postcount_{posts.uid}'>{posts.user_postcount}</span>
-								{posts.additional_profile_info}
-							</span>
-							<span class="pull-right">
-								[[category:posted]] <span class="relativeTimeAgo timeago" title="{posts.relativeTime}"></span>
-								<!-- IF posts.editor -->
-								<span>| [[category:last_edited_by]] <strong><a href="{relative_path}/user/{posts.editorslug}">{posts.editorname}</a></strong></span>
-								<span class="timeago" title="{posts.relativeEditTime}"></span>
-								<!-- ENDIF posts.editor -->
-							</span>
-							<div style="clear:both;"></div>
+						<div class="pull-right">
+							<div class="btn-group post-tools">
+								<div class="dropdown share-dropdown">
+									<button title="[[topic:share]]"class="btn btn-sm btn-default share" data-toggle="dropdown" href="#"><i class="fa fa-share-square-o"></i></button>
+									<ul class="dropdown-menu text-center pull-right" role="menu" aria-labelledby="dLabel">
+										<!-- IF !disableSocialButtons -->
+										<li class="btn btn-sm btn-default facebook-share" type="button" title=""><i class="fa fa-facebook"></i></li>
+										<li class="btn btn-sm btn-default twitter-share" type="button" title=""><i class="fa fa-twitter"></i></li>
+										<li class="btn btn-sm btn-default google-share" type="button" title=""><i class="fa fa-google-plus"></i></li>
+										<!-- ENDIF !disableSocialButtons -->
+										<li>
+											<input type="text" id="post_{posts.pid}_link" value="" class="form-control pull-right post-link" style=""></input>
+										<li>
+									</ul>
+								</div>
+							</div>
+
+							<!-- IF posts.display_moderator_tools -->
+							<div class="btn-group post-tools">
+								<div class="dropdown">
+									<button title="[[topic:tools]]" class="btn btn-sm btn-default" data-toggle="dropdown" href="#"><i class="fa fa-gear"></i></button>
+									<ul class="dropdown-menu text-center pull-right" role="menu" aria-labelledby="dLabel">
+										<button class="btn btn-sm btn-default edit" type="button" title="[[topic:edit]]"><i class="fa fa-pencil"></i></button>
+										<button class="btn btn-sm btn-default delete" type="button" title="[[topic:delete]]"><i class="fa fa-trash-o"></i></button>
+
+										<button class="btn btn-sm btn-default move {posts.display_move_tools}" type="button" title="[[topic:move]]"><i class="fa fa-arrows"></i></button>
+
+									</ul>
+								</div>
+							</div>
+							<!-- ENDIF posts.display_moderator_tools -->
 						</div>
 					</div>
+
+					<div id="content_{posts.pid}" class="post-content" itemprop="text">{posts.content}</div>
+					<!-- IF posts.signature -->
+					<div class="post-signature">{posts.signature}</div>
+					<!-- ENDIF posts.signature -->
+
+					<div class="post-info">
+						<span class="pull-left">
+							[[topic:reputation]]: <i class='fa fa-star'></i> <span class='formatted-number post_rep_{posts.uid}'>{posts.user_rep}</span>&nbsp;|&nbsp;[[topic:posts]]: <i class='fa fa-pencil'></i> <span class='formatted-number user_postcount_{posts.uid}'>{posts.user_postcount}</span>
+							{posts.additional_profile_info}
+						</span>
+						<span class="pull-right">
+							[[category:posted]] <span class="relativeTimeAgo timeago" title="{posts.relativeTime}"></span>
+							<!-- IF posts.editor -->
+							<span>| [[category:last_edited_by]] <strong><a href="{relative_path}/user/{posts.editorslug}">{posts.editorname}</a></strong></span>
+							<span class="timeago" title="{posts.relativeEditTime}"></span>
+							<!-- ENDIF posts.editor -->
+						</span>
+						<div style="clear:both;"></div>
+					</div>
 				</div>
+				<div style="clear:both;"></div>
 			</li>
 
 			<!-- IF @first -->

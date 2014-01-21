@@ -522,8 +522,10 @@ define(['composer'], function(composer) {
 
 
 		$('#post-container').on('click', '.chat', function(e) {
-			var username = $(this).parents('li.row').attr('data-username');
-			var touid = $(this).parents('li.row').attr('data-uid');
+			var post = $(this).parents('li.post-row'),
+				username = post.attr('data-username'),
+				touid = post.attr('data-uid');
+
 			app.openChat(username, touid);
 			$(this).parents('.btn-group').find('.dropdown-toggle').click();
 			return false;
@@ -536,7 +538,6 @@ define(['composer'], function(composer) {
 			'event:topic_moved', 'event:post_edited', 'event:post_deleted', 'event:post_restored',
 			'posts.favourite'
 		]);
-
 
 		socket.on('get_users_in_room', function(data) {
 
@@ -640,6 +641,8 @@ define(['composer'], function(composer) {
 					postcount.html(ptotal);
 				}
 			}
+
+			socket.emit('topics.markAsRead', {tid: tid, uid: app.uid});
 
 			createNewPosts(data);
 		});

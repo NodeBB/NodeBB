@@ -454,6 +454,7 @@ var socket,
 				$('#search-fields').hide();
 				$('#search-button').show();
 			});
+			return false;
 		});
 
 		var loggedInMenu = $('#logged-in-menu'),
@@ -501,7 +502,7 @@ var socket,
 
 		}
 
-		$('#main-nav a,#user-control-list a,#logged-out-menu li a').off('click').on('click', function() {
+		$('#main-nav a,#user-control-list a,#logged-out-menu li a,#logged-in-menu .visible-xs').off('click').on('click', function() {
 			if($('.navbar .navbar-collapse').hasClass('in')) {
 				$('.navbar-header button').click();
 			}

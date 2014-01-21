@@ -68,10 +68,6 @@ define(['forum/accountheader'], function(header) {
 				app.openChat(username, theirid);
 			});
 
-			$('.user-recent-posts .topic-row').on('click', function() {
-				ajaxify.go($(this).attr('topic-url'));
-			});
-
 			socket.on('user.isOnline', Account.handleUserOnline);
 
 			socket.emit('user.isOnline', theirid, Account.handleUserOnline);

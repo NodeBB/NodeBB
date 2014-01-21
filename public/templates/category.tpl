@@ -30,59 +30,60 @@
 			<meta itemprop="itemListOrder" content="descending">
 			<!-- BEGIN topics -->
 			<li class="category-item {topics.deleted-class}" itemprop="itemListElement">
-				<div class="row">
-					<div class="col-md-12 topic-row">
-						<div>
-							<a href="../../topic/{topics.slug}" itemprop="url">
-								<h3>
-									<meta itemprop="name" content="{topics.title}">
 
-									<span class="topic-title">
-										<strong><i class="fa {topics.pin-icon}"></i> <i class="fa {topics.lock-icon}"></i></strong>
-										{topics.title}
-									</span>
-								</h3>
+				<div class="col-md-12 col-xs-12 panel panel-default topic-row">
+					<a href="../../user/{topics.userslug}" class="pull-left">
+						<img class="img-rounded user-img" src="{topics.picture}" title="{topics.username}" />
+					</a>
+
+					<h3>
+						<a href="../../topic/{topics.slug}" itemprop="url">
+							<meta itemprop="name" content="{topics.title}">
+
+							<span class="topic-title">
+								<strong><i class="fa {topics.pin-icon}"></i> <i class="fa {topics.lock-icon}"></i></strong>
+								{topics.title}
+							</span>
+						</a>
+					</h3>
+
+					<small>
+						<span class="topic-stats">
+							[[category:posts]]
+							<strong class="human-readable-number" title="{topics.postcount}">{topics.postcount}</strong>
+						</span>
+						|
+						<span class="topic-stats">
+							[[category:views]]
+							<strong class="human-readable-number" title="{topics.viewcount}">{topics.viewcount}</strong>
+						</span>
+						|
+						<span>
+							[[category:posted]] <span class="timeago" title="{topics.relativeTime}"></span>
+						</span>
+
+						<span class="pull-right">
+							<!-- IF topics.unreplied -->
+							[[category:no_replies]]
+							<!-- ELSE -->
+							<a href="../../user/{topics.teaser_userslug}">
+								<img class="teaser-pic" src="{topics.teaser_userpicture}" title="{topics.teaser_username}"/>
 							</a>
-							<small>
-								<span class="topic-stats">
-									[[category:posts]]
-									<strong class="human-readable-number" title="{topics.postcount}">{topics.postcount}</strong>
-								</span>
-								|
-								<span class="topic-stats">
-									[[category:views]]
-									<strong class="human-readable-number" title="{topics.viewcount}">{topics.viewcount}</strong>
-								</span>
-								|
-								<span>
-									<a href="../../user/{topics.userslug}">
-										<img class="teaser-pic" src="{topics.picture}" title="{topics.username}"/>
-									</a>
-									[[category:posted]] <span class="timeago" title="{topics.relativeTime}"></span>
-								</span>
+							<a href="../../topic/{topics.slug}#{topics.teaser_pid}">
+								[[category:replied]]
+							</a>
+							<span class="timeago" title="{topics.teaser_timestamp}"></span>
+							<!-- ENDIF topics.unreplied -->
+						</span>
+					</small>
 
-								<span class="pull-right hidden-xs">
-									<!-- IF topics.unreplied -->
-									[[category:no_replies]]
-									<!-- ELSE -->
-									<a href="../../user/{topics.teaser_userslug}">
-										<img class="teaser-pic" src="{topics.teaser_userpicture}" title="{topics.teaser_username}"/>
-									</a>
-									<a href="../../topic/{topics.slug}#{topics.teaser_pid}">
-										[[category:replied]]
-									</a>
-									<span class="timeago" title="{topics.teaser_timestamp}"></span>
-									<!-- ENDIF topics.unreplied -->
-								</span>
-							</small>
-						</div>
-					</div>
 				</div>
+
 			</li>
 			<!-- END topics -->
 		</ul>
 	</div>
-	<div class="col-md-3 {show_sidebar} category-sidebar">
+	<div class="col-md-3 col-xs-12 {show_sidebar} category-sidebar">
 		<div class="panel panel-default">
 			<div class="panel-heading">[[category:sidebar.recent_replies]]</div>
 			<div class="panel-body recent-replies">
