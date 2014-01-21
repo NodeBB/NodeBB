@@ -174,12 +174,12 @@ define(function() {
 				gid = detailsModal.attr('data-gid');
 				
 			socket.emit('admin.groups.get', gid, function(err, groupObj){
-                if (!err){
-				    if (groupObj.name == 'Administrators' && uid == yourid){
-				        bootbox.alert('You cannot remove yourself from the Administrator Group');
-				        return;
-				    }
-				    bootbox.confirm('Are you sure you want to remove this user?', function(confirm) {
+				if (!err){
+					if (groupObj.name == 'Administrators' && uid == yourid){
+						bootbox.alert('You cannot remove yourself from the Administrator Group');
+						return;
+					}
+					bootbox.confirm('Are you sure you want to remove this user?', function(confirm) {
 						if (confirm){
 							socket.emit('admin.groups.leave', {
 								gid: gid,
