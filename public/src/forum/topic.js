@@ -715,8 +715,13 @@ define(['composer'], function(composer) {
 				var favBtn = $('li[data-pid="' + data.pid + '"] .favourite');
 				if(favBtn.length) {
 					favBtn.addClass('btn-warning')
-						.attr('data-favourited', true)
-						.find('i').attr('class', 'fa fa-star');
+						.attr('data-favourited', true);
+
+					var icon = favBtn.find('i');
+					var className = icon.attr('class');
+					if (className.indexOf('-o') !== -1) {
+						icon.attr('class', className.replace('-o', ''));
+					}
 				}
 			}
 		});
@@ -726,8 +731,12 @@ define(['composer'], function(composer) {
 				var favBtn = $('li[data-pid="' + data.pid + '"] .favourite');
 				if(favBtn.length) {
 					favBtn.removeClass('btn-warning')
-						.attr('data-favourited', false)
-						.find('i').attr('class', 'fa fa-star-o');
+						.attr('data-favourited', false);
+					var icon = favBtn.find('i');
+					var className = icon.attr('class');
+					if (className.indexOf('-o') === -1) {
+						icon.attr('class', className + '-o');
+					}
 				}
 			}
 		});
