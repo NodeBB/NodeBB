@@ -1,4 +1,6 @@
-var db = require('./database'),
+var async = require('async'),
+
+	db = require('./database'),
 	posts = require('./posts'),
 	user = require('./user'),
 	translator = require('./../public/src/translator');
@@ -98,21 +100,33 @@ var db = require('./database'),
 	};
 
 	Favourites.getFavouritesByPostIDs = function (pids, uid, callback) {
-		var loaded = 0;
 		var data = {};
 
-		for (var i = 0, ii = pids.length; i < ii; i++) {
-			(function (post_id) {
-				Favourites.hasFavourited(post_id, uid, function (hasFavourited) {
-
-					data[post_id] = hasFavourited;
-					loaded++;
-					if (loaded === pids.length) {
-						callback(data);
-					}
-				});
-			}(pids[i]));
+		function iterator(pid, next) {
+			Favourites.hasFavourited(pid, uid, function (hasFavourited) {
+				data[pid] = hasFavourited;
+				next()
+			});
 		}
+
+		async.each(pids, iterator, function(err) {
+			callback(data);
+		});
+	};
+
+	Favourites.getFavouritedUidsByPids = function (pids, callback) {
+		var data = {};
+
+		function getUids(pid, next) {
+			db.getSetMembers('pid:' + pid + ':users_favourited', function(err, uids) {
+				data[pid] = uids;
+				next();
+			});
+		}
+
+		async.each(pids, getUids, function(err) {
+			callback(data);
+		});
 	};
 
 }(exports));
