@@ -1,4 +1,6 @@
-var db = require('./database'),
+var async = require('async'),
+
+	db = require('./database'),
 	posts = require('./posts'),
 	user = require('./user'),
 	translator = require('./../public/src/translator');
@@ -116,22 +118,18 @@ var db = require('./database'),
 	};
 
 	Favourites.getFavouritedUidsByPids = function (pids, callback) {
-		//Might as well take the method above this as an example
-		var loaded = 0;
 		var data = {};
 
-		for (var i = 0, ii = pids.length; i < ii; i++) {
-			(function (post_id) {
-				db.getSetMembers('pid:' + post_id + ':users_favourited', function(err, uids) {
-					data[post_id] = uids;
-					loaded++;
-					if (loaded === pids.length) {
-						callback(data);
-					}
-				});
-			}(pids[i]));
+		function getUids(pid, next) {
+			db.getSetMembers('pid:' + pid + ':users_favourited', function(err, uids) {
+				data[pid] = uids;
+				next();
+			});
 		}
-		//Literally
+
+		async.each(pids, getUids, function(err) {
+			callback(data);
+		});
 	};
 
 }(exports));
