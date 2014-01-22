@@ -372,11 +372,22 @@ var async = require('async'),
 
 			function getFavouritedUsers(next) {
 				favourites.getFavouritedUidsByPids(pids, function(data) {
+					var max = 5; //hardcoded
 					var usernames = {};
 					async.each(pids, function(pid, next) {
-						if (data.hasOwnProperty(pid) && data[pid].length > 0) {
-							user.getUsernamesByUids(data[pid], function(result) {
-								usernames[pid] = result;
+						var pid_uids = data[pid];
+						var rest_amount = 0;
+						if (data.hasOwnProperty(pid) && pid_uids.length > 0) {
+							if (pid_uids.length > max) {
+								console.log(pid_uids);
+								rest_amount = pid_uids.length - max;
+								pid_uids = pid_uids.slice(0, max);
+							}
+							user.getUsernamesByUids(pid_uids, function(result) {
+								console.log(rest_amount);
+								usernames[pid] = result.join(', ') + (rest_amount > 0
+									? " and " + rest_amount + (rest_amount > 1 ? " others" : " other")
+									: "");
 							});
 						} else {
 							usernames[pid] = [];
@@ -429,7 +440,7 @@ var async = require('async'),
 				for (var i = 0; i < postData.length; ++i) {
 					var pid = postData[i].pid;
 					postData[i].favourited = fav_data[pid];
-					postData[i].favourited_users = fav_users[pid].join(', ');
+					postData[i].favourited_users = fav_users[pid];
 					postData[i].display_moderator_tools = (current_user != 0) && privileges[pid].editable;
 					postData[i].display_move_tools = privileges[pid].move ? '' : 'hidden';
 				}
