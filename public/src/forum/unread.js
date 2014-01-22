@@ -37,19 +37,6 @@ define(function() {
 			} else if(newPostCount === 1) {
 				text += (newTopicCount?' and ':' is ') + ' a new post';
 			}
-			/*if (newTopicCount > 1)
-				text = 'There are ' + newTopicCount + ' new topics';
-			else if (newTopicCount === 1)
-				text = 'There is 1 new topic';
-			else
-				text = 'There are no new topics';
-
-			if (newPostCount > 1)
-				text += ' and ' + newPostCount + ' new posts.';
-			else if (newPostCount === 1)
-				text += ' and 1 new post.';
-			else
-				text += ' and no new posts.';*/
 
 			text += '. Click here to reload.';
 
