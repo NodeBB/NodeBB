@@ -1,0 +1,50 @@
+{
+	"topic": "Téma",
+	"topics": "Témy",
+
+	"no_topics_found": "Neboli nájdené žiadne témy!",
+
+	"profile": "Profil",
+	"posted_by": "Odoslal",
+	"chat": "Chat",
+	"notify_me": "Sledovať túto tému",
+	"quote": "Citovať",
+	"reply": "Odpovedať",
+	"edit": "Upraviť",
+	"delete": "Zmazať",
+	"move": "Presunúť",
+	"fork": "Rozdeliť",
+	"banned": "Zakázaný",
+	"link": "Odkaz",
+
+	"thread_tools.title": "Nástroje",
+	"thread_tools.pin": "Zvýrazniť vlákno",
+	"thread_tools.lock": "Uzamknúť vlákno",
+	"thread_tools.move": "Presunúť vlákno",
+	"thread_tools.fork": "Rozdeliť vlákno",
+	"thread_tools.delete": "Zmazať vlákno",
+
+	"load_categories": "Načítanie kategórií",
+	"disabled_categories_note": "Vypnuté (disabled) kategorie sú šedé.",
+	"confirm_move": "Presunúť",
+	"confirm_fork": "Rozdeliť",
+
+	"favourite": "Oblúbené",
+	"favourites": "Obľúbené",
+	"favourites.not_logged_in.title": "Prihlásiť sa!",
+	"favourites.not_logged_in.message": "Pre obľúbenie príspevku sa musíte prihlásiť.",
+	"favourites.has_no_favourites": "Nemáte žiadne obľúbené príspevky, pridajte niektorý príspevok k obľúbeným a uvidíte ho tu!",
+
+	"posted_by": "odoslal",
+	"loading_more_posts": "Načítavanie viac príspevkov",
+	"move_topic": "Presunúť tému",
+	"move_post": "Presunúť príspevok",
+	"fork_topic": "Rozdeliť príspevok",
+	"topic_will_be_moved_to": "Táto téma bude presunutá do kategórie",
+	"fork_topic_instruction": "Vyber príspevky, ktoré chceš oddeliť",
+	"fork_no_pids": "Žiadne príspevky neboli vybrané!",
+	"fork_success": "Téma bola úspešne rozdelená!",
+
+	"reputation": "Reputácia",
+	"posts": "Príspevky"
+}
