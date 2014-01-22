@@ -33,7 +33,7 @@ var ajaxify = {};
 
 	ajaxify.currentPage = null;
 
-	ajaxify.go = function (url, callback, quiet) {
+	ajaxify.go = function (url, callback, tpl_url, quiet) {
 		// start: the following should be set like so: ajaxify.onchange(function(){}); where the code actually belongs
 		$(window).off('scroll');
 		app.enterRoom('global');
@@ -61,17 +61,19 @@ var ajaxify = {};
 			url = url.slice(RELATIVE_PATH.length);
 		}
 
-		var tpl_url = templates.get_custom_map(url.split('?')[0]);
-
-		if (tpl_url == false && !templates[url]) {
-			if (url === '' || url === '/') {
-				tpl_url = 'home';
-			} else {
-				tpl_url = url.split('/')[0].split('?')[0];
+		if (!tpl_url || tpl_url === "undefined") {
+			tpl_url = templates.get_custom_map(url.split('?')[0]);
+			if (tpl_url === false) {
+				if (!templates[url]) {
+					if (url === '' || url === '/') {
+						tpl_url = 'home';
+					} else {
+						tpl_url = url.split('/')[0].split('?')[0];
+					}
+				} else if (templates[url]) {
+					tpl_url = url;
+				}
 			}
-
-		} else if (templates[url]) {
-			tpl_url = url;
 		}
 
 		if (templates.is_available(tpl_url) && !templates.force_refresh(tpl_url)) {
