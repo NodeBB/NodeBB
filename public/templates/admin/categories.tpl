@@ -85,6 +85,12 @@
 								</div>
 								<div class="col-sm-4 col-xs-12">
 									<div class="form-group">
+										<label for="cid-{categories.cid}-imageClass">Image Class</label>
+										<input id="cid-{categories.cid}-imageClass" type="text" class="form-control" placeholder="default" data-name="imageClass" value="{categories.imageClass}" />
+									</div>
+								</div>
+								<div class="col-sm-4 col-xs-12">
+									<div class="form-group">
 										<label for="cid-{categories.cid}-numRecentReplies"># of Recent Replies Displayed</label>
 										<input id="cid-{categories.cid}-numRecentReplies" type="text" class="form-control" placeholder="2" data-name="numRecentReplies" value="{categories.numRecentReplies}" />
 									</div>

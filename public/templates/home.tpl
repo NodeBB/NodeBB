@@ -26,7 +26,7 @@
 		<!-- ELSE -->
 		<a href="{relative_path}/category/{categories.slug}" itemprop="url">
 		<!-- ENDIF categories.link -->
-			<div class="icon" style="background: {categories.background}; color: {categories.color};">
+			<div class="category-header icon category-header-image-{categories.imageClass}" style="background: {categories.background}; color: {categories.color};">
 				<div id="category-{categories.cid}" class="category-slider-{categories.post_count}">
 					<div class="category-box"><i class="fa {categories.icon} fa-4x"></i></div>
 					<div class="category-box" itemprop="description">{categories.description}</div>

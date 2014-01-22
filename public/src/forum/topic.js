@@ -356,6 +356,7 @@ define(['composer'], function(composer) {
 		}
 
 		$('.topic').on('click', '.post_reply', function() {
+			console.log('gg twice');
 			var selectionText = '',
 				selection = window.getSelection() || document.getSelection();
 
