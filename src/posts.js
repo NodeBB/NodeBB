@@ -388,7 +388,7 @@ var db = require('./database'),
 
 		if(meta.config.imgurClientID) {
 			if(!image || !image.data) {
-				return callback('invalid image', null);
+				return callback(new Error('invalid image'), null);
 			}
 
 			require('./imgur').upload(meta.config.imgurClientID, image.data, 'base64', function(err, data) {

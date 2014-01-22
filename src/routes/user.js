@@ -214,7 +214,7 @@ var fs = require('fs'),
 
 			os.on('error', function (err) {
 				fs.unlinkSync(tempPath);
-				winston.err(err);
+				winston.error(err.message);
 			});
 
 			is.pipe(os);
