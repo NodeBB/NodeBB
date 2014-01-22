@@ -379,12 +379,10 @@ var async = require('async'),
 						var rest_amount = 0;
 						if (data.hasOwnProperty(pid) && pid_uids.length > 0) {
 							if (pid_uids.length > max) {
-								console.log(pid_uids);
 								rest_amount = pid_uids.length - max;
 								pid_uids = pid_uids.slice(0, max);
 							}
 							user.getUsernamesByUids(pid_uids, function(result) {
-								console.log(rest_amount);
 								usernames[pid] = result.join(', ') + (rest_amount > 0
 									? " and " + rest_amount + (rest_amount > 1 ? " others" : " other")
 									: "");
