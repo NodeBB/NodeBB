@@ -19,16 +19,25 @@ define(function() {
 		});
 
 		socket.on('event:new_topic', function(data) {
-
 			++newTopicCount;
 			updateAlertText();
-
 		});
 
 		function updateAlertText() {
-			var text = '';
+			var text = 'There';
 
-			if (newTopicCount > 1)
+			if (newTopicCount > 1) {
+				text += ' are ' + newTopicCount + ' new topics';
+			} else if (newTopicCount === 1) {
+				text += ' is a new topic';
+			}
+
+			if (newPostCount > 1) {
+				text += (newTopicCount?' and ':' are ') + newPostCount + ' new posts';
+			} else if(newPostCount === 1) {
+				text += (newTopicCount?' and ':' is ') + ' a new post';
+			}
+			/*if (newTopicCount > 1)
 				text = 'There are ' + newTopicCount + ' new topics';
 			else if (newTopicCount === 1)
 				text = 'There is 1 new topic';
@@ -40,9 +49,9 @@ define(function() {
 			else if (newPostCount === 1)
 				text += ' and 1 new post.';
 			else
-				text += ' and no new posts.';
+				text += ' and no new posts.';*/
 
-			text += ' Click here to reload.';
+			text += '. Click here to reload.';
 
 			$('#new-topics-alert').html(text).removeClass('hide').fadeIn('slow');
 			$('#category-no-topics').addClass('hidden');

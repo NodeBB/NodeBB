@@ -384,18 +384,19 @@ define(['taskbar'], function(taskbar) {
 		titleEl.val(titleEl.val().trim());
 		bodyEl.val(bodyEl.val().trim());
 
+		var checkTitle = parseInt(postData.cid, 10) || parseInt(postData.pid, 10);
+
 		if(postData.uploadsInProgress && postData.uploadsInProgress.length) {
 			return composerAlert('Still uploading', 'Please wait for uploads to complete.');
-		} else if (titleEl.val().length < parseInt(config.minimumTitleLength, 10)) {
+		} else if (checkTitle && titleEl.val().length < parseInt(config.minimumTitleLength, 10)) {
 			return composerAlert('Title too short', 'Please enter a longer title. At least ' + config.minimumTitleLength+ ' characters.');
-		} else if (titleEl.val().length > parseInt(config.maximumTitleLength, 10)) {
+		} else if (checkTitle && titleEl.val().length > parseInt(config.maximumTitleLength, 10)) {
 			return composerAlert('Title too long', 'Please enter a shorter title. Titles can\'t be longer than ' + config.maximumTitleLength + ' characters.');
 		} else if (bodyEl.val().length < parseInt(config.minimumPostLength, 10)) {
 			return composerAlert('Content too short', 'Please enter a longer post. At least ' + config.minimumPostLength + ' characters.');
 		}
 
-		// Still here? Let's post.
-		if (parseInt(postData.cid) > 0) {
+		if (parseInt(postData.cid, 10) > 0) {
 			socket.emit('topics.post', {
 				'title' : titleEl.val(),
 				'content' : bodyEl.val(),
@@ -403,14 +404,14 @@ define(['taskbar'], function(taskbar) {
 			}, function() {
 				composer.discard(post_uuid);
 			});
-		} else if (parseInt(postData.tid) > 0) {
+		} else if (parseInt(postData.tid, 10) > 0) {
 			socket.emit('posts.reply', {
 				'topic_id' : postData.tid,
 				'content' : bodyEl.val()
 			}, function() {
 				composer.discard(post_uuid);
 			});
-		} else if (parseInt(postData.pid) > 0) {
+		} else if (parseInt(postData.pid, 10) > 0) {
 			socket.emit('posts.edit', {
 				pid: postData.pid,
 				content: bodyEl.val(),
