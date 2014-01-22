@@ -342,7 +342,16 @@ define(['composer'], function(composer) {
 				}
 			})();
 
-			$('.favourite-tooltip').tooltip();
+			$('#post-container').on('mouseenter', '.favourite-tooltip', function(e) {
+				if (!$(this).data('users-loaded')) {
+					$(this).data('users-loaded', "true");
+					var pid = $(this).parents('.post-row').attr('data-pid');
+					var el = $(this).attr('title', "Loading...");
+					socket.emit('posts.getFavouritedUsers', pid, function(err, usernames) {
+						el.attr('title', usernames).tooltip('show');
+					});
+				}
+			});
 		});
 
 		function enableInfiniteLoading() {
