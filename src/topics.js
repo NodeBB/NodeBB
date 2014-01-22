@@ -370,6 +370,24 @@ var async = require('async'),
 				});
 			}
 
+			function getFavouritedUsers(next) {
+				favourites.getFavouritedUidsByPids(pids, function(data) {
+					var usernames = {};
+					async.each(pids, function(pid, next) {
+						if (data.hasOwnProperty(pid) && data[pid].length > 0) {
+							user.getUsernamesByUids(data[pid], function(result) {
+								usernames[pid] = result;
+							});
+						} else {
+							usernames[pid] = [];
+						}
+						next();
+					}, function(err) {
+						next(err, usernames);
+					});
+				});
+			}
+
 			function addUserInfoToPosts(next) {
 				function iterator(post, callback) {
 					posts.addUserInfoToPost(post, function() {
@@ -399,17 +417,19 @@ var async = require('async'),
 				}
 			}
 
-			async.parallel([getFavouritesData, addUserInfoToPosts, getPrivileges], function(err, results) {
+			async.parallel([getFavouritesData, addUserInfoToPosts, getPrivileges, getFavouritedUsers], function(err, results) {
 				if(err) {
 					return callback(err);
 				}
 
 				var fav_data = results[0],
-					privileges = results[2];
+					privileges = results[2],
+					fav_users = results[3];
 
 				for (var i = 0; i < postData.length; ++i) {
 					var pid = postData[i].pid;
 					postData[i].favourited = fav_data[pid];
+					postData[i].favourited_users = fav_users[pid].join(', ');
 					postData[i].display_moderator_tools = (current_user != 0) && privileges[pid].editable;
 					postData[i].display_move_tools = privileges[pid].move ? '' : 'hidden';
 				}

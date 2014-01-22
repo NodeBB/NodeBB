@@ -341,6 +341,8 @@ define(['composer'], function(composer) {
 					updateHeader();
 				}
 			})();
+
+			$('.favourite-tooltip').tooltip();
 		});
 
 		function enableInfiniteLoading() {
