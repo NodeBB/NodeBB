@@ -1,0 +1,41 @@
+{
+	"banned": "Zakázaný",
+	"offline": "Offline",
+	"username": "Uživateľské meno",
+	"email": "Email",
+	"fullname": "Meno a priezvisko",
+	"website": "Webová stránka",
+	"location": "Poloha",
+	"age": "Vek",
+	"joined": "Registrovaný",
+	"lastonline": "Naposledy online",
+	"profile_views": "Zobrazenie profilu",
+	"reputation": "Reputácia",
+	"posts": "Príspevky",
+	"followers": "Nasledujú ho",
+	"following": "Nasleduje",
+	"signature": "Podpis",
+	"gravatar": "Gravatar",
+	"birthday": "Dátum narodenia",
+
+	"change_picture": "Zmeniť obrázok",
+	"edit": "Upraviť",
+	"uploaded_picture": "Nahraný obrázok",
+	"upload_new_picture": "Nahrať nový obrázok",
+	"change_password": "Zmeniť heslo",
+	"confirm_password": "Potvrdenie hesla",
+	"password": "Heslo",
+
+	"upload_picture": "Nahrať obrázok",
+	"upload_a_picture": "Nahrať obrázok",
+	"image_spec": "Môžete nahrávať iba obrázky vo formáte PNG, JPG, alebo GIF o veľkosti menšej než 256kb.",
+
+	"settings": "nastavenia",
+	"show_email": "Zobrazovať môj email v profile",
+
+	"has_no_follower": "Tohoto užívatela nikto nesleduje :(",
+	"follows_no_one": "Tento užívateľ nikoho nesleduje :(",
+
+	"email_hidden": "Skrytý email",
+	"hidden": "skrytý"
+}
