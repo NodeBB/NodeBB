@@ -36,7 +36,7 @@
 		passport.use(new passportTwitter({
 			consumerKey: meta.config['social:twitter:key'],
 			consumerSecret: meta.config['social:twitter:secret'],
-			callbackURL: nconf.get('url') + 'auth/twitter/callback'
+			callbackURL: nconf.get('url') + '/auth/twitter/callback'
 		}, function(token, tokenSecret, profile, done) {
 			login_module.loginViaTwitter(profile.id, profile.username, profile.photos, function(err, user) {
 				if (err) {
@@ -59,7 +59,7 @@
 		passport.use(new passportGoogle({
 			clientID: meta.config['social:google:id'],
 			clientSecret: meta.config['social:google:secret'],
-			callbackURL: nconf.get('url') + 'auth/google/callback'
+			callbackURL: nconf.get('url') + '/auth/google/callback'
 		}, function(accessToken, refreshToken, profile, done) {
 			login_module.loginViaGoogle(profile.id, profile.displayName, profile.emails[0].value, function(err, user) {
 				if (err) {
@@ -82,7 +82,7 @@
 		passport.use(new passportFacebook({
 			clientID: meta.config['social:facebook:app_id'],
 			clientSecret: meta.config['social:facebook:secret'],
-			callbackURL: nconf.get('url') + 'auth/facebook/callback'
+			callbackURL: nconf.get('url') + '/auth/facebook/callback'
 		}, function(accessToken, refreshToken, profile, done) {
 			login_module.loginViaFacebook(profile.id, profile.displayName, profile.emails[0].value, function(err, user) {
 				if (err) {

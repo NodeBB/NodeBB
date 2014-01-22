@@ -586,7 +586,11 @@ if(nconf.get('ssl')) {
 							},
 							{
 								property: "og:url",
-								content: nconf.get('url') + 'topic/' + topicData.slug
+								content: nconf.get('url') + '/topic/' + topicData.slug
+							},
+							{
+								property: "og:image:url",
+								content: nconf.get('url') + (meta.config['brand:logo']?meta.config['brand:logo']:'')
 							},
 							{
 								property: 'og:image',
@@ -609,11 +613,11 @@ if(nconf.get('ssl')) {
 							{
 								rel: 'alternate',
 								type: 'application/rss+xml',
-								href: nconf.get('url') + 'topic/' + tid + '.rss'
+								href: nconf.get('url') + '/topic/' + tid + '.rss'
 							},
 							{
 								rel: 'up',
-								href: nconf.get('url') + 'category/' + topicData.category_slug
+								href: nconf.get('url') + '/category/' + topicData.category_slug
 							}
 						]
 					}, function (err, header) {
@@ -720,7 +724,7 @@ if(nconf.get('ssl')) {
 							{
 								rel: 'alternate',
 								type: 'application/rss+xml',
-								href: nconf.get('url') + 'category/' + cid + '.rss'
+								href: nconf.get('url') + '/category/' + cid + '.rss'
 							},
 							{
 								rel: 'up',
@@ -784,7 +788,7 @@ if(nconf.get('ssl')) {
 			} else {
 				res.send("User-agent: *\n" +
 					"Disallow: /admin/\n" +
-					"Sitemap: " + nconf.get('url') + "sitemap.xml");
+					"Sitemap: " + nconf.get('url') + "/sitemap.xml");
 			}
 		});
 

@@ -801,7 +801,7 @@ var bcrypt = require('bcrypt'),
 				db.setObjectField('reset:uid', reset_code, uid);
 				db.setObjectField('reset:expiry', reset_code, (60 * 60) + new Date() / 1000 | 0); // Active for one hour
 
-				var reset_link = nconf.get('url') + 'reset/' + reset_code;
+				var reset_link = nconf.get('url') + '/reset/' + reset_code;
 
 				Emailer.send('reset', uid, {
 					'site_title': (meta.config['title'] || 'NodeBB'),
@@ -857,7 +857,7 @@ var bcrypt = require('bcrypt'),
 	User.email = {
 		verify: function(uid, email) {
 			var confirm_code = utils.generateUUID(),
-				confirm_link = nconf.get('url') + 'confirm/' + confirm_code;
+				confirm_link = nconf.get('url') + '/confirm/' + confirm_code;
 
 			async.series([
 				function(next) {

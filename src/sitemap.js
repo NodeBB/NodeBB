@@ -12,11 +12,11 @@ var path = require('path'),
 				changefreq: 'weekly',
 				priority: '0.6'
 			}, {
-				url: 'recent',
+				url: '/recent',
 				changefreq: 'daily',
 				priority: '0.4'
 			}, {
-				url: 'users',
+				url: '/users',
 				changefreq: 'daily',
 				priority: '0.4'
 			}]);
@@ -31,7 +31,7 @@ var path = require('path'),
 						data.categories.forEach(function(category) {
 							if (!category.disabled) {
 								categoryUrls.push({
-									url: path.join('category', category.slug),
+									url: path.join('/category', category.slug),
 									changefreq: 'weekly',
 									priority: '0.4'
 								});
@@ -48,7 +48,7 @@ var path = require('path'),
 
 							if (parseInt(topic.deleted, 10) !== 1) {
 								topicUrls.push({
-									url: path.join('topic', topic.slug),
+									url: path.join('/topic', topic.slug),
 									changefreq: 'daily',
 									priority: '0.6'
 								});
