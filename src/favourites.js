@@ -100,21 +100,18 @@ var async = require('async'),
 	};
 
 	Favourites.getFavouritesByPostIDs = function (pids, uid, callback) {
-		var loaded = 0;
 		var data = {};
 
-		for (var i = 0, ii = pids.length; i < ii; i++) {
-			(function (post_id) {
-				Favourites.hasFavourited(post_id, uid, function (hasFavourited) {
-
-					data[post_id] = hasFavourited;
-					loaded++;
-					if (loaded === pids.length) {
-						callback(data);
-					}
-				});
-			}(pids[i]));
+		function iterator(pid, next) {
+			Favourites.hasFavourited(pid, uid, function (hasFavourited) {
+				data[pid] = hasFavourited;
+				next()
+			});
 		}
+
+		async.each(pids, iterator, function(err) {
+			callback(data);
+		});
 	};
 
 	Favourites.getFavouritedUidsByPids = function (pids, callback) {
