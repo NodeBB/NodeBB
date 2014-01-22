@@ -161,7 +161,7 @@ define(['composer'], function(composer) {
 							'<a href="' + RELATIVE_PATH + '/topic/' + posts[i].topicSlug + '#' + posts[i].pid + '">posted</a> '+
 							'<span class="timeago" title="' + posts[i].relativeTime + '"></span>' +
 						'</span>'+
-					   '</li>';
+						'</li>';
 		}
 
 		recentReplies.html(replies);
