@@ -39,6 +39,10 @@
 					languageCode = 'cz';
 					break;
 
+				case 'zh_tw':
+					languageCode = 'zh-TW';
+					break;
+
 				case 'zh_cn':
 					languageCode = 'zh-CN';
 					break;
