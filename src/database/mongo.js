@@ -145,11 +145,14 @@
 		});
 	}
 
-	module.searchRemove = function(key, id) {
+	module.searchRemove = function(key, id, callback) {
 		db.collection('search').remove({id:id, key:key}, function(err, result) {
 			if(err) {
 				winston.error('Error removing search ' + err.message);
 			}
+      if (typeof callback === 'function') {
+        callback()
+      }
 		});
 	}
 

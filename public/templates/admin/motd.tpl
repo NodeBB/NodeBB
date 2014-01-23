@@ -12,6 +12,10 @@
 	<textarea class="form-control" placeholder="Welcome to NodeBB!" data-field="motd" rows="10"></textarea>
 	<br />
 	<form class="form-inline">
+		<label>MOTD Class</label>
+		<input class="form-control" type="text" placeholder="CSS class to add to MOTD" data-field="motd_class" />
+	</form>
+	<form class="form-inline">
 		<div class="checkbox">
 			<label for="show_motd">
 				<input type="checkbox" id="show_motd" data-field="show_motd" /> Show the Message of the Day

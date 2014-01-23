@@ -1,0 +1,50 @@
+{
+	"topic": "主題",
+	"topics": "主題",
+
+	"no_topics_found": "沒有找到主題！",
+
+	"profile": "資料",
+	"posted_by": "發表",
+	"chat": "聊天",
+	"notify_me": "該主題有新回復時通知我",
+	"quote": "引用",
+	"reply": "回復",
+	"edit": "編輯",
+	"delete": "刪除",
+	"move": "移動",
+	"fork": "作為主題",
+	"banned": "封禁",
+	"link": "鏈接",
+
+	"thread_tools.title": "管理工具",
+	"thread_tools.pin": "置頂帖子",
+	"thread_tools.lock": "鎖定帖子",
+	"thread_tools.move": "移動帖子",
+	"thread_tools.fork": "作為主題",
+	"thread_tools.delete": "刪除帖子",
+
+	"load_categories": "版面載入中",
+	"disabled_categories_note": "停用的版面為灰色",
+	"confirm_move": "移動",
+	"confirm_fork": "作為主題",
+
+	"favourite": "收藏",
+	"favourites": "收藏",
+	"favourites.not_logged_in.title": "未登錄",
+	"favourites.not_logged_in.message": "收藏帖子之前請先登錄。",
+	"favourites.has_no_favourites": "你還沒有任何收藏，收藏的帖子將會出現在這裡！",
+
+	"posted_by": "發布",
+	"loading_more_posts": "載入更多帖子",
+	"move_topic": "移動主題",
+	"move_post": "移動帖子",
+	"fork_topic": "作為主題",
+	"topic_will_be_moved_to": "這個主題將會被移動到",
+	"fork_topic_instruction": "點擊要作為主題的帖子",
+	"fork_no_pids": "尚未選擇帖子！",
+	"fork_success": "成功將帖子作為主題！",
+
+	"reputation": "聲望",
+	"posts": "發帖數"
+}

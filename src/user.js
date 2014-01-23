@@ -105,7 +105,9 @@ var bcrypt = require('bcrypt'),
 
 				if (email !== undefined) {
 					db.setObjectField('email:uid', email, uid);
-					if (uid !== 1) User.email.verify(uid, email);
+					if (parseInt(uid, 10) !== 1) {
+						User.email.verify(uid, email);
+					}
 				}
 
 				plugins.fireHook('action:user.create', {uid: uid, username: username, email: email, picture: gravatar, timestamp: timestamp});
@@ -114,8 +116,6 @@ var bcrypt = require('bcrypt'),
 				db.sortedSetAdd('users:joindate', timestamp, uid);
 				db.sortedSetAdd('users:postcount', 0, uid);
 				db.sortedSetAdd('users:reputation', 0, uid);
-
-				db.searchIndex('user', username, uid);
 
 				// Join the "registered-users" meta group
 				groups.joinByGroupName('registered-users', uid);
@@ -309,7 +309,6 @@ var bcrypt = require('bcrypt'),
 							db.deleteObjectField('username:uid', userData.username);
 							db.setObjectField('username:uid', data.username, uid);
 							events.logUsernameChange(uid, userData.username, data.username);
-							User.reIndexUser(uid, data.username);
 						}
 
 						if(userslug !== userData.userslug) {
@@ -438,26 +437,6 @@ var bcrypt = require('bcrypt'),
 		});
 	};
 
-	User.reIndexAll = function(callback) {
-		User.getUsers('users:joindate', 0, -1, function(err, usersData) {
-			if (err) {
-				return callback(err, null);
-			}
-
-			for (var i = 0; i < usersData.length; ++i) {
-				User.reIndexUser(usersData[i].uid, usersData[i].username);
-			}
-
-			callback(null, 1);
-		});
-	};
-
-	User.reIndexUser = function(uid, username) {
-		db.searchRemove('user', uid, function() {
-			db.searchIndex('user', username, uid);
-		});
-	};
-
 	// thanks to @akhoury
 	User.getUsersCSV = function(callback) {
 		var csvContent = "";
@@ -482,23 +461,35 @@ var bcrypt = require('bcrypt'),
 		});
 	}
 
-	User.search = function(username, callback) {
-		if (!username) {
-			return callback([]);
+	User.search = function(query, callback) {
+		if (!query || query.length === 0) {
+			return callback(null, []);
 		}
 
-		db.search('user', username, 50, function(err, uids) {
+		// TODO: Have this use db.getObjectKeys (doesn't exist yet)
+		db.getObject('username:uid', function(err, usernamesHash) {
 			if (err) {
-				console.log(err);
-				return;
+				return callback(null, []);
 			}
 
-			if (uids && uids.length) {
-				User.getDataForUsers(uids, function(userdata) {
-					callback(userdata);
+			var	usernames = Object.keys(usernamesHash),
+				results = [];
+
+			results = usernames.filter(function(username) {		// Remove non-matches
+				return username.indexOf(query) === 0;
+			}).sort(function(a, b) {							// Sort alphabetically
+				return a > b;
+			}).slice(0, 5)										// Limit 5
+			.map(function(username) {							// Translate to uids
+				return usernamesHash[username];
+			});
+
+			if (results && results.length) {
+				User.getDataForUsers(results, function(userdata) {
+					callback(null, userdata);
 				});
 			} else {
-				callback([]);
+				callback(null, []);
 			}
 		});
 	};
@@ -812,7 +803,7 @@ var bcrypt = require('bcrypt'),
 				db.setObjectField('reset:uid', reset_code, uid);
 				db.setObjectField('reset:expiry', reset_code, (60 * 60) + new Date() / 1000 | 0); // Active for one hour
 
-				var reset_link = nconf.get('url') + 'reset/' + reset_code;
+				var reset_link = nconf.get('url') + '/reset/' + reset_code;
 
 				Emailer.send('reset', uid, {
 					'site_title': (meta.config['title'] || 'NodeBB'),
@@ -868,7 +859,7 @@ var bcrypt = require('bcrypt'),
 	User.email = {
 		verify: function(uid, email) {
 			var confirm_code = utils.generateUUID(),
-				confirm_link = nconf.get('url') + 'confirm/' + confirm_code;
+				confirm_link = nconf.get('url') + '/confirm/' + confirm_code;
 
 			async.series([
 				function(next) {
@@ -943,6 +934,7 @@ var bcrypt = require('bcrypt'),
 								notifications.get(nid, uid, function(notif_data) {
 									// If the notification could not be found, silently drop it
 									if (notif_data) {
+										notif_data.readClass = !notif_data.read ? 'label-warning' : '';
 										unread.push(notif_data);
 									} else {
 										db.sortedSetRemove('uid:' + uid + ':notifications:unread', nid);
@@ -1025,7 +1017,7 @@ var bcrypt = require('bcrypt'),
 							return parseInt(b.datetime, 10) - parseInt(a.datetime, 10);
 						}).map(function(notif) {
 							notif.datetimeISO = utils.toISOString(notif.datetime);
-							notif.readClass = !notif.read ? 'unread' : '';
+							notif.readClass = !notif.read ? 'label-warning' : '';
 
 							return notif;
 						});

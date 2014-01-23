@@ -4,11 +4,9 @@
 	<title>{browserTitle}</title>
 	{meta_tags}
 	<link rel="icon" type="image/x-icon" href="{brand:favicon}" />
-	<!-- IF bootswatchCSS -->
-	<link href="{bootswatchCSS}" rel="stylesheet" media="screen">
-	<!-- ENDIF bootswatchCSS -->
 	<link rel="stylesheet" href="{relative_path}/vendor/fontawesome/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="{relative_path}/css/theme.css?{cache-buster}" />
+	<!-- IF bootswatchCSS --><link href="{bootswatchCSS}" rel="stylesheet" media="screen"><!-- ENDIF bootswatchCSS -->
 	{link_tags}
 	<!-- BEGIN pluginCSS -->
 	<link rel="stylesheet" href="{pluginCSS.path}">
@@ -70,7 +68,7 @@
 					</li>
 
 					<li class="visible-xs">
-						<a id="mobile-search-button" href="{relative_path}/search"><i class="fa fa-search" title="[[global:header.search]]"></i><span class="visible-xs-inline"> [[global:header.search]]</span></a>
+						<a id="mobile-search-button" href="{relative_path}/search"><i class="fa fa-search" title="[[global:header.search]]"></i> [[global:header.search]]</a>
 					</li>
 
 					<!-- BEGIN navigation -->
@@ -101,9 +99,12 @@
 							</li>
 						</ul>
 					</li>
+					<li class="visible-xs">
+						<a href="{relative_path}/notifications"><i class="fa fa-exclamation-triangle" title="[[notifications:title]]"></i> [[notifications:title]]</a>
+					</li>
 
 					<li class="chats dropdown text-center hidden-xs">
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="chat_dropdown"><i class="fa fa-comment"></i></a>
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="chat_dropdown"><i class="fa fa-comment-o"></i></a>
 						<ul id="chat-list" class="dropdown-menu" aria-labelledby="chat_dropdown">
 							<li>
 								<a href="#"><i class="fa fa-refresh fa-spin"></i> [[global:chats.loading]]</a>

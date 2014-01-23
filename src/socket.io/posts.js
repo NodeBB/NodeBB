@@ -3,6 +3,7 @@ var	posts = require('../posts'),
 	topics = require('../topics'),
 	favourites = require('../favourites'),
 	postTools = require('../postTools'),
+	user = require('../user'),
 	index = require('./index'),
 
 	SocketPosts = {};
@@ -165,6 +166,30 @@ SocketPosts.getPrivileges = function(socket, pid, callback) {
 		}
 		privileges.pid = parseInt(pid);
 		callback(null, privileges);
+	});
+};
+
+SocketPosts.getFavouritedUsers = function(socket, pid, callback) {
+	favourites.getFavouritedUidsByPids([pid], function(data) {
+		var max = 5; //hardcoded
+		var usernames = "";
+
+		var pid_uids = data[pid];
+		var rest_amount = 0;
+		if (data.hasOwnProperty(pid) && pid_uids.length > 0) {
+			if (pid_uids.length > max) {
+				rest_amount = pid_uids.length - max;
+				pid_uids = pid_uids.slice(0, max);
+			}
+			user.getUsernamesByUids(pid_uids, function(result) {
+				usernames = result.join(', ') + (rest_amount > 0
+					? " and " + rest_amount + (rest_amount > 1 ? " others" : " other")
+					: "");
+				callback(null, usernames);
+			});
+		} else {
+			callback(null, "");
+		}
 	});
 };
 

@@ -13,28 +13,31 @@
 	<div class="row">
 		<div class="col-md-12 user-favourite-posts">
 			<!-- BEGIN posts -->
-			<div class="topic-row img-thumbnail clearfix">
-				<a href="../../user/{posts.userslug}">
-					<img title="{posts.username}" class="img-rounded user-img" src="{posts.picture}">
-				</a>
+			<div class="topic-row panel panel-default clearfix">
+				<div class="panel-body">
+					<a href="../../user/{posts.userslug}">
+						<img title="{posts.username}" class="img-rounded user-img" src="{posts.picture}">
+					</a>
 
-				<a href="../../user/{posts.userslug}">
-					<strong><span>{posts.username}</span></strong>
-				</a>
-				<p>{posts.content}</p>
+					<a href="../../user/{posts.userslug}">
+						<strong><span>{posts.username}</span></strong>
+					</a>
+					<p>{posts.content}</p>
 
-				<div>
-					<span class="pull-right">
-						<a href="../../topic/{posts.tid}/#{posts.pid}">posted</a>
-						in
-						<a href="../../category/{posts.categorySlug}">
-							<i class="fa {posts.categoryIcon}"></i> {posts.categoryName}
-						</a>
-						<span class="timeago" title="{posts.relativeTime}"></span>
-					</span>
+					<div>
+						<small>
+							<span class="pull-right">
+								<a href="../../topic/{posts.tid}/#{posts.pid}">posted</a>
+								in
+								<a href="../../category/{posts.categorySlug}">
+									<i class="fa {posts.categoryIcon}"></i> {posts.categoryName}
+								</a>
+								<span class="timeago" title="{posts.relativeTime}"></span>
+							</span>
+						</small>
+					</div>
 				</div>
 			</div>
-			<br/>
 			<!-- END posts -->
 		</div>
 	</div>

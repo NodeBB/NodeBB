@@ -37,7 +37,7 @@
 	<script src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 	<script src="{relative_path}/src/utils.js"></script>
 
-	<link rel="stylesheet" type="text/css" href="{relative_path}/css/theme.css" />
+	<link rel="stylesheet" type="text/css" href="{relative_path}/css/theme.css?{cache-buster}" />
 </head>
 
 <body class="admin">
@@ -54,13 +54,13 @@
 			<div class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
 					<li>
-						<a href="{relative_path}/admin/index"><i class="fa fa-home" title="Home"></i></a>
+						<a href="{relative_path}/admin/index"><i class="fa fa-home" title="Home"></i><span class="visible-xs-inline"> Home</span></a>
 					</li>
 					<li>
-						<a href="{relative_path}/admin/settings"><i class="fa fa-cogs" title="Settings"></i></a>
+						<a href="{relative_path}/admin/settings"><i class="fa fa-cogs" title="Settings"></i><span class="visible-xs-inline"> Settings</span></a>
 					</li>
 					<li>
-						<a href="{relative_path}/" target="_top"><i class="fa fa-book" title="Forum"></i></a>
+						<a href="{relative_path}/" target="_top"><i class="fa fa-book" title="Forum"></i><span class="visible-xs-inline"> Forum</span></a>
 					</li>
 					<li>
 						<a href="#" id="reconnect"></a>

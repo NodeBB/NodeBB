@@ -71,13 +71,23 @@ SocketTopics.postcount = function(socket, tid, callback) {
 	topics.getTopicField(tid, 'postcount', callback);
 };
 
+SocketTopics.markAsRead = function(socket, data) {
+	if(!data || !data.tid || !data.uid) {
+		return;
+	}
+
+	topics.markAsRead(data.tid, data.uid, function(err) {
+		topics.pushUnreadCount(data.uid);
+	});
+}
+
 SocketTopics.markAllRead = function(socket, data, callback) {
 	topics.markAllRead(socket.uid, function(err) {
 		if(err) {
 			return callback(err);
 		}
 
-		index.server.sockets.in('uid_' + socket.uid).emit('event:unread.updateCount', null, 0);
+		index.server.sockets.in('uid_' + socket.uid).emit('event:unread.updateCount', null, []);
 
 		callback(null);
 	});

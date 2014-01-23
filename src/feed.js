@@ -14,7 +14,7 @@
 	Feed.defaults = {
 		ttl: 60,
 		basePath: path.join(__dirname, '../', 'feeds'),
-		baseUrl: nconf.get('url') + 'feeds'
+		baseUrl: nconf.get('url') + '/feeds'
 	};
 
 	Feed.saveFeed = function (location, feed, callback) {
@@ -42,7 +42,7 @@
 					title: topicData.topic_name,
 					description: topicData.posts[0].content,
 					feed_url: Feed.defaults.baseUrl + '/topics/' + tid + '.rss',
-					site_url: nconf.get('url') + 'topic/' + topicData.slug,
+					site_url: nconf.get('url') + '/topic/' + topicData.slug,
 					image_url: topicData.posts[0].picture,
 					author: topicData.posts[0].username,
 					ttl: Feed.defaults.ttl
@@ -61,7 +61,7 @@
 					feed.item({
 						title: 'Reply to ' + topicData.topic_name + ' on ' + dateStamp,
 						description: postData.content,
-						url: nconf.get('url') + 'topic/' + topicData.slug + '#' + postData.pid,
+						url: nconf.get('url') + '/topic/' + topicData.slug + '#' + postData.pid,
 						author: postData.username,
 						date: dateStamp
 					});
@@ -91,7 +91,7 @@
 					title: categoryData.category_name,
 					description: categoryData.category_description,
 					feed_url: Feed.defaults.baseUrl + '/categories/' + cid + '.rss',
-					site_url: nconf.get('url') + 'category/' + categoryData.category_id,
+					site_url: nconf.get('url') + '/category/' + categoryData.category_id,
 					ttl: Feed.defaults.ttl
 				});
 
@@ -101,7 +101,7 @@
 			async.eachSeries(categoryData.topics, function(topicData, next) {
 				feed.item({
 					title: topicData.title,
-					url: nconf.get('url') + 'topic/' + topicData.slug,
+					url: nconf.get('url') + '/topic/' + topicData.slug,
 					author: topicData.username,
 					date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString()
 				});
@@ -127,7 +127,7 @@
 					title: 'Recently Active Topics',
 					description: 'A list of topics that have been active within the past 24 hours',
 					feed_url: Feed.defaults.baseUrl + '/recent.rss',
-					site_url: nconf.get('url') + 'recent',
+					site_url: nconf.get('url') + '/recent',
 					ttl: Feed.defaults.ttl
 				});
 
@@ -139,7 +139,7 @@
 			async.eachSeries(recentData.topics, function(topicData, next) {
 				feed.item({
 					title: topicData.title,
-					url: nconf.get('url') + 'topic/' + topicData.slug,
+					url: nconf.get('url') + '/topic/' + topicData.slug,
 					author: topicData.username,
 					date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString()
 				});

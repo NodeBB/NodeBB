@@ -39,6 +39,14 @@
 					languageCode = 'cz';
 					break;
 
+				case 'zh_tw':
+					languageCode = 'zh-TW';
+					break;
+
+				case 'zh_cn':
+					languageCode = 'zh-CN';
+					break;
+
 				default:
 					languageCode = config.defaultLang;
 					break;
@@ -47,8 +55,15 @@
 			$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').fail(function() {
 				$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.en.js');
 			});
+
+			// Add directional code if necessary
+			translator.get('language:dir', function(value) {
+				if (value) {
+					$('html').attr('dir', value);
+				}
+			});
 		}
-	}
+	};
 
 	translator.get = function (key, callback) {
 		var parsedKey = key.split(':'),
@@ -76,7 +91,7 @@
 		}
 
 		async.map(keys, getKey, callback);
-	}
+	};
 
 	translator.translate = function (data, callback) {
 		var keys = data.match(/\[\[.*?\]\]/g),
@@ -103,7 +118,9 @@
 				var variables = keys[key].split(/[,][?\s+]/);
 
 				var parsedKey = keys[key].replace('[[', '').replace(']]', '').split(':');
-				if (!(parsedKey[0] && parsedKey[1])) continue;
+				if (!(parsedKey[0] && parsedKey[1])) {
+					continue;
+				}
 
 				var languageFile = parsedKey[0];
 				parsedKey = parsedKey[1].split(',')[0];

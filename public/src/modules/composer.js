@@ -264,6 +264,7 @@ define(['taskbar'], function(taskbar) {
 							newHeight = $(window).height() - $('#header-menu').height() - 20;
 						}
 						postContainer.css('height', newHeight);
+						$('body').css({'margin-bottom': newHeight});
 						resizeSavePosition(newHeight);
 					}
 					e.preventDefault();
@@ -353,6 +354,7 @@ define(['taskbar'], function(taskbar) {
 		postContainer.css('visibility', 'visible')
 			.css('z-index', 1);
 
+		$('body').css({'margin-bottom': postContainer.css('height')});
 
 		composer.focusElements(post_uuid);
 	}
@@ -382,18 +384,19 @@ define(['taskbar'], function(taskbar) {
 		titleEl.val(titleEl.val().trim());
 		bodyEl.val(bodyEl.val().trim());
 
+		var checkTitle = parseInt(postData.cid, 10) || parseInt(postData.pid, 10);
+
 		if(postData.uploadsInProgress && postData.uploadsInProgress.length) {
 			return composerAlert('Still uploading', 'Please wait for uploads to complete.');
-		} else if (titleEl.val().length < parseInt(config.minimumTitleLength, 10)) {
+		} else if (checkTitle && titleEl.val().length < parseInt(config.minimumTitleLength, 10)) {
 			return composerAlert('Title too short', 'Please enter a longer title. At least ' + config.minimumTitleLength+ ' characters.');
-		} else if (titleEl.val().length > parseInt(config.maximumTitleLength, 10)) {
+		} else if (checkTitle && titleEl.val().length > parseInt(config.maximumTitleLength, 10)) {
 			return composerAlert('Title too long', 'Please enter a shorter title. Titles can\'t be longer than ' + config.maximumTitleLength + ' characters.');
 		} else if (bodyEl.val().length < parseInt(config.minimumPostLength, 10)) {
 			return composerAlert('Content too short', 'Please enter a longer post. At least ' + config.minimumPostLength + ' characters.');
 		}
 
-		// Still here? Let's post.
-		if (parseInt(postData.cid) > 0) {
+		if (parseInt(postData.cid, 10) > 0) {
 			socket.emit('topics.post', {
 				'title' : titleEl.val(),
 				'content' : bodyEl.val(),
@@ -401,14 +404,14 @@ define(['taskbar'], function(taskbar) {
 			}, function() {
 				composer.discard(post_uuid);
 			});
-		} else if (parseInt(postData.tid) > 0) {
+		} else if (parseInt(postData.tid, 10) > 0) {
 			socket.emit('posts.reply', {
 				'topic_id' : postData.tid,
 				'content' : bodyEl.val()
 			}, function() {
 				composer.discard(post_uuid);
 			});
-		} else if (parseInt(postData.pid) > 0) {
+		} else if (parseInt(postData.pid, 10) > 0) {
 			socket.emit('posts.edit', {
 				pid: postData.pid,
 				content: bodyEl.val(),
@@ -436,6 +439,7 @@ define(['taskbar'], function(taskbar) {
 			delete composer.posts[post_uuid];
 			composer.active = undefined;
 			taskbar.discard('composer', post_uuid);
+			$('body').css({'margin-bottom': 0});
 		}
 	}
 
@@ -456,6 +460,7 @@ define(['taskbar'], function(taskbar) {
 		if(window.FileReader) {
 			var postContainer = $('#cmp-uuid-' + post_uuid),
 				drop = postContainer.find('.imagedrop'),
+				tabContent = postContainer.find('.tab-content'),
 				textarea = postContainer.find('textarea');
 
 			$(document).off('dragstart').on('dragstart', function(e) {
@@ -468,7 +473,7 @@ define(['taskbar'], function(taskbar) {
 				if(draggingDocument) {
 					return;
 				}
-				drop.css('top', textarea.position().top + 'px');
+				drop.css('top', tabContent.position().top + 'px');
 				drop.css('height', textarea.height());
 				drop.css('line-height', textarea.height() + 'px');
 				drop.show();

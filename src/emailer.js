@@ -20,6 +20,7 @@ var	render = function(template, params, callback) {
 }
 
 Emailer.send = function(template, uid, params) {
+
 	async.parallel({
 		html: function(next) {
 			render('emails/' + template, params, next);

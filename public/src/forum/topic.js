@@ -341,6 +341,17 @@ define(['composer'], function(composer) {
 					updateHeader();
 				}
 			})();
+
+			$('#post-container').on('mouseenter', '.favourite-tooltip', function(e) {
+				if (!$(this).data('users-loaded')) {
+					$(this).data('users-loaded', "true");
+					var pid = $(this).parents('.post-row').attr('data-pid');
+					var el = $(this).attr('title', "Loading...");
+					socket.emit('posts.getFavouritedUsers', pid, function(err, usernames) {
+						el.attr('title', usernames).tooltip('show');
+					});
+				}
+			});
 		});
 
 		function enableInfiniteLoading() {
@@ -522,8 +533,10 @@ define(['composer'], function(composer) {
 
 
 		$('#post-container').on('click', '.chat', function(e) {
-			var username = $(this).parents('li.row').attr('data-username');
-			var touid = $(this).parents('li.row').attr('data-uid');
+			var post = $(this).parents('li.post-row'),
+				username = post.attr('data-username'),
+				touid = post.attr('data-uid');
+
 			app.openChat(username, touid);
 			$(this).parents('.btn-group').find('.dropdown-toggle').click();
 			return false;
@@ -536,7 +549,6 @@ define(['composer'], function(composer) {
 			'event:topic_moved', 'event:post_edited', 'event:post_deleted', 'event:post_restored',
 			'posts.favourite'
 		]);
-
 
 		socket.on('get_users_in_room', function(data) {
 
@@ -641,6 +653,8 @@ define(['composer'], function(composer) {
 				}
 			}
 
+			socket.emit('topics.markAsRead', {tid: tid, uid: app.uid});
+
 			createNewPosts(data);
 		});
 
@@ -711,8 +725,13 @@ define(['composer'], function(composer) {
 				var favBtn = $('li[data-pid="' + data.pid + '"] .favourite');
 				if(favBtn.length) {
 					favBtn.addClass('btn-warning')
-						.attr('data-favourited', true)
-						.find('i').attr('class', 'fa fa-star');
+						.attr('data-favourited', true);
+
+					var icon = favBtn.find('i');
+					var className = icon.attr('class');
+					if (className.indexOf('-o') !== -1) {
+						icon.attr('class', className.replace('-o', ''));
+					}
 				}
 			}
 		});
@@ -722,8 +741,12 @@ define(['composer'], function(composer) {
 				var favBtn = $('li[data-pid="' + data.pid + '"] .favourite');
 				if(favBtn.length) {
 					favBtn.removeClass('btn-warning')
-						.attr('data-favourited', false)
-						.find('i').attr('class', 'fa fa-star-o');
+						.attr('data-favourited', false);
+					var icon = favBtn.find('i');
+					var className = icon.attr('class');
+					if (className.indexOf('-o') === -1) {
+						icon.attr('class', className + '-o');
+					}
 				}
 			}
 		});

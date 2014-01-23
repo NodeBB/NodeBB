@@ -35,7 +35,8 @@ var db = require('./database.js'),
 				order: data.order,
 				link: "",
 				numRecentReplies: 2,
-				"class": 'col-md-3 col-xs-6'
+				class: 'col-md-3 col-xs-6',
+				imageClass: 'default'
 			};
 
 			db.setObject('category:' + cid, category, function(err, data) {
