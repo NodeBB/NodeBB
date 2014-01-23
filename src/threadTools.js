@@ -58,51 +58,69 @@ var winston = require('winston'),
 	}
 
 	ThreadTools.delete = function(tid, uid, callback) {
-		topics.delete(tid);
+		topics.getTopicField(tid, 'deleted', function(err, deleted) {
+			if(err) {
+				return callback(err);
+			}
 
-		db.decrObjectField('global', 'topicCount');
+			if (parseInt(deleted, 10)) {
+				return callback(new Error('topic-already-deleted'));
+			}
 
-		ThreadTools.lock(tid);
+			topics.delete(tid);
 
-		db.searchRemove('topic', tid);
+			db.decrObjectField('global', 'topicCount');
 
-		events.logTopicDelete(uid, tid);
+			ThreadTools.lock(tid);
 
-		websockets.emitTopicPostStats();
+			db.searchRemove('topic', tid);
 
-		websockets.in('topic_' + tid).emit('event:topic_deleted', {
-			tid: tid
-		});
+			events.logTopicDelete(uid, tid);
 
-		if (callback) {
+			websockets.emitTopicPostStats();
+
+			websockets.in('topic_' + tid).emit('event:topic_deleted', {
+				tid: tid
+			});
+
 			callback(null, {
 				tid: tid
 			});
-		}
+		});
 	}
 
 	ThreadTools.restore = function(tid, uid, callback) {
-		topics.restore(tid);
-		db.incrObjectField('global', 'topicCount');
-		ThreadTools.unlock(tid);
+		topics.getTopicField(tid, 'deleted', function(err, deleted) {
+			if(err) {
+				return callback(err);
+			}
 
-		events.logTopicRestore(uid, tid);
+			if (!parseInt(deleted, 10)) {
+				return callback(new Error('topic-already-restored'));
+			}
 
-		websockets.emitTopicPostStats();
+			topics.restore(tid);
 
-		websockets.in('topic_' + tid).emit('event:topic_restored', {
-			tid: tid
-		});
+			db.incrObjectField('global', 'topicCount');
 
-		topics.getTopicField(tid, 'title', function(err, title) {
-			db.searchIndex('topic', title, tid);
-		});
+			ThreadTools.unlock(tid);
 
-		if(callback) {
+			events.logTopicRestore(uid, tid);
+
+			websockets.emitTopicPostStats();
+
+			websockets.in('topic_' + tid).emit('event:topic_restored', {
+				tid: tid
+			});
+
+			topics.getTopicField(tid, 'title', function(err, title) {
+				db.searchIndex('topic', title, tid);
+			});
+
 			callback(null, {
 				tid:tid
 			});
-		}
+		});
 	}
 
 	ThreadTools.lock = function(tid, uid, callback) {
