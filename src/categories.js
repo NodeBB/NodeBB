@@ -189,6 +189,10 @@ var db = require('./database.js'),
 		db.setAdd('cid:' + cid + ':read_by_uid', uid);
 	};
 
+	Categories.markAsUnreadForAll = function(cid, callback) {
+		db.delete('cid:' + cid + ':read_by_uid', callback);
+	};
+
 	Categories.hasReadCategories = function(cids, uid, callback) {
 
 		var sets = [];

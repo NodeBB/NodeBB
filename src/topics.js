@@ -138,88 +138,85 @@ var async = require('async'),
 	};
 
 	Topics.reply = function(tid, uid, content, callback) {
-		threadTools.privileges(tid, uid, function(err, privileges) {
-			if(err) {
-				return callback(err);
-			}
+		var privileges;
 
-			if (content) {
-				content = content.trim();
-			}
-
-			if (!content || content.length < meta.config.minimumPostLength) {
-				return callback(new Error('content-too-short'));
-			} else if (!privileges.write) {
-				return callback(new Error('no-privileges'));
-			}
-
-			user.getUserField(uid, 'lastposttime', function(err, lastposttime) {
-				if(err) {
-					return callback(err);
+		async.waterfall([
+			function(next) {
+				threadTools.privileges(tid, uid, next);
+			},
+			function(privilegesData, next) {
+				privileges = privilegesData;
+				if (!privileges.write) {
+					return next(new Error('no-privileges'));
 				}
-
+				next();
+			},
+			function(next) {
+				user.getUserField(uid, 'lastposttime', next);
+			},
+			function(lastposttime, next) {
 				if(!lastposttime) {
 					lastposttime = 0;
 				}
 
-				if (Date.now() - lastposttime < meta.config.postDelay * 1000) {
-					return callback(new Error('too-many-posts'), null);
+				if (Date.now() - parseInt(lastposttime, 10) < parseInt(meta.config.postDelay, 10) * 1000) {
+					return next(new Error('too-many-posts'), null);
 				}
 
-				posts.create(uid, tid, content, function(err, postData) {
+				next();
+			},
+			function(next) {
+				if (content) {
+					content = content.trim();
+				}
+
+				if (!content || content.length < meta.config.minimumPostLength) {
+					return next(new Error('content-too-short'));
+				}
+
+				posts.create(uid, tid, content, next);
+			},
+			function(postData, next) {
+				db.getObjectField('tid:lastFeedUpdate', tid, function(err, lastFeedUpdate) {
+					var now = Date.now();
+					if(!lastFeedUpdate || parseInt(lastFeedUpdate, 10) < now - 3600000) {
+						feed.updateTopic(tid);
+						db.setObjectField('tid:lastFeedUpdate', tid, now);
+					}
+				});
+
+				feed.updateRecent();
+				threadTools.notifyFollowers(tid, uid);
+				user.sendPostNotificationToFollowers(uid, tid, postData.pid);
+
+				Topics.markCategoryUnreadForAll(tid, function(err) {
+					next(err, postData);
+				});
+			},
+			function(postData, next) {
+				Topics.markAsUnreadForAll(tid, function(err) {
 					if(err) {
-						return callback(err);
-					} else if(!postData) {
-						callback(new Error('reply-error'), null);
+						return next(err);
 					}
 
-					posts.getCidByPid(postData.pid, function(err, cid) {
-						if(err) {
-							return callback(err, null);
-						}
-
-						db.delete('cid:' + cid + ':read_by_uid', function(err) {
-							Topics.markAsUnreadForAll(tid, function(err) {
-								if(err) {
-									return callback(err, null);
-								}
-
-								Topics.markAsRead(tid, uid, function(err) {
-									Topics.pushUnreadCount(null);
-								});
-							});
-						});
-					});
-
-					db.getObjectField('tid:lastFeedUpdate', tid, function(err, lastFeedUpdate) {
-						var now = Date.now();
-						if(!lastFeedUpdate || parseInt(lastFeedUpdate, 10) < now - 3600000) {
-							feed.updateTopic(tid);
-							db.setObjectField('tid:lastFeedUpdate', tid, now);
-						}
-					});
-
-					feed.updateRecent();
-
-					threadTools.notifyFollowers(tid, uid);
-
-					user.sendPostNotificationToFollowers(uid, tid, postData.pid);
-
-					posts.addUserInfoToPost(postData, function(err) {
-						if(err) {
-							return callback(err, null);
-						}
-
-						postData.favourited = false;
-						postData.display_moderator_tools = true;
-						postData.display_move_tools = privileges.admin || privileges.moderator;
-						postData.relativeTime = utils.toISOString(postData.timestamp);
-
-						callback(null, postData);
+					Topics.markAsRead(tid, uid, function(err) {
+						Topics.pushUnreadCount(null);
+						next(err, postData);
 					});
 				});
-			});
-		});
+			},
+			function(postData, next) {
+				posts.addUserInfoToPost(postData, next);
+			},
+			function(postData, next) {
+				postData.favourited = false;
+				postData.display_moderator_tools = true;
+				postData.display_move_tools = privileges.admin || privileges.moderator;
+				postData.relativeTime = utils.toISOString(postData.timestamp);
+
+				next(null, postData);
+			}
+		], callback);
 	}
 
 	Topics.createTopicFromPosts = function(uid, title, pids, callback) {
@@ -967,6 +964,16 @@ var async = require('async'),
 			notifications.mark_read_multiple(nids, uid, function() {
 				user.pushNotifCount(uid);
 			});
+		});
+	}
+
+	Topics.markCategoryUnreadForAll = function(tid, callback) {
+		Topics.getTopicField(tid, 'cid', function(err, cid) {
+			if(err) {
+				return callback(err);
+			}
+
+			categories.markAsUnreadForAll(cid, callback);
 		});
 	}
 
