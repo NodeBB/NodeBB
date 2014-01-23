@@ -275,6 +275,10 @@
 		});
 	}
 
+	module.getObjectKeys = function(key, callback) {
+		redisClient.hkeys(key, callback);
+	}
+
 	module.getObjectValues = function(key, callback) {
 		redisClient.hvals(key, callback);
 	}
