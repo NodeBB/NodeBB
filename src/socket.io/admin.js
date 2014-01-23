@@ -211,10 +211,19 @@ SocketAdmin.categories.setGroupPrivilege = function(socket, data, callback) {
 };
 
 SocketAdmin.categories.groupsList = function(socket, cid, callback) {
-	groups.list({expand:false}, function(err, data){
+	async.parallel({
+		groups: function(next) {
+			groups.list({expand:false}, next);
+		},
+		system: function(next) {
+			groups.listSystemGroups({expand: false}, next);
+		}
+	}, function(err, results) {
 		if(err) {
 			return callback(err);
 		}
+
+		var	data = results.groups.concat(results.system);
 
 		async.map(data, function(groupObj, next) {
 			CategoryTools.groupPrivileges(cid, groupObj.gid, function(err, privileges) {

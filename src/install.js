@@ -289,7 +289,7 @@ var async = require('async'),
 					// Check if an administrator needs to be created
 					var Groups = require('./groups');
 
-					Groups.getGidFromName('Administrators', function (err, gid) {
+					Groups.getGidFromName('administrators', function (err, gid) {
 						if (err) {
 							return next(err.message);
 						}
@@ -417,11 +417,11 @@ var async = require('async'),
 							return callback(new Error('invalid-values'));
 						}
 
-						Groups.getGidFromName('Administrators', function (err, gid) {
+						Groups.getGidFromName('administrators', function (err, gid) {
 							if (gid) {
 								Groups.join(gid, uid, callback);
 							} else {
-								Groups.create('Administrators', 'Forum Administrators', function (err, groupObj) {
+								Groups.create('administrators', 'Forum Administrators', function (err, groupObj) {
 									Groups.join(groupObj.gid, uid, callback);
 								});
 							}
