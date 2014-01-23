@@ -732,10 +732,11 @@
 	}
 
 	module.listRemoveAll = function(key, value, callback) {
-		if(value !== null && value !== undefined) {
-			value = value.toString();
+		var operator = { $pull: {array: value} };
+		if (typeof(value === 'array')) {
+			operator = { $pullAll: {array: value } };
 		}
-		db.collection('objects').update({_key: key }, { $pull: { array: value } }, function(err, result) {
+		db.collection('objects').update({_key: key }, operator, function(err, result) {
 			if(err) {
 				if(callback) {
 					return callback(err);
