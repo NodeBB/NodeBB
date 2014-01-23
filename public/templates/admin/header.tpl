@@ -22,6 +22,8 @@
 	<script src="{relative_path}/vendor/requirejs/require.js"></script>
 	<script src="{relative_path}/vendor/bootbox/bootbox.min.js"></script>
 	<script src="{relative_path}/vendor/colorpicker/colorpicker.js"></script>
+	<script src="{relative_path}/vendor/xregexp/xregexp.js"></script>
+	<script src="{relative_path}/vendor/xregexp/unicode/unicode-base.js"></script>
 
 	<script>
 		require.config({
