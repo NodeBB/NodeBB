@@ -191,9 +191,10 @@ if(nconf.get('ssl')) {
 
 				app.use(express.csrf());
 
-				// double negative here to support config.json without 'use_proxy' set to true, so unless it's specifically set to false, it's true
+				// negative boolean with type check here to support a config.json without a 'use_proxy' value, 
+				// so unless it's specifically set to false, it's true (as long as it's not a dev env)
 				// todo: remove double negative with a minor release, where backward compatibility can be broken
-				// and if dev mode, then it's probably not behind a proxy but it can be forced by setting 'use_proxy' to '1'
+				// and if dev mode, then it's probably not behind a proxy but it can be forced by setting 'use_proxy' to true
 
 				if (nconf.get('use_proxy') === false) {
 					winston.info('\'use_proxy\' is set to false in config file, skipping \'trust proxy\'');
