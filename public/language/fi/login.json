@@ -1,0 +1,10 @@
+{
+	"login": "Kirjaudu sisään",
+	"username": "Käyttäjän nimi",
+	"password": "Salasana",
+	"remember_me": "Muista minut?",
+	"forgot_password": "Unohtuiko salasana?",
+	"alternative_logins": "Vaihtoehtoiset sisäänkirjaantumistavat",
+	"failed_login_attempt": "Sisäänkirjaantuminen epäonnistui, ole hyvä ja yritä uudestaan.",
+	"login_successful": "Olet onnistuneesti kirjautunut sisään!"
+}

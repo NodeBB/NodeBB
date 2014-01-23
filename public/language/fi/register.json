@@ -1,0 +1,16 @@
+{
+	"register": "Rekisteröidy",
+	"help.email": "Oletuksena sähköposti osoitettasi ei näytetä muille .",
+	"help.username_restrictions": "Yksilöllinen käyttäjänimi, pitää olla %1 - %2 merkkiä pitkä. Toiset voivat mainita sinut @<span id='yourUsername'>käyttäjänimi</span>.",
+	"help.minimum_password_length": "Salasanasi pitää olla vähintään %1 merkin mittainen.",
+	"email_address": "Sähköposti",
+	"email_address_placeholder": "Anna sähköpostiosoitteesi",
+	"username": "Käyttäjänimi",
+	"username_placeholder": "Syötä käyttäjänimesi",
+	"password": "Salasana",
+	"password_placeholder": "Syötä salasanasi",
+	"confirm_password": "Vahvista salasana",
+	"confirm_password_placeholder": "Vahvista salasana",
+	"register_now_button": "Rekisteröidy nyt",
+	"alternative_registration": "Vaihtoehtoiset rekisteröitymistavat"
+}
