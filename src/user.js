@@ -105,7 +105,9 @@ var bcrypt = require('bcrypt'),
 
 				if (email !== undefined) {
 					db.setObjectField('email:uid', email, uid);
-					if (uid !== 1) User.email.verify(uid, email);
+					if (parseInt(uid, 10) !== 1) {
+						User.email.verify(uid, email);
+					}
 				}
 
 				plugins.fireHook('action:user.create', {uid: uid, username: username, email: email, picture: gravatar, timestamp: timestamp});
