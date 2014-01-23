@@ -133,22 +133,6 @@
 						<!-- END plugins -->
 					</ul>
 				</div>
-				<div class="well sidebar-nav">
-					<ul class="nav nav-list">
-						<li class="nav-header">Unit Tests</li>
-						<ul class="nav nav-list">
-							<li><a href="{relative_path}/admin/testing/categories">Categories</a></li>
-							<!--<li><a href="{relative_path}/admin/testing/topics">Topics</a></li>
-							<li><a href="{relative_path}/admin/testing/posts">Posts</a></li>
-							<li><a href="{relative_path}/admin/testing/accounts">Accounts</a></li>
-							<li><a href="{relative_path}/admin/testing/chat">Chat</a></li>
-							<li><a href="{relative_path}/admin/testing/notifications">Notifications</a></li>
-							<li><a href="{relative_path}/admin/testing/friends">Friends</a></li>
-							<li><a href="{relative_path}/admin/testing/feed">RSS Feed</a></li>
-							<li><a href="{relative_path}/admin/testing/emails">Emails</a></li>-->
-						</ul>
-					</ul>
-				</div><!--/.well -->
 			</div><!--/span-->
 
 			<div class="col-sm-9" id="content">
