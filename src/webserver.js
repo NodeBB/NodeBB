@@ -191,7 +191,7 @@ if(nconf.get('ssl')) {
 
 				app.use(express.csrf());
 
-				// negative boolean with type check here to support a config.json without a 'use_proxy' value, 
+				// negative boolean with type check here to support a config.json without a 'use_proxy' value,
 				// so unless it's specifically set to false, it's true (as long as it's not a dev env)
 				// todo: remove double negative with a minor release, where backward compatibility can be broken
 				// and if dev mode, then it's probably not behind a proxy but it can be forced by setting 'use_proxy' to true
@@ -401,7 +401,7 @@ if(nconf.get('ssl')) {
 			});
 		});
 
-		plugins.fireHook('action:app.load');
+		plugins.fireHook('action:app.load', app);
 
 		translator.translate(templates.logout.toString(), function(parsedTemplate) {
 			templates.logout = parsedTemplate;
