@@ -197,7 +197,7 @@
 					return res.send(403);
 				}
 
-				user.create(req.body.username, req.body.password, req.body.email, function(err, uid) {
+				user.create({username: req.body.username, password: req.body.password, email: req.body.email, ip: req.ip}, function(err, uid) {
 					if (err === null && uid) {
 						req.login({
 							uid: uid

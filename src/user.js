@@ -19,34 +19,35 @@ var bcrypt = require('bcrypt'),
 
 (function(User) {
 	'use strict';
-	User.create = function(username, password, email, callback) {
-		var userslug = utils.slugify(username);
+	User.create = function(userData, callback) {
+		userData = userData || {};
+		userData.userslug = utils.slugify(userData.username);
 
-		username = username.trim();
-		if (email !== undefined) {
-			email = email.trim();
+		userData.username = userData.username.trim();
+		if (userData.email !== undefined) {
+			userData.email = userData.email.trim();
 		}
 
 		async.parallel([
 			function(next) {
-				if (email !== undefined) {
-					next(!utils.isEmailValid(email) ? new Error('Invalid Email!') : null);
+				if (userData.email) {
+					next(!utils.isEmailValid(userData.email) ? new Error('Invalid Email!') : null);
 				} else {
 					next();
 				}
 			},
 			function(next) {
-				next((!utils.isUserNameValid(username) || !userslug) ? new Error('Invalid Username!') : null);
+				next((!utils.isUserNameValid(userData.username) || !userData.userslug) ? new Error('Invalid Username!') : null);
 			},
 			function(next) {
-				if (password !== undefined) {
-					next(!utils.isPasswordValid(password) ? new Error('Invalid Password!') : null);
+				if (userData.password) {
+					next(!utils.isPasswordValid(userData.password) ? new Error('Invalid Password!') : null);
 				} else {
 					next();
 				}
 			},
 			function(next) {
-				User.exists(userslug, function(err, exists) {
+				User.exists(userData.userslug, function(err, exists) {
 					if (err) {
 						return next(err);
 					}
@@ -54,8 +55,8 @@ var bcrypt = require('bcrypt'),
 				});
 			},
 			function(next) {
-				if (email !== undefined) {
-					User.isEmailAvailable(email, function(err, available) {
+				if (userData.email) {
+					User.isEmailAvailable(userData.email, function(err, available) {
 						if (err) {
 							return next(err);
 						}
@@ -64,8 +65,14 @@ var bcrypt = require('bcrypt'),
 				} else {
 					next();
 				}
+			},
+			function(next) {
+				plugins.fireHook('filter:user.create', userData, function(err, filteredUserData){
+					next(err, utils.merge(userData, filteredUserData));
+				});
 			}
 		], function(err, results) {
+			userData = results[results.length - 1];
 			if (err) {
 				return callback(err);
 			}
@@ -75,18 +82,19 @@ var bcrypt = require('bcrypt'),
 					return callback(err);
 				}
 
-				var gravatar = User.createGravatarURLFromEmail(email);
+				var gravatar = User.createGravatarURLFromEmail(userData.email);
 				var timestamp = Date.now();
+				var password = userData.password;
 
-				db.setObject('user:' + uid, {
+				userData = {
 					'uid': uid,
-					'username': username,
-					'userslug': userslug,
+					'username': userData.username,
+					'userslug': userData.userslug,
 					'fullname': '',
 					'location': '',
 					'birthday': '',
 					'website': '',
-					'email': email || '',
+					'email': userData.email || '',
 					'signature': '',
 					'joindate': timestamp,
 					'picture': gravatar,
@@ -98,19 +106,21 @@ var bcrypt = require('bcrypt'),
 					'lastposttime': 0,
 					'banned': 0,
 					'showemail': 0
-				});
+				};
 
-				db.setObjectField('username:uid', username, uid);
-				db.setObjectField('userslug:uid', userslug, uid);
+				db.setObject('user:' + uid, userData);
 
-				if (email !== undefined) {
-					db.setObjectField('email:uid', email, uid);
+				db.setObjectField('username:uid', userData.username, uid);
+				db.setObjectField('userslug:uid', userData.userslug, uid);
+
+				if (userData.email !== undefined) {
+					db.setObjectField('email:uid', userData.email, uid);
 					if (parseInt(uid, 10) !== 1) {
-						User.email.verify(uid, email);
+						User.email.verify(uid, userData.email);
 					}
 				}
 
-				plugins.fireHook('action:user.create', {uid: uid, username: username, email: email, picture: gravatar, timestamp: timestamp});
+				plugins.fireHook('action:user.create', userData);
 				db.incrObjectField('global', 'userCount');
 
 				db.sortedSetAdd('users:joindate', timestamp, uid);
@@ -120,7 +130,7 @@ var bcrypt = require('bcrypt'),
 				// Join the "registered-users" meta group
 				groups.joinByGroupName('registered-users', uid);
 
-				if (password !== undefined) {
+				if (password) {
 					User.hashPassword(password, function(err, hash) {
 						User.setUserField(uid, 'password', hash);
 						callback(null, uid);

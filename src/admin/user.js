@@ -11,7 +11,7 @@ var utils = require('../../public/src/utils'),
 			}
 
 			if (isAdmin) {
-				user.create(userData.username, userData.password, userData.email, function(err) {
+				user.create(userData, function(err) {
 					if(err) {
 						return callback(err);
 					}
