@@ -1,0 +1,14 @@
+{
+	"new_topic_button": "Aloita uusi keskustelu.",
+	"no_topics": "<strong>Tällä aihealueella ei ole yhtään viestiketjua.</strong><br />Miksi et aloittaisi yhtä?",
+	"sidebar.recent_replies": "Viimeisimmät vastaukset",
+	"sidebar.active_participants": "Aktiiviset keskustelijat",
+	"sidebar.moderators": "Moderaattorit",
+	"posts": "viestit",
+	"views": "katsottu",
+	"posted": "lähetetty",
+	"browsing": "selaamassa",
+	"no_replies": "Kukaan ei ole vastannut",
+	"replied": "vastasi",
+	"last_edited_by": "viimeksi muokannut "
+}

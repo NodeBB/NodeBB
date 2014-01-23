@@ -1,0 +1,6 @@
+{
+	"chat.chatting_with": "Juttele <span id=\"chat-with-name\"></span> kanssa",
+	"chat.placeholder": "kirjoita viestisi tähän, paina enter lähettääksesi",
+	"chat.send": "Lähetä",
+	"chat.no_active": "Sinulla ei ole aktiivisiä keskusteluita."
+}
