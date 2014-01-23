@@ -61,7 +61,12 @@ var ajaxify = {};
 			url = url.slice(RELATIVE_PATH.length);
 		}
 
-		if (!tpl_url || tpl_url === "undefined") {
+		if (typeof(tpl_url) === "boolean") {
+			quiet = tpl_url;
+			tpl_url = null;
+		}
+
+		if (tpl_url === undefined || tpl_url === null || typeof(tpl_url === "string")) {
 			tpl_url = templates.get_custom_map(url.split('?')[0]);
 			if (tpl_url === false) {
 				if (!templates[url]) {
