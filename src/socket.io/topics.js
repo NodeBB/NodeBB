@@ -16,7 +16,7 @@ SocketTopics.post = function(socket, data, callback) {
 			type: 'danger',
 			timeout: 2000
 		});
-		return;
+		return callback(new Error('not-logged-in'));
 	}
 
 	topics.post(socket.uid, data.title, data.content, data.category_id, function(err, result) {
@@ -44,7 +44,7 @@ SocketTopics.post = function(socket, data, callback) {
 					timeout: 7500
 				});
 			}
-			return;
+			return callback(err);
 		}
 
 		if (result) {

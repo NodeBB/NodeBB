@@ -90,9 +90,7 @@ var db = require('./database'),
 					next(null, postData);
 				});
 			}
-		], function(err, postData) {
-			callback(err, postData);
-		});
+		], callback);
 	};
 
 	Posts.getPostsByTid = function(tid, start, end, callback) {
@@ -222,10 +220,10 @@ var db = require('./database'),
 
 							post.editorname = editorData.username;
 							post.editorslug = editorData.userslug;
-							callback();
+							callback(null,  post);
 						});
 					} else {
-						callback();
+						callback(null, post);
 					}
 				});
 			});
