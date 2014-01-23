@@ -32,6 +32,6 @@
 	"motd.welcome": "Welcome to NodeBB, the discussion platform of the future.",
 	"motd.get": "Get NodeBB",
 	"motd.fork": "Fork",
-	"motd.like": "Like",
-	"motd.follow": "Follow"
+	"motd.like": "讚好",
+	"motd.follow": "關注"
 }
