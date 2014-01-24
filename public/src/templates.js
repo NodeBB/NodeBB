@@ -394,10 +394,10 @@
 				var regex = new RegExp("{" + namespace + "[\\s\\S]*?}", 'g');
 				template = template.replace(regex, '');
 				namespace = '';
+			} else {
+				// clean up all undefined conditionals
+				template = template.replace(/<!-- IF([^@]*?)ENDIF([^@]*?)-->/gi, '');	
 			}
-
-			// clean up all undefined conditionals
-			template = template.replace(/<!-- IF([^@]*?)ENDIF([^@]*?)-->/gi, '');
 
 			return template;
 
