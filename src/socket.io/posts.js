@@ -170,6 +170,7 @@ SocketPosts.getPrivileges = function(socket, pid, callback) {
 };
 
 SocketPosts.getFavouritedUsers = function(socket, pid, callback) {
+
 	favourites.getFavouritedUidsByPids([pid], function(data) {
 		var max = 5; //hardcoded
 		var usernames = "";

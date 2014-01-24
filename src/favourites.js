@@ -27,13 +27,17 @@ var async = require('async'),
 
 		posts.getPostFields(pid, ['uid', 'timestamp'], function (err, postData) {
 
-			Favourites.hasFavourited(pid, uid, function (hasFavourited) {
+			Favourites.hasFavourited(pid, uid, function (err, hasFavourited) {
 
 				if (!hasFavourited) {
-					db.setAdd('pid:' + pid + ':users_favourited', uid);
-					db.sortedSetAdd('uid:' + uid + ':favourites', postData.timestamp, pid);
 
-					db.incrObjectFieldBy('post:' + pid, 'reputation', 1);
+					db.sortedSetAdd('uid:' + uid + ':favourites', postData.timestamp, pid);
+					db.setAdd('pid:' + pid + ':users_favourited', uid, function(err) {
+						db.setCount('pid:' + pid + ':users_favourited', function(err, count) {
+							posts.setPostField(pid, 'reputation', count);
+						});
+					});
+
 
 					if (uid !== postData.uid) {
 						user.incrementUserFieldBy(postData.uid, 'reputation', 1, function (err, newreputation) {
@@ -64,12 +68,16 @@ var async = require('async'),
 		}
 
 		posts.getPostField(pid, 'uid', function (err, uid_of_poster) {
-			Favourites.hasFavourited(pid, uid, function (hasFavourited) {
+			Favourites.hasFavourited(pid, uid, function (err, hasFavourited) {
 				if (hasFavourited) {
-					db.setRemove('pid:' + pid + ':users_favourited', uid);
+
 					db.sortedSetRemove('uid:' + uid + ':favourites', pid);
 
-					db.incrObjectFieldBy('post:' + pid, 'reputation', -1);
+					db.setRemove('pid:' + pid + ':users_favourited', uid, function(err) {
+						db.setCount('pid:' + pid + ':users_favourited', function(err, count) {
+							posts.setPostField(pid, 'reputation', count);
+						});
+					});
 
 					if (uid !== uid_of_poster) {
 						user.incrementUserFieldBy(uid_of_poster, 'reputation', -1, function (err, newreputation) {
@@ -93,17 +101,14 @@ var async = require('async'),
 	};
 
 	Favourites.hasFavourited = function (pid, uid, callback) {
-		db.isSetMember('pid:' + pid + ':users_favourited', uid, function (err, hasFavourited) {
-
-			callback(hasFavourited);
-		});
+		db.isSetMember('pid:' + pid + ':users_favourited', uid, callback);
 	};
 
 	Favourites.getFavouritesByPostIDs = function (pids, uid, callback) {
 		var data = {};
 
 		function iterator(pid, next) {
-			Favourites.hasFavourited(pid, uid, function (hasFavourited) {
+			Favourites.hasFavourited(pid, uid, function (err, hasFavourited) {
 				data[pid] = hasFavourited;
 				next()
 			});
