@@ -23,7 +23,7 @@ var ajaxify = {};
 
 
 	window.onpopstate = function (event) {
-		if (event !== null && event.state && event.state.url !== undefined) {
+		if (event !== null && event.state && event.state.url !== undefined && !ajaxify.initialLoad) {
 			ajaxify.go(event.state.url, null, true);
 		}
 	};
@@ -31,6 +31,7 @@ var ajaxify = {};
 	var pagination, paginator_bar;
 
 	ajaxify.currentPage = null;
+	ajaxify.initialLoad = false;
 
 	ajaxify.go = function (url, callback, quiet) {
 		// "quiet": If set to true, will not call pushState
