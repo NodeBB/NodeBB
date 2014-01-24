@@ -191,23 +191,11 @@ if(nconf.get('ssl')) {
 
 				app.use(express.csrf());
 
-				// negative boolean with type check here to support a config.json without a 'use_proxy' value,
-				// so unless it's specifically set to false, it's true (as long as it's not a dev env)
-				// todo: remove double negative with a minor release, where backward compatibility can be broken
-				// and if dev mode, then it's probably not behind a proxy but it can be forced by setting 'use_proxy' to true
-
-				if (nconf.get('use_proxy') === false) {
-					winston.info('\'use_proxy\' is set to false in config file, skipping \'trust proxy\'');
-
-				} else if (!nconf.get('use_proxy') && process.env.NODE_ENV === 'development') {
-					winston.info('\'use_proxy\' is not set, skipping because you\'re in development env. Set to true to force enabling it.');
-
-				} else {
-					winston.info('\'use_proxy\''
-						+ (nconf.get('use_proxy') === true ? ' is set to true ' : ' is not set ')
-						+ 'in config file, enabling \'trust proxy\', set to false to disable it.');
-
+				if (nconf.get('port') != 80 && nconf.get('port') != 443 && nconf.get('use_port') === true) {
+					winston.info('Enabling \'trust proxy\'');
 					app.enable('trust proxy');
+				} else if (process.env.NODE_ENV !== 'development') {
+					winston.info('Using ports 80 and 443 is not recommend; use a proxy instead. See README.md');
 				}
 
 				// Local vars, other assorted setup
