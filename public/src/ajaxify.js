@@ -118,6 +118,7 @@ var ajaxify = {};
 				app.processPage();
 
 				jQuery('#content, #footer').stop(true, true).removeClass('ajaxifying');
+				ajaxify.initialLoad = false;
 
 				if (window.location.hash) {
 					hash = window.location.hash;
