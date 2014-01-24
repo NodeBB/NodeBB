@@ -28,6 +28,18 @@
 		});
 	};
 
+	Groups.listSystemGroups = function(options, callback) {
+		var	systemGroups = ['administrators', 'registered-users'],
+			humanNames = ['Administrators', 'Registered Users'];
+
+		async.map(systemGroups, function(groupName, next) {
+			Groups.getByGroupName(groupName, options, function(err, groupObj) {
+				groupObj['name'] = humanNames[systemGroups.indexOf(groupObj['name'])];
+				next(err, groupObj);
+			});
+		}, callback);
+	};
+
 	Groups.get = function(gid, options, callback) {
 		async.parallel({
 			base: function (next) {
@@ -199,7 +211,26 @@
 	Groups.update = function(gid, values, callback) {
 		db.exists('gid:' + gid, function (err, exists) {
 			if (!err && exists) {
-				db.setObject('gid:' + gid, values, callback);
+				// If the group was renamed, check for dupes, fix the assoc. hash
+				if (values['name']) {
+					Groups.exists(values['name'], function(err, exists) {
+						if (!exists) {
+							Groups.get(gid, {}, function(err, groupObj) {
+								if (err) {
+									return callback(new Error('group-not-found'));
+								}
+
+								db.deleteObjectField('group:gid', groupObj['name']);
+								db.setObjectField('group:gid', values['name'], gid);
+								db.setObject('gid:' + gid, values, callback);
+							});
+						} else {
+							callback(new Error('group-exists'));
+						}
+					});
+				} else {
+					db.setObject('gid:' + gid, values, callback);
+				}
 			} else {
 				if (callback) {
 					callback(new Error('gid-not-found'));

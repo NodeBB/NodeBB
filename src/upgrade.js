@@ -17,7 +17,7 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2014, 0, 19, 22, 19).getTime();
+	var	latestSchema = new Date(2014, 0, 23, 16, 5).getTime();
 
 	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -297,6 +297,25 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/1/19] Remove user search from Reds -- skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 0, 23, 16, 5).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				Groups.getByGroupName('Administrators', {}, function(err, groupObj) {
+					Groups.update(groupObj.gid, {
+						name: 'administrators',
+						hidden: '1'
+					}, function() {
+						winston.info('[2014/1/23] Updating Administrators Group');
+						next();
+					});
+				})
+			} else {
+				winston.info('[2014/1/23] Updating Administrators Group -- skipped');
 				next();
 			}
 		}

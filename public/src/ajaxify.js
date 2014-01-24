@@ -23,8 +23,7 @@ var ajaxify = {};
 
 
 	window.onpopstate = function (event) {
-		// "quiet": If set to true, will not call pushState
-		if (event !== null && event.state && event.state.url !== undefined) {
+		if (event !== null && event.state && event.state.url !== undefined && !ajaxify.initialLoad) {
 			ajaxify.go(event.state.url, null, true);
 		}
 	};
@@ -32,13 +31,10 @@ var ajaxify = {};
 	var pagination, paginator_bar;
 
 	ajaxify.currentPage = null;
+	ajaxify.initialLoad = false;
 
 	ajaxify.go = function (url, callback, quiet) {
-		if ($('#content').hasClass('ajaxifying')) {
-			return true;
-		}
-
-		jQuery('#footer, #content').addClass('ajaxifying');
+		// "quiet": If set to true, will not call pushState
 
 		// start: the following should be set like so: ajaxify.onchange(function(){}); where the code actually belongs
 		$(window).off('scroll');
@@ -54,6 +50,9 @@ var ajaxify = {};
 		window.onscroll = null;
 		// end
 
+		if ($('#content').hasClass('ajaxifying')) {
+			templates.cancelRequest();
+		}
 
 		// Remove trailing slash
 		url = url.replace(/\/$/, "");
@@ -101,12 +100,11 @@ var ajaxify = {};
 
 			translator.load(tpl_url);
 
-			jQuery('#footer, #content').removeClass('hide');
+			jQuery('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
 			templates.flush();
 			templates.load_template(function () {
 				exec_body_scripts(content);
-
 				require(['forum/' + tpl_url], function(script) {
 					if (script && script.init) {
 						script.init();
@@ -176,6 +174,7 @@ var ajaxify = {};
 					var url = this.href.replace(rootUrl + '/', '');
 
 					if (ajaxify.go(url)) {
+
 						e.preventDefault();
 					}
 				} else if (window.location.pathname !== '/outgoing') {
