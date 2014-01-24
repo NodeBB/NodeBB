@@ -355,15 +355,27 @@ define(['composer'], function(composer) {
 		});
 
 		function enableInfiniteLoading() {
-			$(window).off('scroll').on('scroll', function() {
-				var bottom = ($(document).height() - $(window).height()) * 0.9;
+			if(!config.usePagination) {
+				$(window).off('scroll').on('scroll', function() {
+					var bottom = ($(document).height() - $(window).height()) * 0.9;
 
-				if ($(window).scrollTop() > bottom && !infiniteLoaderActive && $('#post-container').children().length) {
-					loadMorePosts(tid, function(posts) {
-						fixDeleteStateForPosts();
-					});
-				}
-			});
+					if ($(window).scrollTop() > bottom && !infiniteLoaderActive && $('#post-container').children().length) {
+						loadMorePosts(tid, function(posts) {
+							fixDeleteStateForPosts();
+						});
+					}
+				});
+			} else {
+				$('.pagination .previous').on('click', function() {
+
+					return false;
+				});
+
+				$('.pagination .next').on('click', function() {
+
+					return false;
+				});
+			}
 		}
 
 		$('.topic').on('click', '.post_reply', function() {

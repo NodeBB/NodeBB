@@ -528,6 +528,10 @@ var socket,
 		});
 
 		templates.setGlobal('relative_path', RELATIVE_PATH);
+		templates.setGlobal('usePagination', config.usePagination);
+		templates.setGlobal('topicsPerPage', config.topicsPerPage);
+		templates.setGlobal('postsPerPage', config.postsPerPage);
+		console.log(templates.globals);
 	});
 
 	showWelcomeMessage = location.href.indexOf('loggedin') !== -1;

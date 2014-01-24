@@ -42,6 +42,9 @@ var path = require('path'),
 				config.useOutgoingLinksPage = parseInt(meta.config.useOutgoingLinksPage, 10) === 1;
 				config.allowGuestPosting = parseInt(meta.config.allowGuestPosting, 10) === 1;
 				config.allowFileUploads = parseInt(meta.config.allowFileUploads, 10) === 1;
+				config.usePagination = parseInt(meta.config.usePagination, 10) === 1;
+				config.topicsPerPage = meta.config.topicsPerPage || 20;
+				config.postsPerPage = meta.config.postsPerPage || 20;
 				config.maximumFileSize = meta.config.maximumFileSize;
 				config.emailSetup = !!meta.config['email:from'];
 				config.defaultLang = meta.config.defaultLang || 'en';
@@ -161,20 +164,23 @@ var path = require('path'),
 			});
 
 			app.get('/topic/:id/:slug?', function (req, res, next) {
+				console.log(req.query);
 				var uid = (req.user) ? req.user.uid : 0;
 				ThreadTools.privileges(req.params.id, uid, function(err, privileges) {
 					if (privileges.read) {
-						topics.getTopicWithPosts(req.params.id, uid, 0, 10, false, function (err, data) {
-							if (!err) {
-								// Send in privilege data as well
-								data.privileges = privileges;
+						var postsPerPage = meta.config.postsPerPage ? (meta.config.postsPerPage - 1) : 20;
+						topics.getTopicWithPosts(req.params.id, uid, 0, postsPerPage, false, function (err, data) {
+							if(err) {
+								return next(err);
+							}
 
-								if (parseInt(data.deleted, 10) === 1 && parseInt(data.expose_tools, 10) === 0) {
-									return res.json(404, {});
-								}
+							data.privileges = privileges;
 
-								res.json(data);
-							} else next();
+							if (parseInt(data.deleted, 10) === 1 && parseInt(data.expose_tools, 10) === 0) {
+								return res.json(404, {});
+							}
+
+							res.json(data);
 						});
 					} else {
 						res.send(403);

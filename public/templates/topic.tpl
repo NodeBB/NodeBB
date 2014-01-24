@@ -201,6 +201,13 @@
 		<div style="clear:both;"></div>
 	</div>
 
+	<!-- {usePagination} -->
+	<ul class="pager">
+		<li class="previous"><a href="#">&larr; Older</a></li>
+		<li class="next"><a href="#">Newer &rarr;</a></li>
+	</ul>
+	<!-- {usePagination} -->
+
 	<div id="move_thread_modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="Move Topic" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
