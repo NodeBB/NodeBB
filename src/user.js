@@ -348,6 +348,23 @@ var bcrypt = require('bcrypt'),
 		}
 	};
 
+	User.isReadyToPost = function(uid, callback) {
+		User.getUserField(uid, 'lastposttime', function(err, lastposttime) {
+			if(err) {
+				return callback(err);
+			}
+
+			if(!lastposttime) {
+				lastposttime = 0;
+			}
+
+			if (Date.now() - parseInt(lastposttime, 10) < parseInt(meta.config.postDelay, 10) * 1000) {
+				return callback(new Error('too-many-posts'));
+			}
+			callback();
+		});
+	}
+
 	User.isEmailAvailable = function(email, callback) {
 		db.isObjectField('email:uid', email, function(err, exists) {
 			callback(err, !exists);

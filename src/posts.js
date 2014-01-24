@@ -439,26 +439,23 @@ var db = require('./database'),
 
 	Posts.reIndexPids = function(pids, callback) {
 
-		function reIndex(pid, callback) {
+		function reIndex(pid, next) {
 
 			Posts.getPostField(pid, 'content', function(err, content) {
-				db.searchRemove('post', pid, function() {
+				if(err) {
+					return next(err);
+				}
 
+				db.searchRemove('post', pid, function() {
 					if (content && content.length) {
 						db.searchIndex('post', content, pid);
 					}
-					callback(null);
+					next();
 				});
 			});
 		}
 
-		async.each(pids, reIndex, function(err) {
-			if (err) {
-				callback(err, null);
-			} else {
-				callback(null, 'Posts reindexed');
-			}
-		});
+		async.each(pids, reIndex, callback);
 	}
 
 	Posts.getFavourites = function(uid, callback) {
