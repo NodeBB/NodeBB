@@ -400,7 +400,7 @@ if(nconf.get('ssl')) {
 	};
 
 	app.create_route = function (url, tpl) { // to remove
-		return '<script>templates.ready(function(){ajaxify.go("' + url + '", null, "' + tpl + '", true);});</script>';
+		return '<script>templates.ready(function(){ajaxify.go("' + url + '", null, true);});</script>';
 	};
 
 	app.namespace(nconf.get('relative_path'), function () {
@@ -648,7 +648,7 @@ if(nconf.get('ssl')) {
 				res.send(
 					data.header +
 					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/topic'].parse(data.topics) + '\n\t</noscript>' +
-					'\n\t<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '", undefined, undefined, true);});</script>' +
+					'\n\t<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '", undefined, true);});</script>' +
 					templates.footer
 				);
 			});
@@ -763,7 +763,7 @@ if(nconf.get('ssl')) {
 				res.send(
 					data.header +
 					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/category'].parse(data.categories) + '\n\t</noscript>' +
-					'\n\t<script>templates.ready(function(){ajaxify.go("category/' + category_url + '", undefined, undefined, true);});</script>' +
+					'\n\t<script>templates.ready(function(){ajaxify.go("category/' + category_url + '", undefined, true);});</script>' +
 					templates.footer
 				);
 			});
@@ -774,7 +774,7 @@ if(nconf.get('ssl')) {
 				req: req,
 				res: res
 			}, function (err, header) {
-				res.send(header + '<script>templates.ready(function(){ajaxify.go("confirm/' + req.params.code + '", undefined, undefined, true);});</script>' + templates.footer);
+				res.send(header + '<script>templates.ready(function(){ajaxify.go("confirm/' + req.params.code + '", undefined, true);});</script>' + templates.footer);
 			});
 		});
 
@@ -847,7 +847,7 @@ if(nconf.get('ssl')) {
 			}, function (err, header) {
 				res.send(
 					header +
-					'\n\t<script>templates.ready(function(){ajaxify.go("outgoing?url=' + encodeURIComponent(req.query.url) + '", null, null, true);});</script>' +
+					'\n\t<script>templates.ready(function(){ajaxify.go("outgoing?url=' + encodeURIComponent(req.query.url) + '", null, true);});</script>' +
 					templates.footer
 				);
 			});

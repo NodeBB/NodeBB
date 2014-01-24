@@ -23,7 +23,6 @@ var ajaxify = {};
 
 
 	window.onpopstate = function (event) {
-		// "quiet": If set to true, will not call pushState
 		if (event !== null && event.state && event.state.url !== undefined) {
 			ajaxify.go(event.state.url, null, true);
 		}
@@ -34,6 +33,8 @@ var ajaxify = {};
 	ajaxify.currentPage = null;
 
 	ajaxify.go = function (url, callback, quiet) {
+		// "quiet": If set to true, will not call pushState
+
 		// start: the following should be set like so: ajaxify.onchange(function(){}); where the code actually belongs
 		$(window).off('scroll');
 		app.enterRoom('global');
