@@ -1110,6 +1110,7 @@ define(['composer'], function(composer) {
 			infiniteLoaderActive = false;
 
 			app.populateOnlineUsers();
+			app.createUserTooltips();
 			app.addCommasToNumbers();
 			$('span.timeago').timeago();
 			$('.post-content img').addClass('img-responsive');
@@ -1139,7 +1140,7 @@ define(['composer'], function(composer) {
 				$('#topic-post-count').html(Topic.postCount);
 				updateHeader();
 			}
-		})
+		});
 	}
 
 	function loadMorePosts(tid, callback) {

@@ -81,6 +81,7 @@ define(function() {
 				html = $(translatedHTML);
 				container.append(html);
 				$('span.timeago').timeago();
+				app.createUserTooltips();
 				app.makeNumbersHumanReadable(html.find('.human-readable-number'));
 			});
 		}
