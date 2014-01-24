@@ -76,12 +76,10 @@
 								<!-- ENDIF posts.favourited -->
 							</button>
 						</div>
-						<!-- IF privileges.write -->
 						<div class="btn-group">
 							<button class="btn btn-sm btn-default quote" type="button" title="[[topic:quote]]"><i class="fa fa-quote-left"></i></button>
 							<button class="btn btn-sm btn-primary btn post_reply" type="button">[[topic:reply]] <i class="fa fa-reply"></i></button>
 						</div>
-						<!-- ENDIF privileges.write -->
 
 						<div class="pull-right">
 							<div class="btn-group post-tools">
