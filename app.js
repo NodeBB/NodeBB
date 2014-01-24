@@ -74,6 +74,7 @@
 		nconf.set('upload_url', path.join(path.sep, nconf.get('relative_path'), 'uploads', path.sep));
 		nconf.set('base_dir', __dirname);
 
+		winston.info('Time: ' + new Date());
 		winston.info('Initializing NodeBB v' + pkg.version + ', on port ' + nconf.get('port') + ', using ' + nconf.get('database') +' store at ' + nconf.get(nconf.get('database') + ':host') + ':' + nconf.get(nconf.get('database') + ':port') + '.');
 		winston.info('NodeBB instance bound to: ' + ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? 'Any address (0.0.0.0)' : nconf.get('bind_address')));
 
