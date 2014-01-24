@@ -127,16 +127,16 @@ define(function() {
 				foundUserLabel = foundUser.getElementsByTagName('span')[0];
 
 				socket.emit('admin.user.search', searchText, function(err, results) {
-					if (!err && results && results.length > 0) {
-						var numResults = results.length,
+					if (!err && results && results.users.length > 0) {
+						var numResults = results.users.length,
 							resultsSlug = document.createDocumentFragment(),
 							x;
 						if (numResults > 4) numResults = 4;
 						for (x = 0; x < numResults; x++) {
-							foundUserImg.src = results[x].picture;
-							foundUserLabel.innerHTML = results[x].username;
-							foundUser.setAttribute('title', results[x].username);
-							foundUser.setAttribute('data-uid', results[x].uid);
+							foundUserImg.src = results.users[x].picture;
+							foundUserLabel.innerHTML = results.users[x].username;
+							foundUser.setAttribute('title', results.users[x].username);
+							foundUser.setAttribute('data-uid', results.users[x].uid);
 							resultsSlug.appendChild(foundUser.cloneNode(true));
 						}
 
@@ -172,7 +172,7 @@ define(function() {
 		groupMembersEl.on('click', 'li[data-uid]', function() {
 			var uid = this.getAttribute('data-uid'),
 				gid = detailsModal.attr('data-gid');
-				
+
 			socket.emit('admin.groups.get', gid, function(err, groupObj){
 				if (!err){
 					if (groupObj.name == 'Administrators' && uid == yourid){

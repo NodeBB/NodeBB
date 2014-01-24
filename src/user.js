@@ -490,34 +490,36 @@ var bcrypt = require('bcrypt'),
 
 	User.search = function(query, callback) {
 		if (!query || query.length === 0) {
-			return callback(null, []);
+			return callback(null, {timing:0, users:[]});
 		}
+		var start = process.hrtime();
 
-		// TODO: Have this use db.getObjectKeys (doesn't exist yet)
 		db.getObject('username:uid', function(err, usernamesHash) {
 			if (err) {
-				return callback(null, []);
+				return callback(null, {timing: 0, users:[]});
 			}
+
+			query = query.toLowerCase();
 
 			var	usernames = Object.keys(usernamesHash),
 				results = [];
 
-			results = usernames.filter(function(username) {		// Remove non-matches
-				return username.indexOf(query) === 0;
-			}).sort(function(a, b) {							// Sort alphabetically
+			results = usernames.filter(function(username) {
+				return username.toLowerCase().indexOf(query) === 0;
+			})
+			.slice(0, 10)
+			.sort(function(a, b) {
 				return a > b;
-			}).slice(0, 5)										// Limit 5
-			.map(function(username) {							// Translate to uids
+			})
+			.map(function(username) {
 				return usernamesHash[username];
 			});
 
-			if (results && results.length) {
-				User.getDataForUsers(results, function(userdata) {
-					callback(null, userdata);
-				});
-			} else {
-				callback(null, []);
-			}
+			User.getDataForUsers(results, function(userdata) {
+				var diff = process.hrtime(start);
+				var timing = (diff[0] * 1e3 + diff[1] / 1e6).toFixed(1);
+				callback(null, {timing: timing, users: userdata});
+			});
 		});
 	};
 

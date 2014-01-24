@@ -91,7 +91,7 @@ SocketAdmin.user.search = function(socket, username, callback) {
 			});
 		}
 
-		async.each(data, isAdmin, function(err) {
+		async.each(data.users, isAdmin, function(err) {
 			callback(err, data);
 		});
 	});
@@ -126,7 +126,7 @@ SocketAdmin.categories.search = function(socket, data, callback) {
 		cid = data.cid;
 
 	user.search(username, function(err, data) {
-		async.map(data, function(userObj, next) {
+		async.map(data.users, function(userObj, next) {
 			CategoryTools.privileges(cid, userObj.uid, function(err, privileges) {
 				if(err) {
 					return next(err);

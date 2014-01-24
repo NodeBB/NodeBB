@@ -52,6 +52,8 @@ define(function() {
 							return app.alert(err.message);
 						}
 
+						console.log(data);
+
 						if (!data) {
 							$('#user-notfound-notify').html('You need to be logged in to search!');
 							$('#user-notfound-notify').parent().addClass('btn-warning label-warning');
@@ -59,18 +61,18 @@ define(function() {
 						}
 
 						var html = templates.prepare(templates['users'].blocks['users']).parse({
-							users: data
+							users: data.users
 						}),
 							userListEl = $('#users-container');
 
 						userListEl.html(html);
 
 
-						if (data && data.length === 0) {
+						if (data && data.users.length === 0) {
 							$('#user-notfound-notify').html('User not found!');
 							$('#user-notfound-notify').parent().addClass('btn-warning label-warning');
 						} else {
-							$('#user-notfound-notify').html(data.length + ' user' + (data.length > 1 ? 's' : '') + ' found!');
+							$('#user-notfound-notify').html(data.users.length + ' user' + (data.users.length > 1 ? 's' : '') + ' found! Search took ' + data.timing + ' ms.');
 							$('#user-notfound-notify').parent().addClass('btn-success label-success');
 						}
 
