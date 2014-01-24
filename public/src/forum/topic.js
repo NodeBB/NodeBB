@@ -366,7 +366,6 @@ define(['composer'], function(composer) {
 			});
 		}
 
-
 		$('.topic').on('click', '.post_reply', function() {
 			var selectionText = '',
 				selection = window.getSelection() || document.getSelection();

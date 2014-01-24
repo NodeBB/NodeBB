@@ -34,12 +34,6 @@ var ajaxify = {};
 	ajaxify.currentPage = null;
 
 	ajaxify.go = function (url, callback, quiet) {
-		if ($('#content').hasClass('ajaxifying')) {
-			return true;
-		}
-
-		jQuery('#footer, #content').addClass('ajaxifying');
-
 		// start: the following should be set like so: ajaxify.onchange(function(){}); where the code actually belongs
 		$(window).off('scroll');
 		app.enterRoom('global');
@@ -54,6 +48,9 @@ var ajaxify = {};
 		window.onscroll = null;
 		// end
 
+		if ($('#content').hasClass('ajaxifying')) {
+			templates.cancelRequest();
+		}
 
 		// Remove trailing slash
 		url = url.replace(/\/$/, "");
@@ -101,12 +98,11 @@ var ajaxify = {};
 
 			translator.load(tpl_url);
 
-			jQuery('#footer, #content').removeClass('hide');
+			jQuery('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
 			templates.flush();
 			templates.load_template(function () {
 				exec_body_scripts(content);
-
 				require(['forum/' + tpl_url], function(script) {
 					if (script && script.init) {
 						script.init();
@@ -176,6 +172,7 @@ var ajaxify = {};
 					var url = this.href.replace(rootUrl + '/', '');
 
 					if (ajaxify.go(url)) {
+
 						e.preventDefault();
 					}
 				} else if (window.location.pathname !== '/outgoing') {
