@@ -197,7 +197,7 @@
 			app.post('/login', function(req, res, next) {
 				var authStrategy = 'local',
 					namespace = req.body.namespace;
-				if(namespace != 'native') {
+				if(namespace && namespace != 'native') {
 					authStrategy = 'ldapauth';
 				}
 
