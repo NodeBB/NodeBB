@@ -27,15 +27,15 @@ define(function() {
 		});
 	}
 
-	pagination.recreatePaginationLinks = function(newPageCount) {
-		pagination.pageCount = parseInt(newPageCount);
+	pagination.recreatePaginationLinks = function(template, newPageCount) {
+		pagination.pageCount = parseInt(newPageCount, 10);
 
 		var pages = [];
-		for(var i=1; i<=pagination.page; ++i) {
+		for(var i=1; i<=pagination.pageCount; ++i) {
 			pages.push({pageNumber: i});
 		}
 
-		var html = templates.prepare(templates['topic'].blocks['pages']).parse({pages:pages});
+		var html = templates.prepare(templates[template].blocks['pages']).parse({pages:pages});
 		html = $(html);
 		$('.pagination li.page').remove();
 		html.insertAfter($('.pagination li.previous'));
@@ -60,6 +60,12 @@ define(function() {
 
 
 	function updatePageLinks() {
+		if(pagination.pageCount === 0) {
+			$('.pagination').addClass('hide');
+		} else {
+			$('.pagination').removeClass('hide');
+		}
+
 		$('.pagination .next').removeClass('disabled');
 		$('.pagination .previous').removeClass('disabled');
 

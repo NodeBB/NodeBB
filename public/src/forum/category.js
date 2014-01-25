@@ -104,7 +104,12 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 			addActiveUser(data);
 
+			socket.emit('categories.getPageCount', templates.get('category_id'), function(err, newPageCount) {
+				pagination.recreatePaginationLinks('category', newPageCount);
+			});
+
 			$('#topics-container span.timeago').timeago();
+			app.createUserTooltips();
 		});
 	}
 
@@ -143,6 +148,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			}
 
 			$('#topics-container span.timeago').timeago();
+			app.createUserTooltips();
 			app.makeNumbersHumanReadable(html.find('.human-readable-number'));
 		});
 	}

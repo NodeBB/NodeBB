@@ -96,6 +96,7 @@
 		</div>
 		<!-- ENDIF usePagination -->
 	</div>
+
 	<div class="col-md-3 col-xs-12 {show_sidebar} category-sidebar">
 		<div class="panel panel-default">
 			<div class="panel-heading">[[category:sidebar.recent_replies]]</div>

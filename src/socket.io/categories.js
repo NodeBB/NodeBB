@@ -38,14 +38,15 @@ SocketCategories.loadPage = function(socket, data, callback) {
 	var start = (data.page - 1) * topicsPerPage,
 		end = start + topicsPerPage - 1;
 
-		console.log('start to end' ,start, end);
-
 	categories.getCategoryTopics(data.cid, start, end, socket.uid, function(err, topics) {
-		console.log('getting topics', topics.length);
 		callback(err, {
 			topics: topics
 		});
 	});
+}
+
+SocketCategories.getPageCount = function(socket, cid, callback) {
+	categories.getPageCount(cid, callback);
 }
 
 module.exports = SocketCategories;
