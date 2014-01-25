@@ -70,6 +70,11 @@
 		});
 		meta = require('./src/meta');
 
+		// had to set these here so the logs won't lie
+		// but I don't like that, what if a cloud 'service' is using other var names?
+		nconf.set('port', nconf.get('PORT') || nconf.get('PORT'));
+		nconf.set('bind_address', nconf.get('IP') || nconf.get('bind_address'));
+
 		nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
 		nconf.set('upload_url', path.join(path.sep, nconf.get('relative_path'), 'uploads', path.sep));
 		nconf.set('base_dir', __dirname);

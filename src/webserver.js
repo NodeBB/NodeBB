@@ -396,7 +396,7 @@ if(nconf.get('ssl')) {
 		});
 
 		winston.info('NodeBB Ready');
-		server.listen(nconf.get('PORT') || nconf.get('port'), nconf.get('bind_address'));
+		server.listen(nconf.get('port'), nconf.get('bind_address'));
 	};
 
 	app.create_route = function (url, tpl) { // to remove
