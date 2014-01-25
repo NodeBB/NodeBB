@@ -1,0 +1,53 @@
+{
+	"topic": "Keskustelu",
+	"topics": "Keskustelut",
+
+	"no_topics_found": "Keskusteluja ei löytynyt!",
+
+	"profile": "Profiili",
+	"posted_by": "Kirjoitti",
+	"chat": "Juttele",
+	"notify_me": "Ilmoita uusista viesteistä tässä keskustelussa",
+	"quote": "Lainaa",
+	"reply": "Vastaa",
+	"edit": "Muokkaa",
+	"delete": "Poista",
+	"move": "Siirrä",
+	"fork": "Haaroita",
+	"banned": "banned",
+	"link": "Linkkaa",
+	"share": "Jaa",
+	"tools": "Työkalut",
+
+	"thread_tools.title": "Ketjun työkalut",
+	"thread_tools.markAsUnreadForAll": "Merkitse luetuiksi",
+	"thread_tools.pin": "Tee ketjusta pysyvä",
+	"thread_tools.lock": "Lukitse ketju",
+	"thread_tools.move": "Siirrä ketju",
+	"thread_tools.fork": "Haaroita ketju",
+	"thread_tools.delete": "Poista ketju",
+
+	"load_categories": "Ladataan aihealueita",
+	"disabled_categories_note": "Käytöstä poistetut aihealueetta ovat harmaina",
+	"confirm_move": "Siirrä",
+	"confirm_fork": "Haaroita",
+
+	"favourite": "Suosikki",
+	"favourites": "Suosikit",
+	"favourites.not_logged_in.title": "Ei kirjaantuneena sisään",
+	"favourites.not_logged_in.message": "Kirjaudu sisään jotta voit lisätä tämän viestin suosikkeihisi.",
+	"favourites.has_no_favourites": "Sinulla ei ole yhtään suosikkiviestiä.",
+
+	"posted_by": "kirjoittanut ",
+	"loading_more_posts": "Ladataan lisää viestejä",
+	"move_topic": "Siirrä keskustelu",
+	"move_post": "Siirrä viesti",
+	"fork_topic": "Haaroita keskustelu",
+	"topic_will_be_moved_to": "Tämä keskustelu siirretään aihealueelle ",
+	"fork_topic_instruction": "Klikkaa viestejä jotka haluat haaroittaa",
+	"fork_no_pids": "Ei valittuja viestejä!",
+	"fork_success": "Keskustelu haaroitettu onnistuneesti!",
+
+	"reputation": "Maine",
+	"posts": "Viestejä"
+}

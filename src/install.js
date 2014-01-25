@@ -25,7 +25,7 @@ var async = require('async'),
 			description: 'Use a port number to access NodeBB?',
 			'default': (nconf.get('use_port') !== undefined ? (nconf.get('use_port') ? 'y' : 'n') : 'y'),
 			pattern: /y[es]*|n[o]?/,
-			message: 'Please enter \'yes\' or \'no\'',
+			message: 'Please enter \'yes\' or \'no\''
 		}, {
 			name: 'secret',
 			description: 'Please enter a NodeBB secret',
@@ -218,7 +218,7 @@ var async = require('async'),
 							value: 1
 						}, {
 							field: 'allowFileUploads',
-							value: 0,
+							value: 0
 						}, {
 							field: 'maximumFileSize',
 							value: 2048
@@ -282,7 +282,7 @@ var async = require('async'),
 					// Check if an administrator needs to be created
 					var Groups = require('./groups');
 
-					Groups.getGidFromName('Administrators', function (err, gid) {
+					Groups.getGidFromName('administrators', function (err, gid) {
 						if (err) {
 							return next(err.message);
 						}
@@ -404,17 +404,17 @@ var async = require('async'),
 					}
 
 					nconf.set('bcrypt_rounds', 12);
-					User.create(results.username, results.password, results.email, function (err, uid) {
+					User.create({username: results.username, password: results.password, email: results.email}, function (err, uid) {
 						if (err) {
 							winston.warn(err.message + ' Please try again.');
 							return callback(new Error('invalid-values'));
 						}
 
-						Groups.getGidFromName('Administrators', function (err, gid) {
+						Groups.getGidFromName('administrators', function (err, gid) {
 							if (gid) {
 								Groups.join(gid, uid, callback);
 							} else {
-								Groups.create('Administrators', 'Forum Administrators', function (err, groupObj) {
+								Groups.create('administrators', 'Forum Administrators', function (err, groupObj) {
 									Groups.join(groupObj.gid, uid, callback);
 								});
 							}

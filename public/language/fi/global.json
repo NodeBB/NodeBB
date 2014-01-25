@@ -1,0 +1,37 @@
+{
+	"home": "Etusivu",
+	"search": "Etsi",
+	"buttons.close": "Sulje",
+	"403.title": "Pääsy kielletty",
+	"403.message": "Olet päätynyt sivulle jolle sinulla ei ole tarvittavia oikeuksia. Ehkäpä sinun tulisi <a href='/login'>kirjaudu sisään</a>?",
+	"404.title": "Sivua ei löydy",
+	"404.message": "Olet päätynyt sivulle jota ei ole olemassa. Palaa <a href='/'>etusivulle</a>.",
+	"500.title": "Sisäinen virhe.",
+	"500.message": "Oho! Jotain meni pieleen!",
+
+	"register": "Rekisteröidy",
+	"login": "Kirjaudu",
+
+	"logout": "Kirjaudu ulos",
+	"logout.title": "Olet nyt kirjaunut ulos.",
+	"logout.message": "Olet onnistuneesti kirjautunut ulos NodeBB:stä",
+
+	"save_changes": "Tallenna muutokset",
+	"close": "Sulje",
+
+	"header.admin": "Admin",
+	"header.recent": "Viimeisimmät",
+	"header.unread": "Lukemattomat",
+	"header.users": "Käyttäjät",
+	"header.search": "Etsi",
+	"header.profile": "Profiili",
+
+	"notifications.loading": "Ladataan ilmoituksia.",
+	"chats.loading": "Ladataan keskusteluja",
+
+	"motd.welcome": "Tervetuloa NodeBB:n, tulevaisuuden keskustelualustalle.",
+	"motd.get": "Hanki NodeBB",
+	"motd.fork": "Fork",
+	"motd.like": "Tykkää",
+	"motd.follow": "Seuraa"
+}

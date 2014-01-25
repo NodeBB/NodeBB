@@ -5,6 +5,7 @@ var db = require('./database.js'),
 	topics = require('./topics.js'),
 	plugins = require('./plugins'),
 	CategoryTools = require('./categoryTools'),
+	meta = require('./meta'),
 
 	async = require('async'),
 	winston = require('winston'),
@@ -187,6 +188,10 @@ var db = require('./database.js'),
 
 	Categories.markAsRead = function(cid, uid) {
 		db.setAdd('cid:' + cid + ':read_by_uid', uid);
+	};
+
+	Categories.markAsUnreadForAll = function(cid, callback) {
+		db.delete('cid:' + cid + ':read_by_uid', callback);
 	};
 
 	Categories.hasReadCategories = function(cids, uid, callback) {

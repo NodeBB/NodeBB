@@ -343,6 +343,20 @@
 		});
 	}
 
+	module.getObjectKeys = function(key, callback) {
+		module.getObject(key, function(err, data) {
+			if(err) {
+				return callback(err);
+			}
+
+			if(data) {
+				callback(null, Object.keys(data));
+			} else {
+				callback(null, []);
+			}
+		});
+	}
+
 	module.getObjectValues = function(key, callback) {
 		module.getObject(key, function(err, data) {
 			if(err) {

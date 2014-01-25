@@ -401,23 +401,29 @@ define(['taskbar'], function(taskbar) {
 				'title' : titleEl.val(),
 				'content' : bodyEl.val(),
 				'category_id' : postData.cid
-			}, function() {
-				composer.discard(post_uuid);
+			}, function(err) {
+				if(!err) {
+					composer.discard(post_uuid);
+				}
 			});
 		} else if (parseInt(postData.tid, 10) > 0) {
 			socket.emit('posts.reply', {
 				'topic_id' : postData.tid,
 				'content' : bodyEl.val()
-			}, function() {
-				composer.discard(post_uuid);
+			}, function(err) {
+				if(!err) {
+					composer.discard(post_uuid);
+				}
 			});
 		} else if (parseInt(postData.pid, 10) > 0) {
 			socket.emit('posts.edit', {
 				pid: postData.pid,
 				content: bodyEl.val(),
 				title: titleEl.val()
-			}, function() {
-				composer.discard(post_uuid);
+			}, function(err) {
+				if(!err) {
+					composer.discard(post_uuid);
+				}
 			});
 		}
 	}

@@ -378,7 +378,7 @@
 						checkConditional(namespace + d, data[d]);
 						checkConditional('!' + namespace + d, !data[d]);
 
-						if (blockInfo) {
+						if (blockInfo && blockInfo.iterator) {
 							checkConditional('@first', blockInfo.iterator === 0);
 							checkConditional('!@first', blockInfo.iterator !== 0);
 							checkConditional('@last', blockInfo.iterator === blockInfo.total);
@@ -394,10 +394,10 @@
 				var regex = new RegExp("{" + namespace + "[\\s\\S]*?}", 'g');
 				template = template.replace(regex, '');
 				namespace = '';
+			} else {
+				// clean up all undefined conditionals
+				template = template.replace(/<!-- IF([^@]*?)ENDIF([^@]*?)-->/gi, '');	
 			}
-
-			// clean up all undefined conditionals
-			template = template.replace(/<!-- IF([^@]*?)ENDIF([^@]*?)-->/gi, '');
 
 			return template;
 

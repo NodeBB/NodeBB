@@ -104,15 +104,15 @@ SocketPosts.edit = function(socket, data, callback) {
 			type: 'warning',
 			timeout: 2000
 		});
-		return;
+		return callback(new Error('not-logged-in'));
 	} else if(!data || !data.pid || !data.title || !data.content) {
 		return callback(new Error('invalid data'));
 	} else if (!data.title || data.title.length < parseInt(meta.config.minimumTitleLength, 10)) {
 		topics.emitTitleTooShortAlert(socket);
-		return;
+		return callback(new Error('title-too-short'));
 	} else if (!data.content || data.content.length < parseInt(meta.config.minimumPostLength, 10)) {
 		module.parent.exports.emitContentTooShortAlert(socket);
-		return;
+		return callback(new Error('content-too-short'));
 	}
 
 	postTools.edit(socket.uid, data.pid, data.title, data.content);
@@ -170,6 +170,7 @@ SocketPosts.getPrivileges = function(socket, pid, callback) {
 };
 
 SocketPosts.getFavouritedUsers = function(socket, pid, callback) {
+
 	favourites.getFavouritedUidsByPids([pid], function(data) {
 		var max = 5; //hardcoded
 		var usernames = "";

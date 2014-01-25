@@ -23,8 +23,7 @@ var ajaxify = {};
 
 
 	window.onpopstate = function (event) {
-		// "quiet": If set to true, will not call pushState
-		if (event !== null && event.state && event.state.url !== undefined) {
+		if (event !== null && event.state && event.state.url !== undefined && !ajaxify.initialLoad) {
 			ajaxify.go(event.state.url, null, true);
 		}
 	};
@@ -32,8 +31,11 @@ var ajaxify = {};
 	var pagination, paginator_bar;
 
 	ajaxify.currentPage = null;
+	ajaxify.initialLoad = false;
 
 	ajaxify.go = function (url, callback, quiet) {
+		// "quiet": If set to true, will not call pushState
+
 		// start: the following should be set like so: ajaxify.onchange(function(){}); where the code actually belongs
 		$(window).off('scroll');
 		app.enterRoom('global');
@@ -116,6 +118,7 @@ var ajaxify = {};
 				app.processPage();
 
 				jQuery('#content, #footer').stop(true, true).removeClass('ajaxifying');
+				ajaxify.initialLoad = false;
 
 				if (window.location.hash) {
 					hash = window.location.hash;
