@@ -392,6 +392,19 @@ var async = require('async'),
 		});
 	}
 
+	Topics.getPages = function(tid, callback) {
+		Topics.getPageCount(tid, function(err, pageCount) {
+			if(err) {
+				return callback(err);
+			}
+			var pages = [];
+			for(var i=1; i<=pageCount; ++i) {
+				pages.push({pageNumber: i});
+			}
+			callback(null, pages);
+		});
+	}
+
 	Topics.getPageCount = function(tid, callback) {
 		db.sortedSetCard('tid:' + tid + ':posts', function(err, postCount) {
 			if(err) {
@@ -782,16 +795,7 @@ var async = require('async'),
 			}
 
 			function getPages(next) {
-				Topics.getPageCount(tid, function(err, pageCount) {
-					if(err) {
-						return next(err);
-					}
-					var pages = [];
-					for(var i=1; i<=pageCount; ++i) {
-						pages.push({pageNumber: i});
-					}
-					next(null, pages);
-				});
+				Topics.getPages(tid, next);
 			}
 
 			async.parallel([getTopicData, getTopicPosts, getPrivileges, getCategoryData, getPages], function(err, results) {

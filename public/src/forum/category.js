@@ -1,13 +1,10 @@
-define(['composer'], function(composer) {
+define(['composer', 'forum/pagination'], function(composer, pagination) {
 	var Category = {},
 		loadingMoreTopics = false;
 
 	Category.init = function() {
 		var	cid = templates.get('category_id'),
 			categoryName = templates.get('category_name'),
-			twitterEl = jQuery('#twitter-intent'),
-			facebookEl = jQuery('#facebook-share'),
-			googleEl = jQuery('#google-share'),
 			categoryUrl = encodeURIComponent(window.location.href),
 			twitterUrl = "https://twitter.com/intent/tweet?url=" + categoryUrl + "&text=" + encodeURIComponent(categoryName),
 			facebookUrl = "https://www.facebook.com/sharer/sharer.php?u=" + categoryUrl,
@@ -15,17 +12,17 @@ define(['composer'], function(composer) {
 
 		app.enterRoom('category_' + cid);
 
-
-
-		twitterEl.on('click', function () {
+		$('#twitter-intent').on('click', function () {
 			window.open(twitterUrl, '_blank', 'width=550,height=420,scrollbars=no,status=no');
 			return false;
 		});
-		facebookEl.on('click', function () {
+
+		$('#facebook-share').on('click', function () {
 			window.open(facebookUrl, '_blank', 'width=626,height=436,scrollbars=no,status=no');
 			return false;
 		});
-		googleEl.on('click', function () {
+
+		$('#google-share').on('click', function () {
 			window.open(googleUrl, '_blank', 'width=500,height=570,scrollbars=no,status=no');
 			return false;
 		});
@@ -42,14 +39,36 @@ define(['composer'], function(composer) {
 
 		socket.emit('categories.getRecentReplies', cid, renderRecentReplies);
 
-		$(window).off('scroll').on('scroll', function (ev) {
-			var bottom = ($(document).height() - $(window).height()) * 0.9;
-
-			if ($(window).scrollTop() > bottom && !loadingMoreTopics) {
-				Category.loadMoreTopics(cid);
-			}
-		});
+		enableInfiniteLoading();
 	};
+
+	function enableInfiniteLoading() {
+		if(!config.usePagination) {
+			$(window).off('scroll').on('scroll', function (ev) {
+				var bottom = ($(document).height() - $(window).height()) * 0.9;
+
+				if ($(window).scrollTop() > bottom && !loadingMoreTopics) {
+					Category.loadMoreTopics(cid);
+				}
+			});
+		} else {
+			pagination.init(templates.get('currentPage'), templates.get('pageCount'), loadPage);
+		}
+	}
+
+	function loadPage(page, callback) {
+		socket.emit('categories.loadPage', {cid: templates.get('category_id'), page: page}, function(err, data) {
+			if(err) {
+				return callback(err);
+			}
+
+			if (data && data.topics && data.topics.length) {
+				Category.onTopicsLoaded(data.topics);
+			}
+
+			callback(null);
+		});
+	}
 
 	Category.onNewTopic = function(data) {
 		var html = templates.prepare(templates['category'].blocks['topics']).parse({
@@ -116,7 +135,12 @@ define(['composer'], function(composer) {
 			jQuery('#category-no-topics').remove();
 
 			html = $(translatedHTML);
-			container.append(html);
+
+			if(config.usePagination) {
+				container.empty().append(html);
+			} else {
+				container.append(html);
+			}
 
 			$('#topics-container span.timeago').timeago();
 			app.makeNumbersHumanReadable(html.find('.human-readable-number'));

@@ -52,7 +52,8 @@ var db = require('./database.js'),
 			}
 
 			function getTopicIds(next) {
-				Categories.getTopicIds(category_id, 0, 19, next);
+				var topicsPerPage = meta.config.topicsPerPage || 20;
+				Categories.getTopicIds(category_id, 0, topicsPerPage - 1, next);
 			}
 
 			function getActiveUsers(next) {
@@ -65,10 +66,15 @@ var db = require('./database.js'),
 				});
 			}
 
-			async.parallel([getTopicIds, getActiveUsers, getSidebars], function(err, results) {
+			function getPages(next) {
+				Categories.getPages(category_id, next);
+			}
+
+			async.parallel([getTopicIds, getActiveUsers, getSidebars, getPages], function(err, results) {
 				var tids = results[0],
 					active_users = results[1],
-					sidebars = results[2];
+					sidebars = results[2],
+					pages = results[3];
 
 				var category = {
 					'category_name': categoryData.name,
@@ -82,6 +88,8 @@ var db = require('./database.js'),
 					'category_id': category_id,
 					'active_users': [],
 					'topics': [],
+					'pages': pages,
+					'pageCount': pages.length,
 					'disableSocialButtons': meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false,
 					'sidebars': sidebars
 				};
@@ -137,6 +145,31 @@ var db = require('./database.js'),
 		db.getSortedSetRevRange('categories:' + cid + ':tid', start, stop, callback);
 	};
 
+	Categories.getPages = function(cid, callback) {
+		Categories.getPageCount(cid, function(err, pageCount) {
+			if(err) {
+				return callback(err);
+			}
+			var pages = [];
+			for(var i=1; i<=pageCount; ++i) {
+				pages.push({pageNumber: i});
+			}
+			callback(null, pages);
+		});
+	};
+
+	Categories.getPageCount = function(cid, callback) {
+		db.sortedSetCard('categories:' + cid + ':tid', function(err, topicCount) {
+			if(err) {
+				return callback(err);
+			}
+
+			var topicsPerPage = parseInt(meta.config.topicsPerPage, 10);
+			topicsPerPage = topicsPerPage ? topicsPerPage : 20;
+
+			callback(null, Math.ceil(parseInt(topicCount, 10) / topicsPerPage));
+		});
+	};
 
 	Categories.getAllCategories = function(current_user, callback) {
 		db.getListRange('categories:cid', 0, -1, function(err, cids) {

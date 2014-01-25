@@ -200,7 +200,7 @@ var path = require('path'),
 								return next(err);
 							}
 
-							// Add privilege data to template data
+							data.currentPage = 1;
 							data.privileges = privileges;
 
 							if (data && parseInt(data.disabled, 10) === 0) {

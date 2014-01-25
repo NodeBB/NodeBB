@@ -1,4 +1,4 @@
-define(['composer'], function(composer) {
+define(['composer', 'forum/pagination'], function(composer, pagination) {
 	var	Topic = {},
 		infiniteLoaderActive = false,
 		pagination;
@@ -357,44 +357,12 @@ define(['composer'], function(composer) {
 				});
 			} else {
 				$('.pagination-block').addClass('hide');
-				updatePageLinks();
 
-				$('.pagination').on('click', '.previous', function() {
-					loadPage(currentPage - 1);
-				});
-
-				$('.pagination').on('click', '.next', function() {
-					loadPage(currentPage + 1);
-				});
-
-				$('.pagination').on('click', '.page', function() {
-					loadPage($(this).attr('data-page'));
-				});
+				pagination.init(currentPage, pageCount, loadPage);
 			}
 		}
 
-		function updatePageLinks() {
-			$('.pagination .next').removeClass('disabled');
-			$('.pagination .previous').removeClass('disabled');
-
-			if(currentPage === 1) {
-				$('.pagination .previous').addClass('disabled');
-			}
-
-			if(currentPage === pageCount) {
-				$('.pagination .next').addClass('disabled');
-			}
-
-			$('.pagination .page').removeClass('active');
-			$('.pagination .page[data-page="' + currentPage + '"]').addClass('active');
-		}
-
-		function loadPage(page) {
-			page = parseInt(page, 10);
-			if(page < 1 || page > pageCount) {
-				return;
-			}
-
+		function loadPage(page, callback) {
 			if(page === 1) {
 				ajaxify.go('topic/' + tid );
 				return;
@@ -402,9 +370,8 @@ define(['composer'], function(composer) {
 
 			socket.emit('topics.loadPage', {tid: tid, page: page}, function(err, data) {
 				if(err) {
-					return app.alertError(err.message);
+					return callback(err);
 				}
-				currentPage = page;
 
 				if (data && data.posts && data.posts.length) {
 					createPagePosts(data, function() {
@@ -412,7 +379,7 @@ define(['composer'], function(composer) {
 					});
 				}
 
-				updatePageLinks();
+				callback(null);
 			});
 		}
 
@@ -420,27 +387,14 @@ define(['composer'], function(composer) {
 			var posts = data.posts;
 			socket.emit('topics.getPageCount', tid, function(err, newPageCount) {
 
-				pageCount = newPageCount;
-				recreatePaginationLinks();
-				if(currentPage === newPageCount) {
+				pagination.recreatePaginationLinks(newPageCount);
+
+				if(pagination.currentPage === pagination.newPageCount) {
 					createNewPosts(data);
 				} else if(data.posts && data.posts.length && parseInt(data.posts[0].uid, 10) === parseInt(app.uid, 10)) {
-					loadPage(pageCount);
+					pagination.loadPage(pagination.pageCount);
 				}
 			});
-
-		}
-
-		function recreatePaginationLinks() {
-			var pages = [];
-			for(var i=1; i<=pageCount; ++i) {
-				pages.push({pageNumber: i});
-			}
-			var html = templates.prepare(templates['topic'].blocks['pages']).parse({pages:pages});
-			html = $(html);
-			$('.pagination li.page').remove();
-			html.insertAfter($('.pagination li.previous'));
-			updatePageLinks();
 		}
 
 		function createPagePosts(data, callback) {
@@ -451,11 +405,9 @@ define(['composer'], function(composer) {
 			parseAndTranslatePosts(data.posts, function(translatedHTML) {
 				var translated = $(translatedHTML);
 
-				$('#post-container').fadeOut(function() {
+				$('#post-container').fadeOut(200, function() {
 
-					$(this).empty();
-					translated.appendTo($(this));
-					$(this).fadeIn('slow');
+					$('#post-container').empty().append(translated).fadeIn('slow');
 
 					onNewPostsLoaded(data.posts);
 
@@ -1068,7 +1020,8 @@ define(['composer'], function(composer) {
 		var	progressBarContainer = $('.progress-container');
 		var tid = templates.get('topic_id');
 
-		pagination.parentNode.style.display = 'block';
+		if(pagination.parentNode)
+			pagination.parentNode.style.display = 'block';
 		progressBarContainer.css('display', '');
 
 		if (scrollTop < jQuery('.posts > .post-row:first-child').height() && Topic.postCount > 1) {
