@@ -230,13 +230,45 @@ SocketTopics.loadMore = function(socket, data, callback) {
 		return callback(new Error('invalid data'));
 	}
 
+	var postsPerPage = parseInt(meta.config.postsPerPage, 10);
+	postsPerPage = postsPerPage ? postsPerPage : 20;
+
 	var start = data.after,
-		end = start + 9;
+		end = start + postsPerPage - 1;
 
 	topics.getTopicPosts(data.tid, start, end, socket.uid, function(err, posts) {
+		if(err) {
+			return callback(err);
+		}
+
 		callback(err, {posts: posts});
 	});
 };
+
+SocketTopics.loadPage = function(socket, data, callback) {
+	if(!data || !data.tid || !data.page || parseInt(data.page < 0)) {
+		return callback(new Error('invalid data'));
+	}
+
+	var postsPerPage = parseInt((meta.config.postsPerPage ? meta.config.postsPerPage : 20), 10);
+
+	topics.getPageCount(data.tid, function(err, pageCount) {
+		if(err) {
+			return callback(err);
+		}
+
+		if(data.page > pageCount) {
+			return callback(new Error('page doesn\'t exist'));
+		}
+
+		var start = (data.page-1) * postsPerPage,
+			end = start + postsPerPage - 1;
+
+		topics.getTopicPosts(data.tid, start, end, socket.uid, function(err, posts) {
+			callback(err, {posts: posts});
+		});
+	});
+}
 
 SocketTopics.loadMoreRecentTopics = function(socket, data, callback) {
 	if(!data || !data.term) {
@@ -255,5 +287,9 @@ SocketTopics.loadMoreUnreadTopics = function(socket, data, callback) {
 
 	topics.getUnreadTopics(socket.uid, start, end, callback);
 };
+
+SocketTopics.getPageCount = function(socket, tid, callback) {
+	topics.getPageCount(tid, callback);
+}
 
 module.exports = SocketTopics;

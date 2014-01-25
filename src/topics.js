@@ -330,10 +330,6 @@ var async = require('async'),
 				postData[i].index = start + i;
 			}
 
-			postData = postData.filter(function(post) {
-				return parseInt(current_user, 10) !== 0 || parseInt(post.deleted, 10) === 0;
-			});
-
 			pids = postData.map(function(post) {
 				return post.pid;
 			});
@@ -386,10 +382,26 @@ var async = require('async'),
 					postData[i].favourited = fav_data[pid];
 					postData[i].display_moderator_tools = (current_user != 0) && privileges[pid].editable;
 					postData[i].display_move_tools = privileges[pid].move ? '' : 'hidden';
+					if(parseInt(postData[i].deleted, 10) === 1 && !privileges[pid].view_deleted) {
+						postData[i].content = 'This post is deleted!';
+					}
 				}
 
 				callback(null, postData);
 			});
+		});
+	}
+
+	Topics.getPageCount = function(tid, callback) {
+		db.sortedSetCard('tid:' + tid + ':posts', function(err, postCount) {
+			if(err) {
+				return callback(err);
+			}
+
+			var postsPerPage = parseInt(meta.config.postsPerPage, 10);
+			postsPerPage = postsPerPage ? postsPerPage : 20;
+
+			callback(null, Math.ceil(parseInt(postCount, 10) / postsPerPage));
 		});
 	}
 
@@ -755,21 +767,34 @@ var async = require('async'),
 
 			function getTopicData(next) {
 				Topics.getTopicData(tid, next);
-			};
+			}
 
 			function getTopicPosts(next) {
 				Topics.getTopicPosts(tid, start, end, current_user, next);
-			};
+			}
 
 			function getPrivileges(next) {
 				threadTools.privileges(tid, current_user, next);
-			};
+			}
 
 			function getCategoryData(next) {
 				Topics.getCategoryData(tid, next);
-			};
+			}
 
-			async.parallel([getTopicData, getTopicPosts, getPrivileges, getCategoryData], function(err, results) {
+			function getPages(next) {
+				Topics.getPageCount(tid, function(err, pageCount) {
+					if(err) {
+						return next(err);
+					}
+					var pages = [];
+					for(var i=1; i<=pageCount; ++i) {
+						pages.push({pageNumber: i});
+					}
+					next(null, pages);
+				});
+			}
+
+			async.parallel([getTopicData, getTopicPosts, getPrivileges, getCategoryData, getPages], function(err, results) {
 				if (err) {
 					winston.error('[Topics.getTopicWithPosts] Could not retrieve topic data: ', err.message);
 					return callback(err, null);
@@ -778,7 +803,11 @@ var async = require('async'),
 				var topicData = results[0],
 					topicPosts = results[1],
 					privileges = results[2],
-					categoryData = results[3];
+					categoryData = results[3],
+					pages = results[4];
+
+				var postsPerPage = parseInt(meta.config.postsPerPage, 10);
+				postsPerPage = postsPerPage ? postsPerPage : 20;
 
 				callback(null, {
 					'topic_name': topicData.title,
@@ -791,6 +820,8 @@ var async = require('async'),
 					'slug': topicData.slug,
 					'postcount': topicData.postcount,
 					'viewcount': topicData.viewcount,
+					'pages': pages,
+					'pageCount': pages.length,
 					'unreplied': parseInt(topicData.postcount, 10) > 1,
 					'topic_id': tid,
 					'expose_tools': privileges.editable ? 1 : 0,

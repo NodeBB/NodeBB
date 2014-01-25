@@ -374,6 +374,10 @@
 		redisClient.zcount(key, min, max, callback);
 	}
 
+	module.sortedSetCard = function(key, callback) {
+		redisClient.zcard(key, callback);
+	}
+
 	module.sortedSetRank = function(key, value, callback) {
 		redisClient.zrank(key, value, callback);
 	}

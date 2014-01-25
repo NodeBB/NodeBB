@@ -17,7 +17,9 @@ define(['composer'], function(composer) {
 				deleted: templates.get('deleted'),
 				pinned: templates.get('pinned')
 			},
-			topic_name = templates.get('topic_name');
+			topic_name = templates.get('topic_name'),
+			currentPage = parseInt(templates.get('currentPage'), 10),
+			pageCount = parseInt(templates.get('pageCount'), 10);
 
 
 		function fixDeleteStateForPosts() {
@@ -323,13 +325,9 @@ define(['composer'], function(composer) {
 
 			var bookmark = localStorage.getItem('topic:' + tid + ':bookmark');
 
-			if(bookmark) {
+			if(bookmark && !config.usePagination) {
 				Topic.scrollToPost(parseInt(bookmark, 10));
 			}
-
-			$('#post-container').on('click', '.deleted', function(ev) {
-				$(this).toggleClass('deleted-expanded');
-			});
 
 			// Show the paginator block, now that the DOM has finished loading
 			(function delayedHeaderUpdate() {
@@ -366,17 +364,128 @@ define(['composer'], function(composer) {
 					}
 				});
 			} else {
-				$('.pagination .previous').on('click', function() {
+				$('.pagination-block').addClass('hide');
+				updatePageLinks();
 
-					return false;
+				$('.pagination').on('click', '.previous', function() {
+					loadPage(currentPage - 1);
 				});
 
-				$('.pagination .next').on('click', function() {
+				$('.pagination').on('click', '.next', function() {
+					loadPage(currentPage + 1);
+				});
 
-					return false;
+				$('.pagination').on('click', '.page', function() {
+					loadPage($(this).attr('data-page'));
 				});
 			}
 		}
+
+		function updatePageLinks() {
+			$('.pagination .next').removeClass('disabled');
+			$('.pagination .previous').removeClass('disabled');
+
+			if(currentPage === 1) {
+				$('.pagination .previous').addClass('disabled');
+			}
+
+			if(currentPage === parseInt($('.pagination').attr('data-pageCount'), 10)) {
+				$('.pagination .next').addClass('disabled');
+			}
+
+			$('.pagination .page').removeClass('active');
+			$('.pagination .page[data-page="' + currentPage + '"]').addClass('active');
+		}
+
+		function loadPage(page) {
+			page = parseInt(page, 10);
+			if(page < 1 || page > pageCount) {
+				return;
+			}
+
+			socket.emit('topics.loadPage', {tid: tid, page: page}, function(err, data) {
+				if(err) {
+					return app.alertError(err.message);
+				}
+				currentPage = page;
+
+				if (data && data.posts && data.posts.length) {
+					createPagePosts(data, function() {
+						fixDeleteStateForPosts();
+					});
+				}
+
+				updatePageLinks();
+			});
+		}
+
+		function onNewPostPagination(data) {
+			var posts = data.posts;
+			socket.emit('topics.getPageCount', tid, function(err, newPageCount) {
+
+				pageCount = newPageCount;
+				recreatePaginationLinks();
+				if(currentPage === newPageCount) {
+					createNewPosts(data);
+				} else if(data.posts && data.posts.length && parseInt(data.posts[0].uid, 10) === parseInt(app.uid, 10)) {
+					loadPage(pageCount);
+				}
+			});
+
+		}
+
+		function recreatePaginationLinks() {
+			var pages = [];
+			for(var i=1; i<=pageCount; ++i) {
+				pages.push({pageNumber: i});
+			}
+			var html = templates.prepare(templates['topic'].blocks['pages']).parse({pages:pages});
+			html = $(html);
+			$('.pagination li.page').remove();
+			html.insertAfter($('.pagination li.previous'));
+			updatePageLinks();
+		}
+
+		function createPagePosts(data, callback) {
+			if(!data || (data.posts && !data.posts.length)) {
+				return;
+			}
+
+			var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
+			var regexp = new RegExp("<!--[\\s]*IF @first[\\s]*-->([\\s\\S]*?)<!--[\\s]*ENDIF @first[\\s]*-->", 'g');
+			html = html.replace(regexp, '');
+
+			translator.translate(html, function(translatedHTML) {
+				var translated = $(translatedHTML);
+
+				$('#post-container').fadeOut(function() {
+
+					$(this).empty();
+					translated.appendTo($(this));
+					$(this).fadeIn('slow');
+
+					for (var x = 0, numPosts = data.posts.length; x < numPosts; x++) {
+						socket.emit('posts.getPrivileges', data.posts[x].pid, function(err, privileges) {
+							if(err) {
+								return app.alertError(err.message);
+							}
+							toggle_mod_tools(privileges.pid, privileges.editable);
+						});
+					}
+
+					app.populateOnlineUsers();
+					app.createUserTooltips();
+					app.addCommasToNumbers();
+					$('span.timeago').timeago();
+					$('.post-content img').addClass('img-responsive');
+					updatePostCount();
+					showBottomPostBar();
+
+					callback();
+				});
+			});
+		}
+
 
 		$('.topic').on('click', '.post_reply', function() {
 			var selectionText = '',
@@ -653,6 +762,11 @@ define(['composer'], function(composer) {
 		});
 
 		socket.on('event:new_post', function(data) {
+			if(config.usePagination) {
+				onNewPostPagination(data);
+				return;
+			}
+
 			var posts = data.posts;
 			for (var p in posts) {
 				if (posts.hasOwnProperty(p)) {
@@ -926,11 +1040,8 @@ define(['composer'], function(composer) {
 						}
 					}
 
-					if (privileges.view_deleted) {
-						postEl.toggleClass('deleted');
-					} else {
-						postEl.toggleClass('none');
-					}
+					postEl.toggleClass('deleted');
+
 					updatePostCount();
 				});
 			}
@@ -1161,7 +1272,6 @@ define(['composer'], function(composer) {
 		if (infiniteLoaderActive) {
 			return;
 		}
-
 
 		if (indicatorEl.attr('done') === '0') {
 			infiniteLoaderActive = true;

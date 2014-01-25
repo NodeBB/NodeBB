@@ -166,14 +166,15 @@ var path = require('path'),
 			app.get('/topic/:id/:slug?', function (req, res, next) {
 				console.log(req.query);
 				var uid = (req.user) ? req.user.uid : 0;
+
 				ThreadTools.privileges(req.params.id, uid, function(err, privileges) {
 					if (privileges.read) {
-						var postsPerPage = meta.config.postsPerPage ? (meta.config.postsPerPage - 1) : 20;
-						topics.getTopicWithPosts(req.params.id, uid, 0, postsPerPage, false, function (err, data) {
+						var postsPerPage = parseInt(meta.config.postsPerPage ? meta.config.postsPerPage : 20, 10);
+						topics.getTopicWithPosts(req.params.id, uid, 0, postsPerPage - 1, false, function (err, data) {
 							if(err) {
 								return next(err);
 							}
-
+							data.currentPage = 1;
 							data.privileges = privileges;
 
 							if (parseInt(data.deleted, 10) === 1 && parseInt(data.expose_tools, 10) === 0) {

@@ -626,6 +626,19 @@
 		});
 	}
 
+	module.sortedSetCard = function(key, callback) {
+		db.collection('objects').count({_key:key}, function(err, count) {
+			if(err) {
+				return callback(err);
+			}
+
+			if(!count) {
+				return callback(null, 0);
+			}
+			callback(null, count);
+		});
+	}
+
 	module.sortedSetRank = function(key, value, callback) {
 		if(value !== null && value !== undefined) {
 			value = value.toString();
