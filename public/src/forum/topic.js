@@ -19,8 +19,9 @@ define(['composer'], function(composer) {
 			},
 			topic_name = templates.get('topic_name'),
 			currentPage = parseInt(templates.get('currentPage'), 10),
-			pageCount = parseInt(templates.get('pageCount'), 10),
-			Topic.postCount = templates.get('postcount');
+			pageCount = parseInt(templates.get('pageCount'), 10);
+
+		Topic.postCount = templates.get('postcount');
 
 
 		function fixDeleteStateForPosts() {

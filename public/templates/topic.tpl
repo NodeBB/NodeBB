@@ -1,5 +1,7 @@
 <input type="hidden" template-variable="expose_tools" value="{expose_tools}" />
 <input type="hidden" template-variable="topic_id" value="{topic_id}" />
+<input type="hidden" template-variable="currentPage" value="{currentPage}" />
+<input type="hidden" template-variable="pageCount" value="{pageCount}" />
 <input type="hidden" template-variable="locked" value="{locked}" />
 <input type="hidden" template-variable="deleted" value="{deleted}" />
 <input type="hidden" template-variable="pinned" value="{pinned}" />
@@ -201,12 +203,17 @@
 		<div style="clear:both;"></div>
 	</div>
 
-	<!-- {usePagination} -->
-	<ul class="pager">
-		<li class="previous"><a href="#">&larr; Older</a></li>
-		<li class="next"><a href="#">Newer &rarr;</a></li>
-	</ul>
-	<!-- {usePagination} -->
+	<!-- IF usePagination -->
+	<div class="text-center">
+		<ul class="pagination">
+			<li class="previous pull-left"><a href="#">&larr; Older</a></li>
+			<!-- BEGIN pages -->
+			<li class="page" data-page="{pages.pageNumber}"><a href="#">{pages.pageNumber}</a></li>
+			<!-- END pages -->
+			<li class="next pull-right"><a href="#">Newer &rarr;</a></li>
+		</ul>
+	</div>
+	<!-- ENDIF usePagination -->
 
 	<div id="move_thread_modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="Move Topic" aria-hidden="true">
 		<div class="modal-dialog">
