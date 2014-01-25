@@ -306,6 +306,11 @@ Upgrade.upgrade = function(callback) {
 				updatesMade = true;
 
 				Groups.getByGroupName('Administrators', {}, function(err, groupObj) {
+					if (err && err.message === 'gid-not-found') {
+						winston.info('[2014/1/23] Updating Administrators Group -- skipped');
+						return next();
+					}
+
 					Groups.update(groupObj.gid, {
 						name: 'administrators',
 						hidden: '1'
