@@ -5,6 +5,7 @@ var db = require('./database.js'),
 	topics = require('./topics.js'),
 	plugins = require('./plugins'),
 	CategoryTools = require('./categoryTools'),
+	meta = require('./meta'),
 
 	async = require('async'),
 	winston = require('winston'),
