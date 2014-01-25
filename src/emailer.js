@@ -1,16 +1,18 @@
-var	User = require('./user'),
+var	fs = require('fs'),
+	async = require('async'),
+	path = require('path'),
+
+	User = require('./user'),
 	Plugins = require('./plugins'),
 	Meta = require('./meta'),
 	Translator = require('../public/src/translator'),
-
-	fs = require('fs'),
-	async = require('async'),
-	path = require('path'),
+	templates = require('../public/src/templates'),
 
 	Emailer = {};
 
 var	render = function(template, params, callback) {
-	if (templates[template] !== null) {
+
+	if (templates[template]) {
 		Translator.translate(templates[template].parse(params), function(template) {
 			callback(null, template);
 		});

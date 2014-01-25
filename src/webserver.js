@@ -28,7 +28,9 @@ var path = require('path'),
 	meta = require('./meta'),
 	feed = require('./feed'),
 	plugins = require('./plugins'),
-	logger = require('./logger');
+	logger = require('./logger'),
+	templates = require('./../public/src/templates'),
+	translator = require('./../public/src/translator');
 
 if(nconf.get('ssl')) {
 	server = require('https').createServer({
@@ -39,13 +41,12 @@ if(nconf.get('ssl')) {
 	server = require('http').createServer(WebServer);
 }
 
+module.exports.server = server;
 
 (function (app) {
 	"use strict";
 
-	var templates = null,
-		clientScripts;
-
+	var	clientScripts;
 
 	plugins.ready(function() {
 		// Minify client-side libraries
@@ -59,9 +60,6 @@ if(nconf.get('ssl')) {
 			});
 		});
 	});
-
-
-	server.app = app;
 
 	/**
 	 *	`options` object	requires:	req, res
@@ -375,8 +373,6 @@ if(nconf.get('ssl')) {
 	});
 
 	module.exports.init = function () {
-		templates = global.templates;
-
 		// translate all static templates served by webserver here. ex. footer, logout
 		plugins.fireHook('filter:footer.build', '', function(err, appendHTML) {
 			var footer = templates.footer.parse({
@@ -931,6 +927,3 @@ if(nconf.get('ssl')) {
 
 	});
 }(WebServer));
-
-
-global.server = server;

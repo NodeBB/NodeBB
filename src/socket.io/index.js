@@ -30,9 +30,9 @@ Sockets.userSockets = {};
 Sockets.rooms = {};
 
 
-Sockets.init = function() {
+Sockets.init = function(server) {
 
-	io = socketioWildcard(SocketIO).listen(global.server, {
+	io = socketioWildcard(SocketIO).listen(server, {
 		log: false,
 		transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket'],
 		'browser client minification': true

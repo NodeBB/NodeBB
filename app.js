@@ -106,11 +106,9 @@
 				upgrade.check(function(schema_ok) {
 					if (schema_ok || nconf.get('check-schema') === false) {
 
-						sockets.init();
+						sockets.init(webserver.server);
 
 						plugins.init();
-						global.templates = {};
-						global.translator = translator;
 
 						translator.loadServer();
 
