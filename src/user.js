@@ -741,6 +741,15 @@ var bcrypt = require('bcrypt'),
 		});
 	};
 
+	User.getUidByLDAPid = function(ldapid, callback) {
+		db.getObjectField('ldapid:uid', ldapid, function(err, uid) {
+			if (err) {
+				return callback(err);
+			}
+			callback(null, uid);
+		});
+	};	
+
 	User.isModerator = function(uid, cid, callback) {
 		db.isSetMember('cid:' + cid + ':moderators', uid, function(err, exists) {
 			if(err) {

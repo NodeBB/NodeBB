@@ -18,17 +18,29 @@
 
 			<form class="form-horizontal" role="form">
 				<div class="form-group">
-					<label for="username" class="col-lg-2 control-label">[[login:username]]</label>
-					<div class="col-lg-10">
+					<label for="username" class="col-lg-3 control-label">[[login:username]]</label>
+					<div class="col-lg-9">
 						<input class="form-control" type="text" placeholder="[[login:username]]" name="username" id="username" />
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="password" class="col-lg-2 control-label">[[login:password]]</label>
-					<div class="col-lg-10">
+					<label for="password" class="col-lg-3 control-label">[[login:password]]</label>
+					<div class="col-lg-9">
 						<input class="form-control" type="password" placeholder="[[login:password]]" name="password" id="password" />
 					</div>
 				</div>
+				<!-- IF ldapAuth -->
+				<div class="form-group">
+					<label for="namespace" class="col-lg-3 control-label">[[login:namespace]]</label>
+					<div class="col-lg-9">
+						<select class="form-control" placeholder="[[login:namespace]]" name="namespace" id="namespace">
+							<option value="native">[[login:native]]</option>
+							<option value="ldap">[[login:ldap]]</option>
+						</select>
+					</div>
+				</div>				
+				<!-- ENDIF ldapAuth -->
+
 				<!-- <div class="form-group">
 					<div class="col-lg-offset-2 col-lg-10">
 						<div class="checkbox">

@@ -6,6 +6,7 @@ define(function() {
 			var loginData = {
 				'username': $('#username').val(),
 				'password': $('#password').val(),
+				'namespace': $('#namespace').val(),
 				'_csrf': $('#csrf-token').val()
 			};
 

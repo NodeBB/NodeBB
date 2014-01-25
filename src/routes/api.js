@@ -131,6 +131,10 @@ var path = require('path'),
 
 				data.token = res.locals.csrf_token;
 
+				if(meta.config['authentication:ldap:url'] && meta.config['authentication:ldap:adminDn']) {
+					data.ldapAuth = true;						
+				}
+
 				res.json(data);
 			});
 

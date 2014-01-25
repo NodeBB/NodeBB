@@ -125,6 +125,12 @@
 				</div>
 				<div class="well sidebar-nav">
 					<ul class="nav nav-list">
+						<li class="nav-header">Authentication</li>
+						<li><a href="{relative_path}/admin/ldap"><i class="fa fa-fw fa-list-alt"></i> LDAP</a></li>
+					</ul>
+				</div>
+				<div class="well sidebar-nav">
+					<ul class="nav nav-list">
 						<li class="nav-header">Plugins</li>
 						<!-- BEGIN plugins -->
 						<li>
