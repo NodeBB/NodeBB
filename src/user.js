@@ -442,15 +442,14 @@ var bcrypt = require('bcrypt'),
 			size: '128',
 			default: 'identicon',
 			rating: 'pg'
-		},
-		https = nconf.get('https');
+		};
 
 		if (!email) {
 			email = '';
 			options.forcedefault = 'y';
 		}
 
-		return gravatar.url(email, options, https);
+		return gravatar.url(email, options, true);
 	};
 
 	User.hashPassword = function(password, callback) {

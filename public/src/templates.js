@@ -79,7 +79,7 @@
 							template.prototype.parse = parse;
 							template.prototype.html = String(html);
 
-							global.templates[file] = new template;
+							templates[file] = new template;
 
 							loaded--;
 							if (loaded === 0) {
@@ -396,7 +396,7 @@
 				namespace = '';
 			} else {
 				// clean up all undefined conditionals
-				template = template.replace(/<!-- IF([^@]*?)ENDIF([^@]*?)-->/gi, '');	
+				template = template.replace(/<!-- IF([^@]*?)ENDIF([^@]*?)-->/gi, '');
 			}
 
 			return template;

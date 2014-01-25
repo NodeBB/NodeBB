@@ -738,14 +738,14 @@ var async = require('async'),
 					topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
 					topicData.username = topicInfo.username || 'anonymous';
 					topicData.userslug = topicInfo.userslug || '';
-					topicData.picture = topicInfo.picture || gravatar.url('', {}, https = nconf.get('https'));
+					topicData.picture = topicInfo.picture || gravatar.url('', {}, true);
 					topicData.categoryIcon = topicInfo.categoryData.icon;
 					topicData.categoryName = topicInfo.categoryData.name;
 					topicData.categorySlug = topicInfo.categoryData.slug;
 					topicData.badgeclass = (topicInfo.hasread && parseInt(current_user, 10) !== 0) ? '' : 'badge-important';
 					topicData.teaser_username = topicInfo.teaserInfo.username || '';
 					topicData.teaser_userslug = topicInfo.teaserInfo.userslug || '';
-					topicData.teaser_userpicture = topicInfo.teaserInfo.picture || gravatar.url('', {}, https = nconf.get('https'));
+					topicData.teaser_userpicture = topicInfo.teaserInfo.picture || gravatar.url('', {}, true);
 					topicData.teaser_pid = topicInfo.teaserInfo.pid;
 					topicData.teaser_timestamp = utils.toISOString(topicInfo.teaserInfo.timestamp);
 
@@ -1053,7 +1053,7 @@ var async = require('async'),
 						pid: postData.pid,
 						username: userData.username || 'anonymous',
 						userslug: userData.userslug,
-						picture: userData.picture || gravatar.url('', {}, https = nconf.get('https')),
+						picture: userData.picture || gravatar.url('', {}, true),
 						timestamp: postData.timestamp
 					});
 				});

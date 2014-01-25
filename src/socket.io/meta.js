@@ -58,7 +58,7 @@ SocketMeta.updateHeader = function(socket, data, callback) {
 			email: '',
 			picture: gravatar.url('', {
 				s: '24'
-			}, nconf.get('https')),
+			}, true),
 			config: {
 				allowGuestSearching: meta.config.allowGuestSearching
 			}

@@ -255,7 +255,7 @@ var fs = require('fs'),
 						},
 						minFile: function (next) {
 							if (!fs.existsSync(Meta.js.minFile)) {
-								winston.warn('No minified client-side library found');
+								winston.info('No minified client-side library found');
 								return next(null, 0);
 							}
 
