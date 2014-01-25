@@ -19,7 +19,8 @@ define(['composer'], function(composer) {
 			},
 			topic_name = templates.get('topic_name'),
 			currentPage = parseInt(templates.get('currentPage'), 10),
-			pageCount = parseInt(templates.get('pageCount'), 10);
+			pageCount = parseInt(templates.get('pageCount'), 10),
+			Topic.postCount = templates.get('postcount');
 
 
 		function fixDeleteStateForPosts() {
@@ -40,7 +41,8 @@ define(['composer'], function(composer) {
 
 			showBottomPostBar();
 
-			// Resetting thread state
+			updateHeader();
+
 			if (thread_state.locked === '1') set_locked_state(true);
 			if (thread_state.deleted === '1') set_delete_state(true);
 			if (thread_state.pinned === '1') set_pinned_state(true);
@@ -329,17 +331,6 @@ define(['composer'], function(composer) {
 				Topic.scrollToPost(parseInt(bookmark, 10));
 			}
 
-			// Show the paginator block, now that the DOM has finished loading
-			(function delayedHeaderUpdate() {
-				if (!Topic.postCount) {
-					setTimeout(function() {
-						delayedHeaderUpdate();
-					}, 25);
-				} else {
-					updateHeader();
-				}
-			})();
-
 			$('#post-container').on('mouseenter', '.favourite-tooltip', function(e) {
 				if (!$(this).data('users-loaded')) {
 					$(this).data('users-loaded', "true");
@@ -389,7 +380,7 @@ define(['composer'], function(composer) {
 				$('.pagination .previous').addClass('disabled');
 			}
 
-			if(currentPage === parseInt($('.pagination').attr('data-pageCount'), 10)) {
+			if(currentPage === pageCount) {
 				$('.pagination .next').addClass('disabled');
 			}
 
@@ -400,6 +391,11 @@ define(['composer'], function(composer) {
 		function loadPage(page) {
 			page = parseInt(page, 10);
 			if(page < 1 || page > pageCount) {
+				return;
+			}
+
+			if(page === 1) {
+				ajaxify.go('topic/' + tid );
 				return;
 			}
 
@@ -451,11 +447,7 @@ define(['composer'], function(composer) {
 				return;
 			}
 
-			var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
-			var regexp = new RegExp("<!--[\\s]*IF @first[\\s]*-->([\\s\\S]*?)<!--[\\s]*ENDIF @first[\\s]*-->", 'g');
-			html = html.replace(regexp, '');
-
-			translator.translate(html, function(translatedHTML) {
+			parseAndTranslatePosts(data.posts, function(translatedHTML) {
 				var translated = $(translatedHTML);
 
 				$('#post-container').fadeOut(function() {
@@ -464,22 +456,7 @@ define(['composer'], function(composer) {
 					translated.appendTo($(this));
 					$(this).fadeIn('slow');
 
-					for (var x = 0, numPosts = data.posts.length; x < numPosts; x++) {
-						socket.emit('posts.getPrivileges', data.posts[x].pid, function(err, privileges) {
-							if(err) {
-								return app.alertError(err.message);
-							}
-							toggle_mod_tools(privileges.pid, privileges.editable);
-						});
-					}
-
-					app.populateOnlineUsers();
-					app.createUserTooltips();
-					app.addCommasToNumbers();
-					$('span.timeago').timeago();
-					$('.post-content img').addClass('img-responsive');
-					updatePostCount();
-					showBottomPostBar();
+					onNewPostsLoaded(data.posts);
 
 					callback();
 				});
@@ -554,7 +531,7 @@ define(['composer'], function(composer) {
 			var pid = $(this).parents('.post-row').attr('data-pid');
 			$('#post_' + pid + '_link').val(window.location.href + "#" + pid);
 			// without the setTimeout can't select the text in the input
-			setTimeout(function(){
+			setTimeout(function() {
 				$('#post_' + pid + '_link').select();
 			}, 50);
 		});
@@ -1064,8 +1041,6 @@ define(['composer'], function(composer) {
 			}
 		}
 
-		Topic.postCount = templates.get('postcount');
-
 		window.onscroll = updateHeader;
 	};
 
@@ -1186,6 +1161,7 @@ define(['composer'], function(composer) {
 		function findInsertionPoint() {
 			var after = null,
 				firstPid = data.posts[0].pid;
+
 			$('#post-container li[data-pid]').each(function() {
 				if(parseInt(firstPid, 10) > parseInt($(this).attr('data-pid'), 10)) {
 					after = $(this);
@@ -1206,11 +1182,7 @@ define(['composer'], function(composer) {
 
 		var insertAfter = findInsertionPoint();
 
-		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
-		var regexp = new RegExp("<!--[\\s]*IF @first[\\s]*-->([\\s\\S]*?)<!--[\\s]*ENDIF @first[\\s]*-->", 'g');
-		html = html.replace(regexp, '');
-
-		translator.translate(html, function(translatedHTML) {
+		parseAndTranslatePosts(data.posts, function(translatedHTML) {
 			var translated = $(translatedHTML);
 
 			if(!infiniteLoaded) {
@@ -1221,26 +1193,40 @@ define(['composer'], function(composer) {
 				.hide()
 				.fadeIn('slow');
 
-			for (var x = 0, numPosts = data.posts.length; x < numPosts; x++) {
-				socket.emit('posts.getPrivileges', data.posts[x].pid, function(err, privileges) {
-					if(err) {
-						return app.alertError(err.message);
-					}
-					toggle_mod_tools(privileges.pid, privileges.editable);
-				});
-			}
-
-			infiniteLoaderActive = false;
-
-			app.populateOnlineUsers();
-			app.createUserTooltips();
-			app.addCommasToNumbers();
-			$('span.timeago').timeago();
-			$('.post-content img').addClass('img-responsive');
-			updatePostCount();
-			showBottomPostBar();
+			onNewPostsLoaded(data.posts);
 		});
 	}
+
+	function parseAndTranslatePosts(posts, callback) {
+		var html = templates.prepare(templates['topic'].blocks['posts']).parse({posts: posts});
+		var regexp = new RegExp("<!--[\\s]*IF @first[\\s]*-->([\\s\\S]*?)<!--[\\s]*ENDIF @first[\\s]*-->", 'g');
+		html = html.replace(regexp, '');
+
+		translator.translate(html, callback);
+	}
+
+
+	function onNewPostsLoaded(posts) {
+		for (var x = 0, numPosts = posts.length; x < numPosts; x++) {
+			socket.emit('posts.getPrivileges', posts[x].pid, function(err, privileges) {
+				if(err) {
+					return app.alertError(err.message);
+				}
+				toggle_mod_tools(privileges.pid, privileges.editable);
+			});
+		}
+
+		infiniteLoaderActive = false;
+
+		app.populateOnlineUsers();
+		app.createUserTooltips();
+		app.addCommasToNumbers();
+		$('span.timeago').timeago();
+		$('.post-content img').addClass('img-responsive');
+		updatePostCount();
+		showBottomPostBar();
+	}
+
 
 	function toggle_mod_tools(pid, state) {
 		var postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
