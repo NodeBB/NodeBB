@@ -753,7 +753,7 @@ var async = require('async'),
 
 					if (isTopicVisible(topicData, topicInfo)) {
 						retrieved_topics.push(topicData);
-					} else console.log('not visible');
+					}
 
 					next(null);
 				});
