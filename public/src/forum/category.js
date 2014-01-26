@@ -44,10 +44,8 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 	function enableInfiniteLoading() {
 		if(!config.usePagination) {
-			$(window).off('scroll').on('scroll', function (ev) {
-				var bottom = ($(document).height() - $(window).height()) * 0.9;
-
-				if ($(window).scrollTop() > bottom && !loadingMoreTopics) {
+			app.enableInfiniteLoading(function() {
+				if(!loadingMoreTopics) {
 					Category.loadMoreTopics(templates.get('category_id'));
 				}
 			});

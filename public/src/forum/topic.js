@@ -346,10 +346,8 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 		function enableInfiniteLoading() {
 			if(!config.usePagination) {
-				$(window).off('scroll').on('scroll', function() {
-					var bottom = ($(document).height() - $(window).height()) * 0.9;
-
-					if ($(window).scrollTop() > bottom && !infiniteLoaderActive && $('#post-container').children().length) {
+				app.enableInfiniteLoading(function() {
+					if (!infiniteLoaderActive && $('#post-container').children().length) {
 						loadMorePosts(tid, function(posts) {
 							fixDeleteStateForPosts();
 						});
