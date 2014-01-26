@@ -48,7 +48,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				var bottom = ($(document).height() - $(window).height()) * 0.9;
 
 				if ($(window).scrollTop() > bottom && !loadingMoreTopics) {
-					Category.loadMoreTopics(cid);
+					Category.loadMoreTopics(templates.get('category_id'));
 				}
 			});
 		} else {
