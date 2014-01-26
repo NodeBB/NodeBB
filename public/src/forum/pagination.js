@@ -12,17 +12,19 @@ define(function() {
 
 		pagination.recreatePaginationLinks(pageCount);
 
-		$('.pagination').on('click', '.previous', function() {
-			pagination.loadPage(pagination.currentPage - 1);
-		});
-
-		$('.pagination').on('click', '.next', function() {
-			pagination.loadPage(pagination.currentPage + 1);
-		});
-
-		$('.pagination').on('click', '.page', function() {
-			pagination.loadPage($(this).attr('data-page'));
-		});
+		$('.pagination')
+			.on('click', '.previous', function() {
+				pagination.loadPage(pagination.currentPage - 1);
+			}).on('click', '.next', function() {
+				pagination.loadPage(pagination.currentPage + 1);
+			}).on('click', '.page', function() {
+				pagination.loadPage($(this).attr('data-page'));
+			}).on('click', '.select_page', function(e) {
+				e.preventDefault();
+				bootbox.prompt('Enter page number:', function(pageNum) {
+					pagination.loadPage(pageNum);
+				});
+			});
 	}
 
 	pagination.recreatePaginationLinks = function(newPageCount) {
@@ -53,7 +55,7 @@ define(function() {
 		for(var i=0; i<pagesToShow.length; ++i) {
 			if(i > 0) {
 				if (pagesToShow[i] - 1 !== pagesToShow[i-1]) {
-					html += '<li class="disabled"><a href="#">|</a></li>';
+					html += '<li class="disabled"><a class="select_page" href="#">|</a></li>';
 				}
 			}
 			html += '<li class="page" data-page="' + pagesToShow[i] + '"><a href="#">' + pagesToShow[i] + '</a></li>';
