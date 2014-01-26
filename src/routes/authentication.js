@@ -1,7 +1,6 @@
 (function(Auth) {
 	var passport = require('passport'),
 		passportLocal = require('passport-local').Strategy,
-		passportTwitter = require('passport-twitter').Strategy,
 		passportGoogle = require('passport-google-oauth').OAuth2Strategy,
 		login_strategies = [],
 		nconf = require('nconf'),
@@ -30,29 +29,6 @@
 			Auth.createRoutes(Auth.app);
 		});
 	});
-
-	if (meta.config['social:twitter:key'] && meta.config['social:twitter:secret']) {
-		passport.use(new passportTwitter({
-			consumerKey: meta.config['social:twitter:key'],
-			consumerSecret: meta.config['social:twitter:secret'],
-			callbackURL: nconf.get('url') + '/auth/twitter/callback'
-		}, function(token, tokenSecret, profile, done) {
-			login_module.loginViaTwitter(profile.id, profile.username, profile.photos, function(err, user) {
-				if (err) {
-					return done(err);
-				}
-				done(null, user);
-			});
-		}));
-
-		login_strategies.push({
-			name: 'twitter',
-			url: '/auth/twitter',
-			callbackURL: '/auth/twitter/callback',
-			icon: 'twitter',
-			scope: ''
-		});
-	}
 
 	if (meta.config['social:google:id'] && meta.config['social:google:secret']) {
 		passport.use(new passportGoogle({

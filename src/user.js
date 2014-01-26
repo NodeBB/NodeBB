@@ -742,15 +742,6 @@ var bcrypt = require('bcrypt'),
 		});
 	};
 
-	User.getUidByTwitterId = function(twid, callback) {
-		db.getObjectField('twid:uid', twid, function(err, uid) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, uid);
-		});
-	};
-
 	User.getUidByGoogleId = function(gplusid, callback) {
 		db.getObjectField('gplusid:uid', gplusid, function(err, uid) {
 			if (err) {

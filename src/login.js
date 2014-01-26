@@ -57,44 +57,6 @@ var user = require('./user'),
 		}
 	}
 
-	Login.loginViaTwitter = function(twid, handle, photos, callback) {
-		user.getUidByTwitterId(twid, function(err, uid) {
-			if(err) {
-				return callback(err);
-			}
-
-			if (uid !== null) {
-				// Existing User
-				callback(null, {
-					uid: uid
-				});
-			} else {
-				// New User
-				user.create({username: handle}, function(err, uid) {
-					if(err) {
-						return callback(err);
-					}
-
-					// Save twitter-specific information to the user
-					user.setUserField(uid, 'twid', twid);
-					db.setObjectField('twid:uid', twid, uid);
-
-					// Save their photo, if present
-					if (photos && photos.length > 0) {
-						var photoUrl = photos[0].value;
-						photoUrl = path.dirname(photoUrl) + '/' + path.basename(photoUrl, path.extname(photoUrl)).slice(0, -6) + 'bigger' + path.extname(photoUrl);
-						user.setUserField(uid, 'uploadedpicture', photoUrl);
-						user.setUserField(uid, 'picture', photoUrl);
-					}
-
-					callback(null, {
-						uid: uid
-					});
-				});
-			}
-		});
-	};
-
 	Login.loginViaGoogle = function(gplusid, handle, email, callback) {
 		user.getUidByGoogleId(gplusid, function(err, uid) {
 			if(err) {
