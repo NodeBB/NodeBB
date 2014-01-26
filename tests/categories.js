@@ -31,7 +31,7 @@ describe('Categories', function() {
 
 	describe('.getCategoryById', function() {
 		it('should retrieve a newly created category by its ID', function(done) {
-			Categories.getCategoryById(categoryObj.cid, 0, function(err, categoryData) {
+			Categories.getCategoryById(categoryObj.cid, 0, -1, 0, function(err, categoryData) {
 				assert(categoryData);
 				assert.equal(categoryObj.name, categoryData.category_name);
 				assert.equal(categoryObj.description, categoryData.category_description);

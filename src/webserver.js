@@ -9,6 +9,7 @@ var path = require('path'),
 	validator = require('validator'),
 	async = require('async'),
 	S = require('string'),
+	qs = require('querystring'),
 
 	pkg = require('../package.json'),
 
@@ -28,7 +29,9 @@ var path = require('path'),
 	meta = require('./meta'),
 	feed = require('./feed'),
 	plugins = require('./plugins'),
-	logger = require('./logger');
+	logger = require('./logger'),
+	templates = require('./../public/src/templates'),
+	translator = require('./../public/src/translator');
 
 if(nconf.get('ssl')) {
 	server = require('https').createServer({
@@ -39,13 +42,12 @@ if(nconf.get('ssl')) {
 	server = require('http').createServer(WebServer);
 }
 
+module.exports.server = server;
 
 (function (app) {
 	"use strict";
 
-	var templates = null,
-		clientScripts;
-
+	var	clientScripts;
 
 	plugins.ready(function() {
 		// Minify client-side libraries
@@ -59,9 +61,6 @@ if(nconf.get('ssl')) {
 			});
 		});
 	});
-
-
-	server.app = app;
 
 	/**
 	 *	`options` object	requires:	req, res
@@ -200,7 +199,6 @@ if(nconf.get('ssl')) {
 
 				// Local vars, other assorted setup
 				app.use(function (req, res, next) {
-					nconf.set('https', req.secure);
 					res.locals.csrf_token = req.session._csrf;
 
 					// Disable framing
@@ -376,8 +374,6 @@ if(nconf.get('ssl')) {
 	});
 
 	module.exports.init = function () {
-		templates = global.templates;
-
 		// translate all static templates served by webserver here. ex. footer, logout
 		plugins.fireHook('filter:footer.build', '', function(err, appendHTML) {
 			var footer = templates.footer.parse({
@@ -649,6 +645,10 @@ if(nconf.get('ssl')) {
 				}
 
 				var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
+				var queryString = qs.stringify(req.query);
+				if(queryString.length) {
+					topic_url += '?' + queryString;
+				}
 
 				res.send(
 					data.header +
@@ -706,7 +706,7 @@ if(nconf.get('ssl')) {
 					});
 				},
 				function (next) {
-					categories.getCategoryById(cid, 0, function (err, categoryData) {
+					categories.getCategoryById(cid, 0, -1, 0, function (err, categoryData) {
 
 						if (categoryData) {
 							if (parseInt(categoryData.disabled, 10) === 1) {
@@ -763,6 +763,10 @@ if(nconf.get('ssl')) {
 				}
 
 				var category_url = cid + (req.params.slug ? '/' + req.params.slug : '');
+				var queryString = qs.stringify(req.query);
+				if(queryString.length) {
+					category_url += '?' + queryString;
+				}
 
 				res.send(
 					data.header +
@@ -932,6 +936,3 @@ if(nconf.get('ssl')) {
 
 	});
 }(WebServer));
-
-
-global.server = server;
