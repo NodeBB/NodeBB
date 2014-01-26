@@ -212,7 +212,7 @@ var path = require('path'),
 					page = req.query.page;
 				}
 
-				if(parseInt(page, 10) < 1) {
+				if(!utils.isNumber(page) || parseInt(page, 10) < 1) {
 					return res.send(404);
 				}
 
