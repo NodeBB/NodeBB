@@ -402,8 +402,11 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 					if(post) {
 						quoted = '> ' + post.replace(/\n/g, '\n> ') + '\n\n';
 					}
-
-					composer.newReply(tid, topic_name, username + ' said:\n' + quoted);
+					if($('.composer').length) {
+						$('.write').val($('.write').val() + username + ' said:\n' + quoted);
+					}else {
+						composer.newReply(tid, topic_name, username + ' said:\n' + quoted);
+					}
 				});
 			}
 		});
