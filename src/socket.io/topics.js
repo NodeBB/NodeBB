@@ -230,10 +230,17 @@ SocketTopics.loadMore = function(socket, data, callback) {
 		return callback(new Error('invalid data'));
 	}
 
+	var postsPerPage = parseInt(meta.config.postsPerPage, 10);
+	postsPerPage = postsPerPage ? postsPerPage : 20;
+
 	var start = data.after,
-		end = start + 9;
+		end = start + postsPerPage - 1;
 
 	topics.getTopicPosts(data.tid, start, end, socket.uid, function(err, posts) {
+		if(err) {
+			return callback(err);
+		}
+
 		callback(err, {posts: posts});
 	});
 };
@@ -255,5 +262,9 @@ SocketTopics.loadMoreUnreadTopics = function(socket, data, callback) {
 
 	topics.getUnreadTopics(socket.uid, start, end, callback);
 };
+
+SocketTopics.getPageCount = function(socket, tid, callback) {
+	topics.getPageCount(tid, callback);
+}
 
 module.exports = SocketTopics;

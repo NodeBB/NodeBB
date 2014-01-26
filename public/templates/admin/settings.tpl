@@ -7,6 +7,7 @@
 	<li><a href="#email" data-toggle="tab">Email</a></li>
 	<li><a href="#user" data-toggle="tab">User</a></li>
 	<li><a href="#post" data-toggle="tab">Post</a></li>
+	<li><a href="#pagination" data-toggle="tab">Pagination</a></li>
 	<li><a href="#web-crawler" data-toggle="tab">Web Crawler</a></li>
 </ul>
 
@@ -129,6 +130,21 @@
 					</label>
 				</div>
 				<strong>Maximum File Size</strong><br /> <input type="text" class="form-control" value="2048" data-field="maximumFileSize"><br />
+			</div>
+		</form>
+	</div>
+
+	<div class="tab-pane" id="pagination">
+		<form>
+			<div class="alert alert-warning">
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" data-field="usePagination"> <strong>Paginate topics and posts instead of using infinite scroll.</strong>
+					</label>
+				</div>
+
+				<strong>Topics per Page</strong><br /> <input type="text" class="form-control" value="20" data-field="topicsPerPage"><br />
+				<strong>Posts per Page</strong><br /> <input type="text" class="form-control" value="20" data-field="postsPerPage"><br />
 			</div>
 		</form>
 	</div>

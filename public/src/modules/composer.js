@@ -352,7 +352,7 @@ define(['taskbar'], function(taskbar) {
 		}
 
 		postContainer.css('visibility', 'visible')
-			.css('z-index', 1);
+			.css('z-index', 2);
 
 		$('body').css({'margin-bottom': postContainer.css('height')});
 

@@ -7,13 +7,14 @@ var nconf = require('nconf'),
 	user = require('./../user'),
 	groups = require('../groups'),
 	topics = require('./../topics'),
-	pkg = require('./../../package.json'),
+	pkg = require('./../../package'),
 	categories = require('./../categories'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
 	Languages = require('../languages'),
 	events = require('./../events'),
-	utils = require('./../../public/src/utils.js');
+	utils = require('./../../public/src/utils'),
+	templates = require('./../../public/src/templates');
 
 (function (Admin) {
 	Admin.isAdmin = function (req, res, next) {

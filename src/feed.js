@@ -84,7 +84,7 @@
 	};
 
 	Feed.updateCategory = function (cid, callback) {
-		categories.getCategoryById(cid, 0, function (err, categoryData) {
+		categories.getCategoryById(cid, 0, -1, 0, function (err, categoryData) {
 			if (err) return callback(new Error('category-invalid'));
 
 			var feed = new rss({

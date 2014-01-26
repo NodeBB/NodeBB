@@ -84,7 +84,16 @@
 			</li>
 			<!-- END topics -->
 		</ul>
+		<!-- IF usePagination -->
+		<div class="text-center">
+			<ul class="pagination">
+				<li class="previous pull-left"><a href="#"><i class="fa fa-chevron-left"></i> [[global:previouspage]]</a></li>
+				<li class="next pull-right"><a href="#">[[global:nextpage]] <i class="fa fa-chevron-right"></i></a></li>
+			</ul>
+		</div>
+		<!-- ENDIF usePagination -->
 	</div>
+
 	<div class="col-md-3 col-xs-12 {show_sidebar} category-sidebar">
 		<div class="panel panel-default">
 			<div class="panel-heading">[[category:sidebar.recent_replies]]</div>
@@ -122,3 +131,5 @@
 
 <input type="hidden" template-variable="category_id" value="{category_id}" />
 <input type="hidden" template-variable="category_name" value="{category_name}" />
+<input type="hidden" template-variable="currentPage" value="{currentPage}" />
+<input type="hidden" template-variable="pageCount" value="{pageCount}" />
