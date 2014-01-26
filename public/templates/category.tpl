@@ -87,11 +87,8 @@
 		<!-- IF usePagination -->
 		<div class="text-center">
 			<ul class="pagination">
-				<li class="previous pull-left"><a href="#">&larr; Older</a></li>
-				<!-- BEGIN pages -->
-				<li class="page" data-page="{pages.pageNumber}"><a href="#">{pages.pageNumber}</a></li>
-				<!-- END pages -->
-				<li class="next pull-right"><a href="#">Newer &rarr;</a></li>
+				<li class="previous pull-left"><a href="#"><i class="fa fa-chevron-left"></i> [[global:previouspage]]</a></li>
+				<li class="next pull-right"><a href="#">[[global:nextpage]] <i class="fa fa-chevron-right"></i></a></li>
 			</ul>
 		</div>
 		<!-- ENDIF usePagination -->

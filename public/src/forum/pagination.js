@@ -10,7 +10,7 @@ define(function() {
 		pagination.currentPage = parseInt(currentPage, 10);
 		pagination.pageCount = parseInt(pageCount, 10);
 
-		updatePageLinks();
+		pagination.recreatePaginationLinks(pageCount);
 
 		$('.pagination').on('click', '.previous', function() {
 			pagination.loadPage(pagination.currentPage - 1);
@@ -25,18 +25,42 @@ define(function() {
 		});
 	}
 
-	pagination.recreatePaginationLinks = function(template, newPageCount) {
+	pagination.recreatePaginationLinks = function(newPageCount) {
 		pagination.pageCount = parseInt(newPageCount, 10);
 
-		var pages = [];
-		for(var i=1; i<=pagination.pageCount; ++i) {
-			pages.push({pageNumber: i});
+		var pagesToShow = [1, pagination.pageCount];
+
+		var previous = pagination.currentPage - 1;
+		var next = pagination.currentPage + 1;
+
+		if(previous > 1 && pagesToShow.indexOf(previous) === -1) {
+			pagesToShow.push(previous);
 		}
 
-		var html = templates.prepare(templates[template].blocks['pages']).parse({pages:pages});
-		html = $(html);
+		if(next < pagination.pageCount && pagesToShow.indexOf(next) === -1) {
+			pagesToShow.push(next);
+		}
+
+		if(pagesToShow.indexOf(pagination.currentPage) === -1) {
+			pagesToShow.push(pagination.currentPage);
+		}
+
+		pagesToShow.sort(function(a, b) {
+			return parseInt(a, 10) - parseInt(b, 10);
+		});
+
+		var html = '';
+		for(var i=0; i<pagesToShow.length; ++i) {
+			if(i > 0) {
+				if (pagesToShow[i] - 1 !== pagesToShow[i-1]) {
+					html += '<li class="disabled"><a href="#">|</a></li>';
+				}
+			}
+			html += '<li class="page" data-page="' + pagesToShow[i] + '"><a href="#">' + pagesToShow[i] + '</a></li>';
+		}
+
 		$('.pagination li.page').remove();
-		html.insertAfter($('.pagination li.previous'));
+		$(html).insertAfter($('.pagination li.previous'));
 		updatePageLinks();
 	}
 
