@@ -489,13 +489,13 @@ var bcrypt = require('bcrypt'),
 
 	User.search = function(query, callback) {
 		if (!query || query.length === 0) {
-			return callback(null, []);
+			return callback(null, {timing:0, users:[]});
 		}
 		var start = process.hrtime();
 
 		db.getObject('username:uid', function(err, usernamesHash) {
 			if (err) {
-				return callback(null, []);
+				return callback(null, {timing: 0, users:[]});
 			}
 
 			query = query.toLowerCase();
@@ -515,7 +515,9 @@ var bcrypt = require('bcrypt'),
 			});
 
 			User.getDataForUsers(results, function(userdata) {
-				callback(null, userdata);
+				var diff = process.hrtime(start);
+				var timing = (diff[0] * 1e3 + diff[1] / 1e6).toFixed(1);
+				callback(null, {timing: timing, users: userdata});
 			});
 		});
 	};
