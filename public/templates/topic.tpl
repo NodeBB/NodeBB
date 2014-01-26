@@ -186,7 +186,7 @@
 			<!-- IF privileges.write -->
 			<button class="btn btn-primary post_reply" type="button">[[topic:reply]]</button>
 			<!-- ENDIF privileges.write -->
-			<div class="btn-group thread-tools hide">
+			<div class="btn-group thread-tools hide dropup">
 				<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">[[topic:thread_tools.title]] <span class="caret"></span></button>
 				<ul class="dropdown-menu pull-right">
 					<li><a href="#" class="markAsUnreadForAll"><i class="fa fa-inbox"></i> [[topic:thread_tools.markAsUnreadForAll]]</a></li>
