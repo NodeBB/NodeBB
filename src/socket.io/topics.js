@@ -1,6 +1,9 @@
 var topics = require('../topics'),
 	threadTools = require('../threadTools'),
 	index = require('./index'),
+
+	async = require('async'),
+
 	SocketTopics = {};
 
 SocketTopics.post = function(socket, data, callback) {
@@ -236,12 +239,15 @@ SocketTopics.loadMore = function(socket, data, callback) {
 	var start = data.after,
 		end = start + postsPerPage - 1;
 
-	topics.getTopicPosts(data.tid, start, end, socket.uid, function(err, posts) {
-		if(err) {
-			return callback(err);
+	async.parallel({
+		posts: function(next) {
+			topics.getTopicPosts(data.tid, start, end, socket.uid, next);
+		},
+		privileges: function(next) {
+			threadTools.privileges(data.tid, socket.uid, next);
 		}
-
-		callback(err, {posts: posts});
+	}, function(err, results) {
+		callback(err, results);
 	});
 };
 

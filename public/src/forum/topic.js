@@ -1097,7 +1097,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 		var insertAfter = findInsertionPoint();
 
-		parseAndTranslatePosts(data.posts, function(translatedHTML) {
+		parseAndTranslatePosts(data, function(translatedHTML) {
 			var translated = $(translatedHTML);
 
 			if(!infiniteLoaded) {
@@ -1112,8 +1112,8 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		});
 	}
 
-	function parseAndTranslatePosts(posts, callback) {
-		var html = templates.prepare(templates['topic'].blocks['posts']).parse({posts: posts});
+	function parseAndTranslatePosts(data, callback) {
+		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
 		var regexp = new RegExp("<!--[\\s]*IF @first[\\s]*-->([\\s\\S]*?)<!--[\\s]*ENDIF @first[\\s]*-->", 'g');
 		html = html.replace(regexp, '');
 
