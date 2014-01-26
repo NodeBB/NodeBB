@@ -41,7 +41,10 @@
 				<div class="form-group">
 					<div class="col-lg-offset-2 col-lg-10">
 						<hr />
-						<button class="btn btn-primary btn-lg btn-block"  id="login" type="submit">[[login:login]]</button> &nbsp; <a id="reset-link" class="hide" href="{relative_path}/reset">[[login:forgot_password]]</a>
+						<button class="btn btn-primary btn-lg btn-block"  id="login" type="submit">[[login:login]]</button>
+						<!-- IF showResetLink -->
+						&nbsp; <a id="reset-link" href="{relative_path}/reset">[[login:forgot_password]]</a>
+						<!-- ENDIF showResetLink -->
 					</div>
 				</div>
 				<input type="hidden" name="_csrf" value="{token}" id="csrf-token" />

@@ -396,6 +396,16 @@ var socket,
 		});
 	};
 
+	app.enableInfiniteLoading = function(callback) {
+		$(window).off('scroll').on('scroll', function() {
+			var bottom = ($(document).height() - $(window).height()) * 0.9;
+
+			if ($(window).scrollTop() > bottom) {
+				callback();
+			}
+		});
+	}
+
 	var	titleObj = {
 			active: false,
 			interval: undefined,
@@ -528,6 +538,9 @@ var socket,
 		});
 
 		templates.setGlobal('relative_path', RELATIVE_PATH);
+		templates.setGlobal('usePagination', config.usePagination);
+		templates.setGlobal('topicsPerPage', config.topicsPerPage);
+		templates.setGlobal('postsPerPage', config.postsPerPage);
 	});
 
 	showWelcomeMessage = location.href.indexOf('loggedin') !== -1;

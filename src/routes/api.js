@@ -11,10 +11,11 @@ var path = require('path'),
 	posts = require('../posts'),
 	categories = require('../categories'),
 	categoryTools = require('../categoryTools')
+	meta = require('../meta'),
+	Plugins = require('../plugins'),
 	utils = require('../../public/src/utils'),
 	translator = require('../../public/src/translator'),
-	pkg = require('../../package.json'),
-	meta = require('../meta');
+	pkg = require('../../package.json');
 
 
 (function (Api) {
@@ -42,8 +43,10 @@ var path = require('path'),
 				config.useOutgoingLinksPage = parseInt(meta.config.useOutgoingLinksPage, 10) === 1;
 				config.allowGuestPosting = parseInt(meta.config.allowGuestPosting, 10) === 1;
 				config.allowFileUploads = parseInt(meta.config.allowFileUploads, 10) === 1;
+				config.usePagination = parseInt(meta.config.usePagination, 10) === 1;
+				config.topicsPerPage = meta.config.topicsPerPage || 20;
+				config.postsPerPage = meta.config.postsPerPage || 20;
 				config.maximumFileSize = meta.config.maximumFileSize;
-				config.emailSetup = !!meta.config['email:from'];
 				config.defaultLang = meta.config.defaultLang || 'en';
 
 				res.json(200, config);
@@ -113,7 +116,8 @@ var path = require('path'),
 			app.get('/login', function (req, res) {
 				var data = {},
 					login_strategies = auth.get_login_strategies(),
-					num_strategies = login_strategies.length;
+					num_strategies = login_strategies.length,
+					emailersPresent = Plugins.hasListeners('action:email.send');
 
 				if (num_strategies == 0) {
 					data = {
@@ -128,8 +132,8 @@ var path = require('path'),
 				}
 
 				data.authentication = login_strategies;
-
 				data.token = res.locals.csrf_token;
+				data.showResetLink = emailersPresent;
 
 				res.json(data);
 			});
@@ -161,20 +165,40 @@ var path = require('path'),
 			});
 
 			app.get('/topic/:id/:slug?', function (req, res, next) {
+
 				var uid = (req.user) ? req.user.uid : 0;
+				var page = 1;
+				if(req.query && req.query.page) {
+					page = req.query.page;
+				}
+
+				if(!utils.isNumber(page) || parseInt(page, 10) < 1) {
+					return res.send(404);
+				}
+
+				var postsPerPage = parseInt(meta.config.postsPerPage ? meta.config.postsPerPage : 20, 10);
+				var start = (page - 1) * postsPerPage;
+				var end = start + postsPerPage - 1;
+
 				ThreadTools.privileges(req.params.id, uid, function(err, privileges) {
 					if (privileges.read) {
-						topics.getTopicWithPosts(req.params.id, uid, 0, 10, false, function (err, data) {
-							if (!err) {
-								// Send in privilege data as well
-								data.privileges = privileges;
+						topics.getTopicWithPosts(req.params.id, uid, start, end, false, function (err, data) {
+							if(err) {
+								return next(err);
+							}
 
-								if (parseInt(data.deleted, 10) === 1 && parseInt(data.expose_tools, 10) === 0) {
-									return res.json(404, {});
-								}
+							if(page > data.pageCount) {
+								return res.send(404);
+							}
 
-								res.json(data);
-							} else next();
+							data.currentPage = page;
+							data.privileges = privileges;
+
+							if (parseInt(data.deleted, 10) === 1 && parseInt(data.expose_tools, 10) === 0) {
+								return res.json(404, {});
+							}
+
+							res.json(data);
 						});
 					} else {
 						res.send(403);
@@ -184,16 +208,28 @@ var path = require('path'),
 
 			app.get('/category/:id/:slug?', function (req, res, next) {
 				var uid = (req.user) ? req.user.uid : 0;
+				var page = 1;
+				if(req.query && req.query.page) {
+					page = req.query.page;
+				}
+
+				if(!utils.isNumber(page) || parseInt(page, 10) < 1) {
+					return res.send(404);
+				}
+
+				var topicsPerPage = parseInt(meta.config.topicsPerPage ? meta.config.topicsPerPage : 20, 10);
+				var start = (page - 1) * topicsPerPage;
+				var end = start + topicsPerPage - 1;
 
 				// Category Whitelisting
 				categoryTools.privileges(req.params.id, uid, function(err, privileges) {
 					if (!err && privileges.read) {
-						categories.getCategoryById(req.params.id, uid, function (err, data) {
+						categories.getCategoryById(req.params.id, start, end, uid, function (err, data) {
 							if(err) {
 								return next(err);
 							}
 
-							// Add privilege data to template data
+							data.currentPage = page;
 							data.privileges = privileges;
 
 							if (data && parseInt(data.disabled, 10) === 0) {

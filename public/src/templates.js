@@ -79,7 +79,7 @@
 							template.prototype.parse = parse;
 							template.prototype.html = String(html);
 
-							global.templates[file] = new template;
+							templates[file] = new template;
 
 							loaded--;
 							if (loaded === 0) {
@@ -196,6 +196,7 @@
 			template_data = data;
 			parse_template();
 		}).fail(function (data, textStatus) {
+			jQuery('#content, #footer').stop(true, true).removeClass('ajaxifying');
 			if (data && data.status == 404) {
 				return ajaxify.go('404');
 			} else if (data && data.status === 403) {
@@ -396,7 +397,7 @@
 				namespace = '';
 			} else {
 				// clean up all undefined conditionals
-				template = template.replace(/<!-- IF([^@]*?)ENDIF([^@]*?)-->/gi, '');	
+				template = template.replace(/<!-- IF([^@]*?)ENDIF([^@]*?)-->/gi, '');
 			}
 
 			return template;

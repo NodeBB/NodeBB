@@ -17,7 +17,7 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2014, 0, 23, 16, 5).getTime();
+	var	latestSchema = new Date(2014, 0, 25, 0, 0).getTime();
 
 	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -318,9 +318,44 @@ Upgrade.upgrade = function(callback) {
 						winston.info('[2014/1/23] Updating Administrators Group');
 						next();
 					});
-				})
+				});
 			} else {
 				winston.info('[2014/1/23] Updating Administrators Group -- skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 0, 25, 0, 0).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
+					if(err) {
+						return next(err);
+					}
+
+					if(!uids || !uids.length) {
+						winston.info('[2014/1/25] Updating User Gravatars to HTTPS  -- skipped');
+						return next();
+					}
+
+					var gravatar = require('gravatar');
+
+					function updateGravatar(uid, next) {
+						User.getUserFields(uid, ['email', 'picture', 'gravatarpicture'], function(err, userData) {
+							var gravatarPicture = User.createGravatarURLFromEmail(userData.email);
+							if(userData.picture === userData.gravatarpicture) {
+								User.setUserField(uid, 'picture', gravatarPicture);
+							}
+							User.setUserField(uid, 'gravatarpicture', gravatarPicture, next);
+						});
+					}
+
+					winston.info('[2014/1/25] Updating User Gravatars to HTTPS');
+					async.each(uids, updateGravatar, next);
+				});
+			} else {
+				winston.info('[2014/1/25] Updating User Gravatars to HTTPS -- skipped');
 				next();
 			}
 		}

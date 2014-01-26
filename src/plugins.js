@@ -202,6 +202,10 @@ var fs = require('fs'),
 		} else return;
 	};
 
+	Plugins.hasListeners = function(hook) {
+		return (Plugins.loadedHooks[hook] && Plugins.loadedHooks[hook].length > 0);
+	};
+
 	Plugins.fireHook = function(hook, args, callback) {
 		hookList = Plugins.loadedHooks[hook];
 

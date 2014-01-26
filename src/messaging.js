@@ -1,7 +1,7 @@
 var db = require('./database'),
 	async = require('async'),
 	user = require('./user'),
-    plugins = require('./plugins');
+	plugins = require('./plugins'),
 	meta = require('./meta');
 
 

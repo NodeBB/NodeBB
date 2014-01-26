@@ -1,5 +1,7 @@
 <input type="hidden" template-variable="expose_tools" value="{expose_tools}" />
 <input type="hidden" template-variable="topic_id" value="{topic_id}" />
+<input type="hidden" template-variable="currentPage" value="{currentPage}" />
+<input type="hidden" template-variable="pageCount" value="{pageCount}" />
 <input type="hidden" template-variable="locked" value="{locked}" />
 <input type="hidden" template-variable="deleted" value="{deleted}" />
 <input type="hidden" template-variable="pinned" value="{pinned}" />
@@ -141,7 +143,7 @@
 			</li>
 
 			<!-- IF @first -->
-			<li class="well post-bar">
+			<li class="well post-bar" data-index="{posts.index}">
 				<div class="inline-block">
 					<small class="topic-stats">
 						<span>[[category:posts]]</span>
@@ -176,15 +178,15 @@
 		<!-- END posts -->
 	</ul>
 
-	<div class="well col-md-11 col-xs-12 pull-right hide">
-		<div class="topic-main-buttons pull-right inline-block hide">
+	<div class="well col-md-11 col-xs-12 pull-right post-bar bottom-post-bar hide">
+		<div class="topic-main-buttons pull-right inline-block">
 			<div class="loading-indicator" done="0" style="display:none;">
 				<span class="hidden-xs-inline">[[topic:loading_more_posts]]</span> <i class="fa fa-refresh fa-spin"></i>
 			</div>
 			<!-- IF privileges.write -->
 			<button class="btn btn-primary post_reply" type="button">[[topic:reply]]</button>
 			<!-- ENDIF privileges.write -->
-			<div class="btn-group thread-tools hide">
+			<div class="btn-group thread-tools hide dropup">
 				<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">[[topic:thread_tools.title]] <span class="caret"></span></button>
 				<ul class="dropdown-menu pull-right">
 					<li><a href="#" class="markAsUnreadForAll"><i class="fa fa-inbox"></i> [[topic:thread_tools.markAsUnreadForAll]]</a></li>
@@ -200,6 +202,15 @@
 		</div>
 		<div style="clear:both;"></div>
 	</div>
+
+	<!-- IF usePagination -->
+	<div class="text-center">
+		<ul class="pagination">
+			<li class="previous pull-left"><a href="#"><i class="fa fa-chevron-left"></i> [[global:previouspage]]</a></li>
+			<li class="next pull-right"><a href="#">[[global:nextpage]] <i class="fa fa-chevron-right"></i></a></li>
+		</ul>
+	</div>
+	<!-- ENDIF usePagination -->
 
 	<div id="move_thread_modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="Move Topic" aria-hidden="true">
 		<div class="modal-dialog">

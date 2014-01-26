@@ -194,7 +194,7 @@ var db = require('./database'),
 				post.user_rep = userData.reputation || 0;
 				post.user_postcount = userData.postcount || 0;
 				post.user_banned = parseInt(userData.banned, 10) === 1;
-				post.picture = userData.picture || gravatar.url('', {}, https = nconf.get('https'));
+				post.picture = userData.picture || gravatar.url('', {}, true);
 
 				if(meta.config.disableSignatures === undefined || parseInt(meta.config.disableSignatures, 10) === 0) {
 					post.signature = signature;
@@ -465,6 +465,30 @@ var db = require('./database'),
 			}
 
 			Posts.getPostSummaryByPids(pids, false, callback);
+		});
+	}
+
+	Posts.getPidPage = function(pid, callback) {
+		Posts.getPostField(pid, 'tid', function(err, tid) {
+			if(err) {
+				return callback(err);
+			}
+
+			topics.getPids(tid, function(err, pids) {
+				if(err) {
+					return callback(err);
+				}
+
+				var index = pids.indexOf(pid);
+				if(index === -1) {
+					return callback(new Error('pid not found'));
+				}
+				var postsPerPage = parseInt(meta.config.postsPerPage, 10);
+				postsPerPage = postsPerPage ? postsPerPage : 20;
+
+				var page = Math.ceil((index + 1) / postsPerPage);
+				callback(null, page);
+			});
 		});
 	}
 

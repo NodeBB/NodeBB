@@ -442,15 +442,14 @@ var bcrypt = require('bcrypt'),
 			size: '128',
 			default: 'identicon',
 			rating: 'pg'
-		},
-		https = nconf.get('https');
+		};
 
 		if (!email) {
 			email = '';
 			options.forcedefault = 'y';
 		}
 
-		return gravatar.url(email, options, https);
+		return gravatar.url(email, options, true);
 	};
 
 	User.hashPassword = function(password, callback) {
@@ -490,13 +489,13 @@ var bcrypt = require('bcrypt'),
 
 	User.search = function(query, callback) {
 		if (!query || query.length === 0) {
-			return callback(null, []);
+			return callback(null, {timing:0, users:[]});
 		}
 		var start = process.hrtime();
 
 		db.getObject('username:uid', function(err, usernamesHash) {
 			if (err) {
-				return callback(null, []);
+				return callback(null, {timing: 0, users:[]});
 			}
 
 			query = query.toLowerCase();
@@ -516,7 +515,9 @@ var bcrypt = require('bcrypt'),
 			});
 
 			User.getDataForUsers(results, function(userdata) {
-				callback(null, userdata);
+				var diff = process.hrtime(start);
+				var timing = (diff[0] * 1e3 + diff[1] / 1e6).toFixed(1);
+				callback(null, {timing: timing, users: userdata});
 			});
 		});
 	};
@@ -885,6 +886,10 @@ var bcrypt = require('bcrypt'),
 
 	User.email = {
 		verify: function(uid, email) {
+			if (!plugins.hasListeners('action:email.send')) {
+				return;
+			}
+
 			var confirm_code = utils.generateUUID(),
 				confirm_link = nconf.get('url') + '/confirm/' + confirm_code;
 

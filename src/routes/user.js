@@ -8,6 +8,7 @@ var fs = require('fs'),
 	posts = require('./../posts'),
 	postTools = require('../postTools'),
 	utils = require('./../../public/src/utils'),
+	templates = require('./../../public/src/templates'),
 	meta = require('./../meta'),
 	db = require('./../database');
 

@@ -5,6 +5,7 @@ var db = require('./database.js'),
 	topics = require('./topics.js'),
 	plugins = require('./plugins'),
 	CategoryTools = require('./categoryTools'),
+	meta = require('./meta'),
 
 	async = require('async'),
 	winston = require('winston'),
@@ -45,14 +46,14 @@ var db = require('./database.js'),
 		});
 	};
 
-	Categories.getCategoryById = function(category_id, current_user, callback) {
+	Categories.getCategoryById = function(category_id, start, end, current_user, callback) {
 		Categories.getCategoryData(category_id, function(err, categoryData) {
 			if (err) {
 				return callback(err);
 			}
 
 			function getTopicIds(next) {
-				Categories.getTopicIds(category_id, 0, 19, next);
+				Categories.getTopicIds(category_id, start, end, next);
 			}
 
 			function getActiveUsers(next) {
@@ -65,10 +66,15 @@ var db = require('./database.js'),
 				});
 			}
 
-			async.parallel([getTopicIds, getActiveUsers, getSidebars], function(err, results) {
+			function getPageCount(next) {
+				Categories.getPageCount(category_id, next);
+			}
+
+			async.parallel([getTopicIds, getActiveUsers, getSidebars, getPageCount], function(err, results) {
 				var tids = results[0],
 					active_users = results[1],
-					sidebars = results[2];
+					sidebars = results[2],
+					pageCount = results[3];
 
 				var category = {
 					'category_name': categoryData.name,
@@ -82,6 +88,7 @@ var db = require('./database.js'),
 					'category_id': category_id,
 					'active_users': [],
 					'topics': [],
+					'pageCount': pageCount,
 					'disableSocialButtons': meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false,
 					'sidebars': sidebars
 				};
@@ -137,6 +144,18 @@ var db = require('./database.js'),
 		db.getSortedSetRevRange('categories:' + cid + ':tid', start, stop, callback);
 	};
 
+	Categories.getPageCount = function(cid, callback) {
+		db.sortedSetCard('categories:' + cid + ':tid', function(err, topicCount) {
+			if(err) {
+				return callback(err);
+			}
+
+			var topicsPerPage = parseInt(meta.config.topicsPerPage, 10);
+			topicsPerPage = topicsPerPage ? topicsPerPage : 20;
+
+			callback(null, Math.ceil(parseInt(topicCount, 10) / topicsPerPage));
+		});
+	};
 
 	Categories.getAllCategories = function(current_user, callback) {
 		db.getListRange('categories:cid', 0, -1, function(err, cids) {
