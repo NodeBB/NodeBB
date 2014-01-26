@@ -28,7 +28,10 @@ define(function() {
 	pagination.recreatePaginationLinks = function(newPageCount) {
 		pagination.pageCount = parseInt(newPageCount, 10);
 
-		var pagesToShow = [1, pagination.pageCount];
+		var pagesToShow = [1];
+		if(pagination.pageCount !== 1) {
+			pagesToShow.push(pagination.pageCount);
+		}
 
 		var previous = pagination.currentPage - 1;
 		var next = pagination.currentPage + 1;

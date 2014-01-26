@@ -91,7 +91,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			addActiveUser(data);
 
 			socket.emit('categories.getPageCount', templates.get('category_id'), function(err, newPageCount) {
-				pagination.recreatePaginationLinks('category', newPageCount);
+				pagination.recreatePaginationLinks(newPageCount);
 			});
 
 			$('#topics-container span.timeago').timeago();

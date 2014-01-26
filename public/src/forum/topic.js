@@ -1065,9 +1065,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 	function onNewPostPagination(data) {
 		var posts = data.posts;
-		socket.emit('topics.getPageCount', tid, function(err, newPageCount) {
+		socket.emit('topics.getPageCount', templates.get('topic_id'), function(err, newPageCount) {
 
-			pagination.recreatePaginationLinks('topic', newPageCount);
+			pagination.recreatePaginationLinks(newPageCount);
 
 			if(pagination.currentPage === pagination.pageCount) {
 				createNewPosts(data);
