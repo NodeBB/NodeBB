@@ -245,7 +245,7 @@ var path = require('path'),
 
 			app.get('/recent/:term?', function (req, res, next) {
 				var uid = (req.user) ? req.user.uid : 0;
-				topics.getLatestTopics(uid, 0, 19, req.params.term, function (err, data) {
+				topics.getLatestTopics(uid, 0, 9, req.params.term, function (err, data) {
 					if(err) {
 						return next(err);
 					}

@@ -426,8 +426,9 @@ var async = require('async'),
 		};
 
 		var since = terms['day'];
-		if(terms[term])
+		if(terms[term]) {
 			since = terms[term];
+		}
 
 		var args = ['topics:recent', '+inf', timestamp - since, 'LIMIT', start, end - start + 1];
 		db.getSortedSetRevRangeByScore(args, function(err, tids) {
@@ -442,11 +443,9 @@ var async = require('async'),
 
 			if (!tids || !tids.length) {
 				latestTopics.no_topics_message = 'show';
-				callback(err, latestTopics);
-				return;
+				return callback(null, latestTopics);
 			}
 
-			// Filter out topics that belong to categories that this user cannot access
 			async.filter(tids, function(tid, next) {
 				threadTools.privileges(tid, current_user, function(err, privileges) {
 					if (!err && privileges.read) {
@@ -457,8 +456,20 @@ var async = require('async'),
 				});
 			}, function(tids) {
 				Topics.getTopicsByTids(tids, 0, current_user, function(err, topicData) {
-					latestTopics.topics = topicData;
-					callback(err, latestTopics);
+					if(err) {
+						return callback(err);
+					}
+
+					if(!topicData || !topicData.length) {
+						latestTopics.no_topics_message = 'show';
+						return callback(null, latestTopics);
+					}
+
+					db.sortedSetRevRank('topics:recent', topicData[topicData.length - 1].tid, function(err, rank) {
+						latestTopics.lastIndex = rank;
+						latestTopics.topics = topicData;
+						callback(null, latestTopics);
+					});
 				});
 			});
 		});
@@ -700,6 +711,7 @@ var async = require('async'),
 
 		function isTopicVisible(topicData, topicInfo) {
 			var deleted = parseInt(topicData.deleted, 10) !== 0;
+
 			return !deleted || (deleted && topicInfo.privileges.view_deleted) || topicData.uid === current_user;
 		}
 
@@ -738,7 +750,7 @@ var async = require('async'),
 
 					if (isTopicVisible(topicData, topicInfo)) {
 						retrieved_topics.push(topicData);
-					}
+					} else console.log('not visible');
 
 					next(null);
 				});

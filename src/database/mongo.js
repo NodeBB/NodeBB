@@ -656,6 +656,23 @@
 		});
 	}
 
+	module.sortedSetRevRank = function(key, value, callback) {
+		if(value !== null && value !== undefined) {
+			value = value.toString();
+		}
+		module.getSortedSetRange(key, 0, -1, function(err, result) {
+			if(err) {
+				return callback(err);
+			}
+			var rank = result.indexOf(value);
+			if(rank === -1) {
+				return callback(null, null);
+			}
+
+			callback(null, result.length - rank - 1);
+		});
+	}
+
 	module.sortedSetScore = function(key, value, callback) {
 		if(value !== null && value !== undefined) {
 			value = value.toString();
