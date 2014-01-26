@@ -196,6 +196,7 @@
 			template_data = data;
 			parse_template();
 		}).fail(function (data, textStatus) {
+			jQuery('#content, #footer').stop(true, true).removeClass('ajaxifying');
 			if (data && data.status == 404) {
 				return ajaxify.go('404');
 			} else if (data && data.status === 403) {

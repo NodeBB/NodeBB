@@ -42,7 +42,7 @@ define(function() {
 
 	pagination.loadPage = function(page, callback) {
 		page = parseInt(page, 10);
-		if(page < 1 || page > pagination.pageCount) {
+		if(!utils.isNumber(page) || page < 1 || page > pagination.pageCount) {
 			return;
 		}
 

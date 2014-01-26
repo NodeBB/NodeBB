@@ -1018,6 +1018,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 		if(config.usePagination) {
 			socket.emit('posts.getPidPage', pid, function(err, page) {
+				if(err) {
+					return;
+				}
 				if(parseInt(page, 10) !== pagination.currentPage) {
 					pagination.loadPage(page);
 				} else {
