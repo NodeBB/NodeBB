@@ -145,7 +145,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		loadingMoreTopics = true;
 		socket.emit('categories.loadMore', {
 			cid: cid,
-			after: $('#topics-container').children('.category-item').length
+			after: $('#topics-container').attr('data-nextstart')
 		}, function (err, data) {
 			if(err) {
 				return app.alertError(err.message);
@@ -153,6 +153,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 			if (data && data.topics.length) {
 				Category.onTopicsLoaded(data.topics);
+				$('#topics-container').attr('data-nextstart', data.nextStart);
 			}
 			loadingMoreTopics = false;
 		});

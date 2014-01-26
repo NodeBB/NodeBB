@@ -448,11 +448,7 @@ var async = require('async'),
 
 			async.filter(tids, function(tid, next) {
 				threadTools.privileges(tid, current_user, function(err, privileges) {
-					if (!err && privileges.read) {
-						next(true);
-					} else {
-						next(false);
-					}
+					next(!err && privileges.read);
 				});
 			}, function(tids) {
 				Topics.getTopicsByTids(tids, 0, current_user, function(err, topicData) {
@@ -466,7 +462,7 @@ var async = require('async'),
 					}
 
 					db.sortedSetRevRank('topics:recent', topicData[topicData.length - 1].tid, function(err, rank) {
-						latestTopics.lastIndex = rank;
+						latestTopics.nextStart = parseInt(rank,10) + 1;
 						latestTopics.topics = topicData;
 						callback(null, latestTopics);
 					});
@@ -549,7 +545,7 @@ var async = require('async'),
 							return parseInt(read[index], 10) === 0;
 						});
 
-						// Filter out topics that belong to categories that this user cannot access
+
 						async.filter(newtids, function(tid, next) {
 							threadTools.privileges(tid, uid, function(err, privileges) {
 								if (!err && privileges.read) {
@@ -599,16 +595,23 @@ var async = require('async'),
 					return callback(err);
 				}
 
-				unreadTopics.topics = topicData;
-				unreadTopics.nextStart = stop + 1;
-				if (!topicData || topicData.length === 0) {
-					unreadTopics.no_topics_message = 'show';
-				}
-				if (uid === 0 || topicData.length === 0) {
-					unreadTopics.show_markallread_button = 'hidden';
-				}
+				db.sortedSetRevRank('topics:recent', topicData[topicData.length - 1].tid, function(err, rank) {
+					if(err) {
+						return callback(err);
+					}
 
-				callback(null, unreadTopics);
+					unreadTopics.topics = topicData;
+					unreadTopics.nextStart = parseInt(rank, 10) + 1;
+
+					if (!topicData || topicData.length === 0) {
+						unreadTopics.no_topics_message = 'show';
+					}
+					if (uid === 0 || topicData.length === 0) {
+						unreadTopics.show_markallread_button = 'hidden';
+					}
+
+					callback(null, unreadTopics);
+				});
 			});
 		}
 

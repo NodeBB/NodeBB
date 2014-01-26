@@ -18,14 +18,10 @@ SocketCategories.loadMore = function(socket, data, callback) {
 
 	var topicsPerPage = parseInt(meta.config.topicsPerPage, 10) || 20;
 
-	var start = data.after,
+	var start = parseInt(data.after, 10),
 		end = start + topicsPerPage - 1;
-
-	categories.getCategoryTopics(data.cid, start, end, socket.uid, function(err, topics) {
-		callback(err, {
-			topics: topics
-		});
-	});
+console.log(start, end);
+	categories.getCategoryTopics(data.cid, start, end, socket.uid, callback);
 };
 
 SocketCategories.getPageCount = function(socket, cid, callback) {

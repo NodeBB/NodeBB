@@ -16,7 +16,7 @@
 
 	<div class="category row">
 		<div class="col-md-12">
-			<ul id="topics-container" data-next-start="{nextStart}">
+			<ul id="topics-container" data-nextstart="{nextStart}">
 			<!-- BEGIN topics -->
 			<li class="category-item {topics.deleted-class}">
 				<div class="col-md-12 col-xs-12 panel panel-default topic-row">
