@@ -376,7 +376,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			var username = '',
 				post = $(this).parents('li[data-pid]');
 			if (post.length) {
-				username = '@' + post.attr('data-username') + ' ';
+				username = '@' + post.attr('data-username').replace(/\s/g, '-') + ' ';
 			}
 
 			if (thread_state.locked !== '1') {
@@ -391,7 +391,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 					pid = $(this).parents('.post-row').attr('data-pid');
 
 				if (post.length) {
-					username = '@' + post.attr('data-username');
+					username = '@' + post.attr('data-username').replace(/\s/g, '-');
 				}
 
 				socket.emit('posts.getRawPost', pid, function(err, post) {
