@@ -15,6 +15,7 @@
 		"^admin/facebook.*": "admin/facebook",
 		"^admin/logger.*": "admin/logger",
 		"^admin/gplus.*": "admin/gplus",
+		"^admin/ldap.*": "admin/ldap",
 		"^admin/motd/?$": "admin/motd",
 		"^admin/groups/?$": "admin/groups",
 		"^users/sort-posts": "users",

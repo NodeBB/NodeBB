@@ -58,7 +58,7 @@ var nconf = require('nconf'),
 		(function () {
 			var routes = [
 				'categories/active', 'categories/disabled', 'users', 'topics', 'settings', 'themes',
-				'twitter', 'facebook', 'gplus', 'database', 'events', 'motd', 'groups', 'plugins',
+				'twitter', 'facebook', 'gplus', 'ldap', 'database', 'events', 'motd', 'groups', 'plugins',
 				'languages', 'logger',
 				'users/latest', 'users/sort-posts', 'users/sort-reputation', 'users/search'
 			];
@@ -418,6 +418,10 @@ var nconf = require('nconf'),
 			});
 
 			app.get('/gplus', function (req, res) {
+				res.json(200, {});
+			});
+
+			app.get('/ldap', function (req, res) {
 				res.json(200, {});
 			});
 

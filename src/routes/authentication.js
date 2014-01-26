@@ -4,6 +4,7 @@
 		passportTwitter = require('passport-twitter').Strategy,
 		passportGoogle = require('passport-google-oauth').OAuth2Strategy,
 		passportFacebook = require('passport-facebook').Strategy,
+		passportLDAP = require('passport-ldapauth').Strategy,
 		login_strategies = [],
 		nconf = require('nconf'),
 		meta = require('../meta'),
@@ -31,6 +32,7 @@
 			Auth.createRoutes(Auth.app);
 		});
 	});
+
 
 	if (meta.config['social:twitter:key'] && meta.config['social:twitter:secret']) {
 		passport.use(new passportTwitter({
@@ -100,6 +102,28 @@
 			scope: 'email'
 		});
 	}
+
+	if (meta.config['authentication:ldap:url'] && meta.config['authentication:ldap:adminDn'] &&
+		meta.config['authentication:ldap:adminPassword'] && meta.config['authentication:ldap:searchBase'] &&
+		meta.config['authentication:ldap:searchFilter']) {
+		passport.use(new passportLDAP({
+			server: {
+				url: meta.config['authentication:ldap:url'],
+			    adminDn: meta.config['authentication:ldap:adminDn'],
+			    adminPassword: meta.config['authentication:ldap:adminPassword'],
+			    searchBase: meta.config['authentication:ldap:searchBase'],
+			    searchFilter: meta.config['authentication:ldap:searchFilter']
+			}
+		}, function(user, done){			
+				login_module.loginViaLDAP(user.sAMAccountName, user.givenName + ' ' + user.sn, user.mail, function(err, user) {
+					if (err) {
+						return done(err);
+					}
+					done(null, user);
+				});
+		}));
+	}
+
 
 	passport.serializeUser(function(user, done) {
 		done(null, user.uid);
@@ -171,7 +195,13 @@
 			});
 
 			app.post('/login', function(req, res, next) {
-				passport.authenticate('local', function(err, user, info) {
+				var authStrategy = 'local',
+					namespace = req.body.namespace;
+				if(namespace && namespace != 'native') {
+					authStrategy = 'ldapauth';
+				}
+
+				passport.authenticate(authStrategy, function(err, user, info) {
 					if (err) {
 						return next(err);
 					}

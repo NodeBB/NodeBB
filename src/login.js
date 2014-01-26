@@ -93,7 +93,7 @@ var user = require('./user'),
 				});
 			}
 		});
-	};
+	}
 
 	Login.loginViaGoogle = function(gplusid, handle, email, callback) {
 		user.getUidByGoogleId(gplusid, function(err, uid) {
@@ -179,6 +179,50 @@ var user = require('./user'),
 				});
 			}
 		});
+	};
+
+	Login.loginViaLDAP = function(ldapid, name, email, callback) {
+		user.getUidByLDAPid(ldapid, function(err, uid) {
+			if(err) {
+				return callback(err);
+			}
+
+			if (uid !== null) {
+				// Existing User
+				callback(null, {
+					uid: uid
+				});
+			} else {
+				// New User
+				var success = function(uid) {
+					// Save ldap-specific information to the user
+					user.setUserField(uid, 'ldapid', ldapid);
+					db.setObjectField('ldapid:uid', ldapid, uid);
+					callback(null, {
+						uid: uid
+					});
+				}
+
+				user.getUidByEmail(email, function(err, uid) {
+					if(err) {
+						return callback(err);
+					}
+
+					if (!uid) {
+						user.create(name, undefined, email, function(err, uid) {
+							if(err) {
+								return callback(err);
+							}
+
+							success(uid);
+						});
+					} else {
+						success(uid); // Existing account -- merge
+					}
+				});
+			
+			}
+		});		
 	}
 
 }(exports));
