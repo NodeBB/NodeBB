@@ -38,10 +38,8 @@ define(function() {
 		});
 
 		socket.on('event:new_topic', function(data) {
-
 			++Recent.newTopicCount;
 			Recent.updateAlertText();
-
 		});
 
 		socket.on('event:new_post', function(data) {
@@ -61,16 +59,16 @@ define(function() {
 	Recent.updateAlertText = function() {
 		var text = 'There';
 
-		if (newTopicCount > 1) {
-			text += ' are ' + newTopicCount + ' new topics';
-		} else if (newTopicCount === 1) {
+		if (Recent.newTopicCount > 1) {
+			text += ' are ' + Recent.newTopicCount + ' new topics';
+		} else if (Recent.newTopicCount === 1) {
 			text += ' is a new topic';
 		}
 
-		if (newPostCount > 1) {
-			text += (newTopicCount?' and ':' are ') + newPostCount + ' new posts';
+		if (Recent.newPostCount > 1) {
+			text += (Recent.newTopicCount?' and ':' are ') + Recent.newPostCount + ' new posts';
 		} else if(newPostCount === 1) {
-			text += (newTopicCount?' and ':' is ') + ' a new post';
+			text += (Recent.newTopicCount?' and ':' is ') + ' a new post';
 		}
 
 		text += '. Click here to reload.';
