@@ -20,7 +20,7 @@ SocketCategories.loadMore = function(socket, data, callback) {
 
 	var start = parseInt(data.after, 10),
 		end = start + topicsPerPage - 1;
-console.log(start, end);
+
 	categories.getCategoryTopics(data.cid, start, end, socket.uid, callback);
 };
 
