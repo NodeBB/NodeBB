@@ -886,6 +886,10 @@ var bcrypt = require('bcrypt'),
 
 	User.email = {
 		verify: function(uid, email) {
+			if (!plugins.hasListeners('action:email.send')) {
+				return;
+			}
+
 			var confirm_code = utils.generateUUID(),
 				confirm_link = nconf.get('url') + '/confirm/' + confirm_code;
 
