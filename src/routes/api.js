@@ -228,10 +228,6 @@ var path = require('path'),
 								return next(err);
 							}
 
-							if(page > data.pageCount) {
-								return res.send(404);
-							}
-
 							data.currentPage = page;
 							data.privileges = privileges;
 
