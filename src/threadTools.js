@@ -187,9 +187,20 @@ var winston = require('winston'),
 
 	ThreadTools.move = function(tid, cid, callback) {
 		topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
+			if(err) {
+				return callback(err);
+			}
+
 			var oldCid = topicData.cid;
+			if(!oldCid) {
+				return callback(new Error('invalid-topic'));
+			}
 
 			db.sortedSetRemove('categories:' + oldCid + ':tid', tid, function(err, result) {
+				if(err) {
+					return callback(err);
+				}
+
 				db.sortedSetAdd('categories:' + cid + ':tid', topicData.lastposttime, tid, function(err, result) {
 
 					if(err) {
