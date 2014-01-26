@@ -3,7 +3,6 @@
 		passportLocal = require('passport-local').Strategy,
 		passportTwitter = require('passport-twitter').Strategy,
 		passportGoogle = require('passport-google-oauth').OAuth2Strategy,
-		passportFacebook = require('passport-facebook').Strategy,
 		login_strategies = [],
 		nconf = require('nconf'),
 		meta = require('../meta'),
@@ -75,29 +74,6 @@
 			callbackURL: '/auth/google/callback',
 			icon: 'google-plus',
 			scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
-		});
-	}
-
-	if (meta.config['social:facebook:app_id'] && meta.config['social:facebook:secret']) {
-		passport.use(new passportFacebook({
-			clientID: meta.config['social:facebook:app_id'],
-			clientSecret: meta.config['social:facebook:secret'],
-			callbackURL: nconf.get('url') + '/auth/facebook/callback'
-		}, function(accessToken, refreshToken, profile, done) {
-			login_module.loginViaFacebook(profile.id, profile.displayName, profile.emails[0].value, function(err, user) {
-				if (err) {
-					return done(err);
-				}
-				done(null, user);
-			});
-		}));
-
-		login_strategies.push({
-			name: 'facebook',
-			url: '/auth/facebook',
-			callbackURL: '/auth/facebook/callback',
-			icon: 'facebook',
-			scope: 'email'
 		});
 	}
 

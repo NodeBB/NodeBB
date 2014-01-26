@@ -58,7 +58,7 @@ var nconf = require('nconf'),
 		(function () {
 			var routes = [
 				'categories/active', 'categories/disabled', 'users', 'topics', 'settings', 'themes',
-				'twitter', 'facebook', 'gplus', 'database', 'events', 'motd', 'groups', 'plugins',
+				'twitter', 'gplus', 'database', 'events', 'motd', 'groups', 'plugins',
 				'languages', 'logger',
 				'users/latest', 'users/sort-posts', 'users/sort-reputation', 'users/search'
 			];
@@ -410,10 +410,6 @@ var nconf = require('nconf'),
 			});
 
 			app.get('/twitter', function (req, res) {
-				res.json(200, {});
-			});
-
-			app.get('/facebook', function (req, res) {
 				res.json(200, {});
 			});
 

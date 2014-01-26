@@ -138,47 +138,4 @@ var user = require('./user'),
 		});
 	};
 
-	Login.loginViaFacebook = function(fbid, name, email, callback) {
-		user.getUidByFbid(fbid, function(err, uid) {
-			if(err) {
-				return callback(err);
-			}
-
-			if (uid !== null) {
-				// Existing User
-				callback(null, {
-					uid: uid
-				});
-			} else {
-				// New User
-				var success = function(uid) {
-					// Save facebook-specific information to the user
-					user.setUserField(uid, 'fbid', fbid);
-					db.setObjectField('fbid:uid', fbid, uid);
-					callback(null, {
-						uid: uid
-					});
-				};
-
-				user.getUidByEmail(email, function(err, uid) {
-					if(err) {
-						return callback(err);
-					}
-
-					if (!uid) {
-						user.create({username: name, email: email}, function(err, uid) {
-							if(err) {
-								return callback(err);
-							}
-
-							success(uid);
-						});
-					} else {
-						success(uid); // Existing account -- merge
-					}
-				});
-			}
-		});
-	}
-
 }(exports));
