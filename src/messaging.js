@@ -97,7 +97,19 @@ var db = require('./database'),
 				username = '<span class="chat-user"> ' + toUserData.username + '</span>: ';
 			}
 
-			callback(picture + username + parsed);
+			var messageData = {
+				message: message,
+				parsed: parsed,
+				fromuid: fromuid,
+				myuid: myuid,
+				toUserData: toUserData,
+				myUserData: myUserData,
+				parsedMessage: picture + username + parsed
+			};
+
+			plugins.fireHook('filter:messaging.parse', messageData, function(err, messageData) {
+				callback(messageData.parsedMessage);
+			});
 		});
 	};
 
