@@ -245,31 +245,6 @@ SocketTopics.loadMore = function(socket, data, callback) {
 	});
 };
 
-SocketTopics.loadPage = function(socket, data, callback) {
-	if(!data || !data.tid || !data.page || parseInt(data.page < 0)) {
-		return callback(new Error('invalid data'));
-	}
-
-	var postsPerPage = parseInt((meta.config.postsPerPage ? meta.config.postsPerPage : 20), 10);
-
-	topics.getPageCount(data.tid, function(err, pageCount) {
-		if(err) {
-			return callback(err);
-		}
-
-		if(data.page > pageCount) {
-			return callback(new Error('page doesn\'t exist'));
-		}
-
-		var start = (data.page-1) * postsPerPage,
-			end = start + postsPerPage - 1;
-
-		topics.getTopicPosts(data.tid, start, end, socket.uid, function(err, posts) {
-			callback(err, {posts: posts});
-		});
-	});
-}
-
 SocketTopics.loadMoreRecentTopics = function(socket, data, callback) {
 	if(!data || !data.term) {
 		return callback(new Error('invalid data'));

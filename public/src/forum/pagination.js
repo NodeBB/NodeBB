@@ -5,12 +5,10 @@ define(function() {
 
 	pagination.currentPage = 0;
 	pagination.pageCount = 0;
-	pagination.loadFunction = null;
 
-	pagination.init = function(currentPage, pageCount, loadFunction) {
+	pagination.init = function(currentPage, pageCount) {
 		pagination.currentPage = parseInt(currentPage, 10);
 		pagination.pageCount = parseInt(pageCount, 10);
-		pagination.loadFunction = loadFunction;
 
 		updatePageLinks();
 
@@ -48,16 +46,8 @@ define(function() {
 			return;
 		}
 
-		pagination.loadFunction(page, function(err) {
-			if(err) {
-				return app.alertError(err.message);
-			}
-
-			pagination.currentPage = parseInt(page, 10);
-			updatePageLinks();
-		});
+		ajaxify.go(window.location.pathname.slice(1) + '?page=' + page);
 	}
-
 
 	function updatePageLinks() {
 		if(pagination.pageCount === 0) {
@@ -79,6 +69,11 @@ define(function() {
 
 		$('.pagination .page').removeClass('active');
 		$('.pagination .page[data-page="' + pagination.currentPage + '"]').addClass('active');
+		$('.pagination .page').each(function(index, element) {
+			var li = $(this);
+			var page = li.attr('data-page');
+			li.find('a').attr('href', window.location.pathname + '?page=' + page);
+		});
 	}
 
 	return pagination;

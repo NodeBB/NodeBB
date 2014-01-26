@@ -28,23 +28,6 @@ SocketCategories.loadMore = function(socket, data, callback) {
 	});
 };
 
-SocketCategories.loadPage = function(socket, data, callback) {
-	if(!data) {
-		return callback(new Error('invalid data'));
-	}
-
-	var topicsPerPage = parseInt(meta.config.topicsPerPage, 10) || 20;
-
-	var start = (data.page - 1) * topicsPerPage,
-		end = start + topicsPerPage - 1;
-
-	categories.getCategoryTopics(data.cid, start, end, socket.uid, function(err, topics) {
-		callback(err, {
-			topics: topics
-		});
-	});
-}
-
 SocketCategories.getPageCount = function(socket, cid, callback) {
 	categories.getPageCount(cid, callback);
 }

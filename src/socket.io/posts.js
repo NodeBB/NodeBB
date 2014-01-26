@@ -194,4 +194,8 @@ SocketPosts.getFavouritedUsers = function(socket, pid, callback) {
 	});
 };
 
+SocketPosts.getPidPage = function(socket, pid, callback) {
+	posts.getPidPage(pid, callback);
+}
+
 module.exports = SocketPosts;

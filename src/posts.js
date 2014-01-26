@@ -468,4 +468,28 @@ var db = require('./database'),
 		});
 	}
 
+	Posts.getPidPage = function(pid, callback) {
+		Posts.getPostField(pid, 'tid', function(err, tid) {
+			if(err) {
+				return callback(err);
+			}
+
+			topics.getPids(tid, function(err, pids) {
+				if(err) {
+					return callback(err);
+				}
+
+				var index = pids.indexOf(pid);
+				if(index === -1) {
+					return callback(new Error('pid not found'));
+				}
+				var postsPerPage = parseInt(meta.config.postsPerPage, 10);
+				postsPerPage = postsPerPage ? postsPerPage : 20;
+
+				var page = Math.ceil((index + 1) / postsPerPage);
+				callback(null, page);
+			});
+		});
+	}
+
 }(exports));

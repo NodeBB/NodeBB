@@ -52,22 +52,8 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				}
 			});
 		} else {
-			pagination.init(templates.get('currentPage'), templates.get('pageCount'), loadPage);
+			pagination.init(templates.get('currentPage'), templates.get('pageCount'));
 		}
-	}
-
-	function loadPage(page, callback) {
-		socket.emit('categories.loadPage', {cid: templates.get('category_id'), page: page}, function(err, data) {
-			if(err) {
-				return callback(err);
-			}
-
-			if (data && data.topics && data.topics.length) {
-				Category.onTopicsLoaded(data.topics);
-			}
-
-			callback(null);
-		});
 	}
 
 	Category.onNewTopic = function(data) {

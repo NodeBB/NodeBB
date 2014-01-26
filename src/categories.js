@@ -46,15 +46,14 @@ var db = require('./database.js'),
 		});
 	};
 
-	Categories.getCategoryById = function(category_id, current_user, callback) {
+	Categories.getCategoryById = function(category_id, start, end, current_user, callback) {
 		Categories.getCategoryData(category_id, function(err, categoryData) {
 			if (err) {
 				return callback(err);
 			}
 
 			function getTopicIds(next) {
-				var topicsPerPage = meta.config.topicsPerPage || 20;
-				Categories.getTopicIds(category_id, 0, topicsPerPage - 1, next);
+				Categories.getTopicIds(category_id, start, end, next);
 			}
 
 			function getActiveUsers(next) {

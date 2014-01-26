@@ -143,7 +143,7 @@
 			</li>
 
 			<!-- IF @first -->
-			<li class="well post-bar">
+			<li class="well post-bar" data-index="{posts.index}">
 				<div class="inline-block">
 					<small class="topic-stats">
 						<span>[[category:posts]]</span>
@@ -178,8 +178,8 @@
 		<!-- END posts -->
 	</ul>
 
-	<div class="well col-md-11 col-xs-12 pull-right hide">
-		<div class="topic-main-buttons pull-right inline-block hide">
+	<div class="well col-md-11 col-xs-12 pull-right post-bar bottom-post-bar hide">
+		<div class="topic-main-buttons pull-right inline-block">
 			<div class="loading-indicator" done="0" style="display:none;">
 				<span class="hidden-xs-inline">[[topic:loading_more_posts]]</span> <i class="fa fa-refresh fa-spin"></i>
 			</div>

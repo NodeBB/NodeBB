@@ -9,6 +9,7 @@ var path = require('path'),
 	validator = require('validator'),
 	async = require('async'),
 	S = require('string'),
+	qs = require('querystring'),
 
 	pkg = require('../package.json'),
 
@@ -644,6 +645,10 @@ module.exports.server = server;
 				}
 
 				var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
+				var queryString = qs.stringify(req.query);
+				if(queryString.length) {
+					topic_url += '?' + queryString;
+				}
 
 				res.send(
 					data.header +
@@ -701,7 +706,7 @@ module.exports.server = server;
 					});
 				},
 				function (next) {
-					categories.getCategoryById(cid, 0, function (err, categoryData) {
+					categories.getCategoryById(cid, 0, -1, 0, function (err, categoryData) {
 
 						if (categoryData) {
 							if (parseInt(categoryData.disabled, 10) === 1) {
@@ -758,6 +763,10 @@ module.exports.server = server;
 				}
 
 				var category_url = cid + (req.params.slug ? '/' + req.params.slug : '');
+				var queryString = qs.stringify(req.query);
+				if(queryString.length) {
+					category_url += '?' + queryString;
+				}
 
 				res.send(
 					data.header +
