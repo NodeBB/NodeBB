@@ -21,7 +21,11 @@
 
 	// Configuration setup
 	var nconf = require('nconf');
-	nconf.argv().env();
+
+	// Load server-side configs
+	nconf.argv().env().file({
+		file: __dirname + '/config.json'
+	});
 
 	var fs = require('fs'),
 		async = require('async'),
@@ -64,16 +68,7 @@
 
 
 	if (!nconf.get('help') && !nconf.get('setup') && !nconf.get('install') && !nconf.get('upgrade') && fs.existsSync(__dirname + '/config.json')) {
-		// Load server-side configs
-		nconf.file({
-			file: __dirname + '/config.json'
-		});
 		meta = require('./src/meta');
-
-		// had to set these here so the logs won't lie
-		// but I don't like that, what if a cloud 'service' is using other var names?
-		nconf.set('port', nconf.get('PORT') || nconf.get('PORT'));
-		nconf.set('bind_address', nconf.get('IP') || nconf.get('bind_address'));
 
 		nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
 		nconf.set('upload_url', path.join(path.sep, nconf.get('relative_path'), 'uploads', path.sep));
@@ -147,10 +142,6 @@
 			winston.warn('Configuration not found, starting NodeBB setup');
 		}
 
-		nconf.file({
-			file: __dirname + '/config.json'
-		});
-
 		var templates = require('./public/src/templates'),
 			install = require('./src/install');
 
@@ -169,9 +160,7 @@
 		});
 
 	} else if (nconf.get('upgrade')) {
-		nconf.file({
-			file: __dirname + '/config.json'
-		});
+
 		require('./src/database').init(function(err) {
 			meta = require('./src/meta.js');
 
@@ -188,5 +177,5 @@
 		winston.info('  --setup             configure your environment and setup NodeBB');
 		winston.info('  --upgrade           upgrade NodeBB, first read: github.com/designcreateplay/NodeBB/wiki/Upgrading-NodeBB');
 		winston.info('  --start             manually start NodeBB (default when no options are given)');
-	};
+	}
 }());
