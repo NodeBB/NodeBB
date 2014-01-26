@@ -11,10 +11,11 @@ var path = require('path'),
 	posts = require('../posts'),
 	categories = require('../categories'),
 	categoryTools = require('../categoryTools')
+	meta = require('../meta'),
+	Plugins = require('../plugins'),
 	utils = require('../../public/src/utils'),
 	translator = require('../../public/src/translator'),
-	pkg = require('../../package.json'),
-	meta = require('../meta');
+	pkg = require('../../package.json');
 
 
 (function (Api) {
@@ -46,7 +47,6 @@ var path = require('path'),
 				config.topicsPerPage = meta.config.topicsPerPage || 20;
 				config.postsPerPage = meta.config.postsPerPage || 20;
 				config.maximumFileSize = meta.config.maximumFileSize;
-				config.emailSetup = !!meta.config['email:from'];
 				config.defaultLang = meta.config.defaultLang || 'en';
 
 				res.json(200, config);
@@ -116,7 +116,8 @@ var path = require('path'),
 			app.get('/login', function (req, res) {
 				var data = {},
 					login_strategies = auth.get_login_strategies(),
-					num_strategies = login_strategies.length;
+					num_strategies = login_strategies.length,
+					emailersPresent = Plugins.hasListeners('action:email.send');
 
 				if (num_strategies == 0) {
 					data = {
@@ -131,8 +132,8 @@ var path = require('path'),
 				}
 
 				data.authentication = login_strategies;
-
 				data.token = res.locals.csrf_token;
+				data.showResetLink = emailersPresent;
 
 				res.json(data);
 			});
