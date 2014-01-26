@@ -66,15 +66,15 @@ var db = require('./database.js'),
 				});
 			}
 
-			function getPages(next) {
-				Categories.getPages(category_id, next);
+			function getPageCount(next) {
+				Categories.getPageCount(category_id, next);
 			}
 
-			async.parallel([getTopicIds, getActiveUsers, getSidebars, getPages], function(err, results) {
+			async.parallel([getTopicIds, getActiveUsers, getSidebars, getPageCount], function(err, results) {
 				var tids = results[0],
 					active_users = results[1],
 					sidebars = results[2],
-					pages = results[3];
+					pageCount = results[3];
 
 				var category = {
 					'category_name': categoryData.name,
@@ -88,8 +88,7 @@ var db = require('./database.js'),
 					'category_id': category_id,
 					'active_users': [],
 					'topics': [],
-					'pages': pages,
-					'pageCount': pages.length,
+					'pageCount': pageCount,
 					'disableSocialButtons': meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false,
 					'sidebars': sidebars
 				};
@@ -143,19 +142,6 @@ var db = require('./database.js'),
 
 	Categories.getTopicIds = function(cid, start, stop, callback) {
 		db.getSortedSetRevRange('categories:' + cid + ':tid', start, stop, callback);
-	};
-
-	Categories.getPages = function(cid, callback) {
-		Categories.getPageCount(cid, function(err, pageCount) {
-			if(err) {
-				return callback(err);
-			}
-			var pages = [];
-			for(var i=1; i<=pageCount; ++i) {
-				pages.push({pageNumber: i});
-			}
-			callback(null, pages);
-		});
 	};
 
 	Categories.getPageCount = function(cid, callback) {

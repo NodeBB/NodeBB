@@ -186,7 +186,7 @@
 			<!-- IF privileges.write -->
 			<button class="btn btn-primary post_reply" type="button">[[topic:reply]]</button>
 			<!-- ENDIF privileges.write -->
-			<div class="btn-group thread-tools hide">
+			<div class="btn-group thread-tools hide dropup">
 				<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">[[topic:thread_tools.title]] <span class="caret"></span></button>
 				<ul class="dropdown-menu pull-right">
 					<li><a href="#" class="markAsUnreadForAll"><i class="fa fa-inbox"></i> [[topic:thread_tools.markAsUnreadForAll]]</a></li>
@@ -206,11 +206,8 @@
 	<!-- IF usePagination -->
 	<div class="text-center">
 		<ul class="pagination">
-			<li class="previous pull-left"><a href="#">&larr; Older</a></li>
-			<!-- BEGIN pages -->
-			<li class="page" data-page="{pages.pageNumber}"><a href="#">{pages.pageNumber}</a></li>
-			<!-- END pages -->
-			<li class="next pull-right"><a href="#">Newer &rarr;</a></li>
+			<li class="previous pull-left"><a href="#"><i class="fa fa-chevron-left"></i> [[global:previouspage]]</a></li>
+			<li class="next pull-right"><a href="#">[[global:nextpage]] <i class="fa fa-chevron-right"></i></a></li>
 		</ul>
 	</div>
 	<!-- ENDIF usePagination -->

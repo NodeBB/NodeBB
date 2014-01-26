@@ -392,19 +392,6 @@ var async = require('async'),
 		});
 	}
 
-	Topics.getPages = function(tid, callback) {
-		Topics.getPageCount(tid, function(err, pageCount) {
-			if(err) {
-				return callback(err);
-			}
-			var pages = [];
-			for(var i=1; i<=pageCount; ++i) {
-				pages.push({pageNumber: i});
-			}
-			callback(null, pages);
-		});
-	}
-
 	Topics.getPageCount = function(tid, callback) {
 		db.sortedSetCard('tid:' + tid + ':posts', function(err, postCount) {
 			if(err) {
@@ -794,11 +781,11 @@ var async = require('async'),
 				Topics.getCategoryData(tid, next);
 			}
 
-			function getPages(next) {
-				Topics.getPages(tid, next);
+			function getPageCount(next) {
+				Topics.getPageCount(tid, next);
 			}
 
-			async.parallel([getTopicData, getTopicPosts, getPrivileges, getCategoryData, getPages], function(err, results) {
+			async.parallel([getTopicData, getTopicPosts, getPrivileges, getCategoryData, getPageCount], function(err, results) {
 				if (err) {
 					winston.error('[Topics.getTopicWithPosts] Could not retrieve topic data: ', err.message);
 					return callback(err, null);
@@ -808,7 +795,7 @@ var async = require('async'),
 					topicPosts = results[1],
 					privileges = results[2],
 					categoryData = results[3],
-					pages = results[4];
+					pageCount = results[4];
 
 				var postsPerPage = parseInt(meta.config.postsPerPage, 10);
 				postsPerPage = postsPerPage ? postsPerPage : 20;
@@ -824,8 +811,7 @@ var async = require('async'),
 					'slug': topicData.slug,
 					'postcount': topicData.postcount,
 					'viewcount': topicData.viewcount,
-					'pages': pages,
-					'pageCount': pages.length,
+					'pageCount': pageCount,
 					'unreplied': parseInt(topicData.postcount, 10) > 1,
 					'topic_id': tid,
 					'expose_tools': privileges.editable ? 1 : 0,
