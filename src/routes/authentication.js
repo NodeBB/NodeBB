@@ -1,16 +1,19 @@
 (function(Auth) {
 	var passport = require('passport'),
 		passportLocal = require('passport-local').Strategy,
-		login_strategies = [],
 		nconf = require('nconf'),
+		bcrypt = require('bcryptjs'),
+		winston = require('winston'),
+
 		meta = require('../meta'),
 		user = require('../user'),
 		plugins = require('../plugins'),
-		winston = require('winston'),
-		login_module = require('./../login');
+		utils = require('../../public/src/utils'),
+
+		login_strategies = [];
 
 	passport.use(new passportLocal(function(user, password, next) {
-		login_module.loginViaLocal(user, password, function(err, login) {
+		Auth.login(user, password, function(err, login) {
 			if (!err) {
 				next(null, login.user);
 			} else {
@@ -144,5 +147,54 @@
 				});
 			});
 		});
+	}
+
+	Auth.login = function(username, password, next) {
+		if (!username || !password) {
+			return next({
+				status: 'error',
+				message: 'invalid-user'
+			});
+		} else {
+
+			var userslug = utils.slugify(username);
+
+			user.getUidByUserslug(userslug, function(err, uid) {
+				if (err) {
+					return next(new Error('redis-error'));
+				} else if (uid == null) {
+					return next(new Error('invalid-user'));
+				}
+
+				user.getUserFields(uid, ['password', 'banned'], function(err, userData) {
+					if (err) return next(err);
+
+					if (userData.banned && parseInt(userData.banned, 10) === 1) {
+						return next({
+							status: "error",
+							message: "user-banned"
+						});
+					}
+
+					bcrypt.compare(password, userData.password, function(err, res) {
+						if (err) {
+							winston.err(err.message);
+							next(new Error('bcrypt compare error'));
+							return;
+						}
+
+						if (res) {
+							next(null, {
+								user: {
+									uid: uid
+								}
+							});
+						} else {
+							next(new Error('invalid-password'));
+						}
+					});
+				});
+			});
+		}
 	}
 }(exports));
