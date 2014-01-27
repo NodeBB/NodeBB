@@ -136,16 +136,23 @@ var db = require('./database'),
 				topics.getTopicsByTids(tids, cid, uid, next);
 			},
 			function(topics, next) {
-				db.sortedSetRevRank('categories:' + cid + ':tid', topics[topics.length - 1].tid, function(err, rank) {
-					if(err) {
-						return next(err);
-					}
+				if (topics && topics.length > 0) {
+					db.sortedSetRevRank('categories:' + cid + ':tid', topics[topics.length - 1].tid, function(err, rank) {
+						if(err) {
+							return next(err);
+						}
 
-					return next(null, {
-						topics: topics,
-						nextStart: parseInt(rank, 10) + 1
+						next(null, {
+							topics: topics,
+							nextStart: parseInt(rank, 10) + 1
+						});
 					});
-				});
+				} else {
+					next(null, {
+						topics: topics,
+						nextStart: 1
+					});
+				}
 			}
 		], callback);
 	};
