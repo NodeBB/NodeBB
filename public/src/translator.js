@@ -47,6 +47,10 @@
 					languageCode = 'zh-CN';
 					break;
 
+				case 'pt_br':
+					languageCode = 'pt-br';
+					break;
+
 				default:
 					languageCode = config.defaultLang;
 					break;
