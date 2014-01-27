@@ -1,5 +1,5 @@
 var user = require('./user'),
-	bcrypt = require('bcrypt'),
+	bcrypt = require('bcryptjs'),
 	db = require('./database'),
 	path = require('path'),
 	winston = require('winston'),

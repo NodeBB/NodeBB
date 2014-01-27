@@ -1,4 +1,4 @@
-var bcrypt = require('bcrypt'),
+var bcrypt = require('bcryptjs'),
 	async = require('async'),
 	nconf = require('nconf'),
 	winston = require('winston'),
