@@ -1,4 +1,4 @@
-var bcrypt = require('bcrypt'),
+var bcrypt = require('bcryptjs'),
 	async = require('async'),
 	nconf = require('nconf'),
 	winston = require('winston'),
@@ -742,33 +742,6 @@ var bcrypt = require('bcrypt'),
 		});
 	};
 
-	User.getUidByTwitterId = function(twid, callback) {
-		db.getObjectField('twid:uid', twid, function(err, uid) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, uid);
-		});
-	};
-
-	User.getUidByGoogleId = function(gplusid, callback) {
-		db.getObjectField('gplusid:uid', gplusid, function(err, uid) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, uid);
-		});
-	};
-
-	User.getUidByFbid = function(fbid, callback) {
-		db.getObjectField('fbid:uid', fbid, function(err, uid) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, uid);
-		});
-	};
-
 	User.isModerator = function(uid, cid, callback) {
 		db.isSetMember('cid:' + cid + ':moderators', uid, function(err, exists) {
 			if(err) {
@@ -926,21 +899,21 @@ var bcrypt = require('bcrypt'),
 		confirm: function(code, callback) {
 			db.getObject('confirm:' + code, function(err, confirmObj) {
 				if (err) {
-					callback({
+					return callback({
 						status:'error'
 					});
-				} else {
-					if (confirmObj.uid && confirmObj.email) {
-						db.setObjectField('email:confirmed', confirmObj.email, '1', function() {
-							callback({
-								status: 'ok'
-							});
-						});
-					} else {
+				}
+
+				if (confirmObj && confirmObj.uid && confirmObj.email) {
+					db.setObjectField('email:confirmed', confirmObj.email, '1', function() {
 						callback({
-							status: 'not_ok'
+							status: 'ok'
 						});
-					}
+					});
+				} else {
+					callback({
+						status: 'not_ok'
+					});
 				}
 			});
 		}

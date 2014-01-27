@@ -1,9 +1,6 @@
 (function(Auth) {
 	var passport = require('passport'),
 		passportLocal = require('passport-local').Strategy,
-		passportTwitter = require('passport-twitter').Strategy,
-		passportGoogle = require('passport-google-oauth').OAuth2Strategy,
-		passportFacebook = require('passport-facebook').Strategy,
 		login_strategies = [],
 		nconf = require('nconf'),
 		meta = require('../meta'),
@@ -31,75 +28,6 @@
 			Auth.createRoutes(Auth.app);
 		});
 	});
-
-	if (meta.config['social:twitter:key'] && meta.config['social:twitter:secret']) {
-		passport.use(new passportTwitter({
-			consumerKey: meta.config['social:twitter:key'],
-			consumerSecret: meta.config['social:twitter:secret'],
-			callbackURL: nconf.get('url') + '/auth/twitter/callback'
-		}, function(token, tokenSecret, profile, done) {
-			login_module.loginViaTwitter(profile.id, profile.username, profile.photos, function(err, user) {
-				if (err) {
-					return done(err);
-				}
-				done(null, user);
-			});
-		}));
-
-		login_strategies.push({
-			name: 'twitter',
-			url: '/auth/twitter',
-			callbackURL: '/auth/twitter/callback',
-			icon: 'twitter',
-			scope: ''
-		});
-	}
-
-	if (meta.config['social:google:id'] && meta.config['social:google:secret']) {
-		passport.use(new passportGoogle({
-			clientID: meta.config['social:google:id'],
-			clientSecret: meta.config['social:google:secret'],
-			callbackURL: nconf.get('url') + '/auth/google/callback'
-		}, function(accessToken, refreshToken, profile, done) {
-			login_module.loginViaGoogle(profile.id, profile.displayName, profile.emails[0].value, function(err, user) {
-				if (err) {
-					return done(err);
-				}
-				done(null, user);
-			});
-		}));
-
-		login_strategies.push({
-			name: 'google',
-			url: '/auth/google',
-			callbackURL: '/auth/google/callback',
-			icon: 'google-plus',
-			scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
-		});
-	}
-
-	if (meta.config['social:facebook:app_id'] && meta.config['social:facebook:secret']) {
-		passport.use(new passportFacebook({
-			clientID: meta.config['social:facebook:app_id'],
-			clientSecret: meta.config['social:facebook:secret'],
-			callbackURL: nconf.get('url') + '/auth/facebook/callback'
-		}, function(accessToken, refreshToken, profile, done) {
-			login_module.loginViaFacebook(profile.id, profile.displayName, profile.emails[0].value, function(err, user) {
-				if (err) {
-					return done(err);
-				}
-				done(null, user);
-			});
-		}));
-
-		login_strategies.push({
-			name: 'facebook',
-			url: '/auth/facebook',
-			callbackURL: '/auth/facebook/callback',
-			icon: 'facebook',
-			scope: 'email'
-		});
-	}
 
 	passport.serializeUser(function(user, done) {
 		done(null, user.uid);

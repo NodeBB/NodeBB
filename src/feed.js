@@ -38,13 +38,17 @@
 				}
 			}
 
+			var description = topicData.posts.length ? topicData.posts[0].content : '';
+			var image_url = topicData.posts.length ? topicData.posts[0].picture : '';
+			var author = topicData.posts.length ? topicData.posts[0].username : '';
+
 			var feed = new rss({
 					title: topicData.topic_name,
-					description: topicData.posts[0].content,
+					description: description,
 					feed_url: Feed.defaults.baseUrl + '/topics/' + tid + '.rss',
 					site_url: nconf.get('url') + '/topic/' + topicData.slug,
-					image_url: topicData.posts[0].picture,
-					author: topicData.posts[0].username,
+					image_url: image_url,
+					author: author,
 					ttl: Feed.defaults.ttl
 				}),
 				dateStamp;

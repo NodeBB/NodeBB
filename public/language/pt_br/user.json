@@ -1,0 +1,41 @@
+{
+	"banned": "Banido",
+	"offline": "Offline",
+	"username": "Usu&aacute;rio",
+	"email": "Email",
+	"fullname": "Nome Completo",
+	"website": "Website",
+	"location": "Localiza&ccedil;&atilde;o",
+	"age": "Idade",
+	"joined": "Cadastrou",
+	"lastonline": "Visto &aacute;",
+	"profile_views": "Visualiza&ccedil;&otilde;es de Profile",
+	"reputation": "Reputa&ccedil;&atilde;o",
+	"posts": "Posts",
+	"followers": "Seguidores",
+	"following": "Seguindo",
+	"signature": "Assinatura",
+	"gravatar": "Gravatar",
+	"birthday": "Anivers&aacute;rio",
+
+	"change_picture": "Alterar Foto",
+	"edit": "Editar",
+	"uploaded_picture": "Foto Carregada",
+	"upload_new_picture": "Carregar novo Foto",
+	"change_password": "Alterar Senha",
+	"confirm_password": "Confirmar Senha",
+	"password": "Senha",
+
+	"upload_picture": "Carregar Foto",
+	"upload_a_picture": "Carregar Foto",
+	"image_spec": "Somente arquivos jpg, png e gif com no maximo 256kb.",
+
+	"settings": "Configura&ccedil;&otilde;es",
+	"show_email": "Mostrar meu email",
+
+	"has_no_follower": "Ningu&eacute;m est&aacute; seguindo esse usu&aacute;rio...",
+	"follows_no_one": "Este usu&aacute;rio n&atilde;o est&aacute; seguindo ninguem...",
+
+	"email_hidden": "Email Escondido",
+	"hidden": "Escondido"
+}

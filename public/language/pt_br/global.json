@@ -1,0 +1,40 @@
+{
+	"home": "Home",
+	"search": "Procurar",
+	"buttons.close": "Fechar",
+	"403.title": "Acesso Negado",
+	"403.message": "Parece que você n&atilde;o tem acesso a essa p&aacute;gina. talvez você devesse <a href='/login'>tentar logar...</a>?",
+	"404.title": "Not Found",
+	"404.message": "Essa p&aacute;gina n&atilde;o existe... volte para <a href='/'>p&aacute;gina principal</a>.",
+	"500.title": "Erro Interno.",
+	"500.message": "Oops! deu algo errado!",
+
+	"register": "Cadastrar",
+	"login": "Logar",
+
+	"logout": "Logout",
+	"logout.title": "Logout com sucesso.",
+	"logout.message": "Logado com Sucesso!",
+
+	"save_changes": "Salvar Altera&ccedil;&otilde;es",
+	"close": "Fechar",
+
+	"header.admin": "Admin",
+	"header.recent": "Recente",
+	"header.unread": "Não Lido",
+	"header.users": "Usu&aacute;rios",
+	"header.search": "Procurar",
+	"header.profile": "Profile",
+
+	"notifications.loading": "Carregando Notifica&ccedil;&otilde;es",
+	"chats.loading": "Carregando Bate-Papo",
+
+	"motd.welcome": "Welcome to NodeBB, the discussion platform of the future.",
+	"motd.get": "Get NodeBB",
+	"motd.fork": "Fork",
+	"motd.like": "Like",
+	"motd.follow": "Seguir",
+
+	"previouspage": "P&aacute;gina Anterior",
+	"nextpage": "Pr&oacutexima pagina;"
+}

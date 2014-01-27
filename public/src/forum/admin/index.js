@@ -18,6 +18,7 @@ define(function() {
 	};
 
 	Admin.updateRoomUsage = function(err, data) {
+
 		function getUserCountIn(room) {
 			var count = 0;
 			for(var user in data[room]) {
@@ -25,27 +26,36 @@ define(function() {
 			}
 			return count;
 		}
-		var active_users = $('#active_users'),
+
+		var active_users = $('#active_users').html(''),
 			total = 0;
 
 		if(!active_users.length) {
 			return;
 		}
 
-		active_users.html('');
 
-		var usersHtml = '';
+		var sortedData = [];
 
 		for (var room in data) {
 			if (room !== '') {
-				var count = getUserCountIn(room);
-				total += count;
-				usersHtml += "<div class='alert alert-success'><strong>" + room + "</strong> " + count + " active user" + (count > 1 ? "s" : "") + "</div>";
+				sortedData.push({room: room, count: data[room].length});
+				total += data[room].length;
 			}
 		}
 
+		sortedData.sort(function(a, b) {
+			return parseInt(b.count, 10) - parseInt(a.count, 10);
+		});
+
+		var usersHtml = '';
+		for(var i=0; i<sortedData.length; ++i) {
+			usersHtml += "<div class='alert alert-success'><strong>" + sortedData[i].room + "</strong> " +
+				sortedData[i].count + " active user" + (sortedData[i].count > 1 ? "s" : "") + "</div>";
+		}
+
 		active_users.html(usersHtml);
-		document.getElementById('connections').innerHTML = total;
+		$('#connections').html(total);
 	};
 
 	return Admin;

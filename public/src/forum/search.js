@@ -2,9 +2,9 @@ define(function() {
 	var	Search = {};
 
 	Search.init = function() {
-		var searchQuery = $('#topics-container').attr('data-search-query');
-
-		$('.search-result-text').each(function() {
+		var searchQuery = $('#topic-results').attr('data-search-query');
+console.log(searchQuery);
+		$('.search-result-text').children().each(function() {
 			var text = $(this).html();
 			var regex = new RegExp(searchQuery, 'gi');
 			text = text.replace(regex, '<span class="label label-success">' + searchQuery + '</span>');

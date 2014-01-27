@@ -25,7 +25,6 @@
     "passport-facebook": "0.1.5",
     "less-middleware": "0.1.12",
     "marked": "0.2.8",
-    "bcrypt": "0.7.5",
     "async": "~0.2.8",
     "node-imagemagick": "0.1.8",
     "gravatar": "1.0.6",
@@ -47,7 +46,8 @@
     "semver": "~2.2.1",
     "string": "~1.7.0",
     "xregexp": "~2.0.0",
-    "socket.io-wildcard": "~0.1.1"
+    "socket.io-wildcard": "~0.1.1",
+    "bcryptjs": "~0.7.10"
   },
   "optionalDependencies": {
     "redis": "0.8.3",

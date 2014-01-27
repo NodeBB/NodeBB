@@ -43,9 +43,9 @@ describe('Categories', function() {
 
 	describe('.getCategoryTopics', function() {
 		it('should return a list of topics', function(done) {
-			Categories.getCategoryTopics(categoryObj.cid, 0, 10, 0, function(err, topics) {
-				assert(Array.isArray(topics));
-				assert(topics.every(function(topic) {
+			Categories.getCategoryTopics(categoryObj.cid, 0, 10, 0, function(err, result) {
+				assert(Array.isArray(result.topics));
+				assert(result.topics.every(function(topic) {
 					return topic instanceof Object;
 				}));
 

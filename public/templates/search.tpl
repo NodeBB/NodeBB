@@ -13,56 +13,86 @@
 	</div>
 </form>
 
-<div class="category search">
-	<div class="{show_results}">
-		<h3>[[topic:topics]]</h3>
+<div class="search favourites well">
+	<div class="{show_results} row">
 
-		<!-- IF topic_matches -->
-		<small>{topic_matches} result(s) matching "{search_query}"</small>
-		<!-- ENDIF topic_matches -->
-		<div class="alert alert-info {show_no_topics}">[[topic:no_topics_found]]</div>
+		<div id="topic-results" class="col-md-12" data-search-query="{search_query}">
 
-		<ul id="topics-container" data-search-query="{search_query}">
+			<h3>[[topic:topics]]</h3>
+
+			<!-- IF topic_matches -->
+			<small>{topic_matches} result(s) matching "{search_query}"</small>
+			<!-- ENDIF topic_matches -->
+			<div class="alert alert-info {show_no_topics}">[[topic:no_topics_found]]</div>
 
 			<!-- BEGIN topics -->
-			<li class="category-item">
-				<a href="{relative_path}/topic/{topics.slug}" id="tid-{topics.tid}">
-					<div>
-						<div class="col-md-12 img-thumbnail">
-							<div class="search-result-post">
-								<img src="{topics.teaser_userpicture}" />
-								<strong>{topics.teaser_username}</strong>: <span class="search-result-text">{topics.title}</span>
-							</div>
+			<div class="topic-row panel panel-default clearfix">
+				<div class="panel-body">
+					<a href="../../user/{topics.userslug}">
+						<img title="{topics.username}" class="img-rounded user-img" src="{topics.picture}">
+					</a>
 
-						</div>
+					<a href="../../user/{topics.userslug}">
+						<strong><span>{topics.username}</span></strong>
+					</a>
+					<span class="search-result-text">
+					<p>{topics.title}</p>
+					</span>
+
+					<div>
+						<small>
+							<span class="pull-right">
+								<a href="../../topic/{topics.slug}">posted</a>
+								in
+								<a href="../../category/{topics.categorySlug}">
+									<i class="fa {topics.categoryIcon}"></i> {topics.categoryName}
+								</a>
+								<span class="timeago" title="{topics.relativeTime}"></span>
+							</span>
+						</small>
 					</div>
-				</a>
-			</li>
+				</div>
+			</div>
 			<!-- END topics -->
-		</ul>
+		</div>
 
-		<h3>Posts</h3>
-		<!-- IF post_matches -->
-		<small>{post_matches} result(s) matching "{search_query}"</small>
-		<!-- ENDIF post_matches -->
-		<div class="alert alert-info {show_no_posts}">No posts found!</div>
+		<div id="post-results" class="col-md-12" data-search-query="{search_query}">
+			<h3>Posts</h3>
 
-		<ul id="topics-container" data-search-query="{search_query}">
+			<!-- IF post_matches -->
+			<small>{post_matches} result(s) matching "{search_query}"</small>
+			<!-- ENDIF post_matches -->
+			<div class="alert alert-info {show_no_posts}">No posts found!</div>
+
 			<!-- BEGIN posts -->
-			<li class="category-item">
-				<a href="{relative_path}/topic/{posts.topicSlug}#{posts.pid}" id="tid-{posts.tid}">
-					<div>
-						<div class="col-md-12 img-thumbnail">
-							<div class="search-result-post">
-								<img src="{posts.picture}" />
-								<strong>{posts.username}</strong>: <span class="search-result-text">{posts.content}</span>
-							</div>
+			<div class="topic-row panel panel-default clearfix">
+				<div class="panel-body">
+					<a href="../../user/{posts.userslug}">
+						<img title="{posts.username}" class="img-rounded user-img" src="{posts.picture}">
+					</a>
 
-						</div>
+					<a href="../../user/{posts.userslug}">
+						<strong><span>{posts.username}</span></strong>
+					</a>
+					<span class="search-result-text">
+					{posts.content}
+					</span>
+
+					<div>
+						<small>
+							<span class="pull-right">
+								<a href="../../topic/{posts.topicSlug}#{posts.pid}">posted</a>
+								in
+								<a href="../../category/{posts.categorySlug}">
+									<i class="fa {posts.categoryIcon}"></i> {posts.categoryName}
+								</a>
+								<span class="timeago" title="{posts.relativeTime}"></span>
+							</span>
+						</small>
 					</div>
-				</a>
-			</li>
+				</div>
+			</div>
 			<!-- END posts -->
-		</ul>
+		</div>
 	</div>
 </div>

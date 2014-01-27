@@ -236,7 +236,7 @@ SocketTopics.loadMore = function(socket, data, callback) {
 	var postsPerPage = parseInt(meta.config.postsPerPage, 10);
 	postsPerPage = postsPerPage ? postsPerPage : 20;
 
-	var start = data.after,
+	var start = parseInt(data.after, 10),
 		end = start + postsPerPage - 1;
 
 	async.parallel({
@@ -256,14 +256,14 @@ SocketTopics.loadMoreRecentTopics = function(socket, data, callback) {
 		return callback(new Error('invalid data'));
 	}
 
-	var start = data.after,
+	var start = parseInt(data.after, 10),
 		end = start + 9;
 
 	topics.getLatestTopics(socket.uid, start, end, data.term, callback);
 };
 
 SocketTopics.loadMoreUnreadTopics = function(socket, data, callback) {
-	var start = data.after,
+	var start = parseInt(data.after, 10),
 		end = start + 9;
 
 	topics.getUnreadTopics(socket.uid, start, end, callback);

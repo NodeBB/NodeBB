@@ -86,7 +86,7 @@ define(function() {
 	Recent.loadMoreTopics = function() {
 		loadingMoreTopics = true;
 		socket.emit('topics.loadMoreRecentTopics', {
-			after: $('#topics-container').children('li').length,
+			after: $('#topics-container').attr('data-nextstart'),
 			term: active
 		}, function(err, data) {
 			if(err) {
@@ -95,6 +95,7 @@ define(function() {
 
 			if (data.topics && data.topics.length) {
 				Recent.onTopicsLoaded('recent', data.topics);
+				$('#topics-container').attr('data-nextstart', data.nextStart);
 			}
 
 			loadingMoreTopics = false;
