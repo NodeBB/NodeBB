@@ -165,6 +165,25 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		}
 
 		var recentReplies = $('#category_recent_replies');
+
+
+		// doesnt work see https://github.com/designcreateplay/NodeBB/issues/893
+		/*
+		templates.preload_template('recentreplies', function() {
+
+			var html = templates.prepare(templates['recentreplies'].blocks['posts']).parse({
+				posts: posts
+			});
+
+			translator.translate(html, function(translatedHTML) {
+				recentReplies.html(translatedHTML);
+
+				$('#category_recent_replies span.timeago').timeago();
+				app.createUserTooltips();
+			});
+		});
+		*/
+
 		var replies = '';
 		for (var i = 0, numPosts = posts.length; i < numPosts; ++i) {
 
