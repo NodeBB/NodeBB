@@ -106,6 +106,7 @@
 		collapseWhitespace : /\s+/g,
 		collapseDash : /-+/g,
 		trimTrailingDash : /-$/g,
+		trimLeadingDash : /^-/g,
 		isLatin : /^[\w]+$/,
 
 		//http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
@@ -120,6 +121,7 @@
 			str = str.replace(utils.collapseWhitespace, '-')
 			str = str.replace(utils.collapseDash, '-');
 			str = str.replace(utils.trimTrailingDash, '');
+			str = str.replace(utils.trimLeadingDash, '');
 			return str;
 		},
 
