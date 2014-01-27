@@ -1,7 +1,6 @@
 (function(Auth) {
 	var passport = require('passport'),
 		passportLocal = require('passport-local').Strategy,
-		passportGoogle = require('passport-google-oauth').OAuth2Strategy,
 		login_strategies = [],
 		nconf = require('nconf'),
 		meta = require('../meta'),
@@ -29,29 +28,6 @@
 			Auth.createRoutes(Auth.app);
 		});
 	});
-
-	if (meta.config['social:google:id'] && meta.config['social:google:secret']) {
-		passport.use(new passportGoogle({
-			clientID: meta.config['social:google:id'],
-			clientSecret: meta.config['social:google:secret'],
-			callbackURL: nconf.get('url') + '/auth/google/callback'
-		}, function(accessToken, refreshToken, profile, done) {
-			login_module.loginViaGoogle(profile.id, profile.displayName, profile.emails[0].value, function(err, user) {
-				if (err) {
-					return done(err);
-				}
-				done(null, user);
-			});
-		}));
-
-		login_strategies.push({
-			name: 'google',
-			url: '/auth/google',
-			callbackURL: '/auth/google/callback',
-			icon: 'google-plus',
-			scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
-		});
-	}
 
 	passport.serializeUser(function(user, done) {
 		done(null, user.uid);

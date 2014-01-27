@@ -56,48 +56,4 @@ var user = require('./user'),
 			});
 		}
 	}
-
-	Login.loginViaGoogle = function(gplusid, handle, email, callback) {
-		user.getUidByGoogleId(gplusid, function(err, uid) {
-			if(err) {
-				return callback(err);
-			}
-
-			if (uid !== null) {
-				// Existing User
-				callback(null, {
-					uid: uid
-				});
-			} else {
-				// New User
-				var success = function(uid) {
-					// Save google-specific information to the user
-					user.setUserField(uid, 'gplusid', gplusid);
-					db.setObjectField('gplusid:uid', gplusid, uid);
-					callback(null, {
-						uid: uid
-					});
-				};
-
-				user.getUidByEmail(email, function(err, uid) {
-					if(err) {
-						return callback(err);
-					}
-
-					if (!uid) {
-						user.create({username: handle, email: email}, function(err, uid) {
-							if(err) {
-								return callback(err);
-							}
-
-							success(uid);
-						});
-					} else {
-						success(uid); // Existing account -- merge
-					}
-				});
-			}
-		});
-	};
-
 }(exports));

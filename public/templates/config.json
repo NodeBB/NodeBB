@@ -12,7 +12,6 @@
 		"^admin/languages/?$": "admin/languages",
 		"^admin/settings.*": "admin/settings",
 		"^admin/logger.*": "admin/logger",
-		"^admin/gplus.*": "admin/gplus",
 		"^admin/motd/?$": "admin/motd",
 		"^admin/groups/?$": "admin/groups",
 		"^users/sort-posts": "users",
