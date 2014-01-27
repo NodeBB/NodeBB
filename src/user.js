@@ -742,33 +742,6 @@ var bcrypt = require('bcryptjs'),
 		});
 	};
 
-	User.getUidByTwitterId = function(twid, callback) {
-		db.getObjectField('twid:uid', twid, function(err, uid) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, uid);
-		});
-	};
-
-	User.getUidByGoogleId = function(gplusid, callback) {
-		db.getObjectField('gplusid:uid', gplusid, function(err, uid) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, uid);
-		});
-	};
-
-	User.getUidByFbid = function(fbid, callback) {
-		db.getObjectField('fbid:uid', fbid, function(err, uid) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, uid);
-		});
-	};
-
 	User.isModerator = function(uid, cid, callback) {
 		db.isSetMember('cid:' + cid + ':moderators', uid, function(err, exists) {
 			if(err) {
