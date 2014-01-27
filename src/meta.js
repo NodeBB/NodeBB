@@ -177,14 +177,15 @@ var fs = require('fs'),
 			});
 		},
 		parseFragment: function (urlFragment, callback) {
-			if (urlFragment === '') {
-				callback(null, 'Index');
-			} else if (urlFragment === 'recent') {
-				callback(null, 'Recent Topics');
-			} else if (urlFragment === 'unread') {
-				callback(null, 'Unread Topics');
-			} else if (urlFragment === 'users') {
-				callback(null, 'Registered Users');
+			var	translated = ['', 'recent', 'unread', 'users', 'notifications'];
+			if (translated.indexOf(urlFragment) !== -1) {
+				if (!urlFragment.length) {
+					urlFragment = 'home';
+				}
+
+				translator.translate('[[pages:' + urlFragment + ']]', function(translated) {
+					callback(null, translated);
+				});
 			} else if (/^category\/\d+\/?/.test(urlFragment)) {
 				var cid = urlFragment.match(/category\/(\d+)/)[1];
 
