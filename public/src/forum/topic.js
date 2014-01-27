@@ -401,7 +401,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 						quoted = '> ' + post.replace(/\n/g, '\n> ') + '\n\n';
 					}
 					if($('.composer').length) {
-						composer.addQuote(tid, pid, topic_name ,username, quoted);
+						composer.addQuote(tid, pid, topic_name, username, quoted);
 					}else {
 						composer.newReply(tid, topic_name, username + ' said:\n' + quoted);
 					}

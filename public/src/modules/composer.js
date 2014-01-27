@@ -32,18 +32,18 @@ define(['taskbar'], function(taskbar) {
 		}
 	}
 
-	composer.addQuote = function(tid,pid, title,username, text){
+	composer.addQuote = function(tid, pid, title, username, text){
 		if (allowed()) {
 			var uuid = composer.active;
 			if(uuid !== undefined){
 				var bodyEl = $('#cmp-uuid-'+uuid).find('textarea');
 				var prevText = bodyEl.val();
 				if(tid !== composer.posts[uuid].tid) {
-					text = '\n'+username + ' said in ['+title+'](/topic/'+tid+'#'+pid+'):\n'+text;
+					text = username + ' said in ['+title+'](/topic/'+tid+'#'+pid+'):\n'+text;
 				}else {
-					text ='\n'+ username + ' said:\n' + text;
+					text = username + ' said:\n' + text;
 				}
-				composer.posts[uuid].body = prevText + text;
+				composer.posts[uuid].body = (prevText.length ? prevText + '\n\n' : '') + text;
 				bodyEl.val(composer.posts[uuid].body);
 			}else{
 				composer.newReply(tid,title,username + ' said:\n' + text);
