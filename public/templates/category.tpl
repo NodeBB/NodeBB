@@ -28,7 +28,7 @@
 
 <div class="category row">
 	<div class="{topic_row_size}">
-		<ul id="topics-container" itemscope itemtype="http://www.schema.org/ItemList">
+		<ul id="topics-container" itemscope itemtype="http://www.schema.org/ItemList" data-nextstart="{nextStart}">
 			<meta itemprop="itemListOrder" content="descending">
 			<!-- BEGIN topics -->
 			<li class="category-item {topics.deleted-class}" itemprop="itemListElement">

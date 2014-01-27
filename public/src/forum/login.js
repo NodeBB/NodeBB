@@ -52,12 +52,6 @@ define(function() {
 		});
 
 		document.querySelector('#content input').focus();
-
-		if(!config.emailSetup)
-			$('#reset-link').addClass('hide');
-		else
-			$('#reset-link').removeClass('hide');
-
 	};
 
 	return Login;

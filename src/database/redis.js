@@ -382,6 +382,10 @@
 		redisClient.zrank(key, value, callback);
 	}
 
+	module.sortedSetRevRank = function(key, value, callback) {
+		redisClient.zrevrank(key, value, callback);
+	}
+
 	module.sortedSetScore = function(key, value, callback) {
 		redisClient.zscore(key, value, callback);
 	}

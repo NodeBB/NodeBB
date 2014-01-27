@@ -44,11 +44,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 	function enableInfiniteLoading() {
 		if(!config.usePagination) {
-			$(window).off('scroll').on('scroll', function (ev) {
-				var bottom = ($(document).height() - $(window).height()) * 0.9;
-
-				if ($(window).scrollTop() > bottom && !loadingMoreTopics) {
-					Category.loadMoreTopics(cid);
+			app.enableInfiniteLoading(function() {
+				if(!loadingMoreTopics) {
+					Category.loadMoreTopics(templates.get('category_id'));
 				}
 			});
 		} else {
@@ -147,7 +145,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		loadingMoreTopics = true;
 		socket.emit('categories.loadMore', {
 			cid: cid,
-			after: $('#topics-container').children('.category-item').length
+			after: $('#topics-container').attr('data-nextstart')
 		}, function (err, data) {
 			if(err) {
 				return app.alertError(err.message);
@@ -155,6 +153,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 			if (data && data.topics.length) {
 				Category.onTopicsLoaded(data.topics);
+				$('#topics-container').attr('data-nextstart', data.nextStart);
 			}
 			loadingMoreTopics = false;
 		});

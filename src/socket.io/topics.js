@@ -1,6 +1,9 @@
 var topics = require('../topics'),
 	threadTools = require('../threadTools'),
 	index = require('./index'),
+
+	async = require('async'),
+
 	SocketTopics = {};
 
 SocketTopics.post = function(socket, data, callback) {
@@ -233,15 +236,18 @@ SocketTopics.loadMore = function(socket, data, callback) {
 	var postsPerPage = parseInt(meta.config.postsPerPage, 10);
 	postsPerPage = postsPerPage ? postsPerPage : 20;
 
-	var start = data.after,
+	var start = parseInt(data.after, 10),
 		end = start + postsPerPage - 1;
 
-	topics.getTopicPosts(data.tid, start, end, socket.uid, function(err, posts) {
-		if(err) {
-			return callback(err);
+	async.parallel({
+		posts: function(next) {
+			topics.getTopicPosts(data.tid, start, end, socket.uid, next);
+		},
+		privileges: function(next) {
+			threadTools.privileges(data.tid, socket.uid, next);
 		}
-
-		callback(err, {posts: posts});
+	}, function(err, results) {
+		callback(err, results);
 	});
 };
 
@@ -250,14 +256,14 @@ SocketTopics.loadMoreRecentTopics = function(socket, data, callback) {
 		return callback(new Error('invalid data'));
 	}
 
-	var start = data.after,
+	var start = parseInt(data.after, 10),
 		end = start + 9;
 
 	topics.getLatestTopics(socket.uid, start, end, data.term, callback);
 };
 
 SocketTopics.loadMoreUnreadTopics = function(socket, data, callback) {
-	var start = data.after,
+	var start = parseInt(data.after, 10),
 		end = start + 9;
 
 	topics.getUnreadTopics(socket.uid, start, end, callback);

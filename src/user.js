@@ -1,4 +1,4 @@
-var bcrypt = require('bcrypt'),
+var bcrypt = require('bcryptjs'),
 	async = require('async'),
 	nconf = require('nconf'),
 	winston = require('winston'),
@@ -859,6 +859,10 @@ var bcrypt = require('bcrypt'),
 
 	User.email = {
 		verify: function(uid, email) {
+			if (!plugins.hasListeners('action:email.send')) {
+				return;
+			}
+
 			var confirm_code = utils.generateUUID(),
 				confirm_link = nconf.get('url') + '/confirm/' + confirm_code;
 
@@ -895,21 +899,21 @@ var bcrypt = require('bcrypt'),
 		confirm: function(code, callback) {
 			db.getObject('confirm:' + code, function(err, confirmObj) {
 				if (err) {
-					callback({
+					return callback({
 						status:'error'
 					});
-				} else {
-					if (confirmObj.uid && confirmObj.email) {
-						db.setObjectField('email:confirmed', confirmObj.email, '1', function() {
-							callback({
-								status: 'ok'
-							});
-						});
-					} else {
+				}
+
+				if (confirmObj && confirmObj.uid && confirmObj.email) {
+					db.setObjectField('email:confirmed', confirmObj.email, '1', function() {
 						callback({
-							status: 'not_ok'
+							status: 'ok'
 						});
-					}
+					});
+				} else {
+					callback({
+						status: 'not_ok'
+					});
 				}
 			});
 		}

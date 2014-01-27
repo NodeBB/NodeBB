@@ -93,7 +93,17 @@ SocketPosts.uploadFile = function(socket, data, callback) {
 };
 
 SocketPosts.getRawPost = function(socket, pid, callback) {
-	posts.getPostField(pid, 'content', callback);
+	posts.getPostFields(pid, ['content', 'deleted'], function(err, data) {
+		if(err) {
+			return callback(err);
+		}
+
+		if(data.deleted === '1') {
+			return callback(new Error('This post no longer exists'));
+		}
+
+		callback(null, data.content);
+	});
 };
 
 SocketPosts.edit = function(socket, data, callback) {

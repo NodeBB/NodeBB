@@ -14,11 +14,11 @@ define(function() {
 
 		$('.pagination')
 			.on('click', '.previous', function() {
-				pagination.loadPage(pagination.currentPage - 1);
+				return pagination.loadPage(pagination.currentPage - 1);
 			}).on('click', '.next', function() {
-				pagination.loadPage(pagination.currentPage + 1);
+				return pagination.loadPage(pagination.currentPage + 1);
 			}).on('click', '.page', function() {
-				pagination.loadPage($(this).attr('data-page'));
+				return pagination.loadPage($(this).attr('data-page'));
 			}).on('click', '.select_page', function(e) {
 				e.preventDefault();
 				bootbox.prompt('Enter page number:', function(pageNum) {
@@ -58,7 +58,7 @@ define(function() {
 		for(var i=0; i<pagesToShow.length; ++i) {
 			if(i > 0) {
 				if (pagesToShow[i] - 1 !== pagesToShow[i-1]) {
-					html += '<li class="disabled"><a class="select_page" href="#">|</a></li>';
+					html += '<li><a class="select_page" href="#">|</a></li>';
 				}
 			}
 			html += '<li class="page" data-page="' + pagesToShow[i] + '"><a href="#">' + pagesToShow[i] + '</a></li>';
@@ -72,10 +72,11 @@ define(function() {
 	pagination.loadPage = function(page, callback) {
 		page = parseInt(page, 10);
 		if(!utils.isNumber(page) || page < 1 || page > pagination.pageCount) {
-			return;
+			return false;
 		}
 
 		ajaxify.go(window.location.pathname.slice(1) + '?page=' + page);
+		return true;
 	}
 
 	function updatePageLinks() {

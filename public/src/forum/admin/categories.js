@@ -178,13 +178,13 @@ define(['uploader'], function(uploader) {
 			});
 
 			// Permissions modal
-			$('.permissions').on('click', function() {
+			$('.admin-categories').on('click', '.permissions', function() {
 				var	cid = $(this).parents('li[data-cid]').attr('data-cid');
 				Categories.launchPermissionsModal(cid);
 			});
 
 
-			$('.upload-button').on('click', function() {
+			$('.admin-categories').on('click', '.upload-button', function() {
 				var inputEl = this;
 				var	cid = $(this).parents('li[data-cid]').attr('data-cid');
 				uploader.open(RELATIVE_PATH + '/admin/category/uploadpicture', {cid:cid}, function(imageUrlOnServer) {
@@ -196,7 +196,7 @@ define(['uploader'], function(uploader) {
 				});
 			});
 
-			$('.admin-categories').delegate('.delete-image', 'click', function() {
+			$('.admin-categories').on('click', '.delete-image', function() {
 				var parent = $(this).parents('li[data-cid]'),
 					inputEl = parent.find('.upload-button'),
 					preview = parent.find('.preview-box'),

@@ -56,13 +56,16 @@ var db = require('./database'),
 
 				var messages = [];
 
+				userData[0].uid = touid;
+				userData[1].uid = fromuid;
+
 				function getMessage(mid, next) {
 					db.getObject('message:' + mid, function(err, message) {
 						if (err) {
 							return next(err);
 						}
 
-						Messaging.parse(message.content, message.fromuid, fromuid, userData[1], userData[0], function(result) {
+						Messaging.parse(message.content, message.fromuid, fromuid, userData[1], userData[0], false, function(result) {
 							message.content = result;
 							messages.push(message);
 							next(null);
@@ -81,7 +84,7 @@ var db = require('./database'),
 		});
 	};
 
-	Messaging.parse = function (message, fromuid, myuid, toUserData, myUserData, callback) {
+	Messaging.parse = function (message, fromuid, myuid, toUserData, myUserData, isNew, callback) {
 		plugins.fireHook('filter:post.parse', message, function(err, parsed) {
 			if (err) {
 				return callback(message);
@@ -97,7 +100,20 @@ var db = require('./database'),
 				username = '<span class="chat-user"> ' + toUserData.username + '</span>: ';
 			}
 
-			callback(picture + username + parsed);
+			var messageData = {
+				message: message,
+				parsed: parsed,
+				fromuid: fromuid,
+				myuid: myuid,
+				toUserData: toUserData,
+				myUserData: myUserData,
+				isNew: isNew,
+				parsedMessage: picture + username + parsed
+			};
+
+			plugins.fireHook('filter:messaging.parse', messageData, function(err, messageData) {
+				callback(messageData.parsedMessage);
+			});
 		});
 	};
 
