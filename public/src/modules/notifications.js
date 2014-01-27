@@ -45,20 +45,11 @@ define(function() {
 
 					notifList.appendChild(notifFrag);
 
-					if (data.unread.length > 0) {
-						notifIcon.removeClass('fa-bell-o').addClass('fa-bell');
-					} else {
-						notifIcon.removeClass('fa-bell').addClass('fa-bell-o');
-					}
+					updateNotifCount(data.unread.length);
 
 					socket.emit('modules.notifications.mark_all_read', null, function(err) {
 						if (!err) {
-							notifIcon.removeClass('fa-bell').addClass('fa-bell-o');
-							app.refreshTitle();
-
-							// Update favicon + local count
-							Tinycon.setBubble(0);
-							localStorage.setItem('notifications:count', 0);
+							updateNotifCount(0);
 						}
 					});
 				});
@@ -92,6 +83,9 @@ define(function() {
 				notifIcon.removeClass('fa-bell').addClass('fa-bell-o');
 			}
 
+			notifIcon.toggleClass('unread-count', count > 0);
+			notifIcon.attr('data-content', count > 20 ? '20+' : count);
+
 			// Update the favicon + saved local count
 			Tinycon.setBubble(count);
 			localStorage.setItem('notifications:count', count);
@@ -107,8 +101,6 @@ define(function() {
 
 		socket.on('event:new_notification', function() {
 
-			notifIcon.removeClass('fa-bell-o').addClass('fa-bell');
-
 			app.alert({
 				alert_id: 'new_notif',
 				title: 'New notification',
@@ -123,8 +115,8 @@ define(function() {
 			}
 
 			// Update the favicon + local storage
-			var	savedCount = parseInt(localStorage.getItem('notifications:count'),10) || 0;
-			updateNotifCount(savedCount+1);
+			var	savedCount = parseInt(localStorage.getItem('notifications:count'), 10) || 0;
+			updateNotifCount(savedCount + 1);
 		});
 		socket.on('event:notifications.updateCount', function(count) {
 			updateNotifCount(count);
