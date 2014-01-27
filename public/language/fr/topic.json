@@ -16,6 +16,8 @@
 	"fork": "Scinder",
 	"banned": "bannis",
 	"link": "Lien",
+	"share": "Partager",
+	"tools": "Outils",
 
 	"thread_tools.title": "Outils du Fil",
 	"thread_tools.markAsUnreadForAll": "Marqué comme non lu",
