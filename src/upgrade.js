@@ -8,6 +8,8 @@ var db = require('./database'),
 	Topics = require('./topics'),
 	Posts = require('./posts'),
 	Groups = require('./groups'),
+	Meta = require('./meta'),
+	Plugins = require('./plugins'),
 	Utils = require('../public/src/utils'),
 
 	Upgrade = {},
@@ -17,7 +19,7 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2014, 0, 25, 0, 0).getTime();
+	var	latestSchema = new Date(2014, 0, 27, 12, 35).getTime();
 
 	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -356,6 +358,50 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/1/25] Updating User Gravatars to HTTPS -- skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 0, 27, 12, 35).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				var	activations = [];
+
+				if (Meta.config['social:facebook:secret'] && Meta.config['social:facebook:app_id']) {
+					activations.push(function(next) {
+						Plugins.toggleActive('nodebb-plugin-sso-facebook', function(result) {
+							winston.info('[2014/1/25] Activating Facebook SSO Plugin');
+							next();
+						});
+					});
+				}
+				if (Meta.config['social:twitter:key'] && Meta.config['social:twitter:secret']) {
+					activations.push(function(next) {
+						Plugins.toggleActive('nodebb-plugin-sso-twitter', function(result) {
+							winston.info('[2014/1/25] Activating Twitter SSO Plugin');
+							next();
+						});
+					});
+				}
+				if (Meta.config['social:google:secret'] && Meta.config['social:google:id']) {
+					activations.push(function(next) {
+						Plugins.toggleActive('nodebb-plugin-sso-google', function(result) {
+							winston.info('[2014/1/25] Activating Google SSO Plugin');
+							next();
+						});
+					});
+				}
+
+				async.parallel(activations, function(err) {
+					if (!err) {
+						winston.info('[2014/1/25] Done activating SSO plugins');
+					}
+
+					next(err);
+				});
+			} else {
+				winston.info('[2014/1/25] Activating SSO plugins, if set up -- skipped');
 				next();
 			}
 		}
