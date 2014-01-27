@@ -23,8 +23,10 @@
 	"header.recent": "Récent",
 	"header.unread": "Non Lu",
 	"header.users": "Utilisateurs",
+	"header.chats": "Chat",
+	"header.notifications": "Notifications",
 	"header.search": "Recherche",
-	"header.profile": "Profile",
+	"header.profile": "Profil",
 
 	"notifications.loading": "Chargement des Notifications",
 	"chats.loading": "Chargement des Chats",
@@ -33,5 +35,8 @@
 	"motd.get": "Obtenir NodeBB",
 	"motd.fork": "Fork",
 	"motd.like": "J'aime",
-	"motd.follow": "Suivre"
+	"motd.follow": "Suivre",
+
+	"previouspage": "Page Précédente",
+	"nextpage": "Page Suivante"
 }
