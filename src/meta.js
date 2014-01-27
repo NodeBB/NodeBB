@@ -6,7 +6,8 @@ var fs = require('fs'),
 
 	utils = require('./../public/src/utils'),
 	db = require('./database'),
-	plugins = require('./plugins');
+	plugins = require('./plugins'),
+	User = require('./user');
 
 
 (function (Meta) {
@@ -161,10 +162,15 @@ var fs = require('fs'),
 	};
 
 	Meta.title = {
+		tests: {
+			isCategory: /^category\/\d+\/?/,
+			isTopic: /^topic\/\d+\/?/,
+			isUserPage: /^user\/[^\/]+(\/[\w]+)?/
+		},
 		build: function (urlFragment, callback) {
 			var user = require('./user');
 
-			Meta.title.parseFragment(urlFragment, function(err, title) {
+			Meta.title.parseFragment(decodeURIComponent(urlFragment), function(err, title) {
 				var title;
 
 				if (err) {
@@ -186,17 +192,31 @@ var fs = require('fs'),
 				translator.translate('[[pages:' + urlFragment + ']]', function(translated) {
 					callback(null, translated);
 				});
-			} else if (/^category\/\d+\/?/.test(urlFragment)) {
+			} else if (this.tests.isCategory.test(urlFragment)) {
 				var cid = urlFragment.match(/category\/(\d+)/)[1];
 
 				require('./categories').getCategoryField(cid, 'name', function (err, name) {
 					callback(null, name);
 				});
-			} else if (/^topic\/\d+\/?/.test(urlFragment)) {
+			} else if (this.tests.isTopic.test(urlFragment)) {
 				var tid = urlFragment.match(/topic\/(\d+)/)[1];
 
 				require('./topics').getTopicField(tid, 'title', function (err, title) {
 					callback(null, title);
+				});
+			} else if (this.tests.isUserPage.test(urlFragment)) {
+				var	matches = urlFragment.match(/user\/([^\/]+)\/?([\w]+)?/),
+					userslug = matches[1],
+					subpage = matches[2];
+
+				User.getUsernameByUserslug(userslug, function(err, username) {
+					if (subpage) {
+						translator.translate('[[pages:user.' + subpage + ', ' + username + ']]', function(translated) {
+							callback(null, translated);
+						})
+					} else {
+						callback(null, username);
+					}
 				});
 			} else {
 				callback(null);

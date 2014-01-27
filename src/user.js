@@ -733,6 +733,17 @@ var bcrypt = require('bcryptjs'),
 		});
 	};
 
+	User.getUsernameByUserslug = function(slug, callback) {
+		async.waterfall([
+			function(next) {
+				User.getUidByUserslug(slug, next);
+			},
+			function(uid, next) {
+				User.getUserField(uid, 'username', next);
+			}
+		], callback);
+	};
+
 	User.getUidByEmail = function(email, callback) {
 		db.getObjectField('email:uid', email, function(err, data) {
 			if (err) {
