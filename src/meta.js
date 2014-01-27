@@ -174,9 +174,9 @@ var fs = require('fs'),
 				var title;
 
 				if (err) {
-					title = Meta.config.title || 'NodeBB';
+					title = Meta.config.browserTitle || 'NodeBB';
 				} else {
-					title = (title ? title + ' | ' : '') + (Meta.config.title || 'NodeBB');
+					title = (title ? title + ' | ' : '') + (Meta.config.browserTitle || 'NodeBB');
 				}
 
 				callback(null, title);

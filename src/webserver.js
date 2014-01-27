@@ -100,7 +100,7 @@ module.exports.server = server;
 					'brand:logo': meta.config['brand:logo'] || '',
 					'brand:logo:display': meta.config['brand:logo']?'':'hide',
 					'brand:favicon': meta.config['brand:favicon'] || nconf.get('relative_path') + '/favicon.ico',
-					browserTitle: meta.config.title || 'NodeBB',
+					browserTitle: meta.config.browserTitle || 'NodeBB',
 					csrf: options.res.locals.csrf_token,
 					relative_path: nconf.get('relative_path'),
 					clientScripts: clientScripts,

@@ -17,6 +17,8 @@
 			<form>
 				<label>Site Title</label>
 				<input class="form-control" type="text" placeholder="Your Community Name" data-field="title" /><br />
+				<label>Browser Title</label>
+				<input class="form-control" type="text" placeholder="Browser Title" data-field="browserTitle" /><br />
 				<label>Site Description</label>
 				<input type="text" class="form-control" placeholder="A short description about your community" data-field="description" /><br />
 				<label>Site Keywords</label>
