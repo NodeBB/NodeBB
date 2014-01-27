@@ -6,7 +6,7 @@ define(function() {
 		var notifContainer = document.getElementsByClassName('notifications')[0],
 			notifTrigger = notifContainer.querySelector('a'),
 			notifList = document.getElementById('notif-list'),
-			notifIcon = $('.notifications a');
+			notifIcon = $('.notifications a i');
 
 		notifTrigger.addEventListener('click', function(e) {
 			e.preventDefault();
@@ -46,14 +46,14 @@ define(function() {
 					notifList.appendChild(notifFrag);
 
 					if (data.unread.length > 0) {
-						notifIcon.toggleClass('active', true);
+						notifIcon.removeClass('fa-bell-o').addClass('fa-bell');
 					} else {
-						notifIcon.toggleClass('active', false);
+						notifIcon.removeClass('fa-bell').addClass('fa-bell-o');
 					}
 
 					socket.emit('modules.notifications.mark_all_read', null, function(err) {
 						if (!err) {
-							notifIcon.toggleClass('active', false);
+							notifIcon.removeClass('fa-bell').addClass('fa-bell-o');
 							app.refreshTitle();
 
 							// Update favicon + local count
@@ -87,9 +87,9 @@ define(function() {
 		var	updateNotifCount = function(count) {
 			// Update notification icon, if necessary
 			if (count > 0) {
-				notifIcon.toggleClass('active', true);
+				notifIcon.removeClass('fa-bell-o').addClass('fa-bell');
 			} else {
-				notifIcon.toggleClass('active', false);
+				notifIcon.removeClass('fa-bell').addClass('fa-bell-o');
 			}
 
 			// Update the favicon + saved local count
@@ -106,7 +106,9 @@ define(function() {
 		});
 
 		socket.on('event:new_notification', function() {
-			notifIcon.toggleClass('active', true);
+
+			notifIcon.removeClass('fa-bell-o').addClass('fa-bell');
+
 			app.alert({
 				alert_id: 'new_notif',
 				title: 'New notification',
