@@ -22,12 +22,11 @@ var	SocketIO = require('socket.io'),
 
 /* === */
 
-var users = {},
-	io;
+
+var	io;
 
 
 Sockets.userSockets = {};
-Sockets.rooms = {};
 
 
 Sockets.init = function(server) {
@@ -59,9 +58,9 @@ Sockets.init = function(server) {
 			sessionID = socket.handshake.signedCookies["express.sid"];
 			db.sessionStore.get(sessionID, function(err, sessionData) {
 				if (!err && sessionData && sessionData.passport && sessionData.passport.user) {
-					uid = users[sessionID] = sessionData.passport.user;
+					uid = sessionData.passport.user;
 				} else {
-					uid = users[sessionID] = 0;
+					uid = 0;
 				}
 
 				socket.uid = parseInt(uid, 10);
@@ -110,8 +109,8 @@ Sockets.init = function(server) {
 			}
 
 			if (Sockets.userSockets[uid] && Sockets.userSockets[uid].length === 0) {
-				delete users[sessionID];
 				delete Sockets.userSockets[uid];
+
 				if (uid) {
 					db.sortedSetRemove('users:online', uid, function(err, data) {
 					});
@@ -126,17 +125,10 @@ Sockets.init = function(server) {
 
 			emitOnlineUserCount();
 
-			for (var roomName in Sockets.rooms) {
-				if (Sockets.rooms.hasOwnProperty(roomName)) {
-					socket.leave(roomName);
-
-					if (Sockets.rooms[roomName][socket.id]) {
-						delete Sockets.rooms[roomName][socket.id];
-					}
-
-					updateRoomBrowsingText(roomName);
-				}
+			for(var roomName in io.sockets.manager.roomClients[socket.id]) {
+				updateRoomBrowsingText(roomName.slice(1));
 			}
+
 		});
 
 		socket.on('*', function(payload, callback) {
@@ -222,9 +214,10 @@ function updateRoomBrowsingText(roomName) {
 
 	function getUidsInRoom(room) {
 		var uids = [];
-		for (var socketId in room) {
-			if (uids.indexOf(room[socketId]) === -1) {
-				uids.push(room[socketId]);
+		var clients = io.sockets.clients(roomName);
+		for(var i=0; i<clients.length; ++i) {
+			if (uids.indexOf(clients[i].uid) === -1 && clients[i].uid !== 0) {
+				uids.push(clients[i].uid);
 			}
 		}
 		return uids;
@@ -235,15 +228,14 @@ function updateRoomBrowsingText(roomName) {
 		var anonCount = 0;
 
 		for (var i = 0; i < clients.length; ++i) {
-			var hs = clients[i].handshake;
-			if (hs && clients[i].state && clients[i].state.user.uid === 0) {
+			if(clients[i].uid === 0) {
 				++anonCount;
 			}
 		}
 		return anonCount;
 	}
 
-	var	uids = getUidsInRoom(Sockets.rooms[roomName]),
+	var	uids = getUidsInRoom(roomName),
 		anonymousCount = getAnonymousCount(roomName);
 
 	user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, users) {

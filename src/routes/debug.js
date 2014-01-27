@@ -75,12 +75,12 @@ var	DebugRoute = function(app) {
 
 		app.get('/test', function(req, res) {
 
-			/*topics.getTopicPosts2(2, 0, 10, 5, function(err, data) {
-				res.json(data);
-			})*/
-			topics.getTopicWithPosts(2, 1, 0, -1, true, function (err, topicData) {
-				res.json(topicData);
+			var db = require('./../database');
+
+			db.getSortedSetRevRange('topics:recent', 0 , -1, function(err, tids) {
+				res.json(tids);
 			});
+
 		});
 
 	});

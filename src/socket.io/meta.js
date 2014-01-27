@@ -84,18 +84,6 @@ SocketMeta.rooms.enter = function(socket, data) {
 	}
 
 	socket.join(data.enter);
-	server.rooms[data.enter] = server.rooms[data.enter] || {};
-
-	if (socket.uid) {
-		server.rooms[data.enter][socket.id] = socket.uid;
-
-		if (data.leave && server.rooms[data.leave] && server.rooms[data.leave][socket.id] && data.enter !== data.leave) {
-			delete server.rooms[data.leave][socket.id];
-			if(!Object.keys(server.rooms[data.leave]).length) {
-				delete server.rooms[data.leave];
-			}
-		}
-	}
 
 	if (data.leave) {
 		module.parent.exports.updateRoomBrowsingText(data.leave);
@@ -104,12 +92,12 @@ SocketMeta.rooms.enter = function(socket, data) {
 	module.parent.exports.updateRoomBrowsingText(data.enter);
 
 	if (data.enter != 'admin') {
-		server.in('admin').emit('event:meta.rooms.update', null, server.rooms);
+		server.in('admin').emit('event:meta.rooms.update', null, server.server.sockets.manager.rooms);
 	}
 };
 
 SocketMeta.rooms.getAll = function(socket, data, callback) {
-	callback(null, server.rooms);
+	callback(null, server.server.sockets.manager.rooms);
 };
 
 /* Exports */
