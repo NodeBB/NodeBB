@@ -32,6 +32,26 @@ define(['taskbar'], function(taskbar) {
 		}
 	}
 
+	composer.addQuote = function(tid,pid, title,username, text){
+		if (allowed()) {
+			var uuid = composer.active;
+			if(uuid !== undefined){
+				var bodyEl = $('#cmp-uuid-'+uuid).find('textarea');
+				var prevText = bodyEl.val();
+				if(tid !== composer.posts[uuid].tid) {
+					text = '\n'+username + ' said in ['+title+'](/topic/'+tid+'#'+pid+'):\n'+text;
+				}else {
+					text ='\n'+ username + ' said:\n' + text;
+				}
+				composer.posts[uuid].body = prevText + text;
+				bodyEl.val(composer.posts[uuid].body);
+			}else{
+				composer.newReply(tid,title,username + ' said:\n' + text);
+			}
+
+		}
+	};
+
 	composer.newReply = function(tid, title, text) {
 		if(allowed()) {
 			push({
@@ -373,8 +393,6 @@ define(['taskbar'], function(taskbar) {
 			titleEl.focus();
 		}
 	}
-
-
 	composer.post = function(post_uuid) {
 		var postData = composer.posts[post_uuid],
 			postContainer = $('#cmp-uuid-' + post_uuid),
@@ -586,6 +604,7 @@ define(['taskbar'], function(taskbar) {
 	return {
 		newTopic: composer.newTopic,
 		newReply: composer.newReply,
+		addQuote: composer.addQuote,
 		editPost: composer.editPost,
 		load: composer.load,
 		minimize: composer.minimize
