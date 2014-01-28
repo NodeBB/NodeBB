@@ -28,27 +28,14 @@ var ajaxify = {};
 		}
 	};
 
-	var pagination, paginator_bar;
-
 	ajaxify.currentPage = null;
 	ajaxify.initialLoad = false;
 
 	ajaxify.go = function (url, callback, quiet) {
 		// "quiet": If set to true, will not call pushState
-
-		// start: the following should be set like so: ajaxify.onchange(function(){}); where the code actually belongs
-		$(window).off('scroll');
 		app.enterRoom('global');
 
-		pagination = pagination || document.getElementById('pagination');
-		paginator_bar = pagination ? document.body.querySelector('.progress-container') : undefined;
-		if (pagination) {
-			pagination.parentNode.style.display = 'none';
-			paginator_bar.style.display = 'none';
-		}
-
-		window.onscroll = null;
-		// end
+		$('body').trigger('action:ajaxifying', {url: url});
 
 		if ($('#content').hasClass('ajaxifying')) {
 			templates.cancelRequest();

@@ -156,7 +156,7 @@
 					</li>
 				</ul>
 
-				<ul class="nav navbar-nav navbar-right pagination-block">
+				<ul class="nav navbar-nav navbar-right pagination-block hide">
 					<li class="active">
 						<a href="#">
 							<i class="fa fa-chevron-up pointer"></i>
