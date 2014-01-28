@@ -55,6 +55,10 @@ Sockets.init = function(server) {
 
 		// Validate the session, if present
 		socketCookieParser(hs, {}, function(err) {
+			if(err) {
+				winston.error(err.message);
+			}
+
 			sessionID = socket.handshake.signedCookies["express.sid"];
 			db.sessionStore.get(sessionID, function(err, sessionData) {
 				if (!err && sessionData && sessionData.passport && sessionData.passport.user) {
@@ -133,6 +137,10 @@ Sockets.init = function(server) {
 
 		socket.on('*', function(payload, callback) {
 			function callMethod(method) {
+				if(socket.uid) {
+					user.setUserField(socket.uid, 'lastonline', Date.now());
+				}
+
 				method.call(null, socket, payload.args.length ? payload.args[0] : null, function(err, result) {
 					if (callback) {
 						callback(err?{message:err.message}:null, result);
