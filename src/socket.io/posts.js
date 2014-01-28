@@ -16,7 +16,7 @@ SocketPosts.reply = function(socket, data, callback) {
 			type: 'danger',
 			timeout: 2000
 		});
-		return;
+		return callback(new Error('not-logged-in'));
 	}
 
 	if(!data || !data.topic_id || !data.content) {

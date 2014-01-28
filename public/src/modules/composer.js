@@ -151,6 +151,7 @@ define(['taskbar'], function(taskbar) {
 
 				switch(action) {
 					case 'post':
+						$(this).attr('disabled', true);
 						composer.post(post_uuid);
 						break;
 					case 'discard':
@@ -419,34 +420,30 @@ define(['taskbar'], function(taskbar) {
 				'title' : titleEl.val(),
 				'content' : bodyEl.val(),
 				'category_id' : postData.cid
-			}, function(err) {
-				if(!err) {
-					composer.discard(post_uuid);
-				}
-			});
+			}, done);
 		} else if (parseInt(postData.tid, 10) > 0) {
 			socket.emit('posts.reply', {
 				'topic_id' : postData.tid,
 				'content' : bodyEl.val()
-			}, function(err) {
-				if(!err) {
-					composer.discard(post_uuid);
-				}
-			});
+			}, done);
 		} else if (parseInt(postData.pid, 10) > 0) {
 			socket.emit('posts.edit', {
 				pid: postData.pid,
 				content: bodyEl.val(),
 				title: titleEl.val()
-			}, function(err) {
-				if(!err) {
-					composer.discard(post_uuid);
-				}
-			});
+			}, done);
+		}
+
+		function done(err) {
+			$('.action-bar button').removeAttr('disabled');
+			if(!err) {
+				composer.discard(post_uuid);
+			}
 		}
 	}
 
 	function composerAlert(title, message) {
+		$('.action-bar button').removeAttr('disabled');
 		app.alert({
 			type: 'danger',
 			timeout: 2000,
@@ -456,7 +453,6 @@ define(['taskbar'], function(taskbar) {
 		});
 	}
 
-
 	composer.discard = function(post_uuid) {
 		if (composer.posts[post_uuid]) {
 			$('#cmp-uuid-' + post_uuid).remove();
@@ -464,6 +460,7 @@ define(['taskbar'], function(taskbar) {
 			composer.active = undefined;
 			taskbar.discard('composer', post_uuid);
 			$('body').css({'margin-bottom': 0});
+			$('.action-bar button').removeAttr('disabled');
 		}
 	}
 
