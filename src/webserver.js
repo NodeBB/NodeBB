@@ -193,7 +193,9 @@ module.exports.server = server;
 				if (nconf.get('port') != 80 && nconf.get('port') != 443 && nconf.get('use_port') === true) {
 					winston.info('Enabling \'trust proxy\'');
 					app.enable('trust proxy');
-				} else if (process.env.NODE_ENV !== 'development') {
+				}
+
+				if ((nconf.get('port') == 80 || nconf.get('port') == 443) && process.env.NODE_ENV !== 'development') {
 					winston.info('Using ports 80 and 443 is not recommend; use a proxy instead. See README.md');
 				}
 
