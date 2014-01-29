@@ -20,8 +20,15 @@ var	nconf = require('nconf'),
 
 		app.put('/plugins/fireHook', function(req, res) {
 			// PUT = action
-			plugins.fireHook('action:' + req.body.hook, req.body.args);
-			res.send(200);
+			var	hook = 'action:' + req.body.hook;
+			if (plugins.hasListeners(hook)) {
+				// Hook executes
+				plugins.fireHook(hook, req.body.args);
+				res.send(200);
+			} else {
+				// No listeners for this hook
+				res.send(404);
+			}
 		});
 
 		// Static Assets
