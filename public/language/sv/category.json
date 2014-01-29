@@ -1,8 +1,8 @@
-﻿{
-	"new_topic_button": "Nytt Ämne",
+{
+	"new_topic_button": "Nytt ämne",
 	"no_topics": "<strong>Det finns inga ämnen i denna kategori.</strong><br />Varför inte skapa ett?",
-	"sidebar.recent_replies": "Senaste Svaren",
-	"sidebar.active_participants": "Aktiva Deltagare",
+	"sidebar.recent_replies": "Senaste svaren",
+	"sidebar.active_participants": "Aktiva deltagare",
 	"sidebar.moderators": "Moderatorer",
 	"posts": "inlägg",
 	"views": "tittningar",
