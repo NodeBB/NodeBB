@@ -1,0 +1,41 @@
+{
+	"banned": "Bannad",
+	"offline": "Offline",
+	"username": "Användarnamn",
+	"email": "Epost",
+	"fullname": "Hela namnet",
+	"website": "Webbsida",
+	"location": "Plats",
+	"age": "Ålder",
+	"joined": "Gick med",
+	"lastonline": "Senast online",
+	"profile_views": "Profil-visningar",
+	"reputation": "Rykte",
+	"posts": "Inlägg",
+	"followers": "Följare",
+	"following": "Följer",
+	"signature": "Signatur",
+	"gravatar": "Gravatar",
+	"birthday": "Födelsedag",
+
+	"change_picture": "Ändra bild",
+	"edit": "Ändra",
+	"uploaded_picture": "Uppladdad bild",
+	"upload_new_picture": "Ladda upp ny bild",
+	"change_password": "Ändra lösenord",
+	"confirm_password": "Bekräfta lösenord",
+	"password": "Lösenord",
+
+	"upload_picture": "Ladda upp bild",
+	"upload_a_picture": "Ladda upp en bild",
+	"image_spec": "Du får endast ladda upp PNG, JPG, eller GIF-filer mindre än 256kb.",
+
+	"settings": "inställningar",
+	"show_email": "Visa min epost",
+
+	"has_no_follower": "Denna användare har inga följare :(",
+	"follows_no_one": "Denna användare följer ingen :(",
+
+	"email_hidden": "Epost dold",
+	"hidden": "dold"
+}
