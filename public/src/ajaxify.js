@@ -35,6 +35,8 @@ var ajaxify = {};
 		// "quiet": If set to true, will not call pushState
 		app.enterRoom('global');
 
+		$(window).off('scroll');
+
 		$('body').trigger('action:ajaxify.start', { url: url });
 		$('body').trigger('action:ajaxifying', {url: url});	// Deprecated as of v0.4.0
 

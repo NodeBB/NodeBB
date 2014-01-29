@@ -24,7 +24,6 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			});
 
 		} else {
-			$(window).off('scroll');
 			$('.pagination-block').addClass('hide');
 		}
 	});
