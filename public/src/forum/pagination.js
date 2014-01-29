@@ -66,6 +66,7 @@ define(function() {
 
 		$('.pagination li.page').remove();
 		$(html).insertAfter($('.pagination li.previous'));
+
 		updatePageLinks();
 	}
 
@@ -80,7 +81,7 @@ define(function() {
 	}
 
 	function updatePageLinks() {
-		if(pagination.pageCount === 0) {
+		if(pagination.pageCount === 0 || pagination.pageCount === 1) {
 			$('.pagination').addClass('hide');
 		} else {
 			$('.pagination').removeClass('hide');
