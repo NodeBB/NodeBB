@@ -1,0 +1,42 @@
+{
+	"home": "Hem",
+	"search": "Sök",
+	"buttons.close": "Stäng",
+	"403.title": "Tillgång Nekad",
+	"403.message": "Du verkar ha hittat till en sida du inte har tillgång till. Kanske du ska <a href='/login'>testa att logga in</a>?",
+	"404.title": "Sidan saknas",
+	"404.message": "Du verkar ha hamnat på en sida som inte finns. Återgå till <a href='/'>första sidan</a>.",
+	"500.title": "Internt fel.",
+	"500.message": "Hoppsan! Verkar som att något gått snett!",
+
+	"register": "Registrera",
+	"login": "Logga in",
+
+	"logout": "Logga ut",
+	"logout.title": "Du är nu utloggad.",
+	"logout.message": "Du är nu utloggad från NodeBB.",
+
+	"save_changes": "Spara ändringar",
+	"close": "Stäng",
+
+	"header.admin": "Admin",
+	"header.recent": "Senaste",
+	"header.unread": "Olästa",
+	"header.users": "Användare",
+	"header.chats": "Chattar",
+	"header.notifications": "Notiser",
+	"header.search": "Sök",
+	"header.profile": "Profil",
+
+	"notifications.loading": "Laddar Notiser",
+	"chats.loading": "Laddar Chattar",
+
+	"motd.welcome": "Välkommen till NodeBB, framtidens diskussions-plattform.",
+	"motd.get": "Hämta NodeBB",
+	"motd.fork": "Grena",
+	"motd.like": "Gilla",
+	"motd.follow": "Följ",
+
+	"previouspage": "Föregående sida",
+	"nextpage": "Nästa sida"
+}

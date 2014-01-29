@@ -192,16 +192,18 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 						'<strong><span>'+ posts[i].username + '</span></strong>' +
 						'<p>' +	posts[i].content + '</p>' +
 						'<span class="pull-right">'+
-							'<a href="' + RELATIVE_PATH + '/topic/' + posts[i].topicSlug + '#' + posts[i].pid + '">posted</a> '+
+							'<a href="' + RELATIVE_PATH + '/topic/' + posts[i].topicSlug + '#' + posts[i].pid + '">[[category:posted]]</a> '+
 							'<span class="timeago" title="' + posts[i].relativeTime + '"></span>' +
 						'</span>'+
 						'</li>';
 		}
 
-		recentReplies.html(replies);
+		translator.translate(replies, function(translatedHTML) {			
+			recentReplies.html(translatedHTML);
 
-		$('#category_recent_replies span.timeago').timeago();
-		app.createUserTooltips();
+			$('#category_recent_replies span.timeago').timeago();
+			app.createUserTooltips();
+		});
 	};
 
 	return Category;
