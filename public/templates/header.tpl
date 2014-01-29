@@ -9,14 +9,14 @@
 	<!-- IF bootswatchCSS --><link href="{bootswatchCSS}" rel="stylesheet" media="screen"><!-- ENDIF bootswatchCSS -->
 	{link_tags}
 	<!-- BEGIN pluginCSS -->
-	<link rel="stylesheet" href="{pluginCSS.path}">
+	<link rel="stylesheet" href="{pluginCSS.path}?{cache-buster}">
 	<!-- END pluginCSS -->
 	<script>
 		var RELATIVE_PATH = "{relative_path}";
 	</script>
 	<script src="{relative_path}/socket.io/socket.io.js"></script>
 	<!-- BEGIN clientScripts -->
-	<script src="{relative_path}/{clientScripts.script}"></script>
+	<script src="{relative_path}/{clientScripts.script}?{cache-buster}"></script>
 	<!-- END clientScripts -->
 	<script>
 		require.config({
