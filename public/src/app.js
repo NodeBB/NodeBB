@@ -547,13 +547,13 @@ var socket,
 
 	function createHeaderTooltips() {
 		$('#header-menu li i[title]').each(function() {
-			$(this).parents('li').tooltip({
+			$(this).parents('a').tooltip({
 				placement: 'bottom',
 				title: $(this).attr('title')
 			});
 		});
 
-		$('#user_label').tooltip({
+		$('#user_dropdown').tooltip({
 			placement: 'bottom',
 			title: $('#user_dropdown').attr('title')
 		});
