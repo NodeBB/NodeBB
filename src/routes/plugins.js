@@ -24,11 +24,9 @@ var	nconf = require('nconf'),
 			if (plugins.hasListeners(hook)) {
 				// Hook executes
 				plugins.fireHook(hook, req.body.args);
-				res.send(200);
-			} else {
-				// No listeners for this hook
-				res.send(404);
 			}
+
+			res.send(200);
 		});
 
 		// Static Assets
