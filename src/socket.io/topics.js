@@ -229,7 +229,7 @@ SocketTopics.follow = function(socket, tid, callback) {
 };
 
 SocketTopics.loadMore = function(socket, data, callback) {
-	if(!data || !data.tid) {
+	if(!data || !data.tid || !data.after) {
 		return callback(new Error('invalid data'));
 	}
 
@@ -252,7 +252,7 @@ SocketTopics.loadMore = function(socket, data, callback) {
 };
 
 SocketTopics.loadMoreRecentTopics = function(socket, data, callback) {
-	if(!data || !data.term) {
+	if(!data || !data.term || !data.after) {
 		return callback(new Error('invalid data'));
 	}
 
@@ -263,6 +263,10 @@ SocketTopics.loadMoreRecentTopics = function(socket, data, callback) {
 };
 
 SocketTopics.loadMoreUnreadTopics = function(socket, data, callback) {
+	if(!data || !data.after) {
+		return callback(new Error('invalid data'));
+	}
+
 	var start = parseInt(data.after, 10),
 		end = start + 9;
 
