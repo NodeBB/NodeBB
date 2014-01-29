@@ -1,9 +1,9 @@
 {
-	"latest_users": "Latest Users",
-	"top_posters": "Top Posters",
-	"most_reputation": "Most Reputation",
+	"latest_users": "Senaste användarna",
+	"top_posters": "Flest inlägg",
+	"most_reputation": "Bäst rykte",
 	"online": "Online",
-	"search": "Search",
-	"enter_username": "Enter a username to search",
-	"load_more": "Load More"
+	"search": "Sök",
+	"enter_username": "Ange ett användarnamn för att söka",
+	"load_more": "Ladda fler"
 }

@@ -1,14 +1,14 @@
-{
-	"new_topic_button": "Nytt �mne",
-	"no_topics": "<strong>There are no topics in this category.</strong><br />Why don't you try posting one?",
-	"sidebar.recent_replies": "Recent Replies",
-	"sidebar.active_participants": "Active Participants",
-	"sidebar.moderators": "Moderators",
-	"posts": "posts",
-	"views": "views",
-	"posted": "posted",
-	"browsing": "browsing",
-	"no_replies": "No one has replied",
-	"replied": "replied",
-	"last_edited_by": "last edited by"
+﻿{
+	"new_topic_button": "Nytt Ämne",
+	"no_topics": "<strong>Det finns inga ämnen i denna kategori.</strong><br />Varför inte skapa ett?",
+	"sidebar.recent_replies": "Senaste Svaren",
+	"sidebar.active_participants": "Aktiva Deltagare",
+	"sidebar.moderators": "Moderatorer",
+	"posts": "inlägg",
+	"views": "tittningar",
+	"posted": "skapad",
+	"browsing": "läser",
+	"no_replies": "Ingen har svarat",
+	"replied": "svarade",
+	"last_edited_by": "senaste ändrad av"
 }
