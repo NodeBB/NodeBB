@@ -47,7 +47,7 @@ var path = require('path'),
 				config.topicsPerPage = meta.config.topicsPerPage || 20;
 				config.postsPerPage = meta.config.postsPerPage || 20;
 				config.maximumFileSize = meta.config.maximumFileSize;
-				config.defaultLang = meta.config.defaultLang || 'en';
+				config.defaultLang = meta.config.defaultLang || 'en_GB';
 
 				res.json(200, config);
 			});
