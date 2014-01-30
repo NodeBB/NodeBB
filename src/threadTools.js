@@ -263,23 +263,36 @@ var winston = require('winston'),
 		});
 	}
 
-	ThreadTools.notifyFollowers = function(tid, exceptUid) {
+	ThreadTools.notifyFollowers = function(tid, pid, exceptUid) {
 		async.parallel([
 			function(next) {
-				topics.getTopicField(tid, 'title', function(err, title) {
-					topics.getTeaser(tid, function(err, teaser) {
-						if (!err) {
-							notifications.create('<strong>' + teaser.username + '</strong> has posted a reply to: "<strong>' + title + '</strong>"', nconf.get('relative_path') + '/topic/' + tid, 'topic:' + tid, function(nid) {
-								next(null, nid);
-							});
-						} else next(err);
+				topics.getTopicFields(tid, ['title', 'slug'], function(err, topicData) {
+					if(err) {
+						return next(err);
+					}
+
+					user.getUserField(exceptUid, 'username', function(err, username) {
+						if(err) {
+							return next(err);
+						}
+
+						notifications.create('<strong>' + username + '</strong> has posted a reply to: "<strong>' + topicData.title + '</strong>"', nconf.get('relative_path') + '/topic/' + topicData.slug + '#' + pid, 'topic:' + tid, function(nid) {
+							next(null, nid);
+						});
 					});
 				});
 			},
 			function(next) {
 				ThreadTools.getFollowers(tid, function(err, followers) {
+					if(err) {
+						return next(err);
+					}
+
 					exceptUid = parseInt(exceptUid, 10);
-					if (followers.indexOf(exceptUid) !== -1) followers.splice(followers.indexOf(exceptUid), 1);
+					if (followers.indexOf(exceptUid) !== -1) {
+						followers.splice(followers.indexOf(exceptUid), 1);
+					}
+
 					next(null, followers);
 				});
 			}
