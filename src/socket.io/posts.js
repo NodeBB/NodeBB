@@ -235,9 +235,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 		function(adminGroup, next) {
 
 			notifications.create(message, path, 'post_flag:' + pid, function(nid) {
-
 				notifications.push(nid, adminGroup.members, function() {
-					console.log('derp');
 					next(null);
 				});
 			});
