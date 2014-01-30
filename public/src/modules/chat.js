@@ -176,11 +176,11 @@ define(['taskbar', 'string'], function(taskbar, S) {
 	module.load = function(uuid) {
 		var chatModal = $('div[UUID="'+uuid+'"]');
 		chatModal.removeClass('hide');
-		module.bringModalToTop(chatModal);
 		checkOnlineStatus(chatModal);
 		taskbar.updateActive(uuid);
 		scrollToBottom(chatModal.find('#chat-content'));
 		module.center(chatModal);
+		module.bringModalToTop(chatModal);
 	}
 
 	module.minimize = function(uuid) {
