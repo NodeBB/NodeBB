@@ -358,6 +358,7 @@
 						template = replace(namespace + d, '', template);
 					} else if (data[d].constructor == Array) {
 						checkConditional(namespace + d + '.length', data[d].length);
+						checkConditional('!' + namespace + d + '.length', !data[d].length);
 
 						namespace += d + '.';
 
