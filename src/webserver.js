@@ -599,7 +599,7 @@ module.exports.server = server;
 							},
 							{
 								property: 'og:title',
-								content: topicData.topic_name + ' | ' + (meta.config.title || 'NodeBB')
+								content: topicData.topic_name
 							},
 							{
 								property: 'og:description',
@@ -738,16 +738,24 @@ module.exports.server = server;
 					app.build_header({
 						req: req,
 						res: res,
-						metaTags: [{
-							name: 'title',
-							content: categoryData.category_name
-						}, {
-							name: 'description',
-							content: categoryData.category_description
-						}, {
-							property: "og:type",
-							content: 'website'
-						}],
+						metaTags: [
+							{
+								name: 'title',
+								content: categoryData.category_name
+							},
+							{
+								property: 'og:title',
+								content: categoryData.category_name
+							},
+							{
+								name: 'description',
+								content: categoryData.category_description
+							},
+							{
+								property: "og:type",
+								content: 'website'
+							}
+						],
 						linkTags: [
 							{
 								rel: 'alternate',
