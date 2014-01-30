@@ -132,6 +132,16 @@ module.exports.server = server;
 				href: meta.config['brand:favicon'] || nconf.get('relative_path') + '/favicon.ico'
 			});
 
+			// Browser Title
+			var	metaTitle = templateValues.metaTags.filter(function(tag) {
+				return tag.property === 'og:title';
+			});
+			if (metaTitle.length > 0 && metaTitle[0].content) {
+				templateValues.browserTitle = metaTitle[0].content;
+			} else {
+				templateValues.browserTitle = meta.config.browserTitle || 'NodeBB';
+			}
+
 			if(options.req.user && options.req.user.uid) {
 				uid = options.req.user.uid;
 			}
