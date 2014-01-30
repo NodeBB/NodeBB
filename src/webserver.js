@@ -94,13 +94,11 @@ module.exports.server = server;
 				}],
 				templateValues = {
 					bootswatchCSS: meta.config['theme:src'],
-					pluginCSS: plugins.cssFiles.map(function(file) { return { path: nconf.get('relative_path') + file.replace(/\\/g, '/') + (meta.config['cache-buster'] ? '?v=' + meta.config['cache-buster'] : '') }; }),
+					pluginCSS: plugins.cssFiles.map(function(file) { return { path: nconf.get('relative_path') + file.replace(/\\/g, '/') }; }),
 					title: meta.config.title || '',
 					description: meta.config.description || '',
 					'brand:logo': meta.config['brand:logo'] || '',
 					'brand:logo:display': meta.config['brand:logo']?'':'hide',
-					'brand:favicon': meta.config['brand:favicon'] || nconf.get('relative_path') + '/favicon.ico',
-					browserTitle: meta.config.browserTitle || 'NodeBB',
 					csrf: options.res.locals.csrf_token,
 					relative_path: nconf.get('relative_path'),
 					clientScripts: clientScripts,
@@ -119,13 +117,20 @@ module.exports.server = server;
 			var uid = '0';
 
 			// Meta Tags
-			templateValues.meta_tags = utils.buildMetaTags(defaultMetaTags.concat(options.metaTags || []).map(function(tag) {
+			templateValues.metaTags = defaultMetaTags.concat(options.metaTags || []).map(function(tag) {
 				tag.content = tag.content.replace(/[&<>'"]/g, function(tag) {
 					return escapeList[tag] || tag;
 				});
 				return tag;
-			}));
-			templateValues.link_tags = utils.buildLinkTags(defaultLinkTags.concat(options.linkTags || []));
+			});
+
+			// Link Tags
+			templateValues.linkTags = defaultLinkTags.concat(options.linkTags || []);
+			templateValues.linkTags.push({
+				rel: "icon",
+				type: "image/x-icon",
+				href: meta.config['brand:favicon'] || nconf.get('relative_path') + '/favicon.ico'
+			});
 
 			if(options.req.user && options.req.user.uid) {
 				uid = options.req.user.uid;

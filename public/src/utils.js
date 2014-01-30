@@ -153,43 +153,6 @@
 			}
 			return result;
 		},
-		buildMetaTags: function(tagsArr) {
-			var tags = '',
-				tag;
-			for (var x = 0, numTags = tagsArr.length; x < numTags; x++) {
-				if (tags.length > 0) {
-					tags += "\n\t";
-				}
-				tag = '<meta';
-				var y;
-				for (y in tagsArr[x]) {
-					tag += ' ' + y + '="' + tagsArr[x][y] + '"';
-				}
-				tag += ' />';
-
-				tags += tag;
-			}
-
-			return tags;
-		},
-
-		buildLinkTags: function(tagsArr) {
-			var tags = '',
-				tag;
-			for (var x = 0, numTags = tagsArr.length; x < numTags; x++) {
-				if (tags.length > 0) tags += "\n\t";
-				tag = '<link';
-				var y;
-				for (y in tagsArr[x]) {
-					tag += ' ' + y + '="' + tagsArr[x][y] + '"';
-				}
-				tag += ' />';
-
-				tags += tag;
-			}
-
-			return tags;
-		},
 
 		isRelativeUrl: function(url) {
 			var firstChar = url.slice(0, 1);
