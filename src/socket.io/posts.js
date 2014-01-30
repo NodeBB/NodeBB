@@ -1,8 +1,13 @@
-var	posts = require('../posts'),
+var	async = require('async'),
+	nconf = require('nconf'),
+
+	posts = require('../posts'),
 	meta = require('../meta'),
 	topics = require('../topics'),
 	favourites = require('../favourites'),
 	postTools = require('../postTools'),
+	notifications = require('../notifications'),
+	groups = require('../groups'),
 	user = require('../user'),
 	index = require('./index'),
 
@@ -206,6 +211,38 @@ SocketPosts.getFavouritedUsers = function(socket, pid, callback) {
 
 SocketPosts.getPidPage = function(socket, pid, callback) {
 	posts.getPidPage(pid, callback);
+}
+
+SocketPosts.flag = function(socket, pid, callback) {
+	var message = '',
+		path = '';
+
+	async.waterfall([
+		function(next) {
+			user.getUserField(socket.uid, 'username', next);
+		},
+		function(username, next) {
+			message = username + ' flagged a post.';
+			posts.getPostField(pid, 'tid', next);
+		},
+		function(tid, next) {
+			topics.getTopicField(tid, 'slug', next)
+		},
+		function(topicSlug, next) {
+			path = nconf.get('relative_path') + '/topic/' + topicSlug + '#' + pid;
+			groups.getByGroupName('administrators', {}, next);
+		},
+		function(adminGroup, next) {
+
+			notifications.create(message, path, 'post_flag:' + pid, function(nid) {
+
+				notifications.push(nid, adminGroup.members, function() {
+					console.log('derp');
+					next(null);
+				});
+			});
+		}
+	], callback);
 }
 
 module.exports = SocketPosts;

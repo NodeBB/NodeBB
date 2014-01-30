@@ -431,20 +431,26 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 		$('#post-container').on('click', '.favourite', function() {
 			var pid = $(this).parents('.post-row').attr('data-pid');
-			var uid = $(this).parents('.post-row').attr('data-uid');
 
-			if ($(this).attr('data-favourited') == 'false') {
-				socket.emit('posts.favourite', {
-					pid: pid,
-					room_id: app.currentRoom
-				});
-			} else {
-				socket.emit('posts.unfavourite', {
-					pid: pid,
-					room_id: app.currentRoom
-				});
-			}
+			var method = $(this).attr('data-favourited') == 'false' ? 'posts.favourite' : 'posts.unfavourite';
+
+			socket.emit(method, {
+				pid: pid,
+				room_id: app.currentRoom
+			});
 		});
+
+		$('#post-container').on('click', '.flag', function() {
+			var pid = $(this).parents('.post-row').attr('data-pid');
+
+			socket.emit('posts.flag', pid, function(err) {
+				if(err) {
+					return app.alertError(err.message);
+				}
+				app.alertSuccess('This post has been flagged for moderation.');
+			});
+		});
+
 
 		$('#post-container').on('shown.bs.dropdown', '.share-dropdown', function() {
 			var pid = $(this).parents('.post-row').attr('data-pid');

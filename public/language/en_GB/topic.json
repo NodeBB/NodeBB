@@ -18,6 +18,9 @@
 	"link": "Link",
 	"share": "Share",
 	"tools": "Tools",
+	"flag": "Flag",
+
+	"flag_title":"Flag this post for moderation",
 
 	"thread_tools.title": "Thread Tools",
 	"thread_tools.markAsUnreadForAll": "Mark Unread",
