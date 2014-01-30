@@ -911,6 +911,12 @@ module.exports.server = server;
 			'templates': []
 		};
 
+		app.get_custom_templates = function() {
+			return custom_routes.templates.map(function(tpl) {
+				return tpl.template.split('.tpl')[0];
+			});
+		}
+
 		plugins.ready(function() {
 			plugins.fireHook('filter:server.create_routes', custom_routes, function(err, custom_routes) {
 				var routes = custom_routes.routes;

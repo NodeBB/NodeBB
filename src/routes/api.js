@@ -24,7 +24,9 @@ var path = require('path'),
 		app.namespace('/api', function () {
 			app.get('/get_templates_listing', function (req, res) {
 				utils.walk(path.join(__dirname, '../../', 'public/templates'), function (err, data) {
-					res.json(data);
+					res.json(data.concat(app.get_custom_templates()).filter(function(value, index, self) {
+						return self.indexOf(value) === index;
+					}));
 				});
 			});
 
