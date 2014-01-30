@@ -38,5 +38,14 @@
 	"motd.follow": "Follow",
 
 	"previouspage": "Previous Page",
-	"nextpage": "Next Page"
+	"nextpage": "Next Page",
+
+	"alert.success": "Success",
+	"alert.error": "Error",
+
+	"alert.banned": "Banned",
+	"alert.banned.message": "You are banned you will be logged out!",
+
+	"alert.unfollow": "You are no longer following %1!",
+	"alert.follow": "You are now following %1!"
 }
