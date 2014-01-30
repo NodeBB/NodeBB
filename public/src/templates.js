@@ -186,23 +186,27 @@
 			parse_template();
 		}
 
-		apiXHR = jQuery.get(RELATIVE_PATH + '/api/' + api_url, function (data) {
+		apiXHR = $.ajax({
+			url: RELATIVE_PATH + '/api/' + api_url,
+			cache: false,
+			success: function (data) {
+				if (!data) {
+					ajaxify.go('404');
+					return;
+				}
 
-			if (!data) {
-				ajaxify.go('404');
-				return;
-			}
-
-			template_data = data;
-			parse_template();
-		}).fail(function (data, textStatus) {
-			jQuery('#content, #footer').stop(true, true).removeClass('ajaxifying');
-			if (data && data.status == 404) {
-				return ajaxify.go('404');
-			} else if (data && data.status === 403) {
-				return ajaxify.go('403');
-			} else if (textStatus !== "abort") {
-				app.alertError(data.responseJSON.error);
+				template_data = data;
+				parse_template();
+			},
+			error: function (data, textStatus) {
+				$('#content, #footer').stop(true, true).removeClass('ajaxifying');
+				if (data && data.status == 404) {
+					return ajaxify.go('404');
+				} else if (data && data.status === 403) {
+					return ajaxify.go('403');
+				} else if (textStatus !== "abort") {
+					app.alertError(data.responseJSON.error);
+				}
 			}
 		});
 
