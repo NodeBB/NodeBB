@@ -127,7 +127,9 @@
 					<div class="post-info">
 						<span class="pull-left">
 							[[topic:reputation]]: <i class='fa fa-star'></i> <span class='formatted-number post_rep_{posts.uid}'>{posts.user_rep}</span>&nbsp;|&nbsp;[[topic:posts]]: <i class='fa fa-pencil'></i> <span class='formatted-number user_postcount_{posts.uid}'>{posts.user_postcount}</span>
-							{posts.additional_profile_info}
+							<!-- BEGIN custom_profile_info -->
+							| {posts.custom_profile_info.content}
+							<!-- END custom_profile_info -->
 						</span>
 						<span class="pull-right">
 							[[category:posted]] <span class="relativeTimeAgo timeago" title="{posts.relativeTime}"></span>

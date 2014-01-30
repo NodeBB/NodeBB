@@ -206,11 +206,11 @@ var db = require('./database'),
 					}
 				}
 
-				plugins.fireHook('filter:posts.custom_profile_info', {profile: "", uid: post.uid, pid: post.pid}, function(err, profile_info) {
+				plugins.fireHook('filter:posts.custom_profile_info', {profile: [], uid: post.uid, pid: post.pid}, function(err, profile_info) {
 					if(err) {
 						return callback(err);
 					}
-					post.additional_profile_info = profile_info.profile;
+					post.custom_profile_info = profile_info.profile;
 
 					if (post.editor !== '') {
 						user.getUserFields(post.editor, ['username', 'userslug'], function(err, editorData) {
