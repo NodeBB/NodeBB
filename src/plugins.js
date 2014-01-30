@@ -4,7 +4,8 @@ var fs = require('fs'),
 	winston = require('winston'),
 	nconf = require('nconf'),
 	eventEmitter = require('events').EventEmitter,
-	db = require('./database');
+	db = require('./database'),
+	meta = require('./meta');
 
 (function(Plugins) {
 
@@ -63,7 +64,9 @@ var fs = require('fs'),
 				db.getSetMembers('plugins:active', next);
 			},
 			function(plugins, next) {
-				if (plugins && Array.isArray(plugins) && plugins.length > 0) {
+				if (plugins && Array.isArray(plugins)) {
+					plugins.push(meta.config['theme:id']);
+
 					async.each(plugins, function(plugin, next) {
 						var modulePath = path.join(__dirname, '../node_modules/', plugin);
 						if (fs.existsSync(modulePath)) {
@@ -94,7 +97,7 @@ var fs = require('fs'),
 	Plugins.loadPlugin = function(pluginPath, callback) {
 		fs.readFile(path.join(pluginPath, 'plugin.json'), function(err, data) {
 			if (err) {
-				return callback(err);
+				return callback(pluginPath.match('nodebb-theme') ? null  : err);
 			}
 
 			var pluginData = JSON.parse(data),
