@@ -227,10 +227,12 @@ define(['taskbar', 'string'], function(taskbar, S) {
 
 		var date = new Date(parseInt(timestamp, 10));
 
-        var prefix = '<span class="chat-timestamp">' + date.toLocaleTimeString() + '</span> ';
-        message = '<li>' + S(prefix + message).stripTags('p').s + '</li>';
+		var prefix = '<span class="chat-timestamp">' + date.toLocaleTimeString() + '</span> ';
+		message = $('<li>' + S(prefix + message).stripTags('p').s + '</li>');
 
+		message.find('img:not(".chat-user-image")').addClass('img-responsive');
 		chatContent.append(message);
+
 		scrollToBottom(chatContent);
 	};
 
