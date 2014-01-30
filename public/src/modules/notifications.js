@@ -3,12 +3,12 @@ define(function() {
 
 	Notifications.prepareDOM = function() {
 		// Notifications dropdown
-		var notifContainer = document.getElementsByClassName('notifications')[0],
-			notifTrigger = notifContainer.querySelector('a'),
-			notifList = document.getElementById('notif-list'),
+		var notifContainer = $('.notifications'),
+			notifTrigger = notifContainer.children('a'),
+			notifList = $('#notif-list'),
 			notifIcon = $('.notifications a i');
 
-		notifTrigger.addEventListener('click', function(e) {
+		notifTrigger.on('click', function(e) {
 			e.preventDefault();
 			if (notifContainer.className.indexOf('open') === -1) {
 				socket.emit('notifications.get', null, function(err, data) {
@@ -58,7 +58,7 @@ define(function() {
 			}
 		});
 
-		notifList.addEventListener('click', function(e) {
+		notifList.on('click', function(e) {
 			var target;
 			switch (e.target.nodeName) {
 				case 'SPAN':
