@@ -11,15 +11,15 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 	$('body').on('action:ajaxifying', function(ev, data) {
 
 		if(data.url.indexOf('topic') === 0) {
-			$('.pagination-block a').on('click', function() {
+			$('.pagination-block a').off('click').on('click', function() {
 				return false;
 			});
 
-			$('.pagination-block i:first').on('click', function() {
+			$('.pagination-block i:first').off('click').on('click', function() {
 				app.scrollToTop();
 			});
 
-			$('.pagination-block i:last').on('click', function() {
+			$('.pagination-block i:last').off('click').on('click', function() {
 				app.scrollToBottom();
 			});
 
