@@ -112,16 +112,18 @@
 						<li><a href="{relative_path}/admin/events"><i class="fa fa-fw fa-calendar-o"></i> Events</a></li>
 					</ul>
 				</div>
+				<!-- IF authentication.length -->
 				<div class="well sidebar-nav">
 					<ul class="nav nav-list">
-						<li class="nav-header">Social Authentication</li>
-						<!-- BEGIN authentication -->
-						<li>
-							<a href="{relative_path}/admin{authentication.route}"><i class="fa fa-fw {authentication.icon}"></i> {authentication.name}</a>
-						</li>
-						<!-- END authentication -->
+							<li class="nav-header">Social Authentication</li>
+							<!-- BEGIN authentication -->
+							<li>
+								<a href="{relative_path}/admin{authentication.route}"><i class="fa fa-fw {authentication.icon}"></i> {authentication.name}</a>
+							</li>
+							<!-- END authentication -->
 					</ul>
 				</div>
+				<!-- ENDIF authentication.length -->
 				<div class="well sidebar-nav">
 					<ul class="nav nav-list">
 						<li class="nav-header">Plugins</li>

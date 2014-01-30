@@ -134,11 +134,17 @@
 				<ul id="logged-out-menu" class="nav navbar-nav navbar-right">
 					<!-- IF allowRegistration -->
 					<li>
-						<a href="{relative_path}/register">[[global:register]]</a>
+						<a href="{relative_path}/register">
+							<i class="fa fa-pencil visible-xs-inline"></i>
+							<span>[[global:register]]</span>
+						</a>
 					</li>
 					<!-- ENDIF allowRegistration -->
 					<li>
-						<a href="{relative_path}/login">[[global:login]]</a>
+						<a href="{relative_path}/login">
+							<i class="fa fa-sign-in visible-xs-inline"></i>
+							<span>[[global:login]]</span>
+						</a>
 					</li>
 				</ul>
 

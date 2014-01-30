@@ -323,6 +323,33 @@
 				template = '';
 			}
 
+			function checkConditional(key, value) {
+				var conditional = makeConditionalRegex(key),
+					matches = template.match(conditional);
+
+				if (matches !== null) {
+					for (var i = 0, ii = matches.length; i < ii; i++) {
+						var conditionalBlock = matches[i].split(/<!-- ELSE -->/);
+
+						if (conditionalBlock[1]) {
+							// there is an else statement
+							if (!value) {
+								template = template.replace(matches[i], conditionalBlock[1].replace(/<!-- ((\IF\b)|(\bENDIF\b))([^@]*?)-->/gi, ''));
+							} else {
+								template = template.replace(matches[i], conditionalBlock[0].replace(/<!-- ((\IF\b)|(\bENDIF\b))([^@]*?)-->/gi, ''));
+							}
+						} else {
+							// regular if statement
+							if (!value) {
+								template = template.replace(matches[i], '');
+							} else {
+								template = template.replace(matches[i], matches[i].replace(/<!-- ((\IF\b)|(\bENDIF\b))([^@]*?)-->/gi, ''));
+							}
+						}
+					}
+				}
+			}
+
 			for (var d in data) {
 				if (data.hasOwnProperty(d)) {
 					if (typeof data[d] === 'undefined') {
@@ -330,6 +357,9 @@
 					} else if (data[d] === null) {
 						template = replace(namespace + d, '', template);
 					} else if (data[d].constructor == Array) {
+						checkConditional(namespace + d + '.length', data[d].length);
+						checkConditional('!' + namespace + d + '.length', !data[d].length);
+
 						namespace += d + '.';
 
 						var regex = makeRegex(d),
@@ -353,33 +383,6 @@
 					} else if (data[d] instanceof Object) {
 						template = parse(data[d], d + '.', template);
 					} else {
-						function checkConditional(key, value) {
-							var conditional = makeConditionalRegex(key),
-								matches = template.match(conditional);
-
-							if (matches !== null) {
-								for (var i = 0, ii = matches.length; i < ii; i++) {
-									var conditionalBlock = matches[i].split(/<!-- ELSE -->/);
-
-									if (conditionalBlock[1]) {
-										// there is an else statement
-										if (!value) {
-											template = template.replace(matches[i], conditionalBlock[1].replace(/<!-- ((\IF\b)|(\bENDIF\b))([^@]*?)-->/gi, ''));
-										} else {
-											template = template.replace(matches[i], conditionalBlock[0].replace(/<!-- ((\IF\b)|(\bENDIF\b))([^@]*?)-->/gi, ''));
-										}
-									} else {
-										// regular if statement
-										if (!value) {
-											template = template.replace(matches[i], '');
-										} else {
-											template = template.replace(matches[i], matches[i].replace(/<!-- ((\IF\b)|(\bENDIF\b))([^@]*?)-->/gi, ''));
-										}
-									}
-								}
-							}
-						}
-
 						checkConditional(namespace + d, data[d]);
 						checkConditional('!' + namespace + d, !data[d]);
 

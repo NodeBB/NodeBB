@@ -164,7 +164,7 @@ var async = require('async'),
 				});
 
 				feed.updateRecent();
-				threadTools.notifyFollowers(tid, uid);
+				threadTools.notifyFollowers(tid, postData.pid, uid);
 				user.sendPostNotificationToFollowers(uid, tid, postData.pid);
 
 				Topics.markCategoryUnreadForAll(tid, function(err) {

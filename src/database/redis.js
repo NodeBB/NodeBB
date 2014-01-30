@@ -70,20 +70,6 @@
 		callback(null);
 	}
 
-
-	/*
-	 * A possibly more efficient way of doing multiple sismember calls
-	 */
-	function sismembers(key, needles, callback) {
-		var tempkey = key + ':temp:' + utils.generateUUID();
-		redisClient.sadd(tempkey, needles, function() {
-			redisClient.sinter(key, tempkey, function(err, data) {
-				redisClient.del(tempkey);
-				callback(err, data);
-			});
-		});
-	};
-
 	//
 	// Exported functions
 	//
