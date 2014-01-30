@@ -19,7 +19,7 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2014, 0, 27, 12, 35).getTime();
+	var	latestSchema = new Date(2014, 0, 30, 15, 0).getTime();
 
 	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -402,6 +402,31 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/1/25] Activating SSO plugins, if set up -- skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 0, 30, 15, 0).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				if (Meta.config.defaultLang === 'en') {
+					Meta.configs.set('defaultLang', 'en_GB', next);
+				} else if (Meta.config.defaultLang === 'pt_br') {
+					Meta.configs.set('defaultLang', 'pt_BR', next);
+				} else if (Meta.config.defaultLang === 'zh_cn') {
+					Meta.configs.set('defaultLang', 'zh_CN', next);
+				} else if (Meta.config.defaultLang === 'zh_tw') {
+					Meta.configs.set('defaultLang', 'zh_TW', next);
+				} else {
+					winston.info('[2014/1/30] Fixing language settings -- skipped');
+					return next();
+				}
+
+				winston.info('[2014/1/30] Fixing language settings');
+				next();
+			} else {
+				winston.info('[2014/1/30] Fixing language settings -- skipped');
 				next();
 			}
 		}

@@ -31,7 +31,7 @@
 
 	translator.prepareDOM = function() {
 		// Load the appropriate timeago locale file
-		if (config.defaultLang !== 'en') {
+		if (config.defaultLang !== 'en_GB') {
 			// Correct NodeBB language codes to timeago codes, if necessary
 			var	languageCode;
 			switch(config.defaultLang) {
@@ -39,15 +39,15 @@
 					languageCode = 'cz';
 					break;
 
-				case 'zh_tw':
+				case 'zh_TW':
 					languageCode = 'zh-TW';
 					break;
 
-				case 'zh_cn':
+				case 'zh_CN':
 					languageCode = 'zh-CN';
 					break;
 
-				case 'pt_br':
+				case 'pt_BR':
 					languageCode = 'pt-br';
 					break;
 
@@ -203,7 +203,7 @@
 			fs = require('fs'),
 			winston = require('winston');
 
-		utils.walk(path.join(__dirname, '../language', (Meta.config.defaultLang || 'en')), function (err, data) {
+		utils.walk(path.join(__dirname, '../language', (Meta.config.defaultLang || 'en_GB')), function (err, data) {
 			var loaded = data.length;
 
 			for (var d in data) {
