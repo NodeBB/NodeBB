@@ -125,6 +125,14 @@ var socket,
 					socket.on('meta.updateHeader', app.updateHeader);
 
 					app.enterRoom('global');
+
+					if (config.environment === 'development' && console && console.log) {
+						var log = console.log;
+						console.log = function() {
+							log.apply(this, arguments);
+							socket.emit('tools.log', arguments);
+						}
+					}
 				}
 			},
 			async: false
