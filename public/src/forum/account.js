@@ -44,7 +44,7 @@ define(['forum/accountheader'], function(header) {
 
 					followBtn.addClass('hide');
 					unfollowBtn.removeClass('hide');
-					app.alertSuccess('You are now following ' + username + '!');
+					app.alertSuccess('[[global:alert.follow, ' + username + ']]');
 				});
 				return false;
 			});
@@ -59,7 +59,7 @@ define(['forum/accountheader'], function(header) {
 
 					followBtn.removeClass('hide');
 					unfollowBtn.addClass('hide');
-					app.alertSuccess('You are no longer following ' + username + '!');
+					app.alertSuccess('[[global:alert.unfollow, ' + username + ']]');
 				});
 				return false;
 			});

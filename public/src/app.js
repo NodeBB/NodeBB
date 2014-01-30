@@ -113,8 +113,8 @@ var socket,
 
 					socket.on('event:banned', function() {
 						app.alert({
-							title: 'Banned',
-							message: 'You are banned you will be logged out!',
+							title: '[[global:alert.banned]]',
+							message: '[[global:alert.banned.message]]',
 							type: 'warning',
 							timeout: 1000
 						});
@@ -125,6 +125,14 @@ var socket,
 					socket.on('meta.updateHeader', app.updateHeader);
 
 					app.enterRoom('global');
+
+					if (config.environment === 'development' && console && console.log) {
+						var log = console.log;
+						console.log = function() {
+							log.apply(this, arguments);
+							socket.emit('tools.log', arguments);
+						}
+					}
 				}
 			},
 			async: false
@@ -190,7 +198,10 @@ var socket,
 			if (params.location == null)
 				params.location = 'alert_window';
 
-			$('#' + params.location).prepend(div.fadeIn('100'));
+			translator.translate(div.html(), function(translatedHTML) {
+				div.html(translatedHTML);
+				$('#' + params.location).prepend(div.fadeIn('100'));
+			});
 
 			if (params.timeout) {
 				startTimeout(div, params.timeout);
@@ -212,7 +223,7 @@ var socket,
 			timeout = 2000;
 
 		app.alert({
-			title: 'Success',
+			title: '[[global:alert.success]]',
 			message: message,
 			type: 'success',
 			timeout: timeout
@@ -224,7 +235,7 @@ var socket,
 			timeout = 2000;
 
 		app.alert({
-			title: 'Error',
+			title: '[[global:alert.error]]',
 			message: message,
 			type: 'danger',
 			timeout: timeout
