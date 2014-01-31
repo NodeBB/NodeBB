@@ -15,9 +15,11 @@
 	<div class="alert alert-warning hide" id="new-topics-alert"></div>
 </a>
 
-<div class="alert alert-warning hide {no_topics_message}" id="category-no-topics">
+<!-- IF !topics.length -->
+<div class="alert alert-warning" id="category-no-topics">
 	<strong>There are no recent topics.</strong>
 </div>
+<!-- ENDIF !topics.length -->
 
 <div class="category row">
 	<div class="col-md-12">

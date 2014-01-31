@@ -22,6 +22,7 @@
 	"header.admin": "Admin",
 	"header.recent": "Recent",
 	"header.unread": "Unread",
+	"header.popular": "Popular",
 	"header.users": "Users",
 	"header.chats": "Chats",
 	"header.notifications": "Notifications",
@@ -47,5 +48,8 @@
 	"alert.banned.message": "You are banned you will be logged out!",
 
 	"alert.unfollow": "You are no longer following %1!",
-	"alert.follow": "You are now following %1!"
+	"alert.follow": "You are now following %1!",
+
+	"posts": "Posts",
+	"views": "Views"
 }

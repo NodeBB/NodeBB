@@ -19,7 +19,7 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2014, 0, 30, 15, 0).getTime();
+	var	latestSchema = new Date(2014, 0, 30, 16, 0).getTime();
 
 	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -427,6 +427,53 @@ Upgrade.upgrade = function(callback) {
 				next();
 			} else {
 				winston.info('[2014/1/30] Fixing language settings -- skipped');
+				next();
+			}
+		},
+		function(next) {
+			function updateTopic(tid, next) {
+				Topics.getTopicFields(tid, ['postcount', 'viewcount'], function(err, topicData) {
+					if(err) {
+						next(err);
+					}
+
+					if(topicData) {
+						if(!topicData.postcount) {
+							topicData.postcount = 0;
+						}
+
+						if(!topicData.viewcount) {
+							topicData.viewcount = 0;
+						}
+
+						db.sortedSetAdd('topics:posts', topicData.postcount, tid);
+						db.sortedSetAdd('topics:views', topicData.viewcount, tid);
+					}
+
+					next();
+				});
+			}
+
+			thisSchemaDate = new Date(2014, 0, 30, 16, 0).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+
+
+				winston.info('[2014/1/30] Adding new topic sets');
+				db.getSortedSetRange('topics:recent', 0, -1, function(err, tids) {
+					if(err) {
+						return next(err);
+					}
+
+					async.each(tids, updateTopic, function(err) {
+						next(err);
+					});
+				});
+
+
+			} else {
+				winston.info('[2014/1/30] Adding new topic sets -- skipped');
 				next();
 			}
 		}

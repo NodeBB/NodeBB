@@ -273,8 +273,20 @@ SocketTopics.loadMoreUnreadTopics = function(socket, data, callback) {
 	topics.getUnreadTopics(socket.uid, start, end, callback);
 };
 
+SocketTopics.loadMoreFromSet = function(socket, data, callback) {
+	if(!data || !data.after || !data.set) {
+		return callback(new Error('invalid data'));
+	}
+
+	var start = parseInt(data.after, 10),
+		end = start + 9;
+
+	topics.getTopicsFromSet(socket.uid, data.set, start, end, callback);
+};
+
+
 SocketTopics.getPageCount = function(socket, tid, callback) {
 	topics.getPageCount(tid, callback);
-}
+};
 
 module.exports = SocketTopics;
