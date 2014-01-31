@@ -868,6 +868,16 @@ module.exports.server = server;
 
 		});
 
+		app.get('/popular/:term?', function (req, res) {
+			app.build_header({
+				req: req,
+				res: res
+			}, function (err, header) {
+				res.send(header + app.create_route('popular/' + req.params.term, null, 'popular') + templates.footer);
+			});
+
+		});
+
 		app.get('/outgoing', function (req, res) {
 			if (!req.query.url) {
 				return res.redirect('/404');
