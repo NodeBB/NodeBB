@@ -494,13 +494,19 @@ var fs = require('fs'),
 
 				var onlineUsers = [];
 
-				function iterator(user, callback) {
-					if(websockets.isUserOnline(user.uid)) {
-						onlineUsers.push(user);
-					} else {
-						db.sortedSetRemove('users:online', user.uid);
+				data = data.filter(function(item) {
+					return item.status !== 'offline';
+				});
+
+				function iterator(userData, next) {
+					var online = websockets.isUserOnline(userData.uid);
+					if(!online) {
+						db.sortedSetRemove('users:online', userData.uid);
+						return next(null);
 					}
-					callback(null);
+
+					onlineUsers.push(userData);
+					next(null);
 				}
 
 				var anonymousUserCount = websockets.getOnlineAnonCount();

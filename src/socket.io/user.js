@@ -174,20 +174,28 @@ SocketUser.getActiveUsers = function(socket, data, callback) {
 };
 
 SocketUser.loadMore = function(socket, data, callback) {
-	if(data) {
-		var start = data.after,
-			end = start + 19;
-
-		user.getUsers(data.set, start, end, function(err, data) {
-			if(err) {
-				return callback(err);
-			}
-
-			callback(null, {
-				users: data
-			});
-		});
+	if(!data || !data.set || parseInt(data.after, 10) < 0) {
+		return callback(new Error('invalid-data'));
 	}
+
+	var start = data.after,
+		end = start + 19;
+
+	user.getUsers(data.set, start, end, function(err, userData) {
+		if(err) {
+			return callback(err);
+		}
+
+		if(data.set === 'users:online') {
+			userData = userData.filter(function(item) {
+				return item.status !== 'offline';
+			});
+		}
+
+		callback(null, {
+			users: userData
+		});
+	});
 };
 
 SocketUser.setStatus = function(socket, status, callback) {

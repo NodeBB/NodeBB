@@ -52,8 +52,6 @@ define(function() {
 							return app.alert(err.message);
 						}
 
-						console.log(data);
-
 						if (!data) {
 							$('#user-notfound-notify').html('You need to be logged in to search!');
 							$('#user-notfound-notify').parent().addClass('btn-warning label-warning');
@@ -83,7 +81,7 @@ define(function() {
 		});
 
 		socket.on('user.isOnline', function(err, data) {
-			if(getActiveSection() == 'online' && !loadingMoreUsers) {
+			if(getActiveSection().indexOf('online') === 0 && !loadingMoreUsers) {
 				startLoading('users:online', 0, true);
 				socket.emit('user.getOnlineAnonCount', {} , function(err, anonCount) {
 					if(parseInt(anonCount, 10) > 0) {
@@ -100,8 +98,11 @@ define(function() {
 			var html = templates.prepare(templates['users'].blocks['users']).parse({
 				users: users
 			});
-			if(emptyContainer)
+
+			if(emptyContainer) {
 				$('#users-container .registered-user').remove();
+			}
+
 			$('#users-container').append(html);
 			$('#users-container .anon-user').appendTo($('#users-container'));
 		}
@@ -125,6 +126,7 @@ define(function() {
 
 		function startLoading(set, after, emptyContainer) {
 			loadingMoreUsers = true;
+
 			socket.emit('user.loadMore', {
 				set: set,
 				after: after
