@@ -105,6 +105,7 @@ var bcrypt = require('bcryptjs'),
 					'postcount': 0,
 					'lastposttime': 0,
 					'banned': 0,
+					'status': 'online',
 					'showemail': 0
 				};
 

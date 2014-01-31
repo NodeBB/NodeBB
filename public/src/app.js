@@ -268,14 +268,13 @@ var socket,
 		});
 
 		socket.emit('user.getOnlineUsers', uids, function (err, users) {
-			jQuery('button .username-field').each(function (index, element) {
+
+			jQuery('.username-field').each(function (index, element) {
 				var el = jQuery(this),
 					uid = el.parents('li').attr('data-uid');
 
-				if (uid && jQuery.inArray(uid, users) !== -1) {
-					el.parent().addClass('btn-success').removeClass('btn-danger');
-				} else {
-					el.parent().addClass('btn-danger').removeClass('btn-success');
+				if (uid && users[uid]) {
+					el.siblings('i').attr('class', 'fa fa-circle status-' + users[uid].status)
 				}
 			});
 		});
@@ -527,6 +526,14 @@ var socket,
 			if($('.navbar .navbar-collapse').hasClass('in')) {
 				$('.navbar-header button').click();
 			}
+		});
+
+		$('#user-control-list .user-status').off('click').on('click', function() {
+			socket.emit('user.setStatus', $(this).attr('data-status'), function(err) {
+				if(err) {
+					return app.alertError(err.message);
+				}
+			});
 		});
 	};
 

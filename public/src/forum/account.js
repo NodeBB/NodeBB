@@ -84,13 +84,15 @@ define(['forum/accountheader'], function(header) {
 	Account.handleUserOnline = function(err, data) {
 		var onlineStatus = $('.account-online-status');
 
-		if (data.online) {
-			onlineStatus.find('span span').text('online');
-			onlineStatus.find('i').attr('class', 'fa fa-circle');
-		} else {
-			onlineStatus.find('span span').text('offline');
-			onlineStatus.find('i').attr('class', 'fa fa-circle-o');
+		if(parseInt(templates.get('theirid'), 10) !== parseInt(data.uid, 10)) {
+			return;
 		}
+
+		translator.get('global:' + data.status, function(translated) {
+			onlineStatus.find('span span').text(translated);
+			onlineStatus.find('i').attr('class', 'fa fa-circle status-' + data.status);
+		});
+
 	};
 
 	return Account;

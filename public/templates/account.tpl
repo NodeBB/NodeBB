@@ -13,7 +13,7 @@
 				<img src="{picture}" class="user-profile-picture img-thumbnail"/>
 			</div>
 			<div class="account-online-status">
-				<span><i class="fa fa-circle-o"></i> <span>[[user:offline]]</span></span>
+				<span><i class="fa fa-circle status-offline"></i> <span>[[user:offline]]</span></span>
 			</div>
 			<!-- IF banned -->
 			<div>

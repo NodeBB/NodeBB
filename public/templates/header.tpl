@@ -131,16 +131,16 @@
 							</li>
 							<li role="presentation" class="divider"></li>
 							<li>
-								<a href="#"><i class="fa fa-circle state-online"></i><span> [[global:online]]</span></a>
+								<a href="#" class="user-status" data-status="online"><i class="fa fa-circle status-online"></i><span> [[global:online]]</span></a>
 							</li>
 							<li>
-								<a href="#"><i class="fa fa-circle state-away"></i><span> [[global:away]]</span></a>
+								<a href="#" class="user-status" data-status="away"><i class="fa fa-circle status-away"></i><span> [[global:away]]</span></a>
 							</li>
 							<li>
-								<a href="#"><i class="fa fa-circle state-dnd"></i><span> [[global:donotdisturb]]</span></a>
+								<a href="#" class="user-status" data-status="dnd"><i class="fa fa-circle status-dnd"></i><span> [[global:dnd]]</span></a>
 							</li>
 							<li>
-								<a href="#"><i class="fa fa-circle state-invisible"></i><span> [[global:invisible]]</span></a>
+								<a href="#" class="user-status" data-status="offline"><i class="fa fa-circle status-offline"></i><span> [[global:invisible]]</span></a>
 							</li>
 						</ul>
 					</li>

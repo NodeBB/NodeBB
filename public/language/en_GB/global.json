@@ -60,6 +60,7 @@
 
 	"online": "Online",
 	"away": "Away",
-	"donotdisturb": "Do not disturb",
-	"invisible": "Invisible"
+	"dnd": "Do not disturb",
+	"invisible": "Invisible",
+	"offline": "Offline"
 }
