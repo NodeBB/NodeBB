@@ -36,7 +36,7 @@
 	"favourites": "Favoritos",
 	"favourites.not_logged_in.title": "N&atilde;o Logado",
 	"favourites.not_logged_in.message": "Por Favor logar para favoritar o t&oacute;pico",
-	"favourites.has_no_favourites": "Você n&atilde;o tem nenhum item favoritado!",
+	"favourites.has_no_favourites": "VocÃª n&atilde;o tem nenhum item favoritado!",
 
 	"posted_by": "postado por",
 	"loading_more_posts": "Carregando mais posts",
@@ -44,7 +44,7 @@
 	"move_post": "Mover Post",
 	"fork_topic": "Fork T&oacute;pico",
 	"topic_will_be_moved_to": "Este t&oacute;pico ser&aacute; movido para categoria",
-	"fork_topic_instruction": "Clique nos postas que você fazer o fork",
+	"fork_topic_instruction": "Clique nos postas que vocÃª fazer o fork",
 	"fork_no_pids": "Nenhum T&oacute;pico selecionado",
 	"fork_success": "Fork realizado com sucesso!",
 

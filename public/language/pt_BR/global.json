@@ -3,7 +3,7 @@
 	"search": "Procurar",
 	"buttons.close": "Fechar",
 	"403.title": "Acesso Negado",
-	"403.message": "Parece que você n&atilde;o tem acesso a essa p&aacute;gina. talvez você devesse <a href='/login'>tentar logar...</a>?",
+	"403.message": "Parece que vocÃª n&atilde;o tem acesso a essa p&aacute;gina. talvez vocÃª devesse <a href='/login'>tentar logar...</a>?",
 	"404.title": "Not Found",
 	"404.message": "Essa p&aacute;gina n&atilde;o existe... volte para <a href='/'>p&aacute;gina principal</a>.",
 	"500.title": "Erro Interno.",
@@ -21,7 +21,7 @@
 
 	"header.admin": "Admin",
 	"header.recent": "Recente",
-	"header.unread": "Não Lido",
+	"header.unread": "NÃ£o Lido",
 	"header.users": "Usu&aacute;rios",
 	"header.search": "Procurar",
 	"header.profile": "Profile",

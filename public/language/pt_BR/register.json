@@ -1,7 +1,7 @@
 {
 	"register": "Cadastrar",
 	"help.email": "Por padr&atilde;o, seu email n&atilde;o ficar&aacute; visivel.",
-	"help.username_restrictions": "Um usu&aacute;rio único com %1 e %2 caracteres. Outros poder&atilde;o te mencionar digitando @<span id='yourUsername'>usu&aacute;rio</span>.",
+	"help.username_restrictions": "Um usu&aacute;rio Ãºnico com %1 e %2 caracteres. Outros poder&atilde;o te mencionar digitando @<span id='yourUsername'>usu&aacute;rio</span>.",
 	"help.minimum_password_length": "Sua senha tem que ter no m&iacute;nimo %1 caracteres.",
 	"email_address": "Email",
 	"email_address_placeholder": "Digite seu Email",
@@ -12,5 +12,5 @@
 	"confirm_password": "Confirmar Senha",
 	"confirm_password_placeholder": "Confirmar Senha",
 	"register_now_button": "Cadastrar Agora",
-	"alternative_registration": "Você pode usar essas outras formas de cadastro"
+	"alternative_registration": "VocÃª pode usar essas outras formas de cadastro"
 }
