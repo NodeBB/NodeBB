@@ -1,4 +1,4 @@
-define(function() {
+define(['forum/admin/settings'], function(Settings) {
 	var Themes = {};
 
 	Themes.init = function() {
@@ -96,6 +96,8 @@ define(function() {
 			instListEl.innerHTML = '';
 			instListEl.appendChild(themeFrag);
 		});
+
+		Settings.prepare();
 	}
 
 	Themes.render = function(bootswatch) {

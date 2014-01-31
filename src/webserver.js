@@ -146,6 +146,13 @@ module.exports.server = server;
 				uid = options.req.user.uid;
 			}
 
+			// Custom CSS
+			templateValues.useCustomCSS = false;
+			if (meta.config.useCustomCSS === '1') {
+				templateValues.useCustomCSS = true;
+				templateValues.customCSS = meta.config.customCSS;
+			}
+
 			user.isAdministrator(uid, function(err, isAdmin) {
 				templateValues.adminDisplay = isAdmin ? 'show' : 'hide';
 
