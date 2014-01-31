@@ -166,10 +166,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 		var recentReplies = $('#category_recent_replies');
 
-
-		// doesnt work see https://github.com/designcreateplay/NodeBB/issues/893
-		/*
 		templates.preload_template('recentreplies', function() {
+
+			templates['recentreplies'].parse({posts:[]});
 
 			var html = templates.prepare(templates['recentreplies'].blocks['posts']).parse({
 				posts: posts
@@ -181,28 +180,6 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				$('#category_recent_replies span.timeago').timeago();
 				app.createUserTooltips();
 			});
-		});
-		*/
-
-		var replies = '';
-		for (var i = 0, numPosts = posts.length; i < numPosts; ++i) {
-
-			replies += '<li data-pid="'+ posts[i].pid +'" class="clearfix">' +
-						'<a href="' + RELATIVE_PATH + '/user/' + posts[i].userslug + '"><img title="' + posts[i].username + '" class="img-rounded user-img" src="' + posts[i].picture + '"/></a>' +
-						'<strong><span>'+ posts[i].username + '</span></strong>' +
-						'<p>' +	posts[i].content + '</p>' +
-						'<span class="pull-right">'+
-							'<a href="' + RELATIVE_PATH + '/topic/' + posts[i].topicSlug + '#' + posts[i].pid + '">[[category:posted]]</a> '+
-							'<span class="timeago" title="' + posts[i].relativeTime + '"></span>' +
-						'</span>'+
-						'</li>';
-		}
-
-		translator.translate(replies, function(translatedHTML) {			
-			recentReplies.html(translatedHTML);
-
-			$('#category_recent_replies span.timeago').timeago();
-			app.createUserTooltips();
 		});
 	};
 
