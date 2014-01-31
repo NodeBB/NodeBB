@@ -1,0 +1,260 @@
+[main]
+host = https://www.transifex.com
+
+[nodebb.category]
+file_filter = public/language/<lang>/category.json
+source_file = public/language/en_GB/category.json
+source_lang = en_GB
+trans.ar = public/language/ar/category.json
+trans.cs = public/language/cs/category.json
+trans.de = public/language/de/category.json
+trans.es = public/language/es/category.json
+trans.fi = public/language/fi/category.json
+trans.fr = public/language/fr/category.json
+trans.it = public/language/it/category.json
+trans.pt_BR = public/language/pt_BR/category.json
+trans.sk = public/language/sk/category.json
+trans.sv = public/language/sv/category.json
+trans.zh_CN = public/language/zh_CN/category.json
+trans.zh_TW = public/language/zh_TW/category.json
+type = KEYVALUEJSON
+
+[nodebb.login]
+file_filter = public/language/<lang>/login.json
+source_file = public/language/en_GB/login.json
+source_lang = en_GB
+trans.ar = public/language/ar/login.json
+trans.cs = public/language/cs/login.json
+trans.de = public/language/de/login.json
+trans.es = public/language/es/login.json
+trans.fi = public/language/fi/login.json
+trans.fr = public/language/fr/login.json
+trans.it = public/language/it/login.json
+trans.pt_BR = public/language/pt_BR/login.json
+trans.sk = public/language/sk/login.json
+trans.sv = public/language/sv/login.json
+trans.zh_CN = public/language/zh_CN/login.json
+trans.zh_TW = public/language/zh_TW/login.json
+type = KEYVALUEJSON
+
+[nodebb.recent]
+source_file = public/language/en_GB/recent.json
+source_lang = en_GB
+trans.ar = public/language/ar/recent.json
+trans.cs = public/language/cs/recent.json
+trans.de = public/language/de/recent.json
+trans.es = public/language/es/recent.json
+trans.fi = public/language/fi/recent.json
+trans.fr = public/language/fr/recent.json
+trans.it = public/language/it/recent.json
+trans.pt_BR = public/language/pt_BR/recent.json
+trans.sk = public/language/sk/recent.json
+trans.sv = public/language/sv/recent.json
+trans.zh_CN = public/language/zh_CN/recent.json
+trans.zh_TW = public/language/zh_TW/recent.json
+type = KEYVALUEJSON
+
+[nodebb.unread]
+source_file = public/language/en_GB/unread.json
+source_lang = en_GB
+trans.ar = public/language/ar/unread.json
+trans.cs = public/language/cs/unread.json
+trans.de = public/language/de/unread.json
+trans.es = public/language/es/unread.json
+trans.fi = public/language/fi/unread.json
+trans.fr = public/language/fr/unread.json
+trans.it = public/language/it/unread.json
+trans.pt_BR = public/language/pt_BR/unread.json
+trans.sk = public/language/sk/unread.json
+trans.sv = public/language/sv/unread.json
+trans.zh_CN = public/language/zh_CN/unread.json
+trans.zh_TW = public/language/zh_TW/unread.json
+type = KEYVALUEJSON
+
+[nodebb.footer]
+source_file = public/language/en_GB/footer.json
+source_lang = en_GB
+trans.ar = public/language/ar/footer.json
+trans.cs = public/language/cs/footer.json
+trans.de = public/language/de/footer.json
+trans.es = public/language/es/footer.json
+trans.fi = public/language/fi/footer.json
+trans.fr = public/language/fr/footer.json
+trans.it = public/language/it/footer.json
+trans.pt_BR = public/language/pt_BR/footer.json
+trans.sk = public/language/sk/footer.json
+trans.sv = public/language/sv/footer.json
+trans.zh_CN = public/language/zh_CN/footer.json
+trans.zh_TW = public/language/zh_TW/footer.json
+type = KEYVALUEJSON
+
+[nodebb.modules]
+source_file = public/language/en_GB/modules.json
+source_lang = en_GB
+trans.ar = public/language/ar/modules.json
+trans.cs = public/language/cs/modules.json
+trans.de = public/language/de/modules.json
+trans.es = public/language/es/modules.json
+trans.fi = public/language/fi/modules.json
+trans.fr = public/language/fr/modules.json
+trans.it = public/language/it/modules.json
+trans.pt_BR = public/language/pt_BR/modules.json
+trans.sk = public/language/sk/modules.json
+trans.sv = public/language/sv/modules.json
+trans.zh_CN = public/language/zh_CN/modules.json
+trans.zh_TW = public/language/zh_TW/modules.json
+type = KEYVALUEJSON
+
+[nodebb.register]
+source_file = public/language/en_GB/register.json
+source_lang = en_GB
+trans.ar = public/language/ar/register.json
+trans.cs = public/language/cs/register.json
+trans.de = public/language/de/register.json
+trans.es = public/language/es/register.json
+trans.fi = public/language/fi/register.json
+trans.fr = public/language/fr/register.json
+trans.it = public/language/it/register.json
+trans.pt_BR = public/language/pt_BR/register.json
+trans.sk = public/language/sk/register.json
+trans.sv = public/language/sv/register.json
+trans.zh_CN = public/language/zh_CN/register.json
+trans.zh_TW = public/language/zh_TW/register.json
+type = KEYVALUEJSON
+
+[nodebb.user]
+source_file = public/language/en_GB/user.json
+source_lang = en_GB
+trans.ar = public/language/ar/user.json
+trans.cs = public/language/cs/user.json
+trans.de = public/language/de/user.json
+trans.es = public/language/es/user.json
+trans.fi = public/language/fi/user.json
+trans.fr = public/language/fr/user.json
+trans.it = public/language/it/user.json
+trans.pt_BR = public/language/pt_BR/user.json
+trans.sk = public/language/sk/user.json
+trans.sv = public/language/sv/user.json
+trans.zh_CN = public/language/zh_CN/user.json
+trans.zh_TW = public/language/zh_TW/user.json
+type = KEYVALUEJSON
+
+[nodebb.global]
+source_file = public/language/en_GB/global.json
+source_lang = en_GB
+trans.ar = public/language/ar/global.json
+trans.cs = public/language/cs/global.json
+trans.de = public/language/de/global.json
+trans.es = public/language/es/global.json
+trans.fi = public/language/fi/global.json
+trans.fr = public/language/fr/global.json
+trans.it = public/language/it/global.json
+trans.pt_BR = public/language/pt_BR/global.json
+trans.sk = public/language/sk/global.json
+trans.sv = public/language/sv/global.json
+trans.zh_CN = public/language/zh_CN/global.json
+trans.zh_TW = public/language/zh_TW/global.json
+type = KEYVALUEJSON
+
+[nodebb.notifications]
+source_file = public/language/en_GB/notifications.json
+source_lang = en_GB
+trans.ar = public/language/ar/notifications.json
+trans.cs = public/language/cs/notifications.json
+trans.de = public/language/de/notifications.json
+trans.es = public/language/es/notifications.json
+trans.fi = public/language/fi/notifications.json
+trans.fr = public/language/fr/notifications.json
+trans.it = public/language/it/notifications.json
+trans.pt_BR = public/language/pt_BR/notifications.json
+trans.sk = public/language/sk/notifications.json
+trans.sv = public/language/sv/notifications.json
+trans.zh_CN = public/language/zh_CN/notifications.json
+trans.zh_TW = public/language/zh_TW/notifications.json
+type = KEYVALUEJSON
+
+[nodebb.reset_password]
+source_file = public/language/en_GB/reset_password.json
+source_lang = en_GB
+trans.ar = public/language/ar/reset_password.json
+trans.cs = public/language/cs/reset_password.json
+trans.de = public/language/de/reset_password.json
+trans.es = public/language/es/reset_password.json
+trans.fi = public/language/fi/reset_password.json
+trans.fr = public/language/fr/reset_password.json
+trans.it = public/language/it/reset_password.json
+trans.pt_BR = public/language/pt_BR/reset_password.json
+trans.sk = public/language/sk/reset_password.json
+trans.sv = public/language/sv/reset_password.json
+trans.zh_CN = public/language/zh_CN/reset_password.json
+trans.zh_TW = public/language/zh_TW/reset_password.json
+type = KEYVALUEJSON
+
+[nodebb.users]
+source_file = public/language/en_GB/users.json
+source_lang = en_GB
+trans.ar = public/language/ar/users.json
+trans.cs = public/language/cs/users.json
+trans.de = public/language/de/users.json
+trans.es = public/language/es/users.json
+trans.fi = public/language/fi/users.json
+trans.fr = public/language/fr/users.json
+trans.it = public/language/it/users.json
+trans.pt_BR = public/language/pt_BR/users.json
+trans.sk = public/language/sk/users.json
+trans.sv = public/language/sv/users.json
+trans.zh_CN = public/language/zh_CN/users.json
+trans.zh_TW = public/language/zh_TW/users.json
+type = KEYVALUEJSON
+
+[nodebb.language]
+source_file = public/language/en_GB/language.json
+source_lang = en_GB
+trans.ar = public/language/ar/language.json
+trans.cs = public/language/cs/language.json
+trans.de = public/language/de/language.json
+trans.es = public/language/es/language.json
+trans.fi = public/language/fi/language.json
+trans.fr = public/language/fr/language.json
+trans.it = public/language/it/language.json
+trans.pt_BR = public/language/pt_BR/language.json
+trans.sk = public/language/sk/language.json
+trans.sv = public/language/sv/language.json
+trans.zh_CN = public/language/zh_CN/language.json
+trans.zh_TW = public/language/zh_TW/language.json
+type = KEYVALUEJSON
+
+[nodebb.pages]
+source_file = public/language/en_GB/pages.json
+source_lang = en_GB
+trans.ar = public/language/ar/pages.json
+trans.cs = public/language/cs/pages.json
+trans.de = public/language/de/pages.json
+trans.es = public/language/es/pages.json
+trans.fi = public/language/fi/pages.json
+trans.fr = public/language/fr/pages.json
+trans.it = public/language/it/pages.json
+trans.pt_BR = public/language/pt_BR/pages.json
+trans.sk = public/language/sk/pages.json
+trans.sv = public/language/sv/pages.json
+trans.zh_CN = public/language/zh_CN/pages.json
+trans.zh_TW = public/language/zh_TW/pages.json
+type = KEYVALUEJSON
+
+[nodebb.topic]
+source_file = public/language/en_GB/topic.json
+source_lang = en_GB
+trans.ar = public/language/ar/topic.json
+trans.cs = public/language/cs/topic.json
+trans.de = public/language/de/topic.json
+trans.es = public/language/es/topic.json
+trans.fi = public/language/fi/topic.json
+trans.fr = public/language/fr/topic.json
+trans.it = public/language/it/topic.json
+trans.pt_BR = public/language/pt_BR/topic.json
+trans.sk = public/language/sk/topic.json
+trans.sv = public/language/sv/topic.json
+trans.zh_CN = public/language/zh_CN/topic.json
+trans.zh_TW = public/language/zh_TW/topic.json
+type = KEYVALUEJSON
+
