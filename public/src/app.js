@@ -458,6 +458,13 @@ var socket,
 		});
 	};
 
+	function updateOnlineStatus(uid) {
+		socket.emit('user.isOnline', uid, function(err, data) {
+			$('#logged-in-menu #user_label #user-profile-link>i').attr('class', 'fa fa-circle status-' + data.status);
+		});
+	}
+
+
 	app.updateHeader = function(err, data) {
 		$('#search-button').off().on('click', function(e) {
 			e.stopPropagation();
@@ -500,11 +507,14 @@ var socket,
 					userLabel.find('img').attr('src', data.picture);
 				}
 				if (data.username) {
-					userLabel.find('#user-profile-link>span').html(data.username);
+					userLabel.find('#user-profile-link>span').html(' ' + data.username);
 				}
 
 				$('#logout-link').on('click', app.logout);
 			}
+
+			updateOnlineStatus(data.uid);
+
 		} else {
 			if (allowGuestSearching) {
 				$('#search-button').removeClass("hide").show();
@@ -528,12 +538,14 @@ var socket,
 			}
 		});
 
-		$('#user-control-list .user-status').off('click').on('click', function() {
-			socket.emit('user.setStatus', $(this).attr('data-status'), function(err) {
+		$('#user-control-list .user-status').off('click').on('click', function(e) {
+			socket.emit('user.setStatus', $(this).attr('data-status'), function(err, data) {
 				if(err) {
 					return app.alertError(err.message);
 				}
+				updateOnlineStatus(data.uid);
 			});
+			e.preventDefault();
 		});
 	};
 
