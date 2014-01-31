@@ -18,6 +18,9 @@
 	"link": "Lien",
 	"share": "Partager",
 	"tools": "Outils",
+	"flag": "Signaler",
+
+	"flag_title":"Signaler ce post pour modération",
 
 	"thread_tools.title": "Outils du Fil",
 	"thread_tools.markAsUnreadForAll": "Marqué comme non lu",
