@@ -7,27 +7,21 @@ define(function() {
 
 	var active = '';
 
+	function getActiveSection() {
+		var url = window.location.href,
+		parts = url.split('/'),
+		active = parts[parts.length - 1];
+		return active;
+	}
+
 	Recent.init = function() {
 		app.enterRoom('recent_posts');
 
 		Recent.watchForNewPosts();
 
-		function getActiveSection() {
-			var url = window.location.href,
-			parts = url.split('/'),
-			active = parts[parts.length - 1];
-			return active;
-		}
 
-		active = getActiveSection();
+		active = Recent.selectActivePill();
 
-		jQuery('.nav-pills li').removeClass('active');
-		jQuery('.nav-pills li a').each(function() {
-			if (this.getAttribute('href').match(active)) {
-				jQuery(this.parentNode).addClass('active');
-				return false;
-			}
-		});
 
 		$('#new-topics-alert').on('click', function() {
 			$(this).addClass('hide');
@@ -40,6 +34,20 @@ define(function() {
 			}
 		});
 	};
+
+	Recent.selectActivePill = function() {
+		var active = getActiveSection();
+
+		jQuery('.nav-pills li').removeClass('active');
+		jQuery('.nav-pills li a').each(function() {
+			if (this.getAttribute('href').match(active)) {
+				jQuery(this.parentNode).addClass('active');
+				return false;
+			}
+		});
+
+		return active;
+	}
 
 	Recent.watchForNewPosts = function () {
 

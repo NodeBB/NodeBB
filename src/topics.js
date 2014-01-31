@@ -415,6 +415,42 @@ var async = require('async'),
 		});
 	}
 
+	function getTopics(set, uid, tids, callback) {
+		var latestTopics = {
+			'topics': []
+		};
+
+		if (!tids || !tids.length) {
+			return callback(null, latestTopics);
+		}
+
+		async.filter(tids, function(tid, next) {
+			threadTools.privileges(tid, uid, function(err, privileges) {
+				next(!err && privileges.read);
+			});
+		}, function(tids) {
+			Topics.getTopicsByTids(tids, 0, uid, function(err, topicData) {
+				if(err) {
+					return callback(err);
+				}
+
+				if(!topicData || !topicData.length) {
+					return callback(null, latestTopics);
+				}
+
+				db.sortedSetRevRank(set, topicData[topicData.length - 1].tid, function(err, rank) {
+					if(err) {
+						return calllback(err);
+					}
+
+					latestTopics.nextStart = parseInt(rank, 10) + 1;
+					latestTopics.topics = topicData;
+					callback(null, latestTopics);
+				});
+			});
+		});
+	}
+
 	Topics.getLatestTopics = function(current_user, start, end, term, callback) {
 
 		var timestamp = Date.now();
@@ -436,38 +472,17 @@ var async = require('async'),
 				return callback(err);
 			}
 
-			var latestTopics = {
-				'no_topics_message': 'hidden',
-				'topics': []
-			};
+			getTopics('topics:recent', current_user, tids, callback);
+		});
+	}
 
-			if (!tids || !tids.length) {
-				latestTopics.no_topics_message = 'show';
-				return callback(null, latestTopics);
+	Topics.getTopicsFromSet = function(uid, set, start, end, callback) {
+		db.getSortedSetRevRange(set, start, end, function(err, tids) {
+			if(err) {
+				return callback(err);
 			}
 
-			async.filter(tids, function(tid, next) {
-				threadTools.privileges(tid, current_user, function(err, privileges) {
-					next(!err && privileges.read);
-				});
-			}, function(tids) {
-				Topics.getTopicsByTids(tids, 0, current_user, function(err, topicData) {
-					if(err) {
-						return callback(err);
-					}
-
-					if(!topicData || !topicData.length) {
-						latestTopics.no_topics_message = 'show';
-						return callback(null, latestTopics);
-					}
-
-					db.sortedSetRevRank('topics:recent', topicData[topicData.length - 1].tid, function(err, rank) {
-						latestTopics.nextStart = parseInt(rank,10) + 1;
-						latestTopics.topics = topicData;
-						callback(null, latestTopics);
-					});
-				});
-			});
+			getTopics(set, uid, tids, callback);
 		});
 	}
 
@@ -1075,15 +1090,30 @@ var async = require('async'),
 	}
 
 	Topics.increasePostCount = function(tid, callback) {
-		db.incrObjectField('topic:' + tid, 'postcount', callback);
+		db.incrObjectField('topic:' + tid, 'postcount', function(err, value) {
+			if(err) {
+				return callback(err);
+			}
+			db.sortedSetAdd('topics:posts', value, tid, callback);
+		});
 	}
 
 	Topics.decreasePostCount = function(tid, callback) {
-		db.decrObjectField('topic:' + tid, 'postcount', callback);
+		db.decrObjectField('topic:' + tid, 'postcount', function(err, value) {
+			if(err) {
+				return callback(err);
+			}
+			db.sortedSetAdd('topics:posts', value, tid, callback);
+		});
 	}
 
 	Topics.increaseViewCount = function(tid, callback) {
-		db.incrObjectField('topic:' + tid, 'viewcount', callback);
+		db.incrObjectField('topic:' + tid, 'viewcount', function(err, value) {
+			if(err) {
+				return callback(err);
+			}
+			db.sortedSetAdd('topics:views', value, tid, callback);
+		});
 	}
 
 	Topics.isLocked = function(tid, callback) {
@@ -1143,6 +1173,8 @@ var async = require('async'),
 	Topics.delete = function(tid) {
 		Topics.setTopicField(tid, 'deleted', 1);
 		db.sortedSetRemove('topics:recent', tid);
+		db.sortedSetRemove('topics:posts', tid);
+		db.sortedSetRemove('topics:views', tid);
 
 		Topics.getTopicField(tid, 'cid', function(err, cid) {
 			feed.updateCategory(cid);
@@ -1152,8 +1184,10 @@ var async = require('async'),
 
 	Topics.restore = function(tid) {
 		Topics.setTopicField(tid, 'deleted', 0);
-		Topics.getTopicField(tid, 'lastposttime', function(err, lastposttime) {
-			db.sortedSetAdd('topics:recent', lastposttime, tid);
+		Topics.getTopicFields(tid, ['lastposttime', 'postcount', 'viewcount'], function(err, topicData) {
+			db.sortedSetAdd('topics:recent', topicData.lastposttime, tid);
+			db.sortedSetAdd('topics:posts', topicData.postcount, tid);
+			db.sortedSetAdd('topics:views', topicData.viewcount, tid);
 		});
 
 		Topics.getTopicField(tid, 'cid', function(err, cid) {

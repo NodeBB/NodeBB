@@ -430,7 +430,7 @@ module.exports.server = server;
 
 		// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 		(function () {
-			var routes = ['login', 'register', 'account', 'recent', '403', '404', '500'],
+			var routes = ['login', 'register', 'account', 'recent', 'popular', '403', '404', '500'],
 				loginRequired = ['unread', 'notifications'];
 
 			async.each(routes.concat(loginRequired), function(route, next) {
@@ -864,6 +864,16 @@ module.exports.server = server;
 				res: res
 			}, function (err, header) {
 				res.send(header + app.create_route('recent/' + req.params.term, null, 'recent') + templates.footer);
+			});
+
+		});
+
+		app.get('/popular/:term?', function (req, res) {
+			app.build_header({
+				req: req,
+				res: res
+			}, function (err, header) {
+				res.send(header + app.create_route('popular/' + req.params.term, null, 'popular') + templates.footer);
 			});
 
 		});
