@@ -9,6 +9,7 @@
 		user = require('../user'),
 		plugins = require('../plugins'),
 		utils = require('../../public/src/utils'),
+		templates = require('./../../public/src/templates'),
 
 		login_strategies = [];
 
