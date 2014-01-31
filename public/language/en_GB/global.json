@@ -56,5 +56,10 @@
 	"posted": "posted",
 	"in": "in",
 
-	"recentposts": "Recent Posts"
+	"recentposts": "Recent Posts",
+
+	"online": "Online",
+	"away": "Away",
+	"donotdisturb": "Do not disturb",
+	"invisible": "Invisible"
 }
