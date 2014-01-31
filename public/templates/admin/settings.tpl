@@ -84,18 +84,34 @@
 						<input type="checkbox" data-field="profile:convertProfileImageToPNG"> <strong>Convert profile image uploads to PNG</strong>
 					</label>
 				</div>
-				<label>Maximum User Image File Size</label>
-				<input type="text" class="form-control" placeholder="Maximum size of uploaded user images in kilobytes" data-field="maximumProfileImageSize" /><br />
-				<strong>Minimum Username Length</strong><br />
-				<input type="text" class="form-control" value="2" data-field="minimumUsernameLength"><br />
-				<strong>Maximum Username Length</strong><br />
-				<input type="text" class="form-control" value="16" data-field="maximumUsernameLength"><br />
-				<strong>Minimum Password Length</strong><br />
-				<input type="text" class="form-control" value="6" data-field="minimumPasswordLength"><br />
-				<strong>Maximum Signature Length</strong><br />
-				<input type="text" class="form-control" value="255" data-field="maximumSignatureLength"><br />
-				<strong>Forum Terms of Use <small>(Leave blank to disable)</small></strong><br />
-				<textarea class="form-control" data-field="termsOfUse"></textarea><br />
+				<div class="form-group">
+					<label>Days to remember user login sessions</label>
+					<input type="text" class="form-control" data-field="loginDays" placeholder="14" />
+				</div>
+				<div class="form-group">
+					<label>Maximum User Image File Size</label>
+					<input type="text" class="form-control" placeholder="Maximum size of uploaded user images in kilobytes" data-field="maximumProfileImageSize" />
+				</div>
+				<div class="form-group">
+					<label>Minimum Username Length</label>
+					<input type="text" class="form-control" value="2" data-field="minimumUsernameLength">
+				</div>
+				<div class="form-group">
+					<label>Maximum Username Length</label>
+					<input type="text" class="form-control" value="16" data-field="maximumUsernameLength">
+				</div>
+				<div class="form-group">
+					<label>Minimum Password Length</label>
+					<input type="text" class="form-control" value="6" data-field="minimumPasswordLength">
+				</div>
+				<div class="form-group">
+					<label>Maximum Signature Length</label>
+					<input type="text" class="form-control" value="255" data-field="maximumSignatureLength">
+				</div>
+				<div class="form-group">
+					<label>Forum Terms of Use <small>(Leave blank to disable)</small></label>
+					<textarea class="form-control" data-field="termsOfUse"></textarea>
+				</div>
 			</div>
 		</form>
 	</div>
