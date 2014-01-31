@@ -435,8 +435,8 @@ module.exports.server = server;
 
 			async.each(routes.concat(loginRequired), function(route, next) {
 				app.get('/' + route, function (req, res) {
-					if (loginRequired.indexOf(route) !== -1 && (req.user && req.user.uid > 0)) {
 
+					if ((route === 'register' || route === 'login') && (req.user && req.user.uid > 0)) {
 						user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
 							res.redirect('/user/' + userslug);
 						});
@@ -857,7 +857,6 @@ module.exports.server = server;
 					feed.loadFeed(rssPath, res);
 				}
 			});
-
 		});
 
 		app.get('/recent/:term?', function (req, res) {
