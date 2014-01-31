@@ -203,6 +203,7 @@ SocketUser.setStatus = function(socket, status, callback) {
 	user.setUserField(socket.uid, 'status', status, function(err) {
 		SocketUser.isOnline(socket, socket.uid, function(err, data) {
 			server.server.sockets.emit('user.isOnline', err, data);
+			callback(err, data);
 		});
 	});
 };
