@@ -107,7 +107,6 @@
 						<li><a href="{relative_path}/admin/languages"><i class="fa fa-fw fa-comments-o"></i> Languages</a></li>
 						<li><a href="{relative_path}/admin/settings"><i class="fa fa-fw fa-cogs"></i> Settings</a></li>
 						<li><a href="{relative_path}/admin/database"><i class="fa fa-fw fa-hdd-o"></i> Database</a></li>
-						<li><a href="{relative_path}/admin/logger"><i class="fa fa-fw fa-th"></i> Logger</a></li>
 						<li><a href="{relative_path}/admin/motd"><i class="fa fa-fw fa-comment"></i> MOTD</a></li>
 						<li><a href="{relative_path}/admin/events"><i class="fa fa-fw fa-calendar-o"></i> Events</a></li>
 					</ul>
@@ -134,6 +133,14 @@
 						<!-- END plugins -->
 					</ul>
 				</div>
+				<!-- IF env -->
+				<div class="well sidebar-nav">
+					<ul class="nav nav-list">
+						<li class="nav-header">Development</li>
+						<li><a href="{relative_path}/admin/logger"><i class="fa fa-fw fa-th"></i> Logger</a></li>
+					</ul>
+				</div>
+				<!-- ENDIF env -->
 			</div><!--/span-->
 
 			<div class="col-sm-9" id="content">
