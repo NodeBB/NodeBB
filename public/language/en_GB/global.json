@@ -51,5 +51,10 @@
 	"alert.follow": "You are now following %1!",
 
 	"posts": "Posts",
-	"views": "Views"
+	"views": "Views",
+
+	"posted": "posted",
+	"in": "in",
+
+	"recentposts": "Recent Posts"
 }
