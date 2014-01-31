@@ -1,9 +1,8 @@
 {
-	"title": "消息",
-	"back_to_home": "返回主頁",
-	"mark_all_as_read": "全部標記為已讀",
-	"outgoing_link": "站外鏈接",
-	"outgoing_link_message": "你正在離開本站。",
-	"continue_to": "繼續前往",
-	"return_to": "返回"
+    "title": "消息",
+    "back_to_home": "返回主頁",
+    "outgoing_link": "站外鏈接",
+    "outgoing_link_message": "你正在離開本站。",
+    "continue_to": "繼續前往",
+    "return_to": "返回"
 }

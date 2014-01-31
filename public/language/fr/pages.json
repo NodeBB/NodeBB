@@ -1,12 +1,12 @@
 {
-	"home": "Accueil",
-	"unread": "Sujets non lus",
-	"recent": "Sujets Récents",
-	"users": "Utilisateurs enregistrés",
-	"notifications": "Notifications",
-	"user.edit": "Edite \"%1\"",
-	"user.following": "Personnes que %1 suit",
-	"user.followers": "Personnes qui suivent  %1",
-	"user.favourites": "Messages favoris de %1",
-	"user.settings": "Préférences Utilisateur"
+    "home": "Accueil",
+    "unread": "Sujets non lus",
+    "recent": "Sujets Récents",
+    "users": "Utilisateurs enregistrés",
+    "notifications": "Notifications",
+    "user.edit": "Edite \"%1\"",
+    "user.following": "Personnes que %1 suit",
+    "user.followers": "Personnes qui suivent  %1",
+    "user.favourites": "Messages favoris de %1",
+    "user.settings": "Préférences Utilisateur"
 }

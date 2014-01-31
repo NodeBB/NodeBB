@@ -1,8 +1,8 @@
 {
-	"title": "Notiser",
-	"back_to_home": "Tillbaka till NodeBB",
-	"outgoing_link": "Utgående länk",
-	"outgoing_link_message": "Du lämnar nu",
-	"continue_to": "Fortsätt till",
-	"return_to": "Återgå till "
+    "title": "Notiser",
+    "back_to_home": "Tillbaka till NodeBB",
+    "outgoing_link": "Utgående länk",
+    "outgoing_link_message": "Du lämnar nu",
+    "continue_to": "Fortsätt till",
+    "return_to": "Återgå till "
 }

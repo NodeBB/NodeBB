@@ -1,9 +1,9 @@
 {
-	"latest_users": "Viimeisimmät Käyttäjät",
-	"top_posters": "Aktiivisimmat viestittelijät",
-	"most_reputation": "Eniten mainetta",
-	"online": "Online",
-	"search": "Etsi",
-	"enter_username": "Syötä käyttäjänimi etsiäksesi",
-	"load_more": "Lataa lisää"
+    "latest_users": "Viimeisimmät Käyttäjät",
+    "top_posters": "Aktiivisimmat viestittelijät",
+    "most_reputation": "Eniten mainetta",
+    "online": "Online",
+    "search": "Etsi",
+    "enter_username": "Syötä käyttäjänimi etsiäksesi",
+    "load_more": "Lataa lisää"
 }

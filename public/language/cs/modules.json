@@ -1,6 +1,6 @@
 {
-	"chat.chatting_with": "Chat s <span id=\"chat-with-name\"></span>",
-	"chat.placeholder": "napište zprávu sem a zmáčkněte enter pro odeslání",
-	"chat.send": "Odeslat",
-	"chat.no_active": "Nemáte žádné aktivní konverzace."
+    "chat.chatting_with": "Chat s <span id=\"chat-with-name\"></span>",
+    "chat.placeholder": "napište zprávu sem a zmáčkněte enter pro odeslání",
+    "chat.send": "Odeslat",
+    "chat.no_active": "Nemáte žádné aktivní konverzace."
 }

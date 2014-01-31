@@ -1,8 +1,8 @@
 {
-	"title": "Ilmoitukset",
-	"back_to_home": "Takaisin NodeBB:n",
-	"outgoing_link": "Ulkopuolinen linkki",
-	"outgoing_link_message": "Olet nyt poistumassa",
-	"continue_to": "Jatka",
-	"return_to": "Palaa "
+    "title": "Ilmoitukset",
+    "back_to_home": "Takaisin NodeBB:n",
+    "outgoing_link": "Ulkopuolinen linkki",
+    "outgoing_link_message": "Olet nyt poistumassa",
+    "continue_to": "Jatka",
+    "return_to": "Palaa "
 }

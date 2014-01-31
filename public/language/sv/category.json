@@ -1,14 +1,14 @@
 {
-	"new_topic_button": "Nytt ämne",
-	"no_topics": "<strong>Det finns inga ämnen i denna kategori.</strong><br />Varför inte skapa ett?",
-	"sidebar.recent_replies": "Senaste svaren",
-	"sidebar.active_participants": "Aktiva deltagare",
-	"sidebar.moderators": "Moderatorer",
-	"posts": "inlägg",
-	"views": "tittningar",
-	"posted": "skapad",
-	"browsing": "läser",
-	"no_replies": "Ingen har svarat",
-	"replied": "svarade",
-	"last_edited_by": "senaste ändrad av"
+    "new_topic_button": "Nytt ämne",
+    "no_topics": "<strong>Det finns inga ämnen i denna kategori.</strong><br />Varför inte skapa ett?",
+    "sidebar.recent_replies": "Senaste svaren",
+    "sidebar.active_participants": "Aktiva deltagare",
+    "sidebar.moderators": "Moderatorer",
+    "posts": "inlägg",
+    "views": "tittningar",
+    "posted": "skapad",
+    "browsing": "läser",
+    "no_replies": "Ingen har svarat",
+    "replied": "svarade",
+    "last_edited_by": "senaste ändrad av"
 }

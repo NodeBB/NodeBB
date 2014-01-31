@@ -1,10 +1,10 @@
 {
-	"login": "Prihlásiť sa",
-	"username": "Užívateľské meno",
-	"password": "Heslo",
-	"remember_me": "Zapamätať si ma?",
-	"forgot_password": "Zabudli ste heslo?",
-	"alternative_logins": "Dalšie spôsoby prihlásení",
-	"failed_login_attempt": "Prihlásenie sa nepodarilo, skuste to prosím znovu.",
-	"login_successful": "Prihlásenie prebehlo úspešne!"
+    "login": "Prihlásiť sa",
+    "username": "Užívateľské meno",
+    "password": "Heslo",
+    "remember_me": "Zapamätať si ma?",
+    "forgot_password": "Zabudli ste heslo?",
+    "alternative_logins": "Dalšie spôsoby prihlásení",
+    "failed_login_attempt": "Prihlásenie sa nepodarilo, skuste to prosím znovu.",
+    "login_successful": "Prihlásenie prebehlo úspešne!"
 }
