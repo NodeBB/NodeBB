@@ -129,6 +129,19 @@
 							<li id="logout-link">
 								<a href="#">[[global:logout]]</a>
 							</li>
+							<li role="presentation" class="divider"></li>
+							<li>
+								<a href="#"><i class="fa fa-circle state-online"></i><span> [[global:online]]</span></a>
+							</li>
+							<li>
+								<a href="#"><i class="fa fa-circle state-away"></i><span> [[global:away]]</span></a>
+							</li>
+							<li>
+								<a href="#"><i class="fa fa-circle state-dnd"></i><span> [[global:donotdisturb]]</span></a>
+							</li>
+							<li>
+								<a href="#"><i class="fa fa-circle state-invisible"></i><span> [[global:invisible]]</span></a>
+							</li>
 						</ul>
 					</li>
 

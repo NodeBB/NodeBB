@@ -501,7 +501,7 @@ var socket,
 					userLabel.find('img').attr('src', data.picture);
 				}
 				if (data.username) {
-					userLabel.find('span').html(data.username);
+					userLabel.find('#user-profile-link>span').html(data.username);
 				}
 
 				$('#logout-link').on('click', app.logout);
