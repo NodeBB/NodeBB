@@ -29,15 +29,15 @@
 						<input class="form-control" type="password" placeholder="[[login:password]]" name="password" id="password" />
 					</div>
 				</div>
-				<!-- <div class="form-group">
+				<div class="form-group">
 					<div class="col-lg-offset-2 col-lg-10">
 						<div class="checkbox">
 							<label>
-								<input type="checkbox"> [[login:remember_me]]
+								<input type="checkbox" name="remember" id="remember" checked /> [[login:remember_me]]
 							</label>
 						</div>
 					</div>
-				</div> -->
+				</div>
 				<div class="form-group">
 					<div class="col-lg-offset-2 col-lg-10">
 						<hr />
