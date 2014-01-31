@@ -94,6 +94,8 @@
 				<input type="text" class="form-control" value="6" data-field="minimumPasswordLength"><br />
 				<strong>Maximum Signature Length</strong><br />
 				<input type="text" class="form-control" value="255" data-field="maximumSignatureLength"><br />
+				<strong>Forum Terms of Use <small>(Leave blank to disable)</small></strong><br />
+				<textarea class="form-control" data-field="termsOfUse"></textarea><br />
 			</div>
 		</form>
 	</div>

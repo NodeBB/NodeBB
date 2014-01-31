@@ -58,6 +58,21 @@
 						</div>
 					</div>
 				</div>
+				<!-- IF termsOfUse -->
+				<div class="form-group">
+					<label class="col-lg-4 control-label">&nbsp;</label>
+					<div class="col-lg-8">
+						<hr />
+						<strong>[[register:terms_of_use]]</strong>
+						<textarea readonly class="form-control" rows=6>{termsOfUse}</textarea>
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" name="agree-terms" id="agree-terms"> [[register:agree_to_terms_of_use]]
+							</label>
+						</div>
+					</div>
+				</div>
+				<!-- ENDIF termsOfUse -->
 				<div class="form-group">
 					<div class="col-lg-offset-4 col-lg-8">
 						<hr />

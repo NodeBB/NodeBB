@@ -161,9 +161,10 @@ var path = require('path'),
 				data.authentication = login_strategies;
 
 				data.token = res.locals.csrf_token;
-				data.minimumUsernameLength = meta.config['minimumUsernameLength'];
-				data.maximumUsernameLength = meta.config['maximumUsernameLength'];
-				data.minimumPasswordLength = meta.config['minimumPasswordLength'];
+				data.minimumUsernameLength = meta.config.minimumUsernameLength;
+				data.maximumUsernameLength = meta.config.maximumUsernameLength;
+				data.minimumPasswordLength = meta.config.minimumPasswordLength;
+				data.termsOfUse = meta.config.termsOfUse;
 				res.json(data);
 			});
 
