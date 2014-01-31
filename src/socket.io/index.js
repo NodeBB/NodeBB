@@ -13,6 +13,7 @@ var	SocketIO = require('socket.io'),
 
 	db = require('../database'),
 	user = require('../user'),
+	socketUser = require('./user'),
 	topics = require('../topics'),
 	logger = require('../logger'),
 	meta = require('../meta'),
@@ -97,10 +98,8 @@ Sockets.init = function(server) {
 					});
 				}
 
-				socket.broadcast.emit('user.isOnline', null, {
-					online: isUserOnline(uid),
-					uid: uid,
-					timestamp: Date.now()
+				socketUser.isOnline(socket, uid, function(err, data) {
+					socket.broadcast.emit('user.isOnline', err, data);
 				});
 			});
 		});
@@ -121,10 +120,8 @@ Sockets.init = function(server) {
 				}
 			}
 
-			socket.broadcast.emit('user.isOnline', null, {
-				online: isUserOnline(uid),
-				uid: uid,
-				timestamp: Date.now()
+			socketUser.isOnline(socket, uid, function(err, data) {
+				socket.broadcast.emit('user.isOnline', err, data);
 			});
 
 			emitOnlineUserCount();

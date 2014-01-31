@@ -4,7 +4,8 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4>[[modules:chat.chatting_with]]</h4>
+				<h4>[[modules:chat.chatting_with]] <i id="chat-user-status" class="fa fa-circle status-offline"></i></h4>
+
 			</div>
 			<div class="modal-body">
 				<ul id="chat-content" class="well well-sm"></ul>

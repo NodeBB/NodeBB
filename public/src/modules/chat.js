@@ -89,18 +89,9 @@ define(['taskbar', 'string'], function(taskbar, S) {
 		return $('#chat-modal-' + touid).length !== 0;
 	}
 
-	function checkStatus(chatModal, callback) {
+	function checkStatus(chatModal) {
 		socket.emit('user.isOnline', chatModal.touid, function(err, data) {
-			if(data.online !== chatModal.online) {
-				if(data.online) {
-					module.appendChatMessage(chatModal, chatModal.username + ' is currently online.\n', data.timestamp);
-				} else {
-					module.appendChatMessage(chatModal, chatModal.username + ' is currently offline.\n', data.timestamp);
-				}
-				chatModal.online = data.online;
-			}
-			if(callback)
-				callback(data.online);
+			$('#chat-user-status').attr('class', 'fa fa-circle status-' + data.status);
 		});
 	}
 

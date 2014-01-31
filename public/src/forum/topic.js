@@ -570,7 +570,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			'event:topic_deleted', 'event:topic_restored', 'event:topic:locked',
 			'event:topic_unlocked', 'event:topic_pinned', 'event:topic_unpinned',
 			'event:topic_moved', 'event:post_edited', 'event:post_deleted', 'event:post_restored',
-			'posts.favourite'
+			'posts.favourite', 'user.isOnline'
 		]);
 
 		socket.on('get_users_in_room', function(data) {
@@ -652,6 +652,11 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 					});
 				}
 			}
+
+			app.populateOnlineUsers();
+		});
+
+		socket.on('user.isOnline', function(err, data) {
 			app.populateOnlineUsers();
 		});
 
