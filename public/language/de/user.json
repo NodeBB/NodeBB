@@ -1,14 +1,14 @@
 {
     "banned": "Gebannt",
     "offline": "offline",
-    "username": "User Name",
+    "username": "Nutzername",
     "email": "E-Mail",
     "fullname": "Kompletter Name",
     "website": "Homepage",
     "location": "Wohnort",
     "age": "Alter",
     "joined": "Beigetreten",
-    "lastonline": "Last Online",
+    "lastonline": "Zuletzt online",
     "profile_views": "Profilaufrufe",
     "reputation": "Reputation",
     "posts": "Posts",
@@ -31,6 +31,6 @@
     "show_email": "Zeige meine E-Mail Adresse an.",
     "has_no_follower": "Dieser User hat noch keine Follower.",
     "follows_no_one": "Dieser User folgt noch niemanden.",
-    "email_hidden": "Email Hidden",
-    "hidden": "hidden"
+    "email_hidden": "E-Mail Adresse versteckt",
+    "hidden": "versteckt"
 }
