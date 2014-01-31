@@ -406,7 +406,7 @@
 				namespace = '';
 			} else {
 				// clean up all undefined conditionals
-				template = template.replace(/<!-- IF([^@]*?)ENDIF([^@]*?)-->/gi, '');
+				template = template.replace(/(<!-- IF([^@]*?)(ELSE -->| -->))|(<!-- ENDIF([^@]*?)-->)/gi, '');
 			}
 
 			return template;
