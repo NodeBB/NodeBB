@@ -1,7 +1,7 @@
 <div class="unread">
 	<ol class="breadcrumb">
 		<li><a href="{relative_path}/">[[global:home]]</a></li>
-		<li class="active">{category_name}</li>
+		<li class="active">[[unread:title]]</li>
 	</ol>
 
 	<div class="alert alert-warning {no_topics_message}" id="category-no-topics">

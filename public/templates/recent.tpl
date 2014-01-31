@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
-	<li><a href="{relative_path}/">Home</a></li>
-	<li class="active">Recent <a href="{relative_path}/recent.rss"><i class="fa fa-rss-square"></i></a></li>
+	<li><a href="{relative_path}/">[[global:home]]</a></li>
+	<li class="active">[[recent:title]] <a href="{relative_path}/recent.rss"><i class="fa fa-rss-square"></i></a></li>
 </ol>
 
 <ul class="nav nav-pills">
