@@ -257,7 +257,7 @@ var async = require('async'),
 				return callback(new Error('Topic doesn\'t exist'));
 			}
 
-			posts.getPostFields(pid, ['tid', 'timestamp'], function(err, postData) {
+			posts.getPostFields(pid, ['deleted', 'tid', 'timestamp'], function(err, postData) {
 				if(err) {
 					return callback(err);
 				}
@@ -271,11 +271,12 @@ var async = require('async'),
 						return callback(err);
 					}
 
-					Topics.decreasePostCount(postData.tid);
+					if(!parseInt(postData.deleted, 10)) {
+						Topics.decreasePostCount(postData.tid);
+						Topics.increasePostCount(tid);
+					}
 
 					posts.setPostField(pid, 'tid', tid);
-
-					Topics.increasePostCount(tid);
 					Topics.addPostToTopic(tid, pid, postData.timestamp, callback);
 				});
 			});
