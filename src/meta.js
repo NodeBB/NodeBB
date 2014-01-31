@@ -19,7 +19,7 @@ var fs = require('fs'),
 
 			Meta.configs.list(function (err, config) {
 				if(err) {
-					winston.error(err.message);
+					winston.error(err);
 					return callback(err);
 				}
 
