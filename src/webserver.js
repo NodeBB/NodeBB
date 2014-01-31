@@ -832,29 +832,32 @@ module.exports.server = server;
 		});
 
 		app.get('/recent.rss', function(req, res) {
-			var rssPath = path.join(__dirname, '../', 'feeds/recent.rss'),
-				loadFeed = function () {
-					fs.readFile(rssPath, function (err, data) {
-						if (err) {
-							res.type('text').send(404, "Unable to locate an rss feed at this location.");
-						} else {
-							res.type('xml').set('Content-Length', data.length).send(data);
-						}
-					});
-
-				};
+			var rssPath = path.join(__dirname, '../', 'feeds/recent.rss');
 
 			if (!fs.existsSync(rssPath)) {
 				feed.updateRecent(function (err) {
 					if (err) {
 						res.redirect('/404');
 					} else {
-						loadFeed();
+						feed.loadFeed(rssPath, res);
 					}
 				});
 			} else {
-				loadFeed();
+				feed.loadFeed(rssPath, res);
 			}
+		});
+
+		app.get('/popular.rss', function(req, res) {
+			var rssPath = path.join(__dirname, '../', 'feeds/popular.rss');
+
+			feed.updatePopular(function (err) {
+				if (err) {
+					res.redirect('/404');
+				} else {
+					feed.loadFeed(rssPath, res);
+				}
+			});
+
 		});
 
 		app.get('/recent/:term?', function (req, res) {
