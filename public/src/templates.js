@@ -331,19 +331,21 @@
 					for (var i = 0, ii = matches.length; i < ii; i++) {
 						var conditionalBlock = matches[i].split(/<!-- ELSE -->/);
 
+						var statement = new RegExp("(<!--[\\s]*IF " + key + "[\\s]*-->)|(<!--[\\s]*ENDIF " + key + "[\\s]*-->)", 'gi');
+
 						if (conditionalBlock[1]) {
 							// there is an else statement
 							if (!value) {
-								template = template.replace(matches[i], conditionalBlock[1].replace(/<!-- ((\IF\b)|(\bENDIF\b))([^@]*?)-->/gi, ''));
+								template = template.replace(matches[i], conditionalBlock[1].replace(statement, ''));
 							} else {
-								template = template.replace(matches[i], conditionalBlock[0].replace(/<!-- ((\IF\b)|(\bENDIF\b))([^@]*?)-->/gi, ''));
+								template = template.replace(matches[i], conditionalBlock[0].replace(statement, ''));
 							}
 						} else {
 							// regular if statement
 							if (!value) {
 								template = template.replace(matches[i], '');
 							} else {
-								template = template.replace(matches[i], matches[i].replace(/<!-- ((\IF\b)|(\bENDIF\b))([^@]*?)-->/gi, ''));
+								template = template.replace(matches[i], matches[i].replace(statement, ''));
 							}
 						}
 					}
