@@ -11,6 +11,7 @@ case "$1" in
 
 	upgrade)
 		npm install
+		ls -d node_modules/nodebb* | xargs -n1 basename | xargs npm install
 		ls -d node_modules/nodebb* | xargs -n1 basename | xargs npm update
 		node app --upgrade
 		echo -e "\n\e[00;32mNodeBB Dependencies up-to-date!\e[00;00m";
