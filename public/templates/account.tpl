@@ -110,7 +110,7 @@
 		<div class="col-md-6 user-recent-posts">
 			<div class="topic-row panel panel-default clearfix">
 				<div class="panel-heading">
-					<h3 class="panel-title">Recent Posts</h3>
+					<h3 class="panel-title">[[global:recentposts]]</h3>
 				</div>
 				<div class="panel-body">
 					<!-- BEGIN posts -->
@@ -118,8 +118,8 @@
 						<p>{posts.content}</p>
 						<small>
 							<span class="pull-right">
-								<a href="../../topic/{posts.tid}/#{posts.pid}">posted</a>
-								in
+								<a href="../../topic/{posts.tid}/#{posts.pid}">[[global:posted]]</a>
+								[[global:in]]
 								<a href="../../category/{posts.categorySlug}">
 									<i class="fa {posts.categoryIcon}"></i> {posts.categoryName}
 								</a>
