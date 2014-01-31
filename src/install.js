@@ -410,15 +410,7 @@ var async = require('async'),
 							return callback(new Error('invalid-values'));
 						}
 
-						Groups.getGidFromName('administrators', function (err, gid) {
-							if (gid) {
-								Groups.join(gid, uid, callback);
-							} else {
-								Groups.create('administrators', 'Forum Administrators', function (err, groupObj) {
-									Groups.join(groupObj.gid, uid, callback);
-								});
-							}
-						});
+						Groups.joinByGroupName('administrators', uid, callback);
 					});
 				},
 				retryPassword = function (originalResults) {
