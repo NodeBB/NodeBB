@@ -12,5 +12,7 @@
     "confirm_password": "Confirmer le Mot de passe",
     "confirm_password_placeholder": "Confirmer le Mot de passe",
     "register_now_button": "S'enregistrer Maintenant",
-    "alternative_registration": "Enregistrement Alternatif"
+    "alternative_registration": "Enregistrement Alternatif",
+    "terms_of_use": "Conditions d'utilisation",
+    "agree_to_terms_of_use": "J'accepte les Conditions d'utilisation"
 }

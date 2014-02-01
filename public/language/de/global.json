@@ -40,5 +40,13 @@
     "alert.unfollow": "Du folgst %1 nicht länger!",
     "alert.follow": "Du folgst nun %1!",
     "posts": "Beiträge",
-    "views": "Aufrufe"
+    "views": "Aufrufe",
+    "posted": "posted",
+    "in": "in",
+    "recentposts": "Recent Posts",
+    "online": "Online",
+    "away": "Away",
+    "dnd": "Do not Disturb",
+    "invisible": "Invisible",
+    "offline": "Offline"
 }

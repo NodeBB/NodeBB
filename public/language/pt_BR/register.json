@@ -12,5 +12,7 @@
     "confirm_password": "Confirmar Senha",
     "confirm_password_placeholder": "Confirmar Senha",
     "register_now_button": "Cadastrar Agora",
-    "alternative_registration": "Você pode usar essas outras formas de cadastro"
+    "alternative_registration": "Você pode usar essas outras formas de cadastro",
+    "terms_of_use": "Terms of Use",
+    "agree_to_terms_of_use": "I agree to the Terms of Use"
 }
