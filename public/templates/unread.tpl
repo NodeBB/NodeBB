@@ -4,6 +4,7 @@
 		<li class="active">[[unread:title]]</li>
 	</ol>
 
+
 	<div class="alert alert-warning {no_topics_message}" id="category-no-topics">
 		<strong>[[unread:no_unread_topics]]</strong>
 	</div>
