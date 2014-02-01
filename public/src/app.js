@@ -177,13 +177,13 @@ var socket,
 		if (alert.length > 0) {
 			alert.find('strong').html(title);
 			alert.find('p').html(params.message);
-			alert.attr('class', "alert toaster-alert " + "alert-" + params.type);
+			alert.attr('class', "alert alert-dismissable alert-" + params.type);
 
 			clearTimeout(alert.attr('timeoutId'));
 			startTimeout(alert, params.timeout);
 		} else {
-			var div = $('<div id="' + alert_id + '" class="alert toaster-alert alert-' + params.type +'"></div>'),
-				button = $('<button class="close">&times;</button>'),
+			var div = $('<div id="' + alert_id + '" class="alert alert-dismissable alert-' + params.type +'"></div>'),
+				button = $('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'),
 				strong = $('<strong>' + title + '</strong>'),
 				p = $('<p>' + params.message + '</p>');
 
