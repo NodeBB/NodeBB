@@ -243,8 +243,12 @@ function updateRoomBrowsingText(roomName) {
 	var	uids = getUidsInRoom(roomName),
 		anonymousCount = getAnonymousCount(roomName);
 
-	user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, users) {
+	user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status'], function(err, users) {
 		if(!err) {
+			users = users.filter(function(user) {
+				return user.status !== 'offline';
+			});
+
 			io.sockets.in(roomName).emit('get_users_in_room', {
 				users: users,
 				anonymousCount: anonymousCount,
