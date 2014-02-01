@@ -487,16 +487,21 @@ module.exports.server = server;
 					}, next);
 				},
 				"categories": function (next) {
+					function canSee(category, next) {
+						CategoryTools.privileges(category.cid, ((req.user) ? req.user.uid || 0 : 0), function(err, privileges) {
+							next(!err && privileges.read);
+						});
+					}
+
 					categories.getAllCategories(0, function (err, returnData) {
 						returnData.categories = returnData.categories.filter(function (category) {
-							if (parseInt(category.disabled, 10) !== 1) {
-								return true;
-							} else {
-								return false;
-							}
+							return parseInt(category.disabled, 10) !== 1;
 						});
 
-						next(null, returnData);
+						async.filter(returnData.categories, canSee, function(visibleCategories) {
+							returnData.categories = visibleCategories;
+							next(null, returnData);
+						});
 					});
 				}
 			}, function (err, data) {
