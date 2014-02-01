@@ -91,7 +91,7 @@ define(['taskbar', 'string'], function(taskbar, S) {
 
 	function checkStatus(chatModal) {
 		socket.emit('user.isOnline', chatModal.touid, function(err, data) {
-			$('#chat-user-status').attr('class', 'fa fa-circle status-' + data.status);
+			$('#chat-user-status').attr('class', 'fa fa-circle status ' + data.status);
 		});
 	}
 

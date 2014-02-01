@@ -274,7 +274,7 @@ var socket,
 					uid = el.parents('li').attr('data-uid');
 
 				if (uid && users[uid]) {
-					el.siblings('i').attr('class', 'fa fa-circle status-' + users[uid].status)
+					el.siblings('i').attr('class', 'fa fa-circle status ' + users[uid].status)
 				}
 			});
 		});
@@ -460,7 +460,7 @@ var socket,
 
 	function updateOnlineStatus(uid) {
 		socket.emit('user.isOnline', uid, function(err, data) {
-			$('#logged-in-menu #user_label #user-profile-link>i').attr('class', 'fa fa-circle status-' + data.status);
+			$('#logged-in-menu #user_label #user-profile-link>i').attr('class', 'fa fa-circle status ' + data.status);
 		});
 	}
 

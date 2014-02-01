@@ -90,7 +90,7 @@ define(['forum/accountheader'], function(header) {
 
 		translator.get('global:' + data.status, function(translated) {
 			onlineStatus.find('span span').text(translated);
-			onlineStatus.find('i').attr('class', 'fa fa-circle status-' + data.status);
+			onlineStatus.find('i').attr('class', 'fa fa-circle status ' + data.status);
 		});
 
 	};
