@@ -123,6 +123,9 @@ define(['taskbar', 'string'], function(taskbar, S) {
 					start:function() {
 						module.bringModalToTop(chatModal);
 					},
+					stop:function() {
+						chatModal.find('#chat-message-input').focus();
+					},
 					handle: '.modal-header'
 				});
 
