@@ -12,5 +12,7 @@
     "confirm_password": "Potvrzení hesla",
     "confirm_password_placeholder": "Potvrďte heslo",
     "register_now_button": "Zaregistrovat se",
-    "alternative_registration": "Jiný způsob registrace"
+    "alternative_registration": "Jiný způsob registrace",
+    "terms_of_use": "Terms of Use",
+    "agree_to_terms_of_use": "I agree to the Terms of Use"
 }

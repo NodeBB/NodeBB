@@ -12,5 +12,7 @@
     "confirm_password": "Confirmar Contraseña",
     "confirm_password_placeholder": "Confirmar Contraseña",
     "register_now_button": "Registrarme ahora",
-    "alternative_registration": "Otros metodos interesantes para registrarse"
+    "alternative_registration": "Otros metodos interesantes para registrarse",
+    "terms_of_use": "Terms of Use",
+    "agree_to_terms_of_use": "I agree to the Terms of Use"
 }

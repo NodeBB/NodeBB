@@ -12,5 +12,7 @@
     "confirm_password": "Passwort bestätigen",
     "confirm_password_placeholder": "Passwort zur Bestätigung erneut eingeben",
     "register_now_button": "Jetzt registrieren",
-    "alternative_registration": "Alternative Registrierung"
+    "alternative_registration": "Alternative Registrierung",
+    "terms_of_use": "Terms of Use",
+    "agree_to_terms_of_use": "I agree to the Terms of Use"
 }

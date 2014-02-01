@@ -40,5 +40,13 @@
     "alert.unfollow": "Vous ne suivez plus %1!",
     "alert.follow": "Vous suivez maintenant %1!",
     "posts": "Messages",
-    "views": "Vues"
+    "views": "Vues",
+    "posted": "posté",
+    "in": "dans",
+    "recentposts": "Messages Récents",
+    "online": "En ligne",
+    "away": "Absent",
+    "dnd": "Occupé",
+    "invisible": "Invisible",
+    "offline": "Hors ligne"
 }

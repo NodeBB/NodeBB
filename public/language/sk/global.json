@@ -40,5 +40,13 @@
     "alert.unfollow": "Už nenasleduješ %!",
     "alert.follow": "Nasleduješ %1!",
     "posts": "Príspevkov",
-    "views": "Zhliadnutí"
+    "views": "Zhliadnutí",
+    "posted": "posted",
+    "in": "in",
+    "recentposts": "Recent Posts",
+    "online": "Online",
+    "away": "Away",
+    "dnd": "Do not Disturb",
+    "invisible": "Invisible",
+    "offline": "Offline"
 }
