@@ -598,7 +598,7 @@ var async = require('async'),
 		};
 
 		function noUnreadTopics() {
-			unreadTopics.no_topics_message = 'show';
+			unreadTopics.no_topics_message = '';
 			unreadTopics.show_markallread_button = 'hidden';
 			callback(null, unreadTopics);
 		}
@@ -619,7 +619,7 @@ var async = require('async'),
 					unreadTopics.nextStart = parseInt(rank, 10) + 1;
 
 					if (!topicData || topicData.length === 0) {
-						unreadTopics.no_topics_message = 'show';
+						unreadTopics.no_topics_message = '';
 					}
 					if (uid === 0 || topicData.length === 0) {
 						unreadTopics.show_markallread_button = 'hidden';
