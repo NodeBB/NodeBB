@@ -208,7 +208,7 @@ define(['taskbar'], function(taskbar) {
 					break;
 					case 'fa fa-list':
 						// Nothing selected
-						insertIntoInput(postContentEl, "\n\n* list item");
+						insertIntoInput(postContentEl, "\n* list item");
 					break;
 					case 'fa fa-link':
 						if (selectionStart === selectionEnd) {
@@ -282,9 +282,13 @@ define(['taskbar'], function(taskbar) {
 					if (resizeActive) {
 						position = (e.clientY + resizeOffset);
 						var newHeight = $(window).height() - position;
+						var paddingBottom = parseInt(postContainer.css('padding-bottom'), 10);
 						if(newHeight > $(window).height() - $('#header-menu').height() - 20) {
 							newHeight = $(window).height() - $('#header-menu').height() - 20;
+						} else if (newHeight < paddingBottom) {
+							newHeight = paddingBottom;
 						}
+
 						postContainer.css('height', newHeight);
 						$('body').css({'margin-bottom': newHeight});
 						resizeSavePosition(newHeight);
