@@ -269,6 +269,7 @@ define(['taskbar'], function(taskbar) {
 				},
 				resizeStop = function() {
 					resizeActive = false;
+					bodyEl.focus();
 					$(window).off('mousemove', resizeAction);
 					$(window).off('mouseup', resizeStop);
 					document.body.removeEventListener('touchmove', resizeTouchAction);
