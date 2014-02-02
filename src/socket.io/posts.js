@@ -214,6 +214,10 @@ SocketPosts.getPidPage = function(socket, pid, callback) {
 }
 
 SocketPosts.flag = function(socket, pid, callback) {
+	if (!socket.uid) {
+		return callback(new Error('not-logged-in'));
+	}
+
 	var message = '',
 		path = '';
 
