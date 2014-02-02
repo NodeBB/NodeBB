@@ -388,9 +388,6 @@
 						var key = namespace + d,
 							value = typeof data[d] === 'string' ? data[d].replace(/^\s+|\s+$/g, '') : data[d];
 
-						if (key === 'metaTags.content' && data[d]) {
-							console.log(typeof data[d] === 'string', data[d].replace(/^\s+|\s+$/g, ''));
-						}
 						checkConditional(key, value);
 						checkConditional('!' + key, !value);
 
