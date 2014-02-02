@@ -446,7 +446,7 @@ var fs = require('fs'),
 			});
 		});
 
-		app.get('/api/users', getUsersSortedByJoinDate);
+		app.get('/api/users', getOnlineUsers);
 		app.get('/api/users/sort-posts', getUsersSortedByPosts);
 		app.get('/api/users/sort-reputation', getUsersSortedByReputation);
 		app.get('/api/users/latest', getUsersSortedByJoinDate);
