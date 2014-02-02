@@ -186,43 +186,39 @@ var winston = require('winston'),
 	}
 
 	ThreadTools.move = function(tid, cid, callback) {
-		topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
+		var topic;
+		async.waterfall([
+			function(next) {
+				topics.getTopicFields(tid, ['cid', 'lastposttime', 'deleted'], next);
+			},
+			function(topicData, next) {
+				topic = topicData;
+				db.sortedSetRemove('categories:' + topicData.cid + ':tid', tid, next);
+			},
+			function(result, next) {
+				db.sortedSetAdd('categories:' + cid + ':tid', topic.lastposttime, tid, next);
+			}
+		], function(err, result) {
 			if(err) {
 				return callback(err);
 			}
+			var oldCid = topic.cid;
 
-			var oldCid = topicData.cid;
-			if(!oldCid) {
-				return callback(new Error('invalid-topic'));
+			topics.setTopicField(tid, 'cid', cid);
+
+			categories.moveActiveUsers(tid, oldCid, cid);
+			categories.moveRecentReplies(tid, oldCid, cid, function(err, data) {
+				if (err) {
+					winston.err(err);
+				}
+			});
+
+			if(!parseInt(topic.deleted, 10)) {
+				categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1);
+				categories.incrementCategoryFieldBy(cid, 'topic_count', 1);
 			}
 
-			db.sortedSetRemove('categories:' + oldCid + ':tid', tid, function(err, result) {
-				if(err) {
-					return callback(err);
-				}
-
-				db.sortedSetAdd('categories:' + cid + ':tid', topicData.lastposttime, tid, function(err, result) {
-
-					if(err) {
-						return callback(err);
-					}
-
-					topics.setTopicField(tid, 'cid', cid);
-
-					categories.moveRecentReplies(tid, oldCid, cid, function(err, data) {
-						if (err) {
-							winston.err(err);
-						}
-					});
-
-					categories.moveActiveUsers(tid, oldCid, cid);
-
-					categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1);
-					categories.incrementCategoryFieldBy(cid, 'topic_count', 1);
-
-					callback(null);
-				});
-			});
+			callback(null);
 		});
 	}
 
