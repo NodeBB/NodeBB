@@ -88,10 +88,22 @@ Sockets.init = function(server) {
 					db.sortedSetAdd('users:online', Date.now(), uid, function(err, data) {
 						socket.join('uid_' + uid);
 
-						user.getUserField(uid, 'username', function(err, username) {
+						async.parallel({
+							username: function(next) {
+								user.getUserField(uid, 'username', function(err, username) {
+									next(err, username);
+								});
+							},
+							isAdmin: function(next) {
+								user.isAdministrator(uid, function(err, isAdmin) {
+									next(err, isAdmin);
+								});
+							}
+						}, function(err, userData) {
 							socket.emit('event:connect', {
 								status: 1,
-								username: username,
+								username: userData.username,
+								isAdmin: userData.isAdmin,
 								uid: uid
 							});
 						});
