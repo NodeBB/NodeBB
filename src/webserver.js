@@ -154,7 +154,7 @@ module.exports.server = server;
 			}
 
 			user.isAdministrator(uid, function(err, isAdmin) {
-				templateValues.adminDisplay = isAdmin ? 'show' : 'hide';
+				templateValues.isAdmin = isAdmin;
 
 				translator.translate(templates.header.parse(templateValues), function(template) {
 					callback(null, template);

@@ -72,9 +72,11 @@
 					<li>
 						<a href="{relative_path}/users"><i class="fa fa-fw fa-users" title="[[global:header.users]]"></i><span class="visible-xs-inline"> [[global:header.users]]</span></a>
 					</li>
-					<li class="{adminDisplay}">
+					<!-- IF isAdmin -->
+					<li>
 						<a href="{relative_path}/admin"><i class="fa fa-fw fa-cogs" title="[[global:header.admin]]"></i><span class="visible-xs-inline"> [[global:header.admin]]</span></a>
 					</li>
+					<!-- ENDIF isAdmin -->
 
 					<li class="visible-xs">
 						<a id="mobile-search-button" href="{relative_path}/search"><i class="fa fa-search" title="[[global:header.search]]"></i> [[global:header.search]]</a>
