@@ -31,7 +31,6 @@ var	nconf = require('nconf'),
 
 		// Static Assets
 		app.get('/plugins/:id/*', function(req, res) {
-
 			var	relPath = req._parsedUrl.pathname.replace(nconf.get('relative_path') + '/plugins/' + req.params.id, '');
 
 			if (plugins.staticDirs[req.params.id]) {
