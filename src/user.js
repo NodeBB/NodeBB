@@ -413,28 +413,39 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.getUsers = function(set, start, stop, callback) {
-		var data = [];
 
 		db.getSortedSetRevRange(set, start, stop, function(err, uids) {
 			if (err) {
 				return callback(err, null);
 			}
 
-			function iterator(uid, callback) {
+			function getUserData(uid, callback) {
 				User.getUserData(uid, function(err, userData) {
+					if(!userData.status) {
+						userData.status = 'offline';
+					}
+
 					User.isAdministrator(uid, function(err, isAdmin) {
 						if (userData) {
-							userData.administrator = isAdmin?"1":"0";
-							data.push(userData);
+							userData.administrator = isAdmin ? '1':'0';
 						}
-						callback(null);
+
+						if(set === 'users:online') {
+							return callback(null, userData);
+						}
+
+						db.sortedSetScore('users:online', uid, function(err, score) {
+							if(!score) {
+								userData.status = 'offline';
+							}
+
+							callback(null, userData);
+						});
 					});
 				});
 			}
 
-			async.eachSeries(uids, iterator, function(err) {
-				callback(err, data);
-			});
+			async.map(uids, getUserData, callback);
 		});
 	};
 
