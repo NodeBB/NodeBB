@@ -34,6 +34,7 @@ var socket,
 					socket.on('event:connect', function (data) {
 						app.username = data.username;
 						app.uid = data.uid;
+						app.isAdmin = data.isAdmin;
 
 						app.showLoginMessage();
 						socket.emit('meta.updateHeader', {
