@@ -8,7 +8,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		}
 	}
 
-	$('body').on('action:ajaxifying', function(ev, data) {
+	$(window).on('action:ajaxifying', function(ev, data) {
 
 		if(data.url.indexOf('topic') === 0) {
 			$('.pagination-block a').off('click').on('click', function() {
