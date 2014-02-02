@@ -9,6 +9,7 @@ var socket,
 
 (function () {
 	var showWelcomeMessage = false;
+	var body = $('body');
 
 	app.loadConfig = function() {
 		$.ajax({
@@ -40,6 +41,8 @@ var socket,
 						socket.emit('meta.updateHeader', {
 							fields: ['username', 'picture', 'userslug']
 						}, app.updateHeader);
+
+						body.trigger('action:connected');
 					});
 
 					socket.on('event:alert', function (data) {
@@ -79,6 +82,7 @@ var socket,
 							app.enterRoom(room, true);
 
 							socket.emit('meta.reconnected');
+							body.trigger('action:reconnected');
 
 							setTimeout(function() {
 								reconnectEl.removeClass('active').addClass("hide");
@@ -91,6 +95,7 @@ var socket,
 					});
 
 					socket.on('event:disconnect', function() {
+						body.trigger('action:disconnected');
 						socket.socket.connect();
 					});
 
