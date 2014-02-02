@@ -37,7 +37,7 @@ var ajaxify = {};
 
 		$(window).off('scroll');
 
-		$('body').trigger('action:ajaxify.start', { url: url });
+		$(window).trigger('action:ajaxify.start', { url: url });
 		$('body').trigger('action:ajaxifying', {url: url});	// Deprecated as of v0.4.0
 
 		if ($('#content').hasClass('ajaxifying')) {
@@ -121,7 +121,7 @@ var ajaxify = {};
 				}
 
 				app.refreshTitle(url);
-				$('body').trigger('action:ajaxify.end', { url: url });
+				$(window).trigger('action:ajaxify.end', { url: url });
 			}, url);
 
 			return true;
