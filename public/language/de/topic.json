@@ -3,7 +3,7 @@
     "topics": "Themen",
     "no_topics_found": "Keine passende Themen gefunden.",
     "profile": "Profil",
-    "posted_by": "Posted by",
+    "posted_by": "Geposted von",
     "chat": "Chat",
     "notify_me": "Werde bei neues Antworten auf dieses Thema benachrichtigt.",
     "quote": "zitieren",
@@ -43,5 +43,5 @@
     "fork_no_pids": "Keine Beiträge ausgewählt!",
     "fork_success": "Thema erfolgreich aufgespalten!",
     "reputation": "Reputation",
-    "posts": "Posts"
+    "posts": "Beiträge"
 }

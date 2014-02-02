@@ -24,6 +24,7 @@
 	<script src="{relative_path}/vendor/colorpicker/colorpicker.js"></script>
 	<script src="{relative_path}/vendor/xregexp/xregexp.js"></script>
 	<script src="{relative_path}/vendor/xregexp/unicode/unicode-base.js"></script>
+	<script src="{relative_path}/vendor/tabIndent/tabIndent.js"></script>
 
 	<script>
 		require.config({

@@ -97,6 +97,11 @@ define(['forum/admin/settings'], function(Settings) {
 			instListEl.appendChild(themeFrag);
 		});
 
+		// Proper tabbing for "Custom CSS" field
+		var	customCSSEl = $('textarea[data-field]')[0];
+		tabIndent.config.tab = '    ';
+		tabIndent.render(customCSSEl);
+
 		Settings.prepare();
 	}
 

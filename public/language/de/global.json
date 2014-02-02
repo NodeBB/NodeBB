@@ -41,12 +41,12 @@
     "alert.follow": "Du folgst nun %1!",
     "posts": "Beiträge",
     "views": "Aufrufe",
-    "posted": "posted",
+    "posted": "geposted",
     "in": "in",
-    "recentposts": "Recent Posts",
+    "recentposts": "Aktuelle Beiträge",
     "online": "Online",
-    "away": "Away",
-    "dnd": "Do not Disturb",
-    "invisible": "Invisible",
+    "away": "Abwesend",
+    "dnd": "Nicht stören",
+    "invisible": "Unsichtbar",
     "offline": "Offline"
 }

@@ -30,6 +30,10 @@
 		redisClient = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host'));
 	}
 
+	if (nconf.get('redis:password')) {
+		redisClient.auth(nconf.get('redis:password'));
+	}
+
 	redisClient.on('error', function (err) {
 		winston.error(err.message);
 		process.exit();
@@ -50,10 +54,6 @@
 	var	userSearch = reds.createSearch('nodebbusersearch'),
 		postSearch = reds.createSearch('nodebbpostsearch'),
 		topicSearch = reds.createSearch('nodebbtopicsearch');
-
-	if (nconf.get('redis:password')) {
-		redisClient.auth(nconf.get('redis:password'));
-	}
 
 	var db = parseInt(nconf.get('redis:database'), 10);
 
