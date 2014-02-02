@@ -134,16 +134,41 @@ var fs = require('fs'),
 				},
 				function(next) {
 					// Static Directories for Plugins
-					if (pluginData.staticDir) {
-						staticDir = path.join(pluginPath, pluginData.staticDir);
+					var	realPath,
+						validMappedPath = /^[\w\-_]+$/;
 
-						fs.exists(staticDir, function(exists) {
-							if (exists) {
-								Plugins.staticDirs[pluginData.id] = staticDir;
-								next();
-							} else next();
-						});
-					} else next();
+					pluginData.staticDirs = pluginData.staticDirs || {};
+
+					// Deprecated, to be removed v0.5
+					if (pluginData.staticDir) {
+						winston.warn('[plugins/' + pluginData.id + '] staticDir is deprecated, use staticDirs instead');
+						Plugins.staticDirs[pluginData.id] = path.join(pluginPath, pluginData.staticDir);
+					}
+
+					for(key in pluginData.staticDirs) {
+						(function(mappedPath) {
+							if (pluginData.staticDirs.hasOwnProperty(mappedPath)) {
+								if (Plugins.staticDirs[mappedPath]) {
+									winston.warn('[plugins/' + pluginData.id + '] Mapped path (' + mappedPath + ') already specified!');
+								} else if (!validMappedPath.test(mappedPath)) {
+									winston.warn('[plugins/' + pluginData.id + '] Invalid mapped path specified: ' + mappedPath + '. Path must adhere to: ' + validMappedPath.toString());
+								} else {
+									realPath = pluginData.staticDirs[mappedPath];
+									staticDir = path.join(pluginPath, realPath);
+
+									(function(staticDir) {
+										fs.exists(staticDir, function(exists) {
+											if (exists) {
+												Plugins.staticDirs[mappedPath] = staticDir;
+											}
+										});
+									}(staticDir));
+								}
+							}
+						}(key));
+					}
+
+					next();
 				},
 				function(next) {
 					// CSS Files for plugins
@@ -152,9 +177,16 @@ var fs = require('fs'),
 							winston.info('[plugins] Found ' + pluginData.css.length + ' CSS file(s) for plugin ' + pluginData.id);
 						}
 
-						Plugins.cssFiles = Plugins.cssFiles.concat(pluginData.css.map(function(file) {
-							return path.join('/plugins', pluginData.id, file);
-						}));
+						if (!pluginData.staticDir) {
+							Plugins.cssFiles = Plugins.cssFiles.concat(pluginData.css.map(function(file) {
+								return path.join('/plugins', file);
+							}));
+						} else {
+							winston.warn('[plugins/' + pluginData.id + '] staticDir is deprecated, define CSS files with new staticDirs instead.');
+							Plugins.cssFiles = Plugins.cssFiles.concat(pluginData.css.map(function(file) {
+								return path.join('/plugins', pluginData.id, file);
+							}));
+						}
 
 						next();
 					} else {

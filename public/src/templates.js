@@ -385,8 +385,11 @@
 					} else if (data[d] instanceof Object) {
 						template = parse(data[d], d + '.', template);
 					} else {
-						checkConditional(namespace + d, data[d]);
-						checkConditional('!' + namespace + d, !data[d]);
+						var key = namespace + d,
+							value = typeof data[d] === 'string' ? data[d].replace(/^\s+|\s+$/g, '') : data[d];
+
+						checkConditional(key, value);
+						checkConditional('!' + key, !value);
 
 						if (blockInfo && blockInfo.iterator) {
 							checkConditional('@first', blockInfo.iterator === 0);
@@ -395,7 +398,7 @@
 							checkConditional('!@last', blockInfo.iterator !== blockInfo.total);
 						}
 
-						template = replace(namespace + d, data[d], template);
+						template = replace(key, value, template);
 					}
 				}
 			}
@@ -406,7 +409,8 @@
 				namespace = '';
 			} else {
 				// clean up all undefined conditionals
-				template = template.replace(/(<!-- IF([^@]*?)(ELSE -->| -->))|(<!-- ENDIF([^@]*?)-->)/gi, '');
+				template = template.replace(/<!-- ELSE -->/gi, 'ENDIF -->')
+									.replace(/<!-- IF([^@]*?)ENDIF([^@]*?)-->/gi, '');
 			}
 
 			return template;

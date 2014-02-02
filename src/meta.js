@@ -249,10 +249,10 @@ var fs = require('fs'),
 					jsPaths = scripts.map(function (jsPath) {
 						if (jsPath.substring(0, 7) === 'plugins') {
 							var paths = jsPath.split('/'),
-								pluginID = paths[1];
+								mappedPath = paths[1];
 
-							jsPath = jsPath.replace(path.join('plugins', pluginID), '');
-							return path.join(plugins.staticDirs[pluginID], jsPath);
+							jsPath = jsPath.replace(path.join('plugins', mappedPath), '');
+							return path.join(plugins.staticDirs[mappedPath], jsPath);
 						} else {
 							return path.join(__dirname, '..', '/public', jsPath);
 						}
