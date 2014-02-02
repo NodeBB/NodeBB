@@ -164,25 +164,11 @@ var bcrypt = require('bcryptjs'),
 			return callback(null, []);
 		}
 
-		var returnData = [];
-
-		var uuids = uids.filter(function(value, index, self) {
-			return self.indexOf(value) === index;
-		});
-
-		function iterator(uid, next) {
-			User.getUserFields(uid, fields, function(err, userData) {
-				if (err) {
-					return next(err);
-				}
-				returnData.push(userData);
-				next(null);
-			});
+		function getFields(uid, next) {
+			User.getUserFields(uid, fields, next);
 		}
 
-		async.eachSeries(uuids, iterator, function(err) {
-			callback(err, returnData);
-		});
+		async.map(uids, getFields, callback);
 	};
 
 	User.getUserData = function(uid, callback) {
