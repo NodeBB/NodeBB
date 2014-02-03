@@ -35,6 +35,41 @@ var fs = require('fs'),
 		});
 
 		app.namespace('/user', function () {
+
+			function createRoute(routeName, path, templateName) {
+				app.get(routeName, function(req, res, next) {
+					if (!req.user) {
+						return res.redirect('/403');
+					}
+
+					user.getUidByUserslug(req.params.userslug, function (err, uid) {
+						if(err) {
+							return next(err);
+						}
+
+						if (!uid) {
+							return res.redirect('/404');
+						}
+
+						app.build_header({
+							req: req,
+							res: res
+						}, function (err, header) {
+							if(err) {
+								return next(err);
+							}
+							res.send(header + app.create_route('user/' + req.params.userslug + path, templateName) + templates['footer']);
+						});
+					});
+				})
+			}
+
+			createRoute('/:userslug', '', 'account');
+			createRoute('/:userslug/following', '/following', 'following');
+			createRoute('/:userslug/followers', '/followers', 'followers');
+			createRoute('/:userslug/favourites', '/favourites', 'favourites');
+
+
 			app.get('/:userslug', function (req, res, next) {
 
 				if (!req.params.userslug) {
@@ -221,63 +256,6 @@ var fs = require('fs'),
 			is.pipe(os);
 		}
 
-		app.get('/user/:userslug/following', function (req, res) {
-
-			if (!req.user)
-				return res.redirect('/403');
-
-			user.getUidByUserslug(req.params.userslug, function (err, uid) {
-				if (!uid) {
-					res.redirect('/404');
-					return;
-				}
-
-				app.build_header({
-					req: req,
-					res: res
-				}, function (err, header) {
-					res.send(header + app.create_route('user/' + req.params.userslug + '/following', 'following') + templates['footer']);
-				});
-			});
-		});
-
-		app.get('/user/:userslug/followers', function (req, res) {
-
-			if (!req.user)
-				return res.redirect('/403');
-
-			user.getUidByUserslug(req.params.userslug, function (err, uid) {
-				if (!uid) {
-					res.redirect('/404');
-					return;
-				}
-				app.build_header({
-					req: req,
-					res: res
-				}, function (err, header) {
-					res.send(header + app.create_route('user/' + req.params.userslug + '/followers', 'followers') + templates['footer']);
-				});
-			});
-		});
-
-		app.get('/user/:userslug/favourites', function (req, res) {
-
-			if (!req.user)
-				return res.redirect('/403');
-
-			user.getUidByUserslug(req.params.userslug, function (err, uid) {
-				if (!uid) {
-					res.redirect('/404');
-					return;
-				}
-				app.build_header({
-					req: req,
-					res: res
-				}, function (err, header) {
-					res.send(header + app.create_route('user/' + req.params.userslug + '/favourites', 'favourites') + templates['footer']);
-				});
-			});
-		});
 
 		app.get('/api/user/:userslug/following', function (req, res) {
 			var callerUID = req.user ? req.user.uid : '0';
