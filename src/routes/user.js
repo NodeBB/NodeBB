@@ -38,7 +38,11 @@ var fs = require('fs'),
 
 			function createRoute(routeName, path, templateName) {
 				app.get(routeName, function(req, res, next) {
-					if (!req.user) {
+					if (!req.params.userslug) {
+						return next();
+					}
+
+					if (!req.user && path === '/favourites') {
 						return res.redirect('/403');
 					}
 
@@ -68,31 +72,6 @@ var fs = require('fs'),
 			createRoute('/:userslug/following', '/following', 'following');
 			createRoute('/:userslug/followers', '/followers', 'followers');
 			createRoute('/:userslug/favourites', '/favourites', 'favourites');
-
-
-			app.get('/:userslug', function (req, res, next) {
-
-				if (!req.params.userslug) {
-					return next();
-				}
-
-				user.getUidByUserslug(req.params.userslug, function (err, uid) {
-					if (err) {
-						return next(err);
-					}
-
-					if (!uid) {
-						return next();
-					}
-
-					app.build_header({
-						req: req,
-						res: res
-					}, function (err, header) {
-						res.send(header + app.create_route('user/' + req.params.userslug, 'account') + templates['footer']);
-					});
-				});
-			});
 
 			app.get('/:userslug/edit', function (req, res) {
 
