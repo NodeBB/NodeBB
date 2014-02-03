@@ -129,7 +129,7 @@
 						</a>
 						<ul id="user-control-list" class="dropdown-menu" aria-labelledby="user_dropdown">
 							<li>
-								<a id="user-profile-link" href=""><span>[[global:header.profile]]</span></a>
+								<a id="user-profile-link" href=""><i class="fa fa-circle status-offline"></i><span>[[global:header.profile]]</span></a>
 							</li>
 							<li id="logout-link">
 								<a href="#">[[global:logout]]</a>
