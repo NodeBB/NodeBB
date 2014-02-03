@@ -312,6 +312,7 @@ var bcrypt = require('bcryptjs'),
 							User.setUserField(uid, 'userslug', userslug);
 							db.deleteObjectField('userslug:uid', userData.userslug);
 							db.setObjectField('userslug:uid', userslug, uid);
+							returnData.userslug = userslug;
 						}
 
 						next();
