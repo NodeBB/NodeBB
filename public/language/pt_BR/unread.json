@@ -1,6 +1,6 @@
 {
-    "title": "Unread",
-    "no_unread_topics": "Todos os topicos lidos.",
-    "mark_all_read": "Marcar como Lido",
+    "title": "Não Lido",
+    "no_unread_topics": "Todos os tópicos lidos.",
+    "mark_all_read": "Marcar todos como Lido",
     "load_more": "Carregar"
 }

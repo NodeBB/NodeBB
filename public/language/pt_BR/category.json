@@ -1,14 +1,14 @@
 {
-    "new_topic_button": "New Topic",
-    "no_topics": "<strong>There are no topics in this category.</strong><br />Why don't you try posting one?",
-    "sidebar.recent_replies": "Recent Replies",
-    "sidebar.active_participants": "Active Participants",
-    "sidebar.moderators": "Moderators",
+    "new_topic_button": "Novo Tópico",
+    "no_topics": "<strong>Não tem nenhum tópico nesta categoria.</strong><br />Por que não tenta postar um?",
+    "sidebar.recent_replies": "Respostas Recentes",
+    "sidebar.active_participants": "Participantes Ativos",
+    "sidebar.moderators": "Moderadores",
     "posts": "posts",
-    "views": "views",
-    "posted": "posted",
-    "browsing": "browsing",
-    "no_replies": "No one has replied",
-    "replied": "replied",
-    "last_edited_by": "last edited by"
+    "views": "visualizações",
+    "posted": "postado",
+    "browsing": "navegando",
+    "no_replies": "Ninguém respondeu",
+    "replied": "respondeu",
+    "last_edited_by": "última edição por"
 }
