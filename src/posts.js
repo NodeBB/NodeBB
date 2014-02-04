@@ -232,12 +232,15 @@ var db = require('./database'),
 
 	Posts.getPostSummaryByPids = function(pids, stripTags, callback) {
 
-		var posts = [];
-
 		function getPostSummary(pid, callback) {
+
 			async.waterfall([
 				function(next) {
 					Posts.getPostFields(pid, ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'], function(err, postData) {
+						if(err) {
+							return next(err);
+						}
+
 						if (parseInt(postData.deleted, 10) === 1) {
 							return callback(null);
 						} else {
@@ -287,20 +290,19 @@ var db = require('./database'),
 						next(null, postData);
 					}
 				}
-			], function(err, postData) {
-				if (!err) {
-					posts.push(postData);
-				}
-				callback(err);
-			});
+			], callback);
 		}
 
-		async.eachSeries(pids, getPostSummary, function(err) {
-			if (!err) {
-				callback(null, posts);
-			} else {
-				callback(err, null);
+		async.map(pids, getPostSummary, function(err, posts) {
+			if(err) {
+				return callback(err);
 			}
+
+			posts = posts.filter(function(p) {
+				return p;
+			});
+
+			callback(null, posts);
 		});
 	};
 
@@ -458,13 +460,33 @@ var db = require('./database'),
 		async.each(pids, reIndex, callback);
 	}
 
-	Posts.getFavourites = function(uid, callback) {
-		db.getSortedSetRevRange('uid:' + uid + ':favourites', 0, -1, function(err, pids) {
+	Posts.getFavourites = function(uid, start, end, callback) {
+
+		db.getSortedSetRevRange('uid:' + uid + ':favourites', start, end, function(err, pids) {
 			if (err) {
-				return callback(err, null);
+				return callback(err);
 			}
 
-			Posts.getPostSummaryByPids(pids, false, callback);
+			Posts.getPostSummaryByPids(pids, false, function(err, posts) {
+				if(err) {
+					return callback(err);
+				}
+
+				if(!posts || !posts.length) {
+					return callback(null, { posts: [], nextStart: 0});
+				}
+
+				db.sortedSetRevRank('uid:' + uid + ':favourites', posts[posts.length - 1].pid, function(err, rank) {
+					if(err) {
+						return calllback(err);
+					}
+					var favourites = {
+						posts: posts,
+						nextStart: parseInt(rank, 10) + 1
+					};
+					callback(null, favourites);
+				});
+			});
 		});
 	}
 
