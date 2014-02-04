@@ -38,18 +38,18 @@
 			<div class="text-center account-stats panel panel-default">
 				<div class="panel-body">
 					<div class="inline-block text-center">
+						<div class="formatted-number">{reputation}</div>
+						<div class="account-bio-label">[[user:reputation]]</div>
+					</div>
+
+					<div class="inline-block text-center">
 						<div class="formatted-number">{postcount}</div>
 						<div class="account-bio-label">[[user:posts]]</div>
 					</div>
 
 					<div class="inline-block text-center">
-						<div class="formatted-number">{followerCount}</div>
-						<div class="account-bio-label">[[user:followers]]</div>
-					</div>
-
-					<div class="inline-block text-center">
-						<div class="formatted-number">{followingCount}</div>
-						<div class="account-bio-label">[[user:following]]</div>
+						<div class="formatted-number">{profileviews}</div>
+						<div class="account-bio-label">[[user:profile_views]]</div>
 					</div>
 				</div>
 			</div>
@@ -83,11 +83,11 @@
 					<!-- ENDIF age -->
 
 
-					<span class="account-bio-label">[[user:profile_views]]</span>
-					<span class="formatted-number account-bio-value">{profileviews}</span>
+					<span class="account-bio-label">[[user:followers]]</span>
+					<span class="formatted-number account-bio-value">{followerCount}</span>
 
-					<span class="account-bio-label">[[user:reputation]]</span>
-					<span class="formatted-number account-bio-value">{reputation}</span>
+					<span class="account-bio-label">[[user:following]]</span>
+					<span class="formatted-number account-bio-value">{followingCount}</span>
 
 					<span class="account-bio-label">[[user:joined]]</span>
 					<span class="timeago account-bio-value" title="{joindate}"></span>
