@@ -1,0 +1,8 @@
+{
+    "title": "Notifications",
+    "back_to_home": "Back to NodeBB",
+    "outgoing_link": "Outgoing Link",
+    "outgoing_link_message": "You are now leaving",
+    "continue_to": "Continue to",
+    "return_to": "Return to "
+}

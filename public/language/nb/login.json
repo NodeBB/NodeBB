@@ -1,0 +1,10 @@
+{
+    "login": "Logg inn",
+    "username": "Brukernavn",
+    "password": "Passord",
+    "remember_me": "Husk meg?",
+    "forgot_password": "Glemt passord?",
+    "alternative_logins": "Alternativ innlogging",
+    "failed_login_attempt": "Mislykket innloggingsforsøk, vennligst prøv igjen.",
+    "login_successful": "Du har blitt logget inn!"
+}

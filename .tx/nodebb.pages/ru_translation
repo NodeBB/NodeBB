@@ -1,0 +1,12 @@
+{
+    "home": "Home",
+    "unread": "Непрочитанные темы",
+    "recent": "Последние темы",
+    "users": "Зарегистрированные пользователи",
+    "notifications": "Уведомления",
+    "user.edit": "Editing \"%1\"",
+    "user.following": "%1 читает",
+    "user.followers": "Читают %1",
+    "user.favourites": "Избранные сообщения %1",
+    "user.settings": "User Settings"
+}
