@@ -56,11 +56,10 @@
 
 			<div class="panel panel-default">
 				<div class="panel-body">
-					<span class="account-bio-label">[[user:email]]</span>
+
 					<!-- IF email -->
+					<span class="account-bio-label">[[user:email]]</span>
 					<span class="account-bio-value"><i class="fa fa-eye-slash {emailClass}" title="[[user:email_hidden]]"></i> {email}</span>
-					<!-- ELSE -->
-					<i class="fa fa-eye-slash" title="[[user:email_hidden]]"></i> [[user:hidden]]
 					<!-- ENDIF email -->
 
 					<!-- IF fullname -->
@@ -68,10 +67,10 @@
 					<span class="account-bio-value">{fullname}</span>
 					<!-- ENDIF fullname -->
 
-					<!-- IF website -->
+					<!-- IF websiteName -->
 					<span class="account-bio-label">[[user:website]]</span>
 					<span class="account-bio-value"><a href="{website}">{websiteName}</a></span>
-					<!-- ENDIF website -->
+					<!-- ENDIF websiteName -->
 
 					<!-- IF location -->
 					<span class="account-bio-label">[[user:location]]</span>
@@ -81,10 +80,8 @@
 					<!-- IF age -->
 					<span class="account-bio-label">[[user:age]]</span>
 					<span class="account-bio-value">{age}</span>
-
 					<!-- ENDIF age -->
 
-					<hr/>
 
 					<span class="account-bio-label">[[user:profile_views]]</span>
 					<span class="formatted-number account-bio-value">{profileviews}</span>
@@ -102,7 +99,7 @@
 					<!-- IF signature -->
 					<hr/>
 					<span class="account-bio-label">[[user:signature]]</span>
-					<div class="post-signature account-bio-value">
+					<div class="post-signature">
 						<span id='signature'>{signature}</span>
 					</div>
 					<!-- ENDIF signature -->
