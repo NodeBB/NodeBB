@@ -6,12 +6,12 @@
 		</span>
 	</div>
 
-	<!-- IF show_nofavourites -->
+	<!-- IF !posts.length -->
 		<div id="no-favourites-notice" class="alert alert-warning">[[topic:favourites.has_no_favourites]]</div>
-	<!-- ENDIF show_nofavourites -->
+	<!-- ENDIF !posts.length -->
 
 	<div class="row">
-		<div class="col-md-12 user-favourite-posts">
+		<div class="col-md-12 user-favourite-posts" data-nextstart="{nextStart}">
 			<!-- BEGIN posts -->
 			<div class="topic-row panel panel-default clearfix">
 				<div class="panel-body">

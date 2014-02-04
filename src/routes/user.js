@@ -344,12 +344,14 @@ var fs = require('fs'),
 					}
 
 					if (userData) {
-						posts.getFavourites(uid, function (err, posts) {
+						posts.getFavourites(uid, 0, 9, function (err, favourites) {
 							if (err) {
 								return next(err);
 							}
-							userData.posts = posts;
-							userData.show_nofavourites = posts.length === 0;
+
+							userData.posts = favourites.posts;
+							userData.nextStart = favourites.nextStart;
+
 							res.json(userData);
 						});
 					} else {

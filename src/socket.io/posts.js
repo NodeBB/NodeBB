@@ -247,4 +247,15 @@ SocketPosts.flag = function(socket, pid, callback) {
 	], callback);
 }
 
+SocketPosts.loadMoreFavourites = function(socket, data, callback) {
+	if(!data || !data.after) {
+		return callback(new Error('invalid data'));
+	}
+
+	var start = parseInt(data.after, 10),
+		end = start + 9;
+
+	posts.getFavourites(socket.uid, start, end, callback);
+};
+
 module.exports = SocketPosts;
