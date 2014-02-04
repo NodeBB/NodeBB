@@ -31,9 +31,22 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 						$('#user-current-picture').attr('src', data.picture);
 						$('#user_label img').attr('src', data.picture);
 					}
+
 					if (data.gravatarpicture) {
 						$('#user-gravatar-picture').attr('src', data.gravatarpicture);
 						gravatarPicture = data.gravatarpicture;
+					}
+
+					if(data.userslug) {
+						var oldslug = $('.account-username-box').attr('data-userslug');
+						$('.account-username-box a').each(function(index) {
+							$(this).attr('href', $(this).attr('href').replace(oldslug, data.userslug));
+						});
+						$('.account-username a:first-child').html(userData.username);
+						$('.account-username-box').attr('data-userslug', data.userslug);
+
+						$('#user-profile-link').attr('href', config.relative_path + '/user/' + data.userslug);
+						$('#user-profile-link span').html(' ' + userData.username);
 					}
 				} else {
 					app.alertError('There was an error updating your profile! ' + err.message);

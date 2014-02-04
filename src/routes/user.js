@@ -8,6 +8,7 @@ var fs = require('fs'),
 	posts = require('./../posts'),
 	postTools = require('../postTools'),
 	utils = require('./../../public/src/utils'),
+	templates = require('./../../public/src/templates'),
 	meta = require('./../meta'),
 	db = require('./../database');
 
@@ -34,29 +35,43 @@ var fs = require('fs'),
 		});
 
 		app.namespace('/user', function () {
-			app.get('/:userslug', function (req, res, next) {
 
-				if (!req.params.userslug) {
-					return next();
-				}
-
-				user.getUidByUserslug(req.params.userslug, function (err, uid) {
-					if (err) {
-						return next(err);
-					}
-
-					if (!uid) {
+			function createRoute(routeName, path, templateName) {
+				app.get(routeName, function(req, res, next) {
+					if (!req.params.userslug) {
 						return next();
 					}
 
-					app.build_header({
-						req: req,
-						res: res
-					}, function (err, header) {
-						res.send(header + app.create_route('user/' + req.params.userslug, 'account') + templates['footer']);
+					if (!req.user && path === '/favourites') {
+						return res.redirect('/403');
+					}
+
+					user.getUidByUserslug(req.params.userslug, function (err, uid) {
+						if(err) {
+							return next(err);
+						}
+
+						if (!uid) {
+							return res.redirect('/404');
+						}
+
+						app.build_header({
+							req: req,
+							res: res
+						}, function (err, header) {
+							if(err) {
+								return next(err);
+							}
+							res.send(header + app.create_route('user/' + req.params.userslug + path, templateName) + templates['footer']);
+						});
 					});
-				});
-			});
+				})
+			}
+
+			createRoute('/:userslug', '', 'account');
+			createRoute('/:userslug/following', '/following', 'following');
+			createRoute('/:userslug/followers', '/followers', 'followers');
+			createRoute('/:userslug/favourites', '/favourites', 'favourites');
 
 			app.get('/:userslug/edit', function (req, res) {
 
@@ -220,63 +235,6 @@ var fs = require('fs'),
 			is.pipe(os);
 		}
 
-		app.get('/user/:userslug/following', function (req, res) {
-
-			if (!req.user)
-				return res.redirect('/403');
-
-			user.getUidByUserslug(req.params.userslug, function (err, uid) {
-				if (!uid) {
-					res.redirect('/404');
-					return;
-				}
-
-				app.build_header({
-					req: req,
-					res: res
-				}, function (err, header) {
-					res.send(header + app.create_route('user/' + req.params.userslug + '/following', 'following') + templates['footer']);
-				});
-			});
-		});
-
-		app.get('/user/:userslug/followers', function (req, res) {
-
-			if (!req.user)
-				return res.redirect('/403');
-
-			user.getUidByUserslug(req.params.userslug, function (err, uid) {
-				if (!uid) {
-					res.redirect('/404');
-					return;
-				}
-				app.build_header({
-					req: req,
-					res: res
-				}, function (err, header) {
-					res.send(header + app.create_route('user/' + req.params.userslug + '/followers', 'followers') + templates['footer']);
-				});
-			});
-		});
-
-		app.get('/user/:userslug/favourites', function (req, res) {
-
-			if (!req.user)
-				return res.redirect('/403');
-
-			user.getUidByUserslug(req.params.userslug, function (err, uid) {
-				if (!uid) {
-					res.redirect('/404');
-					return;
-				}
-				app.build_header({
-					req: req,
-					res: res
-				}, function (err, header) {
-					res.send(header + app.create_route('user/' + req.params.userslug + '/favourites', 'favourites') + templates['footer']);
-				});
-			});
-		});
 
 		app.get('/api/user/:userslug/following', function (req, res) {
 			var callerUID = req.user ? req.user.uid : '0';
@@ -386,12 +344,14 @@ var fs = require('fs'),
 					}
 
 					if (userData) {
-						posts.getFavourites(uid, function (err, posts) {
+						posts.getFavourites(uid, 0, 9, function (err, favourites) {
 							if (err) {
 								return next(err);
 							}
-							userData.posts = posts;
-							userData.show_nofavourites = posts.length === 0;
+
+							userData.posts = favourites.posts;
+							userData.nextStart = favourites.nextStart;
+
 							res.json(userData);
 						});
 					} else {
@@ -445,7 +405,7 @@ var fs = require('fs'),
 			});
 		});
 
-		app.get('/api/users', getUsersSortedByJoinDate);
+		app.get('/api/users', getOnlineUsers);
 		app.get('/api/users/sort-posts', getUsersSortedByPosts);
 		app.get('/api/users/sort-reputation', getUsersSortedByReputation);
 		app.get('/api/users/latest', getUsersSortedByJoinDate);
@@ -493,13 +453,19 @@ var fs = require('fs'),
 
 				var onlineUsers = [];
 
-				function iterator(user, callback) {
-					if(websockets.isUserOnline(user.uid)) {
-						onlineUsers.push(user);
-					} else {
-						db.sortedSetRemove('users:online', user.uid);
+				data = data.filter(function(item) {
+					return item.status !== 'offline';
+				});
+
+				function iterator(userData, next) {
+					var online = websockets.isUserOnline(userData.uid);
+					if(!online) {
+						db.sortedSetRemove('users:online', userData.uid);
+						return next(null);
 					}
-					callback(null);
+
+					onlineUsers.push(userData);
+					next(null);
 				}
 
 				var anonymousUserCount = websockets.getOnlineAnonCount();

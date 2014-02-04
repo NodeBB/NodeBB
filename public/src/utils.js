@@ -106,6 +106,7 @@
 		collapseWhitespace : /\s+/g,
 		collapseDash : /-+/g,
 		trimTrailingDash : /-$/g,
+		trimLeadingDash : /^-/g,
 		isLatin : /^[\w]+$/,
 
 		//http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
@@ -120,14 +121,14 @@
 			str = str.replace(utils.collapseWhitespace, '-')
 			str = str.replace(utils.collapseDash, '-');
 			str = str.replace(utils.trimTrailingDash, '');
+			str = str.replace(utils.trimLeadingDash, '');
 			return str;
 		},
 
 		// from http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
 		isEmailValid: function(email) {
 			// var re = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-			var valid = email.indexOf('@') !== -1 ? true : false;
-			return valid;
+			return email.indexOf('@') !== -1;
 		},
 
 		isUserNameValid: function(name) {
@@ -137,42 +138,20 @@
 		isPasswordValid: function(password) {
 			return password && password.indexOf(' ') === -1;
 		},
-		buildMetaTags: function(tagsArr) {
-			var tags = '',
-				tag;
-			for (var x = 0, numTags = tagsArr.length; x < numTags; x++) {
-				if (tags.length > 0) {
-					tags += "\n\t";
-				}
-				tag = '<meta';
-				var y;
-				for (y in tagsArr[x]) {
-					tag += ' ' + y + '="' + tagsArr[x][y] + '"';
-				}
-				tag += ' />';
-
-				tags += tag;
-			}
-
-			return tags;
+		isNumber: function(n) {
+			return !isNaN(parseFloat(n)) && isFinite(n);
 		},
-
-		buildLinkTags: function(tagsArr) {
-			var tags = '',
-				tag;
-			for (var x = 0, numTags = tagsArr.length; x < numTags; x++) {
-				if (tags.length > 0) tags += "\n\t";
-				tag = '<link';
-				var y;
-				for (y in tagsArr[x]) {
-					tag += ' ' + y + '="' + tagsArr[x][y] + '"';
+		// shallow objects merge
+		merge: function() {
+			var result = {}, obj, keys;
+			for (var i = 0; i < arguments.length; i++) {
+				obj = arguments[i] || {};
+				keys = Object.keys(obj);
+				for (var j = 0; j < keys.length; j++) {
+					result[keys[j]] = obj[keys[j]];
 				}
-				tag += ' />';
-
-				tags += tag;
 			}
-
-			return tags;
+			return result;
 		},
 
 		isRelativeUrl: function(url) {

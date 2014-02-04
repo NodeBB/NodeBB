@@ -1,5 +1,6 @@
 {
-	"day": "Giorno",
-	"week": "Settimana",
-	"month": "Mese"
+    "title": "Recent",
+    "day": "Giorno",
+    "week": "Settimana",
+    "month": "Mese"
 }

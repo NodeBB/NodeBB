@@ -1,8 +1,9 @@
 <div class="unread">
 	<ol class="breadcrumb">
 		<li><a href="{relative_path}/">[[global:home]]</a></li>
-		<li class="active">{category_name}</li>
+		<li class="active">[[unread:title]]</li>
 	</ol>
+
 
 	<div class="alert alert-warning {no_topics_message}" id="category-no-topics">
 		<strong>[[unread:no_unread_topics]]</strong>
@@ -16,7 +17,7 @@
 
 	<div class="category row">
 		<div class="col-md-12">
-			<ul id="topics-container" data-next-start="{nextStart}">
+			<ul id="topics-container" data-nextstart="{nextStart}">
 			<!-- BEGIN topics -->
 			<li class="category-item {topics.deleted-class}">
 				<div class="col-md-12 col-xs-12 panel panel-default topic-row">

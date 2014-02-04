@@ -9,6 +9,7 @@ var path = require('path'),
 	validator = require('validator'),
 	async = require('async'),
 	S = require('string'),
+	qs = require('querystring'),
 
 	pkg = require('../package.json'),
 
@@ -28,7 +29,9 @@ var path = require('path'),
 	meta = require('./meta'),
 	feed = require('./feed'),
 	plugins = require('./plugins'),
-	logger = require('./logger');
+	logger = require('./logger'),
+	templates = require('./../public/src/templates'),
+	translator = require('./../public/src/translator');
 
 if(nconf.get('ssl')) {
 	server = require('https').createServer({
@@ -39,13 +42,12 @@ if(nconf.get('ssl')) {
 	server = require('http').createServer(WebServer);
 }
 
+module.exports.server = server;
 
 (function (app) {
 	"use strict";
 
-	var templates = null,
-		clientScripts;
-
+	var	clientScripts;
 
 	plugins.ready(function() {
 		// Minify client-side libraries
@@ -59,9 +61,6 @@ if(nconf.get('ssl')) {
 			});
 		});
 	});
-
-
-	server.app = app;
 
 	/**
 	 *	`options` object	requires:	req, res
@@ -95,13 +94,11 @@ if(nconf.get('ssl')) {
 				}],
 				templateValues = {
 					bootswatchCSS: meta.config['theme:src'],
-					pluginCSS: plugins.cssFiles.map(function(file) { return { path: nconf.get('relative_path') + file.replace(/\\/g, '/') + (meta.config['cache-buster'] ? '?v=' + meta.config['cache-buster'] : '') }; }),
+					pluginCSS: plugins.cssFiles.map(function(file) { return { path: nconf.get('relative_path') + file.replace(/\\/g, '/') }; }),
 					title: meta.config.title || '',
 					description: meta.config.description || '',
 					'brand:logo': meta.config['brand:logo'] || '',
 					'brand:logo:display': meta.config['brand:logo']?'':'hide',
-					'brand:favicon': meta.config['brand:favicon'] || nconf.get('relative_path') + '/favicon.ico',
-					browserTitle: meta.config.title || 'NodeBB',
 					csrf: options.res.locals.csrf_token,
 					relative_path: nconf.get('relative_path'),
 					clientScripts: clientScripts,
@@ -120,20 +117,44 @@ if(nconf.get('ssl')) {
 			var uid = '0';
 
 			// Meta Tags
-			templateValues.meta_tags = utils.buildMetaTags(defaultMetaTags.concat(options.metaTags || []).map(function(tag) {
+			templateValues.metaTags = defaultMetaTags.concat(options.metaTags || []).map(function(tag) {
 				tag.content = tag.content.replace(/[&<>'"]/g, function(tag) {
 					return escapeList[tag] || tag;
 				});
 				return tag;
-			}));
-			templateValues.link_tags = utils.buildLinkTags(defaultLinkTags.concat(options.linkTags || []));
+			});
+
+			// Link Tags
+			templateValues.linkTags = defaultLinkTags.concat(options.linkTags || []);
+			templateValues.linkTags.push({
+				rel: "icon",
+				type: "image/x-icon",
+				href: meta.config['brand:favicon'] || nconf.get('relative_path') + '/favicon.ico'
+			});
+
+			// Browser Title
+			var	metaTitle = templateValues.metaTags.filter(function(tag) {
+				return tag.property === 'og:title';
+			});
+			if (metaTitle.length > 0 && metaTitle[0].content) {
+				templateValues.browserTitle = metaTitle[0].content;
+			} else {
+				templateValues.browserTitle = meta.config.browserTitle || 'NodeBB';
+			}
 
 			if(options.req.user && options.req.user.uid) {
 				uid = options.req.user.uid;
 			}
 
+			// Custom CSS
+			templateValues.useCustomCSS = false;
+			if (meta.config.useCustomCSS === '1') {
+				templateValues.useCustomCSS = true;
+				templateValues.customCSS = meta.config.customCSS;
+			}
+
 			user.isAdministrator(uid, function(err, isAdmin) {
-				templateValues.adminDisplay = isAdmin ? 'show' : 'hide';
+				templateValues.isAdmin = isAdmin;
 
 				translator.translate(templates.header.parse(templateValues), function(template) {
 					callback(null, template);
@@ -191,9 +212,17 @@ if(nconf.get('ssl')) {
 
 				app.use(express.csrf());
 
+				if (nconf.get('port') != 80 && nconf.get('port') != 443 && nconf.get('use_port') === true) {
+					winston.info('Enabling \'trust proxy\'');
+					app.enable('trust proxy');
+				}
+
+				if ((nconf.get('port') == 80 || nconf.get('port') == 443) && process.env.NODE_ENV !== 'development') {
+					winston.info('Using ports 80 and 443 is not recommend; use a proxy instead. See README.md');
+				}
+
 				// Local vars, other assorted setup
 				app.use(function (req, res, next) {
-					nconf.set('https', req.secure);
 					res.locals.csrf_token = req.session._csrf;
 
 					// Disable framing
@@ -210,7 +239,7 @@ if(nconf.get('ssl')) {
 						user.setUserField(req.user.uid, 'lastonline', Date.now());
 					}
 					next();
-				})
+				});
 
 				next();
 			},
@@ -369,8 +398,6 @@ if(nconf.get('ssl')) {
 	});
 
 	module.exports.init = function () {
-		templates = global.templates;
-
 		// translate all static templates served by webserver here. ex. footer, logout
 		plugins.fireHook('filter:footer.build', '', function(err, appendHTML) {
 			var footer = templates.footer.parse({
@@ -382,7 +409,7 @@ if(nconf.get('ssl')) {
 			});
 		});
 
-		plugins.fireHook('action:app.load');
+		plugins.fireHook('action:app.load', app);
 
 		translator.translate(templates.logout.toString(), function(parsedTemplate) {
 			templates.logout = parsedTemplate;
@@ -393,7 +420,12 @@ if(nconf.get('ssl')) {
 	};
 
 	app.create_route = function (url, tpl) { // to remove
-		return '<script>templates.ready(function(){ajaxify.go("' + url + '", null, "' + tpl + '", true);});</script>';
+		var	routerScript = '<script> \
+				ajaxify.initialLoad = true; \
+				templates.ready(function(){ajaxify.go("' + url + '", null, true);}); \
+			</script>';
+
+		return routerScript;
 	};
 
 	app.namespace(nconf.get('relative_path'), function () {
@@ -405,13 +437,13 @@ if(nconf.get('ssl')) {
 
 		// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 		(function () {
-			var routes = ['login', 'register', 'account', 'recent', '403', '404', '500'],
+			var routes = ['login', 'register', 'account', 'recent', 'popular', '403', '404', '500'],
 				loginRequired = ['unread', 'notifications'];
 
 			async.each(routes.concat(loginRequired), function(route, next) {
 				app.get('/' + route, function (req, res) {
-					if ((route === 'login' || route === 'register') && (req.user && req.user.uid > 0)) {
 
+					if ((route === 'register' || route === 'login') && (req.user && req.user.uid > 0)) {
 						user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
 							res.redirect('/user/' + userslug);
 						});
@@ -455,16 +487,21 @@ if(nconf.get('ssl')) {
 					}, next);
 				},
 				"categories": function (next) {
+					function canSee(category, next) {
+						CategoryTools.privileges(category.cid, ((req.user) ? req.user.uid || 0 : 0), function(err, privileges) {
+							next(!err && privileges.read);
+						});
+					}
+
 					categories.getAllCategories(0, function (err, returnData) {
 						returnData.categories = returnData.categories.filter(function (category) {
-							if (parseInt(category.disabled, 10) !== 1) {
-								return true;
-							} else {
-								return false;
-							}
+							return parseInt(category.disabled, 10) !== 1;
 						});
 
-						next(null, returnData);
+						async.filter(returnData.categories, canSee, function(visibleCategories) {
+							returnData.categories = visibleCategories;
+							next(null, returnData);
+						});
 					});
 				}
 			}, function (err, data) {
@@ -574,7 +611,7 @@ if(nconf.get('ssl')) {
 							},
 							{
 								property: 'og:title',
-								content: topicData.topic_name + ' | ' + (meta.config.title || 'NodeBB')
+								content: topicData.topic_name
 							},
 							{
 								property: 'og:description',
@@ -637,12 +674,15 @@ if(nconf.get('ssl')) {
 				}
 
 				var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
+				var queryString = qs.stringify(req.query);
+				if(queryString.length) {
+					topic_url += '?' + queryString;
+				}
 
 				res.send(
 					data.header +
 					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/topic'].parse(data.topics) + '\n\t</noscript>' +
-					'\n\t<script>templates.ready(function(){ajaxify.go("topic/' + topic_url + '", undefined, undefined, true);});</script>' +
-					templates.footer
+					'\n\t' + app.create_route('topic/' + topic_url) + templates.footer
 				);
 			});
 		});
@@ -695,7 +735,7 @@ if(nconf.get('ssl')) {
 					});
 				},
 				function (next) {
-					categories.getCategoryById(cid, 0, function (err, categoryData) {
+					categories.getCategoryById(cid, 0, -1, 0, function (err, categoryData) {
 
 						if (categoryData) {
 							if (parseInt(categoryData.disabled, 10) === 1) {
@@ -710,16 +750,24 @@ if(nconf.get('ssl')) {
 					app.build_header({
 						req: req,
 						res: res,
-						metaTags: [{
-							name: 'title',
-							content: categoryData.category_name
-						}, {
-							name: 'description',
-							content: categoryData.category_description
-						}, {
-							property: "og:type",
-							content: 'website'
-						}],
+						metaTags: [
+							{
+								name: 'title',
+								content: categoryData.category_name
+							},
+							{
+								property: 'og:title',
+								content: categoryData.category_name
+							},
+							{
+								name: 'description',
+								content: categoryData.category_description
+							},
+							{
+								property: "og:type",
+								content: 'website'
+							}
+						],
 						linkTags: [
 							{
 								rel: 'alternate',
@@ -752,12 +800,15 @@ if(nconf.get('ssl')) {
 				}
 
 				var category_url = cid + (req.params.slug ? '/' + req.params.slug : '');
+				var queryString = qs.stringify(req.query);
+				if(queryString.length) {
+					category_url += '?' + queryString;
+				}
 
 				res.send(
 					data.header +
 					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/category'].parse(data.categories) + '\n\t</noscript>' +
-					'\n\t<script>templates.ready(function(){ajaxify.go("category/' + category_url + '", undefined, undefined, true);});</script>' +
-					templates.footer
+					'\n\t' + app.create_route('category/' + category_url) + templates.footer
 				);
 			});
 		});
@@ -767,7 +818,7 @@ if(nconf.get('ssl')) {
 				req: req,
 				res: res
 			}, function (err, header) {
-				res.send(header + '<script>templates.ready(function(){ajaxify.go("confirm/' + req.params.code + '", undefined, undefined, true);});</script>' + templates.footer);
+				res.send(header + app.create_route('confirm/' + req.params.code) + templates.footer);
 			});
 		});
 
@@ -793,29 +844,31 @@ if(nconf.get('ssl')) {
 		});
 
 		app.get('/recent.rss', function(req, res) {
-			var rssPath = path.join(__dirname, '../', 'feeds/recent.rss'),
-				loadFeed = function () {
-					fs.readFile(rssPath, function (err, data) {
-						if (err) {
-							res.type('text').send(404, "Unable to locate an rss feed at this location.");
-						} else {
-							res.type('xml').set('Content-Length', data.length).send(data);
-						}
-					});
-
-				};
+			var rssPath = path.join(__dirname, '../', 'feeds/recent.rss');
 
 			if (!fs.existsSync(rssPath)) {
 				feed.updateRecent(function (err) {
 					if (err) {
 						res.redirect('/404');
 					} else {
-						loadFeed();
+						feed.loadFeed(rssPath, res);
 					}
 				});
 			} else {
-				loadFeed();
+				feed.loadFeed(rssPath, res);
 			}
+		});
+
+		app.get('/popular.rss', function(req, res) {
+			var rssPath = path.join(__dirname, '../', 'feeds/popular.rss');
+
+			feed.updatePopular(function (err) {
+				if (err) {
+					res.redirect('/404');
+				} else {
+					feed.loadFeed(rssPath, res);
+				}
+			});
 		});
 
 		app.get('/recent/:term?', function (req, res) {
@@ -829,6 +882,16 @@ if(nconf.get('ssl')) {
 
 		});
 
+		app.get('/popular/:term?', function (req, res) {
+			app.build_header({
+				req: req,
+				res: res
+			}, function (err, header) {
+				res.send(header + app.create_route('popular/' + req.params.term, null, 'popular') + templates.footer);
+			});
+
+		});
+
 		app.get('/outgoing', function (req, res) {
 			if (!req.query.url) {
 				return res.redirect('/404');
@@ -838,11 +901,7 @@ if(nconf.get('ssl')) {
 				req: req,
 				res: res
 			}, function (err, header) {
-				res.send(
-					header +
-					'\n\t<script>templates.ready(function(){ajaxify.go("outgoing?url=' + encodeURIComponent(req.query.url) + '", null, null, true);});</script>' +
-					templates.footer
-				);
+				res.send(header + app.create_route('outgoing?url=' + encodeURIComponent(req.query.url)) + templates.footer);
 			});
 		});
 
@@ -875,6 +934,12 @@ if(nconf.get('ssl')) {
 			'api': [],
 			'templates': []
 		};
+
+		app.get_custom_templates = function() {
+			return custom_routes.templates.map(function(tpl) {
+				return tpl.template.split('.tpl')[0];
+			});
+		}
 
 		plugins.ready(function() {
 			plugins.fireHook('filter:server.create_routes', custom_routes, function(err, custom_routes) {
@@ -926,6 +991,3 @@ if(nconf.get('ssl')) {
 
 	});
 }(WebServer));
-
-
-global.server = server;

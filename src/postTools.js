@@ -207,17 +207,21 @@ var winston = require('winston'),
 					});
 				});
 
-				// Restore topic if it is the only post
-				topics.getTopicField(postData.tid, 'postcount', function(err, count) {
-					if (parseInt(count, 10) === 1) {
-						threadTools.restore(postData.tid, uid);
-					}
-				});
-
 				Feed.updateTopic(postData.tid);
 				Feed.updateRecent();
 
 				db.searchIndex('post', postData.content, pid);
+
+				// Restore topic if it is the only post
+				topics.getTopicField(postData.tid, 'postcount', function(err, count) {
+					if (parseInt(count, 10) === 1) {
+						threadTools.restore(postData.tid, uid, function(err) {
+							if(err) {
+								winston.err(err);
+							}
+						});
+					}
+				});
 
 				callback();
 			});

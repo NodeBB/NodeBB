@@ -1,4 +1,4 @@
-var bcrypt = require('bcrypt'),
+var bcrypt = require('bcryptjs'),
 	async = require('async'),
 	nconf = require('nconf'),
 	winston = require('winston'),
@@ -19,34 +19,35 @@ var bcrypt = require('bcrypt'),
 
 (function(User) {
 	'use strict';
-	User.create = function(username, password, email, callback) {
-		var userslug = utils.slugify(username);
+	User.create = function(userData, callback) {
+		userData = userData || {};
+		userData.userslug = utils.slugify(userData.username);
 
-		username = username.trim();
-		if (email !== undefined) {
-			email = email.trim();
+		userData.username = userData.username.trim();
+		if (userData.email !== undefined) {
+			userData.email = userData.email.trim();
 		}
 
 		async.parallel([
 			function(next) {
-				if (email !== undefined) {
-					next(!utils.isEmailValid(email) ? new Error('Invalid Email!') : null);
+				if (userData.email) {
+					next(!utils.isEmailValid(userData.email) ? new Error('Invalid Email!') : null);
 				} else {
 					next();
 				}
 			},
 			function(next) {
-				next((!utils.isUserNameValid(username) || !userslug) ? new Error('Invalid Username!') : null);
+				next((!utils.isUserNameValid(userData.username) || !userData.userslug) ? new Error('Invalid Username!') : null);
 			},
 			function(next) {
-				if (password !== undefined) {
-					next(!utils.isPasswordValid(password) ? new Error('Invalid Password!') : null);
+				if (userData.password) {
+					next(!utils.isPasswordValid(userData.password) ? new Error('Invalid Password!') : null);
 				} else {
 					next();
 				}
 			},
 			function(next) {
-				User.exists(userslug, function(err, exists) {
+				User.exists(userData.userslug, function(err, exists) {
 					if (err) {
 						return next(err);
 					}
@@ -54,8 +55,8 @@ var bcrypt = require('bcrypt'),
 				});
 			},
 			function(next) {
-				if (email !== undefined) {
-					User.isEmailAvailable(email, function(err, available) {
+				if (userData.email) {
+					User.isEmailAvailable(userData.email, function(err, available) {
 						if (err) {
 							return next(err);
 						}
@@ -64,8 +65,14 @@ var bcrypt = require('bcrypt'),
 				} else {
 					next();
 				}
+			},
+			function(next) {
+				plugins.fireHook('filter:user.create', userData, function(err, filteredUserData){
+					next(err, utils.merge(userData, filteredUserData));
+				});
 			}
 		], function(err, results) {
+			userData = results[results.length - 1];
 			if (err) {
 				return callback(err);
 			}
@@ -75,18 +82,19 @@ var bcrypt = require('bcrypt'),
 					return callback(err);
 				}
 
-				var gravatar = User.createGravatarURLFromEmail(email);
+				var gravatar = User.createGravatarURLFromEmail(userData.email);
 				var timestamp = Date.now();
+				var password = userData.password;
 
-				db.setObject('user:' + uid, {
+				userData = {
 					'uid': uid,
-					'username': username,
-					'userslug': userslug,
+					'username': userData.username,
+					'userslug': userData.userslug,
 					'fullname': '',
 					'location': '',
 					'birthday': '',
 					'website': '',
-					'email': email || '',
+					'email': userData.email || '',
 					'signature': '',
 					'joindate': timestamp,
 					'picture': gravatar,
@@ -97,20 +105,23 @@ var bcrypt = require('bcrypt'),
 					'postcount': 0,
 					'lastposttime': 0,
 					'banned': 0,
+					'status': 'online',
 					'showemail': 0
-				});
+				};
 
-				db.setObjectField('username:uid', username, uid);
-				db.setObjectField('userslug:uid', userslug, uid);
+				db.setObject('user:' + uid, userData);
 
-				if (email !== undefined) {
-					db.setObjectField('email:uid', email, uid);
+				db.setObjectField('username:uid', userData.username, uid);
+				db.setObjectField('userslug:uid', userData.userslug, uid);
+
+				if (userData.email !== undefined) {
+					db.setObjectField('email:uid', userData.email, uid);
 					if (parseInt(uid, 10) !== 1) {
-						User.email.verify(uid, email);
+						User.email.verify(uid, userData.email);
 					}
 				}
 
-				plugins.fireHook('action:user.create', {uid: uid, username: username, email: email, picture: gravatar, timestamp: timestamp});
+				plugins.fireHook('action:user.create', userData);
 				db.incrObjectField('global', 'userCount');
 
 				db.sortedSetAdd('users:joindate', timestamp, uid);
@@ -120,7 +131,7 @@ var bcrypt = require('bcrypt'),
 				// Join the "registered-users" meta group
 				groups.joinByGroupName('registered-users', uid);
 
-				if (password !== undefined) {
+				if (password) {
 					User.hashPassword(password, function(err, hash) {
 						User.setUserField(uid, 'password', hash);
 						callback(null, uid);
@@ -153,25 +164,11 @@ var bcrypt = require('bcrypt'),
 			return callback(null, []);
 		}
 
-		var returnData = [];
-
-		var uuids = uids.filter(function(value, index, self) {
-			return self.indexOf(value) === index;
-		});
-
-		function iterator(uid, next) {
-			User.getUserFields(uid, fields, function(err, userData) {
-				if (err) {
-					return next(err);
-				}
-				returnData.push(userData);
-				next(null);
-			});
+		function getFields(uid, next) {
+			User.getUserFields(uid, fields, next);
 		}
 
-		async.eachSeries(uuids, iterator, function(err) {
-			callback(err, returnData);
-		});
+		async.map(uids, getFields, callback);
 	};
 
 	User.getUserData = function(uid, callback) {
@@ -315,6 +312,7 @@ var bcrypt = require('bcrypt'),
 							User.setUserField(uid, 'userslug', userslug);
 							db.deleteObjectField('userslug:uid', userData.userslug);
 							db.setObjectField('userslug:uid', userslug, uid);
+							returnData.userslug = userslug;
 						}
 
 						next();
@@ -337,6 +335,23 @@ var bcrypt = require('bcrypt'),
 			}
 		}
 	};
+
+	User.isReadyToPost = function(uid, callback) {
+		User.getUserField(uid, 'lastposttime', function(err, lastposttime) {
+			if(err) {
+				return callback(err);
+			}
+
+			if(!lastposttime) {
+				lastposttime = 0;
+			}
+
+			if (Date.now() - parseInt(lastposttime, 10) < parseInt(meta.config.postDelay, 10) * 1000) {
+				return callback(new Error('too-many-posts'));
+			}
+			callback();
+		});
+	}
 
 	User.isEmailAvailable = function(email, callback) {
 		db.isObjectField('email:uid', email, function(err, exists) {
@@ -385,28 +400,39 @@ var bcrypt = require('bcrypt'),
 	};
 
 	User.getUsers = function(set, start, stop, callback) {
-		var data = [];
 
 		db.getSortedSetRevRange(set, start, stop, function(err, uids) {
 			if (err) {
 				return callback(err, null);
 			}
 
-			function iterator(uid, callback) {
+			function getUserData(uid, callback) {
 				User.getUserData(uid, function(err, userData) {
+					if(!userData.status) {
+						userData.status = 'offline';
+					}
+
 					User.isAdministrator(uid, function(err, isAdmin) {
 						if (userData) {
-							userData.administrator = isAdmin?"1":"0";
-							data.push(userData);
+							userData.administrator = isAdmin ? '1':'0';
 						}
-						callback(null);
+
+						if(set === 'users:online') {
+							return callback(null, userData);
+						}
+
+						db.sortedSetScore('users:online', uid, function(err, score) {
+							if(!score) {
+								userData.status = 'offline';
+							}
+
+							callback(null, userData);
+						});
 					});
 				});
 			}
 
-			async.eachSeries(uids, iterator, function(err) {
-				callback(err, data);
-			});
+			async.map(uids, getUserData, callback);
 		});
 	};
 
@@ -415,15 +441,14 @@ var bcrypt = require('bcrypt'),
 			size: '128',
 			default: 'identicon',
 			rating: 'pg'
-		},
-		https = nconf.get('https');
+		};
 
 		if (!email) {
 			email = '';
 			options.forcedefault = 'y';
 		}
 
-		return gravatar.url(email, options, https);
+		return gravatar.url(email, options, true);
 	};
 
 	User.hashPassword = function(password, callback) {
@@ -463,34 +488,36 @@ var bcrypt = require('bcrypt'),
 
 	User.search = function(query, callback) {
 		if (!query || query.length === 0) {
-			return callback(null, []);
+			return callback(null, {timing:0, users:[]});
 		}
+		var start = process.hrtime();
 
-		// TODO: Have this use db.getObjectKeys (doesn't exist yet)
 		db.getObject('username:uid', function(err, usernamesHash) {
 			if (err) {
-				return callback(null, []);
+				return callback(null, {timing: 0, users:[]});
 			}
+
+			query = query.toLowerCase();
 
 			var	usernames = Object.keys(usernamesHash),
 				results = [];
 
-			results = usernames.filter(function(username) {		// Remove non-matches
-				return username.indexOf(query) === 0;
-			}).sort(function(a, b) {							// Sort alphabetically
+			results = usernames.filter(function(username) {
+				return username.toLowerCase().indexOf(query) === 0;
+			})
+			.slice(0, 10)
+			.sort(function(a, b) {
 				return a > b;
-			}).slice(0, 5)										// Limit 5
-			.map(function(username) {							// Translate to uids
+			})
+			.map(function(username) {
 				return usernamesHash[username];
 			});
 
-			if (results && results.length) {
-				User.getDataForUsers(results, function(userdata) {
-					callback(null, userdata);
-				});
-			} else {
-				callback(null, []);
-			}
+			User.getDataForUsers(results, function(userdata) {
+				var diff = process.hrtime(start);
+				var timing = (diff[0] * 1e3 + diff[1] / 1e6).toFixed(1);
+				callback(null, {timing: timing, users: userdata});
+			});
 		});
 	};
 
@@ -705,39 +732,23 @@ var bcrypt = require('bcrypt'),
 		});
 	};
 
+	User.getUsernameByUserslug = function(slug, callback) {
+		async.waterfall([
+			function(next) {
+				User.getUidByUserslug(slug, next);
+			},
+			function(uid, next) {
+				User.getUserField(uid, 'username', next);
+			}
+		], callback);
+	};
+
 	User.getUidByEmail = function(email, callback) {
 		db.getObjectField('email:uid', email, function(err, data) {
 			if (err) {
 				return callback(err);
 			}
 			callback(null, data);
-		});
-	};
-
-	User.getUidByTwitterId = function(twid, callback) {
-		db.getObjectField('twid:uid', twid, function(err, uid) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, uid);
-		});
-	};
-
-	User.getUidByGoogleId = function(gplusid, callback) {
-		db.getObjectField('gplusid:uid', gplusid, function(err, uid) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, uid);
-		});
-	};
-
-	User.getUidByFbid = function(fbid, callback) {
-		db.getObjectField('fbid:uid', fbid, function(err, uid) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, uid);
 		});
 	};
 
@@ -751,7 +762,7 @@ var bcrypt = require('bcrypt'),
 	};
 
 	User.isAdministrator = function(uid, callback) {
-		groups.getGidFromName('Administrators', function(err, gid) {
+		groups.getGidFromName('administrators', function(err, gid) {
 			if(err) {
 				return callback(err);
 			}
@@ -858,6 +869,10 @@ var bcrypt = require('bcrypt'),
 
 	User.email = {
 		verify: function(uid, email) {
+			if (!plugins.hasListeners('action:email.send')) {
+				return;
+			}
+
 			var confirm_code = utils.generateUUID(),
 				confirm_link = nconf.get('url') + '/confirm/' + confirm_code;
 
@@ -894,21 +909,21 @@ var bcrypt = require('bcrypt'),
 		confirm: function(code, callback) {
 			db.getObject('confirm:' + code, function(err, confirmObj) {
 				if (err) {
-					callback({
+					return callback({
 						status:'error'
 					});
-				} else {
-					if (confirmObj.uid && confirmObj.email) {
-						db.setObjectField('email:confirmed', confirmObj.email, '1', function() {
-							callback({
-								status: 'ok'
-							});
-						});
-					} else {
+				}
+
+				if (confirmObj && confirmObj.uid && confirmObj.email) {
+					db.setObjectField('email:confirmed', confirmObj.email, '1', function() {
 						callback({
-							status: 'not_ok'
+							status: 'ok'
 						});
-					}
+					});
+				} else {
+					callback({
+						status: 'not_ok'
+					});
 				}
 			});
 		}

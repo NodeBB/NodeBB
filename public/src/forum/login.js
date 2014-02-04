@@ -6,6 +6,7 @@ define(function() {
 			var loginData = {
 				'username': $('#username').val(),
 				'password': $('#password').val(),
+				'remember': $('#remember').prop('checked'),
 				'_csrf': $('#csrf-token').val()
 			};
 
@@ -52,12 +53,6 @@ define(function() {
 		});
 
 		document.querySelector('#content input').focus();
-
-		if(!config.emailSetup)
-			$('#reset-link').addClass('hide');
-		else
-			$('#reset-link').removeClass('hide');
-
 	};
 
 	return Login;

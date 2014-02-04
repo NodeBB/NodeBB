@@ -1,8 +1,8 @@
 {
-	"title": "Benachrichtigungen",
-	"back_to_home": "Zurück zur Startseite",
-	"outgoing_link": "Externer Link",
-	"outgoing_link_message": "Du verlässt nun",
-	"continue_to": "Gehe weiter zu",
-	"return_to": "Kehre zurück zu"
+    "title": "Benachrichtigungen",
+    "back_to_home": "Zurück zur Startseite",
+    "outgoing_link": "Externer Link",
+    "outgoing_link_message": "Du verlässt nun",
+    "continue_to": "Gehe weiter zu",
+    "return_to": "Kehre zurück zu"
 }

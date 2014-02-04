@@ -59,18 +59,18 @@ define(function() {
 						}
 
 						var html = templates.prepare(templates['users'].blocks['users']).parse({
-							users: data
+							users: data.users
 						}),
 							userListEl = $('#users-container');
 
 						userListEl.html(html);
 
 
-						if (data && data.length === 0) {
+						if (data && data.users.length === 0) {
 							$('#user-notfound-notify').html('User not found!');
 							$('#user-notfound-notify').parent().addClass('btn-warning label-warning');
 						} else {
-							$('#user-notfound-notify').html(data.length + ' user' + (data.length > 1 ? 's' : '') + ' found!');
+							$('#user-notfound-notify').html(data.users.length + ' user' + (data.users.length > 1 ? 's' : '') + ' found! Search took ' + data.timing + ' ms.');
 							$('#user-notfound-notify').parent().addClass('btn-success label-success');
 						}
 
@@ -81,7 +81,7 @@ define(function() {
 		});
 
 		socket.on('user.isOnline', function(err, data) {
-			if(getActiveSection() == 'online' && !loadingMoreUsers) {
+			if(getActiveSection().indexOf('online') === 0 && !loadingMoreUsers) {
 				startLoading('users:online', 0, true);
 				socket.emit('user.getOnlineAnonCount', {} , function(err, anonCount) {
 					if(parseInt(anonCount, 10) > 0) {
@@ -98,8 +98,11 @@ define(function() {
 			var html = templates.prepare(templates['users'].blocks['users']).parse({
 				users: users
 			});
-			if(emptyContainer)
+
+			if(emptyContainer) {
 				$('#users-container .registered-user').remove();
+			}
+
 			$('#users-container').append(html);
 			$('#users-container .anon-user').appendTo($('#users-container'));
 		}
@@ -123,6 +126,7 @@ define(function() {
 
 		function startLoading(set, after, emptyContainer) {
 			loadingMoreUsers = true;
+
 			socket.emit('user.loadMore', {
 				set: set,
 				after: after

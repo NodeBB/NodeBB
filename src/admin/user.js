@@ -11,7 +11,7 @@ var utils = require('../../public/src/utils'),
 			}
 
 			if (isAdmin) {
-				user.create(userData.username, userData.password, userData.email, function(err) {
+				user.create(userData, function(err) {
 					if(err) {
 						return callback(err);
 					}
@@ -27,7 +27,7 @@ var utils = require('../../public/src/utils'),
 	UserAdmin.makeAdmin = function(uid, theirid, socket) {
 		user.isAdministrator(uid, function(err, isAdmin) {
 			if (isAdmin) {
-				groups.getGidFromName('Administrators', function(err, gid) {
+				groups.getGidFromName('administrators', function(err, gid) {
 					groups.join(gid, theirid, function(err) {
 						if (!err) {
 							socket.emit('event:alert', {
@@ -53,7 +53,7 @@ var utils = require('../../public/src/utils'),
 	UserAdmin.removeAdmin = function(uid, theirid, socket) {
 		user.isAdministrator(uid, function(err, isAdmin) {
 			if (isAdmin) {
-				groups.getGidFromName('Administrators', function(err, gid) {
+				groups.getGidFromName('administrators', function(err, gid) {
 					groups.leave(gid, theirid, function(err) {
 						if (!err) {
 

@@ -20,13 +20,17 @@ var	nconf = require('nconf'),
 
 		app.put('/plugins/fireHook', function(req, res) {
 			// PUT = action
-			plugins.fireHook('action:' + req.body.hook, req.body.args);
+			var	hook = 'action:' + req.body.hook;
+			if (plugins.hasListeners(hook)) {
+				// Hook executes
+				plugins.fireHook(hook, req.body.args);
+			}
+
 			res.send(200);
 		});
 
 		// Static Assets
 		app.get('/plugins/:id/*', function(req, res) {
-
 			var	relPath = req._parsedUrl.pathname.replace(nconf.get('relative_path') + '/plugins/' + req.params.id, '');
 
 			if (plugins.staticDirs[req.params.id]) {

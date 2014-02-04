@@ -32,6 +32,26 @@ define(['taskbar'], function(taskbar) {
 		}
 	}
 
+	composer.addQuote = function(tid, pid, title, username, text){
+		if (allowed()) {
+			var uuid = composer.active;
+			if(uuid !== undefined){
+				var bodyEl = $('#cmp-uuid-'+uuid).find('textarea');
+				var prevText = bodyEl.val();
+				if(tid !== composer.posts[uuid].tid) {
+					text = username + ' said in ['+title+'](/topic/'+tid+'#'+pid+'):\n'+text;
+				}else {
+					text = username + ' said:\n' + text;
+				}
+				composer.posts[uuid].body = (prevText.length ? prevText + '\n\n' : '') + text;
+				bodyEl.val(composer.posts[uuid].body);
+			}else{
+				composer.newReply(tid,title,username + ' said:\n' + text);
+			}
+
+		}
+	};
+
 	composer.newReply = function(tid, title, text) {
 		if(allowed()) {
 			push({
@@ -131,6 +151,7 @@ define(['taskbar'], function(taskbar) {
 
 				switch(action) {
 					case 'post':
+						$(this).attr('disabled', true);
 						composer.post(post_uuid);
 						break;
 					case 'discard':
@@ -187,7 +208,7 @@ define(['taskbar'], function(taskbar) {
 					break;
 					case 'fa fa-list':
 						// Nothing selected
-						insertIntoInput(postContentEl, "\n\n* list item");
+						insertIntoInput(postContentEl, "\n* list item");
 					break;
 					case 'fa fa-link':
 						if (selectionStart === selectionEnd) {
@@ -248,6 +269,7 @@ define(['taskbar'], function(taskbar) {
 				},
 				resizeStop = function() {
 					resizeActive = false;
+					bodyEl.focus();
 					$(window).off('mousemove', resizeAction);
 					$(window).off('mouseup', resizeStop);
 					document.body.removeEventListener('touchmove', resizeTouchAction);
@@ -260,9 +282,13 @@ define(['taskbar'], function(taskbar) {
 					if (resizeActive) {
 						position = (e.clientY + resizeOffset);
 						var newHeight = $(window).height() - position;
+						var paddingBottom = parseInt(postContainer.css('padding-bottom'), 10);
 						if(newHeight > $(window).height() - $('#header-menu').height() - 20) {
 							newHeight = $(window).height() - $('#header-menu').height() - 20;
+						} else if (newHeight < paddingBottom) {
+							newHeight = paddingBottom;
 						}
+
 						postContainer.css('height', newHeight);
 						$('body').css({'margin-bottom': newHeight});
 						resizeSavePosition(newHeight);
@@ -352,7 +378,7 @@ define(['taskbar'], function(taskbar) {
 		}
 
 		postContainer.css('visibility', 'visible')
-			.css('z-index', 1);
+			.css('z-index', 2);
 
 		$('body').css({'margin-bottom': postContainer.css('height')});
 
@@ -373,8 +399,6 @@ define(['taskbar'], function(taskbar) {
 			titleEl.focus();
 		}
 	}
-
-
 	composer.post = function(post_uuid) {
 		var postData = composer.posts[post_uuid],
 			postContainer = $('#cmp-uuid-' + post_uuid),
@@ -401,28 +425,30 @@ define(['taskbar'], function(taskbar) {
 				'title' : titleEl.val(),
 				'content' : bodyEl.val(),
 				'category_id' : postData.cid
-			}, function() {
-				composer.discard(post_uuid);
-			});
+			}, done);
 		} else if (parseInt(postData.tid, 10) > 0) {
 			socket.emit('posts.reply', {
 				'topic_id' : postData.tid,
 				'content' : bodyEl.val()
-			}, function() {
-				composer.discard(post_uuid);
-			});
+			}, done);
 		} else if (parseInt(postData.pid, 10) > 0) {
 			socket.emit('posts.edit', {
 				pid: postData.pid,
 				content: bodyEl.val(),
 				title: titleEl.val()
-			}, function() {
+			}, done);
+		}
+
+		function done(err) {
+			$('.action-bar button').removeAttr('disabled');
+			if(!err) {
 				composer.discard(post_uuid);
-			});
+			}
 		}
 	}
 
 	function composerAlert(title, message) {
+		$('.action-bar button').removeAttr('disabled');
 		app.alert({
 			type: 'danger',
 			timeout: 2000,
@@ -432,7 +458,6 @@ define(['taskbar'], function(taskbar) {
 		});
 	}
 
-
 	composer.discard = function(post_uuid) {
 		if (composer.posts[post_uuid]) {
 			$('#cmp-uuid-' + post_uuid).remove();
@@ -440,6 +465,7 @@ define(['taskbar'], function(taskbar) {
 			composer.active = undefined;
 			taskbar.discard('composer', post_uuid);
 			$('body').css({'margin-bottom': 0});
+			$('.action-bar button').removeAttr('disabled');
 		}
 	}
 
@@ -580,6 +606,7 @@ define(['taskbar'], function(taskbar) {
 	return {
 		newTopic: composer.newTopic,
 		newReply: composer.newReply,
+		addQuote: composer.addQuote,
 		editPost: composer.editPost,
 		load: composer.load,
 		minimize: composer.minimize

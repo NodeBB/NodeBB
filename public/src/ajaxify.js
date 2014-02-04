@@ -23,30 +23,22 @@ var ajaxify = {};
 
 
 	window.onpopstate = function (event) {
-		// "quiet": If set to true, will not call pushState
-		if (event !== null && event.state && event.state.url !== undefined) {
+		if (event !== null && event.state && event.state.url !== undefined && !ajaxify.initialLoad) {
 			ajaxify.go(event.state.url, null, true);
 		}
 	};
 
-	var pagination, paginator_bar;
-
 	ajaxify.currentPage = null;
+	ajaxify.initialLoad = false;
 
 	ajaxify.go = function (url, callback, quiet) {
-		// start: the following should be set like so: ajaxify.onchange(function(){}); where the code actually belongs
-		$(window).off('scroll');
+		// "quiet": If set to true, will not call pushState
 		app.enterRoom('global');
 
-		pagination = pagination || document.getElementById('pagination');
-		paginator_bar = pagination ? document.body.querySelector('.progress-container') : undefined;
-		if (pagination) {
-			pagination.parentNode.style.display = 'none';
-			paginator_bar.style.display = 'none';
-		}
+		$(window).off('scroll');
 
-		window.onscroll = null;
-		// end
+		$(window).trigger('action:ajaxify.start', { url: url });
+		$('body').trigger('action:ajaxifying', {url: url});	// Deprecated as of v0.4.0
 
 		if ($('#content').hasClass('ajaxifying')) {
 			templates.cancelRequest();
@@ -116,6 +108,7 @@ var ajaxify = {};
 				app.processPage();
 
 				jQuery('#content, #footer').stop(true, true).removeClass('ajaxifying');
+				ajaxify.initialLoad = false;
 
 				if (window.location.hash) {
 					hash = window.location.hash;
@@ -128,7 +121,7 @@ var ajaxify = {};
 				}
 
 				app.refreshTitle(url);
-
+				$(window).trigger('action:ajaxify.end', { url: url });
 			}, url);
 
 			return true;

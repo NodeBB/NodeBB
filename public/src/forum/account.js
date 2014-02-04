@@ -44,7 +44,7 @@ define(['forum/accountheader'], function(header) {
 
 					followBtn.addClass('hide');
 					unfollowBtn.removeClass('hide');
-					app.alertSuccess('You are now following ' + username + '!');
+					app.alertSuccess('[[global:alert.follow, ' + username + ']]');
 				});
 				return false;
 			});
@@ -59,7 +59,7 @@ define(['forum/accountheader'], function(header) {
 
 					followBtn.removeClass('hide');
 					unfollowBtn.addClass('hide');
-					app.alertSuccess('You are no longer following ' + username + '!');
+					app.alertSuccess('[[global:alert.unfollow, ' + username + ']]');
 				});
 				return false;
 			});
@@ -84,13 +84,15 @@ define(['forum/accountheader'], function(header) {
 	Account.handleUserOnline = function(err, data) {
 		var onlineStatus = $('.account-online-status');
 
-		if (data.online) {
-			onlineStatus.find('span span').text('online');
-			onlineStatus.find('i').attr('class', 'fa fa-circle');
-		} else {
-			onlineStatus.find('span span').text('offline');
-			onlineStatus.find('i').attr('class', 'fa fa-circle-o');
+		if(parseInt(templates.get('theirid'), 10) !== parseInt(data.uid, 10)) {
+			return;
 		}
+
+		translator.get('global:' + data.status, function(translated) {
+			onlineStatus.find('span span').text(translated);
+			onlineStatus.find('i').attr('class', 'fa fa-circle status ' + data.status);
+		});
+
 	};
 
 	return Account;

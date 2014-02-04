@@ -5,7 +5,7 @@ define(['uploader'], function(uploader) {
 		Settings.prepare();
 	};
 
-	Settings.prepare = function() {
+	Settings.prepare = function(callback) {
 		// Come back in 125ms if the config isn't ready yet
 		if (!app.config) {
 			setTimeout(function() {
@@ -117,6 +117,10 @@ define(['uploader'], function(uploader) {
 			$(this).tab('show');
 			return false;
 		});
+
+		if (typeof callback === 'function') {
+			callback();
+		}
 	};
 
 	Settings.remove = function(key) {

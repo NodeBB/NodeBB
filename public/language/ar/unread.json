@@ -1,5 +1,6 @@
 {
-	"no_unread_topics": "ليس هناك أي موضوع غير مقروء",
-	"mark_all_read": "إجعل كل المواضيع مقرؤة",
-	"load_more": "حمل المزيد"
+    "title": "Unread",
+    "no_unread_topics": "ليس هناك أي موضوع غير مقروء",
+    "mark_all_read": "إجعل كل المواضيع مقرؤة",
+    "load_more": "حمل المزيد"
 }

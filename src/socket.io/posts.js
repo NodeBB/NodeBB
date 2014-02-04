@@ -1,8 +1,13 @@
-var	posts = require('../posts'),
+var	async = require('async'),
+	nconf = require('nconf'),
+
+	posts = require('../posts'),
 	meta = require('../meta'),
 	topics = require('../topics'),
 	favourites = require('../favourites'),
 	postTools = require('../postTools'),
+	notifications = require('../notifications'),
+	groups = require('../groups'),
 	user = require('../user'),
 	index = require('./index'),
 
@@ -16,7 +21,7 @@ SocketPosts.reply = function(socket, data, callback) {
 			type: 'danger',
 			timeout: 2000
 		});
-		return;
+		return callback(new Error('not-logged-in'));
 	}
 
 	if(!data || !data.topic_id || !data.content) {
@@ -93,7 +98,17 @@ SocketPosts.uploadFile = function(socket, data, callback) {
 };
 
 SocketPosts.getRawPost = function(socket, pid, callback) {
-	posts.getPostField(pid, 'content', callback);
+	posts.getPostFields(pid, ['content', 'deleted'], function(err, data) {
+		if(err) {
+			return callback(err);
+		}
+
+		if(data.deleted === '1') {
+			return callback(new Error('This post no longer exists'));
+		}
+
+		callback(null, data.content);
+	});
 };
 
 SocketPosts.edit = function(socket, data, callback) {
@@ -104,15 +119,15 @@ SocketPosts.edit = function(socket, data, callback) {
 			type: 'warning',
 			timeout: 2000
 		});
-		return;
+		return callback(new Error('not-logged-in'));
 	} else if(!data || !data.pid || !data.title || !data.content) {
 		return callback(new Error('invalid data'));
 	} else if (!data.title || data.title.length < parseInt(meta.config.minimumTitleLength, 10)) {
 		topics.emitTitleTooShortAlert(socket);
-		return;
+		return callback(new Error('title-too-short'));
 	} else if (!data.content || data.content.length < parseInt(meta.config.minimumPostLength, 10)) {
 		module.parent.exports.emitContentTooShortAlert(socket);
-		return;
+		return callback(new Error('content-too-short'));
 	}
 
 	postTools.edit(socket.uid, data.pid, data.title, data.content);
@@ -170,6 +185,7 @@ SocketPosts.getPrivileges = function(socket, pid, callback) {
 };
 
 SocketPosts.getFavouritedUsers = function(socket, pid, callback) {
+
 	favourites.getFavouritedUidsByPids([pid], function(data) {
 		var max = 5; //hardcoded
 		var usernames = "";
@@ -191,6 +207,55 @@ SocketPosts.getFavouritedUsers = function(socket, pid, callback) {
 			callback(null, "");
 		}
 	});
+};
+
+SocketPosts.getPidPage = function(socket, pid, callback) {
+	posts.getPidPage(pid, callback);
+}
+
+SocketPosts.flag = function(socket, pid, callback) {
+	if (!socket.uid) {
+		return callback(new Error('not-logged-in'));
+	}
+
+	var message = '',
+		path = '';
+
+	async.waterfall([
+		function(next) {
+			user.getUserField(socket.uid, 'username', next);
+		},
+		function(username, next) {
+			message = username + ' flagged a post.';
+			posts.getPostField(pid, 'tid', next);
+		},
+		function(tid, next) {
+			topics.getTopicField(tid, 'slug', next)
+		},
+		function(topicSlug, next) {
+			path = nconf.get('relative_path') + '/topic/' + topicSlug + '#' + pid;
+			groups.getByGroupName('administrators', {}, next);
+		},
+		function(adminGroup, next) {
+
+			notifications.create(message, path, 'post_flag:' + pid, function(nid) {
+				notifications.push(nid, adminGroup.members, function() {
+					next(null);
+				});
+			});
+		}
+	], callback);
+}
+
+SocketPosts.loadMoreFavourites = function(socket, data, callback) {
+	if(!data || !data.after) {
+		return callback(new Error('invalid data'));
+	}
+
+	var start = parseInt(data.after, 10),
+		end = start + 9;
+
+	posts.getFavourites(socket.uid, start, end, callback);
 };
 
 module.exports = SocketPosts;

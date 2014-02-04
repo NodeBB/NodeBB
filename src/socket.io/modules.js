@@ -109,7 +109,11 @@ SocketModules.chats.send = function(socket, data) {
 				});
 			});
 		}
-        Messaging.parse(msg, socket.uid, socket.uid, usersData[1], usersData[0], function(parsed) {
+
+		usersData[0].uid = socket.uid;
+		usersData[1].uid = touid;
+
+        Messaging.parse(msg, socket.uid, socket.uid, usersData[1], usersData[0], true, function(parsed) {
             Messaging.addMessage(socket.uid, touid, msg, function(err, message) {
                 var numSockets = 0,
                     x;

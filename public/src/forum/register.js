@@ -11,6 +11,7 @@ define(function() {
 			email_notify = $('#email-notify'),
 			password_notify = $('#password-notify'),
 			password_confirm_notify = $('#password-confirm-notify'),
+			agreeTerms = $('#agree-terms'),
 			validationError = false,
 			successIcon = '<i class="fa fa-check"></i>';
 
@@ -154,6 +155,18 @@ define(function() {
 				e.preventDefault();
 			}
 		});
+
+		if(agreeTerms.length) {
+			agreeTerms.on('click', function() {
+				if ($(this).prop('checked')) {
+					register.removeAttr('disabled');
+				} else {
+					register.attr('disabled', 'disabled');
+				}
+			});
+
+			register.attr('disabled', 'disabled');
+		}
 	};
 
 	return Register;

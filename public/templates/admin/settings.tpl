@@ -7,6 +7,7 @@
 	<li><a href="#email" data-toggle="tab">Email</a></li>
 	<li><a href="#user" data-toggle="tab">User</a></li>
 	<li><a href="#post" data-toggle="tab">Post</a></li>
+	<li><a href="#pagination" data-toggle="tab">Pagination</a></li>
 	<li><a href="#web-crawler" data-toggle="tab">Web Crawler</a></li>
 </ul>
 
@@ -16,6 +17,8 @@
 			<form>
 				<label>Site Title</label>
 				<input class="form-control" type="text" placeholder="Your Community Name" data-field="title" /><br />
+				<label>Browser Title</label>
+				<input class="form-control" type="text" placeholder="Browser Title" data-field="browserTitle" /><br />
 				<label>Site Description</label>
 				<input type="text" class="form-control" placeholder="A short description about your community" data-field="description" /><br />
 				<label>Site Keywords</label>
@@ -81,16 +84,34 @@
 						<input type="checkbox" data-field="profile:convertProfileImageToPNG"> <strong>Convert profile image uploads to PNG</strong>
 					</label>
 				</div>
-				<label>Maximum User Image File Size</label>
-				<input type="text" class="form-control" placeholder="Maximum size of uploaded user images in kilobytes" data-field="maximumProfileImageSize" /><br />
-				<strong>Minimum Username Length</strong><br />
-				<input type="text" class="form-control" value="2" data-field="minimumUsernameLength"><br />
-				<strong>Maximum Username Length</strong><br />
-				<input type="text" class="form-control" value="16" data-field="maximumUsernameLength"><br />
-				<strong>Minimum Password Length</strong><br />
-				<input type="text" class="form-control" value="6" data-field="minimumPasswordLength"><br />
-				<strong>Maximum Signature Length</strong><br />
-				<input type="text" class="form-control" value="255" data-field="maximumSignatureLength"><br />
+				<div class="form-group">
+					<label>Days to remember user login sessions</label>
+					<input type="text" class="form-control" data-field="loginDays" placeholder="14" />
+				</div>
+				<div class="form-group">
+					<label>Maximum User Image File Size</label>
+					<input type="text" class="form-control" placeholder="Maximum size of uploaded user images in kilobytes" data-field="maximumProfileImageSize" />
+				</div>
+				<div class="form-group">
+					<label>Minimum Username Length</label>
+					<input type="text" class="form-control" value="2" data-field="minimumUsernameLength">
+				</div>
+				<div class="form-group">
+					<label>Maximum Username Length</label>
+					<input type="text" class="form-control" value="16" data-field="maximumUsernameLength">
+				</div>
+				<div class="form-group">
+					<label>Minimum Password Length</label>
+					<input type="text" class="form-control" value="6" data-field="minimumPasswordLength">
+				</div>
+				<div class="form-group">
+					<label>Maximum Signature Length</label>
+					<input type="text" class="form-control" value="255" data-field="maximumSignatureLength">
+				</div>
+				<div class="form-group">
+					<label>Forum Terms of Use <small>(Leave blank to disable)</small></label>
+					<textarea class="form-control" data-field="termsOfUse"></textarea>
+				</div>
 			</div>
 		</form>
 	</div>
@@ -129,6 +150,21 @@
 					</label>
 				</div>
 				<strong>Maximum File Size</strong><br /> <input type="text" class="form-control" value="2048" data-field="maximumFileSize"><br />
+			</div>
+		</form>
+	</div>
+
+	<div class="tab-pane" id="pagination">
+		<form>
+			<div class="alert alert-warning">
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" data-field="usePagination"> <strong>Paginate topics and posts instead of using infinite scroll.</strong>
+					</label>
+				</div>
+
+				<strong>Topics per Page</strong><br /> <input type="text" class="form-control" value="20" data-field="topicsPerPage"><br />
+				<strong>Posts per Page</strong><br /> <input type="text" class="form-control" value="20" data-field="postsPerPage"><br />
 			</div>
 		</form>
 	</div>

@@ -4,7 +4,8 @@ var fs = require('fs'),
 	winston = require('winston'),
 	nconf = require('nconf'),
 	eventEmitter = require('events').EventEmitter,
-	db = require('./database');
+	db = require('./database'),
+	meta = require('./meta');
 
 (function(Plugins) {
 
@@ -63,8 +64,14 @@ var fs = require('fs'),
 				db.getSetMembers('plugins:active', next);
 			},
 			function(plugins, next) {
-				if (plugins && Array.isArray(plugins) && plugins.length > 0) {
+				if (plugins && Array.isArray(plugins)) {
+					plugins.push(meta.config['theme:id']);
+
 					async.each(plugins, function(plugin, next) {
+						if (!plugin) {
+							return next();
+						}
+
 						var modulePath = path.join(__dirname, '../node_modules/', plugin);
 						if (fs.existsSync(modulePath)) {
 							Plugins.loadPlugin(modulePath, next);
@@ -94,7 +101,7 @@ var fs = require('fs'),
 	Plugins.loadPlugin = function(pluginPath, callback) {
 		fs.readFile(path.join(pluginPath, 'plugin.json'), function(err, data) {
 			if (err) {
-				return callback(err);
+				return callback(pluginPath.match('nodebb-theme') ? null  : err);
 			}
 
 			var pluginData = JSON.parse(data),
@@ -131,16 +138,41 @@ var fs = require('fs'),
 				},
 				function(next) {
 					// Static Directories for Plugins
-					if (pluginData.staticDir) {
-						staticDir = path.join(pluginPath, pluginData.staticDir);
+					var	realPath,
+						validMappedPath = /^[\w\-_]+$/;
 
-						fs.exists(staticDir, function(exists) {
-							if (exists) {
-								Plugins.staticDirs[pluginData.id] = staticDir;
-								next();
-							} else next();
-						});
-					} else next();
+					pluginData.staticDirs = pluginData.staticDirs || {};
+
+					// Deprecated, to be removed v0.5
+					if (pluginData.staticDir) {
+						winston.warn('[plugins/' + pluginData.id + '] staticDir is deprecated, use staticDirs instead');
+						Plugins.staticDirs[pluginData.id] = path.join(pluginPath, pluginData.staticDir);
+					}
+
+					for(key in pluginData.staticDirs) {
+						(function(mappedPath) {
+							if (pluginData.staticDirs.hasOwnProperty(mappedPath)) {
+								if (Plugins.staticDirs[mappedPath]) {
+									winston.warn('[plugins/' + pluginData.id + '] Mapped path (' + mappedPath + ') already specified!');
+								} else if (!validMappedPath.test(mappedPath)) {
+									winston.warn('[plugins/' + pluginData.id + '] Invalid mapped path specified: ' + mappedPath + '. Path must adhere to: ' + validMappedPath.toString());
+								} else {
+									realPath = pluginData.staticDirs[mappedPath];
+									staticDir = path.join(pluginPath, realPath);
+
+									(function(staticDir) {
+										fs.exists(staticDir, function(exists) {
+											if (exists) {
+												Plugins.staticDirs[mappedPath] = staticDir;
+											}
+										});
+									}(staticDir));
+								}
+							}
+						}(key));
+					}
+
+					next();
 				},
 				function(next) {
 					// CSS Files for plugins
@@ -149,9 +181,16 @@ var fs = require('fs'),
 							winston.info('[plugins] Found ' + pluginData.css.length + ' CSS file(s) for plugin ' + pluginData.id);
 						}
 
-						Plugins.cssFiles = Plugins.cssFiles.concat(pluginData.css.map(function(file) {
-							return path.join('/plugins', pluginData.id, file);
-						}));
+						if (!pluginData.staticDir) {
+							Plugins.cssFiles = Plugins.cssFiles.concat(pluginData.css.map(function(file) {
+								return path.join('/plugins', file);
+							}));
+						} else {
+							winston.warn('[plugins/' + pluginData.id + '] staticDir is deprecated, define CSS files with new staticDirs instead.');
+							Plugins.cssFiles = Plugins.cssFiles.concat(pluginData.css.map(function(file) {
+								return path.join('/plugins', pluginData.id, file);
+							}));
+						}
 
 						next();
 					} else {
@@ -200,6 +239,10 @@ var fs = require('fs'),
 			}
 			callback();
 		} else return;
+	};
+
+	Plugins.hasListeners = function(hook) {
+		return (Plugins.loadedHooks[hook] && Plugins.loadedHooks[hook].length > 0);
 	};
 
 	Plugins.fireHook = function(hook, args, callback) {

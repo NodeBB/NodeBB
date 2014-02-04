@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
-	<li><a href="{relative_path}/">Home</a></li>
-	<li class="active">Recent <a href="{relative_path}/recent.rss"><i class="fa fa-rss-square"></i></a></li>
+	<li><a href="{relative_path}/">[[global:home]]</a></li>
+	<li class="active">[[recent:title]] <a href="{relative_path}/recent.rss"><i class="fa fa-rss-square"></i></a></li>
 </ol>
 
 <ul class="nav nav-pills">
@@ -15,13 +15,15 @@
 	<div class="alert alert-warning hide" id="new-topics-alert"></div>
 </a>
 
-<div class="alert alert-warning hide {no_topics_message}" id="category-no-topics">
+<!-- IF !topics.length -->
+<div class="alert alert-warning" id="category-no-topics">
 	<strong>There are no recent topics.</strong>
 </div>
+<!-- ENDIF !topics.length -->
 
 <div class="category row">
 	<div class="col-md-12">
-		<ul id="topics-container">
+		<ul id="topics-container" data-nextstart="{nextStart}">
 		<!-- BEGIN topics -->
 		<li class="category-item {topics.deleted-class}">
 			<div class="col-md-12 col-xs-12 panel panel-default topic-row">

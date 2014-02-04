@@ -89,18 +89,9 @@ define(['taskbar', 'string'], function(taskbar, S) {
 		return $('#chat-modal-' + touid).length !== 0;
 	}
 
-	function checkStatus(chatModal, callback) {
+	function checkStatus(chatModal) {
 		socket.emit('user.isOnline', chatModal.touid, function(err, data) {
-			if(data.online !== chatModal.online) {
-				if(data.online) {
-					module.appendChatMessage(chatModal, chatModal.username + ' is currently online.\n', data.timestamp);
-				} else {
-					module.appendChatMessage(chatModal, chatModal.username + ' is currently offline.\n', data.timestamp);
-				}
-				chatModal.online = data.online;
-			}
-			if(callback)
-				callback(data.online);
+			$('#chat-user-status').attr('class', 'fa fa-circle status ' + data.status);
 		});
 	}
 
@@ -131,6 +122,9 @@ define(['taskbar', 'string'], function(taskbar, S) {
 				chatModal.draggable({
 					start:function() {
 						module.bringModalToTop(chatModal);
+					},
+					stop:function() {
+						chatModal.find('#chat-message-input').focus();
 					},
 					handle: '.modal-header'
 				});
@@ -176,11 +170,11 @@ define(['taskbar', 'string'], function(taskbar, S) {
 	module.load = function(uuid) {
 		var chatModal = $('div[UUID="'+uuid+'"]');
 		chatModal.removeClass('hide');
-		module.bringModalToTop(chatModal);
 		checkOnlineStatus(chatModal);
 		taskbar.updateActive(uuid);
 		scrollToBottom(chatModal.find('#chat-content'));
 		module.center(chatModal);
+		module.bringModalToTop(chatModal);
 	}
 
 	module.minimize = function(uuid) {
@@ -227,10 +221,12 @@ define(['taskbar', 'string'], function(taskbar, S) {
 
 		var date = new Date(parseInt(timestamp, 10));
 
-        var prefix = '<span class="chat-timestamp">' + date.toLocaleTimeString() + '</span> ';
-        message = '<li>' + S(prefix + message).stripTags('p').s + '</li>';
+		var prefix = '<span class="chat-timestamp">' + date.toLocaleTimeString() + '</span> ';
+		message = $('<li>' + S(prefix + message).stripTags('p').s + '</li>');
 
+		message.find('img:not(".chat-user-image")').addClass('img-responsive');
 		chatContent.append(message);
+
 		scrollToBottom(chatContent);
 	};
 

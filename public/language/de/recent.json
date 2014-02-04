@@ -1,5 +1,6 @@
 {
-	"day": "Tag",
-	"week": "Woche",
-	"month": "Monat"
+    "title": "Aktuell",
+    "day": "Tag",
+    "week": "Woche",
+    "month": "Monat"
 }

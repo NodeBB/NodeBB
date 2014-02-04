@@ -73,6 +73,12 @@ describe('Test database', function() {
 			});
 		}
 
+		function getObjectKeys(callback) {
+			db.getObjectKeys(objectKey, function(err, data) {
+				callback(err, {'getObjectKeys':data});
+			});
+		}
+
 		var objectTasks = [
 			setObject,
 			getObject,
@@ -88,7 +94,8 @@ describe('Test database', function() {
 			isObjectField,
 			incrObjectFieldBy,
 			getObject,
-			getObjects
+			getObjects,
+			getObjectKeys
 		];
 
 		async.series(objectTasks, function(err, results) {

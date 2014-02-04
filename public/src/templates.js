@@ -79,7 +79,7 @@
 							template.prototype.parse = parse;
 							template.prototype.html = String(html);
 
-							global.templates[file] = new template;
+							templates[file] = new template;
 
 							loaded--;
 							if (loaded === 0) {
@@ -186,22 +186,27 @@
 			parse_template();
 		}
 
-		apiXHR = jQuery.get(RELATIVE_PATH + '/api/' + api_url, function (data) {
+		apiXHR = $.ajax({
+			url: RELATIVE_PATH + '/api/' + api_url,
+			cache: false,
+			success: function (data) {
+				if (!data) {
+					ajaxify.go('404');
+					return;
+				}
 
-			if (!data) {
-				ajaxify.go('404');
-				return;
-			}
-
-			template_data = data;
-			parse_template();
-		}).fail(function (data, textStatus) {
-			if (data && data.status == 404) {
-				return ajaxify.go('404');
-			} else if (data && data.status === 403) {
-				return ajaxify.go('403');
-			} else if (textStatus !== "abort") {
-				app.alertError(data.responseJSON.error);
+				template_data = data;
+				parse_template();
+			},
+			error: function (data, textStatus) {
+				$('#content, #footer').stop(true, true).removeClass('ajaxifying');
+				if (data && data.status == 404) {
+					return ajaxify.go('404');
+				} else if (data && data.status === 403) {
+					return ajaxify.go('403');
+				} else if (textStatus !== "abort") {
+					app.alertError(data.responseJSON.error);
+				}
 			}
 		});
 
@@ -318,6 +323,35 @@
 				template = '';
 			}
 
+			function checkConditional(key, value) {
+				var conditional = makeConditionalRegex(key),
+					matches = template.match(conditional);
+
+				if (matches !== null) {
+					for (var i = 0, ii = matches.length; i < ii; i++) {
+						var conditionalBlock = matches[i].split(/<!-- ELSE -->/);
+
+						var statement = new RegExp("(<!--[\\s]*IF " + key + "[\\s]*-->)|(<!--[\\s]*ENDIF " + key + "[\\s]*-->)", 'gi');
+
+						if (conditionalBlock[1]) {
+							// there is an else statement
+							if (!value) {
+								template = template.replace(matches[i], conditionalBlock[1].replace(statement, ''));
+							} else {
+								template = template.replace(matches[i], conditionalBlock[0].replace(statement, ''));
+							}
+						} else {
+							// regular if statement
+							if (!value) {
+								template = template.replace(matches[i], '');
+							} else {
+								template = template.replace(matches[i], matches[i].replace(statement, ''));
+							}
+						}
+					}
+				}
+			}
+
 			for (var d in data) {
 				if (data.hasOwnProperty(d)) {
 					if (typeof data[d] === 'undefined') {
@@ -325,6 +359,9 @@
 					} else if (data[d] === null) {
 						template = replace(namespace + d, '', template);
 					} else if (data[d].constructor == Array) {
+						checkConditional(namespace + d + '.length', data[d].length);
+						checkConditional('!' + namespace + d + '.length', !data[d].length);
+
 						namespace += d + '.';
 
 						var regex = makeRegex(d),
@@ -348,44 +385,20 @@
 					} else if (data[d] instanceof Object) {
 						template = parse(data[d], d + '.', template);
 					} else {
-						function checkConditional(key, value) {
-							var conditional = makeConditionalRegex(key),
-								matches = template.match(conditional);
+						var key = namespace + d,
+							value = typeof data[d] === 'string' ? data[d].replace(/^\s+|\s+$/g, '') : data[d];
 
-							if (matches !== null) {
-								for (var i = 0, ii = matches.length; i < ii; i++) {
-									var conditionalBlock = matches[i].split(/<!-- ELSE -->/);
+						checkConditional(key, value);
+						checkConditional('!' + key, !value);
 
-									if (conditionalBlock[1]) {
-										// there is an else statement
-										if (!value) {
-											template = template.replace(matches[i], conditionalBlock[1].replace(/<!-- ((\IF\b)|(\bENDIF\b))([^@]*?)-->/gi, ''));
-										} else {
-											template = template.replace(matches[i], conditionalBlock[0].replace(/<!-- ((\IF\b)|(\bENDIF\b))([^@]*?)-->/gi, ''));
-										}
-									} else {
-										// regular if statement
-										if (!value) {
-											template = template.replace(matches[i], '');
-										} else {
-											template = template.replace(matches[i], matches[i].replace(/<!-- ((\IF\b)|(\bENDIF\b))([^@]*?)-->/gi, ''));
-										}
-									}
-								}
-							}
-						}
-
-						checkConditional(namespace + d, data[d]);
-						checkConditional('!' + namespace + d, !data[d]);
-
-						if (blockInfo) {
+						if (blockInfo && blockInfo.iterator) {
 							checkConditional('@first', blockInfo.iterator === 0);
 							checkConditional('!@first', blockInfo.iterator !== 0);
 							checkConditional('@last', blockInfo.iterator === blockInfo.total);
 							checkConditional('!@last', blockInfo.iterator !== blockInfo.total);
 						}
 
-						template = replace(namespace + d, data[d], template);
+						template = replace(key, value, template);
 					}
 				}
 			}
@@ -394,10 +407,11 @@
 				var regex = new RegExp("{" + namespace + "[\\s\\S]*?}", 'g');
 				template = template.replace(regex, '');
 				namespace = '';
+			} else {
+				// clean up all undefined conditionals
+				template = template.replace(/<!-- ELSE -->/gi, 'ENDIF -->')
+									.replace(/<!-- IF([^@]*?)ENDIF([^@]*?)-->/gi, '');
 			}
-
-			// clean up all undefined conditionals
-			template = template.replace(/<!-- IF([^@]*?)ENDIF([^@]*?)-->/gi, '');
 
 			return template;
 

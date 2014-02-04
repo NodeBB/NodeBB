@@ -1,5 +1,4 @@
-// this test currently needs to talk to the redis database.
-// get the redis config info from root directory's config.json:
+
 var winston = require('winston');
 
 process.on('uncaughtException', function (err) {
@@ -32,7 +31,7 @@ describe('Categories', function() {
 
 	describe('.getCategoryById', function() {
 		it('should retrieve a newly created category by its ID', function(done) {
-			Categories.getCategoryById(categoryObj.cid, 0, function(err, categoryData) {
+			Categories.getCategoryById(categoryObj.cid, 0, -1, 0, function(err, categoryData) {
 				assert(categoryData);
 				assert.equal(categoryObj.name, categoryData.category_name);
 				assert.equal(categoryObj.description, categoryData.category_description);
@@ -44,9 +43,9 @@ describe('Categories', function() {
 
 	describe('.getCategoryTopics', function() {
 		it('should return a list of topics', function(done) {
-			Categories.getCategoryTopics(categoryObj.cid, 0, 10, 0, function(err, topics) {
-				assert(Array.isArray(topics));
-				assert(topics.every(function(topic) {
+			Categories.getCategoryTopics(categoryObj.cid, 0, 10, 0, function(err, result) {
+				assert(Array.isArray(result.topics));
+				assert(result.topics.every(function(topic) {
 					return topic instanceof Object;
 				}));
 

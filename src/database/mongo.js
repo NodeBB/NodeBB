@@ -343,6 +343,20 @@
 		});
 	}
 
+	module.getObjectKeys = function(key, callback) {
+		module.getObject(key, function(err, data) {
+			if(err) {
+				return callback(err);
+			}
+
+			if(data) {
+				callback(null, Object.keys(data));
+			} else {
+				callback(null, []);
+			}
+		});
+	}
+
 	module.getObjectValues = function(key, callback) {
 		module.getObject(key, function(err, data) {
 			if(err) {
@@ -612,6 +626,19 @@
 		});
 	}
 
+	module.sortedSetCard = function(key, callback) {
+		db.collection('objects').count({_key:key}, function(err, count) {
+			if(err) {
+				return callback(err);
+			}
+
+			if(!count) {
+				return callback(null, 0);
+			}
+			callback(null, count);
+		});
+	}
+
 	module.sortedSetRank = function(key, value, callback) {
 		if(value !== null && value !== undefined) {
 			value = value.toString();
@@ -626,6 +653,23 @@
 			}
 
 			callback(null, rank);
+		});
+	}
+
+	module.sortedSetRevRank = function(key, value, callback) {
+		if(value !== null && value !== undefined) {
+			value = value.toString();
+		}
+		module.getSortedSetRange(key, 0, -1, function(err, result) {
+			if(err) {
+				return callback(err);
+			}
+			var rank = result.indexOf(value);
+			if(rank === -1) {
+				return callback(null, null);
+			}
+
+			callback(null, result.length - rank - 1);
 		});
 	}
 

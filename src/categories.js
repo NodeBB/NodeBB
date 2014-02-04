@@ -1,10 +1,11 @@
-var db = require('./database.js'),
-	posts = require('./posts.js'),
-	utils = require('./../public/src/utils.js'),
-	user = require('./user.js'),
-	topics = require('./topics.js'),
+var db = require('./database'),
+	posts = require('./posts'),
+	utils = require('./../public/src/utils'),
+	user = require('./user'),
+	topics = require('./topics'),
 	plugins = require('./plugins'),
 	CategoryTools = require('./categoryTools'),
+	meta = require('./meta'),
 
 	async = require('async'),
 	winston = require('winston'),
@@ -45,14 +46,14 @@ var db = require('./database.js'),
 		});
 	};
 
-	Categories.getCategoryById = function(category_id, current_user, callback) {
+	Categories.getCategoryById = function(category_id, start, end, current_user, callback) {
 		Categories.getCategoryData(category_id, function(err, categoryData) {
 			if (err) {
 				return callback(err);
 			}
 
-			function getTopicIds(next) {
-				Categories.getTopicIds(category_id, 0, 19, next);
+			function getTopics(next) {
+				Categories.getCategoryTopics(category_id, start, end, current_user, next);
 			}
 
 			function getActiveUsers(next) {
@@ -65,10 +66,18 @@ var db = require('./database.js'),
 				});
 			}
 
-			async.parallel([getTopicIds, getActiveUsers, getSidebars], function(err, results) {
-				var tids = results[0],
-					active_users = results[1],
-					sidebars = results[2];
+			function getPageCount(next) {
+				Categories.getPageCount(category_id, next);
+			}
+
+			async.parallel([getTopics, getActiveUsers, getSidebars, getPageCount], function(err, results) {
+				if(err) {
+					return callback(err);
+				}
+
+				var active_users = results[1],
+					sidebars = results[2],
+					pageCount = results[3];
 
 				var category = {
 					'category_name': categoryData.name,
@@ -81,26 +90,22 @@ var db = require('./database.js'),
 					'topic_row_size': 'col-md-9',
 					'category_id': category_id,
 					'active_users': [],
-					'topics': [],
+					'topics': results[0].topics,
+					'nextStart': results[0].nextStart,
+					'pageCount': pageCount,
 					'disableSocialButtons': meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false,
 					'sidebars': sidebars
 				};
-
-				function getTopics(next) {
-					topics.getTopicsByTids(tids, category_id, current_user, next);
-				}
 
 				function getModerators(next) {
 					Categories.getModerators(category_id, next);
 				}
 
 				function getActiveUsers(next) {
-					user.getMultipleUserFields(active_users, ['uid', 'username', 'userslug', 'picture'], function(err, users) {
-						next(err, users);
-					});
+					user.getMultipleUserFields(active_users, ['uid', 'username', 'userslug', 'picture'], next);
 				}
 
-				if (tids.length === 0) {
+				if (!category.topics.length) {
 					getModerators(function(err, moderators) {
 						category.moderator_block_class = moderators.length > 0 ? '' : 'none';
 						category.moderators = moderators;
@@ -109,11 +114,10 @@ var db = require('./database.js'),
 						callback(null, category);
 					});
 				} else {
-					async.parallel([getTopics, getModerators, getActiveUsers], function(err, results) {
-						category.topics = results[0];
-						category.moderator_block_class = results[1].length > 0 ? '' : 'none';
-						category.moderators = results[1];
-						category.active_users = results[2];
+					async.parallel([getModerators, getActiveUsers], function(err, results) {
+						category.moderator_block_class = results[0].length > 0 ? '' : 'none';
+						category.moderators = results[0];
+						category.active_users = results[1];
 						category.show_sidebar = category.topics.length > 0 ? 'show' : 'hidden';
 						callback(null, category);
 					});
@@ -124,19 +128,51 @@ var db = require('./database.js'),
 	};
 
 	Categories.getCategoryTopics = function(cid, start, stop, uid, callback) {
-		Categories.getTopicIds(cid, start, stop, function(err, tids) {
-			if(err) {
-				return callback(err);
-			}
+		async.waterfall([
+			function(next) {
+				Categories.getTopicIds(cid, start, stop, next);
+			},
+			function(tids, next) {
+				topics.getTopicsByTids(tids, cid, uid, next);
+			},
+			function(topics, next) {
+				if (topics && topics.length > 0) {
+					db.sortedSetRevRank('categories:' + cid + ':tid', topics[topics.length - 1].tid, function(err, rank) {
+						if(err) {
+							return next(err);
+						}
 
-			topics.getTopicsByTids(tids, cid, uid, callback);
-		});
+						next(null, {
+							topics: topics,
+							nextStart: parseInt(rank, 10) + 1
+						});
+					});
+				} else {
+					next(null, {
+						topics: topics,
+						nextStart: 1
+					});
+				}
+			}
+		], callback);
 	};
 
 	Categories.getTopicIds = function(cid, start, stop, callback) {
 		db.getSortedSetRevRange('categories:' + cid + ':tid', start, stop, callback);
 	};
 
+	Categories.getPageCount = function(cid, callback) {
+		db.sortedSetCard('categories:' + cid + ':tid', function(err, topicCount) {
+			if(err) {
+				return callback(err);
+			}
+
+			var topicsPerPage = parseInt(meta.config.topicsPerPage, 10);
+			topicsPerPage = topicsPerPage ? topicsPerPage : 20;
+
+			callback(null, Math.ceil(parseInt(topicCount, 10) / topicsPerPage));
+		});
+	};
 
 	Categories.getAllCategories = function(current_user, callback) {
 		db.getListRange('categories:cid', 0, -1, function(err, cids) {
@@ -187,6 +223,10 @@ var db = require('./database.js'),
 
 	Categories.markAsRead = function(cid, uid) {
 		db.setAdd('cid:' + cid + ':read_by_uid', uid);
+	};
+
+	Categories.markAsUnreadForAll = function(cid, callback) {
+		db.delete('cid:' + cid + ':read_by_uid', callback);
 	};
 
 	Categories.hasReadCategories = function(cids, uid, callback) {

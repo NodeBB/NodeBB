@@ -6,7 +6,6 @@
 	<ul class="nav nav-pills">
 		<li class='active'><a href='/admin/categories/active'>Active</a></li>
 		<li class=''><a href='/admin/categories/disabled'>Disabled</a></li>
-		<li class=''><a href='/admin/testing/categories'>Unit Tests</a></li>
 	</ul>
 
 	<div class="row admin-categories">

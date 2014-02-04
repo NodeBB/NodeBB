@@ -22,6 +22,9 @@
 	<script src="{relative_path}/vendor/requirejs/require.js"></script>
 	<script src="{relative_path}/vendor/bootbox/bootbox.min.js"></script>
 	<script src="{relative_path}/vendor/colorpicker/colorpicker.js"></script>
+	<script src="{relative_path}/vendor/xregexp/xregexp.js"></script>
+	<script src="{relative_path}/vendor/xregexp/unicode/unicode-base.js"></script>
+	<script src="{relative_path}/vendor/tabIndent/tabIndent.js"></script>
 
 	<script>
 		require.config({
@@ -105,24 +108,22 @@
 						<li><a href="{relative_path}/admin/languages"><i class="fa fa-fw fa-comments-o"></i> Languages</a></li>
 						<li><a href="{relative_path}/admin/settings"><i class="fa fa-fw fa-cogs"></i> Settings</a></li>
 						<li><a href="{relative_path}/admin/database"><i class="fa fa-fw fa-hdd-o"></i> Database</a></li>
-						<li><a href="{relative_path}/admin/logger"><i class="fa fa-fw fa-th"></i> Logger</a></li>
 						<li><a href="{relative_path}/admin/motd"><i class="fa fa-fw fa-comment"></i> MOTD</a></li>
 						<li><a href="{relative_path}/admin/events"><i class="fa fa-fw fa-calendar-o"></i> Events</a></li>
 					</ul>
 				</div>
+				<!-- IF authentication.length -->
 				<div class="well sidebar-nav">
 					<ul class="nav nav-list">
-						<li class="nav-header">Social Authentication</li>
-						<li><a href="{relative_path}/admin/twitter"><i class="fa fa-fw fa-twitter-square"></i> Twitter</a></li>
-						<li><a href="{relative_path}/admin/facebook"><i class="fa fa-fw fa-facebook-square"></i> Facebook</a></li>
-						<li><a href="{relative_path}/admin/gplus"><i class="fa fa-fw fa-google-plus-square"></i> Google+</a></li>
-						<!-- BEGIN authentication -->
-						<li>
-							<a href="{relative_path}/admin{authentication.route}"><i class="fa fa-fw {authentication.icon}"></i> {authentication.name}</a>
-						</li>
-						<!-- END authentication -->
+							<li class="nav-header">Social Authentication</li>
+							<!-- BEGIN authentication -->
+							<li>
+								<a href="{relative_path}/admin{authentication.route}"><i class="fa fa-fw {authentication.icon}"></i> {authentication.name}</a>
+							</li>
+							<!-- END authentication -->
 					</ul>
 				</div>
+				<!-- ENDIF authentication.length -->
 				<div class="well sidebar-nav">
 					<ul class="nav nav-list">
 						<li class="nav-header">Plugins</li>
@@ -133,22 +134,14 @@
 						<!-- END plugins -->
 					</ul>
 				</div>
+				<!-- IF env -->
 				<div class="well sidebar-nav">
 					<ul class="nav nav-list">
-						<li class="nav-header">Unit Tests</li>
-						<ul class="nav nav-list">
-							<li><a href="{relative_path}/admin/testing/categories">Categories</a></li>
-							<!--<li><a href="{relative_path}/admin/testing/topics">Topics</a></li>
-							<li><a href="{relative_path}/admin/testing/posts">Posts</a></li>
-							<li><a href="{relative_path}/admin/testing/accounts">Accounts</a></li>
-							<li><a href="{relative_path}/admin/testing/chat">Chat</a></li>
-							<li><a href="{relative_path}/admin/testing/notifications">Notifications</a></li>
-							<li><a href="{relative_path}/admin/testing/friends">Friends</a></li>
-							<li><a href="{relative_path}/admin/testing/feed">RSS Feed</a></li>
-							<li><a href="{relative_path}/admin/testing/emails">Emails</a></li>-->
-						</ul>
+						<li class="nav-header">Development</li>
+						<li><a href="{relative_path}/admin/logger"><i class="fa fa-fw fa-th"></i> Logger</a></li>
 					</ul>
-				</div><!--/.well -->
+				</div>
+				<!-- ENDIF env -->
 			</div><!--/span-->
 
 			<div class="col-sm-9" id="content">

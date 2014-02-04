@@ -6,7 +6,8 @@ var fs = require('fs'),
 
 	utils = require('./../public/src/utils'),
 	db = require('./database'),
-	plugins = require('./plugins');
+	plugins = require('./plugins'),
+	User = require('./user');
 
 
 (function (Meta) {
@@ -18,7 +19,7 @@ var fs = require('fs'),
 
 			Meta.configs.list(function (err, config) {
 				if(err) {
-					winston.error(err.message);
+					winston.error(err);
 					return callback(err);
 				}
 
@@ -161,41 +162,61 @@ var fs = require('fs'),
 	};
 
 	Meta.title = {
+		tests: {
+			isCategory: /^category\/\d+\/?/,
+			isTopic: /^topic\/\d+\/?/,
+			isUserPage: /^user\/[^\/]+(\/[\w]+)?/
+		},
 		build: function (urlFragment, callback) {
 			var user = require('./user');
 
-			Meta.title.parseFragment(urlFragment, function(err, title) {
+			Meta.title.parseFragment(decodeURIComponent(urlFragment), function(err, title) {
 				var title;
 
 				if (err) {
-					title = Meta.config.title || 'NodeBB';
+					title = Meta.config.browserTitle || 'NodeBB';
 				} else {
-					title = (title ? title + ' | ' : '') + (Meta.config.title || 'NodeBB');
+					title = (title ? title + ' | ' : '') + (Meta.config.browserTitle || 'NodeBB');
 				}
 
 				callback(null, title);
 			});
 		},
 		parseFragment: function (urlFragment, callback) {
-			if (urlFragment === '') {
-				callback(null, 'Index');
-			} else if (urlFragment === 'recent') {
-				callback(null, 'Recent Topics');
-			} else if (urlFragment === 'unread') {
-				callback(null, 'Unread Topics');
-			} else if (urlFragment === 'users') {
-				callback(null, 'Registered Users');
-			} else if (/^category\/\d+\/?/.test(urlFragment)) {
+			var	translated = ['', 'recent', 'unread', 'users', 'notifications'];
+			if (translated.indexOf(urlFragment) !== -1) {
+				if (!urlFragment.length) {
+					urlFragment = 'home';
+				}
+
+				translator.translate('[[pages:' + urlFragment + ']]', function(translated) {
+					callback(null, translated);
+				});
+			} else if (this.tests.isCategory.test(urlFragment)) {
 				var cid = urlFragment.match(/category\/(\d+)/)[1];
 
 				require('./categories').getCategoryField(cid, 'name', function (err, name) {
 					callback(null, name);
 				});
-			} else if (/^topic\/\d+\/?/.test(urlFragment)) {
+			} else if (this.tests.isTopic.test(urlFragment)) {
 				var tid = urlFragment.match(/topic\/(\d+)/)[1];
 
 				require('./topics').getTopicField(tid, 'title', function (err, title) {
 					callback(null, title);
+				});
+			} else if (this.tests.isUserPage.test(urlFragment)) {
+				var	matches = urlFragment.match(/user\/([^\/]+)\/?([\w]+)?/),
+					userslug = matches[1],
+					subpage = matches[2];
+
+				User.getUsernameByUserslug(userslug, function(err, username) {
+					if (subpage) {
+						translator.translate('[[pages:user.' + subpage + ', ' + username + ']]', function(translated) {
+							callback(null, translated);
+						})
+					} else {
+						callback(null, username);
+					}
 				});
 			} else {
 				callback(null);
@@ -228,10 +249,10 @@ var fs = require('fs'),
 					jsPaths = scripts.map(function (jsPath) {
 						if (jsPath.substring(0, 7) === 'plugins') {
 							var paths = jsPath.split('/'),
-								pluginID = paths[1];
+								mappedPath = paths[1];
 
-							jsPath = jsPath.replace(path.join('plugins', pluginID), '');
-							return path.join(plugins.staticDirs[pluginID], jsPath);
+							jsPath = jsPath.replace(path.join('plugins', mappedPath), '');
+							return path.join(plugins.staticDirs[mappedPath], jsPath);
 						} else {
 							return path.join(__dirname, '..', '/public', jsPath);
 						}
@@ -255,7 +276,7 @@ var fs = require('fs'),
 						},
 						minFile: function (next) {
 							if (!fs.existsSync(Meta.js.minFile)) {
-								winston.warn('No minified client-side library found');
+								winston.info('No minified client-side library found');
 								return next(null, 0);
 							}
 
@@ -266,21 +287,16 @@ var fs = require('fs'),
 					}, function (err, results) {
 						if (results.minFile > results.mtime) {
 							winston.info('No changes to client-side libraries -- skipping minification');
-							callback(null, [path.relative(path.join(__dirname, '../public'), Meta.js.minFile) + (meta.config['cache-buster'] ? '?v=' + meta.config['cache-buster'] : '')]);
+							callback(null, [path.relative(path.join(__dirname, '../public'), Meta.js.minFile)]);
 						} else {
 							Meta.js.minify(function () {
 								callback(null, [
-									path.relative(path.join(__dirname, '../public'), Meta.js.minFile) + (meta.config['cache-buster'] ? '?v=' + meta.config['cache-buster'] : '')
+									path.relative(path.join(__dirname, '../public'), Meta.js.minFile)
 								]);
 							});
 						}
 					});
 				} else {
-					if (meta.config['cache-buster']) {
-						scripts = scripts.map(function(script) {
-							return script + '?v=' + meta.config['cache-buster'];
-						});
-					}
 					callback(null, scripts);
 				}
 			});

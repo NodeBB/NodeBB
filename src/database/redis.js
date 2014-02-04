@@ -30,6 +30,10 @@
 		redisClient = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host'));
 	}
 
+	if (nconf.get('redis:password')) {
+		redisClient.auth(nconf.get('redis:password'));
+	}
+
 	redisClient.on('error', function (err) {
 		winston.error(err.message);
 		process.exit();
@@ -51,10 +55,6 @@
 		postSearch = reds.createSearch('nodebbpostsearch'),
 		topicSearch = reds.createSearch('nodebbtopicsearch');
 
-	if (nconf.get('redis:password')) {
-		redisClient.auth(nconf.get('redis:password'));
-	}
-
 	var db = parseInt(nconf.get('redis:database'), 10);
 
 	if (db){
@@ -69,20 +69,6 @@
 	module.init = function(callback) {
 		callback(null);
 	}
-
-
-	/*
-	 * A possibly more efficient way of doing multiple sismember calls
-	 */
-	function sismembers(key, needles, callback) {
-		var tempkey = key + ':temp:' + utils.generateUUID();
-		redisClient.sadd(tempkey, needles, function() {
-			redisClient.sinter(key, tempkey, function(err, data) {
-				redisClient.del(tempkey);
-				callback(err, data);
-			});
-		});
-	};
 
 	//
 	// Exported functions
@@ -275,6 +261,10 @@
 		});
 	}
 
+	module.getObjectKeys = function(key, callback) {
+		redisClient.hkeys(key, callback);
+	}
+
 	module.getObjectValues = function(key, callback) {
 		redisClient.hvals(key, callback);
 	}
@@ -370,8 +360,16 @@
 		redisClient.zcount(key, min, max, callback);
 	}
 
+	module.sortedSetCard = function(key, callback) {
+		redisClient.zcard(key, callback);
+	}
+
 	module.sortedSetRank = function(key, value, callback) {
 		redisClient.zrank(key, value, callback);
+	}
+
+	module.sortedSetRevRank = function(key, value, callback) {
+		redisClient.zrevrank(key, value, callback);
 	}
 
 	module.sortedSetScore = function(key, value, callback) {

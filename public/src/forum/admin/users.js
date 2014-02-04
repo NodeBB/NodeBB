@@ -196,23 +196,23 @@ define(function() {
 					socket.emit('admin.user.search', username, function(err, data) {
 						if(err) {
 							return app.alertError(err.message);
-						}console.log(data)
+						}
 
 						var html = templates.prepare(templates['admin/users'].blocks['users']).parse({
-							users: data
+							users: data.users
 						}),
 							userListEl = document.querySelector('.users');
 
 						userListEl.innerHTML = html;
 						jQuery('.fa-spinner').addClass('none');
 
-						if (data && data.length === 0) {
+						if (data && data.users.length === 0) {
 							$('#user-notfound-notify').html('User not found!')
 								.show()
 								.addClass('label-danger')
 								.removeClass('label-success');
 						} else {
-							$('#user-notfound-notify').html(data.length + ' user' + (data.length > 1 ? 's' : '') + ' found!')
+							$('#user-notfound-notify').html(data.users.length + ' user' + (data.users.length > 1 ? 's' : '') + ' found! Search took ' + data.timing + ' ms.')
 								.show()
 								.addClass('label-success')
 								.removeClass('label-danger');

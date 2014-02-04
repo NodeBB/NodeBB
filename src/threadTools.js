@@ -58,51 +58,69 @@ var winston = require('winston'),
 	}
 
 	ThreadTools.delete = function(tid, uid, callback) {
-		topics.delete(tid);
+		topics.getTopicField(tid, 'deleted', function(err, deleted) {
+			if(err) {
+				return callback(err);
+			}
 
-		db.decrObjectField('global', 'topicCount');
+			if (parseInt(deleted, 10)) {
+				return callback(new Error('topic-already-deleted'));
+			}
 
-		ThreadTools.lock(tid);
+			topics.delete(tid);
 
-		db.searchRemove('topic', tid);
+			db.decrObjectField('global', 'topicCount');
 
-		events.logTopicDelete(uid, tid);
+			ThreadTools.lock(tid);
 
-		websockets.emitTopicPostStats();
+			db.searchRemove('topic', tid);
 
-		websockets.in('topic_' + tid).emit('event:topic_deleted', {
-			tid: tid
-		});
+			events.logTopicDelete(uid, tid);
 
-		if (callback) {
+			websockets.emitTopicPostStats();
+
+			websockets.in('topic_' + tid).emit('event:topic_deleted', {
+				tid: tid
+			});
+
 			callback(null, {
 				tid: tid
 			});
-		}
+		});
 	}
 
 	ThreadTools.restore = function(tid, uid, callback) {
-		topics.restore(tid);
-		db.incrObjectField('global', 'topicCount');
-		ThreadTools.unlock(tid);
+		topics.getTopicField(tid, 'deleted', function(err, deleted) {
+			if(err) {
+				return callback(err);
+			}
 
-		events.logTopicRestore(uid, tid);
+			if (!parseInt(deleted, 10)) {
+				return callback(new Error('topic-already-restored'));
+			}
 
-		websockets.emitTopicPostStats();
+			topics.restore(tid);
 
-		websockets.in('topic_' + tid).emit('event:topic_restored', {
-			tid: tid
-		});
+			db.incrObjectField('global', 'topicCount');
 
-		topics.getTopicField(tid, 'title', function(err, title) {
-			db.searchIndex('topic', title, tid);
-		});
+			ThreadTools.unlock(tid);
 
-		if(callback) {
+			events.logTopicRestore(uid, tid);
+
+			websockets.emitTopicPostStats();
+
+			websockets.in('topic_' + tid).emit('event:topic_restored', {
+				tid: tid
+			});
+
+			topics.getTopicField(tid, 'title', function(err, title) {
+				db.searchIndex('topic', title, tid);
+			});
+
 			callback(null, {
 				tid:tid
 			});
-		}
+		});
 	}
 
 	ThreadTools.lock = function(tid, uid, callback) {
@@ -168,32 +186,39 @@ var winston = require('winston'),
 	}
 
 	ThreadTools.move = function(tid, cid, callback) {
-		topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
-			var oldCid = topicData.cid;
+		var topic;
+		async.waterfall([
+			function(next) {
+				topics.getTopicFields(tid, ['cid', 'lastposttime', 'deleted'], next);
+			},
+			function(topicData, next) {
+				topic = topicData;
+				db.sortedSetRemove('categories:' + topicData.cid + ':tid', tid, next);
+			},
+			function(result, next) {
+				db.sortedSetAdd('categories:' + cid + ':tid', topic.lastposttime, tid, next);
+			}
+		], function(err, result) {
+			if(err) {
+				return callback(err);
+			}
+			var oldCid = topic.cid;
 
-			db.sortedSetRemove('categories:' + oldCid + ':tid', tid, function(err, result) {
-				db.sortedSetAdd('categories:' + cid + ':tid', topicData.lastposttime, tid, function(err, result) {
+			topics.setTopicField(tid, 'cid', cid);
 
-					if(err) {
-						return callback(err);
-					}
-
-					topics.setTopicField(tid, 'cid', cid);
-
-					categories.moveRecentReplies(tid, oldCid, cid, function(err, data) {
-						if (err) {
-							winston.err(err);
-						}
-					});
-
-					categories.moveActiveUsers(tid, oldCid, cid);
-
-					categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1);
-					categories.incrementCategoryFieldBy(cid, 'topic_count', 1);
-
-					callback(null);
-				});
+			categories.moveActiveUsers(tid, oldCid, cid);
+			categories.moveRecentReplies(tid, oldCid, cid, function(err, data) {
+				if (err) {
+					winston.err(err);
+				}
 			});
+
+			if(!parseInt(topic.deleted, 10)) {
+				categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1);
+				categories.incrementCategoryFieldBy(cid, 'topic_count', 1);
+			}
+
+			callback(null);
 		});
 	}
 
@@ -234,23 +259,36 @@ var winston = require('winston'),
 		});
 	}
 
-	ThreadTools.notifyFollowers = function(tid, exceptUid) {
+	ThreadTools.notifyFollowers = function(tid, pid, exceptUid) {
 		async.parallel([
 			function(next) {
-				topics.getTopicField(tid, 'title', function(err, title) {
-					topics.getTeaser(tid, function(err, teaser) {
-						if (!err) {
-							notifications.create('<strong>' + teaser.username + '</strong> has posted a reply to: "<strong>' + title + '</strong>"', nconf.get('relative_path') + '/topic/' + tid, 'topic:' + tid, function(nid) {
-								next(null, nid);
-							});
-						} else next(err);
+				topics.getTopicFields(tid, ['title', 'slug'], function(err, topicData) {
+					if(err) {
+						return next(err);
+					}
+
+					user.getUserField(exceptUid, 'username', function(err, username) {
+						if(err) {
+							return next(err);
+						}
+
+						notifications.create('<strong>' + username + '</strong> has posted a reply to: "<strong>' + topicData.title + '</strong>"', nconf.get('relative_path') + '/topic/' + topicData.slug + '#' + pid, 'topic:' + tid, function(nid) {
+							next(null, nid);
+						});
 					});
 				});
 			},
 			function(next) {
 				ThreadTools.getFollowers(tid, function(err, followers) {
+					if(err) {
+						return next(err);
+					}
+
 					exceptUid = parseInt(exceptUid, 10);
-					if (followers.indexOf(exceptUid) !== -1) followers.splice(followers.indexOf(exceptUid), 1);
+					if (followers.indexOf(exceptUid) !== -1) {
+						followers.splice(followers.indexOf(exceptUid), 1);
+					}
+
 					next(null, followers);
 				});
 			}

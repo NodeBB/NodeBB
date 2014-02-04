@@ -91,7 +91,7 @@ SocketAdmin.user.search = function(socket, username, callback) {
 			});
 		}
 
-		async.each(data, isAdmin, function(err) {
+		async.each(data.users, isAdmin, function(err) {
 			callback(err, data);
 		});
 	});
@@ -126,7 +126,7 @@ SocketAdmin.categories.search = function(socket, data, callback) {
 		cid = data.cid;
 
 	user.search(username, function(err, data) {
-		async.map(data, function(userObj, next) {
+		async.map(data.users, function(userObj, next) {
 			CategoryTools.privileges(cid, userObj.uid, function(err, privileges) {
 				if(err) {
 					return next(err);
@@ -211,10 +211,19 @@ SocketAdmin.categories.setGroupPrivilege = function(socket, data, callback) {
 };
 
 SocketAdmin.categories.groupsList = function(socket, cid, callback) {
-	groups.list({expand:false}, function(err, data){
+	async.parallel({
+		groups: function(next) {
+			groups.list({expand:false}, next);
+		},
+		system: function(next) {
+			groups.listSystemGroups({expand: false}, next);
+		}
+	}, function(err, results) {
 		if(err) {
 			return callback(err);
 		}
+
+		var	data = results.groups.concat(results.system);
 
 		async.map(data, function(groupObj, next) {
 			CategoryTools.groupPrivileges(cid, groupObj.gid, function(err, privileges) {

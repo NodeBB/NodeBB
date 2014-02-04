@@ -34,11 +34,14 @@ var socket,
 					socket.on('event:connect', function (data) {
 						app.username = data.username;
 						app.uid = data.uid;
+						app.isAdmin = data.isAdmin;
 
 						app.showLoginMessage();
 						socket.emit('meta.updateHeader', {
 							fields: ['username', 'picture', 'userslug']
 						}, app.updateHeader);
+
+						$(window).trigger('action:connected');
 					});
 
 					socket.on('event:alert', function (data) {
@@ -78,6 +81,7 @@ var socket,
 							app.enterRoom(room, true);
 
 							socket.emit('meta.reconnected');
+							$(window).trigger('action:reconnected');
 
 							setTimeout(function() {
 								reconnectEl.removeClass('active').addClass("hide");
@@ -90,6 +94,7 @@ var socket,
 					});
 
 					socket.on('event:disconnect', function() {
+						$(window).trigger('action:disconnected');
 						socket.socket.connect();
 					});
 
@@ -113,8 +118,8 @@ var socket,
 
 					socket.on('event:banned', function() {
 						app.alert({
-							title: 'Banned',
-							message: 'You are banned you will be logged out!',
+							title: '[[global:alert.banned]]',
+							message: '[[global:alert.banned.message]]',
 							type: 'warning',
 							timeout: 1000
 						});
@@ -125,6 +130,14 @@ var socket,
 					socket.on('meta.updateHeader', app.updateHeader);
 
 					app.enterRoom('global');
+
+					if (config.environment === 'development' && console && console.log) {
+						var log = console.log;
+						console.log = function() {
+							log.apply(this, arguments);
+							socket.emit('tools.log', arguments);
+						}
+					}
 				}
 			},
 			async: false
@@ -169,13 +182,13 @@ var socket,
 		if (alert.length > 0) {
 			alert.find('strong').html(title);
 			alert.find('p').html(params.message);
-			alert.attr('class', "alert toaster-alert " + "alert-" + params.type);
+			alert.attr('class', "alert alert-dismissable alert-" + params.type);
 
 			clearTimeout(alert.attr('timeoutId'));
 			startTimeout(alert, params.timeout);
 		} else {
-			var div = $('<div id="' + alert_id + '" class="alert toaster-alert alert-' + params.type +'"></div>'),
-				button = $('<button class="close">&times;</button>'),
+			var div = $('<div id="' + alert_id + '" class="alert alert-dismissable alert-' + params.type +'"></div>'),
+				button = $('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'),
 				strong = $('<strong>' + title + '</strong>'),
 				p = $('<p>' + params.message + '</p>');
 
@@ -190,7 +203,10 @@ var socket,
 			if (params.location == null)
 				params.location = 'alert_window';
 
-			$('#' + params.location).prepend(div.fadeIn('100'));
+			translator.translate(div.html(), function(translatedHTML) {
+				div.html(translatedHTML);
+				$('#' + params.location).prepend(div.fadeIn('100'));
+			});
 
 			if (params.timeout) {
 				startTimeout(div, params.timeout);
@@ -212,7 +228,7 @@ var socket,
 			timeout = 2000;
 
 		app.alert({
-			title: 'Success',
+			title: '[[global:alert.success]]',
 			message: message,
 			type: 'success',
 			timeout: timeout
@@ -224,7 +240,7 @@ var socket,
 			timeout = 2000;
 
 		app.alert({
-			title: 'Error',
+			title: '[[global:alert.error]]',
 			message: message,
 			type: 'danger',
 			timeout: timeout
@@ -257,14 +273,13 @@ var socket,
 		});
 
 		socket.emit('user.getOnlineUsers', uids, function (err, users) {
-			jQuery('button .username-field').each(function (index, element) {
+
+			jQuery('.username-field').each(function (index, element) {
 				var el = jQuery(this),
 					uid = el.parents('li').attr('data-uid');
 
-				if (uid && jQuery.inArray(uid, users) !== -1) {
-					el.parent().addClass('btn-success').removeClass('btn-danger');
-				} else {
-					el.parent().addClass('btn-danger').removeClass('btn-success');
+				if (uid && users[uid]) {
+					el.siblings('i').attr('class', 'fa fa-circle status ' + users[uid].status)
 				}
 			});
 		});
@@ -396,6 +411,16 @@ var socket,
 		});
 	};
 
+	app.enableInfiniteLoading = function(callback) {
+		$(window).off('scroll').on('scroll', function() {
+			var bottom = ($(document).height() - $(window).height()) * 0.9;
+
+			if ($(window).scrollTop() > bottom) {
+				callback();
+			}
+		});
+	}
+
 	var	titleObj = {
 			active: false,
 			interval: undefined,
@@ -437,6 +462,13 @@ var socket,
 			app.alternatingTitle('');
 		});
 	};
+
+	function updateOnlineStatus(uid) {
+		socket.emit('user.isOnline', uid, function(err, data) {
+			$('#logged-in-menu #user_label #user-profile-link>i').attr('class', 'fa fa-circle status ' + data.status);
+		});
+	}
+
 
 	app.updateHeader = function(err, data) {
 		$('#search-button').off().on('click', function(e) {
@@ -480,11 +512,14 @@ var socket,
 					userLabel.find('img').attr('src', data.picture);
 				}
 				if (data.username) {
-					userLabel.find('span').html(data.username);
+					userLabel.find('#user-profile-link>span').html(' ' + data.username);
 				}
 
 				$('#logout-link').on('click', app.logout);
 			}
+
+			updateOnlineStatus(data.uid);
+
 		} else {
 			if (allowGuestSearching) {
 				$('#search-button').removeClass("hide").show();
@@ -507,6 +542,16 @@ var socket,
 				$('.navbar-header button').click();
 			}
 		});
+
+		$('#user-control-list .user-status').off('click').on('click', function(e) {
+			socket.emit('user.setStatus', $(this).attr('data-status'), function(err, data) {
+				if(err) {
+					return app.alertError(err.message);
+				}
+				updateOnlineStatus(data.uid);
+			});
+			e.preventDefault();
+		});
 	};
 
 	jQuery('document').ready(function () {
@@ -527,8 +572,27 @@ var socket,
 			app.alternatingTitle('');
 		});
 
+		createHeaderTooltips();
+
 		templates.setGlobal('relative_path', RELATIVE_PATH);
+		templates.setGlobal('usePagination', config.usePagination);
+		templates.setGlobal('topicsPerPage', config.topicsPerPage);
+		templates.setGlobal('postsPerPage', config.postsPerPage);
 	});
+
+	function createHeaderTooltips() {
+		$('#header-menu li i[title]').each(function() {
+			$(this).parents('a').tooltip({
+				placement: 'bottom',
+				title: $(this).attr('title')
+			});
+		});
+
+		$('#user_dropdown').tooltip({
+			placement: 'bottom',
+			title: $('#user_dropdown').attr('title')
+		});
+	}
 
 	showWelcomeMessage = location.href.indexOf('loggedin') !== -1;
 

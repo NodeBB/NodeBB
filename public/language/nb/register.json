@@ -1,0 +1,18 @@
+{
+    "register": "Registrer",
+    "help.email": "Som standard, er din e-post skjult for allmennheten.",
+    "help.username_restrictions": "Et unikt brukernavn mellom %1 og %2 tegn. Andre kan nevne deg med @<span id='yourUsername'>brukernavn</span>.",
+    "help.minimum_password_length": "Ditt passord må være minst %1 tegn.",
+    "email_address": "E-post",
+    "email_address_placeholder": "Skriv e-post",
+    "username": "Brukernavn",
+    "username_placeholder": "Skriv brukernavn",
+    "password": "Passor",
+    "password_placeholder": "Skriv passor",
+    "confirm_password": "Bekreft passor",
+    "confirm_password_placeholder": "Bekreft passord",
+    "register_now_button": "Registrer nå",
+    "alternative_registration": "Alternativ registrering",
+    "terms_of_use": "Vilkårene for bruk",
+    "agree_to_terms_of_use": "Jeg godtar vilkårene for bruk"
+}

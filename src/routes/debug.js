@@ -74,7 +74,13 @@ var	DebugRoute = function(app) {
 		});
 
 		app.get('/test', function(req, res) {
-			res.send();
+
+			var db = require('./../database');
+
+			db.getSortedSetRevRange('topics:recent', 0 , -1, function(err, tids) {
+				res.json(tids);
+			});
+
 		});
 
 	});

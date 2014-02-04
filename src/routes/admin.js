@@ -7,13 +7,14 @@ var nconf = require('nconf'),
 	user = require('./../user'),
 	groups = require('../groups'),
 	topics = require('./../topics'),
-	pkg = require('./../../package.json'),
+	pkg = require('./../../package'),
 	categories = require('./../categories'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
 	Languages = require('../languages'),
 	events = require('./../events'),
-	utils = require('./../../public/src/utils.js');
+	utils = require('./../../public/src/utils'),
+	templates = require('./../../public/src/templates');
 
 (function (Admin) {
 	Admin.isAdmin = function (req, res, next) {
@@ -44,6 +45,7 @@ var nconf = require('nconf'),
 					username: userData.username,
 					userslug: userData.userslug,
 					'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
+					env: process.env.NODE_ENV ? true : false
 				}));
 			});
 		});
@@ -57,8 +59,7 @@ var nconf = require('nconf'),
 		(function () {
 			var routes = [
 				'categories/active', 'categories/disabled', 'users', 'topics', 'settings', 'themes',
-				'twitter', 'facebook', 'gplus', 'database', 'events', 'motd', 'groups', 'plugins',
-				'languages', 'logger',
+				'database', 'events', 'motd', 'groups', 'plugins', 'languages', 'logger',
 				'users/latest', 'users/sort-posts', 'users/sort-reputation', 'users/search'
 			];
 
@@ -405,18 +406,6 @@ var nconf = require('nconf'),
 			});
 
 			app.get('/themes', function (req, res) {
-				res.json(200, {});
-			});
-
-			app.get('/twitter', function (req, res) {
-				res.json(200, {});
-			});
-
-			app.get('/facebook', function (req, res) {
-				res.json(200, {});
-			});
-
-			app.get('/gplus', function (req, res) {
 				res.json(200, {});
 			});
 

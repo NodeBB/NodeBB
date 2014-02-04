@@ -8,6 +8,8 @@ var db = require('./database'),
 	Topics = require('./topics'),
 	Posts = require('./posts'),
 	Groups = require('./groups'),
+	Meta = require('./meta'),
+	Plugins = require('./plugins'),
 	Utils = require('../public/src/utils'),
 
 	Upgrade = {},
@@ -17,7 +19,7 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2014, 0, 19, 22, 19).getTime();
+	var	latestSchema = new Date(2014, 0, 30, 16, 0).getTime();
 
 	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -297,6 +299,181 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/1/19] Remove user search from Reds -- skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 0, 23, 16, 5).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				Groups.getByGroupName('Administrators', {}, function(err, groupObj) {
+					if (err && err.message === 'gid-not-found') {
+						winston.info('[2014/1/23] Updating Administrators Group -- skipped');
+						return next();
+					}
+
+					Groups.update(groupObj.gid, {
+						name: 'administrators',
+						hidden: '1'
+					}, function() {
+						winston.info('[2014/1/23] Updating Administrators Group');
+						next();
+					});
+				});
+			} else {
+				winston.info('[2014/1/23] Updating Administrators Group -- skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 0, 25, 0, 0).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
+					if(err) {
+						return next(err);
+					}
+
+					if(!uids || !uids.length) {
+						winston.info('[2014/1/25] Updating User Gravatars to HTTPS  -- skipped');
+						return next();
+					}
+
+					var gravatar = require('gravatar');
+
+					function updateGravatar(uid, next) {
+						User.getUserFields(uid, ['email', 'picture', 'gravatarpicture'], function(err, userData) {
+							var gravatarPicture = User.createGravatarURLFromEmail(userData.email);
+							if(userData.picture === userData.gravatarpicture) {
+								User.setUserField(uid, 'picture', gravatarPicture);
+							}
+							User.setUserField(uid, 'gravatarpicture', gravatarPicture, next);
+						});
+					}
+
+					winston.info('[2014/1/25] Updating User Gravatars to HTTPS');
+					async.each(uids, updateGravatar, next);
+				});
+			} else {
+				winston.info('[2014/1/25] Updating User Gravatars to HTTPS -- skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 0, 27, 12, 35).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				var	activations = [];
+
+				if (Meta.config['social:facebook:secret'] && Meta.config['social:facebook:app_id']) {
+					activations.push(function(next) {
+						Plugins.toggleActive('nodebb-plugin-sso-facebook', function(result) {
+							winston.info('[2014/1/25] Activating Facebook SSO Plugin');
+							next();
+						});
+					});
+				}
+				if (Meta.config['social:twitter:key'] && Meta.config['social:twitter:secret']) {
+					activations.push(function(next) {
+						Plugins.toggleActive('nodebb-plugin-sso-twitter', function(result) {
+							winston.info('[2014/1/25] Activating Twitter SSO Plugin');
+							next();
+						});
+					});
+				}
+				if (Meta.config['social:google:secret'] && Meta.config['social:google:id']) {
+					activations.push(function(next) {
+						Plugins.toggleActive('nodebb-plugin-sso-google', function(result) {
+							winston.info('[2014/1/25] Activating Google SSO Plugin');
+							next();
+						});
+					});
+				}
+
+				async.parallel(activations, function(err) {
+					if (!err) {
+						winston.info('[2014/1/25] Done activating SSO plugins');
+					}
+
+					next(err);
+				});
+			} else {
+				winston.info('[2014/1/25] Activating SSO plugins, if set up -- skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 0, 30, 15, 0).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				if (Meta.config.defaultLang === 'en') {
+					Meta.configs.set('defaultLang', 'en_GB', next);
+				} else if (Meta.config.defaultLang === 'pt_br') {
+					Meta.configs.set('defaultLang', 'pt_BR', next);
+				} else if (Meta.config.defaultLang === 'zh_cn') {
+					Meta.configs.set('defaultLang', 'zh_CN', next);
+				} else if (Meta.config.defaultLang === 'zh_tw') {
+					Meta.configs.set('defaultLang', 'zh_TW', next);
+				} else {
+					winston.info('[2014/1/30] Fixing language settings -- skipped');
+					return next();
+				}
+
+				winston.info('[2014/1/30] Fixing language settings');
+				next();
+			} else {
+				winston.info('[2014/1/30] Fixing language settings -- skipped');
+				next();
+			}
+		},
+		function(next) {
+			function updateTopic(tid, next) {
+				Topics.getTopicFields(tid, ['postcount', 'viewcount'], function(err, topicData) {
+					if(err) {
+						next(err);
+					}
+
+					if(topicData) {
+						if(!topicData.postcount) {
+							topicData.postcount = 0;
+						}
+
+						if(!topicData.viewcount) {
+							topicData.viewcount = 0;
+						}
+
+						db.sortedSetAdd('topics:posts', topicData.postcount, tid);
+						db.sortedSetAdd('topics:views', topicData.viewcount, tid);
+					}
+
+					next();
+				});
+			}
+
+			thisSchemaDate = new Date(2014, 0, 30, 16, 0).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+
+
+				winston.info('[2014/1/30] Adding new topic sets');
+				db.getSortedSetRange('topics:recent', 0, -1, function(err, tids) {
+					if(err) {
+						return next(err);
+					}
+
+					async.each(tids, updateTopic, function(err) {
+						next(err);
+					});
+				});
+
+
+			} else {
+				winston.info('[2014/1/30] Adding new topic sets -- skipped');
 				next();
 			}
 		}

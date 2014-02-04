@@ -1,8 +1,8 @@
 {
-	"title": "Notifications",
-	"back_to_home": "Retour à NodeBB",
-	"outgoing_link": "Lien Sortant",
-	"outgoing_link_message": "Vous quitter NodeBB",
-	"continue_to": "Continuer vers",
-	"return_to": "Retour vers "
+    "title": "Notifications",
+    "back_to_home": "Retour à NodeBB",
+    "outgoing_link": "Lien Sortant",
+    "outgoing_link_message": "Vous quitter NodeBB",
+    "continue_to": "Continuer vers",
+    "return_to": "Retour vers "
 }

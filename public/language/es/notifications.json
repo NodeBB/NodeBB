@@ -1,8 +1,8 @@
 {
-	"title": "Notificaciones",
-	"back_to_home": "Volver al Inicio",
-	"outgoing_link": "Link Externo",
-	"outgoing_link_message": "Estas saliendo del sitio",
-	"continue_to": "Continuar",
-	"return_to": "Volver a "
+    "title": "Notificaciones",
+    "back_to_home": "Volver al Inicio",
+    "outgoing_link": "Link Externo",
+    "outgoing_link_message": "Estas saliendo del sitio",
+    "continue_to": "Continuar",
+    "return_to": "Volver a "
 }

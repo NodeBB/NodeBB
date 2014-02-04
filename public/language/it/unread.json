@@ -1,5 +1,6 @@
 {
-	"no_unread_topics": "Non ci sono discussioni non lette.",
-	"mark_all_read": "Segna tutto come già letto",
-	"load_more": "Carica Altro"
+    "title": "Unread",
+    "no_unread_topics": "Non ci sono discussioni non lette.",
+    "mark_all_read": "Segna tutto come già letto",
+    "load_more": "Carica Altro"
 }

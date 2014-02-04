@@ -1,19 +1,20 @@
 (function(Auth) {
 	var passport = require('passport'),
 		passportLocal = require('passport-local').Strategy,
-		passportTwitter = require('passport-twitter').Strategy,
-		passportGoogle = require('passport-google-oauth').OAuth2Strategy,
-		passportFacebook = require('passport-facebook').Strategy,
-		login_strategies = [],
 		nconf = require('nconf'),
+		bcrypt = require('bcryptjs'),
+		winston = require('winston'),
+
 		meta = require('../meta'),
 		user = require('../user'),
 		plugins = require('../plugins'),
-		winston = require('winston'),
-		login_module = require('./../login');
+		utils = require('../../public/src/utils'),
+		templates = require('./../../public/src/templates'),
+
+		login_strategies = [];
 
 	passport.use(new passportLocal(function(user, password, next) {
-		login_module.loginViaLocal(user, password, function(err, login) {
+		Auth.login(user, password, function(err, login) {
 			if (!err) {
 				next(null, login.user);
 			} else {
@@ -31,75 +32,6 @@
 			Auth.createRoutes(Auth.app);
 		});
 	});
-
-	if (meta.config['social:twitter:key'] && meta.config['social:twitter:secret']) {
-		passport.use(new passportTwitter({
-			consumerKey: meta.config['social:twitter:key'],
-			consumerSecret: meta.config['social:twitter:secret'],
-			callbackURL: nconf.get('url') + '/auth/twitter/callback'
-		}, function(token, tokenSecret, profile, done) {
-			login_module.loginViaTwitter(profile.id, profile.username, profile.photos, function(err, user) {
-				if (err) {
-					return done(err);
-				}
-				done(null, user);
-			});
-		}));
-
-		login_strategies.push({
-			name: 'twitter',
-			url: '/auth/twitter',
-			callbackURL: '/auth/twitter/callback',
-			icon: 'twitter',
-			scope: ''
-		});
-	}
-
-	if (meta.config['social:google:id'] && meta.config['social:google:secret']) {
-		passport.use(new passportGoogle({
-			clientID: meta.config['social:google:id'],
-			clientSecret: meta.config['social:google:secret'],
-			callbackURL: nconf.get('url') + '/auth/google/callback'
-		}, function(accessToken, refreshToken, profile, done) {
-			login_module.loginViaGoogle(profile.id, profile.displayName, profile.emails[0].value, function(err, user) {
-				if (err) {
-					return done(err);
-				}
-				done(null, user);
-			});
-		}));
-
-		login_strategies.push({
-			name: 'google',
-			url: '/auth/google',
-			callbackURL: '/auth/google/callback',
-			icon: 'google-plus',
-			scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
-		});
-	}
-
-	if (meta.config['social:facebook:app_id'] && meta.config['social:facebook:secret']) {
-		passport.use(new passportFacebook({
-			clientID: meta.config['social:facebook:app_id'],
-			clientSecret: meta.config['social:facebook:secret'],
-			callbackURL: nconf.get('url') + '/auth/facebook/callback'
-		}, function(accessToken, refreshToken, profile, done) {
-			login_module.loginViaFacebook(profile.id, profile.displayName, profile.emails[0].value, function(err, user) {
-				if (err) {
-					return done(err);
-				}
-				done(null, user);
-			});
-		}));
-
-		login_strategies.push({
-			name: 'facebook',
-			url: '/auth/facebook',
-			callbackURL: '/auth/facebook/callback',
-			icon: 'facebook',
-			scope: 'email'
-		});
-	}
 
 	passport.serializeUser(function(user, done) {
 		done(null, user.uid);
@@ -181,6 +113,14 @@
 							message: info.message
 						});
 					}
+
+					// Alter user cookie depending on passed-in option
+					if (req.body.remember === 'true') {
+						req.session.cookie.maxAge = 1000*60*60*24*parseInt(meta.configs.loginDays || 14, 10);
+					} else {
+						req.session.cookie.expires = false;
+					}
+
 					req.login({
 						uid: user.uid
 					}, function() {
@@ -197,7 +137,7 @@
 					return res.send(403);
 				}
 
-				user.create(req.body.username, req.body.password, req.body.email, function(err, uid) {
+				user.create({username: req.body.username, password: req.body.password, email: req.body.email, ip: req.ip}, function(err, uid) {
 					if (err === null && uid) {
 						req.login({
 							uid: uid
@@ -216,5 +156,54 @@
 				});
 			});
 		});
+	}
+
+	Auth.login = function(username, password, next) {
+		if (!username || !password) {
+			return next({
+				status: 'error',
+				message: 'invalid-user'
+			});
+		} else {
+
+			var userslug = utils.slugify(username);
+
+			user.getUidByUserslug(userslug, function(err, uid) {
+				if (err) {
+					return next(new Error('redis-error'));
+				} else if (uid == null) {
+					return next(new Error('invalid-user'));
+				}
+
+				user.getUserFields(uid, ['password', 'banned'], function(err, userData) {
+					if (err) return next(err);
+
+					if (userData.banned && parseInt(userData.banned, 10) === 1) {
+						return next({
+							status: "error",
+							message: "user-banned"
+						});
+					}
+
+					bcrypt.compare(password, userData.password, function(err, res) {
+						if (err) {
+							winston.err(err.message);
+							next(new Error('bcrypt compare error'));
+							return;
+						}
+
+						if (res) {
+							next(null, {
+								user: {
+									uid: uid
+								}
+							});
+						} else {
+							next(new Error('invalid-password'));
+						}
+					});
+				});
+			});
+		}
 	}
 }(exports));

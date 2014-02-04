@@ -1,5 +1,7 @@
 <input type="hidden" template-variable="expose_tools" value="{expose_tools}" />
 <input type="hidden" template-variable="topic_id" value="{topic_id}" />
+<input type="hidden" template-variable="currentPage" value="{currentPage}" />
+<input type="hidden" template-variable="pageCount" value="{pageCount}" />
 <input type="hidden" template-variable="locked" value="{locked}" />
 <input type="hidden" template-variable="deleted" value="{deleted}" />
 <input type="hidden" template-variable="pinned" value="{pinned}" />
@@ -51,6 +53,7 @@
 
 						<div class="btn-group">
 							<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="[[topic:posted_by]] {posts.username}">
+								<i class="fa fa-circle status offline"></i>
 								<span class="visible-xs visible-sm pull-left"><img class="" src="{posts.picture}" width=18 height=18 />&nbsp;</span>
 								<span class="username-field" href="{relative_path}/user/{posts.userslug}" itemprop="author">{posts.username}&nbsp;</span>
 								<span class="caret"></span>
@@ -64,8 +67,9 @@
 
 						<div class="btn-group">
 							<!-- IF @first -->
-							<button class="btn btn-sm btn-default follow" type="button" title="Be notified of new replies in this topic"><i class="fa fa-eye"></i></button>
+							<button class="btn btn-sm btn-default follow" type="button" title="[[topic:notify_me]]"><i class="fa fa-eye"></i></button>
 							<!-- ENDIF @first -->
+							<button class="btn btn-sm btn-default flag" type="button" title="[[topic:flag_title]]"><i class="fa fa-flag-o"></i></button>
 							<button data-favourited="{posts.favourited}" class="favourite favourite-tooltip btn btn-sm btn-default <!-- IF posts.favourited --> btn-warning <!-- ENDIF posts.favourited -->" type="button">
 								<span class="favourite-text">[[topic:favourite]]</span>
 								<span class="post_rep_{posts.pid}">{posts.reputation} </span>
@@ -108,8 +112,9 @@
 										<button class="btn btn-sm btn-default edit" type="button" title="[[topic:edit]]"><i class="fa fa-pencil"></i></button>
 										<button class="btn btn-sm btn-default delete" type="button" title="[[topic:delete]]"><i class="fa fa-trash-o"></i></button>
 
-										<button class="btn btn-sm btn-default move {posts.display_move_tools}" type="button" title="[[topic:move]]"><i class="fa fa-arrows"></i></button>
-
+										<!-- IF posts.display_move_tools -->
+										<button class="btn btn-sm btn-default move" type="button" title="[[topic:move]]"><i class="fa fa-arrows"></i></button>
+										<!-- ENDIF posts.display_move_tools -->
 									</ul>
 								</div>
 							</div>
@@ -125,7 +130,9 @@
 					<div class="post-info">
 						<span class="pull-left">
 							[[topic:reputation]]: <i class='fa fa-star'></i> <span class='formatted-number post_rep_{posts.uid}'>{posts.user_rep}</span>&nbsp;|&nbsp;[[topic:posts]]: <i class='fa fa-pencil'></i> <span class='formatted-number user_postcount_{posts.uid}'>{posts.user_postcount}</span>
-							{posts.additional_profile_info}
+							<!-- BEGIN custom_profile_info -->
+							| {posts.custom_profile_info.content}
+							<!-- END custom_profile_info -->
 						</span>
 						<span class="pull-right">
 							[[category:posted]] <span class="relativeTimeAgo timeago" title="{posts.relativeTime}"></span>
@@ -141,7 +148,7 @@
 			</li>
 
 			<!-- IF @first -->
-			<li class="well post-bar">
+			<li class="well post-bar" data-index="{posts.index}">
 				<div class="inline-block">
 					<small class="topic-stats">
 						<span>[[category:posts]]</span>
@@ -176,15 +183,15 @@
 		<!-- END posts -->
 	</ul>
 
-	<div class="well col-md-11 col-xs-12 pull-right hide">
-		<div class="topic-main-buttons pull-right inline-block hide">
+	<div class="well col-md-11 col-xs-12 pull-right post-bar bottom-post-bar hide">
+		<div class="topic-main-buttons pull-right inline-block">
 			<div class="loading-indicator" done="0" style="display:none;">
 				<span class="hidden-xs-inline">[[topic:loading_more_posts]]</span> <i class="fa fa-refresh fa-spin"></i>
 			</div>
 			<!-- IF privileges.write -->
 			<button class="btn btn-primary post_reply" type="button">[[topic:reply]]</button>
 			<!-- ENDIF privileges.write -->
-			<div class="btn-group thread-tools hide">
+			<div class="btn-group thread-tools hide dropup">
 				<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">[[topic:thread_tools.title]] <span class="caret"></span></button>
 				<ul class="dropdown-menu pull-right">
 					<li><a href="#" class="markAsUnreadForAll"><i class="fa fa-inbox"></i> [[topic:thread_tools.markAsUnreadForAll]]</a></li>
@@ -200,6 +207,15 @@
 		</div>
 		<div style="clear:both;"></div>
 	</div>
+
+	<!-- IF usePagination -->
+	<div class="text-center">
+		<ul class="pagination">
+			<li class="previous pull-left"><a href="#"><i class="fa fa-chevron-left"></i> [[global:previouspage]]</a></li>
+			<li class="next pull-right"><a href="#">[[global:nextpage]] <i class="fa fa-chevron-right"></i></a></li>
+		</ul>
+	</div>
+	<!-- ENDIF usePagination -->
 
 	<div id="move_thread_modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="Move Topic" aria-hidden="true">
 		<div class="modal-dialog">
