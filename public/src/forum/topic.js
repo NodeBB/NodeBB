@@ -443,13 +443,17 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		});
 
 		$('#post-container').on('click', '.flag', function() {
-			var pid = $(this).parents('.post-row').attr('data-pid');
+			bootbox.confirm('Are you sure you want to flag this post?', function(confirm) {
+				if (confirm) {
+					var pid = $(this).parents('.post-row').attr('data-pid');
 
-			socket.emit('posts.flag', pid, function(err) {
-				if(err) {
-					return app.alertError(err.message);
+					socket.emit('posts.flag', pid, function(err) {
+						if(err) {
+							return app.alertError(err.message);
+						}
+						app.alertSuccess('This post has been flagged for moderation.');
+					});
 				}
-				app.alertSuccess('This post has been flagged for moderation.');
 			});
 		});
 
