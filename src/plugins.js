@@ -68,6 +68,10 @@ var fs = require('fs'),
 					plugins.push(meta.config['theme:id']);
 
 					async.each(plugins, function(plugin, next) {
+						if (!plugin) {
+							return next();
+						}
+
 						var modulePath = path.join(__dirname, '../node_modules/', plugin);
 						if (fs.existsSync(modulePath)) {
 							Plugins.loadPlugin(modulePath, next);
