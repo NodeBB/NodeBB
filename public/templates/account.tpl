@@ -1,9 +1,9 @@
 
+<div class="account-username-box" data-userslug="{userslug}">
+
+</div>
+
 <div class="well account">
-
-	<div class="account-username-box" data-userslug="{userslug}">
-
-	</div>
 
 	<div class="row">
 		<div class="col-md-5 account-block">

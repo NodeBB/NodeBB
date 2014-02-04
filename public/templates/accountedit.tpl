@@ -1,3 +1,7 @@
+<div class="account-username-box" data-userslug="{userslug}">
+
+</div>
+
 <div class="well account">
 
 	<div id="change-picture-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="[[user:change_picture]]" aria-hidden="true">
@@ -29,10 +33,6 @@
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
-
-	<div class="account-username-box clearfix" data-userslug="{userslug}">
-
-	</div>
 
 	<div class="row">
 		<div class="col-md-2" style="text-align: center; margin-bottom:20px;">
@@ -150,5 +150,7 @@
 	</div>
 </div>
 
+<input type="hidden" template-variable="yourid" value="{yourid}" />
+<input type="hidden" template-variable="theirid" value="{theirid}" />
 <input type="hidden" template-variable="gravatarpicture" value="{gravatarpicture}" />
 <input type="hidden" template-variable="uploadedpicture" value="{uploadedpicture}" />

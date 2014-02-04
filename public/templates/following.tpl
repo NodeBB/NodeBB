@@ -1,9 +1,8 @@
+<div class="account-username-box clearfix" data-userslug="{userslug}">
+
+</div>
+
 <div class="well users account">
-
-	<div class="account-username-box clearfix" data-userslug="{userslug}">
-
-	</div>
-
 	<div>
 		<!-- BEGIN following -->
 		<div class="users-box">

@@ -1,7 +1,8 @@
-<div class="well favourites">
-	<div class="account-username-box clearfix" data-userslug="{userslug}">
+<div class="account-username-box clearfix" data-userslug="{userslug}">
 
-	</div>
+</div>
+
+<div class="well favourites">
 
 	<!-- IF !posts.length -->
 		<div class="alert alert-warning">[[topic:favourites.has_no_favourites]]</div>
@@ -39,3 +40,6 @@
 		</div>
 	</div>
 </div>
+
+<input type="hidden" template-variable="yourid" value="{yourid}" />
+<input type="hidden" template-variable="theirid" value="{theirid}" />

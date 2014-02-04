@@ -311,6 +311,9 @@ var fs = require('fs'),
 						} else {
 							userData.showemail = "";
 						}
+
+						userData.theirid = uid;
+						userData.yourid = callerUID;
 						res.json(userData);
 					} else {
 						res.json(404, {
@@ -350,6 +353,8 @@ var fs = require('fs'),
 								return next(err);
 							}
 
+							userData.theirid = uid;
+							userData.yourid = callerUID;
 							userData.posts = favourites.posts;
 							userData.nextStart = favourites.nextStart;
 
@@ -386,6 +391,8 @@ var fs = require('fs'),
 								return next(err);
 							}
 							userData.uid = uid;
+							userData.theirid = uid;
+							userData.yourid = callerUID;
 							userData.posts = userPosts.posts;
 							userData.nextStart = userPosts.nextStart;
 

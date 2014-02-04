@@ -1,8 +1,8 @@
+<div class="account-username-box clearfix" data-userslug="{userslug}">
+
+</div>
+
 <div class="well account">
-
-	<div class="account-username-box clearfix" data-userslug="{userslug}">
-
-	</div>
 
 	<div class="row">
 		<div class="col-md-6">
@@ -22,3 +22,6 @@
 		<a id="submitBtn" href="#" class="btn btn-primary">[[global:save_changes]]</a>
 	</div>
 </div>
+
+<input type="hidden" template-variable="yourid" value="{yourid}" />
+<input type="hidden" template-variable="theirid" value="{theirid}" />
