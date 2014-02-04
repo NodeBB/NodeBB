@@ -30,11 +30,8 @@
 		</div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
 
-	<div class="account-username-box" data-userslug="{userslug}">
-		<span class="account-username">
-			<a href="{relative_path}/user/{userslug}">{username}</a> <i class="fa fa-chevron-right"></i>
-			<a href="{relative_path}/user/{userslug}/edit">[[user:edit]]</a>
-		</span>
+	<div class="account-username-box clearfix" data-userslug="{userslug}">
+
 	</div>
 
 	<div class="row">

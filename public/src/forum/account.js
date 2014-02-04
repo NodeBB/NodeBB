@@ -88,11 +88,7 @@ define(['forum/accountheader'], function(header) {
 			return;
 		}
 
-		translator.get('global:' + data.status, function(translated) {
-			onlineStatus.find('span span').text(translated);
-			onlineStatus.find('i').attr('class', 'fa fa-circle status ' + data.status);
-		});
-
+		onlineStatus.attr('class', 'account-online-status fa fa-circle status ' + data.status);
 	};
 
 	return Account;
