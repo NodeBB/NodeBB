@@ -42,7 +42,7 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 						$('.account-username-box a').each(function(index) {
 							$(this).attr('href', $(this).attr('href').replace(oldslug, data.userslug));
 						});
-						$('.account-username a:first-child').html(userData.username);
+
 						$('.account-username-box').attr('data-userslug', data.userslug);
 
 						$('#user-profile-link').attr('href', config.relative_path + '/user/' + data.userslug);

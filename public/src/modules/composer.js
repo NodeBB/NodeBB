@@ -244,6 +244,9 @@ define(['taskbar'], function(taskbar) {
 				var selector = $(this).attr('data-pane');
 				postContainer.find('.tab-content div').removeClass('active');
 				postContainer.find(selector).addClass('active');
+				if(selector === '.tab-write') {
+					bodyEl.focus();
+				}
 				return false;
 			});
 

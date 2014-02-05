@@ -169,11 +169,30 @@ var db = require('./database'),
 				});
 			}, function(pids) {
 				if (!(pids && pids.length)) {
-					return callback(null, []);
+					return callback(null, { posts: [], nextStart: 0});
 				}
 
 
-				Posts.getPostSummaryByPids(pids, false, callback);
+				Posts.getPostSummaryByPids(pids, false, function(err, posts) {
+					if(err) {
+						return callback(err);
+					}
+
+					if(!posts || !posts.length) {
+						return callback(null, { posts: [], nextStart: 0});
+					}
+
+					db.sortedSetRevRank('uid:' + uid + ':posts', posts[posts.length - 1].pid, function(err, rank) {
+						if(err) {
+							return calllback(err);
+						}
+						var userPosts = {
+							posts: posts,
+							nextStart: parseInt(rank, 10) + 1
+						};
+						callback(null, userPosts);
+					});
+				});
 			});
 		});
 	}
