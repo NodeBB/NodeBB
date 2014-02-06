@@ -19,7 +19,7 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2014, 0, 30, 16, 0).getTime();
+	var	latestSchema = new Date(2014, 1, 2, 16, 0).getTime();
 
 	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -431,6 +431,8 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
+			thisSchemaDate = new Date(2014, 0, 30, 16, 0).getTime();
+
 			function updateTopic(tid, next) {
 				Topics.getTopicFields(tid, ['postcount', 'viewcount'], function(err, topicData) {
 					if(err) {
@@ -454,7 +456,6 @@ Upgrade.upgrade = function(callback) {
 				});
 			}
 
-			thisSchemaDate = new Date(2014, 0, 30, 16, 0).getTime();
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 
@@ -476,7 +477,42 @@ Upgrade.upgrade = function(callback) {
 				winston.info('[2014/1/30] Adding new topic sets -- skipped');
 				next();
 			}
-		}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 1, 2, 16, 0).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				winston.info('[2014/2/6] Upvoting all favourited posts for each user');
+
+				User.getUsers('users:joindate', 0, -1, function (err, users) {
+					function getFavourites(user, next) {
+						function upvote(post, next) {
+							var pid = post.pid,
+								uid = user.uid;
+
+							db.setAdd('pid:' + pid + ':upvote', uid);
+							db.sortedSetAdd('uid:' + uid + ':upvote', post.timestamp, pid);
+							db.incrObjectField('post:' + pid, 'votes');
+
+							next();
+						}
+
+						Posts.getFavourites(user.uid, 0, -1, function(err, posts) {
+							async.each(posts.posts, upvote, function(err) {
+								next(err);
+							});
+						});
+					}
+					async.each(users, getFavourites, function(err) {
+						next(err);
+					});
+				});
+			} else {
+				winston.info('[2014/2/6] Upvoting all favourited posts for each user -- skipped');
+				next();
+			}
+		},
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 17!!!
 	], function(err) {
