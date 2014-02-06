@@ -514,7 +514,7 @@ module.exports.server = server;
 			});
 		});
 
-		app.get('/topic/:topic_id/:slug?', function (req, res) {
+		app.get('/topic/:topic_id/:slug?', function (req, res, next) {
 			var tid = req.params.topic_id;
 
 			if (tid.match(/^\d+\.rss$/)) {
@@ -531,24 +531,33 @@ module.exports.server = server;
 
 					};
 
-				if (!fs.existsSync(rssPath)) {
-					feed.updateTopic(tid, function (err) {
-						if (err) {
-							res.redirect('/404');
-						} else {
-							loadFeed();
-						}
-					});
-				} else {
-					loadFeed();
-				}
+				ThreadTools.privileges(tid, ((req.user) ? req.user.uid || 0 : 0), function(err, privileges) {
+					if(err) {
+						return next(err);
+					}
+
+					if(!privileges.read) {
+						return res.redirect('403');
+					}
+
+					if (!fs.existsSync(rssPath)) {
+						feed.updateTopic(tid, function (err) {
+							if (err) {
+								res.redirect('/404');
+							} else {
+								loadFeed();
+							}
+						});
+					} else {
+						loadFeed();
+					}
+				});
 
 				return;
 			}
 
 			async.waterfall([
 				function(next) {
-					// Check whether this user is allowed to access this topic
 					ThreadTools.privileges(tid, ((req.user) ? req.user.uid || 0 : 0), function(err, privileges) {
 						if (!err) {
 							if (!privileges.read) {
@@ -687,7 +696,7 @@ module.exports.server = server;
 			});
 		});
 
-		app.get('/category/:category_id/:slug?', function (req, res) {
+		app.get('/category/:category_id/:slug?', function (req, res, next) {
 			var cid = req.params.category_id;
 
 			if (cid.match(/^\d+\.rss$/)) {
@@ -704,24 +713,33 @@ module.exports.server = server;
 
 					};
 
-				if (!fs.existsSync(rssPath)) {
-					feed.updateCategory(cid, function (err) {
-						if (err) {
-							res.redirect('/404');
-						} else {
-							loadFeed();
-						}
-					});
-				} else {
-					loadFeed();
-				}
+				CategoryTools.privileges(cid, ((req.user) ? req.user.uid || 0 : 0), function(err, privileges) {
+					if(err) {
+						return next(err);
+					}
+
+					if(!privileges.read) {
+						return res.redirect('403');
+					}
+
+					if (!fs.existsSync(rssPath)) {
+						feed.updateCategory(cid, function (err) {
+							if (err) {
+								res.redirect('/404');
+							} else {
+								loadFeed();
+							}
+						});
+					} else {
+						loadFeed();
+					}
+				});
 
 				return;
 			}
 
 			async.waterfall([
 				function(next) {
-					// Check whether this user is allowed to access this category
 					CategoryTools.privileges(cid, ((req.user) ? req.user.uid || 0 : 0), function(err, privileges) {
 						if (!err) {
 							if (!privileges.read) {
