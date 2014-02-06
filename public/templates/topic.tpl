@@ -72,7 +72,7 @@
 							<button class="btn btn-sm btn-default flag" type="button" title="[[topic:flag_title]]"><i class="fa fa-flag-o"></i></button>
 							<button data-favourited="{posts.favourited}" class="favourite favourite-tooltip btn btn-sm btn-default <!-- IF posts.favourited --> btn-warning <!-- ENDIF posts.favourited -->" type="button">
 								<span class="favourite-text">[[topic:favourite]]</span>
-								<span class="post_rep_{posts.pid}">{posts.reputation} </span>
+								<span class="post_rep_{posts.pid}">{posts.favourited} </span>
 								<!-- IF posts.favourited -->
 								<i class="fa fa-star"></i>
 								<!-- ELSE -->
@@ -80,6 +80,13 @@
 								<!-- ENDIF posts.favourited -->
 							</button>
 						</div>
+
+						<div class="btn-group">
+							<button class="upvote btn btn-sm btn-default"><i class="fa fa-chevron-up"></i></button>
+							<button class="votes btn btn-sm btn-default" data-vote-status="" data-votes="1" disabled>1</button>
+							<button class="downvote btn btn-sm btn-default"><i class="fa fa-chevron-down"></i></button>
+						</div>
+
 						<!-- IF privileges.write -->
 						<div class="btn-group">
 							<button class="btn btn-sm btn-default quote" type="button" title="[[topic:quote]]"><i class="fa fa-quote-left"></i></button>
@@ -129,7 +136,7 @@
 
 					<div class="post-info">
 						<span class="pull-left">
-							[[topic:reputation]]: <i class='fa fa-star'></i> <span class='formatted-number post_rep_{posts.uid}'>{posts.user_rep}</span>&nbsp;|&nbsp;[[topic:posts]]: <i class='fa fa-pencil'></i> <span class='formatted-number user_postcount_{posts.uid}'>{posts.user_postcount}</span>
+							[[topic:reputation]]: <i class='fa fa-star'></i> <span data-reputation="{posts.user_rep}" data-uid="{posts.uid}" class='formatted-number reputation'>{posts.user_rep}</span>&nbsp;|&nbsp;[[topic:posts]]: <i class='fa fa-pencil'></i> <span class='formatted-number user_postcount_{posts.uid}'>{posts.user_postcount}</span>
 							<!-- BEGIN custom_profile_info -->
 							| {posts.custom_profile_info.content}
 							<!-- END custom_profile_info -->
