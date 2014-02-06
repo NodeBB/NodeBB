@@ -111,14 +111,16 @@
 			</div>
 		</div>
 
-		<div class="panel panel-default {moderator_block_class}">
+		<!-- IF moderators.length -->
+		<div class="panel panel-default">
 			<div class="panel-heading">[[category:sidebar.moderators]]</div>
 			<div class="panel-body moderators">
 				<!-- BEGIN moderators -->
-				<a href="../../user/{moderators.userslug}"><img title="{moderators.username}" src="{moderators.picture}" class="img-rounded" /></a>
+				<a data-uid="{moderators.uid}" href="../../user/{moderators.userslug}"><img title="{moderators.username}" src="{moderators.picture}" class="img-rounded user-img" /></a>
 				<!-- END moderators -->
 			</div>
 		</div>
+		<!-- ENDIF moderators.length -->
 
 		<!-- BEGIN sidebars -->
 		<div class="panel panel-default">

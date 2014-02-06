@@ -494,33 +494,40 @@ var fs = require('fs'),
 			var	websockets = require('../socket.io');
 
 			user.getUsers('users:online', 0, 49, function (err, data) {
-
 				var onlineUsers = [];
 
-				data = data.filter(function(item) {
-					return item.status !== 'offline';
-				});
-
-				function iterator(userData, next) {
-					var online = websockets.isUserOnline(userData.uid);
-					if(!online) {
-						db.sortedSetRemove('users:online', userData.uid);
-						return next(null);
+				uid = 0;
+				if (req.user) {
+					uid = req.user.uid;
+				}
+				user.isAdministrator(uid, function (err, isAdministrator) {
+					if (true != isAdministrator) {
+						data = data.filter(function(item) {
+							return item.status !== 'offline';
+						});
 					}
 
-					onlineUsers.push(userData);
-					next(null);
-				}
+					function iterator(userData, next) {
+						var online = websockets.isUserOnline(userData.uid);
+						if(!online) {
+							db.sortedSetRemove('users:online', userData.uid);
+							return next(null);
+						}
 
-				var anonymousUserCount = websockets.getOnlineAnonCount();
+						onlineUsers.push(userData);
+						next(null);
+					}
 
-				async.each(data, iterator, function(err) {
-					res.json({
-						search_display: 'none',
-						loadmore_display: 'block',
-						users: onlineUsers,
-						anonymousUserCount: anonymousUserCount,
-						show_anon: anonymousUserCount?'':'hide'
+					var anonymousUserCount = websockets.getOnlineAnonCount();
+
+					async.each(data, iterator, function(err) {
+						res.json({
+							search_display: 'none',
+							loadmore_display: 'block',
+							users: onlineUsers,
+							anonymousUserCount: anonymousUserCount,
+							show_anon: anonymousUserCount?'':'hide'
+						});
 					});
 				});
 			});
