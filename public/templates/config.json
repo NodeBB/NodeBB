@@ -23,6 +23,7 @@
 		"^user.*followers": "followers",
 		"^user.*settings": "accountsettings",
 		"^user.*favourites": "favourites",
+		"^user.*posts": "accountposts",
 		"^user/.*": "account",
 
 		"^recent/.*": "recent",

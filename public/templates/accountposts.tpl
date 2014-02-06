@@ -1,4 +1,4 @@
-<div class="account-username-box clearfix" data-userslug="{userslug}">
+<div class="account-username-box clearfix" data-userslug="{userslug}" data-uid="{uid}">
 
 </div>
 

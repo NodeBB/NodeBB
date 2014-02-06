@@ -258,4 +258,15 @@ SocketPosts.loadMoreFavourites = function(socket, data, callback) {
 	posts.getFavourites(socket.uid, start, end, callback);
 };
 
+SocketPosts.loadMoreUserPosts = function(socket, data, callback) {
+	if(!data || !data.after || !data.uid) {
+		return callback(new Error('invalid data'));
+	}
+
+	var start = parseInt(data.after, 10),
+		end = start + 9;
+
+	posts.getPostsByUid(socket.uid, data.uid, start, end, callback);
+};
+
 module.exports = SocketPosts;

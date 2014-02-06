@@ -109,13 +109,13 @@ define(function() {
 
 		function loadMoreUsers() {
 			var set = '';
-			if (active === 'latest' || active === 'users') {
+			if (active === 'latest') {
 				set = 'users:joindate';
 			} else if (active === 'sort-posts') {
 				set = 'users:postcount';
 			} else if (active === 'sort-reputation') {
 				set = 'users:reputation';
-			} else if (active === 'online') {
+			} else if (active === 'online' || active === 'users') {
 				set = 'users:online';
 			}
 

@@ -1,12 +1,8 @@
+<div class="account-username-box clearfix" data-userslug="{userslug}">
+
+</div>
+
 <div class="well users account">
-
-	<div class="account-username-box" data-userslug="{userslug}">
-		<span class="account-username">
-			<a href="../../user/{userslug}">{username}</a> <i class="fa fa-chevron-right"></i>
-			<a href="../../user/{userslug}/followers">[[user:followers]]</a>
-		</span>
-	</div>
-
 	<div>
 		<!-- BEGIN followers -->
 		<div class="users-box">

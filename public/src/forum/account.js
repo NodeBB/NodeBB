@@ -13,6 +13,7 @@ define(['forum/accountheader'], function(header) {
 			app.enterRoom('user/' + theirid);
 
 			app.addCommasToNumbers();
+			app.makeNumbersHumanReadable($('.account .human-readable-number'));
 			$('.user-recent-posts img').addClass('img-responsive');
 
 			var followBtn = $('#follow-btn');
@@ -88,11 +89,7 @@ define(['forum/accountheader'], function(header) {
 			return;
 		}
 
-		translator.get('global:' + data.status, function(translated) {
-			onlineStatus.find('span span').text(translated);
-			onlineStatus.find('i').attr('class', 'fa fa-circle status ' + data.status);
-		});
-
+		onlineStatus.attr('class', 'account-online-status fa fa-circle status ' + data.status);
 	};
 
 	return Account;

@@ -72,6 +72,7 @@ var fs = require('fs'),
 			createRoute('/:userslug/following', '/following', 'following');
 			createRoute('/:userslug/followers', '/followers', 'followers');
 			createRoute('/:userslug/favourites', '/favourites', 'favourites');
+			createRoute('/:userslug/posts', '/posts', 'accountposts');
 
 			app.get('/:userslug/edit', function (req, res) {
 
@@ -310,6 +311,9 @@ var fs = require('fs'),
 						} else {
 							userData.showemail = "";
 						}
+
+						userData.theirid = uid;
+						userData.yourid = callerUID;
 						res.json(userData);
 					} else {
 						res.json(404, {
@@ -349,8 +353,48 @@ var fs = require('fs'),
 								return next(err);
 							}
 
+							userData.theirid = uid;
+							userData.yourid = callerUID;
 							userData.posts = favourites.posts;
 							userData.nextStart = favourites.nextStart;
+
+							res.json(userData);
+						});
+					} else {
+						res.json(404, {
+							error: 'User not found!'
+						});
+					}
+				});
+			});
+		});
+
+		app.get('/api/user/:userslug/posts', function (req, res, next) {
+			var callerUID = req.user ? req.user.uid : '0';
+
+			user.getUidByUserslug(req.params.userslug, function (err, uid) {
+				if (!uid) {
+					res.json(404, {
+						error: 'User not found!'
+					});
+					return;
+				}
+
+				user.getUserFields(uid, ['username', 'userslug'], function (err, userData) {
+					if (err) {
+						return next(err);
+					}
+
+					if (userData) {
+						posts.getPostsByUid(callerUID, uid, 0, 19, function (err, userPosts) {
+							if (err) {
+								return next(err);
+							}
+							userData.uid = uid;
+							userData.theirid = uid;
+							userData.yourid = callerUID;
+							userData.posts = userPosts.posts;
+							userData.nextStart = userPosts.nextStart;
 
 							res.json(userData);
 						});
@@ -375,13 +419,13 @@ var fs = require('fs'),
 
 				user.isFollowing(callerUID, userData.theirid, function (isFollowing) {
 
-					posts.getPostsByUid(callerUID, userData.theirid, 0, 9, function (err, posts) {
+					posts.getPostsByUid(callerUID, userData.theirid, 0, 9, function (err, userPosts) {
 
 						if(err) {
 							return next(err);
 						}
 
-						userData.posts = posts.filter(function (p) {
+						userData.posts = userPosts.posts.filter(function (p) {
 							return p && parseInt(p.deleted, 10) !== 1;
 						});
 
@@ -391,7 +435,7 @@ var fs = require('fs'),
 							userData.profileviews = 1;
 						}
 
-						if (parseInt(callerUID, 10) !== parseInt(userData.uid, 10)) {
+						if (parseInt(callerUID, 10) !== parseInt(userData.uid, 10) && parseInt(callerUID, 0)) {
 							user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
 						}
 

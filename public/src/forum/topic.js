@@ -296,7 +296,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				set_follow_state = function(state, quiet) {
 					if (state && !followEl.hasClass('btn-success')) {
 						followEl.addClass('btn-success');
-						followEl[0].title = 'You are currently receiving updates to this topic';
+						followEl.attr('title', 'You are currently receiving updates to this topic');
 						if (!quiet) {
 							app.alert({
 								alert_id: 'topic_follow',
@@ -308,7 +308,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 						}
 					} else if (!state && followEl.hasClass('btn-success')) {
 						followEl.removeClass('btn-success');
-						followEl[0].title = 'Be notified of new replies in this topic';
+						followEl.attr('title', 'Be notified of new replies in this topic');
 						if (!quiet) {
 							app.alert({
 								alert_id: 'topic_follow',
@@ -325,23 +325,23 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				set_follow_state(state, true);
 			});
 
-			if (followEl[0]) {
-				followEl[0].addEventListener('click', function() {
-					socket.emit('topics.follow', tid, function(err, state) {
-						if(err) {
-							return app.alert({
-								type: 'danger',
-								alert_id: 'topic_follow',
-								title: 'Please Log In',
-								message: 'Please register or log in in order to subscribe to this topic',
-								timeout: 5000
-							});
-						}
+			followEl.on('click', function() {
+				socket.emit('topics.follow', tid, function(err, state) {
+					if(err) {
+						return app.alert({
+							type: 'danger',
+							alert_id: 'topic_follow',
+							title: 'Please Log In',
+							message: 'Please register or log in in order to subscribe to this topic',
+							timeout: 5000
+						});
+					}
 
-						set_follow_state(state);
-					});
-				}, false);
-			}
+					set_follow_state(state);
+				});
+
+				return false;
+			});
 
 			enableInfiniteLoading();
 
@@ -438,16 +438,22 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				pid: pid,
 				room_id: app.currentRoom
 			});
+
+			return false;
 		});
 
 		$('#post-container').on('click', '.flag', function() {
-			var pid = $(this).parents('.post-row').attr('data-pid');
+			bootbox.confirm('Are you sure you want to flag this post?', function(confirm) {
+				if (confirm) {
+					var pid = $(this).parents('.post-row').attr('data-pid');
 
-			socket.emit('posts.flag', pid, function(err) {
-				if(err) {
-					return app.alertError(err.message);
+					socket.emit('posts.flag', pid, function(err) {
+						if(err) {
+							return app.alertError(err.message);
+						}
+						app.alertSuccess('This post has been flagged for moderation.');
+					});
 				}
-				app.alertSuccess('This post has been flagged for moderation.');
 			});
 		});
 

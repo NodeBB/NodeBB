@@ -1,11 +1,8 @@
-<div class="well account">
+<div class="account-username-box clearfix" data-userslug="{userslug}">
 
-	<div class="account-username-box" data-userslug="{userslug}">
-		<span class="account-username">
-			<a href="{relative_path}/user/{userslug}">{username}</a> <i class="fa fa-chevron-right"></i>
-			<a href="{relative_path}/user/{userslug}/settings">[[user:settings]]</a>
-		</span>
-	</div>
+</div>
+
+<div class="well account">
 
 	<div class="row">
 		<div class="col-md-6">
@@ -25,3 +22,6 @@
 		<a id="submitBtn" href="#" class="btn btn-primary">[[global:save_changes]]</a>
 	</div>
 </div>
+
+<input type="hidden" template-variable="yourid" value="{yourid}" />
+<input type="hidden" template-variable="theirid" value="{theirid}" />

@@ -32,18 +32,23 @@ Emailer.send = function(template, uid, params) {
 		}
 	}, function(err, results) {
 		User.getUserField(uid, 'email', function(err, email) {
-			if (!err) {
-				Plugins.fireHook('action:email.send', {
-					to: email,
-					from: Meta.config['email:from'] || 'no-reply@localhost.lan',
-					subject: params.subject,
-					html: results.html,
-					plaintext: results.plaintext,
-
-					template: template,
-					uid: uid
-				});
+			if(err) {
+				return winston.error(err.message);
 			}
+
+			if(!email) {
+				return winston.warn('uid : ' + uid + ' has no email, not sending.');
+			}
+
+			Plugins.fireHook('action:email.send', {
+				to: email,
+				from: Meta.config['email:from'] || 'no-reply@localhost.lan',
+				subject: params.subject,
+				html: results.html,
+				plaintext: results.plaintext,
+				template: template,
+				uid: uid
+			});
 		});
 	});
 };
