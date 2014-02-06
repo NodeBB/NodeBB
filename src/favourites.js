@@ -167,24 +167,14 @@ var async = require('async'),
 		}
 
 		posts.getPostFields(pid, ['uid', 'timestamp'], function (err, postData) {
-
 			Favourites.hasFavourited(pid, uid, function (err, hasFavourited) {
-
 				if (!hasFavourited) {
-
 					db.sortedSetAdd('uid:' + uid + ':favourites', postData.timestamp, pid);
 					db.setAdd('pid:' + pid + ':users_favourited', uid, function(err) {
 						db.setCount('pid:' + pid + ':users_favourited', function(err, count) {
-							posts.setPostField(pid, 'reputation', count);
+							posts.setPostField(pid, 'favourited', count);
 						});
 					});
-
-
-					if (uid !== postData.uid) {
-						user.incrementUserFieldBy(postData.uid, 'reputation', 1, function (err, newreputation) {
-							db.sortedSetAdd('users:reputation', newreputation, postData.uid);
-						});
-					}
 
 					if (room_id) {
 						websockets.in(room_id).emit('event:favourited', {
@@ -201,7 +191,7 @@ var async = require('async'),
 		});
 	};
 
-	Favourites.unfavourite = function (pid, room_id, uid, socket) {
+	Favourites.unfavourite = function(pid, room_id, uid, socket) {
 		var	websockets = require('./socket.io');
 
 		if (uid === 0) {
@@ -211,20 +201,12 @@ var async = require('async'),
 		posts.getPostField(pid, 'uid', function (err, uid_of_poster) {
 			Favourites.hasFavourited(pid, uid, function (err, hasFavourited) {
 				if (hasFavourited) {
-
 					db.sortedSetRemove('uid:' + uid + ':favourites', pid);
-
 					db.setRemove('pid:' + pid + ':users_favourited', uid, function(err) {
 						db.setCount('pid:' + pid + ':users_favourited', function(err, count) {
-							posts.setPostField(pid, 'reputation', count);
+							posts.setPostField(pid, 'favourited', count);
 						});
 					});
-
-					if (uid !== uid_of_poster) {
-						user.incrementUserFieldBy(uid_of_poster, 'reputation', -1, function (err, newreputation) {
-							db.sortedSetAdd('users:reputation', newreputation, uid_of_poster);
-						});
-					}
 
 					if (room_id) {
 						websockets.in(room_id).emit('event:unfavourited', {
@@ -241,15 +223,15 @@ var async = require('async'),
 		});
 	};
 
-	Favourites.hasFavourited = function (pid, uid, callback) {
+	Favourites.hasFavourited = function(pid, uid, callback) {
 		db.isSetMember('pid:' + pid + ':users_favourited', uid, callback);
 	};
 
-	Favourites.getFavouritesByPostIDs = function (pids, uid, callback) {
+	Favourites.getFavouritesByPostIDs = function(pids, uid, callback) {
 		var data = {};
 
 		function iterator(pid, next) {
-			Favourites.hasFavourited(pid, uid, function (err, hasFavourited) {
+			Favourites.hasFavourited(pid, uid, function(err, hasFavourited) {
 				data[pid] = hasFavourited;
 				next()
 			});
@@ -260,7 +242,7 @@ var async = require('async'),
 		});
 	};
 
-	Favourites.getFavouritedUidsByPids = function (pids, callback) {
+	Favourites.getFavouritedUidsByPids = function(pids, callback) {
 		var data = {};
 
 		function getUids(pid, next) {
