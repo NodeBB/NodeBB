@@ -86,6 +86,24 @@
 		});
 	};
 
+	Groups.getMemberships = function(uid, callback) {
+		if (!uid) {
+			return callback(new Error('no-uid-specified'));
+		}
+
+		db.getObjectValues('group:gid', function(err, gids) {
+			async.filter(gids, function(gid, next) {
+				Groups.isMember(uid, gid, function(err, isMember) {
+					next(isMember);
+				});
+			}, function(gids) {
+				async.map(gids, function(gid, next) {
+					Groups.get(gid, {}, next);
+				}, callback);
+			});
+		});
+	};
+
 	Groups.isDeleted = function(gid, callback) {
 		db.getObjectField('gid:' + gid, 'deleted', function(err, deleted) {
 			callback(err, parseInt(deleted, 10) === 1);
