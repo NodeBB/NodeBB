@@ -168,16 +168,13 @@ var async = require('async'),
 		var	websockets = require('./socket.io');
 
 		if (uid === 0) {
-			translator.mget(['topic:favourites.not_logged_in.message', 'topic:favourites.not_logged_in.title'], function(err, results) {
-				socket.emit('event:alert', {
-					alert_id: 'post_favourite',
-					title: results[1],
-					message: results[0],
-					type: 'danger',
-					timeout: 5000
-				});
+			return socket.emit('event:alert', {
+				alert_id: 'post_favourite',
+				title: '[[topic:favourites.not_logged_in.title]]',
+				message: '[[topic:favourites.not_logged_in.message]]',
+				type: 'danger',
+				timeout: 5000
 			});
-			return;
 		}
 
 		posts.getPostFields(pid, ['uid', 'timestamp'], function (err, postData) {
