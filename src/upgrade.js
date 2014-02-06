@@ -491,9 +491,11 @@ Upgrade.upgrade = function(callback) {
 							var pid = post.pid,
 								uid = user.uid;
 
-							db.setAdd('pid:' + pid + ':upvote', uid);
-							db.sortedSetAdd('uid:' + uid + ':upvote', post.timestamp, pid);
-							db.incrObjectField('post:' + pid, 'votes');
+							if (post.uid !== uid) {
+								db.setAdd('pid:' + pid + ':upvote', uid);
+								db.sortedSetAdd('uid:' + uid + ':upvote', post.timestamp, pid);
+								db.incrObjectField('post:' + pid, 'votes');
+							}
 
 							next();
 						}
