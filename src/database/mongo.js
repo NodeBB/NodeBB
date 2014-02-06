@@ -415,12 +415,11 @@
 		}
 		field = field.replace(/\./g, '\uff0E');
 		data[field] = value;
-		db.collection('objects').update({_key:key}, {$inc : data}, {upsert:true}, function(err, result) {
-			module.getObjectField(key, field, function(err, value) {
-				if(callback) {
-					callback(err, value);
-				}
-			});
+
+		db.collection('objects').findAndModify({_key:key}, {}, {$inc: data}, {new:true, upsert:true}, function(err, result) {
+			if(callback) {
+				callback(err, result ? result[field] : null);
+			}
 		});
 	}
 
