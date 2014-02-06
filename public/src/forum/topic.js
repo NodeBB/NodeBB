@@ -442,6 +442,46 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			return false;
 		});
 
+		$('#post-container').on('click', '.upvote', function() {
+			var post = $(this).parents('.post-row'),
+				pid = post.attr('data-pid'),
+				upvoted = post.find('.votes').attr('data-vote-status') === 'upvoted';
+
+			if (upvoted === true) {
+				socket.emit('posts.unvote', {
+					pid: pid,
+					room_id: app.currentRoom
+				});
+			} else {
+				socket.emit('posts.upvote', {
+					pid: pid,
+					room_id: app.currentRoom
+				});
+			}
+			
+			return false;
+		});
+
+		$('#post-container').on('click', '.downvote', function() {
+			var post = $(this).parents('.post-row'),
+				pid = post.attr('data-pid'),
+				downvoted = post.find('.votes').attr('data-vote-status') === 'downvoted';
+
+			if (downvoted === true) {
+				socket.emit('posts.unvote', {
+					pid: pid,
+					room_id: app.currentRoom
+				});
+			} else {
+				socket.emit('posts.downvote', {
+					pid: pid,
+					room_id: app.currentRoom
+				});
+			}
+			
+			return false;
+		});
+
 		$('#post-container').on('click', '.flag', function() {
 			bootbox.confirm('Are you sure you want to flag this post?', function(confirm) {
 				if (confirm) {
@@ -576,7 +616,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			'event:topic_deleted', 'event:topic_restored', 'event:topic:locked',
 			'event:topic_unlocked', 'event:topic_pinned', 'event:topic_unpinned',
 			'event:topic_moved', 'event:post_edited', 'event:post_deleted', 'event:post_restored',
-			'posts.favourite', 'user.isOnline'
+			'posts.favourite', 'user.isOnline', 'posts.upvote', 'posts.downvote'
 		]);
 
 		socket.on('get_users_in_room', function(data) {
@@ -759,6 +799,58 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			});
 		});
 
+		socket.on('posts.upvote', function(data) {
+			if (data && data.pid) {
+				var post = $('li[data-pid="' + data.pid + '"]'),
+					upvote = post.find('.upvote'),
+					downvote = post.find('.downvote'),
+					votes = post.find('.votes');
+
+				upvote.addClass('btn-primary');
+				downvote.removeClass('btn-primary');
+				votes.attr('data-vote-status', 'upvoted');
+			}
+		});
+
+		socket.on('posts.downvote', function(data) {
+			if (data && data.pid) {
+				var post = $('li[data-pid="' + data.pid + '"]'),
+					upvote = post.find('.upvote'),
+					downvote = post.find('.downvote'),
+					votes = post.find('.votes'),
+					currentVotes = parseInt(votes.attr('data-votes'), 10) - 1;
+
+				downvote.addClass('btn-primary');
+				upvote.removeClass('btn-primary');
+				votes.html(currentVotes)
+					.attr('data-votes', currentVotes)
+					.attr('data-vote-status', 'downvoted');
+			}
+		});
+
+		socket.on('posts.unvote', function(data) {
+			if (data && data.pid) {
+				var post = $('li[data-pid="' + data.pid + '"]'),
+					upvote = post.find('.upvote'),
+					downvote = post.find('.downvote'),
+					votes = post.find('.votes'),
+					status = votes.attr('data-vote-status'),
+					currentVotes = parseInt(votes.attr('data-votes'), 10);
+
+				if (status === 'upvoted') {
+					currentVotes --;
+					upvote.removeClass('btn-primary');
+				} else if (status === 'downvoted') {
+					currentVotes ++;
+					downvote.removeClass('btn-primary');
+				}
+
+				votes.html(currentVotes)
+					.attr('data-votes', currentVotes)
+					.attr('data-vote-status', '');
+			}
+		});
+
 		socket.on('posts.favourite', function(data) {
 			if (data && data.pid) {
 				var favBtn = $('li[data-pid="' + data.pid + '"] .favourite');
@@ -803,17 +895,16 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		});
 
 		function adjust_rep(value, pid, uid) {
-			var post_rep = jQuery('.post_rep_' + pid),
-				user_rep = jQuery('.user_rep_' + uid);
+			var votes = $('li[data-pid="' + pid + '"] .votes'),
+				reputationElements = $('.reputation[data-uid="' + uid + '"]'),
+				currentVotes = parseInt(votes.attr('data-votes'), 10),
+				reputation = parseInt(reputationElements.attr('data-reputation'), 10);
 
-			var ptotal = parseInt(post_rep.html(), 10),
-				utotal = parseInt(user_rep.html(), 10);
+			currentVotes += value;
+			reputation += value;
 
-			ptotal += value;
-			utotal += value;
-
-			post_rep.html(ptotal + ' ');
-			user_rep.html(utotal + ' ');
+			reputationElements.html(currentVotes).attr('data-votes', currentVotes);
+			reputationElements.html(reputation);
 		}
 
 		function set_locked_state(locked, alert) {
