@@ -490,18 +490,26 @@ var fs = require('fs'),
 			});
 		}
 
-		function getOnlineUsers(req, res) {
+		function getOnlineUsers(req, res, next) {
 			var	websockets = require('../socket.io');
 
 			user.getUsers('users:online', 0, 49, function (err, data) {
+				if(err) {
+					return next(err);
+				}
 				var onlineUsers = [];
 
 				uid = 0;
 				if (req.user) {
 					uid = req.user.uid;
 				}
+
 				user.isAdministrator(uid, function (err, isAdministrator) {
-					if (true != isAdministrator) {
+					if(err) {
+						return next(err);
+					}
+
+					if (!isAdministrator) {
 						data = data.filter(function(item) {
 							return item.status !== 'offline';
 						});
