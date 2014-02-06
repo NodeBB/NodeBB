@@ -102,7 +102,6 @@ Sockets.init = function(server) {
 							});
 
 							socketUser.isOnline(socket, uid, function(err, data) {
-								console.log('deeerp');
 								socket.broadcast.emit('user.isOnline', err, data);
 							});
 						});
