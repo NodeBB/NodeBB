@@ -442,6 +442,46 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			return false;
 		});
 
+		$('#post-container').on('click', '.upvote', function() {
+			var post = $(this).parents('.post-row'),
+				pid = post.attr('data-pid'),
+				upvoted = post.find('.upvoted').length;
+				
+			if (upvoted) {
+				socket.emit('posts.unvote', {
+					pid: pid,
+					room_id: app.currentRoom
+				});
+			} else {
+				socket.emit('posts.upvote', {
+					pid: pid,
+					room_id: app.currentRoom
+				});
+			}
+			
+			return false;
+		});
+
+		$('#post-container').on('click', '.downvote', function() {
+			var post = $(this).parents('.post-row'),
+				pid = post.attr('data-pid'),
+				downvoted = post.find('.downvoted').length;
+
+			if (downvoted) {
+				socket.emit('posts.unvote', {
+					pid: pid,
+					room_id: app.currentRoom
+				});
+			} else {
+				socket.emit('posts.downvote', {
+					pid: pid,
+					room_id: app.currentRoom
+				});
+			}
+			
+			return false;
+		});
+
 		$('#post-container').on('click', '.flag', function() {
 			bootbox.confirm('Are you sure you want to flag this post?', function(confirm) {
 				if (confirm) {
@@ -572,11 +612,11 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		});
 
 		ajaxify.register_events([
-			'event:rep_up', 'event:rep_down', 'event:new_post', 'get_users_in_room',
+			'event:rep_up', 'event:rep_down', 'event:favourited', 'event:unfavourited', 'event:new_post', 'get_users_in_room',
 			'event:topic_deleted', 'event:topic_restored', 'event:topic:locked',
 			'event:topic_unlocked', 'event:topic_pinned', 'event:topic_unpinned',
 			'event:topic_moved', 'event:post_edited', 'event:post_deleted', 'event:post_restored',
-			'posts.favourite', 'user.isOnline'
+			'posts.favourite', 'user.isOnline', 'posts.upvote', 'posts.downvote'
 		]);
 
 		socket.on('get_users_in_room', function(data) {
@@ -674,6 +714,14 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			adjust_rep(-1, data.pid, data.uid);
 		});
 
+		socket.on('event:favourited', function(data) {
+			adjust_favourites(1, data.pid, data.uid);
+		});
+
+		socket.on('event:unfavourited', function(data) {
+			adjust_favourites(-1, data.pid, data.uid);
+		});
+
 		socket.on('event:new_post', function(data) {
 			if(config.usePagination) {
 				onNewPostPagination(data);
@@ -759,6 +807,35 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			});
 		});
 
+		socket.on('posts.upvote', function(data) {
+			if (data && data.pid) {
+				var post = $('li[data-pid="' + data.pid + '"]'),
+					upvote = post.find('.upvote');
+
+				upvote.addClass('btn-primary upvoted');
+			}
+		});
+
+		socket.on('posts.downvote', function(data) {
+			if (data && data.pid) {
+				var post = $('li[data-pid="' + data.pid + '"]'),
+					downvote = post.find('.downvote');
+
+				downvote.addClass('btn-primary downvoted');
+			}
+		});
+
+		socket.on('posts.unvote', function(data) {
+			if (data && data.pid) {
+				var post = $('li[data-pid="' + data.pid + '"]'),
+					upvote = post.find('.upvote'),
+					downvote = post.find('.downvote');
+
+				upvote.removeClass('btn-primary upvoted');
+				downvote.removeClass('btn-primary downvoted');
+			}
+		});
+
 		socket.on('posts.favourite', function(data) {
 			if (data && data.pid) {
 				var favBtn = $('li[data-pid="' + data.pid + '"] .favourite');
@@ -803,17 +880,25 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		});
 
 		function adjust_rep(value, pid, uid) {
-			var post_rep = jQuery('.post_rep_' + pid),
-				user_rep = jQuery('.user_rep_' + uid);
+			var votes = $('li[data-pid="' + pid + '"] .votes'),
+				reputationElements = $('.reputation[data-uid="' + uid + '"]'),
+				currentVotes = parseInt(votes.attr('data-votes'), 10),
+				reputation = parseInt(reputationElements.attr('data-reputation'), 10);
 
-			var ptotal = parseInt(post_rep.html(), 10),
-				utotal = parseInt(user_rep.html(), 10);
+			currentVotes += value;
+			reputation += value;
 
-			ptotal += value;
-			utotal += value;
+			votes.html(currentVotes).attr('data-votes', currentVotes);
+			reputationElements.html(reputation).attr('data-reputation', reputation);
+		}
 
-			post_rep.html(ptotal + ' ');
-			user_rep.html(utotal + ' ');
+		function adjust_favourites(value, pid, uid) {
+			var favourites = $('li[data-pid="' + pid + '"] .favouriteCount'),
+				currentFavourites = parseInt(favourites.attr('data-favourites'), 10);
+
+			currentFavourites += value;
+
+			favourites.html(currentFavourites).attr('data-favourites', currentFavourites);
 		}
 
 		function set_locked_state(locked, alert) {

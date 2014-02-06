@@ -81,18 +81,27 @@ define(function() {
 		});
 
 		socket.on('user.isOnline', function(err, data) {
-			if(getActiveSection().indexOf('online') === 0 && !loadingMoreUsers) {
+			var section = getActiveSection();
+			if((section.indexOf('online') === 0 || section.indexOf('users') === 0)  && !loadingMoreUsers) {
 				startLoading('users:online', 0, true);
-				socket.emit('user.getOnlineAnonCount', {} , function(err, anonCount) {
-					if(parseInt(anonCount, 10) > 0) {
-						$('#users-container .anon-user').removeClass('hide');
-						$('#online_anon_count').html(anonCount);
-					} else {
-						$('#users-container .anon-user').addClass('hide');
-					}
-				});
+				updateAnonCount();
 			}
 		});
+
+		socket.on('user.anonDisconnect', updateAnonCount);
+		socket.on('user.anonConnect', updateAnonCount)
+
+		function updateAnonCount() {
+			socket.emit('user.getOnlineAnonCount', {} , function(err, anonCount) {
+
+				if(parseInt(anonCount, 10) > 0) {
+					$('#users-container .anon-user').removeClass('hide');
+					$('#online_anon_count').html(anonCount);
+				} else {
+					$('#users-container .anon-user').addClass('hide');
+				}
+			});
+		}
 
 		function onUsersLoaded(users, emptyContainer) {
 			var html = templates.prepare(templates['users'].blocks['users']).parse({

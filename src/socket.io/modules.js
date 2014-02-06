@@ -113,39 +113,29 @@ SocketModules.chats.send = function(socket, data) {
 		usersData[0].uid = socket.uid;
 		usersData[1].uid = touid;
 
-        Messaging.parse(msg, socket.uid, socket.uid, usersData[1], usersData[0], true, function(parsed) {
-            Messaging.addMessage(socket.uid, touid, msg, function(err, message) {
-                var numSockets = 0,
-                    x;
+		Messaging.parse(msg, socket.uid, socket.uid, usersData[1], usersData[0], true, function(parsed) {
+			Messaging.addMessage(socket.uid, touid, msg, function(err, message) {
 
-                if (server.userSockets[touid]) {
-                    numSockets = server.userSockets[touid].length;
 
-                    for (x = 0; x < numSockets; ++x) {
-                        server.userSockets[touid][x].emit('event:chats.receive', {
-                            fromuid: socket.uid,
-                            username: username,
-                            message: parsed,
-                            timestamp: Date.now()
-                        });
-                    }
-                }
+				server.getUserSockets(touid).forEach(function(s) {
+					s.emit('event:chats.receive', {
+						fromuid: socket.uid,
+						username: username,
+						message: parsed,
+						timestamp: Date.now()
+					});
+				});
 
-                if (server.userSockets[socket.uid]) {
-
-                    numSockets = server.userSockets[socket.uid].length;
-
-                    for (x = 0; x < numSockets; ++x) {
-                        server.userSockets[socket.uid][x].emit('event:chats.receive', {
-                            fromuid: touid,
-                            username: toUsername,
-                            message: parsed,
-                            timestamp: Date.now()
-                        });
-                    }
-                }
-            });
-        });
+				server.getUserSockets(socket.uid).forEach(function(s) {
+					s.emit('event:chats.receive', {
+						fromuid: touid,
+						username: toUsername,
+						message: parsed,
+						timestamp: Date.now()
+					});
+				});
+			});
+		});
 	});
 };
 

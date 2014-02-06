@@ -73,6 +73,24 @@ SocketPosts.reply = function(socket, data, callback) {
 	});
 };
 
+SocketPosts.upvote = function(socket, data) {
+	if(data && data.pid && data.room_id) {
+		favourites.upvote(data.pid, data.room_id, socket.uid, socket);
+	}
+};
+
+SocketPosts.downvote = function(socket, data) {
+	if(data && data.pid && data.room_id) {
+		favourites.downvote(data.pid, data.room_id, socket.uid, socket);
+	}
+};
+
+SocketPosts.unvote = function(socket, data) {
+	if(data && data.pid && data.room_id) {
+		favourites.unvote(data.pid, data.room_id, socket.uid, socket);
+	}
+};
+
 SocketPosts.favourite = function(socket, data) {
 	if(data && data.pid && data.room_id) {
 		favourites.favourite(data.pid, data.room_id, socket.uid, socket);
