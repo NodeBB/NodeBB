@@ -612,7 +612,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		});
 
 		ajaxify.register_events([
-			'event:rep_up', 'event:rep_down', 'event:new_post', 'get_users_in_room',
+			'event:rep_up', 'event:rep_down', 'event:favourited', 'event:unfavourited', 'event:new_post', 'get_users_in_room',
 			'event:topic_deleted', 'event:topic_restored', 'event:topic:locked',
 			'event:topic_unlocked', 'event:topic_pinned', 'event:topic_unpinned',
 			'event:topic_moved', 'event:post_edited', 'event:post_deleted', 'event:post_restored',
@@ -712,6 +712,14 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 		socket.on('event:rep_down', function(data) {
 			adjust_rep(-1, data.pid, data.uid);
+		});
+
+		socket.on('event:favourited', function(data) {
+			adjust_favourites(1, data.pid, data.uid);
+		});
+
+		socket.on('event:unfavourited', function(data) {
+			adjust_favourites(-1, data.pid, data.uid);
 		});
 
 		socket.on('event:new_post', function(data) {
@@ -882,6 +890,15 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 			votes.html(currentVotes).attr('data-votes', currentVotes);
 			reputationElements.html(reputation).attr('data-reputation', reputation);
+		}
+
+		function adjust_favourites(value, pid, uid) {
+			var favourites = $('li[data-pid="' + pid + '"] .favouriteCount'),
+				currentFavourites = parseInt(favourites.attr('data-favourites'), 10);
+
+			currentFavourites += value;
+
+			favourites.html(currentFavourites).attr('data-favourites', currentFavourites);
 		}
 
 		function set_locked_state(locked, alert) {

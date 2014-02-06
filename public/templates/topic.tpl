@@ -72,7 +72,7 @@
 							<button class="btn btn-sm btn-default flag" type="button" title="[[topic:flag_title]]"><i class="fa fa-flag-o"></i></button>
 							<button data-favourited="{posts.favourited}" class="favourite favourite-tooltip btn btn-sm btn-default <!-- IF posts.favourited --> btn-warning <!-- ENDIF posts.favourited -->" type="button">
 								<span class="favourite-text">[[topic:favourite]]</span>
-								<span class="post_rep_{posts.pid}">{posts.reputation} </span>
+								<span class="favouriteCount" data-favourites="{posts.reputation}">{posts.reputation}</span>&nbsp;
 								<!-- IF posts.favourited -->
 								<i class="fa fa-star"></i>
 								<!-- ELSE -->

@@ -186,7 +186,7 @@ var async = require('async'),
 					db.sortedSetAdd('uid:' + uid + ':favourites', postData.timestamp, pid);
 					db.setAdd('pid:' + pid + ':users_favourited', uid, function(err) {
 						db.setCount('pid:' + pid + ':users_favourited', function(err, count) {
-							posts.setPostField(pid, 'favourited', count);
+							posts.setPostField(pid, 'reputation', count);
 						});
 					});
 
@@ -218,7 +218,7 @@ var async = require('async'),
 					db.sortedSetRemove('uid:' + uid + ':favourites', pid);
 					db.setRemove('pid:' + pid + ':users_favourited', uid, function(err) {
 						db.setCount('pid:' + pid + ':users_favourited', function(err, count) {
-							posts.setPostField(pid, 'favourited', count);
+							posts.setPostField(pid, 'reputation', count);
 						});
 					});
 
