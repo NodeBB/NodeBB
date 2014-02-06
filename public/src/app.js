@@ -186,6 +186,12 @@ var socket,
 
 			clearTimeout(alert.attr('timeoutId'));
 			startTimeout(alert, params.timeout);
+
+			alert.children().fadeOut('100');
+			translator.translate(alert.html(), function(translatedHTML) {
+				alert.children().fadeIn('100');
+				alert.html(translatedHTML);
+			});
 		} else {
 			var div = $('<div id="' + alert_id + '" class="alert alert-dismissable alert-' + params.type +'"></div>'),
 				button = $('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'),
