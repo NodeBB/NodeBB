@@ -67,7 +67,6 @@ var db = require('./database'),
 
 						Messaging.parse(message.content, message.fromuid, fromuid, userData[1], userData[0], false, function(result) {
 							message.content = result;
-							console.log(message);
 							messages.push(message);
 							next(null);
 						});
