@@ -496,7 +496,11 @@ var fs = require('fs'),
 			user.getUsers('users:online', 0, 49, function (err, data) {
 				var onlineUsers = [];
 
-                user.isAdministrator(req.user.uid, function (err, isAdministrator) {
+                uid = 0;
+                if (req.user) {
+                    uid = req.user.uid;
+                }
+                user.isAdministrator(uid, function (err, isAdministrator) {
                     if (true != isAdministrator) {
                         data = data.filter(function(item) {
                             return item.status !== 'offline';
