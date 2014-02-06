@@ -55,6 +55,7 @@ SocketUser.isOnline = function(socket, uid, callback) {
 		}
 
 		var online = module.parent.exports.isUserOnline(uid);
+
 		if(!online) {
 			status = 'offline';
 		}
@@ -203,6 +204,8 @@ SocketUser.loadMore = function(socket, data, callback) {
 		});
 	});
 };
+
+
 
 SocketUser.setStatus = function(socket, status, callback) {
 	var server = require('./index');

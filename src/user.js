@@ -409,7 +409,7 @@ var bcrypt = require('bcryptjs'),
 			function getUserData(uid, callback) {
 				User.getUserData(uid, function(err, userData) {
 					if(!userData.status) {
-						userData.status = 'offline';
+						userData.status = 'online';
 					}
 
 					User.isAdministrator(uid, function(err, isAdmin) {
