@@ -647,8 +647,7 @@ var async = require('async'),
 		var	websockets = require('./socket.io');
 
 		if (!uids) {
-			clients = websockets.getConnectedClients();
-			uids = Object.keys(clients);
+			uids = websockets.getConnectedClients();
 		} else if (!Array.isArray(uids)) {
 			uids = [uids];
 		}
