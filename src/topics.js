@@ -341,6 +341,12 @@ var async = require('async'),
 				});
 			}
 
+			function getVoteStatusData(next) {
+				favourites.getVoteStatusByPostIDs(pids, current_user, function(vote_data) {
+					next(null, vote_data);
+				})
+			}
+
 			function addUserInfoToPosts(next) {
 				function iterator(post, callback) {
 					posts.addUserInfoToPost(post, function() {
@@ -370,17 +376,21 @@ var async = require('async'),
 				}
 			}
 
-			async.parallel([getFavouritesData, addUserInfoToPosts, getPrivileges], function(err, results) {
+			async.parallel([getFavouritesData, addUserInfoToPosts, getPrivileges, getVoteStatusData], function(err, results) {
 				if(err) {
 					return callback(err);
 				}
 
 				var fav_data = results[0],
-					privileges = results[2];
+					privileges = results[2],
+					voteStatus = results[3];
 
 				for (var i = 0; i < postData.length; ++i) {
 					var pid = postData[i].pid;
 					postData[i].favourited = fav_data[pid];
+					postData[i].upvoted = voteStatus[pid].upvoted;
+					postData[i].downvoted = voteStatus[pid].downvoted;
+					postData[i].votes = postData[i].votes || 0;
 					postData[i].display_moderator_tools = (current_user != 0) && privileges[pid].editable;
 					postData[i].display_move_tools = privileges[pid].move;
 					if(parseInt(postData[i].deleted, 10) === 1 && !privileges[pid].view_deleted) {
