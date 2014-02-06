@@ -43,7 +43,6 @@ var async = require('async'),
 
 				db.setAdd('pid:' + pid + ':' + type, uid, function(err) {
 					db.setCount('pid:' + pid + ':' + type, function(err, count) {
-						console.log(count);
 						posts.setPostField(pid, type, count);
 					});
 				});
@@ -69,13 +68,13 @@ var async = require('async'),
 	}
 
 	Favourites.upvote = function(pid, room_id, uid, socket) {
-		Favourites.unvote(pid, room_id, uid, socket, function(postData) {
+		Favourites.unvote(pid, room_id, uid, socket, function(err, postData) {
 			vote('upvote', postData, pid, room_id, uid, socket);
 		});
 	};
 
 	Favourites.downvote = function(pid, room_id, uid, socket) {
-		Favourites.unvote(pid, room_id, uid, socket, function(postData) {
+		Favourites.unvote(pid, room_id, uid, socket, function(err, postData) {
 			vote('downvote', postData, pid, room_id, uid, socket);
 		});
 	};
@@ -83,16 +82,9 @@ var async = require('async'),
 	Favourites.unvote = function(pid, room_id, uid, socket, callback) {
 		var	websockets = require('./socket.io');
 
-		async.parallel({
-			upvoted: function(each) {
-				db.isSetMember('pid:' + pid + ':upvote', uid, each);
-			},
-			downvoted: function(each) {
-				db.isSetMember('pid:' + pid + ':downvote', uid, each);
-			}
-		}, function(err, results) {
+		Favourites.hasVoted(pid, uid, function(err, voteStatus) {
 			posts.getPostFields(pid, ['uid', 'timestamp'], function (err, postData) {
-				if (results.upvoted) {
+				if (voteStatus === 'upvoted') {
 					db.sortedSetRemove('uid:' + uid + ':upvote');
 
 					db.setRemove('pid:' + pid + ':upvote', uid, function(err) {
@@ -111,7 +103,7 @@ var async = require('async'),
 							pid: pid
 						});
 					}
-				} else if (results.downvoted) {
+				} else if (voteStatus === 'downvoted') {
 					db.sortedSetRemove('uid:' + uid + ':downvote');
 
 					db.setRemove('pid:' + pid + ':downvote', uid, function(err) {
@@ -132,22 +124,39 @@ var async = require('async'),
 					}
 				}
 
-				if (results.upvoted || results.downvoted) {
+				if (voteStatus) {
 					socket.emit('posts.unvote', {
 						pid: pid
 					});
 				}
 
 				if (callback) {
-					callback(postData);
+					callback(err, postData);
 				}
 			});
 		});
 
 	};
 
-	Favourites.hasVoted = function(type, pid, uid, callback) {
-		db.isSetMember('pid:' + pid + ':' + type, uid, callback);
+	Favourites.hasVoted = function(pid, uid, callback) {
+		async.parallel({
+			upvoted: function(each) {
+				db.isSetMember('pid:' + pid + ':upvote', uid, each);
+			},
+			downvoted: function(each) {
+				db.isSetMember('pid:' + pid + ':downvote', uid, each);
+			}
+		}, function(err, results) {
+			var voteStatus = "";
+
+			if (results.upvoted) {
+				voteStatus = "upvoted";
+			} else if (results.downvoted) {
+				voteStatus = "downvoted";
+			}
+
+			callback(err, voteStatus)
+		});
 	};
 
 	Favourites.favourite = function (pid, room_id, uid, socket) {
