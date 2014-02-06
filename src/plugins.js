@@ -164,6 +164,8 @@ var fs = require('fs'),
 										fs.exists(staticDir, function(exists) {
 											if (exists) {
 												Plugins.staticDirs[mappedPath] = staticDir;
+											} else {
+												winston.warn('[plugins/' + pluginData.id + '] Mapped path \'' + mappedPath + ' => ' + staticDir + '\' not found.');
 											}
 										});
 									}(staticDir));
