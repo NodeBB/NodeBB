@@ -8,74 +8,109 @@ var async = require('async'),
 (function (Favourites) {
 	"use strict";
 
-	function vote(type, postData, pid, room_id, uid, socket) {
+	function vote(type, unvote, pid, room_id, uid, socket, callback) {
 		var	websockets = require('./socket.io');
 
 		if (uid === 0) {
 			return socket.emit('event:alert', {
 				alert_id: 'post_vote',
-				title: '[[vote.not_logged_in.title]]',
-				message: '[[vote.not_logged_in.message]]',
-				type: 'danger',
-				timeout: 5000
-			});
-		} else if (uid === postData.uid) {
-			return socket.emit('event:alert', {
-				alert_id: 'post_vote',
-				title: '[[vote.cant_vote_self.title]]',
-				message: '[[vote.cant_vote_self.message]]',
+				title: '[[topic:vote.not_logged_in.title]]',
+				message: '[[topic:vote.not_logged_in.message]]',
 				type: 'danger',
 				timeout: 5000
 			});
 		}
 
-		//Favourites.hasVoted(type, pid, uid, function (err, hasVoted) {
-		//	if (!hasVoted) {
-				var notType = (type === 'upvote' ? 'downvote' : 'upvote');
-
-				db[type === 'upvote' ? 'sortedSetAdd' : 'sortedSetRemove']('uid:' + uid + ':upvote', postData.timestamp, pid);
-				db[type === 'upvote' ? 'sortedSetRemove' : 'sortedSetAdd']('uid:' + uid + ':downvote', postData.timestamp, pid);
-
-
-				user[type === 'upvote' ? 'incrementUserFieldBy' : 'decrementUserFieldBy'](postData.uid, 'reputation', 1, function (err, newreputation) {
-					db.sortedSetAdd('users:reputation', newreputation, postData.uid);
+		posts.getPostFields(pid, ['uid', 'timestamp'], function (err, postData) {
+			if (uid === parseInt(postData.uid, 10)) {
+				socket.emit('event:alert', {
+					alert_id: 'post_vote',
+					title: '[[topic:vote.cant_vote_self.title]]',
+					message: '[[topic:vote.cant_vote_self.message]]',
+					type: 'danger',
+					timeout: 5000
 				});
 
-				db.setAdd('pid:' + pid + ':' + type, uid, function(err) {
-					db.setCount('pid:' + pid + ':' + type, function(err, count) {
-						posts.setPostField(pid, type, count);
-					});
-				});
-
-				db.setRemove('pid:' + pid + ':' + notType, uid, function(err) {
-					db.setCount('pid:' + pid + ':' + notType, function(err, count) {
-						posts.setPostField(pid, notType, count);
-					});
-				});
-
-				if (room_id) {
-					websockets.in(room_id).emit('event:' + (type === 'upvote' ? 'rep_up' : 'rep_down'), {
-						uid: postData.uid,
-						pid: pid
-					});
+				if (callback) {
+					callback(false);
 				}
 
-				socket.emit('posts.' + type, {
+				return false;
+			}
+
+			db[type === 'upvote' || !unvote ? 'sortedSetAdd' : 'sortedSetRemove']('uid:' + uid + ':upvote', postData.timestamp, pid);
+			db[type === 'upvote' || unvote ? 'sortedSetRemove' : 'sortedSetAdd']('uid:' + uid + ':downvote', postData.timestamp, pid);
+
+			user[type === 'upvote' ? 'incrementUserFieldBy' : 'decrementUserFieldBy'](postData.uid, 'reputation', 1, function (err, newreputation) {
+				db.sortedSetAdd('users:reputation', newreputation, postData.uid);
+			});
+
+			if (room_id) {
+				websockets.in(room_id).emit('event:' + (type === 'upvote' ? 'rep_up' : 'rep_down'), {
+					uid: postData.uid,
 					pid: pid
 				});
-		//	}
-		//});
+			}
+
+			socket.emit('posts.' + (unvote ? 'unvote' : type), {
+				pid: pid
+			});
+
+			adjustPostVotes(pid, uid, type, unvote, function() {
+				if (callback) {
+					callback();
+				}
+			});
+		});
+	}
+
+	function adjustPostVotes(pid, uid, type, unvote, callback) {
+		var notType = (type === 'upvote' ? 'downvote' : 'upvote');
+
+		async.series([
+			function(next) {
+				if (unvote) {
+					db.setRemove('pid:' + pid + ':' + type, uid, function(err) {
+						next(err);
+					});
+				} else {
+					db.setAdd('pid:' + pid + ':' + type, uid, function(err) {
+						next(err);
+					});
+				}
+			},
+			function(next) {
+				db.setRemove('pid:' + pid + ':' + notType, uid, function(err) {
+					next(err);
+				});
+			}
+		], function(err) {
+			async.parallel({
+				upvotes: function(next) {
+					db.setCount('pid:' + pid + ':upvote', next);
+				},
+				downvotes: function(next) {
+					db.setCount('pid:' + pid + ':downvote', next);
+				}
+			}, function(err, results) {
+				posts.setPostField(pid, 'votes', parseInt(results.upvotes, 10) - parseInt(results.downvotes, 10));
+			});
+
+			if (callback) {
+				callback();
+			}
+		});
 	}
 
 	Favourites.upvote = function(pid, room_id, uid, socket) {
-		Favourites.unvote(pid, room_id, uid, socket, function(err, postData) {
-			vote('upvote', postData, pid, room_id, uid, socket);
+		Favourites.unvote(pid, room_id, uid, socket, function(err) {
+			vote('upvote', false, pid, room_id, uid, socket);
 		});
 	};
 
 	Favourites.downvote = function(pid, room_id, uid, socket) {
-		Favourites.unvote(pid, room_id, uid, socket, function(err, postData) {
-			vote('downvote', postData, pid, room_id, uid, socket);
+		Favourites.unvote(pid, room_id, uid, socket, function(err) {
+			vote('downvote', false, pid, room_id, uid, socket);
 		});
 	};
 
@@ -83,79 +118,49 @@ var async = require('async'),
 		var	websockets = require('./socket.io');
 
 		Favourites.hasVoted(pid, uid, function(err, voteStatus) {
-			posts.getPostFields(pid, ['uid', 'timestamp'], function (err, postData) {
-				if (voteStatus === 'upvoted') {
-					db.sortedSetRemove('uid:' + uid + ':upvote');
+			if (voteStatus.upvoted || voteStatus.downvoted) {
+				socket.emit('posts.unvote', {
+					pid: pid
+				});
 
-					db.setRemove('pid:' + pid + ':upvote', uid, function(err) {
-						db.setCount('pid:' + pid + ':upvote', function(err, count) {
-							posts.setPostField(pid, 'upvote', count);
-						});
-					});
-
-					user.decrementUserFieldBy(postData.uid, 'reputation', 1, function (err, newreputation) {
-						db.sortedSetAdd('users:reputation', newreputation, postData.uid);
-					});
-
-					if (room_id) {
-						websockets.in(room_id).emit('event:rep_down', {
-							uid: postData.uid,
-							pid: pid
-						});
+				return vote(voteStatus.upvoted ? 'downvote' : 'upvote', true, pid, room_id, uid, socket, function() {
+					if (callback) {
+						callback(err);
 					}
-				} else if (voteStatus === 'downvoted') {
-					db.sortedSetRemove('uid:' + uid + ':downvote');
+				});
+			}
 
-					db.setRemove('pid:' + pid + ':downvote', uid, function(err) {
-						db.setCount('pid:' + pid + ':downvote', function(err, count) {
-							posts.setPostField(pid, 'downvote', count);
-						});
-					});
-
-					user.incrementUserFieldBy(postData.uid, 'reputation', 1, function (err, newreputation) {
-						db.sortedSetAdd('users:reputation', newreputation, postData.uid);
-					});
-
-					if (room_id) {
-						websockets.in(room_id).emit('event:rep_up', {
-							uid: postData.uid,
-							pid: pid
-						});
-					}
-				}
-
-				if (voteStatus) {
-					socket.emit('posts.unvote', {
-						pid: pid
-					});
-				}
-
-				if (callback) {
-					callback(err, postData);
-				}
-			});
+			if (callback) {
+				callback(err);
+			}
 		});
-
 	};
 
 	Favourites.hasVoted = function(pid, uid, callback) {
 		async.parallel({
-			upvoted: function(each) {
-				db.isSetMember('pid:' + pid + ':upvote', uid, each);
+			upvoted: function(next) {
+				db.isSetMember('pid:' + pid + ':upvote', uid, next);
 			},
-			downvoted: function(each) {
-				db.isSetMember('pid:' + pid + ':downvote', uid, each);
+			downvoted: function(next) {
+				db.isSetMember('pid:' + pid + ':downvote', uid, next);
 			}
 		}, function(err, results) {
-			var voteStatus = "";
+			callback(err, results)
+		});
+	};
 
-			if (results.upvoted) {
-				voteStatus = "upvoted";
-			} else if (results.downvoted) {
-				voteStatus = "downvoted";
-			}
+	Favourites.getVoteStatusByPostIDs = function(pids, uid, callback) {
+		var data = {};
 
-			callback(err, voteStatus)
+		function iterator(pid, next) {
+			Favourites.hasVoted(pid, uid, function(err, voteStatus) {
+				data[pid] = voteStatus;
+				next()
+			});
+		}
+
+		async.each(pids, iterator, function(err) {
+			callback(data);
 		});
 	};
 

@@ -445,9 +445,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		$('#post-container').on('click', '.upvote', function() {
 			var post = $(this).parents('.post-row'),
 				pid = post.attr('data-pid'),
-				upvoted = post.find('.votes').attr('data-vote-status') === 'upvoted';
-
-			if (upvoted === true) {
+				upvoted = post.find('.upvoted').length;
+				
+			if (upvoted) {
 				socket.emit('posts.unvote', {
 					pid: pid,
 					room_id: app.currentRoom
@@ -465,9 +465,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		$('#post-container').on('click', '.downvote', function() {
 			var post = $(this).parents('.post-row'),
 				pid = post.attr('data-pid'),
-				downvoted = post.find('.votes').attr('data-vote-status') === 'downvoted';
+				downvoted = post.find('.downvoted').length;
 
-			if (downvoted === true) {
+			if (downvoted) {
 				socket.emit('posts.unvote', {
 					pid: pid,
 					room_id: app.currentRoom
@@ -802,29 +802,18 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		socket.on('posts.upvote', function(data) {
 			if (data && data.pid) {
 				var post = $('li[data-pid="' + data.pid + '"]'),
-					upvote = post.find('.upvote'),
-					downvote = post.find('.downvote'),
-					votes = post.find('.votes');
+					upvote = post.find('.upvote');
 
-				upvote.addClass('btn-primary');
-				downvote.removeClass('btn-primary');
-				votes.attr('data-vote-status', 'upvoted');
+				upvote.addClass('btn-primary upvoted');
 			}
 		});
 
 		socket.on('posts.downvote', function(data) {
 			if (data && data.pid) {
 				var post = $('li[data-pid="' + data.pid + '"]'),
-					upvote = post.find('.upvote'),
-					downvote = post.find('.downvote'),
-					votes = post.find('.votes'),
-					currentVotes = parseInt(votes.attr('data-votes'), 10) - 1;
+					downvote = post.find('.downvote');
 
-				downvote.addClass('btn-primary');
-				upvote.removeClass('btn-primary');
-				votes.html(currentVotes)
-					.attr('data-votes', currentVotes)
-					.attr('data-vote-status', 'downvoted');
+				downvote.addClass('btn-primary downvoted');
 			}
 		});
 
@@ -832,22 +821,10 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			if (data && data.pid) {
 				var post = $('li[data-pid="' + data.pid + '"]'),
 					upvote = post.find('.upvote'),
-					downvote = post.find('.downvote'),
-					votes = post.find('.votes'),
-					status = votes.attr('data-vote-status'),
-					currentVotes = parseInt(votes.attr('data-votes'), 10);
+					downvote = post.find('.downvote');
 
-				if (status === 'upvoted') {
-					currentVotes --;
-					upvote.removeClass('btn-primary');
-				} else if (status === 'downvoted') {
-					currentVotes ++;
-					downvote.removeClass('btn-primary');
-				}
-
-				votes.html(currentVotes)
-					.attr('data-votes', currentVotes)
-					.attr('data-vote-status', '');
+				upvote.removeClass('btn-primary upvoted');
+				downvote.removeClass('btn-primary downvoted');
 			}
 		});
 
@@ -903,8 +880,8 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			currentVotes += value;
 			reputation += value;
 
-			reputationElements.html(currentVotes).attr('data-votes', currentVotes);
-			reputationElements.html(reputation);
+			votes.html(currentVotes).attr('data-votes', currentVotes);
+			reputationElements.html(reputation).attr('data-reputation', reputation);
 		}
 
 		function set_locked_state(locked, alert) {

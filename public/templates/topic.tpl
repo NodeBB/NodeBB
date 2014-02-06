@@ -72,7 +72,7 @@
 							<button class="btn btn-sm btn-default flag" type="button" title="[[topic:flag_title]]"><i class="fa fa-flag-o"></i></button>
 							<button data-favourited="{posts.favourited}" class="favourite favourite-tooltip btn btn-sm btn-default <!-- IF posts.favourited --> btn-warning <!-- ENDIF posts.favourited -->" type="button">
 								<span class="favourite-text">[[topic:favourite]]</span>
-								<span class="post_rep_{posts.pid}">{posts.favourited} </span>
+								<span class="post_rep_{posts.pid}">{posts.reputation} </span>
 								<!-- IF posts.favourited -->
 								<i class="fa fa-star"></i>
 								<!-- ELSE -->
@@ -82,9 +82,9 @@
 						</div>
 
 						<div class="btn-group">
-							<button class="upvote btn btn-sm btn-default"><i class="fa fa-chevron-up"></i></button>
-							<button class="votes btn btn-sm btn-default" data-vote-status="" data-votes="1" disabled>1</button>
-							<button class="downvote btn btn-sm btn-default"><i class="fa fa-chevron-down"></i></button>
+							<button class="upvote btn btn-sm btn-default <!-- IF posts.upvoted --> upvoted btn-primary <!-- ENDIF posts.upvoted -->"><i class="fa fa-chevron-up"></i></button>
+							<button class="votes btn btn-sm btn-default" data-votes="{posts.votes}" disabled>{posts.votes}</button>
+							<button class="downvote btn btn-sm btn-default <!-- IF posts.downvoted --> downvoted btn-primary <!-- ENDIF posts.downvoted -->"><i class="fa fa-chevron-down"></i></button>
 						</div>
 
 						<!-- IF privileges.write -->
