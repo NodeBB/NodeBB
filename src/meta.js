@@ -251,14 +251,19 @@ var fs = require('fs'),
 							var paths = jsPath.split('/'),
 								mappedPath = paths[1];
 
-							jsPath = jsPath.replace(path.join('plugins', mappedPath), '');
-							return path.join(plugins.staticDirs[mappedPath], jsPath);
+							if (plugins.staticDirs[mappedPath]) {
+								jsPath = jsPath.replace(path.join('plugins', mappedPath), '');
+								return path.join(plugins.staticDirs[mappedPath], jsPath);
+							} else {
+								winston.warn('[meta.scripts.get] Could not resolve mapped path: ' + mappedPath + '. Are you sure it is defined by a plugin?');
+								return null;
+							}
 						} else {
 							return path.join(__dirname, '..', '/public', jsPath);
 						}
 					});
 
-				Meta.js.scripts = jsPaths;
+				Meta.js.scripts = jsPaths.filter(function(path) { return path !== null });
 
 				if (process.env.NODE_ENV !== 'development') {
 					async.parallel({
