@@ -2,6 +2,7 @@ var db = require('./database'),
 	posts = require('./posts'),
 	utils = require('./../public/src/utils'),
 	user = require('./user'),
+	Groups = require('./groups'),
 	topics = require('./topics'),
 	plugins = require('./plugins'),
 	CategoryTools = require('./categoryTools'),
@@ -186,10 +187,10 @@ var db = require('./database'),
 	};
 
 	Categories.getModerators = function(cid, callback) {
-		db.getSetMembers('cid:' + cid + ':moderators', function(err, mods) {
+		Groups.getByGroupName('cid:' + cid + ':moderators', {}, function(err, groupObj) {
 			if (!err) {
-				if (mods && mods.length) {
-					user.getMultipleUserFields(mods, ['uid', 'username', 'userslug', 'picture'], function(err, moderators) {
+				if (groupObj.members && groupObj.members.length) {
+					user.getMultipleUserFields(groupObj.members, ['uid', 'username', 'userslug', 'picture'], function(err, moderators) {
 						callback(err, moderators);
 					});
 				} else {
@@ -198,7 +199,6 @@ var db = require('./database'),
 			} else {
 				callback(err, null);
 			}
-
 		});
 	};
 
