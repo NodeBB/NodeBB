@@ -186,6 +186,17 @@ SocketAdmin.categories.getPrivilegeSettings = function(socket, cid, callback) {
 					});
 				}
 			});
+		},
+		"mods": function(next) {
+			groups.getByGroupName('cid:' + cid + ':privileges:mods', { expand: true }, function(err, groupObj) {
+				if (!err) {
+					next.apply(this, arguments);
+				} else {
+					next(null, {
+						members: []
+					});
+				}
+			});
 		}
 	}, function(err, data) {
 		if(err) {
@@ -194,7 +205,8 @@ SocketAdmin.categories.getPrivilegeSettings = function(socket, cid, callback) {
 
 		callback(null, {
 			"+r": data['+r'].members,
-			"+w": data['+w'].members
+			"+w": data['+w'].members,
+			"mods": data['mods'].members
 		});
 	});
 };
