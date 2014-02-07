@@ -244,6 +244,7 @@ define(['uploader'], function(uploader) {
 												'<div class="btn-group">' +
 													'<button type="button" data-priv="+r" class="btn btn-default' + (resultObj.privileges['+r'] ? ' active' : '') + '">Read</button>' +
 													'<button type="button" data-priv="+w" class="btn btn-default' + (resultObj.privileges['+w'] ? ' active' : '') + '">Write</button>' +
+													'<button type="button" data-priv="mods" class="btn btn-default' + (resultObj.privileges['mods'] ? ' active' : '') + '">Moderator</button>' +
 												'</div>' +
 											'</div>' +
 											'<img src="' + resultObj.picture + '" /> ' + resultObj.username;
@@ -331,12 +332,15 @@ define(['uploader'], function(uploader) {
 	Categories.refreshPrivilegeList = function (cid) {
 		var	modalEl = $('#category-permissions-modal'),
 			readMembers = modalEl.find('#category-permissions-read'),
-			writeMembers = modalEl.find('#category-permissions-write');
+			writeMembers = modalEl.find('#category-permissions-write'),
+			moderatorsEl = modalEl.find('#category-permissions-mods');
 		socket.emit('admin.categories.getPrivilegeSettings', cid, function(err, privilegeList) {
 			var	readLength = privilegeList['+r'].length,
 				writeLength = privilegeList['+w'].length,
+				modLength = privilegeList['mods'].length,
 				readFrag = document.createDocumentFragment(),
 				writeFrag = document.createDocumentFragment(),
+				modFrag = document.createDocumentFragment(),
 				liEl = document.createElement('li'),
 				x, userObj;
 
@@ -350,7 +354,7 @@ define(['uploader'], function(uploader) {
 				}
 			} else {
 				liEl.className = 'empty';
-				liEl.innerHTML = 'No users are in this list';
+				liEl.innerHTML = 'All users can read and see this category';
 				readFrag.appendChild(liEl.cloneNode(true));
 			}
 
@@ -364,12 +368,27 @@ define(['uploader'], function(uploader) {
 				}
 			} else {
 				liEl.className = 'empty';
-				liEl.innerHTML = 'No users are in this list';
+				liEl.innerHTML = 'All users can write to this category';
 				writeFrag.appendChild(liEl.cloneNode(true));
+			}
+
+			if (modLength > 0) {
+				for(x=0;x<modLength;x++) {
+					userObj = privilegeList['mods'][x];
+					liEl.setAttribute('data-uid', userObj.uid);
+
+					liEl.innerHTML = '<img src="' + userObj.picture + '" title="' + userObj.username + '" />';
+					modFrag.appendChild(liEl.cloneNode(true));
+				}
+			} else {
+				liEl.className = 'empty';
+				liEl.innerHTML = 'No moderators';
+				modFrag.appendChild(liEl.cloneNode(true));
 			}
 
 			readMembers.html(readFrag);
 			writeMembers.html(writeFrag);
+			moderatorsEl.html(modFrag);
 		});
 	};
 
