@@ -187,7 +187,7 @@ var db = require('./database'),
 	};
 
 	Categories.getModerators = function(cid, callback) {
-		Groups.getByGroupName('cid:' + cid + ':moderators', {}, function(err, groupObj) {
+		Groups.getByGroupName('cid:' + cid + ':privileges:mod', {}, function(err, groupObj) {
 			if (!err) {
 				if (groupObj.members && groupObj.members.length) {
 					user.getMultipleUserFields(groupObj.members, ['uid', 'username', 'userslug', 'picture'], function(err, moderators) {
@@ -197,7 +197,8 @@ var db = require('./database'),
 					callback(null, []);
 				}
 			} else {
-				callback(err, null);
+				// Probably no mods
+				callback(null, []);
 			}
 		});
 	};
