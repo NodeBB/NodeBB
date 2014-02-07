@@ -19,7 +19,7 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2014, 1, 2, 16, 0).getTime();
+	var	latestSchema = new Date(2014, 1, 7, 16, 0).getTime();
 
 	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -515,6 +515,52 @@ Upgrade.upgrade = function(callback) {
 				next();
 			}
 		},
+		function(next) {
+
+			thisSchemaDate = new Date(2014, 1, 7, 16, 0).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				winston.info('[2014/2/7] Updating category recent replies');
+				db.getListRange('categories:cid', 0, -1, function(err, cids) {
+
+					function updateCategory(cid, next) {
+						db.getSortedSetRevRange('categories:recent_posts:cid:' + cid, 0, - 1, function(err, pids) {
+							function updatePid(pid, next) {
+								Posts.getCidByPid(pid, function(err, realCid) {
+									if(err) {
+										return next(err);
+									}
+
+									if(parseInt(realCid, 10) !== parseInt(cid, 10)) {
+										Posts.getPostField(pid, 'timestamp', function(err, timestamp) {
+											db.sortedSetRemove('categories:recent_posts:cid:' + cid, pid);
+											db.sortedSetAdd('categories:recent_posts:cid:' + realCid, timestamp, pid);
+											next();
+										});
+									} else {
+										next();
+									}
+								});
+							}
+
+							async.each(pids, updatePid, next);
+						});
+					}
+
+					if(err) {
+						return next(err);
+					}
+
+					async.each(cids, updateCategory, next);
+				});
+
+
+			} else {
+				winston.info('[2014/2/7] Updating category recent replies -- skipped');
+				next();
+			}
+		}
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 17!!!
 	], function(err) {

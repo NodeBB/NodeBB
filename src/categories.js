@@ -256,28 +256,25 @@ var db = require('./database'),
 		}
 
 		CategoryTools.privileges(cid, uid, function(err, privileges) {
-			if (privileges.read) {
-				db.getSortedSetRevRange('categories:recent_posts:cid:' + cid, 0, count - 1, function(err, pids) {
-
-					if (err) {
-						winston.err(err);
-						return callback(err, []);
-					}
-
-					if (pids.length === 0) {
-						return callback(null, []);
-					}
-
-					posts.getPostSummaryByPids(pids, true, function(err, postData) {
-						if(err) {
-							return callback(err);
-						}
-						callback(null, postData);
-					});
-				});
-			} else {
-				callback(null, []);
+			if(err) {
+				return callback(err);
 			}
+
+			if (!privileges.read) {
+				return callback(null, []);
+			}
+
+			db.getSortedSetRevRange('categories:recent_posts:cid:' + cid, 0, count - 1, function(err, pids) {
+				if (err) {
+					return callback(err, []);
+				}
+
+				if (!pids || !pids.length) {
+					return callback(null, []);
+				}
+
+				posts.getPostSummaryByPids(pids, true, callback);
+			});
 		});
 	};
 
