@@ -753,11 +753,11 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.isModerator = function(uid, cid, callback) {
-		db.isSetMember('cid:' + cid + ':moderators', uid, function(err, exists) {
+		groups.isMemberByGroupName(uid, 'cid:' + cid + ':moderators', function(err, isMember) {
 			if(err) {
 				return calback(err);
 			}
-			callback(err, exists);
+			callback(err, isMember);
 		});
 	};
 
