@@ -290,21 +290,16 @@ var db = require('./database'),
 
 				db.sortedSetRemove('categories:recent_posts:cid:' + oldCid, pid);
 				db.sortedSetAdd('categories:recent_posts:cid:' + cid, timestamp, pid);
-				callback(null);
+				callback();
 			});
 		}
 
 		topics.getPids(tid, function(err, pids) {
 			if(err) {
-				return callback(err, null);
+				return callback(err);
 			}
 
-			async.each(pids, movePost, function(err) {
-				if(err) {
-					return callback(err, null);
-				}
-				callback(null, 1);
-			});
+			async.each(pids, movePost, callback);
 		});
 	};
 
