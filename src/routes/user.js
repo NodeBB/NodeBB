@@ -490,37 +490,52 @@ var fs = require('fs'),
 			});
 		}
 
-		function getOnlineUsers(req, res) {
+		function getOnlineUsers(req, res, next) {
 			var	websockets = require('../socket.io');
 
 			user.getUsers('users:online', 0, 49, function (err, data) {
-
+				if(err) {
+					return next(err);
+				}
 				var onlineUsers = [];
 
-				data = data.filter(function(item) {
-					return item.status !== 'offline';
-				});
-
-				function iterator(userData, next) {
-					var online = websockets.isUserOnline(userData.uid);
-					if(!online) {
-						db.sortedSetRemove('users:online', userData.uid);
-						return next(null);
-					}
-
-					onlineUsers.push(userData);
-					next(null);
+				uid = 0;
+				if (req.user) {
+					uid = req.user.uid;
 				}
 
-				var anonymousUserCount = websockets.getOnlineAnonCount();
+				user.isAdministrator(uid, function (err, isAdministrator) {
+					if(err) {
+						return next(err);
+					}
 
-				async.each(data, iterator, function(err) {
-					res.json({
-						search_display: 'none',
-						loadmore_display: 'block',
-						users: onlineUsers,
-						anonymousUserCount: anonymousUserCount,
-						show_anon: anonymousUserCount?'':'hide'
+					if (!isAdministrator) {
+						data = data.filter(function(item) {
+							return item.status !== 'offline';
+						});
+					}
+
+					function iterator(userData, next) {
+						var online = websockets.isUserOnline(userData.uid);
+						if(!online) {
+							db.sortedSetRemove('users:online', userData.uid);
+							return next(null);
+						}
+
+						onlineUsers.push(userData);
+						next(null);
+					}
+
+					var anonymousUserCount = websockets.getOnlineAnonCount();
+
+					async.each(data, iterator, function(err) {
+						res.json({
+							search_display: 'none',
+							loadmore_display: 'block',
+							users: onlineUsers,
+							anonymousUserCount: anonymousUserCount,
+							show_anon: anonymousUserCount?'':'hide'
+						});
 					});
 				});
 			});

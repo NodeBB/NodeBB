@@ -55,6 +55,7 @@ SocketUser.isOnline = function(socket, uid, callback) {
 		}
 
 		var online = module.parent.exports.isUserOnline(uid);
+
 		if(!online) {
 			status = 'offline';
 		}
@@ -186,17 +187,25 @@ SocketUser.loadMore = function(socket, data, callback) {
 			return callback(err);
 		}
 
-		if(data.set === 'users:online') {
-			userData = userData.filter(function(item) {
-				return item.status !== 'offline';
-			});
-		}
+		user.isAdministrator(socket.uid, function (err, isAdministrator) {
+			if(err) {
+				return callback(err);
+			}
 
-		callback(null, {
-			users: userData
+			if(!isAdministrator && data.set === 'users:online') {
+				userData = userData.filter(function(item) {
+					return item.status !== 'offline';
+				});
+			}
+
+			callback(null, {
+				users: userData
+			});
 		});
 	});
 };
+
+
 
 SocketUser.setStatus = function(socket, status, callback) {
 	var server = require('./index');

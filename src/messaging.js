@@ -49,7 +49,7 @@ var db = require('./database'),
 				return callback(null, []);
 			}
 
-			user.getMultipleUserFields([fromuid, touid], ['username', 'picture'], function(err, userData) {
+			user.getMultipleUserFields([fromuid, touid], ['username', 'userslug', 'picture'], function(err, userData) {
 				if(err) {
 					return callback(err, null);
 				}
@@ -93,10 +93,10 @@ var db = require('./database'),
 				picture;
 
 			if (parseInt(fromuid, 10) === parseInt(myuid, 10)) {
-				picture = '<img class="chat-user-image" src="' + myUserData.picture + '">';
+				picture = '<a href="/user/' + myUserData.userslug + '"><img class="chat-user-image" src="' + myUserData.picture + '"></a>';
 				username = '<span class="chat-user chat-user-you"> '+ myUserData.username + '</span>: ';
 			} else {
-				picture = '<img class="chat-user-image" src="' + toUserData.picture + '">';
+				picture = '<a href="/user/' + toUserData.userslug + '"><img class="chat-user-image" src="' + toUserData.picture + '"></a>';
 				username = '<span class="chat-user"> ' + toUserData.username + '</span>: ';
 			}
 

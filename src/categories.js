@@ -107,7 +107,6 @@ var db = require('./database'),
 
 				if (!category.topics.length) {
 					getModerators(function(err, moderators) {
-						category.moderator_block_class = moderators.length > 0 ? '' : 'none';
 						category.moderators = moderators;
 						category.show_sidebar = 'hidden';
 						category.no_topics_message = 'show';
@@ -115,7 +114,6 @@ var db = require('./database'),
 					});
 				} else {
 					async.parallel([getModerators, getActiveUsers], function(err, results) {
-						category.moderator_block_class = results[0].length > 0 ? '' : 'none';
 						category.moderators = results[0];
 						category.active_users = results[1];
 						category.show_sidebar = category.topics.length > 0 ? 'show' : 'hidden';
@@ -191,7 +189,7 @@ var db = require('./database'),
 		db.getSetMembers('cid:' + cid + ':moderators', function(err, mods) {
 			if (!err) {
 				if (mods && mods.length) {
-					user.getMultipleUserFields(mods, ['username'], function(err, moderators) {
+					user.getMultipleUserFields(mods, ['uid', 'username', 'userslug', 'picture'], function(err, moderators) {
 						callback(err, moderators);
 					});
 				} else {

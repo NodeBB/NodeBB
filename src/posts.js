@@ -479,8 +479,8 @@ var db = require('./database'),
 		async.each(pids, reIndex, callback);
 	}
 
+	// this function should really be called User.getFavouritePosts
 	Posts.getFavourites = function(uid, start, end, callback) {
-
 		db.getSortedSetRevRange('uid:' + uid + ':favourites', start, end, function(err, pids) {
 			if (err) {
 				return callback(err);

@@ -38,17 +38,17 @@
 			<div class="text-center account-stats panel panel-default">
 				<div class="panel-body">
 					<div class="inline-block text-center">
-						<div class="formatted-number">{reputation}</div>
+						<div class="human-readable-number" title="{reputation}">{reputation}</div>
 						<div class="account-bio-label">[[user:reputation]]</div>
 					</div>
 
 					<div class="inline-block text-center">
-						<div class="formatted-number">{postcount}</div>
+						<div class="human-readable-number" title="{postcount}">{postcount}</div>
 						<div class="account-bio-label">[[user:posts]]</div>
 					</div>
 
 					<div class="inline-block text-center">
-						<div class="formatted-number">{profileviews}</div>
+						<div class="human-readable-number" title="{profileviews}">{profileviews}</div>
 						<div class="account-bio-label">[[user:profile_views]]</div>
 					</div>
 				</div>
@@ -84,10 +84,10 @@
 
 
 					<span class="account-bio-label">[[user:followers]]</span>
-					<span class="formatted-number account-bio-value">{followerCount}</span>
+					<span class="human-readable-number account-bio-value" title="{followerCount}">{followerCount}</span>
 
 					<span class="account-bio-label">[[user:following]]</span>
-					<span class="formatted-number account-bio-value">{followingCount}</span>
+					<span class="human-readable-number account-bio-value"  title="{followingCount}">{followingCount}</span>
 
 					<span class="account-bio-label">[[user:joined]]</span>
 					<span class="timeago account-bio-value" title="{joindate}"></span>
