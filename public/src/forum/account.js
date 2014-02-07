@@ -9,7 +9,7 @@ define(['forum/accountheader'], function(header) {
 			isFollowing = templates.get('isFollowing');
 
 		$(document).ready(function() {
-			var username = $('.account-username a').html();
+			var username = $('.account-username').html();
 			app.enterRoom('user/' + theirid);
 
 			app.addCommasToNumbers();
