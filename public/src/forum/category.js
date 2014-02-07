@@ -175,6 +175,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			});
 
 			translator.translate(html, function(translatedHTML) {
+				translatedHTML = $(translatedHTML);
+				translatedHTML.find('img').addClass('img-responsive');
+
 				recentReplies.html(translatedHTML);
 
 				$('#category_recent_replies span.timeago').timeago();
