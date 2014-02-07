@@ -206,19 +206,14 @@ var winston = require('winston'),
 
 			topics.setTopicField(tid, 'cid', cid);
 
-			categories.moveActiveUsers(tid, oldCid, cid);
-			categories.moveRecentReplies(tid, oldCid, cid, function(err, data) {
-				if (err) {
-					winston.err(err);
-				}
-			});
-
 			if(!parseInt(topic.deleted, 10)) {
 				categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1);
 				categories.incrementCategoryFieldBy(cid, 'topic_count', 1);
 			}
 
-			callback(null);
+			categories.moveActiveUsers(tid, oldCid, cid);
+
+			categories.moveRecentReplies(tid, oldCid, cid, callback);
 		});
 	}
 
