@@ -66,7 +66,9 @@
 					}
 				});
 
-				callback(null);
+				if(typeof callback === 'function') {
+					callback(null);
+				}
 			}
 		});
 	}
@@ -150,9 +152,9 @@
 			if(err) {
 				winston.error('Error removing search ' + err.message);
 			}
-      if (typeof callback === 'function') {
-        callback()
-      }
+			if (typeof callback === 'function') {
+				callback();
+			}
 		});
 	}
 
@@ -160,12 +162,12 @@
 		db.dropDatabase(function(err, result) {
 			if(err){
 				winston.error(error);
-				if(callback) {
+				if(typeof callback === 'function') {
 					return callback(err);
 				}
 			}
 
-			if(callback) {
+			if(typeof callback === 'function') {
 				callback(null);
 			}
 		});
@@ -190,7 +192,6 @@
 			stats.mongo = true;
 
 			callback(err, stats);
-
 		});
 	}
 
@@ -205,14 +206,14 @@
 	module.delete = function(key, callback) {
 		db.collection('objects').remove({_key:key}, function(err, result) {
 			if(err) {
-				if(callback) {
+				if(typeof callback === 'function') {
 					return callback(err);
 				} else {
 					return winston.error(err.message);
 				}
 			}
 
-			if(callback) {
+			if(typeof callback === 'function') {
 				callback(null, result);
 			}
 		});
@@ -235,7 +236,7 @@
 
 	module.rename = function(oldKey, newKey, callback) {
 		db.collection('objects').update({_key: oldKey}, {$set:{_key: newKey}}, function(err, result) {
-			if(callback) {
+			if(typeof callback === 'function') {
 				callback(err, result);
 			}
 		});
@@ -253,7 +254,7 @@
 	module.setObject = function(key, data, callback) {
 		data['_key'] = key;
 		db.collection('objects').update({_key:key}, {$set:data}, {upsert:true, w: 1}, function(err, result) {
-			if(callback) {
+			if(typeof callback === 'function') {
 				callback(err, result);
 			}
 		});
@@ -268,7 +269,7 @@
 		field = field.replace(/\./g, '\uff0E');
 		data[field] = value;
 		db.collection('objects').update({_key:key}, {$set:data}, {upsert:true, w: 1}, function(err, result) {
-			if(callback) {
+			if(typeof callback === 'function') {
 				callback(err, result);
 			}
 		});
@@ -394,7 +395,7 @@
 		field = field.replace(/\./g, '\uff0E');
 		data[field] = "";
 		db.collection('objects').update({_key:key}, {$unset : data}, function(err, result) {
-			if(callback) {
+			if(typeof callback === 'function') {
 				callback(err, result);
 			}
 		});
@@ -417,7 +418,7 @@
 		data[field] = value;
 
 		db.collection('objects').findAndModify({_key:key}, {}, {$inc: data}, {new:true, upsert:true}, function(err, result) {
-			if(callback) {
+			if(typeof callback === 'function') {
 				callback(err, result ? result[field] : null);
 			}
 		});
@@ -431,7 +432,7 @@
 			value = value.toString();
 		}
 		db.collection('objects').update({_key:key}, {$addToSet: { members: value }}, {upsert:true, w: 1},  function(err, result) {
-			if(callback) {
+			if(typeof callback === 'function') {
 				callback(err, result);
 			}
 		});
@@ -442,7 +443,7 @@
 			value = value.toString();
 		}
 		db.collection('objects').update({_key:key, members: value}, {$pull : {members: value}}, function(err, result) {
-			if(callback) {
+			if(typeof callback === 'function') {
 				callback(err, result);
 			}
 		});
@@ -452,6 +453,7 @@
 		if(value !== null && value !== undefined) {
 			value = value.toString();
 		}
+
 		db.collection('objects').findOne({_key:key, members: value}, function(err, item) {
 			callback(err, item !== null && item !== undefined);
 		});
@@ -468,10 +470,7 @@
 			});
 		}
 
-		async.map(sets, iterator, function(err, result) {
-			callback(err, result);
-		});
-
+		async.map(sets, iterator, callback);
 	}
 
 	module.getSetMembers = function(key, callback) {
@@ -504,7 +503,7 @@
 	module.setRemoveRandom = function(key, callback) {
 		db.collection('objects').findOne({_key:key}, function(err, data) {
 			if(err) {
-				if(callback) {
+				if(typeof callback === 'function') {
 					return callback(err);
 				} else {
 					return winston.error(err.message);
@@ -512,14 +511,14 @@
 			}
 
 			if(!data) {
-				if(callback) {
+				if(typeof callback === 'function') {
 					callback(null, 0);
 				}
 			} else {
 				var randomIndex = Math.floor(Math.random() * data.members.length);
 				var value = data.members[randomIndex];
 				module.setRemove(data._key, value, function(err, result) {
-					if(callback) {
+					if(typeof callback === 'function') {
 						callback(err, value);
 					}
 				});
@@ -540,7 +539,7 @@
 		};
 
 		db.collection('objects').update({_key:key, value:value}, {$set:data}, {upsert:true, w: 1}, function(err, result) {
-			if(callback) {
+			if(typeof callback === 'function') {
 				callback(err, result);
 			}
 		});
@@ -550,8 +549,9 @@
 		if(value !== null && value !== undefined) {
 			value = value.toString();
 		}
+
 		db.collection('objects').remove({_key:key, value:value}, function(err, result) {
-			if(callback) {
+			if(typeof callback === 'function') {
 				callback(err, result);
 			}
 		});
@@ -716,7 +716,7 @@
 		}
 		module.isObjectField(key, 'array', function(err, exists) {
 			if(err) {
-				if(callback) {
+				if(typeof callback === 'function') {
 					return callback(err);
 				} else {
 					return winston.error(err.message);
@@ -725,7 +725,7 @@
 
 			if(exists) {
  				db.collection('objects').update({_key:key}, {'$set': {'array.-1': value}}, {upsert:true, w:1 }, function(err, result) {
-					if(callback) {
+					if(typeof callback === 'function') {
 						callback(err, result);
 					}
 	 			});
@@ -741,7 +741,7 @@
 			value = value.toString();
 		}
 		db.collection('objects').update({ _key: key }, { $push: { array: value } }, {upsert:true, w:1}, function(err, result) {
-			if(callback) {
+			if(typeof callback === 'function') {
 				callback(err, result);
 			}
 		});
@@ -750,23 +750,21 @@
 	module.listRemoveLast = function(key, callback) {
 		module.getListRange(key, -1, 0, function(err, value) {
 			if(err) {
-				return callback(err);
+				if(typeof callback === 'function') {
+					return callback(err);
+				}
+				return;
 			}
 
 			db.collection('objects').update({_key: key }, { $pop: { array: 1 } }, function(err, result) {
-				if(err) {
-					if(callback) {
+				if(typeof callback === 'function') {
+					if(err) {
 						return callback(err);
 					}
-					return;
-				}
 
-				if(value && value.length) {
-					if(callback) {
+					if(value && value.length) {
 						callback(err, value[0]);
-					}
-				} else {
-					if(callback) {
+					} else {
 						callback(err, null);
 					}
 				}
@@ -778,16 +776,10 @@
 		if(value !== null && value !== undefined) {
 			value = value.toString();
 		}
-		db.collection('objects').update({_key: key }, { $pull: { array: value } }, function(err, result) {
-			if(err) {
-				if(callback) {
-					return callback(err);
-				}
-				return;
-			}
 
-			if(callback) {
-				callback(null, result);
+		db.collection('objects').update({_key: key }, { $pull: { array: value } }, function(err, result) {
+			if(typeof callback === 'function') {
+				callback(err, result);
 			}
 		});
 	}
