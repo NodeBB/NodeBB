@@ -329,22 +329,17 @@ var db = require('./database'),
 	Posts.getPostData = function(pid, callback) {
 		db.getObject('post:' + pid, function(err, data) {
 			if(err) {
-				return callback(err, null);
+				return callback(err);
 			}
 
-			plugins.fireHook('filter:post.get', data, function(err, newData) {
-				if(err) {
-					return callback(err, null);
-				}
-				callback(null, newData);
-			});
+			plugins.fireHook('filter:post.get', data, callback);
 		});
 	};
 
 	Posts.getPostFields = function(pid, fields, callback) {
 		db.getObjectFields('post:' + pid, fields, function(err, data) {
 			if(err) {
-				return callback(err, null);
+				return callback(err);
 			}
 
 			// TODO: I think the plugins system needs an optional 'parameters' paramter so I don't have to do this:
@@ -352,19 +347,14 @@ var db = require('./database'),
 			data.pid = pid;
 			data.fields = fields;
 
-			plugins.fireHook('filter:post.getFields', data, function(err, data) {
-				if(err) {
-					return callback(err, null);
-				}
-				callback(null, data);
-			});
+			plugins.fireHook('filter:post.getFields', data, callback);
 		});
 	};
 
 	Posts.getPostField = function(pid, field, callback) {
 		Posts.getPostFields(pid, [field], function(err, data) {
 			if(err) {
-				return callback(err, null);
+				return callback(err);
 			}
 
 			callback(null, data[field]);
@@ -387,18 +377,18 @@ var db = require('./database'),
 	Posts.getCidByPid = function(pid, callback) {
 		Posts.getPostField(pid, 'tid', function(err, tid) {
 			if(err) {
-				return callback(err, null);
+				return callback(err);
 			}
 
 			topics.getTopicField(tid, 'cid', function(err, cid) {
 				if(err) {
-					return callback(err, null);
+					return callback(err);
 				}
 
 				if (cid) {
 					callback(null, cid);
 				} else {
-					callback(new Error('invalid-category-id'), null);
+					callback(new Error('invalid-category-id'));
 				}
 			});
 		});
@@ -408,7 +398,7 @@ var db = require('./database'),
 
 		if(meta.config.imgurClientID) {
 			if(!image || !image.data) {
-				return callback(new Error('invalid image'), null);
+				return callback(new Error('invalid image'));
 			}
 
 			require('./imgur').upload(meta.config.imgurClientID, image.data, 'base64', function(err, data) {
