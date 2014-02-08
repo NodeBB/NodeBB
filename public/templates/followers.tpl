@@ -2,13 +2,11 @@
 
 </div>
 
-<div class="well users account">
+<div class="users account">
 	<div>
 		<!-- BEGIN followers -->
 		<div class="users-box">
-			<a href="../../user/{followers.userslug}">
-				<img src="{followers.picture}" class="img-thumbnail"/>
-			</a>
+			<a href="../../user/{followers.userslug}"><img src="{followers.picture}" class="img-thumbnail"/></a>
 			<br/>
 			<div class="user-info">
 				<a href="../../user/{followers.userslug}">{followers.username}</a>

@@ -14,7 +14,7 @@ define(function() {
 	AccountHeader.createMenu = function() {
 		var userslug = $('.account-username-box').attr('data-userslug');
 
-		var html ='<ul class="nav nav-tabs account-sub-links">\
+		var html ='<ul class="nav nav-pills account-sub-links">\
 					<li id="settingsLink"><a href="' + RELATIVE_PATH + '/user/' + userslug + '/settings">[[user:settings]]</a></li>\
 					<li id="favouritesLink"><a href="' + RELATIVE_PATH + '/user/' + userslug + '/favourites">[[user:favourites]]</a></li>\
 					<li><a href="' + RELATIVE_PATH + '/user/' + userslug + '/posts">[[global:posts]]</a></li>\

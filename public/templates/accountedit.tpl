@@ -2,7 +2,7 @@
 
 </div>
 
-<div class="well account">
+<div class="account">
 
 	<div id="change-picture-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="[[user:change_picture]]" aria-hidden="true">
 		<div class="modal-dialog">
@@ -106,7 +106,7 @@
 				</form>
 			</div>
 
-			<hr/>
+			<hr class="visible-xs visible-sm"/>
 		</div>
 
 		<div class="col-md-5">
