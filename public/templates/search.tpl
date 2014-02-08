@@ -13,7 +13,7 @@
 	</div>
 </form>
 
-<div class="search favourites well">
+<div class="search favourites">
 	<div class="{show_results} row">
 
 		<div id="topic-results" class="col-md-12" data-search-query="{search_query}">
