@@ -48,81 +48,68 @@ var db = require('./database'),
 	};
 
 	Categories.getCategoryById = function(category_id, start, end, current_user, callback) {
-		Categories.getCategoryData(category_id, function(err, categoryData) {
-			if (err) {
+
+		function getCategoryData(next) {
+			Categories.getCategoryData(category_id, next);
+		}
+
+		function getTopics(next) {
+			Categories.getCategoryTopics(category_id, start, end, current_user, next);
+		}
+
+		function getActiveUsers(next) {
+			Categories.getActiveUsers(category_id, function(err, uids) {
+				if(err) {
+					return next(err);
+				}
+				user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
+			});
+		}
+
+		function getModerators(next) {
+			Categories.getModerators(category_id, next);
+		}
+
+		function getSidebars(next) {
+			plugins.fireHook('filter:category.build_sidebars', [], function(err, sidebars) {
+				next(err, sidebars);
+			});
+		}
+
+		function getPageCount(next) {
+			Categories.getPageCount(category_id, next);
+		}
+
+		async.parallel({
+			'category': getCategoryData,
+			'topics': getTopics,
+			'active_users': getActiveUsers,
+			'moderators': getModerators,
+			'sidebars': getSidebars,
+			'pageCount': getPageCount
+		}, function(err, results) {
+			if(err) {
 				return callback(err);
 			}
 
-			function getTopics(next) {
-				Categories.getCategoryTopics(category_id, start, end, current_user, next);
-			}
+			var category = {
+				'category_name': results.category.name,
+				'category_description': results.category.description,
+				'link': results.category.link,
+				'disabled': results.category.disabled || '0',
+				'show_topic_button': 'inline-block',
+				'topic_row_size': 'col-md-9',
+				'category_id': category_id,
+				'active_users': results.active_users,
+				'moderators': results.moderators,
+				'topics': results.topics.topics,
+				'nextStart': results.topics.nextStart,
+				'pageCount': results.pageCount,
+				'disableSocialButtons': meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false,
+				'sidebars': results.sidebars
+			};
 
-			function getActiveUsers(next) {
-				Categories.getActiveUsers(category_id, next);
-			}
-
-			function getSidebars(next) {
-				plugins.fireHook('filter:category.build_sidebars', [], function(err, sidebars) {
-					next(err, sidebars);
-				});
-			}
-
-			function getPageCount(next) {
-				Categories.getPageCount(category_id, next);
-			}
-
-			async.parallel([getTopics, getActiveUsers, getSidebars, getPageCount], function(err, results) {
-				if(err) {
-					return callback(err);
-				}
-
-				var active_users = results[1],
-					sidebars = results[2],
-					pageCount = results[3];
-
-				var category = {
-					'category_name': categoryData.name,
-					'category_description': categoryData.description,
-					'link': categoryData.link,
-					'disabled': categoryData.disabled || '0',
-					'show_sidebar': 'show',
-					'show_topic_button': 'inline-block',
-					'no_topics_message': 'hidden',
-					'topic_row_size': 'col-md-9',
-					'category_id': category_id,
-					'active_users': [],
-					'topics': results[0].topics,
-					'nextStart': results[0].nextStart,
-					'pageCount': pageCount,
-					'disableSocialButtons': meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false,
-					'sidebars': sidebars
-				};
-
-				function getModerators(next) {
-					Categories.getModerators(category_id, next);
-				}
-
-				function getActiveUsers(next) {
-					user.getMultipleUserFields(active_users, ['uid', 'username', 'userslug', 'picture'], next);
-				}
-
-				if (!category.topics.length) {
-					getModerators(function(err, moderators) {
-						category.moderators = moderators;
-						category.show_sidebar = 'hidden';
-						category.no_topics_message = 'show';
-						callback(null, category);
-					});
-				} else {
-					async.parallel([getModerators, getActiveUsers], function(err, results) {
-						category.moderators = results[0];
-						category.active_users = results[1];
-						category.show_sidebar = category.topics.length > 0 ? 'show' : 'hidden';
-						callback(null, category);
-					});
-				}
-
-			});
+			callback(null, category);
 		});
 	};
 
