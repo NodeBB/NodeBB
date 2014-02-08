@@ -42,6 +42,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 		Topic.postCount = templates.get('postcount');
 
+		$(window).trigger('action:topic.loading');
 
 		function fixDeleteStateForPosts() {
 			var postEls = document.querySelectorAll('#post-container li[data-deleted]');
@@ -446,7 +447,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			var post = $(this).parents('.post-row'),
 				pid = post.attr('data-pid'),
 				upvoted = post.find('.upvoted').length;
-				
+
 			if (upvoted) {
 				socket.emit('posts.unvote', {
 					pid: pid,
@@ -458,7 +459,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 					room_id: app.currentRoom
 				});
 			}
-			
+
 			return false;
 		});
 
@@ -478,7 +479,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 					room_id: app.currentRoom
 				});
 			}
-			
+
 			return false;
 		});
 
@@ -1050,6 +1051,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		}
 
 		$(window).on('scroll', updateHeader);
+		$(window).trigger('action:topic.loaded');
 	};
 
 	function updateHeader() {
