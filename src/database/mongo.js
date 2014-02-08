@@ -44,6 +44,7 @@
 					createIndices();
 				});
 			} else {
+				winston.warn('You have no mongo password setup!');
 				createIndices();
 			}
 
