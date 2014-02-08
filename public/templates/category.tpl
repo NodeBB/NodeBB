@@ -9,7 +9,7 @@
 
 <div>
 	<!-- IF privileges.write -->
-	<button id="new_post" class="btn btn-primary {show_topic_button}">[[category:new_topic_button]]</button>
+	<button id="new_post" class="btn btn-primary">[[category:new_topic_button]]</button>
 	<!-- ENDIF privileges.write -->
 	<!-- IF !disableSocialButtons -->
 	<div class="inline-block pull-right">

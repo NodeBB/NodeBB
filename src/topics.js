@@ -601,7 +601,6 @@ var async = require('async'),
 	Topics.getUnreadTopics = function(uid, start, stop, callback) {
 		var unreadTopics = {
 			'show_sidebar': 'hidden',
-			'show_topic_button': 'hidden',
 			'show_markallread_button': 'show',
 			'no_topics_message': 'hidden',
 			'topics': []
