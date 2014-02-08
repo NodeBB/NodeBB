@@ -3,36 +3,37 @@
 
 </div>
 
-<div class="well account">
+<div class="account">
 
 	<div class="row">
 		<div class="col-md-5 account-block">
 
-			<div class="text-center account-picture-block">
-				<div>
-					<a href="{relative_path}/user/{userslug}"><img src="{picture}" class="user-profile-picture img-thumbnail"/></a>
+			<div class="text-center account-picture-block panel panel-default">
+				<div class="panel-body">
+					<div>
+						<a href="{relative_path}/user/{userslug}"><img src="{picture}" class="user-profile-picture img-thumbnail"/></a>
+					</div>
+
+					<div>
+						<div>
+							<span>
+								<i class="account-online-status fa fa-circle status offline"></i>
+								<span class="account-username"> {username}</span>
+							</span>
+						</div>
+
+						<!-- IF banned -->
+						<div>
+							<span class="label label-danger">[[user:banned]]</span>
+						</div>
+						<!-- ENDIF banned -->
+						<div>
+							<a id="chat-btn" href="#" class="btn btn-primary hide">Chat</a>
+							<a id="follow-btn" href="#" class="btn btn-success hide">Follow</a>
+							<a id="unfollow-btn" href="#" class="btn btn-warning hide">Unfollow</a>
+						</div>
+					</div>
 				</div>
-
-				<div>
-					<div>
-						<span>
-							<i class="account-online-status fa fa-circle status offline"></i>
-							<span class="account-username"> {username}</span>
-						</span>
-					</div>
-
-					<!-- IF banned -->
-					<div>
-						<span class="label label-danger">[[user:banned]]</span>
-					</div>
-					<!-- ENDIF banned -->
-					<div>
-						<a id="chat-btn" href="#" class="btn btn-primary hide">Chat</a>
-						<a id="follow-btn" href="#" class="btn btn-success hide">Follow</a>
-						<a id="unfollow-btn" href="#" class="btn btn-warning hide">Unfollow</a>
-					</div>
-				</div>
-
 			</div>
 
 			<div class="text-center account-stats panel panel-default">
@@ -117,6 +118,9 @@
 					<h3 class="panel-title">[[global:recentposts]]</h3>
 				</div>
 				<div class="panel-body">
+					<!-- IF !posts.length -->
+					<span>[[user:has_no_posts]]</span>
+					<!-- ENDIF !posts.length -->
 					<!-- BEGIN posts -->
 					<div class="clearfix">
 						<p>{posts.content}</p>
