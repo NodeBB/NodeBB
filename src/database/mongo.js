@@ -180,6 +180,9 @@
 
 	module.info = function(callback) {
 		db.stats({scale:1024}, function(err, stats) {
+			if(err) {
+				return callback(err);
+			}
 
 			// TODO : if this it not deleted the templates break,
 			// it is a nested object inside stats
@@ -191,7 +194,7 @@
 
 			stats.mongo = true;
 
-			callback(err, stats);
+			callback(null, stats);
 		});
 	}
 
@@ -205,16 +208,8 @@
 
 	module.delete = function(key, callback) {
 		db.collection('objects').remove({_key:key}, function(err, result) {
-			if(err) {
-				if(typeof callback === 'function') {
-					return callback(err);
-				} else {
-					return winston.error(err.message);
-				}
-			}
-
 			if(typeof callback === 'function') {
-				callback(null, result);
+				callback(err, result);
 			}
 		});
 	}
@@ -262,10 +257,10 @@
 
 	module.setObjectField = function(key, field, value, callback) {
 		var data = {};
-		// if there is a '.' in the field name it inserts subdocument in mongo, replace '.'s with \uff0E
 		if(typeof field !== 'string') {
 			field = field.toString();
 		}
+		// if there is a '.' in the field name it inserts subdocument in mongo, replace '.'s with \uff0E
 		field = field.replace(/\./g, '\uff0E');
 		data[field] = value;
 		db.collection('objects').update({_key:key}, {$set:data}, {upsert:true, w: 1}, function(err, result) {
@@ -297,7 +292,7 @@
 				returnData.push(findItem(data, keys[i]));
 			}
 
-			callback(err, returnData);
+			callback(null, returnData);
 		});
 	}
 
@@ -340,7 +335,7 @@
 
 			removeHiddenFields(item);
 
-			callback(err, item);
+			callback(null, item);
 		});
 	}
 
