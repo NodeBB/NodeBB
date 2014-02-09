@@ -26,8 +26,6 @@
 				<label>Site Logo</label>
 				<input id="logoUrl" type="text" class="form-control" placeholder="Path to a logo to display on forum header" data-field="brand:logo" /><br />
 				<input id="uploadLogoBtn" type="button" class="btn btn-default" value="Upload Logo"></input> <br /> <br/>
-				<label>Imgur Client ID</label>
-				<input type="text" class="form-control" placeholder="Imgur ClientID for image uploads" data-field="imgurClientID" /><br />
 				<label>Favicon</label><br />
 				<input id="faviconUrl" type="text" class="form-control" placeholder="favicon.ico" data-field="brand:favicon" /><br />
 				<input id="uploadFaviconBtn" type="button" class="btn btn-default" value="Upload Favicon"></input> <br />

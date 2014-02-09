@@ -400,22 +400,7 @@ var db = require('./database'),
 			plugins.fireHook('filter:post.upload', image, callback);
 		} else {
 
-			if(meta.config.imgurClientID) {
-				if(!image || !image.data) {
-					return callback(new Error('invalid image'));
-				}
-
-				require('./imgur').upload(meta.config.imgurClientID, image.data, 'base64', function(err, data) {
-					if(err) {
-						return callback(err);
-					}
-
-					callback(null, {
-						url: data.link,
-						name: image.name
-					});
-				});
-			} else if (meta.config.allowFileUploads) {
+			if (meta.config.allowFileUploads) {
 				Posts.uploadPostFile(image, callback);
 			} else {
 				callback(new Error('Uploads are disabled!'));

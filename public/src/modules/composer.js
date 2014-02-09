@@ -115,7 +115,7 @@ define(['taskbar'], function(taskbar) {
 
 			var postContainer = $(composerTemplate[0]);
 
-			if(config.allowFileUploads || config.imgurClientIDSet) {
+			if(config.allowFileUploads || config.hasPostUploadPlugin) {
 				initializeFileReader(post_uuid);
 			}
 
@@ -369,7 +369,7 @@ define(['taskbar'], function(taskbar) {
 			postContainer.css('height', $(window).height() - $('#header-menu').height());
 		}
 
-		if(config.imgurClientIDSet) {
+		if(config.hasPostUploadPlugin) {
 			if(env === 'md' || env === 'lg') {
 				postContainer.find('.upload-instructions').removeClass('hide');
 			}

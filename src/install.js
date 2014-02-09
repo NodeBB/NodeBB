@@ -238,9 +238,6 @@ var async = require('async'),
 							field: 'minimumPasswordLength',
 							value: 6
 						}, {
-							field: 'imgurClientID',
-							value: ''
-						}, {
 							field: 'maximumSignatureLength',
 							value: 255
 						}, {
