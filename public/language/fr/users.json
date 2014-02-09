@@ -1,7 +1,7 @@
 {
-    "latest_users": "Derniers Utilisateurs",
-    "top_posters": "Meilleurs Publieurs",
-    "most_reputation": "Meilleur Réputation",
+    "latest_users": "Derniers inscrits",
+    "top_posters": "Actifs",
+    "most_reputation": "Réputés",
     "online": "En Ligne",
     "search": "Rechercher",
     "enter_username": "Entrer un nom d'utilisateur pour rechercher",
