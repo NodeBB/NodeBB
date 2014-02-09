@@ -19,8 +19,8 @@ define(function() {
 			return parent.attr('data-uid');
 		}
 
-		function updateUserBanButtons() {
-			jQuery('.ban-btn').each(function(index, element) {
+		function updateUserBanButtons(elements) {
+			elements.each(function(index, element) {
 				var banBtn = $(element);
 				var uid = getUID(banBtn);
 				if (isUserAdmin(banBtn) || uid === yourid)
@@ -31,12 +31,11 @@ define(function() {
 					banBtn.removeClass('disabled');
 				else
 					banBtn.removeClass('btn-warning');
-					updateUserAdminButtons();
 			});
 		}
 
-		function updateUserAdminButtons() {
-			jQuery('.admin-btn').each(function(index, element) {
+		function updateUserAdminButtons(elements) {
+			elements.each(function(index, element) {
 				var adminBtn = $(element);
 				var uid = getUID(adminBtn);
 				if (isUserAdmin(adminBtn)) {
@@ -56,8 +55,8 @@ define(function() {
 		}
 
 		function initUsers() {
-			updateUserBanButtons();
-			updateUserAdminButtons();
+			updateUserBanButtons(jQuery('.ban-btn'));
+			updateUserAdminButtons(jQuery('.admin-btn'));
 
 			$('#users-container').on('click', '.ban-btn', function() {
 				var banBtn = $(this);
@@ -71,14 +70,14 @@ define(function() {
 						socket.emit('admin.user.unbanUser', uid);
 						banBtn.removeClass('btn-warning');
 						parent.attr('data-banned', 0);
-						updateUserAdminButtons();
+						updateUserAdminButtons(jQuery('.admin-btn'));
 					} else {
 						bootbox.confirm('Do you really want to ban "' + parent.attr('data-username') + '"?', function(confirm) {
 							if (confirm) {
 								socket.emit('admin.user.banUser', uid);
 								banBtn.addClass('btn-warning');
 								parent.attr('data-banned', 1);
-								updateUserAdminButtons();
+								updateUserAdminButtons(jQuery('.admin-btn'));
 							}
 						});
 					}
@@ -106,7 +105,7 @@ define(function() {
 						socket.emit('admin.user.makeAdmin', uid);
 						adminBtn.attr('value', 'UnMake Admin').html('Remove Admin');
 						parent.attr('data-admin', 1);
-						updateUserBanButtons();
+						updateUserBanButtons(jQuery('.ban-btn'));
 
 					} else if(uid !== yourid) {
 						bootbox.confirm('Do you really want to remove this user as admin "' + parent.attr('data-username') + '"?', function(confirm) {
@@ -114,7 +113,7 @@ define(function() {
 								socket.emit('admin.user.removeAdmin', uid);
 								adminBtn.attr('value', 'Make Admin').html('Make Admin');
 								parent.attr('data-admin', 0);
-								updateUserBanButtons();
+								updateUserBanButtons(jQuery('.ban-btn'));
 
 							}
 						});
@@ -231,9 +230,11 @@ define(function() {
 				var html = templates.prepare(templates['admin/users'].blocks['users']).parse({
 					users: users
 				});
+				html = $(html);
 				$('#users-container').append(html);
-				updateUserBanButtons();
-				updateUserAdminButtons();
+
+				updateUserBanButtons(html.find('.ban-btn'));
+				updateUserAdminButtons(html.find('.admin-btn'));
 			}
 
 			function loadMoreUsers() {
