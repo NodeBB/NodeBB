@@ -1,4 +1,5 @@
 {
     "name": "French",
-    "code": "fr"
+    "code": "fr",
+    "dir": "ltr"
 }

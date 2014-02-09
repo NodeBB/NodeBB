@@ -1,4 +1,5 @@
 {
     "name": "簡體中文",
-    "code": "zh_TW"
+    "code": "zh_TW",
+    "dir": "ltr"
 }

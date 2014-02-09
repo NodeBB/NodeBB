@@ -1,4 +1,5 @@
 {
     "name": "Norwegian Bokmål",
-    "code": "nb"
+    "code": "nb",
+    "dir": "ltr"
 }
