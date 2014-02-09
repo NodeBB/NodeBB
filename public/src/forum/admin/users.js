@@ -232,7 +232,8 @@ define(function() {
 					users: users
 				});
 				$('#users-container').append(html);
-				updateUserButtons();
+				updateUserBanButtons();
+				updateUserAdminButtons();
 			}
 
 			function loadMoreUsers() {
