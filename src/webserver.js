@@ -415,8 +415,20 @@ module.exports.server = server;
 			templates.logout = parsedTemplate;
 		});
 
-		winston.info('NodeBB Ready');
-		server.listen(nconf.get('PORT') || nconf.get('port'), nconf.get('bind_address'));
+		server.on("error", function(e){
+			if (e.code === 'EADDRINUSE') {
+				winston.error('NodeBB address in use, exiting...');
+				process.exit(1);
+			} else {
+				throw e;
+			}
+		});
+
+		var port = nconf.get('PORT') || nconf.get('port');
+		winston.info('NodeBB attempting to listen on: ' + ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port);
+		server.listen(port, nconf.get('bind_address'), function(){
+			winston.info('NodeBB Ready');
+		});
 	};
 
 	app.create_route = function (url, tpl) { // to remove
