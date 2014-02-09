@@ -53,7 +53,7 @@
 
 
 	function generateForTopic(req, res, next) {
-		var tid = req.params.tid;
+		var tid = req.params.topic_id;
 
 		topics.getTopicWithPosts(tid, 0, 0, 25, true, function (err, topicData) {
 			if (err) {
