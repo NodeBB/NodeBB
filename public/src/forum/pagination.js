@@ -65,6 +65,7 @@ define(function() {
 		}
 
 		$('.pagination li.page').remove();
+		$('.pagination li .select_page').parent().remove();
 		$(html).insertAfter($('.pagination li.previous'));
 
 		updatePageLinks();

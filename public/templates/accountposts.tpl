@@ -2,7 +2,7 @@
 
 </div>
 
-<div class="well favourites">
+<div class="favourites">
 
 	<!-- IF !posts.length -->
 		<div class="alert alert-warning">[[topic:favourites.has_no_favourites]]</div>

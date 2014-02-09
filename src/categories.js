@@ -2,6 +2,7 @@ var db = require('./database'),
 	posts = require('./posts'),
 	utils = require('./../public/src/utils'),
 	user = require('./user'),
+	Groups = require('./groups'),
 	topics = require('./topics'),
 	plugins = require('./plugins'),
 	CategoryTools = require('./categoryTools'),
@@ -47,81 +48,67 @@ var db = require('./database'),
 	};
 
 	Categories.getCategoryById = function(category_id, start, end, current_user, callback) {
-		Categories.getCategoryData(category_id, function(err, categoryData) {
-			if (err) {
+
+		function getCategoryData(next) {
+			Categories.getCategoryData(category_id, next);
+		}
+
+		function getTopics(next) {
+			Categories.getCategoryTopics(category_id, start, end, current_user, next);
+		}
+
+		function getActiveUsers(next) {
+			Categories.getActiveUsers(category_id, function(err, uids) {
+				if(err) {
+					return next(err);
+				}
+				user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
+			});
+		}
+
+		function getModerators(next) {
+			Categories.getModerators(category_id, next);
+		}
+
+		function getSidebars(next) {
+			plugins.fireHook('filter:category.build_sidebars', [], function(err, sidebars) {
+				next(err, sidebars);
+			});
+		}
+
+		function getPageCount(next) {
+			Categories.getPageCount(category_id, next);
+		}
+
+		async.parallel({
+			'category': getCategoryData,
+			'topics': getTopics,
+			'active_users': getActiveUsers,
+			'moderators': getModerators,
+			'sidebars': getSidebars,
+			'pageCount': getPageCount
+		}, function(err, results) {
+			if(err) {
 				return callback(err);
 			}
 
-			function getTopics(next) {
-				Categories.getCategoryTopics(category_id, start, end, current_user, next);
-			}
+			var category = {
+				'category_name': results.category.name,
+				'category_description': results.category.description,
+				'link': results.category.link,
+				'disabled': results.category.disabled || '0',
+				'topic_row_size': 'col-md-9',
+				'category_id': category_id,
+				'active_users': results.active_users,
+				'moderators': results.moderators,
+				'topics': results.topics.topics,
+				'nextStart': results.topics.nextStart,
+				'pageCount': results.pageCount,
+				'disableSocialButtons': meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false,
+				'sidebars': results.sidebars
+			};
 
-			function getActiveUsers(next) {
-				Categories.getActiveUsers(category_id, next);
-			}
-
-			function getSidebars(next) {
-				plugins.fireHook('filter:category.build_sidebars', [], function(err, sidebars) {
-					next(err, sidebars);
-				});
-			}
-
-			function getPageCount(next) {
-				Categories.getPageCount(category_id, next);
-			}
-
-			async.parallel([getTopics, getActiveUsers, getSidebars, getPageCount], function(err, results) {
-				if(err) {
-					return callback(err);
-				}
-
-				var active_users = results[1],
-					sidebars = results[2],
-					pageCount = results[3];
-
-				var category = {
-					'category_name': categoryData.name,
-					'category_description': categoryData.description,
-					'link': categoryData.link,
-					'disabled': categoryData.disabled || '0',
-					'show_sidebar': 'show',
-					'show_topic_button': 'inline-block',
-					'no_topics_message': 'hidden',
-					'topic_row_size': 'col-md-9',
-					'category_id': category_id,
-					'active_users': [],
-					'topics': results[0].topics,
-					'nextStart': results[0].nextStart,
-					'pageCount': pageCount,
-					'disableSocialButtons': meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false,
-					'sidebars': sidebars
-				};
-
-				function getModerators(next) {
-					Categories.getModerators(category_id, next);
-				}
-
-				function getActiveUsers(next) {
-					user.getMultipleUserFields(active_users, ['uid', 'username', 'userslug', 'picture'], next);
-				}
-
-				if (!category.topics.length) {
-					getModerators(function(err, moderators) {
-						category.moderators = moderators;
-						category.show_sidebar = 'hidden';
-						category.no_topics_message = 'show';
-						callback(null, category);
-					});
-				} else {
-					async.parallel([getModerators, getActiveUsers], function(err, results) {
-						category.moderators = results[0];
-						category.active_users = results[1];
-						category.show_sidebar = category.topics.length > 0 ? 'show' : 'hidden';
-						callback(null, category);
-					});
-				}
-
-			});
+			callback(null, category);
 		});
 	};
 
@@ -186,19 +173,19 @@ var db = require('./database'),
 	};
 
 	Categories.getModerators = function(cid, callback) {
-		db.getSetMembers('cid:' + cid + ':moderators', function(err, mods) {
+		Groups.getByGroupName('cid:' + cid + ':privileges:mod', {}, function(err, groupObj) {
 			if (!err) {
-				if (mods && mods.length) {
-					user.getMultipleUserFields(mods, ['uid', 'username', 'userslug', 'picture'], function(err, moderators) {
+				if (groupObj.members && groupObj.members.length) {
+					user.getMultipleUserFields(groupObj.members, ['uid', 'username', 'userslug', 'picture'], function(err, moderators) {
 						callback(err, moderators);
 					});
 				} else {
 					callback(null, []);
 				}
 			} else {
-				callback(err, null);
+				// Probably no mods
+				callback(null, []);
 			}
-
 		});
 	};
 
@@ -256,28 +243,25 @@ var db = require('./database'),
 		}
 
 		CategoryTools.privileges(cid, uid, function(err, privileges) {
-			if (privileges.read) {
-				db.getSortedSetRevRange('categories:recent_posts:cid:' + cid, 0, count - 1, function(err, pids) {
-
-					if (err) {
-						winston.err(err);
-						return callback(err, []);
-					}
-
-					if (pids.length === 0) {
-						return callback(null, []);
-					}
-
-					posts.getPostSummaryByPids(pids, true, function(err, postData) {
-						if(err) {
-							return callback(err);
-						}
-						callback(null, postData);
-					});
-				});
-			} else {
-				callback(null, []);
+			if(err) {
+				return callback(err);
 			}
+
+			if (!privileges.read) {
+				return callback(null, []);
+			}
+
+			db.getSortedSetRevRange('categories:recent_posts:cid:' + cid, 0, count - 1, function(err, pids) {
+				if (err) {
+					return callback(err, []);
+				}
+
+				if (!pids || !pids.length) {
+					return callback(null, []);
+				}
+
+				posts.getPostSummaryByPids(pids, true, callback);
+			});
 		});
 	};
 
@@ -290,21 +274,16 @@ var db = require('./database'),
 
 				db.sortedSetRemove('categories:recent_posts:cid:' + oldCid, pid);
 				db.sortedSetAdd('categories:recent_posts:cid:' + cid, timestamp, pid);
-				callback(null);
+				callback();
 			});
 		}
 
 		topics.getPids(tid, function(err, pids) {
 			if(err) {
-				return callback(err, null);
+				return callback(err);
 			}
 
-			async.each(pids, movePost, function(err) {
-				if(err) {
-					return callback(err, null);
-				}
-				callback(null, 1);
-			});
+			async.each(pids, movePost, callback);
 		});
 	};
 

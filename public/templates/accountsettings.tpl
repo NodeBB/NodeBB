@@ -2,7 +2,7 @@
 
 </div>
 
-<div class="well account">
+<div class="account">
 
 	<div class="row">
 		<div class="col-md-6">

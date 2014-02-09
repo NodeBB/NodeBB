@@ -38,8 +38,17 @@ var async = require('async'),
 				return false;
 			}
 
-			db[type === 'upvote' || !unvote ? 'sortedSetAdd' : 'sortedSetRemove']('uid:' + uid + ':upvote', postData.timestamp, pid);
-			db[type === 'upvote' || unvote ? 'sortedSetRemove' : 'sortedSetAdd']('uid:' + uid + ':downvote', postData.timestamp, pid);
+			if(type === 'upvote' || !unvote) {
+				db.sortedSetAdd('uid: ' + uid + ':upvote', postData.timestamp, pid);
+			} else {
+				db.sortedSetRemove('uid: ' + uid + ':upvote', pid);
+			}
+
+			if(type === 'upvote' || unvote) {
+				db.sortedSetRemove('uid: ' + uid + ':downvote', pid);
+			} else {
+				db.sortedSetAdd('uid: ' + uid + ':downvote', postData.timestamp, pid);
+			}
 
 			user[type === 'upvote' ? 'incrementUserFieldBy' : 'decrementUserFieldBy'](postData.uid, 'reputation', 1, function (err, newreputation) {
 				db.sortedSetAdd('users:reputation', newreputation, postData.uid);

@@ -189,14 +189,15 @@ var winston = require('winston'),
 		var topic;
 		async.waterfall([
 			function(next) {
-				topics.getTopicFields(tid, ['cid', 'lastposttime', 'deleted'], next);
+				topics.getTopicFields(tid, ['cid', 'lastposttime', 'pinned', 'deleted'], next);
 			},
 			function(topicData, next) {
 				topic = topicData;
 				db.sortedSetRemove('categories:' + topicData.cid + ':tid', tid, next);
 			},
 			function(result, next) {
-				db.sortedSetAdd('categories:' + cid + ':tid', topic.lastposttime, tid, next);
+				var timestamp = parseInt(topic.pinned, 10) ? Math.pow(2, 53) : topic.lastposttime;
+				db.sortedSetAdd('categories:' + cid + ':tid', timestamp, tid, next);
 			}
 		], function(err, result) {
 			if(err) {
@@ -206,19 +207,14 @@ var winston = require('winston'),
 
 			topics.setTopicField(tid, 'cid', cid);
 
-			categories.moveActiveUsers(tid, oldCid, cid);
-			categories.moveRecentReplies(tid, oldCid, cid, function(err, data) {
-				if (err) {
-					winston.err(err);
-				}
-			});
-
 			if(!parseInt(topic.deleted, 10)) {
 				categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1);
 				categories.incrementCategoryFieldBy(cid, 'topic_count', 1);
 			}
 
-			callback(null);
+			categories.moveActiveUsers(tid, oldCid, cid);
+
+			categories.moveRecentReplies(tid, oldCid, cid, callback);
 		});
 	}
 

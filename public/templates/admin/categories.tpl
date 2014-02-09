@@ -158,7 +158,7 @@
 		</div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
 
-	<div id="category-permissions-modal" class="modal permissions-modal" tabindex="-1" role="dialog" aria-labelledby="Category Permissions" aria-hidden="true">
+	<div id="category-permissions-modal" class="modal permissions-modal fade" tabindex="-1" role="dialog" aria-labelledby="Category Permissions" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -166,11 +166,14 @@
 					<h3>Category Permissions</h3>
 				</div>
 				<div class="modal-body">
-					<p>The following users can read Topics in this Category</p>
+					<p>The following users can view &amp; read Topics in this Category</p>
 					<ul class="members" id="category-permissions-read"></ul>
 
 					<p>The following users can post and reply to Topics in this Category</p>
 					<ul class="members" id="category-permissions-write"></ul>
+
+					<p>The following users are moderators of this Category</p>
+					<ul class="members" id="category-permissions-mods"></ul>
 
 					<hr />
 					<form role="form">

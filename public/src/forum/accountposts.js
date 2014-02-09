@@ -5,6 +5,8 @@ define(['forum/accountheader'], function(header) {
 	AccountPosts.init = function() {
 		header.init();
 
+		$('.user-favourite-posts img').addClass('img-responsive');
+
 		app.enableInfiniteLoading(function() {
 			if(!loadingMore) {
 				loadMore();
@@ -41,6 +43,7 @@ define(['forum/accountheader'], function(header) {
 			$('#category-no-topics').remove();
 
 			html = $(translatedHTML);
+			html.find('img').addClass('img-responsive');
 			$('.user-favourite-posts').append(html);
 			$('span.timeago').timeago();
 			app.createUserTooltips();

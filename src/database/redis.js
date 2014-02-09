@@ -32,6 +32,8 @@
 
 	if (nconf.get('redis:password')) {
 		redisClient.auth(nconf.get('redis:password'));
+	} else {
+		winston.warn('You have no redis password setup!');
 	}
 
 	redisClient.on('error', function (err) {

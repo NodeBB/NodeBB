@@ -37,6 +37,7 @@
 
 	"has_no_follower": "This user doesn't have any followers :(",
 	"follows_no_one": "This user isn't following anyone :(",
+	"has_no_posts": "This user didn't post anything yet.",
 
 	"email_hidden": "Email Hidden",
 	"hidden": "hidden"

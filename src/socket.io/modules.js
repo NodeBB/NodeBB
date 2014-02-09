@@ -92,7 +92,7 @@ SocketModules.chats.send = function(socket, data) {
 
 	var msg = S(data.message).stripTags().s;
 
-	user.getMultipleUserFields([socket.uid, touid], ['username', 'picture'], function(err, usersData) {
+	user.getMultipleUserFields([socket.uid, touid], ['username', 'userslug', 'picture'], function(err, usersData) {
 		if(err) {
 			return;
 		}
