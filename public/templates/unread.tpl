@@ -38,17 +38,17 @@
 
 					<small>
 						<span class="topic-stats">
-							posts
+							[[category:posts]]
 							<strong class="human-readable-number" title="{topics.postcount}">{topics.postcount}</strong>
 						</span>
 						|
 						<span class="topic-stats">
-							views
+							[[category:views]]
 							<strong class="human-readable-number" title="{topics.viewcount}">{topics.viewcount}</strong>
 						</span>
 						|
 						<span>
-							posted in
+							[[category:posted]] [[global:in]]
 							<a href="{relative_path}/category/{topics.categorySlug}">
 								<i class="fa {topics.categoryIcon}"></i> {topics.categoryName}
 							</a>
@@ -58,13 +58,13 @@
 
 						<span class="pull-right">
 							<!-- IF topics.unreplied -->
-							No one has replied
+							[[category:no_replies]]
 							<!-- ELSE -->
 							<a href="{relative_path}/user/{topics.teaser_userslug}">
 								<img class="teaser-pic" src="{topics.teaser_userpicture}" title="{topics.teaser_username}"/>
 							</a>
 							<a href="{relative_path}/topic/{topics.slug}#{topics.teaser_pid}">
-								replied
+								[[category:replied]]
 							</a>
 							<span class="timeago" title="{topics.teaser_timestamp}"></span>
 							<!-- ENDIF topics.unreplied -->
