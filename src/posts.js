@@ -410,33 +410,38 @@ var db = require('./database'),
 
 	Posts.uploadPostFile = function(file, callback) {
 
-		if(!meta.config.allowFileUploads) {
-			return callback(new Error('File uploads are not allowed'));
-		}
+		if(plugins.hasListeners('filter:post.uploadFile')) {
+			plugins.fireHook('filter:post.uploadFile', file, callback);
+		} else {
 
-		if(!file || !file.data) {
-			return callback(new Error('invalid file'));
-		}
-
-		var buffer = new Buffer(file.data, 'base64');
-
-		if(buffer.length > parseInt(meta.config.maximumFileSize, 10) * 1024) {
-			return callback(new Error('File too big'));
-		}
-
-		var filename = 'upload-' + utils.generateUUID() + path.extname(file.name);
-		var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), filename);
-
-		fs.writeFile(uploadPath, buffer, function (err) {
-			if(err) {
-				return callback(err);
+			if(!meta.config.allowFileUploads) {
+				return callback(new Error('File uploads are not allowed'));
 			}
 
-			callback(null, {
-				url: nconf.get('upload_url') + filename,
-				name: file.name
+			if(!file || !file.data) {
+				return callback(new Error('invalid file'));
+			}
+
+			var buffer = new Buffer(file.data, 'base64');
+
+			if(buffer.length > parseInt(meta.config.maximumFileSize, 10) * 1024) {
+				return callback(new Error('File too big'));
+			}
+
+			var filename = 'upload-' + utils.generateUUID() + path.extname(file.name);
+			var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), filename);
+
+			fs.writeFile(uploadPath, buffer, function (err) {
+				if(err) {
+					return callback(err);
+				}
+
+				callback(null, {
+					url: nconf.get('upload_url') + filename,
+					name: file.name
+				});
 			});
-		});
+		}
 	}
 
 	Posts.reIndexPids = function(pids, callback) {
