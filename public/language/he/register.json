@@ -1,0 +1,18 @@
+{
+    "register": "הרשם",
+    "help.email": "כברירת מחדל, כתובת האימייל שלך אינה חשופה למשתמשים אחרים",
+    "help.username_restrictions": "שם משתמש ייחודי בין %1 ל %2 תווים. משתמשים אחרים יכולים לציין את שמך באמצעות @<span id='yourUsername'>שם המשתמש שלך</span>.",
+    "help.minimum_password_length": "סיסמתך חייבת להיות לפחות באורך של %1 תווים.",
+    "email_address": "כתובת אימייל",
+    "email_address_placeholder": "הכנס כתובת אימייל",
+    "username": "שם משתמש",
+    "username_placeholder": "הכנס שם משתמש",
+    "password": "סיסמה",
+    "password_placeholder": "הכנס סיסמה",
+    "confirm_password": "אמת סיסמה",
+    "confirm_password_placeholder": "אמת סיסמה",
+    "register_now_button": "הרשם עכשיו",
+    "alternative_registration": "הרשמה אלטרנטיבית",
+    "terms_of_use": "תנאי שימוש",
+    "agree_to_terms_of_use": "אני מסכים לתנאי השימוש"
+}
