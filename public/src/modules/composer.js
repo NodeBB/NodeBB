@@ -603,6 +603,7 @@ define(['taskbar'], function(taskbar) {
 			textarea.val(currentText.replace(imgText, linkStart + '[' + data.name + '](' + data.url + ')'));
 
 			composer.posts[post_uuid].uploadsInProgress.pop();
+			textarea.focus();
 		});
 	}
 
