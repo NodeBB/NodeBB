@@ -96,7 +96,7 @@
 			if(err){
 				return callback(err);
 			}
-console.log(recentData);
+
 			var	feed = new rss({
 					title: 'Recently Active Topics',
 					description: 'A list of topics that have been active within the past 24 hours',
