@@ -15,7 +15,6 @@ var async = require('async'),
 	threadTools = require('./threadTools'),
 	postTools = require('./postTools'),
 	notifications = require('./notifications'),
-	feed = require('./feed'),
 	favourites = require('./favourites'),
 	meta = require('./meta');
 
@@ -56,8 +55,6 @@ var async = require('async'),
 				db.sortedSetAdd('categories:' + cid + ':tid', timestamp, tid);
 				db.incrObjectField('category:' + cid, 'topic_count');
 				db.incrObjectField('global', 'topicCount');
-
-				feed.updateCategory(cid);
 
 				callback(null, tid);
 			});
@@ -158,12 +155,10 @@ var async = require('async'),
 				db.getObjectField('tid:lastFeedUpdate', tid, function(err, lastFeedUpdate) {
 					var now = Date.now();
 					if(!lastFeedUpdate || parseInt(lastFeedUpdate, 10) < now - 3600000) {
-						feed.updateTopic(tid);
 						db.setObjectField('tid:lastFeedUpdate', tid, now);
 					}
 				});
 
-				feed.updateRecent();
 				threadTools.notifyFollowers(tid, postData.pid, uid);
 				user.sendPostNotificationToFollowers(uid, tid, postData.pid);
 
@@ -1185,7 +1180,6 @@ var async = require('async'),
 		db.sortedSetRemove('topics:views', tid);
 
 		Topics.getTopicField(tid, 'cid', function(err, cid) {
-			feed.updateCategory(cid);
 			db.incrObjectFieldBy('category:' + cid, 'topic_count', -1);
 		});
 	}
@@ -1199,7 +1193,6 @@ var async = require('async'),
 		});
 
 		Topics.getTopicField(tid, 'cid', function(err, cid) {
-			feed.updateCategory(cid);
 			db.incrObjectFieldBy('category:' + cid, 'topic_count', 1);
 		});
 	}
