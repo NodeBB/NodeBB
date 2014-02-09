@@ -115,7 +115,7 @@ define(['taskbar'], function(taskbar) {
 
 			var postContainer = $(composerTemplate[0]);
 
-			if(config.allowFileUploads || config.hasPostUploadPlugin) {
+			if(config.allowFileUploads || config.hasImageUploadPlugin) {
 				initializeFileReader(post_uuid);
 			}
 
@@ -369,7 +369,7 @@ define(['taskbar'], function(taskbar) {
 			postContainer.css('height', $(window).height() - $('#header-menu').height());
 		}
 
-		if(config.hasPostUploadPlugin) {
+		if(config.hasImageUploadPlugin) {
 			if(env === 'md' || env === 'lg') {
 				postContainer.find('.upload-instructions').removeClass('hide');
 			}

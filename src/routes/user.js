@@ -3,6 +3,7 @@ var fs = require('fs'),
 	winston = require('winston'),
 	nconf = require('nconf'),
 	async= require('async'),
+	imagemagick = require('node-imagemagick'),
 
 	user = require('./../user'),
 	posts = require('./../posts'),
@@ -10,6 +11,8 @@ var fs = require('fs'),
 	utils = require('./../../public/src/utils'),
 	templates = require('./../../public/src/templates'),
 	meta = require('./../meta'),
+	plugins = require('./../plugins'),
+	image = require('./../image'),
 	db = require('./../database');
 
 (function (User) {
@@ -114,118 +117,101 @@ var fs = require('fs'),
 			});
 
 			app.post('/uploadpicture', function (req, res) {
-				if (!req.user)
-					return res.redirect('/403');
+				if (!req.user) {
+					return res.json(403, {
+						error: 'Not allowed!'
+					});
+				}
 
 				var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
-
 				if (req.files.userPhoto.size > uploadSize * 1024) {
-					res.send({
+					return res.send({
 						error: 'Images must be smaller than ' + uploadSize + ' kb!'
 					});
-					return;
 				}
 
 				var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
-
 				if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
-					res.send({
+					return res.send({
 						error: 'Allowed image types are png, jpg and gif!'
 					});
-					return;
 				}
 
-				user.getUserField(req.user.uid, 'uploadedpicture', function (err, oldpicture) {
-					if (!oldpicture) {
-						uploadUserPicture(req.user.uid, path.extname(req.files.userPhoto.name), req.files.userPhoto.path, res);
-						return;
+				var extension = path.extname(req.files.userPhoto.name);
+				if (!extension) {
+					return res.send({
+						error: 'Error uploading file! Error : Invalid extension!'
+					});
+				}
+
+				var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10);
+				var filename = req.user.uid + '-profileimg' + (convertToPNG ? '.png' : extension);
+
+				async.waterfall([
+					function(next) {
+						image.resizeImage(req.files.userPhoto.path, extension, 128, 128, next);
+					},
+					function(next) {
+						image.convertImageToPng(req.files.userPhoto.path, extension, next);
 					}
-
-					var absolutePath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), path.basename(oldpicture));
-
-					fs.unlink(absolutePath, function (err) {
-						if (err) {
-							winston.err(err);
+				], function(err, result) {
+					function done(err, image) {
+						if(err) {
+							return res.send({error: err.message});
 						}
 
-						uploadUserPicture(req.user.uid, path.extname(req.files.userPhoto.name), req.files.userPhoto.path, res);
-					});
+						user.setUserField(req.user.uid, 'uploadedpicture', image.url);
+						user.setUserField(req.user.uid, 'picture', image.url);
+						res.json({
+							path: image.url
+						});
+					}
+
+					if(err) {
+						return res.send({error:err.message});
+					}
+
+					if(plugins.hasListeners('filter:uploadImage')) {
+						image.convertImageToBase64(req.files.userPhoto.path, function(err, image64) {
+							plugins.fireHook('filter:uploadImage', {data:image64, name:filename}, done);
+						});
+					} else {
+
+						user.getUserField(req.user.uid, 'uploadedpicture', function (err, oldpicture) {
+							if (!oldpicture) {
+								saveFileToLocal(filename, req.files.userPhoto.path, done);
+								return;
+							}
+
+							var absolutePath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), path.basename(oldpicture));
+
+							fs.unlink(absolutePath, function (err) {
+								if (err) {
+									winston.err(err);
+								}
+
+								saveFileToLocal(filename, req.files.userPhoto.path, done);
+							});
+						});
+					}
 				});
 			});
 		});
 
-		function uploadUserPicture(uid, extension, tempPath, res) {
-			if (!extension) {
-				res.send({
-					error: 'Error uploading file! Error : Invalid extension!'
-				});
-				return;
-			}
 
-			var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10);
+		function saveFileToLocal(filename, tempPath, callback) {
 
-			var filename = uid + '-profileimg' + (convertToPNG ? '.png' : extension);
 			var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), filename);
 
-			winston.info('Attempting upload to: ' + uploadPath);
+			winston.info('Saving file '+ filename +' to : ' + uploadPath);
 
 			var is = fs.createReadStream(tempPath);
 			var os = fs.createWriteStream(uploadPath);
-			var im = require('node-imagemagick');
 
 			is.on('end', function () {
 				fs.unlinkSync(tempPath);
 
-				function done(err) {
-					if (err) {
-						winston.err(err);
-						res.send({
-							error: 'Invalid image file!'
-						});
-						return;
-					}
-
-					var imageUrl = nconf.get('upload_url') + filename;
-
-					user.setUserField(uid, 'uploadedpicture', imageUrl);
-					user.setUserField(uid, 'picture', imageUrl);
-
-					if (convertToPNG && extension !== '.png') {
-						im.convert([uploadPath, 'png:-'], function(err, stdout) {
-							if (err) {
-								winston.err(err);
-								res.send({
-									error: 'Unable to convert image to PNG.'
-								});
-								return;
-							}
-
-							fs.writeFileSync(uploadPath, stdout, 'binary');
-							res.json({
-								path: imageUrl
-							});
-						});
-					} else {
-						res.json({
-							path: imageUrl
-						});
-					}
-				}
-
-				if(extension === '.gif') {
-					im.convert([uploadPath, '-coalesce', '-repage', '0x0', '-crop', '128x128+0+0', '+repage', 'uploadPath'], function(err, stdout) {
-						done(err);
-					});
-				} else {
-					im.crop({
-						srcPath: uploadPath,
-						dstPath: uploadPath,
-						width: 128,
-						height: 128
-					}, function (err, stdout, stderr) {
-						done(err);
-					});
-				}
+				callback(null, {url: nconf.get('upload_url') + filename});
 			});
 
 			os.on('error', function (err) {

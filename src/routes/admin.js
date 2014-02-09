@@ -11,6 +11,7 @@ var nconf = require('nconf'),
 	categories = require('./../categories'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
+	image = require('./../image'),
 	Languages = require('../languages'),
 	events = require('./../events'),
 	utils = require('./../../public/src/utils'),
@@ -139,7 +140,17 @@ var nconf = require('nconf'),
 					return;
 				}
 
-				uploadImage('favicon.ico', req, res);
+				saveFileToLocal('favicon.ico', req, res, function(err, image) {
+					if(err) {
+						return res.send({
+							error: err.message
+						});
+					}
+
+					res.json({
+						path: image.url
+					});
+				});
 			});
 
 			app.post('/uploadlogo', function(req, res) {
@@ -156,7 +167,7 @@ var nconf = require('nconf'),
 					return;
 				}
 
-				var filename =  'site-logo' + path.extname(req.files.userPhoto.name);
+				var filename = 'site-logo' + path.extname(req.files.userPhoto.name);
 
 				uploadImage(filename, req, res);
 			});
@@ -171,6 +182,32 @@ var nconf = require('nconf'),
 		});
 
 		function uploadImage(filename, req, res) {
+			function done(err, image) {
+				if(err) {
+					return res.send({
+						error: err.message
+					});
+				}
+
+				res.json({
+					path: image.url
+				});
+			}
+
+			if(plugins.hasListeners('filter:uploadImage')) {
+				image.convertImageToBase64(req.files.userPhoto.path, function(err, image64) {
+					if(err) {
+						return done(err);
+					}
+
+					plugins.fireHook('filter:uploadImage', {data:image64, name:filename}, done);
+				});
+			} else {
+				saveFileToLocal(filename, req, res, done);
+			}
+		}
+
+		function saveFileToLocal(filename, req, res, callback) {
 
 			var tempPath = req.files.userPhoto.path;
 			var extension = path.extname(req.files.userPhoto.name);
@@ -191,9 +228,7 @@ var nconf = require('nconf'),
 			is.on('end', function () {
 				fs.unlinkSync(tempPath);
 
-				res.json({
-					path: nconf.get('upload_url') + filename
-				});
+				callback(null, {url: nconf.get('upload_url') + filename});
 			});
 
 			os.on('error', function (err) {
@@ -203,7 +238,6 @@ var nconf = require('nconf'),
 
 			is.pipe(os);
 		}
-
 
 		var custom_routes = {
 			'routes': [],
