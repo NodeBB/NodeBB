@@ -202,7 +202,7 @@
 			path = require('path'),
 			fs = require('fs'),
 			winston = require('winston'),
-			language = Meta.config.defaultLang;
+			language = Meta.config.defaultLang || 'en_GB';
 
 		if (!fs.existsSync(path.join(__dirname, '../language', language))) {
 			winston.warn('[translator] Language \'' + Meta.config.defaultLang + '\' not found. Defaulting to \'en_GB\'');
