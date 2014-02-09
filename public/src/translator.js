@@ -63,7 +63,7 @@
 			// Add directional code if necessary
 			translator.get('language:dir', function(value) {
 				if (value) {
-					$('html').attr('dir', value);
+					$('html').css('direction', value);
 				}
 			});
 		}
