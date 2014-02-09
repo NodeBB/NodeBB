@@ -172,9 +172,7 @@ var fs = require('fs'),
 					}
 
 					if(plugins.hasListeners('filter:uploadImage')) {
-						image.convertImageToBase64(req.files.userPhoto.path, function(err, image64) {
-							plugins.fireHook('filter:uploadImage', {data:image64, name:filename}, done);
-						});
+						plugins.fireHook('filter:uploadImage', {file: req.files.userPhoto.path, name: filename}, done);
 					} else {
 
 						user.getUserField(req.user.uid, 'uploadedpicture', function (err, oldpicture) {
