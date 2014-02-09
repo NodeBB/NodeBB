@@ -152,13 +152,6 @@ var async = require('async'),
 				posts.create(uid, tid, content, next);
 			},
 			function(postData, next) {
-				db.getObjectField('tid:lastFeedUpdate', tid, function(err, lastFeedUpdate) {
-					var now = Date.now();
-					if(!lastFeedUpdate || parseInt(lastFeedUpdate, 10) < now - 3600000) {
-						db.setObjectField('tid:lastFeedUpdate', tid, now);
-					}
-				});
-
 				threadTools.notifyFollowers(tid, postData.pid, uid);
 				user.sendPostNotificationToFollowers(uid, tid, postData.pid);
 
