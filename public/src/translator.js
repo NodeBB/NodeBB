@@ -204,13 +204,13 @@
 			winston = require('winston'),
 			language = Meta.config.defaultLang || 'en_GB';
 
+
 		if (!fs.existsSync(path.join(__dirname, '../language', language))) {
 			winston.warn('[translator] Language \'' + Meta.config.defaultLang + '\' not found. Defaulting to \'en_GB\'');
 			language = 'en_GB';
 		}
 
 		utils.walk(path.join(__dirname, '../language', language), function (err, data) {
-			var loaded = data.length;
 
 			for (var d in data) {
 				if (data.hasOwnProperty(d)) {
