@@ -12,30 +12,13 @@
 		async = require('async');
 
 	Feed.defaults = {
-		ttl: 60,
-		basePath: path.join(__dirname, '../', 'feeds'),
-		baseUrl: nconf.get('url') + '/feeds'
+		ttl: 60
 	};
 
-	Feed.saveFeed = function (location, feed, callback) {
-		var savePath = path.join(__dirname, '../', location);
-
-		fs.writeFile(savePath, feed.xml(), function (err) {
-			if (err) return winston.err(err);
-
-			if (callback) callback(err);
-		});
-	}
-
-	Feed.updateTopic = function (tid, callback) {
-		topics.getTopicWithPosts(tid, 0, 0, -1, true, function (err, topicData) {
+	Feed.forTopic = function (tid, callback) {
+		topics.getTopicWithPosts(tid, 0, 0, 25, true, function (err, topicData) {
 			if (err) {
-				if(callback) {
-					return callback(new Error('topic-invalid'));
-				} else {
-					winston.error(err.message);
-					return;
-				}
+				return callback(new Error('topic-invalid'));
 			}
 
 			var description = topicData.posts.length ? topicData.posts[0].content : '';
@@ -45,7 +28,7 @@
 			var feed = new rss({
 					title: topicData.topic_name,
 					description: description,
-					feed_url: Feed.defaults.baseUrl + '/topics/' + tid + '.rss',
+					feed_url: nconf.get('url') + '/topic/' + tid + '.rss',
 					site_url: nconf.get('url') + '/topic/' + topicData.slug,
 					image_url: image_url,
 					author: author,
@@ -58,7 +41,7 @@
 				feed.pubDate = new Date(parseInt(topicData.posts[0].timestamp, 10)).toUTCString();
 			}
 
-			async.each(topicData.posts, function(postData, next) {
+			topicData.posts.forEach(function(postData) {
 				if (parseInt(postData.deleted, 10) === 0) {
 					dateStamp = new Date(parseInt(parseInt(postData.edited, 10) === 0 ? postData.timestamp : postData.edited, 10)).toUTCString();
 
@@ -70,31 +53,23 @@
 						date: dateStamp
 					});
 				}
-
-				next();
-			}, function() {
-				Feed.saveFeed('feeds/topics/' + tid + '.rss', feed, function (err) {
-					if (process.env.NODE_ENV === 'development') {
-						winston.info('[rss] Re-generated RSS Feed for tid ' + tid + '.');
-					}
-
-					if (callback) {
-						callback();
-					}
-				});
 			});
+
+			callback(null, feed.xml());
 		});
 
 	};
 
-	Feed.updateCategory = function (cid, callback) {
+	Feed.forCategory = function (cid, callback) {
 		categories.getCategoryById(cid, 0, 25, 0, function (err, categoryData) {
-			if (err) return callback(new Error('category-invalid'));
+			if (err) {
+				return callback(new Error('category-invalid'));
+			}
 
 			var feed = new rss({
 					title: categoryData.category_name,
 					description: categoryData.category_description,
-					feed_url: Feed.defaults.baseUrl + '/categories/' + cid + '.rss',
+					feed_url: nconf.get('url') + '/category/' + cid + '.rss',
 					site_url: nconf.get('url') + '/category/' + categoryData.category_id,
 					ttl: Feed.defaults.ttl
 				});
@@ -102,35 +77,29 @@
 			// Add pubDate if category has topics
 			if (categoryData.topics.length > 0) feed.pubDate = new Date(parseInt(categoryData.topics[0].lastposttime, 10)).toUTCString();
 
-			async.eachSeries(categoryData.topics, function(topicData, next) {
+			categoryData.topics.forEach(function(topicData) {
 				feed.item({
 					title: topicData.title,
 					url: nconf.get('url') + '/topic/' + topicData.slug,
 					author: topicData.username,
 					date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString()
 				});
-
-				next();
-			}, function() {
-				Feed.saveFeed('feeds/categories/' + cid + '.rss', feed, function (err) {
-					if (process.env.NODE_ENV === 'development') {
-						winston.info('[rss] Re-generated RSS Feed for cid ' + cid + '.');
-					}
-
-					if (callback) {
-						callback();
-					}
-				});
 			});
+
+			callback(null, feed.xml());
 		});
 	};
 
-	Feed.updateRecent = function(callback) {
+	Feed.forRecent = function(callback) {
 		topics.getLatestTopics(0, 0, 19, undefined, function (err, recentData) {
+			if(err){
+				return callback(err);
+			}
+
 			var	feed = new rss({
 					title: 'Recently Active Topics',
 					description: 'A list of topics that have been active within the past 24 hours',
-					feed_url: Feed.defaults.baseUrl + '/recent.rss',
+					feed_url: nconf.get('url') + '/recent.rss',
 					site_url: nconf.get('url') + '/recent',
 					ttl: Feed.defaults.ttl
 				});
@@ -140,32 +109,29 @@
 				feed.pubDate = new Date(parseInt(recentData.topics[0].lastposttime, 10)).toUTCString();
 			}
 
-			async.eachSeries(recentData.topics, function(topicData, next) {
+			recentData.topics.forEach(function(topicData) {
 				feed.item({
 					title: topicData.title,
 					url: nconf.get('url') + '/topic/' + topicData.slug,
 					author: topicData.username,
 					date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString()
 				});
-				next();
-			}, function() {
-				Feed.saveFeed('feeds/recent.rss', feed, function (err) {
-					if (process.env.NODE_ENV === 'development') {
-						winston.info('[rss] Re-generated "recent posts" RSS Feed.');
-					}
-
-					if (callback) callback();
-				});
 			});
+
+			callback(null, feed.xml());
 		});
 	};
 
-	Feed.updatePopular = function(callback) {
+	Feed.forPopular = function(callback) {
 		topics.getTopicsFromSet(0, 'topics:posts', 0, 19, function (err, popularData) {
+			if(err){
+				return callback(err);
+			}
+
 			var	feed = new rss({
 					title: 'Popular Topics',
 					description: 'A list of topics that are sorted by post count',
-					feed_url: Feed.defaults.baseUrl + '/popular.rss',
+					feed_url: nconf.get('url') + '/popular.rss',
 					site_url: nconf.get('url') + '/popular',
 					ttl: Feed.defaults.ttl
 				});
@@ -175,33 +141,16 @@
 				feed.pubDate = new Date(parseInt(popularData.topics[0].lastposttime, 10)).toUTCString();
 			}
 
-			async.eachSeries(popularData.topics, function(topicData, next) {
+			popularData.topics.forEach(function(topicData, next) {
 				feed.item({
 					title: topicData.title,
 					url: nconf.get('url') + '/topic/' + topicData.slug,
 					author: topicData.username,
 					date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString()
 				});
-				next();
-			}, function() {
-				Feed.saveFeed('feeds/popular.rss', feed, function (err) {
-					if (process.env.NODE_ENV === 'development') {
-						winston.info('[rss] Re-generated "popular posts" RSS Feed.');
-					}
-
-					if (callback) callback();
-				});
 			});
-		});
-	};
 
-	Feed.loadFeed = function(rssPath, res) {
-		fs.readFile(rssPath, function (err, data) {
-			if (err) {
-				res.type('text').send(404, "Unable to locate an rss feed at this location.");
-			} else {
-				res.type('xml').set('Content-Length', data.length).send(data);
-			}
+			callback(null, feed.xml());
 		});
 	};
 }(exports));

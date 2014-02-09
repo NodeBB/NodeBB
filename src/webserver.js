@@ -435,6 +435,74 @@ module.exports.server = server;
 		userRoute.createRoutes(app);
 		apiRoute.createRoutes(app);
 
+		// RSS Feeds:
+		app.get('/topic/:topic_id.rss', function(req, res, next) {
+			var tid = req.params.topic_id;
+			var uid = req.user ? req.user.uid || 0 : 0;
+
+			ThreadTools.privileges(tid, uid, function(err, privileges) {
+				if(err) {
+					return next(err);
+				}
+
+				if(!privileges.read) {
+					return res.redirect('403');
+				}
+
+				feed.forTopic(tid, function(err, feedData){
+					if(err) {
+						return next(err);
+					}
+
+					res.type('xml').set('Content-Length', Buffer.byteLength(feedData)).send(feedData);
+				});
+			});
+		});
+
+		app.get('/category/:category_id.rss', function(req, res, next){
+			var cid = req.params.category_id;
+			var uid = req.user ? req.user.uid || 0 : 0;
+
+			CategoryTools.privileges(cid, uid, function(err, privileges) {
+				if(err) {
+					return next(err);
+				}
+
+				if(!privileges.read) {
+					return res.redirect('403');
+				}
+
+				feed.forCategory(cid, function(err, feedData){
+					if(err) {
+						return next(err);
+					}
+
+					res.type('xml').set('Content-Length', Buffer.byteLength(feedData)).send(feedData);
+				})
+			});
+		});
+
+		app.get('/recent.rss', function(req, res) {
+			feed.forRecent(function(err, feedData){
+				if(err) {
+					return next(err);
+				}
+
+				res.type('xml').set('Content-Length', Buffer.byteLength(feedData)).send(feedData);
+			});
+		});
+
+		app.get('/popular.rss', function(req, res) {
+			feed.forPopular(function(err, feedData){
+				if(err) {
+					return next(err);
+				}
+
+				res.type('xml').set('Content-Length', Buffer.byteLength(feedData)).send(feedData);
+			});
+		});
+
+
 		// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 		(function () {
 			var routes = ['login', 'register', 'account', 'recent', 'popular', '403', '404', '500'],
@@ -516,45 +584,6 @@ module.exports.server = server;
 
 		app.get('/topic/:topic_id/:slug?', function (req, res, next) {
 			var tid = req.params.topic_id;
-
-			if (tid.match(/^\d+\.rss$/)) {
-				tid = tid.slice(0, -4);
-				var rssPath = path.join(__dirname, '../', 'feeds/topics', tid + '.rss'),
-					loadFeed = function () {
-						fs.readFile(rssPath, function (err, data) {
-							if (err) {
-								res.type('text').send(404, "Unable to locate an rss feed at this location.");
-							} else {
-								res.type('xml').set('Content-Length', data.length).send(data);
-							}
-						});
-
-					};
-
-				ThreadTools.privileges(tid, ((req.user) ? req.user.uid || 0 : 0), function(err, privileges) {
-					if(err) {
-						return next(err);
-					}
-
-					if(!privileges.read) {
-						return res.redirect('403');
-					}
-
-					if (!fs.existsSync(rssPath)) {
-						feed.updateTopic(tid, function (err) {
-							if (err) {
-								res.redirect('/404');
-							} else {
-								loadFeed();
-							}
-						});
-					} else {
-						loadFeed();
-					}
-				});
-
-				return;
-			}
 
 			async.waterfall([
 				function(next) {
@@ -699,45 +728,6 @@ module.exports.server = server;
 		app.get('/category/:category_id/:slug?', function (req, res, next) {
 			var cid = req.params.category_id;
 
-			if (cid.match(/^\d+\.rss$/)) {
-				cid = cid.slice(0, -4);
-				var rssPath = path.join(__dirname, '../', 'feeds/categories', cid + '.rss'),
-					loadFeed = function () {
-						fs.readFile(rssPath, function (err, data) {
-							if (err) {
-								res.type('text').send(404, "Unable to locate an rss feed at this location.");
-							} else {
-								res.type('xml').set('Content-Length', data.length).send(data);
-							}
-						});
-
-					};
-
-				CategoryTools.privileges(cid, ((req.user) ? req.user.uid || 0 : 0), function(err, privileges) {
-					if(err) {
-						return next(err);
-					}
-
-					if(!privileges.read) {
-						return res.redirect('403');
-					}
-
-					if (!fs.existsSync(rssPath)) {
-						feed.updateCategory(cid, function (err) {
-							if (err) {
-								res.redirect('/404');
-							} else {
-								loadFeed();
-							}
-						});
-					} else {
-						loadFeed();
-					}
-				});
-
-				return;
-			}
-
 			async.waterfall([
 				function(next) {
 					CategoryTools.privileges(cid, ((req.user) ? req.user.uid || 0 : 0), function(err, privileges) {
@@ -859,34 +849,6 @@ module.exports.server = server;
 					"Disallow: /admin/\n" +
 					"Sitemap: " + nconf.get('url') + "/sitemap.xml");
 			}
-		});
-
-		app.get('/recent.rss', function(req, res) {
-			var rssPath = path.join(__dirname, '../', 'feeds/recent.rss');
-
-			if (!fs.existsSync(rssPath)) {
-				feed.updateRecent(function (err) {
-					if (err) {
-						res.redirect('/404');
-					} else {
-						feed.loadFeed(rssPath, res);
-					}
-				});
-			} else {
-				feed.loadFeed(rssPath, res);
-			}
-		});
-
-		app.get('/popular.rss', function(req, res) {
-			var rssPath = path.join(__dirname, '../', 'feeds/popular.rss');
-
-			feed.updatePopular(function (err) {
-				if (err) {
-					res.redirect('/404');
-				} else {
-					feed.loadFeed(rssPath, res);
-				}
-			});
 		});
 
 		app.get('/recent/:term?', function (req, res) {
