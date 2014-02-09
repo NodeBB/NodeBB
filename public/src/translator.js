@@ -201,13 +201,16 @@
 			Meta = require('../../src/meta'),
 			path = require('path'),
 			fs = require('fs'),
-			winston = require('winston');
+			winston = require('winston'),
+			language = Meta.config.defaultLang;
 
-		utils.walk(path.join(__dirname, '../language', (Meta.config.defaultLang || 'en_GB')), function (err, data) {
-			if(err) {
-				console.log(err.message);
-				return;
-			}
+
+		if (!fs.existsSync(path.join(__dirname, '../language', language))) {
+			winston.warn('[translator] Language \'' + Meta.config.defaultLang + '\' not found. Defaulting to \'en_GB\'');
+			language = 'en_GB';
+		}
+
+		utils.walk(path.join(__dirname, '../language', language), function (err, data) {
 
 			for (var d in data) {
 				if (data.hasOwnProperty(d)) {
