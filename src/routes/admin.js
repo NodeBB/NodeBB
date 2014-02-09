@@ -140,7 +140,7 @@ var nconf = require('nconf'),
 					return;
 				}
 
-				saveFileToLocal('favicon.ico', req, res, function(err, image) {
+				saveFileToLocal('favicon.ico', req, function(err, image) {
 					if(err) {
 						return res.send({
 							error: err.message
@@ -203,20 +203,17 @@ var nconf = require('nconf'),
 					plugins.fireHook('filter:uploadImage', {data:image64, name:filename}, done);
 				});
 			} else {
-				saveFileToLocal(filename, req, res, done);
+				saveFileToLocal(filename, req, done);
 			}
 		}
 
-		function saveFileToLocal(filename, req, res, callback) {
+		function saveFileToLocal(filename, req, callback) {
 
 			var tempPath = req.files.userPhoto.path;
 			var extension = path.extname(req.files.userPhoto.name);
 
 			if (!extension) {
-				res.send({
-					error: 'Error uploading file! Error : Invalid extension!'
-				});
-				return;
+				return callback(new Error('Error uploading file! Error : Invalid extension!'));
 			}
 
 			var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), filename);
