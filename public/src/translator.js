@@ -204,7 +204,10 @@
 			winston = require('winston');
 
 		utils.walk(path.join(__dirname, '../language', (Meta.config.defaultLang || 'en_GB')), function (err, data) {
-			var loaded = data.length;
+			if(err) {
+				console.log(err.message);
+				return;
+			}
 
 			for (var d in data) {
 				if (data.hasOwnProperty(d)) {
