@@ -482,7 +482,7 @@ module.exports.server = server;
 			});
 		});
 
-		app.get('/recent.rss', function(req, res) {
+		app.get('/recent.rss', function(req, res, next) {
 			feed.forRecent(function(err, feedData){
 				if(err) {
 					return next(err);
@@ -492,7 +492,7 @@ module.exports.server = server;
 			});
 		});
 
-		app.get('/popular.rss', function(req, res) {
+		app.get('/popular.rss', function(req, res, next) {
 			feed.forPopular(function(err, feedData){
 				if(err) {
 					return next(err);

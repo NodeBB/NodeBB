@@ -91,11 +91,12 @@
 	};
 
 	Feed.forRecent = function(callback) {
+
 		topics.getLatestTopics(0, 0, 19, undefined, function (err, recentData) {
 			if(err){
 				return callback(err);
 			}
-
+console.log(recentData);
 			var	feed = new rss({
 					title: 'Recently Active Topics',
 					description: 'A list of topics that have been active within the past 24 hours',
@@ -141,7 +142,7 @@
 				feed.pubDate = new Date(parseInt(popularData.topics[0].lastposttime, 10)).toUTCString();
 			}
 
-			popularData.topics.forEach(function(topicData, next) {
+			popularData.topics.forEach(function(topicData) {
 				feed.item({
 					title: topicData.title,
 					url: nconf.get('url') + '/topic/' + topicData.slug,
