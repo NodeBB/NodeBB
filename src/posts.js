@@ -396,25 +396,30 @@ var db = require('./database'),
 
 	Posts.uploadPostImage = function(image, callback) {
 
-		if(meta.config.imgurClientID) {
-			if(!image || !image.data) {
-				return callback(new Error('invalid image'));
-			}
+		if(plugins.hasListeners('filter:post.upload')) {
+			plugins.fireHook('filter:post.upload', image, callback);
+		} else {
 
-			require('./imgur').upload(meta.config.imgurClientID, image.data, 'base64', function(err, data) {
-				if(err) {
-					return callback(err);
+			if(meta.config.imgurClientID) {
+				if(!image || !image.data) {
+					return callback(new Error('invalid image'));
 				}
 
-				callback(null, {
-					url: data.link,
-					name: image.name
+				require('./imgur').upload(meta.config.imgurClientID, image.data, 'base64', function(err, data) {
+					if(err) {
+						return callback(err);
+					}
+
+					callback(null, {
+						url: data.link,
+						name: image.name
+					});
 				});
-			});
-		} else if (meta.config.allowFileUploads) {
-			Posts.uploadPostFile(image, callback);
-		} else {
-			callback(new Error('Uploads are disabled!'));
+			} else if (meta.config.allowFileUploads) {
+				Posts.uploadPostFile(image, callback);
+			} else {
+				callback(new Error('Uploads are disabled!'));
+			}
 		}
 	}
 
