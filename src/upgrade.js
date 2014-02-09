@@ -566,7 +566,7 @@ Upgrade.upgrade = function(callback) {
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 
-				db.delete('tid:lastFeedUpdate', function(err, uids) {
+				db.delete('tid:lastFeedUpdate', function(err) {
 					if(err) {
 						winston.err('Error upgrading '+ err.message);
 						process.exit();
