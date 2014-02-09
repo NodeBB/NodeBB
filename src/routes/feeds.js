@@ -1,24 +1,63 @@
-(function (Feed) {
-	var db = require('./database'),
-		posts = require('./posts'),
-		topics = require('./topics'),
-		categories = require('./categories'),
+(function (Feeds) {
+	var posts = require('../posts'),
+		topics = require('../topics'),
+		categories = require('../categories'),
 
-		fs = require('fs'),
 		rss = require('rss'),
-		winston = require('winston'),
-		path = require('path'),
 		nconf = require('nconf'),
-		async = require('async');
 
-	Feed.defaults = {
-		ttl: 60
+		ThreadTools = require('../threadTools'),
+		CategoryTools = require('../categoryTools');
+
+	Feeds.createRoutes = function(app){
+		app.get('/topic/:topic_id.rss', hasTopicPrivileges, generateForTopic);
+		app.get('/category/:category_id.rss', hasCategoryPrivileges, generateForCategory);
+		app.get('/recent.rss', generateForRecent);
+		app.get('/popular.rss', generateForPopular);
 	};
 
-	Feed.forTopic = function (tid, callback) {
+
+	function hasTopicPrivileges(req, res, next) {
+		var tid = req.params.topic_id;
+		var uid = req.user ? req.user.uid || 0 : 0;
+
+		ThreadTools.privileges(tid, uid, function(err, privileges) {
+			if(err) {
+				return next(err);
+			}
+
+			if(!privileges.read) {
+				return res.redirect('403');
+			}
+
+			return next();
+		});
+	}
+
+	function hasCategoryPrivileges(req, res, next) {
+		var cid = req.params.category_id;
+		var uid = req.user ? req.user.uid || 0 : 0;
+
+		CategoryTools.privileges(cid, uid, function(err, privileges) {
+			if(err) {
+				return next(err);
+			}
+
+			if(!privileges.read) {
+				return res.redirect('403');
+			}
+
+			return next();
+		});
+	}
+
+
+	function generateForTopic(req, res, next) {
+		var tid = req.params.tid;
+
 		topics.getTopicWithPosts(tid, 0, 0, 25, true, function (err, topicData) {
 			if (err) {
-				return callback(new Error('topic-invalid'));
+				return next(err);
 			}
 
 			var description = topicData.posts.length ? topicData.posts[0].content : '';
@@ -32,7 +71,7 @@
 					site_url: nconf.get('url') + '/topic/' + topicData.slug,
 					image_url: image_url,
 					author: author,
-					ttl: Feed.defaults.ttl
+					ttl: 60
 				}),
 				dateStamp;
 
@@ -55,15 +94,18 @@
 				}
 			});
 
-			callback(null, feed.xml());
+			var xml = feed.xml();
+			res.type('xml').set('Content-Length', Buffer.byteLength(xml)).send(xml);
 		});
 
 	};
 
-	Feed.forCategory = function (cid, callback) {
+	function generateForCategory(req, res, next) {
+		var cid = req.params.category_id;
+
 		categories.getCategoryById(cid, 0, 25, 0, function (err, categoryData) {
 			if (err) {
-				return callback(new Error('category-invalid'));
+				return next(err);
 			}
 
 			var feed = new rss({
@@ -71,7 +113,7 @@
 					description: categoryData.category_description,
 					feed_url: nconf.get('url') + '/category/' + cid + '.rss',
 					site_url: nconf.get('url') + '/category/' + categoryData.category_id,
-					ttl: Feed.defaults.ttl
+					ttl: 60
 				});
 
 			// Add pubDate if category has topics
@@ -86,15 +128,15 @@
 				});
 			});
 
-			callback(null, feed.xml());
+			var xml = feed.xml();
+			res.type('xml').set('Content-Length', Buffer.byteLength(xml)).send(xml);
 		});
 	};
 
-	Feed.forRecent = function(callback) {
-
-		topics.getLatestTopics(0, 0, 19, undefined, function (err, recentData) {
+	function generateForRecent(req, res, next) {
+		topics.getLatestTopics(0, 0, 19, 'month', function (err, recentData) {
 			if(err){
-				return callback(err);
+				return next(err);
 			}
 
 			var	feed = new rss({
@@ -102,7 +144,7 @@
 					description: 'A list of topics that have been active within the past 24 hours',
 					feed_url: nconf.get('url') + '/recent.rss',
 					site_url: nconf.get('url') + '/recent',
-					ttl: Feed.defaults.ttl
+					ttl: 60
 				});
 
 			// Add pubDate if recent topics list contains topics
@@ -119,14 +161,15 @@
 				});
 			});
 
-			callback(null, feed.xml());
+			var xml = feed.xml();
+			res.type('xml').set('Content-Length', Buffer.byteLength(xml)).send(xml);
 		});
 	};
 
-	Feed.forPopular = function(callback) {
+	function generateForPopular(req, res, next) {
 		topics.getTopicsFromSet(0, 'topics:posts', 0, 19, function (err, popularData) {
 			if(err){
-				return callback(err);
+				return next(err);
 			}
 
 			var	feed = new rss({
@@ -134,7 +177,7 @@
 					description: 'A list of topics that are sorted by post count',
 					feed_url: nconf.get('url') + '/popular.rss',
 					site_url: nconf.get('url') + '/popular',
-					ttl: Feed.defaults.ttl
+					ttl: 60
 				});
 
 			// Add pubDate if recent topics list contains topics
@@ -151,7 +194,8 @@
 				});
 			});
 
-			callback(null, feed.xml());
+			var xml = feed.xml();
+			res.type('xml').set('Content-Length', Buffer.byteLength(xml)).send(xml);
 		});
 	};
 }(exports));

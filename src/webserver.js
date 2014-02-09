@@ -25,9 +25,9 @@ var path = require('path'),
 	admin = require('./routes/admin'),
 	userRoute = require('./routes/user'),
 	apiRoute = require('./routes/api'),
+	feedsRoute = require('./routes/feeds'),
 	auth = require('./routes/authentication'),
 	meta = require('./meta'),
-	feed = require('./feed'),
 	plugins = require('./plugins'),
 	logger = require('./logger'),
 	templates = require('./../public/src/templates'),
@@ -446,74 +446,7 @@ module.exports.server = server;
 		admin.createRoutes(app);
 		userRoute.createRoutes(app);
 		apiRoute.createRoutes(app);
-
-		// RSS Feeds:
-		app.get('/topic/:topic_id.rss', function(req, res, next) {
-			var tid = req.params.topic_id;
-			var uid = req.user ? req.user.uid || 0 : 0;
-
-			ThreadTools.privileges(tid, uid, function(err, privileges) {
-				if(err) {
-					return next(err);
-				}
-
-				if(!privileges.read) {
-					return res.redirect('403');
-				}
-
-				feed.forTopic(tid, function(err, feedData){
-					if(err) {
-						return next(err);
-					}
-
-					res.type('xml').set('Content-Length', Buffer.byteLength(feedData)).send(feedData);
-				});
-			});
-		});
-
-		app.get('/category/:category_id.rss', function(req, res, next){
-			var cid = req.params.category_id;
-			var uid = req.user ? req.user.uid || 0 : 0;
-
-			CategoryTools.privileges(cid, uid, function(err, privileges) {
-				if(err) {
-					return next(err);
-				}
-
-				if(!privileges.read) {
-					return res.redirect('403');
-				}
-
-				feed.forCategory(cid, function(err, feedData){
-					if(err) {
-						return next(err);
-					}
-
-					res.type('xml').set('Content-Length', Buffer.byteLength(feedData)).send(feedData);
-				})
-			});
-		});
-
-		app.get('/recent.rss', function(req, res, next) {
-			feed.forRecent(function(err, feedData){
-				if(err) {
-					return next(err);
-				}
-
-				res.type('xml').set('Content-Length', Buffer.byteLength(feedData)).send(feedData);
-			});
-		});
-
-		app.get('/popular.rss', function(req, res, next) {
-			feed.forPopular(function(err, feedData){
-				if(err) {
-					return next(err);
-				}
-
-				res.type('xml').set('Content-Length', Buffer.byteLength(feedData)).send(feedData);
-			});
-		});
-
+		feedsRoute.createRoutes(app);
 
 		// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 		(function () {
