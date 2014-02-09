@@ -16,7 +16,7 @@
 	};
 
 	Feed.forTopic = function (tid, callback) {
-		topics.getTopicWithPosts(tid, 0, 0, -1, true, function (err, topicData) {
+		topics.getTopicWithPosts(tid, 0, 0, 25, true, function (err, topicData) {
 			if (err) {
 				return callback(new Error('topic-invalid'));
 			}
