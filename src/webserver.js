@@ -88,10 +88,10 @@ module.exports.server = server;
 					property: 'keywords',
 					content: meta.config.keywords || ''
 				}],
-				defaultLinkTags = [{
+				defaultLinkTags = [/*{
 					rel: 'apple-touch-icon',
 					href: meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png'
-				}],
+				}*/],
 				templateValues = {
 					bootswatchCSS: meta.config['theme:src'],
 					pluginCSS: plugins.cssFiles.map(function(file) { return { path: nconf.get('relative_path') + file.replace(/\\/g, '/') }; }),
