@@ -7,7 +7,6 @@ var db = require('./database'),
 	threadTools = require('./threadTools'),
 	postTools = require('./postTools'),
 	categories = require('./categories'),
-	feed = require('./feed'),
 	plugins = require('./plugins'),
 	meta = require('./meta'),
 
