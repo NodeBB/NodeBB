@@ -396,8 +396,8 @@ var db = require('./database'),
 
 	Posts.uploadPostImage = function(image, callback) {
 
-		if(plugins.hasListeners('filter:post.upload')) {
-			plugins.fireHook('filter:post.upload', image, callback);
+		if(plugins.hasListeners('filter:post.uploadImage')) {
+			plugins.fireHook('filter:post.uploadImage', image, callback);
 		} else {
 
 			if (meta.config.allowFileUploads) {
