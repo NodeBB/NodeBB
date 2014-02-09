@@ -397,7 +397,7 @@ var db = require('./database'),
 	Posts.uploadPostImage = function(image, callback) {
 
 		if(plugins.hasListeners('filter:uploadImage')) {
-			plugins.fireHook('filter:uploadImage', image, callback);
+			plugins.fireHook('filter:uploadImage', {base64: image.data, name: image.name}, callback);
 		} else {
 
 			if (meta.config.allowFileUploads) {
@@ -411,7 +411,7 @@ var db = require('./database'),
 	Posts.uploadPostFile = function(file, callback) {
 
 		if(plugins.hasListeners('filter:uploadFile')) {
-			plugins.fireHook('filter:uploadFile', file, callback);
+			plugins.fireHook('filter:uploadFile', {base64: file.data, name: file.name}, callback);
 		} else {
 
 			if(!meta.config.allowFileUploads) {
