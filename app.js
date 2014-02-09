@@ -84,8 +84,7 @@ function start() {
 	nconf.set('base_dir', __dirname);
 
 	winston.info('Time: ' + new Date());
-	winston.info('Initializing NodeBB v' + pkg.version + ', on port ' + nconf.get('port') + ', using ' + nconf.get('database') +' store at ' + nconf.get(nconf.get('database') + ':host') + ':' + nconf.get(nconf.get('database') + ':port') + '.');
-	winston.info('NodeBB instance bound to: ' + ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? 'Any address (0.0.0.0)' : nconf.get('bind_address')));
+	winston.info('Initializing NodeBB v' + pkg.version + ', using ' + nconf./**/get('database') +' store at ' + nconf.get(nconf.get('database') + ':host') + ':' + nconf.get(nconf.get('database') + ':port') + '.');
 
 	if (process.env.NODE_ENV === 'development') {
 		winston.info('Base Configuration OK.');
