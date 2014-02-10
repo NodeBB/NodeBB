@@ -3,7 +3,6 @@ define(function() {
 
 	Search.init = function() {
 		var searchQuery = $('#topic-results').attr('data-search-query');
-console.log(searchQuery);
 		$('.search-result-text').children().each(function() {
 			var text = $(this).html();
 			var regex = new RegExp(searchQuery, 'gi');
