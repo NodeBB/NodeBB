@@ -592,6 +592,11 @@ var socket,
 			});
 		});
 
+		$('#search-form').parent().tooltip({
+			placement: 'bottom',
+			title: $('#search-button i').attr('title')
+		});
+
 		$('#user_dropdown').tooltip({
 			placement: 'bottom',
 			title: $('#user_dropdown').attr('title')
