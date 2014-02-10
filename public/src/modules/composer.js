@@ -329,6 +329,10 @@ define(['taskbar'], function(taskbar) {
 						composer.activateReposition(composer.active);
 					}
 				});
+
+				$(window).trigger('action:composer.loaded', {
+					post_uuid: post_uuid
+				});
 			});
 		});
 	}

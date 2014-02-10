@@ -55,7 +55,7 @@
 							<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="[[topic:posted_by]] {posts.username}">
 								<i class="fa fa-circle status offline"></i>
 								<span class="visible-xs-inline visible-md-inline"><img class="" src="{posts.picture}" width=18 height=18 />&nbsp;</span>
-								<span class="username-field" href="{relative_path}/user/{posts.userslug}" itemprop="author">{posts.username}&nbsp;</span>
+								<span class="username-field" href="{relative_path}/user/{posts.userslug}" itemprop="author" data-username="{posts.username}">{posts.username}&nbsp;</span>
 								<span class="caret"></span>
 							</button>
 
