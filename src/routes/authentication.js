@@ -60,7 +60,7 @@
 	Auth.createRoutes = function(app) {
 		app.namespace(nconf.get('relative_path'), function () {
 			app.post('/logout', function(req, res) {
-				if (req.user && req.user.uid > 0) {
+				if (req.user && parseInt(req.user.uid, 10) > 0) {
 					winston.info('[Auth] Session ' + req.sessionID + ' logout (uid: ' + req.user.uid + ')');
 
 					var ws = require('../socket.io');
