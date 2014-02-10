@@ -9,6 +9,7 @@
     "age": "Alder",
     "joined": "Ble med",
     "lastonline": "Senest online",
+    "profile": "Profile",
     "profile_views": "Profilvisninger",
     "reputation": "Rykte",
     "posts": "Innlegg",
@@ -32,6 +33,7 @@
     "show_email": "Vis min e-post",
     "has_no_follower": "Denne brukeren har ingen følgere :(",
     "follows_no_one": "Denne brukeren følger ingen :(",
+    "has_no_posts": "This user didn't post anything yet.",
     "email_hidden": "E-post skjult",
     "hidden": "skjult"
 }

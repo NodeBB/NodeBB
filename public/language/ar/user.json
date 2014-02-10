@@ -9,6 +9,7 @@
     "age": "عمر",
     "joined": "تاريخ التسجيل",
     "lastonline": "تاريخ أخر دخول",
+    "profile": "Profile",
     "profile_views": "مشاهد الملف",
     "reputation": "سمعة",
     "posts": "ردود",
@@ -32,6 +33,7 @@
     "show_email": "أظهر بريدي الإلكتروني",
     "has_no_follower": "هذا المستخدم ليس لديه أي أتباع :(",
     "follows_no_one": "هذا المستخدم لا يتبع أحد :(",
+    "has_no_posts": "This user didn't post anything yet.",
     "email_hidden": "البريد الإلكتروني مخفي",
     "hidden": "مخفي"
 }

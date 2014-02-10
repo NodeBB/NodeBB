@@ -9,6 +9,7 @@
     "age": "年龄",
     "joined": "加入时间",
     "lastonline": "最后在线",
+    "profile": "Profile",
     "profile_views": "资料被查看",
     "reputation": "声望",
     "posts": "发帖数",
@@ -32,6 +33,7 @@
     "show_email": "显示我的邮箱",
     "has_no_follower": "该用户还没有被任何人关注。",
     "follows_no_one": "该用户还没有关注过任何人。",
+    "has_no_posts": "This user didn't post anything yet.",
     "email_hidden": "邮箱被隐藏",
     "hidden": "隐藏"
 }

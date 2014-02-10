@@ -2,5 +2,6 @@
     "title": "Seneste",
     "day": "Dag",
     "week": "Uke",
-    "month": "Måned"
+    "month": "Måned",
+    "no_recent_topics": "There are no recent topics."
 }

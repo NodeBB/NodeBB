@@ -9,6 +9,7 @@
     "age": "Ikä",
     "joined": "Liittynyt",
     "lastonline": "Viimeksi online",
+    "profile": "Profile",
     "profile_views": "Profiilin katselukerrat",
     "reputation": "Maine",
     "posts": "Viestit",
@@ -32,6 +33,7 @@
     "show_email": "Näytä sähköpostiosoitteeni",
     "has_no_follower": "Tällä käyttäjällä ei ole yhtään seuraaja :(",
     "follows_no_one": "Tämä käyttäjä ei seuraa ketään :(",
+    "has_no_posts": "This user didn't post anything yet.",
     "email_hidden": "Sähköposti piilotettu",
     "hidden": "piilotettu"
 }

@@ -1,5 +1,7 @@
 {
     "title": "Értesítések",
+    "no_notifs": "You have no notifications",
+    "see_all": "See all Notifications",
     "back_to_home": "Vissza a NodeBB-re",
     "outgoing_link": "Külső Link",
     "outgoing_link_message": "Most távozol",

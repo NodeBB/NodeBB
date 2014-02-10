@@ -2,5 +2,6 @@
     "title": "אחרונים",
     "day": "יום",
     "week": "שבוע",
-    "month": "חודש"
+    "month": "חודש",
+    "no_recent_topics": "There are no recent topics."
 }

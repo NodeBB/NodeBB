@@ -9,6 +9,7 @@
     "age": "Idade",
     "joined": "Cadastrou",
     "lastonline": "Última vez online",
+    "profile": "Profile",
     "profile_views": "Visualizações de Profile",
     "reputation": "Reputação",
     "posts": "Posts",
@@ -32,6 +33,7 @@
     "show_email": "Mostrar meu email",
     "has_no_follower": "Ninguém está seguindo esse usuário :(",
     "follows_no_one": "Este usuário não está seguindo ninguém :(",
+    "has_no_posts": "This user didn't post anything yet.",
     "email_hidden": "Email Escondido",
     "hidden": "Escondido"
 }

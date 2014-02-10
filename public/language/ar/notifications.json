@@ -1,5 +1,7 @@
 {
     "title": "إعلام",
+    "no_notifs": "You have no notifications",
+    "see_all": "See all Notifications",
     "back_to_home": "العودة إلى NodeBB",
     "outgoing_link": "رابط خارجي",
     "outgoing_link_message": "أنت الأن ترحل",

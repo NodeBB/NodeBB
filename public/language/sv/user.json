@@ -9,6 +9,7 @@
     "age": "Ålder",
     "joined": "Gick med",
     "lastonline": "Senast online",
+    "profile": "Profile",
     "profile_views": "Profil-visningar",
     "reputation": "Rykte",
     "posts": "Inlägg",
@@ -32,6 +33,7 @@
     "show_email": "Visa min epost",
     "has_no_follower": "Denna användare har inga följare :(",
     "follows_no_one": "Denna användare följer ingen :(",
+    "has_no_posts": "This user didn't post anything yet.",
     "email_hidden": "Epost dold",
     "hidden": "dold"
 }

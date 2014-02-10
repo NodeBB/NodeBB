@@ -1,5 +1,7 @@
 {
     "title": "Bildirimler",
+    "no_notifs": "You have no notifications",
+    "see_all": "See all Notifications",
     "back_to_home": "NodeBB'ye geri dön",
     "outgoing_link": "Harici Link",
     "outgoing_link_message": "Şimdi ayrılıyorsunuz",
