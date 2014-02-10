@@ -1217,10 +1217,17 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				.hide()
 				.fadeIn('slow');
 
-			// Remove the extra post-bar that gets added
-			$('.posts').find('.post-bar[data-index]').each(function(idx, el) {
-				if (el.getAttribute('data-index')) {
+			// Remove the extra post-bar and "follow" button that gets added
+			var	postsEl = $('.posts');
+			postsEl.find('.post-bar').each(function(idx, el) {
+				if (idx !== 0) {
 					el.parentNode.removeChild(el);
+				}
+			});
+			postsEl.find('li.post-row[data-index]').each(function(idx, el) {
+				followEl = el.querySelector('.follow');
+				if (idx !== 0 && followEl) {
+					followEl.parentNode.removeChild(followEl);
 				}
 			});
 
