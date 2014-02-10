@@ -62,5 +62,7 @@
 	"away": "Away",
 	"dnd": "Do not Disturb",
 	"invisible": "Invisible",
-	"offline": "Offline"
+	"offline": "Offline",
+
+	"privacy": "Privacy"
 }
