@@ -1217,15 +1217,19 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				.hide()
 				.fadeIn('slow');
 
+			// Remove the extra post-bar that gets added
+			$('.posts').find('.post-bar[data-index]').each(function(idx, el) {
+				if (el.getAttribute('data-index')) {
+					el.parentNode.removeChild(el);
+				}
+			});
+
 			onNewPostsLoaded(data.posts);
 		});
 	}
 
 	function parseAndTranslatePosts(data, callback) {
 		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
-		var regexp = new RegExp("<!--[\\s]*IF @first[\\s]*-->([\\s\\S]*?)<!--[\\s]*ENDIF @first[\\s]*-->", 'g');
-		html = html.replace(regexp, '');
-
 		translator.translate(html, callback);
 	}
 
