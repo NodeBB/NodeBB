@@ -176,6 +176,7 @@ var async = require('async'),
 			},
 			function(postData, next) {
 				postData.favourited = false;
+				postData.votes = 0;
 				postData.display_moderator_tools = true;
 				postData.display_move_tools = privileges.admin || privileges.moderator;
 				postData.relativeTime = utils.toISOString(postData.timestamp);
