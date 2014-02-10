@@ -3,6 +3,7 @@
 	"topics": "Topics",
 
 	"no_topics_found": "No topics found!",
+	"no_posts_found": "No posts found!",
 
 	"profile": "Profile",
 	"posted_by": "Posted by",
@@ -20,15 +21,19 @@
 	"tools": "Tools",
 	"flag": "Flag",
 
-	"flag_title":"Flag this post for moderation",
+	"flag_title": "Flag this post for moderation",
+	"deleted_message": "This thread has been deleted. Only users with thread management privileges can see it.",
 
 	"thread_tools.title": "Thread Tools",
 	"thread_tools.markAsUnreadForAll": "Mark Unread",
-	"thread_tools.pin": "Pin Thread",
-	"thread_tools.lock": "Lock Thread",
-	"thread_tools.move": "Move Thread",
-	"thread_tools.fork": "Fork Thread",
-	"thread_tools.delete": "Delete Thread",
+	"thread_tools.pin": "Pin",
+	"thread_tools.unpin": "Unpin",
+	"thread_tools.lock": "Lock",
+	"thread_tools.unlock": "Unlock",
+	"thread_tools.move": "Move",
+	"thread_tools.fork": "Fork",
+	"thread_tools.delete": "Delete",
+	"thread_tools.restore": "Restore",
 
 	"load_categories": "Loading Categories",
 	"disabled_categories_note": "Disabled Categories are greyed out",

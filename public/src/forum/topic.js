@@ -913,7 +913,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				x;
 
 			if (locked === true) {
-				lockThreadEl.html('<i class="fa fa-unlock"></i> Unlock Thread');
+				translator.translate('<i class="fa fa-unlock"></i> [[topic:thread_tools.unlock]] [[topic:topic]]', function(translated) {
+					lockThreadEl.html(translated);
+				});
 				threadReplyBtn.attr('disabled', true);
 				threadReplyBtn.html('Locked <i class="fa fa-lock"></i>');
 				for (x = 0; x < numPosts; x++) {
@@ -935,7 +937,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 				thread_state.locked = '1';
 			} else {
-				lockThreadEl.html('<i class="fa fa-lock"></i> Lock Thread');
+				translator.translate('<i class="fa fa-lock"></i> [[topic:thread_tools.lock]] [[topic:topic]]', function(translated) {
+					lockThreadEl.html(translated);
+				});
 				threadReplyBtn.attr('disabled', false);
 				threadReplyBtn.html('Reply');
 				for (x = 0; x < numPosts; x++) {
@@ -967,7 +971,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				deleteNotice = document.getElementById('thread-deleted') || document.createElement('div');
 
 			if (deleted) {
-				deleteTextEl.html('<i class="fa fa-comment"></i> Restore Thread');
+				translator.translate('<i class="fa fa-comment"></i> [[topic:thread_tools.restore]] [[topic:topic]]', function(translated) {
+					deleteTextEl.html(translated);
+				});
 				threadEl.addClass('deleted');
 
 				// Spawn a 'deleted' notice at the top of the page
@@ -978,7 +984,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 				thread_state.deleted = '1';
 			} else {
-				deleteTextEl.html('<i class="fa fa-trash-o"></i> Delete Thread');
+				translator.translate('<i class="fa fa-trash-o"></i> [[topic:thread_tools.delete]] [[topic:topic]]', function(translated) {
+					deleteTextEl.html(translated);
+				});
 				threadEl.removeClass('deleted');
 				deleteNotice.parentNode.removeChild(deleteNotice);
 
@@ -989,33 +997,35 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		function set_pinned_state(pinned, alert) {
 			var pinEl = $('.pin_thread');
 
-			if (pinned) {
-				pinEl.html('<i class="fa fa-thumb-tack"></i> Unpin Thread');
-				if (alert) {
-					app.alert({
-						'alert_id': 'thread_pin',
-						type: 'success',
-						title: 'Thread Pinned',
-						message: 'Thread has been successfully pinned',
-						timeout: 5000
-					});
-				}
+			translator.translate('<i class="fa fa-thumb-tack"></i> [[topic:thread_tools.' + (pinned ? 'unpin' : 'pin') + ']] [[topic:topic]]', function(translated) {
+				if (pinned) {
+					pinEl.html(translated);
+					if (alert) {
+						app.alert({
+							'alert_id': 'thread_pin',
+							type: 'success',
+							title: 'Thread Pinned',
+							message: 'Thread has been successfully pinned',
+							timeout: 5000
+						});
+					}
 
-				thread_state.pinned = '1';
-			} else {
-				pinEl.html('<i class="fa fa-thumb-tack"></i> Pin Thread');
-				if (alert) {
-					app.alert({
-						'alert_id': 'thread_pin',
-						type: 'success',
-						title: 'Thread Unpinned',
-						message: 'Thread has been successfully unpinned',
-						timeout: 5000
-					});
-				}
+					thread_state.pinned = '1';
+				} else {
+					pinEl.html(translated);
+					if (alert) {
+						app.alert({
+							'alert_id': 'thread_pin',
+							type: 'success',
+							title: 'Thread Unpinned',
+							message: 'Thread has been successfully unpinned',
+							timeout: 5000
+						});
+					}
 
-				thread_state.pinned = '0';
-			}
+					thread_state.pinned = '0';
+				}
+			});
 		}
 
 		function toggle_post_delete_state(pid) {
