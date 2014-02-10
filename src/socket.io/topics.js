@@ -1,6 +1,7 @@
 var topics = require('../topics'),
 	threadTools = require('../threadTools'),
 	index = require('./index'),
+	user = require('../user'),
 
 	async = require('async'),
 
@@ -233,21 +234,21 @@ SocketTopics.loadMore = function(socket, data, callback) {
 		return callback(new Error('invalid data'));
 	}
 
-	var postsPerPage = parseInt(meta.config.postsPerPage, 10);
-	postsPerPage = postsPerPage ? postsPerPage : 20;
+	user.getSettings(socket.uid, function(err, settings) {
 
-	var start = parseInt(data.after, 10),
-		end = start + postsPerPage - 1;
+		var start = parseInt(data.after, 10),
+			end = start + settings.postsPerPage - 1;
 
-	async.parallel({
-		posts: function(next) {
-			topics.getTopicPosts(data.tid, start, end, socket.uid, next);
-		},
-		privileges: function(next) {
-			threadTools.privileges(data.tid, socket.uid, next);
-		}
-	}, function(err, results) {
-		callback(err, results);
+		async.parallel({
+			posts: function(next) {
+				topics.getTopicPosts(data.tid, start, end, socket.uid, next);
+			},
+			privileges: function(next) {
+				threadTools.privileges(data.tid, socket.uid, next);
+			}
+		}, function(err, results) {
+			callback(err, results);
+		});
 	});
 };
 
@@ -286,7 +287,7 @@ SocketTopics.loadMoreFromSet = function(socket, data, callback) {
 
 
 SocketTopics.getPageCount = function(socket, tid, callback) {
-	topics.getPageCount(tid, callback);
+	topics.getPageCount(tid, socket.uid, callback);
 };
 
 module.exports = SocketTopics;

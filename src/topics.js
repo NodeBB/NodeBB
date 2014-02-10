@@ -391,16 +391,19 @@ var async = require('async'),
 		});
 	}
 
-	Topics.getPageCount = function(tid, callback) {
+	Topics.getPageCount = function(tid, uid, callback) {
 		db.sortedSetCard('tid:' + tid + ':posts', function(err, postCount) {
 			if(err) {
 				return callback(err);
 			}
 
-			var postsPerPage = parseInt(meta.config.postsPerPage, 10);
-			postsPerPage = postsPerPage ? postsPerPage : 20;
+			user.getSettings(uid, function(err, settings) {
+				if(err) {
+					return callback(err);
+				}
 
-			callback(null, Math.ceil(parseInt(postCount, 10) / postsPerPage));
+				callback(null, Math.ceil(parseInt(postCount, 10) / settings.postsPerPage));
+			});
 		});
 	}
 
@@ -808,7 +811,7 @@ var async = require('async'),
 			}
 
 			function getPageCount(next) {
-				Topics.getPageCount(tid, next);
+				Topics.getPageCount(tid, current_user, next);
 			}
 
 			async.parallel([getTopicData, getTopicPosts, getPrivileges, getCategoryData, getPageCount], function(err, results) {

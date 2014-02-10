@@ -7,7 +7,10 @@ define(['forum/accountheader'], function(header) {
 		$('#submitBtn').on('click', function() {
 
 			var settings = {
-				showemail: $('#showemailCheckBox').is(':checked') ? 1 : 0
+				showemail: $('#showemailCheckBox').is(':checked') ? 1 : 0,
+				usePagination: $('#usePaginationCheckBox').is(':checked') ? 1 : 0,
+				topicsPerPage: $('#topicsPerPage').val(),
+				postsPerPage: $('#postsPerPage').val()
 			};
 
 			socket.emit('user.saveSettings', settings, function(err) {

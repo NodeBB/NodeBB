@@ -6,16 +6,31 @@
 
 	<div class="row">
 		<div class="col-md-6">
-			<h4>privacy</h4>
-			<div class="checkbox">
-				<label>
-	      			<input id="showemailCheckBox" type="checkbox" {showemail}> [[user:show_email]]
-	    		</label>
-	    	</div>
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<h4>privacy</h4>
+					<div class="checkbox">
+						<label>
+							<input id="showemailCheckBox" type="checkbox" <!-- IF settings.showemail -->checked<!-- ENDIF settings.showemail --> > [[user:show_email]]
+						</label>
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<div class="col-md-6">
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<div class="checkbox">
+						<label>
+							<input id="usePaginationCheckBox" type="checkbox" <!-- IF settings.usePagination -->checked<!-- ENDIF settings.usePagination -->> <strong>Paginate topics and posts instead of using infinite scroll.</strong>
+						</label>
+					</div>
 
+					<strong>Topics per Page</strong><br /> <input id="topicsPerPage" type="text" class="form-control" value="{settings.topicsPerPage}"><br />
+					<strong>Posts per Page</strong><br /> <input id="postsPerPage" type="text" class="form-control" value="{settings.postsPerPage}"><br />
+				</div>
+			</div>
 		</div>
 	</div>
 	<div class="form-actions">

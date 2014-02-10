@@ -1,5 +1,6 @@
 var	categories = require('../categories'),
 	meta = require('./../meta'),
+	user = require('./../user'),
 
 	SocketCategories = {};
 
@@ -16,16 +17,17 @@ SocketCategories.loadMore = function(socket, data, callback) {
 		return callback(new Error('invalid data'));
 	}
 
-	var topicsPerPage = parseInt(meta.config.topicsPerPage, 10) || 20;
+	user.getSettings(socket.uid, function(err, settings) {
 
-	var start = parseInt(data.after, 10),
-		end = start + topicsPerPage - 1;
+		var start = parseInt(data.after, 10),
+		end = start + settings.topicsPerPage - 1;
 
-	categories.getCategoryTopics(data.cid, start, end, socket.uid, callback);
+		categories.getCategoryTopics(data.cid, start, end, socket.uid, callback);
+	});
 };
 
 SocketCategories.getPageCount = function(socket, cid, callback) {
-	categories.getPageCount(cid, callback);
-}
+	categories.getPageCount(cid, socket.uid, callback);
+};
 
 module.exports = SocketCategories;

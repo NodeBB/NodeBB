@@ -77,7 +77,7 @@ var db = require('./database'),
 		}
 
 		function getPageCount(next) {
-			Categories.getPageCount(category_id, next);
+			Categories.getPageCount(category_id, current_user, next);
 		}
 
 		async.parallel({
@@ -146,16 +146,19 @@ var db = require('./database'),
 		db.getSortedSetRevRange('categories:' + cid + ':tid', start, stop, callback);
 	};
 
-	Categories.getPageCount = function(cid, callback) {
+	Categories.getPageCount = function(cid, uid, callback) {
 		db.sortedSetCard('categories:' + cid + ':tid', function(err, topicCount) {
 			if(err) {
 				return callback(err);
 			}
 
-			var topicsPerPage = parseInt(meta.config.topicsPerPage, 10);
-			topicsPerPage = topicsPerPage ? topicsPerPage : 20;
+			user.getSettings(uid, function(err, settings) {
+				if(err) {
+					return callback(err);
+				}
 
-			callback(null, Math.ceil(parseInt(topicCount, 10) / topicsPerPage));
+				callback(null, Math.ceil(parseInt(topicCount, 10) / settings.topicsPerPage));
+			});
 		});
 	};
 

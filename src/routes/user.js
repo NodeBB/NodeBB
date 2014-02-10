@@ -270,40 +270,43 @@ var fs = require('fs'),
 			var callerUID = req.user ? req.user.uid : '0';
 
 			user.getUidByUserslug(req.params.userslug, function (err, uid) {
+				if (err) {
+					return next(err);
+				}
+
 				if (!uid) {
-					res.json(404, {
+					return res.json(404, {
 						error: 'User not found!'
 					});
-					return;
 				}
 
 				if (uid != callerUID || callerUID == '0') {
-					res.json(403, {
+					return res.json(403, {
 						error: 'Not allowed!'
 					});
-					return;
 				}
 
-
-				user.getUserFields(uid, ['username', 'userslug', 'showemail'], function (err, userData) {
-					if (err)
+				user.getUserFields(uid, ['username', 'userslug'], function (err, userData) {
+					if (err) {
 						return next(err);
+					}
 
-					if (userData) {
-						if (userData.showemail && parseInt(userData.showemail, 10) === 1) {
-							userData.showemail = "checked";
-						} else {
-							userData.showemail = "";
+					if(!userData) {
+						return res.json(404, {
+							error: 'User not found!'
+						});
+					}
+
+					user.getSettings(uid, function(err, settings) {
+						if(err) {
+							return next(err);
 						}
 
 						userData.theirid = uid;
 						userData.yourid = callerUID;
+						userData.settings = settings;
 						res.json(userData);
-					} else {
-						res.json(404, {
-							error: 'User not found!'
-						});
-					}
+					});
 				});
 			});
 		});
@@ -313,17 +316,15 @@ var fs = require('fs'),
 
 			user.getUidByUserslug(req.params.userslug, function (err, uid) {
 				if (!uid) {
-					res.json(404, {
+					return res.json(404, {
 						error: 'User not found!'
 					});
-					return;
 				}
 
 				if (uid != callerUID || callerUID == '0') {
-					res.json(403, {
+					return res.json(403, {
 						error: 'Not allowed!'
 					});
-					return;
 				}
 
 				user.getUserFields(uid, ['username', 'userslug'], function (err, userData) {
@@ -331,24 +332,24 @@ var fs = require('fs'),
 						return next(err);
 					}
 
-					if (userData) {
-						posts.getFavourites(uid, 0, 9, function (err, favourites) {
-							if (err) {
-								return next(err);
-							}
-
-							userData.theirid = uid;
-							userData.yourid = callerUID;
-							userData.posts = favourites.posts;
-							userData.nextStart = favourites.nextStart;
-
-							res.json(userData);
-						});
-					} else {
-						res.json(404, {
+					if (!userData) {
+						return res.json(404, {
 							error: 'User not found!'
 						});
 					}
+
+					posts.getFavourites(uid, 0, 9, function (err, favourites) {
+						if (err) {
+							return next(err);
+						}
+
+						userData.theirid = uid;
+						userData.yourid = callerUID;
+						userData.posts = favourites.posts;
+						userData.nextStart = favourites.nextStart;
+
+						res.json(userData);
+					});
 				});
 			});
 		});
@@ -358,10 +359,9 @@ var fs = require('fs'),
 
 			user.getUidByUserslug(req.params.userslug, function (err, uid) {
 				if (!uid) {
-					res.json(404, {
+					return res.json(404, {
 						error: 'User not found!'
 					});
-					return;
 				}
 
 				user.getUserFields(uid, ['username', 'userslug'], function (err, userData) {
@@ -369,24 +369,24 @@ var fs = require('fs'),
 						return next(err);
 					}
 
-					if (userData) {
-						posts.getPostsByUid(callerUID, uid, 0, 19, function (err, userPosts) {
-							if (err) {
-								return next(err);
-							}
-							userData.uid = uid;
-							userData.theirid = uid;
-							userData.yourid = callerUID;
-							userData.posts = userPosts.posts;
-							userData.nextStart = userPosts.nextStart;
-
-							res.json(userData);
-						});
-					} else {
-						res.json(404, {
+					if (!userData) {
+						return res.json(404, {
 							error: 'User not found!'
 						});
 					}
+
+					posts.getPostsByUid(callerUID, uid, 0, 19, function (err, userPosts) {
+						if (err) {
+							return next(err);
+						}
+						userData.uid = uid;
+						userData.theirid = uid;
+						userData.yourid = callerUID;
+						userData.posts = userPosts.posts;
+						userData.nextStart = userPosts.nextStart;
+
+						res.json(userData);
+					});
 				});
 			});
 		});
