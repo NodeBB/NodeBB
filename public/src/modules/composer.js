@@ -82,9 +82,11 @@ define(['taskbar'], function(taskbar) {
 	function push(post) {
 		var uuid = utils.generateUUID();
 
-		taskbar.push('composer', uuid, {
-			title: post.title ? post.title : 'New Topic',
-			icon: post.picture
+		translator.translate('[[topic:composer.new_topic]]', function(newTopicStr) {
+			taskbar.push('composer', uuid, {
+				title: post.title ? post.title : newTopicStr,
+				icon: post.picture
+			});
 		});
 
 		composer.posts[uuid] = post;
@@ -103,227 +105,230 @@ define(['taskbar'], function(taskbar) {
 	composer.createNewComposer = function(post_uuid) {
 
 		templates.preload_template('composer', function() {
-
 			var composerTemplate = templates['composer'].parse({});
-			composerTemplate = $(composerTemplate);
+			translator.translate(composerTemplate, function(composerTemplate) {
+				composerTemplate = $(composerTemplate);
 
-			composerTemplate.attr('id', 'cmp-uuid-' + post_uuid);
+				composerTemplate.attr('id', 'cmp-uuid-' + post_uuid);
 
-			$(document.body).append(composerTemplate);
+				$(document.body).append(composerTemplate);
 
-			composer.activateReposition(post_uuid);
+				composer.activateReposition(post_uuid);
 
-			var postContainer = $(composerTemplate[0]);
+				var postContainer = $(composerTemplate[0]);
 
-			if(config.allowFileUploads || config.hasImageUploadPlugin) {
-				initializeFileReader(post_uuid);
-			}
+				if(config.allowFileUploads || config.hasImageUploadPlugin) {
+					initializeFileReader(post_uuid);
+				}
 
-			var postData = composer.posts[post_uuid],
-				titleEl = postContainer.find('.title'),
-				bodyEl = postContainer.find('textarea');
+				var postData = composer.posts[post_uuid],
+					titleEl = postContainer.find('.title'),
+					bodyEl = postContainer.find('textarea');
 
-			if (parseInt(postData.tid) > 0) {
-				titleEl.val('Replying to: ' + postData.title);
-				titleEl.prop('disabled', true);
-			} else if (parseInt(postData.pid) > 0) {
-				titleEl.val(postData.title);
-				titleEl.prop('disabled', true);
-				socket.emit('modules.composer.editCheck', postData.pid, function(err, editCheck) {
-					if (!err && editCheck.titleEditable) {
-						titleEl.prop('disabled', false);
+				if (parseInt(postData.tid) > 0) {
+					translator.translate('[[topic:composer.replying_to]]: ' + postData.title, function(newTitle) {
+						titleEl.val(newTitle);
+					});
+					titleEl.prop('disabled', true);
+				} else if (parseInt(postData.pid) > 0) {
+					titleEl.val(postData.title);
+					titleEl.prop('disabled', true);
+					socket.emit('modules.composer.editCheck', postData.pid, function(err, editCheck) {
+						if (!err && editCheck.titleEditable) {
+							titleEl.prop('disabled', false);
+						}
+					});
+				} else {
+					titleEl.val(postData.title);
+					titleEl.prop('disabled', false);
+				}
+
+				bodyEl.val(postData.body);
+
+
+				postContainer.on('change', 'input, textarea', function() {
+					composer.posts[post_uuid].modified = true;
+				});
+
+				postContainer.on('click', '.action-bar button', function() {
+					var	action = $(this).attr('data-action');
+
+					switch(action) {
+						case 'post':
+							$(this).attr('disabled', true);
+							composer.post(post_uuid);
+							break;
+						case 'discard':
+							if (composer.posts[post_uuid].modified) {
+								bootbox.confirm('Are you sure you wish to discard this post?', function(discard) {
+									if (discard) {
+										composer.discard(post_uuid);
+									}
+								});
+							} else {
+								composer.discard(post_uuid);
+							}
+							break;
 					}
 				});
-			} else {
-				titleEl.val(postData.title);
-				titleEl.prop('disabled', false);
-			}
 
-			bodyEl.val(postData.body);
-
-
-			postContainer.on('change', 'input, textarea', function() {
-				composer.posts[post_uuid].modified = true;
-			});
-
-			postContainer.on('click', '.action-bar button', function() {
-				var	action = $(this).attr('data-action');
-
-				switch(action) {
-					case 'post':
-						$(this).attr('disabled', true);
-						composer.post(post_uuid);
-						break;
-					case 'discard':
-						if (composer.posts[post_uuid].modified) {
-							bootbox.confirm('Are you sure you wish to discard this post?', function(discard) {
-								if (discard) {
-									composer.discard(post_uuid);
-								}
-							});
-						} else {
-							composer.discard(post_uuid);
-						}
-						break;
-				}
-			});
-
-			postContainer.on('click', '.formatting-bar span', function() {
-				var postContentEl = postContainer.find('textarea'),
-					iconClass = $(this).find('i').attr('class'),
-					cursorEnd = postContentEl.val().length,
-					selectionStart = postContentEl[0].selectionStart,
-					selectionEnd = postContentEl[0].selectionEnd,
-					selectionLength = selectionEnd - selectionStart;
+				postContainer.on('click', '.formatting-bar span', function() {
+					var postContentEl = postContainer.find('textarea'),
+						iconClass = $(this).find('i').attr('class'),
+						cursorEnd = postContentEl.val().length,
+						selectionStart = postContentEl[0].selectionStart,
+						selectionEnd = postContentEl[0].selectionEnd,
+						selectionLength = selectionEnd - selectionStart;
 
 
-				function insertIntoInput(element, value) {
-					var start = postContentEl[0].selectionStart;
-					element.val(element.val().slice(0, start) + value + element.val().slice(start, element.val().length));
-					postContentEl[0].selectionStart = postContentEl[0].selectionEnd = start + value.length;
-				}
-
-				switch(iconClass) {
-					case 'fa fa-bold':
-						if (selectionStart === selectionEnd) {
-							// Nothing selected
-							insertIntoInput(postContentEl, "**bolded text**");
-						} else {
-							// Text selected
-							postContentEl.val(postContentEl.val().slice(0, selectionStart) + '**' + postContentEl.val().slice(selectionStart, selectionEnd) + '**' + postContentEl.val().slice(selectionEnd));
-							postContentEl[0].selectionStart = selectionStart + 2;
-							postContentEl[0].selectionEnd = selectionEnd + 2;
-						}
-					break;
-					case 'fa fa-italic':
-						if (selectionStart === selectionEnd) {
-							// Nothing selected
-							insertIntoInput(postContentEl, "*italicised text*");
-						} else {
-							// Text selected
-							postContentEl.val(postContentEl.val().slice(0, selectionStart) + '*' + postContentEl.val().slice(selectionStart, selectionEnd) + '*' + postContentEl.val().slice(selectionEnd));
-							postContentEl[0].selectionStart = selectionStart + 1;
-							postContentEl[0].selectionEnd = selectionEnd + 1;
-						}
-					break;
-					case 'fa fa-list':
-						// Nothing selected
-						insertIntoInput(postContentEl, "\n* list item");
-					break;
-					case 'fa fa-link':
-						if (selectionStart === selectionEnd) {
-							// Nothing selected
-							insertIntoInput(postContentEl, "[link text](link url)");
-						} else {
-							// Text selected
-							postContentEl.val(postContentEl.val().slice(0, selectionStart) + '[' + postContentEl.val().slice(selectionStart, selectionEnd) + '](link url)' + postContentEl.val().slice(selectionEnd));
-							postContentEl[0].selectionStart = selectionStart + selectionLength + 3;
-							postContentEl[0].selectionEnd = selectionEnd + 11;
-						}
-					break;
-				}
-			});
-
-			postContainer.on('click', '.formatting-bar span .fa-picture-o, .formatting-bar span .fa-upload', function() {
-				$('#files').click();
-			});
-
-			$('#files').on('change', function(e) {
-				var files = e.target.files;
-				if(files) {
-					for (var i=0; i<files.length; i++) {
-						loadFile(post_uuid, files[i]);
+					function insertIntoInput(element, value) {
+						var start = postContentEl[0].selectionStart;
+						element.val(element.val().slice(0, start) + value + element.val().slice(start, element.val().length));
+						postContentEl[0].selectionStart = postContentEl[0].selectionEnd = start + value.length;
 					}
-				}
-				$('#fileForm')[0].reset();
-			});
 
-			postContainer.find('.nav-tabs a').click(function (e) {
-				e.preventDefault();
-				$(this).tab('show');
-				var selector = $(this).attr('data-pane');
-				postContainer.find('.tab-content div').removeClass('active');
-				postContainer.find(selector).addClass('active');
-				if(selector === '.tab-write') {
-					bodyEl.focus();
-				}
-				return false;
-			});
-
-			bodyEl.on('blur', function() {
-				socket.emit('modules.composer.renderPreview', bodyEl.val(), function(err, preview) {
-  					postContainer.find('.preview').html(preview);
-  				});
-			});
-
-
-			var	resizeActive = false,
-				resizeCenterY = 0,
-				resizeOffset = 0,
-				resizeStart = function(e) {
-					resizeRect = resizeEl.getBoundingClientRect();
-					resizeCenterY = resizeRect.top + (resizeRect.height/2);
-					resizeOffset = resizeCenterY - e.clientY;
-					resizeActive = true;
-
-					$(window).on('mousemove', resizeAction);
-					$(window).on('mouseup', resizeStop);
-					document.body.addEventListener('touchmove', resizeTouchAction);
-				},
-				resizeStop = function() {
-					resizeActive = false;
-					bodyEl.focus();
-					$(window).off('mousemove', resizeAction);
-					$(window).off('mouseup', resizeStop);
-					document.body.removeEventListener('touchmove', resizeTouchAction);
-				},
-				resizeTouchAction = function(e) {
-					e.preventDefault();
-					resizeAction(e.touches[0]);
-				},
-				resizeAction = function(e) {
-					if (resizeActive) {
-						position = (e.clientY + resizeOffset);
-						var newHeight = $(window).height() - position;
-						var paddingBottom = parseInt(postContainer.css('padding-bottom'), 10);
-						if(newHeight > $(window).height() - $('#header-menu').height() - 20) {
-							newHeight = $(window).height() - $('#header-menu').height() - 20;
-						} else if (newHeight < paddingBottom) {
-							newHeight = paddingBottom;
-						}
-
-						postContainer.css('height', newHeight);
-						$('body').css({'margin-bottom': newHeight});
-						resizeSavePosition(newHeight);
+					switch(iconClass) {
+						case 'fa fa-bold':
+							if (selectionStart === selectionEnd) {
+								// Nothing selected
+								insertIntoInput(postContentEl, "**bolded text**");
+							} else {
+								// Text selected
+								postContentEl.val(postContentEl.val().slice(0, selectionStart) + '**' + postContentEl.val().slice(selectionStart, selectionEnd) + '**' + postContentEl.val().slice(selectionEnd));
+								postContentEl[0].selectionStart = selectionStart + 2;
+								postContentEl[0].selectionEnd = selectionEnd + 2;
+							}
+						break;
+						case 'fa fa-italic':
+							if (selectionStart === selectionEnd) {
+								// Nothing selected
+								insertIntoInput(postContentEl, "*italicised text*");
+							} else {
+								// Text selected
+								postContentEl.val(postContentEl.val().slice(0, selectionStart) + '*' + postContentEl.val().slice(selectionStart, selectionEnd) + '*' + postContentEl.val().slice(selectionEnd));
+								postContentEl[0].selectionStart = selectionStart + 1;
+								postContentEl[0].selectionEnd = selectionEnd + 1;
+							}
+						break;
+						case 'fa fa-list':
+							// Nothing selected
+							insertIntoInput(postContentEl, "\n* list item");
+						break;
+						case 'fa fa-link':
+							if (selectionStart === selectionEnd) {
+								// Nothing selected
+								insertIntoInput(postContentEl, "[link text](link url)");
+							} else {
+								// Text selected
+								postContentEl.val(postContentEl.val().slice(0, selectionStart) + '[' + postContentEl.val().slice(selectionStart, selectionEnd) + '](link url)' + postContentEl.val().slice(selectionEnd));
+								postContentEl[0].selectionStart = selectionStart + selectionLength + 3;
+								postContentEl[0].selectionEnd = selectionEnd + 11;
+							}
+						break;
 					}
+				});
+
+				postContainer.on('click', '.formatting-bar span .fa-picture-o, .formatting-bar span .fa-upload', function() {
+					$('#files').click();
+				});
+
+				$('#files').on('change', function(e) {
+					var files = e.target.files;
+					if(files) {
+						for (var i=0; i<files.length; i++) {
+							loadFile(post_uuid, files[i]);
+						}
+					}
+					$('#fileForm')[0].reset();
+				});
+
+				postContainer.find('.nav-tabs a').click(function (e) {
 					e.preventDefault();
+					$(this).tab('show');
+					var selector = $(this).attr('data-pane');
+					postContainer.find('.tab-content div').removeClass('active');
+					postContainer.find(selector).addClass('active');
+					if(selector === '.tab-write') {
+						bodyEl.focus();
+					}
 					return false;
-				},
-				resizeSavePosition = function(px) {
-					var	percentage = px / $(window).height();
-					localStorage.setItem('composer:resizePercentage', percentage);
-				},
-				resizeRect;
+				});
 
-			var resizeEl = postContainer.find('.resizer')[0];
+				bodyEl.on('blur', function() {
+					socket.emit('modules.composer.renderPreview', bodyEl.val(), function(err, preview) {
+	  					postContainer.find('.preview').html(preview);
+	  				});
+				});
 
-			resizeEl.addEventListener('mousedown', resizeStart);
 
-			resizeEl.addEventListener('touchstart', function(e) {
-				e.preventDefault();
-				resizeStart(e.touches[0]);
-			});
-			resizeEl.addEventListener('touchend', function(e) {
-				e.preventDefault();
-				resizeStop();
-			});
-				// .on('mousedown touchstart', resizeStart)
-				// .on('mouseup touchend', resizeStop)
+				var	resizeActive = false,
+					resizeCenterY = 0,
+					resizeOffset = 0,
+					resizeStart = function(e) {
+						resizeRect = resizeEl.getBoundingClientRect();
+						resizeCenterY = resizeRect.top + (resizeRect.height/2);
+						resizeOffset = resizeCenterY - e.clientY;
+						resizeActive = true;
 
-			window.addEventListener('resize', function() {
-				if (composer.active !== undefined) {
-					composer.activateReposition(composer.active);
-				}
+						$(window).on('mousemove', resizeAction);
+						$(window).on('mouseup', resizeStop);
+						document.body.addEventListener('touchmove', resizeTouchAction);
+					},
+					resizeStop = function() {
+						resizeActive = false;
+						bodyEl.focus();
+						$(window).off('mousemove', resizeAction);
+						$(window).off('mouseup', resizeStop);
+						document.body.removeEventListener('touchmove', resizeTouchAction);
+					},
+					resizeTouchAction = function(e) {
+						e.preventDefault();
+						resizeAction(e.touches[0]);
+					},
+					resizeAction = function(e) {
+						if (resizeActive) {
+							position = (e.clientY + resizeOffset);
+							var newHeight = $(window).height() - position;
+							var paddingBottom = parseInt(postContainer.css('padding-bottom'), 10);
+							if(newHeight > $(window).height() - $('#header-menu').height() - 20) {
+								newHeight = $(window).height() - $('#header-menu').height() - 20;
+							} else if (newHeight < paddingBottom) {
+								newHeight = paddingBottom;
+							}
+
+							postContainer.css('height', newHeight);
+							$('body').css({'margin-bottom': newHeight});
+							resizeSavePosition(newHeight);
+						}
+						e.preventDefault();
+						return false;
+					},
+					resizeSavePosition = function(px) {
+						var	percentage = px / $(window).height();
+						localStorage.setItem('composer:resizePercentage', percentage);
+					},
+					resizeRect;
+
+				var resizeEl = postContainer.find('.resizer')[0];
+
+				resizeEl.addEventListener('mousedown', resizeStart);
+
+				resizeEl.addEventListener('touchstart', function(e) {
+					e.preventDefault();
+					resizeStart(e.touches[0]);
+				});
+				resizeEl.addEventListener('touchend', function(e) {
+					e.preventDefault();
+					resizeStop();
+				});
+					// .on('mousedown touchstart', resizeStart)
+					// .on('mouseup touchend', resizeStop)
+
+				window.addEventListener('resize', function() {
+					if (composer.active !== undefined) {
+						composer.activateReposition(composer.active);
+					}
+				});
 			});
 		});
 	}
