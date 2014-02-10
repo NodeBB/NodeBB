@@ -1,5 +1,7 @@
 {
     "title": "Notificaciones",
+    "no_notifs": "You have no notifications",
+    "see_all": "See all Notifications",
     "back_to_home": "Volver al Inicio",
     "outgoing_link": "Link Externo",
     "outgoing_link_message": "Estas saliendo del sitio",

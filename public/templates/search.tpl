@@ -1,15 +1,15 @@
 <ol class="breadcrumb">
 	<li><a href="{relative_path}/">[[global:home]]</a></li>
-	<li class="active">[[global:header.search]]</li>
+	<li class="active">[[global:search]]</li>
 </ol>
 
 
 <form id="mobile-search-form" class="navbar-form navbar-right visible-xs" role="search" method="GET" action="">
 	<div class="" id="search-fields">
 		<div class="form-group">
-			<input type="text" class="form-control" placeholder="Search" name="query" value="">
+			<input type="text" class="form-control" placeholder="[[global:search]]" name="query" value="">
 		</div>
-		<button type="submit" class="btn btn-default hide">[[global:header.search]]</button>
+		<button type="submit" class="btn btn-default hide">[[global:search]]</button>
 	</div>
 </form>
 
@@ -57,12 +57,12 @@
 		</div>
 
 		<div id="post-results" class="col-md-12" data-search-query="{search_query}">
-			<h3>Posts</h3>
+			<h3>[[topic:posts]]</h3>
 
 			<!-- IF post_matches -->
 			<small>{post_matches} result(s) matching "{search_query}"</small>
 			<!-- ENDIF post_matches -->
-			<div class="alert alert-info {show_no_posts}">No posts found!</div>
+			<div class="alert alert-info {show_no_posts}">[[tropic:no_posts_found]]</div>
 
 			<!-- BEGIN posts -->
 			<div class="topic-row panel panel-default clearfix">

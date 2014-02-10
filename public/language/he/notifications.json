@@ -1,5 +1,7 @@
 {
     "title": "התראות",
+    "no_notifs": "You have no notifications",
+    "see_all": "See all Notifications",
     "back_to_home": "חזרה ל NodeBB",
     "outgoing_link": "לינק",
     "outgoing_link_message": "אתה כעת עוזב",

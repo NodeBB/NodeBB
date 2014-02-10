@@ -174,7 +174,7 @@
 						<form id="search-form" class="navbar-form navbar-right" role="search" method="GET" action="">
 							<div class="hide" id="search-fields">
 								<div class="form-group">
-									<input type="text" class="form-control" placeholder="Search" name="query" value="">
+									<input type="text" class="form-control" placeholder="[[global:search]]" name="query" value="">
 								</div>
 								<button type="submit" class="btn btn-default hide">[[global:search]]</button>
 							</div>

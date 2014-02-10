@@ -29,10 +29,14 @@ define(function() {
 						}
 
 					} else {
-						notifList.append($('<li class="no-notifs"><a>You have no notifications</a></li>'));
+						translator.translate('<li class="no-notifs"><a>[[notifications:no_notifs]]</a></li>', function(translated) {
+							notifList.append($(translated));
+						});
 					}
 
-					notifList.append($('<li class="pagelink"><a href="' + RELATIVE_PATH + '/notifications">See all Notifications</a></li>'));
+					translator.translate('<li class="pagelink"><a href="' + RELATIVE_PATH + '/notifications">[[notifications:see_all]]</a></li>', function(translated) {
+						notifList.append($(translated));
+					});
 
 					updateNotifCount(data.unread.length);
 

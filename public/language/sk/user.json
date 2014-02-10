@@ -9,6 +9,7 @@
     "age": "Vek",
     "joined": "Registrovaný",
     "lastonline": "Naposledy online",
+    "profile": "Profile",
     "profile_views": "Zobrazenie profilu",
     "reputation": "Reputácia",
     "posts": "Príspevky",
@@ -32,6 +33,7 @@
     "show_email": "Zobrazovať môj email v profile",
     "has_no_follower": "Tohoto užívatela nikto nesleduje :(",
     "follows_no_one": "Tento užívateľ nikoho nesleduje :(",
+    "has_no_posts": "This user didn't post anything yet.",
     "email_hidden": "Skrytý email",
     "hidden": "skrytý"
 }
