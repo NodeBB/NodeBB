@@ -41,9 +41,7 @@
 		</li>
 		<!-- END users -->
 		<li class="users-box {show_anon} anon-user">
-			<a href="#">
-				<img src="https://secure.gravatar.com/avatar/" class="img-thumbnail"/>
-			</a>
+			<img src="https://secure.gravatar.com/avatar/" class="img-thumbnail"/>
 			<br/>
 			<div class="user-info">
 				<span id="online_anon_count">{anonymousUserCount}</span>

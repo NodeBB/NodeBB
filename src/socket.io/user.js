@@ -135,9 +135,7 @@ SocketUser.unfollow = function(socket, data, callback) {
 
 SocketUser.saveSettings = function(socket, data, callback) {
 	if (socket.uid && data) {
-		user.setUserFields(socket.uid, {
-			showemail: data.showemail
-		}, callback);
+		user.saveSettings(socket.uid, data, callback);
 	}
 };
 

@@ -444,7 +444,11 @@ var socket,
 				clearInterval(titleObj.interval);
 			}
 			titleObj.interval = setInterval(function() {
-				window.document.title = titleObj.titles[titleObj.titles.indexOf(window.document.title) ^ 1];
+				var title = titleObj.titles[titleObj.titles.indexOf(window.document.title) ^ 1];
+
+				if (title) {
+					window.document.title = title;
+				}
 			}, 2000);
 		} else {
 			if (titleObj.interval) {
