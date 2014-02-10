@@ -1,7 +1,7 @@
 {
     "title": "Varsler",
-    "no_notifs": "You have no notifications",
-    "see_all": "See all Notifications",
+    "no_notifs": "Du har ingen varsler",
+    "see_all": "Se alle varsler",
     "back_to_home": "Tilbake til NodeBB",
     "outgoing_link": "Utgående link",
     "outgoing_link_message": "Du forlatter nå",

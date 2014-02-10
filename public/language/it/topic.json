@@ -52,5 +52,12 @@
     "fork_no_pids": "Nessun post selezionato!",
     "fork_success": "Discussione forkata con successo!",
     "reputation": "Reputazione",
-    "posts": "Post"
+    "posts": "Post",
+    "composer.title_placeholder": "Enter your topic title here...",
+    "composer.write": "Write",
+    "composer.preview": "Preview",
+    "composer.discard": "Discard",
+    "composer.submit": "Submit",
+    "composer.replying_to": "Replying to",
+    "composer.new_topic": "New Topic"
 }

@@ -52,5 +52,12 @@
     "fork_no_pids": "Keine Beiträge ausgewählt!",
     "fork_success": "Thema erfolgreich aufgespalten!",
     "reputation": "Reputation",
-    "posts": "Beiträge"
+    "posts": "Beiträge",
+    "composer.title_placeholder": "Enter your topic title here...",
+    "composer.write": "Write",
+    "composer.preview": "Preview",
+    "composer.discard": "Discard",
+    "composer.submit": "Submit",
+    "composer.replying_to": "Replying to",
+    "composer.new_topic": "New Topic"
 }

@@ -52,5 +52,12 @@
     "fork_no_pids": "尚未选择帖子！",
     "fork_success": "成功将帖子作为主题！",
     "reputation": "声望",
-    "posts": "发帖数"
+    "posts": "发帖数",
+    "composer.title_placeholder": "Enter your topic title here...",
+    "composer.write": "Write",
+    "composer.preview": "Preview",
+    "composer.discard": "Discard",
+    "composer.submit": "Submit",
+    "composer.replying_to": "Replying to",
+    "composer.new_topic": "New Topic"
 }
