@@ -510,19 +510,17 @@ var socket,
 
 			var userLabel = loggedInMenu.find('#user_label');
 
-			if (userLabel.length) {
-				if (data.userslug) {
-					userLabel.find('#user-profile-link').attr('href', RELATIVE_PATH + '/user/' + data.userslug);
-				}
-				if (data.picture) {
-					userLabel.find('img').attr('src', data.picture);
-				}
-				if (data.username) {
-					userLabel.find('#user-profile-link>span').html(' ' + data.username);
-				}
-
-				$('#logout-link').on('click', app.logout);
+			if (data.userslug) {
+				userLabel.find('#user-profile-link').attr('href', RELATIVE_PATH + '/user/' + data.userslug);
 			}
+			if (data.picture) {
+				userLabel.find('img').attr('src', data.picture);
+			}
+			if (data.username) {
+				userLabel.find('#user-profile-link>span').html(' ' + data.username);
+			}
+
+			$('#logout-link').on('click', app.logout);
 
 			updateOnlineStatus(data.uid);
 
