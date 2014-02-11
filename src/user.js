@@ -204,29 +204,23 @@ var bcrypt = require('bcryptjs'),
 			}
 
 			if(!settings) {
-				return sendDefaultSettings();
+				settings = {}
 			}
 
-			settings.showemail = parseInt(settings.showemail, 10) !== 0;
-			settings.usePagination = parseInt(settings.usePagination, 10) !== 0;
-			settings.topicsPerPage = parseInt(settings.topicsPerPage, 10);
-			settings.postsPerPage = parseInt(settings.postsPerPage, 10);
+			settings.showemail = settings.showemail ? parseInt(settings.showemail, 10) !== 0 : parseInt(meta.config.usePagination, 10) !== 0;
+			settings.usePagination = settings.usePagination ? parseInt(settings.usePagination, 10) !== 0 : parseInt(meta.config.usePagination, 10) !== 0;
+			settings.topicsPerPage = settings.topicsPerPage ? parseInt(settings.topicsPerPage, 10) : parseInt(meta.config.topicsPerPage, 10) || 20;
+			settings.postsPerPage = settings.postsPerPage ? parseInt(settings.postsPerPage, 10) : parseInt(meta.config.postsPerPage, 10) || 10;
 
 			callback(null, settings);
 		});
 	}
 
 	User.saveSettings = function(uid, data, callback) {
-		db.setObject('user:' + uid + ':settings', {
-			showemail: data.showemail || 0,
-			usePagination: data.usePagination || 0,
-			topicsPerPage: data.topicsPerPage || 20,
-			postsPerPage: data.postsPerPage || 10
-		}, callback);
+		db.setObject('user:' + uid + ':settings', data, callback);
 	}
 
 	User.updateProfile = function(uid, data, callback) {
-
 		var fields = ['username', 'email', 'fullname', 'website', 'location', 'birthday', 'signature'];
 		var returnData = {
 			success: false

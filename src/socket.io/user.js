@@ -133,6 +133,12 @@ SocketUser.unfollow = function(socket, data, callback) {
 	}
 };
 
+SocketUser.getSettings = function(socket, data, callback) {
+	if (socket.uid) {
+		user.getSettings(socket.uid, callback);
+	}
+};
+
 SocketUser.saveSettings = function(socket, data, callback) {
 	if (socket.uid && data) {
 		user.saveSettings(socket.uid, data, callback);
