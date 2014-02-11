@@ -129,7 +129,7 @@ module.exports.server = server;
 			templateValues.linkTags.push({
 				rel: "icon",
 				type: "image/x-icon",
-				href: meta.config['brand:favicon'] || nconf.get('relative_path') + '/favicon.ico'
+				href: nconf.get('relative_path') + '/favicon.ico'
 			});
 
 			// Browser Title
@@ -192,7 +192,9 @@ module.exports.server = server;
 
 				logger.init(app);
 
-				app.use(express.favicon(path.join(__dirname, '../', 'public', 'favicon.ico')));
+
+				app.use(express.favicon(path.join(__dirname, '../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico')));
+
 				app.use(require('less-middleware')({
 					src: path.join(__dirname, '../', 'public'),
 					prefix: nconf.get('relative_path'),
