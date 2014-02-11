@@ -302,8 +302,6 @@ var fs = require('fs'),
 							return next(err);
 						}
 
-						userData.theirid = uid;
-						userData.yourid = callerUID;
 						userData.settings = settings;
 						res.json(userData);
 					});
