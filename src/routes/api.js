@@ -103,12 +103,12 @@ var path = require('path'),
 									data.motd_class += (meta.config.motd && meta.config.motd.length > 0 ? '' : ' default');
 									data.motd_class += meta.config.motd_class ? ' ' + meta.config.motd_class : '';
 
-									data.motd = require('marked')(motdString);
+									data.motd = motdString;
 									res.json(data);
 								};
 
 							if (!meta.config.motd) {
-								translator.translate('\n\n# NodeBB <small><span>v' + pkg.version + '</span></small>\n\n<h5>[[global:motd.welcome]]</h5>\
+								translator.translate('\n\n<h1>NodeBB</h1> <small><span>v' + pkg.version + '</span></small>\n\n<h5>[[global:motd.welcome]]</h5>\
 									<div class="btn-group">\
 										<a target="_blank" href="https://www.nodebb.org" class="btn btn-link btn-md">\
 											<i class="fa fa-comment"></i>\
