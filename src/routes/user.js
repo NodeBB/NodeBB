@@ -266,10 +266,10 @@ var fs = require('fs'),
 			});
 		});
 
-		app.get('/api/user/:userslug/settings', function (req, res, next) {
+		app.get('/api/user/:userslug/settings', function(req, res, next) {
 			var callerUID = req.user ? req.user.uid : '0';
 
-			user.getUidByUserslug(req.params.userslug, function (err, uid) {
+			user.getUidByUserslug(req.params.userslug, function(err, uid) {
 				if (err) {
 					return next(err);
 				}
@@ -286,26 +286,27 @@ var fs = require('fs'),
 					});
 				}
 
-				user.getUserFields(uid, ['username', 'userslug'], function (err, userData) {
+				plugins.fireHook('filter:user.settings', [], function(err, settings) {
 					if (err) {
 						return next(err);
 					}
 
-					if(!userData) {
-						return res.json(404, {
-							error: 'User not found!'
-						});
-					}
-
-					user.getSettings(uid, function(err, settings) {
-						if(err) {
+					user.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
+						if (err) {
 							return next(err);
+						}
+
+						if(!userData) {
+							return res.json(404, {
+								error: 'User not found!'
+							});
 						}
 
 						userData.settings = settings;
 						res.json(userData);
 					});
 				});
+
 			});
 		});
 
