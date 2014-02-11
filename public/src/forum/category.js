@@ -138,7 +138,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 	}
 
 	Category.loadMoreTopics = function(cid) {
-		if (loadingMoreTopics) {
+		if (loadingMoreTopics || !$('#topics-container').length) {
 			return;
 		}
 
