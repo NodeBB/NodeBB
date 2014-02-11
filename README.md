@@ -1,7 +1,7 @@
-# NodeBB
-**NodeBB** is a robust Node.js driven forum built on a Redis database. It is powered by web sockets, and is compatible down to IE8.
+# <img alt="NodeBB" src="http://i.imgur.com/3yj1n6N.png" />
+**NodeBB Forum Software** is powered by Node.js and built on a Redis database. It utilizes web sockets for instant interactions and real-time notifications. NodeBB is compatible down to IE8 and has many modern features out of the box such as social network integration and streaming discussions.
 
-* [NodeBB Homepage](http://www.nodebb.org/ "NodeBB")
+* [Get NodeBB](http://www.nodebb.org/ "NodeBB")
 * [Demo & Meta Discussion](http://community.nodebb.org)
 * [NodeBB Blog](http://blog.nodebb.org)
 * [Wiki Guides](https://github.com/designcreateplay/NodeBB/wiki) - includes setup for other platforms
