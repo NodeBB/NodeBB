@@ -197,6 +197,8 @@ var async = require('async'),
 	};
 
 	Notifications.prune = function(cutoff) {
+		var start = process.hrtime();
+
 		if (process.env.NODE_ENV === 'development') {
 			winston.info('[notifications.prune] Removing expired notifications from the database.');
 		}
@@ -269,6 +271,9 @@ var async = require('async'),
 				if (process.env.NODE_ENV === 'development') {
 					winston.info('[notifications.prune] Notification pruning completed. ' + numPruned + ' expired notification' + (numPruned !== 1 ? 's' : '') + ' removed.');
 				}
+				var diff = process.hrtime(start);
+				events.log('Pruning notifications took : ' + (diff[0] * 1e3 + diff[1] / 1e6) + ' ms');
+
 			});
 
 		});

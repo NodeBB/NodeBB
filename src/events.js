@@ -57,7 +57,7 @@ var fs = require('fs'),
 				return;
 			}
 
-			var msg = '[' + new Date().toUTCString() + '] - ' + username + '(uid ' + uid + ') ' + string + '\n';
+			var msg = '[' + new Date().toUTCString() + '] - ' + username + '(uid ' + uid + ') ' + string;
 			log(msg);
 		});
 	}
@@ -65,7 +65,7 @@ var fs = require('fs'),
 	events.log = function(msg) {
 		var logFile = path.join(nconf.get('base_dir'), logFileName);
 
-		fs.appendFile(logFile, msg, function(err) {
+		fs.appendFile(logFile, msg + '\n', function(err) {
 			if(err) {
 				winston.error('Error logging event. ' + err.message);
 				return;
