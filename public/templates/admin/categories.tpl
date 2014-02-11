@@ -3,6 +3,8 @@
 	<h1><i class="fa fa-folder"></i> Categories</h1>
 	<hr />
 
+	<button class="btn btn-primary" id="addNew">Add New</button>
+	<hr />
 	<ul class="nav nav-pills">
 		<li class='active'><a href='/admin/categories/active'>Active</a></li>
 		<li class=''><a href='/admin/categories/disabled'>Disabled</a></li>
@@ -50,7 +52,7 @@
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-md-8 col-sm-6">
+								<div class="col-md-12 col-sm-12">
 									<div class="form-group">
 										<div class="form-group">
 											<label for="cid-{categories.cid}-description">Description</label>
@@ -58,22 +60,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="col-md-4 col-sm-6">
-									<div class="form-group">
-										<div class="form-group">
-											<label>&nbsp;</label>
-											<div class="dropdown">
-												<button type="button" class="btn btn-default" data-toggle="dropdown"><i class="fa fa-cogs"></i> Options</button>
-												<ul class="dropdown-menu" role="menu">
-													<li class="permissions"><a href="#"><i class="fa fa-ban"></i> Access Control</a></li>
-													<hr />
-													<li data-disabled="{categories.disabled}"><a href="#"></a></li>
-												</ul>
-												<button type="button" data-name="image" data-value="{categories.image}" class="btn btn-default upload-button"><i class="fa fa-upload"></i> Image</button>
-											</div>
-										</div>
-									</div>
-								</div>
+
 							</div>
 							<div class="row">
 								<div class="col-sm-4 col-xs-12">
@@ -96,8 +83,25 @@
 								</div>
 								<div class="col-sm-4 col-xs-12">
 									<div class="form-group">
-										<label for="cid-{categories.cid}-link">Is Link (if set, category acts as external link)</label>
+										<label for="cid-{categories.cid}-link">External Link</label>
 										<input id="cid-{categories.cid}-link" type="text" class="form-control" placeholder="http://domain.com" data-name="link" value="{categories.link}" />
+									</div>
+								</div>
+								<div class="col-sm-4 col-xs-12">
+									<div class="form-group">
+
+										<label>&nbsp;</label>
+										<div class="dropdown">
+											<button type="button" class="btn btn-default" data-toggle="dropdown"><i class="fa fa-cogs"></i> Options</button>
+											<ul class="dropdown-menu" role="menu">
+												<li class="permissions"><a href="#"><i class="fa fa-ban"></i> Access Control</a></li>
+												<hr />
+												<li data-disabled="{categories.disabled}"><a href="#"></a></li>
+											</ul>
+											<button type="button" data-name="image" data-value="{categories.image}" class="btn btn-default upload-button"><i class="fa fa-upload"></i> Image</button>
+											<button class="btn btn-primary" class="save">Save</button>
+										</div>
+
 									</div>
 								</div>
 							</div>
@@ -112,8 +116,7 @@
 		<!-- END categories -->
 		</ul>
 
-		<button class="btn btn-lg btn-primary" id="save">Save</button>
-		<button class="btn btn-lg btn-primary" id="addNew">Add New</button>
+
 	</div>
 
 	<div id="new-category-modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="Add New Modal" aria-hidden="true">

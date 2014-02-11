@@ -122,7 +122,7 @@ define(['uploader'], function(uploader) {
 				}
 			});
 
-			$('#save').on('click', save);
+			$('.save').on('click', save);
 			$('#addNew').on('click', showCreateCategoryModal);
 			$('#create-category-btn').on('click', createNewCategory);
 

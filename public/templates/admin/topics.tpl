@@ -26,7 +26,7 @@
 </div>
 <!-- ELSE -->
 <div class="text-center">
-	<button id="topics_loadmore" class="btn btn-primary btn-lg">Load More Topics</button>
+	<button id="topics_loadmore" class="btn btn-primary">Load More Topics</button>
 </div>
 <!-- ENDIF notopics -->
 

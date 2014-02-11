@@ -21,4 +21,4 @@
 	</form>
 </div>
 
-<button class="btn btn-lg btn-primary" id="save">Save</button>
+<button class="btn btn-primary" id="save">Save</button>
