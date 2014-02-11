@@ -58,7 +58,7 @@ var fs = require('fs'),
 			}
 
 			var msg = '[' + new Date().toUTCString() + '] - ' + username + '(uid ' + uid + ') ' + string;
-			log(msg);
+			events.log(msg);
 		});
 	}
 
