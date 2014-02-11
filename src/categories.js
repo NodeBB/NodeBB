@@ -334,7 +334,8 @@ var db = require('./database'),
 				}
 
 				Categories.hasReadCategory(cid, uid, function(hasRead) {
-					categoryData.badgeclass = (parseInt(categoryData.topic_count, 10) === 0 || (hasRead && uid !== 0)) ? '' : 'badge-important';
+
+					categoryData['unread-class'] = (parseInt(categoryData.topic_count, 10) === 0 || (hasRead && parseInt(uid, 10) !== 0)) ? '' : 'unread';
 
 					callback(null, categoryData);
 				});

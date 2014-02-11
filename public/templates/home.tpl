@@ -9,7 +9,7 @@
 		<meta itemprop="name" content="{categories.name}">
 		<h4>
 			<!-- IF !categories.link -->
-			<span class="badge {categories.badgeclass}">{categories.topic_count} </span>
+			<span class="badge {categories.unread-class}">{categories.topic_count} </span>
 			<!-- ENDIF !categories.link -->
 
 			<!-- IF categories.link -->

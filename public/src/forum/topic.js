@@ -114,10 +114,12 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				});
 
 				$('.markAsUnreadForAll').on('click', function() {
+					var btn = $(this);
 					socket.emit('topics.markAsUnreadForAll', tid, function(err) {
 						if(err) {
 							return app.alertError(err.message);
 						}
+						btn.parents('.thread-tools.open').find('.dropdown-toggle').trigger('click');
 					});
 					return false;
 				})

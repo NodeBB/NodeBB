@@ -152,12 +152,12 @@ var async = require('async'),
 				posts.create(uid, tid, content, next);
 			},
 			function(postData, next) {
+
 				threadTools.notifyFollowers(tid, postData.pid, uid);
+
 				user.sendPostNotificationToFollowers(uid, tid, postData.pid);
 
-				Topics.markCategoryUnreadForAll(tid, function(err) {
-					next(err, postData);
-				});
+				next(err, postData);
 			},
 			function(postData, next) {
 				Topics.markAsUnreadForAll(tid, function(err) {
@@ -972,7 +972,12 @@ var async = require('async'),
 	}
 
 	Topics.markAsUnreadForAll = function(tid, callback) {
-		db.delete('tid:' + tid + ':read_by_uid', callback);
+		db.delete('tid:' + tid + ':read_by_uid', function(err) {
+			if(err) {
+				return callback(err);
+			}
+			Topics.markCategoryUnreadForAll(tid, callback)
+		});
 	}
 
 	Topics.markAsRead = function(tid, uid, callback) {
