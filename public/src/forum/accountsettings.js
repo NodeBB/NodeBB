@@ -32,7 +32,6 @@ define(['forum/accountheader'], function(header) {
 		});
 		
 		socket.emit('user.getSettings', function(err, settings) {
-			console.log(settings);
 			for (var setting in settings) {
 				if (settings.hasOwnProperty(setting)) {
 					var input = $('.account input[data-property="' + setting + '"]');
