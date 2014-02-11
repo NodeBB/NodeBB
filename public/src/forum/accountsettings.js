@@ -5,13 +5,21 @@ define(['forum/accountheader'], function(header) {
 		header.init();
 
 		$('#submitBtn').on('click', function() {
+			var settings = {};
 
-			var settings = {
-				showemail: $('#showemailCheckBox').is(':checked') ? 1 : 0,
-				usePagination: $('#usePaginationCheckBox').is(':checked') ? 1 : 0,
-				topicsPerPage: $('#topicsPerPage').val(),
-				postsPerPage: $('#postsPerPage').val()
-			};
+			$('.account input, .account textarea').each(function(id, input) {
+				input = $(input);
+
+				switch (input.attr('type')) {
+					case 'text' :
+					case 'textarea' :
+						settings[input.attr('data-property')] = input.val();
+						break;
+					case 'checkbox' :
+						settings[input.attr('data-property')] = input.is(':checked') ? 1 : 0;
+						break;
+				}
+			});
 
 			socket.emit('user.saveSettings', settings, function(err) {
 				if (err) {
@@ -19,7 +27,27 @@ define(['forum/accountheader'], function(header) {
 				}
 				app.alertSuccess('Settings saved!');
 			});
+
 			return false;
+		});
+		
+		socket.emit('user.getSettings', function(err, settings) {
+			console.log(settings);
+			for (var setting in settings) {
+				if (settings.hasOwnProperty(setting)) {
+					var input = $('.account input[data-property="' + setting + '"]');
+
+					switch (input.attr('type')) {
+						case 'text' :
+						case 'textarea' :
+							input.val(settings[setting]);
+							break;
+						case 'checkbox' :
+							input.prop('checked', !!settings[setting]);
+							break;
+					}
+				}
+			}
 		});
 	};
 

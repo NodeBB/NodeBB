@@ -5,7 +5,7 @@
 			<div class="well">
 				<div class="checkbox">
 					<label>
-						<input id="showemailCheckBox" type="checkbox" <!-- IF settings.showemail -->checked<!-- ENDIF settings.showemail --> > <strong>[[user:show_email]]</strong>
+						<input type="checkbox" data-property="showemail" /> <strong>[[user:show_email]]</strong>
 					</label>
 				</div>
 			</div>
@@ -13,13 +13,20 @@
 			<div class="well">
 				<div class="checkbox">
 					<label>
-						<input id="usePaginationCheckBox" type="checkbox" <!-- IF settings.usePagination -->checked<!-- ENDIF settings.usePagination -->> <strong>[[user:paginate_description]]</strong>
+						<input type="checkbox" data-property="usePagination"> <strong>[[user:paginate_description]]</strong>
 					</label>
 				</div>
 
-				<strong>[[user:topics_per_page]]</strong><br /> <input id="topicsPerPage" type="text" class="form-control" value="{settings.topicsPerPage}"><br />
-				<strong>[[user:posts_per_page]]</strong><br /> <input id="postsPerPage" type="text" class="form-control" value="{settings.postsPerPage}"><br />
+				<strong>[[user:topics_per_page]]</strong><br /> <input type="text" class="form-control" data-property="topicsPerPage"><br />
+				<strong>[[user:posts_per_page]]</strong><br /> <input type="text" class="form-control" data-property="postsPerPage"><br />
 			</div>
+
+			<!-- BEGIN settings -->
+			<h4>{settings.title}</h4>
+			<div class="well">
+				{settings.content}
+			</div>
+			<!-- END settings -->
 		</div>
 	</div>
 
