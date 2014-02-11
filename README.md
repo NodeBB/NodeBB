@@ -22,12 +22,8 @@
 
 ## Screenshots 
 
-![Convoe Homepage powered by NodeBB](http://i.imgur.com/tbAxIyb.jpg)
-![Convoe Topics powered by NodeBB](http://i.imgur.com/FLOUuIq.png)
-![Kano Homepage powered by NodeBB](http://i.imgur.com/Ud1LrfI.png)
-![NodeBB Vanilla Topic Page](http://i.imgur.com/ZC8W39a.png)
-![NodeBB Homepage (Pewter Theme)](http://i.imgur.com/o90kVPi.png)
-![NodeBB Sidemenu (Pewter Theme)](http://i.imgur.com/AaRRrU2.png)
+[<img src="http://i.imgur.com/FLOUuIqb.png" />](http://i.imgur.com/FLOUuIq.png)&nbsp;[<img src="http://i.imgur.com/Ud1LrfIb.png" />](http://i.imgur.com/Ud1LrfI.png)&nbsp;[<img src="http://i.imgur.com/ZC8W39ab.png" />](http://i.imgur.com/ZC8W39a.png)&nbsp;[<img src="http://i.imgur.com/o90kVPib.png" />](http://i.imgur.com/o90kVPi.png)&nbsp;[<img src="http://i.imgur.com/AaRRrU2b.png" />](http://i.imgur.com/AaRRrU2.png)
+
 Credit: [Convoe](http://www.convoe.com), [Kano](http://www.kano.me).
 
 ## Requirements
