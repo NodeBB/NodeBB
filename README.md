@@ -1,29 +1,37 @@
 # NodeBB
-**NodeBB** is a robust Node.js driven forum built on a redis database. It is powered by web sockets, and is compatible down to IE8.
+**NodeBB** is a robust Node.js driven forum built on a Redis database. It is powered by web sockets, and is compatible down to IE8.
 
 * [NodeBB Homepage](http://www.nodebb.org/ "NodeBB")
-* [Demo & Meta Discussion](http://try.nodebb.org)
+* [Demo & Meta Discussion](http://community.nodebb.org)
+* [NodeBB Blog](http://blog.nodebb.org)
 * [Wiki Guides](https://github.com/designcreateplay/NodeBB/wiki) - includes setup for other platforms
 * [Join us on IRC](https://kiwiirc.com/client/irc.freenode.net/nodebb) - #nodebb on Freenode
 * [Follow on Twitter](http://www.twitter.com/NodeBB/ "NodeBB Twitter")
 * [Like us on Facebook](http://www.facebook.com/NodeBB/ "NodeBB Facebook")
+* [Get Plugins](http://community.nodebb.org/category/7/nodebb-plugins "NodeBB Plugins")
+* [Get Themes](http://community.nodebb.org/category/10/nodebb-themes "NodeBB Themes")
 
-![NodeBB Main Category Listing](http://i.imgur.com/zRdzCcj.png)
-
-![NodeBB Topic Page](http://i.imgur.com/ZC8W39a.png)
 
 ## How can I follow along/contribute?
 
 * Our feature roadmap is hosted on the project wiki's [Version History / Roadmap](https://github.com/designcreateplay/NodeBB/wiki/Version-History-%26-Roadmap)
-* If you are a developer, feel free to check out the source and submit pull requests.
-* If you are a designer, NodeBB needs themes! NodeBB will accept any LESS or CSS file and use it in place of the default Twitter Bootstrap theme. Consider extending Bootstrap themes by extending the base bootstrap LESS file.
+* If you are a developer, feel free to check out the source and submit pull requests. We also have a wide array of [plugins](http://community.nodebb.org/category/7/nodebb-plugins) which would be a great starting point for learning the codebase.
+* If you are a designer, [NodeBB needs themes](http://community.nodebb.org/category/10/nodebb-themes)! NodeBB's theming system allows extention of the base templates as well as styling via LESS or CSS. NodeBB's base theme utilizes [Bootstrap 3](http://getbootstrap.com/) but themes can choose to use a different framework altogether.
+* Please don't forget to like, follow, and star our repo! Join our growing [community](http://community.nodebb.org) to keep up to date with the latest NodeBB development.
+
+
+## Screenshots 
+
+[<img src="http://i.imgur.com/FLOUuIqb.png" />](http://i.imgur.com/FLOUuIq.png)&nbsp;[<img src="http://i.imgur.com/Ud1LrfIb.png" />](http://i.imgur.com/Ud1LrfI.png)&nbsp;[<img src="http://i.imgur.com/ZC8W39ab.png" />](http://i.imgur.com/ZC8W39a.png)&nbsp;[<img src="http://i.imgur.com/o90kVPib.png" />](http://i.imgur.com/o90kVPi.png)&nbsp;[<img src="http://i.imgur.com/AaRRrU2b.png" />](http://i.imgur.com/AaRRrU2.png)
+
+Credit: [Convoe](http://www.convoe.com), [Kano](http://www.kano.me).
 
 ## Requirements
 
 NodeBB requires the following software to be installed:
 
 * A version of Node.js at least 0.8 or greater
-* Redis, version 2.6 or greater or MongoDB, version 2.4 or greater
+* Redis, version 2.6 or greater **or** MongoDB, version 2.4 or greater
 * nginx, version 1.3.13 or greater (**only if** intending to use nginx to proxy requests to a NodeBB)
 
 ## Installation
