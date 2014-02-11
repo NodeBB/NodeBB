@@ -228,7 +228,7 @@ SocketPosts.getFavouritedUsers = function(socket, pid, callback) {
 };
 
 SocketPosts.getPidPage = function(socket, pid, callback) {
-	posts.getPidPage(pid, callback);
+	posts.getPidPage(pid, socket.uid, callback);
 }
 
 SocketPosts.flag = function(socket, pid, callback) {

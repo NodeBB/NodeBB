@@ -495,7 +495,7 @@ var db = require('./database'),
 		});
 	}
 
-	Posts.getPidPage = function(pid, callback) {
+	Posts.getPidPage = function(pid, uid, callback) {
 		Posts.getPostField(pid, 'tid', function(err, tid) {
 			if(err) {
 				return callback(err);
@@ -510,11 +510,15 @@ var db = require('./database'),
 				if(index === -1) {
 					return callback(new Error('pid not found'));
 				}
-				var postsPerPage = parseInt(meta.config.postsPerPage, 10);
-				postsPerPage = postsPerPage ? postsPerPage : 20;
 
-				var page = Math.ceil((index + 1) / postsPerPage);
-				callback(null, page);
+				user.getSettings(uid, function(err, settings) {
+					if(err) {
+						return callback(err);
+					}
+
+					var page = Math.ceil((index + 1) / settings.postsPerPage);
+					callback(null, page);
+				});
 			});
 		});
 	}
