@@ -605,7 +605,7 @@ define(['taskbar'], function(taskbar) {
 			var currentText = textarea.val();
 
 			if(err) {
-				textarea.val(currentText.replace(imgText, linkStart + '[' + img.name + '](upload error)'));
+				textarea.val(currentText.replace(imgText, linkStart + '[' + img.name + ']( Error : ' + err.message + ')'));
 				return app.alertError(err.message);
 			}
 

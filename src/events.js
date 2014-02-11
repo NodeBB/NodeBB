@@ -10,46 +10,46 @@ var fs = require('fs'),
 	var logFileName = 'events.log';
 
 	events.logPasswordChange = function(uid) {
-		log(uid, 'changed password');
+		logWithUser(uid, 'changed password');
 	}
 
 	events.logPasswordReset = function(uid) {
-		log(uid, 'reset password');
+		logWithUser(uid, 'reset password');
 	}
 
 	events.logEmailChange = function(uid, oldEmail, newEmail) {
-		log(uid,'changed email from "' + oldEmail + '" to "' + newEmail +'"');
+		logWithUser(uid,'changed email from "' + oldEmail + '" to "' + newEmail +'"');
 	}
 
 	events.logUsernameChange = function(uid, oldUsername, newUsername) {
-		log(uid,'changed username from "' + oldUsername + '" to "' + newUsername +'"');
+		logWithUser(uid,'changed username from "' + oldUsername + '" to "' + newUsername +'"');
 	}
 
 	events.logAdminLogin = function(uid) {
-		log(uid, 'logged into admin panel');
+		logWithUser(uid, 'logged into admin panel');
 	}
 
 	events.logPostEdit = function(uid, pid) {
-		log(uid, 'edited post (pid ' + pid + ')');
+		logWithUser(uid, 'edited post (pid ' + pid + ')');
 	}
 
 	events.logPostDelete = function(uid, pid) {
-		log(uid, 'deleted post (pid ' + pid + ')');
+		logWithUser(uid, 'deleted post (pid ' + pid + ')');
 	}
 
 	events.logPostRestore = function(uid, pid) {
-		log(uid, 'restored post (pid ' + pid + ')');
+		logWithUser(uid, 'restored post (pid ' + pid + ')');
 	}
 
 	events.logTopicDelete = function(uid, tid) {
-		log(uid, 'deleted topic (tid ' + tid + ')');
+		logWithUser(uid, 'deleted topic (tid ' + tid + ')');
 	}
 
 	events.logTopicRestore = function(uid, tid) {
-		log(uid, 'restored topic (tid ' + tid + ')');
+		logWithUser(uid, 'restored topic (tid ' + tid + ')');
 	}
 
-	function log(uid, string) {
+	function logWithUser(uid, string) {
 
 		user.getUserField(uid, 'username', function(err, username) {
 			if(err) {
@@ -57,17 +57,19 @@ var fs = require('fs'),
 				return;
 			}
 
-			var date = new Date().toUTCString();
+			var msg = '[' + new Date().toUTCString() + '] - ' + username + '(uid ' + uid + ') ' + string + '\n';
+			log(msg);
+		});
+	}
 
-			var msg = '[' + date + '] - ' + username + '(uid ' + uid + ') ' + string + '\n';
-			var logFile = path.join(nconf.get('base_dir'), logFileName);
+	events.log = function(msg) {
+		var logFile = path.join(nconf.get('base_dir'), logFileName);
 
-			fs.appendFile(logFile, msg, function(err) {
-				if(err) {
-					winston.error('Error logging event. ' + err.message);
-					return;
-				}
-			});
+		fs.appendFile(logFile, msg, function(err) {
+			if(err) {
+				winston.error('Error logging event. ' + err.message);
+				return;
+			}
 		});
 	}
 

@@ -3,7 +3,8 @@ var async = require('async'),
 	cron = require('cron').CronJob,
 
 	db = require('./database'),
-	utils = require('../public/src/utils');
+	utils = require('../public/src/utils'),
+	events = require('./events');
 
 (function(Notifications) {
 	"use strict";
@@ -196,7 +197,6 @@ var async = require('async'),
 	};
 
 	Notifications.prune = function(cutoff) {
-
 		if (process.env.NODE_ENV === 'development') {
 			winston.info('[notifications.prune] Removing expired notifications from the database.');
 		}
