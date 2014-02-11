@@ -17,12 +17,12 @@
 * Our feature roadmap is hosted on the project wiki's [Version History / Roadmap](https://github.com/designcreateplay/NodeBB/wiki/Version-History-%26-Roadmap)
 * If you are a developer, feel free to check out the source and submit pull requests. We also have a wide array of [plugins](http://community.nodebb.org/category/7/nodebb-plugins) which would be a great starting point for learning the codebase.
 * If you are a designer, [NodeBB needs themes](http://community.nodebb.org/category/10/nodebb-themes)! NodeBB's theming system allows extention of the base templates as well as styling via LESS or CSS. NodeBB's base theme utilizes [Bootstrap 3](http://getbootstrap.com/) but themes can choose to use a different framework altogether.
-* Please don't forget to like, follow, and star our repo! Join our growing [community](http://community.nodebb.org) to keep up to date with the latest NodeBB development.
+* Please don't forget to **like**, **follow**, and **star our repo**! Join our growing [community](http://community.nodebb.org) to keep up to date with the latest NodeBB development.
 
 
 ## Screenshots 
 
-[<img src="http://i.imgur.com/FLOUuIqb.png" />](http://i.imgur.com/FLOUuIq.png)&nbsp;[<img src="http://i.imgur.com/Ud1LrfIb.png" />](http://i.imgur.com/Ud1LrfI.png)&nbsp;[<img src="http://i.imgur.com/ZC8W39ab.png" />](http://i.imgur.com/ZC8W39a.png)&nbsp;[<img src="http://i.imgur.com/o90kVPib.png" />](http://i.imgur.com/o90kVPi.png)&nbsp;[<img src="http://i.imgur.com/AaRRrU2b.png" />](http://i.imgur.com/AaRRrU2.png)
+[<img src="http://i.imgur.com/FLOUuIqb.png" />](http://i.imgur.com/FLOUuIq.png)&nbsp;[<img src="http://i.imgur.com/Ud1LrfIb.png" />](http://i.imgur.com/Ud1LrfI.png)&nbsp;[<img src="http://i.imgur.com/ZC8W39ab.png" />](http://i.imgur.com/ZC8W39a.png)&nbsp;[<img src="http://i.imgur.com/o90kVPib.png" />](http://i.imgur.com/o90kVPi.png)&nbsp;[<img src="http://i.imgur.com/AaRRrU2b.png" />](http://i.imgur.com/AaRRrU2.png)&nbsp;[<img src="http://i.imgur.com/LmHtPhob.png" />](http://i.imgur.com/LmHtPho.png)&nbsp;[<img src="http://i.imgur.com/paiJPJkb.jpg" />](http://i.imgur.com/paiJPJk.jpg)&nbsp;[<img src="http://i.imgur.com/ZfavPHDb.png" />](http://i.imgur.com/ZfavPHD.png)
 
 Credit: [Convoe](http://www.convoe.com), [Kano](http://www.kano.me).
 
