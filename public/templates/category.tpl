@@ -33,7 +33,7 @@
 		<ul id="topics-container" itemscope itemtype="http://www.schema.org/ItemList" data-nextstart="{nextStart}">
 			<meta itemprop="itemListOrder" content="descending">
 			<!-- BEGIN topics -->
-			<li class="category-item {topics.deleted-class}" itemprop="itemListElement">
+			<li class="category-item {topics.deleted-class} {topics.unread-class}" itemprop="itemListElement">
 
 				<div class="col-md-12 col-xs-12 panel panel-default topic-row">
 					<a href="../../user/{topics.userslug}" class="pull-left">

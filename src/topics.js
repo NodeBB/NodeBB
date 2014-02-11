@@ -751,7 +751,9 @@ var async = require('async'),
 					topicData['pin-icon'] = parseInt(topicData.pinned, 10) === 1 ? 'fa-thumb-tack' : 'none';
 					topicData['lock-icon'] = parseInt(topicData.locked, 10) === 1 ? 'fa-lock' : 'none';
 					topicData['deleted-class'] = parseInt(topicData.deleted, 10) === 1 ? 'deleted' : '';
+					topicData['unread-class'] = !(topicInfo.hasread && parseInt(current_user, 10) !== 0) ? 'unread' : '';
 
+					topicData.unread = !(topicInfo.hasread && parseInt(current_user, 10) !== 0);
 					topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
 					topicData.username = topicInfo.username || 'anonymous';
 					topicData.userslug = topicInfo.userslug || '';
@@ -759,7 +761,7 @@ var async = require('async'),
 					topicData.categoryIcon = topicInfo.categoryData.icon;
 					topicData.categoryName = topicInfo.categoryData.name;
 					topicData.categorySlug = topicInfo.categoryData.slug;
-					topicData.badgeclass = (topicInfo.hasread && parseInt(current_user, 10) !== 0) ? '' : 'badge-important';
+
 					topicData.teaser_username = topicInfo.teaserInfo.username || '';
 					topicData.teaser_userslug = topicInfo.teaserInfo.userslug || '';
 					topicData.teaser_userpicture = topicInfo.teaserInfo.picture || gravatar.url('', {}, true);
@@ -884,8 +886,9 @@ var async = require('async'),
 
 			topicData['pin-icon'] = parseInt(topicData.pinned, 10) === 1 ? 'fa-thumb-tack' : 'none';
 			topicData['lock-icon'] = parseInt(topicData.locked, 10) === 1 ? 'fa-lock' : 'none';
+			topicData['unread-class'] = !(topicInfo.hasread && parseInt(current_user, 10) !== 0) ? 'unread' : '';
 
-			topicData.badgeclass = hasRead ? '' : 'badge-important';
+			topicData.unread = !(topicInfo.hasread && parseInt(current_user, 10) !== 0);
 			topicData.teaser_username = teaser.username || '';
 			topicData.teaser_userslug = teaser.userslug || '';
 			topicData.userslug = teaser.userslug || '';
@@ -1007,6 +1010,12 @@ var async = require('async'),
 	}
 
 	Topics.hasReadTopics = function(tids, uid, callback) {
+		if(!parseInt(uid, 10)) {
+			return callback(tids.map(function() {
+				return false;
+			}));
+		}
+
 		var sets = [];
 
 		for (var i = 0, ii = tids.length; i < ii; i++) {
@@ -1019,6 +1028,10 @@ var async = require('async'),
 	}
 
 	Topics.hasReadTopic = function(tid, uid, callback) {
+		if(!parseInt(uid, 10)) {
+			return callback(false);
+		}
+
 		db.isSetMember('tid:' + tid + ':read_by_uid', uid, function(err, hasRead) {
 
 			if (err === null) {

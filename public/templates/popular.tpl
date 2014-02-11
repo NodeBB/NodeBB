@@ -24,7 +24,7 @@
 	<div class="col-md-12">
 		<ul id="topics-container" data-nextstart="{nextStart}">
 		<!-- BEGIN topics -->
-		<li class="category-item {topics.deleted-class}">
+		<li class="category-item {topics.deleted-class} {topics.unread-class}">
 			<div class="col-md-12 col-xs-12 panel panel-default topic-row">
 				<a href="{relative_path}/user/{topics.userslug}" class="pull-left">
 					<img class="img-rounded user-img" src="{topics.picture}" title="{topics.username}" />
