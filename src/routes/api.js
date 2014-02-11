@@ -38,6 +38,7 @@ var path = require('path'),
 				config.maximumTitleLength = meta.config.maximumTitleLength;
 				config.minimumPostLength = meta.config.minimumPostLength;
 				config.hasImageUploadPlugin = Plugins.hasListeners('filter:uploadImage');
+				config.maximumProfileImageSize = meta.config.maximumProfileImageSize;
 				config.minimumUsernameLength = meta.config.minimumUsernameLength;
 				config.maximumUsernameLength = meta.config.maximumUsernameLength;
 				config.minimumPasswordLength = meta.config.minimumPasswordLength;

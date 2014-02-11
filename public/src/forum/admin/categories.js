@@ -187,7 +187,7 @@ define(['uploader'], function(uploader) {
 			$('.admin-categories').on('click', '.upload-button', function() {
 				var inputEl = this;
 				var	cid = $(this).parents('li[data-cid]').attr('data-cid');
-				uploader.open(RELATIVE_PATH + '/admin/category/uploadpicture', {cid:cid}, function(imageUrlOnServer) {
+				uploader.open(RELATIVE_PATH + '/admin/category/uploadpicture', {cid:cid}, 0, function(imageUrlOnServer) {
 					inputEl.value = imageUrlOnServer;
 					var previewBox = $(inputEl).parents('li[data-cid]').find('.preview-box');
 					previewBox.css('background', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')')
