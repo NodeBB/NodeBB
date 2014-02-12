@@ -216,7 +216,16 @@ var bcrypt = require('bcryptjs'),
 	}
 
 	User.saveSettings = function(uid, data, callback) {
-		db.setObject('user:' + uid + ':settings', data, callback);
+		if(!data.topicsPerPage || !data.postsPerPage || parseInt(data.topicsPerPage, 10) <= 0 || !parseInt(data.postsPerPage, 10) <= 0) {
+			return callback(new Error('Invalid pagination value!'));
+		}
+
+		db.setObject('user:' + uid + ':settings', {
+			showemail: data.showemail,
+			usePagination: data.usePagination,
+			topicsPerPage: data.topicsPerPage,
+			postsPerPage: data.postsPerPage
+		}, callback);
 	}
 
 	User.updateProfile = function(uid, data, callback) {

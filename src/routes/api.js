@@ -119,7 +119,7 @@ var path = require('path'),
 							var	motdString,
 								assemble = function() {
 									data.motd_class = (parseInt(meta.config.show_motd, 10) === 1 || meta.config.show_motd === undefined) ? '' : ' none';
-									data.motd_class += (meta.config.motd && meta.config.motd.length > 0 ? '' : ' default');
+									data.motd_class += (meta.config.motd && meta.config.motd.length > 0) ? '' : ' default';
 									data.motd_class += meta.config.motd_class ? ' ' + meta.config.motd_class : '';
 
 									data.motd = motdString;
