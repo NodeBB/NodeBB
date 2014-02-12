@@ -82,7 +82,7 @@ var fs = require('fs'),
 				if (!req.user) {
 					return res.redirect('/403');
 				}
-				console.log('epic fail', req.user);
+
 				user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
 					function done() {
 						app.build_header({
