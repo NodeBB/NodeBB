@@ -54,8 +54,6 @@ var db = require('./database'),
 					return callback(err, null);
 				}
 
-				var messages = [];
-
 				userData[0].uid = touid;
 				userData[1].uid = fromuid;
 
@@ -67,19 +65,12 @@ var db = require('./database'),
 
 						Messaging.parse(message.content, message.fromuid, fromuid, userData[1], userData[0], false, function(result) {
 							message.content = result;
-							messages.push(message);
-							next(null);
+							next(null, message);
 						});
 					});
 				}
 
-				async.eachSeries(mids, getMessage, function(err) {
-					if (err) {
-						return callback(err, null);
-					}
-
-					callback(null, messages);
-				});
+				async.map(mids, getMessage, callback);
 			});
 		});
 	};
