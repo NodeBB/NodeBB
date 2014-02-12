@@ -248,7 +248,10 @@ var fs = require('fs'),
 				}
 
 				if (userData) {
-					user.getFollowing(userData.uid, function (followingData) {
+					user.getFollowing(userData.uid, function (err, followingData) {
+						if(err) {
+							return next(err);
+						}
 						userData.following = followingData;
 						userData.followingCount = followingData.length;
 						res.json(userData);
@@ -271,7 +274,10 @@ var fs = require('fs'),
 				}
 
 				if (userData) {
-					user.getFollowers(userData.uid, function (followersData) {
+					user.getFollowers(userData.uid, function (err, followersData) {
+						if(err) {
+							return next(err);
+						}
 						userData.followers = followersData;
 						userData.followersCount = followersData.length;
 						res.json(userData);
@@ -634,12 +640,13 @@ var fs = require('fs'),
 
 				userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
 
-				user.getFollowingCount(userData.uid, function (followingCount) {
-					user.getFollowerCount(userData.uid, function (followerCount) {
-						userData.followingCount = followingCount;
-						userData.followerCount = followerCount;
-						callback(null, userData);
-					});
+				user.getFollowStats(userData.uid, function (err, followStats) {
+					if(err) {
+						return callback(err);
+					}
+					userData.followingCount = followStats.followingCount;
+					userData.followerCount = followStats.followerCount;
+					callback(null, userData);
 				});
 			});
 		}

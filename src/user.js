@@ -548,7 +548,7 @@ var bcrypt = require('bcryptjs'),
 				return usernamesHash[username];
 			});
 
-			User.getDataForUsers(results, function(userdata) {
+			User.getDataForUsers(results, function(err, userdata) {
 				var diff = process.hrtime(start);
 				var timing = (diff[0] * 1e3 + diff[1] / 1e6).toFixed(1);
 				callback(null, {timing: timing, users: userdata});
@@ -610,73 +610,76 @@ var bcrypt = require('bcryptjs'),
 
 	User.getFollowing = function(uid, callback) {
 		db.getSetMembers('following:' + uid, function(err, userIds) {
-			if (!err) {
-				User.getDataForUsers(userIds, callback);
-			} else {
-				console.log(err);
+			if(err) {
+				return callback(err);
 			}
+
+			User.getDataForUsers(userIds, callback);
 		});
 	};
 
 	User.getFollowers = function(uid, callback) {
 		db.getSetMembers('followers:' + uid, function(err, userIds) {
-			if (!err) {
-				User.getDataForUsers(userIds, callback);
-			} else {
-				console.log(err);
+			if(err) {
+				return callback(err);
 			}
+
+			User.getDataForUsers(userIds, callback);
 		});
 	};
 
 	User.getFollowingCount = function(uid, callback) {
 		db.getSetMembers('following:' + uid, function(err, userIds) {
 			if (err) {
-				console.log(err);
-			} else {
-				userIds = userIds.filter(function(value) {
-					return parseInt(value, 10) !== 0;
-				});
-				callback(userIds.length);
+				return callback(err);
 			}
+
+			userIds = userIds.filter(function(value) {
+				return parseInt(value, 10) !== 0;
+			});
+			callback(null, userIds.length);
 		});
 	};
 
 	User.getFollowerCount = function(uid, callback) {
 		db.getSetMembers('followers:' + uid, function(err, userIds) {
 			if(err) {
-				console.log(err);
-			} else {
-				userIds = userIds.filter(function(value) {
-					return parseInt(value, 10) !== 0;
-				});
-				callback(userIds.length);
+				return callback(err);
 			}
+
+			userIds = userIds.filter(function(value) {
+				return parseInt(value, 10) !== 0;
+			});
+			callback(null, userIds.length);
 		});
 	};
 
+	User.getFollowStats = function (uid, callback) {
+		async.parallel({
+			followingCount: function(next) {
+				User.getFollowingCount(uid, next);
+			},
+			followerCount : function(next) {
+				User.getFollowerCount(uid, next);
+			}
+		}, callback);
+	}
+
 	User.getDataForUsers = function(uids, callback) {
-		var returnData = [];
 
 		if (!uids || !Array.isArray(uids) || uids.length === 0) {
-			callback(returnData);
-			return;
+			return callback(null, []);
 		}
 
-		function iterator(uid, callback) {
+		function getUserData(uid, next) {
 			if(parseInt(uid, 10) === 0) {
-				return callback(null);
+				return next(null, null);
 			}
 
-			User.getUserData(uid, function(err, userData) {
-				returnData.push(userData);
-
-				callback(null);
-			});
+			User.getUserData(uid, next);
 		}
 
-		async.eachSeries(uids, iterator, function(err) {
-			callback(returnData);
-		});
+		async.map(uids, getUserData, callback);
 	};
 
 	User.sendPostNotificationToFollowers = function(uid, tid, pid) {
