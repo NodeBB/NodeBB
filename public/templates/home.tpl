@@ -1,4 +1,4 @@
-<div class="motd{motd_class}">
+<div class="motd {motd_class}">
 	{motd}
 </div>
 
