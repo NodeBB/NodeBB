@@ -139,7 +139,7 @@ Sockets.init = function(server) {
 
 			function callMethod(method) {
 				if(socket.uid) {
-					user.setUserField(socket.uid, 'lastonline', Date.now());
+					user.updateLastOnlineTime(socket.uid);
 				}
 
 				method.call(null, socket, payload.args.length ? payload.args[0] : null, function(err, result) {

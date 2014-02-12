@@ -229,6 +229,22 @@ var bcrypt = require('bcryptjs'),
 		}, callback);
 	}
 
+	User.updateLastOnlineTime = function(uid, callback) {
+		User.getUserField(uid, 'status', function(err, status) {
+			function cb(err) {
+				if(typeof callback === 'function') {
+					callback(err);
+				}
+			}
+
+			if(err || status === 'offline') {
+				return cb(err);
+			}
+
+			User.setUserField(socket.uid, 'lastonline', Date.now(), cb);
+		});
+	};
+
 	User.updateProfile = function(uid, data, callback) {
 		var fields = ['username', 'email', 'fullname', 'website', 'location', 'birthday', 'signature'];
 		var returnData = {
