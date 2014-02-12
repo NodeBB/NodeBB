@@ -732,41 +732,29 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.getUsernamesByUids = function(uids, callback) {
-		var usernames = [];
 
 		if (!Array.isArray(uids)) {
-			return callback([]);
+			return callback(null, []);
 		}
 
-		function iterator(uid, callback) {
-			User.getUserField(uid, 'username', function(err, username) {
-				usernames.push(username);
-				callback(null);
-			});
+		function getUserName(uid, next) {
+			User.getUserField(uid, 'username', next);
 		}
 
-		async.eachSeries(uids, iterator, function(err) {
-			callback(usernames);
-		});
+		async.map(uids, iterator, callback);
 	};
 
 	User.getUserSlugsByUids = function(uids, callback) {
-		var userslugs = [];
 
 		if (!Array.isArray(uids)) {
-			return callback([]);
+			return callback(null, []);
 		}
 
-		function iterator(uid, callback) {
-			User.getUserField(uid, 'userslug', function(err, userslug) {
-				userslugs.push(userslug);
-				callback(null);
-			});
+		function getUserSlug(uid, next) {
+			User.getUserField(uid, 'userslug', next);
 		}
 
-		async.eachSeries(uids, iterator, function(err) {
-			callback(userslugs);
-		});
+		async.map(uids, getUserSlug, callback);
 	};
 
 	User.getUsernameByUserslug = function(slug, callback) {
