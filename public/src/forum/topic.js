@@ -8,7 +8,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		}
 	}
 
-	$(window).on('action:ajaxifying', function(ev, data) {
+	$(window).on('action:ajaxify.start', function(ev, data) {
 
 		if(data.url.indexOf('topic') === 0) {
 			$('.pagination-block a').off('click').on('click', function() {
@@ -22,9 +22,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			$('.pagination-block i:last').off('click').on('click', function() {
 				app.scrollToBottom();
 			});
-
 		} else {
 			$('.pagination-block').addClass('hide');
+			$('#header-topic-title').html('').hide();
 		}
 	});
 
@@ -1079,8 +1079,11 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			localStorage.removeItem("topic:" + tid + ":bookmark");
 			paginationEl.html('1 out of ' + Topic.postCount);
 			progressBar.width(0);
+			$('#header-topic-title').html('').hide();
 			return;
 		}
+
+		$('#header-topic-title').html(templates.get('topic_name')).show();
 
 
 		var count = 0, smallestNonNegative = 0;

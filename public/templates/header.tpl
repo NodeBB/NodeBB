@@ -198,6 +198,10 @@
 						</a>
 					</li>
 				</ul>
+
+				<ul class="nav navbar-nav navbar-right hidden-md-inline header-topic-title">
+					<h4 id="header-topic-title"></h4>
+				</ul>
 			</div>
 		</div>
 	</div>
