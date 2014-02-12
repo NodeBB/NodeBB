@@ -122,7 +122,7 @@ define(['uploader'], function(uploader) {
 				}
 			});
 
-			$('.save').on('click', save);
+
 			$('#addNew').on('click', showCreateCategoryModal);
 			$('#create-category-btn').on('click', createNewCategory);
 
@@ -176,6 +176,8 @@ define(['uploader'], function(uploader) {
 					}
 				});
 			});
+
+			$('.admin-categories').on('click', '.save', save);
 
 			// Permissions modal
 			$('.admin-categories').on('click', '.permissions', function() {
