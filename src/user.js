@@ -956,69 +956,47 @@ var bcrypt = require('bcryptjs'),
 
 	User.notifications = {
 		get: function(uid, callback) {
+
+			function getNotifications(set, start, stop, iterator, done) {
+				db.getSortedSetRevRange(set, start, stop, function(err, nids) {
+					if(err) {
+						return done(err);
+					}
+
+					if(!nids || nids.length === 0) {
+						return done(null, []);
+					}
+
+					if (nids.length > maxNotifs) {
+						nids.length = maxNotifs;
+					}
+
+					async.map(nids, function(nid, next) {
+						notifications.get(nid, uid, function(notif_data) {
+							if(!notif_data) {
+								db.sortedSetRemove(set, nid);
+							} else {
+								if(typeof iterator === 'function') {
+									iterator(notif_data);
+								}
+							}
+
+							next(null, notif_data);
+						});
+					}, done);
+				});
+			}
+
 			var maxNotifs = 15;
 
 			async.parallel({
 				unread: function(next) {
-					db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, 10, function(err, nids) {
-						// @todo handle err
-						var unread = [];
-
-						// Cap the number of notifications returned
-						if (nids.length > maxNotifs) {
-							nids.length = maxNotifs;
-						}
-
-						if (nids && nids.length > 0) {
-							async.eachSeries(nids, function(nid, next) {
-								notifications.get(nid, uid, function(notif_data) {
-									// If the notification could not be found, silently drop it
-									if (notif_data) {
-										notif_data.readClass = !notif_data.read ? 'label-warning' : '';
-										unread.push(notif_data);
-									} else {
-										db.sortedSetRemove('uid:' + uid + ':notifications:unread', nid);
-									}
-
-									next();
-								});
-							}, function(err) {
-								next(null, unread);
-							});
-						} else {
-							next(null, unread);
-						}
-					});
+					getNotifications('uid:' + uid + ':notifications:unread', 0, 10, function(notif_data) {
+						notif_data.readClass = !notif_data.read ? 'label-warning' : '';
+					}, next);
 				},
 				read: function(next) {
-					db.getSortedSetRevRange('uid:' + uid + ':notifications:read', 0, 10, function(err, nids) {
-						// @todo handle err
-						var read = [];
-
-						// Cap the number of notifications returned
-						if (nids.length > maxNotifs) {
-							nids.length = maxNotifs;
-						}
-
-						if (nids && nids.length > 0) {
-							async.eachSeries(nids, function(nid, next) {
-								notifications.get(nid, uid, function(notif_data) {
-									// If the notification could not be found, silently drop it
-									if (notif_data) {
-										read.push(notif_data);
-									} else {
-										db.sortedSetRemove('uid:' + uid + ':notifications:read', nid);
-									}
-
-									next();
-								});
-							}, function(err) {
-								next(null, read);
-							});
-						} else {
-							next(null, read);
-						}
-					});
+					getNotifications('uid:' + uid + 'notifications:read', 0, 10, null, next);
 				}
 			}, function(err, notifications) {
 				// Limit the number of notifications to `maxNotifs`, prioritising unread notifications
