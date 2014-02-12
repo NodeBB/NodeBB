@@ -157,7 +157,7 @@ var async = require('async'),
 
 				user.sendPostNotificationToFollowers(uid, tid, postData.pid);
 
-				next(err, postData);
+				next(null, postData);
 			},
 			function(postData, next) {
 				Topics.markAsUnreadForAll(tid, function(err) {
@@ -825,17 +825,13 @@ var async = require('async'),
 			async.parallel([getTopicData, getTopicPosts, getPrivileges, getCategoryData, getPageCount], function(err, results) {
 				if (err) {
 					winston.error('[Topics.getTopicWithPosts] Could not retrieve topic data: ', err.message);
-					return callback(err, null);
+					return callback(err);
 				}
 
 				var topicData = results[0],
-					topicPosts = results[1],
 					privileges = results[2],
 					categoryData = results[3],
 					pageCount = results[4];
-
-				var postsPerPage = parseInt(meta.config.postsPerPage, 10);
-				postsPerPage = postsPerPage ? postsPerPage : 20;
 
 				callback(null, {
 					'topic_name': topicData.title,
@@ -853,7 +849,7 @@ var async = require('async'),
 					'topic_id': tid,
 					'expose_tools': privileges.editable ? 1 : 0,
 					'disableSocialButtons': meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false,
-					'posts': topicPosts
+					'posts': results[1]
 				});
 			});
 		});
