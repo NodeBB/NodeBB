@@ -22,6 +22,24 @@ var path = require('path'),
 	Api.createRoutes = function (app) {
 
 		app.namespace('/api', function () {
+
+			app.all('*', function(req, res, next) {
+
+				if(req.user) {
+					user.getUserField(req.user.uid, 'status', function(err, status) {
+						if(err) {
+							return next(err);
+						}
+
+						if(status !== 'offline') {
+							user.setUserField(req.user.uid, 'lastonline', Date.now());
+						}
+					});
+				}
+
+				next();
+			});
+
 			app.get('/get_templates_listing', function (req, res) {
 				utils.walk(path.join(__dirname, '../../', 'public/templates'), function (err, data) {
 					res.json(data.concat(app.get_custom_templates()).filter(function(value, index, self) {

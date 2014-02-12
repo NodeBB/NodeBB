@@ -192,7 +192,6 @@ module.exports.server = server;
 
 				logger.init(app);
 
-
 				app.use(express.favicon(path.join(__dirname, '../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico')));
 
 				app.use(require('less-middleware')({
@@ -235,13 +234,6 @@ module.exports.server = server;
 
 				// Authentication Routes
 				auth.initialize(app);
-
-				app.use(function(req, res, next) {
-					if(req.user) {
-						user.setUserField(req.user.uid, 'lastonline', Date.now());
-					}
-					next();
-				});
 
 				next();
 			},

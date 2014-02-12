@@ -741,7 +741,7 @@ var bcrypt = require('bcryptjs'),
 			User.getUserField(uid, 'username', next);
 		}
 
-		async.map(uids, iterator, callback);
+		async.map(uids, getUserName, callback);
 	};
 
 	User.getUserSlugsByUids = function(uids, callback) {
