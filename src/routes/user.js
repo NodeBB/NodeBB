@@ -342,7 +342,8 @@ var fs = require('fs'),
 								error: 'User not found!'
 							});
 						}
-
+						userData.yourid = req.user.uid;
+						userData.theirid = uid;
 						userData.settings = settings;
 						res.json(userData);
 					});

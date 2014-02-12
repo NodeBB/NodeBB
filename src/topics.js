@@ -675,10 +675,8 @@ var async = require('async'),
 
 	Topics.getTopicsByTids = function(tids, cid, current_user, callback) {
 
-		var retrieved_topics = [];
-
 		if (!Array.isArray(tids) || tids.length === 0) {
-			return callback(null, retrieved_topics);
+			return callback(null, []);
 		}
 
 		function getTopicInfo(topicData, callback) {
@@ -748,6 +746,10 @@ var async = require('async'),
 						return next(err);
 					}
 
+					if (!isTopicVisible(topicData, topicInfo)) {
+						return next();
+					}
+
 					topicData['pin-icon'] = parseInt(topicData.pinned, 10) === 1 ? 'fa-thumb-tack' : 'none';
 					topicData['lock-icon'] = parseInt(topicData.locked, 10) === 1 ? 'fa-lock' : 'none';
 					topicData['deleted-class'] = parseInt(topicData.deleted, 10) === 1 ? 'deleted' : '';
@@ -768,19 +770,22 @@ var async = require('async'),
 					topicData.teaser_pid = topicInfo.teaserInfo.pid;
 					topicData.teaser_timestamp = utils.toISOString(topicInfo.teaserInfo.timestamp);
 
-					if (isTopicVisible(topicData, topicInfo)) {
-						retrieved_topics.push(topicData);
-					}
-
-					next(null);
+					next(null, topicData);
 				});
 			});
 		}
 
-		async.eachSeries(tids, loadTopic, function(err) {
-			callback(err, retrieved_topics);
-		});
+		async.map(tids, loadTopic, function(err, topics) {
+			if(err) {
+				return callback(err);
+			}
 
+			topics = topics.filter(function(topic) {
+				return !!topic;
+			});
+
+			callback(null, topics);
+		});
 	}
 
 	Topics.getTopicWithPosts = function(tid, current_user, start, end, quiet, callback) {
