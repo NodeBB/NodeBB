@@ -411,7 +411,7 @@ var db = require('./database'),
 	};
 
 	Categories.getActiveUsers = function(cid, callback) {
-		db.getSortedSetRevRange('cid:' + cid + ':active_users', 0, 31, callback);
+		db.getSortedSetRevRange('cid:' + cid + ':active_users', 0, 23, callback);
 	};
 
 	Categories.moveActiveUsers = function(tid, oldCid, cid, callback) {
