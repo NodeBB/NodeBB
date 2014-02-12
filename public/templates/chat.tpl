@@ -3,7 +3,7 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
 				<h4>[[modules:chat.chatting_with]] <i id="chat-user-status" class="fa fa-circle status offline"></i></h4>
 
 			</div>
@@ -13,6 +13,7 @@
 					<input id="chat-message-input" type="text" placeholder="[[modules:chat.placeholder]]" name="chat-message" class="form-control">
 					<span class="input-group-btn">
 						<button id="chat-message-send-btn" class="btn btn-primary" href="#" type="button">[[modules:chat.send]]</button>
+						<button id="chat-close-btn" class="btn btn-warning" data-dismiss="modal" aria-hidden="true">[[global:close]]</button>
 					</span>
 				</div>
 			</div>
