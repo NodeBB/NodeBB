@@ -62,6 +62,7 @@
 								</div>
 
 							</div>
+
 							<div class="row">
 								<div class="col-sm-4 col-xs-12">
 									<div class="form-group">
@@ -81,13 +82,16 @@
 										<input id="cid-{categories.cid}-numRecentReplies" type="text" class="form-control" placeholder="2" data-name="numRecentReplies" value="{categories.numRecentReplies}" />
 									</div>
 								</div>
+
+							</div>
+							<div class="row">
 								<div class="col-sm-4 col-xs-12">
 									<div class="form-group">
 										<label for="cid-{categories.cid}-link">External Link</label>
 										<input id="cid-{categories.cid}-link" type="text" class="form-control" placeholder="http://domain.com" data-name="link" value="{categories.link}" />
 									</div>
 								</div>
-								<div class="col-sm-4 col-xs-12">
+								<div class="col-sm-8 col-xs-12">
 									<div class="form-group">
 
 										<label>&nbsp;</label>
@@ -99,7 +103,8 @@
 												<li data-disabled="{categories.disabled}"><a href="#"></a></li>
 											</ul>
 											<button type="button" data-name="image" data-value="{categories.image}" class="btn btn-default upload-button"><i class="fa fa-upload"></i> Image</button>
-											<button class="btn btn-primary" class="save">Save</button>
+
+											<button class="btn btn-primary save">Save</button>
 										</div>
 
 									</div>

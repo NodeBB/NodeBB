@@ -13,8 +13,11 @@ define(['uploader'], function(uploader) {
 		}
 
 		function save() {
-			socket.emit('admin.categories.update', modified_categories);
-			modified_categories = {};
+			if(Object.keys(modified_categories).length) {
+				socket.emit('admin.categories.update', modified_categories);
+				modified_categories = {};
+			}
+			return false;
 		}
 
 		function select_icon(el) {
