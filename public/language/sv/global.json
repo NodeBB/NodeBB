@@ -41,12 +41,12 @@
     "alert.follow": "Du följer nu %1!",
     "posts": "Inlägg",
     "views": "Visningar",
-    "posted": "posted",
-    "in": "in",
-    "recentposts": "Recent Posts",
+    "posted": "skapad",
+    "in": "i",
+    "recentposts": "Senaste ämnena",
     "online": "Online",
-    "away": "Away",
-    "dnd": "Do not Disturb",
-    "invisible": "Invisible",
+    "away": "Borta",
+    "dnd": "Stör ej",
+    "invisible": "Osynlig",
     "offline": "Offline"
 }

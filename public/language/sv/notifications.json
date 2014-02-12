@@ -1,7 +1,7 @@
 {
     "title": "Notiser",
-    "no_notifs": "You have no notifications",
-    "see_all": "See all Notifications",
+    "no_notifs": "Du har inga notiser",
+    "see_all": "Visa alla notiser",
     "back_to_home": "Tillbaka till NodeBB",
     "outgoing_link": "Utgående länk",
     "outgoing_link_message": "Du lämnar nu",
