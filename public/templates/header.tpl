@@ -199,9 +199,9 @@
 					</li>
 				</ul>
 
-				<ul class="nav navbar-nav navbar-right hidden-md-inline header-topic-title">
+				<div class="header-topic-title pull-right hidden-md-inline">
 					<h4 id="header-topic-title"></h4>
-				</ul>
+				</div>
 			</div>
 		</div>
 	</div>

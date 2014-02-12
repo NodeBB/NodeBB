@@ -1075,16 +1075,19 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		var progressBar = $('.progress-bar');
 		var tid = templates.get('topic_id');
 
+		if(scrollTop > 50) {
+			$('#header-topic-title').html(templates.get('topic_name')).show();
+		} else {
+			$('#header-topic-title').html('').hide();
+		}
+
 		if (scrollTop < jQuery('.posts > .post-row:first-child').height() && Topic.postCount > 1) {
 			localStorage.removeItem("topic:" + tid + ":bookmark");
 			paginationEl.html('1 out of ' + Topic.postCount);
 			progressBar.width(0);
-			$('#header-topic-title').html('').hide();
+
 			return;
 		}
-
-		$('#header-topic-title').html(templates.get('topic_name')).show();
-
 
 		var count = 0, smallestNonNegative = 0;
 
