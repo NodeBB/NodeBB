@@ -887,9 +887,9 @@ var async = require('async'),
 
 			topicData['pin-icon'] = parseInt(topicData.pinned, 10) === 1 ? 'fa-thumb-tack' : 'none';
 			topicData['lock-icon'] = parseInt(topicData.locked, 10) === 1 ? 'fa-lock' : 'none';
-			topicData['unread-class'] = !(hasRead && parseInt(current_user, 10) !== 0) ? 'unread' : '';
+			topicData['unread-class'] = !(hasRead && parseInt(uid, 10) !== 0) ? 'unread' : '';
 
-			topicData.unread = !(hasRead && parseInt(current_user, 10) !== 0);
+			topicData.unread = !(hasRead && parseInt(uid, 10) !== 0);
 			topicData.teaser_username = teaser.username || '';
 			topicData.teaser_userslug = teaser.userslug || '';
 			topicData.userslug = teaser.userslug || '';
