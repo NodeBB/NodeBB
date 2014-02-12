@@ -45,6 +45,10 @@ define(function() {
 			settingsLink.hide();
 			favouritesLink.hide();
 		}
+
+		if(app.isAdmin) {
+			editLink.show();
+		}
 	}
 
 	function selectActivePill() {

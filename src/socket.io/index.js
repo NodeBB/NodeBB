@@ -84,14 +84,10 @@ Sockets.init = function(server) {
 
 						async.parallel({
 							username: function(next) {
-								user.getUserField(uid, 'username', function(err, username) {
-									next(err, username);
-								});
+								user.getUserField(uid, 'username', next);
 							},
 							isAdmin: function(next) {
-								user.isAdministrator(uid, function(err, isAdmin) {
-									next(err, isAdmin);
-								});
+								user.isAdministrator(uid, next);
 							}
 						}, function(err, userData) {
 							socket.emit('event:connect', {
@@ -108,9 +104,13 @@ Sockets.init = function(server) {
 					});
 				} else {
 					socket.broadcast.emit('user.anonConnect');
+					socket.emit('event:connect', {
+						status: 1,
+						username: 'Anonymous',
+						isAdmin: false,
+						uid: 0
+					});
 				}
-
-
 			});
 		});
 

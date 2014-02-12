@@ -25,31 +25,35 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 			};
 
 			socket.emit('user.updateProfile', userData, function(err, data) {
-				if (data.success) {
-					app.alertSuccess('Your profile has been updated successfully!');
-					if (data.picture) {
-						$('#user-current-picture').attr('src', data.picture);
-						$('#user_label img').attr('src', data.picture);
-					}
+				if(err) {
+					return app.alertError(err.message);
+				}
 
-					if (data.gravatarpicture) {
-						$('#user-gravatar-picture').attr('src', data.gravatarpicture);
-						gravatarPicture = data.gravatarpicture;
-					}
+				if (!data || !data.success) {
+					return app.alertError('There was an error updating your profile! ' + err.message);
+				}
 
-					if(data.userslug) {
-						var oldslug = $('.account-username-box').attr('data-userslug');
-						$('.account-username-box a').each(function(index) {
-							$(this).attr('href', $(this).attr('href').replace(oldslug, data.userslug));
-						});
+				app.alertSuccess('Your profile has been updated successfully!');
+				if (data.picture) {
+					$('#user-current-picture').attr('src', data.picture);
+					$('#user_label img').attr('src', data.picture);
+				}
 
-						$('.account-username-box').attr('data-userslug', data.userslug);
+				if (data.gravatarpicture) {
+					$('#user-gravatar-picture').attr('src', data.gravatarpicture);
+					gravatarPicture = data.gravatarpicture;
+				}
 
-						$('#user-profile-link').attr('href', config.relative_path + '/user/' + data.userslug);
-						$('#user-profile-link span').html(' ' + userData.username);
-					}
-				} else {
-					app.alertError('There was an error updating your profile! ' + err.message);
+				if(data.userslug) {
+					var oldslug = $('.account-username-box').attr('data-userslug');
+					$('.account-username-box a').each(function(index) {
+						$(this).attr('href', $(this).attr('href').replace(oldslug, data.userslug));
+					});
+
+					$('.account-username-box').attr('data-userslug', data.userslug);
+
+					$('#user-profile-link').attr('href', config.relative_path + '/user/' + data.userslug);
+					$('#user-profile-link span').html(' ' + userData.username);
 				}
 			});
 			return false;

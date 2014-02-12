@@ -301,73 +301,73 @@ var bcrypt = require('bcryptjs'),
 		});
 
 		function updateField(field, next) {
-			if (data[field] !== undefined && typeof data[field] === 'string') {
-				data[field] = data[field].trim();
-				data[field] = sanitize(data[field]).escape();
-
-				if (field === 'email') {
-					User.getUserFields(uid, ['email', 'picture', 'uploadedpicture'], function(err, userData) {
-						if (err) {
-							return next(err);
-						}
-
-						if(userData.email === data.email) {
-							return next();
-						}
-
-						var gravatarpicture = User.createGravatarURLFromEmail(data.email);
-						User.setUserField(uid, 'gravatarpicture', gravatarpicture);
-
-						db.deleteObjectField('email:uid', userData.email);
-						db.setObjectField('email:uid', data.email, uid);
-						User.setUserField(uid, 'email', data.email);
-						if (userData.picture !== userData.uploadedpicture) {
-							returnData.picture = gravatarpicture;
-							User.setUserField(uid, 'picture', gravatarpicture);
-						}
-						returnData.gravatarpicture = gravatarpicture;
-
-						events.logEmailChange(uid, userData.email, data.email);
-						next();
-					});
-					return;
-				} else if (field === 'username') {
-
-					User.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
-						var userslug = utils.slugify(data.username);
-
-						if(data.username !== userData.username) {
-							User.setUserField(uid, 'username', data.username);
-							db.deleteObjectField('username:uid', userData.username);
-							db.setObjectField('username:uid', data.username, uid);
-							events.logUsernameChange(uid, userData.username, data.username);
-						}
-
-						if(userslug !== userData.userslug) {
-							User.setUserField(uid, 'userslug', userslug);
-							db.deleteObjectField('userslug:uid', userData.userslug);
-							db.setObjectField('userslug:uid', userslug, uid);
-							returnData.userslug = userslug;
-						}
-
-						next();
-					});
-
-					return;
-				} else if (field === 'signature') {
-					data[field] = S(data[field]).stripTags().s;
-				} else if (field === 'website') {
-					if(data[field].substr(0, 7) !== 'http://' && data[field].substr(0, 8) !== 'https://') {
-						data[field] = 'http://' + data[field];
-					}
-				}
-
-				User.setUserField(uid, field, data[field]);
-
-				next();
-			} else {
-				next();
+			if (!(data[field] !== undefined && typeof data[field] === 'string')) {
+				return next();
 			}
+
+			data[field] = data[field].trim();
+			data[field] = sanitize(data[field]).escape();
+
+			if (field === 'email') {
+				User.getUserFields(uid, ['email', 'picture', 'uploadedpicture'], function(err, userData) {
+					if (err) {
+						return next(err);
+					}
+
+					if(userData.email === data.email) {
+						return next();
+					}
+
+					var gravatarpicture = User.createGravatarURLFromEmail(data.email);
+					User.setUserField(uid, 'gravatarpicture', gravatarpicture);
+
+					db.deleteObjectField('email:uid', userData.email);
+					db.setObjectField('email:uid', data.email, uid);
+					User.setUserField(uid, 'email', data.email);
+					if (userData.picture !== userData.uploadedpicture) {
+						returnData.picture = gravatarpicture;
+						User.setUserField(uid, 'picture', gravatarpicture);
+					}
+					returnData.gravatarpicture = gravatarpicture;
+
+					events.logEmailChange(uid, userData.email, data.email);
+					next();
+				});
+				return;
+			} else if (field === 'username') {
+
+				User.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
+					var userslug = utils.slugify(data.username);
+
+					if(data.username !== userData.username) {
+						User.setUserField(uid, 'username', data.username);
+						db.deleteObjectField('username:uid', userData.username);
+						db.setObjectField('username:uid', data.username, uid);
+						events.logUsernameChange(uid, userData.username, data.username);
+					}
+
+					if(userslug !== userData.userslug) {
+						User.setUserField(uid, 'userslug', userslug);
+						db.deleteObjectField('userslug:uid', userData.userslug);
+						db.setObjectField('userslug:uid', userslug, uid);
+						returnData.userslug = userslug;
+					}
+
+					next();
+				});
+
+				return;
+			} else if (field === 'signature') {
+				data[field] = S(data[field]).stripTags().s;
+			} else if (field === 'website') {
+				if(data[field].substr(0, 7) !== 'http://' && data[field].substr(0, 8) !== 'https://') {
+					data[field] = 'http://' + data[field];
+				}
+			}
+
+			User.setUserField(uid, field, data[field]);
+
+			next();
 		}
 	};
 

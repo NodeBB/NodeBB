@@ -77,23 +77,41 @@ var fs = require('fs'),
 			createRoute('/:userslug/favourites', '/favourites', 'favourites');
 			createRoute('/:userslug/posts', '/posts', 'accountposts');
 
-			app.get('/:userslug/edit', function (req, res) {
+			app.get('/:userslug/edit', function (req, res, next) {
 
 				if (!req.user) {
 					return res.redirect('/403');
 				}
-
+				console.log('epic fail', req.user);
 				user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
-					if (req.params.userslug && userslug === req.params.userslug) {
+					function done() {
 						app.build_header({
 							req: req,
 							res: res
 						}, function (err, header) {
 							res.send(header + app.create_route('user/' + req.params.userslug + '/edit', 'accountedit') + templates['footer']);
 						});
-					} else {
-						return res.redirect('/404');
 					}
+
+					if(err || !userslug) {
+						return next(err);
+					}
+
+					if (userslug === req.params.userslug) {
+						return done();
+					}
+
+					user.isAdministrator(req.user.uid, function(err, isAdmin) {
+						if(err) {
+							return next(err);
+						}
+
+						if(!isAdmin) {
+							return res.redirect('/403');
+						}
+
+						done();
+					});
 				});
 			});
 
@@ -221,10 +239,14 @@ var fs = require('fs'),
 		}
 
 
-		app.get('/api/user/:userslug/following', function (req, res) {
+		app.get('/api/user/:userslug/following', function (req, res, next) {
 			var callerUID = req.user ? req.user.uid : '0';
 
-			getUserDataByUserSlug(req.params.userslug, callerUID, function (userData) {
+			getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
+				if(err) {
+					return next(err);
+				}
+
 				if (userData) {
 					user.getFollowing(userData.uid, function (followingData) {
 						userData.following = followingData;
@@ -240,10 +262,14 @@ var fs = require('fs'),
 			});
 		});
 
-		app.get('/api/user/:userslug/followers', function (req, res) {
+		app.get('/api/user/:userslug/followers', function (req, res, next) {
 			var callerUID = req.user ? req.user.uid : '0';
 
-			getUserDataByUserSlug(req.params.userslug, callerUID, function (userData) {
+			getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
+				if(err) {
+					return next(err);
+				}
+
 				if (userData) {
 					user.getFollowers(userData.uid, function (followersData) {
 						userData.followers = followersData;
@@ -258,10 +284,19 @@ var fs = require('fs'),
 			});
 		});
 
-		app.get('/api/user/:userslug/edit', function (req, res) {
+		app.get('/api/user/:userslug/edit', function (req, res, next) {
 			var callerUID = req.user ? req.user.uid : '0';
 
-			getUserDataByUserSlug(req.params.userslug, callerUID, function (userData) {
+			if(!parseInt(callerUID, 10)) {
+				return res.json(403, {
+					error: 'Not allowed!'
+				});
+			}
+
+			getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
+				if(err) {
+					return next(err);
+				}
 				res.json(userData);
 			});
 		});
@@ -393,7 +428,11 @@ var fs = require('fs'),
 		app.get('/api/user/:userslug', function (req, res, next) {
 			var callerUID = req.user ? req.user.uid : '0';
 
-			getUserDataByUserSlug(req.params.userslug, callerUID, function (userData) {
+			getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
+				if(err) {
+					return next(err);
+				}
+
 				if(!userData) {
 					return res.json(404, {
 						error: 'User not found!'
@@ -534,62 +573,74 @@ var fs = require('fs'),
 		}
 
 		function getUserDataByUserSlug(userslug, callerUID, callback) {
-			user.getUidByUserslug(userslug, function (err, uid) {
+			var userData;
 
-				if (uid === null) {
-					callback(null);
-					return;
+			async.waterfall([
+				function(next) {
+					user.getUidByUserslug(userslug, next);
+				},
+				function(uid, next) {
+					if (!uid) {
+						return next(new Error('invalid-user'));
+					}
+
+					user.getUserData(uid, next);
+				},
+				function(data, next) {
+					userData = data;
+					if (!userData) {
+						return callback(new Error('invalid-user'));
+					}
+
+					user.isAdministrator(callerUID, next);
+				}
+			], function(err, isAdmin) {
+				if(err) {
+					return callback(err);
 				}
 
-				user.getUserData(uid, function (err, data) {
-					if (data) {
-						data.joindate = utils.toISOString(data.joindate);
-						if(data.lastonline) {
-							data.lastonline = utils.toISOString(data.lastonline);
-						} else {
-							data.lastonline = data.joindate;
-						}
+				userData.joindate = utils.toISOString(userData.joindate);
+				if(userData.lastonline) {
+					userData.lastonline = utils.toISOString(userData.lastonline);
+				} else {
+					userData.lastonline = userData.joindate;
+				}
 
-						if (!data.birthday) {
-							data.age = '';
-						} else {
-							data.age = Math.floor((new Date().getTime() - new Date(data.birthday).getTime()) / 31536000000);
-						}
+				if (!userData.birthday) {
+					userData.age = '';
+				} else {
+					userData.age = Math.floor((new Date().getTime() - new Date(userData.birthday).getTime()) / 31536000000);
+				}
 
-						function canSeeEmail() {
-							return callerUID == uid || (data.email && (data.showemail && parseInt(data.showemail, 10) === 1));
-						}
+				function canSeeEmail() {
+					return isAdmin || callerUID == userData.uid || (userData.email && (userData.showemail && parseInt(userData.showemail, 10) === 1));
+				}
 
-						if (!canSeeEmail()) {
-							data.email = "";
-						}
+				if (!canSeeEmail()) {
+					userData.email = "";
+				}
 
-						if (callerUID == uid && (!data.showemail || parseInt(data.showemail, 10) === 0)) {
-							data.emailClass = "";
-						} else {
-							data.emailClass = "hide";
-						}
+				if (callerUID == userData.uid && (!userData.showemail || parseInt(userData.showemail, 10) === 0)) {
+					userData.emailClass = "";
+				} else {
+					userData.emailClass = "hide";
+				}
 
-						data.websiteName = data.website.replace('http://', '').replace('https://', '');
-						data.banned = parseInt(data.banned, 10) === 1;
-						data.uid = uid;
-						data.yourid = callerUID;
-						data.theirid = uid;
+				userData.websiteName = userData.website.replace('http://', '').replace('https://', '');
+				userData.banned = parseInt(userData.banned, 10) === 1;
+				userData.uid = userData.uid;
+				userData.yourid = callerUID;
+				userData.theirid = userData.uid;
 
-						data.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
+				userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
 
-						user.getFollowingCount(uid, function (followingCount) {
-							user.getFollowerCount(uid, function (followerCount) {
-								data.followingCount = followingCount;
-								data.followerCount = followerCount;
-								callback(data);
-							});
-						});
-					} else {
-						callback(null);
-					}
+				user.getFollowingCount(userData.uid, function (followingCount) {
+					user.getFollowerCount(userData.uid, function (followerCount) {
+						userData.followingCount = followingCount;
+						userData.followerCount = followerCount;
+						callback(null, userData);
+					});
 				});
-
 			});
 		}
 

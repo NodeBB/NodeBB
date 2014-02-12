@@ -80,9 +80,24 @@ SocketUser.changePassword = function(socket, data, callback) {
 };
 
 SocketUser.updateProfile = function(socket, data, callback) {
-	if(data) {
-		user.updateProfile(socket.uid, data, callback);
+	if(!data || !data.uid) {
+		return callback(new Error('invalid-data'));
 	}
+
+	if(socket.uid === parseInt(data.uid, 10)) {
+		return user.updateProfile(socket.uid, data, callback);
+	}
+
+	user.isAdministrator(socket.uid, function(err, isAdmin) {
+		if(err) {
+			return callback(err);
+		}
+		if(!isAdmin) {
+			return callback(new Error('not allowed!'))
+		}
+
+		user.updateProfile(data.uid, data, callback);
+	});
 };
 
 SocketUser.changePicture = function(socket, data, callback) {
