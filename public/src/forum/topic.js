@@ -506,7 +506,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			$('#post_' + pid + '_link').val(window.location.href + "#" + pid);
 			// without the setTimeout can't select the text in the input
 			setTimeout(function() {
-				$('#post_' + pid + '_link').select();
+				$('#post_' + pid + '_link').putCursorAtEnd().select();
+
+
 			}, 50);
 		});
 
