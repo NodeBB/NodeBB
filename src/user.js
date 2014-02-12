@@ -216,7 +216,8 @@ var bcrypt = require('bcryptjs'),
 	}
 
 	User.saveSettings = function(uid, data, callback) {
-		if(!data.topicsPerPage || !data.postsPerPage || parseInt(data.topicsPerPage, 10) <= 0 || !parseInt(data.postsPerPage, 10) <= 0) {
+
+		if(!data.topicsPerPage || !data.postsPerPage || parseInt(data.topicsPerPage, 10) <= 0 || parseInt(data.postsPerPage, 10) <= 0) {
 			return callback(new Error('Invalid pagination value!'));
 		}
 
