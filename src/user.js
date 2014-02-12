@@ -128,7 +128,6 @@ var bcrypt = require('bcryptjs'),
 				db.sortedSetAdd('users:postcount', 0, uid);
 				db.sortedSetAdd('users:reputation', 0, uid);
 
-				// Join the "registered-users" meta group
 				groups.joinByGroupName('registered-users', uid);
 
 				if (password) {
