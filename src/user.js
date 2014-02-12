@@ -241,7 +241,7 @@ var bcrypt = require('bcryptjs'),
 				return cb(err);
 			}
 
-			User.setUserField(socket.uid, 'lastonline', Date.now(), cb);
+			User.setUserField(uid, 'lastonline', Date.now(), cb);
 		});
 	};
 
