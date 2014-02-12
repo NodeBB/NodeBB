@@ -915,7 +915,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				x;
 
 			if (locked === true) {
-				translator.translate('<i class="fa fa-unlock"></i> [[topic:thread_tools.unlock]]', function(translated) {
+				translator.translate('<i class="fa fa-fw fa-unlock"></i> [[topic:thread_tools.unlock]]', function(translated) {
 					lockThreadEl.html(translated);
 				});
 				threadReplyBtn.attr('disabled', true);
@@ -939,7 +939,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 				thread_state.locked = '1';
 			} else {
-				translator.translate('<i class="fa fa-lock"></i> [[topic:thread_tools.lock]]', function(translated) {
+				translator.translate('<i class="fa fa-fw fa-lock"></i> [[topic:thread_tools.lock]]', function(translated) {
 					lockThreadEl.html(translated);
 				});
 				threadReplyBtn.attr('disabled', false);
@@ -973,7 +973,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				deleteNotice = document.getElementById('thread-deleted') || document.createElement('div');
 
 			if (deleted) {
-				translator.translate('<i class="fa fa-comment"></i> [[topic:thread_tools.restore]]', function(translated) {
+				translator.translate('<i class="fa fa-fw fa-comment"></i> [[topic:thread_tools.restore]]', function(translated) {
 					deleteTextEl.html(translated);
 				});
 				threadEl.addClass('deleted');
@@ -986,7 +986,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 				thread_state.deleted = '1';
 			} else {
-				translator.translate('<i class="fa fa-trash-o"></i> [[topic:thread_tools.delete]]', function(translated) {
+				translator.translate('<i class="fa fa-fw fa-trash-o"></i> [[topic:thread_tools.delete]]', function(translated) {
 					deleteTextEl.html(translated);
 				});
 				threadEl.removeClass('deleted');
@@ -999,7 +999,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		function set_pinned_state(pinned, alert) {
 			var pinEl = $('.pin_thread');
 
-			translator.translate('<i class="fa fa-thumb-tack"></i> [[topic:thread_tools.' + (pinned ? 'unpin' : 'pin') + ']]', function(translated) {
+			translator.translate('<i class="fa fa-fw fa-thumb-tack"></i> [[topic:thread_tools.' + (pinned ? 'unpin' : 'pin') + ']]', function(translated) {
 				if (pinned) {
 					pinEl.html(translated);
 					if (alert) {
