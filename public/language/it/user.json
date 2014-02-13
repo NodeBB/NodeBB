@@ -9,6 +9,7 @@
     "age": "Età",
     "joined": "Iscrizione",
     "lastonline": "Ultima volta in linea",
+    "profile": "Profile",
     "profile_views": "Visite al profilo",
     "reputation": "Reputazione",
     "posts": "Post",
@@ -32,6 +33,7 @@
     "show_email": "Mostra la mia Email",
     "has_no_follower": "Questo utente non è seguito da nessuno :(",
     "follows_no_one": "Questo utente non segue nessuno :(",
+    "has_no_posts": "This user didn't post anything yet.",
     "email_hidden": "Email Nascosta",
     "hidden": "nascosta"
 }

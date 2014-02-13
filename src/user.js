@@ -128,7 +128,6 @@ var bcrypt = require('bcryptjs'),
 				db.sortedSetAdd('users:postcount', 0, uid);
 				db.sortedSetAdd('users:reputation', 0, uid);
 
-				// Join the "registered-users" meta group
 				groups.joinByGroupName('registered-users', uid);
 
 				if (password) {
@@ -184,8 +183,69 @@ var bcrypt = require('bcryptjs'),
 		});
 	};
 
-	User.updateProfile = function(uid, data, callback) {
+	User.getSettings = function(uid, callback) {
+		function sendDefaultSettings() {
+			callback(null, {
+				showemail: false,
+				usePagination: parseInt(meta.config.usePagination, 10) !== 0,
+				topicsPerPage: parseInt(meta.config.topicsPerPage, 10) || 20,
+				postsPerPage: parseInt(meta.config.postsPerPage, 10) || 10
+			});
+		}
 
+		if(!parseInt(uid, 10)) {
+			return sendDefaultSettings();
+		}
+
+		db.getObject('user:' + uid + ':settings', function(err, settings) {
+			if(err) {
+				return callback(err);
+			}
+
+			if(!settings) {
+				settings = {}
+			}
+
+			settings.showemail = settings.showemail ? parseInt(settings.showemail, 10) !== 0 : parseInt(meta.config.usePagination, 10) !== 0;
+			settings.usePagination = settings.usePagination ? parseInt(settings.usePagination, 10) !== 0 : parseInt(meta.config.usePagination, 10) !== 0;
+			settings.topicsPerPage = settings.topicsPerPage ? parseInt(settings.topicsPerPage, 10) : parseInt(meta.config.topicsPerPage, 10) || 20;
+			settings.postsPerPage = settings.postsPerPage ? parseInt(settings.postsPerPage, 10) : parseInt(meta.config.postsPerPage, 10) || 10;
+
+			callback(null, settings);
+		});
+	}
+
+	User.saveSettings = function(uid, data, callback) {
+
+		if(!data.topicsPerPage || !data.postsPerPage || parseInt(data.topicsPerPage, 10) <= 0 || parseInt(data.postsPerPage, 10) <= 0) {
+			return callback(new Error('Invalid pagination value!'));
+		}
+
+		db.setObject('user:' + uid + ':settings', {
+			showemail: data.showemail,
+			usePagination: data.usePagination,
+			topicsPerPage: data.topicsPerPage,
+			postsPerPage: data.postsPerPage
+		}, callback);
+	}
+
+	User.updateLastOnlineTime = function(uid, callback) {
+		User.getUserField(uid, 'status', function(err, status) {
+			function cb(err) {
+				if(typeof callback === 'function') {
+					callback(err);
+				}
+			}
+
+			if(err || status === 'offline') {
+				return cb(err);
+			}
+
+			User.setUserField(uid, 'lastonline', Date.now(), cb);
+		});
+	};
+
+	User.updateProfile = function(uid, data, callback) {
 		var fields = ['username', 'email', 'fullname', 'website', 'location', 'birthday', 'signature'];
 		var returnData = {
 			success: false
@@ -266,73 +326,73 @@ var bcrypt = require('bcryptjs'),
 		});
 
 		function updateField(field, next) {
-			if (data[field] !== undefined && typeof data[field] === 'string') {
-				data[field] = data[field].trim();
-				data[field] = sanitize(data[field]).escape();
-
-				if (field === 'email') {
-					User.getUserFields(uid, ['email', 'picture', 'uploadedpicture'], function(err, userData) {
-						if (err) {
-							return next(err);
-						}
-
-						if(userData.email === data.email) {
-							return next();
-						}
-
-						var gravatarpicture = User.createGravatarURLFromEmail(data.email);
-						User.setUserField(uid, 'gravatarpicture', gravatarpicture);
-
-						db.deleteObjectField('email:uid', userData.email);
-						db.setObjectField('email:uid', data.email, uid);
-						User.setUserField(uid, 'email', data.email);
-						if (userData.picture !== userData.uploadedpicture) {
-							returnData.picture = gravatarpicture;
-							User.setUserField(uid, 'picture', gravatarpicture);
-						}
-						returnData.gravatarpicture = gravatarpicture;
-
-						events.logEmailChange(uid, userData.email, data.email);
-						next();
-					});
-					return;
-				} else if (field === 'username') {
-
-					User.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
-						var userslug = utils.slugify(data.username);
-
-						if(data.username !== userData.username) {
-							User.setUserField(uid, 'username', data.username);
-							db.deleteObjectField('username:uid', userData.username);
-							db.setObjectField('username:uid', data.username, uid);
-							events.logUsernameChange(uid, userData.username, data.username);
-						}
-
-						if(userslug !== userData.userslug) {
-							User.setUserField(uid, 'userslug', userslug);
-							db.deleteObjectField('userslug:uid', userData.userslug);
-							db.setObjectField('userslug:uid', userslug, uid);
-							returnData.userslug = userslug;
-						}
-
-						next();
-					});
-
-					return;
-				} else if (field === 'signature') {
-					data[field] = S(data[field]).stripTags().s;
-				} else if (field === 'website') {
-					if(data[field].substr(0, 7) !== 'http://' && data[field].substr(0, 8) !== 'https://') {
-						data[field] = 'http://' + data[field];
-					}
-				}
-
-				User.setUserField(uid, field, data[field]);
-
-				next();
-			} else {
-				next();
+			if (!(data[field] !== undefined && typeof data[field] === 'string')) {
+				return next();
 			}
+
+			data[field] = data[field].trim();
+			data[field] = sanitize(data[field]).escape();
+
+			if (field === 'email') {
+				User.getUserFields(uid, ['email', 'picture', 'uploadedpicture'], function(err, userData) {
+					if (err) {
+						return next(err);
+					}
+
+					if(userData.email === data.email) {
+						return next();
+					}
+
+					var gravatarpicture = User.createGravatarURLFromEmail(data.email);
+					User.setUserField(uid, 'gravatarpicture', gravatarpicture);
+
+					db.deleteObjectField('email:uid', userData.email);
+					db.setObjectField('email:uid', data.email, uid);
+					User.setUserField(uid, 'email', data.email);
+					if (userData.picture !== userData.uploadedpicture) {
+						returnData.picture = gravatarpicture;
+						User.setUserField(uid, 'picture', gravatarpicture);
+					}
+					returnData.gravatarpicture = gravatarpicture;
+
+					events.logEmailChange(uid, userData.email, data.email);
+					next();
+				});
+				return;
+			} else if (field === 'username') {
+
+				User.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
+					var userslug = utils.slugify(data.username);
+
+					if(data.username !== userData.username) {
+						User.setUserField(uid, 'username', data.username);
+						db.deleteObjectField('username:uid', userData.username);
+						db.setObjectField('username:uid', data.username, uid);
+						events.logUsernameChange(uid, userData.username, data.username);
+					}
+
+					if(userslug !== userData.userslug) {
+						User.setUserField(uid, 'userslug', userslug);
+						db.deleteObjectField('userslug:uid', userData.userslug);
+						db.setObjectField('userslug:uid', userslug, uid);
+						returnData.userslug = userslug;
+					}
+
+					next();
+				});
+
+				return;
+			} else if (field === 'signature') {
+				data[field] = S(data[field]).stripTags().s;
+			} else if (field === 'website') {
+				if(data[field].substr(0, 7) !== 'http://' && data[field].substr(0, 8) !== 'https://') {
+					data[field] = 'http://' + data[field];
+				}
+			}
+
+			User.setUserField(uid, field, data[field]);
+
+			next();
 		}
 	};
 
@@ -513,7 +573,7 @@ var bcrypt = require('bcryptjs'),
 				return usernamesHash[username];
 			});
 
-			User.getDataForUsers(results, function(userdata) {
+			User.getDataForUsers(results, function(err, userdata) {
 				var diff = process.hrtime(start);
 				var timing = (diff[0] * 1e3 + diff[1] / 1e6).toFixed(1);
 				callback(null, {timing: timing, users: userdata});
@@ -575,73 +635,76 @@ var bcrypt = require('bcryptjs'),
 
 	User.getFollowing = function(uid, callback) {
 		db.getSetMembers('following:' + uid, function(err, userIds) {
-			if (!err) {
-				User.getDataForUsers(userIds, callback);
-			} else {
-				console.log(err);
+			if(err) {
+				return callback(err);
 			}
+
+			User.getDataForUsers(userIds, callback);
 		});
 	};
 
 	User.getFollowers = function(uid, callback) {
 		db.getSetMembers('followers:' + uid, function(err, userIds) {
-			if (!err) {
-				User.getDataForUsers(userIds, callback);
-			} else {
-				console.log(err);
+			if(err) {
+				return callback(err);
 			}
+
+			User.getDataForUsers(userIds, callback);
 		});
 	};
 
 	User.getFollowingCount = function(uid, callback) {
 		db.getSetMembers('following:' + uid, function(err, userIds) {
 			if (err) {
-				console.log(err);
-			} else {
-				userIds = userIds.filter(function(value) {
-					return parseInt(value, 10) !== 0;
-				});
-				callback(userIds.length);
+				return callback(err);
 			}
+
+			userIds = userIds.filter(function(value) {
+				return parseInt(value, 10) !== 0;
+			});
+			callback(null, userIds.length);
 		});
 	};
 
 	User.getFollowerCount = function(uid, callback) {
 		db.getSetMembers('followers:' + uid, function(err, userIds) {
 			if(err) {
-				console.log(err);
-			} else {
-				userIds = userIds.filter(function(value) {
-					return parseInt(value, 10) !== 0;
-				});
-				callback(userIds.length);
+				return callback(err);
 			}
+
+			userIds = userIds.filter(function(value) {
+				return parseInt(value, 10) !== 0;
+			});
+			callback(null, userIds.length);
 		});
 	};
 
+	User.getFollowStats = function (uid, callback) {
+		async.parallel({
+			followingCount: function(next) {
+				User.getFollowingCount(uid, next);
+			},
+			followerCount : function(next) {
+				User.getFollowerCount(uid, next);
+			}
+		}, callback);
+	}
+
 	User.getDataForUsers = function(uids, callback) {
-		var returnData = [];
 
 		if (!uids || !Array.isArray(uids) || uids.length === 0) {
-			callback(returnData);
-			return;
+			return callback(null, []);
 		}
 
-		function iterator(uid, callback) {
+		function getUserData(uid, next) {
 			if(parseInt(uid, 10) === 0) {
-				return callback(null);
+				return next(null, null);
 			}
 
-			User.getUserData(uid, function(err, userData) {
-				returnData.push(userData);
-
-				callback(null);
-			});
+			User.getUserData(uid, next);
 		}
 
-		async.eachSeries(uids, iterator, function(err) {
-			callback(returnData);
-		});
+		async.map(uids, getUserData, callback);
 	};
 
 	User.sendPostNotificationToFollowers = function(uid, tid, pid) {
@@ -695,41 +758,29 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.getUsernamesByUids = function(uids, callback) {
-		var usernames = [];
 
 		if (!Array.isArray(uids)) {
-			return callback([]);
+			return callback(null, []);
 		}
 
-		function iterator(uid, callback) {
-			User.getUserField(uid, 'username', function(err, username) {
-				usernames.push(username);
-				callback(null);
-			});
+		function getUserName(uid, next) {
+			User.getUserField(uid, 'username', next);
 		}
 
-		async.eachSeries(uids, iterator, function(err) {
-			callback(usernames);
-		});
+		async.map(uids, getUserName, callback);
 	};
 
 	User.getUserSlugsByUids = function(uids, callback) {
-		var userslugs = [];
 
 		if (!Array.isArray(uids)) {
-			return callback([]);
+			return callback(null, []);
 		}
 
-		function iterator(uid, callback) {
-			User.getUserField(uid, 'userslug', function(err, userslug) {
-				userslugs.push(userslug);
-				callback(null);
-			});
+		function getUserSlug(uid, next) {
+			User.getUserField(uid, 'userslug', next);
 		}
 
-		async.eachSeries(uids, iterator, function(err) {
-			callback(userslugs);
-		});
+		async.map(uids, getUserSlug, callback);
 	};
 
 	User.getUsernameByUserslug = function(slug, callback) {
@@ -931,83 +982,65 @@ var bcrypt = require('bcryptjs'),
 
 	User.notifications = {
 		get: function(uid, callback) {
+
+			function getNotifications(set, start, stop, iterator, done) {
+				db.getSortedSetRevRange(set, start, stop, function(err, nids) {
+					if(err) {
+						return done(err);
+					}
+
+					if(!nids || nids.length === 0) {
+						return done(null, []);
+					}
+
+					if (nids.length > maxNotifs) {
+						nids.length = maxNotifs;
+					}
+
+					async.map(nids, function(nid, next) {
+						notifications.get(nid, uid, function(notif_data) {
+							if(!notif_data) {
+								db.sortedSetRemove(set, nid);
+							} else {
+								if(typeof iterator === 'function') {
+									iterator(notif_data);
+								}
+							}
+
+							next(null, notif_data);
+						});
+					}, done);
+				});
+			}
+
 			var maxNotifs = 15;
 
 			async.parallel({
 				unread: function(next) {
-					db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, 10, function(err, nids) {
-						// @todo handle err
-						var unread = [];
-
-						// Cap the number of notifications returned
-						if (nids.length > maxNotifs) {
-							nids.length = maxNotifs;
-						}
-
-						if (nids && nids.length > 0) {
-							async.eachSeries(nids, function(nid, next) {
-								notifications.get(nid, uid, function(notif_data) {
-									// If the notification could not be found, silently drop it
-									if (notif_data) {
-										notif_data.readClass = !notif_data.read ? 'label-warning' : '';
-										unread.push(notif_data);
-									} else {
-										db.sortedSetRemove('uid:' + uid + ':notifications:unread', nid);
-									}
-
-									next();
-								});
-							}, function(err) {
-								next(null, unread);
-							});
-						} else {
-							next(null, unread);
-						}
-					});
+					getNotifications('uid:' + uid + ':notifications:unread', 0, 9, function(notif_data) {
+						notif_data.readClass = !notif_data.read ? 'label-warning' : '';
+					}, next);
 				},
 				read: function(next) {
-					db.getSortedSetRevRange('uid:' + uid + ':notifications:read', 0, 10, function(err, nids) {
-						// @todo handle err
-						var read = [];
-
-						// Cap the number of notifications returned
-						if (nids.length > maxNotifs) {
-							nids.length = maxNotifs;
-						}
-
-						if (nids && nids.length > 0) {
-							async.eachSeries(nids, function(nid, next) {
-								notifications.get(nid, uid, function(notif_data) {
-									// If the notification could not be found, silently drop it
-									if (notif_data) {
-										read.push(notif_data);
-									} else {
-										db.sortedSetRemove('uid:' + uid + ':notifications:read', nid);
-									}
-
-									next();
-								});
-							}, function(err) {
-								next(null, read);
-							});
-						} else {
-							next(null, read);
-						}
-					});
+					getNotifications('uid:' + uid + ':notifications:read', 0, 9, null, next);
 				}
 			}, function(err, notifications) {
+				if(err) {
+					return calback(err);
+				}
+
 				// Limit the number of notifications to `maxNotifs`, prioritising unread notifications
 				if (notifications.read.length + notifications.unread.length > maxNotifs) {
 					notifications.read.length = maxNotifs - notifications.unread.length;
 				}
 
-				callback(err, notifications);
+				callback(null, notifications);
 			});
 		},
 		getAll: function(uid, limit, before, callback) {
 			var	now = new Date();
 
-			if (!limit || parseInt(limit,10) <= 0) {
+			if (!limit || parseInt(limit, 10) <= 0) {
 				limit = 25;
 			}
 			if (before) {

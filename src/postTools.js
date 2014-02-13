@@ -11,8 +11,7 @@ var winston = require('winston'),
 	utils = require('../public/src/utils'),
 	plugins = require('./plugins'),
 	events = require('./events'),
-	meta = require('./meta'),
-	Feed = require('./feed');
+	meta = require('./meta');
 
 (function(PostTools) {
 	PostTools.isMain = function(pid, tid, callback) {
@@ -162,8 +161,6 @@ var winston = require('winston'),
 					}
 				});
 
-				Feed.updateTopic(postData.tid);
-				Feed.updateRecent();
 
 				callback(null);
 			});
@@ -207,8 +204,6 @@ var winston = require('winston'),
 					});
 				});
 
-				Feed.updateTopic(postData.tid);
-				Feed.updateRecent();
 
 				db.searchIndex('post', postData.content, pid);
 

@@ -121,6 +121,10 @@ var async = require('async'),
 									password: databaseConfig['redis:password'],
 									database: databaseConfig['redis:database']
 								};
+
+								if (config.redis.host.slice(0, 1) === '/') {
+									delete config.redis.port;
+								}
 							} else if (config.database === 'mongo') {
 								config.mongo = {
 									host: databaseConfig['mongo:host'],
@@ -237,9 +241,6 @@ var async = require('async'),
 						}, {
 							field: 'minimumPasswordLength',
 							value: 6
-						}, {
-							field: 'imgurClientID',
-							value: ''
 						}, {
 							field: 'maximumSignatureLength',
 							value: 255

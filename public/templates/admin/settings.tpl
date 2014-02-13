@@ -26,11 +26,25 @@
 				<label>Site Logo</label>
 				<input id="logoUrl" type="text" class="form-control" placeholder="Path to a logo to display on forum header" data-field="brand:logo" /><br />
 				<input id="uploadLogoBtn" type="button" class="btn btn-default" value="Upload Logo"></input> <br /> <br/>
-				<label>Imgur Client ID</label>
-				<input type="text" class="form-control" placeholder="Imgur ClientID for image uploads" data-field="imgurClientID" /><br />
 				<label>Favicon</label><br />
 				<input id="faviconUrl" type="text" class="form-control" placeholder="favicon.ico" data-field="brand:favicon" /><br />
 				<input id="uploadFaviconBtn" type="button" class="btn btn-default" value="Upload Favicon"></input> <br />
+				<hr/>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" data-field="allowGuestSearching"> <strong>Allow guests to search without logging in</strong>
+					</label>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" data-field="useOutgoingLinksPage"> <strong>Use Outgoing Links Warning Page</strong>
+					</label>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" data-field="disableSocialButtons"> <strong>Disable social buttons</strong>
+					</label>
+				</div>
 			</form>
 		</div>
 	</div>
@@ -131,21 +145,6 @@
 				</div>
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" data-field="allowGuestSearching"> <strong>Allow guests to search without logging in</strong>
-					</label>
-				</div>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox" data-field="useOutgoingLinksPage"> <strong>Use Outgoing Links Warning Page</strong>
-					</label>
-				</div>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox" data-field="disableSocialButtons"> <strong>Disable social buttons</strong>
-					</label>
-				</div>
-				<div class="checkbox">
-					<label>
 						<input type="checkbox" data-field="allowFileUploads"> <strong>Allow users to upload regular files</strong>
 					</label>
 				</div>
@@ -180,7 +179,7 @@
 </div>
 
 
-<button class="btn btn-lg btn-primary" id="save">Save</button>
+<button class="btn btn-primary" id="save">Save</button>
 
 <script>
 	require(['forum/admin/settings'], function(Settings) {

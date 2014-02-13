@@ -55,7 +55,7 @@
 							<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" type="button" title="[[topic:posted_by]] {posts.username}">
 								<i class="fa fa-circle status offline"></i>
 								<span class="visible-xs-inline visible-md-inline"><img class="" src="{posts.picture}" width=18 height=18 />&nbsp;</span>
-								<span class="username-field" href="{relative_path}/user/{posts.userslug}" itemprop="author">{posts.username}&nbsp;</span>
+								<span class="username-field" href="{relative_path}/user/{posts.userslug}" itemprop="author" data-username="{posts.username}">{posts.username}&nbsp;</span>
 								<span class="caret"></span>
 							</button>
 
@@ -139,18 +139,18 @@
 					<!-- ENDIF posts.signature -->
 
 					<div class="post-info">
-						<span class="pull-left">
-							[[topic:reputation]]: <i class='fa fa-star'></i> <span data-reputation="{posts.user_rep}" data-uid="{posts.uid}" class='formatted-number reputation'>{posts.user_rep}</span>&nbsp;|&nbsp;[[topic:posts]]: <i class='fa fa-pencil'></i> <span class='formatted-number user_postcount_{posts.uid}'>{posts.user_postcount}</span>
-							<!-- BEGIN custom_profile_info -->
-							| {posts.custom_profile_info.content}
-							<!-- END custom_profile_info -->
-						</span>
 						<span class="pull-right">
 							[[category:posted]] <span class="relativeTimeAgo timeago" title="{posts.relativeTime}"></span>
 							<!-- IF posts.editor -->
 							<span>| [[category:last_edited_by]] <strong><a href="{relative_path}/user/{posts.editorslug}">{posts.editorname}</a></strong></span>
 							<span class="timeago" title="{posts.relativeEditTime}"></span>
 							<!-- ENDIF posts.editor -->
+						</span>
+						<span class="pull-left">
+							[[topic:reputation]]: <i class='fa fa-star'></i> <span data-reputation="{posts.user_rep}" data-uid="{posts.uid}" class='formatted-number reputation'>{posts.user_rep}</span>&nbsp;|&nbsp;[[topic:posts]]: <i class='fa fa-pencil'></i> <span class='formatted-number user_postcount_{posts.uid}'>{posts.user_postcount}</span>
+							<!-- BEGIN custom_profile_info -->
+							| {posts.custom_profile_info.content}
+							<!-- END custom_profile_info -->
 						</span>
 						<div style="clear:both;"></div>
 					</div>
@@ -177,14 +177,14 @@
 					<div class="btn-group thread-tools hide">
 						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">[[topic:thread_tools.title]] <span class="caret"></span></button>
 						<ul class="dropdown-menu pull-right">
-							<li><a href="#" class="markAsUnreadForAll"><i class="fa fa-inbox"></i> [[topic:thread_tools.markAsUnreadForAll]]</a></li>
-							<li><a href="#" class="pin_thread"><i class="fa fa-thumb-tack"></i> [[topic:thread_tools.pin]]</a></li>
-							<li><a href="#" class="lock_thread"><i class="fa fa-lock"></i> [[topic:thread_tools.lock]]</a></li>
+							<li><a href="#" class="markAsUnreadForAll"><i class="fa fa-fw fa-inbox"></i> [[topic:thread_tools.markAsUnreadForAll]]</a></li>
+							<li><a href="#" class="pin_thread"><i class="fa fa-fw fa-thumb-tack"></i> [[topic:thread_tools.pin]]</a></li>
+							<li><a href="#" class="lock_thread"><i class="fa fa-fw fa-lock"></i> [[topic:thread_tools.lock]]</a></li>
 							<li class="divider"></li>
-							<li><a href="#" class="move_thread"><i class="fa fa-arrows"></i> [[topic:thread_tools.move]]</a></li>
-							<li><a href="#" class="fork_thread"><i class="fa fa-code-fork"></i> [[topic:thread_tools.fork]]</a></li>
+							<li><a href="#" class="move_thread"><i class="fa fa-fw fa-arrows"></i> [[topic:thread_tools.move]]</a></li>
+							<li><a href="#" class="fork_thread"><i class="fa fa-fw fa-code-fork"></i> [[topic:thread_tools.fork]]</a></li>
 							<li class="divider"></li>
-							<li><a href="#" class="delete_thread"><span class="text-error"><i class="fa fa-trash-o"></i> [[topic:thread_tools.delete]]</span></a></li>
+							<li><a href="#" class="delete_thread"><span class="text-error"><i class="fa fa-fw fa-trash-o"></i> [[topic:thread_tools.delete]]</span></a></li>
 						</ul>
 					</div>
 				</div>
@@ -205,14 +205,14 @@
 			<div class="btn-group thread-tools hide dropup">
 				<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">[[topic:thread_tools.title]] <span class="caret"></span></button>
 				<ul class="dropdown-menu pull-right">
-					<li><a href="#" class="markAsUnreadForAll"><i class="fa fa-inbox"></i> [[topic:thread_tools.markAsUnreadForAll]]</a></li>
-					<li><a href="#" class="pin_thread"><i class="fa fa-thumb-tack"></i> [[topic:thread_tools.pin]]</a></li>
-					<li><a href="#" class="lock_thread"><i class="fa fa-lock"></i> [[topic:thread_tools.lock]]</a></li>
+					<li><a href="#" class="markAsUnreadForAll"><i class="fa fa-fw fa-inbox"></i> [[topic:thread_tools.markAsUnreadForAll]]</a></li>
+					<li><a href="#" class="pin_thread"><i class="fa fa-fw fa-thumb-tack"></i> [[topic:thread_tools.pin]]</a></li>
+					<li><a href="#" class="lock_thread"><i class="fa fa-fw fa-lock"></i> [[topic:thread_tools.lock]]</a></li>
 					<li class="divider"></li>
-					<li><a href="#" class="move_thread"><i class="fa fa-arrows"></i> [[topic:thread_tools.move]]</a></li>
-					<li><a href="#" class="fork_thread"><i class="fa fa-code-fork"></i> [[topic:thread_tools.fork]]</a></li>
+					<li><a href="#" class="move_thread"><i class="fa fa-fw fa-arrows"></i> [[topic:thread_tools.move]]</a></li>
+					<li><a href="#" class="fork_thread"><i class="fa fa-fw fa-code-fork"></i> [[topic:thread_tools.fork]]</a></li>
 					<li class="divider"></li>
-					<li><a href="#" class="delete_thread"><span class="text-error"><i class="fa fa-trash-o"></i> [[topic:thread_tools.delete]]</span></a></li>
+					<li><a href="#" class="delete_thread"><span class="text-error"><i class="fa fa-fw fa-trash-o"></i> [[topic:thread_tools.delete]]</span></a></li>
 				</ul>
 			</div>
 		</div>

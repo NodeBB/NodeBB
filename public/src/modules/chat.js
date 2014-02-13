@@ -131,7 +131,7 @@ define(['taskbar', 'string'], function(taskbar, S) {
 
 				chatModal.find('#chat-with-name').html(username);
 
-				chatModal.find('.close').on('click', function(e) {
+				chatModal.find('#chat-close-btn').on('click', function(e) {
 					clearInterval(chatModal.intervalId);
 					chatModal.intervalId = 0;
 					chatModal.remove();

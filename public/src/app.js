@@ -444,7 +444,11 @@ var socket,
 				clearInterval(titleObj.interval);
 			}
 			titleObj.interval = setInterval(function() {
-				window.document.title = titleObj.titles[titleObj.titles.indexOf(window.document.title) ^ 1];
+				var title = titleObj.titles[titleObj.titles.indexOf(window.document.title) ^ 1];
+
+				if (title) {
+					window.document.title = title;
+				}
 			}, 2000);
 		} else {
 			if (titleObj.interval) {
@@ -510,19 +514,17 @@ var socket,
 
 			var userLabel = loggedInMenu.find('#user_label');
 
-			if (userLabel.length) {
-				if (data.userslug) {
-					userLabel.find('#user-profile-link').attr('href', RELATIVE_PATH + '/user/' + data.userslug);
-				}
-				if (data.picture) {
-					userLabel.find('img').attr('src', data.picture);
-				}
-				if (data.username) {
-					userLabel.find('#user-profile-link>span').html(' ' + data.username);
-				}
-
-				$('#logout-link').on('click', app.logout);
+			if (data.userslug) {
+				userLabel.find('#user-profile-link').attr('href', RELATIVE_PATH + '/user/' + data.userslug);
 			}
+			if (data.picture) {
+				userLabel.find('img').attr('src', data.picture);
+			}
+			if (data.username) {
+				userLabel.find('#user-profile-link>span').html(' ' + data.username);
+			}
+
+			$('#logout-link').on('click', app.logout);
 
 			updateOnlineStatus(data.uid);
 
@@ -592,6 +594,11 @@ var socket,
 				placement: 'bottom',
 				title: $(this).attr('title')
 			});
+		});
+
+		$('#search-form').parent().tooltip({
+			placement: 'bottom',
+			title: $('#search-button i').attr('title')
 		});
 
 		$('#user_dropdown').tooltip({

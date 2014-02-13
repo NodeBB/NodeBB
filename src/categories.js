@@ -77,7 +77,7 @@ var db = require('./database'),
 		}
 
 		function getPageCount(next) {
-			Categories.getPageCount(category_id, next);
+			Categories.getPageCount(category_id, current_user, next);
 		}
 
 		async.parallel({
@@ -146,16 +146,19 @@ var db = require('./database'),
 		db.getSortedSetRevRange('categories:' + cid + ':tid', start, stop, callback);
 	};
 
-	Categories.getPageCount = function(cid, callback) {
+	Categories.getPageCount = function(cid, uid, callback) {
 		db.sortedSetCard('categories:' + cid + ':tid', function(err, topicCount) {
 			if(err) {
 				return callback(err);
 			}
 
-			var topicsPerPage = parseInt(meta.config.topicsPerPage, 10);
-			topicsPerPage = topicsPerPage ? topicsPerPage : 20;
+			user.getSettings(uid, function(err, settings) {
+				if(err) {
+					return callback(err);
+				}
 
-			callback(null, Math.ceil(parseInt(topicCount, 10) / topicsPerPage));
+				callback(null, Math.ceil(parseInt(topicCount, 10) / settings.topicsPerPage));
+			});
 		});
 	};
 
@@ -331,7 +334,8 @@ var db = require('./database'),
 				}
 
 				Categories.hasReadCategory(cid, uid, function(hasRead) {
-					categoryData.badgeclass = (parseInt(categoryData.topic_count, 10) === 0 || (hasRead && uid !== 0)) ? '' : 'badge-important';
+
+					categoryData['unread-class'] = (parseInt(categoryData.topic_count, 10) === 0 || (hasRead && parseInt(uid, 10) !== 0)) ? '' : 'unread';
 
 					callback(null, categoryData);
 				});
@@ -407,7 +411,7 @@ var db = require('./database'),
 	};
 
 	Categories.getActiveUsers = function(cid, callback) {
-		db.getSortedSetRevRange('cid:' + cid + ':active_users', 0, 15, callback);
+		db.getSortedSetRevRange('cid:' + cid + ':active_users', 0, 23, callback);
 	};
 
 	Categories.moveActiveUsers = function(tid, oldCid, cid, callback) {

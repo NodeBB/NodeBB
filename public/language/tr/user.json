@@ -9,6 +9,7 @@
     "age": "Yaş",
     "joined": "Katıldı",
     "lastonline": "En Son Çevrimiçi",
+    "profile": "Profile",
     "profile_views": "Profil Görüntülemeleri",
     "reputation": "Saygınlık",
     "posts": "İletiler",
@@ -32,6 +33,7 @@
     "show_email": "E-postamı göster",
     "has_no_follower": "Bu kullanıcının hiç takipçisi yok :(",
     "follows_no_one": "Bu kullanıcı kimseyi takip etmiyor :(",
+    "has_no_posts": "This user didn't post anything yet.",
     "email_hidden": "E-posta gizli",
     "hidden": "gizli"
 }

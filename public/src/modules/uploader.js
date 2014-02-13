@@ -2,13 +2,20 @@ define(function() {
 
 	var module = {};
 
-	module.open = function(route, params, callback) {
+	module.open = function(route, params, fileSize, callback) {
 		$('#upload-picture-modal').modal('show').removeClass('hide');
 		module.hideAlerts();
+		var uploadForm = $('#uploadForm');
+		uploadForm[0].reset();
+		uploadForm.attr('action', route);
+		uploadForm.find('#params').val(JSON.stringify(params));
 
-		$('#uploadForm')[0].reset();
-		$('#uploadForm').attr('action', route);
-		$('#uploadForm').find('#params').val(JSON.stringify(params));
+		if(fileSize) {
+			uploadForm.find('#upload-file-size').html(fileSize);
+			uploadForm.find('#file-size-block').removeClass('hide');
+		} else {
+			uploadForm.find('#file-size-block').addClass('hide');
+		}
 
 		$('#pictureUploadSubmitBtn').off('click').on('click', function() {
 			$('#uploadForm').submit();

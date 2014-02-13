@@ -30,7 +30,8 @@
 
 	"upload_picture": "Upload picture",
 	"upload_a_picture": "Upload a picture",
-	"image_spec": "You may only upload PNG, JPG, or GIF files under 256kb.",
+	"image_spec": "You may only upload PNG, JPG, or GIF files",
+	"max": "max.",
 
 	"settings": "Settings",
 	"show_email": "Show My Email",
@@ -40,5 +41,9 @@
 	"has_no_posts": "This user didn't post anything yet.",
 
 	"email_hidden": "Email Hidden",
-	"hidden": "hidden"
+	"hidden": "hidden",
+
+	"paginate_description" : "Paginate topics and posts instead of using infinite scroll.",
+	"topics_per_page": "Topics per Page",
+	"posts_per_page": "Posts per Page"
 }

@@ -247,8 +247,10 @@ var fs = require('fs'),
 			plugins.fireHook('filter:scripts.get', this.scripts, function(err, scripts) {
 				var mtime,
 					jsPaths = scripts.map(function (jsPath) {
+						jsPath = path.normalize(jsPath);
+
 						if (jsPath.substring(0, 7) === 'plugins') {
-							var paths = jsPath.split('/'),
+							var paths = jsPath.split(path.sep),
 								mappedPath = paths[1];
 
 							if (plugins.staticDirs[mappedPath]) {

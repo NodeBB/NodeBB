@@ -8,7 +8,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		}
 	}
 
-	$(window).on('action:ajaxifying', function(ev, data) {
+	$(window).on('action:ajaxify.start', function(ev, data) {
 
 		if(data.url.indexOf('topic') === 0) {
 			$('.pagination-block a').off('click').on('click', function() {
@@ -22,9 +22,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			$('.pagination-block i:last').off('click').on('click', function() {
 				app.scrollToBottom();
 			});
-
 		} else {
 			$('.pagination-block').addClass('hide');
+			$('#header-topic-title').html('').hide();
 		}
 	});
 
@@ -114,10 +114,12 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				});
 
 				$('.markAsUnreadForAll').on('click', function() {
+					var btn = $(this);
 					socket.emit('topics.markAsUnreadForAll', tid, function(err) {
 						if(err) {
 							return app.alertError(err.message);
 						}
+						btn.parents('.thread-tools.open').find('.dropdown-toggle').trigger('click');
 					});
 					return false;
 				})
@@ -504,7 +506,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			$('#post_' + pid + '_link').val(window.location.href + "#" + pid);
 			// without the setTimeout can't select the text in the input
 			setTimeout(function() {
-				$('#post_' + pid + '_link').select();
+				$('#post_' + pid + '_link').putCursorAtEnd().select();
 			}, 50);
 		});
 
@@ -913,7 +915,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				x;
 
 			if (locked === true) {
-				lockThreadEl.html('<i class="fa fa-unlock"></i> Unlock Thread');
+				translator.translate('<i class="fa fa-fw fa-unlock"></i> [[topic:thread_tools.unlock]]', function(translated) {
+					lockThreadEl.html(translated);
+				});
 				threadReplyBtn.attr('disabled', true);
 				threadReplyBtn.html('Locked <i class="fa fa-lock"></i>');
 				for (x = 0; x < numPosts; x++) {
@@ -935,7 +939,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 				thread_state.locked = '1';
 			} else {
-				lockThreadEl.html('<i class="fa fa-lock"></i> Lock Thread');
+				translator.translate('<i class="fa fa-fw fa-lock"></i> [[topic:thread_tools.lock]]', function(translated) {
+					lockThreadEl.html(translated);
+				});
 				threadReplyBtn.attr('disabled', false);
 				threadReplyBtn.html('Reply');
 				for (x = 0; x < numPosts; x++) {
@@ -967,7 +973,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				deleteNotice = document.getElementById('thread-deleted') || document.createElement('div');
 
 			if (deleted) {
-				deleteTextEl.html('<i class="fa fa-comment"></i> Restore Thread');
+				translator.translate('<i class="fa fa-fw fa-comment"></i> [[topic:thread_tools.restore]]', function(translated) {
+					deleteTextEl.html(translated);
+				});
 				threadEl.addClass('deleted');
 
 				// Spawn a 'deleted' notice at the top of the page
@@ -978,7 +986,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 				thread_state.deleted = '1';
 			} else {
-				deleteTextEl.html('<i class="fa fa-trash-o"></i> Delete Thread');
+				translator.translate('<i class="fa fa-fw fa-trash-o"></i> [[topic:thread_tools.delete]]', function(translated) {
+					deleteTextEl.html(translated);
+				});
 				threadEl.removeClass('deleted');
 				deleteNotice.parentNode.removeChild(deleteNotice);
 
@@ -989,33 +999,35 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		function set_pinned_state(pinned, alert) {
 			var pinEl = $('.pin_thread');
 
-			if (pinned) {
-				pinEl.html('<i class="fa fa-thumb-tack"></i> Unpin Thread');
-				if (alert) {
-					app.alert({
-						'alert_id': 'thread_pin',
-						type: 'success',
-						title: 'Thread Pinned',
-						message: 'Thread has been successfully pinned',
-						timeout: 5000
-					});
-				}
+			translator.translate('<i class="fa fa-fw fa-thumb-tack"></i> [[topic:thread_tools.' + (pinned ? 'unpin' : 'pin') + ']]', function(translated) {
+				if (pinned) {
+					pinEl.html(translated);
+					if (alert) {
+						app.alert({
+							'alert_id': 'thread_pin',
+							type: 'success',
+							title: 'Thread Pinned',
+							message: 'Thread has been successfully pinned',
+							timeout: 5000
+						});
+					}
 
-				thread_state.pinned = '1';
-			} else {
-				pinEl.html('<i class="fa fa-thumb-tack"></i> Pin Thread');
-				if (alert) {
-					app.alert({
-						'alert_id': 'thread_pin',
-						type: 'success',
-						title: 'Thread Unpinned',
-						message: 'Thread has been successfully unpinned',
-						timeout: 5000
-					});
-				}
+					thread_state.pinned = '1';
+				} else {
+					pinEl.html(translated);
+					if (alert) {
+						app.alert({
+							'alert_id': 'thread_pin',
+							type: 'success',
+							title: 'Thread Unpinned',
+							message: 'Thread has been successfully unpinned',
+							timeout: 5000
+						});
+					}
 
-				thread_state.pinned = '0';
-			}
+					thread_state.pinned = '0';
+				}
+			});
 		}
 
 		function toggle_post_delete_state(pid) {
@@ -1063,13 +1075,19 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		var progressBar = $('.progress-bar');
 		var tid = templates.get('topic_id');
 
+		if(scrollTop > 50) {
+			$('#header-topic-title').html(templates.get('topic_name')).show();
+		} else {
+			$('#header-topic-title').html('').hide();
+		}
+
 		if (scrollTop < jQuery('.posts > .post-row:first-child').height() && Topic.postCount > 1) {
 			localStorage.removeItem("topic:" + tid + ":bookmark");
 			paginationEl.html('1 out of ' + Topic.postCount);
 			progressBar.width(0);
+
 			return;
 		}
-
 
 		var count = 0, smallestNonNegative = 0;
 
@@ -1217,15 +1235,26 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				.hide()
 				.fadeIn('slow');
 
+			// Remove the extra post-bar and "follow" button that gets added
+			var	postsEl = $('.posts');
+			postsEl.find('.post-bar').each(function(idx, el) {
+				if (idx !== 0) {
+					el.parentNode.removeChild(el);
+				}
+			});
+			postsEl.find('li.post-row[data-index]').each(function(idx, el) {
+				followEl = el.querySelector('.follow');
+				if (idx !== 0 && followEl) {
+					followEl.parentNode.removeChild(followEl);
+				}
+			});
+
 			onNewPostsLoaded(data.posts);
 		});
 	}
 
 	function parseAndTranslatePosts(data, callback) {
 		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
-		var regexp = new RegExp("<!--[\\s]*IF @first[\\s]*-->([\\s\\S]*?)<!--[\\s]*ENDIF @first[\\s]*-->", 'g');
-		html = html.replace(regexp, '');
-
 		translator.translate(html, callback);
 	}
 

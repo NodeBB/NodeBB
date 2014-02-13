@@ -7,7 +7,6 @@ var db = require('./database'),
 	threadTools = require('./threadTools'),
 	postTools = require('./postTools'),
 	categories = require('./categories'),
-	feed = require('./feed'),
 	plugins = require('./plugins'),
 	meta = require('./meta'),
 
@@ -52,7 +51,8 @@ var db = require('./database'),
 						'tid': tid,
 						'content': newContent,
 						'timestamp': timestamp,
-						'reputation': 0,
+						'reputation': '0',
+						'votes': '0',
 						'editor': '',
 						'edited': 0,
 						'deleted': 0
@@ -396,57 +396,52 @@ var db = require('./database'),
 
 	Posts.uploadPostImage = function(image, callback) {
 
-		if(meta.config.imgurClientID) {
-			if(!image || !image.data) {
-				return callback(new Error('invalid image'));
-			}
-
-			require('./imgur').upload(meta.config.imgurClientID, image.data, 'base64', function(err, data) {
-				if(err) {
-					return callback(err);
-				}
-
-				callback(null, {
-					url: data.link,
-					name: image.name
-				});
-			});
-		} else if (meta.config.allowFileUploads) {
-			Posts.uploadPostFile(image, callback);
+		if(plugins.hasListeners('filter:uploadImage')) {
+			plugins.fireHook('filter:uploadImage', {base64: image.data, name: image.name}, callback);
 		} else {
-			callback(new Error('Uploads are disabled!'));
+
+			if (meta.config.allowFileUploads) {
+				Posts.uploadPostFile(image, callback);
+			} else {
+				callback(new Error('Uploads are disabled!'));
+			}
 		}
 	}
 
 	Posts.uploadPostFile = function(file, callback) {
 
-		if(!meta.config.allowFileUploads) {
-			return callback(new Error('File uploads are not allowed'));
-		}
+		if(plugins.hasListeners('filter:uploadFile')) {
+			plugins.fireHook('filter:uploadFile', {base64: file.data, name: file.name}, callback);
+		} else {
 
-		if(!file || !file.data) {
-			return callback(new Error('invalid file'));
-		}
-
-		var buffer = new Buffer(file.data, 'base64');
-
-		if(buffer.length > parseInt(meta.config.maximumFileSize, 10) * 1024) {
-			return callback(new Error('File too big'));
-		}
-
-		var filename = 'upload-' + utils.generateUUID() + path.extname(file.name);
-		var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), filename);
-
-		fs.writeFile(uploadPath, buffer, function (err) {
-			if(err) {
-				return callback(err);
+			if(!meta.config.allowFileUploads) {
+				return callback(new Error('File uploads are not allowed'));
 			}
 
-			callback(null, {
-				url: nconf.get('upload_url') + filename,
-				name: file.name
+			if(!file || !file.data) {
+				return callback(new Error('invalid file'));
+			}
+
+			var buffer = new Buffer(file.data, 'base64');
+
+			if(buffer.length > parseInt(meta.config.maximumFileSize, 10) * 1024) {
+				return callback(new Error('File too big'));
+			}
+
+			var filename = 'upload-' + utils.generateUUID() + path.extname(file.name);
+			var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), filename);
+
+			fs.writeFile(uploadPath, buffer, function (err) {
+				if(err) {
+					return callback(err);
+				}
+
+				callback(null, {
+					url: nconf.get('upload_url') + filename,
+					name: file.name
+				});
 			});
-		});
+		}
 	}
 
 	Posts.reIndexPids = function(pids, callback) {
@@ -500,7 +495,7 @@ var db = require('./database'),
 		});
 	}
 
-	Posts.getPidPage = function(pid, callback) {
+	Posts.getPidPage = function(pid, uid, callback) {
 		Posts.getPostField(pid, 'tid', function(err, tid) {
 			if(err) {
 				return callback(err);
@@ -515,11 +510,15 @@ var db = require('./database'),
 				if(index === -1) {
 					return callback(new Error('pid not found'));
 				}
-				var postsPerPage = parseInt(meta.config.postsPerPage, 10);
-				postsPerPage = postsPerPage ? postsPerPage : 20;
 
-				var page = Math.ceil((index + 1) / postsPerPage);
-				callback(null, page);
+				user.getSettings(uid, function(err, settings) {
+					if(err) {
+						return callback(err);
+					}
+
+					var page = Math.ceil((index + 1) / settings.postsPerPage);
+					callback(null, page);
+				});
 			});
 		});
 	}

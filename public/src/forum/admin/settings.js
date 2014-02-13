@@ -97,7 +97,7 @@ define(['uploader'], function(uploader) {
 		});
 
 		$('#uploadLogoBtn').on('click', function() {
-			uploader.open(RELATIVE_PATH + '/admin/uploadlogo', {}, function(image) {
+			uploader.open(RELATIVE_PATH + '/admin/uploadlogo', {}, 0, function(image) {
 				$('#logoUrl').val(image);
 			});
 
@@ -105,7 +105,7 @@ define(['uploader'], function(uploader) {
 		});
 
 		$('#uploadFaviconBtn').on('click', function() {
-			uploader.open(RELATIVE_PATH + '/admin/uploadfavicon', {}, function(icon) {
+			uploader.open(RELATIVE_PATH + '/admin/uploadfavicon', {}, 0, function(icon) {
 				$('#faviconUrl').val(icon);
 			});
 

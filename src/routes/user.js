@@ -3,6 +3,7 @@ var fs = require('fs'),
 	winston = require('winston'),
 	nconf = require('nconf'),
 	async= require('async'),
+	imagemagick = require('node-imagemagick'),
 
 	user = require('./../user'),
 	posts = require('./../posts'),
@@ -10,6 +11,8 @@ var fs = require('fs'),
 	utils = require('./../../public/src/utils'),
 	templates = require('./../../public/src/templates'),
 	meta = require('./../meta'),
+	plugins = require('./../plugins'),
+	image = require('./../image'),
 	db = require('./../database');
 
 (function (User) {
@@ -74,23 +77,41 @@ var fs = require('fs'),
 			createRoute('/:userslug/favourites', '/favourites', 'favourites');
 			createRoute('/:userslug/posts', '/posts', 'accountposts');
 
-			app.get('/:userslug/edit', function (req, res) {
+			app.get('/:userslug/edit', function (req, res, next) {
 
 				if (!req.user) {
 					return res.redirect('/403');
 				}
 
 				user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
-					if (req.params.userslug && userslug === req.params.userslug) {
+					function done() {
 						app.build_header({
 							req: req,
 							res: res
 						}, function (err, header) {
 							res.send(header + app.create_route('user/' + req.params.userslug + '/edit', 'accountedit') + templates['footer']);
 						});
-					} else {
-						return res.redirect('/404');
 					}
+
+					if(err || !userslug) {
+						return next(err);
+					}
+
+					if (userslug === req.params.userslug) {
+						return done();
+					}
+
+					user.isAdministrator(req.user.uid, function(err, isAdmin) {
+						if(err) {
+							return next(err);
+						}
+
+						if(!isAdmin) {
+							return res.redirect('/403');
+						}
+
+						done();
+					});
 				});
 			});
 
@@ -114,118 +135,99 @@ var fs = require('fs'),
 			});
 
 			app.post('/uploadpicture', function (req, res) {
-				if (!req.user)
-					return res.redirect('/403');
+				if (!req.user) {
+					return res.json(403, {
+						error: 'Not allowed!'
+					});
+				}
 
 				var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
-
 				if (req.files.userPhoto.size > uploadSize * 1024) {
-					res.send({
+					return res.send({
 						error: 'Images must be smaller than ' + uploadSize + ' kb!'
 					});
-					return;
 				}
 
 				var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
-
 				if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
-					res.send({
+					return res.send({
 						error: 'Allowed image types are png, jpg and gif!'
 					});
-					return;
 				}
 
-				user.getUserField(req.user.uid, 'uploadedpicture', function (err, oldpicture) {
-					if (!oldpicture) {
-						uploadUserPicture(req.user.uid, path.extname(req.files.userPhoto.name), req.files.userPhoto.path, res);
-						return;
+				var extension = path.extname(req.files.userPhoto.name);
+				if (!extension) {
+					return res.send({
+						error: 'Error uploading file! Error : Invalid extension!'
+					});
+				}
+
+				var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10);
+				var filename = req.user.uid + '-profileimg' + (convertToPNG ? '.png' : extension);
+
+				async.waterfall([
+					function(next) {
+						image.resizeImage(req.files.userPhoto.path, extension, 128, 128, next);
+					},
+					function(next) {
+						image.convertImageToPng(req.files.userPhoto.path, extension, next);
 					}
-
-					var absolutePath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), path.basename(oldpicture));
-
-					fs.unlink(absolutePath, function (err) {
-						if (err) {
-							winston.err(err);
+				], function(err, result) {
+					function done(err, image) {
+						if(err) {
+							return res.send({error: err.message});
 						}
 
-						uploadUserPicture(req.user.uid, path.extname(req.files.userPhoto.name), req.files.userPhoto.path, res);
-					});
+						user.setUserField(req.user.uid, 'uploadedpicture', image.url);
+						user.setUserField(req.user.uid, 'picture', image.url);
+						res.json({
+							path: image.url
+						});
+					}
+
+					if(err) {
+						return res.send({error:err.message});
+					}
+
+					if(plugins.hasListeners('filter:uploadImage')) {
+						plugins.fireHook('filter:uploadImage', {file: req.files.userPhoto.path, name: filename}, done);
+					} else {
+
+						user.getUserField(req.user.uid, 'uploadedpicture', function (err, oldpicture) {
+							if (!oldpicture) {
+								saveFileToLocal(filename, req.files.userPhoto.path, done);
+								return;
+							}
+
+							var absolutePath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), path.basename(oldpicture));
+
+							fs.unlink(absolutePath, function (err) {
+								if (err) {
+									winston.err(err);
+								}
+
+								saveFileToLocal(filename, req.files.userPhoto.path, done);
+							});
+						});
+					}
 				});
 			});
 		});
 
-		function uploadUserPicture(uid, extension, tempPath, res) {
-			if (!extension) {
-				res.send({
-					error: 'Error uploading file! Error : Invalid extension!'
-				});
-				return;
-			}
 
-			var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10);
+		function saveFileToLocal(filename, tempPath, callback) {
 
-			var filename = uid + '-profileimg' + (convertToPNG ? '.png' : extension);
 			var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), filename);
 
-			winston.info('Attempting upload to: ' + uploadPath);
+			winston.info('Saving file '+ filename +' to : ' + uploadPath);
 
 			var is = fs.createReadStream(tempPath);
 			var os = fs.createWriteStream(uploadPath);
-			var im = require('node-imagemagick');
 
 			is.on('end', function () {
 				fs.unlinkSync(tempPath);
 
-				function done(err) {
-					if (err) {
-						winston.err(err);
-						res.send({
-							error: 'Invalid image file!'
-						});
-						return;
-					}
-
-					var imageUrl = nconf.get('upload_url') + filename;
-
-					user.setUserField(uid, 'uploadedpicture', imageUrl);
-					user.setUserField(uid, 'picture', imageUrl);
-
-					if (convertToPNG && extension !== '.png') {
-						im.convert([uploadPath, 'png:-'], function(err, stdout) {
-							if (err) {
-								winston.err(err);
-								res.send({
-									error: 'Unable to convert image to PNG.'
-								});
-								return;
-							}
-
-							fs.writeFileSync(uploadPath, stdout, 'binary');
-							res.json({
-								path: imageUrl
-							});
-						});
-					} else {
-						res.json({
-							path: imageUrl
-						});
-					}
-				}
-
-				if(extension === '.gif') {
-					im.convert([uploadPath, '-coalesce', '-repage', '0x0', '-crop', '128x128+0+0', '+repage', 'uploadPath'], function(err, stdout) {
-						done(err);
-					});
-				} else {
-					im.crop({
-						srcPath: uploadPath,
-						dstPath: uploadPath,
-						width: 128,
-						height: 128
-					}, function (err, stdout, stderr) {
-						done(err);
-					});
-				}
+				callback(null, {url: nconf.get('upload_url') + filename});
 			});
 
 			os.on('error', function (err) {
@@ -237,12 +239,19 @@ var fs = require('fs'),
 		}
 
 
-		app.get('/api/user/:userslug/following', function (req, res) {
+		app.get('/api/user/:userslug/following', function (req, res, next) {
 			var callerUID = req.user ? req.user.uid : '0';
 
-			getUserDataByUserSlug(req.params.userslug, callerUID, function (userData) {
+			getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
+				if(err) {
+					return next(err);
+				}
+
 				if (userData) {
-					user.getFollowing(userData.uid, function (followingData) {
+					user.getFollowing(userData.uid, function (err, followingData) {
+						if(err) {
+							return next(err);
+						}
 						userData.following = followingData;
 						userData.followingCount = followingData.length;
 						res.json(userData);
@@ -256,12 +265,19 @@ var fs = require('fs'),
 			});
 		});
 
-		app.get('/api/user/:userslug/followers', function (req, res) {
+		app.get('/api/user/:userslug/followers', function (req, res, next) {
 			var callerUID = req.user ? req.user.uid : '0';
 
-			getUserDataByUserSlug(req.params.userslug, callerUID, function (userData) {
+			getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
+				if(err) {
+					return next(err);
+				}
+
 				if (userData) {
-					user.getFollowers(userData.uid, function (followersData) {
+					user.getFollowers(userData.uid, function (err, followersData) {
+						if(err) {
+							return next(err);
+						}
 						userData.followers = followersData;
 						userData.followersCount = followersData.length;
 						res.json(userData);
@@ -274,53 +290,65 @@ var fs = require('fs'),
 			});
 		});
 
-		app.get('/api/user/:userslug/edit', function (req, res) {
+		app.get('/api/user/:userslug/edit', function (req, res, next) {
 			var callerUID = req.user ? req.user.uid : '0';
 
-			getUserDataByUserSlug(req.params.userslug, callerUID, function (userData) {
+			if(!parseInt(callerUID, 10)) {
+				return res.json(403, {
+					error: 'Not allowed!'
+				});
+			}
+
+			getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
+				if(err) {
+					return next(err);
+				}
 				res.json(userData);
 			});
 		});
 
-		app.get('/api/user/:userslug/settings', function (req, res, next) {
+		app.get('/api/user/:userslug/settings', function(req, res, next) {
 			var callerUID = req.user ? req.user.uid : '0';
 
-			user.getUidByUserslug(req.params.userslug, function (err, uid) {
+			user.getUidByUserslug(req.params.userslug, function(err, uid) {
+				if (err) {
+					return next(err);
+				}
+
 				if (!uid) {
-					res.json(404, {
+					return res.json(404, {
 						error: 'User not found!'
 					});
-					return;
 				}
 
 				if (uid != callerUID || callerUID == '0') {
-					res.json(403, {
+					return res.json(403, {
 						error: 'Not allowed!'
 					});
-					return;
 				}
 
-
-				user.getUserFields(uid, ['username', 'userslug', 'showemail'], function (err, userData) {
-					if (err)
+				plugins.fireHook('filter:user.settings', [], function(err, settings) {
+					if (err) {
 						return next(err);
+					}
 
-					if (userData) {
-						if (userData.showemail && parseInt(userData.showemail, 10) === 1) {
-							userData.showemail = "checked";
-						} else {
-							userData.showemail = "";
+					user.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
+						if (err) {
+							return next(err);
 						}
 
+						if(!userData) {
+							return res.json(404, {
+								error: 'User not found!'
+							});
+						}
+						userData.yourid = req.user.uid;
 						userData.theirid = uid;
-						userData.yourid = callerUID;
+						userData.settings = settings;
 						res.json(userData);
-					} else {
-						res.json(404, {
-							error: 'User not found!'
-						});
-					}
+					});
 				});
+
 			});
 		});
 
@@ -329,17 +357,15 @@ var fs = require('fs'),
 
 			user.getUidByUserslug(req.params.userslug, function (err, uid) {
 				if (!uid) {
-					res.json(404, {
+					return res.json(404, {
 						error: 'User not found!'
 					});
-					return;
 				}
 
 				if (uid != callerUID || callerUID == '0') {
-					res.json(403, {
+					return res.json(403, {
 						error: 'Not allowed!'
 					});
-					return;
 				}
 
 				user.getUserFields(uid, ['username', 'userslug'], function (err, userData) {
@@ -347,24 +373,24 @@ var fs = require('fs'),
 						return next(err);
 					}
 
-					if (userData) {
-						posts.getFavourites(uid, 0, 9, function (err, favourites) {
-							if (err) {
-								return next(err);
-							}
-
-							userData.theirid = uid;
-							userData.yourid = callerUID;
-							userData.posts = favourites.posts;
-							userData.nextStart = favourites.nextStart;
-
-							res.json(userData);
-						});
-					} else {
-						res.json(404, {
+					if (!userData) {
+						return res.json(404, {
 							error: 'User not found!'
 						});
 					}
+
+					posts.getFavourites(uid, 0, 9, function (err, favourites) {
+						if (err) {
+							return next(err);
+						}
+
+						userData.theirid = uid;
+						userData.yourid = callerUID;
+						userData.posts = favourites.posts;
+						userData.nextStart = favourites.nextStart;
+
+						res.json(userData);
+					});
 				});
 			});
 		});
@@ -374,10 +400,9 @@ var fs = require('fs'),
 
 			user.getUidByUserslug(req.params.userslug, function (err, uid) {
 				if (!uid) {
-					res.json(404, {
+					return res.json(404, {
 						error: 'User not found!'
 					});
-					return;
 				}
 
 				user.getUserFields(uid, ['username', 'userslug'], function (err, userData) {
@@ -385,32 +410,45 @@ var fs = require('fs'),
 						return next(err);
 					}
 
-					if (userData) {
-						posts.getPostsByUid(callerUID, uid, 0, 19, function (err, userPosts) {
-							if (err) {
-								return next(err);
-							}
-							userData.uid = uid;
-							userData.theirid = uid;
-							userData.yourid = callerUID;
-							userData.posts = userPosts.posts;
-							userData.nextStart = userPosts.nextStart;
-
-							res.json(userData);
-						});
-					} else {
-						res.json(404, {
+					if (!userData) {
+						return res.json(404, {
 							error: 'User not found!'
 						});
 					}
+
+					posts.getPostsByUid(callerUID, uid, 0, 19, function (err, userPosts) {
+						if (err) {
+							return next(err);
+						}
+						userData.uid = uid;
+						userData.theirid = uid;
+						userData.yourid = callerUID;
+						userData.posts = userPosts.posts;
+						userData.nextStart = userPosts.nextStart;
+
+						res.json(userData);
+					});
 				});
+			});
+		});
+
+
+		app.get('/api/user/uid/:uid', function(req, res, next) {
+			var uid = req.params.uid ? req.params.uid : 0;
+
+			user.getUserData(uid, function(err, userData) {
+				res.json(userData);
 			});
 		});
 
 		app.get('/api/user/:userslug', function (req, res, next) {
 			var callerUID = req.user ? req.user.uid : '0';
 
-			getUserDataByUserSlug(req.params.userslug, callerUID, function (userData) {
+			getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
+				if(err) {
+					return next(err);
+				}
+
 				if(!userData) {
 					return res.json(404, {
 						error: 'User not found!'
@@ -551,62 +589,75 @@ var fs = require('fs'),
 		}
 
 		function getUserDataByUserSlug(userslug, callerUID, callback) {
-			user.getUidByUserslug(userslug, function (err, uid) {
+			var userData;
 
-				if (uid === null) {
-					callback(null);
-					return;
+			async.waterfall([
+				function(next) {
+					user.getUidByUserslug(userslug, next);
+				},
+				function(uid, next) {
+					if (!uid) {
+						return next(new Error('invalid-user'));
+					}
+
+					user.getUserData(uid, next);
+				},
+				function(data, next) {
+					userData = data;
+					if (!userData) {
+						return callback(new Error('invalid-user'));
+					}
+
+					user.isAdministrator(callerUID, next);
+				}
+			], function(err, isAdmin) {
+				if(err) {
+					return callback(err);
 				}
 
-				user.getUserData(uid, function (err, data) {
-					if (data) {
-						data.joindate = utils.toISOString(data.joindate);
-						if(data.lastonline) {
-							data.lastonline = utils.toISOString(data.lastonline);
-						} else {
-							data.lastonline = data.joindate;
-						}
+				userData.joindate = utils.toISOString(userData.joindate);
+				if(userData.lastonline) {
+					userData.lastonline = utils.toISOString(userData.lastonline);
+				} else {
+					userData.lastonline = userData.joindate;
+				}
 
-						if (!data.birthday) {
-							data.age = '';
-						} else {
-							data.age = Math.floor((new Date().getTime() - new Date(data.birthday).getTime()) / 31536000000);
-						}
+				if (!userData.birthday) {
+					userData.age = '';
+				} else {
+					userData.age = Math.floor((new Date().getTime() - new Date(userData.birthday).getTime()) / 31536000000);
+				}
 
-						function canSeeEmail() {
-							return callerUID == uid || (data.email && (data.showemail && parseInt(data.showemail, 10) === 1));
-						}
+				function canSeeEmail() {
+					return isAdmin || callerUID == userData.uid || (userData.email && (userData.showemail && parseInt(userData.showemail, 10) === 1));
+				}
 
-						if (!canSeeEmail()) {
-							data.email = "";
-						}
+				if (!canSeeEmail()) {
+					userData.email = "";
+				}
 
-						if (callerUID == uid && (!data.showemail || parseInt(data.showemail, 10) === 0)) {
-							data.emailClass = "";
-						} else {
-							data.emailClass = "hide";
-						}
+				if (callerUID == userData.uid && (!userData.showemail || parseInt(userData.showemail, 10) === 0)) {
+					userData.emailClass = "";
+				} else {
+					userData.emailClass = "hide";
+				}
 
-						data.websiteName = data.website.replace('http://', '').replace('https://', '');
-						data.banned = parseInt(data.banned, 10) === 1;
-						data.uid = uid;
-						data.yourid = callerUID;
-						data.theirid = uid;
+				userData.websiteName = userData.website.replace('http://', '').replace('https://', '');
+				userData.banned = parseInt(userData.banned, 10) === 1;
+				userData.uid = userData.uid;
+				userData.yourid = callerUID;
+				userData.theirid = userData.uid;
 
-						data.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
+				userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
 
-						user.getFollowingCount(uid, function (followingCount) {
-							user.getFollowerCount(uid, function (followerCount) {
-								data.followingCount = followingCount;
-								data.followerCount = followerCount;
-								callback(data);
-							});
-						});
-					} else {
-						callback(null);
+				user.getFollowStats(userData.uid, function (err, followStats) {
+					if(err) {
+						return callback(err);
 					}
+					userData.followingCount = followStats.followingCount;
+					userData.followerCount = followStats.followerCount;
+					callback(null, userData);
 				});
-
 			});
 		}
 

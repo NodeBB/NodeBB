@@ -1,4 +1,5 @@
 {
     "name": "Hungarian",
-    "code": "hu"
+    "code": "hu",
+    "dir": "ltr"
 }

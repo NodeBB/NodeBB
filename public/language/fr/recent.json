@@ -2,5 +2,6 @@
     "title": "Récent",
     "day": "Jour",
     "week": "Semaine",
-    "month": "Mois"
+    "month": "Mois",
+    "no_recent_topics": "There are no recent topics."
 }

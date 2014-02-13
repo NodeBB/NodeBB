@@ -19,7 +19,7 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2014, 1, 7, 16, 0).getTime();
+	var	latestSchema = new Date(2014, 1, 9, 20, 50).getTime();
 
 	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -558,6 +558,25 @@ Upgrade.upgrade = function(callback) {
 
 			} else {
 				winston.info('[2014/2/7] Updating category recent replies -- skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 1, 9, 20, 50).getTime();
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				db.delete('tid:lastFeedUpdate', function(err) {
+					if(err) {
+						winston.err('Error upgrading '+ err.message);
+						process.exit();
+					} else {
+						winston.info('[2014/2/9] Remove Topic LastFeedUpdate value, as feeds are now on-demand');
+						next();
+					}
+				});
+			} else {
+				winston.info('[2014/2/9] Remove Topic LastFeedUpdate value, as feeds are now on-demand - skipped');
 				next();
 			}
 		}

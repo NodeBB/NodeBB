@@ -22,6 +22,16 @@ var path = require('path'),
 	Api.createRoutes = function (app) {
 
 		app.namespace('/api', function () {
+
+			app.all('*', function(req, res, next) {
+
+				if(req.user) {
+					user.updateLastOnlineTime(req.user.uid);
+				}
+
+				next();
+			});
+
 			app.get('/get_templates_listing', function (req, res) {
 				utils.walk(path.join(__dirname, '../../', 'public/templates'), function (err, data) {
 					res.json(data.concat(app.get_custom_templates()).filter(function(value, index, self) {
@@ -37,7 +47,8 @@ var path = require('path'),
 				config.minimumTitleLength = meta.config.minimumTitleLength;
 				config.maximumTitleLength = meta.config.maximumTitleLength;
 				config.minimumPostLength = meta.config.minimumPostLength;
-				config.imgurClientIDSet = !! meta.config.imgurClientID;
+				config.hasImageUploadPlugin = Plugins.hasListeners('filter:uploadImage');
+				config.maximumProfileImageSize = meta.config.maximumProfileImageSize;
 				config.minimumUsernameLength = meta.config.minimumUsernameLength;
 				config.maximumUsernameLength = meta.config.maximumUsernameLength;
 				config.minimumPasswordLength = meta.config.minimumPasswordLength;
@@ -52,7 +63,22 @@ var path = require('path'),
 				config.defaultLang = meta.config.defaultLang || 'en_GB';
 				config.environment = process.env.NODE_ENV;
 
-				res.json(200, config);
+				if (!req.user) {
+					return res.json(200, config);
+				}
+
+				if(req.user) {
+					user.getSettings(req.user.uid, function(err, settings) {
+						if(err) {
+							return next(err);
+						}
+
+						config.usePagination = settings.usePagination;
+						config.topicsPerPage = settings.topicsPerPage;
+						config.postsPerPage = settings.postsPerPage;
+						res.json(200, config);
+					});
+				}
 			});
 
 			app.get('/home', function (req, res) {
@@ -85,15 +111,15 @@ var path = require('path'),
 							var	motdString,
 								assemble = function() {
 									data.motd_class = (parseInt(meta.config.show_motd, 10) === 1 || meta.config.show_motd === undefined) ? '' : ' none';
-									data.motd_class += (meta.config.motd && meta.config.motd.length > 0 ? '' : ' default');
+									data.motd_class += (meta.config.motd && meta.config.motd.length > 0) ? '' : ' default';
 									data.motd_class += meta.config.motd_class ? ' ' + meta.config.motd_class : '';
 
-									data.motd = require('marked')(motdString);
+									data.motd = motdString;
 									res.json(data);
 								};
 
 							if (!meta.config.motd) {
-								translator.translate('\n\n# NodeBB <small><span>v' + pkg.version + '</span></small>\n\n<h5>[[global:motd.welcome]]</h5>\
+								translator.translate('\n\n<h1>NodeBB</h1> <small><span>v' + pkg.version + '</span></small>\n\n<h5>[[global:motd.welcome]]</h5>\
 									<div class="btn-group">\
 										<a target="_blank" href="https://www.nodebb.org" class="btn btn-link btn-md">\
 											<i class="fa fa-comment"></i>\
@@ -189,33 +215,38 @@ var path = require('path'),
 					return res.send(404);
 				}
 
-				var postsPerPage = parseInt(meta.config.postsPerPage ? meta.config.postsPerPage : 20, 10);
-				var start = (page - 1) * postsPerPage;
-				var end = start + postsPerPage - 1;
-
-				ThreadTools.privileges(req.params.id, uid, function(err, privileges) {
-					if (privileges.read) {
-						topics.getTopicWithPosts(req.params.id, uid, start, end, false, function (err, data) {
-							if(err) {
-								return next(err);
-							}
-
-							if(page > data.pageCount) {
-								return res.send(404);
-							}
-
-							data.currentPage = page;
-							data.privileges = privileges;
-
-							if (parseInt(data.deleted, 10) === 1 && parseInt(data.expose_tools, 10) === 0) {
-								return res.json(404, {});
-							}
-
-							res.json(data);
-						});
-					} else {
-						res.send(403);
+				user.getSettings(uid, function(err, settings) {
+					if(err) {
+						return next(err);
 					}
+
+					var start = (page - 1) * settings.postsPerPage;
+					var end = start + settings.postsPerPage - 1;
+
+					ThreadTools.privileges(req.params.id, uid, function(err, privileges) {
+						if (privileges.read) {
+							topics.getTopicWithPosts(req.params.id, uid, start, end, false, function (err, data) {
+								if(err) {
+									return next(err);
+								}
+
+								if(page > data.pageCount) {
+									return res.send(404);
+								}
+
+								data.currentPage = page;
+								data.privileges = privileges;
+
+								if (parseInt(data.deleted, 10) === 1 && parseInt(data.expose_tools, 10) === 0) {
+									return res.json(404, {});
+								}
+
+								res.json(data);
+							});
+						} else {
+							res.send(403);
+						}
+					});
 				});
 			});
 
@@ -230,30 +261,34 @@ var path = require('path'),
 					return res.send(404);
 				}
 
-				var topicsPerPage = parseInt(meta.config.topicsPerPage ? meta.config.topicsPerPage : 20, 10);
-				var start = (page - 1) * topicsPerPage;
-				var end = start + topicsPerPage - 1;
-
-				// Category Whitelisting
-				categoryTools.privileges(req.params.id, uid, function(err, privileges) {
-					if (!err && privileges.read) {
-						categories.getCategoryById(req.params.id, start, end, uid, function (err, data) {
-							if(err) {
-								return next(err);
-							}
-
-							data.currentPage = page;
-							data.privileges = privileges;
-
-							if (data && parseInt(data.disabled, 10) === 0) {
-								res.json(data);
-							} else {
-								next();
-							}
-						}, req.params.id, uid);
-					} else {
-						res.send(403);
+				user.getSettings(uid, function(err, settings) {
+					if(err) {
+						return next(err);
 					}
+
+					var start = (page - 1) * settings.topicsPerPage;
+					var end = start + settings.topicsPerPage - 1;
+
+					categoryTools.privileges(req.params.id, uid, function(err, privileges) {
+						if (!err && privileges.read) {
+							categories.getCategoryById(req.params.id, start, end, uid, function (err, data) {
+								if(err) {
+									return next(err);
+								}
+
+								data.currentPage = page;
+								data.privileges = privileges;
+
+								if (data && parseInt(data.disabled, 10) === 0) {
+									res.json(data);
+								} else {
+									next();
+								}
+							}, req.params.id, uid);
+						} else {
+							res.send(403);
+						}
+					});
 				});
 			});
 

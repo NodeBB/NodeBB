@@ -215,7 +215,11 @@ SocketPosts.getFavouritedUsers = function(socket, pid, callback) {
 				rest_amount = pid_uids.length - max;
 				pid_uids = pid_uids.slice(0, max);
 			}
-			user.getUsernamesByUids(pid_uids, function(result) {
+			user.getUsernamesByUids(pid_uids, function(err, result) {
+				if(err) {
+					return callback(err);
+				}
+
 				usernames = result.join(', ') + (rest_amount > 0
 					? " and " + rest_amount + (rest_amount > 1 ? " others" : " other")
 					: "");
@@ -228,7 +232,7 @@ SocketPosts.getFavouritedUsers = function(socket, pid, callback) {
 };
 
 SocketPosts.getPidPage = function(socket, pid, callback) {
-	posts.getPidPage(pid, callback);
+	posts.getPidPage(pid, socket.uid, callback);
 }
 
 SocketPosts.flag = function(socket, pid, callback) {
