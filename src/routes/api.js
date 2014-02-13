@@ -26,15 +26,7 @@ var path = require('path'),
 			app.all('*', function(req, res, next) {
 
 				if(req.user) {
-					user.getUserField(req.user.uid, 'status', function(err, status) {
-						if(err) {
-							return next(err);
-						}
-
-						if(status !== 'offline') {
-							user.setUserField(req.user.uid, 'lastonline', Date.now());
-						}
-					});
+					user.updateLastOnlineTime(req.user.uid);
 				}
 
 				next();
