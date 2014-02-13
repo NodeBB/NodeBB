@@ -18,6 +18,10 @@ case "$1" in
 		echo -e "\n\e[00;32mNodeBB Dependencies up-to-date!\e[00;00m";
 		;;
 
+	setup)
+		node app --setup
+		;;
+
 	dev)
 		echo "Launching NodeBB in \"development\" mode."
 		echo "To run the production build of NodeBB, please use \"forever\"."
