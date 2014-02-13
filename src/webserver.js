@@ -574,6 +574,11 @@ module.exports.server = server;
 						}
 					}
 
+					var ogImageUrl = meta.config['brand:logo'];
+					if(ogImageUrl && ogImageUrl.indexOf('http') === -1) {
+						ogImageUrl = nconf.get('url') + ogImageUrl;
+					}
+
 					app.build_header({
 						req: req,
 						res: res,
@@ -604,7 +609,7 @@ module.exports.server = server;
 							},
 							{
 								property: "og:image:url",
-								content: nconf.get('url') + (meta.config['brand:logo']?meta.config['brand:logo']:'')
+								content: ogImageUrl
 							},
 							{
 								property: 'og:image',
