@@ -139,18 +139,18 @@
 					<!-- ENDIF posts.signature -->
 
 					<div class="post-info">
-						<span class="pull-left">
-							[[topic:reputation]]: <i class='fa fa-star'></i> <span data-reputation="{posts.user_rep}" data-uid="{posts.uid}" class='formatted-number reputation'>{posts.user_rep}</span>&nbsp;|&nbsp;[[topic:posts]]: <i class='fa fa-pencil'></i> <span class='formatted-number user_postcount_{posts.uid}'>{posts.user_postcount}</span>
-							<!-- BEGIN custom_profile_info -->
-							| {posts.custom_profile_info.content}
-							<!-- END custom_profile_info -->
-						</span>
 						<span class="pull-right">
 							[[category:posted]] <span class="relativeTimeAgo timeago" title="{posts.relativeTime}"></span>
 							<!-- IF posts.editor -->
 							<span>| [[category:last_edited_by]] <strong><a href="{relative_path}/user/{posts.editorslug}">{posts.editorname}</a></strong></span>
 							<span class="timeago" title="{posts.relativeEditTime}"></span>
 							<!-- ENDIF posts.editor -->
+						</span>
+						<span class="pull-left">
+							[[topic:reputation]]: <i class='fa fa-star'></i> <span data-reputation="{posts.user_rep}" data-uid="{posts.uid}" class='formatted-number reputation'>{posts.user_rep}</span>&nbsp;|&nbsp;[[topic:posts]]: <i class='fa fa-pencil'></i> <span class='formatted-number user_postcount_{posts.uid}'>{posts.user_postcount}</span>
+							<!-- BEGIN custom_profile_info -->
+							| {posts.custom_profile_info.content}
+							<!-- END custom_profile_info -->
 						</span>
 						<div style="clear:both;"></div>
 					</div>
