@@ -26,8 +26,6 @@ var async = require('async'),
 				return callback(err);
 			}
 
-			db.setAdd('topics:tid', tid);
-
 			var slug = tid + '/' + utils.slugify(title),
 				timestamp = Date.now();
 
@@ -48,6 +46,8 @@ var async = require('async'),
 				if(err) {
 					return callback(err);
 				}
+
+				db.setAdd('topics:tid', tid);
 				db.searchIndex('topic', title, tid);
 
 				user.addTopicIdToUser(uid, tid, timestamp);
