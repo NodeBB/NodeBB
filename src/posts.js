@@ -93,8 +93,13 @@ var db = require('./database'),
 		], callback);
 	};
 
-	Posts.getPostsByTid = function(tid, start, end, callback) {
-		db.getSortedSetRange('tid:' + tid + ':posts', start, end, function(err, pids) {
+	Posts.getPostsByTid = function(tid, start, end, reverse, callback) {
+		if (typeof reverse === 'function') {
+			callback = reverse;
+			reverse = false;
+		}
+
+		db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange']('tid:' + tid + ':posts', start, end, function(err, pids) {
 			if(err) {
 				return callback(err);
 			}
