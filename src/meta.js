@@ -85,7 +85,7 @@ var fs = require('fs'),
 
 	Meta.themes = {
 		get: function (callback) {
-			var themePath = path.join(__dirname, '../node_modules');
+			var themePath = nconf.get('themes_dir');
 			fs.readdir(themePath, function (err, files) {
 				async.filter(files, function (file, next) {
 					fs.stat(path.join(themePath, file), function (err, fileStat) {
@@ -132,7 +132,7 @@ var fs = require('fs'),
 				case 'local':
 					async.waterfall([
 						function(next) {
-							fs.readFile(path.join(__dirname, '../node_modules', data.id, 'theme.json'), function(err, config) {
+							fs.readFile(path.join(nconf.get('themes_dir'), data.id, 'theme.json'), function(err, config) {
 								if (!err) {
 									config = JSON.parse(config.toString());
 									next(null, config);
