@@ -19,6 +19,7 @@ define(['uploader'], function(uploader) {
 			numFields = fields.length,
 			saveBtn = document.getElementById('save'),
 			x, key, inputType;
+
 		for (x = 0; x < numFields; x++) {
 			key = fields[x].getAttribute('data-field');
 			inputType = fields[x].getAttribute('type');
@@ -45,56 +46,66 @@ define(['uploader'], function(uploader) {
 		}
 
 		saveBtn.addEventListener('click', function(e) {
-			var key, value;
+
 			e.preventDefault();
 
 			for (x = 0; x < numFields; x++) {
-				key = fields[x].getAttribute('data-field');
-				if (fields[x].nodeName === 'INPUT') {
-					inputType = fields[x].getAttribute('type');
-					switch (inputType) {
-						case 'text':
-						case 'password':
-						case 'textarea':
-						case 'number':
-							value = fields[x].value;
-							break;
-
-						case 'checkbox':
-							value = fields[x].checked ? '1' : '0';
-							break;
-					}
-				} else if (fields[x].nodeName === 'TEXTAREA') {
-					value = fields[x].value;
-				} else if (fields[x].nodeName === 'SELECT') {
-					value = fields[x].value;
-				}
-
-				socket.emit('admin.config.set', {
-					key: key,
-					value: value
-				}, function(err) {
-					if(err) {
-						return app.alert({
-							alert_id: 'config_status',
-							timeout: 2500,
-							title: 'Changes Not Saved',
-							message: 'NodeBB encountered a problem saving your changes',
-							type: 'danger'
-						});
-					}
-
-					app.alert({
-						alert_id: 'config_status',
-						timeout: 2500,
-						title: 'Changes Saved',
-						message: 'Your changes to the NodeBB configuration have been saved.',
-						type: 'success'
-					});
-
-				});
+				saveField(fields[x]);
 			}
 		});
+
+		function saveField(field) {
+			var key = field.getAttribute('data-field'),
+				value;
+
+			if (field.nodeName === 'INPUT') {
+				inputType = field.getAttribute('type');
+				switch (inputType) {
+					case 'text':
+					case 'password':
+					case 'textarea':
+					case 'number':
+						value = field.value;
+						break;
+
+					case 'checkbox':
+						value = field.checked ? '1' : '0';
+						break;
+				}
+			} else if (field.nodeName === 'TEXTAREA') {
+				value = field.value;
+			} else if (field.nodeName === 'SELECT') {
+				value = field.value;
+			}
+
+			socket.emit('admin.config.set', {
+				key: key,
+				value: value
+			}, function(err) {
+				if(err) {
+					return app.alert({
+						alert_id: 'config_status',
+						timeout: 2500,
+						title: 'Changes Not Saved',
+						message: 'NodeBB encountered a problem saving your changes',
+						type: 'danger'
+					});
+				}
+
+				if(app.config[key] !== undefined) {
+					app.config[key] = value;
+				}
+
+				app.alert({
+					alert_id: 'config_status',
+					timeout: 2500,
+					title: 'Changes Saved',
+					message: 'Your changes to the NodeBB configuration have been saved.',
+					type: 'success'
+				});
+
+			});
+		}
 
 		$('#uploadLogoBtn').on('click', function() {
 			uploader.open(RELATIVE_PATH + '/admin/uploadlogo', {}, 0, function(image) {
