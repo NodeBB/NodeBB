@@ -332,7 +332,7 @@ var nconf = require('nconf'),
 			});
 
 			app.get('/topics', function (req, res) {
-				topics.getAllTopics(10, null, function (err, topics) {
+				topics.getAllTopics(0, 19, function (err, topics) {
 					res.json({
 						topics: topics,
 						notopics: topics.length === 0
