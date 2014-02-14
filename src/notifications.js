@@ -19,18 +19,37 @@ var async = require('async'),
 	Notifications.get = function(nid, uid, callback) {
 
 		db.exists('notifications:' + nid, function(err, exists) {
-			if(!exists) {
+			if (err) {
+				winston.error('[notifications.get] Could not retrieve nid ' + nid + ': ' + err.message);
 				return callback(null);
 			}
 
-			db.sortedSetRank('uid:' + uid + ':notifications:read', nid, function(err, rank) {
+			if (exists) {
+				db.sortedSetRank('uid:' + uid + ':notifications:read', nid, function(err, rank) {
 
-				db.getObjectFields('notifications:' + nid, ['nid', 'text', 'score', 'path', 'datetime', 'uniqueId'], function(err, notification) {
+					db.getObjectFields('notifications:' + nid, ['nid', 'text', 'score', 'path', 'datetime', 'uniqueId'], function(err, notification) {
 
-					notification.read = rank !== null ? true:false;
-					callback(notification);
+						notification.read = rank !== null ? true:false;
+						callback(notification);
+					});
 				});
-			});
+			} else {
+				// Remove from the user's boxes
+				if (process.env.NODE_ENV === 'development') {
+					winston.info('[notifications.get] nid ' + nid + ' not found. Removing.');
+				}
+
+				async.parallel([
+					function(next) {
+						db.sortedSetRemove('uid:' + uid + ':notifications:unread', nid, next);
+					},
+					function(next) {
+						db.sortedSetRemove('uid:' + uid + ':notifications:read', nid, next);
+					}
+				], function(err) {
+					callback(null);
+				});
+			}
 		});
 	};
 
