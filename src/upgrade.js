@@ -19,7 +19,7 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2014, 1, 9, 20, 50).getTime();
+	var	latestSchema = new Date(2014, 1, 14, 20, 50).getTime();
 
 	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -579,7 +579,41 @@ Upgrade.upgrade = function(callback) {
 				winston.info('[2014/2/9] Remove Topic LastFeedUpdate value, as feeds are now on-demand - skipped');
 				next();
 			}
-		}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 1, 14, 20, 50).getTime();
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				db.getSetMembers('topics:tid', function(err, tids) {
+					if(err) {
+						return next(err);
+					}
+
+					db.delete('topics:tid', function(err) {
+						if(err) {
+							return next(err);
+						}
+
+						async.each(tids, function(tid, next) {
+							Topics.getTopicField(tid, 'timestamp', function(err, timestamp) {
+								db.sortedSetAdd('topics:tid', timestamp, tid, next);
+							});
+						}, function(err) {
+							if(err) {
+								return next(err);
+							}
+							winston.info('[2014/2/14] Upgraded topics to sorted set');
+							next();
+						})
+					});
+				})
+			} else {
+				winston.info('[2014/2/14] Upgrade topics to sorted set - skipped');
+				next();
+			}
+		},
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 17!!!
 	], function(err) {

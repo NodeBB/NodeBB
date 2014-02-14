@@ -378,6 +378,12 @@
 		redisClient.zscore(key, value, callback);
 	}
 
+	module.isSortedSetMember = function(key, value, callback) {
+		module.sortedSetScore(key, value, function(err, score) {
+			callback(err, !!score);
+		});
+	}
+
 	module.sortedSetsScore = function(keys, value, callback) {
 		var	multi = redisClient.multi();
 

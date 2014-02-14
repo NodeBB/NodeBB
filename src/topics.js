@@ -47,7 +47,7 @@ var async = require('async'),
 					return callback(err);
 				}
 
-				db.setAdd('topics:tid', tid);
+				db.sortedSetAdd('topics:tid', timestamp, tid);
 				db.searchIndex('topic', title, tid);
 
 				user.addTopicIdToUser(uid, tid, timestamp);
@@ -906,7 +906,7 @@ var async = require('async'),
 	};
 
 	Topics.getAllTopics = function(start, end, callback) {
-		db.getSortedSetRevRange('topics:recent', start, end, function(err, tids) {
+		db.getSortedSetRevRange('topics:tid', start, end, function(err, tids) {
 			if(err) {
 				return callback(err);
 			}
@@ -918,7 +918,7 @@ var async = require('async'),
 	};
 
 	Topics.markAllRead = function(uid, callback) {
-		db.getSetMembers('topics:tid', function(err, tids) {
+		db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
 			if (err) {
 				return callback(err);
 			}
@@ -1189,7 +1189,7 @@ var async = require('async'),
 	}
 
 	Topics.reIndexAll = function(callback) {
-		db.getSetMembers('topics:tid', function(err, tids) {
+		db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
 			if (err) {
 				return callback(err);
 			}
