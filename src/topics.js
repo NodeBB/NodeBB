@@ -907,6 +907,10 @@ var async = require('async'),
 
 	Topics.getAllTopics = function(start, end, callback) {
 		db.getSortedSetRevRange('topics:recent', start, end, function(err, tids) {
+			if(err) {
+				return callback(err);
+			}
+
 			async.map(tids, function(tid, next) {
 				Topics.getTopicDataWithUser(tid, next);
 			}, callback);
