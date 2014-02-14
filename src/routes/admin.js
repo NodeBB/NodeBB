@@ -12,6 +12,7 @@ var nconf = require('nconf'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
 	image = require('./../image'),
+	file = require('./../file'),
 	Languages = require('../languages'),
 	events = require('./../events'),
 	utils = require('./../../public/src/utils'),
@@ -102,8 +103,9 @@ var nconf = require('nconf'),
 			});
 
 			app.post('/category/uploadpicture', function(req, res) {
-				if (!req.user)
+				if (!req.user) {
 					return res.redirect('/403');
+				}
 
 				var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
 				var params = null;
@@ -128,8 +130,9 @@ var nconf = require('nconf'),
 			});
 
 			app.post('/uploadfavicon', function(req, res) {
-				if (!req.user)
+				if (!req.user) {
 					return res.redirect('/403');
+				}
 
 				var allowedTypes = ['image/x-icon', 'image/vnd.microsoft.icon'];
 
@@ -140,7 +143,9 @@ var nconf = require('nconf'),
 					return;
 				}
 
-				saveFileToLocal('favicon.ico', req, function(err, image) {
+				file.saveFileToLocal('favicon.ico', req.files.userPhoto.path, function(err, image) {
+					fs.unlink(req.files.userPhoto.path);
+
 					if(err) {
 						return res.send({
 							error: err.message
@@ -155,8 +160,9 @@ var nconf = require('nconf'),
 
 			app.post('/uploadlogo', function(req, res) {
 
-				if (!req.user)
+				if (!req.user) {
 					return res.redirect('/403');
+				}
 
 				var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
 
@@ -183,6 +189,8 @@ var nconf = require('nconf'),
 
 		function uploadImage(filename, req, res) {
 			function done(err, image) {
+				fs.unlink(req.files.userPhoto.path);
+
 				if(err) {
 					return res.send({
 						error: err.message
@@ -195,39 +203,10 @@ var nconf = require('nconf'),
 			}
 
 			if(plugins.hasListeners('filter:uploadImage')) {
-				plugins.fireHook('filter:uploadImage', {file: req.files.userPhoto.path, name:filename}, done);
+				plugins.fireHook('filter:uploadImage', req.files.userPhoto, done);
 			} else {
-				saveFileToLocal(filename, req, done);
+				file.saveFileToLocal(filename, req.files.userPhoto.path, done);
 			}
-		}
-
-		function saveFileToLocal(filename, req, callback) {
-
-			var tempPath = req.files.userPhoto.path;
-			var extension = path.extname(req.files.userPhoto.name);
-
-			if (!extension) {
-				return callback(new Error('Error uploading file! Error : Invalid extension!'));
-			}
-
-			var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), filename);
-
-			winston.info('Attempting upload to: ' + uploadPath);
-			var is = fs.createReadStream(tempPath);
-			var os = fs.createWriteStream(uploadPath);
-
-			is.on('end', function () {
-				fs.unlinkSync(tempPath);
-
-				callback(null, {url: nconf.get('upload_url') + filename});
-			});
-
-			os.on('error', function (err) {
-				fs.unlinkSync(tempPath);
-				winston.err(err);
-			});
-
-			is.pipe(os);
 		}
 
 		var custom_routes = {

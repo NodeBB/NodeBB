@@ -397,7 +397,7 @@ var db = require('./database'),
 	Posts.uploadPostImage = function(image, callback) {
 
 		if(plugins.hasListeners('filter:uploadImage')) {
-			plugins.fireHook('filter:uploadImage', {base64: image.data, name: image.name}, callback);
+			plugins.fireHook('filter:uploadImage', image, callback);
 		} else {
 
 			if (meta.config.allowFileUploads) {
@@ -411,38 +411,35 @@ var db = require('./database'),
 	Posts.uploadPostFile = function(file, callback) {
 
 		if(plugins.hasListeners('filter:uploadFile')) {
-			plugins.fireHook('filter:uploadFile', {base64: file.data, name: file.name}, callback);
+			plugins.fireHook('filter:uploadFile', file, callback);
 		} else {
 
 			if(!meta.config.allowFileUploads) {
 				return callback(new Error('File uploads are not allowed'));
 			}
 
-			if(!file || !file.data) {
+			if(!file) {
 				return callback(new Error('invalid file'));
 			}
 
-			var buffer = new Buffer(file.data, 'base64');
-
-			if(buffer.length > parseInt(meta.config.maximumFileSize, 10) * 1024) {
+			if(file.size > parseInt(meta.config.maximumFileSize, 10) * 1024) {
 				return callback(new Error('File too big'));
 			}
 
 			var filename = 'upload-' + utils.generateUUID() + path.extname(file.name);
-			var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), filename);
-
-			fs.writeFile(uploadPath, buffer, function (err) {
+			require('./file').saveFileToLocal(filename, file.path, function(err, upload) {
 				if(err) {
 					return callback(err);
 				}
 
 				callback(null, {
-					url: nconf.get('upload_url') + filename,
+					url: upload.url,
 					name: file.name
 				});
 			});
 		}
 	}
+
 
 	Posts.reIndexPids = function(pids, callback) {
 
