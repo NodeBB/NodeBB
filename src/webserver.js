@@ -209,7 +209,7 @@ module.exports.server = server;
 					secret: nconf.get('secret'),
 					key: 'express.sid',
 					cookie: {
-						maxAge: 60 * 60 * 24 * 30 * 1000 // 30 days
+						maxAge: 1000 * 60 * 60 * 24 * parseInt(meta.configs.loginDays || 14, 10)
 					}
 				}));
 

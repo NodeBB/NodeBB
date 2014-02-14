@@ -46,7 +46,7 @@
 
 	module.sessionStore = new connectRedis({
 		client: redisClient,
-		ttl: 60 * 60 * 24 * 30
+		ttl: 60 * 60 * 24 * 14
 	});
 
 	reds.createClient = function () {
