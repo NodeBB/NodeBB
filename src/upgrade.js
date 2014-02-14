@@ -591,7 +591,7 @@ Upgrade.upgrade = function(callback) {
 						return next(err);
 					}
 
-					db.delete('topics:tid', function(err) {
+					db.rename('topics:tid', 'topics:tid:old', function(err) {
 						if(err) {
 							return next(err);
 						}
@@ -605,8 +605,8 @@ Upgrade.upgrade = function(callback) {
 								return next(err);
 							}
 							winston.info('[2014/2/14] Upgraded topics to sorted set');
-							next();
-						})
+							db.delete('topics:tid:old', next);
+						});
 					});
 				})
 			} else {
