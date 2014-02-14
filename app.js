@@ -97,14 +97,6 @@ function start() {
 		winston.info('Base Configuration OK.');
 	}
 
-	if (!semver.satisfies(require('./node_modules/nodebb-theme-cerulean/package.json').version, pkg.dependencies['nodebb-theme-cerulean'])) {
-		winston.error('nodebb-theme-cerulean is out of date - please run npm install.');
-	}
-
-	if (!semver.satisfies(require('./node_modules/nodebb-theme-vanilla/package.json').version, pkg.dependencies['nodebb-theme-vanilla'])) {
-		winston.error('nodebb-theme-vanilla is out of date - please run npm install.');
-	}
-
 	var meta = require('./src/meta');
 
 	require('./src/database').init(function(err) {
