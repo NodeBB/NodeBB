@@ -255,7 +255,7 @@ module.exports.server = server;
 
 								// Theme's static directory
 								if (themeData['theme:staticDir']) {
-									app.use('/css/assets', express.static(path.join(nconf.get('themes_dir'), themeData['theme:id'], themeData['theme:staticDir']), {
+									app.use('/css/assets', express.static(path.join(nconf.get('themes_path'), themeData['theme:id'], themeData['theme:staticDir']), {
 										maxAge: app.enabled('cache') ? 5184000000 : 0
 									}));
 									if (process.env.NODE_ENV === 'development') {
@@ -264,7 +264,7 @@ module.exports.server = server;
 								}
 
 								if (themeData['theme:templates']) {
-									app.use('/templates', express.static(path.join(nconf.get('themes_dir'), themeData['theme:id'], themeData['theme:templates']), {
+									app.use('/templates', express.static(path.join(nconf.get('themes_path'), themeData['theme:id'], themeData['theme:templates']), {
 										maxAge: app.enabled('cache') ? 5184000000 : 0
 									}));
 									if (process.env.NODE_ENV === 'development') {
@@ -273,7 +273,7 @@ module.exports.server = server;
 								}
 
 								app.use(require('less-middleware')({
-									src: path.join(nconf.get('themes_dir'), themeId),
+									src: path.join(nconf.get('themes_path'), themeId),
 									dest: path.join(__dirname, '../public/css'),
 									prefix: nconf.get('relative_path') + '/css',
 									yuicompress: app.enabled('minification') ? true : false
@@ -287,7 +287,7 @@ module.exports.server = server;
 								}
 
 								app.use(require('less-middleware')({
-									src: path.join(nconf.get('themes_dir'), '/nodebb-theme-vanilla'),
+									src: path.join(nconf.get('themes_path'), '/nodebb-theme-vanilla'),
 									dest: path.join(__dirname, '../public/css'),
 									prefix: nconf.get('relative_path') + '/css',
 									yuicompress: app.enabled('minification') ? true : false
@@ -303,7 +303,7 @@ module.exports.server = server;
 
 							async.each(themes, function(themeObj, next) {
 								if (themeObj.screenshot) {
-									screenshotPath = path.join(nconf.get('themes_dir'), themeObj.id, themeObj.screenshot);
+									screenshotPath = path.join(nconf.get('themes_path'), themeObj.id, themeObj.screenshot);
 									(function(id, path) {
 										fs.exists(path, function(exists) {
 											if (exists) {
