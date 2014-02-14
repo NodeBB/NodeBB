@@ -303,7 +303,7 @@ module.exports.server = server;
 
 							async.each(themes, function(themeObj, next) {
 								if (themeObj.screenshot) {
-									screenshotPath = path.join(__dirname, nconf.get('themes_dir'), themeObj.id, themeObj.screenshot);
+									screenshotPath = path.join(nconf.get('themes_dir'), themeObj.id, themeObj.screenshot);
 									(function(id, path) {
 										fs.exists(path, function(exists) {
 											if (exists) {
