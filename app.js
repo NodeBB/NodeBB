@@ -62,10 +62,17 @@ winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
 winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
 winston.info('');
 
+// Alternate configuration file support
+var	configFile = __dirname + '/config.json',
+	configExists;
+if (nconf.get('config')) {
+	configFile = path.join(__dirname, nconf.get('config'));
+}
+configExists = fs.existsSync(configFile);
 
-if (!nconf.get('help') && !nconf.get('setup') && !nconf.get('install') && !nconf.get('upgrade') && fs.existsSync(__dirname + '/config.json')) {
+if (!nconf.get('help') && !nconf.get('setup') && !nconf.get('install') && !nconf.get('upgrade') && configExists) {
 	start();
-} else if (nconf.get('setup') || nconf.get('install') || !fs.existsSync(__dirname + '/config.json')) {
+} else if (nconf.get('setup') || nconf.get('install') || !configExists) {
 	setup();
 } else if (nconf.get('upgrade')) {
 	upgrade();
