@@ -19,7 +19,7 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2014, 1, 14, 20, 50).getTime();
+	var	latestSchema = new Date(2014, 1, 14, 21, 50).getTime();
 
 	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -608,12 +608,53 @@ Upgrade.upgrade = function(callback) {
 							db.delete('topics:tid:old', next);
 						});
 					});
-				})
+				});
 			} else {
 				winston.info('[2014/2/14] Upgrade topics to sorted set - skipped');
 				next();
 			}
 		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 1, 14, 21, 50).getTime();
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
+					if(err) {
+						return next(err);
+					}
+
+					async.each(uids, function(uid, next) {
+						User.getPostIds(uid, 0, -1, function(err, pids) {
+							if(err) {
+								return next(err);
+							}
+
+							async.each(pids, function(pid, next) {
+								Posts.getPostField(pid, 'timestamp', function(err, timestamp) {
+									if(err) {
+										return next(err);
+									}
+									db.sortedSetAdd('posts:pid', timestamp, pid, next);
+								});
+							}, next);
+						});
+					}, function(err) {
+						if(err) {
+							return next(err);
+						}
+
+						winston.info('[2014/2/14] Added posts to sorted set');
+						next();
+					});
+				});
+
+			} else {
+				winston.info('[2014/2/14] Added posts to sorted set - skipped');
+				next();
+			}
+		}
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 17!!!
 	], function(err) {

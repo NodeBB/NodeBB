@@ -63,6 +63,8 @@ var db = require('./database'),
 						return next(err);
 					}
 
+					db.sortedSetAdd('posts:pid', timestamp, pid);
+
 					db.incrObjectField('global', 'postCount');
 
 					topics.onNewPostMade(tid, pid, timestamp);
