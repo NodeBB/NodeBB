@@ -34,7 +34,7 @@ var	nconf = require('nconf'),
 			var	relPath = req._parsedUrl.pathname.replace(nconf.get('relative_path') + '/plugins/' + req.params.id, '');
 
 			if (plugins.staticDirs[req.params.id]) {
-				var	fullPath = path.join(plugins.staticDirs[req.params.id], relPath);
+				var	fullPath = path.join(plugins.staticDirs[req.params.id], decodeURIComponent(relPath));
 
 				fs.exists(fullPath, function(exists) {
 					if (exists) {
