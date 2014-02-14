@@ -411,6 +411,15 @@ var fs = require('fs'),
 			});
 		});
 
+
+		app.get('/api/user/uid/:uid', function(req, res, next) {
+			var uid = req.params.uid ? req.params.uid : 0;
+
+			user.getUserData(uid, function(err, userData) {
+				res.json(userData);
+			});
+		});
+
 		app.get('/api/user/:userslug', function (req, res, next) {
 			var callerUID = req.user ? req.user.uid : '0';
 

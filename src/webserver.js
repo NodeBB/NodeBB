@@ -178,7 +178,9 @@ module.exports.server = server;
 				meta.config['cache-buster'] = stdOut.trim();
 				// winston.info('[init] Cache buster value set to: ' + stdOut);
 			} else {
-				winston.warn('[init] Cache buster not set');
+				fs.stat(path.join(__dirname, '../package.json'), function(err, stats) {
+					meta.config['cache-buster'] = new Date(stats.mtime).getTime();
+				});
 			}
 		});
 	}

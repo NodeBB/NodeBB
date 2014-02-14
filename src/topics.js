@@ -306,8 +306,13 @@ var async = require('async'),
 		});
 	};
 
-	Topics.getTopicPosts = function(tid, start, end, current_user, callback) {
-		posts.getPostsByTid(tid, start, end, function(err, postData) {
+	Topics.getTopicPosts = function(tid, start, end, current_user, reverse, callback) {
+		if (typeof reverse === 'function') {
+			callback = reverse;
+			reverse = false;
+		}
+
+		posts.getPostsByTid(tid, start, end, reverse, function(err, postData) {
 			if(err) {
 				return callback(err);
 			}
