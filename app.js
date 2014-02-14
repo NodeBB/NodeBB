@@ -93,6 +93,7 @@ function start() {
 	winston.info('Time: ' + new Date());
 	winston.info('Initializing NodeBB v' + pkg.version);
 	winston.info('* using ' + nconf.get('database') +' store at ' + nconf.get(nconf.get('database') + ':host') + ':' + nconf.get(nconf.get('database') + ':port'));
+	winston.info('* using themes stored in: ' + nconf.get('themes_dir'));
 
 	if (process.env.NODE_ENV === 'development') {
 		winston.info('Base Configuration OK.');
