@@ -273,7 +273,7 @@ module.exports.server = server;
 								}
 
 								app.use(require('less-middleware')({
-									src: path.join(nconf.get('themes_dir') + themeId),
+									src: path.join(nconf.get('themes_dir'), themeId),
 									dest: path.join(__dirname, '../public/css'),
 									prefix: nconf.get('relative_path') + '/css',
 									yuicompress: app.enabled('minification') ? true : false
@@ -287,7 +287,7 @@ module.exports.server = server;
 								}
 
 								app.use(require('less-middleware')({
-									src: path.join(__dirname, nconf.get('themes_dir'), '/nodebb-theme-vanilla'),
+									src: path.join(nconf.get('themes_dir'), '/nodebb-theme-vanilla'),
 									dest: path.join(__dirname, '../public/css'),
 									prefix: nconf.get('relative_path') + '/css',
 									yuicompress: app.enabled('minification') ? true : false
