@@ -586,26 +586,35 @@ Upgrade.upgrade = function(callback) {
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 
-				db.getSetMembers('topics:tid', function(err, tids) {
+				db.exists('topics:tid', function(err, exists) {
 					if(err) {
 						return next(err);
 					}
-
-					db.rename('topics:tid', 'topics:tid:old', function(err) {
+					if(!exists) {
+						winston.info('[2014/2/14] Upgraded topics to sorted set - skipped');
+						return next();
+					}
+					db.getSetMembers('topics:tid', function(err, tids) {
 						if(err) {
 							return next(err);
 						}
 
-						async.each(tids, function(tid, next) {
-							Topics.getTopicField(tid, 'timestamp', function(err, timestamp) {
-								db.sortedSetAdd('topics:tid', timestamp, tid, next);
-							});
-						}, function(err) {
+						db.rename('topics:tid', 'topics:tid:old', function(err) {
 							if(err) {
 								return next(err);
 							}
-							winston.info('[2014/2/14] Upgraded topics to sorted set');
-							db.delete('topics:tid:old', next);
+
+							async.each(tids, function(tid, next) {
+								Topics.getTopicField(tid, 'timestamp', function(err, timestamp) {
+									db.sortedSetAdd('topics:tid', timestamp, tid, next);
+								});
+							}, function(err) {
+								if(err) {
+									return next(err);
+								}
+								winston.info('[2014/2/14] Upgraded topics to sorted set');
+								db.delete('topics:tid:old', next);
+							});
 						});
 					});
 				});
@@ -620,33 +629,43 @@ Upgrade.upgrade = function(callback) {
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 
-				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
+				db.exists('users:joindate', function(err, exists) {
 					if(err) {
 						return next(err);
 					}
+					if(!exists) {
+						winston.info('[2014/2/14] Added posts to sorted set - skipped');
+						return next();
+					}
 
-					async.each(uids, function(uid, next) {
-						User.getPostIds(uid, 0, -1, function(err, pids) {
-							if(err) {
-								return next(err);
-							}
-
-							async.each(pids, function(pid, next) {
-								Posts.getPostField(pid, 'timestamp', function(err, timestamp) {
-									if(err) {
-										return next(err);
-									}
-									db.sortedSetAdd('posts:pid', timestamp, pid, next);
-								});
-							}, next);
-						});
-					}, function(err) {
+					db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
 						if(err) {
 							return next(err);
 						}
 
-						winston.info('[2014/2/14] Added posts to sorted set');
-						next();
+						async.each(uids, function(uid, next) {
+							User.getPostIds(uid, 0, -1, function(err, pids) {
+								if(err) {
+									return next(err);
+								}
+
+								async.each(pids, function(pid, next) {
+									Posts.getPostField(pid, 'timestamp', function(err, timestamp) {
+										if(err) {
+											return next(err);
+										}
+										db.sortedSetAdd('posts:pid', timestamp, pid, next);
+									});
+								}, next);
+							});
+						}, function(err) {
+							if(err) {
+								return next(err);
+							}
+
+							winston.info('[2014/2/14] Added posts to sorted set');
+							next();
+						});
 					});
 				});
 
