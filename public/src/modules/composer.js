@@ -90,6 +90,7 @@ define(['taskbar'], function(taskbar) {
 		});
 
 		composer.posts[uuid] = post;
+		composer.posts[uuid].uploadsInProgress = [];
 
 		composer.load(uuid);
 	}
@@ -118,7 +119,7 @@ define(['taskbar'], function(taskbar) {
 				var postContainer = $(composerTemplate[0]);
 
 				if(config.allowFileUploads || config.hasImageUploadPlugin) {
-					initializeFileReader(post_uuid);
+					initializeDragAndDrop(post_uuid);
 				}
 
 				var postData = composer.posts[post_uuid],
@@ -235,11 +236,8 @@ define(['taskbar'], function(taskbar) {
 				$('#files').on('change', function(e) {
 					var files = e.target.files;
 					if(files) {
-						for (var i=0; i<files.length; i++) {
-							loadFile(post_uuid, files[i]);
-						}
+						uploadSubmit(files, post_uuid, '/api/post/upload');
 					}
-					$('#fileForm')[0].reset();
 				});
 
 				postContainer.find('.nav-tabs a').click(function (e) {
@@ -256,6 +254,8 @@ define(['taskbar'], function(taskbar) {
 
 				bodyEl.on('blur', function() {
 					socket.emit('modules.composer.renderPreview', bodyEl.val(), function(err, preview) {
+						preview = $(preview);
+						preview.find('img').addClass('img-responsive');
 	  					postContainer.find('.preview').html(preview);
 	  				});
 				});
@@ -488,133 +488,148 @@ define(['taskbar'], function(taskbar) {
 		taskbar.minimize('composer', post_uuid);
 	}
 
-	function initializeFileReader(post_uuid) {
+	function initializeDragAndDrop(post_uuid) {
+
 		if(jQuery.event.props.indexOf('dataTransfer') === -1) {
 			jQuery.event.props.push('dataTransfer');
 		}
 
 		var draggingDocument = false;
 
-		if(window.FileReader) {
-			var postContainer = $('#cmp-uuid-' + post_uuid),
-				drop = postContainer.find('.imagedrop'),
-				tabContent = postContainer.find('.tab-content'),
-				textarea = postContainer.find('textarea');
+		var postContainer = $('#cmp-uuid-' + post_uuid),
+			fileForm = postContainer.find('#fileForm');
+			drop = postContainer.find('.imagedrop'),
+			tabContent = postContainer.find('.tab-content'),
+			textarea = postContainer.find('textarea');
 
-			$(document).off('dragstart').on('dragstart', function(e) {
-				draggingDocument = true;
-			}).off('dragend').on('dragend', function(e) {
-				draggingDocument = false;
-			});
-
-			textarea.on('dragenter', function(e) {
-				if(draggingDocument) {
-					return;
-				}
-				drop.css('top', tabContent.position().top + 'px');
-				drop.css('height', textarea.height());
-				drop.css('line-height', textarea.height() + 'px');
-				drop.show();
-
-				drop.on('dragleave', function(ev) {
-					drop.hide();
-					drop.off('dragleave');
-				});
-			});
-
-			function cancel(e) {
-				e.preventDefault();
-				return false;
-			}
-
-			drop.on('dragover', cancel);
-			drop.on('dragenter', cancel);
-
-			drop.on('drop', function(e) {
-				e.preventDefault();
-				var dt = e.dataTransfer,
-					files = dt.files;
-
-				for (var i=0; i<files.length; i++) {
-					loadFile(post_uuid, files[i]);
-				}
-
-				if(!files.length) {
-					drop.hide();
-				}
-				return false;
-			});
-
-			$(window).off('paste').on('paste', function(event) {
-				var items = (event.clipboardData || event.originalEvent.clipboardData).items;
-				if(items && items.length) {
-					var blob = items[0].getAsFile();
-					loadFile(post_uuid, blob);
-				}
-			});
-		}
-	}
-
-	function loadFile(post_uuid, file) {
-		var reader = new FileReader(),
-			dropDiv = $('#cmp-uuid-' + post_uuid).find('.imagedrop');
-
-		$(reader).on('loadend', function(e) {
-			var regex = /^data:.*;base64,(.*)$/;
-			var matches = this.result.match(regex);
-
-			var fileData = {
-				name: file.name || '',
-				data: matches[1]
-			};
-
-			dropDiv.hide();
-
-			if(file.type.match('image.*')) {
-				uploadFile('posts.uploadImage', post_uuid, fileData);
-			} else {
-				if(file.size > parseInt(config.maximumFileSize, 10) * 1024) {
-					return composerAlert('File too big', 'Maximum allowed file size is ' + config.maximumFileSize + 'kbs');
-				}
-				uploadFile('posts.uploadFile', post_uuid, fileData);
-			}
+		$(document).off('dragstart').on('dragstart', function(e) {
+			draggingDocument = true;
+		}).off('dragend').on('dragend', function(e) {
+			draggingDocument = false;
 		});
 
-		reader.readAsDataURL(file);
+		textarea.on('dragenter', function(e) {
+			if(draggingDocument) {
+				return;
+			}
+			drop.css('top', tabContent.position().top + 'px');
+			drop.css('height', textarea.height());
+			drop.css('line-height', textarea.height() + 'px');
+			drop.show();
+
+			drop.on('dragleave', function(ev) {
+				drop.hide();
+				drop.off('dragleave');
+			});
+		});
+
+		function cancel(e) {
+			e.preventDefault();
+			return false;
+		}
+
+		drop.on('dragover', cancel);
+		drop.on('dragenter', cancel);
+
+		drop.on('drop', function(e) {
+			e.preventDefault();
+			var dt = e.dataTransfer,
+				files = dt.files;
+
+			if(files.length) {
+				fileForm[0].reset();
+				fileForm.find('#files')[0].files = files;
+			}
+
+			drop.hide();
+			return false;
+		});
+
+		$(window).off('paste').on('paste', function(event) {
+
+			var items = (event.clipboardData || event.originalEvent.clipboardData).items;
+
+			if(items && items.length) {
+
+				var blob = items[0].getAsFile();
+				blob.name = 'upload-'+ utils.generateUUID();
+
+				var fd = new FormData();
+				fd.append('files[]', blob, blob.name);
+
+				fileForm[0].reset();
+				uploadSubmit([blob], post_uuid, '/api/post/upload', fd);
+			}
+		});
 	}
 
-
-	function uploadFile(method, post_uuid, img) {
-		var linkStart = method === 'posts.uploadImage' ? '!' : '',
-			postContainer = $('#cmp-uuid-' + post_uuid),
+	function uploadSubmit(files, post_uuid, route, formData, callback) {
+		var postContainer = $('#cmp-uuid-' + post_uuid),
 			textarea = postContainer.find('textarea'),
 			text = textarea.val(),
-			imgText = linkStart + '[' + img.name + '](uploading...)';
+			uploadForm = postContainer.find('#fileForm');
 
-		text += imgText;
-		textarea.val(text + " ");
+		uploadForm.attr('action', route);
 
-		if(!composer.posts[post_uuid].uploadsInProgress) {
-			composer.posts[post_uuid].uploadsInProgress = [];
+		for(var i=0; i<files.length; ++i) {
+			var isImage = files[i].type.match('image.*');
+			text += (isImage ? '!' : '') + '[' + files[i].name + '](uploading...) ';
+
+			if(files[i].size > parseInt(config.maximumFileSize, 10) * 1024) {
+				uploadForm[0].reset();
+				return composerAlert('File too big', 'Maximum allowed file size is ' + config.maximumFileSize + 'kbs');
+			}
 		}
 
-		composer.posts[post_uuid].uploadsInProgress.push(1);
+		textarea.val(text);
 
-		socket.emit(method, img, function(err, data) {
+		uploadForm.off('submit').submit(function() {
 
-			var currentText = textarea.val();
-
-			if(err) {
-				textarea.val(currentText.replace(imgText, linkStart + '[' + img.name + ']( Error : ' + err.message + ')'));
-				return app.alertError(err.message);
+			$(this).find('#postUploadCsrf').val($('#csrf_token').val());
+			if(formData) {
+				formData.append('_csrf', $('#csrf_token').val());
 			}
 
-			textarea.val(currentText.replace(imgText, linkStart + '[' + data.name + '](' + data.url + ')'));
+			composer.posts[post_uuid].uploadsInProgress.push(1);
 
-			composer.posts[post_uuid].uploadsInProgress.pop();
-			textarea.focus();
+			$(this).ajaxSubmit({
+				resetForm: true,
+				clearForm: true,
+				formData: formData,
+				error: function(xhr) {
+					app.alertError('Error uploading file! ' + xhr.status);
+					composer.posts[post_uuid].uploadsInProgress.pop();
+				},
+
+				uploadProgress: function(event, position, total, percent) {
+					var current = textarea.val();
+					for(var i=0; i<files.length; ++i) {
+						var re = new RegExp(files[i].name + "]\\([^)]+\\)", 'g');
+						textarea.val(current.replace(re, files[i].name+'](uploading ' + percent + '%)'));
+					}
+				},
+
+				success: function(uploads) {
+
+					if(uploads && uploads.length) {
+						for(var i=0; i<uploads.length; ++i) {
+							var current = textarea.val();
+							var re = new RegExp(uploads[i].name + "]\\([^)]+\\)", 'g');
+							textarea.val(current.replace(re, uploads[i].name + '](' + uploads[i].url + ')'));
+						}
+					}
+
+					composer.posts[post_uuid].uploadsInProgress.pop();
+					textarea.focus();
+				}
+			});
+
+			return false;
 		});
+
+		uploadForm.submit();
 	}
+
 
 	return {
 		newTopic: composer.newTopic,

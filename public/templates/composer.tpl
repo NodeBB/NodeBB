@@ -13,8 +13,10 @@
 				<span class="btn btn-link file-upload-btn hide" tabindex="-1">
 					<i class="fa fa-upload"></i>
 				</span>
-				<form id="fileForm">
-						<input type="file" id="files" name="files[]" multiple class="hide"/>
+
+				<form id="fileForm" method="post" enctype="multipart/form-data">
+					<input type="file" id="files" name="files[]" multiple class="hide"/>
+					<input id="postUploadCsrf" type="hidden" name="_csrf">
 				</form>
 			</div>
 		</div>

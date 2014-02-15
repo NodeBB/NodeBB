@@ -4,8 +4,11 @@ var fs = require('fs'),
 	winston = require('winston'),
 	nconf = require('nconf'),
 	eventEmitter = require('events').EventEmitter,
+	semver = require('semver'),
+
 	db = require('./database'),
-	meta = require('./meta');
+	meta = require('./meta'),
+	pkg = require('../package.json');
 
 (function(Plugins) {
 
@@ -106,6 +109,26 @@ var fs = require('fs'),
 
 			var pluginData = JSON.parse(data),
 				libraryPath, staticDir;
+
+			if (pluginData.minver && semver.validRange(pluginData.minver)) {
+				if (!semver.satisfies(pkg.version, pluginData.minver)) {
+					// If NodeBB is not new enough to run this plugin
+					if (process.env.NODE_ENV === 'development') {
+						// Throw a warning in development, but do nothing else
+						winston.warn('[plugins/' + pluginData.id + '] This plugin may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing.');
+					} else {
+						if (nconf.get('check-plugins') !== false) {
+							// Refuse to load this plugin...
+							winston.error('[plugins/' + pluginData.id + '] This plugin is reportedly incompatible with your version of NodeBB, so it has been disabled.');
+							winston.error('[plugins/' + pluginData.id + '] Use `--no-check-plugins` if you wish to live dangerously.');
+
+							// ... and disable it, too
+							Plugins.toggleActive(pluginData.id);
+							return callback();
+						}
+					}
+				}
+			}
 
 			async.parallel([
 				function(next) {

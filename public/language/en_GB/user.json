@@ -19,6 +19,9 @@
 	"signature": "Signature",
 	"gravatar": "Gravatar",
 	"birthday": "Birthday",
+	"chat": "Chat",
+	"follow": "Follow",
+	"unfollow": "Unfollow",
 
 	"change_picture": "Change Picture",
 	"edit": "Edit",

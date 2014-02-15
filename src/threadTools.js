@@ -18,7 +18,7 @@ var winston = require('winston'),
 
 	ThreadTools.exists = function(tid, callback) {
 
-		db.isSetMember('topics:tid', tid, function(err, ismember) {
+		db.isSortedSetMember('topics:tid', tid, function(err, ismember) {
 
 			if (err) {
 				callback(false);

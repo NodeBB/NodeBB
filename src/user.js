@@ -999,12 +999,8 @@ var bcrypt = require('bcryptjs'),
 
 					async.map(nids, function(nid, next) {
 						notifications.get(nid, uid, function(notif_data) {
-							if(!notif_data) {
-								db.sortedSetRemove(set, nid);
-							} else {
-								if(typeof iterator === 'function') {
-									iterator(notif_data);
-								}
+							if(typeof iterator === 'function') {
+								iterator(notif_data);
 							}
 
 							next(null, notif_data);
@@ -1018,7 +1014,9 @@ var bcrypt = require('bcryptjs'),
 			async.parallel({
 				unread: function(next) {
 					getNotifications('uid:' + uid + ':notifications:unread', 0, 9, function(notif_data) {
-						notif_data.readClass = !notif_data.read ? 'label-warning' : '';
+						if (notif_data) {
+							notif_data.readClass = !notif_data.read ? 'label-warning' : '';
+						}
 					}, next);
 				},
 				read: function(next) {
@@ -1028,6 +1026,14 @@ var bcrypt = require('bcryptjs'),
 				if(err) {
 					return calback(err);
 				}
+
+				// Remove empties
+				notifications.read = notifications.read.filter(function(notifObj) {
+					return notifObj;
+				});
+				notifications.unread = notifications.unread.filter(function(notifObj) {
+					return notifObj;
+				});
 
 				// Limit the number of notifications to `maxNotifs`, prioritising unread notifications
 				if (notifications.read.length + notifications.unread.length > maxNotifs) {

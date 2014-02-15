@@ -447,10 +447,15 @@ var async = require('async'),
 			}
 		},
 		save: function (server_conf, client_conf, callback) {
+			var	serverConfigPath = path.join(__dirname, '../config.json');
+			if (nconf.get('config')) {
+				serverConfigPath = path.join(__dirname, '../', nconf.get('config'));
+			}
+
 			// Server Config
 			async.parallel([
 				function (next) {
-					fs.writeFile(path.join(__dirname, '../', 'config.json'), JSON.stringify(server_conf, null, 4), function (err) {
+					fs.writeFile(serverConfigPath, JSON.stringify(server_conf, null, 4), function (err) {
 						next(err);
 					});
 				},

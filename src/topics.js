@@ -47,7 +47,7 @@ var async = require('async'),
 					return callback(err);
 				}
 
-				db.setAdd('topics:tid', tid);
+				db.sortedSetAdd('topics:tid', timestamp, tid);
 				db.searchIndex('topic', title, tid);
 
 				user.addTopicIdToUser(uid, tid, timestamp);
@@ -306,8 +306,13 @@ var async = require('async'),
 		});
 	};
 
-	Topics.getTopicPosts = function(tid, start, end, current_user, callback) {
-		posts.getPostsByTid(tid, start, end, function(err, postData) {
+	Topics.getTopicPosts = function(tid, start, end, current_user, reverse, callback) {
+		if (typeof reverse === 'function') {
+			callback = reverse;
+			reverse = false;
+		}
+
+		posts.getPostsByTid(tid, start, end, reverse, function(err, postData) {
 			if(err) {
 				return callback(err);
 			}
@@ -419,12 +424,12 @@ var async = require('async'),
 	};
 
 	function getTopics(set, uid, tids, callback) {
-		var latestTopics = {
+		var returnTopics = {
 			'topics': []
 		};
 
 		if (!tids || !tids.length) {
-			return callback(null, latestTopics);
+			return callback(null, returnTopics);
 		}
 
 		async.filter(tids, function(tid, next) {
@@ -438,7 +443,7 @@ var async = require('async'),
 				}
 
 				if(!topicData || !topicData.length) {
-					return callback(null, latestTopics);
+					return callback(null, returnTopics);
 				}
 
 				db.sortedSetRevRank(set, topicData[topicData.length - 1].tid, function(err, rank) {
@@ -446,9 +451,9 @@ var async = require('async'),
 						return calllback(err);
 					}
 
-					latestTopics.nextStart = parseInt(rank, 10) + 1;
-					latestTopics.topics = topicData;
-					callback(null, latestTopics);
+					returnTopics.nextStart = parseInt(rank, 10) + 1;
+					returnTopics.topics = topicData;
+					callback(null, returnTopics);
 				});
 			});
 		});
@@ -900,54 +905,20 @@ var async = require('async'),
 		});
 	};
 
-	Topics.getAllTopics = function(limit, after, callback) {
-		db.getSetMembers('topics:tid', function(err, tids) {
+	Topics.getAllTopics = function(start, end, callback) {
+		db.getSortedSetRevRange('topics:tid', start, end, function(err, tids) {
 			if(err) {
-				return callback(err, null);
+				return callback(err);
 			}
 
-			var topics = [],
-				numTids, x;
-
-			// Sort into ascending order
-			tids.sort(function(a, b) {
-				return a - b;
-			});
-
-			// Eliminate everything after the "after" tid
-			if (after) {
-				for (x = 0, numTids = tids.length; x < numTids; x++) {
-					if (tids[x] >= after) {
-						tids = tids.slice(0, x);
-						break;
-					}
-				}
-			}
-
-			if (limit) {
-				if (limit > 0 && limit < tids.length) {
-					tids = tids.slice(tids.length - limit);
-				}
-			}
-
-			// Sort into descending order
-			tids.sort(function(a, b) {
-				return b - a;
-			});
-
-			async.each(tids, function(tid, next) {
-				Topics.getTopicDataWithUser(tid, function(err, topicData) {
-					topics.push(topicData);
-					next();
-				});
-			}, function(err) {
-				callback(err, topics);
-			});
+			async.map(tids, function(tid, next) {
+				Topics.getTopicDataWithUser(tid, next);
+			}, callback);
 		});
 	};
 
 	Topics.markAllRead = function(uid, callback) {
-		db.getSetMembers('topics:tid', function(err, tids) {
+		db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
 			if (err) {
 				return callback(err);
 			}
@@ -1218,7 +1189,7 @@ var async = require('async'),
 	}
 
 	Topics.reIndexAll = function(callback) {
-		db.getSetMembers('topics:tid', function(err, tids) {
+		db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
 			if (err) {
 				return callback(err);
 			}

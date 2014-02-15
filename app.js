@@ -62,10 +62,17 @@ winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
 winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
 winston.info('');
 
+// Alternate configuration file support
+var	configFile = __dirname + '/config.json',
+	configExists;
+if (nconf.get('config')) {
+	configFile = path.join(__dirname, nconf.get('config'));
+}
+configExists = fs.existsSync(configFile);
 
-if (!nconf.get('help') && !nconf.get('setup') && !nconf.get('install') && !nconf.get('upgrade') && fs.existsSync(__dirname + '/config.json')) {
+if (!nconf.get('help') && !nconf.get('setup') && !nconf.get('install') && !nconf.get('upgrade') && configExists) {
 	start();
-} else if (nconf.get('setup') || nconf.get('install') || !fs.existsSync(__dirname + '/config.json')) {
+} else if (nconf.get('setup') || nconf.get('install') || !configExists) {
 	setup();
 } else if (nconf.get('upgrade')) {
 	upgrade();
@@ -79,23 +86,24 @@ function start() {
 		file: __dirname + '/config.json'
 	});
 
+	nconf.defaults({
+		themes_path: path.join(__dirname, 'node_modules')
+	});
+
 	nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
 	nconf.set('upload_url', path.join(path.sep, nconf.get('relative_path'), 'uploads', path.sep));
 	nconf.set('base_dir', __dirname);
 
+	// Ensure themes_path is a full filepath
+	nconf.set('themes_path', path.resolve(__dirname, nconf.get('themes_path')));
+
 	winston.info('Time: ' + new Date());
-	winston.info('Initializing NodeBB v' + pkg.version + ', using ' + nconf./**/get('database') +' store at ' + nconf.get(nconf.get('database') + ':host') + ':' + nconf.get(nconf.get('database') + ':port') + '.');
+	winston.info('Initializing NodeBB v' + pkg.version);
+	winston.info('* using ' + nconf.get('database') +' store at ' + nconf.get(nconf.get('database') + ':host') + ':' + nconf.get(nconf.get('database') + ':port'));
+	winston.info('* using themes stored in: ' + nconf.get('themes_path'));
 
 	if (process.env.NODE_ENV === 'development') {
 		winston.info('Base Configuration OK.');
-	}
-
-	if (!semver.satisfies(require('./node_modules/nodebb-theme-cerulean/package.json').version, pkg.dependencies['nodebb-theme-cerulean'])) {
-		winston.error('nodebb-theme-cerulean is out of date - please run npm install.');
-	}
-
-	if (!semver.satisfies(require('./node_modules/nodebb-theme-vanilla/package.json').version, pkg.dependencies['nodebb-theme-vanilla'])) {
-		winston.error('nodebb-theme-vanilla is out of date - please run npm install.');
 	}
 
 	var meta = require('./src/meta');
@@ -122,7 +130,7 @@ function start() {
 
 					translator.loadServer();
 
-					var customTemplates = meta.config['theme:templates'] ? path.join(__dirname, 'node_modules', meta.config['theme:id'], meta.config['theme:templates']) : false;
+					var customTemplates = meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : false;
 
 					utils.walk(path.join(__dirname, 'public/templates'), function (err, tplsToLoad) {
 						templates.init(tplsToLoad, customTemplates);
