@@ -215,6 +215,7 @@ SocketAdmin.categories.getPrivilegeSettings = function(socket, cid, callback) {
 };
 
 SocketAdmin.categories.setGroupPrivilege = function(socket, data, callback) {
+
 	if(!data) {
 		return callback(new Error('invalid data'));
 	}
