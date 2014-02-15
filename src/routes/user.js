@@ -165,7 +165,7 @@ var fs = require('fs'),
 					});
 				}
 
-				var updateUid = req.params.uid;
+				var updateUid = req.user.uid;
 
 				async.waterfall([
 					function(next) {
