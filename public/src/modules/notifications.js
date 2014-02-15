@@ -5,7 +5,7 @@ define(function() {
 		var notifContainer = $('.notifications'),
 			notifTrigger = notifContainer.children('a'),
 			notifList = $('#notif-list'),
-			notifIcon = $('.notifications a i');
+			notifIcon = $('.notifications > a > i');
 
 		notifTrigger.on('click', function(e) {
 			e.preventDefault();
