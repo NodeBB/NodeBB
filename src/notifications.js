@@ -4,7 +4,8 @@ var async = require('async'),
 
 	db = require('./database'),
 	utils = require('../public/src/utils'),
-	events = require('./events');
+	events = require('./events'),
+	User = require('./user');
 
 (function(Notifications) {
 	"use strict";
@@ -27,10 +28,17 @@ var async = require('async'),
 			if (exists) {
 				db.sortedSetRank('uid:' + uid + ':notifications:read', nid, function(err, rank) {
 
-					db.getObjectFields('notifications:' + nid, ['nid', 'text', 'score', 'path', 'datetime', 'uniqueId'], function(err, notification) {
-
+					db.getObjectFields('notifications:' + nid, ['nid', 'from', 'text', 'score', 'path', 'datetime', 'uniqueId'], function(err, notification) {
 						notification.read = rank !== null ? true:false;
-						callback(notification);
+
+						if (notification.from) {
+							User.getUserField(notification.from, 'picture', function(err, picture) {
+								notification.image = picture;
+								callback(notification);
+							});
+						} else {
+							callback(notification);
+						}
 					});
 				});
 			} else {

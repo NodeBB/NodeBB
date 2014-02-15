@@ -717,7 +717,8 @@ var bcrypt = require('bcryptjs'),
 						notifications.create({
 							text: message,
 							path: nconf.get('relative_path') + '/topic/' + slug + '#' + pid,
-							uniqueId: 'topic:' + tid
+							uniqueId: 'topic:' + tid,
+							from: uid
 						}, function(nid) {
 							notifications.push(nid, followers);
 						});
@@ -1029,6 +1030,7 @@ var bcrypt = require('bcryptjs'),
 					getNotifications('uid:' + uid + ':notifications:read', 0, 9, null, next);
 				}
 			}, function(err, notifications) {
+				console.log(notifications);
 				if(err) {
 					return calback(err);
 				}

@@ -106,7 +106,8 @@ SocketModules.chats.send = function(socket, data) {
 			notifications.create({
 				text: notifText,
 				path: 'javascript:app.openChat(&apos;' + username + '&apos;, ' + socket.uid + ');',
-				uniqueId: 'notification_' + socket.uid + '_' + touid
+				uniqueId: 'notification_' + socket.uid + '_' + touid,
+				from: socket.uid
 			}, function(nid) {
 				notifications.push(nid, [touid], function(success) {
 

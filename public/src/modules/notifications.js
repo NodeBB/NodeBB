@@ -20,12 +20,23 @@ define(function() {
 					notifList.html('');
 
 					if (!err && (data.read.length + data.unread.length) > 0) {
+						var	image = '';
 						for (x = 0; x < numUnread; x++) {
-							notifList.append($('<li class="' + data.unread[x].readClass + '"><a href="' + data.unread[x].path + '"><span class="pull-right">' + utils.relativeTime(data.unread[x].datetime, true) + '</span>' + data.unread[x].text + '</a></li>'));
+							if (data.unread[x].image) {
+								image = '<img src="' + data.unread[x].image + '" />';
+							} else {
+								image = '';
+							}
+							notifList.append($('<li class="' + data.unread[x].readClass + '"><a href="' + data.unread[x].path + '">' + image + '<span class="pull-right relTime">' + utils.relativeTime(data.unread[x].datetime, true) + '</span><span class="text">' + data.unread[x].text + '</span></a></li>'));
 						}
 
 						for (x = 0; x < numRead; x++) {
-							notifList.append($('<li class="' + data.read[x].readClass + '"><a href="' + data.read[x].path + '"><span class="pull-right">' + utils.relativeTime(data.read[x].datetime, true) + '</span>' + data.read[x].text + '</a></li>'));
+							if (data.read[x].image) {
+								image = '<img src="' + data.read[x].image + '" />';
+							} else {
+								image = '';
+							}
+							notifList.append($('<li class="' + data.read[x].readClass + '"><a href="' + data.read[x].path + '">' + image + '<span class="pull-right relTime">' + utils.relativeTime(data.read[x].datetime, true) + '</span><span class="text">' + data.read[x].text + '</span></a></li>'));
 						}
 
 					} else {

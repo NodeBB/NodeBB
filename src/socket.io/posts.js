@@ -263,7 +263,8 @@ SocketPosts.flag = function(socket, pid, callback) {
 			notifications.create({
 				text: message,
 				path: path,
-				uniqueId: 'post_flag:' + pid
+				uniqueId: 'post_flag:' + pid,
+				from: socket.uid
 			}, function(nid) {
 				notifications.push(nid, adminGroup.members, function() {
 					next(null);
