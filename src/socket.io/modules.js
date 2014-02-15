@@ -103,7 +103,11 @@ SocketModules.chats.send = function(socket, data) {
 			notifText = 'New message from <strong>' + username + '</strong>';
 
 		if (!module.parent.exports.isUserOnline(touid)) {
-			notifications.create(notifText, 'javascript:app.openChat(&apos;' + username + '&apos;, ' + socket.uid + ');', 'notification_' + socket.uid + '_' + touid, function(nid) {
+			notifications.create({
+				text: notifText,
+				path: 'javascript:app.openChat(&apos;' + username + '&apos;, ' + socket.uid + ');',
+				uniqueId: 'notification_' + socket.uid + '_' + touid
+			}, function(nid) {
 				notifications.push(nid, [touid], function(success) {
 
 				});
