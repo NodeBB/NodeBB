@@ -1,12 +1,12 @@
 {
-	"home": "Strona główna",
-	"unread": "Nieprzeczytane wątki",
-	"recent": "Ostatnie wątki",
-	"users": "Zarejestrowani użytkownicy",
-	"notifications": "Powiadomienia",
-	"user.edit": "Edytowanie \"%1\"",
-	"user.following": "Obserwowani przez %1",
-	"user.followers": "Obserwujący %1",
-	"user.favourites": "Ulubione posty %1",
-	"user.settings": "Ustawienia użytkownika"
+    "home": "Strona główna",
+    "unread": "Nieprzeczytane wątki",
+    "recent": "Ostatnie wątki",
+    "users": "Zarejestrowani użytkownicy",
+    "notifications": "Powiadomienia",
+    "user.edit": "Edytowanie \"%1\"",
+    "user.following": "Obserwowani przez %1",
+    "user.followers": "Obserwujący %1",
+    "user.favourites": "Ulubione posty %1",
+    "user.settings": "Ustawienia użytkownika"
 }
