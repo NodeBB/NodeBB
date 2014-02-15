@@ -28,9 +28,9 @@
 						</div>
 						<!-- ENDIF banned -->
 						<div>
-							<a id="chat-btn" href="#" class="btn btn-primary hide">Chat</a>
-							<a id="follow-btn" href="#" class="btn btn-success hide">Follow</a>
-							<a id="unfollow-btn" href="#" class="btn btn-warning hide">Unfollow</a>
+							<a id="chat-btn" href="#" class="btn btn-primary hide">[[user:chat]]</a>
+							<a id="follow-btn" href="#" class="btn btn-success hide">[[user:follow]]</a>
+							<a id="unfollow-btn" href="#" class="btn btn-warning hide">[[user:unfollow]]</a>
 						</div>
 					</div>
 				</div>
