@@ -1,0 +1,52 @@
+{
+	"banned": "Zbanowany",
+	"offline": "Offline",
+	"username": "Nazwa użytkownika",
+	"email": "Adres e-mail",
+	"fullname": "Pełna nazwa",
+	"website": "Strona WWW",
+	"location": "Położenie",
+	"age": "Wiek",
+	"joined": "Dołączono",
+	"lastonline": "Ostatnio online",
+	"profile": "Profil",
+	"profile_views": "wyświetleń",
+	"reputation": "reputacji",
+	"posts": "postów",
+	"favourites":"Ulubione",
+	"followers": "Obserwujących",
+	"following": "Obserwowanych",
+	"signature": "Sygnatura",
+	"gravatar": "Gravatar",
+	"birthday": "Urodziny",
+	"chat": "Rozmawiaj",
+	"follow": "Śledź",
+	"unfollow": "Przestań śledzić",
+
+	"change_picture": "Zmień zdjęcie",
+	"edit": "Edytuj",
+	"uploaded_picture": "Przesłane zdjęcie",
+	"upload_new_picture": "Prześlij nowe zdjęcie",
+	"change_password": "Zmień hasło",
+	"confirm_password": "Potwierdź hasło",
+	"password": "Hasło",
+
+	"upload_picture": "Prześlij zdjęcie",
+	"upload_a_picture": "Prześlij zdjęcie",
+	"image_spec": "Możesz przesłać tylko pliki PNG, JPG lub GIF.",
+	"max": "maks.",
+
+	"settings": "Ustawienia",
+	"show_email": "Wyświetlaj mój adres e-mail",
+
+	"has_no_follower": "Ten użytkownik nie ma jeszcze żadnych obserwujących",
+	"follows_no_one": "Użytkownik jeszcze nikogo nie obsweruje.",
+	"has_no_posts": "Użytkownik nie napisał jeszcze żadnych postów.",
+
+	"email_hidden": "Adres e-mail ukryty",
+	"hidden": "ukryty",
+
+	"paginate_description" : "Użyj klasycznego trybu paginacji zamiast nieskończonego przewijania.",
+	"topics_per_page": "Wątków na stronę",
+	"posts_per_page": "Postów na stronę"
+}
