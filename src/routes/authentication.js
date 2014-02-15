@@ -116,8 +116,11 @@
 
 					// Alter user cookie depending on passed-in option
 					if (req.body.remember === 'true') {
-						req.session.cookie.maxAge = 1000*60*60*24*parseInt(meta.configs.loginDays || 14, 10);
+						var duration = 1000*60*60*24*parseInt(meta.configs.loginDays || 14, 10);
+						req.session.cookie.maxAge = duration;
+						req.session.cookie.expires = new Date(Date.now() + duration);
 					} else {
+						req.session.cookie.maxAge = false;
 						req.session.cookie.expires = false;
 					}
 

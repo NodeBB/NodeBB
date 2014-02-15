@@ -1,6 +1,7 @@
 var	fs = require('fs'),
 	async = require('async'),
 	path = require('path'),
+	winston = require('winston'),
 
 	User = require('./user'),
 	Plugins = require('./plugins'),

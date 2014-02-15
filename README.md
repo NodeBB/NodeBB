@@ -58,19 +58,26 @@ Obtain all of the dependencies required by NodeBB:
 
 Initiate the setup script by running the app with the `--setup` flag:
 
-    $ node app --setup
+    $ ./nodebb setup
 
 The default settings are for a local server running on the default port, with a redis store on the same machine/port.
 
 Lastly, we run the forum.
 
-    $ node app
+    $ ./nodebb start
 
 NodeBB can also be started with helper programs, such as `supervisor` and `forever`. [Take a look at the options here](https://github.com/designcreateplay/NodeBB/wiki/How-to-run-NodeBB).
 
-*(Optional)* Some server configurations may install the node binary as `nodejs` instead of `node`. You can re-map it (so as to not break compatibility with `node-supervisor`) by running the following command:
+## Securing NodeBB
 
-    # update-alternatives --install /usr/bin/node node /usr/bin/nodejs 10
+It is important to ensure that your NodeBB and database servers are secured. Bear these points in mind:
+
+1. While some distributions set up Redis with a more restrictive configuration, Redis by default listens to all interfaces, which is especially dangerous when a server is open to the public. Some suggestions:
+    * Set `bind_address` to `127.0.0.1` so as to restrict access  to the local machine only
+    * Use `requirepass` to secure Redis behind a password (preferably a long one)
+    * Familiarise yourself with [Redis Security](http://redis.io/topics/security)
+2. Use `iptables` to secure your server from unintended open ports. In Ubuntu, `ufw` provides a friendlier interface to working with `iptables`.
+    * e.g. If your NodeBB is proxied, no ports should be open except 80 (and possibly 22, for SSH access)
 
 ## Upgrading NodeBB
 

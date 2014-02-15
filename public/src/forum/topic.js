@@ -9,20 +9,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 	}
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
-
-		if(data.url.indexOf('topic') === 0) {
-			$('.pagination-block a').off('click').on('click', function() {
-				return false;
-			});
-
-			$('.pagination-block i:first').off('click').on('click', function() {
-				app.scrollToTop();
-			});
-
-			$('.pagination-block i:last').off('click').on('click', function() {
-				app.scrollToBottom();
-			});
-		} else {
+		if(data.url.indexOf('topic') !== 0) {
 			$('.pagination-block').addClass('hide');
 			$('#header-topic-title').html('').hide();
 		}
@@ -1068,6 +1055,18 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 	function updateHeader() {
 		var paginationEl = $('#pagination');
+
+		$('.pagination-block a').off('click').on('click', function() {
+			return false;
+		});
+
+		$('.pagination-block i:first').off('click').on('click', function() {
+			app.scrollToTop();
+		});
+
+		$('.pagination-block i:last').off('click').on('click', function() {
+			app.scrollToBottom();
+		});
 
 		var windowHeight = jQuery(window).height();
 		var scrollTop = jQuery(window).scrollTop();

@@ -13,6 +13,7 @@ var fs = require('fs'),
 	meta = require('./../meta'),
 	plugins = require('./../plugins'),
 	image = require('./../image'),
+	file = require('./../file'),
 	db = require('./../database');
 
 (function (User) {
@@ -134,6 +135,8 @@ var fs = require('fs'),
 				});
 			});
 
+
+
 			app.post('/uploadpicture', function (req, res) {
 				if (!req.user) {
 					return res.json(403, {
@@ -174,6 +177,7 @@ var fs = require('fs'),
 					}
 				], function(err, result) {
 					function done(err, image) {
+						fs.unlink(req.files.userPhoto.path);
 						if(err) {
 							return res.send({error: err.message});
 						}
@@ -190,12 +194,12 @@ var fs = require('fs'),
 					}
 
 					if(plugins.hasListeners('filter:uploadImage')) {
-						plugins.fireHook('filter:uploadImage', {file: req.files.userPhoto.path, name: filename}, done);
+						plugins.fireHook('filter:uploadImage', req.files.userPhoto, done);
 					} else {
 
 						user.getUserField(req.user.uid, 'uploadedpicture', function (err, oldpicture) {
 							if (!oldpicture) {
-								saveFileToLocal(filename, req.files.userPhoto.path, done);
+								file.saveFileToLocal(filename, req.files.userPhoto.path, done);
 								return;
 							}
 
@@ -206,38 +210,13 @@ var fs = require('fs'),
 									winston.err(err);
 								}
 
-								saveFileToLocal(filename, req.files.userPhoto.path, done);
+								file.saveFileToLocal(filename, req.files.userPhoto.path, done);
 							});
 						});
 					}
 				});
 			});
 		});
-
-
-		function saveFileToLocal(filename, tempPath, callback) {
-
-			var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), filename);
-
-			winston.info('Saving file '+ filename +' to : ' + uploadPath);
-
-			var is = fs.createReadStream(tempPath);
-			var os = fs.createWriteStream(uploadPath);
-
-			is.on('end', function () {
-				fs.unlinkSync(tempPath);
-
-				callback(null, {url: nconf.get('upload_url') + filename});
-			});
-
-			os.on('error', function (err) {
-				fs.unlinkSync(tempPath);
-				winston.error(err.message);
-			});
-
-			is.pipe(os);
-		}
-
 
 		app.get('/api/user/:userslug/following', function (req, res, next) {
 			var callerUID = req.user ? req.user.uid : '0';
@@ -429,6 +408,15 @@ var fs = require('fs'),
 						res.json(userData);
 					});
 				});
+			});
+		});
+
+
+		app.get('/api/user/uid/:uid', function(req, res, next) {
+			var uid = req.params.uid ? req.params.uid : 0;
+
+			user.getUserData(uid, function(err, userData) {
+				res.json(userData);
 			});
 		});
 

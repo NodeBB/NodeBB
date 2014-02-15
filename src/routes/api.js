@@ -1,6 +1,7 @@
 var path = require('path'),
 	nconf = require('nconf'),
 	async = require('async'),
+	fs = require('fs'),
 
 	db = require('../database'),
 	user = require('../user'),
@@ -446,6 +447,44 @@ var path = require('path'),
 				} else {
 					res.send(403);
 				}
+			});
+
+			app.post('/post/upload', function(req, res, next) {
+				if(!req.user) {
+					return res.json(403, {message:'not allowed'});
+				}
+				var files = req.files.files;
+
+				if(!Array.isArray(files)) {
+					return res.json(500, {message: 'invalid files'});
+				}
+
+				// multiple files
+				if(Array.isArray(files[0])) {
+					files = files[0];
+				}
+
+				function deleteTempFiles() {
+					for(var i=0; i<files.length; ++i) {
+						fs.unlink(files[i].path);
+					}
+				}
+
+				async.map(files, function(file, next) {
+					if(file.type.match('image.*')) {
+						posts.uploadPostImage(file, next);
+					} else {
+						posts.uploadPostFile(file, next);
+					}
+				}, function(err, images) {
+					deleteTempFiles();
+
+					if(err) {
+						return res.json(500, {message: err.message});
+					}
+
+					res.json(200, images);
+				});
 			});
 
 			app.get('/reset', function (req, res) {

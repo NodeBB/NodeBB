@@ -43,7 +43,7 @@ var path = require('path'),
 				},
 				function(next) {
 					var topicUrls = [];
-					topics.getAllTopics(null, null, function(err, topics) {
+					topics.getAllTopics(0, -1, function(err, topics) {
 						topics.forEach(function(topic) {
 
 							if (parseInt(topic.deleted, 10) !== 1) {

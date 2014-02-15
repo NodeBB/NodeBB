@@ -41,12 +41,12 @@
     "alert.follow": "Nasleduješ %1!",
     "posts": "Príspevkov",
     "views": "Zhliadnutí",
-    "posted": "posted",
-    "in": "in",
-    "recentposts": "Recent Posts",
+    "posted": "príspevok",
+    "in": "v",
+    "recentposts": "Posledné príspevky",
     "online": "Online",
-    "away": "Away",
-    "dnd": "Do not Disturb",
-    "invisible": "Invisible",
+    "away": "Preč",
+    "dnd": "Nevyrušovať",
+    "invisible": "Neviditeľný",
     "offline": "Offline"
 }
