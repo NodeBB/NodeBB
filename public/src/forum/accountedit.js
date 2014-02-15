@@ -117,7 +117,7 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 		$('#uploadPictureBtn').on('click', function() {
 
 			$('#change-picture-modal').modal('hide');
-			uploader.open(RELATIVE_PATH + '/user/uploadpicture', {}, config.maximumProfileImageSize, function(imageUrlOnServer) {
+			uploader.open(RELATIVE_PATH + '/user/uploadpicture', {uid: templates.get('theirid')}, config.maximumProfileImageSize, function(imageUrlOnServer) {
 				imageUrlOnServer = imageUrlOnServer + '?' + new Date().getTime();
 
 				$('#user-current-picture').attr('src', imageUrlOnServer);
@@ -220,7 +220,8 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 
 	AccountEdit.changeUserPicture = function(type) {
 		var userData = {
-			type: type
+			type: type,
+			uid: templates.get('theirid')
 		};
 
 		socket.emit('user.changePicture', userData, function(err) {
