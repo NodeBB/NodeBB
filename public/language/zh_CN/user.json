@@ -19,6 +19,9 @@
     "signature": "签名",
     "gravatar": "Gravatar头像",
     "birthday": "生日",
+    "chat": "Chat",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "change_picture": "改变头像",
     "edit": "编辑",
     "uploaded_picture": "已有头像",
@@ -28,12 +31,16 @@
     "password": "密码",
     "upload_picture": "上传头像",
     "upload_a_picture": "上传一张照片",
-    "image_spec": "你可以上传PNG，JPG或GIF格式的图像，文件小于256kb。",
+    "image_spec": "You may only upload PNG, JPG, or GIF files",
+    "max": "max.",
     "settings": "Settings",
     "show_email": "显示我的邮箱",
     "has_no_follower": "该用户还没有被任何人关注。",
     "follows_no_one": "该用户还没有关注过任何人。",
     "has_no_posts": "This user didn't post anything yet.",
     "email_hidden": "邮箱被隐藏",
-    "hidden": "隐藏"
+    "hidden": "隐藏",
+    "paginate_description": "Paginate topics and posts instead of using infinite scroll.",
+    "topics_per_page": "Topics per Page",
+    "posts_per_page": "Posts per Page"
 }

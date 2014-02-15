@@ -19,6 +19,9 @@
     "signature": "Signatur",
     "gravatar": "Gravatar",
     "birthday": "Bursdag",
+    "chat": "Chatt",
+    "follow": "Følg",
+    "unfollow": "Avfølg",
     "change_picture": "Bytt bilde",
     "edit": "Endre",
     "uploaded_picture": "Opplastet bilde",
@@ -28,12 +31,16 @@
     "password": "Passord",
     "upload_picture": "Last opp bilde",
     "upload_a_picture": "Last opp et bilde",
-    "image_spec": "Du kan bare laste opp PNG, JPG, eller GIF-filer under 256kb.",
+    "image_spec": "Du kan bare laste opp PNG, JPG eller GIF-filer",
+    "max": "maks.",
     "settings": "Innstillinger",
     "show_email": "Vis min e-post",
     "has_no_follower": "Denne brukeren har ingen følgere :(",
     "follows_no_one": "Denne brukeren følger ingen :(",
     "has_no_posts": "Denne brukeren har ikke skrevet noe enda.",
     "email_hidden": "E-post skjult",
-    "hidden": "skjult"
+    "hidden": "skjult",
+    "paginate_description": "Paginer tråder og innlegg istedet for å bruke uendelig skrolling.",
+    "topics_per_page": "Tråd per side",
+    "posts_per_page": "Innlegg per side"
 }

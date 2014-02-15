@@ -19,6 +19,9 @@
     "signature": "Allekirjoitus",
     "gravatar": "Gravatar",
     "birthday": "Syntymäpäivä",
+    "chat": "Chat",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "change_picture": "Vaihda kuvaa",
     "edit": "Muokkaa",
     "uploaded_picture": "Siirretty kuva",
@@ -28,12 +31,16 @@
     "password": "Salasana",
     "upload_picture": "Siirrä kuva",
     "upload_a_picture": "Siirrä kuva",
-    "image_spec": "Voit käyttää PNG, JPG, tai GIF tiedostoja joiden koko on korkeintaan 256kb.",
+    "image_spec": "You may only upload PNG, JPG, or GIF files",
+    "max": "max.",
     "settings": "Settings",
     "show_email": "Näytä sähköpostiosoitteeni",
     "has_no_follower": "Tällä käyttäjällä ei ole yhtään seuraaja :(",
     "follows_no_one": "Tämä käyttäjä ei seuraa ketään :(",
     "has_no_posts": "This user didn't post anything yet.",
     "email_hidden": "Sähköposti piilotettu",
-    "hidden": "piilotettu"
+    "hidden": "piilotettu",
+    "paginate_description": "Paginate topics and posts instead of using infinite scroll.",
+    "topics_per_page": "Topics per Page",
+    "posts_per_page": "Posts per Page"
 }

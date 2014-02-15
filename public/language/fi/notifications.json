@@ -1,6 +1,6 @@
 {
     "title": "Ilmoitukset",
-    "no_notifs": "You have no notifications",
+    "no_notifs": "You have no new notifications",
     "see_all": "See all Notifications",
     "back_to_home": "Takaisin NodeBB:n",
     "outgoing_link": "Ulkopuolinen linkki",

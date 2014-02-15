@@ -19,6 +19,9 @@
     "signature": "Подпись",
     "gravatar": "Gravatar",
     "birthday": "День рождения",
+    "chat": "Chat",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "change_picture": "Изменить фотографию",
     "edit": "Редактировать",
     "uploaded_picture": "Загруженные Фотографии",
@@ -28,12 +31,16 @@
     "password": "Пароль",
     "upload_picture": "Загрузить фотографию",
     "upload_a_picture": "Загрузить фотографию",
-    "image_spec": "Вы можете загружать только PNG, JPG, или GIF файлы размером до 256kb.",
+    "image_spec": "You may only upload PNG, JPG, or GIF files",
+    "max": "max.",
     "settings": "Настройки",
     "show_email": "Показывать мой Email",
     "has_no_follower": "Этого пользователя никто не читает :(",
     "follows_no_one": "Этот пользователь никого не читает :(",
     "has_no_posts": "This user didn't post anything yet.",
     "email_hidden": "Email Скрыт",
-    "hidden": "скрыто"
+    "hidden": "скрыто",
+    "paginate_description": "Paginate topics and posts instead of using infinite scroll.",
+    "topics_per_page": "Topics per Page",
+    "posts_per_page": "Posts per Page"
 }
