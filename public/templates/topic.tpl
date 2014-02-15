@@ -20,7 +20,6 @@
 		<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
 			<span itemprop="title">{topic_name} <a target="_blank" href="../{topic_id}.rss"><i class="fa fa-rss-square"></i></a></span>
 		</li>
-
 	</ol>
 
 	<ul id="post-container" class="posts" data-tid="{topic_id}">

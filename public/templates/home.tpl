@@ -5,7 +5,6 @@
 <div class="row home" itemscope itemtype="http://www.schema.org/ItemList">
 	<!-- BEGIN categories -->
 	<div class="{categories.class}">
-
 		<meta itemprop="name" content="{categories.name}">
 		<h4>
 			<!-- IF !categories.link -->
