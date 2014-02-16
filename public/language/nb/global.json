@@ -10,11 +10,14 @@
     "500.message": "Oops! Ser ut som noe gikk galt!",
     "register": "Registrer",
     "login": "Logg inn",
+    "welcome_back": "Welcome Back ",
+    "you_have_successfully_logged_in": "You have successfully logged in",
     "logout": "Logg ut",
     "logout.title": "Du er nå logget ut.",
     "logout.message": "Du er nå logget ut av NodeBB",
     "save_changes": "Lagre endringer",
     "close": "Steng",
+    "pagination": "Pagination",
     "header.admin": "Admin",
     "header.recent": "Seneste",
     "header.unread": "Uleste",
@@ -48,5 +51,6 @@
     "away": "Borte",
     "dnd": "Ikke forsturr",
     "invisible": "Usynlig",
-    "offline": "Offline"
+    "offline": "Offline",
+    "privacy": "Privacy"
 }
