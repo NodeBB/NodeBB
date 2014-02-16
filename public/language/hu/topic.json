@@ -20,6 +20,8 @@
     "flag": "Jelentés",
     "flag_title": "A hozzászólás jelentése a moderátoroknál",
     "deleted_message": "Ez a topik törölve lett. Kizárólag azok a felhasználók láthatják, akiknek joga van hozzá.",
+    "watch": "Watch",
+    "share_this_post": "Share this Post",
     "thread_tools.title": "Téma Eszközök",
     "thread_tools.markAsUnreadForAll": "Olvasatlannak jelölés",
     "thread_tools.pin": "Kiemel",
