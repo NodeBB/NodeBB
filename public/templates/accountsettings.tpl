@@ -13,7 +13,7 @@
 					</label>
 				</div>
 			</div>
-			<h4>Pagination</h4>
+			<h4>[[global:pagination]]</h4>
 			<div class="well">
 				<div class="checkbox">
 					<label>

@@ -27,8 +27,8 @@
 					<a id="uploadPictureBtn" href="#">[[user:upload_new_picture]]</a>
 				</div>
 				<div class="modal-footer">
-					<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
-					<button id="savePictureChangesBtn" class="btn btn-primary">Save changes</button>
+					<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">[[global:close]]</button>
+					<button id="savePictureChangesBtn" class="btn btn-primary">[[global:save_changes]]</button>
 				</div>
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal-dialog -->
@@ -113,7 +113,7 @@
 			<div style="vertical-align:top;">
 				<form class='form-horizontal'>
 					<div class="control-group">
-						<label class="control-label" for="inputCurrentPassword">Current Password</label>
+						<label class="control-label" for="inputCurrentPassword">[[user:current_password]]</label>
 						<div class="controls">
 							<input class="form-control" type="password" id="inputCurrentPassword" placeholder="Current Password" value="">
 						</div>

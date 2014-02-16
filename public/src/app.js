@@ -346,8 +346,8 @@ var socket,
 		function showAlert() {
 			app.alert({
 				type: 'success',
-				title: 'Welcome Back ' + app.username + '!',
-				message: 'You have successfully logged in!',
+				title: '[[global:welcome_back]] ' + app.username + '!',
+				message: '[[global:you_have_successfully_logged_in]]',
 				timeout: 5000
 			});
 		}
