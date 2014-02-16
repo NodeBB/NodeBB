@@ -72,10 +72,10 @@ var bcrypt = require('bcryptjs'),
 				});
 			}
 		], function(err, results) {
-			userData = results[results.length - 1];
 			if (err) {
 				return callback(err);
 			}
+			userData = results[results.length - 1];
 
 			db.incrObjectField('global', 'nextUid', function(err, uid) {
 				if(err) {
@@ -132,6 +132,10 @@ var bcrypt = require('bcryptjs'),
 
 				if (password) {
 					User.hashPassword(password, function(err, hash) {
+						if(err) {
+							return callback(err);
+						}
+
 						User.setUserField(uid, 'password', hash);
 						callback(null, uid);
 					});
