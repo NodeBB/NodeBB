@@ -83,7 +83,7 @@ if (!nconf.get('help') && !nconf.get('setup') && !nconf.get('install') && !nconf
 
 function start() {
 	nconf.file({
-		file: __dirname + '/config.json'
+		file: configFile
 	});
 
 	nconf.defaults({
@@ -99,6 +99,7 @@ function start() {
 
 	winston.info('Time: ' + new Date());
 	winston.info('Initializing NodeBB v' + pkg.version);
+	winston.info('* using configuration stored in: ' + configFile);
 	winston.info('* using ' + nconf.get('database') +' store at ' + nconf.get(nconf.get('database') + ':host') + ':' + nconf.get(nconf.get('database') + ':port'));
 	winston.info('* using themes stored in: ' + nconf.get('themes_path'));
 
