@@ -83,7 +83,7 @@ if (!nconf.get('help') && !nconf.get('setup') && !nconf.get('install') && !nconf
 
 function start() {
 	nconf.file({
-		file: __dirname + '/config.json'
+		file: configFile
 	});
 
 	nconf.defaults({
