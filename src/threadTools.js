@@ -268,7 +268,12 @@ var winston = require('winston'),
 							return next(err);
 						}
 
-						notifications.create('<strong>' + username + '</strong> has posted a reply to: "<strong>' + topicData.title + '</strong>"', nconf.get('relative_path') + '/topic/' + topicData.slug + '#' + pid, 'topic:' + tid, function(nid) {
+						notifications.create({
+							text: '<strong>' + username + '</strong> has posted a reply to: "<strong>' + topicData.title + '</strong>"',
+							path: nconf.get('relative_path') + '/topic/' + topicData.slug + '#' + pid,
+							uniqueId: 'topic:' + tid,
+							from: exceptUid
+						}, function(nid) {
 							next(null, nid);
 						});
 					});
@@ -289,7 +294,7 @@ var winston = require('winston'),
 				});
 			}
 		], function(err, results) {
-			if (!err) {
+			if (!err && results[1].length) {
 				notifications.push(results[0], results[1]);
 			}
 		});

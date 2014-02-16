@@ -19,6 +19,9 @@
     "signature": "Firma",
     "gravatar": "Gravatar",
     "birthday": "Data di nascita",
+    "chat": "Chat",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "change_picture": "Cambia la foto",
     "edit": "Modifica",
     "uploaded_picture": "Foto caricata",
@@ -28,12 +31,16 @@
     "password": "Password",
     "upload_picture": "Carica foto",
     "upload_a_picture": "Carica una foto",
-    "image_spec": "È possibile caricare solo immagini in formato PNG, JPG, o GIF, non più grandi di 256kb.",
+    "image_spec": "You may only upload PNG, JPG, or GIF files",
+    "max": "max.",
     "settings": "Settings",
     "show_email": "Mostra la mia Email",
     "has_no_follower": "Questo utente non è seguito da nessuno :(",
     "follows_no_one": "Questo utente non segue nessuno :(",
     "has_no_posts": "This user didn't post anything yet.",
     "email_hidden": "Email Nascosta",
-    "hidden": "nascosta"
+    "hidden": "nascosta",
+    "paginate_description": "Paginate topics and posts instead of using infinite scroll.",
+    "topics_per_page": "Topics per Page",
+    "posts_per_page": "Posts per Page"
 }

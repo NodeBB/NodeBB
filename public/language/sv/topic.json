@@ -56,8 +56,8 @@
     "composer.title_placeholder": "Skriv in ämnets titel här...",
     "composer.write": "Skriv",
     "composer.preview": "Förhandsgranska",
-    "composer.discard": "Kasta bort",
-    "composer.submit": "Skicka",
+    "composer.discard": "Avbryt",
+    "composer.submit": "Spara",
     "composer.replying_to": "Svarar till",
     "composer.new_topic": "Nytt ämne"
 }

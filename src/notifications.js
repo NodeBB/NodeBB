@@ -4,7 +4,8 @@ var async = require('async'),
 
 	db = require('./database'),
 	utils = require('../public/src/utils'),
-	events = require('./events');
+	events = require('./events'),
+	User = require('./user');
 
 (function(Notifications) {
 	"use strict";
@@ -27,10 +28,17 @@ var async = require('async'),
 			if (exists) {
 				db.sortedSetRank('uid:' + uid + ':notifications:read', nid, function(err, rank) {
 
-					db.getObjectFields('notifications:' + nid, ['nid', 'text', 'score', 'path', 'datetime', 'uniqueId'], function(err, notification) {
-
+					db.getObjectFields('notifications:' + nid, ['nid', 'from', 'text', 'score', 'path', 'datetime', 'uniqueId'], function(err, notification) {
 						notification.read = rank !== null ? true:false;
-						callback(notification);
+
+						if (notification.from) {
+							User.getUserField(notification.from, 'picture', function(err, picture) {
+								notification.image = picture;
+								callback(notification);
+							});
+						} else {
+							callback(notification);
+						}
 					});
 				});
 			} else {
@@ -53,39 +61,36 @@ var async = require('async'),
 		});
 	};
 
-	Notifications.create = function(text, path, uniqueId, callback) {
+	Notifications.create = function(data, callback) {
 		/**
-		 * uniqueId is used solely to override stale nids.
+		 * data.uniqueId is used solely to override stale nids.
 		 * 		If a new nid is pushed to a user and an existing nid in the user's
 		 *		(un)read list contains the same uniqueId, it will be removed, and
 		 *		the new one put in its place.
 		 */
+
+		// Add default values to data Object if not already set
+		var	defaults = {
+				text: '',
+				path: null,
+				datetime: Date.now(),
+				uniqueId: utils.generateUUID()
+			};
+		for(var v in defaults) {
+			if (defaults.hasOwnProperty(v) && !data[v]) {
+				data[v] = defaults[v];
+			}
+		}
+
 		db.incrObjectField('global', 'nextNid', function(err, nid) {
 			db.setAdd('notifications', nid);
-			db.setObject('notifications:' + nid, {
-				text: text || '',
-				path: path || null,
-				datetime: Date.now(),
-				uniqueId: uniqueId || utils.generateUUID()
-			}, function(err, status) {
+			db.setObject('notifications:' + nid, data, function(err, status) {
 				if (!err) {
 					callback(nid);
 				}
 			});
 		});
 	};
-
-	function destroy(nid) {
-
-		db.delete('notifications:' + nid, function(err, result) {
-			db.setRemove('notifications', nid, function(err, result) {
-				if (err) {
-					winston.error('Problem deleting expired notifications. Stack follows.');
-					winston.error(err.stack);
-				}
-			});
-		});
-	}
 
 	Notifications.push = function(nid, uids, callback) {
 		var websockets = require('./socket.io');

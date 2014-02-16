@@ -19,6 +19,9 @@
     "signature": "Signature",
     "gravatar": "Gravatar",
     "birthday": "Anniversaire",
+    "chat": "Chat",
+    "follow": "S'abonner",
+    "unfollow": "Se désabonner",
     "change_picture": "Changer d'image",
     "edit": "Editer",
     "uploaded_picture": "Image uploadée",
@@ -28,12 +31,16 @@
     "password": "Mot de passe",
     "upload_picture": "Uploader une image",
     "upload_a_picture": "Uploader une image",
-    "image_spec": "Vous pouvez uploader seulement des fichiers de types PNG, JPG, ou GIF en dessous de 256kb.",
+    "image_spec": "Vous ne pouvez envoyer que des fichiers PNG, JPG ou GIF",
+    "max": "max.",
     "settings": "Paramètres",
     "show_email": "Révéler mon Email",
     "has_no_follower": "Cet utilisateur n'a aucun suiveur :(",
     "follows_no_one": "Cet utilisateur ne suit personne :(",
     "has_no_posts": "Ce membre n'a rien posté pour le moment",
     "email_hidden": "Email masqué",
-    "hidden": "masqué"
+    "hidden": "masqué",
+    "paginate_description": "Utiliser la pagination de sujets et messages au lieu du défilement infini.",
+    "topics_per_page": "Sujets par Page",
+    "posts_per_page": "Messages par Page"
 }

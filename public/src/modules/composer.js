@@ -552,13 +552,15 @@ define(['taskbar'], function(taskbar) {
 			if(items && items.length) {
 
 				var blob = items[0].getAsFile();
-				blob.name = 'upload-'+ utils.generateUUID();
+				if(blob) {
+					blob.name = 'upload-'+ utils.generateUUID();
 
-				var fd = new FormData();
-				fd.append('files[]', blob, blob.name);
+					var fd = new FormData();
+					fd.append('files[]', blob, blob.name);
 
-				fileForm[0].reset();
-				uploadSubmit([blob], post_uuid, '/api/post/upload', fd);
+					fileForm[0].reset();
+					uploadSubmit([blob], post_uuid, '/api/post/upload', fd);
+				}
 			}
 		});
 	}

@@ -72,10 +72,10 @@ var bcrypt = require('bcryptjs'),
 				});
 			}
 		], function(err, results) {
-			userData = results[results.length - 1];
 			if (err) {
 				return callback(err);
 			}
+			userData = results[results.length - 1];
 
 			db.incrObjectField('global', 'nextUid', function(err, uid) {
 				if(err) {
@@ -132,6 +132,10 @@ var bcrypt = require('bcryptjs'),
 
 				if (password) {
 					User.hashPassword(password, function(err, hash) {
+						if(err) {
+							return callback(err);
+						}
+
 						User.setUserField(uid, 'password', hash);
 						callback(null, uid);
 					});
@@ -710,13 +714,20 @@ var bcrypt = require('bcryptjs'),
 	User.sendPostNotificationToFollowers = function(uid, tid, pid) {
 		User.getUserField(uid, 'username', function(err, username) {
 			db.getSetMembers('followers:' + uid, function(err, followers) {
-				topics.getTopicField(tid, 'slug', function(err, slug) {
-					var message = '<strong>' + username + '</strong> made a new post';
+				if (followers && followers.length) {
+					topics.getTopicField(tid, 'slug', function(err, slug) {
+						var message = '<strong>' + username + '</strong> made a new post';
 
-					notifications.create(message, nconf.get('relative_path') + '/topic/' + slug + '#' + pid, 'topic:' + tid, function(nid) {
-						notifications.push(nid, followers);
+						notifications.create({
+							text: message,
+							path: nconf.get('relative_path') + '/topic/' + slug + '#' + pid,
+							uniqueId: 'topic:' + tid,
+							from: uid
+						}, function(nid) {
+							notifications.push(nid, followers);
+						});
 					});
-				});
+				}
 			});
 		});
 	};
@@ -1023,6 +1034,7 @@ var bcrypt = require('bcryptjs'),
 					getNotifications('uid:' + uid + ':notifications:read', 0, 9, null, next);
 				}
 			}, function(err, notifications) {
+				console.log(notifications);
 				if(err) {
 					return calback(err);
 				}

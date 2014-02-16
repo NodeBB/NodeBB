@@ -19,6 +19,9 @@
     "signature": "簽名",
     "gravatar": "Gravatar頭像",
     "birthday": "生日",
+    "chat": "Chat",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "change_picture": "改變頭像",
     "edit": "編輯",
     "uploaded_picture": "已有頭像",
@@ -28,12 +31,16 @@
     "password": "密碼",
     "upload_picture": "上傳頭像",
     "upload_a_picture": "上傳一張照片",
-    "image_spec": "你可以上傳PNG，JPG或GIF格式的圖像，文件小於256kb。",
+    "image_spec": "You may only upload PNG, JPG, or GIF files",
+    "max": "max.",
     "settings": "Settings",
     "show_email": "顯示我的郵箱",
     "has_no_follower": "該用戶還沒有被任何人關注。",
     "follows_no_one": "該用戶還沒有關注過任何人。",
     "has_no_posts": "This user didn't post anything yet.",
     "email_hidden": "郵箱被隱藏",
-    "hidden": "隱藏"
+    "hidden": "隱藏",
+    "paginate_description": "Paginate topics and posts instead of using infinite scroll.",
+    "topics_per_page": "Topics per Page",
+    "posts_per_page": "Posts per Page"
 }
