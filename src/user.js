@@ -1034,7 +1034,6 @@ var bcrypt = require('bcryptjs'),
 					getNotifications('uid:' + uid + ':notifications:read', 0, 9, null, next);
 				}
 			}, function(err, notifications) {
-				console.log(notifications);
 				if(err) {
 					return calback(err);
 				}
