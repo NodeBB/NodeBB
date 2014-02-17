@@ -36,7 +36,10 @@ var socket,
 						app.uid = data.uid;
 						app.isAdmin = data.isAdmin;
 
+						templates.setGlobal('loggedIn', parseInt(data.uid, 10) !== 0);
+
 						app.showLoginMessage();
+
 						socket.emit('meta.updateHeader', {
 							fields: ['username', 'picture', 'userslug']
 						}, app.updateHeader);
