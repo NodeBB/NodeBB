@@ -47,8 +47,6 @@ var ajaxify = {};
 		// Remove trailing slash
 		url = url.replace(/\/$/, "");
 
-		var hash = window.location.hash;
-
 		if (url.indexOf(RELATIVE_PATH.slice(1)) !== -1) {
 			url = url.slice(RELATIVE_PATH.length);
 		}
@@ -66,13 +64,18 @@ var ajaxify = {};
 			tpl_url = url;
 		}
 
+		var hash = '';
+		if(ajaxify.initialLoad && window.location.href.search(/#[0-9]+$/) !== -1) {
+			hash = window.location.hash ? window.location.hash : '';
+		}
+
 		if (templates.is_available(tpl_url) && !templates.force_refresh(tpl_url)) {
 			ajaxify.currentPage = tpl_url;
 
 			if (window.history && window.history.pushState) {
 				window.history[!quiet ? 'pushState' : 'replaceState']({
-					url: url
-				}, url, RELATIVE_PATH + '/' + url);
+					url: url + hash
+				}, url, RELATIVE_PATH + '/' + url + hash);
 
 				$.ajax(RELATIVE_PATH + '/plugins/fireHook', {
 					type: 'PUT',
@@ -109,16 +112,6 @@ var ajaxify = {};
 
 				jQuery('#content, #footer').stop(true, true).removeClass('ajaxifying');
 				ajaxify.initialLoad = false;
-
-				if (window.location.hash) {
-					hash = window.location.hash;
-				}
-
-				if (hash) {
-					require(['forum/topic'], function(topic) {
-						topic.scrollToPost(hash.substr(1));
-					});
-				}
 
 				app.refreshTitle(url);
 				$(window).trigger('action:ajaxify.end', { url: url });
@@ -165,7 +158,6 @@ var ajaxify = {};
 					var url = this.href.replace(rootUrl + '/', '');
 
 					if (ajaxify.go(url)) {
-
 						e.preventDefault();
 					}
 				} else if (window.location.pathname !== '/outgoing') {

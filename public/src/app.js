@@ -420,13 +420,20 @@ var socket,
 		});
 	};
 
+	var previousScrollTop = 0;
+
 	app.enableInfiniteLoading = function(callback) {
 		$(window).off('scroll').on('scroll', function() {
+			var top = $(window).height() * 0.1;
 			var bottom = ($(document).height() - $(window).height()) * 0.9;
+			var currentScrollTop = $(window).scrollTop();
 
-			if ($(window).scrollTop() > bottom) {
-				callback();
+			if($(window).scrollTop() < top && previousScrollTop > currentScrollTop) {
+				callback(-1);
+			} else if ($(window).scrollTop() > bottom && previousScrollTop < currentScrollTop) {
+				callback(1);
 			}
+			previousScrollTop = currentScrollTop;
 		});
 	}
 

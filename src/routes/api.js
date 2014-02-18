@@ -205,7 +205,6 @@ var path = require('path'),
 			});
 
 			app.get('/topic/:id/:slug?', function (req, res, next) {
-
 				var uid = (req.user) ? req.user.uid : 0;
 				var page = 1;
 				if(req.query && req.query.page) {
