@@ -754,7 +754,6 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			}
 
 			socket.emit('topics.markAsRead', {tid: tid, uid: app.uid});
-
 			createNewPosts(data);
 		});
 

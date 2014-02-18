@@ -125,6 +125,7 @@ var async = require('async'),
 
 	Topics.reply = function(tid, uid, content, callback) {
 		var privileges;
+		var postData;
 
 		async.waterfall([
 			function(next) {
@@ -151,30 +152,29 @@ var async = require('async'),
 
 				posts.create(uid, tid, content, next);
 			},
-			function(postData, next) {
-
+			function(data, next) {
+				postData = data;
 				threadTools.notifyFollowers(tid, postData.pid, uid);
 
 				user.sendPostNotificationToFollowers(uid, tid, postData.pid);
 
-				next(null, postData);
+				next();
 			},
-			function(postData, next) {
-				Topics.markAsUnreadForAll(tid, function(err) {
-					if(err) {
-						return next(err);
-					}
-
-					Topics.markAsRead(tid, uid, function(err) {
-						Topics.pushUnreadCount(null);
-						next(err, postData);
-					});
-				});
+			function(next) {
+				Topics.markAsUnreadForAll(tid, next);
 			},
-			function(postData, next) {
+			function(next) {
+				Topics.markAsRead(tid, uid, next);
+			},
+			function(next) {
+				Topics.pushUnreadCount();
 				posts.addUserInfoToPost(postData, next);
 			},
-			function(postData, next) {
+			function(postData,next) {
+				posts.getPidIndex(postData.pid, next);
+			},
+			function(index, next) {
+				postData.index = index;
 				postData.favourited = false;
 				postData.votes = 0;
 				postData.display_moderator_tools = true;

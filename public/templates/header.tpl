@@ -79,7 +79,7 @@
 					<!-- ENDIF isAdmin -->
 
 					<li class="visible-xs">
-						<a id="mobile-search-button" href="{relative_path}/search"><i class="fa fa-search" title="[[global:header.search]]"></i> [[global:header.search]]</a>
+						<a id="mobile-search-button" href="{relative_path}/search"><i class="fa fa-search fa-fw" title="[[global:header.search]]"></i> [[global:header.search]]</a>
 					</li>
 
 					<!-- BEGIN navigation -->
@@ -111,7 +111,7 @@
 						</ul>
 					</li>
 					<li class="visible-xs">
-						<a href="{relative_path}/notifications"><i class="fa fa-exclamation-triangle" title="[[notifications:title]]"></i> [[notifications:title]]</a>
+						<a href="{relative_path}/notifications"><i class="fa fa-exclamation-triangle fa-fw" title="[[notifications:title]]"></i> [[notifications:title]]</a>
 					</li>
 
 					<li class="chats dropdown text-center hidden-xs">
@@ -170,19 +170,16 @@
 				</ul>
 
 				<ul id="logged-conditional-menu" class="nav navbar-nav navbar-right">
-					<li class="hidden-xs">
-						<form id="search-form" class="navbar-form navbar-right" role="search" method="GET" action="">
+					<li>
+						<form id="search-form" class="navbar-form navbar-right hidden-xs" role="search" method="GET" action="">
 							<div class="hide" id="search-fields">
 								<div class="form-group">
 									<input type="text" class="form-control" placeholder="[[global:search]]" name="query" value="">
 								</div>
 								<button type="submit" class="btn btn-default hide">[[global:search]]</button>
 							</div>
+							<button id="search-button" type="button" class="btn btn-link hide"><i class="fa fa-search fa-fw" title="[[global:header.search]]"></i></button>
 						</form>
-					</li>
-
-					<li class="hidden-xs">
-						<a href="#" id="search-button" class="hide"><i class="fa fa-search" title="[[global:header.search]]"></i></a>
 					</li>
 				</ul>
 
