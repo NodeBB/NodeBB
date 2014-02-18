@@ -215,7 +215,7 @@ module.exports.server = server;
 
 				app.use(express.csrf());
 
-				if (nconf.get('port') != 80 && nconf.get('port') != 443 && nconf.get('use_port') === true) {
+				if (nconf.get('port') != 80 && nconf.get('port') != 443 && nconf.get('use_port') === false) {
 					winston.info('Enabling \'trust proxy\'');
 					app.enable('trust proxy');
 				}
