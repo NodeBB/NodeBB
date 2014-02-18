@@ -88,10 +88,10 @@ module.exports.server = server;
 					property: 'keywords',
 					content: meta.config.keywords || ''
 				}],
-				defaultLinkTags = [/*{
+				defaultLinkTags = [{
 					rel: 'apple-touch-icon',
 					href: meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png'
-				}*/],
+				}],
 				templateValues = {
 					bootswatchCSS: meta.config['theme:src'],
 					pluginCSS: plugins.cssFiles.map(function(file) { return { path: nconf.get('relative_path') + file.replace(/\\/g, '/') }; }),
@@ -185,6 +185,17 @@ module.exports.server = server;
 		});
 	}
 
+	function skipTouchIcon(middleware){
+		var appleTouchIcon = meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png';
+		return function(req, res, next){
+			if(req.url === appleTouchIcon){
+				return next();
+			}
+
+			return middleware(req, res, next);
+		}
+	}
+
 	// Middlewares
 	app.configure(function() {
 		async.series([
@@ -204,16 +215,16 @@ module.exports.server = server;
 				app.use(express.bodyParser()); // Puts POST vars in request.body
 				app.use(express.cookieParser()); // If you want to parse cookies (res.cookies)
 
-				app.use(express.session({
+				app.use(skipTouchIcon(express.session({
 					store: db.sessionStore,
 					secret: nconf.get('secret'),
 					key: 'express.sid',
 					cookie: {
 						maxAge: 1000 * 60 * 60 * 24 * parseInt(meta.configs.loginDays || 14, 10)
 					}
-				}));
+				})));
 
-				app.use(express.csrf());
+				app.use(skipTouchIcon(express.csrf()));
 
 				if (nconf.get('port') != 80 && nconf.get('port') != 443 && nconf.get('use_port') === true) {
 					winston.info('Enabling \'trust proxy\'');
@@ -226,7 +237,9 @@ module.exports.server = server;
 
 				// Local vars, other assorted setup
 				app.use(function (req, res, next) {
-					res.locals.csrf_token = req.session._csrf;
+					if(req.session){
+						res.locals.csrf_token = req.session._csrf;
+					}
 
 					// Disable framing
 					res.setHeader('X-Frame-Options', 'SAMEORIGIN');
