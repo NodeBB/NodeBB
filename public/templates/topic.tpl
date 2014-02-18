@@ -65,7 +65,7 @@
 						</div>
 
 						<div class="btn-group">
-							<button class="btn btn-sm btn-default follow" type="button" title="[[topic:notify_me]]"><i class="fa fa-eye"></i></button>
+							<button class="btn btn-sm btn-default follow hide" type="button" title="[[topic:notify_me]]"><i class="fa fa-eye"></i></button>
 							<button class="btn btn-sm btn-default flag" type="button" title="[[topic:flag_title]]"><i class="fa fa-flag-o"></i></button>
 							<button data-favourited="{posts.favourited}" class="favourite favourite-tooltip btn btn-sm btn-default <!-- IF posts.favourited --> btn-warning <!-- ENDIF posts.favourited -->" type="button">
 								<span class="favourite-text">[[topic:favourite]]</span>

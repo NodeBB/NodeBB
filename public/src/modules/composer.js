@@ -537,8 +537,13 @@ define(['taskbar'], function(taskbar) {
 				files = dt.files;
 
 			if(files.length) {
+				var fd = new FormData();
+				for (var i = 0, file; file = dt.files[i]; i++) {
+					fd.append('files[]', file, file.name);
+				}
+
 				fileForm[0].reset();
-				fileForm.find('#files')[0].files = files;
+				uploadSubmit(files, post_uuid, '/api/post/upload', fd);
 			}
 
 			drop.hide();
