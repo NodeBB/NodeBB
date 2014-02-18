@@ -1138,11 +1138,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		var elTop = el.offset().top;
 		var height = Math.floor(el.height());
 		var elBottom = elTop + height;
-
-		return ((elBottom >= scrollTop) &&
-				(elTop <= scrollBottom) &&
-				(elBottom <= scrollBottom) &&
-				(elTop >= scrollTop));
+		return !(elTop > scrollBottom || elBottom < scrollTop);
 	}
 
 	Topic.scrollToPost = function(pid, duration, offset) {
