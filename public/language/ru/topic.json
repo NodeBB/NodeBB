@@ -20,6 +20,8 @@
     "flag": "Отметить",
     "flag_title": "Отметить сообщение для модерирования",
     "deleted_message": "This thread has been deleted. Only users with thread management privileges can see it.",
+    "watch": "Watch",
+    "share_this_post": "Share this Post",
     "thread_tools.title": "Опции Темы",
     "thread_tools.markAsUnreadForAll": "Отметить как непрочитанные",
     "thread_tools.pin": "Pin Topic",

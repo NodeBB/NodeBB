@@ -23,11 +23,11 @@ define(function() {
 						var	image = '';
 						for (x = 0; x < numUnread; x++) {
 							if (data.unread[x].image) {
-								image = '<img src="' + data.unread[x].image + '" />';
+								image = '<img class="image" src="' + data.unread[x].image + '" />';
 							} else {
 								image = '';
 							}
-							notifList.append($('<li class="' + data.unread[x].readClass + '"><a href="' + data.unread[x].path + '">' + image + '<span class="pull-right relTime">' + utils.relativeTime(data.unread[x].datetime, true) + '</span><span class="text">' + data.unread[x].text + '</span></a></li>'));
+							notifList.append($('<li class="' + (data.unread[x].readClass || '') + '"><a href="' + data.unread[x].path + '">' + image + '<span class="pull-right relTime">' + utils.relativeTime(data.unread[x].datetime, true) + '</span><span class="text">' + data.unread[x].text + '</span></a></li>'));
 						}
 
 						for (x = 0; x < numRead; x++) {

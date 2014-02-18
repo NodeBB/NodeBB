@@ -10,11 +10,14 @@
     "500.message": "Ooops! Looks like something went wrong!",
     "register": "Registrierung",
     "login": "Login",
+    "welcome_back": "Welcome Back ",
+    "you_have_successfully_logged_in": "You have successfully logged in",
     "logout": "Logout",
     "logout.title": "Du bist ausgeloggt.",
     "logout.message": "Du hast dich soeben erfolgreich aus dem Forum ausgeloggt.",
     "save_changes": "Speichere Änderungen",
     "close": "Schließen",
+    "pagination": "Pagination",
     "header.admin": "Admin",
     "header.recent": "Aktuell",
     "header.unread": "Ungelesen",
@@ -48,5 +51,6 @@
     "away": "Abwesend",
     "dnd": "Nicht stören",
     "invisible": "Unsichtbar",
-    "offline": "Offline"
+    "offline": "Offline",
+    "privacy": "Privacy"
 }

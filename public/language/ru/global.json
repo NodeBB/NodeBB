@@ -10,11 +10,14 @@
     "500.message": "Упс! Похоже, что-то пошло не так!",
     "register": "Зарегистрироваться",
     "login": "Войти",
+    "welcome_back": "Welcome Back ",
+    "you_have_successfully_logged_in": "You have successfully logged in",
     "logout": "Выйти",
     "logout.title": "Вы успешно вышли.",
     "logout.message": "Вы успешно вышли из NodeBB",
     "save_changes": "Сохранить изменения",
     "close": "Закрыть",
+    "pagination": "Pagination",
     "header.admin": "Админка",
     "header.recent": "Последние",
     "header.unread": "Непрочитанное",
@@ -48,5 +51,6 @@
     "away": "Отсутствует",
     "dnd": "Не беспокоить",
     "invisible": "Невидимый",
-    "offline": "Не в сети"
+    "offline": "Не в сети",
+    "privacy": "Privacy"
 }

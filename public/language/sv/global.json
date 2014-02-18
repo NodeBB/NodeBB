@@ -10,11 +10,14 @@
     "500.message": "Hoppsan! Verkar som att något gått snett!",
     "register": "Registrera",
     "login": "Logga in",
+    "welcome_back": "Welcome Back ",
+    "you_have_successfully_logged_in": "You have successfully logged in",
     "logout": "Logga ut",
     "logout.title": "Du är nu utloggad.",
     "logout.message": "Du är nu utloggad från NodeBB.",
     "save_changes": "Spara ändringar",
     "close": "Stäng",
+    "pagination": "Pagination",
     "header.admin": "Admin",
     "header.recent": "Senaste",
     "header.unread": "Olästa",
@@ -48,5 +51,6 @@
     "away": "Borta",
     "dnd": "Stör ej",
     "invisible": "Osynlig",
-    "offline": "Offline"
+    "offline": "Offline",
+    "privacy": "Privacy"
 }

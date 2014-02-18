@@ -10,11 +10,14 @@
     "500.message": "Oops! Il semblerait que quelque chose se soit mal passé!",
     "register": "S'inscrire",
     "login": "Connecter",
+    "welcome_back": "Bon retour parmis nous",
+    "you_have_successfully_logged_in": "Vous vous êtes connecté avec succès.",
     "logout": "Déconnection",
     "logout.title": "Vous êtes maintenant déconnecté.",
     "logout.message": "Vous vous êtes déconnecté de NodeBB avec succès",
     "save_changes": "Enregistrer les changements",
     "close": "Fermer",
+    "pagination": "Pagination",
     "header.admin": "Admin",
     "header.recent": "Récent",
     "header.unread": "Non Lu",
@@ -48,5 +51,6 @@
     "away": "Absent",
     "dnd": "Occupé",
     "invisible": "Invisible",
-    "offline": "Hors ligne"
+    "offline": "Hors ligne",
+    "privacy": "Vie privée"
 }

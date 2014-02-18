@@ -20,6 +20,8 @@
     "flag": "Markieren",
     "flag_title": "Diesen Beitrag zur Moderation markieren",
     "deleted_message": "This thread has been deleted. Only users with thread management privileges can see it.",
+    "watch": "Watch",
+    "share_this_post": "Share this Post",
     "thread_tools.title": "Thread Tools",
     "thread_tools.markAsUnreadForAll": "Als ungelesen markieren",
     "thread_tools.pin": "Pin Topic",
