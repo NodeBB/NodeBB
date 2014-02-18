@@ -70,13 +70,15 @@ if (nconf.get('config')) {
 }
 configExists = fs.existsSync(configFile);
 
-if (!nconf.get('help') && !nconf.get('setup') && !nconf.get('install') && !nconf.get('upgrade') && configExists) {
+if (!nconf.get('help') && !nconf.get('setup') && !nconf.get('install') && !nconf.get('upgrade') && !nconf.get('reset') && configExists) {
 	start();
 } else if (nconf.get('setup') || nconf.get('install') || !configExists) {
 	setup();
 } else if (nconf.get('upgrade')) {
 	upgrade();
-} else/* if (nconf.get('help') */{
+} else if (nconf.get('reset')) {
+	reset();
+} else {
 	displayHelp();
 };
 
@@ -196,6 +198,46 @@ function upgrade() {
 	});
 }
 
+function reset() {
+	nconf.file({
+		file: __dirname + '/config.json'
+	});
+
+	var meta = require('./src/meta'),
+		db = require('./src/database'),
+		async = require('async');
+
+	db.init(function(err) {
+		meta.configs.init(function () {
+			async.parallel([
+				function(next) {
+					db.delete('plugins:active', next);
+				},
+				function(next) {
+					meta.configs.set('theme:type', 'local', next);
+				},
+				function(next) {
+					meta.configs.set('theme:id', 'nodebb-theme-vanilla', next);
+				},
+				function(next) {
+					meta.configs.set('theme:staticDir', '', next);
+				},
+				function(next) {
+					meta.configs.set('theme:templates', '', next);
+				}
+			], function(err) {
+				if (err) {
+					winston.error(err);
+				} else {
+					winston.info("Successfully reset theme to Vanilla and disabled all plugins.");
+				}
+
+				process.exit();				
+			});
+		});
+	});
+}
+
 function displayHelp() {
 	winston.info('Usage: node app [options] [arguments]');
 	winston.info('       [NODE_ENV=development | NODE_ENV=production] node app [--start] [arguments]');
@@ -204,5 +246,6 @@ function displayHelp() {
 	winston.info('  --help              displays this usage information');
 	winston.info('  --setup             configure your environment and setup NodeBB');
 	winston.info('  --upgrade           upgrade NodeBB, first read: github.com/designcreateplay/NodeBB/wiki/Upgrading-NodeBB');
+	winston.info('  --reset             soft resets NodeBB; disables all plugins and restores selected theme to Vanilla');
 	winston.info('  --start             manually start NodeBB (default when no options are given)');
 }
