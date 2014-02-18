@@ -65,7 +65,7 @@ var ajaxify = {};
 		}
 
 		var hash = '';
-		if(ajaxify.initialLoad && window.location.href.search(/#[a-zA-Z0-9]+$/) !== -1) {
+		if(ajaxify.initialLoad) {
 			hash = window.location.hash ? window.location.hash : '';
 		}
 
