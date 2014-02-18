@@ -6,7 +6,7 @@
 		In NodeBB, the MOTD is present at the top of the forum homepage, and can be customized much like a header.
 	</p>
 	<p>
-		You can enter either full HTML or Markdown text.
+		You can enter full HTML/Javascript.
 	</p>
 	<br />
 	<textarea class="form-control" placeholder="Welcome to NodeBB!" data-field="motd" rows="10"></textarea>
