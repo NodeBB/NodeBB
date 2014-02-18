@@ -604,10 +604,8 @@ define(['taskbar'], function(taskbar) {
 				clearForm: true,
 				formData: formData,
 				error: function(xhr) {
-					app.alertError('Error uploading file! ' + xhr.status);
-					composer.posts[post_uuid].uploadsInProgress.pop();
+					app.alertError('Error uploading file!\nStatus : ' + xhr.status + '\nMessage : ' + xhr.responseText);
 				},
-
 				uploadProgress: function(event, position, total, percent) {
 					var current = textarea.val();
 					for(var i=0; i<files.length; ++i) {
@@ -615,7 +613,6 @@ define(['taskbar'], function(taskbar) {
 						textarea.val(current.replace(re, files[i].name+'](uploading ' + percent + '%)'));
 					}
 				},
-
 				success: function(uploads) {
 
 					if(uploads && uploads.length) {
@@ -626,8 +623,11 @@ define(['taskbar'], function(taskbar) {
 						}
 					}
 
-					composer.posts[post_uuid].uploadsInProgress.pop();
 					textarea.focus();
+				},
+				complete: function(xhr, status) {
+					uploadForm[0].reset();
+					composer.posts[post_uuid].uploadsInProgress.pop();
 				}
 			});
 

@@ -479,7 +479,7 @@ var path = require('path'),
 					deleteTempFiles();
 
 					if(err) {
-						return res.json(500, {message: err.message});
+						return res.json(500, err.message);
 					}
 
 					res.json(200, images);
