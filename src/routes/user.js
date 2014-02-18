@@ -24,6 +24,11 @@ var fs = require('fs'),
 
 			function createRoute(routeName) {
 				app.get(routeName, function (req, res) {
+
+					if(!req.user && !!parseInt(meta.config.privateUserInfo, 10)) {
+						return res.redirect('/403');
+					}
+
 					app.build_header({
 						req: req,
 						res: res
@@ -46,7 +51,7 @@ var fs = require('fs'),
 						return next();
 					}
 
-					if (!req.user && path === '/favourites') {
+					if (!req.user && (path === '/favourites' || !!parseInt(meta.config.privateUserInfo, 10))) {
 						return res.redirect('/403');
 					}
 
@@ -118,8 +123,9 @@ var fs = require('fs'),
 
 			app.get('/:userslug/settings', function (req, res) {
 
-				if (!req.user)
+				if (!req.user) {
 					return res.redirect('/403');
+				}
 
 				user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
 					if (req.params.userslug && userslug === req.params.userslug) {
@@ -244,7 +250,14 @@ var fs = require('fs'),
 			});
 		});
 
-		app.get('/api/user/:userslug/following', function (req, res, next) {
+		function isAllowed(req, res, next) {
+			if(!req.user && !!parseInt(meta.config.privateUserInfo, 10)) {
+				return res.json(403, 'not-allowed');
+			}
+			next();
+		}
+
+		app.get('/api/user/:userslug/following', isAllowed, function (req, res, next) {
 			var callerUID = req.user ? req.user.uid : '0';
 
 			getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
@@ -270,7 +283,7 @@ var fs = require('fs'),
 			});
 		});
 
-		app.get('/api/user/:userslug/followers', function (req, res, next) {
+		app.get('/api/user/:userslug/followers', isAllowed, function (req, res, next) {
 			var callerUID = req.user ? req.user.uid : '0';
 
 			getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
@@ -357,7 +370,7 @@ var fs = require('fs'),
 			});
 		});
 
-		app.get('/api/user/:userslug/favourites', function (req, res, next) {
+		app.get('/api/user/:userslug/favourites', isAllowed, function (req, res, next) {
 			var callerUID = req.user ? req.user.uid : '0';
 
 			user.getUidByUserslug(req.params.userslug, function (err, uid) {
@@ -400,7 +413,7 @@ var fs = require('fs'),
 			});
 		});
 
-		app.get('/api/user/:userslug/posts', function (req, res, next) {
+		app.get('/api/user/:userslug/posts', isAllowed, function (req, res, next) {
 			var callerUID = req.user ? req.user.uid : '0';
 
 			user.getUidByUserslug(req.params.userslug, function (err, uid) {
@@ -438,7 +451,7 @@ var fs = require('fs'),
 		});
 
 
-		app.get('/api/user/uid/:uid', function(req, res, next) {
+		app.get('/api/user/uid/:uid', isAllowed, function(req, res, next) {
 			var uid = req.params.uid ? req.params.uid : 0;
 
 			user.getUserData(uid, function(err, userData) {
@@ -446,7 +459,7 @@ var fs = require('fs'),
 			});
 		});
 
-		app.get('/api/user/:userslug', function (req, res, next) {
+		app.get('/api/user/:userslug', isAllowed, function (req, res, next) {
 			var callerUID = req.user ? req.user.uid : '0';
 
 			getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
@@ -492,12 +505,12 @@ var fs = require('fs'),
 			});
 		});
 
-		app.get('/api/users', getOnlineUsers);
-		app.get('/api/users/sort-posts', getUsersSortedByPosts);
-		app.get('/api/users/sort-reputation', getUsersSortedByReputation);
-		app.get('/api/users/latest', getUsersSortedByJoinDate);
-		app.get('/api/users/online', getOnlineUsers);
-		app.get('/api/users/search', getUsersForSearch);
+		app.get('/api/users', isAllowed, getOnlineUsers);
+		app.get('/api/users/sort-posts', isAllowed, getUsersSortedByPosts);
+		app.get('/api/users/sort-reputation', isAllowed, getUsersSortedByReputation);
+		app.get('/api/users/latest', isAllowed, getUsersSortedByJoinDate);
+		app.get('/api/users/online', isAllowed, getOnlineUsers);
+		app.get('/api/users/search', isAllowed, getUsersForSearch);
 
 
 		function getUsersSortedByJoinDate(req, res) {
