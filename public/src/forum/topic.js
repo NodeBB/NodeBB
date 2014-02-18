@@ -1145,9 +1145,11 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		if (!pid) {
 			return;
 		}
+
 		if(!offset) {
 			offset = 0;
 		}
+
 
 		if($('#post_anchor_' + pid).length) {
 			return scrollToPid(pid);
@@ -1193,7 +1195,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				});
 			}
 
-			if (tid && scrollTo.length) {
+			if (tid && scrollTo.length && $('#post-container li.post-row[data-pid="' + pid + '"]').attr('data-index') !== '0') {
 				animateScroll();
 			}
 		}
