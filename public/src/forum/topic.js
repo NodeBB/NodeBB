@@ -338,9 +338,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			if(window.location.hash) {
 				Topic.scrollToPost(window.location.hash.substr(1));
 			} else if(bookmark) {
-				if(bookmark) {
-					Topic.scrollToPost(parseInt(bookmark, 10));
-				}
+				Topic.scrollToPost(parseInt(bookmark, 10));
 			} else {
 				updateHeader();
 			}
