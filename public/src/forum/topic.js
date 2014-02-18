@@ -290,8 +290,8 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 							app.alert({
 								alert_id: 'topic_follow',
 								timeout: 2500,
-								title: 'Following Topic',
-								message: 'You will now be receiving notifications when somebody posts to this topic.',
+								title: '[[topic:following_topic.title]]',
+								message: '[[topic:following_topic.message]]',
 								type: 'success'
 							});
 						}
@@ -302,8 +302,8 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 							app.alert({
 								alert_id: 'topic_follow',
 								timeout: 2500,
-								title: 'Not Following Topic',
-								message: 'You will no longer receive notifications from this topic.',
+								title: '[[topic:not_following_topic.title]]',
+								message: '[[topic:not_following_topic.message]]',
 								type: 'success'
 							});
 						}
@@ -320,8 +320,8 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 						return app.alert({
 							type: 'danger',
 							alert_id: 'topic_follow',
-							title: 'Please Log In',
-							message: 'Please register or log in in order to subscribe to this topic',
+							title: '[[global:please_log_in]]',
+							message: '[[topic:login_to_subscribe]]',
 							timeout: 5000
 						});
 					}

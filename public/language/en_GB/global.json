@@ -11,6 +11,9 @@
 
 	"register": "Register",
 	"login": "Login",
+	"please_log_in": "Please Log In",
+
+	"posting_restriction_info": "Posting is currently restricted to registered members only, click here to log in.",
 
 	"welcome_back": "Welcome Back ",
 	"you_have_successfully_logged_in": "You have successfully logged in",

@@ -10,8 +10,8 @@ define(['taskbar'], function(taskbar) {
 				type: 'danger',
 				timeout: 5000,
 				alert_id: 'post_error',
-				title: 'Please Log In to Post',
-				message: 'Posting is currently restricted to registered members only, click here to log in',
+				title: '[[global:please_log_in]]',
+				message: '[[global:posting_restriction_info]]',
 				clickfn: function() {
 					ajaxify.go('login');
 				}
