@@ -12,12 +12,17 @@
 	"register": "Register",
 	"login": "Login",
 
+	"welcome_back": "Welcome Back ",
+	"you_have_successfully_logged_in": "You have successfully logged in",
+
 	"logout": "Logout",
 	"logout.title": "You are now logged out.",
 	"logout.message": "You have successfully logged out of NodeBB",
 
 	"save_changes": "Save Changes",
 	"close": "Close",
+
+	"pagination": "Pagination",
 
 	"header.admin": "Admin",
 	"header.recent": "Recent",

@@ -13,14 +13,16 @@
 						expand: options.expand
 					}, next);
 				}, function (err, groups) {
-					// Remove deleted and hidden groups from this list
-					callback(err, groups.filter(function (group) {
-						if (parseInt(group.deleted, 10) === 1 || parseInt(group.hidden, 10) === 1) {
-							return false;
-						} else {
-							return true;
+					groups.forEach(function(group, g, arr) {
+						if (parseInt(group.deleted, 10) === 1) {
+							delete arr[g];
 						}
-					}));
+						if (parseInt(group.hidden, 10) === 1) {
+							group.deletable = 0;
+						}
+					});
+
+					callback(err, groups);
 				});
 			} else {
 				callback(null, []);

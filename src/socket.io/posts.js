@@ -235,6 +235,10 @@ SocketPosts.getPidPage = function(socket, pid, callback) {
 	posts.getPidPage(pid, socket.uid, callback);
 }
 
+SocketPosts.getPidIndex = function(socket, pid, callback) {
+	posts.getPidIndex(pid, callback);
+}
+
 SocketPosts.flag = function(socket, pid, callback) {
 	if (!socket.uid) {
 		return callback(new Error('not-logged-in'));
@@ -260,7 +264,12 @@ SocketPosts.flag = function(socket, pid, callback) {
 		},
 		function(adminGroup, next) {
 
-			notifications.create(message, path, 'post_flag:' + pid, function(nid) {
+			notifications.create({
+				text: message,
+				path: path,
+				uniqueId: 'post_flag:' + pid,
+				from: socket.uid
+			}, function(nid) {
 				notifications.push(nid, adminGroup.members, function() {
 					next(null);
 				});

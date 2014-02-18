@@ -67,27 +67,31 @@ var winston = require('winston'),
 				return callback(new Error('topic-already-deleted'));
 			}
 
-			topics.delete(tid);
+			topics.delete(tid, function(err) {
+				if(err) {
+					return callback(err);
+				}
 
-			db.decrObjectField('global', 'topicCount');
+				db.decrObjectField('global', 'topicCount');
 
-			ThreadTools.lock(tid);
+				ThreadTools.lock(tid);
 
-			db.searchRemove('topic', tid);
+				db.searchRemove('topic', tid);
 
-			events.logTopicDelete(uid, tid);
+				events.logTopicDelete(uid, tid);
 
-			websockets.emitTopicPostStats();
+				websockets.emitTopicPostStats();
 
-			websockets.in('topic_' + tid).emit('event:topic_deleted', {
-				tid: tid
-			});
+				websockets.in('topic_' + tid).emit('event:topic_deleted', {
+					tid: tid
+				});
 
-			callback(null, {
-				tid: tid
+				callback(null, {
+					tid: tid
+				});
 			});
 		});
-	}
+	};
 
 	ThreadTools.restore = function(tid, uid, callback) {
 		topics.getTopicField(tid, 'deleted', function(err, deleted) {
@@ -99,29 +103,33 @@ var winston = require('winston'),
 				return callback(new Error('topic-already-restored'));
 			}
 
-			topics.restore(tid);
+			topics.restore(tid, function(err) {
+				if(err) {
+					return callback(err);
+				}
 
-			db.incrObjectField('global', 'topicCount');
+				db.incrObjectField('global', 'topicCount');
 
-			ThreadTools.unlock(tid);
+				ThreadTools.unlock(tid);
 
-			events.logTopicRestore(uid, tid);
+				events.logTopicRestore(uid, tid);
 
-			websockets.emitTopicPostStats();
+				websockets.emitTopicPostStats();
 
-			websockets.in('topic_' + tid).emit('event:topic_restored', {
-				tid: tid
-			});
+				websockets.in('topic_' + tid).emit('event:topic_restored', {
+					tid: tid
+				});
 
-			topics.getTopicField(tid, 'title', function(err, title) {
-				db.searchIndex('topic', title, tid);
-			});
+				topics.getTopicField(tid, 'title', function(err, title) {
+					db.searchIndex('topic', title, tid);
+				});
 
-			callback(null, {
-				tid:tid
+				callback(null, {
+					tid:tid
+				});
 			});
 		});
-	}
+	};
 
 	ThreadTools.lock = function(tid, uid, callback) {
 		topics.setTopicField(tid, 'locked', 1);
@@ -268,7 +276,12 @@ var winston = require('winston'),
 							return next(err);
 						}
 
-						notifications.create('<strong>' + username + '</strong> has posted a reply to: "<strong>' + topicData.title + '</strong>"', nconf.get('relative_path') + '/topic/' + topicData.slug + '#' + pid, 'topic:' + tid, function(nid) {
+						notifications.create({
+							text: '<strong>' + username + '</strong> has posted a reply to: "<strong>' + topicData.title + '</strong>"',
+							path: nconf.get('relative_path') + '/topic/' + topicData.slug + '#' + pid,
+							uniqueId: 'topic:' + tid,
+							from: exceptUid
+						}, function(nid) {
 							next(null, nid);
 						});
 					});
@@ -289,7 +302,7 @@ var winston = require('winston'),
 				});
 			}
 		], function(err, results) {
-			if (!err) {
+			if (!err && results[1].length) {
 				notifications.push(results[0], results[1]);
 			}
 		});

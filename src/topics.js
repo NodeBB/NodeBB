@@ -1154,29 +1154,61 @@ var async = require('async'),
 		});
 	}
 
-	Topics.delete = function(tid) {
-		Topics.setTopicField(tid, 'deleted', 1);
-		db.sortedSetRemove('topics:recent', tid);
-		db.sortedSetRemove('topics:posts', tid);
-		db.sortedSetRemove('topics:views', tid);
+	Topics.delete = function(tid, callback) {
+		async.parallel([
+			function(next) {
+				Topics.setTopicField(tid, 'deleted', 1, next);
+			},
+			function(next) {
+				db.sortedSetRemove('topics:recent', tid, next);
+			},
+			function(next) {
+				db.sortedSetRemove('topics:posts', tid, next);
+			},
+			function(next) {
+				db.sortedSetRemove('topics:views', tid, next);
+			},
+			function(next) {
+				Topics.getTopicField(tid, 'cid', function(err, cid) {
+					if(err) {
+						return next(err);
+					}
+					db.incrObjectFieldBy('category:' + cid, 'topic_count', -1, next);
+				});
+			}
+		], callback);
+	};
 
-		Topics.getTopicField(tid, 'cid', function(err, cid) {
-			db.incrObjectFieldBy('category:' + cid, 'topic_count', -1);
-		});
-	}
-
-	Topics.restore = function(tid) {
-		Topics.setTopicField(tid, 'deleted', 0);
+	Topics.restore = function(tid, callback) {
 		Topics.getTopicFields(tid, ['lastposttime', 'postcount', 'viewcount'], function(err, topicData) {
-			db.sortedSetAdd('topics:recent', topicData.lastposttime, tid);
-			db.sortedSetAdd('topics:posts', topicData.postcount, tid);
-			db.sortedSetAdd('topics:views', topicData.viewcount, tid);
-		});
+			if(err) {
+				return callback(err);
+			}
 
-		Topics.getTopicField(tid, 'cid', function(err, cid) {
-			db.incrObjectFieldBy('category:' + cid, 'topic_count', 1);
+			async.parallel([
+				function(next) {
+					Topics.setTopicField(tid, 'deleted', 0, next);
+				},
+				function(next) {
+					db.sortedSetAdd('topics:recent', topicData.lastposttime, tid, next);
+				},
+				function(next) {
+					db.sortedSetAdd('topics:posts', topicData.postcount, tid, next);
+				},
+				function(next) {
+					db.sortedSetAdd('topics:views', topicData.viewcount, tid, next);
+				},
+				function(next) {
+					Topics.getTopicField(tid, 'cid', function(err, cid) {
+						if(err) {
+							return next(err);
+						}
+						db.incrObjectFieldBy('category:' + cid, 'topic_count', 1, next);
+					});
+				}
+			], callback);
 		});
-	}
+	};
 
 	Topics.reIndexTopic = function(tid, callback) {
 		Topics.getPids(tid, function(err, pids) {

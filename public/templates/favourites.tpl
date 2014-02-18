@@ -20,7 +20,7 @@
 					<a href="../../user/{posts.userslug}">
 						<strong><span>{posts.username}</span></strong>
 					</a>
-					<p>{posts.content}</p>
+					<div class="content">{posts.content}</div>
 
 					<div>
 						<small>

@@ -525,6 +525,16 @@ var db = require('./database'),
 				});
 			});
 		});
+	};
+
+	Posts.getPidIndex = function(pid, callback) {
+		Posts.getPostField(pid, 'tid', function(err, tid) {
+			if(err) {
+				return callback(err);
+			}
+
+			db.sortedSetRank('tid:' + tid + ':posts', pid, callback);
+		});
 	}
 
 }(exports));

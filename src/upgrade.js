@@ -590,13 +590,20 @@ Upgrade.upgrade = function(callback) {
 					if(err) {
 						return next(err);
 					}
+
 					if(!exists) {
 						winston.info('[2014/2/14] Upgraded topics to sorted set - skipped');
 						return next();
 					}
+
 					db.getSetMembers('topics:tid', function(err, tids) {
 						if(err) {
 							return next(err);
+						}
+
+						if(!Array.isArray(tids)) {
+							winston.info('[2014/2/14] Upgraded topics to sorted set - skipped (cant find any tids)');
+							return next();
 						}
 
 						db.rename('topics:tid', 'topics:tid:old', function(err) {
@@ -641,6 +648,11 @@ Upgrade.upgrade = function(callback) {
 					db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
 						if(err) {
 							return next(err);
+						}
+
+						if(!Array.isArray(uids)) {
+							winston.info('[2014/2/14] Add posts to sorted set - skipped (cant find any uids)');
+							return next();
 						}
 
 						async.each(uids, function(uid, next) {

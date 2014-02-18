@@ -1,0 +1,10 @@
+{
+    "login": "Zaloguj się",
+    "username": "Nazwa użytkownika",
+    "password": "Hasło",
+    "remember_me": "Zapamiętaj mnie",
+    "forgot_password": "Zapomniałeś hasło?",
+    "alternative_logins": "Alternatywne logowanie",
+    "failed_login_attempt": "Nie udało się zalogować. Spróbuj ponownie.",
+    "login_successful": "Zostałeś pomyślnie zalogowany."
+}

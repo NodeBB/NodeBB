@@ -19,6 +19,9 @@
     "signature": "Podpis",
     "gravatar": "Gravatar",
     "birthday": "Datum narození",
+    "chat": "Chat",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "change_picture": "Změnit obrázek",
     "edit": "Upravit",
     "uploaded_picture": "Nahraný obrázek",
@@ -28,12 +31,16 @@
     "password": "Heslo",
     "upload_picture": "Nahrát obrázek",
     "upload_a_picture": "Nahrát obrázek",
-    "image_spec": "Můžete nahrávat poze obrázky ve formátu PNG, JPG, nebo GIF o velikosti menší než 256kb.",
+    "image_spec": "You may only upload PNG, JPG, or GIF files",
+    "max": "max.",
     "settings": "Nastavení",
     "show_email": "Zobrazovat můj email v profilu",
     "has_no_follower": "Tohoto uživatele nikdo nesleduje :(",
     "follows_no_one": "Tento uživatel nikoho nesleduje :(",
     "has_no_posts": "This user didn't post anything yet.",
     "email_hidden": "Skrytý email",
-    "hidden": "skrytý"
+    "hidden": "skrytý",
+    "paginate_description": "Paginate topics and posts instead of using infinite scroll.",
+    "topics_per_page": "Topics per Page",
+    "posts_per_page": "Posts per Page"
 }

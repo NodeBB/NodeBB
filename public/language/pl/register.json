@@ -1,0 +1,18 @@
+{
+    "register": "Rejestracja",
+    "help.email": "Domyślnie twój adres e-mail będzie ukryty.",
+    "help.username_restrictions": "Unikalna nazwa użytkownika z min. %1 i maks. %2 znaków. Inni użytkownicy mogą ciebie zawołać pisząc @<span id='yourUsername'>nazwa użytkownika</span>.",
+    "help.minimum_password_length": "Hasło musi mieć co najmniej %1 znaków.",
+    "email_address": "Adres e-mail",
+    "email_address_placeholder": "Wpisz swój adres",
+    "username": "Nazwa użytkownika",
+    "username_placeholder": "Wpisz nazwę użytkownika",
+    "password": "Hasło",
+    "password_placeholder": "Wpisz hasło",
+    "confirm_password": "Potwierdź hasło",
+    "confirm_password_placeholder": "Potwierdź hasło",
+    "register_now_button": "Zarejestruj się",
+    "alternative_registration": "Alternatywna rejestracja",
+    "terms_of_use": "Warunki korzystania z serwisu",
+    "agree_to_terms_of_use": "Zgadzam się na powyższe warunki"
+}

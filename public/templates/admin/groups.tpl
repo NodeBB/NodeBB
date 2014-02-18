@@ -5,7 +5,7 @@
 <div class="groups">
 	<ul id="groups-list">
 	<!-- BEGIN groups -->
-		<li data-gid="{groups.gid}">
+		<li data-gid="{groups.gid}" data-system="{groups.hidden}">
 			<div class="row">
 				<div class="col-lg-8">
 					<h2>{groups.name}</h2>
@@ -69,7 +69,7 @@
 				<div class="modal-body">
 					<div class="alert alert-danger hide" id="create-modal-error"></div>
 					<form>
-						<div class="form-group">
+						<div class="form-group hide-if-system">
 							<label for="group-name">Group Name</label>
 							<input type="text" class="form-control" id="change-group-name" placeholder="Group Name" />
 						</div>

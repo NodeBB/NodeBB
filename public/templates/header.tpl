@@ -200,7 +200,7 @@
 				</ul>
 
 				<div class="header-topic-title pull-right hidden-md-inline">
-					<h4 id="header-topic-title"></h4>
+					<span id="header-topic-title"></span>
 				</div>
 			</div>
 		</div>

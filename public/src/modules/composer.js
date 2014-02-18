@@ -537,8 +537,13 @@ define(['taskbar'], function(taskbar) {
 				files = dt.files;
 
 			if(files.length) {
+				var fd = new FormData();
+				for (var i = 0, file; file = dt.files[i]; i++) {
+					fd.append('files[]', file, file.name);
+				}
+
 				fileForm[0].reset();
-				fileForm.find('#files')[0].files = files;
+				uploadSubmit(files, post_uuid, '/api/post/upload', fd);
 			}
 
 			drop.hide();
@@ -552,13 +557,15 @@ define(['taskbar'], function(taskbar) {
 			if(items && items.length) {
 
 				var blob = items[0].getAsFile();
-				blob.name = 'upload-'+ utils.generateUUID();
+				if(blob) {
+					blob.name = 'upload-'+ utils.generateUUID();
 
-				var fd = new FormData();
-				fd.append('files[]', blob, blob.name);
+					var fd = new FormData();
+					fd.append('files[]', blob, blob.name);
 
-				fileForm[0].reset();
-				uploadSubmit([blob], post_uuid, '/api/post/upload', fd);
+					fileForm[0].reset();
+					uploadSubmit([blob], post_uuid, '/api/post/upload', fd);
+				}
 			}
 		});
 	}
@@ -597,10 +604,8 @@ define(['taskbar'], function(taskbar) {
 				clearForm: true,
 				formData: formData,
 				error: function(xhr) {
-					app.alertError('Error uploading file! ' + xhr.status);
-					composer.posts[post_uuid].uploadsInProgress.pop();
+					app.alertError('Error uploading file!\nStatus : ' + xhr.status + '\nMessage : ' + xhr.responseText);
 				},
-
 				uploadProgress: function(event, position, total, percent) {
 					var current = textarea.val();
 					for(var i=0; i<files.length; ++i) {
@@ -608,7 +613,6 @@ define(['taskbar'], function(taskbar) {
 						textarea.val(current.replace(re, files[i].name+'](uploading ' + percent + '%)'));
 					}
 				},
-
 				success: function(uploads) {
 
 					if(uploads && uploads.length) {
@@ -619,8 +623,11 @@ define(['taskbar'], function(taskbar) {
 						}
 					}
 
-					composer.posts[post_uuid].uploadsInProgress.pop();
 					textarea.focus();
+				},
+				complete: function(xhr, status) {
+					uploadForm[0].reset();
+					composer.posts[post_uuid].uploadsInProgress.pop();
 				}
 			});
 

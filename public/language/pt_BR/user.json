@@ -19,6 +19,9 @@
     "signature": "Assinatura",
     "gravatar": "Gravatar",
     "birthday": "Aniversário",
+    "chat": "Chat",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "change_picture": "Alterar Foto",
     "edit": "Editar",
     "uploaded_picture": "Foto Carregada",
@@ -28,12 +31,16 @@
     "password": "Senha",
     "upload_picture": "Carregar Foto",
     "upload_a_picture": "Carregar Foto",
-    "image_spec": "Somente arquivos jpg, png e gif com no maximo 256kb.",
+    "image_spec": "You may only upload PNG, JPG, or GIF files",
+    "max": "max.",
     "settings": "Configurações",
     "show_email": "Mostrar meu email",
     "has_no_follower": "Ninguém está seguindo esse usuário :(",
     "follows_no_one": "Este usuário não está seguindo ninguém :(",
     "has_no_posts": "This user didn't post anything yet.",
     "email_hidden": "Email Escondido",
-    "hidden": "Escondido"
+    "hidden": "Escondido",
+    "paginate_description": "Paginate topics and posts instead of using infinite scroll.",
+    "topics_per_page": "Topics per Page",
+    "posts_per_page": "Posts per Page"
 }

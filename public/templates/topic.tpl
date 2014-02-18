@@ -20,7 +20,6 @@
 		<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
 			<span itemprop="title">{topic_name} <a target="_blank" href="../{topic_id}.rss"><i class="fa fa-rss-square"></i></a></span>
 		</li>
-
 	</ol>
 
 	<ul id="post-container" class="posts" data-tid="{topic_id}">
@@ -66,9 +65,7 @@
 						</div>
 
 						<div class="btn-group">
-							<!-- IF @first -->
-							<button class="btn btn-sm btn-default follow" type="button" title="[[topic:notify_me]]"><i class="fa fa-eye"></i></button>
-							<!-- ENDIF @first -->
+							<button class="btn btn-sm btn-default follow hide" type="button" title="[[topic:notify_me]]"><i class="fa fa-eye"></i></button>
 							<button class="btn btn-sm btn-default flag" type="button" title="[[topic:flag_title]]"><i class="fa fa-flag-o"></i></button>
 							<button data-favourited="{posts.favourited}" class="favourite favourite-tooltip btn btn-sm btn-default <!-- IF posts.favourited --> btn-warning <!-- ENDIF posts.favourited -->" type="button">
 								<span class="favourite-text">[[topic:favourite]]</span>
@@ -158,7 +155,6 @@
 				<div style="clear:both;"></div>
 			</li>
 
-			<!-- IF @first -->
 			<li class="well post-bar" data-index="{posts.index}">
 				<div class="inline-block">
 					<small class="topic-stats">
@@ -190,7 +186,6 @@
 				</div>
 				<div style="clear:both;"></div>
 			</li>
-			<!-- ENDIF @first -->
 		<!-- END posts -->
 	</ul>
 

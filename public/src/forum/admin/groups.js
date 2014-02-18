@@ -58,14 +58,15 @@ define(function() {
 
 		listEl.on('click', 'button[data-action]', function() {
 			var action = this.getAttribute('data-action'),
-				gid = $(this).parents('li[data-gid]').attr('data-gid');
+				parent = $(this).parents('li[data-gid]'),
+				gid = parent.attr('data-gid'),
+				system = parseInt(parent.attr('data-system'), 10) === 1;
 
 			switch (action) {
 				case 'delete':
 					bootbox.confirm('Are you sure you wish to delete this group?', function(confirm) {
 						if (confirm) {
 							socket.emit('admin.groups.delete', gid, function(err, data) {
-								console.log(err, data);
 								if(err) {
 									return app.alertError(err.message);
 								}
@@ -106,6 +107,8 @@ define(function() {
 
 						detailsModal.attr('data-gid', groupObj.gid);
 						detailsModal.modal('show');
+						
+						$('.hide-if-system')[system ? 'hide' : 'show']();
 					});
 					break;
 			}

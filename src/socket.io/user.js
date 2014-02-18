@@ -102,12 +102,12 @@ SocketUser.updateProfile = function(socket, data, callback) {
 
 SocketUser.changePicture = function(socket, data, callback) {
 	if(!data) {
-		return;
+		return callback(new Error('invalid-data'));
 	}
 
 	var type = data.type;
 
-	function updateHeader() {
+	function updateHeader(callback) {
 		user.getUserFields(socket.uid, ['picture'], function(err, fields) {
 			if(err) {
 				return callback(err);
@@ -118,7 +118,17 @@ SocketUser.changePicture = function(socket, data, callback) {
 				socket.emit('meta.updateHeader', null, fields);
 			}
 
-			callback(null);
+			callback();
+		});
+	}
+
+	function changePicture(uid, callback) {
+		user.getUserField(uid, type, function(err, picture) {
+			if(err) {
+				return callback(err);
+			}
+
+			user.setUserField(uid, 'picture', picture, callback);
 		});
 	}
 
@@ -130,9 +140,26 @@ SocketUser.changePicture = function(socket, data, callback) {
 		return callback(new Error('invalid-image-type'));
 	}
 
-	user.getUserField(socket.uid, type, function(err, picture) {
-		user.setUserField(socket.uid, 'picture', picture);
-		updateHeader();
+	if(socket.uid === parseInt(data.uid, 10)) {
+		changePicture(socket.uid, function(err) {
+			if(err) {
+				return callback(err);
+			}
+			updateHeader(callback);
+		});
+		return;
+	}
+
+	user.isAdministrator(socket.uid, function(err, isAdmin) {
+		if(err) {
+			return callback(err);
+		}
+
+		if(!isAdmin) {
+			return callback(new Error('not-allowed'));
+		}
+
+		changePicture(data.uid, callback);
 	});
 };
 

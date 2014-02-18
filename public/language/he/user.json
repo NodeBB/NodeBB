@@ -19,6 +19,9 @@
     "signature": "חתימה",
     "gravatar": "אווטר",
     "birthday": "יום הולדת",
+    "chat": "Chat",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "change_picture": "שנה תמונה",
     "edit": "ערוך",
     "uploaded_picture": "התמונה הועלתה",
@@ -28,12 +31,16 @@
     "password": "סיסמה",
     "upload_picture": "העלה תמונה",
     "upload_a_picture": "העלה תמונה",
-    "image_spec": "ניתן להעלות תמונות בפורמט PNG, JPG או GIF בגודל של עד 256KB",
+    "image_spec": "You may only upload PNG, JPG, or GIF files",
+    "max": "max.",
     "settings": "הגדרות",
     "show_email": "פרסם את כתובת האימייל שלי",
     "has_no_follower": "למשתמש זה אין עוקבים :(",
     "follows_no_one": "משתמש זה אינו עוקב אחרי אחרים :(",
     "has_no_posts": "המשתמש הזה עוד לא פרסם כלום.",
     "email_hidden": "כתובת אימייל מוסתרת",
-    "hidden": "מוסתר"
+    "hidden": "מוסתר",
+    "paginate_description": "Paginate topics and posts instead of using infinite scroll.",
+    "topics_per_page": "Topics per Page",
+    "posts_per_page": "Posts per Page"
 }
