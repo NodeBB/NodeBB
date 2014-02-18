@@ -1195,8 +1195,12 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				});
 			}
 
-			if (tid && scrollTo.length && $('#post-container li.post-row[data-pid="' + pid + '"]').attr('data-index') !== '0') {
-				animateScroll();
+			if (tid && scrollTo.length) {
+				if($('#post-container li.post-row[data-pid="' + pid + '"]').attr('data-index') !== '0') {
+					animateScroll();
+				} else {
+					updateHeader();
+				}
 			}
 		}
 	}
