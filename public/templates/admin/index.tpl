@@ -12,7 +12,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-sm-6">
+	<div class="col-sm-6 pull-right">
 		<div class="panel panel-default">
 			<div class="panel-heading">Updates</div>
 			<div class="panel-body">
