@@ -524,7 +524,9 @@ module.exports.server = server;
 		});
 
 		app.get('/topic/:topic_id/:slug?', function (req, res, next) {
-			var tid = req.params.topic_id;
+			var tid = req.params.topic_id,
+				page = req.query.page || 1,
+				uid = req.user ? req.user.uid : 0;
 
 			async.waterfall([
 				function(next) {
@@ -541,14 +543,23 @@ module.exports.server = server;
 					});
 				},
 				function (next) {
-					topics.getTopicWithPosts(tid, ((req.user) ? req.user.uid : 0), 0, -1, true, function (err, topicData) {
-						if (topicData) {
-							if (parseInt(topicData.deleted, 10) === 1 && parseInt(topicData.expose_tools, 10) === 0) {
-								return next(new Error('Topic deleted'), null);
-							}
+					user.getSettings(uid, function(err, settings) {
+						if (err) {
+							return next(err);
 						}
 
-						next(err, topicData);
+						var start = (page - 1) * settings.topicsPerPage,
+							end = start + settings.topicsPerPage - 1;
+
+						topics.getTopicWithPosts(tid, uid, start, end, true, function (err, topicData) {
+							if (topicData) {
+								if (parseInt(topicData.deleted, 10) === 1 && parseInt(topicData.expose_tools, 10) === 0) {
+									return next(new Error('Topic deleted'), null);
+								}
+							}
+
+							next(err, topicData);
+						});
 					});
 				},
 				function (topicData, next) {
@@ -644,7 +655,7 @@ module.exports.server = server;
 					}, function (err, header) {
 						next(err, {
 							header: header,
-							topics: topicData
+							posts: topicData
 						});
 					});
 				},
@@ -663,11 +674,22 @@ module.exports.server = server;
 					topic_url += '?' + queryString;
 				}
 
-				res.send(
-					data.header +
-					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/topic'].parse(data.topics) + '\n\t</noscript>' +
-					'\n\t' + app.create_route('topic/' + topic_url) + templates.footer
-				);
+				// Paginator for noscript
+				data.posts.pages = [];
+				for(var x=1;x<=data.posts.pageCount;x++) {
+					data.posts.pages.push({
+						page: x,
+						active: x === parseInt(page, 10)
+					});
+				}
+
+				translator.translate(templates['noscript/topic'].parse(data.posts), function(translatedHTML) {
+					res.send(
+						data.header +
+						'\n\t<noscript>\n' + templates['noscript/header'] + translatedHTML + '\n\t</noscript>' +
+						'\n\t' + app.create_route('topic/' + topic_url) + templates.footer
+					);
+				});
 			});
 		});
 
@@ -678,7 +700,7 @@ module.exports.server = server;
 
 			async.waterfall([
 				function(next) {
-					CategoryTools.privileges(cid, ((req.user) ? req.user.uid || 0 : 0), function(err, privileges) {
+					CategoryTools.privileges(cid, uid, function(err, privileges) {
 						if (!err) {
 							if (!privileges.read) {
 								next(new Error('not-enough-privileges'));
@@ -698,6 +720,7 @@ module.exports.server = server;
 
 						var start = (page - 1) * settings.topicsPerPage,
 							end = start + settings.topicsPerPage - 1;
+
 						categories.getCategoryById(cid, start, end, 0, function (err, categoryData) {
 
 							if (categoryData) {
