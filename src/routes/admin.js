@@ -410,7 +410,11 @@ var nconf = require('nconf'),
 			});
 
 			app.get('/themes', function (req, res) {
-				res.json(200, {});
+				plugins.fireHook('filter:widgets.getAreas', [], function(err, widgets) {
+					res.json(200, {
+						widgets: widgets
+					});
+				});
 			});
 
 			app.get('/testing/categories', function (req, res) {
