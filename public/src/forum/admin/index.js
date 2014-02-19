@@ -14,7 +14,23 @@ define(function() {
 			}, function() {
 				window.location.href = RELATIVE_PATH + '/';
 			});
-		})
+		});
+
+		$.get('https://api.github.com/repos/designcreateplay/NodeBB/tags', function(releases) {
+			var	version = $('#version').html(),
+				latestVersion = releases[0].name.slice(1),
+				checkEl = $('.version-check');
+			checkEl.html($('.version-check').html().replace('<i class="fa fa-spinner fa-spin"></i>', 'v' + latestVersion));
+
+			// Alter box colour accordingly
+			if (latestVersion === version) {
+				checkEl.removeClass('alert-info').addClass('alert-success');
+				checkEl.append('<p>You are <strong>up-to-date</strong> <i class="fa fa-check"></i></p>');
+			} else if (latestVersion > version) {
+				checkEl.removeClass('alert-info').addClass('alert-danger');
+				checkEl.append('<p>A new version (v' + latestVersion + ') has been released. Consider upgrading your NodeBB.</p>');
+			}
+		});
 	};
 
 	Admin.updateRoomUsage = function(err, data) {

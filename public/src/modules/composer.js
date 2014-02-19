@@ -218,7 +218,12 @@ define(['taskbar'], function(taskbar) {
 						case 'fa fa-link':
 							if (selectionStart === selectionEnd) {
 								// Nothing selected
+								var	cursorPos = postContentEl[0].selectionStart;
 								insertIntoInput(postContentEl, "[link text](link url)");
+
+								// Highlight "link url"
+								postContentEl[0].selectionStart = cursorPos + 12;
+								postContentEl[0].selectionEnd = cursorPos + 20;
 							} else {
 								// Text selected
 								postContentEl.val(postContentEl.val().slice(0, selectionStart) + '[' + postContentEl.val().slice(selectionStart, selectionEnd) + '](link url)' + postContentEl.val().slice(selectionEnd));

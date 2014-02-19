@@ -132,16 +132,6 @@ module.exports.server = server;
 				href: nconf.get('relative_path') + '/favicon.ico'
 			});
 
-			// Browser Title
-			var	metaTitle = templateValues.metaTags.filter(function(tag) {
-				return tag.property === 'og:title';
-			});
-			if (metaTitle.length > 0 && metaTitle[0].content) {
-				templateValues.browserTitle = metaTitle[0].content;
-			} else {
-				templateValues.browserTitle = meta.config.browserTitle || 'NodeBB';
-			}
-
 			if(options.req.user && options.req.user.uid) {
 				uid = options.req.user.uid;
 			}
@@ -153,15 +143,34 @@ module.exports.server = server;
 				templateValues.customCSS = meta.config.customCSS;
 			}
 
-			user.isAdministrator(uid, function(err, isAdmin) {
-				templateValues.isAdmin = isAdmin;
+			async.parallel([
+				function(next) {
+					translator.get('pages:' + path.basename(options.req.url), function(translated) {
+						var	metaTitle = templateValues.metaTags.filter(function(tag) {
+								return tag.name === 'title';
+							});
+						if (translated) {
+							templateValues.browserTitle = translated;
+						} else if (metaTitle.length > 0 && metaTitle[0].content) {
+							templateValues.browserTitle = metaTitle[0].content;
+						} else {
+							templateValues.browserTitle = meta.config.browserTitle || 'NodeBB';
+						}
 
+						next();
+					});
+				},
+				function(next) {
+					user.isAdministrator(uid, function(err, isAdmin) {
+						templateValues.isAdmin = isAdmin || false;
+						next();
+					});
+				}
+			], function() {
 				translator.translate(templates.header.parse(templateValues), function(template) {
 					callback(null, template);
 				});
 			});
-
-
 		});
 	};
 
