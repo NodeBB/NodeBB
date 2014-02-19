@@ -25,6 +25,8 @@ var async = require('async'),
 					rendered.push({
 						html: html
 					});
+
+					next(err);
 				});
 			}, function(err) {
 				callback(err, rendered);
@@ -39,7 +41,7 @@ var async = require('async'),
 	};
 
 	Widgets.setArea = function(area, callback) {
-		if (!area.location || !data.template) {
+		if (!area.location || !area.template) {
 			callback({
 				error: 'Missing location and template data'
 			});
