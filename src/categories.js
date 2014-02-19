@@ -71,12 +71,6 @@ var db = require('./database'),
 			Categories.getModerators(category_id, next);
 		}
 
-		function getSidebars(next) {
-			plugins.fireHook('filter:category.build_sidebars', [], function(err, sidebars) {
-				next(err, sidebars);
-			});
-		}
-
 		function getPageCount(next) {
 			Categories.getPageCount(category_id, current_user, next);
 		}
@@ -86,7 +80,6 @@ var db = require('./database'),
 			'topics': getTopics,
 			'active_users': getActiveUsers,
 			'moderators': getModerators,
-			'sidebars': getSidebars,
 			'pageCount': getPageCount
 		}, function(err, results) {
 			if(err) {
@@ -106,7 +99,6 @@ var db = require('./database'),
 				'nextStart': results.topics.nextStart,
 				'pageCount': results.pageCount,
 				'disableSocialButtons': meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false,
-				'sidebars': results.sidebars
 			};
 
 			callback(null, category);

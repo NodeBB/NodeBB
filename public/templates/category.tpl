@@ -124,13 +124,6 @@
 			</div>
 		</div>
 		<!-- ENDIF moderators.length -->
-
-		<!-- BEGIN sidebars -->
-		<div class="panel panel-default">
-			<div class="panel panel-default {sidebars.block_class}">{sidebars.header}</div>
-			<div class="panel-body">{sidebars.content}</div>
-		</div>
-		<!-- END sidebars -->
 	</div>
 	<!-- ENDIF topics.length -->
 </div>
