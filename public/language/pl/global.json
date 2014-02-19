@@ -10,14 +10,14 @@
     "500.message": "Coś poszło nie tak.",
     "register": "Zarejestruj się",
     "login": "Zaloguj się",
-    "welcome_back": "Welcome Back ",
-    "you_have_successfully_logged_in": "You have successfully logged in",
+    "welcome_back": "Witaj z powrotem!",
+    "you_have_successfully_logged_in": "Zostałeś pomyślnie zalogowany.",
     "logout": "Wyloguj się",
     "logout.title": "Wylogowałeś się.",
     "logout.message": "Pomyślnie wylogowałeś się z forum.",
     "save_changes": "Zapisz zmiany",
     "close": "Zamknij",
-    "pagination": "Pagination",
+    "pagination": "Numerowanie stron",
     "header.admin": "Administracja",
     "header.recent": "Ostatnie",
     "header.unread": "Nieprzeczytane",
@@ -52,5 +52,5 @@
     "dnd": "Nie przeszkadzać",
     "invisible": "Niewidoczny",
     "offline": "Niedostępny",
-    "privacy": "Privacy"
+    "privacy": "Prywatność"
 }

@@ -279,7 +279,7 @@ var async = require('async'),
 			}
 
 			if(data) {
-				data.title = validator.sanitize(data.title).escape();
+				data.title = validator.escape(data.title);
 				data.relativeTime = utils.toISOString(data.timestamp);
 			}
 

@@ -132,16 +132,6 @@ module.exports.server = server;
 				href: nconf.get('relative_path') + '/favicon.ico'
 			});
 
-			// Browser Title
-			var	metaTitle = templateValues.metaTags.filter(function(tag) {
-				return tag.property === 'og:title';
-			});
-			if (metaTitle.length > 0 && metaTitle[0].content) {
-				templateValues.browserTitle = metaTitle[0].content;
-			} else {
-				templateValues.browserTitle = meta.config.browserTitle || 'NodeBB';
-			}
-
 			if(options.req.user && options.req.user.uid) {
 				uid = options.req.user.uid;
 			}
@@ -153,15 +143,34 @@ module.exports.server = server;
 				templateValues.customCSS = meta.config.customCSS;
 			}
 
-			user.isAdministrator(uid, function(err, isAdmin) {
-				templateValues.isAdmin = isAdmin;
+			async.parallel([
+				function(next) {
+					translator.get('pages:' + path.basename(options.req.url), function(translated) {
+						var	metaTitle = templateValues.metaTags.filter(function(tag) {
+								return tag.name === 'title';
+							});
+						if (translated) {
+							templateValues.browserTitle = translated;
+						} else if (metaTitle.length > 0 && metaTitle[0].content) {
+							templateValues.browserTitle = metaTitle[0].content;
+						} else {
+							templateValues.browserTitle = meta.config.browserTitle || 'NodeBB';
+						}
 
+						next();
+					});
+				},
+				function(next) {
+					user.isAdministrator(uid, function(err, isAdmin) {
+						templateValues.isAdmin = isAdmin || false;
+						next();
+					});
+				}
+			], function() {
 				translator.translate(templates.header.parse(templateValues), function(template) {
 					callback(null, template);
 				});
 			});
-
-
 		});
 	};
 
@@ -504,7 +513,7 @@ module.exports.server = server;
 
 					categories.getAllCategories(0, function (err, returnData) {
 						returnData.categories = returnData.categories.filter(function (category) {
-							return parseInt(category.disabled, 10) !== 1;
+							return !category.disabled;
 						});
 
 						async.filter(returnData.categories, canSee, function(visibleCategories) {
@@ -565,7 +574,6 @@ module.exports.server = server;
 				function (topicData, next) {
 
 					var lastMod = topicData.timestamp,
-						sanitize = validator.sanitize,
 						description = (function() {
 							var	content = '';
 							if(topicData.posts.length) {
@@ -576,7 +584,7 @@ module.exports.server = server;
 								content = content.substr(0, 255) + '...';
 							}
 
-							return sanitize(content).escape();
+							return validator.escape(content);
 						})(),
 						timestamp;
 
