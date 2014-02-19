@@ -1,7 +1,3 @@
-<div class="motd {motd_class}">
-	{motd}
-</div>
-
 <div widget-area="motd" class="hidden">
 	<!-- BEGIN widgets -->
 	<div class="well">
