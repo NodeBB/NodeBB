@@ -412,18 +412,25 @@ var nconf = require('nconf'),
 			});
 
 			app.get('/themes', function (req, res) {
-				plugins.fireHook('filter:widgets.getAreas', [], function(err, areas) {
-					async.each(areas, function(area, next) {
+				async.parallel({
+					areas: function(next) {
+						plugins.fireHook('filter:widgets.getAreas', [], next);
+					},
+					widgets: function(next) {
+						plugins.fireHook('filter:widgets.getWidgets', [], next);
+					}
+				}, function(err, data) {
+					async.each(data.areas, function(area, next) {
 						widgets.getArea(area.template, area.location, function(err, areaData) {
 							area.data = areaData;
 							next(err);
 						});
 					}, function(err) {
 						res.json(200, {
-							areas: areas,
+							areas: data.areas,
+							widgets: data.widgets
 						});
 					});
-					
 				});
 			});
 

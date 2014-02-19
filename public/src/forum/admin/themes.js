@@ -235,7 +235,6 @@ define(['forum/admin/settings'], function(Settings) {
 							var data = area.data[i],
 								widgetEl = $('.available-widgets [data-widget="' + data.widget + '"]').clone();
 
-
 							widgetArea.append(populateWidget(widgetEl, data.data));
 							appendToggle(widgetEl);
 						}

@@ -57,32 +57,17 @@
 				<div class="col-xs-6 available-widgets">
 					<h4>Available Widgets</h4>
 					<div class="well">
-						<div data-widget="html" class="panel panel-default pointer">
-							<div class="panel-heading">
-								<strong>HTML</strong> <small>Any text, html, or embedded script.</small>
-							</div>
-							<div class="panel-body hidden">
-								<form>
-									<textarea class="form-control" rows="6" name="html" placeholder="Enter HTML"></textarea>
-								</form>
-							</div>
-						</div>
-						<div data-widget="text" class="panel panel-default pointer">
-							<div class="panel-heading">
-								<strong>Text</strong> <small>Markdown formatted text</small>
-							</div>
-							<div class="panel-body hidden">
-								<form>
-									<textarea class="form-control" rows="6" name="text" placeholder="Enter Text / Markdown"></textarea>
-									<hr />
-									<div class="checkbox">
-										<label><input type="checkbox" name="markdown" checked /> Parse as Markdown?</label>
-									</div>
-								</form>
-							</div>
-						</div>
 						<!-- BEGIN widgets -->
-
+						<div data-widget="{widgets.widget}" class="panel panel-default pointer">
+							<div class="panel-heading">
+								<strong>{widgets.name}</strong> <small>{widgets.description}</small>
+							</div>
+							<div class="panel-body hidden">
+								<form>
+									{widgets.content}
+								</form>
+							</div>
+						</div>
 						<!-- END widgets -->
 					</div>
 				</div>
