@@ -122,14 +122,15 @@ var ajaxify = {};
 
 						socket.emit('widgets.render', {template: tpl_url + '.tpl', location: location}, function(err, renderedWidgets) {
 							area.html(templates.prepare(area.html()).parse({widgets: renderedWidgets})).removeClass('hidden');
+							next(err);
 						});
+					}, function(err) {
+						$('#content, #footer').stop(true, true).removeClass('ajaxifying');
+						ajaxify.initialLoad = false;
+
+						app.refreshTitle(url);
+						$(window).trigger('action:ajaxify.end', { url: url });
 					});
-
-					$('#content, #footer').stop(true, true).removeClass('ajaxifying');
-					ajaxify.initialLoad = false;
-
-					app.refreshTitle(url);
-					$(window).trigger('action:ajaxify.end', { url: url });
 				});
 			}, url);
 
