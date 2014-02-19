@@ -153,6 +153,34 @@ define(['forum/admin/settings'], function(Settings) {
 		}).on('click', '.toggle-widget', function() {
 			$(this).parents('.panel').children('.panel-body').toggleClass('hidden');
 		});
+
+		$('#widgets .btn[data-template]').on('click', function() {
+			var btn = $(this),
+				template = btn.attr('data-template'),
+				location = btn.attr('data-location'),
+				area = btn.parents('.area').children('.widget-area'),
+				widgets = [];
+
+			area.find('.panel[data-widget]').each(function() {
+				var widget = {};
+				widget[this.getAttribute('data-widget')] = $(this).find('form').serializeArray();
+				widgets.push(widget);
+			});
+
+			socket.emit('admin.themes.widgets.set', {
+				template: template,
+				location: location,
+				widgets: widgets
+			}, function(err) {
+				app.alert({
+					alert_id: 'admin:widgets',
+					type: err ? 'danger' : 'success',
+					title: err ? 'Error' : 'Widgets Updated',
+					message: err ? err : 'Successfully updated widgets',
+					timeout: 2500
+				});
+			});
+		});
 		
 	};
 

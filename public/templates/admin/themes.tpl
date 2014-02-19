@@ -57,20 +57,24 @@
 				<div class="col-xs-6">
 					<h4>Available Widgets</h4>
 					<div class="well">
-						<div class="panel panel-default pointer">
+						<div data-widget="html" class="panel panel-default pointer">
 							<div class="panel-heading">
 								<strong>HTML</strong> <small>Any text, html, or embedded script.</small>
 							</div>
 							<div class="panel-body hidden">
-								<textarea class="form-control" rows="6" placeholder="Enter HTML"></textarea>
+								<form>
+									<textarea class="form-control" rows="6" name="html" placeholder="Enter HTML"></textarea>
+								</form>
 							</div>
 						</div>
-						<div class="panel panel-default pointer">
+						<div data-widget="markdown" class="panel panel-default pointer">
 							<div class="panel-heading">
 								<strong>Markdown</strong> <small>Markdown formatted text</small>
 							</div>
 							<div class="panel-body hidden">
-								<textarea class="form-control" rows="6" placeholder="Enter Markdown"></textarea>
+								<form>
+									<textarea class="form-control" rows="6" name="markdown" placeholder="Enter Markdown"></textarea>
+								</form>
 							</div>
 						</div>
 						<!-- BEGIN widgets -->
@@ -81,9 +85,11 @@
 
 				<div class="col-xs-6">
 					<!-- BEGIN areas -->
-					<h4>{areas.name}</h4>
-					<div class="well widget-area">
+					<div class="area">
+						<h4>{areas.name} <small>{areas.template} / {areas.location}</small> <button data-template="{areas.template}" data-location="{areas.location}" class="btn btn-success btn-xs pull-right">Save</button></h4>
+						<div class="well widget-area">
 
+						</div>
 					</div>
 					<!-- END areas -->
 				</div>
