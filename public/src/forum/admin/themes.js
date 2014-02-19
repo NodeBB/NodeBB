@@ -159,7 +159,7 @@ define(['forum/admin/settings'], function(Settings) {
 			$(this).parents('.panel').children('.panel-body').toggleClass('hidden');
 		}).on('click', '.delete-widget', function() {
 			var panel = $(this).parents('.panel');
-			
+
 			bootbox.confirm('Are you sure you wish to delete this widget?', function(confirm) {
 				if (confirm) {
 					panel.remove();
@@ -230,7 +230,6 @@ define(['forum/admin/settings'], function(Settings) {
 					var area = areas[a],
 						widgetArea = $('#widgets .area [data-template="' + area.template + '"][data-location="' + area.location + '"]').parents('.area').find('.widget-area');
 
-					console.log('data', area.data);
 					for (var i in area.data) {
 						if (area.data.hasOwnProperty(i)) {
 							var data = area.data[i],
