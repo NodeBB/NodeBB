@@ -14,14 +14,6 @@
 	</div>
 	<div class="col-sm-6">
 		<div class="panel panel-default">
-			<div class="panel-heading">Active Users <small><span class="badge" id="connections"></span> socket connections</small></div>
-			<div class="panel-body">
-				<div id="active_users"></div>
-			</div>
-		</div>
-	</div>
-	<div class="col-sm-6">
-		<div class="panel panel-default">
 			<div class="panel-heading">Updates</div>
 			<div class="panel-body">
 				<div class="alert alert-info version-check">
@@ -30,6 +22,14 @@
 				<p>
 					Always make sure that your <strong>NodeBB</strong> is up to date for the latest security patches and bug fixes.
 				</p>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">Active Users <small><span class="badge" id="connections"></span> socket connections</small></div>
+			<div class="panel-body">
+				<div id="active_users"></div>
 			</div>
 		</div>
 	</div>
