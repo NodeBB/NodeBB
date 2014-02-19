@@ -5,6 +5,7 @@
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="#" data-target="#themes" data-toggle="tab">Themes</a></li>
 		<li><a href="#" data-target="#customise" data-toggle="tab">Customise</a></li>
+		<li><a href="#" data-target="#widgets" data-toggle="tab">Widgets</a></li>
 	</ul>
 
 	<div class="tab-content">
@@ -48,6 +49,9 @@
 			</form>
 
 			<button class="btn btn-primary" id="save">Save</button>
+		</div>
+		<div class="tab-pane" id="widgets">
+			<h3>Widgets</h3>
 		</div>
 	</div>
 </div>
