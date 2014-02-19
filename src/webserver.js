@@ -504,7 +504,7 @@ module.exports.server = server;
 
 					categories.getAllCategories(0, function (err, returnData) {
 						returnData.categories = returnData.categories.filter(function (category) {
-							return parseInt(category.disabled, 10) !== 1;
+							return !category.disabled;
 						});
 
 						async.filter(returnData.categories, canSee, function(visibleCategories) {

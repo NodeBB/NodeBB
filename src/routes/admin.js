@@ -316,7 +316,7 @@ var nconf = require('nconf'),
 			app.get('/categories/active', function (req, res) {
 				categories.getAllCategories(0, function (err, data) {
 					data.categories = data.categories.filter(function (category) {
-						return (!category.disabled || parseInt(category.disabled, 10) === 0);
+						return !category.disabled;
 					});
 					res.json(data);
 				});
@@ -325,7 +325,7 @@ var nconf = require('nconf'),
 			app.get('/categories/disabled', function (req, res) {
 				categories.getAllCategories(0, function (err, data) {
 					data.categories = data.categories.filter(function (category) {
-						return parseInt(category.disabled, 10) === 1;
+						return category.disabled;
 					});
 					res.json(data);
 				});

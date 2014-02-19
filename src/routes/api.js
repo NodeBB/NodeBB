@@ -87,7 +87,7 @@ var path = require('path'),
 				categories.getAllCategories(uid, function (err, data) {
 
 					data.categories = data.categories.filter(function (category) {
-						return (!category.disabled || parseInt(category.disabled, 10) === 0);
+						return !category.disabled;
 					});
 
 					function canSee(category, next) {
@@ -279,7 +279,7 @@ var path = require('path'),
 								data.currentPage = page;
 								data.privileges = privileges;
 
-								if (data && parseInt(data.disabled, 10) === 0) {
+								if (data && !data.disabled) {
 									res.json(data);
 								} else {
 									next();
