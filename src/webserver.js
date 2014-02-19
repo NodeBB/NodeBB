@@ -672,7 +672,9 @@ module.exports.server = server;
 		});
 
 		app.get('/category/:category_id/:slug?', function (req, res, next) {
-			var cid = req.params.category_id;
+			var cid = req.params.category_id,
+				page = req.query.page || 1,
+				uid = req.user ? req.user.uid : 0;
 
 			async.waterfall([
 				function(next) {
@@ -689,15 +691,23 @@ module.exports.server = server;
 					});
 				},
 				function (next) {
-					categories.getCategoryById(cid, 0, -1, 0, function (err, categoryData) {
-
-						if (categoryData) {
-							if (parseInt(categoryData.disabled, 10) === 1) {
-								return next(new Error('Category disabled'), null);
-							}
+					user.getSettings(uid, function(err, settings) {
+						if (err) {
+							return next(err);
 						}
 
-						next(err, categoryData);
+						var start = (page - 1) * settings.topicsPerPage,
+							end = start + settings.topicsPerPage - 1;
+						categories.getCategoryById(cid, start, end, 0, function (err, categoryData) {
+
+							if (categoryData) {
+								if (parseInt(categoryData.disabled, 10) === 1) {
+									return next(new Error('Category disabled'), null);
+								}
+							}
+
+							next(err, categoryData);
+						});
 					});
 				},
 				function (categoryData, next) {
@@ -736,7 +746,7 @@ module.exports.server = server;
 					}, function (err, header) {
 						next(err, {
 							header: header,
-							categories: categoryData
+							topics: categoryData
 						});
 					});
 				}
@@ -749,8 +759,8 @@ module.exports.server = server;
 					}
 				}
 
-				if(data.categories.link) {
-					return res.redirect(data.categories.link);
+				if(data.topics.link) {
+					return res.redirect(data.topics.link);
 				}
 
 				var category_url = cid + (req.params.slug ? '/' + req.params.slug : '');
@@ -759,11 +769,22 @@ module.exports.server = server;
 					category_url += '?' + queryString;
 				}
 
-				res.send(
-					data.header +
-					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/category'].parse(data.categories) + '\n\t</noscript>' +
-					'\n\t' + app.create_route('category/' + category_url) + templates.footer
-				);
+				// Paginator for noscript
+				data.topics.pages = [];
+				for(var x=1;x<=data.topics.pageCount;x++) {
+					data.topics.pages.push({
+						page: x,
+						active: x === parseInt(page, 10)
+					});
+				}
+
+				translator.translate(templates['noscript/category'].parse(data.topics), function(translatedHTML) {
+					res.send(
+						data.header +
+						'\n\t<noscript>\n' + templates['noscript/header'] + translatedHTML + '\n\t</noscript>' +
+						'\n\t' + app.create_route('category/' + category_url) + templates.footer
+					);
+				});
 			});
 		});
 

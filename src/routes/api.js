@@ -266,8 +266,8 @@ var path = require('path'),
 						return next(err);
 					}
 
-					var start = (page - 1) * settings.topicsPerPage;
-					var end = start + settings.topicsPerPage - 1;
+					var start = (page - 1) * settings.topicsPerPage,
+						end = start + settings.topicsPerPage - 1;
 
 					categoryTools.privileges(req.params.id, uid, function(err, privileges) {
 						if (!err && privileges.read) {
