@@ -19,7 +19,7 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2014, 1, 14, 21, 50).getTime();
+	var	latestSchema = new Date(2014, 1, 19, 18, 15).getTime();
 
 	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -683,6 +683,38 @@ Upgrade.upgrade = function(callback) {
 
 			} else {
 				winston.info('[2014/2/14] Added posts to sorted set - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 1, 19, 18, 15).getTime();
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				
+				if (Meta.config['motd']) {
+					db.setObjectField('widgets:home.tpl', 'motd', JSON.stringify([
+						{
+							"widget": "html",
+							"data": {
+								"html": Meta.config['motd']
+							}
+						}
+					]), function(err) {
+						Meta.configs.remove('motd');
+						Meta.configs.remove('motd_class');
+						Meta.configs.remove('show_motd');
+
+						winston.info('[2014/2/19] Updated MOTD to use the HTML widget.');
+						next(err);
+					});
+				} else {
+					winston.info('[2014/2/19] Updating MOTD to use the HTML widget - skipped');
+					next();
+				}
+
+			} else {
+				winston.info('[2014/2/19] Updating MOTD to use the HTML widget - skipped');
 				next();
 			}
 		}
