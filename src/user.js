@@ -4,7 +4,6 @@ var bcrypt = require('bcryptjs'),
 	winston = require('winston'),
 	gravatar = require('gravatar'),
 	check = require('validator').check,
-	sanitize = require('validator').sanitize,
 	S = require('string'),
 
 	utils = require('./../public/src/utils'),
@@ -335,7 +334,7 @@ var bcrypt = require('bcryptjs'),
 			}
 
 			data[field] = data[field].trim();
-			data[field] = sanitize(data[field]).escape();
+			data[field] = validator.escape(data[field]);
 
 			if (field === 'email') {
 				User.getUserFields(uid, ['email', 'picture', 'uploadedpicture'], function(err, userData) {

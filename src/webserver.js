@@ -574,7 +574,6 @@ module.exports.server = server;
 				function (topicData, next) {
 
 					var lastMod = topicData.timestamp,
-						sanitize = validator.sanitize,
 						description = (function() {
 							var	content = '';
 							if(topicData.posts.length) {
@@ -585,7 +584,7 @@ module.exports.server = server;
 								content = content.substr(0, 255) + '...';
 							}
 
-							return sanitize(content).escape();
+							return validator.escape(content);
 						})(),
 						timestamp;
 
