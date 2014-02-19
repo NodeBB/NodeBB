@@ -97,20 +97,26 @@
 	</div>
 
 	<!-- IF topics.length -->
-	<div class="col-md-3 col-xs-12 category-sidebar">
+	<div widget-area="sidebar" class="col-md-3 col-xs-12 category-sidebar">
+		<!-- BEGIN widgets -->
 		<div class="panel panel-default">
-			<div class="panel-heading">[[category:sidebar.recent_replies]]</div>
-			<div class="panel-body recent-replies">
-				<ul id="category_recent_replies"></ul>
+			<div class="panel-heading">{widgets.title}</div>
+			<div class="panel-body">
+				{widgets.html}
 			</div>
 		</div>
+		<!-- END widgets -->
+	</div>
 
+	<div class="col-md-3 col-xs-12 category-sidebar">
 		<div class="panel panel-default">
 			<div class="panel-heading">[[category:sidebar.active_participants]]</div>
-			<div class="panel-body active-users">
-				<!-- BEGIN active_users -->
-				<a data-uid="{active_users.uid}" href="../../user/{active_users.userslug}"><img title="{active_users.username}" src="{active_users.picture}" class="img-rounded user-img" /></a>
-				<!-- END active_users -->
+			<div class="panel-body">
+				<div class="active-users"
+					<!-- BEGIN active_users -->
+					<a data-uid="{active_users.uid}" href="../../user/{active_users.userslug}"><img title="{active_users.username}" src="{active_users.picture}" class="img-rounded user-img" /></a>
+					<!-- END active_users -->
+				</div>
 			</div>
 		</div>
 

@@ -21,9 +21,10 @@ var async = require('async'),
 					uid: uid,
 					area: area,
 					data: widget.data
-				}, function(err, html){
+				}, function(err, data){
 					rendered.push({
-						html: html
+						html: data.html,
+						title: data.title
 					});
 
 					next(err);

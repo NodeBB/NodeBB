@@ -37,8 +37,6 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 		socket.on('event:new_topic', Category.onNewTopic);
 
-		socket.emit('categories.getRecentReplies', cid, renderRecentReplies);
-
 		enableInfiniteLoading();
 	};
 
@@ -84,7 +82,6 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			}
 
 			topic.hide().fadeIn('slow');
-			socket.emit('categories.getRecentReplies', templates.get('category_id'), renderRecentReplies);
 
 			addActiveUser(data);
 
@@ -158,33 +155,6 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			loadingMoreTopics = false;
 		});
 	}
-
-	function renderRecentReplies(err, posts) {
-		if (err || !posts || posts.length === 0) {
-			return;
-		}
-
-		var recentReplies = $('#category_recent_replies');
-
-		templates.preload_template('recentreplies', function() {
-
-			templates['recentreplies'].parse({posts:[]});
-
-			var html = templates.prepare(templates['recentreplies'].blocks['posts']).parse({
-				posts: posts
-			});
-
-			translator.translate(html, function(translatedHTML) {
-				translatedHTML = $(translatedHTML);
-				translatedHTML.find('img').addClass('img-responsive');
-
-				recentReplies.html(translatedHTML);
-
-				$('#category_recent_replies span.timeago').timeago();
-				app.createUserTooltips();
-			});
-		});
-	};
 
 	return Category;
 });
