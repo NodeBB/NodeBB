@@ -9,7 +9,7 @@
 	</ul>
 
 	<div class="tab-content">
-		<div class="tab-pane active" id="themes">
+		<div class="tab-pane" id="themes">
 			<h3>Installed Themes</h3>
 			<p>
 				The following themes are currently installed in this NodeBB instance.
@@ -50,8 +50,44 @@
 
 			<button class="btn btn-primary" id="save">Save</button>
 		</div>
-		<div class="tab-pane" id="widgets">
+		<div class="tab-pane active" id="widgets">
 			<h3>Widgets</h3>
+
+			<div class="row">
+				<div class="col-xs-6">
+					<h4>Available Widgets</h4>
+					<div class="well">
+						<div class="panel panel-default pointer">
+							<div class="panel-heading">
+								<strong>HTML</strong> <small>Any text, html, or embedded script.</small>
+							</div>
+							<div class="panel-body hidden">
+								<textarea class="form-control" rows="6" placeholder="Enter HTML"></textarea>
+							</div>
+						</div>
+						<div class="panel panel-default pointer">
+							<div class="panel-heading">
+								<strong>Markdown</strong> <small>Markdown formatted text</small>
+							</div>
+							<div class="panel-body hidden">
+								<textarea class="form-control" rows="6" placeholder="Enter Markdown"></textarea>
+							</div>
+						</div>
+						<!-- BEGIN widgets -->
+
+						<!-- END widgets -->
+					</div>
+				</div>
+
+				<div class="col-xs-6">
+					<!-- BEGIN areas -->
+					<h4>{areas.name}</h4>
+					<div class="well widget-area">
+
+					</div>
+					<!-- END areas -->
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

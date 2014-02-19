@@ -102,6 +102,8 @@ define(['forum/admin/settings'], function(Settings) {
 		tabIndent.config.tab = '    ';
 		tabIndent.render(customCSSEl);
 
+		Themes.prepareWidgets();
+
 		Settings.prepare();
 	}
 
@@ -131,6 +133,28 @@ define(['forum/admin/settings'], function(Settings) {
 		themeContainer.innerHTML = '';
 		themeContainer.appendChild(themeFrag);
 	}
+
+	Themes.prepareWidgets = function() {
+		$('#widgets .panel').draggable({
+			helper: function(e) {
+				return $(e.target).parents('.panel').clone().addClass('block').width($(e.target.parentNode).width());
+			},
+			connectToSortable: ".widget-area"
+		});
+
+		$('#widgets .widget-area').sortable({
+			update: function (event, ui) {
+				if (!ui.item.hasClass('block')) {
+					ui.item.addClass('block');
+					ui.item.children('.panel-heading').append('<div class="toggle-widget pull-right pointer"><i class="fa fa-chevron-down"></i></div>');
+				}
+				
+			}
+		}).on('click', '.toggle-widget', function() {
+			$(this).parents('.panel').children('.panel-body').toggleClass('hidden');
+		});
+		
+	};
 
 	return Themes;
 });
