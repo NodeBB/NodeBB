@@ -54,7 +54,7 @@
 			<h3>Widgets</h3>
 
 			<div class="row">
-				<div class="col-xs-6">
+				<div class="col-xs-6 available-widgets">
 					<h4>Available Widgets</h4>
 					<div class="well">
 						<div data-widget="html" class="panel panel-default pointer">
@@ -67,13 +67,17 @@
 								</form>
 							</div>
 						</div>
-						<div data-widget="markdown" class="panel panel-default pointer">
+						<div data-widget="text" class="panel panel-default pointer">
 							<div class="panel-heading">
-								<strong>Markdown</strong> <small>Markdown formatted text</small>
+								<strong>Text</strong> <small>Markdown formatted text</small>
 							</div>
 							<div class="panel-body hidden">
 								<form>
-									<textarea class="form-control" rows="6" name="markdown" placeholder="Enter Markdown"></textarea>
+									<textarea class="form-control" rows="6" name="text" placeholder="Enter Text / Markdown"></textarea>
+									<hr />
+									<div class="checkbox">
+										<label><input type="checkbox" name="markdown" checked /> Parse as Markdown?</label>
+									</div>
 								</form>
 							</div>
 						</div>

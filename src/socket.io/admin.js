@@ -3,6 +3,7 @@
 var	groups = require('../groups'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
+	widgets = require('../widgets'),
 	user = require('../user'),
 	topics = require('../topics'),
 	categories = require('../categories'),
@@ -255,10 +256,11 @@ SocketAdmin.categories.groupsList = function(socket, cid, callback) {
 	});
 };
 
-/* Themes & Plugins */
+/* Themes, Widgets, and Plugins */
 
 SocketAdmin.themes = {};
 SocketAdmin.plugins = {};
+SocketAdmin.widgets = {};
 
 SocketAdmin.themes.getInstalled = function(socket, data, callback) {
 	meta.themes.get(callback);
@@ -269,12 +271,20 @@ SocketAdmin.themes.set = function(socket, data, callback) {
 		return callback(new Error('invalid data'));
 	}
 	meta.themes.set(data, callback);
-}
+};
 
 SocketAdmin.plugins.toggle = function(socket, plugin_id) {
 	plugins.toggleActive(plugin_id, function(status) {
 		socket.emit('admin.plugins.toggle', status);
 	});
+};
+
+SocketAdmin.widgets.set = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
+
+	widgets.setArea(data, callback);
 };
 
 /* Configs */

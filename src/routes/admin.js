@@ -2,6 +2,7 @@ var nconf = require('nconf'),
 	fs = require('fs'),
 	path = require('path'),
 	winston = require('winston'),
+	async = require('async'),
 
 	db = require('./../database'),
 	user = require('./../user'),
@@ -11,6 +12,7 @@ var nconf = require('nconf'),
 	categories = require('./../categories'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
+	widgets = require('../widgets'),
 	image = require('./../image'),
 	file = require('./../file'),
 	Languages = require('../languages'),
@@ -411,9 +413,17 @@ var nconf = require('nconf'),
 
 			app.get('/themes', function (req, res) {
 				plugins.fireHook('filter:widgets.getAreas', [], function(err, areas) {
-					res.json(200, {
-						areas: areas
+					async.each(areas, function(area, next) {
+						widgets.getArea(area.template, area.location, function(err, areaData) {
+							area.data = areaData;
+							next(err);
+						});
+					}, function(err) {
+						res.json(200, {
+							areas: areas,
+						});
 					});
+					
 				});
 			});
 

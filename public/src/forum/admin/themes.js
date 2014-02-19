@@ -142,16 +142,29 @@ define(['forum/admin/settings'], function(Settings) {
 			connectToSortable: ".widget-area"
 		});
 
+		function appendToggle(el) {
+			if (!el.hasClass('block')) {
+				el.addClass('block')
+					.children('.panel-heading')
+						.append('<div class="pull-right pointer"><span class="delete-widget"><i class="fa fa-times-circle"></i></span>&nbsp;<span class="toggle-widget"><i class="fa fa-chevron-down"></i></span></div>');
+			}
+		}
+
 		$('#widgets .widget-area').sortable({
 			update: function (event, ui) {
-				if (!ui.item.hasClass('block')) {
-					ui.item.addClass('block');
-					ui.item.children('.panel-heading').append('<div class="toggle-widget pull-right pointer"><i class="fa fa-chevron-down"></i></div>');
-				}
-				
-			}
+				appendToggle(ui.item);
+			},
+			connectWith: "div"
 		}).on('click', '.toggle-widget', function() {
 			$(this).parents('.panel').children('.panel-body').toggleClass('hidden');
+		}).on('click', '.delete-widget', function() {
+			var panel = $(this).parents('.panel');
+			
+			bootbox.confirm('Are you sure you wish to delete this widget?', function(confirm) {
+				if (confirm) {
+					panel.remove();
+				}
+			});
 		});
 
 		$('#widgets .btn[data-template]').on('click', function() {
@@ -162,12 +175,24 @@ define(['forum/admin/settings'], function(Settings) {
 				widgets = [];
 
 			area.find('.panel[data-widget]').each(function() {
-				var widget = {};
-				widget[this.getAttribute('data-widget')] = $(this).find('form').serializeArray();
-				widgets.push(widget);
+				var widgetData = {},
+					data = $(this).find('form').serializeArray();
+
+				for (var d in data) {
+					if (data.hasOwnProperty(d)) {
+						if (data[d].name) {
+							widgetData[data[d].name] = data[d].value;	
+						}
+					}
+				}
+
+				widgets.push({
+					widget: this.getAttribute('data-widget'),
+					data: widgetData
+				});
 			});
 
-			socket.emit('admin.themes.widgets.set', {
+			socket.emit('admin.widgets.set', {
 				template: template,
 				location: location,
 				widgets: widgets
@@ -181,7 +206,46 @@ define(['forum/admin/settings'], function(Settings) {
 				});
 			});
 		});
+
+		function populateWidget(widget, data) {
+			widget.find('input, textarea').each(function() {
+				var input = $(this),
+					value = data[input.attr('name')];
+
+				if (this.type === 'checkbox') {
+					input.attr('checked', !!value);
+				} else {
+					input.val(value);
+				}
+			});
+
+			return widget;
+		}
 		
+		$.get(RELATIVE_PATH + '/api/admin/themes', function(data) {
+			var areas = data.areas;
+
+			for (var a in areas) {
+				if (areas.hasOwnProperty(a)) {
+					var area = areas[a],
+						widgetArea = $('#widgets .area [data-template="' + area.template + '"][data-location="' + area.location + '"]').parents('.area').find('.widget-area');
+
+					console.log('data', area.data);
+					for (var i in area.data) {
+						if (area.data.hasOwnProperty(i)) {
+							var data = area.data[i],
+								widgetEl = $('.available-widgets [data-widget="' + data.widget + '"]').clone();
+
+
+							widgetArea.append(populateWidget(widgetEl, data.data));
+							appendToggle(widgetEl);
+						}
+					}
+
+
+				}
+			}
+		});
 	};
 
 	return Themes;
