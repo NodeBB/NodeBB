@@ -2,6 +2,14 @@
 	{motd}
 </div>
 
+<div widget-area="motd" class="hidden">
+	<!-- BEGIN widgets -->
+	<div class="well">
+		{widgets.html}
+	</div>
+	<!-- END widgets -->
+</div>
+
 <div class="row home" itemscope itemtype="http://www.schema.org/ItemList">
 	<!-- BEGIN categories -->
 	<div class="{categories.class}">
