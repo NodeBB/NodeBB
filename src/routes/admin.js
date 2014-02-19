@@ -375,7 +375,10 @@ var nconf = require('nconf'),
 					if(err) {
 						return next(err);
 					}
-					res.json(200, {eventdata: data.toString()});
+					if(data) {
+						data = data.toString().split('\n').reverse().join('\n');
+					}
+					res.json(200, {eventdata: data});
 				});
 			});
 
