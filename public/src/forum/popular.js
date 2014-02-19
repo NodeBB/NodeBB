@@ -21,6 +21,10 @@ define(['forum/recent'], function(recent) {
 		});
 
 		function loadMoreTopics() {
+			if(!$('#topics-container').length) {
+				return;
+			}
+
 			loadingMoreTopics = true;
 			socket.emit('topics.loadMoreFromSet', {
 				set: 'topics:' + $('.nav-pills .active a').html().toLowerCase(),
