@@ -28,10 +28,16 @@ define(function() {
 							app.previousUrl = '/';
 						}
 
-						if(app.previousUrl.indexOf('/reset/') != -1)
+						if(app.previousUrl.indexOf('/reset/') !== -1) {
 							window.location.replace(RELATIVE_PATH + "/?loggedin");
-						else
-							window.location.replace(app.previousUrl + "?loggedin");
+						} else {
+							var index = app.previousUrl.indexOf('#');
+							if(index !== -1) {
+								window.location.replace(app.previousUrl.slice(0, index) + '?loggedin' + app.previousUrl.slice(index));
+							} else {
+								window.location.replace(app.previousUrl + "?loggedin");
+							}
+						}
 
 						app.loadConfig();
 					}
