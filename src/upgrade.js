@@ -724,18 +724,29 @@ Upgrade.upgrade = function(callback) {
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 				
+				var container = '<div class="panel panel-default"><div class="panel-heading">{title}</div><div class="panel-body">{body}</div></div>';
+				
 				db.setObjectField('widgets:category.tpl', 'sidebar', JSON.stringify([
 					{
 						"widget": "recentreplies",
-						"data": {}
+						"data": {
+							"title": "Recent Replies",
+							"container": container
+						}
 					},
 					{
 						"widget": "activeusers",
-						"data": {}
+						"data": {
+							"title": "Active Users",
+							"container": container
+						}
 					},
 					{
 						"widget": "moderators",
-						"data": {}
+						"data": {
+							"title": "Moderators",
+							"container": container
+						}
 					}
 				]), function(err) {
 					winston.info('[2014/2/20] Adding Recent Replies, Active Users, and Moderator widgets to category sidebar.');
