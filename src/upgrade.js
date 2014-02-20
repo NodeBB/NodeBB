@@ -745,6 +745,26 @@ Upgrade.upgrade = function(callback) {
 				winston.info('[2014/2/20] Adding Recent Replies, Active Users, and Moderator widgets to category sidebar - skipped');
 				next();
 			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 1, 20, 16, 15).getTime();
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				
+				db.setObjectField('widgets:home.tpl', 'footer', JSON.stringify([
+					{
+						"widget": "forumstats",
+						"data": {}
+					}
+				]), function(err) {
+					winston.info('[2014/2/20] Adding Forum Stats Widget to the Homepage Footer.');
+					next(err);
+				});
+			} else {
+				winston.info('[2014/2/20] Adding Forum Stats Widget to the Homepage Footer - skipped');
+				next();
+			}
 		}
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 17!!!

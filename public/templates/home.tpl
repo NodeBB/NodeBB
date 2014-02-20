@@ -48,3 +48,11 @@
 	</div>
 	<!-- END categories -->
 </div>
+
+<div widget-area="footer" class="hidden">
+	<!-- BEGIN widgets -->
+	<div class="footer">
+		{widgets.html}
+	</div>
+	<!-- END widgets -->
+</div>
