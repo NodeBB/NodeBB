@@ -88,10 +88,10 @@ module.exports.server = server;
 					property: 'keywords',
 					content: meta.config.keywords || ''
 				}],
-				defaultLinkTags = [/*{
+				defaultLinkTags = [{
 					rel: 'apple-touch-icon',
-					href: meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png'
-				}*/],
+					href: '/apple-touch-icon'
+				}],
 				templateValues = {
 					bootswatchCSS: meta.config['theme:src'],
 					pluginCSS: plugins.cssFiles.map(function(file) { return { path: nconf.get('relative_path') + file.replace(/\\/g, '/') }; }),
@@ -203,7 +203,13 @@ module.exports.server = server;
 
 				logger.init(app);
 
+				// favicon & apple-touch-icon middleware
 				app.use(express.favicon(path.join(__dirname, '../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico')));
+				app.use('/apple-touch-icon', function(req, res) {
+					return res.sendfile(path.join(__dirname, '../public', meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png'), {
+						maxAge: app.enabled('cache') ? 5184000000 : 0
+					});
+				});
 
 				app.use(require('less-middleware')({
 					src: path.join(__dirname, '../', 'public'),
