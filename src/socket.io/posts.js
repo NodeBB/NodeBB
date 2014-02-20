@@ -148,7 +148,7 @@ SocketPosts.edit = function(socket, data, callback) {
 		return callback(new Error('content-too-short'));
 	}
 
-	postTools.edit(socket.uid, data.pid, data.title, data.content);
+	postTools.edit(socket.uid, data.pid, data.title, data.content, {topic_thumb: data.topic_thumb});
 	callback();
 };
 

@@ -57,6 +57,7 @@ var path = require('path'),
 				config.useOutgoingLinksPage = parseInt(meta.config.useOutgoingLinksPage, 10) === 1;
 				config.allowGuestPosting = parseInt(meta.config.allowGuestPosting, 10) === 1;
 				config.allowFileUploads = parseInt(meta.config.allowFileUploads, 10) === 1;
+				config.allowTopicsThumbnail = parseInt(meta.config.allowTopicsThumbnail, 10) === 1;
 				config.usePagination = parseInt(meta.config.usePagination, 10) === 1;
 				config.topicsPerPage = meta.config.topicsPerPage || 20;
 				config.postsPerPage = meta.config.postsPerPage || 20;
@@ -448,7 +449,7 @@ var path = require('path'),
 				}
 			});
 
-			app.post('/post/upload', function(req, res, next) {
+			function upload(req, res, filesIterator, next) {
 				if(!req.user) {
 					return res.json(403, {message:'not allowed'});
 				}
@@ -469,21 +470,33 @@ var path = require('path'),
 					}
 				}
 
-				async.map(files, function(file, next) {
+				async.map(files, filesIterator, function(err, images) {
+					deleteTempFiles();
+					if(err) {
+						return res.json(500, {message: err.message});
+					}
+					res.json(200, images);
+				});
+			}
+
+			app.post('/post/upload', function(req, res, next) {
+				upload(req, res, function(file, next) {
 					if(file.type.match('image.*')) {
 						posts.uploadPostImage(file, next);
 					} else {
 						posts.uploadPostFile(file, next);
 					}
-				}, function(err, images) {
-					deleteTempFiles();
+				}, next)
+			});
 
-					if(err) {
-						return res.json(500, {message: err.message});
+			app.post('/topic/thumb/upload', function(req, res, next) {
+				upload(req, res, function(file, next) {
+					if(file.type.match('image.*')) {
+						topics.uploadTopicThumb(file, next);
+					} else {
+		            	res.json(500, {message: 'Invalid File'});
 					}
-
-					res.json(200, images);
-				});
+				}, next)
 			});
 
 			app.get('/reset', function (req, res) {

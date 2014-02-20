@@ -29,19 +29,21 @@ SocketModules.composer.push = function(socket, pid, callback) {
 					posts.getPostFields(pid, ['content'], next);
 				},
 				function(next) {
-					topics.getTitleByPid(pid, function(title) {
-						next(null, title);
-					});
+					topics.getTopicDataByPid(pid, next);
+				},
+				function(next) {
+					posts.getPidIndex(pid, next);
 				}
 			], function(err, results) {
 				if(err) {
 					return callback(err);
 				}
-
 				callback(null, {
-					title: results[1],
 					pid: pid,
-					body: results[0].content
+					body: results[0].content,
+					title: results[1].title,
+					topic_thumb: results[1].thumb,
+					index: results[2]
 				});
 			});
 		}

@@ -37,6 +37,11 @@
 				</div>
 				<div class="checkbox">
 					<label>
+						<input type="checkbox" data-field="allowTopicsThumbnail"> <strong>Allow users to upload topic thumbnails</strong>
+					</label>
+				</div>
+				<div class="checkbox">
+					<label>
 						<input type="checkbox" data-field="useOutgoingLinksPage"> <strong>Use Outgoing Links Warning Page</strong>
 					</label>
 				</div>

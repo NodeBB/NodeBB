@@ -72,5 +72,12 @@
 	"composer.discard": "Discard",
 	"composer.submit": "Submit",
 	"composer.replying_to": "Replying to",
-	"composer.new_topic": "New Topic"
+	"composer.new_topic": "New Topic",
+
+	"composer.uploading": "uploading...",
+	"composer.thumb_url_label": "Paste a topic thumbnail URL",
+	"composer.thumb_title": "Add a thumbnail to this topic",
+	"composer.thumb_url_placeholder": "http://example.com/thumb.png",
+	"composer.thumb_file_label": "Or upload a file",
+	"composer.thumb_remove": "Clear fields"
 }

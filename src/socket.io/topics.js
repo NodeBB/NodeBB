@@ -23,7 +23,7 @@ SocketTopics.post = function(socket, data, callback) {
 		return callback(new Error('not-logged-in'));
 	}
 
-	topics.post(socket.uid, data.title, data.content, data.category_id, function(err, result) {
+	topics.post({uid: socket.uid, title: data.title, content: data.content, cid: data.category_id, thumb: data.topic_thumb}, function(err, result) {
 		if(err) {
 		 	if (err.message === 'title-too-short') {
 				module.parent.exports.emitAlert(socket, 'Title too short', 'Please enter a longer title. At least ' + meta.config.minimumTitleLength + ' characters.');
