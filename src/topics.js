@@ -1,5 +1,6 @@
 var async = require('async'),
 	gravatar = require('gravatar'),
+	path = require('path'),
 	nconf = require('nconf'),
 	validator = require('validator'),
 	S = require('string'),
@@ -8,6 +9,7 @@ var async = require('async'),
 	db = require('./database'),
 	posts = require('./posts'),
 	utils = require('./../public/src/utils'),
+	plugins = require('./plugins'),
 	user = require('./user'),
 	categories = require('./categories'),
 	categoryTools = require('./categoryTools'),
@@ -20,7 +22,12 @@ var async = require('async'),
 
 (function(Topics) {
 
-	Topics.create = function(uid, title, cid, callback) {
+	Topics.create = function(data, callback) {
+		var uid = data.uid,
+			title = data.title,
+			cid = data.cid,
+			thumb = data.thumb;
+
 		db.incrObjectField('global', 'nextTid', function(err, tid) {
 			if(err) {
 				return callback(err);
@@ -41,7 +48,8 @@ var async = require('async'),
 				'viewcount': 0,
 				'locked': 0,
 				'deleted': 0,
-				'pinned': 0
+				'pinned': 0,
+				'thumb': thumb || ''
 			}, function(err) {
 				if(err) {
 					return callback(err);
@@ -61,7 +69,13 @@ var async = require('async'),
 		});
 	};
 
-	Topics.post = function(uid, title, content, cid, callback) {
+	Topics.post = function(data, callback) {
+		var uid = data.uid,
+			title = data.title,
+			content = data.content,
+			cid = data.cid,
+			thumb = data.thumb;
+
 		if (title) {
 			title = title.trim();
 		}
@@ -98,7 +112,7 @@ var async = require('async'),
 				user.isReadyToPost(uid, next);
 			},
 			function(next) {
-				Topics.create(uid, title, cid, next);
+				Topics.create({uid: uid, title: title, cid: cid}, next);
 			},
 			function(tid, next) {
 				Topics.reply(tid, uid, content, next);
@@ -210,7 +224,7 @@ var async = require('async'),
 				posts.getCidByPid(mainPid, callback);
 			}
 		}, function(err, results) {
-			Topics.create(results.postData.uid, title, results.cid, function(err, tid) {
+			Topics.create({uid: results.postData.uid, title: title, cid: results.cid}, function(err, tid) {
 				if(err) {
 					return callback(err);
 				}
@@ -847,6 +861,7 @@ var async = require('async'),
 					'pinned': topicData.pinned,
 					'timestamp': topicData.timestamp,
 					'slug': topicData.slug,
+					'thumb': topicData.thumb,
 					'postcount': topicData.postcount,
 					'viewcount': topicData.viewcount,
 					'pageCount': pageCount,
@@ -936,11 +951,41 @@ var async = require('async'),
 	};
 
 	Topics.getTitleByPid = function(pid, callback) {
+		Topics.getTopicFieldByPid('title', pid, callback);
+	};
+
+	Topics.getTopicFieldByPid = function(field, pid, callback) {
 		posts.getPostField(pid, 'tid', function(err, tid) {
-			Topics.getTopicField(tid, 'title', function(err, title) {
-				callback(title);
-			});
+			Topics.getTopicField(tid, field, callback);
 		});
+	};
+
+	Topics.getTopicDataByPid = function(pid, callback) {
+		posts.getPostField(pid, 'tid', function(err, tid) {
+			Topics.getTopicData(tid, callback);
+		});
+	};
+
+	Topics.uploadTopicThumb = function(image, callback) {
+
+		if(plugins.hasListeners('filter:uploadImage')) {
+			plugins.fireHook('filter:uploadImage', image, callback);
+		} else {
+			if (meta.config.allowTopicsThumbnail) {
+				var filename = 'upload-' + utils.generateUUID() + path.extname(image.name);
+				require('./file').saveFileToLocal(filename, image.path, function(err, upload) {
+					if(err) {
+						return callback(err);
+					}
+					callback(null, {
+						url: upload.url,
+						name: image.name
+					});
+				});
+			} else {
+				callback(new Error('Topic Thumbnails are disabled!'));
+			}
+		}
 	};
 
 	Topics.markAsUnreadForAll = function(tid, callback) {
@@ -1011,10 +1056,9 @@ var async = require('async'),
 
 		db.isSetMember('tid:' + tid + ':read_by_uid', uid, function(err, hasRead) {
 
-			if (err === null) {
+			if (!err) {
 				callback(hasRead);
 			} else {
-				console.log(err);
 				callback(false);
 			}
 		});
