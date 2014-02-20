@@ -39,6 +39,7 @@
     "validator": "~3.2.1",
     "nodebb-plugin-mentions": "~0.4",
     "nodebb-plugin-markdown": "~0.3",
+    "nodebb-widgets-essentials": "~0.2",
     "nodebb-theme-vanilla": "~0.0.13",
     "nodebb-theme-cerulean": "~0.0.12",
     "nodebb-theme-lavender": "~0.0",
