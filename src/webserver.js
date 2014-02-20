@@ -206,9 +206,13 @@ module.exports.server = server;
 				// favicon & apple-touch-icon middleware
 				app.use(express.favicon(path.join(__dirname, '../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico')));
 				app.use('/apple-touch-icon', function(req, res) {
-					return res.sendfile(path.join(__dirname, '../public', meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png'), {
-						maxAge: app.enabled('cache') ? 5184000000 : 0
-					});
+					if (meta.config['brand:logo'] && validator.isURL(meta.config['brand:logo'])) {
+						return res.redirect(meta.config['brand:logo']);
+					} else {
+						return res.sendfile(path.join(__dirname, '../public', meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png'), {
+							maxAge: app.enabled('cache') ? 5184000000 : 0
+						});
+					}
 				});
 
 				app.use(require('less-middleware')({
