@@ -107,30 +107,6 @@
 		</div>
 		<!-- END widgets -->
 	</div>
-
-	<div class="col-md-3 col-xs-12 category-sidebar">
-		<div class="panel panel-default">
-			<div class="panel-heading">[[category:sidebar.active_participants]]</div>
-			<div class="panel-body">
-				<div class="active-users"
-					<!-- BEGIN active_users -->
-					<a data-uid="{active_users.uid}" href="../../user/{active_users.userslug}"><img title="{active_users.username}" src="{active_users.picture}" class="img-rounded user-img" /></a>
-					<!-- END active_users -->
-				</div>
-			</div>
-		</div>
-
-		<!-- IF moderators.length -->
-		<div class="panel panel-default">
-			<div class="panel-heading">[[category:sidebar.moderators]]</div>
-			<div class="panel-body moderators">
-				<!-- BEGIN moderators -->
-				<a data-uid="{moderators.uid}" href="../../user/{moderators.userslug}"><img title="{moderators.username}" src="{moderators.picture}" class="img-rounded user-img" /></a>
-				<!-- END moderators -->
-			</div>
-		</div>
-		<!-- ENDIF moderators.length -->
-	</div>
 	<!-- ENDIF topics.length -->
 </div>
 

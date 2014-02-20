@@ -58,19 +58,6 @@ var db = require('./database'),
 			Categories.getCategoryTopics(category_id, start, end, current_user, next);
 		}
 
-		function getActiveUsers(next) {
-			Categories.getActiveUsers(category_id, function(err, uids) {
-				if(err) {
-					return next(err);
-				}
-				user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
-			});
-		}
-
-		function getModerators(next) {
-			Categories.getModerators(category_id, next);
-		}
-
 		function getPageCount(next) {
 			Categories.getPageCount(category_id, current_user, next);
 		}
@@ -78,8 +65,6 @@ var db = require('./database'),
 		async.parallel({
 			'category': getCategoryData,
 			'topics': getTopics,
-			'active_users': getActiveUsers,
-			'moderators': getModerators,
 			'pageCount': getPageCount
 		}, function(err, results) {
 			if(err) {
@@ -93,8 +78,6 @@ var db = require('./database'),
 				'disabled': results.category.disabled,
 				'topic_row_size': 'col-md-9',
 				'category_id': category_id,
-				'active_users': results.active_users,
-				'moderators': results.moderators,
 				'topics': results.topics.topics,
 				'nextStart': results.topics.nextStart,
 				'pageCount': results.pageCount,
