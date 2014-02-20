@@ -135,18 +135,34 @@ define(['forum/admin/settings'], function(Settings) {
 	}
 
 	Themes.prepareWidgets = function() {
-		$('#widgets .panel').draggable({
+		$('#widgets .available-widgets .panel').draggable({
 			helper: function(e) {
 				return $(e.target).parents('.panel').clone().addClass('block').width($(e.target.parentNode).width());
 			},
 			connectToSortable: ".widget-area"
 		});
 
+		$('#widgets .available-containers .containers > [data-container]').draggable({
+			helper: function(e) {
+				var target = $(e.target);
+				target = target.attr('data-container') ? target : target.parents('[data-container]');
+
+				return target.clone().addClass('block').width(target.width()).css('opacity', '0.5');
+			}
+		});
+
 		function appendToggle(el) {
 			if (!el.hasClass('block')) {
 				el.addClass('block')
+					.droppable({
+						drop: function(event, ui) {
+							$(this).find('.panel-heading small').html(ui.draggable.attr('data-container'));
+						},
+						hoverClass: "panel-info"
+					})
 					.children('.panel-heading')
-						.append('<div class="pull-right pointer"><span class="delete-widget"><i class="fa fa-times-circle"></i></span>&nbsp;<span class="toggle-widget"><i class="fa fa-chevron-down"></i></span></div>');
+						.append('<div class="pull-right pointer"><span class="delete-widget"><i class="fa fa-times-circle"></i></span>&nbsp;<span class="toggle-widget"><i class="fa fa-chevron-down"></i></span></div>')
+						.children('small').html('');
 			}
 		}
 

@@ -54,25 +54,7 @@
 			<h3>Widgets</h3>
 
 			<div class="row">
-				<div class="col-xs-6 available-widgets">
-					<h4>Available Widgets</h4>
-					<div class="well">
-						<!-- BEGIN widgets -->
-						<div data-widget="{widgets.widget}" class="panel panel-default pointer">
-							<div class="panel-heading">
-								<strong>{widgets.name}</strong> <small>{widgets.description}</small>
-							</div>
-							<div class="panel-body hidden">
-								<form>
-									{widgets.content}
-								</form>
-							</div>
-						</div>
-						<!-- END widgets -->
-					</div>
-				</div>
-
-				<div class="col-xs-6">
+				<div class="col-xs-6 pull-right">
 					<!-- BEGIN areas -->
 					<div class="area">
 						<h4>{areas.name} <small>{areas.template} / {areas.location}</small> <button data-template="{areas.template}" data-location="{areas.location}" class="btn btn-success btn-xs pull-right">Save</button></h4>
@@ -81,6 +63,45 @@
 						</div>
 					</div>
 					<!-- END areas -->
+				</div>
+				<div class="col-xs-6 pull-left">
+					<div class="available-widgets">
+						<h4>Available Widgets</h4>
+						<div>
+							<!-- BEGIN widgets -->
+							<div data-widget="{widgets.widget}" class="panel panel-default pointer">
+								<div class="panel-heading">
+									<strong>{widgets.name}</strong> <small>{widgets.description}</small>
+								</div>
+								<div class="panel-body hidden">
+									<form>
+										{widgets.content}
+									</form>
+								</div>
+							</div>
+							<!-- END widgets -->
+						</div>
+					</div>
+
+					<div class="available-containers">
+						<h4>Available Containers</h4>
+						<div class="containers">
+							<div class="pointer" style="padding: 20px; border: 1px dotted #dedede; margin-bottom: 20px;" data-container=" ">
+								None
+							</div>
+							<div class="well pointer" data-container="well">
+								Well
+							</div>
+							<div class="panel panel-default pointer" data-container="panel">
+								<div class="panel-heading">
+									Panel Header
+								</div>
+								<div class="panel-body">
+									Panel Body
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
