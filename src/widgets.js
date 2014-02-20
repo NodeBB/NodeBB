@@ -16,7 +16,7 @@ var async = require('async'),
 		var rendered = [];
 
 		Widgets.getArea(area.template, area.location, function(err, widgets) {
-			async.each(widgets, function(widget, next) {
+			async.eachSeries(widgets, function(widget, next) {
 				plugins.fireHook('filter:widget.render:' + widget.widget, {
 					uid: uid,
 					area: area,
