@@ -45,18 +45,17 @@ var fs = require('fs'),
 
 		app.namespace('/user', function () {
 
-			function createRoute(routeName, path, templateName) {
-				app.get(routeName, function(req, res, next) {
-					if (!req.params.userslug) {
-						return next();
-					}
+			function createRoute(routeName, path, templateName, access) {
 
-					if (!req.user && (path === '/favourites' || !!parseInt(meta.config.privateUserInfo, 10))) {
+				function isAllowed(req, res, next) {
+					var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
+
+					if (!callerUID && !!parseInt(meta.config.privateUserInfo, 10)) {
 						return res.redirect('/403');
 					}
 
 					user.getUidByUserslug(req.params.userslug, function (err, uid) {
-						if(err) {
+						if (err) {
 							return next(err);
 						}
 
@@ -64,17 +63,41 @@ var fs = require('fs'),
 							return res.redirect('/404');
 						}
 
-						app.build_header({
-							req: req,
-							res: res
-						}, function (err, header) {
-							if(err) {
-								return next(err);
-							}
-							res.send(header + app.create_route('user/' + req.params.userslug + path, templateName) + templates['footer']);
-						});
+						if (parseInt(uid, 10) === callerUID) {
+							return next();
+						}
+
+						if (req.path.indexOf('/edit') !== -1) {
+							user.isAdministrator(callerUID, function(err, isAdmin) {
+								if(err) {
+									return next(err);
+								}
+
+								if(!isAdmin) {
+									return res.redirect('/403');
+								}
+
+								next();
+							});
+						} else if (req.path.indexOf('/settings') !== -1 || req.path.indexOf('/favourites') !== -1) {
+							res.redirect('/403')
+						} else {
+							next();
+						}
 					});
-				})
+				}
+
+				app.get(routeName, isAllowed, function(req, res, next) {
+					app.build_header({
+						req: req,
+						res: res
+					}, function (err, header) {
+						if(err) {
+							return next(err);
+						}
+						res.send(header + app.create_route('user/' + req.params.userslug + path, templateName) + templates['footer']);
+					});
+				});
 			}
 
 			createRoute('/:userslug', '', 'account');
@@ -82,64 +105,8 @@ var fs = require('fs'),
 			createRoute('/:userslug/followers', '/followers', 'followers');
 			createRoute('/:userslug/favourites', '/favourites', 'favourites');
 			createRoute('/:userslug/posts', '/posts', 'accountposts');
-
-			app.get('/:userslug/edit', function (req, res, next) {
-
-				if (!req.user) {
-					return res.redirect('/403');
-				}
-
-				user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
-					function done() {
-						app.build_header({
-							req: req,
-							res: res
-						}, function (err, header) {
-							res.send(header + app.create_route('user/' + req.params.userslug + '/edit', 'accountedit') + templates['footer']);
-						});
-					}
-
-					if(err || !userslug) {
-						return next(err);
-					}
-
-					if (userslug === req.params.userslug) {
-						return done();
-					}
-
-					user.isAdministrator(req.user.uid, function(err, isAdmin) {
-						if(err) {
-							return next(err);
-						}
-
-						if(!isAdmin) {
-							return res.redirect('/403');
-						}
-
-						done();
-					});
-				});
-			});
-
-			app.get('/:userslug/settings', function (req, res) {
-
-				if (!req.user) {
-					return res.redirect('/403');
-				}
-
-				user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
-					if (req.params.userslug && userslug === req.params.userslug) {
-						app.build_header({
-							req: req,
-							res: res
-						}, function (err, header) {
-							res.send(header + app.create_route('user/' + req.params.userslug + '/settings', 'accountsettings') + templates['footer']);
-						})
-					} else {
-						return res.redirect('/404');
-					}
-				});
-			});
+			createRoute('/:userslug/edit', '/edit', 'accountedit');
+			createRoute('/:userslug/settings', '/settings', 'accountsettings');
 
 			app.post('/uploadpicture', function (req, res) {
 				if (!req.user) {
@@ -313,7 +280,6 @@ var fs = require('fs'),
 						});
 					});
 				});
-
 			});
 		}
 
@@ -512,8 +478,6 @@ var fs = require('fs'),
 			});
 		}
 
-
-
 		function getUsersSortedByJoinDate(req, res) {
 			user.getUsers('users:joindate', 0, 49, function (err, data) {
 				res.json({
@@ -677,9 +641,7 @@ var fs = require('fs'),
 					callback(null, userData);
 				});
 			});
-
 		}
-
 	};
 
 }(exports));
