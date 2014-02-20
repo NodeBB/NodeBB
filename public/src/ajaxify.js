@@ -121,7 +121,10 @@ var ajaxify = {};
 						var area = $('#content [widget-area="' + location + '"]');
 
 						socket.emit('widgets.render', {template: tpl_url + '.tpl', url: url, location: location}, function(err, renderedWidgets) {
-							area.html(templates.prepare(area.html()).parse({widgets: renderedWidgets})).removeClass('hidden');
+							area.html(templates.prepare(area.html()).parse({
+								widgets: renderedWidgets
+							})).removeClass('hidden');
+							
 							next(err);
 						});
 					}, function(err) {
