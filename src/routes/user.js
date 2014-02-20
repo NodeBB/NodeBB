@@ -607,76 +607,76 @@ var fs = require('fs'),
 		}
 
 		function getUserDataByUserSlug(userslug, callerUID, callback) {
-			var userData;
 
-			async.waterfall([
-				function(next) {
-					user.getUidByUserslug(userslug, next);
-				},
-				function(uid, next) {
-					if (!uid) {
-						return next(new Error('invalid-user'));
+			user.getUidByUserslug(userslug, function(err, uid) {
+				if(err || !uid) {
+					return callback(err || new Error('invalid-user'));
+				}
+
+				async.parallel({
+					userData : function(next) {
+						user.getUserData(uid, next);
+					},
+					userSettings : function(next) {
+						user.getSettings(uid, next);
+					},
+					isAdmin : function(next) {
+						user.isAdministrator(callerUID, next);
+					},
+					followStats: function(next) {
+						user.getFollowStats(uid, next);
+					}
+				}, function(err, results) {
+					if(err || !results.userData) {
+						return callback(err || new Error('invalid-user'));
 					}
 
-					user.getUserData(uid, next);
-				},
-				function(data, next) {
-					userData = data;
-					if (!userData) {
-						return callback(new Error('invalid-user'));
+					var userData = results.userData;
+					var userSettings = results.userSettings;
+					var isAdmin = results.isAdmin;
+
+					userData.joindate = utils.toISOString(userData.joindate);
+					if(userData.lastonline) {
+						userData.lastonline = utils.toISOString(userData.lastonline);
+					} else {
+						userData.lastonline = userData.joindate;
 					}
 
-					user.isAdministrator(callerUID, next);
-				}
-			], function(err, isAdmin) {
-				if(err) {
-					return callback(err);
-				}
-
-				userData.joindate = utils.toISOString(userData.joindate);
-				if(userData.lastonline) {
-					userData.lastonline = utils.toISOString(userData.lastonline);
-				} else {
-					userData.lastonline = userData.joindate;
-				}
-
-				if (!userData.birthday) {
-					userData.age = '';
-				} else {
-					userData.age = Math.floor((new Date().getTime() - new Date(userData.birthday).getTime()) / 31536000000);
-				}
-
-				function canSeeEmail() {
-					return isAdmin || callerUID == userData.uid || (userData.email && (userData.showemail && parseInt(userData.showemail, 10) === 1));
-				}
-
-				if (!canSeeEmail()) {
-					userData.email = "";
-				}
-
-				if (callerUID == userData.uid && (!userData.showemail || parseInt(userData.showemail, 10) === 0)) {
-					userData.emailClass = "";
-				} else {
-					userData.emailClass = "hide";
-				}
-
-				userData.websiteName = userData.website.replace('http://', '').replace('https://', '');
-				userData.banned = parseInt(userData.banned, 10) === 1;
-				userData.uid = userData.uid;
-				userData.yourid = callerUID;
-				userData.theirid = userData.uid;
-
-				userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
-
-				user.getFollowStats(userData.uid, function (err, followStats) {
-					if(err) {
-						return callback(err);
+					if (!userData.birthday) {
+						userData.age = '';
+					} else {
+						userData.age = Math.floor((new Date().getTime() - new Date(userData.birthday).getTime()) / 31536000000);
 					}
-					userData.followingCount = followStats.followingCount;
-					userData.followerCount = followStats.followerCount;
+
+					function canSeeEmail() {
+						return isAdmin || callerUID == userData.uid || (userData.email && userSettings.showemail);
+					}
+
+					if (!canSeeEmail()) {
+						userData.email = "";
+					}
+
+					if (callerUID == userData.uid && !userSettings.showemail) {
+						userData.emailClass = "";
+					} else {
+						userData.emailClass = "hide";
+					}
+
+					userData.websiteName = userData.website.replace('http://', '').replace('https://', '');
+					userData.banned = parseInt(userData.banned, 10) === 1;
+					userData.uid = userData.uid;
+					userData.yourid = callerUID;
+					userData.theirid = userData.uid;
+
+					userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
+
+					userData.followingCount = results.followStats.followingCount;
+					userData.followerCount = results.followStats.followerCount;
+
 					callback(null, userData);
 				});
 			});
+
 		}
 
 	};
