@@ -20,6 +20,8 @@
     "flag": "Reportar",
     "flag_title": "Reportar este post a los moderadores",
     "deleted_message": "Este tema ha sido borrado. Solo los miembros con privilegios pueden verlo.",
+    "watch": "Seguir",
+    "share_this_post": "Compartir este post",
     "thread_tools.title": "Herramientas del Tema",
     "thread_tools.markAsUnreadForAll": "Marcar como no leido",
     "thread_tools.pin": "Tema Importante",

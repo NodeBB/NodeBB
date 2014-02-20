@@ -127,7 +127,7 @@ var async = require('async'),
 					if (nids && nids.length > 0) {
 						async.each(nids, function(nid, next) {
 							Notifications.get(nid, uid, function(nid_info) {
-								if (nid_info.uniqueId === uniqueId) {
+								if (nid_info && nid_info.uniqueId === uniqueId) {
 									db.sortedSetRemove('uid:' + uid + ':notifications:unread', nid);
 								}
 

@@ -291,7 +291,7 @@ var db = require('./database'),
 							postData.categoryName = categoryData.name;
 							postData.categoryIcon = categoryData.icon;
 							postData.categorySlug = categoryData.slug;
-							postData.title = validator.sanitize(topicData.title).escape();
+							postData.title = validator.escape(topicData.title);
 							postData.topicSlug = topicData.slug;
 							next(null, postData);
 						})
@@ -524,6 +524,16 @@ var db = require('./database'),
 					callback(null, page);
 				});
 			});
+		});
+	};
+
+	Posts.getPidIndex = function(pid, callback) {
+		Posts.getPostField(pid, 'tid', function(err, tid) {
+			if(err) {
+				return callback(err);
+			}
+
+			db.sortedSetRank('tid:' + tid + ':posts', pid, callback);
 		});
 	}
 

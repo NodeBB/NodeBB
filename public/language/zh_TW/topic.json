@@ -20,6 +20,8 @@
     "flag": "Flag",
     "flag_title": "Flag this post for moderation",
     "deleted_message": "This thread has been deleted. Only users with thread management privileges can see it.",
+    "watch": "Watch",
+    "share_this_post": "Share this Post",
     "thread_tools.title": "管理工具",
     "thread_tools.markAsUnreadForAll": "Mark Unread",
     "thread_tools.pin": "Pin Topic",

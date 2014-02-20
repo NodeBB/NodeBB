@@ -47,8 +47,6 @@ var ajaxify = {};
 		// Remove trailing slash
 		url = url.replace(/\/$/, "");
 
-		var hash = window.location.hash;
-
 		if (url.indexOf(RELATIVE_PATH.slice(1)) !== -1) {
 			url = url.slice(RELATIVE_PATH.length);
 		}
@@ -66,13 +64,18 @@ var ajaxify = {};
 			tpl_url = url;
 		}
 
+		var hash = '';
+		if(ajaxify.initialLoad) {
+			hash = window.location.hash ? window.location.hash : '';
+		}
+
 		if (templates.is_available(tpl_url) && !templates.force_refresh(tpl_url)) {
 			ajaxify.currentPage = tpl_url;
 
 			if (window.history && window.history.pushState) {
 				window.history[!quiet ? 'pushState' : 'replaceState']({
-					url: url
-				}, url, RELATIVE_PATH + '/' + url);
+					url: url + hash
+				}, url, RELATIVE_PATH + '/' + url + hash);
 
 				$.ajax(RELATIVE_PATH + '/plugins/fireHook', {
 					type: 'PUT',
@@ -94,7 +97,7 @@ var ajaxify = {};
 
 			templates.flush();
 			templates.load_template(function () {
-				exec_body_scripts(content);
+
 				require(['forum/' + tpl_url], function(script) {
 					if (script && script.init) {
 						script.init();
@@ -109,16 +112,6 @@ var ajaxify = {};
 
 				jQuery('#content, #footer').stop(true, true).removeClass('ajaxifying');
 				ajaxify.initialLoad = false;
-
-				if (window.location.hash) {
-					hash = window.location.hash;
-				}
-
-				if (hash) {
-					require(['forum/topic'], function(topic) {
-						topic.scrollToPost(hash.substr(1));
-					});
-				}
 
 				app.refreshTitle(url);
 				$(window).trigger('action:ajaxify.end', { url: url });
@@ -165,7 +158,6 @@ var ajaxify = {};
 					var url = this.href.replace(rootUrl + '/', '');
 
 					if (ajaxify.go(url)) {
-
 						e.preventDefault();
 					}
 				} else if (window.location.pathname !== '/outgoing') {
@@ -179,57 +171,5 @@ var ajaxify = {};
 			}
 		});
 	});
-
-	function exec_body_scripts(body_el) {
-		// modified from http://stackoverflow.com/questions/2592092/executing-script-elements-inserted-with-innerhtml
-
-		function nodeName(elem, name) {
-			return elem.nodeName && elem.nodeName.toUpperCase() === name.toUpperCase();
-		}
-
-		function evalScript(elem) {
-			var data = (elem.text || elem.textContent || elem.innerHTML || ""),
-				head = document.getElementsByTagName("head")[0] ||
-					document.documentElement,
-				script = document.createElement("script");
-
-			script.type = "text/javascript";
-			try {
-				script.appendChild(document.createTextNode(data));
-			} catch (e) {
-				script.text = data;
-			}
-
-			if (elem.src) {
-				script.src = elem.src;
-			}
-
-			head.insertBefore(script, head.firstChild);
-			//TODO: remove from head before inserting?, doing this breaks scripts in safari so commented out for now
-			//head.removeChild(script);
-		}
-
-		var scripts = [],
-			script,
-			children_nodes = $(body_el).find('script'),
-			child,
-			i;
-
-		for (i = 0; children_nodes[i]; i++) {
-			child = children_nodes[i];
-			if (nodeName(child, "script") &&
-				(!child.type || child.type.toLowerCase() === "text/javascript")) {
-				scripts.push(child);
-			}
-		}
-
-		for (i = 0; scripts[i]; i++) {
-			script = scripts[i];
-			if (script.parentNode) {
-				script.parentNode.removeChild(script);
-			}
-			evalScript(scripts[i]);
-		}
-	}
 
 }(jQuery));

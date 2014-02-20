@@ -30,6 +30,7 @@ var db = require('./database'),
 				description: data.description,
 				icon: data.icon,
 				bgColor: data.bgColor,
+				background: data.bgColor,
 				color: data.color,
 				slug: slug,
 				topic_count: 0,
@@ -96,7 +97,7 @@ var db = require('./database'),
 				'category_name': results.category.name,
 				'category_description': results.category.description,
 				'link': results.category.link,
-				'disabled': results.category.disabled || '0',
+				'disabled': results.category.disabled,
 				'topic_row_size': 'col-md-9',
 				'category_id': category_id,
 				'active_users': results.active_users,
@@ -167,6 +168,7 @@ var db = require('./database'),
 			if(err) {
 				return callback(err);
 			}
+
 			if(cids && cids.length === 0) {
 				return callback(null, {categories : []});
 			}
@@ -214,7 +216,11 @@ var db = require('./database'),
 	};
 
 	Categories.markAsUnreadForAll = function(cid, callback) {
-		db.delete('cid:' + cid + ':read_by_uid', callback);
+		db.delete('cid:' + cid + ':read_by_uid', function(err) {
+			if(typeof callback === 'function') {
+				callback(err);
+			}
+		});
 	};
 
 	Categories.hasReadCategories = function(cids, uid, callback) {
@@ -297,6 +303,7 @@ var db = require('./database'),
 			if (exists) {
 				db.getObject('category:' + cid, function(err, data) {
 					data.background = data.image ? 'url(' + data.image + ')' : data.bgColor;
+					data.disabled = data.disabled ? parseInt(data.disabled, 10) !== 0 : false;
 					callback(err, data);
 				});
 			} else {

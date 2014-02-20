@@ -87,7 +87,7 @@ var path = require('path'),
 				categories.getAllCategories(uid, function (err, data) {
 
 					data.categories = data.categories.filter(function (category) {
-						return (!category.disabled || parseInt(category.disabled, 10) === 0);
+						return !category.disabled;
 					});
 
 					function canSee(category, next) {
@@ -205,7 +205,6 @@ var path = require('path'),
 			});
 
 			app.get('/topic/:id/:slug?', function (req, res, next) {
-
 				var uid = (req.user) ? req.user.uid : 0;
 				var page = 1;
 				if(req.query && req.query.page) {
@@ -267,8 +266,8 @@ var path = require('path'),
 						return next(err);
 					}
 
-					var start = (page - 1) * settings.topicsPerPage;
-					var end = start + settings.topicsPerPage - 1;
+					var start = (page - 1) * settings.topicsPerPage,
+						end = start + settings.topicsPerPage - 1;
 
 					categoryTools.privileges(req.params.id, uid, function(err, privileges) {
 						if (!err && privileges.read) {
@@ -280,7 +279,7 @@ var path = require('path'),
 								data.currentPage = page;
 								data.privileges = privileges;
 
-								if (data && parseInt(data.disabled, 10) === 0) {
+								if (data && !data.disabled) {
 									res.json(data);
 								} else {
 									next();
@@ -480,7 +479,7 @@ var path = require('path'),
 					deleteTempFiles();
 
 					if(err) {
-						return res.json(500, {message: err.message});
+						return res.json(500, err.message);
 					}
 
 					res.json(200, images);

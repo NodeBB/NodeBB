@@ -10,8 +10,8 @@ define(['taskbar'], function(taskbar) {
 				type: 'danger',
 				timeout: 5000,
 				alert_id: 'post_error',
-				title: 'Please Log In to Post',
-				message: 'Posting is currently restricted to registered members only, click here to log in',
+				title: '[[global:please_log_in]]',
+				message: '[[global:posting_restriction_info]]',
 				clickfn: function() {
 					ajaxify.go('login');
 				}
@@ -218,7 +218,12 @@ define(['taskbar'], function(taskbar) {
 						case 'fa fa-link':
 							if (selectionStart === selectionEnd) {
 								// Nothing selected
+								var	cursorPos = postContentEl[0].selectionStart;
 								insertIntoInput(postContentEl, "[link text](link url)");
+
+								// Highlight "link url"
+								postContentEl[0].selectionStart = cursorPos + 12;
+								postContentEl[0].selectionEnd = cursorPos + 20;
 							} else {
 								// Text selected
 								postContentEl.val(postContentEl.val().slice(0, selectionStart) + '[' + postContentEl.val().slice(selectionStart, selectionEnd) + '](link url)' + postContentEl.val().slice(selectionEnd));
@@ -537,8 +542,13 @@ define(['taskbar'], function(taskbar) {
 				files = dt.files;
 
 			if(files.length) {
+				var fd = new FormData();
+				for (var i = 0, file; file = dt.files[i]; i++) {
+					fd.append('files[]', file, file.name);
+				}
+
 				fileForm[0].reset();
-				fileForm.find('#files')[0].files = files;
+				uploadSubmit(files, post_uuid, '/api/post/upload', fd);
 			}
 
 			drop.hide();
@@ -599,10 +609,8 @@ define(['taskbar'], function(taskbar) {
 				clearForm: true,
 				formData: formData,
 				error: function(xhr) {
-					app.alertError('Error uploading file! ' + xhr.status);
-					composer.posts[post_uuid].uploadsInProgress.pop();
+					app.alertError('Error uploading file!\nStatus : ' + xhr.status + '\nMessage : ' + xhr.responseText);
 				},
-
 				uploadProgress: function(event, position, total, percent) {
 					var current = textarea.val();
 					for(var i=0; i<files.length; ++i) {
@@ -610,7 +618,6 @@ define(['taskbar'], function(taskbar) {
 						textarea.val(current.replace(re, files[i].name+'](uploading ' + percent + '%)'));
 					}
 				},
-
 				success: function(uploads) {
 
 					if(uploads && uploads.length) {
@@ -621,8 +628,11 @@ define(['taskbar'], function(taskbar) {
 						}
 					}
 
-					composer.posts[post_uuid].uploadsInProgress.pop();
 					textarea.focus();
+				},
+				complete: function(xhr, status) {
+					uploadForm[0].reset();
+					composer.posts[post_uuid].uploadsInProgress.pop();
 				}
 			});
 

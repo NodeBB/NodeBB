@@ -67,27 +67,31 @@ var winston = require('winston'),
 				return callback(new Error('topic-already-deleted'));
 			}
 
-			topics.delete(tid);
+			topics.delete(tid, function(err) {
+				if(err) {
+					return callback(err);
+				}
 
-			db.decrObjectField('global', 'topicCount');
+				db.decrObjectField('global', 'topicCount');
 
-			ThreadTools.lock(tid);
+				ThreadTools.lock(tid);
 
-			db.searchRemove('topic', tid);
+				db.searchRemove('topic', tid);
 
-			events.logTopicDelete(uid, tid);
+				events.logTopicDelete(uid, tid);
 
-			websockets.emitTopicPostStats();
+				websockets.emitTopicPostStats();
 
-			websockets.in('topic_' + tid).emit('event:topic_deleted', {
-				tid: tid
-			});
+				websockets.in('topic_' + tid).emit('event:topic_deleted', {
+					tid: tid
+				});
 
-			callback(null, {
-				tid: tid
+				callback(null, {
+					tid: tid
+				});
 			});
 		});
-	}
+	};
 
 	ThreadTools.restore = function(tid, uid, callback) {
 		topics.getTopicField(tid, 'deleted', function(err, deleted) {
@@ -99,29 +103,33 @@ var winston = require('winston'),
 				return callback(new Error('topic-already-restored'));
 			}
 
-			topics.restore(tid);
+			topics.restore(tid, function(err) {
+				if(err) {
+					return callback(err);
+				}
 
-			db.incrObjectField('global', 'topicCount');
+				db.incrObjectField('global', 'topicCount');
 
-			ThreadTools.unlock(tid);
+				ThreadTools.unlock(tid);
 
-			events.logTopicRestore(uid, tid);
+				events.logTopicRestore(uid, tid);
 
-			websockets.emitTopicPostStats();
+				websockets.emitTopicPostStats();
 
-			websockets.in('topic_' + tid).emit('event:topic_restored', {
-				tid: tid
-			});
+				websockets.in('topic_' + tid).emit('event:topic_restored', {
+					tid: tid
+				});
 
-			topics.getTopicField(tid, 'title', function(err, title) {
-				db.searchIndex('topic', title, tid);
-			});
+				topics.getTopicField(tid, 'title', function(err, title) {
+					db.searchIndex('topic', title, tid);
+				});
 
-			callback(null, {
-				tid:tid
+				callback(null, {
+					tid:tid
+				});
 			});
 		});
-	}
+	};
 
 	ThreadTools.lock = function(tid, uid, callback) {
 		topics.setTopicField(tid, 'locked', 1);

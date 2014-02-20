@@ -10,11 +10,14 @@
     "500.message": "אופס! נראה שמשהו השתבש!",
     "register": "הרשמה",
     "login": "התחברות",
+    "welcome_back": "ברוכים השבים",
+    "you_have_successfully_logged_in": "התחברת בהצלחה",
     "logout": "יציאה",
     "logout.title": "אתה מנותק כעת.",
     "logout.message": "התנתקת בהצלחה מ NodeBB.",
     "save_changes": "שמור שינויים",
     "close": "סגור",
+    "pagination": "עימוד",
     "header.admin": "ניהול",
     "header.recent": "פוסטים אחרונים",
     "header.unread": "לא נקרא",
@@ -48,5 +51,6 @@
     "away": "לא נמצא",
     "dnd": "לא להפריע",
     "invisible": "מוסתר",
-    "offline": "מנותק"
+    "offline": "מנותק",
+    "privacy": "פרטיות"
 }

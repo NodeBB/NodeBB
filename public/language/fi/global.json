@@ -10,11 +10,14 @@
     "500.message": "Oho! Jotain meni pieleen!",
     "register": "Rekisteröidy",
     "login": "Kirjaudu",
+    "welcome_back": "Welcome Back ",
+    "you_have_successfully_logged_in": "You have successfully logged in",
     "logout": "Kirjaudu ulos",
     "logout.title": "Olet nyt kirjaunut ulos.",
     "logout.message": "Olet onnistuneesti kirjautunut ulos NodeBB:stä",
     "save_changes": "Tallenna muutokset",
     "close": "Sulje",
+    "pagination": "Pagination",
     "header.admin": "Admin",
     "header.recent": "Viimeisimmät",
     "header.unread": "Lukemattomat",
@@ -48,5 +51,6 @@
     "away": "Away",
     "dnd": "Do not Disturb",
     "invisible": "Invisible",
-    "offline": "Offline"
+    "offline": "Offline",
+    "privacy": "Privacy"
 }

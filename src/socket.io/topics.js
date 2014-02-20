@@ -230,7 +230,7 @@ SocketTopics.follow = function(socket, tid, callback) {
 };
 
 SocketTopics.loadMore = function(socket, data, callback) {
-	if(!data || !data.tid || !data.after) {
+	if(!data || !data.tid || !(parseInt(data.after, 10) >= 0)) {
 		return callback(new Error('invalid data'));
 	}
 

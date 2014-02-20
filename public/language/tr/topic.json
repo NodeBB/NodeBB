@@ -20,6 +20,8 @@
     "flag": "Bayrak",
     "flag_title": "Bu iletiyi moderatöre haber et",
     "deleted_message": "This thread has been deleted. Only users with thread management privileges can see it.",
+    "watch": "Watch",
+    "share_this_post": "Share this Post",
     "thread_tools.title": "Seçenekler",
     "thread_tools.markAsUnreadForAll": "Okunmadı Olarak İşaretle",
     "thread_tools.pin": "Pin Topic",

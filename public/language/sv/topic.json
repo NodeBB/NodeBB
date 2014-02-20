@@ -20,6 +20,8 @@
     "flag": "Rapportera",
     "flag_title": "Rapportera detta inlägg för granskning",
     "deleted_message": "Denna tråd har tagits bort. Endast användare med administrations-rättigheter kan se den.",
+    "watch": "Watch",
+    "share_this_post": "Share this Post",
     "thread_tools.title": "Trådverktyg",
     "thread_tools.markAsUnreadForAll": "Markera som oläst",
     "thread_tools.pin": "Fäst ämne",
