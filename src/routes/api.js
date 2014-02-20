@@ -402,7 +402,10 @@ var path = require('path'),
 				var limit = 50;
 
 				function searchPosts(callback) {
-					db.search('post', req.params.term, limit, function(err, pids) {
+					Plugins.fireHook('filter:search.query', {
+						index: 'post',
+						query: req.params.terms
+					}, function(err, pids) {
 						if (err) {
 							return callback(err, null);
 						}
@@ -412,7 +415,10 @@ var path = require('path'),
 				}
 
 				function searchTopics(callback) {
-					db.search('topic', req.params.term, limit, function(err, tids) {
+					Plugins.fireHook('filter:search.query', {
+						index: 'topic',
+						query: req.params.terms
+					}, function(err, tids) {
 						if (err) {
 							return callback(err, null);
 						}

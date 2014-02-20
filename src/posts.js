@@ -87,8 +87,6 @@ var db = require('./database'),
 
 					plugins.fireHook('action:post.save', postData);
 
-					db.searchIndex('post', content, postData.pid);
-
 					next(null, postData);
 				});
 			}
@@ -445,28 +443,6 @@ var db = require('./database'),
 				});
 			});
 		}
-	}
-
-
-	Posts.reIndexPids = function(pids, callback) {
-
-		function reIndex(pid, next) {
-
-			Posts.getPostField(pid, 'content', function(err, content) {
-				if(err) {
-					return next(err);
-				}
-
-				db.searchRemove('post', pid, function() {
-					if (content && content.length) {
-						db.searchIndex('post', content, pid);
-					}
-					next();
-				});
-			});
-		}
-
-		async.each(pids, reIndex, callback);
 	}
 
 	// this function should really be called User.getFavouritePosts

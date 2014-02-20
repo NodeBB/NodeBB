@@ -16,7 +16,8 @@ var async = require('async'),
 	postTools = require('./postTools'),
 	notifications = require('./notifications'),
 	favourites = require('./favourites'),
-	meta = require('./meta');
+	meta = require('./meta'),
+	Plugins = require('./plugins');
 
 (function(Topics) {
 
@@ -48,7 +49,7 @@ var async = require('async'),
 				}
 
 				db.sortedSetAdd('topics:tid', timestamp, tid);
-				db.searchIndex('topic', title, tid);
+				Plugins.fireHook('action:topic.save', tid);
 
 				user.addTopicIdToUser(uid, tid, timestamp);
 
@@ -1209,25 +1210,4 @@ var async = require('async'),
 			], callback);
 		});
 	};
-
-	Topics.reIndexTopic = function(tid, callback) {
-		Topics.getPids(tid, function(err, pids) {
-			if (err) {
-				return callback(err);
-			}
-
-			posts.reIndexPids(pids, callback);
-		});
-	}
-
-	Topics.reIndexAll = function(callback) {
-		db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
-			if (err) {
-				return callback(err);
-			}
-
-			async.each(tids, Topics.reIndexTopic, callback);
-		});
-	}
-
 }(exports));
