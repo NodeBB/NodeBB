@@ -66,7 +66,7 @@
 				</div>
 				<div class="col-xs-6 pull-left">
 					<div class="available-widgets">
-						<h4>Available Widgets</h4>
+						<h4>Available Widgets <small>Drag and drop widgets into templates</small></h4>
 						<div>
 							<!-- BEGIN widgets -->
 							<div data-widget="{widgets.widget}" class="panel panel-default pointer">
@@ -82,15 +82,18 @@
 							<!-- END widgets -->
 						</div>
 					</div>
-
+					<hr />
 					<div class="available-containers">
-						<h4>Available Containers</h4>
+						<h4>Available Containers <small>Drag and drop on top of any widget</small></h4>
 						<div class="containers">
 							<div class="pointer" style="padding: 20px; border: 1px dotted #dedede; margin-bottom: 20px;" data-container-html=" ">
 								None
 							</div>
 							<div class="well pointer" data-container-html='<div class="well">{body}</div>'>
 								Well
+							</div>
+							<div class="jumbotron pointer" data-container-html='<div class="jumbotron">{body}</div>'>
+								Jumbotron
 							</div>
 							<div class="panel panel-default pointer" data-container-html='<div class="panel panel-default"><div class="panel-heading">{title}</div><div class="panel-body">{body}</div></div>'>
 								<div class="panel-heading">
