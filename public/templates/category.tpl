@@ -99,12 +99,7 @@
 	<!-- IF topics.length -->
 	<div widget-area="sidebar" class="col-md-3 col-xs-12 category-sidebar">
 		<!-- BEGIN widgets -->
-		<div class="panel panel-default">
-			<div class="panel-heading">{widgets.title}</div>
-			<div class="panel-body">
-				{widgets.html}
-			</div>
-		</div>
+		{widgets.html}
 		<!-- END widgets -->
 	</div>
 	<!-- ENDIF topics.length -->
