@@ -1,7 +1,8 @@
 var async = require('async'),
 	winston = require('winston'),
 	plugins = require('./plugins'),
-	db = require('./database');
+	db = require('./database'),
+	templates = require('./../public/src/templates');
 
 
 (function(Widgets) {
@@ -21,10 +22,16 @@ var async = require('async'),
 					uid: uid,
 					area: area,
 					data: widget.data
-				}, function(err, data){
+				}, function(err, html){
+					if (widget.data.container && widget.data.container.match('{body}')) {
+						html = templates.prepare(widget.data.container).parse({
+							title: widget.data.title,
+							body: html
+						});
+					}
+					
 					rendered.push({
-						html: data.html,
-						title: data.title
+						html: html
 					});
 
 					next(err);
