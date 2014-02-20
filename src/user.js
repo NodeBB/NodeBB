@@ -108,39 +108,43 @@ var bcrypt = require('bcryptjs'),
 					'showemail': 0
 				};
 
-				db.setObject('user:' + uid, userData);
+				db.setObject('user:' + uid, userData, function(err) {
 
-				db.setObjectField('username:uid', userData.username, uid);
-				db.setObjectField('userslug:uid', userData.userslug, uid);
-
-				if (userData.email !== undefined) {
-					db.setObjectField('email:uid', userData.email, uid);
-					if (parseInt(uid, 10) !== 1) {
-						User.email.verify(uid, userData.email);
+					if(err) {
+						return callback(err);
 					}
-				}
+					db.setObjectField('username:uid', userData.username, uid);
+					db.setObjectField('userslug:uid', userData.userslug, uid);
 
-				plugins.fireHook('action:user.create', userData);
-				db.incrObjectField('global', 'userCount');
-
-				db.sortedSetAdd('users:joindate', timestamp, uid);
-				db.sortedSetAdd('users:postcount', 0, uid);
-				db.sortedSetAdd('users:reputation', 0, uid);
-
-				groups.joinByGroupName('registered-users', uid);
-
-				if (password) {
-					User.hashPassword(password, function(err, hash) {
-						if(err) {
-							return callback(err);
+					if (userData.email !== undefined) {
+						db.setObjectField('email:uid', userData.email, uid);
+						if (parseInt(uid, 10) !== 1) {
+							User.email.verify(uid, userData.email);
 						}
+					}
 
-						User.setUserField(uid, 'password', hash);
+					plugins.fireHook('action:user.create', userData);
+					db.incrObjectField('global', 'userCount');
+
+					db.sortedSetAdd('users:joindate', timestamp, uid);
+					db.sortedSetAdd('users:postcount', 0, uid);
+					db.sortedSetAdd('users:reputation', 0, uid);
+
+					groups.joinByGroupName('registered-users', uid);
+
+					if (password) {
+						User.hashPassword(password, function(err, hash) {
+							if(err) {
+								return callback(err);
+							}
+
+							User.setUserField(uid, 'password', hash);
+							callback(null, uid);
+						});
+					} else {
 						callback(null, uid);
-					});
-				} else {
-					callback(null, uid);
-				}
+					}
+				});
 			});
 		});
 	};
