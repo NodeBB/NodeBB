@@ -37,6 +37,9 @@ var async = require('async'),
 
 	Widgets.getArea = function(template, location, callback) {
 		db.getObjectField('widgets:' + template, location, function(err, widgets) {
+			if (!widgets) {
+				return callback(err, []);
+			}
 			callback(err, JSON.parse(widgets));
 		})
 	};
