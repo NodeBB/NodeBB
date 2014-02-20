@@ -111,7 +111,7 @@ var winston = require('winston'),
 				], function(err, results) {
 					websockets.in('topic_' + results[0].tid).emit('event:post_edited', {
 						pid: pid,
-						title: validator.sanitize(title).escape(),
+						title: validator.escape(title),
 						isMainPost: results[0].isMainPost,
 						content: results[1]
 					});

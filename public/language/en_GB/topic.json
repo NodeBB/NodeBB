@@ -24,6 +24,13 @@
 	"flag_title": "Flag this post for moderation",
 	"deleted_message": "This thread has been deleted. Only users with thread management privileges can see it.",
 
+	"following_topic.title": "Following Topic",
+	"following_topic.message": "You will now be receiving notifications when somebody posts to this topic.",
+	"not_following_topic.title": "Not Following Topic",
+	"not_following_topic.message": "You will no longer receive notifications from this topic.",
+
+	"login_to_subscribe": "Please register or log in in order to subscribe to this topic",
+
 	"watch": "Watch",
 	"share_this_post": "Share this Post",
 
@@ -79,5 +86,8 @@
 	"composer.thumb_title": "Add a thumbnail to this topic",
 	"composer.thumb_url_placeholder": "http://example.com/thumb.png",
 	"composer.thumb_file_label": "Or upload a file",
-	"composer.thumb_remove": "Clear fields"
+	"composer.thumb_remove": "Clear fields",
+	"composer.drag_and_drop_images": "Drag and Drop Images Here",
+	"composer.content_is_parsed_with": "Content is parsed with",
+	"composer.upload_instructions": "Upload images by dragging & dropping them."
 }

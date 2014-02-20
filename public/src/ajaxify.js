@@ -65,7 +65,7 @@ var ajaxify = {};
 		}
 
 		var hash = '';
-		if(ajaxify.initialLoad && window.location.href.search(/#[0-9]+$/) !== -1) {
+		if(ajaxify.initialLoad) {
 			hash = window.location.hash ? window.location.hash : '';
 		}
 
@@ -97,7 +97,7 @@ var ajaxify = {};
 
 			templates.flush();
 			templates.load_template(function () {
-				exec_body_scripts(content);
+
 				require(['forum/' + tpl_url], function(script) {
 					if (script && script.init) {
 						script.init();
@@ -171,57 +171,5 @@ var ajaxify = {};
 			}
 		});
 	});
-
-	function exec_body_scripts(body_el) {
-		// modified from http://stackoverflow.com/questions/2592092/executing-script-elements-inserted-with-innerhtml
-
-		function nodeName(elem, name) {
-			return elem.nodeName && elem.nodeName.toUpperCase() === name.toUpperCase();
-		}
-
-		function evalScript(elem) {
-			var data = (elem.text || elem.textContent || elem.innerHTML || ""),
-				head = document.getElementsByTagName("head")[0] ||
-					document.documentElement,
-				script = document.createElement("script");
-
-			script.type = "text/javascript";
-			try {
-				script.appendChild(document.createTextNode(data));
-			} catch (e) {
-				script.text = data;
-			}
-
-			if (elem.src) {
-				script.src = elem.src;
-			}
-
-			head.insertBefore(script, head.firstChild);
-			//TODO: remove from head before inserting?, doing this breaks scripts in safari so commented out for now
-			//head.removeChild(script);
-		}
-
-		var scripts = [],
-			script,
-			children_nodes = $(body_el).find('script'),
-			child,
-			i;
-
-		for (i = 0; children_nodes[i]; i++) {
-			child = children_nodes[i];
-			if (nodeName(child, "script") &&
-				(!child.type || child.type.toLowerCase() === "text/javascript")) {
-				scripts.push(child);
-			}
-		}
-
-		for (i = 0; scripts[i]; i++) {
-			script = scripts[i];
-			if (script.parentNode) {
-				script.parentNode.removeChild(script);
-			}
-			evalScript(scripts[i]);
-		}
-	}
 
 }(jQuery));

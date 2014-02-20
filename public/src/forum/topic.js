@@ -290,8 +290,8 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 							app.alert({
 								alert_id: 'topic_follow',
 								timeout: 2500,
-								title: 'Following Topic',
-								message: 'You will now be receiving notifications when somebody posts to this topic.',
+								title: '[[topic:following_topic.title]]',
+								message: '[[topic:following_topic.message]]',
 								type: 'success'
 							});
 						}
@@ -302,8 +302,8 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 							app.alert({
 								alert_id: 'topic_follow',
 								timeout: 2500,
-								title: 'Not Following Topic',
-								message: 'You will no longer receive notifications from this topic.',
+								title: '[[topic:not_following_topic.title]]',
+								message: '[[topic:not_following_topic.message]]',
 								type: 'success'
 							});
 						}
@@ -320,8 +320,8 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 						return app.alert({
 							type: 'danger',
 							alert_id: 'topic_follow',
-							title: 'Please Log In',
-							message: 'Please register or log in in order to subscribe to this topic',
+							title: '[[global:please_log_in]]',
+							message: '[[topic:login_to_subscribe]]',
 							timeout: 5000
 						});
 					}
@@ -754,7 +754,6 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			}
 
 			socket.emit('topics.markAsRead', {tid: tid, uid: app.uid});
-
 			createNewPosts(data);
 		});
 
@@ -1138,20 +1137,18 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		var elTop = el.offset().top;
 		var height = Math.floor(el.height());
 		var elBottom = elTop + height;
-
-		return ((elBottom >= scrollTop) &&
-				(elTop <= scrollBottom) &&
-				(elBottom <= scrollBottom) &&
-				(elTop >= scrollTop));
+		return !(elTop > scrollBottom || elBottom < scrollTop);
 	}
 
 	Topic.scrollToPost = function(pid, duration, offset) {
 		if (!pid) {
 			return;
 		}
+
 		if(!offset) {
 			offset = 0;
 		}
+
 
 		if($('#post_anchor_' + pid).length) {
 			return scrollToPid(pid);
@@ -1198,7 +1195,11 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			}
 
 			if (tid && scrollTo.length) {
-				animateScroll();
+				if($('#post-container li.post-row[data-pid="' + pid + '"]').attr('data-index') !== '0') {
+					animateScroll();
+				} else {
+					updateHeader();
+				}
 			}
 		}
 	}

@@ -15,8 +15,8 @@ define(['taskbar'], function(taskbar) {
 				type: 'danger',
 				timeout: 5000,
 				alert_id: 'post_error',
-				title: 'Please Log In to Post',
-				message: 'Posting is currently restricted to registered members only, click here to log in',
+				title: '[[global:please_log_in]]',
+				message: '[[global:posting_restriction_info]]',
 				clickfn: function() {
 					ajaxify.go('login');
 				}
@@ -192,8 +192,7 @@ define(['taskbar'], function(taskbar) {
 				clearForm: true,
 				formData: formData,
 				error: function(xhr) {
-					app.alertError('Error uploading file! ' + xhr.status);
-					composer.posts[post_uuid].uploadsInProgress.pop();
+					app.alertError('Error uploading file!\nStatus : ' + xhr.status + '\nMessage : ' + xhr.responseText);
 					if (typeof callback == 'function')
 						callback(xhr);
 				},
@@ -214,10 +213,14 @@ define(['taskbar'], function(taskbar) {
 						}
 					}
 
-					composer.posts[post_uuid].uploadsInProgress.pop();
 					textarea.focus();
 					if (typeof callback == 'function')
 						callback(null, uploads);
+				},
+
+				complete: function(xhr, status) {
+					uploadForm[0].reset();
+					composer.posts[post_uuid].uploadsInProgress.pop();
 				}
 			});
 
@@ -252,18 +255,17 @@ define(['taskbar'], function(taskbar) {
 			$(this).ajaxSubmit({
 				formData: formData,
 				error: function(xhr) {
-					app.alertError('Error uploading file! ' + xhr.status);
-					composer.posts[post_uuid].uploadsInProgress.pop();
+					app.alertError('Error uploading file!\nStatus : ' + xhr.status + '\nMessage : ' + xhr.responseText);
 					if (typeof callback == 'function')
 						callback(xhr);
 				},
 				success: function(uploads) {
-					composer.posts[post_uuid].uploadsInProgress.pop();
 					postContainer.find('#topic-thumb-url').val((uploads[0] || {}).url || '').trigger('change');
 					if (typeof callback == 'function')
 						callback(null, uploads);
 				},
-				complete: function(){
+				complete: function() {
+					composer.posts[post_uuid].uploadsInProgress.pop();
 					spinner.addClass('hide');
 				}
 			});
@@ -477,7 +479,12 @@ define(['taskbar'], function(taskbar) {
 						case 'fa fa-bold':
 							if (selectionStart === selectionEnd) {
 								// Nothing selected
+								var	cursorPos = postContentEl[0].selectionStart;
 								insertIntoInput(postContentEl, "**bolded text**");
+
+								// Highlight "link url"
+								postContentEl[0].selectionStart = cursorPos + 12;
+								postContentEl[0].selectionEnd = cursorPos + 20;
 							} else {
 								// Text selected
 								postContentEl.val(postContentEl.val().slice(0, selectionStart) + '**' + postContentEl.val().slice(selectionStart, selectionEnd) + '**' + postContentEl.val().slice(selectionEnd));
@@ -503,7 +510,12 @@ define(['taskbar'], function(taskbar) {
 						case 'fa fa-link':
 							if (selectionStart === selectionEnd) {
 								// Nothing selected
+								var	cursorPos = postContentEl[0].selectionStart;
 								insertIntoInput(postContentEl, "[link text](link url)");
+
+								// Highlight "link url"
+								postContentEl[0].selectionStart = cursorPos + 12;
+								postContentEl[0].selectionEnd = cursorPos + 20;
 							} else {
 								// Text selected
 								postContentEl.val(postContentEl.val().slice(0, selectionStart) + '[' + postContentEl.val().slice(selectionStart, selectionEnd) + '](link url)' + postContentEl.val().slice(selectionEnd));
@@ -759,6 +771,155 @@ define(['taskbar'], function(taskbar) {
 		composer.active = undefined;
 		taskbar.minimize('composer', post_uuid);
 	};
+
+	function initializeDragAndDrop(post_uuid) {
+
+		if(jQuery.event.props.indexOf('dataTransfer') === -1) {
+			jQuery.event.props.push('dataTransfer');
+		}
+
+		var draggingDocument = false;
+
+		var postContainer = $('#cmp-uuid-' + post_uuid),
+			fileForm = postContainer.find('#fileForm');
+			drop = postContainer.find('.imagedrop'),
+			tabContent = postContainer.find('.tab-content'),
+			textarea = postContainer.find('textarea');
+
+		$(document).off('dragstart').on('dragstart', function(e) {
+			draggingDocument = true;
+		}).off('dragend').on('dragend', function(e) {
+			draggingDocument = false;
+		});
+
+		textarea.on('dragenter', function(e) {
+			if(draggingDocument) {
+				return;
+			}
+			drop.css('top', tabContent.position().top + 'px');
+			drop.css('height', textarea.height());
+			drop.css('line-height', textarea.height() + 'px');
+			drop.show();
+
+			drop.on('dragleave', function(ev) {
+				drop.hide();
+				drop.off('dragleave');
+			});
+		});
+
+		function cancel(e) {
+			e.preventDefault();
+			return false;
+		}
+
+		drop.on('dragover', cancel);
+		drop.on('dragenter', cancel);
+
+		drop.on('drop', function(e) {
+			e.preventDefault();
+			var dt = e.dataTransfer,
+				files = dt.files;
+
+			if(files.length) {
+				var fd = new FormData();
+				for (var i = 0, file; file = dt.files[i]; i++) {
+					fd.append('files[]', file, file.name);
+				}
+
+				fileForm[0].reset();
+				uploadSubmit(files, post_uuid, '/api/post/upload', fd);
+			}
+
+			drop.hide();
+			return false;
+		});
+
+		$(window).off('paste').on('paste', function(event) {
+
+			var items = (event.clipboardData || event.originalEvent.clipboardData).items;
+
+			if(items && items.length) {
+
+				var blob = items[0].getAsFile();
+				if(blob) {
+					blob.name = 'upload-'+ utils.generateUUID();
+
+					var fd = new FormData();
+					fd.append('files[]', blob, blob.name);
+
+					fileForm[0].reset();
+					uploadSubmit([blob], post_uuid, '/api/post/upload', fd);
+				}
+			}
+		});
+	}
+
+	function uploadSubmit(files, post_uuid, route, formData, callback) {
+		var postContainer = $('#cmp-uuid-' + post_uuid),
+			textarea = postContainer.find('textarea'),
+			text = textarea.val(),
+			uploadForm = postContainer.find('#fileForm');
+
+		uploadForm.attr('action', route);
+
+		for(var i=0; i<files.length; ++i) {
+			var isImage = files[i].type.match('image.*');
+			text += (isImage ? '!' : '') + '[' + files[i].name + '](uploading...) ';
+
+			if(files[i].size > parseInt(config.maximumFileSize, 10) * 1024) {
+				uploadForm[0].reset();
+				return composerAlert('File too big', 'Maximum allowed file size is ' + config.maximumFileSize + 'kbs');
+			}
+		}
+
+		textarea.val(text);
+
+		uploadForm.off('submit').submit(function() {
+
+			$(this).find('#postUploadCsrf').val($('#csrf_token').val());
+			if(formData) {
+				formData.append('_csrf', $('#csrf_token').val());
+			}
+
+			composer.posts[post_uuid].uploadsInProgress.push(1);
+
+			$(this).ajaxSubmit({
+				resetForm: true,
+				clearForm: true,
+				formData: formData,
+				error: function(xhr) {
+					app.alertError('Error uploading file!\nStatus : ' + xhr.status + '\nMessage : ' + xhr.responseText);
+				},
+				uploadProgress: function(event, position, total, percent) {
+					var current = textarea.val();
+					for(var i=0; i<files.length; ++i) {
+						var re = new RegExp(files[i].name + "]\\([^)]+\\)", 'g');
+						textarea.val(current.replace(re, files[i].name+'](uploading ' + percent + '%)'));
+					}
+				},
+				success: function(uploads) {
+
+					if(uploads && uploads.length) {
+						for(var i=0; i<uploads.length; ++i) {
+							var current = textarea.val();
+							var re = new RegExp(uploads[i].name + "]\\([^)]+\\)", 'g');
+							textarea.val(current.replace(re, uploads[i].name + '](' + uploads[i].url + ')'));
+						}
+					}
+
+					textarea.focus();
+				},
+				complete: function(xhr, status) {
+					uploadForm[0].reset();
+					composer.posts[post_uuid].uploadsInProgress.pop();
+				}
+			});
+
+			return false;
+		});
+
+		uploadForm.submit();
+	}
 
 	return {
 		newTopic: composer.newTopic,

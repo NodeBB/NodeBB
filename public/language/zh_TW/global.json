@@ -10,11 +10,14 @@
     "500.message": "不好！看來是哪裡出錯了！",
     "register": "注冊",
     "login": "登錄",
+    "welcome_back": "Welcome Back ",
+    "you_have_successfully_logged_in": "You have successfully logged in",
     "logout": "退出",
     "logout.title": "你已經退出。",
     "logout.message": "你已經成功退出登錄。",
     "save_changes": "保存修改",
     "close": "關閉",
+    "pagination": "Pagination",
     "header.admin": "管理",
     "header.recent": "最近",
     "header.unread": "未讀",
@@ -48,5 +51,6 @@
     "away": "Away",
     "dnd": "Do not Disturb",
     "invisible": "Invisible",
-    "offline": "Offline"
+    "offline": "Offline",
+    "privacy": "Privacy"
 }

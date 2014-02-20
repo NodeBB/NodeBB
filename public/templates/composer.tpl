@@ -73,12 +73,12 @@
 			</div>
 		</div>
 
-		<div class="imagedrop"><div>Drag and Drop Images Here</div></div>
+		<div class="imagedrop"><div>[[topic:composer.drag_and_drop_images]]</div></div>
 
 		<div class="text-center">
 			<span>
-				<small>Content is parsed with <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a>. </small>
-				<span class="upload-instructions hide"><small>Upload content images by dragging & dropping them.</small></span>
+				<small>[[topic:composer.content_is_parsed_with]] <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a>. </small>
+				<span class="upload-instructions hide"><small>[[topic:composer.upload_instructions]]</small></span>
 			</span>
 
 		</div>

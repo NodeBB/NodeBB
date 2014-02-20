@@ -20,6 +20,8 @@
     "flag": "Flag",
     "flag_title": "Flag this post for moderation",
     "deleted_message": "This thread has been deleted. Only users with thread management privileges can see it.",
+    "watch": "Watch",
+    "share_this_post": "Share this Post",
     "thread_tools.title": "Ketjun työkalut",
     "thread_tools.markAsUnreadForAll": "Merkitse luetuiksi",
     "thread_tools.pin": "Pin Topic",

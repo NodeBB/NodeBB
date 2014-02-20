@@ -10,11 +10,14 @@
     "500.message": "Jejda, vypadá to, že se něco pokazilo.",
     "register": "Registrovat",
     "login": "Přihlásit se",
+    "welcome_back": "Welcome Back ",
+    "you_have_successfully_logged_in": "You have successfully logged in",
     "logout": "Odhlásit se",
     "logout.title": "Odhlásili jsme Vás.",
     "logout.message": "Úspěšně jsme Vás odhlásili z fóra.",
     "save_changes": "Uložit změny",
     "close": "Zrušit",
+    "pagination": "Pagination",
     "header.admin": "Administrace",
     "header.recent": "Aktuality",
     "header.unread": "Nepřečtené",
@@ -48,5 +51,6 @@
     "away": "Pryč",
     "dnd": "Nerušit",
     "invisible": "Neviditelný",
-    "offline": "Offline"
+    "offline": "Offline",
+    "privacy": "Privacy"
 }

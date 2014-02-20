@@ -4,7 +4,6 @@ var bcrypt = require('bcryptjs'),
 	winston = require('winston'),
 	gravatar = require('gravatar'),
 	check = require('validator').check,
-	sanitize = require('validator').sanitize,
 	S = require('string'),
 
 	utils = require('./../public/src/utils'),
@@ -335,7 +334,7 @@ var bcrypt = require('bcryptjs'),
 			}
 
 			data[field] = data[field].trim();
-			data[field] = sanitize(data[field]).escape();
+			data[field] = validator.escape(data[field]);
 
 			if (field === 'email') {
 				User.getUserFields(uid, ['email', 'picture', 'uploadedpicture'], function(err, userData) {
@@ -424,27 +423,59 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.changePassword = function(uid, data, callback) {
+		if(!data || !data.uid) {
+			return callback(new Error('invalid-uid'));
+		}
+
+		function hashAndSetPassword(callback) {
+			User.hashPassword(data.newPassword, function(err, hash) {
+				if(err) {
+					return callback(err);
+				}
+
+				User.setUserField(data.uid, 'password', hash, function(err) {
+					if(err) {
+						return callback(err);
+					}
+
+					if(parseInt(uid, 10) === parseInt(data.uid, 10)) {
+						events.logPasswordChange(data.uid);
+					} else {
+						events.logAdminChangeUserPassword(uid, data.uid);
+					}
+
+					callback();
+				});
+			});
+		}
+
 		if (!utils.isPasswordValid(data.newPassword)) {
 			return callback(new Error('Invalid password!'));
 		}
 
-		User.getUserField(uid, 'password', function(err, currentPassword) {
-			bcrypt.compare(data.currentPassword, currentPassword, function(err, res) {
-				if (err) {
+		if(parseInt(uid, 10) !== parseInt(data.uid, 10)) {
+			User.isAdministrator(uid, function(err, isAdmin) {
+				if(err || !isAdmin) {
+					return callback(err || new Error('not-allowed'));
+				}
+
+				hashAndSetPassword(callback);
+			});
+		} else {
+			User.getUserField(uid, 'password', function(err, currentPassword) {
+				if(err) {
 					return callback(err);
 				}
 
-				if (res) {
-					User.hashPassword(data.newPassword, function(err, hash) {
-						User.setUserField(uid, 'password', hash);
-						events.logPasswordChange(uid);
-						callback(null);
-					});
-				} else {
-					callback(new Error('Your current password is not correct!'));
-				}
+				bcrypt.compare(data.currentPassword, currentPassword, function(err, res) {
+					if (err || !res) {
+						return callback(err || new Error('Your current password is not correct!'));
+					}
+
+					hashAndSetPassword(callback);
+				});
 			});
-		});
+		}
 	};
 
 	User.setUserField = function(uid, field, value, callback) {

@@ -10,11 +10,14 @@
     "500.message": "Ups! Bir şeyler ters gitti sanki!",
     "register": "Kayıt Ol",
     "login": "Giriş",
+    "welcome_back": "Welcome Back ",
+    "you_have_successfully_logged_in": "You have successfully logged in",
     "logout": "Çıkış",
     "logout.title": "Şimdi çıkış yaptınız.",
     "logout.message": "NodeBB 'ye başarıyla giriş yaptınız",
     "save_changes": "Değişiklikleri kaydet",
     "close": "Yakın",
+    "pagination": "Pagination",
     "header.admin": "Yönetim",
     "header.recent": "Yeni",
     "header.unread": "Okunmamış",
@@ -48,5 +51,6 @@
     "away": "Dışarıda",
     "dnd": "Rahatsız Etmeyin",
     "invisible": "Görünmez",
-    "offline": "Çevrimdışı"
+    "offline": "Çevrimdışı",
+    "privacy": "Privacy"
 }

@@ -10,11 +10,14 @@
     "500.message": "Oops! deu algo errado!",
     "register": "Cadastrar",
     "login": "Logar",
+    "welcome_back": "Welcome Back ",
+    "you_have_successfully_logged_in": "You have successfully logged in",
     "logout": "Logout",
     "logout.title": "Logout com sucesso.",
     "logout.message": "Logado com Sucesso!",
     "save_changes": "Salvar Alterações",
     "close": "Fechar",
+    "pagination": "Pagination",
     "header.admin": "Admin",
     "header.recent": "Recente",
     "header.unread": "Não Lido",
@@ -48,5 +51,6 @@
     "away": "Ausente",
     "dnd": "Não Perturbe",
     "invisible": "Invisível",
-    "offline": "Offline"
+    "offline": "Offline",
+    "privacy": "Privacy"
 }

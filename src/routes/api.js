@@ -11,7 +11,7 @@ var path = require('path'),
 	ThreadTools = require('../threadTools'),
 	posts = require('../posts'),
 	categories = require('../categories'),
-	categoryTools = require('../categoryTools')
+	categoryTools = require('../categoryTools'),
 	meta = require('../meta'),
 	Plugins = require('../plugins'),
 	utils = require('../../public/src/utils'),
@@ -88,7 +88,7 @@ var path = require('path'),
 				categories.getAllCategories(uid, function (err, data) {
 
 					data.categories = data.categories.filter(function (category) {
-						return (!category.disabled || parseInt(category.disabled, 10) === 0);
+						return !category.disabled;
 					});
 
 					function canSee(category, next) {
@@ -267,8 +267,8 @@ var path = require('path'),
 						return next(err);
 					}
 
-					var start = (page - 1) * settings.topicsPerPage;
-					var end = start + settings.topicsPerPage - 1;
+					var start = (page - 1) * settings.topicsPerPage,
+						end = start + settings.topicsPerPage - 1;
 
 					categoryTools.privileges(req.params.id, uid, function(err, privileges) {
 						if (!err && privileges.read) {
@@ -280,7 +280,7 @@ var path = require('path'),
 								data.currentPage = page;
 								data.privileges = privileges;
 
-								if (data && parseInt(data.disabled, 10) === 0) {
+								if (data && !data.disabled) {
 									res.json(data);
 								} else {
 									next();
@@ -473,7 +473,7 @@ var path = require('path'),
 				async.map(files, filesIterator, function(err, images) {
 					deleteTempFiles();
 					if(err) {
-						return res.json(500, {message: err.message});
+						return res.json(500, err.message);
 					}
 					res.json(200, images);
 				});
@@ -496,7 +496,7 @@ var path = require('path'),
 					} else {
 		            	res.json(500, {message: 'Invalid File'});
 					}
-				}, next)
+				}, next);
 			});
 
 			app.get('/reset', function (req, res) {

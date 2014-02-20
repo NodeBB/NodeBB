@@ -289,7 +289,7 @@ var db = require('./database'),
 							postData.categoryName = categoryData.name;
 							postData.categoryIcon = categoryData.icon;
 							postData.categorySlug = categoryData.slug;
-							postData.title = validator.sanitize(topicData.title).escape();
+							postData.title = validator.escape(topicData.title);
 							postData.topicSlug = topicData.slug;
 							next(null, postData);
 						})

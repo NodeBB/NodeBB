@@ -22,6 +22,10 @@ case "$1" in
 		node app --setup
 		;;
 
+        reset)
+                node app --reset
+                ;;
+
 	dev)
 		echo "Launching NodeBB in \"development\" mode."
 		echo "To run the production build of NodeBB, please use \"forever\"."
@@ -55,7 +59,7 @@ case "$1" in
 
 	*)
 		echo "Welcome to NodeBB"
-		echo $"Usage: $0 {start|dev|watch|language}"
+		echo $"Usage: $0 {start|dev|watch|upgrade}"
 		echo ''
 		column -s '	' -t <<< '
 		start	Start NodeBB in production mode

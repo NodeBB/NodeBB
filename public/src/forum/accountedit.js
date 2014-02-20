@@ -190,10 +190,11 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 
 			$('#changePasswordBtn').on('click', function() {
 
-				if (passwordvalid && passwordsmatch && currentPassword.val()) {
+				if (passwordvalid && passwordsmatch && (currentPassword.val() || app.isAdmin)) {
 					socket.emit('user.changePassword', {
 						'currentPassword': currentPassword.val(),
-						'newPassword': password.val()
+						'newPassword': password.val(),
+						'uid': templates.get('theirid')
 					}, function(err) {
 
 						currentPassword.val('');
@@ -203,12 +204,10 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 						passwordvalid = false;
 
 						if (err) {
-							app.alertError(err.message);
-							return;
+							return app.alertError(err.message);
 						}
 
 						app.alertSuccess('Your password is updated!');
-
 					});
 				}
 				return false;

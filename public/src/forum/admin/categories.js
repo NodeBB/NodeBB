@@ -83,7 +83,7 @@ define(['uploader'], function(uploader) {
 			var category = {
 				name: $('#inputName').val(),
 				description: $('#inputDescription').val(),
-				icon: $('#new-category-modal i').val(),
+				icon: $('#new-category-modal i').attr('value'),
 				bgColor: '#0059b2',
 				color: '#fff',
 				order: $('.admin-categories #entry-container').children().length + 1
@@ -105,10 +105,26 @@ define(['uploader'], function(uploader) {
 				var html = templates.prepare(templates['admin/categories'].blocks['categories']).parse({
 					categories: [data]
 				});
+				html = $(html);
+				html.find('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
 
 				$('#entry-container').append(html);
 				$('#new-category-modal').modal('hide');
+			});
+		}
 
+		function enableColorPicker(idx, inputEl) {
+			var	jinputEl = $(inputEl),
+				previewEl = jinputEl.parents('[data-cid]').find('.preview-box');
+
+			jinputEl.ColorPicker({
+				color: jinputEl.val() || '#000',
+				onChange: function(hsb, hex) {
+					jinputEl.val('#' + hex);
+					if (inputEl.getAttribute('data-name') === 'bgColor') previewEl.css('background', '#' + hex);
+					else if (inputEl.getAttribute('data-name') === 'color') previewEl.css('color', '#' + hex);
+					modified(inputEl);
+				}
 			});
 		}
 
@@ -141,21 +157,12 @@ define(['uploader'], function(uploader) {
 				modified(ev.target);
 			});
 
-			$('.dropdown li[data-disabled]').each(function(index, element) {
-				var disabled = $(element).attr('data-disabled');
-				if (disabled == "0" || disabled == "") {
-					$(element).html('<a href="#"><i class="fa fa-power-off"></i> Disable</a>');
-				} else {
-					$(element).html('<a href="#"><i class="fa fa-power-off"></i> Enable</a>');
-				}
-			});
-
 			$('.dropdown').on('click', '[data-disabled]', function(ev) {
 				var btn = $(this);
 				var categoryRow = btn.parents('li');
 				var cid = categoryRow.attr('data-cid');
 
-				var disabled = this.getAttribute('data-disabled') === '0' ? '1' : '0';
+				var disabled = this.getAttribute('data-disabled') === 'false' ? '1' : '0';
 				categoryRow.remove();
 				modified_categories[cid] = modified_categories[cid] || {};
 				modified_categories[cid]['disabled'] = disabled;
@@ -165,20 +172,7 @@ define(['uploader'], function(uploader) {
 			});
 
 			// Colour Picker
-			$('[data-name="bgColor"], [data-name="color"]').each(function(idx, inputEl) {
-				var	jinputEl = $(this),
-					previewEl = jinputEl.parents('[data-cid]').find('.preview-box');
-
-				jinputEl.ColorPicker({
-					color: this.value || '#000',
-					onChange: function(hsb, hex) {
-						jinputEl.val('#' + hex);
-						if (inputEl.getAttribute('data-name') === 'bgColor') previewEl.css('background', '#' + hex);
-						else if (inputEl.getAttribute('data-name') === 'color') previewEl.css('color', '#' + hex);
-						modified(inputEl);
-					}
-				});
-			});
+			$('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
 
 			$('.admin-categories').on('click', '.save', save);
 

@@ -92,6 +92,10 @@ define(function() {
 	}
 
 	Recent.loadMoreTopics = function() {
+		if(!$('#topics-container').length) {
+			return;
+		}
+
 		loadingMoreTopics = true;
 		socket.emit('topics.loadMoreRecentTopics', {
 			after: $('#topics-container').attr('data-nextstart'),
