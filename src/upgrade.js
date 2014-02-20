@@ -738,11 +738,11 @@ Upgrade.upgrade = function(callback) {
 						"data": {}
 					}
 				]), function(err) {
-					winston.info('[2014/2/20] Updated MOTD to use the HTML widget.');
+					winston.info('[2014/2/20] Adding Recent Replies, Active Users, and Moderator widgets to category sidebar.');
 					next(err);
 				});
 			} else {
-				winston.info('[2014/2/20] Updating MOTD to use the HTML widget - skipped');
+				winston.info('[2014/2/20] Adding Recent Replies, Active Users, and Moderator widgets to category sidebar - skipped');
 				next();
 			}
 		}
