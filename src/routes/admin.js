@@ -429,6 +429,12 @@ var nconf = require('nconf'),
 							next(err);
 						});
 					}, function(err) {
+						for (var w in data.widgets) {
+							if (data.widgets.hasOwnProperty(w)) {
+								data.widgets[w].content += "<br /><label>Title:</label><input type=\"text\" class=\"form-control\" name=\"title\" placeholder=\"Title (only shown on some containers)\" /><br /><label>Container:</label><textarea rows=\"4\" class=\"form-control container-html\" name=\"container\" placeholder=\"Drag and drop a container or enter HTML here.\"></textarea>";
+							}
+						}
+
 						res.json(200, {
 							areas: data.areas,
 							widgets: data.widgets

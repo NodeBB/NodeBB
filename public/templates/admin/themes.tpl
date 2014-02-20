@@ -86,13 +86,13 @@
 					<div class="available-containers">
 						<h4>Available Containers</h4>
 						<div class="containers">
-							<div class="pointer" style="padding: 20px; border: 1px dotted #dedede; margin-bottom: 20px;" data-container=" ">
+							<div class="pointer" style="padding: 20px; border: 1px dotted #dedede; margin-bottom: 20px;" data-container-html=" ">
 								None
 							</div>
-							<div class="well pointer" data-container="well">
+							<div class="well pointer" data-container-html='<div class="well">{body}</div>'>
 								Well
 							</div>
-							<div class="panel panel-default pointer" data-container="panel">
+							<div class="panel panel-default pointer" data-container-html='<div class="panel panel-default"><div class="panel-heading">{title}</div><div class="panel-body">{body}</div></div>'>
 								<div class="panel-heading">
 									Panel Header
 								</div>

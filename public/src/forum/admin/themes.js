@@ -142,10 +142,10 @@ define(['forum/admin/settings'], function(Settings) {
 			connectToSortable: ".widget-area"
 		});
 
-		$('#widgets .available-containers .containers > [data-container]').draggable({
+		$('#widgets .available-containers .containers > [data-container-html]').draggable({
 			helper: function(e) {
 				var target = $(e.target);
-				target = target.attr('data-container') ? target : target.parents('[data-container]');
+				target = target.attr('data-container-html') ? target : target.parents('[data-container-html]');
 
 				return target.clone().addClass('block').width(target.width()).css('opacity', '0.5');
 			}
@@ -156,7 +156,10 @@ define(['forum/admin/settings'], function(Settings) {
 				el.addClass('block')
 					.droppable({
 						drop: function(event, ui) {
-							$(this).find('.panel-heading small').html(ui.draggable.attr('data-container'));
+							var el = $(this);
+
+							el.find('.panel-body .container-html').val(ui.draggable.attr('data-container-html'));
+							el.find('.panel-body').removeClass('hidden');
 						},
 						hoverClass: "panel-info"
 					})
