@@ -83,8 +83,6 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 			topic.hide().fadeIn('slow');
 
-			addActiveUser(data);
-
 			socket.emit('categories.getPageCount', templates.get('category_id'), function(err, newPageCount) {
 				pagination.recreatePaginationLinks(newPageCount);
 			});
@@ -92,21 +90,6 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			$('#topics-container span.timeago').timeago();
 			app.createUserTooltips();
 		});
-	}
-
-	function addActiveUser(data) {
-		var activeUser = $('.category-sidebar .active-users').find('a[data-uid="' + data.uid + '"]');
-		if(!activeUser.length) {
-			var newUser = templates.prepare(templates['category'].blocks['active_users']).parse({
-				active_users: [{
-					uid: data.uid,
-					username: data.username,
-					userslug: data.userslug,
-					picture: data.teaser_userpicture
-				}]
-			});
-			$(newUser).appendTo($('.category-sidebar .active-users'));
-		}
 	}
 
 	Category.onTopicsLoaded = function(topics) {
