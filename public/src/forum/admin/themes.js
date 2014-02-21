@@ -155,6 +155,7 @@ define(['forum/admin/settings'], function(Settings) {
 			if (!el.hasClass('block')) {
 				el.addClass('block')
 					.droppable({
+						accept: '[data-container-html]',
 						drop: function(event, ui) {
 							var el = $(this);
 
