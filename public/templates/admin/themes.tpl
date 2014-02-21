@@ -9,7 +9,7 @@
 	</ul>
 
 	<div class="tab-content">
-		<div class="tab-pane" id="themes">
+		<div class="tab-pane active" id="themes">
 			<h3>Installed Themes</h3>
 			<p>
 				The following themes are currently installed in this NodeBB instance.
@@ -50,7 +50,7 @@
 
 			<button class="btn btn-primary" id="save">Save</button>
 		</div>
-		<div class="tab-pane active" id="widgets">
+		<div class="tab-pane" id="widgets">
 			<h3>Widgets</h3>
 
 			<div class="row">
