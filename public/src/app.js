@@ -15,6 +15,9 @@ var socket,
 			url: RELATIVE_PATH + '/api/config',
 			success: function (data) {
 				config = data;
+
+				exposeConfigToTemplates();
+
 				if(socket) {
 					socket.disconnect();
 					setTimeout(function() {
@@ -591,12 +594,16 @@ var socket,
 		});
 
 		createHeaderTooltips();
-
-		templates.setGlobal('relative_path', RELATIVE_PATH);
-		templates.setGlobal('usePagination', config.usePagination);
-		templates.setGlobal('topicsPerPage', config.topicsPerPage);
-		templates.setGlobal('postsPerPage', config.postsPerPage);
 	});
+
+	function exposeConfigToTemplates() {
+		$(document).ready(function() {
+			templates.setGlobal('relative_path', RELATIVE_PATH);
+			for(var key in config) {
+				templates.setGlobal('config.' + key, config[key]);
+			}
+		});
+	}
 
 	function createHeaderTooltips() {
 		$('#header-menu li i[title]').each(function() {

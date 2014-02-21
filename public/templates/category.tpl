@@ -86,14 +86,14 @@
 			</li>
 			<!-- END topics -->
 		</ul>
-		<!-- IF usePagination -->
+		<!-- IF config.usePagination -->
 		<div class="text-center">
 			<ul class="pagination">
 				<li class="previous pull-left"><a href="#"><i class="fa fa-chevron-left"></i> [[global:previouspage]]</a></li>
 				<li class="next pull-right"><a href="#">[[global:nextpage]] <i class="fa fa-chevron-right"></i></a></li>
 			</ul>
 		</div>
-		<!-- ENDIF usePagination -->
+		<!-- ENDIF config.usePagination -->
 	</div>
 
 	<!-- IF topics.length -->

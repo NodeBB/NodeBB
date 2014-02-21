@@ -14,6 +14,10 @@
 	<!-- BEGIN pluginCSS -->
 	<link rel="stylesheet" href="{pluginCSS.path}?{cache-buster}">
 	<!-- END pluginCSS -->
+	<!-- IF useCustomCSS -->
+	<style type="text/css">{customCSS}</style>
+	<!-- ENDIF useCustomCSS -->
+
 	<script>
 		var RELATIVE_PATH = "{relative_path}";
 	</script>
@@ -31,12 +35,6 @@
 			}
 		});
 	</script>
-
-	<!-- TODO : this has to be refactored, maybe configured from ACP? -baris -->
-	<link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
-	<!-- IF useCustomCSS -->
-	<style type="text/css">{customCSS}</style>
-	<!-- ENDIF useCustomCSS -->
 </head>
 
 <body>

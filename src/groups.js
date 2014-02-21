@@ -70,7 +70,7 @@
 			results.base.count = results.users.length;
 			results.base.members = results.users;
 
-			results.base.deletable = parseInt(results.base.gid, 10) !== 1;
+			results.base.deletable = results.base.hidden !== '1';
 
 			callback(err, results.base);
 		});

@@ -104,43 +104,46 @@ var bcrypt = require('bcryptjs'),
 					'postcount': 0,
 					'lastposttime': 0,
 					'banned': 0,
-					'status': 'online',
-					'showemail': 0
+					'status': 'online'
 				};
 
-				db.setObject('user:' + uid, userData);
+				db.setObject('user:' + uid, userData, function(err) {
 
-				db.setObjectField('username:uid', userData.username, uid);
-				db.setObjectField('userslug:uid', userData.userslug, uid);
-
-				if (userData.email !== undefined) {
-					db.setObjectField('email:uid', userData.email, uid);
-					if (parseInt(uid, 10) !== 1) {
-						User.email.verify(uid, userData.email);
+					if(err) {
+						return callback(err);
 					}
-				}
+					db.setObjectField('username:uid', userData.username, uid);
+					db.setObjectField('userslug:uid', userData.userslug, uid);
 
-				plugins.fireHook('action:user.create', userData);
-				db.incrObjectField('global', 'userCount');
-
-				db.sortedSetAdd('users:joindate', timestamp, uid);
-				db.sortedSetAdd('users:postcount', 0, uid);
-				db.sortedSetAdd('users:reputation', 0, uid);
-
-				groups.joinByGroupName('registered-users', uid);
-
-				if (password) {
-					User.hashPassword(password, function(err, hash) {
-						if(err) {
-							return callback(err);
+					if (userData.email !== undefined) {
+						db.setObjectField('email:uid', userData.email, uid);
+						if (parseInt(uid, 10) !== 1) {
+							User.email.verify(uid, userData.email);
 						}
+					}
 
-						User.setUserField(uid, 'password', hash);
+					plugins.fireHook('action:user.create', userData);
+					db.incrObjectField('global', 'userCount');
+
+					db.sortedSetAdd('users:joindate', timestamp, uid);
+					db.sortedSetAdd('users:postcount', 0, uid);
+					db.sortedSetAdd('users:reputation', 0, uid);
+
+					groups.joinByGroupName('registered-users', uid);
+
+					if (password) {
+						User.hashPassword(password, function(err, hash) {
+							if(err) {
+								return callback(err);
+							}
+
+							User.setUserField(uid, 'password', hash);
+							callback(null, uid);
+						});
+					} else {
 						callback(null, uid);
-					});
-				} else {
-					callback(null, uid);
-				}
+					}
+				});
 			});
 		});
 	};
@@ -209,7 +212,7 @@ var bcrypt = require('bcryptjs'),
 				settings = {}
 			}
 
-			settings.showemail = settings.showemail ? parseInt(settings.showemail, 10) !== 0 : parseInt(meta.config.usePagination, 10) !== 0;
+			settings.showemail = settings.showemail ? parseInt(settings.showemail, 10) !== 0 : false;
 			settings.usePagination = settings.usePagination ? parseInt(settings.usePagination, 10) !== 0 : parseInt(meta.config.usePagination, 10) !== 0;
 			settings.topicsPerPage = settings.topicsPerPage ? parseInt(settings.topicsPerPage, 10) : parseInt(meta.config.topicsPerPage, 10) || 20;
 			settings.postsPerPage = settings.postsPerPage ? parseInt(settings.postsPerPage, 10) : parseInt(meta.config.postsPerPage, 10) || 10;

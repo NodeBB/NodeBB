@@ -448,9 +448,20 @@ var nconf = require('nconf'),
 			});
 
 			app.get('/groups', function (req, res) {
-				groups.list({
-					expand: true
-				}, function (err, groups) {
+				async.parallel([
+					function(next) {
+						groups.list({
+							expand: true
+						}, next);
+					},
+					function(next) {
+						groups.listSystemGroups({
+							expand: true
+						}, next);
+					}
+				], function(err, data) {
+					var	groups = data[0].concat(data[1]);
+
 					res.json(200, {
 						groups: groups,
 						yourid: req.user.uid

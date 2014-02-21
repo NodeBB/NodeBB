@@ -171,8 +171,6 @@ var fs = require('fs'),
 			var user = require('./user');
 
 			Meta.title.parseFragment(decodeURIComponent(urlFragment), function(err, title) {
-				var title;
-
 				if (err) {
 					title = Meta.config.browserTitle || 'NodeBB';
 				} else {

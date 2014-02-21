@@ -214,14 +214,14 @@
 		<div style="clear:both;"></div>
 	</div>
 
-	<!-- IF usePagination -->
+	<!-- IF config.usePagination -->
 	<div class="text-center">
 		<ul class="pagination">
 			<li class="previous pull-left"><a href="#"><i class="fa fa-chevron-left"></i> [[global:previouspage]]</a></li>
 			<li class="next pull-right"><a href="#">[[global:nextpage]] <i class="fa fa-chevron-right"></i></a></li>
 		</ul>
 	</div>
-	<!-- ENDIF usePagination -->
+	<!-- ENDIF config.usePagination -->
 
 	<div id="move_thread_modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="Move Topic" aria-hidden="true">
 		<div class="modal-dialog">
