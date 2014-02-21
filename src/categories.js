@@ -58,25 +58,6 @@ var db = require('./database'),
 			Categories.getCategoryTopics(category_id, start, end, current_user, next);
 		}
 
-		function getActiveUsers(next) {
-			Categories.getActiveUsers(category_id, function(err, uids) {
-				if(err) {
-					return next(err);
-				}
-				user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
-			});
-		}
-
-		function getModerators(next) {
-			Categories.getModerators(category_id, next);
-		}
-
-		function getSidebars(next) {
-			plugins.fireHook('filter:category.build_sidebars', [], function(err, sidebars) {
-				next(err, sidebars);
-			});
-		}
-
 		function getPageCount(next) {
 			Categories.getPageCount(category_id, current_user, next);
 		}
@@ -84,9 +65,6 @@ var db = require('./database'),
 		async.parallel({
 			'category': getCategoryData,
 			'topics': getTopics,
-			'active_users': getActiveUsers,
-			'moderators': getModerators,
-			'sidebars': getSidebars,
 			'pageCount': getPageCount
 		}, function(err, results) {
 			if(err) {
@@ -100,13 +78,10 @@ var db = require('./database'),
 				'disabled': results.category.disabled,
 				'topic_row_size': 'col-md-9',
 				'category_id': category_id,
-				'active_users': results.active_users,
-				'moderators': results.moderators,
 				'topics': results.topics.topics,
 				'nextStart': results.topics.nextStart,
 				'pageCount': results.pageCount,
 				'disableSocialButtons': meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false,
-				'sidebars': results.sidebars
 			};
 
 			callback(null, category);

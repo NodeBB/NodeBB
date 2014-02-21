@@ -12,6 +12,7 @@ var nconf = require('nconf'),
 	categories = require('./../categories'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
+	widgets = require('../widgets'),
 	image = require('./../image'),
 	file = require('./../file'),
 	Languages = require('../languages'),
@@ -414,7 +415,32 @@ var nconf = require('nconf'),
 			});
 
 			app.get('/themes', function (req, res) {
-				res.json(200, {});
+				async.parallel({
+					areas: function(next) {
+						plugins.fireHook('filter:widgets.getAreas', [], next);
+					},
+					widgets: function(next) {
+						plugins.fireHook('filter:widgets.getWidgets', [], next);
+					}
+				}, function(err, data) {
+					async.each(data.areas, function(area, next) {
+						widgets.getArea(area.template, area.location, function(err, areaData) {
+							area.data = areaData;
+							next(err);
+						});
+					}, function(err) {
+						for (var w in data.widgets) {
+							if (data.widgets.hasOwnProperty(w)) {
+								data.widgets[w].content += "<br /><label>Title:</label><input type=\"text\" class=\"form-control\" name=\"title\" placeholder=\"Title (only shown on some containers)\" /><br /><label>Container:</label><textarea rows=\"4\" class=\"form-control container-html\" name=\"container\" placeholder=\"Drag and drop a container or enter HTML here.\"></textarea>";
+							}
+						}
+
+						res.json(200, {
+							areas: data.areas,
+							widgets: data.widgets
+						});
+					});
+				});
 			});
 
 			app.get('/testing/categories', function (req, res) {

@@ -7,7 +7,7 @@
 		var RELATIVE_PATH = "{relative_path}";
 	</script>
 	<link rel="stylesheet" href="{relative_path}/vendor/fontawesome/css/font-awesome.min.css">
-	<script src="//code.jquery.com/jquery.js"></script>
+	<script src="{relative_path}/vendor/jquery/js/jquery.js"></script>
 	<script src="{relative_path}/vendor/bootstrap/js/bootstrap.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="{relative_path}/vendor/colorpicker/colorpicker.css">
 	<script src="{relative_path}/socket.io/socket.io.js"></script>
@@ -34,7 +34,6 @@
 			}
 		});
 	</script>
-	<link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
 	<script src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 	<script src="{relative_path}/src/utils.js"></script>
 
@@ -106,7 +105,6 @@
 						<li><a href="{relative_path}/admin/languages"><i class="fa fa-fw fa-comments-o"></i> Languages</a></li>
 						<li><a href="{relative_path}/admin/settings"><i class="fa fa-fw fa-cogs"></i> Settings</a></li>
 						<li><a href="{relative_path}/admin/database"><i class="fa fa-fw fa-hdd-o"></i> Database</a></li>
-						<li><a href="{relative_path}/admin/motd"><i class="fa fa-fw fa-comment"></i> MOTD</a></li>
 						<li><a href="{relative_path}/admin/events"><i class="fa fa-fw fa-calendar-o"></i> Events</a></li>
 					</ul>
 				</div>
