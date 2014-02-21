@@ -826,7 +826,13 @@ var async = require('async'),
 				Topics.getPageCount(tid, current_user, next);
 			}
 
-			async.parallel([getTopicData, getTopicPosts, getPrivileges, getCategoryData, getPageCount], function(err, results) {
+			function getThreadTools(next) {
+				Plugins.fireHook('filter:topic.thread_tools', [], function(err, threadTools) {
+					next(err, threadTools);
+				});
+			}
+
+			async.parallel([getTopicData, getTopicPosts, getPrivileges, getCategoryData, getPageCount, getThreadTools], function(err, results) {
 				if (err) {
 					winston.error('[Topics.getTopicWithPosts] Could not retrieve topic data: ', err.message);
 					return callback(err);
@@ -835,7 +841,8 @@ var async = require('async'),
 				var topicData = results[0],
 					privileges = results[2],
 					categoryData = results[3],
-					pageCount = results[4];
+					pageCount = results[4],
+					threadTools = results[5];
 
 				callback(null, {
 					'topic_name': topicData.title,
@@ -852,6 +859,7 @@ var async = require('async'),
 					'unreplied': parseInt(topicData.postcount, 10) === 1,
 					'topic_id': tid,
 					'expose_tools': privileges.editable ? 1 : 0,
+					'thread_tools': threadTools,
 					'disableSocialButtons': meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false,
 					'posts': results[1]
 				});
