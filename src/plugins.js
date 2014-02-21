@@ -71,8 +71,7 @@ var fs = require('fs'),
 					plugins.push(meta.config['theme:id']);
 
 					async.each(plugins, function(plugin, next) {
-
-						if (!plugin) {
+						if (!plugin || typeof plugin !== 'string') {
 							return next();
 						}
 
