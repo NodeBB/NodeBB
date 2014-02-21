@@ -93,7 +93,7 @@ var ajaxify = {};
 
 			translator.load(tpl_url);
 
-			jQuery('#footer, #content').removeClass('hide').addClass('ajaxifying');
+			$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
 			templates.flush();
 			templates.load_template(function () {
@@ -110,11 +110,31 @@ var ajaxify = {};
 
 				app.processPage();
 
-				jQuery('#content, #footer').stop(true, true).removeClass('ajaxifying');
-				ajaxify.initialLoad = false;
+				var widgetLocations = [];
 
-				app.refreshTitle(url);
-				$(window).trigger('action:ajaxify.end', { url: url });
+				require(['vendor/async'], function(async) {
+					$('#content [widget-area]').each(function() {
+						widgetLocations.push(this.getAttribute('widget-area'));
+					});
+
+					async.each(widgetLocations, function(location, next) {
+						var area = $('#content [widget-area="' + location + '"]');
+
+						socket.emit('widgets.render', {template: tpl_url + '.tpl', url: url, location: location}, function(err, renderedWidgets) {
+							area.html(templates.prepare(area.html()).parse({
+								widgets: renderedWidgets
+							})).removeClass('hidden');
+							
+							next(err);
+						});
+					}, function(err) {
+						$('#content, #footer').stop(true, true).removeClass('ajaxifying');
+						ajaxify.initialLoad = false;
+
+						app.refreshTitle(url);
+						$(window).trigger('action:ajaxify.end', { url: url });
+					});
+				});
 			}, url);
 
 			return true;

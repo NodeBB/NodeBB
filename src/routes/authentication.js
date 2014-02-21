@@ -13,16 +13,6 @@
 
 		login_strategies = [];
 
-	passport.use(new passportLocal(function(user, password, next) {
-		Auth.login(user, password, function(err, login) {
-			if (!err) {
-				next(null, login.user);
-			} else {
-				next(null, false, err);
-			}
-		});
-	}));
-
 	plugins.ready(function() {
 		plugins.fireHook('filter:auth.init', login_strategies, function(err) {
 			if (err) {
@@ -30,16 +20,6 @@
 			}
 
 			Auth.createRoutes(Auth.app);
-		});
-	});
-
-	passport.serializeUser(function(user, done) {
-		done(null, user.uid);
-	});
-
-	passport.deserializeUser(function(uid, done) {
-		done(null, {
-			uid: uid
 		});
 	});
 
@@ -107,11 +87,9 @@
 					if (err) {
 						return next(err);
 					}
+
 					if (!user) {
-						return res.send({
-							success: false,
-							message: info.message
-						});
+						return res.json(403, info);
 					}
 
 					// Alter user cookie depending on passed-in option
@@ -127,10 +105,7 @@
 					req.login({
 						uid: user.uid
 					}, function() {
-						res.send({
-							success: true,
-							message: 'authentication succeeded'
-						});
+						res.json(info);
 					});
 				})(req, res, next);
 			});
@@ -163,50 +138,60 @@
 
 	Auth.login = function(username, password, next) {
 		if (!username || !password) {
-			return next({
-				status: 'error',
-				message: 'invalid-user'
-			});
-		} else {
+			return next(new Error('invalid-user'));
+		}
 
-			var userslug = utils.slugify(username);
+		var userslug = utils.slugify(username);
 
-			user.getUidByUserslug(userslug, function(err, uid) {
+		user.getUidByUserslug(userslug, function(err, uid) {
+			if (err) {
+				return next(err);
+			}
+
+			if(!uid) {
+				return next(null, false, 'user doesn\'t exist');
+			}
+
+			user.getUserFields(uid, ['password', 'banned'], function(err, userData) {
 				if (err) {
-					return next(new Error('redis-error'));
-				} else if (uid == null) {
-					return next(new Error('invalid-user'));
+					return next(err);
 				}
 
-				user.getUserFields(uid, ['password', 'banned'], function(err, userData) {
-					if (err) return next(err);
+				if (!userData || !userData.password) {
+					return next(new Error('invalid userdata or password'));
+				}
 
-					if (userData.banned && parseInt(userData.banned, 10) === 1) {
-						return next({
-							status: "error",
-							message: "user-banned"
-						});
+				if (userData.banned && parseInt(userData.banned, 10) === 1) {
+					return next(null, false, 'User banned');
+				}
+
+				bcrypt.compare(password, userData.password, function(err, res) {
+					if (err) {
+						winston.err(err.message);
+						return next(new Error('bcrypt compare error'));
 					}
 
-					bcrypt.compare(password, userData.password, function(err, res) {
-						if (err) {
-							winston.err(err.message);
-							next(new Error('bcrypt compare error'));
-							return;
-						}
+					if (!res) {
+						next(null, false, 'invalid-password');
+					}
 
-						if (res) {
-							next(null, {
-								user: {
-									uid: uid
-								}
-							});
-						} else {
-							next(new Error('invalid-password'));
-						}
-					});
+					next(null, {
+						uid: uid
+					}, 'Authentication successful');
 				});
 			});
-		}
+		});
 	}
+
+	passport.use(new passportLocal(Auth.login));
+
+	passport.serializeUser(function(user, done) {
+		done(null, user.uid);
+	});
+
+	passport.deserializeUser(function(uid, done) {
+		done(null, {
+			uid: uid
+		});
+	});
 }(exports));

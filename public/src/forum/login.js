@@ -18,23 +18,23 @@ define(function() {
 				url: RELATIVE_PATH + '/login',
 				data: loginData,
 				success: function(data, textStatus, jqXHR) {
-
-					if (!data.success) {
-						$('#login-error-notify').show();
-						$('#login').removeAttr('disabled').html('Login');
-					} else {
-						$('#login').html('Redirecting...');
-						if(!app.previousUrl) {
-							app.previousUrl = '/';
-						}
-
-						if(app.previousUrl.indexOf('/reset/') != -1)
-							window.location.replace(RELATIVE_PATH + "/?loggedin");
-						else
-							window.location.replace(app.previousUrl + "?loggedin");
-
-						app.loadConfig();
+					$('#login').html('Redirecting...');
+					if(!app.previousUrl) {
+						app.previousUrl = '/';
 					}
+
+					if(app.previousUrl.indexOf('/reset/') !== -1) {
+						window.location.replace(RELATIVE_PATH + "/?loggedin");
+					} else {
+						var index = app.previousUrl.indexOf('#');
+						if(index !== -1) {
+							window.location.replace(app.previousUrl.slice(0, index) + '?loggedin' + app.previousUrl.slice(index));
+						} else {
+							window.location.replace(app.previousUrl + "?loggedin");
+						}
+					}
+
+					app.loadConfig();
 				},
 				error: function(data, textStatus, jqXHR) {
 					$('#login-error-notify').show();
