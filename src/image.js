@@ -11,7 +11,16 @@ image.resizeImage = function(path, extension, width, height, callback) {
 	}
 
 	if(extension === '.gif') {
-		imagemagick.convert([path, '-coalesce', '-repage', '0x0', '-crop', width+'x'+height+'+0+0', '+repage', 'uploadPath'], done);
+		imagemagick.convert([
+			path,
+			'-coalesce',
+			'-repage',
+			'0x0',
+			'-crop',
+			width+'x'+height+'+0+0',
+			'+repage',
+			path
+		], done);
 	} else {
 		imagemagick.crop({
 			srcPath: path,
