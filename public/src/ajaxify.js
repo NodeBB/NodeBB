@@ -124,6 +124,12 @@ var ajaxify = {};
 							area.html(templates.prepare(area.html()).parse({
 								widgets: renderedWidgets
 							})).removeClass('hidden');
+
+							if (!renderedWidgets.length) {
+								$('body [no-widget-class]').each(function() {
+									this.className = this.getAttribute('no-widget-class');
+								});
+							}
 							
 							next(err);
 						});
