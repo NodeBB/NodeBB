@@ -19,7 +19,7 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2014, 1, 20, 20, 20).getTime();
+	var	latestSchema = new Date(2014, 1, 20, 20, 25).getTime();
 
 	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -798,14 +798,16 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = new Date(2014, 1, 20, 20, 20).getTime();
+			thisSchemaDate = new Date(2014, 1, 20, 20, 25).getTime();
 
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 
 				db.setAdd('plugins:active', 'nodebb-widget-essentials', function(err) {
 					winston.info('[2014/2/20] Activating NodeBB Essential Widgets');
-					next(err);
+					Plugins.reload(function() {
+						next(err);
+					});
 				});
 			} else {
 				winston.info('[2014/2/20] Activating NodeBB Essential Widgets - skipped');
