@@ -518,8 +518,10 @@ var async = require('async'),
 						return callback(null);
 					}
 
-					Topics.hasReadTopics(tids, uid, function(read) {
-
+					Topics.hasReadTopics(tids, uid, function(err, read) {
+						if(err) {
+							return callback(err);
+						}
 						var newtids = tids.filter(function(tid, index, self) {
 							return read[index] === 0;
 						});
@@ -563,8 +565,10 @@ var async = require('async'),
 					unreadTids.push.apply(unreadTids, tids);
 					callback(null);
 				} else {
-					Topics.hasReadTopics(tids, uid, function(read) {
-
+					Topics.hasReadTopics(tids, uid, function(err, read) {
+						if(err) {
+							return callback(err);
+						}
 						var newtids = tids.filter(function(tid, index, self) {
 							return parseInt(read[index], 10) === 0;
 						});
@@ -572,11 +576,7 @@ var async = require('async'),
 
 						async.filter(newtids, function(tid, next) {
 							threadTools.privileges(tid, uid, function(err, privileges) {
-								if (!err && privileges.read) {
-									next(true);
-								} else {
-									next(false);
-								}
+								next(!err && privileges.read);
 							});
 						}, function(newtids) {
 							unreadTids.push.apply(unreadTids, newtids);
@@ -692,9 +692,7 @@ var async = require('async'),
 			}
 
 			function hasReadTopic(next) {
-				Topics.hasReadTopic(topicData.tid, current_user, function(hasRead) {
-					next(null, hasRead);
-				});
+				Topics.hasReadTopic(topicData.tid, current_user, next);
 			}
 
 			function getTeaserInfo(next) {
@@ -870,9 +868,7 @@ var async = require('async'),
 
 		function getReadStatus(next) {
 			if (uid && parseInt(uid, 10) > 0) {
-				Topics.hasReadTopic(tid, uid, function(read) {
-					next(null, read);
-				});
+				Topics.hasReadTopic(tid, uid, next);
 			} else {
 				next(null, null);
 			}
@@ -989,7 +985,7 @@ var async = require('async'),
 
 	Topics.hasReadTopics = function(tids, uid, callback) {
 		if(!parseInt(uid, 10)) {
-			return callback(tids.map(function() {
+			return callback(null, tids.map(function() {
 				return false;
 			}));
 		}
@@ -1000,25 +996,15 @@ var async = require('async'),
 			sets.push('tid:' + tids[i] + ':read_by_uid');
 		}
 
-		db.isMemberOfSets(sets, uid, function(err, hasRead) {
-			callback(hasRead);
-		});
+		db.isMemberOfSets(sets, uid, callback);
 	};
 
 	Topics.hasReadTopic = function(tid, uid, callback) {
 		if(!parseInt(uid, 10)) {
-			return callback(false);
+			return callback(null, false);
 		}
 
-		db.isSetMember('tid:' + tid + ':read_by_uid', uid, function(err, hasRead) {
-
-			if (err === null) {
-				callback(hasRead);
-			} else {
-				console.log(err);
-				callback(false);
-			}
-		});
+		db.isSetMember('tid:' + tid + ':read_by_uid', uid, callback);
 	};
 
 	Topics.getTeasers = function(tids, callback) {

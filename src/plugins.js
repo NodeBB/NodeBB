@@ -71,7 +71,7 @@ var fs = require('fs'),
 					plugins.push(meta.config['theme:id']);
 
 					async.each(plugins, function(plugin, next) {
-						if (!plugin) {
+						if (!plugin || typeof plugin !== 'string') {
 							return next();
 						}
 
@@ -377,7 +377,7 @@ var fs = require('fs'),
 					}).filter(function(file) {
 						var stats = fs.statSync(file),
 							isPlugin =  file.substr(npmPluginPath.length + 1, 14) === 'nodebb-plugin-' || file.substr(npmPluginPath.length + 1, 14) === 'nodebb-widget-';
-							
+
 						if (stats.isDirectory() && isPlugin) return true;
 						else return false;
 					});

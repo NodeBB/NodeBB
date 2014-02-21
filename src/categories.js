@@ -171,8 +171,14 @@ var db = require('./database'),
 
 	Categories.isTopicsRead = function(cid, uid, callback) {
 		db.getSortedSetRange('categories:' + cid + ':tid', 0, -1, function(err, tids) {
+			if(err) {
+				return callback(err);
+			}
 
-			topics.hasReadTopics(tids, uid, function(hasRead) {
+			topics.hasReadTopics(tids, uid, function(err, hasRead) {
+				if(err) {
+					return callback(err);
+				}
 
 				var allread = true;
 				for (var i = 0, ii = tids.length; i < ii; i++) {
@@ -270,8 +276,6 @@ var db = require('./database'),
 			async.each(pids, movePost, callback);
 		});
 	};
-
-
 
 	Categories.getCategoryData = function(cid, callback) {
 		db.exists('category:' + cid, function(err, exists) {

@@ -424,10 +424,23 @@
 	// sets
 
 	module.setAdd = function(key, value, callback) {
-		if(value !== null && value !== undefined) {
-			value = value.toString();
+		if(!Array.isArray(value)) {
+			value = [value];
 		}
-		db.collection('objects').update({_key:key}, {$addToSet: { members: value }}, {upsert:true, w: 1},  function(err, result) {
+
+		value.forEach(function(element, index, array) {
+			array[index] = element ? element.toString() : element;
+		});
+
+
+		db.collection('objects').update({_key:key},
+			{
+				$addToSet: { members: { $each: value } }
+			},
+			{
+				upsert:true, w: 1
+			}
+		, function(err, result) {
 			if(typeof callback === 'function') {
 				callback(err, result);
 			}
@@ -435,10 +448,15 @@
 	}
 
 	module.setRemove = function(key, value, callback) {
-		if(value !== null && value !== undefined) {
-			value = value.toString();
+		if(!Array.isArray(value)) {
+			value = [value];
 		}
-		db.collection('objects').update({_key:key, members: value}, {$pull : {members: value}}, function(err, result) {
+
+		value.forEach(function(element, index, array) {
+			array[index] = element ? element.toString() : element;
+		});
+
+		db.collection('objects').update( { _key: key }, { $pullAll: { members: value } }, function(err, result) {
 			if(typeof callback === 'function') {
 				callback(err, result);
 			}
@@ -456,17 +474,26 @@
 	}
 
 	module.isMemberOfSets = function(sets, value, callback) {
-		function iterator(set, next) {
-			module.isSetMember(set, value, function(err, result) {
-				if(err) {
-					return next(err);
-				}
 
-				next(null, result?1:0);
-			});
+		if(value !== null && value !== undefined) {
+			value = value.toString();
 		}
 
-		async.map(sets, iterator, callback);
+		db.collection('objects').find({_key: {$in : sets}, members: value}).toArray(function(err, result) {
+			if(err) {
+				return callback(err);
+			}
+
+			result = result.map(function(item) {
+				return item._key;
+			});
+
+			result = sets.map(function(set) {
+				return result.indexOf(set) !== -1 ? 1 : 0;
+			});
+
+			callback(err, result);
+		});
 	}
 
 	module.getSetMembers = function(key, callback) {
@@ -655,16 +682,18 @@
 		if(value !== null && value !== undefined) {
 			value = value.toString();
 		}
-		module.getSortedSetRange(key, 0, -1, function(err, result) {
+		module.getSortedSetRevRange(key, 0, -1, function(err, result) {
 			if(err) {
 				return callback(err);
 			}
+
 			var rank = result.indexOf(value);
+
 			if(rank === -1) {
 				return callback(null, null);
 			}
 
-			callback(null, result.length - rank - 1);
+			callback(null, rank);
 		});
 	}
 
