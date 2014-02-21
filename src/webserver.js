@@ -741,7 +741,6 @@ module.exports.server = server;
 							end = start + settings.topicsPerPage - 1;
 
 						categories.getCategoryById(cid, start, end, 0, function (err, categoryData) {
-
 							if (categoryData) {
 								if (parseInt(categoryData.disabled, 10) === 1) {
 									return next(new Error('Category disabled'), null);

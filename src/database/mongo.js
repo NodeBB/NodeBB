@@ -614,11 +614,14 @@
 			max = (args[1] === '+inf')?Number.MAX_VALUE:args[1],
 			min = args[2],
 			start = args[4],
-			stop = args[5];
+			count = args[5];
 
+		if(parseInt(count, 10) === -1) {
+			count = 0;
+		}
 
 		db.collection('objects').find({_key:key, score: {$gte:min, $lte:max}}, {fields:{value:1}})
-			.limit(stop - start + 1)
+			.limit(count)
 			.skip(start)
 			.sort({score: -1})
 			.toArray(function(err, data) {

@@ -48,18 +48,22 @@ var db = require('./database'),
 		});
 	};
 
-	Categories.getCategoryById = function(category_id, start, end, current_user, callback) {
+	Categories.getCategoryById = function(cid, start, end, uid, callback) {
+
+		if(parseInt(uid, 10)) {
+			Categories.markAsRead(cid, uid);
+		}
 
 		function getCategoryData(next) {
-			Categories.getCategoryData(category_id, next);
+			Categories.getCategoryData(cid, next);
 		}
 
 		function getTopics(next) {
-			Categories.getCategoryTopics(category_id, start, end, current_user, next);
+			Categories.getCategoryTopics(cid, start, end, uid, next);
 		}
 
 		function getPageCount(next) {
-			Categories.getPageCount(category_id, current_user, next);
+			Categories.getPageCount(cid, uid, next);
 		}
 
 		async.parallel({
@@ -77,7 +81,7 @@ var db = require('./database'),
 				'link': results.category.link,
 				'disabled': results.category.disabled,
 				'topic_row_size': 'col-md-9',
-				'category_id': category_id,
+				'category_id': cid,
 				'topics': results.topics.topics,
 				'nextStart': results.topics.nextStart,
 				'pageCount': results.pageCount,
@@ -166,29 +170,6 @@ var db = require('./database'),
 				// Probably no mods
 				callback(null, []);
 			}
-		});
-	};
-
-	Categories.isTopicsRead = function(cid, uid, callback) {
-		db.getSortedSetRange('categories:' + cid + ':tid', 0, -1, function(err, tids) {
-			if(err) {
-				return callback(err);
-			}
-
-			topics.hasReadTopics(tids, uid, function(err, hasRead) {
-				if(err) {
-					return callback(err);
-				}
-
-				var allread = true;
-				for (var i = 0, ii = tids.length; i < ii; i++) {
-					if (hasRead[i] === 0) {
-						allread = false;
-						break;
-					}
-				}
-				callback(allread);
-			});
 		});
 	};
 
