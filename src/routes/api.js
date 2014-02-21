@@ -361,6 +361,10 @@ var path = require('path'),
 			});
 
 			app.get('/search/:term', function (req, res, next) {
+				if (!Plugins.hasListeners('filter:search.query')) {
+					return res.redirect('/404');
+				}
+
 				var limit = 50;
 
 				function searchPosts(callback) {
