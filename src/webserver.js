@@ -104,7 +104,8 @@ module.exports.server = server;
 					clientScripts: clientScripts,
 					navigation: custom_header.navigation,
 					'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
-					allowRegistration: meta.config.allowRegistration === undefined || parseInt(meta.config.allowRegistration, 10) === 1
+					allowRegistration: meta.config.allowRegistration === undefined || parseInt(meta.config.allowRegistration, 10) === 1,
+					searchEnabled: plugins.hasListeners('filter:search.query') ? true : false
 				},
 				escapeList = {
 					'&': '&amp;',

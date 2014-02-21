@@ -112,53 +112,6 @@
 	// Exported functions
 	//
 
-	module.searchIndex = function(key, content, id) {
-
-		var data = {
-			id:id,
-			key:key,
-			content:content
-		};
-
-		db.collection('search').update({id:id, key:key}, {$set:data}, {upsert:true, w: 1}, function(err, result) {
-			if(err) {
-				winston.error('Error indexing ' + err.message);
-			}
-		});
-	}
-
-	module.search = function(key, term, limit, callback) {
-		db.command({text:"search" , search: term, filter: {key:key}, limit: limit }, function(err, result) {
-			if(err) {
-				return callback(err);
-			}
-
-			if(!result) {
-				return callback(null, []);
-			}
-
-			if(result.results && result.results.length) {
-				var data = result.results.map(function(item) {
-					return item.obj.id;
-				});
-				callback(null, data);
-			} else {
-				callback(null, []);
-			}
-		});
-	}
-
-	module.searchRemove = function(key, id, callback) {
-		db.collection('search').remove({id:id, key:key}, function(err, result) {
-			if(err) {
-				winston.error('Error removing search ' + err.message);
-			}
-			if (typeof callback === 'function') {
-				callback();
-			}
-		});
-	}
-
 	module.flushdb = function(callback) {
 		db.dropDatabase(function(err, result) {
 			if(err){

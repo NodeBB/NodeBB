@@ -75,10 +75,6 @@ var winston = require('winston'),
 
 				events.logPostEdit(uid, pid);
 
-				db.searchRemove('post', pid, function() {
-					db.searchIndex('post', content, pid);
-				});
-
 				async.parallel([
 					function(next) {
 						posts.getPostField(pid, 'tid', function(err, tid) {
@@ -89,11 +85,11 @@ var winston = require('winston'),
 
 									topics.setTopicField(tid, 'title', title);
 									topics.setTopicField(tid, 'slug', slug);
-
-									db.searchRemove('topic', tid, function() {
-										db.searchIndex('topic', title, tid);
-									});
 								}
+
+								posts.getPostData(pid, function(err, postData) {
+									plugins.fireHook('action:post.edit', postData);
+								});
 
 								next(null, {
 									tid: tid,
@@ -129,7 +125,8 @@ var winston = require('winston'),
 		var success = function() {
 			posts.setPostField(pid, 'deleted', 1);
 			db.decrObjectField('global', 'postCount');
-			db.searchRemove('post', pid);
+
+			plugins.fireHook('action:post.delete', pid);
 
 			events.logPostDelete(uid, pid);
 
@@ -205,7 +202,7 @@ var winston = require('winston'),
 				});
 
 
-				db.searchIndex('post', postData.content, pid);
+				plugins.fireHook('action:post.restore', postData);
 
 				// Restore topic if it is the only post
 				topics.getTopicField(postData.tid, 'postcount', function(err, count) {

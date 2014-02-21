@@ -9,13 +9,11 @@
 		utils = require('./../../public/src/utils.js'),
 		redis,
 		connectRedis,
-		reds,
 		redisClient;
 
 	try {
 		redis = require('redis');
 		connectRedis = require('connect-redis')(express);
-		reds = require('reds');
 	} catch (err) {
 		winston.error('Unable to initialize Redis! Is Redis installed? Error :' + err.message);
 		process.exit();
@@ -49,14 +47,6 @@
 		ttl: 60 * 60 * 24 * 14
 	});
 
-	reds.createClient = function () {
-		return reds.client || (reds.client = redisClient);
-	};
-
-	var	userSearch = reds.createSearch('nodebbusersearch'),
-		postSearch = reds.createSearch('nodebbpostsearch'),
-		topicSearch = reds.createSearch('nodebbtopicsearch');
-
 	var db = parseInt(nconf.get('redis:database'), 10);
 
 	if (db){
@@ -75,47 +65,6 @@
 	//
 	// Exported functions
 	//
-	module.searchIndex = function(key, content, id) {
-		if(key === 'post') {
-			postSearch.index(content, id);
-		} else if(key === 'topic') {
-			topicSearch.index(content, id);
-		} else if(key === 'user') {
-			userSearch.index(content, id);
-		}
-	}
-
-	module.search = function(key, term, limit, callback) {
-		function search(searchObj, callback) {
-			searchObj
-				.query(term)
-				.between(0, limit - 1)
-				.type('or')
-				.end(callback);
-		}
-
-		if(key === 'post') {
-			search(postSearch, callback);
-		} else if(key === 'topic') {
-			search(topicSearch, callback);
-		} else if(key === 'user') {
-			search(userSearch, callback);
-		}
-	}
-
-	module.searchRemove = function(key, id, callback) {
-		if(key === 'post') {
-			postSearch.remove(id);
-		} else if(key === 'topic') {
-			topicSearch.remove(id);
-		} else if(key === 'user') {
-			userSearch.remove(id);
-		}
-
-		if (typeof callback === 'function') {
-			callback()
-		}
-	}
 
 	module.flushdb = function(callback) {
 		redisClient.send_command('flushdb', [], function(err) {
