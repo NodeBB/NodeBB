@@ -164,7 +164,7 @@ define(['forum/admin/settings'], function(Settings) {
 						hoverClass: "panel-info"
 					})
 					.children('.panel-heading')
-						.append('<div class="pull-right pointer"><span class="delete-widget"><i class="fa fa-times-circle"></i></span>&nbsp;<span class="toggle-widget"><i class="fa fa-chevron-down"></i></span></div>')
+						.append('<div class="pull-right pointer"><span class="delete-widget"><i class="fa fa-times-circle"></i></span></div><div class="pull-left pointer"><span class="toggle-widget"><i class="fa fa-chevron-circle-down"></i></span>&nbsp;</div>')
 						.children('small').html('');
 			}
 		}
@@ -184,6 +184,8 @@ define(['forum/admin/settings'], function(Settings) {
 					panel.remove();
 				}
 			});
+		}).on('dblclick', '.panel-heading', function() {
+			$(this).parents('.panel').children('.panel-body').toggleClass('hidden');
 		});
 
 		$('#widgets .btn[data-template]').on('click', function() {
