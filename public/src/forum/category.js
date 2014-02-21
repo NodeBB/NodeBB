@@ -53,6 +53,8 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 	}
 
 	Category.onNewTopic = function(data) {
+		$(window).trigger('filter:categories.new_topic', data);
+
 		var html = templates.prepare(templates['category'].blocks['topics']).parse({
 			topics: [data]
 		});
@@ -89,6 +91,8 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 			$('#topics-container span.timeago').timeago();
 			app.createUserTooltips();
+
+			$(window).trigger('action:categories.new_topic.loaded');
 		});
 	}
 
