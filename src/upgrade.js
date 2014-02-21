@@ -19,7 +19,7 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2014, 1, 20, 15, 30).getTime();
+	var	latestSchema = new Date(2014, 1, 20, 19, 45).getTime();
 
 	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -692,27 +692,21 @@ Upgrade.upgrade = function(callback) {
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 				
-				if (Meta.config['motd']) {
-					db.setObjectField('widgets:home.tpl', 'motd', JSON.stringify([
-						{
-							"widget": "html",
-							"data": {
-								"html": Meta.config['motd']
-							}
+				db.setObjectField('widgets:home.tpl', 'motd', JSON.stringify([
+					{
+						"widget": "html",
+						"data": {
+							"html": Meta.config['motd'] ||  "Welcome to NodeBB, if you are an administrator of this forum visit the <a target='_blank' href='/admin/themes'>Themes</a> ACP to modify and add widgets."
 						}
-					]), function(err) {
-						Meta.configs.remove('motd');
-						Meta.configs.remove('motd_class');
-						Meta.configs.remove('show_motd');
+					}
+				]), function(err) {
+					Meta.configs.remove('motd');
+					Meta.configs.remove('motd_class');
+					Meta.configs.remove('show_motd');
 
-						winston.info('[2014/2/19] Updated MOTD to use the HTML widget.');
-						next(err);
-					});
-				} else {
-					winston.info('[2014/2/19] Updating MOTD to use the HTML widget - skipped');
-					next();
-				}
-
+					winston.info('[2014/2/19] Updated MOTD to use the HTML widget.');
+					next(err);
+				});
 			} else {
 				winston.info('[2014/2/19] Updating MOTD to use the HTML widget - skipped');
 				next();
@@ -774,6 +768,32 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/2/20] Adding Forum Stats Widget to the Homepage Footer - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 1, 20, 19, 45).getTime();
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				var container = '<div class="panel panel-default"><div class="panel-heading">{title}</div><div class="panel-body">{body}</div></div>';
+				
+				db.setObjectField('widgets:home.tpl', 'sidebar', JSON.stringify([
+					{
+						"widget": "html",
+						"data": {
+							"html": Meta.config['motd'] || "Welcome to NodeBB, if you are an administrator of this forum visit the <a target='_blank' href='/admin/themes'>Themes</a> ACP to modify and add widgets.",
+							"container": container,
+							"title": "MOTD"
+						}
+					}
+				]), function(err) {
+					winston.info('[2014/2/20] Updating Lavender MOTD');
+					next(err);
+				});
+			} else {
+				winston.info('[2014/2/20] Updating Lavender MOTD - skipped');
 				next();
 			}
 		}
