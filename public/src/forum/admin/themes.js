@@ -263,6 +263,25 @@ define(['forum/admin/settings'], function(Settings) {
 				}
 			}
 		});
+
+		$('.color-selector').on('click', '.btn', function() {
+			var btn = $(this),
+				selector = btn.parents('.color-selector'),
+				container = selector.parents('[data-container-html]'),
+				classList = [];
+
+			selector.children().each(function() {
+				classList.push($(this).attr('data-class'));
+			});
+
+			container
+				.removeClass(classList.join(' '))
+				.addClass(btn.attr('data-class'));
+
+			container.attr('data-container-html', container.attr('data-container-html')
+				.replace(/class="[a-zA-Z0-9-\s]+"/, 'class="' + container[0].className.replace(' pointer ui-draggable', '') + '"')
+			);
+		});
 	};
 
 	return Themes;

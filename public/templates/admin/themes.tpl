@@ -98,9 +98,27 @@
 							<div class="panel panel-default pointer" data-container-html='<div class="panel panel-default"><div class="panel-heading">{title}</div><div class="panel-body">{body}</div></div>'>
 								<div class="panel-heading">
 									Panel Header
+									<div class="pull-right color-selector">
+										<button data-class="panel-default" class="btn btn-xs">&nbsp;&nbsp;</button>
+										<button data-class="panel-primary" class="btn btn-xs btn-primary">&nbsp;&nbsp;</button>
+										<button data-class="panel-success" class="btn btn-xs btn-success">&nbsp;&nbsp;</button>
+										<button data-class="panel-info" class="btn btn-xs btn-info">&nbsp;&nbsp;</button>
+										<button data-class="panel-warning" class="btn btn-xs btn-warning">&nbsp;&nbsp;</button>
+										<button data-class="panel-danger" class="btn btn-xs btn-danger">&nbsp;&nbsp;</button>
+									</div>
 								</div>
 								<div class="panel-body">
 									Panel Body
+								</div>
+							</div>
+
+							<div class="alert alert-info pointer" data-container-html='<div class="alert alert-info">{body}</div>'>
+								Alert
+								<div class="pull-right color-selector">
+									<button data-class="alert-success" class="btn btn-xs btn-success">&nbsp;&nbsp;</button>
+									<button data-class="alert-info" class="btn btn-xs btn-info">&nbsp;&nbsp;</button>
+									<button data-class="alert-warning" class="btn btn-xs btn-warning">&nbsp;&nbsp;</button>
+									<button data-class="alert-danger" class="btn btn-xs btn-danger">&nbsp;&nbsp;</button>
 								</div>
 							</div>
 						</div>
