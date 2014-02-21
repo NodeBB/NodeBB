@@ -122,6 +122,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			return;
 		}
 
+		$(window).trigger('action:categories.loading');
 		loadingMoreTopics = true;
 		socket.emit('categories.loadMore', {
 			cid: cid,
@@ -136,6 +137,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				$('#topics-container').attr('data-nextstart', data.nextStart);
 			}
 			loadingMoreTopics = false;
+			$(window).trigger('action:categories.loaded');
 		});
 	}
 
