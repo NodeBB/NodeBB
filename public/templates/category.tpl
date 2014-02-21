@@ -44,10 +44,8 @@
 						<a href="../../topic/{topics.slug}" itemprop="url">
 							<meta itemprop="name" content="{topics.title}">
 
-							<span class="topic-title">
-								<strong><i class="fa {topics.pin-icon}"></i> <i class="fa {topics.lock-icon}"></i></strong>
-								{topics.title}
-							</span>
+							<strong><i class="fa {topics.pin-icon}"></i> <i class="fa {topics.lock-icon}"></i></strong>
+							<span class="topic-title">{topics.title}</span>
 						</a>
 					</h3>
 
