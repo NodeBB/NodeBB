@@ -1136,8 +1136,9 @@ var bcrypt = require('bcryptjs'),
 				async.filter(nids, function(nid, next) {
 					notifications.get(nid, uid, function(notifObj) {
 						if(!notifObj) {
-							next(false);
+							return next(false);
 						}
+
 						if (notifObj.uniqueId === uniqueId) {
 							next(true);
 						} else {
