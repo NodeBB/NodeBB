@@ -41,7 +41,7 @@
     "nodebb-plugin-markdown": "~0.3",
     "nodebb-widget-essentials": "~0.0",
     "nodebb-theme-vanilla": "~0.0.14",
-    "nodebb-theme-cerulean": "~0.0.12",
+    "nodebb-theme-cerulean": "~0.0.13",
     "nodebb-theme-lavender": "~0.0.21",
     "cron": "~1.0.1",
     "semver": "~2.2.1",
