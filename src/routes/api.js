@@ -232,24 +232,28 @@ var path = require('path'),
 						end = start + settings.topicsPerPage - 1;
 
 					categoryTools.privileges(req.params.id, uid, function(err, privileges) {
-						if (!err && privileges.read) {
-							categories.getCategoryById(req.params.id, start, end, uid, function (err, data) {
-								if(err) {
-									return next(err);
-								}
-
-								data.currentPage = page;
-								data.privileges = privileges;
-
-								if (data && !data.disabled) {
-									res.json(data);
-								} else {
-									next();
-								}
-							}, req.params.id, uid);
-						} else {
-							res.send(403);
+						if (err) {
+							return next(err);
 						}
+
+						if (!privileges.read) {
+							return res.send(403);
+						}
+
+						categories.getCategoryById(req.params.id, start, end, uid, function (err, data) {
+							if(err) {
+								return next(err);
+							}
+
+							data.currentPage = page;
+							data.privileges = privileges;
+
+							if (data && !data.disabled) {
+								res.json(data);
+							} else {
+								next();
+							}
+						});
 					});
 				});
 			});

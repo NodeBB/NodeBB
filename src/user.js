@@ -3,7 +3,7 @@ var bcrypt = require('bcryptjs'),
 	nconf = require('nconf'),
 	winston = require('winston'),
 	gravatar = require('gravatar'),
-	check = require('validator').check,
+	validator = require('validator'),
 	S = require('string'),
 
 	utils = require('./../public/src/utils'),

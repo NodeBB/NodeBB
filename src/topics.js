@@ -460,10 +460,7 @@ var async = require('async'),
 		});
 	}
 
-	Topics.getLatestTopics = function(current_user, start, end, term, callback) {
-
-		var timestamp = Date.now();
-
+	Topics.getLatestTids = function(start, end, term, callback) {
 		var terms = {
 			day: 86400000,
 			week: 604800000,
@@ -475,13 +472,17 @@ var async = require('async'),
 			since = terms[term];
 		}
 
-		var args = ['topics:recent', '+inf', timestamp - since, 'LIMIT', start, end - start + 1];
-		db.getSortedSetRevRangeByScore(args, function(err, tids) {
-			if (err) {
+		var count = parseInt(end, 10) === -1 ? end : end - start + 1;
+
+		db.getSortedSetRevRangeByScore(['topics:recent', '+inf', Date.now() - since, 'LIMIT', start, count], callback);
+	};
+
+	Topics.getLatestTopics = function(uid, start, end, term, callback) {
+		Topics.getLatestTids(start, end, term, function(err, tids) {
+			if(err) {
 				return callback(err);
 			}
-
-			getTopics('topics:recent', current_user, tids, callback);
+			getTopics('topics:recent', uid, tids, callback);
 		});
 	};
 
@@ -496,100 +497,54 @@ var async = require('async'),
 	};
 
 	Topics.getTotalUnread = function(uid, callback) {
-
-		var unreadTids = [],
-			start = 0,
-			stop = 21,
-			done = false;
-
-		async.whilst(
-			function() {
-				return unreadTids.length < 21 && !done;
-			},
-			function(callback) {
-				db.getSortedSetRevRange('topics:recent', start, stop, function(err, tids) {
-
-					if (err) {
-						return callback(err);
-					}
-
-					if (tids && !tids.length) {
-						done = true;
-						return callback(null);
-					}
-
-					Topics.hasReadTopics(tids, uid, function(err, read) {
-						if(err) {
-							return callback(err);
-						}
-						var newtids = tids.filter(function(tid, index, self) {
-							return read[index] === 0;
-						});
-
-						unreadTids.push.apply(unreadTids, newtids);
-
-						start = stop + 1;
-						stop = start + 21;
-						callback(null);
-					});
-				});
-			},
-			function(err) {
-				callback(null, {
-					count: unreadTids.length
-				});
-			}
-		);
+		Topics.getUnreadTids(uid, 0, 21, function(err, tids) {
+			callback(err, {count: tids ? tids.length : 0});
+		});
 	};
 
 	Topics.getUnreadTids = function(uid, start, stop, callback) {
 		var unreadTids = [],
 			done = false;
 
-		function continueCondition() {
-			return unreadTids.length < 20 && !done;
+		uid = parseInt(uid, 10);
+		if(uid === 0) {
+			return callback(null, unreadTids);
 		}
 
-		async.whilst(continueCondition, function(callback) {
-			db.getSortedSetRevRange('topics:recent', start, stop, function(err, tids) {
+		async.whilst(function() {
+			return unreadTids.length < 20 && !done;
+		}, function(callback) {
+			Topics.getLatestTids(start, stop, 'month', function(err, tids) {
 				if (err) {
 					return callback(err);
 				}
 
 				if (tids && !tids.length) {
 					done = true;
-					return callback(null);
+					return callback();
 				}
 
-				if (uid === 0) {
-					unreadTids.push.apply(unreadTids, tids);
-					callback(null);
-				} else {
-					Topics.hasReadTopics(tids, uid, function(err, read) {
-						if(err) {
-							return callback(err);
-						}
-						var newtids = tids.filter(function(tid, index, self) {
-							return parseInt(read[index], 10) === 0;
-						});
-
-
-						async.filter(newtids, function(tid, next) {
-							threadTools.privileges(tid, uid, function(err, privileges) {
-								next(!err && privileges.read);
-							});
-						}, function(newtids) {
-							unreadTids.push.apply(unreadTids, newtids);
-
-							if(continueCondition()) {
-								start = stop + 1;
-								stop = start + 19;
-							}
-
-							callback(null);
-						});
+				Topics.hasReadTopics(tids, uid, function(err, read) {
+					if(err) {
+						return callback(err);
+					}
+					var newtids = tids.filter(function(tid, index, self) {
+						return parseInt(read[index], 10) === 0;
 					});
-				}
+
+					async.filter(newtids, function(tid, next) {
+						threadTools.privileges(tid, uid, function(err, privileges) {
+							next(!err && privileges.read);
+						});
+					}, function(newtids) {
+						unreadTids.push.apply(unreadTids, newtids);
+
+						start = stop + 1;
+						stop = start + 19;
+
+						callback();
+					});
+				});
 			});
 		}, function(err) {
 			callback(err, unreadTids);
@@ -598,7 +553,6 @@ var async = require('async'),
 
 	Topics.getUnreadTopics = function(uid, start, stop, callback) {
 		var unreadTopics = {
-			'show_sidebar': 'hidden',
 			'show_markallread_button': 'show',
 			'no_topics_message': 'hidden',
 			'topics': []
@@ -923,13 +877,13 @@ var async = require('async'),
 	};
 
 	Topics.markAllRead = function(uid, callback) {
-		db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
+		Topics.getLatestTids(0, -1, 'month', function(err, tids) {
 			if (err) {
 				return callback(err);
 			}
 
 			if(!tids || !tids.length) {
-				return callback(null);
+				return callback();
 			}
 
 			function markRead(tid, next) {
@@ -966,12 +920,7 @@ var async = require('async'),
 		});
 
 		Topics.getTopicField(tid, 'cid', function(err, cid) {
-
-			categories.isTopicsRead(cid, uid, function(read) {
-				if (read) {
-					categories.markAsRead(cid, uid);
-				}
-			});
+			categories.markAsRead(cid, uid);
 		});
 
 		user.notifications.getUnreadByUniqueId(uid, 'topic:' + tid, function(err, nids) {
