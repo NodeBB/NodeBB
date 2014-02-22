@@ -44,6 +44,7 @@ var path = require('path'),
 			app.get('/config', function (req, res, next) {
 				var config = require('../../public/config.json');
 
+				config.version = pkg.version;
 				config.postDelay = meta.config.postDelay;
 				config.minimumTitleLength = meta.config.minimumTitleLength;
 				config.maximumTitleLength = meta.config.maximumTitleLength;
