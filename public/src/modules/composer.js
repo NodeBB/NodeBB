@@ -711,7 +711,9 @@ define(['taskbar'], function(taskbar) {
 
 		titleEl.val(titleEl.val().trim());
 		bodyEl.val(bodyEl.val().trim());
-		thumbEl.val(thumbEl.val().trim());
+		if(thumbEl.length) {
+			thumbEl.val(thumbEl.val().trim());
+		}
 
 		var checkTitle = parseInt(postData.cid, 10) || parseInt(postData.pid, 10);
 
@@ -729,7 +731,7 @@ define(['taskbar'], function(taskbar) {
 			socket.emit('topics.post', {
 				title: titleEl.val(),
 				content: bodyEl.val(),
-				topic_thumb: thumbEl.val(),
+				topic_thumb: thumbEl.val() || '',
 				category_id: postData.cid
 			}, done);
 		} else if (parseInt(postData.tid, 10) > 0) {
@@ -742,7 +744,7 @@ define(['taskbar'], function(taskbar) {
 				pid: postData.pid,
 				content: bodyEl.val(),
 				title: titleEl.val(),
-				topic_thumb: thumbEl.val()
+				topic_thumb: thumbEl.val() || ''
 			}, done);
 		}
 
