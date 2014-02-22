@@ -5,7 +5,7 @@
 	<li data-plugin-id="{plugins.id}">
 		<h2>{plugins.name}</h2>
 		<div class="pull-right">
-			<button data-action="toggleActive" class="btn btn-primary">{plugins.activeText}</button>
+			<button data-action="toggleActive" class="btn <!-- IF plugins.active -->btn-warning<!-- ELSE -->btn-success<!-- ENDIF plugins.active -->">{plugins.activeText}</button>
 		</div>
 		<p>{plugins.description}</p>
 		<p>For more information: <a href="{plugins.url}">{plugins.url}</a></p>
