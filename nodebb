@@ -6,56 +6,39 @@
 
 case "$1" in
 	start)
-		node app "$@"
+		node loader "$@"
 		;;
 
 	upgrade)
 		npm install
 		ls -d node_modules/nodebb* | xargs -n1 basename | xargs npm install
 		ls -d node_modules/nodebb* | xargs -n1 basename | xargs npm update
-		node app --upgrade
+		node loader --upgrade
 		touch package.json
 		echo -e "\n\e[00;32mNodeBB Dependencies up-to-date!\e[00;00m";
 		;;
 
 	setup)
-		node app --setup
+		node loader --setup
 		;;
 
-        reset)
-                node app --reset
-                ;;
+	reset)
+		node loader --reset
+		;;
 
 	dev)
 		echo "Launching NodeBB in \"development\" mode."
 		echo "To run the production build of NodeBB, please use \"forever\"."
 		echo "More Information: https://github.com/designcreateplay/NodeBB/wiki/How-to-run-NodeBB"
-		NODE_ENV=development node app "$@"
+		NODE_ENV=development node loader "$@"
 		;;
 
 	watch)
 		echo "Launching NodeBB in \"development\" mode."
 		echo "To run the production build of NodeBB, please use \"forever\"."
 		echo "More Information: https://github.com/designcreateplay/NodeBB/wiki/How-to-run-NodeBB"
-		NODE_ENV=development supervisor -q --extensions 'node|js|tpl' -- app "$@"
+		NODE_ENV=development supervisor -q --extensions 'node|js|tpl' -- loader "$@"
 		;;
-
-	# language)
-	# 	case "$2" in
-	# 		check)
-	# 			node app --language="check"
-	# 			;;
-
-	# 		*)
-	# 			echo "Language Settings"
-	# 			echo $"Usage: $0 language {check}"
-	# 			echo ''
-	# 			column -s '	' -t <<< '
-	# 			check	Compare language files against the /en directory
-	# 			'
-	# 			;;
-	# 	esac
-	# 	;;
 
 	*)
 		echo "Welcome to NodeBB"

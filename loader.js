@@ -2,16 +2,16 @@ var	fork = require('child_process').fork,
 	start = function() {
 		var	nbb = fork('./app', [], {
 				env: {
-					'NODE_ENV': 'development'
+					'NODE_ENV': process.env.NODE_ENV
 				}
 			});
 
 		nbb.on('message', function(cmd) {
 			if (cmd === 'nodebb:restart') {
-				nbb.kill();
-				setTimeout(function() {
+				nbb.on('exit', function() {
 					start();
-				}, 1000);
+				});
+				nbb.kill();
 			}
 		});
 	};
