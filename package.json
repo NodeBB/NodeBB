@@ -18,7 +18,7 @@
     "express-namespace": "~0.1.1",
     "emailjs": "0.3.4",
     "cookie": "0.0.6",
-    "passport": "0.1.17",
+    "passport": "^0.2.0",
     "passport-local": "0.1.6",
     "passport-twitter": "0.1.5",
     "passport-google-oauth": "0.1.5",
