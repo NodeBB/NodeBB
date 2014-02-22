@@ -445,7 +445,8 @@ var async = require('async'),
 
 	function getTopics(set, uid, tids, callback) {
 		var returnTopics = {
-			'topics': []
+			topics: [],
+			nextStart: 0
 		};
 
 		if (!tids || !tids.length) {
@@ -571,17 +572,13 @@ var async = require('async'),
 	};
 
 	Topics.getUnreadTopics = function(uid, start, stop, callback) {
-		var unreadTopics = {
-			'show_markallread_button': 'show',
-			'no_topics_message': 'hidden',
-			'topics': []
-		};
 
-		function noUnreadTopics() {
-			unreadTopics.no_topics_message = '';
-			unreadTopics.show_markallread_button = 'hidden';
-			callback(null, unreadTopics);
-		}
+		var unreadTopics = {
+			no_topics_message: '',
+			show_markallread_button: 'hidden',
+			nextStart : 0,
+			topics: []
+		};
 
 		function sendUnreadTopics(topicIds) {
 
@@ -597,13 +594,8 @@ var async = require('async'),
 
 					unreadTopics.topics = topicData;
 					unreadTopics.nextStart = parseInt(rank, 10) + 1;
-
-					if (!topicData || topicData.length === 0) {
-						unreadTopics.no_topics_message = '';
-					}
-					if (uid === 0 || topicData.length === 0) {
-						unreadTopics.show_markallread_button = 'hidden';
-					}
+					unreadTopics.no_topics_message = (!topicData || topicData.length === 0) ? '' : 'hidden';
+					unreadTopics.show_markallread_button = topicData.length === 0 ? 'hidden' : '';
 
 					callback(null, unreadTopics);
 				});
@@ -618,7 +610,7 @@ var async = require('async'),
 			if (unreadTids.length) {
 				sendUnreadTopics(unreadTids);
 			} else {
-				noUnreadTopics();
+				callback(null, unreadTopics);
 			}
 		});
 	};
