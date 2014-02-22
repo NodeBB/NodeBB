@@ -37,7 +37,7 @@ var async = require('async'),
 			var slug = tid + '/' + utils.slugify(title),
 				timestamp = Date.now();
 
-			db.setObject('topic:' + tid, {
+			var topicData = {
 				'tid': tid,
 				'uid': uid,
 				'cid': cid,
@@ -49,9 +49,14 @@ var async = require('async'),
 				'viewcount': 0,
 				'locked': 0,
 				'deleted': 0,
-				'pinned': 0,
-				'thumb': thumb || ''
-			}, function(err) {
+				'pinned': 0
+			};
+
+			if(thumb) {
+				topicData['thumb'] = thumb;
+			}
+
+			db.setObject('topic:' + tid, topicData, function(err) {
 				if(err) {
 					return callback(err);
 				}
