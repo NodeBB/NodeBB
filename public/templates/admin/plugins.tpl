@@ -1,5 +1,14 @@
 <h1><i class="fa fa-code-fork"></i> Plugins</h1>
 
+<div class="alert alert-warning">
+	<p>
+		<strong>Interested in writing plugins for NodeBB?</strong>
+	</p>
+	<p>
+		Full documentation regarding plugin authoring can be found in the <a target="_blank" href="https://github.com/designcreateplay/NodeBB/wiki/Writing-Plugins-for-NodeBB">NodeBB Wiki</a>.
+	</p>
+</div>
+
 <ul class="plugins">
 	<!-- BEGIN plugins -->
 	<li data-plugin-id="{plugins.id}">
@@ -13,11 +22,4 @@
 	<!-- END plugins -->
 </ul>
 
-<div class="alert alert-warning">
-	<p>
-		<strong>Interested in writing plugins for NodeBB?</strong>
-	</p>
-	<p>
-		Full documentation regarding plugin authoring can be found in the <a target="_blank" href="https://github.com/designcreateplay/NodeBB/wiki/Writing-Plugins-for-NodeBB">NodeBB Wiki</a>.
-	</p>
-</div>
+
