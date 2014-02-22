@@ -22,6 +22,9 @@
 				<p>
 					Always make sure that your <strong>NodeBB</strong> is up to date for the latest security patches and bug fixes.
 				</p>
+				<p class="pull-right">
+					<button class="btn btn-warning restart">Restart NodeBB</button>
+				</p>
 			</div>
 		</div>
 	</div>

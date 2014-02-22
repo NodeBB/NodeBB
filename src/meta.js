@@ -336,4 +336,12 @@ var fs = require('fs'),
 			db.getFileName(callback);
 		}
 	};
+
+	Meta.restart = function() {
+		if (process.send) {
+			process.send('nodebb:restart');
+		} else {
+			winston.error('[meta.restart] Could not restart, are you sure NodeBB was started with `./nodebb start`?');
+		}
+	};
 }(exports));

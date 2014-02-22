@@ -31,6 +31,10 @@ SocketAdmin.before = function(socket, next) {
 	});
 };
 
+SocketAdmin.restart = function(socket, data, callback) {
+	meta.restart();
+};
+
 /* Topics */
 
 SocketAdmin.topics = {};
