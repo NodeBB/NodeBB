@@ -44,6 +44,16 @@ if(nconf.get('ssl')) {
 
 module.exports.server = server;
 
+// Signals
+process.on('SIGINT', function() {
+	winston.info('[app] Shutdown Initialised.');
+	db.close();
+	winston.info('[app] Database connection closed.');
+
+	winston.info('[app] Goodbye!');
+	process.exit();
+});
+
 (function (app) {
 	"use strict";
 
