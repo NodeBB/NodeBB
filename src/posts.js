@@ -20,7 +20,12 @@ var db = require('./database'),
 (function(Posts) {
 	var customUserInfo = {};
 
-	Posts.create = function(uid, tid, content, callback) {
+	Posts.create = function(data, callback) {
+		var uid = data.uid,
+			tid = data.tid,
+			content = data.content,
+			toPid = data.toPid;
+
 		if (uid === null) {
 			return callback(new Error('invalid-user'), null);
 		}
@@ -55,6 +60,10 @@ var db = require('./database'),
 						'edited': 0,
 						'deleted': 0
 					};
+
+				if (toPid) {
+					postData['toPid'] = toPid;
+				}
 
 				db.setObject('post:' + pid, postData, function(err) {
 					if(err) {

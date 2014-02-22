@@ -294,22 +294,22 @@ define(['taskbar'], function(taskbar) {
 				var prevText = bodyEl.val();
 				if(tid !== composer.posts[uuid].tid) {
 					text = username + ' said in ['+title+'](/topic/'+tid+'#'+pid+'):\n'+text;
-				}else {
+				} else {
 					text = username + ' said:\n' + text;
 				}
 				composer.posts[uuid].body = (prevText.length ? prevText + '\n\n' : '') + text;
 				bodyEl.val(composer.posts[uuid].body);
-			}else{
-				composer.newReply(tid,title,username + ' said:\n' + text);
+			} else {
+				composer.newReply(tid, pid, title, username + ' said:\n' + text);
 			}
-
 		}
 	};
 
-	composer.newReply = function(tid, title, text) {
+	composer.newReply = function(tid, pid, title, text) {
 		if(allowed()) {
 			push({
 				tid: tid,
+				toPid: pid,
 				title: title,
 				body: text,
 				modified: false,
@@ -737,7 +737,8 @@ define(['taskbar'], function(taskbar) {
 		} else if (parseInt(postData.tid, 10) > 0) {
 			socket.emit('posts.reply', {
 				topic_id: postData.tid,
-				content: bodyEl.val()
+				content: bodyEl.val(),
+				toPid: postData.toPid
 			}, done);
 		} else if (parseInt(postData.pid, 10) > 0) {
 			socket.emit('posts.edit', {

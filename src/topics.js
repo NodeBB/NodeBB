@@ -121,7 +121,7 @@ var async = require('async'),
 				Topics.create({uid: uid, title: title, cid: cid, thumb: thumb}, next);
 			},
 			function(tid, next) {
-				Topics.reply(tid, uid, content, next);
+				Topics.reply({uid:uid, tid:tid, content:content}, next);
 			},
 			function(postData, next) {
 				threadTools.toggleFollow(postData.tid, uid);
@@ -143,9 +143,13 @@ var async = require('async'),
 		], callback);
 	};
 
-	Topics.reply = function(tid, uid, content, callback) {
-		var privileges;
-		var postData;
+	Topics.reply = function(data, callback) {
+		var tid = data.topic_id,
+			uid = data.uid,
+			toPid = data.toPid,
+			content = data.content,
+			privileges,
+			postData;
 
 		async.waterfall([
 			function(next) {
@@ -170,7 +174,7 @@ var async = require('async'),
 					return next(new Error('content-too-short'));
 				}
 
-				posts.create(uid, tid, content, next);
+				posts.create({uid:uid, tid:tid, content:content, toPid:toPid}, next);
 			},
 			function(data, next) {
 				postData = data;
