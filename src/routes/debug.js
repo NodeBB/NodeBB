@@ -24,7 +24,6 @@ var	DebugRoute = function(app) {
 			});
 		});
 
-
 		app.get('/cid/:cid', function (req, res) {
 			categories.getCategoryData(req.params.cid, function (err, data) {
 				if (data) {
@@ -51,24 +50,6 @@ var	DebugRoute = function(app) {
 					res.send(data);
 				} else {
 					res.send(404, "Post doesn't exist!");
-				}
-			});
-		});
-
-		app.get('/groups/prune', function(req, res) {
-			var	Groups = require('../groups');
-
-			Groups.prune(function(err) {
-				res.send('pruned');
-			});
-		});
-
-		app.get('/reindex', function (req, res) {
-			topics.reIndexAll(function (err) {
-				if (err) {
-					return res.json(err);
-				} else {
-					res.send('Topics and users reindexed');
 				}
 			});
 		});

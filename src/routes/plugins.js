@@ -13,7 +13,7 @@ var	nconf = require('nconf'),
 				if (typeof returnData === 'object') {
 					res.json(200, returnData);
 				} else {
-					res.send(200, validator.sanitize(returnData).escape());
+					res.send(200, validator.escape(returnData));
 				}
 			});
 		});

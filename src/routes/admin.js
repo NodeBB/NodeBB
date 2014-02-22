@@ -2,6 +2,7 @@ var nconf = require('nconf'),
 	fs = require('fs'),
 	path = require('path'),
 	winston = require('winston'),
+	async = require('async'),
 
 	db = require('./../database'),
 	user = require('./../user'),
@@ -11,6 +12,7 @@ var nconf = require('nconf'),
 	categories = require('./../categories'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
+	widgets = require('../widgets'),
 	image = require('./../image'),
 	file = require('./../file'),
 	Languages = require('../languages'),
@@ -316,7 +318,7 @@ var nconf = require('nconf'),
 			app.get('/categories/active', function (req, res) {
 				categories.getAllCategories(0, function (err, data) {
 					data.categories = data.categories.filter(function (category) {
-						return (!category.disabled || parseInt(category.disabled, 10) === 0);
+						return !category.disabled;
 					});
 					res.json(data);
 				});
@@ -325,7 +327,7 @@ var nconf = require('nconf'),
 			app.get('/categories/disabled', function (req, res) {
 				categories.getAllCategories(0, function (err, data) {
 					data.categories = data.categories.filter(function (category) {
-						return parseInt(category.disabled, 10) === 1;
+						return category.disabled;
 					});
 					res.json(data);
 				});
@@ -375,7 +377,10 @@ var nconf = require('nconf'),
 					if(err) {
 						return next(err);
 					}
-					res.json(200, {eventdata: data.toString()});
+					if(data) {
+						data = data.toString().split('\n').reverse().join('\n');
+					}
+					res.json(200, {eventdata: data});
 				});
 			});
 
@@ -410,7 +415,32 @@ var nconf = require('nconf'),
 			});
 
 			app.get('/themes', function (req, res) {
-				res.json(200, {});
+				async.parallel({
+					areas: function(next) {
+						plugins.fireHook('filter:widgets.getAreas', [], next);
+					},
+					widgets: function(next) {
+						plugins.fireHook('filter:widgets.getWidgets', [], next);
+					}
+				}, function(err, data) {
+					async.each(data.areas, function(area, next) {
+						widgets.getArea(area.template, area.location, function(err, areaData) {
+							area.data = areaData;
+							next(err);
+						});
+					}, function(err) {
+						for (var w in data.widgets) {
+							if (data.widgets.hasOwnProperty(w)) {
+								data.widgets[w].content += "<br /><label>Title:</label><input type=\"text\" class=\"form-control\" name=\"title\" placeholder=\"Title (only shown on some containers)\" /><br /><label>Container:</label><textarea rows=\"4\" class=\"form-control container-html\" name=\"container\" placeholder=\"Drag and drop a container or enter HTML here.\"></textarea>";
+							}
+						}
+
+						res.json(200, {
+							areas: data.areas,
+							widgets: data.widgets
+						});
+					});
+				});
 			});
 
 			app.get('/testing/categories', function (req, res) {
@@ -418,9 +448,20 @@ var nconf = require('nconf'),
 			});
 
 			app.get('/groups', function (req, res) {
-				groups.list({
-					expand: true
-				}, function (err, groups) {
+				async.parallel([
+					function(next) {
+						groups.list({
+							expand: true
+						}, next);
+					},
+					function(next) {
+						groups.listSystemGroups({
+							expand: true
+						}, next);
+					}
+				], function(err, data) {
+					var	groups = data[0].concat(data[1]);
+
 					res.json(200, {
 						groups: groups,
 						yourid: req.user.uid

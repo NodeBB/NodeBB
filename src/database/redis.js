@@ -72,6 +72,10 @@
 		callback(null);
 	}
 
+	module.close = function() {
+		redisClient.quit();
+	}
+
 	//
 	// Exported functions
 	//

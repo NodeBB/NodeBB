@@ -3,8 +3,7 @@ var bcrypt = require('bcryptjs'),
 	nconf = require('nconf'),
 	winston = require('winston'),
 	gravatar = require('gravatar'),
-	check = require('validator').check,
-	sanitize = require('validator').sanitize,
+	validator = require('validator'),
 	S = require('string'),
 
 	utils = require('./../public/src/utils'),
@@ -105,43 +104,46 @@ var bcrypt = require('bcryptjs'),
 					'postcount': 0,
 					'lastposttime': 0,
 					'banned': 0,
-					'status': 'online',
-					'showemail': 0
+					'status': 'online'
 				};
 
-				db.setObject('user:' + uid, userData);
+				db.setObject('user:' + uid, userData, function(err) {
 
-				db.setObjectField('username:uid', userData.username, uid);
-				db.setObjectField('userslug:uid', userData.userslug, uid);
-
-				if (userData.email !== undefined) {
-					db.setObjectField('email:uid', userData.email, uid);
-					if (parseInt(uid, 10) !== 1) {
-						User.email.verify(uid, userData.email);
+					if(err) {
+						return callback(err);
 					}
-				}
+					db.setObjectField('username:uid', userData.username, uid);
+					db.setObjectField('userslug:uid', userData.userslug, uid);
 
-				plugins.fireHook('action:user.create', userData);
-				db.incrObjectField('global', 'userCount');
-
-				db.sortedSetAdd('users:joindate', timestamp, uid);
-				db.sortedSetAdd('users:postcount', 0, uid);
-				db.sortedSetAdd('users:reputation', 0, uid);
-
-				groups.joinByGroupName('registered-users', uid);
-
-				if (password) {
-					User.hashPassword(password, function(err, hash) {
-						if(err) {
-							return callback(err);
+					if (userData.email !== undefined) {
+						db.setObjectField('email:uid', userData.email, uid);
+						if (parseInt(uid, 10) !== 1) {
+							User.email.verify(uid, userData.email);
 						}
+					}
 
-						User.setUserField(uid, 'password', hash);
+					plugins.fireHook('action:user.create', userData);
+					db.incrObjectField('global', 'userCount');
+
+					db.sortedSetAdd('users:joindate', timestamp, uid);
+					db.sortedSetAdd('users:postcount', 0, uid);
+					db.sortedSetAdd('users:reputation', 0, uid);
+
+					groups.joinByGroupName('registered-users', uid);
+
+					if (password) {
+						User.hashPassword(password, function(err, hash) {
+							if(err) {
+								return callback(err);
+							}
+
+							User.setUserField(uid, 'password', hash);
+							callback(null, uid);
+						});
+					} else {
 						callback(null, uid);
-					});
-				} else {
-					callback(null, uid);
-				}
+					}
+				});
 			});
 		});
 	};
@@ -210,7 +212,7 @@ var bcrypt = require('bcryptjs'),
 				settings = {}
 			}
 
-			settings.showemail = settings.showemail ? parseInt(settings.showemail, 10) !== 0 : parseInt(meta.config.usePagination, 10) !== 0;
+			settings.showemail = settings.showemail ? parseInt(settings.showemail, 10) !== 0 : false;
 			settings.usePagination = settings.usePagination ? parseInt(settings.usePagination, 10) !== 0 : parseInt(meta.config.usePagination, 10) !== 0;
 			settings.topicsPerPage = settings.topicsPerPage ? parseInt(settings.topicsPerPage, 10) : parseInt(meta.config.topicsPerPage, 10) || 20;
 			settings.postsPerPage = settings.postsPerPage ? parseInt(settings.postsPerPage, 10) : parseInt(meta.config.postsPerPage, 10) || 10;
@@ -335,7 +337,7 @@ var bcrypt = require('bcryptjs'),
 			}
 
 			data[field] = data[field].trim();
-			data[field] = sanitize(data[field]).escape();
+			data[field] = validator.escape(data[field]);
 
 			if (field === 'email') {
 				User.getUserFields(uid, ['email', 'picture', 'uploadedpicture'], function(err, userData) {
@@ -424,27 +426,59 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.changePassword = function(uid, data, callback) {
+		if(!data || !data.uid) {
+			return callback(new Error('invalid-uid'));
+		}
+
+		function hashAndSetPassword(callback) {
+			User.hashPassword(data.newPassword, function(err, hash) {
+				if(err) {
+					return callback(err);
+				}
+
+				User.setUserField(data.uid, 'password', hash, function(err) {
+					if(err) {
+						return callback(err);
+					}
+
+					if(parseInt(uid, 10) === parseInt(data.uid, 10)) {
+						events.logPasswordChange(data.uid);
+					} else {
+						events.logAdminChangeUserPassword(uid, data.uid);
+					}
+
+					callback();
+				});
+			});
+		}
+
 		if (!utils.isPasswordValid(data.newPassword)) {
 			return callback(new Error('Invalid password!'));
 		}
 
-		User.getUserField(uid, 'password', function(err, currentPassword) {
-			bcrypt.compare(data.currentPassword, currentPassword, function(err, res) {
-				if (err) {
+		if(parseInt(uid, 10) !== parseInt(data.uid, 10)) {
+			User.isAdministrator(uid, function(err, isAdmin) {
+				if(err || !isAdmin) {
+					return callback(err || new Error('not-allowed'));
+				}
+
+				hashAndSetPassword(callback);
+			});
+		} else {
+			User.getUserField(uid, 'password', function(err, currentPassword) {
+				if(err) {
 					return callback(err);
 				}
 
-				if (res) {
-					User.hashPassword(data.newPassword, function(err, hash) {
-						User.setUserField(uid, 'password', hash);
-						events.logPasswordChange(uid);
-						callback(null);
-					});
-				} else {
-					callback(new Error('Your current password is not correct!'));
-				}
+				bcrypt.compare(data.currentPassword, currentPassword, function(err, res) {
+					if (err || !res) {
+						return callback(err || new Error('Your current password is not correct!'));
+					}
+
+					hashAndSetPassword(callback);
+				});
 			});
-		});
+		}
 	};
 
 	User.setUserField = function(uid, field, value, callback) {
@@ -1102,8 +1136,9 @@ var bcrypt = require('bcryptjs'),
 				async.filter(nids, function(nid, next) {
 					notifications.get(nid, uid, function(notifObj) {
 						if(!notifObj) {
-							next(false);
+							return next(false);
 						}
+
 						if (notifObj.uniqueId === uniqueId) {
 							next(true);
 						} else {

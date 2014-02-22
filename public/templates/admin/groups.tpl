@@ -5,17 +5,17 @@
 <div class="groups">
 	<ul id="groups-list">
 	<!-- BEGIN groups -->
-		<li data-gid="{groups.gid}" data-system="{groups.hidden}">
+		<li data-gid="{groups.gid}">
 			<div class="row">
 				<div class="col-lg-8">
 					<h2>{groups.name}</h2>
 					<p>{groups.description}</p>
+					<!-- IF groups.deletable -->
 					<div class="btn-group">
 						<button class="btn btn-default" data-action="members">Members</button>
-						<!-- IF groups.deletable -->
 						<button class="btn btn-danger" data-action="delete">Delete Group</button>
-						<!-- ENDIF groups.deletable -->
 					</div>
+					<!-- ENDIF groups.deletable -->
 				</div>
 				<div class="col-lg-4">
 					<ul class="pull-right members">
@@ -69,7 +69,7 @@
 				<div class="modal-body">
 					<div class="alert alert-danger hide" id="create-modal-error"></div>
 					<form>
-						<div class="form-group hide-if-system">
+						<div class="form-group">
 							<label for="group-name">Group Name</label>
 							<input type="text" class="form-control" id="change-group-name" placeholder="Group Name" />
 						</div>

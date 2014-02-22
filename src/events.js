@@ -13,6 +13,17 @@ var fs = require('fs'),
 		logWithUser(uid, 'changed password');
 	}
 
+	events.logAdminChangeUserPassword = function(adminUid, theirUid) {
+		user.getMultipleUserFields([adminUid, theirUid], ['username'], function(err, userData) {
+			if(err) {
+				return winston.error('Error logging event. ' + err.message);
+			}
+
+			var msg = userData[0].username + '(uid ' + adminUid + ') changed password of ' + userData[1].username + '(uid ' + theirUid + ')';
+			events.log(msg);
+		});
+	}
+
 	events.logPasswordReset = function(uid) {
 		logWithUser(uid, 'reset password');
 	}
@@ -53,17 +64,18 @@ var fs = require('fs'),
 
 		user.getUserField(uid, 'username', function(err, username) {
 			if(err) {
-				winston.error('Error logging event. ' + err.message);
-				return;
+				return winston.error('Error logging event. ' + err.message);
 			}
 
-			var msg = '[' + new Date().toUTCString() + '] - ' + username + '(uid ' + uid + ') ' + string;
+			var msg = username + '(uid ' + uid + ') ' + string;
 			events.log(msg);
 		});
 	}
 
 	events.log = function(msg) {
 		var logFile = path.join(nconf.get('base_dir'), logFileName);
+
+		msg = '[' + new Date().toUTCString() + '] - ' + msg;
 
 		fs.appendFile(logFile, msg + '\n', function(err) {
 			if(err) {

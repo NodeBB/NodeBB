@@ -2,9 +2,7 @@ var db = require('./database'),
 	utils = require('./../public/src/utils'),
 	user = require('./user'),
 	topics = require('./topics'),
-	categories = require('./categories'),
 	favourites = require('./favourites'),
-	threadTools = require('./threadTools'),
 	postTools = require('./postTools'),
 	categories = require('./categories'),
 	plugins = require('./plugins'),
@@ -86,8 +84,6 @@ var db = require('./database'),
 					postData.content = content;
 
 					plugins.fireHook('action:post.save', postData);
-
-					db.searchIndex('post', content, postData.pid);
 
 					next(null, postData);
 				});
@@ -291,7 +287,7 @@ var db = require('./database'),
 							postData.categoryName = categoryData.name;
 							postData.categoryIcon = categoryData.icon;
 							postData.categorySlug = categoryData.slug;
-							postData.title = validator.sanitize(topicData.title).escape();
+							postData.title = validator.escape(topicData.title);
 							postData.topicSlug = topicData.slug;
 							next(null, postData);
 						})
@@ -445,28 +441,6 @@ var db = require('./database'),
 				});
 			});
 		}
-	}
-
-
-	Posts.reIndexPids = function(pids, callback) {
-
-		function reIndex(pid, next) {
-
-			Posts.getPostField(pid, 'content', function(err, content) {
-				if(err) {
-					return next(err);
-				}
-
-				db.searchRemove('post', pid, function() {
-					if (content && content.length) {
-						db.searchIndex('post', content, pid);
-					}
-					next();
-				});
-			});
-		}
-
-		async.each(pids, reIndex, callback);
 	}
 
 	// this function should really be called User.getFavouritePosts

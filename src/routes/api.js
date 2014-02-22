@@ -11,7 +11,7 @@ var path = require('path'),
 	ThreadTools = require('../threadTools'),
 	posts = require('../posts'),
 	categories = require('../categories'),
-	categoryTools = require('../categoryTools')
+	categoryTools = require('../categoryTools'),
 	meta = require('../meta'),
 	Plugins = require('../plugins'),
 	utils = require('../../public/src/utils'),
@@ -44,6 +44,7 @@ var path = require('path'),
 			app.get('/config', function (req, res, next) {
 				var config = require('../../public/config.json');
 
+				config.version = pkg.version;
 				config.postDelay = meta.config.postDelay;
 				config.minimumTitleLength = meta.config.minimumTitleLength;
 				config.maximumTitleLength = meta.config.maximumTitleLength;
@@ -57,6 +58,7 @@ var path = require('path'),
 				config.useOutgoingLinksPage = parseInt(meta.config.useOutgoingLinksPage, 10) === 1;
 				config.allowGuestPosting = parseInt(meta.config.allowGuestPosting, 10) === 1;
 				config.allowFileUploads = parseInt(meta.config.allowFileUploads, 10) === 1;
+				config.allowTopicsThumbnail = parseInt(meta.config.allowTopicsThumbnail, 10) === 1;
 				config.usePagination = parseInt(meta.config.usePagination, 10) === 1;
 				config.topicsPerPage = meta.config.topicsPerPage || 20;
 				config.postsPerPage = meta.config.postsPerPage || 20;
@@ -87,7 +89,7 @@ var path = require('path'),
 				categories.getAllCategories(uid, function (err, data) {
 
 					data.categories = data.categories.filter(function (category) {
-						return (!category.disabled || parseInt(category.disabled, 10) === 0);
+						return !category.disabled;
 					});
 
 					function canSee(category, next) {
@@ -108,45 +110,7 @@ var path = require('path'),
 						data.categories = visibleCategories;
 
 						async.each(data.categories, getRecentReplies, function (err) {
-
-							var	motdString,
-								assemble = function() {
-									data.motd_class = (parseInt(meta.config.show_motd, 10) === 1 || meta.config.show_motd === undefined) ? '' : ' none';
-									data.motd_class += (meta.config.motd && meta.config.motd.length > 0) ? '' : ' default';
-									data.motd_class += meta.config.motd_class ? ' ' + meta.config.motd_class : '';
-
-									data.motd = motdString;
-									res.json(data);
-								};
-
-							if (!meta.config.motd) {
-								translator.translate('\n\n<h1>NodeBB</h1> <small><span>v' + pkg.version + '</span></small>\n\n<h5>[[global:motd.welcome]]</h5>\
-									<div class="btn-group">\
-										<a target="_blank" href="https://www.nodebb.org" class="btn btn-link btn-md">\
-											<i class="fa fa-comment"></i>\
-											<span>&nbsp;[[global:motd.get]]</span>\
-										</a>\
-										<a target="_blank" href="https://github.com/designcreateplay/NodeBB" class="btn btn-link btn-md">\
-											<i class="fa fa-github"></i>\
-											<span>&nbsp;[[global:motd.fork]]</span>\
-										</a>\
-										<a target="_blank" href="https://facebook.com/NodeBB" class="btn btn-link btn-md">\
-											<i class="fa fa-facebook"></i>\
-											<span>&nbsp;[[global:motd.like]]</span>\
-										</a>\
-										<a target="_blank" href="https://twitter.com/NodeBB" class="btn btn-link btn-md">\
-											<i class="fa fa-twitter"></i>\
-											<span>&nbsp;[[global:motd.follow]]</span>\
-										</a>\
-									</div>\
-								', function(motd) {
-									motdString = motd;
-									assemble();
-								});
-							} else {
-								motdString = meta.config.motd;
-								assemble();
-							}
+							res.json(data);
 						});
 					});
 				});
@@ -266,28 +230,32 @@ var path = require('path'),
 						return next(err);
 					}
 
-					var start = (page - 1) * settings.topicsPerPage;
-					var end = start + settings.topicsPerPage - 1;
+					var start = (page - 1) * settings.topicsPerPage,
+						end = start + settings.topicsPerPage - 1;
 
 					categoryTools.privileges(req.params.id, uid, function(err, privileges) {
-						if (!err && privileges.read) {
-							categories.getCategoryById(req.params.id, start, end, uid, function (err, data) {
-								if(err) {
-									return next(err);
-								}
-
-								data.currentPage = page;
-								data.privileges = privileges;
-
-								if (data && parseInt(data.disabled, 10) === 0) {
-									res.json(data);
-								} else {
-									next();
-								}
-							}, req.params.id, uid);
-						} else {
-							res.send(403);
+						if (err) {
+							return next(err);
 						}
+
+						if (!privileges.read) {
+							return res.send(403);
+						}
+
+						categories.getCategoryById(req.params.id, start, end, uid, function (err, data) {
+							if(err) {
+								return next(err);
+							}
+
+							data.currentPage = page;
+							data.privileges = privileges;
+
+							if (data && !data.disabled) {
+								res.json(data);
+							} else {
+								next();
+							}
+						});
 					});
 				});
 			});
@@ -319,6 +287,9 @@ var path = require('path'),
 
 			app.get('/unread', function (req, res, next) {
 				var uid = (req.user) ? req.user.uid : 0;
+				if(!req.user) {
+					return res.json(403, 'not-allowed');
+				}
 				topics.getUnreadTopics(uid, 0, 19, function (err, data) {
 					if(err) {
 						return next(err);
@@ -330,6 +301,9 @@ var path = require('path'),
 
 			app.get('/unread/total', function (req, res, next) {
 				var uid = (req.user) ? req.user.uid : 0;
+				if(!req.user) {
+					return res.json(403, 'not-allowed');
+				}
 				topics.getTotalUnread(uid, function (err, data) {
 					if(err) {
 						return next(err);
@@ -399,10 +373,17 @@ var path = require('path'),
 			});
 
 			app.get('/search/:term', function (req, res, next) {
+				if (!Plugins.hasListeners('filter:search.query')) {
+					return res.redirect('/404');
+				}
+
 				var limit = 50;
 
 				function searchPosts(callback) {
-					db.search('post', req.params.term, limit, function(err, pids) {
+					Plugins.fireHook('filter:search.query', {
+						index: 'post',
+						query: req.params.terms
+					}, function(err, pids) {
 						if (err) {
 							return callback(err, null);
 						}
@@ -412,7 +393,10 @@ var path = require('path'),
 				}
 
 				function searchTopics(callback) {
-					db.search('topic', req.params.term, limit, function(err, tids) {
+					Plugins.fireHook('filter:search.query', {
+						index: 'topic',
+						query: req.params.terms
+					}, function(err, tids) {
 						if (err) {
 							return callback(err, null);
 						}
@@ -448,7 +432,7 @@ var path = require('path'),
 				}
 			});
 
-			app.post('/post/upload', function(req, res, next) {
+			function upload(req, res, filesIterator, next) {
 				if(!req.user) {
 					return res.json(403, {message:'not allowed'});
 				}
@@ -469,21 +453,33 @@ var path = require('path'),
 					}
 				}
 
-				async.map(files, function(file, next) {
+				async.map(files, filesIterator, function(err, images) {
+					deleteTempFiles();
+					if(err) {
+						return res.json(500, err.message);
+					}
+					res.json(200, images);
+				});
+			}
+
+			app.post('/post/upload', function(req, res, next) {
+				upload(req, res, function(file, next) {
 					if(file.type.match('image.*')) {
 						posts.uploadPostImage(file, next);
 					} else {
 						posts.uploadPostFile(file, next);
 					}
-				}, function(err, images) {
-					deleteTempFiles();
+				}, next)
+			});
 
-					if(err) {
-						return res.json(500, err.message);
+			app.post('/topic/thumb/upload', function(req, res, next) {
+				upload(req, res, function(file, next) {
+					if(file.type.match('image.*')) {
+						topics.uploadTopicThumb(file, next);
+					} else {
+		            	res.json(500, {message: 'Invalid File'});
 					}
-
-					res.json(200, images);
-				});
+				}, next);
 			});
 
 			app.get('/reset', function (req, res) {

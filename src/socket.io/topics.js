@@ -2,6 +2,7 @@ var topics = require('../topics'),
 	threadTools = require('../threadTools'),
 	index = require('./index'),
 	user = require('../user'),
+	db = require('./../database'),
 
 	async = require('async'),
 
@@ -23,7 +24,7 @@ SocketTopics.post = function(socket, data, callback) {
 		return callback(new Error('not-logged-in'));
 	}
 
-	topics.post(socket.uid, data.title, data.content, data.category_id, function(err, result) {
+	topics.post({uid: socket.uid, title: data.title, content: data.content, cid: data.category_id, thumb: data.topic_thumb}, function(err, result) {
 		if(err) {
 		 	if (err.message === 'title-too-short') {
 				module.parent.exports.emitAlert(socket, 'Title too short', 'Please enter a longer title. At least ' + meta.config.minimumTitleLength + ' characters.');
@@ -83,7 +84,7 @@ SocketTopics.markAsRead = function(socket, data) {
 	topics.markAsRead(data.tid, data.uid, function(err) {
 		topics.pushUnreadCount(data.uid);
 	});
-}
+};
 
 SocketTopics.markAllRead = function(socket, data, callback) {
 	topics.markAllRead(socket.uid, function(err) {
@@ -102,8 +103,13 @@ SocketTopics.markAsUnreadForAll = function(socket, tid, callback) {
 		if(err) {
 			return callback(err);
 		}
-		topics.pushUnreadCount();
-		callback();
+		db.sortedSetAdd('topics:recent', Date.now(), tid, function(err) {
+			if(err) {
+				return callback(err);
+			}
+			topics.pushUnreadCount();
+			callback();
+		});
 	});
 }
 
@@ -125,7 +131,7 @@ function doTopicAction(action, socket, tid, callback) {
 			threadTools[action](tid, socket.uid, callback);
 		}
 	});
-}
+};
 
 SocketTopics.delete = function(socket, tid, callback) {
 	doTopicAction('delete', socket, tid, callback);

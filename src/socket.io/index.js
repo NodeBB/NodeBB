@@ -49,7 +49,7 @@ Sockets.init = function(server) {
 
 	io.sockets.on('connection', function(socket) {
 		var hs = socket.handshake,
-			sessionID, uid, lastPostTime = 0;
+			sessionID, uid;
 
 		// Validate the session, if present
 		socketCookieParser(hs, {}, function(err) {

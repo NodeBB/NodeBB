@@ -30,6 +30,7 @@ var db = require('./database'),
 				description: data.description,
 				icon: data.icon,
 				bgColor: data.bgColor,
+				background: data.bgColor,
 				color: data.color,
 				slug: slug,
 				topic_count: 0,
@@ -47,45 +48,27 @@ var db = require('./database'),
 		});
 	};
 
-	Categories.getCategoryById = function(category_id, start, end, current_user, callback) {
+	Categories.getCategoryById = function(cid, start, end, uid, callback) {
+
+		if(parseInt(uid, 10)) {
+			Categories.markAsRead(cid, uid);
+		}
 
 		function getCategoryData(next) {
-			Categories.getCategoryData(category_id, next);
+			Categories.getCategoryData(cid, next);
 		}
 
 		function getTopics(next) {
-			Categories.getCategoryTopics(category_id, start, end, current_user, next);
-		}
-
-		function getActiveUsers(next) {
-			Categories.getActiveUsers(category_id, function(err, uids) {
-				if(err) {
-					return next(err);
-				}
-				user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
-			});
-		}
-
-		function getModerators(next) {
-			Categories.getModerators(category_id, next);
-		}
-
-		function getSidebars(next) {
-			plugins.fireHook('filter:category.build_sidebars', [], function(err, sidebars) {
-				next(err, sidebars);
-			});
+			Categories.getCategoryTopics(cid, start, end, uid, next);
 		}
 
 		function getPageCount(next) {
-			Categories.getPageCount(category_id, current_user, next);
+			Categories.getPageCount(cid, uid, next);
 		}
 
 		async.parallel({
 			'category': getCategoryData,
 			'topics': getTopics,
-			'active_users': getActiveUsers,
-			'moderators': getModerators,
-			'sidebars': getSidebars,
 			'pageCount': getPageCount
 		}, function(err, results) {
 			if(err) {
@@ -96,16 +79,13 @@ var db = require('./database'),
 				'category_name': results.category.name,
 				'category_description': results.category.description,
 				'link': results.category.link,
-				'disabled': results.category.disabled || '0',
+				'disabled': results.category.disabled,
 				'topic_row_size': 'col-md-9',
-				'category_id': category_id,
-				'active_users': results.active_users,
-				'moderators': results.moderators,
+				'category_id': cid,
 				'topics': results.topics.topics,
 				'nextStart': results.topics.nextStart,
 				'pageCount': results.pageCount,
 				'disableSocialButtons': meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false,
-				'sidebars': results.sidebars
 			};
 
 			callback(null, category);
@@ -167,6 +147,7 @@ var db = require('./database'),
 			if(err) {
 				return callback(err);
 			}
+
 			if(cids && cids.length === 0) {
 				return callback(null, {categories : []});
 			}
@@ -192,29 +173,16 @@ var db = require('./database'),
 		});
 	};
 
-	Categories.isTopicsRead = function(cid, uid, callback) {
-		db.getSortedSetRange('categories:' + cid + ':tid', 0, -1, function(err, tids) {
-
-			topics.hasReadTopics(tids, uid, function(hasRead) {
-
-				var allread = true;
-				for (var i = 0, ii = tids.length; i < ii; i++) {
-					if (hasRead[i] === 0) {
-						allread = false;
-						break;
-					}
-				}
-				callback(allread);
-			});
-		});
-	};
-
 	Categories.markAsRead = function(cid, uid) {
 		db.setAdd('cid:' + cid + ':read_by_uid', uid);
 	};
 
 	Categories.markAsUnreadForAll = function(cid, callback) {
-		db.delete('cid:' + cid + ':read_by_uid', callback);
+		db.delete('cid:' + cid + ':read_by_uid', function(err) {
+			if(typeof callback === 'function') {
+				callback(err);
+			}
+		});
 	};
 
 	Categories.hasReadCategories = function(cids, uid, callback) {
@@ -290,13 +258,12 @@ var db = require('./database'),
 		});
 	};
 
-
-
 	Categories.getCategoryData = function(cid, callback) {
 		db.exists('category:' + cid, function(err, exists) {
 			if (exists) {
 				db.getObject('category:' + cid, function(err, data) {
 					data.background = data.image ? 'url(' + data.image + ')' : data.bgColor;
+					data.disabled = data.disabled ? parseInt(data.disabled, 10) !== 0 : false;
 					callback(err, data);
 				});
 			} else {

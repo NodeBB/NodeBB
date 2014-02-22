@@ -37,6 +37,11 @@
 				</div>
 				<div class="checkbox">
 					<label>
+						<input type="checkbox" data-field="allowTopicsThumbnail"> <strong>Allow users to upload topic thumbnails</strong>
+					</label>
+				</div>
+				<div class="checkbox">
+					<label>
 						<input type="checkbox" data-field="useOutgoingLinksPage"> <strong>Use Outgoing Links Warning Page</strong>
 					</label>
 				</div>
@@ -86,6 +91,11 @@
 				<div class="checkbox">
 					<label>
 						<input type="checkbox" data-field="allowRegistration" checked> <strong>Allow registration</strong>
+					</label>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" data-field="privateUserInfo"> <strong>Make user info private</strong>
 					</label>
 				</div>
 				<div class="checkbox">

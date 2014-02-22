@@ -93,11 +93,11 @@ var ajaxify = {};
 
 			translator.load(tpl_url);
 
-			jQuery('#footer, #content').removeClass('hide').addClass('ajaxifying');
+			$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
 			templates.flush();
 			templates.load_template(function () {
-				exec_body_scripts(content);
+
 				require(['forum/' + tpl_url], function(script) {
 					if (script && script.init) {
 						script.init();
@@ -110,11 +110,37 @@ var ajaxify = {};
 
 				app.processPage();
 
-				jQuery('#content, #footer').stop(true, true).removeClass('ajaxifying');
-				ajaxify.initialLoad = false;
+				var widgetLocations = [];
 
-				app.refreshTitle(url);
-				$(window).trigger('action:ajaxify.end', { url: url });
+				require(['vendor/async'], function(async) {
+					$('#content [widget-area]').each(function() {
+						widgetLocations.push(this.getAttribute('widget-area'));
+					});
+
+					async.each(widgetLocations, function(location, next) {
+						var area = $('#content [widget-area="' + location + '"]');
+
+						socket.emit('widgets.render', {template: tpl_url + '.tpl', url: url, location: location}, function(err, renderedWidgets) {
+							area.html(templates.prepare(area.html()).parse({
+								widgets: renderedWidgets
+							})).removeClass('hidden');
+
+							if (!renderedWidgets.length) {
+								$('body [no-widget-class]').each(function() {
+									this.className = this.getAttribute('no-widget-class');
+								});
+							}
+							
+							next(err);
+						});
+					}, function(err) {
+						$('#content, #footer').stop(true, true).removeClass('ajaxifying');
+						ajaxify.initialLoad = false;
+
+						app.refreshTitle(url);
+						$(window).trigger('action:ajaxify.end', { url: url });
+					});
+				});
 			}, url);
 
 			return true;
@@ -171,57 +197,5 @@ var ajaxify = {};
 			}
 		});
 	});
-
-	function exec_body_scripts(body_el) {
-		// modified from http://stackoverflow.com/questions/2592092/executing-script-elements-inserted-with-innerhtml
-
-		function nodeName(elem, name) {
-			return elem.nodeName && elem.nodeName.toUpperCase() === name.toUpperCase();
-		}
-
-		function evalScript(elem) {
-			var data = (elem.text || elem.textContent || elem.innerHTML || ""),
-				head = document.getElementsByTagName("head")[0] ||
-					document.documentElement,
-				script = document.createElement("script");
-
-			script.type = "text/javascript";
-			try {
-				script.appendChild(document.createTextNode(data));
-			} catch (e) {
-				script.text = data;
-			}
-
-			if (elem.src) {
-				script.src = elem.src;
-			}
-
-			head.insertBefore(script, head.firstChild);
-			//TODO: remove from head before inserting?, doing this breaks scripts in safari so commented out for now
-			//head.removeChild(script);
-		}
-
-		var scripts = [],
-			script,
-			children_nodes = $(body_el).find('script'),
-			child,
-			i;
-
-		for (i = 0; children_nodes[i]; i++) {
-			child = children_nodes[i];
-			if (nodeName(child, "script") &&
-				(!child.type || child.type.toLowerCase() === "text/javascript")) {
-				scripts.push(child);
-			}
-		}
-
-		for (i = 0; scripts[i]; i++) {
-			script = scripts[i];
-			if (script.parentNode) {
-				script.parentNode.removeChild(script);
-			}
-			evalScript(scripts[i]);
-		}
-	}
 
 }(jQuery));

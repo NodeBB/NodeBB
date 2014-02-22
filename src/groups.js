@@ -13,16 +13,14 @@
 						expand: options.expand
 					}, next);
 				}, function (err, groups) {
-					groups.forEach(function(group, g, arr) {
-						if (parseInt(group.deleted, 10) === 1) {
-							delete arr[g];
+					// Remove deleted and hidden groups from this list
+					callback(err, groups.filter(function (group) {
+						if (parseInt(group.deleted, 10) === 1 || parseInt(group.hidden, 10) === 1) {
+							return false;
+						} else {
+							return true;
 						}
-						if (parseInt(group.hidden, 10) === 1) {
-							group.deletable = 0;
-						}
-					});
-
-					callback(err, groups);
+					}));
 				});
 			} else {
 				callback(null, []);
@@ -72,7 +70,7 @@
 			results.base.count = results.users.length;
 			results.base.members = results.users;
 
-			results.base.deletable = parseInt(results.base.gid, 10) !== 1;
+			results.base.deletable = results.base.hidden !== '1';
 
 			callback(err, results.base);
 		});

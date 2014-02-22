@@ -100,7 +100,13 @@
 											<ul class="dropdown-menu" role="menu">
 												<li class="permissions"><a href="#"><i class="fa fa-ban"></i> Access Control</a></li>
 												<hr />
-												<li data-disabled="{categories.disabled}"><a href="#"></a></li>
+												<li data-disabled="{categories.disabled}">
+													<!-- IF categories.disabled -->
+														<a href="#"><i class="fa fa-power-off"></i> Enable</a>
+													<!-- ELSE -->
+														<a href="#"><i class="fa fa-power-off"></i> Disable</a>
+													<!-- ENDIF categories.disabled -->
+												</li>
 											</ul>
 											<button type="button" data-name="image" data-value="{categories.image}" class="btn btn-default upload-button"><i class="fa fa-upload"></i> Image</button>
 

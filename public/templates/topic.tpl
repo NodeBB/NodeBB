@@ -181,6 +181,11 @@
 							<li><a href="#" class="fork_thread"><i class="fa fa-fw fa-code-fork"></i> [[topic:thread_tools.fork]]</a></li>
 							<li class="divider"></li>
 							<li><a href="#" class="delete_thread"><span class="text-error"><i class="fa fa-fw fa-trash-o"></i> [[topic:thread_tools.delete]]</span></a></li>
+							<!-- BEGIN thread_tools -->
+							<li>
+								<a href="#" class="{thread_tools.class}"><i class="fa fa-fw {thread_tools.icon}"></i> {thread_tools.title}</a>
+							</li>
+							<!-- END thread_tools -->
 						</ul>
 					</div>
 				</div>
@@ -208,20 +213,25 @@
 					<li><a href="#" class="fork_thread"><i class="fa fa-fw fa-code-fork"></i> [[topic:thread_tools.fork]]</a></li>
 					<li class="divider"></li>
 					<li><a href="#" class="delete_thread"><span class="text-error"><i class="fa fa-fw fa-trash-o"></i> [[topic:thread_tools.delete]]</span></a></li>
+					<!-- BEGIN thread_tools -->
+					<li>
+						<a href="#" class="{thread_tools.class}"><i class="fa fa-fw {thread_tools.icon}"></i> {thread_tools.title}</a>
+					</li>
+					<!-- END thread_tools -->
 				</ul>
 			</div>
 		</div>
 		<div style="clear:both;"></div>
 	</div>
 
-	<!-- IF usePagination -->
+	<!-- IF config.usePagination -->
 	<div class="text-center">
 		<ul class="pagination">
 			<li class="previous pull-left"><a href="#"><i class="fa fa-chevron-left"></i> [[global:previouspage]]</a></li>
 			<li class="next pull-right"><a href="#">[[global:nextpage]] <i class="fa fa-chevron-right"></i></a></li>
 		</ul>
 	</div>
-	<!-- ENDIF usePagination -->
+	<!-- ENDIF config.usePagination -->
 
 	<div id="move_thread_modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="Move Topic" aria-hidden="true">
 		<div class="modal-dialog">

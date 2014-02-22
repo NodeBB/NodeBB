@@ -218,6 +218,9 @@ var async = require('async'),
 							field: 'allowGuestSearching',
 							value: 0
 						}, {
+							field: 'allowTopicsThumbnail',
+							value: 0
+						}, {
 							field: 'allowRegistration',
 							value: 1
 						}, {
