@@ -74,6 +74,10 @@
 		});
 	}
 
+	module.close = function() {
+		db.close();
+	}
+
 	//
 	// helper functions
 	//
