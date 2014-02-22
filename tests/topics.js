@@ -25,7 +25,7 @@ describe('Topic\'s', function() {
 	describe('.post', function() {
 
 		it('should create a new topic with proper parameters', function(done) {
-			Topics.post(topic.userId, topic.title, topic.content, topic.categoryId, function(err, result) {
+			Topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
 				assert.equal(err, null, 'was created with error');
 				assert.ok(result);
 
@@ -36,7 +36,7 @@ describe('Topic\'s', function() {
 		it('should fail to create new topic with wrong parameters', function(done) {
 			topic.userId = null;
 
-			Topics.post(topic.userId, topic.title, topic.content, topic.categoryId, function(err, result) {
+			Topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
 				assert.equal(err.message, 'invalid-user');
 				done();
 			});
@@ -48,7 +48,7 @@ describe('Topic\'s', function() {
 		var newPost;
 
 		beforeEach(function(done){
-			Topics.post(topic.userId, topic.title, topic.content, topic.categoryId, function(err, result) {
+			Topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
 				newTopic = result.topicData;
 				newPost = result.postData;
 				done();

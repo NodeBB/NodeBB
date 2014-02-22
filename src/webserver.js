@@ -677,7 +677,7 @@ module.exports.server = server;
 							posts: topicData
 						});
 					});
-				},
+				}
 			], function (err, data) {
 				if (err) {
 					if (err.message === 'not-enough-privileges') {
@@ -927,7 +927,7 @@ module.exports.server = server;
 			return custom_routes.templates.map(function(tpl) {
 				return tpl.template.split('.tpl')[0];
 			});
-		}
+		};
 
 		plugins.ready(function() {
 			plugins.fireHook('filter:server.create_routes', custom_routes, function(err, custom_routes) {

@@ -4,6 +4,7 @@ var fs = require('fs'),
 	winston = require('winston'),
 	nconf = require('nconf'),
 
+	translator = require('../public/src/translator'),
 	utils = require('./../public/src/utils'),
 	db = require('./database'),
 	plugins = require('./plugins'),

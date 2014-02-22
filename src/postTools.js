@@ -64,7 +64,9 @@ var winston = require('winston'),
 	}
 
 
-	PostTools.edit = function(uid, pid, title, content) {
+	PostTools.edit = function(uid, pid, title, content, options) {
+		options || (options = {});
+
 		var	websockets = require('./socket.io'),
 			success = function() {
 				posts.setPostFields(pid, {
@@ -85,6 +87,12 @@ var winston = require('winston'),
 
 									topics.setTopicField(tid, 'title', title);
 									topics.setTopicField(tid, 'slug', slug);
+
+									topics.setTopicField(tid, 'thumb', options.topic_thumb);
+
+									db.searchRemove('topic', tid, function() {
+										db.searchIndex('topic', title, tid);
+									});
 								}
 
 								posts.getPostData(pid, function(err, postData) {

@@ -4,6 +4,11 @@ define(['taskbar'], function(taskbar) {
 		posts: {}
 	};
 
+	function resetInputFile($el) {
+		$el.wrap('<form />').closest('form').get(0).reset();
+		$el.unwrap();
+	}
+
 	function allowed() {
 		if(!(parseInt(app.uid, 10) > 0 || config.allowGuestPosting)) {
 			app.alert({
@@ -21,16 +26,265 @@ define(['taskbar'], function(taskbar) {
 		return true;
 	}
 
+	function push(post) {
+		var uuid = utils.generateUUID();
+
+		translator.translate('[[topic:composer.new_topic]]', function(newTopicStr) {
+			taskbar.push('composer', uuid, {
+				title: post.title ? post.title : newTopicStr,
+				icon: post.picture
+			});
+		});
+
+		composer.posts[uuid] = post;
+		composer.posts[uuid].uploadsInProgress = [];
+
+		composer.load(uuid);
+	}
+
+	//http://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api
+	function findBootstrapEnvironment() {
+		var envs = ['xs', 'sm', 'md', 'lg'];
+
+		$el = $('<div>');
+		$el.appendTo($('body'));
+
+		for (var i = envs.length - 1; i >= 0; i--) {
+			var env = envs[i];
+
+			$el.addClass('hidden-'+env);
+			if ($el.is(':hidden')) {
+				$el.remove();
+				return env;
+			}
+		}
+	}
+
+	function composerAlert(title, message) {
+		$('.action-bar button').removeAttr('disabled');
+		app.alert({
+			type: 'danger',
+			timeout: 2000,
+			title: title,
+			message: message,
+			alert_id: 'post_error'
+		});
+	}
+
+	function initializeDragAndDrop(post_uuid) {
+
+		if(jQuery.event.props.indexOf('dataTransfer') === -1) {
+			jQuery.event.props.push('dataTransfer');
+		}
+
+		var draggingDocument = false;
+
+		var postContainer = $('#cmp-uuid-' + post_uuid),
+			fileForm = postContainer.find('#fileForm'),
+			drop = postContainer.find('.imagedrop'),
+			tabContent = postContainer.find('.tab-content'),
+			textarea = postContainer.find('textarea');
+
+		$(document).off('dragstart').on('dragstart', function(e) {
+			draggingDocument = true;
+		}).off('dragend').on('dragend', function(e) {
+				draggingDocument = false;
+		});
+
+		textarea.on('dragenter', function(e) {
+			if(draggingDocument) {
+				return;
+			}
+			drop.css('top', tabContent.position().top + 'px');
+			drop.css('height', textarea.height());
+			drop.css('line-height', textarea.height() + 'px');
+			drop.show();
+
+			drop.on('dragleave', function(ev) {
+				drop.hide();
+				drop.off('dragleave');
+			});
+		});
+
+		function cancel(e) {
+			e.preventDefault();
+			return false;
+		}
+
+		drop.on('dragover', cancel);
+		drop.on('dragenter', cancel);
+
+		drop.on('drop', function(e) {
+			e.preventDefault();
+			var dt = e.dataTransfer,
+				files = dt.files;
+
+			if(files.length) {
+				var fd = new FormData();
+				for (var i = 0, file; file = dt.files[i]; i++) {
+					fd.append('files[]', file, file.name);
+				}
+
+				fileForm[0].reset();
+				uploadContentFiles({files: files, post_uuid: post_uuid, route: '/api/post/upload', formData: fd});
+			}
+
+			drop.hide();
+			return false;
+		});
+
+		$(window).off('paste').on('paste', function(event) {
+
+			var items = (event.clipboardData || event.originalEvent.clipboardData).items;
+
+			if(items && items.length) {
+
+				var blob = items[0].getAsFile();
+				if(blob) {
+					blob.name = 'upload-'+ utils.generateUUID();
+
+					var fd = new FormData();
+					fd.append('files[]', blob, blob.name);
+
+					fileForm[0].reset();
+					uploadContentFiles({files: [blob], post_uuid: post_uuid, route: '/api/post/upload', formData: fd});
+				}
+			}
+		});
+	}
+
+	function uploadContentFiles(params) {
+		var files = params.files,
+			post_uuid = params.post_uuid,
+			route = params.route,
+			formData = params.formData,
+			callback = params.callback,
+			postContainer = $('#cmp-uuid-' + post_uuid),
+			textarea = postContainer.find('textarea'),
+			text = textarea.val(),
+			uploadForm = postContainer.find('#fileForm');
+
+		uploadForm.attr('action', route);
+
+		for(var i = 0; i < files.length; ++i) {
+			var isImage = files[i].type.match('image.*');
+			text += (isImage ? '!' : '') + '[' + files[i].name + '](uploading...) ';
+
+			if(files[i].size > parseInt(config.maximumFileSize, 10) * 1024) {
+				uploadForm[0].reset();
+				return composerAlert('File too big', 'Maximum allowed file size is ' + config.maximumFileSize + 'kbs');
+			}
+		}
+
+		textarea.val(text);
+
+		uploadForm.off('submit').submit(function() {
+
+			$(this).find('#postUploadCsrf').val($('#csrf_token').val());
+			if(formData) {
+				formData.append('_csrf', $('#csrf_token').val());
+			}
+
+			composer.posts[post_uuid].uploadsInProgress.push(1);
+
+			$(this).ajaxSubmit({
+				resetForm: true,
+				clearForm: true,
+				formData: formData,
+				error: function(xhr) {
+					app.alertError('Error uploading file!\nStatus : ' + xhr.status + '\nMessage : ' + xhr.responseText);
+					if (typeof callback == 'function')
+						callback(xhr);
+				},
+				uploadProgress: function(event, position, total, percent) {
+					var current = textarea.val();
+					for(var i=0; i<files.length; ++i) {
+						var re = new RegExp(files[i].name + "]\\([^)]+\\)", 'g');
+						textarea.val(current.replace(re, files[i].name+'](uploading ' + percent + '%)'));
+					}
+				},
+				success: function(uploads) {
+
+					if(uploads && uploads.length) {
+						for(var i=0; i<uploads.length; ++i) {
+							var current = textarea.val();
+							var re = new RegExp(uploads[i].name + "]\\([^)]+\\)", 'g');
+							textarea.val(current.replace(re, uploads[i].name + '](' + uploads[i].url + ')'));
+						}
+					}
+
+					textarea.focus();
+					if (typeof callback == 'function')
+						callback(null, uploads);
+				},
+
+				complete: function(xhr, status) {
+					uploadForm[0].reset();
+					composer.posts[post_uuid].uploadsInProgress.pop();
+				}
+			});
+
+			return false;
+		});
+
+		uploadForm.submit();
+	}
+
+	function uploadTopicThumb(params) {
+		var post_uuid = params.post_uuid,
+			route = params.route,
+			formData = params.formData,
+			callback = params.callback,
+			postContainer = $('#cmp-uuid-' + post_uuid),
+			spinner = postContainer.find('.topic-thumb-spinner'),
+			thumbForm = postContainer.find('#thumbForm');
+
+		thumbForm.attr('action', route);
+
+		thumbForm.off('submit').submit(function() {
+			var csrf = $('#csrf_token').val();
+			$(this).find('#thumbUploadCsrf').val(csrf);
+
+			if(formData) {
+				formData.append('_csrf', csrf);
+			}
+
+			spinner.removeClass('hide');
+			composer.posts[post_uuid].uploadsInProgress.push(1);
+
+			$(this).ajaxSubmit({
+				formData: formData,
+				error: function(xhr) {
+					app.alertError('Error uploading file!\nStatus : ' + xhr.status + '\nMessage : ' + xhr.responseText);
+					if (typeof callback == 'function')
+						callback(xhr);
+				},
+				success: function(uploads) {
+					postContainer.find('#topic-thumb-url').val((uploads[0] || {}).url || '').trigger('change');
+					if (typeof callback == 'function')
+						callback(null, uploads);
+				},
+				complete: function() {
+					composer.posts[post_uuid].uploadsInProgress.pop();
+					spinner.addClass('hide');
+				}
+			});
+			return false;
+		});
+		thumbForm.submit();
+	}
+
 	composer.newTopic = function(cid) {
 		if(allowed()) {
 			push({
 				cid: cid,
 				title: '',
 				body: '',
-				modified: false
+				modified: false,
+				isMain: true
 			});
 		}
-	}
+	};
 
 	composer.addQuote = function(tid, pid, title, username, text){
 		if (allowed()) {
@@ -58,10 +312,11 @@ define(['taskbar'], function(taskbar) {
 				tid: tid,
 				title: title,
 				body: text,
-				modified: false
+				modified: false,
+				isMain: false
 			});
 		}
-	}
+	};
 
 	composer.editPost = function(pid) {
 		if(allowed()) {
@@ -73,27 +328,13 @@ define(['taskbar'], function(taskbar) {
 					pid: pid,
 					title: threadData.title,
 					body: threadData.body,
-					modified: false
+					modified: false,
+					isMain: !threadData.index,
+					topic_thumb: threadData.topic_thumb
 				});
 			});
 		}
-	}
-
-	function push(post) {
-		var uuid = utils.generateUUID();
-
-		translator.translate('[[topic:composer.new_topic]]', function(newTopicStr) {
-			taskbar.push('composer', uuid, {
-				title: post.title ? post.title : newTopicStr,
-				icon: post.picture
-			});
-		});
-
-		composer.posts[uuid] = post;
-		composer.posts[uuid].uploadsInProgress = [];
-
-		composer.load(uuid);
-	}
+	};
 
 	composer.load = function(post_uuid) {
 		if($('#cmp-uuid-' + post_uuid).length) {
@@ -101,12 +342,15 @@ define(['taskbar'], function(taskbar) {
 		} else {
 			composer.createNewComposer(post_uuid);
 		}
-	}
+	};
 
 	composer.createNewComposer = function(post_uuid) {
 
 		templates.preload_template('composer', function() {
-			var composerTemplate = templates['composer'].parse({});
+			var composerTemplate = templates['composer'].parse({
+				allowTopicsThumbnail: config.allowTopicsThumbnail && composer.posts[post_uuid].isMain && config.hasImageUploadPlugin
+			});
+
 			translator.translate(composerTemplate, function(composerTemplate) {
 				composerTemplate = $(composerTemplate);
 
@@ -124,7 +368,19 @@ define(['taskbar'], function(taskbar) {
 
 				var postData = composer.posts[post_uuid],
 					titleEl = postContainer.find('.title'),
-					bodyEl = postContainer.find('textarea');
+					bodyEl = postContainer.find('textarea'),
+					thumbToggleBtnEl = postContainer.find('.topic-thumb-toggle-btn'),
+
+					toggleThumbEls = function(){
+						if (config.allowTopicsThumbnail && composer.posts[post_uuid].isMain) {
+							var url = composer.posts[post_uuid].topic_thumb || '';
+							postContainer.find('input#topic-thumb-url').val(url);
+							postContainer.find('img.topic-thumb-preview').attr('src', url);
+							if (url)
+								postContainer.find('.topic-thumb-clear-btn').removeClass('hide');
+							thumbToggleBtnEl.removeClass('hide');
+						}
+					};
 
 				if (parseInt(postData.tid) > 0) {
 					translator.translate('[[topic:composer.replying_to]]: ' + postData.title, function(newTitle) {
@@ -139,13 +395,44 @@ define(['taskbar'], function(taskbar) {
 							titleEl.prop('disabled', false);
 						}
 					});
+					toggleThumbEls();
 				} else {
 					titleEl.val(postData.title);
 					titleEl.prop('disabled', false);
+					toggleThumbEls();
 				}
 
 				bodyEl.val(postData.body);
 
+				thumbToggleBtnEl.on('click', function() {
+					var container = postContainer.find('.topic-thumb-container');
+					if (container.hasClass('hide')) {
+						container.removeClass('hide');
+					} else {
+						container.addClass('hide');
+					}
+				});
+
+				postContainer.on('click', '.topic-thumb-clear-btn', function(e) {
+					postContainer.find('input#topic-thumb-url').val('').trigger('change');
+					resetInputFile(postContainer.find('input#topic-thumb-file'));
+					$(this).addClass('hide');
+					e.preventDefault();
+				});
+
+				postContainer.on('paste change keypress', 'input#topic-thumb-url', function(e) {
+					var urlEl = $(this);
+					setTimeout(function(){
+						var url = urlEl.val();
+						if (url) {
+							postContainer.find('.topic-thumb-clear-btn').removeClass('hide');
+						} else {
+							resetInputFile(postContainer.find('input#topic-thumb-file'));
+							postContainer.find('.topic-thumb-clear-btn').addClass('hide');
+						}
+						postContainer.find('img.topic-thumb-preview').attr('src', url);
+					}, 100);
+				});
 
 				postContainer.on('change', 'input, textarea', function() {
 					composer.posts[post_uuid].modified = true;
@@ -192,7 +479,12 @@ define(['taskbar'], function(taskbar) {
 						case 'fa fa-bold':
 							if (selectionStart === selectionEnd) {
 								// Nothing selected
+								var	cursorPos = postContentEl[0].selectionStart;
 								insertIntoInput(postContentEl, "**bolded text**");
+
+								// Highlight "link url"
+								postContentEl[0].selectionStart = cursorPos + 12;
+								postContentEl[0].selectionEnd = cursorPos + 20;
 							} else {
 								// Text selected
 								postContentEl.val(postContentEl.val().slice(0, selectionStart) + '**' + postContentEl.val().slice(selectionStart, selectionEnd) + '**' + postContentEl.val().slice(selectionEnd));
@@ -241,7 +533,18 @@ define(['taskbar'], function(taskbar) {
 				$('#files').on('change', function(e) {
 					var files = e.target.files;
 					if(files) {
-						uploadSubmit(files, post_uuid, '/api/post/upload');
+						uploadContentFiles({files: files, post_uuid: post_uuid, route: '/api/post/upload'});
+					}
+				});
+
+				postContainer.find('#topic-thumb-file').on('change', function(e) {
+					var files = e.target.files;
+					if(files) {
+						var fd = new FormData();
+						for (var i = 0, file; file = files[i]; i++) {
+							fd.append('files[]', file, file.name);
+						}
+						uploadTopicThumb({files: files, post_uuid: post_uuid, route: '/api/topic/thumb/upload', formData: fd});
 					}
 				});
 
@@ -342,24 +645,6 @@ define(['taskbar'], function(taskbar) {
 		});
 	}
 
-	//http://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api
-	function findBootstrapEnvironment() {
-		var envs = ['xs', 'sm', 'md', 'lg'];
-
-		$el = $('<div>');
-		$el.appendTo($('body'));
-
-		for (var i = envs.length - 1; i >= 0; i--) {
-			var env = envs[i];
-
-			$el.addClass('hidden-'+env);
-			if ($el.is(':hidden')) {
-				$el.remove();
-				return env;
-			}
-		}
-	}
-
 	composer.activateReposition = function(post_uuid) {
 
 		if(composer.active && composer.active !== post_uuid) {
@@ -400,7 +685,7 @@ define(['taskbar'], function(taskbar) {
 		$('body').css({'margin-bottom': postContainer.css('height')});
 
 		composer.focusElements(post_uuid);
-	}
+	};
 
 	composer.focusElements = function(post_uuid) {
 		var postContainer = $('#cmp-uuid-' + post_uuid),
@@ -415,15 +700,18 @@ define(['taskbar'], function(taskbar) {
 		} else if (parseInt(postData.cid) > 0) {
 			titleEl.focus();
 		}
-	}
+	};
+
 	composer.post = function(post_uuid) {
 		var postData = composer.posts[post_uuid],
 			postContainer = $('#cmp-uuid-' + post_uuid),
 			titleEl = postContainer.find('.title'),
-			bodyEl = postContainer.find('textarea');
+			bodyEl = postContainer.find('textarea'),
+			thumbEl = postContainer.find('input#topic-thumb-url');
 
 		titleEl.val(titleEl.val().trim());
 		bodyEl.val(bodyEl.val().trim());
+		thumbEl.val(thumbEl.val().trim());
 
 		var checkTitle = parseInt(postData.cid, 10) || parseInt(postData.pid, 10);
 
@@ -439,20 +727,22 @@ define(['taskbar'], function(taskbar) {
 
 		if (parseInt(postData.cid, 10) > 0) {
 			socket.emit('topics.post', {
-				'title' : titleEl.val(),
-				'content' : bodyEl.val(),
-				'category_id' : postData.cid
+				title: titleEl.val(),
+				content: bodyEl.val(),
+				topic_thumb: thumbEl.val(),
+				category_id: postData.cid
 			}, done);
 		} else if (parseInt(postData.tid, 10) > 0) {
 			socket.emit('posts.reply', {
-				'topic_id' : postData.tid,
-				'content' : bodyEl.val()
+				topic_id: postData.tid,
+				content: bodyEl.val()
 			}, done);
 		} else if (parseInt(postData.pid, 10) > 0) {
 			socket.emit('posts.edit', {
 				pid: postData.pid,
 				content: bodyEl.val(),
-				title: titleEl.val()
+				title: titleEl.val(),
+				topic_thumb: thumbEl.val()
 			}, done);
 		}
 
@@ -462,18 +752,7 @@ define(['taskbar'], function(taskbar) {
 				composer.discard(post_uuid);
 			}
 		}
-	}
-
-	function composerAlert(title, message) {
-		$('.action-bar button').removeAttr('disabled');
-		app.alert({
-			type: 'danger',
-			timeout: 2000,
-			title: title,
-			message: message,
-			alert_id: 'post_error'
-		});
-	}
+	};
 
 	composer.discard = function(post_uuid) {
 		if (composer.posts[post_uuid]) {
@@ -484,14 +763,14 @@ define(['taskbar'], function(taskbar) {
 			$('body').css({'margin-bottom': 0});
 			$('.action-bar button').removeAttr('disabled');
 		}
-	}
+	};
 
 	composer.minimize = function(post_uuid) {
 		var postContainer = $('#cmp-uuid-' + post_uuid);
 		postContainer.css('visibility', 'hidden');
 		composer.active = undefined;
 		taskbar.minimize('composer', post_uuid);
-	}
+	};
 
 	function initializeDragAndDrop(post_uuid) {
 
@@ -641,7 +920,6 @@ define(['taskbar'], function(taskbar) {
 
 		uploadForm.submit();
 	}
-
 
 	return {
 		newTopic: composer.newTopic,
