@@ -474,31 +474,31 @@ var db = require('./database'),
 	}
 
 	Posts.getPidPage = function(pid, uid, callback) {
-		Posts.getPostField(pid, 'tid', function(err, tid) {
-			if(err) {
-				return callback(err);
-			}
-
-			topics.getPids(tid, function(err, pids) {
-				if(err) {
-					return callback(err);
-				}
-
-				var index = pids.indexOf(pid);
+		if(!pid) {
+			return callback(new Error('invalid-pid'));
+		}
+		var index = 0;
+		async.waterfall([
+			function(next) {
+				Posts.getPostField(pid, 'tid', next);
+			},
+			function(tid, next) {
+				topics.getPids(tid, next);
+			},
+			function(pids, next) {
+				index = pids.indexOf(pid.toString());
 				if(index === -1) {
-					return callback(new Error('pid not found'));
+					return next(new Error('pid not found'));
 				}
-
-				user.getSettings(uid, function(err, settings) {
-					if(err) {
-						return callback(err);
-					}
-
-					var page = Math.ceil((index + 1) / settings.postsPerPage);
-					callback(null, page);
-				});
-			});
-		});
+				next();
+			},
+			function(next) {
+				user.getSettings(uid, next);
+			},
+			function(settings, next) {
+				next(null, Math.ceil((index + 1) / settings.postsPerPage));
+			}
+		], callback);
 	};
 
 	Posts.getPidIndex = function(pid, callback) {
