@@ -45,13 +45,30 @@ if(nconf.get('ssl')) {
 module.exports.server = server;
 
 // Signals
-process.on('SIGINT', function() {
-	winston.info('[app] Shutdown Initialised.');
-	db.close();
-	winston.info('[app] Database connection closed.');
+var	shutdown = function(code) {
+		winston.info('[app] Shutdown (SIGTERM/SIGINT) Initialised.');
+		db.close();
+		winston.info('[app] Database connection closed.');
 
-	winston.info('[app] Goodbye!');
-	process.exit();
+		winston.info('[app] Goodbye!');
+		process.exit();
+	},
+	restart = function() {
+		if (process.send) {
+			winston.info('[app] Restarting...');
+			process.send('nodebb:restart');
+		} else {
+			winston.error('[app] Could not restart server. Shutting down.');
+			shutdown();
+		}
+	};
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);
+process.on('SIGHUP', restart);
+process.on('uncaughtException', function(err) {
+	winston.error('[app] Encountered Uncaught Exception: ' + err.message);
+	console.log(err.stack);
+	restart();
 });
 
 (function (app) {
