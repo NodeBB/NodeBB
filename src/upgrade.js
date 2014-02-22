@@ -7,6 +7,7 @@ var db = require('./database'),
 	User = require('./user'),
 	Topics = require('./topics'),
 	Posts = require('./posts'),
+	Categories = require('./categories'),
 	Groups = require('./groups'),
 	Meta = require('./meta'),
 	Plugins = require('./plugins'),
@@ -19,7 +20,7 @@ var db = require('./database'),
 
 Upgrade.check = function(callback) {
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2014, 1, 20, 20, 25).getTime();
+	var	latestSchema = new Date(2014, 1, 22).getTime();
 
 	db.get('schemaDate', function(err, value) {
 		if (parseInt(value, 10) >= latestSchema) {
@@ -691,7 +692,7 @@ Upgrade.upgrade = function(callback) {
 
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
-				
+
 				db.setObjectField('widgets:home.tpl', 'motd', JSON.stringify([
 					{
 						"widget": "html",
@@ -717,9 +718,9 @@ Upgrade.upgrade = function(callback) {
 
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
-				
+
 				var container = '<div class="panel panel-default"><div class="panel-heading">{title}</div><div class="panel-body">{body}</div></div>';
-				
+
 				db.setObjectField('widgets:category.tpl', 'sidebar', JSON.stringify([
 					{
 						"widget": "recentreplies",
@@ -756,7 +757,7 @@ Upgrade.upgrade = function(callback) {
 
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
-				
+
 				db.setObjectField('widgets:home.tpl', 'footer', JSON.stringify([
 					{
 						"widget": "forumstats",
@@ -778,7 +779,7 @@ Upgrade.upgrade = function(callback) {
 				updatesMade = true;
 
 				var container = '<div class="panel panel-default"><div class="panel-heading">{title}</div><div class="panel-body">{body}</div></div>';
-				
+
 				db.setObjectField('widgets:home.tpl', 'sidebar', JSON.stringify([
 					{
 						"widget": "html",
@@ -811,6 +812,59 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/2/20] Activating NodeBB Essential Widgets - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 1, 22).getTime();
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				db.exists('categories:cid', function(err, exists) {
+					if(err) {
+						return next(err);
+					}
+					if(!exists) {
+						winston.info('[2014/2/22] Added categories to sorted set - skipped');
+						return next();
+					}
+
+					db.getListRange('categories:cid', 0, -1, function(err, cids) {
+						if(err) {
+							return next(err);
+						}
+
+						if(!Array.isArray(cids)) {
+							winston.info('[2014/2/22] Add categories to sorted set - skipped (cant find any cids)');
+							return next();
+						}
+
+						db.rename('categories:cid', 'categories:cid:old', function(err) {
+							if(err) {
+								return next(err);
+							}
+
+							async.each(cids, function(cid, next) {
+								Categories.getCategoryField(cid, 'order', function(err, order) {
+									if(err) {
+										return next(err);
+									}
+									db.sortedSetAdd('categories:cid', order, cid, next);
+								});
+							}, function(err) {
+								if(err) {
+									return next(err);
+								}
+								winston.info('[2014/2/22] Added categories to sorted set');
+								db.delete('categories:cid:old', next);
+							});
+						});
+					});
+				});
+
+			} else {
+				winston.info('[2014/2/22] Added categories to sorted set - skipped');
 				next();
 			}
 		}

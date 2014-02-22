@@ -736,7 +736,7 @@ define(['taskbar'], function(taskbar) {
 			}, done);
 		} else if (parseInt(postData.tid, 10) > 0) {
 			socket.emit('posts.reply', {
-				topic_id: postData.tid,
+				tid: postData.tid,
 				content: bodyEl.val(),
 				toPid: postData.toPid
 			}, done);

@@ -87,7 +87,7 @@ var db = require('./database'),
 			function(postData, next) {
 				postTools.parse(postData.content, function(err, content) {
 					if(err) {
-						return next(err, null);
+						return next(err);
 					}
 
 					postData.content = content;
@@ -303,24 +303,24 @@ var db = require('./database'),
 					});
 				},
 				function(postData, next) {
-					if (postData.content) {
-						postTools.parse(postData.content, function(err, content) {
-							if(err) {
-								return next(err);
-							}
-
-							if(stripTags) {
-								var s = S(content);
-								postData.content = s.stripTags.apply(s, utils.getTagsExcept(['img', 'i'])).s;
-							} else {
-								postData.content = content;
-							}
-
-							next(null, postData);
-						});
-					} else {
-						next(null, postData);
+					if (!postData.content) {
+						return next(null, postData);
 					}
+
+					postTools.parse(postData.content, function(err, content) {
+						if(err) {
+							return next(err);
+						}
+
+						if(stripTags) {
+							var s = S(content);
+							postData.content = s.stripTags.apply(s, utils.getTagsExcept(['img', 'i'])).s;
+						} else {
+							postData.content = content;
+						}
+
+						next(null, postData);
+					});
 				}
 			], callback);
 		}

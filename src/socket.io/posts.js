@@ -25,7 +25,7 @@ SocketPosts.reply = function(socket, data, callback) {
 		return callback(new Error('not-logged-in'));
 	}
 
-	if(!data || !data.topic_id || !data.content) {
+	if(!data || !data.tid || !data.content) {
 		return callback(new Error('invalid data'));
 	}
 

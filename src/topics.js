@@ -106,6 +106,12 @@ var async = require('async'),
 
 		async.waterfall([
 			function(next) {
+				categoryTools.exists(cid, next);
+			},
+			function(categoryExists, next) {
+				if(!categoryExists) {
+					return next(new Error('category doesn\'t exist'))
+				}
 				categoryTools.privileges(cid, uid, next);
 			},
 			function(privileges, next) {
@@ -144,7 +150,7 @@ var async = require('async'),
 	};
 
 	Topics.reply = function(data, callback) {
-		var tid = data.topic_id,
+		var tid = data.tid,
 			uid = data.uid,
 			toPid = data.toPid,
 			content = data.content,
@@ -153,6 +159,12 @@ var async = require('async'),
 
 		async.waterfall([
 			function(next) {
+				threadTools.exists(tid, next);
+			},
+			function(topicExists, next) {
+				if (!topicExists) {
+					return next(new Error('topic doesn\'t exist'));
+				}
 				threadTools.privileges(tid, uid, next);
 			},
 			function(privilegesData, next) {
@@ -265,9 +277,9 @@ var async = require('async'),
 	};
 
 	Topics.movePostToTopic = function(pid, tid, callback) {
-		threadTools.exists(tid, function(exists) {
-			if(!exists) {
-				return callback(new Error('Topic doesn\'t exist'));
+		threadTools.exists(tid, function(err, exists) {
+			if(err || !exists) {
+				return callback(err || new Error('Topic doesn\'t exist'));
 			}
 
 			posts.getPostFields(pid, ['deleted', 'tid', 'timestamp'], function(err, postData) {
@@ -426,7 +438,9 @@ var async = require('async'),
 			if(err) {
 				return callback(err);
 			}
-
+			if(!parseInt(postCount, 10)) {
+				return callback(null, 1);
+			}
 			user.getSettings(uid, function(err, settings) {
 				if(err) {
 					return callback(err);
@@ -762,9 +776,9 @@ var async = require('async'),
 	};
 
 	Topics.getTopicWithPosts = function(tid, current_user, start, end, quiet, callback) {
-		threadTools.exists(tid, function(exists) {
-			if (!exists) {
-				return callback(new Error('Topic tid \'' + tid + '\' not found'));
+		threadTools.exists(tid, function(err, exists) {
+			if (err || !exists) {
+				return callback(err || new Error('Topic tid \'' + tid + '\' not found'));
 			}
 
 			// "quiet" is used for things like RSS feed updating, HTML parsing for non-js users, etc
