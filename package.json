@@ -16,7 +16,7 @@
     "socket.io": "~0.9.16",
     "express": "3.2.0",
     "express-namespace": "~0.1.1",
-    "passport": "^0.2.0",
+    "passport": "~0.2.0",
     "passport-local": "0.1.6",
     "less-middleware": "0.1.12",
     "marked": "0.2.8",
