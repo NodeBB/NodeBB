@@ -16,13 +16,8 @@
     "socket.io": "~0.9.16",
     "express": "3.2.0",
     "express-namespace": "~0.1.1",
-    "emailjs": "0.3.4",
-    "cookie": "0.0.6",
-    "passport": "0.1.17",
+    "passport": "~0.2.0",
     "passport-local": "0.1.6",
-    "passport-twitter": "0.1.5",
-    "passport-google-oauth": "0.1.5",
-    "passport-facebook": "0.1.5",
     "less-middleware": "0.1.12",
     "marked": "0.2.8",
     "async": "~0.2.8",
@@ -30,35 +25,31 @@
     "gravatar": "1.0.6",
     "nconf": "~0.6.7",
     "sitemap": "~0.7.1",
-    "request": "~2.25.0",
     "reds": "~0.2.4",
     "winston": "~0.7.2",
     "rss": "~0.2.0",
     "prompt": "~0.2.11",
     "uglify-js": "~2.4.0",
     "validator": "~3.2.1",
-    "nodebb-plugin-mentions": "~0.4",
-    "nodebb-plugin-markdown": "~0.3",
-    "nodebb-widget-essentials": "~0.0",
-    "nodebb-theme-vanilla": "~0.0.14",
-    "nodebb-theme-cerulean": "~0.0.13",
-    "nodebb-theme-lavender": "~0.0.21",
     "cron": "~1.0.1",
     "semver": "~2.2.1",
     "string": "~1.7.0",
     "xregexp": "~2.0.0",
     "socket.io-wildcard": "~0.1.1",
-    "bcryptjs": "~0.7.10"
+    "bcryptjs": "~0.7.10",
+    "nodebb-plugin-mentions": "~0.4",
+    "nodebb-plugin-markdown": "~0.3",
+    "nodebb-widget-essentials": "~0.0",
+    "nodebb-theme-vanilla": "~0.0.14",
+    "nodebb-theme-cerulean": "~0.0.13",
+    "nodebb-theme-lavender": "~0.0.21"
   },
   "optionalDependencies": {
     "redis": "0.8.3",
-    "mongodb": "~1.3.19",
-    "connect-redis": "1.4.5",
-    "connect-mongo": "0.4.0",
     "hiredis": "~0.1.15",
-    "nodebb-plugin-sso-facebook": "~0.1.0",
-    "nodebb-plugin-sso-twitter": "~0.1.0",
-    "nodebb-plugin-sso-google": "~0.1.0"
+    "connect-redis": "1.4.5",
+    "mongodb": "~1.3.19",
+    "connect-mongo": "0.4.0"
   },
   "devDependencies": {
     "mocha": "~1.13.0"
@@ -69,7 +60,7 @@
   "engines": {
     "node": ">=0.8"
   },
-  "contributors": [
+  "maintainers": [
     {
       "name": "Andrew Rodrigues",
       "email": "andrew@designcreateplay.com",
@@ -84,22 +75,6 @@
       "name": "Barış Soner Uşaklı",
       "email": "baris@designcreateplay.com",
       "url": "https://github.com/barisusakli"
-    },
-    {
-      "name": "Andrew Darqui",
-      "url": "https://github.com/adarqui"
-    },
-    {
-      "name": "Damian Bushong",
-      "url": "https://github.com/damianb"
-    },
-    {
-      "name": "Matt Smith",
-      "url": "https://github.com/soimafreak"
-    },
-    {
-      "name": "Quinton Marchi",
-      "url": "https://github.com/iamcardinal"
     }
   ]
 }
