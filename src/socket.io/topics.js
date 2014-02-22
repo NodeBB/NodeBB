@@ -2,6 +2,7 @@ var topics = require('../topics'),
 	threadTools = require('../threadTools'),
 	index = require('./index'),
 	user = require('../user'),
+	db = require('./../database'),
 
 	async = require('async'),
 
@@ -83,7 +84,7 @@ SocketTopics.markAsRead = function(socket, data) {
 	topics.markAsRead(data.tid, data.uid, function(err) {
 		topics.pushUnreadCount(data.uid);
 	});
-}
+};
 
 SocketTopics.markAllRead = function(socket, data, callback) {
 	topics.markAllRead(socket.uid, function(err) {
@@ -102,8 +103,13 @@ SocketTopics.markAsUnreadForAll = function(socket, tid, callback) {
 		if(err) {
 			return callback(err);
 		}
-		topics.pushUnreadCount();
-		callback();
+		db.sortedSetAdd('topics:recent', Date.now(), tid, function(err) {
+			if(err) {
+				return callback(err);
+			}
+			topics.pushUnreadCount();
+			callback();
+		});
 	});
 }
 
@@ -125,7 +131,7 @@ function doTopicAction(action, socket, tid, callback) {
 			threadTools[action](tid, socket.uid, callback);
 		}
 	});
-}
+};
 
 SocketTopics.delete = function(socket, tid, callback) {
 	doTopicAction('delete', socket, tid, callback);
