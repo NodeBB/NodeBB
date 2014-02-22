@@ -5,6 +5,7 @@ var fs = require('fs'),
 	nconf = require('nconf'),
 
 	utils = require('./../public/src/utils'),
+	translator = require('./../public/src/translator'),
 	db = require('./database'),
 	plugins = require('./plugins'),
 	User = require('./user');
@@ -60,7 +61,6 @@ var fs = require('fs'),
 
 				// this might be a good spot to add a hook
 				if (field === 'defaultLang') {
-					var translator = require('../public/src/translator');
 					translator.loadServer();
 				}
 			});
