@@ -16,12 +16,12 @@ var db = require('./database'),
 	Upgrade = {},
 
 	minSchemaDate = new Date(2014, 0, 4).getTime(),		// This value gets updated every new MINOR version
-	schemaDate, thisSchemaDate;
+	schemaDate, thisSchemaDate,
+
+	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
+	latestSchema = new Date(2014, 1, 22).getTime();
 
 Upgrade.check = function(callback) {
-	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2014, 1, 22).getTime();
-
 	db.get('schemaDate', function(err, value) {
 		if(!value) {
 			db.set('schemaDate', latestSchema, function(err) {
@@ -47,9 +47,16 @@ Upgrade.upgrade = function(callback) {
 		function(next) {
 			// Prepare for upgrade & check to make sure the upgrade is possible
 			db.get('schemaDate', function(err, value) {
-				schemaDate = parseInt(value, 10);
+				if(!value) {
+					db.set('schemaDate', latestSchema, function(err) {
+						next();
+					});
+					schemaDate = latestSchema;
+				} else {
+					schemaDate = parseInt(value, 10);
+				}
 
-				if (schemaDate >= minSchemaDate || schemaDate === null) {
+				if (schemaDate >= minSchemaDate) {
 					next();
 				} else {
 					next(new Error('upgrade-not-possible'));
@@ -876,7 +883,7 @@ Upgrade.upgrade = function(callback) {
 			}
 		}
 		// Add new schema updates here
-		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 17!!!
+		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 22!!!
 	], function(err) {
 		if (!err) {
 			db.set('schemaDate', thisSchemaDate, function(err) {
@@ -886,6 +893,7 @@ Upgrade.upgrade = function(callback) {
 					} else {
 						winston.info('[upgrade] Schema already up to date!');
 					}
+
 					if (callback) {
 						callback(err);
 					} else {
