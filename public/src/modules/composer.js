@@ -294,22 +294,22 @@ define(['taskbar'], function(taskbar) {
 				var prevText = bodyEl.val();
 				if(tid !== composer.posts[uuid].tid) {
 					text = username + ' said in ['+title+'](/topic/'+tid+'#'+pid+'):\n'+text;
-				}else {
+				} else {
 					text = username + ' said:\n' + text;
 				}
 				composer.posts[uuid].body = (prevText.length ? prevText + '\n\n' : '') + text;
 				bodyEl.val(composer.posts[uuid].body);
-			}else{
-				composer.newReply(tid,title,username + ' said:\n' + text);
+			} else {
+				composer.newReply(tid, pid, title, username + ' said:\n' + text);
 			}
-
 		}
 	};
 
-	composer.newReply = function(tid, title, text) {
+	composer.newReply = function(tid, pid, title, text) {
 		if(allowed()) {
 			push({
 				tid: tid,
+				toPid: pid,
 				title: title,
 				body: text,
 				modified: false,
@@ -711,7 +711,9 @@ define(['taskbar'], function(taskbar) {
 
 		titleEl.val(titleEl.val().trim());
 		bodyEl.val(bodyEl.val().trim());
-		thumbEl.val(thumbEl.val().trim());
+		if(thumbEl.length) {
+			thumbEl.val(thumbEl.val().trim());
+		}
 
 		var checkTitle = parseInt(postData.cid, 10) || parseInt(postData.pid, 10);
 
@@ -729,20 +731,21 @@ define(['taskbar'], function(taskbar) {
 			socket.emit('topics.post', {
 				title: titleEl.val(),
 				content: bodyEl.val(),
-				topic_thumb: thumbEl.val(),
+				topic_thumb: thumbEl.val() || '',
 				category_id: postData.cid
 			}, done);
 		} else if (parseInt(postData.tid, 10) > 0) {
 			socket.emit('posts.reply', {
-				topic_id: postData.tid,
-				content: bodyEl.val()
+				tid: postData.tid,
+				content: bodyEl.val(),
+				toPid: postData.toPid
 			}, done);
 		} else if (parseInt(postData.pid, 10) > 0) {
 			socket.emit('posts.edit', {
 				pid: postData.pid,
 				content: bodyEl.val(),
 				title: titleEl.val(),
-				topic_thumb: thumbEl.val()
+				topic_thumb: thumbEl.val() || ''
 			}, done);
 		}
 

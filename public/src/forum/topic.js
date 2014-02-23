@@ -405,13 +405,14 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			}
 
 			var username = '',
-				post = $(this).parents('li[data-pid]');
+				post = $(this).parents('li[data-pid]'),
+				pid = $(this).parents('.post-row').attr('data-pid');
 			if (post.length) {
 				username = '@' + post.attr('data-username').replace(/\s/g, '-') + ' ';
 			}
 
 			if (thread_state.locked !== '1') {
-				composer.newReply(tid, topic_name, selectionText.length > 0 ? selectionText + '\n\n' + username : '' + username);
+				composer.newReply(tid, pid, topic_name, selectionText.length > 0 ? selectionText + '\n\n' + username : '' + username);
 			}
 		});
 
@@ -436,7 +437,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 					if($('.composer').length) {
 						composer.addQuote(tid, pid, topic_name, username, quoted);
 					}else {
-						composer.newReply(tid, topic_name, username + ' said:\n' + quoted);
+						composer.newReply(tid, pid, topic_name, username + ' said:\n' + quoted);
 					}
 				});
 			}

@@ -18,15 +18,7 @@ var winston = require('winston'),
 (function(ThreadTools) {
 
 	ThreadTools.exists = function(tid, callback) {
-
-		db.isSortedSetMember('topics:tid', tid, function(err, ismember) {
-
-			if (err) {
-				callback(false);
-			}
-
-			callback(ismember);
-		});
+		db.isSortedSetMember('topics:tid', tid, callback);
 	}
 
 	ThreadTools.privileges = function(tid, uid, callback) {

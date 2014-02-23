@@ -14,6 +14,7 @@ var	async = require('async'),
 	SocketPosts = {};
 
 SocketPosts.reply = function(socket, data, callback) {
+
 	if (!socket.uid && !parseInt(meta.config.allowGuestPosting, 10)) {
 		socket.emit('event:alert', {
 			title: 'Reply Unsuccessful',
@@ -24,11 +25,13 @@ SocketPosts.reply = function(socket, data, callback) {
 		return callback(new Error('not-logged-in'));
 	}
 
-	if(!data || !data.topic_id || !data.content) {
+	if(!data || !data.tid || !data.content) {
 		return callback(new Error('invalid data'));
 	}
 
-	topics.reply(data.topic_id, socket.uid, data.content, function(err, postData) {
+	data.uid = socket.uid;
+
+	topics.reply(data, function(err, postData) {
 		if(err) {
 			if (err.message === 'content-too-short') {
 				module.parent.exports.emitContentTooShortAlert(socket);
