@@ -915,64 +915,26 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		}
 
 		function set_locked_state(locked, alert) {
-			var threadReplyBtn = $('.topic-main-buttons .post_reply'),
-				postReplyBtns = document.querySelectorAll('#post-container .post_reply'),
-				quoteBtns = document.querySelectorAll('#post-container .quote'),
-				editBtns = document.querySelectorAll('#post-container .edit'),
-				deleteBtns = document.querySelectorAll('#post-container .delete'),
-				numPosts = document.querySelectorAll('#post_container li[data-pid]').length,
-				lockThreadEl = $('.lock_thread'),
-				x;
+			translator.translate('<i class="fa fa-fw fa-' + (locked ? 'un': '') + 'lock"></i> [[topic:thread_tools.' + (locked ? 'un': '') + 'lock]]', function(translated) {
+				$('.lock_thread').html(translated);
+			});
 
-			if (locked === true) {
-				translator.translate('<i class="fa fa-fw fa-unlock"></i> [[topic:thread_tools.unlock]]', function(translated) {
-					lockThreadEl.html(translated);
+			$('.topic-main-buttons .post_reply').attr('disabled', locked).html(locked ? 'Locked <i class="fa fa-lock"></i>' : 'Reply');
+
+			$('#post-container .post_reply').html(locked ? 'Locked <i class="fa fa-lock"></i>' : 'Reply <i class="fa fa-reply"></i>');
+			$('#post-container').find('.quote, .edit, .delete').toggleClass('none', locked);
+
+			if (alert) {
+				app.alert({
+					'alert_id': 'thread_lock',
+					type: 'success',
+					title: 'Thread ' + (locked ? 'Locked' : 'Unlocked'),
+					message: 'Thread has been successfully ' + (locked ? 'locked' : 'unlocked'),
+					timeout: 5000
 				});
-				threadReplyBtn.attr('disabled', true);
-				threadReplyBtn.html('Locked <i class="fa fa-lock"></i>');
-				for (x = 0; x < numPosts; x++) {
-					postReplyBtns[x].innerHTML = 'Locked <i class="fa fa-lock"></i>';
-					quoteBtns[x].style.display = 'none';
-					editBtns[x].style.display = 'none';
-					deleteBtns[x].style.display = 'none';
-				}
-
-				if (alert) {
-					app.alert({
-						'alert_id': 'thread_lock',
-						type: 'success',
-						title: 'Thread Locked',
-						message: 'Thread has been successfully locked',
-						timeout: 5000
-					});
-				}
-
-				thread_state.locked = '1';
-			} else {
-				translator.translate('<i class="fa fa-fw fa-lock"></i> [[topic:thread_tools.lock]]', function(translated) {
-					lockThreadEl.html(translated);
-				});
-				threadReplyBtn.attr('disabled', false);
-				threadReplyBtn.html('Reply');
-				for (x = 0; x < numPosts; x++) {
-					postReplyBtns[x].innerHTML = 'Reply <i class="fa fa-reply"></i>';
-					quoteBtns[x].style.display = 'inline-block';
-					editBtns[x].style.display = 'inline-block';
-					deleteBtns[x].style.display = 'inline-block';
-				}
-
-				if (alert) {
-					app.alert({
-						'alert_id': 'thread_lock',
-						type: 'success',
-						title: 'Thread Unlocked',
-						message: 'Thread has been successfully unlocked',
-						timeout: 5000
-					});
-				}
-
-				thread_state.locked = '0';
 			}
+
+			thread_state.locked = locked ? '1' : '0';
 		}
 
 		function set_delete_state(deleted) {
