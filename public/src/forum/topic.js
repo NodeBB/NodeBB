@@ -978,7 +978,6 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		function set_delete_state(deleted) {
 			var deleteThreadEl = $('.delete_thread'),
 				deleteTextEl = $('.delete_thread span'),
-				//deleteThreadEl.getElementsByTagName('span')[0],
 				threadEl = $('#post-container'),
 				deleteNotice = document.getElementById('thread-deleted') || document.createElement('div');
 
@@ -1007,36 +1006,19 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		}
 
 		function set_pinned_state(pinned, alert) {
-			var pinEl = $('.pin_thread');
-
 			translator.translate('<i class="fa fa-fw fa-thumb-tack"></i> [[topic:thread_tools.' + (pinned ? 'unpin' : 'pin') + ']]', function(translated) {
-				if (pinned) {
-					pinEl.html(translated);
-					if (alert) {
-						app.alert({
-							'alert_id': 'thread_pin',
-							type: 'success',
-							title: 'Thread Pinned',
-							message: 'Thread has been successfully pinned',
-							timeout: 5000
-						});
-					}
+				$('.pin_thread').html(translated);
 
-					thread_state.pinned = '1';
-				} else {
-					pinEl.html(translated);
-					if (alert) {
-						app.alert({
-							'alert_id': 'thread_pin',
-							type: 'success',
-							title: 'Thread Unpinned',
-							message: 'Thread has been successfully unpinned',
-							timeout: 5000
-						});
-					}
-
-					thread_state.pinned = '0';
+				if (alert) {
+					app.alert({
+						'alert_id': 'thread_pin',
+						type: 'success',
+						title: 'Thread ' + (pinned ? 'Pinned' : 'Unpinned'),
+						message: 'Thread has been successfully ' + (pinned ? 'pinned' : 'unpinned'),
+						timeout: 5000
+					});
 				}
+				thread_state.pinned = pinned ? '1' : '0';
 			});
 		}
 
@@ -1053,23 +1035,16 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		}
 
 		function toggle_post_tools(pid, isDeleted) {
-			var postEl = $('#post-container li[data-pid="' + pid + '"]'),
-				quoteEl = $(postEl[0].querySelector('.quote')),
-				favEl = $(postEl[0].querySelector('.favourite')),
-				replyEl = $(postEl[0].querySelector('.post_reply')),
-				chatEl = $(postEl[0].querySelector('.chat'));
+			var postEl = $('#post-container li[data-pid="' + pid + '"]');
 
-			if (isDeleted) {
-				quoteEl.addClass('none');
-				favEl.addClass('none');
-				replyEl.addClass('none');
-				chatEl.addClass('none');
-			} else {
-				quoteEl.removeClass('none');
-				favEl.removeClass('none');
-				replyEl.removeClass('none');
-				chatEl.removeClass('none');
-			}
+			postEl.find('.quote').toggleClass('none', isDeleted);
+			postEl.find('.favourite').toggleClass('none', isDeleted);
+			postEl.find('.post_reply').toggleClass('none', isDeleted);
+			postEl.find('.chat').toggleClass('none', isDeleted);
+
+			translator.translate(isDeleted ? ' [[topic:restore]]' : ' [[topic:delete]]', function(translated) {
+				postEl.find('.delete').find('span').html(translated);
+			});
 		}
 
 		$(window).on('scroll', updateHeader);
