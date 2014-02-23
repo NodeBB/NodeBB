@@ -23,6 +23,13 @@ Upgrade.check = function(callback) {
 	var	latestSchema = new Date(2014, 1, 22).getTime();
 
 	db.get('schemaDate', function(err, value) {
+		if(!value) {
+			db.set('schemaDate', latestSchema, function(err) {
+				callback(true);
+			});
+			return;
+		}
+
 		if (parseInt(value, 10) >= latestSchema) {
 			callback(true);
 		} else {
@@ -40,7 +47,7 @@ Upgrade.upgrade = function(callback) {
 		function(next) {
 			// Prepare for upgrade & check to make sure the upgrade is possible
 			db.get('schemaDate', function(err, value) {
-				schemaDate = value;
+				schemaDate = parseInt(value, 10);
 
 				if (schemaDate >= minSchemaDate || schemaDate === null) {
 					next();
