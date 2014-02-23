@@ -1237,18 +1237,8 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 	}
 
 
-	function toggle_mod_tools(pid, state) {
-		var postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
-			editEl = postEl.find('.edit'),
-			deleteEl = postEl.find('.delete');
-
-		if (state) {
-			editEl.removeClass('none');
-			deleteEl.removeClass('none');
-		} else {
-			editEl.addClass('none');
-			deleteEl.addClass('none');
-		}
+	function toggle_mod_tools(pid, editable) {
+		$('#post-container li[data-pid="' + pid + '"]').find('.edit, .delete').toggleClass('none', !editable);
 	}
 
 	function updatePostCount() {
