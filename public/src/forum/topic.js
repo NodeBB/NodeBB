@@ -1006,36 +1006,19 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		}
 
 		function set_pinned_state(pinned, alert) {
-			var pinEl = $('.pin_thread');
-
 			translator.translate('<i class="fa fa-fw fa-thumb-tack"></i> [[topic:thread_tools.' + (pinned ? 'unpin' : 'pin') + ']]', function(translated) {
-				if (pinned) {
-					pinEl.html(translated);
-					if (alert) {
-						app.alert({
-							'alert_id': 'thread_pin',
-							type: 'success',
-							title: 'Thread Pinned',
-							message: 'Thread has been successfully pinned',
-							timeout: 5000
-						});
-					}
+				$('.pin_thread').html(translated);
 
-					thread_state.pinned = '1';
-				} else {
-					pinEl.html(translated);
-					if (alert) {
-						app.alert({
-							'alert_id': 'thread_pin',
-							type: 'success',
-							title: 'Thread Unpinned',
-							message: 'Thread has been successfully unpinned',
-							timeout: 5000
-						});
-					}
-
-					thread_state.pinned = '0';
+				if (alert) {
+					app.alert({
+						'alert_id': 'thread_pin',
+						type: 'success',
+						title: 'Thread ' + (pinned ? 'Pinned' : 'Unpinned'),
+						message: 'Thread has been successfully ' + (pinned ? 'pinned' : 'unpinned'),
+						timeout: 5000
+					});
 				}
+				thread_state.pinned = pinned ? '1' : '0';
 			});
 		}
 
