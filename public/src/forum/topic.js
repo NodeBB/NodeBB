@@ -280,41 +280,11 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			fixDeleteStateForPosts();
 
 
-			// Follow Thread State
-			var followEl = $('.posts .follow'),
-				set_follow_state = function(state, quiet) {
-					if (state && !followEl.hasClass('btn-success')) {
-						followEl.addClass('btn-success');
-						followEl.attr('title', 'You are currently receiving updates to this topic');
-						if (!quiet) {
-							app.alert({
-								alert_id: 'topic_follow',
-								timeout: 2500,
-								title: '[[topic:following_topic.title]]',
-								message: '[[topic:following_topic.message]]',
-								type: 'success'
-							});
-						}
-					} else if (!state && followEl.hasClass('btn-success')) {
-						followEl.removeClass('btn-success');
-						followEl.attr('title', 'Be notified of new replies in this topic');
-						if (!quiet) {
-							app.alert({
-								alert_id: 'topic_follow',
-								timeout: 2500,
-								title: '[[topic:not_following_topic.title]]',
-								message: '[[topic:not_following_topic.message]]',
-								type: 'success'
-							});
-						}
-					}
-				};
-
 			socket.emit('topics.followCheck', tid, function(err, state) {
-				set_follow_state(state, true);
+				set_follow_state(state, false);
 			});
 
-			followEl.on('click', function() {
+			$('.posts .follow').on('click', function() {
 				socket.emit('topics.follow', tid, function(err, state) {
 					if(err) {
 						return app.alert({
@@ -326,7 +296,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 						});
 					}
 
-					set_follow_state(state);
+					set_follow_state(state, true);
 				});
 
 				return false;
@@ -914,6 +884,21 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			favourites.html(currentFavourites).attr('data-favourites', currentFavourites);
 		}
 
+		function set_follow_state(state, alert) {
+
+			$('.posts .follow').toggleClass('btn-success', state).attr('title', state ? 'You are currently receiving updates to this topic' : 'Be notified of new replies in this topic');
+
+			if(alert) {
+				app.alert({
+					alert_id: 'topic_follow',
+					timeout: 2500,
+					title: state ? '[[topic:following_topic.title]]' : '[[topic:not_following_topic.title]]',
+					message: state ? '[[topic:following_topic.message]]' : '[[topic:not_following_topic.message]]',
+					type: 'success'
+				});
+			}
+		}
+
 		function set_locked_state(locked, alert) {
 			translator.translate('<i class="fa fa-fw fa-' + (locked ? 'un': '') + 'lock"></i> [[topic:thread_tools.' + (locked ? 'un': '') + 'lock]]', function(translated) {
 				$('.lock_thread').html(translated);
@@ -1057,8 +1042,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		var scrollBottom = scrollTop + $(window).height();
 
 		var elTop = el.offset().top;
-		var height = Math.floor(el.height());
-		var elBottom = elTop + height;
+		var elBottom = elTop + Math.floor(el.height());
 		return !(elTop > scrollBottom || elBottom < scrollTop);
 	}
 
