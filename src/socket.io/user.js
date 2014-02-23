@@ -1,6 +1,7 @@
 var	async = require('async'),
 	user = require('../user'),
 	topics = require('../topics'),
+	utils = require('./../../public/src/utils'),
 	SocketUser = {};
 
 SocketUser.exists = function(socket, data, callback) {
