@@ -978,7 +978,6 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		function set_delete_state(deleted) {
 			var deleteThreadEl = $('.delete_thread'),
 				deleteTextEl = $('.delete_thread span'),
-				//deleteThreadEl.getElementsByTagName('span')[0],
 				threadEl = $('#post-container'),
 				deleteNotice = document.getElementById('thread-deleted') || document.createElement('div');
 
@@ -1053,23 +1052,16 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		}
 
 		function toggle_post_tools(pid, isDeleted) {
-			var postEl = $('#post-container li[data-pid="' + pid + '"]'),
-				quoteEl = $(postEl[0].querySelector('.quote')),
-				favEl = $(postEl[0].querySelector('.favourite')),
-				replyEl = $(postEl[0].querySelector('.post_reply')),
-				chatEl = $(postEl[0].querySelector('.chat'));
+			var postEl = $('#post-container li[data-pid="' + pid + '"]');
 
-			if (isDeleted) {
-				quoteEl.addClass('none');
-				favEl.addClass('none');
-				replyEl.addClass('none');
-				chatEl.addClass('none');
-			} else {
-				quoteEl.removeClass('none');
-				favEl.removeClass('none');
-				replyEl.removeClass('none');
-				chatEl.removeClass('none');
-			}
+			postEl.find('.quote').toggleClass('none', isDeleted);
+			postEl.find('.favourite').toggleClass('none', isDeleted);
+			postEl.find('.post_reply').toggleClass('none', isDeleted);
+			postEl.find('.chat').toggleClass('none', isDeleted);
+
+			translator.translate(isDeleted ? ' [[topic:restore]]' : ' [[topic:delete]]', function(translated) {
+				postEl.find('.delete').find('span').html(translated);
+			});
 		}
 
 		$(window).on('scroll', updateHeader);
