@@ -938,32 +938,19 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		}
 
 		function set_delete_state(deleted) {
-			var deleteThreadEl = $('.delete_thread'),
-				deleteTextEl = $('.delete_thread span'),
-				threadEl = $('#post-container'),
-				deleteNotice = document.getElementById('thread-deleted') || document.createElement('div');
+			var threadEl = $('#post-container');
 
-			if (deleted) {
-				translator.translate('<i class="fa fa-fw fa-comment"></i> [[topic:thread_tools.restore]]', function(translated) {
-					deleteTextEl.html(translated);
-				});
-				threadEl.addClass('deleted');
+			translator.translate('<i class="fa fa-fw ' + (deleted ? 'fa-comment' : 'fa-trash-o') + '"></i> [[topic:thread_tools.' + (deleted ? 'restore' : 'delete') + ']]', function(translated) {
+				$('.delete_thread span').html(translated);
+			});
 
-				// Spawn a 'deleted' notice at the top of the page
-				deleteNotice.setAttribute('id', 'thread-deleted');
-				deleteNotice.className = 'alert alert-warning';
-				deleteNotice.innerHTML = 'This thread has been deleted. Only users with thread management privileges can see it.';
-				threadEl.before(deleteNotice);
+			threadEl.toggleClass('deleted', deleted);
+			thread_state.deleted = deleted ? '1' : '0';
 
-				thread_state.deleted = '1';
+			if(deleted) {
+				$('<div id="thread-deleted">This thread has been deleted. Only users with thread management privileges can see it.</div>').insertBefore(threadEl);
 			} else {
-				translator.translate('<i class="fa fa-fw fa-trash-o"></i> [[topic:thread_tools.delete]]', function(translated) {
-					deleteTextEl.html(translated);
-				});
-				threadEl.removeClass('deleted');
-				deleteNotice.parentNode.removeChild(deleteNotice);
-
-				thread_state.deleted = '0';
+				$('#thread-deleted').remove();
 			}
 		}
 
@@ -999,10 +986,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		function toggle_post_tools(pid, isDeleted) {
 			var postEl = $('#post-container li[data-pid="' + pid + '"]');
 
-			postEl.find('.quote').toggleClass('none', isDeleted);
-			postEl.find('.favourite').toggleClass('none', isDeleted);
-			postEl.find('.post_reply').toggleClass('none', isDeleted);
-			postEl.find('.chat').toggleClass('none', isDeleted);
+			postEl.find('.quote, .favourite, .post_reply, .chat').toggleClass('none', isDeleted);
 
 			translator.translate(isDeleted ? ' [[topic:restore]]' : ' [[topic:delete]]', function(translated) {
 				postEl.find('.delete').find('span').html(translated);
