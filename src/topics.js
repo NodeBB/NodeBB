@@ -1154,6 +1154,16 @@ var async = require('async'),
 		});
 	}
 
+	Topics.updateTopicCount = function(callback) {
+		db.sortedSetCard('topics:recent', function(err, count) {
+			if(err) {
+				return callback(err);
+			}
+
+			db.setObjectField('global', count, callback);
+		});
+	};
+
 	Topics.delete = function(tid, callback) {
 		async.parallel([
 			function(next) {
@@ -1176,7 +1186,13 @@ var async = require('async'),
 					db.incrObjectFieldBy('category:' + cid, 'topic_count', -1, next);
 				});
 			}
-		], callback);
+		], function(err) {
+			if (err) {
+				return callback(err);
+			}
+
+			Topics.updateTopicCount(callback);
+		});
 	};
 
 	Topics.restore = function(tid, callback) {
@@ -1206,7 +1222,13 @@ var async = require('async'),
 						db.incrObjectFieldBy('category:' + cid, 'topic_count', 1, next);
 					});
 				}
-			], callback);
+			], function(err) {
+				if (err) {
+					return callback(err);
+				}
+
+				Topics.updateTopicCount(callback);
+			});
 		});
 	};
 }(exports));
