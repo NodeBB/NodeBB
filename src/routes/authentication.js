@@ -83,12 +83,12 @@
 			});
 
 			app.post('/login', function(req, res, next) {
-				passport.authenticate('local', function(err, user, info) {
+				passport.authenticate('local', function(err, userData, info) {
 					if (err) {
 						return next(err);
 					}
 
-					if (!user) {
+					if (!userData) {
 						return res.json(403, info);
 					}
 
@@ -103,9 +103,13 @@
 					}
 
 					req.login({
-						uid: user.uid
+						uid: userData.uid
 					}, function() {
-						res.json(info);
+						if (userData.uid) {
+							user.logIP(userData.uid, req.ip);
+						}
+
+						res.json(200, info);
 					});
 				})(req, res, next);
 			});
@@ -149,6 +153,7 @@
 			}
 
 			if(!uid) {
+				// Even if a user doesn't exist, compare passwords anyway, so we don't immediately return
 				return next(null, false, 'user doesn\'t exist');
 			}
 
@@ -172,7 +177,7 @@
 					}
 
 					if (!res) {
-						next(null, false, 'invalid-password');
+						return next(null, false, 'invalid-password');
 					}
 
 					next(null, {
