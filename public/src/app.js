@@ -290,14 +290,14 @@ var socket,
 				var el = jQuery(this),
 					uid = el.parents('li').attr('data-uid');
 
-				translator.translate('[[global:' + users[uid].status + ']]', function(translated) {
 					if (uid && users[uid]) {
-						el.siblings('i')
-							.attr('class', 'fa fa-circle status ' + users[uid].status)
-							.attr('title', translated)
-							.attr('data-original-title', translated);
+						translator.translate('[[global:' + users[uid].status + ']]', function(translated) {
+							el.siblings('i')
+								.attr('class', 'fa fa-circle status ' + users[uid].status)
+								.attr('title', translated)
+								.attr('data-original-title', translated);
+						});
 					}
-				});
 			});
 		});
 	};

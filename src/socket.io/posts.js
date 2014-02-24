@@ -266,7 +266,6 @@ SocketPosts.flag = function(socket, pid, callback) {
 			groups.getByGroupName('administrators', {}, next);
 		},
 		function(adminGroup, next) {
-
 			notifications.create({
 				text: message,
 				path: path,
