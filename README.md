@@ -1,5 +1,5 @@
 # <img alt="NodeBB" src="http://i.imgur.com/3yj1n6N.png" />
-![Dependency Management powered by David.](https://david-dm.org/designcreateplay/NodeBB.png)
+[![Dependency Status](https://david-dm.org/designcreateplay/nodebb.png)](https://david-dm.org/designcreateplay/nodebb)
 
 **NodeBB Forum Software** is powered by Node.js and built on a Redis database. It utilizes web sockets for instant interactions and real-time notifications. NodeBB is compatible down to IE8 and has many modern features out of the box such as social network integration and streaming discussions.
 
