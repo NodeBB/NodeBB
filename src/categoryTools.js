@@ -2,8 +2,13 @@ var	Groups = require('./groups'),
 	User = require('./user'),
 
 	async = require('async'),
+	db = require('./database'),
 
 	CategoryTools = {};
+
+CategoryTools.exists = function(cid, callback) {
+	db.isSortedSetMember('categories:cid', cid, callback);
+};
 
 CategoryTools.privileges = function(cid, uid, callback) {
 	async.parallel({

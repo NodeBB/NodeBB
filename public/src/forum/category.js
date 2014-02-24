@@ -12,7 +12,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 		app.enterRoom('category_' + cid);
 
-		$('#twitter-intent').on('click', function () {
+		$('#twitter-share').on('click', function () {
 			window.open(twitterUrl, '_blank', 'width=550,height=420,scrollbars=no,status=no');
 			return false;
 		});

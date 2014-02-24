@@ -18,11 +18,10 @@ var db = require('./database'),
 	Categories.create = function(data, callback) {
 		db.incrObjectField('global', 'nextCid', function(err, cid) {
 			if (err) {
-				return callback(err, null);
+				return callback(err);
 			}
 
 			var slug = cid + '/' + utils.slugify(data.name);
-			db.listAppend('categories:cid', cid);
 
 			var category = {
 				cid: cid,
@@ -36,14 +35,20 @@ var db = require('./database'),
 				topic_count: 0,
 				disabled: 0,
 				order: data.order,
-				link: "",
+				link: '',
 				numRecentReplies: 2,
 				class: 'col-md-3 col-xs-6',
 				imageClass: 'default'
 			};
 
-			db.setObject('category:' + cid, category, function(err, data) {
-				callback(err, category);
+			db.setObject('category:' + cid, category, function(err) {
+				if(err) {
+					return callback(err);
+				}
+
+				db.sortedSetAdd('categories:cid', data.order, cid);
+
+				callback(null, category);
 			});
 		});
 	};
@@ -132,6 +137,10 @@ var db = require('./database'),
 				return callback(err);
 			}
 
+			if (parseInt(topicCount, 10) === 0) {
+				return callback(null, 1);
+			}
+
 			user.getSettings(uid, function(err, settings) {
 				if(err) {
 					return callback(err);
@@ -142,8 +151,8 @@ var db = require('./database'),
 		});
 	};
 
-	Categories.getAllCategories = function(current_user, callback) {
-		db.getListRange('categories:cid', 0, -1, function(err, cids) {
+	Categories.getAllCategories = function(uid, callback) {
+		db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
 			if(err) {
 				return callback(err);
 			}
@@ -152,7 +161,7 @@ var db = require('./database'),
 				return callback(null, {categories : []});
 			}
 
-			Categories.getCategories(cids, current_user, callback);
+			Categories.getCategories(cids, uid, callback);
 		});
 	};
 
@@ -311,14 +320,11 @@ var db = require('./database'),
 
 		async.map(cids, getCategory, function(err, categories) {
 			if (err) {
-				winston.err(err);
-				return callback(err, null);
+				return callback(err);
 			}
 
 			categories = categories.filter(function(category) {
 				return !!category;
-			}).sort(function(a, b) {
-				return parseInt(a.order, 10) - parseInt(b.order, 10);
 			});
 
 			callback(null, {

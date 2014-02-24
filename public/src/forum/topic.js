@@ -280,41 +280,11 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			fixDeleteStateForPosts();
 
 
-			// Follow Thread State
-			var followEl = $('.posts .follow'),
-				set_follow_state = function(state, quiet) {
-					if (state && !followEl.hasClass('btn-success')) {
-						followEl.addClass('btn-success');
-						followEl.attr('title', 'You are currently receiving updates to this topic');
-						if (!quiet) {
-							app.alert({
-								alert_id: 'topic_follow',
-								timeout: 2500,
-								title: '[[topic:following_topic.title]]',
-								message: '[[topic:following_topic.message]]',
-								type: 'success'
-							});
-						}
-					} else if (!state && followEl.hasClass('btn-success')) {
-						followEl.removeClass('btn-success');
-						followEl.attr('title', 'Be notified of new replies in this topic');
-						if (!quiet) {
-							app.alert({
-								alert_id: 'topic_follow',
-								timeout: 2500,
-								title: '[[topic:not_following_topic.title]]',
-								message: '[[topic:not_following_topic.message]]',
-								type: 'success'
-							});
-						}
-					}
-				};
-
 			socket.emit('topics.followCheck', tid, function(err, state) {
-				set_follow_state(state, true);
+				set_follow_state(state, false);
 			});
 
-			followEl.on('click', function() {
+			$('.posts .follow').on('click', function() {
 				socket.emit('topics.follow', tid, function(err, state) {
 					if(err) {
 						return app.alert({
@@ -326,7 +296,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 						});
 					}
 
-					set_follow_state(state);
+					set_follow_state(state, true);
 				});
 
 				return false;
@@ -405,13 +375,14 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			}
 
 			var username = '',
-				post = $(this).parents('li[data-pid]');
+				post = $(this).parents('li[data-pid]'),
+				pid = $(this).parents('.post-row').attr('data-pid');
 			if (post.length) {
 				username = '@' + post.attr('data-username').replace(/\s/g, '-') + ' ';
 			}
 
 			if (thread_state.locked !== '1') {
-				composer.newReply(tid, topic_name, selectionText.length > 0 ? selectionText + '\n\n' + username : '' + username);
+				composer.newReply(tid, pid, topic_name, selectionText.length > 0 ? selectionText + '\n\n' + username : '' + username);
 			}
 		});
 
@@ -436,7 +407,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 					if($('.composer').length) {
 						composer.addQuote(tid, pid, topic_name, username, quoted);
 					}else {
-						composer.newReply(tid, topic_name, username + ' said:\n' + quoted);
+						composer.newReply(tid, pid, topic_name, username + ' said:\n' + quoted);
 					}
 				});
 			}
@@ -913,129 +884,75 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			favourites.html(currentFavourites).attr('data-favourites', currentFavourites);
 		}
 
-		function set_locked_state(locked, alert) {
-			var threadReplyBtn = $('.topic-main-buttons .post_reply'),
-				postReplyBtns = document.querySelectorAll('#post-container .post_reply'),
-				quoteBtns = document.querySelectorAll('#post-container .quote'),
-				editBtns = document.querySelectorAll('#post-container .edit'),
-				deleteBtns = document.querySelectorAll('#post-container .delete'),
-				numPosts = document.querySelectorAll('#post_container li[data-pid]').length,
-				lockThreadEl = $('.lock_thread'),
-				x;
+		function set_follow_state(state, alert) {
 
-			if (locked === true) {
-				translator.translate('<i class="fa fa-fw fa-unlock"></i> [[topic:thread_tools.unlock]]', function(translated) {
-					lockThreadEl.html(translated);
+			$('.posts .follow').toggleClass('btn-success', state).attr('title', state ? 'You are currently receiving updates to this topic' : 'Be notified of new replies in this topic');
+
+			if(alert) {
+				app.alert({
+					alert_id: 'topic_follow',
+					timeout: 2500,
+					title: state ? '[[topic:following_topic.title]]' : '[[topic:not_following_topic.title]]',
+					message: state ? '[[topic:following_topic.message]]' : '[[topic:not_following_topic.message]]',
+					type: 'success'
 				});
-				threadReplyBtn.attr('disabled', true);
-				threadReplyBtn.html('Locked <i class="fa fa-lock"></i>');
-				for (x = 0; x < numPosts; x++) {
-					postReplyBtns[x].innerHTML = 'Locked <i class="fa fa-lock"></i>';
-					quoteBtns[x].style.display = 'none';
-					editBtns[x].style.display = 'none';
-					deleteBtns[x].style.display = 'none';
-				}
-
-				if (alert) {
-					app.alert({
-						'alert_id': 'thread_lock',
-						type: 'success',
-						title: 'Thread Locked',
-						message: 'Thread has been successfully locked',
-						timeout: 5000
-					});
-				}
-
-				thread_state.locked = '1';
-			} else {
-				translator.translate('<i class="fa fa-fw fa-lock"></i> [[topic:thread_tools.lock]]', function(translated) {
-					lockThreadEl.html(translated);
-				});
-				threadReplyBtn.attr('disabled', false);
-				threadReplyBtn.html('Reply');
-				for (x = 0; x < numPosts; x++) {
-					postReplyBtns[x].innerHTML = 'Reply <i class="fa fa-reply"></i>';
-					quoteBtns[x].style.display = 'inline-block';
-					editBtns[x].style.display = 'inline-block';
-					deleteBtns[x].style.display = 'inline-block';
-				}
-
-				if (alert) {
-					app.alert({
-						'alert_id': 'thread_lock',
-						type: 'success',
-						title: 'Thread Unlocked',
-						message: 'Thread has been successfully unlocked',
-						timeout: 5000
-					});
-				}
-
-				thread_state.locked = '0';
 			}
 		}
 
+		function set_locked_state(locked, alert) {
+			translator.translate('<i class="fa fa-fw fa-' + (locked ? 'un': '') + 'lock"></i> [[topic:thread_tools.' + (locked ? 'un': '') + 'lock]]', function(translated) {
+				$('.lock_thread').html(translated);
+			});
+
+			$('.topic-main-buttons .post_reply').attr('disabled', locked).html(locked ? 'Locked <i class="fa fa-lock"></i>' : 'Reply');
+
+			$('#post-container .post_reply').html(locked ? 'Locked <i class="fa fa-lock"></i>' : 'Reply <i class="fa fa-reply"></i>');
+			$('#post-container').find('.quote, .edit, .delete').toggleClass('none', locked);
+
+			if (alert) {
+				app.alert({
+					'alert_id': 'thread_lock',
+					type: 'success',
+					title: 'Thread ' + (locked ? 'Locked' : 'Unlocked'),
+					message: 'Thread has been successfully ' + (locked ? 'locked' : 'unlocked'),
+					timeout: 5000
+				});
+			}
+
+			thread_state.locked = locked ? '1' : '0';
+		}
+
 		function set_delete_state(deleted) {
-			var deleteThreadEl = $('.delete_thread'),
-				deleteTextEl = $('.delete_thread span'),
-				//deleteThreadEl.getElementsByTagName('span')[0],
-				threadEl = $('#post-container'),
-				deleteNotice = document.getElementById('thread-deleted') || document.createElement('div');
+			var threadEl = $('#post-container');
 
-			if (deleted) {
-				translator.translate('<i class="fa fa-fw fa-comment"></i> [[topic:thread_tools.restore]]', function(translated) {
-					deleteTextEl.html(translated);
-				});
-				threadEl.addClass('deleted');
+			translator.translate('<i class="fa fa-fw ' + (deleted ? 'fa-comment' : 'fa-trash-o') + '"></i> [[topic:thread_tools.' + (deleted ? 'restore' : 'delete') + ']]', function(translated) {
+				$('.delete_thread span').html(translated);
+			});
 
-				// Spawn a 'deleted' notice at the top of the page
-				deleteNotice.setAttribute('id', 'thread-deleted');
-				deleteNotice.className = 'alert alert-warning';
-				deleteNotice.innerHTML = 'This thread has been deleted. Only users with thread management privileges can see it.';
-				threadEl.before(deleteNotice);
+			threadEl.toggleClass('deleted', deleted);
+			thread_state.deleted = deleted ? '1' : '0';
 
-				thread_state.deleted = '1';
+			if(deleted) {
+				$('<div id="thread-deleted">This thread has been deleted. Only users with thread management privileges can see it.</div>').insertBefore(threadEl);
 			} else {
-				translator.translate('<i class="fa fa-fw fa-trash-o"></i> [[topic:thread_tools.delete]]', function(translated) {
-					deleteTextEl.html(translated);
-				});
-				threadEl.removeClass('deleted');
-				deleteNotice.parentNode.removeChild(deleteNotice);
-
-				thread_state.deleted = '0';
+				$('#thread-deleted').remove();
 			}
 		}
 
 		function set_pinned_state(pinned, alert) {
-			var pinEl = $('.pin_thread');
-
 			translator.translate('<i class="fa fa-fw fa-thumb-tack"></i> [[topic:thread_tools.' + (pinned ? 'unpin' : 'pin') + ']]', function(translated) {
-				if (pinned) {
-					pinEl.html(translated);
-					if (alert) {
-						app.alert({
-							'alert_id': 'thread_pin',
-							type: 'success',
-							title: 'Thread Pinned',
-							message: 'Thread has been successfully pinned',
-							timeout: 5000
-						});
-					}
+				$('.pin_thread').html(translated);
 
-					thread_state.pinned = '1';
-				} else {
-					pinEl.html(translated);
-					if (alert) {
-						app.alert({
-							'alert_id': 'thread_pin',
-							type: 'success',
-							title: 'Thread Unpinned',
-							message: 'Thread has been successfully unpinned',
-							timeout: 5000
-						});
-					}
-
-					thread_state.pinned = '0';
+				if (alert) {
+					app.alert({
+						'alert_id': 'thread_pin',
+						type: 'success',
+						title: 'Thread ' + (pinned ? 'Pinned' : 'Unpinned'),
+						message: 'Thread has been successfully ' + (pinned ? 'pinned' : 'unpinned'),
+						timeout: 5000
+					});
 				}
+				thread_state.pinned = pinned ? '1' : '0';
 			});
 		}
 
@@ -1052,23 +969,13 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		}
 
 		function toggle_post_tools(pid, isDeleted) {
-			var postEl = $('#post-container li[data-pid="' + pid + '"]'),
-				quoteEl = $(postEl[0].querySelector('.quote')),
-				favEl = $(postEl[0].querySelector('.favourite')),
-				replyEl = $(postEl[0].querySelector('.post_reply')),
-				chatEl = $(postEl[0].querySelector('.chat'));
+			var postEl = $('#post-container li[data-pid="' + pid + '"]');
 
-			if (isDeleted) {
-				quoteEl.addClass('none');
-				favEl.addClass('none');
-				replyEl.addClass('none');
-				chatEl.addClass('none');
-			} else {
-				quoteEl.removeClass('none');
-				favEl.removeClass('none');
-				replyEl.removeClass('none');
-				chatEl.removeClass('none');
-			}
+			postEl.find('.quote, .favourite, .post_reply, .chat').toggleClass('none', isDeleted);
+
+			translator.translate(isDeleted ? ' [[topic:restore]]' : ' [[topic:delete]]', function(translated) {
+				postEl.find('.delete').find('span').html(translated);
+			});
 		}
 
 		$(window).on('scroll', updateHeader);
@@ -1135,8 +1042,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		var scrollBottom = scrollTop + $(window).height();
 
 		var elTop = el.offset().top;
-		var height = Math.floor(el.height());
-		var elBottom = elTop + height;
+		var elBottom = elTop + Math.floor(el.height());
 		return !(elTop > scrollBottom || elBottom < scrollTop);
 	}
 
@@ -1315,18 +1221,8 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 	}
 
 
-	function toggle_mod_tools(pid, state) {
-		var postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
-			editEl = postEl.find('.edit'),
-			deleteEl = postEl.find('.delete');
-
-		if (state) {
-			editEl.removeClass('none');
-			deleteEl.removeClass('none');
-		} else {
-			editEl.addClass('none');
-			deleteEl.addClass('none');
-		}
+	function toggle_mod_tools(pid, editable) {
+		$('#post-container li[data-pid="' + pid + '"]').find('.edit, .delete').toggleClass('none', !editable);
 	}
 
 	function updatePostCount() {

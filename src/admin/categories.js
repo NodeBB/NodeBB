@@ -13,10 +13,12 @@ var db = require('./../database'),
 			for (var key in category) {
 				db.setObjectField('category:' + cid, key, category[key]);
 
-				if (key == 'name') {
+				if (key === 'name') {
 					// reset slugs if name is updated
 					var slug = cid + '/' + utils.slugify(category[key]);
 					db.setObjectField('category:' + cid, 'slug', slug);
+				} else if (key === 'order') {
+					db.sortedSetAdd('categories:cid', category[key], cid);
 				}
 			}
 

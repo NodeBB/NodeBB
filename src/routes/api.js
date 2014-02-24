@@ -44,6 +44,7 @@ var path = require('path'),
 			app.get('/config', function (req, res, next) {
 				var config = require('../../public/config.json');
 
+				config.version = pkg.version;
 				config.postDelay = meta.config.postDelay;
 				config.minimumTitleLength = meta.config.minimumTitleLength;
 				config.maximumTitleLength = meta.config.maximumTitleLength;
@@ -286,6 +287,9 @@ var path = require('path'),
 
 			app.get('/unread', function (req, res, next) {
 				var uid = (req.user) ? req.user.uid : 0;
+				if(!req.user) {
+					return res.json(403, 'not-allowed');
+				}
 				topics.getUnreadTopics(uid, 0, 19, function (err, data) {
 					if(err) {
 						return next(err);
@@ -297,6 +301,9 @@ var path = require('path'),
 
 			app.get('/unread/total', function (req, res, next) {
 				var uid = (req.user) ? req.user.uid : 0;
+				if(!req.user) {
+					return res.json(403, 'not-allowed');
+				}
 				topics.getTotalUnread(uid, function (err, data) {
 					if(err) {
 						return next(err);

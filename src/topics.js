@@ -106,6 +106,12 @@ var async = require('async'),
 
 		async.waterfall([
 			function(next) {
+				categoryTools.exists(cid, next);
+			},
+			function(categoryExists, next) {
+				if(!categoryExists) {
+					return next(new Error('category doesn\'t exist'))
+				}
 				categoryTools.privileges(cid, uid, next);
 			},
 			function(privileges, next) {
@@ -121,7 +127,7 @@ var async = require('async'),
 				Topics.create({uid: uid, title: title, cid: cid, thumb: thumb}, next);
 			},
 			function(tid, next) {
-				Topics.reply(tid, uid, content, next);
+				Topics.reply({uid:uid, tid:tid, content:content}, next);
 			},
 			function(postData, next) {
 				threadTools.toggleFollow(postData.tid, uid);
@@ -143,12 +149,22 @@ var async = require('async'),
 		], callback);
 	};
 
-	Topics.reply = function(tid, uid, content, callback) {
-		var privileges;
-		var postData;
+	Topics.reply = function(data, callback) {
+		var tid = data.tid,
+			uid = data.uid,
+			toPid = data.toPid,
+			content = data.content,
+			privileges,
+			postData;
 
 		async.waterfall([
 			function(next) {
+				threadTools.exists(tid, next);
+			},
+			function(topicExists, next) {
+				if (!topicExists) {
+					return next(new Error('topic doesn\'t exist'));
+				}
 				threadTools.privileges(tid, uid, next);
 			},
 			function(privilegesData, next) {
@@ -170,7 +186,7 @@ var async = require('async'),
 					return next(new Error('content-too-short'));
 				}
 
-				posts.create(uid, tid, content, next);
+				posts.create({uid:uid, tid:tid, content:content, toPid:toPid}, next);
 			},
 			function(data, next) {
 				postData = data;
@@ -261,9 +277,9 @@ var async = require('async'),
 	};
 
 	Topics.movePostToTopic = function(pid, tid, callback) {
-		threadTools.exists(tid, function(exists) {
-			if(!exists) {
-				return callback(new Error('Topic doesn\'t exist'));
+		threadTools.exists(tid, function(err, exists) {
+			if(err || !exists) {
+				return callback(err || new Error('Topic doesn\'t exist'));
 			}
 
 			posts.getPostFields(pid, ['deleted', 'tid', 'timestamp'], function(err, postData) {
@@ -422,7 +438,9 @@ var async = require('async'),
 			if(err) {
 				return callback(err);
 			}
-
+			if(!parseInt(postCount, 10)) {
+				return callback(null, 1);
+			}
 			user.getSettings(uid, function(err, settings) {
 				if(err) {
 					return callback(err);
@@ -445,7 +463,8 @@ var async = require('async'),
 
 	function getTopics(set, uid, tids, callback) {
 		var returnTopics = {
-			'topics': []
+			topics: [],
+			nextStart: 0
 		};
 
 		if (!tids || !tids.length) {
@@ -571,17 +590,13 @@ var async = require('async'),
 	};
 
 	Topics.getUnreadTopics = function(uid, start, stop, callback) {
-		var unreadTopics = {
-			'show_markallread_button': 'show',
-			'no_topics_message': 'hidden',
-			'topics': []
-		};
 
-		function noUnreadTopics() {
-			unreadTopics.no_topics_message = '';
-			unreadTopics.show_markallread_button = 'hidden';
-			callback(null, unreadTopics);
-		}
+		var unreadTopics = {
+			no_topics_message: '',
+			show_markallread_button: 'hidden',
+			nextStart : 0,
+			topics: []
+		};
 
 		function sendUnreadTopics(topicIds) {
 
@@ -597,13 +612,8 @@ var async = require('async'),
 
 					unreadTopics.topics = topicData;
 					unreadTopics.nextStart = parseInt(rank, 10) + 1;
-
-					if (!topicData || topicData.length === 0) {
-						unreadTopics.no_topics_message = '';
-					}
-					if (uid === 0 || topicData.length === 0) {
-						unreadTopics.show_markallread_button = 'hidden';
-					}
+					unreadTopics.no_topics_message = (!topicData || topicData.length === 0) ? '' : 'hidden';
+					unreadTopics.show_markallread_button = topicData.length === 0 ? 'hidden' : '';
 
 					callback(null, unreadTopics);
 				});
@@ -618,7 +628,7 @@ var async = require('async'),
 			if (unreadTids.length) {
 				sendUnreadTopics(unreadTids);
 			} else {
-				noUnreadTopics();
+				callback(null, unreadTopics);
 			}
 		});
 	};
@@ -766,9 +776,9 @@ var async = require('async'),
 	};
 
 	Topics.getTopicWithPosts = function(tid, current_user, start, end, quiet, callback) {
-		threadTools.exists(tid, function(exists) {
-			if (!exists) {
-				return callback(new Error('Topic tid \'' + tid + '\' not found'));
+		threadTools.exists(tid, function(err, exists) {
+			if (err || !exists) {
+				return callback(err || new Error('Topic tid \'' + tid + '\' not found'));
 			}
 
 			// "quiet" is used for things like RSS feed updating, HTML parsing for non-js users, etc

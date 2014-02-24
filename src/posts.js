@@ -20,7 +20,12 @@ var db = require('./database'),
 (function(Posts) {
 	var customUserInfo = {};
 
-	Posts.create = function(uid, tid, content, callback) {
+	Posts.create = function(data, callback) {
+		var uid = data.uid,
+			tid = data.tid,
+			content = data.content,
+			toPid = data.toPid;
+
 		if (uid === null) {
 			return callback(new Error('invalid-user'), null);
 		}
@@ -56,6 +61,10 @@ var db = require('./database'),
 						'deleted': 0
 					};
 
+				if (toPid) {
+					postData['toPid'] = toPid;
+				}
+
 				db.setObject('post:' + pid, postData, function(err) {
 					if(err) {
 						return next(err);
@@ -78,7 +87,7 @@ var db = require('./database'),
 			function(postData, next) {
 				postTools.parse(postData.content, function(err, content) {
 					if(err) {
-						return next(err, null);
+						return next(err);
 					}
 
 					postData.content = content;
@@ -294,24 +303,24 @@ var db = require('./database'),
 					});
 				},
 				function(postData, next) {
-					if (postData.content) {
-						postTools.parse(postData.content, function(err, content) {
-							if(err) {
-								return next(err);
-							}
-
-							if(stripTags) {
-								var s = S(content);
-								postData.content = s.stripTags.apply(s, utils.getTagsExcept(['img', 'i'])).s;
-							} else {
-								postData.content = content;
-							}
-
-							next(null, postData);
-						});
-					} else {
-						next(null, postData);
+					if (!postData.content) {
+						return next(null, postData);
 					}
+
+					postTools.parse(postData.content, function(err, content) {
+						if(err) {
+							return next(err);
+						}
+
+						if(stripTags) {
+							var s = S(content);
+							postData.content = s.stripTags.apply(s, utils.getTagsExcept(['img', 'i'])).s;
+						} else {
+							postData.content = content;
+						}
+
+						next(null, postData);
+					});
 				}
 			], callback);
 		}
@@ -474,31 +483,31 @@ var db = require('./database'),
 	}
 
 	Posts.getPidPage = function(pid, uid, callback) {
-		Posts.getPostField(pid, 'tid', function(err, tid) {
-			if(err) {
-				return callback(err);
-			}
-
-			topics.getPids(tid, function(err, pids) {
-				if(err) {
-					return callback(err);
-				}
-
-				var index = pids.indexOf(pid);
+		if(!pid) {
+			return callback(new Error('invalid-pid'));
+		}
+		var index = 0;
+		async.waterfall([
+			function(next) {
+				Posts.getPostField(pid, 'tid', next);
+			},
+			function(tid, next) {
+				topics.getPids(tid, next);
+			},
+			function(pids, next) {
+				index = pids.indexOf(pid.toString());
 				if(index === -1) {
-					return callback(new Error('pid not found'));
+					return next(new Error('pid not found'));
 				}
-
-				user.getSettings(uid, function(err, settings) {
-					if(err) {
-						return callback(err);
-					}
-
-					var page = Math.ceil((index + 1) / settings.postsPerPage);
-					callback(null, page);
-				});
-			});
-		});
+				next();
+			},
+			function(next) {
+				user.getSettings(uid, next);
+			},
+			function(settings, next) {
+				next(null, Math.ceil((index + 1) / settings.postsPerPage));
+			}
+		], callback);
 	};
 
 	Posts.getPidIndex = function(pid, callback) {

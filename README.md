@@ -1,4 +1,6 @@
 # <img alt="NodeBB" src="http://i.imgur.com/3yj1n6N.png" />
+![Dependency Management powered by David.](https://david-dm.org/designcreateplay/NodeBB.png)
+
 **NodeBB Forum Software** is powered by Node.js and built on a Redis database. It utilizes web sockets for instant interactions and real-time notifications. NodeBB is compatible down to IE8 and has many modern features out of the box such as social network integration and streaming discussions.
 
 * [Get NodeBB](http://www.nodebb.org/ "NodeBB")
@@ -11,7 +13,7 @@
 * [Get Plugins](http://community.nodebb.org/category/7/nodebb-plugins "NodeBB Plugins")
 * [Get Themes](http://community.nodebb.org/category/10/nodebb-themes "NodeBB Themes")
 
-## Screenshots 
+## Screenshots
 
 [<img src="http://i.imgur.com/FLOUuIqb.png" />](http://i.imgur.com/FLOUuIq.png)&nbsp;[<img src="http://i.imgur.com/Ud1LrfIb.png" />](http://i.imgur.com/Ud1LrfI.png)&nbsp;[<img src="http://i.imgur.com/ZC8W39ab.png" />](http://i.imgur.com/ZC8W39a.png)&nbsp;[<img src="http://i.imgur.com/o90kVPib.png" />](http://i.imgur.com/o90kVPi.png)&nbsp;[<img src="http://i.imgur.com/AaRRrU2b.png" />](http://i.imgur.com/AaRRrU2.png)&nbsp;[<img src="http://i.imgur.com/LmHtPhob.png" />](http://i.imgur.com/LmHtPho.png)&nbsp;[<img src="http://i.imgur.com/paiJPJkb.jpg" />](http://i.imgur.com/paiJPJk.jpg)&nbsp;[<img src="http://i.imgur.com/ZfavPHDb.png" />](http://i.imgur.com/ZfavPHD.png)
 

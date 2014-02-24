@@ -375,11 +375,15 @@ var fs = require('fs'),
 					dirs = dirs.map(function(file) {
 						return path.join(npmPluginPath, file);
 					}).filter(function(file) {
-						var stats = fs.statSync(file),
-							isPlugin =  file.substr(npmPluginPath.length + 1, 14) === 'nodebb-plugin-' || file.substr(npmPluginPath.length + 1, 14) === 'nodebb-widget-';
+						if (fs.existsSync(file)) {
+							var stats = fs.statSync(file),
+								isPlugin =  file.substr(npmPluginPath.length + 1, 14) === 'nodebb-plugin-' || file.substr(npmPluginPath.length + 1, 14) === 'nodebb-widget-';
 
-						if (stats.isDirectory() && isPlugin) return true;
-						else return false;
+							if (stats.isDirectory() && isPlugin) return true;
+							else return false;
+						} else {
+							return false;
+						}
 					});
 
 					next(err, dirs);

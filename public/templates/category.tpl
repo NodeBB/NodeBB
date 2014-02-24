@@ -14,7 +14,7 @@
 	<!-- IF !disableSocialButtons -->
 	<div class="inline-block pull-right">
 		<a href="#" id="facebook-share"><i class="fa fa-facebook-square fa-2x"></i></a>&nbsp;
-		<a href="#" id="twitter-intent"><i class="fa fa-twitter-square fa-2x"></i></a>&nbsp;
+		<a href="#" id="twitter-share"><i class="fa fa-twitter-square fa-2x"></i></a>&nbsp;
 		<a href="#" id="google-share"><i class="fa fa-google-plus-square fa-2x"></i></a>&nbsp;
 	</div>
 	<!-- ENDIF !disableSocialButtons -->
@@ -43,7 +43,11 @@
 						todo: add a check for config.allowTopicsThumbnail if issue#1066 is a win
 					-->
 					<a href="../../user/{topics.userslug}" class="pull-left">
-						<img src="<!-- IF topics.thumb -->{topics.thumb}<!-- ELSE -->{topics.picture}<!-- ENDIF topics.thumb -->" class="img-rounded user-img" title="{topics.username}"/>
+						<!-- IF topics.thumb -->
+						<img src="{topics.thumb}" class="img-rounded user-img" title="{topics.username}"/>
+						<!-- ELSE -->
+						<img src="{topics.picture}" class="img-rounded user-img" title="{topics.username}"/>
+						<!-- ENDIF topics.thumb -->
 					</a>
 
 					<h3>
