@@ -12,13 +12,14 @@ define(function() {
 				});
 
 				socket.on('admin.plugins.toggle', function(status) {
-					pluginTgl = document.querySelector('.plugins li[data-plugin-id="' + status.id + '"] button');
-					pluginTgl.innerHTML = '<i class="fa fa-power-off"></i> ' + (status.active ? 'Dea' : 'A') + 'ctivate';
+					pluginTgl = $('.plugins li[data-plugin-id="' + status.id + '"] button');
+					pluginTgl.html('<i class="fa fa-power-off"></i> ' + (status.active ? 'Dea' : 'A') + 'ctivate');
+					pluginTgl.toggleClass('btn-warning', status.active).toggleClass('btn-success', !status.active);
 
 					app.alert({
-						alert_id: 'plugin_toggled_' + status.id,
+						alert_id: 'plugin_toggled',
 						title: 'Plugin ' + (status.active ? 'Enabled' : 'Disabled'),
-						message: 'You may need to restart NodeBB in order for these changes to be reflected.',
+						message: 'Restarting your NodeBB <i class="fa fa-refresh fa-spin"></i>',
 						type: 'warning',
 						timeout: 5000
 					})

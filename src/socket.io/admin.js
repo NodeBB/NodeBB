@@ -3,6 +3,7 @@
 var	groups = require('../groups'),
 	meta = require('../meta'),
 	plugins = require('../plugins'),
+	widgets = require('../widgets'),
 	user = require('../user'),
 	topics = require('../topics'),
 	categories = require('../categories'),
@@ -28,6 +29,10 @@ SocketAdmin.before = function(socket, next) {
 			winston.warn('[socket.io] Call to admin method blocked (accessed by uid ' + socket.uid + ')');
 		}
 	});
+};
+
+SocketAdmin.restart = function(socket, data, callback) {
+	meta.restart();
 };
 
 /* Topics */
@@ -255,10 +260,11 @@ SocketAdmin.categories.groupsList = function(socket, cid, callback) {
 	});
 };
 
-/* Themes & Plugins */
+/* Themes, Widgets, and Plugins */
 
 SocketAdmin.themes = {};
 SocketAdmin.plugins = {};
+SocketAdmin.widgets = {};
 
 SocketAdmin.themes.getInstalled = function(socket, data, callback) {
 	meta.themes.get(callback);
@@ -268,13 +274,25 @@ SocketAdmin.themes.set = function(socket, data, callback) {
 	if(!data) {
 		return callback(new Error('invalid data'));
 	}
-	meta.themes.set(data, callback);
-}
+	meta.themes.set(data, function() {
+		callback();
+		meta.restart()
+	});
+};
 
 SocketAdmin.plugins.toggle = function(socket, plugin_id) {
 	plugins.toggleActive(plugin_id, function(status) {
 		socket.emit('admin.plugins.toggle', status);
+		meta.restart();
 	});
+};
+
+SocketAdmin.widgets.set = function(socket, data, callback) {
+	if(!data) {
+		return callback(new Error('invalid data'));
+	}
+
+	widgets.setArea(data, callback);
 };
 
 /* Configs */

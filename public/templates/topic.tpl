@@ -8,7 +8,6 @@
 <input type="hidden" template-variable="topic_name" value="{topic_name}" />
 <input type="hidden" template-variable="postcount" value="{postcount}" />
 
-
 <div class="topic">
 	<ol class="breadcrumb">
 		<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
@@ -101,9 +100,9 @@
 									<button title="[[topic:share]]"class="btn btn-sm btn-default share" data-toggle="dropdown" href="#"><i class="fa fa-share-square-o"></i></button>
 									<ul class="dropdown-menu text-center pull-right" role="menu" aria-labelledby="dLabel">
 										<!-- IF !disableSocialButtons -->
-										<li class="btn btn-sm btn-default facebook-share" type="button" title=""><i class="fa fa-facebook"></i></li>
-										<li class="btn btn-sm btn-default twitter-share" type="button" title=""><i class="fa fa-twitter"></i></li>
-										<li class="btn btn-sm btn-default google-share" type="button" title=""><i class="fa fa-google-plus"></i></li>
+										<li class="btn btn-sm btn-default facebook-share" type="button" title=""><i class="fa fa-facebook fa-fw"></i></li>
+										<li class="btn btn-sm btn-default twitter-share" type="button" title=""><i class="fa fa-twitter fa-fw"></i></li>
+										<li class="btn btn-sm btn-default google-share" type="button" title=""><i class="fa fa-google-plus fa-fw"></i></li>
 										<!-- ENDIF !disableSocialButtons -->
 										<li>
 											<input type="text" id="post_{posts.pid}_link" value="" class="form-control pull-right post-link" style=""></input>
@@ -181,6 +180,11 @@
 							<li><a href="#" class="fork_thread"><i class="fa fa-fw fa-code-fork"></i> [[topic:thread_tools.fork]]</a></li>
 							<li class="divider"></li>
 							<li><a href="#" class="delete_thread"><span class="text-error"><i class="fa fa-fw fa-trash-o"></i> [[topic:thread_tools.delete]]</span></a></li>
+							<!-- BEGIN thread_tools -->
+							<li>
+								<a href="#" class="{thread_tools.class}"><i class="fa fa-fw {thread_tools.icon}"></i> {thread_tools.title}</a>
+							</li>
+							<!-- END thread_tools -->
 						</ul>
 					</div>
 				</div>
@@ -208,20 +212,25 @@
 					<li><a href="#" class="fork_thread"><i class="fa fa-fw fa-code-fork"></i> [[topic:thread_tools.fork]]</a></li>
 					<li class="divider"></li>
 					<li><a href="#" class="delete_thread"><span class="text-error"><i class="fa fa-fw fa-trash-o"></i> [[topic:thread_tools.delete]]</span></a></li>
+					<!-- BEGIN thread_tools -->
+					<li>
+						<a href="#" class="{thread_tools.class}"><i class="fa fa-fw {thread_tools.icon}"></i> {thread_tools.title}</a>
+					</li>
+					<!-- END thread_tools -->
 				</ul>
 			</div>
 		</div>
 		<div style="clear:both;"></div>
 	</div>
 
-	<!-- IF usePagination -->
+	<!-- IF config.usePagination -->
 	<div class="text-center">
 		<ul class="pagination">
 			<li class="previous pull-left"><a href="#"><i class="fa fa-chevron-left"></i> [[global:previouspage]]</a></li>
 			<li class="next pull-right"><a href="#">[[global:nextpage]] <i class="fa fa-chevron-right"></i></a></li>
 		</ul>
 	</div>
-	<!-- ENDIF usePagination -->
+	<!-- ENDIF config.usePagination -->
 
 	<div id="move_thread_modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="Move Topic" aria-hidden="true">
 		<div class="modal-dialog">
@@ -296,4 +305,10 @@
 		</div>
 	</div>
 
+</div>
+
+<div widget-area="footer" class="col-xs-12">
+	<!-- BEGIN widgets -->
+	{widgets.html}
+	<!-- END widgets -->
 </div>

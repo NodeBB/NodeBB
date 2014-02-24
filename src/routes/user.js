@@ -45,18 +45,17 @@ var fs = require('fs'),
 
 		app.namespace('/user', function () {
 
-			function createRoute(routeName, path, templateName) {
-				app.get(routeName, function(req, res, next) {
-					if (!req.params.userslug) {
-						return next();
-					}
+			function createRoute(routeName, path, templateName, access) {
 
-					if (!req.user && (path === '/favourites' || !!parseInt(meta.config.privateUserInfo, 10))) {
+				function isAllowed(req, res, next) {
+					var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
+
+					if (!callerUID && !!parseInt(meta.config.privateUserInfo, 10)) {
 						return res.redirect('/403');
 					}
 
 					user.getUidByUserslug(req.params.userslug, function (err, uid) {
-						if(err) {
+						if (err) {
 							return next(err);
 						}
 
@@ -64,17 +63,41 @@ var fs = require('fs'),
 							return res.redirect('/404');
 						}
 
-						app.build_header({
-							req: req,
-							res: res
-						}, function (err, header) {
-							if(err) {
-								return next(err);
-							}
-							res.send(header + app.create_route('user/' + req.params.userslug + path, templateName) + templates['footer']);
-						});
+						if (parseInt(uid, 10) === callerUID) {
+							return next();
+						}
+
+						if (req.path.indexOf('/edit') !== -1) {
+							user.isAdministrator(callerUID, function(err, isAdmin) {
+								if(err) {
+									return next(err);
+								}
+
+								if(!isAdmin) {
+									return res.redirect('/403');
+								}
+
+								next();
+							});
+						} else if (req.path.indexOf('/settings') !== -1 || req.path.indexOf('/favourites') !== -1) {
+							res.redirect('/403')
+						} else {
+							next();
+						}
 					});
-				})
+				}
+
+				app.get(routeName, isAllowed, function(req, res, next) {
+					app.build_header({
+						req: req,
+						res: res
+					}, function (err, header) {
+						if(err) {
+							return next(err);
+						}
+						res.send(header + app.create_route('user/' + req.params.userslug + path, templateName) + templates['footer']);
+					});
+				});
 			}
 
 			createRoute('/:userslug', '', 'account');
@@ -82,66 +105,8 @@ var fs = require('fs'),
 			createRoute('/:userslug/followers', '/followers', 'followers');
 			createRoute('/:userslug/favourites', '/favourites', 'favourites');
 			createRoute('/:userslug/posts', '/posts', 'accountposts');
-
-			app.get('/:userslug/edit', function (req, res, next) {
-
-				if (!req.user) {
-					return res.redirect('/403');
-				}
-
-				user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
-					function done() {
-						app.build_header({
-							req: req,
-							res: res
-						}, function (err, header) {
-							res.send(header + app.create_route('user/' + req.params.userslug + '/edit', 'accountedit') + templates['footer']);
-						});
-					}
-
-					if(err || !userslug) {
-						return next(err);
-					}
-
-					if (userslug === req.params.userslug) {
-						return done();
-					}
-
-					user.isAdministrator(req.user.uid, function(err, isAdmin) {
-						if(err) {
-							return next(err);
-						}
-
-						if(!isAdmin) {
-							return res.redirect('/403');
-						}
-
-						done();
-					});
-				});
-			});
-
-			app.get('/:userslug/settings', function (req, res) {
-
-				if (!req.user) {
-					return res.redirect('/403');
-				}
-
-				user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
-					if (req.params.userslug && userslug === req.params.userslug) {
-						app.build_header({
-							req: req,
-							res: res
-						}, function (err, header) {
-							res.send(header + app.create_route('user/' + req.params.userslug + '/settings', 'accountsettings') + templates['footer']);
-						})
-					} else {
-						return res.redirect('/404');
-					}
-				});
-			});
-
-
+			createRoute('/:userslug/edit', '/edit', 'accountedit');
+			createRoute('/:userslug/settings', '/settings', 'accountsettings');
 
 			app.post('/uploadpicture', function (req, res) {
 				if (!req.user) {
@@ -257,164 +222,77 @@ var fs = require('fs'),
 			next();
 		}
 
-		app.get('/api/user/:userslug/following', isAllowed, function (req, res, next) {
-			var callerUID = req.user ? req.user.uid : '0';
+		app.get('/api/user/:userslug/following', isAllowed, getUserFollowing);
+		app.get('/api/user/:userslug/followers', isAllowed, getUserFollowers);
+		app.get('/api/user/:userslug/edit', isAllowed, getUserEdit);
+		app.get('/api/user/:userslug/settings', isAllowed, getUserSettings);
+		app.get('/api/user/:userslug/favourites', isAllowed, getUserFavourites);
+		app.get('/api/user/:userslug/posts', isAllowed, getUserPosts);
+		app.get('/api/user/uid/:uid', isAllowed, getUserData);
+		app.get('/api/user/:userslug', isAllowed, getUserProfile);
+		app.get('/api/users', isAllowed, getOnlineUsers);
+		app.get('/api/users/sort-posts', isAllowed, getUsersSortedByPosts);
+		app.get('/api/users/sort-reputation', isAllowed, getUsersSortedByReputation);
+		app.get('/api/users/latest', isAllowed, getUsersSortedByJoinDate);
+		app.get('/api/users/online', isAllowed, getOnlineUsers);
+		app.get('/api/users/search', isAllowed, getUsersForSearch);
+
+
+		function getUserProfile(req, res, next) {
+			var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
 			getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
 				if(err) {
 					return next(err);
 				}
 
-				if (userData) {
-					user.getFollowing(userData.uid, function (err, followingData) {
-						if(err) {
-							return next(err);
-						}
-						userData.following = followingData;
-						userData.followingCount = followingData.length;
-						res.json(userData);
-					});
-
-				} else {
-					res.json(404, {
+				if(!userData) {
+					return res.json(404, {
 						error: 'User not found!'
 					});
 				}
-			});
-		});
 
-		app.get('/api/user/:userslug/followers', isAllowed, function (req, res, next) {
-			var callerUID = req.user ? req.user.uid : '0';
+				user.isFollowing(callerUID, userData.theirid, function (isFollowing) {
 
-			getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
-				if(err) {
-					return next(err);
-				}
+					posts.getPostsByUid(callerUID, userData.theirid, 0, 9, function (err, userPosts) {
 
-				if (userData) {
-					user.getFollowers(userData.uid, function (err, followersData) {
 						if(err) {
 							return next(err);
 						}
-						userData.followers = followersData;
-						userData.followersCount = followersData.length;
-						res.json(userData);
-					});
-				} else {
-					res.json(404, {
-						error: 'User not found!'
-					});
-				}
-			});
-		});
 
-		app.get('/api/user/:userslug/edit', function (req, res, next) {
-			var callerUID = req.user ? req.user.uid : '0';
+						userData.posts = userPosts.posts.filter(function (p) {
+							return p && parseInt(p.deleted, 10) !== 1;
+						});
 
-			if(!parseInt(callerUID, 10)) {
-				return res.json(403, {
-					error: 'Not allowed!'
+						userData.isFollowing = isFollowing;
+
+						if (!userData.profileviews) {
+							userData.profileviews = 1;
+						}
+
+						if (callerUID !== parseInt(userData.uid, 10) && callerUID) {
+							user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
+						}
+
+						postTools.parse(userData.signature, function (err, signature) {
+							userData.signature = signature;
+							res.json(userData);
+						});
+					});
 				});
-			}
+			});
+		}
 
-			getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
-				if(err) {
-					return next(err);
-				}
+		function getUserData(req, res, next) {
+			var uid = req.params.uid ? req.params.uid : 0;
+
+			user.getUserData(uid, function(err, userData) {
 				res.json(userData);
 			});
-		});
+		}
 
-		app.get('/api/user/:userslug/settings', function(req, res, next) {
-			var callerUID = req.user ? req.user.uid : '0';
-
-			user.getUidByUserslug(req.params.userslug, function(err, uid) {
-				if (err) {
-					return next(err);
-				}
-
-				if (!uid) {
-					return res.json(404, {
-						error: 'User not found!'
-					});
-				}
-
-				if (uid != callerUID || callerUID == '0') {
-					return res.json(403, {
-						error: 'Not allowed!'
-					});
-				}
-
-				plugins.fireHook('filter:user.settings', [], function(err, settings) {
-					if (err) {
-						return next(err);
-					}
-
-					user.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
-						if (err) {
-							return next(err);
-						}
-
-						if(!userData) {
-							return res.json(404, {
-								error: 'User not found!'
-							});
-						}
-						userData.yourid = req.user.uid;
-						userData.theirid = uid;
-						userData.settings = settings;
-						res.json(userData);
-					});
-				});
-
-			});
-		});
-
-		app.get('/api/user/:userslug/favourites', isAllowed, function (req, res, next) {
-			var callerUID = req.user ? req.user.uid : '0';
-
-			user.getUidByUserslug(req.params.userslug, function (err, uid) {
-				if (!uid) {
-					return res.json(404, {
-						error: 'User not found!'
-					});
-				}
-
-				if (uid != callerUID || callerUID == '0') {
-					return res.json(403, {
-						error: 'Not allowed!'
-					});
-				}
-
-				user.getUserFields(uid, ['username', 'userslug'], function (err, userData) {
-					if (err) {
-						return next(err);
-					}
-
-					if (!userData) {
-						return res.json(404, {
-							error: 'User not found!'
-						});
-					}
-
-					posts.getFavourites(uid, 0, 9, function (err, favourites) {
-						if (err) {
-							return next(err);
-						}
-
-						userData.theirid = uid;
-						userData.yourid = callerUID;
-						userData.posts = favourites.posts;
-						userData.nextStart = favourites.nextStart;
-
-						res.json(userData);
-					});
-				});
-			});
-		});
-
-		app.get('/api/user/:userslug/posts', isAllowed, function (req, res, next) {
-			var callerUID = req.user ? req.user.uid : '0';
+		function getUserPosts(req, res, next) {
+			var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
 			user.getUidByUserslug(req.params.userslug, function (err, uid) {
 				if (!uid) {
@@ -448,70 +326,157 @@ var fs = require('fs'),
 					});
 				});
 			});
-		});
+		}
 
+		function getUserFavourites(req, res, next) {
+			var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
-		app.get('/api/user/uid/:uid', isAllowed, function(req, res, next) {
-			var uid = req.params.uid ? req.params.uid : 0;
+			user.getUidByUserslug(req.params.userslug, function (err, uid) {
+				if (!uid) {
+					return res.json(404, {
+						error: 'User not found!'
+					});
+				}
 
-			user.getUserData(uid, function(err, userData) {
+				if (parseInt(uid, 10) !== callerUID) {
+					return res.json(403, {
+						error: 'Not allowed!'
+					});
+				}
+
+				user.getUserFields(uid, ['username', 'userslug'], function (err, userData) {
+					if (err) {
+						return next(err);
+					}
+
+					if (!userData) {
+						return res.json(404, {
+							error: 'User not found!'
+						});
+					}
+
+					posts.getFavourites(uid, 0, 9, function (err, favourites) {
+						if (err) {
+							return next(err);
+						}
+
+						userData.theirid = uid;
+						userData.yourid = callerUID;
+						userData.posts = favourites.posts;
+						userData.nextStart = favourites.nextStart;
+
+						res.json(userData);
+					});
+				});
+			});
+		}
+
+		function getUserSettings(req, res, next) {
+			var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
+
+			user.getUidByUserslug(req.params.userslug, function(err, uid) {
+				if (err) {
+					return next(err);
+				}
+
+				if (!uid) {
+					return res.json(404, {
+						error: 'User not found!'
+					});
+				}
+
+				if (parseInt(uid, 10) !== callerUID) {
+					return res.json(403, {
+						error: 'Not allowed!'
+					});
+				}
+
+				plugins.fireHook('filter:user.settings', [], function(err, settings) {
+					if (err) {
+						return next(err);
+					}
+
+					user.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
+						if (err) {
+							return next(err);
+						}
+
+						if(!userData) {
+							return res.json(404, {
+								error: 'User not found!'
+							});
+						}
+						userData.yourid = req.user.uid;
+						userData.theirid = uid;
+						userData.settings = settings;
+						res.json(userData);
+					});
+				});
+
+			});
+		}
+
+		function getUserEdit(req, res, next) {
+			var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
+
+			getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
+				if(err) {
+					return next(err);
+				}
 				res.json(userData);
 			});
-		});
+		}
 
-		app.get('/api/user/:userslug', isAllowed, function (req, res, next) {
-			var callerUID = req.user ? req.user.uid : '0';
+		function getUserFollowers(req, res, next) {
+			var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
 			getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
 				if(err) {
 					return next(err);
 				}
 
-				if(!userData) {
-					return res.json(404, {
-						error: 'User not found!'
-					});
-				}
-
-				user.isFollowing(callerUID, userData.theirid, function (isFollowing) {
-
-					posts.getPostsByUid(callerUID, userData.theirid, 0, 9, function (err, userPosts) {
-
+				if (userData) {
+					user.getFollowers(userData.uid, function (err, followersData) {
 						if(err) {
 							return next(err);
 						}
-
-						userData.posts = userPosts.posts.filter(function (p) {
-							return p && parseInt(p.deleted, 10) !== 1;
-						});
-
-						userData.isFollowing = isFollowing;
-
-						if (!userData.profileviews) {
-							userData.profileviews = 1;
-						}
-
-						if (parseInt(callerUID, 10) !== parseInt(userData.uid, 10) && parseInt(callerUID, 0)) {
-							user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
-						}
-
-						postTools.parse(userData.signature, function (err, signature) {
-							userData.signature = signature;
-							res.json(userData);
-						});
+						userData.followers = followersData;
+						userData.followersCount = followersData.length;
+						res.json(userData);
 					});
-				});
-
+				} else {
+					res.json(404, {
+						error: 'User not found!'
+					});
+				}
 			});
-		});
+		}
 
-		app.get('/api/users', isAllowed, getOnlineUsers);
-		app.get('/api/users/sort-posts', isAllowed, getUsersSortedByPosts);
-		app.get('/api/users/sort-reputation', isAllowed, getUsersSortedByReputation);
-		app.get('/api/users/latest', isAllowed, getUsersSortedByJoinDate);
-		app.get('/api/users/online', isAllowed, getOnlineUsers);
-		app.get('/api/users/search', isAllowed, getUsersForSearch);
+		function getUserFollowing(req, res, next) {
+			var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
+			getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
+				if(err) {
+					return next(err);
+				}
+
+				if (userData) {
+					user.getFollowing(userData.uid, function (err, followingData) {
+						if(err) {
+							return next(err);
+						}
+						userData.following = followingData;
+						userData.followingCount = followingData.length;
+						res.json(userData);
+					});
+
+				} else {
+					res.json(404, {
+						error: 'User not found!'
+					});
+				}
+			});
+		}
 
 		function getUsersSortedByJoinDate(req, res) {
 			user.getUsers('users:joindate', 0, 49, function (err, data) {
@@ -607,78 +572,76 @@ var fs = require('fs'),
 		}
 
 		function getUserDataByUserSlug(userslug, callerUID, callback) {
-			var userData;
 
-			async.waterfall([
-				function(next) {
-					user.getUidByUserslug(userslug, next);
-				},
-				function(uid, next) {
-					if (!uid) {
-						return next(new Error('invalid-user'));
+			user.getUidByUserslug(userslug, function(err, uid) {
+				if(err || !uid) {
+					return callback(err || new Error('invalid-user'));
+				}
+
+				async.parallel({
+					userData : function(next) {
+						user.getUserData(uid, next);
+					},
+					userSettings : function(next) {
+						user.getSettings(uid, next);
+					},
+					isAdmin : function(next) {
+						user.isAdministrator(callerUID, next);
+					},
+					followStats: function(next) {
+						user.getFollowStats(uid, next);
+					}
+				}, function(err, results) {
+					if(err || !results.userData) {
+						return callback(err || new Error('invalid-user'));
 					}
 
-					user.getUserData(uid, next);
-				},
-				function(data, next) {
-					userData = data;
-					if (!userData) {
-						return callback(new Error('invalid-user'));
+					var userData = results.userData;
+					var userSettings = results.userSettings;
+					var isAdmin = results.isAdmin;
+
+					userData.joindate = utils.toISOString(userData.joindate);
+					if(userData.lastonline) {
+						userData.lastonline = utils.toISOString(userData.lastonline);
+					} else {
+						userData.lastonline = userData.joindate;
 					}
 
-					user.isAdministrator(callerUID, next);
-				}
-			], function(err, isAdmin) {
-				if(err) {
-					return callback(err);
-				}
-
-				userData.joindate = utils.toISOString(userData.joindate);
-				if(userData.lastonline) {
-					userData.lastonline = utils.toISOString(userData.lastonline);
-				} else {
-					userData.lastonline = userData.joindate;
-				}
-
-				if (!userData.birthday) {
-					userData.age = '';
-				} else {
-					userData.age = Math.floor((new Date().getTime() - new Date(userData.birthday).getTime()) / 31536000000);
-				}
-
-				function canSeeEmail() {
-					return isAdmin || callerUID == userData.uid || (userData.email && (userData.showemail && parseInt(userData.showemail, 10) === 1));
-				}
-
-				if (!canSeeEmail()) {
-					userData.email = "";
-				}
-
-				if (callerUID == userData.uid && (!userData.showemail || parseInt(userData.showemail, 10) === 0)) {
-					userData.emailClass = "";
-				} else {
-					userData.emailClass = "hide";
-				}
-
-				userData.websiteName = userData.website.replace('http://', '').replace('https://', '');
-				userData.banned = parseInt(userData.banned, 10) === 1;
-				userData.uid = userData.uid;
-				userData.yourid = callerUID;
-				userData.theirid = userData.uid;
-
-				userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
-
-				user.getFollowStats(userData.uid, function (err, followStats) {
-					if(err) {
-						return callback(err);
+					if (!userData.birthday) {
+						userData.age = '';
+					} else {
+						userData.age = Math.floor((new Date().getTime() - new Date(userData.birthday).getTime()) / 31536000000);
 					}
-					userData.followingCount = followStats.followingCount;
-					userData.followerCount = followStats.followerCount;
+
+					function canSeeEmail() {
+						return isAdmin || parseInt(callerUID, 10) === parseInt(userData.uid, 10) || (userData.email && userSettings.showemail);
+					}
+
+					if (!canSeeEmail()) {
+						userData.email = "";
+					}
+
+					if (parseInt(callerUID, 10) === parseInt(userData.uid, 10) && !userSettings.showemail) {
+						userData.emailClass = "";
+					} else {
+						userData.emailClass = "hide";
+					}
+
+					userData.websiteName = userData.website.replace('http://', '').replace('https://', '');
+					userData.banned = parseInt(userData.banned, 10) === 1;
+					userData.uid = userData.uid;
+					userData.yourid = callerUID;
+					userData.theirid = userData.uid;
+
+					userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
+
+					userData.followingCount = results.followStats.followingCount;
+					userData.followerCount = results.followStats.followerCount;
+
 					callback(null, userData);
 				});
 			});
 		}
-
 	};
 
 }(exports));

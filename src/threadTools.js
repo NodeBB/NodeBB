@@ -11,21 +11,14 @@ var winston = require('winston'),
 	posts = require('./posts'),
 	meta = require('./meta'),
 	websockets = require('./socket.io'),
-	events = require('./events');
+	events = require('./events'),
+	Plugins = require('./plugins');
 
 
 (function(ThreadTools) {
 
 	ThreadTools.exists = function(tid, callback) {
-
-		db.isSortedSetMember('topics:tid', tid, function(err, ismember) {
-
-			if (err) {
-				callback(false);
-			}
-
-			callback(ismember);
-		});
+		db.isSortedSetMember('topics:tid', tid, callback);
 	}
 
 	ThreadTools.privileges = function(tid, uid, callback) {
@@ -76,7 +69,7 @@ var winston = require('winston'),
 
 				ThreadTools.lock(tid);
 
-				db.searchRemove('topic', tid);
+				Plugins.fireHook('action:topic.delete', tid);
 
 				events.logTopicDelete(uid, tid);
 
@@ -120,9 +113,7 @@ var winston = require('winston'),
 					tid: tid
 				});
 
-				topics.getTopicField(tid, 'title', function(err, title) {
-					db.searchIndex('topic', title, tid);
-				});
+				Plugins.fireHook('action:topic.restore', tid);
 
 				callback(null, {
 					tid:tid

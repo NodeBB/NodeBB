@@ -232,7 +232,7 @@ function reset() {
 					winston.info("Successfully reset theme to Vanilla and disabled all plugins.");
 				}
 
-				process.exit();				
+				process.exit();
 			});
 		});
 	});

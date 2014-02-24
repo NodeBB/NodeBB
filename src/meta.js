@@ -5,6 +5,7 @@ var fs = require('fs'),
 	nconf = require('nconf'),
 
 	utils = require('./../public/src/utils'),
+	translator = require('./../public/src/translator'),
 	db = require('./database'),
 	plugins = require('./plugins'),
 	User = require('./user');
@@ -60,7 +61,6 @@ var fs = require('fs'),
 
 				// this might be a good spot to add a hook
 				if (field === 'defaultLang') {
-					var translator = require('../public/src/translator');
 					translator.loadServer();
 				}
 			});
@@ -171,8 +171,6 @@ var fs = require('fs'),
 			var user = require('./user');
 
 			Meta.title.parseFragment(decodeURIComponent(urlFragment), function(err, title) {
-				var title;
-
 				if (err) {
 					title = Meta.config.browserTitle || 'NodeBB';
 				} else {
@@ -245,7 +243,7 @@ var fs = require('fs'),
 		minFile: path.join(__dirname, '..', 'public/src/nodebb.min.js'),
 		get: function (callback) {
 			plugins.fireHook('filter:scripts.get', this.scripts, function(err, scripts) {
-				var mtime,
+				var ctime,
 					jsPaths = scripts.map(function (jsPath) {
 						jsPath = path.normalize(jsPath);
 
@@ -269,12 +267,12 @@ var fs = require('fs'),
 
 				if (process.env.NODE_ENV !== 'development') {
 					async.parallel({
-						mtime: function (next) {
+						ctime: function (next) {
 							async.map(jsPaths, fs.stat, function (err, stats) {
 								async.reduce(stats, 0, function (memo, item, next) {
 									if(item) {
-										mtime = +new Date(item.mtime);
-										next(null, mtime > memo ? mtime : memo);
+										ctime = +new Date(item.ctime);
+										next(null, ctime > memo ? ctime : memo);
 									} else {
 										next(null, memo);
 									}
@@ -288,14 +286,15 @@ var fs = require('fs'),
 							}
 
 							fs.stat(Meta.js.minFile, function (err, stat) {
-								next(err, +new Date(stat.mtime));
+								next(err, +new Date(stat.ctime));
 							});
 						}
 					}, function (err, results) {
-						if (results.minFile > results.mtime) {
+						if (results.minFile > results.ctime) {
 							winston.info('No changes to client-side libraries -- skipping minification');
 							callback(null, [path.relative(path.join(__dirname, '../public'), Meta.js.minFile)]);
 						} else {
+							winston.info('Minifying client-side libraries -- please wait');
 							Meta.js.minify(function () {
 								callback(null, [
 									path.relative(path.join(__dirname, '../public'), Meta.js.minFile)
@@ -335,6 +334,14 @@ var fs = require('fs'),
 	Meta.db = {
 		getFile: function (callback) {
 			db.getFileName(callback);
+		}
+	};
+
+	Meta.restart = function() {
+		if (process.send) {
+			process.send('nodebb:restart');
+		} else {
+			winston.error('[meta.restart] Could not restart, are you sure NodeBB was started with `./nodebb start`?');
 		}
 	};
 }(exports));

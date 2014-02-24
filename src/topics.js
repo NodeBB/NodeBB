@@ -1,5 +1,6 @@
 var async = require('async'),
 	gravatar = require('gravatar'),
+	path = require('path'),
 	nconf = require('nconf'),
 	validator = require('validator'),
 	S = require('string'),
@@ -8,6 +9,7 @@ var async = require('async'),
 	db = require('./database'),
 	posts = require('./posts'),
 	utils = require('./../public/src/utils'),
+	plugins = require('./plugins'),
 	user = require('./user'),
 	categories = require('./categories'),
 	categoryTools = require('./categoryTools'),
@@ -16,11 +18,17 @@ var async = require('async'),
 	postTools = require('./postTools'),
 	notifications = require('./notifications'),
 	favourites = require('./favourites'),
-	meta = require('./meta');
+	meta = require('./meta'),
+	Plugins = require('./plugins');
 
 (function(Topics) {
 
-	Topics.create = function(uid, title, cid, callback) {
+	Topics.create = function(data, callback) {
+		var uid = data.uid,
+			title = data.title,
+			cid = data.cid,
+			thumb = data.thumb;
+
 		db.incrObjectField('global', 'nextTid', function(err, tid) {
 			if(err) {
 				return callback(err);
@@ -29,7 +37,7 @@ var async = require('async'),
 			var slug = tid + '/' + utils.slugify(title),
 				timestamp = Date.now();
 
-			db.setObject('topic:' + tid, {
+			var topicData = {
 				'tid': tid,
 				'uid': uid,
 				'cid': cid,
@@ -42,13 +50,19 @@ var async = require('async'),
 				'locked': 0,
 				'deleted': 0,
 				'pinned': 0
-			}, function(err) {
+			};
+
+			if(thumb) {
+				topicData['thumb'] = thumb;
+			}
+
+			db.setObject('topic:' + tid, topicData, function(err) {
 				if(err) {
 					return callback(err);
 				}
 
 				db.sortedSetAdd('topics:tid', timestamp, tid);
-				db.searchIndex('topic', title, tid);
+				Plugins.fireHook('action:topic.save', tid);
 
 				user.addTopicIdToUser(uid, tid, timestamp);
 
@@ -61,7 +75,13 @@ var async = require('async'),
 		});
 	};
 
-	Topics.post = function(uid, title, content, cid, callback) {
+	Topics.post = function(data, callback) {
+		var uid = data.uid,
+			title = data.title,
+			content = data.content,
+			cid = data.cid,
+			thumb = data.thumb;
+
 		if (title) {
 			title = title.trim();
 		}
@@ -86,6 +106,12 @@ var async = require('async'),
 
 		async.waterfall([
 			function(next) {
+				categoryTools.exists(cid, next);
+			},
+			function(categoryExists, next) {
+				if(!categoryExists) {
+					return next(new Error('category doesn\'t exist'))
+				}
 				categoryTools.privileges(cid, uid, next);
 			},
 			function(privileges, next) {
@@ -98,10 +124,10 @@ var async = require('async'),
 				user.isReadyToPost(uid, next);
 			},
 			function(next) {
-				Topics.create(uid, title, cid, next);
+				Topics.create({uid: uid, title: title, cid: cid, thumb: thumb}, next);
 			},
 			function(tid, next) {
-				Topics.reply(tid, uid, content, next);
+				Topics.reply({uid:uid, tid:tid, content:content}, next);
 			},
 			function(postData, next) {
 				threadTools.toggleFollow(postData.tid, uid);
@@ -123,12 +149,22 @@ var async = require('async'),
 		], callback);
 	};
 
-	Topics.reply = function(tid, uid, content, callback) {
-		var privileges;
-		var postData;
+	Topics.reply = function(data, callback) {
+		var tid = data.tid,
+			uid = data.uid,
+			toPid = data.toPid,
+			content = data.content,
+			privileges,
+			postData;
 
 		async.waterfall([
 			function(next) {
+				threadTools.exists(tid, next);
+			},
+			function(topicExists, next) {
+				if (!topicExists) {
+					return next(new Error('topic doesn\'t exist'));
+				}
 				threadTools.privileges(tid, uid, next);
 			},
 			function(privilegesData, next) {
@@ -150,7 +186,7 @@ var async = require('async'),
 					return next(new Error('content-too-short'));
 				}
 
-				posts.create(uid, tid, content, next);
+				posts.create({uid:uid, tid:tid, content:content, toPid:toPid}, next);
 			},
 			function(data, next) {
 				postData = data;
@@ -210,7 +246,7 @@ var async = require('async'),
 				posts.getCidByPid(mainPid, callback);
 			}
 		}, function(err, results) {
-			Topics.create(results.postData.uid, title, results.cid, function(err, tid) {
+			Topics.create({uid: results.postData.uid, title: title, cid: results.cid}, function(err, tid) {
 				if(err) {
 					return callback(err);
 				}
@@ -241,9 +277,9 @@ var async = require('async'),
 	};
 
 	Topics.movePostToTopic = function(pid, tid, callback) {
-		threadTools.exists(tid, function(exists) {
-			if(!exists) {
-				return callback(new Error('Topic doesn\'t exist'));
+		threadTools.exists(tid, function(err, exists) {
+			if(err || !exists) {
+				return callback(err || new Error('Topic doesn\'t exist'));
 			}
 
 			posts.getPostFields(pid, ['deleted', 'tid', 'timestamp'], function(err, postData) {
@@ -402,7 +438,9 @@ var async = require('async'),
 			if(err) {
 				return callback(err);
 			}
-
+			if(!parseInt(postCount, 10)) {
+				return callback(null, 1);
+			}
 			user.getSettings(uid, function(err, settings) {
 				if(err) {
 					return callback(err);
@@ -425,7 +463,8 @@ var async = require('async'),
 
 	function getTopics(set, uid, tids, callback) {
 		var returnTopics = {
-			'topics': []
+			topics: [],
+			nextStart: 0
 		};
 
 		if (!tids || !tids.length) {
@@ -459,10 +498,7 @@ var async = require('async'),
 		});
 	}
 
-	Topics.getLatestTopics = function(current_user, start, end, term, callback) {
-
-		var timestamp = Date.now();
-
+	Topics.getLatestTids = function(start, end, term, callback) {
 		var terms = {
 			day: 86400000,
 			week: 604800000,
@@ -474,13 +510,17 @@ var async = require('async'),
 			since = terms[term];
 		}
 
-		var args = ['topics:recent', '+inf', timestamp - since, 'LIMIT', start, end - start + 1];
-		db.getSortedSetRevRangeByScore(args, function(err, tids) {
-			if (err) {
+		var count = parseInt(end, 10) === -1 ? end : end - start + 1;
+
+		db.getSortedSetRevRangeByScore(['topics:recent', '+inf', Date.now() - since, 'LIMIT', start, count], callback);
+	};
+
+	Topics.getLatestTopics = function(uid, start, end, term, callback) {
+		Topics.getLatestTids(start, end, term, function(err, tids) {
+			if(err) {
 				return callback(err);
 			}
-
-			getTopics('topics:recent', current_user, tids, callback);
+			getTopics('topics:recent', uid, tids, callback);
 		});
 	};
 
@@ -495,100 +535,54 @@ var async = require('async'),
 	};
 
 	Topics.getTotalUnread = function(uid, callback) {
-
-		var unreadTids = [],
-			start = 0,
-			stop = 21,
-			done = false;
-
-		async.whilst(
-			function() {
-				return unreadTids.length < 21 && !done;
-			},
-			function(callback) {
-				db.getSortedSetRevRange('topics:recent', start, stop, function(err, tids) {
-
-					if (err) {
-						return callback(err);
-					}
-
-					if (tids && !tids.length) {
-						done = true;
-						return callback(null);
-					}
-
-					Topics.hasReadTopics(tids, uid, function(read) {
-
-						var newtids = tids.filter(function(tid, index, self) {
-							return read[index] === 0;
-						});
-
-						unreadTids.push.apply(unreadTids, newtids);
-
-						start = stop + 1;
-						stop = start + 21;
-						callback(null);
-					});
-				});
-			},
-			function(err) {
-				callback(null, {
-					count: unreadTids.length
-				});
-			}
-		);
+		Topics.getUnreadTids(uid, 0, 21, function(err, tids) {
+			callback(err, {count: tids ? tids.length : 0});
+		});
 	};
 
 	Topics.getUnreadTids = function(uid, start, stop, callback) {
 		var unreadTids = [],
 			done = false;
 
-		function continueCondition() {
-			return unreadTids.length < 20 && !done;
+		uid = parseInt(uid, 10);
+		if(uid === 0) {
+			return callback(null, unreadTids);
 		}
 
-		async.whilst(continueCondition, function(callback) {
-			db.getSortedSetRevRange('topics:recent', start, stop, function(err, tids) {
+		async.whilst(function() {
+			return unreadTids.length < 20 && !done;
+		}, function(callback) {
+			Topics.getLatestTids(start, stop, 'month', function(err, tids) {
 				if (err) {
 					return callback(err);
 				}
 
 				if (tids && !tids.length) {
 					done = true;
-					return callback(null);
+					return callback();
 				}
 
-				if (uid === 0) {
-					unreadTids.push.apply(unreadTids, tids);
-					callback(null);
-				} else {
-					Topics.hasReadTopics(tids, uid, function(read) {
-
-						var newtids = tids.filter(function(tid, index, self) {
-							return parseInt(read[index], 10) === 0;
-						});
-
-
-						async.filter(newtids, function(tid, next) {
-							threadTools.privileges(tid, uid, function(err, privileges) {
-								if (!err && privileges.read) {
-									next(true);
-								} else {
-									next(false);
-								}
-							});
-						}, function(newtids) {
-							unreadTids.push.apply(unreadTids, newtids);
-
-							if(continueCondition()) {
-								start = stop + 1;
-								stop = start + 19;
-							}
-
-							callback(null);
-						});
+				Topics.hasReadTopics(tids, uid, function(err, read) {
+					if(err) {
+						return callback(err);
+					}
+					var newtids = tids.filter(function(tid, index, self) {
+						return parseInt(read[index], 10) === 0;
 					});
-				}
+
+					async.filter(newtids, function(tid, next) {
+						threadTools.privileges(tid, uid, function(err, privileges) {
+							next(!err && privileges.read);
+						});
+					}, function(newtids) {
+						unreadTids.push.apply(unreadTids, newtids);
+
+						start = stop + 1;
+						stop = start + 19;
+
+						callback();
+					});
+				});
 			});
 		}, function(err) {
 			callback(err, unreadTids);
@@ -596,18 +590,13 @@ var async = require('async'),
 	};
 
 	Topics.getUnreadTopics = function(uid, start, stop, callback) {
-		var unreadTopics = {
-			'show_sidebar': 'hidden',
-			'show_markallread_button': 'show',
-			'no_topics_message': 'hidden',
-			'topics': []
-		};
 
-		function noUnreadTopics() {
-			unreadTopics.no_topics_message = '';
-			unreadTopics.show_markallread_button = 'hidden';
-			callback(null, unreadTopics);
-		}
+		var unreadTopics = {
+			no_topics_message: '',
+			show_markallread_button: 'hidden',
+			nextStart : 0,
+			topics: []
+		};
 
 		function sendUnreadTopics(topicIds) {
 
@@ -623,13 +612,8 @@ var async = require('async'),
 
 					unreadTopics.topics = topicData;
 					unreadTopics.nextStart = parseInt(rank, 10) + 1;
-
-					if (!topicData || topicData.length === 0) {
-						unreadTopics.no_topics_message = '';
-					}
-					if (uid === 0 || topicData.length === 0) {
-						unreadTopics.show_markallread_button = 'hidden';
-					}
+					unreadTopics.no_topics_message = (!topicData || topicData.length === 0) ? '' : 'hidden';
+					unreadTopics.show_markallread_button = topicData.length === 0 ? 'hidden' : '';
 
 					callback(null, unreadTopics);
 				});
@@ -644,7 +628,7 @@ var async = require('async'),
 			if (unreadTids.length) {
 				sendUnreadTopics(unreadTids);
 			} else {
-				noUnreadTopics();
+				callback(null, unreadTopics);
 			}
 		});
 	};
@@ -691,9 +675,7 @@ var async = require('async'),
 			}
 
 			function hasReadTopic(next) {
-				Topics.hasReadTopic(topicData.tid, current_user, function(hasRead) {
-					next(null, hasRead);
-				});
+				Topics.hasReadTopic(topicData.tid, current_user, next);
 			}
 
 			function getTeaserInfo(next) {
@@ -794,9 +776,9 @@ var async = require('async'),
 	};
 
 	Topics.getTopicWithPosts = function(tid, current_user, start, end, quiet, callback) {
-		threadTools.exists(tid, function(exists) {
-			if (!exists) {
-				return callback(new Error('Topic tid \'' + tid + '\' not found'));
+		threadTools.exists(tid, function(err, exists) {
+			if (err || !exists) {
+				return callback(err || new Error('Topic tid \'' + tid + '\' not found'));
 			}
 
 			// "quiet" is used for things like RSS feed updating, HTML parsing for non-js users, etc
@@ -827,7 +809,13 @@ var async = require('async'),
 				Topics.getPageCount(tid, current_user, next);
 			}
 
-			async.parallel([getTopicData, getTopicPosts, getPrivileges, getCategoryData, getPageCount], function(err, results) {
+			function getThreadTools(next) {
+				Plugins.fireHook('filter:topic.thread_tools', [], function(err, threadTools) {
+					next(err, threadTools);
+				});
+			}
+
+			async.parallel([getTopicData, getTopicPosts, getPrivileges, getCategoryData, getPageCount, getThreadTools], function(err, results) {
 				if (err) {
 					winston.error('[Topics.getTopicWithPosts] Could not retrieve topic data: ', err.message);
 					return callback(err);
@@ -836,7 +824,8 @@ var async = require('async'),
 				var topicData = results[0],
 					privileges = results[2],
 					categoryData = results[3],
-					pageCount = results[4];
+					pageCount = results[4],
+					threadTools = results[5];
 
 				callback(null, {
 					'topic_name': topicData.title,
@@ -847,12 +836,14 @@ var async = require('async'),
 					'pinned': topicData.pinned,
 					'timestamp': topicData.timestamp,
 					'slug': topicData.slug,
+					'thumb': topicData.thumb,
 					'postcount': topicData.postcount,
 					'viewcount': topicData.viewcount,
 					'pageCount': pageCount,
 					'unreplied': parseInt(topicData.postcount, 10) === 1,
 					'topic_id': tid,
 					'expose_tools': privileges.editable ? 1 : 0,
+					'thread_tools': threadTools,
 					'disableSocialButtons': meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false,
 					'posts': results[1]
 				});
@@ -869,9 +860,7 @@ var async = require('async'),
 
 		function getReadStatus(next) {
 			if (uid && parseInt(uid, 10) > 0) {
-				Topics.hasReadTopic(tid, uid, function(read) {
-					next(null, read);
-				});
+				Topics.hasReadTopic(tid, uid, next);
 			} else {
 				next(null, null);
 			}
@@ -918,13 +907,13 @@ var async = require('async'),
 	};
 
 	Topics.markAllRead = function(uid, callback) {
-		db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
+		Topics.getLatestTids(0, -1, 'month', function(err, tids) {
 			if (err) {
 				return callback(err);
 			}
 
 			if(!tids || !tids.length) {
-				return callback(null);
+				return callback();
 			}
 
 			function markRead(tid, next) {
@@ -936,11 +925,41 @@ var async = require('async'),
 	};
 
 	Topics.getTitleByPid = function(pid, callback) {
+		Topics.getTopicFieldByPid('title', pid, callback);
+	};
+
+	Topics.getTopicFieldByPid = function(field, pid, callback) {
 		posts.getPostField(pid, 'tid', function(err, tid) {
-			Topics.getTopicField(tid, 'title', function(err, title) {
-				callback(title);
-			});
+			Topics.getTopicField(tid, field, callback);
 		});
+	};
+
+	Topics.getTopicDataByPid = function(pid, callback) {
+		posts.getPostField(pid, 'tid', function(err, tid) {
+			Topics.getTopicData(tid, callback);
+		});
+	};
+
+	Topics.uploadTopicThumb = function(image, callback) {
+
+		if(plugins.hasListeners('filter:uploadImage')) {
+			plugins.fireHook('filter:uploadImage', image, callback);
+		} else {
+			if (meta.config.allowTopicsThumbnail) {
+				var filename = 'upload-' + utils.generateUUID() + path.extname(image.name);
+				require('./file').saveFileToLocal(filename, image.path, function(err, upload) {
+					if(err) {
+						return callback(err);
+					}
+					callback(null, {
+						url: upload.url,
+						name: image.name
+					});
+				});
+			} else {
+				callback(new Error('Topic Thumbnails are disabled!'));
+			}
+		}
 	};
 
 	Topics.markAsUnreadForAll = function(tid, callback) {
@@ -961,12 +980,7 @@ var async = require('async'),
 		});
 
 		Topics.getTopicField(tid, 'cid', function(err, cid) {
-
-			categories.isTopicsRead(cid, uid, function(read) {
-				if (read) {
-					categories.markAsRead(cid, uid);
-				}
-			});
+			categories.markAsRead(cid, uid);
 		});
 
 		user.notifications.getUnreadByUniqueId(uid, 'topic:' + tid, function(err, nids) {
@@ -988,7 +1002,7 @@ var async = require('async'),
 
 	Topics.hasReadTopics = function(tids, uid, callback) {
 		if(!parseInt(uid, 10)) {
-			return callback(tids.map(function() {
+			return callback(null, tids.map(function() {
 				return false;
 			}));
 		}
@@ -999,25 +1013,15 @@ var async = require('async'),
 			sets.push('tid:' + tids[i] + ':read_by_uid');
 		}
 
-		db.isMemberOfSets(sets, uid, function(err, hasRead) {
-			callback(hasRead);
-		});
+		db.isMemberOfSets(sets, uid, callback);
 	};
 
 	Topics.hasReadTopic = function(tid, uid, callback) {
 		if(!parseInt(uid, 10)) {
-			return callback(false);
+			return callback(null, false);
 		}
 
-		db.isSetMember('tid:' + tid + ':read_by_uid', uid, function(err, hasRead) {
-
-			if (err === null) {
-				callback(hasRead);
-			} else {
-				console.log(err);
-				callback(false);
-			}
-		});
+		db.isSetMember('tid:' + tid + ':read_by_uid', uid, callback);
 	};
 
 	Topics.getTeasers = function(tids, callback) {
@@ -1209,25 +1213,4 @@ var async = require('async'),
 			], callback);
 		});
 	};
-
-	Topics.reIndexTopic = function(tid, callback) {
-		Topics.getPids(tid, function(err, pids) {
-			if (err) {
-				return callback(err);
-			}
-
-			posts.reIndexPids(pids, callback);
-		});
-	}
-
-	Topics.reIndexAll = function(callback) {
-		db.getSortedSetRange('topics:tid', 0, -1, function(err, tids) {
-			if (err) {
-				return callback(err);
-			}
-
-			async.each(tids, Topics.reIndexTopic, callback);
-		});
-	}
-
 }(exports));

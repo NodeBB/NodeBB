@@ -14,7 +14,7 @@
 	<!-- IF !disableSocialButtons -->
 	<div class="inline-block pull-right">
 		<a href="#" id="facebook-share"><i class="fa fa-facebook-square fa-2x"></i></a>&nbsp;
-		<a href="#" id="twitter-intent"><i class="fa fa-twitter-square fa-2x"></i></a>&nbsp;
+		<a href="#" id="twitter-share"><i class="fa fa-twitter-square fa-2x"></i></a>&nbsp;
 		<a href="#" id="google-share"><i class="fa fa-google-plus-square fa-2x"></i></a>&nbsp;
 	</div>
 	<!-- ENDIF !disableSocialButtons -->
@@ -29,25 +29,29 @@
 <!-- ENDIF !topics.length -->
 
 <div class="category row">
-	<div class="{topic_row_size}">
+	<div class="{topic_row_size}" no-widget-class="col-lg-12 col-sm-12">
 		<ul id="topics-container" itemscope itemtype="http://www.schema.org/ItemList" data-nextstart="{nextStart}">
 			<meta itemprop="itemListOrder" content="descending">
 			<!-- BEGIN topics -->
 			<li class="category-item {topics.deleted-class} {topics.unread-class}" itemprop="itemListElement">
 
 				<div class="col-md-12 col-xs-12 panel panel-default topic-row">
+
+					<!--
+						todo: tidy this up, not sure what to do with the topic thumbs
+						todo: fix this nesting if issue#1065 is a win
+						todo: add a check for config.allowTopicsThumbnail if issue#1066 is a win
+					-->
 					<a href="../../user/{topics.userslug}" class="pull-left">
-						<img class="img-rounded user-img" src="{topics.picture}" title="{topics.username}" />
+						<img src="<!-- IF topics.thumb -->{topics.thumb}<!-- ELSE -->{topics.picture}<!-- ENDIF topics.thumb -->" class="img-rounded user-img" title="{topics.username}"/>
 					</a>
 
 					<h3>
 						<a href="../../topic/{topics.slug}" itemprop="url">
 							<meta itemprop="name" content="{topics.title}">
 
-							<span class="topic-title">
-								<strong><i class="fa {topics.pin-icon}"></i> <i class="fa {topics.lock-icon}"></i></strong>
-								{topics.title}
-							</span>
+							<strong><i class="fa {topics.pin-icon}"></i> <i class="fa {topics.lock-icon}"></i></strong>
+							<span class="topic-title">{topics.title}</span>
 						</a>
 					</h3>
 
@@ -86,51 +90,21 @@
 			</li>
 			<!-- END topics -->
 		</ul>
-		<!-- IF usePagination -->
+		<!-- IF config.usePagination -->
 		<div class="text-center">
 			<ul class="pagination">
 				<li class="previous pull-left"><a href="#"><i class="fa fa-chevron-left"></i> [[global:previouspage]]</a></li>
 				<li class="next pull-right"><a href="#">[[global:nextpage]] <i class="fa fa-chevron-right"></i></a></li>
 			</ul>
 		</div>
-		<!-- ENDIF usePagination -->
+		<!-- ENDIF config.usePagination -->
 	</div>
 
 	<!-- IF topics.length -->
-	<div class="col-md-3 col-xs-12 category-sidebar">
-		<div class="panel panel-default">
-			<div class="panel-heading">[[category:sidebar.recent_replies]]</div>
-			<div class="panel-body recent-replies">
-				<ul id="category_recent_replies"></ul>
-			</div>
-		</div>
-
-		<div class="panel panel-default">
-			<div class="panel-heading">[[category:sidebar.active_participants]]</div>
-			<div class="panel-body active-users">
-				<!-- BEGIN active_users -->
-				<a data-uid="{active_users.uid}" href="../../user/{active_users.userslug}"><img title="{active_users.username}" src="{active_users.picture}" class="img-rounded user-img" /></a>
-				<!-- END active_users -->
-			</div>
-		</div>
-
-		<!-- IF moderators.length -->
-		<div class="panel panel-default">
-			<div class="panel-heading">[[category:sidebar.moderators]]</div>
-			<div class="panel-body moderators">
-				<!-- BEGIN moderators -->
-				<a data-uid="{moderators.uid}" href="../../user/{moderators.userslug}"><img title="{moderators.username}" src="{moderators.picture}" class="img-rounded user-img" /></a>
-				<!-- END moderators -->
-			</div>
-		</div>
-		<!-- ENDIF moderators.length -->
-
-		<!-- BEGIN sidebars -->
-		<div class="panel panel-default">
-			<div class="panel panel-default {sidebars.block_class}">{sidebars.header}</div>
-			<div class="panel-body">{sidebars.content}</div>
-		</div>
-		<!-- END sidebars -->
+	<div widget-area="sidebar" class="col-md-3 col-xs-12 category-sidebar">
+		<!-- BEGIN widgets -->
+		{widgets.html}
+		<!-- END widgets -->
 	</div>
 	<!-- ENDIF topics.length -->
 </div>

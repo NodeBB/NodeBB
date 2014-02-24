@@ -76,9 +76,11 @@
 					</li>
 					<!-- ENDIF isAdmin -->
 
+					<!-- IF searchEnabled -->
 					<li class="visible-xs">
 						<a id="mobile-search-button" href="{relative_path}/search"><i class="fa fa-search fa-fw" title="[[global:header.search]]"></i> [[global:header.search]]</a>
 					</li>
+					<!-- ENDIF searchEnabled -->
 
 					<!-- BEGIN navigation -->
 					<li class="{navigation.class}">
@@ -167,6 +169,7 @@
 					</li>
 				</ul>
 
+				<!-- IF searchEnabled -->
 				<ul id="logged-conditional-menu" class="nav navbar-nav navbar-right">
 					<li>
 						<form id="search-form" class="navbar-form navbar-right hidden-xs" role="search" method="GET" action="">
@@ -180,6 +183,7 @@
 						</form>
 					</li>
 				</ul>
+				<!-- ENDIF searchEnabled -->
 
 				<ul class="nav navbar-nav navbar-right pagination-block hide">
 					<li class="active">

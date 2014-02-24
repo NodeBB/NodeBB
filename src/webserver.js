@@ -44,6 +44,33 @@ if(nconf.get('ssl')) {
 
 module.exports.server = server;
 
+// Signals
+var	shutdown = function(code) {
+		winston.info('[app] Shutdown (SIGTERM/SIGINT) Initialised.');
+		db.close();
+		winston.info('[app] Database connection closed.');
+
+		winston.info('[app] Goodbye!');
+		process.exit();
+	},
+	restart = function() {
+		if (process.send) {
+			winston.info('[app] Restarting...');
+			process.send('nodebb:restart');
+		} else {
+			winston.error('[app] Could not restart server. Shutting down.');
+			shutdown();
+		}
+	};
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);
+process.on('SIGHUP', restart);
+process.on('uncaughtException', function(err) {
+	winston.error('[app] Encountered Uncaught Exception: ' + err.message);
+	console.log(err.stack);
+	restart();
+});
+
 (function (app) {
 	"use strict";
 
@@ -104,7 +131,8 @@ module.exports.server = server;
 					clientScripts: clientScripts,
 					navigation: custom_header.navigation,
 					'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
-					allowRegistration: meta.config.allowRegistration === undefined || parseInt(meta.config.allowRegistration, 10) === 1
+					allowRegistration: meta.config.allowRegistration === undefined || parseInt(meta.config.allowRegistration, 10) === 1,
+					searchEnabled: plugins.hasListeners('filter:search.query') ? true : false
 				},
 				escapeList = {
 					'&': '&amp;',
@@ -206,9 +234,13 @@ module.exports.server = server;
 				// favicon & apple-touch-icon middleware
 				app.use(express.favicon(path.join(__dirname, '../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico')));
 				app.use('/apple-touch-icon', function(req, res) {
-					return res.sendfile(path.join(__dirname, '../public', meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png'), {
-						maxAge: app.enabled('cache') ? 5184000000 : 0
-					});
+					if (meta.config['brand:logo'] && validator.isURL(meta.config['brand:logo'])) {
+						return res.redirect(meta.config['brand:logo']);
+					} else {
+						return res.sendfile(path.join(__dirname, '../public', meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png'), {
+							maxAge: app.enabled('cache') ? 5184000000 : 0
+						});
+					}
 				});
 
 				app.use(require('less-middleware')({
@@ -672,7 +704,7 @@ module.exports.server = server;
 							posts: topicData
 						});
 					});
-				},
+				}
 			], function (err, data) {
 				if (err) {
 					if (err.message === 'not-enough-privileges') {
@@ -736,7 +768,6 @@ module.exports.server = server;
 							end = start + settings.topicsPerPage - 1;
 
 						categories.getCategoryById(cid, start, end, 0, function (err, categoryData) {
-
 							if (categoryData) {
 								if (parseInt(categoryData.disabled, 10) === 1) {
 									return next(new Error('Category disabled'), null);
@@ -923,7 +954,7 @@ module.exports.server = server;
 			return custom_routes.templates.map(function(tpl) {
 				return tpl.template.split('.tpl')[0];
 			});
-		}
+		};
 
 		plugins.ready(function() {
 			plugins.fireHook('filter:server.create_routes', custom_routes, function(err, custom_routes) {

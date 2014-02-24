@@ -7,6 +7,7 @@ var db = require('./database'),
 	User = require('./user'),
 	Topics = require('./topics'),
 	Posts = require('./posts'),
+	Categories = require('./categories'),
 	Groups = require('./groups'),
 	Meta = require('./meta'),
 	Plugins = require('./plugins'),
@@ -15,13 +16,20 @@ var db = require('./database'),
 	Upgrade = {},
 
 	minSchemaDate = new Date(2014, 0, 4).getTime(),		// This value gets updated every new MINOR version
-	schemaDate, thisSchemaDate;
+	schemaDate, thisSchemaDate,
+
+	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
+	latestSchema = new Date(2014, 1, 22).getTime();
 
 Upgrade.check = function(callback) {
-	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	var	latestSchema = new Date(2014, 1, 14, 21, 50).getTime();
-
 	db.get('schemaDate', function(err, value) {
+		if(!value) {
+			db.set('schemaDate', latestSchema, function(err) {
+				callback(true);
+			});
+			return;
+		}
+
 		if (parseInt(value, 10) >= latestSchema) {
 			callback(true);
 		} else {
@@ -39,9 +47,16 @@ Upgrade.upgrade = function(callback) {
 		function(next) {
 			// Prepare for upgrade & check to make sure the upgrade is possible
 			db.get('schemaDate', function(err, value) {
-				schemaDate = value;
+				if(!value) {
+					db.set('schemaDate', latestSchema, function(err) {
+						next();
+					});
+					schemaDate = latestSchema;
+				} else {
+					schemaDate = parseInt(value, 10);
+				}
 
-				if (schemaDate >= minSchemaDate || schemaDate === null) {
+				if (schemaDate >= minSchemaDate) {
 					next();
 				} else {
 					next(new Error('upgrade-not-possible'));
@@ -685,9 +700,190 @@ Upgrade.upgrade = function(callback) {
 				winston.info('[2014/2/14] Added posts to sorted set - skipped');
 				next();
 			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 1, 19, 18, 15).getTime();
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				db.setObjectField('widgets:home.tpl', 'motd', JSON.stringify([
+					{
+						"widget": "html",
+						"data": {
+							"html": Meta.config['motd'] ||  "Welcome to NodeBB, if you are an administrator of this forum visit the <a target='_blank' href='/admin/themes'>Themes</a> ACP to modify and add widgets."
+						}
+					}
+				]), function(err) {
+					Meta.configs.remove('motd');
+					Meta.configs.remove('motd_class');
+					Meta.configs.remove('show_motd');
+
+					winston.info('[2014/2/19] Updated MOTD to use the HTML widget.');
+					next(err);
+				});
+			} else {
+				winston.info('[2014/2/19] Updating MOTD to use the HTML widget - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 1, 20, 15, 30).getTime();
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				var container = '<div class="panel panel-default"><div class="panel-heading">{title}</div><div class="panel-body">{body}</div></div>';
+
+				db.setObjectField('widgets:category.tpl', 'sidebar', JSON.stringify([
+					{
+						"widget": "recentreplies",
+						"data": {
+							"title": "Recent Replies",
+							"container": container
+						}
+					},
+					{
+						"widget": "activeusers",
+						"data": {
+							"title": "Active Users",
+							"container": container
+						}
+					},
+					{
+						"widget": "moderators",
+						"data": {
+							"title": "Moderators",
+							"container": container
+						}
+					}
+				]), function(err) {
+					winston.info('[2014/2/20] Adding Recent Replies, Active Users, and Moderator widgets to category sidebar.');
+					next(err);
+				});
+			} else {
+				winston.info('[2014/2/20] Adding Recent Replies, Active Users, and Moderator widgets to category sidebar - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 1, 20, 16, 15).getTime();
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				db.setObjectField('widgets:home.tpl', 'footer', JSON.stringify([
+					{
+						"widget": "forumstats",
+						"data": {}
+					}
+				]), function(err) {
+					winston.info('[2014/2/20] Adding Forum Stats Widget to the Homepage Footer.');
+					next(err);
+				});
+			} else {
+				winston.info('[2014/2/20] Adding Forum Stats Widget to the Homepage Footer - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 1, 20, 19, 45).getTime();
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				var container = '<div class="panel panel-default"><div class="panel-heading">{title}</div><div class="panel-body">{body}</div></div>';
+
+				db.setObjectField('widgets:home.tpl', 'sidebar', JSON.stringify([
+					{
+						"widget": "html",
+						"data": {
+							"html": Meta.config['motd'] || "Welcome to NodeBB, if you are an administrator of this forum visit the <a target='_blank' href='/admin/themes'>Themes</a> ACP to modify and add widgets.",
+							"container": container,
+							"title": "MOTD"
+						}
+					}
+				]), function(err) {
+					winston.info('[2014/2/20] Updating Lavender MOTD');
+					next(err);
+				});
+			} else {
+				winston.info('[2014/2/20] Updating Lavender MOTD - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 1, 20, 20, 25).getTime();
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				db.setAdd('plugins:active', 'nodebb-widget-essentials', function(err) {
+					winston.info('[2014/2/20] Activating NodeBB Essential Widgets');
+					Plugins.reload(function() {
+						next(err);
+					});
+				});
+			} else {
+				winston.info('[2014/2/20] Activating NodeBB Essential Widgets - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = new Date(2014, 1, 22).getTime();
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+
+				db.exists('categories:cid', function(err, exists) {
+					if(err) {
+						return next(err);
+					}
+					if(!exists) {
+						winston.info('[2014/2/22] Added categories to sorted set - skipped');
+						return next();
+					}
+
+					db.getListRange('categories:cid', 0, -1, function(err, cids) {
+						if(err) {
+							return next(err);
+						}
+
+						if(!Array.isArray(cids)) {
+							winston.info('[2014/2/22] Add categories to sorted set - skipped (cant find any cids)');
+							return next();
+						}
+
+						db.rename('categories:cid', 'categories:cid:old', function(err) {
+							if(err) {
+								return next(err);
+							}
+
+							async.each(cids, function(cid, next) {
+								Categories.getCategoryField(cid, 'order', function(err, order) {
+									if(err) {
+										return next(err);
+									}
+									db.sortedSetAdd('categories:cid', order, cid, next);
+								});
+							}, function(err) {
+								if(err) {
+									return next(err);
+								}
+								winston.info('[2014/2/22] Added categories to sorted set');
+								db.delete('categories:cid:old', next);
+							});
+						});
+					});
+				});
+
+			} else {
+				winston.info('[2014/2/22] Added categories to sorted set - skipped');
+				next();
+			}
 		}
 		// Add new schema updates here
-		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 17!!!
+		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 22!!!
 	], function(err) {
 		if (!err) {
 			db.set('schemaDate', thisSchemaDate, function(err) {
@@ -697,6 +893,7 @@ Upgrade.upgrade = function(callback) {
 					} else {
 						winston.info('[upgrade] Schema already up to date!');
 					}
+
 					if (callback) {
 						callback(err);
 					} else {

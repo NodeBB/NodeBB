@@ -15,6 +15,9 @@ var socket,
 			url: RELATIVE_PATH + '/api/config',
 			success: function (data) {
 				config = data;
+
+				exposeConfigToTemplates();
+
 				if(socket) {
 					socket.disconnect();
 					setTimeout(function() {
@@ -287,9 +290,14 @@ var socket,
 				var el = jQuery(this),
 					uid = el.parents('li').attr('data-uid');
 
-				if (uid && users[uid]) {
-					el.siblings('i').attr('class', 'fa fa-circle status ' + users[uid].status)
-				}
+				translator.translate('[[global:' + users[uid].status + ']]', function(translated) {
+					if (uid && users[uid]) {
+						el.siblings('i')
+							.attr('class', 'fa fa-circle status ' + users[uid].status)
+							.attr('title', translated)
+							.attr('data-original-title', translated);
+					}
+				});
 			});
 		});
 	};
@@ -322,6 +330,13 @@ var socket,
 		});
 	};
 
+	app.createStatusTooltips = function() {
+		$('body').tooltip({
+			selector:'.fa-circle.status',
+			placement: 'top'
+		});
+	}
+
 	app.makeNumbersHumanReadable = function(elements) {
 		elements.each(function() {
 			$(this).html(utils.makeNumberHumanReadable($(this).attr('title')));
@@ -339,6 +354,8 @@ var socket,
 		app.makeNumbersHumanReadable($('.human-readable-number'));
 
 		app.createUserTooltips();
+
+		app.createStatusTooltips();
 
 		setTimeout(function () {
 			window.scrollTo(0, 1); // rehide address bar on mobile after page load completes.
@@ -591,12 +608,16 @@ var socket,
 		});
 
 		createHeaderTooltips();
-
-		templates.setGlobal('relative_path', RELATIVE_PATH);
-		templates.setGlobal('usePagination', config.usePagination);
-		templates.setGlobal('topicsPerPage', config.topicsPerPage);
-		templates.setGlobal('postsPerPage', config.postsPerPage);
 	});
+
+	function exposeConfigToTemplates() {
+		$(document).ready(function() {
+			templates.setGlobal('relative_path', RELATIVE_PATH);
+			for(var key in config) {
+				templates.setGlobal('config.' + key, config[key]);
+			}
+		});
+	}
 
 	function createHeaderTooltips() {
 		$('#header-menu li i[title]').each(function() {

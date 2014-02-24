@@ -89,7 +89,12 @@ define(['forum/accountheader'], function(header) {
 			return;
 		}
 
-		onlineStatus.attr('class', 'account-online-status fa fa-circle status ' + data.status);
+		translator.translate('[[global:' + data.status + ']]', function(translated) {
+			onlineStatus.attr('class', 'account-online-status fa fa-circle status ' + data.status)
+				.attr('title', translated)
+				.attr('data-original-title', translated);
+		});
+
 	};
 
 	return Account;

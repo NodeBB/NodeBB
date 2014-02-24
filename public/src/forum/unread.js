@@ -47,6 +47,7 @@ define(['forum/recent'], function(recent) {
 			if(!$('#topics-container').length) {
 				return;
 			}
+
 			loadingMoreTopics = true;
 			socket.emit('topics.loadMoreUnreadTopics', {
 				after: $('#topics-container').attr('data-nextstart')
