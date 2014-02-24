@@ -1160,7 +1160,7 @@ var async = require('async'),
 				return callback(err);
 			}
 
-			db.setObjectField('global', count, callback);
+			db.setObjectField('global', 'topicCount', count, callback);
 		});
 	};
 
