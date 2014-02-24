@@ -8,7 +8,6 @@
 <input type="hidden" template-variable="topic_name" value="{topic_name}" />
 <input type="hidden" template-variable="postcount" value="{postcount}" />
 
-
 <div class="topic">
 	<ol class="breadcrumb">
 		<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
@@ -306,4 +305,10 @@
 		</div>
 	</div>
 
+</div>
+
+<div widget-area="footer" class="col-xs-12">
+	<!-- BEGIN widgets -->
+	{widgets.html}
+	<!-- END widgets -->
 </div>
