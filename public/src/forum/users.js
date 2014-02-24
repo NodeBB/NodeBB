@@ -111,12 +111,14 @@ define(function() {
 				users: users
 			});
 
-			if(emptyContainer) {
-				$('#users-container .registered-user').remove();
-			}
+			translator.translate(html, function(translated) {
+				if(emptyContainer) {
+					$('#users-container .registered-user').remove();
+				}
 
-			$('#users-container').append(html);
-			$('#users-container .anon-user').appendTo($('#users-container'));
+				$('#users-container').append(translated);
+				$('#users-container .anon-user').appendTo($('#users-container'));
+			});
 		}
 
 		function loadMoreUsers() {
