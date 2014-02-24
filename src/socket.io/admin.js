@@ -33,6 +33,15 @@ SocketAdmin.before = function(socket, next) {
 
 SocketAdmin.restart = function(socket, data, callback) {
 	meta.restart();
+
+	if (process.env.NODE_ENV === 'development') {
+		socket.emit('event:alert', {
+			title: 'Restart Not Available',
+			message: 'NodeBB restarting is disabled in development mode.',
+			type: 'warning',
+			timeout: 2500
+		});
+	}
 };
 
 /* Topics */
