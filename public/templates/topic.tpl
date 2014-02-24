@@ -101,9 +101,9 @@
 									<button title="[[topic:share]]"class="btn btn-sm btn-default share" data-toggle="dropdown" href="#"><i class="fa fa-share-square-o"></i></button>
 									<ul class="dropdown-menu text-center pull-right" role="menu" aria-labelledby="dLabel">
 										<!-- IF !disableSocialButtons -->
-										<li class="btn btn-sm btn-default facebook-share" type="button" title=""><i class="fa fa-facebook"></i></li>
-										<li class="btn btn-sm btn-default twitter-share" type="button" title=""><i class="fa fa-twitter"></i></li>
-										<li class="btn btn-sm btn-default google-share" type="button" title=""><i class="fa fa-google-plus"></i></li>
+										<li class="btn btn-sm btn-default facebook-share" type="button" title=""><i class="fa fa-facebook fa-fw"></i></li>
+										<li class="btn btn-sm btn-default twitter-share" type="button" title=""><i class="fa fa-twitter fa-fw"></i></li>
+										<li class="btn btn-sm btn-default google-share" type="button" title=""><i class="fa fa-google-plus fa-fw"></i></li>
 										<!-- ENDIF !disableSocialButtons -->
 										<li>
 											<input type="text" id="post_{posts.pid}_link" value="" class="form-control pull-right post-link" style=""></input>
