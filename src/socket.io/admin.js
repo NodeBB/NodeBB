@@ -274,12 +274,16 @@ SocketAdmin.themes.set = function(socket, data, callback) {
 	if(!data) {
 		return callback(new Error('invalid data'));
 	}
-	meta.themes.set(data, callback);
+	meta.themes.set(data, function() {
+		callback();
+		meta.restart()
+	});
 };
 
 SocketAdmin.plugins.toggle = function(socket, plugin_id) {
 	plugins.toggleActive(plugin_id, function(status) {
 		socket.emit('admin.plugins.toggle', status);
+		meta.restart();
 	});
 };
 

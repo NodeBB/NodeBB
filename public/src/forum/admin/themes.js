@@ -21,14 +21,6 @@ define(['forum/admin/settings'], function(Settings) {
 								type: themeType,
 								id: themeId,
 								src: cssSrc
-							}, function(err) {
-								app.alert({
-									alert_id: 'admin:theme',
-									type: 'success',
-									title: 'Theme Changed',
-									message: 'You have successfully changed your NodeBB\'s theme. Please restart to see the changes.',
-									timeout: 2500
-								});
 							});
 						break;
 					}
