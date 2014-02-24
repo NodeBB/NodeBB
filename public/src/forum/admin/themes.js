@@ -21,6 +21,14 @@ define(['forum/admin/settings'], function(Settings) {
 								type: themeType,
 								id: themeId,
 								src: cssSrc
+							}, function(err) {
+								app.alert({
+									alert_id: 'admin:theme',
+									type: 'success',
+									title: 'Theme Changed',
+									message: 'Restarting your NodeBB <i class="fa fa-refresh fa-spin"></i>',
+									timeout: 3500
+								});
 							});
 						break;
 					}
@@ -42,7 +50,7 @@ define(['forum/admin/settings'], function(Settings) {
 							alert_id: 'admin:theme',
 							type: 'success',
 							title: 'Theme Changed',
-							message: 'You have successfully reverted your NodeBB back to it\'s default theme. Please restart to see the changes.',
+							message: 'You have successfully reverted your NodeBB back to it\'s default theme. Restarting your NodeBB <i class="fa fa-refresh fa-spin"></i>',
 							timeout: 3500
 						});
 					});

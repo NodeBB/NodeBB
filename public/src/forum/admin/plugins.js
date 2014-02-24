@@ -15,6 +15,14 @@ define(function() {
 					pluginTgl = $('.plugins li[data-plugin-id="' + status.id + '"] button');
 					pluginTgl.html('<i class="fa fa-power-off"></i> ' + (status.active ? 'Dea' : 'A') + 'ctivate');
 					pluginTgl.toggleClass('btn-warning', status.active).toggleClass('btn-success', !status.active);
+
+					app.alert({
+						alert_id: 'plugin_toggled',
+						title: 'Plugin ' + (status.active ? 'Enabled' : 'Disabled'),
+						message: 'Restarting your NodeBB <i class="fa fa-refresh fa-spin"></i>',
+						type: 'warning',
+						timeout: 5000
+					})
 				});
 			} else {
 				pluginsList.append('<li><p><i>No plugins found.</i></p></li>');
