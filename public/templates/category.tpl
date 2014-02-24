@@ -43,7 +43,11 @@
 						todo: add a check for config.allowTopicsThumbnail if issue#1066 is a win
 					-->
 					<a href="../../user/{topics.userslug}" class="pull-left">
-						<img src="<!-- IF topics.thumb -->{topics.thumb}<!-- ELSE -->{topics.picture}<!-- ENDIF topics.thumb -->" class="img-rounded user-img" title="{topics.username}"/>
+						<!-- IF topics.thumb -->
+						<img src="{topics.thumb}" class="img-rounded user-img" title="{topics.username}"/>
+						<!-- ELSE -->
+						<img src="{topics.picture}" class="img-rounded user-img" title="{topics.username}"/>
+						<!-- ENDIF topics.thumb -->
 					</a>
 
 					<h3>
