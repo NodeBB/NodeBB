@@ -278,6 +278,9 @@ process.on('uncaughtException', function(err) {
 					// Disable framing
 					res.setHeader('X-Frame-Options', 'SAMEORIGIN');
 
+					// Log IP address
+					db.sortedSetAdd('ip:recent', +new Date(), req.ip || 'Unknown');
+
 					next();
 				});
 
