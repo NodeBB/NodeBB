@@ -75,7 +75,7 @@
 
 		<div class="imagedrop"><div>[[topic:composer.drag_and_drop_images]]</div></div>
 
-		<div class="text-center">
+		<div class="text-center instructions">
 			<span>
 				<small>[[topic:composer.content_is_parsed_with]] <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a>. </small>
 				<span class="upload-instructions hide"><small>[[topic:composer.upload_instructions]]</small></span>

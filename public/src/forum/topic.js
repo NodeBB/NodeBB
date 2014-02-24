@@ -484,7 +484,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 		$('#post-container').on('shown.bs.dropdown', '.share-dropdown', function() {
 			var pid = $(this).parents('.post-row').attr('data-pid');
-			$('#post_' + pid + '_link').val(window.location.href + "#" + pid);
+			$('#post_' + pid + '_link').val(window.location.protocol + '//' + window.location.host + window.location.pathname + '#' + pid);
 			// without the setTimeout can't select the text in the input
 			setTimeout(function() {
 				$('#post_' + pid + '_link').putCursorAtEnd().select();
@@ -1055,7 +1055,6 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			offset = 0;
 		}
 
-
 		if($('#post_anchor_' + pid).length) {
 			return scrollToPid(pid);
 		}
@@ -1093,8 +1092,8 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				tid = $('#post-container').attr('data-tid');
 
 			function animateScroll() {
-				$('window,html').animate({
-					scrollTop: scrollTo.offset().top - $('#header-menu').height() - offset
+				$("html, body").animate({
+					scrollTop: (scrollTo.offset().top - $('#header-menu').height() - offset) + "px"
 				}, duration !== undefined ? duration : 400, function() {
 					updateHeader();
 				});

@@ -325,13 +325,13 @@ var async = require('async'),
 
 	Topics.getTopicDataWithUser = function(tid, callback) {
 		Topics.getTopicData(tid, function(err, topic) {
-			if(err) {
-				return callback(err, null);
+			if(err || !topic) {
+				return callback(err || new Error('topic doesn\'t exist'));
 			}
 
 			user.getUserFields(topic.uid, ['username', 'userslug', 'picture'] , function(err, userData) {
 				if(err) {
-					return callback(err, null);
+					return callback(err);
 				}
 
 				topic.username = userData.username;
@@ -859,11 +859,7 @@ var async = require('async'),
 		}
 
 		function getReadStatus(next) {
-			if (uid && parseInt(uid, 10) > 0) {
-				Topics.hasReadTopic(tid, uid, next);
-			} else {
-				next(null, null);
-			}
+			Topics.hasReadTopic(tid, uid, next);
 		}
 
 		function getTeaser(next) {
@@ -1158,6 +1154,16 @@ var async = require('async'),
 		});
 	}
 
+	Topics.updateTopicCount = function(callback) {
+		db.sortedSetCard('topics:recent', function(err, count) {
+			if(err) {
+				return callback(err);
+			}
+
+			db.setObjectField('global', 'topicCount', count, callback);
+		});
+	};
+
 	Topics.delete = function(tid, callback) {
 		async.parallel([
 			function(next) {
@@ -1180,7 +1186,13 @@ var async = require('async'),
 					db.incrObjectFieldBy('category:' + cid, 'topic_count', -1, next);
 				});
 			}
-		], callback);
+		], function(err) {
+			if (err) {
+				return callback(err);
+			}
+
+			Topics.updateTopicCount(callback);
+		});
 	};
 
 	Topics.restore = function(tid, callback) {
@@ -1210,7 +1222,13 @@ var async = require('async'),
 						db.incrObjectFieldBy('category:' + cid, 'topic_count', 1, next);
 					});
 				}
-			], callback);
+			], function(err) {
+				if (err) {
+					return callback(err);
+				}
+
+				Topics.updateTopicCount(callback);
+			});
 		});
 	};
 }(exports));
