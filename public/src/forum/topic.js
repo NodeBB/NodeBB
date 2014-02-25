@@ -1004,9 +1004,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		var tid = templates.get('topic_id');
 
 		if(scrollTop > 50) {
-			$('#header-topic-title').html(templates.get('topic_name')).show();
+			$('#header-topic-title').text(templates.get('topic_name')).show();
 		} else {
-			$('#header-topic-title').html('').hide();
+			$('#header-topic-title').text('').hide();
 		}
 
 		$($('.posts > .post-row').get().reverse()).each(function() {
