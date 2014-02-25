@@ -154,6 +154,7 @@
 				<div style="clear:both;"></div>
 			</li>
 
+			<!-- IF !posts.index -->
 			<li class="well post-bar" data-index="{posts.index}">
 				<div class="inline-block">
 					<small class="topic-stats">
@@ -190,6 +191,7 @@
 				</div>
 				<div style="clear:both;"></div>
 			</li>
+			<!-- ENDIF !posts.index -->
 		<!-- END posts -->
 	</ul>
 

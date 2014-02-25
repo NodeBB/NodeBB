@@ -607,9 +607,10 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		socket.on('get_users_in_room', function(data) {
 
 			if(data && data.room.indexOf('topic') !== -1) {
-				var activeEl = $('.thread_active_users');
+				var activeEl = $('li.post-bar[data-index="0"] .thread_active_users');
 
 				function createUserIcon(uid, picture, userslug, username) {
+
 					if(!activeEl.find('[href="'+ RELATIVE_PATH +'/user/' + data.users[i].userslug + '"]').length) {
 						var userIcon = $('<img src="'+ picture +'"/>');
 
@@ -644,7 +645,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				var i=0;
 				// add self
 				for(i = 0; i<data.users.length; ++i) {
-					if(data.users[i].uid == app.uid) {
+					if(parseInt(data.users[i].uid, 10) === parseInt(app.uid, 10)) {
 						var icon = createUserIcon(data.users[i].uid, data.users[i].picture, data.users[i].userslug, data.users[i].username);
 						activeEl.prepend(icon);
 						data.users.splice(i, 1);
