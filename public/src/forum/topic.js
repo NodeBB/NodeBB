@@ -1025,7 +1025,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 					localStorage.setItem("topic:" + templates.get('topic_id') + ":bookmark", el.attr('data-pid'));
 
 					if(history.replaceState) {
-						history.replaceState(null, window.location.protocol + '//' + window.location.host + window.location.pathname, '#' + el.attr('data-pid'));
+						history.replaceState(null, null, window.location.protocol + '//' + window.location.host + window.location.pathname + '#' + el.attr('data-pid'));
 					} else {
 						location.hash = '#' + el.attr('data-pid');
 					}
