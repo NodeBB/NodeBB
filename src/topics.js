@@ -143,7 +143,7 @@ var async = require('async'),
 					}
 					topicData = topicData[0];
 					topicData.unreplied = 1;
-					console.log(topicData);
+
 					next(null, {
 						topicData: topicData,
 						postData: postData
@@ -688,7 +688,6 @@ var async = require('async'),
 					categoryTools.privileges(topicData.cid, current_user, next);
 				},
 				categoryData : function (next) {
-					console.log(topicData.cid);
 					categories.getCategoryFields(topicData.cid, ['name', 'slug', 'icon'], next);
 				}
 			}, callback);
