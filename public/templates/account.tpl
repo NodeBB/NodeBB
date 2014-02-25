@@ -108,6 +108,18 @@
 				</div>
 			</div>
 
+			<!-- IF ips.length -->
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">[[global:recentips]]</h3>
+				</div>
+				<div class="panel-body">
+				<!-- BEGIN ips -->
+					{ips.ip}
+				<!-- END ips -->
+				</div>
+			</div>
+			<!-- ENDIF ips.length -->
 
 		</div>
 
