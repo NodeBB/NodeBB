@@ -383,7 +383,7 @@
 						namespace = namespace.replace(d + '.', '');
 						template = setBlock(regex, result, template);
 					} else if (data[d] instanceof Object) {
-						template = parse(data[d], d + '.', template);
+						template = parse(data[d], namespace + d + '.', template);
 					} else {
 						var key = namespace + d,
 							value = typeof data[d] === 'string' ? data[d].replace(/^\s+|\s+$/g, '') : data[d];
