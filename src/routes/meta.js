@@ -39,7 +39,9 @@ var path = require('path'),
 							return;
 						}
 
-						meta.css.cache = tree.toCSS();
+						meta.css.cache = tree.toCSS({
+							compress: true
+						});
 						res.type('text/css').send(200, meta.css.cache);
 					});
 				} else {
