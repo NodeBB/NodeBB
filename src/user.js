@@ -25,6 +25,7 @@ var bcrypt = require('bcryptjs'),
 		userData.username = userData.username.trim();
 		if (userData.email !== undefined) {
 			userData.email = userData.email.trim();
+			userData.email = validator.escape(userData.email);
 		}
 
 		async.parallel([
