@@ -964,9 +964,7 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.logIP = function(uid, ip) {
-		db.sortedSetAdd('uid:' + uid + ':ip', +new Date(), ip || 'Unknown', function(err) {
-			console.log(ip, 'for uid', uid);
-		});
+		db.sortedSetAdd('uid:' + uid + ':ip', +new Date(), ip || 'Unknown');
 	};
 
 	User.email = {
