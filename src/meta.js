@@ -337,6 +337,10 @@ var fs = require('fs'),
 		}
 	};
 
+	Meta.css = {
+		cache: undefined
+	};
+
 	Meta.restart = function() {
 		if (process.send) {
 			process.send('nodebb:restart');

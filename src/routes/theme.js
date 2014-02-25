@@ -9,6 +9,11 @@ var path = require('path'),
 (function (Meta) {
 	Meta.createRoutes = function(app) {
 		app.get('/stylesheet.css', function(req, res) {
+			if (meta.css.cache) {
+				res.type('text/css').send(200, meta.css.cache);
+				return;
+			}
+
 			db.getObjectFields('config', ['theme:type', 'theme:id'], function(err, themeData) {
 				var themeId = (themeData['theme:id'] || 'nodebb-theme-vanilla'),
 					baseThemePath = path.join(nconf.get('themes_path'), themeId),
@@ -31,11 +36,11 @@ var path = require('path'),
 					parser.parse(source, function(err, tree) {
 						if (err) {
 							res.send(500, err.message);
-							console.log(err);
 							return;
 						}
 
-						res.type('text/css').send(200, tree.toCSS());
+						meta.css.cache = tree.toCSS();
+						res.type('text/css').send(200, meta.css.cache);
 					});
 				} else {
 					// Bootswatch theme not supported yet
