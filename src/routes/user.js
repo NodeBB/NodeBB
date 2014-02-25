@@ -593,7 +593,7 @@ var fs = require('fs'),
 						user.getFollowStats(uid, next);
 					},
 					ips: function(next) {
-						user.getIPs(uid, next);
+						user.getIPs(uid, 4, next);
 					}
 				}, function(err, results) {
 					if(err || !results.userData) {
