@@ -33,7 +33,7 @@ var path = require('path'),
 	userRoute = require('./routes/user'),
 	apiRoute = require('./routes/api'),
 	feedsRoute = require('./routes/feeds'),
-	themeRoute = require('./routes/theme');
+	metaRoute = require('./routes/meta');
 
 if(nconf.get('ssl')) {
 	server = require('https').createServer({
@@ -483,7 +483,7 @@ process.on('uncaughtException', function(err) {
 
 	app.namespace(nconf.get('relative_path'), function () {
 		auth.registerApp(app);
-		themeRoute.createRoutes(app);
+		metaRoute.createRoutes(app);
 		admin.createRoutes(app);
 		userRoute.createRoutes(app);
 		apiRoute.createRoutes(app);

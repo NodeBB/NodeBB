@@ -48,5 +48,15 @@ var path = require('path'),
 				}
 			});
 		});
+
+		app.get('/nodebb.min.js', function(req, res) {
+			if (meta.js.cache) {
+				res.type('text/javascript').send(meta.js.cache);
+			} else {
+				meta.js.minify(function() {
+					res.type('text/javascript').send(meta.js.cache);
+				});
+			}
+		});
 	};
 })(exports);
