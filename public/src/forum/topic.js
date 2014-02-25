@@ -1,6 +1,7 @@
 define(['composer', 'forum/pagination'], function(composer, pagination) {
 	var	Topic = {},
-		infiniteLoaderActive = false;
+		infiniteLoaderActive = false,
+		scrollingToPost = false;
 
 	function showBottomPostBar() {
 		if($('#post-container .post-row').length > 1 || !$('#post-container li[data-index="0"]').length) {
@@ -983,6 +984,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 	};
 
 	function updateHeader() {
+
 		$('.pagination-block a').off('click').on('click', function() {
 			return false;
 		});
@@ -1024,10 +1026,15 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				} else {
 					localStorage.setItem("topic:" + templates.get('topic_id') + ":bookmark", el.attr('data-pid'));
 
-					if(history.replaceState) {
-						history.replaceState(null, window.location.protocol + '//' + window.location.host + window.location.pathname, '#' + el.attr('data-pid'));
-					} else {
-						location.hash = '#' + el.attr('data-pid');
+					if (!scrollingToPost) {
+						if (history.replaceState) {
+							history.replaceState({
+								url: window.location.pathname.slice(1) + '#' + el.attr('data-pid')
+							}, null,
+								window.location.protocol + '//' + window.location.host + window.location.pathname + '#' + el.attr('data-pid'));
+						} else {
+							location.hash = '#' + el.attr('data-pid');
+						}
 					}
 				}
 				return false;
@@ -1036,7 +1043,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 	}
 
 	function elementInView(el) {
-		var scrollTop = $(window).scrollTop();
+		var scrollTop = $(window).scrollTop() + $('#header-menu').height();
 		var scrollBottom = scrollTop + $(window).height();
 
 		var elTop = el.offset().top;
@@ -1090,11 +1097,12 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				tid = $('#post-container').attr('data-tid');
 
 			function animateScroll() {
+				scrollingToPost = true;
+
 				$("html, body").animate({
 					scrollTop: (scrollTo.offset().top - $('#header-menu').height() - offset) + "px"
 				}, duration !== undefined ? duration : 400, function() {
-					updateHeader();
-
+					scrollingToPost = false;
 					if (highlight) {
 						scrollTo.parent().addClass('highlight');
 						setTimeout(function() {
