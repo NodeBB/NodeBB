@@ -958,9 +958,7 @@ var async = require('async'),
 			return callback(null, []);
 		}
 
-		async.map(tids, function(tid, next) {
-			Topics.getTeaser(tid, next);
-		}, callback);
+		async.map(tids, Topics.getTeaser, callback)
 	};
 
 	Topics.getTeaser = function(tid, callback) {
@@ -1039,7 +1037,7 @@ var async = require('async'),
 	Topics.isLocked = function(tid, callback) {
 		Topics.getTopicField(tid, 'locked', function(err, locked) {
 			if(err) {
-				return callback(err, null);
+				return callback(err);
 			}
 			callback(null, parseInt(locked, 10) === 1);
 		});
@@ -1074,16 +1072,18 @@ var async = require('async'),
 
 			function getUid(pid, next) {
 				posts.getPostField(pid, 'uid', function(err, uid) {
-					if (err)
+					if (err) {
 						return next(err);
+					}
 					uids[uid] = 1;
-					next(null);
+					next();
 				});
 			}
 
 			async.each(pids, getUid, function(err) {
-				if (err)
-					return callback(err, null);
+				if (err) {
+					return callback(err);
+				}
 
 				callback(null, Object.keys(uids));
 			});
