@@ -266,9 +266,13 @@ var fs = require('fs'),
 
 				Meta.js.scripts = jsPaths.filter(function(path) { return path !== null });
 
-				callback(null, [
-					Meta.js.minFile
-				]);
+				if (process.env.NODE_ENV !== 'development') {
+					callback(null, [
+						Meta.js.minFile
+					]);
+				} else {
+					callback(null, scripts);
+				}
 			});
 		},
 		minify: function (callback) {
