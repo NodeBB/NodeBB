@@ -33,7 +33,7 @@
 		<ul id="topics-container" itemscope itemtype="http://www.schema.org/ItemList" data-nextstart="{nextStart}">
 			<meta itemprop="itemListOrder" content="descending">
 			<!-- BEGIN topics -->
-			<li class="category-item {topics.deleted-class} {topics.unread-class}" itemprop="itemListElement">
+			<li class="category-item <!-- IF topics.deleted -->deleted<!-- ENDIF topics.deleted --><!-- IF topics.unread -->unread<!-- ENDIF topics.unread -->" itemprop="itemListElement">
 
 				<div class="col-md-12 col-xs-12 panel panel-default topic-row">
 
@@ -50,7 +50,7 @@
 						<a href="../../topic/{topics.slug}" itemprop="url">
 							<meta itemprop="name" content="{topics.title}">
 
-							<strong><i class="fa {topics.pin-icon}"></i> <i class="fa {topics.lock-icon}"></i></strong>
+							<strong><!-- IF topics.pinned --><i class="fa fa-thumb-tack"></i><!-- ENDIF topics.pinned --> <!-- IF topics.locked --><i class="fa fa-lock"></i><!-- ENDIF topics.locked --></strong>
 							<span class="topic-title">{topics.title}</span>
 						</a>
 					</h3>
@@ -74,13 +74,13 @@
 							<!-- IF topics.unreplied -->
 							[[category:no_replies]]
 							<!-- ELSE -->
-							<a href="../../user/{topics.teaser_userslug}">
-								<img class="teaser-pic" src="{topics.teaser_userpicture}" title="{topics.teaser_username}"/>
+							<a href="../../user/{topics.teaser.userslug}">
+								<img class="teaser-pic" src="{topics.teaser.picture}" title="{topics.teaser.username}"/>
 							</a>
-							<a href="../../topic/{topics.slug}#{topics.teaser_pid}">
+							<a href="../../topic/{topics.slug}#{topics.teaser.pid}">
 								[[category:replied]]
 							</a>
-							<span class="timeago" title="{topics.teaser_timestamp}"></span>
+							<span class="timeago" title="{topics.teaser.timestamp}"></span>
 							<!-- ENDIF topics.unreplied -->
 						</span>
 					</small>

@@ -310,8 +310,9 @@ var winston = require('winston'),
 			if(err) {
 				return callback(err);
 			}
+
 			if (pids.length === 0) {
-				return callback(new Error('no-undeleted-pids-found'));
+				return callback(null, null);
 			}
 
 			async.detectSeries(pids, function(pid, next) {
@@ -322,7 +323,7 @@ var winston = require('winston'),
 				if (pid) {
 					callback(null, pid);
 				} else {
-					callback(new Error('no-undeleted-pids-found'));
+					callback(null, null);
 				}
 			});
 		});

@@ -134,12 +134,16 @@ var async = require('async'),
 				next(null, postData);
 			},
 			function(postData, next) {
-				Topics.getTopicForCategoryView(postData.tid, uid, function(err, topicData) {
+				Topics.getTopicsByTids([postData.tid], data.cid, uid, function(err, topicData) {
 					if(err) {
 						return next(err);
 					}
-
+					if(!topicData || !topicData.length) {
+						return next(new Error('no-topic'));
+					}
+					topicData = topicData[0];
 					topicData.unreplied = 1;
+
 					next(null, {
 						topicData: topicData,
 						postData: postData
@@ -325,18 +329,22 @@ var async = require('async'),
 
 	Topics.getTopicDataWithUser = function(tid, callback) {
 		Topics.getTopicData(tid, function(err, topic) {
-			if(err || !topic) {
+			if (err || !topic) {
 				return callback(err || new Error('topic doesn\'t exist'));
 			}
 
 			user.getUserFields(topic.uid, ['username', 'userslug', 'picture'] , function(err, userData) {
-				if(err) {
+				if (err) {
 					return callback(err);
 				}
 
-				topic.username = userData.username;
-				topic.userslug = userData.userslug
-				topic.picture = userData.picture;
+				if (!userData) {
+					userData = {};
+				}
+
+				topic.username = userData.username || 'Anonymous';
+				topic.userslug = userData.userslug || '';
+				topic.picture = userData.picture || gravatar.url('', {}, true);
 				callback(null, topic);
 			});
 		});
@@ -669,47 +677,20 @@ var async = require('async'),
 		}
 
 		function getTopicInfo(topicData, callback) {
-
-			function getUserInfo(next) {
-				user.getUserFields(topicData.uid, ['username', 'userslug', 'picture'], next);
-			}
-
-			function hasReadTopic(next) {
-				Topics.hasReadTopic(topicData.tid, current_user, next);
-			}
-
-			function getTeaserInfo(next) {
-				Topics.getTeaser(topicData.tid, function(err, teaser) {
-					next(null, teaser || {});
-				});
-			}
-
-			// temporary. I don't think this call should belong here
-
-			function getPrivileges(next) {
-				categoryTools.privileges(cid, current_user, next);
-			}
-
-			function getCategoryInfo(next) {
-				categories.getCategoryFields(topicData.cid, ['name', 'slug', 'icon'], next);
-			}
-
-			async.parallel([getUserInfo, hasReadTopic, getTeaserInfo, getPrivileges, getCategoryInfo], function(err, results) {
-				if(err) {
-					return callback(err);
+			async.parallel({
+				hasread : function (next) {
+					Topics.hasReadTopic(topicData.tid, current_user, next);
+				},
+				teaser : function (next) {
+					Topics.getTeaser(topicData.tid, next);
+				},
+				privileges : function (next) {
+					categoryTools.privileges(topicData.cid, current_user, next);
+				},
+				categoryData : function (next) {
+					categories.getCategoryFields(topicData.cid, ['name', 'slug', 'icon'], next);
 				}
-
-				callback(null, {
-					username: results[0].username,
-					userslug: results[0].userslug,
-					picture: results[0].picture,
-					userbanned: results[0].banned,
-					hasread: results[1],
-					teaserInfo: results[2],
-					privileges: results[3],
-					categoryData: results[4]
-				});
-			});
+			}, callback);
 		}
 
 		function isTopicVisible(topicData, topicInfo) {
@@ -719,7 +700,8 @@ var async = require('async'),
 		}
 
 		function loadTopic(tid, next) {
-			Topics.getTopicData(tid, function(err, topicData) {
+
+			Topics.getTopicDataWithUser(tid, function(err, topicData) {
 				if(err) {
 					return next(err);
 				}
@@ -737,25 +719,14 @@ var async = require('async'),
 						return next();
 					}
 
-					topicData['pin-icon'] = parseInt(topicData.pinned, 10) === 1 ? 'fa-thumb-tack' : 'none';
-					topicData['lock-icon'] = parseInt(topicData.locked, 10) === 1 ? 'fa-lock' : 'none';
-					topicData['deleted-class'] = parseInt(topicData.deleted, 10) === 1 ? 'deleted' : '';
-					topicData['unread-class'] = !(topicInfo.hasread && parseInt(current_user, 10) !== 0) ? 'unread' : '';
-
+					topicData.pinned = parseInt(topicData.pinned, 10) === 1;
+					topicData.locked = parseInt(topicData.locked, 10) === 1;
+					topicData.deleted = parseInt(topicData.deleted, 10) === 1;
 					topicData.unread = !(topicInfo.hasread && parseInt(current_user, 10) !== 0);
 					topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
-					topicData.username = topicInfo.username || 'anonymous';
-					topicData.userslug = topicInfo.userslug || '';
-					topicData.picture = topicInfo.picture || gravatar.url('', {}, true);
-					topicData.categoryIcon = topicInfo.categoryData.icon;
-					topicData.categoryName = topicInfo.categoryData.name;
-					topicData.categorySlug = topicInfo.categoryData.slug;
 
-					topicData.teaser_username = topicInfo.teaserInfo.username || '';
-					topicData.teaser_userslug = topicInfo.teaserInfo.userslug || '';
-					topicData.teaser_userpicture = topicInfo.teaserInfo.picture || gravatar.url('', {}, true);
-					topicData.teaser_pid = topicInfo.teaserInfo.pid;
-					topicData.teaser_timestamp = utils.toISOString(topicInfo.teaserInfo.timestamp);
+					topicData.category = topicInfo.categoryData;
+					topicData.teaser = topicInfo.teaser;
 
 					next(null, topicData);
 				});
@@ -848,45 +819,6 @@ var async = require('async'),
 					'posts': results[1]
 				});
 			});
-		});
-	};
-
-
-	Topics.getTopicForCategoryView = function(tid, uid, callback) {
-
-		function getTopicData(next) {
-			Topics.getTopicDataWithUser(tid, next);
-		}
-
-		function getReadStatus(next) {
-			Topics.hasReadTopic(tid, uid, next);
-		}
-
-		function getTeaser(next) {
-			Topics.getTeaser(tid, next);
-		}
-
-		async.parallel([getTopicData, getReadStatus, getTeaser], function(err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			var topicData = results[0],
-				hasRead = results[1],
-				teaser = results[2];
-
-			topicData['pin-icon'] = parseInt(topicData.pinned, 10) === 1 ? 'fa-thumb-tack' : 'none';
-			topicData['lock-icon'] = parseInt(topicData.locked, 10) === 1 ? 'fa-lock' : 'none';
-			topicData['unread-class'] = !(hasRead && parseInt(uid, 10) !== 0) ? 'unread' : '';
-
-			topicData.unread = !(hasRead && parseInt(uid, 10) !== 0);
-			topicData.teaser_username = teaser.username || '';
-			topicData.teaser_userslug = teaser.userslug || '';
-			topicData.userslug = teaser.userslug || '';
-			topicData.teaser_timestamp = utils.toISOString(teaser.timestamp);
-			topicData.teaser_userpicture = teaser.picture;
-
-			callback(null, topicData);
 		});
 	};
 
@@ -1026,15 +958,17 @@ var async = require('async'),
 			return callback(null, []);
 		}
 
-		async.map(tids, function(tid, next) {
-			Topics.getTeaser(tid, next);
-		}, callback);
+		async.map(tids, Topics.getTeaser, callback)
 	};
 
 	Topics.getTeaser = function(tid, callback) {
 		threadTools.getLatestUndeletedPid(tid, function(err, pid) {
 			if (err) {
 				return callback(err);
+			}
+
+			if (!pid) {
+				return callback(null, null);
 			}
 
 			posts.getPostFields(pid, ['pid', 'uid', 'timestamp'], function(err, postData) {
@@ -1052,9 +986,9 @@ var async = require('async'),
 					callback(null, {
 						pid: postData.pid,
 						username: userData.username || 'anonymous',
-						userslug: userData.userslug,
+						userslug: userData.userslug || '',
 						picture: userData.picture || gravatar.url('', {}, true),
-						timestamp: postData.timestamp
+						timestamp: utils.toISOString(postData.timestamp)
 					});
 				});
 			});
@@ -1103,7 +1037,7 @@ var async = require('async'),
 	Topics.isLocked = function(tid, callback) {
 		Topics.getTopicField(tid, 'locked', function(err, locked) {
 			if(err) {
-				return callback(err, null);
+				return callback(err);
 			}
 			callback(null, parseInt(locked, 10) === 1);
 		});
@@ -1138,16 +1072,18 @@ var async = require('async'),
 
 			function getUid(pid, next) {
 				posts.getPostField(pid, 'uid', function(err, uid) {
-					if (err)
+					if (err) {
 						return next(err);
+					}
 					uids[uid] = 1;
-					next(null);
+					next();
 				});
 			}
 
 			async.each(pids, getUid, function(err) {
-				if (err)
-					return callback(err, null);
+				if (err) {
+					return callback(err);
+				}
 
 				callback(null, Object.keys(uids));
 			});
