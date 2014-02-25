@@ -105,7 +105,9 @@
 					req.login({
 						uid: userData.uid
 					}, function() {
+						console.log('TESTING', userData.uid);
 						if (userData.uid) {
+							console.log('FAIL?', userData.uid);
 							user.logIP(userData.uid, req.ip);
 						}
 
