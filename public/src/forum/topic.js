@@ -1023,7 +1023,6 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 					localStorage.removeItem("topic:" + templates.get('topic_id') + ":bookmark");
 				} else {
 					localStorage.setItem("topic:" + templates.get('topic_id') + ":bookmark", el.attr('data-pid'));
-					window.location.hash = el.attr('data-pid');
 				}
 				return false;
 			}
