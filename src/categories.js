@@ -63,7 +63,7 @@ var db = require('./database'),
 			category: function(next) {
 				Categories.getCategoryData(cid, next);
 			},
-			topics : function(next) {
+			topics: function(next) {
 				Categories.getCategoryTopics(cid, start, end, uid, next);
 			},
 			pageCount: function(next) {
@@ -287,14 +287,14 @@ var db = require('./database'),
 
 	Categories.getCategories = function(cids, uid, callback) {
 		if (!cids || !Array.isArray(cids) || cids.length === 0) {
-			return callback(new Error('invalid-cids'), null);
+			return callback(new Error('invalid-cids'));
 		}
 
 		function getCategory(cid, callback) {
 			Categories.getCategoryData(cid, function(err, categoryData) {
 				if (err) {
 					winston.warn('Attempted to retrieve cid ' + cid + ', but nothing was returned!');
-					return callback(err, null);
+					return callback(err);
 				}
 
 				Categories.hasReadCategory(cid, uid, function(hasRead) {
@@ -326,7 +326,7 @@ var db = require('./database'),
 
 		db.getSortedSetRange('uid:' + uid + ':posts', 0, -1, function(err, pids) {
 			if (err) {
-				return callback(err, null);
+				return callback(err);
 			}
 
 			var index = 0,
@@ -347,15 +347,11 @@ var db = require('./database'),
 						}
 
 						++index;
-						callback(null);
+						callback();
 					});
 				},
 				function(err) {
-					if (err) {
-						return callback(err, null);
-					}
-
-					callback(null, active);
+					callback(err, active);
 				}
 			);
 		});
