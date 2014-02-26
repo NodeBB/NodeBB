@@ -169,7 +169,8 @@ var path = require('path'),
 			});
 
 			app.get('/topic/:id/:slug?', function (req, res, next) {
-				var uid = (req.user) ? req.user.uid : 0;
+				var uid = req.user? parseInt(req.user.uid, 10) : 0;
+				var tid = req.params.id;
 				var page = 1;
 				if(req.query && req.query.page) {
 					page = req.query.page;
@@ -187,29 +188,41 @@ var path = require('path'),
 					var start = (page - 1) * settings.postsPerPage;
 					var end = start + settings.postsPerPage - 1;
 
-					ThreadTools.privileges(req.params.id, uid, function(err, privileges) {
-						if (privileges.read) {
-							topics.getTopicWithPosts(req.params.id, uid, start, end, false, function (err, data) {
-								if(err) {
-									return next(err);
-								}
+					ThreadTools.privileges(tid, uid, function(err, privileges) {
+						if(err) {
+							return next(err);
+						}
 
-								if(page > data.pageCount) {
-									return res.send(404);
-								}
-
-								data.currentPage = page;
-								data.privileges = privileges;
-
-								if (parseInt(data.deleted, 10) === 1 && parseInt(data.expose_tools, 10) === 0) {
-									return res.json(404, {});
-								}
-
-								res.json(data);
-							});
-						} else {
+						if(!privileges.read) {
 							res.send(403);
 						}
+
+						topics.getTopicWithPosts(tid, uid, start, end, function (err, data) {
+							if(err) {
+								return next(err);
+							}
+
+							if(page > data.pageCount) {
+								return res.send(404);
+							}
+
+							if (parseInt(data.deleted, 10) === 1 && parseInt(data.expose_tools, 10) === 0) {
+								return res.json(404, {});
+							}
+
+							data.currentPage = page;
+							data.privileges = privileges;
+
+							if (uid) {
+								topics.markAsRead(tid, uid, function(err) {
+									topics.pushUnreadCount(uid);
+								});
+							}
+
+							topics.increaseViewCount(tid);
+
+							res.json(data);
+						});
 					});
 				});
 			});

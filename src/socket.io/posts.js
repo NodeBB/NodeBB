@@ -217,7 +217,6 @@ SocketPosts.getFavouritedUsers = function(socket, pid, callback) {
 			callback(null, "");
 		}
 
-		console.log(data);
 		var max = 5; //hardcoded
 		var usernames = "";
 
