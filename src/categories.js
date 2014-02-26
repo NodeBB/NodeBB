@@ -424,6 +424,6 @@ var db = require('./database'),
 
 			Categories.addActiveUser(cid, uid, timestamp);
 		});
-	}
+	};
 
 }(exports));

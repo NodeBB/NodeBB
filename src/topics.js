@@ -350,12 +350,7 @@ var async = require('async'),
 		});
 	};
 
-	Topics.getTopicPosts = function(tid, start, end, current_user, reverse, callback) {
-		if (typeof reverse === 'function') {
-			callback = reverse;
-			reverse = false;
-		}
-
+	Topics.getTopicPosts = function(tid, start, end, uid, reverse, callback) {
 		posts.getPostsByTid(tid, start, end, reverse, function(err, postData) {
 			if(err) {
 				return callback(err);
@@ -373,65 +368,34 @@ var async = require('async'),
 				return post.pid;
 			});
 
-			function getFavouritesData(next) {
-				favourites.getFavouritesByPostIDs(pids, current_user, function(fav_data) {
-					next(null, fav_data);
-				});
-			}
-
-			function getVoteStatusData(next) {
-				favourites.getVoteStatusByPostIDs(pids, current_user, function(vote_data) {
-					next(null, vote_data);
-				})
-			}
-
-			function addUserInfoToPosts(next) {
-				function iterator(post, callback) {
-					posts.addUserInfoToPost(post, function() {
-						callback(null);
-					});
+			async.parallel({
+				favourites : function(next) {
+					favourites.getFavouritesByPostIDs(pids, uid, next);
+				},
+				voteData : function(next) {
+					favourites.getVoteStatusByPostIDs(pids, uid, next);
+				},
+				userData : function(next) {
+					async.each(postData, posts.addUserInfoToPost, next);
+				},
+				privileges : function(next) {
+					async.map(pids, function (pid, next) {
+						postTools.privileges(pid, uid, next);
+					}, next);
 				}
-
-				async.each(postData, iterator, function(err) {
-					next(err, null);
-				});
-			}
-
-			function getPrivileges(next) {
-				var privs = {};
-				async.each(pids, getPostPrivileges, function(err) {
-					next(err, privs);
-				});
-
-				function getPostPrivileges(pid, next) {
-					postTools.privileges(pid, current_user, function(err, postPrivileges) {
-						if(err) {
-							return next(err);
-						}
-						privs[pid] = postPrivileges;
-						next();
-					});
-				}
-			}
-
-			async.parallel([getFavouritesData, addUserInfoToPosts, getPrivileges, getVoteStatusData], function(err, results) {
+			}, function(err, results) {
 				if(err) {
 					return callback(err);
 				}
 
-				var fav_data = results[0],
-					privileges = results[2],
-					voteStatus = results[3];
-
 				for (var i = 0; i < postData.length; ++i) {
-					var pid = postData[i].pid;
-					postData[i].favourited = fav_data[pid];
-					postData[i].upvoted = voteStatus[pid].upvoted;
-					postData[i].downvoted = voteStatus[pid].downvoted;
+					postData[i].favourited = results.favourites[i];
+					postData[i].upvoted = results.voteData[i].upvoted;
+					postData[i].downvoted = results.voteData[i].downvoted;
 					postData[i].votes = postData[i].votes || 0;
-					postData[i].display_moderator_tools = (current_user != 0) && privileges[pid].editable;
-					postData[i].display_move_tools = privileges[pid].move;
-					if(parseInt(postData[i].deleted, 10) === 1 && !privileges[pid].view_deleted) {
+					postData[i].display_moderator_tools = (uid != 0) && results.privileges[i].editable;
+					postData[i].display_move_tools = results.privileges[i].move;
+					if(parseInt(postData[i].deleted, 10) === 1 && !results.privileges[i].view_deleted) {
 						postData[i].content = 'This post is deleted!';
 					}
 				}
@@ -696,7 +660,7 @@ var async = require('async'),
 		function isTopicVisible(topicData, topicInfo) {
 			var deleted = parseInt(topicData.deleted, 10) !== 0;
 
-			return !deleted || (deleted && topicInfo.privileges.view_deleted) || topicData.uid === current_user;
+			return !deleted || (deleted && topicInfo.privileges.view_deleted) || parseInt(topicData.uid, 10) === parseInt(current_user, 10);
 		}
 
 		function loadTopic(tid, next) {
@@ -765,7 +729,7 @@ var async = require('async'),
 			}
 
 			function getTopicPosts(next) {
-				Topics.getTopicPosts(tid, start, end, current_user, next);
+				Topics.getTopicPosts(tid, start, end, current_user, false, next);
 			}
 
 			function getPrivileges(next) {

@@ -153,24 +153,13 @@ var async = require('async'),
 			downvoted: function(next) {
 				db.isSetMember('pid:' + pid + ':downvote', uid, next);
 			}
-		}, function(err, results) {
-			callback(err, results)
-		});
+		}, callback);
 	};
 
 	Favourites.getVoteStatusByPostIDs = function(pids, uid, callback) {
-		var data = {};
-
-		function iterator(pid, next) {
-			Favourites.hasVoted(pid, uid, function(err, voteStatus) {
-				data[pid] = voteStatus;
-				next()
-			});
-		}
-
-		async.each(pids, iterator, function(err) {
-			callback(data);
-		});
+		async.map(pids, function(pid, next) {
+			Favourites.hasVoted(pid, uid, next);
+		}, callback);
 	};
 
 	Favourites.favourite = function (pid, room_id, uid, socket) {
@@ -248,33 +237,15 @@ var async = require('async'),
 	};
 
 	Favourites.getFavouritesByPostIDs = function(pids, uid, callback) {
-		var data = {};
-
-		function iterator(pid, next) {
-			Favourites.hasFavourited(pid, uid, function(err, hasFavourited) {
-				data[pid] = hasFavourited;
-				next()
-			});
-		}
-
-		async.each(pids, iterator, function(err) {
-			callback(data);
-		});
+		async.map(pids, function(pid, next) {
+			Favourites.hasFavourited(pid, uid, next);
+		}, callback);
 	};
 
 	Favourites.getFavouritedUidsByPids = function(pids, callback) {
-		var data = {};
-
-		function getUids(pid, next) {
-			db.getSetMembers('pid:' + pid + ':users_favourited', function(err, uids) {
-				data[pid] = uids;
-				next();
-			});
-		}
-
-		async.each(pids, getUids, function(err) {
-			callback(data);
-		});
+		async.map(pids, function(pid, next) {
+			db.getSetMembers('pid:' + pid + ':users_favourited', next);
+		}, callback)
 	};
 
 }(exports));
