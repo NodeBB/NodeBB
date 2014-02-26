@@ -1,10 +1,10 @@
 {
-    "title": "消息",
-    "no_notifs": "You have no new notifications",
-    "see_all": "See all Notifications",
+    "title": "通知",
+    "no_notifs": "你没有新的通知",
+    "see_all": "查看所有通知",
     "back_to_home": "返回主页",
     "outgoing_link": "站外链接",
-    "outgoing_link_message": "你正在离开本站。",
+    "outgoing_link_message": "你正在离开本站",
     "continue_to": "继续前往",
     "return_to": "返回"
 }

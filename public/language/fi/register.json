@@ -1,18 +1,18 @@
 {
     "register": "Rekisteröidy",
-    "help.email": "Oletuksena sähköposti osoitettasi ei näytetä muille .",
-    "help.username_restrictions": "Yksilöllinen käyttäjänimi, pitää olla %1 - %2 merkkiä pitkä. Toiset voivat mainita sinut @<span id='yourUsername'>käyttäjänimi</span>.",
+    "help.email": "Oletuksena sähköpostiosoitettasi ei näytetä muille.",
+    "help.username_restrictions": "Yksilöllisen käyttäjätunnuksen pitää olla %1-%2 merkkiä pitkä. Toiset voivat mainita sinut @<span id='yourUsername'>username</span>.",
     "help.minimum_password_length": "Salasanasi pitää olla vähintään %1 merkin mittainen.",
-    "email_address": "Sähköposti",
-    "email_address_placeholder": "Anna sähköpostiosoitteesi",
-    "username": "Käyttäjänimi",
-    "username_placeholder": "Syötä käyttäjänimesi",
+    "email_address": "Sähköpostiosoite",
+    "email_address_placeholder": "Syötä sähköpostiosoitteesi",
+    "username": "Käyttäjätunnus",
+    "username_placeholder": "Syötä käyttäjätunnuksesi",
     "password": "Salasana",
     "password_placeholder": "Syötä salasanasi",
-    "confirm_password": "Vahvista salasana",
-    "confirm_password_placeholder": "Vahvista salasana",
+    "confirm_password": "Vahvista salasanasi",
+    "confirm_password_placeholder": "Vahvista salasanasi",
     "register_now_button": "Rekisteröidy nyt",
     "alternative_registration": "Vaihtoehtoiset rekisteröitymistavat",
-    "terms_of_use": "Terms of Use",
-    "agree_to_terms_of_use": "I agree to the Terms of Use"
+    "terms_of_use": "Käyttöehdot",
+    "agree_to_terms_of_use": "Hyväksyn käyttöehdot"
 }

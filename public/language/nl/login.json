@@ -1,0 +1,10 @@
+{
+    "login": "Inloggen",
+    "username": "Gebruikersnaam",
+    "password": "Wachtwoord",
+    "remember_me": "Mij Onthouden?",
+    "forgot_password": "Wachtwoord Vergeten?",
+    "alternative_logins": "Alternatieve Logins",
+    "failed_login_attempt": "Mislukte inlog poging, probeer het later opnieuw.",
+    "login_successful": "Je bent succesvol ingelogd!"
+}
