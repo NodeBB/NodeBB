@@ -12,7 +12,7 @@
 <ul class="plugins">
 	<!-- BEGIN plugins -->
 	<li data-plugin-id="{plugins.id}">
-		<h2>{plugins.name}</h2>
+		<h2><strong>{plugins.name}</strong></h2>
 		<div class="pull-right">
 			<button data-action="toggleActive" class="btn <!-- IF plugins.active -->btn-warning<!-- ELSE -->btn-success<!-- ENDIF plugins.active -->">{plugins.activeText}</button>
 		</div>
