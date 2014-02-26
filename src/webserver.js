@@ -22,16 +22,18 @@ var path = require('path'),
 	topics = require('./topics'),
 	ThreadTools = require('./threadTools'),
 	notifications = require('./notifications'),
-	admin = require('./routes/admin'),
-	userRoute = require('./routes/user'),
-	apiRoute = require('./routes/api'),
-	feedsRoute = require('./routes/feeds'),
 	auth = require('./routes/authentication'),
 	meta = require('./meta'),
 	plugins = require('./plugins'),
 	logger = require('./logger'),
 	templates = require('./../public/src/templates'),
-	translator = require('./../public/src/translator');
+	translator = require('./../public/src/translator'),
+
+	admin = require('./routes/admin'),
+	userRoute = require('./routes/user'),
+	apiRoute = require('./routes/api'),
+	feedsRoute = require('./routes/feeds'),
+	metaRoute = require('./routes/meta');
 
 if(nconf.get('ssl')) {
 	server = require('https').createServer({
@@ -322,13 +324,6 @@ process.on('uncaughtException', function(err) {
 									}
 								}
 
-								app.use(require('less-middleware')({
-									src: path.join(nconf.get('themes_path'), themeId),
-									dest: path.join(__dirname, '../public/css'),
-									prefix: nconf.get('relative_path') + '/css',
-									yuicompress: app.enabled('minification') ? true : false
-								}));
-
 								next();
 							} else {
 								// If not using a local theme (bootswatch, etc), drop back to vanilla
@@ -487,8 +482,8 @@ process.on('uncaughtException', function(err) {
 	};
 
 	app.namespace(nconf.get('relative_path'), function () {
-
 		auth.registerApp(app);
+		metaRoute.createRoutes(app);
 		admin.createRoutes(app);
 		userRoute.createRoutes(app);
 		apiRoute.createRoutes(app);

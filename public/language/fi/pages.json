@@ -1,13 +1,13 @@
 {
-    "home": "Home",
-    "unread": "Unread Topics",
-    "popular": "Popular Topics",
-    "recent": "Recent Topics",
-    "users": "Registered Users",
-    "notifications": "Notifications",
-    "user.edit": "Editing \"%1\"",
-    "user.following": "People %1 Follows",
-    "user.followers": "People who Follow %1",
-    "user.favourites": "%1's Favourite Posts",
-    "user.settings": "User Settings"
+    "home": "Etusivu",
+    "unread": "Lukemattomat aiheet",
+    "popular": "Suositut aiheet",
+    "recent": "Viimeisimmät aiheet",
+    "users": "Rekisteröityneet käyttäjät",
+    "notifications": "Ilmoitukset",
+    "user.edit": "Muokataan \"%1\"",
+    "user.following": "Käyttäjät, joita %1 seuraa",
+    "user.followers": "Käyttäjät, jotka seuraavat käyttäjää %1",
+    "user.favourites": "Käyttäjän %1 suosikkiviestit",
+    "user.settings": "Käyttäjän asetukset"
 }

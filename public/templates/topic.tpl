@@ -38,7 +38,7 @@
 					</a>
 				</div>
 
-				<div class="col-md-11 panel panel-default post-block">
+				<div class="col-md-11 panel panel-default post-block topic-item">
 
 					<a class="main-post avatar" href="{relative_path}/user/{posts.userslug}">
 						<img itemprop="image" src="{posts.picture}" align="left" class="img-thumbnail" width=150 height=150 />
@@ -154,6 +154,7 @@
 				<div style="clear:both;"></div>
 			</li>
 
+			<!-- IF !posts.index -->
 			<li class="well post-bar" data-index="{posts.index}">
 				<div class="inline-block">
 					<small class="topic-stats">
@@ -190,6 +191,7 @@
 				</div>
 				<div style="clear:both;"></div>
 			</li>
+			<!-- ENDIF !posts.index -->
 		<!-- END posts -->
 	</ul>
 

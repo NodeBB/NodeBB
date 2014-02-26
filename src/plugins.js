@@ -16,6 +16,7 @@ var fs = require('fs'),
 	Plugins.loadedHooks = {};
 	Plugins.staticDirs = {};
 	Plugins.cssFiles = [];
+	Plugins.lessFiles = [];
 
 	Plugins.initialized = false;
 
@@ -221,6 +222,20 @@ var fs = require('fs'),
 					} else {
 						next();
 					}
+				},
+				function(next) {
+					// LESS files for plugins
+					if (pluginData.less && pluginData.less instanceof Array) {
+						if (global.env === 'development') {
+							winston.info('[plugins] Found ' + pluginData.less.length + ' LESS file(s) for plugin ' + pluginData.id);
+						}
+
+						Plugins.lessFiles = Plugins.lessFiles.concat(pluginData.less.map(function(file) {
+							return path.join(pluginData.id, file);
+						}));
+					}
+
+					next();
 				}
 			], function(err) {
 				if (!err) {

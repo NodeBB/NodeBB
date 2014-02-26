@@ -130,6 +130,7 @@ define(['taskbar', 'string'], function(taskbar, S) {
 					stop:function() {
 						chatModal.find('#chat-message-input').focus();
 					},
+					distance: 10,
 					handle: '.modal-header'
 				});
 

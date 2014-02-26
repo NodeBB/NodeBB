@@ -68,7 +68,8 @@ define(['uploader'], function(uploader) {
 		$('#entry-container').sortable({
 			stop: function( event, ui ) {
 				updateCategoryOrders();
-			}
+			},
+			distance: 10
 		});
 		$('.blockclass').each(function() {
 			$(this).val(this.getAttribute('data-value'));

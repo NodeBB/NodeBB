@@ -139,6 +139,7 @@ define(['forum/admin/settings'], function(Settings) {
 			helper: function(e) {
 				return $(e.target).parents('.panel').clone().addClass('block').width($(e.target.parentNode).width());
 			},
+			distance: 10,
 			connectToSortable: ".widget-area"
 		});
 
@@ -148,7 +149,8 @@ define(['forum/admin/settings'], function(Settings) {
 				target = target.attr('data-container-html') ? target : target.parents('[data-container-html]');
 
 				return target.clone().addClass('block').width(target.width()).css('opacity', '0.5');
-			}
+			},
+			distance: 10
 		});
 
 		function appendToggle(el) {

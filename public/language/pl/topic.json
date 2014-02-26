@@ -20,6 +20,11 @@
     "flag": "Zgłoś",
     "flag_title": "Zgłoś post do moderacji",
     "deleted_message": "Ten wątek został usunięty. Tylko użytkownicy z uprawnieniami do zarządzania wątkami mogą go widzieć.",
+    "following_topic.title": "Obserwujesz wątek",
+    "following_topic.message": "Będziesz otrzymywał powiadomienia, gdy ktoś odpowie w tym wątku.",
+    "not_following_topic.title": "Nie obserwujesz wątku",
+    "not_following_topic.message": "Nie będziesz otrzymywał więcej powiadomień z tego wątku.",
+    "login_to_subscribe": "Zaloguj się, aby subskrybować ten wątek.",
     "watch": "Obserwuj",
     "share_this_post": "Udostępnij",
     "thread_tools.title": "Narzędzia wątków",
@@ -61,5 +66,8 @@
     "composer.discard": "Odrzuć",
     "composer.submit": "Wyślij",
     "composer.replying_to": "Odpowiadasz",
-    "composer.new_topic": "Nowy wątek"
+    "composer.new_topic": "Nowy wątek",
+    "composer.drag_and_drop_images": "Przeciągnij i upuść obrazek tutaj.",
+    "composer.content_is_parsed_with": "Tekst jest parsowany przy pomocy",
+    "composer.upload_instructions": "Prześlij obrazki przeciągając i upuszczając je."
 }

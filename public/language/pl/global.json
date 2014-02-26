@@ -10,6 +10,8 @@
     "500.message": "Coś poszło nie tak.",
     "register": "Zarejestruj się",
     "login": "Zaloguj się",
+    "please_log_in": "Proszę się zalogować",
+    "posting_restriction_info": "Pisanie jest dostępne tylko dla zarejestrowanych członków forum, kliknij tutaj aby się zalogować.",
     "welcome_back": "Witaj z powrotem!",
     "you_have_successfully_logged_in": "Zostałeś pomyślnie zalogowany.",
     "logout": "Wyloguj się",

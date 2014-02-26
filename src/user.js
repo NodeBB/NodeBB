@@ -968,6 +968,18 @@ var bcrypt = require('bcryptjs'),
 		db.sortedSetAdd('uid:' + uid + ':ip', +new Date(), ip || 'Unknown');
 	};
 
+	User.getIPs = function(uid, end, callback) {
+		db.getSortedSetRevRange('uid:' + uid + ':ip', 0, end, function(err, ips) {
+			if(err) {
+				return callback(err);
+			}
+
+			callback(null, ips.map(function(ip) {
+				return {ip:ip};
+			}));
+		});
+	};
+
 	User.email = {
 		verify: function(uid, email) {
 			if (!plugins.hasListeners('action:email.send')) {
