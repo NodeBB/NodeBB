@@ -78,7 +78,6 @@ var db = require('./database'),
 			category.topics = results.topics.topics;
 			category.nextStart = results.topics.nextStart;
 			category.pageCount = results.pageCount;
-			category.disableSocialButtons = meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false;
 			category.topic_row_size = 'col-md-9';
 
 			callback(null, category);

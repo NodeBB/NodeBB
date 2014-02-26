@@ -395,6 +395,7 @@ var async = require('async'),
 					postData[i].votes = postData[i].votes || 0;
 					postData[i].display_moderator_tools = (uid != 0) && results.privileges[i].editable;
 					postData[i].display_move_tools = results.privileges[i].move;
+
 					if(parseInt(postData[i].deleted, 10) === 1 && !results.privileges[i].view_deleted) {
 						postData[i].content = 'This post is deleted!';
 					}
@@ -748,7 +749,6 @@ var async = require('async'),
 				topicData.pageCount = results.pageCount;
 				topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
 				topicData.expose_tools = results.privileges.editable ? 1 : 0;
-				topicData.disableSocialButtons = meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false;
 
 				callback(null, topicData);
 			});

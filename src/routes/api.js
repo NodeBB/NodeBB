@@ -60,6 +60,7 @@ var path = require('path'),
 				config.allowFileUploads = parseInt(meta.config.allowFileUploads, 10) === 1;
 				config.allowTopicsThumbnail = parseInt(meta.config.allowTopicsThumbnail, 10) === 1;
 				config.usePagination = parseInt(meta.config.usePagination, 10) === 1;
+				config.disableSocialButtons = parseInt(meta.config.disableSocialButtons, 10) === 1;
 				config.topicsPerPage = meta.config.topicsPerPage || 20;
 				config.postsPerPage = meta.config.postsPerPage || 20;
 				config.maximumFileSize = meta.config.maximumFileSize;
