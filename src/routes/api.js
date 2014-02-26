@@ -516,6 +516,14 @@ var path = require('path'),
 			app.get('/500', function(req, res) {
 				res.json({errorMessage: 'testing'});
 			});
+
+			app.namespace('/categories', function() {
+				app.get(':cid/moderators', function(req, res) {
+					categories.getModerators(req.params.cid, function(err, moderators) {
+						res.json({moderators: moderators});
+					})
+				});
+			});
 		});
 	}
 }(exports));
