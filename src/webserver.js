@@ -226,6 +226,10 @@ process.on('uncaughtException', function(err) {
 
 	// Middlewares
 	app.configure(function() {
+		app.engine('tpl', templates.__express);
+		app.set('view engine', 'tpl');
+		app.set('views', path.join(__dirname, '../public/templates'));
+
 		async.series([
 			function(next) {
 				// Pre-router middlewares
