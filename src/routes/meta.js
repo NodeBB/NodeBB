@@ -16,7 +16,7 @@ var path = require('path'),
 
 			db.getObjectFields('config', ['theme:type', 'theme:id'], function(err, themeData) {
 				var themeId = (themeData['theme:id'] || 'nodebb-theme-vanilla'),
-					baseThemePath = path.join(nconf.get('themes_path'), themeId),
+					baseThemePath = path.join(nconf.get('themes_path'), (themeData['theme:type'] && themeData['theme:type'] === 'local' ? themeId : 'nodebb-theme-vanilla')),
 					paths = [baseThemePath, path.join(__dirname, '../../node_modules')],
 					source = '@import "./theme";',
 					x, numLESS;
@@ -26,28 +26,21 @@ var path = require('path'),
 					source += '\n@import "./' + plugins.lessFiles[x] + '";';
 				}
 
-				// Detect if a theme has been selected, and handle appropriately
-				if (!themeData['theme:type'] || themeData['theme:type'] === 'local') {
-					// Local theme
-					var	parser = new (less.Parser)({
-							paths: paths
-						});
-
-					parser.parse(source, function(err, tree) {
-						if (err) {
-							res.send(500, err.message);
-							return;
-						}
-
-						meta.css.cache = tree.toCSS({
-							compress: true
-						});
-						res.type('text/css').send(200, meta.css.cache);
+				var	parser = new (less.Parser)({
+						paths: paths
 					});
-				} else {
-					// Bootswatch theme not supported yet
-					res.send(500, 'Give me time!');
-				}
+
+				parser.parse(source, function(err, tree) {
+					if (err) {
+						res.send(500, err.message);
+						return;
+					}
+
+					meta.css.cache = tree.toCSS({
+						compress: true
+					});
+					res.type('text/css').send(200, meta.css.cache);
+				});
 			});
 		});
 
