@@ -1,11 +1,11 @@
 <input type="hidden" template-variable="expose_tools" value="{expose_tools}" />
-<input type="hidden" template-variable="topic_id" value="{topic_id}" />
+<input type="hidden" template-variable="topic_id" value="{tid}" />
 <input type="hidden" template-variable="currentPage" value="{currentPage}" />
 <input type="hidden" template-variable="pageCount" value="{pageCount}" />
 <input type="hidden" template-variable="locked" value="{locked}" />
 <input type="hidden" template-variable="deleted" value="{deleted}" />
 <input type="hidden" template-variable="pinned" value="{pinned}" />
-<input type="hidden" template-variable="topic_name" value="{topic_name}" />
+<input type="hidden" template-variable="topic_name" value="{title}" />
 <input type="hidden" template-variable="postcount" value="{postcount}" />
 
 <div class="topic">
@@ -14,14 +14,14 @@
 			<a href="{relative_path}/" itemprop="url"><span itemprop="title">[[global:home]]</span></a>
 		</li>
 		<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
-			<a href="{relative_path}/category/{category_slug}" itemprop="url"><span itemprop="title">{category_name}</span></a>
+			<a href="{relative_path}/category/{category.slug}" itemprop="url"><span itemprop="title">{category.name}</span></a>
 		</li>
 		<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
-			<span itemprop="title">{topic_name} <a target="_blank" href="../{topic_id}.rss"><i class="fa fa-rss-square"></i></a></span>
+			<span itemprop="title">{title} <a target="_blank" href="../{tid}.rss"><i class="fa fa-rss-square"></i></a></span>
 		</li>
 	</ol>
 
-	<ul id="post-container" class="posts" data-tid="{topic_id}">
+	<ul id="post-container" class="posts" data-tid="{tid}">
 		<!-- BEGIN posts -->
 			<li class="post-row infiniteloaded" data-pid="{posts.pid}" data-uid="{posts.uid}" data-username="{posts.username}" data-userslug="{posts.userslug}" data-index="{posts.index}" data-deleted="{posts.deleted}" itemscope itemtype="http://schema.org/Comment">
 				<a id="post_anchor_{posts.pid}" name="{posts.pid}"></a>
@@ -44,7 +44,7 @@
 						<img itemprop="image" src="{posts.picture}" align="left" class="img-thumbnail" width=150 height=150 />
 					</a>
 					<h3 class="main-post">
-						<p id="topic_title_{posts.pid}" class="topic-title" itemprop="name">{topic_name}</p>
+						<p id="topic_title_{posts.pid}" class="topic-title" itemprop="name">{title}</p>
 					</h3>
 
 					<div class="topic-buttons">

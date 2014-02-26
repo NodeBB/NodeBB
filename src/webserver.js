@@ -596,7 +596,7 @@ process.on('uncaughtException', function(err) {
 						var start = (page - 1) * settings.topicsPerPage,
 							end = start + settings.topicsPerPage - 1;
 
-						topics.getTopicWithPosts(tid, uid, start, end, true, function (err, topicData) {
+						topics.getTopicWithPosts(tid, uid, start, end, function (err, topicData) {
 							if (topicData) {
 								if (parseInt(topicData.deleted, 10) === 1 && parseInt(topicData.expose_tools, 10) === 0) {
 									return next(new Error('Topic deleted'), null);
@@ -642,7 +642,7 @@ process.on('uncaughtException', function(err) {
 						metaTags: [
 							{
 								name: "title",
-								content: topicData.topic_name
+								content: topicData.title
 							},
 							{
 								name: "description",
@@ -650,7 +650,7 @@ process.on('uncaughtException', function(err) {
 							},
 							{
 								property: 'og:title',
-								content: topicData.topic_name
+								content: topicData.title
 							},
 							{
 								property: 'og:description',
@@ -682,7 +682,7 @@ process.on('uncaughtException', function(err) {
 							},
 							{
 								property: 'article:section',
-								content: topicData.category_name
+								content: topicData.category.name
 							}
 						],
 						linkTags: [
@@ -693,7 +693,7 @@ process.on('uncaughtException', function(err) {
 							},
 							{
 								rel: 'up',
-								href: nconf.get('url') + '/category/' + topicData.category_slug
+								href: nconf.get('url') + '/category/' + topicData.category.slug
 							}
 						]
 					}, function (err, header) {
@@ -783,15 +783,15 @@ process.on('uncaughtException', function(err) {
 						metaTags: [
 							{
 								name: 'title',
-								content: categoryData.category_name
+								content: categoryData.name
 							},
 							{
 								property: 'og:title',
-								content: categoryData.category_name
+								content: categoryData.name
 							},
 							{
 								name: 'description',
-								content: categoryData.category_description
+								content: categoryData.description
 							},
 							{
 								property: "og:type",

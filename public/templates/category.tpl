@@ -1,9 +1,15 @@
+
+<input type="hidden" template-variable="category_id" value="{cid}" />
+<input type="hidden" template-variable="category_name" value="{name}" />
+<input type="hidden" template-variable="currentPage" value="{currentPage}" />
+<input type="hidden" template-variable="pageCount" value="{pageCount}" />
+
 <ol class="breadcrumb">
 	<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
 		<a href="{relative_path}/" itemprop="url"><span itemprop="title">[[global:home]]</span></a>
 	</li>
 	<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
-		<span itemprop="title">{category_name} <a target="_blank" href="../{category_id}.rss"><i class="fa fa-rss-square"></i></a></span>
+		<span itemprop="title">{name} <a target="_blank" href="../{cid}.rss"><i class="fa fa-rss-square"></i></a></span>
 	</li>
 </ol>
 
@@ -109,7 +115,3 @@
 	<!-- ENDIF topics.length -->
 </div>
 
-<input type="hidden" template-variable="category_id" value="{category_id}" />
-<input type="hidden" template-variable="category_name" value="{category_name}" />
-<input type="hidden" template-variable="currentPage" value="{currentPage}" />
-<input type="hidden" template-variable="pageCount" value="{pageCount}" />

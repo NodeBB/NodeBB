@@ -55,7 +55,7 @@
 	function generateForTopic(req, res, next) {
 		var tid = req.params.topic_id;
 
-		topics.getTopicWithPosts(tid, 0, 0, 25, true, function (err, topicData) {
+		topics.getTopicWithPosts(tid, 0, 0, 25, function (err, topicData) {
 			if (err) {
 				return next(err);
 			}
@@ -65,7 +65,7 @@
 			var author = topicData.posts.length ? topicData.posts[0].username : '';
 
 			var feed = new rss({
-					title: topicData.topic_name,
+					title: topicData.title,
 					description: description,
 					feed_url: nconf.get('url') + '/topic/' + tid + '.rss',
 					site_url: nconf.get('url') + '/topic/' + topicData.slug,
@@ -85,7 +85,7 @@
 					dateStamp = new Date(parseInt(parseInt(postData.edited, 10) === 0 ? postData.timestamp : postData.edited, 10)).toUTCString();
 
 					feed.item({
-						title: 'Reply to ' + topicData.topic_name + ' on ' + dateStamp,
+						title: 'Reply to ' + topicData.title + ' on ' + dateStamp,
 						description: postData.content,
 						url: nconf.get('url') + '/topic/' + topicData.slug + '#' + postData.pid,
 						author: postData.username,
@@ -109,10 +109,10 @@
 			}
 
 			var feed = new rss({
-					title: categoryData.category_name,
-					description: categoryData.category_description,
+					title: categoryData.name,
+					description: categoryData.description,
 					feed_url: nconf.get('url') + '/category/' + cid + '.rss',
-					site_url: nconf.get('url') + '/category/' + categoryData.category_id,
+					site_url: nconf.get('url') + '/category/' + categoryData.cid,
 					ttl: 60
 				});
 

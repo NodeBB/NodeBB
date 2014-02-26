@@ -59,39 +59,27 @@ var db = require('./database'),
 			Categories.markAsRead(cid, uid);
 		}
 
-		function getCategoryData(next) {
-			Categories.getCategoryData(cid, next);
-		}
-
-		function getTopics(next) {
-			Categories.getCategoryTopics(cid, start, end, uid, next);
-		}
-
-		function getPageCount(next) {
-			Categories.getPageCount(cid, uid, next);
-		}
-
 		async.parallel({
-			'category': getCategoryData,
-			'topics': getTopics,
-			'pageCount': getPageCount
+			category: function(next) {
+				Categories.getCategoryData(cid, next);
+			},
+			topics : function(next) {
+				Categories.getCategoryTopics(cid, start, end, uid, next);
+			},
+			pageCount: function(next) {
+				Categories.getPageCount(cid, uid, next);
+			}
 		}, function(err, results) {
 			if(err) {
 				return callback(err);
 			}
 
-			var category = {
-				'category_name': results.category.name,
-				'category_description': results.category.description,
-				'link': results.category.link,
-				'disabled': results.category.disabled,
-				'topic_row_size': 'col-md-9',
-				'category_id': cid,
-				'topics': results.topics.topics,
-				'nextStart': results.topics.nextStart,
-				'pageCount': results.pageCount,
-				'disableSocialButtons': meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false,
-			};
+			var category = results.category;
+			category.topics = results.topics.topics;
+			category.nextStart = results.topics.nextStart;
+			category.pageCount = results.pageCount;
+			category.disableSocialButtons = meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false;
+			category.topic_row_size = 'col-md-9';
 
 			callback(null, category);
 		});

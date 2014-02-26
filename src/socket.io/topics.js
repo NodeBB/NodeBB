@@ -247,7 +247,7 @@ SocketTopics.loadMore = function(socket, data, callback) {
 
 		async.parallel({
 			posts: function(next) {
-				topics.getTopicPosts(data.tid, start, end, socket.uid, next);
+				topics.getTopicPosts(data.tid, start, end, socket.uid, false, next);
 			},
 			privileges: function(next) {
 				threadTools.privileges(data.tid, socket.uid, next);
