@@ -134,7 +134,7 @@ var async = require('async'),
 				next(null, postData);
 			},
 			function(postData, next) {
-				Topics.getTopicsByTids([postData.tid], data.cid, uid, function(err, topicData) {
+				Topics.getTopicsByTids([postData.tid], uid, function(err, topicData) {
 					if(err) {
 						return next(err);
 					}
@@ -449,7 +449,7 @@ var async = require('async'),
 				next(!err && privileges.read);
 			});
 		}, function(tids) {
-			Topics.getTopicsByTids(tids, 0, uid, function(err, topicData) {
+			Topics.getTopicsByTids(tids, uid, function(err, topicData) {
 				if(err) {
 					return callback(err);
 				}
@@ -573,7 +573,7 @@ var async = require('async'),
 
 		function sendUnreadTopics(topicIds) {
 
-			Topics.getTopicsByTids(topicIds, 0, uid, function(err, topicData) {
+			Topics.getTopicsByTids(topicIds, uid, function(err, topicData) {
 				if(err) {
 					return callback(err);
 				}
@@ -635,7 +635,7 @@ var async = require('async'),
 		});
 	};
 
-	Topics.getTopicsByTids = function(tids, cid, uid, callback) {
+	Topics.getTopicsByTids = function(tids, uid, callback) {
 
 		if (!Array.isArray(tids) || tids.length === 0) {
 			return callback(null, []);

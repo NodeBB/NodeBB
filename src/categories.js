@@ -90,7 +90,7 @@ var db = require('./database'),
 				Categories.getTopicIds(cid, start, stop, next);
 			},
 			function(tids, next) {
-				topics.getTopicsByTids(tids, cid, uid, next);
+				topics.getTopicsByTids(tids, uid, next);
 			},
 			function(topics, next) {
 				if (!topics || !topics.length) {
