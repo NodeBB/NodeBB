@@ -64,6 +64,8 @@
 
 	function loadTemplates(templatesToLoad, customTemplateDir) {
 		function loadServer() {
+			return templates.ready();
+
 			var loaded = templatesToLoad.length,
 				templatesPath = __dirname + '/../templates';
 
@@ -140,8 +142,7 @@
 
 		if (!templates[tpl]) {
 			fs.readFile(filename, function (err, html) {
-				templates[tpl] = html.toString();
-				templates.prepare(templates[tpl]);
+				templates[tpl] = templates.prepare(html.toString());
 
 				return fn(err, templates[tpl].parse(options));
 			});
