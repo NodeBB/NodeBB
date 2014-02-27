@@ -40,7 +40,7 @@
     "socket.io-wildcard": "~0.1.1",
     "bcryptjs": "~0.7.10",
     "nodebb-plugin-mentions": "~0.4",
-    "nodebb-plugin-markdown": "~0.3",
+    "nodebb-plugin-markdown": "~0.4",
     "nodebb-widget-essentials": "~0.0",
     "nodebb-theme-vanilla": "~0.0.14",
     "nodebb-theme-cerulean": "~0.0.13",

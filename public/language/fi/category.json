@@ -1,9 +1,6 @@
 {
     "new_topic_button": "Uusi aihe",
     "no_topics": "<strong>Tällä aihealueella ei ole yhtään aihetta.</strong><br />Miksi et aloittaisi uutta?",
-    "sidebar.recent_replies": "Viimeisimmät vastaukset",
-    "sidebar.active_participants": "Aktiiviset keskustelijat",
-    "sidebar.moderators": "Moderaattorit",
     "posts": "viestit",
     "views": "katsottu",
     "posted": "kirjoitettu",
