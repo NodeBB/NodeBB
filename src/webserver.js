@@ -629,8 +629,11 @@ process.on('uncaughtException', function(err) {
 		app.get('/recent/:term?', app.buildHeader, controllers.categories.recent);
 		app.get('/api/recent/:term?', app.prepareAPI, controllers.categories.recent);
 
-		app.get('/unread/:term?', app.buildHeader, app.authenticate, controllers.categories.unread);
-		app.get('/api/unread/:term?', app.prepareAPI, app.authenticate, controllers.categories.unread);
+		app.get('/unread/', app.buildHeader, app.authenticate, controllers.categories.unread);
+		app.get('/api/unread/', app.prepareAPI, app.authenticate, controllers.categories.unread);
+
+		app.get('/unread/total', app.buildHeader, app.authenticate, controllers.categories.unreadTotal);
+		app.get('/api/unread/total', app.prepareAPI, app.authenticate, controllers.categories.unreadTotal);
 
 		app.get('/category/:category_id/:slug?', app.buildHeader, controllers.categories.get);
 		app.get('/api/category/:category_id/:slug?', app.prepareAPI, controllers.categories.get);

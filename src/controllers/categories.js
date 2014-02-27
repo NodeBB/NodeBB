@@ -57,6 +57,22 @@ categoriesController.unread = function(req, res, next) {
 	});
 };
 
+categoriesController.unreadTotal = function(req, res, next) {
+	var uid = req.user.uid;
+	
+	topics.getTotalUnread(uid, function (err, data) {
+		if(err) {
+			return next(err);
+		}
+
+		if (res.locals.isAPI) {
+			res.json(data);
+		} else {
+			res.render('unread', data);
+		}
+	});
+};
+
 categoriesController.get = function(req, res, next) {
 	var cid = req.params.category_id,
 		page = req.query.page || 1,
