@@ -1,0 +1,18 @@
+{
+    "register": "Registreren",
+    "help.email": "Je email is standaard verborgen voor andere gebruikers.",
+    "help.username_restrictions": "Een unieke gebruikersnaam tussen %1 en %2 karakters. Anderen kunnen je vermelden met @<span id='yourUsername'>gebruikersnaam</span>.",
+    "help.minimum_password_length": "Je wachtwoord moet tenminste %1 karakters lang zijn.",
+    "email_address": "Email Adres",
+    "email_address_placeholder": "Vul Email Adres in",
+    "username": "Gebruikersnaam",
+    "username_placeholder": "Vul Gebruikersnaam in",
+    "password": "Wachtwoord",
+    "password_placeholder": "Vul Wachtwoord in",
+    "confirm_password": "Bevestig Wachtwoord",
+    "confirm_password_placeholder": "Bevestig Wachtwoord",
+    "register_now_button": "Nu Registreren",
+    "alternative_registration": "Alternatieve Registratie",
+    "terms_of_use": "Gebruiksvoorwaarden",
+    "agree_to_terms_of_use": "Ik ga akkoord van de Gebruiksvoorwaarden"
+}

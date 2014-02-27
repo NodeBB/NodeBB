@@ -59,39 +59,26 @@ var db = require('./database'),
 			Categories.markAsRead(cid, uid);
 		}
 
-		function getCategoryData(next) {
-			Categories.getCategoryData(cid, next);
-		}
-
-		function getTopics(next) {
-			Categories.getCategoryTopics(cid, start, end, uid, next);
-		}
-
-		function getPageCount(next) {
-			Categories.getPageCount(cid, uid, next);
-		}
-
 		async.parallel({
-			'category': getCategoryData,
-			'topics': getTopics,
-			'pageCount': getPageCount
+			category: function(next) {
+				Categories.getCategoryData(cid, next);
+			},
+			topics: function(next) {
+				Categories.getCategoryTopics(cid, start, end, uid, next);
+			},
+			pageCount: function(next) {
+				Categories.getPageCount(cid, uid, next);
+			}
 		}, function(err, results) {
 			if(err) {
 				return callback(err);
 			}
 
-			var category = {
-				'category_name': results.category.name,
-				'category_description': results.category.description,
-				'link': results.category.link,
-				'disabled': results.category.disabled,
-				'topic_row_size': 'col-md-9',
-				'category_id': cid,
-				'topics': results.topics.topics,
-				'nextStart': results.topics.nextStart,
-				'pageCount': results.pageCount,
-				'disableSocialButtons': meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false,
-			};
+			var category = results.category;
+			category.topics = results.topics.topics;
+			category.nextStart = results.topics.nextStart;
+			category.pageCount = results.pageCount;
+			category.topic_row_size = 'col-md-9';
 
 			callback(null, category);
 		});
@@ -103,26 +90,26 @@ var db = require('./database'),
 				Categories.getTopicIds(cid, start, stop, next);
 			},
 			function(tids, next) {
-				topics.getTopicsByTids(tids, cid, uid, next);
+				topics.getTopicsByTids(tids, uid, next);
 			},
 			function(topics, next) {
-				if (topics && topics.length > 0) {
-					db.sortedSetRevRank('categories:' + cid + ':tid', topics[topics.length - 1].tid, function(err, rank) {
-						if(err) {
-							return next(err);
-						}
-
-						next(null, {
-							topics: topics,
-							nextStart: parseInt(rank, 10) + 1
-						});
-					});
-				} else {
-					next(null, {
-						topics: topics,
+				if (!topics || !topics.length) {
+					return next(null, {
+						topics: [],
 						nextStart: 1
 					});
 				}
+
+				db.sortedSetRevRank('categories:' + cid + ':tid', topics[topics.length - 1].tid, function(err, rank) {
+					if(err) {
+						return next(err);
+					}
+
+					next(null, {
+						topics: topics,
+						nextStart: parseInt(rank, 10) + 1
+					});
+				});
 			}
 		], callback);
 	};
@@ -299,14 +286,14 @@ var db = require('./database'),
 
 	Categories.getCategories = function(cids, uid, callback) {
 		if (!cids || !Array.isArray(cids) || cids.length === 0) {
-			return callback(new Error('invalid-cids'), null);
+			return callback(new Error('invalid-cids'));
 		}
 
 		function getCategory(cid, callback) {
 			Categories.getCategoryData(cid, function(err, categoryData) {
 				if (err) {
 					winston.warn('Attempted to retrieve cid ' + cid + ', but nothing was returned!');
-					return callback(err, null);
+					return callback(err);
 				}
 
 				Categories.hasReadCategory(cid, uid, function(hasRead) {
@@ -338,7 +325,7 @@ var db = require('./database'),
 
 		db.getSortedSetRange('uid:' + uid + ':posts', 0, -1, function(err, pids) {
 			if (err) {
-				return callback(err, null);
+				return callback(err);
 			}
 
 			var index = 0,
@@ -359,15 +346,11 @@ var db = require('./database'),
 						}
 
 						++index;
-						callback(null);
+						callback();
 					});
 				},
 				function(err) {
-					if (err) {
-						return callback(err, null);
-					}
-
-					callback(null, active);
+					callback(err, active);
 				}
 			);
 		});
@@ -424,6 +407,6 @@ var db = require('./database'),
 
 			Categories.addActiveUser(cid, uid, timestamp);
 		});
-	}
+	};
 
 }(exports));

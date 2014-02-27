@@ -1,7 +1,8 @@
 define(['composer', 'forum/pagination'], function(composer, pagination) {
 	var	Topic = {},
 		infiniteLoaderActive = false,
-		scrollingToPost = false;
+		scrollingToPost = false,
+		currentUrl = '';
 
 	function showBottomPostBar() {
 		if($('#post-container .post-row').length > 1 || !$('#post-container li[data-index="0"]').length) {
@@ -1018,6 +1019,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 		$('.posts > .post-row').each(function() {
 			var el = $(this);
+
 			if (elementInView(el)) {
 				var index = parseInt(el.attr('data-index'), 10) + 1;
 				if(index === 0) {
@@ -1026,17 +1028,19 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 					localStorage.setItem("topic:" + templates.get('topic_id') + ":bookmark", el.attr('data-pid'));
 
 					if (!scrollingToPost) {
-						if (history.replaceState) {
-							history.replaceState({
+						var newUrl = window.location.protocol + '//' + window.location.host + window.location.pathname + '#' + el.attr('data-pid')
+						if (newUrl !== currentUrl) {
+							if (history.replaceState) {
+								history.replaceState({
 									url: window.location.pathname.slice(1) + '#' + el.attr('data-pid')
-								},
-								null,
-								window.location.protocol + '//' + window.location.host + window.location.pathname + '#' + el.attr('data-pid'));
-						} else {
-							// this is very slugish on IE8/9, it causes the browser to adjust its scroll on its own,
-							// it can be fixed, but too much work for a very little return just so ie8/9 users can have the hash updated
-							// commenting it out, sorry
-							// location.hash = '#' + el.attr('data-pid');
+								}, null, newUrl);
+							} else {
+								// this is very slugish on IE8/9, it causes the browser to adjust its scroll on its own,
+								// it can be fixed, but too much work for a very little return just so ie8/9 users can have the hash updated
+								// commenting it out, sorry
+								// location.hash = '#' + el.attr('data-pid');
+							}
+							currentUrl = newUrl;
 						}
 					}
 				}
@@ -1107,9 +1111,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				}, duration !== undefined ? duration : 400, function() {
 					scrollingToPost = false;
 					if (highlight) {
-						scrollTo.parent().addClass('highlight');
+						scrollTo.parent().find('.topic-item').addClass('highlight');
 						setTimeout(function() {
-							scrollTo.parent().removeClass('highlight');
+							scrollTo.parent().find('.topic-item').removeClass('highlight');
 						}, 5000);
 					}
 				});

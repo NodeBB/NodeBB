@@ -1,6 +1,6 @@
 var	fork = require('child_process').fork,
 	start = function() {
-		var	nbb = fork('./app', process.argv.slice(2), {
+		nbb = fork('./app', process.argv.slice(2), {
 				env: {
 					'NODE_ENV': process.env.NODE_ENV
 				}
@@ -14,6 +14,13 @@ var	fork = require('child_process').fork,
 				nbb.kill();
 			}
 		});
-	}
+	},
+	stop = function() {
+		nbb.kill();
+	},
+	nbb;
+
+process.on('SIGINT', stop);
+process.on('SIGTERM', stop);
 
 start();

@@ -3,6 +3,7 @@
 	var config = {},
 		templates,
 		fs = null,
+		path = null,
 		available_templates = [],
 		parsed_variables = {},
 		apiXHR;
@@ -13,11 +14,12 @@
 
 	try {
 		fs = require('fs');
+		path = require('path');
 	} catch (e) {}
 
 	templates.force_refresh = function (tpl) {
 		return !!config.force_refresh[tpl];
-	}
+	};
 
 	templates.get_custom_map = function (tpl) {
 		if (config['custom_mapping'] && tpl) {
@@ -125,7 +127,28 @@
 
 	templates.init = function (templates_to_load, custom_templates) {
 		loadTemplates(templates_to_load || [], custom_templates || false);
-	}
+	};
+
+	templates.render = function(filename, options, fn) {
+		if ('function' === typeof options) {
+			fn = options, options = false;
+		}
+
+		var tpl = filename
+			.replace(path.join(__dirname + '/../templates/'), '')
+			.replace('.' + options.settings['view engine'], '');
+
+		if (!templates[tpl]) {
+			fs.readFile(filename, function (err, html) {
+				templates[tpl] = html.toString();
+				templates.prepare(templates[tpl]);
+
+				return fn(err, templates[tpl].parse(options));
+			});
+		} else {
+			return fn(null, templates[tpl].parse(options));
+		}
+	};
 
 	templates.getTemplateNameFromUrl = function (url) {
 		var parts = url.split('?')[0].split('/');
@@ -136,7 +159,7 @@
 			}
 		}
 		return '';
-	}
+	};
 
 	templates.preload_template = function(tpl_name, callback) {
 
@@ -153,7 +176,7 @@
 				this.toString = function () {
 					return this.html;
 				};
-			}
+			};
 
 			template.prototype.parse = parse;
 			template.prototype.html = String(html);
@@ -163,7 +186,7 @@
 
 			callback();
 		});
-	}
+	};
 
 	templates.load_template = function (callback, url, template) {
 		var location = document.location || window.location,
@@ -247,29 +270,29 @@
 			});
 		}
 
-	}
+	};
 
 	templates.cancelRequest = function() {
 		if (apiXHR) {
 			apiXHR.abort();
 		}
-	}
+	};
 
 	templates.flush = function () {
 		parsed_variables = {};
-	}
+	};
 
 	templates.get = function (key) {
 		return parsed_variables[key];
-	}
+	};
 
 	templates.set = function (key, value) {
 		parsed_variables[key] = value;
-	}
+	};
 
 	templates.setGlobal = function(key, value) {
 		templates.globals[key] = value;
-	}
+	};
 
 	//modified from https://github.com/psychobunny/dcp.templates
 	var parse = function (data) {
@@ -419,6 +442,8 @@
 		})(data, "", template);
 	}
 
+	module.exports.__express = module.exports.render;
+
 	if ('undefined' !== typeof window) {
 		window.templates = module.exports;
 		templates.init();
@@ -428,4 +453,4 @@
 	module: {
 		exports: {}
 	}
-} : module)
+} : module);
