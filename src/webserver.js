@@ -632,35 +632,6 @@ process.on('uncaughtException', function(err) {
 		app.get('/unread/:term?', app.buildHeader, app.authenticate, controllers.categories.unread);
 		app.get('/api/unread/:term?', app.prepareAPI, app.authenticate, controllers.categories.unread);
 
-		/*
-		app.get('/unread', function (req, res, next) {
-			var uid = (req.user) ? req.user.uid : 0;
-			if(!req.user) {
-				return res.json(403, 'not-allowed');
-			}
-			topics.getUnreadTopics(uid, 0, 19, function (err, data) {
-				if(err) {
-					return next(err);
-				}
-
-				res.json(data);
-			});
-		});
-
-		app.get('/unread/total', function (req, res, next) {
-			var uid = (req.user) ? req.user.uid : 0;
-			if(!req.user) {
-				return res.json(403, 'not-allowed');
-			}
-			topics.getTotalUnread(uid, function (err, data) {
-				if(err) {
-					return next(err);
-				}
-
-				res.json(data);
-			});
-		});*/
-
 		app.get('/category/:category_id/:slug?', app.buildHeader, controllers.categories.get);
 		app.get('/api/category/:category_id/:slug?', app.prepareAPI, controllers.categories.get);
 

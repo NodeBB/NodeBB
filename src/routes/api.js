@@ -242,45 +242,6 @@ var path = require('path'),
 				});
 			});
 
-			app.get('/recent/:term?', function (req, res, next) {
-				var uid = (req.user) ? req.user.uid : 0;
-				topics.getLatestTopics(uid, 0, 19, req.params.term, function (err, data) {
-					if(err) {
-						return next(err);
-					}
-
-					res.json(data);
-				});
-			});
-
-			app.get('/unread', function (req, res, next) {
-				var uid = (req.user) ? req.user.uid : 0;
-				if(!req.user) {
-					return res.json(403, 'not-allowed');
-				}
-				topics.getUnreadTopics(uid, 0, 19, function (err, data) {
-					if(err) {
-						return next(err);
-					}
-
-					res.json(data);
-				});
-			});
-
-			app.get('/unread/total', function (req, res, next) {
-				var uid = (req.user) ? req.user.uid : 0;
-				if(!req.user) {
-					return res.json(403, 'not-allowed');
-				}
-				topics.getTotalUnread(uid, function (err, data) {
-					if(err) {
-						return next(err);
-					}
-
-					res.json(data);
-				});
-			});
-
 			app.get('/notifications', function(req, res) {
 				if (req.user && req.user.uid) {
 					user.notifications.getAll(req.user.uid, null, null, function(err, notifications) {
