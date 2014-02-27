@@ -20,6 +20,11 @@
     "flag": "Označiť",
     "flag_title": "Označiť príspevok pre moderáciu",
     "deleted_message": "Toto vlákno bolo vymazané. Iba užívatelia s privilégiami ho môžu vidieť.",
+    "following_topic.title": "Sledovať Tému",
+    "following_topic.message": "Budete teraz príjimať notifikácie, ked niekto prispeje do témy.",
+    "not_following_topic.title": "Nesledujete Tému",
+    "not_following_topic.message": "Nebudete už dostávať notifikácie z tejto Témy",
+    "login_to_subscribe": "Prosím Zaregistrujte sa alebo sa Prihláste, aby ste mohli odoberať túto Tému",
     "watch": "Sledovať",
     "share_this_post": "Zdielaj tento príspevok",
     "thread_tools.title": "Nástroje",
@@ -61,5 +66,8 @@
     "composer.discard": "Zahodiť",
     "composer.submit": "Poslať",
     "composer.replying_to": "Odpovedáš ",
-    "composer.new_topic": "Nová téma"
+    "composer.new_topic": "Nová téma",
+    "composer.drag_and_drop_images": "Pretiahni a Pusť Obrázky Sem",
+    "composer.content_is_parsed_with": "Obsah je vybraný s",
+    "composer.upload_instructions": "Nahraj obrázky pretiahnutím a pustením ich."
 }
