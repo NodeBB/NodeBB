@@ -97,6 +97,18 @@ process.on('uncaughtException', function(err) {
 		next();
 	};
 
+	app.authenticate = function(req, res, next) {
+		if(!req.user) {
+			if (res.locals.isAPI) {
+				return res.json(403, 'not-allowed');	
+			} else {
+				return res.redirect('403');
+			}
+		} else {
+			next();
+		}
+	};
+
 	app.buildHeader = function(req, res, next) {
 		async.parallel([
 			function(next) {
@@ -577,7 +589,7 @@ process.on('uncaughtException', function(err) {
 
 		// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 		(function () {
-			var routes = ['login', 'register', 'account', 'recent', '403', '404', '500'],
+			var routes = ['login', 'register', 'account', '403', '404', '500'],
 				loginRequired = ['unread', 'notifications'];
 
 			async.each(routes.concat(loginRequired), function(route, next) {
@@ -614,6 +626,41 @@ process.on('uncaughtException', function(err) {
 		app.get('/popular/:set?', app.buildHeader, controllers.categories.popular);
 		app.get('/api/popular/:set?', app.prepareAPI, controllers.categories.popular);
 
+		app.get('/recent/:term?', app.buildHeader, controllers.categories.recent);
+		app.get('/api/recent/:term?', app.prepareAPI, controllers.categories.recent);
+
+		app.get('/unread/:term?', app.buildHeader, app.authenticate, controllers.categories.unread);
+		app.get('/api/unread/:term?', app.prepareAPI, app.authenticate, controllers.categories.unread);
+
+		/*
+		app.get('/unread', function (req, res, next) {
+			var uid = (req.user) ? req.user.uid : 0;
+			if(!req.user) {
+				return res.json(403, 'not-allowed');
+			}
+			topics.getUnreadTopics(uid, 0, 19, function (err, data) {
+				if(err) {
+					return next(err);
+				}
+
+				res.json(data);
+			});
+		});
+
+		app.get('/unread/total', function (req, res, next) {
+			var uid = (req.user) ? req.user.uid : 0;
+			if(!req.user) {
+				return res.json(403, 'not-allowed');
+			}
+			topics.getTotalUnread(uid, function (err, data) {
+				if(err) {
+					return next(err);
+				}
+
+				res.json(data);
+			});
+		});*/
+
 		app.get('/category/:category_id/:slug?', app.buildHeader, controllers.categories.get);
 		app.get('/api/category/:category_id/:slug?', app.prepareAPI, controllers.categories.get);
 
@@ -647,7 +694,7 @@ process.on('uncaughtException', function(err) {
 			}
 		});
 
-		app.get('/recent/:term?', function (req, res) {
+		/*app.get('/recent/:term?', function (req, res) {
 			// TODO consolidate with /recent route as well -> that can be combined into this area. See "Basic Routes" near top.
 			app.build_header({
 				req: req,
@@ -656,7 +703,7 @@ process.on('uncaughtException', function(err) {
 				res.send(header + app.create_route('recent/' + req.params.term, null, 'recent') + templates.footer);
 			});
 
-		});
+		});*/
 
 		/*app.get('/popular/:term?', function (req, res) {
 			app.build_header({
