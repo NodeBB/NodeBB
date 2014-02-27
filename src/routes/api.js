@@ -84,38 +84,6 @@ var path = require('path'),
 				}
 			});
 
-			app.get('/home', function (req, res) {
-				var uid = (req.user) ? req.user.uid : 0;
-				categories.getAllCategories(uid, function (err, data) {
-
-					data.categories = data.categories.filter(function (category) {
-						return !category.disabled;
-					});
-
-					function canSee(category, next) {
-						categoryTools.privileges(category.cid, ((req.user) ? req.user.uid || 0 : 0), function(err, privileges) {
-							next(!err && privileges.read);
-						});
-					}
-
-					function getRecentReplies(category, callback) {
-						categories.getRecentReplies(category.cid, uid, parseInt(category.numRecentReplies, 10), function (err, posts) {
-							category.posts = posts;
-							category.post_count = posts.length > 2 ? 2 : posts.length; // this was a hack to make metro work back in the day, post_count should just = length
-							callback(null);
-						});
-					}
-
-					async.filter(data.categories, canSee, function(visibleCategories) {
-						data.categories = visibleCategories;
-
-						async.each(data.categories, getRecentReplies, function (err) {
-							res.json(data);
-						});
-					});
-				});
-			});
-
 			app.get('/login', function (req, res) {
 				var data = {},
 					login_strategies = auth.get_login_strategies(),
@@ -283,20 +251,6 @@ var path = require('path'),
 					res.json(data);
 				});
 			});
-
-			/*app.get('/popular/:set?', function (req, res, next) {
-				var uid = (req.user) ? req.user.uid : 0;
-				var set = 'topics:' + req.params.set;
-				if(!req.params.set) {
-					set = 'topics:posts';
-				}
-				topics.getTopicsFromSet(uid, set, 0, 19, function(err, data) {
-					if(err) {
-						return next(err);
-					}
-					res.json(data);
-				});
-			});*/
 
 			app.get('/unread', function (req, res, next) {
 				var uid = (req.user) ? req.user.uid : 0;
