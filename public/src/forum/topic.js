@@ -1034,11 +1034,6 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 								history.replaceState({
 									url: window.location.pathname.slice(1) + '#' + el.attr('data-pid')
 								}, null, newUrl);
-							} else {
-								// this is very slugish on IE8/9, it causes the browser to adjust its scroll on its own,
-								// it can be fixed, but too much work for a very little return just so ie8/9 users can have the hash updated
-								// commenting it out, sorry
-								// location.hash = '#' + el.attr('data-pid');
 							}
 							currentUrl = newUrl;
 						}

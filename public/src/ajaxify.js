@@ -125,6 +125,7 @@ var ajaxify = {};
 							if (!renderedWidgets.length) {
 								$('body [no-widget-class]').each(function() {
 									var $this = $(this);
+									$this.removeClass();
 									$this.addClass($this.attr('no-widget-class'));
 								});
 							}
