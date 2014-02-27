@@ -3,7 +3,23 @@ var categoriesController = {},
 	qs = require('querystring'),
 	categoryTools = require('../categoryTools'),
 	user = require('../user'),
-	categories = require('../categories');
+	categories = require('../categories'),
+	topics = require('../topics');
+
+categoriesController.recent = function(req, res, next) {
+	var uid = (req.user) ? req.user.uid : 0;
+	topics.getLatestTopics(uid, 0, 19, req.params.term, function (err, data) {
+		if(err) {
+			return next(err);
+		}
+
+		if (res.locals.isAPI) {
+			res.json(data);
+		} else {
+			res.render('recent', data);
+		}
+	});
+};
 
 categoriesController.popular = function(req, res, next) {
 	var uid = (req.user) ? req.user.uid : 0;
@@ -21,6 +37,22 @@ categoriesController.popular = function(req, res, next) {
 			res.json(data);
 		} else {
 			res.render('popular', data);
+		}
+	});
+};
+
+categoriesController.unread = function(req, res, next) {
+	var uid = req.user.uid;
+	
+	topics.getUnreadTopics(uid, 0, 19, function (err, data) {
+		if(err) {
+			return next(err);
+		}
+
+		if (res.locals.isAPI) {
+			res.json(data);
+		} else {
+			res.render('unread', data);
 		}
 	});
 };
