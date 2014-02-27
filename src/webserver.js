@@ -28,6 +28,7 @@ var path = require('path'),
 	logger = require('./logger'),
 	templates = require('./../public/src/templates'),
 	translator = require('./../public/src/translator'),
+	controllers = require('./controllers'),
 
 	admin = require('./routes/admin'),
 	userRoute = require('./routes/user'),
@@ -91,6 +92,34 @@ process.on('uncaughtException', function(err) {
 		});
 	});
 
+	app.prepareAPI = function(req, res, next) {
+		res.locals.isAPI = true;
+		next();
+	};
+
+	app.buildHeader = function(req, res, next) {
+		async.parallel([
+			function(next) {
+				// temp, don't forget to set metaTags and linkTags to res.locals.header
+				app.build_header({
+					req: req,
+					res: res
+				}, function(err, template) {
+					res.locals.header = template;
+					next(err);
+				});
+			},
+			function(next) {
+				app.render('footer', {}, function(err, template) {
+					res.locals.footer = template;
+					next(err);
+				});
+			}
+		], function(err) {
+			next();
+		});
+	};
+
 	/**
 	 *	`options` object	requires:	req, res
 	 *						accepts:	metaTags, linkTags
@@ -147,20 +176,20 @@ process.on('uncaughtException', function(err) {
 			var uid = '0';
 
 			// Meta Tags
-			templateValues.metaTags = defaultMetaTags.concat(options.metaTags || []).map(function(tag) {
+			/*templateValues.metaTags = defaultMetaTags.concat(options.metaTags || []).map(function(tag) {
 				tag.content = tag.content.replace(/[&<>'"]/g, function(tag) {
 					return escapeList[tag] || tag;
 				});
 				return tag;
-			});
+			});*/
 
 			// Link Tags
-			templateValues.linkTags = defaultLinkTags.concat(options.linkTags || []);
+			/*templateValues.linkTags = defaultLinkTags.concat(options.linkTags || []);
 			templateValues.linkTags.push({
 				rel: "icon",
 				type: "image/x-icon",
 				href: nconf.get('relative_path') + '/favicon.ico'
-			});
+			});*/
 
 			if(options.req.user && options.req.user.uid) {
 				uid = options.req.user.uid;
@@ -176,7 +205,7 @@ process.on('uncaughtException', function(err) {
 			async.parallel([
 				function(next) {
 					translator.get('pages:' + path.basename(options.req.url), function(translated) {
-						var	metaTitle = templateValues.metaTags.filter(function(tag) {
+						/*var	metaTitle = templateValues.metaTags.filter(function(tag) {
 								return tag.name === 'title';
 							});
 						if (translated) {
@@ -185,7 +214,7 @@ process.on('uncaughtException', function(err) {
 							templateValues.browserTitle = metaTitle[0].content;
 						} else {
 							templateValues.browserTitle = meta.config.browserTitle || 'NodeBB';
-						}
+						}*/
 
 						next();
 					});
@@ -197,8 +226,11 @@ process.on('uncaughtException', function(err) {
 					});
 				}
 			], function() {
-				translator.translate(templates.header.parse(templateValues), function(template) {
+				/*translator.translate(templates.header.parse(templateValues), function(template) {
 					callback(null, template);
+				});*/
+				app.render('header', templateValues, function(err, template) {
+					callback(null, template)
 				});
 			});
 		});
@@ -287,6 +319,51 @@ process.on('uncaughtException', function(err) {
 					// Log IP address
 					db.sortedSetAdd('ip:recent', +new Date(), req.ip || 'Unknown');
 
+					next();
+				});
+
+				app.use(function(req, res, next) {
+					// res.render post-processing middleware, modified from here: https://gist.github.com/mrlannigan/5051687
+					var render = res.render;
+					res.render = function(template, options, fn) {
+						var self = this,
+							options = options || {},
+							req = this.req,
+							app = req.app,
+							defaultFn = function(err, str){
+								if (err) {
+									return req.next(err);
+								}
+
+								self.send(str);
+							};
+
+						if ('function' == typeof options) {
+							fn = options, options = {};
+						}
+
+						if ('function' != typeof fn) {
+							fn = defaultFn;
+						}
+
+						render.call(self, template, options, function(err, str) {
+							if (res.locals.header) {
+								str = res.locals.header + str;
+							}
+
+							if (res.locals.footer) {
+								str = str + res.locals.footer;
+							}
+
+							if (str) {
+								translator.translate(str, function(translated) {
+									fn(err, translated);
+								});
+							} else {
+								fn(err, str);
+							}
+						});
+					};
 					next();
 				});
 
@@ -444,7 +521,7 @@ process.on('uncaughtException', function(err) {
 
 	module.exports.init = function () {
 		// translate all static templates served by webserver here. ex. footer, logout
-		plugins.fireHook('filter:footer.build', '', function(err, appendHTML) {
+		/*plugins.fireHook('filter:footer.build', '', function(err, appendHTML) {
 			var footer = templates.footer.parse({
 				footerHTML: appendHTML
 			});
@@ -452,13 +529,13 @@ process.on('uncaughtException', function(err) {
 			translator.translate(footer, function(parsedTemplate) {
 				templates.footer = parsedTemplate;
 			});
-		});
+		});*/
 
 		plugins.fireHook('action:app.load', app);
 
-		translator.translate(templates.logout.toString(), function(parsedTemplate) {
+		/*translator.translate(templates.logout.toString(), function(parsedTemplate) {
 			templates.logout = parsedTemplate;
-		});
+		});*/
 
 		server.on("error", function(e){
 			if (e.code === 'EADDRINUSE') {
@@ -495,7 +572,7 @@ process.on('uncaughtException', function(err) {
 
 		// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 		(function () {
-			var routes = ['login', 'register', 'account', 'recent', 'popular', '403', '404', '500'],
+			var routes = ['login', 'register', 'account', 'recent', '403', '404', '500'],
 				loginRequired = ['unread', 'notifications'];
 
 			async.each(routes.concat(loginRequired), function(route, next) {
@@ -523,340 +600,17 @@ process.on('uncaughtException', function(err) {
 		}());
 
 
-		app.get('/', function (req, res) {
-			async.parallel({
-				"header": function (next) {
-					app.build_header({
-						req: req,
-						res: res,
-						metaTags: [{
-							name: "title",
-							content: meta.config.title || 'NodeBB'
-						}, {
-							name: "description",
-							content: meta.config.description || ''
-						}, {
-							property: 'og:title',
-							content: 'Index | ' + (meta.config.title || 'NodeBB')
-						}, {
-							property: "og:type",
-							content: 'website'
-						}]
-					}, next);
-				},
-				"categories": function (next) {
-					function canSee(category, next) {
-						CategoryTools.privileges(category.cid, ((req.user) ? req.user.uid || 0 : 0), function(err, privileges) {
-							next(!err && privileges.read);
-						});
-					}
+		app.get('/', app.buildHeader, controllers.home);
+		app.get('/api/home', app.prepareAPI, controllers.home);
 
-					categories.getAllCategories(0, function (err, returnData) {
-						returnData.categories = returnData.categories.filter(function (category) {
-							return !category.disabled;
-						});
+		app.get('/topic/:topic_id/:slug?', app.buildHeader, controllers.topics.get);
+		app.get('/api/topic/:topic_id/:slug?', app.prepareAPI, controllers.topics.get);
 
-						async.filter(returnData.categories, canSee, function(visibleCategories) {
-							returnData.categories = visibleCategories;
-							next(null, returnData);
-						});
-					});
-				}
-			}, function (err, data) {
-				res.send(
-					data.header +
-					'\n\t<noscript>\n' + templates['noscript/header'] + templates['noscript/home'].parse(data.categories) + '\n\t</noscript>' +
-					app.create_route('') +
-					templates.footer
-				);
-			});
-		});
+		app.get('/popular/:set?', app.buildHeader, controllers.categories.popular);
+		app.get('/api/popular/:set?', app.prepareAPI, controllers.categories.popular);
 
-		app.get('/topic/:topic_id/:slug?', function (req, res, next) {
-			var tid = req.params.topic_id,
-				page = req.query.page || 1,
-				uid = req.user ? req.user.uid : 0;
-
-			async.waterfall([
-				function(next) {
-					ThreadTools.privileges(tid, ((req.user) ? req.user.uid || 0 : 0), function(err, privileges) {
-						if (!err) {
-							if (!privileges.read) {
-								next(new Error('not-enough-privileges'));
-							} else {
-								next();
-							}
-						} else {
-							next(err);
-						}
-					});
-				},
-				function (next) {
-					user.getSettings(uid, function(err, settings) {
-						if (err) {
-							return next(err);
-						}
-
-						var start = (page - 1) * settings.topicsPerPage,
-							end = start + settings.topicsPerPage - 1;
-
-						topics.getTopicWithPosts(tid, uid, start, end, function (err, topicData) {
-							if (topicData) {
-								if (parseInt(topicData.deleted, 10) === 1 && parseInt(topicData.expose_tools, 10) === 0) {
-									return next(new Error('Topic deleted'), null);
-								}
-							}
-
-							next(err, topicData);
-						});
-					});
-				},
-				function (topicData, next) {
-
-					var lastMod = topicData.timestamp,
-						description = (function() {
-							var	content = '';
-							if(topicData.posts.length) {
-								content = S(topicData.posts[0].content).stripTags().s;
-							}
-
-							if (content.length > 255) {
-								content = content.substr(0, 255) + '...';
-							}
-
-							return validator.escape(content);
-						})(),
-						timestamp;
-
-					for (var x = 0, numPosts = topicData.posts.length; x < numPosts; x++) {
-						timestamp = parseInt(topicData.posts[x].timestamp, 10);
-						if (timestamp > lastMod) {
-							lastMod = timestamp;
-						}
-					}
-
-					var ogImageUrl = meta.config['brand:logo'];
-					if(ogImageUrl && ogImageUrl.indexOf('http') === -1) {
-						ogImageUrl = nconf.get('url') + ogImageUrl;
-					}
-
-					app.build_header({
-						req: req,
-						res: res,
-						metaTags: [
-							{
-								name: "title",
-								content: topicData.title
-							},
-							{
-								name: "description",
-								content: description
-							},
-							{
-								property: 'og:title',
-								content: topicData.title
-							},
-							{
-								property: 'og:description',
-								content: description
-							},
-							{
-								property: "og:type",
-								content: 'article'
-							},
-							{
-								property: "og:url",
-								content: nconf.get('url') + '/topic/' + topicData.slug
-							},
-							{
-								property: "og:image:url",
-								content: ogImageUrl
-							},
-							{
-								property: 'og:image',
-								content: topicData.posts.length?topicData.posts[0].picture:''
-							},
-							{
-								property: "article:published_time",
-								content: utils.toISOString(topicData.timestamp)
-							},
-							{
-								property: 'article:modified_time',
-								content: utils.toISOString(lastMod)
-							},
-							{
-								property: 'article:section',
-								content: topicData.category.name
-							}
-						],
-						linkTags: [
-							{
-								rel: 'alternate',
-								type: 'application/rss+xml',
-								href: nconf.get('url') + '/topic/' + tid + '.rss'
-							},
-							{
-								rel: 'up',
-								href: nconf.get('url') + '/category/' + topicData.category.slug
-							}
-						]
-					}, function (err, header) {
-						next(err, {
-							header: header,
-							posts: topicData
-						});
-					});
-				}
-			], function (err, data) {
-				if (err) {
-					if (err.message === 'not-enough-privileges') {
-						return res.redirect('403');
-					} else {
-						return res.redirect('404');
-					}
-				}
-
-				var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
-				var queryString = qs.stringify(req.query);
-				if(queryString.length) {
-					topic_url += '?' + queryString;
-				}
-
-				// Paginator for noscript
-				data.posts.pages = [];
-				for(var x=1;x<=data.posts.pageCount;x++) {
-					data.posts.pages.push({
-						page: x,
-						active: x === parseInt(page, 10)
-					});
-				}
-
-				translator.translate(templates['noscript/topic'].parse(data.posts), function(translatedHTML) {
-					res.send(
-						data.header +
-						'\n\t<noscript>\n' + templates['noscript/header'] + translatedHTML + '\n\t</noscript>' +
-						'\n\t' + app.create_route('topic/' + topic_url) + templates.footer
-					);
-				});
-			});
-		});
-
-		app.get('/category/:category_id/:slug?', function (req, res, next) {
-			var cid = req.params.category_id,
-				page = req.query.page || 1,
-				uid = req.user ? req.user.uid : 0;
-
-			async.waterfall([
-				function(next) {
-					CategoryTools.privileges(cid, uid, function(err, privileges) {
-						if (!err) {
-							if (!privileges.read) {
-								next(new Error('not-enough-privileges'));
-							} else {
-								next();
-							}
-						} else {
-							next(err);
-						}
-					});
-				},
-				function (next) {
-					user.getSettings(uid, function(err, settings) {
-						if (err) {
-							return next(err);
-						}
-
-						var start = (page - 1) * settings.topicsPerPage,
-							end = start + settings.topicsPerPage - 1;
-
-						categories.getCategoryById(cid, start, end, 0, function (err, categoryData) {
-							if (categoryData) {
-								if (parseInt(categoryData.disabled, 10) === 1) {
-									return next(new Error('Category disabled'), null);
-								}
-							}
-
-							next(err, categoryData);
-						});
-					});
-				},
-				function (categoryData, next) {
-					app.build_header({
-						req: req,
-						res: res,
-						metaTags: [
-							{
-								name: 'title',
-								content: categoryData.name
-							},
-							{
-								property: 'og:title',
-								content: categoryData.name
-							},
-							{
-								name: 'description',
-								content: categoryData.description
-							},
-							{
-								property: "og:type",
-								content: 'website'
-							}
-						],
-						linkTags: [
-							{
-								rel: 'alternate',
-								type: 'application/rss+xml',
-								href: nconf.get('url') + '/category/' + cid + '.rss'
-							},
-							{
-								rel: 'up',
-								href: nconf.get('url')
-							}
-						]
-					}, function (err, header) {
-						next(err, {
-							header: header,
-							topics: categoryData
-						});
-					});
-				}
-			], function (err, data) {
-				if (err) {
-					if (err.message === 'not-enough-privileges') {
-						return res.redirect('403');
-					} else {
-						return res.redirect('404');
-					}
-				}
-
-				if(data.topics.link) {
-					return res.redirect(data.topics.link);
-				}
-
-				var category_url = cid + (req.params.slug ? '/' + req.params.slug : '');
-				var queryString = qs.stringify(req.query);
-				if(queryString.length) {
-					category_url += '?' + queryString;
-				}
-
-				// Paginator for noscript
-				data.topics.pages = [];
-				for(var x=1;x<=data.topics.pageCount;x++) {
-					data.topics.pages.push({
-						page: x,
-						active: x === parseInt(page, 10)
-					});
-				}
-
-				translator.translate(templates['noscript/category'].parse(data.topics), function(translatedHTML) {
-					res.send(
-						data.header +
-						'\n\t<noscript>\n' + templates['noscript/header'] + translatedHTML + '\n\t</noscript>' +
-						'\n\t' + app.create_route('category/' + category_url) + templates.footer
-					);
-				});
-			});
-		});
+		app.get('/category/:category_id/:slug?', app.buildHeader, controllers.categories.get);
+		app.get('/api/category/:category_id/:slug?', app.prepareAPI, controllers.categories.get);
 
 		app.get('/confirm/:code', function (req, res) {
 			app.build_header({
@@ -899,7 +653,7 @@ process.on('uncaughtException', function(err) {
 
 		});
 
-		app.get('/popular/:term?', function (req, res) {
+		/*app.get('/popular/:term?', function (req, res) {
 			app.build_header({
 				req: req,
 				res: res
@@ -907,7 +661,7 @@ process.on('uncaughtException', function(err) {
 				res.send(header + app.create_route('popular/' + req.params.term, null, 'popular') + templates.footer);
 			});
 
-		});
+		});*/
 
 		app.get('/outgoing', function (req, res) {
 			if (!req.query.url) {
