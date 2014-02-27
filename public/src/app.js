@@ -1,10 +1,10 @@
 var socket,
 	config,
 	app = {
-		"username": null,
-		"uid": null,
-		"isFocused": true,
-		"currentRoom": null
+		'username': null,
+		'uid': null,
+		'isFocused': true,
+		'currentRoom': null
 	};
 
 (function () {
@@ -175,23 +175,27 @@ var socket,
 		var alert = $('#' + alert_id);
 		var title = params.title || '';
 
-		function startTimeout(div, timeout) {
+		function fadeOut() {
+			alert.fadeOut(500, function () {
+				$(this).remove();
+			});
+		}
+
+		function startTimeout(timeout) {
 			var timeoutId = setTimeout(function () {
-				$(div).fadeOut(1000, function () {
-					$(this).remove();
-				});
+				fadeOut();
 			}, timeout);
 
-			$(div).attr('timeoutId', timeoutId);
+			alert.attr('timeoutId', timeoutId);
 		}
 
 		if (alert.length > 0) {
 			alert.find('strong').html(title);
 			alert.find('p').html(params.message);
-			alert.attr('class', "alert alert-dismissable alert-" + params.type);
+			alert.attr('class', 'alert alert-dismissable alert-' + params.type);
 
 			clearTimeout(alert.attr('timeoutId'));
-			startTimeout(alert, params.timeout);
+			startTimeout(params.timeout);
 
 			alert.children().fadeOut('100');
 			translator.translate(alert.html(), function(translatedHTML) {
@@ -199,41 +203,44 @@ var socket,
 				alert.html(translatedHTML);
 			});
 		} else {
-			var div = $('<div id="' + alert_id + '" class="alert alert-dismissable alert-' + params.type +'"></div>'),
-				button = $('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'),
-				strong = $('<strong>' + title + '</strong>'),
-				p = $('<p>' + params.message + '</p>');
+			alert = $('<div id="' + alert_id + '" class="alert alert-dismissable alert-' + params.type +'"></div>');
 
-			div.append(button)
-				.append(strong)
-				.append(p);
+			alert.append($('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'))
+				.append($('<strong>' + title + '</strong>'))
+				.append($('<p>' + params.message + '</p>'));
 
-			button.on('click', function () {
-				div.remove();
-			});
-
-			if (params.location == null)
+			if (params.location == null) {
 				params.location = 'alert_window';
+			}
 
-			translator.translate(div.html(), function(translatedHTML) {
-				div.html(translatedHTML);
-				$('#' + params.location).prepend(div.fadeIn('100'));
+			translator.translate(alert.html(), function(translatedHTML) {
+				alert.html(translatedHTML);
+				$('#' + params.location).prepend(alert.fadeIn('100'));
+
+				if(typeof params.closefn === 'function') {
+					alert.find('button').on('click', function () {
+						params.closefn();
+						fadeOut();
+					});
+				}
 			});
 
 			if (params.timeout) {
-				startTimeout(div, params.timeout);
+				startTimeout(params.timeout);
 			}
 
-			if (params.clickfn) {
-				div.on('click', function () {
+			if (typeof params.clickfn === 'function') {
+				alert.on('click', function () {
 					params.clickfn();
-					div.fadeOut(500, function () {
-						$(this).remove();
-					});
+					fadeOut();
 				});
 			}
 		}
 	};
+
+	app.removeAlert = function(id) {
+		$('#' + 'alert_button_' + id).remove();
+	}
 
 	app.alertSuccess = function (message, timeout) {
 		if (!timeout)
@@ -277,7 +284,7 @@ var socket,
 	app.populateOnlineUsers = function () {
 		var uids = [];
 
-		jQuery('.post-row').each(function () {
+		$('.post-row').each(function () {
 			var uid = $(this).attr('data-uid');
 			if(uids.indexOf(uid) === -1) {
 				uids.push(uid);
@@ -286,8 +293,8 @@ var socket,
 
 		socket.emit('user.getOnlineUsers', uids, function (err, users) {
 
-			jQuery('.username-field').each(function (index, element) {
-				var el = jQuery(this),
+			$('.username-field').each(function (index, element) {
+				var el = $(this),
 					uid = el.parents('li').attr('data-uid');
 
 					if (uid && users[uid]) {
@@ -307,19 +314,19 @@ var socket,
 			parts = path.split('/'),
 			active = parts[parts.length - 1];
 
-		jQuery('#main-nav li').removeClass('active');
+		$('#main-nav li').removeClass('active');
 		if (active) {
-			jQuery('#main-nav li a').each(function () {
-				var href = this.getAttribute('href');
+			$('#main-nav li a').each(function () {
+				var href = $(this).attr('href');
 				if (active == "sort-posts" || active == "sort-reputation" || active == "search" || active == "latest" || active == "online")
 					active = 'users';
 				if (href && href.match(active)) {
-					jQuery(this.parentNode).addClass('active');
+					$(this.parentNode).addClass('active');
 					return false;
 				}
 			});
 		}
-	};
+	}
 
 	app.createUserTooltips = function() {
 		$('img[title].teaser-pic,img[title].user-img').each(function() {
@@ -335,7 +342,7 @@ var socket,
 			selector:'.fa-circle.status',
 			placement: 'top'
 		});
-	}
+	};
 
 	app.makeNumbersHumanReadable = function(elements) {
 		elements.each(function() {
@@ -452,7 +459,7 @@ var socket,
 			}
 			previousScrollTop = currentScrollTop;
 		});
-	}
+	};
 
 	var	titleObj = {
 			active: false,
@@ -589,7 +596,7 @@ var socket,
 		});
 	};
 
-	jQuery('document').ready(function () {
+	$('document').ready(function () {
 		$('#search-form').on('submit', function () {
 			var input = $(this).find('input');
 			ajaxify.go("search/" + input.val());

@@ -109,20 +109,22 @@ var nconf = require('nconf'),
 					return res.redirect('/403');
 				}
 
-				var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
-				var params = null;
+				var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'],
+					params = null, er;
 				try {
 					params = JSON.parse(req.body.params);
 				} catch (e) {
-					return res.send({
+					er = {
 						error: 'Error uploading file! Error :' + e.message
-					});
+					};
+					return res.send(req.xhr ? er : JSON.stringify(er));
 				}
 
 				if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
-					res.send({
+					er = {
 						error: 'Allowed image types are png, jpg and gif!'
-					});
+					};
+					res.send(req.xhr ? er : JSON.stringify(er));
 					return;
 				}
 
@@ -136,12 +138,12 @@ var nconf = require('nconf'),
 					return res.redirect('/403');
 				}
 
-				var allowedTypes = ['image/x-icon', 'image/vnd.microsoft.icon'];
+				var allowedTypes = ['image/x-icon', 'image/vnd.microsoft.icon'],
+					er;
 
 				if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
-					res.send({
-						error: 'You can only upload icon file type!'
-					});
+					er = {error: 'You can only upload icon file type!'};
+					res.send(req.xhr ? er : JSON.stringify(er));
 					return;
 				}
 
@@ -149,14 +151,12 @@ var nconf = require('nconf'),
 					fs.unlink(req.files.userPhoto.path);
 
 					if(err) {
-						return res.send({
-							error: err.message
-						});
+						er = {error: err.message};
+						return res.send(req.xhr ? er : JSON.stringify(er));
 					}
 
-					res.json({
-						path: image.url
-					});
+					var rs = {path: image.url};
+					res.send(req.xhr ? rs : JSON.stringify(rs));
 				});
 			});
 
@@ -166,12 +166,12 @@ var nconf = require('nconf'),
 					return res.redirect('/403');
 				}
 
-				var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
+				var allowedTypes = ['image/png', 'image/jpeg', 'image/pjpeg', 'image/jpg', 'image/gif'],
+					er;
 
 				if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
-					res.send({
-						error: 'Allowed image types are png, jpg and gif!'
-					});
+					er = {error: 'Allowed image types are png, jpg and gif!'};
+					res.send(req.xhr ? er : JSON.stringify(er));
 					return;
 				}
 
@@ -191,17 +191,16 @@ var nconf = require('nconf'),
 
 		function uploadImage(filename, req, res) {
 			function done(err, image) {
+				var er, rs;
 				fs.unlink(req.files.userPhoto.path);
 
 				if(err) {
-					return res.send({
-						error: err.message
-					});
+					er = {error: err.message};
+					return res.send(req.xhr ? er : JSON.stringify(er));
 				}
 
-				res.json({
-					path: image.url
-				});
+				rs = {path: image.url};
+				res.send(req.xhr ? rs : JSON.stringify(rs));
 			}
 
 			if(plugins.hasListeners('filter:uploadImage')) {

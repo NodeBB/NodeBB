@@ -68,7 +68,11 @@ SocketModules.composer.editCheck = function(socket, pid, callback) {
 
 SocketModules.composer.renderPreview = function(socket, content, callback) {
 	plugins.fireHook('filter:post.parse', content, callback);
-}
+};
+
+SocketModules.composer.renderHelp = function(socket, data, callback) {
+	plugins.fireHook('filter:composer.help', '', callback);
+};
 
 /* Chat */
 

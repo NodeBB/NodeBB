@@ -17,13 +17,13 @@
 	<!-- IF privileges.write -->
 	<button id="new_post" class="btn btn-primary">[[category:new_topic_button]]</button>
 	<!-- ENDIF privileges.write -->
-	<!-- IF !disableSocialButtons -->
+	<!-- IF !config.disableSocialButtons -->
 	<div class="inline-block pull-right">
 		<a href="#" id="facebook-share"><i class="fa fa-facebook-square fa-2x"></i></a>&nbsp;
 		<a href="#" id="twitter-share"><i class="fa fa-twitter-square fa-2x"></i></a>&nbsp;
 		<a href="#" id="google-share"><i class="fa fa-google-plus-square fa-2x"></i></a>&nbsp;
 	</div>
-	<!-- ENDIF !disableSocialButtons -->
+	<!-- ENDIF !config.disableSocialButtons -->
 </div>
 
 <hr/>

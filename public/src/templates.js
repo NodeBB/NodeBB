@@ -13,13 +13,13 @@
 	};
 
 	try {
-		fs = require('fs'),
+		fs = require('fs');
 		path = require('path');
 	} catch (e) {}
 
 	templates.force_refresh = function (tpl) {
 		return !!config.force_refresh[tpl];
-	}
+	};
 
 	templates.get_custom_map = function (tpl) {
 		if (config['custom_mapping'] && tpl) {
@@ -34,7 +34,7 @@
 	}
 
 	templates.is_available = function (tpl) {
-		return jQuery.inArray(tpl, available_templates) !== -1;
+		return $.inArray(tpl, available_templates) !== -1;
 	};
 
 	templates.ready = function (callback) {
@@ -115,7 +115,7 @@
 		}
 
 		function loadClient() {
-			jQuery.when(jQuery.getJSON(RELATIVE_PATH + '/templates/config.json'), jQuery.getJSON(RELATIVE_PATH + '/api/get_templates_listing')).done(function (config_data, templates_data) {
+			$.when($.getJSON(RELATIVE_PATH + '/templates/config.json'), $.getJSON(RELATIVE_PATH + '/api/get_templates_listing')).done(function (config_data, templates_data) {
 				config = config_data[0];
 				available_templates = templates_data[0];
 				templates.ready();
@@ -129,7 +129,7 @@
 
 	templates.init = function (templates_to_load, custom_templates) {
 		loadTemplates(templates_to_load || [], custom_templates || false);
-	}
+	};
 
 	templates.render = function(filename, options, fn) {
 		if ('function' === typeof options) {
@@ -149,7 +149,7 @@
 		} else {
 			return fn(null, templates[tpl].parse(options));
 		}
-	}
+	};
 
 	templates.getTemplateNameFromUrl = function (url) {
 		var parts = url.split('?')[0].split('/');
@@ -160,7 +160,7 @@
 			}
 		}
 		return '';
-	}
+	};
 
 	templates.preload_template = function(tpl_name, callback) {
 
@@ -172,12 +172,12 @@
 		// should be named something else
 		// TODO: The "Date.now()" in the line below is only there for development purposes.
 		// It should be removed at some point.
-		jQuery.get(RELATIVE_PATH + '/templates/' + tpl_name + '.tpl?v=' + Date.now(), function (html) {
+		$.get(RELATIVE_PATH + '/templates/' + tpl_name + '.tpl?v=' + Date.now(), function (html) {
 			var template = function () {
 				this.toString = function () {
 					return this.html;
 				};
-			}
+			};
 
 			template.prototype.parse = parse;
 			template.prototype.html = String(html);
@@ -187,7 +187,7 @@
 
 			callback();
 		});
-	}
+	};
 
 	templates.load_template = function (callback, url, template) {
 		var location = document.location || window.location,
@@ -199,8 +199,6 @@
 		}
 
 		var template_data = null;
-
-		var timestamp = new Date().getTime(); //debug
 
 		if (!templates[tpl_url]) {
 			templates.preload_template(tpl_url, function() {
@@ -246,7 +244,7 @@
 
 				$('#content').html(translatedTemplate);
 
-				jQuery('#content [template-variable]').each(function (index, element) {
+				$('#content [template-variable]').each(function (index, element) {
 					var value = null;
 
 					switch ($(element).attr('template-type')) {
@@ -271,29 +269,29 @@
 			});
 		}
 
-	}
+	};
 
 	templates.cancelRequest = function() {
 		if (apiXHR) {
 			apiXHR.abort();
 		}
-	}
+	};
 
 	templates.flush = function () {
 		parsed_variables = {};
-	}
+	};
 
 	templates.get = function (key) {
 		return parsed_variables[key];
-	}
+	};
 
 	templates.set = function (key, value) {
 		parsed_variables[key] = value;
-	}
+	};
 
 	templates.setGlobal = function(key, value) {
 		templates.globals[key] = value;
-	}
+	};
 
 	//modified from https://github.com/psychobunny/dcp.templates
 	var parse = function (data) {
@@ -454,4 +452,4 @@
 	module: {
 		exports: {}
 	}
-} : module)
+} : module);

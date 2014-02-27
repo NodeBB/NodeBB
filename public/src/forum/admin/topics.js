@@ -2,14 +2,14 @@ define(function() {
 	var	Topics = {};
 
 	Topics.init = function() {
-		var topicsListEl = document.querySelector('.topics'),
-			loadMoreEl = document.getElementById('topics_loadmore');
+		var topicsListEl = $('.topics'),
+			loadMoreEl = $('#topics_loadmore');
 
 		this.resolveButtonStates();
 
-		$(topicsListEl).on('click', '[data-action]', function() {
+		topicsListEl.on('click', '[data-action]', function() {
 			var $this = $(this),
-				action = this.getAttribute('data-action'),
+				action = $this.attr('data-action'),
 				tid = $this.parents('[data-tid]').attr('data-tid');
 
 			switch (action) {
@@ -40,17 +40,17 @@ define(function() {
 			}
 		});
 
-		loadMoreEl.addEventListener('click', function() {
-			if (this.className.indexOf('disabled') === -1) {
-				var topics = document.querySelectorAll('.topics li[data-tid]');
+		loadMoreEl.on('click', function() {
+			if (!$(this).hasClass('disabled')) {
+				var topics = $('.topics li[data-tid]');
 
 				if(!topics.length) {
 					return;
 				}
 
-				var lastTid = parseInt(topics[topics.length - 1].getAttribute('data-tid'));
+				var lastTid = parseInt(topics.eq(topics.length - 1).attr('data-tid'));
 
-				this.innerHTML = '<i class="fa fa-refresh fa-spin"></i> Retrieving topics';
+				$(this).html('<i class="fa fa-refresh fa-spin"></i> Retrieving topics');
 				socket.emit('admin.topics.getMore', {
 					limit: 10,
 					after: lastTid
@@ -59,27 +59,27 @@ define(function() {
 						return app.alertError(err.message);
 					}
 
-					var btnEl = document.getElementById('topics_loadmore');
+					var btnEl = $('#topics_loadmore');
 
 					if (topics.length > 0) {
 						var html = templates.prepare(templates['admin/topics'].blocks['topics']).parse({
 								topics: topics
 							}),
-							topicsListEl = document.querySelector('.topics');
+							topicsListEl = $('.topics');
 
 						// Fix relative paths
 						html = html.replace(/\{relative_path\}/g, RELATIVE_PATH);
 
-						topicsListEl.innerHTML += html;
+						topicsListEl.html(topicsListEl.html() + html);
 
 						Topics.resolveButtonStates();
 
-						btnEl.innerHTML = 'Load More Topics';
+						btnEl.html('Load More Topics');
 						$('span.timeago').timeago();
 					} else {
 						// Exhausted all topics
-						btnEl.className += ' disabled';
-						btnEl.innerHTML = 'No more topics';
+						btnEl.addClass('disabled');
+						btnEl.html('No more topics');
 					}
 				});
 			}
@@ -88,24 +88,26 @@ define(function() {
 
 	Topics.resolveButtonStates = function() {
 		// Resolve proper button state for all topics
-		var topicsListEl = document.querySelector('.topics'),
-			topicEls = topicsListEl.querySelectorAll('li'),
+		var topicsListEl = $('.topics'),
+			topicEls = topicsListEl.find('li'),
 			numTopics = topicEls.length;
+
 		for (var x = 0; x < numTopics; x++) {
-			if (topicEls[x].getAttribute('data-pinned') === '1') {
-				topicEls[x].querySelector('[data-action="pin"]').className += ' active';
-				topicEls[x].removeAttribute('data-pinned');
+			var topic = topicEls.eq(x);
+			if (topic.attr('data-pinned') === '1') {
+				topic.find('[data-action="pin"]').addClass('active');
+				topic.removeAttr('data-pinned');
 			}
-			if (topicEls[x].getAttribute('data-locked') === '1') {
-				topicEls[x].querySelector('[data-action="lock"]').className += ' active';
-				topicEls[x].removeAttribute('data-locked');
+			if (topic.attr('data-locked') === '1') {
+				topic.find('[data-action="lock"]').addClass('active');
+				topic.removeAttr('data-locked');
 			}
-			if (topicEls[x].getAttribute('data-deleted') === '1') {
-				topicEls[x].querySelector('[data-action="delete"]').className += ' active';
-				topicEls[x].removeAttribute('data-deleted');
+			if (topic.attr('data-deleted') === '1') {
+				topic.find('[data-action="delete"]').addClass('active');
+				topic.removeAttr('data-deleted');
 			}
 		}
-	}
+	};
 
 	Topics.setDeleted = function(err, response) {
 		if(err) {
@@ -113,10 +115,9 @@ define(function() {
 		}
 
 		if (response && response.tid) {
-			var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="delete"]');
-
-			$(btnEl).addClass('active');
-			$(btnEl).siblings('[data-action="lock"]').addClass('active');
+			var btnEl = $('li[data-tid="' + response.tid + '"] button[data-action="delete"]');
+			btnEl.addClass('active');
+			btnEl.siblings('[data-action="lock"]').addClass('active');
 		}
 	};
 
@@ -126,10 +127,10 @@ define(function() {
 		}
 
 		if (response && response.tid) {
-			var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="delete"]');
+			var btnEl = $('li[data-tid="' + response.tid + '"] button[data-action="delete"]');
 
-			$(btnEl).removeClass('active');
-			$(btnEl).siblings('[data-action="lock"]').removeClass('active');
+			btnEl.removeClass('active');
+			btnEl.siblings('[data-action="lock"]').removeClass('active');
 		}
 	};
 
@@ -139,9 +140,9 @@ define(function() {
 		}
 
 		if (response && response.tid) {
-			var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="lock"]');
+			var btnEl = $('li[data-tid="' + response.tid + '"] button[data-action="lock"]');
 
-			$(btnEl).addClass('active');
+			btnEl.addClass('active');
 		}
 	};
 
@@ -151,9 +152,9 @@ define(function() {
 		}
 
 		if (response && response.tid) {
-			var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="lock"]');
+			var btnEl = $('li[data-tid="' + response.tid + '"] button[data-action="lock"]');
 
-			$(btnEl).removeClass('active');
+			btnEl.removeClass('active');
 		}
 	};
 
@@ -164,9 +165,9 @@ define(function() {
 		}
 
 		if (response && response.tid) {
-			var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="pin"]');
+			var btnEl = $('li[data-tid="' + response.tid + '"] button[data-action="pin"]');
 
-			$(btnEl).removeClass('active');
+			btnEl.removeClass('active');
 		}
 	};
 
@@ -176,9 +177,9 @@ define(function() {
 		}
 
 		if (response && response.tid) {
-			var btnEl = document.querySelector('li[data-tid="' + response.tid + '"] button[data-action="pin"]');
+			var btnEl = $('li[data-tid="' + response.tid + '"] button[data-action="pin"]');
 
-			$(btnEl).addClass('active');
+			btnEl.addClass('active');
 		}
 	};
 

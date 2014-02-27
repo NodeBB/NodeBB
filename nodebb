@@ -6,7 +6,19 @@
 
 case "$1" in
 	start)
-		node loader "$@"
+		echo "Starting NodeBB";
+		echo "  \"./nodebb stop\" to stop the NodeBB server";
+		echo "  \"./nodebb log\" to view server output";
+		node loader -d "$@"
+		;;
+
+	stop)
+		echo "Stopping NodeBB. Goodbye!";
+		kill `cat pidfile`;
+		;;
+
+	log)
+		tail -F ./logs/output.log;
 		;;
 
 	upgrade)
@@ -42,13 +54,17 @@ case "$1" in
 
 	*)
 		echo "Welcome to NodeBB"
-		echo $"Usage: $0 {start|dev|watch|upgrade}"
+		echo $"Usage: $0 {start|stop|log|setup|reset|upgrade|dev|watch}"
 		echo ''
 		column -s '	' -t <<< '
-		start	Start NodeBB in production mode
-		dev	Start NodeBB in development mode
-		watch	Start NodeBB in development mode and watch for changes
+		start	Start the NodeBB server
+		stop	Stops the NodeBB server
+		log	Opens the logging interface (useful for debugging)
+		setup	Runs the NodeBB setup script
+		reset	Disables all plugins, restores the default theme.
 		upgrade	Run NodeBB upgrade scripts, ensure packages are up-to-date
+		dev	Start NodeBB in interactive development mode
+		watch	Start NodeBB in development mode and watch for changes
 		'
 		exit 1
 esac

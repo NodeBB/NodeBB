@@ -18,6 +18,13 @@
 	<style type="text/css">{customCSS}</style>
 	<!-- ENDIF useCustomCSS -->
 
+	<!--[if lt IE 9]>
+  		<script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/2.3.0/es5-shim.min.js"></script>
+  		<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>
+  		<script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
+  		<script>__lt_ie_9__ = 1;</script>
+	<![endif]-->
+
 	<script>
 		var RELATIVE_PATH = "{relative_path}";
 	</script>

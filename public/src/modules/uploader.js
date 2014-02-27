@@ -1,6 +1,16 @@
 define(function() {
 
-	var module = {};
+	var module = {},
+		maybeParse = function(response) {
+			if (typeof response == 'string')  {
+				try {
+					return $.parseJSON(response);
+				} catch (e) {
+					return {error: 'Something went wrong while parsing server response'};
+				}
+			}
+			return response;
+		};
 
 	module.open = function(route, params, fileSize, callback) {
 		$('#upload-picture-modal').modal('show').removeClass('hide');
@@ -21,7 +31,7 @@ define(function() {
 			$('#uploadForm').submit();
 		});
 
-		$('#uploadForm').off('submit').submit(function() {
+		uploadForm.off('submit').submit(function() {
 
 			function status(message) {
 				module.hideAlerts();
@@ -52,8 +62,8 @@ define(function() {
 
 
 			$(this).ajaxSubmit({
-
 				error: function(xhr) {
+					xhr = maybeParse(xhr);
 					error('Error: ' + xhr.status);
 				},
 
@@ -62,6 +72,8 @@ define(function() {
 				},
 
 				success: function(response) {
+					response = maybeParse(response);
+
 					if (response.error) {
 						error(response.error);
 						return;
@@ -78,14 +90,14 @@ define(function() {
 
 			return false;
 		});
-	}
+	};
 
 	module.hideAlerts = function() {
 		$('#alert-status').addClass('hide');
 		$('#alert-success').addClass('hide');
 		$('#alert-error').addClass('hide');
 		$('#upload-progress-box').addClass('hide');
-	}
+	};
 
 	return module;
 });

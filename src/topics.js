@@ -1,3 +1,5 @@
+"use strict";
+
 var async = require('async'),
 	gravatar = require('gravatar'),
 	path = require('path'),
@@ -53,7 +55,7 @@ var async = require('async'),
 			};
 
 			if(thumb) {
-				topicData['thumb'] = thumb;
+				topicData.thumb = thumb;
 			}
 
 			db.setObject('topic:' + tid, topicData, function(err) {
@@ -109,8 +111,8 @@ var async = require('async'),
 				categoryTools.exists(cid, next);
 			},
 			function(categoryExists, next) {
-				if(!categoryExists) {
-					return next(new Error('category doesn\'t exist'))
+				if (!categoryExists) {
+					return next(new Error('category doesn\'t exist'));
 				}
 				categoryTools.privileges(cid, uid, next);
 			},
@@ -134,7 +136,7 @@ var async = require('async'),
 				next(null, postData);
 			},
 			function(postData, next) {
-				Topics.getTopicsByTids([postData.tid], data.cid, uid, function(err, topicData) {
+				Topics.getTopicsByTids([postData.tid], uid, function(err, topicData) {
 					if(err) {
 						return next(err);
 					}
@@ -364,7 +366,7 @@ var async = require('async'),
 				postData[i].index = start + i;
 			}
 
-			pids = postData.map(function(post) {
+			var pids = postData.map(function(post) {
 				return post.pid;
 			});
 
@@ -393,8 +395,9 @@ var async = require('async'),
 					postData[i].upvoted = results.voteData[i].upvoted;
 					postData[i].downvoted = results.voteData[i].downvoted;
 					postData[i].votes = postData[i].votes || 0;
-					postData[i].display_moderator_tools = (uid != 0) && results.privileges[i].editable;
+					postData[i].display_moderator_tools = parseInt(uid, 10) !== 0 && results.privileges[i].editable;
 					postData[i].display_move_tools = results.privileges[i].move;
+
 					if(parseInt(postData[i].deleted, 10) === 1 && !results.privileges[i].view_deleted) {
 						postData[i].content = 'This post is deleted!';
 					}
@@ -448,7 +451,7 @@ var async = require('async'),
 				next(!err && privileges.read);
 			});
 		}, function(tids) {
-			Topics.getTopicsByTids(tids, 0, uid, function(err, topicData) {
+			Topics.getTopicsByTids(tids, uid, function(err, topicData) {
 				if(err) {
 					return callback(err);
 				}
@@ -459,7 +462,7 @@ var async = require('async'),
 
 				db.sortedSetRevRank(set, topicData[topicData.length - 1].tid, function(err, rank) {
 					if(err) {
-						return calllback(err);
+						return callback(err);
 					}
 
 					returnTopics.nextStart = parseInt(rank, 10) + 1;
@@ -477,7 +480,7 @@ var async = require('async'),
 			month: 2592000000
 		};
 
-		var since = terms['day'];
+		var since = terms.day;
 		if(terms[term]) {
 			since = terms[term];
 		}
@@ -572,7 +575,7 @@ var async = require('async'),
 
 		function sendUnreadTopics(topicIds) {
 
-			Topics.getTopicsByTids(topicIds, 0, uid, function(err, topicData) {
+			Topics.getTopicsByTids(topicIds, uid, function(err, topicData) {
 				if(err) {
 					return callback(err);
 				}
@@ -634,7 +637,7 @@ var async = require('async'),
 		});
 	};
 
-	Topics.getTopicsByTids = function(tids, cid, uid, callback) {
+	Topics.getTopicsByTids = function(tids, uid, callback) {
 
 		if (!Array.isArray(tids) || tids.length === 0) {
 			return callback(null, []);
@@ -748,7 +751,6 @@ var async = require('async'),
 				topicData.pageCount = results.pageCount;
 				topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
 				topicData.expose_tools = results.privileges.editable ? 1 : 0;
-				topicData.disableSocialButtons = meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false;
 
 				callback(null, topicData);
 			});
@@ -828,7 +830,7 @@ var async = require('async'),
 			if(err) {
 				return callback(err);
 			}
-			Topics.markCategoryUnreadForAll(tid, callback)
+			Topics.markCategoryUnreadForAll(tid, callback);
 		});
 	};
 
@@ -891,7 +893,7 @@ var async = require('async'),
 			return callback(null, []);
 		}
 
-		async.map(tids, Topics.getTeaser, callback)
+		async.map(tids, Topics.getTeaser, callback);
 	};
 
 	Topics.getTeaser = function(tid, callback) {
@@ -926,19 +928,19 @@ var async = require('async'),
 				});
 			});
 		});
-	}
+	};
 
 	Topics.getTopicField = function(tid, field, callback) {
 		db.getObjectField('topic:' + tid, field, callback);
-	}
+	};
 
 	Topics.getTopicFields = function(tid, fields, callback) {
 		db.getObjectFields('topic:' + tid, fields, callback);
-	}
+	};
 
 	Topics.setTopicField = function(tid, field, value, callback) {
 		db.setObjectField('topic:' + tid, field, value, callback);
-	}
+	};
 
 	Topics.increasePostCount = function(tid, callback) {
 		db.incrObjectField('topic:' + tid, 'postcount', function(err, value) {
@@ -947,7 +949,7 @@ var async = require('async'),
 			}
 			db.sortedSetAdd('topics:posts', value, tid, callback);
 		});
-	}
+	};
 
 	Topics.decreasePostCount = function(tid, callback) {
 		db.decrObjectField('topic:' + tid, 'postcount', function(err, value) {
@@ -956,7 +958,7 @@ var async = require('async'),
 			}
 			db.sortedSetAdd('topics:posts', value, tid, callback);
 		});
-	}
+	};
 
 	Topics.increaseViewCount = function(tid, callback) {
 		db.incrObjectField('topic:' + tid, 'viewcount', function(err, value) {
@@ -965,7 +967,7 @@ var async = require('async'),
 			}
 			db.sortedSetAdd('topics:views', value, tid, callback);
 		});
-	}
+	};
 
 	Topics.isLocked = function(tid, callback) {
 		Topics.getTopicField(tid, 'locked', function(err, locked) {
@@ -974,30 +976,30 @@ var async = require('async'),
 			}
 			callback(null, parseInt(locked, 10) === 1);
 		});
-	}
+	};
 
 	Topics.updateTimestamp = function(tid, timestamp) {
 		db.sortedSetAdd('topics:recent', timestamp, tid);
 		Topics.setTopicField(tid, 'lastposttime', timestamp);
-	}
+	};
 
 	Topics.onNewPostMade = function(tid, pid, timestamp, callback) {
 		Topics.increasePostCount(tid);
 		Topics.updateTimestamp(tid, timestamp);
 		Topics.addPostToTopic(tid, pid, timestamp, callback);
-	}
+	};
 
 	Topics.addPostToTopic = function(tid, pid, timestamp, callback) {
 		db.sortedSetAdd('tid:' + tid + ':posts', timestamp, pid, callback);
-	}
+	};
 
 	Topics.removePostFromTopic = function(tid, pid, callback) {
 		db.sortedSetRemove('tid:' + tid + ':posts', pid, callback);
-	}
+	};
 
 	Topics.getPids = function(tid, callback) {
 		db.getSortedSetRange('tid:' + tid + ':posts', 0, -1, callback);
-	}
+	};
 
 	Topics.getUids = function(tid, callback) {
 		var uids = {};
@@ -1021,7 +1023,7 @@ var async = require('async'),
 				callback(null, Object.keys(uids));
 			});
 		});
-	}
+	};
 
 	Topics.updateTopicCount = function(callback) {
 		db.sortedSetCard('topics:recent', function(err, count) {

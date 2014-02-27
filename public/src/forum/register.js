@@ -93,7 +93,7 @@ define(function() {
 		}
 
 		username.on('keyup', function() {
-			jQuery('#yourUsername').html(this.value.length > 0 ? this.value : 'username');
+			$('#yourUsername').html(this.value.length > 0 ? this.value : 'username');
 		});
 
 		username.on('blur', function() {

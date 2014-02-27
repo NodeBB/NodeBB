@@ -78,7 +78,6 @@ var db = require('./database'),
 			category.topics = results.topics.topics;
 			category.nextStart = results.topics.nextStart;
 			category.pageCount = results.pageCount;
-			category.disableSocialButtons = meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false;
 			category.topic_row_size = 'col-md-9';
 
 			callback(null, category);
@@ -91,26 +90,26 @@ var db = require('./database'),
 				Categories.getTopicIds(cid, start, stop, next);
 			},
 			function(tids, next) {
-				topics.getTopicsByTids(tids, cid, uid, next);
+				topics.getTopicsByTids(tids, uid, next);
 			},
 			function(topics, next) {
-				if (topics && topics.length > 0) {
-					db.sortedSetRevRank('categories:' + cid + ':tid', topics[topics.length - 1].tid, function(err, rank) {
-						if(err) {
-							return next(err);
-						}
-
-						next(null, {
-							topics: topics,
-							nextStart: parseInt(rank, 10) + 1
-						});
-					});
-				} else {
-					next(null, {
-						topics: topics,
+				if (!topics || !topics.length) {
+					return next(null, {
+						topics: [],
 						nextStart: 1
 					});
 				}
+
+				db.sortedSetRevRank('categories:' + cid + ':tid', topics[topics.length - 1].tid, function(err, rank) {
+					if(err) {
+						return next(err);
+					}
+
+					next(null, {
+						topics: topics,
+						nextStart: parseInt(rank, 10) + 1
+					});
+				});
 			}
 		], callback);
 	};

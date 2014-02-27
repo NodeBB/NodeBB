@@ -53,7 +53,7 @@ var	shutdown = function(code) {
 		db.close();
 		winston.info('[app] Database connection closed.');
 
-		winston.info('[app] Goodbye!');
+		winston.info('[app] Shutdown complete.');
 		process.exit();
 	},
 	restart = function() {
@@ -177,6 +177,11 @@ process.on('uncaughtException', function(err) {
 
 			// Meta Tags
 			/*templateValues.metaTags = defaultMetaTags.concat(options.metaTags || []).map(function(tag) {
+				if(!tag || typeof tag.content !== 'string') {
+					winston.warn('Invalid meta tag. ', tag);
+					return tag;
+				}
+
 				tag.content = tag.content.replace(/[&<>'"]/g, function(tag) {
 					return escapeList[tag] || tag;
 				});

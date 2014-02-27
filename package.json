@@ -10,6 +10,8 @@
   },
   "main": "app.js",
   "scripts": {
+    "start": "./nodebb start",
+    "stop": "./nodebb stop",
     "test": "mocha ./tests"
   },
   "dependencies": {
@@ -38,12 +40,13 @@
     "socket.io-wildcard": "~0.1.1",
     "bcryptjs": "~0.7.10",
     "nodebb-plugin-mentions": "~0.4",
-    "nodebb-plugin-markdown": "~0.3",
+    "nodebb-plugin-markdown": "~0.4",
     "nodebb-widget-essentials": "~0.0",
     "nodebb-theme-vanilla": "~0.0.14",
     "nodebb-theme-cerulean": "~0.0.13",
     "nodebb-theme-lavender": "~0.0.22",
-    "less": "^1.6.3"
+    "less": "^1.6.3",
+    "daemon": "~1.1.0"
   },
   "optionalDependencies": {
     "redis": "0.8.3",
