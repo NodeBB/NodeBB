@@ -175,23 +175,27 @@ var socket,
 		var alert = $('#' + alert_id);
 		var title = params.title || '';
 
-		function startTimeout(div, timeout) {
+		function fadeOut() {
+			alert.fadeOut(500, function () {
+				$(this).remove();
+			});
+		}
+
+		function startTimeout(timeout) {
 			var timeoutId = setTimeout(function () {
-				$(div).fadeOut(1000, function () {
-					$(this).remove();
-				});
+				fadeOut();
 			}, timeout);
 
-			$(div).attr('timeoutId', timeoutId);
+			alert.attr('timeoutId', timeoutId);
 		}
 
 		if (alert.length > 0) {
 			alert.find('strong').html(title);
 			alert.find('p').html(params.message);
-			alert.attr('class', "alert alert-dismissable alert-" + params.type);
+			alert.attr('class', 'alert alert-dismissable alert-' + params.type);
 
 			clearTimeout(alert.attr('timeoutId'));
-			startTimeout(alert, params.timeout);
+			startTimeout(params.timeout);
 
 			alert.children().fadeOut('100');
 			translator.translate(alert.html(), function(translatedHTML) {
@@ -199,41 +203,44 @@ var socket,
 				alert.html(translatedHTML);
 			});
 		} else {
-			var div = $('<div id="' + alert_id + '" class="alert alert-dismissable alert-' + params.type +'"></div>'),
-				button = $('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'),
-				strong = $('<strong>' + title + '</strong>'),
-				p = $('<p>' + params.message + '</p>');
+			alert = $('<div id="' + alert_id + '" class="alert alert-dismissable alert-' + params.type +'"></div>');
 
-			div.append(button)
-				.append(strong)
-				.append(p);
+			alert.append($('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'))
+				.append($('<strong>' + title + '</strong>'))
+				.append($('<p>' + params.message + '</p>'));
 
-			button.on('click', function () {
-				div.remove();
-			});
-
-			if (params.location == null)
+			if (params.location == null) {
 				params.location = 'alert_window';
+			}
 
-			translator.translate(div.html(), function(translatedHTML) {
-				div.html(translatedHTML);
-				$('#' + params.location).prepend(div.fadeIn('100'));
+			translator.translate(alert.html(), function(translatedHTML) {
+				alert.html(translatedHTML);
+				$('#' + params.location).prepend(alert.fadeIn('100'));
+
+				if(typeof params.closefn === 'function') {
+					alert.find('button').on('click', function () {
+						params.closefn();
+						fadeOut();
+					});
+				}
 			});
 
 			if (params.timeout) {
-				startTimeout(div, params.timeout);
+				startTimeout(params.timeout);
 			}
 
-			if (params.clickfn) {
-				div.on('click', function () {
+			if (typeof params.clickfn === 'function') {
+				alert.on('click', function () {
 					params.clickfn();
-					div.fadeOut(500, function () {
-						$(this).remove();
-					});
+					fadeOut();
 				});
 			}
 		}
 	};
+
+	app.removeAlert = function(id) {
+		$('#' + 'alert_button_' + id).remove();
+	}
 
 	app.alertSuccess = function (message, timeout) {
 		if (!timeout)

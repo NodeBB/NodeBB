@@ -14,6 +14,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		if(data.url.indexOf('topic') !== 0) {
 			$('.pagination-block').addClass('hide');
 			$('#header-topic-title').html('').hide();
+			app.removeAlert('bookmark');
 		}
 	});
 
@@ -310,7 +311,18 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			if (window.location.hash) {
 				Topic.scrollToPost(window.location.hash.substr(1), true);
 			} else if (bookmark) {
-				Topic.scrollToPost(parseInt(bookmark, 10), true);
+				app.alert({
+					alert_id: 'bookmark',
+					message: '[[topic:bookmark_instructions]]',
+					timeout: 0,
+					type: 'info',
+					clickfn : function() {
+						Topic.scrollToPost(parseInt(bookmark, 10), true);
+					},
+					closefn : function() {
+						localStorage.removeItem('topic:' + tid + ':bookmark');
+					}
+				});
 			} else {
 				updateHeader();
 			}
@@ -1023,11 +1035,10 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			var el = $(this);
 
 			if (elementInView(el)) {
-				var index = parseInt(el.attr('data-index'), 10) + 1;
-				if(index === 0) {
-					localStorage.removeItem("topic:" + templates.get('topic_id') + ":bookmark");
+				if(!parseInt(el.attr('data-index'), 10)) {
+					localStorage.removeItem('topic:' + templates.get('topic_id') + ':bookmark');
 				} else {
-					localStorage.setItem("topic:" + templates.get('topic_id') + ":bookmark", el.attr('data-pid'));
+					localStorage.setItem('topic:' + templates.get('topic_id') + ':bookmark', el.attr('data-pid'));
 
 					if (!scrollingToPost) {
 						var newUrl = window.location.protocol + '//' + window.location.host + window.location.pathname + '#' + el.attr('data-pid')
