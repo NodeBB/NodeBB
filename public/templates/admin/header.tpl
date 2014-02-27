@@ -7,7 +7,9 @@
 		var RELATIVE_PATH = "{relative_path}";
 	</script>
 	<link rel="stylesheet" href="{relative_path}/vendor/fontawesome/css/font-awesome.min.css">
+
 	<script src="{relative_path}/vendor/jquery/js/jquery.js"></script>
+	<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 	<script src="{relative_path}/vendor/bootstrap/js/bootstrap.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="{relative_path}/vendor/colorpicker/colorpicker.css">
 	<script src="{relative_path}/socket.io/socket.io.js"></script>
@@ -34,7 +36,7 @@
 			}
 		});
 	</script>
-	<script src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
 	<script src="{relative_path}/src/utils.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="{relative_path}/stylesheet.css?{cache-buster}" />
