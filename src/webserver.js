@@ -148,6 +148,11 @@ process.on('uncaughtException', function(err) {
 
 			// Meta Tags
 			templateValues.metaTags = defaultMetaTags.concat(options.metaTags || []).map(function(tag) {
+				if(!tag || !tag.content) {
+					winston.warn('Invalid meta tag. ' + tag);
+					return tag;
+				}
+
 				tag.content = tag.content.replace(/[&<>'"]/g, function(tag) {
 					return escapeList[tag] || tag;
 				});
