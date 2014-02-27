@@ -54,12 +54,14 @@ case "$1" in
 
 	*)
 		echo "Welcome to NodeBB"
-		echo $"Usage: $0 {start|stop|log|upgrade|dev|watch}"
+		echo $"Usage: $0 {start|stop|log|setup|reset|upgrade|dev|watch}"
 		echo ''
 		column -s '	' -t <<< '
 		start	Start the NodeBB server
 		stop	Stops the NodeBB server
 		log	Opens the logging interface (useful for debugging)
+		setup	Runs the NodeBB setup script
+		reset	Disables all plugins, restores the default theme.
 		upgrade	Run NodeBB upgrade scripts, ensure packages are up-to-date
 		dev	Start NodeBB in interactive development mode
 		watch	Start NodeBB in development mode and watch for changes
