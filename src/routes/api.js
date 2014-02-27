@@ -469,16 +469,25 @@ var path = require('path'),
 
 				async.map(files, filesIterator, function(err, images) {
 					deleteTempFiles();
+
 					if(err) {
-						return res.json(500, err.message);
+						return res.send(500, err.message);
 					}
-					res.json(200, images);
+
+					// if this was not a XMLHttpRequest (hence the req.xhr check http://expressjs.com/api.html#req.xhr)
+					// then most likely it's submit via the iFrame workaround, via the jquery.form plugin's ajaxSubmit()
+					// we need to send it as text/html so IE8 won't trigger a file download for the json response
+					// malsup.com/jquery/form/#file-upload
+
+					// Also, req.send is safe for both types, if the response was an object, res.send will automatically submit as application/json
+					// expressjs.com/api.html#res.send
+					res.send(200, req.xhr ? images : JSON.stringify(images));
 				});
 			}
 
 			app.post('/post/upload', function(req, res, next) {
 				upload(req, res, function(file, next) {
-					if(file.type.match('image.*')) {
+					if(file.type.match(/image./)) {
 						posts.uploadPostImage(file, next);
 					} else {
 						posts.uploadPostFile(file, next);
@@ -488,7 +497,7 @@ var path = require('path'),
 
 			app.post('/topic/thumb/upload', function(req, res, next) {
 				upload(req, res, function(file, next) {
-					if(file.type.match('image.*')) {
+					if(file.type.match(/image./)) {
 						topics.uploadTopicThumb(file, next);
 					} else {
 		            	res.json(500, {message: 'Invalid File'});

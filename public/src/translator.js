@@ -105,7 +105,7 @@
 			if (value) {
 				for (var i = 1, ii = variables.length; i < ii; i++) {
 					var variable = variables[i].replace(']]', '');
-					value = value.replace('%' + i, variable);
+					value = ('' + value).replace('%' + i, variable);
 				}
 
 				text = text.replace(key, value);
@@ -119,6 +119,7 @@
 
 		for (var key in keys) {
 			if (keys.hasOwnProperty(key)) {
+				keys[key] = '' + keys[key];
 				var variables = keys[key].split(/[,][?\s+]/);
 
 				var parsedKey = keys[key].replace('[[', '').replace(']]', '').split(':');
@@ -127,7 +128,7 @@
 				}
 
 				var languageFile = parsedKey[0];
-				parsedKey = parsedKey[1].split(',')[0];
+				parsedKey = ('' + parsedKey[1]).split(',')[0];
 
 				if (files.loaded[languageFile]) {
 					data = insertLanguage(data, keys[key], files.loaded[languageFile][parsedKey], variables);
@@ -178,7 +179,7 @@
 
 			files.loading[filename] = true;
 
-			jQuery.getJSON(RELATIVE_PATH + '/language/' + config.defaultLang + '/' + filename + '.json?v=' + timestamp, function (language) {
+			$.getJSON(RELATIVE_PATH + '/language/' + config.defaultLang + '/' + filename + '.json?v=' + timestamp, function (language) {
 				files.loaded[filename] = language;
 
 				if (callback) {

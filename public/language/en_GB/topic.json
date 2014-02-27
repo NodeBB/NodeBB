@@ -32,7 +32,9 @@
 	"not_following_topic.title": "Not Following Topic",
 	"not_following_topic.message": "You will no longer receive notifications from this topic.",
 
-	"login_to_subscribe": "Please register or log in in order to subscribe to this topic",
+	"login_to_subscribe": "Please register or log in in order to subscribe to this topic.",
+
+	"markAsUnreadForAll.success" : "Topic marked as unread for all.",
 
 	"watch": "Watch",
 	"share_this_post": "Share this Post",
