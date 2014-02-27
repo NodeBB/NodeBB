@@ -1,11 +1,14 @@
-var topics = require('./topics'),
-	categories = require('./categories');
+var topicsController = require('./topics'),
+	categoriesController = require('./categories'),
+	async = require('async'),
+	categories = require('../categories'),
+	categoryTools = require('../categoryTools');
 
 
 
 Controllers = {
-	topics: topics,
-	categories: categories
+	topics: topicsController,
+	categories: categoriesController
 };
 
 
@@ -33,20 +36,32 @@ Controllers.home = function(req, res, next) {
 			next(null);
 		},
 		"categories": function (next) {
-			function canSee(category, next) {
-				CategoryTools.privileges(category.cid, ((req.user) ? req.user.uid || 0 : 0), function(err, privileges) {
-					next(!err && privileges.read);
-				});
-			}
-
-			categories.getAllCategories(0, function (err, returnData) {
-				returnData.categories = returnData.categories.filter(function (category) {
+			var uid = (req.user) ? req.user.uid : 0;
+			categories.getAllCategories(uid, function (err, data) {
+				data.categories = data.categories.filter(function (category) {
 					return !category.disabled;
 				});
 
-				async.filter(returnData.categories, canSee, function(visibleCategories) {
-					returnData.categories = visibleCategories;
-					next(null, returnData);
+				function canSee(category, next) {
+					categoryTools.privileges(category.cid, ((req.user) ? req.user.uid || 0 : 0), function(err, privileges) {
+						next(!err && privileges.read);
+					});
+				}
+
+				function getRecentReplies(category, callback) {
+					categories.getRecentReplies(category.cid, uid, parseInt(category.numRecentReplies, 10), function (err, posts) {
+						category.posts = posts;
+						category.post_count = posts.length > 2 ? 2 : posts.length; // this was a hack to make metro work back in the day, post_count should just = length
+						callback(null);
+					});
+				}
+
+				async.filter(data.categories, canSee, function(visibleCategories) {
+					data.categories = visibleCategories;
+
+					async.each(data.categories, getRecentReplies, function (err) {
+						next(err, data.categories);
+					});
 				});
 			});
 		}
@@ -58,6 +73,7 @@ Controllers.home = function(req, res, next) {
 		}
 	});
 };
+
 
 
 module.exports = Controllers;
