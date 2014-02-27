@@ -108,6 +108,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 						if(err) {
 							return app.alertError(err.message);
 						}
+						app.alertSuccess('[[topic:markAsUnreadForAll.success]]');
 						btn.parents('.thread-tools.open').find('.dropdown-toggle').trigger('click');
 					});
 					return false;
@@ -323,6 +324,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 						localStorage.removeItem('topic:' + tid + ':bookmark');
 					}
 				});
+				updateHeader();
 			} else {
 				updateHeader();
 			}
