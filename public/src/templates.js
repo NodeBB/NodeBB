@@ -199,8 +199,6 @@
 
 		var template_data = null;
 
-		var timestamp = new Date().getTime(); //debug
-
 		if (!templates[tpl_url]) {
 			templates.preload_template(tpl_url, function() {
 				parse_template();
