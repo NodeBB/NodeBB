@@ -589,8 +589,8 @@ process.on('uncaughtException', function(err) {
 
 		// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 		(function () {
-			var routes = ['login', 'register', 'account', '403', '404', '500'],
-				loginRequired = ['unread', 'notifications'];
+			var routes = ['register', 'account', '403', '404', '500'],
+				loginRequired = ['notifications'];
 
 			async.each(routes.concat(loginRequired), function(route, next) {
 				app.get('/' + route, function (req, res) {
@@ -619,6 +619,12 @@ process.on('uncaughtException', function(err) {
 
 		app.get('/', app.buildHeader, controllers.home);
 		app.get('/api/home', app.prepareAPI, controllers.home);
+
+		app.get('/login', app.buildHeader, controllers.login);
+		app.get('/api/login', app.prepareAPI, controllers.login);
+
+		app.get('/register', app.buildHeader, controllers.register);
+		app.get('/api/register', app.prepareAPI, controllers.register);
 
 		app.get('/topic/:topic_id/:slug?', app.buildHeader, controllers.topics.get);
 		app.get('/api/topic/:topic_id/:slug?', app.prepareAPI, controllers.topics.get);

@@ -1,6 +1,9 @@
 var topicsController = require('./topics'),
 	categoriesController = require('./categories'),
 	async = require('async'),
+	auth = require('../routes/authentication'),
+	meta = require('../meta'),
+	plugins = require('../plugins'),
 	categories = require('../categories'),
 	categoryTools = require('../categoryTools');
 
@@ -72,6 +75,68 @@ Controllers.home = function(req, res, next) {
 			res.render('home', data);
 		}
 	});
+};
+
+
+Controllers.login = function (req, res, next) {
+	var data = {},
+		login_strategies = auth.get_login_strategies(),
+		num_strategies = login_strategies.length,
+		emailersPresent = plugins.hasListeners('action:email.send');
+
+	if (num_strategies == 0) {
+		data = {
+			'login_window:spansize': 'col-md-12',
+			'alternate_logins': false
+		};
+	} else {
+		data = {
+			'login_window:spansize': 'col-md-6',
+			'alternate_logins': true
+		}
+	}
+
+	data.authentication = login_strategies;
+	data.token = res.locals.csrf_token;
+	data.showResetLink = emailersPresent;
+
+	if (res.locals.isAPI) {
+		res.json(data);
+	} else {
+		res.render('login', data);
+	}
+};
+
+Controllers.register = function (req, res, next) {
+	var data = {},
+		login_strategies = auth.get_login_strategies(),
+		num_strategies = login_strategies.length;
+
+	if (num_strategies == 0) {
+		data = {
+			'register_window:spansize': 'col-md-12',
+			'alternate_logins': false
+		};
+	} else {
+		data = {
+			'register_window:spansize': 'col-md-6',
+			'alternate_logins': true
+		}
+	}
+
+	data.authentication = login_strategies;
+
+	data.token = res.locals.csrf_token;
+	data.minimumUsernameLength = meta.config.minimumUsernameLength;
+	data.maximumUsernameLength = meta.config.maximumUsernameLength;
+	data.minimumPasswordLength = meta.config.minimumPasswordLength;
+	data.termsOfUse = meta.config.termsOfUse;
+	
+	if (res.locals.isAPI) {
+		res.json(data);
+	} else {
+		res.render('register', data);
+	}
 };
 
 

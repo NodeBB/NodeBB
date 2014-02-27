@@ -85,58 +85,6 @@ var path = require('path'),
 				}
 			});
 
-			app.get('/login', function (req, res) {
-				var data = {},
-					login_strategies = auth.get_login_strategies(),
-					num_strategies = login_strategies.length,
-					emailersPresent = Plugins.hasListeners('action:email.send');
-
-				if (num_strategies == 0) {
-					data = {
-						'login_window:spansize': 'col-md-12',
-						'alternate_logins': false
-					};
-				} else {
-					data = {
-						'login_window:spansize': 'col-md-6',
-						'alternate_logins': true
-					}
-				}
-
-				data.authentication = login_strategies;
-				data.token = res.locals.csrf_token;
-				data.showResetLink = emailersPresent;
-
-				res.json(data);
-			});
-
-			app.get('/register', function (req, res) {
-				var data = {},
-					login_strategies = auth.get_login_strategies(),
-					num_strategies = login_strategies.length;
-
-				if (num_strategies == 0) {
-					data = {
-						'register_window:spansize': 'col-md-12',
-						'alternate_logins': false
-					};
-				} else {
-					data = {
-						'register_window:spansize': 'col-md-6',
-						'alternate_logins': true
-					}
-				}
-
-				data.authentication = login_strategies;
-
-				data.token = res.locals.csrf_token;
-				data.minimumUsernameLength = meta.config.minimumUsernameLength;
-				data.maximumUsernameLength = meta.config.maximumUsernameLength;
-				data.minimumPasswordLength = meta.config.minimumPasswordLength;
-				data.termsOfUse = meta.config.termsOfUse;
-				res.json(data);
-			});
-
 			app.get('/topic/:id/:slug?', function (req, res, next) {
 				var uid = req.user? parseInt(req.user.uid, 10) : 0;
 				var tid = req.params.id;
