@@ -58,6 +58,7 @@
 		<ul class="nav nav-tabs">
 			<li class="active"><a data-pane=".tab-write" data-toggle="tab">[[topic:composer.write]]</a></li>
 			<li><a data-pane=".tab-preview" data-toggle="tab">[[topic:composer.preview]]</a></li>
+			<li class="hidden"><a data-pane=".tab-help" data-toggle="tab">[[topic:composer.help]]</a></li>
 			<li class="btn-group pull-right action-bar">
 				<button class="btn btn-default" data-action="discard" tabIndex="5"><i class="fa fa-times"></i> [[topic:composer.discard]]</button>
 				<button data-action="post" class="btn btn-default btn-primary" tabIndex="3"><i class="fa fa-check"></i> [[topic:composer.submit]]</button>
@@ -71,13 +72,15 @@
 			<div class="tab-pane tab-preview">
 				<div class="preview well"></div>
 			</div>
+			<div class="tab-pane tab-help">
+				<div class="help well"></div>
+			</div>
 		</div>
 
 		<div class="imagedrop"><div>[[topic:composer.drag_and_drop_images]]</div></div>
 
 		<div class="text-center instructions">
 			<span>
-				<small>[[topic:composer.content_is_parsed_with]] <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a>. </small>
 				<span class="upload-instructions hide"><small>[[topic:composer.upload_instructions]]</small></span>
 			</span>
 
