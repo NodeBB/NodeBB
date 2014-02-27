@@ -19,7 +19,6 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 	});
 
 	Topic.init = function() {
-
 		var expose_tools = templates.get('expose_tools'),
 			tid = templates.get('topic_id'),
 			thread_state = {
@@ -36,17 +35,16 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		$(window).trigger('action:topic.loading');
 
 		function fixDeleteStateForPosts() {
-			var postEls = document.querySelectorAll('#post-container li[data-deleted]');
+			var postEls = $('#post-container li[data-deleted]');
 			for (var x = 0, numPosts = postEls.length; x < numPosts; x++) {
-				if (postEls[x].getAttribute('data-deleted') === '1') {
-					toggle_post_delete_state(postEls[x].getAttribute('data-pid'));
+				if (postEls.eq(x).attr('data-deleted') === '1') {
+					toggle_post_delete_state(postEls.eq(x).attr('data-pid'));
 				}
-				postEls[x].removeAttribute('data-deleted');
+				postEls.eq(x).removeAttr('data-deleted');
 			}
 		}
 
-		jQuery('document').ready(function() {
-
+		$(function() {
 			app.addCommasToNumbers();
 
 			app.enterRoom('topic_' + tid);
@@ -112,54 +110,54 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 						btn.parents('.thread-tools.open').find('.dropdown-toggle').trigger('click');
 					});
 					return false;
-				})
+				});
 
 				moveThreadModal.on('shown.bs.modal', function() {
 
-					var loadingEl = document.getElementById('categories-loading');
-					if (loadingEl) {
+					var loadingEl = $('#categories-loading');
+					if (loadingEl.length) {
 						socket.emit('categories.get', function(err, data) {
+
 							// Render categories
-							var categoriesFrag = document.createDocumentFragment(),
-								categoryEl = document.createElement('li'),
+							var categoryEl,
 								numCategories = data.categories.length,
 								modalBody = moveThreadModal.find('.modal-body'),
-								categoriesEl = modalBody[0].getElementsByTagName('ul')[0],
-								confirmDiv = document.getElementById('move-confirm'),
-								confirmCat = confirmDiv.getElementsByTagName('span')[0],
-								commitEl = document.getElementById('move_thread_commit'),
-								cancelEl = document.getElementById('move_thread_cancel'),
+								categoriesEl = modalBody.find('ul').eq(0).addClass('categories-list'),
+								confirmDiv = $('#move-confirm'),
+								confirmCat = confirmDiv.find('span').eq(0),
+								commitEl = $('#move_thread_commit'),
+								cancelEl = $('#move_thread_cancel'),
 								x, info, targetCid, targetCatLabel;
 
-							categoriesEl.className = 'category-list';
 							for (x = 0; x < numCategories; x++) {
 								info = data.categories[x];
-								categoryEl.style.background = info.bgColor;
-								categoryEl.style.color = info.color || '#fff';
-								categoryEl.className = info.disabled === '1' ? ' disabled' : '';
-								categoryEl.innerHTML = '<i class="fa ' + info.icon + '"></i> ' + info.name;
-								categoryEl.setAttribute('data-cid', info.cid);
-								categoriesFrag.appendChild(categoryEl.cloneNode(true));
-							}
-							categoriesEl.appendChild(categoriesFrag);
-							modalBody[0].removeChild(loadingEl);
+								categoryEl = $('<li />');
+								categoryEl.css({background: info.bgColor, color: info.color || '#fff'})
+									.addClass(info.disabled === '1' ? ' disabled' : '')
+									.attr('data-cid', info.cid)
+									.html('<i class="fa ' + info.icon + '"></i> ' + info.name);
 
-							categoriesEl.addEventListener('click', function(e) {
-								if (e.target.nodeName === 'LI') {
-									confirmCat.innerHTML = e.target.innerHTML;
-									confirmDiv.style.display = 'block';
-									targetCid = e.target.getAttribute('data-cid');
-									targetCatLabel = e.target.innerHTML;
-									commitEl.disabled = false;
+								categoriesEl.append(categoryEl);
+							}
+							loadingEl.remove();
+
+							categoriesEl.on('click', function(e) {
+								var el = $(e.target);
+								if (el.is('li')) {
+									confirmCat.html(e.target.innerHTML);
+									confirmDiv.css({display: 'block'});
+									targetCid = el.attr('data-cid');
+									targetCatLabel = e.html();
+									commitEl.prop('disabled', false);
 								}
 							}, false);
 
-							commitEl.addEventListener('click', function() {
-								if (!commitEl.disabled && targetCid) {
-									commitEl.disabled = true;
-									$(cancelEl).fadeOut(250);
-									$(moveThreadModal).find('.modal-header button').fadeOut(250);
-									commitEl.innerHTML = 'Moving <i class="fa-spin fa-refresh"></i>';
+							commitEl.on('click', function() {
+								if (!commitEl.prop('disabled') && targetCid) {
+									commitEl.prop('disabled', true);
+									cancelEl.fadeOut(250);
+									moveThreadModal.find('.modal-header button').fadeOut(250);
+									commitEl.html('Moving <i class="fa-spin fa-refresh"></i>');
 
 									socket.emit('topics.move', {
 										tid: tid,
@@ -195,10 +193,10 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 					var forkModal = $('#fork-thread-modal'),
 						forkCommit = forkModal.find('#fork_thread_commit');
 					forkModal.removeClass('hide');
-					forkModal.css("position", "fixed")
-						.css("left", Math.max(0, (($(window).width() - $(forkModal).outerWidth()) / 2) + $(window).scrollLeft()) + "px")
-						.css("top", "0px")
-						.css("z-index", "2000");
+					forkModal.css('position', 'fixed')
+						.css('left', Math.max(0, (($(window).width() - $(forkModal).outerWidth()) / 2) + $(window).scrollLeft()) + 'px')
+						.css('top', '0px')
+						.css('z-index', '2000');
 
 					showNoPostsSelected();
 
@@ -259,7 +257,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 					function closeForkModal() {
 						for(var i=0; i<pids.length; ++i) {
-							$('#post-container li[data-pid="' + pids[i] + '"]').css('opacity', 1.0);
+							$('#post-container li[data-pid="' + pids[i] + '"]').css('opacity', 1);
 						}
 						forkModal.addClass('hide');
 						$('#post-container').off('click', 'li');
@@ -381,7 +379,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 		$('.topic').on('click', '.post_reply', function() {
 			var selectionText = '',
-				selection = window.getSelection() || document.getSelection();
+				selection = window.getSelection ? window.getSelection() : document.selection.createRange();
 
 			if ($(selection.baseNode).parents('.post-content').length > 0) {
 				var snippet = selection.toString();
@@ -733,7 +731,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			for (var p in posts) {
 				if (posts.hasOwnProperty(p)) {
 					var post = posts[p],
-						postcount = jQuery('.user_postcount_' + post.uid),
+						postcount = $('.user_postcount_' + post.uid),
 						ptotal = parseInt(postcount.html(), 10);
 
 					ptotal += 1;
@@ -1049,8 +1047,6 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 								history.replaceState({
 									url: window.location.pathname.slice(1) + '#' + el.attr('data-pid')
 								}, null, newUrl);
-							} else {
-								location.hash = '#' + el.attr('data-pid');
 							}
 							currentUrl = newUrl;
 						}
@@ -1139,7 +1135,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				}
 			}
 		}
-	}
+	};
 
 	function onNewPostPagination(data) {
 		var posts = data.posts;

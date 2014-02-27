@@ -239,6 +239,7 @@ var fs = require('fs'),
 			'src/templates.js',
 			'src/ajaxify.js',
 			'src/translator.js',
+			'src/overrides.js',
 			'src/utils.js'
 		],
 		minFile: nconf.get('relative_path') + 'nodebb.min.js',
