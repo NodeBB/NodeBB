@@ -52,7 +52,7 @@ var	shutdown = function(code) {
 		db.close();
 		winston.info('[app] Database connection closed.');
 
-		winston.info('[app] Goodbye!');
+		winston.info('[app] Shutdown complete.');
 		process.exit();
 	},
 	restart = function() {

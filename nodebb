@@ -6,7 +6,19 @@
 
 case "$1" in
 	start)
-		node loader "$@"
+		echo "Starting NodeBB";
+		echo "  \"./nodebb stop\" to stop the NodeBB server";
+		echo "  \"./nodebb log\" to view server output";
+		node loader -d "$@"
+		;;
+
+	stop)
+		echo "Stopping NodeBB. Goodbye!";
+		kill `cat pidfile`;
+		;;
+
+	log)
+		tail -F ./logs/output.log;
 		;;
 
 	upgrade)
