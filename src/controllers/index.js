@@ -1,11 +1,12 @@
 var topicsController = require('./topics'),
 	categoriesController = require('./categories'),
 	async = require('async'),
-	auth = require('../routes/authentication'),
-	meta = require('../meta'),
-	plugins = require('../plugins'),
-	categories = require('../categories'),
-	categoryTools = require('../categoryTools');
+	nconf = require('nconf'),
+	auth = require('./../routes/authentication'),
+	meta = require('./../meta'),
+	plugins = require('./../plugins'),
+	categories = require('./../categories'),
+	categoryTools = require('./../categoryTools');
 
 
 
@@ -162,6 +163,27 @@ Controllers.confirmEmail = function(req, res, next) {
 			res.render('confirm', data);
 		}
 	});
+};
+
+Controllers.sitemap = function(req, res, next) {
+	var sitemap = require('./../sitemap.js');
+
+	sitemap.render(function(xml) {
+		res.header('Content-Type', 'application/xml');
+		res.send(xml);
+	});
+};
+
+Controllers.robots = function (req, res) {
+	res.set('Content-Type', 'text/plain');
+
+	if (meta.config["robots.txt"]) {
+		res.send(meta.config["robots.txt"]);
+	} else {
+		res.send("User-agent: *\n" +
+			"Disallow: /admin/\n" +
+			"Sitemap: " + nconf.get('url') + "/sitemap.xml");
+	}
 };
 
 module.exports = Controllers;

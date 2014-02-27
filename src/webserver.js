@@ -629,6 +629,10 @@ process.on('uncaughtException', function(err) {
 		app.get('/confirm/:code', app.buildHeader, controllers.confirmEmail);
 		app.get('/api/confirm/:code', app.prepareAPI, controllers.confirmEmail);
 
+		app.get('/sitemap.xml', controllers.sitemap);
+
+		app.get('/robots.txt', controllers.robots);
+
 		/* Topics */
 		app.get('/topic/:topic_id/:slug?', app.buildHeader, controllers.topics.get);
 		app.get('/api/topic/:topic_id/:slug?', app.prepareAPI, controllers.topics.get);
@@ -649,56 +653,7 @@ process.on('uncaughtException', function(err) {
 		app.get('/category/:category_id/:slug?', app.buildHeader, controllers.categories.get);
 		app.get('/api/category/:category_id/:slug?', app.prepareAPI, controllers.categories.get);
 
-		app.get('/confirm/:code', function (req, res) {
-			app.build_header({
-				req: req,
-				res: res
-			}, function (err, header) {
-				res.send(header + app.create_route('confirm/' + req.params.code) + templates.footer);
-			});
-		});
-
-		app.get('/sitemap.xml', function (req, res) {
-			var sitemap = require('./sitemap.js');
-
-			sitemap.render(function (xml) {
-				res.header('Content-Type', 'application/xml');
-				res.send( xml );
-			});
-		});
-
-		app.get('/robots.txt', function (req, res) {
-			res.set('Content-Type', 'text/plain');
-
-			if (meta.config["robots.txt"]) {
-				res.send(meta.config["robots.txt"])
-			} else {
-				res.send("User-agent: *\n" +
-					"Disallow: /admin/\n" +
-					"Sitemap: " + nconf.get('url') + "/sitemap.xml");
-			}
-		});
-
-		/*app.get('/recent/:term?', function (req, res) {
-			// TODO consolidate with /recent route as well -> that can be combined into this area. See "Basic Routes" near top.
-			app.build_header({
-				req: req,
-				res: res
-			}, function (err, header) {
-				res.send(header + app.create_route('recent/' + req.params.term, null, 'recent') + templates.footer);
-			});
-
-		});*/
-
-		/*app.get('/popular/:term?', function (req, res) {
-			app.build_header({
-				req: req,
-				res: res
-			}, function (err, header) {
-				res.send(header + app.create_route('popular/' + req.params.term, null, 'popular') + templates.footer);
-			});
-
-		});*/
+		
 
 		app.get('/outgoing', function (req, res) {
 			if (!req.query.url) {
