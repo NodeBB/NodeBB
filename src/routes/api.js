@@ -284,7 +284,7 @@ var path = require('path'),
 				});
 			});
 
-			app.get('/popular/:set?', function (req, res, next) {
+			/*app.get('/popular/:set?', function (req, res, next) {
 				var uid = (req.user) ? req.user.uid : 0;
 				var set = 'topics:' + req.params.set;
 				if(!req.params.set) {
@@ -296,7 +296,7 @@ var path = require('path'),
 					}
 					res.json(data);
 				});
-			});
+			});*/
 
 			app.get('/unread', function (req, res, next) {
 				var uid = (req.user) ? req.user.uid : 0;
