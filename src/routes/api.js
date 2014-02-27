@@ -415,7 +415,7 @@ var path = require('path'),
 							return callback(err, null);
 						}
 
-						topics.getTopicsByTids(tids, 0, 0, callback);
+						topics.getTopicsByTids(tids, 0, callback);
 					});
 				}
 
