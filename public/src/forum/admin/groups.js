@@ -20,7 +20,7 @@ define(function() {
 			setTimeout(function() {
 				createNameEl.focus();
 			}, 250);
-		}, false);
+		});
 
 		createSubmitBtn.on('click', function() {
 			var submitObj = {
