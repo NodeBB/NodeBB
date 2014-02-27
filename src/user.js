@@ -1,3 +1,5 @@
+'use strict';
+
 var bcrypt = require('bcryptjs'),
 	async = require('async'),
 	nconf = require('nconf'),
@@ -17,7 +19,7 @@ var bcrypt = require('bcryptjs'),
 	Emailer = require('./emailer');
 
 (function(User) {
-	'use strict';
+
 	User.create = function(userData, callback) {
 		userData = userData || {};
 		userData.userslug = utils.slugify(userData.username);
@@ -210,7 +212,7 @@ var bcrypt = require('bcryptjs'),
 			}
 
 			if(!settings) {
-				settings = {}
+				settings = {};
 			}
 
 			settings.showemail = settings.showemail ? parseInt(settings.showemail, 10) !== 0 : false;
@@ -220,7 +222,7 @@ var bcrypt = require('bcryptjs'),
 
 			callback(null, settings);
 		});
-	}
+	};
 
 	User.saveSettings = function(uid, data, callback) {
 
@@ -234,7 +236,7 @@ var bcrypt = require('bcryptjs'),
 			topicsPerPage: data.topicsPerPage,
 			postsPerPage: data.postsPerPage
 		}, callback);
-	}
+	};
 
 	User.updateLastOnlineTime = function(uid, callback) {
 		User.getUserField(uid, 'status', function(err, status) {
@@ -418,7 +420,7 @@ var bcrypt = require('bcryptjs'),
 			}
 			callback();
 		});
-	}
+	};
 
 	User.isEmailAvailable = function(email, callback) {
 		db.isObjectField('email:uid', email, function(err, exists) {
@@ -561,29 +563,28 @@ var bcrypt = require('bcryptjs'),
 		});
 	};
 
-	// thanks to @akhoury
 	User.getUsersCSV = function(callback) {
 		var csvContent = "";
 
 		db.getObjectValues('username:uid', function(err, uids) {
+			if(err) {
+				return callback(err);
+			}
+
 			async.each(uids, function(uid, next) {
 				User.getUserFields(uid, ['email', 'username'], function(err, userData) {
 					if(err) {
 						return next(err);
 					}
 
-					csvContent += userData.email+ ',' + userData.username + ',' + uid +'\n';
+					csvContent += userData.email + ',' + userData.username + ',' + uid + '\n';
 					next();
 				});
 			}, function(err) {
-				if (err) {
-					throw err;
-				}
-
 				callback(err, csvContent);
 			});
 		});
-	}
+	};
 
 	User.search = function(query, callback) {
 		if (!query || query.length === 0) {
@@ -727,7 +728,7 @@ var bcrypt = require('bcryptjs'),
 				User.getFollowerCount(uid, next);
 			}
 		}, callback);
-	}
+	};
 
 	User.getDataForUsers = function(uids, callback) {
 
@@ -850,22 +851,11 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.isModerator = function(uid, cid, callback) {
-		groups.isMemberByGroupName(uid, 'cid:' + cid + ':privileges:mod', function(err, isMember) {
-			if(err) {
-				return calback(err);
-			}
-			callback(err, isMember);
-		});
+		groups.isMemberByGroupName(uid, 'cid:' + cid + ':privileges:mod', callback);
 	};
 
 	User.isAdministrator = function(uid, callback) {
-		groups.getGidFromName('administrators', function(err, gid) {
-			if(err) {
-				return callback(err);
-			}
-
-			groups.isMember(uid, gid, callback);
-		});
+		groups.isMemberByGroupName(uid, 'administrators', callback);
 	};
 
 	User.reset = {
@@ -882,7 +872,7 @@ var bcrypt = require('bcryptjs'),
 							return callback(err);
 						}
 
-						if (expiry >= +Date.now() / 1000 | 0) {
+						if (parseInt(expiry, 10) >= Date.now() / 1000) {
 							callback(null, true);
 						} else {
 							// Expired, delete from db
@@ -909,15 +899,15 @@ var bcrypt = require('bcryptjs'),
 				// Generate a new reset code
 				var reset_code = utils.generateUUID();
 				db.setObjectField('reset:uid', reset_code, uid);
-				db.setObjectField('reset:expiry', reset_code, (60 * 60) + new Date() / 1000 | 0); // Active for one hour
+				db.setObjectField('reset:expiry', reset_code, (60 * 60) + Math.floor(Date.now() / 1000));
 
 				var reset_link = nconf.get('url') + '/reset/' + reset_code;
 
 				Emailer.send('reset', uid, {
-					'site_title': (meta.config['title'] || 'NodeBB'),
+					'site_title': (meta.config.title || 'NodeBB'),
 					'reset_link': reset_link,
 
-					subject: 'Password Reset Requested - ' + (meta.config['title'] || 'NodeBB') + '!',
+					subject: 'Password Reset Requested - ' + (meta.config.title || 'NodeBB') + '!',
 					template: 'reset',
 					uid: uid
 				});
@@ -1003,11 +993,11 @@ var bcrypt = require('bcryptjs'),
 				// Send intro email w/ confirm code
 				User.getUserField(uid, 'username', function(err, username) {
 					Emailer.send('welcome', uid, {
-						'site_title': (meta.config['title'] || 'NodeBB'),
+						'site_title': (meta.config.title || 'NodeBB'),
 						username: username,
 						'confirm_link': confirm_link,
 
-						subject: 'Welcome to ' + (meta.config['title'] || 'NodeBB') + '!',
+						subject: 'Welcome to ' + (meta.config.title || 'NodeBB') + '!',
 						template: 'welcome',
 						uid: uid
 					});
@@ -1086,7 +1076,7 @@ var bcrypt = require('bcryptjs'),
 				}
 			}, function(err, notifications) {
 				if(err) {
-					return calback(err);
+					return callback(err);
 				}
 
 				// Remove empties
