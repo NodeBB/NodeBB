@@ -616,7 +616,7 @@ process.on('uncaughtException', function(err) {
 			});
 		}());
 
-
+		/* Main */
 		app.get('/', app.buildHeader, controllers.home);
 		app.get('/api/home', app.prepareAPI, controllers.home);
 
@@ -626,9 +626,14 @@ process.on('uncaughtException', function(err) {
 		app.get('/register', app.buildHeader, controllers.register);
 		app.get('/api/register', app.prepareAPI, controllers.register);
 
+		app.get('/confirm/:code', app.buildHeader, controllers.confirmEmail);
+		app.get('/api/confirm/:code', app.prepareAPI, controllers.confirmEmail);
+
+		/* Topics */
 		app.get('/topic/:topic_id/:slug?', app.buildHeader, controllers.topics.get);
 		app.get('/api/topic/:topic_id/:slug?', app.prepareAPI, controllers.topics.get);
 
+		/* Categories */
 		app.get('/popular/:set?', app.buildHeader, controllers.categories.popular);
 		app.get('/api/popular/:set?', app.prepareAPI, controllers.categories.popular);
 

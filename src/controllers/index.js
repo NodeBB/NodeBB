@@ -78,7 +78,7 @@ Controllers.home = function(req, res, next) {
 };
 
 
-Controllers.login = function (req, res, next) {
+Controllers.login = function(req, res, next) {
 	var data = {},
 		login_strategies = auth.get_login_strategies(),
 		num_strategies = login_strategies.length,
@@ -107,7 +107,7 @@ Controllers.login = function (req, res, next) {
 	}
 };
 
-Controllers.register = function (req, res, next) {
+Controllers.register = function(req, res, next) {
 	var data = {},
 		login_strategies = auth.get_login_strategies(),
 		num_strategies = login_strategies.length;
@@ -140,5 +140,28 @@ Controllers.register = function (req, res, next) {
 };
 
 
+Controllers.confirmEmail = function(req, res, next) {
+	user.email.confirm(req.params.code, function (data) {
+		if (data.status === 'ok') {
+			data = {
+				'alert-class': 'alert-success',
+				title: 'Email Confirmed',
+				text: 'Thank you for vaidating your email. Your account is now fully activated.'
+			};
+		} else {
+			data = {
+				'alert-class': 'alert-danger',
+				title: 'An error occurred...',
+				text: 'There was a problem validating your email address. Perhaps the code was invalid or has expired.'
+			};
+		}
+
+		if (res.locals.isAPI) {
+			res.json(data);
+		} else {
+			res.render('confirm', data);
+		}
+	});
+};
 
 module.exports = Controllers;
