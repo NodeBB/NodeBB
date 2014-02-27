@@ -156,7 +156,7 @@ define(function() {
 		}
 
 
-		jQuery('document').ready(function() {
+		$('document').ready(function() {
 
 			var timeoutId = 0,
 				loadingMoreUsers = false;
@@ -165,15 +165,16 @@ define(function() {
 				parts = url.split('/'),
 				active = parts[parts.length - 1];
 
-			jQuery('.nav-pills li').removeClass('active');
-			jQuery('.nav-pills li a').each(function() {
-				if (this.getAttribute('href').match(active)) {
-					jQuery(this.parentNode).addClass('active');
+			$('.nav-pills li').removeClass('active');
+			$('.nav-pills li a').each(function() {
+				var $this = $(this);
+				if ($this.attr('href').match(active)) {
+					$this.parent().addClass('active');
 					return false;
 				}
 			});
 
-			jQuery('#search-user').on('keyup', function() {
+			$('#search-user').on('keyup', function() {
 				if (timeoutId !== 0) {
 					clearTimeout(timeoutId);
 					timeoutId = 0;
@@ -182,7 +183,7 @@ define(function() {
 				timeoutId = setTimeout(function() {
 					var username = $('#search-user').val();
 
-					jQuery('.fa-spinner').removeClass('none');
+					$('.fa-spinner').removeClass('none');
 
 					socket.emit('admin.user.search', username, function(err, data) {
 						if(err) {
@@ -195,7 +196,7 @@ define(function() {
 							userListEl = document.querySelector('.users');
 
 						userListEl.innerHTML = html;
-						jQuery('.fa-spinner').addClass('none');
+						$('.fa-spinner').addClass('none');
 
 						if (data && data.users.length === 0) {
 							$('#user-notfound-notify').html('User not found!')

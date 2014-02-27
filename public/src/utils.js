@@ -99,15 +99,14 @@
 			return difference + (min ? 'y' : ' year') + (difference !== 1 && !min ? 's' : '');
 		},
 
-		invalidUnicodeChars : XRegExp('[^\\p{L}\\s\\d\\-_]', 'g'),
-		invalidLatinChars : /[^\w\s\d\-_]/g,
-
-		trimRegex : /^\s+|\s+$/g,
-		collapseWhitespace : /\s+/g,
-		collapseDash : /-+/g,
-		trimTrailingDash : /-$/g,
-		trimLeadingDash : /^-/g,
-		isLatin : /^[\w]+$/,
+		invalidUnicodeChars: XRegExp('[^\\p{L}\\s\\d\\-_]', 'g'),
+		invalidLatinChars: /[^\w\s\d\-_]/g,
+		trimRegex: /^\s+|\s+$/g,
+		collapseWhitespace: /\s+/g,
+		collapseDash: /-+/g,
+		trimTrailingDash: /-$/g,
+		trimLeadingDash: /^-/g,
+		isLatin: /^[\w]+$/,
 
 		//http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
 		slugify: function(str) {
@@ -138,9 +137,11 @@
 		isPasswordValid: function(password) {
 			return password && password.indexOf(' ') === -1;
 		},
+
 		isNumber: function(n) {
 			return !isNaN(parseFloat(n)) && isFinite(n);
 		},
+
 		// shallow objects merge
 		merge: function() {
 			var result = {}, obj, keys;
@@ -153,6 +154,43 @@
 			}
 			return result;
 		},
+
+		fileExtension: function (path) {
+			return ('' + path).split('.').pop();
+		},
+
+		fileMimeType: (function () {
+			// we only care about images, for now
+			var map = {
+				"bmp": "image/bmp",
+				"cmx": "image/x-cmx",
+				"cod": "image/cis-cod",
+				"gif": "image/gif",
+				"ico": "image/x-icon",
+				"ief": "image/ief",
+				"jfif": "image/pipeg",
+				"jpe": "image/jpeg",
+				"jpeg": "image/jpeg",
+				"jpg": "image/jpeg",
+				"pbm": "image/x-portable-bitmap",
+				"pgm": "image/x-portable-graymap",
+				"pnm": "image/x-portable-anymap",
+				"ppm": "image/x-portable-pixmap",
+				"ras": "image/x-cmu-raster",
+				"rgb": "image/x-rgb",
+				"svg": "image/svg+xml",
+				"tif": "image/tiff",
+				"tiff": "image/tiff",
+				"xbm": "image/x-xbitmap",
+				"xpm": "image/x-xpixmap",
+				"xwd": "image/x-xwindowdump"
+			};
+
+			return function (path) {
+				var extension = utils.fileExtension(path);
+				return map[extension] || '*';
+			}
+		})(),
 
 		isRelativeUrl: function(url) {
 			var firstChar = url.slice(0, 1);
@@ -200,64 +238,8 @@
 		}
 	};
 
-
-	if (!String.prototype.trim) {
-		String.prototype.trim = function() {
-			return this.replace(utils.trimRegex, '');
-		};
-	}
-
 	if ('undefined' !== typeof window) {
 		window.utils = module.exports;
-
-		(function ($, undefined) {
-			$.fn.getCursorPosition = function() {
-				var el = $(this).get(0);
-				var pos = 0;
-				if('selectionStart' in el) {
-					pos = el.selectionStart;
-				} else if('selection' in document) {
-					el.focus();
-					var Sel = document.selection.createRange();
-					var SelLength = document.selection.createRange().text.length;
-					Sel.moveStart('character', -el.value.length);
-					pos = Sel.text.length - SelLength;
-				}
-				return pos;
-			}
-
-			$.fn.selectRange = function(start, end) {
-				if(!end) end = start;
-				return this.each(function() {
-					if (this.setSelectionRange) {
-						this.focus();
-						this.setSelectionRange(start, end);
-					} else if (this.createTextRange) {
-						var range = this.createTextRange();
-						range.collapse(true);
-						range.moveEnd('character', end);
-						range.moveStart('character', start);
-						range.select();
-					}
-				});
-			};
-
-			//http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
-			$.fn.putCursorAtEnd = function() {
-				return this.each(function() {
-					$(this).focus();
-
-					if (this.setSelectionRange) {
-						var len = $(this).val().length * 2;
-						this.setSelectionRange(len, len);
-					} else {
-						$(this).val($(this).val());
-					}
-					this.scrollTop = 999999;
-				});
-			};
-
-		})(jQuery);
 	}
 
 })('undefined' === typeof module ? {

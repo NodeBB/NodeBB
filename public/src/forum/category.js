@@ -65,8 +65,8 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				topics = $('#topics-container').children('.category-item'),
 				numTopics = topics.length;
 
-			jQuery('#topics-container, .category-sidebar').removeClass('hidden');
-			jQuery('#category-no-topics').remove();
+			$('#topics-container, .category-sidebar').removeClass('hidden');
+			$('#category-no-topics').remove();
 
 			if (numTopics > 0) {
 				for (var x = 0; x < numTopics; x++) {
@@ -104,8 +104,8 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		translator.translate(html, function(translatedHTML) {
 			var container = $('#topics-container');
 
-			jQuery('#topics-container, .category-sidebar').removeClass('hidden');
-			jQuery('#category-no-topics').remove();
+			$('#topics-container, .category-sidebar').removeClass('hidden');
+			$('#category-no-topics').remove();
 
 			html = $(translatedHTML);
 
