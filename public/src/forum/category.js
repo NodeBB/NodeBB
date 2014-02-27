@@ -2,6 +2,10 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 	var Category = {},
 		loadingMoreTopics = false;
 
+	$(window).on('action:popstate', function(ev, data) {
+
+	});
+
 	Category.init = function() {
 		var	cid = templates.get('category_id'),
 			categoryName = templates.get('category_name'),

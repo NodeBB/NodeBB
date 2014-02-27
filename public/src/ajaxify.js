@@ -22,6 +22,7 @@ var ajaxify = {};
 	window.onpopstate = function (event) {
 		if (event !== null && event.state && event.state.url !== undefined && !ajaxify.initialLoad) {
 			ajaxify.go(event.state.url, null, true);
+			$(window).trigger('action:popstate', {url: event.state.url});
 		}
 	};
 
@@ -129,7 +130,7 @@ var ajaxify = {};
 									$this.addClass($this.attr('no-widget-class'));
 								});
 							}
-							
+
 							next(err);
 						});
 					}, function(err) {
