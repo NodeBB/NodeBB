@@ -32,7 +32,7 @@
 	}
 
 	templates.is_available = function (tpl) {
-		return jQuery.inArray(tpl, available_templates) !== -1;
+		return $.inArray(tpl, available_templates) !== -1;
 	};
 
 	templates.ready = function (callback) {
@@ -111,7 +111,7 @@
 		}
 
 		function loadClient() {
-			jQuery.when(jQuery.getJSON(RELATIVE_PATH + '/templates/config.json'), jQuery.getJSON(RELATIVE_PATH + '/api/get_templates_listing')).done(function (config_data, templates_data) {
+			$.when($.getJSON(RELATIVE_PATH + '/templates/config.json'), $.getJSON(RELATIVE_PATH + '/api/get_templates_listing')).done(function (config_data, templates_data) {
 				config = config_data[0];
 				available_templates = templates_data[0];
 				templates.ready();
@@ -148,7 +148,7 @@
 		// should be named something else
 		// TODO: The "Date.now()" in the line below is only there for development purposes.
 		// It should be removed at some point.
-		jQuery.get(RELATIVE_PATH + '/templates/' + tpl_name + '.tpl?v=' + Date.now(), function (html) {
+		$.get(RELATIVE_PATH + '/templates/' + tpl_name + '.tpl?v=' + Date.now(), function (html) {
 			var template = function () {
 				this.toString = function () {
 					return this.html;
@@ -222,7 +222,7 @@
 
 				$('#content').html(translatedTemplate);
 
-				jQuery('#content [template-variable]').each(function (index, element) {
+				$('#content [template-variable]').each(function (index, element) {
 					var value = null;
 
 					switch ($(element).attr('template-type')) {

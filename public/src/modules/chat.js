@@ -14,30 +14,32 @@ define(['taskbar', 'string'], function(taskbar, S) {
 			}
 
 			socket.emit('modules.chats.list', function(err, chats) {
-				var	chatsFrag = document.createDocumentFragment(),
-					chatEl = document.createElement('li'),
-					numChats = chats.length,
-					x, userObj;
-
+				var	numChats = chats.length,
+					chatEl, x, userObj;
+				chatsListEl.empty();
 				if (!err && numChats > 0) {
-					for(x=0;x<numChats;x++) {
+
+					for(x = 0;x < numChats; x++) {
 						userObj = chats[x];
-						chatEl.setAttribute('data-uid', userObj.uid);
-						chatEl.innerHTML = '<a href="javascript:app.openChat(\'' + userObj.username + '\', ' + userObj.uid + ');"><img src="' + userObj.picture + '" title="' + userObj.username + '" />' + userObj.username + '</a>';
+						chatEl = $('<li />')
+							.attr('data-uid', userObj.uid)
+							.html('<a href="javascript:app.openChat(\''
+								+ userObj.username
+								+ '\', ' + userObj.uid
+								+ ');"><img src="'
+								+ userObj.picture
+								+ '" title="'
+								+ userObj.username
+								+ '" />' + userObj.username + '</a>');
 
-						chatsFrag.appendChild(chatEl.cloneNode(true));
+						chatsListEl.append(chatEl);
 					}
-
-					chatsListEl.empty();
-					chatsListEl.html(chatsFrag);
 				} else {
 					translator.get('modules:chat.no_active', function(str) {
-						chatEl.className = 'no_active';
-						chatEl.innerHTML = '<a href="#">' + str + '</a>';
-						chatsFrag.appendChild(chatEl.cloneNode(true));
-
-						chatsListEl.empty();
-						chatsListEl.html(chatsFrag);
+						chatEl = $('<li />')
+							.addClass('no_active')
+							.html('<a href="#">' + str + '</a>');
+						chatsListEl.append(chatEl);
 					});
 				}
 			});
@@ -79,15 +81,15 @@ define(['taskbar', 'string'], function(taskbar, S) {
 			}
 		});
 		chatModal.css('zIndex', topZ + 1);
-	}
+	};
 
 	module.getModal = function(touid) {
 		return $('#chat-modal-' + touid);
-	}
+	};
 
 	module.modalExists = function(touid) {
 		return $('#chat-modal-' + touid).length !== 0;
-	}
+	};
 
 	function checkStatus(chatModal) {
 		socket.emit('user.isOnline', chatModal.touid, function(err, data) {
@@ -162,7 +164,7 @@ define(['taskbar', 'string'], function(taskbar, S) {
 				callback(chatModal);
 			});
 		});
-	}
+	};
 
 	module.center = function(chatModal) {
 		chatModal.css("left", Math.max(0, (($(window).width() - $(chatModal).outerWidth()) / 2) + $(window).scrollLeft()) + "px");
@@ -170,7 +172,7 @@ define(['taskbar', 'string'], function(taskbar, S) {
 		chatModal.css("zIndex", 2000);
 		chatModal.find('#chat-message-input').focus();
 		return chatModal;
-	}
+	};
 
 	module.load = function(uuid) {
 		var chatModal = $('div[UUID="'+uuid+'"]');
@@ -180,7 +182,7 @@ define(['taskbar', 'string'], function(taskbar, S) {
 		scrollToBottom(chatModal.find('#chat-content'));
 		module.center(chatModal);
 		module.bringModalToTop(chatModal);
-	}
+	};
 
 	module.minimize = function(uuid) {
 		var chatModal = $('div[UUID="'+uuid+'"]');
@@ -188,7 +190,7 @@ define(['taskbar', 'string'], function(taskbar, S) {
 		taskbar.minimize('chat', uuid);
 		clearInterval(chatModal.intervalId);
 		chatModal.intervalId = 0;
-	}
+	};
 
 	function getChatMessages(chatModal, callback) {
 		socket.emit('modules.chats.get', {touid:chatModal.touid}, function(err, messages) {

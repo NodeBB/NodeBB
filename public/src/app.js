@@ -1,10 +1,10 @@
 var socket,
 	config,
 	app = {
-		"username": null,
-		"uid": null,
-		"isFocused": true,
-		"currentRoom": null
+		'username': null,
+		'uid': null,
+		'isFocused': true,
+		'currentRoom': null
 	};
 
 (function () {
@@ -277,7 +277,7 @@ var socket,
 	app.populateOnlineUsers = function () {
 		var uids = [];
 
-		jQuery('.post-row').each(function () {
+		$('.post-row').each(function () {
 			var uid = $(this).attr('data-uid');
 			if(uids.indexOf(uid) === -1) {
 				uids.push(uid);
@@ -286,8 +286,8 @@ var socket,
 
 		socket.emit('user.getOnlineUsers', uids, function (err, users) {
 
-			jQuery('.username-field').each(function (index, element) {
-				var el = jQuery(this),
+			$('.username-field').each(function (index, element) {
+				var el = $(this),
 					uid = el.parents('li').attr('data-uid');
 
 					if (uid && users[uid]) {
@@ -307,19 +307,19 @@ var socket,
 			parts = path.split('/'),
 			active = parts[parts.length - 1];
 
-		jQuery('#main-nav li').removeClass('active');
+		$('#main-nav li').removeClass('active');
 		if (active) {
-			jQuery('#main-nav li a').each(function () {
-				var href = this.getAttribute('href');
+			$('#main-nav li a').each(function () {
+				var href = $(this).attr('href');
 				if (active == "sort-posts" || active == "sort-reputation" || active == "search" || active == "latest" || active == "online")
 					active = 'users';
 				if (href && href.match(active)) {
-					jQuery(this.parentNode).addClass('active');
+					$(this.parentNode).addClass('active');
 					return false;
 				}
 			});
 		}
-	};
+	}
 
 	app.createUserTooltips = function() {
 		$('img[title].teaser-pic,img[title].user-img').each(function() {
@@ -335,7 +335,7 @@ var socket,
 			selector:'.fa-circle.status',
 			placement: 'top'
 		});
-	}
+	};
 
 	app.makeNumbersHumanReadable = function(elements) {
 		elements.each(function() {
@@ -452,7 +452,7 @@ var socket,
 			}
 			previousScrollTop = currentScrollTop;
 		});
-	}
+	};
 
 	var	titleObj = {
 			active: false,
@@ -589,7 +589,7 @@ var socket,
 		});
 	};
 
-	jQuery('document').ready(function () {
+	$('document').ready(function () {
 		$('#search-form').on('submit', function () {
 			var input = $(this).find('input');
 			ajaxify.go("search/" + input.val());

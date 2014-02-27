@@ -3,9 +3,9 @@ define(function() {
 
 	Groups.init = function() {
 		var yourid = templates.get('yourid'),
-		    createEl = document.getElementById('create'),
+		    createEl = $('#create'),
 			createModal = $('#create-modal'),
-			createSubmitBtn = document.getElementById('create-modal-go'),
+			createSubmitBtn = $('#create-modal-go'),
 			createNameEl = $('#create-group-name'),
 			detailsModal = $('#group-details-modal'),
 			detailsSearch = detailsModal.find('#group-details-search'),
@@ -15,14 +15,14 @@ define(function() {
 			searchDelay = undefined,
 			listEl = $('#groups-list');
 
-		createEl.addEventListener('click', function() {
+		createEl.on('click', function() {
 			createModal.modal('show');
 			setTimeout(function() {
 				createNameEl.focus();
 			}, 250);
 		}, false);
 
-		createSubmitBtn.addEventListener('click', function() {
+		createSubmitBtn.on('click', function() {
 			var submitObj = {
 				name: createNameEl.val(),
 				description: $('#create-group-desc').val()
@@ -37,7 +37,7 @@ define(function() {
 							errorText = '<strong>Please choose another name</strong><p>There seems to be a group with this name already.</p>';
 							break;
 						case 'name-too-short':
-							errorText = '<strong>Please specify a grou name</strong><p>A group name is required for administrative purposes.</p>';
+							errorText = '<strong>Please specify a group name</strong><p>A group name is required for administrative purposes.</p>';
 							break;
 						default:
 							errorText = '<strong>Uh-Oh</strong><p>There was a problem creating your group. Please try again later!</p>';
@@ -57,8 +57,9 @@ define(function() {
 		});
 
 		listEl.on('click', 'button[data-action]', function() {
-			var action = this.getAttribute('data-action'),
-				gid = $(this).parents('li[data-gid]').attr('data-gid');
+			var el = $(this),
+				action = el.attr('data-action'),
+				gid = el.parents('li[data-gid]').attr('data-gid');
 
 			switch (action) {
 				case 'delete':
@@ -80,28 +81,20 @@ define(function() {
 						var formEl = detailsModal.find('form'),
 							nameEl = formEl.find('#change-group-name'),
 							descEl = formEl.find('#change-group-desc'),
-							memberIcon = document.createElement('li'),
 							numMembers = groupObj.members.length,
-							membersFrag = document.createDocumentFragment(),
-							memberIconImg, x;
-
+							x;
 
 						nameEl.val(groupObj.name);
 						descEl.val(groupObj.description);
 
-						// Member list
-						memberIcon.innerHTML = '<img /><span></span>';
-						memberIconImg = memberIcon.querySelector('img');
-						memberIconLabel = memberIcon.querySelector('span');
 						if (numMembers > 0) {
+							groupMembersEl.empty();
 							for (x = 0; x < numMembers; x++) {
-								memberIconImg.src = groupObj.members[x].picture;
-								memberIconLabel.innerHTML = groupObj.members[x].username;
-								memberIcon.setAttribute('data-uid', groupObj.members[x].uid);
-								membersFrag.appendChild(memberIcon.cloneNode(true));
+								var memberIcon = $('<li />')
+									.append($('<img />').attr('src', groupObj.members[x].picture))
+									.append($('<span />').attr('data-uid', groupObj.members[x].uid).html(groupObj.members[x].username));
+								groupMembersEl.append(memberIcon);
 							}
-							groupMembersEl.html('');
-							groupMembersEl[0].appendChild(membersFrag);
 						}
 
 						detailsModal.attr('data-gid', groupObj.gid);
@@ -118,43 +111,39 @@ define(function() {
 
 			searchDelay = setTimeout(function() {
 				var searchText = searchEl.value,
-					resultsEl = document.getElementById('group-details-search-results'),
-					foundUser = document.createElement('li'),
-					foundUserImg, foundUserLabel;
-
-				foundUser.innerHTML = '<img /><span></span>';
-				foundUserImg = foundUser.getElementsByTagName('img')[0];
-				foundUserLabel = foundUser.getElementsByTagName('span')[0];
+					resultsEl = $('#group-details-search-results'),
+					foundUser;
 
 				socket.emit('admin.user.search', searchText, function(err, results) {
 					if (!err && results && results.users.length > 0) {
-						var numResults = results.users.length,
-							resultsSlug = document.createDocumentFragment(),
-							x;
+						var numResults = results.users.length, x;
 						if (numResults > 4) numResults = 4;
-						for (x = 0; x < numResults; x++) {
-							foundUserImg.src = results.users[x].picture;
-							foundUserLabel.innerHTML = results.users[x].username;
-							foundUser.setAttribute('title', results.users[x].username);
-							foundUser.setAttribute('data-uid', results.users[x].uid);
-							resultsSlug.appendChild(foundUser.cloneNode(true));
-						}
 
-						resultsEl.innerHTML = '';
-						resultsEl.appendChild(resultsSlug);
-					} else resultsEl.innerHTML = '<li>No Users Found</li>';
+						resultsEl.empty();
+						for (x = 0; x < numResults; x++) {
+							foundUser = $('<li />');
+							foundUser
+								.attr({title: results.users[x].username, 'data-uid': results.users[x].uid})
+								.append($('<img />').attr('src', results.users[x].picture))
+								.append($('<span />').html(results.users[x].username));
+
+							resultsEl.appendChild(foundUser);
+						}
+					} else {
+						resultsEl.html('<li>No Users Found</li>');
+					}
 				});
 			}, 200);
 		});
 
 		searchResults.on('click', 'li[data-uid]', function() {
-			var userLabel = this,
-				uid = parseInt(this.getAttribute('data-uid')),
+			var userLabel = $(this),
+				uid = parseInt(userLabel.attr('data-uid')),
 				gid = detailsModal.attr('data-gid'),
 				members = [];
 
 			groupMembersEl.find('li[data-uid]').each(function() {
-				members.push(parseInt(this.getAttribute('data-uid')));
+				members.push(parseInt($(this).attr('data-uid')));
 			});
 
 			if (members.indexOf(uid) === -1) {
@@ -170,7 +159,7 @@ define(function() {
 		});
 
 		groupMembersEl.on('click', 'li[data-uid]', function() {
-			var uid = this.getAttribute('data-uid'),
+			var uid = $(this).attr('data-uid'),
 				gid = detailsModal.attr('data-gid');
 
 			socket.emit('admin.groups.get', gid, function(err, groupObj){

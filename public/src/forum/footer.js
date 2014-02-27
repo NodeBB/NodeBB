@@ -9,13 +9,17 @@ define(['notifications', 'chat'], function(Notifications, Chat) {
 	translator.prepareDOM();
 
 	function updateUnreadCount(err, tids) {
-		var count = 0;
-		if(tids && tids.length) {
+		var count = 0, unreadEl = $('#unread-count');
+
+		if (err) {
+			console.warn('Error updating unread count', err);
+		} else if(tids && tids.length) {
 			count = tids.length;
 		}
 
-		$('#unread-count').toggleClass('unread-count', count > 0);
-		$('#unread-count').attr('data-content', count > 20 ? '20+' : count);
+		unreadEl
+			.toggleClass('unread-count', count > 0)
+			.attr('data-content', count > 20 ? '20+' : count);
 	}
 
 
