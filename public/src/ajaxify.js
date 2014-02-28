@@ -110,38 +110,12 @@ var ajaxify = {};
 
 				app.processPage();
 
-				var widgetLocations = [];
+				ajaxify.renderWidgets(tpl_url, url, location, function(err) {
+					$('#content, #footer').stop(true, true).removeClass('ajaxifying');
+					ajaxify.initialLoad = false;
 
-				require(['vendor/async'], function(async) {
-					$('#content [widget-area]').each(function() {
-						widgetLocations.push($(this).attr('widget-area'));
-					});
-
-					async.each(widgetLocations, function(location, next) {
-						var area = $('#content [widget-area="' + location + '"]');
-
-						socket.emit('widgets.render', {template: tpl_url + '.tpl', url: url, location: location}, function(err, renderedWidgets) {
-							area.html(templates.prepare(area.html()).parse({
-								widgets: renderedWidgets
-							})).removeClass('hidden');
-
-							if (!renderedWidgets.length) {
-								$('body [no-widget-class]').each(function() {
-									var $this = $(this);
-									$this.removeClass();
-									$this.addClass($this.attr('no-widget-class'));
-								});
-							}
-
-							next(err);
-						});
-					}, function(err) {
-						$('#content, #footer').stop(true, true).removeClass('ajaxifying');
-						ajaxify.initialLoad = false;
-
-						app.refreshTitle(url);
-						$(window).trigger('action:ajaxify.end', { url: url });
-					});
+					app.refreshTitle(url);
+					$(window).trigger('action:ajaxify.end', { url: url });
 				});
 			}, url);
 
@@ -150,6 +124,39 @@ var ajaxify = {};
 
 		return false;
 	};
+
+	ajaxify.renderWidgets = function(tpl_url, url, location, callback) {
+		var widgetLocations = [];
+
+		require(['vendor/async'], function(async) {
+			$('#content [widget-area]').each(function() {
+				widgetLocations.push($(this).attr('widget-area'));
+			});
+
+			async.each(widgetLocations, function(location, next) {
+				var area = $('#content [widget-area="' + location + '"]');
+
+				socket.emit('widgets.render', {template: tpl_url + '.tpl', url: url, location: location}, function(err, renderedWidgets) {
+					area.html(templates.prepare(area.html()).parse({
+						widgets: renderedWidgets
+					})).removeClass('hidden');
+
+					if (!renderedWidgets.length) {
+						$('body [no-widget-class]').each(function() {
+							var $this = $(this);
+							$this.removeClass();
+							$this.addClass($this.attr('no-widget-class'));
+						});
+					}
+
+					next(err);
+				});
+			}, function(err) {
+				callback(err);
+			});
+		});
+	};
+
 
 	ajaxify.refresh = function() {
 		ajaxify.go(ajaxify.currentPage);
