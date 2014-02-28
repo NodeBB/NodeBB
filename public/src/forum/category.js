@@ -3,27 +3,22 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		loadingMoreTopics = false;
 
 	Category.init = function() {
-		var	cid = templates.get('category_id'),
-			categoryName = templates.get('category_name'),
-			categoryUrl = encodeURIComponent(window.location.href),
-			twitterUrl = "https://twitter.com/intent/tweet?url=" + categoryUrl + "&text=" + encodeURIComponent(categoryName),
-			facebookUrl = "https://www.facebook.com/sharer/sharer.php?u=" + categoryUrl,
-			googleUrl = "https://plus.google.com/share?url=" + categoryUrl;
+		var	cid = templates.get('category_id');
 
 		app.enterRoom('category_' + cid);
 
 		$('#twitter-share').on('click', function () {
-			window.open(twitterUrl, '_blank', 'width=550,height=420,scrollbars=no,status=no');
+			window.open('https://twitter.com/intent/tweet?url=' + encodeURIComponent(window.location.href) + '&text=' + encodeURIComponent(templates.get('category_name')), '_blank', 'width=550,height=420,scrollbars=no,status=no');
 			return false;
 		});
 
 		$('#facebook-share').on('click', function () {
-			window.open(facebookUrl, '_blank', 'width=626,height=436,scrollbars=no,status=no');
+			window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href), '_blank', 'width=626,height=436,scrollbars=no,status=no');
 			return false;
 		});
 
 		$('#google-share').on('click', function () {
-			window.open(googleUrl, '_blank', 'width=500,height=570,scrollbars=no,status=no');
+			window.open('https://plus.google.com/share?url=' + encodeURIComponent(window.location.href), '_blank', 'width=500,height=570,scrollbars=no,status=no');
 			return false;
 		});
 
