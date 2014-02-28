@@ -99,7 +99,7 @@ var ajaxify = {};
 
 				app.processPage();
 
-				ajaxify.renderWidgets(tpl_url, url, location, function(err) {
+				ajaxify.renderWidgets(tpl_url, url, function(err) {
 					$('#content, #footer').stop(true, true).removeClass('ajaxifying');
 					ajaxify.initialLoad = false;
 
@@ -131,7 +131,7 @@ var ajaxify = {};
 		return tpl_url;
 	}
 
-	ajaxify.renderWidgets = function(tpl_url, url, location, callback) {
+	ajaxify.renderWidgets = function(tpl_url, url, callback) {
 		var widgetLocations = [];
 
 		require(['vendor/async'], function(async) {

@@ -627,7 +627,8 @@ var socket,
 
 
 	$('document').ready(function () {
-		var url = window.location.pathname.slice(1);
+		var url = window.location.pathname.slice(1),
+			tpl_url = ajaxify.getTemplateMapping(url);
 
 		$(window).trigger('action:ajaxify.start', {
 			url: url
@@ -652,9 +653,12 @@ var socket,
 
 		createHeaderTooltips();
 
-		$(window).trigger('action:ajaxify.end', {
-			url: url
+		ajaxify.renderWidgets(tpl_url, url, function() {
+			$(window).trigger('action:ajaxify.end', {
+				url: url
+			});
 		});
+
 	});
 
 	showWelcomeMessage = location.href.indexOf('loggedin') !== -1;
