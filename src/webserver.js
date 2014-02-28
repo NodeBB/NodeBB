@@ -173,9 +173,15 @@ process.on('uncaughtException', function(err) {
 				});
 			},
 			function(next) {
-				app.render('footer', {}, function(err, template) {
-					res.locals.footer = template;
-					next(err);
+				// this is slower than the original implementation because the rendered template is not cached
+				// but I didn't bother to fix this because we will deprecate [filter:footer.build] in favour of the widgets system by 0.4x
+				plugins.fireHook('filter:footer.build', '', function(err, appendHTML) {
+					app.render('footer', {footerHTML: appendHTML}, function(err, template) {
+						translator.translate(template, function(parsedTemplate) {
+							res.locals.footer = template;
+							next(err);
+						});
+					});
 				});
 			}
 		], function(err) {
@@ -589,16 +595,6 @@ process.on('uncaughtException', function(err) {
 
 	module.exports.init = function () {
 		// translate all static templates served by webserver here. ex. footer, logout
-		/*plugins.fireHook('filter:footer.build', '', function(err, appendHTML) {
-			var footer = templates.footer.parse({
-				footerHTML: appendHTML
-			});
-
-			translator.translate(footer, function(parsedTemplate) {
-				templates.footer = parsedTemplate;
-			});
-		});*/
-
 		plugins.fireHook('action:app.load', app);
 
 		/*translator.translate(templates.logout.toString(), function(parsedTemplate) {
