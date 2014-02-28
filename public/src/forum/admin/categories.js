@@ -14,7 +14,20 @@ define(['uploader'], function(uploader) {
 
 		function save() {
 			if(Object.keys(modified_categories).length) {
-				socket.emit('admin.categories.update', modified_categories);
+				socket.emit('admin.categories.update', modified_categories, function(err, result) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+
+					if (result && result.length) {
+						app.alert({
+							title: 'Updated Categories',
+							message: 'Category IDs ' + result.join(', ') + ' was successfully updated.',
+							type: 'success',
+							timeout: 2000
+						});
+					}
+				});
 				modified_categories = {};
 			}
 			return false;
