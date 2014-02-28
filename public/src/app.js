@@ -654,6 +654,8 @@ var socket,
 		createHeaderTooltips();
 
 		ajaxify.renderWidgets(tpl_url, url, function() {
+			ajaxify.fadeIn();
+			
 			$(window).trigger('action:ajaxify.end', {
 				url: url
 			});
