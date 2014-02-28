@@ -1,7 +1,8 @@
 var usersController = {},
-	user = require('./../user'),
-	posts = require('./../posts');
 
+var async = require('async'),
+	user = require('./../user'),
+	db = require('./../database');
 
 usersController.getOnlineUsers = function(req, res, next) {
 	var	websockets = require('../socket.io');

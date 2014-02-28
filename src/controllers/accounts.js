@@ -1,9 +1,19 @@
-var accountsController = {},
+var accountsController = {};
+
+var fs = require('fs'),
+	path = require('path'),
+	winston = require('winston'),
+	nconf = require('nconf'),
+	async= require('async'),
+
 	user = require('./../user'),
 	posts = require('./../posts'),
+	postTools = require('../postTools'),
+	utils = require('./../../public/src/utils'),
+	meta = require('./../meta'),
 	plugins = require('./../plugins'),
-	meta = require('./../meta');
-
+	image = require('./../image'),
+	file = require('./../file');
 
 function userNotFound(res) {
 	if (res.locals.isAPI) {
@@ -107,6 +117,14 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 		});
 	});
 }
+
+accountsController.getUserByUID = function(req, res, next) {
+	var uid = req.params.uid ? req.params.uid : 0;
+
+	user.getUserData(uid, function(err, userData) {
+		res.json(userData);
+	});
+};
 
 accountsController.getAccount = function(req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
