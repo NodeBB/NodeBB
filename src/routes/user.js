@@ -100,13 +100,7 @@ var fs = require('fs'),
 				});
 			}
 
-			createRoute('/:userslug', '', 'account');
-			createRoute('/:userslug/following', '/following', 'following');
-			createRoute('/:userslug/followers', '/followers', 'followers');
-			createRoute('/:userslug/favourites', '/favourites', 'favourites');
-			createRoute('/:userslug/posts', '/posts', 'accountposts');
-			createRoute('/:userslug/edit', '/edit', 'accountedit');
-			createRoute('/:userslug/settings', '/settings', 'accountsettings');
+			
 
 			app.post('/uploadpicture', function (req, res) {
 				if (!req.user) {
@@ -216,20 +210,17 @@ var fs = require('fs'),
 		});
 
 		function isAllowed(req, res, next) {
-			if(!req.user && !!parseInt(meta.config.privateUserInfo, 10)) {
-				return res.json(403, 'not-allowed');
-			}
-			next();
+			
 		}
 
-		app.get('/api/user/:userslug/following', isAllowed, getUserFollowing);
-		app.get('/api/user/:userslug/followers', isAllowed, getUserFollowers);
-		app.get('/api/user/:userslug/edit', isAllowed, getUserEdit);
-		app.get('/api/user/:userslug/settings', isAllowed, getUserSettings);
-		app.get('/api/user/:userslug/favourites', isAllowed, getUserFavourites);
-		app.get('/api/user/:userslug/posts', isAllowed, getUserPosts);
+		//app.get('/api/user/:userslug/following', isAllowed, getUserFollowing);
+		//app.get('/api/user/:userslug/followers', isAllowed, getUserFollowers);
+		//app.get('/api/user/:userslug/edit', isAllowed, getUserEdit);
+		//app.get('/api/user/:userslug/settings', isAllowed, getUserSettings);
+		//app.get('/api/user/:userslug/favourites', isAllowed, getUserFavourites);
+		//app.get('/api/user/:userslug/posts', isAllowed, getUserPosts);
 		app.get('/api/user/uid/:uid', isAllowed, getUserData);
-		app.get('/api/user/:userslug', isAllowed, getUserProfile);
+		//app.get('/api/user/:userslug', isAllowed, getUserProfile);
 
 		app.get('/api/users', isAllowed, getOnlineUsers);
 		app.get('/api/users/sort-posts', isAllowed, getUsersSortedByPosts);
@@ -240,48 +231,7 @@ var fs = require('fs'),
 
 
 		function getUserProfile(req, res, next) {
-			var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
-
-			getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
-				if(err) {
-					return next(err);
-				}
-
-				if(!userData) {
-					return res.json(404, {
-						error: 'User not found!'
-					});
-				}
-
-				user.isFollowing(callerUID, userData.theirid, function (isFollowing) {
-
-					posts.getPostsByUid(callerUID, userData.theirid, 0, 9, function (err, userPosts) {
-
-						if(err) {
-							return next(err);
-						}
-
-						userData.posts = userPosts.posts.filter(function (p) {
-							return p && parseInt(p.deleted, 10) !== 1;
-						});
-
-						userData.isFollowing = isFollowing;
-
-						if (!userData.profileviews) {
-							userData.profileviews = 1;
-						}
-
-						if (callerUID !== parseInt(userData.uid, 10) && callerUID) {
-							user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
-						}
-
-						postTools.parse(userData.signature, function (err, signature) {
-							userData.signature = signature;
-							res.json(userData);
-						});
-					});
-				});
-			});
+			
 		}
 
 		function getUserData(req, res, next) {
@@ -293,190 +243,27 @@ var fs = require('fs'),
 		}
 
 		function getUserPosts(req, res, next) {
-			var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
-			user.getUidByUserslug(req.params.userslug, function (err, uid) {
-				if (!uid) {
-					return res.json(404, {
-						error: 'User not found!'
-					});
-				}
-
-				user.getUserFields(uid, ['username', 'userslug'], function (err, userData) {
-					if (err) {
-						return next(err);
-					}
-
-					if (!userData) {
-						return res.json(404, {
-							error: 'User not found!'
-						});
-					}
-
-					posts.getPostsByUid(callerUID, uid, 0, 19, function (err, userPosts) {
-						if (err) {
-							return next(err);
-						}
-						userData.uid = uid;
-						userData.theirid = uid;
-						userData.yourid = callerUID;
-						userData.posts = userPosts.posts;
-						userData.nextStart = userPosts.nextStart;
-
-						res.json(userData);
-					});
-				});
-			});
 		}
 
 		function getUserFavourites(req, res, next) {
-			var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
-
-			user.getUidByUserslug(req.params.userslug, function (err, uid) {
-				if (!uid) {
-					return res.json(404, {
-						error: 'User not found!'
-					});
-				}
-
-				if (parseInt(uid, 10) !== callerUID) {
-					return res.json(403, {
-						error: 'Not allowed!'
-					});
-				}
-
-				user.getUserFields(uid, ['username', 'userslug'], function (err, userData) {
-					if (err) {
-						return next(err);
-					}
-
-					if (!userData) {
-						return res.json(404, {
-							error: 'User not found!'
-						});
-					}
-
-					posts.getFavourites(uid, 0, 9, function (err, favourites) {
-						if (err) {
-							return next(err);
-						}
-
-						userData.theirid = uid;
-						userData.yourid = callerUID;
-						userData.posts = favourites.posts;
-						userData.nextStart = favourites.nextStart;
-
-						res.json(userData);
-					});
-				});
-			});
+			
 		}
 
 		function getUserSettings(req, res, next) {
-			var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
-
-			user.getUidByUserslug(req.params.userslug, function(err, uid) {
-				if (err) {
-					return next(err);
-				}
-
-				if (!uid) {
-					return res.json(404, {
-						error: 'User not found!'
-					});
-				}
-
-				if (parseInt(uid, 10) !== callerUID) {
-					return res.json(403, {
-						error: 'Not allowed!'
-					});
-				}
-
-				plugins.fireHook('filter:user.settings', [], function(err, settings) {
-					if (err) {
-						return next(err);
-					}
-
-					user.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
-						if (err) {
-							return next(err);
-						}
-
-						if(!userData) {
-							return res.json(404, {
-								error: 'User not found!'
-							});
-						}
-						userData.yourid = req.user.uid;
-						userData.theirid = uid;
-						userData.settings = settings;
-						res.json(userData);
-					});
-				});
-
-			});
+			
 		}
 
-		function getUserEdit(req, res, next) {
-			var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
-
-			getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
-				if(err) {
-					return next(err);
-				}
-				res.json(userData);
-			});
+		//function getUserEdit(req, res, next) {
+			//
 		}
 
 		function getUserFollowers(req, res, next) {
-			var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
-
-			getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
-				if(err) {
-					return next(err);
-				}
-
-				if (userData) {
-					user.getFollowers(userData.uid, function (err, followersData) {
-						if(err) {
-							return next(err);
-						}
-						userData.followers = followersData;
-						userData.followersCount = followersData.length;
-						res.json(userData);
-					});
-				} else {
-					res.json(404, {
-						error: 'User not found!'
-					});
-				}
-			});
+			
 		}
 
 		function getUserFollowing(req, res, next) {
-			var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
-
-			getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
-				if(err) {
-					return next(err);
-				}
-
-				if (userData) {
-					user.getFollowing(userData.uid, function (err, followingData) {
-						if(err) {
-							return next(err);
-						}
-						userData.following = followingData;
-						userData.followingCount = followingData.length;
-						res.json(userData);
-					});
-
-				} else {
-					res.json(404, {
-						error: 'User not found!'
-					});
-				}
-			});
+			
 		}
 
 		function getUsersSortedByJoinDate(req, res) {

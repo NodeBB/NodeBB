@@ -200,21 +200,7 @@ var path = require('path'),
 				} else {
 					res.send(403);
 				}
-			});
-
-			app.get('/outgoing', function (req, res) {
-				var url = req.query.url;
-
-				if (url) {
-					res.json({
-						url: url,
-						title: meta.config.title
-					});
-				} else {
-					res.status(404);
-					res.redirect(nconf.get('relative_path') + '/404');
-				}
-			});
+			});			
 
 			app.get('/search', function (req, res) {
 				if ((req.user && req.user.uid) || meta.config.allowGuestSearching === '1') {
@@ -358,18 +344,6 @@ var path = require('path'),
 				res.json({
 					reset_code: req.params.code
 				});
-			});
-
-			app.get('/404', function (req, res) {
-				res.json({});
-			});
-
-			app.get('/403', function (req, res) {
-				res.json({});
-			});
-
-			app.get('/500', function(req, res) {
-				res.json({errorMessage: 'testing'});
 			});
 
 			app.namespace('/categories', function() {

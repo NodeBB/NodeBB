@@ -1,5 +1,6 @@
 var topicsController = require('./topics'),
 	categoriesController = require('./categories'),
+	staticController = require('./static'),
 	async = require('async'),
 	nconf = require('nconf'),
 	auth = require('./../routes/authentication'),
@@ -12,13 +13,14 @@ var topicsController = require('./topics'),
 
 Controllers = {
 	topics: topicsController,
-	categories: categoriesController
+	categories: categoriesController,
+	static: staticController
 };
 
 
 Controllers.home = function(req, res, next) {
 	async.parallel({
-		"header": function (next) {
+		header: function (next) {
 			/*app.build_header({
 				req: req,
 				res: res,
@@ -39,7 +41,7 @@ Controllers.home = function(req, res, next) {
 
 			next(null);
 		},
-		"categories": function (next) {
+		categories: function (next) {
 			var uid = (req.user) ? req.user.uid : 0;
 			categories.getAllCategories(uid, function (err, data) {
 				data.categories = data.categories.filter(function (category) {
@@ -183,6 +185,25 @@ Controllers.robots = function (req, res) {
 		res.send("User-agent: *\n" +
 			"Disallow: /admin/\n" +
 			"Sitemap: " + nconf.get('url') + "/sitemap.xml");
+	}
+};
+
+Controllers.outgoing = function(req, res, next) {
+	var url = req.query.url,
+		data = {
+			url: url,
+			title: meta.config.title
+		};
+
+	if (url) {
+		if (res.locals.isAPI) {
+			res.json(data);
+		} else {
+			res.render('outgoing', data);
+		}
+	} else {
+		res.status(404);
+		res.redirect(nconf.get('relative_path') + '/404');
 	}
 };
 

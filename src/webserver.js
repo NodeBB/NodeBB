@@ -109,6 +109,18 @@ process.on('uncaughtException', function(err) {
 		}
 	};
 
+	app.checkGlobalPrivacySettings = function(req, res, next) {
+		if(!req.user && !!parseInt(meta.config.privateUserInfo, 10)) {
+			if (res.locals.isAPI) {
+				return res.json(403, 'not-allowed');
+			} else {
+				return res.redirect('403');
+			}
+		}
+
+		next();
+	};
+
 	app.buildHeader = function(req, res, next) {
 		async.parallel([
 			function(next) {
@@ -589,7 +601,7 @@ process.on('uncaughtException', function(err) {
 
 		// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 		(function () {
-			var routes = ['register', 'account', '403', '404', '500'],
+			var routes = ['account'],
 				loginRequired = ['notifications'];
 
 			async.each(routes.concat(loginRequired), function(route, next) {
@@ -630,8 +642,20 @@ process.on('uncaughtException', function(err) {
 		app.get('/api/confirm/:code', app.prepareAPI, controllers.confirmEmail);
 
 		app.get('/sitemap.xml', controllers.sitemap);
-
 		app.get('/robots.txt', controllers.robots);
+
+		app.get('/outgoing', app.buildHeader, controllers.outgoing);
+		app.get('/api/outgoing', app.prepareAPI, controllers.outgoing);
+
+		app.get('/404', app.buildHeader, controllers.static['404']);
+		app.get('/api/404', app.prepareAPI, controllers.static['404']);
+
+		app.get('/403', app.buildHeader, controllers.static['403']);
+		app.get('/api/403', app.prepareAPI, controllers.static['403']);
+
+		app.get('/500', app.buildHeader, controllers.static['500']);
+		app.get('/api/500', app.prepareAPI, controllers.static['500']);
+
 
 		/* Topics */
 		app.get('/topic/:topic_id/:slug?', app.buildHeader, controllers.topics.get);
@@ -653,20 +677,31 @@ process.on('uncaughtException', function(err) {
 		app.get('/category/:category_id/:slug?', app.buildHeader, controllers.categories.get);
 		app.get('/api/category/:category_id/:slug?', app.prepareAPI, controllers.categories.get);
 
-		
+		/* Users */
+		app.get'/user/:userslug', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getAccount);
+		app.get'/api/user/:userslug', app.prepareAPI, app.checkGlobalPrivacySettings controllers.users.getAccount);
 
-		app.get('/outgoing', function (req, res) {
-			if (!req.query.url) {
-				return res.redirect('/404');
-			}
+		app.get'/user/:userslug/following', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getFollowing);
+		app.get'/api/user/:userslug/following', app.prepareAPI, app.checkGlobalPrivacySettings controllers.users.getFollowing);
 
-			app.build_header({
-				req: req,
-				res: res
-			}, function (err, header) {
-				res.send(header + app.create_route('outgoing?url=' + encodeURIComponent(req.query.url)) + templates.footer);
-			});
-		});
+		app.get'/user/:userslug/followers', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getFollowers);
+		app.get'/api/user/:userslug/followers', app.prepareAPI, app.checkGlobalPrivacySettings controllers.users.getFollowers);
+
+		app.get'/user/:userslug/favourites', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getFavourites);
+		app.get'/api/user/:userslug/favourites', app.prepareAPI, app.checkGlobalPrivacySettings controllers.users.getFavourites);
+
+		app.get'/user/:userslug/posts', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getPosts);
+		app.get'/api/user/:userslug/posts', app.prepareAPI, app.checkGlobalPrivacySettings controllers.users.getPosts);
+
+		app.get'/user/:userslug/edit', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.accountEdit);
+		app.get'/api/user/:userslug/edit', app.prepareAPI, app.checkGlobalPrivacySettings controllers.users.accountEdit);
+
+		app.get'/user/:userslug/settings', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.accountSettings);
+		app.get'/api/user/:userslug/settings', app.prepareAPI, app.checkGlobalPrivacySettings controllers.users.accountSettings);
+
+
+
+
 
 		app.get('/search/:term?', function (req, res) {
 
