@@ -407,7 +407,7 @@ var socket,
 			return;
 		}
 
-		if (!app.username) {
+		if (!app.uid) {
 			app.alert({
 				type: 'danger',
 				title: 'Not Logged In',
