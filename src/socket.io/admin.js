@@ -118,12 +118,12 @@ SocketAdmin.categories.create = function(socket, data, callback) {
 	categories.create(data, callback);
 };
 
-SocketAdmin.categories.update = function(socket, data) {
+SocketAdmin.categories.update = function(socket, data, callback) {
 	if(!data) {
-		throw new Error('invalid data');
+		return callback(new Error('invalid data'));
 	}
 
-	admin.categories.update(data, socket);
+	admin.categories.update(data, socket, callback);
 };
 
 SocketAdmin.categories.search = function(socket, data, callback) {
