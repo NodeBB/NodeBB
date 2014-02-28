@@ -82,7 +82,7 @@ var ajaxify = {};
 
 			translator.load(tpl_url);
 
-			$('#footer, #content').removeClass('hide').addClass('ajaxifying');
+			ajaxify.fadeOut();
 
 			templates.flush();
 			templates.load_template(function () {
@@ -100,7 +100,7 @@ var ajaxify = {};
 				app.processPage();
 
 				ajaxify.renderWidgets(tpl_url, url, function(err) {
-					$('#content, #footer').stop(true, true).removeClass('ajaxifying');
+					ajaxify.fadeIn();
 					ajaxify.initialLoad = false;
 
 					app.refreshTitle(url);
@@ -112,6 +112,14 @@ var ajaxify = {};
 		}
 
 		return false;
+	};
+
+	ajaxify.fadeIn = function() {
+		$('#content, #footer').stop(true, true).removeClass('ajaxifying');
+	};
+
+	ajaxify.fadeOut = function() {
+		$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 	};
 
 	ajaxify.getTemplateMapping = function(url) {
