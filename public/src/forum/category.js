@@ -90,7 +90,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 						$('#topics-container').empty();
 						loadingMoreTopics = false;
 
-						Category.loadMoreTopics(templates.get('category_id'), after, function() {
+						Category.loadMoreTopics(templates.get('category_id'), index, function() {
 							Category.scrollToTopic(bookmark, clicked, 0);
 						});
 					});
