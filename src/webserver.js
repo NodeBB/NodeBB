@@ -110,7 +110,9 @@ process.on('uncaughtException', function(err) {
 	};
 
 	app.checkGlobalPrivacySettings = function(req, res, next) {
-		if(!req.user && !!parseInt(meta.config.privateUserInfo, 10)) {
+		var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
+
+		if (!callerUID && !!parseInt(meta.config.privateUserInfo, 10)) {
 			if (res.locals.isAPI) {
 				return res.json(403, 'not-allowed');
 			} else {
@@ -119,6 +121,43 @@ process.on('uncaughtException', function(err) {
 		}
 
 		next();
+	};
+
+	app.checkAccountPermissions = function(req, res, next) {
+		user.getUidByUserslug(req.params.userslug, function (err, uid) {
+			if (err) {
+				return next(err);
+			}
+
+			// not sure if this check really should belong here. also make sure we're not doing this check again in the actual method
+			if (!uid) {
+				if (res.locals.isAPI) {
+					return res.json(404);
+				} else {
+					return res.redirect('404');
+				}
+			}
+
+			if (parseInt(uid, 10) === callerUID) {
+				return next();
+			}
+
+			user.isAdministrator(callerUID, function(err, isAdmin) {
+				if(err) {
+					return next(err);
+				}
+
+				if(isAdmin) {
+					next();
+				}
+
+				if (res.locals.isAPI) {
+					return res.json(403, 'not-allowed');
+				} else {
+					return res.redirect('403');
+				}
+			});
+		});
 	};
 
 	app.buildHeader = function(req, res, next) {
@@ -601,20 +640,12 @@ process.on('uncaughtException', function(err) {
 
 		// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 		(function () {
-			var routes = ['account'],
+			var routes = [],
 				loginRequired = ['notifications'];
 
 			async.each(routes.concat(loginRequired), function(route, next) {
 				app.get('/' + route, function (req, res) {
-
-					if ((route === 'register' || route === 'login') && (req.user && req.user.uid > 0)) {
-						user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
-							res.redirect('/user/' + userslug);
-						});
-						return;
-					} else if(route === 'register' && meta.config.allowRegistration !== undefined && parseInt(meta.config.allowRegistration, 10) === 0) {
-						return res.redirect('/403');
-					} else if (loginRequired.indexOf(route) !== -1 && !req.user) {
+					if (loginRequired.indexOf(route) !== -1 && !req.user) {
 						return res.redirect('/403');
 					}
 
@@ -679,25 +710,26 @@ process.on('uncaughtException', function(err) {
 
 		/* Accounts */
 		app.get'/user/:userslug', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.getAccount);
-		app.get'/api/user/:userslug', app.prepareAPI, app.checkGlobalPrivacySettings controllers.accounts.getAccount);
+		app.get'/api/user/:userslug', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.accounts.getAccount);
 
 		app.get'/user/:userslug/following', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.getFollowing);
-		app.get'/api/user/:userslug/following', app.prepareAPI, app.checkGlobalPrivacySettings controllers.accounts.getFollowing);
+		app.get'/api/user/:userslug/following', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.accounts.getFollowing);
 
 		app.get'/user/:userslug/followers', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.getFollowers);
-		app.get'/api/user/:userslug/followers', app.prepareAPI, app.checkGlobalPrivacySettings controllers.accounts.getFollowers);
+		app.get'/api/user/:userslug/followers', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.accounts.getFollowers);
 
-		app.get'/user/:userslug/favourites', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.getFavourites);
-		app.get'/api/user/:userslug/favourites', app.prepareAPI, app.checkGlobalPrivacySettings controllers.accounts.getFavourites);
+		app.get'/user/:userslug/favourites', app.buildHeader, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.getFavourites);
+		app.get'/api/user/:userslug/favourites', app.prepareAPI, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.getFavourites);
 
 		app.get'/user/:userslug/posts', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.getPosts);
-		app.get'/api/user/:userslug/posts', app.prepareAPI, app.checkGlobalPrivacySettings controllers.accounts.getPosts);
+		app.get'/api/user/:userslug/posts', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.accounts.getPosts);
 
-		app.get'/user/:userslug/edit', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.accountEdit);
-		app.get'/api/user/:userslug/edit', app.prepareAPI, app.checkGlobalPrivacySettings controllers.accounts.accountEdit);
+		app.get'/user/:userslug/edit', app.buildHeader, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.accountEdit);
+		app.get'/api/user/:userslug/edit', app.prepareAPI, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.accountEdit);
 
-		app.get'/user/:userslug/settings', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.accountSettings);
-		app.get'/api/user/:userslug/settings', app.prepareAPI, app.checkGlobalPrivacySettings controllers.accounts.accountSettings);
+		// todo: admin recently gained access to this page, pls check if it actually works
+		app.get'/user/:userslug/settings', app.buildHeader, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.accountSettings);
+		app.get'/api/user/:userslug/settings', app.prepareAPI, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.accountSettings);
 
 		/* Users */
 		app.get('/users', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
