@@ -426,6 +426,26 @@ var async = require('async'),
 		});
 	};
 
+	Topics.getTidPage = function(tid, uid, callback) {
+		if(!tid) {
+			return callback(new Error('invalid-tid'));
+		}
+
+		async.parallel({
+			index: function(next) {
+				categories.getTopicIndex(tid, next);
+			},
+			settings: function(next) {
+				user.getSettings(uid, next);
+			}
+		}, function(err, results) {
+			if(err) {
+				return callback(err);
+			}
+			callback(null, Math.ceil((results.index + 1) / results.settings.topicsPerPage));
+		});
+	};
+
 	Topics.getCategoryData = function(tid, callback) {
 		Topics.getTopicField(tid, 'cid', function(err, cid) {
 			if(err) {

@@ -39,7 +39,7 @@
 		<ul id="topics-container" itemscope itemtype="http://www.schema.org/ItemList" data-nextstart="{nextStart}">
 			<meta itemprop="itemListOrder" content="descending">
 			<!-- BEGIN topics -->
-			<li class="category-item <!-- IF topics.deleted -->deleted<!-- ENDIF topics.deleted --><!-- IF topics.unread -->unread<!-- ENDIF topics.unread -->" itemprop="itemListElement">
+			<li class="category-item <!-- IF topics.deleted -->deleted<!-- ENDIF topics.deleted --><!-- IF topics.unread -->unread<!-- ENDIF topics.unread -->" itemprop="itemListElement" data-tid="{topics.tid}" data-index="{topics.index}">
 
 				<div class="col-md-12 col-xs-12 panel panel-default topic-row">
 
