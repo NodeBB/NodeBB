@@ -1,5 +1,7 @@
 var topicsController = require('./topics'),
 	categoriesController = require('./categories'),
+	usersController = require('./users'),
+	accountsController = require('./accounts'),
 	staticController = require('./static'),
 	async = require('async'),
 	nconf = require('nconf'),
@@ -14,6 +16,8 @@ var topicsController = require('./topics'),
 Controllers = {
 	topics: topicsController,
 	categories: categoriesController,
+	users: usersController,
+	accounts: accountsController,
 	static: staticController
 };
 

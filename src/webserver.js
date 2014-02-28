@@ -647,6 +647,7 @@ process.on('uncaughtException', function(err) {
 		app.get('/outgoing', app.buildHeader, controllers.outgoing);
 		app.get('/api/outgoing', app.prepareAPI, controllers.outgoing);
 
+		/* Static Pages */
 		app.get('/404', app.buildHeader, controllers.static['404']);
 		app.get('/api/404', app.prepareAPI, controllers.static['404']);
 
@@ -655,7 +656,6 @@ process.on('uncaughtException', function(err) {
 
 		app.get('/500', app.buildHeader, controllers.static['500']);
 		app.get('/api/500', app.prepareAPI, controllers.static['500']);
-
 
 		/* Topics */
 		app.get('/topic/:topic_id/:slug?', app.buildHeader, controllers.topics.get);
@@ -677,27 +677,27 @@ process.on('uncaughtException', function(err) {
 		app.get('/category/:category_id/:slug?', app.buildHeader, controllers.categories.get);
 		app.get('/api/category/:category_id/:slug?', app.prepareAPI, controllers.categories.get);
 
-		/* Users */
-		app.get'/user/:userslug', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getAccount);
-		app.get'/api/user/:userslug', app.prepareAPI, app.checkGlobalPrivacySettings controllers.users.getAccount);
+		/* Accounts */
+		app.get'/user/:userslug', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.getAccount);
+		app.get'/api/user/:userslug', app.prepareAPI, app.checkGlobalPrivacySettings controllers.accounts.getAccount);
 
-		app.get'/user/:userslug/following', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getFollowing);
-		app.get'/api/user/:userslug/following', app.prepareAPI, app.checkGlobalPrivacySettings controllers.users.getFollowing);
+		app.get'/user/:userslug/following', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.getFollowing);
+		app.get'/api/user/:userslug/following', app.prepareAPI, app.checkGlobalPrivacySettings controllers.accounts.getFollowing);
 
-		app.get'/user/:userslug/followers', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getFollowers);
-		app.get'/api/user/:userslug/followers', app.prepareAPI, app.checkGlobalPrivacySettings controllers.users.getFollowers);
+		app.get'/user/:userslug/followers', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.getFollowers);
+		app.get'/api/user/:userslug/followers', app.prepareAPI, app.checkGlobalPrivacySettings controllers.accounts.getFollowers);
 
-		app.get'/user/:userslug/favourites', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getFavourites);
-		app.get'/api/user/:userslug/favourites', app.prepareAPI, app.checkGlobalPrivacySettings controllers.users.getFavourites);
+		app.get'/user/:userslug/favourites', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.getFavourites);
+		app.get'/api/user/:userslug/favourites', app.prepareAPI, app.checkGlobalPrivacySettings controllers.accounts.getFavourites);
 
-		app.get'/user/:userslug/posts', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getPosts);
-		app.get'/api/user/:userslug/posts', app.prepareAPI, app.checkGlobalPrivacySettings controllers.users.getPosts);
+		app.get'/user/:userslug/posts', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.getPosts);
+		app.get'/api/user/:userslug/posts', app.prepareAPI, app.checkGlobalPrivacySettings controllers.accounts.getPosts);
 
-		app.get'/user/:userslug/edit', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.accountEdit);
-		app.get'/api/user/:userslug/edit', app.prepareAPI, app.checkGlobalPrivacySettings controllers.users.accountEdit);
+		app.get'/user/:userslug/edit', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.accountEdit);
+		app.get'/api/user/:userslug/edit', app.prepareAPI, app.checkGlobalPrivacySettings controllers.accounts.accountEdit);
 
-		app.get'/user/:userslug/settings', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.accountSettings);
-		app.get'/api/user/:userslug/settings', app.prepareAPI, app.checkGlobalPrivacySettings controllers.users.accountSettings);
+		app.get'/user/:userslug/settings', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.accountSettings);
+		app.get'/api/user/:userslug/settings', app.prepareAPI, app.checkGlobalPrivacySettings controllers.accounts.accountSettings);
 
 
 
