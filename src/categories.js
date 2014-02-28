@@ -85,11 +85,13 @@ var db = require('./database'),
 	};
 
 	Categories.getCategoryTopics = function(cid, start, stop, uid, callback) {
+		var tids;
 		async.waterfall([
 			function(next) {
 				Categories.getTopicIds(cid, start, stop, next);
 			},
-			function(tids, next) {
+			function(topicIds, next) {
+				tids = topicIds;
 				topics.getTopicsByTids(tids, uid, next);
 			},
 			function(topics, next) {
@@ -98,6 +100,15 @@ var db = require('./database'),
 						topics: [],
 						nextStart: 1
 					});
+				}
+
+				var indices = {};
+				for(var i=0; i<tids.length; ++i) {
+					indices[tids[i]] = start + i;
+				}
+
+				for(var i=0; i<topics.length; ++i) {
+					topics[i].index = indices[topics[i].tid];
 				}
 
 				db.sortedSetRevRank('categories:' + cid + ':tid', topics[topics.length - 1].tid, function(err, rank) {
@@ -116,6 +127,16 @@ var db = require('./database'),
 
 	Categories.getTopicIds = function(cid, start, stop, callback) {
 		db.getSortedSetRevRange('categories:' + cid + ':tid', start, stop, callback);
+	};
+
+	Categories.getTopicIndex = function(tid, callback) {
+		topics.getTopicField(tid, 'cid', function(err, cid) {
+			if(err) {
+				return callback(err);
+			}
+
+			db.sortedSetRevRank('categories:' + cid + ':tid', tid, callback);
+		});
 	};
 
 	Categories.getPageCount = function(cid, uid, callback) {

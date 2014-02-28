@@ -21,7 +21,9 @@ var ajaxify = {};
 
 	window.onpopstate = function (event) {
 		if (event !== null && event.state && event.state.url !== undefined && !ajaxify.initialLoad) {
-			ajaxify.go(event.state.url, null, true);
+			ajaxify.go(event.state.url, function() {
+				$(window).trigger('action:popstate', {url: event.state.url});
+			}, true);
 		}
 	};
 
@@ -29,6 +31,7 @@ var ajaxify = {};
 	ajaxify.initialLoad = false;
 
 	ajaxify.go = function (url, callback, quiet) {
+
 		// "quiet": If set to true, will not call pushState
 		app.enterRoom('global');
 
@@ -101,7 +104,7 @@ var ajaxify = {};
 					}
 				});
 
-				if (callback) {
+				if (typeof callback === 'function') {
 					callback();
 				}
 
@@ -129,7 +132,7 @@ var ajaxify = {};
 									$this.addClass($this.attr('no-widget-class'));
 								});
 							}
-							
+
 							next(err);
 						});
 					}, function(err) {
