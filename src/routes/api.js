@@ -30,6 +30,9 @@ var path = require('path'),
 					user.updateLastOnlineTime(req.user.uid);
 				}
 
+				// Log IP address
+				db.sortedSetAdd('ip:recent', +new Date(), req.ip || 'Unknown');
+
 				next();
 			});
 
