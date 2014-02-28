@@ -46,7 +46,8 @@
     "nodebb-theme-cerulean": "~0.0.13",
     "nodebb-theme-lavender": "~0.0.22",
     "less": "^1.6.3",
-    "daemon": "~1.1.0"
+    "daemon": "~1.1.0",
+    "underscore": "^1.6.0"
   },
   "optionalDependencies": {
     "redis": "0.8.3",
