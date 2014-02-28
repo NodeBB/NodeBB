@@ -1,6 +1,8 @@
 var accountsController = {},
 	user = require('./../user'),
-	posts = require('./../posts');
+	posts = require('./../posts'),
+	plugins = require('./../plugins'),
+	meta = require('./../meta');
 
 
 function userNotFound(res) {
@@ -346,11 +348,109 @@ accountsController.accountSettings = function(req, res, next) {
 			});
 		});
 
-	});
-
-	
+	});	
 };
 
+accountsController.uploadPicture = function (req, res, next) {
+	if (!req.user) {
+		return userNotAllowed();
+	}
 
+	var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
+	if (req.files.userPhoto.size > uploadSize * 1024) {
+		return res.json({
+			error: 'Images must be smaller than ' + uploadSize + ' kb!'
+		});
+	}
+
+	var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
+	if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
+		return res.json({
+			error: 'Allowed image types are png, jpg and gif!'
+		});
+	}
+
+	var extension = path.extname(req.files.userPhoto.name);
+	if (!extension) {
+		return res.json({
+			error: 'Error uploading file! Error : Invalid extension!'
+		});
+	}
+
+	var updateUid = req.user.uid;
+
+	async.waterfall([
+		function(next) {
+			image.resizeImage(req.files.userPhoto.path, extension, 128, 128, next);
+		},
+		function(next) {
+			image.convertImageToPng(req.files.userPhoto.path, extension, next);
+		},
+		function(next) {
+			try {
+				var params = JSON.parse(req.body.params);
+				if(parseInt(updateUid, 10) === parseInt(params.uid, 10)) {
+					return next();
+				}
+
+				user.isAdministrator(req.user.uid, function(err, isAdmin) {
+					if(err) {
+						return next(err);
+					}
+
+					if(!isAdmin) {
+						return userNotAllowed();
+					}
+					updateUid = params.uid;
+					next();
+				});
+			} catch(err) {
+				next(err);
+			}
+		}
+	], function(err, result) {
+
+		function done(err, image) {
+			fs.unlink(req.files.userPhoto.path);
+			if(err) {
+				return res.json({error: err.message});
+			}
+
+			user.setUserField(updateUid, 'uploadedpicture', image.url);
+			user.setUserField(updateUid, 'picture', image.url);
+			res.json({
+				path: image.url
+			});
+		}
+
+		if(err) {
+			return res.json({error:err.message});
+		}
+
+		if(plugins.hasListeners('filter:uploadImage')) {
+			return plugins.fireHook('filter:uploadImage', req.files.userPhoto, done);
+		}
+
+		var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10);
+		var filename = updateUid + '-profileimg' + (convertToPNG ? '.png' : extension);
+
+		user.getUserField(updateUid, 'uploadedpicture', function (err, oldpicture) {
+			if (!oldpicture) {
+				file.saveFileToLocal(filename, req.files.userPhoto.path, done);
+				return;
+			}
+
+			var absolutePath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), path.basename(oldpicture));
+
+			fs.unlink(absolutePath, function (err) {
+				if (err) {
+					winston.err(err);
+				}
+
+				file.saveFileToLocal(filename, req.files.userPhoto.path, done);
+			});
+		});
+	});
+});
 
 module.exports = accountsController;

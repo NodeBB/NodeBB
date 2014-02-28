@@ -727,6 +727,9 @@ process.on('uncaughtException', function(err) {
 		app.get'/user/:userslug/settings', app.buildHeader, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.accountSettings);
 		app.get'/api/user/:userslug/settings', app.prepareAPI, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.accountSettings);
 
+		// this should have been in the API namespace
+		app.post'/user/uploadpicture', app.prepareAPI, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.uploadPicture);
+
 		/* Users */
 		app.get('/users', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
 		app.get('/api/users', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
