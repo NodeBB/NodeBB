@@ -120,7 +120,7 @@ SocketAdmin.categories.create = function(socket, data, callback) {
 
 SocketAdmin.categories.update = function(socket, data) {
 	if(!data) {
-		return callback(new Error('invalid data'));
+		throw new Error('invalid data');
 	}
 
 	admin.categories.update(data, socket);
