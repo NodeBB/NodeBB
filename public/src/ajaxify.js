@@ -51,18 +51,7 @@ var ajaxify = {};
 			url = url.slice(RELATIVE_PATH.length);
 		}
 
-		var tpl_url = templates.get_custom_map(url.split('?')[0]);
-
-		if (tpl_url == false && !templates[url]) {
-			if (url === '' || url === '/') {
-				tpl_url = 'home';
-			} else {
-				tpl_url = url.split('/')[0].split('?')[0];
-			}
-
-		} else if (templates[url]) {
-			tpl_url = url;
-		}
+		var tpl_url = ajaxify.getTemplateMapping(url);
 
 		var hash = '';
 		if(ajaxify.initialLoad) {
@@ -124,6 +113,23 @@ var ajaxify = {};
 
 		return false;
 	};
+
+	ajaxify.getTemplateMapping = function(url) {
+		var tpl_url = templates.get_custom_map(url.split('?')[0]);
+
+		if (tpl_url == false && !templates[url]) {
+			if (url === '' || url === '/') {
+				tpl_url = 'home';
+			} else {
+				tpl_url = url.split('/')[0].split('?')[0];
+			}
+
+		} else if (templates[url]) {
+			tpl_url = url;
+		}
+
+		return tpl_url;
+	}
 
 	ajaxify.renderWidgets = function(tpl_url, url, location, callback) {
 		var widgetLocations = [];
