@@ -267,96 +267,23 @@ var fs = require('fs'),
 		}
 
 		function getUsersSortedByJoinDate(req, res) {
-			user.getUsers('users:joindate', 0, 49, function (err, data) {
-				res.json({
-					search_display: 'none',
-					loadmore_display: 'block',
-					users: data,
-					show_anon: 'hide'
-				});
-			});
+			
 		}
 
 		function getUsersSortedByPosts(req, res) {
-			user.getUsers('users:postcount', 0, 49, function (err, data) {
-				res.json({
-					search_display: 'none',
-					loadmore_display: 'block',
-					users: data,
-					show_anon: 'hide'
-				});
-			});
+			
 		}
 
 		function getUsersSortedByReputation(req, res) {
-			user.getUsers('users:reputation', 0, 49, function (err, data) {
-				res.json({
-					search_display: 'none',
-					loadmore_display: 'block',
-					users: data,
-					show_anon: 'hide'
-				});
-			});
+			
 		}
 
 		function getOnlineUsers(req, res, next) {
-			var	websockets = require('../socket.io');
-
-			user.getUsers('users:online', 0, 49, function (err, data) {
-				if(err) {
-					return next(err);
-				}
-				var onlineUsers = [];
-
-				uid = 0;
-				if (req.user) {
-					uid = req.user.uid;
-				}
-
-				user.isAdministrator(uid, function (err, isAdministrator) {
-					if(err) {
-						return next(err);
-					}
-
-					if (!isAdministrator) {
-						data = data.filter(function(item) {
-							return item.status !== 'offline';
-						});
-					}
-
-					function iterator(userData, next) {
-						var online = websockets.isUserOnline(userData.uid);
-						if(!online) {
-							db.sortedSetRemove('users:online', userData.uid);
-							return next(null);
-						}
-
-						onlineUsers.push(userData);
-						next(null);
-					}
-
-					var anonymousUserCount = websockets.getOnlineAnonCount();
-
-					async.each(data, iterator, function(err) {
-						res.json({
-							search_display: 'none',
-							loadmore_display: 'block',
-							users: onlineUsers,
-							anonymousUserCount: anonymousUserCount,
-							show_anon: anonymousUserCount?'':'hide'
-						});
-					});
-				});
-			});
+			
 		}
 
 		function getUsersForSearch(req, res) {
-			res.json({
-				search_display: 'block',
-				loadmore_display: 'none',
-				users: [],
-				show_anon: 'hide'
-			});
+			
 		}
 
 		function getUserDataByUserSlug(userslug, callerUID, callback) {

@@ -699,6 +699,25 @@ process.on('uncaughtException', function(err) {
 		app.get'/user/:userslug/settings', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.accountSettings);
 		app.get'/api/user/:userslug/settings', app.prepareAPI, app.checkGlobalPrivacySettings controllers.accounts.accountSettings);
 
+		/* Users */
+		app.get('/users', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
+		app.get('/api/users', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
+
+		// was this duped by accident or purpose?
+		app.get('/users/online', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
+		app.get('/api/users/online', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
+
+		app.get('/users/sort-posts', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getUsersSortedByPosts);
+		app.get('/api/users/sort-posts', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.users.getUsersSortedByPosts);
+
+		app.get('/users/sort-reputation', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getUsersSortedByReputation);
+		app.get('/api/users/sort-reputation', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.users.getUsersSortedByReputation);
+
+		app.get('/users/latest', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getUsersSortedByJoinDate);
+		app.get('/api/users/latest', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.users.getUsersSortedByJoinDate);
+
+		app.get('/users/search', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getUsersForSearch);
+		app.get('/api/users/search', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.users.getUsersForSearch);
 
 
 
