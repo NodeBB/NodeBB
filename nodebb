@@ -61,7 +61,7 @@ case "$1" in
 
 	*)
 		echo "Welcome to NodeBB"
-		echo $"Usage: $0 {start|stop|reoad|restart|log|setup|reset|upgrade|dev|watch}"
+		echo $"Usage: $0 {start|stop|reload|restart|log|setup|reset|upgrade|dev|watch}"
 		echo ''
 		column -s '	' -t <<< '
 		start	Start the NodeBB server
