@@ -4,6 +4,8 @@ var	nconf = require('nconf'),
 	path = require('path'),
 	fs = require('fs'),
 	validator = require('validator'),
+	_ = require('underscore'),
+	async = require('async'),
 	plugins = require('../plugins'),
 
 	PluginRoutes = function(app) {
@@ -31,16 +33,34 @@ var	nconf = require('nconf'),
 
 		// Static Assets
 		app.get('/plugins/:id/*', function(req, res) {
-			var	relPath = req._parsedUrl.pathname.replace(nconf.get('relative_path') + '/plugins/' + req.params.id, '');
+			var	relPath = req._parsedUrl.pathname.replace(nconf.get('relative_path') + '/plugins/', ''),
+				matches = _.map(plugins.staticDirs, function(realPath, mappedPath) {
+					if (relPath.match(mappedPath)) {
+						return mappedPath;
+					} else {
+						return null;
+					}
+				}).filter(function(a) { return a; });
 
-			if (plugins.staticDirs[req.params.id]) {
-				var	fullPath = path.join(plugins.staticDirs[req.params.id], decodeURIComponent(relPath));
+			if (matches) {
+				async.map(matches, function(mappedPath, next) {
+					var	filePath = path.join(plugins.staticDirs[mappedPath], relPath.slice(mappedPath.length));
 
-				fs.exists(fullPath, function(exists) {
-					if (exists) {
-						res.sendfile(fullPath, {
-							maxAge: app.enabled('cache') ? 5184000000 : 0
-						});
+					fs.exists(filePath, function(exists) {
+						if (exists) {
+							next(null, filePath);
+						} else {
+							next();
+						}
+					});
+				}, function(err, matches) {
+					// Filter out the nulls
+					matches = matches.filter(function(a) {
+						return a;
+					});
+
+					if (matches.length) {
+						res.sendfile(matches[0]);
 					} else {
 						res.redirect('/404');
 					}

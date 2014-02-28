@@ -218,9 +218,10 @@ var socket,
 				$('#' + params.location).prepend(alert.fadeIn('100'));
 
 				if(typeof params.closefn === 'function') {
-					alert.find('button').on('click', function () {
+					alert.find('button').on('click', function() {
 						params.closefn();
 						fadeOut();
+						return false;
 					});
 				}
 			});
@@ -407,7 +408,7 @@ var socket,
 			return;
 		}
 
-		if (!app.username) {
+		if (!app.uid) {
 			app.alert({
 				type: 'danger',
 				title: 'Not Logged In',
