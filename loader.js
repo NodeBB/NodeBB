@@ -14,10 +14,7 @@ var	nconf = require('nconf'),
 
 				nbb.on('message', function(cmd) {
 					if (cmd === 'nodebb:restart') {
-						nbb.on('exit', function() {
-							nbb_start();
-						});
-						nbb.kill();
+						nbb_restart();
 					}
 				});
 			},
@@ -29,10 +26,17 @@ var	nconf = require('nconf'),
 						fs.unlinkSync(pidFilePath);
 					}
 				}
+			},
+			nbb_restart = function() {
+				nbb.on('exit', function() {
+					nbb_start();
+				});
+				nbb.kill();
 			};
 
 		process.on('SIGINT', nbb_stop);
 		process.on('SIGTERM', nbb_stop);
+		process.on('SIGHUP', nbb_restart);
 
 		nbb_start();
 	},
