@@ -31,7 +31,6 @@ var path = require('path'),
 	controllers = require('./controllers'),
 
 	admin = require('./routes/admin'),
-	userRoute = require('./routes/user'),
 	apiRoute = require('./routes/api'),
 	feedsRoute = require('./routes/feeds'),
 	metaRoute = require('./routes/meta');
@@ -124,6 +123,9 @@ process.on('uncaughtException', function(err) {
 	};
 
 	app.checkAccountPermissions = function(req, res, next) {
+		var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
+
+		// this function requires userslug to be passed in. todo: /user/uploadpicture should pass in userslug I think
 		user.getUidByUserslug(req.params.userslug, function (err, uid) {
 			if (err) {
 				return next(err);
@@ -630,7 +632,6 @@ process.on('uncaughtException', function(err) {
 		auth.registerApp(app);
 		metaRoute.createRoutes(app);
 		admin.createRoutes(app);
-		userRoute.createRoutes(app);
 		apiRoute.createRoutes(app);
 		feedsRoute.createRoutes(app);
 
@@ -705,32 +706,33 @@ process.on('uncaughtException', function(err) {
 		app.get('/api/category/:category_id/:slug?', app.prepareAPI, controllers.categories.get);
 
 		/* Accounts */
-		app.get'/user/:userslug', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.getAccount);
-		app.get'/api/user/:userslug', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.accounts.getAccount);
+		app.get('/user/:userslug', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.getAccount);
+		app.get('/api/user/:userslug', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.accounts.getAccount);
 
-		app.get'/user/:userslug/following', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.getFollowing);
-		app.get'/api/user/:userslug/following', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.accounts.getFollowing);
+		app.get('/user/:userslug/following', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.getFollowing);
+		app.get('/api/user/:userslug/following', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.accounts.getFollowing);
 
-		app.get'/user/:userslug/followers', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.getFollowers);
-		app.get'/api/user/:userslug/followers', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.accounts.getFollowers);
+		app.get('/user/:userslug/followers', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.getFollowers);
+		app.get('/api/user/:userslug/followers', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.accounts.getFollowers);
 
-		app.get'/user/:userslug/favourites', app.buildHeader, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.getFavourites);
-		app.get'/api/user/:userslug/favourites', app.prepareAPI, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.getFavourites);
+		app.get('/user/:userslug/favourites', app.buildHeader, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.getFavourites);
+		app.get('/api/user/:userslug/favourites', app.prepareAPI, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.getFavourites);
 
-		app.get'/user/:userslug/posts', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.getPosts);
-		app.get'/api/user/:userslug/posts', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.accounts.getPosts);
+		app.get('/user/:userslug/posts', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.getPosts);
+		app.get('/api/user/:userslug/posts', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.accounts.getPosts);
 
-		app.get'/user/:userslug/edit', app.buildHeader, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.accountEdit);
-		app.get'/api/user/:userslug/edit', app.prepareAPI, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.accountEdit);
+		app.get('/user/:userslug/edit', app.buildHeader, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.accountEdit);
+		app.get('/api/user/:userslug/edit', app.prepareAPI, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.accountEdit);
 
 		// todo: admin recently gained access to this page, pls check if it actually works
-		app.get'/user/:userslug/settings', app.buildHeader, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.accountSettings);
-		app.get'/api/user/:userslug/settings', app.prepareAPI, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.accountSettings);
+		app.get('/user/:userslug/settings', app.buildHeader, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.accountSettings);
+		app.get('/api/user/:userslug/settings', app.prepareAPI, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.accountSettings);
 
 		app.get('/api/user/uid/:uid', app.checkGlobalPrivacySettings, controllers.accounts.getUserByUID);
 
 		// this should have been in the API namespace
-		app.post'/user/uploadpicture', app.prepareAPI, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.uploadPicture);
+		// also, perhaps pass in :userslug so we can use checkAccountPermissions middleware, in future will allow admins to upload a picture for a user
+		app.post('/user/uploadpicture', app.prepareAPI, app.checkGlobalPrivacySettings, /*app.checkAccountPermissions,*/ controllers.accounts.uploadPicture);
 
 		/* Users */
 		app.get('/users', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);

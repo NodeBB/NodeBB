@@ -164,9 +164,9 @@ accountsController.getAccount = function(req, res, next) {
 					userData.signature = signature;
 
 					if (res.locals.isAPI) {
-						res.json({});
+						res.json(userData);
 					} else {
-						res.render('account', {});
+						res.render('account', userData);
 					};
 				});
 			});
@@ -469,6 +469,6 @@ accountsController.uploadPicture = function (req, res, next) {
 			});
 		});
 	});
-});
+};
 
 module.exports = accountsController;

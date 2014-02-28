@@ -1,4 +1,4 @@
-var usersController = {},
+var usersController = {};
 
 var async = require('async'),
 	user = require('./../user'),
@@ -124,7 +124,7 @@ usersController.getUsersForSearch = function(req, res, next) {
 		res.json(data);
 	} else {
 		res.render('users', data);
-	};
+	}
 };
 
 
