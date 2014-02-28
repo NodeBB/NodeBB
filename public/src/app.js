@@ -446,8 +446,6 @@ var socket,
 
 	var previousScrollTop = 0;
 
-
-
 	app.enableInfiniteLoading = function(callback) {
 		$(window).off('scroll').on('scroll', function() {
 

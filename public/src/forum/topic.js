@@ -1027,14 +1027,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				}
 				$('#pagination').html(index + ' out of ' + Topic.postCount);
 				$('.progress-bar').width((index / Topic.postCount * 100) + '%');
-				return false;
-			}
-		});
 
-		$('.posts > .post-row').each(function() {
-			var el = $(this);
-
-			if (elementInView(el)) {
 				if(!parseInt(el.attr('data-index'), 10)) {
 					localStorage.removeItem('topic:' + templates.get('topic_id') + ':bookmark');
 				} else {
@@ -1063,7 +1056,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 		var elTop = el.offset().top;
 		var elBottom = elTop + Math.floor(el.height());
-		return !(elTop > scrollBottom || elBottom < scrollTop);
+		return (elTop >= scrollTop && elBottom <= scrollBottom) || (elTop <= scrollTop && elBottom >= scrollTop);
 	}
 
 	Topic.scrollToPost = function(pid, highlight, duration, offset) {
