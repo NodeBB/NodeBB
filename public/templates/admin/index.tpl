@@ -36,4 +36,29 @@
 			</div>
 		</div>
 	</div>
+	<div class="col-sm-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">Unique Visitors</div>
+			<div class="panel-body">
+				<div id="unique-visitors">
+					<div class="text-center pull-left">
+						<div id="day"></div>
+						<div>Day</div>
+					</div>
+					<div class="text-center pull-left">
+						<div id="week"></div>
+						<div>Week</div>
+					</div>
+					<div class="text-center pull-left">
+						<div id="month"></div>
+						<div>Month</div>
+					</div>
+					<div class="text-center pull-left">
+						<div id="alltime"></div>
+						<div>All Time</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
