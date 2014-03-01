@@ -246,24 +246,31 @@ var fs = require('fs'),
 				`data.priority`, the relative priority of the method when it is eventually called (default: 10)
 		*/
 
+		var method;
+
 		if (data.hook && data.method && typeof data.method === 'string' && data.method.length > 0) {
 			data.id = id;
 			if (!data.priority) data.priority = 10;
-			data.method = data.method.split('.').reduce(function(memo, prop) {
-				if (memo[prop]) {
+			method = data.method.split('.').reduce(function(memo, prop) {
+				if (memo !== null && memo[prop]) {
 					return memo[prop];
 				} else {
-					// Couldn't find method by path, assuming property with periods in it (evil!)
-					Plugins.libraries[data.id][data.method];
+					// Couldn't find method by path, aborting
+					return null;
 				}
 			}, Plugins.libraries[data.id]);
+
+			if (method === null) {
+				winston.warn('[plugins/' + id + '] Hook method mismatch: ' + data.hook + ' => ' + data.method);
+				return callback();
+			}
+
+			// Write the actual method reference to the hookObj
+			data.method = method;
 
 			Plugins.loadedHooks[data.hook] = Plugins.loadedHooks[data.hook] || [];
 			Plugins.loadedHooks[data.hook].push(data);
 
-			if (global.env === 'development') {
-				winston.info('[plugins] Hook registered: ' + data.hook + ' will call ' + id);
-			}
 			callback();
 		} else return;
 	};
