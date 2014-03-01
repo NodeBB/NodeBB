@@ -92,9 +92,9 @@ var db = require('./database'),
 						return next(err);
 					}
 
-					postData.content = content;
-
 					plugins.fireHook('action:post.save', postData);
+
+					postData.content = content;
 
 					next(null, postData);
 				});

@@ -90,9 +90,7 @@ var winston = require('winston'),
 
 									topics.setTopicField(tid, 'thumb', options.topic_thumb);
 
-									db.searchRemove('topic', tid, function() {
-										db.searchIndex('topic', title, tid);
-									});
+									plugins.fireHook('action:topic.edit', tid);
 								}
 
 								posts.getPostData(pid, function(err, postData) {
