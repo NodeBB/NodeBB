@@ -322,10 +322,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 						localStorage.removeItem('topic:' + tid + ':bookmark');
 					}
 				});
-				updateHeader();
-			} else {
-				updateHeader();
 			}
+
+			updateHeader();
 
 			$('#post-container').on('mouseenter', '.favourite-tooltip', function(e) {
 				if (!$(this).data('users-loaded')) {
