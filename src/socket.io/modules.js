@@ -78,6 +78,7 @@ SocketModules.composer.renderHelp = function(socket, data, callback) {
 
 SocketModules.composer.register = function(socket, data) {
 	var	now = Date.now();
+
 	server.in('topic_' + data.tid).emit('event:topic.replyStart', data.uid);
 
 	data.socket = socket;

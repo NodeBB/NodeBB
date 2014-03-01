@@ -390,9 +390,8 @@ define(['taskbar'], function(taskbar) {
 			composer.createNewComposer(post_uuid);
 		}
 
-		var	tid = templates.get('topic_id'),
-			postData = composer.posts[post_uuid];
-		if (tid) {
+		var	postData = composer.posts[post_uuid];
+		if (postData.tid) {
 			// Replying to a topic
 			socket.emit('modules.composer.register', {
 				uuid: post_uuid,
@@ -843,6 +842,8 @@ define(['taskbar'], function(taskbar) {
 		postContainer.css('visibility', 'hidden');
 		composer.active = undefined;
 		taskbar.minimize('composer', post_uuid);
+
+		socket.emit('modules.composer.unregister', post_uuid);
 	};
 
 	return {
