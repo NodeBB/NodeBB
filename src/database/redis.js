@@ -11,7 +11,9 @@
 		redis,
 		connectRedis,
 		reds,
-		redisClient;
+		redisClient,
+		postSearch,
+		topicSearch;
 
 	try {
 		redis = require('redis');
@@ -22,54 +24,52 @@
 		process.exit();
 	}
 
+	module.init = function(callback) {
+		if (redis_socket_or_host && redis_socket_or_host.indexOf('/')>=0) {
+			/* If redis.host contains a path name character, use the unix dom sock connection. ie, /tmp/redis.sock */
+			redisClient = redis.createClient(nconf.get('redis:host'));
+		} else {
+			/* Else, connect over tcp/ip */
+			redisClient = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host'));
+		}
 
-	if (redis_socket_or_host && redis_socket_or_host.indexOf('/')>=0) {
-		/* If redis.host contains a path name character, use the unix dom sock connection. ie, /tmp/redis.sock */
-		redisClient = redis.createClient(nconf.get('redis:host'));
-	} else {
-		/* Else, connect over tcp/ip */
-		redisClient = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host'));
-	}
+		if (nconf.get('redis:password')) {
+			redisClient.auth(nconf.get('redis:password'));
+		} else {
+			winston.warn('You have no redis password setup!');
+		}
 
-	if (nconf.get('redis:password')) {
-		redisClient.auth(nconf.get('redis:password'));
-	} else {
-		winston.warn('You have no redis password setup!');
-	}
+		redisClient.on('error', function (err) {
+			winston.error(err.message);
+			process.exit();
+		});
 
-	redisClient.on('error', function (err) {
-		winston.error(err.message);
-		process.exit();
-	});
+		module.client = redisClient;
 
+		module.sessionStore = new connectRedis({
+			client: redisClient,
+			ttl: 60 * 60 * 24 * 14
+		});
 
-	module.client = redisClient;
+		reds.createClient = function () {
+			return reds.client || (reds.client = redisClient);
+		};
 
-	module.sessionStore = new connectRedis({
-		client: redisClient,
-		ttl: 60 * 60 * 24 * 14
-	});
-
-	reds.createClient = function () {
-		return reds.client || (reds.client = redisClient);
-	};
-
-	var	postSearch = reds.createSearch('nodebbpostsearch'),
+		postSearch = reds.createSearch('nodebbpostsearch'),
 		topicSearch = reds.createSearch('nodebbtopicsearch');
 
-	var db = parseInt(nconf.get('redis:database'), 10);
+		var db = parseInt(nconf.get('redis:database'), 10);
 
-	if (db) {
-		redisClient.select(db, function(error) {
-			if(error) {
-				winston.error("NodeBB could not connect to your Redis database. Redis returned the following error: " + error.message);
-				process.exit();
-			}
-		});
-	}
+		if (db) {
+			redisClient.select(db, function(error) {
+				if(error) {
+					winston.error("NodeBB could not connect to your Redis database. Redis returned the following error: " + error.message);
+					process.exit();
+				}
+			});
+		}
 
-	module.init = function(callback) {
-		callback(null);
+		callback();
 	};
 
 	module.close = function() {
@@ -122,26 +122,6 @@
 				return callback(err);
 			}
 			callback();
-		});
-	};
-
-	module.getFileName = function(callback) {
-		var multi = redisClient.multi();
-
-		multi.config('get', 'dir');
-		multi.config('get', 'dbfilename');
-		multi.exec(function (err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			results = results.reduce(function (memo, config) {
-				memo[config[0]] = config[1];
-				return memo;
-			}, {});
-
-			var dbFile = path.join(results.dir, results.dbfilename);
-			callback(null, dbFile);
 		});
 	};
 

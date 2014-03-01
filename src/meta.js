@@ -297,12 +297,6 @@ var fs = require('fs'),
 		}
 	};
 
-	Meta.db = {
-		getFile: function (callback) {
-			db.getFileName(callback);
-		}
-	};
-
 	Meta.css = {
 		cache: undefined
 	};
