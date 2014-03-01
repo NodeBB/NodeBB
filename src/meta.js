@@ -3,6 +3,7 @@ var fs = require('fs'),
 	async = require('async'),
 	winston = require('winston'),
 	nconf = require('nconf'),
+	_ = require('underscore'),
 
 	utils = require('./../public/src/utils'),
 	translator = require('./../public/src/translator'),
@@ -223,6 +224,7 @@ var fs = require('fs'),
 	};
 
 	Meta.js = {
+		cache: undefined,
 		scripts: [
 			'vendor/jquery/js/jquery.js',
 			'vendor/jquery/js/jquery-ui-1.10.4.custom.js',
@@ -238,9 +240,10 @@ var fs = require('fs'),
 			'src/templates.js',
 			'src/ajaxify.js',
 			'src/translator.js',
+			'src/overrides.js',
 			'src/utils.js'
 		],
-		minFile: path.join(__dirname, '..', 'public/src/nodebb.min.js'),
+		minFile: nconf.get('relative_path') + 'nodebb.min.js',
 		get: function (callback) {
 			plugins.fireHook('filter:scripts.get', this.scripts, function(err, scripts) {
 				var ctime,
@@ -248,14 +251,19 @@ var fs = require('fs'),
 						jsPath = path.normalize(jsPath);
 
 						if (jsPath.substring(0, 7) === 'plugins') {
-							var paths = jsPath.split(path.sep),
-								mappedPath = paths[1];
+							var	matches = _.map(plugins.staticDirs, function(realPath, mappedPath) {
+								if (jsPath.match(mappedPath)) {
+									return mappedPath;
+								} else {
+									return null;
+								}
+							}).filter(function(a) { return a; });
 
-							if (plugins.staticDirs[mappedPath]) {
-								jsPath = jsPath.replace(path.join('plugins', mappedPath), '');
-								return path.join(plugins.staticDirs[mappedPath], jsPath);
+							if (matches.length) {
+								var	relPath = jsPath.slice(new String('plugins/' + matches[0]).length);
+								return plugins.staticDirs[matches[0]] + relPath;
 							} else {
-								winston.warn('[meta.scripts.get] Could not resolve mapped path: ' + mappedPath + '. Are you sure it is defined by a plugin?');
+								winston.warn('[meta.scripts.get] Could not resolve mapped path: ' + jsPath + '. Are you sure it is defined by a plugin?');
 								return null;
 							}
 						} else {
@@ -266,42 +274,9 @@ var fs = require('fs'),
 				Meta.js.scripts = jsPaths.filter(function(path) { return path !== null });
 
 				if (process.env.NODE_ENV !== 'development') {
-					async.parallel({
-						ctime: function (next) {
-							async.map(jsPaths, fs.stat, function (err, stats) {
-								async.reduce(stats, 0, function (memo, item, next) {
-									if(item) {
-										ctime = +new Date(item.ctime);
-										next(null, ctime > memo ? ctime : memo);
-									} else {
-										next(null, memo);
-									}
-								}, next);
-							});
-						},
-						minFile: function (next) {
-							if (!fs.existsSync(Meta.js.minFile)) {
-								winston.info('No minified client-side library found');
-								return next(null, 0);
-							}
-
-							fs.stat(Meta.js.minFile, function (err, stat) {
-								next(err, +new Date(stat.ctime));
-							});
-						}
-					}, function (err, results) {
-						if (results.minFile > results.ctime) {
-							winston.info('No changes to client-side libraries -- skipping minification');
-							callback(null, [path.relative(path.join(__dirname, '../public'), Meta.js.minFile)]);
-						} else {
-							winston.info('Minifying client-side libraries -- please wait');
-							Meta.js.minify(function () {
-								callback(null, [
-									path.relative(path.join(__dirname, '../public'), Meta.js.minFile)
-								]);
-							});
-						}
-					});
+					callback(null, [
+						Meta.js.minFile
+					]);
 				} else {
 					callback(null, scripts);
 				}
@@ -317,23 +292,26 @@ var fs = require('fs'),
 			}
 
 			minified = uglifyjs.minify(jsPaths);
-			fs.writeFile(Meta.js.minFile, minified.code, function (err) {
-				if (!err) {
-					if (process.env.NODE_ENV === 'development') {
-						winston.info('Minified client-side libraries');
-					}
-					callback();
-				} else {
-					winston.error('Problem minifying client-side libraries, exiting.');
-					process.exit();
-				}
-			});
+			this.cache = minified.code;
+			callback();
 		}
 	};
 
 	Meta.db = {
 		getFile: function (callback) {
 			db.getFileName(callback);
+		}
+	};
+
+	Meta.css = {
+		cache: undefined
+	};
+
+	Meta.restart = function() {
+		if (process.send) {
+			process.send('nodebb:restart');
+		} else {
+			winston.error('[meta.restart] Could not restart, are you sure NodeBB was started with `./nodebb start`?');
 		}
 	};
 }(exports));

@@ -65,8 +65,6 @@ var winston = require('winston'),
 					return callback(err);
 				}
 
-				db.decrObjectField('global', 'topicCount');
-
 				ThreadTools.lock(tid);
 
 				Plugins.fireHook('action:topic.delete', tid);
@@ -101,9 +99,9 @@ var winston = require('winston'),
 					return callback(err);
 				}
 
-				db.incrObjectField('global', 'topicCount');
-
 				ThreadTools.unlock(tid);
+
+				Plugins.fireHook('action:topic.restore', tid);
 
 				events.logTopicRestore(uid, tid);
 
@@ -112,8 +110,6 @@ var winston = require('winston'),
 				websockets.in('topic_' + tid).emit('event:topic_restored', {
 					tid: tid
 				});
-
-				Plugins.fireHook('action:topic.restore', tid);
 
 				callback(null, {
 					tid:tid
@@ -134,7 +130,7 @@ var winston = require('winston'),
 				tid: tid
 			});
 		}
-	}
+	};
 
 	ThreadTools.unlock = function(tid, uid, callback) {
 		topics.setTopicField(tid, 'locked', 0);
@@ -314,8 +310,9 @@ var winston = require('winston'),
 			if(err) {
 				return callback(err);
 			}
+
 			if (pids.length === 0) {
-				return callback(new Error('no-undeleted-pids-found'));
+				return callback(null, null);
 			}
 
 			async.detectSeries(pids, function(pid, next) {
@@ -326,7 +323,7 @@ var winston = require('winston'),
 				if (pid) {
 					callback(null, pid);
 				} else {
-					callback(new Error('no-undeleted-pids-found'));
+					callback(null, null);
 				}
 			});
 		});

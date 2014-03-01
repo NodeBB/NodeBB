@@ -1,13 +1,14 @@
 {
     "home": "Home",
     "unread": "Tópicos Não Lidos",
-    "popular": "Popular Topics",
+    "popular": "Tópicos Populares",
     "recent": "Tópicos Recentes",
     "users": "Usuários Registrados",
     "notifications": "Notificações",
     "user.edit": "Editando \"%1\"",
     "user.following": "Pessoas %1 Seguindo",
     "user.followers": "Pessoas que seguem %1",
+    "user.posts": "Posts made by %1",
     "user.favourites": "%1's Posts Favoritos",
     "user.settings": "Configurações de Usuário"
 }

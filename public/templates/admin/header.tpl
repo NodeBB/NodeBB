@@ -3,13 +3,25 @@
 <head>
 	<title>NodeBB Administration Panel</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="{relative_path}/vendor/fontawesome/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="{relative_path}/vendor/colorpicker/colorpicker.css">
+	<link rel="stylesheet" type="text/css" href="{relative_path}/stylesheet.css?{cache-buster}" />
+
 	<script>
 		var RELATIVE_PATH = "{relative_path}";
 	</script>
-	<link rel="stylesheet" href="{relative_path}/vendor/fontawesome/css/font-awesome.min.css">
+
+	<!--[if lt IE 9]>
+  		<script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/2.3.0/es5-shim.min.js"></script>
+  		<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>
+  		<script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
+	    <script>__lt_ie_9__ = 1;</script>
+	<![endif]-->
+
 	<script src="{relative_path}/vendor/jquery/js/jquery.js"></script>
+	<script src="{relative_path}/vendor/jquery/js/jquery-ui-1.10.4.custom.js"></script>
 	<script src="{relative_path}/vendor/bootstrap/js/bootstrap.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="{relative_path}/vendor/colorpicker/colorpicker.css">
 	<script src="{relative_path}/socket.io/socket.io.js"></script>
 	<script src="{relative_path}/src/app.js?{cache-buster}"></script>
 	<script src="{relative_path}/src/templates.js?{cache-buster}"></script>
@@ -34,10 +46,10 @@
 			}
 		});
 	</script>
-	<script src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+	<script src="{relative_path}/src/overrides.js"></script>
 	<script src="{relative_path}/src/utils.js"></script>
 
-	<link rel="stylesheet" type="text/css" href="{relative_path}/css/theme.css?{cache-buster}" />
 </head>
 
 <body class="admin">

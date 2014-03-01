@@ -25,7 +25,7 @@
 			<br/>
 			<div class="user-info">
 				<span>
-					<i class="fa fa-circle status {users.status}"></i>
+					<i class="fa fa-circle status {users.status}" title="[[global:{users.status}]]"></i>
 					<a href="{relative_path}/user/{users.userslug}">{users.username}</a>
 				</span>
 				<br/>

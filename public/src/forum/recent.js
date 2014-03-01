@@ -38,10 +38,11 @@ define(function() {
 	Recent.selectActivePill = function() {
 		var active = getActiveSection();
 
-		jQuery('.nav-pills li').removeClass('active');
-		jQuery('.nav-pills li a').each(function() {
-			if (this.getAttribute('href').match(active)) {
-				jQuery(this.parentNode).addClass('active');
+		$('.nav-pills li').removeClass('active');
+		$('.nav-pills li a').each(function() {
+			var $this = $(this);
+			if ($this.attr('href').match(active)) {
+				$this.parent().addClass('active');
 				return false;
 			}
 		});

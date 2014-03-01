@@ -52,7 +52,7 @@ define(function() {
 			return false;
 		});
 
-		document.querySelector('#content input').focus();
+		$('#content input').focus();
 	};
 
 	return Login;

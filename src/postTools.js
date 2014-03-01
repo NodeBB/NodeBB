@@ -90,9 +90,7 @@ var winston = require('winston'),
 
 									topics.setTopicField(tid, 'thumb', options.topic_thumb);
 
-									db.searchRemove('topic', tid, function() {
-										db.searchIndex('topic', title, tid);
-									});
+									plugins.fireHook('action:topic.edit', tid);
 								}
 
 								posts.getPostData(pid, function(err, postData) {
@@ -153,7 +151,11 @@ var winston = require('winston'),
 
 				// Delete the thread if it is the last undeleted post
 				threadTools.getLatestUndeletedPid(postData.tid, function(err, pid) {
-					if (err && err.message === 'no-undeleted-pids-found') {
+					if(err) {
+						return winston.error(err.message);
+					}
+
+					if (!pid) {
 						threadTools.delete(postData.tid, uid, function(err) {
 							if (err) {
 								winston.error('Could not delete topic (tid: ' + postData.tid + ')', err.stack);
@@ -165,7 +167,6 @@ var winston = require('winston'),
 						});
 					}
 				});
-
 
 				callback(null);
 			});
@@ -182,7 +183,6 @@ var winston = require('winston'),
 				}
 			});
 		});
-
 	}
 
 	PostTools.restore = function(uid, pid, callback) {

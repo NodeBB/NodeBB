@@ -1,9 +1,6 @@
 {
     "new_topic_button": "Создать тему",
     "no_topics": "<strong>В этой категории еще нет тем.</strong><br />Почему бы вам не создать первую?",
-    "sidebar.recent_replies": "Последние сообщения",
-    "sidebar.active_participants": "Активные участники",
-    "sidebar.moderators": "Модераторы",
     "posts": "сообщений",
     "views": "просмотров",
     "posted": "написано",

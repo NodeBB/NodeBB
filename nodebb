@@ -6,31 +6,50 @@
 
 case "$1" in
 	start)
-		node app "$@"
+		echo "Starting NodeBB";
+		echo "  \"./nodebb stop\" to stop the NodeBB server";
+		echo "  \"./nodebb log\" to view server output";
+		echo "" > ./logs/output.log;
+		node loader -d "$@"
+		;;
+
+	stop)
+		echo "Stopping NodeBB. Goodbye!";
+		kill `cat pidfile`;
+		;;
+
+	reload|restart)
+		echo "Restarting NodeBB.";
+		kill -1 `cat pidfile`;
+		;;
+
+	log)
+		clear;
+		tail -F ./logs/output.log;
 		;;
 
 	upgrade)
 		npm install
 		ls -d node_modules/nodebb* | xargs -n1 basename | xargs npm install
 		ls -d node_modules/nodebb* | xargs -n1 basename | xargs npm update
-		node app --upgrade
+		node loader --upgrade
 		touch package.json
 		echo -e "\n\e[00;32mNodeBB Dependencies up-to-date!\e[00;00m";
 		;;
 
 	setup)
-		node app --setup
+		node loader --setup
 		;;
 
-        reset)
-                node app --reset
-                ;;
+	reset)
+		node loader --reset
+		;;
 
 	dev)
 		echo "Launching NodeBB in \"development\" mode."
 		echo "To run the production build of NodeBB, please use \"forever\"."
 		echo "More Information: https://github.com/designcreateplay/NodeBB/wiki/How-to-run-NodeBB"
-		NODE_ENV=development node app "$@"
+		NODE_ENV=development node loader "$@"
 		;;
 
 	watch)
@@ -40,32 +59,21 @@ case "$1" in
 		NODE_ENV=development supervisor -q --extensions 'node|js|tpl' -- app "$@"
 		;;
 
-	# language)
-	# 	case "$2" in
-	# 		check)
-	# 			node app --language="check"
-	# 			;;
-
-	# 		*)
-	# 			echo "Language Settings"
-	# 			echo $"Usage: $0 language {check}"
-	# 			echo ''
-	# 			column -s '	' -t <<< '
-	# 			check	Compare language files against the /en directory
-	# 			'
-	# 			;;
-	# 	esac
-	# 	;;
-
 	*)
 		echo "Welcome to NodeBB"
-		echo $"Usage: $0 {start|dev|watch|upgrade}"
+		echo $"Usage: $0 {start|stop|reload|restart|log|setup|reset|upgrade|dev|watch}"
 		echo ''
 		column -s '	' -t <<< '
-		start	Start NodeBB in production mode
-		dev	Start NodeBB in development mode
-		watch	Start NodeBB in development mode and watch for changes
+		start	Start the NodeBB server
+		stop	Stops the NodeBB server
+		reload	Restarts NodeBB
+		restart	Restarts NodeBB
+		log	Opens the logging interface (useful for debugging)
+		setup	Runs the NodeBB setup script
+		reset	Disables all plugins, restores the default theme.
 		upgrade	Run NodeBB upgrade scripts, ensure packages are up-to-date
+		dev	Start NodeBB in interactive development mode
+		watch	Start NodeBB in development mode and watch for changes
 		'
 		exit 1
 esac

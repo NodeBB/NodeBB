@@ -1,4 +1,5 @@
 var topics = require('../topics'),
+	categories = require('../categories'),
 	threadTools = require('../threadTools'),
 	index = require('./index'),
 	user = require('../user'),
@@ -247,7 +248,7 @@ SocketTopics.loadMore = function(socket, data, callback) {
 
 		async.parallel({
 			posts: function(next) {
-				topics.getTopicPosts(data.tid, start, end, socket.uid, next);
+				topics.getTopicPosts(data.tid, start, end, socket.uid, false, next);
 			},
 			privileges: function(next) {
 				threadTools.privileges(data.tid, socket.uid, next);
@@ -291,9 +292,16 @@ SocketTopics.loadMoreFromSet = function(socket, data, callback) {
 	topics.getTopicsFromSet(socket.uid, data.set, start, end, callback);
 };
 
-
 SocketTopics.getPageCount = function(socket, tid, callback) {
 	topics.getPageCount(tid, socket.uid, callback);
+};
+
+SocketTopics.getTidPage = function(socket, tid, callback) {
+	topics.getTidPage(tid, socket.uid, callback);
+};
+
+SocketTopics.getTidIndex = function(socket, tid, callback) {
+	categories.getTopicIndex(tid, callback);
 };
 
 module.exports = SocketTopics;

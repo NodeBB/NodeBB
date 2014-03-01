@@ -207,40 +207,47 @@ SocketPosts.getPrivileges = function(socket, pid, callback) {
 
 SocketPosts.getFavouritedUsers = function(socket, pid, callback) {
 
-	favourites.getFavouritedUidsByPids([pid], function(data) {
+	favourites.getFavouritedUidsByPids([pid], function(err, data) {
+
+		if(err) {
+			return callback(err);
+		}
+
+		if(!Array.isArray(data) || !data.length) {
+			callback(null, "");
+		}
+
 		var max = 5; //hardcoded
 		var usernames = "";
 
-		var pid_uids = data[pid];
+		var pid_uids = data[0];
 		var rest_amount = 0;
-		if (data.hasOwnProperty(pid) && pid_uids.length > 0) {
-			if (pid_uids.length > max) {
-				rest_amount = pid_uids.length - max;
-				pid_uids = pid_uids.slice(0, max);
-			}
-			user.getUsernamesByUids(pid_uids, function(err, result) {
-				if(err) {
-					return callback(err);
-				}
 
-				usernames = result.join(', ') + (rest_amount > 0
-					? " and " + rest_amount + (rest_amount > 1 ? " others" : " other")
-					: "");
-				callback(null, usernames);
-			});
-		} else {
-			callback(null, "");
+		if (pid_uids.length > max) {
+			rest_amount = pid_uids.length - max;
+			pid_uids = pid_uids.slice(0, max);
 		}
+
+		user.getUsernamesByUids(pid_uids, function(err, result) {
+			if(err) {
+				return callback(err);
+			}
+
+			usernames = result.join(', ') + (rest_amount > 0
+				? " and " + rest_amount + (rest_amount > 1 ? " others" : " other")
+				: "");
+			callback(null, usernames);
+		});
 	});
 };
 
 SocketPosts.getPidPage = function(socket, pid, callback) {
 	posts.getPidPage(pid, socket.uid, callback);
-}
+};
 
 SocketPosts.getPidIndex = function(socket, pid, callback) {
 	posts.getPidIndex(pid, callback);
-}
+};
 
 SocketPosts.flag = function(socket, pid, callback) {
 	if (!socket.uid) {
@@ -266,7 +273,6 @@ SocketPosts.flag = function(socket, pid, callback) {
 			groups.getByGroupName('administrators', {}, next);
 		},
 		function(adminGroup, next) {
-
 			notifications.create({
 				text: message,
 				path: path,
