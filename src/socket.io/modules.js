@@ -77,23 +77,38 @@ SocketModules.composer.renderHelp = function(socket, data, callback) {
 };
 
 SocketModules.composer.register = function(socket, data) {
+	var	now = Date.now();
 	server.in('topic_' + data.tid).emit('event:topic.replyStart', data.uid);
 
 	data.socket = socket;
+	data.lastPing = now;
+	data.lastAnswer = now;
 	data.timer = setInterval(function() {
-		// Ping the socket to see if the composer is still active
-		socket.emit('event:composer.ping', data.uuid);
-	}, 1000*10);	// Every 10 seconds...
+		if (data.lastPing === data.lastAnswer) {
+			// Ping the socket to see if the composer is still active
+			data.lastPing = Date.now();
+			socket.emit('event:composer.ping', data.uuid);
+		} else {
+			server.in('topic_' + data.tid).emit('event:topic.replyStop', data.uid);
+			delete SocketModules.composer.replyHash[data.uuid];
+		}
+	}, 1000*5);	// Every 5 seconds...
 
 	SocketModules.composer.replyHash[data.uuid] = data;
 };
 
-SocketModules.composer.pingInactive = function(socket, uuid) {
+SocketModules.composer.unregister = function(socket, uuid) {
+	var	replyObj = SocketModules.composer.replyHash[uuid];
+	if (uuid && replyObj) {
+		server.in('topic_' + replyObj.tid).emit('event:topic.replyStop', replyObj.uid);
+		delete SocketModules.composer.replyHash[replyObj.uuid];
+	}
+};
+
+SocketModules.composer.pingActive = function(socket, uuid) {
 	var	data = SocketModules.composer.replyHash[uuid];
-	if (SocketModules.composer.replyHash[uuid]) {
-		server.in('topic_' + data.tid).emit('event:topic.replyStop', data.uid);
-		clearInterval(data.timer);
-		delete SocketModules.composer.replyHash[uuid];
+	if (data) {
+		data.lastAnswer = data.lastPing;
 	}
 };
 

@@ -6,8 +6,8 @@ define(['taskbar'], function(taskbar) {
 
 	function initialise() {
 		socket.on('event:composer.ping', function(post_uuid) {
-			if (composer.active !== post_uuid) {
-				socket.emit('modules.composer.pingInactive', post_uuid);
+			if (composer.active === post_uuid) {
+				socket.emit('modules.composer.pingActive', post_uuid);
 			}
 		});
 	};
@@ -832,6 +832,8 @@ define(['taskbar'], function(taskbar) {
 			taskbar.discard('composer', post_uuid);
 			$('body').css({'margin-bottom': 0});
 			$('.action-bar button').removeAttr('disabled');
+
+			socket.emit('modules.composer.unregister', post_uuid);
 		}
 	};
 
