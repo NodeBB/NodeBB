@@ -613,7 +613,8 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			'event:topic_deleted', 'event:topic_restored', 'event:topic:locked',
 			'event:topic_unlocked', 'event:topic_pinned', 'event:topic_unpinned',
 			'event:topic_moved', 'event:post_edited', 'event:post_deleted', 'event:post_restored',
-			'posts.favourite', 'user.isOnline', 'posts.upvote', 'posts.downvote'
+			'posts.favourite', 'user.isOnline', 'posts.upvote', 'posts.downvote',
+			'event:topic.replyStart', 'event:topic.replyStop'
 		]);
 
 		socket.on('get_users_in_room', function(data) {
@@ -874,6 +875,14 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			if (data.pid) {
 				toggle_post_delete_state(data.pid);
 			}
+		});
+
+		socket.on('event:topic.replyStart', function(uid) {
+			$('.thread_active_users [data-uid="' + uid + '"]').addClass('replying');
+		});
+
+		socket.on('event:topic.replyStop', function(uid) {
+			$('.thread_active_users [data-uid="' + uid + '"]').removeClass('replying');
 		});
 
 		function adjust_rep(value, pid, uid) {
