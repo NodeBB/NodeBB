@@ -18,7 +18,9 @@ var	posts = require('../posts'),
 
 /* Posts Composer */
 
-SocketModules.composer = {};
+SocketModules.composer = {
+	replyHash: {}
+};
 
 SocketModules.composer.push = function(socket, pid, callback) {
 	if (socket.uid || parseInt(meta.config.allowGuestPosting, 10)) {
@@ -72,6 +74,27 @@ SocketModules.composer.renderPreview = function(socket, content, callback) {
 
 SocketModules.composer.renderHelp = function(socket, data, callback) {
 	plugins.fireHook('filter:composer.help', '', callback);
+};
+
+SocketModules.composer.register = function(socket, data) {
+	server.in('topic_' + data.tid).emit('event:topic.replyStart', data.uid);
+
+	data.socket = socket;
+	data.timer = setInterval(function() {
+		// Ping the socket to see if the composer is still active
+		socket.emit('event:composer.ping', data.uuid);
+	}, 1000*10);	// Every 10 seconds...
+
+	SocketModules.composer.replyHash[data.uuid] = data;
+};
+
+SocketModules.composer.pingInactive = function(socket, uuid) {
+	var	data = SocketModules.composer.replyHash[uuid];
+	if (SocketModules.composer.replyHash[uuid]) {
+		server.in('topic_' + data.tid).emit('event:topic.replyStop', data.uid);
+		clearInterval(data.timer);
+		delete SocketModules.composer.replyHash[uuid];
+	}
 };
 
 /* Chat */

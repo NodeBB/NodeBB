@@ -4,6 +4,15 @@ define(['taskbar'], function(taskbar) {
 		posts: {}
 	};
 
+	function initialise() {
+		socket.on('event:composer.ping', function(post_uuid) {
+			if (composer.active !== post_uuid) {
+				socket.emit('modules.composer.pingInactive', post_uuid);
+			}
+		});
+	};
+	initialise();
+
 	function maybeParse(response) {
 		if (typeof response == 'string')  {
 			try {
@@ -379,6 +388,16 @@ define(['taskbar'], function(taskbar) {
 			composer.activateReposition(post_uuid);
 		} else {
 			composer.createNewComposer(post_uuid);
+		}
+
+		var	tid = templates.get('topic_id');
+		if (tid) {
+			// Replying to a topic
+			socket.emit('modules.composer.register', {
+				uuid: post_uuid,
+				tid: templates.get('topic_id'),
+				uid: app.uid
+			});
 		}
 	};
 
