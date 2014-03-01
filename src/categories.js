@@ -1,3 +1,6 @@
+
+'use strict';
+
 var db = require('./database'),
 	posts = require('./posts'),
 	utils = require('./../public/src/utils'),
@@ -13,7 +16,6 @@ var db = require('./database'),
 	nconf = require('nconf');
 
 (function(Categories) {
-	"use strict";
 
 	Categories.create = function(data, callback) {
 		db.incrObjectField('global', 'nextCid', function(err, cid) {
@@ -161,11 +163,11 @@ var db = require('./database'),
 
 	Categories.getAllCategories = function(uid, callback) {
 		db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
-			if(cids && cids.length === 0) {
+			if (!cids || (cids && cids.length === 0)) {
 				return callback(null, {categories : []});
 			}
 
@@ -339,7 +341,6 @@ var db = require('./database'),
 				'categories': categories
 			});
 		});
-
 	};
 
 	Categories.isUserActiveIn = function(cid, uid, callback) {
