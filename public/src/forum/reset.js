@@ -7,7 +7,7 @@ define(function() {
 			successEl = $('#success'),
 			errorTextEl = errorEl.find('p');
 
-		$('#reset').onclick = function() {
+		$('#reset').on('click', function() {
 			if (inputEl.val() && inputEl.val().indexOf('@') !== -1) {
 				socket.emit('user.reset.send', {
 					email: inputEl.val()
