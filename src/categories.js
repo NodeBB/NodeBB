@@ -104,12 +104,13 @@ var db = require('./database'),
 					});
 				}
 
-				var indices = {};
-				for(var i=0; i<tids.length; ++i) {
+				var indices = {},
+					i = 0;
+				for(i=0; i<tids.length; ++i) {
 					indices[tids[i]] = start + i;
 				}
 
-				for(var i=0; i<topics.length; ++i) {
+				for(i=0; i<topics.length; ++i) {
 					topics[i].index = indices[topics[i].tid];
 				}
 
