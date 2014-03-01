@@ -44,7 +44,7 @@ var	nconf = require('nconf'),
 
 			if (matches) {
 				async.map(matches, function(mappedPath, next) {
-					var	filePath = path.join(plugins.staticDirs[mappedPath], relPath.slice(mappedPath.length));
+					var	filePath = path.join(plugins.staticDirs[mappedPath], decodeURIComponent(relPath.slice(mappedPath.length)));
 
 					fs.exists(filePath, function(exists) {
 						if (exists) {
