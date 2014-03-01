@@ -390,12 +390,13 @@ define(['taskbar'], function(taskbar) {
 			composer.createNewComposer(post_uuid);
 		}
 
-		var	tid = templates.get('topic_id');
+		var	tid = templates.get('topic_id'),
+			postData = composer.posts[post_uuid];
 		if (tid) {
 			// Replying to a topic
 			socket.emit('modules.composer.register', {
 				uuid: post_uuid,
-				tid: templates.get('topic_id'),
+				tid: postData.tid,
 				uid: app.uid
 			});
 		}
