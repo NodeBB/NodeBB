@@ -10,6 +10,9 @@ var path = require('path'),
 	async = require('async'),
 
 	utils = require('../public/src/utils'),
+	templates = require('./../public/src/templates'), // todo remove
+	translator = require('./../public/src/translator'),
+
 	db = require('./database'),
 	user = require('./user'),
 	notifications = require('./notifications'),
@@ -17,9 +20,8 @@ var path = require('path'),
 	meta = require('./meta'),
 	plugins = require('./plugins'),
 	logger = require('./logger'),
-	templates = require('./../public/src/templates'),
-	translator = require('./../public/src/translator'),
 	controllers = require('./controllers'),
+	middleware = require('./middleware'),
 
 	admin = require('./routes/admin'),
 	apiRoute = require('./routes/api'),
@@ -34,8 +36,6 @@ if(nconf.get('ssl')) {
 } else {
 	server = require('http').createServer(WebServer);
 }
-
-module.exports.server = server;
 
 // Signals
 var	shutdown = function(code) {
@@ -67,6 +67,7 @@ process.on('uncaughtException', function(err) {
 (function (app) {
 	"use strict";
 
+	// this can be moved to app.js
 	var	clientScripts;
 
 	plugins.ready(function() {
@@ -81,6 +82,29 @@ process.on('uncaughtException', function(err) {
 			});
 		});
 	});
+
+	logger.init(app);
+	
+
+	async.series({
+		themesData: meta.themes.get,
+		currentThemeData: function(next) {
+			db.getObjectFields('config', ['theme:type', 'theme:id', 'theme:staticDir', 'theme:templates'], next);
+		}
+	}, function(err, data) {
+		middleware(app, data);
+
+		if (err) {
+			winston.error('Errors were encountered while attempting to initialise NodeBB.');
+			process.exit();
+		} else {
+			if (process.env.NODE_ENV === 'development') {
+				winston.info('Middlewares loaded.');
+			}
+		}
+	});
+	
+	
 
 	app.prepareAPI = function(req, res, next) {
 		res.locals.isAPI = true;
@@ -323,266 +347,16 @@ process.on('uncaughtException', function(err) {
 		});
 	}
 
-	// Middlewares
-	app.configure(function() {
-		app.engine('tpl', templates.__express);
-		app.set('view engine', 'tpl');
-		app.set('views', path.join(__dirname, '../public/templates'));
+	if (nconf.get('port') != 80 && nconf.get('port') != 443 && nconf.get('use_port') === false) {
+		winston.info('Enabling \'trust proxy\'');
+		app.enable('trust proxy');
+	}
 
-		async.series([
-			function(next) {
-				// Pre-router middlewares
-				app.use(express.compress());
+	if ((nconf.get('port') == 80 || nconf.get('port') == 443) && process.env.NODE_ENV !== 'development') {
+		winston.info('Using ports 80 and 443 is not recommend; use a proxy instead. See README.md');
+	}
 
-				logger.init(app);
-
-				// favicon & apple-touch-icon middleware
-				app.use(express.favicon(path.join(__dirname, '../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico')));
-				app.use('/apple-touch-icon', function(req, res) {
-					if (meta.config['brand:logo'] && validator.isURL(meta.config['brand:logo'])) {
-						return res.redirect(meta.config['brand:logo']);
-					} else {
-						return res.sendfile(path.join(__dirname, '../public', meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png'), {
-							maxAge: app.enabled('cache') ? 5184000000 : 0
-						});
-					}
-				});
-
-				app.use(require('less-middleware')({
-					src: path.join(__dirname, '../', 'public'),
-					prefix: nconf.get('relative_path'),
-					yuicompress: app.enabled('minification') ? true : false
-				}));
-				app.use(express.bodyParser()); // Puts POST vars in request.body
-				app.use(express.cookieParser()); // If you want to parse cookies (res.cookies)
-
-				app.use(express.session({
-					store: db.sessionStore,
-					secret: nconf.get('secret'),
-					key: 'express.sid',
-					cookie: {
-						maxAge: 1000 * 60 * 60 * 24 * parseInt(meta.configs.loginDays || 14, 10)
-					}
-				}));
-
-				app.use(express.csrf());
-
-				if (nconf.get('port') != 80 && nconf.get('port') != 443 && nconf.get('use_port') === false) {
-					winston.info('Enabling \'trust proxy\'');
-					app.enable('trust proxy');
-				}
-
-				if ((nconf.get('port') == 80 || nconf.get('port') == 443) && process.env.NODE_ENV !== 'development') {
-					winston.info('Using ports 80 and 443 is not recommend; use a proxy instead. See README.md');
-				}
-
-				// Local vars, other assorted setup
-				app.use(function (req, res, next) {
-					res.locals.csrf_token = req.session._csrf;
-
-					// Disable framing
-					res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-
-					next();
-				});
-
-				app.use(function(req, res, next) {
-					// res.render post-processing middleware, modified from here: https://gist.github.com/mrlannigan/5051687
-					var render = res.render;
-					res.render = function(template, options, fn) {
-						var self = this,
-							options = options || {},
-							req = this.req,
-							app = req.app,
-							defaultFn = function(err, str){
-								if (err) {
-									return req.next(err);
-								}
-
-								self.send(str);
-							};
-
-						if ('function' == typeof options) {
-							fn = options, options = {};
-						}
-
-						if ('function' != typeof fn) {
-							fn = defaultFn;
-						}
-
-						render.call(self, template, options, function(err, str) {
-							if (res.locals.header) {
-								str = res.locals.header + str;
-							}
-
-							if (res.locals.footer) {
-								str = str + res.locals.footer;
-							}
-
-							if (str) {
-								translator.translate(str, function(translated) {
-									fn(err, translated);
-								});
-							} else {
-								fn(err, str);
-							}
-						});
-					};
-					next();
-				});
-
-				// Authentication Routes
-				auth.initialize(app);
-
-				next();
-			},
-			function(next) {
-				async.parallel([
-					function(next) {
-
-						db.getObjectFields('config', ['theme:type', 'theme:id', 'theme:staticDir', 'theme:templates'], function(err, themeData) {
-							var themeId = (themeData['theme:id'] || 'nodebb-theme-vanilla');
-
-							// Detect if a theme has been selected, and handle appropriately
-							if (!themeData['theme:type'] || themeData['theme:type'] === 'local') {
-								// Local theme
-								if (process.env.NODE_ENV === 'development') {
-									winston.info('[themes] Using theme ' + themeId);
-								}
-
-								// Theme's static directory
-								if (themeData['theme:staticDir']) {
-									app.use('/css/assets', express.static(path.join(nconf.get('themes_path'), themeData['theme:id'], themeData['theme:staticDir']), {
-										maxAge: app.enabled('cache') ? 5184000000 : 0
-									}));
-									if (process.env.NODE_ENV === 'development') {
-										winston.info('Static directory routed for theme: ' + themeData['theme:id']);
-									}
-								}
-
-								if (themeData['theme:templates']) {
-									app.use('/templates', express.static(path.join(nconf.get('themes_path'), themeData['theme:id'], themeData['theme:templates']), {
-										maxAge: app.enabled('cache') ? 5184000000 : 0
-									}));
-									if (process.env.NODE_ENV === 'development') {
-										winston.info('Custom templates directory routed for theme: ' + themeData['theme:id']);
-									}
-								}
-
-								next();
-							} else {
-								// If not using a local theme (bootswatch, etc), drop back to vanilla
-								if (process.env.NODE_ENV === 'development') {
-									winston.info('[themes] Using theme ' + themeId);
-								}
-
-								app.use(require('less-middleware')({
-									src: path.join(nconf.get('themes_path'), '/nodebb-theme-vanilla'),
-									dest: path.join(__dirname, '../public/css'),
-									prefix: nconf.get('relative_path') + '/css',
-									yuicompress: app.enabled('minification') ? true : false
-								}));
-
-								next();
-							}
-						});
-
-						// Route paths to screenshots for installed themes
-						meta.themes.get(function(err, themes) {
-							var	screenshotPath;
-
-							async.each(themes, function(themeObj, next) {
-								if (themeObj.screenshot) {
-									screenshotPath = path.join(nconf.get('themes_path'), themeObj.id, themeObj.screenshot);
-									(function(id, path) {
-										fs.exists(path, function(exists) {
-											if (exists) {
-												app.get('/css/previews/' + id, function(req, res) {
-													res.sendfile(path);
-												});
-											}
-										});
-									})(themeObj.id, screenshotPath);
-								} else {
-									next(false);
-								}
-							});
-						});
-					}
-				], next);
-			},
-			function(next) {
-				// Router & post-router middlewares
-				app.use(app.router);
-
-				// Static directory /public
-				app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../', 'public'), {
-					maxAge: app.enabled('cache') ? 5184000000 : 0
-				}));
-
-				// 404 catch-all
-				app.use(function (req, res, next) {
-					var	isLanguage = new RegExp('^' + nconf.get('relative_path') + '/language/[\\w]{2,}/.*.json'),
-						isClientScript = new RegExp('^' + nconf.get('relative_path') + '\\/src\\/forum(\\/admin)?\\/[\\w]+\\.js');
-
-					res.status(404);
-
-					if (isClientScript.test(req.url)) {
-						// Handle missing client-side scripts
-						res.type('text/javascript').send(200, '');
-					} else if (isLanguage.test(req.url)) {
-						// Handle languages by sending an empty object
-						res.json(200, {});
-					} else if (req.accepts('html')) {
-						// respond with html page
-						if (process.env.NODE_ENV === 'development') {
-							winston.warn('Route requested but not found: ' + req.url);
-						}
-
-						res.redirect(nconf.get('relative_path') + '/404');
-					} else if (req.accepts('json')) {
-						// respond with json
-						if (process.env.NODE_ENV === 'development') {
-							winston.warn('Route requested but not found: ' + req.url);
-						}
-
-						res.json({
-							error: 'Not found'
-						});
-					} else {
-						// default to plain-text. send()
-						res.type('txt').send('Not found');
-					}
-				});
-
-				app.use(function (err, req, res, next) {
-
-					// we may use properties of the error object
-					// here and next(err) appropriately, or if
-					// we possibly recovered from the error, simply next().
-					console.error(err.stack);
-					var status = err.status || 500;
-					res.status(status);
-
-					res.json(status, {
-						error: err.message
-					});
-				});
-
-				next();
-			}
-		], function(err) {
-			if (err) {
-				winston.error('Errors were encountered while attempting to initialise NodeBB.');
-				process.exit();
-			} else {
-				if (process.env.NODE_ENV === 'development') {
-					winston.info('Middlewares loaded.');
-				}
-			}
-		});
-	});
-
+	module.exports.server = server;
 	module.exports.init = function () {
 		// translate all static templates served by webserver here. ex. footer, logout
 		plugins.fireHook('action:app.load', app);
