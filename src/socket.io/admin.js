@@ -9,6 +9,7 @@ var	groups = require('../groups'),
 	categories = require('../categories'),
 	CategoryTools = require('../categoryTools'),
 	logger = require('../logger'),
+	db = require('../database'),
 	admin = {
 		user: require('../admin/user'),
 		categories: require('../admin/categories')
@@ -34,6 +35,30 @@ SocketAdmin.before = function(socket, next) {
 SocketAdmin.restart = function(socket, data, callback) {
 	meta.restart();
 };
+
+
+SocketAdmin.getVisitorCount = function(socket, data, callback) {
+	var terms = {
+		day: 86400000,
+		week: 604800000,
+		month: 2592000000
+	};
+	var now = Date.now();
+	async.parallel({
+		day: function(next) {
+			db.sortedSetCount('ip:recent', now - terms.day, now, next);
+		},
+		week: function(next) {
+			db.sortedSetCount('ip:recent', now - terms.week, now, next);
+		},
+		month: function(next) {
+			db.sortedSetCount('ip:recent', now - terms.month, now, next);
+		},
+		alltime: function(next) {
+			db.sortedSetCount('ip:recent', 0, now, next);
+		}
+	}, callback);
+}
 
 /* Topics */
 

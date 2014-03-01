@@ -30,6 +30,8 @@ var path = require('path'),
 					user.updateLastOnlineTime(req.user.uid);
 				}
 
+				db.sortedSetAdd('ip:recent', Date.now(), req.ip || 'Unknown');
+
 				next();
 			});
 
@@ -222,15 +224,13 @@ var path = require('path'),
 					return res.redirect('/404');
 				}
 
-				var limit = 50;
-
 				function searchPosts(callback) {
 					Plugins.fireHook('filter:search.query', {
 						index: 'post',
-						query: req.params.terms
+						query: req.params.term
 					}, function(err, pids) {
 						if (err) {
-							return callback(err, null);
+							return callback(err);
 						}
 
 						posts.getPostSummaryByPids(pids, false, callback);
@@ -240,10 +240,10 @@ var path = require('path'),
 				function searchTopics(callback) {
 					Plugins.fireHook('filter:search.query', {
 						index: 'topic',
-						query: req.params.terms
+						query: req.params.term
 					}, function(err, tids) {
 						if (err) {
-							return callback(err, null);
+							return callback(err);
 						}
 
 						topics.getTopicsByTids(tids, 0, callback);

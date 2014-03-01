@@ -141,16 +141,16 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 							}
 							loadingEl.remove();
 
-							categoriesEl.on('click', function(e) {
-								var el = $(e.target);
+							categoriesEl.on('click', 'li[data-cid]', function(e) {
+								var el = $(this);
 								if (el.is('li')) {
-									confirmCat.html(e.target.innerHTML);
+									confirmCat.html(el.html());
 									confirmDiv.css({display: 'block'});
 									targetCid = el.attr('data-cid');
-									targetCatLabel = e.html();
+									targetCatLabel = el.html();
 									commitEl.prop('disabled', false);
 								}
-							}, false);
+							});
 
 							commitEl.on('click', function() {
 								if (!commitEl.prop('disabled') && targetCid) {
@@ -322,10 +322,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 						localStorage.removeItem('topic:' + tid + ':bookmark');
 					}
 				});
-				updateHeader();
-			} else {
-				updateHeader();
 			}
+
+			updateHeader();
 
 			$('#post-container').on('mouseenter', '.favourite-tooltip', function(e) {
 				if (!$(this).data('users-loaded')) {
