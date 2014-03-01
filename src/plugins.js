@@ -246,7 +246,7 @@ var fs = require('fs'),
 				`data.priority`, the relative priority of the method when it is eventually called (default: 10)
 		*/
 
-		if (data.hook && data.method) {
+		if (data.hook && data.method && typeof data.method === 'string' && data.method.length > 0) {
 			data.id = id;
 			if (!data.priority) data.priority = 10;
 			data.method = data.method.split('.').reduce(function(memo, prop) {
