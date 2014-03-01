@@ -263,7 +263,7 @@ var fs = require('fs'),
 								var	relPath = jsPath.slice(new String('plugins/' + matches[0]).length);
 								return plugins.staticDirs[matches[0]] + relPath;
 							} else {
-								winston.warn('[meta.scripts.get] Could not resolve mapped path: ' + mappedPath + '. Are you sure it is defined by a plugin?');
+								winston.warn('[meta.scripts.get] Could not resolve mapped path: ' + jsPath + '. Are you sure it is defined by a plugin?');
 								return null;
 							}
 						} else {
