@@ -101,6 +101,7 @@ SocketModules.composer.unregister = function(socket, uuid) {
 	var	replyObj = SocketModules.composer.replyHash[uuid];
 	if (uuid && replyObj) {
 		server.in('topic_' + replyObj.tid).emit('event:topic.replyStop', replyObj.uid);
+		clearInterval(replyObj.timer);
 		delete SocketModules.composer.replyHash[replyObj.uuid];
 	}
 };
