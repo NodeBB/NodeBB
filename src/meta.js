@@ -3,6 +3,7 @@ var fs = require('fs'),
 	async = require('async'),
 	winston = require('winston'),
 	nconf = require('nconf'),
+	_ = require('underscore'),
 
 	utils = require('./../public/src/utils'),
 	translator = require('./../public/src/translator'),
@@ -250,12 +251,17 @@ var fs = require('fs'),
 						jsPath = path.normalize(jsPath);
 
 						if (jsPath.substring(0, 7) === 'plugins') {
-							var paths = jsPath.split(path.sep),
-								mappedPath = paths[1];
+							var	matches = _.map(plugins.staticDirs, function(realPath, mappedPath) {
+								if (jsPath.match(mappedPath)) {
+									return mappedPath;
+								} else {
+									return null;
+								}
+							}).filter(function(a) { return a; });
 
-							if (plugins.staticDirs[mappedPath]) {
-								jsPath = jsPath.replace(path.join('plugins', mappedPath), '');
-								return path.join(plugins.staticDirs[mappedPath], jsPath);
+							if (matches.length) {
+								var	relPath = jsPath.slice(new String('plugins/' + matches[0]).length);
+								return plugins.staticDirs[matches[0]] + relPath;
 							} else {
 								winston.warn('[meta.scripts.get] Could not resolve mapped path: ' + mappedPath + '. Are you sure it is defined by a plugin?');
 								return null;
