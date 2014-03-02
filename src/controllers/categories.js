@@ -3,10 +3,10 @@
 var categoriesController = {},
 	async = require('async'),
 	qs = require('querystring'),
-	categoryTools = require('../categoryTools'),
-	user = require('../user'),
-	categories = require('../categories'),
-	topics = require('../topics');
+	categoryTools = require('./../categoryTools'),
+	user = require('./../user'),
+	categories = require('./../categories'),
+	topics = require('./../topics');
 
 categoriesController.recent = function(req, res, next) {
 	var uid = (req.user) ? req.user.uid : 0;

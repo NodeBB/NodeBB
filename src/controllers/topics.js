@@ -1,11 +1,16 @@
+"use strict";
+
 var topicsController = {},
 	async = require('async'),
 	S = require('string'),
 	validator = require('validator'),
+	nconf = require('nconf'),
 	qs = require('querystring'),
-	user = require('../user'),
-	topics = require('../topics'),
-	threadTools = require('../threadTools');
+	user = require('./../user'),
+	meta = require('./../meta'),
+	topics = require('./../topics'),
+	threadTools = require('./../threadTools'),
+	utils = require('./../../public/src/utils');
 
 topicsController.get = function(req, res, next) {
 	var tid = req.params.topic_id,
@@ -72,77 +77,70 @@ topicsController.get = function(req, res, next) {
 
 			next(null, topicData);
 
-			/*var ogImageUrl = meta.config['brand:logo'];
+			var ogImageUrl = meta.config['brand:logo'];
 			if(ogImageUrl && ogImageUrl.indexOf('http') === -1) {
 				ogImageUrl = nconf.get('url') + ogImageUrl;
 			}
 
-			app.build_header({
-				req: req,
-				res: res,
-				metaTags: [
-					{
-						name: "title",
-						content: topicData.title
-					},
-					{
-						name: "description",
-						content: description
-					},
-					{
-						property: 'og:title',
-						content: topicData.title
-					},
-					{
-						property: 'og:description',
-						content: description
-					},
-					{
-						property: "og:type",
-						content: 'article'
-					},
-					{
-						property: "og:url",
-						content: nconf.get('url') + '/topic/' + topicData.slug
-					},
-					{
-						property: "og:image:url",
-						content: ogImageUrl
-					},
-					{
-						property: 'og:image',
-						content: topicData.posts.length?topicData.posts[0].picture:''
-					},
-					{
-						property: "article:published_time",
-						content: utils.toISOString(topicData.timestamp)
-					},
-					{
-						property: 'article:modified_time',
-						content: utils.toISOString(lastMod)
-					},
-					{
-						property: 'article:section',
-						content: topicData.category.name
-					}
-				],
-				linkTags: [
-					{
-						rel: 'alternate',
-						type: 'application/rss+xml',
-						href: nconf.get('url') + '/topic/' + tid + '.rss'
-					},
-					{
-						rel: 'up',
-						href: nconf.get('url') + '/category/' + topicData.category.slug
-					}
-				]
-			}, function (err, header) {
-				next(err, {
-					header: header,
-					posts: topicData
-				});
-			});*/
+			res.locals.metaTags = [
+				{
+					name: "title",
+					content: topicData.title
+				},
+				{
+					name: "description",
+					content: description
+				},
+				{
+					property: 'og:title',
+					content: topicData.title
+				},
+				{
+					property: 'og:description',
+					content: description
+				},
+				{
+					property: "og:type",
+					content: 'article'
+				},
+				{
+					property: "og:url",
+					content: nconf.get('url') + '/topic/' + topicData.slug
+				},
+				{
+					property: "og:image:url",
+					content: ogImageUrl
+				},
+				{
+					property: 'og:image',
+					content: topicData.posts.length?topicData.posts[0].picture:''
+				},
+				{
+					property: "article:published_time",
+					content: utils.toISOString(topicData.timestamp)
+				},
+				{
+					property: 'article:modified_time',
+					content: utils.toISOString(lastMod)
+				},
+				{
+					property: 'article:section',
+					content: topicData.category.name
+				}
+			];
+
+			res.locals.linkTags = [
+				{
+					rel: 'alternate',
+					type: 'application/rss+xml',
+					href: nconf.get('url') + '/topic/' + tid + '.rss'
+				},
+				{
+					rel: 'up',
+					href: nconf.get('url') + '/category/' + topicData.category.slug
+				}
+			];
+
 		}
 	], function (err, posts) {
 		if (err) {

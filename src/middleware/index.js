@@ -102,20 +102,16 @@ function catch404(req, res, next) {
 	res.status(404);
 
 	if (isClientScript.test(req.url)) {
-		// Handle missing client-side scripts
 		res.type('text/javascript').send(200, '');
 	} else if (isLanguage.test(req.url)) {
-		// Handle languages by sending an empty object
 		res.json(200, {});
 	} else if (req.accepts('html')) {
-		// respond with html page
 		if (process.env.NODE_ENV === 'development') {
 			winston.warn('Route requested but not found: ' + req.url);
 		}
 
 		res.redirect(nconf.get('relative_path') + '/404');
 	} else if (req.accepts('json')) {
-		// respond with json
 		if (process.env.NODE_ENV === 'development') {
 			winston.warn('Route requested but not found: ' + req.url);
 		}
@@ -124,7 +120,6 @@ function catch404(req, res, next) {
 			error: 'Not found'
 		});
 	} else {
-		// default to plain-text. send()
 		res.type('txt').send('Not found');
 	}
 }
@@ -137,7 +132,6 @@ module.exports = function(app, data) {
 		app.set('view engine', 'tpl');
 		app.set('views', path.join(__dirname, '../../public/templates'));
 
-		// Pre-router middlewares
 		app.use(express.compress());
 
 		app.use(express.favicon(path.join(__dirname, '../../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico')));
@@ -163,28 +157,21 @@ module.exports = function(app, data) {
 
 		app.use(express.csrf()); // todo, make this a conditional middleware
 
-		// Local vars, other assorted setup
 		app.use(function (req, res, next) {
 			res.locals.csrf_token = req.session._csrf;
-
-			// Disable framing
 			res.setHeader('X-Frame-Options', 'SAMEORIGIN');
 			next();
 		});
 
 		app.use(middleware.processRender);
 
-		// Authentication Routes
 		auth.initialize(app);
 
 		routeCurrentTheme(app, data.currentThemeData);
-
-		// Route paths to screenshots for installed themes
 		routeThemeScreenshots(app, data.themesData);
 
 		app.use(app.router);
 
-		// Static directory /public
 		app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../../', 'public'), {
 			maxAge: app.enabled('cache') ? 5184000000 : 0
 		}));

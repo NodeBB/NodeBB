@@ -6,6 +6,7 @@ var app,
 	middleware = {},
 	async = require('async'),
 	path = require('path'),
+	winston = require('winston'),
 	validator = require('validator'),
 	fs = require('fs'),
 	nconf = require('nconf'),
@@ -89,13 +90,8 @@ middleware.buildHeader = function(req, res, next) {
 	async.parallel([
 		function(next) {
 			// temp, don't forget to set metaTags and linkTags to res.locals.header
-			middleware.build_header({
-				req: req,
-				res: res
-			}, function(err, template) {
-				res.locals.header = template;
-				next(err);
-			});
+			res.locals.header = true;
+			next();
 		},
 		function(next) {
 			// this is slower than the original implementation because the rendered template is not cached
@@ -115,10 +111,11 @@ middleware.buildHeader = function(req, res, next) {
 };
 
 /**
+* TODO: switch signature to req, res, callback
  *	`options` object	requires:	req, res
  *						accepts:	metaTags, linkTags
  */
-middleware.build_header = function (options, callback) {
+middleware.renderHeader = function (options, callback) {
 	var custom_header = {
 		'navigation': []
 	};
@@ -168,9 +165,9 @@ middleware.build_header = function (options, callback) {
 			};
 
 		var uid = '0';
-
+console.log(options.res.locals.metaTags);
 		// Meta Tags
-		/*templateValues.metaTags = defaultMetaTags.concat(options.metaTags || []).map(function(tag) {
+		templateValues.metaTags = defaultMetaTags.concat(options.res.locals.metaTags || []).map(function(tag) {
 			if(!tag || typeof tag.content !== 'string') {
 				winston.warn('Invalid meta tag. ', tag);
 				return tag;
@@ -180,7 +177,7 @@ middleware.build_header = function (options, callback) {
 				return escapeList[tag] || tag;
 			});
 			return tag;
-		});*/
+		});
 
 		// Link Tags
 		/*templateValues.linkTags = defaultLinkTags.concat(options.linkTags || []);
@@ -204,7 +201,7 @@ middleware.build_header = function (options, callback) {
 		async.parallel([
 			function(next) {
 				translator.get('pages:' + path.basename(options.req.url), function(translated) {
-					/*var	metaTitle = templateValues.metaTags.filter(function(tag) {
+					var	metaTitle = templateValues.metaTags.filter(function(tag) {
 							return tag.name === 'title';
 						});
 					if (translated) {
@@ -213,7 +210,7 @@ middleware.build_header = function (options, callback) {
 						templateValues.browserTitle = metaTitle[0].content;
 					} else {
 						templateValues.browserTitle = meta.config.browserTitle || 'NodeBB';
-					}*/
+					}
 
 					next();
 				});
@@ -260,17 +257,20 @@ middleware.processRender = function(req, res, next) {
 		}
 
 		render.call(self, template, options, function(err, str) {
-			if (res.locals.header) {
-				str = res.locals.header + str;
-			}
-
 			if (res.locals.footer) {
 				str = str + res.locals.footer;
 			}
 
-			if (str) {
-				translator.translate(str, function(translated) {
-					fn(err, translated);
+			if (res.locals.header) {
+				middleware.renderHeader({
+					req: req,
+					res: res
+				}, function(err, template) {
+					str = template + str;
+
+					translator.translate(str, function(translated) {
+						fn(err, translated);
+					});
 				});
 			} else {
 				fn(err, str);
