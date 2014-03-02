@@ -618,6 +618,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		]);
 
 		socket.on('get_users_in_room', function(data) {
+
 			if(data && data.room.indexOf('topic') !== -1) {
 				var activeEl = $('li.post-bar[data-index="0"] .thread_active_users');
 
@@ -636,9 +637,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				// remove users that are no longer here
 				activeEl.find('a').each(function(index, element) {
 					if(element) {
-						var uid = $(element).attr('data-uid'),
-							absent = data.users.every(function(aUid) {
-								return parseInt(aUid, 10) !== parseInt(uid, 10);
+						var uid = $(element).attr('data-uid');
+							absent = data.users.every(function(user) {
+								return parseInt(user.uid, 10) !== parseInt(uid, 10);
 							});
 
 						if (absent) {

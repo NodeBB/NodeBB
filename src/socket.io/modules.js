@@ -135,13 +135,8 @@ SocketModules.composer.pingActive = function(socket, uuid) {
 
 SocketModules.composer.getUsersByTid = function(socket, tid, callback) {
 	// Return uids with active composers
-	console.log(tid);
 	callback(null, _.filter(SocketModules.composer.replyHash, function(replyObj, uuid) {
-		if (parseInt(replyObj.tid, 10) === parseInt(tid, 10)) {
-			return true;
-		} else {
-			return false;
-		}
+		return parseInt(replyObj.tid, 10) === parseInt(tid, 10);
 	}).map(function(replyObj) {
 		return replyObj.uid
 	}));

@@ -131,6 +131,7 @@ Sockets.init = function(server) {
 			emitOnlineUserCount();
 
 			for(var roomName in io.sockets.manager.roomClients[socket.id]) {
+				console.log('disconnected from', roomName);
 				updateRoomBrowsingText(roomName.slice(1));
 			}
 		});
@@ -235,7 +236,11 @@ function isUserOnline(uid) {
 Sockets.updateRoomBrowsingText = updateRoomBrowsingText;
 function updateRoomBrowsingText(roomName) {
 
-	function getUidsInRoom(room) {
+	if (!roomName) {
+		return;
+	}
+
+	function getUidsInRoom() {
 		var uids = [];
 		var clients = io.sockets.clients(roomName);
 		for(var i=0; i<clients.length; ++i) {
@@ -246,7 +251,7 @@ function updateRoomBrowsingText(roomName) {
 		return uids;
 	}
 
-	function getAnonymousCount(roomName) {
+	function getAnonymousCount() {
 		var clients = io.sockets.clients(roomName);
 		var anonCount = 0;
 
@@ -258,15 +263,17 @@ function updateRoomBrowsingText(roomName) {
 		return anonCount;
 	}
 
-	var	uids = getUidsInRoom(roomName),
-		anonymousCount = getAnonymousCount(roomName);
+	var	uids = getUidsInRoom(),
+		anonymousCount = getAnonymousCount();
+
+
 
 	user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status'], function(err, users) {
 		if(!err) {
 			users = users.filter(function(user) {
 				return user.status !== 'offline';
 			});
-
+			console.log('['+roomName+']', users.length, anonymousCount);
 			io.sockets.in(roomName).emit('get_users_in_room', {
 				users: users,
 				anonymousCount: anonymousCount,
