@@ -242,7 +242,7 @@ function reset() {
 
 function shutdown(code) {
 	winston.info('[app] Shutdown (SIGTERM/SIGINT) Initialised.');
-	db.close();
+	require('./src/database').close();
 	winston.info('[app] Database connection closed.');
 
 	winston.info('[app] Shutdown complete.');

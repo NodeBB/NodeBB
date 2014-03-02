@@ -40,7 +40,6 @@ if(nconf.get('ssl')) {
 (function (app) {
 	"use strict";
 
-	// this can be moved to app.js
 	var	clientScripts;
 
 	plugins.ready(function() {
