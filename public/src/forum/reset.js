@@ -26,7 +26,7 @@ define(function() {
 				errorEl.removeClass('hide').show();
 				errorTextEl.html('Please enter a valid email');
 			}
-		};
+		});
 	};
 
 	return ResetPassword;
