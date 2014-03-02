@@ -131,7 +131,6 @@ Sockets.init = function(server) {
 			emitOnlineUserCount();
 
 			for(var roomName in io.sockets.manager.roomClients[socket.id]) {
-				console.log('disconnected from', roomName);
 				updateRoomBrowsingText(roomName.slice(1));
 			}
 		});
@@ -273,7 +272,7 @@ function updateRoomBrowsingText(roomName) {
 			users = users.filter(function(user) {
 				return user.status !== 'offline';
 			});
-			console.log('['+roomName+']', users.length, anonymousCount);
+
 			io.sockets.in(roomName).emit('get_users_in_room', {
 				users: users,
 				anonymousCount: anonymousCount,
