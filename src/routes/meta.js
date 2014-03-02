@@ -45,12 +45,22 @@ var path = require('path'),
 		});
 
 		app.get('/nodebb.min.js', function(req, res) {
+			var	sendCached = function() {
+				return res.type('text/javascript').send(meta.js.cache);
+			}
 			if (meta.js.cache) {
-				res.type('text/javascript').send(meta.js.cache);
+				sendCached();
 			} else {
-				meta.js.minify(function() {
-					res.type('text/javascript').send(meta.js.cache);
-				});
+				if (app.enabled('minification')) {
+					meta.js.minify(function() {
+						sendCached();
+					});
+				} else {
+					// Compress only
+					meta.js.compress(function() {
+						sendCached();
+					});
+				}
 			}
 		});
 	};

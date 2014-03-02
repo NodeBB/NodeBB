@@ -17,6 +17,7 @@ var fs = require('fs'),
 	Plugins.staticDirs = {};
 	Plugins.cssFiles = [];
 	Plugins.lessFiles = [];
+	Plugins.clientScripts = [];
 
 	Plugins.initialized = false;
 
