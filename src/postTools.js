@@ -71,7 +71,7 @@ var winston = require('winston'),
 
 
 	PostTools.edit = function(uid, pid, title, content, options, callback) {
-		options = options || (options = {});
+		options = options || {};
 
 		function success(postData) {
 			posts.setPostFields(pid, {
