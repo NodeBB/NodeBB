@@ -29,61 +29,49 @@ var db = require('./database'),
 			toPid = data.toPid;
 
 		if (uid === null) {
-			return callback(new Error('invalid-user'), null);
+			return callback(new Error('invalid-user'));
 		}
+
+		var timestamp = Date.now(),
+			postData;
 
 		async.waterfall([
 			function(next) {
-				topics.isLocked(tid, next);
-			},
-			function(locked, next) {
-				if(locked) {
-					return next(new Error('topic-locked'));
-				}
-
 				db.incrObjectField('global', 'nextPid', next);
 			},
 			function(pid, next) {
-				plugins.fireHook('filter:post.save', content, function(err, newContent) {
-					next(err, pid, newContent);
-				});
-			},
-			function(pid, newContent, next) {
-				var timestamp = Date.now(),
-					postData = {
-						'pid': pid,
-						'uid': uid,
-						'tid': tid,
-						'content': newContent,
-						'timestamp': timestamp,
-						'reputation': '0',
-						'votes': '0',
-						'editor': '',
-						'edited': 0,
-						'deleted': 0
-					};
+
+				postData = {
+					'pid': pid,
+					'uid': uid,
+					'tid': tid,
+					'content': content,
+					'timestamp': timestamp,
+					'reputation': 0,
+					'votes': 0,
+					'editor': '',
+					'edited': 0,
+					'deleted': 0
+				};
 
 				if (toPid) {
 					postData.toPid = toPid;
 				}
 
-				db.setObject('post:' + pid, postData, function(err) {
-					if(err) {
-						return next(err);
-					}
-
-					db.sortedSetAdd('posts:pid', timestamp, pid);
-
-					db.incrObjectField('global', 'postCount');
-
-					topics.onNewPostMade(tid, pid, timestamp);
-					categories.onNewPostMade(uid, tid, pid, timestamp);
-					user.onNewPostMade(uid, tid, pid, timestamp);
-
-					next(null, postData);
-				});
+				plugins.fireHook('filter:post.save', postData, next);
 			},
 			function(postData, next) {
+				db.setObject('post:' + postData.pid, postData, next);
+			},
+			function(result, next) {
+				db.sortedSetAdd('posts:pid', timestamp, postData.pid);
+
+				db.incrObjectField('global', 'postCount');
+
+				topics.onNewPostMade(tid, postData.pid, timestamp);
+				categories.onNewPostMade(uid, tid, postData.pid, timestamp);
+				user.onNewPostMade(uid, tid, postData.pid, timestamp);
+
 				plugins.fireHook('filter:post.get', postData, next);
 			},
 			function(postData, next) {
@@ -103,36 +91,34 @@ var db = require('./database'),
 	};
 
 	Posts.getPostsByTid = function(tid, start, end, reverse, callback) {
-		if (typeof reverse === 'function') {
-			callback = reverse;
-			reverse = false;
-		}
-
 		db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange']('tid:' + tid + ':posts', start, end, function(err, pids) {
 			if(err) {
 				return callback(err);
 			}
 
-			if(!pids.length) {
+			if(!Array.isArray(pids) || !pids.length) {
 				return callback(null, []);
 			}
 
-			plugins.fireHook('filter:post.getTopic', pids, function(err, posts) {
+			Posts.getPostsByPids(pids, function(err, posts) {
 				if(err) {
 					return callback(err);
 				}
 
-				if(!posts.length) {
+				if(!Array.isArray(posts) || !posts.length) {
 					return callback(null, []);
 				}
 
-
-				Posts.getPostsByPids(pids, function(err, posts) {
+				plugins.fireHook('filter:post.getPosts', {tid: tid, posts: posts}, function(err, data) {
 					if(err) {
 						return callback(err);
 					}
-					plugins.fireHook('action:post.gotTopic', posts);
-					callback(null, posts);
+
+					if(!data || !Array.isArray(data.posts)) {
+						return callback(null, []);
+					}
+
+					callback(null, data.posts);
 				});
 			});
 		});

@@ -613,7 +613,8 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			'event:topic_deleted', 'event:topic_restored', 'event:topic:locked',
 			'event:topic_unlocked', 'event:topic_pinned', 'event:topic_unpinned',
 			'event:topic_moved', 'event:post_edited', 'event:post_deleted', 'event:post_restored',
-			'posts.favourite', 'user.isOnline', 'posts.upvote', 'posts.downvote'
+			'posts.favourite', 'user.isOnline', 'posts.upvote', 'posts.downvote',
+			'event:topic.replyStart', 'event:topic.replyStop'
 		]);
 
 		socket.on('get_users_in_room', function(data) {
@@ -622,17 +623,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				var activeEl = $('li.post-bar[data-index="0"] .thread_active_users');
 
 				function createUserIcon(uid, picture, userslug, username) {
-
-					if(!activeEl.find('[href="'+ RELATIVE_PATH +'/user/' + data.users[i].userslug + '"]').length) {
-						var userIcon = $('<img src="'+ picture +'"/>');
-
-						var userLink = $('<a href="' + RELATIVE_PATH + '/user/' + userslug + '"></a>').append(userIcon);
-						userLink.attr('data-uid', uid);
-
-						var div = $('<div class="inline-block"></div>');
-						div.append(userLink);
-
-						userLink.tooltip({
+					if(!activeEl.find('[data-uid="' + uid + '"]').length) {
+						var div = $('<div class="inline-block"><a data-uid="' + uid + '" href="' + RELATIVE_PATH + '/user/' + userslug + '"><img src="'+ picture +'"/></a></div>');
+						div.find('a').tooltip({
 							placement: 'top',
 							title: username
 						});
@@ -642,15 +635,16 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				}
 
 				// remove users that are no longer here
-				activeEl.children().each(function(index, element) {
+				activeEl.find('a').each(function(index, element) {
 					if(element) {
 						var uid = $(element).attr('data-uid');
-						for(var i=0; i<data.users.length; ++i) {
-							if(data.users[i].uid == uid) {
-								return;
-							}
+							absent = data.users.every(function(user) {
+								return parseInt(user.uid, 10) !== parseInt(uid, 10);
+							});
+
+						if (absent) {
+							$(element).remove();
 						}
-						$(element).remove();
 					}
 				});
 
@@ -695,6 +689,17 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 						title: title
 					});
 				}
+
+				// Get users who are currently replying to the topic entered
+				socket.emit('modules.composer.getUsersByTid', templates.get('topic_id'), function(err, uids) {
+					var	activeUsersEl = $('.thread_active_users'),
+						x;
+					if (uids && uids.length) {
+						for(var x=0;x<uids.length;x++) {
+							activeUsersEl.find('[data-uid="' + uids[x] + '"]').addClass('replying');
+						}
+					}
+				});
 			}
 
 			app.populateOnlineUsers();
@@ -876,6 +881,14 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			}
 		});
 
+		socket.on('event:topic.replyStart', function(uid) {
+			$('.thread_active_users [data-uid="' + uid + '"]').addClass('replying');
+		});
+
+		socket.on('event:topic.replyStop', function(uid) {
+			$('.thread_active_users [data-uid="' + uid + '"]').removeClass('replying');
+		});
+
 		function adjust_rep(value, pid, uid) {
 			var votes = $('li[data-pid="' + pid + '"] .votes'),
 				reputationElements = $('.reputation[data-uid="' + uid + '"]'),
@@ -887,7 +900,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 			votes.html(currentVotes).attr('data-votes', currentVotes);
 			reputationElements.html(reputation).attr('data-reputation', reputation);
-		}
+		};
 
 		function adjust_favourites(value, pid, uid) {
 			var favourites = $('li[data-pid="' + pid + '"] .favouriteCount'),
@@ -896,7 +909,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			currentFavourites += value;
 
 			favourites.html(currentFavourites).attr('data-favourites', currentFavourites);
-		}
+		};
 
 		function set_follow_state(state, alert) {
 
@@ -911,7 +924,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 					type: 'success'
 				});
 			}
-		}
+		};
 
 		function set_locked_state(locked, alert) {
 			translator.translate('<i class="fa fa-fw fa-' + (locked ? 'un': '') + 'lock"></i> [[topic:thread_tools.' + (locked ? 'un': '') + 'lock]]', function(translated) {
@@ -934,7 +947,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			}
 
 			thread_state.locked = locked ? '1' : '0';
-		}
+		};
 
 		function set_delete_state(deleted) {
 			var threadEl = $('#post-container');
@@ -951,7 +964,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			} else {
 				$('#thread-deleted').remove();
 			}
-		}
+		};
 
 		function set_pinned_state(pinned, alert) {
 			translator.translate('<i class="fa fa-fw fa-thumb-tack"></i> [[topic:thread_tools.' + (pinned ? 'unpin' : 'pin') + ']]', function(translated) {
@@ -968,7 +981,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				}
 				thread_state.pinned = pinned ? '1' : '0';
 			});
-		}
+		};
 
 		function toggle_post_delete_state(pid) {
 			var postEl = $('#post-container li[data-pid="' + pid + '"]');
@@ -980,7 +993,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 				updatePostCount();
 			}
-		}
+		};
 
 		function toggle_post_tools(pid, isDeleted) {
 			var postEl = $('#post-container li[data-pid="' + pid + '"]');
@@ -990,7 +1003,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			translator.translate(isDeleted ? ' [[topic:restore]]' : ' [[topic:delete]]', function(translated) {
 				postEl.find('.delete').find('span').html(translated);
 			});
-		}
+		};
 
 		$(window).on('scroll', updateHeader);
 		$(window).trigger('action:topic.loaded');

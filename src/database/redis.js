@@ -1,16 +1,19 @@
-
+'use strict';
 
 (function(module) {
-	'use strict';
+
 	var winston = require('winston'),
 		nconf = require('nconf'),
+		path = require('path'),
 		express = require('express'),
 		redis_socket_or_host = nconf.get('redis:host'),
 		utils = require('./../../public/src/utils.js'),
 		redis,
 		connectRedis,
 		reds,
-		redisClient;
+		redisClient,
+		postSearch,
+		topicSearch;
 
 	try {
 		redis = require('redis');
@@ -21,73 +24,68 @@
 		process.exit();
 	}
 
+	module.init = function(callback) {
+		if (redis_socket_or_host && redis_socket_or_host.indexOf('/')>=0) {
+			/* If redis.host contains a path name character, use the unix dom sock connection. ie, /tmp/redis.sock */
+			redisClient = redis.createClient(nconf.get('redis:host'));
+		} else {
+			/* Else, connect over tcp/ip */
+			redisClient = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host'));
+		}
 
-	if (redis_socket_or_host && redis_socket_or_host.indexOf('/')>=0) {
-		/* If redis.host contains a path name character, use the unix dom sock connection. ie, /tmp/redis.sock */
-		redisClient = redis.createClient(nconf.get('redis:host'));
-	} else {
-		/* Else, connect over tcp/ip */
-		redisClient = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host'));
-	}
+		if (nconf.get('redis:password')) {
+			redisClient.auth(nconf.get('redis:password'));
+		} else {
+			winston.warn('You have no redis password setup!');
+		}
 
-	if (nconf.get('redis:password')) {
-		redisClient.auth(nconf.get('redis:password'));
-	} else {
-		winston.warn('You have no redis password setup!');
-	}
+		redisClient.on('error', function (err) {
+			winston.error(err.message);
+			process.exit();
+		});
 
-	redisClient.on('error', function (err) {
-		winston.error(err.message);
-		process.exit();
-	});
+		module.client = redisClient;
 
+		module.sessionStore = new connectRedis({
+			client: redisClient,
+			ttl: 60 * 60 * 24 * 14
+		});
 
-	module.client = redisClient;
+		reds.createClient = function () {
+			return reds.client || (reds.client = redisClient);
+		};
 
-	module.sessionStore = new connectRedis({
-		client: redisClient,
-		ttl: 60 * 60 * 24 * 14
-	});
-
-	reds.createClient = function () {
-		return reds.client || (reds.client = redisClient);
-	};
-
-	var	userSearch = reds.createSearch('nodebbusersearch'),
 		postSearch = reds.createSearch('nodebbpostsearch'),
 		topicSearch = reds.createSearch('nodebbtopicsearch');
 
-	var db = parseInt(nconf.get('redis:database'), 10);
+		var db = parseInt(nconf.get('redis:database'), 10);
 
-	if (db){
-		redisClient.select(db, function(error) {
-			if(error) {
-				winston.error("NodeBB could not connect to your Redis database. Redis returned the following error: " + error.message);
-				process.exit();
-			}
-		});
-	}
+		if (db) {
+			redisClient.select(db, function(error) {
+				if(error) {
+					winston.error("NodeBB could not connect to your Redis database. Redis returned the following error: " + error.message);
+					process.exit();
+				}
+			});
+		}
 
-	module.init = function(callback) {
-		callback(null);
-	}
+		callback();
+	};
 
 	module.close = function() {
 		redisClient.quit();
-	}
+	};
 
 	//
 	// Exported functions
 	//
 	module.searchIndex = function(key, content, id) {
-		if(key === 'post') {
+		if (key === 'post') {
 			postSearch.index(content, id);
 		} else if(key === 'topic') {
 			topicSearch.index(content, id);
-		} else if(key === 'user') {
-			userSearch.index(content, id);
 		}
-	}
+	};
 
 	module.search = function(key, term, limit, callback) {
 		function search(searchObj, callback) {
@@ -102,55 +100,30 @@
 			search(postSearch, callback);
 		} else if(key === 'topic') {
 			search(topicSearch, callback);
-		} else if(key === 'user') {
-			search(userSearch, callback);
 		}
-	}
+	};
 
 	module.searchRemove = function(key, id, callback) {
 		if(key === 'post') {
 			postSearch.remove(id);
 		} else if(key === 'topic') {
 			topicSearch.remove(id);
-		} else if(key === 'user') {
-			userSearch.remove(id);
 		}
 
 		if (typeof callback === 'function') {
-			callback()
+			callback();
 		}
-	}
+	};
 
 	module.flushdb = function(callback) {
 		redisClient.send_command('flushdb', [], function(err) {
-			if(err){
-				winston.error(error);
-				return callback(err);
-			}
-			callback(null);
-		});
-	}
-
-	module.getFileName = function(callback) {
-		var multi = redisClient.multi();
-
-		multi.config('get', 'dir');
-		multi.config('get', 'dbfilename');
-		multi.exec(function (err, results) {
 			if (err) {
+				winston.error(err.message);
 				return callback(err);
 			}
-
-			results = results.reduce(function (memo, config) {
-				memo[config[0]] = config[1];
-				return memo;
-			}, {});
-
-			var dbFile = path.join(results.dir, results.dbfilename);
-			callback(null, dbFile);
+			callback();
 		});
-	}
-
+	};
 
 	module.info = function(callback) {
 		redisClient.info(function (err, data) {
@@ -172,7 +145,7 @@
 
 			callback(null, redisData);
 		});
-	}
+	};
 
 	// key
 
@@ -180,35 +153,35 @@
 		redisClient.exists(key, function(err, exists) {
 			callback(err, exists === 1);
 		});
-	}
+	};
 
 	module.delete = function(key, callback) {
 		redisClient.del(key, callback);
-	}
+	};
 
 	module.get = function(key, callback) {
 		redisClient.get(key, callback);
-	}
+	};
 
 	module.set = function(key, value, callback) {
 		redisClient.set(key, value, callback);
-	}
+	};
 
 	module.keys = function(key, callback) {
 		redisClient.keys(key, callback);
-	}
+	};
 
 	module.rename = function(oldKey, newKey, callback) {
 		redisClient.rename(oldKey, newKey, callback);
-	}
+	};
 
 	module.expire = function(key, seconds, callback) {
 		redisClient.expire(key, seconds, callback);
-	}
+	};
 
 	module.expireAt = function(key, timestamp, callback) {
 		redisClient.expireat(key, timestamp, callback);
-	}
+	};
 
 	//hashes
 
@@ -219,15 +192,15 @@
 				callback(err, res);
 			}
 		});
-	}
+	};
 
 	module.setObjectField = function(key, field, value, callback) {
 		redisClient.hset(key, field, value, callback);
-	}
+	};
 
 	module.getObject = function(key, callback) {
 		redisClient.hgetall(key, callback);
-	}
+	};
 
 	module.getObjects = function(keys, callback) {
 		var	multi = redisClient.multi();
@@ -239,7 +212,7 @@
 		multi.exec(function (err, replies) {
 			callback(err, replies);
 		});
-	}
+	};
 
 	module.getObjectField = function(key, field, callback) {
 		module.getObjectFields(key, [field], function(err, data) {
@@ -249,7 +222,7 @@
 
 			callback(null, data[field]);
 		});
-	}
+	};
 
 	module.getObjectFields = function(key, fields, callback) {
 		redisClient.hmget(key, fields, function(err, data) {
@@ -265,48 +238,48 @@
 
 			callback(null, returnData);
 		});
-	}
+	};
 
 	module.getObjectKeys = function(key, callback) {
 		redisClient.hkeys(key, callback);
-	}
+	};
 
 	module.getObjectValues = function(key, callback) {
 		redisClient.hvals(key, callback);
-	}
+	};
 
 	module.isObjectField = function(key, field, callback) {
 		redisClient.hexists(key, field, function(err, exists) {
 			callback(err, exists === 1);
 		});
-	}
+	};
 
 	module.deleteObjectField = function(key, field, callback) {
 		redisClient.hdel(key, field, callback);
-	}
+	};
 
 	module.incrObjectField = function(key, field, callback) {
 		redisClient.hincrby(key, field, 1, callback);
-	}
+	};
 
 	module.decrObjectField = function(key, field, callback) {
 		redisClient.hincrby(key, field, -1, callback);
-	}
+	};
 
 	module.incrObjectFieldBy = function(key, field, value, callback) {
 		redisClient.hincrby(key, field, value, callback);
-	}
+	};
 
 
 	// sets
 
 	module.setAdd = function(key, value, callback) {
 		redisClient.sadd(key, value, callback);
-	}
+	};
 
 	module.setRemove = function(key, value, callback) {
 		redisClient.srem(key, value, callback);
-	}
+	};
 
 	module.isSetMember = function(key, value, callback) {
 		redisClient.sismember(key, value, function(err, result) {
@@ -316,7 +289,7 @@
 
 			callback(null, result === 1);
 		});
-	}
+	};
 
 	module.isMemberOfSets = function(sets, value, callback) {
 		var batch = redisClient.multi();
@@ -326,67 +299,67 @@
 		}
 
 		batch.exec(callback);
-	}
+	};
 
 	module.getSetMembers = function(key, callback) {
 		redisClient.smembers(key, callback);
-	}
+	};
 
 	module.setCount = function(key, callback) {
 		redisClient.scard(key, callback);
-	}
+	};
 
 	module.setRemoveRandom = function(key, callback) {
 		redisClient.spop(key, callback);
-	}
+	};
 
 	// sorted sets
 
 	module.sortedSetAdd = function(key, score, value, callback) {
 		redisClient.zadd(key, score, value, callback);
-	}
+	};
 
 	module.sortedSetRemove = function(key, value, callback) {
 		redisClient.zrem(key, value, callback);
-	}
+	};
 
 	module.getSortedSetRange = function(key, start, stop, callback) {
 		redisClient.zrange(key, start, stop, callback);
-	}
+	};
 
 	module.getSortedSetRevRange = function(key, start, stop, callback) {
 		redisClient.zrevrange(key, start, stop, callback);
-	}
+	};
 
 	module.getSortedSetRevRangeByScore = function(args, callback) {
 		redisClient.zrevrangebyscore(args, callback);
-	}
+	};
 
 	module.sortedSetCount = function(key, min, max, callback) {
 		redisClient.zcount(key, min, max, callback);
-	}
+	};
 
 	module.sortedSetCard = function(key, callback) {
 		redisClient.zcard(key, callback);
-	}
+	};
 
 	module.sortedSetRank = function(key, value, callback) {
 		redisClient.zrank(key, value, callback);
-	}
+	};
 
 	module.sortedSetRevRank = function(key, value, callback) {
 		redisClient.zrevrank(key, value, callback);
-	}
+	};
 
 	module.sortedSetScore = function(key, value, callback) {
 		redisClient.zscore(key, value, callback);
-	}
+	};
 
 	module.isSortedSetMember = function(key, value, callback) {
 		module.sortedSetScore(key, value, function(err, score) {
 			callback(err, !!score);
 		});
-	}
+	};
 
 	module.sortedSetsScore = function(keys, value, callback) {
 		var	multi = redisClient.multi();
@@ -396,31 +369,28 @@
 		}
 
 		multi.exec(callback);
-	}
+	};
 
 	// lists
 	module.listPrepend = function(key, value, callback) {
 		redisClient.lpush(key, value, callback);
-	}
+	};
 
 	module.listAppend = function(key, value, callback) {
 		redisClient.rpush(key, value, callback);
-	}
+	};
 
 	module.listRemoveLast = function(key, callback) {
 		redisClient.rpop(key, callback);
-	}
+	};
 
 	module.listRemoveAll = function(key, value, callback) {
 		redisClient.lrem(key, 0, value, callback);
-	}
+	};
 
 	module.getListRange = function(key, start, stop, callback) {
 		redisClient.lrange(key, start, stop, callback);
-	}
-
-
-
+	};
 
 }(exports));
 

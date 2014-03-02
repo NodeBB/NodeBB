@@ -171,6 +171,14 @@ var async = require('async'),
 				if (!topicExists) {
 					return next(new Error('topic doesn\'t exist'));
 				}
+
+				Topics.isLocked(tid, next);
+			},
+			function(locked, next) {
+				if (locked) {
+					return next(new Error('topic-locked'));
+				}
+
 				threadTools.privileges(tid, uid, next);
 			},
 			function(privilegesData, next) {

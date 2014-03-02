@@ -4,6 +4,15 @@ define(['taskbar'], function(taskbar) {
 		posts: {}
 	};
 
+	function initialise() {
+		socket.on('event:composer.ping', function(post_uuid) {
+			if (composer.active === post_uuid) {
+				socket.emit('modules.composer.pingActive', post_uuid);
+			}
+		});
+	};
+	initialise();
+
 	function maybeParse(response) {
 		if (typeof response == 'string')  {
 			try {
@@ -379,6 +388,16 @@ define(['taskbar'], function(taskbar) {
 			composer.activateReposition(post_uuid);
 		} else {
 			composer.createNewComposer(post_uuid);
+		}
+
+		var	postData = composer.posts[post_uuid];
+		if (postData.tid) {
+			// Replying to a topic
+			socket.emit('modules.composer.register', {
+				uuid: post_uuid,
+				tid: postData.tid,
+				uid: app.uid
+			});
 		}
 	};
 
@@ -813,6 +832,8 @@ define(['taskbar'], function(taskbar) {
 			taskbar.discard('composer', post_uuid);
 			$('body').css({'margin-bottom': 0});
 			$('.action-bar button').removeAttr('disabled');
+
+			socket.emit('modules.composer.unregister', post_uuid);
 		}
 	};
 
@@ -821,6 +842,8 @@ define(['taskbar'], function(taskbar) {
 		postContainer.css('visibility', 'hidden');
 		composer.active = undefined;
 		taskbar.minimize('composer', post_uuid);
+
+		socket.emit('modules.composer.unregister', post_uuid);
 	};
 
 	return {

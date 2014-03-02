@@ -347,28 +347,6 @@ var nconf = require('nconf'),
 						res.json(data);
 					});
 				});
-
-				// app.get('/export', function (req, res) {
-				// 	meta.db.getFile(function (err, dbFile) {
-				// 		if (!err) {
-				// 			res.download(dbFile, 'redis.rdb', function (err) {
-				// 				console.log(err);
-				// 				res.send(500);
-				// 				if (err) {
-				// 					res.send(500);
-				// 					switch (err.code) {
-				// 					case 'EACCES':
-				// 						res.send(500, 'Require permissions from Redis database file: ', dbFile);
-				// 						break;
-				// 					default:
-				// 						res.send(500);
-				// 						break;
-				// 					}
-				// 				}
-				// 			});
-				// 		} else res.send(500);
-				// 	});
-				// });
 			});
 
 			app.get('/events', function(req, res, next) {
