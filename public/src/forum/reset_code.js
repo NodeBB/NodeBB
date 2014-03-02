@@ -33,9 +33,8 @@ define(function() {
 					$('#success').removeClass('hide').addClass('show').show();
 				});
 			}
-		}, false);
+		});
 
-		// Enable the form if the code is valid
 		socket.emit('user.reset.valid', {
 			code: reset_code
 		}, function(err, valid) {
@@ -44,7 +43,7 @@ define(function() {
 			}
 
 			if (valid) {
-				resetEl.disabled = false;
+				resetEl.prop('disabled', false);
 			} else {
 				var formEl = $('#reset-form');
 				// Show error message
