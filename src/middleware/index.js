@@ -1,3 +1,5 @@
+"use strict";
+
 var templates = require('./../../public/src/templates'),
 	translator = require('./../../public/src/translator'),
 	meta = require('./../meta'),
@@ -7,7 +9,7 @@ var templates = require('./../../public/src/templates'),
 	path = require('path'),
 	fs = require('fs'),
 	nconf = require('nconf'),
-	express = require('express')
+	express = require('express'),
 	winston = require('winston');
 
 

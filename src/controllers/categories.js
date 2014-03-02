@@ -1,3 +1,5 @@
+"use strict";
+
 var categoriesController = {},
 	async = require('async'),
 	qs = require('querystring'),
@@ -154,7 +156,7 @@ categoriesController.get = function(req, res, next) {
 			next(null, {
 				header: null,
 				topics: categoryData
-			})
+			});
 		}
 	], function (err, data) {
 		if (err) {
@@ -185,13 +187,6 @@ categoriesController.get = function(req, res, next) {
 		}
 
 		res.render('category', data.topics);
-		/*translator.translate(templates['noscript/category'].parse(data.topics), function(translatedHTML) {
-			res.send(
-				data.header +
-				'\n\t<noscript>\n' + templates['noscript/header'] + translatedHTML + '\n\t</noscript>' +
-				'\n\t' + app.create_route('category/' + category_url) + templates.footer
-			);
-		});*/
 	});
 };
 

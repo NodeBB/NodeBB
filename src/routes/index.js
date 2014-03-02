@@ -1,5 +1,8 @@
+"use strict";
+
 var nconf = require('nconf'),
 	controllers = require('./../controllers'),
+	meta = require('./../meta'),
 	middleware = {},
 	
 	/*temp*/
@@ -152,7 +155,7 @@ module.exports = function(app, middleware) {
 				req: req,
 				res: res
 			}, function (err, header) {
-				res.send(header + app.create_route('search/' + req.params.term, null, 'search') + templates.footer);
+				//res.send(header + app.create_route('search/' + req.params.term, null, 'search') + templates.footer);
 			});
 		});
 
@@ -178,8 +181,10 @@ module.exports = function(app, middleware) {
 
 		plugins.ready(function() {
 			plugins.fireHook('filter:server.create_routes', custom_routes, function(err, custom_routes) {
-				var routes = custom_routes.routes;
-				for (var route in routes) {
+				var route,
+					routes = custom_routes.routes;
+
+				for (route in routes) {
 					if (routes.hasOwnProperty(route)) {
 						(function(route) {
 							app[routes[route].method || 'get'](routes[route].route, function(req, res) {
@@ -188,7 +193,7 @@ module.exports = function(app, middleware) {
 										req: options.req || req,
 										res: options.res || res
 									}, function (err, header) {
-										res.send(header + options.content + templates.footer);
+										//res.send(header + options.content + templates.footer);
 									});
 								});
 							});
@@ -197,7 +202,7 @@ module.exports = function(app, middleware) {
 				}
 
 				var apiRoutes = custom_routes.api;
-				for (var route in apiRoutes) {
+				for (route in apiRoutes) {
 					if (apiRoutes.hasOwnProperty(route)) {
 						(function(route) {
 							app[apiRoutes[route].method || 'get']('/api' + apiRoutes[route].route, function(req, res) {
@@ -210,7 +215,7 @@ module.exports = function(app, middleware) {
 				}
 
 				var templateRoutes = custom_routes.templates;
-				for (var route in templateRoutes) {
+				for (route in templateRoutes) {
 					if (templateRoutes.hasOwnProperty(route)) {
 						(function(route) {
 							app.get('/templates/' + templateRoutes[route].template, function(req, res) {
@@ -223,4 +228,4 @@ module.exports = function(app, middleware) {
 			});
 		});
 	});
-}
+};

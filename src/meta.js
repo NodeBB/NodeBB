@@ -1,3 +1,5 @@
+"use strict";
+
 var fs = require('fs'),
 	path = require('path'),
 	async = require('async'),
@@ -102,8 +104,9 @@ var fs = require('fs'),
 
 						if (fs.existsSync(config)) {
 							fs.readFile(config, function (err, file) {
-								if (err) return next();
-								else {
+								if (err) {
+									return next();
+								} else {
 									var configObj = JSON.parse(file.toString());
 									next(err, configObj);
 								}
@@ -152,12 +155,12 @@ var fs = require('fs'),
 					], function(err) {
 						callback(err);
 					});
-				break;
+					break;
 
 				case 'bootswatch':
 					themeData['theme:src'] = data.src;
 					db.setObject('config', themeData, callback);
-				break;
+					break;
 			}
 		}
 	};
@@ -212,7 +215,7 @@ var fs = require('fs'),
 					if (subpage) {
 						translator.translate('[[pages:user.' + subpage + ', ' + username + ']]', function(translated) {
 							callback(null, translated);
-						})
+						});
 					} else {
 						callback(null, username);
 					}
@@ -271,7 +274,9 @@ var fs = require('fs'),
 						}
 					});
 
-				Meta.js.scripts = jsPaths.filter(function(path) { return path !== null });
+				Meta.js.scripts = jsPaths.filter(function(path) {
+					return path !== null;
+				});
 
 				if (process.env.NODE_ENV !== 'development') {
 					callback(null, [

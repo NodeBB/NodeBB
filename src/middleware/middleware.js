@@ -1,5 +1,18 @@
+"use strict";
+
+
 var app,
-	middleware = {};
+	clientScripts,
+	middleware = {},
+	async = require('async'),
+	path = require('path'),
+	validator = require('validator'),
+	fs = require('fs'),
+	nconf = require('nconf'),
+	plugins = require('./../plugins'),
+	meta = require('./../meta'),
+	translator = require('./../../public/src/translator'),
+	user = require('./../user');
 
 middleware.prepareAPI = function(req, res, next) {
 	res.locals.isAPI = true;
@@ -216,7 +229,7 @@ middleware.build_header = function (options, callback) {
 				callback(null, template);
 			});*/
 			app.render('header', templateValues, function(err, template) {
-				callback(null, template)
+				callback(null, template);
 			});
 		});
 	});
@@ -238,11 +251,11 @@ middleware.processRender = function(req, res, next) {
 				self.send(str);
 			};
 
-		if ('function' == typeof options) {
+		if ('function' === typeof options) {
 			fn = options, options = {};
 		}
 
-		if ('function' != typeof fn) {
+		if ('function' !== typeof fn) {
 			fn = defaultFn;
 		}
 
@@ -276,9 +289,23 @@ middleware.routeTouchIcon = function(req, res) {
 			maxAge: app.enabled('cache') ? 5184000000 : 0
 		});
 	}
-}
+};
 
 module.exports = function(webserver) {
 	app = webserver;
+
+	plugins.ready(function() {
+		// Minify client-side libraries
+		meta.js.get(function (err, scripts) {
+			clientScripts = scripts.map(function (script) {
+				script = {
+					script: script
+				};
+
+				return script;
+			});
+		});
+	});
+
 	return middleware;
-}
+};

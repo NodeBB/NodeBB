@@ -40,21 +40,7 @@ if(nconf.get('ssl')) {
 (function (app) {
 	"use strict";
 
-	var	clientScripts,
-		port = nconf.get('PORT') || nconf.get('port');
-
-	plugins.ready(function() {
-		// Minify client-side libraries
-		meta.js.get(function (err, scripts) {
-			clientScripts = scripts.map(function (script) {
-				script = {
-					script: script
-				};
-
-				return script;
-			});
-		});
-	});
+	var	port = nconf.get('PORT') || nconf.get('port');
 
 	logger.init(app);
 	auth.registerApp(app);
@@ -97,12 +83,12 @@ if(nconf.get('ssl')) {
 		});
 	}
 
-	if (port != 80 && port != 443 && nconf.get('use_port') === false) {
+	if (port !== 80 && port !== 443 && nconf.get('use_port') === false) {
 		winston.info('Enabling \'trust proxy\'');
 		app.enable('trust proxy');
 	}
 
-	if ((port == 80 || port == 443) && process.env.NODE_ENV !== 'development') {
+	if ((port === 80 || port === 443) && process.env.NODE_ENV !== 'development') {
 		winston.info('Using ports 80 and 443 is not recommend; use a proxy instead. See README.md');
 	}
 
