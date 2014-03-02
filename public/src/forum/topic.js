@@ -618,7 +618,6 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		]);
 
 		socket.on('get_users_in_room', function(data) {
-
 			if(data && data.room.indexOf('topic') !== -1) {
 				var activeEl = $('li.post-bar[data-index="0"] .thread_active_users');
 
@@ -696,6 +695,17 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 						title: title
 					});
 				}
+
+				// Get users who are currently replying to the topic entered
+				socket.emit('modules.composer.getUsersByTid', templates.get('topic_id'), function(err, uids) {
+					var	activeUsersEl = $('.thread_active_users'),
+						x;
+					if (uids && uids.length) {
+						for(var x=0;x<uids.length;x++) {
+							activeUsersEl.find('[data-uid="' + uids[x] + '"]').addClass('replying');
+						}
+					}
+				});
 			}
 
 			app.populateOnlineUsers();
@@ -896,7 +906,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 			votes.html(currentVotes).attr('data-votes', currentVotes);
 			reputationElements.html(reputation).attr('data-reputation', reputation);
-		}
+		};
 
 		function adjust_favourites(value, pid, uid) {
 			var favourites = $('li[data-pid="' + pid + '"] .favouriteCount'),
@@ -905,7 +915,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			currentFavourites += value;
 
 			favourites.html(currentFavourites).attr('data-favourites', currentFavourites);
-		}
+		};
 
 		function set_follow_state(state, alert) {
 
@@ -920,7 +930,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 					type: 'success'
 				});
 			}
-		}
+		};
 
 		function set_locked_state(locked, alert) {
 			translator.translate('<i class="fa fa-fw fa-' + (locked ? 'un': '') + 'lock"></i> [[topic:thread_tools.' + (locked ? 'un': '') + 'lock]]', function(translated) {
@@ -943,7 +953,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			}
 
 			thread_state.locked = locked ? '1' : '0';
-		}
+		};
 
 		function set_delete_state(deleted) {
 			var threadEl = $('#post-container');
@@ -960,7 +970,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			} else {
 				$('#thread-deleted').remove();
 			}
-		}
+		};
 
 		function set_pinned_state(pinned, alert) {
 			translator.translate('<i class="fa fa-fw fa-thumb-tack"></i> [[topic:thread_tools.' + (pinned ? 'unpin' : 'pin') + ']]', function(translated) {
@@ -977,7 +987,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				}
 				thread_state.pinned = pinned ? '1' : '0';
 			});
-		}
+		};
 
 		function toggle_post_delete_state(pid) {
 			var postEl = $('#post-container li[data-pid="' + pid + '"]');
@@ -989,7 +999,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 				updatePostCount();
 			}
-		}
+		};
 
 		function toggle_post_tools(pid, isDeleted) {
 			var postEl = $('#post-container li[data-pid="' + pid + '"]');
@@ -999,7 +1009,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			translator.translate(isDeleted ? ' [[topic:restore]]' : ' [[topic:delete]]', function(translated) {
 				postEl.find('.delete').find('span').html(translated);
 			});
-		}
+		};
 
 		$(window).on('scroll', updateHeader);
 		$(window).trigger('action:topic.loaded');
