@@ -37,13 +37,6 @@ var db = require('./database'),
 
 		async.waterfall([
 			function(next) {
-				topics.isLocked(tid, next);
-			},
-			function(locked, next) {
-				if(locked) {
-					return next(new Error('topic-locked'));
-				}
-
 				db.incrObjectField('global', 'nextPid', next);
 			},
 			function(pid, next) {
