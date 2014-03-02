@@ -151,8 +151,20 @@ SocketPosts.edit = function(socket, data, callback) {
 		return callback(new Error('content-too-short'));
 	}
 
-	postTools.edit(socket.uid, data.pid, data.title, data.content, {topic_thumb: data.topic_thumb});
-	callback();
+	postTools.edit(socket.uid, data.pid, data.title, data.content, {topic_thumb: data.topic_thumb}, function(err, results) {
+		if(err) {
+			return callback(err);
+		}
+
+		index.server.sockets.in('topic_' + results.topic.tid).emit('event:post_edited', {
+			pid: data.pid,
+			title: results.topic.title,
+			isMainPost: results.topic.isMainPost,
+			content: results.content
+		});
+
+		callback();
+	});
 };
 
 SocketPosts.delete = function(socket, data, callback) {
