@@ -622,17 +622,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				var activeEl = $('li.post-bar[data-index="0"] .thread_active_users');
 
 				function createUserIcon(uid, picture, userslug, username) {
-
-					if(!activeEl.find('[href="'+ RELATIVE_PATH +'/user/' + data.users[i].userslug + '"]').length) {
-						var userIcon = $('<img src="'+ picture +'"/>');
-
-						var userLink = $('<a href="' + RELATIVE_PATH + '/user/' + userslug + '"></a>').append(userIcon);
-						userLink.attr('data-uid', uid);
-
-						var div = $('<div class="inline-block"></div>');
-						div.append(userLink);
-
-						userLink.tooltip({
+					if(!activeEl.find('[data-uid="' + uid + '"]').length) {
+						var div = $('<div class="inline-block"><a data-uid="' + uid + '" href="' + RELATIVE_PATH + '/user/' + userslug + '"><img src="'+ picture +'"/></a></div>');
+						div.find('a').tooltip({
 							placement: 'top',
 							title: username
 						});
@@ -642,15 +634,16 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				}
 
 				// remove users that are no longer here
-				activeEl.children().each(function(index, element) {
+				activeEl.find('a').each(function(index, element) {
 					if(element) {
-						var uid = $(element).attr('data-uid');
-						for(var i=0; i<data.users.length; ++i) {
-							if(data.users[i].uid == uid) {
-								return;
-							}
+						var uid = $(element).attr('data-uid'),
+							absent = data.users.every(function(aUid) {
+								return parseInt(aUid, 10) !== parseInt(uid, 10);
+							});
+
+						if (absent) {
+							$(element).remove();
 						}
-						$(element).remove();
 					}
 				});
 
