@@ -299,21 +299,24 @@ var fs = require('fs'),
 			this.cache = minified.code;
 			callback();
 		},
-		compress: function(callback) {
-			var uglifyjs = require('uglify-js'),
-				jsPaths = this.scripts,
-				compressed;
-
+		concatenate: function(callback) {
 			if (process.env.NODE_ENV === 'development') {
-				winston.info('Compressing client-side libraries into one file');
+				winston.info('Concatenating client-side libraries into one file');
 			}
 
-			minified = uglifyjs.minify(jsPaths, {
-				mangle: false,
-				compress: false
+			async.map(this.scripts, function(path, next) {
+				fs.readFile(path, { encoding: 'utf-8' }, next);
+			}, function(err, contents) {
+				if (err) {
+					winston.error('[meta.js.concatenate] Could not minify javascript! Error: ' + err.message);
+					process.exit();
+				}
+
+				Meta.js.cache = contents.reduce(function(output, src) {
+					return output.length ? output + ';\n' + src : src;
+				}, '');
+				callback();
 			});
-			this.cache = minified.code;
-			callback();
 		}
 	};
 

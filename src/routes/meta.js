@@ -57,7 +57,7 @@ var path = require('path'),
 					});
 				} else {
 					// Compress only
-					meta.js.compress(function() {
+					meta.js.concatenate(function() {
 						sendCached();
 					});
 				}
