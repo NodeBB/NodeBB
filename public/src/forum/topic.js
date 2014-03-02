@@ -309,7 +309,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			var bookmark = localStorage.getItem('topic:' + tid + ':bookmark');
 			if (window.location.hash) {
 				Topic.scrollToPost(window.location.hash.substr(1), true);
-			} else if (bookmark) {
+			} else if (bookmark && (!config.usePagination || (config.usePagination && pagination.currentPage === 1))) {
 				app.alert({
 					alert_id: 'bookmark',
 					message: '[[topic:bookmark_instructions]]',
@@ -324,7 +324,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				});
 			}
 
-			updateHeader();
+			if (!window.location.hash && !config.usePagination) {
+				updateHeader();
+			}
 
 			$('#post-container').on('mouseenter', '.favourite-tooltip', function(e) {
 				if (!$(this).data('users-loaded')) {
@@ -1037,26 +1039,29 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				if(index > Topic.postCount) {
 					index = Topic.postCount;
 				}
+
 				$('#pagination').html(index + ' out of ' + Topic.postCount);
 				$('.progress-bar').width((index / Topic.postCount * 100) + '%');
 
-				if(!parseInt(el.attr('data-index'), 10)) {
-					localStorage.removeItem('topic:' + templates.get('topic_id') + ':bookmark');
-				} else {
+				var currentBookmark = localStorage.getItem('topic:' + templates.get('topic_id') + ':bookmark');
+				if (!currentBookmark || parseInt(el.attr('data-pid'), 10) > parseInt(currentBookmark, 10)) {
 					localStorage.setItem('topic:' + templates.get('topic_id') + ':bookmark', el.attr('data-pid'));
+				}
 
-					if (!scrollingToPost) {
-						var newUrl = window.location.protocol + '//' + window.location.host + window.location.pathname + '#' + el.attr('data-pid')
-						if (newUrl !== currentUrl) {
-							if (history.replaceState) {
-								history.replaceState({
-									url: window.location.pathname.slice(1) + '#' + el.attr('data-pid')
-								}, null, newUrl);
-							}
-							currentUrl = newUrl;
+				if (!scrollingToPost) {
+
+					var newUrl = window.location.href.replace(window.location.hash, '') + '#' + el.attr('data-pid');
+
+					if (newUrl !== currentUrl) {
+						if (history.replaceState) {
+							history.replaceState({
+								url: window.location.pathname.slice(1) + (window.location.search ? window.location.search : '' ) + '#' + el.attr('data-pid')
+							}, null, newUrl);
 						}
+						currentUrl = newUrl;
 					}
 				}
+
 				return false;
 			}
 		});
@@ -1090,7 +1095,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 					return;
 				}
 				if(parseInt(page, 10) !== pagination.currentPage) {
-					pagination.loadPage(page);
+					pagination.loadPage(page, function() {
+						scrollToPid(pid);
+					});
 				} else {
 					scrollToPid(pid);
 				}
@@ -1106,6 +1113,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				if(after < 0) {
 					after = 0;
 				}
+
 				loadMorePosts(tid, after, function() {
 					scrollToPid(pid);
 				});
@@ -1123,6 +1131,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 					scrollTop: (scrollTo.offset().top - $('#header-menu').height() - offset) + "px"
 				}, duration !== undefined ? duration : 400, function() {
 					scrollingToPost = false;
+					updateHeader();
 					if (highlight) {
 						scrollTo.parent().find('.topic-item').addClass('highlight');
 						setTimeout(function() {
