@@ -224,6 +224,20 @@ var fs = require('fs'),
 					}
 
 					next();
+				},
+				function(next) {
+					// Client-side scripts
+					if (pluginData.scripts && pluginData.scripts instanceof Array) {
+						if (global.env === 'development') {
+							winston.info('[plugins] Found ' + pluginData.scripts.length + ' js file(s) for plugin ' + pluginData.id);
+						}
+
+						Plugins.clientScripts = Plugins.clientScripts.concat(pluginData.scripts.map(function(file) {
+							return path.join(pluginData.id, file);
+						}));
+					}
+
+					next();
 				}
 			], function(err) {
 				if (!err) {
