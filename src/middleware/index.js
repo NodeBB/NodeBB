@@ -11,66 +11,7 @@ var templates = require('./../../public/src/templates'),
 	winston = require('winston');
 
 
-/*
-* todo: move out into their own file(s)
-*/
 var middleware = {};
-
-middleware.processRender = function(req, res, next) {
-	// res.render post-processing, modified from here: https://gist.github.com/mrlannigan/5051687
-	var render = res.render;
-	res.render = function(template, options, fn) {
-		var self = this,
-			options = options || {},
-			req = this.req,
-			app = req.app,
-			defaultFn = function(err, str){
-				if (err) {
-					return req.next(err);
-				}
-
-				self.send(str);
-			};
-
-		if ('function' == typeof options) {
-			fn = options, options = {};
-		}
-
-		if ('function' != typeof fn) {
-			fn = defaultFn;
-		}
-
-		render.call(self, template, options, function(err, str) {
-			if (res.locals.header) {
-				str = res.locals.header + str;
-			}
-
-			if (res.locals.footer) {
-				str = str + res.locals.footer;
-			}
-
-			if (str) {
-				translator.translate(str, function(translated) {
-					fn(err, translated);
-				});
-			} else {
-				fn(err, str);
-			}
-		});
-	};
-
-	next();
-};
-
-middleware.routeTouchIcon = function(req, res) {
-	if (meta.config['brand:logo'] && validator.isURL(meta.config['brand:logo'])) {
-		return res.redirect(meta.config['brand:logo']);
-	} else {
-		return res.sendfile(path.join(__dirname, '../../public', meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png'), {
-			maxAge: app.enabled('cache') ? 5184000000 : 0
-		});
-	}
-}
 
 /*
 * Helper functions
@@ -187,7 +128,8 @@ function catch404(req, res, next) {
 }
 
 module.exports = function(app, data) {
-	// Middlewares
+	middleware = require('./middleware')(app);
+
 	app.configure(function() {
 		app.engine('tpl', templates.__express);
 		app.set('view engine', 'tpl');
@@ -248,4 +190,6 @@ module.exports = function(app, data) {
 		app.use(catch404);
 		app.use(handleErrors);
 	});
+
+	return middleware;
 };

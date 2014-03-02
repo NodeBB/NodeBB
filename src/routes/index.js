@@ -1,4 +1,6 @@
-var controllers = require('./../controllers'),
+var nconf = require('nconf'),
+	controllers = require('./../controllers'),
+	middleware = {},
 	
 	/*temp*/
 	plugins = require('./../plugins'),
@@ -8,8 +10,8 @@ var controllers = require('./../controllers'),
 	feedsRoute = require('./feeds');
 
 
-module.exports = function(app, relativePath) {
-	app.namespace(relativePath, function() {
+module.exports = function(app, middleware) {
+	app.namespace(nconf.get('relative_path'), function() {
 		//temp
 		metaRoute.createRoutes(app);
 		admin.createRoutes(app);
@@ -38,102 +40,102 @@ module.exports = function(app, relativePath) {
 		}());*/
 
 		/* Main */
-		app.get('/', app.buildHeader, controllers.home);
-		app.get('/api/home', app.prepareAPI, controllers.home);
+		app.get('/', middleware.buildHeader, controllers.home);
+		app.get('/api/home', middleware.prepareAPI, controllers.home);
 
-		app.get('/login', app.buildHeader, controllers.login);
-		app.get('/api/login', app.prepareAPI, controllers.login);
+		app.get('/login', middleware.buildHeader, controllers.login);
+		app.get('/api/login', middleware.prepareAPI, controllers.login);
 
-		app.get('/register', app.buildHeader, controllers.register);
-		app.get('/api/register', app.prepareAPI, controllers.register);
+		app.get('/register', middleware.buildHeader, controllers.register);
+		app.get('/api/register', middleware.prepareAPI, controllers.register);
 
-		app.get('/confirm/:code', app.buildHeader, controllers.confirmEmail);
-		app.get('/api/confirm/:code', app.prepareAPI, controllers.confirmEmail);
+		app.get('/confirm/:code', middleware.buildHeader, controllers.confirmEmail);
+		app.get('/api/confirm/:code', middleware.prepareAPI, controllers.confirmEmail);
 
 		app.get('/sitemap.xml', controllers.sitemap);
 		app.get('/robots.txt', controllers.robots);
 
-		app.get('/outgoing', app.buildHeader, controllers.outgoing);
-		app.get('/api/outgoing', app.prepareAPI, controllers.outgoing);
+		app.get('/outgoing', middleware.buildHeader, controllers.outgoing);
+		app.get('/api/outgoing', middleware.prepareAPI, controllers.outgoing);
 
 		/* Static Pages */
-		app.get('/404', app.buildHeader, controllers.static['404']);
-		app.get('/api/404', app.prepareAPI, controllers.static['404']);
+		app.get('/404', middleware.buildHeader, controllers.static['404']);
+		app.get('/api/404', middleware.prepareAPI, controllers.static['404']);
 
-		app.get('/403', app.buildHeader, controllers.static['403']);
-		app.get('/api/403', app.prepareAPI, controllers.static['403']);
+		app.get('/403', middleware.buildHeader, controllers.static['403']);
+		app.get('/api/403', middleware.prepareAPI, controllers.static['403']);
 
-		app.get('/500', app.buildHeader, controllers.static['500']);
-		app.get('/api/500', app.prepareAPI, controllers.static['500']);
+		app.get('/500', middleware.buildHeader, controllers.static['500']);
+		app.get('/api/500', middleware.prepareAPI, controllers.static['500']);
 
 		/* Topics */
-		app.get('/topic/:topic_id/:slug?', app.buildHeader, controllers.topics.get);
-		app.get('/api/topic/:topic_id/:slug?', app.prepareAPI, controllers.topics.get);
+		app.get('/topic/:topic_id/:slug?', middleware.buildHeader, controllers.topics.get);
+		app.get('/api/topic/:topic_id/:slug?', middleware.prepareAPI, controllers.topics.get);
 
 		/* Categories */
-		app.get('/popular/:set?', app.buildHeader, controllers.categories.popular);
-		app.get('/api/popular/:set?', app.prepareAPI, controllers.categories.popular);
+		app.get('/popular/:set?', middleware.buildHeader, controllers.categories.popular);
+		app.get('/api/popular/:set?', middleware.prepareAPI, controllers.categories.popular);
 
-		app.get('/recent/:term?', app.buildHeader, controllers.categories.recent);
-		app.get('/api/recent/:term?', app.prepareAPI, controllers.categories.recent);
+		app.get('/recent/:term?', middleware.buildHeader, controllers.categories.recent);
+		app.get('/api/recent/:term?', middleware.prepareAPI, controllers.categories.recent);
 
-		app.get('/unread/', app.buildHeader, app.authenticate, controllers.categories.unread);
-		app.get('/api/unread/', app.prepareAPI, app.authenticate, controllers.categories.unread);
+		app.get('/unread/', middleware.buildHeader, middleware.authenticate, controllers.categories.unread);
+		app.get('/api/unread/', middleware.prepareAPI, middleware.authenticate, controllers.categories.unread);
 
-		app.get('/unread/total', app.buildHeader, app.authenticate, controllers.categories.unreadTotal);
-		app.get('/api/unread/total', app.prepareAPI, app.authenticate, controllers.categories.unreadTotal);
+		app.get('/unread/total', middleware.buildHeader, middleware.authenticate, controllers.categories.unreadTotal);
+		app.get('/api/unread/total', middleware.prepareAPI, middleware.authenticate, controllers.categories.unreadTotal);
 
-		app.get('/category/:category_id/:slug?', app.buildHeader, controllers.categories.get);
-		app.get('/api/category/:category_id/:slug?', app.prepareAPI, controllers.categories.get);
+		app.get('/category/:category_id/:slug?', middleware.buildHeader, controllers.categories.get);
+		app.get('/api/category/:category_id/:slug?', middleware.prepareAPI, controllers.categories.get);
 
 		/* Accounts */
-		app.get('/user/:userslug', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.getAccount);
-		app.get('/api/user/:userslug', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.accounts.getAccount);
+		app.get('/user/:userslug', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.accounts.getAccount);
+		app.get('/api/user/:userslug', middleware.prepareAPI, middleware.checkGlobalPrivacySettings, controllers.accounts.getAccount);
 
-		app.get('/user/:userslug/following', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.getFollowing);
-		app.get('/api/user/:userslug/following', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.accounts.getFollowing);
+		app.get('/user/:userslug/following', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.accounts.getFollowing);
+		app.get('/api/user/:userslug/following', middleware.prepareAPI, middleware.checkGlobalPrivacySettings, controllers.accounts.getFollowing);
 
-		app.get('/user/:userslug/followers', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.getFollowers);
-		app.get('/api/user/:userslug/followers', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.accounts.getFollowers);
+		app.get('/user/:userslug/followers', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.accounts.getFollowers);
+		app.get('/api/user/:userslug/followers', middleware.prepareAPI, middleware.checkGlobalPrivacySettings, controllers.accounts.getFollowers);
 
-		app.get('/user/:userslug/favourites', app.buildHeader, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.getFavourites);
-		app.get('/api/user/:userslug/favourites', app.prepareAPI, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.getFavourites);
+		app.get('/user/:userslug/favourites', middleware.buildHeader, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.getFavourites);
+		app.get('/api/user/:userslug/favourites', middleware.prepareAPI, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.getFavourites);
 
-		app.get('/user/:userslug/posts', app.buildHeader, app.checkGlobalPrivacySettings, controllers.accounts.getPosts);
-		app.get('/api/user/:userslug/posts', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.accounts.getPosts);
+		app.get('/user/:userslug/posts', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.accounts.getPosts);
+		app.get('/api/user/:userslug/posts', middleware.prepareAPI, middleware.checkGlobalPrivacySettings, controllers.accounts.getPosts);
 
-		app.get('/user/:userslug/edit', app.buildHeader, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.accountEdit);
-		app.get('/api/user/:userslug/edit', app.prepareAPI, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.accountEdit);
+		app.get('/user/:userslug/edit', middleware.buildHeader, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.accountEdit);
+		app.get('/api/user/:userslug/edit', middleware.prepareAPI, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.accountEdit);
 
 		// todo: admin recently gained access to this page, pls check if it actually works
-		app.get('/user/:userslug/settings', app.buildHeader, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.accountSettings);
-		app.get('/api/user/:userslug/settings', app.prepareAPI, app.checkGlobalPrivacySettings, app.checkAccountPermissions, controllers.accounts.accountSettings);
+		app.get('/user/:userslug/settings', middleware.buildHeader, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.accountSettings);
+		app.get('/api/user/:userslug/settings', middleware.prepareAPI, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.accountSettings);
 
-		app.get('/api/user/uid/:uid', app.checkGlobalPrivacySettings, controllers.accounts.getUserByUID);
+		app.get('/api/user/uid/:uid', middleware.checkGlobalPrivacySettings, controllers.accounts.getUserByUID);
 
 		// this should have been in the API namespace
 		// also, perhaps pass in :userslug so we can use checkAccountPermissions middleware, in future will allow admins to upload a picture for a user
-		app.post('/user/uploadpicture', app.prepareAPI, app.checkGlobalPrivacySettings, /*app.checkAccountPermissions,*/ controllers.accounts.uploadPicture);
+		app.post('/user/uploadpicture', middleware.prepareAPI, middleware.checkGlobalPrivacySettings, /*middleware.checkAccountPermissions,*/ controllers.accounts.uploadPicture);
 
 		/* Users */
-		app.get('/users', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
-		app.get('/api/users', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
+		app.get('/users', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
+		app.get('/api/users', middleware.prepareAPI, middleware.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
 
 		// was this duped by accident or purpose?
-		app.get('/users/online', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
-		app.get('/api/users/online', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
+		app.get('/users/online', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
+		app.get('/api/users/online', middleware.prepareAPI, middleware.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
 
-		app.get('/users/sort-posts', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getUsersSortedByPosts);
-		app.get('/api/users/sort-posts', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.users.getUsersSortedByPosts);
+		app.get('/users/sort-posts', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.users.getUsersSortedByPosts);
+		app.get('/api/users/sort-posts', middleware.prepareAPI, middleware.checkGlobalPrivacySettings, controllers.users.getUsersSortedByPosts);
 
-		app.get('/users/sort-reputation', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getUsersSortedByReputation);
-		app.get('/api/users/sort-reputation', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.users.getUsersSortedByReputation);
+		app.get('/users/sort-reputation', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.users.getUsersSortedByReputation);
+		app.get('/api/users/sort-reputation', middleware.prepareAPI, middleware.checkGlobalPrivacySettings, controllers.users.getUsersSortedByReputation);
 
-		app.get('/users/latest', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getUsersSortedByJoinDate);
-		app.get('/api/users/latest', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.users.getUsersSortedByJoinDate);
+		app.get('/users/latest', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.users.getUsersSortedByJoinDate);
+		app.get('/api/users/latest', middleware.prepareAPI, middleware.checkGlobalPrivacySettings, controllers.users.getUsersSortedByJoinDate);
 
-		app.get('/users/search', app.buildHeader, app.checkGlobalPrivacySettings, controllers.users.getUsersForSearch);
-		app.get('/api/users/search', app.prepareAPI, app.checkGlobalPrivacySettings, controllers.users.getUsersForSearch);
+		app.get('/users/search', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.users.getUsersForSearch);
+		app.get('/api/users/search', middleware.prepareAPI, middleware.checkGlobalPrivacySettings, controllers.users.getUsersForSearch);
 
 
 
