@@ -17,6 +17,7 @@ var fs = require('fs'),
 	Plugins.staticDirs = {};
 	Plugins.cssFiles = [];
 	Plugins.lessFiles = [];
+	Plugins.clientScripts = [];
 
 	Plugins.initialized = false;
 
@@ -219,6 +220,20 @@ var fs = require('fs'),
 
 						Plugins.lessFiles = Plugins.lessFiles.concat(pluginData.less.map(function(file) {
 							return path.join(pluginData.id, file);
+						}));
+					}
+
+					next();
+				},
+				function(next) {
+					// Client-side scripts
+					if (pluginData.scripts && pluginData.scripts instanceof Array) {
+						if (global.env === 'development') {
+							winston.info('[plugins] Found ' + pluginData.scripts.length + ' js file(s) for plugin ' + pluginData.id);
+						}
+
+						Plugins.clientScripts = Plugins.clientScripts.concat(pluginData.scripts.map(function(file) {
+							return path.join(__dirname, '../node_modules/', pluginData.id, file);
 						}));
 					}
 

@@ -250,6 +250,7 @@ var fs = require('fs'),
 					jsPaths = scripts.map(function (jsPath) {
 						jsPath = path.normalize(jsPath);
 
+						// The filter:scripts.get plugin will be deprecated as of v0.5.0, specify scripts in plugin.json instead
 						if (jsPath.substring(0, 7) === 'plugins') {
 							var	matches = _.map(plugins.staticDirs, function(realPath, mappedPath) {
 								if (jsPath.match(mappedPath)) {
@@ -260,7 +261,10 @@ var fs = require('fs'),
 							}).filter(function(a) { return a; });
 
 							if (matches.length) {
-								var	relPath = jsPath.slice(new String('plugins/' + matches[0]).length);
+								var	relPath = jsPath.slice(new String('plugins/' + matches[0]).length),
+									pluginId = matches[0].split(path.sep)[0];
+
+								winston.warn('[meta.scripts.get (' + pluginId + ')] filter:scripts.get is deprecated, consider using "scripts" in plugin.json');
 								return plugins.staticDirs[matches[0]] + relPath;
 							} else {
 								winston.warn('[meta.scripts.get] Could not resolve mapped path: ' + jsPath + '. Are you sure it is defined by a plugin?');
@@ -271,15 +275,18 @@ var fs = require('fs'),
 						}
 					});
 
+				// Remove scripts that could not be found (remove this line at v0.5.0)
 				Meta.js.scripts = jsPaths.filter(function(path) { return path !== null });
 
-				if (process.env.NODE_ENV !== 'development') {
-					callback(null, [
-						Meta.js.minFile
-					]);
-				} else {
-					callback(null, scripts);
-				}
+				// Add socket.io client library
+				Meta.js.scripts.unshift(path.join(__dirname, '../node_modules/socket.io/node_modules/socket.io-client/dist/socket.io.js'));
+
+				// Add plugin scripts
+				Meta.js.scripts = Meta.js.scripts.concat(plugins.clientScripts);
+
+				callback(null, [
+					Meta.js.minFile
+				]);
 			});
 		},
 		minify: function (callback) {
@@ -294,6 +301,25 @@ var fs = require('fs'),
 			minified = uglifyjs.minify(jsPaths);
 			this.cache = minified.code;
 			callback();
+		},
+		concatenate: function(callback) {
+			if (process.env.NODE_ENV === 'development') {
+				winston.info('Concatenating client-side libraries into one file');
+			}
+
+			async.map(this.scripts, function(path, next) {
+				fs.readFile(path, { encoding: 'utf-8' }, next);
+			}, function(err, contents) {
+				if (err) {
+					winston.error('[meta.js.concatenate] Could not minify javascript! Error: ' + err.message);
+					process.exit();
+				}
+
+				Meta.js.cache = contents.reduce(function(output, src) {
+					return output.length ? output + ';\n' + src : src;
+				}, '');
+				callback();
+			});
 		}
 	};
 
