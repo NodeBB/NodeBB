@@ -233,7 +233,7 @@ var fs = require('fs'),
 						}
 
 						Plugins.clientScripts = Plugins.clientScripts.concat(pluginData.scripts.map(function(file) {
-							return path.join(pluginData.id, file);
+							return path.join(__dirname, '../node_modules/', pluginData.id, file);
 						}));
 					}
 
