@@ -40,7 +40,8 @@ if(nconf.get('ssl')) {
 (function (app) {
 	"use strict";
 
-	var	clientScripts;
+	var	clientScripts,
+		port = nconf.get('PORT') || nconf.get('port');
 
 	plugins.ready(function() {
 		// Minify client-side libraries
@@ -88,7 +89,6 @@ if(nconf.get('ssl')) {
 		}, function(err, stdOut) {
 			if (!err) {
 				meta.config['cache-buster'] = stdOut.trim();
-				// winston.info('[init] Cache buster value set to: ' + stdOut);
 			} else {
 				fs.stat(path.join(__dirname, '../package.json'), function(err, stats) {
 					meta.config['cache-buster'] = new Date(stats.mtime).getTime();
@@ -97,23 +97,18 @@ if(nconf.get('ssl')) {
 		});
 	}
 
-	if (nconf.get('port') != 80 && nconf.get('port') != 443 && nconf.get('use_port') === false) {
+	if (port != 80 && port != 443 && nconf.get('use_port') === false) {
 		winston.info('Enabling \'trust proxy\'');
 		app.enable('trust proxy');
 	}
 
-	if ((nconf.get('port') == 80 || nconf.get('port') == 443) && process.env.NODE_ENV !== 'development') {
+	if ((port == 80 || port == 443) && process.env.NODE_ENV !== 'development') {
 		winston.info('Using ports 80 and 443 is not recommend; use a proxy instead. See README.md');
 	}
 
 	module.exports.server = server;
 	module.exports.init = function () {
-		// translate all static templates served by webserver here. ex. footer, logout
 		plugins.fireHook('action:app.load', app);
-
-		/*translator.translate(templates.logout.toString(), function(parsedTemplate) {
-			templates.logout = parsedTemplate;
-		});*/
 
 		server.on("error", function(e){
 			if (e.code === 'EADDRINUSE') {
@@ -124,7 +119,6 @@ if(nconf.get('ssl')) {
 			}
 		});
 
-		var port = nconf.get('PORT') || nconf.get('port');
 		winston.info('NodeBB attempting to listen on: ' + ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port);
 		server.listen(port, nconf.get('bind_address'), function(){
 			winston.info('NodeBB Ready');
