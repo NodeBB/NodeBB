@@ -276,7 +276,7 @@ var fs = require('fs'),
 				Meta.js.scripts = jsPaths.filter(function(path) { return path !== null });
 
 				// Add socket.io client library
-				Meta.js.scripts.push(path.join(__dirname, '../node_modules/socket.io/node_modules/socket.io-client/dist/socket.io.js'));
+				Meta.js.scripts.unshift(path.join(__dirname, '../node_modules/socket.io/node_modules/socket.io-client/dist/socket.io.js'));
 
 				// Add plugin scripts
 				Meta.js.scripts = Meta.js.scripts.concat(plugins.clientScripts);
