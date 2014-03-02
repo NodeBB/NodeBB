@@ -95,7 +95,6 @@ function loadConfig() {
 	nconf.set('themes_path', path.resolve(__dirname, nconf.get('themes_path')));
 }
 
-
 function start() {
 	loadConfig();
 
@@ -117,7 +116,6 @@ function start() {
 
 	require('./src/database').init(function(err) {
 		meta.configs.init(function () {
-
 			var templates = require('./public/src/templates'),
 				translator = require('./public/src/translator'),
 				webserver = require('./src/webserver'),
@@ -130,11 +128,8 @@ function start() {
 
 			upgrade.check(function(schema_ok) {
 				if (schema_ok || nconf.get('check-schema') === false) {
-
 					sockets.init(webserver.server);
-
 					plugins.init();
-
 					translator.loadServer();
 
 					var customTemplates = meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : false;
@@ -148,6 +143,15 @@ function start() {
 					});
 
 					notifications.init();
+
+					process.on('SIGTERM', shutdown);
+					process.on('SIGINT', shutdown);
+					process.on('SIGHUP', restart);
+					process.on('uncaughtException', function(err) {
+						winston.error('[app] Encountered Uncaught Exception: ' + err.message);
+						console.log(err.stack);
+						restart();
+					});
 				} else {
 					winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
 					winston.warn('    node app --upgrade');
@@ -234,6 +238,25 @@ function reset() {
 			});
 		});
 	});
+}
+
+function shutdown(code) {
+	winston.info('[app] Shutdown (SIGTERM/SIGINT) Initialised.');
+	db.close();
+	winston.info('[app] Database connection closed.');
+
+	winston.info('[app] Shutdown complete.');
+	process.exit();
+}
+
+function restart() {
+	if (process.send) {
+		winston.info('[app] Restarting...');
+		process.send('nodebb:restart');
+	} else {
+		winston.error('[app] Could not restart server. Shutting down.');
+		shutdown();
+	}
 }
 
 function displayHelp() {

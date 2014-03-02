@@ -37,33 +37,6 @@ if(nconf.get('ssl')) {
 	server = require('http').createServer(WebServer);
 }
 
-// Signals
-var	shutdown = function(code) {
-		winston.info('[app] Shutdown (SIGTERM/SIGINT) Initialised.');
-		db.close();
-		winston.info('[app] Database connection closed.');
-
-		winston.info('[app] Shutdown complete.');
-		process.exit();
-	},
-	restart = function() {
-		if (process.send) {
-			winston.info('[app] Restarting...');
-			process.send('nodebb:restart');
-		} else {
-			winston.error('[app] Could not restart server. Shutting down.');
-			shutdown();
-		}
-	};
-process.on('SIGTERM', shutdown);
-process.on('SIGINT', shutdown);
-process.on('SIGHUP', restart);
-process.on('uncaughtException', function(err) {
-	winston.error('[app] Encountered Uncaught Exception: ' + err.message);
-	console.log(err.stack);
-	restart();
-});
-
 (function (app) {
 	"use strict";
 
@@ -85,7 +58,7 @@ process.on('uncaughtException', function(err) {
 
 	logger.init(app);
 	auth.registerApp(app);
-	
+
 	async.series({
 		themesData: meta.themes.get,
 		currentThemeData: function(next) {
