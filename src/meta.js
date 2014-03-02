@@ -261,7 +261,10 @@ var fs = require('fs'),
 							}).filter(function(a) { return a; });
 
 							if (matches.length) {
-								var	relPath = jsPath.slice(new String('plugins/' + matches[0]).length);
+								var	relPath = jsPath.slice(new String('plugins/' + matches[0]).length),
+									pluginId = matches[0].split(path.sep)[0];
+
+								winston.warn('[meta.scripts.get (' + pluginId + ')] filter:scripts.get is deprecated, consider using "scripts" in plugin.json');
 								return plugins.staticDirs[matches[0]] + relPath;
 							} else {
 								winston.warn('[meta.scripts.get] Could not resolve mapped path: ' + jsPath + '. Are you sure it is defined by a plugin?');
