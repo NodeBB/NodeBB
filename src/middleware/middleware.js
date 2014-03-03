@@ -293,14 +293,9 @@ middleware.processRender = function(req, res, next) {
 						fn(err, translated);
 					});
 				});
-			} else if (res.locals.renderAdminHeader) {
-				middleware.admin.renderHeader({
-					req: req,
-					res: res
-				}, function(err, template) {
-					str = template + str;
-					fn(err, str);
-				});
+			} else if (res.locals.adminHeader) {
+				str = res.locals.adminHeader + str;
+				fn(err, str);
 			} else {
 				fn(err, str);
 			}

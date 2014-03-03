@@ -103,7 +103,7 @@ module.exports = function(app, middleware, controllers) {
 	}());
 
 	app.namespace('/admin', function () {
-		app.get('/', middleware.buildHeader, function(req, res, next) {
+		app.get('/', middleware.admin.buildHeader, function(req, res, next) {
 			res.render('admin/index', {});
 		});
 
