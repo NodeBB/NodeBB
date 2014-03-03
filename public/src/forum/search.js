@@ -3,13 +3,13 @@ define(function() {
 
 	Search.init = function() {
 		var searchQuery = $('#topic-results').attr('data-search-query');
-		$('.search-result-text').children().each(function() {
-			var text = $(this).text();
+
+		$('.search-result-text').each(function() {
+			var text = $(this).html();
 			var regex = new RegExp(searchQuery, 'gi');
 			text = text.replace(regex, '<span class="label label-success">' + searchQuery + '</span>');
 			$(this).html(text);
 		});
-
 
 		$('#search-form input').val(searchQuery);
 
