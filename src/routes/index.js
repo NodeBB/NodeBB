@@ -3,9 +3,7 @@
 var nconf = require('nconf'),
 	controllers = require('./../controllers'),
 	meta = require('./../meta'),
-	middleware = {},
 	
-	/*temp*/
 	plugins = require('./../plugins'),
 	metaRoute = require('./meta'),
 	apiRoute = require('./api'),
@@ -18,30 +16,14 @@ module.exports = function(app, middleware) {
 		//temp
 		metaRoute.createRoutes(app);
 		admin.createRoutes(app);
-		apiRoute.createRoutes(app);
 		feedsRoute.createRoutes(app);
 
-		// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
-		/*(function () {
-			var routes = [],
-				loginRequired = ['notifications'];
-
-			async.each(routes.concat(loginRequired), function(route, next) {
-				app.get('/' + route, function (req, res) {
-					if (loginRequired.indexOf(route) !== -1 && !req.user) {
-						return res.redirect('/403');
-					}
-
-					app.build_header({
-						req: req,
-						res: res
-					}, function (err, header) {
-						res.send((isNaN(parseInt(route, 10)) ? 200 : parseInt(route, 10)), header + app.create_route(route) + templates.footer);
-					});
-				});
-			});
-		}());*/
-
+		apiRoute(app, middleware, controllers);
+		
+		/**
+		* Every view has an associated API route.
+		*
+		*/
 		/* Main */
 		app.get('/', middleware.buildHeader, controllers.home);
 		app.get('/api/home', controllers.home);
@@ -54,9 +36,6 @@ module.exports = function(app, middleware) {
 
 		app.get('/confirm/:code', middleware.buildHeader, controllers.confirmEmail);
 		app.get('/api/confirm/:code', controllers.confirmEmail);
-
-		app.get('/sitemap.xml', controllers.sitemap);
-		app.get('/robots.txt', controllers.robots);
 
 		app.get('/outgoing', middleware.buildHeader, controllers.outgoing);
 		app.get('/api/outgoing', controllers.outgoing);
@@ -114,12 +93,6 @@ module.exports = function(app, middleware) {
 		app.get('/user/:userslug/settings', middleware.buildHeader, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.accountSettings);
 		app.get('/api/user/:userslug/settings', middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.accountSettings);
 
-		app.get('/api/user/uid/:uid', middleware.checkGlobalPrivacySettings, controllers.accounts.getUserByUID);
-
-		// this should have been in the API namespace
-		// also, perhaps pass in :userslug so we can use checkAccountPermissions middleware, in future will allow admins to upload a picture for a user
-		app.post('/user/uploadpicture', middleware.checkGlobalPrivacySettings, /*middleware.checkAccountPermissions,*/ controllers.accounts.uploadPicture);
-
 		/* Users */
 		app.get('/users', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
 		app.get('/api/users', middleware.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
@@ -140,8 +113,26 @@ module.exports = function(app, middleware) {
 		app.get('/users/search', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.users.getUsersForSearch);
 		app.get('/api/users/search', middleware.checkGlobalPrivacySettings, controllers.users.getUsersForSearch);
 
+		/* Misc */
+		app.get('/sitemap.xml', controllers.sitemap);
+		app.get('/robots.txt', controllers.robots);
 
+		//todo notifications
 
+		app.get('api/search/:term?', function (req, res) {
+			if ((req.user && req.user.uid) || meta.config.allowGuestSearching === '1') {
+				return res.json({
+					show_no_topics: 'hide',
+					show_no_posts: 'hide',
+					show_results: 'hide',
+					search_query: '',
+					posts: [],
+					topics: []
+				});
+			} else {
+				res.send(403);
+			}
+		});
 
 		app.get('/search/:term?', function (req, res) {
 
@@ -159,6 +150,36 @@ module.exports = function(app, middleware) {
 			});
 		});
 
+
+		app.get('/reset/:code', function(req, res) {
+			app.build_header({
+				req: req,
+				res: res
+			}, function(err, header) {
+				res.send(header + app.create_route('reset/' + req.params.code) + templates.footer);
+			});
+		});
+
+		app.get('api/reset/:code', function (req, res) {
+			res.json({
+				reset_code: req.params.code
+			});
+		});
+
+		app.get('/reset', function(req, res) {
+			app.build_header({
+				req: req,
+				res: res
+			}, function(err, header) {
+				res.send(header + app.create_route('reset') + templates.footer);
+			});
+		});
+
+		app.get('api/reset', function (req, res) {
+			res.json({});
+		});
+
+		
 		// Other routes
 		require('./plugins')(app);
 
@@ -178,6 +199,7 @@ module.exports = function(app, middleware) {
 				return tpl.template.split('.tpl')[0];
 			});
 		};
+
 
 		plugins.ready(function() {
 			plugins.fireHook('filter:server.create_routes', custom_routes, function(err, custom_routes) {

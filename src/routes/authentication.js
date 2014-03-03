@@ -68,24 +68,6 @@
 				}
 			}
 
-			app.get('/reset/:code', function(req, res) {
-				app.build_header({
-					req: req,
-					res: res
-				}, function(err, header) {
-					res.send(header + app.create_route('reset/' + req.params.code) + templates.footer);
-				});
-			});
-
-			app.get('/reset', function(req, res) {
-				app.build_header({
-					req: req,
-					res: res
-				}, function(err, header) {
-					res.send(header + app.create_route('reset') + templates.footer);
-				});
-			});
-
 			app.post('/login', function(req, res, next) {
 				passport.authenticate('local', function(err, userData, info) {
 					if (err) {
