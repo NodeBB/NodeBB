@@ -15,11 +15,6 @@ var app,
 	translator = require('./../../public/src/translator'),
 	user = require('./../user');
 
-middleware.prepareAPI = function(req, res, next) {
-	res.locals.isAPI = true;
-	next();
-};
-
 middleware.authenticate = function(req, res, next) {
 	if(!req.user) {
 		if (res.locals.isAPI) {

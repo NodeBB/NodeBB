@@ -23,14 +23,13 @@ var path = require('path'),
 	Api.createRoutes = function (app) {
 
 		app.namespace('/api', function () {
-
 			app.all('*', function(req, res, next) {
-
 				if(req.user) {
 					user.updateLastOnlineTime(req.user.uid);
 				}
 
 				db.sortedSetAdd('ip:recent', Date.now(), req.ip || 'Unknown');
+				res.locals.isAPI = true;
 
 				next();
 			});
