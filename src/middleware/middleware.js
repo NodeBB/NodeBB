@@ -165,7 +165,6 @@ middleware.renderHeader = function (options, callback) {
 			};
 
 		var uid = '0';
-console.log(options.res.locals.metaTags);
 		// Meta Tags
 		templateValues.metaTags = defaultMetaTags.concat(options.res.locals.metaTags || []).map(function(tag) {
 			if(!tag || typeof tag.content !== 'string') {

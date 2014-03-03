@@ -52,7 +52,6 @@ topicsController.get = function(req, res, next) {
 			});
 		},
 		function (topicData, next) {
-
 			var lastMod = topicData.timestamp,
 				description = (function() {
 					var	content = '';
@@ -74,8 +73,6 @@ topicsController.get = function(req, res, next) {
 					lastMod = timestamp;
 				}
 			}
-
-			next(null, topicData);
 
 			var ogImageUrl = meta.config['brand:logo'];
 			if(ogImageUrl && ogImageUrl.indexOf('http') === -1) {
@@ -140,7 +137,8 @@ topicsController.get = function(req, res, next) {
 					href: nconf.get('url') + '/category/' + topicData.category.slug
 				}
 			];
-
+			
+			next(null, topicData);
 		}
 	], function (err, posts) {
 		if (err) {
