@@ -9,6 +9,10 @@ var	nconf = require('nconf'),
 	plugins = require('../plugins'),
 
 	PluginRoutes = function(app) {
+		/**
+		* GET/PUT /plugins/fireHook to be deprecated after 0.4.x
+		*
+		*/
 		app.get('/plugins/fireHook', function(req, res) {
 			// GET = filter
 			plugins.fireHook('filter:' + req.query.hook, req.query.args, function(err, returnData) {
