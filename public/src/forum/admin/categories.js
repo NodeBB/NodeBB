@@ -303,7 +303,9 @@ define(['uploader'], function(uploader) {
 			}
 			var numResults = results.length,
 				trEl,
-			    resultObj;
+				resultObj;
+
+			groupsResultsEl.empty();
 
 			for(var x = 0; x < numResults; x++) {
 				resultObj = results[x];

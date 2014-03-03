@@ -261,7 +261,10 @@ var fs = require('fs'),
 							}).filter(function(a) { return a; });
 
 							if (matches.length) {
-								var	relPath = jsPath.slice(new String('plugins/' + matches[0]).length);
+								var	relPath = jsPath.slice(new String('plugins/' + matches[0]).length),
+									pluginId = matches[0].split(path.sep)[0];
+
+								winston.warn('[meta.scripts.get (' + pluginId + ')] filter:scripts.get is deprecated, consider using "scripts" in plugin.json');
 								return plugins.staticDirs[matches[0]] + relPath;
 							} else {
 								winston.warn('[meta.scripts.get] Could not resolve mapped path: ' + jsPath + '. Are you sure it is defined by a plugin?');
@@ -275,9 +278,6 @@ var fs = require('fs'),
 				// Remove scripts that could not be found (remove this line at v0.5.0)
 				Meta.js.scripts = jsPaths.filter(function(path) { return path !== null });
 
-				// Add socket.io client library
-				Meta.js.scripts.push(path.join(__dirname, '../node_modules/socket.io/node_modules/socket.io-client/dist/socket.io.js'));
-
 				// Add plugin scripts
 				Meta.js.scripts = Meta.js.scripts.concat(plugins.clientScripts);
 
@@ -288,32 +288,34 @@ var fs = require('fs'),
 		},
 		minify: function (callback) {
 			var uglifyjs = require('uglify-js'),
-				jsPaths = this.scripts,
 				minified;
 
 			if (process.env.NODE_ENV === 'development') {
 				winston.info('Minifying client-side libraries');
 			}
 
-			minified = uglifyjs.minify(jsPaths);
+			minified = uglifyjs.minify(this.scripts);
 			this.cache = minified.code;
 			callback();
 		},
-		compress: function(callback) {
-			var uglifyjs = require('uglify-js'),
-				jsPaths = this.scripts,
-				compressed;
-
+		concatenate: function(callback) {
 			if (process.env.NODE_ENV === 'development') {
-				winston.info('Compressing client-side libraries into one file');
+				winston.info('Concatenating client-side libraries into one file');
 			}
 
-			minified = uglifyjs.minify(jsPaths, {
-				mangle: false,
-				compress: false
+			async.map(this.scripts, function(path, next) {
+				fs.readFile(path, { encoding: 'utf-8' }, next);
+			}, function(err, contents) {
+				if (err) {
+					winston.error('[meta.js.concatenate] Could not minify javascript! Error: ' + err.message);
+					process.exit();
+				}
+
+				Meta.js.cache = contents.reduce(function(output, src) {
+					return output.length ? output + ';\n' + src : src;
+				}, '');
+				callback();
 			});
-			this.cache = minified.code;
-			callback();
 		}
 	};
 
