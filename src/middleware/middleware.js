@@ -1,6 +1,5 @@
 "use strict";
 
-
 var app,
 	clientScripts,
 	middleware = {},
@@ -18,7 +17,6 @@ var app,
 	controllers = {
 		api: require('./../controllers/api')
 	};
-
 
 middleware.authenticate = function(req, res, next) {
 	if(!req.user) {

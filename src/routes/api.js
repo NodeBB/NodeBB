@@ -40,18 +40,6 @@ module.exports =  function(app, middleware, controllers) {
 
 		app.get('/config', controllers.api.getConfig);
 
-		app.get('/notifications', function(req, res) {
-			if (req.user && req.user.uid) {
-				user.notifications.getAll(req.user.uid, null, null, function(err, notifications) {
-					res.json({
-						notifications: notifications
-					});
-				});
-			} else {
-				res.send(403);
-			}
-		});			
-
 		app.get('/search/:term', function (req, res, next) {
 			if (!plugins.hasListeners('filter:search.query')) {
 				return res.redirect('/404');
@@ -176,7 +164,7 @@ module.exports =  function(app, middleware, controllers) {
 		});
 	});
 
-	// this should have been in the API namespace
+	// this should be in the API namespace
 	// also, perhaps pass in :userslug so we can use checkAccountPermissions middleware - in future will allow admins to upload a picture for a user
-	app.post('/user/uploadpicture', middleware.checkGlobalPrivacySettings, /*middleware.checkAccountPermissions,*/ controllers.accounts.uploadPicture);
+	app.post('/user/uploadpicture', middleware.authenticate, middleware.checkGlobalPrivacySettings, /*middleware.checkAccountPermissions,*/ controllers.accounts.uploadPicture);
 };

@@ -93,6 +93,9 @@ module.exports = function(app, middleware) {
 		app.get('/user/:userslug/settings', middleware.buildHeader, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.accountSettings);
 		app.get('/api/user/:userslug/settings', middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.accountSettings);
 
+		app.get('/notifications', middleware.buildHeader, middleware.authenticate, controllers.accounts.getNotifications);
+		app.get('/api/notifications', middleware.authenticate, controllers.accounts.getNotifications);
+
 		/* Users */
 		app.get('/users', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
 		app.get('/api/users', middleware.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
@@ -116,8 +119,6 @@ module.exports = function(app, middleware) {
 		/* Misc */
 		app.get('/sitemap.xml', controllers.sitemap);
 		app.get('/robots.txt', controllers.robots);
-
-		//todo notifications
 
 		app.get('api/search/:term?', function (req, res) {
 			if ((req.user && req.user.uid) || meta.config.allowGuestSearching === '1') {

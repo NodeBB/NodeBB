@@ -372,10 +372,6 @@ accountsController.accountSettings = function(req, res, next) {
 };
 
 accountsController.uploadPicture = function (req, res, next) {
-	if (!req.user) {
-		return userNotAllowed();
-	}
-
 	var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
 	if (req.files.userPhoto.size > uploadSize * 1024) {
 		return res.json({
@@ -470,6 +466,20 @@ accountsController.uploadPicture = function (req, res, next) {
 				file.saveFileToLocal(filename, req.files.userPhoto.path, done);
 			});
 		});
+	});
+};
+
+accountsController.getNotifications = function(req, res, next) {
+	user.notifications.getAll(req.user.uid, null, null, function(err, notifications) {
+		if (res.locals.isAPI) {
+			res.json({
+				notifications: notifications
+			});	
+		} else {
+			res.render('notifications', {
+				notifications: notifications
+			});
+		}
 	});
 };
 
