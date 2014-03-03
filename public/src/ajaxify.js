@@ -133,8 +133,11 @@ var ajaxify = {};
 		var tpl_url = templates.get_custom_map(url.split('?')[0]);
 
 		if (tpl_url == false && !templates[url]) {
+			// todo: regex
 			if (url === '' || url === '/') {
 				tpl_url = 'home';
+			} else if (url === 'admin' || url === 'admin/') {
+				tpl_url = 'admin/index';
 			} else {
 				tpl_url = url.split('/')[0].split('?')[0];
 			}
