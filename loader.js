@@ -44,11 +44,18 @@ var	nconf = require('nconf'),
 
 nconf.argv();
 
+// Start the daemon!
 if (nconf.get('d')) {
 	// Check for a still-active NodeBB process
 	if (fs.existsSync(pidFilePath)) {
-		console.log('\n  Error: Another NodeBB is already running!');
-		process.exit();
+		try {
+			var	pid = fs.readFileSync(pidFilePath, { encoding: 'utf-8' });
+			process.kill(pid, 0);
+			console.log('\n  Error: Another NodeBB is already running!');
+			process.exit();
+		} catch (e) {
+			fs.unlinkSync(pidFilePath);
+		}
 	}
 
 	// Initialise logging streams
