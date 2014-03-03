@@ -202,6 +202,9 @@ module.exports = function(app, middleware) {
 
 
 		plugins.ready(function() {
+			/*
+			* TO BE DEPRECATED post 0.4x
+			*/
 			plugins.fireHook('filter:server.create_routes', custom_routes, function(err, custom_routes) {
 				var route,
 					routes = custom_routes.routes;
