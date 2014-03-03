@@ -24,9 +24,9 @@ define(function() {
 
 		createSubmitBtn.on('click', function() {
 			var submitObj = {
-				name: createNameEl.val(),
-				description: $('#create-group-desc').val()
-			},
+					name: createNameEl.val(),
+					description: $('#create-group-desc').val()
+				},
 				errorEl = $('#create-modal-error'),
 				errorText;
 
@@ -91,8 +91,9 @@ define(function() {
 							groupMembersEl.empty();
 							for (x = 0; x < numMembers; x++) {
 								var memberIcon = $('<li />')
+									.attr('data-uid', groupObj.members[x].uid)
 									.append($('<img />').attr('src', groupObj.members[x].picture))
-									.append($('<span />').attr('data-uid', groupObj.members[x].uid).html(groupObj.members[x].username));
+									.append($('<span />').html(groupObj.members[x].username));
 								groupMembersEl.append(memberIcon);
 							}
 						}
@@ -152,7 +153,7 @@ define(function() {
 					uid: uid
 				}, function(err, data) {
 					if (!err) {
-						groupMembersEl.append(userLabel.cloneNode(true));
+						groupMembersEl.append(userLabel.clone(true));
 					}
 				});
 			}
@@ -164,10 +165,6 @@ define(function() {
 
 			socket.emit('admin.groups.get', gid, function(err, groupObj){
 				if (!err){
-					if (groupObj.name == 'Administrators' && uid == yourid){
-						bootbox.alert('You cannot remove yourself from the Administrator Group');
-						return;
-					}
 					bootbox.confirm('Are you sure you want to remove this user?', function(confirm) {
 						if (confirm){
 							socket.emit('admin.groups.leave', {
