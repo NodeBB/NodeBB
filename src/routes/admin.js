@@ -103,10 +103,8 @@ module.exports = function(app, middleware, controllers) {
 	}());
 
 	app.namespace('/admin', function () {
-		app.get('/', function (req, res) {
-			Admin.buildHeader(req, res, function(err, header) {
-				res.send(header + app.create_route('admin/index') + templates['admin/footer']);
-			});
+		app.get('/', middleware.buildHeader, function(req, res, next) {
+			res.render('admin/index', {});
 		});
 
 		app.get('/index', function (req, res) {

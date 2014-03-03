@@ -278,6 +278,8 @@ middleware.processRender = function(req, res, next) {
 		render.call(self, template, options, function(err, str) {
 			if (res.locals.footer) {
 				str = str + res.locals.footer;
+			} else if (res.locals.adminFooter) {
+				str = str + res.locals.adminFooter;
 			}
 
 			if (res.locals.renderHeader) {
@@ -290,6 +292,14 @@ middleware.processRender = function(req, res, next) {
 					translator.translate(str, function(translated) {
 						fn(err, translated);
 					});
+				});
+			} else if (res.locals.renderAdminHeader) {
+				middleware.admin.renderHeader({
+					req: req,
+					res: res
+				}, function(err, template) {
+					str = template + str;
+					fn(err, str);
 				});
 			} else {
 				fn(err, str);
@@ -312,6 +322,7 @@ middleware.routeTouchIcon = function(req, res) {
 
 module.exports = function(webserver) {
 	app = webserver;
+	middleware.admin = require('./admin')(webserver);
 
 	plugins.ready(function() {
 		// Minify client-side libraries
