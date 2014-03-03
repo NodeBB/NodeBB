@@ -17,8 +17,6 @@ define(function() {
 				return pagination.loadPage(pagination.currentPage - 1);
 			}).on('click', '.next', function() {
 				return pagination.loadPage(pagination.currentPage + 1);
-			}).on('click', '.page', function() {
-				return pagination.loadPage($(this).attr('data-page'));
 			}).on('click', '.select_page', function(e) {
 				e.preventDefault();
 				bootbox.prompt('Enter page number:', function(pageNum) {
@@ -77,7 +75,11 @@ define(function() {
 			return false;
 		}
 
-		ajaxify.go(window.location.pathname.slice(1) + '?page=' + page);
+		ajaxify.go(window.location.pathname.slice(1) + '?page=' + page, function() {
+			if (typeof callback === 'function') {
+				callback();
+			}
+		});
 		return true;
 	}
 
