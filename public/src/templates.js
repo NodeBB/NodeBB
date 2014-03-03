@@ -271,7 +271,7 @@
 					value = $(element).val();
 					break;
 			}
-			console.log($(element).attr('template-variable'), value);
+			
 			templates.set($(element).attr('template-variable'), value);
 		});
 	};
