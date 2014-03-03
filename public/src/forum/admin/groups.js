@@ -127,7 +127,7 @@ define(function() {
 								.append($('<img />').attr('src', results.users[x].picture))
 								.append($('<span />').html(results.users[x].username));
 
-							resultsEl.appendChild(foundUser);
+							resultsEl.append(foundUser);
 						}
 					} else {
 						resultsEl.html('<li>No Users Found</li>');
