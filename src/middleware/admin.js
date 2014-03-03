@@ -13,7 +13,7 @@ var app,
 	};
 
 
-middleware.isAdmin = function (req, res, next) {
+middleware.isAdmin = function(req, res, next) {
 	user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {
 		if (!isAdmin) {
 			res.status(403);
@@ -69,8 +69,6 @@ middleware.buildHeader = function(req, res, next) {
 		next();
 	});
 };
-
-
 
 module.exports = function(webserver) {
 	app = webserver;

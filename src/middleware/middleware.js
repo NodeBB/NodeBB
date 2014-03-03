@@ -129,12 +129,7 @@ middleware.buildHeader = function(req, res, next) {
 	});
 };
 
-/**
-* TODO: switch signature to req, res, callback
- *	`options` object	requires:	req, res
- *						accepts:	metaTags, linkTags
- */
-middleware.renderHeader = function (options, callback) {
+middleware.renderHeader = function(req, res, callback) {
 	var custom_header = {
 		'navigation': []
 	};
@@ -284,10 +279,7 @@ middleware.processRender = function(req, res, next) {
 			}
 
 			if (res.locals.renderHeader) {
-				middleware.renderHeader({
-					req: req,
-					res: res
-				}, function(err, template) {
+				middleware.renderHeader(req, res, function(err, template) {
 					str = template + str;
 
 					translator.translate(str, function(translated) {
