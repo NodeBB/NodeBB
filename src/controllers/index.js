@@ -6,6 +6,8 @@ var topicsController = require('./topics'),
 	accountsController = require('./accounts'),
 	staticController = require('./static'),
 	apiController = require('./api'),
+	adminController = require('./admin'),
+
 	async = require('async'),
 	nconf = require('nconf'),
 	auth = require('./../routes/authentication'),
@@ -23,7 +25,8 @@ var Controllers = {
 	users: usersController,
 	accounts: accountsController,
 	static: staticController,
-	api: apiController
+	api: apiController,
+	admin: adminController
 };
 
 

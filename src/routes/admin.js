@@ -24,40 +24,6 @@ var nconf = require('nconf'),
 
 var Admin = {};
 
-Admin.isAdmin = function (req, res, next) {
-	user.isAdministrator((req.user && req.user.uid) ? req.user.uid : 0, function (err, isAdmin) {
-		if (!isAdmin) {
-			res.status(403);
-			res.redirect('/403');
-		} else {
-			next();
-		}
-	});
-};
-
-Admin.buildHeader = function (req, res, callback) {
-	var custom_header = {
-		'plugins': [],
-		'authentication': []
-	};
-
-	user.getUserFields(req.user.uid, ['username', 'userslug', 'picture'], function(err, userData) {
-		plugins.fireHook('filter:admin.header.build', custom_header, function(err, custom_header) {
-			callback(err, templates['admin/header'].parse({
-				csrf: res.locals.csrf_token,
-				relative_path: nconf.get('relative_path'),
-				plugins: custom_header.plugins,
-				authentication: custom_header.authentication,
-				userpicture: userData.picture,
-				username: userData.username,
-				userslug: userData.userslug,
-				'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
-				env: process.env.NODE_ENV ? true : false
-			}));
-		});
-	});
-};
-
 function uploadImage(filename, req, res) {
 	function done(err, image) {
 		var er, rs;
@@ -80,9 +46,9 @@ function uploadImage(filename, req, res) {
 }
 
 module.exports = function(app, middleware, controllers) {
-	app.all('/api/admin/*', Admin.isAdmin);
-	app.all('/admin/*', Admin.isAdmin);
-	app.get('/admin', Admin.isAdmin);
+	app.all('/api/admin/*', middleware.admin.isAdmin, middleware.prepareAPI);
+	app.all('/admin/*', middleware.admin.isAdmin);
+	app.get('/admin', middleware.admin.isAdmin);
 
 	(function () {
 		var routes = [
@@ -93,26 +59,71 @@ module.exports = function(app, middleware, controllers) {
 
 		for (var i = 0, ii = routes.length; i < ii; i++) {
 			(function (route) {
-				app.get('/admin/' + route, function (req, res) {
+				/*app.get('/admin/' + route, function (req, res) {
 					Admin.buildHeader(req, res, function(err, header) {
 						res.send(header + app.create_route('admin/' + route) + templates['admin/footer']);
 					});
-				});
+				});*/
 			}(routes[i]));
 		}
 	}());
 
+
+	app.get('/admin/', middleware.admin.buildHeader, controllers.admin.home);
+	app.get('/api/admin/index', controllers.admin.home);
+
+	app.get('/admin/users/search', middleware.admin.buildHeader, controllers.admin.users.search);
+	app.get('/api/admin/users/search', controllers.admin.users.search);
+
+	app.get('/admin/users/latest', middleware.admin.buildHeader, controllers.admin.users.latest);
+	app.get('/api/admin/users/latest', controllers.admin.users.latest);
+
+	app.get('/admin/users/sort-posts', middleware.admin.buildHeader, controllers.admin.users.sortByPosts);
+	app.get('/api/admin/users/sort-posts', controllers.admin.users.sortByPosts);
+
+	app.get('/admin/users/sort-reputation', middleware.admin.buildHeader, controllers.admin.users.sortByReputation);
+	app.get('/api/admin/users/sort-reputation', controllers.admin.users.sortByReputation);
+
+	app.get('/admin/users', middleware.admin.buildHeader, controllers.admin.users.sortByJoinDate);
+	app.get('/api/admin/users', controllers.admin.users.sortByJoinDate);
+
+	app.get('/admin/categories/active', middleware.admin.buildHeader, controllers.admin.categories.active);
+	app.get('/api/admin/categories/active', controllers.admin.categories.active);
+
+	app.get('/admin/categories/disabled', middleware.admin.buildHeader, controllers.admin.categories.disabled);
+	app.get('/api/admin/categories/disabled', controllers.admin.categories.disabled);
+
+	app.get('/admin/topics', middleware.admin.buildHeader, controllers.admin.topics.get);
+	app.get('/api/admin/topics', controllers.admin.topics.get);
+
+	app.get('/admin/database', middleware.admin.buildHeader, controllers.admin.database.get);
+	app.get('/api/admin/database', controllers.admin.database.get);
+
+	app.get('/admin/events', middleware.admin.buildHeader, controllers.admin.events.get);
+	app.get('/api/admin/events', controllers.admin.events.get);
+
+	app.get('/admin/plugins', middleware.admin.buildHeader, controllers.admin.plugins.get);
+	app.get('/api/admin/plugins', controllers.admin.plugins.get);
+
+	app.get('/admin/languages', middleware.admin.buildHeader, controllers.admin.languages.get);
+	app.get('/api/admin/languages', controllers.admin.languages.get);
+
+	app.get('/admin/settings', middleware.admin.buildHeader, controllers.admin.settings.get);
+	app.get('/api/admin/settings', controllers.admin.settings.get);
+
+	app.get('/admin/logger', middleware.admin.buildHeader, controllers.admin.logger.get);
+	app.get('/api/admin/logger', controllers.admin.logger.get);
+
+	app.get('/admin/themes', middleware.admin.buildHeader, controllers.admin.themes.get);
+	app.get('/api/admin/themes', controllers.admin.themes.get);
+
+	app.get('/admin/groups', middleware.admin.buildHeader, controllers.admin.groups.get);
+	app.get('/api/admin/groups', controllers.admin.groups.get);
+
+
+
+
 	app.namespace('/admin', function () {
-		app.get('/', middleware.admin.buildHeader, function(req, res, next) {
-			res.render('admin/index', {});
-		});
-
-		app.get('/index', function (req, res) {
-			Admin.buildHeader(req, res, function(err, header) {
-				res.send(header + app.create_route('admin/index') + templates['admin/footer']);
-			});
-		});
-
 		app.post('/category/uploadpicture', function(req, res) {
 			if (!req.user) {
 				return res.redirect('/403');
@@ -233,203 +244,6 @@ module.exports = function(app, middleware, controllers) {
 					}(route));
 				}
 			}
-		});
-	});
-
-
-	app.namespace('/api/admin', function () {
-
-		app.get('/index', function (req, res) {
-			res.json({
-				version: pkg.version,
-			});
-		});
-
-		app.get('/users/search', function (req, res) {
-			res.json({
-				search_display: 'block',
-				loadmore_display: 'none',
-				users: []
-			});
-		});
-
-		app.get('/users/latest', function (req, res) {
-			user.getUsers('users:joindate', 0, 49, function (err, data) {
-				res.json({
-					search_display: 'none',
-					loadmore_display: 'block',
-					users: data,
-					yourid: req.user.uid
-				});
-			});
-		});
-
-		app.get('/users/sort-posts', function (req, res) {
-			user.getUsers('users:postcount', 0, 49, function (err, data) {
-				res.json({
-					search_display: 'none',
-					loadmore_display: 'block',
-					users: data,
-					yourid: req.user.uid
-				});
-			});
-		});
-
-		app.get('/users/sort-reputation', function (req, res) {
-			user.getUsers('users:reputation', 0, 49, function (err, data) {
-				res.json({
-					search_display: 'none',
-					loadmore_display: 'block',
-					users: data,
-					yourid: req.user.uid
-				});
-			});
-		});
-
-		app.get('/users', function (req, res) {
-			user.getUsers('users:joindate', 0, 49, function (err, data) {
-				res.json({
-					search_display: 'none',
-					users: data,
-					yourid: req.user.uid
-				});
-			});
-		});
-
-		app.get('/categories', function (req, res) {
-			categories.getAllCategories(0, function (err, data) {
-				res.json(data);
-			});
-		});
-
-		app.get('/categories/active', function (req, res) {
-			categories.getAllCategories(0, function (err, data) {
-				data.categories = data.categories.filter(function (category) {
-					return !category.disabled;
-				});
-				res.json(data);
-			});
-		});
-
-		app.get('/categories/disabled', function (req, res) {
-			categories.getAllCategories(0, function (err, data) {
-				data.categories = data.categories.filter(function (category) {
-					return category.disabled;
-				});
-				res.json(data);
-			});
-		});
-
-		app.get('/topics', function (req, res) {
-			topics.getAllTopics(0, 19, function (err, topics) {
-				res.json({
-					topics: topics,
-					notopics: topics.length === 0
-				});
-			});
-		});
-
-		app.namespace('/database', function () {
-			app.get('/', function (req, res) {
-				db.info(function (err, data) {
-					res.json(data);
-				});
-			});
-		});
-
-		app.get('/events', function(req, res, next) {
-			events.getLog(function(err, data) {
-				if(err) {
-					return next(err);
-				}
-				if(data) {
-					data = data.toString().split('\n').reverse().join('\n');
-				}
-				res.json(200, {eventdata: data});
-			});
-		});
-
-		app.get('/plugins', function (req, res) {
-			plugins.showInstalled(function (err, plugins) {
-				if (err || !Array.isArray(plugins)) {
-					plugins = [];
-				}
-
-				res.json(200, {
-					plugins: plugins
-				});
-			});
-		});
-
-		app.get('/languages', function(req, res) {
-			Languages.list(function(err, languages) {
-				res.send(200, {
-					languages: languages
-				});
-			});
-		});
-
-		app.get('/settings', function (req, res) {
-			res.json(200, {});
-		});
-
-		app.get('/motd', function (req, res) {
-			res.json(200, {});
-		});
-
-		app.get('/logger', function(req, res) {
-			res.json(200, {});
-		});
-
-		app.get('/themes', function (req, res) {
-			async.parallel({
-				areas: function(next) {
-					plugins.fireHook('filter:widgets.getAreas', [], next);
-				},
-				widgets: function(next) {
-					plugins.fireHook('filter:widgets.getWidgets', [], next);
-				}
-			}, function(err, data) {
-				async.each(data.areas, function(area, next) {
-					widgets.getArea(area.template, area.location, function(err, areaData) {
-						area.data = areaData;
-						next(err);
-					});
-				}, function(err) {
-					for (var w in data.widgets) {
-						if (data.widgets.hasOwnProperty(w)) {
-							data.widgets[w].content += "<br /><label>Title:</label><input type=\"text\" class=\"form-control\" name=\"title\" placeholder=\"Title (only shown on some containers)\" /><br /><label>Container:</label><textarea rows=\"4\" class=\"form-control container-html\" name=\"container\" placeholder=\"Drag and drop a container or enter HTML here.\"></textarea>";
-						}
-					}
-
-					res.json(200, {
-						areas: data.areas,
-						widgets: data.widgets
-					});
-				});
-			});
-		});
-
-		app.get('/groups', function (req, res) {
-			async.parallel([
-				function(next) {
-					groups.list({
-						expand: true
-					}, next);
-				},
-				function(next) {
-					groups.listSystemGroups({
-						expand: true
-					}, next);
-				}
-			], function(err, data) {
-				var	groups = data[0].concat(data[1]);
-
-				res.json(200, {
-					groups: groups,
-					yourid: req.user.uid
-				});
-			});
 		});
 	});
 };
