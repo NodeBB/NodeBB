@@ -60,7 +60,7 @@ middleware.buildHeader = function(req, res, next) {
 			});
 		},
 		function(next) {
-			app.render('footer', {}, function(err, template) {
+			app.render('admin/footer', {}, function(err, template) {
 				res.locals.adminFooter = template;
 				next(err);
 			});

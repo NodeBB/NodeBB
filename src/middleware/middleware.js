@@ -226,6 +226,7 @@ middleware.renderHeader = function (options, callback) {
 					var	metaTitle = templateValues.metaTags.filter(function(tag) {
 							return tag.name === 'title';
 						});
+
 					if (translated) {
 						templateValues.browserTitle = translated;
 					} else if (metaTitle.length > 0 && metaTitle[0].content) {
