@@ -33,10 +33,10 @@
 			<div class="panel-heading">Notices</div>
 			<div class="panel-body">
 				<div>
-					Emailer Installed <!-- IF emailerInstalled --><i class="fa fa-check alert-success"></i><!-- ELSE --><i class="fa fa-times alert-danger"></i><!-- ENDIF emailerInstalled -->
+					<!-- IF emailerInstalled --><i class="fa fa-check alert-success"></i><!-- ELSE --><i class="fa fa-times alert-danger"></i><!-- ENDIF emailerInstalled --> Emailer Installed
 				</div>
 				<div>
-					Search Plugin Installed <!-- IF searchInstalled --><i class="fa fa-check alert-success"></i><!-- ELSE --><i class="fa fa-times alert-danger"></i><!-- ENDIF searchInstalled -->
+					<!-- IF searchInstalled --><i class="fa fa-check alert-success"></i><!-- ELSE --><i class="fa fa-times alert-danger"></i><!-- ENDIF searchInstalled --> Search Plugin Installed
 				</div>
 			</div>
 		</div>
