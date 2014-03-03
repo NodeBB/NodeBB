@@ -279,7 +279,7 @@ var fs = require('fs'),
 				Meta.js.scripts = jsPaths.filter(function(path) { return path !== null });
 
 				// Add socket.io client library
-				Meta.js.scripts.unshift(path.join(__dirname, '../node_modules/socket.io/node_modules/socket.io-client/dist/socket.io.js'));
+				Meta.js.scripts.push(path.join(__dirname, '../node_modules/socket.io/node_modules/socket.io-client/dist/socket.io.js'));
 
 				// Add plugin scripts
 				Meta.js.scripts = Meta.js.scripts.concat(plugins.clientScripts);
@@ -291,14 +291,13 @@ var fs = require('fs'),
 		},
 		minify: function (callback) {
 			var uglifyjs = require('uglify-js'),
-				jsPaths = this.scripts,
 				minified;
 
 			if (process.env.NODE_ENV === 'development') {
 				winston.info('Minifying client-side libraries');
 			}
 
-			minified = uglifyjs.minify(jsPaths);
+			minified = uglifyjs.minify(this.scripts);
 			this.cache = minified.code;
 			callback();
 		},
