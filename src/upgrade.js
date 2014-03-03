@@ -864,6 +864,12 @@ Upgrade.upgrade = function(callback) {
 									if(err) {
 										return next(err);
 									}
+
+									// If there was no order present, put it at the end
+									if (!order) {
+										order = cids.length;
+									}
+
 									db.sortedSetAdd('categories:cid', order, cid, next);
 								});
 							}, function(err) {
