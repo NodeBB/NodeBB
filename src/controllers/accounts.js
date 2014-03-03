@@ -1,3 +1,5 @@
+"use strict";
+
 var accountsController = {};
 
 var fs = require('fs'),
@@ -167,7 +169,7 @@ accountsController.getAccount = function(req, res, next) {
 						res.json(userData);
 					} else {
 						res.render('account', userData);
-					};
+					}
 				});
 			});
 		});

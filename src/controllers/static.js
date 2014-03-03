@@ -1,3 +1,5 @@
+"use strict";
+
 var staticController = {};
 
 staticController['404'] = function(req, res, next) {

@@ -1,3 +1,5 @@
+"use strict";
+
 var usersController = {};
 
 var async = require('async'),
@@ -11,9 +13,9 @@ usersController.getOnlineUsers = function(req, res, next) {
 		if(err) {
 			return next(err);
 		}
-		var onlineUsers = [];
+		var onlineUsers = [],
+			uid = 0;
 
-		uid = 0;
 		if (req.user) {
 			uid = req.user.uid;
 		}
@@ -55,7 +57,7 @@ usersController.getOnlineUsers = function(req, res, next) {
 					res.json(userData);
 				} else {
 					res.render('users', userData);
-				};
+				}
 			});
 		});
 	});
@@ -74,7 +76,7 @@ usersController.getUsersSortedByPosts = function(req, res, next) {
 			res.json(userData);
 		} else {
 			res.render('users', userData);
-		};
+		}
 	});
 };
 
@@ -91,7 +93,7 @@ usersController.getUsersSortedByReputation = function(req, res, next) {
 			res.json(userData);
 		} else {
 			res.render('users', userData);
-		};
+		}
 	});
 };
 
@@ -108,7 +110,7 @@ usersController.getUsersSortedByJoinDate = function(req, res, next) {
 			res.json(userData);
 		} else {
 			res.render('users', userData);
-		};
+		}
 	});
 };
 
