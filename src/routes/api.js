@@ -4,15 +4,15 @@ var path = require('path'),
 	async = require('async'),
 	fs = require('fs'),
 
-	db = require('../database'),
-	user = require('../user'),
-	topics = require('../topics'),
-	posts = require('../posts'),
-	categories = require('../categories'),
-	meta = require('../meta'),
-	plugins = require('../plugins'),
-	utils = require('../../public/src/utils'),
-	pkg = require('../../package.json');
+	db = require('./../database'),
+	user = require('./../user'),
+	topics = require('./../topics'),
+	posts = require('./../posts'),
+	categories = require('./../categories'),
+	meta = require('./../meta'),
+	plugins = require('./../plugins'),
+	utils = require('./../../public/src/utils'),
+	pkg = require('./../../package.json');
 
 
 module.exports =  function(app, middleware, controllers) {
@@ -38,49 +38,7 @@ module.exports =  function(app, middleware, controllers) {
 			});
 		});
 
-		app.get('/config', function (req, res, next) {
-			var config = require('../../public/config.json');
-
-			config.version = pkg.version;
-			config.postDelay = meta.config.postDelay;
-			config.minimumTitleLength = meta.config.minimumTitleLength;
-			config.maximumTitleLength = meta.config.maximumTitleLength;
-			config.minimumPostLength = meta.config.minimumPostLength;
-			config.hasImageUploadPlugin = plugins.hasListeners('filter:uploadImage');
-			config.maximumProfileImageSize = meta.config.maximumProfileImageSize;
-			config.minimumUsernameLength = meta.config.minimumUsernameLength;
-			config.maximumUsernameLength = meta.config.maximumUsernameLength;
-			config.minimumPasswordLength = meta.config.minimumPasswordLength;
-			config.maximumSignatureLength = meta.config.maximumSignatureLength;
-			config.useOutgoingLinksPage = parseInt(meta.config.useOutgoingLinksPage, 10) === 1;
-			config.allowGuestPosting = parseInt(meta.config.allowGuestPosting, 10) === 1;
-			config.allowFileUploads = parseInt(meta.config.allowFileUploads, 10) === 1;
-			config.allowTopicsThumbnail = parseInt(meta.config.allowTopicsThumbnail, 10) === 1;
-			config.usePagination = parseInt(meta.config.usePagination, 10) === 1;
-			config.disableSocialButtons = parseInt(meta.config.disableSocialButtons, 10) === 1;
-			config.topicsPerPage = meta.config.topicsPerPage || 20;
-			config.postsPerPage = meta.config.postsPerPage || 20;
-			config.maximumFileSize = meta.config.maximumFileSize;
-			config.defaultLang = meta.config.defaultLang || 'en_GB';
-			config.environment = process.env.NODE_ENV;
-
-			if (!req.user) {
-				return res.json(200, config);
-			}
-
-			if(req.user) {
-				user.getSettings(req.user.uid, function(err, settings) {
-					if(err) {
-						return next(err);
-					}
-
-					config.usePagination = settings.usePagination;
-					config.topicsPerPage = settings.topicsPerPage;
-					config.postsPerPage = settings.postsPerPage;
-					res.json(200, config);
-				});
-			}
-		});
+		app.get('/config', controllers.api.getConfig);
 
 		app.get('/notifications', function(req, res) {
 			if (req.user && req.user.uid) {
