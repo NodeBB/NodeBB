@@ -84,8 +84,7 @@ middleware.checkAccountPermissions = function(req, res, next) {
 middleware.buildHeader = function(req, res, next) {
 	async.parallel([
 		function(next) {
-			// temp, don't forget to set metaTags and linkTags to res.locals.header
-			res.locals.header = true;
+			res.locals.renderHeader = true;
 			next();
 		},
 		function(next) {
@@ -160,7 +159,7 @@ middleware.renderHeader = function (options, callback) {
 			};
 
 		var uid = '0';
-		// Meta Tags
+
 		templateValues.metaTags = defaultMetaTags.concat(options.res.locals.metaTags || []).map(function(tag) {
 			if(!tag || typeof tag.content !== 'string') {
 				winston.warn('Invalid meta tag. ', tag);
@@ -173,19 +172,17 @@ middleware.renderHeader = function (options, callback) {
 			return tag;
 		});
 
-		// Link Tags
-		/*templateValues.linkTags = defaultLinkTags.concat(options.linkTags || []);
+		templateValues.linkTags = defaultLinkTags.concat(options.linkTags || []);
 		templateValues.linkTags.push({
 			rel: "icon",
 			type: "image/x-icon",
 			href: nconf.get('relative_path') + '/favicon.ico'
-		});*/
+		});
 
 		if(options.req.user && options.req.user.uid) {
 			uid = options.req.user.uid;
 		}
 
-		// Custom CSS
 		templateValues.useCustomCSS = false;
 		if (meta.config.useCustomCSS === '1') {
 			templateValues.useCustomCSS = true;
@@ -216,9 +213,6 @@ middleware.renderHeader = function (options, callback) {
 				});
 			}
 		], function() {
-			/*translator.translate(templates.header.parse(templateValues), function(template) {
-				callback(null, template);
-			});*/
 			app.render('header', templateValues, function(err, template) {
 				callback(null, template);
 			});
@@ -255,7 +249,7 @@ middleware.processRender = function(req, res, next) {
 				str = str + res.locals.footer;
 			}
 
-			if (res.locals.header) {
+			if (res.locals.renderHeader) {
 				middleware.renderHeader({
 					req: req,
 					res: res
