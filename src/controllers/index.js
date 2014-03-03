@@ -1,3 +1,5 @@
+"use strict";
+
 var topicsController = require('./topics'),
 	categoriesController = require('./categories'),
 	usersController = require('./users'),
@@ -7,13 +9,14 @@ var topicsController = require('./topics'),
 	nconf = require('nconf'),
 	auth = require('./../routes/authentication'),
 	meta = require('./../meta'),
+	user = require('./../user'),
 	plugins = require('./../plugins'),
 	categories = require('./../categories'),
 	categoryTools = require('./../categoryTools');
 
 
 
-Controllers = {
+var Controllers = {
 	topics: topicsController,
 	categories: categoriesController,
 	users: usersController,
@@ -25,23 +28,19 @@ Controllers = {
 Controllers.home = function(req, res, next) {
 	async.parallel({
 		header: function (next) {
-			/*app.build_header({
-				req: req,
-				res: res,
-				metaTags: [{
-					name: "title",
-					content: meta.config.title || 'NodeBB'
-				}, {
-					name: "description",
-					content: meta.config.description || ''
-				}, {
-					property: 'og:title',
-					content: 'Index | ' + (meta.config.title || 'NodeBB')
-				}, {
-					property: "og:type",
-					content: 'website'
-				}]
-			}, next);*/
+			res.locals.metaTags = [{
+				name: "title",
+				content: meta.config.title || 'NodeBB'
+			}, {
+				name: "description",
+				content: meta.config.description || ''
+			}, {
+				property: 'og:title',
+				content: 'Index | ' + (meta.config.title || 'NodeBB')
+			}, {
+				property: "og:type",
+				content: 'website'
+			}];
 
 			next(null);
 		},
@@ -91,7 +90,7 @@ Controllers.login = function(req, res, next) {
 		num_strategies = login_strategies.length,
 		emailersPresent = plugins.hasListeners('action:email.send');
 
-	if (num_strategies == 0) {
+	if (num_strategies === 0) {
 		data = {
 			'login_window:spansize': 'col-md-12',
 			'alternate_logins': false
@@ -100,7 +99,7 @@ Controllers.login = function(req, res, next) {
 		data = {
 			'login_window:spansize': 'col-md-6',
 			'alternate_logins': true
-		}
+		};
 	}
 
 	data.authentication = login_strategies;
@@ -119,7 +118,7 @@ Controllers.register = function(req, res, next) {
 		login_strategies = auth.get_login_strategies(),
 		num_strategies = login_strategies.length;
 
-	if (num_strategies == 0) {
+	if (num_strategies === 0) {
 		data = {
 			'register_window:spansize': 'col-md-12',
 			'alternate_logins': false
@@ -128,7 +127,7 @@ Controllers.register = function(req, res, next) {
 		data = {
 			'register_window:spansize': 'col-md-6',
 			'alternate_logins': true
-		}
+		};
 	}
 
 	data.authentication = login_strategies;
