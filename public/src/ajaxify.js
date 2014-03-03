@@ -86,12 +86,7 @@ var ajaxify = {};
 
 			templates.flush();
 			templates.load_template(function () {
-
-				require(['forum/' + tpl_url], function(script) {
-					if (script && script.init) {
-						script.init();
-					}
-				});
+				ajaxify.loadScript(tpl_url);
 
 				if (typeof callback === 'function') {
 					callback();
@@ -112,6 +107,18 @@ var ajaxify = {};
 		}
 
 		return false;
+	};
+
+	ajaxify.loadScript = function(tpl_url, callback) {
+		require(['forum/' + tpl_url], function(script) {
+			if (script && script.init) {
+				script.init();
+			}
+
+			if (callback) {
+				callback();
+			}
+		});
 	};
 
 	ajaxify.fadeIn = function() {
