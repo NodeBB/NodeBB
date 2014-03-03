@@ -653,15 +653,25 @@ var socket,
 		});
 
 		createHeaderTooltips();
+		templates.parseTemplateVariables();
+		app.processPage();
 
-		ajaxify.renderWidgets(tpl_url, url, function() {
-			ajaxify.fadeIn();
-			
-			$(window).trigger('action:ajaxify.end', {
-				url: url
+		require(['vendor/async'], function(async) {
+			async.parallel([
+				function(next) {
+					ajaxify.loadScript(tpl_url, next);
+				},
+				function(next) {
+					ajaxify.renderWidgets(tpl_url, url, next);
+				}
+			], function(err) {
+				ajaxify.fadeIn();
+				
+				$(window).trigger('action:ajaxify.end', {
+					url: url
+				});
 			});
 		});
-
 	});
 
 	showWelcomeMessage = location.href.indexOf('loggedin') !== -1;
