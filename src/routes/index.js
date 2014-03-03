@@ -15,9 +15,9 @@ module.exports = function(app, middleware) {
 	app.namespace(nconf.get('relative_path'), function() {
 		//temp
 		metaRoute.createRoutes(app);
-		admin.createRoutes(app);
 		feedsRoute.createRoutes(app);
 
+		admin(app, middleware, controllers);
 		apiRoute(app, middleware, controllers);
 		
 		/**
