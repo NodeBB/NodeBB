@@ -797,24 +797,6 @@ var async = require('async'),
 		});
 	};
 
-	Topics.markAllRead = function(uid, callback) {
-		Topics.getLatestTids(0, -1, 'month', function(err, tids) {
-			if (err) {
-				return callback(err);
-			}
-
-			if(!tids || !tids.length) {
-				return callback();
-			}
-
-			function markRead(tid, next) {
-				Topics.markAsRead(tid, uid, next);
-			}
-
-			async.each(tids, markRead, callback);
-		});
-	};
-
 	Topics.getTitleByPid = function(pid, callback) {
 		Topics.getTopicFieldByPid('title', pid, callback);
 	};
@@ -860,6 +842,16 @@ var async = require('async'),
 			}
 			Topics.markCategoryUnreadForAll(tid, callback);
 		});
+	};
+
+	Topics.markAllRead = function(uid, tids, callback) {
+		if(!tids || !tids.length) {
+			return callback();
+		}
+
+		async.each(tids, function (tid, next) {
+			Topics.markAsRead(tid, uid, next);
+		}, callback);
 	};
 
 	Topics.markAsRead = function(tid, uid, callback) {

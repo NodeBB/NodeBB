@@ -19,7 +19,7 @@
 		<div class="col-md-12">
 			<ul id="topics-container" data-nextstart="{nextStart}">
 			<!-- BEGIN topics -->
-			<li class="category-item <!-- IF topics.deleted --> deleted<!-- ENDIF topics.deleted -->">
+			<li class="category-item<!-- IF topics.deleted --> deleted<!-- ENDIF topics.deleted -->" data-tid="{topics.tid}">
 				<div class="col-md-12 col-xs-12 panel panel-default topic-row">
 					<a href="{relative_path}/user/{topics.userslug}" class="pull-left">
 						<img class="img-rounded user-img" src="{topics.picture}" title="{topics.username}" />

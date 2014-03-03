@@ -1,3 +1,6 @@
+
+'use strict';
+
 var topics = require('../topics'),
 	categories = require('../categories'),
 	threadTools = require('../threadTools'),
@@ -68,7 +71,7 @@ SocketTopics.post = function(socket, data, callback) {
 				type: 'success',
 				timeout: 2000
 			});
-			callback(null);
+			callback();
 		}
 	});
 };
@@ -88,14 +91,19 @@ SocketTopics.markAsRead = function(socket, data) {
 };
 
 SocketTopics.markAllRead = function(socket, data, callback) {
-	topics.markAllRead(socket.uid, function(err) {
+
+	if (!Array.isArray(data)) {
+		return callback(new Error('invalid-data'));
+	}
+
+	topics.markAllRead(socket.uid, data, function(err) {
 		if(err) {
 			return callback(err);
 		}
 
 		index.server.sockets.in('uid_' + socket.uid).emit('event:unread.updateCount', null, []);
 
-		callback(null);
+		callback();
 	});
 };
 
