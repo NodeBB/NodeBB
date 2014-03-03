@@ -162,7 +162,7 @@ middleware.renderHeader = function(req, res, callback) {
 				description: meta.config.description || '',
 				'brand:logo': meta.config['brand:logo'] || '',
 				'brand:logo:display': meta.config['brand:logo']?'':'hide',
-				csrf: options.res.locals.csrf_token,
+				csrf: res.locals.csrf_token,
 				relative_path: nconf.get('relative_path'),
 				clientScripts: clientScripts,
 				navigation: custom_header.navigation,
@@ -178,15 +178,15 @@ middleware.renderHeader = function(req, res, callback) {
 				'"': '&quot;'
 			};
 
-		for (var key in options.res.locals.config) {
-			if (options.res.locals.config.hasOwnProperty(key)) {
-				templateValues[key] = options.res.locals.config[key];
+		for (var key in res.locals.config) {
+			if (res.locals.config.hasOwnProperty(key)) {
+				templateValues[key] = res.locals.config[key];
 			}
 		}
 
 		var uid = '0';
 
-		templateValues.metaTags = defaultMetaTags.concat(options.res.locals.metaTags || []).map(function(tag) {
+		templateValues.metaTags = defaultMetaTags.concat(res.locals.metaTags || []).map(function(tag) {
 			if(!tag || typeof tag.content !== 'string') {
 				winston.warn('Invalid meta tag. ', tag);
 				return tag;
@@ -198,15 +198,15 @@ middleware.renderHeader = function(req, res, callback) {
 			return tag;
 		});
 
-		templateValues.linkTags = defaultLinkTags.concat(options.linkTags || []);
+		templateValues.linkTags = defaultLinkTags.concat(res.locals.linkTags || []);
 		templateValues.linkTags.push({
 			rel: "icon",
 			type: "image/x-icon",
 			href: nconf.get('relative_path') + '/favicon.ico'
 		});
 
-		if(options.req.user && options.req.user.uid) {
-			uid = options.req.user.uid;
+		if(req.user && req.user.uid) {
+			uid = req.user.uid;
 		}
 
 		templateValues.useCustomCSS = false;
@@ -217,7 +217,7 @@ middleware.renderHeader = function(req, res, callback) {
 
 		async.parallel([
 			function(next) {
-				translator.get('pages:' + path.basename(options.req.url), function(translated) {
+				translator.get('pages:' + path.basename(req.url), function(translated) {
 					var	metaTitle = templateValues.metaTags.filter(function(tag) {
 							return tag.name === 'title';
 						});
