@@ -15,15 +15,17 @@ var topicsController = {},
 topicsController.get = function(req, res, next) {
 	var tid = req.params.topic_id,
 		page = req.query.page || 1,
-		uid = req.user ? req.user.uid : 0;
+		uid = req.user ? req.user.uid : 0,
+		privileges;
 
 	async.waterfall([
 		function(next) {
-			threadTools.privileges(tid, ((req.user) ? req.user.uid || 0 : 0), function(err, privileges) {
+			threadTools.privileges(tid, ((req.user) ? req.user.uid || 0 : 0), function(err, userPrivileges) {
 				if (!err) {
-					if (!privileges.read) {
+					if (!userPrivileges.read) {
 						next(new Error('not-enough-privileges'));
 					} else {
+						privileges = userPrivileges;
 						next();
 					}
 				} else {
@@ -140,7 +142,7 @@ topicsController.get = function(req, res, next) {
 			
 			next(null, topicData);
 		}
-	], function (err, posts) {
+	], function (err, data) {
 		if (err) {
 			if (err.message === 'not-enough-privileges') {
 				return res.redirect('403');
@@ -149,6 +151,8 @@ topicsController.get = function(req, res, next) {
 			}
 		}
 
+		data.privileges = privileges;
+
 		var topic_url = tid + (req.params.slug ? '/' + req.params.slug : '');
 		var queryString = qs.stringify(req.query);
 		if(queryString.length) {
@@ -156,18 +160,18 @@ topicsController.get = function(req, res, next) {
 		}
 
 		// Paginator for noscript
-		posts.pages = [];
-		for(var x=1;x<=posts.pageCount;x++) {
-			posts.pages.push({
+		data.pages = [];
+		for(var x=1;x<=data.pageCount;x++) {
+			data.pages.push({
 				page: x,
 				active: x === parseInt(page, 10)
 			});
 		}
 
 		if (res.locals.isAPI) {
-			res.json(posts);
+			res.json(data);
 		} else {
-			res.render('topic', posts);
+			res.render('topic', data);
 		}
 	});
 };
