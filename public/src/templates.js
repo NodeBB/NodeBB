@@ -235,40 +235,45 @@
 		function parse_template() {
 			if (!templates[tpl_url] || !template_data) return;
 
-			if (typeof global !== "undefined")
+			if (typeof global !== "undefined") {
 				template_data['relative_path'] = nconf.get('relative_path');
-			else
+			} else {
 				template_data['relative_path'] = RELATIVE_PATH;
+			}
 
-			translator.translate(templates[tpl_url].parse(template_data), function (translatedTemplate) {
+			var template = templates[tpl_url].parse(template_data)
 
+			translator.translate(template, function (translatedTemplate) {
 				$('#content').html(translatedTemplate);
 
-				$('#content [template-variable]').each(function (index, element) {
-					var value = null;
-
-					switch ($(element).attr('template-type')) {
-						case 'boolean':
-							value = ($(element).val() === 'true' || $(element).val() === '1') ? true : false;
-							break;
-						case 'int': // Intentional fall-through
-						case 'integer':
-							value = parseInt($(element).val());
-							break;
-						default:
-							value = $(element).val();
-							break;
-					}
-
-					templates.set($(element).attr('template-variable'), value);
-				});
+				templates.parseTemplateVariables();
 
 				if (callback) {
 					callback(true);
 				}
 			});
 		}
+	};
 
+	templates.parseTemplateVariables = function() {
+		$('#content [template-variable]').each(function (index, element) {
+			var value = null;
+
+			switch ($(element).attr('template-type')) {
+				case 'boolean':
+					value = ($(element).val() === 'true' || $(element).val() === '1') ? true : false;
+					break;
+				case 'int': // Intentional fall-through
+				case 'integer':
+					value = parseInt($(element).val());
+					break;
+				default:
+					value = $(element).val();
+					break;
+			}
+			console.log($(element).attr('template-variable'), value);
+			templates.set($(element).attr('template-variable'), value);
+		});
 	};
 
 	templates.cancelRequest = function() {
