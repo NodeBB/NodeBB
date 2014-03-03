@@ -13,7 +13,12 @@ var app,
 	plugins = require('./../plugins'),
 	meta = require('./../meta'),
 	translator = require('./../../public/src/translator'),
-	user = require('./../user');
+	user = require('./../user'),
+
+	controllers = {
+		api: require('./../controllers/api')
+	};
+
 
 middleware.authenticate = function(req, res, next) {
 	if(!req.user) {
@@ -88,6 +93,12 @@ middleware.buildHeader = function(req, res, next) {
 			next();
 		},
 		function(next) {
+			controllers.api.getConfig(req, res, function(err, config) {
+				res.locals.config = config;
+				next();
+			});
+		},
+		function(next) {
 			// this is slower than the original implementation because the rendered template is not cached
 			// but I didn't bother to fix this because we will deprecate [filter:footer.build] in favour of the widgets system by 0.4x
 			plugins.fireHook('filter:footer.build', '', function(err, appendHTML) {
@@ -157,6 +168,12 @@ middleware.renderHeader = function (options, callback) {
 				"'": '&apos;',
 				'"': '&quot;'
 			};
+
+		for (var key in options.res.locals.config) {
+			if (options.res.locals.config.hasOwnProperty(key)) {
+				templateValues[key] = options.res.locals.config[key];
+			}
+		}
 
 		var uid = '0';
 

@@ -7,9 +7,8 @@ var pkg = require('./../../package.json'),
 
 var apiController = {};
 
-
-apiController.getConfig = function(req, res, next, callback) {
-	var config = require('../../public/config.json');
+apiController.getConfig = function(req, res, next) {
+	var config = require('./../../public/config.json');
 
 	config.version = pkg.version;
 	config.postDelay = meta.config.postDelay;
@@ -35,23 +34,23 @@ apiController.getConfig = function(req, res, next, callback) {
 	config.environment = process.env.NODE_ENV;
 
 	if (!req.user) {
-		return res.json(200, config);
+		if (res.locals.isAPI) {
+			res.json(200, config);
+		} else {
+			next(null, config);
+		}
 	}
 
 	if(req.user) {
 		user.getSettings(req.user.uid, function(err, settings) {
-			if(err) {
-				return next(err);
-			}
-
 			config.usePagination = settings.usePagination;
 			config.topicsPerPage = settings.topicsPerPage;
 			config.postsPerPage = settings.postsPerPage;
 
-			if (callback) {
-				callback(err, config);
-			} else {
+			if (res.locals.isAPI) {
 				res.json(200, config);
+			} else {
+				next(err, config);
 			}
 		});
 	}
