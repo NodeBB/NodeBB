@@ -30,9 +30,14 @@
 	</div>
 	<div class="col-sm-6">
 		<div class="panel panel-default">
-			<div class="panel-heading">Active Users <small><span class="badge" id="connections"></span> socket connections</small></div>
+			<div class="panel-heading">Notices</div>
 			<div class="panel-body">
-				<div id="active_users"></div>
+				<div>
+					Emailer Installed <!-- IF emailerInstalled --><i class="fa fa-check alert-success"></i><!-- ELSE --><i class="fa fa-times alert-danger"></i><!-- ENDIF emailerInstalled -->
+				</div>
+				<div>
+					Search Plugin Installed <!-- IF searchInstalled --><i class="fa fa-check alert-success"></i><!-- ELSE --><i class="fa fa-times alert-danger"></i><!-- ENDIF searchInstalled -->
+				</div>
 			</div>
 		</div>
 	</div>
@@ -58,6 +63,14 @@
 						<div>All Time</div>
 					</div>
 				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">Active Users <small><span class="badge" id="connections"></span> socket connections</small></div>
+			<div class="panel-body">
+				<div id="active_users"></div>
 			</div>
 		</div>
 	</div>

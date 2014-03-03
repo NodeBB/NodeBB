@@ -252,8 +252,11 @@ var nconf = require('nconf'),
 		app.namespace('/api/admin', function () {
 
 			app.get('/index', function (req, res) {
+
 				res.json({
 					version: pkg.version,
+					emailerInstalled: plugins.hasListeners('action:email.send'),
+					searchInstalled: plugins.hasListeners('filter:search.query')
 				});
 			});
 
