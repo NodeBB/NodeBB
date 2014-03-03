@@ -46,6 +46,12 @@ middleware.prepareAPI = function(req, res, next) {
 	next();
 };
 
+middleware.guestSearchingAllowed = function(req, res, next) {
+	if (!req.user && meta.config.allowGuestSearching !== '1') {
+		return res.redirect('/403');
+	}
+};
+
 middleware.checkGlobalPrivacySettings = function(req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 

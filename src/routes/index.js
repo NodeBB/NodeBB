@@ -40,6 +40,12 @@ module.exports = function(app, middleware) {
 		app.get('/outgoing', middleware.buildHeader, controllers.outgoing);
 		app.get('/api/outgoing', controllers.outgoing);
 
+		app.get('/search/:term?', middleware.buildHeader, middleware.guestSearchingAllowed, controllers.search);
+		app.get('/api/search/:term?', middleware.guestSearchingAllowed, controllers.search);
+
+		app.get('/reset/:code?', middleware.buildHeader, controllers.reset);
+		app.get('/api/reset/:code?', controllers.reset);
+
 		/* Static Pages */
 		app.get('/404', middleware.buildHeader, controllers.static['404']);
 		app.get('/api/404', controllers.static['404']);
@@ -120,65 +126,6 @@ module.exports = function(app, middleware) {
 		app.get('/sitemap.xml', controllers.sitemap);
 		app.get('/robots.txt', controllers.robots);
 
-		app.get('api/search/:term?', function (req, res) {
-			if ((req.user && req.user.uid) || meta.config.allowGuestSearching === '1') {
-				return res.json({
-					show_no_topics: 'hide',
-					show_no_posts: 'hide',
-					show_results: 'hide',
-					search_query: '',
-					posts: [],
-					topics: []
-				});
-			} else {
-				res.send(403);
-			}
-		});
-
-		app.get('/search/:term?', function (req, res) {
-
-			if (!req.user && meta.config.allowGuestSearching !== '1') {
-				return res.redirect('/403');
-			}
-			if(!req.params.term) {
-				req.params.term = '';
-			}
-			app.build_header({
-				req: req,
-				res: res
-			}, function (err, header) {
-				//res.send(header + app.create_route('search/' + req.params.term, null, 'search') + templates.footer);
-			});
-		});
-
-
-		app.get('/reset/:code', function(req, res) {
-			app.build_header({
-				req: req,
-				res: res
-			}, function(err, header) {
-				res.send(header + app.create_route('reset/' + req.params.code) + templates.footer);
-			});
-		});
-
-		app.get('api/reset/:code', function (req, res) {
-			res.json({
-				reset_code: req.params.code
-			});
-		});
-
-		app.get('/reset', function(req, res) {
-			app.build_header({
-				req: req,
-				res: res
-			}, function(err, header) {
-				res.send(header + app.create_route('reset') + templates.footer);
-			});
-		});
-
-		app.get('api/reset', function (req, res) {
-			res.json({});
-		});
 
 		
 		// Other routes

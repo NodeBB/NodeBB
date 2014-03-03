@@ -88,6 +88,34 @@ Controllers.home = function(req, res, next) {
 	});
 };
 
+Controllers.search = function(req, res, next) {
+	var data = {
+		show_no_topics: 'hide',
+		show_no_posts: 'hide',
+		show_results: 'hide',
+		search_query: '',
+		posts: [],
+		topics: []
+	};
+
+	if (res.locals.isAPI) {
+		res.json(data);
+	} else {
+		res.render('search', data);
+	}
+};
+
+Controllers.reset = function(req, res, next) {
+	var data = {
+		reset_code: req.params.code ? req.params.code : null
+	}
+
+	if (res.locals.isAPI) {
+		res.json(data);
+	} else {
+		res.render('reset', data);
+	}
+};
 
 Controllers.login = function(req, res, next) {
 	var data = {},
