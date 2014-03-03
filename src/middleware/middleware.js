@@ -13,6 +13,7 @@ var app,
 	meta = require('./../meta'),
 	translator = require('./../../public/src/translator'),
 	user = require('./../user'),
+	db = require('./../database'),
 
 	controllers = {
 		api: require('./../controllers/api')
@@ -28,6 +29,21 @@ middleware.authenticate = function(req, res, next) {
 	} else {
 		next();
 	}
+};
+
+middleware.updateLastOnlineTime = function(req, res, next) {
+	if(req.user) {
+		user.updateLastOnlineTime(req.user.uid);
+	}
+
+	db.sortedSetAdd('ip:recent', Date.now(), req.ip || 'Unknown');
+
+	next();
+};
+
+middleware.prepareAPI = function(req, res, next) {
+	res.locals.isAPI = true;
+	next();
 };
 
 middleware.checkGlobalPrivacySettings = function(req, res, next) {

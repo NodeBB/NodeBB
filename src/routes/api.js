@@ -17,16 +17,7 @@ var path = require('path'),
 
 module.exports =  function(app, middleware, controllers) {
 	app.namespace('/api', function () {
-		app.all('*', function(req, res, next) {
-			if(req.user) {
-				user.updateLastOnlineTime(req.user.uid);
-			}
-
-			db.sortedSetAdd('ip:recent', Date.now(), req.ip || 'Unknown');
-			res.locals.isAPI = true;
-
-			next();
-		});
+		app.all('*', middleware.updateLastOnlineTime, middleware.prepareAPI);
 
 		app.get('/user/uid/:uid', middleware.checkGlobalPrivacySettings, controllers.accounts.getUserByUID);
 
