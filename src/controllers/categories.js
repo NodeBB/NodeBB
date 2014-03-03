@@ -3,6 +3,7 @@
 var categoriesController = {},
 	async = require('async'),
 	qs = require('querystring'),
+	nconf = require('nconf'),
 	categoryTools = require('./../categoryTools'),
 	user = require('./../user'),
 	categories = require('./../categories'),
@@ -115,46 +116,38 @@ categoriesController.get = function(req, res, next) {
 			});
 		},
 		function (categoryData, next) {
-			/*app.build_header({
-				req: req,
-				res: res,
-				metaTags: [
-					{
-						name: 'title',
-						content: categoryData.name
-					},
-					{
-						property: 'og:title',
-						content: categoryData.name
-					},
-					{
-						name: 'description',
-						content: categoryData.description
-					},
-					{
-						property: "og:type",
-						content: 'website'
-					}
-				],
-				linkTags: [
-					{
-						rel: 'alternate',
-						type: 'application/rss+xml',
-						href: nconf.get('url') + '/category/' + cid + '.rss'
-					},
-					{
-						rel: 'up',
-						href: nconf.get('url')
-					}
-				]
-			}, function (err, header) {
-				next(err, {
-					header: header,
-					topics: categoryData
-				});
-			});*/
+			res.locals.metaTags = [
+				{
+					name: 'title',
+					content: categoryData.name
+				},
+				{
+					property: 'og:title',
+					content: categoryData.name
+				},
+				{
+					name: 'description',
+					content: categoryData.description
+				},
+				{
+					property: "og:type",
+					content: 'website'
+				}
+			];
+
+			res.locals.linkTags = [
+				{
+					rel: 'alternate',
+					type: 'application/rss+xml',
+					href: nconf.get('url') + '/category/' + cid + '.rss'
+				},
+				{
+					rel: 'up',
+					href: nconf.get('url')
+				}
+			];
+			
 			next(null, {
-				header: null,
 				topics: categoryData
 			});
 		}
