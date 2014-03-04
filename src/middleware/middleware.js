@@ -131,7 +131,7 @@ middleware.buildHeader = function(req, res, next) {
 			});
 		}
 	], function(err) {
-		next();
+		next(err);
 	});
 };
 
