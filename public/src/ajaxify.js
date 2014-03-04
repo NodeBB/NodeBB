@@ -31,14 +31,12 @@ var ajaxify = {};
 	ajaxify.initialLoad = false;
 
 	ajaxify.go = function (url, callback, quiet) {
-
 		// "quiet": If set to true, will not call pushState
 		app.enterRoom('global');
 
 		$(window).off('scroll');
 
-		$(window).trigger('action:ajaxify.start', { url: url });
-		$('body').trigger('action:ajaxifying', {url: url});	// Deprecated as of v0.4.0
+		$(window).trigger('action:ajaxify.start', {url: url});
 
 		if ($('#content').hasClass('ajaxifying')) {
 			templates.cancelRequest();
@@ -99,7 +97,7 @@ var ajaxify = {};
 					ajaxify.initialLoad = false;
 
 					app.refreshTitle(url);
-					$(window).trigger('action:ajaxify.end', { url: url });
+					$(window).trigger('action:ajaxify.end', {url: url});
 				});
 			}, url);
 
