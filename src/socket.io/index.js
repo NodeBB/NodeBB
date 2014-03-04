@@ -116,7 +116,7 @@ Sockets.init = function(server) {
 
 		socket.on('disconnect', function() {
 
-			if (uid && !Sockets.getUserSockets(uid).length <= 1) {
+			if (uid && Sockets.getUserSockets(uid).length <= 1) {
 				db.sortedSetRemove('users:online', uid, function(err) {
 					socketUser.isOnline(socket, uid, function(err, data) {
 						socket.broadcast.emit('user.isOnline', err, data);
