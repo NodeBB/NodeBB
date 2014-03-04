@@ -28,9 +28,7 @@
 
 		//Adapted from http://stackoverflow.com/questions/5827612/node-js-fs-readdir-recursive-directory-search
 		walk: function(dir, done) {
-			var results = [],
-				path = require('path'),
-				main_dir = path.join(__dirname, '..', 'templates');
+			var results = [];
 
 			fs.readdir(dir, function(err, list) {
 				if (err) {
@@ -51,7 +49,7 @@
 								}
 							});
 						} else {
-							results.push(file.replace(main_dir + '/', '').replace('.tpl', ''));
+							results.push(file);
 							if (!--pending) {
 								done(null, results);
 							}
