@@ -3,6 +3,7 @@
 var path = require('path'),
 	async = require('async'),
 	fs = require('fs'),
+	nconf = require('nconf'),
 
 	db = require('./../database'),
 	user = require('./../user'),
@@ -22,10 +23,15 @@ module.exports =  function(app, middleware, controllers) {
 		app.get('/user/uid/:uid', middleware.checkGlobalPrivacySettings, controllers.accounts.getUserByUID);
 
 		app.get('/get_templates_listing', function (req, res) {
-			utils.walk(path.join(__dirname, '../../', 'public/templates'), function (err, data) {
-				res.json(data.concat(app.get_custom_templates()).filter(function(value, index, self) {
-					return self.indexOf(value) === index;
-				}));
+			utils.walk(nconf.get('views_dir'), function (err, data) {
+				data = data.concat(app.get_custom_templates())
+						.filter(function(value, index, self) {
+							return self.indexOf(value) === index;
+						}).map(function(el) {
+							return el.replace(nconf.get('views_dir') + '/', '');
+						});
+
+				res.json(data);
 			});
 		});
 

@@ -17,27 +17,27 @@
 		path = require('path');
 	} catch (e) {}
 
-	templates.force_refresh = function (tpl) {
+	templates.force_refresh = function(tpl) {
 		return !!config.force_refresh[tpl];
 	};
 
-	templates.get_custom_map = function (tpl) {
-		if (config['custom_mapping'] && tpl) {
-			for (var pattern in config['custom_mapping']) {
+	templates.get_custom_map = function(tpl) {
+		if (config.custom_mapping && tpl) {
+			for (var pattern in config.custom_mapping) {
 				if (tpl.match(pattern)) {
-					return (config['custom_mapping'][pattern]);
+					return (config.custom_mapping[pattern]);
 				}
 			}
 		}
 
 		return false;
-	}
-
-	templates.is_available = function (tpl) {
-		return $.inArray(tpl, available_templates) !== -1;
 	};
 
-	templates.prepare = function (raw_tpl) {
+	templates.is_available = function(tpl) {
+		return $.inArray(tpl + '.tpl', available_templates) !== -1;
+	};
+
+	templates.prepare = function(raw_tpl) {
 		var template = {};
 		template.html = raw_tpl;
 		template.parse = parse;
@@ -56,7 +56,7 @@
 			.replace('.' + options.settings['view engine'], '');
 
 		if (!templates[tpl]) {
-			fs.readFile(filename, function (err, html) {
+			fs.readFile(filename, function(err, html) {
 				templates[tpl] = templates.prepare(html.toString());
 
 				return fn(err, templates[tpl].parse(options));
@@ -66,7 +66,7 @@
 		}
 	};
 
-	templates.getTemplateNameFromUrl = function (url) {
+	templates.getTemplateNameFromUrl = function(url) {
 		var parts = url.split('?')[0].split('/');
 
 		for (var i = 0; i < parts.length; ++i) {
@@ -86,9 +86,9 @@
 		// should be named something else
 		// TODO: The "Date.now()" in the line below is only there for development purposes.
 		// It should be removed at some point.
-		$.get(RELATIVE_PATH + '/templates/' + tpl_name + '.tpl?v=' + Date.now(), function (html) {
-			var template = function () {
-				this.toString = function () {
+		$.get(RELATIVE_PATH + '/templates/' + tpl_name + '.tpl?v=' + Date.now(), function(html) {
+			var template = function() {
+				this.toString = function() {
 					return this.html;
 				};
 			};
@@ -103,7 +103,7 @@
 		});
 	};
 
-	templates.load_template = function (callback, url, template) {
+	templates.load_template = function(callback, url, template) {
 		var location = document.location || window.location,
 			api_url = (url === '' || url === '/') ? 'home' : url,
 			tpl_url = templates.get_custom_map(api_url.split('?')[0]);
@@ -125,7 +125,7 @@
 		apiXHR = $.ajax({
 			url: RELATIVE_PATH + '/api/' + api_url,
 			cache: false,
-			success: function (data) {
+			success: function(data) {
 				if (!data) {
 					ajaxify.go('404');
 					return;
@@ -134,7 +134,7 @@
 				template_data = data;
 				parse_template();
 			},
-			error: function (data, textStatus) {
+			error: function(data, textStatus) {
 				$('#content, #footer').stop(true, true).removeClass('ajaxifying');
 				if (data && data.status == 404) {
 					return ajaxify.go('404');
@@ -157,7 +157,7 @@
 
 			var template = templates[tpl_url].parse(template_data)
 
-			translator.translate(template, function (translatedTemplate) {
+			translator.translate(template, function(translatedTemplate) {
 				$('#content').html(translatedTemplate);
 
 				templates.parseTemplateVariables();
@@ -170,14 +170,14 @@
 	};
 
 	templates.parseTemplateVariables = function() {
-		$('#content [template-variable]').each(function (index, element) {
+		$('#content [template-variable]').each(function(index, element) {
 			var value = null;
 
 			switch ($(element).attr('template-type')) {
 				case 'boolean':
 					value = ($(element).val() === 'true' || $(element).val() === '1') ? true : false;
 					break;
-				case 'int': // Intentional fall-through
+				case 'int':
 				case 'integer':
 					value = parseInt($(element).val());
 					break;
@@ -196,15 +196,15 @@
 		}
 	};
 
-	templates.flush = function () {
+	templates.flush = function() {
 		parsed_variables = {};
 	};
 
-	templates.get = function (key) {
+	templates.get = function(key) {
 		return parsed_variables[key];
 	};
 
-	templates.set = function (key, value) {
+	templates.set = function(key, value) {
 		parsed_variables[key] = value;
 	};
 
@@ -213,7 +213,7 @@
 	};
 
 	//modified from https://github.com/psychobunny/dcp.templates
-	var parse = function (data) {
+	var parse = function(data) {
 		var self = this;
 
 		function replace(key, value, template) {
@@ -252,7 +252,6 @@
 		var template = this.html,
 			regex, block;
 
-		// registering globals
 		for (var g in templates.globals) {
 			if (templates.globals.hasOwnProperty(g)) {
 				data[g] = data[g] || templates.globals[g];
@@ -363,7 +362,14 @@
 	module.exports.__express = module.exports.render;
 
 	if ('undefined' !== typeof window) {
-		window.templates = module.exports;a
+		window.templates = module.exports;
+
+		window.onload = function() {
+			$.when($.getJSON(RELATIVE_PATH + '/templates/config.json'), $.getJSON(RELATIVE_PATH + '/api/get_templates_listing')).done(function (config_data, templates_data) {
+				config = config_data[0];
+				available_templates = templates_data[0];
+			});
+		}
 	}
 
 })('undefined' === typeof module ? {

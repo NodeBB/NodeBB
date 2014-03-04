@@ -2,6 +2,7 @@
 
 var templates = require('./../../public/src/templates'),
 	translator = require('./../../public/src/translator'),
+	utils = require('./../../public/src/utils'),
 	meta = require('./../meta'),
 	db = require('./../database'),
 	auth = require('./../routes/authentication'),
@@ -128,6 +129,42 @@ module.exports = function(app, data) {
 	middleware = require('./middleware')(app);
 
 	app.configure(function() {
+
+		utils.walk(nconf.get('base_templates_path'), function(err, baseTpls) {
+			utils.walk(nconf.get('theme_templates_path'), function (err, themeTpls) {
+				var tpls = [];
+
+				baseTpls = baseTpls.map(function(tpl) {
+					return tpl.replace(nconf.get('base_templates_path'), '');
+				});
+
+				themeTpls = themeTpls.map(function(tpl) {
+					return tpl.replace(nconf.get('theme_templates_path'), '');
+				});
+
+				baseTpls.forEach(function(el, i) {
+					var relative_path = (themeTpls.indexOf(el) !== -1 ? themeTpls[themeTpls.indexOf(el)] : baseTpls[i]),
+						full_path = path.join(themeTpls.indexOf(el) !== -1 ? nconf.get('theme_templates_path') : nconf.get('base_templates_path'), relative_path);
+
+					tpls.push({
+						relative_path: relative_path,
+						path: full_path
+					});
+				});
+
+				async.each(tpls, function(tpl, next) {
+					fs.writeFile(path.join(nconf.get('views_dir'), tpl.relative_path), fs.readFileSync(tpl.path), next);
+				}, function(err) {
+					if (err) {
+						winston.error(err);
+					} else {
+						winston.info('Successfully compiled templates.');
+					}
+				});
+			});
+		});
+
+
 		app.engine('tpl', templates.__express);
 		app.set('view engine', 'tpl');
 		app.set('views', nconf.get('views_dir'));

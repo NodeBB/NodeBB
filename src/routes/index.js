@@ -144,7 +144,7 @@ module.exports = function(app, middleware) {
 
 		app.get_custom_templates = function() {
 			return custom_routes.templates.map(function(tpl) {
-				return tpl.template.split('.tpl')[0];
+				return tpl.template;
 			});
 		};
 
