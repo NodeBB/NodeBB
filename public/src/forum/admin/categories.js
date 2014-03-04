@@ -252,6 +252,7 @@ define(['uploader'], function(uploader) {
 
 					var	numResults = results.length,
 						resultObj;
+					resultsEl.html('');
 					for(var x = 0; x < numResults; x++) {
 						resultObj = results[x];
 						liEl = $('<li />')
@@ -303,7 +304,9 @@ define(['uploader'], function(uploader) {
 			}
 			var numResults = results.length,
 				trEl,
-			    resultObj;
+				resultObj;
+
+			groupsResultsEl.empty();
 
 			for(var x = 0; x < numResults; x++) {
 				resultObj = results[x];
@@ -346,12 +349,14 @@ define(['uploader'], function(uploader) {
 			readMembers = modalEl.find('#category-permissions-read'),
 			writeMembers = modalEl.find('#category-permissions-write'),
 			moderatorsEl = modalEl.find('#category-permissions-mods');
+
 		socket.emit('admin.categories.getPrivilegeSettings', cid, function(err, privilegeList) {
 			var	readLength = privilegeList['+r'].length,
 				writeLength = privilegeList['+w'].length,
 				modLength = privilegeList['mods'].length,
 				liEl, x, userObj;
 
+			readMembers.html('');
 			if (readLength > 0) {
 				for(x = 0; x < readLength; x++) {
 					userObj = privilegeList['+r'][x];
@@ -363,10 +368,11 @@ define(['uploader'], function(uploader) {
 				readMembers.append(liEl);
 			}
 
+			writeMembers.html('');
 			if (writeLength > 0) {
 				for(x=0;x<writeLength;x++) {
 					userObj = privilegeList['+w'][x];
-					$('<li />').attr('data-uid', userObj.uid).html('<img src="' + userObj.picture + '" title="' + userObj.username + '" />');
+					liEl = $('<li />').attr('data-uid', userObj.uid).html('<img src="' + userObj.picture + '" title="' + userObj.username + '" />');
 					writeMembers.append(liEl);
 				}
 			} else {
@@ -374,6 +380,7 @@ define(['uploader'], function(uploader) {
 				writeMembers.append(liEl);
 			}
 
+			moderatorsEl.html('');
 			if (modLength > 0) {
 				for(x = 0;x < modLength; x++) {
 					userObj = privilegeList['mods'][x];
@@ -382,7 +389,7 @@ define(['uploader'], function(uploader) {
 				}
 			} else {
 				liEl = $('<li />').addClass('empty').html('No moderators');
-				moderatorsEl.appendChild(liEl);
+				moderatorsEl.append(liEl);
 			}
 		});
 	};

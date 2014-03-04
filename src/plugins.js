@@ -175,7 +175,7 @@ var fs = require('fs'),
 									(function(staticDir) {
 										fs.exists(staticDir, function(exists) {
 											if (exists) {
-												Plugins.staticDirs[path.join(pluginData.id, mappedPath)] = staticDir;
+												Plugins.staticDirs[pluginData.id + '/' + mappedPath] = staticDir;
 											} else {
 												winston.warn('[plugins/' + pluginData.id + '] Mapped path \'' + mappedPath + ' => ' + staticDir + '\' not found.');
 											}

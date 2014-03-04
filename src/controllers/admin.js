@@ -29,7 +29,9 @@ var adminController = {
 
 adminController.home = function(req, res, next) {
 	var data = {
-		version: pkg.version
+		version: pkg.version,
+		emailerInstalled: plugins.hasListeners('action:email.send'),
+		searchInstalled: plugins.hasListeners('filter:search.query')
 	};
 
 	if (res.locals.isAPI) {

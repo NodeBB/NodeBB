@@ -294,6 +294,10 @@
 	};
 
 	module.getObjectField = function(key, field, callback) {
+		if(typeof field !== 'string') {
+			field = field.toString();
+		}
+		field = field.replace(/\./g, '\uff0E');
 		module.getObjectFields(key, [field], function(err, data) {
 			if(err) {
 				return callback(err);
@@ -307,11 +311,12 @@
 
 		var _fields = {};
 		for(var i=0; i<fields.length; ++i) {
-			if(typeof fields[i] !== 'string') {
-				_fields[fields[i].toString().replace(/\./g, '\uff0E')] = 1;
-			} else {
-				_fields[fields[i].replace(/\./g, '\uff0E')] = 1;
+			if (typeof fields[i] !== 'string') {
+				fields[i] = fields[i].toString();
 			}
+
+			fields[i] = fields[i].replace(/\./g, '\uff0E');
+			_fields[fields[i]] = 1;
 		}
 
 		db.collection('objects').findOne({_key:key}, _fields, function(err, item) {
