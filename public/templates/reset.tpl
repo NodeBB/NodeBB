@@ -8,7 +8,7 @@
 </ol>
 
 <div class="alert alert-info">
-	[[reset_password:reset_password:enter_email]]
+	[[reset_password:enter_email]]
 </div>
 
 <div class="well">
@@ -21,7 +21,7 @@
 		<strong>[[reset_password:invalid_email]]</strong>
 	</div>
 	<form onsubmit="return false;">
-		<input type="text" class="form-control input-block input-lg" placeholder="Enter Email Address" id="email" />
+		<input type="text" class="form-control input-block input-lg" placeholder="[[reset_password:enter_email_address]]" id="email" />
 
 		<br />
 		<button class="btn btn-primary btn-block btn-lg" id="reset" type="submit">[[reset_password:reset_password]]</button>
