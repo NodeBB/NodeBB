@@ -110,13 +110,4 @@ if(nconf.get('ssl')) {
 			winston.info('NodeBB Ready');
 		});
 	};
-
-	app.create_route = function (url, tpl) { // to remove
-		var	routerScript = '<script> \
-				ajaxify.initialLoad = true; \
-				templates.ready(function(){ajaxify.go("' + url + '", null, true);}); \
-			</script>';
-
-		return routerScript;
-	};
 }(WebServer));
