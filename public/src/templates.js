@@ -363,8 +363,7 @@
 	module.exports.__express = module.exports.render;
 
 	if ('undefined' !== typeof window) {
-		window.templates = module.exports;
-		templates.init();
+		window.templates = module.exports;a
 	}
 
 })('undefined' === typeof module ? {

@@ -176,7 +176,9 @@ var ajaxify = {};
 					next(err);
 				});
 			}, function(err) {
-				callback(err);
+				if (callback) {
+					callback(err);
+				}
 			});
 		});
 	};
