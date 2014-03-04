@@ -130,7 +130,7 @@ module.exports = function(app, data) {
 	app.configure(function() {
 		app.engine('tpl', templates.__express);
 		app.set('view engine', 'tpl');
-		app.set('views', path.join(__dirname, '../../public/templates'));
+		app.set('views', nconf.get('views_dir'));
 
 		app.use(express.compress());
 
