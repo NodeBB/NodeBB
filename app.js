@@ -134,14 +134,11 @@ function start() {
 					plugins.init();
 					translator.loadServer();
 
-					var customTemplates = meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : false;
-
-					utils.walk(path.join(__dirname, 'public/templates'), function (err, tplsToLoad) {
-						templates.init(tplsToLoad, customTemplates);
-					});
+					nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));
+					nconf.set('theme_templates_path', meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : nconf.get('base_templates_path'));
 
 					plugins.ready(function() {
-						templates.ready(webserver.init);
+						webserver.init();
 					});
 
 					notifications.init();

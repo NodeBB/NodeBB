@@ -37,22 +37,6 @@
 		return $.inArray(tpl, available_templates) !== -1;
 	};
 
-	templates.ready = function (callback) {
-		if (callback == null) {
-			if (this.ready_callback) {
-				this.ready_callback();
-			} else {
-				this.loaded = true;
-			}
-		} else {
-			if (this.loaded == true) {
-				callback();
-			} else {
-				this.ready_callback = callback;
-			}
-		}
-	};
-
 	templates.prepare = function (raw_tpl) {
 		var template = {};
 		template.html = raw_tpl;
@@ -63,73 +47,12 @@
 	};
 
 	function loadTemplates(templatesToLoad, customTemplateDir) {
-		function loadServer() {
-			return templates.ready();
-
-			var loaded = templatesToLoad.length,
-				templatesPath = __dirname + '/../templates';
-
-			function getTemplates(directory) {
-				for (var t in templatesToLoad) {
-					(function (file) {
-						function loadFile(html) {
-							var template = function () {
-								this.toString = function () {
-									return this.html;
-								};
-							}
-
-							template.prototype.file = file;
-							template.prototype.parse = parse;
-							template.prototype.html = String(html);
-
-							templates[file] = new template;
-
-							loaded--;
-							if (loaded === 0) {
-								templates.ready();
-							}
-						}
-
-						fs.readFile(directory + '/' + file + '.tpl', function (err, html) {
-							if (err && directory !== templatesPath) {
-								fs.readFile(templatesPath + '/' + file + '.tpl', function (err, html) {
-									loadFile(html);
-								});
-							} else {
-								loadFile(html);
-							}
-						});
-					}(templatesToLoad[t]));
-				}
-			}
-			if (customTemplateDir) {
-				fs.exists(customTemplateDir, function (exists) {
-					var directory = (exists ? customTemplateDir : templatesPath);
-					getTemplates(directory);
-				});
-			} else {
-				getTemplates(templatesPath);
-			}
-
-		}
-
-		function loadClient() {
-			$.when($.getJSON(RELATIVE_PATH + '/templates/config.json'), $.getJSON(RELATIVE_PATH + '/api/get_templates_listing')).done(function (config_data, templates_data) {
-				config = config_data[0];
-				available_templates = templates_data[0];
-				templates.ready();
-			});
-		}
-
-		if (fs === null) loadClient();
-		else loadServer();
+		$.when($.getJSON(RELATIVE_PATH + '/templates/config.json'), $.getJSON(RELATIVE_PATH + '/api/get_templates_listing')).done(function (config_data, templates_data) {
+			config = config_data[0];
+			available_templates = templates_data[0];
+			templates.ready();
+		});
 	}
-
-
-	templates.init = function (templates_to_load, custom_templates) {
-		loadTemplates(templates_to_load || [], custom_templates || false);
-	};
 
 	templates.render = function(filename, options, fn) {
 		if ('function' === typeof options) {
