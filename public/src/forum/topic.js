@@ -286,7 +286,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				set_follow_state(state, false);
 			});
 
-			$('.posts .follow').on('click', function() {
+			$('.posts').on('click', '.follow', function() {
 				socket.emit('topics.follow', tid, function(err, state) {
 					if(err) {
 						return app.alert({
