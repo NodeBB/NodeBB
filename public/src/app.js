@@ -231,8 +231,10 @@ var socket,
 			}
 
 			if (typeof params.clickfn === 'function') {
-				alert.on('click', function () {
-					params.clickfn();
+				alert.on('click', function (e) {
+					if(!$(e.target).is('.close')) {
+						params.clickfn();
+					}
 					fadeOut();
 				});
 			}
