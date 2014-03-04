@@ -45,6 +45,7 @@ define(function() {
 			for(var key in data) {
 				uniqueVisitors.find('#' + key).text(data[key]);
 			}
+
 		});
 	};
 

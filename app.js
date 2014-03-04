@@ -80,7 +80,7 @@ if (!nconf.get('help') && !nconf.get('setup') && !nconf.get('install') && !nconf
 	reset();
 } else {
 	displayHelp();
-};
+}
 
 function loadConfig() {
 	nconf.file({
@@ -153,7 +153,7 @@ function start() {
 					winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
 					winston.warn('    node app --upgrade');
 					winston.warn('To ignore this error (not recommended):');
-					winston.warn('    node app --no-check-schema')
+					winston.warn('    node app --no-check-schema');
 					process.exit();
 				}
 			});

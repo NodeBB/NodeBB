@@ -5,7 +5,7 @@
 <div class="favourites">
 
 	<!-- IF !posts.length -->
-		<div class="alert alert-warning">[[topic:favourites.has_no_favourites]]</div>
+		<div class="alert alert-warning">[[user:has_no_posts]]</div>
 	<!-- ENDIF !posts.length -->
 
 	<div class="row">
@@ -25,8 +25,8 @@
 					<div>
 						<small>
 							<span class="pull-right">
-								<a href="../../topic/{posts.tid}/#{posts.pid}">posted</a>
-								in
+								<a href="../../topic/{posts.tid}/#{posts.pid}">[[global:posted]]</a>
+								[[global:in]]
 								<a href="../../category/{posts.categorySlug}">
 									<i class="fa {posts.categoryIcon}"></i> {posts.categoryName}
 								</a>
