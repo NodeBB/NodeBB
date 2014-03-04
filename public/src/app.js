@@ -658,21 +658,12 @@ var socket,
 		templates.parseTemplateVariables();
 		app.processPage();
 
-		require(['vendor/async'], function(async) {
-			async.parallel([
-				function(next) {
-					ajaxify.loadScript(tpl_url, next);
-				},
-				function(next) {
-					ajaxify.renderWidgets(tpl_url, url, next);
-				}
-			], function(err) {
-				ajaxify.fadeIn();
-				
-				$(window).trigger('action:ajaxify.end', {
-					url: url
-				});
-			});
+		ajaxify.renderWidgets(tpl_url, url);
+		
+		ajaxify.loadScript(tpl_url, function() {
+			$(window).trigger('action:ajaxify.end', {
+				url: url
+			});	
 		});
 	});
 
