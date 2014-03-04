@@ -1,4 +1,5 @@
 <div class="home">
+
 	<div class="col-sm-6">
 		<div class="panel panel-default">
 			<div class="panel-heading">Welcome to NodeBB</div>
@@ -11,24 +12,7 @@
 				</p>
 			</div>
 		</div>
-	</div>
-	<div class="col-sm-6 pull-right">
-		<div class="panel panel-default">
-			<div class="panel-heading">Updates</div>
-			<div class="panel-body">
-				<div class="alert alert-info version-check">
-					<p>You are running <strong>NodeBB v<span id="version">{version}</span></strong>.</p>
-				</div>
-				<p>
-					Always make sure that your <strong>NodeBB</strong> is up to date for the latest security patches and bug fixes.
-				</p>
-				<p class="pull-right">
-					<button class="btn btn-warning restart">Restart NodeBB</button>
-				</p>
-			</div>
-		</div>
-	</div>
-	<div class="col-sm-6">
+
 		<div class="panel panel-default">
 			<div class="panel-heading">Notices</div>
 			<div class="panel-body">
@@ -40,8 +24,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
-	<div class="col-sm-6">
+
 		<div class="panel panel-default">
 			<div class="panel-heading">Unique Visitors</div>
 			<div class="panel-body">
@@ -65,13 +48,32 @@
 				</div>
 			</div>
 		</div>
+
 	</div>
-	<div class="col-sm-6">
+
+
+	<div class="col-sm-6 pull-right">
+		<div class="panel panel-default">
+			<div class="panel-heading">Updates</div>
+			<div class="panel-body">
+				<div class="alert alert-info version-check">
+					<p>You are running <strong>NodeBB v<span id="version">{version}</span></strong>.</p>
+				</div>
+				<p>
+					Always make sure that your <strong>NodeBB</strong> is up to date for the latest security patches and bug fixes.
+				</p>
+				<p class="pull-right">
+					<button class="btn btn-warning restart">Restart NodeBB</button>
+				</p>
+			</div>
+		</div>
+
 		<div class="panel panel-default">
 			<div class="panel-heading">Active Users <small><span class="badge" id="connections"></span> socket connections</small></div>
 			<div class="panel-body">
 				<div id="active_users"></div>
 			</div>
 		</div>
+
 	</div>
 </div>
