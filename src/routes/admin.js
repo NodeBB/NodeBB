@@ -50,23 +50,6 @@ module.exports = function(app, middleware, controllers) {
 	app.all('/admin/*', middleware.admin.isAdmin);
 	app.get('/admin', middleware.admin.isAdmin);
 
-	(function () {
-		var routes = [
-			'categories/active', 'categories/disabled', 'users', 'topics', 'settings', 'themes',
-			'database', 'events', 'motd', 'groups', 'plugins', 'languages', 'logger',
-			'users/latest', 'users/sort-posts', 'users/sort-reputation', 'users/search'
-		];
-
-		for (var i = 0, ii = routes.length; i < ii; i++) {
-			(function (route) {
-				/*app.get('/admin/' + route, function (req, res) {
-					Admin.buildHeader(req, res, function(err, header) {
-						res.send(header + app.create_route('admin/' + route) + templates['admin/footer']);
-					});
-				});*/
-			}(routes[i]));
-		}
-	}());
 
 
 	app.get('/admin/', middleware.admin.buildHeader, controllers.admin.home);
