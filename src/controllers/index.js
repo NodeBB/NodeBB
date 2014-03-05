@@ -108,7 +108,7 @@ Controllers.search = function(req, res, next) {
 Controllers.reset = function(req, res, next) {
 	var data = {
 		reset_code: req.params.code ? req.params.code : null
-	}
+	};
 
 	if (res.locals.isAPI) {
 		res.json(data);

@@ -1,10 +1,10 @@
 "use strict";
 
-var	nconf = require('nconf'),
+var	_ = require('underscore'),
+	nconf = require('nconf'),
 	path = require('path'),
 	fs = require('fs'),
 	validator = require('validator'),
-	_ = require('underscore'),
 	async = require('async'),
 
 	plugins = require('../plugins');
@@ -35,12 +35,12 @@ function setupPluginRoutes(app) {
 					(function(route) {
 						app[routes[route].method || 'get'](routes[route].route, function(req, res) {
 							routes[route].options(req, res, function(options) {
-								app.build_header({
+								/*app.build_header({
 									req: options.req || req,
 									res: options.res || res
 								}, function (err, header) {
 									//res.send(header + options.content + templates.footer);
-								});
+								});*/
 							});
 						});
 					}(route));
@@ -93,9 +93,9 @@ function setupPluginAdminRoutes(app) {
 					(function(route) {
 						app[routes[route].method || 'get']('/admin' + routes[route].route, function(req, res) {
 							routes[route].options(req, res, function(options) {
-								Admin.buildHeader(req, res, function (err, header) {
+								//Admin.buildHeader(req, res, function (err, header) {
 									//res.send(header + options.content + templates['admin/footer']);
-								});
+								//});
 							});
 						});
 					}(route));

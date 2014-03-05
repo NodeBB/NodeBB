@@ -7,10 +7,10 @@
 		bcrypt = require('bcryptjs'),
 		winston = require('winston'),
 
-		meta = require('../meta'),
-		user = require('../user'),
-		plugins = require('../plugins'),
-		utils = require('../../public/src/utils'),
+		meta = require('./../meta'),
+		user = require('./../user'),
+		plugins = require('./../plugins'),
+		utils = require('./../../public/src/utils'),
 		templates = require('./../../public/src/templates'),
 
 		login_strategies = [];

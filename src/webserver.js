@@ -84,12 +84,12 @@ if(nconf.get('ssl')) {
 	module.exports.init = function () {
 		plugins.fireHook('action:app.load', app);
 
-		server.on("error", function(e){
-			if (e.code === 'EADDRINUSE') {
+		server.on("error", function(err){
+			if (err.code === 'EADDRINUSE') {
 				winston.error('NodeBB address in use, exiting...');
 				process.exit(1);
 			} else {
-				throw e;
+				throw err;
 			}
 		});
 

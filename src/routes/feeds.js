@@ -1,14 +1,14 @@
 "use strict";
 
-var posts = require('../posts'),
-	topics = require('../topics'),
-	categories = require('../categories'),
+var posts = require('./../posts'),
+	topics = require('./../topics'),
+	categories = require('./../categories'),
 
 	rss = require('rss'),
 	nconf = require('nconf'),
 
-	ThreadTools = require('../threadTools'),
-	CategoryTools = require('../categoryTools');
+	ThreadTools = require('./../threadTools'),
+	CategoryTools = require('./../categoryTools');
 
 function hasTopicPrivileges(req, res, next) {
 	var tid = req.params.topic_id;

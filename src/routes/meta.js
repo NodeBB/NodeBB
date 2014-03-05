@@ -4,9 +4,9 @@ var path = require('path'),
 	nconf = require('nconf'),
 	less = require('less'),
 
-	meta = require('../meta'),
-	db = require('../database'),
-	plugins = require('../plugins'),
+	meta = require('./../meta'),
+	db = require('./../database'),
+	plugins = require('./../plugins'),
 
 	minificationEnabled = false;
 
