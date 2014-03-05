@@ -47,7 +47,8 @@
     "nodebb-theme-lavender": "~0.0.22",
     "less": "^1.6.3",
     "daemon": "~1.1.0",
-    "underscore": "^1.6.0"
+    "underscore": "^1.6.0",
+    "mkdirp": "~0.3.5"
   },
   "optionalDependencies": {
     "redis": "0.8.3",

@@ -83,6 +83,51 @@ function routeCurrentTheme(app, themeData) {
 	}
 }
 
+function compileTemplates() {
+	var mkdirp = require('mkdirp');
+
+	winston.info('[themes] Compiling templates');
+	utils.walk(nconf.get('base_templates_path'), function(err, baseTpls) {
+		utils.walk(nconf.get('theme_templates_path'), function (err, themeTpls) {
+			var paths = {};
+
+			baseTpls = baseTpls.map(function(tpl) { return tpl.replace(nconf.get('base_templates_path'), ''); });
+			themeTpls = themeTpls.map(function(tpl) { return tpl.replace(nconf.get('theme_templates_path'), ''); });
+
+			baseTpls.forEach(function(el, i) {
+				var relative_path = (themeTpls.indexOf(el) !== -1 ? themeTpls[themeTpls.indexOf(el)] : baseTpls[i]),
+					full_path = path.join(themeTpls.indexOf(el) !== -1 ? nconf.get('theme_templates_path') : nconf.get('base_templates_path'), relative_path);
+
+				paths[themeTpls.indexOf(el) !== -1 ? themeTpls[themeTpls.indexOf(el)] : baseTpls[i]] = full_path;
+			});
+
+			async.each(Object.keys(paths), function(relative_path, next) {
+				var file = fs.readFileSync(paths[relative_path]).toString(),
+					matches = null;
+
+				while (matches = file.match(/<!-- IMPORT ([\s\S]*?)? -->/)) {
+					var partial = "";
+
+					if (paths["/" + matches[1]]) {
+						partial = fs.readFileSync(paths["/" + matches[1]]).toString();
+					}
+
+					file = file.replace(/<!-- IMPORT ([\s\S]*?)? -->/, partial);
+				}
+
+				mkdirp.sync(path.join(nconf.get('views_dir'), relative_path.split('/').slice(0, -1).join('/')));
+				fs.writeFile(path.join(nconf.get('views_dir'), relative_path), file, next);
+			}, function(err) {
+				if (err) {
+					winston.error(err);
+				} else {
+					winston.info('[themes] Successfully compiled templates.');
+				}
+			});
+		});
+	});
+}
+
 function handleErrors(err, req, res, next) {
 	// we may use properties of the error object
 	// here and next(err) appropriately, or if
@@ -129,42 +174,6 @@ module.exports = function(app, data) {
 	middleware = require('./middleware')(app);
 
 	app.configure(function() {
-
-		utils.walk(nconf.get('base_templates_path'), function(err, baseTpls) {
-			utils.walk(nconf.get('theme_templates_path'), function (err, themeTpls) {
-				var tpls = [];
-
-				baseTpls = baseTpls.map(function(tpl) {
-					return tpl.replace(nconf.get('base_templates_path'), '');
-				});
-
-				themeTpls = themeTpls.map(function(tpl) {
-					return tpl.replace(nconf.get('theme_templates_path'), '');
-				});
-
-				baseTpls.forEach(function(el, i) {
-					var relative_path = (themeTpls.indexOf(el) !== -1 ? themeTpls[themeTpls.indexOf(el)] : baseTpls[i]),
-						full_path = path.join(themeTpls.indexOf(el) !== -1 ? nconf.get('theme_templates_path') : nconf.get('base_templates_path'), relative_path);
-
-					tpls.push({
-						relative_path: relative_path,
-						path: full_path
-					});
-				});
-
-				async.each(tpls, function(tpl, next) {
-					fs.writeFile(path.join(nconf.get('views_dir'), tpl.relative_path), fs.readFileSync(tpl.path), next);
-				}, function(err) {
-					if (err) {
-						winston.error(err);
-					} else {
-						winston.info('Successfully compiled templates.');
-					}
-				});
-			});
-		});
-
-
 		app.engine('tpl', templates.__express);
 		app.set('view engine', 'tpl');
 		app.set('views', nconf.get('views_dir'));
@@ -206,6 +215,7 @@ module.exports = function(app, data) {
 
 		routeCurrentTheme(app, data.currentThemeData);
 		routeThemeScreenshots(app, data.themesData);
+		compileTemplates();
 
 		app.use(app.router);
 
