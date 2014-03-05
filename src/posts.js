@@ -281,11 +281,9 @@ var db = require('./database'),
 							return callback(null);
 						}
 						categories.getCategoryFields(topicData.cid, ['name', 'icon', 'slug'], function(err, categoryData) {
-							postData.categoryName = categoryData.name;
-							postData.categoryIcon = categoryData.icon;
-							postData.categorySlug = categoryData.slug;
-							postData.title = validator.escape(topicData.title);
-							postData.topicSlug = topicData.slug;
+							postData.category = categoryData;
+							topicData.title = validator.escape(topicData.title);
+							postData.topic = topicData;
 							next(null, postData);
 						});
 					});

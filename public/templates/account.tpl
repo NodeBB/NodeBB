@@ -140,8 +140,8 @@
 							<span class="pull-right">
 								<a href="../../topic/{posts.tid}/#{posts.pid}">[[global:posted]]</a>
 								[[global:in]]
-								<a href="../../category/{posts.categorySlug}">
-									<i class="fa {posts.categoryIcon}"></i> {posts.categoryName}
+								<a href="../../category/{posts.category.slug}">
+									<i class="fa {posts.category.icon}"></i> {posts.category.name}
 								</a>
 								<span class="timeago" title="{posts.relativeTime}"></span>
 							</span>
