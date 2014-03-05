@@ -5,7 +5,6 @@ var path = require('path'),
 	fs = require('fs'),
 	nconf = require('nconf'),
 
-	db = require('./../database'),
 	user = require('./../user'),
 	topics = require('./../topics'),
 	posts = require('./../posts'),
@@ -14,6 +13,7 @@ var path = require('path'),
 	plugins = require('./../plugins'),
 	utils = require('./../../public/src/utils'),
 	pkg = require('./../../package.json');
+
 
 
 function searchTerm(req, res, next) {
@@ -146,6 +146,18 @@ function getTemplatesListing(req, res, next) {
 	});
 }
 
+function getRecentPosts(req, res, next) {
+	var uid = (req.user) ? req.user.uid : 0;
+
+	posts.getRecentPosts(uid, 0, 19, req.params.term, function (err, data) {
+		if(err) {
+			return next(err);
+		}
+
+		res.json(data);
+	});
+}
+
 module.exports =  function(app, middleware, controllers) {
 	app.namespace('/api', function () {
 		app.all('*', middleware.updateLastOnlineTime, middleware.prepareAPI);
@@ -156,6 +168,7 @@ module.exports =  function(app, middleware, controllers) {
 		app.get('/get_templates_listing', getTemplatesListing);
 		app.get('/search/:term', searchTerm);
 		app.get('/categories/:cid/moderators', getModerators);
+		app.get('/recent/posts/:term?', getRecentPosts);
 
 		app.post('/post/upload', uploadPost);
 		app.post('/topic/thumb/upload', uploadThumb);
