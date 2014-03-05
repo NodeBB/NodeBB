@@ -1,7 +1,7 @@
 <div widget-area="motd" class="hidden">
 	<!-- BEGIN widgets -->
 	<div class="motd">
-		{widgets.html}
+		
 	</div>
 	<!-- END widgets -->
 </div>
