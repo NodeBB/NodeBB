@@ -47,31 +47,27 @@ function searchTerm(req, res, next) {
 		});
 	}
 
-	if ((req.user && req.user.uid) || meta.config.allowGuestSearching === '1') {
-		async.parallel([searchPosts, searchTopics], function (err, results) {
-			if (err) {
-				return next(err);
-			}
+	async.parallel([searchPosts, searchTopics], function (err, results) {
+		if (err) {
+			return next(err);
+		}
 
-			if(!results) {
-				results = [];
-				results[0] = results[1] = [];
-			}
+		if(!results) {
+			results = [];
+			results[0] = results[1] = [];
+		}
 
-			return res.json({
-				show_no_topics: results[1].length ? 'hide' : '',
-				show_no_posts: results[0].length ? 'hide' : '',
-				show_results: '',
-				search_query: req.params.term,
-				posts: results[0],
-				topics: results[1],
-				post_matches : results[0].length,
-				topic_matches : results[1].length
-			});
+		return res.json({
+			show_no_topics: results[1].length ? 'hide' : '',
+			show_no_posts: results[0].length ? 'hide' : '',
+			show_results: '',
+			search_query: req.params.term,
+			posts: results[0],
+			topics: results[1],
+			post_matches : results[0].length,
+			topic_matches : results[1].length
 		});
-	} else {
-		res.send(403);
-	}
+	});
 }
 
 function upload(req, res, filesIterator, next) {
@@ -166,7 +162,7 @@ module.exports =  function(app, middleware, controllers) {
 
 		app.get('/user/uid/:uid', middleware.checkGlobalPrivacySettings, controllers.accounts.getUserByUID);
 		app.get('/get_templates_listing', getTemplatesListing);
-		app.get('/search/:term', searchTerm);
+		app.get('/search/:term', middleware.guestSearchingAllowed, searchTerm); // todo: look at this, may not belong here.
 		app.get('/categories/:cid/moderators', getModerators);
 		app.get('/recent/posts/:term?', getRecentPosts);
 
