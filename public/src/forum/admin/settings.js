@@ -9,7 +9,7 @@ define(['uploader'], function(uploader) {
 		// Come back in 125ms if the config isn't ready yet
 		if (!app.config) {
 			setTimeout(function() {
-				Settings.prepare();
+				Settings.prepare(callback);
 			}, 125);
 			return;
 		}
