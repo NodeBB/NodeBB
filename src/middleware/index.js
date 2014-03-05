@@ -106,13 +106,12 @@ function compileTemplates() {
 					matches = null;
 
 				while (matches = file.match(/<!-- IMPORT ([\s\S]*?)? -->/)) {
-					var partial = "";
-
 					if (paths["/" + matches[1]]) {
-						partial = fs.readFileSync(paths["/" + matches[1]]).toString();
+						file = file.replace(/<!-- IMPORT ([\s\S]*?)? -->/, fs.readFileSync(paths["/" + matches[1]]).toString());
+					} else {
+						winston.warn('[themes] Partial not found: ' + matches[1]);
+						file = file.replace(/<!-- IMPORT ([\s\S]*?)? -->/, "");
 					}
-
-					file = file.replace(/<!-- IMPORT ([\s\S]*?)? -->/, partial);
 				}
 
 				mkdirp.sync(path.join(nconf.get('views_dir'), relative_path.split('/').slice(0, -1).join('/')));
