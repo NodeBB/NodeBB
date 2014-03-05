@@ -103,14 +103,15 @@ function compileTemplates() {
 
 			async.each(Object.keys(paths), function(relative_path, next) {
 				var file = fs.readFileSync(paths[relative_path]).toString(),
-					matches = null;
+					matches = null,
+					regex = /[ \t]*<!-- IMPORT ([\s\S]*?)? -->[ \t]*/;
 
-				while (matches = file.match(/<!-- IMPORT ([\s\S]*?)? -->/)) {
+				while (matches = file.match(regex)) {
 					if (paths["/" + matches[1]]) {
-						file = file.replace(/<!-- IMPORT ([\s\S]*?)? -->/, fs.readFileSync(paths["/" + matches[1]]).toString());
+						file = file.replace(regex, fs.readFileSync(paths["/" + matches[1]]).toString());
 					} else {
 						winston.warn('[themes] Partial not found: ' + matches[1]);
-						file = file.replace(/<!-- IMPORT ([\s\S]*?)? -->/, "");
+						file = file.replace(regex, "");
 					}
 				}
 
