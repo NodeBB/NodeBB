@@ -13,9 +13,7 @@ var path = require('path'),
 	meta = require('./../meta'),
 	plugins = require('./../plugins'),
 	utils = require('./../../public/src/utils'),
-	pkg = require('./../../package.json'),
-
-	customTemplates = [];
+	pkg = require('./../../package.json');
 
 
 function searchTerm(req, res, next) {
@@ -137,7 +135,7 @@ function getModerators(req, res, next) {
 
 function getTemplatesListing(req, res, next) {
 	utils.walk(nconf.get('views_dir'), function (err, data) {
-		data = data.concat(customTemplates)
+		data = data.concat(require('./plugins').getCustomTemplates())
 				.filter(function(value, index, self) {
 					return self.indexOf(value) === index;
 				}).map(function(el) {
@@ -151,8 +149,6 @@ function getTemplatesListing(req, res, next) {
 module.exports =  function(app, middleware, controllers) {
 	app.namespace('/api', function () {
 		app.all('*', middleware.updateLastOnlineTime, middleware.prepareAPI);
-
-		customTemplates = app.get_custom_templates();
 
 		app.get('/config', controllers.api.getConfig);
 

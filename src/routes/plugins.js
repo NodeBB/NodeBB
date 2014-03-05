@@ -7,19 +7,15 @@ var	_ = require('underscore'),
 	validator = require('validator'),
 	async = require('async'),
 
-	plugins = require('../plugins');
+	plugins = require('../plugins'),
+
+	pluginRoutes = [];
 
 function setupPluginRoutes(app) {
 	var custom_routes = {
 		'routes': [],
 		'api': [],
 		'templates': []
-	};
-
-	app.get_custom_templates = function() {
-		return custom_routes.templates.map(function(tpl) {
-			return tpl.template;
-		});
 	};
 
 	plugins.ready(function() {
@@ -29,6 +25,8 @@ function setupPluginRoutes(app) {
 		plugins.fireHook('filter:server.create_routes', custom_routes, function(err, custom_routes) {
 			var route,
 				routes = custom_routes.routes;
+
+			pluginRoutes = custom_routes;
 
 			for (route in routes) {
 				if (routes.hasOwnProperty(route)) {
@@ -70,7 +68,6 @@ function setupPluginRoutes(app) {
 					}(route));
 				}
 			}
-
 		});
 	});
 }
@@ -186,4 +183,12 @@ module.exports = function(app, middleware, controllers) {
 
 	setupPluginRoutes(app);
 	setupPluginAdminRoutes(app);
+
+	return {
+		getCustomTemplates: function() {
+			pluginRoutes.templates.map(function(tpl) {
+				return tpl.template;
+			});
+		}
+	};
 };
