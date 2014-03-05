@@ -22,7 +22,6 @@ var nconf = require('nconf'),
 	utils = require('./../../public/src/utils'),
 	templates = require('./../../public/src/templates');
 
-var Admin = {};
 
 function uploadImage(filename, req, res) {
 	function done(err, image) {
@@ -43,6 +42,89 @@ function uploadImage(filename, req, res) {
 	} else {
 		file.saveFileToLocal(filename, req.files.userPhoto.path, done);
 	}
+}
+
+function uploadCategoryPicture(req, res, next) {
+	if (!req.user) {
+		return res.redirect('/403');
+	}
+
+	var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'],
+		params = null, er;
+	try {
+		params = JSON.parse(req.body.params);
+	} catch (e) {
+		er = {
+			error: 'Error uploading file! Error :' + e.message
+		};
+		return res.send(req.xhr ? er : JSON.stringify(er));
+	}
+
+	if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
+		er = {
+			error: 'Allowed image types are png, jpg and gif!'
+		};
+		res.send(req.xhr ? er : JSON.stringify(er));
+		return;
+	}
+
+	var filename =  'category-' + params.cid + path.extname(req.files.userPhoto.name);
+
+	uploadImage(filename, req, res);
+}
+
+function uploadFavicon(req, res, next) {
+	if (!req.user) {
+		return res.redirect('/403');
+	}
+
+	var allowedTypes = ['image/x-icon', 'image/vnd.microsoft.icon'],
+		er;
+
+	if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
+		er = {error: 'You can only upload icon file type!'};
+		res.send(req.xhr ? er : JSON.stringify(er));
+		return;
+	}
+
+	file.saveFileToLocal('favicon.ico', req.files.userPhoto.path, function(err, image) {
+		fs.unlink(req.files.userPhoto.path);
+
+		if(err) {
+			er = {error: err.message};
+			return res.send(req.xhr ? er : JSON.stringify(er));
+		}
+
+		var rs = {path: image.url};
+		res.send(req.xhr ? rs : JSON.stringify(rs));
+	});
+}
+
+function uploadLogo(req, res, next) {
+	if (!req.user) {
+		return res.redirect('/403');
+	}
+
+	var allowedTypes = ['image/png', 'image/jpeg', 'image/pjpeg', 'image/jpg', 'image/gif'],
+		er;
+
+	if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
+		er = {error: 'Allowed image types are png, jpg and gif!'};
+		res.send(req.xhr ? er : JSON.stringify(er));
+		return;
+	}
+
+	var filename = 'site-logo' + path.extname(req.files.userPhoto.name);
+
+	uploadImage(filename, req, res);
+}
+
+function getUsersCSV(req, res, next) {
+	user.getUsersCSV(function(err, data) {
+		res.attachment('users.csv');
+		res.setHeader('Content-Type', 'text/csv');
+		res.end(data);
+	});
 }
 
 module.exports = function(app, middleware, controllers) {
@@ -104,129 +186,11 @@ module.exports = function(app, middleware, controllers) {
 	app.get('/api/admin/groups', controllers.admin.groups.get);
 
 
-
-
 	app.namespace('/admin', function () {
-		app.post('/category/uploadpicture', function(req, res) {
-			if (!req.user) {
-				return res.redirect('/403');
-			}
+		app.get('/users/csv', getUsersCSV);
 
-			var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'],
-				params = null, er;
-			try {
-				params = JSON.parse(req.body.params);
-			} catch (e) {
-				er = {
-					error: 'Error uploading file! Error :' + e.message
-				};
-				return res.send(req.xhr ? er : JSON.stringify(er));
-			}
-
-			if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
-				er = {
-					error: 'Allowed image types are png, jpg and gif!'
-				};
-				res.send(req.xhr ? er : JSON.stringify(er));
-				return;
-			}
-
-			var filename =  'category-' + params.cid + path.extname(req.files.userPhoto.name);
-
-			uploadImage(filename, req, res);
-		});
-
-		app.post('/uploadfavicon', function(req, res) {
-			if (!req.user) {
-				return res.redirect('/403');
-			}
-
-			var allowedTypes = ['image/x-icon', 'image/vnd.microsoft.icon'],
-				er;
-
-			if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
-				er = {error: 'You can only upload icon file type!'};
-				res.send(req.xhr ? er : JSON.stringify(er));
-				return;
-			}
-
-			file.saveFileToLocal('favicon.ico', req.files.userPhoto.path, function(err, image) {
-				fs.unlink(req.files.userPhoto.path);
-
-				if(err) {
-					er = {error: err.message};
-					return res.send(req.xhr ? er : JSON.stringify(er));
-				}
-
-				var rs = {path: image.url};
-				res.send(req.xhr ? rs : JSON.stringify(rs));
-			});
-		});
-
-		app.post('/uploadlogo', function(req, res) {
-
-			if (!req.user) {
-				return res.redirect('/403');
-			}
-
-			var allowedTypes = ['image/png', 'image/jpeg', 'image/pjpeg', 'image/jpg', 'image/gif'],
-				er;
-
-			if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
-				er = {error: 'Allowed image types are png, jpg and gif!'};
-				res.send(req.xhr ? er : JSON.stringify(er));
-				return;
-			}
-
-			var filename = 'site-logo' + path.extname(req.files.userPhoto.name);
-
-			uploadImage(filename, req, res);
-		});
-
-		app.get('/users/csv', function(req, res) {
-			user.getUsersCSV(function(err, data) {
-				res.attachment('users.csv');
-				res.setHeader('Content-Type', 'text/csv');
-				res.end(data);
-			});
-		});
-	});
-
-	var custom_routes = {
-		'routes': [],
-		'api': []
-	};
-
-	plugins.ready(function() {
-		plugins.fireHook('filter:admin.create_routes', custom_routes, function(err, custom_routes) {
-			var route, routes = custom_routes.routes;
-
-			for (route in routes) {
-				if (routes.hasOwnProperty(route)) {
-					(function(route) {
-						app[routes[route].method || 'get']('/admin' + routes[route].route, function(req, res) {
-							routes[route].options(req, res, function(options) {
-								Admin.buildHeader(req, res, function (err, header) {
-									res.send(header + options.content + templates['admin/footer']);
-								});
-							});
-						});
-					}(route));
-				}
-			}
-
-			var apiRoutes = custom_routes.api;
-			for (route in apiRoutes) {
-				if (apiRoutes.hasOwnProperty(route)) {
-					(function(route) {
-						app[apiRoutes[route].method || 'get']('/api/admin' + apiRoutes[route].route, function(req, res) {
-							apiRoutes[route].callback(req, res, function(data) {
-								res.json(data);
-							});
-						});
-					}(route));
-				}
-			}
-		});
+		app.post('/category/uploadpicture', uploadCategoryPicture);
+		app.post('/uploadfavicon', uploadFavicon);
+		app.post('/uploadlogo', uploadLogo);
 	});
 };

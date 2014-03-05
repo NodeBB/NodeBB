@@ -14,12 +14,7 @@ var path = require('path'),
 	plugins = require('./plugins'),
 	logger = require('./logger'),
 	middleware = require('./middleware'),
-	routes = require('./routes'),
-
-	admin = require('./routes/admin'),
-	apiRoute = require('./routes/api'),
-	feedsRoute = require('./routes/feeds'),
-	metaRoute = require('./routes/meta');
+	routes = require('./routes');
 
 if(nconf.get('ssl')) {
 	server = require('https').createServer({

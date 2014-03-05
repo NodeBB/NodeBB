@@ -5,20 +5,19 @@ var nconf = require('nconf'),
 	meta = require('./../meta'),
 	
 	plugins = require('./../plugins'),
-	metaRoute = require('./meta'),
-	apiRoute = require('./api'),
-	admin = require('./admin'),
-	feedsRoute = require('./feeds');
+	metaRoutes = require('./meta'),
+	apiRoutes = require('./api'),
+	adminRoutes = require('./admin'),
+	feedRoutes = require('./feeds'),
+	pluginRoutes = require('./plugins');
 
 
 module.exports = function(app, middleware) {
 	app.namespace(nconf.get('relative_path'), function() {
-		//temp
-		metaRoute.createRoutes(app);
-		feedsRoute.createRoutes(app);
-
-		admin(app, middleware, controllers);
-		apiRoute(app, middleware, controllers);
+		adminRoutes(app, middleware, controllers);
+		metaRoutes(app, middleware, controllers);
+		apiRoutes(app, middleware, controllers);
+		feedRoutes(app, middleware, controllers);
 		
 		/**
 		* Every view has an associated API route.
@@ -120,85 +119,12 @@ module.exports = function(app, middleware) {
 		app.get('/api/users/latest', middleware.checkGlobalPrivacySettings, controllers.users.getUsersSortedByJoinDate);
 
 		app.get('/users/search', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.users.getUsersForSearch);
-		app.get('/api/users/search', middleware.checkGlobalPrivacySettings, controllers.users.getUsersForSearch);
+		app.get('/api/users/search', middleware.checkGlobalPrivacySettings, controllers.users.getUsersForSearch);		
 
-		/* Misc */
-		app.get('/sitemap.xml', controllers.sitemap);
-		app.get('/robots.txt', controllers.robots);
+		pluginRoutes(app, middleware, controllers);
 
-
-		
-		// Other routes
-		require('./plugins')(app);
-
-		// Debug routes
 		if (process.env.NODE_ENV === 'development') {
-			require('./debug')(app);
+			require('./debug')(app, middleware, controllers);
 		}
-
-		var custom_routes = {
-			'routes': [],
-			'api': [],
-			'templates': []
-		};
-
-		app.get_custom_templates = function() {
-			return custom_routes.templates.map(function(tpl) {
-				return tpl.template;
-			});
-		};
-
-
-		plugins.ready(function() {
-			/*
-			* TO BE DEPRECATED post 0.4x
-			*/
-			plugins.fireHook('filter:server.create_routes', custom_routes, function(err, custom_routes) {
-				var route,
-					routes = custom_routes.routes;
-
-				for (route in routes) {
-					if (routes.hasOwnProperty(route)) {
-						(function(route) {
-							app[routes[route].method || 'get'](routes[route].route, function(req, res) {
-								routes[route].options(req, res, function(options) {
-									app.build_header({
-										req: options.req || req,
-										res: options.res || res
-									}, function (err, header) {
-										//res.send(header + options.content + templates.footer);
-									});
-								});
-							});
-						}(route));
-					}
-				}
-
-				var apiRoutes = custom_routes.api;
-				for (route in apiRoutes) {
-					if (apiRoutes.hasOwnProperty(route)) {
-						(function(route) {
-							app[apiRoutes[route].method || 'get']('/api' + apiRoutes[route].route, function(req, res) {
-								apiRoutes[route].callback(req, res, function(data) {
-									res.json(data);
-								});
-							});
-						}(route));
-					}
-				}
-
-				var templateRoutes = custom_routes.templates;
-				for (route in templateRoutes) {
-					if (templateRoutes.hasOwnProperty(route)) {
-						(function(route) {
-							app.get('/templates/' + templateRoutes[route].template, function(req, res) {
-								res.send(templateRoutes[route].content);
-							});
-						}(route));
-					}
-				}
-
-			});
-		});
 	});
 };

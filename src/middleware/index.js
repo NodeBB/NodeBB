@@ -16,9 +16,7 @@ var templates = require('./../../public/src/templates'),
 
 var middleware = {};
 
-/*
-* Helper functions
-*/
+
 function routeThemeScreenshots(app, themes) {
 	var	screenshotPath;
 
@@ -169,6 +167,9 @@ function catch404(req, res, next) {
 		res.type('txt').send('Not found');
 	}
 }
+
+
+
 
 module.exports = function(app, data) {
 	middleware = require('./middleware')(app);
