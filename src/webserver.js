@@ -6,16 +6,9 @@ var path = require('path'),
 	WebServer = express(),
 	server,
 	winston = require('winston'),
-	validator = require('validator'),
 	async = require('async'),
 
-	utils = require('../public/src/utils'),
-	templates = require('./../public/src/templates'), // todo remove
-	translator = require('./../public/src/translator'),
-
 	db = require('./database'),
-	user = require('./user'),
-	notifications = require('./notifications'),
 	auth = require('./routes/authentication'),
 	meta = require('./meta'),
 	plugins = require('./plugins'),
