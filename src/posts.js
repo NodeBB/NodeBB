@@ -197,6 +197,35 @@ var db = require('./database'),
 		});
 	};
 
+	Posts.getRecentPosts = function(uid, start, stop, term, callback) {
+		var terms = {
+			day: 86400000,
+			week: 604800000,
+			month: 2592000000
+		};
+
+		var since = terms.day;
+		if (terms[term]) {
+			since = terms[term];
+		}
+
+		var count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
+
+		db.getSortedSetRevRangeByScore(['posts:pid', '+inf', Date.now() - since, 'LIMIT', start, count], function(err, pids) {
+			if(err) {
+				return callback(err);
+			}
+
+			async.filter(pids, function(pid, next) {
+				postTools.privileges(pid, uid, function(err, privileges) {
+					next(!err && privileges.read);
+				});
+			}, function(pids) {
+				Posts.getPostSummaryByPids(pids, true, callback);
+			});
+		});
+	};
+
 	Posts.addUserInfoToPost = function(post, callback) {
 		user.getUserFields(post.uid, ['username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned'], function(err, userData) {
 			if (err) {
@@ -262,10 +291,10 @@ var db = require('./database'),
 
 						if (parseInt(postData.deleted, 10) === 1) {
 							return callback(null);
-						} else {
-							postData.relativeTime = utils.toISOString(postData.timestamp);
-							next(null, postData);
 						}
+
+						postData.relativeTime = utils.toISOString(postData.timestamp);
+						next(null, postData);
 					});
 				},
 				function(postData, next) {
@@ -281,11 +310,9 @@ var db = require('./database'),
 							return callback(null);
 						}
 						categories.getCategoryFields(topicData.cid, ['name', 'icon', 'slug'], function(err, categoryData) {
-							postData.categoryName = categoryData.name;
-							postData.categoryIcon = categoryData.icon;
-							postData.categorySlug = categoryData.slug;
-							postData.title = validator.escape(topicData.title);
-							postData.topicSlug = topicData.slug;
+							postData.category = categoryData;
+							topicData.title = validator.escape(topicData.title);
+							postData.topic = topicData;
 							next(null, postData);
 						});
 					});
