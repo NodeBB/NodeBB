@@ -374,6 +374,7 @@ accountsController.accountSettings = function(req, res, next) {
 accountsController.uploadPicture = function (req, res, next) {
 	var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
 	if (req.files.userPhoto.size > uploadSize * 1024) {
+		fs.unlink(req.files.userPhoto.path);
 		return res.json({
 			error: 'Images must be smaller than ' + uploadSize + ' kb!'
 		});
@@ -381,6 +382,7 @@ accountsController.uploadPicture = function (req, res, next) {
 
 	var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
 	if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
+		fs.unlink(req.files.userPhoto.path);
 		return res.json({
 			error: 'Allowed image types are png, jpg and gif!'
 		});
@@ -388,6 +390,7 @@ accountsController.uploadPicture = function (req, res, next) {
 
 	var extension = path.extname(req.files.userPhoto.name);
 	if (!extension) {
+		fs.unlink(req.files.userPhoto.path);
 		return res.json({
 			error: 'Error uploading file! Error : Invalid extension!'
 		});
@@ -440,6 +443,7 @@ accountsController.uploadPicture = function (req, res, next) {
 		}
 
 		if(err) {
+			fs.unlink(req.files.userPhoto.path);
 			return res.json({error:err.message});
 		}
 
