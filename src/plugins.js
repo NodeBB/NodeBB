@@ -8,6 +8,7 @@ var fs = require('fs'),
 
 	db = require('./database'),
 	meta = require('./meta'),
+	utils = require('./../public/src/utils'),
 	pkg = require('../package.json');
 
 (function(Plugins) {
@@ -388,7 +389,30 @@ var fs = require('fs'),
 				});
 			});
 		});
-	}
+	};
+
+	Plugins.getTemplates = function(callback) {
+		var templates = {};
+
+		Plugins.showInstalled(function(err, plugins) {
+			async.each(plugins, function(plugin, next) {
+				if (plugin.templates && plugin.id) {
+					var templatesPath = path.join(__dirname, '../node_modules', plugin.id, plugin.templates);
+					utils.walk(templatesPath, function(err, pluginTemplates) {
+						pluginTemplates.forEach(function(pluginTemplate) {
+							templates[pluginTemplate.replace(templatesPath, '').substring(1)] = pluginTemplate;
+						});
+
+						next(err);
+					});
+				} else {
+					next(false);
+				}
+			}, function(err) {
+				callback(err, templates);
+			});
+		});
+	};
 
 	Plugins.showInstalled = function(callback) {
 		npmPluginPath = path.join(__dirname, '../node_modules');
@@ -456,5 +480,5 @@ var fs = require('fs'),
 		], function(err, plugins) {
 			callback(err, plugins);
 		});
-	}
+	};
 }(exports));

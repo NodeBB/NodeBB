@@ -183,12 +183,4 @@ module.exports = function(app, middleware, controllers) {
 
 	setupPluginRoutes(app);
 	setupPluginAdminRoutes(app);
-
-	return {
-		getCustomTemplates: function() {
-			pluginRoutes.templates.map(function(tpl) {
-				return tpl.template;
-			});
-		}
-	};
 };

@@ -4,6 +4,7 @@ var templates = require('./../../public/src/templates'),
 	translator = require('./../../public/src/translator'),
 	utils = require('./../../public/src/utils'),
 	meta = require('./../meta'),
+	plugins = require('./../plugins'),
 	db = require('./../database'),
 	auth = require('./../routes/authentication'),
 	async = require('async'),
@@ -81,13 +82,14 @@ function routeCurrentTheme(app, themeData) {
 	}
 }
 
-function compileTemplates() {
+function compileTemplates(pluginTemplates) {
 	var mkdirp = require('mkdirp');
 
 	winston.info('[themes] Compiling templates');
+
 	utils.walk(nconf.get('base_templates_path'), function(err, baseTpls) {
 		utils.walk(nconf.get('theme_templates_path'), function (err, themeTpls) {
-			var paths = {};
+			var paths = pluginTemplates;
 
 			baseTpls = baseTpls.map(function(tpl) { return tpl.replace(nconf.get('base_templates_path'), ''); });
 			themeTpls = themeTpls.map(function(tpl) { return tpl.replace(nconf.get('theme_templates_path'), ''); });
@@ -123,7 +125,7 @@ function compileTemplates() {
 				}
 			});
 		});
-	});
+	});	
 }
 
 function handleErrors(err, req, res, next) {
@@ -216,7 +218,10 @@ module.exports = function(app, data) {
 
 		routeCurrentTheme(app, data.currentThemeData);
 		routeThemeScreenshots(app, data.themesData);
-		compileTemplates();
+
+		plugins.getTemplates(function(err, pluginTemplates) {
+			compileTemplates(pluginTemplates);
+		});
 
 		app.use(app.router);
 

@@ -131,7 +131,7 @@ function getModerators(req, res, next) {
 
 function getTemplatesListing(req, res, next) {
 	utils.walk(nconf.get('views_dir'), function (err, data) {
-		data = data.concat(require('./plugins').getCustomTemplates())
+		data = data
 				.filter(function(value, index, self) {
 					return self.indexOf(value) === index;
 				}).map(function(el) {
