@@ -116,6 +116,7 @@ var fs = require('fs'),
 
 				var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
 				if (req.files.userPhoto.size > uploadSize * 1024) {
+					fs.unlink(req.files.userPhoto.path);
 					return res.send({
 						error: 'Images must be smaller than ' + uploadSize + ' kb!'
 					});
@@ -123,6 +124,7 @@ var fs = require('fs'),
 
 				var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
 				if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
+					fs.unlink(req.files.userPhoto.path);
 					return res.send({
 						error: 'Allowed image types are png, jpg and gif!'
 					});
@@ -130,6 +132,7 @@ var fs = require('fs'),
 
 				var extension = path.extname(req.files.userPhoto.name);
 				if (!extension) {
+					fs.unlink(req.files.userPhoto.path);
 					return res.send({
 						error: 'Error uploading file! Error : Invalid extension!'
 					});
@@ -184,6 +187,7 @@ var fs = require('fs'),
 					}
 
 					if(err) {
+						fs.unlink(req.files.userPhoto.path);
 						return res.send({error:err.message});
 					}
 
