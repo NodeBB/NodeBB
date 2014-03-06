@@ -6,11 +6,15 @@ var	_ = require('underscore'),
 	fs = require('fs'),
 	validator = require('validator'),
 	async = require('async'),
+	winston = require('winston'),
 
 	plugins = require('../plugins'),
 
 	pluginRoutes = [];
 
+/*
+* TO BE DEPRECATED post 0.4x
+*/
 function setupPluginRoutes(app) {
 	var custom_routes = {
 		'routes': [],
@@ -19,10 +23,8 @@ function setupPluginRoutes(app) {
 	};
 
 	plugins.ready(function() {
-		/*
-		* TO BE DEPRECATED post 0.4x and replaced with something that isn't as complicated as this...
-		*/
-		/*plugins.fireHook('filter:server.create_routes', custom_routes, function(err, custom_routes) {
+		plugins.fireHook('filter:server.create_routes', custom_routes, function(err, custom_routes) {
+			winston.warn('[plugins] filter:server.create_routes is deprecated and will maintain limited functionality until 0.4x');
 			var route,
 				routes = custom_routes.routes;
 
@@ -33,11 +35,15 @@ function setupPluginRoutes(app) {
 					(function(route) {
 						app[routes[route].method || 'get'](routes[route].route, function(req, res) {
 							routes[route].options(req, res, function(options) {
-								app.build_header({
-									req: options.req || req,
-									res: options.res || res
-								}, function (err, header) {
-									//res.send(header + options.content + templates.footer);
+								async.parallel([
+									function(next) {
+										app.render('header', {}, next);
+									},
+									function(next) {
+										app.render('footer', {}, next);
+									}
+								], function(err, data) {
+									res.send(data[0] + options.content + data[1]);
 								});
 							});
 						});
@@ -68,10 +74,13 @@ function setupPluginRoutes(app) {
 					}(route));
 				}
 			}
-		});*/
+		});
 	});
 }
 
+/*
+* TO BE DEPRECATED post 0.4x
+*/
 function setupPluginAdminRoutes(app) {
 	var custom_routes = {
 		'routes': [],
@@ -79,10 +88,8 @@ function setupPluginAdminRoutes(app) {
 	};
 
 	plugins.ready(function() {
-		/*
-		* TO BE DEPRECATED post 0.4x and replaced with something that isn't as complicated as this...
-		*/
-		/*plugins.fireHook('filter:admin.create_routes', custom_routes, function(err, custom_routes) {
+		plugins.fireHook('filter:admin.create_routes', custom_routes, function(err, custom_routes) {
+			winston.warn('[plugins] filter:admin.create_routes is deprecated and will maintain limited functionality until 0.4x');
 			var route, routes = custom_routes.routes;
 
 			for (route in routes) {
@@ -90,8 +97,15 @@ function setupPluginAdminRoutes(app) {
 					(function(route) {
 						app[routes[route].method || 'get']('/admin' + routes[route].route, function(req, res) {
 							routes[route].options(req, res, function(options) {
-								Admin.buildHeader(req, res, function (err, header) {
-									res.send(header + options.content + templates['admin/footer']);
+								async.parallel([
+									function(next) {
+										app.render('admin/header', {}, next);
+									},
+									function(next) {
+										app.render('admin/footer', {}, next);
+									}
+								], function(err, data) {
+									res.send(data[0] + options.content + data[1]);
 								});
 							});
 						});
@@ -111,7 +125,7 @@ function setupPluginAdminRoutes(app) {
 					}(route));
 				}
 			}
-		});*/
+		});
 	});
 }
 
