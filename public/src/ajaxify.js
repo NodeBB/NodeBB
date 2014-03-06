@@ -153,7 +153,6 @@ var ajaxify = {};
 			tpl_url = url;
 		}
 
-		console.log(tpl_url);
 		return tpl_url;
 	}
 
