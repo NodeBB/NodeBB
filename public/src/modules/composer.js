@@ -4,6 +4,27 @@ define(['taskbar'], function(taskbar) {
 		posts: {}
 	};
 
+	function initialise() {
+		socket.on('event:composer.ping', function(post_uuid) {
+			if (composer.active === post_uuid) {
+				socket.emit('modules.composer.pingActive', post_uuid);
+			}
+		});
+	};
+	initialise();
+
+	function maybeParse(response) {
+		if (typeof response == 'string')  {
+			try {
+				return $.parseJSON(response);
+			} catch (e) {
+				return {status: 500, message: 'Something went wrong while parsing server response'}
+			}
+		}
+		return response;
+
+	}
+
 	function resetInputFile($el) {
 		$el.wrap('<form />').closest('form').get(0).reset();
 		$el.unwrap();
@@ -44,9 +65,9 @@ define(['taskbar'], function(taskbar) {
 
 	//http://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api
 	function findBootstrapEnvironment() {
-		var envs = ['xs', 'sm', 'md', 'lg'];
+		var envs = ['xs', 'sm', 'md', 'lg'],
+			$el = $('<div>');
 
-		$el = $('<div>');
 		$el.appendTo($('body'));
 
 		for (var i = envs.length - 1; i >= 0; i--) {
@@ -73,8 +94,8 @@ define(['taskbar'], function(taskbar) {
 
 	function initializeDragAndDrop(post_uuid) {
 
-		if(jQuery.event.props.indexOf('dataTransfer') === -1) {
-			jQuery.event.props.push('dataTransfer');
+		if($.event.props.indexOf('dataTransfer') === -1) {
+			$.event.props.push('dataTransfer');
 		}
 
 		var draggingDocument = false;
@@ -88,7 +109,7 @@ define(['taskbar'], function(taskbar) {
 		$(document).off('dragstart').on('dragstart', function(e) {
 			draggingDocument = true;
 		}).off('dragend').on('dragend', function(e) {
-				draggingDocument = false;
+			draggingDocument = false;
 		});
 
 		textarea.on('dragenter', function(e) {
@@ -116,17 +137,24 @@ define(['taskbar'], function(taskbar) {
 
 		drop.on('drop', function(e) {
 			e.preventDefault();
-			var dt = e.dataTransfer,
-				files = dt.files;
+			var files = e.files || (e.dataTransfer || {}).files || (e.target.value ? [e.target.value] : []),
+				fd;
 
 			if(files.length) {
-				var fd = new FormData();
-				for (var i = 0, file; file = dt.files[i]; i++) {
-					fd.append('files[]', file, file.name);
+				if (window.FormData) {
+					fd = new FormData();
+					for (var i = 0, file; file = files[i]; i++) {
+						fd.append('files[]', file, file.name);
+					}
 				}
 
-				fileForm[0].reset();
-				uploadContentFiles({files: files, post_uuid: post_uuid, route: '/api/post/upload', formData: fd});
+				// fileForm[0].reset();
+				uploadContentFiles({
+					files: files,
+					post_uuid: post_uuid,
+					route: '/api/post/upload',
+					formData: fd
+				});
 			}
 
 			drop.hide();
@@ -135,7 +163,8 @@ define(['taskbar'], function(taskbar) {
 
 		$(window).off('paste').on('paste', function(event) {
 
-			var items = (event.clipboardData || event.originalEvent.clipboardData).items;
+			var items = (event.clipboardData || event.originalEvent.clipboardData || {}).items,
+				fd;
 
 			if(items && items.length) {
 
@@ -143,11 +172,18 @@ define(['taskbar'], function(taskbar) {
 				if(blob) {
 					blob.name = 'upload-'+ utils.generateUUID();
 
-					var fd = new FormData();
-					fd.append('files[]', blob, blob.name);
+					if (window.FormData) {
+						fd = new FormData();
+						fd.append('files[]', blob, blob.name);
+					}
 
-					fileForm[0].reset();
-					uploadContentFiles({files: [blob], post_uuid: post_uuid, route: '/api/post/upload', formData: fd});
+					// fileForm[0].reset();
+					uploadContentFiles({
+						files: [blob],
+						post_uuid: post_uuid,
+						route: '/api/post/upload',
+						formData: fd
+					});
 				}
 			}
 		});
@@ -167,7 +203,7 @@ define(['taskbar'], function(taskbar) {
 		uploadForm.attr('action', route);
 
 		for(var i = 0; i < files.length; ++i) {
-			var isImage = files[i].type.match('image.*');
+			var isImage = files[i].type.match(/image./);
 			text += (isImage ? '!' : '') + '[' + files[i].name + '](uploading...) ';
 
 			if(files[i].size > parseInt(config.maximumFileSize, 10) * 1024) {
@@ -181,6 +217,7 @@ define(['taskbar'], function(taskbar) {
 		uploadForm.off('submit').submit(function() {
 
 			$(this).find('#postUploadCsrf').val($('#csrf_token').val());
+
 			if(formData) {
 				formData.append('_csrf', $('#csrf_token').val());
 			}
@@ -191,19 +228,25 @@ define(['taskbar'], function(taskbar) {
 				resetForm: true,
 				clearForm: true,
 				formData: formData,
+
 				error: function(xhr) {
+					xhr = maybeParse(xhr);
+
 					app.alertError('Error uploading file!\nStatus : ' + xhr.status + '\nMessage : ' + xhr.responseText);
 					if (typeof callback == 'function')
 						callback(xhr);
 				},
+
 				uploadProgress: function(event, position, total, percent) {
 					var current = textarea.val();
-					for(var i=0; i<files.length; ++i) {
+					for(var i=0; i < files.length; ++i) {
 						var re = new RegExp(files[i].name + "]\\([^)]+\\)", 'g');
 						textarea.val(current.replace(re, files[i].name+'](uploading ' + percent + '%)'));
 					}
 				},
+
 				success: function(uploads) {
+					uploads = maybeParse(uploads);
 
 					if(uploads && uploads.length) {
 						for(var i=0; i<uploads.length; ++i) {
@@ -218,7 +261,7 @@ define(['taskbar'], function(taskbar) {
 						callback(null, uploads);
 				},
 
-				complete: function(xhr, status) {
+				complete: function() {
 					uploadForm[0].reset();
 					composer.posts[post_uuid].uploadsInProgress.pop();
 				}
@@ -255,11 +298,15 @@ define(['taskbar'], function(taskbar) {
 			$(this).ajaxSubmit({
 				formData: formData,
 				error: function(xhr) {
+					xhr = maybeParse(xhr);
+
 					app.alertError('Error uploading file!\nStatus : ' + xhr.status + '\nMessage : ' + xhr.responseText);
 					if (typeof callback == 'function')
 						callback(xhr);
 				},
 				success: function(uploads) {
+					uploads = maybeParse(uploads);
+
 					postContainer.find('#topic-thumb-url').val((uploads[0] || {}).url || '').trigger('change');
 					if (typeof callback == 'function')
 						callback(null, uploads);
@@ -294,22 +341,22 @@ define(['taskbar'], function(taskbar) {
 				var prevText = bodyEl.val();
 				if(tid !== composer.posts[uuid].tid) {
 					text = username + ' said in ['+title+'](/topic/'+tid+'#'+pid+'):\n'+text;
-				}else {
+				} else {
 					text = username + ' said:\n' + text;
 				}
 				composer.posts[uuid].body = (prevText.length ? prevText + '\n\n' : '') + text;
 				bodyEl.val(composer.posts[uuid].body);
-			}else{
-				composer.newReply(tid,title,username + ' said:\n' + text);
+			} else {
+				composer.newReply(tid, pid, title, username + ' said:\n' + text);
 			}
-
 		}
 	};
 
-	composer.newReply = function(tid, title, text) {
+	composer.newReply = function(tid, pid, title, text) {
 		if(allowed()) {
 			push({
 				tid: tid,
+				toPid: pid,
 				title: title,
 				body: text,
 				modified: false,
@@ -341,6 +388,16 @@ define(['taskbar'], function(taskbar) {
 			composer.activateReposition(post_uuid);
 		} else {
 			composer.createNewComposer(post_uuid);
+		}
+
+		var	postData = composer.posts[post_uuid];
+		if (postData.tid) {
+			// Replying to a topic
+			socket.emit('modules.composer.register', {
+				uuid: post_uuid,
+				tid: postData.tid,
+				uid: app.uid
+			});
 		}
 	};
 
@@ -530,19 +587,23 @@ define(['taskbar'], function(taskbar) {
 					$('#files').click();
 				});
 
-				$('#files').on('change', function(e) {
-					var files = e.target.files;
+				postContainer.find('#files').on('change', function(e) {
+					var files = (e.target || {}).files || ($(this).val() ? [{name: $(this).val(), type: utils.fileMimeType($(this).val())}] : null);
 					if(files) {
 						uploadContentFiles({files: files, post_uuid: post_uuid, route: '/api/post/upload'});
 					}
 				});
 
 				postContainer.find('#topic-thumb-file').on('change', function(e) {
-					var files = e.target.files;
+					var files = (e.target || {}).files || ($(this).val() ? [{name: $(this).val(), type: utils.fileMimeType($(this).val())}] : null),
+						fd;
+
 					if(files) {
-						var fd = new FormData();
-						for (var i = 0, file; file = files[i]; i++) {
-							fd.append('files[]', file, file.name);
+						if (window.FormData) {
+							fd = new FormData();
+							for (var i = 0, file; file = files[i]; i++) {
+								fd.append('files[]', file, file.name);
+							}
 						}
 						uploadTopicThumb({files: files, post_uuid: post_uuid, route: '/api/topic/thumb/upload', formData: fd});
 					}
@@ -573,21 +634,21 @@ define(['taskbar'], function(taskbar) {
 					resizeCenterY = 0,
 					resizeOffset = 0,
 					resizeStart = function(e) {
-						resizeRect = resizeEl.getBoundingClientRect();
+						resizeRect = resizeEl[0].getBoundingClientRect();
 						resizeCenterY = resizeRect.top + (resizeRect.height/2);
 						resizeOffset = resizeCenterY - e.clientY;
 						resizeActive = true;
 
 						$(window).on('mousemove', resizeAction);
 						$(window).on('mouseup', resizeStop);
-						document.body.addEventListener('touchmove', resizeTouchAction);
+						$('body').on('touchmove', resizeTouchAction);
 					},
 					resizeStop = function() {
 						resizeActive = false;
 						bodyEl.focus();
 						$(window).off('mousemove', resizeAction);
 						$(window).off('mouseup', resizeStop);
-						document.body.removeEventListener('touchmove', resizeTouchAction);
+						$('body').off('touchmove', resizeTouchAction);
 					},
 					resizeTouchAction = function(e) {
 						e.preventDefault();
@@ -617,24 +678,29 @@ define(['taskbar'], function(taskbar) {
 					},
 					resizeRect;
 
-				var resizeEl = postContainer.find('.resizer')[0];
+				var resizeEl = postContainer.find('.resizer');
 
-				resizeEl.addEventListener('mousedown', resizeStart);
+				resizeEl.on('mousedown', resizeStart);
 
-				resizeEl.addEventListener('touchstart', function(e) {
+				resizeEl.on('touchstart', function(e) {
 					e.preventDefault();
 					resizeStart(e.touches[0]);
 				});
-				resizeEl.addEventListener('touchend', function(e) {
+				resizeEl.on('touchend', function(e) {
 					e.preventDefault();
 					resizeStop();
 				});
-					// .on('mousedown touchstart', resizeStart)
-					// .on('mouseup touchend', resizeStop)
 
-				window.addEventListener('resize', function() {
+				$(window).on('resize', function() {
 					if (composer.active !== undefined) {
 						composer.activateReposition(composer.active);
+					}
+				});
+
+				socket.emit('modules.composer.renderHelp', function(err, html) {
+					if (html && html.length > 0) {
+						postContainer.find('.help').html(html);
+						postContainer.find('[data-pane=".tab-help"]').parent().removeClass('hidden');
 					}
 				});
 
@@ -652,7 +718,6 @@ define(['taskbar'], function(taskbar) {
 		}
 
 		var	percentage = localStorage.getItem('composer:resizePercentage'),
-			bodyRect = document.body.getBoundingClientRect(),
 			postContainer = $('#cmp-uuid-' + post_uuid);
 
 		composer.active = post_uuid;
@@ -673,10 +738,12 @@ define(['taskbar'], function(taskbar) {
 				postContainer.find('.upload-instructions').removeClass('hide');
 			}
 			postContainer.find('.img-upload-btn').removeClass('hide');
+			postContainer.find('#files.lt-ie9').removeClass('hide');
 		}
 
 		if(config.allowFileUploads) {
 			postContainer.find('.file-upload-btn').removeClass('hide');
+			postContainer.find('#files.lt-ie9').removeClass('hide');
 		}
 
 		postContainer.css('visibility', 'visible')
@@ -736,8 +803,9 @@ define(['taskbar'], function(taskbar) {
 			}, done);
 		} else if (parseInt(postData.tid, 10) > 0) {
 			socket.emit('posts.reply', {
-				topic_id: postData.tid,
-				content: bodyEl.val()
+				tid: postData.tid,
+				content: bodyEl.val(),
+				toPid: postData.toPid
 			}, done);
 		} else if (parseInt(postData.pid, 10) > 0) {
 			socket.emit('posts.edit', {
@@ -764,6 +832,8 @@ define(['taskbar'], function(taskbar) {
 			taskbar.discard('composer', post_uuid);
 			$('body').css({'margin-bottom': 0});
 			$('.action-bar button').removeAttr('disabled');
+
+			socket.emit('modules.composer.unregister', post_uuid);
 		}
 	};
 
@@ -772,156 +842,9 @@ define(['taskbar'], function(taskbar) {
 		postContainer.css('visibility', 'hidden');
 		composer.active = undefined;
 		taskbar.minimize('composer', post_uuid);
+
+		socket.emit('modules.composer.unregister', post_uuid);
 	};
-
-	function initializeDragAndDrop(post_uuid) {
-
-		if(jQuery.event.props.indexOf('dataTransfer') === -1) {
-			jQuery.event.props.push('dataTransfer');
-		}
-
-		var draggingDocument = false;
-
-		var postContainer = $('#cmp-uuid-' + post_uuid),
-			fileForm = postContainer.find('#fileForm');
-			drop = postContainer.find('.imagedrop'),
-			tabContent = postContainer.find('.tab-content'),
-			textarea = postContainer.find('textarea');
-
-		$(document).off('dragstart').on('dragstart', function(e) {
-			draggingDocument = true;
-		}).off('dragend').on('dragend', function(e) {
-			draggingDocument = false;
-		});
-
-		textarea.on('dragenter', function(e) {
-			if(draggingDocument) {
-				return;
-			}
-			drop.css('top', tabContent.position().top + 'px');
-			drop.css('height', textarea.height());
-			drop.css('line-height', textarea.height() + 'px');
-			drop.show();
-
-			drop.on('dragleave', function(ev) {
-				drop.hide();
-				drop.off('dragleave');
-			});
-		});
-
-		function cancel(e) {
-			e.preventDefault();
-			return false;
-		}
-
-		drop.on('dragover', cancel);
-		drop.on('dragenter', cancel);
-
-		drop.on('drop', function(e) {
-			e.preventDefault();
-			var dt = e.dataTransfer,
-				files = dt.files;
-
-			if(files.length) {
-				var fd = new FormData();
-				for (var i = 0, file; file = dt.files[i]; i++) {
-					fd.append('files[]', file, file.name);
-				}
-
-				fileForm[0].reset();
-				uploadSubmit(files, post_uuid, '/api/post/upload', fd);
-			}
-
-			drop.hide();
-			return false;
-		});
-
-		$(window).off('paste').on('paste', function(event) {
-
-			var items = (event.clipboardData || event.originalEvent.clipboardData).items;
-
-			if(items && items.length) {
-
-				var blob = items[0].getAsFile();
-				if(blob) {
-					blob.name = 'upload-'+ utils.generateUUID();
-
-					var fd = new FormData();
-					fd.append('files[]', blob, blob.name);
-
-					fileForm[0].reset();
-					uploadSubmit([blob], post_uuid, '/api/post/upload', fd);
-				}
-			}
-		});
-	}
-
-	function uploadSubmit(files, post_uuid, route, formData, callback) {
-		var postContainer = $('#cmp-uuid-' + post_uuid),
-			textarea = postContainer.find('textarea'),
-			text = textarea.val(),
-			uploadForm = postContainer.find('#fileForm');
-
-		uploadForm.attr('action', route);
-
-		for(var i=0; i<files.length; ++i) {
-			var isImage = files[i].type.match('image.*');
-			text += (isImage ? '!' : '') + '[' + files[i].name + '](uploading...) ';
-
-			if(files[i].size > parseInt(config.maximumFileSize, 10) * 1024) {
-				uploadForm[0].reset();
-				return composerAlert('File too big', 'Maximum allowed file size is ' + config.maximumFileSize + 'kbs');
-			}
-		}
-
-		textarea.val(text);
-
-		uploadForm.off('submit').submit(function() {
-
-			$(this).find('#postUploadCsrf').val($('#csrf_token').val());
-			if(formData) {
-				formData.append('_csrf', $('#csrf_token').val());
-			}
-
-			composer.posts[post_uuid].uploadsInProgress.push(1);
-
-			$(this).ajaxSubmit({
-				resetForm: true,
-				clearForm: true,
-				formData: formData,
-				error: function(xhr) {
-					app.alertError('Error uploading file!\nStatus : ' + xhr.status + '\nMessage : ' + xhr.responseText);
-				},
-				uploadProgress: function(event, position, total, percent) {
-					var current = textarea.val();
-					for(var i=0; i<files.length; ++i) {
-						var re = new RegExp(files[i].name + "]\\([^)]+\\)", 'g');
-						textarea.val(current.replace(re, files[i].name+'](uploading ' + percent + '%)'));
-					}
-				},
-				success: function(uploads) {
-
-					if(uploads && uploads.length) {
-						for(var i=0; i<uploads.length; ++i) {
-							var current = textarea.val();
-							var re = new RegExp(uploads[i].name + "]\\([^)]+\\)", 'g');
-							textarea.val(current.replace(re, uploads[i].name + '](' + uploads[i].url + ')'));
-						}
-					}
-
-					textarea.focus();
-				},
-				complete: function(xhr, status) {
-					uploadForm[0].reset();
-					composer.posts[post_uuid].uploadsInProgress.pop();
-				}
-			});
-
-			return false;
-		});
-
-		uploadForm.submit();
-	}
 
 	return {
 		newTopic: composer.newTopic,

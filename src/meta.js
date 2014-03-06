@@ -3,6 +3,7 @@ var fs = require('fs'),
 	async = require('async'),
 	winston = require('winston'),
 	nconf = require('nconf'),
+	_ = require('underscore'),
 
 	utils = require('./../public/src/utils'),
 	translator = require('./../public/src/translator'),
@@ -223,6 +224,7 @@ var fs = require('fs'),
 	};
 
 	Meta.js = {
+		cache: undefined,
 		scripts: [
 			'vendor/jquery/js/jquery.js',
 			'vendor/jquery/js/jquery-ui-1.10.4.custom.js',
@@ -238,24 +240,34 @@ var fs = require('fs'),
 			'src/templates.js',
 			'src/ajaxify.js',
 			'src/translator.js',
+			'src/overrides.js',
 			'src/utils.js'
 		],
-		minFile: path.join(__dirname, '..', 'public/src/nodebb.min.js'),
+		minFile: nconf.get('relative_path') + 'nodebb.min.js',
 		get: function (callback) {
 			plugins.fireHook('filter:scripts.get', this.scripts, function(err, scripts) {
 				var ctime,
 					jsPaths = scripts.map(function (jsPath) {
 						jsPath = path.normalize(jsPath);
 
+						// The filter:scripts.get plugin will be deprecated as of v0.5.0, specify scripts in plugin.json instead
 						if (jsPath.substring(0, 7) === 'plugins') {
-							var paths = jsPath.split(path.sep),
-								mappedPath = paths[1];
+							var	matches = _.map(plugins.staticDirs, function(realPath, mappedPath) {
+								if (jsPath.match(mappedPath)) {
+									return mappedPath;
+								} else {
+									return null;
+								}
+							}).filter(function(a) { return a; });
 
-							if (plugins.staticDirs[mappedPath]) {
-								jsPath = jsPath.replace(path.join('plugins', mappedPath), '');
-								return path.join(plugins.staticDirs[mappedPath], jsPath);
+							if (matches.length) {
+								var	relPath = jsPath.slice(new String('plugins/' + matches[0]).length),
+									pluginId = matches[0].split(path.sep)[0];
+
+								winston.warn('[meta.scripts.get (' + pluginId + ')] filter:scripts.get is deprecated, consider using "scripts" in plugin.json');
+								return plugins.staticDirs[matches[0]] + relPath;
 							} else {
-								winston.warn('[meta.scripts.get] Could not resolve mapped path: ' + mappedPath + '. Are you sure it is defined by a plugin?');
+								winston.warn('[meta.scripts.get] Could not resolve mapped path: ' + jsPath + '. Are you sure it is defined by a plugin?');
 								return null;
 							}
 						} else {
@@ -263,77 +275,59 @@ var fs = require('fs'),
 						}
 					});
 
+				// Remove scripts that could not be found (remove this line at v0.5.0)
 				Meta.js.scripts = jsPaths.filter(function(path) { return path !== null });
 
-				if (process.env.NODE_ENV !== 'development') {
-					async.parallel({
-						ctime: function (next) {
-							async.map(jsPaths, fs.stat, function (err, stats) {
-								async.reduce(stats, 0, function (memo, item, next) {
-									if(item) {
-										ctime = +new Date(item.ctime);
-										next(null, ctime > memo ? ctime : memo);
-									} else {
-										next(null, memo);
-									}
-								}, next);
-							});
-						},
-						minFile: function (next) {
-							if (!fs.existsSync(Meta.js.minFile)) {
-								winston.info('No minified client-side library found');
-								return next(null, 0);
-							}
+				// Add plugin scripts
+				Meta.js.scripts = Meta.js.scripts.concat(plugins.clientScripts);
 
-							fs.stat(Meta.js.minFile, function (err, stat) {
-								next(err, +new Date(stat.ctime));
-							});
-						}
-					}, function (err, results) {
-						if (results.minFile > results.ctime) {
-							winston.info('No changes to client-side libraries -- skipping minification');
-							callback(null, [path.relative(path.join(__dirname, '../public'), Meta.js.minFile)]);
-						} else {
-							winston.info('Minifying client-side libraries -- please wait');
-							Meta.js.minify(function () {
-								callback(null, [
-									path.relative(path.join(__dirname, '../public'), Meta.js.minFile)
-								]);
-							});
-						}
-					});
-				} else {
-					callback(null, scripts);
-				}
+				callback(null, [
+					Meta.js.minFile
+				]);
 			});
 		},
 		minify: function (callback) {
 			var uglifyjs = require('uglify-js'),
-				jsPaths = this.scripts,
 				minified;
 
 			if (process.env.NODE_ENV === 'development') {
 				winston.info('Minifying client-side libraries');
 			}
 
-			minified = uglifyjs.minify(jsPaths);
-			fs.writeFile(Meta.js.minFile, minified.code, function (err) {
-				if (!err) {
-					if (process.env.NODE_ENV === 'development') {
-						winston.info('Minified client-side libraries');
-					}
-					callback();
-				} else {
-					winston.error('Problem minifying client-side libraries, exiting.');
+			minified = uglifyjs.minify(this.scripts);
+			this.cache = minified.code;
+			callback();
+		},
+		concatenate: function(callback) {
+			if (process.env.NODE_ENV === 'development') {
+				winston.info('Concatenating client-side libraries into one file');
+			}
+
+			async.map(this.scripts, function(path, next) {
+				fs.readFile(path, { encoding: 'utf-8' }, next);
+			}, function(err, contents) {
+				if (err) {
+					winston.error('[meta.js.concatenate] Could not minify javascript! Error: ' + err.message);
 					process.exit();
 				}
+
+				Meta.js.cache = contents.reduce(function(output, src) {
+					return output.length ? output + ';\n' + src : src;
+				}, '');
+				callback();
 			});
 		}
 	};
 
-	Meta.db = {
-		getFile: function (callback) {
-			db.getFileName(callback);
+	Meta.css = {
+		cache: undefined
+	};
+
+	Meta.restart = function() {
+		if (process.send) {
+			process.send('nodebb:restart');
+		} else {
+			winston.error('[meta.restart] Could not restart, are you sure NodeBB was started with `./nodebb start`?');
 		}
 	};
 }(exports));

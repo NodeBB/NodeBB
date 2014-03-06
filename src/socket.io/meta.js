@@ -85,7 +85,7 @@ SocketMeta.rooms.enter = function(socket, data) {
 
 	socket.join(data.enter);
 
-	if (data.leave) {
+	if (data.leave && data.leave !== data.enter) {
 		module.parent.exports.updateRoomBrowsingText(data.leave);
 	}
 

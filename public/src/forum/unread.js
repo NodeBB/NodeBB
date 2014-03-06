@@ -12,8 +12,17 @@ define(['forum/recent'], function(recent) {
 		recent.watchForNewPosts();
 
 		$('#mark-allread-btn').on('click', function() {
+			function getUnreadTids() {
+				var tids = [];
+				$('#topics-container .category-item[data-tid]').each(function() {
+					tids.push($(this).attr('data-tid'));
+				});
+				return tids;
+			}
+
 			var btn = $(this);
-			socket.emit('topics.markAllRead', function(err) {
+
+			socket.emit('topics.markAllRead', getUnreadTids(), function(err) {
 				if(err) {
 					return app.alertError('There was an error marking topics read!');
 				}

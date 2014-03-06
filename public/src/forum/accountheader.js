@@ -9,7 +9,7 @@ define(function() {
 		hideLinks();
 
 		selectActivePill();
-	}
+	};
 
 	AccountHeader.createMenu = function() {
 		var userslug = $('.account-username-box').attr('data-userslug');
@@ -30,7 +30,7 @@ define(function() {
 			selectActivePill();
 			hideLinks();
 		});
-	}
+	};
 
 	function hideLinks() {
 		var yourid = templates.get('yourid'),

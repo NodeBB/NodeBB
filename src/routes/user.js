@@ -3,7 +3,6 @@ var fs = require('fs'),
 	winston = require('winston'),
 	nconf = require('nconf'),
 	async= require('async'),
-	imagemagick = require('node-imagemagick'),
 
 	user = require('./../user'),
 	posts = require('./../posts'),
@@ -117,6 +116,7 @@ var fs = require('fs'),
 
 				var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
 				if (req.files.userPhoto.size > uploadSize * 1024) {
+					fs.unlink(req.files.userPhoto.path);
 					return res.send({
 						error: 'Images must be smaller than ' + uploadSize + ' kb!'
 					});
@@ -124,6 +124,7 @@ var fs = require('fs'),
 
 				var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
 				if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
+					fs.unlink(req.files.userPhoto.path);
 					return res.send({
 						error: 'Allowed image types are png, jpg and gif!'
 					});
@@ -131,6 +132,7 @@ var fs = require('fs'),
 
 				var extension = path.extname(req.files.userPhoto.name);
 				if (!extension) {
+					fs.unlink(req.files.userPhoto.path);
 					return res.send({
 						error: 'Error uploading file! Error : Invalid extension!'
 					});
@@ -185,6 +187,7 @@ var fs = require('fs'),
 					}
 
 					if(err) {
+						fs.unlink(req.files.userPhoto.path);
 						return res.send({error:err.message});
 					}
 
@@ -230,6 +233,7 @@ var fs = require('fs'),
 		app.get('/api/user/:userslug/posts', isAllowed, getUserPosts);
 		app.get('/api/user/uid/:uid', isAllowed, getUserData);
 		app.get('/api/user/:userslug', isAllowed, getUserProfile);
+
 		app.get('/api/users', isAllowed, getOnlineUsers);
 		app.get('/api/users/sort-posts', isAllowed, getUsersSortedByPosts);
 		app.get('/api/users/sort-reputation', isAllowed, getUsersSortedByReputation);
@@ -590,6 +594,9 @@ var fs = require('fs'),
 					},
 					followStats: function(next) {
 						user.getFollowStats(uid, next);
+					},
+					ips: function(next) {
+						user.getIPs(uid, 4, next);
 					}
 				}, function(err, results) {
 					if(err || !results.userData) {
@@ -599,6 +606,7 @@ var fs = require('fs'),
 					var userData = results.userData;
 					var userSettings = results.userSettings;
 					var isAdmin = results.isAdmin;
+					var self = parseInt(callerUID, 10) === parseInt(userData.uid, 10);
 
 					userData.joindate = utils.toISOString(userData.joindate);
 					if(userData.lastonline) {
@@ -614,17 +622,21 @@ var fs = require('fs'),
 					}
 
 					function canSeeEmail() {
-						return isAdmin || parseInt(callerUID, 10) === parseInt(userData.uid, 10) || (userData.email && userSettings.showemail);
+						return ;
 					}
 
-					if (!canSeeEmail()) {
+					if (!(isAdmin || self || (userData.email && userSettings.showemail))) {
 						userData.email = "";
 					}
 
-					if (parseInt(callerUID, 10) === parseInt(userData.uid, 10) && !userSettings.showemail) {
+					if (self && !userSettings.showemail) {
 						userData.emailClass = "";
 					} else {
 						userData.emailClass = "hide";
+					}
+
+					if (isAdmin || self) {
+						userData.ips = results.ips;
 					}
 
 					userData.websiteName = userData.website.replace('http://', '').replace('https://', '');

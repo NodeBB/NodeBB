@@ -1,9 +1,15 @@
+
+<input type="hidden" template-variable="category_id" value="{cid}" />
+<input type="hidden" template-variable="category_name" value="{name}" />
+<input type="hidden" template-variable="currentPage" value="{currentPage}" />
+<input type="hidden" template-variable="pageCount" value="{pageCount}" />
+
 <ol class="breadcrumb">
 	<li itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
 		<a href="{relative_path}/" itemprop="url"><span itemprop="title">[[global:home]]</span></a>
 	</li>
 	<li class="active" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
-		<span itemprop="title">{category_name} <a target="_blank" href="../{category_id}.rss"><i class="fa fa-rss-square"></i></a></span>
+		<span itemprop="title">{name} <a target="_blank" href="../{cid}.rss"><i class="fa fa-rss-square"></i></a></span>
 	</li>
 </ol>
 
@@ -11,13 +17,13 @@
 	<!-- IF privileges.write -->
 	<button id="new_post" class="btn btn-primary">[[category:new_topic_button]]</button>
 	<!-- ENDIF privileges.write -->
-	<!-- IF !disableSocialButtons -->
+	<!-- IF !config.disableSocialButtons -->
 	<div class="inline-block pull-right">
 		<a href="#" id="facebook-share"><i class="fa fa-facebook-square fa-2x"></i></a>&nbsp;
-		<a href="#" id="twitter-intent"><i class="fa fa-twitter-square fa-2x"></i></a>&nbsp;
+		<a href="#" id="twitter-share"><i class="fa fa-twitter-square fa-2x"></i></a>&nbsp;
 		<a href="#" id="google-share"><i class="fa fa-google-plus-square fa-2x"></i></a>&nbsp;
 	</div>
-	<!-- ENDIF !disableSocialButtons -->
+	<!-- ENDIF !config.disableSocialButtons -->
 </div>
 
 <hr/>
@@ -33,7 +39,7 @@
 		<ul id="topics-container" itemscope itemtype="http://www.schema.org/ItemList" data-nextstart="{nextStart}">
 			<meta itemprop="itemListOrder" content="descending">
 			<!-- BEGIN topics -->
-			<li class="category-item {topics.deleted-class} {topics.unread-class}" itemprop="itemListElement">
+			<li class="category-item <!-- IF topics.deleted -->deleted<!-- ENDIF topics.deleted --><!-- IF topics.unread -->unread<!-- ENDIF topics.unread -->" itemprop="itemListElement" data-tid="{topics.tid}" data-index="{topics.index}">
 
 				<div class="col-md-12 col-xs-12 panel panel-default topic-row">
 
@@ -50,7 +56,7 @@
 						<a href="../../topic/{topics.slug}" itemprop="url">
 							<meta itemprop="name" content="{topics.title}">
 
-							<strong><i class="fa {topics.pin-icon}"></i> <i class="fa {topics.lock-icon}"></i></strong>
+							<strong><!-- IF topics.pinned --><i class="fa fa-thumb-tack"></i><!-- ENDIF topics.pinned --> <!-- IF topics.locked --><i class="fa fa-lock"></i><!-- ENDIF topics.locked --></strong>
 							<span class="topic-title">{topics.title}</span>
 						</a>
 					</h3>
@@ -74,13 +80,13 @@
 							<!-- IF topics.unreplied -->
 							[[category:no_replies]]
 							<!-- ELSE -->
-							<a href="../../user/{topics.teaser_userslug}">
-								<img class="teaser-pic" src="{topics.teaser_userpicture}" title="{topics.teaser_username}"/>
+							<a href="../../user/{topics.teaser.userslug}">
+								<img class="teaser-pic" src="{topics.teaser.picture}" title="{topics.teaser.username}"/>
 							</a>
-							<a href="../../topic/{topics.slug}#{topics.teaser_pid}">
+							<a href="../../topic/{topics.slug}#{topics.teaser.pid}">
 								[[category:replied]]
 							</a>
-							<span class="timeago" title="{topics.teaser_timestamp}"></span>
+							<span class="timeago" title="{topics.teaser.timestamp}"></span>
 							<!-- ENDIF topics.unreplied -->
 						</span>
 					</small>
@@ -109,7 +115,3 @@
 	<!-- ENDIF topics.length -->
 </div>
 
-<input type="hidden" template-variable="category_id" value="{category_id}" />
-<input type="hidden" template-variable="category_name" value="{category_name}" />
-<input type="hidden" template-variable="currentPage" value="{currentPage}" />
-<input type="hidden" template-variable="pageCount" value="{pageCount}" />

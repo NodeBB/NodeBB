@@ -1,13 +1,14 @@
 {
     "home": "Hjem",
     "unread": "Uleste emner",
-    "popular": "Popular Topics",
+    "popular": "Populære tråder",
     "recent": "Seneste emner",
     "users": "Registrerte brukere",
     "notifications": "Varsler",
     "user.edit": "Endrer \"%1\"",
     "user.following": "Personer %1 følger",
     "user.followers": "Personer som følger %1",
+    "user.posts": "Innlegg laget av %1",
     "user.favourites": "%1 sine favoritt-innlegg",
     "user.settings": "Brukerinnstillinger"
 }

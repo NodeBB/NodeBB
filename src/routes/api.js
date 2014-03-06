@@ -30,6 +30,8 @@ var path = require('path'),
 					user.updateLastOnlineTime(req.user.uid);
 				}
 
+				db.sortedSetAdd('ip:recent', Date.now(), req.ip || 'Unknown');
+
 				next();
 			});
 
@@ -60,6 +62,7 @@ var path = require('path'),
 				config.allowFileUploads = parseInt(meta.config.allowFileUploads, 10) === 1;
 				config.allowTopicsThumbnail = parseInt(meta.config.allowTopicsThumbnail, 10) === 1;
 				config.usePagination = parseInt(meta.config.usePagination, 10) === 1;
+				config.disableSocialButtons = parseInt(meta.config.disableSocialButtons, 10) === 1;
 				config.topicsPerPage = meta.config.topicsPerPage || 20;
 				config.postsPerPage = meta.config.postsPerPage || 20;
 				config.maximumFileSize = meta.config.maximumFileSize;
@@ -169,7 +172,8 @@ var path = require('path'),
 			});
 
 			app.get('/topic/:id/:slug?', function (req, res, next) {
-				var uid = (req.user) ? req.user.uid : 0;
+				var uid = req.user? parseInt(req.user.uid, 10) : 0;
+				var tid = req.params.id;
 				var page = 1;
 				if(req.query && req.query.page) {
 					page = req.query.page;
@@ -187,29 +191,41 @@ var path = require('path'),
 					var start = (page - 1) * settings.postsPerPage;
 					var end = start + settings.postsPerPage - 1;
 
-					ThreadTools.privileges(req.params.id, uid, function(err, privileges) {
-						if (privileges.read) {
-							topics.getTopicWithPosts(req.params.id, uid, start, end, false, function (err, data) {
-								if(err) {
-									return next(err);
-								}
+					ThreadTools.privileges(tid, uid, function(err, privileges) {
+						if(err) {
+							return next(err);
+						}
 
-								if(page > data.pageCount) {
-									return res.send(404);
-								}
-
-								data.currentPage = page;
-								data.privileges = privileges;
-
-								if (parseInt(data.deleted, 10) === 1 && parseInt(data.expose_tools, 10) === 0) {
-									return res.json(404, {});
-								}
-
-								res.json(data);
-							});
-						} else {
+						if(!privileges.read) {
 							res.send(403);
 						}
+
+						topics.getTopicWithPosts(tid, uid, start, end, function (err, data) {
+							if(err) {
+								return next(err);
+							}
+
+							if(page > data.pageCount) {
+								return res.send(404);
+							}
+
+							if (parseInt(data.deleted, 10) === 1 && parseInt(data.expose_tools, 10) === 0) {
+								return res.json(404, {});
+							}
+
+							data.currentPage = page;
+							data.privileges = privileges;
+
+							if (uid) {
+								topics.markAsRead(tid, uid, function(err) {
+									topics.pushUnreadCount(uid);
+								});
+							}
+
+							topics.increaseViewCount(tid);
+
+							res.json(data);
+						});
 					});
 				});
 			});
@@ -257,6 +273,17 @@ var path = require('path'),
 							}
 						});
 					});
+				});
+			});
+
+			app.get('/recent/posts/:term?', function (req, res, next) {
+				var uid = (req.user) ? req.user.uid : 0;
+				posts.getRecentPosts(uid, 0, 19, req.params.term, function (err, data) {
+					if(err) {
+						return next(err);
+					}
+
+					res.json(data);
 				});
 			});
 
@@ -377,15 +404,13 @@ var path = require('path'),
 					return res.redirect('/404');
 				}
 
-				var limit = 50;
-
 				function searchPosts(callback) {
 					Plugins.fireHook('filter:search.query', {
 						index: 'post',
-						query: req.params.terms
+						query: req.params.term
 					}, function(err, pids) {
 						if (err) {
-							return callback(err, null);
+							return callback(err);
 						}
 
 						posts.getPostSummaryByPids(pids, false, callback);
@@ -395,13 +420,13 @@ var path = require('path'),
 				function searchTopics(callback) {
 					Plugins.fireHook('filter:search.query', {
 						index: 'topic',
-						query: req.params.terms
+						query: req.params.term
 					}, function(err, tids) {
 						if (err) {
-							return callback(err, null);
+							return callback(err);
 						}
 
-						topics.getTopicsByTids(tids, 0, 0, callback);
+						topics.getTopicsByTids(tids, 0, callback);
 					});
 				}
 
@@ -455,16 +480,25 @@ var path = require('path'),
 
 				async.map(files, filesIterator, function(err, images) {
 					deleteTempFiles();
+
 					if(err) {
-						return res.json(500, err.message);
+						return res.send(500, err.message);
 					}
-					res.json(200, images);
+
+					// if this was not a XMLHttpRequest (hence the req.xhr check http://expressjs.com/api.html#req.xhr)
+					// then most likely it's submit via the iFrame workaround, via the jquery.form plugin's ajaxSubmit()
+					// we need to send it as text/html so IE8 won't trigger a file download for the json response
+					// malsup.com/jquery/form/#file-upload
+
+					// Also, req.send is safe for both types, if the response was an object, res.send will automatically submit as application/json
+					// expressjs.com/api.html#res.send
+					res.send(200, req.xhr ? images : JSON.stringify(images));
 				});
 			}
 
 			app.post('/post/upload', function(req, res, next) {
 				upload(req, res, function(file, next) {
-					if(file.type.match('image.*')) {
+					if(file.type.match(/image./)) {
 						posts.uploadPostImage(file, next);
 					} else {
 						posts.uploadPostFile(file, next);
@@ -474,7 +508,7 @@ var path = require('path'),
 
 			app.post('/topic/thumb/upload', function(req, res, next) {
 				upload(req, res, function(file, next) {
-					if(file.type.match('image.*')) {
+					if(file.type.match(/image./)) {
 						topics.uploadTopicThumb(file, next);
 					} else {
 		            	res.json(500, {message: 'Invalid File'});
@@ -502,6 +536,14 @@ var path = require('path'),
 
 			app.get('/500', function(req, res) {
 				res.json({errorMessage: 'testing'});
+			});
+
+			app.namespace('/categories', function() {
+				app.get(':cid/moderators', function(req, res) {
+					categories.getModerators(req.params.cid, function(err, moderators) {
+						res.json({moderators: moderators});
+					})
+				});
 			});
 		});
 	}

@@ -9,44 +9,44 @@ define(['uploader'], function(uploader) {
 		// Come back in 125ms if the config isn't ready yet
 		if (!app.config) {
 			setTimeout(function() {
-				Settings.prepare();
+				Settings.prepare(callback);
 			}, 125);
 			return;
 		}
 
 		// Populate the fields on the page from the config
-		var fields = document.querySelectorAll('#content [data-field]'),
+		var fields = $('#content [data-field]'),
 			numFields = fields.length,
-			saveBtn = document.getElementById('save'),
-			x, key, inputType;
+			saveBtn = $('#save'),
+			x, key, inputType, field;
 
 		for (x = 0; x < numFields; x++) {
-			key = fields[x].getAttribute('data-field');
-			inputType = fields[x].getAttribute('type');
-			if (fields[x].nodeName === 'INPUT') {
+			field = fields.eq(x);
+			key = field.attr('data-field');
+			inputType = field.attr('type');
+			if (field.is('input')) {
 				if (app.config[key]) {
 					switch (inputType) {
 						case 'text':
 						case 'password':
 						case 'textarea':
 						case 'number':
-							fields[x].value = app.config[key];
+							field.val(app.config[key]);
 							break;
 
 						case 'checkbox':
-							fields[x].checked = parseInt(app.config[key], 10) === 1;
+							field.prop('checked', parseInt(app.config[key], 10) === 1);
 							break;
 					}
 				}
-			} else if (fields[x].nodeName === 'TEXTAREA') {
-				if (app.config[key]) fields[x].value = app.config[key];
-			} else if (fields[x].nodeName === 'SELECT') {
-				if (app.config[key]) fields[x].value = app.config[key];
+			} else if (field.is('textarea')) {
+				if (app.config[key]) field.val(app.config[key]);
+			} else if (field.is('select')) {
+				if (app.config[key]) field.val(app.config[key]);
 			}
 		}
 
-		saveBtn.addEventListener('click', function(e) {
-
+		saveBtn.on('click', function(e) {
 			e.preventDefault();
 
 			for (x = 0; x < numFields; x++) {
@@ -55,27 +55,28 @@ define(['uploader'], function(uploader) {
 		});
 
 		function saveField(field) {
-			var key = field.getAttribute('data-field'),
+			field = $(field);
+			var key = field.attr('data-field'),
 				value;
 
-			if (field.nodeName === 'INPUT') {
-				inputType = field.getAttribute('type');
+			if (field.is('input')) {
+				inputType = field.attr('type');
 				switch (inputType) {
 					case 'text':
 					case 'password':
 					case 'textarea':
 					case 'number':
-						value = field.value;
+						value = field.val();
 						break;
 
 					case 'checkbox':
-						value = field.checked ? '1' : '0';
+						value = field.prop('checked') ? '1' : '0';
 						break;
 				}
-			} else if (field.nodeName === 'TEXTAREA') {
-				value = field.value;
-			} else if (field.nodeName === 'SELECT') {
-				value = field.value;
+			} else if (field.is('textarea')) {
+				value = field.val();
+			} else if (field.is('select')) {
+				value = field.val();
 			}
 
 			socket.emit('admin.config.set', {

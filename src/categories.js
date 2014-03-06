@@ -1,3 +1,6 @@
+
+'use strict';
+
 var db = require('./database'),
 	posts = require('./posts'),
 	utils = require('./../public/src/utils'),
@@ -13,16 +16,14 @@ var db = require('./database'),
 	nconf = require('nconf');
 
 (function(Categories) {
-	"use strict";
 
 	Categories.create = function(data, callback) {
 		db.incrObjectField('global', 'nextCid', function(err, cid) {
 			if (err) {
-				return callback(err, null);
+				return callback(err);
 			}
 
 			var slug = cid + '/' + utils.slugify(data.name);
-			db.listAppend('categories:cid', cid);
 
 			var category = {
 				cid: cid,
@@ -36,14 +37,20 @@ var db = require('./database'),
 				topic_count: 0,
 				disabled: 0,
 				order: data.order,
-				link: "",
+				link: '',
 				numRecentReplies: 2,
 				class: 'col-md-3 col-xs-6',
 				imageClass: 'default'
 			};
 
-			db.setObject('category:' + cid, category, function(err, data) {
-				callback(err, category);
+			db.setObject('category:' + cid, category, function(err) {
+				if(err) {
+					return callback(err);
+				}
+
+				db.sortedSetAdd('categories:cid', data.order, cid);
+
+				callback(null, category);
 			});
 		});
 	};
@@ -54,70 +61,69 @@ var db = require('./database'),
 			Categories.markAsRead(cid, uid);
 		}
 
-		function getCategoryData(next) {
-			Categories.getCategoryData(cid, next);
-		}
-
-		function getTopics(next) {
-			Categories.getCategoryTopics(cid, start, end, uid, next);
-		}
-
-		function getPageCount(next) {
-			Categories.getPageCount(cid, uid, next);
-		}
-
 		async.parallel({
-			'category': getCategoryData,
-			'topics': getTopics,
-			'pageCount': getPageCount
+			category: function(next) {
+				Categories.getCategoryData(cid, next);
+			},
+			topics: function(next) {
+				Categories.getCategoryTopics(cid, start, end, uid, next);
+			},
+			pageCount: function(next) {
+				Categories.getPageCount(cid, uid, next);
+			}
 		}, function(err, results) {
 			if(err) {
 				return callback(err);
 			}
 
-			var category = {
-				'category_name': results.category.name,
-				'category_description': results.category.description,
-				'link': results.category.link,
-				'disabled': results.category.disabled,
-				'topic_row_size': 'col-md-9',
-				'category_id': cid,
-				'topics': results.topics.topics,
-				'nextStart': results.topics.nextStart,
-				'pageCount': results.pageCount,
-				'disableSocialButtons': meta.config.disableSocialButtons !== undefined ? parseInt(meta.config.disableSocialButtons, 10) !== 0 : false,
-			};
+			var category = results.category;
+			category.topics = results.topics.topics;
+			category.nextStart = results.topics.nextStart;
+			category.pageCount = results.pageCount;
+			category.topic_row_size = 'col-md-9';
 
 			callback(null, category);
 		});
 	};
 
 	Categories.getCategoryTopics = function(cid, start, stop, uid, callback) {
+		var tids;
 		async.waterfall([
 			function(next) {
 				Categories.getTopicIds(cid, start, stop, next);
 			},
-			function(tids, next) {
-				topics.getTopicsByTids(tids, cid, uid, next);
+			function(topicIds, next) {
+				tids = topicIds;
+				topics.getTopicsByTids(tids, uid, next);
 			},
 			function(topics, next) {
-				if (topics && topics.length > 0) {
-					db.sortedSetRevRank('categories:' + cid + ':tid', topics[topics.length - 1].tid, function(err, rank) {
-						if(err) {
-							return next(err);
-						}
-
-						next(null, {
-							topics: topics,
-							nextStart: parseInt(rank, 10) + 1
-						});
-					});
-				} else {
-					next(null, {
-						topics: topics,
+				if (!topics || !topics.length) {
+					return next(null, {
+						topics: [],
 						nextStart: 1
 					});
 				}
+
+				var indices = {},
+					i = 0;
+				for(i=0; i<tids.length; ++i) {
+					indices[tids[i]] = start + i;
+				}
+
+				for(i=0; i<topics.length; ++i) {
+					topics[i].index = indices[topics[i].tid];
+				}
+
+				db.sortedSetRevRank('categories:' + cid + ':tid', topics[topics.length - 1].tid, function(err, rank) {
+					if(err) {
+						return next(err);
+					}
+
+					next(null, {
+						topics: topics,
+						nextStart: parseInt(rank, 10) + 1
+					});
+				});
 			}
 		], callback);
 	};
@@ -126,10 +132,24 @@ var db = require('./database'),
 		db.getSortedSetRevRange('categories:' + cid + ':tid', start, stop, callback);
 	};
 
+	Categories.getTopicIndex = function(tid, callback) {
+		topics.getTopicField(tid, 'cid', function(err, cid) {
+			if(err) {
+				return callback(err);
+			}
+
+			db.sortedSetRevRank('categories:' + cid + ':tid', tid, callback);
+		});
+	};
+
 	Categories.getPageCount = function(cid, uid, callback) {
 		db.sortedSetCard('categories:' + cid + ':tid', function(err, topicCount) {
 			if(err) {
 				return callback(err);
+			}
+
+			if (parseInt(topicCount, 10) === 0) {
+				return callback(null, 1);
 			}
 
 			user.getSettings(uid, function(err, settings) {
@@ -142,17 +162,17 @@ var db = require('./database'),
 		});
 	};
 
-	Categories.getAllCategories = function(current_user, callback) {
-		db.getListRange('categories:cid', 0, -1, function(err, cids) {
-			if(err) {
+	Categories.getAllCategories = function(uid, callback) {
+		db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
+			if (err) {
 				return callback(err);
 			}
 
-			if(cids && cids.length === 0) {
+			if (!cids || (cids && cids.length === 0)) {
 				return callback(null, {categories : []});
 			}
 
-			Categories.getCategories(cids, current_user, callback);
+			Categories.getCategories(cids, uid, callback);
 		});
 	};
 
@@ -290,14 +310,14 @@ var db = require('./database'),
 
 	Categories.getCategories = function(cids, uid, callback) {
 		if (!cids || !Array.isArray(cids) || cids.length === 0) {
-			return callback(new Error('invalid-cids'), null);
+			return callback(new Error('invalid-cids'));
 		}
 
 		function getCategory(cid, callback) {
 			Categories.getCategoryData(cid, function(err, categoryData) {
 				if (err) {
 					winston.warn('Attempted to retrieve cid ' + cid + ', but nothing was returned!');
-					return callback(err, null);
+					return callback(err);
 				}
 
 				Categories.hasReadCategory(cid, uid, function(hasRead) {
@@ -311,28 +331,24 @@ var db = require('./database'),
 
 		async.map(cids, getCategory, function(err, categories) {
 			if (err) {
-				winston.err(err);
-				return callback(err, null);
+				return callback(err);
 			}
 
 			categories = categories.filter(function(category) {
 				return !!category;
-			}).sort(function(a, b) {
-				return parseInt(a.order, 10) - parseInt(b.order, 10);
 			});
 
 			callback(null, {
 				'categories': categories
 			});
 		});
-
 	};
 
 	Categories.isUserActiveIn = function(cid, uid, callback) {
 
 		db.getSortedSetRange('uid:' + uid + ':posts', 0, -1, function(err, pids) {
 			if (err) {
-				return callback(err, null);
+				return callback(err);
 			}
 
 			var index = 0,
@@ -353,15 +369,11 @@ var db = require('./database'),
 						}
 
 						++index;
-						callback(null);
+						callback();
 					});
 				},
 				function(err) {
-					if (err) {
-						return callback(err, null);
-					}
-
-					callback(null, active);
+					callback(err, active);
 				}
 			);
 		});
@@ -418,6 +430,6 @@ var db = require('./database'),
 
 			Categories.addActiveUser(cid, uid, timestamp);
 		});
-	}
+	};
 
 }(exports));

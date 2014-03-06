@@ -13,7 +13,7 @@
 	</div>
 </form>
 
-<div class="search favourites">
+<div class="search">
 	<div class="{show_results} row">
 
 		<div id="topic-results" class="col-md-12" data-search-query="{search_query}">
@@ -28,25 +28,19 @@
 			<!-- BEGIN topics -->
 			<div class="topic-row panel panel-default clearfix">
 				<div class="panel-body">
-					<a href="../../user/{topics.userslug}">
-						<img title="{topics.username}" class="img-rounded user-img" src="{topics.picture}">
-					</a>
 
-					<a href="../../user/{topics.userslug}">
-						<strong><span>{topics.username}</span></strong>
+
+					<a href="../../topic/{topics.slug}" class="search-result-text">
+						{topics.title}
 					</a>
-					<span class="search-result-text">
-					<p>{topics.title}</p>
-					</span>
 
 					<div>
 						<small>
 							<span class="pull-right">
-								<a href="../../topic/{topics.slug}">posted</a>
-								in
-								<a href="../../category/{topics.categorySlug}">
-									<i class="fa {topics.categoryIcon}"></i> {topics.categoryName}
-								</a>
+								<a href="../../user/{topics.userslug}"><img title="{topics.username}" class="img-rounded user-img" src="{topics.picture}"></a>
+								<a href="../../topic/{topics.slug}"> [[global:posted]]</a>
+								[[global:in]]
+								<a href="../../category/{topics.category.slug}"><i class="fa {topics.category.icon}"></i> {topics.category.name}</a>
 								<span class="timeago" title="{topics.relativeTime}"></span>
 							</span>
 						</small>
@@ -67,24 +61,20 @@
 			<!-- BEGIN posts -->
 			<div class="topic-row panel panel-default clearfix">
 				<div class="panel-body">
-					<a href="../../user/{posts.userslug}">
-						<img title="{posts.username}" class="img-rounded user-img" src="{posts.picture}">
+					<a href="../../topic/{posts.topic.slug}#{posts.pid}" class="search-result-text">
+						{posts.content}
 					</a>
-
-					<a href="../../user/{posts.userslug}">
-						<strong><span>{posts.username}</span></strong>
-					</a>
-					<span class="search-result-text">
-					{posts.content}
-					</span>
 
 					<div>
 						<small>
 							<span class="pull-right">
-								<a href="../../topic/{posts.topicSlug}#{posts.pid}">posted</a>
-								in
-								<a href="../../category/{posts.categorySlug}">
-									<i class="fa {posts.categoryIcon}"></i> {posts.categoryName}
+								<a href="../../user/{posts.userslug}">
+									<img title="{posts.username}" class="img-rounded user-img" src="{posts.picture}">
+								</a>
+								<a href="../../topic/{posts.topic.slug}#{posts.pid}"> [[global:posted]]</a>
+								[[global:in]]
+								<a href="../../category/{posts.category.slug}">
+									<i class="fa {posts.category.icon}"></i> {posts.category.name}
 								</a>
 								<span class="timeago" title="{posts.relativeTime}"></span>
 							</span>

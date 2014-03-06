@@ -18,15 +18,16 @@ define(function() {
 
 		app.addCommasToNumbers();
 
-		jQuery('.nav-pills li').removeClass('active');
-		jQuery('.nav-pills li a').each(function() {
-			if (this.getAttribute('href').match(active)) {
-				jQuery(this.parentNode).addClass('active');
+		$('.nav-pills li').removeClass('active');
+		$('.nav-pills li a').each(function() {
+			var $this = $(this);
+			if ($this.attr('href').match(active)) {
+				$this.parent().addClass('active');
 				return false;
 			}
 		});
 
-		jQuery('#search-user').on('keyup', function() {
+		$('#search-user').on('keyup', function() {
 			if (timeoutId !== 0) {
 				clearTimeout(timeoutId);
 				timeoutId = 0;
@@ -36,15 +37,15 @@ define(function() {
 				var username = $('#search-user').val();
 
 				if (username == '') {
-					jQuery('#user-notfound-notify').html('<i class="fa fa-circle-o"></i>');
-					jQuery('#user-notfound-notify').parent().removeClass('btn-warning label-warning btn-success label-success');
+					$('#user-notfound-notify').html('<i class="fa fa-circle-o"></i>');
+					$('#user-notfound-notify').parent().removeClass('btn-warning label-warning btn-success label-success');
 					return;
 				}
 
 				if (lastSearch === username) return;
 				lastSearch = username;
 
-				jQuery('#user-notfound-notify').html('<i class="fa fa-spinner fa-spin"></i>');
+				$('#user-notfound-notify').html('<i class="fa fa-spinner fa-spin"></i>');
 
 				setTimeout(function() {
 					socket.emit('user.search', username, function(err, data) {
@@ -111,12 +112,14 @@ define(function() {
 				users: users
 			});
 
-			if(emptyContainer) {
-				$('#users-container .registered-user').remove();
-			}
+			translator.translate(html, function(translated) {
+				if(emptyContainer) {
+					$('#users-container .registered-user').remove();
+				}
 
-			$('#users-container').append(html);
-			$('#users-container .anon-user').appendTo($('#users-container'));
+				$('#users-container').append(translated);
+				$('#users-container .anon-user').appendTo($('#users-container'));
+			});
 		}
 
 		function loadMoreUsers() {

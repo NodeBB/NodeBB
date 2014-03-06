@@ -16,6 +16,8 @@ var fs = require('fs'),
 	Plugins.loadedHooks = {};
 	Plugins.staticDirs = {};
 	Plugins.cssFiles = [];
+	Plugins.lessFiles = [];
+	Plugins.clientScripts = [];
 
 	Plugins.initialized = false;
 
@@ -113,20 +115,7 @@ var fs = require('fs'),
 			if (pluginData.minver && semver.validRange(pluginData.minver)) {
 				if (!semver.satisfies(pkg.version, pluginData.minver)) {
 					// If NodeBB is not new enough to run this plugin
-					if (process.env.NODE_ENV === 'development') {
-						// Throw a warning in development, but do nothing else
-						winston.warn('[plugins/' + pluginData.id + '] This plugin may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing.');
-					} else {
-						if (nconf.get('check-plugins') !== false) {
-							// Refuse to load this plugin...
-							winston.error('[plugins/' + pluginData.id + '] This plugin is reportedly incompatible with your version of NodeBB, so it has been disabled.');
-							winston.error('[plugins/' + pluginData.id + '] Use `--no-check-plugins` if you wish to live dangerously.');
-
-							// ... and disable it, too
-							Plugins.toggleActive(pluginData.id);
-							return callback();
-						}
-					}
+					winston.warn('[plugins/' + pluginData.id + '] This plugin may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing.');
 				}
 			}
 
@@ -186,7 +175,7 @@ var fs = require('fs'),
 									(function(staticDir) {
 										fs.exists(staticDir, function(exists) {
 											if (exists) {
-												Plugins.staticDirs[mappedPath] = staticDir;
+												Plugins.staticDirs[pluginData.id + '/' + mappedPath] = staticDir;
 											} else {
 												winston.warn('[plugins/' + pluginData.id + '] Mapped path \'' + mappedPath + ' => ' + staticDir + '\' not found.');
 											}
@@ -221,6 +210,34 @@ var fs = require('fs'),
 					} else {
 						next();
 					}
+				},
+				function(next) {
+					// LESS files for plugins
+					if (pluginData.less && pluginData.less instanceof Array) {
+						if (global.env === 'development') {
+							winston.info('[plugins] Found ' + pluginData.less.length + ' LESS file(s) for plugin ' + pluginData.id);
+						}
+
+						Plugins.lessFiles = Plugins.lessFiles.concat(pluginData.less.map(function(file) {
+							return path.join(pluginData.id, file);
+						}));
+					}
+
+					next();
+				},
+				function(next) {
+					// Client-side scripts
+					if (pluginData.scripts && pluginData.scripts instanceof Array) {
+						if (global.env === 'development') {
+							winston.info('[plugins] Found ' + pluginData.scripts.length + ' js file(s) for plugin ' + pluginData.id);
+						}
+
+						Plugins.clientScripts = Plugins.clientScripts.concat(pluginData.scripts.map(function(file) {
+							return path.join(__dirname, '../node_modules/', pluginData.id, file);
+						}));
+					}
+
+					next();
 				}
 			], function(err) {
 				if (!err) {
@@ -244,24 +261,31 @@ var fs = require('fs'),
 				`data.priority`, the relative priority of the method when it is eventually called (default: 10)
 		*/
 
-		if (data.hook && data.method) {
+		var method;
+
+		if (data.hook && data.method && typeof data.method === 'string' && data.method.length > 0) {
 			data.id = id;
 			if (!data.priority) data.priority = 10;
-			data.method = data.method.split('.').reduce(function(memo, prop) {
-				if (memo[prop]) {
+			method = data.method.split('.').reduce(function(memo, prop) {
+				if (memo !== null && memo[prop]) {
 					return memo[prop];
 				} else {
-					// Couldn't find method by path, assuming property with periods in it (evil!)
-					Plugins.libraries[data.id][data.method];
+					// Couldn't find method by path, aborting
+					return null;
 				}
 			}, Plugins.libraries[data.id]);
+
+			if (method === null) {
+				winston.warn('[plugins/' + id + '] Hook method mismatch: ' + data.hook + ' => ' + data.method);
+				return callback();
+			}
+
+			// Write the actual method reference to the hookObj
+			data.method = method;
 
 			Plugins.loadedHooks[data.hook] = Plugins.loadedHooks[data.hook] || [];
 			Plugins.loadedHooks[data.hook].push(data);
 
-			if (global.env === 'development') {
-				winston.info('[plugins] Hook registered: ' + data.hook + ' will call ' + id);
-			}
 			callback();
 		} else return;
 	};
@@ -375,11 +399,15 @@ var fs = require('fs'),
 					dirs = dirs.map(function(file) {
 						return path.join(npmPluginPath, file);
 					}).filter(function(file) {
-						var stats = fs.statSync(file),
-							isPlugin =  file.substr(npmPluginPath.length + 1, 14) === 'nodebb-plugin-' || file.substr(npmPluginPath.length + 1, 14) === 'nodebb-widget-';
+						if (fs.existsSync(file)) {
+							var stats = fs.statSync(file),
+								isPlugin =  file.substr(npmPluginPath.length + 1, 14) === 'nodebb-plugin-' || file.substr(npmPluginPath.length + 1, 14) === 'nodebb-widget-';
 
-						if (stats.isDirectory() && isPlugin) return true;
-						else return false;
+							if (stats.isDirectory() && isPlugin) return true;
+							else return false;
+						} else {
+							return false;
+						}
 					});
 
 					next(err, dirs);

@@ -1,14 +1,5 @@
 <div class="composer">
 
-	<style>
-			/* todo: move this to base theme */
-			.topic-thumb-container { width: 95%; margin-top: 5px; background: rgb(255, 255, 255); background: rgba(255, 255, 255, 0.6); padding: 10px; }
-			.topic-thumb-btn { cursor: hand; cursor: pointer; }
-			.topic-thumb-toggle-btn { margin: -25px 3% 0 0; }
-			.topic-thumb-preview { width: auto; height: auto; max-width: 100px; max-height: 100px }
-			.topic-thumb-ctrl.form-group { display: inline-block; vertical-align: -50% !important; }
-	</style>
-
 	<div class="composer-container">
 		<input class="title form-control" type="text" tabIndex="1" placeholder="[[topic:composer.title_placeholder]]" />
 
@@ -22,7 +13,6 @@
 					<input type="text" id="topic-thumb-url" class="form-control" placeholder="[[topic:composer.thumb_url_placeholder]]" />
 				</div>
 				<div class="form-group">
-					<!-- todo: drag and drop? -->
 					<label for="topic-thumb-file">[[topic:composer.thumb_file_label]]</label>
 					<input type="file" id="topic-thumb-file" class="form-control" />
 				</div>
@@ -41,16 +31,26 @@
 				<span class="btn btn-link" tabindex="-1"><i class="fa fa-italic"></i></span>
 				<span class="btn btn-link" tabindex="-1"><i class="fa fa-list"></i></span>
 				<span class="btn btn-link" tabindex="-1"><i class="fa fa-link"></i></span>
-				<span class="btn btn-link img-upload-btn hide" tabindex="-1">
-					<i class="fa fa-picture-o"></i>
-				</span>
-				<span class="btn btn-link file-upload-btn hide" tabindex="-1">
-					<i class="fa fa-upload"></i>
-				</span>
+
+				<!--[if gte IE 9]><!-->
+					<span class="btn btn-link img-upload-btn hide" tabindex="-1">
+						<i class="fa fa-picture-o"></i>
+					</span>
+					<span class="btn btn-link file-upload-btn hide" tabindex="-1">
+						<i class="fa fa-upload"></i>
+					</span>
+				<!--<![endif]-->
 
 				<form id="fileForm" method="post" enctype="multipart/form-data">
-					<input type="file" id="files" name="files[]" multiple class="hide"/>
 					<input id="postUploadCsrf" type="hidden" name="_csrf">
+
+					<!--[if gte IE 9]><!-->
+					     <input type="file" id="files" name="files[]" multiple class="gte-ie9 hide"/>
+                    <!--<![endif]-->
+					<!--[if lt IE 9]>
+					     <input type="file" id="files" name="files[]" class="lt-ie9 hide" value="Upload"/>
+					<![endif]-->
+
 				</form>
 			</div>
 		</div>
@@ -58,6 +58,7 @@
 		<ul class="nav nav-tabs">
 			<li class="active"><a data-pane=".tab-write" data-toggle="tab">[[topic:composer.write]]</a></li>
 			<li><a data-pane=".tab-preview" data-toggle="tab">[[topic:composer.preview]]</a></li>
+			<li class="hidden"><a data-pane=".tab-help" data-toggle="tab">[[topic:composer.help]]</a></li>
 			<li class="btn-group pull-right action-bar">
 				<button class="btn btn-default" data-action="discard" tabIndex="5"><i class="fa fa-times"></i> [[topic:composer.discard]]</button>
 				<button data-action="post" class="btn btn-default btn-primary" tabIndex="3"><i class="fa fa-check"></i> [[topic:composer.submit]]</button>
@@ -71,13 +72,15 @@
 			<div class="tab-pane tab-preview">
 				<div class="preview well"></div>
 			</div>
+			<div class="tab-pane tab-help">
+				<div class="help well"></div>
+			</div>
 		</div>
 
 		<div class="imagedrop"><div>[[topic:composer.drag_and_drop_images]]</div></div>
 
-		<div class="text-center">
+		<div class="text-center instructions">
 			<span>
-				<small>[[topic:composer.content_is_parsed_with]] <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a>. </small>
 				<span class="upload-instructions hide"><small>[[topic:composer.upload_instructions]]</small></span>
 			</span>
 

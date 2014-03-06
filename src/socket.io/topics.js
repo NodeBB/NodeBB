@@ -1,4 +1,8 @@
+
+'use strict';
+
 var topics = require('../topics'),
+	categories = require('../categories'),
 	threadTools = require('../threadTools'),
 	index = require('./index'),
 	user = require('../user'),
@@ -67,7 +71,7 @@ SocketTopics.post = function(socket, data, callback) {
 				type: 'success',
 				timeout: 2000
 			});
-			callback(null);
+			callback();
 		}
 	});
 };
@@ -87,14 +91,19 @@ SocketTopics.markAsRead = function(socket, data) {
 };
 
 SocketTopics.markAllRead = function(socket, data, callback) {
-	topics.markAllRead(socket.uid, function(err) {
+
+	if (!Array.isArray(data)) {
+		return callback(new Error('invalid-data'));
+	}
+
+	topics.markAllRead(socket.uid, data, function(err) {
 		if(err) {
 			return callback(err);
 		}
 
 		index.server.sockets.in('uid_' + socket.uid).emit('event:unread.updateCount', null, []);
 
-		callback(null);
+		callback();
 	});
 };
 
@@ -247,7 +256,7 @@ SocketTopics.loadMore = function(socket, data, callback) {
 
 		async.parallel({
 			posts: function(next) {
-				topics.getTopicPosts(data.tid, start, end, socket.uid, next);
+				topics.getTopicPosts(data.tid, start, end, socket.uid, false, next);
 			},
 			privileges: function(next) {
 				threadTools.privileges(data.tid, socket.uid, next);
@@ -291,9 +300,16 @@ SocketTopics.loadMoreFromSet = function(socket, data, callback) {
 	topics.getTopicsFromSet(socket.uid, data.set, start, end, callback);
 };
 
-
 SocketTopics.getPageCount = function(socket, tid, callback) {
 	topics.getPageCount(tid, socket.uid, callback);
+};
+
+SocketTopics.getTidPage = function(socket, tid, callback) {
+	topics.getTidPage(tid, socket.uid, callback);
+};
+
+SocketTopics.getTidIndex = function(socket, tid, callback) {
+	categories.getTopicIndex(tid, callback);
 };
 
 module.exports = SocketTopics;

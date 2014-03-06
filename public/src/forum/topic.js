@@ -1,6 +1,8 @@
 define(['composer', 'forum/pagination'], function(composer, pagination) {
 	var	Topic = {},
-		infiniteLoaderActive = false;
+		infiniteLoaderActive = false,
+		scrollingToPost = false,
+		currentUrl = '';
 
 	function showBottomPostBar() {
 		if($('#post-container .post-row').length > 1 || !$('#post-container li[data-index="0"]').length) {
@@ -10,13 +12,13 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
 		if(data.url.indexOf('topic') !== 0) {
-			$('.pagination-block').addClass('hide');
-			$('#header-topic-title').html('').hide();
+			$('.pagination-block').addClass('hidden');
+			$('.header-topic-title').find('span').text('').hide();
+			app.removeAlert('bookmark');
 		}
 	});
 
 	Topic.init = function() {
-
 		var expose_tools = templates.get('expose_tools'),
 			tid = templates.get('topic_id'),
 			thread_state = {
@@ -33,17 +35,16 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		$(window).trigger('action:topic.loading');
 
 		function fixDeleteStateForPosts() {
-			var postEls = document.querySelectorAll('#post-container li[data-deleted]');
+			var postEls = $('#post-container li[data-deleted]');
 			for (var x = 0, numPosts = postEls.length; x < numPosts; x++) {
-				if (postEls[x].getAttribute('data-deleted') === '1') {
-					toggle_post_delete_state(postEls[x].getAttribute('data-pid'));
+				if (postEls.eq(x).attr('data-deleted') === '1') {
+					toggle_post_delete_state(postEls.eq(x).attr('data-pid'));
 				}
-				postEls[x].removeAttribute('data-deleted');
+				postEls.eq(x).removeAttr('data-deleted');
 			}
 		}
 
-		jQuery('document').ready(function() {
-
+		$(function() {
 			app.addCommasToNumbers();
 
 			app.enterRoom('topic_' + tid);
@@ -105,57 +106,58 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 						if(err) {
 							return app.alertError(err.message);
 						}
+						app.alertSuccess('[[topic:markAsUnreadForAll.success]]');
 						btn.parents('.thread-tools.open').find('.dropdown-toggle').trigger('click');
 					});
 					return false;
-				})
+				});
 
 				moveThreadModal.on('shown.bs.modal', function() {
 
-					var loadingEl = document.getElementById('categories-loading');
-					if (loadingEl) {
+					var loadingEl = $('#categories-loading');
+					if (loadingEl.length) {
 						socket.emit('categories.get', function(err, data) {
+
 							// Render categories
-							var categoriesFrag = document.createDocumentFragment(),
-								categoryEl = document.createElement('li'),
+							var categoryEl,
 								numCategories = data.categories.length,
 								modalBody = moveThreadModal.find('.modal-body'),
-								categoriesEl = modalBody[0].getElementsByTagName('ul')[0],
-								confirmDiv = document.getElementById('move-confirm'),
-								confirmCat = confirmDiv.getElementsByTagName('span')[0],
-								commitEl = document.getElementById('move_thread_commit'),
-								cancelEl = document.getElementById('move_thread_cancel'),
+								categoriesEl = modalBody.find('ul').eq(0).addClass('categories-list'),
+								confirmDiv = $('#move-confirm'),
+								confirmCat = confirmDiv.find('span').eq(0),
+								commitEl = $('#move_thread_commit'),
+								cancelEl = $('#move_thread_cancel'),
 								x, info, targetCid, targetCatLabel;
 
-							categoriesEl.className = 'category-list';
 							for (x = 0; x < numCategories; x++) {
 								info = data.categories[x];
-								categoryEl.style.background = info.bgColor;
-								categoryEl.style.color = info.color || '#fff';
-								categoryEl.className = info.disabled === '1' ? ' disabled' : '';
-								categoryEl.innerHTML = '<i class="fa ' + info.icon + '"></i> ' + info.name;
-								categoryEl.setAttribute('data-cid', info.cid);
-								categoriesFrag.appendChild(categoryEl.cloneNode(true));
+								categoryEl = $('<li />');
+								categoryEl.css({background: info.bgColor, color: info.color || '#fff'})
+									.addClass(info.disabled === '1' ? ' disabled' : '')
+									.attr('data-cid', info.cid)
+									.html('<i class="fa ' + info.icon + '"></i> ' + info.name);
+
+								categoriesEl.append(categoryEl);
 							}
-							categoriesEl.appendChild(categoriesFrag);
-							modalBody[0].removeChild(loadingEl);
+							loadingEl.remove();
 
-							categoriesEl.addEventListener('click', function(e) {
-								if (e.target.nodeName === 'LI') {
-									confirmCat.innerHTML = e.target.innerHTML;
-									confirmDiv.style.display = 'block';
-									targetCid = e.target.getAttribute('data-cid');
-									targetCatLabel = e.target.innerHTML;
-									commitEl.disabled = false;
+							categoriesEl.on('click', 'li[data-cid]', function(e) {
+								var el = $(this);
+								if (el.is('li')) {
+									confirmCat.html(el.html());
+									confirmDiv.css({display: 'block'});
+									targetCid = el.attr('data-cid');
+									targetCatLabel = el.html();
+									commitEl.prop('disabled', false);
 								}
-							}, false);
+							});
 
-							commitEl.addEventListener('click', function() {
-								if (!commitEl.disabled && targetCid) {
-									commitEl.disabled = true;
-									$(cancelEl).fadeOut(250);
-									$(moveThreadModal).find('.modal-header button').fadeOut(250);
-									commitEl.innerHTML = 'Moving <i class="fa-spin fa-refresh"></i>';
+							commitEl.on('click', function() {
+								if (!commitEl.prop('disabled') && targetCid) {
+									commitEl.prop('disabled', true);
+									cancelEl.fadeOut(250);
+									moveThreadModal.find('.modal-header button').fadeOut(250);
+									commitEl.html('Moving <i class="fa-spin fa-refresh"></i>');
 
 									socket.emit('topics.move', {
 										tid: tid,
@@ -191,10 +193,10 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 					var forkModal = $('#fork-thread-modal'),
 						forkCommit = forkModal.find('#fork_thread_commit');
 					forkModal.removeClass('hide');
-					forkModal.css("position", "fixed")
-						.css("left", Math.max(0, (($(window).width() - $(forkModal).outerWidth()) / 2) + $(window).scrollLeft()) + "px")
-						.css("top", "0px")
-						.css("z-index", "2000");
+					forkModal.css('position', 'fixed')
+						.css('left', Math.max(0, (($(window).width() - $(forkModal).outerWidth()) / 2) + $(window).scrollLeft()) + 'px')
+						.css('top', '0px')
+						.css('z-index', '2000');
 
 					showNoPostsSelected();
 
@@ -255,7 +257,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 					function closeForkModal() {
 						for(var i=0; i<pids.length; ++i) {
-							$('#post-container li[data-pid="' + pids[i] + '"]').css('opacity', 1.0);
+							$('#post-container li[data-pid="' + pids[i] + '"]').css('opacity', 1);
 						}
 						forkModal.addClass('hide');
 						$('#post-container').off('click', 'li');
@@ -280,41 +282,11 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			fixDeleteStateForPosts();
 
 
-			// Follow Thread State
-			var followEl = $('.posts .follow'),
-				set_follow_state = function(state, quiet) {
-					if (state && !followEl.hasClass('btn-success')) {
-						followEl.addClass('btn-success');
-						followEl.attr('title', 'You are currently receiving updates to this topic');
-						if (!quiet) {
-							app.alert({
-								alert_id: 'topic_follow',
-								timeout: 2500,
-								title: '[[topic:following_topic.title]]',
-								message: '[[topic:following_topic.message]]',
-								type: 'success'
-							});
-						}
-					} else if (!state && followEl.hasClass('btn-success')) {
-						followEl.removeClass('btn-success');
-						followEl.attr('title', 'Be notified of new replies in this topic');
-						if (!quiet) {
-							app.alert({
-								alert_id: 'topic_follow',
-								timeout: 2500,
-								title: '[[topic:not_following_topic.title]]',
-								message: '[[topic:not_following_topic.message]]',
-								type: 'success'
-							});
-						}
-					}
-				};
-
 			socket.emit('topics.followCheck', tid, function(err, state) {
-				set_follow_state(state, true);
+				set_follow_state(state, false);
 			});
 
-			followEl.on('click', function() {
+			$('.posts').on('click', '.follow', function() {
 				socket.emit('topics.follow', tid, function(err, state) {
 					if(err) {
 						return app.alert({
@@ -326,7 +298,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 						});
 					}
 
-					set_follow_state(state);
+					set_follow_state(state, true);
 				});
 
 				return false;
@@ -335,11 +307,24 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			enableInfiniteLoading();
 
 			var bookmark = localStorage.getItem('topic:' + tid + ':bookmark');
-			if(window.location.hash) {
-				Topic.scrollToPost(window.location.hash.substr(1));
-			} else if(bookmark) {
-				Topic.scrollToPost(parseInt(bookmark, 10));
-			} else {
+			if (window.location.hash) {
+				Topic.scrollToPost(window.location.hash.substr(1), true);
+			} else if (bookmark && (!config.usePagination || (config.usePagination && pagination.currentPage === 1))) {
+				app.alert({
+					alert_id: 'bookmark',
+					message: '[[topic:bookmark_instructions]]',
+					timeout: 0,
+					type: 'info',
+					clickfn : function() {
+						Topic.scrollToPost(parseInt(bookmark, 10), true);
+					},
+					closefn : function() {
+						localStorage.removeItem('topic:' + tid + ':bookmark');
+					}
+				});
+			}
+
+			if (!window.location.hash && !config.usePagination) {
 				updateHeader();
 			}
 
@@ -357,7 +342,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 		function enableInfiniteLoading() {
 			if(!config.usePagination) {
-				$('.pagination-block').removeClass('hide');
+				$('.pagination-block').removeClass('hidden');
 
 				app.enableInfiniteLoading(function(direction) {
 
@@ -381,13 +366,13 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 						loadMorePosts(tid, after, function() {
 							fixDeleteStateForPosts();
 							if(direction < 0 && el) {
-								Topic.scrollToPost(el.attr('data-pid'), 0, offset);
+								Topic.scrollToPost(el.attr('data-pid'), false, 0, offset);
 							}
 						});
 					}
 				});
 			} else {
-				$('.pagination-block').addClass('hide');
+				$('.pagination-block').addClass('hidden');
 
 				pagination.init(currentPage, pageCount);
 			}
@@ -395,7 +380,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 		$('.topic').on('click', '.post_reply', function() {
 			var selectionText = '',
-				selection = window.getSelection() || document.getSelection();
+				selection = window.getSelection ? window.getSelection() : document.selection.createRange();
 
 			if ($(selection.baseNode).parents('.post-content').length > 0) {
 				var snippet = selection.toString();
@@ -405,13 +390,14 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			}
 
 			var username = '',
-				post = $(this).parents('li[data-pid]');
+				post = $(this).parents('li[data-pid]'),
+				pid = $(this).parents('.post-row').attr('data-pid');
 			if (post.length) {
 				username = '@' + post.attr('data-username').replace(/\s/g, '-') + ' ';
 			}
 
 			if (thread_state.locked !== '1') {
-				composer.newReply(tid, topic_name, selectionText.length > 0 ? selectionText + '\n\n' + username : '' + username);
+				composer.newReply(tid, pid, topic_name, selectionText.length > 0 ? selectionText + '\n\n' + username : '' + username);
 			}
 		});
 
@@ -436,7 +422,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 					if($('.composer').length) {
 						composer.addQuote(tid, pid, topic_name, username, quoted);
 					}else {
-						composer.newReply(tid, topic_name, username + ' said:\n' + quoted);
+						composer.newReply(tid, pid, topic_name, username + ' said:\n' + quoted);
 					}
 				});
 			}
@@ -496,10 +482,10 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		});
 
 		$('#post-container').on('click', '.flag', function() {
+			var btn = $(this);
 			bootbox.confirm('Are you sure you want to flag this post?', function(confirm) {
 				if (confirm) {
-					var pid = $(this).parents('.post-row').attr('data-pid');
-
+					var pid = btn.parents('.post-row').attr('data-pid');
 					socket.emit('posts.flag', pid, function(err) {
 						if(err) {
 							return app.alertError(err.message);
@@ -513,7 +499,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 		$('#post-container').on('shown.bs.dropdown', '.share-dropdown', function() {
 			var pid = $(this).parents('.post-row').attr('data-pid');
-			$('#post_' + pid + '_link').val(window.location.href + "#" + pid);
+			$('#post_' + pid + '_link').val(window.location.protocol + '//' + window.location.host + window.location.pathname + '#' + pid);
 			// without the setTimeout can't select the text in the input
 			setTimeout(function() {
 				$('#post_' + pid + '_link').putCursorAtEnd().select();
@@ -629,25 +615,19 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			'event:topic_deleted', 'event:topic_restored', 'event:topic:locked',
 			'event:topic_unlocked', 'event:topic_pinned', 'event:topic_unpinned',
 			'event:topic_moved', 'event:post_edited', 'event:post_deleted', 'event:post_restored',
-			'posts.favourite', 'user.isOnline', 'posts.upvote', 'posts.downvote'
+			'posts.favourite', 'user.isOnline', 'posts.upvote', 'posts.downvote',
+			'event:topic.replyStart', 'event:topic.replyStop'
 		]);
 
 		socket.on('get_users_in_room', function(data) {
 
 			if(data && data.room.indexOf('topic') !== -1) {
-				var activeEl = $('.thread_active_users');
+				var activeEl = $('li.post-bar[data-index="0"] .thread_active_users');
 
 				function createUserIcon(uid, picture, userslug, username) {
-					if(!activeEl.find('[href="'+ RELATIVE_PATH +'/user/' + data.users[i].userslug + '"]').length) {
-						var userIcon = $('<img src="'+ picture +'"/>');
-
-						var userLink = $('<a href="' + RELATIVE_PATH + '/user/' + userslug + '"></a>').append(userIcon);
-						userLink.attr('data-uid', uid);
-
-						var div = $('<div class="inline-block"></div>');
-						div.append(userLink);
-
-						userLink.tooltip({
+					if(!activeEl.find('[data-uid="' + uid + '"]').length) {
+						var div = $('<div class="inline-block"><a data-uid="' + uid + '" href="' + RELATIVE_PATH + '/user/' + userslug + '"><img src="'+ picture +'"/></a></div>');
+						div.find('a').tooltip({
 							placement: 'top',
 							title: username
 						});
@@ -657,22 +637,23 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				}
 
 				// remove users that are no longer here
-				activeEl.children().each(function(index, element) {
+				activeEl.find('a').each(function(index, element) {
 					if(element) {
 						var uid = $(element).attr('data-uid');
-						for(var i=0; i<data.users.length; ++i) {
-							if(data.users[i].uid == uid) {
-								return;
-							}
+							absent = data.users.every(function(user) {
+								return parseInt(user.uid, 10) !== parseInt(uid, 10);
+							});
+
+						if (absent) {
+							$(element).remove();
 						}
-						$(element).remove();
 					}
 				});
 
 				var i=0;
 				// add self
 				for(i = 0; i<data.users.length; ++i) {
-					if(data.users[i].uid == app.uid) {
+					if(parseInt(data.users[i].uid, 10) === parseInt(app.uid, 10)) {
 						var icon = createUserIcon(data.users[i].uid, data.users[i].picture, data.users[i].userslug, data.users[i].username);
 						activeEl.prepend(icon);
 						data.users.splice(i, 1);
@@ -710,6 +691,17 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 						title: title
 					});
 				}
+
+				// Get users who are currently replying to the topic entered
+				socket.emit('modules.composer.getUsersByTid', templates.get('topic_id'), function(err, uids) {
+					var	activeUsersEl = $('.thread_active_users'),
+						x;
+					if (uids && uids.length) {
+						for(var x=0;x<uids.length;x++) {
+							activeUsersEl.find('[data-uid="' + uids[x] + '"]').addClass('replying');
+						}
+					}
+				});
 			}
 
 			app.populateOnlineUsers();
@@ -745,7 +737,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			for (var p in posts) {
 				if (posts.hasOwnProperty(p)) {
 					var post = posts[p],
-						postcount = jQuery('.user_postcount_' + post.uid),
+						postcount = $('.user_postcount_' + post.uid),
 						ptotal = parseInt(postcount.html(), 10);
 
 					ptotal += 1;
@@ -891,6 +883,14 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			}
 		});
 
+		socket.on('event:topic.replyStart', function(uid) {
+			$('.thread_active_users [data-uid="' + uid + '"]').addClass('replying');
+		});
+
+		socket.on('event:topic.replyStop', function(uid) {
+			$('.thread_active_users [data-uid="' + uid + '"]').removeClass('replying');
+		});
+
 		function adjust_rep(value, pid, uid) {
 			var votes = $('li[data-pid="' + pid + '"] .votes'),
 				reputationElements = $('.reputation[data-uid="' + uid + '"]'),
@@ -902,7 +902,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 			votes.html(currentVotes).attr('data-votes', currentVotes);
 			reputationElements.html(reputation).attr('data-reputation', reputation);
-		}
+		};
 
 		function adjust_favourites(value, pid, uid) {
 			var favourites = $('li[data-pid="' + pid + '"] .favouriteCount'),
@@ -911,133 +911,79 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			currentFavourites += value;
 
 			favourites.html(currentFavourites).attr('data-favourites', currentFavourites);
-		}
+		};
+
+		function set_follow_state(state, alert) {
+
+			$('.posts .follow').toggleClass('btn-success', state).attr('title', state ? 'You are currently receiving updates to this topic' : 'Be notified of new replies in this topic');
+
+			if(alert) {
+				app.alert({
+					alert_id: 'topic_follow',
+					timeout: 2500,
+					title: state ? '[[topic:following_topic.title]]' : '[[topic:not_following_topic.title]]',
+					message: state ? '[[topic:following_topic.message]]' : '[[topic:not_following_topic.message]]',
+					type: 'success'
+				});
+			}
+		};
 
 		function set_locked_state(locked, alert) {
-			var threadReplyBtn = $('.topic-main-buttons .post_reply'),
-				postReplyBtns = document.querySelectorAll('#post-container .post_reply'),
-				quoteBtns = document.querySelectorAll('#post-container .quote'),
-				editBtns = document.querySelectorAll('#post-container .edit'),
-				deleteBtns = document.querySelectorAll('#post-container .delete'),
-				numPosts = document.querySelectorAll('#post_container li[data-pid]').length,
-				lockThreadEl = $('.lock_thread'),
-				x;
+			translator.translate('<i class="fa fa-fw fa-' + (locked ? 'un': '') + 'lock"></i> [[topic:thread_tools.' + (locked ? 'un': '') + 'lock]]', function(translated) {
+				$('.lock_thread').html(translated);
+			});
 
-			if (locked === true) {
-				translator.translate('<i class="fa fa-fw fa-unlock"></i> [[topic:thread_tools.unlock]]', function(translated) {
-					lockThreadEl.html(translated);
+			$('.topic-main-buttons .post_reply').attr('disabled', locked).html(locked ? 'Locked <i class="fa fa-lock"></i>' : 'Reply');
+
+			$('#post-container .post_reply').html(locked ? 'Locked <i class="fa fa-lock"></i>' : 'Reply <i class="fa fa-reply"></i>');
+			$('#post-container').find('.quote, .edit, .delete').toggleClass('none', locked);
+
+			if (alert) {
+				app.alert({
+					'alert_id': 'thread_lock',
+					type: 'success',
+					title: 'Thread ' + (locked ? 'Locked' : 'Unlocked'),
+					message: 'Thread has been successfully ' + (locked ? 'locked' : 'unlocked'),
+					timeout: 5000
 				});
-				threadReplyBtn.attr('disabled', true);
-				threadReplyBtn.html('Locked <i class="fa fa-lock"></i>');
-				for (x = 0; x < numPosts; x++) {
-					postReplyBtns[x].innerHTML = 'Locked <i class="fa fa-lock"></i>';
-					quoteBtns[x].style.display = 'none';
-					editBtns[x].style.display = 'none';
-					deleteBtns[x].style.display = 'none';
-				}
-
-				if (alert) {
-					app.alert({
-						'alert_id': 'thread_lock',
-						type: 'success',
-						title: 'Thread Locked',
-						message: 'Thread has been successfully locked',
-						timeout: 5000
-					});
-				}
-
-				thread_state.locked = '1';
-			} else {
-				translator.translate('<i class="fa fa-fw fa-lock"></i> [[topic:thread_tools.lock]]', function(translated) {
-					lockThreadEl.html(translated);
-				});
-				threadReplyBtn.attr('disabled', false);
-				threadReplyBtn.html('Reply');
-				for (x = 0; x < numPosts; x++) {
-					postReplyBtns[x].innerHTML = 'Reply <i class="fa fa-reply"></i>';
-					quoteBtns[x].style.display = 'inline-block';
-					editBtns[x].style.display = 'inline-block';
-					deleteBtns[x].style.display = 'inline-block';
-				}
-
-				if (alert) {
-					app.alert({
-						'alert_id': 'thread_lock',
-						type: 'success',
-						title: 'Thread Unlocked',
-						message: 'Thread has been successfully unlocked',
-						timeout: 5000
-					});
-				}
-
-				thread_state.locked = '0';
 			}
-		}
+
+			thread_state.locked = locked ? '1' : '0';
+		};
 
 		function set_delete_state(deleted) {
-			var deleteThreadEl = $('.delete_thread'),
-				deleteTextEl = $('.delete_thread span'),
-				//deleteThreadEl.getElementsByTagName('span')[0],
-				threadEl = $('#post-container'),
-				deleteNotice = document.getElementById('thread-deleted') || document.createElement('div');
+			var threadEl = $('#post-container');
 
-			if (deleted) {
-				translator.translate('<i class="fa fa-fw fa-comment"></i> [[topic:thread_tools.restore]]', function(translated) {
-					deleteTextEl.html(translated);
-				});
-				threadEl.addClass('deleted');
+			translator.translate('<i class="fa fa-fw ' + (deleted ? 'fa-comment' : 'fa-trash-o') + '"></i> [[topic:thread_tools.' + (deleted ? 'restore' : 'delete') + ']]', function(translated) {
+				$('.delete_thread span').html(translated);
+			});
 
-				// Spawn a 'deleted' notice at the top of the page
-				deleteNotice.setAttribute('id', 'thread-deleted');
-				deleteNotice.className = 'alert alert-warning';
-				deleteNotice.innerHTML = 'This thread has been deleted. Only users with thread management privileges can see it.';
-				threadEl.before(deleteNotice);
+			threadEl.toggleClass('deleted', deleted);
+			thread_state.deleted = deleted ? '1' : '0';
 
-				thread_state.deleted = '1';
+			if(deleted) {
+				$('<div id="thread-deleted" class="alert alert-warning">This thread has been deleted. Only users with thread management privileges can see it.</div>').insertBefore(threadEl);
 			} else {
-				translator.translate('<i class="fa fa-fw fa-trash-o"></i> [[topic:thread_tools.delete]]', function(translated) {
-					deleteTextEl.html(translated);
-				});
-				threadEl.removeClass('deleted');
-				deleteNotice.parentNode.removeChild(deleteNotice);
-
-				thread_state.deleted = '0';
+				$('#thread-deleted').remove();
 			}
-		}
+		};
 
 		function set_pinned_state(pinned, alert) {
-			var pinEl = $('.pin_thread');
-
 			translator.translate('<i class="fa fa-fw fa-thumb-tack"></i> [[topic:thread_tools.' + (pinned ? 'unpin' : 'pin') + ']]', function(translated) {
-				if (pinned) {
-					pinEl.html(translated);
-					if (alert) {
-						app.alert({
-							'alert_id': 'thread_pin',
-							type: 'success',
-							title: 'Thread Pinned',
-							message: 'Thread has been successfully pinned',
-							timeout: 5000
-						});
-					}
+				$('.pin_thread').html(translated);
 
-					thread_state.pinned = '1';
-				} else {
-					pinEl.html(translated);
-					if (alert) {
-						app.alert({
-							'alert_id': 'thread_pin',
-							type: 'success',
-							title: 'Thread Unpinned',
-							message: 'Thread has been successfully unpinned',
-							timeout: 5000
-						});
-					}
-
-					thread_state.pinned = '0';
+				if (alert) {
+					app.alert({
+						'alert_id': 'thread_pin',
+						type: 'success',
+						title: 'Thread ' + (pinned ? 'Pinned' : 'Unpinned'),
+						message: 'Thread has been successfully ' + (pinned ? 'pinned' : 'unpinned'),
+						timeout: 5000
+					});
 				}
+				thread_state.pinned = pinned ? '1' : '0';
 			});
-		}
+		};
 
 		function toggle_post_delete_state(pid) {
 			var postEl = $('#post-container li[data-pid="' + pid + '"]');
@@ -1049,34 +995,23 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 				updatePostCount();
 			}
-		}
+		};
 
 		function toggle_post_tools(pid, isDeleted) {
-			var postEl = $('#post-container li[data-pid="' + pid + '"]'),
-				quoteEl = $(postEl[0].querySelector('.quote')),
-				favEl = $(postEl[0].querySelector('.favourite')),
-				replyEl = $(postEl[0].querySelector('.post_reply')),
-				chatEl = $(postEl[0].querySelector('.chat'));
+			var postEl = $('#post-container li[data-pid="' + pid + '"]');
 
-			if (isDeleted) {
-				quoteEl.addClass('none');
-				favEl.addClass('none');
-				replyEl.addClass('none');
-				chatEl.addClass('none');
-			} else {
-				quoteEl.removeClass('none');
-				favEl.removeClass('none');
-				replyEl.removeClass('none');
-				chatEl.removeClass('none');
-			}
-		}
+			postEl.find('.quote, .favourite, .post_reply, .chat').toggleClass('none', isDeleted);
+
+			translator.translate(isDeleted ? ' [[topic:restore]]' : ' [[topic:delete]]', function(translated) {
+				postEl.find('.delete').find('span').html(translated);
+			});
+		};
 
 		$(window).on('scroll', updateHeader);
 		$(window).trigger('action:topic.loaded');
 	};
 
 	function updateHeader() {
-		var paginationEl = $('#pagination');
 
 		$('.pagination-block a').off('click').on('click', function() {
 			return false;
@@ -1090,16 +1025,10 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			app.scrollToBottom();
 		});
 
-		var windowHeight = jQuery(window).height();
-		var scrollTop = jQuery(window).scrollTop();
-		var scrollBottom = scrollTop + windowHeight;
-		var progressBar = $('.progress-bar');
-		var tid = templates.get('topic_id');
-
-		if(scrollTop > 50) {
-			$('#header-topic-title').html(templates.get('topic_name')).show();
+		if($(window).scrollTop() > 50) {
+			$('.header-topic-title').find('span').text(templates.get('topic_name')).show();
 		} else {
-			$('#header-topic-title').html('').hide();
+			$('.header-topic-title').find('span').text('').hide();
 		}
 
 		$($('.posts > .post-row').get().reverse()).each(function() {
@@ -1110,37 +1039,44 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				if(index > Topic.postCount) {
 					index = Topic.postCount;
 				}
-				paginationEl.html(index + ' out of ' + Topic.postCount);
-				progressBar.width((index / Topic.postCount * 100) + '%');
-				return false;
-			}
-		});
 
-		$('.posts > .post-row').each(function() {
-			var el = $(this);
-			if (elementInView(el)) {
-				var index = parseInt(el.attr('data-index'), 10) + 1;
-				if(index === 0) {
-					localStorage.removeItem("topic:" + tid + ":bookmark");
-				} else {
-					localStorage.setItem("topic:" + tid + ":bookmark", el.attr('data-pid'));
+				$('#pagination').html(index + ' out of ' + Topic.postCount);
+				$('.progress-bar').width((index / Topic.postCount * 100) + '%');
+
+				var currentBookmark = localStorage.getItem('topic:' + templates.get('topic_id') + ':bookmark');
+				if (!currentBookmark || parseInt(el.attr('data-pid'), 10) > parseInt(currentBookmark, 10)) {
+					localStorage.setItem('topic:' + templates.get('topic_id') + ':bookmark', el.attr('data-pid'));
 				}
+
+				if (!scrollingToPost) {
+
+					var newUrl = window.location.href.replace(window.location.hash, '') + '#' + el.attr('data-pid');
+
+					if (newUrl !== currentUrl) {
+						if (history.replaceState) {
+							history.replaceState({
+								url: window.location.pathname.slice(1) + (window.location.search ? window.location.search : '' ) + '#' + el.attr('data-pid')
+							}, null, newUrl);
+						}
+						currentUrl = newUrl;
+					}
+				}
+
 				return false;
 			}
 		});
 	}
 
 	function elementInView(el) {
-		var scrollTop = $(window).scrollTop();
+		var scrollTop = $(window).scrollTop() + $('#header-menu').height();
 		var scrollBottom = scrollTop + $(window).height();
 
 		var elTop = el.offset().top;
-		var height = Math.floor(el.height());
-		var elBottom = elTop + height;
-		return !(elTop > scrollBottom || elBottom < scrollTop);
+		var elBottom = elTop + Math.floor(el.height());
+		return (elTop >= scrollTop && elBottom <= scrollBottom) || (elTop <= scrollTop && elBottom >= scrollTop);
 	}
 
-	Topic.scrollToPost = function(pid, duration, offset) {
+	Topic.scrollToPost = function(pid, highlight, duration, offset) {
 		if (!pid) {
 			return;
 		}
@@ -1148,7 +1084,6 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		if(!offset) {
 			offset = 0;
 		}
-
 
 		if($('#post_anchor_' + pid).length) {
 			return scrollToPid(pid);
@@ -1160,7 +1095,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 					return;
 				}
 				if(parseInt(page, 10) !== pagination.currentPage) {
-					pagination.loadPage(page);
+					pagination.loadPage(page, function() {
+						scrollToPid(pid);
+					});
 				} else {
 					scrollToPid(pid);
 				}
@@ -1176,6 +1113,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				if(after < 0) {
 					after = 0;
 				}
+
 				loadMorePosts(tid, after, function() {
 					scrollToPid(pid);
 				});
@@ -1187,10 +1125,19 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				tid = $('#post-container').attr('data-tid');
 
 			function animateScroll() {
-				$('window,html').animate({
-					scrollTop: scrollTo.offset().top - $('#header-menu').height() - offset
+				scrollingToPost = true;
+
+				$("html, body").animate({
+					scrollTop: (scrollTo.offset().top - $('#header-menu').height() - offset) + "px"
 				}, duration !== undefined ? duration : 400, function() {
+					scrollingToPost = false;
 					updateHeader();
+					if (highlight) {
+						scrollTo.parent().find('.topic-item').addClass('highlight');
+						setTimeout(function() {
+							scrollTo.parent().find('.topic-item').removeClass('highlight');
+						}, 5000);
+					}
 				});
 			}
 
@@ -1202,7 +1149,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				}
 			}
 		}
-	}
+	};
 
 	function onNewPostPagination(data) {
 		var posts = data.posts;
@@ -1315,18 +1262,8 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 	}
 
 
-	function toggle_mod_tools(pid, state) {
-		var postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
-			editEl = postEl.find('.edit'),
-			deleteEl = postEl.find('.delete');
-
-		if (state) {
-			editEl.removeClass('none');
-			deleteEl.removeClass('none');
-		} else {
-			editEl.addClass('none');
-			deleteEl.addClass('none');
-		}
+	function toggle_mod_tools(pid, editable) {
+		$('#post-container li[data-pid="' + pid + '"]').find('.edit, .delete').toggleClass('none', !editable);
 	}
 
 	function updatePostCount() {

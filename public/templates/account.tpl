@@ -17,7 +17,7 @@
 					<div>
 						<div>
 							<span>
-								<i class="account-online-status fa fa-circle status offline"></i>
+								<i class="account-online-status fa fa-circle status offline" title="[[global:{status}]]"></i>
 								<span class="account-username"> {username}</span>
 							</span>
 						</div>
@@ -108,6 +108,18 @@
 				</div>
 			</div>
 
+			<!-- IF ips.length -->
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">[[global:recentips]]</h3>
+				</div>
+				<div class="panel-body">
+				<!-- BEGIN ips -->
+					<div>{ips.ip}</div>
+				<!-- END ips -->
+				</div>
+			</div>
+			<!-- ENDIF ips.length -->
 
 		</div>
 
@@ -128,8 +140,8 @@
 							<span class="pull-right">
 								<a href="../../topic/{posts.tid}/#{posts.pid}">[[global:posted]]</a>
 								[[global:in]]
-								<a href="../../category/{posts.categorySlug}">
-									<i class="fa {posts.categoryIcon}"></i> {posts.categoryName}
+								<a href="../../category/{posts.category.slug}">
+									<i class="fa {posts.category.icon}"></i> {posts.category.name}
 								</a>
 								<span class="timeago" title="{posts.relativeTime}"></span>
 							</span>

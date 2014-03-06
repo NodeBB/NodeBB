@@ -1,14 +1,11 @@
 {
-    "new_topic_button": "Nuova Discussione",
+    "new_topic_button": "Nuovo Argomento",
     "no_topics": "<strong>Non ci sono discussioni in questa categoria.</strong><br />Perché non ne inizi una?",
-    "sidebar.recent_replies": "Risposte Recenti",
-    "sidebar.active_participants": "Partecipanti Attivi",
-    "sidebar.moderators": "Moderatori",
     "posts": "post",
     "views": "visualizzazioni",
-    "posted": "inserito",
-    "browsing": "navigazione",
-    "no_replies": "Non ha ancora risposto nessuno",
+    "posted": "postato",
+    "browsing": "visualizzando",
+    "no_replies": "Nessuno ha risposto",
     "replied": "risposto",
     "last_edited_by": "ultima modifica di"
 }

@@ -22,16 +22,18 @@ var path = require('path'),
 	topics = require('./topics'),
 	ThreadTools = require('./threadTools'),
 	notifications = require('./notifications'),
-	admin = require('./routes/admin'),
-	userRoute = require('./routes/user'),
-	apiRoute = require('./routes/api'),
-	feedsRoute = require('./routes/feeds'),
 	auth = require('./routes/authentication'),
 	meta = require('./meta'),
 	plugins = require('./plugins'),
 	logger = require('./logger'),
 	templates = require('./../public/src/templates'),
-	translator = require('./../public/src/translator');
+	translator = require('./../public/src/translator'),
+
+	admin = require('./routes/admin'),
+	userRoute = require('./routes/user'),
+	apiRoute = require('./routes/api'),
+	feedsRoute = require('./routes/feeds'),
+	metaRoute = require('./routes/meta');
 
 if(nconf.get('ssl')) {
 	server = require('https').createServer({
@@ -43,6 +45,33 @@ if(nconf.get('ssl')) {
 }
 
 module.exports.server = server;
+
+// Signals
+var	shutdown = function(code) {
+		winston.info('[app] Shutdown (SIGTERM/SIGINT) Initialised.');
+		db.close();
+		winston.info('[app] Database connection closed.');
+
+		winston.info('[app] Shutdown complete.');
+		process.exit();
+	},
+	restart = function() {
+		if (process.send) {
+			winston.info('[app] Restarting...');
+			process.send('nodebb:restart');
+		} else {
+			winston.error('[app] Could not restart server. Shutting down.');
+			shutdown();
+		}
+	};
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);
+process.on('SIGHUP', restart);
+process.on('uncaughtException', function(err) {
+	winston.error('[app] Encountered Uncaught Exception: ' + err.message);
+	console.log(err.stack);
+	restart();
+});
 
 (function (app) {
 	"use strict";
@@ -119,6 +148,11 @@ module.exports.server = server;
 
 			// Meta Tags
 			templateValues.metaTags = defaultMetaTags.concat(options.metaTags || []).map(function(tag) {
+				if(!tag || typeof tag.content !== 'string') {
+					winston.warn('Invalid meta tag. ', tag);
+					return tag;
+				}
+
 				tag.content = tag.content.replace(/[&<>'"]/g, function(tag) {
 					return escapeList[tag] || tag;
 				});
@@ -197,6 +231,10 @@ module.exports.server = server;
 
 	// Middlewares
 	app.configure(function() {
+		app.engine('tpl', templates.__express);
+		app.set('view engine', 'tpl');
+		app.set('views', path.join(__dirname, '../public/templates'));
+
 		async.series([
 			function(next) {
 				// Pre-router middlewares
@@ -291,13 +329,6 @@ module.exports.server = server;
 										winston.info('Custom templates directory routed for theme: ' + themeData['theme:id']);
 									}
 								}
-
-								app.use(require('less-middleware')({
-									src: path.join(nconf.get('themes_path'), themeId),
-									dest: path.join(__dirname, '../public/css'),
-									prefix: nconf.get('relative_path') + '/css',
-									yuicompress: app.enabled('minification') ? true : false
-								}));
 
 								next();
 							} else {
@@ -457,8 +488,8 @@ module.exports.server = server;
 	};
 
 	app.namespace(nconf.get('relative_path'), function () {
-
 		auth.registerApp(app);
+		metaRoute.createRoutes(app);
 		admin.createRoutes(app);
 		userRoute.createRoutes(app);
 		apiRoute.createRoutes(app);
@@ -571,7 +602,7 @@ module.exports.server = server;
 						var start = (page - 1) * settings.topicsPerPage,
 							end = start + settings.topicsPerPage - 1;
 
-						topics.getTopicWithPosts(tid, uid, start, end, true, function (err, topicData) {
+						topics.getTopicWithPosts(tid, uid, start, end, function (err, topicData) {
 							if (topicData) {
 								if (parseInt(topicData.deleted, 10) === 1 && parseInt(topicData.expose_tools, 10) === 0) {
 									return next(new Error('Topic deleted'), null);
@@ -617,7 +648,7 @@ module.exports.server = server;
 						metaTags: [
 							{
 								name: "title",
-								content: topicData.topic_name
+								content: topicData.title
 							},
 							{
 								name: "description",
@@ -625,7 +656,7 @@ module.exports.server = server;
 							},
 							{
 								property: 'og:title',
-								content: topicData.topic_name
+								content: topicData.title
 							},
 							{
 								property: 'og:description',
@@ -657,7 +688,7 @@ module.exports.server = server;
 							},
 							{
 								property: 'article:section',
-								content: topicData.category_name
+								content: topicData.category.name
 							}
 						],
 						linkTags: [
@@ -668,7 +699,7 @@ module.exports.server = server;
 							},
 							{
 								rel: 'up',
-								href: nconf.get('url') + '/category/' + topicData.category_slug
+								href: nconf.get('url') + '/category/' + topicData.category.slug
 							}
 						]
 					}, function (err, header) {
@@ -758,15 +789,15 @@ module.exports.server = server;
 						metaTags: [
 							{
 								name: 'title',
-								content: categoryData.category_name
+								content: categoryData.name
 							},
 							{
 								property: 'og:title',
-								content: categoryData.category_name
+								content: categoryData.name
 							},
 							{
 								name: 'description',
-								content: categoryData.category_description
+								content: categoryData.description
 							},
 							{
 								property: "og:type",

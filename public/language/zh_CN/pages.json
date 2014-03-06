@@ -1,13 +1,14 @@
 {
-    "home": "Home",
-    "unread": "Unread Topics",
-    "popular": "Popular Topics",
-    "recent": "Recent Topics",
-    "users": "Registered Users",
-    "notifications": "Notifications",
-    "user.edit": "Editing \"%1\"",
-    "user.following": "People %1 Follows",
-    "user.followers": "People who Follow %1",
-    "user.favourites": "%1's Favourite Posts",
-    "user.settings": "User Settings"
+    "home": "主页",
+    "unread": "未读",
+    "popular": "受欢迎的主题",
+    "recent": "最新主题",
+    "users": "已注册用户",
+    "notifications": "提醒",
+    "user.edit": "编辑 \"%1\"",
+    "user.following": "%1的人关注",
+    "user.followers": "%1关注的人",
+    "user.posts": "%1 发表",
+    "user.favourites": "%1 喜爱的帖子",
+    "user.settings": "用户设置"
 }

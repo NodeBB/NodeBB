@@ -2,32 +2,31 @@ define(function() {
 	var	ResetPassword = {};
 
 	ResetPassword.init = function() {
-		var inputEl = document.getElementById('email'),
-			errorEl = document.getElementById('error'),
-			errorTextEl = errorEl.querySelector('p');
+		var inputEl = $('#email'),
+			errorEl = $('#error'),
+			successEl = $('#success'),
+			errorTextEl = errorEl.find('p');
 
-		document.getElementById('reset').onclick = function() {
-			if (inputEl.value.length > 0 && inputEl.value.indexOf('@') !== -1) {
+		$('#reset').on('click', function() {
+			if (inputEl.val() && inputEl.val().indexOf('@') !== -1) {
 				socket.emit('user.reset.send', {
-					email: inputEl.value
+					email: inputEl.val()
 				}, function(err, data) {
 					if(err) {
 						return app.alertError(err.message);
 					}
 
-					var submitEl = document.getElementById('reset');
-
-					jQuery('#error').hide();
-					jQuery('#success').show();
-					jQuery('#success p').html('An email has been dispatched to "' + inputEl.value + '" with instructions on setting a new password.');
-					inputEl.value = '';
+					errorEl.addClass('hide').hide();
+					successEl.removeClass('hide').show();
+					successEl.find('p').html('An email has been dispatched to "' + inputEl.val() + '" with instructions on setting a new password.');
+					inputEl.val('');
 				});
 			} else {
-				jQuery('#success').hide();
-				jQuery(errorEl).show();
-				errorTextEl.innerHTML = 'Please enter a valid email';
+				successEl.addClass('hide').hide();
+				errorEl.removeClass('hide').show();
+				errorTextEl.html('Please enter a valid email');
 			}
-		};
+		});
 	};
 
 	return ResetPassword;

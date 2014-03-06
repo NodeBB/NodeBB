@@ -14,7 +14,20 @@ define(['uploader'], function(uploader) {
 
 		function save() {
 			if(Object.keys(modified_categories).length) {
-				socket.emit('admin.categories.update', modified_categories);
+				socket.emit('admin.categories.update', modified_categories, function(err, result) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+
+					if (result && result.length) {
+						app.alert({
+							title: 'Updated Categories',
+							message: 'Category IDs ' + result.join(', ') + ' was successfully updated.',
+							type: 'success',
+							timeout: 2000
+						});
+					}
+				});
 				modified_categories = {};
 			}
 			return false;
@@ -57,7 +70,7 @@ define(['uploader'], function(uploader) {
 
 		function updateCategoryOrders() {
 			var categories = $('.admin-categories #entry-container').children();
-			for(var i=0; i<categories.length; ++i) {
+			for(var i = 0; i<categories.length; ++i) {
 				var input = $(categories[i]).find('input[data-name="order"]');
 
 				input.val(i+1).attr('data-value', i+1);
@@ -66,12 +79,14 @@ define(['uploader'], function(uploader) {
 		}
 
 		$('#entry-container').sortable({
-			stop: function( event, ui ) {
+			stop: function(event, ui) {
 				updateCategoryOrders();
-			}
+			},
+			distance: 10
 		});
 		$('.blockclass').each(function() {
-			$(this).val(this.getAttribute('data-value'));
+			var $this = $(this);
+			$this.val($this.attr('data-value'));
 		});
 
 
@@ -114,29 +129,30 @@ define(['uploader'], function(uploader) {
 		}
 
 		function enableColorPicker(idx, inputEl) {
-			var	jinputEl = $(inputEl),
-				previewEl = jinputEl.parents('[data-cid]').find('.preview-box');
+			var	$inputEl = $(inputEl),
+				previewEl = $inputEl.parents('[data-cid]').find('.preview-box');
 
-			jinputEl.ColorPicker({
-				color: jinputEl.val() || '#000',
+			$inputEl.ColorPicker({
+				color: $inputEl.val() || '#000',
 				onChange: function(hsb, hex) {
-					jinputEl.val('#' + hex);
-					if (inputEl.getAttribute('data-name') === 'bgColor') previewEl.css('background', '#' + hex);
-					else if (inputEl.getAttribute('data-name') === 'color') previewEl.css('color', '#' + hex);
-					modified(inputEl);
+					$inputEl.val('#' + hex);
+					if ($inputEl.attr('data-name') === 'bgColor') previewEl.css('background', '#' + hex);
+					else if ($inputEl.attr('data-name') === 'color') previewEl.css('color', '#' + hex);
+					modified($inputEl[0]);
 				}
 			});
 		}
 
-		$('document').ready(function() {
+		$(function() {
 			var url = window.location.href,
 				parts = url.split('/'),
 				active = parts[parts.length - 1];
 
 			$('.nav-pills li').removeClass('active');
 			$('.nav-pills li a').each(function() {
-				if (this.getAttribute('href').match(active)) {
-					$(this.parentNode).addClass('active');
+				var $this = $(this);
+				if ($this.attr('href').match(active)) {
+					$this.parent().addClass('active');
 					return false;
 				}
 			});
@@ -158,11 +174,11 @@ define(['uploader'], function(uploader) {
 			});
 
 			$('.dropdown').on('click', '[data-disabled]', function(ev) {
-				var btn = $(this);
-				var categoryRow = btn.parents('li');
-				var cid = categoryRow.attr('data-cid');
+				var btn = $(this),
+					categoryRow = btn.parents('li'),
+					cid = categoryRow.attr('data-cid'),
+					disabled = btn.attr('data-disabled') === 'false' ? '1' : '0';
 
-				var disabled = this.getAttribute('data-disabled') === 'false' ? '1' : '0';
 				categoryRow.remove();
 				modified_categories[cid] = modified_categories[cid] || {};
 				modified_categories[cid]['disabled'] = disabled;
@@ -184,14 +200,15 @@ define(['uploader'], function(uploader) {
 
 
 			$('.admin-categories').on('click', '.upload-button', function() {
-				var inputEl = this;
-				var	cid = $(this).parents('li[data-cid]').attr('data-cid');
-				uploader.open(RELATIVE_PATH + '/admin/category/uploadpicture', {cid:cid}, 0, function(imageUrlOnServer) {
-					inputEl.value = imageUrlOnServer;
-					var previewBox = $(inputEl).parents('li[data-cid]').find('.preview-box');
+				var inputEl = $(this),
+					cid = inputEl.parents('li[data-cid]').attr('data-cid');
+
+				uploader.open(RELATIVE_PATH + '/admin/category/uploadpicture', {cid: cid}, 0, function(imageUrlOnServer) {
+					inputEl.val(imageUrlOnServer);
+					var previewBox = inputEl.parents('li[data-cid]').find('.preview-box');
 					previewBox.css('background', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')')
 						.css('background-size', 'cover');
-					modified(inputEl);
+					modified(inputEl[0]);
 				});
 			});
 
@@ -201,12 +218,12 @@ define(['uploader'], function(uploader) {
 					preview = parent.find('.preview-box'),
 					bgColor = parent.find('.category_bgColor').val();
 
-				inputEl.value = '';
-				modified(inputEl);
+				inputEl.val('');
+				modified(inputEl[0]);
 
 				preview.css('background', bgColor);
 
-				$(this).hide();
+				$(this).addClass('hide').hide();
 			});
 		});
 	};
@@ -220,8 +237,8 @@ define(['uploader'], function(uploader) {
 
 		searchEl.off().on('keyup', function() {
 			var	searchEl = this,
-				resultsFrag = document.createDocumentFragment(),
-				liEl = document.createElement('li');
+				liEl;
+
 			clearTimeout(searchDelay);
 
 			searchDelay = setTimeout(function() {
@@ -235,23 +252,22 @@ define(['uploader'], function(uploader) {
 
 					var	numResults = results.length,
 						resultObj;
-					for(var x=0;x<numResults;x++) {
+					resultsEl.html('');
+					for(var x = 0; x < numResults; x++) {
 						resultObj = results[x];
+						liEl = $('<li />')
+							.attr('data-uid', resultObj.uid)
+							.html('<div class="pull-right">' +
+								'<div class="btn-group">' +
+								'<button type="button" data-priv="+r" class="btn btn-default' + (resultObj.privileges['+r'] ? ' active' : '') + '">Read</button>' +
+								'<button type="button" data-priv="+w" class="btn btn-default' + (resultObj.privileges['+w'] ? ' active' : '') + '">Write</button>' +
+								'<button type="button" data-priv="mods" class="btn btn-default' + (resultObj.privileges['mods'] ? ' active' : '') + '">Moderator</button>' +
+								'</div>' +
+								'</div>' +
+								'<img src="' + resultObj.picture + '" /> ' + resultObj.username);
 
-						liEl.setAttribute('data-uid', resultObj.uid);
-						liEl.innerHTML =	'<div class="pull-right">' +
-												'<div class="btn-group">' +
-													'<button type="button" data-priv="+r" class="btn btn-default' + (resultObj.privileges['+r'] ? ' active' : '') + '">Read</button>' +
-													'<button type="button" data-priv="+w" class="btn btn-default' + (resultObj.privileges['+w'] ? ' active' : '') + '">Write</button>' +
-													'<button type="button" data-priv="mods" class="btn btn-default' + (resultObj.privileges['mods'] ? ' active' : '') + '">Moderator</button>' +
-												'</div>' +
-											'</div>' +
-											'<img src="' + resultObj.picture + '" /> ' + resultObj.username;
-
-						resultsFrag.appendChild(liEl.cloneNode(true));
+						resultsEl.append(liEl);
 					}
-
-					resultsEl.html(resultsFrag);
 				});
 			}, 250);
 		});
@@ -261,7 +277,7 @@ define(['uploader'], function(uploader) {
 		resultsEl.off().on('click', '[data-priv]', function(e) {
 			var	btnEl = $(this),
 				uid = btnEl.parents('li[data-uid]').attr('data-uid'),
-				privilege = this.getAttribute('data-priv');
+				privilege = btnEl.attr('data-priv');
 			e.preventDefault();
 
 			socket.emit('admin.categories.setPrivilege', {
@@ -277,7 +293,7 @@ define(['uploader'], function(uploader) {
 		});
 
 		modal.off().on('click', '.members li > img', function() {
-			searchEl.val(this.getAttribute('title'));
+			searchEl.val($(this).attr('title'));
 			searchEl.keyup();
 		});
 
@@ -286,33 +302,33 @@ define(['uploader'], function(uploader) {
 			if(err) {
 				return app.alertError(err.message);
 			}
-			var groupsFrag = document.createDocumentFragment(),
-				numResults = results.length,
-				trEl = document.createElement('tr'),
-			    resultObj;
+			var numResults = results.length,
+				trEl,
+				resultObj;
 
-			for(var x=0;x<numResults;x++) {
+			groupsResultsEl.empty();
+
+			for(var x = 0; x < numResults; x++) {
 				resultObj = results[x];
-				trEl.setAttribute('data-gid', resultObj.gid);
-				trEl.innerHTML =	'<td><h4>' + resultObj.name + '</h4></td>' +
-									'<td>' +
-										'<div class="btn-group pull-right">' +
-											'<button type="button" data-gpriv="g+r" class="btn btn-default' + (resultObj.privileges['g+r'] ? ' active' : '') + '">Read</button>' +
-											'<button type="button" data-gpriv="g+w" class="btn btn-default' + (resultObj.privileges['g+w'] ? ' active' : '') + '">Write</button>' +
-										'</div>' +
-									'</td>';
-
-				groupsFrag.appendChild(trEl.cloneNode(true));
+				trEl = $('<tr />')
+					.attr('data-gid', resultObj.gid)
+					.html('<td><h4>' + resultObj.name + '</h4></td>' +
+						'<td>' +
+						'<div class="btn-group pull-right">' +
+						'<button type="button" data-gpriv="g+r" class="btn btn-default' + (resultObj.privileges['g+r'] ? ' active' : '') + '">Read</button>' +
+						'<button type="button" data-gpriv="g+w" class="btn btn-default' + (resultObj.privileges['g+w'] ? ' active' : '') + '">Write</button>' +
+						'</div>' +
+						'</td>');
+				groupsResultsEl.append(trEl);
 			}
-
-			groupsResultsEl.html(groupsFrag);
 		});
 
 		groupsResultsEl.off().on('click', '[data-gpriv]', function(e) {
 			var	btnEl = $(this),
 				gid = btnEl.parents('tr[data-gid]').attr('data-gid'),
-				privilege = this.getAttribute('data-gpriv');
+				privilege = btnEl.attr('data-gpriv');
 			e.preventDefault();
+
 			socket.emit('admin.categories.setGroupPrivilege', {
 				cid: cid,
 				gid: gid,
@@ -323,7 +339,7 @@ define(['uploader'], function(uploader) {
 					btnEl.toggleClass('active');
 				}
 			});
-		})
+		});
 
 		modal.modal();
 	};
@@ -333,61 +349,48 @@ define(['uploader'], function(uploader) {
 			readMembers = modalEl.find('#category-permissions-read'),
 			writeMembers = modalEl.find('#category-permissions-write'),
 			moderatorsEl = modalEl.find('#category-permissions-mods');
+
 		socket.emit('admin.categories.getPrivilegeSettings', cid, function(err, privilegeList) {
 			var	readLength = privilegeList['+r'].length,
 				writeLength = privilegeList['+w'].length,
 				modLength = privilegeList['mods'].length,
-				readFrag = document.createDocumentFragment(),
-				writeFrag = document.createDocumentFragment(),
-				modFrag = document.createDocumentFragment(),
-				liEl = document.createElement('li'),
-				x, userObj;
+				liEl, x, userObj;
 
+			readMembers.html('');
 			if (readLength > 0) {
-				for(x=0;x<readLength;x++) {
+				for(x = 0; x < readLength; x++) {
 					userObj = privilegeList['+r'][x];
-					liEl.setAttribute('data-uid', userObj.uid);
-
-					liEl.innerHTML = '<img src="' + userObj.picture + '" title="' + userObj.username + '" />';
-					readFrag.appendChild(liEl.cloneNode(true));
+					liEl = $('<li/>').attr('data-uid', userObj.uid).html('<img src="' + userObj.picture + '" title="' + userObj.username + '" />');
+					readMembers.append(liEl);
 				}
 			} else {
-				liEl.className = 'empty';
-				liEl.innerHTML = 'All users can read and see this category';
-				readFrag.appendChild(liEl.cloneNode(true));
+				liEl = $('<li/>').addClass('empty').html('All users can read and see this category');
+				readMembers.append(liEl);
 			}
 
+			writeMembers.html('');
 			if (writeLength > 0) {
 				for(x=0;x<writeLength;x++) {
 					userObj = privilegeList['+w'][x];
-					liEl.setAttribute('data-uid', userObj.uid);
-
-					liEl.innerHTML = '<img src="' + userObj.picture + '" title="' + userObj.username + '" />';
-					writeFrag.appendChild(liEl.cloneNode(true));
+					liEl = $('<li />').attr('data-uid', userObj.uid).html('<img src="' + userObj.picture + '" title="' + userObj.username + '" />');
+					writeMembers.append(liEl);
 				}
 			} else {
-				liEl.className = 'empty';
-				liEl.innerHTML = 'All users can write to this category';
-				writeFrag.appendChild(liEl.cloneNode(true));
+				liEl = $('<li />').addClass('empty').html('All users can write to this category');
+				writeMembers.append(liEl);
 			}
 
+			moderatorsEl.html('');
 			if (modLength > 0) {
-				for(x=0;x<modLength;x++) {
+				for(x = 0;x < modLength; x++) {
 					userObj = privilegeList['mods'][x];
-					liEl.setAttribute('data-uid', userObj.uid);
-
-					liEl.innerHTML = '<img src="' + userObj.picture + '" title="' + userObj.username + '" />';
-					modFrag.appendChild(liEl.cloneNode(true));
+					liEl = $('<li />').attr('data-uid', userObj.uid).html('<img src="' + userObj.picture + '" title="' + userObj.username + '" />');
+					moderatorsEl.append(liEl);
 				}
 			} else {
-				liEl.className = 'empty';
-				liEl.innerHTML = 'No moderators';
-				modFrag.appendChild(liEl.cloneNode(true));
+				liEl = $('<li />').addClass('empty').html('No moderators');
+				moderatorsEl.append(liEl);
 			}
-
-			readMembers.html(readFrag);
-			writeMembers.html(writeFrag);
-			moderatorsEl.html(modFrag);
 		});
 	};
 

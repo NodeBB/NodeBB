@@ -4,39 +4,37 @@ define(function() {
 	ResetCode.init = function() {
 		var reset_code = templates.get('reset_code');
 
-		var resetEl = document.getElementById('reset'),
-			password = document.getElementById('password'),
-			repeat = document.getElementById('repeat'),
-			noticeEl = document.getElementById('notice');
+		var resetEl = $('#reset'),
+			password = $('#password'),
+			repeat = $('#repeat'),
+			noticeEl = $('#notice');
 
-		resetEl.addEventListener('click', function() {
-			if (password.value.length < 6) {
-				$('#error').hide();
-				noticeEl.querySelector('strong').innerHTML = 'Invalid Password';
-				noticeEl.querySelector('p').innerHTML = 'The password entered is too short, please pick a different password.';
-				noticeEl.style.display = 'block';
+		resetEl.on('click', function() {
+			if (password.val().length < 6) {
+				$('#error').addClass('hide').hide();
+				noticeEl.find('strong').html('Invalid Password');
+				noticeEl.find('p').html('The password entered is too short, please pick a different password.');
+				noticeEl.removeClass('hide').css({display: 'block'});
 			} else if (password.value !== repeat.value) {
 				$('#error').hide();
-				noticeEl.querySelector('strong').innerHTML = 'Invalid Password';
-				noticeEl.querySelector('p').innerHTML = 'The two passwords you\'ve entered do not match.';
-				noticeEl.style.display = 'block';
+				noticeEl.find('strong').html('Invalid Password');
+				noticeEl.find('p').html('The two passwords you\'ve entered do not match.');
+				noticeEl.removeClass('hide').css({display: 'block'});
 			} else {
 				socket.emit('user.reset.commit', {
 					code: reset_code,
-					password: password.value
+					password: password.val()
 				}, function(err) {
 					if(err) {
 						return app.alert(err.message);
 					}
-
-					$('#error').hide();
-					$('#notice').hide();
-					$('#success').show();
+					$('#error').addClass('hide').hide();
+					$('#notice').addClass('hide').hide();
+					$('#success').removeClass('hide').addClass('show').show();
 				});
 			}
-		}, false);
+		});
 
-		// Enable the form if the code is valid
 		socket.emit('user.reset.valid', {
 			code: reset_code
 		}, function(err, valid) {
@@ -45,12 +43,12 @@ define(function() {
 			}
 
 			if (valid) {
-				resetEl.disabled = false;
+				resetEl.prop('disabled', false);
 			} else {
-				var formEl = document.getElementById('reset-form');
+				var formEl = $('#reset-form');
 				// Show error message
 				$('#error').show();
-				formEl.parentNode.removeChild(formEl);
+				formEl.remove();
 			}
 		});
 	};

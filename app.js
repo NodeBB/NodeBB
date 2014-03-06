@@ -80,10 +80,9 @@ if (!nconf.get('help') && !nconf.get('setup') && !nconf.get('install') && !nconf
 	reset();
 } else {
 	displayHelp();
-};
+}
 
-
-function start() {
+function loadConfig() {
 	nconf.file({
 		file: configFile
 	});
@@ -92,17 +91,23 @@ function start() {
 		themes_path: path.join(__dirname, 'node_modules')
 	});
 
+	// Ensure themes_path is a full filepath
+	nconf.set('themes_path', path.resolve(__dirname, nconf.get('themes_path')));
+}
+
+
+function start() {
+	loadConfig();
+
 	nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
 	nconf.set('upload_url', path.join(path.sep, nconf.get('relative_path'), 'uploads', path.sep));
 	nconf.set('base_dir', __dirname);
 
-	// Ensure themes_path is a full filepath
-	nconf.set('themes_path', path.resolve(__dirname, nconf.get('themes_path')));
-
 	winston.info('Time: ' + new Date());
 	winston.info('Initializing NodeBB v' + pkg.version);
 	winston.info('* using configuration stored in: ' + configFile);
-	winston.info('* using ' + nconf.get('database') +' store at ' + nconf.get(nconf.get('database') + ':host') + ':' + nconf.get(nconf.get('database') + ':port'));
+	var host = nconf.get(nconf.get('database') + ':host');
+	winston.info('* using ' + nconf.get('database') +' store at ' + host + (host.indexOf('/') === -1 ? ':' + nconf.get(nconf.get('database') + ':port') : ''));
 	winston.info('* using themes stored in: ' + nconf.get('themes_path'));
 
 	if (process.env.NODE_ENV === 'development') {
@@ -148,7 +153,7 @@ function start() {
 					winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
 					winston.warn('    node app --upgrade');
 					winston.warn('To ignore this error (not recommended):');
-					winston.warn('    node app --no-check-schema')
+					winston.warn('    node app --no-check-schema');
 					process.exit();
 				}
 			});
@@ -157,15 +162,13 @@ function start() {
 }
 
 function setup() {
+	loadConfig();
+
 	if (nconf.get('setup')) {
 		winston.info('NodeBB Setup Triggered via Command Line');
 	} else {
 		winston.warn('Configuration not found, starting NodeBB setup');
 	}
-
-	nconf.file({
-		file: __dirname + '/config.json'
-	});
 
 	var install = require('./src/install');
 
@@ -185,9 +188,7 @@ function setup() {
 }
 
 function upgrade() {
-	nconf.file({
-		file: __dirname + '/config.json'
-	});
+	loadConfig();
 
 	var meta = require('./src/meta');
 
@@ -199,9 +200,7 @@ function upgrade() {
 }
 
 function reset() {
-	nconf.file({
-		file: __dirname + '/config.json'
-	});
+	loadConfig();
 
 	var meta = require('./src/meta'),
 		db = require('./src/database'),
@@ -232,7 +231,7 @@ function reset() {
 					winston.info("Successfully reset theme to Vanilla and disabled all plugins.");
 				}
 
-				process.exit();				
+				process.exit();
 			});
 		});
 	});

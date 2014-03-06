@@ -1,10 +1,10 @@
 {
     "title": "Notifiche",
-    "no_notifs": "You have no new notifications",
-    "see_all": "See all Notifications",
+    "no_notifs": "Non hai nuove notifiche",
+    "see_all": "Vedi tutte le Notifiche",
     "back_to_home": "Torna alla pagina iniziale",
     "outgoing_link": "Link in uscita",
-    "outgoing_link_message": "Ci stai abbandonando",
+    "outgoing_link_message": "Stai lasciando",
     "continue_to": "Continua verso",
     "return_to": "Ritorna a "
 }

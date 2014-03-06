@@ -1,33 +1,45 @@
-var db = require('./../database'),
+
+'use strict';
+
+var async = require('async'),
+	db = require('./../database'),
 	utils = require('./../../public/src/utils'),
 	categories = require('./../categories');
 
 (function(CategoriesAdmin) {
 
-	CategoriesAdmin.update = function(modified, socket) {
-		var updated = [];
+	CategoriesAdmin.update = function(modified, socket, callback) {
 
-		for (var cid in modified) {
+		function updateCategory(cid, next) {
 			var category = modified[cid];
+			var fields = Object.keys(category);
 
-			for (var key in category) {
-				db.setObjectField('category:' + cid, key, category[key]);
-
-				if (key == 'name') {
-					// reset slugs if name is updated
-					var slug = cid + '/' + utils.slugify(category[key]);
-					db.setObjectField('category:' + cid, 'slug', slug);
-				}
-			}
-
-			updated.push(cid);
+			async.each(fields, function(key, next) {
+				updateCategoryField(cid, key, category[key], next);
+			}, next);
 		}
 
-		socket.emit('event:alert', {
-			title: 'Updated Categories',
-			message: 'Category IDs ' + updated.join(', ') + ' was successfully updated.',
-			type: 'success',
-			timeout: 2000
+		function updateCategoryField(cid, key, value, next) {
+			db.setObjectField('category:' + cid, key, value, function(err) {
+				if(err) {
+					return next(err);
+				}
+
+				if (key === 'name') {
+					var slug = cid + '/' + utils.slugify(value);
+					db.setObjectField('category:' + cid, 'slug', slug, next);
+				} else if (key === 'order') {
+					db.sortedSetAdd('categories:cid', value, cid, next);
+				} else {
+					next();
+				}
+			});
+		}
+
+		var cids = Object.keys(modified);
+
+		async.each(cids, updateCategory, function(err) {
+			callback(err, cids);
 		});
 	};
 

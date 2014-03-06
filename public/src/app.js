@@ -1,10 +1,10 @@
 var socket,
 	config,
 	app = {
-		"username": null,
-		"uid": null,
-		"isFocused": true,
-		"currentRoom": null
+		'username': null,
+		'uid': null,
+		'isFocused': true,
+		'currentRoom': null
 	};
 
 (function () {
@@ -175,23 +175,27 @@ var socket,
 		var alert = $('#' + alert_id);
 		var title = params.title || '';
 
-		function startTimeout(div, timeout) {
+		function fadeOut() {
+			alert.fadeOut(500, function () {
+				$(this).remove();
+			});
+		}
+
+		function startTimeout(timeout) {
 			var timeoutId = setTimeout(function () {
-				$(div).fadeOut(1000, function () {
-					$(this).remove();
-				});
+				fadeOut();
 			}, timeout);
 
-			$(div).attr('timeoutId', timeoutId);
+			alert.attr('timeoutId', timeoutId);
 		}
 
 		if (alert.length > 0) {
 			alert.find('strong').html(title);
 			alert.find('p').html(params.message);
-			alert.attr('class', "alert alert-dismissable alert-" + params.type);
+			alert.attr('class', 'alert alert-dismissable alert-' + params.type);
 
 			clearTimeout(alert.attr('timeoutId'));
-			startTimeout(alert, params.timeout);
+			startTimeout(params.timeout);
 
 			alert.children().fadeOut('100');
 			translator.translate(alert.html(), function(translatedHTML) {
@@ -199,41 +203,47 @@ var socket,
 				alert.html(translatedHTML);
 			});
 		} else {
-			var div = $('<div id="' + alert_id + '" class="alert alert-dismissable alert-' + params.type +'"></div>'),
-				button = $('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'),
-				strong = $('<strong>' + title + '</strong>'),
-				p = $('<p>' + params.message + '</p>');
+			alert = $('<div id="' + alert_id + '" class="alert alert-dismissable alert-' + params.type +'"></div>');
 
-			div.append(button)
-				.append(strong)
-				.append(p);
+			alert.append($('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'))
+				.append($('<strong>' + title + '</strong>'))
+				.append($('<p>' + params.message + '</p>'));
 
-			button.on('click', function () {
-				div.remove();
-			});
-
-			if (params.location == null)
+			if (params.location == null) {
 				params.location = 'alert_window';
+			}
 
-			translator.translate(div.html(), function(translatedHTML) {
-				div.html(translatedHTML);
-				$('#' + params.location).prepend(div.fadeIn('100'));
+			translator.translate(alert.html(), function(translatedHTML) {
+				alert.html(translatedHTML);
+				$('#' + params.location).prepend(alert.fadeIn('100'));
+
+				if(typeof params.closefn === 'function') {
+					alert.find('button').on('click', function() {
+						params.closefn();
+						fadeOut();
+						return false;
+					});
+				}
 			});
 
 			if (params.timeout) {
-				startTimeout(div, params.timeout);
+				startTimeout(params.timeout);
 			}
 
-			if (params.clickfn) {
-				div.on('click', function () {
-					params.clickfn();
-					div.fadeOut(500, function () {
-						$(this).remove();
-					});
+			if (typeof params.clickfn === 'function') {
+				alert.on('click', function (e) {
+					if(!$(e.target).is('.close')) {
+						params.clickfn();
+					}
+					fadeOut();
 				});
 			}
 		}
 	};
+
+	app.removeAlert = function(id) {
+		$('#' + 'alert_button_' + id).remove();
+	}
 
 	app.alertSuccess = function (message, timeout) {
 		if (!timeout)
@@ -277,7 +287,7 @@ var socket,
 	app.populateOnlineUsers = function () {
 		var uids = [];
 
-		jQuery('.post-row').each(function () {
+		$('.post-row').each(function () {
 			var uid = $(this).attr('data-uid');
 			if(uids.indexOf(uid) === -1) {
 				uids.push(uid);
@@ -286,13 +296,18 @@ var socket,
 
 		socket.emit('user.getOnlineUsers', uids, function (err, users) {
 
-			jQuery('.username-field').each(function (index, element) {
-				var el = jQuery(this),
+			$('.username-field').each(function (index, element) {
+				var el = $(this),
 					uid = el.parents('li').attr('data-uid');
 
-				if (uid && users[uid]) {
-					el.siblings('i').attr('class', 'fa fa-circle status ' + users[uid].status)
-				}
+					if (uid && users[uid]) {
+						translator.translate('[[global:' + users[uid].status + ']]', function(translated) {
+							el.siblings('i')
+								.attr('class', 'fa fa-circle status ' + users[uid].status)
+								.attr('title', translated)
+								.attr('data-original-title', translated);
+						});
+					}
 			});
 		});
 	};
@@ -302,19 +317,19 @@ var socket,
 			parts = path.split('/'),
 			active = parts[parts.length - 1];
 
-		jQuery('#main-nav li').removeClass('active');
+		$('#main-nav li').removeClass('active');
 		if (active) {
-			jQuery('#main-nav li a').each(function () {
-				var href = this.getAttribute('href');
+			$('#main-nav li a').each(function () {
+				var href = $(this).attr('href');
 				if (active == "sort-posts" || active == "sort-reputation" || active == "search" || active == "latest" || active == "online")
 					active = 'users';
 				if (href && href.match(active)) {
-					jQuery(this.parentNode).addClass('active');
+					$(this.parentNode).addClass('active');
 					return false;
 				}
 			});
 		}
-	};
+	}
 
 	app.createUserTooltips = function() {
 		$('img[title].teaser-pic,img[title].user-img').each(function() {
@@ -322,6 +337,13 @@ var socket,
 				placement: 'top',
 				title: $(this).attr('title')
 			});
+		});
+	};
+
+	app.createStatusTooltips = function() {
+		$('body').tooltip({
+			selector:'.fa-circle.status',
+			placement: 'top'
 		});
 	};
 
@@ -342,6 +364,8 @@ var socket,
 		app.makeNumbersHumanReadable($('.human-readable-number'));
 
 		app.createUserTooltips();
+
+		app.createStatusTooltips();
 
 		setTimeout(function () {
 			window.scrollTo(0, 1); // rehide address bar on mobile after page load completes.
@@ -386,7 +410,7 @@ var socket,
 			return;
 		}
 
-		if (!app.username) {
+		if (!app.uid) {
 			app.alert({
 				type: 'danger',
 				title: 'Not Logged In',
@@ -427,18 +451,19 @@ var socket,
 
 	app.enableInfiniteLoading = function(callback) {
 		$(window).off('scroll').on('scroll', function() {
+
 			var top = $(window).height() * 0.1;
 			var bottom = ($(document).height() - $(window).height()) * 0.9;
 			var currentScrollTop = $(window).scrollTop();
 
-			if($(window).scrollTop() < top && previousScrollTop > currentScrollTop) {
+			if(currentScrollTop < top && currentScrollTop < previousScrollTop) {
 				callback(-1);
-			} else if ($(window).scrollTop() > bottom && previousScrollTop < currentScrollTop) {
+			} else if (currentScrollTop > bottom && currentScrollTop > previousScrollTop) {
 				callback(1);
 			}
 			previousScrollTop = currentScrollTop;
 		});
-	}
+	};
 
 	var	titleObj = {
 			active: false,
@@ -575,7 +600,7 @@ var socket,
 		});
 	};
 
-	jQuery('document').ready(function () {
+	$('document').ready(function () {
 		$('#search-form').on('submit', function () {
 			var input = $(this).find('input');
 			ajaxify.go("search/" + input.val());

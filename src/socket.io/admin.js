@@ -9,6 +9,7 @@ var	groups = require('../groups'),
 	categories = require('../categories'),
 	CategoryTools = require('../categoryTools'),
 	logger = require('../logger'),
+	db = require('../database'),
 	admin = {
 		user: require('../admin/user'),
 		categories: require('../admin/categories')
@@ -30,6 +31,34 @@ SocketAdmin.before = function(socket, next) {
 		}
 	});
 };
+
+SocketAdmin.restart = function(socket, data, callback) {
+	meta.restart();
+};
+
+
+SocketAdmin.getVisitorCount = function(socket, data, callback) {
+	var terms = {
+		day: 86400000,
+		week: 604800000,
+		month: 2592000000
+	};
+	var now = Date.now();
+	async.parallel({
+		day: function(next) {
+			db.sortedSetCount('ip:recent', now - terms.day, now, next);
+		},
+		week: function(next) {
+			db.sortedSetCount('ip:recent', now - terms.week, now, next);
+		},
+		month: function(next) {
+			db.sortedSetCount('ip:recent', now - terms.month, now, next);
+		},
+		alltime: function(next) {
+			db.sortedSetCount('ip:recent', 0, now, next);
+		}
+	}, callback);
+}
 
 /* Topics */
 
@@ -114,12 +143,12 @@ SocketAdmin.categories.create = function(socket, data, callback) {
 	categories.create(data, callback);
 };
 
-SocketAdmin.categories.update = function(socket, data) {
+SocketAdmin.categories.update = function(socket, data, callback) {
 	if(!data) {
 		return callback(new Error('invalid data'));
 	}
 
-	admin.categories.update(data, socket);
+	admin.categories.update(data, socket, callback);
 };
 
 SocketAdmin.categories.search = function(socket, data, callback) {
@@ -270,12 +299,16 @@ SocketAdmin.themes.set = function(socket, data, callback) {
 	if(!data) {
 		return callback(new Error('invalid data'));
 	}
-	meta.themes.set(data, callback);
+	meta.themes.set(data, function() {
+		callback();
+		meta.restart()
+	});
 };
 
 SocketAdmin.plugins.toggle = function(socket, plugin_id) {
 	plugins.toggleActive(plugin_id, function(status) {
 		socket.emit('admin.plugins.toggle', status);
+		meta.restart();
 	});
 };
 

@@ -339,7 +339,7 @@ var async = require('async'),
 					winston.info('Enabling default plugins');
 
 					var defaultEnabled = [
-						'nodebb-plugin-markdown', 'nodebb-plugin-mentions'
+						'nodebb-plugin-markdown', 'nodebb-plugin-mentions', 'nodebb-widget-essentials'
 					];
 
 					async.each(defaultEnabled, function (pluginId, next) {

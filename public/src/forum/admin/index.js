@@ -31,6 +31,22 @@ define(function() {
 				checkEl.append('<p>A new version (v' + latestVersion + ') has been released. Consider upgrading your NodeBB.</p>');
 			}
 		});
+
+		$('.restart').on('click', function() {
+			socket.emit('admin.restart');
+		});
+
+		socket.emit('admin.getVisitorCount', function(err, data) {
+			if(err) {
+				return app.alertError(err.message);
+			}
+
+			var uniqueVisitors = $('#unique-visitors');
+			for(var key in data) {
+				uniqueVisitors.find('#' + key).text(data[key]);
+			}
+
+		});
 	};
 
 	Admin.updateRoomUsage = function(err, data) {

@@ -1,7 +1,8 @@
 
+'use strict';
 
 (function(module) {
-	'use strict';
+
 	var winston = require('winston'),
 		async = require('async'),
 		nconf = require('nconf'),
@@ -68,15 +69,15 @@
 				});
 
 				if(typeof callback === 'function') {
-					callback(null);
+					callback();
 				}
 			}
 		});
-	}
+	};
 
 	module.close = function() {
 		db.close();
-	}
+	};
 
 	//
 	// helper functions
@@ -129,7 +130,7 @@
 				winston.error('Error indexing ' + err.message);
 			}
 		});
-	}
+	};
 
 	module.search = function(key, term, limit, callback) {
 		db.command({text:"search" , search: term, filter: {key:key}, limit: limit }, function(err, result) {
@@ -150,7 +151,7 @@
 				callback(null, []);
 			}
 		});
-	}
+	};
 
 	module.searchRemove = function(key, id, callback) {
 		db.collection('search').remove({id:id, key:key}, function(err, result) {
@@ -161,37 +162,28 @@
 				callback();
 			}
 		});
-	}
+	};
 
 	module.flushdb = function(callback) {
 		db.dropDatabase(function(err, result) {
-			if(err){
-				winston.error(error);
-				if(typeof callback === 'function') {
+			if (err) {
+				winston.error(err.message);
+				if (typeof callback === 'function') {
 					return callback(err);
 				}
 			}
 
-			if(typeof callback === 'function') {
-				callback(null);
+			if (typeof callback === 'function') {
+				callback();
 			}
 		});
-	}
-
-
-	module.getFileName = function(callback) {
-		throw new Error('not-implemented');
-	}
+	};
 
 	module.info = function(callback) {
 		db.stats({scale:1024}, function(err, stats) {
 			if(err) {
 				return callback(err);
 			}
-
-			// TODO : if this it not deleted the templates break,
-			// it is a nested object inside stats
-			delete stats.dataFileVersion;
 
 			stats.avgObjSize = (stats.avgObjSize / 1024).toFixed(2);
 
@@ -201,7 +193,7 @@
 
 			callback(null, stats);
 		});
-	}
+	};
 
 	// key
 
@@ -209,7 +201,7 @@
 		db.collection('objects').findOne({_key:key}, function(err, item) {
 			callback(err, item !== undefined && item !== null);
 		});
-	}
+	};
 
 	module.delete = function(key, callback) {
 		db.collection('objects').remove({_key:key}, function(err, result) {
@@ -217,22 +209,22 @@
 				callback(err, result);
 			}
 		});
-	}
+	};
 
 	module.get = function(key, callback) {
 		module.getObjectField(key, 'value', callback);
-	}
+	};
 
 	module.set = function(key, value, callback) {
 		var data = {value:value};
 		module.setObject(key, data, callback);
-	}
+	};
 
 	module.keys = function(key, callback) {
 		db.collection('objects').find( { _key: { $regex: key /*, $options: 'i'*/ } }, function(err, result) {
 			callback(err, result);
 		});
-	}
+	};
 
 	module.rename = function(oldKey, newKey, callback) {
 		db.collection('objects').update({_key: oldKey}, {$set:{_key: newKey}}, function(err, result) {
@@ -240,25 +232,25 @@
 				callback(err, result);
 			}
 		});
-	}
+	};
 
 	module.expire = function(key, seconds, callback) {
 		module.expireAt(key, Math.round(Date.now() / 1000) + seconds, callback);
-	}
+	};
 
 	module.expireAt = function(key, timestamp, callback) {
 		module.setObjectField(key, 'expireAt', new Date(timestamp * 1000), callback);
-	}
+	};
 
 	//hashes
 	module.setObject = function(key, data, callback) {
-		data['_key'] = key;
+		data._key = key;
 		db.collection('objects').update({_key:key}, {$set:data}, {upsert:true, w: 1}, function(err, result) {
 			if(typeof callback === 'function') {
 				callback(err, result);
 			}
 		});
-	}
+	};
 
 	module.setObjectField = function(key, field, value, callback) {
 		var data = {};
@@ -273,7 +265,7 @@
 				callback(err, result);
 			}
 		});
-	}
+	};
 
 	module.getObject = function(key, callback) {
 		db.collection('objects').findOne({_key:key}, function(err, item) {
@@ -281,7 +273,7 @@
 
 			callback(err, item);
 		});
-	}
+	};
 
 	module.getObjects = function(keys, callback) {
 
@@ -299,9 +291,13 @@
 
 			callback(null, returnData);
 		});
-	}
+	};
 
 	module.getObjectField = function(key, field, callback) {
+		if(typeof field !== 'string') {
+			field = field.toString();
+		}
+		field = field.replace(/\./g, '\uff0E');
 		module.getObjectFields(key, [field], function(err, data) {
 			if(err) {
 				return callback(err);
@@ -309,17 +305,18 @@
 
 			callback(null, data[field]);
 		});
-	}
+	};
 
 	module.getObjectFields = function(key, fields, callback) {
 
 		var _fields = {};
 		for(var i=0; i<fields.length; ++i) {
-			if(typeof fields[i] !== 'string') {
-				_fields[fields[i].toString().replace(/\./g, '\uff0E')] = 1;
-			} else {
-				_fields[fields[i].replace(/\./g, '\uff0E')] = 1;
+			if (typeof fields[i] !== 'string') {
+				fields[i] = fields[i].toString();
 			}
+
+			fields[i] = fields[i].replace(/\./g, '\uff0E');
+			_fields[fields[i]] = 1;
 		}
 
 		db.collection('objects').findOne({_key:key}, _fields, function(err, item) {
@@ -342,7 +339,7 @@
 
 			callback(null, item);
 		});
-	}
+	};
 
 	module.getObjectKeys = function(key, callback) {
 		module.getObject(key, function(err, data) {
@@ -356,7 +353,7 @@
 				callback(null, []);
 			}
 		});
-	}
+	};
 
 	module.getObjectValues = function(key, callback) {
 		module.getObject(key, function(err, data) {
@@ -370,7 +367,7 @@
 			}
 			callback(null, values);
 		});
-	}
+	};
 
 	module.isObjectField = function(key, field, callback) {
 		var data = {};
@@ -385,7 +382,7 @@
 			}
 			callback(err, !!item && item[field] !== undefined && item[field] !== null);
 		});
-	}
+	};
 
 	module.deleteObjectField = function(key, field, callback) {
 		var data = {};
@@ -399,15 +396,15 @@
 				callback(err, result);
 			}
 		});
-	}
+	};
 
 	module.incrObjectField = function(key, field, callback) {
 		module.incrObjectFieldBy(key, field, 1, callback);
-	}
+	};
 
 	module.decrObjectField = function(key, field, callback) {
 		module.incrObjectFieldBy(key, field, -1, callback);
-	}
+	};
 
 	module.incrObjectFieldBy = function(key, field, value, callback) {
 		var data = {};
@@ -422,7 +419,7 @@
 				callback(err, result ? result[field] : null);
 			}
 		});
-	}
+	};
 
 
 	// sets
@@ -437,19 +434,12 @@
 		});
 
 
-		db.collection('objects').update({_key:key},
-			{
-				$addToSet: { members: { $each: value } }
-			},
-			{
-				upsert:true, w: 1
-			}
-		, function(err, result) {
+		db.collection('objects').update({_key: key}, { $addToSet: { members: { $each: value } }	}, { upsert: true, w: 1 }, function(err, result) {
 			if(typeof callback === 'function') {
 				callback(err, result);
 			}
 		});
-	}
+	};
 
 	module.setRemove = function(key, value, callback) {
 		if(!Array.isArray(value)) {
@@ -465,7 +455,7 @@
 				callback(err, result);
 			}
 		});
-	}
+	};
 
 	module.isSetMember = function(key, value, callback) {
 		if(value !== null && value !== undefined) {
@@ -475,7 +465,7 @@
 		db.collection('objects').findOne({_key:key, members: value}, function(err, item) {
 			callback(err, item !== null && item !== undefined);
 		});
-	}
+	};
 
 	module.isMemberOfSets = function(sets, value, callback) {
 
@@ -498,7 +488,7 @@
 
 			callback(err, result);
 		});
-	}
+	};
 
 	module.getSetMembers = function(key, callback) {
 		db.collection('objects').findOne({_key:key}, {members:1}, function(err, data) {
@@ -512,7 +502,7 @@
 				callback(null, data.members);
 			}
 		});
-	}
+	};
 
 	module.setCount = function(key, callback) {
 		db.collection('objects').findOne({_key:key}, function(err, data) {
@@ -525,7 +515,7 @@
 
 			callback(null, data.members.length);
 		});
-	}
+	};
 
 	module.setRemoveRandom = function(key, callback) {
 		db.collection('objects').findOne({_key:key}, function(err, data) {
@@ -551,7 +541,7 @@
 				});
 			}
 		});
-	}
+	};
 
 
 	// sorted sets
@@ -570,7 +560,7 @@
 				callback(err, result);
 			}
 		});
-	}
+	};
 
 	module.sortedSetRemove = function(key, value, callback) {
 		if(value !== null && value !== undefined) {
@@ -582,7 +572,7 @@
 				callback(err, result);
 			}
 		});
-	}
+	};
 
 	function getSortedSetRange(key, start, stop, sort, callback) {
 		db.collection('objects').find({_key:key}, {fields:{value:1}})
@@ -590,26 +580,29 @@
 			.skip(start)
 			.sort({score: sort})
 			.toArray(function(err, data) {
-				if(err) {
+				if (err) {
 					return callback(err);
 				}
 
-				// maybe this can be done with mongo?
+				if (!data) {
+					return callback(null, null);
+				}
+
 				data = data.map(function(item) {
 					return item.value;
 				});
 
-				callback(err, data);
+				callback(null, data);
 			});
 	}
 
 	module.getSortedSetRange = function(key, start, stop, callback) {
 		getSortedSetRange(key, start, stop, 1, callback);
-	}
+	};
 
 	module.getSortedSetRevRange = function(key, start, stop, callback) {
 		getSortedSetRange(key, start, stop, -1, callback);
-	}
+	};
 
 	module.getSortedSetRevRangeByScore = function(args, callback) {
 
@@ -640,7 +633,7 @@
 
 				callback(err, data);
 			});
-	}
+	};
 
 	module.sortedSetCount = function(key, min, max, callback) {
 		db.collection('objects').count({_key:key, score: {$gte:min, $lte:max}}, function(err, count) {
@@ -653,7 +646,7 @@
 			}
 			callback(null,count);
 		});
-	}
+	};
 
 	module.sortedSetCard = function(key, callback) {
 		db.collection('objects').count({_key:key}, function(err, count) {
@@ -666,7 +659,7 @@
 			}
 			callback(null, count);
 		});
-	}
+	};
 
 	module.sortedSetRank = function(key, value, callback) {
 		if(value !== null && value !== undefined) {
@@ -683,7 +676,7 @@
 
 			callback(null, rank);
 		});
-	}
+	};
 
 	module.sortedSetRevRank = function(key, value, callback) {
 		if(value !== null && value !== undefined) {
@@ -702,7 +695,7 @@
 
 			callback(null, rank);
 		});
-	}
+	};
 
 	module.sortedSetScore = function(key, value, callback) {
 		if(value !== null && value !== undefined) {
@@ -718,13 +711,13 @@
 
 			callback(err, null);
 		});
-	}
+	};
 
 	module.isSortedSetMember = function(key, value, callback) {
 		module.sortedSetScore(key, value, function(err, score) {
 			callback(err, !!score);
 		});
-	}
+	};
 
 	module.sortedSetsScore = function(keys, value, callback) {
 		if(value !== null && value !== undefined) {
@@ -745,13 +738,14 @@
 
 			callback(null, returnData);
 		});
-	}
+	};
 
 	// lists
 	module.listPrepend = function(key, value, callback) {
 		if(value !== null && value !== undefined) {
 			value = value.toString();
 		}
+
 		module.isObjectField(key, 'array', function(err, exists) {
 			if(err) {
 				if(typeof callback === 'function') {
@@ -762,17 +756,16 @@
 			}
 
 			if(exists) {
- 				db.collection('objects').update({_key:key}, {'$set': {'array.-1': value}}, {upsert:true, w:1 }, function(err, result) {
+				db.collection('objects').update({_key:key}, {'$set': {'array.-1': value}}, {upsert:true, w:1 }, function(err, result) {
 					if(typeof callback === 'function') {
 						callback(err, result);
 					}
-	 			});
- 			} else {
- 				module.listAppend(key, value, callback);
- 			}
-
- 		})
-	}
+				});
+			} else {
+				module.listAppend(key, value, callback);
+			}
+		});
+	};
 
 	module.listAppend = function(key, value, callback) {
 		if(value !== null && value !== undefined) {
@@ -783,7 +776,7 @@
 				callback(err, result);
 			}
 		});
-	}
+	};
 
 	module.listRemoveLast = function(key, callback) {
 		module.getListRange(key, -1, 0, function(err, value) {
@@ -808,7 +801,7 @@
 				}
 			});
 		});
-	}
+	};
 
 	module.listRemoveAll = function(key, value, callback) {
 		if(value !== null && value !== undefined) {
@@ -820,7 +813,7 @@
 				callback(err, result);
 			}
 		});
-	}
+	};
 
 	module.getListRange = function(key, start, stop, callback) {
 
@@ -867,8 +860,7 @@
 				callback(null, []);
 			}
 		});
-	}
-
+	};
 
 }(exports));
 

@@ -1,13 +1,14 @@
 {
     "home": "Hem",
     "unread": "Olästa ämnen",
-    "popular": "Popular Topics",
+    "popular": "Populära ämnen",
     "recent": "Senaste ämnena",
     "users": "Registrerade användare",
     "notifications": "Notiser",
     "user.edit": "Ändrar \"%1\"",
     "user.following": "Personer %1 Följer",
     "user.followers": "Personer som följer %1",
+    "user.posts": "Inlägg skapat av %1",
     "user.favourites": "%1's favorit-inlägg",
     "user.settings": "Avnändarinställningar"
 }

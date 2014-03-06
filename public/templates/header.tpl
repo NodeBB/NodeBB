@@ -6,7 +6,7 @@
 	<meta<!-- IF metaTags.name --> name="{metaTags.name}"<!-- ENDIF metaTags.name --><!-- IF metaTags.property --> property="{metaTags.property}"<!-- ENDIF metaTags.property --><!-- IF metaTags.content --> content="{metaTags.content}"<!-- ENDIF metaTags.content --> />
 	<!-- END metaTags -->
 	<link rel="stylesheet" href="{relative_path}/vendor/fontawesome/css/font-awesome.min.css">
-	<link rel="stylesheet" type="text/css" href="{relative_path}/css/theme.css?{cache-buster}" />
+	<link rel="stylesheet" type="text/css" href="{relative_path}/stylesheet.css?{cache-buster}" />
 	<!-- IF bootswatchCSS --><link href="{bootswatchCSS}" rel="stylesheet" media="screen"><!-- ENDIF bootswatchCSS -->
 	<!-- BEGIN linkTags -->
 	<link<!-- IF linkTags.link --> link="{linkTags.link}"<!-- ENDIF linkTags.link --><!-- IF linkTags.rel --> rel="{linkTags.rel}"<!-- ENDIF linkTags.rel --><!-- IF linkTags.type --> type="{linkTags.type}"<!-- ENDIF linkTags.type --><!-- IF linkTags.href --> href="{linkTags.href}"<!-- ENDIF linkTags.href --> />
@@ -17,6 +17,13 @@
 	<!-- IF useCustomCSS -->
 	<style type="text/css">{customCSS}</style>
 	<!-- ENDIF useCustomCSS -->
+
+	<!--[if lt IE 9]>
+  		<script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/2.3.0/es5-shim.min.js"></script>
+  		<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>
+  		<script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
+  		<script>__lt_ie_9__ = 1;</script>
+	<![endif]-->
 
 	<script>
 		var RELATIVE_PATH = "{relative_path}";
@@ -53,11 +60,16 @@
 					<a href="{relative_path}/">
 						<h1 class="navbar-brand forum-title">{title}</h1>
 					</a>
+
+					<div class="header-topic-title visible-xs">
+						<span></span>
+					</div>
+
 				</div>
 			</div>
 
 			<div class="navbar-collapse collapse navbar-ex1-collapse">
-				<ul id="main-nav" class="nav navbar-nav">
+				<ul id="main-nav" class="nav navbar-nav pull-left">
 					<li class="nodebb-loggedin">
 						<a href="{relative_path}/unread"><i id="unread-count" class="fa fa-fw fa-inbox" data-content="0" title="[[global:header.unread]]"></i><span class="visible-xs-inline"> [[global:header.unread]]</span></a>
 					</li>
@@ -97,7 +109,7 @@
 					<!-- END navigation -->
 				</ul>
 
-				<ul id="logged-in-menu" class="nav navbar-nav navbar-right hide">
+				<ul id="logged-in-menu" class="nav navbar-nav navbar-right hide pull-right">
 					<li>
 						<a href="#" id="reconnect" class="hide" title="Connection to {title} has been lost, attempting to reconnect..."><i class="fa fa-check"></i></a>
 					</li>
@@ -114,8 +126,8 @@
 						<a href="{relative_path}/notifications"><i class="fa fa-exclamation-triangle fa-fw" title="[[notifications:title]]"></i> [[notifications:title]]</a>
 					</li>
 
-					<li class="chats dropdown text-center hidden-xs">
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="chat_dropdown"><i class="fa fa-comment-o" title="[[global:header.chats]]"></i></a>
+					<li class="chats dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="chat_dropdown"><i class="fa fa-comment-o fa-fw" title="[[global:header.chats]]"></i> <span class="visible-xs-inline">[[global:header.chats]]</span></a>
 						<ul id="chat-list" class="dropdown-menu" aria-labelledby="chat_dropdown">
 							<li>
 								<a href="#"><i class="fa fa-refresh fa-spin"></i> [[global:chats.loading]]</a>
@@ -149,10 +161,9 @@
 							</li>
 						</ul>
 					</li>
-
 				</ul>
 
-				<ul id="logged-out-menu" class="nav navbar-nav navbar-right">
+				<ul id="logged-out-menu" class="nav navbar-nav navbar-right pull-right">
 					<!-- IF allowRegistration -->
 					<li>
 						<a href="{relative_path}/register">
@@ -185,7 +196,7 @@
 				</ul>
 				<!-- ENDIF searchEnabled -->
 
-				<ul class="nav navbar-nav navbar-right pagination-block hide">
+				<ul class="nav navbar-nav navbar-right pagination-block hidden visible-lg visible-md">
 					<li class="active">
 						<a href="#">
 							<i class="fa fa-chevron-up pointer"></i>
@@ -198,8 +209,8 @@
 					</li>
 				</ul>
 
-				<div class="header-topic-title pull-right hidden-md-inline">
-					<span id="header-topic-title"></span>
+				<div class="header-topic-title pull-right hidden-xs">
+					<span></span>
 				</div>
 			</div>
 		</div>

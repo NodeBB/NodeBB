@@ -55,9 +55,7 @@ var	DebugRoute = function(app) {
 		});
 
 		app.get('/test', function(req, res) {
-			// categories.getModerators(1, function(err, mods) {
-			// 	res.json(mods);
-			// })
+			res.send(200);
 		});
 
 	});

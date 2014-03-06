@@ -116,7 +116,7 @@ Sockets.init = function(server) {
 
 		socket.on('disconnect', function() {
 
-			if (uid && !Sockets.getUserSockets(uid).length <= 1) {
+			if (uid && Sockets.getUserSockets(uid).length <= 1) {
 				db.sortedSetRemove('users:online', uid, function(err) {
 					socketUser.isOnline(socket, uid, function(err, data) {
 						socket.broadcast.emit('user.isOnline', err, data);
@@ -235,7 +235,11 @@ function isUserOnline(uid) {
 Sockets.updateRoomBrowsingText = updateRoomBrowsingText;
 function updateRoomBrowsingText(roomName) {
 
-	function getUidsInRoom(room) {
+	if (!roomName) {
+		return;
+	}
+
+	function getUidsInRoom() {
 		var uids = [];
 		var clients = io.sockets.clients(roomName);
 		for(var i=0; i<clients.length; ++i) {
@@ -246,7 +250,7 @@ function updateRoomBrowsingText(roomName) {
 		return uids;
 	}
 
-	function getAnonymousCount(roomName) {
+	function getAnonymousCount() {
 		var clients = io.sockets.clients(roomName);
 		var anonCount = 0;
 
@@ -258,8 +262,10 @@ function updateRoomBrowsingText(roomName) {
 		return anonCount;
 	}
 
-	var	uids = getUidsInRoom(roomName),
-		anonymousCount = getAnonymousCount(roomName);
+	var	uids = getUidsInRoom(),
+		anonymousCount = getAnonymousCount();
+
+
 
 	user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status'], function(err, users) {
 		if(!err) {
