@@ -58,7 +58,7 @@ var bcrypt = require('bcryptjs'),
 			},
 			function(next) {
 				if (userData.email) {
-					User.isEmailAvailable(userData.email, function(err, available) {
+					User.email.available(userData.email, function(err, available) {
 						if (err) {
 							return next(err);
 						}
@@ -278,7 +278,7 @@ var bcrypt = require('bcryptjs'),
 					return next(null, true);
 				}
 
-				User.isEmailAvailable(data.email, function(err, available) {
+				User.email.available(data.email, function(err, available) {
 					if (err) {
 						return next(err, null);
 					}
@@ -419,12 +419,6 @@ var bcrypt = require('bcryptjs'),
 				return callback(new Error('too-many-posts'));
 			}
 			callback();
-		});
-	};
-
-	User.isEmailAvailable = function(email, callback) {
-		db.isObjectField('email:uid', email, function(err, exists) {
-			callback(err, !exists);
 		});
 	};
 
@@ -1028,6 +1022,11 @@ var bcrypt = require('bcryptjs'),
 						status: 'not_ok'
 					});
 				}
+			});
+		},
+		available: function(email, callback) {
+			db.isObjectField('email:uid', email, function(err, exists) {
+				callback(err, !exists);
 			});
 		}
 	};
