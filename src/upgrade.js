@@ -197,17 +197,16 @@ Upgrade.upgrade = function(callback) {
 				db.setAdd('plugins:active', 'nodebb-widget-essentials', function(err) {
 					winston.info('[2014/2/20] Activating NodeBB Essential Widgets');
 					Plugins.reload(function() {
-						next(err);
+						if (err) {
+							next(err);
+						} else {
+							Upgrade.update(thisSchemaDate, next);
+						}
 					});
 				});
 			} else {
 				winston.info('[2014/2/20] Activating NodeBB Essential Widgets - skipped');
-
-				if (err) {
-					next(err);
-				} else {
-					Upgrade.update(thisSchemaDate, next);
-				}
+				next();
 			}
 		},
 		function(next) {
