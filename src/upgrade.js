@@ -38,6 +38,10 @@ Upgrade.check = function(callback) {
 	});
 };
 
+Upgrade.update = function(schemaDate, callback) {
+	db.set('schemaDate', schemaDate, callback);
+};
+
 Upgrade.upgrade = function(callback) {
 	var updatesMade = false;
 
@@ -67,8 +71,6 @@ Upgrade.upgrade = function(callback) {
 			thisSchemaDate = Date.UTC(2014, 1, 19, 18, 15);
 
 			if (schemaDate < thisSchemaDate) {
-				updatesMade = true;
-
 				db.setObjectField('widgets:home.tpl', 'motd', JSON.stringify([
 					{
 						"widget": "html",
@@ -82,7 +84,12 @@ Upgrade.upgrade = function(callback) {
 					Meta.configs.remove('show_motd');
 
 					winston.info('[2014/2/19] Updated MOTD to use the HTML widget.');
-					next(err);
+
+					if (err) {
+						next(err);
+					} else {
+						Upgrade.update(thisSchemaDate, next);
+					}
 				});
 			} else {
 				winston.info('[2014/2/19] Updating MOTD to use the HTML widget - skipped');
@@ -93,8 +100,6 @@ Upgrade.upgrade = function(callback) {
 			thisSchemaDate = Date.UTC(2014, 1, 20, 15, 30);
 
 			if (schemaDate < thisSchemaDate) {
-				updatesMade = true;
-
 				var container = '<div class="panel panel-default"><div class="panel-heading">{title}</div><div class="panel-body">{body}</div></div>';
 
 				db.setObjectField('widgets:category.tpl', 'sidebar', JSON.stringify([
@@ -121,7 +126,12 @@ Upgrade.upgrade = function(callback) {
 					}
 				]), function(err) {
 					winston.info('[2014/2/20] Adding Recent Replies, Active Users, and Moderator widgets to category sidebar.');
-					next(err);
+
+					if (err) {
+						next(err);
+					} else {
+						Upgrade.update(thisSchemaDate, next);
+					}
 				});
 			} else {
 				winston.info('[2014/2/20] Adding Recent Replies, Active Users, and Moderator widgets to category sidebar - skipped');
@@ -132,8 +142,6 @@ Upgrade.upgrade = function(callback) {
 			thisSchemaDate = Date.UTC(2014, 1, 20, 16, 15);
 
 			if (schemaDate < thisSchemaDate) {
-				updatesMade = true;
-
 				db.setObjectField('widgets:home.tpl', 'footer', JSON.stringify([
 					{
 						"widget": "forumstats",
@@ -141,7 +149,12 @@ Upgrade.upgrade = function(callback) {
 					}
 				]), function(err) {
 					winston.info('[2014/2/20] Adding Forum Stats Widget to the Homepage Footer.');
-					next(err);
+
+					if (err) {
+						next(err);
+					} else {
+						Upgrade.update(thisSchemaDate, next);
+					}
 				});
 			} else {
 				winston.info('[2014/2/20] Adding Forum Stats Widget to the Homepage Footer - skipped');
@@ -152,8 +165,6 @@ Upgrade.upgrade = function(callback) {
 			thisSchemaDate = Date.UTC(2014, 1, 20, 19, 45);
 
 			if (schemaDate < thisSchemaDate) {
-				updatesMade = true;
-
 				var container = '<div class="panel panel-default"><div class="panel-heading">{title}</div><div class="panel-body">{body}</div></div>';
 
 				db.setObjectField('widgets:home.tpl', 'sidebar', JSON.stringify([
@@ -167,7 +178,12 @@ Upgrade.upgrade = function(callback) {
 					}
 				]), function(err) {
 					winston.info('[2014/2/20] Updating Lavender MOTD');
-					next(err);
+
+					if (err) {
+						next(err);
+					} else {
+						Upgrade.update(thisSchemaDate, next);
+					}
 				});
 			} else {
 				winston.info('[2014/2/20] Updating Lavender MOTD - skipped');
@@ -178,8 +194,6 @@ Upgrade.upgrade = function(callback) {
 			thisSchemaDate = Date.UTC(2014, 1, 20, 20, 25);
 
 			if (schemaDate < thisSchemaDate) {
-				updatesMade = true;
-
 				db.setAdd('plugins:active', 'nodebb-widget-essentials', function(err) {
 					winston.info('[2014/2/20] Activating NodeBB Essential Widgets');
 					Plugins.reload(function() {
@@ -188,15 +202,18 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/2/20] Activating NodeBB Essential Widgets - skipped');
-				next();
+
+				if (err) {
+					next(err);
+				} else {
+					Upgrade.update(thisSchemaDate, next);
+				}
 			}
 		},
 		function(next) {
 			thisSchemaDate = Date.UTC(2014, 1, 22);
 
 			if (schemaDate < thisSchemaDate) {
-				updatesMade = true;
-
 				db.exists('categories:cid', function(err, exists) {
 					if(err) {
 						return next(err);
@@ -239,7 +256,8 @@ Upgrade.upgrade = function(callback) {
 									return next(err);
 								}
 								winston.info('[2014/2/22] Added categories to sorted set');
-								db.delete('categories:cid:old', next);
+								db.delete('categories:cid:old');
+								Upgrade.update(thisSchemaDate, next);
 							});
 						});
 					});
