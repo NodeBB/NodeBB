@@ -26,6 +26,11 @@ var path = require('path'),
 					source += '\n@import "./' + plugins.lessFiles[x] + '";';
 				}
 
+				// ... and for each CSS file
+				for(x=0,numCSS=plugins.cssFiles.length;x<numCSS;x++) {
+					source += '\n@import (less) "./' + plugins.cssFiles[x] + '";';
+				}
+
 				var	parser = new (less.Parser)({
 						paths: paths
 					});
