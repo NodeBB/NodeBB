@@ -203,11 +203,7 @@ Upgrade.upgrade = function(callback) {
 			} else {
 				winston.info('[2014/2/20] Activating NodeBB Essential Widgets - skipped');
 
-				if (err) {
-					next(err);
-				} else {
-					Upgrade.update(thisSchemaDate, next);
-				}
+				Upgrade.update(thisSchemaDate, next);
 			}
 		},
 		function(next) {
