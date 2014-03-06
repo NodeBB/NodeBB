@@ -87,6 +87,9 @@ var fs = require('fs'),
 	Meta.themes = {
 		get: function (callback) {
 			var themePath = nconf.get('themes_path');
+			if (typeof themePath !== 'string') {
+				return callback(null, []);
+			}
 			fs.readdir(themePath, function (err, files) {
 				async.filter(files, function (file, next) {
 					fs.stat(path.join(themePath, file), function (err, fileStat) {

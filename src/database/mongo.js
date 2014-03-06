@@ -166,15 +166,8 @@
 
 	module.flushdb = function(callback) {
 		db.dropDatabase(function(err, result) {
-			if (err) {
-				winston.error(err.message);
-				if (typeof callback === 'function') {
-					return callback(err);
-				}
-			}
-
 			if (typeof callback === 'function') {
-				callback();
+				callback(err);
 			}
 		});
 	};

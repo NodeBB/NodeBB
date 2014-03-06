@@ -55,23 +55,31 @@
 
 	nconf.set(dbType, testDbConfig);
 
-	db = require('../src/database');
+	var db = require('../src/database'),
+		meta = require('../src/meta');
 	before(function(done) {
 
 		db.init(function(err) {
 			//Clean up
 			db.flushdb(function(err) {
-				if(err){
+				if(err) {
 					winston.error(err);
 					throw new Error(err);
 				} else {
 					winston.info('test_database flushed');
-					done();
+
+
+					meta.configs.init(function () {
+
+						var	webserver = require('../src/webserver'),
+							sockets = require('../src/socket.io');
+
+						sockets.init(webserver.server);
+
+
+						done();
+					});
 				}
-
-				//TODO: data seeding, if needed at all
-
-
 			});
 		});
 	});
