@@ -69,11 +69,17 @@
 	templates.getTemplateNameFromUrl = function(url) {
 		var parts = url.split('?')[0].split('/');
 
-		for (var i = 0; i < parts.length; ++i) {
-			if (templates.is_available(parts[i])) {
-				return parts[i];
+		if (parts[0] === 'admin') {
+			return parts = parts[0] + '/' + parts[1]; 
+		} else {
+			for (var i = 0; i < parts.length; ++i) {
+				if (templates.is_available(parts[i])) {
+					return parts[i];
+				}
 			}
 		}
+
+		
 		return '';
 	};
 
@@ -111,6 +117,8 @@
 		if (!tpl_url) {
 			tpl_url = templates.getTemplateNameFromUrl(api_url);
 		}
+
+		console.log(tpl_url);
 
 		var template_data = null;
 
