@@ -622,7 +622,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		socket.on('get_users_in_room', function(data) {
 
 			if(data && data.room.indexOf('topic') !== -1) {
-				var activeEl = $('li.post-bar[data-index="0"] .thread_active_users');
+				var activeEl = $('.thread_active_users');
 
 				function createUserIcon(uid, picture, userslug, username) {
 					if(!activeEl.find('[data-uid="' + uid + '"]').length) {
@@ -694,11 +694,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 				// Get users who are currently replying to the topic entered
 				socket.emit('modules.composer.getUsersByTid', templates.get('topic_id'), function(err, uids) {
-					var	activeUsersEl = $('.thread_active_users'),
-						x;
 					if (uids && uids.length) {
 						for(var x=0;x<uids.length;x++) {
-							activeUsersEl.find('[data-uid="' + uids[x] + '"]').addClass('replying');
+							activeEl.find('[data-uid="' + uids[x] + '"]').addClass('replying');
 						}
 					}
 				});

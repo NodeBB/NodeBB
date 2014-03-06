@@ -52,7 +52,7 @@ define(function() {
 			return false;
 		});
 
-		$('#content input').focus();
+		$('#content #username').focus();
 	};
 
 	return Login;

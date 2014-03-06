@@ -1,31 +1,39 @@
-var winston = require('winston');
-
-process.on('uncaughtException', function (err) {
-	winston.error('Encountered error while running test suite: ' + err.message);
-});
+'use strict';
 
 var	assert = require('assert'),
-	db = require('../mocks/databasemock');
-
-
-var Topics = require('../src/topics');
+	db = require('../mocks/databasemock'),
+	topics = require('../src/topics'),
+	categories = require('../src/categories');
 
 describe('Topic\'s', function() {
-	var topic;
+	var topic,
+		categoryObj;
 
-	beforeEach(function(){
-		topic = {
-			userId: 1,
-			categoryId: 1,
-			title: 'Test Topic Title',
-			content: 'The content of test topic'
-		};
+	before(function(done) {
+
+		categories.create({
+			name: 'Test Category',
+			description: 'Test category created by testing script',
+			icon: 'fa-check',
+			blockclass: 'category-blue',
+			order: '5'
+		}, function(err, category) {
+			categoryObj = category;
+
+			topic = {
+				userId: 1,
+				categoryId: categoryObj.cid,
+				title: 'Test Topic Title',
+				content: 'The content of test topic'
+			};
+			done();
+		});
 	});
 
 	describe('.post', function() {
 
 		it('should create a new topic with proper parameters', function(done) {
-			Topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
+			topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
 				assert.equal(err, null, 'was created with error');
 				assert.ok(result);
 
@@ -34,9 +42,7 @@ describe('Topic\'s', function() {
 		});
 
 		it('should fail to create new topic with wrong parameters', function(done) {
-			topic.userId = null;
-
-			Topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
+			topics.post({uid: null, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
 				assert.equal(err.message, 'invalid-user');
 				done();
 			});
@@ -47,8 +53,8 @@ describe('Topic\'s', function() {
 		var	newTopic;
 		var newPost;
 
-		beforeEach(function(done){
-			Topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
+		beforeEach(function(done) {
+			topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
 				newTopic = result.topicData;
 				newPost = result.postData;
 				done();
@@ -57,13 +63,13 @@ describe('Topic\'s', function() {
 
 		describe('.getTopicData', function() {
 			it('should not receive errors', function(done) {
-				Topics.getTopicData(newTopic.tid, done);
+				topics.getTopicData(newTopic.tid, done);
 			});
 		});
 
 		describe('.getTopicDataWithUser', function() {
 			it('should not receive errors', function(done) {
-				Topics.getTopicDataWithUser(newTopic.tid, done);
+				topics.getTopicDataWithUser(newTopic.tid, done);
 			});
 		});
 	});

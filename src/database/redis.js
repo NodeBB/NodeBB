@@ -117,11 +117,9 @@
 
 	module.flushdb = function(callback) {
 		redisClient.send_command('flushdb', [], function(err) {
-			if (err) {
-				winston.error(err.message);
-				return callback(err);
+			if (typeof callback === 'function') {
+				callback(err);
 			}
-			callback();
 		});
 	};
 

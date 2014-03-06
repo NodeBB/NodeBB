@@ -166,15 +166,8 @@
 
 	module.flushdb = function(callback) {
 		db.dropDatabase(function(err, result) {
-			if (err) {
-				winston.error(err.message);
-				if (typeof callback === 'function') {
-					return callback(err);
-				}
-			}
-
 			if (typeof callback === 'function') {
-				callback();
+				callback(err);
 			}
 		});
 	};
@@ -551,8 +544,8 @@
 			value = value.toString();
 		}
 		var data = {
-			score:score,
-			value:value
+			score: parseInt(score, 10),
+			value: value
 		};
 
 		db.collection('objects').update({_key:key, value:value}, {$set:data}, {upsert:true, w: 1}, function(err, result) {
