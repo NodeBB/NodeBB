@@ -15,11 +15,11 @@ var db = require('./database'),
 
 	Upgrade = {},
 
-	minSchemaDate = new Date(2014, 0, 4).getTime(),		// This value gets updated every new MINOR version
+	minSchemaDate = Date.UTC(2014, 0, 4),		// This value gets updated every new MINOR version
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = new Date(2014, 1, 22).getTime();
+	latestSchema = Date.UTC(2014, 1, 22);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -64,7 +64,7 @@ Upgrade.upgrade = function(callback) {
 			});
 		},
 		function(next) {
-			thisSchemaDate = new Date(2014, 0, 5).getTime();
+			thisSchemaDate = Date.UTC(2014, 0, 5);
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 
@@ -108,7 +108,7 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = new Date(2014, 0, 5, 14, 6).getTime();
+			thisSchemaDate = Date.UTC(2014, 0, 5, 14, 6);
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 
@@ -257,7 +257,7 @@ Upgrade.upgrade = function(callback) {
 				});
 			}
 
-			thisSchemaDate = new Date(2014, 0, 7).getTime();
+			thisSchemaDate = Date.UTC(2014, 0, 7);
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 
@@ -277,7 +277,7 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = new Date(2014, 0, 13, 12, 0).getTime();
+			thisSchemaDate = Date.UTC(2014, 0, 13, 12, 0);
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 
@@ -300,7 +300,7 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = new Date(2014, 0, 19, 22, 19).getTime();
+			thisSchemaDate = Date.UTC(2014, 0, 19, 22, 19);
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 
@@ -318,7 +318,7 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = new Date(2014, 0, 23, 16, 5).getTime();
+			thisSchemaDate = Date.UTC(2014, 0, 23, 16, 5);
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 
@@ -342,7 +342,7 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = new Date(2014, 0, 25, 0, 0).getTime();
+			thisSchemaDate = Date.UTC(2014, 0, 25, 0, 0);
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 
@@ -377,7 +377,7 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = new Date(2014, 0, 27, 12, 35).getTime();
+			thisSchemaDate = Date.UTC(2014, 0, 27, 12, 35);
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 
@@ -421,7 +421,7 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = new Date(2014, 0, 30, 15, 0).getTime();
+			thisSchemaDate = Date.UTC(2014, 0, 30, 15, 0);
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 
@@ -446,7 +446,7 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = new Date(2014, 0, 30, 16, 0).getTime();
+			thisSchemaDate = Date.UTC(2014, 0, 30, 16, 0);
 
 			function updateTopic(tid, next) {
 				Topics.getTopicFields(tid, ['postcount', 'viewcount'], function(err, topicData) {
@@ -494,7 +494,7 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = new Date(2014, 1, 2, 16, 0).getTime();
+			thisSchemaDate = Date.UTC(2014, 1, 2, 16, 0);
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 
@@ -532,7 +532,7 @@ Upgrade.upgrade = function(callback) {
 		},
 		function(next) {
 
-			thisSchemaDate = new Date(2014, 1, 7, 16, 0).getTime();
+			thisSchemaDate = Date.UTC(2014, 1, 7, 16, 0);
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 
@@ -577,7 +577,7 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = new Date(2014, 1, 9, 20, 50).getTime();
+			thisSchemaDate = Date.UTC(2014, 1, 9, 20, 50);
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 
@@ -596,7 +596,7 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = new Date(2014, 1, 14, 20, 50).getTime();
+			thisSchemaDate = Date.UTC(2014, 1, 14, 20, 50);
 
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
@@ -646,7 +646,7 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = new Date(2014, 1, 14, 21, 50).getTime();
+			thisSchemaDate = Date.UTC(2014, 1, 14, 21, 50);
 
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
@@ -702,7 +702,7 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = new Date(2014, 1, 19, 18, 15).getTime();
+			thisSchemaDate = Date.UTC(2014, 1, 19, 18, 15);
 
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
@@ -728,7 +728,7 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = new Date(2014, 1, 20, 15, 30).getTime();
+			thisSchemaDate = Date.UTC(2014, 1, 20, 15, 30);
 
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
@@ -767,7 +767,7 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = new Date(2014, 1, 20, 16, 15).getTime();
+			thisSchemaDate = Date.UTC(2014, 1, 20, 16, 15);
 
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
@@ -787,7 +787,7 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = new Date(2014, 1, 20, 19, 45).getTime();
+			thisSchemaDate = Date.UTC(2014, 1, 20, 19, 45);
 
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
@@ -813,7 +813,7 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = new Date(2014, 1, 20, 20, 25).getTime();
+			thisSchemaDate = Date.UTC(2014, 1, 20, 20, 25);
 
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
@@ -830,7 +830,7 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = new Date(2014, 1, 22).getTime();
+			thisSchemaDate = Date.UTC(2014, 1, 22);
 
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
