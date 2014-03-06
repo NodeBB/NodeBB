@@ -187,7 +187,7 @@ var bcrypt = require('bcryptjs'),
 
 			if (data) {
 				if (data.password) {
-					delete data.password;
+					data.password = null;
 					data.hasPassword = true;
 				} else {
 					data.hasPassword = false;
