@@ -83,10 +83,13 @@ function routeCurrentTheme(app, themeData) {
 }
 
 function compileTemplates(pluginTemplates) {
-	var mkdirp = require('mkdirp');
+	var mkdirp = require('mkdirp'),
+		rimraf = require('rimraf');
 
 	winston.info('[themes] Compiling templates');
-
+	rimraf.sync(nconf.get('views_dir'));
+	mkdirp.sync(nconf.get('views_dir'));
+	
 	utils.walk(nconf.get('base_templates_path'), function(err, baseTpls) {
 		utils.walk(nconf.get('theme_templates_path'), function (err, themeTpls) {
 			var paths = pluginTemplates;
