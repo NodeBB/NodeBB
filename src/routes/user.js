@@ -3,7 +3,6 @@ var fs = require('fs'),
 	winston = require('winston'),
 	nconf = require('nconf'),
 	async= require('async'),
-	imagemagick = require('node-imagemagick'),
 
 	user = require('./../user'),
 	posts = require('./../posts'),
