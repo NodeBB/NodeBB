@@ -317,15 +317,15 @@ var fs = require('fs'),
 									next(arguments[0], Array.prototype.slice.call(arguments, 1));
 								}));
 							} else {
-								winston.warn('[plugins] "callbacked" property deprecated as of 0.4x. Use asynchronous method instead for hook: ' + hook);
+								winston.warn('[plugins] "callbacked" deprecated as of 0.4x. Use asynchronous method instead for hook: ' + hook);
 								value = hookObj.method.apply(Plugins, value);
-								next(null, value);
+								next(null, [value]);
 							}
 						} else {
 							if (global.env === 'development') {
 								winston.info('[plugins] Expected method for hook \'' + hook + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
 							}
-							next(null, value);
+							next(null, [value]);
 						}
 					}, function(err, values) {
 						if (err) {
