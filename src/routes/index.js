@@ -3,8 +3,8 @@
 var nconf = require('nconf'),
 	controllers = require('./../controllers'),
 	meta = require('./../meta'),
-	
 	plugins = require('./../plugins'),
+
 	metaRoutes = require('./meta'),
 	apiRoutes = require('./api'),
 	adminRoutes = require('./admin'),
@@ -122,6 +122,7 @@ module.exports = function(app, middleware) {
 		app.get('/api/users/search', middleware.checkGlobalPrivacySettings, controllers.users.getUsersForSearch);		
 
 		pluginRoutes(app, middleware, controllers);
+		plugins.fireHook('action:app.load', app, middleware, controllers);
 
 		if (process.env.NODE_ENV === 'development') {
 			require('./debug')(app, middleware, controllers);

@@ -11,7 +11,6 @@ var path = require('path'),
 	db = require('./database'),
 	auth = require('./routes/authentication'),
 	meta = require('./meta'),
-	plugins = require('./plugins'),
 	logger = require('./logger'),
 	middleware = require('./middleware'),
 	routes = require('./routes');
@@ -82,8 +81,6 @@ if(nconf.get('ssl')) {
 
 	module.exports.server = server;
 	module.exports.init = function () {
-		plugins.fireHook('action:app.load', app);
-
 		server.on("error", function(err){
 			if (err.code === 'EADDRINUSE') {
 				winston.error('NodeBB address in use, exiting...');

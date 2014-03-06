@@ -22,7 +22,7 @@ function setupPluginRoutes(app) {
 		/*
 		* TO BE DEPRECATED post 0.4x and replaced with something that isn't as complicated as this...
 		*/
-		plugins.fireHook('filter:server.create_routes', custom_routes, function(err, custom_routes) {
+		/*plugins.fireHook('filter:server.create_routes', custom_routes, function(err, custom_routes) {
 			var route,
 				routes = custom_routes.routes;
 
@@ -33,12 +33,12 @@ function setupPluginRoutes(app) {
 					(function(route) {
 						app[routes[route].method || 'get'](routes[route].route, function(req, res) {
 							routes[route].options(req, res, function(options) {
-								/*app.build_header({
+								app.build_header({
 									req: options.req || req,
 									res: options.res || res
 								}, function (err, header) {
 									//res.send(header + options.content + templates.footer);
-								});*/
+								});
 							});
 						});
 					}(route));
@@ -68,7 +68,7 @@ function setupPluginRoutes(app) {
 					}(route));
 				}
 			}
-		});
+		});*/
 	});
 }
 
@@ -82,7 +82,7 @@ function setupPluginAdminRoutes(app) {
 		/*
 		* TO BE DEPRECATED post 0.4x and replaced with something that isn't as complicated as this...
 		*/
-		plugins.fireHook('filter:admin.create_routes', custom_routes, function(err, custom_routes) {
+		/*plugins.fireHook('filter:admin.create_routes', custom_routes, function(err, custom_routes) {
 			var route, routes = custom_routes.routes;
 
 			for (route in routes) {
@@ -90,9 +90,9 @@ function setupPluginAdminRoutes(app) {
 					(function(route) {
 						app[routes[route].method || 'get']('/admin' + routes[route].route, function(req, res) {
 							routes[route].options(req, res, function(options) {
-								//Admin.buildHeader(req, res, function (err, header) {
-									//res.send(header + options.content + templates['admin/footer']);
-								//});
+								Admin.buildHeader(req, res, function (err, header) {
+									res.send(header + options.content + templates['admin/footer']);
+								});
 							});
 						});
 					}(route));
@@ -111,7 +111,7 @@ function setupPluginAdminRoutes(app) {
 					}(route));
 				}
 			}
-		});
+		});*/
 	});
 }
 
