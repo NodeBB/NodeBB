@@ -295,7 +295,14 @@ var fs = require('fs'),
 		return (Plugins.loadedHooks[hook] && Plugins.loadedHooks[hook].length > 0);
 	};
 
-	Plugins.fireHook = function(hook, args, callback) {
+	Plugins.fireHook = function(hook) {
+		var callback = typeof arguments[arguments.length-1] === "function" ? arguments[arguments.length-1] : null,
+			args = arguments.length ? Array.prototype.slice.call(arguments, 1) : [];
+
+		if (callback) {
+			args.pop();
+		}
+		
 		hookList = Plugins.loadedHooks[hook];
 
 		if (hookList && Array.isArray(hookList)) {
@@ -305,10 +312,13 @@ var fs = require('fs'),
 				case 'filter':
 					async.reduce(hookList, args, function(value, hookObj, next) {
 						if (hookObj.method) {
-							if (hookObj.callbacked) {	// If a callback is present (asynchronous method)
-								hookObj.method.call(Plugins.libraries[hookObj.id], value, next);
-							} else {	// Synchronous method
-								value = hookObj.method.call(Plugins.libraries[hookObj.id], value);
+							if (hookObj.callbacked) {
+								hookObj.method.apply(Plugins, value.concat(function() {
+									next(arguments[0], Array.prototype.slice.call(arguments, 1));
+								}));
+							} else {
+								winston.warn('[plugins] "callbacked" property deprecated as of 0.4x. Use asynchronous method instead for hook: ' + hook);
+								value = hookObj.method.apply(Plugins, value);
 								next(null, value);
 							}
 						} else {
@@ -317,20 +327,20 @@ var fs = require('fs'),
 							}
 							next(null, value);
 						}
-					}, function(err, value) {
+					}, function(err, values) {
 						if (err) {
 							if (global.env === 'development') {
 								winston.info('[plugins] Problem executing hook: ' + hook);
 							}
 						}
 
-						callback.apply(Plugins, arguments);
+						callback.apply(Plugins, [err].concat(values));
 					});
 					break;
 				case 'action':
 					async.each(hookList, function(hookObj) {
 						if (hookObj.method) {
-							hookObj.method.call(Plugins.libraries[hookObj.id], args);
+							hookObj.method.apply(Plugins, args);
 						} else {
 							if (global.env === 'development') {
 								winston.info('[plugins] Expected method \'' + hookObj.method + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
@@ -344,10 +354,11 @@ var fs = require('fs'),
 			}
 		} else {
 			// Otherwise, this hook contains no methods
-			var returnVal = args;
 			if (callback) {
-				callback(null, returnVal);
+				callback.apply(this, [null].concat(args));
 			}
+
+			return args[0];
 		}
 	};
 
