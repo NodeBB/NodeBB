@@ -118,8 +118,6 @@
 			tpl_url = templates.getTemplateNameFromUrl(api_url);
 		}
 
-		console.log(tpl_url);
-
 		var template_data = null;
 
 		if (!templates[tpl_url]) {
