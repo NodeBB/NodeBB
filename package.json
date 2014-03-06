@@ -23,7 +23,7 @@
     "less-middleware": "0.1.12",
     "marked": "0.2.8",
     "async": "~0.2.8",
-    "node-imagemagick": "0.1.8",
+    "gm": "1.14.2",
     "gravatar": "1.0.6",
     "nconf": "~0.6.7",
     "sitemap": "~0.7.1",
