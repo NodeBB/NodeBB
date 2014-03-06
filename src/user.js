@@ -185,8 +185,13 @@ var bcrypt = require('bcryptjs'),
 				return callback(err);
 			}
 
-			if (data && data.password) {
-				delete data.password;
+			if (data) {
+				if (data.password) {
+					data.password = null;
+					data.hasPassword = true;
+				} else {
+					data.hasPassword = false;
+				}
 			}
 			callback(err, data);
 		});
@@ -467,13 +472,18 @@ var bcrypt = require('bcryptjs'),
 					return callback(err);
 				}
 
-				bcrypt.compare(data.currentPassword, currentPassword, function(err, res) {
-					if (err || !res) {
-						return callback(err || new Error('Your current password is not correct!'));
-					}
+				if (currentPassword !== null) {
+					bcrypt.compare(data.currentPassword, currentPassword, function(err, res) {
+						if (err || !res) {
+							return callback(err || new Error('Your current password is not correct!'));
+						}
 
+						hashAndSetPassword(callback);
+					});
+				} else {
+					// No password in account (probably SSO login)
 					hashAndSetPassword(callback);
-				});
+				}
 			});
 		}
 	};

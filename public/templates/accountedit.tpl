@@ -115,7 +115,7 @@
 					<div class="control-group">
 						<label class="control-label" for="inputCurrentPassword">[[user:current_password]]</label>
 						<div class="controls">
-							<input class="form-control" type="password" id="inputCurrentPassword" placeholder="Current Password" value="">
+							<input class="form-control" type="password" id="inputCurrentPassword" placeholder="Current Password" value=""<!-- IF !hasPassword --> disabled<!-- ENDIF !hasPassword-->>
 						</div>
 					</div>
 

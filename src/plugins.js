@@ -62,6 +62,8 @@ var fs = require('fs'),
 		Plugins.loadedHooks = {};
 		Plugins.staticDirs = {};
 		Plugins.cssFiles.length = 0;
+		Plugins.lessFiles.length = 0;
+		Plugins.clientScripts.length = 0;
 
 		// Read the list of activated plugins and require their libraries
 		async.waterfall([
@@ -195,21 +197,12 @@ var fs = require('fs'),
 							winston.info('[plugins] Found ' + pluginData.css.length + ' CSS file(s) for plugin ' + pluginData.id);
 						}
 
-						if (!pluginData.staticDir) {
-							Plugins.cssFiles = Plugins.cssFiles.concat(pluginData.css.map(function(file) {
-								return path.join('/plugins', file);
-							}));
-						} else {
-							winston.warn('[plugins/' + pluginData.id + '] staticDir is deprecated, define CSS files with new staticDirs instead.');
-							Plugins.cssFiles = Plugins.cssFiles.concat(pluginData.css.map(function(file) {
-								return path.join('/plugins', pluginData.id, file);
-							}));
-						}
-
-						next();
-					} else {
-						next();
+						Plugins.cssFiles = Plugins.cssFiles.concat(pluginData.css.map(function(file) {
+							return path.join(pluginData.id, file);
+						}));
 					}
+
+					next();
 				},
 				function(next) {
 					// LESS files for plugins
