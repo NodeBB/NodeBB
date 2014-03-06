@@ -57,6 +57,7 @@
 
 	var db = require('../src/database'),
 		meta = require('../src/meta');
+
 	before(function(done) {
 
 		db.init(function(err) {
@@ -65,21 +66,18 @@
 				if(err) {
 					winston.error(err);
 					throw new Error(err);
-				} else {
-					winston.info('test_database flushed');
+				}
 
+				winston.info('test_database flushed');
 
-					meta.configs.init(function () {
+				meta.configs.init(function () {
 
-						var	webserver = require('../src/webserver'),
-							sockets = require('../src/socket.io');
-
+					var	webserver = require('../src/webserver'),
+						sockets = require('../src/socket.io');
 						sockets.init(webserver.server);
 
-
-						done();
-					});
-				}
+					done();
+				});
 			});
 		});
 	});
