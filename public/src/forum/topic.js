@@ -1292,8 +1292,11 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			tid: tid,
 			after: after
 		}, function (err, data) {
-			infiniteLoaderActive = false;
-			indicatorEl.fadeOut();
+
+			indicatorEl.fadeOut(function() {
+				infiniteLoaderActive = false;
+			});
+
 			if(err) {
 				return app.alertError(err.message);
 			}
