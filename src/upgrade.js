@@ -223,8 +223,11 @@ Upgrade.upgrade = function(callback) {
 					}
 
 					db.getListRange('categories:cid', 0, -1, function(err, cids) {
+						// Naive type-checking, becaue DBAL does not have .type() support
 						if(err) {
-							return next(err);
+							// Most likely upgraded already. Skip.
+							winston.info('[2014/2/22] Added categories to sorted set - skipped');
+							return Upgrade.update(thisSchemaDate, next);
 						}
 
 						if(!Array.isArray(cids)) {
