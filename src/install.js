@@ -253,12 +253,6 @@ var async = require('async'),
 						}, {
 							field: 'chatMessagesToDisplay',
 							value: 50
-						}, {
-							field: 'theme:type',
-							value: 'local'
-						}, {
-							field: 'theme:id',
-							value: 'nodebb-theme-cerulean'
 						}];
 
 					async.each(defaults, function (configObj, next) {
@@ -281,6 +275,15 @@ var async = require('async'),
 							meta.configs.setOnEmpty('social:facebook:secret', install.values['social:facebook:secret']);
 						}
 					}
+				},
+				function(next) {
+					var	meta = require('./meta');
+					winston.info('Enabling default theme: Lavender');
+
+					meta.themes.set({
+						type: 'local',
+						id: 'nodebb-theme-lavender'
+					}, next);
 				},
 				function (next) {
 					// Check if an administrator needs to be created
