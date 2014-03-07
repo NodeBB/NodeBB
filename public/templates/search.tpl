@@ -31,7 +31,7 @@
 
 
 					<a href="../../topic/{topics.slug}" class="search-result-text">
-						{topics.title}
+						<h4>{topics.title}</h4>
 					</a>
 
 					<div>
@@ -61,10 +61,13 @@
 			<!-- BEGIN posts -->
 			<div class="topic-row panel panel-default clearfix">
 				<div class="panel-body">
-					<a href="../../topic/{posts.topic.slug}#{posts.pid}" class="search-result-text">
-						{posts.content}
-					</a>
 
+					<a href="../../topic/{posts.topic.slug}#{posts.pid}" class="search-result-text">
+						<h4>{posts.topic.title}</h4>
+					</a>
+					<div class="search-result-text">
+						{posts.content}
+					</div>
 					<div>
 						<small>
 							<span class="pull-right">
