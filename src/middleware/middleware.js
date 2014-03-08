@@ -163,7 +163,6 @@ middleware.renderHeader = function(req, res, callback) {
 			}],
 			templateValues = {
 				bootswatchCSS: meta.config['theme:src'],
-				pluginCSS: plugins.cssFiles.map(function(file) { return { path: nconf.get('relative_path') + file.replace(/\\/g, '/') }; }),
 				title: meta.config.title || '',
 				description: meta.config.description || '',
 				'brand:logo': meta.config['brand:logo'] || '',

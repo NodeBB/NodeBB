@@ -58,7 +58,7 @@ var bcrypt = require('bcryptjs'),
 			},
 			function(next) {
 				if (userData.email) {
-					User.isEmailAvailable(userData.email, function(err, available) {
+					User.email.available(userData.email, function(err, available) {
 						if (err) {
 							return next(err);
 						}
@@ -185,8 +185,13 @@ var bcrypt = require('bcryptjs'),
 				return callback(err);
 			}
 
-			if (data && data.password) {
-				delete data.password;
+			if (data) {
+				if (data.password) {
+					data.password = null;
+					data.hasPassword = true;
+				} else {
+					data.hasPassword = false;
+				}
 			}
 			callback(err, data);
 		});
@@ -278,7 +283,7 @@ var bcrypt = require('bcryptjs'),
 					return next(null, true);
 				}
 
-				User.isEmailAvailable(data.email, function(err, available) {
+				User.email.available(data.email, function(err, available) {
 					if (err) {
 						return next(err, null);
 					}
@@ -422,12 +427,6 @@ var bcrypt = require('bcryptjs'),
 		});
 	};
 
-	User.isEmailAvailable = function(email, callback) {
-		db.isObjectField('email:uid', email, function(err, exists) {
-			callback(err, !exists);
-		});
-	};
-
 	User.changePassword = function(uid, data, callback) {
 		if(!data || !data.uid) {
 			return callback(new Error('invalid-uid'));
@@ -473,13 +472,18 @@ var bcrypt = require('bcryptjs'),
 					return callback(err);
 				}
 
-				bcrypt.compare(data.currentPassword, currentPassword, function(err, res) {
-					if (err || !res) {
-						return callback(err || new Error('Your current password is not correct!'));
-					}
+				if (currentPassword !== null) {
+					bcrypt.compare(data.currentPassword, currentPassword, function(err, res) {
+						if (err || !res) {
+							return callback(err || new Error('Your current password is not correct!'));
+						}
 
+						hashAndSetPassword(callback);
+					});
+				} else {
+					// No password in account (probably SSO login)
 					hashAndSetPassword(callback);
-				});
+				}
 			});
 		}
 	};
@@ -1028,6 +1032,11 @@ var bcrypt = require('bcryptjs'),
 						status: 'not_ok'
 					});
 				}
+			});
+		},
+		available: function(email, callback) {
+			db.isObjectField('email:uid', email, function(err, exists) {
+				callback(err, !exists);
 			});
 		}
 	};

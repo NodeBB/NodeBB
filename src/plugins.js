@@ -63,6 +63,8 @@ var fs = require('fs'),
 		Plugins.loadedHooks = {};
 		Plugins.staticDirs = {};
 		Plugins.cssFiles.length = 0;
+		Plugins.lessFiles.length = 0;
+		Plugins.clientScripts.length = 0;
 
 		// Read the list of activated plugins and require their libraries
 		async.waterfall([
@@ -196,21 +198,22 @@ var fs = require('fs'),
 							winston.info('[plugins] Found ' + pluginData.css.length + ' CSS file(s) for plugin ' + pluginData.id);
 						}
 
-						if (!pluginData.staticDir) {
-							Plugins.cssFiles = Plugins.cssFiles.concat(pluginData.css.map(function(file) {
-								return path.join('/plugins', file);
-							}));
-						} else {
-							winston.warn('[plugins/' + pluginData.id + '] staticDir is deprecated, define CSS files with new staticDirs instead.');
-							Plugins.cssFiles = Plugins.cssFiles.concat(pluginData.css.map(function(file) {
-								return path.join('/plugins', pluginData.id, file);
-							}));
-						}
-
-						next();
-					} else {
-						next();
+						Plugins.cssFiles = Plugins.cssFiles.concat(pluginData.css.map(function(file) {
+							if (fs.existsSync(path.join(__dirname, '../node_modules', pluginData.id, file))) {
+								return path.join(pluginData.id, file);
+							} else {
+								// Backwards compatibility with < v0.4.0, remove this for v0.5.0
+								if (pluginData.staticDir) {
+									return path.join(pluginData.id, pluginData.staticDir, file);
+								} else {
+									winston.error('[plugins/' + pluginData.id + '] This plugin\'s CSS is incorrectly configured, please contact the plugin author.');
+									return null;
+								}
+							}
+						}).filter(function(path) { return path }));	// Filter out nulls, remove this for v0.5.0
 					}
+
+					next();
 				},
 				function(next) {
 					// LESS files for plugins

@@ -189,8 +189,7 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 			password_confirm.on('blur', onPasswordConfirmChanged);
 
 			$('#changePasswordBtn').on('click', function() {
-
-				if (passwordvalid && passwordsmatch && (currentPassword.val() || app.isAdmin)) {
+				if ((passwordvalid && passwordsmatch) || app.isAdmin) {
 					socket.emit('user.changePassword', {
 						'currentPassword': currentPassword.val(),
 						'newPassword': password.val(),

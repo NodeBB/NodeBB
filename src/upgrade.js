@@ -197,13 +197,16 @@ Upgrade.upgrade = function(callback) {
 				db.setAdd('plugins:active', 'nodebb-widget-essentials', function(err) {
 					winston.info('[2014/2/20] Activating NodeBB Essential Widgets');
 					Plugins.reload(function() {
-						next(err);
+						if (err) {
+							next(err);
+						} else {
+							Upgrade.update(thisSchemaDate, next);
+						}
 					});
 				});
 			} else {
 				winston.info('[2014/2/20] Activating NodeBB Essential Widgets - skipped');
-
-				Upgrade.update(thisSchemaDate, next);
+				next();
 			}
 		},
 		function(next) {
@@ -220,8 +223,11 @@ Upgrade.upgrade = function(callback) {
 					}
 
 					db.getListRange('categories:cid', 0, -1, function(err, cids) {
+						// Naive type-checking, becaue DBAL does not have .type() support
 						if(err) {
-							return next(err);
+							// Most likely upgraded already. Skip.
+							winston.info('[2014/2/22] Added categories to sorted set - skipped');
+							return Upgrade.update(thisSchemaDate, next);
 						}
 
 						if(!Array.isArray(cids)) {

@@ -16,7 +16,7 @@ describe('User', function() {
 
 	beforeEach(function(){
 		userData = {
-			name: 'John Smith',
+			username: 'John Smith',
 			password: 'swordfish',
 			email: 'john@example.com',
 			callback: undefined
@@ -25,8 +25,8 @@ describe('User', function() {
 
 
 	describe('when created', function() {
-		it('should be created properly', function(done){
-			User.create({usename: userData.name, password: userData.password, email: userData.email}, function(error,userId){
+		it('should be created properly', function(done) {
+			User.create({username: userData.username, password: userData.password, email: userData.email}, function(error,userId){
 				assert.equal(error, null, 'was created with error');
 				assert.ok(userId);
 				done();
@@ -35,7 +35,7 @@ describe('User', function() {
 
 		it('should have a valid email, if using an email', function() {
 			assert.throws(
-				User.create({username: userData.name, password: userData.password, email: 'fakeMail'},function(){}),
+				User.create({username: userData.username, password: userData.password, email: 'fakeMail'},function(){}),
 				Error,
 				'does not validate email'
 			);

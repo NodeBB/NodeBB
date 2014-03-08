@@ -50,6 +50,11 @@ function sendStylesheet(req, res, next) {
 			source += '\n@import "./' + plugins.lessFiles[x] + '";';
 		}
 
+		// ... and for each CSS file
+		for(x=0,numCSS=plugins.cssFiles.length;x<numCSS;x++) {
+			source += '\n@import (inline) "./' + plugins.cssFiles[x] + '";';
+		}
+
 		var	parser = new (less.Parser)({
 				paths: paths
 			});
