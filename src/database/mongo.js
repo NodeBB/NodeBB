@@ -82,18 +82,6 @@
 	//
 	// helper functions
 	//
-	function removeHiddenFields(item) {
-		if(item) {
-			if(item._id) {
-				delete item._id;
-			}
-			if(item._key) {
-				delete item._key;
-			}
-		}
-		return item;
-	}
-
 	function findItem(data, key) {
 		if(!data) {
 			return null;
@@ -261,11 +249,7 @@
 	};
 
 	module.getObject = function(key, callback) {
-		db.collection('objects').findOne({_key:key}, function(err, item) {
-			removeHiddenFields(item);
-
-			callback(err, item);
-		});
+		db.collection('objects').findOne({_key:key}, {_id:0, _key:0}, callback);
 	};
 
 	module.getObjects = function(keys, callback) {
@@ -302,7 +286,9 @@
 
 	module.getObjectFields = function(key, fields, callback) {
 
-		var _fields = {};
+		var _fields = {
+			_id: 0
+		};
 		for(var i=0; i<fields.length; ++i) {
 			if (typeof fields[i] !== 'string') {
 				fields[i] = fields[i].toString();
@@ -311,6 +297,7 @@
 			fields[i] = fields[i].replace(/\./g, '\uff0E');
 			_fields[fields[i]] = 1;
 		}
+
 
 		db.collection('objects').findOne({_key:key}, _fields, function(err, item) {
 
@@ -327,8 +314,6 @@
 					item[fields[i]] = null;
 				}
 			}
-
-			removeHiddenFields(item);
 
 			callback(null, item);
 		});
