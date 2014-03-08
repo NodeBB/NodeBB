@@ -28,7 +28,8 @@ var socket,
 					var reconnection_delay = 200;
 					socket = io.connect('', {
 						'max reconnection attempts': max_reconnection_attemps,
-						'reconnection delay': reconnection_delay
+						'reconnection delay': reconnection_delay,
+						resource: RELATIVE_PATH.slice(1) + '/socket.io'
 					});
 
 					var reconnecting = false,

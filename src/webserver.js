@@ -33,7 +33,8 @@ var path = require('path'),
 	userRoute = require('./routes/user'),
 	apiRoute = require('./routes/api'),
 	feedsRoute = require('./routes/feeds'),
-	metaRoute = require('./routes/meta');
+	metaRoute = require('./routes/meta'),
+	pluginsRoute = require('./routes/plugins');
 
 if(nconf.get('ssl')) {
 	server = require('https').createServer({
@@ -312,7 +313,7 @@ process.on('uncaughtException', function(err) {
 
 								// Theme's static directory
 								if (themeData['theme:staticDir']) {
-									app.use('/css/assets', express.static(path.join(nconf.get('themes_path'), themeData['theme:id'], themeData['theme:staticDir']), {
+									app.use(nconf.get('relative_path') + '/css/assets', express.static(path.join(nconf.get('themes_path'), themeData['theme:id'], themeData['theme:staticDir']), {
 										maxAge: app.enabled('cache') ? 5184000000 : 0
 									}));
 									if (process.env.NODE_ENV === 'development') {
@@ -321,7 +322,7 @@ process.on('uncaughtException', function(err) {
 								}
 
 								if (themeData['theme:templates']) {
-									app.use('/templates', express.static(path.join(nconf.get('themes_path'), themeData['theme:id'], themeData['theme:templates']), {
+									app.use(nconf.get('relative_path') + '/templates', express.static(path.join(nconf.get('themes_path'), themeData['theme:id'], themeData['theme:templates']), {
 										maxAge: app.enabled('cache') ? 5184000000 : 0
 									}));
 									if (process.env.NODE_ENV === 'development') {
@@ -493,6 +494,7 @@ process.on('uncaughtException', function(err) {
 		userRoute.createRoutes(app);
 		apiRoute.createRoutes(app);
 		feedsRoute.createRoutes(app);
+		pluginsRoute.createRoutes(app);
 
 		// Basic Routes (entirely client-side parsed, goal is to move the rest of the crap in this file into this one section)
 		(function () {
@@ -938,9 +940,6 @@ process.on('uncaughtException', function(err) {
 				res.send(header + app.create_route('search/' + req.params.term, null, 'search') + templates.footer);
 			});
 		});
-
-		// Other routes
-		require('./routes/plugins')(app);
 
 		// Debug routes
 		if (process.env.NODE_ENV === 'development') {

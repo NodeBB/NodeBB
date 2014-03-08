@@ -28,11 +28,11 @@ var	io;
 
 
 Sockets.init = function(server) {
-
 	io = socketioWildcard(SocketIO).listen(server, {
 		log: false,
 		transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket'],
-		'browser client minification': true
+		'browser client minification': true,
+		resource: nconf.get('relative_path') + '/socket.io'
 	});
 
 	Sockets.server = io;

@@ -6,9 +6,10 @@ var	nconf = require('nconf'),
 	validator = require('validator'),
 	_ = require('underscore'),
 	async = require('async'),
-	plugins = require('../plugins'),
+	plugins = require('../plugins');
 
-	PluginRoutes = function(app) {
+(function(Plugins) {
+	Plugins.createRoutes = function(app) {
 		app.get('/plugins/fireHook', function(req, res) {
 			// GET = filter
 			plugins.fireHook('filter:' + req.query.hook, req.query.args, function(err, returnData) {
@@ -70,5 +71,4 @@ var	nconf = require('nconf'),
 			}
 		});
 	};
-
-module.exports = PluginRoutes;
+})(exports);
