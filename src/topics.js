@@ -559,8 +559,8 @@ var async = require('async'),
 	};
 
 	Topics.getTotalUnread = function(uid, callback) {
-		Topics.getUnreadTids(uid, 0, 21, function(err, tids) {
-			callback(err, {count: tids ? tids.length : 0});
+		Topics.getUnreadTids(uid, 0, 20, function(err, tids) {
+			callback(err, tids ? tids.length : 0);
 		});
 	};
 
@@ -574,7 +574,7 @@ var async = require('async'),
 		}
 
 		async.whilst(function() {
-			return unreadTids.length < 20 && !done;
+			return unreadTids.length < 21 && !done;
 		}, function(callback) {
 			Topics.getLatestTids(start, stop, 'month', function(err, tids) {
 				if (err) {
@@ -671,8 +671,8 @@ var async = require('async'),
 		});
 
 		async.each(uids, function(uid, next) {
-			Topics.getUnreadTids(uid, 0, 19, function(err, tids) {
-				websockets.in('uid_' + uid).emit('event:unread.updateCount', null, tids);
+			Topics.getTotalUnread(uid, function(err, count) {
+				websockets.in('uid_' + uid).emit('event:unread.updateCount', null, count);
 				next();
 			});
 		}, function(err) {

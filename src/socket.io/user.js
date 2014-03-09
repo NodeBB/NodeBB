@@ -214,7 +214,7 @@ SocketUser.getOnlineAnonCount = function(socket, data, callback) {
 };
 
 SocketUser.getUnreadCount = function(socket, data, callback) {
-	topics.getUnreadTids(socket.uid, 0, 19, callback);
+	topics.getTotalUnread(socket.uid, callback);
 };
 
 SocketUser.getActiveUsers = function(socket, data, callback) {
