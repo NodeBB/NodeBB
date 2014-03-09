@@ -323,17 +323,35 @@ var async = require('async'),
 	};
 
 	Topics.getTopicData = function(tid, callback) {
-		db.getObject('topic:' + tid, function(err, data) {
-			if(err) {
-				return callback(err, null);
+		Topics.getTopicsData([tid], function(err, topics) {
+			if (err) {
+				return callback(err);
 			}
 
-			if(data) {
-				data.title = validator.escape(data.title);
-				data.relativeTime = utils.toISOString(data.timestamp);
+			callback(null, topics ? topics[0] : null);
+		});
+	};
+
+	Topics.getTopicsData = function(tids, callback) {
+		var keys = [];
+
+		for (var i=0; i<tids.length; ++i) {
+			keys.push('topic:' + tids[i]);
+		}
+
+		db.getObjects(keys, function(err, topics) {
+			if (err) {
+				return callback(err);
 			}
 
-			callback(null, data);
+			for (var i=0; i<tids.length; ++i) {
+				if(topics[i]) {
+					topics[i].title = validator.escape(topics[i].title);
+					topics[i].relativeTime = utils.toISOString(topics[i].timestamp);
+				}
+			}
+
+			callback(null, topics);
 		});
 	};
 
@@ -671,73 +689,86 @@ var async = require('async'),
 			return callback(null, []);
 		}
 
-		function getTopicInfo(topicData, callback) {
+		var categoryCache = {},
+			privilegeCache = {},
+			userCache = {};
+
+		function loadTopicInfo(topicData, next) {
+
+			function isTopicVisible(topicData, topicInfo) {
+				var deleted = parseInt(topicData.deleted, 10) !== 0;
+				return !deleted || (deleted && topicInfo.privileges.view_deleted) || parseInt(topicData.uid, 10) === parseInt(uid, 10);
+			}
+
 			async.parallel({
-				hasread : function (next) {
+				hasread: function(next) {
 					Topics.hasReadTopic(topicData.tid, uid, next);
 				},
-				teaser : function (next) {
+				teaser: function(next) {
 					Topics.getTeaser(topicData.tid, next);
 				},
-				privileges : function (next) {
+				privileges: function(next) {
+					if (privilegeCache[topicData.cid]) {
+						return next(null, privilegeCache[topicData.cid])
+					}
 					categoryTools.privileges(topicData.cid, uid, next);
 				},
-				categoryData : function (next) {
+				categoryData: function(next) {
+					if (categoryCache[topicData.cid]) {
+						return next(null, categoryCache[topicData.cid]);
+					}
 					categories.getCategoryFields(topicData.cid, ['name', 'slug', 'icon'], next);
+				},
+				user: function(next) {
+					if (userCache[topicData.uid]) {
+						return next(null, userCache[topicData.uid]);
+					}
+					user.getUserFields(topicData.uid, ['username', 'userslug', 'picture'], next);
 				}
-			}, callback);
-		}
-
-		function isTopicVisible(topicData, topicInfo) {
-			var deleted = parseInt(topicData.deleted, 10) !== 0;
-
-			return !deleted || (deleted && topicInfo.privileges.view_deleted) || parseInt(topicData.uid, 10) === parseInt(uid, 10);
-		}
-
-		function loadTopic(tid, next) {
-
-			Topics.getTopicDataWithUser(tid, function(err, topicData) {
+			}, function(err, topicInfo) {
 				if(err) {
 					return next(err);
 				}
 
-				if (!topicData) {
+				privilegeCache[topicData.cid] = topicInfo.privileges;
+				categoryCache[topicData.cid] = topicInfo.categoryData;
+				userCache[topicData.uid] = topicInfo.user;
+
+				if (!isTopicVisible(topicData, topicInfo)) {
+					topicData = null;
 					return next();
 				}
 
-				getTopicInfo(topicData, function(err, topicInfo) {
-					if(err) {
-						return next(err);
-					}
+				topicData.pinned = parseInt(topicData.pinned, 10) === 1;
+				topicData.locked = parseInt(topicData.locked, 10) === 1;
+				topicData.deleted = parseInt(topicData.deleted, 10) === 1;
+				topicData.unread = !(topicInfo.hasread && parseInt(uid, 10) !== 0);
+				topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
 
-					if (!isTopicVisible(topicData, topicInfo)) {
-						return next();
-					}
+				topicData.category = topicInfo.categoryData;
+				topicData.teaser = topicInfo.teaser;
+				topicData.user = topicInfo.user;
 
-					topicData.pinned = parseInt(topicData.pinned, 10) === 1;
-					topicData.locked = parseInt(topicData.locked, 10) === 1;
-					topicData.deleted = parseInt(topicData.deleted, 10) === 1;
-					topicData.unread = !(topicInfo.hasread && parseInt(uid, 10) !== 0);
-					topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
-
-					topicData.category = topicInfo.categoryData;
-					topicData.teaser = topicInfo.teaser;
-
-					next(null, topicData);
-				});
+				next();
 			});
 		}
 
-		async.map(tids, loadTopic, function(err, topics) {
-			if(err) {
+		Topics.getTopicsData(tids, function(err, topics) {
+			if (err) {
 				return callback(err);
 			}
 
-			topics = topics.filter(function(topic) {
-				return !!topic;
-			});
+			async.eachSeries(topics, loadTopicInfo, function(err) {
+				if(err) {
+					return callback(err);
+				}
 
-			callback(null, topics);
+				topics = topics.filter(function(topic) {
+					return !!topic;
+				});
+
+				callback(null, topics);
+			});
 		});
 	};
 
