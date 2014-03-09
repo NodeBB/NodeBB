@@ -80,11 +80,7 @@ Controllers.home = function(req, res, next) {
 			});
 		}
 	}, function (err, data) {
-		if (res.locals.isAPI) {
-			res.json(data);
-		} else {
-			res.render('home', data);
-		}
+		res.render('home', data);
 	});
 };
 

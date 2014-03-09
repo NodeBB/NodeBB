@@ -276,6 +276,10 @@ middleware.processRender = function(req, res, next) {
 			fn = defaultFn;
 		}
 
+		if (res.locals.isAPI) {
+			return res.json(options);
+		}
+
 		render.call(self, template, options, function(err, str) {
 			if (res.locals.footer) {
 				str = str + res.locals.footer;
