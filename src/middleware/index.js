@@ -85,8 +85,12 @@ function compileTemplates(pluginTemplates) {
 		utils.walk(nconf.get('theme_templates_path'), function (err, themeTpls) {
 			var paths = pluginTemplates;
 
-			baseTpls = baseTpls.map(function(tpl) { return tpl.replace(nconf.get('base_templates_path'), ''); });
-			themeTpls = themeTpls.map(function(tpl) { return tpl.replace(nconf.get('theme_templates_path'), ''); });
+			if (!baseTpls || !themeTpls) {
+				winston.warn('[themes] Could not find base template files at: ' + nconf.get('base_templates_path'));
+			}
+
+			baseTpls = !baseTpls ? [] : baseTpls.map(function(tpl) { return tpl.replace(nconf.get('base_templates_path'), ''); });
+			themeTpls = !themeTpls ? [] : themeTpls.map(function(tpl) { return tpl.replace(nconf.get('theme_templates_path'), ''); });
 
 			baseTpls.forEach(function(el, i) {
 				var relative_path = (themeTpls.indexOf(el) !== -1 ? themeTpls[themeTpls.indexOf(el)] : baseTpls[i]),
