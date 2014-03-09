@@ -309,7 +309,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			var bookmark = localStorage.getItem('topic:' + tid + ':bookmark');
 			if (window.location.hash) {
 				Topic.scrollToPost(window.location.hash.substr(1), true);
-			} else if (bookmark && (!config.usePagination || (config.usePagination && pagination.currentPage === 1))) {
+			} else if (bookmark && (!config.usePagination || (config.usePagination && pagination.currentPage === 1)) && Topic.postCount > 1) {
 				app.alert({
 					alert_id: 'bookmark',
 					message: '[[topic:bookmark_instructions]]',
@@ -1042,8 +1042,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				$('.progress-bar').width((index / Topic.postCount * 100) + '%');
 
 				var currentBookmark = localStorage.getItem('topic:' + templates.get('topic_id') + ':bookmark');
-				if (!currentBookmark || parseInt(el.attr('data-pid'), 10) > parseInt(currentBookmark, 10)) {
+				if (!currentBookmark || parseInt(el.attr('data-pid'), 10) >= parseInt(currentBookmark, 10)) {
 					localStorage.setItem('topic:' + templates.get('topic_id') + ':bookmark', el.attr('data-pid'));
+					app.removeAlert('bookmark');
 				}
 
 				if (!scrollingToPost) {

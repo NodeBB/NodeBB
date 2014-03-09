@@ -207,9 +207,7 @@
 			multi.hgetall(keys[x]);
 		}
 
-		multi.exec(function (err, replies) {
-			callback(err, replies);
-		});
+		multi.exec(callback);
 	};
 
 	module.getObjectField = function(key, field, callback) {
