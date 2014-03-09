@@ -370,9 +370,12 @@ var async = require('async'),
 					userData = {};
 				}
 
-				topic.username = userData.username || 'Anonymous';
-				topic.userslug = userData.userslug || '';
-				topic.picture = userData.picture || gravatar.url('', {}, true);
+				topic.user = {
+ 					username: userData.username || 'Anonymous',
+ 					userslug: userData.userslug || '',
+ 					picture: userData.picture || gravatar.url('', {}, true)
+				};
+
 				callback(null, topic);
 			});
 		});
@@ -709,7 +712,7 @@ var async = require('async'),
 				},
 				privileges: function(next) {
 					if (privilegeCache[topicData.cid]) {
-						return next(null, privilegeCache[topicData.cid])
+						return next(null, privilegeCache[topicData.cid]);
 					}
 					categoryTools.privileges(topicData.cid, uid, next);
 				},
