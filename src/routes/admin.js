@@ -135,6 +135,7 @@ module.exports = function(app, middleware, controllers) {
 
 
 	app.get('/admin/', middleware.admin.buildHeader, controllers.admin.home);
+	app.get('/admin/index', middleware.admin.buildHeader, controllers.admin.home);
 	app.get('/api/admin/index', controllers.admin.home);
 
 	app.get('/admin/users/search', middleware.admin.buildHeader, controllers.admin.users.search);
