@@ -1,43 +1,53 @@
 define(['forum/admin/settings'], function(Settings) {
 	var Themes = {};
 
+	function highlightSelectedTheme(themeId) {
+		$('#themes li[data-theme]').removeClass('btn-warning');
+		$('#themes li[data-theme="' + themeId + '"]').addClass('btn-warning');
+	}
+
 	Themes.init = function() {
 		var scriptEl = $('<script />');
 		scriptEl.attr('src', 'http://api.bootswatch.com/3/?callback=bootswatchListener');
 		$('body').append(scriptEl);
 
 		var bootstrapThemeContainer = $('#bootstrap_themes'),
-			installedThemeContainer = $('#installed_themes'),
+			installedThemeContainer = $('#installed_themes');
 
-			themeEvent = function(e) {
-				var target = $(e.target),
-					action = target.attr('data-action');
+		function themeEvent(e) {
+			var target = $(e.target),
+				action = target.attr('data-action');
 
-				if (action) {
-					switch (action) {
-						case 'use':
-							var parentEl = target.parents('li'),
-								themeType = parentEl.attr('data-type'),
-								cssSrc = parentEl.attr('data-css'),
-								themeId = parentEl.attr('data-theme');
+			if (action) {
+				switch (action) {
+					case 'use':
+						var parentEl = target.parents('li'),
+							themeType = parentEl.attr('data-type'),
+							cssSrc = parentEl.attr('data-css'),
+							themeId = parentEl.attr('data-theme');
 
-							socket.emit('admin.themes.set', {
-								type: themeType,
-								id: themeId,
-								src: cssSrc
-							}, function(err) {
-								app.alert({
-									alert_id: 'admin:theme',
-									type: 'success',
-									title: 'Theme Changed',
-									message: 'Restarting your NodeBB <i class="fa fa-refresh fa-spin"></i>',
-									timeout: 3500
-								});
+						socket.emit('admin.themes.set', {
+							type: themeType,
+							id: themeId,
+							src: cssSrc
+						}, function(err) {
+							if (err) {
+								return app.alertError(err.message);
+							}
+							highlightSelectedTheme(themeId);
+
+							app.alert({
+								alert_id: 'admin:theme',
+								type: 'success',
+								title: 'Theme Changed',
+								message: 'Restarting your NodeBB <i class="fa fa-refresh fa-spin"></i>',
+								timeout: 3500
 							});
-							break;
-					}
+						});
+						break;
 				}
-			};
+			}
+		}
 
 		bootstrapThemeContainer.on('click', themeEvent);
 		installedThemeContainer.on('click', themeEvent);
@@ -49,6 +59,10 @@ define(['forum/admin/settings'], function(Settings) {
 						type: 'local',
 						id: 'nodebb-theme-cerulean'
 					}, function(err) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+						highlightSelectedTheme('nodebb-theme-cerulean');
 						app.alert({
 							alert_id: 'admin:theme',
 							type: 'success',
@@ -59,7 +73,7 @@ define(['forum/admin/settings'], function(Settings) {
 					});
 				}
 			});
-		}, false);
+		});
 
 		// Installed Themes
 		socket.emit('admin.themes.getInstalled', function(err, themes) {
@@ -69,30 +83,32 @@ define(['forum/admin/settings'], function(Settings) {
 
 			var instListEl = $('#installed_themes').empty(), liEl;
 
-			if (themes.length > 0) {
-				for (var x = 0, numThemes = themes.length; x < numThemes; x++) {
-					liEl = $('<li/ >').attr({
-						'data-type': 'local',
-						'data-theme': themes[x].id
-					}).html('<img src="' + (themes[x].screenshot ? '/css/previews/' + themes[x].id : RELATIVE_PATH + '/images/themes/default.png') + '" />' +
-							'<div>' +
-							'<div class="pull-right">' +
-							'<button class="btn btn-primary" data-action="use">Use</button> ' +
-							'</div>' +
-							'<h4>' + themes[x].name + '</h4>' +
-							'<p>' +
-							themes[x].description +
-							(themes[x].url ? ' (<a href="' + themes[x].url + '">Homepage</a>)' : '') +
-							'</p>' +
-							'</div>' +
-							'<div class="clear">');
-
-					instListEl.append(liEl);
-				}
-			} else {
-				// No themes found
+			if (!themes.length) {
 				instListEl.append($('<li/ >').addClass('no-themes').html('No installed themes found'));
+				return;
 			}
+
+			for (var x = 0, numThemes = themes.length; x < numThemes; x++) {
+				liEl = $('<li/ >').attr({
+					'data-type': 'local',
+					'data-theme': themes[x].id
+				}).html('<img src="' + (themes[x].screenshot ? '/css/previews/' + themes[x].id : RELATIVE_PATH + '/images/themes/default.png') + '" />' +
+						'<div>' +
+						'<div class="pull-right">' +
+						'<button class="btn btn-primary" data-action="use">Use</button> ' +
+						'</div>' +
+						'<h4>' + themes[x].name + '</h4>' +
+						'<p>' +
+						themes[x].description +
+						(themes[x].url ? ' (<a href="' + themes[x].url + '">Homepage</a>)' : '') +
+						'</p>' +
+						'</div>' +
+						'<div class="clear">');
+
+				instListEl.append(liEl);
+			}
+
+			highlightSelectedTheme(config['theme:id']);
 		});
 
 		// Proper tabbing for "Custom CSS" field

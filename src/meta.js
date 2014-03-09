@@ -125,12 +125,12 @@ var fs = require('fs'),
 		},
 		set: function(data, callback) {
 			var	themeData = {
-					'theme:type': data.type,
-					'theme:id': data.id,
-					'theme:staticDir': '',
-					'theme:templates': '',
-					'theme:src': ''
-				};
+				'theme:type': data.type,
+				'theme:id': data.id,
+				'theme:staticDir': '',
+				'theme:templates': '',
+				'theme:src': ''
+			};
 
 			switch(data.type) {
 				case 'local':
@@ -152,9 +152,7 @@ var fs = require('fs'),
 
 							db.setObject('config', themeData, next);
 						}
-					], function(err) {
-						callback(err);
-					});
+					], callback);
 				break;
 
 				case 'bootswatch':

@@ -10,6 +10,11 @@
 
 	<div class="tab-content">
 		<div class="tab-pane active" id="themes">
+			<h3>Revert to Default</h3>
+			<p class="alert">
+				<button class="btn btn-warning" id="revert_theme">Revert</button> This will remove any custom theme applied to your NodeBB, and restore the base theme.
+			</p>
+
 			<h3>Installed Themes</h3>
 			<p>
 				The following themes are currently installed in this NodeBB instance.
@@ -27,10 +32,6 @@
 				<li><i class="fa fa-refresh fa-spin"></i> Loading Themes</li>
 			</ul>
 
-			<h3>Revert to Default</h3>
-			<p class="alert">
-				<button class="btn btn-warning" id="revert_theme">Revert</button> This will remove any custom theme applied to your NodeBB, and restore the base theme.
-			</p>
 		</div>
 		<div class="tab-pane" id="customise">
 			<h3>Custom CSS</h3>
