@@ -95,4 +95,5 @@ if(nconf.get('ssl')) {
 			winston.info('NodeBB Ready');
 		});
 	};
+
 }(WebServer));

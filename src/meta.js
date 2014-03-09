@@ -249,7 +249,7 @@ var fs = require('fs'),
 			'src/overrides.js',
 			'src/utils.js'
 		],
-		minFile: nconf.get('relative_path') + 'nodebb.min.js',
+		minFile: 'nodebb.min.js',
 		get: function (callback) {
 			plugins.fireHook('filter:scripts.get', this.scripts, function(err, scripts) {
 				var ctime,

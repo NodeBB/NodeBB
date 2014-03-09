@@ -9,7 +9,6 @@ var	_ = require('underscore'),
 	winston = require('winston'),
 
 	plugins = require('../plugins'),
-
 	pluginRoutes = [];
 
 /*

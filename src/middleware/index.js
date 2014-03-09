@@ -51,20 +51,11 @@ function routeCurrentTheme(app, themeData) {
 
 		// Theme's static directory
 		if (themeData['theme:staticDir']) {
-			app.use('/css/assets', express.static(path.join(nconf.get('themes_path'), themeData['theme:id'], themeData['theme:staticDir']), {
+			app.use(nconf.get('relative_path') + '/css/assets', express.static(path.join(nconf.get('themes_path'), themeData['theme:id'], themeData['theme:staticDir']), {
 				maxAge: app.enabled('cache') ? 5184000000 : 0
 			}));
 			if (process.env.NODE_ENV === 'development') {
 				winston.info('Static directory routed for theme: ' + themeData['theme:id']);
-			}
-		}
-
-		if (themeData['theme:templates']) {
-			app.use('/templates', express.static(path.join(nconf.get('themes_path'), themeData['theme:id'], themeData['theme:templates']), {
-				maxAge: app.enabled('cache') ? 5184000000 : 0
-			}));
-			if (process.env.NODE_ENV === 'development') {
-				winston.info('Custom templates directory routed for theme: ' + themeData['theme:id']);
 			}
 		}
 	} else {

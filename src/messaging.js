@@ -1,3 +1,5 @@
+'use strict';
+
 var db = require('./database'),
 	async = require('async'),
 	user = require('./user'),
@@ -35,7 +37,7 @@ var db = require('./database'),
 			Messaging.updateChatTime(touid, fromuid);
 			callback(null, message);
 		});
-	}
+	};
 
 	Messaging.getMessages = function(fromuid, touid, callback) {
 		var uids = sortUids(fromuid, touid);
