@@ -43,7 +43,7 @@ function sendStylesheet(req, res, next) {
 			baseThemePath = path.join(nconf.get('themes_path'), (themeData['theme:type'] && themeData['theme:type'] === 'local' ? themeId : 'nodebb-theme-vanilla')),
 			paths = [baseThemePath, path.join(__dirname, '../../node_modules')],
 			source = '@import "./theme";',
-			x, numLESS;
+			x, numLESS, numCSS;
 
 		// Add the imports for each LESS file
 		for(x=0,numLESS=plugins.lessFiles.length;x<numLESS;x++) {
