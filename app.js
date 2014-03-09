@@ -148,7 +148,8 @@ function start() {
 						templates.ready(webserver.init);
 					});
 
-					notifications.init();
+					// Temporarily removed until ncb000gt/node-cron/issues/81 and ncb000gt/node-cron/issues/83 are fixed
+					// notifications.init();
 				} else {
 					winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
 					winston.warn('    node app --upgrade');
