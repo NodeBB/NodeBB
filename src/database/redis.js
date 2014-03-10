@@ -223,7 +223,7 @@
 	module.getObjectFields = function(key, fields, callback) {
 		redisClient.hmget(key, fields, function(err, data) {
 			if(err) {
-				return callback(err, null);
+				return callback(err);
 			}
 
 			var returnData = {};

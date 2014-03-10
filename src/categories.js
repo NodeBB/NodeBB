@@ -304,7 +304,7 @@ var db = require('./database'),
 			}
 			callback(null, categories);
 		});
-	}
+	};
 
 	Categories.getCategoryField = function(cid, field, callback) {
 		db.getObjectField('category:' + cid, field, callback);
