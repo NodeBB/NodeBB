@@ -261,9 +261,7 @@ SocketTopics.loadMore = function(socket, data, callback) {
 			privileges: function(next) {
 				threadTools.privileges(data.tid, socket.uid, next);
 			}
-		}, function(err, results) {
-			callback(err, results);
-		});
+		}, callback);
 	});
 };
 

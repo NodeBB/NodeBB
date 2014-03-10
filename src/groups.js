@@ -1,7 +1,9 @@
+'use strict';
+
 (function(Groups) {
-	"use strict";
 
 	var async = require('async'),
+		winston = require('winston'),
 		user = require('./user'),
 		db = require('./database');
 
@@ -34,7 +36,7 @@
 
 		async.map(systemGroups, function(groupName, next) {
 			Groups.getByGroupName(groupName, options, function(err, groupObj) {
-				groupObj['name'] = humanNames[systemGroups.indexOf(groupObj['name'])];
+				groupObj.name = humanNames[systemGroups.indexOf(groupObj.name)];
 				next(err, groupObj);
 			});
 		}, callback);
@@ -52,11 +54,8 @@
 							return next(err);
 						}
 
-						async.map(uids, function (uid, next) {
-							user.getUserData(uid, next);
-						}, function (err, users) {
-							next(err, users);
-						});
+						async.map(uids, user.getUserData, next);
+
 					} else {
 						next(err, uids);
 					}
@@ -155,7 +154,7 @@
 					callback(null, result);
 				});
 			});
-		})
+		});
 	};
 
 	Groups.isEmpty = function(gid, callback) {
@@ -230,16 +229,16 @@
 		db.exists('gid:' + gid, function (err, exists) {
 			if (!err && exists) {
 				// If the group was renamed, check for dupes, fix the assoc. hash
-				if (values['name']) {
-					Groups.exists(values['name'], function(err, exists) {
+				if (values.name) {
+					Groups.exists(values.name, function(err, exists) {
 						if (!exists) {
 							Groups.get(gid, {}, function(err, groupObj) {
 								if (err) {
 									return callback(new Error('group-not-found'));
 								}
 
-								db.deleteObjectField('group:gid', groupObj['name']);
-								db.setObjectField('group:gid', values['name'], gid);
+								db.deleteObjectField('group:gid', groupObj.name);
+								db.setObjectField('group:gid', values.name, gid);
 								db.setObject('gid:' + gid, values, callback);
 							});
 						} else {
@@ -329,42 +328,6 @@
 
 				callback(err);
 			});
-		});
-	};
-
-	Groups.getCategoryAccess = function(cid, uid, callback){
-		var access = false;
-		// check user group read access level
-		async.series([function(callback){
-			// get groups with read permission
-			db.getObjectField('group:gid', 'cid:' + cid + ':privileges:g+r', function(err, gid){
-				// get the user groups that belong to this read group
-				db.getSetMembers('gid:' + gid + ':members', function (err, gids) {
-					// check if user belong to any of these user groups
-					var groups_check = new Array();
-					gids.forEach(function(cgid){
-						groups_check.push(function(callback){
-							Groups.isMember(uid, cgid, function(err, isMember){
-								if (isMember){
-									access = true;
-								}
-								callback(null, gids);
-							})
-						});
-					});
-					// do a series check. We want to make sure we check all the groups before determining if the user
-					// has access or not.
-					async.series(groups_check, function(err, results){
-						callback(null, results);
-					});
-				});
-			});
-
-		}],
-		function(err, results){
-			// if the read group is empty we will asume that read access has been granted to ALL
-			if (results[0].length == 0){ access = true; }
-			callback(false, access);
 		});
 	};
 
