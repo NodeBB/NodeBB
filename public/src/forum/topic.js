@@ -1207,6 +1207,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 		findInsertionPoint();
 
+		data.title = templates.get('topic_name');
+		data.viewcount = templates.get('viewcount');
+
 		parseAndTranslatePosts(data, function(translatedHTML) {
 			var translated = $(translatedHTML);
 
@@ -1233,8 +1236,11 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 	}
 
 	function parseAndTranslatePosts(data, callback) {
-		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
-		translator.translate(html, callback);
+		templates.preload_template('topic', function() {
+			templates['topic'].parse({posts: []});
+			var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
+			translator.translate(html, callback);
+		});
 	}
 
 

@@ -66,7 +66,6 @@ define(function() {
 					bootbox.confirm('Are you sure you wish to delete this group?', function(confirm) {
 						if (confirm) {
 							socket.emit('admin.groups.delete', gid, function(err, data) {
-								console.log(err, data);
 								if(err) {
 									return app.alertError(err.message);
 								}

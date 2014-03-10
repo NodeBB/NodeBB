@@ -1,14 +1,16 @@
 (function(Auth) {
+	"use strict";
+
 	var passport = require('passport'),
 		passportLocal = require('passport-local').Strategy,
 		nconf = require('nconf'),
 		bcrypt = require('bcryptjs'),
 		winston = require('winston'),
 
-		meta = require('../meta'),
-		user = require('../user'),
-		plugins = require('../plugins'),
-		utils = require('../../public/src/utils'),
+		meta = require('./../meta'),
+		user = require('./../user'),
+		plugins = require('./../plugins'),
+		utils = require('./../../public/src/utils'),
 		templates = require('./../../public/src/templates'),
 
 		login_strategies = [];
@@ -26,16 +28,16 @@
 	Auth.initialize = function(app) {
 		app.use(passport.initialize());
 		app.use(passport.session());
-	}
+	};
 
 
 	Auth.get_login_strategies = function() {
 		return login_strategies;
-	}
+	};
 
 	Auth.registerApp = function(app) {
 		Auth.app = app;
-	}
+	};
 
 	Auth.createRoutes = function(app) {
 		app.namespace(nconf.get('relative_path'), function () {
@@ -49,38 +51,22 @@
 					req.logout();
 				}
 
-				res.send(200)
+				res.send(200);
 			});
 
 			for (var i in login_strategies) {
-				var strategy = login_strategies[i];
-				app.get(strategy.url, passport.authenticate(strategy.name, {
-					scope: strategy.scope
-				}));
+				if (login_strategies.hasOwnProperty(i)) {
+					var strategy = login_strategies[i];
+					app.get(strategy.url, passport.authenticate(strategy.name, {
+						scope: strategy.scope
+					}));
 
-				app.get(strategy.callbackURL, passport.authenticate(strategy.name, {
-					successRedirect: '/',
-					failureRedirect: '/login'
-				}));
+					app.get(strategy.callbackURL, passport.authenticate(strategy.name, {
+						successRedirect: '/',
+						failureRedirect: '/login'
+					}));
+				}
 			}
-
-			app.get('/reset/:code', function(req, res) {
-				app.build_header({
-					req: req,
-					res: res
-				}, function(err, header) {
-					res.send(header + app.create_route('reset/' + req.params.code) + templates['footer']);
-				});
-			});
-
-			app.get('/reset', function(req, res) {
-				app.build_header({
-					req: req,
-					res: res
-				}, function(err, header) {
-					res.send(header + app.create_route('reset') + templates['footer']);
-				});
-			});
 
 			app.post('/login', function(req, res, next) {
 				passport.authenticate('local', function(err, userData, info) {
@@ -127,10 +113,11 @@
 
 							require('../socket.io').emitUserCount();
 
-							if(req.body.referrer)
+							if(req.body.referrer) {
 								res.redirect(req.body.referrer);
-							else
+							} else {
 								res.redirect(nconf.get('relative_path') + '/');
+							}
 						});
 					} else {
 						res.redirect(nconf.get('relative_path') + '/register');
@@ -138,7 +125,7 @@
 				});
 			});
 		});
-	}
+	};
 
 	Auth.login = function(username, password, next) {
 		if (!username || !password) {
@@ -186,7 +173,7 @@
 				});
 			});
 		});
-	}
+	};
 
 	passport.use(new passportLocal(Auth.login));
 

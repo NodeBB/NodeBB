@@ -31,14 +31,12 @@ var ajaxify = {};
 	ajaxify.initialLoad = false;
 
 	ajaxify.go = function (url, callback, quiet) {
-
 		// "quiet": If set to true, will not call pushState
 		app.enterRoom('global');
 
 		$(window).off('scroll');
 
-		$(window).trigger('action:ajaxify.start', { url: url });
-		$('body').trigger('action:ajaxifying', {url: url});	// Deprecated as of v0.4.0
+		$(window).trigger('action:ajaxify.start', {url: url});
 
 		if ($('#content').hasClass('ajaxifying')) {
 			templates.cancelRequest();
@@ -50,19 +48,7 @@ var ajaxify = {};
 		if (url.indexOf(RELATIVE_PATH.slice(1)) !== -1) {
 			url = url.slice(RELATIVE_PATH.length);
 		}
-
-		var tpl_url = templates.get_custom_map(url.split('?')[0]);
-
-		if (tpl_url == false && !templates[url]) {
-			if (url === '' || url === '/') {
-				tpl_url = 'home';
-			} else {
-				tpl_url = url.split('/')[0].split('?')[0];
-			}
-
-		} else if (templates[url]) {
-			tpl_url = url;
-		}
+		var tpl_url = ajaxify.getTemplateMapping(url);
 
 		var hash = '';
 		if(ajaxify.initialLoad) {
@@ -93,16 +79,11 @@ var ajaxify = {};
 
 			translator.load(tpl_url);
 
-			$('#footer, #content').removeClass('hide').addClass('ajaxifying');
+			ajaxify.fadeOut();
 
 			templates.flush();
 			templates.load_template(function () {
-
-				require(['forum/' + tpl_url], function(script) {
-					if (script && script.init) {
-						script.init();
-					}
-				});
+				ajaxify.loadScript(tpl_url);
 
 				if (typeof callback === 'function') {
 					callback();
@@ -110,38 +91,12 @@ var ajaxify = {};
 
 				app.processPage();
 
-				var widgetLocations = [];
+				ajaxify.renderWidgets(tpl_url, url, function(err) {
+					ajaxify.fadeIn();
+					ajaxify.initialLoad = false;
 
-				require(['vendor/async'], function(async) {
-					$('#content [widget-area]').each(function() {
-						widgetLocations.push($(this).attr('widget-area'));
-					});
-
-					async.each(widgetLocations, function(location, next) {
-						var area = $('#content [widget-area="' + location + '"]');
-
-						socket.emit('widgets.render', {template: tpl_url + '.tpl', url: url, location: location}, function(err, renderedWidgets) {
-							area.html(templates.prepare(area.html()).parse({
-								widgets: renderedWidgets
-							})).removeClass('hidden');
-
-							if (!renderedWidgets.length) {
-								$('body [no-widget-class]').each(function() {
-									var $this = $(this);
-									$this.removeClass();
-									$this.addClass($this.attr('no-widget-class'));
-								});
-							}
-
-							next(err);
-						});
-					}, function(err) {
-						$('#content, #footer').stop(true, true).removeClass('ajaxifying');
-						ajaxify.initialLoad = false;
-
-						app.refreshTitle(url);
-						$(window).trigger('action:ajaxify.end', { url: url });
-					});
+					app.refreshTitle(url);
+					$(window).trigger('action:ajaxify.end', {url: url});
 				});
 			}, url);
 
@@ -150,6 +105,91 @@ var ajaxify = {};
 
 		return false;
 	};
+
+	ajaxify.loadScript = function(tpl_url, callback) {
+		require(['forum/' + tpl_url], function(script) {
+			if (script && script.init) {
+				script.init();
+			}
+
+			if (callback) {
+				callback();
+			}
+		});
+	};
+
+	ajaxify.fadeIn = function() {
+		$('#content, #footer').stop(true, true).removeClass('ajaxifying');
+	};
+
+	ajaxify.fadeOut = function() {
+		$('#footer, #content').removeClass('hide').addClass('ajaxifying');
+	};
+
+	ajaxify.getTemplateMapping = function(url) {
+		var tpl_url = templates.get_custom_map(url.split('?')[0]);
+
+		if (tpl_url == false && !templates[url]) {
+			if (url === '' || url === '/') {
+				tpl_url = 'home';
+			} else if (url === 'admin' || url === 'admin/') {
+				tpl_url = 'admin/index';
+			} else {
+				tpl_url = url.split('/');
+
+				while(tpl_url.length) {
+					if (templates.is_available(tpl_url.join('/'))) {
+						tpl_url = tpl_url.join('/');
+						break;
+					}
+					tpl_url.pop();
+				}
+				
+				if (!tpl_url.length) {
+					tpl_url = url.split('/')[0].split('?')[0];
+				}
+			}
+		} else if (templates[url]) {
+			tpl_url = url;
+		}
+
+		return tpl_url;
+	}
+
+	ajaxify.renderWidgets = function(tpl_url, url, callback) {
+		var widgetLocations = [];
+
+		require(['vendor/async'], function(async) {
+			$('#content [widget-area]').each(function() {
+				widgetLocations.push($(this).attr('widget-area'));
+			});
+
+			async.each(widgetLocations, function(location, next) {
+				var area = $('#content [widget-area="' + location + '"]');
+
+				socket.emit('widgets.render', {template: tpl_url + '.tpl', url: url, location: location}, function(err, renderedWidgets) {
+					area.html(templates.prepare(area.html()).parse({
+						widgets: renderedWidgets
+					})).removeClass('hidden');
+
+					if (!renderedWidgets.length) {
+						$('body [no-widget-class]').each(function() {
+							var $this = $(this);
+							$this.removeClass();
+							$this.addClass($this.attr('no-widget-class'));
+						});
+					}
+
+					next(err);
+				});
+			}, function(err) {
+				if (callback) {
+					callback(err);
+				}
+			});
+		});
+	};
+
 
 	ajaxify.refresh = function() {
 		ajaxify.go(ajaxify.currentPage);

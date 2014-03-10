@@ -162,45 +162,47 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 	Category.onNewTopic = function(data) {
 		$(window).trigger('filter:categories.new_topic', data);
+		templates.preload_template('category', function() {
+			templates['category'].parse({topics:[]});
+			var html = templates.prepare(templates['category'].blocks['topics']).parse({
+				topics: [data]
+			});	
 
-		var html = templates.prepare(templates['category'].blocks['topics']).parse({
-			topics: [data]
-		});
+			translator.translate(html, function(translatedHTML) {
+				var topic = $(translatedHTML),
+					container = $('#topics-container'),
+					topics = $('#topics-container').children('.category-item'),
+					numTopics = topics.length;
 
-		translator.translate(html, function(translatedHTML) {
-			var topic = $(translatedHTML),
-				container = $('#topics-container'),
-				topics = $('#topics-container').children('.category-item'),
-				numTopics = topics.length;
+				$('#topics-container, .category-sidebar').removeClass('hidden');
+				$('#category-no-topics').remove();
 
-			$('#topics-container, .category-sidebar').removeClass('hidden');
-			$('#category-no-topics').remove();
-
-			if (numTopics > 0) {
-				for (var x = 0; x < numTopics; x++) {
-					if ($(topics[x]).find('.fa-thumb-tack').length) {
-						if(x === numTopics - 1) {
-							topic.insertAfter(topics[x]);
+				if (numTopics > 0) {
+					for (var x = 0; x < numTopics; x++) {
+						if ($(topics[x]).find('.fa-thumb-tack').length) {
+							if(x === numTopics - 1) {
+								topic.insertAfter(topics[x]);
+							}
+							continue;
 						}
-						continue;
+						topic.insertBefore(topics[x]);
+						break;
 					}
-					topic.insertBefore(topics[x]);
-					break;
+				} else {
+					container.append(topic);
 				}
-			} else {
-				container.append(topic);
-			}
 
-			topic.hide().fadeIn('slow');
+				topic.hide().fadeIn('slow');
 
-			socket.emit('categories.getPageCount', templates.get('category_id'), function(err, newPageCount) {
-				pagination.recreatePaginationLinks(newPageCount);
+				socket.emit('categories.getPageCount', templates.get('category_id'), function(err, newPageCount) {
+					pagination.recreatePaginationLinks(newPageCount);
+				});
+
+				topic.find('span.timeago').timeago();
+				app.createUserTooltips();
+
+				$(window).trigger('action:categories.new_topic.loaded');
 			});
-
-			topic.find('span.timeago').timeago();
-			app.createUserTooltips();
-
-			$(window).trigger('action:categories.new_topic.loaded');
 		});
 	};
 
@@ -239,36 +241,39 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 		findInsertionPoint();
 
-		var html = templates.prepare(templates['category'].blocks['topics']).parse({
-			topics: topics
-		});
+		templates.preload_template('category', function() {
+			templates['category'].parse({topics:[]});
+			var html = templates.prepare(templates['category'].blocks['topics']).parse({
+				topics: topics
+			});
 
-		translator.translate(html, function(translatedHTML) {
-			var container = $('#topics-container'),
-				html = $(translatedHTML);
+			translator.translate(html, function(translatedHTML) {
+				var container = $('#topics-container'),
+					html = $(translatedHTML);
 
-			$('#topics-container, .category-sidebar').removeClass('hidden');
-			$('#category-no-topics').remove();
+				$('#topics-container, .category-sidebar').removeClass('hidden');
+				$('#category-no-topics').remove();
 
-			if(config.usePagination) {
-				container.empty().append(html);
-			} else {
-				if(after) {
-					html.insertAfter(after);
-				} else if(before) {
-					html.insertBefore(before);
+				if(config.usePagination) {
+					container.empty().append(html);
 				} else {
-					container.append(html);
+					if(after) {
+						html.insertAfter(after);
+					} else if(before) {
+						html.insertBefore(before);
+					} else {
+						container.append(html);
+					}
 				}
-			}
 
-			html.find('span.timeago').timeago();
-			app.createUserTooltips();
-			app.makeNumbersHumanReadable(html.find('.human-readable-number'));
+				html.find('span.timeago').timeago();
+				app.createUserTooltips();
+				app.makeNumbersHumanReadable(html.find('.human-readable-number'));
 
-			if (typeof callback === 'function') {
-				callback(topics);
-			}
+				if (typeof callback === 'function') {
+					callback(topics);
+				}
+			});
 		});
 	};
 

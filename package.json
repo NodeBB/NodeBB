@@ -42,12 +42,14 @@
     "nodebb-plugin-mentions": "~0.4",
     "nodebb-plugin-markdown": "~0.4",
     "nodebb-widget-essentials": "~0.0",
-    "nodebb-theme-vanilla": "~0.0.14",
+    "nodebb-theme-vanilla": "~0.0.15",
     "nodebb-theme-cerulean": "~0.0.13",
-    "nodebb-theme-lavender": "~0.0.22",
+    "nodebb-theme-lavender": "~0.0.23",
     "less": "^1.6.3",
     "daemon": "~1.1.0",
-    "underscore": "^1.6.0"
+    "underscore": "^1.6.0",
+    "mkdirp": "~0.3.5",
+    "rimraf": "~2.2.6"
   },
   "optionalDependencies": {
     "redis": "0.8.3",

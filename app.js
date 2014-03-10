@@ -95,13 +95,13 @@ function loadConfig() {
 	nconf.set('themes_path', path.resolve(__dirname, nconf.get('themes_path')));
 }
 
-
 function start() {
 	loadConfig();
 
 	nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
 	nconf.set('upload_url', path.join(path.sep, nconf.get('relative_path'), 'uploads', path.sep));
 	nconf.set('base_dir', __dirname);
+	nconf.set('views_dir', path.join(__dirname, 'public/templates'));
 
 	winston.info('Time: ' + new Date());
 	winston.info('Initializing NodeBB v' + pkg.version);
@@ -118,7 +118,6 @@ function start() {
 
 	require('./src/database').init(function(err) {
 		meta.configs.init(function () {
-
 			var templates = require('./public/src/templates'),
 				translator = require('./public/src/translator'),
 				webserver = require('./src/webserver'),
@@ -131,25 +130,28 @@ function start() {
 
 			upgrade.check(function(schema_ok) {
 				if (schema_ok || nconf.get('check-schema') === false) {
-
 					sockets.init(webserver.server);
-
 					plugins.init();
-
 					translator.loadServer();
 
-					var customTemplates = meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : false;
-
-					utils.walk(path.join(__dirname, 'public/templates'), function (err, tplsToLoad) {
-						templates.init(tplsToLoad, customTemplates);
-					});
+					nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));
+					nconf.set('theme_templates_path', meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : nconf.get('base_templates_path'));
 
 					plugins.ready(function() {
-						templates.ready(webserver.init);
+						webserver.init();
 					});
 
 					// Temporarily removed until ncb000gt/node-cron/issues/81 and ncb000gt/node-cron/issues/83 are fixed
 					// notifications.init();
+
+					process.on('SIGTERM', shutdown);
+					process.on('SIGINT', shutdown);
+					process.on('SIGHUP', restart);
+					process.on('uncaughtException', function(err) {
+						winston.error('[app] Encountered Uncaught Exception: ' + err.message);
+						console.log(err.stack);
+						restart();
+					});
 				} else {
 					winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
 					winston.warn('    node app --upgrade');
@@ -236,6 +238,25 @@ function reset() {
 			});
 		});
 	});
+}
+
+function shutdown(code) {
+	winston.info('[app] Shutdown (SIGTERM/SIGINT) Initialised.');
+	require('./src/database').close();
+	winston.info('[app] Database connection closed.');
+
+	winston.info('[app] Shutdown complete.');
+	process.exit();
+}
+
+function restart() {
+	if (process.send) {
+		winston.info('[app] Restarting...');
+		process.send('nodebb:restart');
+	} else {
+		winston.error('[app] Could not restart server. Shutting down.');
+		shutdown();
+	}
 }
 
 function displayHelp() {

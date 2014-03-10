@@ -116,19 +116,22 @@ define(function() {
 	}
 
 	Recent.onTopicsLoaded = function(template, topics) {
-		var html = templates.prepare(templates[template].blocks['topics']).parse({
-			topics: topics
-		});
+		templates.preload_template(template, function() {
+			templates[template].parse({topics:[]});
+			var html = templates.prepare(templates[template].blocks['topics']).parse({
+				topics: topics
+			});
 
-		translator.translate(html, function(translatedHTML) {
+			translator.translate(html, function(translatedHTML) {
 
-			$('#category-no-topics').remove();
+				$('#category-no-topics').remove();
 
-			html = $(translatedHTML);
-			$('#topics-container').append(html);
-			$('span.timeago').timeago();
-			app.createUserTooltips();
-			app.makeNumbersHumanReadable(html.find('.human-readable-number'));
+				html = $(translatedHTML);
+				$('#topics-container').append(html);
+				$('span.timeago').timeago();
+				app.createUserTooltips();
+				app.makeNumbersHumanReadable(html.find('.human-readable-number'));
+			});
 		});
 	}
 

@@ -1,13 +1,10 @@
 (function (module) {
 	"use strict";
-	/*global RELATIVE_PATH*/
+	/*global RELATIVE_PATH, config*/
 
 	/*
 	 * TODO:
-	 *
-	 * 1. recursion needed when parsing language keys (ex. topics:modal.delete.title), right now json is all one level deep
-	 * 2. user side settings for preferred language
-	 *
+	 	* user side settings for preferred language
 	 */
 
 	var translator = {},
@@ -98,8 +95,9 @@
 	};
 
 	translator.translate = function (data, callback) {
-		var keys = data.match(/\[\[.*?\]\]/g),
-			loading = 0;
+		if (!data) {
+			return callback(data);	
+		}
 
 		function insertLanguage(text, key, value, variables) {
 			if (value) {
@@ -116,6 +114,9 @@
 
 			return text;
 		}
+
+		var keys = data.match(/\[\[.*?\]\]/g),
+			loading = 0;
 
 		for (var key in keys) {
 			if (keys.hasOwnProperty(key)) {

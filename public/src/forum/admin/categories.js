@@ -117,14 +117,17 @@ define(['uploader'], function(uploader) {
 					timeout: 2000
 				});
 
-				var html = templates.prepare(templates['admin/categories'].blocks['categories']).parse({
-					categories: [data]
-				});
-				html = $(html);
-				html.find('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
+				templates.preload_template('admin/categories', function() {
+					templates['admin/categories'].parse({categories:[]});
+					var html = templates.prepare(templates['admin/categories'].blocks['categories']).parse({
+						categories: [data]
+					});
+					html = $(html);
+					html.find('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
 
-				$('#entry-container').append(html);
-				$('#new-category-modal').modal('hide');
+					$('#entry-container').append(html);
+					$('#new-category-modal').modal('hide');
+				});
 			});
 		}
 

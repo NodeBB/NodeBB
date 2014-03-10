@@ -1,17 +1,16 @@
+"use strict";
 
 var user = require('./../user'),
 	categories = require('./../categories'),
 	topics = require('./../topics'),
 	posts = require('./../posts');
 
-var	DebugRoute = function(app) {
-
+module.exports = function(app, middleware, controllers) {
 	app.namespace('/debug', function() {
-
 		app.get('/uid/:uid', function (req, res) {
-
-			if (!req.params.uid)
+			if (!req.params.uid) {
 				return res.redirect('/404');
+			}
 
 			user.getUserData(req.params.uid, function (err, data) {
 				if (data) {
@@ -53,12 +52,5 @@ var	DebugRoute = function(app) {
 				}
 			});
 		});
-
-		app.get('/test', function(req, res) {
-			res.send(200);
-		});
-
 	});
 };
-
-module.exports = DebugRoute;

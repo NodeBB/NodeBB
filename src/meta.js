@@ -1,3 +1,5 @@
+"use strict";
+
 var fs = require('fs'),
 	path = require('path'),
 	async = require('async'),
@@ -105,8 +107,9 @@ var fs = require('fs'),
 
 						if (fs.existsSync(config)) {
 							fs.readFile(config, function (err, file) {
-								if (err) return next();
-								else {
+								if (err) {
+									return next();
+								} else {
 									var configObj = JSON.parse(file.toString());
 									next(err, configObj);
 								}
@@ -153,12 +156,12 @@ var fs = require('fs'),
 							db.setObject('config', themeData, next);
 						}
 					], callback);
-				break;
+					break;
 
 				case 'bootswatch':
 					themeData['theme:src'] = data.src;
 					db.setObject('config', themeData, callback);
-				break;
+					break;
 			}
 		}
 	};
@@ -213,7 +216,7 @@ var fs = require('fs'),
 					if (subpage) {
 						translator.translate('[[pages:user.' + subpage + ', ' + username + ']]', function(translated) {
 							callback(null, translated);
-						})
+						});
 					} else {
 						callback(null, username);
 					}
@@ -277,7 +280,9 @@ var fs = require('fs'),
 					});
 
 				// Remove scripts that could not be found (remove this line at v0.5.0)
-				Meta.js.scripts = jsPaths.filter(function(path) { return path !== null });
+				Meta.js.scripts = jsPaths.filter(function(path) {
+					return path !== null;
+				});
 
 				// Add plugin scripts
 				Meta.js.scripts = Meta.js.scripts.concat(plugins.clientScripts);
