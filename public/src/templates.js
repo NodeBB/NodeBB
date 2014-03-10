@@ -69,16 +69,11 @@
 	templates.getTemplateNameFromUrl = function(url) {
 		var parts = url.split('?')[0].split('/');
 
-		if (parts[0] === 'admin') {
-			return parts = parts[0] + '/' + parts[1]; 
-		} else {
-			for (var i = 0; i < parts.length; ++i) {
-				if (templates.is_available(parts[i])) {
-					return parts[i];
-				}
+		for (var i = 0; i < parts.length; ++i) {
+			if (templates.is_available(parts[i])) {
+				return parts[i];
 			}
 		}
-
 		
 		return '';
 	};

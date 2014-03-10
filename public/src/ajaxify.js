@@ -127,10 +127,6 @@ var ajaxify = {};
 		$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 	};
 
-	/*
-	* this is complete hax and needs to be looked at. (fixing this is out of scope for what I'm currently refactoring)
-	*   -- psychobunny
-	*/
 	ajaxify.getTemplateMapping = function(url) {
 		var tpl_url = templates.get_custom_map(url.split('?')[0]);
 
@@ -142,13 +138,17 @@ var ajaxify = {};
 			} else {
 				tpl_url = url.split('/');
 
-				if (tpl_url[0] === 'admin') {
-					tpl_url = tpl_url[0] + '/' + tpl_url[1]; 
-				} else {
+				while(tpl_url.length) {
+					if (templates.is_available(tpl_url)) {
+						break;
+					}
+					tpl_url.pop();
+				}
+
+				if (!tpl_url) {
 					tpl_url = tpl_url[0].split('?')[0];
 				}
 			}
-
 		} else if (templates[url]) {
 			tpl_url = url;
 		}
