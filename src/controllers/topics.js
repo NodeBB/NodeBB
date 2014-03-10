@@ -159,6 +159,15 @@ topicsController.get = function(req, res, next) {
 			topic_url += '?' + queryString;
 		}
 
+
+		if (uid) {
+			topics.markAsRead(tid, uid, function(err) {
+				topics.pushUnreadCount(uid);
+			});
+		}
+
+		topics.increaseViewCount(tid);
+
 		// Paginator for noscript
 		data.pages = [];
 		for(var x=1;x<=data.pageCount;x++) {
