@@ -48,7 +48,7 @@ topicsController.get = function(req, res, next) {
 							return next(new Error('Topic deleted'), null);
 						}
 					}
-
+					topicData.currentPage = page;
 					next(err, topicData);
 				});
 			});
@@ -139,7 +139,7 @@ topicsController.get = function(req, res, next) {
 					href: nconf.get('url') + '/category/' + topicData.category.slug
 				}
 			];
-			
+
 			next(null, topicData);
 		}
 	], function (err, data) {
@@ -176,7 +176,6 @@ topicsController.get = function(req, res, next) {
 				active: x === parseInt(page, 10)
 			});
 		}
-
 		res.render('topic', data);
 	});
 };
