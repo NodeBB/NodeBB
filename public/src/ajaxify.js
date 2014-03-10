@@ -48,7 +48,6 @@ var ajaxify = {};
 		if (url.indexOf(RELATIVE_PATH.slice(1)) !== -1) {
 			url = url.slice(RELATIVE_PATH.length);
 		}
-
 		var tpl_url = ajaxify.getTemplateMapping(url);
 
 		var hash = '';
@@ -139,14 +138,15 @@ var ajaxify = {};
 				tpl_url = url.split('/');
 
 				while(tpl_url.length) {
-					if (templates.is_available(tpl_url)) {
+					if (templates.is_available(tpl_url.join('/'))) {
+						tpl_url = tpl_url.join('/');
 						break;
 					}
 					tpl_url.pop();
 				}
-
-				if (!tpl_url) {
-					tpl_url = tpl_url[0].split('?')[0];
+				
+				if (!tpl_url.length) {
+					tpl_url = url.split('/')[0].split('?')[0];
 				}
 			}
 		} else if (templates[url]) {
