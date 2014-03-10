@@ -168,7 +168,7 @@ var db = require('./database'),
 				return callback(err);
 			}
 
-			if (!cids || (cids && cids.length === 0)) {
+			if (!Array.isArray(cids) || !cids.length) {
 				return callback(null, {categories : []});
 			}
 
@@ -213,9 +213,7 @@ var db = require('./database'),
 			sets.push('cid:' + cids[i] + ':read_by_uid');
 		}
 
-		db.isMemberOfSets(sets, uid, function(err, hasRead) {
-			callback(hasRead);
-		});
+		db.isMemberOfSets(sets, uid, callback);
 	};
 
 	Categories.hasReadCategory = function(cid, uid, callback) {
@@ -279,18 +277,34 @@ var db = require('./database'),
 	};
 
 	Categories.getCategoryData = function(cid, callback) {
-		db.exists('category:' + cid, function(err, exists) {
-			if (exists) {
-				db.getObject('category:' + cid, function(err, data) {
-					data.background = data.image ? 'url(' + data.image + ')' : data.bgColor;
-					data.disabled = data.disabled ? parseInt(data.disabled, 10) !== 0 : false;
-					callback(err, data);
-				});
-			} else {
-				callback(new Error('No category found!'));
-			}
+		Categories.getCategoriesData([cid], function(err, categories) {
+			callback(err, categories ? categories[0] : null);
 		});
 	};
+
+	Categories.getCategoriesData = function(cids, callback) {
+		var keys = cids.map(function(cid) {
+			return 'category:'+cid;
+		});
+
+		db.getObjects(keys, function(err, categories) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (!Array.isArray(categories)) {
+				return callback(null, []);
+			}
+
+			for (var i=0; i<categories.length; ++i) {
+				if (categories[i]) {
+					categories[i].background = categories[i].image ? 'url(' + categories[i].image + ')' : categories[i].bgColor;
+					categories[i].disabled = categories[i].disabled ? parseInt(categories[i].disabled, 10) !== 0 : false;
+				}
+			}
+			callback(null, categories);
+		});
+	}
 
 	Categories.getCategoryField = function(cid, field, callback) {
 		db.getObjectField('category:' + cid, field, callback);
@@ -309,38 +323,31 @@ var db = require('./database'),
 	};
 
 	Categories.getCategories = function(cids, uid, callback) {
-		if (!cids || !Array.isArray(cids) || cids.length === 0) {
+
+		if (!Array.isArray(cids) || cids.length === 0) {
 			return callback(new Error('invalid-cids'));
 		}
 
-		function getCategory(cid, callback) {
-			Categories.getCategoryData(cid, function(err, categoryData) {
-				if (err) {
-					winston.warn('Attempted to retrieve cid ' + cid + ', but nothing was returned!');
-					return callback(err);
-				}
-
-				Categories.hasReadCategory(cid, uid, function(hasRead) {
-
-					categoryData['unread-class'] = (parseInt(categoryData.topic_count, 10) === 0 || (hasRead && parseInt(uid, 10) !== 0)) ? '' : 'unread';
-
-					callback(null, categoryData);
-				});
-			});
-		}
-
-		async.map(cids, getCategory, function(err, categories) {
+		async.parallel({
+			categories: function(next) {
+				Categories.getCategoriesData(cids, next);
+			},
+			hasRead: function(next) {
+				Categories.hasReadCategories(cids, uid, next);
+			}
+		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
 
-			categories = categories.filter(function(category) {
-				return !!category;
-			});
+			var categories = results.categories;
+			var hasRead = results.hasRead;
+			uid = parseInt(uid, 10);
+			for(var i=0; i<results.categories.length; ++i) {
+				categories[i]['unread-class'] = (parseInt(categories[i].topic_count, 10) === 0 || (hasRead[i] && uid !== 0)) ? '' : 'unread';
+			}
 
-			callback(null, {
-				'categories': categories
-			});
+			callback(null, {categories: categories});
 		});
 	};
 
