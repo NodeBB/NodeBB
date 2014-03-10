@@ -37,7 +37,7 @@
 					<div>
 						<small>
 							<span class="pull-right">
-								<a href="../../user/{topics.userslug}"><img title="{topics.username}" class="img-rounded user-img" src="{topics.picture}"></a>
+								<a href="../../user/{topics.user.userslug}"><img title="{topics.user.username}" class="img-rounded user-img" src="{topics.user.picture}"></a>
 								<a href="../../topic/{topics.slug}"> [[global:posted]]</a>
 								[[global:in]]
 								<a href="../../category/{topics.category.slug}"><i class="fa {topics.category.icon}"></i> {topics.category.name}</a>
