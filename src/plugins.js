@@ -315,12 +315,17 @@ var fs = require('fs'),
 				case 'filter':
 					async.reduce(hookList, args, function(value, hookObj, next) {
 						if (hookObj.method) {
-							if (hookObj.callbacked) {
-								hookObj.method.apply(Plugins, value.concat(function() {
+							if (!hookObj.hasOwnProperty('callbacked') || hookObj.callbacked === true) {
+								var	value = hookObj.method.apply(Plugins, value.concat(function() {
 									next(arguments[0], Array.prototype.slice.call(arguments, 1));
 								}));
+
+								if (value !== undefined) {
+									winston.warn('[plugins/' + hookObj.id + '] "callbacked" deprecated as of 0.4x. Use asynchronous method instead for hook: ' + hook);
+									next(null, [value]);
+								}
 							} else {
-								winston.warn('[plugins] "callbacked" deprecated as of 0.4x. Use asynchronous method instead for hook: ' + hook);
+								winston.warn('[plugins/' + hookObj.id + '] "callbacked" deprecated as of 0.4x. Use asynchronous method instead for hook: ' + hook);
 								value = hookObj.method.apply(Plugins, value);
 								next(null, [value]);
 							}
