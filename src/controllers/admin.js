@@ -28,97 +28,61 @@ var adminController = {
 };
 
 adminController.home = function(req, res, next) {
-	var data = {
+	res.render('admin/index', {
 		version: pkg.version,
 		emailerInstalled: plugins.hasListeners('action:email.send'),
 		searchInstalled: plugins.hasListeners('filter:search.query')
-	};
-
-	if (res.locals.isAPI) {
-		res.json(data);
-	} else {
-		res.render('admin/index', data);
-	}
+	});
 };
 
 adminController.users.search = function(req, res, next) {
-	var data = {
+	res.render('admin/users', {
 		search_display: 'block',
 		loadmore_display: 'none',
 		users: []
-	};
-
-	if (res.locals.isAPI) {
-		res.json(data);
-	} else {
-		res.render('admin/users', data);
-	}
+	});
 };
 
 adminController.users.latest = function(req, res, next) {
 	user.getUsers('users:joindate', 0, 49, function(err, users) {
-		var data = {
+		res.render('admin/users', {
 			search_display: 'none',
 			loadmore_display: 'block',
 			users: users,
 			yourid: req.user.uid
-		};
-
-		if (res.locals.isAPI) {
-			res.json(data);
-		} else {
-			res.render('admin/users', data);
-		}
+		});
 	});
 };
 
 adminController.users.sortByPosts = function(req, res, next) {
 	user.getUsers('users:postcount', 0, 49, function(err, users) {
-		var data = {
+		res.render('admin/users', {
 			search_display: 'none',
 			loadmore_display: 'block',
 			users: users,
 			yourid: req.user.uid
-		};
-
-		if (res.locals.isAPI) {
-			res.json(data);
-		} else {
-			res.render('admin/users', data);
-		}
+		});
 	});
 };
 
 adminController.users.sortByReputation = function(req, res, next) {
 	user.getUsers('users:reputation', 0, 49, function(err, users) {
-		var data = {
+		res.render('admin/users', {
 			search_display: 'none',
 			loadmore_display: 'block',
 			users: users,
 			yourid: req.user.uid
-		};
-
-		if (res.locals.isAPI) {
-			res.json(data);
-		} else {
-			res.render('admin/users', data);
-		}
+		});
 	});
 };
 
 adminController.users.sortByJoinDate = function(req, res, next) {
 	user.getUsers('users:joindate', 0, 49, function(err, users) {
-		var data = {
+		res.render('admin/users', {
 			search_display: 'none',
 			users: users,
 			yourid: req.user.uid
-		};
-
-		if (res.locals.isAPI) {
-			res.json(data);
-		} else {
-			res.render('admin/users', data);
-		}
+		});
 	});
 };
 
@@ -127,11 +91,8 @@ adminController.categories.active = function(req, res, next) {
 		data.categories = data.categories.filter(function (category) {
 			return !category.disabled;
 		});
-		if (res.locals.isAPI) {
-			res.json(data);
-		} else {
-			res.render('admin/categories', data);
-		}
+
+		res.render('admin/categories', data);
 	});
 };
 
@@ -141,37 +102,23 @@ adminController.categories.disabled = function(req, res, next) {
 			return category.disabled;
 		});
 
-		if (res.locals.isAPI) {
-			res.json(data);
-		} else {
-			res.render('admin/categories', data);
-		}
+		res.render('admin/categories', data);
 	});
 };
 
 adminController.database.get = function(req, res, next) {
 	db.info(function (err, data) {
-		if (res.locals.isAPI) {
-			res.json(data);
-		} else {
-			res.render('admin/database', data);
-		}
+		res.render('admin/database', data);
 	});
 };
 
 // todo: deprecate this seemingly useless view
 adminController.topics.get = function(req, res, next) {
 	topics.getAllTopics(0, 19, function (err, topics) {
-		var data = {
+		res.render('admin/topics', {
 			topics: topics,
 			notopics: topics.length === 0
-		};
-
-		if (res.locals.isAPI) {
-			res.json(data);
-		} else {
-			res.render('admin/topics', data);
-		}
+		});
 	});
 };
 
@@ -182,12 +129,9 @@ adminController.events.get = function(req, res, next) {
 		}
 		
 		data = data.toString().split('\n').reverse().join('\n');
-
-		if (res.locals.isAPI) {
-			res.json({eventdata: data});
-		} else {
-			res.render('admin/events', {eventdata: data});
-		}
+		res.render('admin/events', {
+			eventdata: data
+		});
 	});
 };
 
@@ -197,38 +141,26 @@ adminController.plugins.get = function(req, res, next) {
 			plugins = [];
 		}
 
-		if (res.locals.isAPI) {
-			res.json({plugins: plugins});
-		} else {
-			res.render('admin/plugins', {plugins: plugins});
-		}
+		res.render('admin/plugins', {
+			plugins: plugins
+		});
 	});
 };
 
 adminController.languages.get = function(req, res, next) {
 	languages.list(function(err, languages) {
-		if (res.locals.isAPI) {
-			res.json({languages: languages});
-		} else {
-			res.render('admin/languages', {languages: languages});
-		}
+		res.render('admin/languages', {
+			languages: languages
+		});
 	});
 };
 
 adminController.settings.get = function(req, res, next) {
-	if (res.locals.isAPI) {
-		res.json({});
-	} else {
-		res.render('admin/settings', {});
-	}
+	res.render('admin/settings', {});
 };
 
 adminController.logger.get = function(req, res, next) {
-	if (res.locals.isAPI) {
-		res.json({});
-	} else {
-		res.render('admin/logger', {});
-	}
+	res.render('admin/logger', {});
 };
 
 adminController.themes.get = function(req, res, next) {
@@ -252,16 +184,10 @@ adminController.themes.get = function(req, res, next) {
 				}
 			}
 
-			var data = {
+			res.render('admin/themes', {
 				areas: widgetData.areas,
 				widgets: widgetData.widgets
-			};
-
-			if (res.locals.isAPI) {
-				res.json(data);
-			} else {
-				res.render('admin/themes', data);
-			}
+			});
 		});
 	});
 };
@@ -279,17 +205,12 @@ adminController.groups.get = function(req, res, next) {
 			}, next);
 		}
 	], function(err, groupData) {
-		var	groups = groupData[0].concat(groupData[1]),
-			data = {
-				groups: groups,
-				yourid: req.user.uid
-			};
+		var	groups = groupData[0].concat(groupData[1]);
 
-		if (res.locals.isAPI) {
-			res.json(data);
-		} else {
-			res.render('admin/groups', data);
-		}
+		res.render('admin/groups', {
+			groups: groups,
+			yourid: req.user.uid
+		});
 	});
 };
 

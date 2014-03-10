@@ -168,11 +168,7 @@ topicsController.get = function(req, res, next) {
 			});
 		}
 
-		if (res.locals.isAPI) {
-			res.json(data);
-		} else {
-			res.render('topic', data);
-		}
+		res.render('topic', data);
 	});
 };
 

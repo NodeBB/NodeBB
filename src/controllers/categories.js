@@ -16,11 +16,7 @@ categoriesController.recent = function(req, res, next) {
 			return next(err);
 		}
 
-		if (res.locals.isAPI) {
-			res.json(data);
-		} else {
-			res.render('recent', data);
-		}
+		res.render('recent', data);
 	});
 };
 
@@ -36,11 +32,7 @@ categoriesController.popular = function(req, res, next) {
 			return next(err);
 		}
 
-		if (res.locals.isAPI) {
-			res.json(data);
-		} else {
-			res.render('popular', data);
-		}
+		res.render('popular', data);
 	});
 };
 
@@ -52,11 +44,7 @@ categoriesController.unread = function(req, res, next) {
 			return next(err);
 		}
 
-		if (res.locals.isAPI) {
-			res.json(data);
-		} else {
-			res.render('unread', data);
-		}
+		res.render('unread', data);
 	});
 };
 
@@ -68,11 +56,7 @@ categoriesController.unreadTotal = function(req, res, next) {
 			return next(err);
 		}
 
-		if (res.locals.isAPI) {
-			res.json(data);
-		} else {
-			res.render('unread', data);
-		}
+		res.render('unread', data);
 	});
 };
 
@@ -182,11 +166,7 @@ categoriesController.get = function(req, res, next) {
 			});
 		}
 
-		if (res.locals.isAPI) {
-			res.json(data);
-		} else {
-			res.render('category', data);
-		}
+		res.render('category', data);
 	});
 };
 

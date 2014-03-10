@@ -18,27 +18,15 @@ var fs = require('fs'),
 	file = require('./../file');
 
 function userNotFound(res) {
-	if (res.locals.isAPI) {
-		return res.json(404, {
-			error: 'User not found!'
-		});
-	} else {
-		return res.render('404', {
-			error: 'User not found!'
-		});
-	} 
+	return res.render('404', {
+		error: 'User not found!'
+	});
 }
 
 function userNotAllowed(res) {
-	if (res.locals.isAPI) {
-		return res.json(403, {
-			error: 'Not allowed.'
-		});
-	} else {
-		return res.render('403', {
-			error: 'Not allowed.'
-		});
-	} 
+	return res.render('403', {
+		error: 'Not allowed.'
+	});
 }
 
 function getUserDataByUserSlug(userslug, callerUID, callback) {
@@ -165,11 +153,7 @@ accountsController.getAccount = function(req, res, next) {
 				postTools.parse(userData.signature, function (err, signature) {
 					userData.signature = signature;
 
-					if (res.locals.isAPI) {
-						res.json(userData);
-					} else {
-						res.render('account', userData);
-					}
+					res.render('account', userData);
 				});
 			});
 		});
@@ -192,11 +176,7 @@ accountsController.getFollowing = function(req, res, next) {
 				userData.following = followingData;
 				userData.followingCount = followingData.length;
 				
-				if (res.locals.isAPI) {
-					res.json(userData);
-				} else {
-					res.render('following', userData);
-				}
+				res.render('following', userData);
 			});
 
 		} else {
@@ -221,11 +201,7 @@ accountsController.getFollowers = function(req, res, next) {
 				userData.followers = followersData;
 				userData.followersCount = followersData.length;
 				
-				if (res.locals.isAPI) {
-					res.json(userData);
-				} else {
-					res.render('followers', userData);
-				}
+				res.render('followers', userData);
 			});
 		} else {
 			return userNotFound();
@@ -264,11 +240,7 @@ accountsController.getFavourites = function(req, res, next) {
 				userData.posts = favourites.posts;
 				userData.nextStart = favourites.nextStart;
 
-				if (res.locals.isAPI) {
-					res.json(userData);
-				} else {
-					res.render('favourites', userData);
-				}
+				res.render('favourites', userData);
 			});
 		});
 	});
@@ -301,11 +273,7 @@ accountsController.getPosts = function(req, res, next) {
 				userData.posts = userPosts.posts;
 				userData.nextStart = userPosts.nextStart;
 
-				if (res.locals.isAPI) {
-					res.json(userData);
-				} else {
-					res.render('accountposts', userData);
-				}
+				res.render('accountposts', userData);
 			});
 		});
 	});
@@ -319,11 +287,7 @@ accountsController.accountEdit = function(req, res, next) {
 			return next(err);
 		}
 		
-		if (res.locals.isAPI) {
-			res.json(userData);
-		} else {
-			res.render('accountedit', userData);
-		}
+		res.render('accountedit', userData);
 	});
 };
 
@@ -360,11 +324,7 @@ accountsController.accountSettings = function(req, res, next) {
 				userData.theirid = uid;
 				userData.settings = settings;
 				
-				if (res.locals.isAPI) {
-					res.json(userData);
-				} else {
-					res.render('accountsettings', userData);
-				}
+				res.render('accountsettings', userData);
 			});
 		});
 
@@ -475,15 +435,9 @@ accountsController.uploadPicture = function (req, res, next) {
 
 accountsController.getNotifications = function(req, res, next) {
 	user.notifications.getAll(req.user.uid, null, null, function(err, notifications) {
-		if (res.locals.isAPI) {
-			res.json({
-				notifications: notifications
-			});	
-		} else {
-			res.render('notifications', {
-				notifications: notifications
-			});
-		}
+		res.render('notifications', {
+			notifications: notifications
+		});
 	});
 };
 

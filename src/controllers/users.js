@@ -53,11 +53,7 @@ usersController.getOnlineUsers = function(req, res, next) {
 					show_anon: anonymousUserCount?'':'hide'
 				};
 
-				if (res.locals.isAPI) {
-					res.json(userData);
-				} else {
-					res.render('users', userData);
-				}
+				res.render('users', userData);
 			});
 		});
 	});
@@ -72,11 +68,7 @@ usersController.getUsersSortedByPosts = function(req, res, next) {
 			show_anon: 'hide'
 		};
 
-		if (res.locals.isAPI) {
-			res.json(userData);
-		} else {
-			res.render('users', userData);
-		}
+		res.render('users', userData);
 	});
 };
 
@@ -89,11 +81,7 @@ usersController.getUsersSortedByReputation = function(req, res, next) {
 			show_anon: 'hide'
 		};
 
-		if (res.locals.isAPI) {
-			res.json(userData);
-		} else {
-			res.render('users', userData);
-		}
+		res.render('users', userData);
 	});
 };
 
@@ -106,11 +94,7 @@ usersController.getUsersSortedByJoinDate = function(req, res, next) {
 			show_anon: 'hide'
 		};
 
-		if (res.locals.isAPI) {
-			res.json(userData);
-		} else {
-			res.render('users', userData);
-		}
+		res.render('users', userData);
 	});
 };
 
@@ -122,11 +106,7 @@ usersController.getUsersForSearch = function(req, res, next) {
 		show_anon: 'hide'
 	};
 
-	if (res.locals.isAPI) {
-		res.json(data);
-	} else {
-		res.render('users', data);
-	}
+	res.render('users', data);
 };
 
 

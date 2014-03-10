@@ -85,32 +85,20 @@ Controllers.home = function(req, res, next) {
 };
 
 Controllers.search = function(req, res, next) {
-	var data = {
+	res.render('search', {
 		show_no_topics: 'hide',
 		show_no_posts: 'hide',
 		show_results: 'hide',
 		search_query: '',
 		posts: [],
 		topics: []
-	};
-
-	if (res.locals.isAPI) {
-		res.json(data);
-	} else {
-		res.render('search', data);
-	}
+	});
 };
 
 Controllers.reset = function(req, res, next) {
-	var data = {
+	res.render('reset', {
 		reset_code: req.params.code ? req.params.code : null
-	};
-
-	if (res.locals.isAPI) {
-		res.json(data);
-	} else {
-		res.render('reset', data);
-	}
+	});
 };
 
 Controllers.login = function(req, res, next) {
@@ -135,11 +123,7 @@ Controllers.login = function(req, res, next) {
 	data.token = res.locals.csrf_token;
 	data.showResetLink = emailersPresent;
 
-	if (res.locals.isAPI) {
-		res.json(data);
-	} else {
-		res.render('login', data);
-	}
+	res.render('login', data);
 };
 
 Controllers.register = function(req, res, next) {
@@ -167,11 +151,7 @@ Controllers.register = function(req, res, next) {
 	data.minimumPasswordLength = meta.config.minimumPasswordLength;
 	data.termsOfUse = meta.config.termsOfUse;
 	
-	if (res.locals.isAPI) {
-		res.json(data);
-	} else {
-		res.render('register', data);
-	}
+	res.render('register', data);
 };
 
 
@@ -191,11 +171,7 @@ Controllers.confirmEmail = function(req, res, next) {
 			};
 		}
 
-		if (res.locals.isAPI) {
-			res.json(data);
-		} else {
-			res.render('confirm', data);
-		}
+		res.render('confirm', data);
 	});
 };
 
@@ -228,11 +204,7 @@ Controllers.outgoing = function(req, res, next) {
 		};
 
 	if (url) {
-		if (res.locals.isAPI) {
-			res.json(data);
-		} else {
-			res.render('outgoing', data);
-		}
+		res.render('outgoing', data);
 	} else {
 		res.status(404);
 		res.redirect(nconf.get('relative_path') + '/404');
