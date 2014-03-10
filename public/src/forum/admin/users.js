@@ -190,27 +190,30 @@ define(function() {
 							return app.alertError(err.message);
 						}
 
-						var html = templates.prepare(templates['admin/users'].blocks['users']).parse({
-							users: data.users
-						}),
-							userListEl = document.querySelector('.users');
+						templates.preload_template('admin/users', function() {
+							templates['admin/users'].parse({users:[]});
+							var html = templates.prepare(templates['admin/users'].blocks['users']).parse({
+								users: data.users
+							}),
+								userListEl = document.querySelector('.users');
 
-						userListEl.innerHTML = html;
-						$('.fa-spinner').addClass('none');
+							userListEl.innerHTML = html;
+							$('.fa-spinner').addClass('none');
 
-						if (data && data.users.length === 0) {
-							$('#user-notfound-notify').html('User not found!')
-								.show()
-								.addClass('label-danger')
-								.removeClass('label-success');
-						} else {
-							$('#user-notfound-notify').html(data.users.length + ' user' + (data.users.length > 1 ? 's' : '') + ' found! Search took ' + data.timing + ' ms.')
-								.show()
-								.addClass('label-success')
-								.removeClass('label-danger');
-						}
+							if (data && data.users.length === 0) {
+								$('#user-notfound-notify').html('User not found!')
+									.show()
+									.addClass('label-danger')
+									.removeClass('label-success');
+							} else {
+								$('#user-notfound-notify').html(data.users.length + ' user' + (data.users.length > 1 ? 's' : '') + ' found! Search took ' + data.timing + ' ms.')
+									.show()
+									.addClass('label-success')
+									.removeClass('label-danger');
+							}
 
-						updateButtons();
+							updateButtons();
+						});
 					});
 				}, 250);
 			});
@@ -220,14 +223,17 @@ define(function() {
 			handleUserCreate();
 
 			function onUsersLoaded(users) {
-				var html = templates.prepare(templates['admin/users'].blocks['users']).parse({
-					users: users
-				});
-				html = $(html);
-				$('#users-container').append(html);
+				templates.preload_template('admin/users', function() {
+					templates['admin/users'].parse({users:[]});
+					var html = templates.prepare(templates['admin/users'].blocks['users']).parse({
+						users: users
+					});
+					html = $(html);
+					$('#users-container').append(html);
 
-				updateUserBanButtons(html.find('.ban-btn'));
-				updateUserAdminButtons(html.find('.admin-btn'));
+					updateUserBanButtons(html.find('.ban-btn'));
+					updateUserAdminButtons(html.find('.admin-btn'));
+				});
 			}
 
 			function loadMoreUsers() {

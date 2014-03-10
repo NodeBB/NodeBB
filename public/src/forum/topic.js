@@ -1233,8 +1233,11 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 	}
 
 	function parseAndTranslatePosts(data, callback) {
-		var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
-		translator.translate(html, callback);
+		templates.preload_template('topic', function() {
+			templates['topic'].parse({posts: []});
+			var html = templates.prepare(templates['topic'].blocks['posts']).parse(data);
+			translator.translate(html, callback);
+		});
 	}
 
 

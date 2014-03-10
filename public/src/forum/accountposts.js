@@ -34,20 +34,23 @@ define(['forum/accountheader'], function(header) {
 	}
 
 	function onTopicsLoaded(posts) {
-		var html = templates.prepare(templates['accountposts'].blocks['posts']).parse({
-			posts: posts
-		});
+		templates.preload_template('accountposts', function() {
+			templates['accountposts'].parse(posts: []);
+			var html = templates.prepare(templates['accountposts'].blocks['posts']).parse({
+				posts: posts
+			});
 
-		translator.translate(html, function(translatedHTML) {
+			translator.translate(html, function(translatedHTML) {
 
-			$('#category-no-topics').remove();
+				$('#category-no-topics').remove();
 
-			html = $(translatedHTML);
-			html.find('img').addClass('img-responsive');
-			$('.user-favourite-posts').append(html);
-			$('span.timeago').timeago();
-			app.createUserTooltips();
-			app.makeNumbersHumanReadable(html.find('.human-readable-number'));
+				html = $(translatedHTML);
+				html.find('img').addClass('img-responsive');
+				$('.user-favourite-posts').append(html);
+				$('span.timeago').timeago();
+				app.createUserTooltips();
+				app.makeNumbersHumanReadable(html.find('.human-readable-number'));
+			});
 		});
 	}
 

@@ -62,20 +62,23 @@ define(function() {
 					var btnEl = $('#topics_loadmore');
 
 					if (topics.length > 0) {
-						var html = templates.prepare(templates['admin/topics'].blocks['topics']).parse({
-								topics: topics
-							}),
-							topicsListEl = $('.topics');
+						templates.preload_template('admin/topics', function() {
+							templates['admin/topics'].parse({topics:[]});
+							var html = templates.prepare(templates['admin/topics'].blocks['topics']).parse({
+									topics: topics
+								}),
+								topicsListEl = $('.topics');
 
-						// Fix relative paths
-						html = html.replace(/\{relative_path\}/g, RELATIVE_PATH);
+							// Fix relative paths
+							html = html.replace(/\{relative_path\}/g, RELATIVE_PATH);
 
-						topicsListEl.html(topicsListEl.html() + html);
+							topicsListEl.html(topicsListEl.html() + html);
 
-						Topics.resolveButtonStates();
+							Topics.resolveButtonStates();
 
-						btnEl.html('Load More Topics');
-						$('span.timeago').timeago();
+							btnEl.html('Load More Topics');
+							$('span.timeago').timeago();
+						});
 					} else {
 						// Exhausted all topics
 						btnEl.addClass('disabled');
