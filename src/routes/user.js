@@ -1,3 +1,5 @@
+'use strict';
+
 var fs = require('fs'),
 	path = require('path'),
 	winston = require('winston'),
@@ -79,7 +81,7 @@ var fs = require('fs'),
 								next();
 							});
 						} else if (req.path.indexOf('/settings') !== -1 || req.path.indexOf('/favourites') !== -1) {
-							res.redirect('/403')
+							res.redirect('/403');
 						} else {
 							next();
 						}
@@ -94,7 +96,7 @@ var fs = require('fs'),
 						if(err) {
 							return next(err);
 						}
-						res.send(header + app.create_route('user/' + req.params.userslug + path, templateName) + templates['footer']);
+						res.send(header + app.create_route('user/' + req.params.userslug + path, templateName) + templates.footer);
 					});
 				});
 			}
@@ -524,7 +526,7 @@ var fs = require('fs'),
 				}
 				var onlineUsers = [];
 
-				uid = 0;
+				var uid = 0;
 				if (req.user) {
 					uid = req.user.uid;
 				}
