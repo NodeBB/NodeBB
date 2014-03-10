@@ -320,7 +320,7 @@ var fs = require('fs'),
 									next(arguments[0], Array.prototype.slice.call(arguments, 1));
 								}));
 
-								if (value !== undefined) {
+								if (value !== undefined && value !== callback) {
 									winston.warn('[plugins/' + hookObj.id + '] "callbacked" deprecated as of 0.4x. Use asynchronous method instead for hook: ' + hook);
 									next(null, [value]);
 								}
