@@ -16,60 +16,6 @@ var path = require('path'),
 
 
 
-function searchTerm(req, res, next) {
-	if (!plugins.hasListeners('filter:search.query')) {
-		return res.redirect('/404');
-	}
-
-	function searchPosts(callback) {
-		plugins.fireHook('filter:search.query', {
-			index: 'post',
-			query: req.params.term
-		}, function(err, pids) {
-			if (err) {
-				return callback(err);
-			}
-
-			posts.getPostSummaryByPids(pids, false, callback);
-		});
-	}
-
-	function searchTopics(callback) {
-		plugins.fireHook('filter:search.query', {
-			index: 'topic',
-			query: req.params.term
-		}, function(err, tids) {
-			if (err) {
-				return callback(err);
-			}
-
-			topics.getTopicsByTids(tids, 0, callback);
-		});
-	}
-
-	async.parallel([searchPosts, searchTopics], function (err, results) {
-		if (err) {
-			return next(err);
-		}
-
-		if(!results) {
-			results = [];
-			results[0] = results[1] = [];
-		}
-
-		return res.json({
-			show_no_topics: results[1].length ? 'hide' : '',
-			show_no_posts: results[0].length ? 'hide' : '',
-			show_results: '',
-			search_query: req.params.term,
-			posts: results[0],
-			topics: results[1],
-			post_matches : results[0].length,
-			topic_matches : results[1].length
-		});
-	});
-}
-
 function upload(req, res, filesIterator, next) {
 	if(!req.user) {
 		return res.json(403, {message:'not allowed'});
@@ -162,7 +108,6 @@ module.exports =  function(app, middleware, controllers) {
 
 		app.get('/user/uid/:uid', middleware.checkGlobalPrivacySettings, controllers.accounts.getUserByUID);
 		app.get('/get_templates_listing', getTemplatesListing);
-		app.get('/search/:term', middleware.guestSearchingAllowed, searchTerm); // todo: look at this, may not belong here.
 		app.get('/categories/:cid/moderators', getModerators);
 		app.get('/recent/posts/:term?', getRecentPosts);
 

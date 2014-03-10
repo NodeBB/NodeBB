@@ -50,6 +50,8 @@ middleware.guestSearchingAllowed = function(req, res, next) {
 	if (!req.user && meta.config.allowGuestSearching !== '1') {
 		return res.redirect('/403');
 	}
+
+	next();
 };
 
 middleware.checkGlobalPrivacySettings = function(req, res, next) {

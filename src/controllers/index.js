@@ -13,6 +13,8 @@ var topicsController = require('./topics'),
 	auth = require('./../routes/authentication'),
 	meta = require('./../meta'),
 	user = require('./../user'),
+	posts = require('./../posts'),
+	topics = require('./../topics'),
 	plugins = require('./../plugins'),
 	categories = require('./../categories'),
 	categoryTools = require('./../categoryTools');
@@ -85,13 +87,67 @@ Controllers.home = function(req, res, next) {
 };
 
 Controllers.search = function(req, res, next) {
-	res.render('search', {
-		show_no_topics: 'hide',
-		show_no_posts: 'hide',
-		show_results: 'hide',
-		search_query: '',
-		posts: [],
-		topics: []
+	if (!req.params.term) {
+		return res.render('search', {
+			show_no_topics: 'hide',
+			show_no_posts: 'hide',
+			show_results: 'hide',
+			search_query: '',
+			posts: [],
+			topics: []
+		});
+	}
+
+	if (!plugins.hasListeners('filter:search.query')) {
+		return res.redirect('/404');
+	}
+
+	function searchPosts(callback) {
+		plugins.fireHook('filter:search.query', {
+			index: 'post',
+			query: req.params.term
+		}, function(err, pids) {
+			if (err) {
+				return callback(err);
+			}
+
+			posts.getPostSummaryByPids(pids, false, callback);
+		});
+	}
+
+	function searchTopics(callback) {
+		plugins.fireHook('filter:search.query', {
+			index: 'topic',
+			query: req.params.term
+		}, function(err, tids) {
+			if (err) {
+				return callback(err);
+			}
+
+			topics.getTopicsByTids(tids, 0, callback);
+		});
+	}
+
+	async.parallel([searchPosts, searchTopics], function (err, results) {
+		if (err) {
+			return next(err);
+		}
+
+		if(!results) {
+			results = [];
+			results[0] = results[1] = [];
+		}
+
+		return res.render('search', {
+			show_no_topics: results[1].length ? 'hide' : '',
+			show_no_posts: results[0].length ? 'hide' : '',
+			show_results: '',
+			search_query: req.params.term,
+			posts: results[0],
+			topics: results[1],
+			post_matches : results[0].length,
+			topic_matches : results[1].length
+		});
 	});
 };
 

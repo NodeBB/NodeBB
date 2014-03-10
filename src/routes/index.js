@@ -40,7 +40,8 @@ module.exports = function(app, middleware) {
 		app.get('/api/outgoing', controllers.outgoing);
 
 		app.get('/search/:term?', middleware.buildHeader, middleware.guestSearchingAllowed, controllers.search);
-		app.get('/api/search/:term?', middleware.guestSearchingAllowed, controllers.search);
+		app.get('/api/search/:term', middleware.prepareAPI, middleware.guestSearchingAllowed, controllers.search); // todo: look at this, may not belong here.
+		//app.get('/api/search/:term?', middleware.guestSearchingAllowed, controllers.search);
 
 		app.get('/reset/:code?', middleware.buildHeader, controllers.reset);
 		app.get('/api/reset/:code?', controllers.reset);
