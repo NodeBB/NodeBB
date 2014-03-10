@@ -1207,6 +1207,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 		findInsertionPoint();
 
+		data.title = templates.get('topic_name');
+		data.viewcount = templates.get('viewcount');
+
 		parseAndTranslatePosts(data, function(translatedHTML) {
 			var translated = $(translatedHTML);
 
