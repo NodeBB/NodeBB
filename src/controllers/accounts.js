@@ -165,53 +165,39 @@ accountsController.getAccount = function(req, res, next) {
 };
 
 accountsController.getFollowing = function(req, res, next) {
-	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
-
-	getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
-		if(err) {
-			return next(err);
-		}
-
-		if (userData) {
-			user.getFollowing(userData.uid, function (err, followingData) {
-				if(err) {
-					return next(err);
-				}
-				userData.following = followingData;
-				userData.followingCount = followingData.length;
-
-				res.render('following', userData);
-			});
-
-		} else {
-			return userNotFound();
-		}
-	});
+	getFollow('following', req, res, next);
 };
 
 accountsController.getFollowers = function(req, res, next) {
-	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
+	getFollow('followers', req, res, next);
+};
 
-	getUserDataByUserSlug(req.params.userslug, callerUID, function (err, userData) {
+function getFollow(name, req, res, next) {
+	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
+	var userData;
+
+	async.waterfall([
+		function(next) {
+			getUserDataByUserSlug(req.params.userslug, callerUID, next);
+		},
+		function(data, next) {
+			userData = data;
+			if (!userData) {
+				return userNotFound();
+			}
+			var method = name === 'following' ? 'getFollowing' : 'getFollowers';
+			user[method](userData.uid, next);
+		}
+	], function(err, users) {
 		if(err) {
 			return next(err);
 		}
+		userData[name] = users;
+		userData[name + 'Count'] = users.length;
 
-		if (userData) {
-			user.getFollowers(userData.uid, function (err, followersData) {
-				if(err) {
-					return next(err);
-				}
-				userData.followers = followersData;
-				userData.followersCount = followersData.length;
-
-				res.render('followers', userData);
-			});
-		} else {
-			return userNotFound();
-		}
+		res.render(name, userData);
 	});
-};
+}
 
 accountsController.getFavourites = function(req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
