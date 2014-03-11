@@ -18,7 +18,8 @@ module.exports = function(app, middleware) {
 		metaRoutes(app, middleware, controllers);
 		apiRoutes(app, middleware, controllers);
 		feedRoutes(app, middleware, controllers);
-		
+		pluginRoutes(app, middleware, controllers);
+
 		/**
 		* Every view has an associated API route.
 		*
@@ -119,10 +120,11 @@ module.exports = function(app, middleware) {
 		app.get('/api/users/latest', middleware.checkGlobalPrivacySettings, controllers.users.getUsersSortedByJoinDate);
 
 		app.get('/users/search', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.users.getUsersForSearch);
-		app.get('/api/users/search', middleware.checkGlobalPrivacySettings, controllers.users.getUsersForSearch);		
+		app.get('/api/users/search', middleware.checkGlobalPrivacySettings, controllers.users.getUsersForSearch);
 
-		pluginRoutes(app, middleware, controllers);
-		plugins.fireHook('action:app.load', app, middleware, controllers);
+		plugins.ready(function() {
+			plugins.fireHook('action:app.load', app, middleware, controllers);
+		});
 
 		if (process.env.NODE_ENV === 'development') {
 			require('./debug')(app, middleware, controllers);

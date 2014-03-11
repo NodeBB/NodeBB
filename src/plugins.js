@@ -305,11 +305,11 @@ var fs = require('fs'),
 		if (callback) {
 			args.pop();
 		}
-		
+
 		hookList = Plugins.loadedHooks[hook];
 
 		if (hookList && Array.isArray(hookList)) {
-			//if (global.env === 'development') winston.info('[plugins] Firing hook: \'' + hook + '\'');
+			// if (global.env === 'development') winston.info('[plugins] Firing hook: \'' + hook + '\'');
 			var hookType = hook.split(':')[0];
 			switch (hookType) {
 				case 'filter':
