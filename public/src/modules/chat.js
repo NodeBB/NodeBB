@@ -1,4 +1,4 @@
-define(['taskbar', 'string'], function(taskbar, S) {
+define(['taskbar', 'string', 'sound'], function(taskbar, S, sound) {
 
 	var module = {};
 
@@ -69,6 +69,8 @@ define(['taskbar', 'string'], function(taskbar, S) {
 					app.alternatingTitle(data.username + ' has messaged you');
 				});
 			}
+
+			sound.play('chat-incoming');
 		});
 	}
 
@@ -220,6 +222,7 @@ define(['taskbar', 'string'], function(taskbar, S) {
 			msg = msg +'\n';
 			socket.emit('modules.chats.send', { touid:chatModal.touid, message:msg});
 			chatModal.find('#chat-message-input').val('');
+			sound.play('chat-outgoing');
 		}
 	}
 

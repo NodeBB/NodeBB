@@ -1,4 +1,4 @@
-define(function() {
+define(['sound'], function(sound) {
 	var Notifications = {};
 
 	Notifications.prepareDOM = function() {
@@ -108,6 +108,8 @@ define(function() {
 
 			var	savedCount = parseInt(localStorage.getItem('notifications:count'), 10) || 0;
 			updateNotifCount(savedCount + 1);
+
+			sound.play('notification');
 		});
 		socket.on('event:notifications.updateCount', function(count) {
 			updateNotifCount(count);
