@@ -122,6 +122,7 @@ module.exports = function(app, middleware) {
 		adminRoutes(app, middleware, controllers);
 
 		plugins.ready(function() {
+			app.all('/api/*', middleware.updateLastOnlineTime, middleware.prepareAPI);
 			plugins.fireHook('action:app.load', app, middleware, controllers);
 
 			metaRoutes(app, middleware, controllers);
