@@ -70,9 +70,12 @@ SocketPosts.reply = function(socket, data, callback) {
 			var socketData = {
 				posts: [postData]
 			};
-			index.server.sockets.in('topic_' + postData.tid).emit('event:new_post', socketData);
-			index.server.sockets.in('recent_posts').emit('event:new_post', socketData);
-			index.server.sockets.in('user/' + postData.uid).emit('event:new_post', socketData);
+
+			var rooms = ['recent_posts', 'home', 'topic_' + postData.tid, 'user/' + postData.uid];
+			rooms.forEach(function(room) {
+				index.server.sockets.in(room).emit('event:new_post', socketData);
+			});
+
 			callback();
 		}
 	});
