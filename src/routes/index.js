@@ -119,12 +119,11 @@ function mainRoutes(app, middleware, controllers) {
 
 module.exports = function(app, middleware) {
 	app.namespace(nconf.get('relative_path'), function() {
-		adminRoutes(app, middleware, controllers);
-
 		plugins.ready(function() {
 			app.all('/api/*', middleware.updateLastOnlineTime, middleware.prepareAPI);
 			plugins.fireHook('action:app.load', app, middleware, controllers);
 
+			adminRoutes(app, middleware, controllers);
 			metaRoutes(app, middleware, controllers);
 			apiRoutes(app, middleware, controllers);
 			feedRoutes(app, middleware, controllers);
