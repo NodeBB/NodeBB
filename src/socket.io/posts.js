@@ -1,3 +1,5 @@
+"use strict";
+
 var	async = require('async'),
 	nconf = require('nconf'),
 
@@ -278,7 +280,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 			posts.getPostField(pid, 'tid', next);
 		},
 		function(tid, next) {
-			topics.getTopicField(tid, 'slug', next)
+			topics.getTopicField(tid, 'slug', next);
 		},
 		function(topicSlug, next) {
 			path = nconf.get('relative_path') + '/topic/' + topicSlug + '#' + pid;
@@ -297,7 +299,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 			});
 		}
 	], callback);
-}
+};
 
 SocketPosts.loadMoreFavourites = function(socket, data, callback) {
 	if(!data || !data.after) {
