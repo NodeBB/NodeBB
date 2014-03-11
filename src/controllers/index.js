@@ -184,10 +184,6 @@ Controllers.login = function(req, res, next) {
 
 Controllers.register = function(req, res, next) {
 
-	if (req.user) {
-		res.redirect('/');
-	}
-
 	var data = {},
 		login_strategies = auth.get_login_strategies(),
 		num_strategies = login_strategies.length;
