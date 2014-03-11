@@ -102,8 +102,6 @@ function getRecentPosts(req, res, next) {
 
 module.exports =  function(app, middleware, controllers) {
 	app.namespace('/api', function () {
-		app.all('*', middleware.updateLastOnlineTime, middleware.prepareAPI);
-
 		app.get('/config', controllers.api.getConfig);
 
 		app.get('/user/uid/:uid', middleware.checkGlobalPrivacySettings, controllers.accounts.getUserByUID);

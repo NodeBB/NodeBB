@@ -329,7 +329,7 @@ var db = require('./database'),
 
 						if(stripTags) {
 							var s = S(content);
-							postData.content = s.stripTags.apply(s, utils.getTagsExcept(['img', 'i'])).s;
+							postData.content = s.stripTags.apply(s, utils.getTagsExcept(['img', 'i', 'p'])).s;
 						} else {
 							postData.content = content;
 						}

@@ -61,6 +61,9 @@ SocketTopics.post = function(socket, data, callback) {
 			index.server.sockets.in('category_' + data.category_id).emit('event:new_topic', result.topicData);
 			index.server.sockets.in('recent_posts').emit('event:new_topic', result.topicData);
 			index.server.sockets.in('home').emit('event:new_topic', result.topicData);
+			index.server.sockets.in('home').emit('event:new_post', {
+				posts: result.postData
+			});
 			index.server.sockets.in('user/' + socket.uid).emit('event:new_post', {
 				posts: result.postData
 			});
