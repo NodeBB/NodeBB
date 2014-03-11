@@ -52,5 +52,9 @@ module.exports = function(app, middleware, controllers) {
 				}
 			});
 		});
+
+		app.get('/test', function(req, res) {
+			res.send(200);
+		});
 	});
 };

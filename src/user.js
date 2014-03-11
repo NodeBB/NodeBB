@@ -168,32 +168,51 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.getMultipleUserFields = function(uids, fields, callback) {
-		if (uids.length === 0) {
+
+		if (!Array.isArray(uids) || !uids.length) {
 			return callback(null, []);
 		}
 
-		function getFields(uid, next) {
-			User.getUserFields(uid, fields, next);
-		}
+		var keys = uids.map(function(uid) {
+			return 'user:' + uid;
+		});
 
-		async.map(uids, getFields, callback);
+		db.getObjectsFields(keys, fields, callback);
 	};
 
 	User.getUserData = function(uid, callback) {
-		db.getObject('user:' + uid, function(err, data) {
-			if(err) {
+		User.getUsersData([uid], function(err, users) {
+			callback(err, users ? users[0] : null);
+		});
+	};
+
+	User.getUsersData = function(uids, callback) {
+
+		if (!Array.isArray(uids) || !uids.length) {
+			return callback(null, []);
+		}
+
+		var keys = uids.map(function(uid) {
+			return 'user:' + uid;
+		});
+
+		db.getObjects(keys, function(err, users) {
+			if (err) {
 				return callback(err);
 			}
 
-			if (data) {
-				if (data.password) {
-					data.password = null;
-					data.hasPassword = true;
-				} else {
-					data.hasPassword = false;
+			users.forEach(function(user) {
+				if (user) {
+					if (user.password) {
+						user.password = null;
+						user.hasPassword = true;
+					} else {
+						user.hasPassword = false;
+					}
 				}
-			}
-			callback(err, data);
+			});
+
+			callback(null, users);
 		});
 	};
 
@@ -508,36 +527,48 @@ var bcrypt = require('bcryptjs'),
 
 		db.getSortedSetRevRange(set, start, stop, function(err, uids) {
 			if (err) {
-				return callback(err, null);
+				return callback(err);
 			}
 
-			function getUserData(uid, callback) {
-				User.getUserData(uid, function(err, userData) {
-					if(!userData.status) {
-						userData.status = 'online';
+			User.getUsersData(uids, function(err, users) {
+				if (err) {
+					return callback(err);
+				}
+
+				async.map(users, function(user, next) {
+					if (!user) {
+						return next(null, user);
 					}
 
-					User.isAdministrator(uid, function(err, isAdmin) {
-						if (userData) {
-							userData.administrator = isAdmin ? '1':'0';
+					if (!user.status) {
+						user.status = 'online';
+					}
+
+					User.isAdministrator(user.uid, function(err, isAdmin) {
+						if (err) {
+							return next(err);
 						}
+
+						user.administrator = isAdmin ? '1':'0';
 
 						if(set === 'users:online') {
-							return callback(null, userData);
+							return next(null, user);
 						}
 
-						db.sortedSetScore('users:online', uid, function(err, score) {
-							if(!score) {
-								userData.status = 'offline';
+						db.sortedSetScore('users:online', user.uid, function(err, score) {
+							if (err) {
+								return next(err);
 							}
 
-							callback(null, userData);
+							if(!score) {
+								user.status = 'offline';
+							}
+
+							next(null, user);
 						});
 					});
-				});
-			}
-
-			async.map(uids, getUserData, callback);
+				}, callback);
+			});
 		});
 	};
 
@@ -568,24 +599,25 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.getUsersCSV = function(callback) {
-		var csvContent = "";
+		var csvContent = '';
 
 		db.getObjectValues('username:uid', function(err, uids) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
-			async.each(uids, function(uid, next) {
-				User.getUserFields(uid, ['email', 'username'], function(err, userData) {
-					if(err) {
-						return next(err);
-					}
+			User.getMultipleUserFields(uids, ['email', 'username'], function(err, usersData) {
+				if (err) {
+					return callback(err);
+				}
 
-					csvContent += userData.email + ',' + userData.username + ',' + uid + '\n';
-					next();
+				usersData.forEach(function(user, index) {
+					if (user) {
+						csvContent += user.email + ',' + user.username + ',' + uids[index] + '\n';
+					}
 				});
-			}, function(err) {
-				callback(err, csvContent);
+
+				callback(null, csvContent);
 			});
 		});
 	};
@@ -604,9 +636,9 @@ var bcrypt = require('bcryptjs'),
 			query = query.toLowerCase();
 
 			var	usernames = Object.keys(usernamesHash),
-				results = [];
+				uids = [];
 
-			results = usernames.filter(function(username) {
+			uids = usernames.filter(function(username) {
 				return username.toLowerCase().indexOf(query) === 0;
 			})
 			.slice(0, 10)
@@ -617,7 +649,10 @@ var bcrypt = require('bcryptjs'),
 				return usernamesHash[username];
 			});
 
-			User.getDataForUsers(results, function(err, userdata) {
+			User.getUsersData(uids, function(err, userdata) {
+				if (err) {
+					return callback(err);
+				}
 				var diff = process.hrtime(start);
 				var timing = (diff[0] * 1e3 + diff[1] / 1e6).toFixed(1);
 				callback(null, {timing: timing, users: userdata});
@@ -657,70 +692,48 @@ var bcrypt = require('bcryptjs'),
 		});
 	};
 
-	User.follow = function(uid, followid, callback) {
-		db.setAdd('following:' + uid, followid, function(err, data) {
+	User.follow = function(uid, followuid, callback) {
+		toggleFollow('follow', uid, followuid, callback);
+	};
+
+	User.unfollow = function(uid, unfollowuid, callback) {
+		toggleFollow('unfollow', uid, unfollowuid, callback);
+	};
+
+	function toggleFollow(type, uid, theiruid, callback) {
+		var command = type === 'follow' ? 'setAdd' : 'setRemove';
+		db[command]('following:' + uid, theiruid, function(err) {
 			if(err) {
 				return callback(err);
 			}
-
-			db.setAdd('followers:' + followid, uid, callback);
+			db[command]('followers:' + theiruid, uid, callback);
 		});
-	};
-
-	User.unfollow = function(uid, unfollowid, callback) {
-		db.setRemove('following:' + uid, unfollowid, function(err, data) {
-			if(err) {
-				return callback(err);
-			}
-
-			db.setRemove('followers:' + unfollowid, uid, callback);
-		});
-	};
+	}
 
 	User.getFollowing = function(uid, callback) {
-		db.getSetMembers('following:' + uid, function(err, userIds) {
-			if(err) {
-				return callback(err);
-			}
-
-			User.getDataForUsers(userIds, callback);
-		});
+		getFollow('following:' + uid, callback);
 	};
 
 	User.getFollowers = function(uid, callback) {
-		db.getSetMembers('followers:' + uid, function(err, userIds) {
+		getFollow('followers:' + uid, callback);
+	};
+
+	function getFollow(set, callback) {
+		db.getSetMembers(set, function(err, uids) {
 			if(err) {
 				return callback(err);
 			}
 
-			User.getDataForUsers(userIds, callback);
+			User.getUsersData(uids, callback);
 		});
-	};
+	}
 
 	User.getFollowingCount = function(uid, callback) {
-		db.getSetMembers('following:' + uid, function(err, userIds) {
-			if (err) {
-				return callback(err);
-			}
-
-			userIds = userIds.filter(function(value) {
-				return parseInt(value, 10) !== 0;
-			});
-			callback(null, userIds.length);
-		});
+		db.setCount('following:' + uid, callback);
 	};
 
 	User.getFollowerCount = function(uid, callback) {
-		db.getSetMembers('followers:' + uid, function(err, userIds) {
-			if(err) {
-				return callback(err);
-			}
-
-			userIds = userIds.filter(function(value) {
-				return parseInt(value, 10) !== 0;
-			});
-			callback(null, userIds.length);
-		});
+		db.setCount('followers:' + uid, callback);
 	};
 
 	User.getFollowStats = function (uid, callback) {
@@ -734,22 +747,6 @@ var bcrypt = require('bcryptjs'),
 		}, callback);
 	};
 
-	User.getDataForUsers = function(uids, callback) {
-
-		if (!uids || !Array.isArray(uids) || uids.length === 0) {
-			return callback(null, []);
-		}
-
-		function getUserData(uid, next) {
-			if(parseInt(uid, 10) === 0) {
-				return next(null, null);
-			}
-
-			User.getUserData(uid, next);
-		}
-
-		async.map(uids, getUserData, callback);
-	};
 
 	User.sendPostNotificationToFollowers = function(uid, tid, pid) {
 		User.getUserField(uid, 'username', function(err, username) {
@@ -773,13 +770,7 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.isFollowing = function(uid, theirid, callback) {
-		db.isSetMember('following:' + uid, theirid, function(err, isMember) {
-			if (!err) {
-				callback(isMember);
-			} else {
-				console.log(err);
-			}
-		});
+		db.isSetMember('following:' + uid, theirid, callback);
 	};
 
 	User.exists = function(userslug, callback) {
@@ -809,29 +800,17 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.getUsernamesByUids = function(uids, callback) {
+		User.getMultipleUserFields(uids, ['username'], function(err, users) {
+			if (err) {
+				return callback(err);
+			}
 
-		if (!Array.isArray(uids)) {
-			return callback(null, []);
-		}
+			users = users.map(function(user) {
+				return user.username;
+			});
 
-		function getUserName(uid, next) {
-			User.getUserField(uid, 'username', next);
-		}
-
-		async.map(uids, getUserName, callback);
-	};
-
-	User.getUserSlugsByUids = function(uids, callback) {
-
-		if (!Array.isArray(uids)) {
-			return callback(null, []);
-		}
-
-		function getUserSlug(uid, next) {
-			User.getUserField(uid, 'userslug', next);
-		}
-
-		async.map(uids, getUserSlug, callback);
+			callback(null, users);
+		});
 	};
 
 	User.getUsernameByUserslug = function(slug, callback) {
@@ -846,12 +825,7 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.getUidByEmail = function(email, callback) {
-		db.getObjectField('email:uid', email, function(err, data) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, data);
-		});
+		db.getObjectField('email:uid', email, callback);
 	};
 
 	User.isModerator = function(uid, cid, callback) {

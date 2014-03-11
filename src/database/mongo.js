@@ -100,6 +100,26 @@
 		return null;
 	}
 
+	function fieldToString(field) {
+		if(field === null || field === undefined) {
+			return field;
+		}
+
+		if(typeof field !== 'string') {
+			field = field.toString();
+		}
+		// if there is a '.' in the field name it inserts subdocument in mongo, replace '.'s with \uff0E
+		field = field.replace(/\./g, '\uff0E');
+		return field;
+	}
+
+	function toString(value) {
+		if(value === null || value === undefined) {
+			return value;
+		}
+
+		return value.toString();
+	}
 
 	//
 	// Exported functions
@@ -235,11 +255,7 @@
 
 	module.setObjectField = function(key, field, value, callback) {
 		var data = {};
-		if(typeof field !== 'string') {
-			field = field.toString();
-		}
-		// if there is a '.' in the field name it inserts subdocument in mongo, replace '.'s with \uff0E
-		field = field.replace(/\./g, '\uff0E');
+		field = fieldToString(field);
 		data[field] = value;
 		db.collection('objects').update({_key:key}, {$set:data}, {upsert:true, w: 1}, function(err, result) {
 			if(typeof callback === 'function') {
@@ -271,51 +287,69 @@
 	};
 
 	module.getObjectField = function(key, field, callback) {
-		if(typeof field !== 'string') {
-			field = field.toString();
-		}
-		field = field.replace(/\./g, '\uff0E');
+		field = fieldToString(field);
 		module.getObjectFields(key, [field], function(err, data) {
 			if(err) {
 				return callback(err);
 			}
 
-			callback(null, data[field]);
+			callback(null, data ? data[field] : null);
 		});
 	};
 
 	module.getObjectFields = function(key, fields, callback) {
+		module.getObjectsFields([key], fields, function(err, items) {
+			callback(err, items ? items[0] : null);
+		});
+	};
+
+	module.getObjectsFields = function(keys, fields, callback) {
 
 		var _fields = {
-			_id: 0
+			_id: 0,
+			_key: 1
 		};
-		for(var i=0; i<fields.length; ++i) {
-			if (typeof fields[i] !== 'string') {
-				fields[i] = fields[i].toString();
-			}
 
-			fields[i] = fields[i].replace(/\./g, '\uff0E');
+		for(var i=0; i<fields.length; ++i) {
+			fields[i] = fieldToString(fields[i]);
 			_fields[fields[i]] = 1;
 		}
 
+		keys = keys.map(function(key) {
+			return { _key : key};
+		});
 
-		db.collection('objects').findOne({_key:key}, _fields, function(err, item) {
-
-			if(err) {
+		db.collection('objects').find({$or: keys}, _fields).toArray(function(err, items) {
+			if (err) {
 				return callback(err);
 			}
 
-			if(item === null) {
-				item = {};
+			if (items === null) {
+				items = [];
 			}
 
-			for(var i=0; i<fields.length; ++i) {
-				if(item[fields[i]] === null || item[fields[i]] === undefined) {
-					item[fields[i]] = null;
+			var returnData = [],
+				index = 0,
+				item;
+
+			for (var i=0; i<keys.length; ++i) {
+
+				if (items[index] && items[index]._key === keys[i]._key) {
+					item = items[index];
+					index++;
+				} else {
+					item = {};
+				}
+
+				returnData.push(item);
+				for (var k=0; k<fields.length; ++k) {
+					if (item[fields[k]] === null || item[fields[k]] === undefined) {
+						item[fields[k]] = null;
+					}
 				}
 			}
 
-			callback(null, item);
+			callback(null, returnData);
 		});
 	};
 
@@ -341,7 +375,9 @@
 
 			var values = [];
 			for(var key in data) {
-				values.push(data[key]);
+				if (data && data.hasOwnProperty(key)) {
+					values.push(data[key]);
+				}
 			}
 			callback(null, values);
 		});
@@ -349,10 +385,7 @@
 
 	module.isObjectField = function(key, field, callback) {
 		var data = {};
-		if(typeof field !== 'string') {
-			field = field.toString();
-		}
-		field = field.replace(/\./g, '\uff0E');
+		field = fieldToString(field);
 		data[field] = '';
 		db.collection('objects').findOne({_key:key}, {fields:data}, function(err, item) {
 			if(err) {
@@ -364,11 +397,8 @@
 
 	module.deleteObjectField = function(key, field, callback) {
 		var data = {};
-		if(typeof field !== 'string') {
-			field = field.toString();
-		}
-		field = field.replace(/\./g, '\uff0E');
-		data[field] = "";
+		field = fieldToString(field);
+		data[field] = '';
 		db.collection('objects').update({_key:key}, {$unset : data}, function(err, result) {
 			if(typeof callback === 'function') {
 				callback(err, result);
@@ -386,10 +416,7 @@
 
 	module.incrObjectFieldBy = function(key, field, value, callback) {
 		var data = {};
-		if(typeof field !== 'string') {
-			field = field.toString();
-		}
-		field = field.replace(/\./g, '\uff0E');
+		field = fieldToString(field);
 		data[field] = value;
 
 		db.collection('objects').findAndModify({_key:key}, {}, {$inc: data}, {new:true, upsert:true}, function(err, result) {
@@ -408,9 +435,8 @@
 		}
 
 		value.forEach(function(element, index, array) {
-			array[index] = element ? element.toString() : element;
+			array[index] = toString(element);
 		});
-
 
 		db.collection('objects').update({_key: key}, { $addToSet: { members: { $each: value } }	}, { upsert: true, w: 1 }, function(err, result) {
 			if(typeof callback === 'function') {
@@ -425,7 +451,7 @@
 		}
 
 		value.forEach(function(element, index, array) {
-			array[index] = element ? element.toString() : element;
+			array[index] = toString(element);
 		});
 
 		db.collection('objects').update( { _key: key }, { $pullAll: { members: value } }, function(err, result) {
@@ -436,9 +462,7 @@
 	};
 
 	module.isSetMember = function(key, value, callback) {
-		if(value !== null && value !== undefined) {
-			value = value.toString();
-		}
+		value = toString(value);
 
 		db.collection('objects').findOne({_key:key, members: value}, function(err, item) {
 			callback(err, item !== null && item !== undefined);
@@ -447,9 +471,7 @@
 
 	module.isMemberOfSets = function(sets, value, callback) {
 
-		if(value !== null && value !== undefined) {
-			value = value.toString();
-		}
+		value = toString(value);
 
 		db.collection('objects').find({_key: {$in : sets}, members: value}).toArray(function(err, result) {
 			if(err) {
@@ -525,9 +547,7 @@
 	// sorted sets
 
 	module.sortedSetAdd = function(key, score, value, callback) {
-		if(value !== null && value !== undefined) {
-			value = value.toString();
-		}
+		value = toString(value);
 		var data = {
 			score: parseInt(score, 10),
 			value: value
@@ -541,9 +561,7 @@
 	};
 
 	module.sortedSetRemove = function(key, value, callback) {
-		if(value !== null && value !== undefined) {
-			value = value.toString();
-		}
+		value = toString(value);
 
 		db.collection('objects').remove({_key:key, value:value}, function(err, result) {
 			if(typeof callback === 'function') {
@@ -640,9 +658,7 @@
 	};
 
 	module.sortedSetRank = function(key, value, callback) {
-		if(value !== null && value !== undefined) {
-			value = value.toString();
-		}
+		value = toString(value);
 		module.getSortedSetRange(key, 0, -1, function(err, result) {
 			if(err) {
 				return callback(err);
@@ -657,9 +673,7 @@
 	};
 
 	module.sortedSetRevRank = function(key, value, callback) {
-		if(value !== null && value !== undefined) {
-			value = value.toString();
-		}
+		value = toString(value);
 		module.getSortedSetRevRange(key, 0, -1, function(err, result) {
 			if(err) {
 				return callback(err);
@@ -676,18 +690,9 @@
 	};
 
 	module.sortedSetScore = function(key, value, callback) {
-		if(value !== null && value !== undefined) {
-			value = value.toString();
-		}
+		value = toString(value);
 		db.collection('objects').findOne({_key:key, value: value}, {fields:{score:1}}, function(err, result) {
-			if(err) {
-				return callback(err);
-			}
-			if(result) {
-				return callback(null, result.score);
-			}
-
-			callback(err, null);
+			callback(err, result ? result.score : null);
 		});
 	};
 
@@ -698,9 +703,7 @@
 	};
 
 	module.sortedSetsScore = function(keys, value, callback) {
-		if(value !== null && value !== undefined) {
-			value = value.toString();
-		}
+		value = toString(value);
 		db.collection('objects').find({_key:{$in:keys}, value: value}).toArray(function(err, result) {
 			if(err) {
 				return callback(err);
@@ -720,9 +723,7 @@
 
 	// lists
 	module.listPrepend = function(key, value, callback) {
-		if(value !== null && value !== undefined) {
-			value = value.toString();
-		}
+		value = toString(value);
 
 		module.isObjectField(key, 'array', function(err, exists) {
 			if(err) {
@@ -746,9 +747,7 @@
 	};
 
 	module.listAppend = function(key, value, callback) {
-		if(value !== null && value !== undefined) {
-			value = value.toString();
-		}
+		value = toString(value);
 		db.collection('objects').update({ _key: key }, { $push: { array: value } }, {upsert:true, w:1}, function(err, result) {
 			if(typeof callback === 'function') {
 				callback(err, result);
@@ -782,9 +781,7 @@
 	};
 
 	module.listRemoveAll = function(key, value, callback) {
-		if(value !== null && value !== undefined) {
-			value = value.toString();
-		}
+		value = toString(value);
 
 		db.collection('objects').update({_key: key }, { $pull: { array: value } }, function(err, result) {
 			if(typeof callback === 'function') {

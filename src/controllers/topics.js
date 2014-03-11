@@ -47,8 +47,8 @@ topicsController.get = function(req, res, next) {
 						if (parseInt(topicData.deleted, 10) === 1 && parseInt(topicData.expose_tools, 10) === 0) {
 							return next(new Error('Topic deleted'), null);
 						}
+						topicData.currentPage = page;
 					}
-					topicData.currentPage = page;
 					next(err, topicData);
 				});
 			});

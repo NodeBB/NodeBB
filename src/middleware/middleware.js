@@ -22,7 +22,7 @@ var app,
 middleware.authenticate = function(req, res, next) {
 	if(!req.user) {
 		if (res.locals.isAPI) {
-			return res.json(403, 'not-allowed');	
+			return res.json(403, 'not-allowed');
 		} else {
 			return res.redirect('403');
 		}
@@ -40,6 +40,17 @@ middleware.updateLastOnlineTime = function(req, res, next) {
 
 	next();
 };
+
+middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
+	if (req.user) {
+		user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
+			res.redirect('/user/' + userslug);
+		});
+	} else {
+		next();
+	}
+
+}
 
 middleware.prepareAPI = function(req, res, next) {
 	res.locals.isAPI = true;

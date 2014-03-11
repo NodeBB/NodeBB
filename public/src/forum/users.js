@@ -111,7 +111,7 @@ define(function() {
 
 		function onUsersLoaded(users, emptyContainer) {
 			templates.preload_template('users', function() {
-				templates['useres'].parse({users:[]});
+				templates['users'].parse({users:[]});
 				var html = templates.prepare(templates['users'].blocks['users']).parse({
 					users: users
 				});
