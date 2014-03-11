@@ -687,7 +687,6 @@ var async = require('async'),
 	};
 
 	Topics.getTopicsByTids = function(tids, uid, callback) {
-
 		if (!Array.isArray(tids) || tids.length === 0) {
 			return callback(null, []);
 		}
