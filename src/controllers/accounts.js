@@ -130,7 +130,11 @@ accountsController.getAccount = function(req, res, next) {
 			});
 		}
 
-		user.isFollowing(callerUID, userData.theirid, function (isFollowing) {
+		user.isFollowing(callerUID, userData.theirid, function (err, isFollowing) {
+			if(err) {
+				return next(err);
+			}
+
 			posts.getPostsByUid(callerUID, userData.theirid, 0, 9, function (err, userPosts) {
 				if(err) {
 					return next(err);
@@ -175,7 +179,7 @@ accountsController.getFollowing = function(req, res, next) {
 				}
 				userData.following = followingData;
 				userData.followingCount = followingData.length;
-				
+
 				res.render('following', userData);
 			});
 
@@ -200,7 +204,7 @@ accountsController.getFollowers = function(req, res, next) {
 				}
 				userData.followers = followersData;
 				userData.followersCount = followersData.length;
-				
+
 				res.render('followers', userData);
 			});
 		} else {
@@ -286,7 +290,7 @@ accountsController.accountEdit = function(req, res, next) {
 		if(err) {
 			return next(err);
 		}
-		
+
 		res.render('accountedit', userData);
 	});
 };
@@ -323,12 +327,12 @@ accountsController.accountSettings = function(req, res, next) {
 				userData.yourid = req.user.uid;
 				userData.theirid = uid;
 				userData.settings = settings;
-				
+
 				res.render('accountsettings', userData);
 			});
 		});
 
-	});	
+	});
 };
 
 accountsController.uploadPicture = function (req, res, next) {

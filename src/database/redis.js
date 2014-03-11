@@ -55,7 +55,7 @@
 			return reds.client || (reds.client = redisClient);
 		};
 
-		postSearch = reds.createSearch('nodebbpostsearch'),
+		postSearch = reds.createSearch('nodebbpostsearch');
 		topicSearch = reds.createSearch('nodebbtopicsearch');
 
 		var db = parseInt(nconf.get('redis:database'), 10);
@@ -69,7 +69,9 @@
 			});
 		}
 
-		callback();
+		if(typeof callback === 'function') {
+			callback();
+		}
 	};
 
 	module.close = function() {
@@ -221,18 +223,34 @@
 	};
 
 	module.getObjectFields = function(key, fields, callback) {
-		redisClient.hmget(key, fields, function(err, data) {
-			if(err) {
+		module.getObjectsFields([key], fields, function(err, results) {
+			callback(err, results ? results[0]: null);
+		});
+	};
+
+	module.getObjectsFields = function(keys, fields, callback) {
+		var	multi = redisClient.multi();
+
+		for(var x=0; x<keys.length; ++x) {
+			multi.hmget.apply(multi, [keys[x]].concat(fields));
+		}
+
+		function makeObject(array) {
+			var obj = {};
+
+			for (var i = 0, ii = fields.length; i < ii; ++i) {
+				obj[fields[i]] = array[i];
+			}
+			return obj;
+		}
+
+		multi.exec(function(err, results) {
+			if (err) {
 				return callback(err);
 			}
 
-			var returnData = {};
-
-			for (var i = 0, ii = fields.length; i < ii; ++i) {
-				returnData[fields[i]] = data[i];
-			}
-
-			callback(null, returnData);
+			results = results.map(makeObject);
+			callback(null, results);
 		});
 	};
 

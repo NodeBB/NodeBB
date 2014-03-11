@@ -230,7 +230,7 @@ SocketPosts.getFavouritedUsers = function(socket, pid, callback) {
 		}
 
 		var max = 5; //hardcoded
-		var usernames = "";
+		var finalText = "";
 
 		var pid_uids = data[0];
 		var rest_amount = 0;
@@ -240,15 +240,15 @@ SocketPosts.getFavouritedUsers = function(socket, pid, callback) {
 			pid_uids = pid_uids.slice(0, max);
 		}
 
-		user.getUsernamesByUids(pid_uids, function(err, result) {
+		user.getUsernamesByUids(pid_uids, function(err, usernames) {
 			if(err) {
 				return callback(err);
 			}
 
-			usernames = result.join(', ') + (rest_amount > 0
+			finalText = usernames.join(', ') + (rest_amount > 0
 				? " and " + rest_amount + (rest_amount > 1 ? " others" : " other")
 				: "");
-			callback(null, usernames);
+			callback(null, finalText);
 		});
 	});
 };
