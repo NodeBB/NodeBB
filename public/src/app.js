@@ -4,7 +4,8 @@ var socket,
 		'username': null,
 		'uid': null,
 		'isFocused': true,
-		'currentRoom': null
+		'currentRoom': null,
+		'widgets': {}
 	};
 
 (function () {
@@ -661,11 +662,11 @@ var socket,
 			app.processPage();
 
 			ajaxify.renderWidgets(tpl_url, url);
-			
+
 			ajaxify.loadScript(tpl_url, function() {
 				$(window).trigger('action:ajaxify.end', {
 					url: url
-				});	
+				});
 			});
 		});
 	};

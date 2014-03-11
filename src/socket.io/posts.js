@@ -71,10 +71,7 @@ SocketPosts.reply = function(socket, data, callback) {
 				posts: [postData]
 			};
 
-			var rooms = ['recent_posts', 'home', 'topic_' + postData.tid, 'user/' + postData.uid];
-			rooms.forEach(function(room) {
-				index.server.sockets.in(room).emit('event:new_post', socketData);
-			});
+			index.server.sockets.emit('event:new_post', socketData);
 
 			callback();
 		}
@@ -325,5 +322,10 @@ SocketPosts.loadMoreUserPosts = function(socket, data, callback) {
 
 	posts.getPostsByUid(socket.uid, data.uid, start, end, callback);
 };
+
+SocketPosts.getRecentPosts = function(socket, term, callback) {
+	posts.getRecentPosts(socket.uid, 0, 19, term, callback);
+};
+
 
 module.exports = SocketPosts;
