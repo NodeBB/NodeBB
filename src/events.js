@@ -88,7 +88,13 @@ var fs = require('fs'),
 	events.getLog = function(callback) {
 		var logFile = path.join(nconf.get('base_dir'), logFileName);
 
-		fs.readFile(logFile, callback);
+		fs.exists(logFile, function(exists) {
+			if (exists) {
+				fs.readFile(logFile, callback);
+			} else {
+				callback(null, 'No logs found');
+			}
+		});
 	}
 
 }(module.exports));
