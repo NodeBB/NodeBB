@@ -217,13 +217,7 @@ var db = require('./database'),
 	};
 
 	Categories.hasReadCategory = function(cid, uid, callback) {
-		db.isSetMember('cid:' + cid + ':read_by_uid', uid, function(err, hasRead) {
-			if(err) {
-				return callback(false);
-			}
-
-			callback(hasRead);
-		});
+		db.isSetMember('cid:' + cid + ':read_by_uid', uid, callback);
 	};
 
 	Categories.getRecentReplies = function(cid, uid, count, callback) {

@@ -469,6 +469,24 @@
 		});
 	};
 
+	module.isSetMembers = function(key, values, callback) {
+		for (var i=0; i<values.length; ++i) {
+			values[i] = toString(values[i]);
+		}
+
+		db.collection('objects').findOne({_key:key, members: {$in : values}}, function(err, items) {
+			if (err) {
+				return callback(err);
+			}
+
+			values = values.map(function(value) {
+				return items.members.indexOf(value) !== -1
+			});
+
+			callback(null, values);
+		});
+	};
+
 	module.isMemberOfSets = function(sets, value, callback) {
 
 		value = toString(value);
