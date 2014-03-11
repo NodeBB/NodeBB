@@ -38,7 +38,7 @@ categoriesController.popular = function(req, res, next) {
 
 categoriesController.unread = function(req, res, next) {
 	var uid = req.user.uid;
-	
+
 	topics.getUnreadTopics(uid, 0, 19, function (err, data) {
 		if(err) {
 			return next(err);
@@ -50,7 +50,7 @@ categoriesController.unread = function(req, res, next) {
 
 categoriesController.unreadTotal = function(req, res, next) {
 	var uid = req.user.uid;
-	
+
 	topics.getTotalUnread(uid, function (err, data) {
 		if(err) {
 			return next(err);
@@ -63,8 +63,7 @@ categoriesController.unreadTotal = function(req, res, next) {
 categoriesController.get = function(req, res, next) {
 	var cid = req.params.category_id,
 		page = req.query.page || 1,
-		uid = req.user ? req.user.uid : 0,
-		privileges = null;
+		uid = req.user ? req.user.uid : 0;
 
 	async.waterfall([
 		function(next) {
@@ -73,15 +72,14 @@ categoriesController.get = function(req, res, next) {
 					if (!categoryPrivileges.read) {
 						next(new Error('not-enough-privileges'));
 					} else {
-						privileges = categoryPrivileges;
-						next();
+						next(null, categoryPrivileges);
 					}
 				} else {
 					next(err);
 				}
 			});
 		},
-		function (next) {
+		function (privileges, next) {
 			user.getSettings(uid, function(err, settings) {
 				if (err) {
 					return next(err);
@@ -90,13 +88,14 @@ categoriesController.get = function(req, res, next) {
 				var start = (page - 1) * settings.topicsPerPage,
 					end = start + settings.topicsPerPage - 1;
 
-				categories.getCategoryById(cid, start, end, 0, function (err, categoryData) {
+				categories.getCategoryById(cid, start, end, uid, function (err, categoryData) {
 					if (categoryData) {
 						if (parseInt(categoryData.disabled, 10) === 1) {
 							return next(new Error('Category disabled'), null);
 						}
 					}
 
+					categoryData.privileges = privileges;
 					next(err, categoryData);
 				});
 			});
@@ -132,7 +131,7 @@ categoriesController.get = function(req, res, next) {
 					href: nconf.get('url')
 				}
 			];
-			
+
 			next(null, categoryData);
 		}
 	], function (err, data) {
@@ -154,7 +153,6 @@ categoriesController.get = function(req, res, next) {
 			category_url += '?' + queryString;
 		}
 
-		data.privileges = privileges;
 		data.currentPage = page;
 
 		// Paginator for noscript
