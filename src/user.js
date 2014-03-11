@@ -829,7 +829,7 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.isModerator = function(uid, cid, callback) {
-		groups.isMemberByGroupName(uid, 'cid:' + cid + ':privileges:mod', callback);
+		groups.isMemberByGroupName(uid, 'cid:' + cid + ':privileges:mods', callback);
 	};
 
 	User.isAdministrator = function(uid, callback) {
