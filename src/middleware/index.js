@@ -182,7 +182,7 @@ module.exports = function(app, data) {
 		app.use(express.compress());
 
 		app.use(express.favicon(path.join(__dirname, '../../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico')));
-		app.use('/apple-touch-icon', middleware.routeTouchIcon);
+		app.use(nconf.get('relative_path') + '/apple-touch-icon', middleware.routeTouchIcon);
 
 		app.use(require('less-middleware')({
 			src: path.join(__dirname, '../../', 'public'),
@@ -221,7 +221,7 @@ module.exports = function(app, data) {
 			compileTemplates(pluginTemplates);
 		});
 
-		app.use(app.router);
+		app.use(nconf.get('relative_path'), app.router);
 
 		app.use(nconf.get('relative_path'), express.static(path.join(__dirname, '../../', 'public'), {
 			maxAge: app.enabled('cache') ? 5184000000 : 0

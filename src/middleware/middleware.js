@@ -172,7 +172,7 @@ middleware.renderHeader = function(req, res, callback) {
 			}],
 			defaultLinkTags = [{
 				rel: 'apple-touch-icon',
-				href: '/apple-touch-icon'
+				href: nconf.get('relative_path') + '/apple-touch-icon'
 			}],
 			templateValues = {
 				bootswatchCSS: meta.config['theme:src'],
