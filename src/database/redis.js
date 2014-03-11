@@ -305,14 +305,32 @@
 		});
 	};
 
-	module.isMemberOfSets = function(sets, value, callback) {
-		var batch = redisClient.multi();
-
-		for (var i = 0, ii = sets.length; i < ii; i++) {
-			batch.sismember(sets[i], value);
+	module.isSetMembers = function(key, values, callback) {
+		var multi = redisClient.multi();
+		for (var i=0; i<values.length; ++i) {
+			multi.sismember(key, values[i]);
 		}
 
-		batch.exec(callback);
+		multi.exec(function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			for (var i=0; i<results.length; ++i) {
+				results[i] = results[i] === 1;
+			}
+			callback(null, results);
+		});
+	};
+
+	module.isMemberOfSets = function(sets, value, callback) {
+		var multi = redisClient.multi();
+
+		for (var i = 0, ii = sets.length; i < ii; i++) {
+			multi.sismember(sets[i], value);
+		}
+
+		multi.exec(callback);
 	};
 
 	module.getSetMembers = function(key, callback) {
