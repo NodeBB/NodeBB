@@ -183,6 +183,11 @@ Controllers.login = function(req, res, next) {
 };
 
 Controllers.register = function(req, res, next) {
+
+	if (req.user) {
+		res.redirect('/');
+	}
+
 	var data = {},
 		login_strategies = auth.get_login_strategies(),
 		num_strategies = login_strategies.length;
@@ -206,7 +211,7 @@ Controllers.register = function(req, res, next) {
 	data.maximumUsernameLength = meta.config.maximumUsernameLength;
 	data.minimumPasswordLength = meta.config.minimumPasswordLength;
 	data.termsOfUse = meta.config.termsOfUse;
-	
+
 	res.render('register', data);
 };
 
