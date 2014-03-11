@@ -630,43 +630,45 @@ var socket,
 	}
 
 
-	$('document').ready(function () {
-		var url = window.location.pathname.slice(1),
-			tpl_url = ajaxify.getTemplateMapping(url);
+	app.load = function() {
+		$('document').ready(function () {
+			var url = window.location.pathname.slice(1),
+				tpl_url = ajaxify.getTemplateMapping(url);
 
-		$(window).trigger('action:ajaxify.start', {
-			url: url
-		});
-
-		$('#search-form').on('submit', function () {
-			var input = $(this).find('input');
-			ajaxify.go("search/" + input.val());
-			input.val('');
-			return false;
-		});
-
-		$(window).blur(function(){
-			app.isFocused = false;
-		});
-
-		$(window).focus(function(){
-			app.isFocused = true;
-
-			app.alternatingTitle('');
-		});
-
-		createHeaderTooltips();
-		templates.parseTemplateVariables();
-		app.processPage();
-
-		ajaxify.renderWidgets(tpl_url, url);
-		
-		ajaxify.loadScript(tpl_url, function() {
-			$(window).trigger('action:ajaxify.end', {
+			$(window).trigger('action:ajaxify.start', {
 				url: url
-			});	
+			});
+
+			$('#search-form').on('submit', function () {
+				var input = $(this).find('input');
+				ajaxify.go("search/" + input.val());
+				input.val('');
+				return false;
+			});
+
+			$(window).blur(function(){
+				app.isFocused = false;
+			});
+
+			$(window).focus(function(){
+				app.isFocused = true;
+
+				app.alternatingTitle('');
+			});
+
+			createHeaderTooltips();
+			templates.parseTemplateVariables();
+			app.processPage();
+
+			ajaxify.renderWidgets(tpl_url, url);
+			
+			ajaxify.loadScript(tpl_url, function() {
+				$(window).trigger('action:ajaxify.end', {
+					url: url
+				});	
+			});
 		});
-	});
+	};
 
 	showWelcomeMessage = location.href.indexOf('loggedin') !== -1;
 
