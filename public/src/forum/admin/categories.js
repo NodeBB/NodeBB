@@ -238,6 +238,10 @@ define(['uploader'], function(uploader) {
 			groupsResultsEl = modal.find('.groups-results'),
 			searchDelay;
 
+		// Clear the search field and results
+		searchEl.val('');
+		resultsEl.html('');
+
 		searchEl.off().on('keyup', function() {
 			var	searchEl = this,
 				liEl;
