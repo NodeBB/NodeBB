@@ -229,6 +229,19 @@ adminController.groups.get = function(req, res, next) {
 	});
 };
 
+function validateUpload(type, allowedTypes) {
+	if (allowedTypes.indexOf(type) === -1) {
+		var err = {
+			error: 'Invalid image type. Allowed types are: ' + allowedTypes.join(',')
+		};
+
+		res.send(req.xhr ? err : JSON.stringify(err));
+		return false;
+	}
+
+	return true;
+}
+
 adminController.uploads.uploadImage = function(filename, req, res) {
 	function done(err, image) {
 		var er, rs;
@@ -252,65 +265,48 @@ adminController.uploads.uploadImage = function(filename, req, res) {
 
 adminController.uploads.uploadCategoryPicture = function(req, res, next) {
 	var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'],
-		params = null, er;
+		params = null;
+
 	try {
 		params = JSON.parse(req.body.params);
 	} catch (e) {
-		er = {
+		var err = {
 			error: 'Error uploading file! Error :' + e.message
 		};
-		return res.send(req.xhr ? er : JSON.stringify(er));
+		return res.send(req.xhr ? err : JSON.stringify(err));
 	}
 
-	if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
-		er = {
-			error: 'Allowed image types are png, jpg and gif!'
-		};
-		res.send(req.xhr ? er : JSON.stringify(er));
-		return;
+	if (validateUpload(req.files.userPhoto.type, allowedTypes)) {
+		var filename =  'category-' + params.cid + path.extname(req.files.userPhoto.name);
+		adminController.uploads.uploadImage(filename, req, res);
 	}
-
-	var filename =  'category-' + params.cid + path.extname(req.files.userPhoto.name);
-
-	adminController.uploads.uploadImage(filename, req, res);
 };
 
 adminController.uploads.uploadFavicon = function(req, res, next) {
-	var allowedTypes = ['image/x-icon', 'image/vnd.microsoft.icon'],
-		er;
+	var allowedTypes = ['image/x-icon', 'image/vnd.microsoft.icon'];
 
-	if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
-		er = {error: 'You can only upload icon file type!'};
-		res.send(req.xhr ? er : JSON.stringify(er));
-		return;
+	if (validateUpload(req.files.userPhoto.type, allowedTypes)) {
+		file.saveFileToLocal('favicon.ico', req.files.userPhoto.path, function(err, image) {
+			fs.unlink(req.files.userPhoto.path);
+
+			if(err) {
+				return res.send(req.xhr ? err : JSON.stringify(err));
+			}
+
+			var rs = {path: image.url};
+			res.send(req.xhr ? rs : JSON.stringify(rs));
+		});
 	}
-
-	file.saveFileToLocal('favicon.ico', req.files.userPhoto.path, function(err, image) {
-		fs.unlink(req.files.userPhoto.path);
-
-		if(err) {
-			er = {error: err.message};
-			return res.send(req.xhr ? er : JSON.stringify(er));
-		}
-
-		var rs = {path: image.url};
-		res.send(req.xhr ? rs : JSON.stringify(rs));
-	});
 };
 
 adminController.uploads.uploadLogo = function(req, res, next) {
 	var allowedTypes = ['image/png', 'image/jpeg', 'image/pjpeg', 'image/jpg', 'image/gif'],
 		er;
 
-	if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
-		er = {error: 'Allowed image types are png, jpg and gif!'};
-		res.send(req.xhr ? er : JSON.stringify(er));
-		return;
-	}
-
-	var filename = 'site-logo' + path.extname(req.files.userPhoto.name);
-
-	adminController.uploads.uploadImage(filename, req, res);
+	if (validateUpload(req.files.userPhoto.type, allowedTypes)) {
+		var filename = 'site-logo' + path.extname(req.files.userPhoto.name);
+		adminController.uploads.uploadImage(filename, req, res);
+	}	
 };
 
 
