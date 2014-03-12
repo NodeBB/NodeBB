@@ -12,12 +12,8 @@ var nconf = require('nconf'),
 	pluginRoutes = require('./plugins');
 
 
-/**
-* Every view has an associated API route.
-*
-*/
+
 function mainRoutes(app, middleware, controllers) {
-	/* Main */
 	app.get('/', middleware.buildHeader, controllers.home);
 	app.get('/api/home', controllers.home);
 
@@ -38,8 +34,9 @@ function mainRoutes(app, middleware, controllers) {
 
 	app.get('/reset/:code?', middleware.buildHeader, controllers.reset);
 	app.get('/api/reset/:code?', controllers.reset);
+}
 
-	/* Static Pages */
+function staticRoutes(app, middleware, controllers) {
 	app.get('/404', middleware.buildHeader, controllers.static['404']);
 	app.get('/api/404', controllers.static['404']);
 
@@ -48,12 +45,14 @@ function mainRoutes(app, middleware, controllers) {
 
 	app.get('/500', middleware.buildHeader, controllers.static['500']);
 	app.get('/api/500', controllers.static['500']);
+}
 
-	/* Topics */
+function topicRoutes(app, middleware, controllers) {
 	app.get('/topic/:topic_id/:slug?', middleware.buildHeader, controllers.topics.get);
 	app.get('/api/topic/:topic_id/:slug?', controllers.topics.get);
+}
 
-	/* Categories */
+function categoryRoutes(app, middleware, controllers) {
 	app.get('/popular/:set?', middleware.buildHeader, controllers.categories.popular);
 	app.get('/api/popular/:set?', controllers.categories.popular);
 
@@ -68,8 +67,9 @@ function mainRoutes(app, middleware, controllers) {
 
 	app.get('/category/:category_id/:slug?', middleware.buildHeader, controllers.categories.get);
 	app.get('/api/category/:category_id/:slug?', controllers.categories.get);
+}
 
-	/* Accounts */
+function accountRoutes(app, middleware, controllers) {
 	app.get('/user/:userslug', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.accounts.getAccount);
 	app.get('/api/user/:userslug', middleware.checkGlobalPrivacySettings, controllers.accounts.getAccount);
 
@@ -94,8 +94,9 @@ function mainRoutes(app, middleware, controllers) {
 
 	app.get('/notifications', middleware.buildHeader, middleware.authenticate, controllers.accounts.getNotifications);
 	app.get('/api/notifications', middleware.authenticate, controllers.accounts.getNotifications);
+}
 
-	/* Users */
+function userRoutes(app, middleware, controllers) {
 	app.get('/users', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
 	app.get('/api/users', middleware.checkGlobalPrivacySettings, controllers.users.getOnlineUsers);
 
@@ -128,7 +129,18 @@ module.exports = function(app, middleware) {
 			apiRoutes(app, middleware, controllers);
 			feedRoutes(app, middleware, controllers);
 			pluginRoutes(app, middleware, controllers);
+
+			/**
+			* Every view has an associated API route.
+			*
+			*/
 			mainRoutes(app, middleware, controllers);
+			staticRoutes(app, middleware, controllers);
+			topicRoutes(app, middleware, controllers);
+			categoryRoutes(app, middleware, controllers);
+			accountRoutes(app, middleware, controllers);
+			userRoutes(app, middleware, controllers);
+
 		});
 
 		if (process.env.NODE_ENV === 'development') {

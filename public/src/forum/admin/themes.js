@@ -1,3 +1,6 @@
+"use strict";
+/*global define, socket, app, bootbox, tabIndent, config, RELATIVE_PATH*/
+
 define(['forum/admin/settings'], function(Settings) {
 	var Themes = {};
 
@@ -266,10 +269,10 @@ define(['forum/admin/settings'], function(Settings) {
 
 					for (var i in area.data) {
 						if (area.data.hasOwnProperty(i)) {
-							var data = area.data[i],
-								widgetEl = $('.available-widgets [data-widget="' + data.widget + '"]').clone();
+							var widgetData = area.data[i],
+								widgetEl = $('.available-widgets [data-widget="' + widgetData.widget + '"]').clone();
 
-							widgetArea.append(populateWidget(widgetEl, data.data));
+							widgetArea.append(populateWidget(widgetEl, widgetData.data));
 							appendToggle(widgetEl);
 						}
 					}
