@@ -87,11 +87,10 @@ Controllers.home = function(req, res, next) {
 };
 
 Controllers.search = function(req, res, next) {
+	var start = process.hrtime();
+
 	if (!req.params.term) {
 		return res.render('search', {
-			show_no_topics: 'hide',
-			show_no_posts: 'hide',
-			show_results: 'hide',
 			search_query: '',
 			posts: [],
 			topics: []
@@ -102,51 +101,49 @@ Controllers.search = function(req, res, next) {
 		return res.redirect('/404');
 	}
 
-	function searchPosts(callback) {
+	function search(index, callback) {
 		plugins.fireHook('filter:search.query', {
-			index: 'post',
+			index: index,
 			query: req.params.term
-		}, function(err, pids) {
-			if (err) {
-				return callback(err);
-			}
-
-			posts.getPostSummaryByPids(pids, false, callback);
-		});
+		}, callback);
 	}
 
-	function searchTopics(callback) {
-		plugins.fireHook('filter:search.query', {
-			index: 'topic',
-			query: req.params.term
-		}, function(err, tids) {
-			if (err) {
-				return callback(err);
-			}
-
-			topics.getTopicsByTids(tids, 0, callback);
-		});
-	}
-
-	async.parallel([searchPosts, searchTopics], function (err, results) {
+	async.parallel({
+		pids: function(next) {
+			search('post', next);
+		},
+		tids: function(next) {
+			search('topic', next);
+		}
+	}, function (err, results) {
 		if (err) {
 			return next(err);
 		}
 
 		if(!results) {
-			results = [];
-			results[0] = results[1] = [];
+			results = {pids:[], tids: []};
 		}
 
-		return res.render('search', {
-			show_no_topics: results[1].length ? 'hide' : '',
-			show_no_posts: results[0].length ? 'hide' : '',
-			show_results: '',
-			search_query: req.params.term,
-			posts: results[0],
-			topics: results[1],
-			post_matches : results[0].length,
-			topic_matches : results[1].length
+		async.parallel({
+			posts: function(next) {
+				posts.getPostSummaryByPids(results.pids, false, next);
+			},
+			topics: function(next) {
+				topics.getTopicsByTids(results.tids, 0, next);
+			}
+		}, function(err, results) {
+			if (err) {
+				return next(err);
+			}
+
+			return res.render('search', {
+				time: process.elapsedTimeSince(start),
+				search_query: req.params.term,
+				posts: results.posts,
+				topics: results.topics,
+				post_matches : results.posts.length,
+				topic_matches : results.topics.length
+			});
 		});
 	});
 };
