@@ -1,3 +1,5 @@
+'use strict';
+
 var async = require('async'),
 	winston = require('winston'),
 	cron = require('cron').CronJob,
@@ -8,7 +10,6 @@ var async = require('async'),
 	User = require('./user');
 
 (function(Notifications) {
-	"use strict";
 
 	Notifications.init = function() {
 		if (process.env.NODE_ENV === 'development') {
@@ -63,11 +64,11 @@ var async = require('async'),
 
 	Notifications.create = function(data, callback) {
 		/**
-		 * data.uniqueId is used solely to override stale nids.
-		 * 		If a new nid is pushed to a user and an existing nid in the user's
-		 *		(un)read list contains the same uniqueId, it will be removed, and
-		 *		the new one put in its place.
-		 */
+		*data.uniqueId is used solely to override stale nids.
+		*		If a new nid is pushed to a user and an existing nid in the user's
+		*		(un)read list contains the same uniqueId, it will be removed, and
+		*		the new one put in its place.
+		*/
 
 		// Add default values to data Object if not already set
 		var	defaults = {
@@ -249,10 +250,10 @@ var async = require('async'),
 				async.each(expiredNids, function(nid, next) {
 					async.parallel([
 						function(next) {
-							db.setRemove('notifications', nid, next)
+							db.setRemove('notifications', nid, next);
 						},
 						function(next) {
-							db.delete('notifications:' + nid, next)
+							db.delete('notifications:' + nid, next);
 						}
 					], function(err) {
 						numPruned++;
