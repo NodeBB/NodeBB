@@ -1,143 +1,28 @@
 "use strict";
 
-var nconf = require('nconf'),
-	fs = require('fs'),
-	path = require('path'),
-	winston = require('winston'),
-	async = require('async'),
 
-	db = require('./../database'),
-	user = require('./../user'),
-	groups = require('../groups'),
-	topics = require('./../topics'),
-	pkg = require('./../../package'),
-	categories = require('./../categories'),
-	meta = require('./../meta'),
-	plugins = require('./../plugins'),
-	widgets = require('./../widgets'),
-	image = require('./../image'),
-	file = require('./../file'),
-	Languages = require('./../languages'),
-	events = require('./../events'),
-	utils = require('./../../public/src/utils'),
-	templates = require('./../../public/src/templates');
-
-
-function uploadImage(filename, req, res) {
-	function done(err, image) {
-		var er, rs;
-		fs.unlink(req.files.userPhoto.path);
-
-		if(err) {
-			er = {error: err.message};
-			return res.send(req.xhr ? er : JSON.stringify(er));
-		}
-
-		rs = {path: image.url};
-		res.send(req.xhr ? rs : JSON.stringify(rs));
-	}
-
-	if(plugins.hasListeners('filter:uploadImage')) {
-		plugins.fireHook('filter:uploadImage', req.files.userPhoto, done);
-	} else {
-		file.saveFileToLocal(filename, req.files.userPhoto.path, done);
-	}
-}
-
-function uploadCategoryPicture(req, res, next) {
-	if (!req.user) {
-		return res.redirect('/403');
-	}
-
-	var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'],
-		params = null, er;
-	try {
-		params = JSON.parse(req.body.params);
-	} catch (e) {
-		er = {
-			error: 'Error uploading file! Error :' + e.message
-		};
-		return res.send(req.xhr ? er : JSON.stringify(er));
-	}
-
-	if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
-		er = {
-			error: 'Allowed image types are png, jpg and gif!'
-		};
-		res.send(req.xhr ? er : JSON.stringify(er));
-		return;
-	}
-
-	var filename =  'category-' + params.cid + path.extname(req.files.userPhoto.name);
-
-	uploadImage(filename, req, res);
-}
-
-function uploadFavicon(req, res, next) {
-	if (!req.user) {
-		return res.redirect('/403');
-	}
-
-	var allowedTypes = ['image/x-icon', 'image/vnd.microsoft.icon'],
-		er;
-
-	if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
-		er = {error: 'You can only upload icon file type!'};
-		res.send(req.xhr ? er : JSON.stringify(er));
-		return;
-	}
-
-	file.saveFileToLocal('favicon.ico', req.files.userPhoto.path, function(err, image) {
-		fs.unlink(req.files.userPhoto.path);
-
-		if(err) {
-			er = {error: err.message};
-			return res.send(req.xhr ? er : JSON.stringify(er));
-		}
-
-		var rs = {path: image.url};
-		res.send(req.xhr ? rs : JSON.stringify(rs));
-	});
-}
-
-function uploadLogo(req, res, next) {
-	if (!req.user) {
-		return res.redirect('/403');
-	}
-
-	var allowedTypes = ['image/png', 'image/jpeg', 'image/pjpeg', 'image/jpg', 'image/gif'],
-		er;
-
-	if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
-		er = {error: 'Allowed image types are png, jpg and gif!'};
-		res.send(req.xhr ? er : JSON.stringify(er));
-		return;
-	}
-
-	var filename = 'site-logo' + path.extname(req.files.userPhoto.name);
-
-	uploadImage(filename, req, res);
-}
-
-function getUsersCSV(req, res, next) {
-	user.getUsersCSV(function(err, data) {
-		res.attachment('users.csv');
-		res.setHeader('Content-Type', 'text/csv');
-		res.end(data);
-	});
-}
-
-module.exports = function(app, middleware, controllers) {
-	app.all('/api/admin/*', middleware.admin.isAdmin, middleware.prepareAPI);
-	app.all('/admin/*', middleware.admin.isAdmin);
-	app.get('/admin', middleware.admin.isAdmin);
-
-
-
+function mainRoutes(app, middleware, controllers) {
 	app.get('/admin/', middleware.admin.buildHeader, controllers.admin.home);
 	app.get('/admin/index', middleware.admin.buildHeader, controllers.admin.home);
 	app.get('/api/admin/index', controllers.admin.home);
 
+	app.get('/admin/plugins', middleware.admin.buildHeader, controllers.admin.plugins.get);
+	app.get('/api/admin/plugins', controllers.admin.plugins.get);
+
+	app.get('/admin/settings', middleware.admin.buildHeader, controllers.admin.settings.get);
+	app.get('/api/admin/settings', controllers.admin.settings.get);
+
+	app.get('/admin/themes', middleware.admin.buildHeader, controllers.admin.themes.get);
+	app.get('/api/admin/themes', controllers.admin.themes.get);
+
+	app.get('/admin/languages', middleware.admin.buildHeader, controllers.admin.languages.get);
+	app.get('/api/admin/languages', controllers.admin.languages.get);
+
+	app.get('/admin/groups', middleware.admin.buildHeader, controllers.admin.groups.get);
+	app.get('/api/admin/groups', controllers.admin.groups.get);
+}
+
+function userRoutes(app, middleware, controllers) {
 	app.get('/admin/users/search', middleware.admin.buildHeader, controllers.admin.users.search);
 	app.get('/api/admin/users/search', controllers.admin.users.search);
 
@@ -152,7 +37,9 @@ module.exports = function(app, middleware, controllers) {
 
 	app.get('/admin/users', middleware.admin.buildHeader, controllers.admin.users.sortByJoinDate);
 	app.get('/api/admin/users', controllers.admin.users.sortByJoinDate);
+}
 
+function forumRoutes(app, middleware, controllers) {
 	app.get('/admin/categories/active', middleware.admin.buildHeader, controllers.admin.categories.active);
 	app.get('/api/admin/categories/active', controllers.admin.categories.active);
 
@@ -161,37 +48,38 @@ module.exports = function(app, middleware, controllers) {
 
 	app.get('/admin/topics', middleware.admin.buildHeader, controllers.admin.topics.get);
 	app.get('/api/admin/topics', controllers.admin.topics.get);
+}
 
+function apiRoutes(app, middleware, controllers) {
+	// todo, needs to be in api namespace
+	app.get('/admin/users/csv', controllers.admin.users.getCSV);
+
+	app.post('/admin/category/uploadpicture', controllers.admin.uploads.uploadCategoryPicture);
+	app.post('/admin/uploadfavicon', controllers.admin.uploads.uploadFavicon);
+	app.post('/admin/uploadlogo', controllers.admin.uploads.uploadLogo);
+}
+
+function miscRoutes(app, middleware, controllers) {
 	app.get('/admin/database', middleware.admin.buildHeader, controllers.admin.database.get);
 	app.get('/api/admin/database', controllers.admin.database.get);
 
 	app.get('/admin/events', middleware.admin.buildHeader, controllers.admin.events.get);
 	app.get('/api/admin/events', controllers.admin.events.get);
 
-	app.get('/admin/plugins', middleware.admin.buildHeader, controllers.admin.plugins.get);
-	app.get('/api/admin/plugins', controllers.admin.plugins.get);
-
-	app.get('/admin/languages', middleware.admin.buildHeader, controllers.admin.languages.get);
-	app.get('/api/admin/languages', controllers.admin.languages.get);
-
-	app.get('/admin/settings', middleware.admin.buildHeader, controllers.admin.settings.get);
-	app.get('/api/admin/settings', controllers.admin.settings.get);
-
 	app.get('/admin/logger', middleware.admin.buildHeader, controllers.admin.logger.get);
 	app.get('/api/admin/logger', controllers.admin.logger.get);
-
-	app.get('/admin/themes', middleware.admin.buildHeader, controllers.admin.themes.get);
-	app.get('/api/admin/themes', controllers.admin.themes.get);
-
-	app.get('/admin/groups', middleware.admin.buildHeader, controllers.admin.groups.get);
-	app.get('/api/admin/groups', controllers.admin.groups.get);
+}
 
 
-	app.namespace('/admin', function () {
-		app.get('/users/csv', getUsersCSV);
 
-		app.post('/category/uploadpicture', uploadCategoryPicture);
-		app.post('/uploadfavicon', uploadFavicon);
-		app.post('/uploadlogo', uploadLogo);
-	});
+module.exports = function(app, middleware, controllers) {
+	app.all('/api/admin/*', middleware.admin.isAdmin, middleware.prepareAPI);
+	app.all('/admin/*', middleware.admin.isAdmin);
+	app.get('/admin', middleware.admin.isAdmin);
+	
+	mainRoutes(app, middleware, controllers);
+	userRoutes(app, middleware, controllers);
+	forumRoutes(app, middleware, controllers);
+	apiRoutes(app, middleware, controllers);
+	miscRoutes(app, middleware, controllers);
 };

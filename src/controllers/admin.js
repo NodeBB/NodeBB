@@ -1,6 +1,8 @@
 "use strict";
 
 var async = require('async'),
+	fs = require('fs'),
+	path = require('path'),
 
 	user = require('./../user'),
 	categories = require('./../categories'),
@@ -11,7 +13,11 @@ var async = require('async'),
 	plugins = require('./../plugins'),
 	widgets = require('./../widgets'),
 	groups = require('./../groups'),
-	pkg = require('./../../package.json');
+	pkg = require('./../../package.json'),	
+	image = require('./../image'),
+	file = require('./../file');
+
+
 
 var adminController = {
 	users: {},
@@ -24,7 +30,8 @@ var adminController = {
 	plugins: {},
 	languages: {},
 	settings: {},
-	logger: {}
+	logger: {},
+	uploads: {}
 };
 
 adminController.home = function(req, res, next) {
@@ -83,6 +90,14 @@ adminController.users.sortByJoinDate = function(req, res, next) {
 			users: users,
 			yourid: req.user.uid
 		});
+	});
+};
+
+adminController.users.getCSV = function(req, res, next) {
+	user.getUsersCSV(function(err, data) {
+		res.attachment('users.csv');
+		res.setHeader('Content-Type', 'text/csv');
+		res.end(data);
 	});
 };
 
@@ -213,5 +228,102 @@ adminController.groups.get = function(req, res, next) {
 		});
 	});
 };
+
+adminController.uploads.uploadImage = function(filename, req, res) {
+	function done(err, image) {
+		var er, rs;
+		fs.unlink(req.files.userPhoto.path);
+
+		if(err) {
+			er = {error: err.message};
+			return res.send(req.xhr ? er : JSON.stringify(er));
+		}
+
+		rs = {path: image.url};
+		res.send(req.xhr ? rs : JSON.stringify(rs));
+	}
+
+	if(plugins.hasListeners('filter:uploadImage')) {
+		plugins.fireHook('filter:uploadImage', req.files.userPhoto, done);
+	} else {
+		file.saveFileToLocal(filename, req.files.userPhoto.path, done);
+	}
+};
+
+adminController.uploads.uploadCategoryPicture = function(req, res, next) {
+	if (!req.user) {
+		return res.redirect('/403');
+	}
+
+	var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'],
+		params = null, er;
+	try {
+		params = JSON.parse(req.body.params);
+	} catch (e) {
+		er = {
+			error: 'Error uploading file! Error :' + e.message
+		};
+		return res.send(req.xhr ? er : JSON.stringify(er));
+	}
+
+	if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
+		er = {
+			error: 'Allowed image types are png, jpg and gif!'
+		};
+		res.send(req.xhr ? er : JSON.stringify(er));
+		return;
+	}
+
+	var filename =  'category-' + params.cid + path.extname(req.files.userPhoto.name);
+
+	adminController.uploads.uploadImage(filename, req, res);
+};
+
+adminController.uploads.uploadFavicon = function(req, res, next) {
+	if (!req.user) {
+		return res.redirect('/403');
+	}
+
+	var allowedTypes = ['image/x-icon', 'image/vnd.microsoft.icon'],
+		er;
+
+	if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
+		er = {error: 'You can only upload icon file type!'};
+		res.send(req.xhr ? er : JSON.stringify(er));
+		return;
+	}
+
+	file.saveFileToLocal('favicon.ico', req.files.userPhoto.path, function(err, image) {
+		fs.unlink(req.files.userPhoto.path);
+
+		if(err) {
+			er = {error: err.message};
+			return res.send(req.xhr ? er : JSON.stringify(er));
+		}
+
+		var rs = {path: image.url};
+		res.send(req.xhr ? rs : JSON.stringify(rs));
+	});
+};
+
+adminController.uploads.uploadLogo = function(req, res, next) {
+	if (!req.user) {
+		return res.redirect('/403');
+	}
+
+	var allowedTypes = ['image/png', 'image/jpeg', 'image/pjpeg', 'image/jpg', 'image/gif'],
+		er;
+
+	if (allowedTypes.indexOf(req.files.userPhoto.type) === -1) {
+		er = {error: 'Allowed image types are png, jpg and gif!'};
+		res.send(req.xhr ? er : JSON.stringify(er));
+		return;
+	}
+
+	var filename = 'site-logo' + path.extname(req.files.userPhoto.name);
+
+	adminController.uploads.uploadImage(filename, req, res);
+};
+
 
 module.exports = adminController;
