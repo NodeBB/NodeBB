@@ -12,26 +12,20 @@ var posts = require('./../posts'),
 
 function hasTopicPrivileges(req, res, next) {
 	var tid = req.params.topic_id;
-	var uid = req.user ? req.user.uid || 0 : 0;
 
-	ThreadTools.privileges(tid, uid, function(err, privileges) {
-		if(err) {
-			return next(err);
-		}
-
-		if(!privileges.read) {
-			return res.redirect('403');
-		}
-
-		return next();
-	});
+	hasPrivileges(ThreadTools, tid, req, res, next);
 }
 
 function hasCategoryPrivileges(req, res, next) {
 	var cid = req.params.category_id;
+
+	hasPrivileges(CategoryTools, cid, req, res, next);
+}
+
+function hasPrivileges(module, id, req, res, next) {
 	var uid = req.user ? req.user.uid || 0 : 0;
 
-	CategoryTools.privileges(cid, uid, function(err, privileges) {
+	module.privileges(id, uid, function(err, privileges) {
 		if(err) {
 			return next(err);
 		}
@@ -97,11 +91,11 @@ function generateForCategory(req, res, next) {
 			return next(err);
 		}
 
-		var feed = generateTopicFeed({
+		var feed = generateTopicsFeed({
 			title: categoryData.name,
 			description: categoryData.description,
-			feed_url: nconf.get('url') + '/category/' + cid + '.rss',
-			site_url: nconf.get('url') + '/category/' + categoryData.cid,
+			feed_url: '/category/' + cid + '.rss',
+			site_url: '/category/' + categoryData.cid,
 		}, categoryData.topics);
 
 		sendFeed(feed, res);
@@ -109,42 +103,41 @@ function generateForCategory(req, res, next) {
 }
 
 function generateForRecent(req, res, next) {
-	topics.getLatestTopics(0, 0, 19, 'month', function (err, recentData) {
-		if (err) {
-			return next(err);
-		}
-
-		var feed = generateTopicFeed({
-			title: 'Recently Active Topics',
-			description: 'A list of topics that have been active within the past 24 hours',
-			feed_url: nconf.get('url') + '/recent.rss',
-			site_url: nconf.get('url') + '/recent'
-		}, recentData.topics);
-
-		sendFeed(feed, res);
-	});
+	generateForTopics({
+		title: 'Recently Active Topics',
+		description: 'A list of topics that have been active within the past 24 hours',
+		feed_url: '/recent.rss',
+		site_url: '/recent'
+	}, 'topics:recent', res, next);
 }
 
 function generateForPopular(req, res, next) {
-	topics.getTopicsFromSet(0, 'topics:posts', 0, 19, function (err, popularData) {
+	generateForTopics({
+		title: 'Popular Topics',
+		description: 'A list of topics that are sorted by post count',
+		feed_url: '/popular.rss',
+		site_url: '/popular'
+	}, 'topics:posts', res, next);
+}
+
+function generateForTopics(options, set, res, next) {
+	topics.getTopicsFromSet(0, set, 0, 19, function (err, data) {
 		if (err) {
 			return next(err);
 		}
 
-		var feed = generateTopicFeed({
-			title: 'Popular Topics',
-			description: 'A list of topics that are sorted by post count',
-			feed_url: nconf.get('url') + '/popular.rss',
-			site_url: nconf.get('url') + '/popular'
-		}, popularData.topics);
+		var feed = generateTopicsFeed(options, data.topics);
 
 		sendFeed(feed, res);
 	});
 }
 
-function generateTopicFeed(feedOptions, topics) {
+function generateTopicsFeed(feedOptions, topics) {
 
 	feedOptions.ttl = 60;
+	feedOptions.feed_url = nconf.get('url') + feedOptions.feed_url;
+	feedOptions.site_url = nconf.get('url') + feedOptions.site_url;
+
 	var	feed = new rss(feedOptions);
 
 	if (topics.length > 0) {
