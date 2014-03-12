@@ -141,8 +141,7 @@ function start() {
 						webserver.init();
 					});
 
-					// Temporarily removed until ncb000gt/node-cron/issues/81 and ncb000gt/node-cron/issues/83 are fixed
-					// notifications.init();
+					notifications.init();
 
 					process.on('SIGTERM', shutdown);
 					process.on('SIGINT', shutdown);
