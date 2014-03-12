@@ -17,7 +17,7 @@ SocketMeta.reconnected = function(socket) {
 
 	if (uid) {
 		topics.pushUnreadCount(uid);
-		user.pushNotifCount(uid);
+		user.notifications.pushCount(uid);
 	}
 
 	if (process.env.NODE_ENV === 'development') {

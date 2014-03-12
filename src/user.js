@@ -13,12 +13,15 @@ var bcrypt = require('bcryptjs'),
 	db = require('./database'),
 	meta = require('./meta'),
 	groups = require('./groups'),
-	notifications = require('./notifications'),
 	topics = require('./topics'),
 	events = require('./events'),
 	Emailer = require('./emailer');
 
 (function(User) {
+
+	User.email = require('./useremail');
+	User.notifications = require('./usernotifications');
+	User.reset = require('./userreset');
 
 	User.create = function(userData, callback) {
 		userData = userData || {};
@@ -753,26 +756,7 @@ var bcrypt = require('bcryptjs'),
 	};
 
 
-	User.sendPostNotificationToFollowers = function(uid, tid, pid) {
-		User.getUserField(uid, 'username', function(err, username) {
-			db.getSetMembers('followers:' + uid, function(err, followers) {
-				if (followers && followers.length) {
-					topics.getTopicField(tid, 'slug', function(err, slug) {
-						var message = '<strong>' + username + '</strong> made a new post';
 
-						notifications.create({
-							text: message,
-							path: nconf.get('relative_path') + '/topic/' + slug + '#' + pid,
-							uniqueId: 'topic:' + tid,
-							from: uid
-						}, function(nid) {
-							notifications.push(nid, followers);
-						});
-					});
-				}
-			});
-		});
-	};
 
 	User.isFollowing = function(uid, theirid, callback) {
 		db.isSetMember('following:' + uid, theirid, callback);
@@ -841,102 +825,6 @@ var bcrypt = require('bcryptjs'),
 		groups.isMemberByGroupName(uid, 'administrators', callback);
 	};
 
-	User.reset = {
-		validate: function(socket, code, callback) {
-
-			db.getObjectField('reset:uid', code, function(err, uid) {
-				if (err) {
-					return callback(err);
-				}
-
-				if (uid !== null) {
-					db.getObjectField('reset:expiry', code, function(err, expiry) {
-						if (err) {
-							return callback(err);
-						}
-
-						if (parseInt(expiry, 10) >= Date.now() / 1000) {
-							callback(null, true);
-						} else {
-							// Expired, delete from db
-							db.deleteObjectField('reset:uid', code);
-							db.deleteObjectField('reset:expiry', code);
-							callback(null, false);
-						}
-					});
-				} else {
-					callback(null, false);
-				}
-			});
-		},
-		send: function(socket, email, callback) {
-			User.getUidByEmail(email, function(err, uid) {
-				if(err) {
-					return callback(err);
-				}
-
-				if(!uid) {
-					return callback(new Error('invalid-email'));
-				}
-
-				// Generate a new reset code
-				var reset_code = utils.generateUUID();
-				db.setObjectField('reset:uid', reset_code, uid);
-				db.setObjectField('reset:expiry', reset_code, (60 * 60) + Math.floor(Date.now() / 1000));
-
-				var reset_link = nconf.get('url') + '/reset/' + reset_code;
-
-				Emailer.send('reset', uid, {
-					'site_title': (meta.config.title || 'NodeBB'),
-					'reset_link': reset_link,
-
-					subject: 'Password Reset Requested - ' + (meta.config.title || 'NodeBB') + '!',
-					template: 'reset',
-					uid: uid
-				});
-
-				callback(null);
-			});
-		},
-		commit: function(socket, code, password, callback) {
-			this.validate(socket, code, function(err, validated) {
-				if(err) {
-					return callback(err);
-				}
-
-				if (validated) {
-					db.getObjectField('reset:uid', code, function(err, uid) {
-						if (err) {
-							return callback(err);
-						}
-
-						User.hashPassword(password, function(err, hash) {
-							User.setUserField(uid, 'password', hash);
-							events.logPasswordReset(uid);
-						});
-
-						db.deleteObjectField('reset:uid', code);
-						db.deleteObjectField('reset:expiry', code);
-
-						callback(null);
-					});
-				}
-			});
-		}
-	};
-
-	User.pushNotifCount = function(uid) {
-		var	websockets = require('./socket.io');
-
-		User.notifications.getUnreadCount(uid, function(err, count) {
-			if (!err) {
-				websockets.in('uid_' + uid).emit('event:notifications.updateCount', count);
-			} else {
-				winston.warn('[User.pushNotifCount] Count not retrieve unread notifications count to push to uid ' + uid + '\'s client(s)');
-			}
-		});
-	};
-
 	User.logIP = function(uid, ip) {
 		db.sortedSetAdd('uid:' + uid + ':ip', +new Date(), ip || 'Unknown');
 	};
@@ -953,197 +841,5 @@ var bcrypt = require('bcryptjs'),
 		});
 	};
 
-	User.email = {
-		verify: function(uid, email) {
-			if (!plugins.hasListeners('action:email.send')) {
-				return;
-			}
 
-			var confirm_code = utils.generateUUID(),
-				confirm_link = nconf.get('url') + '/confirm/' + confirm_code;
-
-			async.series([
-				function(next) {
-					db.setObject('confirm:' + confirm_code, {
-						email: email,
-						uid: uid
-					}, next);
-				},
-				function(next) {
-					db.expireAt('confirm:' + confirm_code, Math.floor(Date.now() / 1000 + 60 * 60 * 2), next);
-				}
-			], function(err) {
-				// Send intro email w/ confirm code
-				User.getUserField(uid, 'username', function(err, username) {
-					Emailer.send('welcome', uid, {
-						'site_title': (meta.config.title || 'NodeBB'),
-						username: username,
-						'confirm_link': confirm_link,
-
-						subject: 'Welcome to ' + (meta.config.title || 'NodeBB') + '!',
-						template: 'welcome',
-						uid: uid
-					});
-				});
-			});
-		},
-		exists: function(email, callback) {
-			User.getUidByEmail(email, function(err, exists) {
-				callback(err, !!exists);
-			});
-		},
-		confirm: function(code, callback) {
-			db.getObject('confirm:' + code, function(err, confirmObj) {
-				if (err) {
-					return callback({
-						status:'error'
-					});
-				}
-
-				if (confirmObj && confirmObj.uid && confirmObj.email) {
-					db.setObjectField('email:confirmed', confirmObj.email, '1', function() {
-						callback({
-							status: 'ok'
-						});
-					});
-				} else {
-					callback({
-						status: 'not_ok'
-					});
-				}
-			});
-		},
-		available: function(email, callback) {
-			db.isObjectField('email:uid', email, function(err, exists) {
-				callback(err, !exists);
-			});
-		}
-	};
-
-	User.notifications = {
-		get: function(uid, callback) {
-
-			function getNotifications(set, start, stop, iterator, done) {
-				db.getSortedSetRevRange(set, start, stop, function(err, nids) {
-					if(err) {
-						return done(err);
-					}
-
-					if(!nids || nids.length === 0) {
-						return done(null, []);
-					}
-
-					if (nids.length > maxNotifs) {
-						nids.length = maxNotifs;
-					}
-
-					async.map(nids, function(nid, next) {
-						notifications.get(nid, uid, function(notif_data) {
-							if(typeof iterator === 'function') {
-								iterator(notif_data);
-							}
-
-							next(null, notif_data);
-						});
-					}, done);
-				});
-			}
-
-			var maxNotifs = 15;
-
-			async.parallel({
-				unread: function(next) {
-					getNotifications('uid:' + uid + ':notifications:unread', 0, 9, function(notif_data) {
-						if (notif_data) {
-							notif_data.readClass = !notif_data.read ? 'label-warning' : '';
-						}
-					}, next);
-				},
-				read: function(next) {
-					getNotifications('uid:' + uid + ':notifications:read', 0, 9, null, next);
-				}
-			}, function(err, notifications) {
-				if(err) {
-					return callback(err);
-				}
-
-				// Remove empties
-				notifications.read = notifications.read.filter(function(notifObj) {
-					return notifObj;
-				});
-				notifications.unread = notifications.unread.filter(function(notifObj) {
-					return notifObj;
-				});
-
-				// Limit the number of notifications to `maxNotifs`, prioritising unread notifications
-				if (notifications.read.length + notifications.unread.length > maxNotifs) {
-					notifications.read.length = maxNotifs - notifications.unread.length;
-				}
-
-				callback(null, notifications);
-			});
-		},
-		getAll: function(uid, limit, before, callback) {
-			var	now = new Date();
-
-			if (!limit || parseInt(limit, 10) <= 0) {
-				limit = 25;
-			}
-			if (before) {
-				before = new Date(parseInt(before, 10));
-			}
-
-			var args1 = ['uid:' + uid + ':notifications:read', before ? before.getTime(): now.getTime(), -Infinity, 'LIMIT', 0, limit];
-			var args2 = ['uid:' + uid + ':notifications:unread', before ? before.getTime(): now.getTime(), -Infinity, 'LIMIT', 0, limit];
-
-			db.getSortedSetRevRangeByScore(args1, function(err, results1) {
-				db.getSortedSetRevRangeByScore(args2, function(err, results2) {
-
-					var nids = results1.concat(results2);
-					async.map(nids, function(nid, next) {
-						notifications.get(nid, uid, function(notif_data) {
-							next(null, notif_data);
-						});
-					}, function(err, notifs) {
-						notifs = notifs.filter(function(notif) {
-							return notif !== null;
-						}).sort(function(a, b) {
-							return parseInt(b.datetime, 10) - parseInt(a.datetime, 10);
-						}).map(function(notif) {
-							notif.datetimeISO = utils.toISOString(notif.datetime);
-							notif.readClass = !notif.read ? 'label-warning' : '';
-
-							return notif;
-						});
-
-						callback(err, notifs);
-					});
-				});
-			});
-
-		},
-		getUnreadCount: function(uid, callback) {
-			db.sortedSetCount('uid:' + uid + ':notifications:unread', -Infinity, Infinity, callback);
-		},
-		getUnreadByUniqueId: function(uid, uniqueId, callback) {
-			db.getSortedSetRange('uid:' + uid + ':notifications:unread', 0, -1, function(err, nids) {
-
-				async.filter(nids, function(nid, next) {
-					notifications.get(nid, uid, function(notifObj) {
-						if(!notifObj) {
-							return next(false);
-						}
-
-						if (notifObj.uniqueId === uniqueId) {
-							next(true);
-						} else {
-							next(false);
-						}
-					});
-				}, function(nids) {
-					callback(null, nids);
-				});
-			});
-		}
-	};
 }(exports));

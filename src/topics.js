@@ -206,7 +206,7 @@ var async = require('async'),
 				postData = data;
 				threadTools.notifyFollowers(tid, postData.pid, uid);
 
-				user.sendPostNotificationToFollowers(uid, tid, postData.pid);
+				user.notifications.sendPostNotificationToFollowers(uid, tid, postData.pid);
 
 				next();
 			},
@@ -878,7 +878,7 @@ var async = require('async'),
 
 		user.notifications.getUnreadByUniqueId(uid, 'topic:' + tid, function(err, nids) {
 			notifications.mark_read_multiple(nids, uid, function() {
-				user.pushNotifCount(uid);
+				user.notifications.pushCount(uid);
 			});
 		});
 	};
