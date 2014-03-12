@@ -632,22 +632,21 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 			'event:topic.replyStart', 'event:topic.replyStop'
 		]);
 
-		socket.on('get_users_in_room', function(data) {
+		function createUserIcon(uid, picture, userslug, username) {
+			if(!$('.thread_active_users').find('[data-uid="' + uid + '"]').length) {
+				var div = $('<div class="inline-block"><a data-uid="' + uid + '" href="' + RELATIVE_PATH + '/user/' + userslug + '"><img src="'+ picture +'"/></a></div>');
+				div.find('a').tooltip({
+					placement: 'top',
+					title: username
+				});
 
+				return div;
+			}
+		}
+		
+		socket.on('get_users_in_room', function(data) {
 			if(data && data.room.indexOf('topic') !== -1) {
 				var activeEl = $('.thread_active_users');
-
-				function createUserIcon(uid, picture, userslug, username) {
-					if(!activeEl.find('[data-uid="' + uid + '"]').length) {
-						var div = $('<div class="inline-block"><a data-uid="' + uid + '" href="' + RELATIVE_PATH + '/user/' + userslug + '"><img src="'+ picture +'"/></a></div>');
-						div.find('a').tooltip({
-							placement: 'top',
-							title: username
-						});
-
-						return div;
-					}
-				}
 
 				// remove users that are no longer here
 				activeEl.find('a').each(function(index, element) {
