@@ -1,8 +1,6 @@
 "use strict";
 
 var async = require('async'),
-	fs = require('fs'),
-	path = require('path'),
 
 	user = require('./../user'),
 	categories = require('./../categories'),
@@ -13,14 +11,11 @@ var async = require('async'),
 	plugins = require('./../plugins'),
 	widgets = require('./../widgets'),
 	groups = require('./../groups'),
-	pkg = require('./../../package.json'),	
-	image = require('./../image'),
-	file = require('./../file');
+	pkg = require('./../../package.json');
 
 
 
 var adminController = {
-	users: {},
 	categories: {},
 	topics: {},
 	groups: {},
@@ -31,7 +26,8 @@ var adminController = {
 	languages: {},
 	settings: {},
 	logger: {},
-	uploads: {}
+	users: require('./admin/users'),
+	uploads: require('./admin/uploads')
 };
 
 adminController.home = function(req, res, next) {
@@ -39,65 +35,6 @@ adminController.home = function(req, res, next) {
 		version: pkg.version,
 		emailerInstalled: plugins.hasListeners('action:email.send'),
 		searchInstalled: plugins.hasListeners('filter:search.query')
-	});
-};
-
-adminController.users.search = function(req, res, next) {
-	res.render('admin/users', {
-		search_display: 'block',
-		loadmore_display: 'none',
-		users: []
-	});
-};
-
-adminController.users.latest = function(req, res, next) {
-	user.getUsers('users:joindate', 0, 49, function(err, users) {
-		res.render('admin/users', {
-			search_display: 'none',
-			loadmore_display: 'block',
-			users: users,
-			yourid: req.user.uid
-		});
-	});
-};
-
-adminController.users.sortByPosts = function(req, res, next) {
-	user.getUsers('users:postcount', 0, 49, function(err, users) {
-		res.render('admin/users', {
-			search_display: 'none',
-			loadmore_display: 'block',
-			users: users,
-			yourid: req.user.uid
-		});
-	});
-};
-
-adminController.users.sortByReputation = function(req, res, next) {
-	user.getUsers('users:reputation', 0, 49, function(err, users) {
-		res.render('admin/users', {
-			search_display: 'none',
-			loadmore_display: 'block',
-			users: users,
-			yourid: req.user.uid
-		});
-	});
-};
-
-adminController.users.sortByJoinDate = function(req, res, next) {
-	user.getUsers('users:joindate', 0, 49, function(err, users) {
-		res.render('admin/users', {
-			search_display: 'none',
-			users: users,
-			yourid: req.user.uid
-		});
-	});
-};
-
-adminController.users.getCSV = function(req, res, next) {
-	user.getUsersCSV(function(err, data) {
-		res.attachment('users.csv');
-		res.setHeader('Content-Type', 'text/csv');
-		res.end(data);
 	});
 };
 
@@ -228,86 +165,5 @@ adminController.groups.get = function(req, res, next) {
 		});
 	});
 };
-
-function validateUpload(type, allowedTypes) {
-	if (allowedTypes.indexOf(type) === -1) {
-		var err = {
-			error: 'Invalid image type. Allowed types are: ' + allowedTypes.join(',')
-		};
-
-		res.send(req.xhr ? err : JSON.stringify(err));
-		return false;
-	}
-
-	return true;
-}
-
-adminController.uploads.uploadImage = function(filename, req, res) {
-	function done(err, image) {
-		var er, rs;
-		fs.unlink(req.files.userPhoto.path);
-
-		if(err) {
-			er = {error: err.message};
-			return res.send(req.xhr ? er : JSON.stringify(er));
-		}
-
-		rs = {path: image.url};
-		res.send(req.xhr ? rs : JSON.stringify(rs));
-	}
-
-	if(plugins.hasListeners('filter:uploadImage')) {
-		plugins.fireHook('filter:uploadImage', req.files.userPhoto, done);
-	} else {
-		file.saveFileToLocal(filename, req.files.userPhoto.path, done);
-	}
-};
-
-adminController.uploads.uploadCategoryPicture = function(req, res, next) {
-	var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'],
-		params = null;
-
-	try {
-		params = JSON.parse(req.body.params);
-	} catch (e) {
-		var err = {
-			error: 'Error uploading file! Error :' + e.message
-		};
-		return res.send(req.xhr ? err : JSON.stringify(err));
-	}
-
-	if (validateUpload(req.files.userPhoto.type, allowedTypes)) {
-		var filename =  'category-' + params.cid + path.extname(req.files.userPhoto.name);
-		adminController.uploads.uploadImage(filename, req, res);
-	}
-};
-
-adminController.uploads.uploadFavicon = function(req, res, next) {
-	var allowedTypes = ['image/x-icon', 'image/vnd.microsoft.icon'];
-
-	if (validateUpload(req.files.userPhoto.type, allowedTypes)) {
-		file.saveFileToLocal('favicon.ico', req.files.userPhoto.path, function(err, image) {
-			fs.unlink(req.files.userPhoto.path);
-
-			if(err) {
-				return res.send(req.xhr ? err : JSON.stringify(err));
-			}
-
-			var rs = {path: image.url};
-			res.send(req.xhr ? rs : JSON.stringify(rs));
-		});
-	}
-};
-
-adminController.uploads.uploadLogo = function(req, res, next) {
-	var allowedTypes = ['image/png', 'image/jpeg', 'image/pjpeg', 'image/jpg', 'image/gif'],
-		er;
-
-	if (validateUpload(req.files.userPhoto.type, allowedTypes)) {
-		var filename = 'site-logo' + path.extname(req.files.userPhoto.name);
-		adminController.uploads.uploadImage(filename, req, res);
-	}	
-};
-
 
 module.exports = adminController;
