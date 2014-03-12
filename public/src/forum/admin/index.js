@@ -1,3 +1,6 @@
+"use strict";
+/*global define, ajaxify, app, socket, RELATIVE_PATH*/
+
 define(function() {
 	var	Admin = {};
 
@@ -43,7 +46,9 @@ define(function() {
 
 			var uniqueVisitors = $('#unique-visitors');
 			for(var key in data) {
-				uniqueVisitors.find('#' + key).text(data[key]);
+				if (data.hasOwnProperty(key)) {
+					uniqueVisitors.find('#' + key).text(data[key]);
+				}
 			}
 
 		});
@@ -54,7 +59,9 @@ define(function() {
 		function getUserCountIn(room) {
 			var count = 0;
 			for(var user in data[room]) {
-				++count;
+				if (data[room].hasOwnProperty(user)) {
+					++count;
+				}
 			}
 			return count;
 		}
