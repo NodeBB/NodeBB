@@ -79,34 +79,30 @@ SocketPosts.reply = function(socket, data, callback) {
 };
 
 SocketPosts.upvote = function(socket, data) {
-	if(data && data.pid && data.room_id) {
-		favourites.upvote(data.pid, data.room_id, socket.uid, socket);
-	}
+	favouriteCommand('upvote', socket, data);
 };
 
 SocketPosts.downvote = function(socket, data) {
-	if(data && data.pid && data.room_id) {
-		favourites.downvote(data.pid, data.room_id, socket.uid, socket);
-	}
+	favouriteCommand('downvote', socket, data);
 };
 
 SocketPosts.unvote = function(socket, data) {
-	if(data && data.pid && data.room_id) {
-		favourites.unvote(data.pid, data.room_id, socket.uid, socket);
-	}
+	favouriteCommand('unvote', socket, data);
 };
 
 SocketPosts.favourite = function(socket, data) {
-	if(data && data.pid && data.room_id) {
-		favourites.favourite(data.pid, data.room_id, socket.uid, socket);
-	}
+	favouriteCommand('favourite', socket, data);
 };
 
 SocketPosts.unfavourite = function(socket, data) {
-	if(data && data.pid && data.room_id) {
-		favourites.unfavourite(data.pid, data.room_id, socket.uid, socket);
-	}
+	favouriteCommand('unfavourite', socket, data);
 };
+
+function favouriteCommand(command, socket, data) {
+	if(data && data.pid && data.room_id) {
+		favourites[command](data.pid, data.room_id, socket.uid, socket);
+	}
+}
 
 SocketPosts.uploadImage = function(socket, data, callback) {
 	if(data) {
@@ -170,51 +166,40 @@ SocketPosts.edit = function(socket, data, callback) {
 };
 
 SocketPosts.delete = function(socket, data, callback) {
-	if(!data) {
-		return callback(new Error('invalid data'));
-	}
-
-	postTools.delete(socket.uid, data.pid, function(err) {
-
-		if(err) {
-			return callback(err);
-		}
-
-		module.parent.exports.emitTopicPostStats();
-
-		index.server.sockets.in('topic_' + data.tid).emit('event:post_deleted', {
-			pid: data.pid
-		});
-		callback();
-	});
+	deleteOrRestore('delete', socket, data, callback);
 };
 
 SocketPosts.restore = function(socket, data, callback) {
+	deleteOrRestore('restore', socket, data, callback);
+};
+
+function deleteOrRestore(command, socket, data, callback) {
 	if(!data) {
 		return callback(new Error('invalid data'));
 	}
 
-	postTools.restore(socket.uid, data.pid, function(err) {
+	postTools[command](socket.uid, data.pid, function(err) {
 		if(err) {
 			return callback(err);
 		}
 
 		module.parent.exports.emitTopicPostStats();
 
-		index.server.sockets.in('topic_' + data.tid).emit('event:post_restored', {
+		var eventName = command === 'restore' ? 'event:post_restored' : 'event:post_deleted';
+		index.server.sockets.in('topic_' + data.tid).emit(eventName, {
 			pid: data.pid
 		});
 
 		callback();
 	});
-};
+}
 
 SocketPosts.getPrivileges = function(socket, pid, callback) {
 	postTools.privileges(pid, socket.uid, function(err, privileges) {
 		if(err) {
 			return callback(err);
 		}
-		privileges.pid = parseInt(pid);
+		privileges.pid = parseInt(pid, 10);
 		callback(null, privileges);
 	});
 };
@@ -247,9 +232,8 @@ SocketPosts.getFavouritedUsers = function(socket, pid, callback) {
 				return callback(err);
 			}
 
-			finalText = usernames.join(', ') + (rest_amount > 0
-				? " and " + rest_amount + (rest_amount > 1 ? " others" : " other")
-				: "");
+			finalText = usernames.join(', ') + (rest_amount > 0 ?
+				(" and " + rest_amount + (rest_amount > 1 ? " others" : " other")) : "");
 			callback(null, finalText);
 		});
 	});
@@ -322,6 +306,7 @@ SocketPosts.loadMoreUserPosts = function(socket, data, callback) {
 
 	posts.getPostsByUid(socket.uid, data.uid, start, end, callback);
 };
+
 
 SocketPosts.getRecentPosts = function(socket, term, callback) {
 	posts.getRecentPosts(socket.uid, 0, 19, term, callback);
