@@ -21,34 +21,30 @@ define(['forum/admin/settings'], function(Settings) {
 			var target = $(e.target),
 				action = target.attr('data-action');
 
-			if (action) {
-				switch (action) {
-					case 'use':
-						var parentEl = target.parents('li'),
-							themeType = parentEl.attr('data-type'),
-							cssSrc = parentEl.attr('data-css'),
-							themeId = parentEl.attr('data-theme');
+			if (action && action === 'use') {
+				var parentEl = target.parents('li'),
+					themeType = parentEl.attr('data-type'),
+					cssSrc = parentEl.attr('data-css'),
+					themeId = parentEl.attr('data-theme');
 
-						socket.emit('admin.themes.set', {
-							type: themeType,
-							id: themeId,
-							src: cssSrc
-						}, function(err) {
-							if (err) {
-								return app.alertError(err.message);
-							}
-							highlightSelectedTheme(themeId);
+				socket.emit('admin.themes.set', {
+					type: themeType,
+					id: themeId,
+					src: cssSrc
+				}, function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					highlightSelectedTheme(themeId);
 
-							app.alert({
-								alert_id: 'admin:theme',
-								type: 'success',
-								title: 'Theme Changed',
-								message: 'Restarting your NodeBB <i class="fa fa-refresh fa-spin"></i>',
-								timeout: 3500
-							});
-						});
-						break;
-				}
+					app.alert({
+						alert_id: 'admin:theme',
+						type: 'success',
+						title: 'Theme Changed',
+						message: 'Restarting your NodeBB <i class="fa fa-refresh fa-spin"></i>',
+						timeout: 3500
+					});
+				});
 			}
 		}
 
