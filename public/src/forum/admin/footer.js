@@ -1,5 +1,7 @@
-$(function() {
+"use strict";
+/*global app, socket*/
 
+$(function() {
 	var menuEl = $('.sidebar-nav'),
 		liEls = menuEl.find('li'),
 		parentEl,

@@ -1,3 +1,6 @@
+"use strict";
+/*global define, socket, app, bootbox, templates, RELATIVE_PATH*/
+
 define(['uploader'], function(uploader) {
 	var	Categories = {};
 
@@ -36,9 +39,9 @@ define(['uploader'], function(uploader) {
 		function select_icon(el) {
 			var selected = el.attr('class').replace(' fa-2x', '');
 			$('#icons .selected').removeClass('selected');
-			if (selected)
+			if (selected) {
 				$('#icons .' + selected).parent().addClass('selected');
-
+			}
 
 			bootbox.confirm('<h2>Select an icon.</h2>' + document.getElementById('icons').innerHTML, function(confirm) {
 				if (confirm) {
@@ -119,7 +122,7 @@ define(['uploader'], function(uploader) {
 
 				templates.preload_template('admin/categories', function() {
 					templates['admin/categories'].parse({categories:[]});
-					var html = templates.prepare(templates['admin/categories'].blocks['categories']).parse({
+					var html = templates.prepare(templates['admin/categories'].blocks.categories).parse({
 						categories: [data]
 					});
 					html = $(html);
@@ -139,8 +142,12 @@ define(['uploader'], function(uploader) {
 				color: $inputEl.val() || '#000',
 				onChange: function(hsb, hex) {
 					$inputEl.val('#' + hex);
-					if ($inputEl.attr('data-name') === 'bgColor') previewEl.css('background', '#' + hex);
-					else if ($inputEl.attr('data-name') === 'color') previewEl.css('color', '#' + hex);
+					if ($inputEl.attr('data-name') === 'bgColor') {
+						previewEl.css('background', '#' + hex);
+					} else if ($inputEl.attr('data-name') === 'color') {
+						previewEl.css('color', '#' + hex);
+					}
+
 					modified($inputEl[0]);
 				}
 			});
@@ -184,7 +191,7 @@ define(['uploader'], function(uploader) {
 
 				categoryRow.remove();
 				modified_categories[cid] = modified_categories[cid] || {};
-				modified_categories[cid]['disabled'] = disabled;
+				modified_categories[cid].disabled = disabled;
 
 				save();
 				return false;
@@ -268,7 +275,7 @@ define(['uploader'], function(uploader) {
 								'<div class="btn-group">' +
 								'<button type="button" data-priv="+r" class="btn btn-default' + (resultObj.privileges['+r'] ? ' active' : '') + '">Read</button>' +
 								'<button type="button" data-priv="+w" class="btn btn-default' + (resultObj.privileges['+w'] ? ' active' : '') + '">Write</button>' +
-								'<button type="button" data-priv="mods" class="btn btn-default' + (resultObj.privileges['mods'] ? ' active' : '') + '">Moderator</button>' +
+								'<button type="button" data-priv="mods" class="btn btn-default' + (resultObj.privileges.mods ? ' active' : '') + '">Moderator</button>' +
 								'</div>' +
 								'</div>' +
 								'<img src="' + resultObj.picture + '" /> ' + resultObj.username);
@@ -360,7 +367,7 @@ define(['uploader'], function(uploader) {
 		socket.emit('admin.categories.getPrivilegeSettings', cid, function(err, privilegeList) {
 			var	readLength = privilegeList['+r'].length,
 				writeLength = privilegeList['+w'].length,
-				modLength = privilegeList['mods'].length,
+				modLength = privilegeList.mods.length,
 				liEl, x, userObj;
 
 			readMembers.html('');
@@ -390,7 +397,7 @@ define(['uploader'], function(uploader) {
 			moderatorsEl.html('');
 			if (modLength > 0) {
 				for(x = 0;x < modLength; x++) {
-					userObj = privilegeList['mods'][x];
+					userObj = privilegeList.mods[x];
 					liEl = $('<li />').attr('data-uid', userObj.uid).html('<img src="' + userObj.picture + '" title="' + userObj.username + '" />');
 					moderatorsEl.append(liEl);
 				}
