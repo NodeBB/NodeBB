@@ -165,22 +165,26 @@ var ajaxify = {};
 
 		numLocations = widgetLocations.length;
 
-		function renderWidget(err, renderedWidgets) {
-			if (area.html()) {
-				area.html(templates.prepare(area.html()).parse({
-					widgets: renderedWidgets
-				})).removeClass('hidden');
+		function renderWidgets(location) {
+			var area = $('#content [widget-area="' + location + '"]');
 
-				if (!renderedWidgets.length) {
-					$('body [no-widget-class]').each(function() {
-						var $this = $(this);
-						$this.removeClass();
-						$this.addClass($this.attr('no-widget-class'));
-					});
+			socket.emit('widgets.render', {template: tpl_url + '.tpl', url: url, location: location}, function(err, renderedWidgets) {
+				if (area.html()) {
+					area.html(templates.prepare(area.html()).parse({
+						widgets: renderedWidgets
+					})).removeClass('hidden');
+
+					if (!renderedWidgets.length) {
+						$('body [no-widget-class]').each(function() {
+							var $this = $(this);
+							$this.removeClass();
+							$this.addClass($this.attr('no-widget-class'));
+						});
+					}
 				}
-			}
 
-			checkCallback();
+				checkCallback();
+			});
 		}
 
 		function checkCallback() {
@@ -192,10 +196,7 @@ var ajaxify = {};
 
 		for (var i in widgetLocations) {
 			if (widgetLocations.hasOwnProperty(i)) {
-				var location = widgetLocations,
-					area = $('#content [widget-area="' + location + '"]');
-
-				socket.emit('widgets.render', {template: tpl_url + '.tpl', url: url, location: location}, renderWidget);
+				renderWidgets(widgetLocations[i]);
 			}
 		}
 

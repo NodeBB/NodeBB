@@ -1,3 +1,6 @@
+"use strict";
+/*global define, templates, app, bootbox, socket, translator, config, ajaxify, RELATIVE_PATH*/
+
 define(['composer', 'forum/pagination'], function(composer, pagination) {
 	var	Topic = {},
 		infiniteLoaderActive = false,
@@ -51,9 +54,17 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 			showBottomPostBar();
 
-			if (thread_state.locked === '1') set_locked_state(true);
-			if (thread_state.deleted === '1') set_delete_state(true);
-			if (thread_state.pinned === '1') set_pinned_state(true);
+			if (thread_state.locked === '1') {
+				set_locked_state(true);
+			}
+
+			if (thread_state.deleted === '1') {
+				set_delete_state(true);
+			}
+
+			if (thread_state.pinned === '1') {
+				set_pinned_state(true);
+			}
 
 			if (expose_tools === '1') {
 				var moveThreadModal = $('#move_thread_modal');
@@ -218,10 +229,12 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 								app.alertSuccess(translated);
 							});
 
+							function removePost() {
+								$(this).remove();
+							}
+
 							for(var i=0; i<pids.length; ++i) {
-								$('#post-container li[data-pid="' + pids[i] + '"]').fadeOut(500, function() {
-									$(this).remove();
-								});
+								$('#post-container li[data-pid="' + pids[i] + '"]').fadeOut(500, removePost);
 							}
 							closeForkModal();
 						});
