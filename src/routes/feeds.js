@@ -44,7 +44,6 @@ function hasCategoryPrivileges(req, res, next) {
 	});
 }
 
-
 function generateForTopic(req, res, next) {
 	var tid = req.params.topic_id;
 
@@ -68,7 +67,6 @@ function generateForTopic(req, res, next) {
 			}),
 			dateStamp;
 
-		// Add pubDate if topic contains posts
 		if (topicData.posts.length > 0) {
 			feed.pubDate = new Date(parseInt(topicData.posts[0].timestamp, 10)).toUTCString();
 		}
@@ -87,10 +85,8 @@ function generateForTopic(req, res, next) {
 			}
 		});
 
-		var xml = feed.xml();
-		res.type('xml').set('Content-Length', Buffer.byteLength(xml)).send(xml);
+		sendFeed(feed, res);
 	});
-
 }
 
 function generateForCategory(req, res, next) {
@@ -101,97 +97,75 @@ function generateForCategory(req, res, next) {
 			return next(err);
 		}
 
-		var feed = new rss({
-				title: categoryData.name,
-				description: categoryData.description,
-				feed_url: nconf.get('url') + '/category/' + cid + '.rss',
-				site_url: nconf.get('url') + '/category/' + categoryData.cid,
-				ttl: 60
-			});
+		var feed = generateTopicFeed({
+			title: categoryData.name,
+			description: categoryData.description,
+			feed_url: nconf.get('url') + '/category/' + cid + '.rss',
+			site_url: nconf.get('url') + '/category/' + categoryData.cid,
+		}, categoryData.topics);
 
-		// Add pubDate if category has topics
-		if (categoryData.topics.length > 0) {
-			feed.pubDate = new Date(parseInt(categoryData.topics[0].lastposttime, 10)).toUTCString();
-		}
-
-		categoryData.topics.forEach(function(topicData) {
-			feed.item({
-				title: topicData.title,
-				url: nconf.get('url') + '/topic/' + topicData.slug,
-				author: topicData.username,
-				date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString()
-			});
-		});
-
-		var xml = feed.xml();
-		res.type('xml').set('Content-Length', Buffer.byteLength(xml)).send(xml);
+		sendFeed(feed, res);
 	});
 }
 
 function generateForRecent(req, res, next) {
 	topics.getLatestTopics(0, 0, 19, 'month', function (err, recentData) {
-		if(err){
+		if (err) {
 			return next(err);
 		}
 
-		var	feed = new rss({
-				title: 'Recently Active Topics',
-				description: 'A list of topics that have been active within the past 24 hours',
-				feed_url: nconf.get('url') + '/recent.rss',
-				site_url: nconf.get('url') + '/recent',
-				ttl: 60
-			});
+		var feed = generateTopicFeed({
+			title: 'Recently Active Topics',
+			description: 'A list of topics that have been active within the past 24 hours',
+			feed_url: nconf.get('url') + '/recent.rss',
+			site_url: nconf.get('url') + '/recent'
+		}, recentData.topics);
 
-		// Add pubDate if recent topics list contains topics
-		if (recentData.topics.length > 0) {
-			feed.pubDate = new Date(parseInt(recentData.topics[0].lastposttime, 10)).toUTCString();
-		}
-
-		recentData.topics.forEach(function(topicData) {
-			feed.item({
-				title: topicData.title,
-				url: nconf.get('url') + '/topic/' + topicData.slug,
-				author: topicData.username,
-				date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString()
-			});
-		});
-
-		var xml = feed.xml();
-		res.type('xml').set('Content-Length', Buffer.byteLength(xml)).send(xml);
+		sendFeed(feed, res);
 	});
 }
 
 function generateForPopular(req, res, next) {
 	topics.getTopicsFromSet(0, 'topics:posts', 0, 19, function (err, popularData) {
-		if(err){
+		if (err) {
 			return next(err);
 		}
 
-		var	feed = new rss({
-				title: 'Popular Topics',
-				description: 'A list of topics that are sorted by post count',
-				feed_url: nconf.get('url') + '/popular.rss',
-				site_url: nconf.get('url') + '/popular',
-				ttl: 60
-			});
+		var feed = generateTopicFeed({
+			title: 'Popular Topics',
+			description: 'A list of topics that are sorted by post count',
+			feed_url: nconf.get('url') + '/popular.rss',
+			site_url: nconf.get('url') + '/popular'
+		}, popularData.topics);
 
-		// Add pubDate if recent topics list contains topics
-		if (popularData.topics.length > 0) {
-			feed.pubDate = new Date(parseInt(popularData.topics[0].lastposttime, 10)).toUTCString();
-		}
-
-		popularData.topics.forEach(function(topicData) {
-			feed.item({
-				title: topicData.title,
-				url: nconf.get('url') + '/topic/' + topicData.slug,
-				author: topicData.username,
-				date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString()
-			});
-		});
-
-		var xml = feed.xml();
-		res.type('xml').set('Content-Length', Buffer.byteLength(xml)).send(xml);
+		sendFeed(feed, res);
 	});
+}
+
+function generateTopicFeed(feedOptions, topics) {
+
+	feedOptions.ttl = 60;
+	var	feed = new rss(feedOptions);
+
+	if (topics.length > 0) {
+		feed.pubDate = new Date(parseInt(topics[0].lastposttime, 10)).toUTCString();
+	}
+
+	topics.forEach(function(topicData) {
+		feed.item({
+			title: topicData.title,
+			url: nconf.get('url') + '/topic/' + topicData.slug,
+			author: topicData.username,
+			date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString()
+		});
+	});
+
+	return feed;
+}
+
+function sendFeed(feed, res) {
+	var xml = feed.xml();
+	res.type('xml').set('Content-Length', Buffer.byteLength(xml)).send(xml);
 }
 
 module.exports = function(app, middleware, controllers){
