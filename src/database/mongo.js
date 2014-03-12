@@ -121,12 +121,12 @@
 		return value.toString();
 	}
 
+
 	//
 	// Exported functions
 	//
 
 	module.searchIndex = function(key, content, id) {
-
 		var data = {
 			id:id,
 			key:key,
@@ -141,33 +141,26 @@
 	};
 
 	module.search = function(key, term, limit, callback) {
-		db.command({text:"search" , search: term, filter: {key:key}, limit: limit }, function(err, result) {
+		db.command({text:'search' , search: term, filter: {key:key}, limit: limit }, function(err, result) {
 			if(err) {
 				return callback(err);
 			}
 
-			if(!result) {
+			if(!result || !result.results || !result.results.length) {
 				return callback(null, []);
 			}
 
-			if(result.results && result.results.length) {
-				var data = result.results.map(function(item) {
-					return item.obj.id;
-				});
-				callback(null, data);
-			} else {
-				callback(null, []);
-			}
+			var data = result.results.map(function(item) {
+				return item.obj.id;
+			});
+			callback(null, data);
 		});
 	};
 
 	module.searchRemove = function(key, id, callback) {
 		db.collection('search').remove({id:id, key:key}, function(err, result) {
-			if(err) {
-				winston.error('Error removing search ' + err.message);
-			}
 			if (typeof callback === 'function') {
-				callback();
+				callback(err);
 			}
 		});
 	};
@@ -219,12 +212,6 @@
 	module.set = function(key, value, callback) {
 		var data = {value:value};
 		module.setObject(key, data, callback);
-	};
-
-	module.keys = function(key, callback) {
-		db.collection('objects').find( { _key: { $regex: key /*, $options: 'i'*/ } }, function(err, result) {
-			callback(err, result);
-		});
 	};
 
 	module.rename = function(oldKey, newKey, callback) {
@@ -450,7 +437,7 @@
 			array[index] = toString(element);
 		});
 
-		db.collection('objects').update( { _key: key }, { $pullAll: { members: value } }, function(err, result) {
+		db.collection('objects').update({_key: key}, {$pullAll: {members: value}}, function(err, result) {
 			if(typeof callback === 'function') {
 				callback(err, result);
 			}
@@ -500,34 +487,27 @@
 				return result.indexOf(set) !== -1 ? 1 : 0;
 			});
 
-			callback(err, result);
+			callback(null, result);
 		});
 	};
 
 	module.getSetMembers = function(key, callback) {
 		db.collection('objects').findOne({_key:key}, {members:1}, function(err, data) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
-			if(!data) {
-				callback(null, []);
-			} else {
-				callback(null, data.members);
-			}
+			callback(null, data ? data.members : []);
 		});
 	};
 
 	module.setCount = function(key, callback) {
 		db.collection('objects').findOne({_key:key}, function(err, data) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
-			if(!data) {
-				return callback(null, 0);
-			}
 
-			callback(null, data.members.length);
+			return callback(null, data ? data.members.length : 0);
 		});
 	};
 
@@ -535,25 +515,25 @@
 		db.collection('objects').findOne({_key:key}, function(err, data) {
 			if(err) {
 				if(typeof callback === 'function') {
-					return callback(err);
-				} else {
-					return winston.error(err.message);
+					callback(err);
 				}
+				return;
 			}
 
 			if(!data) {
 				if(typeof callback === 'function') {
 					callback(null, 0);
 				}
-			} else {
-				var randomIndex = Math.floor(Math.random() * data.members.length);
-				var value = data.members[randomIndex];
-				module.setRemove(data._key, value, function(err, result) {
-					if(typeof callback === 'function') {
-						callback(err, value);
-					}
-				});
+				return;
 			}
+
+			var randomIndex = Math.floor(Math.random() * data.members.length);
+			var value = data.members[randomIndex];
+			module.setRemove(data._key, value, function(err, result) {
+				if(typeof callback === 'function') {
+					callback(err, value);
+				}
+			});
 		});
 	};
 
@@ -615,10 +595,8 @@
 	};
 
 	module.getSortedSetRevRangeByScore = function(args, callback) {
-
-		//var args = ['topics:recent', '+inf', timestamp - since, 'LIMIT', start, end - start + 1];
 		var key = args[0],
-			max = (args[1] === '+inf')?Number.MAX_VALUE:args[1],
+			max = (args[1] === '+inf') ? Number.MAX_VALUE : args[1],
 			min = args[2],
 			start = args[4],
 			count = args[5];
@@ -647,27 +625,13 @@
 
 	module.sortedSetCount = function(key, min, max, callback) {
 		db.collection('objects').count({_key:key, score: {$gte:min, $lte:max}}, function(err, count) {
-			if(err) {
-				return callback(err);
-			}
-
-			if(!count) {
-				return callback(null, 0);
-			}
-			callback(null,count);
+			callback(err, count ? count : 0);
 		});
 	};
 
 	module.sortedSetCard = function(key, callback) {
 		db.collection('objects').count({_key:key}, function(err, count) {
-			if(err) {
-				return callback(err);
-			}
-
-			if(!count) {
-				return callback(null, 0);
-			}
-			callback(null, count);
+			callback(err, count ? count : 0);
 		});
 	};
 
@@ -768,15 +732,7 @@
 
 			db.collection('objects').update({_key: key }, { $pop: { array: 1 } }, function(err, result) {
 				if(typeof callback === 'function') {
-					if(err) {
-						return callback(err);
-					}
-
-					if(value && value.length) {
-						callback(err, value[0]);
-					} else {
-						callback(err, null);
-					}
+					callback(err, (value && value.length) ? value[0] : null);
 				}
 			});
 		});
@@ -811,31 +767,31 @@
 				return callback(err);
 			}
 
-			if(data && data.array) {
-				if(splice) {
+			if(!(data && data.array)) {
+				return callback(null, []);
+			}
 
-					if(start < 0) {
-						start = data.array.length - Math.abs(start);
-					}
+			if(splice) {
 
-					if(stop < 0) {
-						stop = data.array.length - Math.abs(stop);
-					}
-
-					if(start > stop) {
-						return callback(null, []);
-					}
-
-					var howMany = stop - start + 1;
-					if(start !== 0 || howMany !== data.array.length) {
-						data.array = data.array.splice(start, howMany);
-					}
+				if(start < 0) {
+					start = data.array.length - Math.abs(start);
 				}
 
-				callback(null, data.array);
-			} else {
-				callback(null, []);
+				if(stop < 0) {
+					stop = data.array.length - Math.abs(stop);
+				}
+
+				if(start > stop) {
+					return callback(null, []);
+				}
+
+				var howMany = stop - start + 1;
+				if(start !== 0 || howMany !== data.array.length) {
+					data.array = data.array.splice(start, howMany);
+				}
 			}
+
+			callback(null, data.array);
 		});
 	};
 
