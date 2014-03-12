@@ -1,3 +1,6 @@
+"use strict";
+/*global ajaxify, app, translator, RELATIVE_PATH*/
+
 (function (module) {
 
 	var config = {},
@@ -11,11 +14,6 @@
 	module.exports = templates = {
 		"globals": {}
 	};
-
-	try {
-		fs = require('fs');
-		path = require('path');
-	} catch (e) {}
 
 	templates.force_refresh = function(tpl) {
 		return !!config.force_refresh[tpl];
@@ -47,6 +45,9 @@
 	};
 
 	templates.render = function(filename, options, fn) {
+		var fs = require('fs'),
+			path = require('path');
+
 		if ('function' === typeof options) {
 			fn = options, options = false;
 		}
@@ -136,15 +137,13 @@
 		});
 
 		function parse_template() {
-			if (!templates[tpl_url] || !template_data) return;
-
-			if (typeof global !== "undefined") {
-				template_data['relative_path'] = nconf.get('relative_path');
-			} else {
-				template_data['relative_path'] = RELATIVE_PATH;
+			if (!templates[tpl_url] || !template_data) {
+				return;
 			}
 
-			var template = templates[tpl_url].parse(template_data)
+			template_data.relative_path = RELATIVE_PATH;
+
+			var template = templates[tpl_url].parse(template_data);
 
 			translator.translate(template, function(translatedTemplate) {
 				$('#content').html(translatedTemplate);
@@ -220,18 +219,20 @@
 
 		function getBlock(regex, block, template) {
 			data = template.match(regex);
-			if (data == null) return;
+			if (data == null) {
+				return;
+			}
 
-			if (self.blocks && block !== undefined) self.blocks[block] = data[0];
+			if (self.blocks && block !== undefined) {
+				self.blocks[block] = data[0];
+			}
 
 			var begin = new RegExp("(\r\n)*<!-- BEGIN " + block + " -->(\r\n)*", "g"),
-				end = new RegExp("(\r\n)*<!-- END " + block + " -->(\r\n)*", "g"),
+				end = new RegExp("(\r\n)*<!-- END " + block + " -->(\r\n)*", "g");
 
-			data = data[0]
+			return data[0]
 				.replace(begin, "")
 				.replace(end, "");
-
-			return data;
 		}
 
 		function setBlock(regex, block, template) {
@@ -333,8 +334,7 @@
 			}
 
 			if (namespace) {
-				var regex = new RegExp("{" + namespace + "[\\s\\S]*?}", 'g');
-				template = template.replace(regex, '');
+				template = template.replace(new RegExp("{" + namespace + "[\\s\\S]*?}", 'g'), '');
 				namespace = '';
 			} else {
 				// clean up all undefined conditionals
@@ -346,7 +346,7 @@
 			return template;
 
 		})(data, "", template);
-	}
+	};
 
 	module.exports.__express = module.exports.render;
 
@@ -360,7 +360,7 @@
 
 				app.load();
 			});
-		}
+		};
 	}
 
 })('undefined' === typeof module ? {
