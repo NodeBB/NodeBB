@@ -92,7 +92,7 @@ define(['forum/admin/settings'], function(Settings) {
 				liEl = $('<li/ >').attr({
 					'data-type': 'local',
 					'data-theme': themes[x].id
-				}).html('<img src="' + (themes[x].screenshot ? '/css/previews/' + themes[x].id : RELATIVE_PATH + '/images/themes/default.png') + '" />' +
+				}).html('<img src="' + (themes[x].screenshot ? RELATIVE_PATH + '/css/previews/' + themes[x].id : RELATIVE_PATH + '/images/themes/default.png') + '" />' +
 						'<div>' +
 						'<div class="pull-right">' +
 						'<button class="btn btn-primary" data-action="use">Use</button> ' +
