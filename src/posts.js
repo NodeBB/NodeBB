@@ -421,52 +421,6 @@ var db = require('./database'),
 		});
 	};
 
-	Posts.uploadPostImage = function(image, callback) {
-
-		if(plugins.hasListeners('filter:uploadImage')) {
-			plugins.fireHook('filter:uploadImage', image, callback);
-		} else {
-
-			if (meta.config.allowFileUploads) {
-				Posts.uploadPostFile(image, callback);
-			} else {
-				callback(new Error('Uploads are disabled!'));
-			}
-		}
-	};
-
-	Posts.uploadPostFile = function(file, callback) {
-
-		if(plugins.hasListeners('filter:uploadFile')) {
-			plugins.fireHook('filter:uploadFile', file, callback);
-		} else {
-
-			if(!meta.config.allowFileUploads) {
-				return callback(new Error('File uploads are not allowed'));
-			}
-
-			if(!file) {
-				return callback(new Error('invalid file'));
-			}
-
-			if(file.size > parseInt(meta.config.maximumFileSize, 10) * 1024) {
-				return callback(new Error('File too big'));
-			}
-
-			var filename = 'upload-' + utils.generateUUID() + path.extname(file.name);
-			require('./file').saveFileToLocal(filename, file.path, function(err, upload) {
-				if(err) {
-					return callback(err);
-				}
-
-				callback(null, {
-					url: upload.url,
-					name: file.name
-				});
-			});
-		}
-	};
-
 	Posts.getFavourites = function(uid, start, end, callback) {
 		db.getSortedSetRevRange('uid:' + uid + ':favourites', start, end, function(err, pids) {
 			if (err) {

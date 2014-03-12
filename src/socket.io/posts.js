@@ -104,18 +104,6 @@ function favouriteCommand(command, socket, data) {
 	}
 }
 
-SocketPosts.uploadImage = function(socket, data, callback) {
-	if(data) {
-		posts.uploadPostImage(data, callback);
-	}
-};
-
-SocketPosts.uploadFile = function(socket, data, callback) {
-	if(data) {
-		posts.uploadPostFile(data, callback);
-	}
-};
-
 SocketPosts.getRawPost = function(socket, pid, callback) {
 	posts.getPostFields(pid, ['content', 'deleted'], function(err, data) {
 		if(err) {

@@ -15,12 +15,19 @@ var path = require('path'),
 	pkg = require('./../../package.json');
 
 
+function deleteTempFiles(files) {
+	for(var i=0; i<files.length; ++i) {
+		fs.unlink(files[i].path);
+	}
+}
 
 function upload(req, res, filesIterator, next) {
+	var files = req.files.files;
+
 	if(!req.user) {
+		deleteTempFiles(files);
 		return res.json(403, {message:'not allowed'});
 	}
-	var files = req.files.files;
 
 	if(!Array.isArray(files)) {
 		return res.json(500, {message: 'invalid files'});
@@ -30,14 +37,8 @@ function upload(req, res, filesIterator, next) {
 		files = files[0];
 	}
 
-	function deleteTempFiles() {
-		for(var i=0; i<files.length; ++i) {
-			fs.unlink(files[i].path);
-		}
-	}
-
 	async.map(files, filesIterator, function(err, images) {
-		deleteTempFiles();
+		deleteTempFiles(files);
 
 		if(err) {
 			return res.send(500, err.message);
@@ -52,22 +53,75 @@ function upload(req, res, filesIterator, next) {
 function uploadPost(req, res, next) {
 	upload(req, res, function(file, next) {
 		if(file.type.match(/image./)) {
-			posts.uploadPostImage(file, next);
+			uploadImage(file, next);
 		} else {
-			posts.uploadPostFile(file, next);
+			uploadFile(file, next);
 		}
 	}, next);
 }
 
 function uploadThumb(req, res, next) {
+	if (!meta.config.allowTopicsThumbnail) {
+		deleteTempFiles(req.files.files);
+		return callback(new Error('Topic Thumbnails are disabled!'));
+	}
+
 	upload(req, res, function(file, next) {
 		if(file.type.match(/image./)) {
-			topics.uploadTopicThumb(file, next);
+			uploadImage(file, next);
 		} else {
-			res.json(500, {message: 'Invalid File'});
+			next(new Error('Invalid File'));
 		}
 	}, next);
 }
+
+
+function uploadImage(image, callback) {
+
+	if(plugins.hasListeners('filter:uploadImage')) {
+		plugins.fireHook('filter:uploadImage', image, callback);
+	} else {
+
+		if (meta.config.allowFileUploads) {
+			Posts.uploadPostFile(image, callback);
+		} else {
+			callback(new Error('Uploads are disabled!'));
+		}
+	}
+}
+
+function uploadFile(file, callback) {
+
+	if(plugins.hasListeners('filter:uploadFile')) {
+		plugins.fireHook('filter:uploadFile', file, callback);
+	} else {
+
+		if(!meta.config.allowFileUploads) {
+			return callback(new Error('File uploads are not allowed'));
+		}
+
+		if(!file) {
+			return callback(new Error('invalid file'));
+		}
+
+		if(file.size > parseInt(meta.config.maximumFileSize, 10) * 1024) {
+			return callback(new Error('File too big'));
+		}
+
+		var filename = 'upload-' + utils.generateUUID() + path.extname(file.name);
+		require('./file').saveFileToLocal(filename, file.path, function(err, upload) {
+			if(err) {
+				return callback(err);
+			}
+
+			callback(null, {
+				url: upload.url,
+				name: file.name
+			});
+		});
+	}
+}
+
 
 function getModerators(req, res, next) {
 	categories.getModerators(req.params.cid, function(err, moderators) {

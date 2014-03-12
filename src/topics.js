@@ -371,9 +371,9 @@ var async = require('async'),
 				}
 
 				topic.user = {
- 					username: userData.username || 'Anonymous',
- 					userslug: userData.userslug || '',
- 					picture: userData.picture || gravatar.url('', {}, true)
+					username: userData.username || 'Anonymous',
+					userslug: userData.userslug || '',
+					picture: userData.picture || gravatar.url('', {}, true)
 				};
 
 				callback(null, topic);
@@ -846,28 +846,6 @@ var async = require('async'),
 		});
 	};
 
-	Topics.uploadTopicThumb = function(image, callback) {
-
-		if(plugins.hasListeners('filter:uploadImage')) {
-			plugins.fireHook('filter:uploadImage', image, callback);
-		} else {
-			if (meta.config.allowTopicsThumbnail) {
-				var filename = 'upload-' + utils.generateUUID() + path.extname(image.name);
-				require('./file').saveFileToLocal(filename, image.path, function(err, upload) {
-					if(err) {
-						return callback(err);
-					}
-					callback(null, {
-						url: upload.url,
-						name: image.name
-					});
-				});
-			} else {
-				callback(new Error('Topic Thumbnails are disabled!'));
-			}
-		}
-	};
-
 	Topics.markAsUnreadForAll = function(tid, callback) {
 		db.delete('tid:' + tid + ':read_by_uid', function(err) {
 			if(err) {
@@ -996,31 +974,25 @@ var async = require('async'),
 	};
 
 	Topics.increasePostCount = function(tid, callback) {
-		db.incrObjectField('topic:' + tid, 'postcount', function(err, value) {
-			if(err) {
-				return callback(err);
-			}
-			db.sortedSetAdd('topics:posts', value, tid, callback);
-		});
+		incrementFieldAndUpdateSortedSet(tid, 'postcount', 1, 'topics:posts', callback);
 	};
 
 	Topics.decreasePostCount = function(tid, callback) {
-		db.decrObjectField('topic:' + tid, 'postcount', function(err, value) {
-			if(err) {
-				return callback(err);
-			}
-			db.sortedSetAdd('topics:posts', value, tid, callback);
-		});
+		incrementFieldAndUpdateSortedSet(tid, 'postcount', -1, 'topics:posts', callback);
 	};
 
 	Topics.increaseViewCount = function(tid, callback) {
-		db.incrObjectField('topic:' + tid, 'viewcount', function(err, value) {
+		incrementFieldAndUpdateSortedSet(tid, 'viewcount', 1, 'topics:views', callback);
+	};
+
+	function incrementFieldAndUpdateSortedSet(tid, field, by, set, callback) {
+		db.incrObjectFieldBy('topic:' + tid, field, by, function(err, value) {
 			if(err) {
 				return callback(err);
 			}
-			db.sortedSetAdd('topics:views', value, tid, callback);
+			db.sortedSetAdd(set, value, tid, callback);
 		});
-	};
+	}
 
 	Topics.isLocked = function(tid, callback) {
 		Topics.getTopicField(tid, 'locked', function(err, locked) {
