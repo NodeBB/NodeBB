@@ -251,10 +251,6 @@ adminController.uploads.uploadImage = function(filename, req, res) {
 };
 
 adminController.uploads.uploadCategoryPicture = function(req, res, next) {
-	if (!req.user) {
-		return res.redirect('/403');
-	}
-
 	var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'],
 		params = null, er;
 	try {
@@ -280,10 +276,6 @@ adminController.uploads.uploadCategoryPicture = function(req, res, next) {
 };
 
 adminController.uploads.uploadFavicon = function(req, res, next) {
-	if (!req.user) {
-		return res.redirect('/403');
-	}
-
 	var allowedTypes = ['image/x-icon', 'image/vnd.microsoft.icon'],
 		er;
 
@@ -307,10 +299,6 @@ adminController.uploads.uploadFavicon = function(req, res, next) {
 };
 
 adminController.uploads.uploadLogo = function(req, res, next) {
-	if (!req.user) {
-		return res.redirect('/403');
-	}
-
 	var allowedTypes = ['image/png', 'image/jpeg', 'image/pjpeg', 'image/jpg', 'image/gif'],
 		er;
 

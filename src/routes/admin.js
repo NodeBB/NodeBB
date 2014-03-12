@@ -52,11 +52,11 @@ function forumRoutes(app, middleware, controllers) {
 
 function apiRoutes(app, middleware, controllers) {
 	// todo, needs to be in api namespace
-	app.get('/admin/users/csv', controllers.admin.users.getCSV);
+	app.get('/admin/users/csv', middleware.authenticate, controllers.admin.users.getCSV);
 
-	app.post('/admin/category/uploadpicture', controllers.admin.uploads.uploadCategoryPicture);
-	app.post('/admin/uploadfavicon', controllers.admin.uploads.uploadFavicon);
-	app.post('/admin/uploadlogo', controllers.admin.uploads.uploadLogo);
+	app.post('/admin/category/uploadpicture', middleware.authenticate, controllers.admin.uploads.uploadCategoryPicture);
+	app.post('/admin/uploadfavicon', middleware.authenticate, controllers.admin.uploads.uploadFavicon);
+	app.post('/admin/uploadlogo', middleware.authenticate, controllers.admin.uploads.uploadLogo);
 }
 
 function miscRoutes(app, middleware, controllers) {
