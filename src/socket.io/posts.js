@@ -296,8 +296,12 @@ SocketPosts.loadMoreUserPosts = function(socket, data, callback) {
 };
 
 
-SocketPosts.getRecentPosts = function(socket, term, callback) {
-	posts.getRecentPosts(socket.uid, 0, 19, term, callback);
+SocketPosts.getRecentPosts = function(socket, data, callback) {
+	if(!data || !data.count) {
+		return callback(new Error('invalid data'));
+	}
+
+	posts.getRecentPosts(socket.uid, 0, data.count - 1, data.term, callback);
 };
 
 
