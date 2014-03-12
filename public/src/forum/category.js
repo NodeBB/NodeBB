@@ -1,5 +1,5 @@
-/* global define, config, templates, app, ajaxify, socket, translator */
 "use strict";
+/* global define, config, templates, app, ajaxify, socket, translator */
 
 define(['composer', 'forum/pagination'], function(composer, pagination) {
 	var Category = {},
