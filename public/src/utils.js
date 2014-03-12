@@ -8,9 +8,13 @@
 		XRegExp = require('xregexp').XRegExp;
 
 		process.profile = function(operation, start) {
+			console.log('%s took %d milliseconds', process.elapsedTimeSince(start));
+		};
+
+		process.elapsedTimeSince = function(start) {
 			var diff = process.hrtime(start);
-			console.log('%s took %d milliseconds', operation, diff[0] * 1e3 + diff[1] / 1e6);
-		}
+			return diff[0] * 1e3 + diff[1] / 1e6;
+		};
 
 	} else {
 		XRegExp = window.XRegExp;
