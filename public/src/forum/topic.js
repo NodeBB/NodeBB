@@ -1,6 +1,3 @@
-"use strict";
-/*global define, templates, app, bootbox, socket, translator, config, ajaxify, RELATIVE_PATH*/
-
 define(['composer', 'forum/pagination'], function(composer, pagination) {
 	var	Topic = {},
 		infiniteLoaderActive = false,
@@ -643,7 +640,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				return div;
 			}
 		}
-		
+
 		socket.on('get_users_in_room', function(data) {
 			if(data && data.room.indexOf('topic') !== -1) {
 				var activeEl = $('.thread_active_users');
