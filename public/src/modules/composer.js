@@ -1,7 +1,8 @@
 define(['taskbar'], function(taskbar) {
 	var composer = {
 		active: undefined,
-		posts: {}
+		posts: {},
+		saving: undefined
 	};
 
 	function initialise() {
@@ -47,8 +48,80 @@ define(['taskbar'], function(taskbar) {
 		return true;
 	}
 
+	function alreadyOpen(post) {
+		// If a composer for the same cid/tid/pid is already open, return the uuid, else return bool false
+		var	type, id;
+
+		if (post.hasOwnProperty('cid')) {
+			type = 'cid';
+		} else if (post.hasOwnProperty('tid')) {
+			type = 'tid';
+		} else if (post.hasOwnProperty('pid')) {
+			type = 'pid';
+		}
+
+		id = post[type];
+
+		// Find a match
+		for(uuid in composer.posts) {
+			if (composer.posts[uuid].hasOwnProperty(type) && id === composer.posts[uuid][type]) {
+				return uuid;
+			}
+		}
+
+		// No matches...
+		return false;
+	}
+
+	function canSave() {
+		// Check for localStorage support
+		if (composer.saving) {
+			return composer.saving;
+		}
+
+		try {
+			localStorage.setItem('test', 'test');
+			localStorage.removeItem('test');
+			composer.saving = true;
+			return true;
+		} catch(e) {
+			composer.saving = false;
+			return false;
+		}
+	}
+
+	function getDraft(save_id) {
+		return localStorage.getItem(save_id);
+	}
+
+	function saveDraft(post_uuid) {
+		var postData = composer.posts[post_uuid],
+			postContainer = $('#cmp-uuid-' + post_uuid),
+			raw;
+
+		if (canSave() && postData && postData.save_id && postContainer.length) {
+			raw = postContainer.find('textarea').val();
+			if (raw.length) {
+				localStorage.setItem(postData.save_id, raw);
+			} else {
+				removeDraft(postData.save_id);
+			}
+		}
+	}
+
+	function removeDraft(save_id) {
+		console.log('removing draft');
+		return localStorage.removeItem(save_id);
+	}
+
 	function push(post) {
-		var uuid = utils.generateUUID();
+		var uuid = utils.generateUUID(),
+			existingUUID = alreadyOpen(post);
+
+		if (existingUUID) {
+			taskbar.updateActive(existingUUID);
+			return composer.load(existingUUID);
+		}
 
 		translator.translate('[[topic:composer.new_topic]]', function(newTopicStr) {
 			taskbar.push('composer', uuid, {
@@ -56,6 +129,17 @@ define(['taskbar'], function(taskbar) {
 				icon: post.picture
 			});
 		});
+
+		// Construct a save_id
+		if (0 !== parseInt(app.uid, 10)) {
+			if (post.hasOwnProperty('cid')) {
+				post.save_id = ['composer', app.uid, 'cid', post.cid].join(':');
+			} else if (post.hasOwnProperty('tid')) {
+				post.save_id = ['composer', app.uid, 'tid', post.tid].join(':');
+			} else if (post.hasOwnProperty('pid')) {
+				post.save_id = ['composer', app.uid, 'pid', post.pid].join(':');
+			}
+		}
 
 		composer.posts[uuid] = post;
 		composer.posts[uuid].uploadsInProgress = [];
@@ -427,6 +511,7 @@ define(['taskbar'], function(taskbar) {
 					titleEl = postContainer.find('.title'),
 					bodyEl = postContainer.find('textarea'),
 					thumbToggleBtnEl = postContainer.find('.topic-thumb-toggle-btn'),
+					draft = getDraft(postData.save_id)
 
 					toggleThumbEls = function(){
 						if (config.allowTopicsThumbnail && composer.posts[post_uuid].isMain) {
@@ -459,7 +544,11 @@ define(['taskbar'], function(taskbar) {
 					toggleThumbEls();
 				}
 
-				bodyEl.val(postData.body);
+				if (draft) {
+					bodyEl.val(draft);
+				} else {
+					bodyEl.val(postData.body);
+				}
 
 				thumbToggleBtnEl.on('click', function() {
 					var container = postContainer.find('.topic-thumb-container');
@@ -629,6 +718,17 @@ define(['taskbar'], function(taskbar) {
 	  				});
 				});
 
+				// Draft Saving
+				var	saveThrottle;
+				bodyEl.on('keyup', function() {
+					if (saveThrottle) {
+						clearTimeout(saveThrottle);
+					}
+
+					saveThrottle = setTimeout(function() {
+						saveDraft(post_uuid);
+					}, 1000);
+				});
 
 				var	resizeActive = false,
 					resizeCenterY = 0,
@@ -820,6 +920,7 @@ define(['taskbar'], function(taskbar) {
 			$('.action-bar button').removeAttr('disabled');
 			if(!err) {
 				composer.discard(post_uuid);
+				removeDraft(postData.save_id);
 			}
 		}
 	};
@@ -827,6 +928,7 @@ define(['taskbar'], function(taskbar) {
 	composer.discard = function(post_uuid) {
 		if (composer.posts[post_uuid]) {
 			$('#cmp-uuid-' + post_uuid).remove();
+			removeDraft(composer.posts[post_uuid].save_id);
 			delete composer.posts[post_uuid];
 			composer.active = undefined;
 			taskbar.discard('composer', post_uuid);
