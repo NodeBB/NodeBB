@@ -1,3 +1,6 @@
+/* global define, config, templates, app, ajaxify, socket, translator */
+"use strict";
+
 define(['composer', 'forum/pagination'], function(composer, pagination) {
 	var Category = {},
 		loadingMoreTopics = false;
@@ -163,10 +166,10 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 	Category.onNewTopic = function(data) {
 		$(window).trigger('filter:categories.new_topic', data);
 		templates.preload_template('category', function() {
-			templates['category'].parse({topics:[]});
-			var html = templates.prepare(templates['category'].blocks['topics']).parse({
+			templates.category.parse({topics:[]});
+			var html = templates.prepare(templates.category.blocks.topics).parse({
 				topics: [data]
-			});	
+			});
 
 			translator.translate(html, function(translatedHTML) {
 				var topic = $(translatedHTML),
@@ -242,8 +245,8 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		findInsertionPoint();
 
 		templates.preload_template('category', function() {
-			templates['category'].parse({topics:[]});
-			var html = templates.prepare(templates['category'].blocks['topics']).parse({
+			templates.category.parse({topics:[]});
+			var html = templates.prepare(templates.category.blocks.topics).parse({
 				topics: topics
 			});
 
