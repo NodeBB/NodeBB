@@ -1,3 +1,5 @@
+"use strict";
+/* global socket, define, templates, bootbox, app, ajaxify,  */
 define(function() {
 	var Users = {};
 
@@ -192,7 +194,7 @@ define(function() {
 
 						templates.preload_template('admin/users', function() {
 							templates['admin/users'].parse({users:[]});
-							var html = templates.prepare(templates['admin/users'].blocks['users']).parse({
+							var html = templates.prepare(templates['admin/users'].blocks.users).parse({
 								users: data.users
 							}),
 								userListEl = document.querySelector('.users');
@@ -225,7 +227,7 @@ define(function() {
 			function onUsersLoaded(users) {
 				templates.preload_template('admin/users', function() {
 					templates['admin/users'].parse({users:[]});
-					var html = templates.prepare(templates['admin/users'].blocks['users']).parse({
+					var html = templates.prepare(templates['admin/users'].blocks.users).parse({
 						users: users
 					});
 					html = $(html);
