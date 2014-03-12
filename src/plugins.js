@@ -419,7 +419,7 @@ var fs = require('fs'),
 					var templatesPath = path.join(__dirname, '../node_modules', plugin.id, plugin.templates);
 					utils.walk(templatesPath, function(err, pluginTemplates) {
 						pluginTemplates.forEach(function(pluginTemplate) {
-							templates[pluginTemplate.replace(templatesPath, '').substring(1)] = pluginTemplate;
+							templates["/" + pluginTemplate.replace(templatesPath, '').substring(1)] = pluginTemplate;
 						});
 
 						next(err);
