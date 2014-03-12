@@ -166,16 +166,18 @@ var ajaxify = {};
 		numLocations = widgetLocations.length;
 
 		function renderWidget(err, renderedWidgets) {
-			area.html(templates.prepare(area.html()).parse({
-				widgets: renderedWidgets
-			})).removeClass('hidden');
+			if (area.html()) {
+				area.html(templates.prepare(area.html()).parse({
+					widgets: renderedWidgets
+				})).removeClass('hidden');
 
-			if (!renderedWidgets.length) {
-				$('body [no-widget-class]').each(function() {
-					var $this = $(this);
-					$this.removeClass();
-					$this.addClass($this.attr('no-widget-class'));
-				});
+				if (!renderedWidgets.length) {
+					$('body [no-widget-class]').each(function() {
+						var $this = $(this);
+						$this.removeClass();
+						$this.addClass($this.attr('no-widget-class'));
+					});
+				}
 			}
 
 			checkCallback();
