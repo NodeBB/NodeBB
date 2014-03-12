@@ -1,3 +1,6 @@
+"use strict";
+/*global define, app, socket, RELATIVE_PATH */
+
 define(['uploader'], function(uploader) {
 	var Settings = {};
 
@@ -40,9 +43,13 @@ define(['uploader'], function(uploader) {
 					}
 				}
 			} else if (field.is('textarea')) {
-				if (app.config[key]) field.val(app.config[key]);
+				if (app.config[key]) {
+					field.val(app.config[key]);
+				}
 			} else if (field.is('select')) {
-				if (app.config[key]) field.val(app.config[key]);
+				if (app.config[key]) {
+					field.val(app.config[key]);
+				}
 			}
 		}
 
