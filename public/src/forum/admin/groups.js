@@ -1,9 +1,12 @@
+"use strict";
+/*global define, templates, socket, ajaxify, app, bootbox*/
+
 define(function() {
 	var	Groups = {};
 
 	Groups.init = function() {
 		var yourid = templates.get('yourid'),
-		    createEl = $('#create'),
+			createEl = $('#create'),
 			createModal = $('#create-modal'),
 			createSubmitBtn = $('#create-modal-go'),
 			createNameEl = $('#create-group-name'),
@@ -12,7 +15,7 @@ define(function() {
 			searchResults = detailsModal.find('#group-details-search-results'),
 			groupMembersEl = detailsModal.find('ul.current_members'),
 			detailsModalSave = detailsModal.find('.btn-primary'),
-			searchDelay = undefined,
+			searchDelay,
 			listEl = $('#groups-list');
 
 		createEl.on('click', function() {
@@ -107,7 +110,9 @@ define(function() {
 		detailsSearch.on('keyup', function() {
 			var searchEl = this;
 
-			if (searchDelay) clearTimeout(searchDelay);
+			if (searchDelay) {
+				clearTimeout(searchDelay);
+			}
 
 			searchDelay = setTimeout(function() {
 				var searchText = searchEl.value,
@@ -117,7 +122,9 @@ define(function() {
 				socket.emit('admin.user.search', searchText, function(err, results) {
 					if (!err && results && results.users.length > 0) {
 						var numResults = results.users.length, x;
-						if (numResults > 4) numResults = 4;
+						if (numResults > 4) {
+							numResults = 4;
+						}
 
 						resultsEl.empty();
 						for (x = 0; x < numResults; x++) {
