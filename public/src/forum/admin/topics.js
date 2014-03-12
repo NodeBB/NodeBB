@@ -1,3 +1,6 @@
+"use strict";
+/* global define, socket, app, templates, RELATIVE_PATH */
+
 define(function() {
 	var	Topics = {};
 
@@ -13,30 +16,29 @@ define(function() {
 				tid = $this.parents('[data-tid]').attr('data-tid');
 
 			switch (action) {
-				case 'pin':
-					if (!$this.hasClass('active')) {
-						socket.emit('topics.pin', tid, Topics.pin);
-					} else {
-						socket.emit('topics.unpin', tid, Topics.unpin);
-					}
-					break;
+			case 'pin':
+				if (!$this.hasClass('active')) {
+					socket.emit('topics.pin', tid, Topics.pin);
+				} else {
+					socket.emit('topics.unpin', tid, Topics.unpin);
+				}
+				break;
 
-				case 'lock':
-					if (!$this.hasClass('active')) {
-						socket.emit('topics.lock', tid, Topics.lock);
-					} else {
-						socket.emit('topics.unlock', tid, Topics.unlock);
-					}
-					break;
+			case 'lock':
+				if (!$this.hasClass('active')) {
+					socket.emit('topics.lock', tid, Topics.lock);
+				} else {
+					socket.emit('topics.unlock', tid, Topics.unlock);
+				}
+				break;
 
-				case 'delete':
-					if (!$this.hasClass('active')) {
-						socket.emit('topics.delete', tid, Topics.setDeleted);
-					} else {
-						socket.emit('topics.restore', tid, Topics.restore);
-					}
-					break;
-
+			case 'delete':
+				if (!$this.hasClass('active')) {
+					socket.emit('topics.delete', tid, Topics.setDeleted);
+				} else {
+					socket.emit('topics.restore', tid, Topics.restore);
+				}
+				break;
 			}
 		});
 
@@ -48,7 +50,7 @@ define(function() {
 					return;
 				}
 
-				var lastTid = parseInt(topics.eq(topics.length - 1).attr('data-tid'));
+				var lastTid = parseInt(topics.eq(topics.length - 1).attr('data-tid'), 10);
 
 				$(this).html('<i class="fa fa-refresh fa-spin"></i> Retrieving topics');
 				socket.emit('admin.topics.getMore', {
@@ -64,7 +66,7 @@ define(function() {
 					if (topics.length > 0) {
 						templates.preload_template('admin/topics', function() {
 							templates['admin/topics'].parse({topics:[]});
-							var html = templates.prepare(templates['admin/topics'].blocks['topics']).parse({
+							var html = templates.prepare(templates['admin/topics'].blocks.topics).parse({
 									topics: topics
 								}),
 								topicsListEl = $('.topics');
