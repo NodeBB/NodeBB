@@ -1,3 +1,6 @@
+"use strict";
+/*global io, templates, translator, ajaxify, utils, RELATIVE_PATH*/
+
 var socket,
 	config,
 	app = {
@@ -6,7 +9,10 @@ var socket,
 		'isFocused': true,
 		'currentRoom': null,
 		'widgets': {}
-	};
+	},
+
+	MAX_RECONNECTION_ATTEMPTS = 5,
+	RECONNECTION_DELAY = 200;
 
 (function () {
 	var showWelcomeMessage = false;
@@ -25,11 +31,9 @@ var socket,
 						socket.socket.connect();
 					}, 200);
 				} else {
-					var max_reconnection_attemps = 5;
-					var reconnection_delay = 200;
 					socket = io.connect('', {
-						'max reconnection attempts': max_reconnection_attemps,
-						'reconnection delay': reconnection_delay,
+						'max reconnection attempts': MAX_RECONNECTION_ATTEMPTS,
+						'reconnection delay': RECONNECTION_DELAY,
 						resource: RELATIVE_PATH.length ? RELATIVE_PATH.slice(1) + '/socket.io' : 'socket.io'
 					});
 
@@ -68,6 +72,7 @@ var socket,
 							switch(url_parts[0]) {
 								case 'user':
 									room = 'user/' + templates.get('theirid');
+									break;
 								case 'topic':
 									room = 'topic_' + url_parts[1];
 									break;
@@ -107,19 +112,20 @@ var socket,
 					});
 
 					socket.on('reconnecting', function (data, attempt) {
-						if(attempt == max_reconnection_attemps) {
+						if(attempt === MAX_RECONNECTION_ATTEMPTS) {
 							socket.socket.reconnectionAttempts = 0;
-							socket.socket.reconnectionDelay = reconnection_delay;
+							socket.socket.reconnectionDelay = RECONNECTION_DELAY;
 							return;
 						}
 
-						if (!reconnectEl) reconnectEl = $('#reconnect');
+						reconnectEl = reconnectEl || $('#reconnect');
 						reconnecting = true;
 
-						if (!reconnectEl.hasClass('active')) reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
-						reconnectEl.addClass('active').removeClass("hide");
+						if (!reconnectEl.hasClass('active')) {
+							reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
+						}
 
-						reconnectEl.tooltip({
+						reconnectEl.addClass('active').removeClass("hide").tooltip({
 							placement: 'bottom'
 						});
 					});
@@ -144,7 +150,7 @@ var socket,
 						console.log = function() {
 							log.apply(this, arguments);
 							socket.emit('tools.log', arguments);
-						}
+						};
 					}
 				}
 			},
@@ -211,7 +217,7 @@ var socket,
 				.append($('<strong>' + title + '</strong>'))
 				.append($('<p>' + params.message + '</p>'));
 
-			if (params.location == null) {
+			if (params.location === null) {
 				params.location = 'alert_window';
 			}
 
@@ -245,11 +251,12 @@ var socket,
 
 	app.removeAlert = function(id) {
 		$('#' + 'alert_button_' + id).remove();
-	}
+	};
 
 	app.alertSuccess = function (message, timeout) {
-		if (!timeout)
+		if (!timeout) {
 			timeout = 2000;
+		}
 
 		app.alert({
 			title: '[[global:alert.success]]',
@@ -260,8 +267,9 @@ var socket,
 	};
 
 	app.alertError = function (message, timeout) {
-		if (!timeout)
+		if (!timeout) {
 			timeout = 2000;
+		}
 
 		app.alert({
 			title: '[[global:alert.error]]',
@@ -302,14 +310,14 @@ var socket,
 				var el = $(this),
 					uid = el.parents('li').attr('data-uid');
 
-					if (uid && users[uid]) {
-						translator.translate('[[global:' + users[uid].status + ']]', function(translated) {
-							el.siblings('i')
-								.attr('class', 'fa fa-circle status ' + users[uid].status)
-								.attr('title', translated)
-								.attr('data-original-title', translated);
-						});
-					}
+				if (uid && users[uid]) {
+					translator.translate('[[global:' + users[uid].status + ']]', function(translated) {
+						el.siblings('i')
+							.attr('class', 'fa fa-circle status ' + users[uid].status)
+							.attr('title', translated)
+							.attr('data-original-title', translated);
+					});
+				}
 			});
 		});
 	};
@@ -323,8 +331,10 @@ var socket,
 		if (active) {
 			$('#main-nav li a').each(function () {
 				var href = $(this).attr('href');
-				if (active == "sort-posts" || active == "sort-reputation" || active == "search" || active == "latest" || active == "online")
+				if (active === "sort-posts" || active === "sort-reputation" || active === "search" || active === "latest" || active === "online") {
 					active = 'users';
+				}
+
 				if (href && href.match(active)) {
 					$(this.parentNode).addClass('active');
 					return false;
@@ -606,7 +616,9 @@ var socket,
 		$(document).ready(function() {
 			templates.setGlobal('relative_path', RELATIVE_PATH);
 			for(var key in config) {
-				templates.setGlobal('config.' + key, config[key]);
+				if (config.hasOwnProperty(key)) {
+					templates.setGlobal('config.' + key, config[key]);
+				}
 			}
 		});
 	}
