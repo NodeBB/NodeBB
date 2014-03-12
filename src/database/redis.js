@@ -167,10 +167,6 @@
 		redisClient.set(key, value, callback);
 	};
 
-	module.keys = function(key, callback) {
-		redisClient.keys(key, callback);
-	};
-
 	module.rename = function(oldKey, newKey, callback) {
 		redisClient.rename(oldKey, newKey, callback);
 	};
@@ -188,7 +184,7 @@
 	module.setObject = function(key, data, callback) {
 		// TODO: this crashes if callback isnt supplied -baris
 		redisClient.hmset(key, data, function(err, res) {
-			if(callback) {
+			if(typeof callback === 'function') {
 				callback(err, res);
 			}
 		});
