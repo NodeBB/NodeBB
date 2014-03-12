@@ -3,7 +3,7 @@
 var ajaxify = {};
 
 (function () {
-	/*global app, templates, utils*/
+	/*global app, templates, utils, socket, translator, config, RELATIVE_PATH*/
 
 	var location = document.location || window.location,
 		rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : ''),
@@ -129,7 +129,7 @@ var ajaxify = {};
 	ajaxify.getTemplateMapping = function(url) {
 		var tpl_url = templates.get_custom_map(url.split('?')[0]);
 
-		if (tpl_url == false && !templates[url]) {
+		if (tpl_url === false && !templates[url]) {
 			if (url === '' || url === '/') {
 				tpl_url = 'home';
 			} else if (url === 'admin' || url === 'admin/') {
@@ -154,40 +154,50 @@ var ajaxify = {};
 		}
 
 		return tpl_url;
-	}
+	};
 
 	ajaxify.renderWidgets = function(tpl_url, url, callback) {
-		var widgetLocations = [];
+		var widgetLocations = [], numLocations;
 
-		require(['vendor/async'], function(async) {
-			$('#content [widget-area]').each(function() {
-				widgetLocations.push($(this).attr('widget-area'));
-			});
-
-			async.each(widgetLocations, function(location, next) {
-				var area = $('#content [widget-area="' + location + '"]');
-
-				socket.emit('widgets.render', {template: tpl_url + '.tpl', url: url, location: location}, function(err, renderedWidgets) {
-					area.html(templates.prepare(area.html()).parse({
-						widgets: renderedWidgets
-					})).removeClass('hidden');
-
-					if (!renderedWidgets.length) {
-						$('body [no-widget-class]').each(function() {
-							var $this = $(this);
-							$this.removeClass();
-							$this.addClass($this.attr('no-widget-class'));
-						});
-					}
-
-					next(err);
-				});
-			}, function(err) {
-				if (callback) {
-					callback(err);
-				}
-			});
+		$('#content [widget-area]').each(function() {
+			widgetLocations.push($(this).attr('widget-area'));
 		});
+
+		numLocations = widgetLocations.length;
+
+		function renderWidget(err, renderedWidgets) {
+			area.html(templates.prepare(area.html()).parse({
+				widgets: renderedWidgets
+			})).removeClass('hidden');
+
+			if (!renderedWidgets.length) {
+				$('body [no-widget-class]').each(function() {
+					var $this = $(this);
+					$this.removeClass();
+					$this.addClass($this.attr('no-widget-class'));
+				});
+			}
+
+			checkCallback();
+		}
+
+		function checkCallback() {
+			numLocations--;
+			if (numLocations <= 0 && callback) {
+				callback();
+			}
+		}
+
+		for (var i in widgetLocations) {
+			if (widgetLocations.hasOwnProperty(i)) {
+				var location = widgetLocations,
+					area = $('#content [widget-area="' + location + '"]');
+
+				socket.emit('widgets.render', {template: tpl_url + '.tpl', url: url, location: location}, renderWidget);
+			}
+		}
+
+		checkCallback();
 	};
 
 
