@@ -99,7 +99,7 @@ function start() {
 	loadConfig();
 
 	nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
-	nconf.set('upload_url', path.join(path.sep, nconf.get('relative_path'), 'uploads', path.sep));
+	nconf.set('upload_url', path.join(path.sep, 'uploads', path.sep));
 	nconf.set('base_dir', __dirname);
 	nconf.set('views_dir', path.join(__dirname, 'public/templates'));
 
