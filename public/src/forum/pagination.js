@@ -1,4 +1,5 @@
-
+'use strict';
+/*global define, utils, ajaxify, bootbox*/
 
 define(function() {
 	var pagination = {};
@@ -23,11 +24,31 @@ define(function() {
 					pagination.loadPage(pageNum);
 				});
 			});
-	}
+	};
 
 	pagination.recreatePaginationLinks = function(newPageCount) {
 		pagination.pageCount = parseInt(newPageCount, 10);
 
+		var pagesToShow = determinePagesToShow();
+
+		var html = '';
+		for(var i=0; i<pagesToShow.length; ++i) {
+			if(i > 0) {
+				if (pagesToShow[i] - 1 !== pagesToShow[i-1]) {
+					html += '<li><a class="select_page" href="#">|</a></li>';
+				}
+			}
+			html += '<li class="page" data-page="' + pagesToShow[i] + '"><a href="#">' + pagesToShow[i] + '</a></li>';
+		}
+
+		$('.pagination li.page').remove();
+		$('.pagination li .select_page').parent().remove();
+		$(html).insertAfter($('.pagination li.previous'));
+
+		updatePageLinks();
+	};
+
+	function determinePagesToShow() {
 		var pagesToShow = [1];
 		if(pagination.pageCount !== 1) {
 			pagesToShow.push(pagination.pageCount);
@@ -51,22 +72,7 @@ define(function() {
 		pagesToShow.sort(function(a, b) {
 			return parseInt(a, 10) - parseInt(b, 10);
 		});
-
-		var html = '';
-		for(var i=0; i<pagesToShow.length; ++i) {
-			if(i > 0) {
-				if (pagesToShow[i] - 1 !== pagesToShow[i-1]) {
-					html += '<li><a class="select_page" href="#">|</a></li>';
-				}
-			}
-			html += '<li class="page" data-page="' + pagesToShow[i] + '"><a href="#">' + pagesToShow[i] + '</a></li>';
-		}
-
-		$('.pagination li.page').remove();
-		$('.pagination li .select_page').parent().remove();
-		$(html).insertAfter($('.pagination li.previous'));
-
-		updatePageLinks();
+		return pagesToShow;
 	}
 
 	pagination.loadPage = function(page, callback) {
@@ -81,25 +87,13 @@ define(function() {
 			}
 		});
 		return true;
-	}
+	};
 
 	function updatePageLinks() {
-		if(pagination.pageCount === 0 || pagination.pageCount === 1) {
-			$('.pagination').addClass('hide');
-		} else {
-			$('.pagination').removeClass('hide');
-		}
+		$('.pagination').toggleClass('hide', pagination.pageCount === 0 || pagination.pageCount === 1);
 
-		$('.pagination .next').removeClass('disabled');
-		$('.pagination .previous').removeClass('disabled');
-
-		if(pagination.currentPage === 1) {
-			$('.pagination .previous').addClass('disabled');
-		}
-
-		if(pagination.currentPage === pagination.pageCount) {
-			$('.pagination .next').addClass('disabled');
-		}
+		$('.pagination .next').toggleClass('disabled', pagination.currentPage === pagination.pageCount);
+		$('.pagination .previous').toggleClass('disabled', pagination.currentPage === 1);
 
 		$('.pagination .page').removeClass('active');
 		$('.pagination .page[data-page="' + pagination.currentPage + '"]').addClass('active');
