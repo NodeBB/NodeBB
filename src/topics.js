@@ -737,8 +737,7 @@ var async = require('async'),
 				userCache[topicData.uid] = topicInfo.user;
 
 				if (!isTopicVisible(topicData, topicInfo)) {
-					topicData = null;
-					return next();
+					return next(null, null);
 				}
 
 				topicData.pinned = parseInt(topicData.pinned, 10) === 1;
@@ -751,7 +750,7 @@ var async = require('async'),
 				topicData.teaser = topicInfo.teaser;
 				topicData.user = topicInfo.user;
 
-				next();
+				next(null, topicData);
 			});
 		}
 
@@ -760,7 +759,7 @@ var async = require('async'),
 				return callback(err);
 			}
 
-			async.eachSeries(topics, loadTopicInfo, function(err) {
+			async.mapSeries(topics, loadTopicInfo, function(err, topics) {
 				if(err) {
 					return callback(err);
 				}
