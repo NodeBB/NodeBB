@@ -1,3 +1,7 @@
+
+'use strict';
+/* globals app, config, define, socket, translator, templates, utils */
+
 define(['taskbar', 'string', 'sound'], function(taskbar, S, sound) {
 
 	var module = {};
@@ -5,42 +9,45 @@ define(['taskbar', 'string', 'sound'], function(taskbar, S, sound) {
 	module.prepareDOM = function() {
 		// Chats Dropdown
 		var	chatsToggleEl = $('#chat_dropdown'),
-			chatsListEl = $('#chat-list'),
-			chatDropdownEl = chatsToggleEl.parent();
+			chatsListEl = $('#chat-list');
 
 		chatsToggleEl.on('click', function() {
-			if (chatDropdownEl.hasClass('open')) {
+			if (chatsToggleEl.parent().hasClass('open')) {
 				return;
 			}
 
 			socket.emit('modules.chats.list', function(err, chats) {
-				var	numChats = chats.length,
-					chatEl, x, userObj;
+				if (err) {
+					return app.alertError(err.message);
+				}
+
+				var	userObj;
+
 				chatsListEl.empty();
-				if (!err && numChats > 0) {
 
-					for(x = 0;x < numChats; x++) {
-						userObj = chats[x];
-						chatEl = $('<li />')
-							.attr('data-uid', userObj.uid)
-							.html('<a href="javascript:app.openChat(\''
-								+ userObj.username
-								+ '\', ' + userObj.uid
-								+ ');"><img src="'
-								+ userObj.picture
-								+ '" title="'
-								+ userObj.username
-								+ '" />' + userObj.username + '</a>');
-
-						chatsListEl.append(chatEl);
-					}
-				} else {
+				if (!chats.length) {
 					translator.get('modules:chat.no_active', function(str) {
-						chatEl = $('<li />')
+						$('<li />')
 							.addClass('no_active')
-							.html('<a href="#">' + str + '</a>');
-						chatsListEl.append(chatEl);
+							.html('<a href="#">' + str + '</a>')
+							.appendTo(chatsListEl);
 					});
+					return;
+				}
+
+				for(var x = 0; x<chats.length; ++x) {
+					userObj = chats[x];
+					$('<li />')
+						.attr('data-uid', userObj.uid)
+						.html('<a href="javascript:app.openChat(\'' +
+							userObj.username +
+							'\', ' + userObj.uid +
+							');"><img src="' +
+							userObj.picture +
+							'" title="' +
+							userObj.username +
+							'" />' + userObj.username + '</a>')
+						.appendTo(chatsListEl);
 				}
 			});
 		});
@@ -72,7 +79,7 @@ define(['taskbar', 'string', 'sound'], function(taskbar, S, sound) {
 
 			sound.play('chat-incoming');
 		});
-	}
+	};
 
 	module.bringModalToTop = function(chatModal) {
 		var topZ = 0;
@@ -114,7 +121,7 @@ define(['taskbar', 'string', 'sound'], function(taskbar, S, sound) {
 	module.createModal = function(username, touid, callback) {
 
 		templates.preload_template('chat', function() {
-			translator.translate(templates['chat'].parse({}), function (chatTpl) {
+			translator.translate(templates.chat.parse({}), function (chatTpl) {
 
 				var chatModal = $(chatTpl),
 					uuid = utils.generateUUID();

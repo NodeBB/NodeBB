@@ -174,7 +174,7 @@
 					value = $(element).val();
 					break;
 			}
-			
+
 			templates.set($(element).attr('template-variable'), value);
 		});
 	};
