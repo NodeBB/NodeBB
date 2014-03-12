@@ -292,7 +292,7 @@ var db = require('./database'),
 
 			for (var i=0; i<categories.length; ++i) {
 				if (categories[i]) {
-					categories[i].background = categories[i].image ? 'url(' + categories[i].image + ')' : categories[i].bgColor;
+					categories[i].backgroundImage = categories[i].image ? 'url(' + categories[i].image + ')' : '';
 					categories[i].disabled = categories[i].disabled ? parseInt(categories[i].disabled, 10) !== 0 : false;
 				}
 			}
