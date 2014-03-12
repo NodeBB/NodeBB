@@ -111,9 +111,7 @@ define(['uploader'], function(uploader) {
 				value = field.prop('checked') ? '1' : '0';
 				break;
 			}
-		} else if (field.is('textarea')) {
-			value = field.val();
-		} else if (field.is('select')) {
+		} else if (field.is('textarea') || field.is('select')) {
 			value = field.val();
 		}
 
@@ -144,7 +142,7 @@ define(['uploader'], function(uploader) {
 			});
 
 		});
-	};
+	}
 
 	return Settings;
 });
