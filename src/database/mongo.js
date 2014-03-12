@@ -257,11 +257,7 @@
 		var data = {};
 		field = fieldToString(field);
 		data[field] = value;
-		db.collection('objects').update({_key:key}, {$set:data}, {upsert:true, w: 1}, function(err, result) {
-			if(typeof callback === 'function') {
-				callback(err, result);
-			}
-		});
+		module.setObject(key, data, callback);
 	};
 
 	module.getObject = function(key, callback) {
@@ -480,7 +476,7 @@
 			}
 
 			values = values.map(function(value) {
-				return items.members.indexOf(value) !== -1
+				return items.members.indexOf(value) !== -1;
 			});
 
 			callback(null, values);
@@ -676,36 +672,24 @@
 	};
 
 	module.sortedSetRank = function(key, value, callback) {
-		value = toString(value);
-		module.getSortedSetRange(key, 0, -1, function(err, result) {
-			if(err) {
-				return callback(err);
-			}
-			var rank = result.indexOf(value);
-			if(rank === -1) {
-				return callback(null, null);
-			}
-
-			callback(null, rank);
-		});
+		getSortedSetRank(module.getSortedSetRange, key, value, callback);
 	};
 
 	module.sortedSetRevRank = function(key, value, callback) {
+		getSortedSetRank(module.getSortedSetRevRange, key, value, callback);
+	};
+
+	function getSortedSetRank(method, key, value, callback) {
 		value = toString(value);
-		module.getSortedSetRevRange(key, 0, -1, function(err, result) {
+		method(key, 0, -1, function(err, result) {
 			if(err) {
 				return callback(err);
 			}
 
 			var rank = result.indexOf(value);
-
-			if(rank === -1) {
-				return callback(null, null);
-			}
-
-			callback(null, rank);
+			callback(null, rank !== -1 ? rank : null);
 		});
-	};
+	}
 
 	module.sortedSetScore = function(key, value, callback) {
 		value = toString(value);
