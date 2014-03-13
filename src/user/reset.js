@@ -4,13 +4,13 @@
 var async = require('async'),
 	nconf = require('nconf'),
 
-	user = require('./user'),
-	utils = require('./../public/src/utils'),
+	user = require('./../user'),
+	utils = require('./../../public/src/utils'),
 
-	db = require('./database'),
-	meta = require('./meta'),
-	events = require('./events'),
-	emailer = require('./emailer');
+	db = require('./../database'),
+	meta = require('./../meta'),
+	events = require('./../events'),
+	emailer = require('./../emailer');
 
 (function(UserReset) {
 

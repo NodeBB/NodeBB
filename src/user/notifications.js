@@ -5,12 +5,11 @@ var async = require('async'),
 	nconf = require('nconf'),
 	winston = require('winston'),
 
-	user = require('./user'),
-	utils = require('./../public/src/utils'),
-	db = require('./database'),
-	notifications = require('./notifications'),
-	topics = require('./topics'),
-	websockets = require('./socket.io');
+	user = require('./../user'),
+	utils = require('./../../public/src/utils'),
+	db = require('./../database'),
+	notifications = require('./../notifications'),
+	topics = require('./../topics');
 
 (function(UserNotifications) {
 
@@ -161,7 +160,7 @@ var async = require('async'),
 	};
 
 	UserNotifications.pushCount = function(uid) {
-
+		var websockets = require('./../socket.io');
 		UserNotifications.getUnreadCount(uid, function(err, count) {
 			if (err) {
 				return winston.warn('[User.pushNotifCount] Count not retrieve unread notifications count to push to uid ' + uid + '\'s client(s)');

@@ -89,6 +89,10 @@ categoriesController.get = function(req, res, next) {
 					end = start + settings.topicsPerPage - 1;
 
 				categories.getCategoryById(cid, start, end, uid, function (err, categoryData) {
+					if (err) {
+						return next(err);
+					}
+
 					if (categoryData) {
 						if (parseInt(categoryData.disabled, 10) === 1) {
 							return next(new Error('Category disabled'), null);

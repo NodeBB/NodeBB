@@ -5,12 +5,12 @@ var async = require('async'),
 	nconf = require('nconf'),
 	winston = require('winston'),
 
-	user = require('./user'),
-	utils = require('./../public/src/utils'),
-	plugins = require('./plugins'),
-	db = require('./database'),
-	meta = require('./meta'),
-	emailer = require('./emailer');
+	user = require('./../user'),
+	utils = require('./../../public/src/utils'),
+	plugins = require('./../plugins'),
+	db = require('./../database'),
+	meta = require('./../meta'),
+	emailer = require('./../emailer');
 
 (function(UserEmail) {
 

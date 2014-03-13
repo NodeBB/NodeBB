@@ -1,3 +1,5 @@
+'use strict';
+
 var	async = require('async'),
 	user = require('../user'),
 	topics = require('../topics'),
@@ -93,8 +95,9 @@ SocketUser.updateProfile = function(socket, data, callback) {
 		if(err) {
 			return callback(err);
 		}
+
 		if(!isAdmin) {
-			return callback(new Error('not allowed!'))
+			return callback(new Error('not allowed!'));
 		}
 
 		user.updateProfile(data.uid, data, callback);
