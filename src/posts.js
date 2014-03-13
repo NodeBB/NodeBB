@@ -232,48 +232,47 @@ var db = require('./database'),
 				return callback(err);
 			}
 
-			postTools.parseSignature(userData.signature, function(err, signature) {
-				if(err) {
+			post.user = {
+				username: userData.username || 'anonymous',
+				userslug: userData.userslug || '',
+				reputation: userData.reputation || 0,
+				postcount: userData.postcount || 0,
+				banned: parseInt(userData.banned, 10) === 1,
+				picture: userData.picture || gravatar.url('', {}, true)
+			};
+
+			for (var info in customUserInfo) {
+				if (customUserInfo.hasOwnProperty(info)) {
+					post.user[info] = userData[info] || customUserInfo[info];
+				}
+			}
+
+			async.parallel({
+				signature: function(next) {
+					if (parseInt(meta.config.disableSignatures, 10) !== 1) {
+						return postTools.parseSignature(userData.signature, next);
+					}
+					next();
+				},
+				editor: function(next) {
+					if (!post.editor) {
+						return next();
+					}
+					user.getUserFields(post.editor, ['username', 'userslug'], next);
+				},
+				customProfileInfo: function(next) {
+					plugins.fireHook('filter:posts.custom_profile_info', {profile: [], uid: post.uid, pid: post.pid}, next);
+				}
+			}, function(err, results) {
+				if (err) {
 					return callback(err);
 				}
 
-				post.username = userData.username || 'anonymous';
-				post.userslug = userData.userslug || '';
-				post.user_rep = userData.reputation || 0;
-				post.user_postcount = userData.postcount || 0;
-				post.user_banned = parseInt(userData.banned, 10) === 1;
-				post.picture = userData.picture || gravatar.url('', {}, true);
+				post.user.signature = results.signature;
+				post.editor = results.editor;
+				post.custom_profile_info = results.profile;
 
-				if(meta.config.disableSignatures === undefined || parseInt(meta.config.disableSignatures, 10) === 0) {
-					post.signature = signature;
-				}
-
-				for (var info in customUserInfo) {
-					if (customUserInfo.hasOwnProperty(info)) {
-						post[info] = userData[info] || customUserInfo[info];
-					}
-				}
-
-				plugins.fireHook('filter:posts.custom_profile_info', {profile: [], uid: post.uid, pid: post.pid}, function(err, profile_info) {
-					if(err) {
-						return callback(err);
-					}
-					post.custom_profile_info = profile_info.profile;
-
-					if (post.editor !== '') {
-						user.getUserFields(post.editor, ['username', 'userslug'], function(err, editorData) {
-							if (err) {
-								return callback(err);
-							}
-
-							post.editorname = editorData.username;
-							post.editorslug = editorData.userslug;
-							callback(null,  post);
-						});
-					} else {
-						callback(null, post);
-					}
-				});
+				callback(null, post);
 			});
 		});
 	};
