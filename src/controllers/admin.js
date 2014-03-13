@@ -11,7 +11,8 @@ var async = require('async'),
 	plugins = require('./../plugins'),
 	widgets = require('./../widgets'),
 	groups = require('./../groups'),
-	pkg = require('./../../package.json');
+	pkg = require('./../../package.json'),
+	validator = require('validator');
 
 
 
@@ -39,24 +40,26 @@ adminController.home = function(req, res, next) {
 };
 
 adminController.categories.active = function(req, res, next) {
-	categories.getAllCategories(0, function (err, data) {
-		data.categories = data.categories.filter(function (category) {
-			return !category.disabled;
-		});
-
-		res.render('admin/categories', data);
-	});
+	filterAndRenderCategories(req, res, next, true);
 };
 
 adminController.categories.disabled = function(req, res, next) {
+	filterAndRenderCategories(req, res, next, false);
+};
+
+function filterAndRenderCategories(req, res, next, active) {
 	categories.getAllCategories(0, function (err, data) {
 		data.categories = data.categories.filter(function (category) {
-			return category.disabled;
+			return active ? !category.disabled : category.disabled;
+		});
+
+		data.categories.forEach(function(category) {
+			category.description = validator.escape(category.description);
 		});
 
 		res.render('admin/categories', data);
 	});
-};
+}
 
 adminController.database.get = function(req, res, next) {
 	db.info(function (err, data) {
@@ -79,7 +82,7 @@ adminController.events.get = function(req, res, next) {
 		if(err || !data) {
 			return next(err);
 		}
-		
+
 		data = data.toString().split('\n').reverse().join('\n');
 		res.render('admin/events', {
 			eventdata: data
