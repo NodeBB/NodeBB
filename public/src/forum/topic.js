@@ -735,6 +735,10 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 		});
 
 		socket.on('event:new_post', function(data) {
+			if(data && data.posts && data.posts.length && data.posts[0].tid !== templates.get('topic_id')) {
+				return;
+			}
+
 			if(config.usePagination) {
 				onNewPostPagination(data);
 				return;

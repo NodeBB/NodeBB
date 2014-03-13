@@ -719,7 +719,7 @@ var async = require('async'),
 					if (categoryCache[topicData.cid]) {
 						return next(null, categoryCache[topicData.cid]);
 					}
-					categories.getCategoryFields(topicData.cid, ['name', 'slug', 'icon'], next);
+					categories.getCategoryFields(topicData.cid, ['name', 'slug', 'icon', 'bgColor', 'color'], next);
 				},
 				user: function(next) {
 					if (userCache[topicData.uid]) {
