@@ -1,3 +1,7 @@
+'use strict';
+
+/* globals define, app, socket, templates, translator */
+
 define(['forum/accountheader'], function(header) {
 	var AccountPosts = {},
 		loadingMore = false;
@@ -35,8 +39,9 @@ define(['forum/accountheader'], function(header) {
 
 	function onTopicsLoaded(posts) {
 		templates.preload_template('accountposts', function() {
-			templates['accountposts'].parse(posts: []);
-			var html = templates.prepare(templates['accountposts'].blocks['posts']).parse({
+			templates.accountposts.parse({posts: []});
+
+			var html = templates.prepare(templates.accountposts.blocks.posts).parse({
 				posts: posts
 			});
 
