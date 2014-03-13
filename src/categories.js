@@ -57,32 +57,38 @@ var db = require('./database'),
 
 	Categories.getCategoryById = function(cid, start, end, uid, callback) {
 
-		if(parseInt(uid, 10)) {
-			Categories.markAsRead(cid, uid);
-		}
-
-		async.parallel({
-			category: function(next) {
-				Categories.getCategoryData(cid, next);
-			},
-			topics: function(next) {
-				Categories.getCategoryTopics(cid, start, end, uid, next);
-			},
-			pageCount: function(next) {
-				Categories.getPageCount(cid, uid, next);
-			}
-		}, function(err, results) {
-			if(err) {
-				return callback(err);
+		CategoryTools.exists(cid, function(err, exists) {
+			if(err || !exists) {
+				return callback(err || new Error('category-not-found [' + cid + ']'));
 			}
 
-			var category = results.category;
-			category.topics = results.topics.topics;
-			category.nextStart = results.topics.nextStart;
-			category.pageCount = results.pageCount;
-			category.topic_row_size = 'col-md-9';
+			if(parseInt(uid, 10)) {
+				Categories.markAsRead(cid, uid);
+			}
 
-			callback(null, category);
+			async.parallel({
+				category: function(next) {
+					Categories.getCategoryData(cid, next);
+				},
+				topics: function(next) {
+					Categories.getCategoryTopics(cid, start, end, uid, next);
+				},
+				pageCount: function(next) {
+					Categories.getPageCount(cid, uid, next);
+				}
+			}, function(err, results) {
+				if(err) {
+					return callback(err);
+				}
+
+				var category = results.category;
+				category.topics = results.topics.topics;
+				category.nextStart = results.topics.nextStart;
+				category.pageCount = results.pageCount;
+				category.topic_row_size = 'col-md-9';
+
+				callback(null, category);
+			});
 		});
 	};
 

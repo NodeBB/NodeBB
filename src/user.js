@@ -19,9 +19,14 @@ var bcrypt = require('bcryptjs'),
 
 (function(User) {
 
-	User.email = require('./useremail');
-	User.notifications = require('./usernotifications');
-	User.reset = require('./userreset');
+	User.email = require('./user/email');
+	User.notifications = require('./user/notifications');
+	User.reset = require('./user/reset');
+
+	require('./user/follow')(User);
+	require('./user/profile')(User);
+	require('./user/admin')(User);
+	require('./user/settings')(User);
 
 	User.create = function(userData, callback) {
 		userData = userData || {};
@@ -224,51 +229,7 @@ var bcrypt = require('bcryptjs'),
 		});
 	};
 
-	User.getSettings = function(uid, callback) {
-		function sendDefaultSettings() {
-			callback(null, {
-				showemail: false,
-				usePagination: parseInt(meta.config.usePagination, 10) === 1,
-				topicsPerPage: parseInt(meta.config.topicsPerPage, 10) || 20,
-				postsPerPage: parseInt(meta.config.postsPerPage, 10) || 10
-			});
-		}
 
-		if(!parseInt(uid, 10)) {
-			return sendDefaultSettings();
-		}
-
-		db.getObject('user:' + uid + ':settings', function(err, settings) {
-			if(err) {
-				return callback(err);
-			}
-
-			if(!settings) {
-				settings = {};
-			}
-
-			settings.showemail = settings.showemail ? parseInt(settings.showemail, 10) !== 0 : false;
-			settings.usePagination = settings.usePagination ? parseInt(settings.usePagination, 10) === 1 : parseInt(meta.config.usePagination, 10) === 1;
-			settings.topicsPerPage = settings.topicsPerPage ? parseInt(settings.topicsPerPage, 10) : parseInt(meta.config.topicsPerPage, 10) || 20;
-			settings.postsPerPage = settings.postsPerPage ? parseInt(settings.postsPerPage, 10) : parseInt(meta.config.postsPerPage, 10) || 10;
-
-			callback(null, settings);
-		});
-	};
-
-	User.saveSettings = function(uid, data, callback) {
-
-		if(!data.topicsPerPage || !data.postsPerPage || parseInt(data.topicsPerPage, 10) <= 0 || parseInt(data.postsPerPage, 10) <= 0) {
-			return callback(new Error('Invalid pagination value!'));
-		}
-
-		db.setObject('user:' + uid + ':settings', {
-			showemail: data.showemail,
-			usePagination: data.usePagination,
-			topicsPerPage: data.topicsPerPage,
-			postsPerPage: data.postsPerPage
-		}, callback);
-	};
 
 	User.updateLastOnlineTime = function(uid, callback) {
 		User.getUserField(uid, 'status', function(err, status) {
@@ -284,157 +245,6 @@ var bcrypt = require('bcryptjs'),
 
 			User.setUserField(uid, 'lastonline', Date.now(), cb);
 		});
-	};
-
-	User.updateProfile = function(uid, data, callback) {
-		var fields = ['username', 'email', 'fullname', 'website', 'location', 'birthday', 'signature'];
-		var returnData = {
-			success: false
-		};
-
-		function isSignatureValid(next) {
-			if (data.signature !== undefined && data.signature.length > meta.config.maximumSignatureLength) {
-				next(new Error('Signature can\'t be longer than ' + meta.config.maximumSignatureLength + ' characters!'), false);
-			} else {
-				next(null, true);
-			}
-		}
-
-		function isEmailAvailable(next) {
-			if (!data.email) {
-				return next(null, true);
-			}
-
-			User.getUserField(uid, 'email', function(err, email) {
-				if(email === data.email) {
-					return next(null, true);
-				}
-
-				User.email.available(data.email, function(err, available) {
-					if (err) {
-						return next(err, null);
-					}
-
-					if (!available) {
-						next(new Error('Email not available!'), false);
-					} else {
-						next(null, true);
-					}
-				});
-			});
-		}
-
-		function isUsernameAvailable(next) {
-			User.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
-
-				var userslug = utils.slugify(data.username);
-
-				if(userslug === userData.userslug) {
-					return next(null, true);
-				}
-
-				if(!utils.isUserNameValid(data.username) || !userslug) {
-					return next(new Error('Invalid Username!'), false);
-				}
-
-				User.exists(userslug, function(err, exists) {
-					if(err) {
-						return next(err);
-					}
-
-					if(exists) {
-						next(new Error('Username not available!'), false);
-					} else {
-						next(null, true);
-					}
-				});
-			});
-		}
-
-		async.series([isSignatureValid, isEmailAvailable, isUsernameAvailable], function(err, results) {
-			if (err) {
-				return callback(err, returnData);
-			}
-
-			async.each(fields, updateField, function(err) {
-				if (err) {
-					return callback(err, returnData);
-				}
-
-				returnData.success = true;
-				callback(null, returnData);
-			});
-		});
-
-		function updateField(field, next) {
-			if (!(data[field] !== undefined && typeof data[field] === 'string')) {
-				return next();
-			}
-
-			data[field] = data[field].trim();
-			data[field] = validator.escape(data[field]);
-
-			if (field === 'email') {
-				User.getUserFields(uid, ['email', 'picture', 'uploadedpicture'], function(err, userData) {
-					if (err) {
-						return next(err);
-					}
-
-					if(userData.email === data.email) {
-						return next();
-					}
-
-					var gravatarpicture = User.createGravatarURLFromEmail(data.email);
-					User.setUserField(uid, 'gravatarpicture', gravatarpicture);
-
-					db.deleteObjectField('email:uid', userData.email);
-					db.setObjectField('email:uid', data.email, uid);
-					User.setUserField(uid, 'email', data.email);
-					if (userData.picture !== userData.uploadedpicture) {
-						returnData.picture = gravatarpicture;
-						User.setUserField(uid, 'picture', gravatarpicture);
-					}
-					returnData.gravatarpicture = gravatarpicture;
-
-					events.logEmailChange(uid, userData.email, data.email);
-					next();
-				});
-				return;
-			} else if (field === 'username') {
-
-				User.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
-					var userslug = utils.slugify(data.username);
-
-					if(data.username !== userData.username) {
-						User.setUserField(uid, 'username', data.username);
-						db.deleteObjectField('username:uid', userData.username);
-						db.setObjectField('username:uid', data.username, uid);
-						events.logUsernameChange(uid, userData.username, data.username);
-					}
-
-					if(userslug !== userData.userslug) {
-						User.setUserField(uid, 'userslug', userslug);
-						db.deleteObjectField('userslug:uid', userData.userslug);
-						db.setObjectField('userslug:uid', userslug, uid);
-						returnData.userslug = userslug;
-					}
-
-					next();
-				});
-
-				return;
-			} else if (field === 'signature') {
-				data[field] = S(data[field]).stripTags().s;
-			} else if (field === 'website') {
-				if(data[field].substr(0, 7) !== 'http://' && data[field].substr(0, 8) !== 'https://') {
-					data[field] = 'http://' + data[field];
-				}
-			}
-
-			User.setUserField(uid, field, data[field]);
-
-			next();
-		}
 	};
 
 	User.isReadyToPost = function(uid, callback) {
@@ -532,52 +342,43 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.getUsers = function(set, start, stop, callback) {
-
-		db.getSortedSetRevRange(set, start, stop, function(err, uids) {
-			if (err) {
-				return callback(err);
+		function loadUserInfo(user, callback) {
+			if (!user) {
+				return callback(null, user);
 			}
 
-			User.getUsersData(uids, function(err, users) {
-				if (err) {
-					return callback(err);
+			async.waterfall([
+				function(next) {
+					User.isAdministrator(user.uid, next);
+				},
+				function(isAdmin, next) {
+					user.status = !user.status ? 'online' : '';
+					user.administrator = isAdmin ? '1':'0';
+					if (set === 'users:online') {
+						return callback(null, user);
+					}
+					db.sortedSetScore('users:online', user.uid, next);
+				},
+				function(score, next) {
+					if (!score) {
+						user.status = 'offline';
+					}
+					next(null, user);
 				}
+			], callback);
+		}
 
-				async.map(users, function(user, next) {
-					if (!user) {
-						return next(null, user);
-					}
-
-					if (!user.status) {
-						user.status = 'online';
-					}
-
-					User.isAdministrator(user.uid, function(err, isAdmin) {
-						if (err) {
-							return next(err);
-						}
-
-						user.administrator = isAdmin ? '1':'0';
-
-						if(set === 'users:online') {
-							return next(null, user);
-						}
-
-						db.sortedSetScore('users:online', user.uid, function(err, score) {
-							if (err) {
-								return next(err);
-							}
-
-							if(!score) {
-								user.status = 'offline';
-							}
-
-							next(null, user);
-						});
-					});
-				}, callback);
-			});
-		});
+		async.waterfall([
+			function(next) {
+				db.getSortedSetRevRange(set, start, stop, next);
+			},
+			function(uids, next) {
+				User.getUsersData(uids, next);
+			},
+			function(users, next) {
+				async.map(users, loadUserInfo, next);
+			}
+		], callback);
 	};
 
 	User.createGravatarURLFromEmail = function(email) {
@@ -597,36 +398,14 @@ var bcrypt = require('bcryptjs'),
 
 	User.hashPassword = function(password, callback) {
 		if (!password) {
-			callback(password);
-			return;
+			return callback(password);
 		}
 
 		bcrypt.genSalt(nconf.get('bcrypt_rounds'), function(err, salt) {
-			bcrypt.hash(password, salt, callback);
-		});
-	};
-
-	User.getUsersCSV = function(callback) {
-		var csvContent = '';
-
-		db.getObjectValues('username:uid', function(err, uids) {
 			if (err) {
 				return callback(err);
 			}
-
-			User.getMultipleUserFields(uids, ['email', 'username'], function(err, usersData) {
-				if (err) {
-					return callback(err);
-				}
-
-				usersData.forEach(function(user, index) {
-					if (user) {
-						csvContent += user.email + ',' + user.username + ',' + uids[index] + '\n';
-					}
-				});
-
-				callback(null, csvContent);
-			});
+			bcrypt.hash(password, salt, callback);
 		});
 	};
 
@@ -688,78 +467,8 @@ var bcrypt = require('bcryptjs'),
 
 	User.getPostIds = function(uid, start, stop, callback) {
 		db.getSortedSetRevRange('uid:' + uid + ':posts', start, stop, function(err, pids) {
-			if(err) {
-				return callback(err);
-			}
-
-			if (pids && pids.length) {
-				callback(null, pids);
-			} else {
-				callback(null, []);
-			}
+			callback(err, Array.isArray(pids) ? pids : []);
 		});
-	};
-
-	User.follow = function(uid, followuid, callback) {
-		toggleFollow('follow', uid, followuid, callback);
-	};
-
-	User.unfollow = function(uid, unfollowuid, callback) {
-		toggleFollow('unfollow', uid, unfollowuid, callback);
-	};
-
-	function toggleFollow(type, uid, theiruid, callback) {
-		var command = type === 'follow' ? 'setAdd' : 'setRemove';
-		db[command]('following:' + uid, theiruid, function(err) {
-			if(err) {
-				return callback(err);
-			}
-			db[command]('followers:' + theiruid, uid, callback);
-		});
-	}
-
-	User.getFollowing = function(uid, callback) {
-		getFollow('following:' + uid, callback);
-	};
-
-	User.getFollowers = function(uid, callback) {
-		getFollow('followers:' + uid, callback);
-	};
-
-	function getFollow(set, callback) {
-		db.getSetMembers(set, function(err, uids) {
-			if(err) {
-				return callback(err);
-			}
-
-			User.getUsersData(uids, callback);
-		});
-	}
-
-	User.getFollowingCount = function(uid, callback) {
-		db.setCount('following:' + uid, callback);
-	};
-
-	User.getFollowerCount = function(uid, callback) {
-		db.setCount('followers:' + uid, callback);
-	};
-
-	User.getFollowStats = function (uid, callback) {
-		async.parallel({
-			followingCount: function(next) {
-				User.getFollowingCount(uid, next);
-			},
-			followerCount : function(next) {
-				User.getFollowerCount(uid, next);
-			}
-		}, callback);
-	};
-
-
-
-
-	User.isFollowing = function(uid, theirid, callback) {
-		db.isSetMember('following:' + uid, theirid, callback);
 	};
 
 	User.exists = function(userslug, callback) {
@@ -770,13 +479,7 @@ var bcrypt = require('bcryptjs'),
 
 	User.count = function(callback) {
 		db.getObjectField('global', 'userCount', function(err, count) {
-			if(err) {
-				return callback(err);
-			}
-
-			callback(null, {
-				count: count ? count : 0
-			});
+			callback(err, count ? count : 0);
 		});
 	};
 
@@ -823,22 +526,6 @@ var bcrypt = require('bcryptjs'),
 
 	User.isAdministrator = function(uid, callback) {
 		groups.isMemberByGroupName(uid, 'administrators', callback);
-	};
-
-	User.logIP = function(uid, ip) {
-		db.sortedSetAdd('uid:' + uid + ':ip', +new Date(), ip || 'Unknown');
-	};
-
-	User.getIPs = function(uid, end, callback) {
-		db.getSortedSetRevRange('uid:' + uid + ':ip', 0, end, function(err, ips) {
-			if(err) {
-				return callback(err);
-			}
-
-			callback(null, ips.map(function(ip) {
-				return {ip:ip};
-			}));
-		});
 	};
 
 

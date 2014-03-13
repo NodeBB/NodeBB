@@ -186,10 +186,8 @@ Sockets.logoutUser = function(uid) {
 };
 
 Sockets.emitUserCount = function() {
-	db.getObjectField('global', 'userCount', function(err, count) {
-		io.sockets.emit('user.count', err?{message:err.message}:null, {
-			count: count
-		});
+	user.count(function(err, count) {
+		io.sockets.emit('user.count', err ? {message:err.message} : null, count);
 	});
 };
 

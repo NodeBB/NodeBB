@@ -29,8 +29,8 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 					return app.alertError(err.message);
 				}
 
-				if (!data || !data.success) {
-					return app.alertError('There was an error updating your profile! ' + err.message);
+				if (!data) {
+					return app.alertError('There was an error updating your profile!');
 				}
 
 				app.alertSuccess('Your profile has been updated successfully!');
