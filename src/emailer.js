@@ -1,3 +1,5 @@
+"use strict";
+
 var	fs = require('fs'),
 	async = require('async'),
 	path = require('path'),
@@ -9,27 +11,22 @@ var	fs = require('fs'),
 	Translator = require('../public/src/translator'),
 	templates = require('../public/src/templates'),
 
+	app = {},
 	Emailer = {};
 
-var	render = function(template, params, callback) {
 
-	if (templates[template]) {
-		Translator.translate(templates[template].parse(params), function(template) {
-			callback(null, template);
-		});
-	} else {
-		callback(null, null);
-	}
-}
+Emailer.registerApp = function(expressApp) {
+	app = expressApp;
+	return Emailer;
+};
 
 Emailer.send = function(template, uid, params) {
-
 	async.parallel({
 		html: function(next) {
-			render('emails/' + template, params, next);
+			app.render('emails/' + template, params, next);
 		},
 		plaintext: function(next) {
-			render('emails/' + template + '_plaintext', params, next);
+			app.render('emails/' + template + '_plaintext', params, next);
 		}
 	}, function(err, results) {
 		User.getUserField(uid, 'email', function(err, email) {

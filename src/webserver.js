@@ -8,6 +8,7 @@ var path = require('path'),
 	winston = require('winston'),
 	async = require('async'),
 
+	emailer = require('./emailer'),
 	db = require('./database'),
 	auth = require('./routes/authentication'),
 	meta = require('./meta'),
@@ -31,6 +32,7 @@ if(nconf.get('ssl')) {
 
 	logger.init(app);
 	auth.registerApp(app);
+	emailer.registerApp(app);
 
 	async.series({
 		themesData: meta.themes.get,
