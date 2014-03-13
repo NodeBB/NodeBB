@@ -59,8 +59,8 @@ var db = require('./database'),
 	};
 
 	Categories.getCategoryById = function(cid, start, end, uid, callback) {
-		CategoryTools.exists(cid, function(err, exists) {
-			if(err || !exists) {
+		Categories.getCategoryData(cid, function(err, category) {
+			if(err || !category) {
 				return callback(err || new Error('category-not-found [' + cid + ']'));
 			}
 
@@ -69,9 +69,6 @@ var db = require('./database'),
 			}
 
 			async.parallel({
-				category: function(next) {
-					Categories.getCategoryData(cid, next);
-				},
 				topics: function(next) {
 					Categories.getCategoryTopics(cid, start, end, uid, next);
 				},
@@ -83,7 +80,6 @@ var db = require('./database'),
 					return callback(err);
 				}
 
-				var category = results.category;
 				category.topics = results.topics.topics;
 				category.nextStart = results.topics.nextStart;
 				category.pageCount = results.pageCount;
