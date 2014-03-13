@@ -212,7 +212,6 @@ var bcrypt = require('bcryptjs'),
 					}
 
 					if (user.picture === user.uploadedpicture) {
-						// Append relative url
 						user.picture = nconf.get('relative_path') + user.picture;
 					}
 				}
