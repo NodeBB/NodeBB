@@ -159,14 +159,6 @@ var bcrypt = require('bcryptjs'),
 		});
 	};
 
-	User.ban = function(uid, callback) {
-		User.setUserField(uid, 'banned', 1, callback);
-	};
-
-	User.unban = function(uid, callback) {
-		User.setUserField(uid, 'banned', 0, callback);
-	};
-
 	User.getUserField = function(uid, field, callback) {
 		db.getObjectField('user:' + uid, field, callback);
 	};
@@ -229,8 +221,6 @@ var bcrypt = require('bcryptjs'),
 		});
 	};
 
-
-
 	User.updateLastOnlineTime = function(uid, callback) {
 		User.getUserField(uid, 'status', function(err, status) {
 			function cb(err) {
@@ -262,67 +252,6 @@ var bcrypt = require('bcryptjs'),
 			}
 			callback();
 		});
-	};
-
-	User.changePassword = function(uid, data, callback) {
-		if(!data || !data.uid) {
-			return callback(new Error('invalid-uid'));
-		}
-
-		function hashAndSetPassword(callback) {
-			User.hashPassword(data.newPassword, function(err, hash) {
-				if(err) {
-					return callback(err);
-				}
-
-				User.setUserField(data.uid, 'password', hash, function(err) {
-					if(err) {
-						return callback(err);
-					}
-
-					if(parseInt(uid, 10) === parseInt(data.uid, 10)) {
-						events.logPasswordChange(data.uid);
-					} else {
-						events.logAdminChangeUserPassword(uid, data.uid);
-					}
-
-					callback();
-				});
-			});
-		}
-
-		if (!utils.isPasswordValid(data.newPassword)) {
-			return callback(new Error('Invalid password!'));
-		}
-
-		if(parseInt(uid, 10) !== parseInt(data.uid, 10)) {
-			User.isAdministrator(uid, function(err, isAdmin) {
-				if(err || !isAdmin) {
-					return callback(err || new Error('not-allowed'));
-				}
-
-				hashAndSetPassword(callback);
-			});
-		} else {
-			User.getUserField(uid, 'password', function(err, currentPassword) {
-				if(err) {
-					return callback(err);
-				}
-
-				if (currentPassword !== null) {
-					bcrypt.compare(data.currentPassword, currentPassword, function(err, res) {
-						if (err || !res) {
-							return callback(err || new Error('Your current password is not correct!'));
-						}
-
-						hashAndSetPassword(callback);
-					});
-				} else {
-					// No password in account (probably SSO login)
-					hashAndSetPassword(callback);
-				}
-			});
-		}
 	};
 
 	User.setUserField = function(uid, field, value, callback) {

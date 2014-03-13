@@ -43,4 +43,12 @@ module.exports = function(User) {
 			}
 		], callback);
 	};
+
+	User.ban = function(uid, callback) {
+		User.setUserField(uid, 'banned', 1, callback);
+	};
+
+	User.unban = function(uid, callback) {
+		User.setUserField(uid, 'banned', 0, callback);
+	};
 };
