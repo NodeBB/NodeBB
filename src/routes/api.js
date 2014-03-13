@@ -83,7 +83,7 @@ function uploadImage(image, callback) {
 	} else {
 
 		if (meta.config.allowFileUploads) {
-			Posts.uploadPostFile(image, callback);
+			uploadFile(image, callback);
 		} else {
 			callback(new Error('Uploads are disabled!'));
 		}
@@ -109,7 +109,7 @@ function uploadFile(file, callback) {
 		}
 
 		var filename = 'upload-' + utils.generateUUID() + path.extname(file.name);
-		require('./file').saveFileToLocal(filename, file.path, function(err, upload) {
+		require('../file').saveFileToLocal(filename, file.path, function(err, upload) {
 			if(err) {
 				return callback(err);
 			}
