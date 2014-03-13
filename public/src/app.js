@@ -217,7 +217,7 @@ var socket,
 				.append($('<strong>' + title + '</strong>'))
 				.append($('<p>' + params.message + '</p>'));
 
-			if (params.location === null) {
+			if (!params.location) {
 				params.location = 'alert_window';
 			}
 
