@@ -1,7 +1,7 @@
 {
-    "title": "消息",
-    "no_notifs": "You have no new notifications",
-    "see_all": "See all Notifications",
+    "title": "通知",
+    "no_notifs": "沒有新消息",
+    "see_all": "顯示全部",
     "back_to_home": "返回主頁",
     "outgoing_link": "站外鏈接",
     "outgoing_link_message": "你正在離開本站。",
