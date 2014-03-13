@@ -110,7 +110,6 @@ define(['taskbar'], function(taskbar) {
 	}
 
 	function removeDraft(save_id) {
-		console.log('removing draft');
 		return localStorage.removeItem(save_id);
 	}
 
@@ -273,6 +272,10 @@ define(['taskbar'], function(taskbar) {
 		});
 	}
 
+	function escapeRegExp(text) {
+  		return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+	};
+
 	function uploadContentFiles(params) {
 		var files = params.files,
 			post_uuid = params.post_uuid,
@@ -299,10 +302,15 @@ define(['taskbar'], function(taskbar) {
 		textarea.val(text);
 
 		uploadForm.off('submit').submit(function() {
+			function updateTextArea(filename, text) {
+				var current = textarea.val();
+				var re = new RegExp(escapeRegExp(filename) + "]\\([^)]+\\)", 'g');
+				textarea.val(current.replace(re, filename + '](' + text + ')'));
+			}
 
 			$(this).find('#postUploadCsrf').val($('#csrf_token').val());
 
-			if(formData) {
+			if (formData) {
 				formData.append('_csrf', $('#csrf_token').val());
 			}
 
@@ -317,15 +325,14 @@ define(['taskbar'], function(taskbar) {
 					xhr = maybeParse(xhr);
 
 					app.alertError('Error uploading file!\nStatus : ' + xhr.status + '\nMessage : ' + xhr.responseText);
-					if (typeof callback == 'function')
+					if (typeof callback === 'function') {
 						callback(xhr);
+					}
 				},
 
 				uploadProgress: function(event, position, total, percent) {
-					var current = textarea.val();
 					for(var i=0; i < files.length; ++i) {
-						var re = new RegExp(files[i].name + "]\\([^)]+\\)", 'g');
-						textarea.val(current.replace(re, files[i].name+'](uploading ' + percent + '%)'));
+						updateTextArea(files[i].name, 'uploading' + percent + '%');
 					}
 				},
 
@@ -334,15 +341,14 @@ define(['taskbar'], function(taskbar) {
 
 					if(uploads && uploads.length) {
 						for(var i=0; i<uploads.length; ++i) {
-							var current = textarea.val();
-							var re = new RegExp(uploads[i].name + "]\\([^)]+\\)", 'g');
-							textarea.val(current.replace(re, uploads[i].name + '](' + uploads[i].url + ')'));
+							updateTextArea(uploads[i].name, uploads[i].url);
 						}
 					}
 
 					textarea.focus();
-					if (typeof callback == 'function')
+					if (typeof callback === 'function') {
 						callback(null, uploads);
+					}
 				},
 
 				complete: function() {
