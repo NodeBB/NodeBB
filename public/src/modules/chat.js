@@ -1,8 +1,7 @@
-
-'use strict';
+"use strict";
 /* globals app, config, define, socket, translator, templates, utils */
 
-define(['taskbar', 'string', 'sound'], function(taskbar, S, sound) {
+define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 
 	var module = {};
 
@@ -53,9 +52,8 @@ define(['taskbar', 'string', 'sound'], function(taskbar, S, sound) {
 		});
 
 		socket.on('event:chats.receive', function(data) {
-
-			if (module.modalExists(data.fromuid)) {
-				var modal = module.getModal(data.fromuid);
+			if (module.modalExists(data.uid)) {
+				var modal = module.getModal(data.uid);
 				module.appendChatMessage(modal, data.message, data.timestamp);
 
 				if (modal.is(":visible")) {
@@ -71,13 +69,15 @@ define(['taskbar', 'string', 'sound'], function(taskbar, S, sound) {
 					app.alternatingTitle(data.username + ' has messaged you');
 				}
 			} else {
-				module.createModal(data.username, data.fromuid, function(modal) {
+				module.createModal(data.username, data.uid, function(modal) {
 					module.toggleNew(modal.attr('UUID'), true);
 					app.alternatingTitle(data.username + ' has messaged you');
 				});
 			}
 
-			sound.play('chat-incoming');
+			if (parseInt(app.uid, 10) !== parseInt(data.fromUid, 10)) {
+				sounds.play('chat-incoming');
+			}
 		});
 	};
 
@@ -229,7 +229,8 @@ define(['taskbar', 'string', 'sound'], function(taskbar, S, sound) {
 			msg = msg +'\n';
 			socket.emit('modules.chats.send', { touid:chatModal.touid, message:msg});
 			chatModal.find('#chat-message-input').val('');
-			sound.play('chat-outgoing');
+			console.log('outgoing');
+			sounds.play('chat-outgoing');
 		}
 	}
 

@@ -198,7 +198,8 @@ SocketModules.chats.send = function(socket, data) {
 
 				server.getUserSockets(touid).forEach(function(s) {
 					s.emit('event:chats.receive', {
-						fromuid: socket.uid,
+						uid: socket.uid,
+						fromUid: socket.uid,
 						username: username,
 						message: parsed,
 						timestamp: Date.now()
@@ -207,7 +208,8 @@ SocketModules.chats.send = function(socket, data) {
 
 				server.getUserSockets(socket.uid).forEach(function(s) {
 					s.emit('event:chats.receive', {
-						fromuid: touid,
+						uid: touid,
+						fromUid: socket.uid,
 						username: toUsername,
 						message: parsed,
 						timestamp: Date.now()
@@ -232,6 +234,19 @@ SocketModules.notifications.mark_read = function(socket, nid) {
 
 SocketModules.notifications.mark_all_read = function(socket, data, callback) {
 	notifications.mark_all_read(socket.uid, callback);
+};
+
+/* Sounds */
+
+SocketModules.sounds = {};
+
+SocketModules.sounds.getSounds  = function(socket, data, callback) {
+	// Read sounds from local directory
+	meta.sounds.getLocal(callback);
+};
+
+SocketModules.sounds.getMapping  = function(socket, data, callback) {
+	meta.sounds.getMapping(callback);
 };
 
 module.exports = SocketModules;

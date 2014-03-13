@@ -1,4 +1,4 @@
-define(['sound'], function(sound) {
+define(['sounds'], function(sound) {
 	var Notifications = {};
 
 	Notifications.prepareDOM = function() {

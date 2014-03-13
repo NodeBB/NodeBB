@@ -325,6 +325,47 @@ var fs = require('fs'),
 		}
 	};
 
+	/* Sounds */
+	Meta.sounds = {};
+
+	// todo: Possibly move these into a bundled module?
+	Meta.sounds.getLocal = function(callback) {
+		fs.readdir(path.join(__dirname, '../public/sounds'), function(err, files) {
+			var	localList = {};
+
+			if (err) {
+				winston.error('Could not get local sound files:' + err.message);
+				console.log(err.stack);
+				return callback(null, []);
+			}
+
+			// Return proper paths
+			files.forEach(function(filename) {
+				localList[filename] = nconf.get('url') + '/sounds/' + filename;
+			});
+
+			callback(null, localList);
+		});
+	};
+
+	Meta.sounds.getMapping = function(callback) {
+		db.getObject('sounds', function(err, sounds) {
+			if (err || !sounds) {
+				// Send default sounds
+				var	defaults = {
+						notification: 'notification.wav',
+						'chat-incoming': 'waterdrop-high.wav',
+						'chat-outgoing': 'waterdrop-low.wav'
+					};
+
+				return callback(null, defaults);
+			}
+
+			callback.apply(null, arguments);
+		});
+	};
+
+	/* Assorted */
 	Meta.css = {
 		cache: undefined
 	};
