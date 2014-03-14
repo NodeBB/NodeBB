@@ -1,4 +1,8 @@
-var utils = require('../../public/src/utils'),
+'use strict';
+
+
+var async = require('async'),
+	utils = require('../../public/src/utils'),
 	user = require('../user'),
 	groups = require('../groups');
 
@@ -6,23 +10,13 @@ var utils = require('../../public/src/utils'),
 
 	UserAdmin.createUser = function(uid, userData, callback) {
 		user.isAdministrator(uid, function(err, isAdmin) {
-			if(err) {
-				return callback(err);
+			if(err || !isAdmin) {
+				return callback(err || new Error('You are not an administrator'));
 			}
 
-			if (isAdmin) {
-				user.create(userData, function(err) {
-					if(err) {
-						return callback(err);
-					}
-
-					callback(null);
-				});
-			} else {
-				callback(new Error('You are not an administrator'));
-			}
+			user.create(userData, callback);
 		});
-	}
+	};
 
 	UserAdmin.makeAdmin = function(uid, theirid, socket) {
 		user.isAdministrator(uid, function(err, isAdmin) {
@@ -103,6 +97,20 @@ var utils = require('../../public/src/utils'),
 				});
 			}
 		});
+	};
+
+	UserAdmin.deleteUser = function(uid, theirid, callback) {
+		async.waterfall([
+			function(next) {
+				user.isAdministrator(uid, next);
+			},
+			function(isAdmin, next) {
+				if(!isAdmin) {
+					return next(new Error('You are not an administrator'));
+				}
+				user.delete(uid, theirid, next);
+			}
+		], callback);
 	};
 
 }(exports));

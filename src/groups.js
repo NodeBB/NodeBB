@@ -7,6 +7,10 @@
 		user = require('./user'),
 		db = require('./database');
 
+	Groups.getGroupIds = function (callback) {
+		db.getObjectValues('group:gid', callback);
+	};
+
 	Groups.list = function(options, callback) {
 		db.getObjectValues('group:gid', function (err, gids) {
 			if (gids.length > 0) {

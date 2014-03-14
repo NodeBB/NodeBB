@@ -695,7 +695,11 @@ var async = require('async'),
 			privilegeCache = {},
 			userCache = {};
 
+
 		function loadTopicInfo(topicData, next) {
+			if (!topicData) {
+				return next(null, null);
+			}
 
 			function isTopicVisible(topicData, topicInfo) {
 				var deleted = parseInt(topicData.deleted, 10) !== 0;
@@ -735,6 +739,10 @@ var async = require('async'),
 				privilegeCache[topicData.cid] = topicInfo.privileges;
 				categoryCache[topicData.cid] = topicInfo.categoryData;
 				userCache[topicData.uid] = topicInfo.user;
+
+				if (!topicInfo.teaser) {
+					return next(null, null);
+				}
 
 				if (!isTopicVisible(topicData, topicInfo)) {
 					return next(null, null);

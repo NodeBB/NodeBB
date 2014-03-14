@@ -281,7 +281,7 @@ var bcrypt = require('bcryptjs'),
 					User.isAdministrator(user.uid, next);
 				},
 				function(isAdmin, next) {
-					user.status = !user.status ? 'online' : '';
+					user.status = !user.status ? 'online' : user.status;
 					user.administrator = isAdmin ? '1':'0';
 					if (set === 'users:online') {
 						return callback(null, user);
