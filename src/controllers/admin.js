@@ -2,16 +2,17 @@
 
 var async = require('async'),
 
-	user = require('./../user'),
-	categories = require('./../categories'),
-	topics = require('./../topics'),
-	db = require('./../database'),
-	events = require('./../events'),
-	languages = require('./../languages'),
-	plugins = require('./../plugins'),
-	widgets = require('./../widgets'),
-	groups = require('./../groups'),
-	pkg = require('./../../package.json'),
+	user = require('../user'),
+	categories = require('../categories'),
+	topics = require('../topics'),
+	meta = require('../meta'),
+	db = require('../database'),
+	events = require('../events'),
+	languages = require('../languages'),
+	plugins = require('../plugins'),
+	widgets = require('../widgets'),
+	groups = require('../groups'),
+	pkg = require('../../package.json'),
 	validator = require('validator');
 
 
@@ -111,7 +112,18 @@ adminController.languages.get = function(req, res, next) {
 };
 
 adminController.settings.get = function(req, res, next) {
-	res.render('admin/settings', {});
+	meta.sounds.getLocal(function(err, sounds) {
+		// There has GOT to be a better way!
+		sounds = Object.keys(sounds).map(function(name) {
+			return {
+				name: name
+			};
+		});
+
+		res.render('admin/settings', {
+			sounds: sounds
+		});
+	});
 };
 
 adminController.logger.get = function(req, res, next) {

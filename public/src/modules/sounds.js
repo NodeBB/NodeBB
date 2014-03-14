@@ -1,4 +1,5 @@
 "use strict";
+/* global socket */
 
 define(['buzz'], function(buzz) {
 	var	Sounds = {};
@@ -69,6 +70,19 @@ define(['buzz'], function(buzz) {
 		if (!this.initialised) this.init(ready);
 		else ready();
 	};
+
+	Sounds.playFile = function(fileName) {
+		var	ready = function() {
+				if (Sounds.loaded[fileName]) {
+					Sounds.loaded[fileName].play();
+				} else {
+					console.log('[sounds] Not found:', name);
+				}
+			};
+
+		if (!this.initialised) this.init(ready);
+		else ready();
+	}
 
 	return Sounds;
 });
