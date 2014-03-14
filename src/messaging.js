@@ -124,7 +124,17 @@ var db = require('./database'),
 				return callback(err);
 			}
 
-			user.getMultipleUserFields(uids, ['username', 'picture', 'uid'], callback);
+			user.getMultipleUserFields(uids, ['username', 'picture', 'uid'], function(err, users) {
+				if (err) {
+					return callback(err)
+				}
+
+				users = users.filter(function(user) {
+					return !!user.uid;
+				})
+
+				callback(null, users);
+			});
 		});
 	};
 
