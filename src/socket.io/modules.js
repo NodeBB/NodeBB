@@ -15,13 +15,17 @@ var	posts = require('../posts'),
 	_ = require('underscore'),
 	server = require('./'),
 
-	SocketModules = {};
+	SocketModules = {
+		composer: {
+			replyHash: {}
+		},
+		chats: {},
+		notifications: {},
+		sounds: {},
+		settings: {}
+	};
 
 /* Posts Composer */
-
-SocketModules.composer = {
-	replyHash: {}
-};
 
 var	stopTracking = function(replyObj) {
 		if (isLast(replyObj.uid, replyObj.tid)) {
@@ -144,8 +148,6 @@ SocketModules.composer.getUsersByTid = function(socket, tid, callback) {
 
 /* Chat */
 
-SocketModules.chats = {};
-
 SocketModules.chats.get = function(socket, data, callback) {
 	if(!data) {
 		return callback(new Error('invalid data'));
@@ -225,9 +227,6 @@ SocketModules.chats.list = function(socket, data, callback) {
 };
 
 /* Notifications */
-
-SocketModules.notifications = {};
-
 SocketModules.notifications.mark_read = function(socket, nid) {
 	notifications.mark_read(nid, socket.uid);
 };
@@ -237,16 +236,23 @@ SocketModules.notifications.mark_all_read = function(socket, data, callback) {
 };
 
 /* Sounds */
-
-SocketModules.sounds = {};
-
-SocketModules.sounds.getSounds  = function(socket, data, callback) {
+SocketModules.sounds.getSounds = function(socket, data, callback) {
 	// Read sounds from local directory
 	meta.sounds.getLocal(callback);
 };
 
-SocketModules.sounds.getMapping  = function(socket, data, callback) {
+SocketModules.sounds.getMapping = function(socket, data, callback) {
 	meta.sounds.getMapping(callback);
+};
+
+/* Settings */
+SocketModules.settings.get = function(socket, data, callback) {
+	meta.settings.get(data.hash, callback);
+};
+
+SocketModules.settings.set = function(socket, data, callback) {
+	console.log('setting', data);
+	meta.settings.set(data.hash, data.values, callback);
 };
 
 module.exports = SocketModules;

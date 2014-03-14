@@ -365,6 +365,11 @@ var fs = require('fs'),
 		});
 	};
 
+	/* Settings */
+	Meta.settings = {};
+	Meta.settings.get = db.getObject;
+	Meta.settings.set = db.setObject;
+
 	/* Assorted */
 	Meta.css = {
 		cache: undefined

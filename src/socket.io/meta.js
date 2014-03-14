@@ -9,7 +9,9 @@ var	meta = require('../meta'),
 	winston = require('winston'),
 	server = require('./'),
 
-	SocketMeta = {};
+	SocketMeta = {
+		rooms: {}
+	};
 
 SocketMeta.reconnected = function(socket) {
 	var	uid = socket.uid,
@@ -71,8 +73,6 @@ SocketMeta.getUsageStats = function(socket, data, callback) {
 };
 
 /* Rooms */
-
-SocketMeta.rooms = {};
 
 SocketMeta.rooms.enter = function(socket, data) {
 	if(!data) {
