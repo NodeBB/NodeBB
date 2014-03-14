@@ -81,13 +81,7 @@ module.exports = function(User) {
 	};
 
 	function deletePosts(uid, callback) {
-		db.getSortedSetRange('uid:' + uid + ':posts', 0, -1, function(err, pids) {
-			if (err) {
-				return callback(err);
-			}
-
-			async.each(pids, deletePost, callback);
-		});
+		deleteSortedSetElements('uid:' + uid + ':posts', deletePost, callback);
 	}
 
 	function deletePost(pid, callback) {
@@ -196,11 +190,16 @@ module.exports = function(User) {
 	}
 
 	function deleteTopics(uid, callback) {
-		db.getSortedSetRange('uid:' + uid + ':topics', 0, -1, function(err, tids) {
+		deleteSortedSetElements('uid:' + uid + ':topics', deleteTopic, callback);
+	}
+
+	function deleteSortedSetElements(set, deleteMethod, callback) {
+		db.getSortedSetRange(set, 0, -1, function(err, ids) {
 			if (err) {
 				return callback(err);
 			}
-			async.each(tids, deleteTopic, callback);
+
+			async.each(ids, deleteMethod, callback);
 		});
 	}
 
@@ -253,7 +252,7 @@ module.exports = function(User) {
 						return callback(err);
 					}
 
-					if (parseInt(topicData.deleted) === 0) {
+					if (parseInt(topicData.deleted, 10) === 0) {
 						db.decrObjectField('global', 'topicCount', callback);
 					} else {
 						callback();
