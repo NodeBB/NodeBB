@@ -407,15 +407,10 @@ var db = require('./database'),
 			}
 
 			topics.getTopicField(tid, 'cid', function(err, cid) {
-				if(err) {
-					return callback(err);
+				if(err || !cid) {
+					return callback(err || new Error('invalid-category-id'));
 				}
-
-				if (cid) {
-					callback(null, cid);
-				} else {
-					callback(new Error('invalid-category-id'));
-				}
+				callback(null, cid);
 			});
 		});
 	};

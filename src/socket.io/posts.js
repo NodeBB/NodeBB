@@ -304,5 +304,8 @@ SocketPosts.getRecentPosts = function(socket, data, callback) {
 	posts.getRecentPosts(socket.uid, 0, data.count - 1, data.term, callback);
 };
 
+SocketPosts.getCategory = function(socket, pid, callback) {
+	posts.getCidByPid(pid, callback);
+}
 
 module.exports = SocketPosts;
