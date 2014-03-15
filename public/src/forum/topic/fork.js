@@ -15,16 +15,10 @@ define(function() {
 
 	function onForkThreadClicked() {
 		forkModal = $('#fork-thread-modal');
-		forkModal.removeClass('hide')
-			.css('position', 'fixed')
-			.css('left', Math.max(0, (($(window).width() - $(forkModal).outerWidth()) / 2) + $(window).scrollLeft()) + 'px')
-			.css('top', '0px')
-			.css('z-index', '2000');
-
 		forkCommit = forkModal.find('#fork_thread_commit');
-
 		pids.length = 0;
 
+		showForkModal();
 		showNoPostsSelected();
 
 		forkModal.find('.close,#fork_thread_cancel').on('click', closeForkModal);
@@ -34,6 +28,14 @@ define(function() {
 		});
 
 		forkCommit.on('click', createTopicFromPosts);
+	}
+
+	function showForkModal() {
+		forkModal.removeClass('hide')
+			.css('position', 'fixed')
+			.css('left', Math.max(0, (($(window).width() - $(forkModal).outerWidth()) / 2) + $(window).scrollLeft()) + 'px')
+			.css('top', '0px')
+			.css('z-index', '2000');
 	}
 
 	function createTopicFromPosts() {
