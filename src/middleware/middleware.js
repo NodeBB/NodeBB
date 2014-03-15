@@ -14,6 +14,8 @@ var app,
 	translator = require('./../../public/src/translator'),
 	user = require('./../user'),
 	db = require('./../database'),
+	categories = require('./../categories'),
+	topics = require('./../topics'),
 
 	controllers = {
 		api: require('./../controllers/api')
@@ -49,8 +51,30 @@ middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
 	} else {
 		next();
 	}
-
 }
+
+middleware.addSlug = function(req, res, next) {
+	function redirect(method, id, name) {
+		method(id, 'slug', function(err, slug) {
+			if (err || !slug) {
+				return next(err);
+			}
+			res.redirect(name + slug);
+		});
+	}
+
+	if (!req.params.slug) {
+		if (req.params.category_id) {
+			redirect(categories.getCategoryField, req.params.category_id, '/category/');
+		} else if (req.params.topic_id) {
+			redirect(topics.getTopicField, req.params.topic_id, '/topic/');
+		} else {
+			return next();
+		}
+		return;
+	}
+	next();
+};
 
 middleware.prepareAPI = function(req, res, next) {
 	res.locals.isAPI = true;
