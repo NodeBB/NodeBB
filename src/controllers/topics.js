@@ -18,6 +18,16 @@ topicsController.get = function(req, res, next) {
 		uid = req.user ? req.user.uid : 0,
 		privileges;
 
+	if (!req.params.slug && !res.locals.isAPI) {
+		topics.getTopicField(tid, 'slug', function(err, slug) {
+			if (err) {
+				return next(err);
+			}
+			res.redirect('/topic/' + slug);
+		});
+		return;
+	}
+
 	async.waterfall([
 		function(next) {
 			threadTools.privileges(tid, ((req.user) ? req.user.uid || 0 : 0), function(err, userPrivileges) {
