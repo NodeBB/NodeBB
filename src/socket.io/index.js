@@ -67,15 +67,8 @@ Sockets.init = function(server) {
 
 				socket.uid = parseInt(uid, 10);
 
-				/* Need to save some state for the logger & maybe some other modules later on */
-				socket.state = {
-					user : {
-						uid : uid
-					}
-				};
-
 				/* If meta.config.loggerIOStatus > 0, logger.io_one will hook into this socket */
-				logger.io_one(socket,uid);
+				logger.io_one(socket, uid);
 
 				if (uid) {
 

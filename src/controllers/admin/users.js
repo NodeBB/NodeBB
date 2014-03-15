@@ -13,30 +13,23 @@ usersController.search = function(req, res, next) {
 	});
 };
 
-usersController.latest = function(req, res, next) {
-	user.getUsers('users:joindate', 0, 49, function(err, users) {
-		res.render('admin/users', {
-			search_display: 'none',
-			loadmore_display: 'block',
-			users: users,
-			yourid: req.user.uid
-		});
-	});
-};
-
 usersController.sortByPosts = function(req, res, next) {
-	user.getUsers('users:postcount', 0, 49, function(err, users) {
-		res.render('admin/users', {
-			search_display: 'none',
-			loadmore_display: 'block',
-			users: users,
-			yourid: req.user.uid
-		});
-	});
+	getUsers('users:postcount', req, res, next);
 };
 
 usersController.sortByReputation = function(req, res, next) {
-	user.getUsers('users:reputation', 0, 49, function(err, users) {
+	getUsers('users:reputation', req, res, next);
+};
+
+usersController.sortByJoinDate = function(req, res, next) {
+	getUsers('users:joindate', req, res, next);
+};
+
+function getUsers(set, req, res, next) {
+	user.getUsers(set, 0, 49, function(err, users) {
+		if (err) {
+			return next(err);
+		}
 		res.render('admin/users', {
 			search_display: 'none',
 			loadmore_display: 'block',
@@ -44,17 +37,7 @@ usersController.sortByReputation = function(req, res, next) {
 			yourid: req.user.uid
 		});
 	});
-};
-
-usersController.sortByJoinDate = function(req, res, next) {
-	user.getUsers('users:joindate', 0, 49, function(err, users) {
-		res.render('admin/users', {
-			search_display: 'none',
-			users: users,
-			yourid: req.user.uid
-		});
-	});
-};
+}
 
 usersController.getCSV = function(req, res, next) {
 	user.getUsersCSV(function(err, data) {

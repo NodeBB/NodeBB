@@ -26,8 +26,8 @@ function userRoutes(app, middleware, controllers) {
 	app.get('/admin/users/search', middleware.admin.buildHeader, controllers.admin.users.search);
 	app.get('/api/admin/users/search', controllers.admin.users.search);
 
-	app.get('/admin/users/latest', middleware.admin.buildHeader, controllers.admin.users.latest);
-	app.get('/api/admin/users/latest', controllers.admin.users.latest);
+	app.get('/admin/users/latest', middleware.admin.buildHeader, controllers.admin.users.sortByJoinDate);
+	app.get('/api/admin/users/latest', controllers.admin.users.sortByJoinDate);
 
 	app.get('/admin/users/sort-posts', middleware.admin.buildHeader, controllers.admin.users.sortByPosts);
 	app.get('/api/admin/users/sort-posts', controllers.admin.users.sortByPosts);
@@ -76,7 +76,7 @@ module.exports = function(app, middleware, controllers) {
 	app.all('/api/admin/*', middleware.admin.isAdmin, middleware.prepareAPI);
 	app.all('/admin/*', middleware.admin.isAdmin);
 	app.get('/admin', middleware.admin.isAdmin);
-	
+
 	mainRoutes(app, middleware, controllers);
 	userRoutes(app, middleware, controllers);
 	forumRoutes(app, middleware, controllers);
