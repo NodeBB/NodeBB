@@ -53,9 +53,7 @@ define(function() {
 				return app.alertError(err.message);
 			}
 
-			translator.get('topic:fork_success', function(translated) {
-				app.alertSuccess(translated);
-			});
+			app.alertSuccess('[[topic:fork_success]]');
 
 			for(var i=0; i<pids.length; ++i) {
 				fadeOutAndRemove(pids[i]);
