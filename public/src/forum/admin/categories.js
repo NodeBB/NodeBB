@@ -87,11 +87,11 @@ define(['uploader'], function(uploader) {
 			},
 			distance: 10
 		});
-		$('.blockclass').each(function() {
+
+		$('.blockclass, .admin-categories form select').each(function() {
 			var $this = $(this);
 			$this.val($this.attr('data-value'));
 		});
-
 
 		function showCreateCategoryModal() {
 			$('#new-category-modal').modal();
@@ -179,9 +179,11 @@ define(['uploader'], function(uploader) {
 				select_icon($(this).find('i'));
 			});
 
-			$('.admin-categories form input').on('change', function(ev) {
+			$('.admin-categories form input, .admin-categories form select').on('change', function(ev) {
 				modified(ev.target);
 			});
+
+
 
 			$('.dropdown').on('click', '[data-disabled]', function(ev) {
 				var btn = $(this),

@@ -1,6 +1,8 @@
 
+'use strict';
 
 var fs = require('fs'),
+	winston = require('winston'),
 	path = require('path'),
 	nconf = require('nconf'),
 	user = require('./user');
@@ -11,54 +13,62 @@ var fs = require('fs'),
 
 	events.logPasswordChange = function(uid) {
 		logWithUser(uid, 'changed password');
-	}
+	};
 
-	events.logAdminChangeUserPassword = function(adminUid, theirUid) {
+	events.logAdminChangeUserPassword = function(adminUid, theirUid, callback) {
+		logAdminEvent(adminUid, theirUid, 'changed password of', callback);
+	};
+
+	events.logAdminUserDelete = function(adminUid, theirUid, callback) {
+		logAdminEvent(adminUid, theirUid, 'deleted', callback);
+	};
+
+	function logAdminEvent(adminUid, theirUid, message, callback) {
 		user.getMultipleUserFields([adminUid, theirUid], ['username'], function(err, userData) {
 			if(err) {
 				return winston.error('Error logging event. ' + err.message);
 			}
 
-			var msg = userData[0].username + '(uid ' + adminUid + ') changed password of ' + userData[1].username + '(uid ' + theirUid + ')';
-			events.log(msg);
+			var msg = userData[0].username + '(uid ' + adminUid + ') ' + message + ' ' +  userData[1].username + '(uid ' + theirUid + ')';
+			events.log(msg, callback);
 		});
 	}
 
 	events.logPasswordReset = function(uid) {
 		logWithUser(uid, 'reset password');
-	}
+	};
 
 	events.logEmailChange = function(uid, oldEmail, newEmail) {
 		logWithUser(uid,'changed email from "' + oldEmail + '" to "' + newEmail +'"');
-	}
+	};
 
 	events.logUsernameChange = function(uid, oldUsername, newUsername) {
 		logWithUser(uid,'changed username from "' + oldUsername + '" to "' + newUsername +'"');
-	}
+	};
 
 	events.logAdminLogin = function(uid) {
 		logWithUser(uid, 'logged into admin panel');
-	}
+	};
 
 	events.logPostEdit = function(uid, pid) {
 		logWithUser(uid, 'edited post (pid ' + pid + ')');
-	}
+	};
 
 	events.logPostDelete = function(uid, pid) {
 		logWithUser(uid, 'deleted post (pid ' + pid + ')');
-	}
+	};
 
 	events.logPostRestore = function(uid, pid) {
 		logWithUser(uid, 'restored post (pid ' + pid + ')');
-	}
+	};
 
 	events.logTopicDelete = function(uid, tid) {
 		logWithUser(uid, 'deleted topic (tid ' + tid + ')');
-	}
+	};
 
 	events.logTopicRestore = function(uid, tid) {
 		logWithUser(uid, 'restored topic (tid ' + tid + ')');
-	}
+	};
 
 	function logWithUser(uid, string) {
 
@@ -72,7 +82,7 @@ var fs = require('fs'),
 		});
 	}
 
-	events.log = function(msg) {
+	events.log = function(msg, callback) {
 		var logFile = path.join(nconf.get('base_dir'), logFileName);
 
 		msg = '[' + new Date().toUTCString() + '] - ' + msg;
@@ -80,10 +90,17 @@ var fs = require('fs'),
 		fs.appendFile(logFile, msg + '\n', function(err) {
 			if(err) {
 				winston.error('Error logging event. ' + err.message);
+				if (typeof callback === 'function') {
+					callback(err);
+				}
 				return;
 			}
+
+			if (typeof callback === 'function') {
+				callback();
+			}
 		});
-	}
+	};
 
 	events.getLog = function(callback) {
 		var logFile = path.join(nconf.get('base_dir'), logFileName);
@@ -95,6 +112,6 @@ var fs = require('fs'),
 				callback(null, 'No logs found');
 			}
 		});
-	}
+	};
 
 }(module.exports));

@@ -49,8 +49,8 @@ module.exports = function(Categories) {
 		}
 	};
 
-	Categories.removeActiveUser = function(cid, uid) {
-		db.sortedSetRemove('cid:' + cid + ':active_users', uid);
+	Categories.removeActiveUser = function(cid, uid, callback) {
+		db.sortedSetRemove('cid:' + cid + ':active_users', uid, callback);
 	};
 
 	Categories.getActiveUsers = function(cid, callback) {

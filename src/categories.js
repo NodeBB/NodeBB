@@ -43,7 +43,7 @@ var db = require('./database'),
 				link: '',
 				numRecentReplies: 2,
 				class: 'col-md-3 col-xs-6',
-				imageClass: 'default'
+				imageClass: 'auto'
 			};
 
 			db.setObject('category:' + cid, category, function(err) {

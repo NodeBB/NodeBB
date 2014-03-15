@@ -65,6 +65,16 @@ categoriesController.get = function(req, res, next) {
 		page = req.query.page || 1,
 		uid = req.user ? req.user.uid : 0;
 
+	if (!req.params.slug && !res.locals.isAPI) {
+		categories.getCategoryField(cid, 'slug', function(err, slug) {
+			if (err) {
+				return next(err);
+			}
+			res.redirect('/category/' + slug);
+		});
+		return;
+	}
+
 	async.waterfall([
 		function(next) {
 			categoryTools.privileges(cid, uid, function(err, categoryPrivileges) {

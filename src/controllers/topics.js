@@ -18,6 +18,16 @@ topicsController.get = function(req, res, next) {
 		uid = req.user ? req.user.uid : 0,
 		privileges;
 
+	if (!req.params.slug && !res.locals.isAPI) {
+		topics.getTopicField(tid, 'slug', function(err, slug) {
+			if (err) {
+				return next(err);
+			}
+			res.redirect('/topic/' + slug);
+		});
+		return;
+	}
+
 	async.waterfall([
 		function(next) {
 			threadTools.privileges(tid, ((req.user) ? req.user.uid || 0 : 0), function(err, userPrivileges) {
@@ -145,9 +155,9 @@ topicsController.get = function(req, res, next) {
 	], function (err, data) {
 		if (err) {
 			if (err.message === 'not-enough-privileges') {
-				return res.redirect('403');
+				return res.locals.isAPI ? res.json(403, err.message) : res.redirect('403');
 			} else {
-				return res.redirect('404');
+				return res.locals.isAPI ? res.json(404, 'not-found') : res.redirect('404');
 			}
 		}
 
@@ -170,7 +180,7 @@ topicsController.get = function(req, res, next) {
 
 		// Paginator for noscript
 		data.pages = [];
-		for(var x=1;x<=data.pageCount;x++) {
+		for(var x=1; x<=data.pageCount; x++) {
 			data.pages.push({
 				page: x,
 				active: x === parseInt(page, 10)

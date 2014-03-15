@@ -112,6 +112,10 @@ SocketAdmin.user.unbanUser = function(socket, theirid) {
 	admin.user.unbanUser(socket.uid, theirid, socket);
 };
 
+SocketAdmin.user.deleteUser = function(socket, theirid, callback) {
+	admin.user.deleteUser(socket.uid, theirid, callback);
+};
+
 SocketAdmin.user.search = function(socket, username, callback) {
 	user.search(username, function(err, data) {
 		function isAdmin(userData, next) {

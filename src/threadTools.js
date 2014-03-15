@@ -311,7 +311,7 @@ var winston = require('winston'),
 				return callback(err);
 			}
 
-			if (pids.length === 0) {
+			if (!pids.length) {
 				return callback(null, null);
 			}
 

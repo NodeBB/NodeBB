@@ -224,9 +224,11 @@ var async = require('async'),
 						});
 					}
 
-					socket.emit('posts.unfavourite', {
-						pid: pid
-					});
+					if (socket) {
+						socket.emit('posts.unfavourite', {
+							pid: pid
+						});
+					}
 				}
 			});
 		});
