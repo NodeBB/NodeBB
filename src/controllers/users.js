@@ -60,33 +60,22 @@ usersController.getOnlineUsers = function(req, res, next) {
 };
 
 usersController.getUsersSortedByPosts = function(req, res, next) {
-	user.getUsers('users:postcount', 0, 49, function (err, data) {
-		var userData = {
-			search_display: 'none',
-			loadmore_display: 'block',
-			users: data,
-			show_anon: 'hide'
-		};
-
-		res.render('users', userData);
-	});
+	getUsers('users:postcount', res, next);
 };
 
 usersController.getUsersSortedByReputation = function(req, res, next) {
-	user.getUsers('users:reputation', 0, 49, function (err, data) {
-		var userData = {
-			search_display: 'none',
-			loadmore_display: 'block',
-			users: data,
-			show_anon: 'hide'
-		};
-
-		res.render('users', userData);
-	});
+	getUsers('users:reputation', res, next);
 };
 
 usersController.getUsersSortedByJoinDate = function(req, res, next) {
-	user.getUsers('users:joindate', 0, 49, function (err, data) {
+	getUsers('users:joindate', res, next);
+};
+
+function getUsers(set, res, next) {
+	user.getUsers(set, 0, 49, function (err, data) {
+		if (err) {
+			return next(err);
+		}
 		var userData = {
 			search_display: 'none',
 			loadmore_display: 'block',
@@ -96,7 +85,7 @@ usersController.getUsersSortedByJoinDate = function(req, res, next) {
 
 		res.render('users', userData);
 	});
-};
+}
 
 usersController.getUsersForSearch = function(req, res, next) {
 	var data = {

@@ -26,6 +26,7 @@ var bcrypt = require('bcryptjs'),
 	require('./user/follow')(User);
 	require('./user/profile')(User);
 	require('./user/admin')(User);
+	require('./user/delete')(User);
 	require('./user/settings')(User);
 	require('./user/search')(User);
 
