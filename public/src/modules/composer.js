@@ -537,12 +537,12 @@ define(['taskbar'], function(taskbar) {
 						}
 					};
 
-				if (parseInt(postData.tid) > 0) {
+				if (parseInt(postData.tid, 10) > 0) {
 					translator.translate('[[topic:composer.replying_to]]: ' + postData.title, function(newTitle) {
 						titleEl.val(newTitle);
 					});
 					titleEl.prop('disabled', true);
-				} else if (parseInt(postData.pid) > 0) {
+				} else if (parseInt(postData.pid, 10) > 0) {
 					titleEl.val(postData.title);
 					titleEl.prop('disabled', true);
 					socket.emit('modules.composer.editCheck', postData.pid, function(err, editCheck) {
