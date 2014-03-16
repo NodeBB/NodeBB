@@ -1,3 +1,7 @@
+'use strict';
+
+/* globals define, socket, app, config, ajaxify, utils, translator, templates, bootbox */
+
 define(['taskbar'], function(taskbar) {
 	var composer = {
 		active: undefined,
@@ -11,19 +15,19 @@ define(['taskbar'], function(taskbar) {
 				socket.emit('modules.composer.pingActive', post_uuid);
 			}
 		});
-	};
+	}
+
 	initialise();
 
 	function maybeParse(response) {
-		if (typeof response == 'string')  {
+		if (typeof response === 'string')  {
 			try {
 				return $.parseJSON(response);
 			} catch (e) {
-				return {status: 500, message: 'Something went wrong while parsing server response'}
+				return {status: 500, message: 'Something went wrong while parsing server response'};
 			}
 		}
 		return response;
-
 	}
 
 	function resetInputFile($el) {
@@ -63,7 +67,7 @@ define(['taskbar'], function(taskbar) {
 		id = post[type];
 
 		// Find a match
-		for(uuid in composer.posts) {
+		for(var uuid in composer.posts) {
 			if (composer.posts[uuid].hasOwnProperty(type) && id === composer.posts[uuid][type]) {
 				return uuid;
 			}
@@ -226,8 +230,8 @@ define(['taskbar'], function(taskbar) {
 			if(files.length) {
 				if (window.FormData) {
 					fd = new FormData();
-					for (var i = 0, file; file = files[i]; i++) {
-						fd.append('files[]', file, file.name);
+					for (var i = 0; i < files.length; ++i) {
+						fd.append('files[]', files[i], files[i].name);
 					}
 				}
 
@@ -273,8 +277,8 @@ define(['taskbar'], function(taskbar) {
 	}
 
 	function escapeRegExp(text) {
-  		return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
-	};
+		return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+	}
 
 	function uploadContentFiles(params) {
 		var files = params.files,
@@ -391,15 +395,17 @@ define(['taskbar'], function(taskbar) {
 					xhr = maybeParse(xhr);
 
 					app.alertError('Error uploading file!\nStatus : ' + xhr.status + '\nMessage : ' + xhr.responseText);
-					if (typeof callback == 'function')
+					if (typeof callback === 'function') {
 						callback(xhr);
+					}
 				},
 				success: function(uploads) {
 					uploads = maybeParse(uploads);
 
 					postContainer.find('#topic-thumb-url').val((uploads[0] || {}).url || '').trigger('change');
-					if (typeof callback == 'function')
+					if (typeof callback === 'function') {
 						callback(null, uploads);
+					}
 				},
 				complete: function() {
 					composer.posts[post_uuid].uploadsInProgress.pop();
@@ -494,7 +500,7 @@ define(['taskbar'], function(taskbar) {
 	composer.createNewComposer = function(post_uuid) {
 
 		templates.preload_template('composer', function() {
-			var composerTemplate = templates['composer'].parse({
+			var composerTemplate = templates.composer.parse({
 				allowTopicsThumbnail: config.allowTopicsThumbnail && composer.posts[post_uuid].isMain && config.hasImageUploadPlugin
 			});
 
@@ -517,15 +523,16 @@ define(['taskbar'], function(taskbar) {
 					titleEl = postContainer.find('.title'),
 					bodyEl = postContainer.find('textarea'),
 					thumbToggleBtnEl = postContainer.find('.topic-thumb-toggle-btn'),
-					draft = getDraft(postData.save_id)
+					draft = getDraft(postData.save_id),
 
 					toggleThumbEls = function(){
 						if (config.allowTopicsThumbnail && composer.posts[post_uuid].isMain) {
 							var url = composer.posts[post_uuid].topic_thumb || '';
 							postContainer.find('input#topic-thumb-url').val(url);
 							postContainer.find('img.topic-thumb-preview').attr('src', url);
-							if (url)
+							if (url) {
 								postContainer.find('.topic-thumb-clear-btn').removeClass('hide');
+							}
 							thumbToggleBtnEl.removeClass('hide');
 						}
 					};
@@ -618,7 +625,8 @@ define(['taskbar'], function(taskbar) {
 						cursorEnd = postContentEl.val().length,
 						selectionStart = postContentEl[0].selectionStart,
 						selectionEnd = postContentEl[0].selectionEnd,
-						selectionLength = selectionEnd - selectionStart;
+						selectionLength = selectionEnd - selectionStart,
+						cursorPos;
 
 
 					function insertIntoInput(element, value) {
@@ -631,7 +639,7 @@ define(['taskbar'], function(taskbar) {
 						case 'fa fa-bold':
 							if (selectionStart === selectionEnd) {
 								// Nothing selected
-								var	cursorPos = postContentEl[0].selectionStart;
+								cursorPos = postContentEl[0].selectionStart;
 								insertIntoInput(postContentEl, "**bolded text**");
 
 								// Highlight "link url"
@@ -643,7 +651,7 @@ define(['taskbar'], function(taskbar) {
 								postContentEl[0].selectionStart = selectionStart + 2;
 								postContentEl[0].selectionEnd = selectionEnd + 2;
 							}
-						break;
+							break;
 						case 'fa fa-italic':
 							if (selectionStart === selectionEnd) {
 								// Nothing selected
@@ -654,15 +662,15 @@ define(['taskbar'], function(taskbar) {
 								postContentEl[0].selectionStart = selectionStart + 1;
 								postContentEl[0].selectionEnd = selectionEnd + 1;
 							}
-						break;
+							break;
 						case 'fa fa-list':
 							// Nothing selected
 							insertIntoInput(postContentEl, "\n* list item");
-						break;
+							break;
 						case 'fa fa-link':
 							if (selectionStart === selectionEnd) {
 								// Nothing selected
-								var	cursorPos = postContentEl[0].selectionStart;
+								cursorPos = postContentEl[0].selectionStart;
 								insertIntoInput(postContentEl, "[link text](link url)");
 
 								// Highlight "link url"
@@ -674,7 +682,7 @@ define(['taskbar'], function(taskbar) {
 								postContentEl[0].selectionStart = selectionStart + selectionLength + 3;
 								postContentEl[0].selectionEnd = selectionEnd + 11;
 							}
-						break;
+							break;
 					}
 				});
 
@@ -696,8 +704,8 @@ define(['taskbar'], function(taskbar) {
 					if(files) {
 						if (window.FormData) {
 							fd = new FormData();
-							for (var i = 0, file; file = files[i]; i++) {
-								fd.append('files[]', file, file.name);
+							for (var i = 0; i < files.length; ++i) {
+								fd.append('files[]', files[i], files[i].name);
 							}
 						}
 						uploadTopicThumb({files: files, post_uuid: post_uuid, route: '/api/topic/thumb/upload', formData: fd});
@@ -720,8 +728,8 @@ define(['taskbar'], function(taskbar) {
 					socket.emit('modules.composer.renderPreview', bodyEl.val(), function(err, preview) {
 						preview = $(preview);
 						preview.find('img').addClass('img-responsive');
-	  					postContainer.find('.preview').html(preview);
-	  				});
+						postContainer.find('.preview').html(preview);
+					});
 				});
 
 				// Draft Saving
@@ -762,7 +770,7 @@ define(['taskbar'], function(taskbar) {
 					},
 					resizeAction = function(e) {
 						if (resizeActive) {
-							position = (e.clientY + resizeOffset);
+							var position = (e.clientY + resizeOffset);
 							var newHeight = $(window).height() - position;
 							var paddingBottom = parseInt(postContainer.css('padding-bottom'), 10);
 							if(newHeight > $(window).height() - $('#header-menu').height() - 20) {
@@ -815,7 +823,7 @@ define(['taskbar'], function(taskbar) {
 				});
 			});
 		});
-	}
+	};
 
 	composer.activateReposition = function(post_uuid) {
 
