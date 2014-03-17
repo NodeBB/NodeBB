@@ -9,7 +9,8 @@ var nconf = require('nconf'),
 	apiRoutes = require('./api'),
 	adminRoutes = require('./admin'),
 	feedRoutes = require('./feeds'),
-	pluginRoutes = require('./plugins');
+	pluginRoutes = require('./plugins'),
+	authRoutes = require('./authentication');
 
 
 
@@ -129,6 +130,7 @@ module.exports = function(app, middleware) {
 			apiRoutes(app, middleware, controllers);
 			feedRoutes(app, middleware, controllers);
 			pluginRoutes(app, middleware, controllers);
+			authRoutes.createRoutes(app, middleware, controllers);
 
 			/**
 			* Every view has an associated API route.
