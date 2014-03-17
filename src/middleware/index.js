@@ -7,6 +7,8 @@ var templates = require('./../../public/src/templates'),
 	plugins = require('./../plugins'),
 	db = require('./../database'),
 	auth = require('./../routes/authentication'),
+	emitter = require('./../emitter'),
+
 	async = require('async'),
 	path = require('path'),
 	fs = require('fs'),
@@ -119,6 +121,7 @@ function compileTemplates(pluginTemplates) {
 				if (err) {
 					winston.error(err);
 				} else {
+					emitter.emit('templates:compiled');
 					winston.info('[themes] Successfully compiled templates.');
 				}
 			});
