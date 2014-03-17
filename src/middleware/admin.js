@@ -4,6 +4,7 @@ var app,
 	middleware = {},
 	nconf = require('nconf'),
 	async = require('async'),
+	path = require('path'),
 	user = require('./../user'),
 	meta = require('./../meta'),
 	plugins = require('./../plugins'),
@@ -33,12 +34,27 @@ middleware.buildHeader = function(req, res, next) {
 			};
 
 			user.getUserFields(req.user.uid, ['username', 'userslug', 'picture'], function(err, userData) {
-				plugins.fireHook('filter:admin.header.build', custom_header, function(err, custom_header) {
+				async.parallel({
+					scripts: function(next) {
+						plugins.fireHook('filter:admin.scripts.get', [], function(err, scripts) {
+							var arr = [];
+							scripts.forEach(function(script) {
+								arr.push({src: path.join(nconf.get('relative_path'), script)});
+							});
+
+							next(err, arr);
+						});
+					},
+					custom_header: function(next) {
+						plugins.fireHook('filter:admin.header.build', custom_header, next);
+					}
+				}, function(err, pluginData) {
 					var data = {
 						csrf: res.locals.csrf_token,
 						relative_path: nconf.get('relative_path'),
-						plugins: custom_header.plugins,
-						authentication: custom_header.authentication,
+						plugins: pluginData.custom_header.plugins,
+						authentication: pluginData.custom_header.authentication,
+						scripts: pluginData.scripts,
 						userpicture: userData.picture,
 						username: userData.username,
 						userslug: userData.userslug,
