@@ -74,12 +74,12 @@
 
 		plugins.fireHook('filter:register.check', userData, function(err, userData) {
 			if (err) {
-				res.redirect(nconf.get('relative_path') + '/register');
+				return res.redirect(nconf.get('relative_path') + '/register');
 			}
 
 			user.create(userData, function(err, uid) {
 				if (err || !uid) {
-					res.redirect(nconf.get('relative_path') + '/register');
+					return res.redirect(nconf.get('relative_path') + '/register');
 				}
 
 				req.login({
