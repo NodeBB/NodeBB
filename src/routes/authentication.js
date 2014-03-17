@@ -138,6 +138,9 @@
 				app.post('/login', function(req, res, next) {
 					if (req.body.username && utils.isEmailValid(req.body.username)) {
 						user.getUsernameByEmail(req.body.username, function(err, username) {
+							if (err) {
+								return next(err);
+							}
 							req.body.username = username ? username : req.body.username;
 							login(req, res, next);
 						});
