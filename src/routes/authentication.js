@@ -59,14 +59,29 @@
 			});
 		})(req, res, next);
 	}
-	
+
 	function register(req, res) {
 		if(meta.config.allowRegistration !== undefined && parseInt(meta.config.allowRegistration, 10) === 0) {
 			return res.send(403);
 		}
 
-		user.create({username: req.body.username, password: req.body.password, email: req.body.email, ip: req.ip}, function(err, uid) {
-			if (err === null && uid) {
+		var userData = {
+			username: req.body.username,
+			password: req.body.password,
+			email: req.body.email,
+			ip: req.ip
+		};
+
+		plugins.fireHook('filter:register.check', userData, function(err, userData) {
+			if (err) {
+				return res.redirect(nconf.get('relative_path') + '/register');
+			}
+
+			user.create(userData, function(err, uid) {
+				if (err || !uid) {
+					return res.redirect(nconf.get('relative_path') + '/register');
+				}
+
 				req.login({
 					uid: uid
 				}, function() {
@@ -79,9 +94,7 @@
 						res.redirect(nconf.get('relative_path') + '/');
 					}
 				});
-			} else {
-				res.redirect(nconf.get('relative_path') + '/register');
-			}
+			});
 		});
 	}
 
@@ -121,8 +134,20 @@
 				}
 
 				app.post('/logout', logout);
-				app.post('/login', login);
 				app.post('/register', register);
+				app.post('/login', function(req, res, next) {
+					if (req.body.username && utils.isEmailValid(req.body.username)) {
+						user.getUsernameByEmail(req.body.username, function(err, username) {
+							if (err) {
+								return next(err);
+							}
+							req.body.username = username ? username : req.body.username;
+							login(req, res, next);
+						});
+					} else {
+						login(req, res, next);
+					}
+				});
 			});
 		});
 	};
