@@ -412,6 +412,12 @@ var bcrypt = require('bcryptjs'),
 		db.getObjectField('email:uid', email, callback);
 	};
 
+	User.getUsernameByEmail = function(email, callback) {
+		db.getObjectField('email:uid', email, function(err, uid) {
+			User.getUserField(uid, 'username', callback);
+		});
+	};
+
 	User.isModerator = function(uid, cid, callback) {
 		groups.isMemberByGroupName(uid, 'cid:' + cid + ':privileges:mods', callback);
 	};

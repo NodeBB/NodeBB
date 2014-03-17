@@ -134,8 +134,17 @@
 				}
 
 				app.post('/logout', logout);
-				app.post('/login', login);
 				app.post('/register', register);
+				app.post('/login', function(req, res, next) {
+					if (req.body.username && utils.isEmailValid(req.body.username)) {
+						user.getUsernameByEmail(req.body.username, function(err, username) {
+							req.body.username = username ? username : req.body.username;
+							login(req, res, next);
+						});
+					} else {
+						login(req, res, next);
+					}
+				});
 			});
 		});
 	};
