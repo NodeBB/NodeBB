@@ -20,6 +20,9 @@ function mainRoutes(app, middleware, controllers) {
 
 	app.get('/admin/groups', middleware.admin.buildHeader, controllers.admin.groups.get);
 	app.get('/api/admin/groups', controllers.admin.groups.get);
+
+	app.get('/admin/sounds', middleware.admin.buildHeader, controllers.admin.sounds.get);
+	app.get('/api/admin/sounds', controllers.admin.sounds.get);
 }
 
 function userRoutes(app, middleware, controllers) {

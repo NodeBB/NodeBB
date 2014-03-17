@@ -43,6 +43,8 @@ define(function() {
 					type: 'success',
 					timeout: 2500
 				});
+
+				socket.emit('admin.restart');
 			});
 		} else {
 			console.log('[settings] Form not found.');

@@ -28,6 +28,7 @@ var adminController = {
 	languages: {},
 	settings: {},
 	logger: {},
+	sounds: {},
 	users: require('./admin/users'),
 	uploads: require('./admin/uploads')
 };
@@ -112,18 +113,7 @@ adminController.languages.get = function(req, res, next) {
 };
 
 adminController.settings.get = function(req, res, next) {
-	meta.sounds.getLocal(function(err, sounds) {
-		// There has GOT to be a better way!
-		sounds = Object.keys(sounds).map(function(name) {
-			return {
-				name: name
-			};
-		});
-
-		res.render('admin/settings', {
-			sounds: sounds
-		});
-	});
+	res.render('admin/settings', {});
 };
 
 adminController.logger.get = function(req, res, next) {
@@ -177,6 +167,20 @@ adminController.groups.get = function(req, res, next) {
 		res.render('admin/groups', {
 			groups: groups,
 			yourid: req.user.uid
+		});
+	});
+};
+
+adminController.sounds.get = function(req, res, next) {
+	meta.sounds.getLocal(function(err, sounds) {
+		sounds = Object.keys(sounds).map(function(name) {
+			return {
+				name: name
+			};
+		});
+
+		res.render('admin/sounds', {
+			sounds: sounds
 		});
 	});
 };

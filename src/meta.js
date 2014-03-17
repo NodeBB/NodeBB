@@ -367,8 +367,15 @@ var fs = require('fs'),
 
 	/* Settings */
 	Meta.settings = {};
-	Meta.settings.get = db.getObject;
-	Meta.settings.set = db.setObject;
+	Meta.settings.get = function(hash, callback) {
+		hash = 'settings:' + hash;
+		db.getObject(hash, callback);
+	};
+
+	Meta.settings.set = function(hash, values, callback) {
+		hash = 'settings:' + hash;
+		db.setObject(hash, values, callback);
+	};
 
 	/* Assorted */
 	Meta.css = {

@@ -5,12 +5,6 @@ define(['uploader', 'sounds'], function(uploader, sounds) {
 	var Settings = {};
 
 	Settings.init = function() {
-		// Sounds tab
-		$('#sounds').find('button[data-action="play"]').on('click', function() {
-			var	fileName = $(this).parent().siblings('select').val();
-			sounds.playFile(fileName);
-		});
-
 		Settings.prepare();
 	};
 
