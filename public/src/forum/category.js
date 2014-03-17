@@ -204,7 +204,10 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				topic.find('span.timeago').timeago();
 				app.createUserTooltips();
 
-				$(window).trigger('action:categories.new_topic.loaded');
+				
+				ajaxify.renderWidgets('category', window.location.pathname.slice(1), function() {
+					$(window).trigger('action:categories.new_topic.loaded');	
+				});
 			});
 		});
 	};

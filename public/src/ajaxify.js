@@ -156,6 +156,14 @@ var ajaxify = {};
 		return tpl_url;
 	};
 
+	ajaxify.repositionNoWidgets = function() {
+		$('body [no-widget-class]').each(function() {
+			var $this = $(this);
+			$this.removeClass();
+			$this.addClass($this.attr('no-widget-class'));
+		});
+	};
+
 	ajaxify.renderWidgets = function(tpl_url, url, callback) {
 		var widgetLocations = [], numLocations;
 
@@ -164,6 +172,10 @@ var ajaxify = {};
 		});
 
 		numLocations = widgetLocations.length;
+
+		if (!numLocations) {
+			ajaxify.repositionNoWidgets();
+		}
 
 		function renderWidgets(location) {
 			var area = $('#content [widget-area="' + location + '"]');
@@ -175,11 +187,7 @@ var ajaxify = {};
 					})).removeClass('hidden');
 
 					if (!renderedWidgets.length) {
-						$('body [no-widget-class]').each(function() {
-							var $this = $(this);
-							$this.removeClass();
-							$this.addClass($this.attr('no-widget-class'));
-						});
+						ajaxify.repositionNoWidgets();
 					}
 				}
 
