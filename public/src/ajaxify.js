@@ -191,6 +191,7 @@ var ajaxify = {};
 					}
 				}
 
+				$('#content [widget-area] img').addClass('img-responsive')
 				checkCallback();
 			});
 		}
