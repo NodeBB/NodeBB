@@ -41,11 +41,10 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 						.html('<a href="javascript:app.openChat(\'' +
 							userObj.username +
 							'\', ' + userObj.uid +
-							');"><img src="' +
-							userObj.picture +
-							'" title="' +
-							userObj.username +
-							'" />' + userObj.username + '</a>')
+							');">'+
+							'<i class="fa fa-circle status ' + userObj.status + '"></i> ' +
+							'<img src="' +	userObj.picture + '" title="' +	userObj.username +'" />' +
+							userObj.username + '</a>')
 						.appendTo(chatsListEl);
 				}
 			});

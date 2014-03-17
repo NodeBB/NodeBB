@@ -48,32 +48,7 @@ SocketUser.reset.commit = function(socket, data, callback) {
 };
 
 SocketUser.isOnline = function(socket, uid, callback) {
-	user.getUserField(uid, 'status', function(err, status) {
-		if(err) {
-			return callback(err);
-		}
-
-		if(!status) {
-			status = 'online';
-		}
-
-		var online = module.parent.exports.isUserOnline(uid);
-
-		if(!online) {
-			status = 'offline';
-		}
-
-		if(status === 'offline') {
-			online = false;
-		}
-
-		callback(null, {
-			online: online,
-			uid: uid,
-			timestamp: Date.now(),
-			status: status
-		});
-	});
+	user.isOnline(uid, callback);
 };
 
 SocketUser.changePassword = function(socket, data, callback) {

@@ -429,5 +429,28 @@ var bcrypt = require('bcryptjs'),
 		groups.isMemberByGroupName(uid, 'administrators', callback);
 	};
 
+	User.isOnline = function(uid, callback) {
+		User.getUserField(uid, 'status', function(err, status) {
+			if(err) {
+				return callback(err);
+			}
+
+			var online = require('./socket.io').isUserOnline(uid);
+
+			status = online ? (status || 'online') : 'offline';
+
+			if(status === 'offline') {
+				online = false;
+			}
+
+			callback(null, {
+				online: online,
+				uid: uid,
+				timestamp: Date.now(),
+				status: status
+			});
+		});
+	};
+
 
 }(exports));

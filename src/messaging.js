@@ -131,7 +131,15 @@ var db = require('./database'),
 					return !!user.uid;
 				});
 
-				callback(null, users);
+				async.map(users, function(userData, next) {
+					user.isOnline(userData.uid, function(err, data) {
+						if (err) {
+							return next(err);
+						}
+						userData.status = data.status;
+						next(null, userData);
+					});
+				}, callback);
 			});
 		});
 	};
