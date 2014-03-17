@@ -9,6 +9,7 @@ var db = require('./database'),
 	categories = require('./categories'),
 	plugins = require('./plugins'),
 	meta = require('./meta'),
+	emitter = require('./emitter'),
 
 	async = require('async'),
 	path = require('path'),
@@ -68,9 +69,7 @@ var db = require('./database'),
 
 				db.incrObjectField('global', 'postCount');
 
-				topics.onNewPostMade(tid, postData.pid, timestamp);
-				categories.onNewPostMade(uid, tid, postData.pid, timestamp);
-				user.onNewPostMade(uid, tid, postData.pid, timestamp);
+				emitter.emit('newpost', postData);
 
 				plugins.fireHook('filter:post.get', postData, next);
 			},

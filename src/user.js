@@ -15,6 +15,7 @@ var bcrypt = require('bcryptjs'),
 	groups = require('./groups'),
 	topics = require('./topics'),
 	events = require('./events'),
+	emitter = require('./emitter'),
 	Emailer = require('./emailer');
 
 (function(User) {
@@ -339,15 +340,17 @@ var bcrypt = require('bcryptjs'),
 		});
 	};
 
-	User.onNewPostMade = function(uid, tid, pid, timestamp) {
-		User.addPostIdToUser(uid, pid, timestamp);
+	User.onNewPostMade = function(postData) {
+		User.addPostIdToUser(postData.uid, postData.pid, postData.timestamp);
 
-		User.incrementUserFieldBy(uid, 'postcount', 1, function(err, newpostcount) {
-			db.sortedSetAdd('users:postcount', newpostcount, uid);
+		User.incrementUserFieldBy(postData.uid, 'postcount', 1, function(err, newpostcount) {
+			db.sortedSetAdd('users:postcount', newpostcount, postData.uid);
 		});
 
-		User.setUserField(uid, 'lastposttime', timestamp);
+		User.setUserField(postData.uid, 'lastposttime', postData.timestamp);
 	};
+
+	emitter.on('newpost', User.onNewPostMade);
 
 	User.addPostIdToUser = function(uid, pid, timestamp) {
 		db.sortedSetAdd('uid:' + uid + ':posts', timestamp, pid);

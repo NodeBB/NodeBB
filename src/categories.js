@@ -10,6 +10,7 @@ var db = require('./database'),
 	plugins = require('./plugins'),
 	CategoryTools = require('./categoryTools'),
 	meta = require('./meta'),
+	emitter = require('./emitter'),
 
 	async = require('async'),
 	winston = require('winston'),
@@ -299,19 +300,24 @@ var db = require('./database'),
 		});
 	};
 
-	Categories.onNewPostMade = function(uid, tid, pid, timestamp) {
-		topics.getTopicFields(tid, ['cid', 'pinned'], function(err, topicData) {
+	Categories.onNewPostMade = function(postData) {
+		topics.getTopicFields(postData.tid, ['cid', 'pinned'], function(err, topicData) {
+			if (err) {
+				winston.error(err.message);
+			}
 
 			var cid = topicData.cid;
 
-			db.sortedSetAdd('categories:recent_posts:cid:' + cid, timestamp, pid);
+			db.sortedSetAdd('categories:recent_posts:cid:' + cid, postData.timestamp, postData.pid);
 
 			if(parseInt(topicData.pinned, 10) === 0) {
-				db.sortedSetAdd('categories:' + cid + ':tid', timestamp, tid);
+				db.sortedSetAdd('categories:' + cid + ':tid', postData.timestamp, postData.tid);
 			}
 
-			Categories.addActiveUser(cid, uid, timestamp);
+			Categories.addActiveUser(cid, postData.uid, postData.timestamp);
 		});
 	};
+
+	emitter.on('newpost', Categories.onNewPostMade);
 
 }(exports));
