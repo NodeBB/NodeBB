@@ -1022,7 +1022,7 @@ var async = require('async'),
 		Topics.addPostToTopic(postData.tid, postData.pid, postData.timestamp);
 	};
 
-	emitter.on('newpost', Topics.onNewPostMade);
+	emitter.on('event:newpost', Topics.onNewPostMade);
 
 	Topics.addPostToTopic = function(tid, pid, timestamp, callback) {
 		db.sortedSetAdd('tid:' + tid + ':posts', timestamp, pid, callback);

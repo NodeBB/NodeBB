@@ -69,7 +69,7 @@ var db = require('./database'),
 
 				db.incrObjectField('global', 'postCount');
 
-				emitter.emit('newpost', postData);
+				emitter.emit('event:newpost', postData);
 
 				plugins.fireHook('filter:post.get', postData, next);
 			},

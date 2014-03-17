@@ -350,7 +350,7 @@ var bcrypt = require('bcryptjs'),
 		User.setUserField(postData.uid, 'lastposttime', postData.timestamp);
 	};
 
-	emitter.on('newpost', User.onNewPostMade);
+	emitter.on('event:newpost', User.onNewPostMade);
 
 	User.addPostIdToUser = function(uid, pid, timestamp) {
 		db.sortedSetAdd('uid:' + uid + ':posts', timestamp, pid);

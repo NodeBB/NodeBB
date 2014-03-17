@@ -318,6 +318,6 @@ var db = require('./database'),
 		});
 	};
 
-	emitter.on('newpost', Categories.onNewPostMade);
+	emitter.on('event:newpost', Categories.onNewPostMade);
 
 }(exports));
