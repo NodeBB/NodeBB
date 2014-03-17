@@ -657,7 +657,7 @@ var socket,
 
 			$('#search-form').on('submit', function () {
 				var input = $(this).find('input');
-				ajaxify.go("search/" + input.val());
+				ajaxify.go("search/" + input.val().replace(/^[ ?#]*/, ''));
 				input.val('');
 				return false;
 			});
