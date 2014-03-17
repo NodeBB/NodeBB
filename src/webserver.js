@@ -14,7 +14,8 @@ var path = require('path'),
 	meta = require('./meta'),
 	logger = require('./logger'),
 	middleware = require('./middleware'),
-	routes = require('./routes');
+	routes = require('./routes'),
+	emitter = require('./emitter');
 
 if(nconf.get('ssl')) {
 	server = require('https').createServer({
@@ -92,9 +93,11 @@ if(nconf.get('ssl')) {
 			}
 		});
 
-		winston.info('NodeBB attempting to listen on: ' + ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port);
-		server.listen(port, nconf.get('bind_address'), function(){
-			winston.info('NodeBB Ready');
+		emitter.on('templates:compiled', function() {
+			winston.info('NodeBB attempting to listen on: ' + ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port);
+			server.listen(port, nconf.get('bind_address'), function(){
+				winston.info('NodeBB Ready');
+			});
 		});
 	};
 
