@@ -245,14 +245,4 @@ SocketModules.sounds.getMapping = function(socket, data, callback) {
 	meta.sounds.getMapping(callback);
 };
 
-/* Settings */
-SocketModules.settings.get = function(socket, data, callback) {
-	meta.settings.get(data.hash, callback);
-};
-
-SocketModules.settings.set = function(socket, data, callback) {
-	console.log('setting', data);
-	meta.settings.set(data.hash, data.values, callback);
-};
-
 module.exports = SocketModules;

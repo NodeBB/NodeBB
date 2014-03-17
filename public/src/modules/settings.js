@@ -17,7 +17,7 @@ define(function() {
 	var Settings = {};
 
 	Settings.load = function(hash, formEl) {
-		socket.emit('modules.settings.get', {
+		socket.emit('admin.settings.get', {
 			hash: hash
 		}, function(err, values) {
 			if (!err) {
@@ -33,7 +33,7 @@ define(function() {
 		if (formEl.length) {
 			var	values = formEl.serializeObject();
 
-			socket.emit('modules.settings.set', {
+			socket.emit('admin.settings.set', {
 				hash: hash,
 				values: values
 			}, function(err) {

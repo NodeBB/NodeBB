@@ -19,7 +19,17 @@ var	groups = require('../groups'),
 	winston = require('winston'),
 	index = require('./index'),
 
-	SocketAdmin = {};
+	SocketAdmin = {
+		topics: {},
+		user: {},
+		categories: {},
+		themes: {},
+		plugins: {},
+		widgets: {},
+		config: {},
+		groups: {},
+		settings: {}
+	};
 
 SocketAdmin.before = function(socket, next) {
 	// Verify administrative privileges
@@ -61,9 +71,6 @@ SocketAdmin.getVisitorCount = function(socket, data, callback) {
 }
 
 /* Topics */
-
-SocketAdmin.topics = {};
-
 SocketAdmin.topics.getMore = function(socket, data, callback) {
 	if(!data) {
 		return callback(new Error('invalid data'));
@@ -76,9 +83,6 @@ SocketAdmin.topics.getMore = function(socket, data, callback) {
 };
 
 /* User */
-
-SocketAdmin.user = {};
-
 SocketAdmin.user.makeAdmin = function(socket, theirid) {
 	admin.user.makeAdmin(socket.uid, theirid, socket);
 };
@@ -136,9 +140,6 @@ SocketAdmin.user.search = function(socket, username, callback) {
 };
 
 /* Categories */
-
-SocketAdmin.categories = {};
-
 SocketAdmin.categories.create = function(socket, data, callback) {
 	if(!data) {
 		return callback(new Error('invalid data'));
@@ -290,11 +291,6 @@ SocketAdmin.categories.groupsList = function(socket, cid, callback) {
 };
 
 /* Themes, Widgets, and Plugins */
-
-SocketAdmin.themes = {};
-SocketAdmin.plugins = {};
-SocketAdmin.widgets = {};
-
 SocketAdmin.themes.getInstalled = function(socket, data, callback) {
 	meta.themes.get(callback);
 };
@@ -325,9 +321,6 @@ SocketAdmin.widgets.set = function(socket, data, callback) {
 };
 
 /* Configs */
-
-SocketAdmin.config = {};
-
 SocketAdmin.config.get = function(socket, data, callback) {
 	meta.configs.list(callback);
 };
@@ -358,9 +351,6 @@ SocketAdmin.config.remove = function(socket, key) {
 };
 
 /* Groups */
-
-SocketAdmin.groups = {};
-
 SocketAdmin.groups.create = function(socket, data, callback) {
 	if(!data) {
 		return callback(new Error('invalid data'));
@@ -407,6 +397,16 @@ SocketAdmin.groups.update = function(socket, data, callback) {
 	groups.update(data.gid, data.values, function(err) {
 		callback(err ? err.message : null);
 	});
+};
+
+/* Settings */
+SocketAdmin.settings.get = function(socket, data, callback) {
+	meta.settings.get(data.hash, callback);
+};
+
+SocketAdmin.settings.set = function(socket, data, callback) {
+	console.log('setting', data);
+	meta.settings.set(data.hash, data.values, callback);
 };
 
 module.exports = SocketAdmin;
