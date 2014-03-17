@@ -414,6 +414,9 @@ var bcrypt = require('bcryptjs'),
 
 	User.getUsernameByEmail = function(email, callback) {
 		db.getObjectField('email:uid', email, function(err, uid) {
+			if (err) {
+				return callback(err);
+			}
 			User.getUserField(uid, 'username', callback);
 		});
 	};
