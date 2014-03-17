@@ -45,7 +45,7 @@
     "nodebb-theme-vanilla": "~0.0.17",
     "nodebb-theme-cerulean": "~0.0.13",
     "nodebb-theme-lavender": "~0.0.23",
-    "less": "^1.6.3",
+    "less": "1.6.3",
     "daemon": "~1.1.0",
     "underscore": "^1.6.0",
     "mkdirp": "~0.3.5",
