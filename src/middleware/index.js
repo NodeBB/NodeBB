@@ -121,8 +121,8 @@ function compileTemplates(pluginTemplates) {
 				if (err) {
 					winston.error(err);
 				} else {
-					emitter.emit('templates:compiled');
 					winston.info('[themes] Successfully compiled templates.');
+					emitter.emit('templates:compiled');
 				}
 			});
 		});
