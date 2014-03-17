@@ -59,14 +59,29 @@
 			});
 		})(req, res, next);
 	}
-	
+
 	function register(req, res) {
 		if(meta.config.allowRegistration !== undefined && parseInt(meta.config.allowRegistration, 10) === 0) {
 			return res.send(403);
 		}
 
-		user.create({username: req.body.username, password: req.body.password, email: req.body.email, ip: req.ip}, function(err, uid) {
-			if (err === null && uid) {
+		var userData = {
+			username: req.body.username,
+			password: req.body.password,
+			email: req.body.email,
+			ip: req.ip
+		};
+
+		plugins.fireHook('filter:register.check', userData, function(err, userData) {
+			if (err) {
+				res.redirect(nconf.get('relative_path') + '/register');
+			}
+
+			user.create(userData, function(err, uid) {
+				if (err || !uid) {
+					res.redirect(nconf.get('relative_path') + '/register');
+				}
+
 				req.login({
 					uid: uid
 				}, function() {
@@ -79,9 +94,7 @@
 						res.redirect(nconf.get('relative_path') + '/');
 					}
 				});
-			} else {
-				res.redirect(nconf.get('relative_path') + '/register');
-			}
+			});
 		});
 	}
 
