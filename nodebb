@@ -67,7 +67,7 @@ case "$1" in
 		;;
 
 	setup)
-		node loader --setup
+		node loader --setup "$@"
 		;;
 
 	reset)
