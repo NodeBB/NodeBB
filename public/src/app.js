@@ -214,8 +214,11 @@ var socket,
 			alert = $('<div id="' + alert_id + '" class="alert alert-dismissable alert-' + params.type +'"></div>');
 
 			alert.append($('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'))
-				.append($('<strong>' + title + '</strong>'))
-				.append($('<p>' + params.message + '</p>'));
+				.append($('<strong>' + title + '</strong>'));
+
+			if (params.message) {
+				alert.append($('<p>' + params.message + '</p>'));
+			}
 
 			if (!params.location) {
 				params.location = 'alert_window';

@@ -28,8 +28,9 @@ define(function() {
 		});
 	};
 
-	Settings.save = function(hash, formEl) {
-		var	formEl = $(formEl);
+	Settings.save = function(hash, formEl, callback) {
+		formEl = $(formEl);
+
 		if (formEl.length) {
 			var	values = formEl.serializeObject();
 
@@ -39,12 +40,13 @@ define(function() {
 			}, function(err) {
 				app.alert({
 					title: 'Settings Saved',
-					message: 'Restarting NodeBB <i class="fa fa-spin fa-refresh"></i>',
 					type: 'success',
 					timeout: 2500
 				});
 
-				socket.emit('admin.restart');
+				if (typeof callback === 'function') {
+					callback();
+				}
 			});
 		} else {
 			console.log('[settings] Form not found.');

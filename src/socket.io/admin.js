@@ -46,7 +46,6 @@ SocketAdmin.restart = function(socket, data, callback) {
 	meta.restart();
 };
 
-
 SocketAdmin.getVisitorCount = function(socket, data, callback) {
 	var terms = {
 		day: 86400000,
@@ -68,7 +67,11 @@ SocketAdmin.getVisitorCount = function(socket, data, callback) {
 			db.sortedSetCount('ip:recent', 0, now, next);
 		}
 	}, callback);
-}
+};
+
+SocketAdmin.fireEvent = function(socket, data, callback) {
+	index.server.sockets.emit(data.name, data.payload || {});
+};
 
 /* Topics */
 SocketAdmin.topics.getMore = function(socket, data, callback) {
@@ -405,7 +408,6 @@ SocketAdmin.settings.get = function(socket, data, callback) {
 };
 
 SocketAdmin.settings.set = function(socket, data, callback) {
-	console.log('setting', data);
 	meta.settings.set(data.hash, data.values, callback);
 };
 

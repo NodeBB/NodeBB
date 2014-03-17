@@ -349,7 +349,7 @@ var fs = require('fs'),
 	};
 
 	Meta.sounds.getMapping = function(callback) {
-		db.getObject('sounds', function(err, sounds) {
+		db.getObject('settings:sounds', function(err, sounds) {
 			if (err || !sounds) {
 				// Send default sounds
 				var	defaults = {

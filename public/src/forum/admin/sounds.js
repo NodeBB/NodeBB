@@ -1,5 +1,5 @@
 "use strict";
-/* global define */
+/* global define, socket */
 
 define(['sounds', 'settings'], function(Sounds, Settings) {
 	var	SoundsAdmin = {};
@@ -19,7 +19,11 @@ define(['sounds', 'settings'], function(Sounds, Settings) {
 		// Saving of Form Values
 		var	saveEl = $('#save');
 		saveEl.on('click', function() {
-			Settings.save('sounds', $('.sounds form'));
+			Settings.save('sounds', $('.sounds form'), function() {
+				socket.emit('admin.fireEvent', {
+					name: 'event:sounds.reloadMapping'
+				});
+			});
 		});
 	};
 

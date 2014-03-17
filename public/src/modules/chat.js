@@ -229,7 +229,6 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 			msg = msg +'\n';
 			socket.emit('modules.chats.send', { touid:chatModal.touid, message:msg});
 			chatModal.find('#chat-message-input').val('');
-			console.log('outgoing');
 			sounds.play('chat-outgoing');
 		}
 	}

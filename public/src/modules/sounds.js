@@ -1,5 +1,5 @@
 "use strict";
-/* global socket */
+/* global define, socket */
 
 define(['buzz'], function(buzz) {
 	var	Sounds = {};
@@ -11,7 +11,10 @@ define(['buzz'], function(buzz) {
 	Sounds.init = function(callback) {
 		var	ready = false,
 			onComplete = function() {
-				callback();
+				Sounds.initialised = true;
+				if (typeof callback === 'function') {
+					callback();
+				}
 			};
 
 		loadFiles(function() {
@@ -29,6 +32,11 @@ define(['buzz'], function(buzz) {
 				ready = true;
 			}
 		});
+
+		// Listen for reload message
+		socket.on('event:sounds.reloadMapping', function() {
+			loadMapping();
+		});
 	};
 
 	var	loadFiles = function(callback) {
@@ -45,8 +53,6 @@ define(['buzz'], function(buzz) {
 				}
 			}
 
-			this.initialised = true;
-
 			callback();
 		});
 	};
@@ -54,7 +60,9 @@ define(['buzz'], function(buzz) {
 	var	loadMapping = function(callback) {
 		socket.emit('modules.sounds.getMapping', function(err, mapping) {
 			Sounds.mapping = mapping;
-			callback();
+			if (typeof callback === 'function') {
+				callback();
+			}
 		});
 	};
 
@@ -67,8 +75,11 @@ define(['buzz'], function(buzz) {
 				}
 			};
 
-		if (!this.initialised) this.init(ready);
-		else ready();
+		if (!this.initialised) {
+			this.init(ready);
+		} else {
+			ready();
+		}
 	};
 
 	Sounds.playFile = function(fileName) {
@@ -80,9 +91,13 @@ define(['buzz'], function(buzz) {
 				}
 			};
 
-		if (!this.initialised) this.init(ready);
-		else ready();
-	}
+		if (!this.initialised) {
+			this.init(ready);
+		} else {
+			ready();
+		}
+	};
 
+	Sounds.init();
 	return Sounds;
 });
