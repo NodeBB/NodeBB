@@ -178,7 +178,12 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 					numTopics = topics.length;
 
 				$('#topics-container, .category-sidebar').removeClass('hidden');
-				$('#category-no-topics').remove();
+
+				var noTopicsWarning = $('#category-no-topics');
+				if (noTopicsWarning.length) {
+					noTopicsWarning.remove();
+					ajaxify.renderWidgets('category', window.location.pathname.slice(1));
+				}
 
 				if (numTopics > 0) {
 					for (var x = 0; x < numTopics; x++) {
@@ -204,10 +209,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				topic.find('span.timeago').timeago();
 				app.createUserTooltips();
 
-				
-				ajaxify.renderWidgets('category', window.location.pathname.slice(1), function() {
-					$(window).trigger('action:categories.new_topic.loaded');	
-				});
+				$(window).trigger('action:categories.new_topic.loaded');
 			});
 		});
 	};
