@@ -4,6 +4,19 @@
 # $1 action
 # $2 subaction
 
+function pidExists() {
+	if [ -e "pidfile" ];
+		then
+			kill -s 0 $(cat pidfile);
+			if [ !$? ];
+				then return 1;
+				else return 0;
+			fi
+		else
+			return 0;
+	fi
+}
+
 case "$1" in
 	start)
 		echo "Starting NodeBB";
@@ -15,12 +28,28 @@ case "$1" in
 
 	stop)
 		echo "Stopping NodeBB. Goodbye!";
-		kill `cat pidfile`;
+		kill $(cat pidfile);
 		;;
 
 	reload|restart)
 		echo "Restarting NodeBB.";
-		kill -1 `cat pidfile`;
+		kill -1 $(cat pidfile);
+		;;
+
+	status)
+		pidExists;
+		if [ 0 -eq $? ];
+			then
+				echo "NodeBB is not running";
+				echo "  \"./nodebb start\" to launch the NodeBB server";
+				return 1;
+			else
+				echo "NodeBB Running (pid $(cat pidfile))";
+				echo "  \"./nodebb stop\" to stop the NodeBB server";
+				echo "  \"./nodebb log\" to view server output";
+				echo "  \"./nodebb restart\" to restart NodeBB";
+				return 0;
+		fi
 		;;
 
 	log)
