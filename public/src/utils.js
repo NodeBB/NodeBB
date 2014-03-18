@@ -126,18 +126,17 @@
 			return str;
 		},
 
-		// from http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
+
 		isEmailValid: function(email) {
-			// var re = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-			return email.indexOf('@') !== -1;
+			return typeof email === 'string' && email.length && email.indexOf('@') !== -1;
 		},
 
 		isUserNameValid: function(name) {
-			return (name && name !== "" && (/^['"\s\-.*0-9\u00BF-\u1FFF\u2C00-\uD7FF\w]+$/.test(name)));
+			return (name && name !== '' && (/^['"\s\-.*0-9\u00BF-\u1FFF\u2C00-\uD7FF\w]+$/.test(name)));
 		},
 
 		isPasswordValid: function(password) {
-			return password && password.indexOf(' ') === -1;
+			return typeof password === 'string' && password.length && password.indexOf(' ') === -1;
 		},
 
 		isNumber: function(n) {
