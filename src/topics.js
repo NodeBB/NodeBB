@@ -21,7 +21,8 @@ var async = require('async'),
 	notifications = require('./notifications'),
 	favourites = require('./favourites'),
 	meta = require('./meta'),
-	Plugins = require('./plugins');
+	Plugins = require('./plugins'),
+	emitter = require('./emitter');
 
 (function(Topics) {
 
@@ -1015,11 +1016,13 @@ var async = require('async'),
 		Topics.setTopicField(tid, 'lastposttime', timestamp);
 	};
 
-	Topics.onNewPostMade = function(tid, pid, timestamp, callback) {
-		Topics.increasePostCount(tid);
-		Topics.updateTimestamp(tid, timestamp);
-		Topics.addPostToTopic(tid, pid, timestamp, callback);
+	Topics.onNewPostMade = function(postData) {
+		Topics.increasePostCount(postData.tid);
+		Topics.updateTimestamp(postData.tid, postData.timestamp);
+		Topics.addPostToTopic(postData.tid, postData.pid, postData.timestamp);
 	};
+
+	emitter.on('event:newpost', Topics.onNewPostMade);
 
 	Topics.addPostToTopic = function(tid, pid, timestamp, callback) {
 		db.sortedSetAdd('tid:' + tid + ':posts', timestamp, pid, callback);

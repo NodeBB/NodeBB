@@ -3,7 +3,7 @@
 
 /* globals define, app, templates, translator, socket, bootbox, config, ajaxify, RELATIVE_PATH */
 
-define(['composer', 'forum/pagination', 'forum/topic/fork'], function(composer, pagination, fork) {
+define(['composer', 'forum/pagination', 'forum/topic/threadTools'], function(composer, pagination, threadTools) {
 	var	Topic = {},
 		infiniteLoaderActive = false,
 		scrollingToPost = false,
@@ -24,8 +24,7 @@ define(['composer', 'forum/pagination', 'forum/topic/fork'], function(composer, 
 	});
 
 	Topic.init = function() {
-		var expose_tools = templates.get('expose_tools'),
-			tid = templates.get('topic_id'),
+		var tid = templates.get('topic_id'),
 			thread_state = {
 				locked: templates.get('locked'),
 				deleted: templates.get('deleted'),
@@ -68,144 +67,11 @@ define(['composer', 'forum/pagination', 'forum/topic/fork'], function(composer, 
 				set_pinned_state(true);
 			}
 
-			if (expose_tools === '1') {
-				var moveThreadModal = $('#move_thread_modal');
-				$('.thread-tools').removeClass('hide');
-
-				// Add events to the thread tools
-				$('.delete_thread').on('click', function(e) {
-					if (thread_state.deleted !== '1') {
-						bootbox.confirm('Are you sure you want to delete this thread?', function(confirm) {
-							if (confirm) {
-								socket.emit('topics.delete', tid);
-							}
-						});
-					} else {
-						bootbox.confirm('Are you sure you want to restore this thread?', function(confirm) {
-							if (confirm) {
-								socket.emit('topics.restore', tid);
-							}
-						});
-					}
-					return false;
-				});
-
-				$('.lock_thread').on('click', function(e) {
-					if (thread_state.locked !== '1') {
-						socket.emit('topics.lock', tid);
-					} else {
-						socket.emit('topics.unlock', tid);
-					}
-					return false;
-				});
-
-				$('.pin_thread').on('click', function(e) {
-					if (thread_state.pinned !== '1') {
-						socket.emit('topics.pin', tid);
-					} else {
-						socket.emit('topics.unpin', tid);
-					}
-					return false;
-				});
-
-				$('.move_thread').on('click', function(e) {
-					moveThreadModal.modal('show');
-					return false;
-				});
-
-				$('.markAsUnreadForAll').on('click', function() {
-					var btn = $(this);
-					socket.emit('topics.markAsUnreadForAll', tid, function(err) {
-						if(err) {
-							return app.alertError(err.message);
-						}
-						app.alertSuccess('[[topic:markAsUnreadForAll.success]]');
-						btn.parents('.thread-tools.open').find('.dropdown-toggle').trigger('click');
-					});
-					return false;
-				});
-
-				moveThreadModal.on('shown.bs.modal', function() {
-
-					var loadingEl = $('#categories-loading');
-					if (loadingEl.length) {
-						socket.emit('categories.get', function(err, data) {
-
-							// Render categories
-							var categoryEl,
-								numCategories = data.categories.length,
-								modalBody = moveThreadModal.find('.modal-body'),
-								categoriesEl = modalBody.find('ul').eq(0).addClass('categories-list'),
-								confirmDiv = $('#move-confirm'),
-								confirmCat = confirmDiv.find('span').eq(0),
-								commitEl = $('#move_thread_commit'),
-								cancelEl = $('#move_thread_cancel'),
-								x, info, targetCid, targetCatLabel;
-
-							for (x = 0; x < numCategories; x++) {
-								info = data.categories[x];
-								categoryEl = $('<li />');
-								categoryEl.css({background: info.bgColor, color: info.color || '#fff'})
-									.addClass(info.disabled === '1' ? ' disabled' : '')
-									.attr('data-cid', info.cid)
-									.html('<i class="fa ' + info.icon + '"></i> ' + info.name);
-
-								categoriesEl.append(categoryEl);
-							}
-							loadingEl.remove();
-
-							categoriesEl.on('click', 'li[data-cid]', function(e) {
-								var el = $(this);
-								if (el.is('li')) {
-									confirmCat.html(el.html());
-									confirmDiv.css({display: 'block'});
-									targetCid = el.attr('data-cid');
-									targetCatLabel = el.html();
-									commitEl.prop('disabled', false);
-								}
-							});
-
-							commitEl.on('click', function() {
-								if (!commitEl.prop('disabled') && targetCid) {
-									commitEl.prop('disabled', true);
-									cancelEl.fadeOut(250);
-									moveThreadModal.find('.modal-header button').fadeOut(250);
-									commitEl.html('Moving <i class="fa-spin fa-refresh"></i>');
-
-									socket.emit('topics.move', {
-										tid: tid,
-										cid: targetCid
-									}, function(err) {
-										moveThreadModal.modal('hide');
-										if(err) {
-											return app.alert({
-												'alert_id': 'thread_move',
-												type: 'danger',
-												title: 'Unable to Move Topic',
-												message: 'This topic could not be moved to ' + targetCatLabel + '.<br />Please try again later',
-												timeout: 5000
-											});
-										}
-
-										app.alert({
-											'alert_id': 'thread_move',
-											type: 'success',
-											title: 'Topic Successfully Moved',
-											message: 'This topic has been successfully moved to ' + targetCatLabel,
-											timeout: 5000
-										});
-									});
-								}
-							});
-						});
-					}
-				});
-
-				fork.init();
+			if (templates.get('expose_tools') === '1') {
+				threadTools.init(tid, thread_state);
 			}
 
 			fixDeleteStateForPosts();
-
 
 			socket.emit('topics.followCheck', tid, function(err, state) {
 				set_follow_state(state, false);
@@ -860,10 +726,9 @@ define(['composer', 'forum/pagination', 'forum/topic/fork'], function(composer, 
 				$('.lock_thread').html(translated);
 			});
 
-			$('.topic-main-buttons .post_reply').attr('disabled', locked).html(locked ? 'Locked <i class="fa fa-lock"></i>' : 'Reply');
-
 			$('#post-container .post_reply').html(locked ? 'Locked <i class="fa fa-lock"></i>' : 'Reply <i class="fa fa-reply"></i>');
 			$('#post-container').find('.quote, .edit, .delete').toggleClass('none', locked);
+			$('.topic-main-buttons .post_reply').attr('disabled', locked).html(locked ? 'Locked <i class="fa fa-lock"></i>' : 'Reply');
 
 			if (alert) {
 				app.alert({

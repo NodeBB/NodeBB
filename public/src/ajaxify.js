@@ -198,7 +198,7 @@ var ajaxify = {};
 
 		function checkCallback() {
 			numLocations--;
-			if (numLocations <= 0 && callback) {
+			if (numLocations < 0 && callback) {
 				callback();
 			}
 		}
