@@ -1,3 +1,5 @@
+'use strict';
+
 var async = require('async'),
 	utils = require('../public/src/utils.js'),
 	fs = require('fs'),
@@ -150,15 +152,15 @@ var async = require('async'),
 								relative_path = (urlObject.pathname && urlObject.pathname.length > 1) ? urlObject.pathname : '',
 								host = urlObject.host,
 								protocol = urlObject.protocol,
-								server_conf = config,
-								client_conf = {
-									relative_path: relative_path
-								};
+								server_conf = config;
 
 							server_conf.base_url = protocol + '//' + host;
 							server_conf.relative_path = relative_path;
 
-							install.save(server_conf, client_conf, function(err) {
+							install.save(server_conf, function(err) {
+								if (err) {
+									return next(err);
+								}
 								require('./database').init(next);
 							});
 						};
@@ -362,7 +364,7 @@ var async = require('async'),
 				}
 			], function (err) {
 				if (err) {
-					winston.warn('NodeBB Setup Aborted.');
+					winston.warn('NodeBB Setup Aborted. ' + err.message);
 					process.exit();
 				} else {
 					callback();
@@ -403,10 +405,8 @@ var async = require('async'),
 						return callback(new Error('aborted'));
 					}
 
-					// Check if the passwords match
 					if (results['password:confirm'] !== results.password) {
 						winston.warn("Passwords did not match, please try again");
-						// Re-prompt password questions.
 						return retryPassword(results);
 					}
 
@@ -452,32 +452,25 @@ var async = require('async'),
 				success(null, results);
 			}
 		},
-		save: function (server_conf, client_conf, callback) {
+		save: function (server_conf, callback) {
 			var	serverConfigPath = path.join(__dirname, '../config.json');
 			if (nconf.get('config')) {
 				serverConfigPath = path.join(__dirname, '../', nconf.get('config'));
 			}
 
-			// Server Config
-			async.parallel([
-				function (next) {
-					fs.writeFile(serverConfigPath, JSON.stringify(server_conf, null, 4), function (err) {
-						next(err);
-					});
-				},
-				function (next) {
-					fs.writeFile(path.join(__dirname, '../', 'public', 'config.json'), JSON.stringify(client_conf, null, 4), function (err) {
-						next(err);
-					});
+			fs.writeFile(serverConfigPath, JSON.stringify(server_conf, null, 4), function (err) {
+				if (err) {
+					winston.error('Error saving server configuration! ' + err.message);
+					return callback(err);
 				}
-			], function (err) {
+
 				winston.info('Configuration Saved OK');
 
 				nconf.file({
 					file: path.join(__dirname, '..', 'config.json')
 				});
 
-				callback(err);
+				callback();
 			});
 		}
 	};
