@@ -144,7 +144,7 @@ var ajaxify = {};
 					}
 					tpl_url.pop();
 				}
-				
+
 				if (!tpl_url.length) {
 					tpl_url = url.split('/')[0].split('?')[0];
 				}
@@ -191,7 +191,7 @@ var ajaxify = {};
 					}
 				}
 
-				$('#content [widget-area] img').addClass('img-responsive')
+				$('#content [widget-area] img:not(.user-img)').addClass('img-responsive');
 				checkCallback();
 			});
 		}
