@@ -47,6 +47,7 @@ apiController.getConfig = function(req, res, next) {
 			config.usePagination = settings.usePagination;
 			config.topicsPerPage = settings.topicsPerPage;
 			config.postsPerPage = settings.postsPerPage;
+			config.notificationSounds = settings.notificationSounds;
 
 			if (res.locals.isAPI) {
 				res.json(200, config);

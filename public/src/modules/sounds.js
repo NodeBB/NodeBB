@@ -67,6 +67,9 @@ define(['buzz'], function(buzz) {
 	};
 
 	Sounds.play = function(name) {
+		if (!config.notificationSounds) {
+			return;
+		}
 		var	ready = function() {
 				if (Sounds.mapping[name] && Sounds.loaded[Sounds.mapping[name]]) {
 					Sounds.loaded[Sounds.mapping[name]].play();

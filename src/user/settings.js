@@ -28,7 +28,7 @@ module.exports = function(User) {
 				settings.usePagination = settings.usePagination ? parseInt(settings.usePagination, 10) === 1 : parseInt(meta.config.usePagination, 10) === 1;
 				settings.topicsPerPage = settings.topicsPerPage ? parseInt(settings.topicsPerPage, 10) : parseInt(meta.config.topicsPerPage, 10) || 20;
 				settings.postsPerPage = settings.postsPerPage ? parseInt(settings.postsPerPage, 10) : parseInt(meta.config.postsPerPage, 10) || 10;
-
+				settings.notificationSounds = settings.notificationSounds ? parseInt(settings.notificationSounds, 10) === 1 : true;
 				callback(null, settings);
 			});
 		});
@@ -46,7 +46,8 @@ module.exports = function(User) {
 			showemail: data.showemail,
 			usePagination: data.usePagination,
 			topicsPerPage: data.topicsPerPage,
-			postsPerPage: data.postsPerPage
+			postsPerPage: data.postsPerPage,
+			notificationSounds: data.notificationSounds
 		}, callback);
 	};
 };
