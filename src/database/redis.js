@@ -359,6 +359,10 @@
 		redisClient.zrevrange(key, start, stop, callback);
 	};
 
+	module.getSortedSetRangeByScore = function(args, callback) {
+		redisClient.zrangebyscore(args, callback);
+	};
+
 	module.getSortedSetRevRangeByScore = function(args, callback) {
 		redisClient.zrevrangebyscore(args, callback);
 	};

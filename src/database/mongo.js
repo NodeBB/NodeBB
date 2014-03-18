@@ -538,7 +538,15 @@
 		getSortedSetRange(key, start, stop, -1, callback);
 	};
 
+	module.getSortedSetRangeByScore = function(args, callback) {
+		getSortedSetRangeByScore(args, 1, callback);
+	};
+
 	module.getSortedSetRevRangeByScore = function(args, callback) {
+		getSortedSetRangeByScore(args, -1, callback);
+	};
+
+	function getSortedSetRangeByScore(args, sort, callback) {
 		var key = args[0],
 			max = (args[1] === '+inf') ? Number.MAX_VALUE : args[1],
 			min = args[2],
@@ -552,20 +560,19 @@
 		db.collection('objects').find({_key:key, score: {$gte:min, $lte:max}}, {fields:{value:1}})
 			.limit(count)
 			.skip(start)
-			.sort({score: -1})
+			.sort({score: sort})
 			.toArray(function(err, data) {
 				if(err) {
 					return callback(err);
 				}
 
-				// maybe this can be done with mongo?
 				data = data.map(function(item) {
 					return item.value;
 				});
 
 				callback(err, data);
 			});
-	};
+	}
 
 	module.sortedSetCount = function(key, min, max, callback) {
 		db.collection('objects').count({_key:key, score: {$gte:min, $lte:max}}, function(err, count) {
