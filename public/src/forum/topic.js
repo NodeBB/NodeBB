@@ -67,33 +67,11 @@ define(['composer', 'forum/pagination', 'forum/topic/threadTools'], function(com
 				set_pinned_state(true);
 			}
 
-			if (templates.get('expose_tools') === '1') {
-				threadTools.init(tid, thread_state);
-			}
+			threadTools.init(tid, thread_state);
+
 
 			fixDeleteStateForPosts();
 
-			socket.emit('topics.followCheck', tid, function(err, state) {
-				set_follow_state(state, false);
-			});
-
-			$('.posts').on('click', '.follow', function() {
-				socket.emit('topics.follow', tid, function(err, state) {
-					if(err) {
-						return app.alert({
-							type: 'danger',
-							alert_id: 'topic_follow',
-							title: '[[global:please_log_in]]',
-							message: '[[topic:login_to_subscribe]]',
-							timeout: 5000
-						});
-					}
-
-					set_follow_state(state, true);
-				});
-
-				return false;
-			});
 
 			enableInfiniteLoading();
 
@@ -704,21 +682,6 @@ define(['composer', 'forum/pagination', 'forum/topic/threadTools'], function(com
 			currentFavourites += value;
 
 			favourites.html(currentFavourites).attr('data-favourites', currentFavourites);
-		}
-
-		function set_follow_state(state, alert) {
-
-			$('.posts .follow').toggleClass('btn-success', state).attr('title', state ? 'You are currently receiving updates to this topic' : 'Be notified of new replies in this topic');
-
-			if(alert) {
-				app.alert({
-					alert_id: 'topic_follow',
-					timeout: 2500,
-					title: state ? '[[topic:following_topic.title]]' : '[[topic:not_following_topic.title]]',
-					message: state ? '[[topic:following_topic.message]]' : '[[topic:not_following_topic.message]]',
-					type: 'success'
-				});
-			}
 		}
 
 		function set_locked_state(locked, alert) {

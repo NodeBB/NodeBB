@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, translator, socket, bootbox */
+/* globals define, app, translator, templates, socket, bootbox */
 
 define(['forum/topic/fork', 'forum/topic/move'], function(fork, move) {
 
@@ -8,45 +8,86 @@ define(['forum/topic/fork', 'forum/topic/move'], function(fork, move) {
 
 	ThreadTools.init = function(tid, threadState) {
 
-		$('.thread-tools').removeClass('hide');
+		if (templates.get('expose_tools') === '1') {
 
-		$('.delete_thread').on('click', function(e) {
-			var command = threadState.deleted !== '1' ? 'delete' : 'restore';
+			$('.thread-tools').removeClass('hide');
 
-			bootbox.confirm('Are you sure you want to ' + command + ' this thread?', function(confirm) {
-				if (confirm) {
-					socket.emit('topics.' + command, tid);
-				}
+			$('.delete_thread').on('click', function(e) {
+				var command = threadState.deleted !== '1' ? 'delete' : 'restore';
+
+				bootbox.confirm('Are you sure you want to ' + command + ' this thread?', function(confirm) {
+					if (confirm) {
+						socket.emit('topics.' + command, tid);
+					}
+				});
+				return false;
 			});
-			return false;
+
+			$('.lock_thread').on('click', function(e) {
+				socket.emit(threadState.locked !== '1' ? 'topics.lock' : 'topics.unlock', tid);
+				return false;
+			});
+
+			$('.pin_thread').on('click', function(e) {
+				socket.emit(threadState.pinned !== '1' ? 'topics.pin' : 'topics.unpin', tid);
+				return false;
+			});
+
+			$('.markAsUnreadForAll').on('click', function() {
+				var btn = $(this);
+				socket.emit('topics.markAsUnreadForAll', tid, function(err) {
+					if(err) {
+						return app.alertError(err.message);
+					}
+					app.alertSuccess('[[topic:markAsUnreadForAll.success]]');
+					btn.parents('.thread-tools.open').find('.dropdown-toggle').trigger('click');
+				});
+				return false;
+			});
+
+			move.init(tid);
+
+			fork.init();
+		}
+
+		socket.emit('topics.followCheck', tid, function(err, state) {
+			setFollowState(state, false);
 		});
 
-		$('.lock_thread').on('click', function(e) {
-			socket.emit(threadState.locked !== '1' ? 'topics.lock' : 'topics.unlock', tid);
-			return false;
-		});
-
-		$('.pin_thread').on('click', function(e) {
-			socket.emit(threadState.pinned !== '1' ? 'topics.pin' : 'topics.unpin', tid);
-			return false;
-		});
-
-		$('.markAsUnreadForAll').on('click', function() {
-			var btn = $(this);
-			socket.emit('topics.markAsUnreadForAll', tid, function(err) {
+		$('.posts').on('click', '.follow', function() {
+			socket.emit('topics.follow', tid, function(err, state) {
 				if(err) {
-					return app.alertError(err.message);
+					return app.alert({
+						type: 'danger',
+						alert_id: 'topic_follow',
+						title: '[[global:please_log_in]]',
+						message: '[[topic:login_to_subscribe]]',
+						timeout: 5000
+					});
 				}
-				app.alertSuccess('[[topic:markAsUnreadForAll.success]]');
-				btn.parents('.thread-tools.open').find('.dropdown-toggle').trigger('click');
+
+				setFollowState(state, true);
 			});
+
 			return false;
 		});
 
-		move.init(tid);
-
-		fork.init();
 	};
+
+	function setFollowState(state, alert) {
+
+		$('.posts .follow').toggleClass('btn-success', state).attr('title', state ? 'You are currently receiving updates to this topic' : 'Be notified of new replies in this topic');
+
+		if(alert) {
+			app.alert({
+				alert_id: 'topic_follow',
+				timeout: 2500,
+				title: state ? '[[topic:following_topic.title]]' : '[[topic:not_following_topic.title]]',
+				message: state ? '[[topic:following_topic.message]]' : '[[topic:not_following_topic.message]]',
+				type: 'success'
+			});
+		}
+	}
 
 
 	return ThreadTools;
