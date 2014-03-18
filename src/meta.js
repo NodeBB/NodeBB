@@ -372,9 +372,33 @@ var fs = require('fs'),
 		db.getObject(hash, callback);
 	};
 
+	Meta.settings.getOne = function(hash, field, callback) {
+		hash = 'settings:' + hash;
+		db.getObjectField(hash, field, callback);
+	};
+
 	Meta.settings.set = function(hash, values, callback) {
 		hash = 'settings:' + hash;
 		db.setObject(hash, values, callback);
+	};
+
+	Meta.settings.setOne = function(hash, field, value, callback) {
+		hash = 'settings:' + hash;
+		db.setObjectField(hash, field, value, callback);
+	};
+
+	Meta.settings.setOnEmpty = function (hash, field, value, callback) {
+		Meta.settings.getOne(hash, field, function (err, curValue) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (!curValue) {
+				Meta.settings.setOne(hash, field, value, callback);
+			} else {
+				callback();
+			}
+		});
 	};
 
 	/* Assorted */

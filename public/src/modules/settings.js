@@ -34,6 +34,14 @@ define(function() {
 		if (formEl.length) {
 			var	values = formEl.serializeObject();
 
+			// "Fix" checkbox values, so that unchecked options are not omitted
+			formEl.find('input[type="checkbox"]').each(function(idx, inputEl) {
+				inputEl = $(inputEl);
+				if (!inputEl.is(':checked')) {
+					values[inputEl.attr('id')] = 'off';
+				}
+			});
+
 			socket.emit('admin.settings.set', {
 				hash: hash,
 				values: values

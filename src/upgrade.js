@@ -19,7 +19,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 1, 22);
+	latestSchema = Date.UTC(2014, 2, 18);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -269,42 +269,97 @@ Upgrade.upgrade = function(callback) {
 				winston.info('[2014/2/22] Added categories to sorted set - skipped');
 				next();
 			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 2, 18);
+
+			if (schemaDate < thisSchemaDate) {
+				db.exists('settings:markdown', function(err, exists) {
+					if (err || exists) {
+						winston.info('[2014/3/18] Migrating Markdown settings to new configuration - skipped');
+						return next();
+					}
+
+					var	fields = [
+							'nodebb-plugin-markdown:options:gfm',
+							'nodebb-plugin-markdown:options:highlight',
+							'nodebb-plugin-markdown:options:tables',
+							'nodebb-plugin-markdown:options:breaks',
+							'nodebb-plugin-markdown:options:pedantic',
+							'nodebb-plugin-markdown:options:sanitize',
+							'nodebb-plugin-markdown:options:smartLists',
+							'nodebb-plugin-markdown:options:smartypants',
+							'nodebb-plugin-markdown:options:langPrefix'
+						],
+						settings = {},
+						newFieldName;
+
+					async.series([
+						function(next) {
+							db.getObjectFields('config', fields, function(err, values) {
+								if (err) {
+									return next();
+								}
+
+								for(var field in values) {
+									if (values.hasOwnProperty(field)) {
+										newFieldName = field.slice(31);
+										settings[newFieldName] = values[field] === '1' ? 'on' : values[field];
+									}
+								}
+
+								next();
+							});
+						},
+						function(next) {
+							console.log('saving new settings');
+							db.setObject('settings:markdown', settings, next);
+						},
+						function(next) {
+							async.each(fields, function(field, next) {
+								console.log('deleting', field);
+								db.deleteObjectField('config', field, next);
+							}, next);
+						}
+					], function(err) {
+						if (err) {
+							winston.error('[2014/3/18] Problem migrating Markdown settings.');
+							next();
+						} else {
+							winston.info('[2014/3/18] Migrated Markdown settings to new configuration');
+							Upgrade.update(thisSchemaDate, next);
+						}
+					});
+				});
+			} else {
+				winston.info('[2014/3/18] Migrating Markdown settings to new configuration - skipped');
+				next();
+			}
 		}
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 22!!!
 	], function(err) {
 		if (!err) {
-			db.set('schemaDate', thisSchemaDate, function(err) {
-				if (!err) {
-					if(updatesMade) {
-						winston.info('[upgrade] Schema update complete!');
-					} else {
-						winston.info('[upgrade] Schema already up to date!');
-					}
+			if(updatesMade) {
+				winston.info('[upgrade] Schema update complete!');
+			} else {
+				winston.info('[upgrade] Schema already up to date!');
+			}
 
-					if (callback) {
-						callback(err);
-					} else {
-						process.exit();
-					}
-				} else {
-					winston.error('[upgrade] Could not update NodeBB schema data!');
-					process.exit();
-				}
-			});
+			process.exit();
 		} else {
 			switch(err.message) {
-				case 'upgrade-not-possible':
-					winston.error('[upgrade] NodeBB upgrade could not complete, as your database schema is too far out of date.');
-					winston.error('[upgrade]   Please ensure that you did not skip any minor version upgrades.');
-					winston.error('[upgrade]   (e.g. v0.1.x directly to v0.3.x)');
-					process.exit();
-					break;
+			case 'upgrade-not-possible':
+				winston.error('[upgrade] NodeBB upgrade could not complete, as your database schema is too far out of date.');
+				winston.error('[upgrade]   Please ensure that you did not skip any minor version upgrades.');
+				winston.error('[upgrade]   (e.g. v0.1.x directly to v0.3.x)');
+				process.exit();
+				break;
 
-				default:
-					winston.error('[upgrade] Errors were encountered while updating the NodeBB schema: ' + err.message);
-					process.exit();
-					break;
+			default:
+				winston.error('[upgrade] Errors were encountered while updating the NodeBB schema: ' + err.message);
+				process.exit();
+				break;
 			}
 		}
 	});
