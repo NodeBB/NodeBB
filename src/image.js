@@ -19,7 +19,7 @@ image.resizeImage = function(path, extension, width, height, callback) {
 			.write(path, done);
 	} else {
 		gm(path)
-			.crop(width, height, 0, 0)
+			.resize(width, height)
 			.write(path, done);
 	}
 };
