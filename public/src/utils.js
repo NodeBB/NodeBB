@@ -8,7 +8,7 @@
 		XRegExp = require('xregexp').XRegExp;
 
 		process.profile = function(operation, start) {
-			console.log('%s took %d milliseconds', process.elapsedTimeSince(start));
+			console.log('%s took %d milliseconds', operation, process.elapsedTimeSince(start));
 		};
 
 		process.elapsedTimeSince = function(start) {
