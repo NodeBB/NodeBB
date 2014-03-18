@@ -31,7 +31,7 @@ var bcrypt = require('bcryptjs'),
 	require('./user/delete')(User);
 	require('./user/settings')(User);
 	require('./user/search')(User);
-
+	require('./user/jobs')(User);
 
 	User.getUserField = function(uid, field, callback) {
 		db.getObjectField('user:' + uid, field, callback);

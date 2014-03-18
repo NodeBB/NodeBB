@@ -5,14 +5,13 @@ var async = require('async'),
 	nconf = require('nconf'),
 	winston = require('winston'),
 
-	user = require('./../user'),
-	utils = require('./../../public/src/utils'),
-	db = require('./../database'),
-	notifications = require('./../notifications'),
-	topics = require('./../topics');
+	user = require('../user'),
+	utils = require('../../public/src/utils'),
+	db = require('../database'),
+	notifications = require('../notifications'),
+	topics = require('../topics');
 
 (function(UserNotifications) {
-
 	UserNotifications.get = function(uid, callback) {
 		function getNotifications(set, start, stop, iterator, done) {
 			db.getSortedSetRevRange(set, start, stop, function(err, nids) {
@@ -110,7 +109,18 @@ var async = require('async'),
 				});
 			});
 		});
+	};
 
+	UserNotifications.getDailyUnread = function(uid, callback) {
+		var	now = Date.now(),
+			yesterday = now - (1000*60*60*24);	// Approximate, can be more or less depending on time changes, makes no difference really.
+		db.getSortedSetRangeByScore(['uid:' + uid + ':notifications:unread', yesterday, now], function(err, nids) {
+			async.map(nids, function(nid, next) {
+				notifications.get(nid, uid, function(notif_data) {
+					next(null, notif_data);
+				});
+			}, callback);
+		});
 	};
 
 	UserNotifications.getUnreadCount = function(uid, callback) {

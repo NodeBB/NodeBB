@@ -12,6 +12,8 @@ var path = require('path'),
 	db = require('./database'),
 	auth = require('./routes/authentication'),
 	meta = require('./meta'),
+	user = require('./user'),
+	notifications = require('./notifications'),
 	logger = require('./logger'),
 	middleware = require('./middleware'),
 	routes = require('./routes'),
@@ -34,6 +36,8 @@ if(nconf.get('ssl')) {
 	logger.init(app);
 	auth.registerApp(app);
 	emailer.registerApp(app);
+	notifications.init();
+	user.startJobs();
 
 	async.series({
 		themesData: meta.themes.get,

@@ -123,7 +123,6 @@ function start() {
 				webserver = require('./src/webserver'),
 				sockets = require('./src/socket.io'),
 				plugins = require('./src/plugins'),
-				notifications = require('./src/notifications'),
 				upgrade = require('./src/upgrade');
 
 			templates.setGlobal('relative_path', nconf.get('relative_path'));
@@ -140,8 +139,6 @@ function start() {
 					plugins.ready(function() {
 						webserver.init();
 					});
-
-					notifications.init();
 
 					process.on('SIGTERM', shutdown);
 					process.on('SIGINT', shutdown);
