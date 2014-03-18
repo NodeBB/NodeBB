@@ -312,12 +312,10 @@ Upgrade.upgrade = function(callback) {
 							});
 						},
 						function(next) {
-							console.log('saving new settings');
 							db.setObject('settings:markdown', settings, next);
 						},
 						function(next) {
 							async.each(fields, function(field, next) {
-								console.log('deleting', field);
 								db.deleteObjectField('config', field, next);
 							}, next);
 						}
