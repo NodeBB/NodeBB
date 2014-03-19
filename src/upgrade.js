@@ -19,7 +19,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 2, 18);
+	latestSchema = Date.UTC(2014, 2, 19);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -331,6 +331,28 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/3/18] Migrating Markdown settings to new configuration - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 2, 19);
+
+			if (schemaDate < thisSchemaDate) {
+				async.map(['administrators', 'registered-users'], Groups.getGidFromName, function(err, gids) {
+					async.each(gids, function(gid, next) {
+						db.setObjectField('gid:' + gid, 'system', '1', next);
+					}, function(err) {
+						if (err) {
+							winston.error('[2014/3/19] Problem setting "system" flag for system groups.');
+							next();
+						} else {
+							winston.info('[2014/3/19] Setting "system" flag for system groups');
+							Upgrade.update(thisSchemaDate, next);
+						}
+					});
+				});
+			} else {
+				winston.info('[2014/3/19] Setting "system" flag for system groups - skipped');
 				next();
 			}
 		}
