@@ -55,9 +55,9 @@ module.exports = function(User) {
 			}, function(err) {
 				// When finished...
 				if (!err) {
-					winston.info('[user/notifications] Daily Digests sent!');
+					winston.info('[user/jobs] Daily Digests sent!');
 				} else {
-					winston.error('[user/notifications] Could not send daily digests: ' + err.message);
+					winston.error('[user/jobs] Could not send daily digests: ' + err.message);
 				}
 			});
 		});
