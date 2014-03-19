@@ -15,18 +15,18 @@
 		db.getObjectValues('group:gid', function (err, gids) {
 			if (gids.length > 0) {
 				async.map(gids, function (gid, next) {
-					Groups.get(gid, {
-						expand: options.expand
-					}, next);
+					Groups.get(gid, options, next);
 				}, function (err, groups) {
-					// Remove deleted and hidden groups from this list
-					callback(err, groups.filter(function (group) {
-						if (parseInt(group.deleted, 10) === 1 || parseInt(group.hidden, 10) === 1) {
+					// Remove system, hidden, or deleted groups from this list
+					groups = groups.filter(function (group) {
+						if (group.deleted || (group.hidden && !group.system) || (!options.showSystemGroups && group.system)) {
 							return false;
 						} else {
 							return true;
 						}
-					}));
+					});
+
+					callback(err, groups);
 				});
 			} else {
 				callback(null, []);
@@ -34,32 +34,30 @@
 		});
 	};
 
-	Groups.listSystemGroups = function(options, callback) {
-		var	systemGroups = ['administrators', 'registered-users'],
-			humanNames = ['Administrators', 'Registered Users'];
-
-		async.map(systemGroups, function(groupName, next) {
-			Groups.getByGroupName(groupName, options, function(err, groupObj) {
-				groupObj.name = humanNames[systemGroups.indexOf(groupObj.name)];
-				next(err, groupObj);
-			});
-		}, callback);
-	};
-
 	Groups.get = function(gid, options, callback) {
+		var	truncated = false,
+			numUsers;
+
 		async.parallel({
 			base: function (next) {
 				db.getObject('gid:' + gid, next);
 			},
 			users: function (next) {
 				db.getSetMembers('gid:' + gid + ':members', function (err, uids) {
-					if (options.expand) {
-						if (err) {
-							return next(err);
+					if (err) {
+						return next(err);
+					}
+
+					if (options.truncateUserList) {
+						if (uids.length > 4) {
+							numUsers = uids.length;
+							uids.length = 4;
+							truncated = true;
 						}
+					}
 
+					if (options.expand) {
 						async.map(uids, user.getUserData, next);
-
 					} else {
 						next(err, uids);
 					}
@@ -72,8 +70,13 @@
 
 			results.base.count = results.users.length;
 			results.base.members = results.users;
+			results.base.memberCount = numUsers || results.users.length;
 
-			results.base.deletable = results.base.hidden !== '1';
+			results.base.deleted = !!parseInt(results.base.deleted, 10);
+			results.base.hidden = !!parseInt(results.base.hidden, 10);
+			results.base.system = !!parseInt(results.base.system, 10);
+			results.base.deletable = !results.base.system;
+			results.base.truncated = truncated;
 
 			callback(err, results.base);
 		});
@@ -197,6 +200,10 @@
 			return callback(new Error('name-too-short'));
 		}
 
+		if (name === 'administrators' || name === 'registered-users') {
+			var system = true;
+		}
+
 		Groups.exists(name, function (err, exists) {
 			if (!exists) {
 				db.incrObjectField('global', 'nextGid', function (err, gid) {
@@ -207,7 +214,8 @@
 							name: name,
 							description: description,
 							deleted: '0',
-							hidden: '0'
+							hidden: '0',
+							system: system ? '1' : '0'
 						};
 
 						db.setObject('gid:' + gid, groupData, function(err) {

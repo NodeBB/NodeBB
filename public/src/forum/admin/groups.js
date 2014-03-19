@@ -208,6 +208,9 @@ define(function() {
 				}
 			});
 		});
+
+		// Tooltips
+		$('#groups-list .members li').tooltip();
 	};
 
 	return Groups;

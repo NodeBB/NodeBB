@@ -150,20 +150,11 @@ adminController.themes.get = function(req, res, next) {
 };
 
 adminController.groups.get = function(req, res, next) {
-	async.parallel([
-		function(next) {
-			groups.list({
-				expand: true
-			}, next);
-		},
-		function(next) {
-			groups.listSystemGroups({
-				expand: true
-			}, next);
-		}
-	], function(err, groupData) {
-		var	groups = groupData[0].concat(groupData[1]);
-
+	groups.list({
+		expand: true,
+		showSystemGroups: true,
+		truncateUserList: true
+	}, function(err, groups) {
 		res.render('admin/groups', {
 			groups: groups,
 			yourid: req.user.uid
