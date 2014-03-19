@@ -106,11 +106,13 @@ function compileTemplates(pluginTemplates) {
 					matches = null,
 					regex = /[ \t]*<!-- IMPORT ([\s\S]*?)? -->[ \t]*/;
 
-				while (matches = file.match(regex)) {
-					if (paths["/" + matches[1]]) {
-						file = file.replace(regex, fs.readFileSync(paths["/" + matches[1]]).toString());
+				while(matches = file.match(regex)) {
+					var partial = "/" + matches[1];
+
+					if (paths[partial] && relative_path !== partial) {
+						file = file.replace(regex, fs.readFileSync(paths[partial]).toString());
 					} else {
-						winston.warn('[themes] Partial not found: ' + matches[1]);
+						winston.warn('[themes] Partial not loaded: ' + matches[1]);
 						file = file.replace(regex, "");
 					}
 				}
