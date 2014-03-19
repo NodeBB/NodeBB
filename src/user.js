@@ -174,7 +174,7 @@ var bcrypt = require('bcryptjs'),
 				db.getSortedSetRevRange(set, start, stop, next);
 			},
 			function(uids, next) {
-				User.getUsersData(uids, next);
+				User.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'banned', 'postcount', 'reputation'], next);
 			},
 			function(users, next) {
 				async.map(users, loadUserInfo, next);
