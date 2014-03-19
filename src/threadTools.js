@@ -1,3 +1,5 @@
+'use strict';
+
 var winston = require('winston'),
 	nconf = require('nconf'),
 	async = require('async'),
@@ -19,7 +21,7 @@ var winston = require('winston'),
 
 	ThreadTools.exists = function(tid, callback) {
 		db.isSortedSetMember('topics:tid', tid, callback);
-	}
+	};
 
 	ThreadTools.privileges = function(tid, uid, callback) {
 		async.parallel({
@@ -33,7 +35,9 @@ var winston = require('winston'),
 					return next(null, false);
 				} else {
 					user.getUserField(uid, 'reputation', function(err, reputation) {
-						if (err) return next(null, false);
+						if (err) {
+							return next(null, false);
+						}
 						next(null, parseInt(reputation, 10) >= parseInt(meta.config['privileges:manage_topic'], 10));
 					});
 				}
@@ -48,98 +52,68 @@ var winston = require('winston'),
 				admin: results.categoryPrivs.admin
 			});
 		});
-	}
+	};
 
 	ThreadTools.delete = function(tid, uid, callback) {
-		topics.getTopicField(tid, 'deleted', function(err, deleted) {
-			if(err) {
-				return callback(err);
-			}
-
-			if (parseInt(deleted, 10)) {
-				return callback(new Error('topic-already-deleted'));
-			}
-
-			topics.delete(tid, function(err) {
-				if(err) {
-					return callback(err);
-				}
-
-				ThreadTools.lock(tid);
-
-				Plugins.fireHook('action:topic.delete', tid);
-
-				events.logTopicDelete(uid, tid);
-
-				websockets.emitTopicPostStats();
-
-				websockets.in('topic_' + tid).emit('event:topic_deleted', {
-					tid: tid
-				});
-
-				callback(null, {
-					tid: tid
-				});
-			});
-		});
+		toggleDelete(tid, uid, true, callback);
 	};
 
 	ThreadTools.restore = function(tid, uid, callback) {
+		toggleDelete(tid, uid, false, callback);
+	};
+
+	function toggleDelete(tid, uid, isDelete, callback) {
 		topics.getTopicField(tid, 'deleted', function(err, deleted) {
 			if(err) {
 				return callback(err);
 			}
 
-			if (!parseInt(deleted, 10)) {
+			if (parseInt(deleted, 10) && isDelete) {
+				return callback(new Error('topic-already-deleted'));
+			} else if (!parseInt(deleted, 10) && !isDelete) {
 				return callback(new Error('topic-already-restored'));
 			}
 
-			topics.restore(tid, function(err) {
+			topics[isDelete ? 'delete' : 'restore'](tid, function(err) {
 				if(err) {
 					return callback(err);
 				}
 
-				ThreadTools.unlock(tid);
+				ThreadTools[isDelete ? 'lock' : 'unlock'](tid);
 
-				Plugins.fireHook('action:topic.restore', tid);
+				Plugins.fireHook(isDelete ? 'action:topic.delete' : 'action:topic.restore', tid);
 
-				events.logTopicRestore(uid, tid);
+				events[isDelete ? 'logTopicDelete' : 'logTopicRestore'](uid, tid);
 
 				websockets.emitTopicPostStats();
 
-				websockets.in('topic_' + tid).emit('event:topic_restored', {
+				websockets.in('topic_' + tid).emit(isDelete ? 'event:topic_deleted' : 'event:topic_restored', {
 					tid: tid
 				});
 
 				callback(null, {
-					tid:tid
+					tid: tid
 				});
 			});
 		});
-	};
+	}
 
 	ThreadTools.lock = function(tid, uid, callback) {
-		topics.setTopicField(tid, 'locked', 1);
-
-		websockets.in('topic_' + tid).emit('event:topic_locked', {
-			tid: tid
-		});
-
-		if (callback) {
-			callback(null, {
-				tid: tid
-			});
-		}
+		toggleLock(tid, uid, true, callback);
 	};
 
 	ThreadTools.unlock = function(tid, uid, callback) {
-		topics.setTopicField(tid, 'locked', 0);
+		toggleLock(tid, uid, false, callback);
+	};
 
-		websockets.in('topic_' + tid).emit('event:topic_unlocked', {
+	function toggleLock(tid, uid, lock, callback) {
+		topics.setTopicField(tid, 'locked', lock ? 1 : 0);
+
+		websockets.in('topic_' + tid).emit(lock ? 'event:topic_locked' : 'event:topic_unlocked', {
 			tid: tid
 		});
 
-		if (callback) {
+		if (typeof callback === 'function') {
 			callback(null, {
 				tid: tid
 			});
@@ -147,33 +121,24 @@ var winston = require('winston'),
 	}
 
 	ThreadTools.pin = function(tid, uid, callback) {
-		topics.setTopicField(tid, 'pinned', 1);
-		topics.getTopicField(tid, 'cid', function(err, cid) {
-			db.sortedSetAdd('categories:' + cid + ':tid', Math.pow(2, 53), tid);
-		});
-
-		websockets.in('topic_' + tid).emit('event:topic_pinned', {
-			tid: tid
-		});
-
-		if (callback) {
-			callback(null, {
-				tid: tid
-			});
-		}
-	}
+		togglePin(tid, uid, true, callback);
+	};
 
 	ThreadTools.unpin = function(tid, uid, callback) {
-		topics.setTopicField(tid, 'pinned', 0);
+		togglePin(tid, uid, false, callback);
+	};
+
+	function togglePin(tid, uid, pin, callback) {
+		topics.setTopicField(tid, 'pinned', pin ? 1 : 0);
 		topics.getTopicFields(tid, ['cid', 'lastposttime'], function(err, topicData) {
-			db.sortedSetAdd('categories:' + topicData.cid + ':tid', topicData.lastposttime, tid);
+			db.sortedSetAdd('categories:' + topicData.cid + ':tid', pin ? Math.pow(2, 53) : topicData.lastposttime, tid);
 		});
 
-		websockets.in('topic_' + tid).emit('event:topic_unpinned', {
+		websockets.in('topic_' + tid).emit(pin ? 'event:topic_pinned' : 'event:topic_unpinned', {
 			tid: tid
 		});
 
-		if (callback) {
+		if (typeof callback === 'function') {
 			callback(null, {
 				tid: tid
 			});
@@ -211,11 +176,11 @@ var winston = require('winston'),
 
 			categories.moveRecentReplies(tid, oldCid, cid, callback);
 		});
-	}
+	};
 
 	ThreadTools.isFollowing = function(tid, uid, callback) {
 		db.isSetMember('tid:' + tid + ':followers', uid, callback);
-	}
+	};
 
 	ThreadTools.toggleFollow = function(tid, uid, callback) {
 		ThreadTools.isFollowing(tid, uid, function(err, following) {
@@ -233,7 +198,7 @@ var winston = require('winston'),
 				}
 			});
 		});
-	}
+	};
 
 	ThreadTools.getFollowers = function(tid, callback) {
 		db.getSetMembers('tid:' + tid + ':followers', function(err, followers) {
@@ -248,7 +213,7 @@ var winston = require('winston'),
 			}
 			callback(null, followers);
 		});
-	}
+	};
 
 	ThreadTools.notifyFollowers = function(tid, pid, exceptUid) {
 		async.parallel([
@@ -293,7 +258,7 @@ var winston = require('winston'),
 				notifications.push(results[0], results[1]);
 			}
 		});
-	}
+	};
 
 	ThreadTools.getLatestUndeletedPost = function(tid, callback) {
 		ThreadTools.getLatestUndeletedPid(tid, function(err, pid) {
@@ -303,7 +268,7 @@ var winston = require('winston'),
 
 			posts.getPostData(pid, callback);
 		});
-	}
+	};
 
 	ThreadTools.getLatestUndeletedPid = function(tid, callback) {
 		db.getSortedSetRevRange('tid:' + tid + ':posts', 0, -1, function(err, pids) {
@@ -327,5 +292,5 @@ var winston = require('winston'),
 				}
 			});
 		});
-	}
+	};
 }(exports));
