@@ -8,117 +8,34 @@ define(['composer'], function(composer) {
 
 	PostTools.init = function(tid, threadState) {
 
-		var topic_name = templates.get('topic_name');
+		var topicName = templates.get('topic_name');
 
 		$('.topic').on('click', '.post_reply', function() {
-			var selectionText = '',
-				selection = window.getSelection ? window.getSelection() : document.selection.createRange();
-
-			if ($(selection.baseNode).parents('.post-content').length > 0) {
-				var snippet = selection.toString();
-				if (snippet.length > 0) {
-					selectionText = '> ' + snippet.replace(/\n/g, '\n> ');
-				}
-			}
-
-			var username = getUserName($(this)) + ' ',
-				pid = getPid($(this));
-
 			if (threadState.locked !== '1') {
-				composer.newReply(tid, pid, topic_name, selectionText.length > 0 ? selectionText + '\n\n' + username : '' + username);
+				onReplyClicked($(this), tid, topicName);
 			}
 		});
 
 		$('#post-container').on('click', '.quote', function() {
 			if (threadState.locked !== '1') {
-				var username = getUserName($(this)),
-					pid = getPid($(this));
-
-				socket.emit('posts.getRawPost', pid, function(err, post) {
-					if(err) {
-						return app.alertError(err.message);
-					}
-					var quoted = '';
-					if(post) {
-						quoted = '> ' + post.replace(/\n/g, '\n> ') + '\n\n';
-					}
-
-					if($('.composer').length) {
-						composer.addQuote(tid, pid, topic_name, username, quoted);
-					} else {
-						composer.newReply(tid, pid, topic_name, username + ' said:\n' + quoted);
-					}
-				});
+				onQuoteClicked($(this), tid, topicName);
 			}
 		});
 
-
 		$('#post-container').on('click', '.favourite', function() {
-			var method = $(this).attr('data-favourited') === 'false' ? 'posts.favourite' : 'posts.unfavourite';
-
-			socket.emit(method, {
-				pid: getPid($(this)),
-				room_id: app.currentRoom
-			});
-
-			return false;
+			favouritePost($(this), getPid($(this)));
 		});
 
 		$('#post-container').on('click', '.upvote', function() {
-			var post = $(this).parents('.post-row'),
-				upvoted = post.find('.upvoted').length;
-
-			socket.emit(upvoted ? 'posts.unvote' : 'posts.upvote' , {
-				pid: post.attr('data-pid'),
-				room_id: app.currentRoom
-			});
-
-			return false;
+			onUpvoteClicked($(this));
 		});
 
 		$('#post-container').on('click', '.downvote', function() {
-			var post = $(this).parents('.post-row'),
-				downvoted = post.find('.downvoted').length;
-
-			socket.emit(downvoted ? 'posts.unvote' : 'posts.downvote', {
-				pid: post.attr('data-pid'),
-				room_id: app.currentRoom
-			});
-
-			return false;
+			onDownvoteClicked($(this));
 		});
 
 		$('#post-container').on('click', '.flag', function() {
 			flagPost(getPid($(this)));
-		});
-
-		$('#post-container').on('shown.bs.dropdown', '.share-dropdown', function() {
-			var pid = getPid($(this));
-			$('#post_' + pid + '_link').val(window.location.protocol + '//' + window.location.host + window.location.pathname + '#' + pid);
-			// without the setTimeout can't select the text in the input
-			setTimeout(function() {
-				$('#post_' + pid + '_link').putCursorAtEnd().select();
-			}, 50);
-		});
-
-		$('#post-container').on('click', '.post-link', function(e) {
-			e.preventDefault();
-			return false;
-		});
-
-		$('#post-container').on('click', '.twitter-share', function () {
-			window.open('https://twitter.com/intent/tweet?url=' + encodeURIComponent(window.location.href + '#' + getPid($(this))) + '&text=' + topic_name, '_blank', 'width=550,height=420,scrollbars=no,status=no');
-			return false;
-		});
-
-		$('#post-container').on('click', '.facebook-share', function () {
-			window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href + '#' + getPid($(this))), '_blank', 'width=626,height=436,scrollbars=no,status=no');
-			return false;
-		});
-
-		$('#post-container').on('click', '.google-share', function () {
-			window.open('https://plus.google.com/share?url=' + encodeURIComponent(window.location.href + '#' + getPid($(this))), '_blank', 'width=500,height=570,scrollbars=no,status=no');
-			return false;
 		});
 
 		$('#post-container').on('click', '.edit', function(e) {
@@ -141,7 +58,77 @@ define(['composer'], function(composer) {
 			$(this).parents('.btn-group').find('.dropdown-toggle').click();
 			return false;
 		});
+
+		addShareHandlers(topicName);
 	};
+
+	function onReplyClicked(button, tid, topicName) {
+		var selectionText = '',
+			selection = window.getSelection ? window.getSelection() : document.selection.createRange();
+
+		if ($(selection.baseNode).parents('.post-content').length > 0) {
+			var snippet = selection.toString();
+			if (snippet.length > 0) {
+				selectionText = '> ' + snippet.replace(/\n/g, '\n> ');
+			}
+		}
+
+		var username = getUserName(button) + ' ';
+
+		composer.newReply(tid, getPid(button), topicName, selectionText.length > 0 ? selectionText + '\n\n' + username : '' + username);
+	}
+
+	function onQuoteClicked(button, tid, topicName) {
+		var username = getUserName(button),
+			pid = getPid(button);
+
+		socket.emit('posts.getRawPost', pid, function(err, post) {
+			if(err) {
+				return app.alertError(err.message);
+			}
+			var quoted = '';
+			if(post) {
+				quoted = '> ' + post.replace(/\n/g, '\n> ') + '\n\n';
+			}
+
+			if($('.composer').length) {
+				composer.addQuote(tid, pid, topicName, username, quoted);
+			} else {
+				composer.newReply(tid, pid, topicName, username + ' said:\n' + quoted);
+			}
+		});
+	}
+
+	function favouritePost(button, pid) {
+		var method = button.attr('data-favourited') === 'false' ? 'posts.favourite' : 'posts.unfavourite';
+
+		socket.emit(method, {
+			pid: pid,
+			room_id: app.currentRoom
+		});
+
+		return false;
+	}
+
+	function onUpvoteClicked(button) {
+		toggleVote(button, '.upvoted', 'posts.upvote');
+	}
+
+	function onDownvoteClicked(button) {
+		toggleVote(button, '.downvoted', 'posts.downvote');
+	}
+
+	function toggleVote(button, className, method) {
+		var post = button.parents('.post-row'),
+			currentState = post.find(className).length;
+
+		socket.emit(currentState ? 'posts.unvote' : method , {
+			pid: post.attr('data-pid'),
+			room_id: app.currentRoom
+		});
+
+		return false;
+	}
 
 	function getPid(button) {
 		return button.parents('.post-row').attr('data-pid');
@@ -176,18 +163,12 @@ define(['composer'], function(composer) {
 		});
 	}
 
-
 	function openMovePostModal(button) {
 		var moveModal = $('#move-post-modal'),
 			moveBtn = moveModal.find('#move_post_commit'),
-			topicId = moveModal.find('#topicId'),
-			post = button.parents('.post-row');
+			topicId = moveModal.find('#topicId');
 
-		moveModal.removeClass('hide');
-		moveModal.css("position", "fixed")
-			.css("left", Math.max(0, (($(window).width() - $(moveModal).outerWidth()) / 2) + $(window).scrollLeft()) + "px")
-			.css("top", "0px")
-			.css("z-index", "2000");
+		showMoveModal();
 
 		moveModal.find('.close,#move_post_cancel').on('click', function() {
 			moveModal.addClass('hide');
@@ -202,8 +183,16 @@ define(['composer'], function(composer) {
 		});
 
 		moveBtn.on('click', function() {
-			movePost(post, getPid(button), topicId.val());
+			movePost(button.parents('.post-row'), getPid(button), topicId.val());
 		});
+	}
+
+	function showMoveModal() {
+		$('#move-post-modal').removeClass('hide')
+			.css("position", "fixed")
+			.css("left", Math.max(0, (($(window).width() - $($('#move-post-modal')).outerWidth()) / 2) + $(window).scrollLeft()) + "px")
+			.css("top", "0px")
+			.css("z-index", "2000");
 	}
 
 	function movePost(post, pid, tid) {
@@ -235,6 +224,37 @@ define(['composer'], function(composer) {
 					app.alertSuccess('This post has been flagged for moderation.');
 				});
 			}
+		});
+	}
+
+	function addShareHandlers(topicName) {
+		$('#post-container').on('shown.bs.dropdown', '.share-dropdown', function() {
+			var pid = getPid($(this));
+			$('#post_' + pid + '_link').val(window.location.protocol + '//' + window.location.host + window.location.pathname + '#' + pid);
+			// without the setTimeout can't select the text in the input
+			setTimeout(function() {
+				$('#post_' + pid + '_link').putCursorAtEnd().select();
+			}, 50);
+		});
+
+		$('#post-container').on('click', '.post-link', function(e) {
+			e.preventDefault();
+			return false;
+		});
+
+		$('#post-container').on('click', '.twitter-share', function () {
+			window.open('https://twitter.com/intent/tweet?url=' + encodeURIComponent(window.location.href + '#' + getPid($(this))) + '&text=' + topicName, '_blank', 'width=550,height=420,scrollbars=no,status=no');
+			return false;
+		});
+
+		$('#post-container').on('click', '.facebook-share', function () {
+			window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href + '#' + getPid($(this))), '_blank', 'width=626,height=436,scrollbars=no,status=no');
+			return false;
+		});
+
+		$('#post-container').on('click', '.google-share', function () {
+			window.open('https://plus.google.com/share?url=' + encodeURIComponent(window.location.href + '#' + getPid($(this))), '_blank', 'width=500,height=570,scrollbars=no,status=no');
+			return false;
 		});
 	}
 
