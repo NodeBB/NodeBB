@@ -16,12 +16,15 @@
 define(function() {
 	var Settings = {};
 
-	Settings.load = function(hash, formEl) {
+	Settings.load = function(hash, formEl, callback) {
 		socket.emit('admin.settings.get', {
 			hash: hash
 		}, function(err, values) {
 			if (!err) {
 				$(formEl).deserialize(values);
+				if (typeof callback === 'function') {
+					callback();
+				}
 			} else {
 				console.log('[settings] Unable to load settings for hash: ', hash);
 			}
