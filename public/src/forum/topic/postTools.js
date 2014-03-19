@@ -21,48 +21,44 @@ define(['composer'], function(composer) {
 				onReplyClicked($(this), tid, topicName);
 			}
 		});
+		var postContainer = $('#post-container');
 
-		$('#post-container').on('click', '.quote', function() {
+		postContainer.on('click', '.quote', function() {
 			if (threadState.locked !== '1') {
 				onQuoteClicked($(this), tid, topicName);
 			}
 		});
 
-		$('#post-container').on('click', '.favourite', function() {
+		postContainer.on('click', '.favourite', function() {
 			favouritePost($(this), getPid($(this)));
 		});
 
-		$('#post-container').on('click', '.upvote', function() {
+		postContainer.on('click', '.upvote', function() {
 			toggleVote($(this), '.upvoted', 'posts.upvote');
 		});
 
-		$('#post-container').on('click', '.downvote', function() {
+		postContainer.on('click', '.downvote', function() {
 			toggleVote($(this), '.downvoted', 'posts.downvote');
 		});
 
-		$('#post-container').on('click', '.flag', function() {
+		postContainer.on('click', '.flag', function() {
 			flagPost(getPid($(this)));
 		});
 
-		$('#post-container').on('click', '.edit', function(e) {
+		postContainer.on('click', '.edit', function(e) {
 			composer.editPost(getPid($(this)));
 		});
 
-		$('#post-container').on('click', '.delete', function(e) {
+		postContainer.on('click', '.delete', function(e) {
 			deletePost($(this), tid);
 		});
 
-		$('#post-container').on('click', '.move', function(e) {
+		postContainer.on('click', '.move', function(e) {
 			openMovePostModal($(this));
 		});
 
-
-		$('#post-container').on('click', '.chat', function(e) {
-			var post = $(this).parents('li.post-row');
-
-			app.openChat(post.attr('data-username'), post.attr('data-uid'));
-			$(this).parents('.btn-group').find('.dropdown-toggle').click();
-			return false;
+		postContainer.on('click', '.chat', function(e) {
+			openChat($(this));
 		});
 	}
 
@@ -221,6 +217,14 @@ define(['composer'], function(composer) {
 				});
 			}
 		});
+	}
+
+	function openChat(button) {
+		var post = button.parents('li.post-row');
+
+		app.openChat(post.attr('data-username'), post.attr('data-uid'));
+		button.parents('.btn-group').find('.dropdown-toggle').click();
+		return false;
 	}
 
 	function addShareHandlers() {
