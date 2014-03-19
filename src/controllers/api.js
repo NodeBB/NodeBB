@@ -8,8 +8,10 @@ var pkg = require('./../../package.json'),
 var apiController = {};
 
 apiController.getConfig = function(req, res, next) {
-	var config = require('./../../public/config.json');
+	var serverConfig = require('./../../config.json');
 
+	var config = {};
+	config.relative_path = serverConfig.relative_path;
 	config.version = pkg.version;
 	config.postDelay = meta.config.postDelay;
 	config.minimumTitleLength = meta.config.minimumTitleLength;
