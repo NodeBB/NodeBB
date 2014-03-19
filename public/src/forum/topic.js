@@ -3,7 +3,7 @@
 
 /* globals define, app, templates, translator, socket, bootbox, config, ajaxify, RELATIVE_PATH */
 
-define(['forum/pagination', 'forum/topic/threadTools'], function(pagination, threadTools) {
+define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools'], function(pagination, threadTools, postTools) {
 	var	Topic = {},
 		infiniteLoaderActive = false,
 		scrollingToPost = false,
@@ -67,11 +67,10 @@ define(['forum/pagination', 'forum/topic/threadTools'], function(pagination, thr
 				set_pinned_state(true);
 			}
 
+			postTools.init(tid, thread_state);
 			threadTools.init(tid, thread_state);
 
-
 			fixDeleteStateForPosts();
-
 
 			enableInfiniteLoading();
 

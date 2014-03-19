@@ -21,12 +21,8 @@ define(['composer'], function(composer) {
 				}
 			}
 
-			var username = '',
-				post = $(this).parents('li[data-pid]'),
-				pid = $(this).parents('.post-row').attr('data-pid');
-			if (post.length) {
-				username = '@' + post.attr('data-username').replace(/\s/g, '-') + ' ';
-			}
+			var username = getUserName($(this)) + ' ',
+				pid = getPid($(this));
 
 			if (threadState.locked !== '1') {
 				composer.newReply(tid, pid, topic_name, selectionText.length > 0 ? selectionText + '\n\n' + username : '' + username);
@@ -35,13 +31,8 @@ define(['composer'], function(composer) {
 
 		$('#post-container').on('click', '.quote', function() {
 			if (threadState.locked !== '1') {
-				var username = '',
-					post = $(this).parents('li[data-pid]'),
-					pid = $(this).parents('.post-row').attr('data-pid');
-
-				if (post.length) {
-					username = '@' + post.attr('data-username').replace(/\s/g, '-');
-				}
+				var username = getUserName($(this)),
+					pid = getPid($(this));
 
 				socket.emit('posts.getRawPost', pid, function(err, post) {
 					if(err) {
@@ -51,22 +42,22 @@ define(['composer'], function(composer) {
 					if(post) {
 						quoted = '> ' + post.replace(/\n/g, '\n> ') + '\n\n';
 					}
+
 					if($('.composer').length) {
 						composer.addQuote(tid, pid, topic_name, username, quoted);
-					}else {
+					} else {
 						composer.newReply(tid, pid, topic_name, username + ' said:\n' + quoted);
 					}
 				});
 			}
 		});
 
-		$('#post-container').on('click', '.favourite', function() {
-			var pid = $(this).parents('.post-row').attr('data-pid');
 
+		$('#post-container').on('click', '.favourite', function() {
 			var method = $(this).attr('data-favourited') === 'false' ? 'posts.favourite' : 'posts.unfavourite';
 
 			socket.emit(method, {
-				pid: pid,
+				pid: getPid($(this)),
 				room_id: app.currentRoom
 			});
 
@@ -98,23 +89,11 @@ define(['composer'], function(composer) {
 		});
 
 		$('#post-container').on('click', '.flag', function() {
-			var btn = $(this);
-			bootbox.confirm('Are you sure you want to flag this post?', function(confirm) {
-				if (confirm) {
-					var pid = btn.parents('.post-row').attr('data-pid');
-					socket.emit('posts.flag', pid, function(err) {
-						if(err) {
-							return app.alertError(err.message);
-						}
-						app.alertSuccess('This post has been flagged for moderation.');
-					});
-				}
-			});
+			flagPost(getPid($(this)));
 		});
 
-
 		$('#post-container').on('shown.bs.dropdown', '.share-dropdown', function() {
-			var pid = $(this).parents('.post-row').attr('data-pid');
+			var pid = getPid($(this));
 			$('#post_' + pid + '_link').val(window.location.protocol + '//' + window.location.host + window.location.pathname + '#' + pid);
 			// without the setTimeout can't select the text in the input
 			setTimeout(function() {
@@ -128,27 +107,22 @@ define(['composer'], function(composer) {
 		});
 
 		$('#post-container').on('click', '.twitter-share', function () {
-			var pid = $(this).parents('.post-row').attr('data-pid');
-			window.open('https://twitter.com/intent/tweet?url=' + encodeURIComponent(window.location.href + '#' + pid) + '&text=' + topic_name, '_blank', 'width=550,height=420,scrollbars=no,status=no');
+			window.open('https://twitter.com/intent/tweet?url=' + encodeURIComponent(window.location.href + '#' + getPid($(this))) + '&text=' + topic_name, '_blank', 'width=550,height=420,scrollbars=no,status=no');
 			return false;
 		});
 
 		$('#post-container').on('click', '.facebook-share', function () {
-			var pid = $(this).parents('.post-row').attr('data-pid');
-			window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href + '#' + pid), '_blank', 'width=626,height=436,scrollbars=no,status=no');
+			window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href + '#' + getPid($(this))), '_blank', 'width=626,height=436,scrollbars=no,status=no');
 			return false;
 		});
 
 		$('#post-container').on('click', '.google-share', function () {
-			var pid = $(this).parents('.post-row').attr('data-pid');
-			window.open('https://plus.google.com/share?url=' + encodeURIComponent(window.location.href + '#' + pid), '_blank', 'width=500,height=570,scrollbars=no,status=no');
+			window.open('https://plus.google.com/share?url=' + encodeURIComponent(window.location.href + '#' + getPid($(this))), '_blank', 'width=500,height=570,scrollbars=no,status=no');
 			return false;
 		});
 
 		$('#post-container').on('click', '.edit', function(e) {
-			var pid = $(this).parents('.post-row').attr('data-pid');
-
-			composer.editPost(pid);
+			composer.editPost(getPid($(this)));
 		});
 
 		$('#post-container').on('click', '.delete', function(e) {
@@ -171,48 +145,7 @@ define(['composer'], function(composer) {
 		});
 
 		$('#post-container').on('click', '.move', function(e) {
-			var moveModal = $('#move-post-modal'),
-				moveBtn = moveModal.find('#move_post_commit'),
-				topicId = moveModal.find('#topicId'),
-				post = $(this).parents('.post-row'),
-				pid = $(this).parents('.post-row').attr('data-pid');
-
-			moveModal.removeClass('hide');
-			moveModal.css("position", "fixed")
-				.css("left", Math.max(0, (($(window).width() - $(moveModal).outerWidth()) / 2) + $(window).scrollLeft()) + "px")
-				.css("top", "0px")
-				.css("z-index", "2000");
-
-			moveModal.find('.close,#move_post_cancel').on('click', function() {
-				moveModal.addClass('hide');
-			});
-
-			topicId.on('change', function() {
-				if(topicId.val().length) {
-					moveBtn.removeAttr('disabled');
-				} else {
-					moveBtn.attr('disabled', true);
-				}
-			});
-
-			moveBtn.on('click', function() {
-				socket.emit('topics.movePost', {pid: pid, tid: topicId.val()}, function(err) {
-					if(err) {
-						$('#topicId').val('');
-						moveModal.addClass('hide');
-						return app.alertError(err.message);
-					}
-
-					post.fadeOut(500, function() {
-						post.remove();
-					});
-
-					moveModal.addClass('hide');
-					$('#topicId').val('');
-
-					app.alertSuccess('Post moved!');
-				});
-			});
+			openMovePostModal($(this));
 		});
 
 
@@ -224,6 +157,77 @@ define(['composer'], function(composer) {
 			return false;
 		});
 	};
+
+	function getPid(button) {
+		return button.parents('.post-row').attr('data-pid');
+	}
+
+	function getUserName(button) {
+		var username = '',
+			post = button.parents('li[data-pid]');
+
+		if (post.length) {
+			username = '@' + post.attr('data-username').replace(/\s/g, '-');
+		}
+		return username;
+	}
+
+	function openMovePostModal(button) {
+		var moveModal = $('#move-post-modal'),
+			moveBtn = moveModal.find('#move_post_commit'),
+			topicId = moveModal.find('#topicId'),
+			post = button.parents('.post-row');
+
+		moveModal.removeClass('hide');
+		moveModal.css("position", "fixed")
+			.css("left", Math.max(0, (($(window).width() - $(moveModal).outerWidth()) / 2) + $(window).scrollLeft()) + "px")
+			.css("top", "0px")
+			.css("z-index", "2000");
+
+		moveModal.find('.close,#move_post_cancel').on('click', function() {
+			moveModal.addClass('hide');
+		});
+
+		topicId.on('change', function() {
+			if(topicId.val().length) {
+				moveBtn.removeAttr('disabled');
+			} else {
+				moveBtn.attr('disabled', true);
+			}
+		});
+
+		moveBtn.on('click', function() {
+			socket.emit('topics.movePost', {pid: getPid(button), tid: topicId.val()}, function(err) {
+				if(err) {
+					$('#topicId').val('');
+					moveModal.addClass('hide');
+					return app.alertError(err.message);
+				}
+
+				post.fadeOut(500, function() {
+					post.remove();
+				});
+
+				moveModal.addClass('hide');
+				$('#topicId').val('');
+
+				app.alertSuccess('Post moved!');
+			});
+		});
+	}
+
+	function flagPost(pid) {
+		bootbox.confirm('Are you sure you want to flag this post?', function(confirm) {
+			if (confirm) {
+				socket.emit('posts.flag', pid, function(err) {
+					if(err) {
+						return app.alertError(err.message);
+					}
+					app.alertSuccess('This post has been flagged for moderation.');
+				});
+			}
+		});
+	}
 
 	return PostTools;
 });
