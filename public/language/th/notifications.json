@@ -1,0 +1,10 @@
+{
+    "title": "แจ้งเตือน",
+    "no_notifs": "คุณไม่มีข้อแจ้งเตือนใหม่",
+    "see_all": "ดูข้อแจ้งเตือนทั้งหมด",
+    "back_to_home": "กลับไปที่ NodeBB",
+    "outgoing_link": "ลิงค์ออก",
+    "outgoing_link_message": "ตอนนี้คุณจะออกจาก",
+    "continue_to": "ดำเนินการต่อไป",
+    "return_to": "กลับไปที่"
+}
