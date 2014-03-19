@@ -126,22 +126,7 @@ define(['composer'], function(composer) {
 		});
 
 		$('#post-container').on('click', '.delete', function(e) {
-			var pid = $(this).parents('.post-row').attr('data-pid'),
-				postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
-				action = !postEl.hasClass('deleted') ? 'delete' : 'restore';
-
-			bootbox.confirm('Are you sure you want to ' + action + ' this post?', function(confirm) {
-				if (confirm) {
-					socket.emit('posts.' + action, {
-						pid: pid,
-						tid: tid
-					}, function(err) {
-						if(err) {
-							return app.alertError('Can\'t ' + action + ' post!');
-						}
-					});
-				}
-			});
+			deletePost($(this), tid);
 		});
 
 		$('#post-container').on('click', '.move', function(e) {
@@ -172,6 +157,26 @@ define(['composer'], function(composer) {
 		return username;
 	}
 
+	function deletePost(button, tid) {
+		var pid = getPid(button),
+			postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
+			action = !postEl.hasClass('deleted') ? 'delete' : 'restore';
+
+		bootbox.confirm('Are you sure you want to ' + action + ' this post?', function(confirm) {
+			if (confirm) {
+				socket.emit('posts.' + action, {
+					pid: pid,
+					tid: tid
+				}, function(err) {
+					if(err) {
+						return app.alertError('Can\'t ' + action + ' post!');
+					}
+				});
+			}
+		});
+	}
+
+
 	function openMovePostModal(button) {
 		var moveModal = $('#move-post-modal'),
 			moveBtn = moveModal.find('#move_post_commit'),
@@ -197,22 +202,26 @@ define(['composer'], function(composer) {
 		});
 
 		moveBtn.on('click', function() {
-			socket.emit('topics.movePost', {pid: getPid(button), tid: topicId.val()}, function(err) {
-				if(err) {
-					$('#topicId').val('');
-					moveModal.addClass('hide');
-					return app.alertError(err.message);
-				}
+			movePost(post, getPid(button), topicId.val());
+		});
+	}
 
-				post.fadeOut(500, function() {
-					post.remove();
-				});
+	function movePost(post, pid, tid) {
+		socket.emit('topics.movePost', {pid: pid, tid: tid}, function(err) {
+			$('#move-post-modal').addClass('hide');
 
-				moveModal.addClass('hide');
+			if(err) {
 				$('#topicId').val('');
+				return app.alertError(err.message);
+			}
 
-				app.alertSuccess('Post moved!');
+			post.fadeOut(500, function() {
+				post.remove();
 			});
+
+			$('#topicId').val('');
+
+			app.alertSuccess('Post moved!');
 		});
 	}
 
