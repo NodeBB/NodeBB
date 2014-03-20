@@ -295,11 +295,11 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.isModerator = function(uid, cid, callback) {
-		groups.isMemberByGroupName(uid, 'cid:' + cid + ':privileges:mods', callback);
+		groups.isMember(uid, 'cid:' + cid + ':privileges:mods', callback);
 	};
 
 	User.isAdministrator = function(uid, callback) {
-		groups.isMemberByGroupName(uid, 'administrators', callback);
+		groups.isMember(uid, 'administrators', callback);
 	};
 
 	User.isOnline = function(uid, callback) {

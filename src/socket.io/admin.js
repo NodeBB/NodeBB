@@ -198,16 +198,16 @@ SocketAdmin.categories.setPrivilege = function(socket, data, callback) {
 		};
 
 	if (set) {
-		groups.joinByGroupName('cid:' + cid + ':privileges:' + privilege, uid, cb);
+		groups.join('cid:' + cid + ':privileges:' + privilege, uid, cb);
 	} else {
-		groups.leaveByGroupName('cid:' + cid + ':privileges:' + privilege, uid, cb);
+		groups.leave('cid:' + cid + ':privileges:' + privilege, uid, cb);
 	}
 };
 
 SocketAdmin.categories.getPrivilegeSettings = function(socket, cid, callback) {
 	async.parallel({
 		"+r": function(next) {
-			groups.getByGroupName('cid:' + cid + ':privileges:+r', { expand: true }, function(err, groupObj) {
+			groups.get('cid:' + cid + ':privileges:+r', { expand: true }, function(err, groupObj) {
 				if (!err) {
 					next.apply(this, arguments);
 				} else {
@@ -218,7 +218,7 @@ SocketAdmin.categories.getPrivilegeSettings = function(socket, cid, callback) {
 			});
 		},
 		"+w": function(next) {
-			groups.getByGroupName('cid:' + cid + ':privileges:+w', { expand: true }, function(err, groupObj) {
+			groups.get('cid:' + cid + ':privileges:+w', { expand: true }, function(err, groupObj) {
 				if (!err) {
 					next.apply(this, arguments);
 				} else {
@@ -229,7 +229,7 @@ SocketAdmin.categories.getPrivilegeSettings = function(socket, cid, callback) {
 			});
 		},
 		"mods": function(next) {
-			groups.getByGroupName('cid:' + cid + ':privileges:mods', { expand: true }, function(err, groupObj) {
+			groups.get('cid:' + cid + ':privileges:mods', { expand: true }, function(err, groupObj) {
 				if (!err) {
 					next.apply(this, arguments);
 				} else {
@@ -259,9 +259,9 @@ SocketAdmin.categories.setGroupPrivilege = function(socket, data, callback) {
 	}
 
 	if (data.set) {
-		groups.joinByGroupName('cid:' + data.cid + ':privileges:' + data.privilege, data.gid, callback);
+		groups.join('cid:' + data.cid + ':privileges:' + data.privilege, data.gid, callback);
 	} else {
-		groups.leaveByGroupName('cid:' + data.cid + ':privileges:' + data.privilege, data.gid, callback);
+		groups.leave('cid:' + data.cid + ':privileges:' + data.privilege, data.gid, callback);
 	}
 };
 

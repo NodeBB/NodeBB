@@ -117,7 +117,7 @@ module.exports = function(User) {
 					db.sortedSetAdd('users:postcount', 0, uid);
 					db.sortedSetAdd('users:reputation', 0, uid);
 
-					groups.joinByGroupName('registered-users', uid);
+					groups.join('registered-users', uid);
 
 					if (password) {
 						User.hashPassword(password, function(err, hash) {

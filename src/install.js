@@ -290,24 +290,14 @@ var async = require('async'),
 				function (next) {
 					// Check if an administrator needs to be created
 					var Groups = require('./groups');
-
-					Groups.getGidFromName('administrators', function (err, gid) {
-						if (err) {
-							return next(err.message);
-						}
-
-						if (gid) {
-							Groups.get(gid, {}, function (err, groupObj) {
-								if (groupObj.count > 0) {
-									winston.info('Administrator found, skipping Admin setup');
-									next();
-								} else {
-									install.createAdmin(next);
-								}
-							});
-						} else {
-							install.createAdmin(next);
-						}
+						Groups.get('administrators', {}, function (err, groupObj) {
+							if (groupObj.memberCount > 0) {
+								winston.info('Administrator found, skipping Admin setup');
+								next();
+							} else {
+								install.createAdmin(next);
+							}
+						});
 					});
 				},
 				function (next) {
@@ -417,7 +407,7 @@ var async = require('async'),
 							return callback(new Error('invalid-values'));
 						}
 
-						Groups.joinByGroupName('administrators', uid, callback);
+						Groups.join('administrators', uid, callback);
 					});
 				},
 				retryPassword = function (originalResults) {

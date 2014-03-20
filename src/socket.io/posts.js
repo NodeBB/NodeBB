@@ -256,7 +256,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 		},
 		function(topicSlug, next) {
 			path = nconf.get('relative_path') + '/topic/' + topicSlug + '#' + pid;
-			groups.getByGroupName('administrators', {}, next);
+			groups.get('administrators', {}, next);
 		},
 		function(adminGroup, next) {
 			notifications.create({

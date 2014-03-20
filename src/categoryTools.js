@@ -1,3 +1,5 @@
+"use strict";
+
 var	Groups = require('./groups'),
 	User = require('./user'),
 
@@ -16,19 +18,9 @@ CategoryTools.privileges = function(cid, uid, callback) {
 			var	key = 'cid:' + cid + ':privileges:+r';
 			Groups.exists(key, function(err, exists) {
 				if (exists) {
-					async.parallel({
-						isMember: function(next) {
-							Groups.isMemberByGroupName(uid, key, next);
-						},
-						isEmpty: function(next) {
-							Groups.isEmptyByGroupName(key, next);
-						}
-					}, next);
+					Groups.isMember(uid, key, next);
 				} else {
-					next(null, {
-						isMember: false,
-						isEmpty: true
-					});
+					next(null, true);
 				}
 			});
 		},
@@ -36,19 +28,9 @@ CategoryTools.privileges = function(cid, uid, callback) {
 			var	key = 'cid:' + cid + ':privileges:+w';
 			Groups.exists(key, function(err, exists) {
 				if (exists) {
-					async.parallel({
-						isMember: function(next) {
-							Groups.isMemberByGroupName(uid, key, next);
-						},
-						isEmpty: function(next) {
-							Groups.isEmptyByGroupName(key, next);
-						}
-					}, next);
+					Groups.isMember(uid, key, next);
 				} else {
-					next(null, {
-						isMember: false,
-						isEmpty: true
-					});
+					next(null, true);
 				}
 			});
 		},
@@ -56,19 +38,9 @@ CategoryTools.privileges = function(cid, uid, callback) {
 			var	key = 'cid:' + cid + ':privileges:g+r';
 			Groups.exists(key, function(err, exists) {
 				if (exists) {
-					async.parallel({
-						isMember: function(next) {
-							Groups.isMemberOfGroupAny(uid, key, next);
-						},
-						isEmpty: function(next) {
-							Groups.isEmptyByGroupName(key, next);
-						}
-					}, next);
+					Groups.isMemberOfGroupList(uid, key, next);
 				} else {
-					next(null, {
-						isMember: false,
-						isEmpty: true
-					});
+					next(null, true);
 				}
 			});
 		},
@@ -76,19 +48,9 @@ CategoryTools.privileges = function(cid, uid, callback) {
 			var	key = 'cid:' + cid + ':privileges:g+w';
 			Groups.exists(key, function(err, exists) {
 				if (exists) {
-					async.parallel({
-						isMember: function(next) {
-							Groups.isMemberOfGroupAny(uid, key, next);
-						},
-						isEmpty: function(next) {
-							Groups.isEmptyByGroupName(key, next);
-						}
-					}, next);
+					Groups.isMemberOfGroupList(uid, key, next);
 				} else {
-					next(null, {
-						isMember: false,
-						isEmpty: true
-					});
+					next(null, true);
 				}
 			});
 		},
@@ -100,25 +62,17 @@ CategoryTools.privileges = function(cid, uid, callback) {
 		}
 	}, function(err, privileges) {
 		callback(err, !privileges ? null : {
-			"+r": privileges['+r'].isMember,
-			"+w": privileges['+w'].isMember,
-			"g+r": privileges['g+r'].isMember,
-			"g+w": privileges['g+w'].isMember,
+			"+r": privileges['+r'],
+			"+w": privileges['+w'],
+			"g+r": privileges['g+r'],
+			"g+w": privileges['g+w'],
 			read: (
-				(
-					(privileges['+r'].isMember || privileges['+r'].isEmpty) &&
-					(privileges['g+r'].isMember || privileges['g+r'].isEmpty)
-				) ||
-				privileges.moderator ||
-				privileges.admin
+				privileges['+r'] || privileges['g+r'] ||
+				privileges.moderator ||	privileges.admin
 			),
 			write: (
-				(
-					(privileges['+w'].isMember || privileges['+w'].isEmpty) &&
-					(privileges['g+w'].isMember || privileges['g+w'].isEmpty)
-				) ||
-				privileges.moderator ||
-				privileges.admin
+				privileges['+w'] || privileges['g+w'] ||
+				privileges.moderator ||	privileges.admin
 			),
 			editable: privileges.moderator || privileges.admin,
 			view_deleted: privileges.moderator || privileges.admin,
@@ -134,16 +88,9 @@ CategoryTools.groupPrivileges = function(cid, gid, callback) {
 			var	key = 'cid:' + cid + ':privileges:g+r';
 			Groups.exists(key, function(err, exists) {
 				if (exists) {
-					async.parallel({
-						isMember: function(next) {
-							Groups.isMemberByGroupName(gid, key, next);
-						}
-					}, next);
+					Groups.isMember(gid, key, next);
 				} else {
-					next(null, {
-						isMember: false,
-						isEmpty: true
-					});
+					next(null, false);
 				}
 			});
 		},
@@ -151,23 +98,16 @@ CategoryTools.groupPrivileges = function(cid, gid, callback) {
 			var	key = 'cid:' + cid + ':privileges:g+w';
 			Groups.exists(key, function(err, exists) {
 				if (exists) {
-					async.parallel({
-						isMember: function(next) {
-							Groups.isMemberByGroupName(gid, key, next);
-						}
-					}, next);
+					Groups.isMember(gid, key, next);
 				} else {
-					next(null, {
-						isMember: false,
-						isEmpty: true
-					});
+					next(null, false);
 				}
 			});
 		}
 	}, function(err, privileges) {
 		callback(err, !privileges ? null : {
-			"g+r": privileges['g+r'].isMember,
-			"g+w": privileges['g+w'].isMember
+			"g+r": privileges['g+r'],
+			"g+w": privileges['g+w']
 		});
 	});
 };

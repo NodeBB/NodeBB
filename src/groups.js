@@ -3,10 +3,7 @@
 (function(Groups) {
 
 	/*  REMOVED
-		Groups.getGidFromName
-		Groups.joinByGroupName
-		Groups.leaveByGroupName
-		Groups.prune
+		group lists need to be updated to contain... groups!
 	*/
 
 	var async = require('async'),
@@ -87,118 +84,30 @@
 		});
 	};
 
-	// Not checked
-	Groups.getByGroupName = function(groupName, options, callback) {
-		Groups.getGidFromName(groupName, function(err, gid) {
-			if (err || !gid) {
-				callback(new Error('gid-not-found'));
-			} else {
-				Groups.get(gid, options, callback);
-			}
-		});
-	};
-
-	// Not checked
-	Groups.getMemberships = function(uid, callback) {
-		if (!uid) {
-			return callback(new Error('no-uid-specified'));
-		}
-
-		db.getObjectValues('group:gid', function(err, gids) {
-			async.filter(gids, function(gid, next) {
-				Groups.isMember(uid, gid, function(err, isMember) {
-					next(isMember);
-				});
-			}, function(gids) {
-				async.map(gids, function(gid, next) {
-					Groups.get(gid, {}, next);
-				}, callback);
-			});
-		});
-	};
-
-	// Not checked
-	Groups.isDeleted = function(gid, callback) {
-		db.getObjectField('gid:' + gid, 'deleted', function(err, deleted) {
-			callback(err, parseInt(deleted, 10) === 1);
-		});
-	};
-
 	Groups.isMember = function(uid, groupName, callback) {
 		db.isSetMember('group:' + groupName + ':members', uid, callback);
 	};
 
-	// Not checked
-	Groups.isMemberByGroupName = function(uid, groupName, callback) {
-		Groups.getGidFromName(groupName, function(err, gid) {
-			if (err || !gid) {
-				callback(null, false);
-			} else {
+	Groups.isMemberOfGroupList = function(uid, groupListKey, callback) {
+		db.getSetMembers('group:' + groupListKey + ':members', function(err, gids) {
+			async.some(gids, function(gid, next) {
 				Groups.isMember(uid, gid, function(err, isMember) {
-					callback(err, !!isMember);
+					if (!err && isMember) {
+						next(true);
+					} else {
+						next(false);
+					}
 				});
-			}
-		});
-	};
-
-	// Not checked
-	Groups.isMemberOfGroupAny = function(uid, groupListKey, callback) {
-		Groups.getGidFromName(groupListKey, function(err, gid) {
-			if (err || !gid) {
-				return callback(new Error('error-checking-group'));
-			}
-
-			db.getSetMembers('gid:' + gid + ':members', function(err, gids) {
-				async.some(gids, function(gid, next) {
-					Groups.isMember(uid, gid, function(err, isMember) {
-						if (!err && isMember) {
-							next(true);
-						} else {
-							next(false);
-						}
-					});
-				}, function(result) {
-					callback(null, result);
-				});
+			}, function(result) {
+				callback(null, result);
 			});
 		});
 	};
 
-	// Not checked
-	Groups.isEmpty = function(gid, callback) {
-		db.setCount('gid:' + gid + ':members', function(err, numMembers) {
-			callback(err, numMembers === 0);
-		});
-	};
-
-	// Not checked
-	Groups.isEmptyByGroupName = function(groupName, callback) {
-		Groups.getGidFromName(groupName, function(err, gid) {
-			if (err || !gid) {
-				callback(new Error('gid-not-found'));
-			} else {
-				Groups.isEmpty(gid, callback);
-			}
-		});
-	};
-
-	// Not checked
 	Groups.exists = function(name, callback) {
-		async.parallel({
-			exists: function(next) {
-				db.isObjectField('group:gid', name, next);
-			},
-			deleted: function(next) {
-				Groups.getGidFromName(name, function(err, gid) {
-					Groups.isDeleted(gid, next);
-				});
-			}
-		}, function(err, results) {
-			callback(err, !results ? null : (results.exists && !results.deleted));
-		});
+		db.isSetMember('groups', name, callback);
 	};
 
-	// Not checked
 	Groups.create = function(name, description, callback) {
 		if (name.length === 0) {
 			return callback(new Error('name-too-short'));
@@ -210,24 +119,16 @@
 
 		Groups.exists(name, function (err, exists) {
 			if (!exists) {
-				db.incrObjectField('global', 'nextGid', function (err, gid) {
-					db.setObjectField('group:gid', name, gid, function(err) {
+				var groupData = {
+					name: name,
+					description: description,
+					deleted: '0',
+					hidden: '0',
+					system: system ? '1' : '0'
+				};
 
-						var groupData = {
-							gid: gid,
-							name: name,
-							description: description,
-							deleted: '0',
-							hidden: '0',
-							system: system ? '1' : '0'
-						};
-
-						db.setObject('gid:' + gid, groupData, function(err) {
-
-							Groups.get(gid, {}, callback);
-
-						});
-					});
+				db.setObject('group:' + name, groupData, function(err) {
+					Groups.get(name, {}, callback);
 				});
 			} else {
 				callback(new Error('group-exists'));
@@ -235,36 +136,34 @@
 		});
 	};
 
-	// Not checked
-	Groups.hide = function(gid, callback) {
-		Groups.update(gid, {
+	Groups.hide = function(groupName, callback) {
+		Groups.update(groupName, {
 			hidden: '1'
 		}, callback);
 	};
 
-	// Not checked
-	Groups.update = function(gid, values, callback) {
-		db.exists('gid:' + gid, function (err, exists) {
+	Groups.update = function(groupName, values, callback) {
+		db.exists('group:' + groupName, function (err, exists) {
 			if (!err && exists) {
-				// If the group was renamed, check for dupes, fix the assoc. hash
+				// If the group was renamed, check for dupes
 				if (values.name) {
 					Groups.exists(values.name, function(err, exists) {
 						if (!exists) {
-							Groups.get(gid, {}, function(err, groupObj) {
+							db.rename('group:' + groupName, 'group:' + values.name, function(err) {
 								if (err) {
-									return callback(new Error('group-not-found'));
+									return callback(new Error('could-not-rename-group'));
 								}
 
-								db.deleteObjectField('group:gid', groupObj.name);
-								db.setObjectField('group:gid', values.name, gid);
-								db.setObject('gid:' + gid, values, callback);
+								db.setRemove('groups', groupName);
+								db.setAdd('groups', values.name);
+								db.setObject('group:' + values.name, values, callback);
 							});
 						} else {
 							callback(new Error('group-exists'));
 						}
 					});
 				} else {
-					db.setObject('gid:' + gid, values, callback);
+					db.setObject('group:' + groupName, values, callback);
 				}
 			} else {
 				if (callback) {

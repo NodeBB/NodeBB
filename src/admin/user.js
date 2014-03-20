@@ -21,17 +21,15 @@ var async = require('async'),
 	UserAdmin.makeAdmin = function(uid, theirid, socket) {
 		user.isAdministrator(uid, function(err, isAdmin) {
 			if (isAdmin) {
-				groups.getGidFromName('administrators', function(err, gid) {
-					groups.join(gid, theirid, function(err) {
-						if (!err) {
-							socket.emit('event:alert', {
-								title: 'User Modified',
-								message: 'This user is now an administrator!',
-								type: 'success',
-								timeout: 2000
-							});
-						}
-					});
+				groups.join('administrators', theirid, function(err) {
+					if (!err) {
+						socket.emit('event:alert', {
+							title: 'User Modified',
+							message: 'This user is now an administrator!',
+							type: 'success',
+							timeout: 2000
+						});
+					}
 				});
 			} else {
 				socket.emit('event:alert', {
@@ -47,18 +45,16 @@ var async = require('async'),
 	UserAdmin.removeAdmin = function(uid, theirid, socket) {
 		user.isAdministrator(uid, function(err, isAdmin) {
 			if (isAdmin) {
-				groups.getGidFromName('administrators', function(err, gid) {
-					groups.leave(gid, theirid, function(err) {
-						if (!err) {
+				groups.leave('administrators', theirid, function(err) {
+					if (!err) {
 
-							socket.emit('event:alert', {
-								title: 'User Modified',
-								message: 'This user is no longer an administrator!',
-								type: 'success',
-								timeout: 2000
-							});
-						}
-					});
+						socket.emit('event:alert', {
+							title: 'User Modified',
+							message: 'This user is no longer an administrator!',
+							type: 'success',
+							timeout: 2000
+						});
+					}
 				});
 			}
 		});

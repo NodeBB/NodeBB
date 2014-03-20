@@ -335,28 +335,6 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = Date.UTC(2014, 2, 19);
-
-			if (schemaDate < thisSchemaDate) {
-				async.map(['administrators', 'registered-users'], Groups.getGidFromName, function(err, gids) {
-					async.each(gids, function(gid, next) {
-						db.setObjectField('gid:' + gid, 'system', '1', next);
-					}, function(err) {
-						if (err) {
-							winston.error('[2014/3/19] Problem setting "system" flag for system groups.');
-							next();
-						} else {
-							winston.info('[2014/3/19] Setting "system" flag for system groups');
-							Upgrade.update(thisSchemaDate, next);
-						}
-					});
-				});
-			} else {
-				winston.info('[2014/3/19] Setting "system" flag for system groups - skipped');
-				next();
-			}
-		},
-		function(next) {
 			thisSchemaDate = Date.UTC(2014, 2, 19, 20);
 
 			if (schemaDate < thisSchemaDate) {
@@ -400,10 +378,21 @@ Upgrade.upgrade = function(callback) {
 							}
 						], next);
 					}, function(err) {
-						// Delete the old mapping key
+						// Clean-up
 						async.series([
 							function(next) {
+								// Mapping
 								db.delete('group:gid', next);
+							},
+							function(next) {
+								// Incrementor
+								db.deleteObjectField('global', 'nextGid', next);
+							},
+							function(next) {
+								// Set 'administrators' and 'registered-users' as system groups
+								db.setObjectField('group:administrators', 'system', '1');
+								db.setObjectField('group:registered-users', 'system', '1');
+								next();
 							},
 							function(next) {
 								// Delete empty groups

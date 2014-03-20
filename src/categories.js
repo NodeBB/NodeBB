@@ -182,7 +182,7 @@ var db = require('./database'),
 	};
 
 	Categories.getModerators = function(cid, callback) {
-		Groups.getByGroupName('cid:' + cid + ':privileges:mods', {}, function(err, groupObj) {
+		Groups.get('cid:' + cid + ':privileges:mods', {}, function(err, groupObj) {
 			if (!err) {
 				if (groupObj.members && groupObj.members.length) {
 					user.getMultipleUserFields(groupObj.members, ['uid', 'username', 'userslug', 'picture'], function(err, moderators) {
