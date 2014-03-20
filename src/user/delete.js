@@ -275,7 +275,7 @@ module.exports = function(User) {
 					deleteUserFromFollowers(uid, next);
 				},
 				function(next) {
-					deleteUserFromGroups(uid, next);
+					groups.leaveAllGroups(uid, next);
 				}
 			], function(err) {
 				if (err) {
@@ -317,14 +317,6 @@ module.exports = function(User) {
 
 			async.each(uids, function(theiruid, next) {
 				db.setRemove('following:' + theiruid, uid, next);
-			}, callback);
-		});
-	}
-
-	function deleteUserFromGroups(uid, callback) {
-		groups.getGroupIds(function(err, gids) {
-			async.each(gids, function(gid, next) {
-				groups.leave(gid, uid, next);
 			}, callback);
 		});
 	}

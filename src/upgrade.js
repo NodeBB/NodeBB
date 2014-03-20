@@ -19,7 +19,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 2, 19);
+	latestSchema = Date.UTC(2014, 2, 19, 20);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -353,6 +353,79 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/3/19] Setting "system" flag for system groups - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 2, 19, 20);
+
+			if (schemaDate < thisSchemaDate) {
+				db.getObject('group:gid', function(err, mapping) {
+					if (err) {
+						return next(err);
+					}
+
+					if (!err && !mapping) {
+						// Done already, skip
+						return next();
+					}
+
+					var	names = Object.keys(mapping);
+					async.each(names, function(name, next) {
+						async.series([
+							function(next) {
+								// Remove the gid from the hash
+								db.deleteObjectField('gid:' + mapping[name], 'gid', next);
+							},
+							function(next) {
+								db.rename('gid:' + mapping[name], 'group:' + name, next);
+							},
+							function(next) {
+								db.exists('gid:' + mapping[name] + ':members', function(err, exists) {
+									if (err) {
+										return next(err);
+									}
+
+									if (exists) {
+										db.rename('gid:' + mapping[name] + ':members', 'group:' + name + ':members', next);
+									} else {
+										// No members, do nothing
+										next();
+									}
+								});
+							},
+							function(next) {
+								// Add groups to a directory (set)
+								db.setAdd('groups', name, next);
+							}
+						], next);
+					}, function(err) {
+						// Delete the old mapping key
+						async.series([
+							function(next) {
+								db.delete('group:gid', next);
+							},
+							function(next) {
+								// Delete empty groups
+								Groups.list({ showAllGroups: true }, function(err, groups) {
+									async.each(groups, function(group, next) {
+										if (group.members.length === 0) {
+											// Delete the group
+											Groups.destroy(group.name, next);
+										} else {
+											next();
+										}
+									}, next);
+								});
+							}
+						], function(err) {
+							console.log('so far so good');
+							process.exit();
+						});
+					});
+				});
+			} else {
+				winston.info('[2014/3/19] Removing gids and pruning groups - skipped');
 				next();
 			}
 		}

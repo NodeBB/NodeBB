@@ -2,29 +2,33 @@
 
 (function(Groups) {
 
+	/*  REMOVED
+		Groups.getGidFromName
+		Groups.joinByGroupName
+		Groups.leaveByGroupName
+	*/
+
 	var async = require('async'),
 		winston = require('winston'),
 		user = require('./user'),
 		db = require('./database');
 
-	Groups.getGroupIds = function (callback) {
-		db.getObjectValues('group:gid', callback);
-	};
-
 	Groups.list = function(options, callback) {
-		db.getObjectValues('group:gid', function (err, gids) {
-			if (gids.length > 0) {
-				async.map(gids, function (gid, next) {
-					Groups.get(gid, options, next);
+		db.getSetMembers('groups', function (err, groupNames) {
+			if (groupNames.length > 0) {
+				async.map(groupNames, function (groupName, next) {
+					Groups.get(groupName, options, next);
 				}, function (err, groups) {
 					// Remove system, hidden, or deleted groups from this list
-					groups = groups.filter(function (group) {
-						if (group.deleted || (group.hidden && !group.system) || (!options.showSystemGroups && group.system)) {
-							return false;
-						} else {
-							return true;
-						}
-					});
+					if (!options.showAllGroups) {
+						groups = groups.filter(function (group) {
+							if (group.deleted || (group.hidden && !group.system) || (!options.showSystemGroups && group.system)) {
+								return false;
+							} else {
+								return true;
+							}
+						});
+					}
 
 					callback(err, groups);
 				});
@@ -34,16 +38,16 @@
 		});
 	};
 
-	Groups.get = function(gid, options, callback) {
+	Groups.get = function(groupName, options, callback) {
 		var	truncated = false,
 			numUsers;
 
 		async.parallel({
 			base: function (next) {
-				db.getObject('gid:' + gid, next);
+				db.getObject('group:' + groupName, next);
 			},
 			users: function (next) {
-				db.getSetMembers('gid:' + gid + ':members', function (err, uids) {
+				db.getSetMembers('group:' + groupName + ':members', function (err, uids) {
 					if (err) {
 						return next(err);
 					}
@@ -82,6 +86,7 @@
 		});
 	};
 
+	// Not checked
 	Groups.getByGroupName = function(groupName, options, callback) {
 		Groups.getGidFromName(groupName, function(err, gid) {
 			if (err || !gid) {
@@ -92,6 +97,7 @@
 		});
 	};
 
+	// Not checked
 	Groups.getMemberships = function(uid, callback) {
 		if (!uid) {
 			return callback(new Error('no-uid-specified'));
@@ -110,26 +116,18 @@
 		});
 	};
 
+	// Not checked
 	Groups.isDeleted = function(gid, callback) {
 		db.getObjectField('gid:' + gid, 'deleted', function(err, deleted) {
 			callback(err, parseInt(deleted, 10) === 1);
 		});
 	};
 
-	Groups.getGidFromName = function(name, callback) {
-		db.getObjectField('group:gid', name, callback);
+	Groups.isMember = function(uid, groupName, callback) {
+		db.isSetMember('group:' + groupName + ':members', uid, callback);
 	};
 
-	Groups.isMember = function(uid, gid, callback) {
-		Groups.isDeleted(gid, function(err, deleted) {
-			if (!deleted) {
-				db.isSetMember('gid:' + gid + ':members', uid, callback);
-			} else {
-				callback(err, false);
-			}
-		});
-	};
-
+	// Not checked
 	Groups.isMemberByGroupName = function(uid, groupName, callback) {
 		Groups.getGidFromName(groupName, function(err, gid) {
 			if (err || !gid) {
@@ -142,6 +140,7 @@
 		});
 	};
 
+	// Not checked
 	Groups.isMemberOfGroupAny = function(uid, groupListKey, callback) {
 		Groups.getGidFromName(groupListKey, function(err, gid) {
 			if (err || !gid) {
@@ -164,12 +163,14 @@
 		});
 	};
 
+	// Not checked
 	Groups.isEmpty = function(gid, callback) {
 		db.setCount('gid:' + gid + ':members', function(err, numMembers) {
 			callback(err, numMembers === 0);
 		});
 	};
 
+	// Not checked
 	Groups.isEmptyByGroupName = function(groupName, callback) {
 		Groups.getGidFromName(groupName, function(err, gid) {
 			if (err || !gid) {
@@ -180,6 +181,7 @@
 		});
 	};
 
+	// Not checked
 	Groups.exists = function(name, callback) {
 		async.parallel({
 			exists: function(next) {
@@ -195,6 +197,7 @@
 		});
 	};
 
+	// Not checked
 	Groups.create = function(name, description, callback) {
 		if (name.length === 0) {
 			return callback(new Error('name-too-short'));
@@ -231,12 +234,14 @@
 		});
 	};
 
+	// Not checked
 	Groups.hide = function(gid, callback) {
 		Groups.update(gid, {
 			hidden: '1'
 		}, callback);
 	};
 
+	// Not checked
 	Groups.update = function(gid, values, callback) {
 		db.exists('gid:' + gid, function (err, exists) {
 			if (!err && exists) {
@@ -268,47 +273,57 @@
 		});
 	};
 
-	Groups.destroy = function(gid, callback) {
-		db.setObjectField('gid:' + gid, 'deleted', '1', callback);
+	Groups.destroy = function(groupName, callback) {
+		async.parallel([
+			function(next) {
+				db.delete('group:' + groupName, next);
+			},
+			function(next) {
+				db.setRemove('groups', groupName, next);
+			}
+		], callback);
 	};
 
-	Groups.join = function(gid, uid, callback) {
-		db.setAdd('gid:' + gid + ':members', uid, callback);
+	Groups.join = function(groupName, uid, callback) {
+		db.setAdd('group:' + groupName + ':members', uid, callback);
 	};
 
-	Groups.joinByGroupName = function(groupName, uid, callback) {
-		Groups.getGidFromName(groupName, function(err, gid) {
-			if (err || !gid) {
-				Groups.create(groupName, '', function(err, groupObj) {
-					async.parallel([
-						function(next) {
-							Groups.hide(groupObj.gid, next);
-						},
-						function(next) {
-							Groups.join(groupObj.gid, uid, next);
-						}
-					], callback);
+	Groups.leave = function(groupName, uid, callback) {
+		db.setRemove('group:' + groupName + ':members', uid, function(err) {
+			if (err) {
+				return callback(err);
+			}
+
+			// If this is a system group, and it is now empty, delete it
+			Groups.get(groupName, function(err, group) {
+				if (err) {
+					return callback(err);
+				}
+
+				if (group.system && group.memberCount === 0) {
+					Groups.destroy(groupName, callback);
+				} else {
+					return callback();
+				}
+			});
+		});
+	};
+
+	Groups.leaveAllGroups = function(uid, callback) {
+		db.getSetMembers('groups', function(err, groups) {
+			async.each(groups, function(groupName, next) {
+				Groups.isMember(uid, groupName, function(err, isMember) {
+					if (!err && isMember) {
+						Groups.leave(groupName, uid, next);
+					} else {
+						next();
+					}
 				});
-			} else {
-				Groups.join(gid, uid, callback);
-			}
+			});
 		});
 	};
 
-	Groups.leave = function(gid, uid, callback) {
-		db.setRemove('gid:' + gid + ':members', uid, callback);
-	};
-
-	Groups.leaveByGroupName = function(groupName, uid, callback) {
-		Groups.getGidFromName(groupName, function(err, gid) {
-			if (err || !gid) {
-				callback(new Error('gid-not-found'));
-			} else {
-				Groups.leave(gid, uid, callback);
-			}
-		});
-	};
-
+	// Not checked
 	Groups.prune = function(callback) {
 		// Actually deletes groups (with the deleted flag) from the redis database
 		db.getObjectValues('group:gid', function (err, gids) {
