@@ -1,11 +1,6 @@
 'use strict';
 
 (function(Groups) {
-
-	/*  REMOVED
-		group lists need to be updated to contain... groups!
-	*/
-
 	var async = require('async'),
 		winston = require('winston'),
 		user = require('./user'),
@@ -42,7 +37,15 @@
 
 		async.parallel({
 			base: function (next) {
-				db.getObject('group:' + groupName, next);
+				db.getObject('group:' + groupName, function(err, groupObj) {
+					if (err) {
+						next(err);
+					} else if (!groupObj) {
+						next('group-not-found');
+					} else {
+						next(err, groupObj);
+					}
+				});
 			},
 			users: function (next) {
 				db.getSetMembers('group:' + groupName + ':members', function (err, uids) {
@@ -70,7 +73,7 @@
 				return callback(err);
 			}
 
-			results.base.count = results.users.length;
+			results.base.count = numUsers || results.users.length;
 			results.base.members = results.users;
 			results.base.memberCount = numUsers || results.users.length;
 
@@ -127,9 +130,16 @@
 					system: system ? '1' : '0'
 				};
 
-				db.setObject('group:' + name, groupData, function(err) {
-					Groups.get(name, {}, callback);
-				});
+				async.parallel([
+					function(next) {
+						db.setAdd('groups', name, next);
+					},
+					function(next) {
+						db.setObject('group:' + name, groupData, function(err) {
+							Groups.get(name, {}, next);
+						});
+					}
+				], callback);
 			} else {
 				callback(new Error('group-exists'));
 			}
@@ -146,24 +156,12 @@
 		db.exists('group:' + groupName, function (err, exists) {
 			if (!err && exists) {
 				// If the group was renamed, check for dupes
-				if (values.name) {
-					Groups.exists(values.name, function(err, exists) {
-						if (!exists) {
-							db.rename('group:' + groupName, 'group:' + values.name, function(err) {
-								if (err) {
-									return callback(new Error('could-not-rename-group'));
-								}
-
-								db.setRemove('groups', groupName);
-								db.setAdd('groups', values.name);
-								db.setObject('group:' + values.name, values, callback);
-							});
-						} else {
-							callback(new Error('group-exists'));
-						}
-					});
-				} else {
+				if (!values.name) {
 					db.setObject('group:' + groupName, values, callback);
+				} else {
+					if (callback) {
+						callback(new Error('name-change-not-allowed'));
+					}
 				}
 			} else {
 				if (callback) {
@@ -185,7 +183,21 @@
 	};
 
 	Groups.join = function(groupName, uid, callback) {
-		db.setAdd('group:' + groupName + ':members', uid, callback);
+		Groups.exists(groupName, function(err, exists) {
+			if (exists) {
+				db.setAdd('group:' + groupName + ':members', uid, callback);
+			} else {
+				Groups.create(groupName, '', function(err) {
+					if (err) {
+						winston.error('[groups.join] Could not create new hidden group: ' + err.message);
+						return callback(err);
+					}
+
+					Groups.hide(groupName);
+					db.setAdd('group:' + groupName + ':members', uid, callback);
+				});
+			}
+		});
 	};
 
 	Groups.leave = function(groupName, uid, callback) {
@@ -194,13 +206,13 @@
 				return callback(err);
 			}
 
-			// If this is a system group, and it is now empty, delete it
-			Groups.get(groupName, function(err, group) {
+			// If this is a hidden group, and it is now empty, delete it
+			Groups.get(groupName, {}, function(err, group) {
 				if (err) {
 					return callback(err);
 				}
 
-				if (group.system && group.memberCount === 0) {
+				if (group.hidden && group.memberCount === 0) {
 					Groups.destroy(groupName, callback);
 				} else {
 					return callback();
@@ -219,7 +231,7 @@
 						next();
 					}
 				});
-			});
+			}, callback);
 		});
 	};
 }(module.exports));

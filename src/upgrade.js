@@ -348,7 +348,16 @@ Upgrade.upgrade = function(callback) {
 						return next();
 					}
 
-					var	names = Object.keys(mapping);
+					var	names = Object.keys(mapping),
+						reverseMapping = {},
+						isGroupList = /^cid:[0-9]+:privileges:g\+[rw]$/;
+
+					for(var groupName in mapping) {
+						if (mapping.hasOwnProperty(groupName)) {
+							reverseMapping[parseInt(mapping[groupName], 10)] = groupName;
+						}
+					}
+
 					async.each(names, function(name, next) {
 						async.series([
 							function(next) {
@@ -356,9 +365,11 @@ Upgrade.upgrade = function(callback) {
 								db.deleteObjectField('gid:' + mapping[name], 'gid', next);
 							},
 							function(next) {
+								// Rename gid hash to groupName hash
 								db.rename('gid:' + mapping[name], 'group:' + name, next);
 							},
 							function(next) {
+								// Move member lists over
 								db.exists('gid:' + mapping[name] + ':members', function(err, exists) {
 									if (err) {
 										return next(err);
@@ -367,18 +378,32 @@ Upgrade.upgrade = function(callback) {
 									if (exists) {
 										db.rename('gid:' + mapping[name] + ':members', 'group:' + name + ':members', next);
 									} else {
-										// No members, do nothing
+										// No members, do nothing, they'll be removed later
 										next();
 									}
 								});
 							},
 							function(next) {
-								// Add groups to a directory (set)
+								// Add group to the directory (set)
 								db.setAdd('groups', name, next);
+							},
+							function(next) {
+								// If this group contained gids, map the gids to group names
+								if (isGroupList.test(name)) {
+									db.getSetMembers('group:' + name + ':members', function(err, gids) {
+										async.each(gids, function(gid, next) {
+											db.setRemove('group:' + name + ':members', gid);
+											db.setAdd('group:' + name + ':members', reverseMapping[gid], next);
+										}, next);
+									});
+								} else {
+									next();
+								}
 							}
 						], next);
 					}, function(err) {
 						// Clean-up
+						var	isValidHiddenGroup = /^cid:[0-9]+:privileges:(g)?\+[rw]$/;
 						async.series([
 							function(next) {
 								// Mapping
@@ -390,16 +415,28 @@ Upgrade.upgrade = function(callback) {
 							},
 							function(next) {
 								// Set 'administrators' and 'registered-users' as system groups
-								db.setObjectField('group:administrators', 'system', '1');
-								db.setObjectField('group:registered-users', 'system', '1');
-								next();
+								async.parallel([
+									function(next) {
+										db.setObject('group:administrators', {
+											system: '1',
+											hidden: '0'
+										}, next);
+									},
+									function(next) {
+										db.setObject('group:registered-users', {
+											system: '1',
+											hidden: '0'
+										}, next);
+									}
+								], next);
 							},
 							function(next) {
-								// Delete empty groups
 								Groups.list({ showAllGroups: true }, function(err, groups) {
 									async.each(groups, function(group, next) {
-										if (group.members.length === 0) {
-											// Delete the group
+										// If empty, delete group
+										if (group.memberCount === 0) {
+											Groups.destroy(group.name, next);
+										} else if (group.hidden && !isValidHiddenGroup.test(group.name)) {
 											Groups.destroy(group.name, next);
 										} else {
 											next();
@@ -408,8 +445,13 @@ Upgrade.upgrade = function(callback) {
 								});
 							}
 						], function(err) {
-							console.log('so far so good');
-							process.exit();
+							if (err) {
+								winston.error('[2014/3/19] Problem removing gids and pruning groups.');
+								next();
+							} else {
+								winston.info('[2014/3/19] Removing gids and pruning groups');
+								Upgrade.update(thisSchemaDate, next);
+							}
 						});
 					});
 				});

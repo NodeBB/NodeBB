@@ -259,9 +259,9 @@ SocketAdmin.categories.setGroupPrivilege = function(socket, data, callback) {
 	}
 
 	if (data.set) {
-		groups.join('cid:' + data.cid + ':privileges:' + data.privilege, data.gid, callback);
+		groups.join('cid:' + data.cid + ':privileges:' + data.privilege, data.name, callback);
 	} else {
-		groups.leave('cid:' + data.cid + ':privileges:' + data.privilege, data.gid, callback);
+		groups.leave('cid:' + data.cid + ':privileges:' + data.privilege, data.name, callback);
 	}
 };
 
@@ -275,7 +275,7 @@ SocketAdmin.categories.groupsList = function(socket, cid, callback) {
 		}
 
 		async.map(data, function(groupObj, next) {
-			CategoryTools.groupPrivileges(cid, groupObj.gid, function(err, privileges) {
+			CategoryTools.groupPrivileges(cid, groupObj.name, function(err, privileges) {
 				if(err) {
 					return next(err);
 				}

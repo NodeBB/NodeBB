@@ -17,10 +17,11 @@ CategoryTools.privileges = function(cid, uid, callback) {
 		"+r": function(next) {
 			var	key = 'cid:' + cid + ':privileges:+r';
 			Groups.exists(key, function(err, exists) {
+				console.log(key, exists);
 				if (exists) {
 					Groups.isMember(uid, key, next);
 				} else {
-					next(null, true);
+					next(null, null);
 				}
 			});
 		},
@@ -30,7 +31,7 @@ CategoryTools.privileges = function(cid, uid, callback) {
 				if (exists) {
 					Groups.isMember(uid, key, next);
 				} else {
-					next(null, true);
+					next(null, null);
 				}
 			});
 		},
@@ -40,7 +41,7 @@ CategoryTools.privileges = function(cid, uid, callback) {
 				if (exists) {
 					Groups.isMemberOfGroupList(uid, key, next);
 				} else {
-					next(null, true);
+					next(null, null);
 				}
 			});
 		},
@@ -50,7 +51,7 @@ CategoryTools.privileges = function(cid, uid, callback) {
 				if (exists) {
 					Groups.isMemberOfGroupList(uid, key, next);
 				} else {
-					next(null, true);
+					next(null, null);
 				}
 			});
 		},
@@ -67,12 +68,20 @@ CategoryTools.privileges = function(cid, uid, callback) {
 			"g+r": privileges['g+r'],
 			"g+w": privileges['g+w'],
 			read: (
-				privileges['+r'] || privileges['g+r'] ||
-				privileges.moderator ||	privileges.admin
+				(
+					(privileges['+r'] || privileges['+r'] === null) &&
+					(privileges['g+r'] || privileges['g+r'] === null)
+				) ||
+				privileges.moderator ||
+				privileges.admin
 			),
 			write: (
-				privileges['+w'] || privileges['g+w'] ||
-				privileges.moderator ||	privileges.admin
+				(
+					(privileges['+w'] || privileges['+w'] === null) &&
+					(privileges['g+w'] || privileges['g+w'] === null)
+				) ||
+				privileges.moderator ||
+				privileges.admin
 			),
 			editable: privileges.moderator || privileges.admin,
 			view_deleted: privileges.moderator || privileges.admin,
@@ -82,13 +91,13 @@ CategoryTools.privileges = function(cid, uid, callback) {
 	});
 };
 
-CategoryTools.groupPrivileges = function(cid, gid, callback) {
+CategoryTools.groupPrivileges = function(cid, groupName, callback) {
 	async.parallel({
 		"g+r": function(next) {
 			var	key = 'cid:' + cid + ':privileges:g+r';
 			Groups.exists(key, function(err, exists) {
 				if (exists) {
-					Groups.isMember(gid, key, next);
+					Groups.isMember(groupName, key, next);
 				} else {
 					next(null, false);
 				}
@@ -98,7 +107,7 @@ CategoryTools.groupPrivileges = function(cid, gid, callback) {
 			var	key = 'cid:' + cid + ':privileges:g+w';
 			Groups.exists(key, function(err, exists) {
 				if (exists) {
-					Groups.isMember(gid, key, next);
+					Groups.isMember(groupName, key, next);
 				} else {
 					next(null, false);
 				}
