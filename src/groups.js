@@ -6,6 +6,7 @@
 		Groups.getGidFromName
 		Groups.joinByGroupName
 		Groups.leaveByGroupName
+		Groups.prune
 	*/
 
 	var async = require('async'),
@@ -322,40 +323,4 @@
 			});
 		});
 	};
-
-	// Not checked
-	Groups.prune = function(callback) {
-		// Actually deletes groups (with the deleted flag) from the redis database
-		db.getObjectValues('group:gid', function (err, gids) {
-			var groupsDeleted = 0;
-
-			async.each(gids, function(gid, next) {
-				Groups.get(gid, {}, function(err, groupObj) {
-					if(err) {
-						return next(err);
-					}
-
-					if (parseInt(groupObj.deleted, 10) === 1) {
-
-						db.deleteObjectField('group:gid', groupObj.name, function(err) {
-							db.delete('gid:' + gid, function(err) {
-								groupsDeleted++;
-								next(null);
-							});
-						});
-					} else {
-						next(null);
-					}
-				});
-			}, function(err) {
-
-				if (!err && process.env.NODE_ENV === 'development') {
-					winston.info('[groups.prune] Pruned ' + groupsDeleted + ' deleted groups from Redis');
-				}
-
-				callback(err);
-			});
-		});
-	};
-
 }(module.exports));
