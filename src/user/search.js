@@ -17,10 +17,8 @@ module.exports = function(User) {
 
 			query = query.toLowerCase();
 
-			var	usernames = Object.keys(usernamesHash),
-				uids = [];
-
-			uids = usernames.filter(function(username) {
+			var	usernames = Object.keys(usernamesHash);
+			var uids = usernames.filter(function(username) {
 				return username.toLowerCase().indexOf(query) === 0;
 			})
 			.slice(0, 10)
