@@ -26,7 +26,7 @@ usersController.sortByJoinDate = function(req, res, next) {
 };
 
 function getUsers(set, req, res, next) {
-	user.getUsers(set, 0, 49, function(err, users) {
+	user.getUsersFromSet(set, 0, 49, function(err, users) {
 		if (err) {
 			return next(err);
 		}

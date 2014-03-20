@@ -4,6 +4,7 @@ var	async = require('async'),
 	user = require('../user'),
 	topics = require('../topics'),
 	utils = require('./../../public/src/utils'),
+	meta = require('../meta'),
 	SocketUser = {};
 
 SocketUser.exists = function(socket, data, callback) {
@@ -204,6 +205,10 @@ SocketUser.loadMore = function(socket, data, callback) {
 		return callback(new Error('invalid-data'));
 	}
 
+	if (!socket.uid && !!parseInt(meta.config.privateUserInfo, 10)) {
+		return callback(new Error('not-allowed'));
+	}
+
 	var start = data.after,
 		end = start + 19;
 
@@ -229,7 +234,6 @@ SocketUser.loadMore = function(socket, data, callback) {
 		});
 	});
 };
-
 
 
 SocketUser.setStatus = function(socket, status, callback) {

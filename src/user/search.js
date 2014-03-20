@@ -31,10 +31,11 @@ module.exports = function(User) {
 				return usernamesHash[username];
 			});
 
-			User.getUsersData(uids, function(err, userdata) {
+			User.getUsers(uids, function(err, userdata) {
 				if (err) {
 					return callback(err);
 				}
+
 				var diff = process.hrtime(start);
 				var timing = (diff[0] * 1e3 + diff[1] / 1e6).toFixed(1);
 				callback(null, {timing: timing, users: userdata});
