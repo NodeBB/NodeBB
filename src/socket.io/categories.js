@@ -1,11 +1,24 @@
+'use strict';
+
 var	categories = require('../categories'),
+	categoryTools = require('../categoryTools'),
 	meta = require('./../meta'),
 	user = require('./../user'),
 
 	SocketCategories = {};
 
-SocketCategories.getRecentReplies = function(socket, tid, callback) {
-	categories.getRecentReplies(tid, socket.uid, 4, callback);
+SocketCategories.getRecentReplies = function(socket, cid, callback) {
+	categoryTools.privileges(cid, socket.uid, function(err, privileges) {
+		if (err) {
+			return callback(err);
+		}
+
+		if (privileges && !privileges.read) {
+			return callback(null, []);
+		}
+
+		categories.getRecentReplies(cid, socket.uid, 4, callback);
+	});
 };
 
 SocketCategories.get = function(socket, data, callback) {
