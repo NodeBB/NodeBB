@@ -34,11 +34,11 @@ define(['composer'], function(composer) {
 		});
 
 		postContainer.on('click', '.upvote', function() {
-			toggleVote($(this), '.upvoted', 'posts.upvote');
+			return toggleVote($(this), '.upvoted', 'posts.upvote');
 		});
 
 		postContainer.on('click', '.downvote', function() {
-			toggleVote($(this), '.downvoted', 'posts.downvote');
+			return toggleVote($(this), '.downvoted', 'posts.downvote');
 		});
 
 		postContainer.on('click', '.flag', function() {
