@@ -30,10 +30,10 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 				}
 
 				if (!data) {
-					return app.alertError('There was an error updating your profile!');
+					return app.alertError('There was an error updating the profile!');
 				}
 
-				app.alertSuccess('Your profile has been updated successfully!');
+				app.alertSuccess('Profile has been updated successfully!');
 				if (data.picture) {
 					$('#user-current-picture').attr('src', data.picture);
 					$('#user_label img').attr('src', data.picture);
