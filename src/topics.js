@@ -272,28 +272,25 @@ var async = require('async'),
 	};
 
 	Topics.getTopicWithPosts = function(tid, uid, start, end, callback) {
-		threadTools.exists(tid, function(err, exists) {
-			if (err || !exists) {
+		Topics.getTopicData(tid, function(err, topicData) {
+			if (err || !topicData) {
 				return callback(err || new Error('Topic tid \'' + tid + '\' not found'));
 			}
 
 			async.parallel({
-				topicData : function(next) {
-					Topics.getTopicData(tid, next);
-				},
-				posts : function(next) {
+				posts: function(next) {
 					Topics.getTopicPosts(tid, start, end, uid, false, next);
 				},
-				privileges : function(next) {
+				privileges: function(next) {
 					threadTools.privileges(tid, uid, next);
 				},
-				category : function(next) {
+				category: function(next) {
 					Topics.getCategoryData(tid, next);
 				},
-				pageCount : function(next) {
+				pageCount: function(next) {
 					Topics.getPageCount(tid, uid, next);
 				},
-				threadTools : function(next) {
+				threadTools: function(next) {
 					plugins.fireHook('filter:topic.thread_tools', [], next);
 				}
 			}, function(err, results) {
@@ -301,7 +298,6 @@ var async = require('async'),
 					return callback(err);
 				}
 
-				var topicData = results.topicData;
 				topicData.category = results.category;
 				topicData.posts = results.posts;
 				topicData.thread_tools = results.threadTools;

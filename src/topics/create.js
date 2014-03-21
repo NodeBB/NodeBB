@@ -2,15 +2,12 @@
 'use strict';
 
 var async = require('async'),
-
 	db = require('./../database'),
-
 	utils = require('./../../public/src/utils'),
 	plugins = require('./../plugins'),
 	user = require('./../user'),
 	meta = require('./../meta'),
 	posts = require('./../posts'),
-
 	threadTools = require('./../threadTools'),
 	categoryTools = require('./../categoryTools');
 
