@@ -54,9 +54,7 @@ topicsController.get = function(req, res, next) {
 			});
 		},
 		function (topicData, next) {
-			var lastMod = topicData.timestamp,
-				timestamp,
-				description = '';
+			var description = '';
 
 			if(topicData.posts.length) {
 				description = S(topicData.posts[0].content).stripTags().s;
@@ -67,13 +65,6 @@ topicsController.get = function(req, res, next) {
 			}
 
 			description = validator.escape(description);
-
-			for (var x = 0, numPosts = topicData.posts.length; x < numPosts; x++) {
-				timestamp = parseInt(topicData.posts[x].timestamp, 10);
-				if (timestamp > lastMod) {
-					lastMod = timestamp;
-				}
-			}
 
 			var ogImageUrl = meta.config['brand:logo'];
 			if(ogImageUrl && ogImageUrl.indexOf('http') === -1) {
@@ -119,7 +110,7 @@ topicsController.get = function(req, res, next) {
 				},
 				{
 					property: 'article:modified_time',
-					content: utils.toISOString(lastMod)
+					content: utils.toISOString(topicData.lastposttime)
 				},
 				{
 					property: 'article:section',
@@ -162,6 +153,7 @@ topicsController.get = function(req, res, next) {
 		if (uid) {
 			topics.markAsRead(tid, uid, function(err) {
 				topics.pushUnreadCount(uid);
+				topics.markTopicNotificationsRead(tid, uid);
 			});
 		}
 

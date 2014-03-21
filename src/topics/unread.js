@@ -162,15 +162,21 @@ module.exports = function(Topics) {
 	Topics.markAsRead = function(tid, uid, callback) {
 
 		db.setAdd('tid:' + tid + ':read_by_uid', uid, function(err) {
-			if(callback) {
-				callback(err);
+			if (err) {
+				return callback(err);
 			}
-		});
 
-		Topics.getTopicField(tid, 'cid', function(err, cid) {
-			categories.markAsRead(cid, uid);
-		});
+			Topics.getTopicField(tid, 'cid', function(err, cid) {
+				if (err) {
+					return callback(err);
+				}
 
+				categories.markAsRead(cid, uid, callback);
+			});
+		});
+	};
+
+	Topics.markTopicNotificationsRead = function(tid, uid) {
 		user.notifications.getUnreadByUniqueId(uid, 'topic:' + tid, function(err, nids) {
 			notifications.mark_read_multiple(nids, uid, function() {
 				user.notifications.pushCount(uid);

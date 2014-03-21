@@ -198,8 +198,8 @@ var db = require('./database'),
 		});
 	};
 
-	Categories.markAsRead = function(cid, uid) {
-		db.setAdd('cid:' + cid + ':read_by_uid', uid);
+	Categories.markAsRead = function(cid, uid, callback) {
+		db.setAdd('cid:' + cid + ':read_by_uid', uid, callback);
 	};
 
 	Categories.markAsUnreadForAll = function(cid, callback) {

@@ -47,6 +47,7 @@ module.exports = function(Topics) {
 						return callback(err);
 					}
 
+					Topics.updateTimestamp(tid, Date.now());
 					Topics.getTopicData(tid, callback);
 				});
 

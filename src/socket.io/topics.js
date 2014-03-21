@@ -92,21 +92,26 @@ SocketTopics.markAsRead = function(socket, data) {
 
 	topics.markAsRead(data.tid, data.uid, function(err) {
 		topics.pushUnreadCount(data.uid);
+		topics.markTopicNotificationsRead(data.tid, data.uid);
 	});
 };
 
-SocketTopics.markAllRead = function(socket, data, callback) {
+SocketTopics.markAllRead = function(socket, tids, callback) {
 
-	if (!Array.isArray(data)) {
+	if (!Array.isArray(tids)) {
 		return callback(new Error('invalid-data'));
 	}
 
-	topics.markAllRead(socket.uid, data, function(err) {
+	topics.markAllRead(socket.uid, tids, function(err) {
 		if(err) {
 			return callback(err);
 		}
 
 		index.server.sockets.in('uid_' + socket.uid).emit('event:unread.updateCount', null, 0);
+
+		for (var i=0; i<tids.length; ++i) {
+			topics.markTopicNotificationsRead(tids[i], socket.uid);
+		}
 
 		callback();
 	});
