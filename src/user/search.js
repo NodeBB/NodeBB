@@ -17,10 +17,8 @@ module.exports = function(User) {
 
 			query = query.toLowerCase();
 
-			var	usernames = Object.keys(usernamesHash),
-				uids = [];
-
-			uids = usernames.filter(function(username) {
+			var	usernames = Object.keys(usernamesHash);
+			var uids = usernames.filter(function(username) {
 				return username.toLowerCase().indexOf(query) === 0;
 			})
 			.slice(0, 10)
@@ -31,10 +29,11 @@ module.exports = function(User) {
 				return usernamesHash[username];
 			});
 
-			User.getUsersData(uids, function(err, userdata) {
+			User.getUsers(uids, function(err, userdata) {
 				if (err) {
 					return callback(err);
 				}
+
 				var diff = process.hrtime(start);
 				var timing = (diff[0] * 1e3 + diff[1] / 1e6).toFixed(1);
 				callback(null, {timing: timing, users: userdata});

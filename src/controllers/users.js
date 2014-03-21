@@ -9,7 +9,7 @@ var async = require('async'),
 usersController.getOnlineUsers = function(req, res, next) {
 	var	websockets = require('../socket.io');
 
-	user.getUsers('users:online', 0, 49, function (err, data) {
+	user.getUsersFromSet('users:online', 0, 49, function (err, data) {
 		if(err) {
 			return next(err);
 		}
@@ -72,7 +72,7 @@ usersController.getUsersSortedByJoinDate = function(req, res, next) {
 };
 
 function getUsers(set, res, next) {
-	user.getUsers(set, 0, 49, function (err, data) {
+	user.getUsersFromSet(set, 0, 49, function (err, data) {
 		if (err) {
 			return next(err);
 		}

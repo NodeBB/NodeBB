@@ -142,7 +142,18 @@ var bcrypt = require('bcryptjs'),
 		db.incrObjectFieldBy('user:' + uid, field, -value, callback);
 	};
 
-	User.getUsers = function(set, start, stop, callback) {
+	User.getUsersFromSet = function(set, start, stop, callback) {
+		async.waterfall([
+			function(next) {
+				db.getSortedSetRevRange(set, start, stop, next);
+			},
+			function(uids, next) {
+				User.getUsers(uids, next);
+			}
+		], callback);
+	};
+
+	User.getUsers = function(uids, callback) {
 		function loadUserInfo(user, callback) {
 			if (!user) {
 				return callback(null, user);
@@ -155,13 +166,10 @@ var bcrypt = require('bcryptjs'),
 				function(isAdmin, next) {
 					user.status = !user.status ? 'online' : user.status;
 					user.administrator = isAdmin ? '1':'0';
-					if (set === 'users:online') {
-						return callback(null, user);
-					}
-					db.sortedSetScore('users:online', user.uid, next);
+					db.isSortedSetMember('users:online', user.uid, next);
 				},
-				function(score, next) {
-					if (!score) {
+				function(isMember, next) {
+					if (!isMember) {
 						user.status = 'offline';
 					}
 					next(null, user);
@@ -169,17 +177,13 @@ var bcrypt = require('bcryptjs'),
 			], callback);
 		}
 
-		async.waterfall([
-			function(next) {
-				db.getSortedSetRevRange(set, start, stop, next);
-			},
-			function(uids, next) {
-				User.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'banned', 'postcount', 'reputation'], next);
-			},
-			function(users, next) {
-				async.map(users, loadUserInfo, next);
+		User.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'banned', 'postcount', 'reputation'], function(err, usersData) {
+			if (err) {
+				return callback(err);
 			}
-		], callback);
+
+			async.map(usersData, loadUserInfo, callback);
+		});
 	};
 
 	User.createGravatarURLFromEmail = function(email) {

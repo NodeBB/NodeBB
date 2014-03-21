@@ -63,19 +63,20 @@ define(function() {
 							templates['users'].parse({users:[]});
 							var html = templates.prepare(templates['users'].blocks['users']).parse({
 								users: data.users
-							}),
-								userListEl = $('#users-container');
+							});
 
-							userListEl.html(html);
+							translator.translate(html, function(translated) {
+								$('#users-container').html(translated);
 
 
-							if (data && data.users.length === 0) {
-								$('#user-notfound-notify').html('User not found!');
-								$('#user-notfound-notify').parent().addClass('btn-warning label-warning');
-							} else {
-								$('#user-notfound-notify').html(data.users.length + ' user' + (data.users.length > 1 ? 's' : '') + ' found! Search took ' + data.timing + ' ms.');
-								$('#user-notfound-notify').parent().addClass('btn-success label-success');
-							}
+								if (data && data.users.length === 0) {
+									$('#user-notfound-notify').html('User not found!');
+									$('#user-notfound-notify').parent().addClass('btn-warning label-warning');
+								} else {
+									$('#user-notfound-notify').html(data.users.length + ' user' + (data.users.length > 1 ? 's' : '') + ' found! Search took ' + data.timing + ' ms.');
+									$('#user-notfound-notify').parent().addClass('btn-success label-success');
+								}
+							});
 						});
 					});
 				}, 500); //replace this with global throttling function/constant
