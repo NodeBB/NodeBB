@@ -336,7 +336,7 @@ define(['taskbar'], function(taskbar) {
 
 				uploadProgress: function(event, position, total, percent) {
 					for(var i=0; i < files.length; ++i) {
-						updateTextArea(files[i].name, 'uploading' + percent + '%');
+						updateTextArea(files[i].name, 'uploading ' + percent + '%');
 					}
 				},
 
