@@ -131,7 +131,7 @@ middleware.checkAccountPermissions = function(req, res, next) {
 			}
 
 			if(isAdmin) {
-				next();
+				return next();
 			}
 
 			if (res.locals.isAPI) {

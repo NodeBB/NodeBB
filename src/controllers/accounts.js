@@ -74,10 +74,6 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 				userData.age = Math.floor((new Date().getTime() - new Date(userData.birthday).getTime()) / 31536000000);
 			}
 
-			function canSeeEmail() {
-				return ;
-			}
-
 			if (!(isAdmin || self || (userData.email && userSettings.showemail))) {
 				userData.email = "";
 			}
