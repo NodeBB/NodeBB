@@ -73,18 +73,6 @@ SocketAdmin.fireEvent = function(socket, data, callback) {
 	index.server.sockets.emit(data.name, data.payload || {});
 };
 
-/* Topics */
-SocketAdmin.topics.getMore = function(socket, data, callback) {
-	if(!data) {
-		return callback(new Error('invalid data'));
-	}
-
-	var start = parseInt(data.after, 10),
-		end = start + parseInt(data.limit, 10);
-
-	topics.getAllTopics(start, end, callback);
-};
-
 /* User */
 SocketAdmin.user.makeAdmin = function(socket, theirid) {
 	admin.user.makeAdmin(socket.uid, theirid, socket);
