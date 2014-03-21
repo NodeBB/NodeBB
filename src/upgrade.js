@@ -437,7 +437,6 @@ Upgrade.upgrade = function(callback) {
 								// Fix its' name, if it is wrong for whatever reason
 								db.getObjectField('group:' + name, 'name', function(err, groupName) {
 									if (name && groupName && name !== groupName) {
-										console.log('I am renaming', groupName, 'to', name);
 										async.series([
 											function(cb) {
 												db.setObjectField('group:' + name, 'name', name, cb);
@@ -495,7 +494,6 @@ Upgrade.upgrade = function(callback) {
 									async.each(groups, function(group, next) {
 										// If deleted, empty, or invalidly named hidden group, delete
 										if (group.deleted || group.memberCount === 0 || (group.hidden && !isValidHiddenGroup.test(group.name))) {
-											// console.log('destroying', group.name);
 											Groups.destroy(group.name, next);
 										} else {
 											next();
