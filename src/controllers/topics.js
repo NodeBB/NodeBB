@@ -20,17 +20,17 @@ topicsController.get = function(req, res, next) {
 
 	async.waterfall([
 		function(next) {
-			threadTools.privileges(tid, ((req.user) ? req.user.uid || 0 : 0), function(err, userPrivileges) {
-				if (!err) {
-					if (!userPrivileges.read) {
-						next(new Error('not-enough-privileges'));
-					} else {
-						privileges = userPrivileges;
-						next();
-					}
-				} else {
-					next(err);
+			threadTools.privileges(tid, uid, function(err, userPrivileges) {
+				if (err) {
+					return next(err);
 				}
+
+				if (!userPrivileges.read) {
+					return next(new Error('not-enough-privileges'));
+				}
+
+				privileges = userPrivileges;
+				next();
 			});
 		},
 		function (next) {
@@ -45,7 +45,7 @@ topicsController.get = function(req, res, next) {
 				topics.getTopicWithPosts(tid, uid, start, end, function (err, topicData) {
 					if (topicData) {
 						if (parseInt(topicData.deleted, 10) === 1 && parseInt(topicData.expose_tools, 10) === 0) {
-							return next(new Error('Topic deleted'), null);
+							return next(new Error('Topic deleted'));
 						}
 						topicData.currentPage = page;
 					}
@@ -55,19 +55,18 @@ topicsController.get = function(req, res, next) {
 		},
 		function (topicData, next) {
 			var lastMod = topicData.timestamp,
-				description = (function() {
-					var	content = '';
-					if(topicData.posts.length) {
-						content = S(topicData.posts[0].content).stripTags().s;
-					}
+				timestamp,
+				description = '';
 
-					if (content.length > 255) {
-						content = content.substr(0, 255) + '...';
-					}
+			if(topicData.posts.length) {
+				description = S(topicData.posts[0].content).stripTags().s;
+			}
 
-					return validator.escape(content);
-				})(),
-				timestamp;
+			if (description.length > 255) {
+				description = description.substr(0, 255) + '...';
+			}
+
+			description = validator.escape(description);
 
 			for (var x = 0, numPosts = topicData.posts.length; x < numPosts; x++) {
 				timestamp = parseInt(topicData.posts[x].timestamp, 10);
