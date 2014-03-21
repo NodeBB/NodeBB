@@ -1,3 +1,5 @@
+'use strict';
+
 var path = require('path'),
 	async = require('async'),
 	sm = require('sitemap'),
@@ -28,6 +30,10 @@ var path = require('path'),
 				function(next) {
 					var categoryUrls = [];
 					categories.getAllCategories(0, function(err, data) {
+						if (err) {
+							return next(err);
+						}
+
 						data.categories.forEach(function(category) {
 							if (!category.disabled) {
 								categoryUrls.push({
@@ -43,16 +49,17 @@ var path = require('path'),
 				},
 				function(next) {
 					var topicUrls = [];
-					topics.getAllTopics(0, -1, function(err, topics) {
-						topics.forEach(function(topic) {
+					topics.getTopicsFromSet(0, 'topics:recent', 0, -1, function(err, data) {
+						if (err) {
+							return next(err);
+						}
 
-							if (parseInt(topic.deleted, 10) !== 1) {
-								topicUrls.push({
-									url: path.join('/topic', topic.slug),
-									changefreq: 'daily',
-									priority: '0.6'
-								});
-							}
+						data.topics.forEach(function(topic) {
+							topicUrls.push({
+								url: path.join('/topic', topic.slug),
+								changefreq: 'daily',
+								priority: '0.6'
+							});
 						});
 
 						next(null, topicUrls);
@@ -63,13 +70,13 @@ var path = require('path'),
 					returnUrls = returnUrls.concat(data[0]).concat(data[1]);
 				}
 
-				callback(null, returnUrls);
+				callback(err, returnUrls);
 			});
 		},
 		render: function(callback) {
 			async.parallel([sitemap.getStaticUrls, sitemap.getDynamicUrls], function(err, urls) {
-				var urls = urls[0].concat(urls[1]),
-					map = sm.createSitemap({
+				urls = urls[0].concat(urls[1]);
+				var map = sm.createSitemap({
 						hostname: nconf.get('url'),
 						cacheTime: 600000,
 						urls: urls
@@ -79,6 +86,6 @@ var path = require('path'),
 					});
 			});
 		}
-	}
+	};
 
 module.exports = sitemap;
