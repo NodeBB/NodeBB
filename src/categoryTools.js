@@ -17,7 +17,6 @@ CategoryTools.privileges = function(cid, uid, callback) {
 		"+r": function(next) {
 			var	key = 'cid:' + cid + ':privileges:+r';
 			Groups.exists(key, function(err, exists) {
-				console.log(key, exists);
 				if (exists) {
 					Groups.isMember(uid, key, next);
 				} else {

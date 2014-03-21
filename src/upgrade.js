@@ -19,7 +19,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 2, 19, 20);
+	latestSchema = Date.UTC(2014, 2, 21);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -335,7 +335,7 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = Date.UTC(2014, 2, 19, 20);
+			thisSchemaDate = Date.UTC(2014, 2, 21);
 
 			if (schemaDate < thisSchemaDate) {
 				db.getObject('group:gid', function(err, mapping) {
