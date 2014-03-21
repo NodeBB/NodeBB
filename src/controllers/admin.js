@@ -69,16 +69,6 @@ adminController.database.get = function(req, res, next) {
 	});
 };
 
-// todo: deprecate this seemingly useless view
-adminController.topics.get = function(req, res, next) {
-	topics.getAllTopics(0, 19, function (err, topics) {
-		res.render('admin/topics', {
-			topics: topics,
-			notopics: topics.length === 0
-		});
-	});
-};
-
 adminController.events.get = function(req, res, next) {
 	events.getLog(function(err, data) {
 		if(err || !data) {
