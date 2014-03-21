@@ -5,7 +5,7 @@ var	assert = require('assert'),
 	Groups = require('../src/groups'),
 	User = require('../src/user');
 
-describe('Groups Library', function() {
+describe('Groups', function() {
 	before(function(done) {
 		async.parallel([
 			function(next) {
@@ -209,6 +209,42 @@ describe('Groups Library', function() {
 
 				Groups.isMember(1, 'Test', function(err, isMember) {
 					assert.strictEqual(true, isMember);
+
+					done();
+				});
+			});
+		});
+	});
+
+	describe('.leave()', function() {
+		it('should remove a user from a group', function(done) {
+			Groups.leave('Test', 1, function(err) {
+				if (err) return done(err);
+
+				Groups.isMember(1, 'Test', function(err, isMember) {
+					assert.strictEqual(false, isMember);
+
+					done();
+				});
+			});
+		});
+	});
+
+	describe('.leaveAllGroups()', function() {
+		it('should remove a user from all groups', function(done) {
+			Groups.leaveAllGroups(1, function(err) {
+				if (err) return done(err);
+
+				var	groups = ['Test', 'Hidden', 'foo'];
+				async.every(groups, function(group, next) {
+					Groups.isMember(1, group, function(err, isMember) {
+						if (err) done(err);
+						else {
+							next(!isMember);
+						}
+					});
+				}, function(result) {
+					assert(result);
 
 					done();
 				});
