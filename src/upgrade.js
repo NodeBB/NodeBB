@@ -492,8 +492,8 @@ Upgrade.upgrade = function(callback) {
 							function(next) {
 								Groups.list({ showAllGroups: true }, function(err, groups) {
 									async.each(groups, function(group, next) {
-										// If deleted, empty, or invalidly named hidden group, delete
-										if (group.deleted || group.memberCount === 0 || (group.hidden && !isValidHiddenGroup.test(group.name))) {
+										// If deleted, (hidden & empty), or invalidly named hidden group, delete
+										if (group.deleted || (group.hidden && group.memberCount === 0) || (group.hidden && !isValidHiddenGroup.test(group.name))) {
 											Groups.destroy(group.name, next);
 										} else {
 											next();
