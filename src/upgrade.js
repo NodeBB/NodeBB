@@ -433,10 +433,11 @@ Upgrade.upgrade = function(callback) {
 							function(next) {
 								Groups.list({ showAllGroups: true }, function(err, groups) {
 									async.each(groups, function(group, next) {
-										// If empty, delete group
 										if (group.memberCount === 0) {
+											// If empty, delete group
 											Groups.destroy(group.name, next);
 										} else if (group.hidden && !isValidHiddenGroup.test(group.name)) {
+											// If invalidly named hidden group, delete
 											Groups.destroy(group.name, next);
 										} else {
 											next();

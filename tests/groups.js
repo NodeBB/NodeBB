@@ -184,6 +184,10 @@ describe('Groups', function() {
 	});
 
 	describe('.destroy()', function() {
+		before(function(done) {
+			Groups.join('foo', 1, done);
+		});
+
 		it('should destroy a group', function(done) {
 			Groups.destroy('foo', function(err) {
 				if (err) return done(err);
@@ -194,6 +198,16 @@ describe('Groups', function() {
 
 					done();
 				});
+			});
+		});
+
+		it('should also remove the members set', function(done) {
+			db.exists('group:foo:members', function(err, exists) {
+				if (err) return done(err);
+
+				assert.strictEqual(false, exists);
+
+				done();
 			});
 		});
 	});
@@ -235,7 +249,7 @@ describe('Groups', function() {
 			Groups.leaveAllGroups(1, function(err) {
 				if (err) return done(err);
 
-				var	groups = ['Test', 'Hidden', 'foo'];
+				var	groups = ['Test', 'Hidden'];
 				async.every(groups, function(group, next) {
 					Groups.isMember(1, group, function(err, isMember) {
 						if (err) done(err);

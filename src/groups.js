@@ -178,6 +178,9 @@
 			},
 			function(next) {
 				db.setRemove('groups', groupName, next);
+			},
+			function(next) {
+				db.delete('group:' + groupName + ':members', next);
 			}
 		], callback);
 	};
