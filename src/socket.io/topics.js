@@ -7,6 +7,7 @@ var topics = require('../topics'),
 	index = require('./index'),
 	user = require('../user'),
 	db = require('./../database'),
+	meta = require('./../meta'),
 
 	async = require('async'),
 
@@ -30,7 +31,7 @@ SocketTopics.post = function(socket, data, callback) {
 
 	topics.post({uid: socket.uid, title: data.title, content: data.content, cid: data.category_id, thumb: data.topic_thumb}, function(err, result) {
 		if(err) {
-		 	if (err.message === 'title-too-short') {
+			if (err.message === 'title-too-short') {
 				module.parent.exports.emitAlert(socket, 'Title too short', 'Please enter a longer title. At least ' + meta.config.minimumTitleLength + ' characters.');
 			} else if (err.message === 'title-too-long') {
 				module.parent.exports.emitAlert(socket, 'Title too long', 'Please enter a shorter title. Titles can\'t be longer than ' + meta.config.maximumTitleLength + ' characters.');
@@ -130,7 +131,7 @@ SocketTopics.markAsUnreadForAll = function(socket, tid, callback) {
 			callback();
 		});
 	});
-}
+};
 
 function doTopicAction(action, socket, tid, callback) {
 	if(!tid) {
@@ -150,7 +151,7 @@ function doTopicAction(action, socket, tid, callback) {
 			threadTools[action](tid, socket.uid, callback);
 		}
 	});
-};
+}
 
 SocketTopics.delete = function(socket, tid, callback) {
 	doTopicAction('delete', socket, tid, callback);
@@ -255,7 +256,7 @@ SocketTopics.follow = function(socket, tid, callback) {
 };
 
 SocketTopics.loadMore = function(socket, data, callback) {
-	if(!data || !data.tid || !(parseInt(data.after, 10) >= 0)) {
+	if(!data || !data.tid || !data.after || parseInt(data.after, 10) < 0) {
 		return callback(new Error('invalid data'));
 	}
 
