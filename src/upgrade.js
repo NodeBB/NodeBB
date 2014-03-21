@@ -350,37 +350,57 @@ Upgrade.upgrade = function(callback) {
 
 					var	names = Object.keys(mapping),
 						reverseMapping = {},
-						isGroupList = /^cid:[0-9]+:privileges:g\+[rw]$/;
+						isGroupList = /^cid:[0-9]+:privileges:g\+[rw]$/,
+						gid;
 
 					for(var groupName in mapping) {
-						if (mapping.hasOwnProperty(groupName)) {
-							reverseMapping[parseInt(mapping[groupName], 10)] = groupName;
+						gid = mapping[groupName];
+						if (mapping.hasOwnProperty(groupName) && !reverseMapping.hasOwnProperty(gid)) {
+							reverseMapping[parseInt(gid, 10)] = groupName;
 						}
 					}
 
-					async.each(names, function(name, next) {
+					async.eachSeries(names, function(name, next) {
 						async.series([
 							function(next) {
 								// Remove the gid from the hash
-								db.deleteObjectField('gid:' + mapping[name], 'gid', next);
+								db.exists('gid:' + mapping[name], function(err, exists) {
+									if (exists) {
+										db.deleteObjectField('gid:' + mapping[name], 'gid', next);
+									} else {
+										next();
+									}
+								});
 							},
 							function(next) {
 								// Rename gid hash to groupName hash
-								db.rename('gid:' + mapping[name], 'group:' + name, next);
+								db.exists('gid:' + mapping[name], function(err, exists) {
+									if (exists) {
+										db.rename('gid:' + mapping[name], 'group:' + name, next);
+									} else {
+										next();
+									}
+								});
 							},
 							function(next) {
 								// Move member lists over
-								db.exists('gid:' + mapping[name] + ':members', function(err, exists) {
+								db.exists('gid:' + mapping[name], function(err, dstExists) {
 									if (err) {
 										return next(err);
 									}
 
-									if (exists) {
-										db.rename('gid:' + mapping[name] + ':members', 'group:' + name + ':members', next);
-									} else {
-										// No members, do nothing, they'll be removed later
-										next();
-									}
+									db.exists('gid:' + mapping[name] + ':members', function(err, srcExists) {
+										if (err) {
+											return next(err);
+										}
+
+										if (srcExists && !dstExists) {
+											db.rename('gid:' + mapping[name] + ':members', 'group:' + name + ':members', next);
+										} else {
+											// No members or group memberlist collision: do nothing, they'll be removed later
+											next();
+										}
+									});
 								});
 							},
 							function(next) {
@@ -389,19 +409,59 @@ Upgrade.upgrade = function(callback) {
 							},
 							function(next) {
 								// If this group contained gids, map the gids to group names
-								if (isGroupList.test(name)) {
+								// Also check if the mapping and reverseMapping still work, if not, delete this group
+								if (isGroupList.test(name) && name === reverseMapping[mapping[name]]) {
 									db.getSetMembers('group:' + name + ':members', function(err, gids) {
 										async.each(gids, function(gid, next) {
 											db.setRemove('group:' + name + ':members', gid);
 											db.setAdd('group:' + name + ':members', reverseMapping[gid], next);
 										}, next);
 									});
+								} else if (name !== reverseMapping[mapping[name]]) {
+									async.parallel([
+										function(next) {
+											db.delete('group:' + name, next);
+										},
+										function(next) {
+											db.delete('group:' + name + ':members', next);
+										},
+										function(next) {
+											db.setRemove('groups', name, next);
+										}
+									], next);
 								} else {
 									next();
 								}
+							},
+							function(next) {
+								// Fix its' name, if it is wrong for whatever reason
+								db.getObjectField('group:' + name, 'name', function(err, groupName) {
+									if (name && groupName && name !== groupName) {
+										console.log('I am renaming', groupName, 'to', name);
+										async.series([
+											function(cb) {
+												db.setObjectField('group:' + name, 'name', name, cb);
+											},
+											function(cb) {
+												db.setRemove('groups', groupName, cb);
+											},
+											function(cb) {
+												db.setAdd('groups', name, cb);
+											}
+										], next);
+									} else {
+										next();
+									}
+								});
 							}
 						], next);
 					}, function(err) {
+						if (err) {
+							winston.error('[2014/3/21] Problem removing gids and pruning groups.');
+							winston.error(err.message);
+							return next();
+						}
+
 						// Clean-up
 						var	isValidHiddenGroup = /^cid:[0-9]+:privileges:(g)?\+[rw]$/;
 						async.series([
@@ -433,11 +493,9 @@ Upgrade.upgrade = function(callback) {
 							function(next) {
 								Groups.list({ showAllGroups: true }, function(err, groups) {
 									async.each(groups, function(group, next) {
-										if (group.memberCount === 0) {
-											// If empty, delete group
-											Groups.destroy(group.name, next);
-										} else if (group.hidden && !isValidHiddenGroup.test(group.name)) {
-											// If invalidly named hidden group, delete
+										// If deleted, empty, or invalidly named hidden group, delete
+										if (group.deleted || group.memberCount === 0 || (group.hidden && !isValidHiddenGroup.test(group.name))) {
+											// console.log('destroying', group.name);
 											Groups.destroy(group.name, next);
 										} else {
 											next();
@@ -447,17 +505,17 @@ Upgrade.upgrade = function(callback) {
 							}
 						], function(err) {
 							if (err) {
-								winston.error('[2014/3/19] Problem removing gids and pruning groups.');
+								winston.error('[2014/3/21] Problem removing gids and pruning groups.');
 								next();
 							} else {
-								winston.info('[2014/3/19] Removing gids and pruning groups');
+								winston.info('[2014/3/21] Removing gids and pruning groups');
 								Upgrade.update(thisSchemaDate, next);
 							}
 						});
 					});
 				});
 			} else {
-				winston.info('[2014/3/19] Removing gids and pruning groups - skipped');
+				winston.info('[2014/3/21] Removing gids and pruning groups - skipped');
 				next();
 			}
 		}
