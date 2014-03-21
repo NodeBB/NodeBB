@@ -112,16 +112,18 @@ var async = require('async'),
 	}
 
 	Favourites.upvote = function(pid, room_id, uid, socket) {
-		Favourites.unvote(pid, room_id, uid, socket, function(err) {
-			vote('upvote', false, pid, room_id, uid, socket);
-		});
+		toggleVote('upvote', pid, room_id, uid, socket);
 	};
 
 	Favourites.downvote = function(pid, room_id, uid, socket) {
-		Favourites.unvote(pid, room_id, uid, socket, function(err) {
-			vote('downvote', false, pid, room_id, uid, socket);
-		});
+		toggleVote('downvote', pid, room_id, uid, socket);
 	};
+
+	function toggleVote(type, pid, room_id, uid, socket) {
+		Favourites.unvote(pid, room_id, uid, socket, function(err) {
+			vote(type, false, pid, room_id, uid, socket);
+		});
+	}
 
 	Favourites.unvote = function(pid, room_id, uid, socket, callback) {
 		var	websockets = require('./socket.io');
@@ -247,7 +249,7 @@ var async = require('async'),
 	Favourites.getFavouritedUidsByPids = function(pids, callback) {
 		async.map(pids, function(pid, next) {
 			db.getSetMembers('pid:' + pid + ':users_favourited', next);
-		}, callback)
+		}, callback);
 	};
 
 }(exports));
