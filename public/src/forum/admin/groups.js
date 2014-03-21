@@ -65,45 +65,46 @@ define(function() {
 				groupName = el.parents('li[data-groupname]').attr('data-groupname');
 
 			switch (action) {
-				case 'delete':
-					bootbox.confirm('Are you sure you wish to delete this group?', function(confirm) {
-						if (confirm) {
-							socket.emit('admin.groups.delete', groupName, function(err, data) {
-								if(err) {
-									return app.alertError(err.message);
-								}
-
-								ajaxify.go('admin/groups');
-							});
-						}
-					});
-					break;
-				case 'members':
-					socket.emit('admin.groups.get', groupName, function(err, groupObj) {
-						var formEl = detailsModal.find('form'),
-							nameEl = formEl.find('#change-group-name'),
-							descEl = formEl.find('#change-group-desc'),
-							numMembers = groupObj.members.length,
-							x;
-
-						nameEl.val(groupObj.name);
-						descEl.val(groupObj.description);
-
-						if (numMembers > 0) {
-							groupMembersEl.empty();
-							for (x = 0; x < numMembers; x++) {
-								var memberIcon = $('<li />')
-									.attr('data-uid', groupObj.members[x].uid)
-									.append($('<img />').attr('src', groupObj.members[x].picture))
-									.append($('<span />').html(groupObj.members[x].username));
-								groupMembersEl.append(memberIcon);
+			case 'delete':
+				bootbox.confirm('Are you sure you wish to delete this group?', function(confirm) {
+					if (confirm) {
+						socket.emit('admin.groups.delete', groupName, function(err, data) {
+							if(err) {
+								return app.alertError(err.message);
 							}
-						}
 
-						detailsModal.attr('data-groupname', groupObj.name);
-						detailsModal.modal('show');
-					});
-					break;
+							ajaxify.go('admin/groups');
+						});
+					}
+				});
+				break;
+			case 'members':
+				socket.emit('admin.groups.get', groupName, function(err, groupObj) {
+					console.log(groupObj);
+					var formEl = detailsModal.find('form'),
+						nameEl = formEl.find('#change-group-name'),
+						descEl = formEl.find('#change-group-desc'),
+						numMembers = groupObj.members.length,
+						x;
+
+					nameEl.val(groupObj.name);
+					descEl.val(groupObj.description);
+
+					if (numMembers > 0) {
+						groupMembersEl.empty();
+						for (x = 0; x < numMembers; x++) {
+							var memberIcon = $('<li />')
+								.attr('data-uid', groupObj.members[x].uid)
+								.append($('<img />').attr('src', groupObj.members[x].picture))
+								.append($('<span />').html(groupObj.members[x].username));
+							groupMembersEl.append(memberIcon);
+						}
+					}
+
+					detailsModal.attr('data-groupname', groupObj.name);
+					detailsModal.modal('show');
+				});
+				break;
 			}
 		});
 
@@ -169,7 +170,7 @@ define(function() {
 			var uid = $(this).attr('data-uid'),
 				groupName = detailsModal.attr('data-groupname');
 
-			socket.emit('admin.groups.get', gid, function(err, groupObj){
+			socket.emit('admin.groups.get', groupName, function(err, groupObj){
 				if (!err){
 					bootbox.confirm('Are you sure you want to remove this user?', function(confirm) {
 						if (confirm){
