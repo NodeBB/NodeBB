@@ -62,13 +62,13 @@ define(function() {
 		listEl.on('click', 'button[data-action]', function() {
 			var el = $(this),
 				action = el.attr('data-action'),
-				gid = el.parents('li[data-gid]').attr('data-gid');
+				groupName = el.parents('li[data-groupname]').attr('data-groupname');
 
 			switch (action) {
 				case 'delete':
 					bootbox.confirm('Are you sure you wish to delete this group?', function(confirm) {
 						if (confirm) {
-							socket.emit('admin.groups.delete', gid, function(err, data) {
+							socket.emit('admin.groups.delete', groupName, function(err, data) {
 								if(err) {
 									return app.alertError(err.message);
 								}
@@ -79,7 +79,7 @@ define(function() {
 					});
 					break;
 				case 'members':
-					socket.emit('admin.groups.get', gid, function(err, groupObj) {
+					socket.emit('admin.groups.get', groupName, function(err, groupObj) {
 						var formEl = detailsModal.find('form'),
 							nameEl = formEl.find('#change-group-name'),
 							descEl = formEl.find('#change-group-desc'),
@@ -100,7 +100,7 @@ define(function() {
 							}
 						}
 
-						detailsModal.attr('data-gid', groupObj.gid);
+						detailsModal.attr('data-groupname', groupObj.name);
 						detailsModal.modal('show');
 					});
 					break;
@@ -146,7 +146,7 @@ define(function() {
 		searchResults.on('click', 'li[data-uid]', function() {
 			var userLabel = $(this),
 				uid = parseInt(userLabel.attr('data-uid')),
-				gid = detailsModal.attr('data-gid'),
+				groupName = detailsModal.attr('data-groupname'),
 				members = [];
 
 			groupMembersEl.find('li[data-uid]').each(function() {
@@ -155,7 +155,7 @@ define(function() {
 
 			if (members.indexOf(uid) === -1) {
 				socket.emit('admin.groups.join', {
-					gid: gid,
+					groupName: groupName,
 					uid: uid
 				}, function(err, data) {
 					if (!err) {
@@ -167,14 +167,14 @@ define(function() {
 
 		groupMembersEl.on('click', 'li[data-uid]', function() {
 			var uid = $(this).attr('data-uid'),
-				gid = detailsModal.attr('data-gid');
+				groupName = detailsModal.attr('data-groupname');
 
 			socket.emit('admin.groups.get', gid, function(err, groupObj){
 				if (!err){
 					bootbox.confirm('Are you sure you want to remove this user?', function(confirm) {
 						if (confirm){
 							socket.emit('admin.groups.leave', {
-								gid: gid,
+								groupName: groupName,
 								uid: uid
 							}, function(err, data) {
 								if (!err) {
@@ -191,10 +191,10 @@ define(function() {
 			var formEl = detailsModal.find('form'),
 				nameEl = formEl.find('#change-group-name'),
 				descEl = formEl.find('#change-group-desc'),
-				gid = detailsModal.attr('data-gid');
+				groupName = detailsModal.attr('data-groupname');
 
 			socket.emit('admin.groups.update', {
-				gid: gid,
+				groupName: groupName,
 				values: {
 					name: nameEl.val(),
 					description: descEl.val()

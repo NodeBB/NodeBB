@@ -358,12 +358,12 @@ SocketAdmin.groups.create = function(socket, data, callback) {
 	});
 };
 
-SocketAdmin.groups.delete = function(socket, gid, callback) {
-	groups.destroy(gid, callback);
+SocketAdmin.groups.delete = function(socket, groupName, callback) {
+	groups.destroy(groupName, callback);
 };
 
-SocketAdmin.groups.get = function(socket, gid, callback) {
-	groups.get(gid, {
+SocketAdmin.groups.get = function(socket, groupName, callback) {
+	groups.get(groupName, {
 		expand: true
 	}, function(err, groupObj) {
 		callback(err, groupObj || undefined);
@@ -375,7 +375,7 @@ SocketAdmin.groups.join = function(socket, data, callback) {
 		return callback(new Error('invalid data'));
 	}
 
-	groups.join(data.gid, data.uid, callback);
+	groups.join(data.groupName, data.uid, callback);
 };
 
 SocketAdmin.groups.leave = function(socket, data, callback) {
@@ -383,7 +383,7 @@ SocketAdmin.groups.leave = function(socket, data, callback) {
 		return callback(new Error('invalid data'));
 	}
 
-	groups.leave(data.gid, data.uid, callback);
+	groups.leave(data.groupName, data.uid, callback);
 };
 
 SocketAdmin.groups.update = function(socket, data, callback) {
@@ -391,7 +391,7 @@ SocketAdmin.groups.update = function(socket, data, callback) {
 		return callback(new Error('invalid data'));
 	}
 
-	groups.update(data.gid, data.values, function(err) {
+	groups.update(data.groupName, data.values, function(err) {
 		callback(err ? err.message : null);
 	});
 };
