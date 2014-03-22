@@ -204,11 +204,18 @@ module.exports = function(Topics) {
 			function(next) {
 				Topics.markAsRead(tid, uid, next);
 			},
-			function(next) {
+			function(result, next) {
 				Topics.pushUnreadCount();
 				posts.addUserInfoToPost(postData, next);
 			},
-			function(postData,next) {
+			function(postData, next) {
+				Topics.getTopicFields(tid, ['tid', 'title', 'slug'], next);
+			},
+			function(topicData, next) {
+				postData.topic = topicData;
+				next();
+			},
+			function(next) {
 				posts.getPidIndex(postData.pid, next);
 			},
 			function(index, next) {
