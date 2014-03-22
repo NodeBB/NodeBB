@@ -149,7 +149,7 @@ Controllers.search = function(req, res, next) {
 };
 
 Controllers.reset = function(req, res, next) {
-	res.render('reset', {
+	res.render(req.params.code ? 'reset_code' : 'reset', {
 		reset_code: req.params.code ? req.params.code : null
 	});
 };
