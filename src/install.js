@@ -291,7 +291,7 @@ var async = require('async'),
 					// Check if an administrator needs to be created
 					var Groups = require('./groups');
 					Groups.get('administrators', {}, function (err, groupObj) {
-						if (groupObj.memberCount > 0) {
+						if (!err && groupObj && groupObj.memberCount > 0) {
 							winston.info('Administrator found, skipping Admin setup');
 							next();
 						} else {
