@@ -290,14 +290,13 @@ var async = require('async'),
 				function (next) {
 					// Check if an administrator needs to be created
 					var Groups = require('./groups');
-						Groups.get('administrators', {}, function (err, groupObj) {
-							if (groupObj.memberCount > 0) {
-								winston.info('Administrator found, skipping Admin setup');
-								next();
-							} else {
-								install.createAdmin(next);
-							}
-						});
+					Groups.get('administrators', {}, function (err, groupObj) {
+						if (groupObj.memberCount > 0) {
+							winston.info('Administrator found, skipping Admin setup');
+							next();
+						} else {
+							install.createAdmin(next);
+						}
 					});
 				},
 				function (next) {
