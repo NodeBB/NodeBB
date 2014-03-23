@@ -71,6 +71,11 @@ topicsController.get = function(req, res, next) {
 				ogImageUrl = nconf.get('url') + ogImageUrl;
 			}
 
+			var userPicture = '';
+			if (topicData.posts.length && topicData.posts[0].user) {
+				userPicture = topicData.posts[0].user.picture;
+			}
+
 			res.locals.metaTags = [
 				{
 					name: "title",
@@ -102,7 +107,7 @@ topicsController.get = function(req, res, next) {
 				},
 				{
 					property: 'og:image',
-					content: topicData.posts.length?topicData.posts[0].picture:''
+					content: userPicture
 				},
 				{
 					property: "article:published_time",
