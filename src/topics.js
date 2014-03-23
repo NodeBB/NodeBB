@@ -380,25 +380,27 @@ var async = require('async'),
 	};
 
 	Topics.getUids = function(tid, callback) {
-		var uids = {};
 		Topics.getPids(tid, function(err, pids) {
-
-			function getUid(pid, next) {
-				posts.getPostField(pid, 'uid', function(err, uid) {
-					if (err) {
-						return next(err);
-					}
-					uids[uid] = 1;
-					next();
-				});
+			if (err) {
+				return callback(err);
 			}
 
-			async.each(pids, getUid, function(err) {
+			var keys = pids.map(function(pid) {
+				return 'post:' + pid;
+			});
+
+			db.getObjectsFields(keys, ['uid'], function(err, data) {
 				if (err) {
 					return callback(err);
 				}
 
-				callback(null, Object.keys(uids));
+				var uids = data.map(function(data) {
+					return data.uid;
+				}).filter(function(uid, pos, array) {
+					return array.indexOf(uid) === pos;
+				});
+
+				callback(null, uids);
 			});
 		});
 	};
