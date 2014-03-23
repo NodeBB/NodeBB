@@ -73,7 +73,8 @@ define(['composer'], function(composer) {
 			}
 		}
 
-		var username = getUserName(button) + ' ';
+		var username = getUserName(button);
+		username += username ? ' ' : '';
 
 		composer.newReply(tid, getPid(button), topicName, selectionText.length > 0 ? selectionText + '\n\n' + username : '' + username);
 	}
