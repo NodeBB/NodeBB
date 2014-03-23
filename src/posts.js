@@ -284,8 +284,12 @@ var db = require('./database'),
 
 			async.parallel([
 				function(next) {
-					Posts.addUserInfoToPost(post, function() {
-						next(null, post);
+					user.getUserFields(post.uid, ['username', 'userslug', 'picture'], function(err, userData) {
+						if (err) {
+							return next(err);
+						}
+						post.user = userData;
+						next();
 					});
 				},
 				function(next) {
