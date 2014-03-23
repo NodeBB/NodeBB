@@ -247,7 +247,7 @@ var db = require('./database'),
 
 			for (var i=0; i<categories.length; ++i) {
 				if (categories[i]) {
-					categories[i].backgroundImage = categories[i].image ? 'url(' + nconf.get('relative_path') + categories[i].image + ')' : '';
+					categories[i].backgroundImage = categories[i].image ? nconf.get('relative_path') + categories[i].image : '';
 					categories[i].disabled = categories[i].disabled ? parseInt(categories[i].disabled, 10) !== 0 : false;
 				}
 			}
