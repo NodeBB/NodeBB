@@ -256,11 +256,14 @@ SocketTopics.follow = function(socket, tid, callback) {
 };
 
 SocketTopics.loadMore = function(socket, data, callback) {
-	if(!data || !data.tid || !data.after || parseInt(data.after, 10) < 0) {
+	if(!data || !data.tid || !(parseInt(data.after, 10) >= 0))  {
 		return callback(new Error('invalid data'));
 	}
 
 	user.getSettings(socket.uid, function(err, settings) {
+		if(err) {
+			return callback(err);
+		}
 
 		var start = parseInt(data.after, 10),
 			end = start + settings.postsPerPage - 1;
