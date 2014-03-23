@@ -57,7 +57,7 @@ topicsController.get = function(req, res, next) {
 			var description = '';
 
 			if(topicData.posts.length) {
-				description = S(topicData.posts[0].content).stripTags().s;
+				description = S(topicData.posts[0].content).stripTags().decodeHTMLEntities().s;
 			}
 
 			if (description.length > 255) {
