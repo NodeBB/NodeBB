@@ -1,151 +1,162 @@
+'use strict';
+
+/* globals define, app, utils, socket, config */
+
+
 define(function() {
-	var Register = {};
+	var Register = {},
+		validationError = false,
+		successIcon = '<i class="fa fa-check"></i>';
+
+	function showError(element, msg) {
+		element.html(msg);
+		element.parent()
+			.removeClass('alert-success')
+			.addClass('alert-danger');
+		element.show();
+		validationError = true;
+	}
+
+	function showSuccess(element, msg) {
+		element.html(msg);
+		element.parent()
+			.removeClass('alert-danger')
+			.addClass('alert-success');
+		element.show();
+	}
+
+	function validateEmail(email) {
+		var email_notify = $('#email-notify');
+
+		if (!email) {
+			validationError = true;
+			return;
+		}
+
+		if (!utils.isEmailValid(email)) {
+			showError(email_notify, 'Invalid email address.');
+			return;
+		}
+
+		socket.emit('user.emailExists', {
+			email: email
+		}, function(err, exists) {
+			if(err) {
+				return app.alertError(err.message);
+			}
+
+			if (exists) {
+				showError(email_notify, 'Email address already taken!');
+			} else {
+				showSuccess(email_notify, successIcon);
+			}
+		});
+	}
+
+	function validateUsername(username) {
+		var username_notify = $('#username-notify');
+
+		if (!username) {
+			validationError = true;
+			return;
+		}
+
+		if (username.length < config.minimumUsernameLength) {
+			showError(username_notify, 'Username too short!');
+		} else if (username.length > config.maximumUsernameLength) {
+			showError(username_notify, 'Username too long!');
+		} else if (!utils.isUserNameValid(username) || !utils.slugify(username)) {
+			showError(username_notify, 'Invalid username!');
+		} else {
+			socket.emit('user.exists', {
+				username: username
+			}, function(err, exists) {
+				if(err) {
+					return app.alertError(err.message);
+				}
+
+				if (exists) {
+					showError(username_notify, 'Username already taken!');
+				} else {
+					showSuccess(username_notify, successIcon);
+				}
+			});
+		}
+	}
+
+	function validatePassword(password, password_confirm) {
+		if (!password) {
+			validationError = true;
+			return;
+		}
+		var password_notify = $('#password-notify'),
+			password_confirm_notify = $('#password-confirm-notify');
+
+		if (password.length < config.minimumPasswordLength) {
+			showError(password_notify, 'Password too short!');
+		} else if (!utils.isPasswordValid(password)) {
+			showError(password_notify, 'Invalid password!');
+		} else {
+			showSuccess(password_notify, successIcon);
+		}
+
+		if (password !== password_confirm && password_confirm !== '') {
+			showError(password_confirm_notify, 'Passwords must match!');
+		}
+	}
+
+	function validatePasswordConfirm(password, password_confirm) {
+		var password_notify = $('#password-notify'),
+			password_confirm_notify = $('#password-confirm-notify');
+
+		if (!password || password_notify.hasClass('alert-error')) {
+			return;
+		}
+
+		if (password !== password_confirm) {
+			showError(password_confirm_notify, 'Passwords must match!');
+		} else {
+			showSuccess(password_confirm_notify, successIcon);
+		}
+	}
 
 	Register.init = function() {
-		var username = $('#username'),
+		var email = $('#email'),
+			username = $('#username'),
 			password = $('#password'),
 			password_confirm = $('#password-confirm'),
 			register = $('#register'),
-			emailEl = $('#email'),
-			username_notify = $('#username-notify'),
-			email_notify = $('#email-notify'),
-			password_notify = $('#password-notify'),
-			password_confirm_notify = $('#password-confirm-notify'),
-			agreeTerms = $('#agree-terms'),
-			validationError = false,
-			successIcon = '<i class="fa fa-check"></i>';
+			agreeTerms = $('#agree-terms');
 
 		$('#referrer').val(app.previousUrl);
 
-		function showError(element, msg) {
-			element.html(msg);
-			element.parent()
-				.removeClass('alert-success')
-				.addClass('alert-danger');
-			element.show();
-			validationError = true;
-		}
-
-		function showSuccess(element, msg) {
-			element.html(msg);
-			element.parent()
-				.removeClass('alert-danger')
-				.addClass('alert-success');
-			element.show();
-		}
-
-		function validateEmail() {
-			if (!emailEl.val()) {
-				validationError = true;
-				return;
-			}
-
-			if (!utils.isEmailValid(emailEl.val())) {
-				showError(email_notify, 'Invalid email address.');
-			} else {
-				socket.emit('user.emailExists', {
-					email: emailEl.val()
-				}, function(err, exists) {
-					if(err) {
-						return app.alertError(err.message);
-					}
-
-					if (exists) {
-						showError(email_notify, 'Email address already taken!');
-					} else {
-						showSuccess(email_notify, successIcon);
-					}
-				});
-			}
-		}
-
-		emailEl.on('blur', function() {
-			validateEmail();
+		email.on('blur', function() {
+			validateEmail(email.val());
 		});
-
-		function validateUsername() {
-			if (!username.val()) {
-				validationError = true;
-				return;
-			}
-
-			if (username.val().length < config.minimumUsernameLength) {
-				showError(username_notify, 'Username too short!');
-			} else if (username.val().length > config.maximumUsernameLength) {
-				showError(username_notify, 'Username too long!');
-			} else if (!utils.isUserNameValid(username.val()) || !utils.slugify(username.val())) {
-				showError(username_notify, 'Invalid username!');
-			} else {
-				socket.emit('user.exists', {
-					username: username.val()
-				}, function(err, exists) {
-					if(err) {
-						return app.alertError(err.message);
-					}
-
-					if (exists) {
-						showError(username_notify, 'Username already taken!');
-					} else {
-						showSuccess(username_notify, successIcon);
-					}
-				});
-			}
-		}
 
 		username.on('keyup', function() {
 			$('#yourUsername').html(this.value.length > 0 ? this.value : 'username');
 		});
 
 		username.on('blur', function() {
-			validateUsername();
+			validateUsername(username.val());
 		});
 
-		function validatePassword() {
-			if (!password.val()) {
-				validationError = true;
-				return;
-			}
-
-			if (password.val().length < config.minimumPasswordLength) {
-				showError(password_notify, 'Password too short!');
-			} else if (!utils.isPasswordValid(password.val())) {
-				showError(password_notify, 'Invalid password!');
-			} else {
-				showSuccess(password_notify, successIcon);
-			}
-
-			if (password.val() !== password_confirm.val() && password_confirm.val() !== '') {
-				showError(password_confirm_notify, 'Passwords must match!');
-			}
-		}
-
-		$(password).on('blur', function() {
-			validatePassword();
+		password.on('blur', function() {
+			validatePassword(password.val(), password_confirm.val());
 		});
 
-		function validatePasswordConfirm() {
-			if (!password.val() || password_notify.hasClass('alert-error')) {
-				return;
-			}
-
-			if (password.val() !== password_confirm.val()) {
-				showError(password_confirm_notify, 'Passwords must match!');
-			} else {
-				showSuccess(password_confirm_notify, successIcon);
-			}
-		}
-
-		$(password_confirm).on('blur', function() {
-			validatePasswordConfirm();
+		password_confirm.on('blur', function() {
+			validatePasswordConfirm(password.val(), password_confirm.val());
 		});
 
 		function validateForm() {
 			validationError = false;
 
-			validateEmail();
-			validateUsername();
-			validatePassword();
-			validatePasswordConfirm();
+			validateEmail(email.val());
+			validateUsername(username.val());
+			validatePassword(password.val(), password_confirm.val());
+			validatePasswordConfirm(password.val(), password_confirm.val());
 
 			return validationError;
 		}

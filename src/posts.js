@@ -9,6 +9,7 @@ var db = require('./database'),
 	categories = require('./categories'),
 	plugins = require('./plugins'),
 	meta = require('./meta'),
+	emitter = require('./emitter'),
 
 	async = require('async'),
 	path = require('path'),
@@ -29,61 +30,47 @@ var db = require('./database'),
 			toPid = data.toPid;
 
 		if (uid === null) {
-			return callback(new Error('invalid-user'), null);
+			return callback(new Error('invalid-user'));
 		}
+
+		var timestamp = Date.now(),
+			postData;
 
 		async.waterfall([
 			function(next) {
-				topics.isLocked(tid, next);
-			},
-			function(locked, next) {
-				if(locked) {
-					return next(new Error('topic-locked'));
-				}
-
 				db.incrObjectField('global', 'nextPid', next);
 			},
 			function(pid, next) {
-				plugins.fireHook('filter:post.save', content, function(err, newContent) {
-					next(err, pid, newContent);
-				});
-			},
-			function(pid, newContent, next) {
-				var timestamp = Date.now(),
-					postData = {
-						'pid': pid,
-						'uid': uid,
-						'tid': tid,
-						'content': newContent,
-						'timestamp': timestamp,
-						'reputation': '0',
-						'votes': '0',
-						'editor': '',
-						'edited': 0,
-						'deleted': 0
-					};
+
+				postData = {
+					'pid': pid,
+					'uid': uid,
+					'tid': tid,
+					'content': content,
+					'timestamp': timestamp,
+					'reputation': 0,
+					'votes': 0,
+					'editor': '',
+					'edited': 0,
+					'deleted': 0
+				};
 
 				if (toPid) {
 					postData.toPid = toPid;
 				}
 
-				db.setObject('post:' + pid, postData, function(err) {
-					if(err) {
-						return next(err);
-					}
-
-					db.sortedSetAdd('posts:pid', timestamp, pid);
-
-					db.incrObjectField('global', 'postCount');
-
-					topics.onNewPostMade(tid, pid, timestamp);
-					categories.onNewPostMade(uid, tid, pid, timestamp);
-					user.onNewPostMade(uid, tid, pid, timestamp);
-
-					next(null, postData);
-				});
+				plugins.fireHook('filter:post.save', postData, next);
 			},
 			function(postData, next) {
+				db.setObject('post:' + postData.pid, postData, next);
+			},
+			function(result, next) {
+				db.sortedSetAdd('posts:pid', timestamp, postData.pid);
+
+				db.incrObjectField('global', 'postCount');
+
+				emitter.emit('event:newpost', postData);
+
 				plugins.fireHook('filter:post.get', postData, next);
 			},
 			function(postData, next) {
@@ -103,36 +90,34 @@ var db = require('./database'),
 	};
 
 	Posts.getPostsByTid = function(tid, start, end, reverse, callback) {
-		if (typeof reverse === 'function') {
-			callback = reverse;
-			reverse = false;
-		}
-
 		db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange']('tid:' + tid + ':posts', start, end, function(err, pids) {
 			if(err) {
 				return callback(err);
 			}
 
-			if(!pids.length) {
+			if(!Array.isArray(pids) || !pids.length) {
 				return callback(null, []);
 			}
 
-			plugins.fireHook('filter:post.getTopic', pids, function(err, posts) {
+			Posts.getPostsByPids(pids, function(err, posts) {
 				if(err) {
 					return callback(err);
 				}
 
-				if(!posts.length) {
+				if(!Array.isArray(posts) || !posts.length) {
 					return callback(null, []);
 				}
 
-
-				Posts.getPostsByPids(pids, function(err, posts) {
+				plugins.fireHook('filter:post.getPosts', {tid: tid, posts: posts}, function(err, data) {
 					if(err) {
 						return callback(err);
 					}
-					plugins.fireHook('action:post.gotTopic', posts);
-					callback(null, posts);
+
+					if(!data || !Array.isArray(data.posts)) {
+						return callback(null, []);
+					}
+
+					callback(null, data.posts);
 				});
 			});
 		});
@@ -211,132 +196,171 @@ var db = require('./database'),
 		});
 	};
 
+	Posts.getRecentPosts = function(uid, start, stop, term, callback) {
+		var terms = {
+			day: 86400000,
+			week: 604800000,
+			month: 2592000000
+		};
+
+		var since = terms.day;
+		if (terms[term]) {
+			since = terms[term];
+		}
+
+		var count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
+
+		db.getSortedSetRevRangeByScore(['posts:pid', '+inf', Date.now() - since, 'LIMIT', start, count], function(err, pids) {
+			if(err) {
+				return callback(err);
+			}
+
+			async.filter(pids, function(pid, next) {
+				postTools.privileges(pid, uid, function(err, privileges) {
+					next(!err && privileges.read);
+				});
+			}, function(pids) {
+				Posts.getPostSummaryByPids(pids, true, callback);
+			});
+		});
+	};
+
 	Posts.addUserInfoToPost = function(post, callback) {
 		user.getUserFields(post.uid, ['username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned'], function(err, userData) {
 			if (err) {
 				return callback(err);
 			}
 
-			postTools.parseSignature(userData.signature, function(err, signature) {
-				if(err) {
+			post.user = {
+				username: userData.username || 'anonymous',
+				userslug: userData.userslug || '',
+				reputation: userData.reputation || 0,
+				postcount: userData.postcount || 0,
+				banned: parseInt(userData.banned, 10) === 1,
+				picture: userData.picture || gravatar.url('', {}, true)
+			};
+
+			for (var info in customUserInfo) {
+				if (customUserInfo.hasOwnProperty(info)) {
+					post.user[info] = userData[info] || customUserInfo[info];
+				}
+			}
+
+			async.parallel({
+				signature: function(next) {
+					if (parseInt(meta.config.disableSignatures, 10) !== 1) {
+						return postTools.parseSignature(userData.signature, next);
+					}
+					next();
+				},
+				editor: function(next) {
+					if (!post.editor) {
+						return next();
+					}
+					user.getUserFields(post.editor, ['username', 'userslug'], next);
+				},
+				customProfileInfo: function(next) {
+					plugins.fireHook('filter:posts.custom_profile_info', {profile: [], uid: post.uid, pid: post.pid}, next);
+				}
+			}, function(err, results) {
+				if (err) {
 					return callback(err);
 				}
 
-				post.username = userData.username || 'anonymous';
-				post.userslug = userData.userslug || '';
-				post.user_rep = userData.reputation || 0;
-				post.user_postcount = userData.postcount || 0;
-				post.user_banned = parseInt(userData.banned, 10) === 1;
-				post.picture = userData.picture || gravatar.url('', {}, true);
+				post.user.signature = results.signature;
+				post.editor = results.editor;
+				post.custom_profile_info = results.profile;
 
-				if(meta.config.disableSignatures === undefined || parseInt(meta.config.disableSignatures, 10) === 0) {
-					post.signature = signature;
-				}
-
-				for (var info in customUserInfo) {
-					if (customUserInfo.hasOwnProperty(info)) {
-						post[info] = userData[info] || customUserInfo[info];
-					}
-				}
-
-				plugins.fireHook('filter:posts.custom_profile_info', {profile: [], uid: post.uid, pid: post.pid}, function(err, profile_info) {
-					if(err) {
-						return callback(err);
-					}
-					post.custom_profile_info = profile_info.profile;
-
-					if (post.editor !== '') {
-						user.getUserFields(post.editor, ['username', 'userslug'], function(err, editorData) {
-							if (err) {
-								return callback(err);
-							}
-
-							post.editorname = editorData.username;
-							post.editorslug = editorData.userslug;
-							callback(null,  post);
-						});
-					} else {
-						callback(null, post);
-					}
-				});
+				callback(null, post);
 			});
 		});
 	};
 
 	Posts.getPostSummaryByPids = function(pids, stripTags, callback) {
 
-		function getPostSummary(pid, callback) {
+		function getPostSummary(post, callback) {
 
-			async.waterfall([
+			post.relativeTime = utils.toISOString(post.timestamp);
+
+			async.parallel([
 				function(next) {
-					Posts.getPostFields(pid, ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'], function(err, postData) {
-						if(err) {
+					user.getUserFields(post.uid, ['username', 'userslug', 'picture'], function(err, userData) {
+						if (err) {
 							return next(err);
 						}
-
-						if (parseInt(postData.deleted, 10) === 1) {
-							return callback(null);
-						} else {
-							postData.relativeTime = utils.toISOString(postData.timestamp);
-							next(null, postData);
-						}
+						post.user = userData;
+						next();
 					});
 				},
-				function(postData, next) {
-					Posts.addUserInfoToPost(postData, function() {
-						next(null, postData);
-					});
-				},
-				function(postData, next) {
-					topics.getTopicFields(postData.tid, ['title', 'cid', 'slug', 'deleted'], function(err, topicData) {
+				function(next) {
+					topics.getTopicFields(post.tid, ['title', 'cid', 'slug', 'deleted'], function(err, topicData) {
 						if (err) {
-							return callback(err);
+							return next(err);
 						} else if (parseInt(topicData.deleted, 10) === 1) {
-							return callback(null);
+							return callback();
 						}
+
 						categories.getCategoryFields(topicData.cid, ['name', 'icon', 'slug'], function(err, categoryData) {
-							postData.categoryName = categoryData.name;
-							postData.categoryIcon = categoryData.icon;
-							postData.categorySlug = categoryData.slug;
-							postData.title = validator.escape(topicData.title);
-							postData.topicSlug = topicData.slug;
-							next(null, postData);
+							if (err) {
+								return next(err);
+							}
+
+							post.category = categoryData;
+							topicData.title = validator.escape(topicData.title);
+							post.topic = topicData;
+							next();
 						});
 					});
 				},
-				function(postData, next) {
-					if (!postData.content) {
-						return next(null, postData);
+				function(next) {
+					if (!post.content) {
+						return next();
 					}
 
-					postTools.parse(postData.content, function(err, content) {
+					postTools.parse(post.content, function(err, content) {
 						if(err) {
 							return next(err);
 						}
 
 						if(stripTags) {
 							var s = S(content);
-							postData.content = s.stripTags.apply(s, utils.getTagsExcept(['img', 'i'])).s;
+							post.content = s.stripTags.apply(s, utils.getTagsExcept(['img', 'i', 'p'])).s;
 						} else {
-							postData.content = content;
+							post.content = content;
 						}
 
-						next(null, postData);
+						next();
 					});
 				}
-			], callback);
+			], function(err) {
+				callback(err, post);
+			});
 		}
 
-		async.map(pids, getPostSummary, function(err, posts) {
-			if(err) {
+		var keys = pids.map(function(pid) {
+			return 'post:' + pid;
+		});
+
+		db.getObjectsFields(keys, ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'], function(err, posts) {
+			if (err) {
 				return callback(err);
 			}
 
 			posts = posts.filter(function(p) {
-				return p;
+				return !!p || parseInt(p.deleted, 10) !== 1;
 			});
 
-			callback(null, posts);
+			async.map(posts, getPostSummary, function(err, posts) {
+				if (err) {
+					return callback(err);
+				}
+
+				posts = posts.filter(function(post) {
+					return !!post;
+				});
+
+				return callback(null, posts);
+			});
 		});
 	};
 
@@ -395,63 +419,12 @@ var db = require('./database'),
 			}
 
 			topics.getTopicField(tid, 'cid', function(err, cid) {
-				if(err) {
-					return callback(err);
+				if(err || !cid) {
+					return callback(err || new Error('invalid-category-id'));
 				}
-
-				if (cid) {
-					callback(null, cid);
-				} else {
-					callback(new Error('invalid-category-id'));
-				}
+				callback(null, cid);
 			});
 		});
-	};
-
-	Posts.uploadPostImage = function(image, callback) {
-
-		if(plugins.hasListeners('filter:uploadImage')) {
-			plugins.fireHook('filter:uploadImage', image, callback);
-		} else {
-
-			if (meta.config.allowFileUploads) {
-				Posts.uploadPostFile(image, callback);
-			} else {
-				callback(new Error('Uploads are disabled!'));
-			}
-		}
-	};
-
-	Posts.uploadPostFile = function(file, callback) {
-
-		if(plugins.hasListeners('filter:uploadFile')) {
-			plugins.fireHook('filter:uploadFile', file, callback);
-		} else {
-
-			if(!meta.config.allowFileUploads) {
-				return callback(new Error('File uploads are not allowed'));
-			}
-
-			if(!file) {
-				return callback(new Error('invalid file'));
-			}
-
-			if(file.size > parseInt(meta.config.maximumFileSize, 10) * 1024) {
-				return callback(new Error('File too big'));
-			}
-
-			var filename = 'upload-' + utils.generateUUID() + path.extname(file.name);
-			require('./file').saveFileToLocal(filename, file.path, function(err, upload) {
-				if(err) {
-					return callback(err);
-				}
-
-				callback(null, {
-					url: upload.url,
-					name: file.name
-				});
-			});
-		}
 	};
 
 	Posts.getFavourites = function(uid, start, end, callback) {

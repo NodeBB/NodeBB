@@ -1,3 +1,6 @@
+"use strict";
+/* global define, config, templates, app, ajaxify, socket, translator */
+
 define(['composer', 'forum/pagination'], function(composer, pagination) {
 	var Category = {},
 		loadingMoreTopics = false;
@@ -162,45 +165,52 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 	Category.onNewTopic = function(data) {
 		$(window).trigger('filter:categories.new_topic', data);
-
-		var html = templates.prepare(templates['category'].blocks['topics']).parse({
-			topics: [data]
-		});
-
-		translator.translate(html, function(translatedHTML) {
-			var topic = $(translatedHTML),
-				container = $('#topics-container'),
-				topics = $('#topics-container').children('.category-item'),
-				numTopics = topics.length;
-
-			$('#topics-container, .category-sidebar').removeClass('hidden');
-			$('#category-no-topics').remove();
-
-			if (numTopics > 0) {
-				for (var x = 0; x < numTopics; x++) {
-					if ($(topics[x]).find('.fa-thumb-tack').length) {
-						if(x === numTopics - 1) {
-							topic.insertAfter(topics[x]);
-						}
-						continue;
-					}
-					topic.insertBefore(topics[x]);
-					break;
-				}
-			} else {
-				container.append(topic);
-			}
-
-			topic.hide().fadeIn('slow');
-
-			socket.emit('categories.getPageCount', templates.get('category_id'), function(err, newPageCount) {
-				pagination.recreatePaginationLinks(newPageCount);
+		templates.preload_template('category', function() {
+			templates.category.parse({topics:[]});
+			var html = templates.prepare(templates.category.blocks.topics).parse({
+				topics: [data]
 			});
 
-			topic.find('span.timeago').timeago();
-			app.createUserTooltips();
+			translator.translate(html, function(translatedHTML) {
+				var topic = $(translatedHTML),
+					container = $('#topics-container'),
+					topics = $('#topics-container').children('.category-item'),
+					numTopics = topics.length;
 
-			$(window).trigger('action:categories.new_topic.loaded');
+				$('#topics-container, .category-sidebar').removeClass('hidden');
+
+				var noTopicsWarning = $('#category-no-topics');
+				if (noTopicsWarning.length) {
+					noTopicsWarning.remove();
+					ajaxify.renderWidgets('category', window.location.pathname.slice(1));
+				}
+
+				if (numTopics > 0) {
+					for (var x = 0; x < numTopics; x++) {
+						if ($(topics[x]).find('.fa-thumb-tack').length) {
+							if(x === numTopics - 1) {
+								topic.insertAfter(topics[x]);
+							}
+							continue;
+						}
+						topic.insertBefore(topics[x]);
+						break;
+					}
+				} else {
+					container.append(topic);
+				}
+
+				topic.hide().fadeIn('slow');
+
+				socket.emit('categories.getPageCount', templates.get('category_id'), function(err, newPageCount) {
+					pagination.recreatePaginationLinks(newPageCount);
+				});
+
+				topic.find('span.timeago').timeago();
+				app.createUserTooltips();
+
+				$(window).trigger('action:categories.new_topic.loaded');
+			});
 		});
 	};
 
@@ -239,36 +249,39 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 		findInsertionPoint();
 
-		var html = templates.prepare(templates['category'].blocks['topics']).parse({
-			topics: topics
-		});
+		templates.preload_template('category', function() {
+			templates.category.parse({topics:[]});
+			var html = templates.prepare(templates.category.blocks.topics).parse({
+				topics: topics
+			});
 
-		translator.translate(html, function(translatedHTML) {
-			var container = $('#topics-container'),
-				html = $(translatedHTML);
+			translator.translate(html, function(translatedHTML) {
+				var container = $('#topics-container'),
+					html = $(translatedHTML);
 
-			$('#topics-container, .category-sidebar').removeClass('hidden');
-			$('#category-no-topics').remove();
+				$('#topics-container, .category-sidebar').removeClass('hidden');
+				$('#category-no-topics').remove();
 
-			if(config.usePagination) {
-				container.empty().append(html);
-			} else {
-				if(after) {
-					html.insertAfter(after);
-				} else if(before) {
-					html.insertBefore(before);
+				if(config.usePagination) {
+					container.empty().append(html);
 				} else {
-					container.append(html);
+					if(after) {
+						html.insertAfter(after);
+					} else if(before) {
+						html.insertBefore(before);
+					} else {
+						container.append(html);
+					}
 				}
-			}
 
-			html.find('span.timeago').timeago();
-			app.createUserTooltips();
-			app.makeNumbersHumanReadable(html.find('.human-readable-number'));
+				html.find('span.timeago').timeago();
+				app.createUserTooltips();
+				app.makeNumbersHumanReadable(html.find('.human-readable-number'));
 
-			if (typeof callback === 'function') {
-				callback(topics);
-			}
+				if (typeof callback === 'function') {
+					callback(topics);
+				}
+			});
 		});
 	};
 

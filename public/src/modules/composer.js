@@ -1,19 +1,33 @@
+'use strict';
+
+/* globals define, socket, app, config, ajaxify, utils, translator, templates, bootbox */
+
 define(['taskbar'], function(taskbar) {
 	var composer = {
 		active: undefined,
-		posts: {}
+		posts: {},
+		saving: undefined
 	};
 
+	function initialise() {
+		socket.on('event:composer.ping', function(post_uuid) {
+			if (composer.active === post_uuid) {
+				socket.emit('modules.composer.pingActive', post_uuid);
+			}
+		});
+	}
+
+	initialise();
+
 	function maybeParse(response) {
-		if (typeof response == 'string')  {
+		if (typeof response === 'string')  {
 			try {
 				return $.parseJSON(response);
 			} catch (e) {
-				return {status: 500, message: 'Something went wrong while parsing server response'}
+				return {status: 500, message: 'Something went wrong while parsing server response'};
 			}
 		}
 		return response;
-
 	}
 
 	function resetInputFile($el) {
@@ -38,8 +52,79 @@ define(['taskbar'], function(taskbar) {
 		return true;
 	}
 
+	function alreadyOpen(post) {
+		// If a composer for the same cid/tid/pid is already open, return the uuid, else return bool false
+		var	type, id;
+
+		if (post.hasOwnProperty('cid')) {
+			type = 'cid';
+		} else if (post.hasOwnProperty('tid')) {
+			type = 'tid';
+		} else if (post.hasOwnProperty('pid')) {
+			type = 'pid';
+		}
+
+		id = post[type];
+
+		// Find a match
+		for(var uuid in composer.posts) {
+			if (composer.posts[uuid].hasOwnProperty(type) && id === composer.posts[uuid][type]) {
+				return uuid;
+			}
+		}
+
+		// No matches...
+		return false;
+	}
+
+	function canSave() {
+		// Check for localStorage support
+		if (composer.saving) {
+			return composer.saving;
+		}
+
+		try {
+			localStorage.setItem('test', 'test');
+			localStorage.removeItem('test');
+			composer.saving = true;
+			return true;
+		} catch(e) {
+			composer.saving = false;
+			return false;
+		}
+	}
+
+	function getDraft(save_id) {
+		return localStorage.getItem(save_id);
+	}
+
+	function saveDraft(post_uuid) {
+		var postData = composer.posts[post_uuid],
+			postContainer = $('#cmp-uuid-' + post_uuid),
+			raw;
+
+		if (canSave() && postData && postData.save_id && postContainer.length) {
+			raw = postContainer.find('textarea').val();
+			if (raw.length) {
+				localStorage.setItem(postData.save_id, raw);
+			} else {
+				removeDraft(postData.save_id);
+			}
+		}
+	}
+
+	function removeDraft(save_id) {
+		return localStorage.removeItem(save_id);
+	}
+
 	function push(post) {
-		var uuid = utils.generateUUID();
+		var uuid = utils.generateUUID(),
+			existingUUID = alreadyOpen(post);
+
+		if (existingUUID) {
+			taskbar.updateActive(existingUUID);
+			return composer.load(existingUUID);
+		}
 
 		translator.translate('[[topic:composer.new_topic]]', function(newTopicStr) {
 			taskbar.push('composer', uuid, {
@@ -47,6 +132,17 @@ define(['taskbar'], function(taskbar) {
 				icon: post.picture
 			});
 		});
+
+		// Construct a save_id
+		if (0 !== parseInt(app.uid, 10)) {
+			if (post.hasOwnProperty('cid')) {
+				post.save_id = ['composer', app.uid, 'cid', post.cid].join(':');
+			} else if (post.hasOwnProperty('tid')) {
+				post.save_id = ['composer', app.uid, 'tid', post.tid].join(':');
+			} else if (post.hasOwnProperty('pid')) {
+				post.save_id = ['composer', app.uid, 'pid', post.pid].join(':');
+			}
+		}
 
 		composer.posts[uuid] = post;
 		composer.posts[uuid].uploadsInProgress = [];
@@ -134,8 +230,8 @@ define(['taskbar'], function(taskbar) {
 			if(files.length) {
 				if (window.FormData) {
 					fd = new FormData();
-					for (var i = 0, file; file = files[i]; i++) {
-						fd.append('files[]', file, file.name);
+					for (var i = 0; i < files.length; ++i) {
+						fd.append('files[]', files[i], files[i].name);
 					}
 				}
 
@@ -180,6 +276,10 @@ define(['taskbar'], function(taskbar) {
 		});
 	}
 
+	function escapeRegExp(text) {
+		return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+	}
+
 	function uploadContentFiles(params) {
 		var files = params.files,
 			post_uuid = params.post_uuid,
@@ -206,10 +306,15 @@ define(['taskbar'], function(taskbar) {
 		textarea.val(text);
 
 		uploadForm.off('submit').submit(function() {
+			function updateTextArea(filename, text) {
+				var current = textarea.val();
+				var re = new RegExp(escapeRegExp(filename) + "]\\([^)]+\\)", 'g');
+				textarea.val(current.replace(re, filename + '](' + text + ')'));
+			}
 
 			$(this).find('#postUploadCsrf').val($('#csrf_token').val());
 
-			if(formData) {
+			if (formData) {
 				formData.append('_csrf', $('#csrf_token').val());
 			}
 
@@ -224,15 +329,14 @@ define(['taskbar'], function(taskbar) {
 					xhr = maybeParse(xhr);
 
 					app.alertError('Error uploading file!\nStatus : ' + xhr.status + '\nMessage : ' + xhr.responseText);
-					if (typeof callback == 'function')
+					if (typeof callback === 'function') {
 						callback(xhr);
+					}
 				},
 
 				uploadProgress: function(event, position, total, percent) {
-					var current = textarea.val();
 					for(var i=0; i < files.length; ++i) {
-						var re = new RegExp(files[i].name + "]\\([^)]+\\)", 'g');
-						textarea.val(current.replace(re, files[i].name+'](uploading ' + percent + '%)'));
+						updateTextArea(files[i].name, 'uploading ' + percent + '%');
 					}
 				},
 
@@ -241,15 +345,14 @@ define(['taskbar'], function(taskbar) {
 
 					if(uploads && uploads.length) {
 						for(var i=0; i<uploads.length; ++i) {
-							var current = textarea.val();
-							var re = new RegExp(uploads[i].name + "]\\([^)]+\\)", 'g');
-							textarea.val(current.replace(re, uploads[i].name + '](' + uploads[i].url + ')'));
+							updateTextArea(uploads[i].name, uploads[i].url);
 						}
 					}
 
 					textarea.focus();
-					if (typeof callback == 'function')
+					if (typeof callback === 'function') {
 						callback(null, uploads);
+					}
 				},
 
 				complete: function() {
@@ -292,15 +395,17 @@ define(['taskbar'], function(taskbar) {
 					xhr = maybeParse(xhr);
 
 					app.alertError('Error uploading file!\nStatus : ' + xhr.status + '\nMessage : ' + xhr.responseText);
-					if (typeof callback == 'function')
+					if (typeof callback === 'function') {
 						callback(xhr);
+					}
 				},
 				success: function(uploads) {
 					uploads = maybeParse(uploads);
 
 					postContainer.find('#topic-thumb-url').val((uploads[0] || {}).url || '').trigger('change');
-					if (typeof callback == 'function')
+					if (typeof callback === 'function') {
 						callback(null, uploads);
+					}
 				},
 				complete: function() {
 					composer.posts[post_uuid].uploadsInProgress.pop();
@@ -380,12 +485,22 @@ define(['taskbar'], function(taskbar) {
 		} else {
 			composer.createNewComposer(post_uuid);
 		}
+
+		var	postData = composer.posts[post_uuid];
+		if (postData.tid) {
+			// Replying to a topic
+			socket.emit('modules.composer.register', {
+				uuid: post_uuid,
+				tid: postData.tid,
+				uid: app.uid
+			});
+		}
 	};
 
 	composer.createNewComposer = function(post_uuid) {
 
 		templates.preload_template('composer', function() {
-			var composerTemplate = templates['composer'].parse({
+			var composerTemplate = templates.composer.parse({
 				allowTopicsThumbnail: config.allowTopicsThumbnail && composer.posts[post_uuid].isMain && config.hasImageUploadPlugin
 			});
 
@@ -408,24 +523,26 @@ define(['taskbar'], function(taskbar) {
 					titleEl = postContainer.find('.title'),
 					bodyEl = postContainer.find('textarea'),
 					thumbToggleBtnEl = postContainer.find('.topic-thumb-toggle-btn'),
+					draft = getDraft(postData.save_id),
 
 					toggleThumbEls = function(){
 						if (config.allowTopicsThumbnail && composer.posts[post_uuid].isMain) {
 							var url = composer.posts[post_uuid].topic_thumb || '';
 							postContainer.find('input#topic-thumb-url').val(url);
 							postContainer.find('img.topic-thumb-preview').attr('src', url);
-							if (url)
+							if (url) {
 								postContainer.find('.topic-thumb-clear-btn').removeClass('hide');
+							}
 							thumbToggleBtnEl.removeClass('hide');
 						}
 					};
 
-				if (parseInt(postData.tid) > 0) {
+				if (parseInt(postData.tid, 10) > 0) {
 					translator.translate('[[topic:composer.replying_to]]: ' + postData.title, function(newTitle) {
 						titleEl.val(newTitle);
 					});
 					titleEl.prop('disabled', true);
-				} else if (parseInt(postData.pid) > 0) {
+				} else if (parseInt(postData.pid, 10) > 0) {
 					titleEl.val(postData.title);
 					titleEl.prop('disabled', true);
 					socket.emit('modules.composer.editCheck', postData.pid, function(err, editCheck) {
@@ -440,7 +557,11 @@ define(['taskbar'], function(taskbar) {
 					toggleThumbEls();
 				}
 
-				bodyEl.val(postData.body);
+				if (draft) {
+					bodyEl.val(draft);
+				} else {
+					bodyEl.val(postData.body);
+				}
 
 				thumbToggleBtnEl.on('click', function() {
 					var container = postContainer.find('.topic-thumb-container');
@@ -504,7 +625,8 @@ define(['taskbar'], function(taskbar) {
 						cursorEnd = postContentEl.val().length,
 						selectionStart = postContentEl[0].selectionStart,
 						selectionEnd = postContentEl[0].selectionEnd,
-						selectionLength = selectionEnd - selectionStart;
+						selectionLength = selectionEnd - selectionStart,
+						cursorPos;
 
 
 					function insertIntoInput(element, value) {
@@ -517,7 +639,7 @@ define(['taskbar'], function(taskbar) {
 						case 'fa fa-bold':
 							if (selectionStart === selectionEnd) {
 								// Nothing selected
-								var	cursorPos = postContentEl[0].selectionStart;
+								cursorPos = postContentEl[0].selectionStart;
 								insertIntoInput(postContentEl, "**bolded text**");
 
 								// Highlight "link url"
@@ -529,7 +651,7 @@ define(['taskbar'], function(taskbar) {
 								postContentEl[0].selectionStart = selectionStart + 2;
 								postContentEl[0].selectionEnd = selectionEnd + 2;
 							}
-						break;
+							break;
 						case 'fa fa-italic':
 							if (selectionStart === selectionEnd) {
 								// Nothing selected
@@ -540,15 +662,15 @@ define(['taskbar'], function(taskbar) {
 								postContentEl[0].selectionStart = selectionStart + 1;
 								postContentEl[0].selectionEnd = selectionEnd + 1;
 							}
-						break;
+							break;
 						case 'fa fa-list':
 							// Nothing selected
 							insertIntoInput(postContentEl, "\n* list item");
-						break;
+							break;
 						case 'fa fa-link':
 							if (selectionStart === selectionEnd) {
 								// Nothing selected
-								var	cursorPos = postContentEl[0].selectionStart;
+								cursorPos = postContentEl[0].selectionStart;
 								insertIntoInput(postContentEl, "[link text](link url)");
 
 								// Highlight "link url"
@@ -560,7 +682,7 @@ define(['taskbar'], function(taskbar) {
 								postContentEl[0].selectionStart = selectionStart + selectionLength + 3;
 								postContentEl[0].selectionEnd = selectionEnd + 11;
 							}
-						break;
+							break;
 					}
 				});
 
@@ -582,8 +704,8 @@ define(['taskbar'], function(taskbar) {
 					if(files) {
 						if (window.FormData) {
 							fd = new FormData();
-							for (var i = 0, file; file = files[i]; i++) {
-								fd.append('files[]', file, file.name);
+							for (var i = 0; i < files.length; ++i) {
+								fd.append('files[]', files[i], files[i].name);
 							}
 						}
 						uploadTopicThumb({files: files, post_uuid: post_uuid, route: '/api/topic/thumb/upload', formData: fd});
@@ -606,10 +728,21 @@ define(['taskbar'], function(taskbar) {
 					socket.emit('modules.composer.renderPreview', bodyEl.val(), function(err, preview) {
 						preview = $(preview);
 						preview.find('img').addClass('img-responsive');
-	  					postContainer.find('.preview').html(preview);
-	  				});
+						postContainer.find('.preview').html(preview);
+					});
 				});
 
+				// Draft Saving
+				var	saveThrottle;
+				bodyEl.on('keyup', function() {
+					if (saveThrottle) {
+						clearTimeout(saveThrottle);
+					}
+
+					saveThrottle = setTimeout(function() {
+						saveDraft(post_uuid);
+					}, 1000);
+				});
 
 				var	resizeActive = false,
 					resizeCenterY = 0,
@@ -637,7 +770,7 @@ define(['taskbar'], function(taskbar) {
 					},
 					resizeAction = function(e) {
 						if (resizeActive) {
-							position = (e.clientY + resizeOffset);
+							var position = (e.clientY + resizeOffset);
 							var newHeight = $(window).height() - position;
 							var paddingBottom = parseInt(postContainer.css('padding-bottom'), 10);
 							if(newHeight > $(window).height() - $('#header-menu').height() - 20) {
@@ -690,7 +823,7 @@ define(['taskbar'], function(taskbar) {
 				});
 			});
 		});
-	}
+	};
 
 	composer.activateReposition = function(post_uuid) {
 
@@ -801,6 +934,7 @@ define(['taskbar'], function(taskbar) {
 			$('.action-bar button').removeAttr('disabled');
 			if(!err) {
 				composer.discard(post_uuid);
+				removeDraft(postData.save_id);
 			}
 		}
 	};
@@ -808,11 +942,14 @@ define(['taskbar'], function(taskbar) {
 	composer.discard = function(post_uuid) {
 		if (composer.posts[post_uuid]) {
 			$('#cmp-uuid-' + post_uuid).remove();
+			removeDraft(composer.posts[post_uuid].save_id);
 			delete composer.posts[post_uuid];
 			composer.active = undefined;
 			taskbar.discard('composer', post_uuid);
 			$('body').css({'margin-bottom': 0});
 			$('.action-bar button').removeAttr('disabled');
+
+			socket.emit('modules.composer.unregister', post_uuid);
 		}
 	};
 
@@ -821,6 +958,8 @@ define(['taskbar'], function(taskbar) {
 		postContainer.css('visibility', 'hidden');
 		composer.active = undefined;
 		taskbar.minimize('composer', post_uuid);
+
+		socket.emit('modules.composer.unregister', post_uuid);
 	};
 
 	return {

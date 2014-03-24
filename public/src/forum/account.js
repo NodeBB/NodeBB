@@ -73,12 +73,6 @@ define(['forum/accountheader'], function(header) {
 
 			socket.emit('user.isOnline', theirid, Account.handleUserOnline);
 
-			socket.on('event:new_post', function(data) {
-				var html = templates.prepare(templates['account'].blocks['posts']).parse(data);
-				$('.user-recent-posts').prepend(html);
-				$('.user-recent-posts span.timeago').timeago();
-			});
-
 		});
 	};
 

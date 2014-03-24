@@ -9,7 +9,9 @@ var	meta = require('../meta'),
 	winston = require('winston'),
 	server = require('./'),
 
-	SocketMeta = {};
+	SocketMeta = {
+		rooms: {}
+	};
 
 SocketMeta.reconnected = function(socket) {
 	var	uid = socket.uid,
@@ -17,7 +19,7 @@ SocketMeta.reconnected = function(socket) {
 
 	if (uid) {
 		topics.pushUnreadCount(uid);
-		user.pushNotifCount(uid);
+		user.notifications.pushCount(uid);
 	}
 
 	if (process.env.NODE_ENV === 'development') {
@@ -72,8 +74,6 @@ SocketMeta.getUsageStats = function(socket, data, callback) {
 
 /* Rooms */
 
-SocketMeta.rooms = {};
-
 SocketMeta.rooms.enter = function(socket, data) {
 	if(!data) {
 		return callback(new Error('invalid data'));
@@ -85,7 +85,7 @@ SocketMeta.rooms.enter = function(socket, data) {
 
 	socket.join(data.enter);
 
-	if (data.leave) {
+	if (data.leave && data.leave !== data.enter) {
 		module.parent.exports.updateRoomBrowsingText(data.leave);
 	}
 

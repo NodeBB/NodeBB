@@ -59,22 +59,25 @@ define(function() {
 							return;
 						}
 
-						var html = templates.prepare(templates['users'].blocks['users']).parse({
-							users: data.users
-						}),
-							userListEl = $('#users-container');
+						templates.preload_template('users', function() {
+							templates['users'].parse({users:[]});
+							var html = templates.prepare(templates['users'].blocks['users']).parse({
+								users: data.users
+							});
 
-						userListEl.html(html);
+							translator.translate(html, function(translated) {
+								$('#users-container').html(translated);
 
 
-						if (data && data.users.length === 0) {
-							$('#user-notfound-notify').html('User not found!');
-							$('#user-notfound-notify').parent().addClass('btn-warning label-warning');
-						} else {
-							$('#user-notfound-notify').html(data.users.length + ' user' + (data.users.length > 1 ? 's' : '') + ' found! Search took ' + data.timing + ' ms.');
-							$('#user-notfound-notify').parent().addClass('btn-success label-success');
-						}
-
+								if (data && data.users.length === 0) {
+									$('#user-notfound-notify').html('User not found!');
+									$('#user-notfound-notify').parent().addClass('btn-warning label-warning');
+								} else {
+									$('#user-notfound-notify').html(data.users.length + ' user' + (data.users.length > 1 ? 's' : '') + ' found! Search took ' + data.timing + ' ms.');
+									$('#user-notfound-notify').parent().addClass('btn-success label-success');
+								}
+							});
+						});
 					});
 				}, 500); //replace this with global throttling function/constant
 
@@ -108,17 +111,20 @@ define(function() {
 		}
 
 		function onUsersLoaded(users, emptyContainer) {
-			var html = templates.prepare(templates['users'].blocks['users']).parse({
-				users: users
-			});
+			templates.preload_template('users', function() {
+				templates['users'].parse({users:[]});
+				var html = templates.prepare(templates['users'].blocks['users']).parse({
+					users: users
+				});
 
-			translator.translate(html, function(translated) {
-				if(emptyContainer) {
-					$('#users-container .registered-user').remove();
-				}
+				translator.translate(html, function(translated) {
+					if(emptyContainer) {
+						$('#users-container .registered-user').remove();
+					}
 
-				$('#users-container').append(translated);
-				$('#users-container .anon-user').appendTo($('#users-container'));
+					$('#users-container').append(translated);
+					$('#users-container .anon-user').appendTo($('#users-container'));
+				});
 			});
 		}
 

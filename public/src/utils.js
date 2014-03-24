@@ -8,9 +8,13 @@
 		XRegExp = require('xregexp').XRegExp;
 
 		process.profile = function(operation, start) {
+			console.log('%s took %d milliseconds', operation, process.elapsedTimeSince(start));
+		};
+
+		process.elapsedTimeSince = function(start) {
 			var diff = process.hrtime(start);
-			console.log('%s took %d milliseconds', operation, diff[0] * 1e3 + diff[1] / 1e6);
-		}
+			return diff[0] * 1e3 + diff[1] / 1e6;
+		};
 
 	} else {
 		XRegExp = window.XRegExp;
@@ -28,9 +32,7 @@
 
 		//Adapted from http://stackoverflow.com/questions/5827612/node-js-fs-readdir-recursive-directory-search
 		walk: function(dir, done) {
-			var results = [],
-				path = require('path'),
-				main_dir = path.join(__dirname, '..', 'templates');
+			var results = [];
 
 			fs.readdir(dir, function(err, list) {
 				if (err) {
@@ -51,7 +53,7 @@
 								}
 							});
 						} else {
-							results.push(file.replace(main_dir + '/', '').replace('.tpl', ''));
+							results.push(file);
 							if (!--pending) {
 								done(null, results);
 							}
@@ -124,18 +126,17 @@
 			return str;
 		},
 
-		// from http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
+
 		isEmailValid: function(email) {
-			// var re = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-			return email.indexOf('@') !== -1;
+			return typeof email === 'string' && email.length && email.indexOf('@') !== -1;
 		},
 
 		isUserNameValid: function(name) {
-			return (name && name !== "" && (/^['"\s\-.*0-9\u00BF-\u1FFF\u2C00-\uD7FF\w]+$/.test(name)));
+			return (name && name !== '' && (/^['"\s\-.*0-9\u00BF-\u1FFF\u2C00-\uD7FF\w]+$/.test(name)));
 		},
 
 		isPasswordValid: function(password) {
-			return password && password.indexOf(' ') === -1;
+			return typeof password === 'string' && password.length && password.indexOf(' ') === -1;
 		},
 
 		isNumber: function(n) {

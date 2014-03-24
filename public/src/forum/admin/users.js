@@ -1,3 +1,5 @@
+"use strict";
+/* global socket, define, templates, bootbox, app, ajaxify,  */
 define(function() {
 	var Users = {};
 
@@ -23,15 +25,9 @@ define(function() {
 			elements.each(function(index, element) {
 				var banBtn = $(element);
 				var uid = getUID(banBtn);
-				if (isUserAdmin(banBtn) || uid === yourid) {
-					banBtn.addClass('disabled');
-				} else if (isUserBanned(banBtn)) {
-					banBtn.addClass('btn-warning');
-				} else if (!isUserAdmin(banBtn)) {
-					banBtn.removeClass('disabled');
-				} else {
-					banBtn.removeClass('btn-warning');
-				}
+
+				banBtn.toggleClass('disabled', isUserAdmin(banBtn) || uid === yourid);
+				banBtn.toggleClass('btn-warning', isUserBanned(banBtn));
 			});
 		}
 
@@ -39,18 +35,9 @@ define(function() {
 			elements.each(function(index, element) {
 				var adminBtn = $(element);
 				var uid = getUID(adminBtn);
-				if (isUserAdmin(adminBtn)) {
-					adminBtn.attr('value', 'UnMake Admin').html('Remove Admin');
-					if (uid === yourid) {
-						adminBtn.addClass('disabled');
-					}
-				} else if (isUserBanned(adminBtn)) {
-					adminBtn.addClass('disabled');
-				} else if (!isUserBanned(adminBtn)) {
-					adminBtn.removeClass('disabled');
-				} else {
-					adminBtn.removeClass('btn-warning');
-				}
+
+				adminBtn.toggleClass('disabled', (isUserAdmin(adminBtn) && uid === yourid) || isUserBanned(adminBtn));
+				adminBtn.toggleClass('btn-success', isUserAdmin(adminBtn));
 			});
 		}
 
@@ -99,21 +86,37 @@ define(function() {
 				});
 			} else if (!isUserAdmin(adminBtn)) {
 				socket.emit('admin.user.makeAdmin', uid);
-				adminBtn.attr('value', 'UnMake Admin').html('Remove Admin');
 				parent.attr('data-admin', 1);
 				updateUserBanButtons($('.ban-btn'));
-
+				updateUserAdminButtons($('.admin-btn'));
 			} else if(uid !== yourid) {
 				bootbox.confirm('Do you really want to remove this user as admin "' + parent.attr('data-username') + '"?', function(confirm) {
 					if (confirm) {
 						socket.emit('admin.user.removeAdmin', uid);
-						adminBtn.attr('value', 'Make Admin').html('Make Admin');
 						parent.attr('data-admin', 0);
 						updateUserBanButtons($('.ban-btn'));
+						updateUserAdminButtons($('.admin-btn'));
 					}
 				});
 			}
 			return false;
+		});
+
+		$('#users-container').on('click', '.delete-btn', function() {
+			var deleteBtn = $(this);
+			var parent = deleteBtn.parents('.users-box');
+			var uid = getUID(deleteBtn);
+			bootbox.confirm('<b>Warning!</b><br/>Do you really want to delete this user "' + parent.attr('data-username') + '"?<br/> This action is not reversable, all user data and content will be erased!', function(confirm) {
+				if (confirm) {
+					socket.emit('admin.user.deleteUser', uid, function(err) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+						parent.remove();
+						app.alertSuccess('User Deleted!');
+					});
+				}
+			});
 		});
 
 		function handleUserCreate() {
@@ -190,27 +193,30 @@ define(function() {
 							return app.alertError(err.message);
 						}
 
-						var html = templates.prepare(templates['admin/users'].blocks['users']).parse({
-							users: data.users
-						}),
-							userListEl = document.querySelector('.users');
+						templates.preload_template('admin/users', function() {
+							templates['admin/users'].parse({users:[]});
+							var html = templates.prepare(templates['admin/users'].blocks.users).parse({
+								users: data.users
+							}),
+								userListEl = document.querySelector('.users');
 
-						userListEl.innerHTML = html;
-						$('.fa-spinner').addClass('none');
+							userListEl.innerHTML = html;
+							$('.fa-spinner').addClass('none');
 
-						if (data && data.users.length === 0) {
-							$('#user-notfound-notify').html('User not found!')
-								.show()
-								.addClass('label-danger')
-								.removeClass('label-success');
-						} else {
-							$('#user-notfound-notify').html(data.users.length + ' user' + (data.users.length > 1 ? 's' : '') + ' found! Search took ' + data.timing + ' ms.')
-								.show()
-								.addClass('label-success')
-								.removeClass('label-danger');
-						}
+							if (data && data.users.length === 0) {
+								$('#user-notfound-notify').html('User not found!')
+									.show()
+									.addClass('label-danger')
+									.removeClass('label-success');
+							} else {
+								$('#user-notfound-notify').html(data.users.length + ' user' + (data.users.length > 1 ? 's' : '') + ' found! Search took ' + data.timing + ' ms.')
+									.show()
+									.addClass('label-success')
+									.removeClass('label-danger');
+							}
 
-						updateButtons();
+							updateButtons();
+						});
 					});
 				}, 250);
 			});
@@ -220,14 +226,17 @@ define(function() {
 			handleUserCreate();
 
 			function onUsersLoaded(users) {
-				var html = templates.prepare(templates['admin/users'].blocks['users']).parse({
-					users: users
-				});
-				html = $(html);
-				$('#users-container').append(html);
+				templates.preload_template('admin/users', function() {
+					templates['admin/users'].parse({users:[]});
+					var html = templates.prepare(templates['admin/users'].blocks.users).parse({
+						users: users
+					});
+					html = $(html);
+					$('#users-container').append(html);
 
-				updateUserBanButtons(html.find('.ban-btn'));
-				updateUserAdminButtons(html.find('.admin-btn'));
+					updateUserBanButtons(html.find('.ban-btn'));
+					updateUserAdminButtons(html.find('.admin-btn'));
+				});
 			}
 
 			function loadMoreUsers() {

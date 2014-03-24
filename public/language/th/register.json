@@ -1,0 +1,18 @@
+{
+    "register": "ลงทะเบียน",
+    "help.email": "ผู้ใช้อื่น ๆ จะไม่สามารถมองเห็นอีเมลของคุณโดยดีฟอลต์",
+    "help.username_restrictions": "ชื่อผู้ใช้ที่ไม่ซ้ำกับผู้อื่น  จะต้องมีความยาวระหว่าง% 1% และ %2 ตัวอักษร ผู้ใช้อื่นๆ สามารถพูดถึงคุณโดย @<span id='yourUsername'>ชื่อผู้ใช้</ span>",
+    "help.minimum_password_length": "ความยาวรหัสผ่านของคุณต้องมีอย่างน้อย %1 ตัวอักษร",
+    "email_address": "อีเมล์",
+    "email_address_placeholder": "ใส่อีเมล์",
+    "username": "ชื่อผู้ใช้",
+    "username_placeholder": "ใส่ชื่อผู้ใช้",
+    "password": "รหัสผ่าน",
+    "password_placeholder": "ใส่รหัสผ่าน",
+    "confirm_password": "ยืนยันรหัสผ่าน",
+    "confirm_password_placeholder": "ยืนยันรหัสผ่าน",
+    "register_now_button": "ลงทะเบียน",
+    "alternative_registration": "เข้าสู่ระบบโดยทางอื่น",
+    "terms_of_use": "เงื่อนไขการใช้งาน",
+    "agree_to_terms_of_use": "ยอมรับข้อตกลงในการใช้งาน"
+}

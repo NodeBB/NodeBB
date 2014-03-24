@@ -8,13 +8,11 @@ define(['notifications', 'chat'], function(Notifications, Chat) {
 	Chat.prepareDOM();
 	translator.prepareDOM();
 
-	function updateUnreadCount(err, tids) {
-		var count = 0, unreadEl = $('#unread-count');
+	function updateUnreadCount(err, count) {
+		var unreadEl = $('#unread-count');
 
 		if (err) {
 			console.warn('Error updating unread count', err);
-		} else if(tids && tids.length) {
-			count = tids.length;
 		}
 
 		unreadEl

@@ -22,3 +22,6 @@ error.log
 events.log
 
 pidfile
+
+# templates
+/public/templates

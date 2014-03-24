@@ -28,11 +28,11 @@ var	io;
 
 
 Sockets.init = function(server) {
-
 	io = socketioWildcard(SocketIO).listen(server, {
 		log: false,
 		transports: ['websocket', 'xhr-polling', 'jsonp-polling', 'flashsocket'],
-		'browser client minification': true
+		'browser client minification': true,
+		resource: nconf.get('relative_path') + '/socket.io'
 	});
 
 	Sockets.server = io;
@@ -67,15 +67,8 @@ Sockets.init = function(server) {
 
 				socket.uid = parseInt(uid, 10);
 
-				/* Need to save some state for the logger & maybe some other modules later on */
-				socket.state = {
-					user : {
-						uid : uid
-					}
-				};
-
 				/* If meta.config.loggerIOStatus > 0, logger.io_one will hook into this socket */
-				logger.io_one(socket,uid);
+				logger.io_one(socket, uid);
 
 				if (uid) {
 
@@ -116,7 +109,7 @@ Sockets.init = function(server) {
 
 		socket.on('disconnect', function() {
 
-			if (uid && !Sockets.getUserSockets(uid).length <= 1) {
+			if (uid && Sockets.getUserSockets(uid).length <= 1) {
 				db.sortedSetRemove('users:online', uid, function(err) {
 					socketUser.isOnline(socket, uid, function(err, data) {
 						socket.broadcast.emit('user.isOnline', err, data);
@@ -186,10 +179,8 @@ Sockets.logoutUser = function(uid) {
 };
 
 Sockets.emitUserCount = function() {
-	db.getObjectField('global', 'userCount', function(err, count) {
-		io.sockets.emit('user.count', err?{message:err.message}:null, {
-			count: count
-		});
+	user.count(function(err, count) {
+		io.sockets.emit('user.count', err ? {message:err.message} : null, count);
 	});
 };
 
@@ -235,7 +226,11 @@ function isUserOnline(uid) {
 Sockets.updateRoomBrowsingText = updateRoomBrowsingText;
 function updateRoomBrowsingText(roomName) {
 
-	function getUidsInRoom(room) {
+	if (!roomName) {
+		return;
+	}
+
+	function getUidsInRoom() {
 		var uids = [];
 		var clients = io.sockets.clients(roomName);
 		for(var i=0; i<clients.length; ++i) {
@@ -246,7 +241,7 @@ function updateRoomBrowsingText(roomName) {
 		return uids;
 	}
 
-	function getAnonymousCount(roomName) {
+	function getAnonymousCount() {
 		var clients = io.sockets.clients(roomName);
 		var anonCount = 0;
 
@@ -258,8 +253,10 @@ function updateRoomBrowsingText(roomName) {
 		return anonCount;
 	}
 
-	var	uids = getUidsInRoom(roomName),
-		anonymousCount = getAnonymousCount(roomName);
+	var	uids = getUidsInRoom(),
+		anonymousCount = getAnonymousCount();
+
+
 
 	user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture', 'status'], function(err, users) {
 		if(!err) {

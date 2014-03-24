@@ -1,54 +1,58 @@
-define(['taskbar', 'string'], function(taskbar, S) {
+"use strict";
+/* globals app, config, define, socket, translator, templates, utils */
+
+define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 
 	var module = {};
 
 	module.prepareDOM = function() {
 		// Chats Dropdown
 		var	chatsToggleEl = $('#chat_dropdown'),
-			chatsListEl = $('#chat-list'),
-			chatDropdownEl = chatsToggleEl.parent();
+			chatsListEl = $('#chat-list');
 
 		chatsToggleEl.on('click', function() {
-			if (chatDropdownEl.hasClass('open')) {
+			if (chatsToggleEl.parent().hasClass('open')) {
 				return;
 			}
 
 			socket.emit('modules.chats.list', function(err, chats) {
-				var	numChats = chats.length,
-					chatEl, x, userObj;
+				if (err) {
+					return app.alertError(err.message);
+				}
+
+				var	userObj;
+
 				chatsListEl.empty();
-				if (!err && numChats > 0) {
 
-					for(x = 0;x < numChats; x++) {
-						userObj = chats[x];
-						chatEl = $('<li />')
-							.attr('data-uid', userObj.uid)
-							.html('<a href="javascript:app.openChat(\''
-								+ userObj.username
-								+ '\', ' + userObj.uid
-								+ ');"><img src="'
-								+ userObj.picture
-								+ '" title="'
-								+ userObj.username
-								+ '" />' + userObj.username + '</a>');
-
-						chatsListEl.append(chatEl);
-					}
-				} else {
+				if (!chats.length) {
 					translator.get('modules:chat.no_active', function(str) {
-						chatEl = $('<li />')
+						$('<li />')
 							.addClass('no_active')
-							.html('<a href="#">' + str + '</a>');
-						chatsListEl.append(chatEl);
+							.html('<a href="#">' + str + '</a>')
+							.appendTo(chatsListEl);
 					});
+					return;
+				}
+
+				for(var x = 0; x<chats.length; ++x) {
+					userObj = chats[x];
+					$('<li />')
+						.attr('data-uid', userObj.uid)
+						.html('<a href="javascript:app.openChat(\'' +
+							userObj.username +
+							'\', ' + userObj.uid +
+							');">'+
+							'<i class="fa fa-circle status ' + userObj.status + '"></i> ' +
+							'<img src="' +	userObj.picture + '" title="' +	userObj.username +'" />' +
+							userObj.username + '</a>')
+						.appendTo(chatsListEl);
 				}
 			});
 		});
 
 		socket.on('event:chats.receive', function(data) {
-
-			if (module.modalExists(data.fromuid)) {
-				var modal = module.getModal(data.fromuid);
+			if (module.modalExists(data.uid)) {
+				var modal = module.getModal(data.uid);
 				module.appendChatMessage(modal, data.message, data.timestamp);
 
 				if (modal.is(":visible")) {
@@ -64,13 +68,17 @@ define(['taskbar', 'string'], function(taskbar, S) {
 					app.alternatingTitle(data.username + ' has messaged you');
 				}
 			} else {
-				module.createModal(data.username, data.fromuid, function(modal) {
+				module.createModal(data.username, data.uid, function(modal) {
 					module.toggleNew(modal.attr('UUID'), true);
 					app.alternatingTitle(data.username + ' has messaged you');
 				});
 			}
+
+			if (parseInt(app.uid, 10) !== parseInt(data.fromUid, 10)) {
+				sounds.play('chat-incoming');
+			}
 		});
-	}
+	};
 
 	module.bringModalToTop = function(chatModal) {
 		var topZ = 0;
@@ -112,7 +120,7 @@ define(['taskbar', 'string'], function(taskbar, S) {
 	module.createModal = function(username, touid, callback) {
 
 		templates.preload_template('chat', function() {
-			translator.translate(templates['chat'].parse({}), function (chatTpl) {
+			translator.translate(templates.chat.parse({}), function (chatTpl) {
 
 				var chatModal = $(chatTpl),
 					uuid = utils.generateUUID();
@@ -220,6 +228,7 @@ define(['taskbar', 'string'], function(taskbar, S) {
 			msg = msg +'\n';
 			socket.emit('modules.chats.send', { touid:chatModal.touid, message:msg});
 			chatModal.find('#chat-message-input').val('');
+			sounds.play('chat-outgoing');
 		}
 	}
 

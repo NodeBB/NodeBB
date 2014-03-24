@@ -1,4 +1,8 @@
-var utils = require('../../public/src/utils'),
+'use strict';
+
+
+var async = require('async'),
+	utils = require('../../public/src/utils'),
 	user = require('../user'),
 	groups = require('../groups');
 
@@ -6,38 +10,26 @@ var utils = require('../../public/src/utils'),
 
 	UserAdmin.createUser = function(uid, userData, callback) {
 		user.isAdministrator(uid, function(err, isAdmin) {
-			if(err) {
-				return callback(err);
+			if(err || !isAdmin) {
+				return callback(err || new Error('You are not an administrator'));
 			}
 
-			if (isAdmin) {
-				user.create(userData, function(err) {
-					if(err) {
-						return callback(err);
-					}
-
-					callback(null);
-				});
-			} else {
-				callback(new Error('You are not an administrator'));
-			}
+			user.create(userData, callback);
 		});
-	}
+	};
 
 	UserAdmin.makeAdmin = function(uid, theirid, socket) {
 		user.isAdministrator(uid, function(err, isAdmin) {
 			if (isAdmin) {
-				groups.getGidFromName('administrators', function(err, gid) {
-					groups.join(gid, theirid, function(err) {
-						if (!err) {
-							socket.emit('event:alert', {
-								title: 'User Modified',
-								message: 'This user is now an administrator!',
-								type: 'success',
-								timeout: 2000
-							});
-						}
-					});
+				groups.join('administrators', theirid, function(err) {
+					if (!err) {
+						socket.emit('event:alert', {
+							title: 'User Modified',
+							message: 'This user is now an administrator!',
+							type: 'success',
+							timeout: 2000
+						});
+					}
 				});
 			} else {
 				socket.emit('event:alert', {
@@ -53,18 +45,16 @@ var utils = require('../../public/src/utils'),
 	UserAdmin.removeAdmin = function(uid, theirid, socket) {
 		user.isAdministrator(uid, function(err, isAdmin) {
 			if (isAdmin) {
-				groups.getGidFromName('administrators', function(err, gid) {
-					groups.leave(gid, theirid, function(err) {
-						if (!err) {
+				groups.leave('administrators', theirid, function(err) {
+					if (!err) {
 
-							socket.emit('event:alert', {
-								title: 'User Modified',
-								message: 'This user is no longer an administrator!',
-								type: 'success',
-								timeout: 2000
-							});
-						}
-					});
+						socket.emit('event:alert', {
+							title: 'User Modified',
+							message: 'This user is no longer an administrator!',
+							type: 'success',
+							timeout: 2000
+						});
+					}
 				});
 			}
 		});
@@ -103,6 +93,20 @@ var utils = require('../../public/src/utils'),
 				});
 			}
 		});
+	};
+
+	UserAdmin.deleteUser = function(uid, theirid, callback) {
+		async.waterfall([
+			function(next) {
+				user.isAdministrator(uid, next);
+			},
+			function(isAdmin, next) {
+				if(!isAdmin) {
+					return next(new Error('You are not an administrator'));
+				}
+				user.delete(uid, theirid, next);
+			}
+		], callback);
 	};
 
 }(exports));

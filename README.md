@@ -16,7 +16,8 @@
 
 ## Screenshots
 
-[<img src="http://i.imgur.com/FLOUuIqb.png" />](http://i.imgur.com/FLOUuIq.png)&nbsp;[<img src="http://i.imgur.com/Ud1LrfIb.png" />](http://i.imgur.com/Ud1LrfI.png)&nbsp;[<img src="http://i.imgur.com/ZC8W39ab.png" />](http://i.imgur.com/ZC8W39a.png)&nbsp;[<img src="http://i.imgur.com/o90kVPib.png" />](http://i.imgur.com/o90kVPi.png)&nbsp;[<img src="http://i.imgur.com/AaRRrU2b.png" />](http://i.imgur.com/AaRRrU2.png)&nbsp;[<img src="http://i.imgur.com/LmHtPhob.png" />](http://i.imgur.com/LmHtPho.png)&nbsp;[<img src="http://i.imgur.com/paiJPJkb.jpg" />](http://i.imgur.com/paiJPJk.jpg)&nbsp;[<img src="http://i.imgur.com/ZfavPHDb.png" />](http://i.imgur.com/ZfavPHD.png)
+[<img src="http://i.imgur.com/FLOUuIqb.png" />](http://i.imgur.com/FLOUuIq.png)&nbsp;[<img src="http://i.imgur.com/Ud1LrfIb.png" />](http://i.imgur.com/Ud1LrfI.png)&nbsp;[<img src="http://i.imgur.com/ZC8W39ab.png" />](http://i.imgur.com/ZC8W39a.png)&nbsp;[<img src="http://i.imgur.com/o90kVPib.png" />](http://i.imgur.com/o90kVPi.png)&nbsp;[<img src="http://i.imgur.com/AaRRrU2b.png" />](http://i.imgur.com/AaRRrU2.png)&nbsp;[<img src="http://i.imgur.com/LmHtPhob.png" />](http://i.imgur.com/LmHtPho.png)&nbsp;[<img src="http://i.imgur.com/paiJPJkb.jpg" />](http://i.imgur.com/paiJPJk.jpg)&nbsp;[<img src="http://i.imgur.com/ZfavPHDb.png" />](http://i.imgur.com/ZfavPHD.png)&nbsp;[<img src="http://i.imgur.com/8vc1Ytc.png" />](http://i.imgur.com/8vc1Ytc.png)
+
 
 Credit: [Convoe](http://www.convoe.com), [Kano](http://www.kano.me), [Manchester United Forum](http://manutdforums.com/).
 
@@ -38,38 +39,7 @@ NodeBB requires the following software to be installed:
 
 ## Installation
 
-First, we install our base software stack:
-
-	# apt-get install git nodejs redis-server build-essential imagemagick
-
-If you want to use MongoDB instead of Redis install it from http://www.mongodb.org/downloads and remove 'redis-server' from the above command. [MongoDB-Setup](https://github.com/designcreateplay/NodeBB/wiki/Installing-NodeBB-With-MongoDB)
-
-**If your package manager only installed a version of Node.js that is less than 0.8 (e.g. Ubuntu 12.10, 13.04):**
-
-	# add-apt-repository ppa:chris-lea/node.js
-	# apt-get update && apt-get dist-upgrade
-
-Next, clone this repository:
-
-	$ cd /path/to/nodebb/install/location
-	$ git clone git://github.com/designcreateplay/NodeBB.git nodebb
-
-Obtain all of the dependencies required by NodeBB:
-
-    $ cd nodebb
-    $ npm install
-
-Initiate the setup script by running the app with the `--setup` flag:
-
-    $ ./nodebb setup
-
-The default settings are for a local server running on the default port, with a redis store on the same machine/port.
-
-Lastly, we run the forum.
-
-    $ ./nodebb start
-
-NodeBB can also be started with helper programs, such as `supervisor` and `forever`. [Take a look at the options here](https://github.com/designcreateplay/NodeBB/wiki/How-to-run-NodeBB).
+[Please refer to platform-specific installation documentation](https://github.com/designcreateplay/NodeBB/wiki#wiki-installing-nodebb)
 
 ## Securing NodeBB
 

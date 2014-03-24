@@ -1,144 +1,156 @@
 (function(Auth) {
+	"use strict";
+
 	var passport = require('passport'),
 		passportLocal = require('passport-local').Strategy,
 		nconf = require('nconf'),
 		bcrypt = require('bcryptjs'),
 		winston = require('winston'),
 
-		meta = require('../meta'),
-		user = require('../user'),
-		plugins = require('../plugins'),
-		utils = require('../../public/src/utils'),
-		templates = require('./../../public/src/templates'),
+		meta = require('./../meta'),
+		user = require('./../user'),
+		plugins = require('./../plugins'),
+		utils = require('./../../public/src/utils'),
 
 		login_strategies = [];
 
-	plugins.ready(function() {
-		plugins.fireHook('filter:auth.init', login_strategies, function(err) {
+
+	function logout(req, res) {
+		if (req.user && parseInt(req.user.uid, 10) > 0) {
+			winston.info('[Auth] Session ' + req.sessionID + ' logout (uid: ' + req.user.uid + ')');
+
+			var ws = require('../socket.io');
+			ws.logoutUser(req.user.uid);
+
+			req.logout();
+		}
+
+		res.send(200);
+	}
+
+	function login(req, res, next) {
+		passport.authenticate('local', function(err, userData, info) {
 			if (err) {
-				winston.error('filter:auth.init - plugin failure');
+				return next(err);
 			}
 
-			Auth.createRoutes(Auth.app);
+			if (!userData) {
+				return res.json(403, info);
+			}
+
+			// Alter user cookie depending on passed-in option
+			if (req.body.remember === 'true') {
+				var duration = 1000*60*60*24*parseInt(meta.configs.loginDays || 14, 10);
+				req.session.cookie.maxAge = duration;
+				req.session.cookie.expires = new Date(Date.now() + duration);
+			} else {
+				req.session.cookie.maxAge = false;
+				req.session.cookie.expires = false;
+			}
+
+			req.login({
+				uid: userData.uid
+			}, function() {
+				if (userData.uid) {
+					user.logIP(userData.uid, req.ip);
+				}
+
+				res.json(200, info);
+			});
+		})(req, res, next);
+	}
+
+	function register(req, res) {
+		if(meta.config.allowRegistration !== undefined && parseInt(meta.config.allowRegistration, 10) === 0) {
+			return res.send(403);
+		}
+
+		var userData = {
+			username: req.body.username,
+			password: req.body.password,
+			email: req.body.email,
+			ip: req.ip
+		};
+
+		plugins.fireHook('filter:register.check', userData, function(err, userData) {
+			if (err) {
+				return res.redirect(nconf.get('relative_path') + '/register');
+			}
+
+			user.create(userData, function(err, uid) {
+				if (err || !uid) {
+					return res.redirect(nconf.get('relative_path') + '/register');
+				}
+
+				req.login({
+					uid: uid
+				}, function() {
+
+					require('../socket.io').emitUserCount();
+
+					if(req.body.referrer) {
+						res.redirect(req.body.referrer);
+					} else {
+						res.redirect(nconf.get('relative_path') + '/');
+					}
+				});
+			});
 		});
-	});
+	}
 
 	Auth.initialize = function(app) {
 		app.use(passport.initialize());
 		app.use(passport.session());
-	}
+	};
 
 
 	Auth.get_login_strategies = function() {
 		return login_strategies;
-	}
+	};
 
 	Auth.registerApp = function(app) {
 		Auth.app = app;
-	}
+	};
 
-	Auth.createRoutes = function(app) {
-		app.namespace(nconf.get('relative_path'), function () {
-			app.post('/logout', function(req, res) {
-				if (req.user && parseInt(req.user.uid, 10) > 0) {
-					winston.info('[Auth] Session ' + req.sessionID + ' logout (uid: ' + req.user.uid + ')');
-
-					var ws = require('../socket.io');
-					ws.logoutUser(req.user.uid);
-
-					req.logout();
+	Auth.createRoutes = function(app, middleware, controllers) {
+		plugins.ready(function() {
+			plugins.fireHook('filter:auth.init', login_strategies, function(err) {
+				if (err) {
+					winston.error('filter:auth.init - plugin failure');
 				}
 
-				res.send(200)
-			});
+				for (var i in login_strategies) {
+					if (login_strategies.hasOwnProperty(i)) {
+						var strategy = login_strategies[i];
+						app.get(strategy.url, passport.authenticate(strategy.name, {
+							scope: strategy.scope
+						}));
 
-			for (var i in login_strategies) {
-				var strategy = login_strategies[i];
-				app.get(strategy.url, passport.authenticate(strategy.name, {
-					scope: strategy.scope
-				}));
-
-				app.get(strategy.callbackURL, passport.authenticate(strategy.name, {
-					successRedirect: '/',
-					failureRedirect: '/login'
-				}));
-			}
-
-			app.get('/reset/:code', function(req, res) {
-				app.build_header({
-					req: req,
-					res: res
-				}, function(err, header) {
-					res.send(header + app.create_route('reset/' + req.params.code) + templates['footer']);
-				});
-			});
-
-			app.get('/reset', function(req, res) {
-				app.build_header({
-					req: req,
-					res: res
-				}, function(err, header) {
-					res.send(header + app.create_route('reset') + templates['footer']);
-				});
-			});
-
-			app.post('/login', function(req, res, next) {
-				passport.authenticate('local', function(err, userData, info) {
-					if (err) {
-						return next(err);
+						app.get(strategy.callbackURL, passport.authenticate(strategy.name, {
+							successRedirect: '/',
+							failureRedirect: '/login'
+						}));
 					}
-
-					if (!userData) {
-						return res.json(403, info);
-					}
-
-					// Alter user cookie depending on passed-in option
-					if (req.body.remember === 'true') {
-						var duration = 1000*60*60*24*parseInt(meta.configs.loginDays || 14, 10);
-						req.session.cookie.maxAge = duration;
-						req.session.cookie.expires = new Date(Date.now() + duration);
-					} else {
-						req.session.cookie.maxAge = false;
-						req.session.cookie.expires = false;
-					}
-
-					req.login({
-						uid: userData.uid
-					}, function() {
-						if (userData.uid) {
-							user.logIP(userData.uid, req.ip);
-						}
-
-						res.json(200, info);
-					});
-				})(req, res, next);
-			});
-
-			app.post('/register', function(req, res) {
-				if(meta.config.allowRegistration !== undefined && parseInt(meta.config.allowRegistration, 10) === 0) {
-					return res.send(403);
 				}
 
-				user.create({username: req.body.username, password: req.body.password, email: req.body.email, ip: req.ip}, function(err, uid) {
-					if (err === null && uid) {
-						req.login({
-							uid: uid
-						}, function() {
-
-							require('../socket.io').emitUserCount();
-
-							if(req.body.referrer)
-								res.redirect(req.body.referrer);
-							else
-								res.redirect(nconf.get('relative_path') + '/');
+				app.post('/logout', logout);
+				app.post('/register', register);
+				app.post('/login', function(req, res, next) {
+					if (req.body.username && utils.isEmailValid(req.body.username)) {
+						user.getUsernameByEmail(req.body.username, function(err, username) {
+							if (err) {
+								return next(err);
+							}
+							req.body.username = username ? username : req.body.username;
+							login(req, res, next);
 						});
 					} else {
-						res.redirect(nconf.get('relative_path') + '/register');
+						login(req, res, next);
 					}
 				});
 			});
 		});
-	}
+	};
 
 	Auth.login = function(username, password, next) {
 		if (!username || !password) {
@@ -186,7 +198,7 @@
 				});
 			});
 		});
-	}
+	};
 
 	passport.use(new passportLocal(Auth.login));
 

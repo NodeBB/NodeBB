@@ -1,3 +1,7 @@
+'use strict';
+
+/* globals define, app, socket, templates, translator */
+
 define(['forum/accountheader'], function(header) {
 	var AccountPosts = {},
 		loadingMore = false;
@@ -34,20 +38,24 @@ define(['forum/accountheader'], function(header) {
 	}
 
 	function onTopicsLoaded(posts) {
-		var html = templates.prepare(templates['accountposts'].blocks['posts']).parse({
-			posts: posts
-		});
+		templates.preload_template('accountposts', function() {
+			templates.accountposts.parse({posts: []});
 
-		translator.translate(html, function(translatedHTML) {
+			var html = templates.prepare(templates.accountposts.blocks.posts).parse({
+				posts: posts
+			});
 
-			$('#category-no-topics').remove();
+			translator.translate(html, function(translatedHTML) {
 
-			html = $(translatedHTML);
-			html.find('img').addClass('img-responsive');
-			$('.user-favourite-posts').append(html);
-			$('span.timeago').timeago();
-			app.createUserTooltips();
-			app.makeNumbersHumanReadable(html.find('.human-readable-number'));
+				$('#category-no-topics').remove();
+
+				html = $(translatedHTML);
+				html.find('img').addClass('img-responsive');
+				$('.user-favourite-posts').append(html);
+				$('span.timeago').timeago();
+				app.createUserTooltips();
+				app.makeNumbersHumanReadable(html.find('.human-readable-number'));
+			});
 		});
 	}
 

@@ -1,3 +1,6 @@
+"use strict";
+/*global define, socket, app, bootbox, templates, RELATIVE_PATH*/
+
 define(['uploader'], function(uploader) {
 	var	Categories = {};
 
@@ -36,9 +39,9 @@ define(['uploader'], function(uploader) {
 		function select_icon(el) {
 			var selected = el.attr('class').replace(' fa-2x', '');
 			$('#icons .selected').removeClass('selected');
-			if (selected)
+			if (selected) {
 				$('#icons .' + selected).parent().addClass('selected');
-
+			}
 
 			bootbox.confirm('<h2>Select an icon.</h2>' + document.getElementById('icons').innerHTML, function(confirm) {
 				if (confirm) {
@@ -84,11 +87,11 @@ define(['uploader'], function(uploader) {
 			},
 			distance: 10
 		});
-		$('.blockclass').each(function() {
+
+		$('.blockclass, .admin-categories form select').each(function() {
 			var $this = $(this);
 			$this.val($this.attr('data-value'));
 		});
-
 
 		function showCreateCategoryModal() {
 			$('#new-category-modal').modal();
@@ -117,14 +120,17 @@ define(['uploader'], function(uploader) {
 					timeout: 2000
 				});
 
-				var html = templates.prepare(templates['admin/categories'].blocks['categories']).parse({
-					categories: [data]
-				});
-				html = $(html);
-				html.find('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
+				templates.preload_template('admin/categories', function() {
+					templates['admin/categories'].parse({categories:[]});
+					var html = templates.prepare(templates['admin/categories'].blocks.categories).parse({
+						categories: [data]
+					});
+					html = $(html);
+					html.find('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
 
-				$('#entry-container').append(html);
-				$('#new-category-modal').modal('hide');
+					$('#entry-container').append(html);
+					$('#new-category-modal').modal('hide');
+				});
 			});
 		}
 
@@ -136,8 +142,12 @@ define(['uploader'], function(uploader) {
 				color: $inputEl.val() || '#000',
 				onChange: function(hsb, hex) {
 					$inputEl.val('#' + hex);
-					if ($inputEl.attr('data-name') === 'bgColor') previewEl.css('background', '#' + hex);
-					else if ($inputEl.attr('data-name') === 'color') previewEl.css('color', '#' + hex);
+					if ($inputEl.attr('data-name') === 'bgColor') {
+						previewEl.css('background', '#' + hex);
+					} else if ($inputEl.attr('data-name') === 'color') {
+						previewEl.css('color', '#' + hex);
+					}
+
 					modified($inputEl[0]);
 				}
 			});
@@ -169,9 +179,11 @@ define(['uploader'], function(uploader) {
 				select_icon($(this).find('i'));
 			});
 
-			$('.admin-categories form input').on('change', function(ev) {
+			$('.admin-categories form input, .admin-categories form select').on('change', function(ev) {
 				modified(ev.target);
 			});
+
+
 
 			$('.dropdown').on('click', '[data-disabled]', function(ev) {
 				var btn = $(this),
@@ -181,7 +193,7 @@ define(['uploader'], function(uploader) {
 
 				categoryRow.remove();
 				modified_categories[cid] = modified_categories[cid] || {};
-				modified_categories[cid]['disabled'] = disabled;
+				modified_categories[cid].disabled = disabled;
 
 				save();
 				return false;
@@ -235,6 +247,10 @@ define(['uploader'], function(uploader) {
 			groupsResultsEl = modal.find('.groups-results'),
 			searchDelay;
 
+		// Clear the search field and results
+		searchEl.val('');
+		resultsEl.html('');
+
 		searchEl.off().on('keyup', function() {
 			var	searchEl = this,
 				liEl;
@@ -252,6 +268,7 @@ define(['uploader'], function(uploader) {
 
 					var	numResults = results.length,
 						resultObj;
+					resultsEl.html('');
 					for(var x = 0; x < numResults; x++) {
 						resultObj = results[x];
 						liEl = $('<li />')
@@ -260,7 +277,7 @@ define(['uploader'], function(uploader) {
 								'<div class="btn-group">' +
 								'<button type="button" data-priv="+r" class="btn btn-default' + (resultObj.privileges['+r'] ? ' active' : '') + '">Read</button>' +
 								'<button type="button" data-priv="+w" class="btn btn-default' + (resultObj.privileges['+w'] ? ' active' : '') + '">Write</button>' +
-								'<button type="button" data-priv="mods" class="btn btn-default' + (resultObj.privileges['mods'] ? ' active' : '') + '">Moderator</button>' +
+								'<button type="button" data-priv="mods" class="btn btn-default' + (resultObj.privileges.mods ? ' active' : '') + '">Moderator</button>' +
 								'</div>' +
 								'</div>' +
 								'<img src="' + resultObj.picture + '" /> ' + resultObj.username);
@@ -303,12 +320,14 @@ define(['uploader'], function(uploader) {
 			}
 			var numResults = results.length,
 				trEl,
-			    resultObj;
+				resultObj;
+
+			groupsResultsEl.empty();
 
 			for(var x = 0; x < numResults; x++) {
 				resultObj = results[x];
 				trEl = $('<tr />')
-					.attr('data-gid', resultObj.gid)
+					.attr('data-name', resultObj.name)
 					.html('<td><h4>' + resultObj.name + '</h4></td>' +
 						'<td>' +
 						'<div class="btn-group pull-right">' +
@@ -322,13 +341,13 @@ define(['uploader'], function(uploader) {
 
 		groupsResultsEl.off().on('click', '[data-gpriv]', function(e) {
 			var	btnEl = $(this),
-				gid = btnEl.parents('tr[data-gid]').attr('data-gid'),
+				name = btnEl.parents('tr[data-name]').attr('data-name'),
 				privilege = btnEl.attr('data-gpriv');
 			e.preventDefault();
 
 			socket.emit('admin.categories.setGroupPrivilege', {
 				cid: cid,
-				gid: gid,
+				name: name,
 				privilege: privilege,
 				set: !btnEl.hasClass('active')
 			}, function(err) {
@@ -346,12 +365,14 @@ define(['uploader'], function(uploader) {
 			readMembers = modalEl.find('#category-permissions-read'),
 			writeMembers = modalEl.find('#category-permissions-write'),
 			moderatorsEl = modalEl.find('#category-permissions-mods');
+
 		socket.emit('admin.categories.getPrivilegeSettings', cid, function(err, privilegeList) {
 			var	readLength = privilegeList['+r'].length,
 				writeLength = privilegeList['+w'].length,
-				modLength = privilegeList['mods'].length,
+				modLength = privilegeList.mods.length,
 				liEl, x, userObj;
 
+			readMembers.html('');
 			if (readLength > 0) {
 				for(x = 0; x < readLength; x++) {
 					userObj = privilegeList['+r'][x];
@@ -363,10 +384,11 @@ define(['uploader'], function(uploader) {
 				readMembers.append(liEl);
 			}
 
+			writeMembers.html('');
 			if (writeLength > 0) {
 				for(x=0;x<writeLength;x++) {
 					userObj = privilegeList['+w'][x];
-					$('<li />').attr('data-uid', userObj.uid).html('<img src="' + userObj.picture + '" title="' + userObj.username + '" />');
+					liEl = $('<li />').attr('data-uid', userObj.uid).html('<img src="' + userObj.picture + '" title="' + userObj.username + '" />');
 					writeMembers.append(liEl);
 				}
 			} else {
@@ -374,15 +396,16 @@ define(['uploader'], function(uploader) {
 				writeMembers.append(liEl);
 			}
 
+			moderatorsEl.html('');
 			if (modLength > 0) {
 				for(x = 0;x < modLength; x++) {
-					userObj = privilegeList['mods'][x];
+					userObj = privilegeList.mods[x];
 					liEl = $('<li />').attr('data-uid', userObj.uid).html('<img src="' + userObj.picture + '" title="' + userObj.username + '" />');
 					moderatorsEl.append(liEl);
 				}
 			} else {
 				liEl = $('<li />').addClass('empty').html('No moderators');
-				moderatorsEl.appendChild(liEl);
+				moderatorsEl.append(liEl);
 			}
 		});
 	};

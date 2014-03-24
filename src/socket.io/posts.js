@@ -1,3 +1,5 @@
+"use strict";
+
 var	async = require('async'),
 	nconf = require('nconf'),
 
@@ -68,55 +70,39 @@ SocketPosts.reply = function(socket, data, callback) {
 			var socketData = {
 				posts: [postData]
 			};
-			index.server.sockets.in('topic_' + postData.tid).emit('event:new_post', socketData);
-			index.server.sockets.in('recent_posts').emit('event:new_post', socketData);
-			index.server.sockets.in('user/' + postData.uid).emit('event:new_post', socketData);
+
+			index.server.sockets.emit('event:new_post', socketData);
+
 			callback();
 		}
 	});
 };
 
 SocketPosts.upvote = function(socket, data) {
-	if(data && data.pid && data.room_id) {
-		favourites.upvote(data.pid, data.room_id, socket.uid, socket);
-	}
+	favouriteCommand('upvote', socket, data);
 };
 
 SocketPosts.downvote = function(socket, data) {
-	if(data && data.pid && data.room_id) {
-		favourites.downvote(data.pid, data.room_id, socket.uid, socket);
-	}
+	favouriteCommand('downvote', socket, data);
 };
 
 SocketPosts.unvote = function(socket, data) {
-	if(data && data.pid && data.room_id) {
-		favourites.unvote(data.pid, data.room_id, socket.uid, socket);
-	}
+	favouriteCommand('unvote', socket, data);
 };
 
 SocketPosts.favourite = function(socket, data) {
-	if(data && data.pid && data.room_id) {
-		favourites.favourite(data.pid, data.room_id, socket.uid, socket);
-	}
+	favouriteCommand('favourite', socket, data);
 };
 
 SocketPosts.unfavourite = function(socket, data) {
+	favouriteCommand('unfavourite', socket, data);
+};
+
+function favouriteCommand(command, socket, data) {
 	if(data && data.pid && data.room_id) {
-		favourites.unfavourite(data.pid, data.room_id, socket.uid, socket);
+		favourites[command](data.pid, data.room_id, socket.uid, socket);
 	}
-};
-
-SocketPosts.uploadImage = function(socket, data, callback) {
-	if(data) {
-		posts.uploadPostImage(data, callback);
-	}
-};
-
-SocketPosts.uploadFile = function(socket, data, callback) {
-	if(data) {
-		posts.uploadPostFile(data, callback);
-	}
-};
+}
 
 SocketPosts.getRawPost = function(socket, pid, callback) {
 	posts.getPostFields(pid, ['content', 'deleted'], function(err, data) {
@@ -151,56 +137,57 @@ SocketPosts.edit = function(socket, data, callback) {
 		return callback(new Error('content-too-short'));
 	}
 
-	postTools.edit(socket.uid, data.pid, data.title, data.content, {topic_thumb: data.topic_thumb});
-	callback();
+	postTools.edit(socket.uid, data.pid, data.title, data.content, {topic_thumb: data.topic_thumb}, function(err, results) {
+		if(err) {
+			return callback(err);
+		}
+
+		index.server.sockets.in('topic_' + results.topic.tid).emit('event:post_edited', {
+			pid: data.pid,
+			title: results.topic.title,
+			isMainPost: results.topic.isMainPost,
+			content: results.content
+		});
+
+		callback();
+	});
 };
 
 SocketPosts.delete = function(socket, data, callback) {
-	if(!data) {
-		return callback(new Error('invalid data'));
-	}
-
-	postTools.delete(socket.uid, data.pid, function(err) {
-
-		if(err) {
-			return callback(err);
-		}
-
-		module.parent.exports.emitTopicPostStats();
-
-		index.server.sockets.in('topic_' + data.tid).emit('event:post_deleted', {
-			pid: data.pid
-		});
-		callback();
-	});
+	deleteOrRestore('delete', socket, data, callback);
 };
 
 SocketPosts.restore = function(socket, data, callback) {
+	deleteOrRestore('restore', socket, data, callback);
+};
+
+function deleteOrRestore(command, socket, data, callback) {
 	if(!data) {
 		return callback(new Error('invalid data'));
 	}
 
-	postTools.restore(socket.uid, data.pid, function(err) {
+	postTools[command](socket.uid, data.pid, function(err) {
 		if(err) {
 			return callback(err);
 		}
 
 		module.parent.exports.emitTopicPostStats();
 
-		index.server.sockets.in('topic_' + data.tid).emit('event:post_restored', {
+		var eventName = command === 'restore' ? 'event:post_restored' : 'event:post_deleted';
+		index.server.sockets.in('topic_' + data.tid).emit(eventName, {
 			pid: data.pid
 		});
 
 		callback();
 	});
-};
+}
 
 SocketPosts.getPrivileges = function(socket, pid, callback) {
 	postTools.privileges(pid, socket.uid, function(err, privileges) {
 		if(err) {
 			return callback(err);
 		}
-		privileges.pid = parseInt(pid);
+		privileges.pid = parseInt(pid, 10);
 		callback(null, privileges);
 	});
 };
@@ -218,7 +205,7 @@ SocketPosts.getFavouritedUsers = function(socket, pid, callback) {
 		}
 
 		var max = 5; //hardcoded
-		var usernames = "";
+		var finalText = "";
 
 		var pid_uids = data[0];
 		var rest_amount = 0;
@@ -228,15 +215,14 @@ SocketPosts.getFavouritedUsers = function(socket, pid, callback) {
 			pid_uids = pid_uids.slice(0, max);
 		}
 
-		user.getUsernamesByUids(pid_uids, function(err, result) {
+		user.getUsernamesByUids(pid_uids, function(err, usernames) {
 			if(err) {
 				return callback(err);
 			}
 
-			usernames = result.join(', ') + (rest_amount > 0
-				? " and " + rest_amount + (rest_amount > 1 ? " others" : " other")
-				: "");
-			callback(null, usernames);
+			finalText = usernames.join(', ') + (rest_amount > 0 ?
+				(" and " + rest_amount + (rest_amount > 1 ? " others" : " other")) : "");
+			callback(null, finalText);
 		});
 	});
 };
@@ -266,11 +252,11 @@ SocketPosts.flag = function(socket, pid, callback) {
 			posts.getPostField(pid, 'tid', next);
 		},
 		function(tid, next) {
-			topics.getTopicField(tid, 'slug', next)
+			topics.getTopicField(tid, 'slug', next);
 		},
 		function(topicSlug, next) {
 			path = nconf.get('relative_path') + '/topic/' + topicSlug + '#' + pid;
-			groups.getByGroupName('administrators', {}, next);
+			groups.get('administrators', {}, next);
 		},
 		function(adminGroup, next) {
 			notifications.create({
@@ -285,7 +271,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 			});
 		}
 	], callback);
-}
+};
 
 SocketPosts.loadMoreFavourites = function(socket, data, callback) {
 	if(!data || !data.after) {
@@ -308,5 +294,18 @@ SocketPosts.loadMoreUserPosts = function(socket, data, callback) {
 
 	posts.getPostsByUid(socket.uid, data.uid, start, end, callback);
 };
+
+
+SocketPosts.getRecentPosts = function(socket, data, callback) {
+	if(!data || !data.count) {
+		return callback(new Error('invalid data'));
+	}
+
+	posts.getRecentPosts(socket.uid, 0, data.count - 1, data.term, callback);
+};
+
+SocketPosts.getCategory = function(socket, pid, callback) {
+	posts.getCidByPid(pid, callback);
+}
 
 module.exports = SocketPosts;

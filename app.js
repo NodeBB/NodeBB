@@ -80,7 +80,7 @@ if (!nconf.get('help') && !nconf.get('setup') && !nconf.get('install') && !nconf
 	reset();
 } else {
 	displayHelp();
-};
+}
 
 function loadConfig() {
 	nconf.file({
@@ -95,18 +95,19 @@ function loadConfig() {
 	nconf.set('themes_path', path.resolve(__dirname, nconf.get('themes_path')));
 }
 
-
 function start() {
 	loadConfig();
 
 	nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
-	nconf.set('upload_url', path.join(path.sep, nconf.get('relative_path'), 'uploads', path.sep));
+	nconf.set('upload_url', path.join(path.sep, 'uploads', path.sep));
 	nconf.set('base_dir', __dirname);
+	nconf.set('views_dir', path.join(__dirname, 'public/templates'));
 
 	winston.info('Time: ' + new Date());
 	winston.info('Initializing NodeBB v' + pkg.version);
 	winston.info('* using configuration stored in: ' + configFile);
-	winston.info('* using ' + nconf.get('database') +' store at ' + nconf.get(nconf.get('database') + ':host') + ':' + nconf.get(nconf.get('database') + ':port'));
+	var host = nconf.get(nconf.get('database') + ':host');
+	winston.info('* using ' + nconf.get('database') +' store at ' + host + (host.indexOf('/') === -1 ? ':' + nconf.get(nconf.get('database') + ':port') : ''));
 	winston.info('* using themes stored in: ' + nconf.get('themes_path'));
 
 	if (process.env.NODE_ENV === 'development') {
@@ -117,42 +118,41 @@ function start() {
 
 	require('./src/database').init(function(err) {
 		meta.configs.init(function () {
-
 			var templates = require('./public/src/templates'),
 				translator = require('./public/src/translator'),
 				webserver = require('./src/webserver'),
 				sockets = require('./src/socket.io'),
 				plugins = require('./src/plugins'),
-				notifications = require('./src/notifications'),
 				upgrade = require('./src/upgrade');
 
 			templates.setGlobal('relative_path', nconf.get('relative_path'));
 
 			upgrade.check(function(schema_ok) {
 				if (schema_ok || nconf.get('check-schema') === false) {
-
 					sockets.init(webserver.server);
-
 					plugins.init();
-
 					translator.loadServer();
 
-					var customTemplates = meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : false;
-
-					utils.walk(path.join(__dirname, 'public/templates'), function (err, tplsToLoad) {
-						templates.init(tplsToLoad, customTemplates);
-					});
+					nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));
+					nconf.set('theme_templates_path', meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : nconf.get('base_templates_path'));
 
 					plugins.ready(function() {
-						templates.ready(webserver.init);
+						webserver.init();
 					});
 
-					notifications.init();
+					process.on('SIGTERM', shutdown);
+					process.on('SIGINT', shutdown);
+					process.on('SIGHUP', restart);
+					process.on('uncaughtException', function(err) {
+						winston.error('[app] Encountered Uncaught Exception: ' + err.message);
+						console.log(err.stack);
+						restart();
+					});
 				} else {
 					winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
 					winston.warn('    node app --upgrade');
 					winston.warn('To ignore this error (not recommended):');
-					winston.warn('    node app --no-check-schema')
+					winston.warn('    node app --no-check-schema');
 					process.exit();
 				}
 			});
@@ -234,6 +234,25 @@ function reset() {
 			});
 		});
 	});
+}
+
+function shutdown(code) {
+	winston.info('[app] Shutdown (SIGTERM/SIGINT) Initialised.');
+	require('./src/database').close();
+	winston.info('[app] Database connection closed.');
+
+	winston.info('[app] Shutdown complete.');
+	process.exit();
+}
+
+function restart() {
+	if (process.send) {
+		winston.info('[app] Restarting...');
+		process.send('nodebb:restart');
+	} else {
+		winston.error('[app] Could not restart server. Shutting down.');
+		shutdown();
+	}
 }
 
 function displayHelp() {

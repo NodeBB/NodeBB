@@ -1,9 +1,13 @@
+
+'use strict';
+
 var topics = require('../topics'),
 	categories = require('../categories'),
 	threadTools = require('../threadTools'),
 	index = require('./index'),
 	user = require('../user'),
 	db = require('./../database'),
+	meta = require('./../meta'),
 
 	async = require('async'),
 
@@ -27,7 +31,7 @@ SocketTopics.post = function(socket, data, callback) {
 
 	topics.post({uid: socket.uid, title: data.title, content: data.content, cid: data.category_id, thumb: data.topic_thumb}, function(err, result) {
 		if(err) {
-		 	if (err.message === 'title-too-short') {
+			if (err.message === 'title-too-short') {
 				module.parent.exports.emitAlert(socket, 'Title too short', 'Please enter a longer title. At least ' + meta.config.minimumTitleLength + ' characters.');
 			} else if (err.message === 'title-too-long') {
 				module.parent.exports.emitAlert(socket, 'Title too long', 'Please enter a shorter title. Titles can\'t be longer than ' + meta.config.maximumTitleLength + ' characters.');
@@ -54,8 +58,13 @@ SocketTopics.post = function(socket, data, callback) {
 		}
 
 		if (result) {
+
 			index.server.sockets.in('category_' + data.category_id).emit('event:new_topic', result.topicData);
 			index.server.sockets.in('recent_posts').emit('event:new_topic', result.topicData);
+			index.server.sockets.in('home').emit('event:new_topic', result.topicData);
+			index.server.sockets.in('home').emit('event:new_post', {
+				posts: result.postData
+			});
 			index.server.sockets.in('user/' + socket.uid).emit('event:new_post', {
 				posts: result.postData
 			});
@@ -68,7 +77,7 @@ SocketTopics.post = function(socket, data, callback) {
 				type: 'success',
 				timeout: 2000
 			});
-			callback(null);
+			callback();
 		}
 	});
 };
@@ -84,18 +93,28 @@ SocketTopics.markAsRead = function(socket, data) {
 
 	topics.markAsRead(data.tid, data.uid, function(err) {
 		topics.pushUnreadCount(data.uid);
+		topics.markTopicNotificationsRead(data.tid, data.uid);
 	});
 };
 
-SocketTopics.markAllRead = function(socket, data, callback) {
-	topics.markAllRead(socket.uid, function(err) {
+SocketTopics.markAllRead = function(socket, tids, callback) {
+
+	if (!Array.isArray(tids)) {
+		return callback(new Error('invalid-data'));
+	}
+
+	topics.markAllRead(socket.uid, tids, function(err) {
 		if(err) {
 			return callback(err);
 		}
 
-		index.server.sockets.in('uid_' + socket.uid).emit('event:unread.updateCount', null, []);
+		index.server.sockets.in('uid_' + socket.uid).emit('event:unread.updateCount', null, 0);
 
-		callback(null);
+		for (var i=0; i<tids.length; ++i) {
+			topics.markTopicNotificationsRead(tids[i], socket.uid);
+		}
+
+		callback();
 	});
 };
 
@@ -112,7 +131,7 @@ SocketTopics.markAsUnreadForAll = function(socket, tid, callback) {
 			callback();
 		});
 	});
-}
+};
 
 function doTopicAction(action, socket, tid, callback) {
 	if(!tid) {
@@ -132,7 +151,7 @@ function doTopicAction(action, socket, tid, callback) {
 			threadTools[action](tid, socket.uid, callback);
 		}
 	});
-};
+}
 
 SocketTopics.delete = function(socket, tid, callback) {
 	doTopicAction('delete', socket, tid, callback);
@@ -237,11 +256,14 @@ SocketTopics.follow = function(socket, tid, callback) {
 };
 
 SocketTopics.loadMore = function(socket, data, callback) {
-	if(!data || !data.tid || !(parseInt(data.after, 10) >= 0)) {
+	if(!data || !data.tid || !(parseInt(data.after, 10) >= 0))  {
 		return callback(new Error('invalid data'));
 	}
 
 	user.getSettings(socket.uid, function(err, settings) {
+		if(err) {
+			return callback(err);
+		}
 
 		var start = parseInt(data.after, 10),
 			end = start + settings.postsPerPage - 1;
@@ -253,9 +275,7 @@ SocketTopics.loadMore = function(socket, data, callback) {
 			privileges: function(next) {
 				threadTools.privileges(data.tid, socket.uid, next);
 			}
-		}, function(err, results) {
-			callback(err, results);
-		});
+		}, callback);
 	});
 };
 

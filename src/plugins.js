@@ -8,6 +8,7 @@ var fs = require('fs'),
 
 	db = require('./database'),
 	meta = require('./meta'),
+	utils = require('./../public/src/utils'),
 	pkg = require('../package.json');
 
 (function(Plugins) {
@@ -17,6 +18,7 @@ var fs = require('fs'),
 	Plugins.staticDirs = {};
 	Plugins.cssFiles = [];
 	Plugins.lessFiles = [];
+	Plugins.clientScripts = [];
 
 	Plugins.initialized = false;
 
@@ -61,6 +63,8 @@ var fs = require('fs'),
 		Plugins.loadedHooks = {};
 		Plugins.staticDirs = {};
 		Plugins.cssFiles.length = 0;
+		Plugins.lessFiles.length = 0;
+		Plugins.clientScripts.length = 0;
 
 		// Read the list of activated plugins and require their libraries
 		async.waterfall([
@@ -174,7 +178,7 @@ var fs = require('fs'),
 									(function(staticDir) {
 										fs.exists(staticDir, function(exists) {
 											if (exists) {
-												Plugins.staticDirs[path.join(pluginData.id, mappedPath)] = staticDir;
+												Plugins.staticDirs[pluginData.id + '/' + mappedPath] = staticDir;
 											} else {
 												winston.warn('[plugins/' + pluginData.id + '] Mapped path \'' + mappedPath + ' => ' + staticDir + '\' not found.');
 											}
@@ -194,21 +198,22 @@ var fs = require('fs'),
 							winston.info('[plugins] Found ' + pluginData.css.length + ' CSS file(s) for plugin ' + pluginData.id);
 						}
 
-						if (!pluginData.staticDir) {
-							Plugins.cssFiles = Plugins.cssFiles.concat(pluginData.css.map(function(file) {
-								return path.join('/plugins', file);
-							}));
-						} else {
-							winston.warn('[plugins/' + pluginData.id + '] staticDir is deprecated, define CSS files with new staticDirs instead.');
-							Plugins.cssFiles = Plugins.cssFiles.concat(pluginData.css.map(function(file) {
-								return path.join('/plugins', pluginData.id, file);
-							}));
-						}
-
-						next();
-					} else {
-						next();
+						Plugins.cssFiles = Plugins.cssFiles.concat(pluginData.css.map(function(file) {
+							if (fs.existsSync(path.join(__dirname, '../node_modules', pluginData.id, file))) {
+								return path.join(pluginData.id, file);
+							} else {
+								// Backwards compatibility with < v0.4.0, remove this for v0.5.0
+								if (pluginData.staticDir) {
+									return path.join(pluginData.id, pluginData.staticDir, file);
+								} else {
+									winston.error('[plugins/' + pluginData.id + '] This plugin\'s CSS is incorrectly configured, please contact the plugin author.');
+									return null;
+								}
+							}
+						}).filter(function(path) { return path }));	// Filter out nulls, remove this for v0.5.0
 					}
+
+					next();
 				},
 				function(next) {
 					// LESS files for plugins
@@ -219,6 +224,20 @@ var fs = require('fs'),
 
 						Plugins.lessFiles = Plugins.lessFiles.concat(pluginData.less.map(function(file) {
 							return path.join(pluginData.id, file);
+						}));
+					}
+
+					next();
+				},
+				function(next) {
+					// Client-side scripts
+					if (pluginData.scripts && pluginData.scripts instanceof Array) {
+						if (global.env === 'development') {
+							winston.info('[plugins] Found ' + pluginData.scripts.length + ' js file(s) for plugin ' + pluginData.id);
+						}
+
+						Plugins.clientScripts = Plugins.clientScripts.concat(pluginData.scripts.map(function(file) {
+							return path.join(__dirname, '../node_modules/', pluginData.id, file);
 						}));
 					}
 
@@ -279,42 +298,57 @@ var fs = require('fs'),
 		return (Plugins.loadedHooks[hook] && Plugins.loadedHooks[hook].length > 0);
 	};
 
-	Plugins.fireHook = function(hook, args, callback) {
+	Plugins.fireHook = function(hook) {
+		var callback = typeof arguments[arguments.length-1] === "function" ? arguments[arguments.length-1] : null,
+			args = arguments.length ? Array.prototype.slice.call(arguments, 1) : [];
+
+		if (callback) {
+			args.pop();
+		}
+
 		hookList = Plugins.loadedHooks[hook];
 
 		if (hookList && Array.isArray(hookList)) {
-			//if (global.env === 'development') winston.info('[plugins] Firing hook: \'' + hook + '\'');
+			// if (global.env === 'development') winston.info('[plugins] Firing hook: \'' + hook + '\'');
 			var hookType = hook.split(':')[0];
 			switch (hookType) {
 				case 'filter':
 					async.reduce(hookList, args, function(value, hookObj, next) {
 						if (hookObj.method) {
-							if (hookObj.callbacked) {	// If a callback is present (asynchronous method)
-								hookObj.method.call(Plugins.libraries[hookObj.id], value, next);
-							} else {	// Synchronous method
-								value = hookObj.method.call(Plugins.libraries[hookObj.id], value);
-								next(null, value);
+							if (!hookObj.hasOwnProperty('callbacked') || hookObj.callbacked === true) {
+								var	value = hookObj.method.apply(Plugins, value.concat(function() {
+									next(arguments[0], Array.prototype.slice.call(arguments, 1));
+								}));
+
+								if (value !== undefined && value !== callback) {
+									winston.warn('[plugins/' + hookObj.id + '] "callbacked" deprecated as of 0.4x. Use asynchronous method instead for hook: ' + hook);
+									next(null, [value]);
+								}
+							} else {
+								winston.warn('[plugins/' + hookObj.id + '] "callbacked" deprecated as of 0.4x. Use asynchronous method instead for hook: ' + hook);
+								value = hookObj.method.apply(Plugins, value);
+								next(null, [value]);
 							}
 						} else {
 							if (global.env === 'development') {
 								winston.info('[plugins] Expected method for hook \'' + hook + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
 							}
-							next(null, value);
+							next(null, [value]);
 						}
-					}, function(err, value) {
+					}, function(err, values) {
 						if (err) {
 							if (global.env === 'development') {
 								winston.info('[plugins] Problem executing hook: ' + hook);
 							}
 						}
 
-						callback.apply(Plugins, arguments);
+						callback.apply(Plugins, [err].concat(values));
 					});
 					break;
 				case 'action':
 					async.each(hookList, function(hookObj) {
 						if (hookObj.method) {
-							hookObj.method.call(Plugins.libraries[hookObj.id], args);
+							hookObj.method.apply(Plugins, args);
 						} else {
 							if (global.env === 'development') {
 								winston.info('[plugins] Expected method \'' + hookObj.method + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
@@ -328,10 +362,11 @@ var fs = require('fs'),
 			}
 		} else {
 			// Otherwise, this hook contains no methods
-			var returnVal = args;
 			if (callback) {
-				callback(null, returnVal);
+				callback.apply(this, [null].concat(args));
 			}
+
+			return args[0];
 		}
 	};
 
@@ -373,7 +408,30 @@ var fs = require('fs'),
 				});
 			});
 		});
-	}
+	};
+
+	Plugins.getTemplates = function(callback) {
+		var templates = {};
+
+		Plugins.showInstalled(function(err, plugins) {
+			async.each(plugins, function(plugin, next) {
+				if (plugin.templates && plugin.id && plugin.active) {
+					var templatesPath = path.join(__dirname, '../node_modules', plugin.id, plugin.templates);
+					utils.walk(templatesPath, function(err, pluginTemplates) {
+						pluginTemplates.forEach(function(pluginTemplate) {
+							templates["/" + pluginTemplate.replace(templatesPath, '').substring(1)] = pluginTemplate;
+						});
+
+						next(err);
+					});
+				} else {
+					next(false);
+				}
+			}, function(err) {
+				callback(err, templates);
+			});
+		});
+	};
 
 	Plugins.showInstalled = function(callback) {
 		npmPluginPath = path.join(__dirname, '../node_modules');
@@ -441,5 +499,5 @@ var fs = require('fs'),
 		], function(err, plugins) {
 			callback(err, plugins);
 		});
-	}
+	};
 }(exports));

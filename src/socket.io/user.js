@@ -1,7 +1,10 @@
+'use strict';
+
 var	async = require('async'),
 	user = require('../user'),
 	topics = require('../topics'),
 	utils = require('./../../public/src/utils'),
+	meta = require('../meta'),
 	SocketUser = {};
 
 SocketUser.exists = function(socket, data, callback) {
@@ -46,32 +49,7 @@ SocketUser.reset.commit = function(socket, data, callback) {
 };
 
 SocketUser.isOnline = function(socket, uid, callback) {
-	user.getUserField(uid, 'status', function(err, status) {
-		if(err) {
-			return callback(err);
-		}
-
-		if(!status) {
-			status = 'online';
-		}
-
-		var online = module.parent.exports.isUserOnline(uid);
-
-		if(!online) {
-			status = 'offline';
-		}
-
-		if(status === 'offline') {
-			online = false;
-		}
-
-		callback(null, {
-			online: online,
-			uid: uid,
-			timestamp: Date.now(),
-			status: status
-		});
-	});
+	user.isOnline(uid, callback);
 };
 
 SocketUser.changePassword = function(socket, data, callback) {
@@ -93,8 +71,9 @@ SocketUser.updateProfile = function(socket, data, callback) {
 		if(err) {
 			return callback(err);
 		}
+
 		if(!isAdmin) {
-			return callback(new Error('not allowed!'))
+			return callback(new Error('not allowed!'));
 		}
 
 		user.updateProfile(data.uid, data, callback);
@@ -214,7 +193,7 @@ SocketUser.getOnlineAnonCount = function(socket, data, callback) {
 };
 
 SocketUser.getUnreadCount = function(socket, data, callback) {
-	topics.getUnreadTids(socket.uid, 0, 19, callback);
+	topics.getTotalUnread(socket.uid, callback);
 };
 
 SocketUser.getActiveUsers = function(socket, data, callback) {
@@ -226,10 +205,14 @@ SocketUser.loadMore = function(socket, data, callback) {
 		return callback(new Error('invalid-data'));
 	}
 
+	if (!socket.uid && !!parseInt(meta.config.privateUserInfo, 10)) {
+		return callback(new Error('not-allowed'));
+	}
+
 	var start = data.after,
 		end = start + 19;
 
-	user.getUsers(data.set, start, end, function(err, userData) {
+	user.getUsersFromSet(data.set, start, end, function(err, userData) {
 		if(err) {
 			return callback(err);
 		}
@@ -251,7 +234,6 @@ SocketUser.loadMore = function(socket, data, callback) {
 		});
 	});
 };
-
 
 
 SocketUser.setStatus = function(socket, status, callback) {
