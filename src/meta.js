@@ -332,9 +332,8 @@ var fs = require('fs'),
 				baseThemePath = path.join(nconf.get('themes_path'), (themeData['theme:type'] && themeData['theme:type'] === 'local' ? themeId : 'nodebb-theme-vanilla')),
 				paths = [
 					baseThemePath,
-					path.join(__dirname, '../../node_modules'),
-					path.join(__dirname, '../public/vendor/fontawesome/less'),
-					path.join(__dirname, '../public/vendor/fontawesome/fonts')
+					path.join(__dirname, '../node_modules'),
+					path.join(__dirname, '../public/vendor/fontawesome/less')
 				],
 				source = '@import "./theme";\n@import "font-awesome";',
 				x, numLESS, numCSS;

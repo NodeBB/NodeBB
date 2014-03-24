@@ -15,6 +15,7 @@ var path = require('path'),
 	user = require('./user'),
 	notifications = require('./notifications'),
 	logger = require('./logger'),
+	plugins = require('./plugins'),
 	middleware = require('./middleware'),
 	routes = require('./routes'),
 	emitter = require('./emitter');
@@ -86,17 +87,19 @@ if(nconf.get('ssl')) {
 		winston.info('Using ports 80 and 443 is not recommend; use a proxy instead. See README.md');
 	}
 
-	// Prepare js for minification/concatenation
-	meta.js.prepare(function() {
-		if (app.enabled('minification')) {
-			meta.js.minify();
-		} else {
-			meta.js.concatenate();
-		}
-	});
+	plugins.ready(function() {
+		// Prepare js for minification/concatenation
+		meta.js.prepare(function() {
+			if (app.enabled('minification')) {
+				meta.js.minify();
+			} else {
+				meta.js.concatenate();
+			}
+		});
 
-	// Minify CSS
-	meta.css.minify();
+		// Minify CSS
+		meta.css.minify();
+	});
 
 	module.exports.server = server;
 	module.exports.init = function () {
