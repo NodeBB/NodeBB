@@ -184,7 +184,6 @@
 
 				bcrypt.compare(password, userData.password, function(err, res) {
 					if (err) {
-						winston.err(err.message);
 						return next(new Error('bcrypt compare error'));
 					}
 
