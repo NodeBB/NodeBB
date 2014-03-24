@@ -126,7 +126,6 @@ function start() {
 				upgrade = require('./src/upgrade');
 
 			templates.setGlobal('relative_path', nconf.get('relative_path'));
-			templates.setGlobal('cache-buster', meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '');
 
 			upgrade.check(function(schema_ok) {
 				if (schema_ok || nconf.get('check-schema') === false) {

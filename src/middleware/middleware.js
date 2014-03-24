@@ -201,6 +201,7 @@ middleware.renderHeader = function(req, res, callback) {
 				bootswatchCSS: meta.config['theme:src'],
 				title: meta.config.title || '',
 				description: meta.config.description || '',
+				'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
 				'brand:logo': meta.config['brand:logo'] || '',
 				'brand:logo:display': meta.config['brand:logo']?'':'hide',
 				csrf: res.locals.csrf_token,
