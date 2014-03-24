@@ -204,9 +204,7 @@ middleware.renderHeader = function(req, res, callback) {
 				'brand:logo': meta.config['brand:logo'] || '',
 				'brand:logo:display': meta.config['brand:logo']?'':'hide',
 				csrf: res.locals.csrf_token,
-				relative_path: nconf.get('relative_path'),
 				navigation: custom_header.navigation,
-				'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
 				allowRegistration: meta.config.allowRegistration === undefined || parseInt(meta.config.allowRegistration, 10) === 1,
 				searchEnabled: plugins.hasListeners('filter:search.query') ? true : false
 			},
