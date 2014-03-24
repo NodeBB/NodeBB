@@ -85,10 +85,10 @@ var db = require('./database'),
 
 			if (parseInt(fromuid, 10) === parseInt(myuid, 10)) {
 				picture = '<a href="/user/' + myUserData.userslug + '"><img class="chat-user-image" src="' + myUserData.picture + '"></a>';
-				username = '<span class="chat-user chat-user-you"> '+ myUserData.username + '</span>: ';
+				username = '<span class="chat-user chat-user-you"> '+ myUserData.username + '</span> ';
 			} else {
 				picture = '<a href="/user/' + toUserData.userslug + '"><img class="chat-user-image" src="' + toUserData.picture + '"></a>';
-				username = '<span class="chat-user"> ' + toUserData.username + '</span>: ';
+				username = '<span class="chat-user"> ' + toUserData.username + '</span> ';
 			}
 
 			var messageData = {
@@ -99,7 +99,7 @@ var db = require('./database'),
 				toUserData: toUserData,
 				myUserData: myUserData,
 				isNew: isNew,
-				parsedMessage: picture + username + parsed
+				parsedMessage: picture + '<strong>' + username + '</strong><br/>' + parsed
 			};
 
 			plugins.fireHook('filter:messaging.parse', messageData, function(err, messageData) {
