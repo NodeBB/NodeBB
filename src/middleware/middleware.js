@@ -1,7 +1,6 @@
 "use strict";
 
 var app,
-	clientScripts,
 	middleware = {},
 	async = require('async'),
 	path = require('path'),
@@ -206,7 +205,6 @@ middleware.renderHeader = function(req, res, callback) {
 				'brand:logo:display': meta.config['brand:logo']?'':'hide',
 				csrf: res.locals.csrf_token,
 				relative_path: nconf.get('relative_path'),
-				clientScripts: clientScripts,
 				navigation: custom_header.navigation,
 				'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
 				allowRegistration: meta.config.allowRegistration === undefined || parseInt(meta.config.allowRegistration, 10) === 1,
@@ -357,19 +355,6 @@ middleware.routeTouchIcon = function(req, res) {
 module.exports = function(webserver) {
 	app = webserver;
 	middleware.admin = require('./admin')(webserver);
-
-	plugins.ready(function() {
-		// Minify client-side libraries
-		meta.js.get(function (err, scripts) {
-			clientScripts = scripts.map(function (script) {
-				script = {
-					script: script
-				};
-
-				return script;
-			});
-		});
-	});
 
 	return middleware;
 };
