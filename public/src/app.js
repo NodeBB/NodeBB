@@ -651,6 +651,12 @@ var socket,
 			var url = window.location.pathname.slice(1),
 				tpl_url = ajaxify.getTemplateMapping(url);
 
+			url = url.replace(/\/$/, "");
+
+			if (url.indexOf(RELATIVE_PATH.slice(1)) !== -1) {
+				url = url.slice(RELATIVE_PATH.length);
+			}
+
 			$(window).trigger('action:ajaxify.start', {
 				url: url
 			});
