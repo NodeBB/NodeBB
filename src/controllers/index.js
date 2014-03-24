@@ -52,8 +52,12 @@ Controllers.home = function(req, res, next) {
 			next(null);
 		},
 		categories: function (next) {
-			var uid = (req.user) ? req.user.uid : 0;
+			var uid = req.user ? req.user.uid : 0;
 			categories.getAllCategories(uid, function (err, data) {
+				if (err) {
+					return next(err);
+				}
+
 				data.categories = data.categories.filter(function (category) {
 					return !category.disabled;
 				});

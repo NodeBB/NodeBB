@@ -235,12 +235,12 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 	module.appendChatMessage = function(chatModal, message, timestamp) {
 		var chatContent = chatModal.find('#chat-content');
 
-		var date = new Date(parseInt(timestamp, 10));
-
-		var prefix = '<span class="chat-timestamp">' + date.toLocaleTimeString() + '</span> ';
-		message = $('<li>' + S(prefix + message).stripTags('p').s + '</li>');
+		var time = '<span class="chat-timestamp pull-right timeago" title="' + utils.toISOString(timestamp) + '"></span> ';
+		message = $('<li>' + S(message + time).stripTags('p').s + '</li>');
 
 		message.find('img:not(".chat-user-image")').addClass('img-responsive');
+		message.find('span.timeago').timeago();
+
 		chatContent.append(message);
 
 		scrollToBottom(chatContent);
