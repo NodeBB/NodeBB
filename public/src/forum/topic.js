@@ -663,20 +663,26 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools'],
 				}, duration !== undefined ? duration : 400, function() {
 					scrollingToPost = false;
 					updateHeader();
-					if (highlight) {
-						scrollTo.parent().find('.topic-item').addClass('highlight');
-						setTimeout(function() {
-							scrollTo.parent().find('.topic-item').removeClass('highlight');
-						}, 5000);
-					}
+					highlightPost();
 				});
 			}
+
+			function highlightPost() {
+				if (highlight) {
+					scrollTo.parent().find('.topic-item').addClass('highlight');
+					setTimeout(function() {
+						scrollTo.parent().find('.topic-item').removeClass('highlight');
+					}, 5000);
+				}
+			}
+
 
 			if (tid && scrollTo.length) {
 				if($('#post-container li.post-row[data-pid="' + pid + '"]').attr('data-index') !== '0') {
 					animateScroll();
 				} else {
 					updateHeader();
+					highlightPost();
 				}
 			}
 		}
