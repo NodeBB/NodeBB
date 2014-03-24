@@ -1,4 +1,3 @@
-
 'use strict';
 
 var async = require('async'),
@@ -249,6 +248,9 @@ module.exports = function(User) {
 				},
 				function(next) {
 					db.delete('uid:' + uid + ':favourites', next);
+				},
+				function(next) {
+					db.delete('user:' + uid + ':settings', next);	
 				},
 				function(next) {
 					db.delete('uid:' + uid + ':topics', next);
