@@ -3,15 +3,15 @@
 var staticController = {};
 
 staticController['404'] = function(req, res, next) {
-	res.render('404', {});
+	res.status(404).render('404', {});
 };
 
 staticController['403'] = function(req, res, next) {
-	res.render('403', {});
+	res.status(403).render('403', {});
 };
 
 staticController['500'] = function(req, res, next) {
-	res.render('500', {});
+	res.status(500).render('500', {});
 };
 
 module.exports = staticController;
