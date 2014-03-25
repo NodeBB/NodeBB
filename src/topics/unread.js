@@ -76,11 +76,14 @@ module.exports = function(Topics) {
 			topics: []
 		};
 
-		function sendUnreadTopics(topicIds) {
-
-			Topics.getTopicsByTids(topicIds, uid, function(err, topicData) {
-				if(err) {
+		function sendUnreadTopics(tids) {
+			Topics.getTopicsByTids(tids, uid, function(err, topicData) {
+				if (err) {
 					return callback(err);
+				}
+
+				if (!Array.isArray(topicData) || !topicData.length) {
+					return callback(null, unreadTopics);
 				}
 
 				db.sortedSetRevRank('topics:recent', topicData[topicData.length - 1].tid, function(err, rank) {
