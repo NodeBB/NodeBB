@@ -236,8 +236,9 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 		var chatContent = chatModal.find('#chat-content');
 
 		var time = '<span class="chat-timestamp pull-right timeago" title="' + utils.toISOString(timestamp) + '"></span> ';
-		message = $('<li>' + S(message + time).stripTags('p').s + '</li>');
+		message = $('<li class="chat-message">' + S(message + time).stripTags('p').s + '</li>');
 
+		message.toggleClass('chat-message-them', !message.find('.chat-user-you').length);
 		message.find('img:not(".chat-user-image")').addClass('img-responsive');
 		message.find('span.timeago').timeago();
 
