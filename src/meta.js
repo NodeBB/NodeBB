@@ -381,7 +381,7 @@ var fs = require('fs'),
 
 			// Return proper paths
 			files.forEach(function(filename) {
-				localList[filename] = nconf.get('url') + '/sounds/' + filename;
+				localList[filename] = nconf.get('relative_path') + '/sounds/' + filename;
 			});
 
 			callback(null, localList);
