@@ -55,10 +55,6 @@ function filterAndRenderCategories(req, res, next, active) {
 			return active ? !category.disabled : category.disabled;
 		});
 
-		data.categories.forEach(function(category) {
-			category.description = validator.escape(category.description);
-		});
-
 		res.render('admin/categories', data);
 	});
 }

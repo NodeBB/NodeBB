@@ -11,6 +11,7 @@ var db = require('./database'),
 	CategoryTools = require('./categoryTools'),
 	meta = require('./meta'),
 	emitter = require('./emitter'),
+	validator = require('validator'),
 
 	async = require('async'),
 	winston = require('winston'),
@@ -247,6 +248,8 @@ var db = require('./database'),
 
 			for (var i=0; i<categories.length; ++i) {
 				if (categories[i]) {
+					categories[i].name = validator.escape(categories[i].name);
+					categories[i].description = validator.escape(categories[i].description);
 					categories[i].backgroundImage = categories[i].image ? nconf.get('relative_path') + categories[i].image : '';
 					categories[i].disabled = categories[i].disabled ? parseInt(categories[i].disabled, 10) !== 0 : false;
 				}
