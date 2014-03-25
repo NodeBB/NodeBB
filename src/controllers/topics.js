@@ -66,14 +66,19 @@ topicsController.get = function(req, res, next) {
 
 			description = validator.escape(description);
 
-			var ogImageUrl = meta.config['brand:logo'];
-			if(ogImageUrl && ogImageUrl.indexOf('http') === -1) {
-				ogImageUrl = nconf.get('url') + ogImageUrl;
+			var ogImageUrl = '';
+			if (topicData.thumb) {
+				ogImageUrl = topicData.thumb;
+			} else if(topicData.posts.length && topicData.posts[0].user && topicData.posts[0].user.picture){
+				ogImageUrl = topicData.posts[0].user.picture;
+			} else if(meta.config['brand:logo']) {
+				ogImageUrl = meta.config['brand:logo'];
+			} else {
+				ogImageUrl = '/logo.png';
 			}
 
-			var userPicture = '';
-			if (topicData.posts.length && topicData.posts[0].user) {
-				userPicture = topicData.posts[0].user.picture;
+			if (ogImageUrl.indexOf('http') === -1) {
+				ogImageUrl = nconf.get('url') + ogImageUrl;
 			}
 
 			res.locals.metaTags = [
@@ -102,12 +107,12 @@ topicsController.get = function(req, res, next) {
 					content: nconf.get('url') + '/topic/' + topicData.slug
 				},
 				{
-					property: "og:image:url",
+					property: 'og:image',
 					content: ogImageUrl
 				},
 				{
-					property: 'og:image',
-					content: userPicture
+					property: "og:image:url",
+					content: ogImageUrl
 				},
 				{
 					property: "article:published_time",
