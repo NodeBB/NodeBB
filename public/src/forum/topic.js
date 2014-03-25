@@ -351,63 +351,51 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools'],
 
 		socket.on('posts.upvote', function(data) {
 			if (data && data.pid) {
-				var post = $('li[data-pid="' + data.pid + '"]'),
-					upvote = post.find('.upvote');
-
-				upvote.addClass('btn-primary upvoted');
+				$('li[data-pid="' + data.pid + '"] .upvote').addClass('btn-primary upvoted');
 			}
 		});
 
 		socket.on('posts.downvote', function(data) {
 			if (data && data.pid) {
-				var post = $('li[data-pid="' + data.pid + '"]'),
-					downvote = post.find('.downvote');
-
-				downvote.addClass('btn-primary downvoted');
+				$('li[data-pid="' + data.pid + '"] .downvote').addClass('btn-primary downvoted');
 			}
 		});
 
 		socket.on('posts.unvote', function(data) {
 			if (data && data.pid) {
-				var post = $('li[data-pid="' + data.pid + '"]'),
-					upvote = post.find('.upvote'),
-					downvote = post.find('.downvote');
+				var post = $('li[data-pid="' + data.pid + '"]');
 
-				upvote.removeClass('btn-primary upvoted');
-				downvote.removeClass('btn-primary downvoted');
+				post.find('.upvote').removeClass('btn-primary upvoted');
+				post.find('.downvote').removeClass('btn-primary downvoted');
 			}
 		});
 
 		socket.on('posts.favourite', function(data) {
 			if (data && data.pid) {
-				var favBtn = $('li[data-pid="' + data.pid + '"] .favourite');
-				if(favBtn.length) {
-					favBtn.addClass('btn-warning')
-						.attr('data-favourited', true);
-
-					var icon = favBtn.find('i');
-					var className = icon.attr('class');
-					if (className.indexOf('-o') !== -1) {
-						icon.attr('class', className.replace('-o', ''));
-					}
-				}
+				toggleFavourite(data.pid, true);
 			}
 		});
 
 		socket.on('posts.unfavourite', function(data) {
 			if (data && data.pid) {
-				var favBtn = $('li[data-pid="' + data.pid + '"] .favourite');
-				if(favBtn.length) {
-					favBtn.removeClass('btn-warning')
-						.attr('data-favourited', false);
-					var icon = favBtn.find('i');
-					var className = icon.attr('class');
-					if (className.indexOf('-o') === -1) {
-						icon.attr('class', className + '-o');
-					}
-				}
+				toggleFavourite(data.pid, false);
 			}
 		});
+
+		function toggleFavourite(pid, isFavourited) {
+			var favBtn = $('li[data-pid="' + pid + '"] .favourite');
+			if(favBtn.length) {
+				favBtn.addClass('btn-warning')
+					.attr('data-favourited', isFavourited);
+
+				var icon = favBtn.find('i');
+				var className = icon.attr('class');
+
+				if (isFavourited ? className.indexOf('-o') !== -1 : className.indexOf('-o') === -1) {
+					icon.attr('class', isFavourited ? className.replace('-o', '') : className + '-o');
+				}
+			}
+		}
 
 		socket.on('event:post_deleted', function(data) {
 			if (data.pid) {
