@@ -113,6 +113,10 @@ function sendNotificationToPostOwner(data, uid, message) {
 				return;
 			}
 
+			if (uid === parseInt(postData.uid)) {
+				return;
+			}
+
 			async.parallel({
 				username: function(next) {
 					user.getUserField(uid, 'username', next);
