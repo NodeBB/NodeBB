@@ -61,6 +61,7 @@ module.exports = function(Topics) {
 				}
 
 				for (var i = 0; i < postData.length; ++i) {
+					postData[i].deleted = parseInt(postData[i].deleted, 10) === 1;
 					postData[i].favourited = results.favourites[i];
 					postData[i].upvoted = results.voteData[i].upvoted;
 					postData[i].downvoted = results.voteData[i].downvoted;
@@ -68,7 +69,7 @@ module.exports = function(Topics) {
 					postData[i].display_moderator_tools = parseInt(uid, 10) !== 0 && results.privileges[i].editable;
 					postData[i].display_move_tools = results.privileges[i].move;
 
-					if(parseInt(postData[i].deleted, 10) === 1 && !results.privileges[i].view_deleted) {
+					if(postData[i].deleted && !results.privileges[i].view_deleted) {
 						postData[i].content = 'This post is deleted!';
 					}
 				}
