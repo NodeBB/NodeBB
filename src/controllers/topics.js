@@ -39,8 +39,8 @@ topicsController.get = function(req, res, next) {
 					return next(err);
 				}
 
-				var start = (page - 1) * settings.topicsPerPage,
-					end = start + settings.topicsPerPage - 1;
+				var start = (page - 1) * settings.postsPerPage,
+					end = start + settings.postsPerPage - 1;
 
 				topics.getTopicWithPosts(tid, uid, start, end, function (err, topicData) {
 					if (topicData) {
