@@ -501,7 +501,7 @@ define(['taskbar'], function(taskbar) {
 
 		templates.preload_template('composer', function() {
 			var composerTemplate = templates.composer.parse({
-				allowTopicsThumbnail: config.allowTopicsThumbnail && composer.posts[post_uuid].isMain && config.hasImageUploadPlugin
+				allowTopicsThumbnail: config.allowTopicsThumbnail && composer.posts[post_uuid].isMain && (config.hasImageUploadPlugin || config.allowFileUploads)
 			});
 
 			translator.translate(composerTemplate, function(composerTemplate) {
