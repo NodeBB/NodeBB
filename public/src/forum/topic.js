@@ -775,17 +775,8 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools'],
 
 
 	function onNewPostsLoaded(html, posts) {
-		function getPostPrivileges(pid) {
-			socket.emit('posts.getPrivileges', pid, function(err, privileges) {
-				if(err) {
-					return app.alertError(err.message);
-				}
-				toggle_mod_tools(privileges.pid, privileges.editable);
-			});
-		}
-
 		for (var x = 0, numPosts = posts.length; x < numPosts; x++) {
-			getPostPrivileges(posts[x].pid);
+			toggle_mod_tools(posts[x].pid, posts[x].display_moderator_tools);
 		}
 
 		infiniteLoaderActive = false;
