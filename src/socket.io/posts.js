@@ -113,7 +113,7 @@ function sendNotificationToPostOwner(data, uid, message) {
 				return;
 			}
 
-			if (uid === parseInt(postData.uid)) {
+			if (uid === parseInt(postData.uid, 10)) {
 				return;
 			}
 
