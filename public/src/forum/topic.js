@@ -30,7 +30,6 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools'],
 				deleted: templates.get('deleted'),
 				pinned: templates.get('pinned')
 			},
-			topic_name = templates.get('topic_name'),
 			currentPage = parseInt(templates.get('currentPage'), 10),
 			pageCount = parseInt(templates.get('pageCount'), 10);
 
