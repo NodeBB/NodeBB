@@ -270,16 +270,9 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools'],
 				return;
 			}
 
-			var posts = data.posts;
-			for (var p in posts) {
-				if (posts.hasOwnProperty(p)) {
-					var post = posts[p],
-						postcount = $('.user_postcount_' + post.uid),
-						ptotal = parseInt(postcount.html(), 10);
-
-					ptotal += 1;
-					postcount.html(ptotal);
-				}
+			for (var i=0; i<data.posts.length; ++i) {
+				var postcount = $('.user_postcount_' + data.posts[i].uid);
+				postcount.html(parseInt(postcount.html(), 10) + 1);
 			}
 
 			socket.emit('topics.markAsRead', {tid: tid, uid: app.uid});
