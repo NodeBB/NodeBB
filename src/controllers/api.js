@@ -27,6 +27,7 @@ apiController.getConfig = function(req, res, next) {
 	config.allowGuestPosting = parseInt(meta.config.allowGuestPosting, 10) === 1;
 	config.allowFileUploads = parseInt(meta.config.allowFileUploads, 10) === 1;
 	config.allowTopicsThumbnail = parseInt(meta.config.allowTopicsThumbnail, 10) === 1;
+	config.privateUserInfo = parseInt(meta.config.privateUserInfo, 10) === 1;
 	config.usePagination = parseInt(meta.config.usePagination, 10) === 1;
 	config.disableSocialButtons = parseInt(meta.config.disableSocialButtons, 10) === 1;
 	config.topicsPerPage = meta.config.topicsPerPage || 20;
@@ -35,6 +36,7 @@ apiController.getConfig = function(req, res, next) {
 	config['theme:id'] = meta.config['theme:id'];
 	config.defaultLang = meta.config.defaultLang || 'en_GB';
 	config.environment = process.env.NODE_ENV;
+	config.isLoggedIn = !!req.user;
 
 	if (!req.user) {
 		if (res.locals.isAPI) {
@@ -42,22 +44,22 @@ apiController.getConfig = function(req, res, next) {
 		} else {
 			next(null, config);
 		}
+		return;
 	}
 
-	if(req.user) {
-		user.getSettings(req.user.uid, function(err, settings) {
-			config.usePagination = settings.usePagination;
-			config.topicsPerPage = settings.topicsPerPage;
-			config.postsPerPage = settings.postsPerPage;
-			config.notificationSounds = settings.notificationSounds;
+	user.getSettings(req.user.uid, function(err, settings) {
+		config.usePagination = settings.usePagination;
+		config.topicsPerPage = settings.topicsPerPage;
+		config.postsPerPage = settings.postsPerPage;
+		config.notificationSounds = settings.notificationSounds;
 
-			if (res.locals.isAPI) {
-				res.json(200, config);
-			} else {
-				next(err, config);
-			}
-		});
-	}
+		if (res.locals.isAPI) {
+			res.json(200, config);
+		} else {
+			next(err, config);
+		}
+	});
+
 };
 
 
