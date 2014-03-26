@@ -1,12 +1,9 @@
 "use strict";
 
-var staticController = {},
-	isApi = function(path) {
-		return !!path.match('api');
-	};
+var staticController = {};
 
 staticController['404'] = function(req, res, next) {
-	if (!isApi(req.path)) {
+	if (!res.locals.isAPI) {
 		res.statusCode = 404;
 	}
 
@@ -14,7 +11,7 @@ staticController['404'] = function(req, res, next) {
 };
 
 staticController['403'] = function(req, res, next) {
-	if (!isApi(req.path)) {
+	if (!res.locals.isAPI) {
 		res.statusCode = 403;
 	}
 
@@ -22,7 +19,7 @@ staticController['403'] = function(req, res, next) {
 };
 
 staticController['500'] = function(req, res, next) {
-	if (!isApi(req.path)) {
+	if (!res.locals.isAPI) {
 		res.statusCode = 500;
 	}
 
