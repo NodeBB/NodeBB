@@ -250,7 +250,7 @@ module.exports = function(User) {
 					db.delete('uid:' + uid + ':favourites', next);
 				},
 				function(next) {
-					db.delete('user:' + uid + ':settings', next);	
+					db.delete('user:' + uid + ':settings', next);
 				},
 				function(next) {
 					db.delete('uid:' + uid + ':topics', next);
@@ -293,6 +293,9 @@ module.exports = function(User) {
 					},
 					function(next) {
 						db.delete('user:' + uid, next);
+					},
+					function(next) {
+						db.decrObjectField('global', 'userCount');
 					}
 				], callback);
 			});
