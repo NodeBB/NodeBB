@@ -444,7 +444,7 @@ var async = require('async'),
 		save: function (server_conf, callback) {
 			var	serverConfigPath = path.join(__dirname, '../config.json');
 			if (nconf.get('config')) {
-				serverConfigPath = path.join(__dirname, '../', nconf.get('config'));
+				serverConfigPath = path.resolve(__dirname, '../', nconf.get('config'));
 			}
 
 			fs.writeFile(serverConfigPath, JSON.stringify(server_conf, null, 4), function (err) {

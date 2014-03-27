@@ -66,7 +66,7 @@ winston.info('');
 var	configFile = __dirname + '/config.json',
 	configExists;
 if (nconf.get('config')) {
-	configFile = path.join(__dirname, nconf.get('config'));
+	configFile = path.resolve(__dirname, nconf.get('config'));
 }
 configExists = fs.existsSync(configFile);
 
