@@ -155,7 +155,7 @@
 		
 		block = template.replace(new RegExp("[\\s\\S]*<!--[\\s]*BEGIN " + block + "[\\s]*-->[\r\n]*([\\s\\S]*?)[\r\n]*<!--[\\s]*END " + block + "[\\s]*-->[\\s\\S]*", 'g'), '$1');
 
-		if (typeof block === "undefined") {
+		if (typeof block === "undefined" || !array[key].length) {
 			return template;
 		}
 
@@ -255,7 +255,7 @@
 					continue;
 				} else if (obj[key] === null) {
 					template = replace(template, namespace + key, '');
-				} else if (obj[key].constructor === Array && obj[key].length) {
+				} else if (obj[key].constructor === Array) {
 					template = parseArray(template, obj, key, namespace + key + '.', bind);
 				} else if (obj[key] instanceof Object) {
 					defineParent(obj[key], originalObj);
@@ -283,7 +283,7 @@
 			// clean up all undefined conditionals
 			template = setBindContainer(template.replace(/\s*<!-- ELSE -->\s*/gi, 'ENDIF -->\r\n')
 								.replace(/\s*<!-- IF([\s\S]*?)ENDIF([\s\S]*?)-->/gi, '')
-								.replace(/\s*<!-- BEGIN([\s\S]*?)END([\s\S]*?)-->/gi, '')
+								.replace(/\s*<!-- BEGIN([\s\S]*?)END ([\s\S]*?)-->/gi, '')
 								.replace(/\s*<!-- ENDIF ([\s\S]*?)-->\s*/gi, ''), bind);
 
 			template = setBindContainer(template, bind);
