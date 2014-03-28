@@ -42,8 +42,8 @@ var ajaxify = {};
 
 		$(window).trigger('action:ajaxify.start', {url: url});
 
-		if ($('#content').hasClass('ajaxifying')) {
-			templates.cancelRequest();
+		if ($('#content').hasClass('ajaxifying') && apiXHR) {
+			apiXHR.abort();
 		}
 
 		// Remove trailing slash
@@ -59,7 +59,7 @@ var ajaxify = {};
 			hash = window.location.hash ? window.location.hash : '';
 		}
 
-		if (ajaxify.isTemplateAvailable(tpl_url) && !ajaxify.forceRefresh(tpl_url)) {
+		if (ajaxify.isTemplateAvailable(tpl_url) && !!!templatesConfig.force_refresh[tpl_url]) {
 			ajaxify.currentPage = tpl_url;
 
 			if (window.history && window.history.pushState) {
@@ -83,10 +83,10 @@ var ajaxify = {};
 
 			translator.load(tpl_url);
 
-			ajaxify.fadeOut();
+			$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
 			ajaxify.variables.flush();
-			ajaxify.getData(function () {
+			ajaxify.loadData(function () {
 				ajaxify.loadScript(tpl_url);
 
 				if (typeof callback === 'function') {
@@ -96,7 +96,7 @@ var ajaxify = {};
 				app.processPage();
 
 				ajaxify.renderWidgets(tpl_url, url, function(err) {
-					ajaxify.fadeIn();
+					$('#content, #footer').stop(true, true).removeClass('ajaxifying');
 					ajaxify.initialLoad = false;
 
 					app.refreshTitle(url);
@@ -126,26 +126,8 @@ var ajaxify = {};
 		});
 	};
 
-	ajaxify.cancelRequest = function() {
-		if (apiXHR) {
-			apiXHR.abort();
-		}
-	};
-
 	ajaxify.isTemplateAvailable = function(tpl) {
 		return $.inArray(tpl + '.tpl', availableTemplates) !== -1;
-	};
-
-	ajaxify.forceRefresh = function(tpl) {
-		return !!templatesConfig.force_refresh[tpl];
-	};
-
-	ajaxify.fadeIn = function() {
-		$('#content, #footer').stop(true, true).removeClass('ajaxifying');
-	};
-
-	ajaxify.fadeOut = function() {
-		$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 	};
 
 	ajaxify.getTemplateMapping = function(url) {
@@ -190,7 +172,7 @@ var ajaxify = {};
 		return false;
 	};
 
-	ajaxify.getData = function(callback, url, template) {
+	ajaxify.loadData = function(callback, url, template) {
 		var location = document.location || window.location,
 			api_url = (url === '' || url === '/') ? 'home' : url,
 			tpl_url = ajaxify.getCustomTemplateMapping(api_url.split('?')[0]);
@@ -224,7 +206,7 @@ var ajaxify = {};
 			},
 			error: function(data, textStatus) {
 				$('#content, #footer').stop(true, true).removeClass('ajaxifying');
-				if (data && data.status == 404) {
+				if (data && data.status === 404) {
 					return ajaxify.go('404');
 				} else if (data && data.status === 403) {
 					return ajaxify.go('403');
