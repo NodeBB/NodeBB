@@ -165,11 +165,9 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 	Category.onNewTopic = function(data) {
 		$(window).trigger('filter:categories.new_topic', data);
-		templates.preload_template('category', function() {
-			templates.category.parse({topics:[]});
-			var html = templates.prepare(templates.category.blocks.topics).parse({
-				topics: [data]
-			});
+
+		ajaxify.loadTemplate('category', function(categoryTemplate) {
+			var html = templates.parse(templates.getBlock(categoryTemplate, 'topics'), {topics: [data]});
 
 			translator.translate(html, function(translatedHTML) {
 				var topic = $(translatedHTML),
@@ -249,11 +247,8 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 		findInsertionPoint();
 
-		templates.preload_template('category', function() {
-			templates.category.parse({topics:[]});
-			var html = templates.prepare(templates.category.blocks.topics).parse({
-				topics: topics
-			});
+		ajaxify.loadTemplate('category', function(categoryTemplate) {
+			var html = templates.parse(templates.getBlock(categoryTemplate, 'topics'), {topics: topics});
 
 			translator.translate(html, function(translatedHTML) {
 				var container = $('#topics-container'),

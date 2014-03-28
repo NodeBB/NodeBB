@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, socket, templates, translator */
+/* globals define, app, socket, ajaxify, templates, translator */
 
 define(['forum/accountheader'], function(header) {
 	var AccountPosts = {},
@@ -38,15 +38,10 @@ define(['forum/accountheader'], function(header) {
 	}
 
 	function onTopicsLoaded(posts) {
-		templates.preload_template('accountposts', function() {
-			templates.accountposts.parse({posts: []});
-
-			var html = templates.prepare(templates.accountposts.blocks.posts).parse({
-				posts: posts
-			});
+		ajaxify.loadTemplate('accountposts', function(accountposts) {
+			var html = templates.parse(templates.getBlock(accountposts, 'posts'), {posts: posts});
 
 			translator.translate(html, function(translatedHTML) {
-
 				$('#category-no-topics').remove();
 
 				html = $(translatedHTML);

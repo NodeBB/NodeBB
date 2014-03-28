@@ -1,10 +1,11 @@
 "use strict";
 
 (function(module) {
-	var templates = {},
+	var templates = {
+			cache: {}
+		},
 		helpers = {},
 		globals = {},
-		cache = {},
 		loader,
 		originalObj;
 
@@ -22,16 +23,16 @@
 		}
 
 		if (loader && callback) {
-			if (!cache[template]) {
+			if (!templates.cache[template]) {
 				loader(template, function(err, loaded) {
 					if (loaded) {
-						cache[template] = loaded;
+						templates.cache[template] = loaded;
 					}
 
 					callback(err, parse(loaded, obj, bind));
 				});	
 			} else {
-				callback(null, parse(cache[template], obj, bind));
+				callback(null, parse(templates.cache[template], obj, bind));
 			}
 		} else {
 			return parse(template, obj, bind);
@@ -58,13 +59,13 @@
 		var fs = require('fs'),
 			tpl = filename.replace(options.settings.views + '/', '');
 
-		if (!cache[tpl]) {
+		if (!templates.cache[tpl]) {
 			fs.readFile(filename, function(err, html) {
-				cache[tpl] = html.toString();
-				return fn(err, templates.parse(cache[tpl], options));
+				templates.cache[tpl] = html.toString();
+				return fn(err, templates.parse(templates.cache[tpl], options));
 			});
 		} else {
-			return fn(null, templates.parse(cache[tpl], options));
+			return fn(null, templates.parse(templates.cache[tpl], options));
 		}
 	}
 

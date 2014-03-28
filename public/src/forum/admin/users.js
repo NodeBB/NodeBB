@@ -193,14 +193,9 @@ define(function() {
 							return app.alertError(err.message);
 						}
 
-						templates.preload_template('admin/users', function() {
-							templates['admin/users'].parse({users:[]});
-							var html = templates.prepare(templates['admin/users'].blocks.users).parse({
-								users: data.users
-							}),
-								userListEl = document.querySelector('.users');
+						ajaxify.loadTemplate('admin/users', function(adminUsers) {
+							$('.users').html(templates.parse(templates.getBlock(adminUsers, 'users'), data));
 
-							userListEl.innerHTML = html;
 							$('.fa-spinner').addClass('none');
 
 							if (data && data.users.length === 0) {
@@ -226,14 +221,8 @@ define(function() {
 			handleUserCreate();
 
 			function onUsersLoaded(users) {
-				templates.preload_template('admin/users', function() {
-					templates['admin/users'].parse({users:[]});
-					var html = templates.prepare(templates['admin/users'].blocks.users).parse({
-						users: users
-					});
-					html = $(html);
-					$('#users-container').append(html);
-
+				ajaxify.loadTemplate('admin/users', function(adminUsers) {
+					$('#users-container').append($(templates.parse(templates.getBlock(adminUsers, 'users'), {users: users})));
 					updateUserBanButtons(html.find('.ban-btn'));
 					updateUserAdminButtons(html.find('.admin-btn'));
 				});

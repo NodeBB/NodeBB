@@ -746,13 +746,11 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools'],
 	}
 
 	function parseAndTranslatePosts(data, callback) {
-		templates.preload_template('topic', function() {
-			templates.topic.parse({posts: []});
-			var html = templates.prepare(templates.topic.blocks.posts).parse(data);
+		ajaxify.loadTemplate('topic', function(topicTemplate) {
+			var html = templates.parse(templates.getBlock(topicTemplate, 'posts'), data);
 			translator.translate(html, callback);
 		});
 	}
-
 
 	function onNewPostsLoaded(html, posts) {
 		for (var x = 0, numPosts = posts.length; x < numPosts; x++) {

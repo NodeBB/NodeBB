@@ -115,15 +115,11 @@ define(function() {
 		});
 	}
 
-	Recent.onTopicsLoaded = function(template, topics) {
-		templates.preload_template(template, function() {
-			templates[template].parse({topics:[]});
-			var html = templates.prepare(templates[template].blocks['topics']).parse({
-				topics: topics
-			});
+	Recent.onTopicsLoaded = function(templateName, topics) {
+		ajaxify.loadTemplate(templateName, function(template) {
+			var html = templates.parse(templates.getBlock(template, 'topics'), {topics: topics});
 
 			translator.translate(html, function(translatedHTML) {
-
 				$('#category-no-topics').remove();
 
 				html = $(translatedHTML);

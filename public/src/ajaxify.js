@@ -210,7 +210,7 @@ var ajaxify = {};
 
 				data.relative_path = RELATIVE_PATH;
 				
-				templates.parse(tpl_url, data, function(err, template) {
+				templates.parse(tpl_url, data, function(template) {
 					translator.translate(template, function(translatedTemplate) {
 						$('#content').html(translatedTemplate);
 
@@ -233,6 +233,23 @@ var ajaxify = {};
 				}
 			}
 		});
+	};
+
+	ajaxify.loadTemplate = function(template, callback) {
+		if (templates.cache[template]) {
+			callback(templates.cache[template]);
+		} else {
+			$.ajax({
+				url: RELATIVE_PATH + '/templates/' + template + '.tpl',
+				type: 'GET',
+				success: function(data) {
+					callback(data.toString());
+				},
+				error: function(error) {
+					throw new Error("Unable to load template: " + template + " (" + error.statusText + ")");
+				}
+			});
+		}
 	};
 
 	ajaxify.variables = (function() {
@@ -297,9 +314,8 @@ var ajaxify = {};
 
 			socket.emit('widgets.render', {template: tpl_url + '.tpl', url: url, location: location}, function(err, renderedWidgets) {
 				if (area.html()) {
-					area.html(templates.parse(area.html(), {
-						widgets: renderedWidgets
-					})).removeClass('hidden');
+					area.html(templates.parse(area.html(), {widgets: renderedWidgets}))
+						.removeClass('hidden');
 
 					if (!renderedWidgets.length) {
 						ajaxify.repositionNoWidgets();
@@ -371,18 +387,7 @@ var ajaxify = {};
 			}
 		});
 
-		templates.registerLoader(function(template, callback) {
-			$.ajax({
-				url: RELATIVE_PATH + '/templates/' + template + '.tpl',
-				type: 'GET',
-				success: function(data) {
-					callback(null, data.toString());
-				},
-				error: function(error) {
-					callback({message: error.statusText}, false);
-				}
-			});
-		});
+		templates.registerLoader(ajaxify.loadTemplate);
 
 		$.when($.getJSON(RELATIVE_PATH + '/templates/config.json'), $.getJSON(RELATIVE_PATH + '/api/get_templates_listing')).done(function (config_data, templates_data) {
 			templatesConfig = config_data[0];

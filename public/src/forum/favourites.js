@@ -33,14 +33,10 @@ define(['forum/accountheader'], function(header) {
 	}
 
 	function onTopicsLoaded(posts) {
-		templates.preload_template('favourites', function() {
-			templates['favourites'].parse({posts:[]});
-			var html = templates.prepare(templates['favourites'].blocks['posts']).parse({
-				posts: posts
-			});
+		ajaxify.loadTemplate('favourites', function(favouritesTemplate) {
+			var html = templates.parse(templates.getBlock(favouritesTemplate, 'posts'), {posts: posts});
 
 			translator.translate(html, function(translatedHTML) {
-
 				$('#category-no-topics').remove();
 
 				html = $(translatedHTML);
