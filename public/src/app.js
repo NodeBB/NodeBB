@@ -71,7 +71,7 @@ var socket,
 								room;
 							switch(url_parts[0]) {
 								case 'user':
-									room = 'user/' + templates.get('theirid');
+									room = 'user/' + ajaxify.variables.get('theirid');
 									break;
 								case 'topic':
 									room = 'topic_' + url_parts[1];
@@ -679,7 +679,7 @@ var socket,
 			});
 
 			createHeaderTooltips();
-			templates.parseTemplateVariables();
+			ajaxify.variables.parse();
 			app.processPage();
 
 			ajaxify.renderWidgets(tpl_url, url);
