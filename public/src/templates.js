@@ -24,15 +24,15 @@
 
 		if (loader && callback) {
 			if (!templates.cache[template]) {
-				loader(template, function(err, loaded) {
+				loader(template, function(loaded) {
 					if (loaded) {
 						templates.cache[template] = loaded;
 					}
 
-					callback(err, parse(loaded, obj, bind));
+					callback(parse(loaded, obj, bind));
 				});	
 			} else {
-				callback(null, parse(templates.cache[template], obj, bind));
+				callback(parse(templates.cache[template], obj, bind));
 			}
 		} else {
 			return parse(template, obj, bind);
