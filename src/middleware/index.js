@@ -95,10 +95,11 @@ function compileTemplates(pluginTemplates) {
 			themeTpls = !themeTpls ? [] : themeTpls.map(function(tpl) { return tpl.replace(nconf.get('theme_templates_path'), ''); });
 
 			baseTpls.forEach(function(el, i) {
-				var relative_path = (themeTpls.indexOf(el) !== -1 ? themeTpls[themeTpls.indexOf(el)] : baseTpls[i]),
-					full_path = path.join(themeTpls.indexOf(el) !== -1 ? nconf.get('theme_templates_path') : nconf.get('base_templates_path'), relative_path);
+				paths[baseTpls[i]] = path.join(nconf.get('base_templates_path'), baseTpls[i]);
+			});
 
-				paths[themeTpls.indexOf(el) !== -1 ? themeTpls[themeTpls.indexOf(el)] : baseTpls[i]] = full_path;
+			themeTpls.forEach(function(el, i) {
+				paths[themeTpls[i]] = path.join(nconf.get('theme_templates_path'), themeTpls[i]);
 			});
 
 			async.each(Object.keys(paths), function(relative_path, next) {
