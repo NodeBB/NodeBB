@@ -24,16 +24,16 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools'],
 	});
 
 	Topic.init = function() {
-		var tid = templates.get('topic_id'),
+		var tid = ajaxify.variables.get('topic_id'),
 			thread_state = {
-				locked: templates.get('locked'),
-				deleted: templates.get('deleted'),
-				pinned: templates.get('pinned')
+				locked: ajaxify.variables.get('locked'),
+				deleted: ajaxify.variables.get('deleted'),
+				pinned: ajaxify.variables.get('pinned')
 			},
-			currentPage = parseInt(templates.get('currentPage'), 10),
-			pageCount = parseInt(templates.get('pageCount'), 10);
+			currentPage = parseInt(ajaxify.variables.get('currentPage'), 10),
+			pageCount = parseInt(ajaxify.variables.get('pageCount'), 10);
 
-		Topic.postCount = templates.get('postcount');
+		Topic.postCount = ajaxify.variables.get('postcount');
 
 		$(window).trigger('action:topic.loading');
 
@@ -228,7 +228,7 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools'],
 				}
 
 				// Get users who are currently replying to the topic entered
-				socket.emit('modules.composer.getUsersByTid', templates.get('topic_id'), function(err, uids) {
+				socket.emit('modules.composer.getUsersByTid', ajaxify.variables.get('topic_id'), function(err, uids) {
 					if (uids && uids.length) {
 						for(var x=0;x<uids.length;x++) {
 							activeEl.find('[data-uid="' + uids[x] + '"]').addClass('replying');
@@ -261,7 +261,7 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools'],
 		});
 
 		socket.on('event:new_post', function(data) {
-			if(data && data.posts && data.posts.length && data.posts[0].tid !== templates.get('topic_id')) {
+			if(data && data.posts && data.posts.length && data.posts[0].tid !== ajaxify.variables.get('topic_id')) {
 				return;
 			}
 
@@ -528,7 +528,7 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools'],
 		});
 
 		if($(window).scrollTop() > 50) {
-			$('.header-topic-title').find('span').text(templates.get('topic_name')).show();
+			$('.header-topic-title').find('span').text(ajaxify.variables.get('topic_name')).show();
 		} else {
 			$('.header-topic-title').find('span').text('').hide();
 		}
@@ -544,9 +544,9 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools'],
 
 				updatePaginationTextAndProgressBar(index);
 
-				var currentBookmark = localStorage.getItem('topic:' + templates.get('topic_id') + ':bookmark');
+				var currentBookmark = localStorage.getItem('topic:' + ajaxify.variables.get('topic_id') + ':bookmark');
 				if (!currentBookmark || parseInt(el.attr('data-pid'), 10) >= parseInt(currentBookmark, 10)) {
-					localStorage.setItem('topic:' + templates.get('topic_id') + ':bookmark', el.attr('data-pid'));
+					localStorage.setItem('topic:' + ajaxify.variables.get('topic_id') + ':bookmark', el.attr('data-pid'));
 					app.removeAlert('bookmark');
 				}
 
@@ -666,7 +666,7 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools'],
 
 	function onNewPostPagination(data) {
 		var posts = data.posts;
-		socket.emit('topics.getPageCount', templates.get('topic_id'), function(err, newPageCount) {
+		socket.emit('topics.getPageCount', ajaxify.variables.get('topic_id'), function(err, newPageCount) {
 
 			pagination.recreatePaginationLinks(newPageCount);
 
@@ -721,8 +721,8 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools'],
 
 		findInsertionPoint();
 
-		data.title = templates.get('topic_name');
-		data.viewcount = templates.get('viewcount');
+		data.title = ajaxify.variables.get('topic_name');
+		data.viewcount = ajaxify.variables.get('viewcount');
 
 		parseAndTranslatePosts(data, function(translatedHTML) {
 			var translated = $(translatedHTML);
@@ -777,7 +777,7 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools'],
 	}
 
 	function updatePostCount() {
-		socket.emit('topics.postcount', templates.get('topic_id'), function(err, postcount) {
+		socket.emit('topics.postcount', ajaxify.variables.get('topic_id'), function(err, postcount) {
 			if(!err) {
 				Topic.postCount = postcount;
 				$('#topic-post-count').html(Topic.postCount);

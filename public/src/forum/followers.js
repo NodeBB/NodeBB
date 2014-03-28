@@ -4,9 +4,9 @@ define(['forum/accountheader'], function(header) {
 	Followers.init = function() {
 		header.init();
 
-		var yourid = templates.get('yourid'),
-			theirid = templates.get('theirid'),
-			followersCount = templates.get('followersCount');
+		var yourid = ajaxify.variables.get('yourid'),
+			theirid = ajaxify.variables.get('theirid'),
+			followersCount = ajaxify.variables.get('followersCount');
 
 
 			if (parseInt(followersCount, 10) === 0) {

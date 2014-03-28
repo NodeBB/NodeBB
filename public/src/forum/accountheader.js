@@ -33,8 +33,8 @@ define(function() {
 	};
 
 	function hideLinks() {
-		var yourid = templates.get('yourid'),
-			theirid = templates.get('theirid');
+		var yourid = ajaxify.variables.get('yourid'),
+			theirid = ajaxify.variables.get('theirid');
 
 		var editLink = $('#editLink');
 		var settingsLink = $('#settingsLink');

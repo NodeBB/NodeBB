@@ -2,7 +2,7 @@ define(function() {
 	var	ResetCode = {};
 
 	ResetCode.init = function() {
-		var reset_code = templates.get('reset_code');
+		var reset_code = ajaxify.variables.get('reset_code');
 
 		var resetEl = $('#reset'),
 			password = $('#password'),

@@ -6,8 +6,8 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 	AccountEdit.init = function() {
 		header.init();
 
-		gravatarPicture = templates.get('gravatarpicture');
-		uploadedPicture = templates.get('uploadedpicture');
+		gravatarPicture = ajaxify.variables.get('gravatarpicture');
+		uploadedPicture = ajaxify.variables.get('uploadedpicture');
 
 		var selectedImageType = '';
 
@@ -117,7 +117,7 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 		$('#uploadPictureBtn').on('click', function() {
 
 			$('#change-picture-modal').modal('hide');
-			uploader.open(RELATIVE_PATH + '/user/uploadpicture', {uid: templates.get('theirid')}, config.maximumProfileImageSize, function(imageUrlOnServer) {
+			uploader.open(RELATIVE_PATH + '/user/uploadpicture', {uid: ajaxify.variables.get('theirid')}, config.maximumProfileImageSize, function(imageUrlOnServer) {
 				imageUrlOnServer = imageUrlOnServer + '?' + new Date().getTime();
 
 				$('#user-current-picture').attr('src', imageUrlOnServer);
@@ -193,7 +193,7 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 					socket.emit('user.changePassword', {
 						'currentPassword': currentPassword.val(),
 						'newPassword': password.val(),
-						'uid': templates.get('theirid')
+						'uid': ajaxify.variables.get('theirid')
 					}, function(err) {
 
 						currentPassword.val('');
@@ -219,7 +219,7 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 	AccountEdit.changeUserPicture = function(type) {
 		var userData = {
 			type: type,
-			uid: templates.get('theirid')
+			uid: ajaxify.variables.get('theirid')
 		};
 
 		socket.emit('user.changePicture', userData, function(err) {

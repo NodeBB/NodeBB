@@ -4,7 +4,7 @@ define(['forum/accountheader'], function(header) {
 	Following.init = function() {
 		header.init();
 
-		var followingCount = templates.get('followingCount');
+		var followingCount = ajaxify.variables.get('followingCount');
 
 		if (parseInt(followingCount, 10) === 0) {
 			$('#no-following-notice').removeClass('hide');

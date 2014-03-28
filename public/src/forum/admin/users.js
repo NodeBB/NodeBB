@@ -4,7 +4,7 @@ define(function() {
 	var Users = {};
 
 	Users.init = function() {
-		var yourid = templates.get('yourid');
+		var yourid = ajaxify.variables.get('yourid');
 
 		function isUserAdmin(element) {
 			var parent = $(element).parents('.users-box');

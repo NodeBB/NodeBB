@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, translator, templates, socket, bootbox */
+/* globals define, app, translator, ajaxify, socket, bootbox */
 
 define(['forum/topic/fork', 'forum/topic/move'], function(fork, move) {
 
@@ -8,7 +8,7 @@ define(['forum/topic/fork', 'forum/topic/move'], function(fork, move) {
 
 	ThreadTools.init = function(tid, threadState) {
 
-		if (templates.get('expose_tools') === '1') {
+		if (ajaxify.variables.get('expose_tools') === '1') {
 
 			$('.thread-tools').removeClass('hide');
 

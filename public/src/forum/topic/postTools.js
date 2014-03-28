@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, translator, templates, socket, bootbox */
+/* globals define, app, translator, ajaxify, socket, bootbox */
 
 define(['composer'], function(composer) {
 
@@ -8,7 +8,7 @@ define(['composer'], function(composer) {
 		topicName;
 
 	PostTools.init = function(tid, threadState) {
-		topicName = templates.get('topic_name');
+		topicName = ajaxify.variables.get('topic_name');
 
 		addPostHandlers(tid, threadState);
 
