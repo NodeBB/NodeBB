@@ -7,7 +7,10 @@ var ajaxify = {};
 
 	var location = document.location || window.location,
 		rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : ''),
-		content = null;
+		content = null,
+		templatesConfig = null,
+		availableTemplates = null,
+		apiXHR = null;
 
 	var events = [];
 	ajaxify.register_events = function (new_page_events) {
@@ -29,6 +32,7 @@ var ajaxify = {};
 
 	ajaxify.currentPage = null;
 	ajaxify.initialLoad = false;
+
 
 	ajaxify.go = function (url, callback, quiet) {
 		// "quiet": If set to true, will not call pushState
@@ -55,7 +59,7 @@ var ajaxify = {};
 			hash = window.location.hash ? window.location.hash : '';
 		}
 
-		if (templates.is_available(tpl_url) && !templates.force_refresh(tpl_url)) {
+		if (ajaxify.isTemplateAvailable(tpl_url) && !ajaxify.forceRefresh(tpl_url)) {
 			ajaxify.currentPage = tpl_url;
 
 			if (window.history && window.history.pushState) {
@@ -81,8 +85,8 @@ var ajaxify = {};
 
 			ajaxify.fadeOut();
 
-			templates.flush();
-			templates.load_template(function () {
+			ajaxify.variables.flush();
+			ajaxify.getData(function () {
 				ajaxify.loadScript(tpl_url);
 
 				if (typeof callback === 'function') {
@@ -106,6 +110,10 @@ var ajaxify = {};
 		return false;
 	};
 
+	ajaxify.refresh = function() {
+		ajaxify.go(ajaxify.currentPage);
+	};
+
 	ajaxify.loadScript = function(tpl_url, callback) {
 		require(['forum/' + tpl_url], function(script) {
 			if (script && script.init) {
@@ -118,6 +126,20 @@ var ajaxify = {};
 		});
 	};
 
+	ajaxify.cancelRequest = function() {
+		if (apiXHR) {
+			apiXHR.abort();
+		}
+	};
+
+	ajaxify.isTemplateAvailable = function(tpl) {
+		return $.inArray(tpl + '.tpl', availableTemplates) !== -1;
+	};
+
+	ajaxify.forceRefresh = function(tpl) {
+		return !!templatesConfig.force_refresh[tpl];
+	};
+
 	ajaxify.fadeIn = function() {
 		$('#content, #footer').stop(true, true).removeClass('ajaxifying');
 	};
@@ -127,7 +149,7 @@ var ajaxify = {};
 	};
 
 	ajaxify.getTemplateMapping = function(url) {
-		var tpl_url = templates.get_custom_map(url.split('?')[0]);
+		var tpl_url = ajaxify.getCustomTemplateMapping(url.split('?')[0]);
 
 		if (tpl_url === false && !templates[url]) {
 			if (url === '' || url === '/') {
@@ -138,7 +160,7 @@ var ajaxify = {};
 				tpl_url = url.split('/');
 
 				while(tpl_url.length) {
-					if (templates.is_available(tpl_url.join('/'))) {
+					if (ajaxify.isTemplateAvailable(tpl_url.join('/'))) {
 						tpl_url = tpl_url.join('/');
 						break;
 					}
@@ -155,6 +177,99 @@ var ajaxify = {};
 
 		return tpl_url;
 	};
+
+	ajaxify.getCustomTemplateMapping = function(tpl) {
+		if (config.custom_mapping && tpl) {
+			for (var pattern in config.custom_mapping) {
+				if (tpl.match(pattern)) {
+					return (config.custom_mapping[pattern]);
+				}
+			}
+		}
+
+		return false;
+	};
+
+	ajaxify.getData = function(callback, url, template) {
+		var location = document.location || window.location,
+			api_url = (url === '' || url === '/') ? 'home' : url,
+			tpl_url = ajaxify.getCustomTemplateMapping(api_url.split('?')[0]);
+
+		if (!tpl_url) {
+			tpl_url = ajaxify.getTemplateMapping(api_url);
+		}
+
+		apiXHR = $.ajax({
+			url: RELATIVE_PATH + '/api/' + api_url,
+			cache: false,
+			success: function(data) {
+				if (!data) {
+					ajaxify.go('404');
+					return;
+				}
+
+				data.relative_path = RELATIVE_PATH;
+				
+				templates.parse(tpl_url, data, function(err, template) {
+					translator.translate(template, function(translatedTemplate) {
+						$('#content').html(translatedTemplate);
+
+						ajaxify.variables.parse();
+
+						if (callback) {
+							callback(true);
+						}
+					});
+				});
+			},
+			error: function(data, textStatus) {
+				$('#content, #footer').stop(true, true).removeClass('ajaxifying');
+				if (data && data.status == 404) {
+					return ajaxify.go('404');
+				} else if (data && data.status === 403) {
+					return ajaxify.go('403');
+				} else if (textStatus !== "abort") {
+					app.alertError(data.responseJSON.error);
+				}
+			}
+		});
+	};
+
+	ajaxify.variables = (function() {
+		var parsedVariables = {};
+
+		return {
+			set: function(key, value) {
+				parsedVariables[key] = value;
+			},
+			get: function(key) {
+				return parsedVariables[key];
+			},
+			flush: function() {
+				parsedVariables = {};
+			},
+			parse: function() {
+				$('#content [template-variable]').each(function(index, element) {
+					var value = null;
+
+					switch ($(element).attr('template-type')) {
+						case 'boolean':
+							value = ($(element).val() === 'true' || $(element).val() === '1') ? true : false;
+							break;
+						case 'int':
+						case 'integer':
+							value = parseInt($(element).val());
+							break;
+						default:
+							value = $(element).val();
+							break;
+					}
+
+					ajaxify.variables.set($(element).attr('template-variable'), value);
+				});
+			}
+		};
+	})();
 
 	ajaxify.repositionNoWidgets = function() {
 		$('body [no-widget-class]').each(function() {
@@ -182,7 +297,7 @@ var ajaxify = {};
 
 			socket.emit('widgets.render', {template: tpl_url + '.tpl', url: url, location: location}, function(err, renderedWidgets) {
 				if (area.html()) {
-					area.html(templates.prepare(area.html()).parse({
+					area.html(templates.parse(area.html(), {
 						widgets: renderedWidgets
 					})).removeClass('hidden');
 
@@ -210,11 +325,6 @@ var ajaxify = {};
 		}
 
 		checkCallback();
-	};
-
-
-	ajaxify.refresh = function() {
-		ajaxify.go(ajaxify.currentPage);
 	};
 
 	$('document').ready(function () {
@@ -259,6 +369,26 @@ var ajaxify = {};
 					}
 				}
 			}
+		});
+
+		templates.registerLoader(function(template, callback) {
+			$.ajax({
+				url: RELATIVE_PATH + '/templates/' + template + '.tpl',
+				type: 'GET',
+				success: function(data) {
+					callback(null, data.toString());
+				},
+				error: function(error) {
+					callback({message: error.statusText}, false);
+				}
+			});
+		});
+
+		$.when($.getJSON(RELATIVE_PATH + '/templates/config.json'), $.getJSON(RELATIVE_PATH + '/api/get_templates_listing')).done(function (config_data, templates_data) {
+			templatesConfig = config_data[0];
+			availableTemplates = templates_data[0];
+
+			app.load();
 		});
 	});
 
