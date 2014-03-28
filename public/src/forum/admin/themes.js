@@ -187,58 +187,63 @@ define(['forum/admin/settings'], function(Settings) {
 			},
 			connectWith: "div"
 		}).on('click', '.toggle-widget', function() {
-				$(this).parents('.panel').children('.panel-body').toggleClass('hidden');
-			}).on('click', '.delete-widget', function() {
-				var panel = $(this).parents('.panel');
+			$(this).parents('.panel').children('.panel-body').toggleClass('hidden');
+		}).on('click', '.delete-widget', function() {
+			var panel = $(this).parents('.panel');
 
-				bootbox.confirm('Are you sure you wish to delete this widget?', function(confirm) {
-					if (confirm) {
-						panel.remove();
-					}
-				});
-			}).on('dblclick', '.panel-heading', function() {
-				$(this).parents('.panel').children('.panel-body').toggleClass('hidden');
+			bootbox.confirm('Are you sure you wish to delete this widget?', function(confirm) {
+				if (confirm) {
+					panel.remove();
+				}
 			});
+		}).on('dblclick', '.panel-heading', function() {
+			$(this).parents('.panel').children('.panel-body').toggleClass('hidden');
+		});
 
-		$('#widgets .btn[data-template]').on('click', function() {
-			var btn = $(this),
-				template = btn.attr('data-template'),
-				location = btn.attr('data-location'),
-				area = btn.parents('.area').children('.widget-area'),
-				widgets = [];
+		$('#widgets .btn[data-template]').on('click', saveWidgets);
 
-			area.find('.panel[data-widget]').each(function() {
-				var widgetData = {},
-					data = $(this).find('form').serializeArray();
+		function saveWidgets() {
+			$('#widgets .btn[data-template]').each(function(i, el) {
+				el = $(el);
 
-				for (var d in data) {
-					if (data.hasOwnProperty(d)) {
-						if (data[d].name) {
-							widgetData[data[d].name] = data[d].value;
+				var template = el.attr('data-template'),
+					location = el.attr('data-location'),
+					area = el.parents('.area').children('.widget-area'),
+					widgets = [];
+
+				area.find('.panel[data-widget]').each(function() {
+					var widgetData = {},
+						data = $(this).find('form').serializeArray();
+
+					for (var d in data) {
+						if (data.hasOwnProperty(d)) {
+							if (data[d].name) {
+								widgetData[data[d].name] = data[d].value;
+							}
 						}
 					}
-				}
 
-				widgets.push({
-					widget: $(this).attr('data-widget'),
-					data: widgetData
+					widgets.push({
+						widget: $(this).attr('data-widget'),
+						data: widgetData
+					});
+				});
+				console.log(template, location, widgets);
+				socket.emit('admin.widgets.set', {
+					template: template,
+					location: location,
+					widgets: widgets
+				}, function(err) {
+					app.alert({
+						alert_id: 'admin:widgets',
+						type: err ? 'danger' : 'success',
+						title: err ? 'Error' : 'Widgets Updated',
+						message: err ? err.message : 'Successfully updated widgets in ' + template + '/' + location,
+						timeout: 2500
+					});
 				});
 			});
-
-			socket.emit('admin.widgets.set', {
-				template: template,
-				location: location,
-				widgets: widgets
-			}, function(err) {
-				app.alert({
-					alert_id: 'admin:widgets',
-					type: err ? 'danger' : 'success',
-					title: err ? 'Error' : 'Widgets Updated',
-					message: err ? err : 'Successfully updated widgets',
-					timeout: 2500
-				});
-			});
-		});
+		}
 
 		function populateWidget(widget, data) {
 			widget.find('input, textarea').each(function() {
