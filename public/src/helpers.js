@@ -3,9 +3,7 @@
 
 
 (function(module) {
-	var helpers = {},
-		templates = templates || require('./templates');
-
+	var helpers = {};
 
 	helpers.displayUsersLink = function(config) {
 		return (config.isLoggedIn && !config.privateUserInfo);
@@ -20,6 +18,8 @@
 	}
 
 	module.exports = function() {
+		var templates = templates || require('./templates');
+
 		templates.registerHelper('displayUsersLink', helpers.displayUsersLink);
 	};
 
