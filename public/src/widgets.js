@@ -29,13 +29,18 @@
 			var area = $('#content [widget-area="' + location + '"]');
 
 			socket.emit('widgets.render', {template: tpl_url + '.tpl', url: url, location: location}, function(err, renderedWidgets) {
-				if (area.html()) {
-					area.html(templates.parse(area.html(), {widgets: renderedWidgets}))
-						.removeClass('hidden');
+				var html = '';
 
-					if (!renderedWidgets.length) {
-						ajaxify.widgets.reposition();
+				for (var widget in renderedWidgets) {
+					if (renderedWidgets.hasOwnProperty(widget)) {
+						html += renderedWidgets[widget].html;
 					}
+				}
+
+				area.html(html).removeClass('hidden');
+
+				if (!renderedWidgets.length) {
+					ajaxify.widgets.reposition();
 				}
 
 				$('#content [widget-area] img:not(.user-img)').addClass('img-responsive');
