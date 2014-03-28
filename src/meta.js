@@ -246,6 +246,7 @@ var fs = require('fs'),
 			'src/variables.js',
 			'src/widgets.js',
 			'src/translator.js',
+			'src/helpers.js',
 			'src/overrides.js',
 			'src/utils.js'
 		],

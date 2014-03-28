@@ -18,7 +18,9 @@ var path = require('path'),
 	plugins = require('./plugins'),
 	middleware = require('./middleware'),
 	routes = require('./routes'),
-	emitter = require('./emitter');
+	emitter = require('./emitter'),
+
+	helpers = require('./../public/src/helpers')();
 
 if(nconf.get('ssl')) {
 	server = require('https').createServer({

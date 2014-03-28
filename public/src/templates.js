@@ -126,6 +126,16 @@
 		return template;
 	}
 
+	function checkConditionalHelper(template, obj) {
+		var func = /IF function.([\S]*)/gi.exec(template);
+
+		if (func && helpers[func[1]]) {
+			template = checkConditional(template, 'function.' + func[1], helpers[func[1]](obj));
+		}
+
+		return template;
+	}
+
 	function callMethod(method, parameters) {
 		return method.apply(templates, [parameters.data, parameters.iterator, parameters.numblocks]);
 	}
@@ -248,6 +258,9 @@
 	function parse(template, obj, bind, namespace, blockInfo) {
 		namespace = namespace || '';
 		originalObj = originalObj || obj;
+
+
+		template = checkConditionalHelper(template, obj);
 
 		for (var key in obj) {
 			if (obj.hasOwnProperty(key)) {
