@@ -142,9 +142,9 @@ SocketModules.composer.getUsersByTid = function(socket, tid, callback) {
 	callback(null, _.filter(SocketModules.composer.replyHash, function(replyObj, uuid) {
 		return parseInt(replyObj.tid, 10) === parseInt(tid, 10);
 	}).map(function(replyObj) {
-		return replyObj.uid
+		return replyObj.uid;
 	}));
-}
+};
 
 /* Chat */
 
@@ -153,10 +153,10 @@ SocketModules.chats.get = function(socket, data, callback) {
 		return callback(new Error('invalid data'));
 	}
 
-	Messaging.getMessages(socket.uid, data.touid, callback);
+	Messaging.getMessages(socket.uid, data.touid, false, callback);
 };
 
-SocketModules.chats.send = function(socket, data) {
+SocketModules.chats.send = function(socket, data, callback) {
 	if(!data) {
 		return callback(new Error('invalid data'));
 	}
@@ -168,59 +168,44 @@ SocketModules.chats.send = function(socket, data) {
 
 	var msg = S(data.message).stripTags().s;
 
-	user.getMultipleUserFields([socket.uid, touid], ['username', 'userslug', 'picture'], function(err, usersData) {
-		if(err) {
-			return;
+	Messaging.addMessage(socket.uid, touid, msg, function(err, message) {
+		if (err) {
+			return callback(err);
 		}
 
-		var username = usersData[0].username,
-			toUsername = usersData[1].username,
-			finalMessage = username + ' : ' + msg,
-			notifText = 'New message from <strong>' + username + '</strong>';
+		sendChatNotification(socket.uid, touid, message.user.username);
 
-		if (!module.parent.exports.isUserOnline(touid)) {
-			notifications.create({
-				text: notifText,
-				path: 'javascript:app.openChat(&apos;' + username + '&apos;, ' + socket.uid + ');',
-				uniqueId: 'notification_' + socket.uid + '_' + touid,
-				from: socket.uid
-			}, function(nid) {
-				notifications.push(nid, [touid], function(success) {
-
-				});
+		server.getUserSockets(touid).forEach(function(s) {
+			s.emit('event:chats.receive', {
+				withUid: socket.uid,
+				message: message
 			});
-		}
+		});
 
-		usersData[0].uid = socket.uid;
-		usersData[1].uid = touid;
-
-		Messaging.parse(msg, socket.uid, socket.uid, usersData[1], usersData[0], true, function(parsed) {
-			Messaging.addMessage(socket.uid, touid, msg, function(err, message) {
-
-
-				server.getUserSockets(touid).forEach(function(s) {
-					s.emit('event:chats.receive', {
-						uid: socket.uid,
-						fromUid: socket.uid,
-						username: username,
-						message: parsed,
-						timestamp: Date.now()
-					});
-				});
-
-				server.getUserSockets(socket.uid).forEach(function(s) {
-					s.emit('event:chats.receive', {
-						uid: touid,
-						fromUid: socket.uid,
-						username: toUsername,
-						message: parsed,
-						timestamp: Date.now()
-					});
-				});
+		server.getUserSockets(socket.uid).forEach(function(s) {
+			s.emit('event:chats.receive', {
+				withUid: touid,
+				message: message
 			});
 		});
 	});
 };
+
+function sendChatNotification(fromuid, touid, username) {
+	if (!module.parent.exports.isUserOnline(touid)) {
+		var notifText = 'New message from <strong>' + username + '</strong>';
+		notifications.create({
+			text: notifText,
+			path: 'javascript:app.openChat(&apos;' + username + '&apos;, ' + fromuid + ');',
+			uniqueId: 'notification_' + fromuid + '_' + touid,
+			from: fromuid
+		}, function(nid) {
+			notifications.push(nid, [touid], function(success) {
+
+			});
+		});
+	}
+}
 
 SocketModules.chats.list = function(socket, data, callback) {
 	Messaging.getRecentChats(socket.uid, callback);

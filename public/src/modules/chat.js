@@ -51,9 +51,9 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 		});
 
 		socket.on('event:chats.receive', function(data) {
-			if (module.modalExists(data.uid)) {
-				var modal = module.getModal(data.uid);
-				module.appendChatMessage(modal, data.message, data.timestamp);
+			if (module.modalExists(data.withUid)) {
+				var modal = module.getModal(data.withUid);
+				module.appendChatMessage(modal, data.message);
 
 				if (modal.is(":visible")) {
 					module.bringModalToTop(modal);
@@ -65,16 +65,16 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 				}
 
 				if (!modal.is(":visible") || !app.isFocused) {
-					app.alternatingTitle(data.username + ' has messaged you');
+					app.alternatingTitle(data.message.user.username + ' has messaged you');
 				}
 			} else {
-				module.createModal(data.username, data.uid, function(modal) {
+				module.createModal(data.message.user.username, data.withUid, function(modal) {
 					module.toggleNew(modal.attr('UUID'), true);
-					app.alternatingTitle(data.username + ' has messaged you');
+					app.alternatingTitle(data.message.user.username + ' has messaged you');
 				});
 			}
 
-			if (parseInt(app.uid, 10) !== parseInt(data.fromUid, 10)) {
+			if (parseInt(app.uid, 10) !== parseInt(data.message.fromuid, 10)) {
 				sounds.play('chat-incoming');
 			}
 		});
@@ -203,7 +203,7 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 	function getChatMessages(chatModal, callback) {
 		socket.emit('modules.chats.get', {touid:chatModal.touid}, function(err, messages) {
 			for(var i = 0; i<messages.length; ++i) {
-				module.appendChatMessage(chatModal, messages[i].content, messages[i].timestamp);
+				module.appendChatMessage(chatModal, messages[i]);
 			}
 			callback();
 		});
@@ -226,19 +226,34 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 		var msg = S(chatModal.find('#chat-message-input').val()).stripTags().s;
 		if(msg.length) {
 			msg = msg +'\n';
-			socket.emit('modules.chats.send', { touid:chatModal.touid, message:msg});
+			socket.emit('modules.chats.send', {touid:chatModal.touid, message:msg});
 			chatModal.find('#chat-message-input').val('');
 			sounds.play('chat-outgoing');
 		}
 	}
 
-	module.appendChatMessage = function(chatModal, message, timestamp) {
+	module.appendChatMessage = function(chatModal, data) {
 		var chatContent = chatModal.find('#chat-content');
 
-		var time = '<span class="chat-timestamp pull-right timeago" title="' + utils.toISOString(timestamp) + '"></span> ';
-		message = $('<li class="chat-message">' + S(message + time).stripTags('p').s + '</li>');
+		var isYou = parseInt(app.uid, 10) === parseInt(data.fromuid, 10);
 
-		message.toggleClass('chat-message-them', !message.find('.chat-user-you').length);
+		var message = $('<li class="chat-message" data-uid="' + data.fromuid + '"></li>');
+		var time = '<span class="chat-timestamp pull-right timeago" title="' + utils.toISOString(data.timestamp) + '"></span> ';
+
+
+		if (data.fromuid !== chatContent.children().last().attr('data-uid')) {
+			var userPicture = $('<a href="/user/' + data.user.userslug + '"><img class="chat-user-image" src="' + data.user.picture + '"></a>');
+			var userName = $('<strong><span class="chat-user"> '+ data.user.username + '</span></strong>');
+			userName.toggleClass('chat-user-you', isYou);
+
+			message.append(userPicture)
+				.append(userName)
+				.append('<br/>');
+		}
+
+		message.append(S(data.content + time).stripTags('p').s);
+
+		message.toggleClass('chat-message-them', !isYou);
 		message.find('img:not(".chat-user-image")').addClass('img-responsive');
 		message.find('span.timeago').timeago();
 
