@@ -165,7 +165,7 @@
 		do {
 			parsedBlock = parse(block, array[key][iterator], bind, namespace, {iterator: iterator, total: numblocks}) + ((iterator < numblocks) ? '\r\n':'');
 			
-			result += (!bind) ? parsedBlock : '<span data-binding="' + bind + namespace + iterator + '">' + parsedBlock + '</span>';
+			result += (!bind) ? parsedBlock : setBindContainer(parsedBlock, bind + namespace + iterator);
 			result = parseFunctions(block, result, {
 				data: array[key][iterator],
 				iterator: iterator,
@@ -178,6 +178,10 @@
 		} while (iterator++ < numblocks);
 
 		return template.replace(regex, result);
+	}
+
+	function setBindContainer(block, namespace) {
+		return namespace ? '<span data-binding="' + namespace + '">' + block + '</span>' : block;
 	}
 
 	function parseValue(template, key, value, blockInfo) {
@@ -199,14 +203,11 @@
 	function setupBindings(parameters) {
 		var obj = parameters.obj,
 			key = parameters.key,
-			namespace = parameters.namespace,
-			blockInfo = parameters.blockInfo,
 			bind = parameters.bind,
-			template = parameters.template,
 			value = obj[key];
 
-		obj.__namespace = namespace;
-		obj.__iterator = blockInfo ? blockInfo.iterator : false;
+		obj.__namespace = parameters.namespace;
+		obj.__iterator = parameters.blockInfo ? parameters.blockInfo.iterator : false;
 
 		Object.defineProperty(obj, key, {
 			get: function() {
@@ -243,10 +244,6 @@
 	}
 
 	function parse(template, obj, bind, namespace, blockInfo) {
-		if (!obj || obj.length === 0) {
-			template = '';
-		}
-
 		namespace = namespace || '';
 		originalObj = originalObj || obj;
 
@@ -270,8 +267,7 @@
 							key: key,
 							namespace: namespace,
 							blockInfo: blockInfo,
-							bind: bind,
-							template: template
+							bind: bind
 						});
 					}
 				}
@@ -283,13 +279,11 @@
 			namespace = '';
 		} else {
 			// clean up all undefined conditionals
-			template = template.replace(/\s*<!-- ELSE -->\s*/gi, 'ENDIF -->\r\n')
+			template = setBindContainer(template.replace(/\s*<!-- ELSE -->\s*/gi, 'ENDIF -->\r\n')
 								.replace(/\s*<!-- IF([\s\S]*?)ENDIF([\s\S]*?)-->/gi, '')
-								.replace(/\s*<!-- ENDIF ([\s\S]*?)-->\s*/gi, '');
+								.replace(/\s*<!-- ENDIF ([\s\S]*?)-->\s*/gi, ''), bind);
 
-			if (bind) {
-				template = '<span data-binding="' + bind + '">' + template + '</span>';
-			}
+			template = setBindContainer(template, bind);
 		}
 
 		return template;
