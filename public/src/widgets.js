@@ -2,6 +2,8 @@
 /*global ajaxify, socket, templates*/
 
 (function(ajaxify) {
+	ajaxify.widgets = {};
+	
 	ajaxify.widgets.reposition = function() {
 		$('body [no-widget-class]').each(function() {
 			var $this = $(this);
