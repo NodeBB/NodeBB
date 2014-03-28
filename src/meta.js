@@ -243,6 +243,8 @@ var fs = require('fs'),
 			'src/app.js',
 			'src/templates.js',
 			'src/ajaxify.js',
+			'src/variables.js',
+			'src/widgets.js',
 			'src/translator.js',
 			'src/overrides.js',
 			'src/utils.js'

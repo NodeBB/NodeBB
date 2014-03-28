@@ -682,7 +682,7 @@ var socket,
 			ajaxify.variables.parse();
 			app.processPage();
 
-			ajaxify.renderWidgets(tpl_url, url);
+			ajaxify.widgets.render(tpl_url, url);
 
 			ajaxify.loadScript(tpl_url, function() {
 				$(window).trigger('action:ajaxify.end', {

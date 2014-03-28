@@ -180,7 +180,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 				var noTopicsWarning = $('#category-no-topics');
 				if (noTopicsWarning.length) {
 					noTopicsWarning.remove();
-					ajaxify.renderWidgets('category', window.location.pathname.slice(1));
+					ajaxify.widgets.render('category', window.location.pathname.slice(1));
 				}
 
 				if (numTopics > 0) {

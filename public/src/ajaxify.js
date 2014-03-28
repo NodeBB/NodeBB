@@ -1,6 +1,6 @@
 "use strict";
 
-var ajaxify = {};
+var ajaxify = ajaxify || {};
 
 (function () {
 	/*global app, templates, utils, socket, translator, config, RELATIVE_PATH*/
@@ -13,6 +13,7 @@ var ajaxify = {};
 		apiXHR = null;
 
 	var events = [];
+
 	ajaxify.register_events = function (new_page_events) {
 		for (var i = 0, ii = events.length; i < ii; i++) {
 			socket.removeAllListeners(events[i]); // optimize this to user removeListener(event, listener) instead.
@@ -95,7 +96,7 @@ var ajaxify = {};
 
 				app.processPage();
 
-				ajaxify.renderWidgets(tpl_url, url, function(err) {
+				ajaxify.widgets.render(tpl_url, url, function(err) {
 					$('#content, #footer').stop(true, true).removeClass('ajaxifying');
 					ajaxify.initialLoad = false;
 
@@ -232,97 +233,6 @@ var ajaxify = {};
 				}
 			});
 		}
-	};
-
-	ajaxify.variables = (function() {
-		var parsedVariables = {};
-
-		return {
-			set: function(key, value) {
-				parsedVariables[key] = value;
-			},
-			get: function(key) {
-				return parsedVariables[key];
-			},
-			flush: function() {
-				parsedVariables = {};
-			},
-			parse: function() {
-				$('#content [template-variable]').each(function(index, element) {
-					var value = null;
-
-					switch ($(element).attr('template-type')) {
-						case 'boolean':
-							value = ($(element).val() === 'true' || $(element).val() === '1') ? true : false;
-							break;
-						case 'int':
-						case 'integer':
-							value = parseInt($(element).val());
-							break;
-						default:
-							value = $(element).val();
-							break;
-					}
-
-					ajaxify.variables.set($(element).attr('template-variable'), value);
-				});
-			}
-		};
-	})();
-
-	ajaxify.repositionNoWidgets = function() {
-		$('body [no-widget-class]').each(function() {
-			var $this = $(this);
-			$this.removeClass();
-			$this.addClass($this.attr('no-widget-class'));
-		});
-	};
-
-	ajaxify.renderWidgets = function(tpl_url, url, callback) {
-		var widgetLocations = [], numLocations;
-
-		$('#content [widget-area]').each(function() {
-			widgetLocations.push($(this).attr('widget-area'));
-		});
-
-		numLocations = widgetLocations.length;
-
-		if (!numLocations) {
-			ajaxify.repositionNoWidgets();
-		}
-
-		function renderWidgets(location) {
-			var area = $('#content [widget-area="' + location + '"]');
-
-			socket.emit('widgets.render', {template: tpl_url + '.tpl', url: url, location: location}, function(err, renderedWidgets) {
-				if (area.html()) {
-					area.html(templates.parse(area.html(), {widgets: renderedWidgets}))
-						.removeClass('hidden');
-
-					if (!renderedWidgets.length) {
-						ajaxify.repositionNoWidgets();
-					}
-				}
-
-				$('#content [widget-area] img:not(.user-img)').addClass('img-responsive');
-				checkCallback();
-			});
-		}
-
-		function checkCallback() {
-			numLocations--;
-			if (numLocations < 0 && callback) {
-				callback();
-			}
-		}
-
-		for (var i in widgetLocations) {
-			if (widgetLocations.hasOwnProperty(i)) {
-				renderWidgets(widgetLocations[i]);
-			}
-		}
-
-		checkCallback();
 	};
 
 	$('document').ready(function () {
