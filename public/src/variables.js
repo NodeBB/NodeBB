@@ -23,16 +23,16 @@
 			var value = null;
 
 			switch ($(element).attr('template-type')) {
-				case 'boolean':
-					value = ($(element).val() === 'true' || $(element).val() === '1') ? true : false;
-					break;
-				case 'int':
-				case 'integer':
-					value = parseInt($(element).val());
-					break;
-				default:
-					value = $(element).val();
-					break;
+			case 'boolean':
+				value = ($(element).val() === 'true' || $(element).val() === '1') ? true : false;
+				break;
+			case 'int':
+			case 'integer':
+				value = parseInt($(element).val(), 10);
+				break;
+			default:
+				value = $(element).val();
+				break;
 			}
 
 			ajaxify.variables.set($(element).attr('template-variable'), value);
