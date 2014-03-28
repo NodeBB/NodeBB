@@ -43,5 +43,6 @@
     "hidden": "masqué",
     "paginate_description": "Utiliser la pagination de sujets et messages au lieu du défilement infini.",
     "topics_per_page": "Sujets par Page",
-    "posts_per_page": "Messages par Page"
+    "posts_per_page": "Messages par Page",
+    "notification_sounds": "Emettre un son lors de la réception de notifications."
 }
