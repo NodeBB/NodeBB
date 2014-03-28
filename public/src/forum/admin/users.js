@@ -222,7 +222,8 @@ define(function() {
 
 			function onUsersLoaded(users) {
 				ajaxify.loadTemplate('admin/users', function(adminUsers) {
-					$('#users-container').append($(templates.parse(templates.getBlock(adminUsers, 'users'), {users: users})));
+					var html = $(templates.parse(templates.getBlock(adminUsers, 'users'), {users: users}));
+					$('#users-container').append(html);
 					updateUserBanButtons(html.find('.ban-btn'));
 					updateUserAdminButtons(html.find('.admin-btn'));
 				});
