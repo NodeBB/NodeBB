@@ -158,8 +158,7 @@ var fs = require('fs'),
 				break;
 
 			case 'bootswatch':
-				themeData['theme:src'] = data.src;
-				db.setObject('config', themeData, callback);
+				db.setObjectField('config', 'theme:src', data.src, callback);
 				break;
 			}
 		}

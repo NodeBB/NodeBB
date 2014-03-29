@@ -5,8 +5,8 @@ define(['forum/admin/settings'], function(Settings) {
 	var Themes = {};
 
 	function highlightSelectedTheme(themeId) {
-		$('#themes li[data-theme]').removeClass('btn-warning');
-		$('#themes li[data-theme="' + themeId + '"]').addClass('btn-warning');
+		$('.themes li[data-theme]').removeClass('btn-warning');
+		$('.themes li[data-theme="' + themeId + '"]').addClass('btn-warning');
 	}
 
 	Themes.init = function() {
@@ -26,7 +26,7 @@ define(['forum/admin/settings'], function(Settings) {
 					themeType = parentEl.attr('data-type'),
 					cssSrc = parentEl.attr('data-css'),
 					themeId = parentEl.attr('data-theme');
-
+			
 				socket.emit('admin.themes.set', {
 					type: themeType,
 					id: themeId,
@@ -228,7 +228,7 @@ define(['forum/admin/settings'], function(Settings) {
 						data: widgetData
 					});
 				});
-				console.log(template, location, widgets);
+				
 				socket.emit('admin.widgets.set', {
 					template: template,
 					location: location,
