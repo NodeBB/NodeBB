@@ -83,7 +83,7 @@
 	}
 
 	function makeStatementRegex(key) {
-		return new RegExp("([\\s]*<!--[\\s]*IF " + key + "[\\s]*-->[\\s]*)|([\\s]*<!--[\\s]*ENDIF " + key + "[\\s]*-->[\\s]*)", 'gi');
+		return new RegExp("([\\s]*<!--[\\s]*IF " + key + "[\\s]*-->)|(<!--[\\s]*ENDIF " + key + "[\\s]*-->[\\s]*)", 'gi');
 	}
 
 	function registerGlobals(obj) {
@@ -108,16 +108,16 @@
 				if (conditionalBlock[1]) {
 					// there is an else statement
 					if (!value) {
-						template = template.replace(matches[i], conditionalBlock[1].replace(statement, '').replace(/(^[\s]*)|([\s]*$)/gi, ''));
+						template = template.replace(matches[i], conditionalBlock[1].replace(statement, '').replace(/(^[\r\n\t]*)|([\r\n\t]*$)/gi, ''));
 					} else {
-						template = template.replace(matches[i], conditionalBlock[0].replace(statement, '').replace(/(^[\s]*)|([\s]*$)/gi, ''));
+						template = template.replace(matches[i], conditionalBlock[0].replace(statement, '').replace(/(^[\r\n\t]*)|([\r\n\t]*$)/gi, ''));
 					}
 				} else {
 					// regular if statement
 					if (!value) {
 						template = template.replace(matches[i], '');
 					} else {
-						template = template.replace(matches[i], matches[i].replace(statement, '').replace(/(^[\s]*)|([\s]*$)/gi, ''));
+						template = template.replace(matches[i], matches[i].replace(statement, '').replace(/(^[\r\n\t]*)|([\r\n\t]*$)/gi, ''));
 					}
 				}
 			}
@@ -294,10 +294,10 @@
 			namespace = '';
 		} else {
 			// clean up all undefined conditionals
-			template = setBindContainer(template.replace(/\s*<!-- ELSE -->\s*/gi, 'ENDIF -->\r\n')
+			template = template.replace(/\s*<!-- ELSE -->\s*/gi, 'ENDIF -->\r\n')
 								.replace(/\s*<!-- IF([\s\S]*?)ENDIF([\s\S]*?)-->/gi, '')
 								.replace(/\s*<!-- BEGIN([\s\S]*?)END ([\s\S]*?)-->/gi, '')
-								.replace(/\s*<!-- ENDIF ([\s\S]*?)-->\s*/gi, ''), bind);
+								.replace(/\s*<!-- ENDIF ([\s\S]*?)-->\s*/gi, '');
 
 			template = setBindContainer(template, bind);
 		}
