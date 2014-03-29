@@ -48,6 +48,8 @@
     "views": "Katsottu",
     "posted": "kirjoitettu",
     "in": "alueelle",
+    "norecentposts": "No Recent Posts",
+    "norecenttopics": "No Recent Topics",
     "recentposts": "Viimeisimmät viestit",
     "recentips": "Recently Logged In IPs",
     "online": "Online",

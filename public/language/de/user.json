@@ -43,5 +43,6 @@
     "hidden": "versteckt",
     "paginate_description": "Themen und Beiträge auf Seiten aufteilen statt unendliches Scrollen verweden",
     "topics_per_page": "Themen pro Seite",
-    "posts_per_page": "Beiträge pro Seite"
+    "posts_per_page": "Beiträge pro Seite",
+    "notification_sounds": "Play a sound when you receive a notification."
 }

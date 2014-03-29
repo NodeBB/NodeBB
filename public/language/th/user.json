@@ -43,5 +43,6 @@
     "hidden": "ซ่อน",
     "paginate_description": "ให้เลขหน้ากระทู้และโพสต์แทนการใช้สกรอลล์ที่ไม่สิ้นสุด",
     "topics_per_page": "จำนวนกระทู้ต่อหน้า",
-    "posts_per_page": "จำนวนโพสต์ต่อหน้า"
+    "posts_per_page": "จำนวนโพสต์ต่อหน้า",
+    "notification_sounds": "Play a sound when you receive a notification."
 }

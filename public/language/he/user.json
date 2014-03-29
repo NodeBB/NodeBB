@@ -43,5 +43,6 @@
     "hidden": "מוסתר",
     "paginate_description": "צור עימוד לנושאים במקום לטעון את כל התוכן בעמוד אחד.",
     "topics_per_page": "כמות נושאים בעמוד",
-    "posts_per_page": "כמות פוסטים בעמוד"
+    "posts_per_page": "כמות פוסטים בעמוד",
+    "notification_sounds": "Play a sound when you receive a notification."
 }

@@ -43,5 +43,6 @@
     "hidden": "cuadu",
     "paginate_description": "Partzi is arresonadas e arresonos in pàginas a su postu de impreare su iscorrimentu infinidu.",
     "topics_per_page": "Arresonadas pro Pàgina",
-    "posts_per_page": "Arresonos pro Pàgina"
+    "posts_per_page": "Arresonos pro Pàgina",
+    "notification_sounds": "Play a sound when you receive a notification."
 }
