@@ -43,5 +43,6 @@
     "hidden": "dold",
     "paginate_description": "Gör så att ämnen och inlägg visas som sidor istället för oändlig scroll.",
     "topics_per_page": "Ämnen per sida",
-    "posts_per_page": "Inlägg per sida"
+    "posts_per_page": "Inlägg per sida",
+    "notification_sounds": "Play a sound when you receive a notification."
 }

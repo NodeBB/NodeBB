@@ -43,5 +43,6 @@
     "hidden": "gizli",
     "paginate_description": "Paginate topics and posts instead of using infinite scroll.",
     "topics_per_page": "Topics per Page",
-    "posts_per_page": "Posts per Page"
+    "posts_per_page": "Posts per Page",
+    "notification_sounds": "Play a sound when you receive a notification."
 }

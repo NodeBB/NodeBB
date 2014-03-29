@@ -43,5 +43,6 @@
     "hidden": "nascosta",
     "paginate_description": "Dividi argomenti e post in pagine anziché usare lo scroll infinito.",
     "topics_per_page": "Argomenti per Pagina",
-    "posts_per_page": "Post per Pagina"
+    "posts_per_page": "Post per Pagina",
+    "notification_sounds": "Play a sound when you receive a notification."
 }

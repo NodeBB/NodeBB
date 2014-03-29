@@ -43,5 +43,6 @@
     "hidden": "skrytý",
     "paginate_description": "Stránkuj témy a príspevky miesto používania nekonečného posúvania.",
     "topics_per_page": "Témy na stranu",
-    "posts_per_page": "Príspevkov na stranu"
+    "posts_per_page": "Príspevkov na stranu",
+    "notification_sounds": "Play a sound when you receive a notification."
 }

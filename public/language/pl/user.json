@@ -43,5 +43,6 @@
     "hidden": "ukryty",
     "paginate_description": "Użyj klasycznego trybu paginacji zamiast nieskończonego przewijania.",
     "topics_per_page": "Wątków na stronę",
-    "posts_per_page": "Postów na stronę"
+    "posts_per_page": "Postów na stronę",
+    "notification_sounds": "Odtwórz dźwięk po otrzymaniu powiadomienia."
 }

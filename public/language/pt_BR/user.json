@@ -43,5 +43,6 @@
     "hidden": "Escondido",
     "paginate_description": "Paginação de tópicos e posts ao invés de usar \"scroll infinito\"",
     "topics_per_page": "Tópicos por Página",
-    "posts_per_page": "Posts por Página"
+    "posts_per_page": "Posts por Página",
+    "notification_sounds": "Play a sound when you receive a notification."
 }

@@ -1,5 +1,5 @@
 {
-    "register": "注冊",
+    "register": "註冊",
     "help.email": "默認情況下，你的郵箱不會公開。",
     "help.username_restrictions": "用戶名由%1到%2個字符組成。其他人可以通過 @<span id='yourUsername'>用戶名</span> 點名你。",
     "help.minimum_password_length": "密碼必須至少包含%1個字符。",
@@ -11,8 +11,8 @@
     "password_placeholder": "輸入密碼",
     "confirm_password": "確認密碼",
     "confirm_password_placeholder": "再次輸入密碼",
-    "register_now_button": "現在注冊",
-    "alternative_registration": "其他方式注冊",
+    "register_now_button": "現在註冊",
+    "alternative_registration": "其他註冊方式",
     "terms_of_use": "使用條款",
     "agree_to_terms_of_use": "同意遵守使用條款"
 }

@@ -1,6 +1,6 @@
 {
     "login": "เข้าสู่ระบบ",
-    "username": "ชื่อผู้ใช้",
+    "username": "Username / Email",
     "password": "รหัสผ่าน",
     "remember_me": "จำไว้ในระบบ?",
     "forgot_password": "ลืมรหัสผ่าน?",

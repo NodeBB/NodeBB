@@ -43,5 +43,6 @@
     "hidden": "piilotettu",
     "paginate_description": "Sivuta aiheet ja viestit loputtoman vierittämisen sijaan.",
     "topics_per_page": "Aihetta per sivu",
-    "posts_per_page": "Viestiä per sivu"
+    "posts_per_page": "Viestiä per sivu",
+    "notification_sounds": "Play a sound when you receive a notification."
 }

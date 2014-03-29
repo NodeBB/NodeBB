@@ -43,5 +43,6 @@
     "hidden": "verborgen",
     "paginate_description": "Blader door onderwerpen en berichten in plaats van oneindig scrollen.",
     "topics_per_page": "Onderwerpen per Pagina",
-    "posts_per_page": "Berichten per Pagina"
+    "posts_per_page": "Berichten per Pagina",
+    "notification_sounds": "Play a sound when you receive a notification."
 }

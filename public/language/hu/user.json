@@ -43,5 +43,6 @@
     "hidden": "rejtett",
     "paginate_description": "Oldalszámok használata a témáknál és hozzászólásoknál a végtelen görgetés helyett.",
     "topics_per_page": "Téma oldalanként",
-    "posts_per_page": "Hozzászólás oldalanként"
+    "posts_per_page": "Hozzászólás oldalanként",
+    "notification_sounds": "Play a sound when you receive a notification."
 }

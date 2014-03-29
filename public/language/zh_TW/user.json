@@ -43,5 +43,6 @@
     "hidden": "隱藏",
     "paginate_description": "使用分頁取代瀏覽載入帖子模式.",
     "topics_per_page": "每頁的主題數",
-    "posts_per_page": "每頁的帖子數"
+    "posts_per_page": "每頁的帖子數",
+    "notification_sounds": "當收到新消息時播放提示音"
 }
