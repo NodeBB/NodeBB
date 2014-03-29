@@ -238,7 +238,7 @@ middleware.renderHeader = function(req, res, callback) {
 		});
 
 		templateValues.linkTags = defaultLinkTags.concat(res.locals.linkTags || []);
-		templateValues.linkTags.push({
+		templateValues.linkTags.unshift({
 			rel: "icon",
 			type: "image/x-icon",
 			href: nconf.get('relative_path') + '/favicon.ico'
