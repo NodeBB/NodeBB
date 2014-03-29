@@ -411,7 +411,13 @@ var fs = require('fs'),
 	Meta.settings = {};
 	Meta.settings.get = function(hash, callback) {
 		hash = 'settings:' + hash;
-		db.getObject(hash, callback);
+		db.getObject(hash, function(err, settings) {
+			if (err) {
+				callback(err);
+			} else {
+				callback(null, settings || {});
+			}
+		});
 	};
 
 	Meta.settings.getOne = function(hash, field, callback) {
