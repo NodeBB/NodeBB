@@ -119,8 +119,8 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 
 	module.createModal = function(username, touid, callback) {
 
-		templates.preload_template('chat', function() {
-			translator.translate(templates.chat.parse({}), function (chatTpl) {
+		templates.parse('chat', {}, function(chatTpl) {
+			translator.translate(chatTpl, function (chatTpl) {
 
 				var chatModal = $(chatTpl),
 					uuid = utils.generateUUID();
