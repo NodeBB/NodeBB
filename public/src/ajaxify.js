@@ -162,10 +162,10 @@ var ajaxify = ajaxify || {};
 	};
 
 	ajaxify.getCustomTemplateMapping = function(tpl) {
-		if (config.custom_mapping && tpl) {
-			for (var pattern in config.custom_mapping) {
+		if (templatesConfig.custom_mapping && tpl) {
+			for (var pattern in templatesConfig.custom_mapping) {
 				if (tpl.match(pattern)) {
-					return (config.custom_mapping[pattern]);
+					return (templatesConfig.custom_mapping[pattern]);
 				}
 			}
 		}
