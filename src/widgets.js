@@ -1,3 +1,5 @@
+"use strict";
+
 var async = require('async'),
 	winston = require('winston'),
 	plugins = require('./plugins'),
@@ -24,7 +26,7 @@ var async = require('async'),
 					data: widget.data
 				}, function(err, html){
 					if (widget.data.container && widget.data.container.match('{body}')) {
-						html = templates.prepare(widget.data.container).parse({
+						html = templates.parse(widget.data.container, {
 							title: widget.data.title,
 							body: html
 						});
@@ -48,7 +50,7 @@ var async = require('async'),
 				return callback(err, []);
 			}
 			callback(err, JSON.parse(widgets));
-		})
+		});
 	};
 
 	Widgets.setArea = function(area, callback) {
