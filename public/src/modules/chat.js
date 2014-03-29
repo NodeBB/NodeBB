@@ -237,7 +237,7 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 
 		var isYou = parseInt(app.uid, 10) === parseInt(data.fromuid, 10);
 
-		var message = $('<li class="chat-message" data-uid="' + data.fromuid + '"></li>');
+		var message = $('<li class="chat-message clear" data-uid="' + data.fromuid + '"></li>');
 		var time = '<span class="chat-timestamp pull-right timeago" title="' + utils.toISOString(data.timestamp) + '"></span> ';
 
 
