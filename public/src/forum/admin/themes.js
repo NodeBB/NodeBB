@@ -11,7 +11,7 @@ define(['forum/admin/settings'], function(Settings) {
 
 	Themes.init = function() {
 		var scriptEl = $('<script />');
-		scriptEl.attr('src', 'http://api.bootswatch.com/3/?callback=bootswatchListener');
+		scriptEl.attr('src', '//api.bootswatch.com/3/?callback=bootswatchListener');
 		$('body').append(scriptEl);
 
 		var bootstrapThemeContainer = $('#bootstrap_themes'),
