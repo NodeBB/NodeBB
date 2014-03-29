@@ -33,7 +33,7 @@
 
 				for (var widget in renderedWidgets) {
 					if (renderedWidgets.hasOwnProperty(widget)) {
-						html += renderedWidgets[widget].html;
+						html += templates.parse(renderedWidgets[widget].html, {});
 					}
 				}
 
