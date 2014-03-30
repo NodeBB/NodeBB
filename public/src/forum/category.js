@@ -10,18 +10,31 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 		app.enterRoom('category_' + cid);
 
-		$('#twitter-share').on('click', function () {
+		$('.twitter-share').on('click', function () {
 			window.open('https://twitter.com/intent/tweet?url=' + encodeURIComponent(window.location.href) + '&text=' + encodeURIComponent(ajaxify.variables.get('category_name')), '_blank', 'width=550,height=420,scrollbars=no,status=no');
 			return false;
 		});
 
-		$('#facebook-share').on('click', function () {
+		$('.facebook-share').on('click', function () {
 			window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href), '_blank', 'width=626,height=436,scrollbars=no,status=no');
 			return false;
 		});
 
-		$('#google-share').on('click', function () {
+		$('.google-share').on('click', function () {
 			window.open('https://plus.google.com/share?url=' + encodeURIComponent(window.location.href), '_blank', 'width=500,height=570,scrollbars=no,status=no');
+			return false;
+		});
+
+		$('.share-dropdown').on('shown.bs.dropdown', function() {
+			$('#category-link').val(window.location.protocol + '//' + window.location.host + window.location.pathname);
+			// without the setTimeout can't select the text in the input
+			setTimeout(function() {
+				$('#category-link').putCursorAtEnd().select();
+			}, 50);
+		});
+
+		$('.post-link').on('click', function(e) {
+			e.preventDefault();
 			return false;
 		});
 
