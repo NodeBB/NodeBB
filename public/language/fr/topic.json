@@ -29,6 +29,7 @@
     "login_to_subscribe": "Veuillez vous enregistrer ou vous connecter afin de souscrire à ce sujet.",
     "markAsUnreadForAll.success": "Sujet marqué comme non lu pour tout le monde.",
     "watch": "Suivre",
+    "watch.title": "Être notifié des nouvelles réponses pour ce sujet",
     "share_this_post": "Partager ce message",
     "thread_tools.title": "Outils du Fil",
     "thread_tools.markAsUnreadForAll": "Marquer comme non lu",

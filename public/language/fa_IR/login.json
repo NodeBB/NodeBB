@@ -1,10 +1,10 @@
 {
-    "login": "درون‌روی",
-    "username": "Username / Email",
+    "login": "درون آمدن",
+    "username": "نام کاربری / رایانامه",
     "password": "گذرواژه",
-    "remember_me": "مرا به بسپار؟",
-    "forgot_password": "فراموشی گذرواژه؟",
-    "alternative_logins": "درون‌رَوی‌های جایگزین",
+    "remember_me": "مرا به یاد بسپار؟",
+    "forgot_password": "گذرواژه را فراموش کرده‌اید؟",
+    "alternative_logins": "روش‌های درون آمدن جایگزین",
     "failed_login_attempt": "شکست در درون آمدن، لطفا دوباره تلاش کنید.",
     "login_successful": "شما با موفقیت به درون آمدید!"
 }

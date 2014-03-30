@@ -29,6 +29,7 @@
     "login_to_subscribe": "请注册或登录以订阅该主题。",
     "markAsUnreadForAll.success": "标记所有未读主题",
     "watch": "查看",
+    "watch.title": "Be notified of new replies in this topic",
     "share_this_post": "分享帖子",
     "thread_tools.title": "管理工具",
     "thread_tools.markAsUnreadForAll": "标记未读",

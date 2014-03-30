@@ -44,5 +44,5 @@
     "paginate_description": "La paginación de los temas no es por página, ya que tiene scroll infinito.",
     "topics_per_page": "Temas por página",
     "posts_per_page": "Post por página",
-    "notification_sounds": "Play a sound when you receive a notification."
+    "notification_sounds": "Reproducir un sonido al recibir una notificación"
 }

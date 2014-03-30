@@ -29,6 +29,7 @@
     "login_to_subscribe": "กรุณาลงทะเบียนหรือเข้าสู่ระบบเพื่อที่จะติดตามกระทู้นี้",
     "markAsUnreadForAll.success": "ทำเครื่องหมายว่ายังไม่ได้อ่านทั้งหมด",
     "watch": "ติดตาม",
+    "watch.title": "Be notified of new replies in this topic",
     "share_this_post": "แชร์โพสต์นี้",
     "thread_tools.title": "เครื่องมือจัดการกระทู้",
     "thread_tools.markAsUnreadForAll": "ทำหมายว่ายังไม่ได้อ่าน",
