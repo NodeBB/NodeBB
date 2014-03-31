@@ -19,7 +19,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 2, 21);
+	latestSchema = Date.UTC(2014, 3, 31, 12, 30);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -514,6 +514,24 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2014/3/21] Removing gids and pruning groups - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 3, 31, 12, 30);
+
+			if (schemaDate < thisSchemaDate) {
+				db.setObjectField('widgets:global', 'footer', "[{\"widget\":\"html\",\"data\":{\"html\":\"<footer id=\\\"footer\\\" class=\\\"container footer\\\">\\r\\n\\t<div class=\\\"copyright\\\">\\r\\n\\t\\tCopyright © 2014 <a target=\\\"_blank\\\" href=\\\"https://www.nodebb.com\\\">NodeBB Forums</a> | <a target=\\\"_blank\\\" href=\\\"//github.com/designcreateplay/NodeBB/graphs/contributors\\\">Contributors</a>\\r\\n\\t</div>\\r\\n</footer>\",\"title\":\"\",\"container\":\"\"}}]", function(err) {
+					if (err) {
+						winston.error('[2014/3/31] Problem re-adding copyright message into global footer widget');
+						next();
+					} else {
+						winston.info('[2014/3/31] Re-added copyright message into global footer widget');
+						Upgrade.update(thisSchemaDate, next);
+					}
+				});
+			} else {
+				winston.info('[2014/3/31] Re-adding copyright message into global footer widget - skipped');
 				next();
 			}
 		}
