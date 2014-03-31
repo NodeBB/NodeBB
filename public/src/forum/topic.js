@@ -44,7 +44,7 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools'],
 		}
 
 		$(function() {
-			app.addCommasToNumbers();
+			utils.addCommasToNumbers($('.topic .formatted-number'));
 
 			app.enterRoom('topic_' + tid);
 
@@ -761,8 +761,8 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools'],
 
 		app.populateOnlineUsers();
 		app.createUserTooltips();
-		app.addCommasToNumbers();
-		app.makeNumbersHumanReadable($('.human-readable-number'));
+		utils.addCommasToNumbers(html.find('.formatted-number'));
+		utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 		html.find('span.timeago').timeago();
 		html.find('.post-content img').addClass('img-responsive');
 		updatePostCount();

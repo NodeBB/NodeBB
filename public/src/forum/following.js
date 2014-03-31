@@ -10,7 +10,7 @@ define(['forum/accountheader'], function(header) {
 			$('#no-following-notice').removeClass('hide');
 		}
 
-		app.addCommasToNumbers();
+		utils.addCommasToNumbers($('.account .formatted-number'));
 	};
 
 	return Following;

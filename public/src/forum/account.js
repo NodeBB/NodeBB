@@ -12,8 +12,8 @@ define(['forum/accountheader'], function(header) {
 			var username = $('.account-username').html();
 			app.enterRoom('user/' + theirid);
 
-			app.addCommasToNumbers();
-			app.makeNumbersHumanReadable($('.account .human-readable-number'));
+			utils.addCommasToNumbers($('.account .formatted-number'));
+			utils.makeNumbersHumanReadable($('.account .human-readable-number'));
 			$('.user-recent-posts img').addClass('img-responsive');
 
 			var followBtn = $('#follow-btn');
