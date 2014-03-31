@@ -166,11 +166,6 @@ var socket,
 		});
 	};
 
-	// takes a string like 1000 and returns 1,000
-	app.addCommas = function (text) {
-		return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
-	};
-
 	// use unique alert_id to have multiple alerts visible at a time, use the same alert_id to fade out the current instance
 	// type : error, success, info, warning/notify
 	// title = bolded title text
@@ -362,12 +357,6 @@ var socket,
 		});
 	};
 
-	app.makeNumbersHumanReadable = function(elements) {
-		elements.each(function() {
-			$(this).html(utils.makeNumberHumanReadable($(this).attr('title')));
-		});
-	};
-
 	app.processPage = function () {
 		app.populateOnlineUsers();
 
@@ -376,7 +365,7 @@ var socket,
 		$('span.timeago').timeago();
 		$('.post-content img').addClass('img-responsive');
 
-		app.makeNumbersHumanReadable($('.human-readable-number'));
+		utils.makeNumbersHumanReadable($('.human-readable-number'));
 
 		app.createUserTooltips();
 
@@ -405,12 +394,6 @@ var socket,
 				showAlert();
 			}
 		}
-	};
-
-	app.addCommasToNumbers = function () {
-		$('.formatted-number').each(function (index, element) {
-			$(element).html(app.addCommas($(element).html()));
-		});
 	};
 
 	app.openChat = function (username, touid) {

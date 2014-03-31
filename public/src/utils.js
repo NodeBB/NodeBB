@@ -198,6 +198,12 @@
 			return (firstChar === '.' || firstChar === '/');
 		},
 
+		makeNumbersHumanReadable: function(elements) {
+			elements.each(function() {
+				$(this).html(utils.makeNumberHumanReadable($(this).attr('title')));
+			});
+		},
+
 		makeNumberHumanReadable: function(num) {
 			var n = parseInt(num, 10);
 			if(!n) {
@@ -210,6 +216,17 @@
 				return (n / 1000).toFixed(1) + 'k';
 			}
 			return n;
+		},
+
+		addCommasToNumbers: function (elements) {
+			elements.each(function (index, element) {
+				$(element).html(utils.addCommas($(element).html()));
+			});
+		},
+
+		// takes a string like 1000 and returns 1,000
+		addCommas: function (text) {
+			return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
 		},
 
 		toISOString: function(timestamp) {

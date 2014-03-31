@@ -42,9 +42,9 @@ define(['forum/accountheader'], function(header) {
 				html = $(translatedHTML);
 				html.find('img').addClass('img-responsive');
 				$('.user-favourite-posts').append(html);
-				$('span.timeago').timeago();
+				html.find('span.timeago').timeago();
 				app.createUserTooltips();
-				app.makeNumbersHumanReadable(html.find('.human-readable-number'));
+				utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 			});
 		});
 	}

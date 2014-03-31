@@ -16,7 +16,7 @@ define(function() {
 
 		var lastSearch = null;
 
-		app.addCommasToNumbers();
+		utils.addCommasToNumbers($('.users .formatted-number'));
 
 		$('.nav-pills li').removeClass('active');
 		$('.nav-pills li a').each(function() {

@@ -284,7 +284,7 @@ define(['composer', 'forum/pagination'], function(composer, pagination) {
 
 				html.find('span.timeago').timeago();
 				app.createUserTooltips();
-				app.makeNumbersHumanReadable(html.find('.human-readable-number'));
+				utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 
 				if (typeof callback === 'function') {
 					callback(topics);

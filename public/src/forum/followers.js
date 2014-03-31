@@ -9,11 +9,11 @@ define(['forum/accountheader'], function(header) {
 			followersCount = ajaxify.variables.get('followersCount');
 
 
-			if (parseInt(followersCount, 10) === 0) {
-				$('#no-followers-notice').removeClass('hide');
-			}
+		if (parseInt(followersCount, 10) === 0) {
+			$('#no-followers-notice').removeClass('hide');
+		}
 
-		app.addCommasToNumbers();
+		utils.addCommasToNumbers($('.account .formatted-number'));
 	};
 
 	return Followers;
