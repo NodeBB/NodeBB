@@ -120,6 +120,8 @@ adminController.themes.get = function(req, res, next) {
 			plugins.fireHook('filter:widgets.getWidgets', [], next);
 		}
 	}, function(err, widgetData) {
+		widgetData.areas.push({ name: 'Drafts', template: 'global', location: 'drafts' });
+
 		async.each(widgetData.areas, function(area, next) {
 			widgets.getArea(area.template, area.location, function(err, areaData) {
 				area.data = areaData;

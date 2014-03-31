@@ -284,9 +284,12 @@ SocketAdmin.themes.set = function(socket, data, callback) {
 	if(!data) {
 		return callback(new Error('invalid data'));
 	}
-	meta.themes.set(data, function() {
-		callback();
-		meta.restart()
+
+	widgets.reset(function(err) {
+		meta.themes.set(data, function() {
+			callback();
+			meta.restart();
+		});
 	});
 };
 

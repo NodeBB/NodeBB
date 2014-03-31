@@ -74,4 +74,25 @@ var async = require('async'),
 		});
 	};
 
+	Widgets.reset = function(callback) {
+		plugins.fireHook('filter:widgets.getAreas', [], function(err, areas) {
+			var drafts = [];
+
+			async.each(areas, function(area, next) {
+				Widgets.getArea(area.template, area.location, function(err, areaData) {
+					drafts = drafts.concat(areaData);
+					area.widgets = [];
+					Widgets.setArea(area, next);
+				});
+			}, function(err) {
+				console.log(drafts);
+				Widgets.setArea({
+					template: 'global',
+					location: 'drafts',
+					widgets: drafts
+				}, callback);
+			});
+		});
+	};
+
 }(exports));
