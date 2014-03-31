@@ -2,7 +2,7 @@
 
 /* globals define, app, translator, ajaxify, socket, bootbox */
 
-define(['composer'], function(composer) {
+define(['composer', 'share'], function(composer, share) {
 
 	var PostTools = {},
 		topicName;
@@ -12,7 +12,7 @@ define(['composer'], function(composer) {
 
 		addPostHandlers(tid, threadState);
 
-		addShareHandlers();
+		share.addShareHandlers(topicName);
 	};
 
 	function addPostHandlers(tid, threadState) {
@@ -21,6 +21,7 @@ define(['composer'], function(composer) {
 				onReplyClicked($(this), tid, topicName);
 			}
 		});
+
 		var postContainer = $('#post-container');
 
 		postContainer.on('click', '.quote', function() {
@@ -226,40 +227,6 @@ define(['composer'], function(composer) {
 		app.openChat(post.attr('data-username'), post.attr('data-uid'));
 		button.parents('.btn-group').find('.dropdown-toggle').click();
 		return false;
-	}
-
-	function addShareHandlers() {
-
-		function openShare(url, pid, width, height) {
-			window.open(url + encodeURIComponent(window.location.protocol + '//' + window.location.host + window.location.pathname + '#' + pid), '_blank', 'width=' + width + ',height=' + height + ',scrollbars=no,status=no');
-			return false;
-		}
-
-		$('#post-container').on('shown.bs.dropdown', '.share-dropdown', function() {
-			var pid = getPid($(this));
-			$('#post_' + pid + '_link').val(window.location.protocol + '//' + window.location.host + window.location.pathname + '#' + pid);
-			// without the setTimeout can't select the text in the input
-			setTimeout(function() {
-				$('#post_' + pid + '_link').putCursorAtEnd().select();
-			}, 50);
-		});
-
-		$('#post-container').on('click', '.post-link', function(e) {
-			e.preventDefault();
-			return false;
-		});
-
-		$('#post-container').on('click', '.twitter-share', function () {
-			return openShare('https://twitter.com/intent/tweet?text=' + topicName + '&url=', getPid($(this)), 550, 420);
-		});
-
-		$('#post-container').on('click', '.facebook-share', function () {
-			return openShare('https://www.facebook.com/sharer/sharer.php?u=', getPid($(this)), 626, 436);
-		});
-
-		$('#post-container').on('click', '.google-share', function () {
-			return openShare('https://plus.google.com/share?url=', getPid($(this)), 500, 570);
-		});
 	}
 
 	return PostTools;
