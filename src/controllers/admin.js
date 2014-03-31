@@ -109,7 +109,12 @@ adminController.logger.get = function(req, res, next) {
 adminController.themes.get = function(req, res, next) {
 	async.parallel({
 		areas: function(next) {
-			plugins.fireHook('filter:widgets.getAreas', [], next);
+			var defaultAreas = [
+				{ name: 'Global Sidebar', template: 'global', location: 'sidebar' },
+				{ name: 'Global Footer', template: 'global', location: 'footer' },
+			];
+
+			plugins.fireHook('filter:widgets.getAreas', defaultAreas, next);
 		},
 		widgets: function(next) {
 			plugins.fireHook('filter:widgets.getWidgets', [], next);

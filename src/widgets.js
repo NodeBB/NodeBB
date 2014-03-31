@@ -18,7 +18,16 @@ var async = require('async'),
 
 		var rendered = [];
 
-		Widgets.getArea(area.template, area.location, function(err, widgets) {
+		async.parallel({
+			global: function(next) {
+				Widgets.getArea('global', area.location, next);
+			},
+			local: function(next) {
+				Widgets.getArea(area.template, area.location, next);
+			}
+		}, function(err, data) {
+			var widgets = data.global.concat(data.local);
+
 			async.eachSeries(widgets, function(widget, next) {
 				plugins.fireHook('filter:widget.render:' + widget.widget, {
 					uid: uid,
