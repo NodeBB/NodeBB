@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, translator, ajaxify, socket, bootbox */
+/* globals define */
 
 define(function() {
 
