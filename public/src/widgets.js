@@ -4,11 +4,13 @@
 (function(ajaxify) {
 	ajaxify.widgets = {};
 	
-	ajaxify.widgets.reposition = function() {
+	ajaxify.widgets.reposition = function(location) {
 		$('body [no-widget-class]').each(function() {
 			var $this = $(this);
-			$this.removeClass();
-			$this.addClass($this.attr('no-widget-class'));
+			if ($this.attr('no-widget-target') === location) {
+				$this.removeClass();
+				$this.addClass($this.attr('no-widget-class'));	
+			}
 		});
 	};
 
@@ -51,7 +53,7 @@
 				area.html(html).removeClass('hidden');
 
 				if (!renderedWidgets.length) {
-					ajaxify.widgets.reposition();
+					ajaxify.widgets.reposition(location);
 				}
 
 				$('#content [widget-area] img:not(.user-img)').addClass('img-responsive');
