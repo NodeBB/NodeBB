@@ -1,6 +1,6 @@
 {
     "register": "S'inscrire",
-    "help.email": "Par défault, votre email est masqué du public.",
+    "help.email": "Par défaut, votre email est cachée du public.",
     "help.username_restrictions": "Un identifiant unique entre %1 et %2 charactères. Les autres utilisateurs peuvent vous citer avec @<span id='yourUsername'>username</span>.",
     "help.minimum_password_length": "Votre mot de passe doit avoir au moins %1 charactères.",
     "email_address": "Adresse Email",
