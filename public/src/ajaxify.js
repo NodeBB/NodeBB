@@ -67,19 +67,6 @@ var ajaxify = ajaxify || {};
 				window.history[!quiet ? 'pushState' : 'replaceState']({
 					url: url + hash
 				}, url, RELATIVE_PATH + '/' + url + hash);
-
-				$.ajax(RELATIVE_PATH + '/plugins/fireHook', {
-					type: 'PUT',
-					data: {
-						_csrf: $('#csrf_token').val(),
-						hook: 'page.load',
-						args: {
-							template: tpl_url,
-							url: url,
-							uid: app.uid
-						}
-					}
-				});
 			}
 
 			translator.load(tpl_url);
