@@ -1,13 +1,14 @@
 'use strict';
 
 var async = require('async'),
-	utils = require('../public/src/utils.js'),
 	fs = require('fs'),
 	url = require('url'),
 	path = require('path'),
 	prompt = require('prompt'),
 	winston = require('winston'),
 	nconf = require('nconf'),
+	utils = require('../public/src/utils.js'),
+	db = require('./database.js'),
 
 	install = {
 		questions: [{
@@ -347,6 +348,9 @@ var async = require('async'),
 							}
 						});
 					}, next);
+				},
+				function (next) {
+					db.setObjectField('widgets:global', 'footer', "[{\"widget\":\"html\",\"data\":{\"html\":\"<footer id=\\\"footer\\\" class=\\\"container footer\\\">\\r\\n\\t<div class=\\\"copyright\\\">\\r\\n\\t\\tCopyright © 2014 <a target=\\\"_blank\\\" href=\\\"https://www.nodebb.com\\\">NodeBB Forums</a> | <a target=\\\"_blank\\\" href=\\\"//github.com/designcreateplay/NodeBB/graphs/contributors\\\">Contributors</a>\\r\\n\\t</div>\\r\\n</footer>\",\"title\":\"\",\"container\":\"\"}}]", next);
 				},
 				function (next) {
 					require('./upgrade').upgrade(next);
