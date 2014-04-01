@@ -328,8 +328,7 @@ var async = require('async'),
 				},
 				function (next) {
 					// Default plugins
-					var Plugins = require('./plugins'),
-						db = require('./database.js');
+					var Plugins = require('./plugins');
 
 					winston.info('Enabling default plugins');
 
@@ -350,7 +349,9 @@ var async = require('async'),
 					}, next);
 				},
 				function (next) {
-					var db = require('./src/database').init(function(err) {
+					var	db = require('./database.js');
+
+					db.init(function(err) {
 						if (!err) {
 							db.setObjectField('widgets:global', 'footer', "[{\"widget\":\"html\",\"data\":{\"html\":\"<footer id=\\\"footer\\\" class=\\\"container footer\\\">\\r\\n\\t<div class=\\\"copyright\\\">\\r\\n\\t\\tCopyright © 2014 <a target=\\\"_blank\\\" href=\\\"https://www.nodebb.com\\\">NodeBB Forums</a> | <a target=\\\"_blank\\\" href=\\\"//github.com/designcreateplay/NodeBB/graphs/contributors\\\">Contributors</a>\\r\\n\\t</div>\\r\\n</footer>\",\"title\":\"\",\"container\":\"\"}}]", next);
 						}
