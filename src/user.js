@@ -124,7 +124,7 @@ var bcrypt = require('bcryptjs'),
 			if (err) {
 				return callback(err);
 			}
-console.log(results);
+
 			if (parseInt(results.banned, 10) === 1) {
 				return callback(new Error('user-banned'));
 			}
