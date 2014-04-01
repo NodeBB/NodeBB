@@ -30,17 +30,6 @@
 		function renderWidgets(location) {
 			var area = $('#content [widget-area="' + location + '"]');
 
-			if (!area.length && window.location.pathname.indexOf('/admin') === -1) {
-				if (location === 'footer') {
-					$('#content').append($('<div class="col-xs-12"><div widget-area="footer"></div></div>'));
-				} else if (location === 'sidebar') {
-					$('#content > *').wrapAll($('<div class="col-xs-9"></div>'));
-					$('#content').append($('<div class="col-xs-3"><div widget-area="sidebar"></div></div>'));
-				}
-
-				area = $('#content [widget-area="' + location + '"]');
-			}
-
 			socket.emit('widgets.render', {template: tpl_url + '.tpl', url: url, location: location}, function(err, renderedWidgets) {
 				var html = '';
 
@@ -48,6 +37,17 @@
 					if (renderedWidgets.hasOwnProperty(widget)) {
 						html += templates.parse(renderedWidgets[widget].html, {});
 					}
+				}
+
+				if (!area.length && window.location.pathname.indexOf('/admin') === -1 && renderedWidgets.length) {
+					if (location === 'footer') {
+						$('#content').append($('<div class="col-xs-12"><div widget-area="footer"></div></div>'));
+					} else if (location === 'sidebar') {
+						$('#content > *').wrapAll($('<div class="col-xs-9"></div>'));
+						$('#content').append($('<div class="col-xs-3"><div widget-area="sidebar"></div></div>'));
+					}
+
+					area = $('#content [widget-area="' + location + '"]');
 				}
 
 				area.html(html).removeClass('hidden');
