@@ -19,7 +19,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 3, 31, 12, 30);
+	latestSchema = Date.UTC(2014, 4, 2);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -534,7 +534,39 @@ Upgrade.upgrade = function(callback) {
 				winston.info('[2014/3/31] Re-adding copyright message into global footer widget - skipped');
 				next();
 			}
-		}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 4, 2);
+
+			if (schemaDate < thisSchemaDate) {
+				db.getObjectField('widgets:home.tpl', 'footer', function(err, widgetData) {
+					if (err) {
+						winston.error('[2014/4/1] Error moving deprecated vanilla footer widgets into draft zone');
+						return next(err);
+					}
+
+					db.setObjectField('widgets:global', 'drafts', widgetData, function(err) {
+						if (err) {
+							winston.error('[2014/4/1] Error moving deprecated vanilla footer widgets into draft zone');
+							return next(err);
+						}
+
+						db.deleteObjectField('widgets:home.tpl', 'footer', function(err) {
+							if (err) {
+								winston.error('[2014/4/1] Error moving deprecated vanilla footer widgets into draft zone');
+								next(err);
+							} else {
+								winston.info('[2014/4/1] Moved deprecated vanilla footer widgets into draft zone');
+								Upgrade.update(thisSchemaDate, next);
+							}
+						});
+					});
+				});
+			} else {
+				winston.info('[2014/4/1] Moved deprecated vanilla footer widgets into draft zone - skipped');
+				next();
+			}
+		},
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 22!!!
 	], function(err) {
