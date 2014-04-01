@@ -21,6 +21,7 @@ var db = require('./database'),
 
 	require('./categories/activeusers')(Categories);
 	require('./categories/recentreplies')(Categories);
+	require('./categories/update')(Categories);
 
 	Categories.create = function(data, callback) {
 		db.incrObjectField('global', 'nextCid', function(err, cid) {
