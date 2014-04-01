@@ -213,6 +213,7 @@ module.exports = function(app, data) {
 		app.use(function (req, res, next) {
 			res.locals.csrf_token = req.session._csrf;
 			res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+			res.setHeader('X-Powered-By', 'NodeBB');
 			next();
 		});
 
