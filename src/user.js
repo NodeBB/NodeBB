@@ -110,12 +110,30 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.isReadyToPost = function(uid, callback) {
-		User.getUserField(uid, 'lastposttime', function(err, lastposttime) {
-			if(err) {
+		async.parallel({
+			banned: function(next) {
+				User.getUserField(uid, 'banned',next);
+			},
+			exists: function(next) {
+				db.exists('user:' + uid, next);
+			},
+			lastposttime: function(next) {
+				User.getUserField(uid, 'lastposttime', next);
+			}
+		}, function(err, results) {
+			if (err) {
 				return callback(err);
 			}
 
-			if(!lastposttime) {
+			if (parseInt(results.banned, 10) === 1) {
+				return callback(new Error('user-banned'));
+			}
+
+			if (!results.exists) {
+				return callback(new Error('user-deleted'));
+			}
+			var lastposttime = results.lastposttime;
+			if (!lastposttime) {
 				lastposttime = 0;
 			}
 
