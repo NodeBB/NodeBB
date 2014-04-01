@@ -295,7 +295,7 @@ module.exports = function(User) {
 						db.delete('user:' + uid, next);
 					},
 					function(next) {
-						db.decrObjectField('global', 'userCount');
+						db.decrObjectField('global', 'userCount', next);
 					}
 				], callback);
 			});
