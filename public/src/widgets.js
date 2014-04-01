@@ -43,8 +43,8 @@
 					if (location === 'footer') {
 						$('#content').append($('<div class="col-xs-12"><div widget-area="footer"></div></div>'));
 					} else if (location === 'sidebar') {
-						$('#content > *').wrapAll($('<div class="col-xs-9"></div>'));
-						$('#content').append($('<div class="col-xs-3"><div widget-area="sidebar"></div></div>'));
+						$('#content > *').wrapAll($('<div class="col-lg-9 col-xs-12"></div>'));
+						$('#content').append($('<div class="col-lg-3 col-xs-12"><div widget-area="sidebar"></div></div>'));
 					}
 
 					area = $('#content [widget-area="' + location + '"]');
