@@ -85,7 +85,6 @@ var async = require('async'),
 					Widgets.setArea(area, next);
 				});
 			}, function(err) {
-				console.log(drafts);
 				Widgets.setArea({
 					template: 'global',
 					location: 'drafts',
