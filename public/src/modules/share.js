@@ -8,17 +8,17 @@ define(function() {
 
 	module.addShareHandlers = function(name) {
 
-		var baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+		var baseUrl = window.location.protocol + '//' + window.location.host;
 
 		function openShare(url, hash, width, height) {
-			window.open(url + encodeURIComponent(baseUrl + hash), '_blank', 'width=' + width + ',height=' + height + ',scrollbars=no,status=no');
+			window.open(url + encodeURIComponent(baseUrl + window.location.pathname + hash), '_blank', 'width=' + width + ',height=' + height + ',scrollbars=no,status=no');
 			return false;
 		}
 
 		$('#content').on('shown.bs.dropdown', '.share-dropdown', function() {
 
 			var postLink = $(this).find('.post-link');
-			postLink.val(baseUrl + getPostHash($(this)));
+			postLink.val(baseUrl + window.location.pathname + getPostHash($(this)));
 
 			// without the setTimeout can't select the text in the input
 			setTimeout(function() {
