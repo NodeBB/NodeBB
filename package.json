@@ -20,7 +20,6 @@
     "express-namespace": "~0.1.1",
     "passport": "~0.2.0",
     "passport-local": "0.1.6",
-    "less-middleware": "0.1.12",
     "marked": "0.2.8",
     "async": "~0.2.8",
     "gm": "1.14.2",
