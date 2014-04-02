@@ -1,6 +1,8 @@
 {
     "topic": "Arresonada",
     "topics": "Arresonadas",
+    "topic_id": "Topic ID",
+    "topic_id_placeholder": "Enter topic ID",
     "no_topics_found": "Peruna arresonada agatada!",
     "no_posts_found": "Perunu arresonu agatadu!",
     "profile": "Perfilu",
@@ -21,6 +23,8 @@
     "flag": "Signala",
     "bookmark_instructions": "Carca inoghe pro torrare a s'ùrtimu logu o serra pro no aprovare.",
     "flag_title": "Signala custu arresonu pro sa moderatzione",
+    "flag_confirm": "Are you sure you want to flag this post?",
+    "flag_success": "This post has been flagged for moderation.",
     "deleted_message": "Custa arresonada est istada cantzellada. Isceti is impitadores chi tenent is permissos pro manigiare is arresonadas dda podent bìdere.",
     "following_topic.title": "Sighende Arresonada",
     "following_topic.message": "As a retzire notìficas si calincunu pùblica in custa arresonada.",

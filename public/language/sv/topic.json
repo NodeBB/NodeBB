@@ -1,6 +1,8 @@
 {
     "topic": "Ämne",
     "topics": "Ämnen",
+    "topic_id": "Topic ID",
+    "topic_id_placeholder": "Enter topic ID",
     "no_topics_found": "Inga ämnen hittades!",
     "no_posts_found": "Inga inlägg hittades!",
     "profile": "Profil",
@@ -21,6 +23,8 @@
     "flag": "Rapportera",
     "bookmark_instructions": "Klicka här för att återgå till den senaste positionen eller stäng för att kasta.",
     "flag_title": "Rapportera detta inlägg för granskning",
+    "flag_confirm": "Are you sure you want to flag this post?",
+    "flag_success": "This post has been flagged for moderation.",
     "deleted_message": "Denna tråd har tagits bort. Endast användare med administrations-rättigheter kan se den.",
     "following_topic.title": "Följer ämne",
     "following_topic.message": "Du kommer nu få notiser när någon gör inlägg i detta ämne.",

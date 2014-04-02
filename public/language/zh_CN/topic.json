@@ -1,6 +1,8 @@
 {
     "topic": "主题",
     "topics": "主题",
+    "topic_id": "Topic ID",
+    "topic_id_placeholder": "Enter topic ID",
     "no_topics_found": "没有找到主题！",
     "no_posts_found": "没有找到帖子!",
     "profile": "资料",
@@ -21,6 +23,8 @@
     "flag": "标志",
     "bookmark_instructions": "点击这里返回你最初的位置或退出。",
     "flag_title": "标志受限的帖子",
+    "flag_confirm": "Are you sure you want to flag this post?",
+    "flag_success": "This post has been flagged for moderation.",
     "deleted_message": "这个帖子已经删除，只有帖子的拥有者才有权限去查看。",
     "following_topic.title": "关注该主题",
     "following_topic.message": "当有回复提交的时候你将会收到通知。",

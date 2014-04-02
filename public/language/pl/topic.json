@@ -1,6 +1,8 @@
 {
     "topic": "Wątek",
     "topics": "Wątki",
+    "topic_id": "Topic ID",
+    "topic_id_placeholder": "Enter topic ID",
     "no_topics_found": "Nie znaleziono żadnych wątków.",
     "no_posts_found": "Nie znaleziono żadnych postów.",
     "profile": "Profil",
@@ -21,6 +23,8 @@
     "flag": "Zgłoś",
     "bookmark_instructions": "Kliknij tutaj, aby wrócić do ostatniej pozycji lub zamknij, aby odrzucić.",
     "flag_title": "Zgłoś post do moderacji",
+    "flag_confirm": "Are you sure you want to flag this post?",
+    "flag_success": "This post has been flagged for moderation.",
     "deleted_message": "Ten wątek został usunięty. Tylko użytkownicy z uprawnieniami do zarządzania wątkami mogą go widzieć.",
     "following_topic.title": "Obserwujesz wątek",
     "following_topic.message": "Będziesz otrzymywał powiadomienia, gdy ktoś odpowie w tym wątku.",

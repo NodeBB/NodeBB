@@ -1,6 +1,8 @@
 {
     "topic": "Tópico",
     "topics": "Tópicos",
+    "topic_id": "Topic ID",
+    "topic_id_placeholder": "Enter topic ID",
     "no_topics_found": "Nenhum tópico encontrado!",
     "no_posts_found": "Nenhum post encontrado!",
     "profile": "Profile",
@@ -21,6 +23,8 @@
     "flag": "Marcar",
     "bookmark_instructions": "Clique aqui para voltar a sua última posição ou feche para descartar",
     "flag_title": "Marcar este post para moderação",
+    "flag_confirm": "Are you sure you want to flag this post?",
+    "flag_success": "This post has been flagged for moderation.",
     "deleted_message": "Esta Thread foi deletada. Somente usuários com privilégios administrativos podem ver.",
     "following_topic.title": "Seguir Tópico",
     "following_topic.message": "Você receberá notificações quando alguém responder este tópico.",

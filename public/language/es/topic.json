@@ -1,6 +1,8 @@
 {
     "topic": "Tema",
     "topics": "Temas",
+    "topic_id": "Topic ID",
+    "topic_id_placeholder": "Enter topic ID",
     "no_topics_found": "No se encontraron temas!",
     "no_posts_found": "No se encontraron publicaciones!",
     "profile": "Perfil",
@@ -21,6 +23,8 @@
     "flag": "Reportar",
     "bookmark_instructions": "Click aqui para restablecer la ultima posicion del post o cierralo para descartar cambios.",
     "flag_title": "Reportar esta publicación a los moderadores",
+    "flag_confirm": "Are you sure you want to flag this post?",
+    "flag_success": "This post has been flagged for moderation.",
     "deleted_message": "Este tema ha sido borrado. Solo los miembros con privilegios pueden verlo.",
     "following_topic.title": "Siguendo tema",
     "following_topic.message": "Ahora recibiras notificaciones cuando alguien publique en este tema.",
