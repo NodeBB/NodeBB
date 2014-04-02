@@ -143,17 +143,19 @@ define(['composer', 'share'], function(composer, share) {
 			postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
 			action = !postEl.hasClass('deleted') ? 'delete' : 'restore';
 
-		bootbox.confirm('Are you sure you want to ' + action + ' this post?', function(confirm) {
-			if (confirm) {
-				socket.emit('posts.' + action, {
-					pid: pid,
-					tid: tid
-				}, function(err) {
-					if(err) {
-						return app.alertError('Can\'t ' + action + ' post!');
-					}
-				});
-			}
+		translator.translate('[[topic:post_' + action + '_confirm]]', function(msg) {
+			bootbox.confirm(msg, function(confirm) {
+				if (confirm) {
+					socket.emit('posts.' + action, {
+						pid: pid,
+						tid: tid
+					}, function(err) {
+						if(err) {
+							return translator.translate('[[topic:post_' + action + '_error]]', app.alertError);
+						}
+					});
+				}
+			});
 		});
 	}
 
