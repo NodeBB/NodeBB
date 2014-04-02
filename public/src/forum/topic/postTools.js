@@ -209,15 +209,19 @@ define(['composer', 'share'], function(composer, share) {
 	}
 
 	function flagPost(pid) {
-		bootbox.confirm('Are you sure you want to flag this post?', function(confirm) {
-			if (confirm) {
-				socket.emit('posts.flag', pid, function(err) {
-					if(err) {
-						return app.alertError(err.message);
-					}
-					app.alertSuccess('This post has been flagged for moderation.');
-				});
-			}
+		translator.translate('[[topic:flag_confirm]]', function(message) {
+			bootbox.confirm(message, function(confirm) {
+				if (confirm) {
+					socket.emit('posts.flag', pid, function(err) {
+						if(err) {
+							return app.alertError(err.message);
+						}
+						translator.translate('[[topic:flag_success]]', function(message) {
+							app.alertSuccess(message);
+						});
+					});
+				}
+			});
 		});
 	}
 

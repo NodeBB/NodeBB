@@ -1,6 +1,8 @@
 {
     "topic": "Téma",
     "topics": "Témy",
+    "topic_id": "Topic ID",
+    "topic_id_placeholder": "Enter topic ID",
     "no_topics_found": "Neboli nájdené žiadne témy!",
     "no_posts_found": "Neboli nájdené žiadne príspevky",
     "profile": "Profil",
@@ -21,6 +23,8 @@
     "flag": "Označiť",
     "bookmark_instructions": "Vrátiť sa na Vašu poslednú pozíciu v príspevku alebo zatvoriť pripomienku.",
     "flag_title": "Označiť príspevok pre moderáciu",
+    "flag_confirm": "Are you sure you want to flag this post?",
+    "flag_success": "This post has been flagged for moderation.",
     "deleted_message": "Toto vlákno bolo vymazané. Iba užívatelia s privilégiami ho môžu vidieť.",
     "following_topic.title": "Sledovať Tému",
     "following_topic.message": "Budete teraz príjimať notifikácie, ked niekto prispeje do témy.",

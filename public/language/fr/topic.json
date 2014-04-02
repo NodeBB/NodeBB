@@ -1,6 +1,8 @@
 {
     "topic": "Sujet",
     "topics": "Sujets",
+    "topic_id": "Topic ID",
+    "topic_id_placeholder": "Enter topic ID",
     "no_topics_found": "Aucun sujet trouvé !",
     "no_posts_found": "Aucun message trouvé!",
     "profile": "Profil",
@@ -21,6 +23,8 @@
     "flag": "Signaler",
     "bookmark_instructions": "Cliquer ici pour retourner à votre dernière position ou fermer pour ignorer.",
     "flag_title": "Signaler ce post pour modération",
+    "flag_confirm": "Are you sure you want to flag this post?",
+    "flag_success": "This post has been flagged for moderation.",
     "deleted_message": "Ce sujet a été supprimé. Seuls les utilsateurs avec les droits d'administration peuvent le voir.",
     "following_topic.title": "Sujet suivi",
     "following_topic.message": "Vous recevrez désormais des notifications lorsque quelqu'un postera dans ce sujet.",

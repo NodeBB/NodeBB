@@ -1,6 +1,8 @@
 {
     "topic": "Topik",
     "topics": "Topikok",
+    "topic_id": "Topic ID",
+    "topic_id_placeholder": "Enter topic ID",
     "no_topics_found": "Téma nem található!",
     "no_posts_found": "Hozzászólások nem találhatóak!",
     "profile": "Profil",
@@ -21,6 +23,8 @@
     "flag": "Jelentés",
     "bookmark_instructions": "Kattintson ide, hogy visszatérjen az utolsó pozícióra vagy close to discard.",
     "flag_title": "A hozzászólás jelentése a moderátoroknál",
+    "flag_confirm": "Are you sure you want to flag this post?",
+    "flag_success": "This post has been flagged for moderation.",
     "deleted_message": "Ez a topik törölve lett. Kizárólag azok a felhasználók láthatják, akiknek joga van hozzá.",
     "following_topic.title": "Following Topic",
     "following_topic.message": "You will now be receiving notifications when somebody posts to this topic.",

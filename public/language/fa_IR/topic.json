@@ -1,6 +1,8 @@
 {
     "topic": "جُستار",
     "topics": "جُستارها",
+    "topic_id": "Topic ID",
+    "topic_id_placeholder": "Enter topic ID",
     "no_topics_found": "هیچ جستاری یافت نشد!",
     "no_posts_found": "دیدگاهی یافت نشد!",
     "profile": "نمایه",
@@ -21,6 +23,8 @@
     "flag": "پرچم",
     "bookmark_instructions": "برای بازگشت به مکان پیشین اینجا را بفشارید یا برای رد دادن ببندید.",
     "flag_title": "پرچم‌گذاری این جستار برای بررسی ناظران",
+    "flag_confirm": "Are you sure you want to flag this post?",
+    "flag_success": "This post has been flagged for moderation.",
     "deleted_message": "این جستار پاک شده است. تنها کاربران دارای پروانه‌های مدیریت جستار می‌توانند آن را ببینند.",
     "following_topic.title": "جستار را دنبال می‌کنید",
     "following_topic.message": "از این پس اگر کسی در این جستار دیدگاه بگذارد، شما آگاه خواهید شد.",

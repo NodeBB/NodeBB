@@ -1,6 +1,8 @@
 {
     "topic": "Emne",
     "topics": "Emner",
+    "topic_id": "Topic ID",
+    "topic_id_placeholder": "Enter topic ID",
     "no_topics_found": "Ingen emner funnet!",
     "no_posts_found": "Ingen innlegg funnet!",
     "profile": "Profil",
@@ -21,6 +23,8 @@
     "flag": "Rapporter",
     "bookmark_instructions": "Klikk her for å returnere til din siste posisjon eller lukk for å forkaste.",
     "flag_title": "Rapporter dette innlegget for granskning",
+    "flag_confirm": "Are you sure you want to flag this post?",
+    "flag_success": "This post has been flagged for moderation.",
     "deleted_message": "Denne tråden har blitt slettet. Bare brukere med trådhåndterings-privilegier kan se den.",
     "following_topic.title": "Følger tråd",
     "following_topic.message": "Du vil nå motta varsler når noen skriver i denne tråden.",

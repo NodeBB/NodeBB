@@ -1,6 +1,8 @@
 {
     "topic": "Onderwerp",
     "topics": "Onderwerpen",
+    "topic_id": "Topic ID",
+    "topic_id_placeholder": "Enter topic ID",
     "no_topics_found": "Geen onderwerpen gevonden!",
     "no_posts_found": "Geen berichten gevonden!",
     "profile": "Profiel",
@@ -21,6 +23,8 @@
     "flag": "Markeren",
     "bookmark_instructions": "Klik hier om terug te gaan naar je laatste positie of sluiten om te annuleren.",
     "flag_title": "Dit bericht markeren voor moderatie",
+    "flag_confirm": "Are you sure you want to flag this post?",
+    "flag_success": "This post has been flagged for moderation.",
     "deleted_message": "Dit onderwerp is verwijderd. Alleen gebruikers met onderwerp management privileges kunnen dit onderwerp zien.",
     "following_topic.title": "Volg Onderwerp",
     "following_topic.message": "Je zult nu notificaties ontvangen wanneer iemand reageert op dit onderwerp.",

@@ -1,6 +1,8 @@
 {
     "topic": "Тема",
     "topics": "Темы",
+    "topic_id": "Topic ID",
+    "topic_id_placeholder": "Enter topic ID",
     "no_topics_found": "Тем не найдено!",
     "no_posts_found": "No posts found!",
     "profile": "Профиль",
@@ -21,6 +23,8 @@
     "flag": "Отметить",
     "bookmark_instructions": "Click here to return to your last position or close to discard.",
     "flag_title": "Отметить сообщение для модерирования",
+    "flag_confirm": "Are you sure you want to flag this post?",
+    "flag_success": "This post has been flagged for moderation.",
     "deleted_message": "This thread has been deleted. Only users with thread management privileges can see it.",
     "following_topic.title": "Following Topic",
     "following_topic.message": "You will now be receiving notifications when somebody posts to this topic.",

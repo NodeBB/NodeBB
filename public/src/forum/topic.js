@@ -464,7 +464,9 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools'],
 			thread_state.deleted = deleted ? '1' : '0';
 
 			if(deleted) {
-				$('<div id="thread-deleted" class="alert alert-warning">This thread has been deleted. Only users with thread management privileges can see it.</div>').insertBefore(threadEl);
+				translator.translate('[[topic:deleted_message]]', function(translated) {
+					$('<div id="thread-deleted" class="alert alert-warning">' + translated + '</div>').insertBefore(threadEl);
+				});
 			} else {
 				$('#thread-deleted').remove();
 			}

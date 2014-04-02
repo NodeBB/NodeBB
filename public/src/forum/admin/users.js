@@ -53,14 +53,25 @@ define(function() {
 
 			if (!isUserAdmin(banBtn)) {
 				if (isUserBanned(banBtn)) {
-					socket.emit('admin.user.unbanUser', uid);
+					socket.emit('admin.user.unbanUser', uid, function(err) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+						app.alertSuccess('This user is unbanned!');
+					});
+
 					banBtn.removeClass('btn-warning');
 					parent.attr('data-banned', 0);
 					updateUserAdminButtons($('.admin-btn'));
 				} else {
 					bootbox.confirm('Do you really want to ban "' + parent.attr('data-username') + '"?', function(confirm) {
 						if (confirm) {
-							socket.emit('admin.user.banUser', uid);
+							socket.emit('admin.user.banUser', uid, function(err) {
+								if (err) {
+									return app.alertError(err.message);
+								}
+								app.alertSuccess('This user is banned!');
+							});
 							banBtn.addClass('btn-warning');
 							parent.attr('data-banned', 1);
 							updateUserAdminButtons($('.admin-btn'));
@@ -85,14 +96,24 @@ define(function() {
 					timeout: 5000
 				});
 			} else if (!isUserAdmin(adminBtn)) {
-				socket.emit('admin.user.makeAdmin', uid);
+				socket.emit('admin.user.makeAdmin', uid, function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					app.alertSuccess('This user is now an administrator.');
+				});
 				parent.attr('data-admin', 1);
 				updateUserBanButtons($('.ban-btn'));
 				updateUserAdminButtons($('.admin-btn'));
 			} else if(uid !== yourid) {
 				bootbox.confirm('Do you really want to remove this user as admin "' + parent.attr('data-username') + '"?', function(confirm) {
 					if (confirm) {
-						socket.emit('admin.user.removeAdmin', uid);
+						socket.emit('admin.user.removeAdmin', uid, function(err) {
+							if (err) {
+								return app.alertError(err.message);
+							}
+							app.alertSuccess('This user is no longer an administrator.');
+						});
 						parent.attr('data-admin', 0);
 						updateUserBanButtons($('.ban-btn'));
 						updateUserAdminButtons($('.admin-btn'));

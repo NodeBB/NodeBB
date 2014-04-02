@@ -7,22 +7,18 @@ var async = require('async'),
 	topics = require('./../topics'),
 	categories = require('./../categories'),
 	plugins = require('./../plugins'),
-	events = require('./../events'),
 	groups = require('./../groups');
 
 
 module.exports = function(User) {
 
-	User.delete = function(adminUid, uid, callback) {
+	User.delete = function(uid, callback) {
 		async.waterfall([
 			function(next) {
 				deletePosts(uid, next);
 			},
 			function(next) {
 				deleteTopics(uid, next);
-			},
-			function(next) {
-				events.logAdminUserDelete(adminUid, uid, next);
 			}
 		], function(err) {
 			if (err) {
