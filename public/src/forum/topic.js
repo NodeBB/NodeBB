@@ -755,9 +755,18 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools'],
 	}
 
 	function onNewPostsLoaded(html, posts) {
-		for (var x = 0, numPosts = posts.length; x < numPosts; x++) {
-			toggle_mod_tools(posts[x].pid, posts[x].display_moderator_tools);
-		}
+		function getPostPrivileges(pid) {
+ 			socket.emit('posts.getPrivileges', pid, function(err, privileges) {
+				if(err) {
+					return app.alertError(err.message);
+				}
+				toggle_mod_tools(html, privileges);
+			});
+ 		}
+
+  		for (var x = 0, numPosts = posts.length; x < numPosts; x++) {
+			getPostPrivileges(posts[x].pid);
+  		}
 
 		infiniteLoaderActive = false;
 
@@ -771,9 +780,9 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools'],
 		showBottomPostBar();
 	}
 
-
-	function toggle_mod_tools(pid, editable) {
-		$('#post-container li[data-pid="' + pid + '"]').find('.edit, .delete').toggleClass('none', !editable);
+	function toggle_mod_tools(postHtml, privileges) {
+		postHtml.find('.edit, .delete').toggleClass('none', !privileges.editable);
+		postHtml.find('.move').toggleClass('none', !privileges.move);
 	}
 
 	function updatePostCount() {

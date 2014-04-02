@@ -219,6 +219,16 @@ function deleteOrRestore(command, socket, data, callback) {
 	});
 }
 
+SocketPosts.getPrivileges = function(socket, pid, callback) {
+	postTools.privileges(pid, socket.uid, function(err, privileges) {
+		if(err) {
+			return callback(err);
+		}
+		privileges.pid = parseInt(pid, 10);
+		callback(null, privileges);
+	});
+};
+
 SocketPosts.getFavouritedUsers = function(socket, pid, callback) {
 
 	favourites.getFavouritedUidsByPids([pid], function(err, data) {

@@ -222,8 +222,8 @@ module.exports = function(Topics) {
 				postData.index = index;
 				postData.favourited = false;
 				postData.votes = 0;
-				postData.display_moderator_tools = false;
-				postData.display_move_tools = false;
+				postData.display_moderator_tools = true;
+				postData.display_move_tools = privileges.admin || privileges.moderator;
 				postData.relativeTime = utils.toISOString(postData.timestamp);
 
 				next(null, postData);
