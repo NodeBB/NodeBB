@@ -71,7 +71,7 @@ SocketPosts.reply = function(socket, data, callback) {
 				posts: [postData]
 			};
 
-			index.server.sockets.in('topic_' + postData.tid).emit('event:new_post', socketData);
+			index.server.sockets.emit('event:new_post', socketData);
 
 			callback();
 		}
