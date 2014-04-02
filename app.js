@@ -39,7 +39,7 @@ winston.add(winston.transports.Console, {
 });
 
 winston.add(winston.transports.File, {
-	filename: 'error.log',
+	filename: 'logs/error.log',
 	level: 'error'
 });
 
