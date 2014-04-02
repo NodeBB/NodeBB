@@ -124,7 +124,7 @@ module.exports = function(Topics) {
 				next(null, postData);
 			},
 			function(postData, next) {
-				Topics.getTopicsByTids([postData.tid], uid, function(err, topicData) {
+				Topics.getTopicsByTids([postData.tid], 0, function(err, topicData) {
 					if(err) {
 						return next(err);
 					}
@@ -222,8 +222,8 @@ module.exports = function(Topics) {
 				postData.index = index;
 				postData.favourited = false;
 				postData.votes = 0;
-				postData.display_moderator_tools = true;
-				postData.display_move_tools = privileges.admin || privileges.moderator;
+				postData.display_moderator_tools = false;
+				postData.display_move_tools = false;
 				postData.relativeTime = utils.toISOString(postData.timestamp);
 
 				next(null, postData);
