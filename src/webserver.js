@@ -7,7 +7,6 @@ var path = require('path'),
 	server,
 	winston = require('winston'),
 	async = require('async'),
-	fork = require('child_process').fork,
 
 	emailer = require('./emailer'),
 	db = require('./database'),
@@ -90,28 +89,9 @@ if(nconf.get('ssl')) {
 		winston.info('Using ports 80 and 443 is not recommend; use a proxy instead. See README.md');
 	}
 
+	// Front-end assets
 	plugins.ready(function() {
-		// Prepare js for minification/concatenation
-		var	minifier = fork('minifier.js');
-
-		minifier.on('message', function(payload) {
-			switch(payload.action) {
-				case 'js.minify':	// Intentional fall-through
-				case 'js.concatenate':
-					winston.info('[meta/js] Compilation complete');
-					meta.js.cache = payload.data;
-				break;
-			}
-		});
-
-		meta.js.prepare(function() {
-			minifier.send({
-				action: app.enabled('minification') ? 'js.minify' : 'js.concatenate',
-				scripts: meta.js.scripts
-			});
-		});
-
-		// Minify CSS
+		meta.js.minify(app.enabled('minification'));
 		meta.css.minify();
 	});
 

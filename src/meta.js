@@ -7,6 +7,7 @@ var fs = require('fs'),
 	nconf = require('nconf'),
 	_ = require('underscore'),
 	less = require('less'),
+	fork = require('child_process').fork,
 
 	utils = require('./../public/src/utils'),
 	translator = require('./../public/src/translator'),
@@ -291,6 +292,30 @@ var fs = require('fs'),
 
 				Meta.js.prepared = true;
 				callback();
+			});
+		},
+		minify: function(minify) {
+			// Prepare js for minification/concatenation
+			var	minifier = fork('minifier.js');
+
+			minifier.on('message', function(payload) {
+				if (payload.action !== 'error') {
+					winston.info('[meta/js] Compilation complete');
+					Meta.js.cache = payload.data;
+					minifier.kill();
+				} else {
+					winston.error('[meta/js] Could not compile client-side scripts!');
+					winston.error('[meta/js]   ' + payload.error.message);
+					minifier.kill();
+					process.exit();
+				}
+			});
+
+			this.prepare(function() {
+				minifier.send({
+					action: minify ? 'js.minify' : 'js.concatenate',
+					scripts: Meta.js.scripts
+				});
 			});
 		}
 	};

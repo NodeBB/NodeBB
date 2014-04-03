@@ -10,31 +10,31 @@ var uglifyjs = require('uglify-js'),
 
 /* Javascript */
 Minifier.js.minify = function (scripts, callback) {
-	// winston.info('[meta/js] Minifying client-side libraries...');
-	var minified = uglifyjs.minify(scripts);
-
-	callback(minified.code);
-
-	// winston.info('[meta/js] Done.');
+	try {
+		var minified = uglifyjs.minify(scripts);
+		callback(minified.code);
+	} catch(err) {
+		process.send({
+			action: 'error',
+			error: err
+		});
+	}
 };
 
 Minifier.js.concatenate = function(scripts, callback) {
-	// winston.info('[meta/js] Concatenating client-side libraries into one file...');
-
 	async.map(scripts, function(path, next) {
 		fs.readFile(path, { encoding: 'utf-8' }, next);
 	}, function(err, contents) {
 		if (err) {
-			// winston.error('[meta/js] Could not minify javascript! Error: ' + err.message);
-			console.log('ERROR');
-			process.exit();
+			process.send({
+				action: 'error',
+				error: err
+			});
+		} else {
+			callback(contents.reduce(function(output, src) {
+				return output.length ? output + ';\n' + src : src;
+			}, ''));
 		}
-
-		callback(contents.reduce(function(output, src) {
-			return output.length ? output + ';\n' + src : src;
-		}, ''));
-
-		// winston.info('[meta/js] Done.');
 	});
 };
 
