@@ -40,8 +40,6 @@ define(['forum/accountheader'], function(header) {
 			var html = templates.parse(templates.getBlock(accounttopics, 'topics'), {topics: topics});
 
 			translator.translate(html, function(translatedHTML) {
-				$('#category-no-topics').remove();
-
 				html = $(translatedHTML);
 				$('#topics-container').append(html);
 				html.find('span.timeago').timeago();
