@@ -30,6 +30,8 @@ apiController.getConfig = function(req, res, next) {
 	config.privateUserInfo = parseInt(meta.config.privateUserInfo, 10) === 1;
 	config.usePagination = parseInt(meta.config.usePagination, 10) === 1;
 	config.disableSocialButtons = parseInt(meta.config.disableSocialButtons, 10) === 1;
+	config.maxReconnectionAttempts = meta.config.maxReconnectionAttempts || 5;
+	config.reconnectionDelay = meta.config.reconnectionDelay || 200;
 	config.topicsPerPage = meta.config.topicsPerPage || 20;
 	config.postsPerPage = meta.config.postsPerPage || 20;
 	config.maximumFileSize = meta.config.maximumFileSize;

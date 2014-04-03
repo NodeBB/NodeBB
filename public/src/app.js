@@ -9,10 +9,7 @@ var socket,
 		'isFocused': true,
 		'currentRoom': null,
 		'widgets': {}
-	},
-
-	MAX_RECONNECTION_ATTEMPTS = 5,
-	RECONNECTION_DELAY = 200;
+	};
 
 (function () {
 	var showWelcomeMessage = false;
@@ -32,8 +29,8 @@ var socket,
 					}, 200);
 				} else {
 					socket = io.connect('', {
-						'max reconnection attempts': MAX_RECONNECTION_ATTEMPTS,
-						'reconnection delay': RECONNECTION_DELAY,
+						'max reconnection attempts': config.maxReconnectionAttempts,
+						'reconnection delay': config.reconnectionDelay,
 						resource: RELATIVE_PATH.length ? RELATIVE_PATH.slice(1) + '/socket.io' : 'socket.io'
 					});
 
@@ -112,9 +109,9 @@ var socket,
 					});
 
 					socket.on('reconnecting', function (data, attempt) {
-						if(attempt === MAX_RECONNECTION_ATTEMPTS) {
+						if(attempt === config.maxReconnectionAttempts) {
 							socket.socket.reconnectionAttempts = 0;
-							socket.socket.reconnectionDelay = RECONNECTION_DELAY;
+							socket.socket.reconnectionDelay = config.reconnectionDelay;
 							return;
 						}
 
