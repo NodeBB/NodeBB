@@ -2,15 +2,13 @@ define(function() {
 	var taskbar = {
 		initialized: false,
 		init: function() {
-			var	footerEl = $('#footer');
-
 			this.taskbar = $('<div />')
 				.html('<div class="navbar-inner"><ul class="nav navbar-nav pull-right"></ul></div>')
 				.addClass('taskbar navbar navbar-default navbar-fixed-bottom')
 				.attr('id', 'taskbar');
 
 			this.tasklist = this.taskbar.find('ul');
-			this.taskbar.insertBefore(footerEl.next());
+			$(document.body).append(this.taskbar);
 
 			// Posts bar events
 			this.taskbar.on('click', 'li', function() {
