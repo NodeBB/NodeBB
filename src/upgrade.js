@@ -673,6 +673,20 @@ Upgrade.upgrade = function(callback) {
 				winston.info('[2014/2/14] Added posts to sorted set - skipped');
 				next();
 			}
+		},
+		function(next) {
+			var	checkDate = Date.UTC(2014, 1, 14, 21, 50);
+
+			if (schemaDate < checkDate) {
+				thisSchemaDate = checkDate;
+				updatesMade = true;
+
+				winston.info('[2014/2/14] Migrating to UTC schemaDate');
+				next();
+			} else {
+				winston.info('[2014/2/14] Migrating to UTC schemaDate -- skipped');
+				next();
+			}
 		}
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 17!!!
