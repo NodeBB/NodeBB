@@ -7,6 +7,7 @@ var path = require('path'),
 	server,
 	winston = require('winston'),
 	async = require('async'),
+	fork = require('child_process').fork,
 
 	emailer = require('./emailer'),
 	db = require('./database'),
@@ -91,12 +92,23 @@ if(nconf.get('ssl')) {
 
 	plugins.ready(function() {
 		// Prepare js for minification/concatenation
-		meta.js.prepare(function() {
-			if (app.enabled('minification')) {
-				meta.js.minify();
-			} else {
-				meta.js.concatenate();
+		var	minifier = fork('minifier.js');
+
+		minifier.on('message', function(payload) {
+			switch(payload.action) {
+				case 'js.minify':	// Intentional fall-through
+				case 'js.concatenate':
+					winston.info('[meta/js] Compilation complete');
+					meta.js.cache = payload.data;
+				break;
 			}
+		});
+
+		meta.js.prepare(function() {
+			minifier.send({
+				action: app.enabled('minification') ? 'js.minify' : 'js.concatenate',
+				scripts: meta.js.scripts
+			});
 		});
 
 		// Minify CSS
