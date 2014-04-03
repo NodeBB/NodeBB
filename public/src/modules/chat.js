@@ -42,8 +42,8 @@ define(['taskbar', 'string', 'sounds'], function(taskbar, S, sounds) {
 							userObj.username +
 							'\', ' + userObj.uid +
 							');">'+
-							'<i class="fa fa-circle status ' + userObj.status + '"></i> ' +
 							'<img src="' +	userObj.picture + '" title="' +	userObj.username +'" />' +
+							'<i class="fa fa-circle status ' + userObj.status + '"></i> ' +
 							userObj.username + '</a>')
 						.appendTo(chatsListEl);
 				}
