@@ -212,7 +212,7 @@ SocketUser.loadMore = function(socket, data, callback) {
 	var start = data.after,
 		end = start + 19;
 
-	user.getUsers(data.set, start, end, function(err, userData) {
+	user.getUsersFromSet(data.set, start, end, function(err, userData) {
 		if(err) {
 			return callback(err);
 		}

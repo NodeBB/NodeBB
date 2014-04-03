@@ -286,7 +286,7 @@ function emitTopicPostStats(callback) {
 		};
 
 		if (!callback) {
-			io.sockets.emit('post.stats', null, stats);
+			io.sockets.emit('meta.getUsageStats', null, stats);
 		} else {
 			callback(null, stats);
 		}

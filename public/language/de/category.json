@@ -1,11 +1,12 @@
 {
     "new_topic_button": "Neues Thema",
-    "no_topics": "<strong>Es gibt noch keine Threads in dieser Kategorie.</strong><br />Warum beginnst du nicht den ersten?",
-    "posts": "Posts",
+    "no_topics": "<strong>Es gibt noch keine Themen in dieser Kategorie.</strong><br />Warum beginnst du nicht das erste?",
+    "posts": "Beiträge",
     "views": "Aufrufe",
-    "posted": "Geposted",
-    "browsing": "Sieht zu",
+    "posted": "Geschrieben",
+    "browsing": "Aktiv",
     "no_replies": "Niemand hat geantwortet",
     "replied": "geantwortet",
-    "last_edited_by": "zuletzt editiert durch"
+    "last_edited_by": "zuletzt editiert durch",
+    "share_this_category": "Share this category"
 }

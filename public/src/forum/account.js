@@ -4,16 +4,16 @@ define(['forum/accountheader'], function(header) {
 	Account.init = function() {
 		header.init();
 
-		var yourid = templates.get('yourid'),
-			theirid = templates.get('theirid'),
-			isFollowing = templates.get('isFollowing');
+		var yourid = ajaxify.variables.get('yourid'),
+			theirid = ajaxify.variables.get('theirid'),
+			isFollowing = ajaxify.variables.get('isFollowing');
 
 		$(document).ready(function() {
 			var username = $('.account-username').html();
 			app.enterRoom('user/' + theirid);
 
-			app.addCommasToNumbers();
-			app.makeNumbersHumanReadable($('.account .human-readable-number'));
+			utils.addCommasToNumbers($('.account .formatted-number'));
+			utils.makeNumbersHumanReadable($('.account .human-readable-number'));
 			$('.user-recent-posts img').addClass('img-responsive');
 
 			var followBtn = $('#follow-btn');
@@ -79,7 +79,7 @@ define(['forum/accountheader'], function(header) {
 	Account.handleUserOnline = function(err, data) {
 		var onlineStatus = $('.account-online-status');
 
-		if(parseInt(templates.get('theirid'), 10) !== parseInt(data.uid, 10)) {
+		if(parseInt(ajaxify.variables.get('theirid'), 10) !== parseInt(data.uid, 10)) {
 			return;
 		}
 

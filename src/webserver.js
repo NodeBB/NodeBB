@@ -15,9 +15,12 @@ var path = require('path'),
 	user = require('./user'),
 	notifications = require('./notifications'),
 	logger = require('./logger'),
+	plugins = require('./plugins'),
 	middleware = require('./middleware'),
 	routes = require('./routes'),
-	emitter = require('./emitter');
+	emitter = require('./emitter'),
+
+	helpers = require('./../public/src/helpers')();
 
 if(nconf.get('ssl')) {
 	server = require('https').createServer({
@@ -85,6 +88,20 @@ if(nconf.get('ssl')) {
 	if ((port === 80 || port === 443) && process.env.NODE_ENV !== 'development') {
 		winston.info('Using ports 80 and 443 is not recommend; use a proxy instead. See README.md');
 	}
+
+	plugins.ready(function() {
+		// Prepare js for minification/concatenation
+		meta.js.prepare(function() {
+			if (app.enabled('minification')) {
+				meta.js.minify();
+			} else {
+				meta.js.concatenate();
+			}
+		});
+
+		// Minify CSS
+		meta.css.minify();
+	});
 
 	module.exports.server = server;
 	module.exports.init = function () {

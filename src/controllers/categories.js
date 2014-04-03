@@ -124,6 +124,13 @@ categoriesController.get = function(req, res, next) {
 				}
 			];
 
+			if(categoryData.backgroundImage) {
+				res.locals.metaTags.push({
+					name: 'og:image',
+					content: categoryData.backgroundImage
+				});
+			}
+
 			res.locals.linkTags = [
 				{
 					rel: 'alternate',

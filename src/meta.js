@@ -6,6 +6,7 @@ var fs = require('fs'),
 	winston = require('winston'),
 	nconf = require('nconf'),
 	_ = require('underscore'),
+	less = require('less'),
 
 	utils = require('./../public/src/utils'),
 	translator = require('./../public/src/translator'),
@@ -13,10 +14,8 @@ var fs = require('fs'),
 	plugins = require('./plugins'),
 	User = require('./user');
 
-
 (function (Meta) {
 	Meta.config = {};
-
 	Meta.configs = {
 		init: function (callback) {
 			delete Meta.config;
@@ -136,32 +135,31 @@ var fs = require('fs'),
 			};
 
 			switch(data.type) {
-				case 'local':
-					async.waterfall([
-						function(next) {
-							fs.readFile(path.join(nconf.get('themes_path'), data.id, 'theme.json'), function(err, config) {
-								if (!err) {
-									config = JSON.parse(config.toString());
-									next(null, config);
-								} else {
-									next(err);
-								}
-							});
-						},
-						function(config, next) {
-							themeData['theme:staticDir'] = config.staticDir ? config.staticDir : '';
-							themeData['theme:templates'] = config.templates ? config.templates : '';
-							themeData['theme:src'] = config.frameworkCSS ? config.frameworkCSS : '';
+			case 'local':
+				async.waterfall([
+					function(next) {
+						fs.readFile(path.join(nconf.get('themes_path'), data.id, 'theme.json'), function(err, config) {
+							if (!err) {
+								config = JSON.parse(config.toString());
+								next(null, config);
+							} else {
+								next(err);
+							}
+						});
+					},
+					function(config, next) {
+						themeData['theme:staticDir'] = config.staticDir ? config.staticDir : '';
+						themeData['theme:templates'] = config.templates ? config.templates : '';
+						themeData['theme:src'] = config.frameworkCSS ? config.frameworkCSS : '';
 
-							db.setObject('config', themeData, next);
-						}
-					], callback);
-					break;
+						db.setObject('config', themeData, next);
+					}
+				], callback);
+				break;
 
-				case 'bootswatch':
-					themeData['theme:src'] = data.src;
-					db.setObject('config', themeData, callback);
-					break;
+			case 'bootswatch':
+				db.setObjectField('config', 'theme:src', data.src, callback);
+				break;
 			}
 		}
 	};
@@ -229,6 +227,7 @@ var fs = require('fs'),
 
 	Meta.js = {
 		cache: undefined,
+		prepared: false,
 		scripts: [
 			'vendor/jquery/js/jquery.js',
 			'vendor/jquery/js/jquery-ui-1.10.4.custom.js',
@@ -243,12 +242,15 @@ var fs = require('fs'),
 			'src/app.js',
 			'src/templates.js',
 			'src/ajaxify.js',
+			'src/variables.js',
+			'src/widgets.js',
 			'src/translator.js',
+			'src/helpers.js',
 			'src/overrides.js',
 			'src/utils.js'
 		],
 		minFile: 'nodebb.min.js',
-		get: function (callback) {
+		prepare: function (callback) {
 			plugins.fireHook('filter:scripts.get', this.scripts, function(err, scripts) {
 				var ctime,
 					jsPaths = scripts.map(function (jsPath) {
@@ -265,7 +267,7 @@ var fs = require('fs'),
 							}).filter(function(a) { return a; });
 
 							if (matches.length) {
-								var	relPath = jsPath.slice(new String('plugins/' + matches[0]).length),
+								var	relPath = jsPath.slice(('plugins/' + matches[0]).length),
 									pluginId = matches[0].split(path.sep)[0];
 
 								winston.warn('[meta.scripts.get (' + pluginId + ')] filter:scripts.get is deprecated, consider using "scripts" in plugin.json');
@@ -287,49 +289,89 @@ var fs = require('fs'),
 				// Add plugin scripts
 				Meta.js.scripts = Meta.js.scripts.concat(plugins.clientScripts);
 
-				callback(null, [
-					Meta.js.minFile
-				]);
+				Meta.js.prepared = true;
+				callback();
 			});
 		},
-		minify: function (callback) {
+		minify: function () {
 			var uglifyjs = require('uglify-js'),
 				minified;
 
-			if (process.env.NODE_ENV === 'development') {
-				winston.info('Minifying client-side libraries');
-			}
+			winston.info('[meta/js] Minifying client-side libraries...');
 
 			minified = uglifyjs.minify(this.scripts);
 			this.cache = minified.code;
-			callback();
+
+			winston.info('[meta/js] Done.');
 		},
-		concatenate: function(callback) {
-			if (process.env.NODE_ENV === 'development') {
-				winston.info('Concatenating client-side libraries into one file');
-			}
+		concatenate: function() {
+			winston.info('[meta/js] Concatenating client-side libraries into one file...');
 
 			async.map(this.scripts, function(path, next) {
 				fs.readFile(path, { encoding: 'utf-8' }, next);
 			}, function(err, contents) {
 				if (err) {
-					winston.error('[meta.js.concatenate] Could not minify javascript! Error: ' + err.message);
+					winston.error('[meta/js] Could not minify javascript! Error: ' + err.message);
 					process.exit();
 				}
 
 				Meta.js.cache = contents.reduce(function(output, src) {
 					return output.length ? output + ';\n' + src : src;
 				}, '');
-				callback();
+
+				winston.info('[meta/js] Done.');
 			});
 		}
 	};
 
+	/* Themes */
+	Meta.css = {};
+	Meta.css.cache = undefined;
+	Meta.css.minify = function() {
+		winston.info('[meta/css] Minifying LESS/CSS');
+		db.getObjectFields('config', ['theme:type', 'theme:id'], function(err, themeData) {
+			var themeId = (themeData['theme:id'] || 'nodebb-theme-vanilla'),
+				baseThemePath = path.join(nconf.get('themes_path'), (themeData['theme:type'] && themeData['theme:type'] === 'local' ? themeId : 'nodebb-theme-vanilla')),
+				paths = [
+					baseThemePath,
+					path.join(__dirname, '../node_modules'),
+					path.join(__dirname, '../public/vendor/fontawesome/less')
+				],
+				source = '@import "./theme";\n@import "font-awesome";',
+				x, numLESS, numCSS;
+
+			// Add the imports for each LESS file
+			for(x=0,numLESS=plugins.lessFiles.length;x<numLESS;x++) {
+				source += '\n@import "./' + plugins.lessFiles[x] + '";';
+			}
+
+			// ... and for each CSS file
+			for(x=0,numCSS=plugins.cssFiles.length;x<numCSS;x++) {
+				source += '\n@import (inline) "./' + plugins.cssFiles[x] + '";';
+			}
+
+			var	parser = new (less.Parser)({
+					paths: paths
+				});
+
+			parser.parse(source, function(err, tree) {
+				if (err) {
+					winston.error('[meta/css] Could not minify LESS/CSS: ' + err.message);
+					process.exit();
+				}
+
+				Meta.css.cache = tree.toCSS({
+					cleancss: true
+				});
+				winston.info('[meta/css] Done.');
+			});
+		});
+	};
+
 	/* Sounds */
 	Meta.sounds = {};
-
-	// todo: Possibly move these into a bundled module?
 	Meta.sounds.getLocal = function(callback) {
+		// todo: Possibly move these into a bundled module?
 		fs.readdir(path.join(__dirname, '../public/sounds'), function(err, files) {
 			var	localList = {};
 
@@ -341,7 +383,7 @@ var fs = require('fs'),
 
 			// Return proper paths
 			files.forEach(function(filename) {
-				localList[filename] = nconf.get('url') + '/sounds/' + filename;
+				localList[filename] = nconf.get('relative_path') + '/sounds/' + filename;
 			});
 
 			callback(null, localList);
@@ -369,7 +411,13 @@ var fs = require('fs'),
 	Meta.settings = {};
 	Meta.settings.get = function(hash, callback) {
 		hash = 'settings:' + hash;
-		db.getObject(hash, callback);
+		db.getObject(hash, function(err, settings) {
+			if (err) {
+				callback(err);
+			} else {
+				callback(null, settings || {});
+			}
+		});
 	};
 
 	Meta.settings.getOne = function(hash, field, callback) {
@@ -402,10 +450,6 @@ var fs = require('fs'),
 	};
 
 	/* Assorted */
-	Meta.css = {
-		cache: undefined
-	};
-
 	Meta.restart = function() {
 		if (process.send) {
 			process.send('nodebb:restart');

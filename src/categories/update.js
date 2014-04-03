@@ -3,12 +3,12 @@
 
 var async = require('async'),
 	db = require('./../database'),
-	utils = require('./../../public/src/utils'),
-	categories = require('./../categories');
+	utils = require('./../../public/src/utils');
 
-(function(CategoriesAdmin) {
 
-	CategoriesAdmin.update = function(modified, socket, callback) {
+module.exports = function(Categories) {
+
+	Categories.update = function(modified, callback) {
 
 		function updateCategory(cid, next) {
 			var category = modified[cid];
@@ -43,4 +43,4 @@ var async = require('async'),
 		});
 	};
 
-}(exports));
+};

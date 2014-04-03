@@ -1,0 +1,18 @@
+{
+    "register": "نام‌نویسی",
+    "help.email": "پیش‌فرض، رایانامهٔ شما از دید همگان پنهان می‌شود.",
+    "help.username_restrictions": "یک نام کاربری یکتا بین %1 و %2 نویسه؛ دیگران می‌توانند با @<span id='yourUsername'>نام‌کاربری</span> به شما اشاره کنند.",
+    "help.minimum_password_length": "گذرواژه شما باید دست‌کم %1 نویسه داشته باشد.",
+    "email_address": "نشانی رایانامه",
+    "email_address_placeholder": "نوشتن نشانی رایانامه",
+    "username": "نام کاربری",
+    "username_placeholder": "نوشتن نام کاربری",
+    "password": "گذرواژه",
+    "password_placeholder": "نوشتن گذرواژه",
+    "confirm_password": "تأیید گذرواژه",
+    "confirm_password_placeholder": "تکرار گذرواژه",
+    "register_now_button": "اکنون نام‌نویسی کنید",
+    "alternative_registration": "روش نام‌نویسی جایگزین",
+    "terms_of_use": "شرایط استفاده",
+    "agree_to_terms_of_use": "با شرایط استفاده موافقم"
+}

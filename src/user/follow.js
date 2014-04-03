@@ -38,7 +38,7 @@ module.exports = function(User) {
 				return callback(err);
 			}
 
-			User.getUsersData(uids, callback);
+			User.getUsers(uids, callback);
 		});
 	}
 

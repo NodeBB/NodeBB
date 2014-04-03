@@ -11,6 +11,7 @@ var db = require('./database'),
 	CategoryTools = require('./categoryTools'),
 	meta = require('./meta'),
 	emitter = require('./emitter'),
+	validator = require('validator'),
 
 	async = require('async'),
 	winston = require('winston'),
@@ -20,6 +21,7 @@ var db = require('./database'),
 
 	require('./categories/activeusers')(Categories);
 	require('./categories/recentreplies')(Categories);
+	require('./categories/update')(Categories);
 
 	Categories.create = function(data, callback) {
 		db.incrObjectField('global', 'nextCid', function(err, cid) {
@@ -182,7 +184,7 @@ var db = require('./database'),
 	};
 
 	Categories.getModerators = function(cid, callback) {
-		Groups.getByGroupName('cid:' + cid + ':privileges:mods', {}, function(err, groupObj) {
+		Groups.get('cid:' + cid + ':privileges:mods', {}, function(err, groupObj) {
 			if (!err) {
 				if (groupObj.members && groupObj.members.length) {
 					user.getMultipleUserFields(groupObj.members, ['uid', 'username', 'userslug', 'picture'], function(err, moderators) {
@@ -198,8 +200,8 @@ var db = require('./database'),
 		});
 	};
 
-	Categories.markAsRead = function(cid, uid) {
-		db.setAdd('cid:' + cid + ':read_by_uid', uid);
+	Categories.markAsRead = function(cid, uid, callback) {
+		db.setAdd('cid:' + cid + ':read_by_uid', uid, callback);
 	};
 
 	Categories.markAsUnreadForAll = function(cid, callback) {
@@ -247,7 +249,9 @@ var db = require('./database'),
 
 			for (var i=0; i<categories.length; ++i) {
 				if (categories[i]) {
-					categories[i].backgroundImage = categories[i].image ? 'url(' + nconf.get('relative_path') + categories[i].image + ')' : '';
+					categories[i].name = validator.escape(categories[i].name);
+					categories[i].description = validator.escape(categories[i].description);
+					categories[i].backgroundImage = categories[i].image ? nconf.get('relative_path') + categories[i].image : '';
 					categories[i].disabled = categories[i].disabled ? parseInt(categories[i].disabled, 10) !== 0 : false;
 				}
 			}

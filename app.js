@@ -39,7 +39,7 @@ winston.add(winston.transports.Console, {
 });
 
 winston.add(winston.transports.File, {
-	filename: 'error.log',
+	filename: 'logs/error.log',
 	level: 'error'
 });
 
@@ -66,7 +66,7 @@ winston.info('');
 var	configFile = __dirname + '/config.json',
 	configExists;
 if (nconf.get('config')) {
-	configFile = path.join(__dirname, nconf.get('config'));
+	configFile = path.resolve(__dirname, nconf.get('config'));
 }
 configExists = fs.existsSync(configFile);
 

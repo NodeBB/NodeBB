@@ -28,6 +28,12 @@
     "upload_new_picture": "Last opp nytt bidle",
     "current_password": "Gjeldende passord",
     "change_password": "Endre passord",
+    "change_password_error": "Invalid Password!",
+    "change_password_error_wrong_current": "Your current password is not correct!",
+    "change_password_error_length": "Password too short!",
+    "change_password_error_match": "Passwords must match!",
+    "change_password_error_privileges": "You are not have the rights to change this password.",
+    "change_password_success": "Your password is updated!",
     "confirm_password": "Bekreft passord",
     "password": "Passord",
     "upload_picture": "Last opp bilde",
@@ -43,5 +49,6 @@
     "hidden": "skjult",
     "paginate_description": "Paginer tråder og innlegg istedet for å bruke uendelig skrolling.",
     "topics_per_page": "Tråd per side",
-    "posts_per_page": "Innlegg per side"
+    "posts_per_page": "Innlegg per side",
+    "notification_sounds": "Spill av en lyd når du mottar ett varsel."
 }

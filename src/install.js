@@ -1,13 +1,13 @@
 'use strict';
 
 var async = require('async'),
-	utils = require('../public/src/utils.js'),
 	fs = require('fs'),
 	url = require('url'),
 	path = require('path'),
 	prompt = require('prompt'),
 	winston = require('winston'),
 	nconf = require('nconf'),
+	utils = require('../public/src/utils.js'),
 
 	install = {
 		questions: [{
@@ -290,21 +290,10 @@ var async = require('async'),
 				function (next) {
 					// Check if an administrator needs to be created
 					var Groups = require('./groups');
-
-					Groups.getGidFromName('administrators', function (err, gid) {
-						if (err) {
-							return next(err.message);
-						}
-
-						if (gid) {
-							Groups.get(gid, {}, function (err, groupObj) {
-								if (groupObj.count > 0) {
-									winston.info('Administrator found, skipping Admin setup');
-									next();
-								} else {
-									install.createAdmin(next);
-								}
-							});
+					Groups.get('administrators', {}, function (err, groupObj) {
+						if (!err && groupObj && groupObj.memberCount > 0) {
+							winston.info('Administrator found, skipping Admin setup');
+							next();
 						} else {
 							install.createAdmin(next);
 						}
@@ -358,6 +347,15 @@ var async = require('async'),
 							}
 						});
 					}, next);
+				},
+				function (next) {
+					var	db = require('./database.js');
+
+					db.init(function(err) {
+						if (!err) {
+							db.setObjectField('widgets:global', 'footer', "[{\"widget\":\"html\",\"data\":{\"html\":\"<footer id=\\\"footer\\\" class=\\\"container footer\\\">\\r\\n\\t<div class=\\\"copyright\\\">\\r\\n\\t\\tCopyright © 2014 <a target=\\\"_blank\\\" href=\\\"https://www.nodebb.com\\\">NodeBB Forums</a> | <a target=\\\"_blank\\\" href=\\\"//github.com/designcreateplay/NodeBB/graphs/contributors\\\">Contributors</a>\\r\\n\\t</div>\\r\\n</footer>\",\"title\":\"\",\"container\":\"\"}}]", next);
+						}
+					});
 				},
 				function (next) {
 					require('./upgrade').upgrade(next);
@@ -417,7 +415,7 @@ var async = require('async'),
 							return callback(new Error('invalid-values'));
 						}
 
-						Groups.joinByGroupName('administrators', uid, callback);
+						Groups.join('administrators', uid, callback);
 					});
 				},
 				retryPassword = function (originalResults) {
@@ -455,7 +453,7 @@ var async = require('async'),
 		save: function (server_conf, callback) {
 			var	serverConfigPath = path.join(__dirname, '../config.json');
 			if (nconf.get('config')) {
-				serverConfigPath = path.join(__dirname, '../', nconf.get('config'));
+				serverConfigPath = path.resolve(__dirname, '../', nconf.get('config'));
 			}
 
 			fs.writeFile(serverConfigPath, JSON.stringify(server_conf, null, 4), function (err) {

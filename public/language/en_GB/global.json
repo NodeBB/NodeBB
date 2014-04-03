@@ -12,15 +12,13 @@
 	"register": "Register",
 	"login": "Login",
 	"please_log_in": "Please Log In",
+	"logout": "Logout",
 
 	"posting_restriction_info": "Posting is currently restricted to registered members only, click here to log in.",
 
 	"welcome_back": "Welcome Back ",
 	"you_have_successfully_logged_in": "You have successfully logged in",
 
-	"logout": "Logout",
-	"logout.title": "You are now logged out.",
-	"logout.message": "You have successfully logged out of NodeBB",
 
 	"save_changes": "Save Changes",
 	"close": "Close",
@@ -41,10 +39,6 @@
 	"chats.loading": "Loading Chats",
 
 	"motd.welcome": "Welcome to NodeBB, the discussion platform of the future.",
-	"motd.get": "Get NodeBB",
-	"motd.fork": "Fork",
-	"motd.like": "Like",
-	"motd.follow": "Follow",
 
 	"previouspage": "Previous Page",
 	"nextpage": "Next Page",

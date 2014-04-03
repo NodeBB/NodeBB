@@ -28,6 +28,12 @@
     "upload_new_picture": "Nieuwe Afbeelding Uploaden",
     "current_password": "Huidige Wachtwoord",
     "change_password": "Wachtwoord Aanpassen",
+    "change_password_error": "Invalid Password!",
+    "change_password_error_wrong_current": "Your current password is not correct!",
+    "change_password_error_length": "Password too short!",
+    "change_password_error_match": "Passwords must match!",
+    "change_password_error_privileges": "You are not have the rights to change this password.",
+    "change_password_success": "Your password is updated!",
     "confirm_password": "Bevestig Wachtwoord",
     "password": "Wachtwoord",
     "upload_picture": "Afbeelding Uploaden",
@@ -43,5 +49,6 @@
     "hidden": "verborgen",
     "paginate_description": "Blader door onderwerpen en berichten in plaats van oneindig scrollen.",
     "topics_per_page": "Onderwerpen per Pagina",
-    "posts_per_page": "Berichten per Pagina"
+    "posts_per_page": "Berichten per Pagina",
+    "notification_sounds": "Play a sound when you receive a notification."
 }

@@ -1,3 +1,5 @@
+"use strict";
+
 var async = require('async'),
 	winston = require('winston'),
 	plugins = require('./plugins'),
@@ -16,7 +18,16 @@ var async = require('async'),
 
 		var rendered = [];
 
-		Widgets.getArea(area.template, area.location, function(err, widgets) {
+		async.parallel({
+			global: function(next) {
+				Widgets.getArea('global', area.location, next);
+			},
+			local: function(next) {
+				Widgets.getArea(area.template, area.location, next);
+			}
+		}, function(err, data) {
+			var widgets = data.global.concat(data.local);
+
 			async.eachSeries(widgets, function(widget, next) {
 				plugins.fireHook('filter:widget.render:' + widget.widget, {
 					uid: uid,
@@ -24,7 +35,7 @@ var async = require('async'),
 					data: widget.data
 				}, function(err, html){
 					if (widget.data.container && widget.data.container.match('{body}')) {
-						html = templates.prepare(widget.data.container).parse({
+						html = templates.parse(widget.data.container, {
 							title: widget.data.title,
 							body: html
 						});
@@ -48,7 +59,7 @@ var async = require('async'),
 				return callback(err, []);
 			}
 			callback(err, JSON.parse(widgets));
-		})
+		});
 	};
 
 	Widgets.setArea = function(area, callback) {
@@ -60,6 +71,26 @@ var async = require('async'),
 		
 		db.setObjectField('widgets:' + area.template, area.location, JSON.stringify(area.widgets), function(err) {
 			callback(err);
+		});
+	};
+
+	Widgets.reset = function(callback) {
+		plugins.fireHook('filter:widgets.getAreas', [], function(err, areas) {
+			var drafts = [];
+
+			async.each(areas, function(area, next) {
+				Widgets.getArea(area.template, area.location, function(err, areaData) {
+					drafts = drafts.concat(areaData);
+					area.widgets = [];
+					Widgets.setArea(area, next);
+				});
+			}, function(err) {
+				Widgets.setArea({
+					template: 'global',
+					location: 'drafts',
+					widgets: drafts
+				}, callback);
+			});
 		});
 	};
 

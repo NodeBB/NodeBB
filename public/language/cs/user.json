@@ -28,6 +28,12 @@
     "upload_new_picture": "Nahrát nový obrázek",
     "current_password": "Current Password",
     "change_password": "Změnit heslo",
+    "change_password_error": "Invalid Password!",
+    "change_password_error_wrong_current": "Your current password is not correct!",
+    "change_password_error_length": "Password too short!",
+    "change_password_error_match": "Passwords must match!",
+    "change_password_error_privileges": "You are not have the rights to change this password.",
+    "change_password_success": "Your password is updated!",
     "confirm_password": "Potvrzení hesla",
     "password": "Heslo",
     "upload_picture": "Nahrát obrázek",
@@ -43,5 +49,6 @@
     "hidden": "skrytý",
     "paginate_description": "Paginate topics and posts instead of using infinite scroll.",
     "topics_per_page": "Topics per Page",
-    "posts_per_page": "Posts per Page"
+    "posts_per_page": "Posts per Page",
+    "notification_sounds": "Play a sound when you receive a notification."
 }

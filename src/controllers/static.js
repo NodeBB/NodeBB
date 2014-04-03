@@ -2,16 +2,20 @@
 
 var staticController = {};
 
-staticController['404'] = function(req, res, next) {
-	res.render('404', {});
-};
+createStatic('404');
+createStatic('403');
+createStatic('500');
 
-staticController['403'] = function(req, res, next) {
-	res.render('403', {});
-};
+function createStatic(statusCode) {
+	staticController[statusCode] = function(req, res) {
+		if (!res.locals.isAPI) {
+			res.statusCode = parseInt(statusCode, 10);
+		}
 
-staticController['500'] = function(req, res, next) {
-	res.render('500', {});
-};
+		res.render(statusCode, {});
+	};
+}
 
 module.exports = staticController;
+
+

@@ -1,4 +1,3 @@
-
 'use strict';
 
 var async = require('async'),
@@ -8,22 +7,18 @@ var async = require('async'),
 	topics = require('./../topics'),
 	categories = require('./../categories'),
 	plugins = require('./../plugins'),
-	events = require('./../events'),
 	groups = require('./../groups');
 
 
 module.exports = function(User) {
 
-	User.delete = function(adminUid, uid, callback) {
+	User.delete = function(uid, callback) {
 		async.waterfall([
 			function(next) {
 				deletePosts(uid, next);
 			},
 			function(next) {
 				deleteTopics(uid, next);
-			},
-			function(next) {
-				events.logAdminUserDelete(adminUid, uid, next);
 			}
 		], function(err) {
 			if (err) {
@@ -251,6 +246,9 @@ module.exports = function(User) {
 					db.delete('uid:' + uid + ':favourites', next);
 				},
 				function(next) {
+					db.delete('user:' + uid + ':settings', next);
+				},
+				function(next) {
 					db.delete('uid:' + uid + ':topics', next);
 				},
 				function(next) {
@@ -275,7 +273,7 @@ module.exports = function(User) {
 					deleteUserFromFollowers(uid, next);
 				},
 				function(next) {
-					deleteUserFromGroups(uid, next);
+					groups.leaveAllGroups(uid, next);
 				}
 			], function(err) {
 				if (err) {
@@ -291,6 +289,9 @@ module.exports = function(User) {
 					},
 					function(next) {
 						db.delete('user:' + uid, next);
+					},
+					function(next) {
+						db.decrObjectField('global', 'userCount', next);
 					}
 				], callback);
 			});
@@ -317,14 +318,6 @@ module.exports = function(User) {
 
 			async.each(uids, function(theiruid, next) {
 				db.setRemove('following:' + theiruid, uid, next);
-			}, callback);
-		});
-	}
-
-	function deleteUserFromGroups(uid, callback) {
-		groups.getGroupIds(function(err, gids) {
-			async.each(gids, function(gid, next) {
-				groups.leave(gid, uid, next);
 			}, callback);
 		});
 	}

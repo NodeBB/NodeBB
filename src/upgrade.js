@@ -19,7 +19,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2014, 2, 19);
+	latestSchema = Date.UTC(2014, 4, 2);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -335,27 +335,238 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = Date.UTC(2014, 2, 19);
+			thisSchemaDate = Date.UTC(2014, 2, 21);
 
 			if (schemaDate < thisSchemaDate) {
-				async.map(['administrators', 'registered-users'], Groups.getGidFromName, function(err, gids) {
-					async.each(gids, function(gid, next) {
-						db.setObjectField('gid:' + gid, 'system', '1', next);
+				db.getObject('group:gid', function(err, mapping) {
+					if (err) {
+						return next(err);
+					}
+
+					if (!err && !mapping) {
+						// Done already, skip
+						return next();
+					}
+
+					var	names = Object.keys(mapping),
+						reverseMapping = {},
+						isGroupList = /^cid:[0-9]+:privileges:g\+[rw]$/,
+						gid;
+
+					for(var groupName in mapping) {
+						gid = mapping[groupName];
+						if (mapping.hasOwnProperty(groupName) && !reverseMapping.hasOwnProperty(gid)) {
+							reverseMapping[parseInt(gid, 10)] = groupName;
+						}
+					}
+
+					async.eachSeries(names, function(name, next) {
+						async.series([
+							function(next) {
+								// Remove the gid from the hash
+								db.exists('gid:' + mapping[name], function(err, exists) {
+									if (exists) {
+										db.deleteObjectField('gid:' + mapping[name], 'gid', next);
+									} else {
+										next();
+									}
+								});
+							},
+							function(next) {
+								// Rename gid hash to groupName hash
+								db.exists('gid:' + mapping[name], function(err, exists) {
+									if (exists) {
+										db.rename('gid:' + mapping[name], 'group:' + name, next);
+									} else {
+										next();
+									}
+								});
+							},
+							function(next) {
+								// Move member lists over
+								db.exists('gid:' + mapping[name], function(err, dstExists) {
+									if (err) {
+										return next(err);
+									}
+
+									db.exists('gid:' + mapping[name] + ':members', function(err, srcExists) {
+										if (err) {
+											return next(err);
+										}
+
+										if (srcExists && !dstExists) {
+											db.rename('gid:' + mapping[name] + ':members', 'group:' + name + ':members', next);
+										} else {
+											// No members or group memberlist collision: do nothing, they'll be removed later
+											next();
+										}
+									});
+								});
+							},
+							function(next) {
+								// Add group to the directory (set)
+								db.setAdd('groups', name, next);
+							},
+							function(next) {
+								// If this group contained gids, map the gids to group names
+								// Also check if the mapping and reverseMapping still work, if not, delete this group
+								if (isGroupList.test(name) && name === reverseMapping[mapping[name]]) {
+									db.getSetMembers('group:' + name + ':members', function(err, gids) {
+										async.each(gids, function(gid, next) {
+											db.setRemove('group:' + name + ':members', gid);
+											db.setAdd('group:' + name + ':members', reverseMapping[gid], next);
+										}, next);
+									});
+								} else if (name !== reverseMapping[mapping[name]]) {
+									async.parallel([
+										function(next) {
+											db.delete('group:' + name, next);
+										},
+										function(next) {
+											db.delete('group:' + name + ':members', next);
+										},
+										function(next) {
+											db.setRemove('groups', name, next);
+										}
+									], next);
+								} else {
+									next();
+								}
+							},
+							function(next) {
+								// Fix its' name, if it is wrong for whatever reason
+								db.getObjectField('group:' + name, 'name', function(err, groupName) {
+									if (name && groupName && name !== groupName) {
+										async.series([
+											function(cb) {
+												db.setObjectField('group:' + name, 'name', name, cb);
+											},
+											function(cb) {
+												db.setRemove('groups', groupName, cb);
+											},
+											function(cb) {
+												db.setAdd('groups', name, cb);
+											}
+										], next);
+									} else {
+										next();
+									}
+								});
+							}
+						], next);
 					}, function(err) {
 						if (err) {
-							winston.error('[2014/3/19] Problem setting "system" flag for system groups.');
-							next();
-						} else {
-							winston.info('[2014/3/19] Setting "system" flag for system groups');
-							Upgrade.update(thisSchemaDate, next);
+							winston.error('[2014/3/21] Problem removing gids and pruning groups.');
+							winston.error(err.message);
+							return next();
 						}
+
+						// Clean-up
+						var	isValidHiddenGroup = /^cid:[0-9]+:privileges:(g)?\+[rw]$/;
+						async.series([
+							function(next) {
+								// Mapping
+								db.delete('group:gid', next);
+							},
+							function(next) {
+								// Incrementor
+								db.deleteObjectField('global', 'nextGid', next);
+							},
+							function(next) {
+								// Set 'administrators' and 'registered-users' as system groups
+								async.parallel([
+									function(next) {
+										db.setObject('group:administrators', {
+											system: '1',
+											hidden: '0'
+										}, next);
+									},
+									function(next) {
+										db.setObject('group:registered-users', {
+											system: '1',
+											hidden: '0'
+										}, next);
+									}
+								], next);
+							},
+							function(next) {
+								Groups.list({ showAllGroups: true }, function(err, groups) {
+									async.each(groups, function(group, next) {
+										// If deleted, (hidden & empty), or invalidly named hidden group, delete
+										if (group.deleted || (group.hidden && group.memberCount === 0) || (group.hidden && !isValidHiddenGroup.test(group.name))) {
+											Groups.destroy(group.name, next);
+										} else {
+											next();
+										}
+									}, next);
+								});
+							}
+						], function(err) {
+							if (err) {
+								winston.error('[2014/3/21] Problem removing gids and pruning groups.');
+								next();
+							} else {
+								winston.info('[2014/3/21] Removing gids and pruning groups');
+								Upgrade.update(thisSchemaDate, next);
+							}
+						});
 					});
 				});
 			} else {
-				winston.info('[2014/3/19] Setting "system" flag for system groups - skipped');
+				winston.info('[2014/3/21] Removing gids and pruning groups - skipped');
 				next();
 			}
-		}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 3, 31, 12, 30);
+
+			if (schemaDate < thisSchemaDate) {
+				db.setObjectField('widgets:global', 'footer', "[{\"widget\":\"html\",\"data\":{\"html\":\"<footer id=\\\"footer\\\" class=\\\"container footer\\\">\\r\\n\\t<div class=\\\"copyright\\\">\\r\\n\\t\\tCopyright © 2014 <a target=\\\"_blank\\\" href=\\\"https://www.nodebb.com\\\">NodeBB Forums</a> | <a target=\\\"_blank\\\" href=\\\"//github.com/designcreateplay/NodeBB/graphs/contributors\\\">Contributors</a>\\r\\n\\t</div>\\r\\n</footer>\",\"title\":\"\",\"container\":\"\"}}]", function(err) {
+					if (err) {
+						winston.error('[2014/3/31] Problem re-adding copyright message into global footer widget');
+						next();
+					} else {
+						winston.info('[2014/3/31] Re-added copyright message into global footer widget');
+						Upgrade.update(thisSchemaDate, next);
+					}
+				});
+			} else {
+				winston.info('[2014/3/31] Re-adding copyright message into global footer widget - skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2014, 4, 2);
+
+			if (schemaDate < thisSchemaDate) {
+				db.getObjectField('widgets:home.tpl', 'footer', function(err, widgetData) {
+					if (err) {
+						winston.error('[2014/4/1] Error moving deprecated vanilla footer widgets into draft zone');
+						return next(err);
+					}
+
+					db.setObjectField('widgets:global', 'drafts', widgetData, function(err) {
+						if (err) {
+							winston.error('[2014/4/1] Error moving deprecated vanilla footer widgets into draft zone');
+							return next(err);
+						}
+
+						db.deleteObjectField('widgets:home.tpl', 'footer', function(err) {
+							if (err) {
+								winston.error('[2014/4/1] Error moving deprecated vanilla footer widgets into draft zone');
+								next(err);
+							} else {
+								winston.info('[2014/4/1] Moved deprecated vanilla footer widgets into draft zone');
+								Upgrade.update(thisSchemaDate, next);
+							}
+						});
+					});
+				});
+			} else {
+				winston.info('[2014/4/1] Moved deprecated vanilla footer widgets into draft zone - skipped');
+				next();
+			}
+		},
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 22!!!
 	], function(err) {

@@ -1,5 +1,5 @@
 "use strict";
-/*global define, socket, app, bootbox, templates, RELATIVE_PATH*/
+/*global define, socket, app, bootbox, templates, ajaxify, RELATIVE_PATH*/
 
 define(['uploader'], function(uploader) {
 	var	Categories = {};
@@ -120,12 +120,9 @@ define(['uploader'], function(uploader) {
 					timeout: 2000
 				});
 
-				templates.preload_template('admin/categories', function() {
-					templates['admin/categories'].parse({categories:[]});
-					var html = templates.prepare(templates['admin/categories'].blocks.categories).parse({
-						categories: [data]
-					});
-					html = $(html);
+				ajaxify.loadTemplate('admin/categories', function(adminCategories) {
+					var html = $(templates.parse(templates.getBlock(adminCategories, 'categories'), {categories: [data]}));
+					
 					html.find('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
 
 					$('#entry-container').append(html);
@@ -327,7 +324,7 @@ define(['uploader'], function(uploader) {
 			for(var x = 0; x < numResults; x++) {
 				resultObj = results[x];
 				trEl = $('<tr />')
-					.attr('data-gid', resultObj.gid)
+					.attr('data-name', resultObj.name)
 					.html('<td><h4>' + resultObj.name + '</h4></td>' +
 						'<td>' +
 						'<div class="btn-group pull-right">' +
@@ -341,13 +338,13 @@ define(['uploader'], function(uploader) {
 
 		groupsResultsEl.off().on('click', '[data-gpriv]', function(e) {
 			var	btnEl = $(this),
-				gid = btnEl.parents('tr[data-gid]').attr('data-gid'),
+				name = btnEl.parents('tr[data-name]').attr('data-name'),
 				privilege = btnEl.attr('data-gpriv');
 			e.preventDefault();
 
 			socket.emit('admin.categories.setGroupPrivilege', {
 				cid: cid,
-				gid: gid,
+				name: name,
 				privilege: privilege,
 				set: !btnEl.hasClass('active')
 			}, function(err) {

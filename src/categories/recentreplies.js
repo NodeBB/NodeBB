@@ -9,30 +9,20 @@ var async = require('async'),
 
 module.exports = function(Categories) {
 	Categories.getRecentReplies = function(cid, uid, count, callback) {
-		if(count === 0 || !count) {
+		if(!parseInt(count, 10)) {
 			return callback(null, []);
 		}
 
-		CategoryTools.privileges(cid, uid, function(err, privileges) {
-			if(err) {
-				return callback(err);
+		db.getSortedSetRevRange('categories:recent_posts:cid:' + cid, 0, count - 1, function(err, pids) {
+			if (err) {
+				return callback(err, []);
 			}
 
-			if (!privileges.read) {
+			if (!pids || !pids.length) {
 				return callback(null, []);
 			}
 
-			db.getSortedSetRevRange('categories:recent_posts:cid:' + cid, 0, count - 1, function(err, pids) {
-				if (err) {
-					return callback(err, []);
-				}
-
-				if (!pids || !pids.length) {
-					return callback(null, []);
-				}
-
-				posts.getPostSummaryByPids(pids, true, callback);
-			});
+			posts.getPostSummaryByPids(pids, true, callback);
 		});
 	};
 

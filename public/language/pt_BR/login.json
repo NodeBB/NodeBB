@@ -1,6 +1,6 @@
 {
     "login": "Login",
-    "username": "Usuário",
+    "username": "Username / Email",
     "password": "Senha",
     "remember_me": "Lembrar?",
     "forgot_password": "Esqueceu a Senha?",

@@ -32,35 +32,41 @@
 			// Correct NodeBB language codes to timeago codes, if necessary
 			var	languageCode;
 			switch(config.defaultLang) {
-				case 'cs':
-					languageCode = 'cz';
-					break;
+			case 'cs':
+				languageCode = 'cz';
+				break;
 
-				case 'zh_TW':
-					languageCode = 'zh-TW';
-					break;
+			case 'fa_IR':
+				languageCode = 'fa';
+				break;
 
-				case 'zh_CN':
-					languageCode = 'zh-CN';
-					break;
+			case 'pt_BR':
+				languageCode = 'pt-br';
+				break;
 
-				case 'pt_BR':
-					languageCode = 'pt-br';
-					break;
+			case 'zh_TW':
+				languageCode = 'zh-TW';
+				break;
 
-				default:
-					languageCode = config.defaultLang;
-					break;
+			case 'zh_CN':
+				languageCode = 'zh-CN';
+				break;
+
+			default:
+				languageCode = config.defaultLang;
+				break;
 			}
 
-			$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').fail(function() {
+			$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').success(function() {
+				$('span.timeago').timeago();
+			}).fail(function() {
 				$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.en.js');
 			});
 
 			// Add directional code if necessary
 			translator.get('language:dir', function(value) {
 				if (value) {
-					$('html').css('direction', value);
+					$('html').css('direction', value).attr('data-dir', value);
 				}
 			});
 		}

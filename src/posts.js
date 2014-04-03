@@ -278,76 +278,89 @@ var db = require('./database'),
 
 	Posts.getPostSummaryByPids = function(pids, stripTags, callback) {
 
-		function getPostSummary(pid, callback) {
+		function getPostSummary(post, callback) {
 
-			async.waterfall([
+			post.relativeTime = utils.toISOString(post.timestamp);
+
+			async.parallel([
 				function(next) {
-					Posts.getPostFields(pid, ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'], function(err, postData) {
-						if(err) {
+					user.getUserFields(post.uid, ['username', 'userslug', 'picture'], function(err, userData) {
+						if (err) {
 							return next(err);
 						}
-
-						if (parseInt(postData.deleted, 10) === 1) {
-							return callback(null);
-						}
-
-						postData.relativeTime = utils.toISOString(postData.timestamp);
-						next(null, postData);
+						post.user = userData;
+						next();
 					});
 				},
-				function(postData, next) {
-					Posts.addUserInfoToPost(postData, function() {
-						next(null, postData);
-					});
-				},
-				function(postData, next) {
-					topics.getTopicFields(postData.tid, ['title', 'cid', 'slug', 'deleted'], function(err, topicData) {
+				function(next) {
+					topics.getTopicFields(post.tid, ['title', 'cid', 'slug', 'deleted'], function(err, topicData) {
 						if (err) {
-							return callback(err);
+							return next(err);
 						} else if (parseInt(topicData.deleted, 10) === 1) {
-							return callback(null);
+							return callback();
 						}
+
 						categories.getCategoryFields(topicData.cid, ['name', 'icon', 'slug'], function(err, categoryData) {
-							postData.category = categoryData;
+							if (err) {
+								return next(err);
+							}
+
+							post.category = categoryData;
 							topicData.title = validator.escape(topicData.title);
-							postData.topic = topicData;
-							next(null, postData);
+							post.topic = topicData;
+							next();
 						});
 					});
 				},
-				function(postData, next) {
-					if (!postData.content) {
-						return next(null, postData);
+				function(next) {
+					if (!post.content) {
+						return next();
 					}
 
-					postTools.parse(postData.content, function(err, content) {
+					postTools.parse(post.content, function(err, content) {
 						if(err) {
 							return next(err);
 						}
 
 						if(stripTags) {
 							var s = S(content);
-							postData.content = s.stripTags.apply(s, utils.getTagsExcept(['img', 'i', 'p'])).s;
+							post.content = s.stripTags.apply(s, utils.getTagsExcept(['img', 'i', 'p'])).s;
 						} else {
-							postData.content = content;
+							post.content = content;
 						}
 
-						next(null, postData);
+						next();
 					});
 				}
-			], callback);
+			], function(err) {
+				callback(err, post);
+			});
 		}
 
-		async.map(pids, getPostSummary, function(err, posts) {
-			if(err) {
+		var keys = pids.map(function(pid) {
+			return 'post:' + pid;
+		});
+
+		db.getObjectsFields(keys, ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'], function(err, posts) {
+			if (err) {
 				return callback(err);
 			}
 
 			posts = posts.filter(function(p) {
-				return p;
+				return !!p || parseInt(p.deleted, 10) !== 1;
 			});
 
-			callback(null, posts);
+			async.map(posts, getPostSummary, function(err, posts) {
+				if (err) {
+					return callback(err);
+				}
+
+				posts = posts.filter(function(post) {
+					return !!post;
+				});
+
+				return callback(null, posts);
+			});
 		});
 	};
 

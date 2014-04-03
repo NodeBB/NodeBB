@@ -1,6 +1,6 @@
 {
     "login": "登录",
-    "username": "用户名",
+    "username": "Username / Email",
     "password": "密码",
     "remember_me": "记住我？",
     "forgot_password": "忘记密码？",
