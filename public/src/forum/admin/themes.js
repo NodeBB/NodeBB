@@ -26,7 +26,7 @@ define(['forum/admin/settings'], function(Settings) {
 					themeType = parentEl.attr('data-type'),
 					cssSrc = parentEl.attr('data-css'),
 					themeId = parentEl.attr('data-theme');
-			
+
 				socket.emit('admin.themes.set', {
 					type: themeType,
 					id: themeId,
@@ -228,7 +228,7 @@ define(['forum/admin/settings'], function(Settings) {
 						data: widgetData
 					});
 				});
-				
+
 				socket.emit('admin.widgets.set', {
 					template: template,
 					location: location,
@@ -246,6 +246,11 @@ define(['forum/admin/settings'], function(Settings) {
 		}
 
 		function populateWidget(widget, data) {
+			if (data.title) {
+				var title = widget.find('.panel-heading strong');
+				title.text(title.text() + ' - ' + data.title);
+			}
+
 			widget.find('input, textarea').each(function() {
 				var input = $(this),
 					value = data[input.attr('name')];
@@ -277,8 +282,6 @@ define(['forum/admin/settings'], function(Settings) {
 							appendToggle(widgetEl);
 						}
 					}
-
-
 				}
 			}
 		});
