@@ -69,15 +69,19 @@ define(['composer', 'share'], function(composer, share) {
 
 		if ($(selection.baseNode).parents('.post-content').length > 0) {
 			var snippet = selection.toString();
-			if (snippet.length > 0) {
-				selectionText = '> ' + snippet.replace(/\n/g, '\n> ');
+			if (snippet.length) {
+				selectionText = '> ' + snippet.replace(/\n/g, '\n> ') + '\n\n';
 			}
 		}
 
 		var username = getUserName(button);
-		username += username ? ' ' : '';
 
-		composer.newReply(tid, getPid(button), topicName, selectionText.length > 0 ? selectionText + '\n\n' + username : '' + username);
+		if (selectionText.length) {
+			composer.addQuote(tid, getPid(button), topicName, username, selectionText);
+		} else {
+			composer.newReply(tid, getPid(button), topicName, username + ' ');
+		}
+
 	}
 
 	function onQuoteClicked(button, tid, topicName) {
