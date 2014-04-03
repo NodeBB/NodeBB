@@ -158,7 +158,7 @@ middleware.buildHeader = function(req, res, next) {
 			// consider caching this, since no user specific information is loaded here
 			app.render('footer', {}, function(err, template) {
 				translator.translate(template, function(parsedTemplate) {
-					res.locals.footer = template;
+					res.locals.footer = parsedTemplate;
 					next(err);
 				});
 			});
