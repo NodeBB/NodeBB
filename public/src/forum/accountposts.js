@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, socket, ajaxify, templates, translator */
+/* globals define, app, socket, ajaxify, templates, translator, utils */
 
 define(['forum/accountheader'], function(header) {
 	var AccountPosts = {},
@@ -29,7 +29,7 @@ define(['forum/accountheader'], function(header) {
 			}
 
 			if (data.posts && data.posts.length) {
-				onTopicsLoaded(data.posts);
+				onPostsLoaded(data.posts);
 				$('.user-favourite-posts').attr('data-nextstart', data.nextStart);
 			}
 
@@ -37,17 +37,16 @@ define(['forum/accountheader'], function(header) {
 		});
 	}
 
-	function onTopicsLoaded(posts) {
+	function onPostsLoaded(posts) {
 		ajaxify.loadTemplate('accountposts', function(accountposts) {
 			var html = templates.parse(templates.getBlock(accountposts, 'posts'), {posts: posts});
 
 			translator.translate(html, function(translatedHTML) {
-				$('#category-no-topics').remove();
 
 				html = $(translatedHTML);
 				html.find('img').addClass('img-responsive');
 				$('.user-favourite-posts').append(html);
-				$('span.timeago').timeago();
+				html.find('span.timeago').timeago();
 				app.createUserTooltips();
 				utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 			});

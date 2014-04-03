@@ -10,6 +10,7 @@ var fs = require('fs'),
 
 	user = require('./../user'),
 	posts = require('./../posts'),
+	topics = require('./../topics'),
 	postTools = require('../postTools'),
 	utils = require('./../../public/src/utils'),
 	meta = require('./../meta'),
@@ -235,35 +236,67 @@ accountsController.getFavourites = function(req, res, next) {
 accountsController.getPosts = function(req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
 
-	user.getUidByUserslug(req.params.userslug, function (err, uid) {
-		if (!uid) {
+	getBaseUser(req.params.userslug, function(err, userData) {
+		if (err) {
+			return next(err);
+		}
+
+		if (!userData) {
 			return userNotFound();
 		}
 
-		user.getUserFields(uid, ['username', 'userslug'], function (err, userData) {
+		posts.getPostsByUid(callerUID, userData.uid, 0, 19, function (err, userPosts) {
 			if (err) {
 				return next(err);
 			}
 
-			if (!userData) {
-				return userNotFound();
-			}
+			userData.theirid = userData.uid;
+			userData.yourid = callerUID;
+			userData.posts = userPosts.posts;
+			userData.nextStart = userPosts.nextStart;
 
-			posts.getPostsByUid(callerUID, uid, 0, 19, function (err, userPosts) {
-				if (err) {
-					return next(err);
-				}
-				userData.uid = uid;
-				userData.theirid = uid;
-				userData.yourid = callerUID;
-				userData.posts = userPosts.posts;
-				userData.nextStart = userPosts.nextStart;
-
-				res.render('accountposts', userData);
-			});
+			res.render('accountposts', userData);
 		});
 	});
 };
+
+accountsController.getTopics = function(req, res, next) {
+	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;
+
+	getBaseUser(req.params.userslug, function(err, userData) {
+		if (err) {
+			return next(err);
+		}
+
+		if (!userData) {
+			return userNotFound();
+		}
+
+		var set = 'uid:' + userData.uid + ':topics';
+		topics.getTopicsFromSet(callerUID, set, 0, 19, function(err, userTopics) {
+			if(err) {
+				return next(err);
+			}
+
+			userData.theirid = userData.uid;
+			userData.yourid = callerUID;
+			userData.topics = userTopics.topics;
+			userData.nextStart = userTopics.nextStart;
+
+			res.render('accounttopics', userData);
+		});
+	});
+};
+
+function getBaseUser(userslug, callback) {
+	user.getUidByUserslug(userslug, function (err, uid) {
+		if (err || !uid) {
+			return callback(err);
+		}
+
+		user.getUserFields(uid, ['uid', 'username', 'userslug'], callback);
+	});
+}
 
 accountsController.accountEdit = function(req, res, next) {
 	var callerUID = req.user ? parseInt(req.user.uid, 10) : 0;

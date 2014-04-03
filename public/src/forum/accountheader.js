@@ -3,7 +3,6 @@ define(function() {
 
 	AccountHeader.init = function() {
 
-
 		AccountHeader.createMenu();
 
 		hideLinks();
@@ -18,6 +17,7 @@ define(function() {
 					<li id="settingsLink"><a href="' + RELATIVE_PATH + '/user/' + userslug + '/settings">[[user:settings]]</a></li>\
 					<li id="favouritesLink"><a href="' + RELATIVE_PATH + '/user/' + userslug + '/favourites">[[user:favourites]]</a></li>\
 					<li><a href="' + RELATIVE_PATH + '/user/' + userslug + '/posts">[[global:posts]]</a></li>\
+					<li><a href="' + RELATIVE_PATH + '/user/' + userslug + '/topics">[[topic:topics]]</a></li>\
 					<li><a href="' + RELATIVE_PATH + '/user/' + userslug + '/followers">[[user:followers]]</a></li>\
 					<li><a href="' + RELATIVE_PATH + '/user/' + userslug + '/following">[[user:following]]</a></li>\
 					<li id="editLink"><a href="' + RELATIVE_PATH + '/user/' + userslug + '/edit">[[user:edit]]</a></li>\
