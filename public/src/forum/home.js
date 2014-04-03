@@ -16,6 +16,10 @@ define(function() {
 		app.enterRoom('home');
 
 		socket.on('event:new_post', home.onNewPost);
+
+		$('.home .category-header').tooltip({
+			placement: 'bottom'
+		});
 	};
 
 	home.onNewPost = function(data) {
