@@ -74,12 +74,12 @@ define(['composer', 'share'], function(composer, share) {
 			}
 		}
 
-		var username = getUserName(button);
+		var username = getUserName(selectionText ? $(selection.baseNode) : button);
 
 		if (selectionText.length) {
 			composer.addQuote(tid, getPid(button), topicName, username, selectionText);
 		} else {
-			composer.newReply(tid, getPid(button), topicName, username + ' ');
+			composer.newReply(tid, getPid(button), topicName, username ? username + ' ' : '');
 		}
 
 	}
