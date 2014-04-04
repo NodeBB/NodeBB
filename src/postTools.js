@@ -251,19 +251,19 @@ var winston = require('winston'),
 	}
 
 	PostTools.parse = function(raw, callback) {
-		raw = raw || '';
-
-		plugins.fireHook('filter:post.parse', raw, function(err, parsed) {
-			callback(null, !err ? parsed : raw);
-		});
+		parse('filter:post.parse', raw, callback);
 	};
 
 	PostTools.parseSignature = function(raw, callback) {
+		parse('filter:post.parseSignature', raw, callback);
+	};
+
+	function parse(hook, raw, callback) {
 		raw = raw || '';
 
-		plugins.fireHook('filter:post.parseSignature', raw, function(err, parsedSignature) {
-			callback(null, !err ? parsedSignature : raw);
+		plugins.fireHook(hook, raw, function(err, parsed) {
+			callback(null, !err ? parsed : raw);
 		});
-	};
+	}
 
 }(exports));
