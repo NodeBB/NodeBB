@@ -1,9 +1,16 @@
 "use strict";
 /* global define, config, templates, app, ajaxify, socket, translator */
 
-define(['composer', 'forum/pagination', 'share'], function(composer, pagination, share) {
+define(['composer', 'forum/pagination', 'share', 'navigator'], function(composer, pagination, share, navigator) {
 	var Category = {},
 		loadingMoreTopics = false;
+
+
+	$(window).on('action:ajaxify.start', function(ev, data) {
+		if(data.url.indexOf('category') !== 0) {
+			navigator.hide();
+		}
+	});
 
 	Category.init = function() {
 		var	cid = ajaxify.variables.get('category_id');
@@ -23,6 +30,10 @@ define(['composer', 'forum/pagination', 'share'], function(composer, pagination,
 		socket.on('event:new_topic', Category.onNewTopic);
 
 		enableInfiniteLoading();
+
+		if (!config.usePagination) {
+			navigator.init('#topics-container > .category-item', ajaxify.variables.get('topic_count'));
+		}
 
 		$('#topics-container').on('click', '.topic-title', function() {
 			var clickedTid = $(this).parents('li.category-item[data-tid]').attr('data-tid');
@@ -110,6 +121,7 @@ define(['composer', 'forum/pagination', 'share'], function(composer, pagination,
 					scrollTop: (scrollTo.offset().top - $('#header-menu').height() - offset) + 'px'
 				}, duration !== undefined ? duration : 400, function() {
 					Category.highlightTopic(clickedTid);
+					navigator.update();
 				});
 			}
 		}
@@ -117,6 +129,7 @@ define(['composer', 'forum/pagination', 'share'], function(composer, pagination,
 
 	function enableInfiniteLoading() {
 		if(!config.usePagination) {
+
 			app.enableInfiniteLoading(function(direction) {
 
 				if(!loadingMoreTopics && $('#topics-container').children().length) {
@@ -193,11 +206,21 @@ define(['composer', 'forum/pagination', 'share'], function(composer, pagination,
 
 				topic.find('span.timeago').timeago();
 				app.createUserTooltips();
+				updateTopicCount();
 
 				$(window).trigger('action:categories.new_topic.loaded');
 			});
 		});
 	};
+
+	function updateTopicCount() {
+		socket.emit('categories.getTopicCount', ajaxify.variables.get('category_id'), function(err, topicCount) {
+			if(err) {
+				return app.alertError(err.message);
+			}
+			navigator.setCount(topicCount);
+		});
+	}
 
 	Category.onTopicsLoaded = function(topics, callback) {
 		if(!topics || !topics.length) {

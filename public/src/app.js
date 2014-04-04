@@ -349,22 +349,10 @@ var socket,
 		});
 	};
 
-	app.scrollToTop = function () {
-		$('body,html').animate({
-			scrollTop: 0
-		});
-	};
-
-	app.scrollToBottom = function () {
-		$('body,html').animate({
-			scrollTop: $('html').height() - 100
-		});
-	};
-
 	var previousScrollTop = 0;
 
 	app.enableInfiniteLoading = function(callback) {
-		$(window).off('scroll').on('scroll', function() {
+		$(window).on('scroll', function() {
 
 			var top = $(window).height() * 0.1;
 			var bottom = ($(document).height() - $(window).height()) * 0.9;
