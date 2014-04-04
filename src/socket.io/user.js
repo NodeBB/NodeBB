@@ -30,15 +30,15 @@ SocketUser.search = function(socket, username, callback) {
 // Password Reset
 SocketUser.reset = {};
 
-SocketUser.reset.send = function(socket, data, callback) {
-	if(data && data.email) {
-		user.reset.send(socket, data.email, callback);
+SocketUser.reset.send = function(socket, email, callback) {
+	if (email) {
+		user.reset.send(socket, email, callback);
 	}
 };
 
-SocketUser.reset.valid = function(socket, data, callback) {
-	if(data && data.code) {
-		user.reset.validate(socket, data.code, callback);
+SocketUser.reset.valid = function(socket, code, callback) {
+	if (code) {
+		user.reset.validate(socket, code, callback);
 	}
 };
 

@@ -9,9 +9,7 @@ define(function() {
 
 		$('#reset').on('click', function() {
 			if (inputEl.val() && inputEl.val().indexOf('@') !== -1) {
-				socket.emit('user.reset.send', {
-					email: inputEl.val()
-				}, function(err, data) {
+				socket.emit('user.reset.send', inputEl.val(), function(err, data) {
 					if(err) {
 						return app.alertError(err.message);
 					}
