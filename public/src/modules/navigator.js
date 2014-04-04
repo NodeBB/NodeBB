@@ -31,23 +31,29 @@ define(function() {
 
 		navigator.setCount(count);
 		navigator.update();
-		navigator.show();
 	};
 
 	navigator.setCount = function(value) {
-		count = value;
+		count = parseInt(value, 10);
 		navigator.updateTextAndProgressBar();
 	};
 
 	navigator.show = function() {
-		$('.pagination-block').removeClass('hidden');
+		toggle(true);
 	};
 
 	navigator.hide = function() {
-		$('.pagination-block').addClass('hidden');
+		toggle(false);
 	};
 
+	function toggle(flag) {
+		$('.pagination-block').toggleClass('hidden', !flag);
+	}
+
 	navigator.update = function() {
+
+		toggle(!!count);
+
 		$($(navigator.selector).get().reverse()).each(function() {
 			var el = $(this);
 
