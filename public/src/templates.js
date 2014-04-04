@@ -184,6 +184,11 @@
 				numblocks: numblocks
 			});
 
+			result = checkConditional(result, '@first', iterator === 0);
+			result = checkConditional(result, '!@first', iterator !== 0);
+			result = checkConditional(result, '@last', iterator === numblocks);
+			result = checkConditional(result, '!@last', iterator !== numblocks);
+
 			if (bind) {
 				array[key][iterator].__template = block;
 			}
@@ -196,18 +201,11 @@
 		return namespace ? '<span data-binding="' + namespace + '">' + block + '</span>' : block;
 	}
 
-	function parseValue(template, key, value, blockInfo) {
+	function parseValue(template, key, value) {
 		value = typeof value === 'string' ? value.replace(/^\s+|\s+$/g, '') : value;
 
 		template = checkConditional(template, key, value);
 		template = checkConditional(template, '!' + key, !value);
-
-		if (blockInfo) {
-			template = checkConditional(template, '@first', blockInfo.iterator === 0);
-			template = checkConditional(template, '!@first', blockInfo.iterator !== 0);
-			template = checkConditional(template, '@last', blockInfo.iterator === blockInfo.total);
-			template = checkConditional(template, '!@last', blockInfo.iterator !== blockInfo.total);
-		}
 
 		return replace(template, key, value);
 	}
@@ -274,7 +272,7 @@
 					defineParent(obj[key], originalObj);
 					template = parse(template, obj[key], bind, namespace + key + '.');
 				} else {
-					template = parseValue(template, namespace + key, obj[key], blockInfo);
+					template = parseValue(template, namespace + key, obj[key]);
 					
 					if (bind && obj[key]) {
 						setupBindings({
