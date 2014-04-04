@@ -522,9 +522,8 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 	}
 
 	Topic.navigatorCallback = function(element) {
-
 		var pid = element.attr('data-pid');
-		console.log('derp', scrollingToPost, pid);
+
 		var currentBookmark = localStorage.getItem('topic:' + ajaxify.variables.get('topic_id') + ':bookmark');
 
 		if (!currentBookmark || parseInt(pid, 10) >= parseInt(currentBookmark, 10)) {
