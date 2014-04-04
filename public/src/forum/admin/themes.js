@@ -200,15 +200,17 @@ define(['forum/admin/settings'], function(Settings) {
 			$(this).parents('.panel').children('.panel-body').toggleClass('hidden');
 		});
 
-		$('#widgets .btn[data-template]').on('click', saveWidgets);
+		$('#widgets .save').on('click', saveWidgets);
 
 		function saveWidgets() {
-			$('#widgets .btn[data-template]').each(function(i, el) {
+			var total = $('#widgets [data-template]').length;
+
+			$('#widgets [data-template]').each(function(i, el) {
 				el = $(el);
 
 				var template = el.attr('data-template'),
 					location = el.attr('data-location'),
-					area = el.parents('.area').children('.widget-area'),
+					area = el.children('.widget-area'),
 					widgets = [];
 
 				area.find('.panel[data-widget]').each(function() {
@@ -234,13 +236,18 @@ define(['forum/admin/settings'], function(Settings) {
 					location: location,
 					widgets: widgets
 				}, function(err) {
-					app.alert({
-						alert_id: 'admin:widgets',
-						type: err ? 'danger' : 'success',
-						title: err ? 'Error' : 'Widgets Updated',
-						message: err ? err.message : 'Successfully updated widgets in ' + template + '/' + location,
-						timeout: 2500
-					});
+					total--;
+
+					if (total === 0) {
+						app.alert({
+							alert_id: 'admin:widgets',
+							type: err ? 'danger' : 'success',
+							title: err ? 'Error' : 'Widgets Updated',
+							message: err ? err.message : 'Successfully updated widgets',
+							timeout: 2500
+						});
+					}
+					
 				});
 			});
 		}
@@ -271,7 +278,7 @@ define(['forum/admin/settings'], function(Settings) {
 			for (var a in areas) {
 				if (areas.hasOwnProperty(a)) {
 					var area = areas[a],
-						widgetArea = $('#widgets .area [data-template="' + area.template + '"][data-location="' + area.location + '"]').parents('.area').find('.widget-area');
+						widgetArea = $('#widgets .area[data-template="' + area.template + '"][data-location="' + area.location + '"]').find('.widget-area');
 
 					for (var i in area.data) {
 						if (area.data.hasOwnProperty(i)) {
