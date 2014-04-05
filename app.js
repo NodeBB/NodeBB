@@ -77,7 +77,22 @@ if (!nconf.get('help') && !nconf.get('setup') && !nconf.get('install') && !nconf
 } else if (nconf.get('upgrade')) {
 	upgrade();
 } else if (nconf.get('reset')) {
-	reset();
+	if (nconf.get('themes')) {
+		resetThemes();
+	} else if (nconf.get('plugins')) {
+		resetPlugins();
+	} else if (nconf.get('all')) {
+		require('async').parallel([resetThemes, resetPlugins], function(err) {
+			if (!err) {
+				winston.info('[reset] Reset complete.');
+			} else {
+				winston.error('[reset] Errors were encountered while resetting your forum settings: ' + err.message);
+			}
+			process.exit();
+		});
+	} else {
+		console.log('no match');
+	}
 } else {
 	displayHelp();
 }
@@ -198,40 +213,40 @@ function upgrade() {
 	});
 }
 
-function reset() {
+function resetThemes(callback) {
 	loadConfig();
 
-	var meta = require('./src/meta'),
-		db = require('./src/database'),
-		async = require('async');
+	var db = require('./src/database'),
+		meta = require('./src/meta');
 
-	db.init(function(err) {
-		meta.configs.init(function () {
-			async.parallel([
-				function(next) {
-					db.delete('plugins:active', next);
-				},
-				function(next) {
-					meta.configs.set('theme:type', 'local', next);
-				},
-				function(next) {
-					meta.configs.set('theme:id', 'nodebb-theme-vanilla', next);
-				},
-				function(next) {
-					meta.configs.set('theme:staticDir', '', next);
-				},
-				function(next) {
-					meta.configs.set('theme:templates', '', next);
-				}
-			], function(err) {
-				if (err) {
-					winston.error(err);
-				} else {
-					winston.info("Successfully reset theme to Vanilla and disabled all plugins.");
-				}
-
+	db.init(function() {
+		meta.themes.set({
+			type: 'local',
+			id: 'nodebb-theme-vanilla'
+		}, function(err) {
+			winston.info('[reset] Theme reset to Vanilla');
+			if (typeof callback === 'function') {
+				callback(err);
+			} else {
 				process.exit();
-			});
+			}
+		});
+	});
+}
+
+function resetPlugins(callback) {
+	loadConfig();
+
+	var db = require('./src/database');
+
+	db.init(function() {
+		db.delete('plugins:active', function(err) {
+			winston.info('[reset] All Plugins De-activated');
+			if (typeof callback === 'function') {
+				callback(err);
+			} else {
+				process.exit();
+			}
 		});
 	});
 }
