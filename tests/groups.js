@@ -73,6 +73,27 @@ describe('Groups', function() {
 		});
 	});
 
+	describe('.search()', function() {
+		it('should return the "Test" group when searched for', function(done) {
+			Groups.search('test', {}, function(err, groups) {
+				assert.equal(1, groups.length);
+				assert.strictEqual('Test', groups[0].name);
+				done();
+			});
+		});
+
+		it('should return the "Hidden" group when "showAllGroups" option is passed in', function(done) {
+			Groups.search('hidden', {
+				showAllGroups: true
+			}, function(err, groups) {
+				console.log(groups);
+				assert.equal(1, groups.length);
+				assert.strictEqual('Hidden', groups[0].name);
+				done();
+			});
+		});
+	});
+
 	describe('.isMember()', function() {
 		it('should return boolean true when a user is in a group', function(done) {
 			Groups.isMember(1, 'Test', function(err, isMember) {
