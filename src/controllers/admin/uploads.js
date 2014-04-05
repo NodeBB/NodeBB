@@ -45,7 +45,7 @@ uploadsController.uploadImage = function(filename, req, res) {
 };
 
 uploadsController.uploadCategoryPicture = function(req, res, next) {
-	var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'],
+	var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/svg+xml'],
 		params = null;
 
 	try {
