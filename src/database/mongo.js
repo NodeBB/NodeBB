@@ -1,4 +1,3 @@
-
 'use strict';
 
 (function(module) {
@@ -36,8 +35,8 @@
 			});
 
 
-			if(nconf.get('mongo:password') && nconf.get('mongo:username')) {
-				db.authenticate(nconf.get('mongo:username'), nconf.get('mongo:password'), function (err) {
+			if(nconf.get('mongo:pwd') && nconf.get('mongo:user')) {
+				db.authenticate(nconf.get('mongo:user'), nconf.get('mongo:pwd'), function (err) {
 					if(err) {
 						winston.error(err.message);
 						process.exit();
