@@ -1,14 +1,14 @@
 {
     "home": "Home",
-    "unread": "Unread Topics",
+    "unread": "Ungelesene Themen",
     "popular": "Beliebte Themen",
-    "recent": "Recent Topics",
-    "users": "Registered Users",
-    "notifications": "Notifications",
-    "user.edit": "Editing \"%1\"",
-    "user.following": "People %1 Follows",
-    "user.followers": "People who Follow %1",
+    "recent": "Neueste Topics",
+    "users": "Registrierte User",
+    "notifications": "Benachrichtigungen",
+    "user.edit": "Bearbeite \"%1\"",
+    "user.following": "User %1 folgen",
+    "user.followers": "User die folgen %1",
     "user.posts": "Beiträge von %1",
     "user.favourites": "%1's favorisierte Beiträge",
-    "user.settings": "User Settings"
+    "user.settings": "User Einstellungen"
 }
