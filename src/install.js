@@ -131,8 +131,8 @@ var async = require('async'),
 								config.mongo = {
 									host: databaseConfig['mongo:host'],
 									port: databaseConfig['mongo:port'],
-									username: databaseConfig['mongo:username'],
-									password: databaseConfig['mongo:password'],
+									username: databaseConfig['mongo:user'],
+									password: databaseConfig['mongo:pwd'],
 									database: databaseConfig['mongo:database']
 								};
 							} else {
