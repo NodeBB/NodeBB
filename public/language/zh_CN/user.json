@@ -45,6 +45,7 @@
     "has_no_follower": "该用户还没有被任何人关注。",
     "follows_no_one": "该用户还没有关注过任何人。",
     "has_no_posts": "此用户还未发表过任何帖子.",
+    "has_no_topics": "This user didn't post any topics yet.",
     "email_hidden": "邮箱被隐藏",
     "hidden": "隐藏",
     "paginate_description": "使用分页方式显示话题和帖子,代替滚动显示",

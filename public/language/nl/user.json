@@ -45,6 +45,7 @@
     "has_no_follower": "Deze gebruiker heeft geen volgers :(",
     "follows_no_one": "Deze gebruiker volgt niemand :(",
     "has_no_posts": "Deze gebruiker heeft nog geen berichten geplaatst",
+    "has_no_topics": "This user didn't post any topics yet.",
     "email_hidden": "Email Verborgen",
     "hidden": "verborgen",
     "paginate_description": "Blader door onderwerpen en berichten in plaats van oneindig scrollen.",

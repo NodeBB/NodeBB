@@ -45,6 +45,7 @@
     "has_no_follower": "Dieser User hat noch keine Follower.",
     "follows_no_one": "Dieser User folgt noch niemanden.",
     "has_no_posts": "Dieser Nutzer hat noch nichts gepostet.",
+    "has_no_topics": "This user didn't post any topics yet.",
     "email_hidden": "E-Mail Adresse versteckt",
     "hidden": "versteckt",
     "paginate_description": "Themen und Beiträge auf Seiten aufteilen statt unendliches Scrollen verweden",

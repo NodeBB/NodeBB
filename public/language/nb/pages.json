@@ -9,6 +9,7 @@
     "user.following": "Personer %1 følger",
     "user.followers": "Personer som følger %1",
     "user.posts": "Innlegg laget av %1",
+    "user.topics": "Topics created by %1",
     "user.favourites": "%1 sine favoritt-innlegg",
     "user.settings": "Brukerinnstillinger"
 }

@@ -45,6 +45,7 @@
     "has_no_follower": "ผู้ใช้รายนี้ไม่มีใครติดตาม :(",
     "follows_no_one": "ผู้ใช้รายนี้ไม่ติดตามใคร :(",
     "has_no_posts": "ผู้ใช้รายนี้ไม่ได้โพสต์อะไรเลย",
+    "has_no_topics": "This user didn't post any topics yet.",
     "email_hidden": "ซ่อนอีเมล์",
     "hidden": "ซ่อน",
     "paginate_description": "ให้เลขหน้ากระทู้และโพสต์แทนการใช้สกรอลล์ที่ไม่สิ้นสุด",

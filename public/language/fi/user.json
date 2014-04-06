@@ -45,6 +45,7 @@
     "has_no_follower": "Kukaan ei seuraa tätä käyttäjää :(",
     "follows_no_one": "Tämä käyttäjä ei seuraa ketään :(",
     "has_no_posts": "Tämä käyttäjä ei ole kirjoittanut vielä mitään.",
+    "has_no_topics": "This user didn't post any topics yet.",
     "email_hidden": "Sähköposti piilotettu",
     "hidden": "piilotettu",
     "paginate_description": "Sivuta aiheet ja viestit loputtoman vierittämisen sijaan.",

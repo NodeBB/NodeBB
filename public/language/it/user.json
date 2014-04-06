@@ -45,6 +45,7 @@
     "has_no_follower": "Questo utente non è seguito da nessuno :(",
     "follows_no_one": "Questo utente non segue nessuno :(",
     "has_no_posts": "Questo utente non ha ancora postato nulla.",
+    "has_no_topics": "This user didn't post any topics yet.",
     "email_hidden": "Email Nascosta",
     "hidden": "nascosta",
     "paginate_description": "Dividi argomenti e post in pagine anziché usare lo scroll infinito.",

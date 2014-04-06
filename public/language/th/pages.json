@@ -9,6 +9,7 @@
     "user.following": "ผู้ใช้ที่ %1 ติดตาม",
     "user.followers": "ผู้ใช้ที่ติดตาม %1",
     "user.posts": "กระทู้โดย %1",
+    "user.topics": "Topics created by %1",
     "user.favourites": "กระทู้ที่ %1 ชอบ",
     "user.settings": "ตั้งค่าผู้ใช้"
 }

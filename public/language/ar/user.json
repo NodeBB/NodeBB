@@ -45,6 +45,7 @@
     "has_no_follower": "هذا المستخدم ليس لديه أي أتباع :(",
     "follows_no_one": "هذا المستخدم لا يتبع أحد :(",
     "has_no_posts": "This user didn't post anything yet.",
+    "has_no_topics": "This user didn't post any topics yet.",
     "email_hidden": "البريد الإلكتروني مخفي",
     "hidden": "مخفي",
     "paginate_description": "Paginate topics and posts instead of using infinite scroll.",

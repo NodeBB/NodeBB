@@ -45,6 +45,7 @@
     "has_no_follower": "Este miembro no tiene seguidores.",
     "follows_no_one": "Este miembro no sigue a nadie.",
     "has_no_posts": "Este usuario aún no ha publicado nada.",
+    "has_no_topics": "This user didn't post any topics yet.",
     "email_hidden": "Correo electrónico Oculto",
     "hidden": "oculto",
     "paginate_description": "La paginación de los temas no es por página, ya que tiene scroll infinito.",

@@ -45,6 +45,7 @@
     "has_no_follower": "Bu kullanıcının hiç takipçisi yok :(",
     "follows_no_one": "Bu kullanıcı kimseyi takip etmiyor :(",
     "has_no_posts": "This user didn't post anything yet.",
+    "has_no_topics": "This user didn't post any topics yet.",
     "email_hidden": "E-posta gizli",
     "hidden": "gizli",
     "paginate_description": "Paginate topics and posts instead of using infinite scroll.",

@@ -45,6 +45,7 @@
     "has_no_follower": "Tohoto uživatele nikdo nesleduje :(",
     "follows_no_one": "Tento uživatel nikoho nesleduje :(",
     "has_no_posts": "This user didn't post anything yet.",
+    "has_no_topics": "This user didn't post any topics yet.",
     "email_hidden": "Skrytý email",
     "hidden": "skrytý",
     "paginate_description": "Paginate topics and posts instead of using infinite scroll.",

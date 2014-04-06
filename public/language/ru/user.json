@@ -45,6 +45,7 @@
     "has_no_follower": "Этого пользователя никто не читает :(",
     "follows_no_one": "Этот пользователь никого не читает :(",
     "has_no_posts": "This user didn't post anything yet.",
+    "has_no_topics": "This user didn't post any topics yet.",
     "email_hidden": "Email Скрыт",
     "hidden": "скрыто",
     "paginate_description": "Paginate topics and posts instead of using infinite scroll.",

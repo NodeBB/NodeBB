@@ -45,6 +45,7 @@
     "has_no_follower": "Denne brukeren har ingen følgere :(",
     "follows_no_one": "Denne brukeren følger ingen :(",
     "has_no_posts": "Denne brukeren har ikke skrevet noe enda.",
+    "has_no_topics": "This user didn't post any topics yet.",
     "email_hidden": "E-post skjult",
     "hidden": "skjult",
     "paginate_description": "Paginer tråder og innlegg istedet for å bruke uendelig skrolling.",

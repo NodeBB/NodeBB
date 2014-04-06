@@ -45,6 +45,7 @@
     "has_no_follower": "למשתמש זה אין עוקבים :(",
     "follows_no_one": "משתמש זה אינו עוקב אחרי אחרים :(",
     "has_no_posts": "המשתמש הזה עוד לא פרסם כלום.",
+    "has_no_topics": "This user didn't post any topics yet.",
     "email_hidden": "כתובת אימייל מוסתרת",
     "hidden": "מוסתר",
     "paginate_description": "צור עימוד לנושאים במקום לטעון את כל התוכן בעמוד אחד.",

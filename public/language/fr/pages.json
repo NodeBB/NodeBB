@@ -9,6 +9,7 @@
     "user.following": "Personnes que %1 suit",
     "user.followers": "Personnes qui suivent  %1",
     "user.posts": "Message écrit par %1",
+    "user.topics": "Topics created by %1",
     "user.favourites": "Messages favoris de %1",
     "user.settings": "Préférences Utilisateur"
 }
