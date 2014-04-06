@@ -73,7 +73,7 @@ var async = require('async'),
 			description: 'Password of your MongoDB database'
 		}, {
 			name: "mongo:database",
-			description: "Which database to use (0..n)",
+			description: "Which database to use",
 			'default': nconf.get('mongo:database') || 0
 		}],
 
