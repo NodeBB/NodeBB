@@ -17,6 +17,7 @@
 
 		obj = registerGlobals(obj || {});
 		bind = bind ? Math.random() : false;
+		template = template.toString() || '';
 
 		if (bind) {
 			obj.__template = template;
