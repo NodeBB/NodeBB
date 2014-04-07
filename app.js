@@ -84,22 +84,13 @@ if (!nconf.get('help') && !nconf.get('setup') && !nconf.get('install') && !nconf
 	} else if (nconf.get('widgets')) {
 		resetWidgets();
 	} else if (nconf.get('all')) {
-		resetWidgets(function(err) {
-			if (err) {
-				winston.error('[reset] Errors were encountered while resetting widget areas: ' + err.message);
-				process.exit();
+		require('async').series([resetWidgets, resetThemes, resetPlugins], function(err) {
+			if (!err) {
+				winston.info('[reset] Reset complete.');
 			} else {
-				winston.info('[reset] All Widgets moved to Draft Zone');
+				winston.error('[reset] Errors were encountered while resetting your forum settings: ' + err.message);
 			}
-
-			require('async').parallel([resetThemes, resetPlugins], function(err) {
-				if (!err) {
-					winston.info('[reset] Reset complete.');
-				} else {
-					winston.error('[reset] Errors were encountered while resetting your forum settings: ' + err.message);
-				}
-				process.exit();
-			});
+			process.exit();
 		});
 	} else {
 		console.log('no match');
@@ -268,7 +259,14 @@ function resetWidgets(callback) {
 	var db = require('./src/database');
 
 	db.init(function() {
-		require('./src/widgets').reset(callback);
+		require('./src/widgets').reset(function(err) {
+			winston.info('[reset] All Widgets moved to Draft Zone');
+			if (typeof callback === 'function') {
+				callback(err);
+			} else {
+				process.exit();
+			}
+		});
 	});
 }
 
