@@ -571,6 +571,13 @@ var socket,
 
 			ajaxify.widgets.render(tpl_url, url);
 
+			if (window.history && window.history.replaceState) {
+				var hash = window.location.hash ? window.location.hash : '';
+				window.history.replaceState({
+					url: url + hash
+				}, url, RELATIVE_PATH + '/' + url + hash);
+			}
+
 			ajaxify.loadScript(tpl_url, function() {
 				$(window).trigger('action:ajaxify.end', {
 					url: url
