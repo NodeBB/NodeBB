@@ -16,7 +16,7 @@ define(function() {
 
 		var lastSearch = null;
 
-		app.addCommasToNumbers();
+		utils.addCommasToNumbers($('.users .formatted-number'));
 
 		$('.nav-pills li').removeClass('active');
 		$('.nav-pills li a').each(function() {
@@ -59,11 +59,8 @@ define(function() {
 							return;
 						}
 
-						templates.preload_template('users', function() {
-							templates['users'].parse({users:[]});
-							var html = templates.prepare(templates['users'].blocks['users']).parse({
-								users: data.users
-							});
+						ajaxify.loadTemplate('users', function(usersTemplate) {
+							var html = templates.parse(templates.getBlock(usersTemplate, 'users'), data);
 
 							translator.translate(html, function(translated) {
 								$('#users-container').html(translated);
@@ -111,11 +108,8 @@ define(function() {
 		}
 
 		function onUsersLoaded(users, emptyContainer) {
-			templates.preload_template('users', function() {
-				templates['users'].parse({users:[]});
-				var html = templates.prepare(templates['users'].blocks['users']).parse({
-					users: users
-				});
+			ajaxify.loadTemplate('users', function(usersTemplate) {
+				var html = templates.parse(templates.getBlock(usersTemplate, 'users'), {users: users});
 
 				translator.translate(html, function(translated) {
 					if(emptyContainer) {

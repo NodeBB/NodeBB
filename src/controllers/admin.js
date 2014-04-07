@@ -55,10 +55,6 @@ function filterAndRenderCategories(req, res, next, active) {
 			return active ? !category.disabled : category.disabled;
 		});
 
-		data.categories.forEach(function(category) {
-			category.description = validator.escape(category.description);
-		});
-
 		res.render('admin/categories', data);
 	});
 }
@@ -113,12 +109,19 @@ adminController.logger.get = function(req, res, next) {
 adminController.themes.get = function(req, res, next) {
 	async.parallel({
 		areas: function(next) {
-			plugins.fireHook('filter:widgets.getAreas', [], next);
+			var defaultAreas = [
+				{ name: 'Global Sidebar', template: 'global', location: 'sidebar' },
+				{ name: 'Global Footer', template: 'global', location: 'footer' },
+			];
+
+			plugins.fireHook('filter:widgets.getAreas', defaultAreas, next);
 		},
 		widgets: function(next) {
 			plugins.fireHook('filter:widgets.getWidgets', [], next);
 		}
 	}, function(err, widgetData) {
+		widgetData.areas.push({ name: 'Drafts', template: 'global', location: 'drafts' });
+
 		async.each(widgetData.areas, function(area, next) {
 			widgets.getArea(area.template, area.location, function(err, areaData) {
 				area.data = areaData;

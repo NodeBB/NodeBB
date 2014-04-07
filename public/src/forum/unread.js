@@ -1,3 +1,7 @@
+'use strict';
+
+/* globals define, app, socket */
+
 define(['forum/recent'], function(recent) {
 	var Unread = {},
 		loadingMoreTopics = false;
@@ -11,31 +15,75 @@ define(['forum/recent'], function(recent) {
 
 		recent.watchForNewPosts();
 
-		$('#mark-allread-btn').on('click', function() {
-			function getUnreadTids() {
+		$('#markSelectedRead').on('click', function() {
+			function getSelectedTids() {
 				var tids = [];
-				$('#topics-container .category-item[data-tid]').each(function() {
+				$('#topics-container .category-item.selected').each(function() {
 					tids.push($(this).attr('data-tid'));
 				});
 				return tids;
 			}
-
-			var btn = $(this);
-
-			socket.emit('topics.markAllRead', getUnreadTids(), function(err) {
+			var tids = getSelectedTids();
+			if(!tids.length) {
+				return;
+			}
+			socket.emit('topics.markTidsRead', tids, function(err) {
 				if(err) {
 					return app.alertError('There was an error marking topics read!');
 				}
 
-				btn.remove();
+				doneRemovingTids(tids);
+			});
+		});
+
+		$('#markAllRead').on('click', function() {
+			socket.emit('topics.markAllRead', function(err) {
+				if(err) {
+					return app.alertError('There was an error marking topics read!');
+				}
+
+				app.alertSuccess('[[unread:topics_marked_as_read.success]]');
+
 				$('#topics-container').empty();
 				$('#category-no-topics').removeClass('hidden');
-				app.alertSuccess('All topics marked as read!');
+				$('.markread').addClass('hidden');
+
 				$('#numUnreadBadge')
 					.removeClass('badge-important')
 					.addClass('badge-inverse')
 					.html('0');
 			});
+		});
+
+		$('.markread').on('click', '.category', function() {
+			function getCategoryTids(cid) {
+				var tids = [];
+				$('#topics-container .category-item[data-cid="' + cid + '"]').each(function() {
+					tids.push($(this).attr('data-tid'));
+				});
+				return tids;
+			}
+			var cid = $(this).attr('data-cid');
+			var tids = getCategoryTids(cid);
+
+			socket.emit('topics.markCategoryTopicsRead', cid, function(err) {
+				if(err) {
+					return app.alertError('There was an error marking topics read!');
+				}
+
+				doneRemovingTids(tids);
+			});
+		});
+
+		socket.emit('categories.get', onCategoriesLoaded);
+
+		$('#topics-container').on('click', '.select', function() {
+			var select = $(this);
+			var isChecked = !select.hasClass('fa-square-o');
+
+			select.toggleClass('fa-check-square-o', !isChecked);
+			select.toggleClass('fa-square-o', isChecked);
+			select.parents('.category-item').toggleClass('selected', !isChecked);
 		});
 
 		if ($("body").height() <= $(window).height() && $('#topics-container').children().length >= 20) {
@@ -76,6 +124,44 @@ define(['forum/recent'], function(recent) {
 			});
 		}
 	};
+
+	function doneRemovingTids(tids) {
+		removeTids(tids);
+
+		app.alertSuccess('[[unread:topics_marked_as_read.success]]');
+
+		if (!$('#topics-container').children().length) {
+			$('#category-no-topics').removeClass('hidden');
+			$('.markread').addClass('hidden');
+		}
+	}
+
+	function removeTids(tids) {
+		for(var i=0; i<tids.length; ++i) {
+			$('#topics-container .category-item[data-tid="' + tids[i] + '"]').remove();
+		}
+	}
+
+	function onCategoriesLoaded(err, data) {
+		createCategoryLinks(data.categories);
+		console.log(data);
+	}
+
+	function createCategoryLinks(categories) {
+		categories = categories.filter(function(category) {
+			return !category.disabled;
+		});
+
+		for(var i=0; i<categories.length; ++i) {
+			createCategoryLink(categories[i]);
+		}
+	}
+
+	function createCategoryLink(category) {
+		var link = $('<li role="presentation" class="category" data-cid="' + category.cid + '"><a role="menuitem" href="#"><i class="fa fa-fw ' + category.icon + '"></i> ' + category.name + '</a></li>');
+
+		$('.markread .dropdown-menu').append(link);
+	}
 
 	return Unread;
 });

@@ -1,5 +1,5 @@
 "use strict";
-/*global define, socket, app, bootbox, templates, RELATIVE_PATH*/
+/*global define, socket, app, bootbox, templates, ajaxify, RELATIVE_PATH*/
 
 define(['uploader'], function(uploader) {
 	var	Categories = {};
@@ -120,12 +120,9 @@ define(['uploader'], function(uploader) {
 					timeout: 2000
 				});
 
-				templates.preload_template('admin/categories', function() {
-					templates['admin/categories'].parse({categories:[]});
-					var html = templates.prepare(templates['admin/categories'].blocks.categories).parse({
-						categories: [data]
-					});
-					html = $(html);
+				ajaxify.loadTemplate('admin/categories', function(adminCategories) {
+					var html = $(templates.parse(templates.getBlock(adminCategories, 'categories'), {categories: [data]}));
+					
 					html.find('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
 
 					$('#entry-container').append(html);

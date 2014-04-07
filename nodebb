@@ -71,7 +71,7 @@ case "$1" in
 		;;
 
 	reset)
-		node loader --reset
+		node loader --reset --$2
 		;;
 
 	dev)

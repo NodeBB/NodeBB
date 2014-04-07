@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, translator, templates, socket, bootbox */
+/* globals define, app, translator, ajaxify, socket, bootbox */
 
 define(['forum/topic/fork', 'forum/topic/move'], function(fork, move) {
 
@@ -8,18 +8,21 @@ define(['forum/topic/fork', 'forum/topic/move'], function(fork, move) {
 
 	ThreadTools.init = function(tid, threadState) {
 
-		if (templates.get('expose_tools') === '1') {
+		if (ajaxify.variables.get('expose_tools') === '1') {
 
 			$('.thread-tools').removeClass('hide');
 
 			$('.delete_thread').on('click', function(e) {
 				var command = threadState.deleted !== '1' ? 'delete' : 'restore';
 
-				bootbox.confirm('Are you sure you want to ' + command + ' this thread?', function(confirm) {
-					if (confirm) {
-						socket.emit('topics.' + command, tid);
-					}
+				translator.translate('[[topic:thread_tools.' + command + '_confirm]]', function(msg) {
+					bootbox.confirm(msg, function(confirm) {
+						if (confirm) {
+							socket.emit('topics.' + command, tid);
+						}
+					});
 				});
+
 				return false;
 			});
 

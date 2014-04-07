@@ -124,7 +124,7 @@ module.exports = function(Topics) {
 				next(null, postData);
 			},
 			function(postData, next) {
-				Topics.getTopicsByTids([postData.tid], uid, function(err, topicData) {
+				Topics.getTopicsByTids([postData.tid], 0, function(err, topicData) {
 					if(err) {
 						return next(err);
 					}

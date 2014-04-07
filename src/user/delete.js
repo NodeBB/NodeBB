@@ -7,22 +7,18 @@ var async = require('async'),
 	topics = require('./../topics'),
 	categories = require('./../categories'),
 	plugins = require('./../plugins'),
-	events = require('./../events'),
 	groups = require('./../groups');
 
 
 module.exports = function(User) {
 
-	User.delete = function(adminUid, uid, callback) {
+	User.delete = function(uid, callback) {
 		async.waterfall([
 			function(next) {
 				deletePosts(uid, next);
 			},
 			function(next) {
 				deleteTopics(uid, next);
-			},
-			function(next) {
-				events.logAdminUserDelete(adminUid, uid, next);
 			}
 		], function(err) {
 			if (err) {
@@ -250,7 +246,7 @@ module.exports = function(User) {
 					db.delete('uid:' + uid + ':favourites', next);
 				},
 				function(next) {
-					db.delete('user:' + uid + ':settings', next);	
+					db.delete('user:' + uid + ':settings', next);
 				},
 				function(next) {
 					db.delete('uid:' + uid + ':topics', next);
@@ -293,6 +289,9 @@ module.exports = function(User) {
 					},
 					function(next) {
 						db.delete('user:' + uid, next);
+					},
+					function(next) {
+						db.decrObjectField('global', 'userCount', next);
 					}
 				], callback);
 			});

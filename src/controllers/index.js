@@ -45,15 +45,26 @@ Controllers.home = function(req, res, next) {
 				property: 'og:title',
 				content: 'Index | ' + (meta.config.title || 'NodeBB')
 			}, {
-				property: "og:type",
+				property: 'og:type',
 				content: 'website'
 			}];
+
+			if(meta.config['brand:logo']) {
+				res.locals.metaTags.push({
+					property: 'og:image',
+					content: meta.config['brand:logo']
+				});
+			}
 
 			next(null);
 		},
 		categories: function (next) {
-			var uid = (req.user) ? req.user.uid : 0;
+			var uid = req.user ? req.user.uid : 0;
 			categories.getAllCategories(uid, function (err, data) {
+				if (err) {
+					return next(err);
+				}
+
 				data.categories = data.categories.filter(function (category) {
 					return !category.disabled;
 				});

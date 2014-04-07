@@ -9,20 +9,24 @@ define(function() {
 		successIcon = '<i class="fa fa-check"></i>';
 
 	function showError(element, msg) {
-		element.html(msg);
-		element.parent()
-			.removeClass('alert-success')
-			.addClass('alert-danger');
-		element.show();
-		validationError = true;
+		translator.translate(msg, function(msg) {
+			element.html(msg);
+			element.parent()
+				.removeClass('alert-success')
+				.addClass('alert-danger');
+			element.show();
+			validationError = true;
+		});
 	}
 
 	function showSuccess(element, msg) {
-		element.html(msg);
-		element.parent()
-			.removeClass('alert-danger')
-			.addClass('alert-success');
-		element.show();
+		translator.translate(msg, function(msg) {
+			element.html(msg);
+			element.parent()
+				.removeClass('alert-danger')
+				.addClass('alert-success');
+			element.show();
+		});
 	}
 
 	function validateEmail(email) {
@@ -93,15 +97,15 @@ define(function() {
 			password_confirm_notify = $('#password-confirm-notify');
 
 		if (password.length < config.minimumPasswordLength) {
-			showError(password_notify, 'Password too short!');
+			showError(password_notify, '[[user:change_password_error_length]]');
 		} else if (!utils.isPasswordValid(password)) {
-			showError(password_notify, 'Invalid password!');
+			showError(password_notify, '[[user:change_password_error_]]');
 		} else {
 			showSuccess(password_notify, successIcon);
 		}
 
 		if (password !== password_confirm && password_confirm !== '') {
-			showError(password_confirm_notify, 'Passwords must match!');
+			showError(password_confirm_notify, '[[user:change_password_error_match]]');
 		}
 	}
 
@@ -114,7 +118,7 @@ define(function() {
 		}
 
 		if (password !== password_confirm) {
-			showError(password_confirm_notify, 'Passwords must match!');
+			showError(password_confirm_notify, '[[user:change_password_error_match]]');
 		} else {
 			showSuccess(password_confirm_notify, successIcon);
 		}

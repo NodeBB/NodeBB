@@ -80,6 +80,7 @@ SocketPosts.reply = function(socket, data, callback) {
 
 SocketPosts.upvote = function(socket, data) {
 	favouriteCommand('upvote', socket, data);
+	sendNotificationToPostOwner(data, socket.uid, 'has upvoted your post');
 };
 
 SocketPosts.downvote = function(socket, data) {
@@ -92,6 +93,7 @@ SocketPosts.unvote = function(socket, data) {
 
 SocketPosts.favourite = function(socket, data) {
 	favouriteCommand('favourite', socket, data);
+	sendNotificationToPostOwner(data, socket.uid, 'has favourited your post');
 };
 
 SocketPosts.unfavourite = function(socket, data) {
@@ -101,6 +103,41 @@ SocketPosts.unfavourite = function(socket, data) {
 function favouriteCommand(command, socket, data) {
 	if(data && data.pid && data.room_id) {
 		favourites[command](data.pid, data.room_id, socket.uid, socket);
+	}
+}
+
+function sendNotificationToPostOwner(data, uid, message) {
+	if(data && data.pid && uid) {
+		posts.getPostFields(data.pid, ['tid', 'uid'], function(err, postData) {
+			if (err) {
+				return;
+			}
+
+			if (uid === parseInt(postData.uid, 10)) {
+				return;
+			}
+
+			async.parallel({
+				username: function(next) {
+					user.getUserField(uid, 'username', next);
+				},
+				slug: function(next) {
+					topics.getTopicField(postData.tid, 'slug', next);
+				}
+			}, function(err, results) {
+				if (err) {
+					return;
+				}
+				notifications.create({
+					text: '<strong>' + results.username + '</strong> ' + message,
+					path: nconf.get('relative_path') + '/topic/' + results.slug + '#' + data.pid,
+					uniqueId: 'post:' + data.pid,
+					from: uid
+				}, function(nid) {
+					notifications.push(nid, [postData.uid]);
+				});
+			});
+		});
 	}
 }
 
@@ -248,7 +285,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 			user.getUserField(socket.uid, 'username', next);
 		},
 		function(username, next) {
-			message = username + ' flagged a post.';
+			message = '<strong>' + username + '</strong> flagged a post.';
 			posts.getPostField(pid, 'tid', next);
 		},
 		function(tid, next) {
@@ -306,6 +343,6 @@ SocketPosts.getRecentPosts = function(socket, data, callback) {
 
 SocketPosts.getCategory = function(socket, pid, callback) {
 	posts.getCidByPid(pid, callback);
-}
+};
 
 module.exports = SocketPosts;

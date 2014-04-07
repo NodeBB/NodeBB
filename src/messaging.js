@@ -18,7 +18,7 @@ var db = require('./database'),
 
 		db.incrObjectField('global', 'nextMid', function(err, mid) {
 			if (err) {
-				return callback(err, null);
+				return callback(err);
 			}
 
 			var message = {
@@ -28,67 +28,70 @@ var db = require('./database'),
 				touid: touid
 			};
 
-			db.setObject('message:' + mid, message);
-			db.listAppend('messages:' + uids[0] + ':' + uids[1], mid);
+			db.setObject('message:' + mid, message, function(err) {
+				if (err) {
+					return callback(err);
+				}
 
-			Messaging.updateChatTime(fromuid, touid);
-			Messaging.updateChatTime(touid, fromuid);
-			callback(null, message);
+				db.listAppend('messages:' + uids[0] + ':' + uids[1], mid);
+
+				Messaging.updateChatTime(fromuid, touid);
+				Messaging.updateChatTime(touid, fromuid);
+
+				getMessages([mid], fromuid, touid, true, function(err, messages) {
+					callback(err, messages ? messages[0] : null);
+				});
+			});
 		});
 	};
 
-	Messaging.getMessages = function(fromuid, touid, callback) {
+	Messaging.getMessages = function(fromuid, touid, isNew, callback) {
 		var uids = sortUids(fromuid, touid);
 
 		db.getListRange('messages:' + uids[0] + ':' + uids[1], -((meta.config.chatMessagesToDisplay || 50) - 1), -1, function(err, mids) {
 			if (err) {
-				return callback(err, null);
+				return callback(err);
 			}
 
 			if (!mids || !mids.length) {
 				return callback(null, []);
 			}
 
-			user.getMultipleUserFields([fromuid, touid], ['username', 'userslug', 'picture'], function(err, userData) {
-				if(err) {
-					return callback(err, null);
-				}
-
-				userData[0].uid = touid;
-				userData[1].uid = fromuid;
-
-				function getMessage(mid, next) {
-					db.getObject('message:' + mid, function(err, message) {
-						if (err) {
-							return next(err);
-						}
-
-						Messaging.parse(message.content, message.fromuid, fromuid, userData[1], userData[0], false, function(result) {
-							message.content = result;
-							next(null, message);
-						});
-					});
-				}
-
-				async.map(mids, getMessage, callback);
-			});
+			getMessages(mids, fromuid, touid, isNew, callback);
 		});
 	};
+
+	function getMessages(mids, fromuid, touid, isNew, callback) {
+		user.getMultipleUserFields([fromuid, touid], ['uid', 'username', 'userslug', 'picture'], function(err, userData) {
+			if(err) {
+				return callback(err);
+			}
+
+			var keys = mids.map(function(mid) {
+				return 'message:' + mid;
+			});
+
+			db.getObjects(keys, function(err, messages) {
+				if (err) {
+					return callback(err);
+				}
+
+				async.map(messages, function(message, next) {
+					message.user = parseInt(message.fromuid, 10) === parseInt(fromuid, 10) ? userData[0] : userData[1];
+
+					Messaging.parse(message.content, message.fromuid, fromuid, userData[1], userData[0], isNew, function(result) {
+						message.content = result;
+						next(null, message);
+					});
+				}, callback);
+			});
+		});
+	}
 
 	Messaging.parse = function (message, fromuid, myuid, toUserData, myUserData, isNew, callback) {
 		plugins.fireHook('filter:post.parse', message, function(err, parsed) {
 			if (err) {
 				return callback(message);
-			}
-			var username,
-				picture;
-
-			if (parseInt(fromuid, 10) === parseInt(myuid, 10)) {
-				picture = '<a href="/user/' + myUserData.userslug + '"><img class="chat-user-image" src="' + myUserData.picture + '"></a>';
-				username = '<span class="chat-user chat-user-you"> '+ myUserData.username + '</span>: ';
-			} else {
-				picture = '<a href="/user/' + toUserData.userslug + '"><img class="chat-user-image" src="' + toUserData.picture + '"></a>';
-				username = '<span class="chat-user"> ' + toUserData.username + '</span>: ';
 			}
 
 			var messageData = {
@@ -99,7 +102,7 @@ var db = require('./database'),
 				toUserData: toUserData,
 				myUserData: myUserData,
 				isNew: isNew,
-				parsedMessage: picture + username + parsed
+				parsedMessage: parsed
 			};
 
 			plugins.fireHook('filter:messaging.parse', messageData, function(err, messageData) {

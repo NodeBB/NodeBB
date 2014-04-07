@@ -28,6 +28,12 @@
     "upload_new_picture": "تحميل صورة جديدة",
     "current_password": "Current Password",
     "change_password": "تغيير كلمة السر",
+    "change_password_error": "Invalid Password!",
+    "change_password_error_wrong_current": "Your current password is not correct!",
+    "change_password_error_length": "Password too short!",
+    "change_password_error_match": "Passwords must match!",
+    "change_password_error_privileges": "You are not have the rights to change this password.",
+    "change_password_success": "Your password is updated!",
     "confirm_password": "تأكيد كلمة السر",
     "password": "كلمة السر",
     "upload_picture": "تحميل الصورة",
@@ -39,9 +45,11 @@
     "has_no_follower": "هذا المستخدم ليس لديه أي أتباع :(",
     "follows_no_one": "هذا المستخدم لا يتبع أحد :(",
     "has_no_posts": "This user didn't post anything yet.",
+    "has_no_topics": "This user didn't post any topics yet.",
     "email_hidden": "البريد الإلكتروني مخفي",
     "hidden": "مخفي",
     "paginate_description": "Paginate topics and posts instead of using infinite scroll.",
     "topics_per_page": "Topics per Page",
-    "posts_per_page": "Posts per Page"
+    "posts_per_page": "Posts per Page",
+    "notification_sounds": "Play a sound when you receive a notification."
 }

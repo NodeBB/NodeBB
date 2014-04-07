@@ -9,10 +9,7 @@ var socket,
 		'isFocused': true,
 		'currentRoom': null,
 		'widgets': {}
-	},
-
-	MAX_RECONNECTION_ATTEMPTS = 5,
-	RECONNECTION_DELAY = 200;
+	};
 
 (function () {
 	var showWelcomeMessage = false;
@@ -32,8 +29,8 @@ var socket,
 					}, 200);
 				} else {
 					socket = io.connect('', {
-						'max reconnection attempts': MAX_RECONNECTION_ATTEMPTS,
-						'reconnection delay': RECONNECTION_DELAY,
+						'max reconnection attempts': config.maxReconnectionAttempts,
+						'reconnection delay': config.reconnectionDelay,
 						resource: RELATIVE_PATH.length ? RELATIVE_PATH.slice(1) + '/socket.io' : 'socket.io'
 					});
 
@@ -71,7 +68,7 @@ var socket,
 								room;
 							switch(url_parts[0]) {
 								case 'user':
-									room = 'user/' + templates.get('theirid');
+									room = 'user/' + ajaxify.variables.get('theirid');
 									break;
 								case 'topic':
 									room = 'topic_' + url_parts[1];
@@ -112,9 +109,9 @@ var socket,
 					});
 
 					socket.on('reconnecting', function (data, attempt) {
-						if(attempt === MAX_RECONNECTION_ATTEMPTS) {
+						if(attempt === config.maxReconnectionAttempts) {
 							socket.socket.reconnectionAttempts = 0;
-							socket.socket.reconnectionDelay = RECONNECTION_DELAY;
+							socket.socket.reconnectionDelay = config.reconnectionDelay;
 							return;
 						}
 
@@ -166,119 +163,33 @@ var socket,
 		});
 	};
 
-	// takes a string like 1000 and returns 1,000
-	app.addCommas = function (text) {
-		return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
-	};
-
-	// use unique alert_id to have multiple alerts visible at a time, use the same alert_id to fade out the current instance
-	// type : error, success, info, warning/notify
-	// title = bolded title text
-	// message = alert message content
-	// timeout default = permanent
-	// location : alert_window (default) or content
 	app.alert = function (params) {
-		var alert_id = 'alert_button_' + ((params.alert_id) ? params.alert_id : new Date().getTime());
-
-		var alert = $('#' + alert_id);
-		var title = params.title || '';
-
-		function fadeOut() {
-			alert.fadeOut(500, function () {
-				$(this).remove();
-			});
-		}
-
-		function startTimeout(timeout) {
-			var timeoutId = setTimeout(function () {
-				fadeOut();
-			}, timeout);
-
-			alert.attr('timeoutId', timeoutId);
-		}
-
-		if (alert.length > 0) {
-			alert.find('strong').html(title);
-			alert.find('p').html(params.message);
-			alert.attr('class', 'alert alert-dismissable alert-' + params.type);
-
-			clearTimeout(alert.attr('timeoutId'));
-			startTimeout(params.timeout);
-
-			alert.children().fadeOut('100');
-			translator.translate(alert.html(), function(translatedHTML) {
-				alert.children().fadeIn('100');
-				alert.html(translatedHTML);
-			});
-		} else {
-			alert = $('<div id="' + alert_id + '" class="alert alert-dismissable alert-' + params.type +'"></div>');
-
-			alert.append($('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'))
-				.append($('<strong>' + title + '</strong>'));
-
-			if (params.message) {
-				alert.append($('<p>' + params.message + '</p>'));
-			}
-
-			if (!params.location) {
-				params.location = 'alert_window';
-			}
-
-			translator.translate(alert.html(), function(translatedHTML) {
-				alert.html(translatedHTML);
-				$('#' + params.location).prepend(alert.fadeIn('100'));
-
-				if(typeof params.closefn === 'function') {
-					alert.find('button').on('click', function() {
-						params.closefn();
-						fadeOut();
-						return false;
-					});
-				}
-			});
-
-			if (params.timeout) {
-				startTimeout(params.timeout);
-			}
-
-			if (typeof params.clickfn === 'function') {
-				alert.on('click', function (e) {
-					if(!$(e.target).is('.close')) {
-						params.clickfn();
-					}
-					fadeOut();
-				});
-			}
-		}
+		require(['alerts'], function(alerts) {
+			alerts.alert(params);
+		});
 	};
 
 	app.removeAlert = function(id) {
-		$('#' + 'alert_button_' + id).remove();
+		require(['alerts'], function(alerts) {
+			alerts.remove(id);
+		});
 	};
 
 	app.alertSuccess = function (message, timeout) {
-		if (!timeout) {
-			timeout = 2000;
-		}
-
 		app.alert({
 			title: '[[global:alert.success]]',
 			message: message,
 			type: 'success',
-			timeout: timeout
+			timeout: timeout ? timeout : 2000
 		});
 	};
 
 	app.alertError = function (message, timeout) {
-		if (!timeout) {
-			timeout = 2000;
-		}
-
 		app.alert({
 			title: '[[global:alert.error]]',
 			message: message,
 			type: 'danger',
-			timeout: timeout
+			timeout: timeout ? timeout : 2000
 		});
 	};
 
@@ -362,12 +273,6 @@ var socket,
 		});
 	};
 
-	app.makeNumbersHumanReadable = function(elements) {
-		elements.each(function() {
-			$(this).html(utils.makeNumberHumanReadable($(this).attr('title')));
-		});
-	};
-
 	app.processPage = function () {
 		app.populateOnlineUsers();
 
@@ -376,7 +281,7 @@ var socket,
 		$('span.timeago').timeago();
 		$('.post-content img').addClass('img-responsive');
 
-		app.makeNumbersHumanReadable($('.human-readable-number'));
+		utils.makeNumbersHumanReadable($('.human-readable-number'));
 
 		app.createUserTooltips();
 
@@ -405,12 +310,6 @@ var socket,
 				showAlert();
 			}
 		}
-	};
-
-	app.addCommasToNumbers = function () {
-		$('.formatted-number').each(function (index, element) {
-			$(element).html(app.addCommas($(element).html()));
-		});
 	};
 
 	app.openChat = function (username, touid) {
@@ -450,22 +349,10 @@ var socket,
 		});
 	};
 
-	app.scrollToTop = function () {
-		$('body,html').animate({
-			scrollTop: 0
-		});
-	};
-
-	app.scrollToBottom = function () {
-		$('body,html').animate({
-			scrollTop: $('html').height() - 100
-		});
-	};
-
 	var previousScrollTop = 0;
 
 	app.enableInfiniteLoading = function(callback) {
-		$(window).off('scroll').on('scroll', function() {
+		$(window).on('scroll', function() {
 
 			var top = $(window).height() * 0.1;
 			var bottom = ($(document).height() - $(window).height()) * 0.9;
@@ -651,6 +538,12 @@ var socket,
 			var url = window.location.pathname.slice(1),
 				tpl_url = ajaxify.getTemplateMapping(url);
 
+			url = url.replace(/\/$/, "");
+
+			if (url.indexOf(RELATIVE_PATH.slice(1)) !== -1) {
+				url = url.slice(RELATIVE_PATH.length);
+			}
+
 			$(window).trigger('action:ajaxify.start', {
 				url: url
 			});
@@ -673,10 +566,17 @@ var socket,
 			});
 
 			createHeaderTooltips();
-			templates.parseTemplateVariables();
+			ajaxify.variables.parse();
 			app.processPage();
 
-			ajaxify.renderWidgets(tpl_url, url);
+			ajaxify.widgets.render(tpl_url, url);
+
+			if (window.history && window.history.replaceState) {
+				var hash = window.location.hash ? window.location.hash : '';
+				window.history.replaceState({
+					url: url + hash
+				}, url, RELATIVE_PATH + '/' + url + hash);
+			}
 
 			ajaxify.loadScript(tpl_url, function() {
 				$(window).trigger('action:ajaxify.end', {

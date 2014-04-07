@@ -5,13 +5,13 @@ define(['forum/admin/settings'], function(Settings) {
 	var Themes = {};
 
 	function highlightSelectedTheme(themeId) {
-		$('#themes li[data-theme]').removeClass('btn-warning');
-		$('#themes li[data-theme="' + themeId + '"]').addClass('btn-warning');
+		$('.themes li[data-theme]').removeClass('btn-warning');
+		$('.themes li[data-theme="' + themeId + '"]').addClass('btn-warning');
 	}
 
 	Themes.init = function() {
 		var scriptEl = $('<script />');
-		scriptEl.attr('src', 'http://api.bootswatch.com/3/?callback=bootswatchListener');
+		scriptEl.attr('src', '//bootswatch.aws.af.cm/3/?callback=bootswatchListener');
 		$('body').append(scriptEl);
 
 		var bootstrapThemeContainer = $('#bootstrap_themes'),
@@ -187,60 +187,77 @@ define(['forum/admin/settings'], function(Settings) {
 			},
 			connectWith: "div"
 		}).on('click', '.toggle-widget', function() {
-				$(this).parents('.panel').children('.panel-body').toggleClass('hidden');
-			}).on('click', '.delete-widget', function() {
-				var panel = $(this).parents('.panel');
+			$(this).parents('.panel').children('.panel-body').toggleClass('hidden');
+		}).on('click', '.delete-widget', function() {
+			var panel = $(this).parents('.panel');
 
-				bootbox.confirm('Are you sure you wish to delete this widget?', function(confirm) {
-					if (confirm) {
-						panel.remove();
-					}
-				});
-			}).on('dblclick', '.panel-heading', function() {
-				$(this).parents('.panel').children('.panel-body').toggleClass('hidden');
-			});
-
-		$('#widgets .btn[data-template]').on('click', function() {
-			var btn = $(this),
-				template = btn.attr('data-template'),
-				location = btn.attr('data-location'),
-				area = btn.parents('.area').children('.widget-area'),
-				widgets = [];
-
-			area.find('.panel[data-widget]').each(function() {
-				var widgetData = {},
-					data = $(this).find('form').serializeArray();
-
-				for (var d in data) {
-					if (data.hasOwnProperty(d)) {
-						if (data[d].name) {
-							widgetData[data[d].name] = data[d].value;
-						}
-					}
+			bootbox.confirm('Are you sure you wish to delete this widget?', function(confirm) {
+				if (confirm) {
+					panel.remove();
 				}
-
-				widgets.push({
-					widget: $(this).attr('data-widget'),
-					data: widgetData
-				});
 			});
-
-			socket.emit('admin.widgets.set', {
-				template: template,
-				location: location,
-				widgets: widgets
-			}, function(err) {
-				app.alert({
-					alert_id: 'admin:widgets',
-					type: err ? 'danger' : 'success',
-					title: err ? 'Error' : 'Widgets Updated',
-					message: err ? err : 'Successfully updated widgets',
-					timeout: 2500
-				});
-			});
+		}).on('dblclick', '.panel-heading', function() {
+			$(this).parents('.panel').children('.panel-body').toggleClass('hidden');
 		});
 
+		$('#widgets .save').on('click', saveWidgets);
+
+		function saveWidgets() {
+			var total = $('#widgets [data-template]').length;
+
+			$('#widgets [data-template]').each(function(i, el) {
+				el = $(el);
+
+				var template = el.attr('data-template'),
+					location = el.attr('data-location'),
+					area = el.children('.widget-area'),
+					widgets = [];
+
+				area.find('.panel[data-widget]').each(function() {
+					var widgetData = {},
+						data = $(this).find('form').serializeArray();
+
+					for (var d in data) {
+						if (data.hasOwnProperty(d)) {
+							if (data[d].name) {
+								widgetData[data[d].name] = data[d].value;
+							}
+						}
+					}
+
+					widgets.push({
+						widget: $(this).attr('data-widget'),
+						data: widgetData
+					});
+				});
+
+				socket.emit('admin.widgets.set', {
+					template: template,
+					location: location,
+					widgets: widgets
+				}, function(err) {
+					total--;
+
+					if (total === 0) {
+						app.alert({
+							alert_id: 'admin:widgets',
+							type: err ? 'danger' : 'success',
+							title: err ? 'Error' : 'Widgets Updated',
+							message: err ? err.message : 'Successfully updated widgets',
+							timeout: 2500
+						});
+					}
+					
+				});
+			});
+		}
+
 		function populateWidget(widget, data) {
+			if (data.title) {
+				var title = widget.find('.panel-heading strong');
+				title.text(title.text() + ' - ' + data.title);
+			}
+
 			widget.find('input, textarea').each(function() {
 				var input = $(this),
 					value = data[input.attr('name')];
@@ -261,7 +278,7 @@ define(['forum/admin/settings'], function(Settings) {
 			for (var a in areas) {
 				if (areas.hasOwnProperty(a)) {
 					var area = areas[a],
-						widgetArea = $('#widgets .area [data-template="' + area.template + '"][data-location="' + area.location + '"]').parents('.area').find('.widget-area');
+						widgetArea = $('#widgets .area[data-template="' + area.template + '"][data-location="' + area.location + '"]').find('.widget-area');
 
 					for (var i in area.data) {
 						if (area.data.hasOwnProperty(i)) {
@@ -272,8 +289,6 @@ define(['forum/admin/settings'], function(Settings) {
 							appendToggle(widgetEl);
 						}
 					}
-
-
 				}
 			}
 		});

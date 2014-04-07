@@ -1,7 +1,6 @@
 "use strict";
 
 var app,
-	clientScripts,
 	middleware = {},
 	async = require('async'),
 	path = require('path'),
@@ -51,7 +50,7 @@ middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
 	} else {
 		next();
 	}
-}
+};
 
 middleware.addSlug = function(req, res, next) {
 	function redirect(method, id, name) {
@@ -156,14 +155,11 @@ middleware.buildHeader = function(req, res, next) {
 			});
 		},
 		function(next) {
-			// this is slower than the original implementation because the rendered template is not cached
-			// but I didn't bother to fix this because we will deprecate [filter:footer.build] in favour of the widgets system by 0.4x
-			plugins.fireHook('filter:footer.build', '', function(err, appendHTML) {
-				app.render('footer', {footerHTML: appendHTML}, function(err, template) {
-					translator.translate(template, function(parsedTemplate) {
-						res.locals.footer = template;
-						next(err);
-					});
+			// consider caching this, since no user specific information is loaded here
+			app.render('footer', {}, function(err, template) {
+				translator.translate(template, function(parsedTemplate) {
+					res.locals.footer = parsedTemplate;
+					next(err);
 				});
 			});
 		}
@@ -202,13 +198,11 @@ middleware.renderHeader = function(req, res, callback) {
 				bootswatchCSS: meta.config['theme:src'],
 				title: meta.config.title || '',
 				description: meta.config.description || '',
+				'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
 				'brand:logo': meta.config['brand:logo'] || '',
 				'brand:logo:display': meta.config['brand:logo']?'':'hide',
 				csrf: res.locals.csrf_token,
-				relative_path: nconf.get('relative_path'),
-				clientScripts: clientScripts,
 				navigation: custom_header.navigation,
-				'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
 				allowRegistration: meta.config.allowRegistration === undefined || parseInt(meta.config.allowRegistration, 10) === 1,
 				searchEnabled: plugins.hasListeners('filter:search.query') ? true : false
 			},
@@ -241,7 +235,7 @@ middleware.renderHeader = function(req, res, callback) {
 		});
 
 		templateValues.linkTags = defaultLinkTags.concat(res.locals.linkTags || []);
-		templateValues.linkTags.push({
+		templateValues.linkTags.unshift({
 			rel: "icon",
 			type: "image/x-icon",
 			href: nconf.get('relative_path') + '/favicon.ico'
@@ -294,7 +288,6 @@ middleware.processRender = function(req, res, next) {
 	var render = res.render;
 	res.render = function(template, options, fn) {
 		var self = this,
-			options = options || {},
 			req = this.req,
 			app = req.app,
 			defaultFn = function(err, str){
@@ -305,8 +298,11 @@ middleware.processRender = function(req, res, next) {
 				self.send(str);
 			};
 
+		options = options || {};
+
 		if ('function' === typeof options) {
-			fn = options, options = {};
+			fn = options;
+			options = {};
 		}
 
 		if ('function' !== typeof fn) {
@@ -357,19 +353,6 @@ middleware.routeTouchIcon = function(req, res) {
 module.exports = function(webserver) {
 	app = webserver;
 	middleware.admin = require('./admin')(webserver);
-
-	plugins.ready(function() {
-		// Minify client-side libraries
-		meta.js.get(function (err, scripts) {
-			clientScripts = scripts.map(function (script) {
-				script = {
-					script: script
-				};
-
-				return script;
-			});
-		});
-	});
 
 	return middleware;
 };

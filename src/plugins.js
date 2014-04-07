@@ -109,7 +109,7 @@ var fs = require('fs'),
 	Plugins.loadPlugin = function(pluginPath, callback) {
 		fs.readFile(path.join(pluginPath, 'plugin.json'), function(err, data) {
 			if (err) {
-				return callback(pluginPath.match('nodebb-theme') ? null  : err);
+				return callback(pluginPath.match('nodebb-theme') ? null : err);
 			}
 
 			var pluginData = JSON.parse(data),
@@ -164,7 +164,7 @@ var fs = require('fs'),
 						Plugins.staticDirs[pluginData.id] = path.join(pluginPath, pluginData.staticDir);
 					}
 
-					for(key in pluginData.staticDirs) {
+					for(var key in pluginData.staticDirs) {
 						(function(mappedPath) {
 							if (pluginData.staticDirs.hasOwnProperty(mappedPath)) {
 								if (Plugins.staticDirs[mappedPath]) {

@@ -1,6 +1,6 @@
 {
     "login": "Kirjaudu sisään",
-    "username": "Käyttäjänimi",
+    "username": "Username / Email",
     "password": "Salasana",
     "remember_me": "Muista minut?",
     "forgot_password": "Unohditko salasanasi?",

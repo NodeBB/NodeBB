@@ -97,24 +97,61 @@ SocketTopics.markAsRead = function(socket, data) {
 	});
 };
 
-SocketTopics.markAllRead = function(socket, tids, callback) {
+SocketTopics.markTidsRead = function(socket, tids, callback) {
 
 	if (!Array.isArray(tids)) {
 		return callback(new Error('invalid-data'));
 	}
 
-	topics.markAllRead(socket.uid, tids, function(err) {
+	topics.markTidsRead(socket.uid, tids, function(err) {
 		if(err) {
 			return callback(err);
 		}
 
-		index.server.sockets.in('uid_' + socket.uid).emit('event:unread.updateCount', null, 0);
+		topics.pushUnreadCount(socket.uid);
 
 		for (var i=0; i<tids.length; ++i) {
 			topics.markTopicNotificationsRead(tids[i], socket.uid);
 		}
 
 		callback();
+	});
+};
+
+SocketTopics.markAllRead = function(socket, data, callback) {
+	topics.getUnreadTids(socket.uid, 0, -1, function(err, tids) {
+		if (err) {
+			return callback(err);
+		}
+
+		SocketTopics.markTidsRead(socket, tids, callback);
+	});
+};
+
+SocketTopics.markCategoryTopicsRead = function(socket, cid, callback) {
+	topics.getUnreadTids(socket.uid, 0, -1, function(err, tids) {
+		if (err) {
+			return callback(err);
+		}
+
+		var keys = tids.map(function(tid) {
+			return 'topic:' + tid;
+		});
+
+		db.getObjectsFields(keys, ['tid', 'cid'], function(err, topicData) {
+			if (err) {
+				return callback(err);
+			}
+
+			tids = topicData.filter(function(topic) {
+				return parseInt(topic.cid, 10) === parseInt(cid, 10);
+			}).map(function(topic) {
+				return topic.tid;
+			});
+
+			SocketTopics.markTidsRead(socket, tids, callback);
+		});
+
 	});
 };
 

@@ -28,6 +28,12 @@
     "upload_new_picture": "อัพโหลดรูปใหม่",
     "current_password": "รหัสผ่านปัจจุบัน",
     "change_password": "เปลี่ยนรหัสผ่าน",
+    "change_password_error": "Invalid Password!",
+    "change_password_error_wrong_current": "Your current password is not correct!",
+    "change_password_error_length": "Password too short!",
+    "change_password_error_match": "Passwords must match!",
+    "change_password_error_privileges": "You are not have the rights to change this password.",
+    "change_password_success": "Your password is updated!",
     "confirm_password": "ยืนยันรหัสผ่าน",
     "password": "รหัสผ่าน",
     "upload_picture": "อัปโหลดรูป",
@@ -39,9 +45,11 @@
     "has_no_follower": "ผู้ใช้รายนี้ไม่มีใครติดตาม :(",
     "follows_no_one": "ผู้ใช้รายนี้ไม่ติดตามใคร :(",
     "has_no_posts": "ผู้ใช้รายนี้ไม่ได้โพสต์อะไรเลย",
+    "has_no_topics": "This user didn't post any topics yet.",
     "email_hidden": "ซ่อนอีเมล์",
     "hidden": "ซ่อน",
     "paginate_description": "ให้เลขหน้ากระทู้และโพสต์แทนการใช้สกรอลล์ที่ไม่สิ้นสุด",
     "topics_per_page": "จำนวนกระทู้ต่อหน้า",
-    "posts_per_page": "จำนวนโพสต์ต่อหน้า"
+    "posts_per_page": "จำนวนโพสต์ต่อหน้า",
+    "notification_sounds": "Play a sound when you receive a notification."
 }

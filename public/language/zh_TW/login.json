@@ -1,0 +1,10 @@
+{
+    "login": "登錄",
+    "username": "使用者名稱 / 電子郵件",
+    "password": "密碼",
+    "remember_me": "記住我？",
+    "forgot_password": "忘記密碼？",
+    "alternative_logins": "其他登錄方式",
+    "failed_login_attempt": "登錄失敗，請再嘗試。",
+    "login_successful": "你已成功登錄！"
+}

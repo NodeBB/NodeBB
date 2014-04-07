@@ -222,13 +222,13 @@ module.exports = function(User) {
 		}
 
 		if (!utils.isPasswordValid(data.newPassword)) {
-			return callback(new Error('Invalid password!'));
+			return callback(new Error('[[user:change_password_error]]'));
 		}
 
 		if(parseInt(uid, 10) !== parseInt(data.uid, 10)) {
 			User.isAdministrator(uid, function(err, isAdmin) {
 				if(err || !isAdmin) {
-					return callback(err || new Error('not-allowed'));
+					return callback(err || new Error('[[user:change_password_error_privileges'));
 				}
 
 				hashAndSetPassword(callback);
@@ -245,7 +245,7 @@ module.exports = function(User) {
 
 				bcrypt.compare(data.currentPassword, currentPassword, function(err, res) {
 					if (err || !res) {
-						return callback(err || new Error('Your current password is not correct!'));
+						return callback(err || new Error('[[user:change_password_error_wrong_current]]'));
 					}
 					hashAndSetPassword(callback);
 				});

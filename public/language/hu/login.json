@@ -1,6 +1,6 @@
 {
     "login": "Bejelentkezés",
-    "username": "Felhasználónév",
+    "username": "Felhasználónév / Email",
     "password": "Jelszó",
     "remember_me": "Emlékezz rám",
     "forgot_password": "Elfelejtett Jelszó?",

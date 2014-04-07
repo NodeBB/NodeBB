@@ -2,7 +2,7 @@ define(function() {
 	var	ResetCode = {};
 
 	ResetCode.init = function() {
-		var reset_code = templates.get('reset_code');
+		var reset_code = ajaxify.variables.get('reset_code');
 
 		var resetEl = $('#reset'),
 			password = $('#password'),
@@ -35,9 +35,7 @@ define(function() {
 			}
 		});
 
-		socket.emit('user.reset.valid', {
-			code: reset_code
-		}, function(err, valid) {
+		socket.emit('user.reset.valid', reset_code, function(err, valid) {
 			if(err) {
 				return app.alertError(err.message);
 			}

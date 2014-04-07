@@ -1,18 +1,18 @@
 'use strict';
 
-/* globals define, app, translator, templates, socket, bootbox */
+/* globals define, app, translator, ajaxify, socket, bootbox */
 
-define(['composer'], function(composer) {
+define(['composer', 'share'], function(composer, share) {
 
 	var PostTools = {},
 		topicName;
 
 	PostTools.init = function(tid, threadState) {
-		topicName = templates.get('topic_name');
+		topicName = ajaxify.variables.get('topic_name');
 
 		addPostHandlers(tid, threadState);
 
-		addShareHandlers();
+		share.addShareHandlers(topicName);
 	};
 
 	function addPostHandlers(tid, threadState) {
@@ -21,6 +21,7 @@ define(['composer'], function(composer) {
 				onReplyClicked($(this), tid, topicName);
 			}
 		});
+
 		var postContainer = $('#post-container');
 
 		postContainer.on('click', '.quote', function() {
@@ -68,15 +69,19 @@ define(['composer'], function(composer) {
 
 		if ($(selection.baseNode).parents('.post-content').length > 0) {
 			var snippet = selection.toString();
-			if (snippet.length > 0) {
-				selectionText = '> ' + snippet.replace(/\n/g, '\n> ');
+			if (snippet.length) {
+				selectionText = '> ' + snippet.replace(/\n/g, '\n> ') + '\n\n';
 			}
 		}
 
-		var username = getUserName(button);
-		username += username ? ' ' : '';
+		var username = getUserName(selectionText ? $(selection.baseNode) : button);
 
-		composer.newReply(tid, getPid(button), topicName, selectionText.length > 0 ? selectionText + '\n\n' + username : '' + username);
+		if (selectionText.length) {
+			composer.addQuote(tid, getPid(button), topicName, username, selectionText);
+		} else {
+			composer.newReply(tid, getPid(button), topicName, username ? username + ' ' : '');
+		}
+
 	}
 
 	function onQuoteClicked(button, tid, topicName) {
@@ -142,17 +147,19 @@ define(['composer'], function(composer) {
 			postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
 			action = !postEl.hasClass('deleted') ? 'delete' : 'restore';
 
-		bootbox.confirm('Are you sure you want to ' + action + ' this post?', function(confirm) {
-			if (confirm) {
-				socket.emit('posts.' + action, {
-					pid: pid,
-					tid: tid
-				}, function(err) {
-					if(err) {
-						return app.alertError('Can\'t ' + action + ' post!');
-					}
-				});
-			}
+		translator.translate('[[topic:post_' + action + '_confirm]]', function(msg) {
+			bootbox.confirm(msg, function(confirm) {
+				if (confirm) {
+					socket.emit('posts.' + action, {
+						pid: pid,
+						tid: tid
+					}, function(err) {
+						if(err) {
+							return translator.translate('[[topic:post_' + action + '_error]]', app.alertError);
+						}
+					});
+				}
+			});
 		});
 	}
 
@@ -208,15 +215,19 @@ define(['composer'], function(composer) {
 	}
 
 	function flagPost(pid) {
-		bootbox.confirm('Are you sure you want to flag this post?', function(confirm) {
-			if (confirm) {
-				socket.emit('posts.flag', pid, function(err) {
-					if(err) {
-						return app.alertError(err.message);
-					}
-					app.alertSuccess('This post has been flagged for moderation.');
-				});
-			}
+		translator.translate('[[topic:flag_confirm]]', function(message) {
+			bootbox.confirm(message, function(confirm) {
+				if (confirm) {
+					socket.emit('posts.flag', pid, function(err) {
+						if(err) {
+							return app.alertError(err.message);
+						}
+						translator.translate('[[topic:flag_success]]', function(message) {
+							app.alertSuccess(message);
+						});
+					});
+				}
+			});
 		});
 	}
 
@@ -226,40 +237,6 @@ define(['composer'], function(composer) {
 		app.openChat(post.attr('data-username'), post.attr('data-uid'));
 		button.parents('.btn-group').find('.dropdown-toggle').click();
 		return false;
-	}
-
-	function addShareHandlers() {
-
-		function openShare(url, pid, width, height) {
-			window.open(url + encodeURIComponent(window.location.protocol + '//' + window.location.host + window.location.pathname + '#' + pid), '_blank', 'width=' + width + ',height=' + height + ',scrollbars=no,status=no');
-			return false;
-		}
-
-		$('#post-container').on('shown.bs.dropdown', '.share-dropdown', function() {
-			var pid = getPid($(this));
-			$('#post_' + pid + '_link').val(window.location.protocol + '//' + window.location.host + window.location.pathname + '#' + pid);
-			// without the setTimeout can't select the text in the input
-			setTimeout(function() {
-				$('#post_' + pid + '_link').putCursorAtEnd().select();
-			}, 50);
-		});
-
-		$('#post-container').on('click', '.post-link', function(e) {
-			e.preventDefault();
-			return false;
-		});
-
-		$('#post-container').on('click', '.twitter-share', function () {
-			return openShare('https://twitter.com/intent/tweet?text=' + topicName + '&url=', getPid($(this)), 550, 420);
-		});
-
-		$('#post-container').on('click', '.facebook-share', function () {
-			return openShare('https://www.facebook.com/sharer/sharer.php?u=', getPid($(this)), 626, 436);
-		});
-
-		$('#post-container').on('click', '.google-share', function () {
-			return openShare('https://plus.google.com/share?url=', getPid($(this)), 500, 570);
-		});
 	}
 
 	return PostTools;

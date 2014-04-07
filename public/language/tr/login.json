@@ -1,6 +1,6 @@
 {
     "login": "Giriş",
-    "username": "Kullanıcı Adı",
+    "username": "Username / Email",
     "password": "Şifre",
     "remember_me": "Beni Hatırla!",
     "forgot_password": "Şifrenizi mi unuttunuz?",

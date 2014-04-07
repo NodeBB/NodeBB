@@ -4,7 +4,23 @@
 	var async = require('async'),
 		winston = require('winston'),
 		user = require('./user'),
-		db = require('./database');
+		db = require('./database'),
+		utils = require('../public/src/utils'),
+
+		filterGroups = function(groups, options) {
+			// Remove system, hidden, or deleted groups from this list
+			if (groups && !options.showAllGroups) {
+				return groups.filter(function (group) {
+					if (group.deleted || (group.hidden && !group.system) || (!options.showSystemGroups && group.system)) {
+						return false;
+					} else {
+						return true;
+					}
+				});
+			} else {
+				return groups;
+			}
+		};
 
 	Groups.list = function(options, callback) {
 		db.getSetMembers('groups', function (err, groupNames) {
@@ -12,18 +28,7 @@
 				async.map(groupNames, function (groupName, next) {
 					Groups.get(groupName, options, next);
 				}, function (err, groups) {
-					// Remove system, hidden, or deleted groups from this list
-					if (!options.showAllGroups) {
-						groups = groups.filter(function (group) {
-							if (group.deleted || (group.hidden && !group.system) || (!options.showSystemGroups && group.system)) {
-								return false;
-							} else {
-								return true;
-							}
-						});
-					}
-
-					callback(err, groups);
+					callback(err, filterGroups(groups, options));
 				});
 			} else {
 				callback(null, []);
@@ -85,6 +90,24 @@
 
 			callback(err, results.base);
 		});
+	};
+
+	Groups.search = function(query, options, callback) {
+		if (query.length) {
+			db.getSetMembers('groups', function(err, groups) {
+				groups = groups.filter(function(groupName) {
+					return groupName.match(new RegExp(utils.escapeRegexChars(query), 'i'));
+				});
+
+				async.map(groups, function(groupName, next) {
+					Groups.get(groupName, options, next);
+				}, function(err, groups) {
+					callback(err, filterGroups(groups, options));
+				});
+			});
+		} else {
+			callback(null, []);
+		}
 	};
 
 	Groups.isMember = function(uid, groupName, callback) {

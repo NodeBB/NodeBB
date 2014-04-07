@@ -29,6 +29,12 @@
 	"upload_new_picture": "Upload New Picture",
 	"current_password": "Current Password",
 	"change_password": "Change Password",
+	"change_password_error": "Invalid Password!",
+	"change_password_error_wrong_current": "Your current password is not correct!",
+	"change_password_error_length": "Password too short!",
+	"change_password_error_match": "Passwords must match!",
+	"change_password_error_privileges": "You are not have the rights to change this password.",
+	"change_password_success": "Your password is updated!",
 	"confirm_password": "Confirm Password",
 	"password": "Password",
 
@@ -43,6 +49,7 @@
 	"has_no_follower": "This user doesn't have any followers :(",
 	"follows_no_one": "This user isn't following anyone :(",
 	"has_no_posts": "This user didn't post anything yet.",
+	"has_no_topics": "This user didn't post any topics yet.",
 
 	"email_hidden": "Email Hidden",
 	"hidden": "hidden",

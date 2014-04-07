@@ -198,6 +198,12 @@
 			return (firstChar === '.' || firstChar === '/');
 		},
 
+		makeNumbersHumanReadable: function(elements) {
+			elements.each(function() {
+				$(this).html(utils.makeNumberHumanReadable($(this).attr('title')));
+			});
+		},
+
 		makeNumberHumanReadable: function(num) {
 			var n = parseInt(num, 10);
 			if(!n) {
@@ -210,6 +216,17 @@
 				return (n / 1000).toFixed(1) + 'k';
 			}
 			return n;
+		},
+
+		addCommasToNumbers: function (elements) {
+			elements.each(function (index, element) {
+				$(element).html(utils.addCommas($(element).html()));
+			});
+		},
+
+		// takes a string like 1000 and returns 1,000
+		addCommas: function (text) {
+			return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
 		},
 
 		toISOString: function(timestamp) {
@@ -227,7 +244,7 @@
 
 		tags : ['a', 'abbr', 'acronym', 'address', 'applet', 'area', 'article', 'aside', 'audio', 'b', 'base', 'basefont', 'bdi', 'bdo', 'big', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'command', 'datalist', 'dd', 'del', 'details', 'dfn', 'dialog', 'dir', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'font', 'footer', 'form', 'frame', 'frameset', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hr', 'html', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'keygen', 'label', 'legend', 'li', 'link', 'map', 'mark', 'menu', 'meta', 'meter', 'nav', 'noframes', 'noscript', 'object', 'ol', 'optgroup', 'option', 'output', 'p', 'param', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strike', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'tt', 'u', 'ul', 'var', 'video', 'wbr'],
 
-		getTagsExcept : function(excludeTags) {
+		getTagsExcept: function(excludeTags) {
 			var tagsToReturn = utils.tags.slice();
 			excludeTags.forEach(function(tag) {
 				var index = tagsToReturn.indexOf(tag);
@@ -236,6 +253,10 @@
 				}
 			});
 			return tagsToReturn;
+		},
+
+		escapeRegexChars: function(text) {
+			return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 		}
 	};
 

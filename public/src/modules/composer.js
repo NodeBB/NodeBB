@@ -498,12 +498,9 @@ define(['taskbar'], function(taskbar) {
 	};
 
 	composer.createNewComposer = function(post_uuid) {
-
-		templates.preload_template('composer', function() {
-			var composerTemplate = templates.composer.parse({
-				allowTopicsThumbnail: config.allowTopicsThumbnail && composer.posts[post_uuid].isMain && config.hasImageUploadPlugin
-			});
-
+		var allowTopicsThumbnail = config.allowTopicsThumbnail && composer.posts[post_uuid].isMain && (config.hasImageUploadPlugin || config.allowFileUploads);
+		
+		templates.parse('composer', {allowTopicsThumbnail: allowTopicsThumbnail}, function(composerTemplate) {
 			translator.translate(composerTemplate, function(composerTemplate) {
 				composerTemplate = $(composerTemplate);
 

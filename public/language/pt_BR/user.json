@@ -28,6 +28,12 @@
     "upload_new_picture": "Carregar novo Foto",
     "current_password": "Senha Atual",
     "change_password": "Alterar Senha",
+    "change_password_error": "Invalid Password!",
+    "change_password_error_wrong_current": "Your current password is not correct!",
+    "change_password_error_length": "Password too short!",
+    "change_password_error_match": "Passwords must match!",
+    "change_password_error_privileges": "You are not have the rights to change this password.",
+    "change_password_success": "Your password is updated!",
     "confirm_password": "Confirmar Senha",
     "password": "Senha",
     "upload_picture": "Carregar Foto",
@@ -39,9 +45,11 @@
     "has_no_follower": "Ninguém está seguindo esse usuário :(",
     "follows_no_one": "Este usuário não está seguindo ninguém :(",
     "has_no_posts": "Este usuário não postou nada ainda.",
+    "has_no_topics": "This user didn't post any topics yet.",
     "email_hidden": "Email Escondido",
     "hidden": "Escondido",
     "paginate_description": "Paginação de tópicos e posts ao invés de usar \"scroll infinito\"",
     "topics_per_page": "Tópicos por Página",
-    "posts_per_page": "Posts por Página"
+    "posts_per_page": "Posts por Página",
+    "notification_sounds": "Play a sound when you receive a notification."
 }

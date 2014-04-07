@@ -45,33 +45,18 @@ function routeCurrentTheme(app, themeData) {
 	var themeId = (themeData['theme:id'] || 'nodebb-theme-vanilla');
 
 	// Detect if a theme has been selected, and handle appropriately
-	if (!themeData['theme:type'] || themeData['theme:type'] === 'local') {
-		// Local theme
-		if (process.env.NODE_ENV === 'development') {
-			winston.info('[themes] Using theme ' + themeId);
-		}
+	if (process.env.NODE_ENV === 'development') {
+		winston.info('[themes] Using theme ' + themeId);
+	}
 
-		// Theme's static directory
-		if (themeData['theme:staticDir']) {
-			app.use(nconf.get('relative_path') + '/css/assets', express.static(path.join(nconf.get('themes_path'), themeData['theme:id'], themeData['theme:staticDir']), {
-				maxAge: app.enabled('cache') ? 5184000000 : 0
-			}));
-			if (process.env.NODE_ENV === 'development') {
-				winston.info('Static directory routed for theme: ' + themeData['theme:id']);
-			}
-		}
-	} else {
-		// If not using a local theme (bootswatch, etc), drop back to vanilla
-		if (process.env.NODE_ENV === 'development') {
-			winston.info('[themes] Using theme ' + themeId);
-		}
-
-		app.use(require('less-middleware')({
-			src: path.join(nconf.get('themes_path'), '/nodebb-theme-vanilla'),
-			dest: path.join(__dirname, '../../public/css'),
-			prefix: nconf.get('relative_path') + '/css',
-			yuicompress: app.enabled('minification') ? true : false
+	// Theme's static directory
+	if (themeData['theme:staticDir']) {
+		app.use(nconf.get('relative_path') + '/css/assets', express.static(path.join(nconf.get('themes_path'), themeData['theme:id'], themeData['theme:staticDir']), {
+			maxAge: app.enabled('cache') ? 5184000000 : 0
 		}));
+		if (process.env.NODE_ENV === 'development') {
+			winston.info('Static directory routed for theme: ' + themeData['theme:id']);
+		}
 	}
 }
 
@@ -95,10 +80,11 @@ function compileTemplates(pluginTemplates) {
 			themeTpls = !themeTpls ? [] : themeTpls.map(function(tpl) { return tpl.replace(nconf.get('theme_templates_path'), ''); });
 
 			baseTpls.forEach(function(el, i) {
-				var relative_path = (themeTpls.indexOf(el) !== -1 ? themeTpls[themeTpls.indexOf(el)] : baseTpls[i]),
-					full_path = path.join(themeTpls.indexOf(el) !== -1 ? nconf.get('theme_templates_path') : nconf.get('base_templates_path'), relative_path);
+				paths[baseTpls[i]] = path.join(nconf.get('base_templates_path'), baseTpls[i]);
+			});
 
-				paths[themeTpls.indexOf(el) !== -1 ? themeTpls[themeTpls.indexOf(el)] : baseTpls[i]] = full_path;
+			themeTpls.forEach(function(el, i) {
+				paths[themeTpls[i]] = path.join(nconf.get('theme_templates_path'), themeTpls[i]);
 			});
 
 			async.each(Object.keys(paths), function(relative_path, next) {
@@ -189,12 +175,6 @@ module.exports = function(app, data) {
 		app.use(express.favicon(path.join(__dirname, '../../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico')));
 		app.use(nconf.get('relative_path') + '/apple-touch-icon', middleware.routeTouchIcon);
 
-		app.use(require('less-middleware')({
-			src: path.join(__dirname, '../../', 'public'),
-			prefix: nconf.get('relative_path'),
-			yuicompress: app.enabled('minification') ? true : false
-		}));
-
 		app.use(express.bodyParser());
 		app.use(express.cookieParser());
 
@@ -212,6 +192,7 @@ module.exports = function(app, data) {
 		app.use(function (req, res, next) {
 			res.locals.csrf_token = req.session._csrf;
 			res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+			res.setHeader('X-Powered-By', 'NodeBB');
 			next();
 		});
 

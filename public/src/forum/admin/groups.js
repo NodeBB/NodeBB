@@ -5,7 +5,7 @@ define(function() {
 	var	Groups = {};
 
 	Groups.init = function() {
-		var yourid = templates.get('yourid'),
+		var yourid = ajaxify.variables.get('yourid'),
 			createEl = $('#create'),
 			createModal = $('#create-modal'),
 			createSubmitBtn = $('#create-modal-go'),

@@ -110,12 +110,30 @@ var bcrypt = require('bcryptjs'),
 	};
 
 	User.isReadyToPost = function(uid, callback) {
-		User.getUserField(uid, 'lastposttime', function(err, lastposttime) {
-			if(err) {
+		async.parallel({
+			banned: function(next) {
+				User.getUserField(uid, 'banned',next);
+			},
+			exists: function(next) {
+				db.exists('user:' + uid, next);
+			},
+			lastposttime: function(next) {
+				User.getUserField(uid, 'lastposttime', next);
+			}
+		}, function(err, results) {
+			if (err) {
 				return callback(err);
 			}
 
-			if(!lastposttime) {
+			if (parseInt(results.banned, 10) === 1) {
+				return callback(new Error('user-banned'));
+			}
+
+			if (!results.exists) {
+				return callback(new Error('user-deleted'));
+			}
+			var lastposttime = results.lastposttime;
+			if (!lastposttime) {
 				lastposttime = 0;
 			}
 
@@ -217,14 +235,24 @@ var bcrypt = require('bcryptjs'),
 	User.onNewPostMade = function(postData) {
 		User.addPostIdToUser(postData.uid, postData.pid, postData.timestamp);
 
-		User.incrementUserFieldBy(postData.uid, 'postcount', 1, function(err, newpostcount) {
-			db.sortedSetAdd('users:postcount', newpostcount, postData.uid);
-		});
+		User.incrementUserPostCountBy(postData.uid, 1);
 
 		User.setUserField(postData.uid, 'lastposttime', postData.timestamp);
 	};
 
 	emitter.on('event:newpost', User.onNewPostMade);
+
+	User.incrementUserPostCountBy = function(uid, value, callback) {
+		User.incrementUserFieldBy(uid, 'postcount', value, function(err, newpostcount) {
+			if (err) {
+				if(typeof callback === 'function') {
+					callback(err);
+				}
+				return;
+			}
+			db.sortedSetAdd('users:postcount', newpostcount, uid, callback);
+		});
+	};
 
 	User.addPostIdToUser = function(uid, pid, timestamp) {
 		db.sortedSetAdd('uid:' + uid + ':posts', timestamp, pid);

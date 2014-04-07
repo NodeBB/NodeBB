@@ -9,12 +9,8 @@ var	groups = require('../groups'),
 	categories = require('../categories'),
 	CategoryTools = require('../categoryTools'),
 	logger = require('../logger'),
+	events = require('../events'),
 	db = require('../database'),
-	admin = {
-		user: require('../admin/user'),
-		categories: require('../admin/categories')
-	},
-
 	async = require('async'),
 	winston = require('winston'),
 	index = require('./index'),
@@ -32,9 +28,8 @@ var	groups = require('../groups'),
 	};
 
 SocketAdmin.before = function(socket, next) {
-	// Verify administrative privileges
 	user.isAdministrator(socket.uid, function(err, isAdmin) {
-		if (isAdmin) {
+		if (!err && isAdmin) {
 			next();
 		} else {
 			winston.warn('[socket.io] Call to admin method blocked (accessed by uid ' + socket.uid + ')');
@@ -74,24 +69,32 @@ SocketAdmin.fireEvent = function(socket, data, callback) {
 };
 
 /* User */
-SocketAdmin.user.makeAdmin = function(socket, theirid) {
-	admin.user.makeAdmin(socket.uid, theirid, socket);
+SocketAdmin.user.makeAdmin = function(socket, theirid, callback) {
+	groups.join('administrators', theirid, callback);
 };
 
-SocketAdmin.user.removeAdmin = function(socket, theirid) {
-	admin.user.removeAdmin(socket.uid, theirid, socket);
+SocketAdmin.user.removeAdmin = function(socket, theirid, callback) {
+	groups.leave('administrators', theirid, callback);
 };
 
-SocketAdmin.user.createUser = function(socket, user, callback) {
-	if(!user) {
+SocketAdmin.user.createUser = function(socket, userData, callback) {
+	if (!userData) {
 		return callback(new Error('invalid data'));
 	}
-	admin.user.createUser(socket.uid, user, callback);
+	user.create(userData, callback);
 };
 
-SocketAdmin.user.banUser = function(socket, theirid) {
-	admin.user.banUser(socket.uid, theirid, socket, function(isBanned) {
-		if(isBanned) {
+SocketAdmin.user.banUser = function(socket, theirid, callback) {
+	user.isAdministrator(theirid, function(err, isAdmin) {
+		if (err || isAdmin) {
+			return callback(err || new Error('You can\'t ban other admins!'));
+		}
+
+		user.ban(theirid, function(err) {
+			if (err) {
+				return callback(err);
+			}
+
 			var sockets = index.getUserSockets(theirid);
 
 			for(var i=0; i<sockets.length; ++i) {
@@ -99,16 +102,26 @@ SocketAdmin.user.banUser = function(socket, theirid) {
 			}
 
 			module.parent.exports.logoutUser(theirid);
-		}
+			callback();
+		});
 	});
 };
 
-SocketAdmin.user.unbanUser = function(socket, theirid) {
-	admin.user.unbanUser(socket.uid, theirid, socket);
+SocketAdmin.user.unbanUser = function(socket, theirid, callback) {
+	user.unban(theirid, callback);
 };
 
 SocketAdmin.user.deleteUser = function(socket, theirid, callback) {
-	admin.user.deleteUser(socket.uid, theirid, callback);
+	user.delete(theirid, function(err) {
+		if (err) {
+			return callback(err);
+		}
+
+		events.logAdminUserDelete(socket.uid, theirid);
+
+		module.parent.exports.logoutUser(theirid);
+		callback();
+	});
 };
 
 SocketAdmin.user.search = function(socket, username, callback) {
@@ -144,7 +157,7 @@ SocketAdmin.categories.update = function(socket, data, callback) {
 		return callback(new Error('invalid data'));
 	}
 
-	admin.categories.update(data, socket, callback);
+	categories.update(data, callback);
 };
 
 SocketAdmin.categories.search = function(socket, data, callback) {
@@ -284,9 +297,12 @@ SocketAdmin.themes.set = function(socket, data, callback) {
 	if(!data) {
 		return callback(new Error('invalid data'));
 	}
-	meta.themes.set(data, function() {
-		callback();
-		meta.restart()
+
+	widgets.reset(function(err) {
+		meta.themes.set(data, function() {
+			callback();
+			meta.restart();
+		});
 	});
 };
 

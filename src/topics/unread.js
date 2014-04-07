@@ -71,16 +71,20 @@ module.exports = function(Topics) {
 
 		var unreadTopics = {
 			no_topics_message: '',
-			show_markallread_button: 'hidden',
+			show_markread_button: 'hidden',
+			showSelect: true,
 			nextStart : 0,
 			topics: []
 		};
 
-		function sendUnreadTopics(topicIds) {
-
-			Topics.getTopicsByTids(topicIds, uid, function(err, topicData) {
-				if(err) {
+		function sendUnreadTopics(tids) {
+			Topics.getTopicsByTids(tids, uid, function(err, topicData) {
+				if (err) {
 					return callback(err);
+				}
+
+				if (!Array.isArray(topicData) || !topicData.length) {
+					return callback(null, unreadTopics);
 				}
 
 				db.sortedSetRevRank('topics:recent', topicData[topicData.length - 1].tid, function(err, rank) {
@@ -91,7 +95,7 @@ module.exports = function(Topics) {
 					unreadTopics.topics = topicData;
 					unreadTopics.nextStart = parseInt(rank, 10) + 1;
 					unreadTopics.no_topics_message = (!topicData || topicData.length === 0) ? '' : 'hidden';
-					unreadTopics.show_markallread_button = topicData.length === 0 ? 'hidden' : '';
+					unreadTopics.show_markread_button = topicData.length === 0 ? 'hidden' : '';
 
 					callback(null, unreadTopics);
 				});
@@ -149,7 +153,7 @@ module.exports = function(Topics) {
 		});
 	};
 
-	Topics.markAllRead = function(uid, tids, callback) {
+	Topics.markTidsRead = function(uid, tids, callback) {
 		if(!tids || !tids.length) {
 			return callback();
 		}

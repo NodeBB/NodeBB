@@ -6,8 +6,8 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 	AccountEdit.init = function() {
 		header.init();
 
-		gravatarPicture = templates.get('gravatarpicture');
-		uploadedPicture = templates.get('uploadedpicture');
+		gravatarPicture = ajaxify.variables.get('gravatarpicture');
+		uploadedPicture = ajaxify.variables.get('uploadedpicture');
 
 		var selectedImageType = '';
 
@@ -117,7 +117,7 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 		$('#uploadPictureBtn').on('click', function() {
 
 			$('#change-picture-modal').modal('hide');
-			uploader.open(RELATIVE_PATH + '/user/uploadpicture', {uid: templates.get('theirid')}, config.maximumProfileImageSize, function(imageUrlOnServer) {
+			uploader.open(RELATIVE_PATH + '/user/uploadpicture', {uid: ajaxify.variables.get('theirid')}, config.maximumProfileImageSize, function(imageUrlOnServer) {
 				imageUrlOnServer = imageUrlOnServer + '?' + new Date().getTime();
 
 				$('#user-current-picture').attr('src', imageUrlOnServer);
@@ -135,20 +135,24 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 		});
 
 		function showError(element, msg) {
-			element.html(msg);
-			element.parent()
-				.removeClass('alert-success')
-				.addClass('alert-danger');
-			element.show();
-			validationError = true;
+			translator.translate(msg, function(msg) {
+				element.html(msg);
+				element.parent()
+					.removeClass('alert-success')
+					.addClass('alert-danger');
+				element.show();
+				validationError = true;
+			});
 		}
 
 		function showSuccess(element, msg) {
-			element.html(msg);
-			element.parent()
-				.removeClass('alert-danger')
-				.addClass('alert-success');
-			element.show();
+			translator.translate(msg, function(msg) {
+				element.html(msg);
+				element.parent()
+					.removeClass('alert-danger')
+					.addClass('alert-success');
+				element.show();
+			});
 		}
 
 		(function handlePasswordChange() {
@@ -165,9 +169,9 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 			function onPasswordChanged() {
 				passwordvalid = utils.isPasswordValid(password.val());
 				if (password.val().length < config.minimumPasswordLength) {
-					showError(password_notify, 'Password too short!');
+					showError(password_notify, '[[user:change_password_error_length]]');
 				} else if (!passwordvalid) {
-					showError(password_notify, 'Invalid password!');
+					showError(password_notify, '[[user:change_password_error]]');
 				} else {
 					showSuccess(password_notify, successIcon);
 				}
@@ -176,7 +180,7 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 			function onPasswordConfirmChanged() {
 				if(password.val()) {
 					if (password.val() !== password_confirm.val()) {
-						showError(password_confirm_notify, 'Passwords must match!')
+						showError(password_confirm_notify, '[[user:change_password_error_match]]')
 						passwordsmatch = false;
 					} else {
 						showSuccess(password_confirm_notify, successIcon);
@@ -193,9 +197,8 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 					socket.emit('user.changePassword', {
 						'currentPassword': currentPassword.val(),
 						'newPassword': password.val(),
-						'uid': templates.get('theirid')
+						'uid': ajaxify.variables.get('theirid')
 					}, function(err) {
-
 						currentPassword.val('');
 						password.val('');
 						password_confirm.val('');
@@ -206,7 +209,7 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 							return app.alertError(err.message);
 						}
 
-						app.alertSuccess('Your password is updated!');
+						app.alertSuccess('[[user:change_password_success]]');
 					});
 				}
 				return false;
@@ -219,7 +222,7 @@ define(['forum/accountheader', 'uploader'], function(header, uploader) {
 	AccountEdit.changeUserPicture = function(type) {
 		var userData = {
 			type: type,
-			uid: templates.get('theirid')
+			uid: ajaxify.variables.get('theirid')
 		};
 
 		socket.emit('user.changePicture', userData, function(err) {

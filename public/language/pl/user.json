@@ -28,6 +28,12 @@
     "upload_new_picture": "Prześlij nowe zdjęcie",
     "current_password": "Obecne hasło",
     "change_password": "Zmień hasło",
+    "change_password_error": "Błędne hasło!",
+    "change_password_error_wrong_current": "Twoje aktualne hasło nie jest poprawne!",
+    "change_password_error_length": "Hasło jest za krótkie!",
+    "change_password_error_match": "Hasła muszą pasować!",
+    "change_password_error_privileges": "Nie masz uprawnień do zmiany tego hasła.",
+    "change_password_success": "Twoje hasło jest zaktualizowane!",
     "confirm_password": "Potwierdź hasło",
     "password": "Hasło",
     "upload_picture": "Prześlij zdjęcie",
@@ -39,9 +45,11 @@
     "has_no_follower": "Ten użytkownik nie ma jeszcze żadnych obserwujących",
     "follows_no_one": "Użytkownik jeszcze nikogo nie obsweruje.",
     "has_no_posts": "Użytkownik nie napisał jeszcze żadnych postów.",
+    "has_no_topics": "This user didn't post any topics yet.",
     "email_hidden": "Adres e-mail ukryty",
     "hidden": "ukryty",
     "paginate_description": "Użyj klasycznego trybu paginacji zamiast nieskończonego przewijania.",
     "topics_per_page": "Wątków na stronę",
-    "posts_per_page": "Postów na stronę"
+    "posts_per_page": "Postów na stronę",
+    "notification_sounds": "Odtwórz dźwięk po otrzymaniu powiadomienia."
 }

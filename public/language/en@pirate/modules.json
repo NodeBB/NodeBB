@@ -1,0 +1,6 @@
+{
+    "chat.chatting_with": "Letters from <span id=\"chat-with-name\"></span>",
+    "chat.placeholder": "Yer message goes here, hit enter to send 'er off",
+    "chat.send": "Send Parrot",
+    "chat.no_active": "Ye be a lonely sailor."
+}

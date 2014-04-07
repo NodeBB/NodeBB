@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, socket, app, templates, translator*/
+/* globals define, socket, app, templates, translator, ajaxify*/
 
 define(function() {
 	var	home = {};
@@ -16,6 +16,10 @@ define(function() {
 		app.enterRoom('home');
 
 		socket.on('event:new_post', home.onNewPost);
+
+		$('.home .category-header').tooltip({
+			placement: 'bottom'
+		});
 	};
 
 	home.onNewPost = function(data) {
@@ -62,19 +66,8 @@ define(function() {
 	}
 
 	function parseAndTranslate(posts, callback) {
-		templates.preload_template('home', function() {
-
-			templates.home.parse({
-				categories: {
-					posts: []
-				}
-			});
-
-			var html = templates.prepare(templates.home.blocks['categories.posts']).parse({
-				categories: {
-					posts: posts
-				}
-			});
+		ajaxify.loadTemplate('home', function(homeTemplate) {
+			var html = templates.parse(templates.getBlock(homeTemplate, 'posts'), {categories: {posts: posts}});
 
 			translator.translate(html, function(translatedHTML) {
 				translatedHTML = $(translatedHTML);

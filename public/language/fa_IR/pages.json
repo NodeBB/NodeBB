@@ -1,0 +1,15 @@
+{
+    "home": "خانه",
+    "unread": "جستاره‌های نخوانده",
+    "popular": "جستارهای دوست‌داشتنی",
+    "recent": "جستارهای تازه",
+    "users": "کاربران نام‌نویسی شده",
+    "notifications": "آگاه‌سازی‌ها",
+    "user.edit": "ویرایش \"%1\"",
+    "user.following": "%1 کاربر دنبال می‌کنند",
+    "user.followers": "کاربرانی که %1 را دنبال می‌کنند",
+    "user.posts": "دیدگاه‌های %1",
+    "user.topics": "Topics created by %1",
+    "user.favourites": "دیدگاه‌های پسندیدهٔ %1",
+    "user.settings": "تنظیمات کاربر"
+}

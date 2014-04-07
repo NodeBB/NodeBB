@@ -4,7 +4,7 @@ define(function() {
 	var Users = {};
 
 	Users.init = function() {
-		var yourid = templates.get('yourid');
+		var yourid = ajaxify.variables.get('yourid');
 
 		function isUserAdmin(element) {
 			var parent = $(element).parents('.users-box');
@@ -53,14 +53,25 @@ define(function() {
 
 			if (!isUserAdmin(banBtn)) {
 				if (isUserBanned(banBtn)) {
-					socket.emit('admin.user.unbanUser', uid);
+					socket.emit('admin.user.unbanUser', uid, function(err) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+						app.alertSuccess('This user is unbanned!');
+					});
+
 					banBtn.removeClass('btn-warning');
 					parent.attr('data-banned', 0);
 					updateUserAdminButtons($('.admin-btn'));
 				} else {
 					bootbox.confirm('Do you really want to ban "' + parent.attr('data-username') + '"?', function(confirm) {
 						if (confirm) {
-							socket.emit('admin.user.banUser', uid);
+							socket.emit('admin.user.banUser', uid, function(err) {
+								if (err) {
+									return app.alertError(err.message);
+								}
+								app.alertSuccess('This user is banned!');
+							});
 							banBtn.addClass('btn-warning');
 							parent.attr('data-banned', 1);
 							updateUserAdminButtons($('.admin-btn'));
@@ -85,14 +96,24 @@ define(function() {
 					timeout: 5000
 				});
 			} else if (!isUserAdmin(adminBtn)) {
-				socket.emit('admin.user.makeAdmin', uid);
+				socket.emit('admin.user.makeAdmin', uid, function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					app.alertSuccess('This user is now an administrator.');
+				});
 				parent.attr('data-admin', 1);
 				updateUserBanButtons($('.ban-btn'));
 				updateUserAdminButtons($('.admin-btn'));
 			} else if(uid !== yourid) {
 				bootbox.confirm('Do you really want to remove this user as admin "' + parent.attr('data-username') + '"?', function(confirm) {
 					if (confirm) {
-						socket.emit('admin.user.removeAdmin', uid);
+						socket.emit('admin.user.removeAdmin', uid, function(err) {
+							if (err) {
+								return app.alertError(err.message);
+							}
+							app.alertSuccess('This user is no longer an administrator.');
+						});
 						parent.attr('data-admin', 0);
 						updateUserBanButtons($('.ban-btn'));
 						updateUserAdminButtons($('.admin-btn'));
@@ -193,14 +214,9 @@ define(function() {
 							return app.alertError(err.message);
 						}
 
-						templates.preload_template('admin/users', function() {
-							templates['admin/users'].parse({users:[]});
-							var html = templates.prepare(templates['admin/users'].blocks.users).parse({
-								users: data.users
-							}),
-								userListEl = document.querySelector('.users');
+						ajaxify.loadTemplate('admin/users', function(adminUsers) {
+							$('.users').html(templates.parse(templates.getBlock(adminUsers, 'users'), data));
 
-							userListEl.innerHTML = html;
 							$('.fa-spinner').addClass('none');
 
 							if (data && data.users.length === 0) {
@@ -226,14 +242,9 @@ define(function() {
 			handleUserCreate();
 
 			function onUsersLoaded(users) {
-				templates.preload_template('admin/users', function() {
-					templates['admin/users'].parse({users:[]});
-					var html = templates.prepare(templates['admin/users'].blocks.users).parse({
-						users: users
-					});
-					html = $(html);
+				ajaxify.loadTemplate('admin/users', function(adminUsers) {
+					var html = $(templates.parse(templates.getBlock(adminUsers, 'users'), {users: users}));
 					$('#users-container').append(html);
-
 					updateUserBanButtons(html.find('.ban-btn'));
 					updateUserAdminButtons(html.find('.admin-btn'));
 				});
