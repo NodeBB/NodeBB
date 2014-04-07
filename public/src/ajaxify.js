@@ -7,7 +7,6 @@ var ajaxify = ajaxify || {};
 
 	var location = document.location || window.location,
 		rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : ''),
-		content = null,
 		templatesConfig = null,
 		availableTemplates = null,
 		apiXHR = null;
@@ -226,8 +225,6 @@ var ajaxify = ajaxify || {};
 		if (!window.history || !window.history.pushState) {
 			return; // no ajaxification for old browsers
 		}
-
-		content = content || document.getElementById('content');
 
 		// Enhancing all anchors to ajaxify...
 		$(document.body).on('click', 'a', function (e) {
