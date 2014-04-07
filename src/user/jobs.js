@@ -36,6 +36,13 @@ module.exports = function(User) {
 			async.each(data.uids, function(uid, next) {
 				UserNotifications.getDailyUnread(uid, function(err, notifications) {
 					if (!err && notifications && notifications.length) {
+
+						for(var i=0; i<notifications.length; ++i) {
+							if (notifications[i].image.indexOf('http') !== 0) {
+								notifications[i].image = nconf.get('url') + notifications[i].image;
+							}
+						}
+
 						user.getUserField(uid, 'username', function(err, username) {
 							// Send daily digest email
 							// winston.info('[user/notifications] Sending Daily Digest to uid ' + uid);
