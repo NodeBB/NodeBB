@@ -144,7 +144,6 @@ define(['forum/recent'], function(recent) {
 
 	function onCategoriesLoaded(err, data) {
 		createCategoryLinks(data.categories);
-		console.log(data);
 	}
 
 	function createCategoryLinks(categories) {
