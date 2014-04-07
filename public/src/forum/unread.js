@@ -114,7 +114,7 @@ define(['forum/recent'], function(recent) {
 				}
 
 				if (data.topics && data.topics.length) {
-					recent.onTopicsLoaded('unread', data.topics);
+					recent.onTopicsLoaded('unread', data.topics, true);
 					$('#topics-container').attr('data-nextstart', data.nextStart);
 				} else {
 					$('#load-more-btn').hide();
