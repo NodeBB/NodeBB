@@ -144,6 +144,9 @@ define(['composer', 'forum/pagination', 'share', 'navigator'], function(composer
 					} else {
 						el = $('#topics-container .category-item[data-tid]').first();
 						after = parseInt(el.attr('data-index'), 10);
+						if(isNaN(after)){
+							after = 0;
+						}
 						after -= config.topicsPerPage;
 						if(after < 0) {
 							after = 0;
