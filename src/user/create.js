@@ -19,6 +19,9 @@ module.exports = function(User) {
 			userData.email = validator.escape(userData.email);
 		}
 
+		var password = userData.password;
+		delete userData.password;
+
 		async.parallel([
 			function(next) {
 				if (userData.email) {
@@ -75,7 +78,6 @@ module.exports = function(User) {
 
 				var gravatar = User.createGravatarURLFromEmail(userData.email);
 				var timestamp = Date.now();
-				var password = userData.password;
 
 				userData = {
 					'uid': uid,
