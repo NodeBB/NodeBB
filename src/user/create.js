@@ -20,7 +20,7 @@ module.exports = function(User) {
 		}
 
 		var password = userData.password;
-		delete userData.password;
+		userData.password = null;
 
 		async.parallel([
 			function(next) {
