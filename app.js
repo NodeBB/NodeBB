@@ -88,7 +88,10 @@ function loadConfig() {
 	});
 
 	nconf.defaults({
-		themes_path: path.join(__dirname, 'node_modules')
+		base_dir: __dirname,
+		themes_path: path.join(__dirname, 'node_modules'),
+		upload_url: path.join(path.sep, 'uploads', path.sep),
+		views_dir: path.join(__dirname, 'public/templates')
 	});
 
 	// Ensure themes_path is a full filepath
@@ -97,11 +100,6 @@ function loadConfig() {
 
 function start() {
 	loadConfig();
-
-	nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
-	nconf.set('upload_url', path.join(path.sep, 'uploads', path.sep));
-	nconf.set('base_dir', __dirname);
-	nconf.set('views_dir', path.join(__dirname, 'public/templates'));
 
 	winston.info('Time: ' + new Date());
 	winston.info('Initializing NodeBB v' + pkg.version);
@@ -133,6 +131,7 @@ function start() {
 					plugins.init();
 					translator.loadServer();
 
+					nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
 					nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));
 					nconf.set('theme_templates_path', meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : nconf.get('base_templates_path'));
 

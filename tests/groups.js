@@ -95,7 +95,6 @@ describe('Groups', function() {
 			Groups.search('hidden', {
 				showAllGroups: true
 			}, function(err, groups) {
-				console.log(groups);
 				assert.equal(1, groups.length);
 				assert.strictEqual('Hidden', groups[0].name);
 				done();

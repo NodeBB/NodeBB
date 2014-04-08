@@ -14,6 +14,12 @@
 
 
 	nconf.file({ file: path.join(__dirname, '../config.json') });
+	nconf.defaults({
+		base_dir: path.join(__dirname,'..'),
+		themes_path: path.join(__dirname, '../node_modules'),
+		upload_url: path.join(path.sep, '../uploads', path.sep),
+		views_dir: path.join(__dirname, '../public/templates')
+	});
 
 	var dbType = nconf.get('database'),
 		testDbConfig = nconf.get('test_database'),
@@ -59,7 +65,6 @@
 		meta = require('../src/meta');
 
 	before(function(done) {
-
 		db.init(function(err) {
 			//Clean up
 			db.flushdb(function(err) {
@@ -71,6 +76,9 @@
 				winston.info('test_database flushed');
 
 				meta.configs.init(function () {
+					nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
+					nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));
+					nconf.set('theme_templates_path', meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : nconf.get('base_templates_path'));
 
 					var	webserver = require('../src/webserver'),
 						sockets = require('../src/socket.io');
