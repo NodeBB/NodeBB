@@ -240,6 +240,7 @@ var fs = require('fs'),
 			'vendor/tinycon/tinycon.js',
 			'vendor/xregexp/xregexp.js',
 			'vendor/xregexp/unicode/unicode-base.js',
+			'src/utils.js',
 			'src/app.js',
 			'src/templates.js',
 			'src/ajaxify.js',
@@ -247,8 +248,7 @@ var fs = require('fs'),
 			'src/widgets.js',
 			'src/translator.js',
 			'src/helpers.js',
-			'src/overrides.js',
-			'src/utils.js'
+			'src/overrides.js'
 		],
 		minFile: 'nodebb.min.js',
 		prepare: function (callback) {
