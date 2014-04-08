@@ -56,6 +56,6 @@ describe('Categories', function() {
 
 	after(function() {
 		db.delete('category:' + categoryObj.cid);
-		db.listRemoveLast('categories:cid');
+		db.sortedSetRemove('categories:cid', categoryObj.cid);
 	});
 });

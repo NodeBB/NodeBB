@@ -130,8 +130,9 @@ var bcrypt = require('bcryptjs'),
 			}
 
 			if (!results.exists) {
-				return callback(new Error('user-deleted'));
+				return callback(new Error('invalid-user'));
 			}
+
 			var lastposttime = results.lastposttime;
 			if (!lastposttime) {
 				lastposttime = 0;
