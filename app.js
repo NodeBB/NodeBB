@@ -233,6 +233,7 @@ function reset() {
 function resetSettings(callback) {
 	var meta = require('./src/meta');
 	meta.configs.set('allowLocalLogin', 1, function(err) {
+		winston.info('[reset] Settings reset to default');
 		if (typeof callback === 'function') {
 			callback(err);
 		} else {
