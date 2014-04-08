@@ -72,25 +72,21 @@ var fs = require('fs'),
 				db.getSetMembers('plugins:active', next);
 			},
 			function(plugins, next) {
-				if (plugins && Array.isArray(plugins)) {
-					plugins.push(meta.config['theme:id']);
+				if (!plugins || !Array.isArray(plugins)) {
+					next();
+				}
 
-					async.each(plugins, function(plugin, next) {
-						if (!plugin || typeof plugin !== 'string') {
-							return next();
-						}
+				plugins.push(meta.config['theme:id']);
 
-						var modulePath = path.join(__dirname, '../node_modules/', plugin);
-						if (fs.existsSync(modulePath)) {
-							Plugins.loadPlugin(modulePath, next);
-						} else {
-							if (global.env === 'development') {
-								winston.warn('[plugins] Plugin \'' + plugin + '\' not found');
-							}
-							next(); // Ignore this plugin silently
-						}
-					}, next);
-				} else next();
+				plugins = plugins.filter(function(plugin){
+					return plugin && typeof plugin === 'string';
+				}).map(function(plugin){
+					return path.join(__dirname, '../node_modules/', plugin);
+				});
+
+				async.filter(plugins, fs.exists, function(plugins){
+					async.each(plugins, Plugins.loadPlugin, next);
+				});
 			},
 			function(next) {
 				if (global.env === 'development') winston.info('[plugins] Sorting hooks to fire in priority sequence');
@@ -434,28 +430,31 @@ var fs = require('fs'),
 	};
 
 	Plugins.showInstalled = function(callback) {
-		npmPluginPath = path.join(__dirname, '../node_modules');
+		var npmPluginPath = path.join(__dirname, '../node_modules');
 
 		async.waterfall([
-			function(next) {
-				fs.readdir(npmPluginPath, function(err, dirs) {
-					dirs = dirs.map(function(file) {
-						return path.join(npmPluginPath, file);
-					}).filter(function(file) {
-						if (fs.existsSync(file)) {
-							var stats = fs.statSync(file),
-								isPlugin =  file.substr(npmPluginPath.length + 1, 14) === 'nodebb-plugin-' || file.substr(npmPluginPath.length + 1, 14) === 'nodebb-widget-';
+			async.apply(fs.readdir, npmPluginPath),
 
-							if (stats.isDirectory() && isPlugin) return true;
-							else return false;
-						} else {
-							return false;
+			function(dirs, next) {
+				dirs = dirs.filter(function(dir){
+					return dir.substr(0, 14) === 'nodebb-plugin-' || dir.substr(0, 14) === 'nodebb-widget-';
+				}).map(function(dir){
+					return path.join(npmPluginPath, dir);
+				});
+
+				async.filter(dirs, function(dir, callback){
+					fs.stat(dir, function(err, stats){
+						if (err) {
+							return callback(false);
 						}
-					});
 
-					next(err, dirs);
+						callback(stats.isDirectory());
+					})
+				}, function(plugins){
+					next(null, plugins);
 				});
 			},
+
 			function(files, next) {
 				var plugins = [];
 
