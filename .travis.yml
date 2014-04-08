@@ -1,3 +1,9 @@
+services:
+  - redis-server
+before_install:
+ - sudo apt-get update -qq
+ - sudo apt-get install -qq redis-server imagemagick
+ - node app --setup="{\"base_url\":\"http://127.0.0.1\",\"port\":4567,\"use_port\":false,\"secret\":\"abcdef\",\"bind_address\":\"0.0.0.0\",\"database\":\"redis\",\"redis:host\":\"127.0.0.1\",\"redis:port\":6379,\"redis:password\":\"\",\"redis:database\":0,\"admin:username\":\"admin\",\"admin:email\":\"test@example.org\",\"admin:password\":\"abcdef\",\"admin:password:confirm\":\"abcdef\"}"
 language: node_js
 node_js:
   - "0.11"
