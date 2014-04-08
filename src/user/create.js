@@ -21,7 +21,11 @@ module.exports = function(User) {
 
 		async.parallel([
 			function(next) {
-				next(!utils.isEmailValid(userData.email) ? new Error('Invalid Email!') : null);
+				if (userData.email) {
+					next(!utils.isEmailValid(userData.email) ? new Error('Invalid Email!') : null);
+				} else {
+					next();
+				}
 			},
 			function(next) {
 				next((!utils.isUserNameValid(userData.username) || !userData.userslug) ? new Error('Invalid Username!') : null);
