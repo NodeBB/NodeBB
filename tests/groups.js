@@ -167,11 +167,12 @@ describe('Groups', function() {
 			});
 		});
 
-		it('should also check slugified name for existence', function(done) {
+		it('should properly resolve a non-slugified group to slugs', function(done) {
 			Groups.exists('Test();', function(err, exists) {
 				if (err) return done(err);
 
 				assert.strictEqual(exists, true);
+				done();
 			});
 		});
 	});
