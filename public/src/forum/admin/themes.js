@@ -238,12 +238,16 @@ define(['forum/admin/settings'], function(Settings) {
 				}, function(err) {
 					total--;
 
+					if (err) {
+						app.alertError(err.message);
+					}
+
 					if (total === 0) {
 						app.alert({
 							alert_id: 'admin:widgets',
-							type: err ? 'danger' : 'success',
-							title: err ? 'Error' : 'Widgets Updated',
-							message: err ? err.message : 'Successfully updated widgets',
+							type: 'success',
+							title: 'Widgets Updated',
+							message: 'Successfully updated widgets',
 							timeout: 2500
 						});
 					}
