@@ -1,5 +1,5 @@
 "use strict";
-/* global define, config, templates, app, ajaxify, socket, translator */
+/* global define, config, templates, app, utils, ajaxify, socket, translator */
 
 define(['composer', 'forum/pagination', 'share', 'navigator'], function(composer, pagination, share, navigator) {
 	var Category = {},
