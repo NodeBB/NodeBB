@@ -75,7 +75,12 @@ var async = require('async'),
 	};
 
 	Widgets.reset = function(callback) {
-		plugins.fireHook('filter:widgets.getAreas', [], function(err, areas) {
+		var defaultAreas = [
+			{ name: 'Global Sidebar', template: 'global', location: 'sidebar' },
+			{ name: 'Global Footer', template: 'global', location: 'footer' },
+		];
+
+		plugins.fireHook('filter:widgets.getAreas', defaultAreas, function(err, areas) {
 			var drafts = [];
 
 			async.each(areas, function(area, next) {
