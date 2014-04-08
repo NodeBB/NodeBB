@@ -226,6 +226,9 @@ var async = require('async'),
 							field: 'allowRegistration',
 							value: 1
 						}, {
+							field: 'allowLocalLogin',
+							value: 1
+						}, {
 							field: 'allowFileUploads',
 							value: 0
 						}, {

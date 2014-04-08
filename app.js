@@ -77,24 +77,7 @@ if (!nconf.get('help') && !nconf.get('setup') && !nconf.get('install') && !nconf
 } else if (nconf.get('upgrade')) {
 	upgrade();
 } else if (nconf.get('reset')) {
-	if (nconf.get('themes')) {
-		resetThemes();
-	} else if (nconf.get('plugins')) {
-		resetPlugins();
-	} else if (nconf.get('widgets')) {
-		resetWidgets();
-	} else if (nconf.get('all')) {
-		require('async').series([resetWidgets, resetThemes, resetPlugins], function(err) {
-			if (!err) {
-				winston.info('[reset] Reset complete.');
-			} else {
-				winston.error('[reset] Errors were encountered while resetting your forum settings: ' + err.message);
-			}
-			process.exit();
-		});
-	} else {
-		console.log('no match');
-	}
+	reset();
 } else {
 	displayHelp();
 }
@@ -211,6 +194,51 @@ function upgrade() {
 	require('./src/database').init(function(err) {
 		meta.configs.init(function () {
 			require('./src/upgrade').upgrade();
+		});
+	});
+}
+
+function reset() {
+	if (nconf.get('themes')) {
+		resetThemes();
+	} else if (nconf.get('plugins')) {
+		resetPlugins();
+	} else if (nconf.get('widgets')) {
+		resetWidgets();
+	} else if (nconf.get('settings')) {
+		resetSettings();
+	} else if (nconf.get('all')) {
+		require('async').series([resetWidgets, resetThemes, resetPlugins, resetSettings], function(err) {
+			if (!err) {
+				winston.info('[reset] Reset complete.');
+			} else {
+				winston.error('[reset] Errors were encountered while resetting your forum settings: ' + err.message);
+			}
+			process.exit();
+		});
+	} else {
+		console.log('no match');
+	}
+}
+
+function resetSettings(callback) {
+	loadConfig();
+
+	require('./src/database').init(function(err) {
+		if (err) {
+			if (typeof callback === 'function') {
+				return callback(err);
+			}
+			process.exit();
+			return;
+		}
+		var meta = require('./src/meta');
+		meta.configs.set('allowLocalLogin', 1, function(err) {
+			if (typeof callback === 'function') {
+				callback(err);
+			} else {
+				process.exit();
+			}
 		});
 	});
 }
