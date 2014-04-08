@@ -34,7 +34,7 @@ var socket,
 						resource: RELATIVE_PATH.length ? RELATIVE_PATH.slice(1) + '/socket.io' : 'socket.io'
 					};
 
-					if (utils.isAndroidBrowser) {
+					if (utils.isAndroidBrowser()) {
 						ioParams.transports = ['xhr-polling'];
 					}
 
