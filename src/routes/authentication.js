@@ -65,12 +65,27 @@
 			return res.send(403);
 		}
 
-		var userData = {
-			username: req.body.username,
-			password: req.body.password,
-			email: req.body.email,
-			ip: req.ip
-		};
+		var userData;
+
+		plugins.fireHook('filter:register.userData', req, function(err, desiredData) {
+			if (err) {
+				return res.redirect(nconf.get('relative_path') + '/register');
+			}
+
+			userData = {
+				username: req.body.username,
+				password: req.body.password,
+				email: req.body.email,
+				ip: req.ip
+			};
+
+			for (var key in desiredData) {
+				if (desiredData.hasOwnProperty(key)) {
+					userData[key] = desiredData[key];
+				}
+			}
+		});
+
 
 		plugins.fireHook('filter:register.check', userData, function(err, userData) {
 			if (err) {
