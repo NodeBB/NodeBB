@@ -17,7 +17,6 @@
 
 		obj = registerGlobals(obj || {});
 		bind = bind ? Math.random() : false;
-		template = template.toString() || '';
 
 		if (bind) {
 			obj.__template = template;
@@ -76,7 +75,7 @@
 	}
 
 	function makeRegex(block) {
-		return new RegExp("<!--[\\s]*BEGIN " + block + "[\\s]*-->[\\s\\S]*?<!--[\\s]*END " + block + "[\\s]*-->", 'g');
+		return new RegExp("<!--[\\s]*BEGIN " + block + "[\\s]*-->[\\s\\S]*<!--[\\s]*END " + block + "[\\s]*-->", 'g');
 	}
 
 	function makeConditionalRegex(block) {
@@ -98,28 +97,33 @@
 	}
 
 	function checkConditional(template, key, value) {
-		var conditional = makeConditionalRegex(key),
-			matches = template.match(conditional);
+		var matches = template.match(makeConditionalRegex(key));
 
 		if (matches !== null) {
 			for (var i = 0, ii = matches.length; i < ii; i++) {
-				var conditionalBlock = matches[i].split(/\s*<!-- ELSE -->\s*/),
-					statement = makeStatementRegex(key);
+				var statement = makeStatementRegex(key),
+					nestedConditionals = matches[i].match(/\s<!-- IF[\s\S]*ENDIF[\s\S]*-->\s/),
+					match = matches[i].replace(statement, '').replace(/<!-- IF[\s\S]*ENDIF[\s\S]*-->/, '<!-- NESTED -->'),
+					conditionalBlock = match.split(/\s*<!-- ELSE -->\s*/);
 
 				if (conditionalBlock[1]) {
 					// there is an else statement
 					if (!value) {
-						template = template.replace(matches[i], conditionalBlock[1].replace(statement, '').replace(/(^[\r\n\t]*)|([\r\n\t]*$)/gi, ''));
+						template = template.replace(matches[i], conditionalBlock[1].replace(/(^[\r\n\t]*)|([\r\n\t]*$)/gi, ''));
 					} else {
-						template = template.replace(matches[i], conditionalBlock[0].replace(statement, '').replace(/(^[\r\n\t]*)|([\r\n\t]*$)/gi, ''));
+						template = template.replace(matches[i], conditionalBlock[0].replace(/(^[\r\n\t]*)|([\r\n\t]*$)/gi, ''));
 					}
 				} else {
 					// regular if statement
 					if (!value) {
 						template = template.replace(matches[i], '');
 					} else {
-						template = template.replace(matches[i], matches[i].replace(statement, '').replace(/(^[\r\n\t]*)|([\r\n\t]*$)/gi, ''));
+						template = template.replace(matches[i], match.replace(/(^[\r\n\t]*)|([\r\n\t]*$)/gi, ''));
 					}
+				}
+
+				if (nestedConditionals) {
+					template = template.replace('<!-- NESTED -->', nestedConditionals[0]);
 				}
 			}
 		}
