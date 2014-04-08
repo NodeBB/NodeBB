@@ -199,102 +199,84 @@ function upgrade() {
 }
 
 function reset() {
-	if (nconf.get('themes')) {
-		resetThemes();
-	} else if (nconf.get('plugins')) {
-		resetPlugins();
-	} else if (nconf.get('widgets')) {
-		resetWidgets();
-	} else if (nconf.get('settings')) {
-		resetSettings();
-	} else if (nconf.get('all')) {
-		require('async').series([resetWidgets, resetThemes, resetPlugins, resetSettings], function(err) {
-			if (!err) {
-				winston.info('[reset] Reset complete.');
-			} else {
-				winston.error('[reset] Errors were encountered while resetting your forum settings: ' + err.message);
-			}
-			process.exit();
-		});
-	} else {
-		console.log('no match');
-	}
-}
-
-function resetSettings(callback) {
 	loadConfig();
 
 	require('./src/database').init(function(err) {
 		if (err) {
-			if (typeof callback === 'function') {
-				return callback(err);
-			}
+			winston.error(err.message);
 			process.exit();
-			return;
 		}
-		var meta = require('./src/meta');
-		meta.configs.set('allowLocalLogin', 1, function(err) {
-			if (typeof callback === 'function') {
-				callback(err);
-			} else {
+
+		if (nconf.get('themes')) {
+			resetThemes();
+		} else if (nconf.get('plugins')) {
+			resetPlugins();
+		} else if (nconf.get('widgets')) {
+			resetWidgets();
+		} else if (nconf.get('settings')) {
+			resetSettings();
+		} else if (nconf.get('all')) {
+			require('async').series([resetWidgets, resetThemes, resetPlugins, resetSettings], function(err) {
+				if (!err) {
+					winston.info('[reset] Reset complete.');
+				} else {
+					winston.error('[reset] Errors were encountered while resetting your forum settings: ' + err.message);
+				}
 				process.exit();
-			}
-		});
+			});
+		} else {
+			console.log('no match');
+		}
+	});
+}
+
+function resetSettings(callback) {
+	var meta = require('./src/meta');
+	meta.configs.set('allowLocalLogin', 1, function(err) {
+		if (typeof callback === 'function') {
+			callback(err);
+		} else {
+			process.exit();
+		}
 	});
 }
 
 function resetThemes(callback) {
-	loadConfig();
+	var meta = require('./src/meta');
 
-	var db = require('./src/database'),
-		meta = require('./src/meta');
-
-	db.init(function() {
-		meta.themes.set({
-			type: 'local',
-			id: 'nodebb-theme-vanilla'
-		}, function(err) {
-			winston.info('[reset] Theme reset to Vanilla');
-			if (typeof callback === 'function') {
-				callback(err);
-			} else {
-				process.exit();
-			}
-		});
+	meta.themes.set({
+		type: 'local',
+		id: 'nodebb-theme-vanilla'
+	}, function(err) {
+		winston.info('[reset] Theme reset to Vanilla');
+		if (typeof callback === 'function') {
+			callback(err);
+		} else {
+			process.exit();
+		}
 	});
 }
 
 function resetPlugins(callback) {
-	loadConfig();
-
 	var db = require('./src/database');
-
-	db.init(function() {
-		db.delete('plugins:active', function(err) {
-			winston.info('[reset] All Plugins De-activated');
-			if (typeof callback === 'function') {
-				callback(err);
-			} else {
-				process.exit();
-			}
-		});
+	db.delete('plugins:active', function(err) {
+		winston.info('[reset] All Plugins De-activated');
+		if (typeof callback === 'function') {
+			callback(err);
+		} else {
+			process.exit();
+		}
 	});
 }
 
 function resetWidgets(callback) {
-	loadConfig();
-
-	var db = require('./src/database');
-
-	db.init(function() {
-		require('./src/widgets').reset(function(err) {
-			winston.info('[reset] All Widgets moved to Draft Zone');
-			if (typeof callback === 'function') {
-				callback(err);
-			} else {
-				process.exit();
-			}
-		});
+	require('./src/widgets').reset(function(err) {
+		winston.info('[reset] All Widgets moved to Draft Zone');
+		if (typeof callback === 'function') {
+			callback(err);
+		} else {
+			process.exit();
+		}
 	});
 }
 
