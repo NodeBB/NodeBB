@@ -103,8 +103,8 @@
 		if (matches !== null) {
 			for (var i = 0, ii = matches.length; i < ii; i++) {
 				var statement = makeStatementRegex(key),
-					nestedConditionals = matches[i].match(/\s<!-- IF[\s\S]*ENDIF[\s\S]*-->\s/),
-					match = matches[i].replace(statement, '').replace(/<!-- IF[\s\S]*ENDIF[\s\S]*-->/, '<!-- NESTED -->'),
+					nestedConditionals = matches[i].match(/[\s|\S]<!-- IF[\s\S]*ENDIF[\s\S]*-->[\s|\S]/),
+					match = matches[i].replace(statement, '').replace(/[\s|\S]<!-- IF[\s\S]*ENDIF[\s\S]*-->[\s|\S]/, '<!-- NESTED -->'),
 					conditionalBlock = match.split(/\s*<!-- ELSE -->\s*/);
 
 				if (conditionalBlock[1]) {
