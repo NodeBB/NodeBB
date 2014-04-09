@@ -142,11 +142,6 @@ function start() {
 					process.on('SIGTERM', shutdown);
 					process.on('SIGINT', shutdown);
 					process.on('SIGHUP', restart);
-					process.on('uncaughtException', function(err) {
-						winston.error('[app] Encountered Uncaught Exception: ' + err.message);
-						console.log(err.stack);
-						restart();
-					});
 				} else {
 					winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
 					winston.warn('    node app --upgrade');
@@ -292,7 +287,9 @@ function shutdown(code) {
 function restart() {
 	if (process.send) {
 		winston.info('[app] Restarting...');
-		process.send('nodebb:restart');
+		process.send({
+			action: 'restart'
+		});
 	} else {
 		winston.error('[app] Could not restart server. Shutting down.');
 		shutdown();

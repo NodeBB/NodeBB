@@ -12,9 +12,19 @@ var	nconf = require('nconf'),
 						}
 					});
 
-				nbb.on('message', function(cmd) {
-					if (cmd === 'nodebb:restart') {
-						nbb_restart();
+				nbb.on('message', function(message) {
+					if (message && typeof message === 'object' && message.action) {
+						if (message.action === 'restart') {
+							nbb_restart();
+						}
+					}
+				});
+
+				nbb.on('exit', function(code, signal) {
+					if (code) {
+						nbb_start();
+					} else {
+						nbb_stop();
 					}
 				});
 			},
