@@ -347,7 +347,7 @@ var db = require('./database'),
 			}
 
 			posts = posts.filter(function(p) {
-				return !!p || parseInt(p.deleted, 10) !== 1;
+				return !!p && parseInt(p.deleted, 10) !== 1;
 			});
 
 			async.map(posts, getPostSummary, function(err, posts) {
