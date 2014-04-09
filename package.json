@@ -31,7 +31,7 @@
     "rss": "~0.2.0",
     "prompt": "~0.2.11",
     "uglify-js": "~2.4.0",
-    "validator": "^3.4.0",
+    "validator": "~3.4.0",
     "cron": "~1.0.4",
     "semver": "~2.2.1",
     "string": "~1.7.0",
@@ -45,7 +45,7 @@
     "nodebb-theme-lavender": "~0.0.25",
     "less": "~1.6.3",
     "daemon": "~1.1.0",
-    "underscore": "^1.6.0",
+    "underscore": "~1.6.0",
     "mkdirp": "~0.3.5",
     "rimraf": "~2.2.6"
   },
