@@ -18,7 +18,10 @@
 		var widgetLocations = ['sidebar', 'footer'], numLocations;
 
 		$('#content [widget-area]').each(function() {
-			widgetLocations.push($(this).attr('widget-area'));
+			var location = $(this).attr('widget-area');
+			if ($.inArray(location, widgetLocations) === -1) {
+				widgetLocations.push(location);
+			}
 		});
 
 		numLocations = widgetLocations.length;
