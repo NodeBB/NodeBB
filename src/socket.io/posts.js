@@ -126,21 +126,13 @@ SocketPosts.getRawPost = function(socket, pid, callback) {
 
 SocketPosts.edit = function(socket, data, callback) {
 	if(!socket.uid) {
-		socket.emit('event:alert', {
-			title: 'Can&apos;t edit',
-			message: 'Guests can&apos;t edit posts!',
-			type: 'warning',
-			timeout: 2000
-		});
-		return callback(new Error('not-logged-in'));
+		return callback(new Error('[[error:not-logged-in]]'));
 	} else if(!data || !data.pid || !data.title || !data.content) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	} else if (!data.title || data.title.length < parseInt(meta.config.minimumTitleLength, 10)) {
-		topics.emitTitleTooShortAlert(socket);
-		return callback(new Error('title-too-short'));
+		return callback(new Error('[[error:title-too-short, ' + meta.config.minimumTitleLength + ']]'));
 	} else if (!data.content || data.content.length < parseInt(meta.config.minimumPostLength, 10)) {
-		module.parent.exports.emitContentTooShortAlert(socket);
-		return callback(new Error('content-too-short'));
+		return callback(new Error('[[error:content-too-short, ' + meta.config.minimumPostLength + ']]'));
 	}
 
 	postTools.edit(socket.uid, data.pid, data.title, data.content, {topic_thumb: data.topic_thumb}, function(err, results) {

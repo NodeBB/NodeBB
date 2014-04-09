@@ -314,37 +314,9 @@ function emitOnlineUserCount(callback) {
 	}
 }
 
-Sockets.emitAlert = emitAlert;
-function emitAlert(socket, title, message) {
-	socket.emit('event:alert', {
-		type: 'danger',
-		timeout: 2000,
-		title: title,
-		message: message,
-		alert_id: 'post_error'
-	});
-}
 
-Sockets.emitContentTooShortAlert = emitContentTooShortAlert;
-function emitContentTooShortAlert(socket) {
-	socket.emit('event:alert', {
-		type: 'danger',
-		timeout: 2000,
-		title: 'Content too short',
-		message: "Please enter a longer post. At least " + meta.config.minimumPostLength + " characters.",
-		alert_id: 'post_error'
-	});
-}
 
-Sockets.emitTooManyPostsAlert = emitTooManyPostsAlert;
-function emitTooManyPostsAlert(socket) {
-	socket.emit('event:alert', {
-		title: 'Too many posts!',
-		message: 'You can only post every ' + meta.config.postDelay + ' seconds.',
-		type: 'danger',
-		timeout: 2000
-	});
-}
+
 
 /* Exporting */
 module.exports = Sockets;
