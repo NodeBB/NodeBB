@@ -12,7 +12,7 @@
   "scripts": {
     "start": "./nodebb start",
     "stop": "./nodebb stop",
-    "test": "mocha ./tests"
+    "test": "mocha ./tests -t 10000"
   },
   "dependencies": {
     "socket.io": "~0.9.16",
