@@ -16,44 +16,15 @@ var topics = require('../topics'),
 SocketTopics.post = function(socket, data, callback) {
 
 	if(!data) {
-		return callback(new Error('Invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	if (!socket.uid && !parseInt(meta.config.allowGuestPosting, 10)) {
-		socket.emit('event:alert', {
-			title: 'Post Unsuccessful',
-			message: 'You don&apos;t seem to be logged in, so you cannot reply.',
-			type: 'danger',
-			timeout: 2000
-		});
-		return callback(new Error('not-logged-in'));
+		return callback(new Error('[[error:not-logged-in]]'));
 	}
 
 	topics.post({uid: socket.uid, title: data.title, content: data.content, cid: data.category_id, thumb: data.topic_thumb}, function(err, result) {
 		if(err) {
-			if (err.message === 'title-too-short') {
-				module.parent.exports.emitAlert(socket, 'Title too short', 'Please enter a longer title. At least ' + meta.config.minimumTitleLength + ' characters.');
-			} else if (err.message === 'title-too-long') {
-				module.parent.exports.emitAlert(socket, 'Title too long', 'Please enter a shorter title. Titles can\'t be longer than ' + meta.config.maximumTitleLength + ' characters.');
-			} else if (err.message === 'content-too-short') {
-				module.parent.exports.emitContentTooShortAlert(socket);
-			} else if (err.message === 'too-many-posts') {
-				module.parent.exports.emitTooManyPostsAlert(socket);
-			} else if (err.message === 'no-privileges') {
-				socket.emit('event:alert', {
-					title: 'Unable to post',
-					message: 'You do not have posting privileges in this category.',
-					type: 'danger',
-					timeout: 7500
-				});
-			} else {
-				socket.emit('event:alert', {
-					title: 'Error',
-					message: err.message,
-					type: 'warning',
-					timeout: 7500
-				});
-			}
 			return callback(err);
 		}
 
@@ -71,12 +42,6 @@ SocketTopics.post = function(socket, data, callback) {
 
 			module.parent.exports.emitTopicPostStats();
 
-			socket.emit('event:alert', {
-				title: 'Thank you for posting',
-				message: 'You have successfully posted. Click here to view your post.',
-				type: 'success',
-				timeout: 2000
-			});
 			callback();
 		}
 	});

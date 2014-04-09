@@ -168,12 +168,12 @@ define(['taskbar'], function(taskbar) {
 		}
 	}
 
-	function composerAlert(title, message) {
+	function composerAlert(message) {
 		$('.action-bar button').removeAttr('disabled');
 		app.alert({
 			type: 'danger',
-			timeout: 2000,
-			title: title,
+			timeout: 3000,
+			title: '',
 			message: message,
 			alert_id: 'post_error'
 		});
@@ -299,7 +299,7 @@ define(['taskbar'], function(taskbar) {
 
 			if(files[i].size > parseInt(config.maximumFileSize, 10) * 1024) {
 				uploadForm[0].reset();
-				return composerAlert('File too big', 'Maximum allowed file size is ' + config.maximumFileSize + 'kbs');
+				return composerAlert('[[error:file-too-big, ' + config.maximumFileSize + ']]');
 			}
 		}
 
@@ -499,7 +499,7 @@ define(['taskbar'], function(taskbar) {
 
 	composer.createNewComposer = function(post_uuid) {
 		var allowTopicsThumbnail = config.allowTopicsThumbnail && composer.posts[post_uuid].isMain && (config.hasImageUploadPlugin || config.allowFileUploads);
-		
+
 		templates.parse('composer', {allowTopicsThumbnail: allowTopicsThumbnail}, function(composerTemplate) {
 			translator.translate(composerTemplate, function(composerTemplate) {
 				composerTemplate = $(composerTemplate);
@@ -896,13 +896,13 @@ define(['taskbar'], function(taskbar) {
 		var checkTitle = parseInt(postData.cid, 10) || parseInt(postData.pid, 10);
 
 		if(postData.uploadsInProgress && postData.uploadsInProgress.length) {
-			return composerAlert('Still uploading', 'Please wait for uploads to complete.');
+			return composerAlert('[[error:still-uploading]]');
 		} else if (checkTitle && titleEl.val().length < parseInt(config.minimumTitleLength, 10)) {
-			return composerAlert('Title too short', 'Please enter a longer title. At least ' + config.minimumTitleLength+ ' characters.');
+			return composerAlert('[[error:title-too-short, ' + config.minimumTitleLength + ']]');
 		} else if (checkTitle && titleEl.val().length > parseInt(config.maximumTitleLength, 10)) {
-			return composerAlert('Title too long', 'Please enter a shorter title. Titles can\'t be longer than ' + config.maximumTitleLength + ' characters.');
+			return composerAlert('[[error:title-too-long, ' + config.maximumTitleLength + ']]');
 		} else if (bodyEl.val().length < parseInt(config.minimumPostLength, 10)) {
-			return composerAlert('Content too short', 'Please enter a longer post. At least ' + config.minimumPostLength + ' characters.');
+			return composerAlert('[[error:content-too-short, ' + config.minimumPostLength + ']]');
 		}
 
 		if (parseInt(postData.cid, 10) > 0) {
@@ -929,10 +929,14 @@ define(['taskbar'], function(taskbar) {
 
 		function done(err) {
 			$('.action-bar button').removeAttr('disabled');
-			if(!err) {
-				composer.discard(post_uuid);
-				removeDraft(postData.save_id);
+			if (err) {
+				return app.alertError(err.message);
 			}
+
+			app.alertSuccess('[[success:topic-post]]');
+
+			composer.discard(post_uuid);
+			removeDraft(postData.save_id);
 		}
 	};
 

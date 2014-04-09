@@ -18,42 +18,17 @@ var	async = require('async'),
 SocketPosts.reply = function(socket, data, callback) {
 
 	if (!socket.uid && !parseInt(meta.config.allowGuestPosting, 10)) {
-		socket.emit('event:alert', {
-			title: 'Reply Unsuccessful',
-			message: 'You don&apos;t seem to be logged in, so you cannot reply.',
-			type: 'danger',
-			timeout: 2000
-		});
-		return callback(new Error('not-logged-in'));
+		return callback(new Error('[[error:not-logged-in]]'));
 	}
 
 	if(!data || !data.tid || !data.content) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	data.uid = socket.uid;
 
 	topics.reply(data, function(err, postData) {
 		if(err) {
-			if (err.message === 'content-too-short') {
-				module.parent.exports.emitContentTooShortAlert(socket);
-			} else if (err.message === 'too-many-posts') {
-				module.parent.exports.emitTooManyPostsAlert(socket);
-			} else if (err.message === 'reply-error') {
-				socket.emit('event:alert', {
-					title: 'Reply Unsuccessful',
-					message: 'Your reply could not be posted at this time. Please try again later.',
-					type: 'warning',
-					timeout: 2000
-				});
-			} else if (err.message === 'no-privileges') {
-				socket.emit('event:alert', {
-					title: 'Unable to post',
-					message: 'You do not have posting privileges in this category.',
-					type: 'danger',
-					timeout: 7500
-				});
-			}
 			return callback(err);
 		}
 
@@ -61,12 +36,6 @@ SocketPosts.reply = function(socket, data, callback) {
 
 			module.parent.exports.emitTopicPostStats();
 
-			socket.emit('event:alert', {
-				title: 'Reply Successful',
-				message: 'You have successfully replied. Click here to view your reply.',
-				type: 'success',
-				timeout: 2000
-			});
 			var socketData = {
 				posts: [postData]
 			};
