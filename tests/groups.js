@@ -71,15 +71,6 @@ describe('Groups', function() {
 				done();
 			});
 		});
-
-		it('should auto-generate a slug given the group name', function(done) {
-			Groups.get('Test', {}, function(err, groupObj) {
-				if (err) return done(err);
-
-				assert.strictEqual('test', groupObj.slug);
-				done();
-			});
-		});
 	});
 
 	describe('.search()', function() {
@@ -163,15 +154,6 @@ describe('Groups', function() {
 
 				assert.strictEqual(exists, false);
 
-				done();
-			});
-		});
-
-		it('should properly resolve a non-slugified group to slugs', function(done) {
-			Groups.exists('Test();', function(err, exists) {
-				if (err) return done(err);
-
-				assert.strictEqual(exists, true);
 				done();
 			});
 		});
