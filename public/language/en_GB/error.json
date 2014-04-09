@@ -1,7 +1,7 @@
 {
 	"invalid-data": "Invalid Data",
 
-	"not-logged-in": "You don't seem to be logged in, so you cannot reply.",
+	"not-logged-in": "You don't seem to be logged in.",
 
 	"invalid-cid": "Invalid Category ID",
 
