@@ -413,21 +413,25 @@ var socket,
 
 
 	app.updateHeader = function(err, data) {
-		$('#search-button').off().on('click', function(e) {
+		var searchButton = $("#search-button"),
+			searchFields = $("#search-fields"),
+			searchInput = $('#search-fields input');
+
+		function dismissSearch(){
+			searchFields.hide();
+			searchButton.show();
+		}
+
+		searchButton.off().on('click', function(e) {
 			e.stopPropagation();
-			$('#search-fields').removeClass('hide').show();
+
+			searchFields.removeClass('hide').show();
 			$(this).hide();
-			$('#search-fields input').focus();
 
-			$('#search-form').on('submit', function() {
-				$('#search-fields').hide();
-				$('#search-button').show();
-			});
+			searchInput.focus();
 
-			$('#search-fields input').on('blur', function() {
-				$('#search-fields').hide();
-				$('#search-button').show();
-			});
+			$('#search-form').on('submit', dismissSearch);
+			searchInput.on('blur', dismissSearch);
 			return false;
 		});
 
@@ -442,7 +446,7 @@ var socket,
 			$('#logged-out-menu').addClass('hide');
 			$('#logged-in-menu').removeClass('hide');
 
-			$('#search-button').removeClass("hide").show();
+			searchButton.removeClass("hide").show();
 
 			var userLabel = loggedInMenu.find('#user_label');
 
@@ -462,10 +466,10 @@ var socket,
 
 		} else {
 			if (allowGuestSearching) {
-				$('#search-button').removeClass("hide").show();
+				searchButton.removeClass("hide").show();
 				$('#mobile-search-button').removeClass("hide").show();
 			} else {
-				$('#search-button').addClass("hide").hide();
+				searchButton.addClass("hide").hide();
 				$('#mobile-search-button').addClass("hide").hide();
 			}
 
