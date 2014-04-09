@@ -4,6 +4,7 @@
 	"not-logged-in": "You don't seem to be logged in.",
 
 	"invalid-cid": "Invalid Category ID",
+	"invalid-tid": "Invalid Topic ID",
 
 	"no-category": "Category doesn't exist",
 	"no-topic": "Topic doesn't exist",

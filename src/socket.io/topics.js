@@ -65,7 +65,7 @@ SocketTopics.markAsRead = function(socket, data) {
 SocketTopics.markTidsRead = function(socket, tids, callback) {
 
 	if (!Array.isArray(tids)) {
-		return callback(new Error('invalid-data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	topics.markTidsRead(socket.uid, tids, function(err) {
@@ -125,6 +125,7 @@ SocketTopics.markAsUnreadForAll = function(socket, tid, callback) {
 		if(err) {
 			return callback(err);
 		}
+
 		db.sortedSetAdd('topics:recent', Date.now(), tid, function(err) {
 			if(err) {
 				return callback(err);
@@ -134,26 +135,6 @@ SocketTopics.markAsUnreadForAll = function(socket, tid, callback) {
 		});
 	});
 };
-
-function doTopicAction(action, socket, tid, callback) {
-	if(!tid) {
-		return callback(new Error('Invalid tid'));
-	}
-
-	threadTools.privileges(tid, socket.uid, function(err, privileges) {
-		if(err) {
-			return callback(err);
-		}
-
-		if(!privileges || !privileges.editable) {
-			return callback(new Error('not-allowed'));
-		}
-
-		if(threadTools[action]) {
-			threadTools[action](tid, socket.uid, callback);
-		}
-	});
-}
 
 SocketTopics.delete = function(socket, tid, callback) {
 	doTopicAction('delete', socket, tid, callback);
@@ -179,19 +160,33 @@ SocketTopics.unpin = function(socket, tid, callback) {
 	doTopicAction('unpin', socket, tid, callback);
 };
 
+function doTopicAction(action, socket, tid, callback) {
+	if(!tid) {
+		return callback(new Error('[[error:invalid-tid]]'));
+	}
+
+	threadTools.privileges(tid, socket.uid, function(err, privileges) {
+		if(err) {
+			return callback(err);
+		}
+
+		if(!privileges || !privileges.editable) {
+			return callback(new Error('[[error:no-privileges]]'));
+		}
+
+		if(threadTools[action]) {
+			threadTools[action](tid, socket.uid, callback);
+		}
+	});
+}
+
 SocketTopics.createTopicFromPosts = function(socket, data, callback) {
 	if(!socket.uid) {
-		socket.emit('event:alert', {
-			title: 'Can&apos;t fork',
-			message: 'Guests can&apos;t fork topics!',
-			type: 'warning',
-			timeout: 2000
-		});
-		return;
+		return callback(new Error('[[error:not-logged-in]]'));
 	}
 
 	if(!data || !data.title || !data.pids || !Array.isArray(data.pids)) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	topics.createTopicFromPosts(socket.uid, data.title, data.pids, callback);
@@ -199,17 +194,11 @@ SocketTopics.createTopicFromPosts = function(socket, data, callback) {
 
 SocketTopics.movePost = function(socket, data, callback) {
 	if(!socket.uid) {
-		socket.emit('event:alert', {
-			title: 'Can&apos;t fork',
-			message: 'Guests can&apos;t fork topics!',
-			type: 'warning',
-			timeout: 2000
-		});
-		return;
+		return callback(new Error('[[error:not-logged-in]]'));
 	}
 
 	if(!data || !data.pid || !data.tid) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	threadTools.privileges(data.tid, socket.uid, function(err, privileges) {
@@ -218,7 +207,7 @@ SocketTopics.movePost = function(socket, data, callback) {
 		}
 
 		if(!(privileges.admin || privileges.moderator)) {
-			return callback(new Error('not allowed'));
+			return callback(new Error('[[error:no-privileges]]'));
 		}
 
 		topics.movePostToTopic(data.pid, data.tid, callback);
@@ -226,9 +215,8 @@ SocketTopics.movePost = function(socket, data, callback) {
 };
 
 SocketTopics.move = function(socket, data, callback) {
-
 	if(!data || !data.tid || !data.cid) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	threadTools.move(data.tid, data.cid, function(err) {
@@ -250,16 +238,15 @@ SocketTopics.followCheck = function(socket, tid, callback) {
 
 SocketTopics.follow = function(socket, tid, callback) {
 	if(!socket.uid) {
-		return callback(new Error('not-logged-in'));
+		return callback(new Error('[[error:not-logged-in]]'));
 	}
-
 
 	threadTools.toggleFollow(tid, socket.uid, callback);
 };
 
 SocketTopics.loadMore = function(socket, data, callback) {
 	if(!data || !data.tid || !(parseInt(data.after, 10) >= 0))  {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	user.getSettings(socket.uid, function(err, settings) {
@@ -283,7 +270,7 @@ SocketTopics.loadMore = function(socket, data, callback) {
 
 SocketTopics.loadMoreRecentTopics = function(socket, data, callback) {
 	if(!data || !data.term || !data.after) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	var start = parseInt(data.after, 10),
@@ -294,7 +281,7 @@ SocketTopics.loadMoreRecentTopics = function(socket, data, callback) {
 
 SocketTopics.loadMoreUnreadTopics = function(socket, data, callback) {
 	if(!data || !data.after) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	var start = parseInt(data.after, 10),
@@ -305,7 +292,7 @@ SocketTopics.loadMoreUnreadTopics = function(socket, data, callback) {
 
 SocketTopics.loadMoreFromSet = function(socket, data, callback) {
 	if(!data || !data.after || !data.set) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	var start = parseInt(data.after, 10),
