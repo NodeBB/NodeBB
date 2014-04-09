@@ -78,10 +78,12 @@
 				return callback(err);
 			}
 
+			// User counts
 			results.base.count = numUsers || results.users.length;
 			results.base.members = results.users;
 			results.base.memberCount = numUsers || results.users.length;
 
+			results.base.slug = utils.slugify(results.base.name);
 			results.base.deleted = !!parseInt(results.base.deleted, 10);
 			results.base.hidden = !!parseInt(results.base.hidden, 10);
 			results.base.system = !!parseInt(results.base.system, 10);
@@ -131,7 +133,20 @@
 	};
 
 	Groups.exists = function(name, callback) {
-		db.isSetMember('groups', name, callback);
+		name = utils.slugify(name);
+		db.getSetMembers('groups', function(err, groupNames) {
+			if (err) {
+				return callback(err);
+			}
+
+			var matches = groupNames.map(function(groupName) {
+				return utils.slugify(groupName);
+			}).filter(function(groupName) {
+				return groupName === name;
+			});
+
+			callback(null, matches.length > 0 ? true : false);
+		});
 	};
 
 	Groups.create = function(name, description, callback) {

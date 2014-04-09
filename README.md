@@ -1,4 +1,5 @@
 # <img alt="NodeBB" src="http://i.imgur.com/3yj1n6N.png" />
+[![Build Status](https://travis-ci.org/designcreateplay/NodeBB.svg?branch=master)](https://travis-ci.org/designcreateplay/NodeBB)
 [![Dependency Status](https://david-dm.org/designcreateplay/nodebb.png)](https://david-dm.org/designcreateplay/nodebb)
 [![Code Climate](https://codeclimate.com/github/designcreateplay/NodeBB.png)](https://codeclimate.com/github/designcreateplay/NodeBB)
 
@@ -33,7 +34,7 @@ Credit: [Convoe](http://www.convoe.com), [Kano](http://www.kano.me), [Manchester
 
 NodeBB requires the following software to be installed:
 
-* A version of Node.js at least 0.8 or greater
+* A version of Node.js at least 0.10 or greater
 * Redis, version 2.6 or greater **or** MongoDB, version 2.4 or greater
 * nginx, version 1.3.13 or greater (**only if** intending to use nginx to proxy requests to a NodeBB)
 

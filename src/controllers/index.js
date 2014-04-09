@@ -171,21 +171,11 @@ Controllers.login = function(req, res, next) {
 		num_strategies = login_strategies.length,
 		emailersPresent = plugins.hasListeners('action:email.send');
 
-	if (num_strategies === 0) {
-		data = {
-			'login_window:spansize': 'col-md-12',
-			'alternate_logins': false
-		};
-	} else {
-		data = {
-			'login_window:spansize': 'col-md-6',
-			'alternate_logins': true
-		};
-	}
-
+	data.alternate_logins = num_strategies > 0;
 	data.authentication = login_strategies;
 	data.token = res.locals.csrf_token;
 	data.showResetLink = emailersPresent;
+	data.allowLocalLogin = meta.config.allowLocalLogin === undefined || parseInt(meta.config.allowLocalLogin, 10) === 1;
 
 	res.render('login', data);
 };

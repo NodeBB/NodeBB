@@ -22,7 +22,13 @@ case "$1" in
 		echo "Starting NodeBB";
 		echo "  \"./nodebb stop\" to stop the NodeBB server";
 		echo "  \"./nodebb log\" to view server output";
-		echo "" > ./logs/output.log;
+
+		if [ -f "./logs/output.log" ];	# Preserve the last output log
+			then
+				mv ./logs/output.log ./logs/output.1.log;
+		fi;
+
+		# Start the loader daemon
 		node loader -d "$@"
 		;;
 
@@ -42,13 +48,11 @@ case "$1" in
 			then
 				echo "NodeBB is not running";
 				echo "  \"./nodebb start\" to launch the NodeBB server";
-				return 1;
 			else
 				echo "NodeBB Running (pid $(cat pidfile))";
 				echo "  \"./nodebb stop\" to stop the NodeBB server";
 				echo "  \"./nodebb log\" to view server output";
 				echo "  \"./nodebb restart\" to restart NodeBB";
-				return 0;
 		fi
 		;;
 

@@ -2,7 +2,7 @@
   "name": "nodebb",
   "license": "GPLv3 or later",
   "description": "NodeBB Forum",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "homepage": "http://www.nodebb.org",
   "repository": {
     "type": "git",
@@ -12,7 +12,7 @@
   "scripts": {
     "start": "./nodebb start",
     "stop": "./nodebb stop",
-    "test": "mocha ./tests"
+    "test": "mocha ./tests -t 10000"
   },
   "dependencies": {
     "socket.io": "~0.9.16",
@@ -31,7 +31,7 @@
     "rss": "~0.2.0",
     "prompt": "~0.2.11",
     "uglify-js": "~2.4.0",
-    "validator": "^3.4.0",
+    "validator": "~3.4.0",
     "cron": "~1.0.4",
     "semver": "~2.2.1",
     "string": "~1.7.0",
@@ -45,7 +45,7 @@
     "nodebb-theme-lavender": "~0.0.25",
     "less": "~1.6.3",
     "daemon": "~1.1.0",
-    "underscore": "^1.6.0",
+    "underscore": "~1.6.0",
     "mkdirp": "~0.3.5",
     "rimraf": "~2.2.6"
   },

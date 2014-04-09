@@ -77,22 +77,7 @@ if (!nconf.get('help') && !nconf.get('setup') && !nconf.get('install') && !nconf
 } else if (nconf.get('upgrade')) {
 	upgrade();
 } else if (nconf.get('reset')) {
-	if (nconf.get('themes')) {
-		resetThemes();
-	} else if (nconf.get('plugins')) {
-		resetPlugins();
-	} else if (nconf.get('all')) {
-		require('async').parallel([resetThemes, resetPlugins], function(err) {
-			if (!err) {
-				winston.info('[reset] Reset complete.');
-			} else {
-				winston.error('[reset] Errors were encountered while resetting your forum settings: ' + err.message);
-			}
-			process.exit();
-		});
-	} else {
-		console.log('no match');
-	}
+	reset();
 } else {
 	displayHelp();
 }
@@ -103,7 +88,10 @@ function loadConfig() {
 	});
 
 	nconf.defaults({
-		themes_path: path.join(__dirname, 'node_modules')
+		base_dir: __dirname,
+		themes_path: path.join(__dirname, 'node_modules'),
+		upload_url: path.join(path.sep, 'uploads', path.sep),
+		views_dir: path.join(__dirname, 'public/templates')
 	});
 
 	// Ensure themes_path is a full filepath
@@ -112,11 +100,6 @@ function loadConfig() {
 
 function start() {
 	loadConfig();
-
-	nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
-	nconf.set('upload_url', path.join(path.sep, 'uploads', path.sep));
-	nconf.set('base_dir', __dirname);
-	nconf.set('views_dir', path.join(__dirname, 'public/templates'));
 
 	winston.info('Time: ' + new Date());
 	winston.info('Initializing NodeBB v' + pkg.version);
@@ -148,6 +131,7 @@ function start() {
 					plugins.init();
 					translator.loadServer();
 
+					nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
 					nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));
 					nconf.set('theme_templates_path', meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : nconf.get('base_templates_path'));
 
@@ -158,11 +142,6 @@ function start() {
 					process.on('SIGTERM', shutdown);
 					process.on('SIGINT', shutdown);
 					process.on('SIGHUP', restart);
-					process.on('uncaughtException', function(err) {
-						winston.error('[app] Encountered Uncaught Exception: ' + err.message);
-						console.log(err.stack);
-						restart();
-					});
 				} else {
 					winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
 					winston.warn('    node app --upgrade');
@@ -213,41 +192,86 @@ function upgrade() {
 	});
 }
 
-function resetThemes(callback) {
+function reset() {
 	loadConfig();
 
-	var db = require('./src/database'),
-		meta = require('./src/meta');
+	require('./src/database').init(function(err) {
+		if (err) {
+			winston.error(err.message);
+			process.exit();
+		}
 
-	db.init(function() {
-		meta.themes.set({
-			type: 'local',
-			id: 'nodebb-theme-vanilla'
-		}, function(err) {
-			winston.info('[reset] Theme reset to Vanilla');
-			if (typeof callback === 'function') {
-				callback(err);
-			} else {
+		if (nconf.get('themes')) {
+			resetThemes();
+		} else if (nconf.get('plugins')) {
+			resetPlugins();
+		} else if (nconf.get('widgets')) {
+			resetWidgets();
+		} else if (nconf.get('settings')) {
+			resetSettings();
+		} else if (nconf.get('all')) {
+			require('async').series([resetWidgets, resetThemes, resetPlugins, resetSettings], function(err) {
+				if (!err) {
+					winston.info('[reset] Reset complete.');
+				} else {
+					winston.error('[reset] Errors were encountered while resetting your forum settings: ' + err.message);
+				}
 				process.exit();
-			}
-		});
+			});
+		} else {
+			console.log('no match');
+		}
+	});
+}
+
+function resetSettings(callback) {
+	var meta = require('./src/meta');
+	meta.configs.set('allowLocalLogin', 1, function(err) {
+		winston.info('[reset] Settings reset to default');
+		if (typeof callback === 'function') {
+			callback(err);
+		} else {
+			process.exit();
+		}
+	});
+}
+
+function resetThemes(callback) {
+	var meta = require('./src/meta');
+
+	meta.themes.set({
+		type: 'local',
+		id: 'nodebb-theme-vanilla'
+	}, function(err) {
+		winston.info('[reset] Theme reset to Vanilla');
+		if (typeof callback === 'function') {
+			callback(err);
+		} else {
+			process.exit();
+		}
 	});
 }
 
 function resetPlugins(callback) {
-	loadConfig();
-
 	var db = require('./src/database');
+	db.delete('plugins:active', function(err) {
+		winston.info('[reset] All Plugins De-activated');
+		if (typeof callback === 'function') {
+			callback(err);
+		} else {
+			process.exit();
+		}
+	});
+}
 
-	db.init(function() {
-		db.delete('plugins:active', function(err) {
-			winston.info('[reset] All Plugins De-activated');
-			if (typeof callback === 'function') {
-				callback(err);
-			} else {
-				process.exit();
-			}
-		});
+function resetWidgets(callback) {
+	require('./src/widgets').reset(function(err) {
+		winston.info('[reset] All Widgets moved to Draft Zone');
+		if (typeof callback === 'function') {
+			callback(err);
+		} else {
+			process.exit();
+		}
 	});
 }
 
@@ -263,7 +287,9 @@ function shutdown(code) {
 function restart() {
 	if (process.send) {
 		winston.info('[app] Restarting...');
-		process.send('nodebb:restart');
+		process.send({
+			action: 'restart'
+		});
 	} else {
 		winston.error('[app] Could not restart server. Shutting down.');
 		shutdown();

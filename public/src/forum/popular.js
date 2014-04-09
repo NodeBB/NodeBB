@@ -35,7 +35,7 @@ define(['forum/recent'], function(recent) {
 				}
 
 				if (data.topics && data.topics.length) {
-					recent.onTopicsLoaded('popular', data.topics);
+					recent.onTopicsLoaded('popular', data.topics, false);
 					$('#topics-container').attr('data-nextstart', data.nextStart);
 				} else {
 					$('#load-more-btn').hide();

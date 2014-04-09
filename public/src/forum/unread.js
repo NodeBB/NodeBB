@@ -114,7 +114,7 @@ define(['forum/recent'], function(recent) {
 				}
 
 				if (data.topics && data.topics.length) {
-					recent.onTopicsLoaded('unread', data.topics);
+					recent.onTopicsLoaded('unread', data.topics, true);
 					$('#topics-container').attr('data-nextstart', data.nextStart);
 				} else {
 					$('#load-more-btn').hide();
@@ -144,7 +144,6 @@ define(['forum/recent'], function(recent) {
 
 	function onCategoriesLoaded(err, data) {
 		createCategoryLinks(data.categories);
-		console.log(data);
 	}
 
 	function createCategoryLinks(categories) {

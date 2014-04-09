@@ -95,7 +95,6 @@ describe('Groups', function() {
 			Groups.search('hidden', {
 				showAllGroups: true
 			}, function(err, groups) {
-				console.log(groups);
 				assert.equal(1, groups.length);
 				assert.strictEqual('Hidden', groups[0].name);
 				done();
@@ -168,11 +167,12 @@ describe('Groups', function() {
 			});
 		});
 
-		it('should also check slugified name for existence', function(done) {
+		it('should properly resolve a non-slugified group to slugs', function(done) {
 			Groups.exists('Test();', function(err, exists) {
 				if (err) return done(err);
 
 				assert.strictEqual(exists, true);
+				done();
 			});
 		});
 	});

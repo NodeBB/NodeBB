@@ -39,7 +39,7 @@ categoriesController.popular = function(req, res, next) {
 categoriesController.unread = function(req, res, next) {
 	var uid = req.user.uid;
 
-	topics.getUnreadTopics(uid, 0, 19, function (err, data) {
+	topics.getUnreadTopics(uid, 0, 20, function (err, data) {
 		if(err) {
 			return next(err);
 		}

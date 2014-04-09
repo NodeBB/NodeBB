@@ -79,7 +79,7 @@ var async = require('async'),
 
 		setup: function (callback) {
 			async.series([
-				function(next) {
+				function (next) {
 					// Check if the `--setup` flag contained values we can work with
 					var	setupVal;
 					try {
@@ -98,6 +98,30 @@ var async = require('async'),
 							if (!setupVal['admin:password']) winston.error('  admin:password');
 							if (!setupVal['admin:password:confirm']) winston.error('  admin:password:confirm');
 							if (!setupVal['admin:email']) winston.error('  admin:email');
+							process.exit();
+						}
+					} else {
+						next();
+					}
+				},
+				function (next) {
+					// Check if the `--ci` flag contained values we can work with
+					var	ciVals;
+					try {
+						ciVals = JSON.parse(nconf.get('ci'));
+					} catch (e) {
+						ciVals = undefined;
+					}
+
+					if (ciVals && ciVals instanceof Object) {
+						if (ciVals.hasOwnProperty('host') && ciVals.hasOwnProperty('port') && ciVals.hasOwnProperty('database')) {
+							install.ciVals = ciVals;
+							next();
+						} else {
+							winston.error('Required values are missing for automated CI integration:');
+							if (!ciVals.hasOwnProperty('host')) winston.error('  host');
+							if (!ciVals.hasOwnProperty('port')) winston.error('  port');
+							if (!ciVals.hasOwnProperty('database')) winston.error('  database');
 							process.exit();
 						}
 					} else {
@@ -165,6 +189,16 @@ var async = require('async'),
 							});
 						};
 
+						// Add CI object
+						if (install.ciVals) {
+							config['test_database'] = {};
+							for(var prop in install.ciVals) {
+								if (install.ciVals.hasOwnProperty(prop)) {
+									config['test_database'][prop] = install.ciVals[prop];
+								}
+							}
+						}
+
 						if(config.database === 'redis') {
 							if (config['redis:host'] && config['redis:port']) {
 								dbQuestionsSuccess(null, config);
@@ -224,6 +258,9 @@ var async = require('async'),
 							value: 0
 						}, {
 							field: 'allowRegistration',
+							value: 1
+						}, {
+							field: 'allowLocalLogin',
 							value: 1
 						}, {
 							field: 'allowFileUploads',
