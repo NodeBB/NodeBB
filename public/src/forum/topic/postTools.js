@@ -69,15 +69,19 @@ define(['composer', 'share'], function(composer, share) {
 
 		if ($(selection.baseNode).parents('.post-content').length > 0) {
 			var snippet = selection.toString();
-			if (snippet.length > 0) {
-				selectionText = '> ' + snippet.replace(/\n/g, '\n> ');
+			if (snippet.length) {
+				selectionText = '> ' + snippet.replace(/\n/g, '\n> ') + '\n\n';
 			}
 		}
 
-		var username = getUserName(button);
-		username += username ? ' ' : '';
+		var username = getUserName(selectionText ? $(selection.baseNode) : button);
 
-		composer.newReply(tid, getPid(button), topicName, selectionText.length > 0 ? selectionText + '\n\n' + username : '' + username);
+		if (selectionText.length) {
+			composer.addQuote(tid, getPid(button), topicName, username, selectionText);
+		} else {
+			composer.newReply(tid, getPid(button), topicName, username ? username + ' ' : '');
+		}
+
 	}
 
 	function onQuoteClicked(button, tid, topicName) {
@@ -143,17 +147,19 @@ define(['composer', 'share'], function(composer, share) {
 			postEl = $(document.querySelector('#post-container li[data-pid="' + pid + '"]')),
 			action = !postEl.hasClass('deleted') ? 'delete' : 'restore';
 
-		bootbox.confirm('Are you sure you want to ' + action + ' this post?', function(confirm) {
-			if (confirm) {
-				socket.emit('posts.' + action, {
-					pid: pid,
-					tid: tid
-				}, function(err) {
-					if(err) {
-						return app.alertError('Can\'t ' + action + ' post!');
-					}
-				});
-			}
+		translator.translate('[[topic:post_' + action + '_confirm]]', function(msg) {
+			bootbox.confirm(msg, function(confirm) {
+				if (confirm) {
+					socket.emit('posts.' + action, {
+						pid: pid,
+						tid: tid
+					}, function(err) {
+						if(err) {
+							return translator.translate('[[topic:post_' + action + '_error]]', app.alertError);
+						}
+					});
+				}
+			});
 		});
 	}
 

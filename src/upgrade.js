@@ -536,6 +536,38 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
+			thisSchemaDate = Date.UTC(2014, 4, 1);
+
+			if (schemaDate < thisSchemaDate) {
+				db.getObjectField('widgets:home.tpl', 'sidebar', function(err, widgetData) {
+					if (err) {
+						winston.error('[2014/4/1] Error moving home sidebar widgets into draft zone');
+						return next(err);
+					}
+
+					db.setObjectField('widgets:global', 'drafts', widgetData, function(err) {
+						if (err) {
+							winston.error('[2014/4/1] Error moving home sidebar widgets into draft zone');
+							return next(err);
+						}
+
+						db.deleteObjectField('widgets:home.tpl', 'sidebar', function(err) {
+							if (err) {
+								winston.error('[2014/4/1] Error moving home sidebar widgets into draft zone');
+								next(err);
+							} else {
+								winston.info('[2014/4/1] Moved home sidebar widgets into draft zone');
+								Upgrade.update(thisSchemaDate, next);
+							}
+						});
+					});
+				});
+			} else {
+				winston.info('[2014/4/1] Moved home sidebar widgets into draft zone - skipped');
+				next();
+			}
+		},
+		function(next) {
 			thisSchemaDate = Date.UTC(2014, 4, 2);
 
 			if (schemaDate < thisSchemaDate) {
@@ -563,10 +595,10 @@ Upgrade.upgrade = function(callback) {
 					});
 				});
 			} else {
-				winston.info('[2014/4/1] Moved deprecated vanilla footer widgets into draft zone - skipped');
+				winston.info('[2014/4/2] Moved deprecated vanilla footer widgets into draft zone - skipped');
 				next();
 			}
-		},
+		}
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 22!!!
 	], function(err) {

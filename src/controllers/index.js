@@ -45,9 +45,16 @@ Controllers.home = function(req, res, next) {
 				property: 'og:title',
 				content: 'Index | ' + (meta.config.title || 'NodeBB')
 			}, {
-				property: "og:type",
+				property: 'og:type',
 				content: 'website'
 			}];
+
+			if(meta.config['brand:logo']) {
+				res.locals.metaTags.push({
+					property: 'og:image',
+					content: meta.config['brand:logo']
+				});
+			}
 
 			next(null);
 		},
@@ -164,21 +171,11 @@ Controllers.login = function(req, res, next) {
 		num_strategies = login_strategies.length,
 		emailersPresent = plugins.hasListeners('action:email.send');
 
-	if (num_strategies === 0) {
-		data = {
-			'login_window:spansize': 'col-md-12',
-			'alternate_logins': false
-		};
-	} else {
-		data = {
-			'login_window:spansize': 'col-md-6',
-			'alternate_logins': true
-		};
-	}
-
+	data.alternate_logins = num_strategies > 0;
 	data.authentication = login_strategies;
 	data.token = res.locals.csrf_token;
 	data.showResetLink = emailersPresent;
+	data.allowLocalLogin = meta.config.allowLocalLogin === undefined || parseInt(meta.config.allowLocalLogin, 10) === 1;
 
 	res.render('login', data);
 };

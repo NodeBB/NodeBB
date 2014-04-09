@@ -5,7 +5,6 @@
 	"email": "Email",
 	"fullname": "Full Name",
 	"website": "Website",
-	"user:website_placeholder": "http://...",
 	"location": "Location",
 	"age": "Age",
 	"joined": "Joined",
@@ -20,7 +19,6 @@
 	"signature": "Signature",
 	"gravatar": "Gravatar",
 	"birthday": "Birthday",
-	"birthday_placeholder": "mm/dd/yyyy",
 	"chat": "Chat",
 	"follow": "Follow",
 	"unfollow": "Unfollow",
@@ -51,6 +49,7 @@
 	"has_no_follower": "This user doesn't have any followers :(",
 	"follows_no_one": "This user isn't following anyone :(",
 	"has_no_posts": "This user didn't post anything yet.",
+	"has_no_topics": "This user didn't post any topics yet.",
 
 	"email_hidden": "Email Hidden",
 	"hidden": "hidden",

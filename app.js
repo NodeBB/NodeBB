@@ -39,7 +39,7 @@ winston.add(winston.transports.Console, {
 });
 
 winston.add(winston.transports.File, {
-	filename: 'error.log',
+	filename: 'logs/error.log',
 	level: 'error'
 });
 
@@ -88,7 +88,10 @@ function loadConfig() {
 	});
 
 	nconf.defaults({
-		themes_path: path.join(__dirname, 'node_modules')
+		base_dir: __dirname,
+		themes_path: path.join(__dirname, 'node_modules'),
+		upload_url: path.join(path.sep, 'uploads', path.sep),
+		views_dir: path.join(__dirname, 'public/templates')
 	});
 
 	// Ensure themes_path is a full filepath
@@ -97,11 +100,6 @@ function loadConfig() {
 
 function start() {
 	loadConfig();
-
-	nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
-	nconf.set('upload_url', path.join(path.sep, 'uploads', path.sep));
-	nconf.set('base_dir', __dirname);
-	nconf.set('views_dir', path.join(__dirname, 'public/templates'));
 
 	winston.info('Time: ' + new Date());
 	winston.info('Initializing NodeBB v' + pkg.version);
@@ -133,6 +131,7 @@ function start() {
 					plugins.init();
 					translator.loadServer();
 
+					nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
 					nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));
 					nconf.set('theme_templates_path', meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : nconf.get('base_templates_path'));
 
@@ -201,38 +200,83 @@ function upgrade() {
 function reset() {
 	loadConfig();
 
-	var meta = require('./src/meta'),
-		db = require('./src/database'),
-		async = require('async');
+	require('./src/database').init(function(err) {
+		if (err) {
+			winston.error(err.message);
+			process.exit();
+		}
 
-	db.init(function(err) {
-		meta.configs.init(function () {
-			async.parallel([
-				function(next) {
-					db.delete('plugins:active', next);
-				},
-				function(next) {
-					meta.configs.set('theme:type', 'local', next);
-				},
-				function(next) {
-					meta.configs.set('theme:id', 'nodebb-theme-vanilla', next);
-				},
-				function(next) {
-					meta.configs.set('theme:staticDir', '', next);
-				},
-				function(next) {
-					meta.configs.set('theme:templates', '', next);
-				}
-			], function(err) {
-				if (err) {
-					winston.error(err);
+		if (nconf.get('themes')) {
+			resetThemes();
+		} else if (nconf.get('plugins')) {
+			resetPlugins();
+		} else if (nconf.get('widgets')) {
+			resetWidgets();
+		} else if (nconf.get('settings')) {
+			resetSettings();
+		} else if (nconf.get('all')) {
+			require('async').series([resetWidgets, resetThemes, resetPlugins, resetSettings], function(err) {
+				if (!err) {
+					winston.info('[reset] Reset complete.');
 				} else {
-					winston.info("Successfully reset theme to Vanilla and disabled all plugins.");
+					winston.error('[reset] Errors were encountered while resetting your forum settings: ' + err.message);
 				}
-
 				process.exit();
 			});
-		});
+		} else {
+			console.log('no match');
+		}
+	});
+}
+
+function resetSettings(callback) {
+	var meta = require('./src/meta');
+	meta.configs.set('allowLocalLogin', 1, function(err) {
+		winston.info('[reset] Settings reset to default');
+		if (typeof callback === 'function') {
+			callback(err);
+		} else {
+			process.exit();
+		}
+	});
+}
+
+function resetThemes(callback) {
+	var meta = require('./src/meta');
+
+	meta.themes.set({
+		type: 'local',
+		id: 'nodebb-theme-vanilla'
+	}, function(err) {
+		winston.info('[reset] Theme reset to Vanilla');
+		if (typeof callback === 'function') {
+			callback(err);
+		} else {
+			process.exit();
+		}
+	});
+}
+
+function resetPlugins(callback) {
+	var db = require('./src/database');
+	db.delete('plugins:active', function(err) {
+		winston.info('[reset] All Plugins De-activated');
+		if (typeof callback === 'function') {
+			callback(err);
+		} else {
+			process.exit();
+		}
+	});
+}
+
+function resetWidgets(callback) {
+	require('./src/widgets').reset(function(err) {
+		winston.info('[reset] All Widgets moved to Draft Zone');
+		if (typeof callback === 'function') {
+			callback(err);
+		} else {
+			process.exit();
+		}
 	});
 }
 

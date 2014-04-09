@@ -86,6 +86,9 @@ function accountRoutes(app, middleware, controllers) {
 	app.get('/user/:userslug/posts', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.accounts.getPosts);
 	app.get('/api/user/:userslug/posts', middleware.checkGlobalPrivacySettings, controllers.accounts.getPosts);
 
+	app.get('/user/:userslug/topics', middleware.buildHeader, middleware.checkGlobalPrivacySettings, controllers.accounts.getTopics);
+	app.get('/api/user/:userslug/topics', middleware.checkGlobalPrivacySettings, controllers.accounts.getTopics);
+
 	app.get('/user/:userslug/edit', middleware.buildHeader, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.accountEdit);
 	app.get('/api/user/:userslug/edit', middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, controllers.accounts.accountEdit);
 

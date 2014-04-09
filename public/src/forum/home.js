@@ -16,6 +16,10 @@ define(function() {
 		app.enterRoom('home');
 
 		socket.on('event:new_post', home.onNewPost);
+
+		$('.home .category-header').tooltip({
+			placement: 'bottom'
+		});
 	};
 
 	home.onNewPost = function(data) {
@@ -63,7 +67,7 @@ define(function() {
 
 	function parseAndTranslate(posts, callback) {
 		ajaxify.loadTemplate('home', function(homeTemplate) {
-			var html = templates.parse(templates.getBlock(homeTemplate, 'categories.posts'), {categories: {posts: posts}});
+			var html = templates.parse(templates.getBlock(homeTemplate, 'posts'), {categories: {posts: posts}});
 
 			translator.translate(html, function(translatedHTML) {
 				translatedHTML = $(translatedHTML);

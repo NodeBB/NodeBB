@@ -42,8 +42,8 @@
     "views": "Visningar",
     "posted": "svarade",
     "in": "i",
-    "norecentposts": "No Recent Posts",
-    "norecenttopics": "No Recent Topics",
+    "norecentposts": "Inga nya inlägg",
+    "norecenttopics": "Inga nya ämnen",
     "recentposts": "Senaste ämnena",
     "recentips": "Nyligen inloggade IPn",
     "online": "Online",
@@ -51,5 +51,5 @@
     "dnd": "Stör ej",
     "invisible": "Osynlig",
     "offline": "Offline",
-    "privacy": "Privacy"
+    "privacy": "Integritet"
 }

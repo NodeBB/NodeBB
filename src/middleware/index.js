@@ -45,33 +45,18 @@ function routeCurrentTheme(app, themeData) {
 	var themeId = (themeData['theme:id'] || 'nodebb-theme-vanilla');
 
 	// Detect if a theme has been selected, and handle appropriately
-	if (!themeData['theme:type'] || themeData['theme:type'] === 'local') {
-		// Local theme
-		if (process.env.NODE_ENV === 'development') {
-			winston.info('[themes] Using theme ' + themeId);
-		}
+	if (process.env.NODE_ENV === 'development') {
+		winston.info('[themes] Using theme ' + themeId);
+	}
 
-		// Theme's static directory
-		if (themeData['theme:staticDir']) {
-			app.use(nconf.get('relative_path') + '/css/assets', express.static(path.join(nconf.get('themes_path'), themeData['theme:id'], themeData['theme:staticDir']), {
-				maxAge: app.enabled('cache') ? 5184000000 : 0
-			}));
-			if (process.env.NODE_ENV === 'development') {
-				winston.info('Static directory routed for theme: ' + themeData['theme:id']);
-			}
-		}
-	} else {
-		// If not using a local theme (bootswatch, etc), drop back to vanilla
-		if (process.env.NODE_ENV === 'development') {
-			winston.info('[themes] Using theme ' + themeId);
-		}
-
-		app.use(require('less-middleware')({
-			src: path.join(nconf.get('themes_path'), '/nodebb-theme-vanilla'),
-			dest: path.join(__dirname, '../../public/css'),
-			prefix: nconf.get('relative_path') + '/css',
-			yuicompress: app.enabled('minification') ? true : false
+	// Theme's static directory
+	if (themeData['theme:staticDir']) {
+		app.use(nconf.get('relative_path') + '/css/assets', express.static(path.join(nconf.get('themes_path'), themeData['theme:id'], themeData['theme:staticDir']), {
+			maxAge: app.enabled('cache') ? 5184000000 : 0
 		}));
+		if (process.env.NODE_ENV === 'development') {
+			winston.info('Static directory routed for theme: ' + themeData['theme:id']);
+		}
 	}
 }
 
@@ -189,12 +174,6 @@ module.exports = function(app, data) {
 
 		app.use(express.favicon(path.join(__dirname, '../../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico')));
 		app.use(nconf.get('relative_path') + '/apple-touch-icon', middleware.routeTouchIcon);
-
-		app.use(require('less-middleware')({
-			src: path.join(__dirname, '../../', 'public'),
-			prefix: nconf.get('relative_path'),
-			yuicompress: app.enabled('minification') ? true : false
-		}));
 
 		app.use(express.bodyParser());
 		app.use(express.cookieParser());

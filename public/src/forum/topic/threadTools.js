@@ -15,11 +15,14 @@ define(['forum/topic/fork', 'forum/topic/move'], function(fork, move) {
 			$('.delete_thread').on('click', function(e) {
 				var command = threadState.deleted !== '1' ? 'delete' : 'restore';
 
-				bootbox.confirm('Are you sure you want to ' + command + ' this thread?', function(confirm) {
-					if (confirm) {
-						socket.emit('topics.' + command, tid);
-					}
+				translator.translate('[[topic:thread_tools.' + command + '_confirm]]', function(msg) {
+					bootbox.confirm(msg, function(confirm) {
+						if (confirm) {
+							socket.emit('topics.' + command, tid);
+						}
+					});
 				});
+
 				return false;
 			});
 

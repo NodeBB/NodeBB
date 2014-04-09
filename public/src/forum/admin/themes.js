@@ -11,7 +11,7 @@ define(['forum/admin/settings'], function(Settings) {
 
 	Themes.init = function() {
 		var scriptEl = $('<script />');
-		scriptEl.attr('src', '//api.bootswatch.com/3/?callback=bootswatchListener');
+		scriptEl.attr('src', '//bootswatch.aws.af.cm/3/?callback=bootswatchListener');
 		$('body').append(scriptEl);
 
 		var bootstrapThemeContainer = $('#bootstrap_themes'),
@@ -26,7 +26,7 @@ define(['forum/admin/settings'], function(Settings) {
 					themeType = parentEl.attr('data-type'),
 					cssSrc = parentEl.attr('data-css'),
 					themeId = parentEl.attr('data-theme');
-			
+
 				socket.emit('admin.themes.set', {
 					type: themeType,
 					id: themeId,
@@ -200,15 +200,17 @@ define(['forum/admin/settings'], function(Settings) {
 			$(this).parents('.panel').children('.panel-body').toggleClass('hidden');
 		});
 
-		$('#widgets .btn[data-template]').on('click', saveWidgets);
+		$('#widgets .save').on('click', saveWidgets);
 
 		function saveWidgets() {
-			$('#widgets .btn[data-template]').each(function(i, el) {
+			var total = $('#widgets [data-template]').length;
+
+			$('#widgets [data-template]').each(function(i, el) {
 				el = $(el);
 
 				var template = el.attr('data-template'),
 					location = el.attr('data-location'),
-					area = el.parents('.area').children('.widget-area'),
+					area = el.children('.widget-area'),
 					widgets = [];
 
 				area.find('.panel[data-widget]').each(function() {
@@ -228,24 +230,38 @@ define(['forum/admin/settings'], function(Settings) {
 						data: widgetData
 					});
 				});
-				
+
 				socket.emit('admin.widgets.set', {
 					template: template,
 					location: location,
 					widgets: widgets
 				}, function(err) {
-					app.alert({
-						alert_id: 'admin:widgets',
-						type: err ? 'danger' : 'success',
-						title: err ? 'Error' : 'Widgets Updated',
-						message: err ? err.message : 'Successfully updated widgets in ' + template + '/' + location,
-						timeout: 2500
-					});
+					total--;
+
+					if (err) {
+						app.alertError(err.message);
+					}
+
+					if (total === 0) {
+						app.alert({
+							alert_id: 'admin:widgets',
+							type: 'success',
+							title: 'Widgets Updated',
+							message: 'Successfully updated widgets',
+							timeout: 2500
+						});
+					}
+					
 				});
 			});
 		}
 
 		function populateWidget(widget, data) {
+			if (data.title) {
+				var title = widget.find('.panel-heading strong');
+				title.text(title.text() + ' - ' + data.title);
+			}
+
 			widget.find('input, textarea').each(function() {
 				var input = $(this),
 					value = data[input.attr('name')];
@@ -266,7 +282,7 @@ define(['forum/admin/settings'], function(Settings) {
 			for (var a in areas) {
 				if (areas.hasOwnProperty(a)) {
 					var area = areas[a],
-						widgetArea = $('#widgets .area [data-template="' + area.template + '"][data-location="' + area.location + '"]').parents('.area').find('.widget-area');
+						widgetArea = $('#widgets .area[data-template="' + area.template + '"][data-location="' + area.location + '"]').find('.widget-area');
 
 					for (var i in area.data) {
 						if (area.data.hasOwnProperty(i)) {
@@ -277,8 +293,6 @@ define(['forum/admin/settings'], function(Settings) {
 							appendToggle(widgetEl);
 						}
 					}
-
-
 				}
 			}
 		});

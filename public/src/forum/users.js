@@ -60,7 +60,7 @@ define(function() {
 						}
 
 						ajaxify.loadTemplate('users', function(usersTemplate) {
-							var html = templates.parse(templates.getBlock(usersTemplate, 'topics'), data);
+							var html = templates.parse(templates.getBlock(usersTemplate, 'users'), data);
 
 							translator.translate(html, function(translated) {
 								$('#users-container').html(translated);

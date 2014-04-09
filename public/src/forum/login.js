@@ -2,7 +2,9 @@ define(function() {
 	var	Login = {};
 
 	Login.init = function() {
-		$('#login').on('click', function() {
+		$('#login').on('click', function(e) {
+			e.preventDefault();
+
 			var loginData = {
 				'username': $('#username').val(),
 				'password': $('#password').val(),
@@ -43,13 +45,11 @@ define(function() {
 				dataType: 'json',
 				async: true
 			});
-
-			return false;
 		});
 
-		$('#login-error-notify button').on('click', function() {
+		$('#login-error-notify button').on('click', function(e) {
+			e.preventDefault();
 			$('#login-error-notify').hide();
-			return false;
 		});
 
 		$('#content #username').focus();

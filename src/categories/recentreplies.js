@@ -14,12 +14,8 @@ module.exports = function(Categories) {
 		}
 
 		db.getSortedSetRevRange('categories:recent_posts:cid:' + cid, 0, count - 1, function(err, pids) {
-			if (err) {
+			if (err || !pids || !pids.length) {
 				return callback(err, []);
-			}
-
-			if (!pids || !pids.length) {
-				return callback(null, []);
 			}
 
 			posts.getPostSummaryByPids(pids, true, callback);

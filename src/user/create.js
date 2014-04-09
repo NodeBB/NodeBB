@@ -19,9 +19,16 @@ module.exports = function(User) {
 			userData.email = validator.escape(userData.email);
 		}
 
+		var password = userData.password;
+		userData.password = null;
+
 		async.parallel([
 			function(next) {
-				next(!utils.isEmailValid(userData.email) ? new Error('Invalid Email!') : null);
+				if (userData.email) {
+					next(!utils.isEmailValid(userData.email) ? new Error('Invalid Email!') : null);
+				} else {
+					next();
+				}
 			},
 			function(next) {
 				next((!utils.isUserNameValid(userData.username) || !userData.userslug) ? new Error('Invalid Username!') : null);
@@ -71,7 +78,6 @@ module.exports = function(User) {
 
 				var gravatar = User.createGravatarURLFromEmail(userData.email);
 				var timestamp = Date.now();
-				var password = userData.password;
 
 				userData = {
 					'uid': uid,

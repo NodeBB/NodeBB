@@ -9,7 +9,7 @@ var fs = require('fs'),
 
 
 (function(events) {
-	var logFileName = 'events.log';
+	var logFileName = 'logs/events.log';
 
 	events.logPasswordChange = function(uid) {
 		logWithUser(uid, 'changed password');
@@ -105,12 +105,11 @@ var fs = require('fs'),
 	events.getLog = function(callback) {
 		var logFile = path.join(nconf.get('base_dir'), logFileName);
 
-		fs.exists(logFile, function(exists) {
-			if (exists) {
-				fs.readFile(logFile, callback);
-			} else {
-				callback(null, 'No logs found');
+		fs.readFile(logFile, function(err, res) {
+			if(err) {
+				return callback(null, 'No logs found!');
 			}
+			callback(null, res);
 		});
 	};
 

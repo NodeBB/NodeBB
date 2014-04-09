@@ -9,6 +9,7 @@
     "user.following": "%1 читает",
     "user.followers": "Читают %1",
     "user.posts": "Posts made by %1",
+    "user.topics": "Topics created by %1",
     "user.favourites": "Избранные сообщения %1",
     "user.settings": "Настройки"
 }

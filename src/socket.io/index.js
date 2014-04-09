@@ -173,6 +173,10 @@ Sockets.init = function(server) {
 
 Sockets.logoutUser = function(uid) {
 	Sockets.getUserSockets(uid).forEach(function(socket) {
+		if (socket.handshake && socket.handshake.signedCookies && socket.handshake.signedCookies['express.sid']) {
+			db.sessionStore.destroy(socket.handshake.signedCookies['express.sid']);
+		}
+
 		socket.emit('event:disconnect');
 		socket.disconnect();
 	});
@@ -286,7 +290,7 @@ function emitTopicPostStats(callback) {
 		};
 
 		if (!callback) {
-			io.sockets.emit('post.stats', null, stats);
+			io.sockets.emit('meta.getUsageStats', null, stats);
 		} else {
 			callback(null, stats);
 		}

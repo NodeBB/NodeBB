@@ -17,6 +17,7 @@
 
 		obj = registerGlobals(obj || {});
 		bind = bind ? Math.random() : false;
+		template = template.toString() || '';
 
 		if (bind) {
 			obj.__template = template;
@@ -75,7 +76,7 @@
 	}
 
 	function makeRegex(block) {
-		return new RegExp("<!--[\\s]*BEGIN " + block + "[\\s]*-->[\\s\\S]*?<!--[\\s]*END " + block + "[\\s]*-->", 'g');
+		return new RegExp("<!--[\\s]*BEGIN " + block + "[\\s]*-->[\\s\\S]*<!--[\\s]*END " + block + "[\\s]*-->", 'g');
 	}
 
 	function makeConditionalRegex(block) {
@@ -97,28 +98,33 @@
 	}
 
 	function checkConditional(template, key, value) {
-		var conditional = makeConditionalRegex(key),
-			matches = template.match(conditional);
+		var matches = template.match(makeConditionalRegex(key));
 
 		if (matches !== null) {
 			for (var i = 0, ii = matches.length; i < ii; i++) {
-				var conditionalBlock = matches[i].split(/\s*<!-- ELSE -->\s*/),
-					statement = makeStatementRegex(key);
+				var statement = makeStatementRegex(key),
+					nestedConditionals = matches[i].match(/[\s|\S]<!-- IF[\s\S]*ENDIF[\s\S]*-->[\s|\S]/),
+					match = matches[i].replace(statement, '').replace(/[\s|\S]<!-- IF[\s\S]*ENDIF[\s\S]*-->[\s|\S]/, '<!-- NESTED -->'),
+					conditionalBlock = match.split(/\s*<!-- ELSE -->\s*/);
 
 				if (conditionalBlock[1]) {
 					// there is an else statement
 					if (!value) {
-						template = template.replace(matches[i], conditionalBlock[1].replace(statement, '').replace(/(^[\r\n\t]*)|([\r\n\t]*$)/gi, ''));
+						template = template.replace(matches[i], conditionalBlock[1].replace(/(^[\r\n\t]*)|([\r\n\t]*$)/gi, ''));
 					} else {
-						template = template.replace(matches[i], conditionalBlock[0].replace(statement, '').replace(/(^[\r\n\t]*)|([\r\n\t]*$)/gi, ''));
+						template = template.replace(matches[i], conditionalBlock[0].replace(/(^[\r\n\t]*)|([\r\n\t]*$)/gi, ''));
 					}
 				} else {
 					// regular if statement
 					if (!value) {
 						template = template.replace(matches[i], '');
 					} else {
-						template = template.replace(matches[i], matches[i].replace(statement, '').replace(/(^[\r\n\t]*)|([\r\n\t]*$)/gi, ''));
+						template = template.replace(matches[i], match.replace(/(^[\r\n\t]*)|([\r\n\t]*$)/gi, ''));
 					}
+				}
+
+				if (nestedConditionals) {
+					template = template.replace('<!-- NESTED -->', nestedConditionals[0]);
 				}
 			}
 		}
@@ -184,6 +190,11 @@
 				numblocks: numblocks
 			});
 
+			result = checkConditional(result, '@first', iterator === 0);
+			result = checkConditional(result, '!@first', iterator !== 0);
+			result = checkConditional(result, '@last', iterator === numblocks);
+			result = checkConditional(result, '!@last', iterator !== numblocks);
+
 			if (bind) {
 				array[key][iterator].__template = block;
 			}
@@ -196,18 +207,11 @@
 		return namespace ? '<span data-binding="' + namespace + '">' + block + '</span>' : block;
 	}
 
-	function parseValue(template, key, value, blockInfo) {
+	function parseValue(template, key, value) {
 		value = typeof value === 'string' ? value.replace(/^\s+|\s+$/g, '') : value;
 
 		template = checkConditional(template, key, value);
 		template = checkConditional(template, '!' + key, !value);
-
-		if (blockInfo) {
-			template = checkConditional(template, '@first', blockInfo.iterator === 0);
-			template = checkConditional(template, '!@first', blockInfo.iterator !== 0);
-			template = checkConditional(template, '@last', blockInfo.iterator === blockInfo.total);
-			template = checkConditional(template, '!@last', blockInfo.iterator !== blockInfo.total);
-		}
 
 		return replace(template, key, value);
 	}
@@ -274,7 +278,7 @@
 					defineParent(obj[key], originalObj);
 					template = parse(template, obj[key], bind, namespace + key + '.');
 				} else {
-					template = parseValue(template, namespace + key, obj[key], blockInfo);
+					template = parseValue(template, namespace + key, obj[key]);
 					
 					if (bind && obj[key]) {
 						setupBindings({

@@ -1,0 +1,18 @@
+{
+    "register": "Registreeri",
+    "help.email": "Algsättena peidetakse sinu e-mail avalikuse eest.",
+    "help.username_restrictions": "Unikaalne kasutajanimi, mis on  %1 - %2 tähemärki pikk. Teised saavad sind postitustes mainida kasutades @<span id='yourUsername'>kasutajanime</span>.",
+    "help.minimum_password_length": "Sinu parooli pikkus peab olema vähemalt %1 tähemärki pikk.",
+    "email_address": "Emaili aadress",
+    "email_address_placeholder": "Sisesta emaili aadress",
+    "username": "Kasutajanimi",
+    "username_placeholder": "Sisesta kasutajanimi",
+    "password": "Parool",
+    "password_placeholder": "Sisesta parool",
+    "confirm_password": "Kinnita parool",
+    "confirm_password_placeholder": "Kinnita parool",
+    "register_now_button": "Registreeri",
+    "alternative_registration": "Alternatiivne registreerimismeetod",
+    "terms_of_use": "Foorumi reeglid",
+    "agree_to_terms_of_use": "Nõustun foorumi reeglitega"
+}

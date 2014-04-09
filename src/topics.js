@@ -230,10 +230,6 @@ var async = require('async'),
 				categoryCache[topicData.cid] = topicInfo.categoryData;
 				userCache[topicData.uid] = topicInfo.user;
 
-				if (!topicInfo.teaser) {
-					return next(null, null);
-				}
-
 				if (!isTopicVisible(topicData, topicInfo)) {
 					return next(null, null);
 				}
@@ -242,7 +238,7 @@ var async = require('async'),
 				topicData.locked = parseInt(topicData.locked, 10) === 1;
 				topicData.deleted = parseInt(topicData.deleted, 10) === 1;
 				topicData.unread = !(topicInfo.hasread && parseInt(uid, 10) !== 0);
-				topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
+				topicData.unreplied = parseInt(topicData.postcount, 10) <= 1;
 
 				topicData.category = topicInfo.categoryData;
 				topicData.teaser = topicInfo.teaser;

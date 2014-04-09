@@ -3,13 +3,13 @@
 
 (function(ajaxify) {
 	ajaxify.widgets = {};
-	
+
 	ajaxify.widgets.reposition = function(location) {
 		$('body [no-widget-class]').each(function() {
 			var $this = $(this);
 			if ($this.attr('no-widget-target') === location) {
 				$this.removeClass();
-				$this.addClass($this.attr('no-widget-class'));	
+				$this.addClass($this.attr('no-widget-class'));
 			}
 		});
 	};

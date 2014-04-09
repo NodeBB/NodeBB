@@ -141,132 +141,129 @@ var winston = require('winston'),
 	};
 
 	PostTools.delete = function(uid, pid, callback) {
-		var success = function() {
-			posts.setPostField(pid, 'deleted', 1);
-			db.decrObjectField('global', 'postCount');
-
-			plugins.fireHook('action:post.delete', pid);
-
-			events.logPostDelete(uid, pid);
-
-			posts.getPostFields(pid, ['tid', 'uid'], function(err, postData) {
-				topics.decreasePostCount(postData.tid);
-
-				user.decrementUserFieldBy(postData.uid, 'postcount', 1, function(err, postcount) {
-					db.sortedSetAdd('users:postcount', postcount, postData.uid);
-				});
-
-				topics.getTopicField(postData.tid, 'cid', function(err, cid) {
-					if(!err) {
-						db.sortedSetRemove('categories:recent_posts:cid:' + cid, pid);
-					}
-				});
-
-				// Delete the thread if it is the last undeleted post
-				threadTools.getLatestUndeletedPid(postData.tid, function(err, pid) {
-					if(err) {
-						return winston.error(err.message);
-					}
-
-					if (!pid) {
-						threadTools.delete(postData.tid, uid, function(err) {
-							if (err) {
-								winston.error('Could not delete topic (tid: ' + postData.tid + ')', err.stack);
-							}
-						});
-					} else {
-						posts.getPostField(pid, 'timestamp', function(err, timestamp) {
-							topics.updateTimestamp(postData.tid, timestamp);
-						});
-					}
-				});
-
-				callback(null);
-			});
-		};
-
-		posts.getPostField(pid, 'deleted', function(err, deleted) {
-			if(parseInt(deleted, 10) === 1) {
-				return callback(new Error('Post already deleted!'));
-			}
-
-			PostTools.privileges(pid, uid, function(err, privileges) {
-				if (privileges.editable) {
-					success();
-				}
-			});
-		});
+		togglePostDelete(uid, pid, true, callback);
 	};
 
 	PostTools.restore = function(uid, pid, callback) {
-		var success = function() {
-			posts.setPostField(pid, 'deleted', 0);
-			db.incrObjectField('global', 'postCount');
+		togglePostDelete(uid, pid, false, callback);
+	};
 
-			events.logPostRestore(uid, pid);
-
-			posts.getPostFields(pid, ['tid', 'uid', 'content'], function(err, postData) {
-				topics.increasePostCount(postData.tid);
-
-				user.incrementUserFieldBy(postData.uid, 'postcount', 1);
-
-				threadTools.getLatestUndeletedPid(postData.tid, function(err, pid) {
-					posts.getPostField(pid, 'timestamp', function(err, timestamp) {
-						topics.updateTimestamp(postData.tid, timestamp);
-
-						topics.getTopicField(postData.tid, 'cid', function(err, cid) {
-							if(!err) {
-								db.sortedSetAdd('categories:recent_posts:cid:' + cid, timestamp, pid);
-							}
-						});
-					});
-				});
-
-
-				plugins.fireHook('action:post.restore', postData);
-
-				// Restore topic if it is the only post
-				topics.getTopicField(postData.tid, 'postcount', function(err, count) {
-					if (parseInt(count, 10) === 1) {
-						threadTools.restore(postData.tid, uid, function(err) {
-							if(err) {
-								winston.err(err);
-							}
-						});
-					}
-				});
-
-				callback();
-			});
-		};
-
-		posts.getPostField(pid, 'deleted', function(err, deleted) {
-			if(parseInt(deleted, 10) === 0) {
-				return callback(new Error('Post already restored'));
+	function togglePostDelete(uid, pid, isDelete, callback) {
+		async.waterfall([
+			function(next) {
+				posts.getPostField(pid, 'deleted', next);
+			},
+			function(deleted, next) {
+				if(parseInt(deleted, 10) === 1 && isDelete) {
+					return next(new Error('Post already deleted'));
+				} else if(parseInt(deleted, 10) !== 1 && !isDelete) {
+					return next(new Error('Post already restored'));
+				}
+				PostTools.privileges(pid, uid, next);
+			},
+			function(privileges, next) {
+				if (!privileges || !privileges.editable) {
+					return next(new Error('no privileges'));
+				}
+				next();
+			}
+		], function(err) {
+			if(err) {
+				return callback(err);
 			}
 
-			PostTools.privileges(pid, uid, function(err, privileges) {
-				if (privileges.editable) {
-					success();
+			posts.setPostField(pid, 'deleted', isDelete ? 1 : 0, function(err) {
+				if (err) {
+					return callback(err);
+				}
+
+				events[isDelete ? 'logPostDelete' : 'logPostRestore'](uid, pid);
+
+				db.incrObjectFieldBy('global', 'postCount', isDelete ? -1 : 1);
+
+				posts.getPostFields(pid, ['tid', 'uid', 'content'], function(err, postData) {
+					if (err) {
+						return callback(err);
+					}
+
+					if (isDelete) {
+						plugins.fireHook('action:post.delete', pid);
+					} else {
+						plugins.fireHook('action:post.restore', postData);
+					}
+
+					async.parallel([
+						function(next) {
+							topics[isDelete ? 'decreasePostCount' : 'increasePostCount'](postData.tid, next);
+						},
+						function(next) {
+							user.incrementUserPostCountBy(postData.uid, isDelete ? -1 : 1, next);
+						},
+						function(next) {
+							updateTopicTimestamp(postData.tid, next);
+						},
+						function(next) {
+							addOrRemoveFromCategoryRecentPosts(pid, postData.tid, isDelete, next);
+						}
+					], callback);
+				});
+			});
+		});
+	}
+
+	function updateTopicTimestamp(tid, callback) {
+		threadTools.getLatestUndeletedPid(tid, function(err, pid) {
+			if(err || !pid) {
+				return callback(err);
+			}
+
+			posts.getPostField(pid, 'timestamp', function(err, timestamp) {
+				if (err) {
+					return callback(err);
+				}
+
+				if (timestamp) {
+					topics.updateTimestamp(tid, timestamp);
+				}
+				callback();
+			});
+		});
+	}
+
+	function addOrRemoveFromCategoryRecentPosts(pid, tid, isDelete, callback) {
+		topics.getTopicField(tid, 'cid', function(err, cid) {
+			if (err) {
+				return callback(err);
+			}
+
+			posts.getPostField(pid, 'timestamp', function(err, timestamp) {
+				if (err) {
+					return callback(err);
+				}
+
+				if (isDelete) {
+					db.sortedSetRemove('categories:recent_posts:cid:' + cid, pid, callback);
+				} else {
+					db.sortedSetAdd('categories:recent_posts:cid:' + cid, timestamp, pid, callback);
 				}
 			});
 		});
-	};
+	}
 
 	PostTools.parse = function(raw, callback) {
-		raw = raw || '';
-
-		plugins.fireHook('filter:post.parse', raw, function(err, parsed) {
-			callback(null, !err ? parsed : raw);
-		});
+		parse('filter:post.parse', raw, callback);
 	};
 
 	PostTools.parseSignature = function(raw, callback) {
+		parse('filter:post.parseSignature', raw, callback);
+	};
+
+	function parse(hook, raw, callback) {
 		raw = raw || '';
 
-		plugins.fireHook('filter:post.parseSignature', raw, function(err, parsedSignature) {
-			callback(null, !err ? parsedSignature : raw);
+		plugins.fireHook(hook, raw, function(err, parsed) {
+			callback(null, !err ? parsed : raw);
 		});
-	};
+	}
 
 }(exports));

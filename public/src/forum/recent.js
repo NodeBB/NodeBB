@@ -107,7 +107,7 @@ define(function() {
 			}
 
 			if (data.topics && data.topics.length) {
-				Recent.onTopicsLoaded('recent', data.topics);
+				Recent.onTopicsLoaded('recent', data.topics, false);
 				$('#topics-container').attr('data-nextstart', data.nextStart);
 			}
 
@@ -115,9 +115,9 @@ define(function() {
 		});
 	}
 
-	Recent.onTopicsLoaded = function(templateName, topics) {
+	Recent.onTopicsLoaded = function(templateName, topics, showSelect) {
 		ajaxify.loadTemplate(templateName, function(template) {
-			var html = templates.parse(templates.getBlock(template, 'topics'), {topics: topics});
+			var html = templates.parse(templates.getBlock(template, 'topics'), {topics: topics, showSelect: showSelect});
 
 			translator.translate(html, function(translatedHTML) {
 				$('#category-no-topics').remove();

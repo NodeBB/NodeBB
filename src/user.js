@@ -130,8 +130,9 @@ var bcrypt = require('bcryptjs'),
 			}
 
 			if (!results.exists) {
-				return callback(new Error('user-deleted'));
+				return callback(new Error('invalid-user'));
 			}
+
 			var lastposttime = results.lastposttime;
 			if (!lastposttime) {
 				lastposttime = 0;
@@ -235,14 +236,24 @@ var bcrypt = require('bcryptjs'),
 	User.onNewPostMade = function(postData) {
 		User.addPostIdToUser(postData.uid, postData.pid, postData.timestamp);
 
-		User.incrementUserFieldBy(postData.uid, 'postcount', 1, function(err, newpostcount) {
-			db.sortedSetAdd('users:postcount', newpostcount, postData.uid);
-		});
+		User.incrementUserPostCountBy(postData.uid, 1);
 
 		User.setUserField(postData.uid, 'lastposttime', postData.timestamp);
 	};
 
 	emitter.on('event:newpost', User.onNewPostMade);
+
+	User.incrementUserPostCountBy = function(uid, value, callback) {
+		User.incrementUserFieldBy(uid, 'postcount', value, function(err, newpostcount) {
+			if (err) {
+				if(typeof callback === 'function') {
+					callback(err);
+				}
+				return;
+			}
+			db.sortedSetAdd('users:postcount', newpostcount, uid, callback);
+		});
+	};
 
 	User.addPostIdToUser = function(uid, pid, timestamp) {
 		db.sortedSetAdd('uid:' + uid + ':posts', timestamp, pid);

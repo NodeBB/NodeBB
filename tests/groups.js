@@ -71,6 +71,35 @@ describe('Groups', function() {
 				done();
 			});
 		});
+
+		it('should auto-generate a slug given the group name', function(done) {
+			Groups.get('Test', {}, function(err, groupObj) {
+				if (err) return done(err);
+
+				assert.strictEqual('test', groupObj.slug);
+				done();
+			});
+		});
+	});
+
+	describe('.search()', function() {
+		it('should return the "Test" group when searched for', function(done) {
+			Groups.search('test', {}, function(err, groups) {
+				assert.equal(1, groups.length);
+				assert.strictEqual('Test', groups[0].name);
+				done();
+			});
+		});
+
+		it('should return the "Hidden" group when "showAllGroups" option is passed in', function(done) {
+			Groups.search('hidden', {
+				showAllGroups: true
+			}, function(err, groups) {
+				assert.equal(1, groups.length);
+				assert.strictEqual('Hidden', groups[0].name);
+				done();
+			});
+		});
 	});
 
 	describe('.isMember()', function() {
@@ -134,6 +163,15 @@ describe('Groups', function() {
 
 				assert.strictEqual(exists, false);
 
+				done();
+			});
+		});
+
+		it('should properly resolve a non-slugified group to slugs', function(done) {
+			Groups.exists('Test();', function(err, exists) {
+				if (err) return done(err);
+
+				assert.strictEqual(exists, true);
 				done();
 			});
 		});

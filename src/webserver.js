@@ -89,17 +89,9 @@ if(nconf.get('ssl')) {
 		winston.info('Using ports 80 and 443 is not recommend; use a proxy instead. See README.md');
 	}
 
+	// Front-end assets
 	plugins.ready(function() {
-		// Prepare js for minification/concatenation
-		meta.js.prepare(function() {
-			if (app.enabled('minification')) {
-				meta.js.minify();
-			} else {
-				meta.js.concatenate();
-			}
-		});
-
-		// Minify CSS
+		meta.js.minify(app.enabled('minification'));
 		meta.css.minify();
 	});
 

@@ -50,7 +50,7 @@ middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
 	} else {
 		next();
 	}
-}
+};
 
 middleware.addSlug = function(req, res, next) {
 	function redirect(method, id, name) {
@@ -158,7 +158,7 @@ middleware.buildHeader = function(req, res, next) {
 			// consider caching this, since no user specific information is loaded here
 			app.render('footer', {}, function(err, template) {
 				translator.translate(template, function(parsedTemplate) {
-					res.locals.footer = template;
+					res.locals.footer = parsedTemplate;
 					next(err);
 				});
 			});
@@ -288,7 +288,6 @@ middleware.processRender = function(req, res, next) {
 	var render = res.render;
 	res.render = function(template, options, fn) {
 		var self = this,
-			options = options || {},
 			req = this.req,
 			app = req.app,
 			defaultFn = function(err, str){
@@ -299,8 +298,11 @@ middleware.processRender = function(req, res, next) {
 				self.send(str);
 			};
 
+		options = options || {};
+
 		if ('function' === typeof options) {
-			fn = options, options = {};
+			fn = options;
+			options = {};
 		}
 
 		if ('function' !== typeof fn) {

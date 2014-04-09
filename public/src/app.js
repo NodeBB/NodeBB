@@ -9,10 +9,7 @@ var socket,
 		'isFocused': true,
 		'currentRoom': null,
 		'widgets': {}
-	},
-
-	MAX_RECONNECTION_ATTEMPTS = 5,
-	RECONNECTION_DELAY = 200;
+	};
 
 (function () {
 	var showWelcomeMessage = false;
@@ -31,11 +28,17 @@ var socket,
 						socket.socket.connect();
 					}, 200);
 				} else {
-					socket = io.connect('', {
-						'max reconnection attempts': MAX_RECONNECTION_ATTEMPTS,
-						'reconnection delay': RECONNECTION_DELAY,
+					var ioParams = {
+						'max reconnection attempts': config.maxReconnectionAttempts,
+						'reconnection delay': config.reconnectionDelay,
 						resource: RELATIVE_PATH.length ? RELATIVE_PATH.slice(1) + '/socket.io' : 'socket.io'
-					});
+					};
+
+					if (utils.isAndroidBrowser()) {
+						ioParams.transports = ['xhr-polling'];
+					}
+
+					socket = io.connect('', ioParams);
 
 					var reconnecting = false,
 						reconnectEl, reconnectTimer;
@@ -112,9 +115,9 @@ var socket,
 					});
 
 					socket.on('reconnecting', function (data, attempt) {
-						if(attempt === MAX_RECONNECTION_ATTEMPTS) {
+						if(attempt === config.maxReconnectionAttempts) {
 							socket.socket.reconnectionAttempts = 0;
-							socket.socket.reconnectionDelay = RECONNECTION_DELAY;
+							socket.socket.reconnectionDelay = config.reconnectionDelay;
 							return;
 						}
 
@@ -352,22 +355,10 @@ var socket,
 		});
 	};
 
-	app.scrollToTop = function () {
-		$('body,html').animate({
-			scrollTop: 0
-		});
-	};
-
-	app.scrollToBottom = function () {
-		$('body,html').animate({
-			scrollTop: $('html').height() - 100
-		});
-	};
-
 	var previousScrollTop = 0;
 
 	app.enableInfiniteLoading = function(callback) {
-		$(window).off('scroll').on('scroll', function() {
+		$(window).on('scroll', function() {
 
 			var top = $(window).height() * 0.1;
 			var bottom = ($(document).height() - $(window).height()) * 0.9;
@@ -585,6 +576,13 @@ var socket,
 			app.processPage();
 
 			ajaxify.widgets.render(tpl_url, url);
+
+			if (window.history && window.history.replaceState) {
+				var hash = window.location.hash ? window.location.hash : '';
+				window.history.replaceState({
+					url: url + hash
+				}, url, RELATIVE_PATH + '/' + url + hash);
+			}
 
 			ajaxify.loadScript(tpl_url, function() {
 				$(window).trigger('action:ajaxify.end', {

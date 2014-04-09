@@ -35,9 +35,7 @@ define(function() {
 			}
 		});
 
-		socket.emit('user.reset.valid', {
-			code: reset_code
-		}, function(err, valid) {
+		socket.emit('user.reset.valid', reset_code, function(err, valid) {
 			if(err) {
 				return app.alertError(err.message);
 			}

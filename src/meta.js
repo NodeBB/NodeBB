@@ -7,6 +7,7 @@ var fs = require('fs'),
 	nconf = require('nconf'),
 	_ = require('underscore'),
 	less = require('less'),
+	fork = require('child_process').fork,
 
 	utils = require('./../public/src/utils'),
 	translator = require('./../public/src/translator'),
@@ -239,6 +240,7 @@ var fs = require('fs'),
 			'vendor/tinycon/tinycon.js',
 			'vendor/xregexp/xregexp.js',
 			'vendor/xregexp/unicode/unicode-base.js',
+			'src/utils.js',
 			'src/app.js',
 			'src/templates.js',
 			'src/ajaxify.js',
@@ -246,8 +248,7 @@ var fs = require('fs'),
 			'src/widgets.js',
 			'src/translator.js',
 			'src/helpers.js',
-			'src/overrides.js',
-			'src/utils.js'
+			'src/overrides.js'
 		],
 		minFile: 'nodebb.min.js',
 		prepare: function (callback) {
@@ -293,33 +294,28 @@ var fs = require('fs'),
 				callback();
 			});
 		},
-		minify: function () {
-			var uglifyjs = require('uglify-js'),
-				minified;
+		minify: function(minify) {
+			// Prepare js for minification/concatenation
+			var	minifier = fork('minifier.js');
 
-			winston.info('[meta/js] Minifying client-side libraries...');
-
-			minified = uglifyjs.minify(this.scripts);
-			this.cache = minified.code;
-
-			winston.info('[meta/js] Done.');
-		},
-		concatenate: function() {
-			winston.info('[meta/js] Concatenating client-side libraries into one file...');
-
-			async.map(this.scripts, function(path, next) {
-				fs.readFile(path, { encoding: 'utf-8' }, next);
-			}, function(err, contents) {
-				if (err) {
-					winston.error('[meta/js] Could not minify javascript! Error: ' + err.message);
+			minifier.on('message', function(payload) {
+				if (payload.action !== 'error') {
+					winston.info('[meta/js] Compilation complete');
+					Meta.js.cache = payload.data;
+					minifier.kill();
+				} else {
+					winston.error('[meta/js] Could not compile client-side scripts!');
+					winston.error('[meta/js]   ' + payload.error.message);
+					minifier.kill();
 					process.exit();
 				}
+			});
 
-				Meta.js.cache = contents.reduce(function(output, src) {
-					return output.length ? output + ';\n' + src : src;
-				}, '');
-
-				winston.info('[meta/js] Done.');
+			this.prepare(function() {
+				minifier.send({
+					action: minify ? 'js.minify' : 'js.concatenate',
+					scripts: Meta.js.scripts
+				});
 			});
 		}
 	};

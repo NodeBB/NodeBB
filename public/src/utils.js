@@ -244,7 +244,7 @@
 
 		tags : ['a', 'abbr', 'acronym', 'address', 'applet', 'area', 'article', 'aside', 'audio', 'b', 'base', 'basefont', 'bdi', 'bdo', 'big', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'command', 'datalist', 'dd', 'del', 'details', 'dfn', 'dialog', 'dir', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'font', 'footer', 'form', 'frame', 'frameset', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hr', 'html', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'keygen', 'label', 'legend', 'li', 'link', 'map', 'mark', 'menu', 'meta', 'meter', 'nav', 'noframes', 'noscript', 'object', 'ol', 'optgroup', 'option', 'output', 'p', 'param', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strike', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'tt', 'u', 'ul', 'var', 'video', 'wbr'],
 
-		getTagsExcept : function(excludeTags) {
+		getTagsExcept: function(excludeTags) {
 			var tagsToReturn = utils.tags.slice();
 			excludeTags.forEach(function(tag) {
 				var index = tagsToReturn.indexOf(tag);
@@ -253,6 +253,16 @@
 				}
 			});
 			return tagsToReturn;
+		},
+
+		escapeRegexChars: function(text) {
+			return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+		},
+
+		isAndroidBrowser: function() {
+			// http://stackoverflow.com/questions/9286355/how-to-detect-only-the-native-android-browser
+			var nua = navigator.userAgent;
+			return ((nua.indexOf('Mozilla/5.0') > -1 && nua.indexOf('Android ') > -1 && nua.indexOf('AppleWebKit') > -1) && !(nua.indexOf('Chrome') > -1));
 		}
 	};
 
