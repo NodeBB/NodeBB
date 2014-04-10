@@ -5,6 +5,7 @@
 
 	"invalid-cid": "Invalid Category ID",
 	"invalid-tid": "Invalid Topic ID",
+	"invalid-pid": "Invalid Post ID",
 
 	"no-category": "Category doesn't exist",
 	"no-topic": "Topic doesn't exist",
