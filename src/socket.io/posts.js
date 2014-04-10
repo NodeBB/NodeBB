@@ -128,8 +128,8 @@ SocketPosts.getRawPost = function(socket, pid, callback) {
 			return callback(err);
 		}
 
-		if(data.deleted === '1') {
-			return callback(new Error('This post no longer exists'));
+		if(parseInt(data.deleted, 10) === 1) {
+			return callback(new Error('[[error:no-post]]'));
 		}
 
 		callback(null, data.content);
@@ -173,7 +173,7 @@ SocketPosts.restore = function(socket, data, callback) {
 
 function deleteOrRestore(command, socket, data, callback) {
 	if(!data) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	postTools[command](socket.uid, data.pid, function(err) {
@@ -247,7 +247,7 @@ SocketPosts.getPidIndex = function(socket, pid, callback) {
 
 SocketPosts.flag = function(socket, pid, callback) {
 	if (!socket.uid) {
-		return callback(new Error('not-logged-in'));
+		return callback(new Error('[[error:not-logged-in]]'));
 	}
 
 	var message = '',
@@ -285,7 +285,7 @@ SocketPosts.flag = function(socket, pid, callback) {
 
 SocketPosts.loadMoreFavourites = function(socket, data, callback) {
 	if(!data || !data.after) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	var start = parseInt(data.after, 10),
@@ -296,7 +296,7 @@ SocketPosts.loadMoreFavourites = function(socket, data, callback) {
 
 SocketPosts.loadMoreUserPosts = function(socket, data, callback) {
 	if(!data || !data.after || !data.uid) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	var start = parseInt(data.after, 10),
@@ -308,7 +308,7 @@ SocketPosts.loadMoreUserPosts = function(socket, data, callback) {
 
 SocketPosts.getRecentPosts = function(socket, data, callback) {
 	if(!data || !data.count) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	posts.getRecentPosts(socket.uid, 0, data.count - 1, data.term, callback);
