@@ -414,6 +414,90 @@ define(['taskbar'], function(taskbar) {
 		thumbForm.submit();
 	}
 
+	function handleFormattingBarClick() {
+		var iconClass = $(this).find('i').attr('class');
+		var textarea = $(this).parents('.composer').find('textarea')[0];
+
+		var textareaValue = $(textarea).val();
+
+		var selectionStart = textarea.selectionStart,
+			selectionEnd = textarea.selectionEnd,
+			selectionLength = selectionEnd - selectionStart,
+			isSelectionAtEnd = selectionStart === selectionEnd;
+
+		function updateSelection(start, end){
+			textarea.setSelectionRange(start, end);
+			textarea.focus();
+		}
+
+		function insertIntoInput(value) {
+			$(textarea).val(textareaValue.slice(0, selectionStart) + value + textareaValue.slice(selectionStart));
+		}
+
+		function wrapSelectedWith(leading, trailing){
+			if(trailing === undefined){
+				trailing = leading;
+			}
+
+			$(textarea).val(textareaValue.slice(0, selectionStart) + leading + textareaValue.slice(selectionStart, selectionEnd) + trailing + textareaValue.slice(selectionEnd));
+		}
+
+		if(iconClass === 'fa fa-bold') {
+			if (isSelectionAtEnd) {
+				insertIntoInput("**bolded text**");
+
+				updateSelection(selectionStart + 2, selectionStart + 13);
+			} else {
+				wrapSelectedWith('**');
+
+				// Highlight selection
+				updateSelection(selectionStart + 2, selectionEnd + 2);
+			}
+		}
+
+		if(iconClass === 'fa fa-italic') {
+			if (isSelectionAtEnd) {
+				insertIntoInput("*italicised text*");
+
+				// Highlight selection
+				updateSelection(selectionStart + 1, selectionStart + 16);
+			} else {
+				wrapSelectedWith('*');
+
+				// Highlight selection
+				updateSelection(selectionStart + 1, selectionEnd + 1);
+			}
+		}
+
+		if (iconClass === 'fa fa-list'){
+			if(isSelectionAtEnd){
+				insertIntoInput("\n* list item");
+
+				// Highlight "list item"
+				updateSelection(selectionStart + 3, selectionStart + 12);
+			} else {
+				wrapSelectedWith('\n* ', '');
+
+				// Maintain selection:
+				updateSelection(selectionStart + 3, selectionEnd + 3);
+			}
+		}
+
+		if (iconClass === 'fa fa-link') {
+			if (isSelectionAtEnd) {
+				insertIntoInput("[link text](link url)");
+
+				// Highlight "link url"
+				updateSelection(selectionStart + 12, selectionEnd + 20);
+			} else {
+				wrapSelectedWith('[', '](link url)');
+
+				// Highlight "link url"
+				updateSelection(selectionStart + selectionLength + 3, selectionEnd + 11);
+			}
+		}
+	}
+
 	composer.newTopic = function(cid) {
 		if(!allowed()) {
 			return;
@@ -624,71 +708,7 @@ define(['taskbar'], function(taskbar) {
 					}
 				});
 
-				postContainer.on('click', '.formatting-bar span', function() {
-					var postContentEl = postContainer.find('textarea'),
-						iconClass = $(this).find('i').attr('class'),
-						selectionStart = postContentEl[0].selectionStart,
-						selectionEnd = postContentEl[0].selectionEnd,
-						selectionLength = selectionEnd - selectionStart,
-						cursorPos;
-
-
-					function insertIntoInput(element, value) {
-						var start = postContentEl[0].selectionStart;
-						element.val(element.val().slice(0, start) + value + element.val().slice(start, element.val().length));
-						postContentEl[0].selectionStart = postContentEl[0].selectionEnd = start + value.length;
-					}
-
-					switch(iconClass) {
-						case 'fa fa-bold':
-							if (selectionStart === selectionEnd) {
-								// Nothing selected
-								cursorPos = postContentEl[0].selectionStart;
-								insertIntoInput(postContentEl, "**bolded text**");
-
-								// Highlight "link url"
-								postContentEl[0].selectionStart = cursorPos + 12;
-								postContentEl[0].selectionEnd = cursorPos + 20;
-							} else {
-								// Text selected
-								postContentEl.val(postContentEl.val().slice(0, selectionStart) + '**' + postContentEl.val().slice(selectionStart, selectionEnd) + '**' + postContentEl.val().slice(selectionEnd));
-								postContentEl[0].selectionStart = selectionStart + 2;
-								postContentEl[0].selectionEnd = selectionEnd + 2;
-							}
-							break;
-						case 'fa fa-italic':
-							if (selectionStart === selectionEnd) {
-								// Nothing selected
-								insertIntoInput(postContentEl, "*italicised text*");
-							} else {
-								// Text selected
-								postContentEl.val(postContentEl.val().slice(0, selectionStart) + '*' + postContentEl.val().slice(selectionStart, selectionEnd) + '*' + postContentEl.val().slice(selectionEnd));
-								postContentEl[0].selectionStart = selectionStart + 1;
-								postContentEl[0].selectionEnd = selectionEnd + 1;
-							}
-							break;
-						case 'fa fa-list':
-							// Nothing selected
-							insertIntoInput(postContentEl, "\n* list item");
-							break;
-						case 'fa fa-link':
-							if (selectionStart === selectionEnd) {
-								// Nothing selected
-								cursorPos = postContentEl[0].selectionStart;
-								insertIntoInput(postContentEl, "[link text](link url)");
-
-								// Highlight "link url"
-								postContentEl[0].selectionStart = cursorPos + 12;
-								postContentEl[0].selectionEnd = cursorPos + 20;
-							} else {
-								// Text selected
-								postContentEl.val(postContentEl.val().slice(0, selectionStart) + '[' + postContentEl.val().slice(selectionStart, selectionEnd) + '](link url)' + postContentEl.val().slice(selectionEnd));
-								postContentEl[0].selectionStart = selectionStart + selectionLength + 3;
-								postContentEl[0].selectionEnd = selectionEnd + 11;
-							}
-							break;
-					}
-				});
+				postContainer.on('click', '.formatting-bar span', handleFormattingBarClick);
 
 				postContainer.on('click', '.formatting-bar span .fa-picture-o, .formatting-bar span .fa-upload', function() {
 					$('#files').click();
