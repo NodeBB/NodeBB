@@ -274,7 +274,7 @@ define(['taskbar'], function(taskbar) {
 	}
 
 	function escapeRegExp(text) {
-		return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+		return text.replace(/[\-\[\]\{\}\(\)\*\+\?\.\,\\\^\$\|\#\s]/g, "\\$&");
 	}
 
 	function uploadContentFiles(params) {
