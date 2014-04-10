@@ -867,11 +867,11 @@ define(['taskbar'], function(taskbar) {
 			titleEl = postContainer.find('.title'),
 			bodyEl = postContainer.find('textarea');
 
-		if ((parseInt(postData.tid) || parseInt(postData.pid)) > 0) {
+		if ((parseInt(postData.tid, 10) || parseInt(postData.pid, 10)) > 0) {
 			bodyEl.focus();
 			bodyEl.selectionStart = bodyEl.val().length;
 			bodyEl.selectionEnd = bodyEl.val().length;
-		} else if (parseInt(postData.cid) > 0) {
+		} else if (parseInt(postData.cid, 10) > 0) {
 			titleEl.focus();
 		}
 	};
