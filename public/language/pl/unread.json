@@ -1,6 +1,9 @@
 {
     "title": "Nieprzeczytane",
     "no_unread_topics": "Nie masz żadnych nieprzeczytanych wątków.",
-    "mark_all_read": "Oznacz wszystkie jako przeczytane",
-    "load_more": "Więcej"
+    "load_more": "Więcej",
+    "mark_as_read": "Mark as Read",
+    "selected": "Selected",
+    "all": "All",
+    "topics_marked_as_read.success": "Topics marked as read!"
 }
