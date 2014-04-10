@@ -188,18 +188,17 @@ define(['taskbar'], function(taskbar) {
 		var draggingDocument = false;
 
 		var postContainer = $('#cmp-uuid-' + post_uuid),
-			fileForm = postContainer.find('#fileForm'),
 			drop = postContainer.find('.imagedrop'),
 			tabContent = postContainer.find('.tab-content'),
 			textarea = postContainer.find('textarea');
 
-		$(document).off('dragstart').on('dragstart', function(e) {
+		$(document).off('dragstart').on('dragstart', function() {
 			draggingDocument = true;
-		}).off('dragend').on('dragend', function(e) {
+		}).off('dragend').on('dragend', function() {
 			draggingDocument = false;
 		});
 
-		textarea.on('dragenter', function(e) {
+		textarea.on('dragenter', function() {
 			if(draggingDocument) {
 				return;
 			}
@@ -208,7 +207,7 @@ define(['taskbar'], function(taskbar) {
 			drop.css('line-height', textarea.height() + 'px');
 			drop.show();
 
-			drop.on('dragleave', function(ev) {
+			drop.on('dragleave', function() {
 				drop.hide();
 				drop.off('dragleave');
 			});
@@ -235,7 +234,6 @@ define(['taskbar'], function(taskbar) {
 					}
 				}
 
-				// fileForm[0].reset();
 				uploadContentFiles({
 					files: files,
 					post_uuid: post_uuid,
@@ -264,7 +262,6 @@ define(['taskbar'], function(taskbar) {
 						fd.append('files[]', blob, blob.name);
 					}
 
-					// fileForm[0].reset();
 					uploadContentFiles({
 						files: [blob],
 						post_uuid: post_uuid,
@@ -576,7 +573,7 @@ define(['taskbar'], function(taskbar) {
 					e.preventDefault();
 				});
 
-				postContainer.on('paste change keypress', 'input#topic-thumb-url', function(e) {
+				postContainer.on('paste change keypress', 'input#topic-thumb-url', function() {
 					var urlEl = $(this);
 					setTimeout(function(){
 						var url = urlEl.val();
@@ -619,7 +616,6 @@ define(['taskbar'], function(taskbar) {
 				postContainer.on('click', '.formatting-bar span', function() {
 					var postContentEl = postContainer.find('textarea'),
 						iconClass = $(this).find('i').attr('class'),
-						cursorEnd = postContentEl.val().length,
 						selectionStart = postContentEl[0].selectionStart,
 						selectionEnd = postContentEl[0].selectionEnd,
 						selectionLength = selectionEnd - selectionStart,
