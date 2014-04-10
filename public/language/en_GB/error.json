@@ -6,11 +6,15 @@
 	"invalid-cid": "Invalid Category ID",
 	"invalid-tid": "Invalid Topic ID",
 	"invalid-pid": "Invalid Post ID",
+	"invalid-uid": "Invalid User ID",
 
 	"no-category": "Category doesn't exist",
 	"no-topic": "Topic doesn't exist",
 	"no-post": "Post doesn't exist",
+	"no-group": "Group doesn't exist",
 	"no-privileges": "You don't have enough privileges for this action.",
+
+	"category-disabled": "Category disabled",
 
 	"topic-locked": "Topic Locked",
 
@@ -27,5 +31,9 @@
 
 	"cant-ban-other-admins": "You can't ban other admins!",
 
-	"invalid-image-type": "Invalid image type"
+	"invalid-image-type": "Invalid image type",
+
+	"group-name-too-short": "Group name too short",
+	"group-already-exists": "Group already exists",
+	"group-name-change-not-allowed": "Group name change not allowed"
 }

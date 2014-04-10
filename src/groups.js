@@ -137,7 +137,7 @@
 
 	Groups.create = function(name, description, callback) {
 		if (name.length === 0) {
-			return callback(new Error('name-too-short'));
+			return callback(new Error('[[error:group-name-too-short]]'));
 		}
 
 		if (name === 'administrators' || name === 'registered-users') {
@@ -145,28 +145,32 @@
 		}
 
 		Groups.exists(name, function (err, exists) {
-			if (!exists) {
-				var groupData = {
-					name: name,
-					description: description,
-					deleted: '0',
-					hidden: '0',
-					system: system ? '1' : '0'
-				};
-
-				async.parallel([
-					function(next) {
-						db.setAdd('groups', name, next);
-					},
-					function(next) {
-						db.setObject('group:' + name, groupData, function(err) {
-							Groups.get(name, {}, next);
-						});
-					}
-				], callback);
-			} else {
-				callback(new Error('group-exists'));
+			if (err) {
+				return callback(err);
 			}
+
+			if (exists) {
+				return callback(new Error('[[error:group-already-exists]]'));
+			}
+
+			var groupData = {
+				name: name,
+				description: description,
+				deleted: '0',
+				hidden: '0',
+				system: system ? '1' : '0'
+			};
+
+			async.parallel([
+				function(next) {
+					db.setAdd('groups', name, next);
+				},
+				function(next) {
+					db.setObject('group:' + name, groupData, function(err) {
+						Groups.get(name, {}, next);
+					});
+				}
+			], callback);
 		});
 	};
 
@@ -184,12 +188,12 @@
 					db.setObject('group:' + groupName, values, callback);
 				} else {
 					if (callback) {
-						callback(new Error('name-change-not-allowed'));
+						callback(new Error('[[error:group-name-change-not-allowed]]'));
 					}
 				}
 			} else {
 				if (callback) {
-					callback(new Error('gid-not-found'));
+					callback(new Error('[[error:no-group]]'));
 				}
 			}
 		});
