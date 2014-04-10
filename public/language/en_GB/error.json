@@ -65,5 +65,5 @@
 
 	"signature-too-long" : "Signature can't be longer than %1 characters!",
 
-	"cant-chat-with-yourself": "You can't chat with yourself!",
+	"cant-chat-with-yourself": "You can't chat with yourself!"
 }
