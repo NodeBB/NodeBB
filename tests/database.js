@@ -10,6 +10,53 @@ describe('Test database', function() {
 		});
 	});
 
+
+	it('should not throw err', function(done) {
+
+		function get(callback) {
+			db.get('testingStr', function(err, data) {
+				callback(err, {'get': data});
+			});
+		}
+
+		function set(callback) {
+			db.set('testingStr', 'opppa gangastayla', function(err, data) {
+				callback(err, {'set': data});
+			});
+		}
+
+		function deleteKey(callback) {
+			db.delete('testingStr', function(err, data) {
+				callback(err, {'delete': data});
+			});
+		}
+
+		function exists(callback) {
+			db.exists('testingStr', function(err, data) {
+				callback(err, {'exists': data});
+			});
+		}
+
+		var keyTasks = [
+			get,
+			set,
+			get,
+			exists,
+			deleteKey,
+			deleteKey,
+			get,
+			exists
+		];
+
+		async.series(keyTasks, function(err, results) {
+			assert.equal(err, null, 'error in key methods');
+			assert.ok(results);
+
+			done();
+		});
+
+	});
+
 	it('should not throw err', function(done) {
 		var objectKey = 'testObj';
 
@@ -107,6 +154,51 @@ describe('Test database', function() {
 	});
 
 	it('should not throw err', function(done) {
+		function listAppend(callback) {
+			db.listAppend('myList5', 5, function(err, data) {
+				callback(err, {'listAppend': data});
+			});
+		}
+
+		function listPrepend(callback) {
+			db.listPrepend('myList5', 4, function(err, data) {
+				callback(err, {'listPrepend': data});
+			});
+		}
+
+
+		function listRemoveLast(callback) {
+			db.listRemoveLast('myList5', function(err, data) {
+				callback(err, {'listRemoveLast': data});
+			});
+		}
+
+
+		function getListRange(callback) {
+			db.getListRange('myList5', 0, -1, function(err, data) {
+				callback(err, {'getListRange': data});
+			});
+		}
+
+		var listTasks = [
+			listAppend,
+			listPrepend,
+			getListRange,
+			listRemoveLast,
+			getListRange
+		];
+
+		async.series(listTasks, function(err, results) {
+			assert.equal(err, null, 'error in list methods');
+			assert.ok(results);
+
+			done();
+		});
+
+	});
+
+/*
+	it('should not throw err', function(done) {
 
 		function sortedSetAdd(callback) {
 			db.sortedSetAdd('sortedSet3', 12, 5, function(err, data) {
@@ -166,97 +258,6 @@ describe('Test database', function() {
 
 		async.series(sortedSetTasks, function(err, results) {
 			assert.equal(err, null, 'error in sorted set methods');
-			assert.ok(results);
-
-			done();
-		});
-
-	});
-
-	it('should not throw err', function(done) {
-
-		function listAppend(callback) {
-			db.listAppend('myList5', 5, function(err, data) {
-				callback(err, {'listAppend': data});
-			});
-		}
-
-		function listPrepend(callback) {
-			db.listPrepend('myList5', 4, function(err, data) {
-				callback(err, {'listPrepend': data});
-			});
-		}
-
-
-		function listRemoveLast(callback) {
-			db.listRemoveLast('myList5', function(err, data) {
-				callback(err, {'listRemoveLast': data});
-			});
-		}
-
-
-		function getListRange(callback) {
-			db.getListRange('myList5', 0, -1, function(err, data) {
-				callback(err, {'getListRange': data});
-			});
-		}
-
-		var listTasks = [
-			listAppend,
-			listPrepend,
-			getListRange,
-			listRemoveLast,
-			getListRange
-		];
-
-		async.series(listTasks, function(err, results) {
-			assert.equal(err, null, 'error in list methods');
-			assert.ok(results);
-
-			done();
-		});
-
-	});
-
-	it('should not throw err', function(done) {
-
-		function get(callback) {
-			db.get('testingStr', function(err, data) {
-				callback(err, {'get': data});
-			});
-		}
-
-		function set(callback) {
-			db.set('testingStr', 'opppa gangastayla', function(err, data) {
-				callback(err, {'set': data});
-			});
-		}
-
-		function deleteKey(callback) {
-			db.delete('testingStr', function(err, data) {
-				callback(err, {'delete': data});
-			});
-		}
-
-		function exists(callback) {
-			db.exists('testingStr', function(err, data) {
-				callback(err, {'exists': data});
-			});
-		}
-
-		var keyTasks = [
-			get,
-			set,
-			get,
-			exists,
-			deleteKey,
-			deleteKey,
-			get,
-			exists
-		];
-
-		async.series(keyTasks, function(err, results) {
-			assert.equal(err, null, 'error in key methods');
 			assert.ok(results);
 
 			done();
@@ -334,4 +335,5 @@ describe('Test database', function() {
 			done();
 		});
 	});
+*/
 });

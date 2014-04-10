@@ -74,7 +74,7 @@
 				}
 
 				winston.info('test_database flushed');
-
+				/*
 				meta.configs.init(function () {
 					nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
 					nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));
@@ -85,7 +85,8 @@
 						sockets.init(webserver.server);
 
 					done();
-				});
+				});*/
+				done();
 			});
 		});
 	});
