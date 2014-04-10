@@ -189,75 +189,7 @@ describe('Test database', function() {
 		];
 
 		async.series(listTasks, function(err, results) {
-			assert.equal(err, null, 'error in list methods');
-			assert.ok(results);
-
-			done();
-		});
-
-	});
-
-/*
-	it('should not throw err', function(done) {
-
-		function sortedSetAdd(callback) {
-			db.sortedSetAdd('sortedSet3', 12, 5, function(err, data) {
-				callback(err, {'sortedSetAdd': data});
-			});
-		}
-
-		function sortedSetRemove(callback) {
-			db.sortedSetRemove('sortedSet3', 12, function(err, data) {
-				callback(err, {'sortedSetRemove': data});
-			});
-		}
-
-		function getSortedSetRange(callback) {
-			db.getSortedSetRevRange('sortedSet3', 0, -1, function(err, data) {
-				callback(err, {'getSortedSetRange': data});
-			});
-		}
-
-		function getSortedSetRevRangeByScore(callback) {
-			var args = ['sortedSet2', '+inf', 100, 'LIMIT', 0, 10];
-			db.getSortedSetRevRangeByScore(args, function(err, data) {
-				callback(err, {'getSortedSetRevRangeByScore': data});
-			});
-		}
-
-		function sortedSetCount(callback) {
-			db.sortedSetCount('sortedSet3', -Infinity, Infinity, function(err, data) {
-				callback(err, {'sortedSetCount': data});
-			});
-		}
-
-		function sortedSetScore(callback) {
-			db.sortedSetScore('users:joindate', 1, function(err, data) {
-				callback(err, {'sortedSetScore': data});
-			});
-		}
-
-		function sortedSetsScore(callback) {
-			db.sortedSetsScore(['users:joindate', 'users:derp', 'users:postcount'], 1, function(err, data) {
-				callback(err, {'sortedSetsScore': data});
-			});
-		}
-
-		var sortedSetTasks = [
-			sortedSetAdd,
-			getSortedSetRange,
-			sortedSetAdd,
-			getSortedSetRange,
-			sortedSetRemove,
-			getSortedSetRange,
-			sortedSetCount,
-			sortedSetScore,
-			sortedSetsScore,
-			getSortedSetRevRangeByScore
-		];
-
-		async.series(sortedSetTasks, function(err, results) {
-			assert.equal(err, null, 'error in sorted set methods');
+			assert.equal(err, null, 'error in list methods: ' + err);
 			assert.ok(results);
 
 			done();
@@ -266,8 +198,6 @@ describe('Test database', function() {
 	});
 
 	it('should not throw err', function(done) {
-
-
 		function setAdd(callback) {
 			db.setAdd('myTestSet', 15, function(err, data) {
 				callback(err, {'setAdd': data});
@@ -335,5 +265,71 @@ describe('Test database', function() {
 			done();
 		});
 	});
-*/
+
+
+	it('should not throw err', function(done) {
+		function sortedSetAdd(callback) {
+			db.sortedSetAdd('sortedSet3', 12, 5, function(err, data) {
+				callback(err, {'sortedSetAdd': data});
+			});
+		}
+
+		function sortedSetRemove(callback) {
+			db.sortedSetRemove('sortedSet3', 12, function(err, data) {
+				callback(err, {'sortedSetRemove': data});
+			});
+		}
+
+		function getSortedSetRange(callback) {
+			db.getSortedSetRevRange('sortedSet3', 0, -1, function(err, data) {
+				callback(err, {'getSortedSetRange': data});
+			});
+		}
+
+		function getSortedSetRevRangeByScore(callback) {
+			var args = ['sortedSet2', '+inf', 100, 'LIMIT', 0, 10];
+			db.getSortedSetRevRangeByScore(args, function(err, data) {
+				callback(err, {'getSortedSetRevRangeByScore': data});
+			});
+		}
+
+		function sortedSetCount(callback) {
+			db.sortedSetCount('sortedSet3', -Infinity, Infinity, function(err, data) {
+				callback(err, {'sortedSetCount': data});
+			});
+		}
+
+		function sortedSetScore(callback) {
+			db.sortedSetScore('users:joindate', 1, function(err, data) {
+				callback(err, {'sortedSetScore': data});
+			});
+		}
+
+		function sortedSetsScore(callback) {
+			db.sortedSetsScore(['users:joindate', 'users:derp', 'users:postcount'], 1, function(err, data) {
+				callback(err, {'sortedSetsScore': data});
+			});
+		}
+
+		var sortedSetTasks = [
+			sortedSetAdd,
+			getSortedSetRange,
+			sortedSetAdd,
+			getSortedSetRange,
+			sortedSetRemove,
+			getSortedSetRange,
+			sortedSetCount,
+			sortedSetScore,
+			sortedSetsScore,
+			getSortedSetRevRangeByScore
+		];
+
+		async.series(sortedSetTasks, function(err, results) {
+			assert.equal(err, null, 'error in sorted set methods');
+			assert.ok(results);
+
+			done();
+		});
+
+	});
 });

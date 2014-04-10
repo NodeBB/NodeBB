@@ -2,9 +2,9 @@
 
 (function(module) {
 	/*
-	* Okay, so LevelDB was made by Google. Therefore its skalable.
+	* Okay, so LevelDB was made by Google. Therefore it's skalable.
 	* BUT, I created 99% of the rest of NodeBB's expected functionality out of just simple get and set commands.
-	* Therefore, it is unskalable.
+	* Therefore, it is unskalable. I totally should have read the docs before starting.
 	*
 	* With much <3, psychobunny.
 	*/
@@ -58,15 +58,15 @@
 	// Exported functions
 	//
 	module.searchIndex = function(key, content, id) {
-		
+		// o.O
 	};
 
 	module.search = function(key, term, limit, callback) {
-		
+		// O.o	
 	};
 
 	module.searchRemove = function(key, id, callback) {
-		
+		// o___O
 	};
 
 	module.flushdb = function(callback) {
@@ -78,7 +78,8 @@
 	};
 
 	module.info = function(callback) {
-		
+		// O____O      GIEF FOOD
+		//  v v
 	};
 
 	// key
@@ -100,19 +101,28 @@
 	};
 
 	module.set = function(key, value, callback) {
-		db.put(key, value, callback);
+		if (value === '') {
+			callback(false);
+		} else {
+			db.put(key, value, function(err) {
+				// uh, err is {}.. why??
+				if (typeof callback === 'function') {
+					callback(null);
+				}
+			});
+		}
 	};
 
 	module.rename = function(oldKey, newKey, callback) {
-		//db.rename(oldKey, newKey, callback);
+		// G__G
 	};
 
 	module.expire = function(key, seconds, callback) {
-		//db.expire(key, seconds, callback);
+		// >__>
 	};
 
 	module.expireAt = function(key, timestamp, callback) {
-		//db.expireat(key, timestamp, callback);
+		// <__<
 	};
 
 	//hashes
@@ -132,7 +142,11 @@
 	};
 
 	module.setObjectField = function(key, field, value, callback) {
-		module.set(key + ':' + field, value, callback);
+		// can be improved.
+		module.getObject(key, function(err, obj) {
+			obj[key] = field;
+			module.setObject(key, obj, callback);
+		});
 	};
 
 	module.getObject = function(key, callback) {
@@ -225,6 +239,7 @@
 		module.delete(key + ':' + field, callback);
 	};
 
+	// BEGIN FAILURE: if the obj doesn't exist like redis, it does not create it!
 	module.incrObjectField = function(key, field, callback) {
 		module.get(key + ':' + field, function(err, val) {
 			module.set(key + ':' + field, val + 1, callback);
@@ -248,66 +263,76 @@
 			module.set(key + ':' + field, val - value, callback);
 		});
 	};
+	// END FAILURE: if the obj doesn't exist like redis, it does not create it!
 
 
 	// sets
 
 	module.setAdd = function(key, value, callback) {
-		db.sadd(key, value, callback);
+		module.getListRange(key, 0, -1, function(err, set) {
+			if (!set.indexOf(value)) {
+				module.listAppend(set, value, callback);
+			} else {
+				callback(null, true); // verify if it sends back true on redis?
+			}
+		});
 	};
 
 	module.setRemove = function(key, value, callback) {
-		db.srem(key, value, callback);
+		module.getListRange(key, 0, -1, function(err, set) {
+			module.set(key, set.splice(set.indexOf(value), 1), callback);
+		});
 	};
 
 	module.isSetMember = function(key, value, callback) {
-		db.sismember(key, value, function(err, result) {
-			if(err) {
-				return callback(err);
-			}
-
-			callback(null, result === 1);
+		module.getListRange(key, 0, -1, function(err, set) {
+			callback(err, !!set.indexOf(value));
 		});
 	};
 
 	module.isSetMembers = function(key, values, callback) {
-		var multi = db.multi();
-		for (var i=0; i<values.length; ++i) {
-			multi.sismember(key, values[i]);
-		}
+		var members = {};
 
-		multi.exec(function(err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			for (var i=0; i<results.length; ++i) {
-				results[i] = results[i] === 1;
-			}
-			callback(null, results);
+		async.each(values, function(value, next) {
+			module.isSetMember(key, value, function(err, isMember) {
+				members[key] = isMember;
+			});
+		}, function(err) {
+			callback(err, members);
 		});
 	};
 
 	module.isMemberOfSets = function(sets, value, callback) {
-		var multi = db.multi();
+		// can be improved
+		var members = {};
 
-		for (var i = 0, ii = sets.length; i < ii; i++) {
-			multi.sismember(sets[i], value);
-		}
-
-		multi.exec(callback);
+		async.each(sets, function(set, next) {
+			module.isSetMember(set, value, function(err, isMember) {
+				members[set] = value;
+				next();
+			});
+		}, function(err) {
+			callback(err, members);
+		});
 	};
 
 	module.getSetMembers = function(key, callback) {
-		db.smembers(key, callback);
+		module.getListRange(key, 0, -1, callback);
 	};
 
 	module.setCount = function(key, callback) {
-		db.scard(key, callback);
+		module.getListRange(key, 0, -1, function(err, set) {
+			callback(err, set.length);
+		});
 	};
 
 	module.setRemoveRandom = function(key, callback) {
-		db.spop(key, callback);
+		// how random is this? well, how random are the other implementations of this?
+		// imo rename this to setRemoveOne
+
+		module.getListRange(key, 0, -2, function(err, set) {
+			module.set(key, set.join('-ldb-'), callback);
+		});
 	};
 
 	// sorted sets
@@ -374,26 +399,53 @@
 
 	// lists
 	module.listPrepend = function(key, value, callback) {
-		module.get(key, function(err, list) {
-			list.split('-ldb-')
-		})
-		db.lpush(key, value, callback);
+		module.getListRange(key, 0, -1, function(err, list) {
+			var arr = list || [];
+			arr.unshift(value);
+			module.set(key, arr.join('-ldb-'), callback);
+		});
 	};
 
 	module.listAppend = function(key, value, callback) {
-		db.rpush(key, value, callback);
+		module.getListRange(key, 0, -1, function(err, list) {
+			var arr = list || [];
+			arr.push(value);
+			module.set(key, arr.join('-ldb-'), callback);
+		});
 	};
 
 	module.listRemoveLast = function(key, callback) {
-		db.rpop(key, callback);
+		module.getListRange(key, 0, -1, function(err, list) {
+			var arr = list || [];
+			list.pop();
+			module.set(key, list.join('-ldb-'), callback);
+		});
+	};
+
+	module.listRemoveFirst = function(key, callback) {
+		module.getListRange(key, 0, -1, function(err, list) {
+			var arr = list || [];
+			list.shift();
+			module.set(key, list.join('-ldb-'), callback);
+		});
 	};
 
 	module.listRemoveAll = function(key, value, callback) {
-		db.lrem(key, 0, value, callback);
+		// wut is this
+		//db.lrem(key, 0, value, callback);
+		throw new Error('not implemented');
 	};
 
 	module.getListRange = function(key, start, stop, callback) {
-		db.lrange(key, start, stop, callback);
+		// needs testing.
+		module.get(key, function(err, list) {
+			if (list) {
+				list = list.split('-ldb-');
+				callback(err, list.slice(start, stop >= 0 ? stop : list.length + stop));
+			} else {
+				callback(null, []);
+			}
+		});
 	};
 
 }(exports));
