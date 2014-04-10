@@ -126,11 +126,11 @@ var bcrypt = require('bcryptjs'),
 			}
 
 			if (parseInt(results.banned, 10) === 1) {
-				return callback(new Error('user-banned'));
+				return callback(new Error('[[error:user-banned]]'));
 			}
 
 			if (!results.exists) {
-				return callback(new Error('invalid-user'));
+				return callback(new Error('[[error:no-user]]'));
 			}
 
 			var lastposttime = results.lastposttime;

@@ -8,10 +8,25 @@
 	"invalid-pid": "Invalid Post ID",
 	"invalid-uid": "Invalid User ID",
 
+	"invalid-username": "Invalid Username",
+	"invalid-email": "Invalid Email",
+	"invalid-title": "Invalid title",
+	"invalid-user-data": "Invalid User Data",
+	"invalid-password": "Invalid Password",
+
+	"invalid-pagination-value": "Invalid pagination value",
+
+	"username-taken": "Username taken",
+	"email-taken": "Email taken",
+
+	"user-banned": "User banned",
+
 	"no-category": "Category doesn't exist",
 	"no-topic": "Topic doesn't exist",
 	"no-post": "Post doesn't exist",
 	"no-group": "Group doesn't exist",
+	"no-user": "User doesn't exist",
+	"no-teaser": "Teaser doesn't exist",
 	"no-privileges": "You don't have enough privileges for this action.",
 
 	"category-disabled": "Category disabled",
@@ -35,5 +50,18 @@
 
 	"group-name-too-short": "Group name too short",
 	"group-already-exists": "Group already exists",
-	"group-name-change-not-allowed": "Group name change not allowed"
+	"group-name-change-not-allowed": "Group name change not allowed",
+
+	"post-already-deleted": "Post already deleted",
+	"post-already-restored": "Post already restored",
+
+	"topic-already-deleted": "Topic already deleted",
+	"topic-already-restored": "Topic already restored",
+
+
+	"topic-thumbnails-are-disabled": "Topic thumbnails are disabled.",
+	"invalid-file": "Invalid File",
+	"uploads-are-disabled": "Uploads are disabled",
+
+	"signature-too-long" : "Signature can't be longer than %1 characters!"
 }

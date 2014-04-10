@@ -40,7 +40,7 @@ var async = require('async'),
 	UserReset.send = function(socket, email, callback) {
 		user.getUidByEmail(email, function(err, uid) {
 			if(err || !uid) {
-				return callback(err || new Error('invalid-email'));
+				return callback(err || new Error('[[error:invalid-email]]'));
 			}
 
 			// Generate a new reset code

@@ -37,7 +37,7 @@ module.exports = function(User) {
 	User.saveSettings = function(uid, data, callback) {
 
 		if(!data.topicsPerPage || !data.postsPerPage || parseInt(data.topicsPerPage, 10) <= 0 || parseInt(data.postsPerPage, 10) <= 0) {
-			return callback(new Error('Invalid pagination value!'));
+			return callback(new Error('[[error:invalid-pagination-value]]'));
 		}
 
 		plugins.fireHook('action:user.saveSettings', {uid: uid, settings: data});
