@@ -415,65 +415,76 @@ define(['taskbar'], function(taskbar) {
 	}
 
 	composer.newTopic = function(cid) {
-		if(allowed()) {
-			push({
-				cid: cid,
-				title: '',
-				body: '',
-				modified: false,
-				isMain: true
-			});
+		if(!allowed()) {
+			return;
 		}
+
+		push({
+			cid: cid,
+			title: '',
+			body: '',
+			modified: false,
+			isMain: true
+		});
 	};
 
 	composer.addQuote = function(tid, pid, title, username, text){
-		if (allowed()) {
-			var uuid = composer.active;
-			if(uuid !== undefined){
-				var bodyEl = $('#cmp-uuid-'+uuid).find('textarea');
-				var prevText = bodyEl.val();
-				if(tid !== composer.posts[uuid].tid) {
-					text = username + ' said in ['+title+'](/topic/'+tid+'#'+pid+'):\n'+text;
-				} else {
-					text = username + ' said:\n' + text;
-				}
-				composer.posts[uuid].body = (prevText.length ? prevText + '\n\n' : '') + text;
-				bodyEl.val(composer.posts[uuid].body);
-			} else {
-				composer.newReply(tid, pid, title, username + ' said:\n' + text);
-			}
+		if (!allowed()) {
+			return;
 		}
+
+		var uuid = composer.active;
+
+		if(uuid === undefined){
+			composer.newReply(tid, pid, title, username + ' said:\n' + text);
+			return;
+		}
+
+		var bodyEl = $('#cmp-uuid-'+uuid).find('textarea');
+		var prevText = bodyEl.val();
+		if(tid !== composer.posts[uuid].tid) {
+			text = username + ' said in ['+title+'](/topic/'+tid+'#'+pid+'):\n'+text;
+		} else {
+			text = username + ' said:\n' + text;
+		}
+		composer.posts[uuid].body = (prevText.length ? prevText + '\n\n' : '') + text;
+		bodyEl.val(composer.posts[uuid].body);
 	};
 
 	composer.newReply = function(tid, pid, title, text) {
-		if(allowed()) {
-			push({
-				tid: tid,
-				toPid: pid,
-				title: title,
-				body: text,
-				modified: false,
-				isMain: false
-			});
+		if(!allowed()) {
+			return;
 		}
+
+		push({
+			tid: tid,
+			toPid: pid,
+			title: title,
+			body: text,
+			modified: false,
+			isMain: false
+		});
 	};
 
 	composer.editPost = function(pid) {
-		if(allowed()) {
-			socket.emit('modules.composer.push', pid, function(err, threadData) {
-				if(err) {
-					return app.alertError(err.message);
-				}
-				push({
-					pid: pid,
-					title: threadData.title,
-					body: threadData.body,
-					modified: false,
-					isMain: !threadData.index,
-					topic_thumb: threadData.topic_thumb
-				});
-			});
+		if(!allowed()) {
+			return;
 		}
+
+		socket.emit('modules.composer.push', pid, function(err, threadData) {
+			if(err) {
+				return app.alertError(err.message);
+			}
+
+			push({
+				pid: pid,
+				title: threadData.title,
+				body: threadData.body,
+				modified: false,
+				isMain: !threadData.index,
+				topic_thumb: threadData.topic_thumb
+			});
+		});
 	};
 
 	composer.load = function(post_uuid) {
