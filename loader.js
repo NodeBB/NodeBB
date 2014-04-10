@@ -6,6 +6,18 @@ var	nconf = require('nconf'),
 	start = function() {
 		var	fork = require('child_process').fork,
 			nbb_start = function() {
+				if (timesStarted > 3) {
+					console.log('\n[loader] Experienced three start attempts in 10 seconds, most likely am error on startup. Halting.');
+					process.exit();
+					return;
+				}
+
+				timesStarted++;
+				if (startTimer) {
+					clearTimeout(startTimer);
+				}
+				startTimer = setTimeout(resetTimer, 1000*10);
+
 				nbb = fork('./app', process.argv.slice(2), {
 						env: {
 							'NODE_ENV': process.env.NODE_ENV
@@ -29,6 +41,10 @@ var	nconf = require('nconf'),
 				});
 			},
 			nbb_stop = function() {
+				if (startTimer) {
+					clearTimeout(startTimer);
+				}
+
 				nbb.kill();
 				if (fs.existsSync(pidFilePath)) {
 					var	pid = parseInt(fs.readFileSync(pidFilePath, { encoding: 'utf-8' }), 10);
@@ -42,7 +58,13 @@ var	nconf = require('nconf'),
 					nbb_start();
 				});
 				nbb.kill();
-			};
+			},
+			resetTimer = function() {
+				clearTimeout(startTimer);
+				timesStarted = 0;
+			},
+			timesStarted = 0,
+			startTimer;
 
 		process.on('SIGINT', nbb_stop);
 		process.on('SIGTERM', nbb_stop);
