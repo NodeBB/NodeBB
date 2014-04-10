@@ -25,5 +25,7 @@
 	"already-favourited": "You already favourited this post",
 	"already-unfavourited": "You alread unfavourited this post",
 
-	"cant-ban-other-admins": "You can't ban other admins!"
+	"cant-ban-other-admins": "You can't ban other admins!",
+
+	"invalid-image-type": "Invalid image type"
 }

@@ -60,7 +60,7 @@ SocketUser.changePassword = function(socket, data, callback) {
 
 SocketUser.updateProfile = function(socket, data, callback) {
 	if(!data || !data.uid) {
-		return callback(new Error('invalid-data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	if(socket.uid === parseInt(data.uid, 10)) {
@@ -73,7 +73,7 @@ SocketUser.updateProfile = function(socket, data, callback) {
 		}
 
 		if(!isAdmin) {
-			return callback(new Error('not allowed!'));
+			return callback(new Error('[[error:no-privileges]]'));
 		}
 
 		user.updateProfile(data.uid, data, callback);
@@ -82,7 +82,7 @@ SocketUser.updateProfile = function(socket, data, callback) {
 
 SocketUser.changePicture = function(socket, data, callback) {
 	if(!data) {
-		return callback(new Error('invalid-data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	var type = data.type;
@@ -117,7 +117,7 @@ SocketUser.changePicture = function(socket, data, callback) {
 	} else if (type === 'uploaded') {
 		type = 'uploadedpicture';
 	} else {
-		return callback(new Error('invalid-image-type'));
+		return callback(new Error('[[error:invalid-image-type]]'));
 	}
 
 	if(socket.uid === parseInt(data.uid, 10)) {
@@ -136,7 +136,7 @@ SocketUser.changePicture = function(socket, data, callback) {
 		}
 
 		if(!isAdmin) {
-			return callback(new Error('not-allowed'));
+			return callback(new Error('[[error:no-privileges]]'));
 		}
 
 		changePicture(data.uid, callback);
@@ -170,7 +170,7 @@ SocketUser.saveSettings = function(socket, data, callback) {
 SocketUser.getOnlineUsers = function(socket, data, callback) {
 	var returnData = {};
 	if(!data) {
-		return callback(new Error('invalid-data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	function getUserStatus(uid, next) {
@@ -202,11 +202,11 @@ SocketUser.getActiveUsers = function(socket, data, callback) {
 
 SocketUser.loadMore = function(socket, data, callback) {
 	if(!data || !data.set || parseInt(data.after, 10) < 0) {
-		return callback(new Error('invalid-data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	if (!socket.uid && !!parseInt(meta.config.privateUserInfo, 10)) {
-		return callback(new Error('not-allowed'));
+		return callback(new Error('[[error:no-privileges]]'));
 	}
 
 	var start = data.after,
