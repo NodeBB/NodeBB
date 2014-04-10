@@ -63,5 +63,7 @@
 	"invalid-file": "Invalid File",
 	"uploads-are-disabled": "Uploads are disabled",
 
-	"signature-too-long" : "Signature can't be longer than %1 characters!"
+	"signature-too-long" : "Signature can't be longer than %1 characters!",
+
+	"cant-chat-with-yourself": "You can't chat with yourself!",
 }
