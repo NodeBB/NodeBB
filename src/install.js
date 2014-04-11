@@ -76,6 +76,11 @@ var async = require('async'),
 			description: "Which database to use",
 			'default': nconf.get('mongo:database') || 0
 		}],
+		levelQuestions : [{
+			name: "level:database",
+			description: "Enter the path to your Level database",
+			'default': nconf.get('level:database') || '/var/level/nodebb'
+		}],
 
 		setup: function (callback) {
 			async.series([
@@ -159,6 +164,10 @@ var async = require('async'),
 									password: databaseConfig['mongo:password'],
 									database: databaseConfig['mongo:database']
 								};
+							} else if (config.database === 'level') {
+								config.level = {
+									database: databaseConfig['level:database']
+								};
 							} else {
 								return next(new Error('unknown database : ' + config.database));
 							}
@@ -210,6 +219,12 @@ var async = require('async'),
 								dbQuestionsSuccess(null, config);
 							} else {
 								prompt.get(install.mongoQuestions, dbQuestionsSuccess);
+							}
+						} else if(config.database === 'level') {
+							if (config['level:database']) {
+								dbQuestionsSuccess(null, config);
+							} else {
+								prompt.get(install.levelQuestions, dbQuestionsSuccess);
 							}
 						} else {
 							return next(new Error('unknown database : ' + config.database));
