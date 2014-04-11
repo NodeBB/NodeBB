@@ -104,8 +104,10 @@ function start() {
 	winston.info('Time: ' + new Date());
 	winston.info('Initializing NodeBB v' + pkg.version);
 	winston.info('* using configuration stored in: ' + configFile);
-	var host = nconf.get(nconf.get('database') + ':host');
-	winston.info('* using ' + nconf.get('database') +' store at ' + host + (host.indexOf('/') === -1 ? ':' + nconf.get(nconf.get('database') + ':port') : ''));
+	var host = nconf.get(nconf.get('database') + ':host'),
+		storeLocation = host ? 'at ' + host + (host.indexOf('/') === -1 ? ':' + nconf.get(nconf.get('database') + ':port') : '') : '';
+
+	winston.info('* using ' + nconf.get('database') +' store ' + storeLocation);
 	winston.info('* using themes stored in: ' + nconf.get('themes_path'));
 
 	if (process.env.NODE_ENV === 'development') {
