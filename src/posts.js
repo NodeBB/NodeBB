@@ -210,7 +210,7 @@ var db = require('./database'),
 
 		var count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
 
-		db.getSortedSetRevRangeByScore(['posts:pid', '+inf', Date.now() - since, 'LIMIT', start, count], function(err, pids) {
+		db.getSortedSetRevRangeByScore('posts:pid', start, count, Infinity, Date.now() - since, function(err, pids) {
 			if(err) {
 				return callback(err);
 			}
