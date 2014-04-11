@@ -29,7 +29,7 @@ var async = require('async'),
 			if (exists) {
 				db.sortedSetRank('uid:' + uid + ':notifications:read', nid, function(err, rank) {
 
-					db.getObjectFields('notifications:' + nid, ['nid', 'from', 'text', 'score', 'path', 'datetime', 'uniqueId'], function(err, notification) {
+					db.getObjectFields('notifications:' + nid, ['nid', 'from', 'text', 'importance', 'score', 'path', 'datetime', 'uniqueId'], function(err, notification) {
 						notification.read = rank !== null ? true:false;
 
 						if (notification.from) {
@@ -74,6 +74,7 @@ var async = require('async'),
 		var	defaults = {
 				text: '',
 				path: null,
+				importance: 5,
 				datetime: Date.now(),
 				uniqueId: utils.generateUUID()
 			};
@@ -84,6 +85,7 @@ var async = require('async'),
 		}
 
 		db.incrObjectField('global', 'nextNid', function(err, nid) {
+			data.nid = nid;
 			db.setAdd('notifications', nid);
 			db.setObject('notifications:' + nid, data, function(err, status) {
 				if (!err) {
@@ -103,25 +105,26 @@ var async = require('async'),
 			x;
 
 		Notifications.get(nid, null, function(notif_data) {
-			for (x = 0; x < numUids; x++) {
-				if (parseInt(uids[x], 10) > 0) {
-					(function(uid) {
-						remove_by_uniqueId(notif_data.uniqueId, uid, function() {
+			async.each(uids, function(uid, next) {
+				if (parseInt(uid, 10) > 0) {
+					checkReplace(notif_data.uniqueId, uid, notif_data, function(replace) {
+						if (replace) {
 							db.sortedSetAdd('uid:' + uid + ':notifications:unread', notif_data.datetime, nid);
-
 							websockets.in('uid_' + uid).emit('event:new_notification', notif_data);
+						}
 
-							if (callback) {
-								callback(true);
-							}
-						});
-					})(uids[x]);
+						if (callback) {
+							callback(true);
+						}
+					});
 				}
-			}
+			});
 		});
 	};
 
-	function remove_by_uniqueId(uniqueId, uid, callback) {
+	function checkReplace(uniqueId, uid, newNotifObj, callback) {
+		var	replace = false, matched = false;
+
 		async.parallel([
 			function(next) {
 				db.getSortedSetRange('uid:' + uid + ':notifications:unread', 0, -1, function(err, nids) {
@@ -129,9 +132,13 @@ var async = require('async'),
 						async.each(nids, function(nid, next) {
 							Notifications.get(nid, uid, function(nid_info) {
 								if (nid_info && nid_info.uniqueId === uniqueId) {
-									db.sortedSetRemove('uid:' + uid + ':notifications:unread', nid);
+									matched = true;
+									if ((nid_info.importance || 5) >= newNotifObj.importance) {
+										replace = true;
+										db.sortedSetRemove('uid:' + uid + ':notifications:unread', nid);
+									}
 								}
-
+								
 								next();
 							});
 						}, function(err) {
@@ -148,9 +155,13 @@ var async = require('async'),
 						async.each(nids, function(nid, next) {
 							Notifications.get(nid, uid, function(nid_info) {
 								if (nid_info && nid_info.uniqueId === uniqueId) {
-									db.sortedSetRemove('uid:' + uid + ':notifications:read', nid);
+									matched = true;
+									if ((nid_info.importance || 5) >= newNotifObj.importance) {
+										replace = true;
+										db.sortedSetRemove('uid:' + uid + ':notifications:read', nid);
+									}
 								}
-
+								
 								next();
 							});
 						}, function(err) {
@@ -163,7 +174,11 @@ var async = require('async'),
 			}
 		], function(err) {
 			if (!err) {
-				callback(true);
+				if (replace === false && matched === false) {
+					replace = true;
+				}
+
+				callback(replace);
 			}
 		});
 	}
