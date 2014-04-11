@@ -90,6 +90,4 @@ module.exports = function(db, module) {
 			callback(err, results);
 		});
 	};
-
-	return module;
 };
