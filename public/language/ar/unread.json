@@ -1,6 +1,9 @@
 {
     "title": "Unread",
     "no_unread_topics": "ليس هناك أي موضوع غير مقروء",
-    "mark_all_read": "إجعل كل المواضيع مقرؤة",
-    "load_more": "حمل المزيد"
+    "load_more": "حمل المزيد",
+    "mark_as_read": "Mark as Read",
+    "selected": "Selected",
+    "all": "All",
+    "topics_marked_as_read.success": "Topics marked as read!"
 }

@@ -538,21 +538,15 @@
 		getSortedSetRange(key, start, stop, -1, callback);
 	};
 
-	module.getSortedSetRangeByScore = function(args, callback) {
-		getSortedSetRangeByScore(args, 1, callback);
+	module.getSortedSetRangeByScore = function(key, start, count, min, max, callback) {
+		getSortedSetRangeByScore(key, start, count, min, max, 1, callback);
 	};
 
-	module.getSortedSetRevRangeByScore = function(args, callback) {
-		getSortedSetRangeByScore(args, -1, callback);
+	module.getSortedSetRevRangeByScore = function(key, start, count, max, min, callback) {
+		getSortedSetRangeByScore(key, start, count, min, max, -1, callback);
 	};
 
-	function getSortedSetRangeByScore(args, sort, callback) {
-		var key = args[0],
-			max = (args[1] === '+inf') ? Number.MAX_VALUE : args[1],
-			min = args[2],
-			start = args[4],
-			count = args[5];
-
+	function getSortedSetRangeByScore(key, start, count, min, max, sort, callback) {
 		if(parseInt(count, 10) === -1) {
 			count = 0;
 		}

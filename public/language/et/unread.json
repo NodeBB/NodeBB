@@ -1,6 +1,9 @@
 {
     "title": "Lugemata",
     "no_unread_topics": "Siin ei ole lugemata teemasi.",
-    "mark_all_read": "Märgi kõik loetuks",
-    "load_more": "Lae rohkem"
+    "load_more": "Lae rohkem",
+    "mark_as_read": "Mark as Read",
+    "selected": "Selected",
+    "all": "All",
+    "topics_marked_as_read.success": "Topics marked as read!"
 }

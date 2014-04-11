@@ -49,35 +49,36 @@ var	stopTracking = function(replyObj) {
 	};
 
 SocketModules.composer.push = function(socket, pid, callback) {
-	if (socket.uid || parseInt(meta.config.allowGuestPosting, 10)) {
-		if (parseInt(pid, 10) > 0) {
-
-			async.parallel([
-				function(next) {
-					posts.getPostFields(pid, ['content'], next);
-				},
-				function(next) {
-					topics.getTopicDataByPid(pid, next);
-				},
-				function(next) {
-					posts.getPidIndex(pid, next);
-				}
-			], function(err, results) {
-				if(err) {
-					return callback(err);
-				}
-				callback(null, {
-					pid: pid,
-					body: results[0].content,
-					title: results[1].title,
-					topic_thumb: results[1].thumb,
-					index: results[2]
-				});
-			});
-		}
-	} else {
-		callback(new Error('no-uid'));
+	if(!socket.uid && parseInt(meta.config.allowGuestPosting, 10) !== 1) {
+		return callback(new Error('[[error:not-logged-in]]'));
 	}
+
+	posts.getPostFields(pid, ['content'], function(err, postData) {
+		if(err || (!postData && !postData.content)) {
+			return callback(err || new Error('[[error:invalid-pid]]'));
+		}
+
+		async.parallel({
+			topic: function(next) {
+				topics.getTopicDataByPid(pid, next);
+			},
+			index: function(next) {
+				posts.getPidIndex(pid, next);
+			}
+		}, function(err, results) {
+			if(err) {
+				return callback(err);
+			}
+
+			callback(null, {
+				pid: pid,
+				body: postData.content,
+				title: results.topic.title,
+				topic_thumb: results.topic.thumb,
+				index: results.index
+			});
+		});
+	});
 };
 
 SocketModules.composer.editCheck = function(socket, pid, callback) {
@@ -150,7 +151,7 @@ SocketModules.composer.getUsersByTid = function(socket, tid, callback) {
 
 SocketModules.chats.get = function(socket, data, callback) {
 	if(!data) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	Messaging.getMessages(socket.uid, data.touid, false, callback);
@@ -158,7 +159,7 @@ SocketModules.chats.get = function(socket, data, callback) {
 
 SocketModules.chats.send = function(socket, data, callback) {
 	if(!data) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	var touid = data.touid;

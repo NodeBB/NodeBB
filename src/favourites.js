@@ -8,67 +8,50 @@ var async = require('async'),
 (function (Favourites) {
 	"use strict";
 
-	function vote(type, unvote, pid, room_id, uid, socket, callback) {
-		var	websockets = require('./socket.io');
+	function vote(type, unvote, pid, uid, callback) {
+		uid = parseInt(uid, 10);
 
 		if (uid === 0) {
-			return socket.emit('event:alert', {
-				alert_id: 'post_vote',
-				title: '[[topic:vote.not_logged_in.title]]',
-				message: '[[topic:vote.not_logged_in.message]]',
-				type: 'danger',
-				timeout: 5000
-			});
+			return callback(new Error('[[error:not-logged-in]]'));
 		}
 
-		posts.getPostFields(pid, ['uid', 'timestamp'], function (err, postData) {
-			if (uid === parseInt(postData.uid, 10)) {
-				socket.emit('event:alert', {
-					alert_id: 'post_vote',
-					title: '[[topic:vote.cant_vote_self.title]]',
-					message: '[[topic:vote.cant_vote_self.message]]',
-					type: 'danger',
-					timeout: 5000
-				});
-
-				if (callback) {
-					callback(false);
-				}
-
-				return false;
+		posts.getPostFields(pid, ['pid', 'uid', 'timestamp'], function (err, postData) {
+			if (err) {
+				return callback(err);
 			}
 
-			if(type === 'upvote' || !unvote) {
-				db.sortedSetAdd('uid: ' + uid + ':upvote', postData.timestamp, pid);
+			if (uid === parseInt(postData.uid, 10)) {
+				return callback(new Error('[[error:cant-vote-self-post]]'));
+			}
+
+			if(type === 'upvote' && !unvote) {
+				db.sortedSetAdd('uid:' + uid + ':upvote', postData.timestamp, pid);
 			} else {
-				db.sortedSetRemove('uid: ' + uid + ':upvote', pid);
+				db.sortedSetRemove('uid:' + uid + ':upvote', pid);
 			}
 
 			if(type === 'upvote' || unvote) {
-				db.sortedSetRemove('uid: ' + uid + ':downvote', pid);
+				db.sortedSetRemove('uid:' + uid + ':downvote', pid);
 			} else {
-				db.sortedSetAdd('uid: ' + uid + ':downvote', postData.timestamp, pid);
+				db.sortedSetAdd('uid:' + uid + ':downvote', postData.timestamp, pid);
 			}
 
 			user[type === 'upvote' ? 'incrementUserFieldBy' : 'decrementUserFieldBy'](postData.uid, 'reputation', 1, function (err, newreputation) {
-				db.sortedSetAdd('users:reputation', newreputation, postData.uid);
-			});
-
-			if (room_id) {
-				websockets.in(room_id).emit('event:' + (type === 'upvote' ? 'rep_up' : 'rep_down'), {
-					uid: postData.uid,
-					pid: pid
-				});
-			}
-
-			socket.emit('posts.' + (unvote ? 'unvote' : type), {
-				pid: pid
-			});
-
-			adjustPostVotes(pid, uid, type, unvote, function() {
-				if (callback) {
-					callback();
+				if (err) {
+					return callback(err);
 				}
+
+				db.sortedSetAdd('users:reputation', newreputation, postData.uid);
+
+				adjustPostVotes(pid, uid, type, unvote, function(err, votes) {
+					postData.votes = votes;
+					callback(err, {
+						user: {
+							reputation: newreputation
+						},
+						post: postData
+					});
+				});
 			});
 		});
 	}
@@ -79,21 +62,19 @@ var async = require('async'),
 		async.series([
 			function(next) {
 				if (unvote) {
-					db.setRemove('pid:' + pid + ':' + type, uid, function(err) {
-						next(err);
-					});
+					db.setRemove('pid:' + pid + ':' + type, uid, next);
 				} else {
-					db.setAdd('pid:' + pid + ':' + type, uid, function(err) {
-						next(err);
-					});
+					db.setAdd('pid:' + pid + ':' + type, uid, next);
 				}
 			},
 			function(next) {
-				db.setRemove('pid:' + pid + ':' + notType, uid, function(err) {
-					next(err);
-				});
+				db.setRemove('pid:' + pid + ':' + notType, uid, next);
 			}
 		], function(err) {
+			if (err) {
+				return callback(err);
+			}
+
 			async.parallel({
 				upvotes: function(next) {
 					db.setCount('pid:' + pid + ':upvote', next);
@@ -102,48 +83,46 @@ var async = require('async'),
 					db.setCount('pid:' + pid + ':downvote', next);
 				}
 			}, function(err, results) {
-				posts.setPostField(pid, 'votes', parseInt(results.upvotes, 10) - parseInt(results.downvotes, 10));
+				if (err) {
+					return callback(err);
+				}
+				var voteCount = parseInt(results.upvotes, 10) - parseInt(results.downvotes, 10);
+				posts.setPostField(pid, 'votes', voteCount, function(err) {
+					callback(err, voteCount);
+				});
 			});
+		});
+	}
 
-			if (callback) {
-				callback();
+	Favourites.upvote = function(pid, uid, callback) {
+		toggleVote('upvote', pid, uid, callback);
+	};
+
+	Favourites.downvote = function(pid, uid, callback) {
+		toggleVote('downvote', pid, uid, callback);
+	};
+
+	function toggleVote(type, pid, uid, callback) {
+		Favourites.unvote(pid, uid, function(err) {
+			if (err) {
+				return callback(err);
 			}
+
+			vote(type, false, pid, uid, callback);
 		});
 	}
 
-	Favourites.upvote = function(pid, room_id, uid, socket) {
-		toggleVote('upvote', pid, room_id, uid, socket);
-	};
-
-	Favourites.downvote = function(pid, room_id, uid, socket) {
-		toggleVote('downvote', pid, room_id, uid, socket);
-	};
-
-	function toggleVote(type, pid, room_id, uid, socket) {
-		Favourites.unvote(pid, room_id, uid, socket, function(err) {
-			vote(type, false, pid, room_id, uid, socket);
-		});
-	}
-
-	Favourites.unvote = function(pid, room_id, uid, socket, callback) {
-		var	websockets = require('./socket.io');
-
+	Favourites.unvote = function(pid, uid, callback) {
 		Favourites.hasVoted(pid, uid, function(err, voteStatus) {
-			if (voteStatus.upvoted || voteStatus.downvoted) {
-				socket.emit('posts.unvote', {
-					pid: pid
-				});
-
-				return vote(voteStatus.upvoted ? 'downvote' : 'upvote', true, pid, room_id, uid, socket, function() {
-					if (callback) {
-						callback(err);
-					}
-				});
+			if (err) {
+				return callback(err);
 			}
 
-			if (callback) {
-				callback(err);
+			if (!voteStatus || (!voteStatus.upvoted && !voteStatus.downvoted)) {
+				return callback();
 			}
+
+			vote(voteStatus.upvoted ? 'downvote' : 'upvote', true, pid, uid, callback);
 		});
 	};
 
@@ -164,77 +143,64 @@ var async = require('async'),
 		}, callback);
 	};
 
-	Favourites.favourite = function (pid, room_id, uid, socket) {
-		var	websockets = require('./socket.io');
+	Favourites.favourite = function (pid, uid, callback) {
+		toggleFavourite('favourite', pid, uid, callback);
+	};
 
+	Favourites.unfavourite = function(pid, uid, callback) {
+		toggleFavourite('unfavourite', pid, uid, callback);
+	};
+
+	function toggleFavourite(type, pid, uid, callback) {
 		if (uid === 0) {
-			return socket.emit('event:alert', {
-				alert_id: 'post_favourite',
-				title: '[[topic:favourites.not_logged_in.title]]',
-				message: '[[topic:favourites.not_logged_in.message]]',
-				type: 'danger',
-				timeout: 5000
-			});
+			return callback(new Error('[[error:not-logged-in]]'));
 		}
 
-		posts.getPostFields(pid, ['uid', 'timestamp'], function (err, postData) {
+		posts.getPostFields(pid, ['pid', 'uid', 'timestamp'], function (err, postData) {
+			if (err) {
+				return callback(err);
+			}
+
 			Favourites.hasFavourited(pid, uid, function (err, hasFavourited) {
-				if (!hasFavourited) {
+				if (err) {
+					return callback(err);
+				}
+
+				if (type === 'favourite' && hasFavourited) {
+					return callback(new Error('[[error:already-favourited]]'));
+				}
+
+				if (type === 'unfavourite' && !hasFavourited) {
+					return callback(new Error('[[error:alrady-unfavourited]]'));
+				}
+
+				if (type === 'favourite') {
 					db.sortedSetAdd('uid:' + uid + ':favourites', postData.timestamp, pid);
-					db.setAdd('pid:' + pid + ':users_favourited', uid, function(err) {
-						db.setCount('pid:' + pid + ':users_favourited', function(err, count) {
-							posts.setPostField(pid, 'reputation', count);
-						});
-					});
-
-					if (room_id) {
-						websockets.in(room_id).emit('event:favourited', {
-							uid: uid !== postData.uid ? postData.uid : 0,
-							pid: pid
-						});
-					}
-
-					socket.emit('posts.favourite', {
-						pid: pid
-					});
-				}
-			});
-		});
-	};
-
-	Favourites.unfavourite = function(pid, room_id, uid, socket) {
-		var	websockets = require('./socket.io');
-
-		if (uid === 0) {
-			return;
-		}
-
-		posts.getPostField(pid, 'uid', function (err, uid_of_poster) {
-			Favourites.hasFavourited(pid, uid, function (err, hasFavourited) {
-				if (hasFavourited) {
+				} else {
 					db.sortedSetRemove('uid:' + uid + ':favourites', pid);
-					db.setRemove('pid:' + pid + ':users_favourited', uid, function(err) {
-						db.setCount('pid:' + pid + ':users_favourited', function(err, count) {
-							posts.setPostField(pid, 'reputation', count);
+				}
+
+
+				db[type === 'favourite' ? 'setAdd' : 'setRemove']('pid:' + pid + ':users_favourited', uid, function(err) {
+					if (err) {
+						return callback(err);
+					}
+
+					db.setCount('pid:' + pid + ':users_favourited', function(err, count) {
+						if (err) {
+							return callback(err);
+						}
+						postData.reputation = count;
+						posts.setPostField(pid, 'reputation', count, function(err) {
+							callback(err, {
+								post: postData
+							});
 						});
 					});
-
-					if (room_id) {
-						websockets.in(room_id).emit('event:unfavourited', {
-							uid: uid !== uid_of_poster ? uid_of_poster : 0,
-							pid: pid
-						});
-					}
-
-					if (socket) {
-						socket.emit('posts.unfavourite', {
-							pid: pid
-						});
-					}
-				}
+				});
 			});
 		});
-	};
+	}
 
 	Favourites.hasFavourited = function(pid, uid, callback) {
 		db.isSetMember('pid:' + pid + ':users_favourited', uid, callback);

@@ -69,14 +69,7 @@
 
 	"favourite": "Favourite",
 	"favourites": "Favourites",
-	"favourites.not_logged_in.title": "Not Logged In",
-	"favourites.not_logged_in.message": "Please log in in order to favourite this post",
 	"favourites.has_no_favourites": "You don't have any favourites, favourite some posts to see them here!",
-
-	"vote.not_logged_in.title": "Not Logged In",
-	"vote.not_logged_in.message": "Please log in in order to vote",
-	"vote.cant_vote_self.title": "Invalid Vote",
-	"vote.cant_vote_self.message": "You cannot vote for your own post",
 
 	"loading_more_posts": "Loading More Posts",
 	"move_topic": "Move Topic",

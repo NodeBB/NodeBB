@@ -79,7 +79,7 @@ SocketAdmin.user.removeAdmin = function(socket, theirid, callback) {
 
 SocketAdmin.user.createUser = function(socket, userData, callback) {
 	if (!userData) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 	user.create(userData, callback);
 };
@@ -87,7 +87,7 @@ SocketAdmin.user.createUser = function(socket, userData, callback) {
 SocketAdmin.user.banUser = function(socket, theirid, callback) {
 	user.isAdministrator(theirid, function(err, isAdmin) {
 		if (err || isAdmin) {
-			return callback(err || new Error('You can\'t ban other admins!'));
+			return callback(err || new Error('[[error:cant-ban-other-admins]]'));
 		}
 
 		user.ban(theirid, function(err) {
@@ -137,6 +137,10 @@ SocketAdmin.user.search = function(socket, username, callback) {
 			});
 		}
 
+		if (err) {
+			return callback(err);
+		}
+
 		async.each(data.users, isAdmin, function(err) {
 			callback(err, data);
 		});
@@ -146,7 +150,7 @@ SocketAdmin.user.search = function(socket, username, callback) {
 /* Categories */
 SocketAdmin.categories.create = function(socket, data, callback) {
 	if(!data) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	categories.create(data, callback);
@@ -154,7 +158,7 @@ SocketAdmin.categories.create = function(socket, data, callback) {
 
 SocketAdmin.categories.update = function(socket, data, callback) {
 	if(!data) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	categories.update(data, callback);
@@ -162,7 +166,7 @@ SocketAdmin.categories.update = function(socket, data, callback) {
 
 SocketAdmin.categories.search = function(socket, data, callback) {
 	if(!data) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	var	username = data.username,
@@ -184,7 +188,7 @@ SocketAdmin.categories.search = function(socket, data, callback) {
 
 SocketAdmin.categories.setPrivilege = function(socket, data, callback) {
 	if(!data) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	var	cid = data.cid,
@@ -248,15 +252,14 @@ SocketAdmin.categories.getPrivilegeSettings = function(socket, cid, callback) {
 		callback(null, {
 			"+r": data['+r'].members,
 			"+w": data['+w'].members,
-			"mods": data['mods'].members
+			"mods": data.mods.members
 		});
 	});
 };
 
 SocketAdmin.categories.setGroupPrivilege = function(socket, data, callback) {
-
 	if(!data) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	if (data.set) {
@@ -295,7 +298,7 @@ SocketAdmin.themes.getInstalled = function(socket, data, callback) {
 
 SocketAdmin.themes.set = function(socket, data, callback) {
 	if(!data) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	widgets.reset(function(err) {
@@ -315,7 +318,7 @@ SocketAdmin.plugins.toggle = function(socket, plugin_id) {
 
 SocketAdmin.widgets.set = function(socket, data, callback) {
 	if(!data) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	widgets.setArea(data, callback);
@@ -328,7 +331,7 @@ SocketAdmin.config.get = function(socket, data, callback) {
 
 SocketAdmin.config.set = function(socket, data, callback) {
 	if(!data) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	meta.configs.set(data.key, data.value, function(err) {
@@ -354,7 +357,7 @@ SocketAdmin.config.remove = function(socket, key) {
 /* Groups */
 SocketAdmin.groups.create = function(socket, data, callback) {
 	if(!data) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	groups.create(data.name, data.description, function(err, groupObj) {
@@ -376,7 +379,7 @@ SocketAdmin.groups.get = function(socket, groupName, callback) {
 
 SocketAdmin.groups.join = function(socket, data, callback) {
 	if(!data) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	groups.join(data.groupName, data.uid, callback);
@@ -384,7 +387,7 @@ SocketAdmin.groups.join = function(socket, data, callback) {
 
 SocketAdmin.groups.leave = function(socket, data, callback) {
 	if(!data) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	groups.leave(data.groupName, data.uid, callback);
@@ -392,7 +395,7 @@ SocketAdmin.groups.leave = function(socket, data, callback) {
 
 SocketAdmin.groups.update = function(socket, data, callback) {
 	if(!data) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	groups.update(data.groupName, data.values, function(err) {

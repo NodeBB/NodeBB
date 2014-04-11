@@ -1,6 +1,9 @@
 {
     "title": "לא נקרא",
     "no_unread_topics": "אין נושאים שלא נקראו",
-    "mark_all_read": "סמן הכל כנקרא",
-    "load_more": "טען עוד"
+    "load_more": "טען עוד",
+    "mark_as_read": "Mark as Read",
+    "selected": "Selected",
+    "all": "All",
+    "topics_marked_as_read.success": "Topics marked as read!"
 }

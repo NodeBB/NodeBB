@@ -33,7 +33,7 @@ function userNotAllowed(res) {
 function getUserDataByUserSlug(userslug, callerUID, callback) {
 	user.getUidByUserslug(userslug, function(err, uid) {
 		if(err || !uid) {
-			return callback(err || new Error('invalid-user'));
+			return callback(err || new Error('[[error:invalid-uid]]'));
 		}
 
 		async.parallel({
@@ -54,7 +54,7 @@ function getUserDataByUserSlug(userslug, callerUID, callback) {
 			}
 		}, function(err, results) {
 			if(err || !results.userData) {
-				return callback(err || new Error('invalid-user'));
+				return callback(err || new Error('[[error:invalid-uid]]'));
 			}
 
 			var userData = results.userData;

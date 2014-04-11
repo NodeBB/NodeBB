@@ -111,6 +111,10 @@ define(['composer', 'share'], function(composer, share) {
 		socket.emit(method, {
 			pid: pid,
 			room_id: app.currentRoom
+		}, function(err) {
+			if (err) {
+				app.alertError(err.message);
+			}
 		});
 
 		return false;
@@ -123,6 +127,10 @@ define(['composer', 'share'], function(composer, share) {
 		socket.emit(currentState ? 'posts.unvote' : method , {
 			pid: post.attr('data-pid'),
 			room_id: app.currentRoom
+		}, function(err) {
+			if (err) {
+				app.alertError(err.message);
+			}
 		});
 
 		return false;

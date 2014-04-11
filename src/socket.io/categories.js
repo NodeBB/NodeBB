@@ -13,7 +13,7 @@ SocketCategories.getRecentReplies = function(socket, cid, callback) {
 			return callback(err);
 		}
 
-		if (privileges && !privileges.read) {
+		if (!privileges || !privileges.read) {
 			return callback(null, []);
 		}
 
@@ -27,7 +27,7 @@ SocketCategories.get = function(socket, data, callback) {
 
 SocketCategories.loadMore = function(socket, data, callback) {
 	if(!data) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	user.getSettings(socket.uid, function(err, settings) {

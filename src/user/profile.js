@@ -18,7 +18,7 @@ module.exports = function(User) {
 
 		function isSignatureValid(next) {
 			if (data.signature !== undefined && data.signature.length > meta.config.maximumSignatureLength) {
-				next(new Error('Signature can\'t be longer than ' + meta.config.maximumSignatureLength + ' characters!'));
+				next(new Error('[[error:signature-too-long, ' + meta.config.maximumSignatureLength + ']]'));
 			} else {
 				next();
 			}
@@ -39,7 +39,7 @@ module.exports = function(User) {
 						return next(err);
 					}
 
-					next(!available ? new Error('Email not available!') : null);
+					next(!available ? new Error('[[error:email-taken]]') : null);
 
 				});
 			});
@@ -55,7 +55,7 @@ module.exports = function(User) {
 				}
 
 				if(!utils.isUserNameValid(data.username) || !userslug) {
-					return next(new Error('Invalid Username!'));
+					return next(new Error('[[error:invalid-username]]'));
 				}
 
 				User.exists(userslug, function(err, exists) {
@@ -63,7 +63,7 @@ module.exports = function(User) {
 						return next(err);
 					}
 
-					next(exists ? new Error('Username not available!') : null);
+					next(exists ? new Error('[[error:username-taken]]') : null);
 				});
 			});
 		}
@@ -196,7 +196,7 @@ module.exports = function(User) {
 
 	User.changePassword = function(uid, data, callback) {
 		if(!data || !data.uid) {
-			return callback(new Error('invalid-uid'));
+			return callback(new Error('[[error:invalid-uid]]'));
 		}
 
 		function hashAndSetPassword(callback) {

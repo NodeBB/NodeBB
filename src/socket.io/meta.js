@@ -37,7 +37,7 @@ SocketMeta.buildTitle = function(socket, text, callback) {
 
 SocketMeta.updateHeader = function(socket, data, callback) {
 	if(!data) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	if (socket.uid) {
@@ -76,7 +76,7 @@ SocketMeta.getUsageStats = function(socket, data, callback) {
 
 SocketMeta.rooms.enter = function(socket, data) {
 	if(!data) {
-		return callback(new Error('invalid data'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	if (data.leave !== null) {

@@ -58,7 +58,7 @@ var async = require('async'),
 	Topics.getTopicDataWithUser = function(tid, callback) {
 		Topics.getTopicData(tid, function(err, topic) {
 			if (err || !topic) {
-				return callback(err || new Error('topic doesn\'t exist'));
+				return callback(err || new Error('[[error:no-topic]]'));
 			}
 
 			user.getUserFields(topic.uid, ['username', 'userslug', 'picture'] , function(err, userData) {
@@ -101,7 +101,7 @@ var async = require('async'),
 
 	Topics.getTidPage = function(tid, uid, callback) {
 		if(!tid) {
-			return callback(new Error('invalid-tid'));
+			return callback(new Error('[[error:invalid-tid]]'));
 		}
 
 		async.parallel({
@@ -270,7 +270,7 @@ var async = require('async'),
 	Topics.getTopicWithPosts = function(tid, uid, start, end, callback) {
 		Topics.getTopicData(tid, function(err, topicData) {
 			if (err || !topicData) {
-				return callback(err || new Error('Topic tid \'' + tid + '\' not found'));
+				return callback(err || new Error('[[error:no-topic]]'));
 			}
 
 			async.parallel({
@@ -328,8 +328,8 @@ var async = require('async'),
 			posts.getPostFields(pid, ['pid', 'uid', 'timestamp'], function(err, postData) {
 				if (err) {
 					return callback(err);
-				} else if(!postData) {
-					return callback(new Error('no-teaser-found'));
+				} else if(!postData || !postData.uid) {
+					return callback(new Error('[[error:no-teaser]]'));
 				}
 
 				user.getUserFields(postData.uid, ['username', 'userslug', 'picture'], function(err, userData) {

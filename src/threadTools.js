@@ -69,9 +69,9 @@ var winston = require('winston'),
 			}
 
 			if (parseInt(deleted, 10) && isDelete) {
-				return callback(new Error('topic-already-deleted'));
+				return callback(new Error('[[error:topic-already-deleted]]'));
 			} else if (!parseInt(deleted, 10) && !isDelete) {
-				return callback(new Error('topic-already-restored'));
+				return callback(new Error('[[error:topic-already-restored]]'));
 			}
 
 			topics[isDelete ? 'delete' : 'restore'](tid, function(err) {

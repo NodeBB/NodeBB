@@ -1,6 +1,9 @@
 {
     "title": "未读",
     "no_unread_topics": "没有未读主题。",
-    "mark_all_read": "标记全部为已读",
-    "load_more": "载入更多"
+    "load_more": "载入更多",
+    "mark_as_read": "Mark as Read",
+    "selected": "Selected",
+    "all": "All",
+    "topics_marked_as_read.success": "Topics marked as read!"
 }
