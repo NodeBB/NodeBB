@@ -163,7 +163,7 @@ define(['composer', 'share'], function(composer, share) {
 						tid: tid
 					}, function(err) {
 						if(err) {
-							return translator.translate('[[topic:post_' + action + '_error]]', app.alertError);
+							app.alertError('[[topic:post_' + action + '_error]]');
 						}
 					});
 				}
@@ -218,7 +218,7 @@ define(['composer', 'share'], function(composer, share) {
 
 			$('#topicId').val('');
 
-			app.alertSuccess('Post moved!');
+			app.alertSuccess('[[topic:post_moved]]');
 		});
 	}
 
@@ -230,9 +230,8 @@ define(['composer', 'share'], function(composer, share) {
 						if(err) {
 							return app.alertError(err.message);
 						}
-						translator.translate('[[topic:flag_success]]', function(message) {
-							app.alertSuccess(message);
-						});
+
+						app.alertSuccess('[[topic:flag_success]]');
 					});
 				}
 			});

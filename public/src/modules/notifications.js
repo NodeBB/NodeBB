@@ -95,8 +95,8 @@ define(['sounds'], function(sound) {
 
 			app.alert({
 				alert_id: 'new_notif',
-				title: 'New notification',
-				message: 'You have unread notifications.',
+				title: '[[notifications:new_notification]]',
+				message: '[[notifications:you_have_unread_notifications]]',
 				type: 'warning',
 				timeout: 2000
 			});

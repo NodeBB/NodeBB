@@ -414,13 +414,7 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 			$('.topic-main-buttons .post_reply').attr('disabled', locked).html(locked ? 'Locked <i class="fa fa-lock"></i>' : 'Reply');
 
 			if (alert) {
-				app.alert({
-					'alert_id': 'thread_lock',
-					type: 'success',
-					title: 'Thread ' + (locked ? 'Locked' : 'Unlocked'),
-					message: 'Thread has been successfully ' + (locked ? 'locked' : 'unlocked'),
-					timeout: 5000
-				});
+				app.alertSuccess(locked ? '[[topic:topic_lock_success]]' : '[[topic:topic_unlock_success]]');
 			}
 
 			thread_state.locked = locked ? '1' : '0';
@@ -450,13 +444,7 @@ define(['forum/pagination', 'forum/topic/threadTools', 'forum/topic/postTools', 
 				$('.pin_thread').html(translated);
 
 				if (alert) {
-					app.alert({
-						'alert_id': 'thread_pin',
-						type: 'success',
-						title: 'Thread ' + (pinned ? 'Pinned' : 'Unpinned'),
-						message: 'Thread has been successfully ' + (pinned ? 'pinned' : 'unpinned'),
-						timeout: 5000
-					});
+					app.alertSuccess(pinned ? '[[topic:topic_pin_success]]' : '[[topic:topic_unpin_success]]');
 				}
 				thread_state.pinned = pinned ? '1' : '0';
 			});

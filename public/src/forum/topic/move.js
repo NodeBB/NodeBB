@@ -71,10 +71,10 @@ define(function() {
 			}, function(err) {
 				modal.modal('hide');
 				if(err) {
-					return app.alertError('This topic could not be moved to ' + targetCategoryLabel + '.<br />Please try again later');
+					return app.alertError(err.message);
 				}
 
-				app.alertSuccess('This topic has been successfully moved to ' + targetCategoryLabel);
+				app.alertSuccess('[[topic:topic_move_success, ' + targetCategoryLabel + ']]');
 			});
 		}
 
