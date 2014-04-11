@@ -1,6 +1,7 @@
 "use strict";
 
-var nconf = require('nconf');
+var nconf = require('nconf'),
+	async = require('async');
 
 module.exports = function(db, module) {
 	module.close = function(callback) {
@@ -31,8 +32,6 @@ module.exports = function(db, module) {
 		// O____O      GIEF FOOD
 		//  v v
 	};
-
-	// key
 
 	module.exists = function(key, callback) {
 		db.get(key, function(err, value) {
@@ -77,6 +76,19 @@ module.exports = function(db, module) {
 
 	module.expireAt = function(key, timestamp, callback) {
 		// <__<
+	};
+
+	module.iterator = function(fn, keys, value, callback) {
+		var results = [];
+
+		async.each(keys, function(key, next) {
+			module.isSetMember(key, value, function(err, result) {
+				results.push(result);
+				next();
+			});
+		}, function(err) {
+			callback(err, results);
+		});
 	};
 
 	return module;

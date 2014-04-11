@@ -40,17 +40,7 @@ module.exports = function(db, module) {
 	};
 
 	module.isMemberOfSets = function(sets, value, callback) {
-		// can be improved
-		var members = [];
-
-		async.each(sets, function(set, next) {
-			module.isSetMember(set, value, function(err, isMember) {
-				members.push(value);
-				next();
-			});
-		}, function(err) {
-			callback(err, members);
-		});
+		module.iterator('isSetMember', sets, value, callback);
 	};
 
 	module.getSetMembers = function(key, callback) {
