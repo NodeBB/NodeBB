@@ -1,6 +1,8 @@
 "use strict";
 
 module.exports = function(db, module) {
+	var helpers = module.helpers.level;
+	
 	module.listPrepend = function(key, value, callback) {
 		module.getListRange(key, 0, -1, function(err, list) {
 			var arr = list || [];

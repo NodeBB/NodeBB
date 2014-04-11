@@ -4,6 +4,8 @@ var nconf = require('nconf'),
 	async = require('async');
 
 module.exports = function(db, module) {
+	var helpers = module.helpers.level;
+	
 	module.close = function(callback) {
 		db.close(callback);
 	};
@@ -76,19 +78,6 @@ module.exports = function(db, module) {
 
 	module.expireAt = function(key, timestamp, callback) {
 		// <__<
-	};
-
-	module.iterator = function(fn, keys, value, callback) {
-		var results = [];
-
-		async.each(keys, function(key, next) {
-			module[fn](key, value, function(err, result) {
-				results.push(result);
-				next();
-			});
-		}, function(err) {
-			callback(err, results);
-		});
 	};
 
 	return module;

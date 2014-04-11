@@ -4,6 +4,8 @@ var async = require('async');
 
 
 module.exports = function(db, module) {
+	var helpers = module.helpers.level;
+	
 	module.sortedSetAdd = function(key, score, value, callback) {
 		module.getListRange(key, 0, -1, function(err, set) {
 			set = set.filter(function(a) {return a.value !== value.toString();});

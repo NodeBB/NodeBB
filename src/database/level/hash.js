@@ -3,6 +3,8 @@
 var async = require('async');
 
 module.exports = function(db, module) {
+	var helpers = module.helpers.level;
+
 	module.setObject = function(key, obj, callback) {
 		async.parallel([
 			function(next) {
@@ -82,7 +84,7 @@ module.exports = function(db, module) {
 	};
 
 	module.getObjectsFields = function(keys, fields, callback) {
-		module.iterator('getObjectFields', keys, fields, callback);
+		helpers.iterator('getObjectFields', keys, fields, callback);
 	};
 
 	module.getObjectKeys = function(key, callback) {

@@ -3,6 +3,8 @@
 var async = require('async');
 
 module.exports = function(db, module) {
+	var helpers = module.helpers.level;
+
 	module.setAdd = function(key, value, callback) {
 		module.getListRange(key, 0, -1, function(err, set) {
 			if (set.indexOf(value) === -1) {
@@ -40,7 +42,7 @@ module.exports = function(db, module) {
 	};
 
 	module.isMemberOfSets = function(sets, value, callback) {
-		module.iterator('isSetMember', sets, value, callback);
+		helpers.iterator('isSetMember', sets, value, callback);
 	};
 
 	module.getSetMembers = function(key, callback) {
