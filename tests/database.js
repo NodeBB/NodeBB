@@ -244,6 +244,8 @@ describe('Test database', function() {
 		var setTasks = [
 			getSetMembers,
 			setAdd,
+			setAdd,
+			setAdd,
 			getSetMembers,
 			setRemove,
 			getSetMembers,
@@ -281,8 +283,14 @@ describe('Test database', function() {
 		}
 
 		function getSortedSetRange(callback) {
-			db.getSortedSetRevRange('sortedSet3', 0, -1, function(err, data) {
+			db.getSortedSetRange('sortedSet3', 0, -1, function(err, data) {
 				callback(err, {'getSortedSetRange': data});
+			});
+		}
+
+		function getSortedSetRevRange(callback) {
+			db.getSortedSetRevRange('sortedSet3', 0, -1, function(err, data) {
+				callback(err, {'getSortedSetRevRange': data});
 			});
 		}
 
@@ -311,11 +319,20 @@ describe('Test database', function() {
 			});
 		}
 
+		function isSortedSetMember(callback) {
+			db.isSortedSetMember('sortedSet3', 5, function(err, data) {
+				callback(err, {'sortedSetMember': data});
+			});
+		}
+
 		var sortedSetTasks = [
 			sortedSetAdd,
+			sortedSetAdd,
+			isSortedSetMember,
 			getSortedSetRange,
 			sortedSetAdd,
 			getSortedSetRange,
+			getSortedSetRevRange,
 			sortedSetRemove,
 			getSortedSetRange,
 			sortedSetCount,
