@@ -172,7 +172,7 @@ var async = require('async'),
 								return next(new Error('unknown database : ' + config.database));
 							}
 
-							var allQuestions = install.redisQuestions.concat(install.mongoQuestions);
+							var allQuestions = install.redisQuestions.concat(install.mongoQuestions.concat(install.levelQuestions));
 							for(var x=0;x<allQuestions.length;x++) {
 								delete config[allQuestions[x].name];
 							}
