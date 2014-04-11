@@ -5,6 +5,7 @@
 
 (function(module) {
 	'use strict';
+	/*global before*/
 
 	var utils = require('./../public/src/utils.js'),
 		path  = require('path'),
@@ -38,11 +39,15 @@
 				'    "database": "1"' + '\n' +
 			'}\n'+
 			" or (mongo):\n" +
-			 	'"test_database": {' + '\n' +
+				'"test_database": {' + '\n' +
 				'    "host": "127.0.0.1",' + '\n' +
 				'    "port": "27017",' + '\n' +
 				'    "password": "",' + '\n' +
 				'    "database": "1"' + '\n' +
+			'}\n'+
+			" or (level):\n" +
+				'"test_database": {' + '\n' +
+				'    "database": "/path/to/database"' + '\n' +
 			'}\n'+
 			"==========================================================="
 		);
