@@ -360,13 +360,11 @@
 	};
 
 	module.getSortedSetRangeByScore = function(key, start, count, min, max, callback) {
-		var args = [key, min, max, 'LIMIT', start, count];
-		redisClient.zrangebyscore(args, callback);
+		redisClient.zrangebyscore([key, min, max, 'LIMIT', start, count], callback);
 	};
 
 	module.getSortedSetRevRangeByScore = function(key, start, count, max, min, callback) {
-		var args = [key, max, min, 'LIMIT', start, count];
-		redisClient.zrevrangebyscore(args, callback);
+		redisClient.zrevrangebyscore([key, max, min, 'LIMIT', start, count], callback);
 	};
 
 	module.sortedSetCount = function(key, min, max, callback) {
