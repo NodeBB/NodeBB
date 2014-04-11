@@ -9,6 +9,7 @@
 	* With much <3, psychobunny.
 	*/
 
+
 	var winston = require('winston'),
 		nconf = require('nconf'),
 		path = require('path'),
@@ -30,7 +31,18 @@
 	}
 
 	module.init = function(callback) {
-		db = levelup(nconf.get('level:database'));
+		if (db) {
+			if(typeof callback === 'function') {
+				callback();
+			}
+
+			return;
+		} 
+
+		db = levelup(nconf.get('level:database'), {
+			valueEncoding: 'json'
+		});
+
 		ld = leveldown(nconf.get('level:database'));
 
 		db.on('error', function (err) {
@@ -50,8 +62,8 @@
 		}
 	};
 
-	module.close = function() {
-		db.quit();
+	module.close = function(callback) {
+		db.close(callback);
 	};
 
 	//
@@ -100,11 +112,15 @@
 		});
 	};
 
-	module.set = function(key, value, callback) {
+	module.set = function(key, value, callback, sync) {
 		if (value === '') {
 			callback(false);
 		} else {
-			db.put(key, value, function(err) {
+			var options = {
+				sync: typeof sync !== 'undefined'
+			};
+
+			db.put(key, value, options, function(err) {
 				// uh, err is {}.. why??
 				if (typeof callback === 'function') {
 					callback(null);
@@ -126,64 +142,205 @@
 	};
 
 	//hashes
+/*
+	module.setObject = function(key, obj, callback) {
+		if (key.indexOf('topic') !== -1) console.log(key, obj);
+		module.set(key, obj, function(err) {
+			if (typeof callback === 'function') {
+				callback(err, obj);
+			}
+		}, true);
+	};
+
+	module.setObjectField = function(key, field, value, callback) {
+		module.getObject(key, function(err, obj) {
+			obj[field] = value;
+			module.setObject(key, obj, callback, true);
+		});
+	};
+
+	module.getObject = function(key, callback) {
+		module.get(key, function(err, obj) {
+			callback(err, typeof obj !== 'undefined' ? obj : {});
+		});
+	};
+
+	module.getObjects = function(keys, callback) {
+		var arr = [];
+
+		async.each(keys, function(key, next) {
+			module.getObject(key, function(err, val) {
+				arr.push(val);
+				next();
+			});
+		}, function(err) {
+			callback(err, arr);
+		});
+	};
+
+	module.getObjectField = function(key, field, callback) {
+		module.getObject(key, function(err, obj) {
+			callback(err, obj[field] || '');
+		});
+	};
+
+	module.getObjectFields = function(key, fields, callback) {
+		var obj = {};
+
+		async.each(fields, function(field, next) {
+			module.getObjectField(key, field, function(err, value) {
+				obj[field] = value;
+				next();
+			});
+		}, function(err) {
+			callback(err, obj);
+		});
+	};
+
+	module.getObjectsFields = function(keys, fields, callback) {
+		var arr = [];
+
+		async.each(keys, function(key, next) {
+			module.getObjectFields(key, fields, function(err, obj) {
+				arr.push(obj);
+				next();
+			});
+		}, function(err) {
+			callback(err, arr);
+		});
+	};
+
+	module.getObjectKeys = function(key, callback) {
+		module.getObject(key, function(err, obj) {
+			callback(err, Object.keys(obj));
+		});
+	};
+
+	module.getObjectValues = function(key, callback) {
+		module.getObject(key, function(err, obj) {
+			var values = [];
+			for (var key in obj) {
+				if (obj.hasOwnProperty(key)) {
+					values.push(obj[key]);
+				}
+			}
+
+			callback(err, values);
+		});
+	};
+
+	module.isObjectField = function(key, field, callback) {
+		module.getObject(key, function(err, obj) {
+			callback(err, !!obj[field]);
+		});
+	};
+
+	module.deleteObjectField = function(key, field, callback) {
+		module.getObject(key, function(err, obj) {
+			delete obj[field];
+			module.setObject(key, obj, callback);
+		});
+	};
+
+	module.incrObjectField = function(key, field, callback) {
+		module.incrObjectFieldBy(key, field, 1, callback);
+	};
+
+	module.decrObjectField = function(key, field, callback) {
+		module.decrObjectFieldBy(key, field, 1, callback);
+	};
+
+	module.incrObjectFieldBy = function(key, field, value, callback) {
+		module.getObject(key, function(err, obj) {
+
+			if (key.indexOf('topic') !== -1) console.log(key, field, obj[field], value, obj[field] + value);
+			obj[field] = typeof obj[field] !== 'undefined' ? (obj[field] + value) : value;
+			if (key.indexOf('topic') !== -1) console.log(key, field, obj[field]);
+			module.setObject(key, obj, function(err) {
+				if (typeof callback === 'function') {
+					callback(err, obj[field]);
+				}
+			});
+		});
+	};
+
+	module.decrObjectFieldBy = function(key, field, value, callback) {
+		console.log('wtf');
+		module.getObject(key, function(err, obj) {
+			obj[field] = obj[field] ? (obj[field] - value) : -value;
+			module.setObject(key, obj, function(err) {
+				if (typeof callback === 'function') {
+					callback(err, obj[field]);
+				}
+			});
+		});
+	};
+*/
+
 
 	module.setObject = function(key, obj, callback) {
 		async.parallel([
 			function(next) {
-				async.each(obj, function(objKey, next) {
+				async.each(Object.keys(obj), function(objKey, next) {
 					module.setObjectField(key, objKey, obj[objKey], next);
 				}, next);
 			},
 			function(next) {
-				module.set('leveldb:object:' + key, Object.keys(obj).join('-ldb-'));
+				module.set(key, Object.keys(obj).join('-ldb-'));
 				next();
 			}
-		], callback);
+		], function(err) {
+			if (typeof callback === 'function') {
+				callback(err, obj);
+			}
+		});
 	};
 
 	module.setObjectField = function(key, field, value, callback) {
-		// can be improved.
-		module.getObject(key, function(err, obj) {
-			obj[key] = field;
-			module.setObject(key, obj, callback);
-		});
+		module.set(key + ':' + field, value, callback);
 	};
 
 	module.getObject = function(key, callback) {
 		var obj = {};
 
-		module.get('leveldb:object:' + key, function(err, keys) {
+		module.getObjectKeys(key, function(err, keys) {
 			if (keys) {
 				keys = keys.split('-ldb-');
-				async.each(keys, function(key, next) {
-					module.get(key, function(err, value) {
-						obj[key] = value;
+				async.each(keys, function(field, next) {
+					module.getObjectField(key, field, function(err, value) {
+						obj[field] = value;
 						next(err);
 					});
 				}, function(err) {
-					callback(err, obj);
+					if (typeof callback === 'function') {
+						callback(err, obj);
+					}
 				});	
 			} else {
-				callback(err, {});
+				if (typeof callback === 'function') {
+					callback(err, {});
+				}
 			}
 		});
 	};
 
 	module.getObjects = function(keys, callback) {
-		var objs = {};
+		var arr = [];
 
 		async.each(keys, function(key, next) {
 			module.getObject(key, function(err, val) {
-				objs[key] = val;
+				arr.push(val);
 				next();
 			});
 		}, function(err) {
-			callback(err, objs);
+			callback(err, arr);
 		});
 	};
 
 	module.getObjectField = function(key, field, callback) {
-		module.get(key + ':' + field, callback);
+		module.get(key + ':' + field, function(err, val) {
+			callback(err, typeof val !== 'undefined' ? val : '');
+		});
 	};
 
 	module.getObjectFields = function(key, fields, callback) {
@@ -200,20 +357,20 @@
 	};
 
 	module.getObjectsFields = function(keys, fields, callback) {
-		var objs = {};
+		var arr = [];
 
 		async.each(keys, function(key, next) {
 			module.getObjectFields(key, fields, function(err, obj) {
-				objs[key] = obj;
+				arr.push(obj);
 				next();
 			});
 		}, function(err) {
-			callback(err, objs);
+			callback(err, arr);
 		});
 	};
 
 	module.getObjectKeys = function(key, callback) {
-		module.get('leveldb:object:' + key, callback);
+		module.get(key, callback);
 	};
 
 	module.getObjectValues = function(key, callback) {
@@ -239,41 +396,48 @@
 		module.delete(key + ':' + field, callback);
 	};
 
-	// BEGIN FAILURE: if the obj doesn't exist like redis, it does not create it!
 	module.incrObjectField = function(key, field, callback) {
-		module.get(key + ':' + field, function(err, val) {
-			module.set(key + ':' + field, val + 1, callback);
-		});
+		module.incrObjectFieldBy(key, field, 1, callback);
 	};
 
 	module.decrObjectField = function(key, field, callback) {
-		module.get(key + ':' + field, function(err, val) {
-			module.set(key + ':' + field, val - 1, callback);
-		});
+		module.decrObjectFieldBy(key, field, 1, callback);
 	};
 
 	module.incrObjectFieldBy = function(key, field, value, callback) {
 		module.get(key + ':' + field, function(err, val) {
-			module.set(key + ':' + field, val + value, callback);
+			val = val ? (val + value) : value;
+			module.set(key + ':' + field, val, function(err) {
+				if (typeof callback === 'function') {
+					callback(err, val);
+				}
+			});
 		});
 	};
 
 	module.decrObjectFieldBy = function(key, field, value, callback) {
 		module.get(key + ':' + field, function(err, val) {
-			module.set(key + ':' + field, val - value, callback);
+			val = val ? (val - value) : -value;
+			module.set(key + ':' + field, val, function(err) {
+				if (typeof callback === 'function') {
+					callback(err, val);
+				}
+			});
 		});
 	};
-	// END FAILURE: if the obj doesn't exist like redis, it does not create it!
-
 
 	// sets
 
 	module.setAdd = function(key, value, callback) {
 		module.getListRange(key, 0, -1, function(err, set) {
-			if (!set.indexOf(value)) {
-				module.listAppend(set, value, callback);
+			console.log('add', value, set, set.indexOf(value));
+			if (set.indexOf(value) === -1) {
+				console.log('adding');
+				module.listAppend(key, value, callback);
 			} else {
-				callback(null, true); // verify if it sends back true on redis?
+				if (typeof callback === 'function') {
+					callback(null, []); // verify if it sends back true on redis?
+				}
 			}
 		});
 	};
@@ -286,7 +450,7 @@
 
 	module.isSetMember = function(key, value, callback) {
 		module.getListRange(key, 0, -1, function(err, set) {
-			callback(err, !!set.indexOf(value));
+			callback(err, set.indexOf(value) !== -1);
 		});
 	};
 
@@ -304,11 +468,11 @@
 
 	module.isMemberOfSets = function(sets, value, callback) {
 		// can be improved
-		var members = {};
+		var members = [];
 
 		async.each(sets, function(set, next) {
 			module.isSetMember(set, value, function(err, isMember) {
-				members[set] = value;
+				members.push(value);
 				next();
 			});
 		}, function(err) {
@@ -317,7 +481,9 @@
 	};
 
 	module.getSetMembers = function(key, callback) {
-		module.getListRange(key, 0, -1, callback);
+		module.getListRange(key, 0, -1, function(err, set) {
+			callback(err, set);
+		});
 	};
 
 	module.setCount = function(key, callback) {
@@ -330,71 +496,176 @@
 		// how random is this? well, how random are the other implementations of this?
 		// imo rename this to setRemoveOne
 
-		module.getListRange(key, 0, -2, function(err, set) {
-			module.set(key, set.join('-ldb-'), callback);
+		module.getListRange(key, 1, -1, function(err, set) {
+			module.set(key, set, callback);
 		});
 	};
 
 	// sorted sets
 
 	module.sortedSetAdd = function(key, score, value, callback) {
-		db.zadd(key, score, value, callback);
+		module.getListRange(key, 0, -1, function(err, set) {
+			set = set.filter(function(a) {return a.value !== value.toString();});
+
+			set.push({
+				value: value.toString(),
+				score: parseInt(score, 10)
+			});
+
+			set.sort(function(a, b) {return a.score - b.score;});
+			module.set(key, set, callback);
+		});
 	};
 
 	module.sortedSetRemove = function(key, value, callback) {
-		db.zrem(key, value, callback);
+		module.getListRange(key, 0, -1, function(err, set) {
+			set = set.filter(function(a) {return a.value !== value.toString();});
+			module.set(key, set, callback);
+		});
 	};
 
+	function flattenSortedSet(set, callback) {
+		/*callback(null, !set.length ? [] : set.reduce(function(a, b) {
+			return (a.length ? a : [a.value, a.score]).concat([b.value, b.score]);
+		}));*/
+		callback(null, !set.length ? [] : set.reduce(function(a, b) {
+			return (a.length ? a : [a.value]).concat([b.value]);
+		}));
+	}
+
 	module.getSortedSetRange = function(key, start, stop, callback) {
-		db.zrange(key, start, stop, callback);
+		module.getListRange(key, start, stop, function(err, set) {
+			set = !set.length ? [] : set.reduce(function(a, b) {
+				return (a.length ? a : [a.value]).concat(b.value);
+			});
+			if (set.value) {
+				set = [set.value];
+			}
+			callback(err, set);
+		});
 	};
 
 	module.getSortedSetRevRange = function(key, start, stop, callback) {
-		db.zrevrange(key, start, stop, callback);
+		module.getListRange(key, start, stop, function(err, set) {
+			set = !set.length ? [] : set.reverse().reduce(function(a, b) {
+				return (a.length ? a : [a.value]).concat(b.value);
+			});
+			if (set.value) {
+				set = [set.value];
+			}
+			callback(err, set);
+		});
 	};
 
 	module.getSortedSetRangeByScore = function(args, callback) {
-		db.zrangebyscore(args, callback);
+		var key = args[0],
+			max = (args[1] === '+inf') ? Number.MAX_VALUE : args[1],
+			min = (args[2] === '-inf') ? Number.MIN_VALUE : args[2],
+			start = args[4],
+			count = args[5];
+
+
+		module.getListRange(key, 0, -1, function(err, list) {
+			list.filter(function(a) {
+				return a.score >= min && a.score <= max; // to check: greater or and equal?
+			});
+
+			flattenSortedSet(list.slice(start ? start : 0, count ? count : list.length), callback);
+		});
 	};
 
 	module.getSortedSetRevRangeByScore = function(args, callback) {
-		db.zrevrangebyscore(args, callback);
+		var key = args[0],
+			max = (args[1] === '+inf') ? Number.MAX_VALUE : args[1],
+			min = (args[2] === '-inf') ? Number.MIN_VALUE : args[2],
+			start = args[4],
+			count = args[5];
+
+
+		module.getListRange(key, 0, -1, function(err, list) {
+			list.filter(function(a) {
+				return a.score >= min && a.score <= max; // to check: greater or and equal?
+			});
+
+			flattenSortedSet(list.slice(start ? start : 0, count ? count : list.length).reverse(), callback);
+		});
 	};
 
 	module.sortedSetCount = function(key, min, max, callback) {
-		db.zcount(key, min, max, callback);
+		module.getListRange(key, 0, -1, function(err, list) {
+			list.filter(function(a) {
+				return a.score >= min && a.score <= max; // to check: greater or and equal?
+			});
+
+			callback(err, list.length);
+		});
 	};
 
 	module.sortedSetCard = function(key, callback) {
-		db.zcard(key, callback);
+		module.getListRange(key, 0, -1, function(err, list) {
+			callback(err, list.length);
+		});
 	};
 
 	module.sortedSetRank = function(key, value, callback) {
-		db.zrank(key, value, callback);
+		module.getListRange(key, 0, -1, function(err, list) {
+			for (var i = 0, ii=list.length; i< ii; i++) {
+				if (list[i].value === value) {
+					return callback(err, i);
+				}
+			}
+
+			callback(err, null);
+		});
 	};
 
 	module.sortedSetRevRank = function(key, value, callback) {
-		db.zrevrank(key, value, callback);
+		module.getListRange(key, 0, -1, function(err, list) {
+			for (var i = list.length - 1, ii=0; i > ii; i--) {
+				if (list[i].value === value.toString()) {
+					return callback(err, i);
+				}
+			}
+
+			callback(err, null);
+		});
 	};
 
 	module.sortedSetScore = function(key, value, callback) {
-		db.zscore(key, value, callback);
+		module.getListRange(key, 0, -1, function(err, list) {
+			for (var i = 0, ii=list.length; i< ii; i++) {
+				if (list[i].value === value.toString()) {
+					return callback(err, list[i].score);
+				}
+			}
+
+			callback(err, null);
+		});
 	};
 
 	module.isSortedSetMember = function(key, value, callback) {
-		module.sortedSetScore(key, value, function(err, score) {
-			callback(err, !!score);
+		// maybe can be improved by having a parallel array
+		module.getListRange(key, 0, -1, function(err, list) {
+			for (var i = 0, ii=list.length; i< ii; i++) {
+				if (list[i].value === value.toString()) {
+					return callback(err, true);
+				}
+			}
+
+			callback(err, false);
 		});
 	};
 
 	module.sortedSetsScore = function(keys, value, callback) {
-		var	multi = db.multi();
-
-		for(var x=0; x<keys.length; ++x) {
-			multi.zscore(keys[x], value);
-		}
-
-		multi.exec(callback);
+		var sets = {};
+		async.each(keys, function(key, next) {
+			module.sortedSetScore(key, value, function(err, score) {
+				sets[key] = value;
+				next();
+			});
+		}, function(err) {
+			callback(err, sets);
+		});
 	};
 
 	// lists
@@ -402,7 +673,7 @@
 		module.getListRange(key, 0, -1, function(err, list) {
 			var arr = list || [];
 			arr.unshift(value);
-			module.set(key, arr.join('-ldb-'), callback);
+			module.set(key, arr, callback);
 		});
 	};
 
@@ -410,7 +681,11 @@
 		module.getListRange(key, 0, -1, function(err, list) {
 			var arr = list || [];
 			arr.push(value);
-			module.set(key, arr.join('-ldb-'), callback);
+			module.set(key, arr, function(err) {
+				if (typeof callback === 'function') {
+					callback(err, list);
+				}
+			});
 		});
 	};
 
@@ -418,7 +693,7 @@
 		module.getListRange(key, 0, -1, function(err, list) {
 			var arr = list || [];
 			list.pop();
-			module.set(key, list.join('-ldb-'), callback);
+			module.set(key, list, callback);
 		});
 	};
 
@@ -426,22 +701,19 @@
 		module.getListRange(key, 0, -1, function(err, list) {
 			var arr = list || [];
 			list.shift();
-			module.set(key, list.join('-ldb-'), callback);
+			module.set(key, list, callback);
 		});
 	};
 
 	module.listRemoveAll = function(key, value, callback) {
-		// wut is this
-		//db.lrem(key, 0, value, callback);
-		throw new Error('not implemented');
+		module.set(key, [], callback);
 	};
 
 	module.getListRange = function(key, start, stop, callback) {
 		// needs testing.
 		module.get(key, function(err, list) {
 			if (list) {
-				list = list.split('-ldb-');
-				callback(err, list.slice(start, stop >= 0 ? stop : list.length + stop));
+				callback(err, list.slice(start, stop === -1 ? list.length : stop));
 			} else {
 				callback(null, []);
 			}
