@@ -82,7 +82,7 @@ module.exports = function(db, module) {
 		var results = [];
 
 		async.each(keys, function(key, next) {
-			module.isSetMember(key, value, function(err, result) {
+			module[fn](key, value, function(err, result) {
 				results.push(result);
 				next();
 			});
