@@ -23,14 +23,14 @@ define(['forum/accountheader'], function(header) {
 
 			socket.emit('user.saveSettings', settings, function(err) {
 				if (err) {
-					return app.alertError('There was an error saving settings!');
+					return app.alertError(err.message);
 				}
-				app.alertSuccess('Settings saved!');
+				app.alertSuccess('[[success:settings-saved]]');
 			});
 
 			return false;
 		});
-		
+
 		socket.emit('user.getSettings', function(err, settings) {
 			for (var setting in settings) {
 				if (settings.hasOwnProperty(setting)) {
